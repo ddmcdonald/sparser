@@ -369,6 +369,19 @@
                     :noun "autoubiquitination"
                     :s agent))
 
+(define-category poly-ubiquitination :specializes ubiquitination
+  :realization
+  (:verb "poly-ubiquitinate" 
+         :etf (svo-passive pre-mod)
+         :noun "poly-ubiquitylation"))
+
+(def-synonym poly-ubiquitination 
+             (:verb "polyubiquitinate"
+                    :etf (sv)
+                    :noun "polyubiquitination"
+                    :s agent))
+
+
 ;;;------------------------------
 ;;; mUbRas, monoubitutinated Ras
 ;;;------------------------------
@@ -873,7 +886,7 @@ it is created from N-terminus to C-terminus.|#
   ;; molecules, often preteins, but not always
   :specializes bio-chemical-entity
   :mixins (reactome-category)
-  :binds ((component (:or bio-complex small-molecule protein protein-domain))
+  :binds ((component (:or bio-complex small-molecule protein protein-domain ion)) ;; ion is for things like Ca2+-calmodulin
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "complex"
@@ -897,6 +910,25 @@ it is created from N-terminus to C-terminus.|#
          :with component
          :of component
          :between component))
+
+
+;; from EDGFR comments
+
+(noun "calcium" :super molecule)
+(define-category calcium-ion :specializes ion
+  :bindings (molecule (category-named 'calcium)))
+
+(def-synonym calcium-ion
+             (:noun "Ca2+"))
+
+
+(define-category calcium-complex :specializes bio-complex
+  :bindings(component (category-named 'calcium-ion)))
+
+(define-protein "CALM_HUMAN" ("calmodulin" "CALM1" "CaM"))
+
+(define-category calcium-calmodulin-complex :specializes calcium-complex
+  :bindings (component (category-named 'calmodulin)))
 
 
 ; From the ERK abstract:
