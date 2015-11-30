@@ -139,7 +139,11 @@
         (tr :looking-at-ns-segment start-pos end-pos)
         
         (multiple-value-bind (layout edge)
-                             (parse-between-scan-boundaries start-pos end-pos)
+                             (let
+                                 ((*allow-pure-syntax-rules* nil)
+                                  (*allow-form-rules* nil))
+                               (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+                               (parse-between-scan-boundaries start-pos end-pos))
           (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
           (cond
            ((eq layout :single-span)  ;; Do nothing. It's already known
