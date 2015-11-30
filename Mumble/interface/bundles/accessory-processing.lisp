@@ -40,8 +40,11 @@
     ))
 
 (defun process-command-accessory ()
-  (change-state
-    ':aux-state 'unmarked (state *current-phrasal-root*)))
+  (let* ((root *current-phrasal-root*)
+         (clause (node root)))
+    (remove-subject clause)
+    (change-state
+     ':aux-state 'unmarked (state root))))
 
 (defun lexical-subject ()
   (let* ((subject-position
