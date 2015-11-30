@@ -205,7 +205,7 @@
 ;;;------------------
 ;;; bundle operators
 ;;;------------------
-
+#|
 (instantiate-type (bundle-operator
 		   (#:bo-)
 		   ("#<operator ~a ~a>" bo
@@ -219,10 +219,10 @@
 (defun bundle-operator-named (symbol)
   (gethash symbol *symbols-to-bundle-operators*))
 
-(defmacro def-bundle-operator (name args &body body)
-  `(def-bundle-operator/expr ',name ',args ',body))
+(defmacro def-accessory-operator (name args &body body)
+  `(def-accessory-operator/expr ',name ',args ',body))
 
-(defun def-bundle-operator/expr (name args body)
+(defun def-accessory-operator/expr (name args body)
   (let ((bo (make-bundle-operator :name name)))
     (setf (indexed-object-index bo) (index-object bo))
     (let* ((fn-name (concat name '#:-bundle-operator))
@@ -231,7 +231,7 @@
       (setf (bo-function bo) fn)
       (setf (gethash name *symbols-to-bundle-operators*) bo)
       bo)))
-
+|#
 
 ;;;-----------------
 ;;; bundle creators
