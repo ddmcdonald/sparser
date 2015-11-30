@@ -16,6 +16,11 @@
 
 (in-package :mumble)
 
+#| DEPRECATED -- Equivalent functionality is in the file
+    interface/bundles/specification-operators.lisp |#
+
+
+
 
 ;################  Setting NP Heads  ##
 ;################################################################
