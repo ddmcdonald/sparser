@@ -12,10 +12,51 @@
 (in-package :mumble)
 
 
+(defgeneric noun (word &optional phrase)
+  (:documentation "Given a designator for a word, return
+    a lexicalized phrase for it as a simple np."))
+
+(defmethod noun ((string string) &optional phrase-name)
+  (let* ((phrase (phrase-named (or phrase-name 'common-noun)))
+         (parameter (car (parameters-to-phrase phrase)))
+         (word (word-for-string string 'noun)))
+    (let ((pair (make-instance 'parameter-value-pair
+                  :phrase-parameter parameter
+                  :value word)))
+      (make-instance 'saturated-lexical-phrase
+        :phrase phrase
+        :bound `(,pair)))))
+
+(defgeneric verb (word &optional phrase)
+  (:documentation "Given a designator for a verb, return 
+    a lexicalized phraes for it. The default phrase is SVO, 
+    but can be overridden by the optional argument."))
+
+(defmethod verb ((string string) &optional phrase-name)
+  (let* ((phrase (phrase-named (or phrase-name 'SVO)))
+         (parameter (parameter-named 'v))
+         (parameters (delete parameter
+                             (copy-list (parameters-to-phrase phrase))))
+         (word (word-for-string string 'verb)))
+    (let ((pair (make-instance 'parameter-value-pair
+                  :phrase-parameter parameter
+                  :value word)))
+      (make-instance 'partially-saturated-lexical-phrase
+        :phrase phrase
+        :free parameters
+        :bound `(,pair)))))
+
+
+
+
 (defmacro define-lexicalized-phrase (phrase words arguments)
   `(create-lexicalized-phrase ',phrase ',words ',arguments))
 
 (defun create-lexicalized-phrase (phrase-name word-strings argument-names)
+  "General scheme for constructing a lexicalized phrase given the
+   name of the phrase and two arguements, the list of word (as strings)
+   that lexicalize it and the list of parameters (as symbols) that
+   they're bound to. The two lists have to be correctly ordered."
   (let ((phrase (phrase-named (intern (symbol-name phrase-name)
                                       (find-package :mumble)))))
     (unless phrase

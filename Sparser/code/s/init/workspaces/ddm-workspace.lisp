@@ -361,7 +361,7 @@ In article 2  "c-termini"
   (ddm-ed "grammar/model/sl/biology/new-RAS2-proteins.lisp")
   (ddm-ed "grammar/model/sl/biology/proteins.lisp")
   (ddm-ed "grammar/model/sl/biology/amino-acids.lisp")
-  (ddm-ed "grammar/model/sl/biology/terms1.lisp")
+  (ddm-ed "grammar/model/sl/biology/terms.lisp")
   (ddm-ed "grammar/model/sl/biology/drugs.lisp")
   (ddm-ed "grammar/model/sl/biology/rhetoric.lisp")
   (ddm-ed "grammar/model/sl/biology/doc-structure.lisp")
@@ -370,10 +370,10 @@ In article 2  "c-termini"
   (ddm-ed "grammar/model/sl/biology/parse-biopax.lisp") ;; +R3
   (ddm-ed "grammar/model/sl/biology/find-extension.lisp") ;; +R3
   (ddm-ed "grammar/model/sl/biology/new-words.lisp")
-  (ddm-ed "grammar/model/sl/biology/UCD-proteins2.lisp")
+  (ddm-ed "grammar/model/sl/biology/UCD-proteins.lisp")
   (ddm-ed "grammar/model/sl/biology/protein-families.lisp")
   (ddm-ed "grammar/model/sl/biology/phenomena.lisp")
-  (ddm-ed "grammar/model/sl/biology/verbs1.lisp")
+  (ddm-ed "grammar/model/sl/biology/verbs.lisp")
   (ddm-ed "grammar/model/sl/biology/methods.lisp")
   (ddm-ed "grammar/model/sl/biology/examples.lisp")
   (ddm-ed "grammar/model/sl/biology/new-word-list.lisp"))

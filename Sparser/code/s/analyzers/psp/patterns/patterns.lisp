@@ -109,8 +109,9 @@
     (or (reify-residue-and-make-edge words start-pos end-pos) ;; Y420
         (reify-ns-name-and-make-edge words start-pos end-pos)))
 
-   ((equal pattern '(:single-cap :single-digit)) ;; "in Figure S1,"
-    (reify-two-part-label words start-pos end-pos))
+   ((or (equal pattern '(:single-cap :single-digit)) ;; "in Figure S1,"
+        (equal pattern '(:single-digit :single-cap))) ;; '3C"
+    (reify-two-part-label words edges start-pos end-pos))
 
    ((equal pattern '(:single-lower :digits))
     (or (reify-p-protein-and-make-edge words start-pos end-pos) ;; p38
@@ -119,7 +120,7 @@
 
    ((or (equal pattern '(:single-digit :single-lower)) ;; (Fig. 4c, 4d) in Dec. 42 
         (equal pattern '(:single-digit :single-cap))) ;; "Histone 2B phosphorylated by..." in Jan 34.
-    (reify-two-part-label words start-pos end-pos))
+    (reify-two-part-label words edges start-pos end-pos))
 
    ((equal pattern '(:single-cap :single-digit :single-cap))
     (reify-ns-name-and-make-edge words start-pos end-pos))

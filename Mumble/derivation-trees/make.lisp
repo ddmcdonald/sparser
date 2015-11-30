@@ -138,4 +138,31 @@ but we don't want to count on that.
     (push cn (complements dtn))
     cn))
 
+;;;-----------------------------------------
+;;; accessor-adding as function composition
+;;;-----------------------------------------
+
+(defmacro def-accessory-operator (name &rest body)
+  `(def-accessory-operator/expr ',name ',body))
+
+(defun def-accessory-operator/expr (name body)
+  (let* ((lexp-form
+         `(defmethod ,name ((base lexicalized-phrase))
+            (let ((dtn (make-instance 'derivation-tree-node
+                         :resource base)))
+              (,name dtn))))
+         (dtn-form
+          `(defmethod ,name ((base derivation-tree-node))
+             ,@body)))
+    ;; (push-debug `(,lexp-form ,dtn-form)) (break "check forms")
+    (eval lexp-form)
+    (eval dtn-form)
+    :accessory-operator))
+
+
+
+
+
+
+
 

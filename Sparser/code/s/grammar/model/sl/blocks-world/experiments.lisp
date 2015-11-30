@@ -26,8 +26,6 @@ See Zo code for what that could look like. |#
 (define-word "build" (verb) :ed-form "built")
 (define-word "let" (verb))
 
-(define-word "KRAS" (proper-noun))
-
 ;;;--------------------------
 ;;; Prebuilt phrases (trees)
 ;;;--------------------------
@@ -50,6 +48,7 @@ See Zo code for what that could look like. |#
 
     ;; connect them
     (make-complement-node 'o a-staircase build) ;; bind argument
+    (make-complement-node 's (mumble-value 'first-person-plural 'pronoun) build)
     (command build) ;; hack that removes subject
     build))
 
@@ -81,5 +80,22 @@ See Zo code for what that could look like. |#
 
 ;; "a drug targets KRAS"
 
-        
+(define-word "KRAS" (proper-noun))
+
+(defun drug-targeting-kras ()
+  (let* ((verb-resource (verb "target"))
+         (kras-resource (noun "KRAS" 'proper-name))
+         (drug-dtn (kind (singular (noun "drug")))))
+    (let ((dtn (make-instance 'derivation-tree-node
+                 :referent 'target-kras
+                 :resource verb-resource)))
+      (make-complement-node 's drug-dtn dtn)
+      (make-complement-node 'o kras-resource dtn)
+      dtn)))
+
+
+;; "but I don't know of any drug targeting KRAS"
+
+
+
 

@@ -7,9 +7,11 @@
 (in-package :mumble)
 
 (defun do-any-label-driven-transformations (labels phrase-node)
-  (declare (ignore labels phrase-node))
-  ""
-)
+  "Called from process-slot just after the realization-cycle has
+   updated the contents. The labels are from the slot"
+  (push-debug `(,labels ,phrase-node)) 
+  (break "transform: ~a" labels))
+
 
 #+ignore
 (defun feature-driven-prepocessing (features dtn)
@@ -31,4 +33,8 @@
           (error "The subject isn't free. Something's wrong"))
         (make-complement-node subject trace dtn)))))
 
+(defmethod remove-subject ((clause phrasal-root))
+  (let ((subject-slot (first-constituent clause)))
+    (let ((predicate-slot (next subject-slot)))
+      (setf (first-constituent clause) predicate-slot))))
 

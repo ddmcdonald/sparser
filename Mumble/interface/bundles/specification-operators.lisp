@@ -1,7 +1,6 @@
 ;;; -*- Syntax: Common-lisp; Mode: LISP; Package: MUMBLE -*-
-;;; $Id: specification-operators.lisp 341 2009-12-29 17:09:23Z dmcdonal $
 
-;;;  MUMBLE-86: message-level;operators-over-specifications
+;;;  MUMBLE-86: interface/bundles/specification-operators
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
@@ -9,197 +8,163 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2015 David D. McDonald  All Rights Reserved
 
 ;; Changelog
-;;   5/25/95 made sure all the functions that operate on bundles for side-effects
-;;    return the bundle so that they can be cascaded.
+;;   5/25/95 made sure all the functions that operate on bases for side-effects
+;;    return the base so that they can be cascaded.
 ;;   6/3 added NP/common-noun and the anonymous-individual and known-individual
-;;    determiner types.  6/6 added PP-bundle
+;;    determiner types.  6/6/95 added PP-base
+;;   11/28/15 Complete make-over using def-accessory-operator to be
+;;    type-specific definitions
 
 (in-package :mumble)
 
 
-
 ;################################################################
-;             making the core specification object
-;################################################################
-
-(def-bundle-creator general-np ()
-  ;; this provides a shell that you then add a kernel, etc. to
-  (make-a-bundle 'general-np))
-
-(def-bundle-creator unmarked ()
-  (make-a-bundle 'general-bundle))
-
-
-(def-bundle-creator np/common-noun (common-noun)
-  (let ((b (make-a-general-np-bundle))
-        (k (make-a-kernel 'np-common-noun common-noun)))
-    (set-bundle-head b k)
-    b ))
-
-(def-bundle-creator np/pronoun (pronoun)
-  (let ((b (make-a-unmarked-bundle))
-        (k (make-a-kernel 'pronoun   ;; it's a single-choice
-                          pronoun)))
-    (set-bundle-head b k)
-    b ))
-
-
-
-(def-bundle-creator pp-bundle (prep lspec-for-complement)
-  (when (stringp prep)
-    (setq prep (word-for-string prep 'preposition)))
-    
-  (let ((b (make-a-unmarked-bundle))
-        (k (make-a-kernel 'prepositional-phrase
-                          prep lspec-for-complement)))
-    (set-bundle-head b k)
-    b ))
-
-
-
-
-;################################################################
-;                   Operators over Bundles
+;                   Operators over bases
 ;################################################################
 
 
 ;################  Setting NP Accessories ################
 
-(def-bundle-operator  neuter-&-third-person  (np-bundle)
-  (add-accessory np-bundle :gender 'neuter)
-  (add-accessory np-bundle :person 'third)
-  np-bundle)
+(def-accessory-operator  neuter-&-third-person 
+  (add-accessory base :gender 'neuter)
+  (add-accessory base :person 'third)
+  base)
 
-(def-bundle-operator  third-person  (np-bundle)
-  (add-accessory np-bundle :person 'third)
-  np-bundle)
+(def-accessory-operator  third-person  
+  (add-accessory base :person 'third)
+  base)
 
-(def-bundle-operator  singular  (np-bundle)
-  (add-accessory np-bundle :number 'singular)
-  np-bundle)
+(def-accessory-operator  singular  
+  (add-accessory base :number 'singular)
+  base)
 
-(def-bundle-operator  plural  (bundle)
-  (add-accessory bundle :number 'plural)
-  bundle)
+(def-accessory-operator  plural
+  (add-accessory base :number 'plural)
+  base)
 
-(def-bundle-operator  proper-NAME  (bundle)
-  (add-accessory bundle :proper-name)
-  bundle)
+(def-accessory-operator  proper-NAME
+  (add-accessory base :proper-name)
+  base)
 
-(def-bundle-operator set-gender-accessory (np-bundle gender-name)
-  (add-accessory np-bundle :gender gender-name)
-  np-bundle )
+#| With two arguments it doesn't fit the pattern
+(def-accessory-operator set-gender-accessory (base gender-name)
+  (add-accessory base :gender gender-name)
+  base )  |#
 
 
 
 ;################ Setting Clause Accessories ################
 
-(def-bundle-operator present-TENSE (bundle)
-  (add-accessory bundle :tense-modal 'present)
-  bundle )
+(def-accessory-operator present-TENSE
+  (add-accessory base :tense-modal 'present)
+  base )
 
-(def-bundle-operator past-tense (bundle)
-  (add-accessory bundle :tense-modal 'past)
-  bundle )
+(def-accessory-operator past-tense
+  (add-accessory base :tense-modal 'past)
+  base )
 
-(def-bundle-operator past (bundle)
-  (add-accessory bundle :tense-modal 'past)
-  bundle )
+(def-accessory-operator past
+  (add-accessory base :tense-modal 'past)
+  base )
 
-(def-bundle-operator future-tense (bundle)
-  (add-accessory bundle :tense-modal "will")
-  bundle )
+(def-accessory-operator future-tense 
+  (add-accessory base :tense-modal "will")
+  base )
 
-(def-bundle-operator progressive (bundle)
-  (add-accessory bundle :progressive)
-  bundle )
+(def-accessory-operator progressive 
+  (add-accessory base :progressive)
+  base )
 
-(def-bundle-operator had (bundle) ;; adds have+en
-  (add-accessory bundle :perfect)
-  bundle )
+(def-accessory-operator had  ;; adds have+en
+  (add-accessory base :perfect)
+  base )
 
-(def-bundle-operator unmarked-clause (bundle)
-  (add-accessory bundle :unmarked)
-  bundle )
+(def-accessory-operator unmarked-clause 
+  (add-accessory base :unmarked)
+  base )
 
-(def-bundle-operator command (bundle)
-  (add-accessory bundle :command)
-  bundle )
+(def-accessory-operator command 
+  (add-accessory base :command)
+  base )
 
-(def-bundle-operator question (bundle)
-  (add-accessory bundle :question)
-  bundle )
+(def-accessory-operator question 
+  (add-accessory base :question)
+  base )
 
-(def-bundle-operator negate (bundle)
-  (add-accessory bundle :negate)
-  bundle )
+(def-accessory-operator negate 
+  (add-accessory base :negate)
+  base )
 
 ;################  Setting NP Heads  ################
-
-(def-bundle-operator headed-by-a-common-noun  ( cn-source np-bundle )
+#+ignore
+(def-accessory-operator headed-by-a-common-noun  ( cn-source base )
   (let ((postprocessed-cn-source
 	  (etypecase  cn-source
 	    (specification  cn-source)
 	    (string  (word-for-string cn-source)))))
-
-  (set-bundle-head postprocessed-cn-source np-bundle)
-  np-bundle))
+  (set-base-head postprocessed-cn-source base)
+  base))
 
 
 ;##################################################
-;  CONJUNCTION ACCESSORIES FOR CONJUNCTION BUNDLES
+;  CONJUNCTION ACCESSORIES FOR CONJUNCTION baseS
 
-
-(def-bundle-operator conjunction (bundle conj)
-  (add-accessory bundle
+#+ignore
+(def-accessory-operator conjunction (base conj)
+  (add-accessory base
 		 :conjunction
 		 (label-named conj))
-  bundle )
+  base )  
 
 ;################ Setting Determiner Policies ################
 
-(def-bundle-operator initially-indefinite (np-bundle)
-  (add-accessory np-bundle
+(def-accessory-operator initially-indefinite 
+  (add-accessory base
 		 :determiner-policy
 		 'indefinite-first-mention_definite-subsequent-mentions)
-  np-bundle )
+  base )
 
 
-(def-bundle-operator always-definite (np-bundle)
-  (add-accessory np-bundle
+(def-accessory-operator always-definite 
+  (add-accessory base
 		 :determiner-policy
 		 'always-definite)
-  np-bundle )
+  base )
 
 
-(def-bundle-operator anonymous-individual (np-bundle)
-  (add-accessory np-bundle
+(def-accessory-operator anonymous-individual 
+  (add-accessory base
 		 :determiner-policy
 		 'anonymous-individual)
-  np-bundle )
+  base )
 
 
-(def-bundle-operator known-individual (np-bundle)
-  (add-accessory np-bundle                                       
+(def-accessory-operator known-individual 
+  (add-accessory base                                       
 		 :determiner-policy
 		 'known-individual)
-  np-bundle )
+  base )
 
 
-(def-bundle-operator no-determiner (np-bundle)
-  (add-accessory np-bundle
+(def-accessory-operator no-determiner 
+  (add-accessory base
 		 :determiner-policy
 		 'no-determiner)
-  np-bundle )
+  base )
+
+(def-accessory-operator kind 
+  (add-accessory base :determiner-policy 'kind)
+  base)
 
 
 ;################  Adding Further-Specifications ################
-
-(def-bundle-operator add-specializing-descriptor  (descriptor np-bundle)
-  (add-further-specification np-bundle
+#+ignore
+(def-accessory-operator add-specializing-descriptor  (descriptor base)
+  (add-further-specification base
 			     descriptor
 			     (attachment-class-named
 			         'restrictive-modifier))
-  np-bundle)
+  base)

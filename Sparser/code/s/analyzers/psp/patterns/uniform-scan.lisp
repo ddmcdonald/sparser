@@ -158,8 +158,7 @@
               (let ((end-edge (left-treetop-at end-pos)))
                 (cond
                  ((edge-p end-edge)
-                  (case
-                      (cat-sym (edge-category end-edge))
+                  (case (cat-sym (edge-category end-edge))
                     (protein 
                      (ns-protein-pattern-resolve  start-pos end-pos edges
                                                   hyphen-positions slash-positions
@@ -168,7 +167,7 @@
                      (ns-amino-pattern-resolve  start-pos end-pos edges
                                                 hyphen-positions slash-positions
                                                 colon-positions other-punct))
-                    (t
+                    (otherwise
                      (ns-pattern-dispatch start-pos end-pos edges
                                        hyphen-positions slash-positions
                                        colon-positions other-punct))))
@@ -181,38 +180,6 @@
               (update-ns-examples start-pos)))))
         end-pos))))
 
-(defun save-ns-example (start-pos end-pos)
-  (let ((nsitem (actual-characters-of-word start-pos end-pos nil)))
-    ;;(when (or (search "-" nsitem) (search "/" nsitem))
-    ;;(lsp-break "collect-no-space-sequence-into-word")
-    (push (list 
-           (let
-               ((end-edge (left-treetop-at end-pos)))
-             (cond
-              ((edge-p end-edge)
-               (list  (cat-sym (edge-form end-edge))
-                      (cat-sym (edge-category end-edge))))
-              ((eq end-edge :MULTIPLE-INITIAL-EDGES)
-               (loop for e in (ev-edges  (pos-ends-here end-pos))
-                 collect
-                 (list  (cat-sym (edge-form e))
-                        (cat-sym (edge-category e)))))
-              ((word-p end-edge)
-               (list end-edge))
-              (t
-               (lsp-break "strange situation in NS"))))
-           nsitem)
-          *collect-ns-examples*)))
-
-(defun update-ns-examples (start-pos)
-  (setf (car *collect-ns-examples*)
-        (append (car *collect-ns-examples*)
-              (cons "==>"
-                    (let ((edge (right-treetop-at start-pos)))
-                      (when edge
-                        (list 
-                              (cat-sym (edge-category edge))
-                              (cat-sym (edge-form edge)))))))))
 
 ;;;----------
 ;;; Dispatch
@@ -360,3 +327,41 @@
         (values (bio-category-for-reifying)
                 cfr
                 i))))))
+
+
+;;;------------------------------------
+;;; saving examples to look at offline
+;;;------------------------------------
+
+(defun save-ns-example (start-pos end-pos)
+  (let ((nsitem (actual-characters-of-word start-pos end-pos nil)))
+    ;;(when (or (search "-" nsitem) (search "/" nsitem))
+    ;;(lsp-break "collect-no-space-sequence-into-word")
+    (push (list 
+           (let
+               ((end-edge (left-treetop-at end-pos)))
+             (cond
+              ((edge-p end-edge)
+               (list  (cat-sym (edge-form end-edge))
+                      (cat-sym (edge-category end-edge))))
+              ((eq end-edge :MULTIPLE-INITIAL-EDGES)
+               (loop for e in (ev-edges  (pos-ends-here end-pos))
+                 collect
+                 (list  (cat-sym (edge-form e))
+                        (cat-sym (edge-category e)))))
+              ((word-p end-edge)
+               (list end-edge))
+              (t
+               (lsp-break "strange situation in NS"))))
+           nsitem)
+          *collect-ns-examples*)))
+
+(defun update-ns-examples (start-pos)
+  (setf (car *collect-ns-examples*)
+        (append (car *collect-ns-examples*)
+              (cons "==>"
+                    (let ((edge (right-treetop-at start-pos)))
+                      (when edge
+                        (list 
+                              (cat-sym (edge-category edge))
+                              (cat-sym (edge-form edge)))))))))

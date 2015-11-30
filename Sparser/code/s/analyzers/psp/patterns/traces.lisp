@@ -211,8 +211,32 @@
                (edge-position-in-resource-array edge))))
 
 
+(deftrace :making-a-bio-complex (start-pos end-pos)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Making bio-complex out of ~s"
+               (string-of-words-between start-pos end-pos))))
+(deftrace :conditions-for-bio-complex-failed (start-pos end-pos)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Cannot make a bio-complex out of ~s"
+               (string-of-words-between start-pos end-pos))))
 
+(deftrace :making-a-protein-collection (start-pos end-pos)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Making protein-collection out of ~s"
+               (string-of-words-between start-pos end-pos))))
+(deftrace :conditions-for-protein-collection-failed (start-pos end-pos)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Cannot make a protein-collection out of ~s"
+               (string-of-words-between start-pos end-pos))))
 
+(deftrace :making-a-amino-collection (start-pos end-pos)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Making protein-collection out of ~s"
+               (string-of-words-between start-pos end-pos))))
+(deftrace :conditions-for-amino-collection-failed (start-pos end-pos)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Cannot make a protein-collection out of ~s"
+               (string-of-words-between start-pos end-pos))))
 
 
 
@@ -428,3 +452,8 @@
 (deftrace :making-ns-pair-on (category)
   (when *trace-ns-sequences* 
     (trace-msg "[ns] Making a no-space pair as a ~a" category)))
+
+(deftrace :making-two-part-label (start-pos end-pos)
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns] Making a two-part-label: ~s"
+               (string-of-words-between start-pos end-pos))))

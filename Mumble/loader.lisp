@@ -22,15 +22,12 @@
 ;; and it would make the dependencies more explicit
 
 (defparameter *mumble-location*
-  (cond 
-    ((member :allegro *features*)
-     (namestring
-      (make-pathname :directory (pathname-directory *load-truename*))))
+  (cond
     ((boundp '*nlp-home*) 
      (ddm-util:string-append *nlp-home* "Mumble/"))
-    (t
-     (break "Not running under Allegro Common Lisp.~
-           ~%Can't construct relative pathname to location of Mumble"))))
+    (t (namestring
+        (make-pathname :directory (pathname-directory *load-truename*)
+                       :device (pathname-device *load-truename*))))))
 
 (load (concatenate 'string *mumble-location* "design.lisp")) ;; has package definition
 
@@ -41,7 +38,7 @@
 (load (concatenate 'string *mumble-location* "types/creating-objects.lisp"))
 (load (concatenate 'string *mumble-location* "types/postprocessing.lisp"))
 
-(load (concatenate 'string *mumble-location*  "derivation-trees/types.lisp"))
+(load (concatenate 'string *mumble-location* "derivation-trees/types.lisp"))
 
 (load (concatenate 'string *mumble-location* "objects/all-the-object-types.lisp"))
 (load (concatenate 'string *mumble-location* "objects/postprocess-objects.lisp"))
@@ -111,14 +108,13 @@
 ;(load (concatenate 'string *mumble-location* "interface/derivations/rspec-interpretation.lisp"))
 (load (concatenate 'string *mumble-location* "interface/derivations/discourse-reference.lisp"))
 
-
 (load (concatenate 'string *mumble-location* "interface/bundles/specification-operators.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/operators-over-specifications.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/specification-templates.lisp"))
 
-(load (concatenate 'string *mumble-location* "interface/bundles/tree-families.lisp"))
-(load (concatenate 'string *mumble-location* "interface/bundles/single-choices.lisp"))
-(load (concatenate 'string *mumble-location* "interface/bundles/curried-tree-families.lisp"))
+;(load (concatenate 'string *mumble-location* "interface/bundles/tree-families.lisp"))
+;(load (concatenate 'string *mumble-location* "interface/bundles/single-choices.lisp"))
+;(load (concatenate 'string *mumble-location* "interface/bundles/curried-tree-families.lisp"))
 
 ;; Postprocesses everything and sets the flag to nil.
 (load (concatenate 'string *mumble-location* "loader/load-final.lisp"))
