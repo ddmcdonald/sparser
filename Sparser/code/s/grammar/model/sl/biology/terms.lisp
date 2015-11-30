@@ -40,7 +40,7 @@
 ;;lipids
 ;; in EGFR signaling comments
 (noun ("PIP2" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
-(noun ("PLC" "phospholipase C") :super phospholipid)
+
 (noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
 (noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate") :super phospholipid)
 
@@ -78,6 +78,7 @@
 ;; want something for magnitude, size, etc. TO-DO
 (adj "single" :super abstract)
 (adj "double" :super abstract)
+(adj "dual-specificity" :super bio-predication)
 (define-category size :specializes abstract
   :binds ((measured-item biological))
   :realization
@@ -536,6 +537,8 @@
 (def-bio "guanine" nucleotide)
 
 (adj "high" :super bio-predication)
+(adj "high-activity" :super bio-predication)
+(adj "high-throughput" :super bio-predication)
 (noun "HPLC" :super bio-method)
 (def-synonym HPLC (:noun "high performance liquid chromatography"))
 (adj "housekeeping" :super bio-predication)
@@ -810,6 +813,7 @@
   :binds ((prior-event  bio-process))
   :realization (:to prior-event))
 (noun "proportion" :super bio-scalar)
+(noun "proto-oncogene" :super oncogene)
 (adj "putative" :super bio-predication)
 
 (noun "radioactivity" :super bio-abstract
@@ -910,6 +914,8 @@
   :binds ((compared-to biological))
   :realization 
   (:to compared-to))
+(adj "related" :super similar)
+
 (define-adverb "similarly")
  
 ;; Jan 29 "two MAPK phosphorylation sites in ASPP1 and ASPP2."
