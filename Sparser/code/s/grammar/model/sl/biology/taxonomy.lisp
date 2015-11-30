@@ -229,6 +229,13 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+
+
+(define-category ion :specializes bio-chemical-entity
+  :binds ((molecule molecule)))
+
+
+
 ;; TO-DO figure out with David why this isnt working as expected...
 ;; why do we still have the old definitions of "processes" hanging arount
 (delete-noun-cfr (resolve "process"))
@@ -627,9 +634,10 @@
 
 (def-synonym phosphatase
              (:noun "phosphatase"
-                   :for reaction
-                   :premod protein
-                   :premod residue))
+                    :etf pre-mod
+                    :for reaction
+                    :premod protein
+                    :premod residue))
 
 (define-category GTPase :specializes enzyme
   :instantiates :self
@@ -641,7 +649,7 @@
    (:noun "gtpase"))
 
 
-(define-category variant :specializes biological
+(define-category variant :specializes bio-chemical-entity
   ;; not sure this is the correct term, but intended for things like "forms of ras" 
   :binds ((basis bio-entity)) ;; can be a gene or protein, or something else
   :instantiates :self
