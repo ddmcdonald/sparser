@@ -159,26 +159,20 @@
             ;;  the pattern (ambiguity) and only one of the edges satisfies a pattern
             ;; this is not done cleanly, and needs some pair-programming
             (catch :punt-on-nospace-without-resolution
-              (let ((end-edge (left-treetop-at end-pos)))
-                (cond
-                 ((edge-p end-edge)
-                  (case (cat-sym (edge-category end-edge))
-                    (protein 
-                     (ns-protein-pattern-resolve  start-pos end-pos edges
-                                                  hyphen-positions slash-positions
-                                                  colon-positions other-punct))
-                    (amino-acid
-                     (ns-amino-pattern-resolve  start-pos end-pos edges
+              (let* ((end-edge (left-treetop-at end-pos))
+                     (end-cat (when (edge-p end-edge)(cat-sym (edge-category end-edge)))))
+                (or
+                 (when (eq end-cat 'protein)
+                   (ns-protein-pattern-resolve  start-pos end-pos edges
                                                 hyphen-positions slash-positions
                                                 colon-positions other-punct))
-                    (otherwise
-                     (ns-pattern-dispatch start-pos end-pos edges
-                                       hyphen-positions slash-positions
-                                       colon-positions other-punct))))
-                 (t
-                  (ns-pattern-dispatch start-pos end-pos edges
-                                       hyphen-positions slash-positions
-                                       colon-positions other-punct)))))
+                 (when (eq end-cat 'amino-acid)
+                   (ns-amino-pattern-resolve  start-pos end-pos edges
+                                              hyphen-positions slash-positions
+                                              colon-positions other-punct))
+                 (ns-pattern-dispatch start-pos end-pos edges
+                                      hyphen-positions slash-positions
+                                      colon-positions other-punct))))
             
             (when *collect-ns-examples*
               (update-ns-examples start-pos)))))
@@ -362,10 +356,12 @@
 
 (defun update-ns-examples (start-pos)
   (setf (car *collect-ns-examples*)
-        (append (car *collect-ns-examples*)
-              (cons "==>"
-                    (let ((edge (right-treetop-at start-pos)))
-                      (when edge
-                        (list 
-                              (cat-sym (edge-category edge))
-                              (cat-sym (edge-form edge)))))))))
+        `(, 
+          (let ((edge (right-treetop-at start-pos)))
+            (when edge
+              (list 
+               (edge-rule edge)
+               (cat-sym (edge-category edge))
+               (cat-sym (edge-form edge)))))
+          "<=="
+          ,.(car *collect-ns-examples*))))
