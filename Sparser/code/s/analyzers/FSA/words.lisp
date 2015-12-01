@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "words"
 ;;;   Module:  "analyzers;FSA:"
-;;;  Version:  3.0 July 2015
+;;;  Version:  3.0 November 2015
 
 ;; 5/5/93 v2.3, typed in hard copy of 11/24/92 that had been lost in
 ;;  disk crash
@@ -32,7 +32,8 @@
 ;;      calls capitalized-correspondent1, which gets the choice of position
 ;;      correct. Start of changing it all over.
 ;; 3.0 (5/20/15) Makeover of polywords to fsa rather than rules and edges.
-;;     (7/28/15) removed pw options from do-fsa-field
+;;     (7/28/15) removed pw options from do-fsa-field.
+;;     (11/30/15) initiates-polyword needed allow an nil FSA field.
 
 (in-package :sparser)
 
@@ -230,16 +231,17 @@
   (flet ((polyword-fsa (rules-field)
            (when rules-field
              (let ((fsa-field (rs-fsa rules-field)))
-               (typecase fsa-field
-                 (polyword-state fsa-field)
-                 (cons
-                  (loop for item in fsa-field
-                    when (typep item 'polyword-state)
-                    return item))
-                 (otherwise
-                  (push-debug `(,fsa-field ,word ,position-before))
-                  (error "fsa field of unexpected type: ~a~%~a"
-                         (type-of fsa-field) fsa-field) ))))))
+               (when fsa-field
+                 (typecase fsa-field
+                   (polyword-state fsa-field)
+                   (cons
+                    (loop for item in fsa-field
+                      when (typep item 'polyword-state)
+                      return item))
+                   (otherwise
+                    (push-debug `(,fsa-field ,word ,position-before))
+                    (error "fsa field of unexpected type: ~a~%~a"
+                           (type-of fsa-field) fsa-field) )))))))
     (let ((rules-field (word-rules word)))
       (or (polyword-fsa rules-field)
           (let ((caps-word (capitalized-correspondent word position-before)))
