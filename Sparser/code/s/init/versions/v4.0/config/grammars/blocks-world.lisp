@@ -15,7 +15,7 @@
 
 (include-grammar-module  *testing*)
 (include-grammar-module  *citations*)
-;;(include-grammar-module  *miscellaneous*)
+(include-grammar-module  *miscellaneous*)
 
 
 ;;;-----------------------------------
