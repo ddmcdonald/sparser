@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  8.5 July 2015
+;;;  Version:  8.5 December 2015
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -47,15 +47,17 @@
 ;; 4/28/2015 Added bunch of variables and switches to collect information on conjunctions
 ;; 5/30/15 Cleaned up that code so that I could read it.
 ;; 7/24/15 Permitting a collection of categories in multi-element conjunction
-;; 7/26/2015 allow conjunctions of bio-entities and proteins, using method bio-coercion-compatible? 
-;; and print out the fact that the bio-entities so-conjoined are likely to be unrecognized proteins.
-
+;; 7/26/2015 allow conjunctions of bio-entities and proteins, using method
+;;  bio-coercion-compatible?  and print out the fact that the bio-entities
+;;  so-conjoined are likely to be unrecognized proteins.
+;; 12/1/15 pulled broad impact globals to sessions/globals with the others.
 
 (in-package :sparser)
 
-;;;-----
+;;;----------------
 ;;; data gathering
-;;;-----
+;;;----------------
+
 (defparameter *save-conjunctions* nil)
 (defun save-conjunctions (&optional (yes? t))
   (setq *save-conjunctions* yes?))
@@ -247,7 +249,7 @@
 (defun check-out-possible-conjunction (start-of-after-segment)
 
   ;; This is the ordinary entry point from segment-finishing code
-  ;; in drivers/chart/psp/pts5.lisp
+  ;; in drivers/chart/psp/pts.lisp
 
   ;; We wouldn't be called if there wasn't a full span over
   ;; the segment after the conjunction, and the segment in front
@@ -377,13 +379,6 @@
 ;;; conjunction heuristics
 ;;;------------------------
 
-(defparameter *allow-form-conjunction-heuristic* t
-  "A switch to determine whether we allow two edges to conjoin 
-  based on having the same form category. This is overly
-  agressive when running inline (in after actions of PTS)
-  but valuable when there's more perspective in which cases
-  it will be shallow bound.")
-
 (defparameter *premod-forms* `(,category::verb+ed ,category::adjective)
   "Heuristic criteria to encourage form-based conjunction")
 
@@ -392,7 +387,6 @@
   ;; This is the actual check that says whether we should conjoin
   ;; or not. More heuristic judgements go here as they are
   ;; developed
-  (declare (special edge-before edge-after))
   (when (and (edge-p edge-before)(edge-p edge-after))
     (let ((label-before (edge-category edge-before))
           (label-after (edge-category edge-after)))
@@ -443,8 +437,7 @@
   (declare (special label-after label-before category::bio-entity))
   (cond
    ((safe-itypep label-before 'protein)
-    (when
-        (eq (safe-itype-of label-after) category::bio-entity)
+    (when (eq (safe-itype-of label-after) category::bio-entity)
       (show-protein-coercion edge-after edge-before)
       t))
    ((safe-itypep label-after 'protein)
@@ -752,7 +745,8 @@
 
 (defun maybe-expand-conjunctions (i)
   (cond
-   ((or (referential-category-p i) (not (individual-p i)))
+   ((or (referential-category-p i) 
+        (not (individual-p i)))
     i)
    ((itypep i 'collection)
     (value-of 'items i))
