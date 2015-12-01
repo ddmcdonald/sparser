@@ -55,10 +55,6 @@
 ;;; specialized NP parsing
 ;;;------------------------
 
-(defparameter *big-mechanism-ngs* t 
-  "use new interpreter for interior of NGs (only called for 
-   NGs without a spanning edge)")
-
 (defparameter *save-chunk-edges* nil
   "only turn on to review NG chunking")
 
