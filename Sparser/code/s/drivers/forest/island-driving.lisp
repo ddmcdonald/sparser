@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  September 2015
+;;;  Version:  December 2015
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -27,20 +27,13 @@
 ;; 9/18/15 Completely rebuilt the 2d pass. 9/29/15 removed the re-computation
 ;;  of the layout for 2d pass because it wasn't needed and it lost information
 ;;  about the presence of pronouns.
-
+;; 12/1/15 pulled control parameters to globals file. 
 
 (in-package :sparser)
 
 ;;;--------------------
 ;;; control parameters
 ;;;--------------------
-
-(defparameter *whack-a-rule* t
-  "This forces application of all applicable rules from 
-   the right to the left, after initial priority rules.")
-
-(defun whack-a-rule (&optional (yes? t))
-  (setq *whack-a-rule* yes?))
 
 (defparameter *island-driven-efrc* nil
   "Controls *edges-from-referent-categories* inside
