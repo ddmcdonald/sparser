@@ -145,8 +145,6 @@
 
   (gate-grammar *amounts*
     (gload "amounts;loader"))
-  
-  (gload "sit-rules;loader")
 
   (gate-grammar *numbers*
     (unless *lattice-points*
@@ -221,6 +219,8 @@
 
   (gate-grammar *ISR*
     (gload "isr;loader"))
+  
+  (gload "sit-rules;loader") ;; depends on ISR categories
 
   (gate-grammar *blocks-world*
     (gload "blocks;loader"))
