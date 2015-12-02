@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;versions:v2.7:loaders:"
-;;;  Version:   November 2015
+;;;  Version:   December 2015
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -82,12 +82,15 @@
 ;; because it's too confusing. 1/29/14 Removing the *c3* guards to see if everything
 ;; will load compatibly. 5/19/15 bumped [fsa;polywords] to 5.  10/26/15 moved
 ;; *external-testing-files* ahead of other two forms in the testing section
-;; so it can override parameter values if it needs to.
+;; so it can override parameter values if it needs to. 12/1/15 Cleaned up now
+;; meaningless alternative load files on the value of *lattice-points*. Removed
+;; the commented out C3 gates.
 
 (in-package :sparser)
 
 
 (defun the-Master-loader () )  ;; for meta-point
+
 #+:sbcl(setf SB-IMPL::*DEFAULT-EXTERNAL-FORMAT* :utf-8)
 
 ;;;--------------------
@@ -123,15 +126,12 @@
 (lload "objects;chart:generics:loader")
 
 (when *include-model-facilities*
-  (if *lattice-points*
-    (lload "objects;model:loader")
-    (lload "objects;model:loader")))
+  (lload "objects;model:loader"))
 
 (when (and *orthographic-structure*
            *include-model-facilities*)  ;; uses routines in the model facilities
   (lload "objects;doc:loader"))
 
-;(when *c3*
 (lload "objects;situation:loader")
 
 (when *da*
@@ -177,10 +177,8 @@
 ;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
 (lload "kinds of edges;loader")
 (lload "complete;loader")
-(if *lattice-points*
-  (then ;;(lload "annotation;loader") empty file flushed 9/22/11
-        (lload "referent;loader"))
-  (lload "referent;loader"))
+(lload "referent;loader")
+
 (lload "analyzers;psp:terminate")
 (lload "forest;loader")
 (lload "traversal-routines;loader")
@@ -260,7 +258,6 @@
 (lload "chart-drivers;all-edges:loader")
 (lload "forest-drivers;loader")
 
-;(when *c3*
 (gload "sit-rules;compose")
 
 (if *da*
@@ -322,15 +319,6 @@
 
     ;; This call actually does the work
     (load-the-grammar)))
-
-
-
-(cond (*assetnet*
-       (lload "interface;AssetNet:loader"))
-      (*apple*
-       (lload "interface;Apple:loader"))
-      (*sun*
-       (lload "interface;SUN:loader")))
 
 
 (when *connect-to-the-corpus*
