@@ -623,6 +623,16 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+(define-category nucleotide-exchange-factor :specializes enzyme
+  :binds ((substrate protein)
+          (nucleotide nucleotide))
+  :realization
+  (:noun "nucleotide exchange factor"
+         :etf pre-mod
+         :m nucleotide
+         :m substrate
+         :of substrate))
+
 (def-synonym kinase
              (:noun "kinase"
                    :for reaction

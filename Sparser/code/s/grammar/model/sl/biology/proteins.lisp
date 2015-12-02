@@ -53,7 +53,7 @@
 (define-protein "DUS8_HUMAN" ("DUSP8" "Dual specificity protein phosphatase 8" "Dual specificity protein phosphatase hVH-5"))
 (define-protein "CNKR1_HUMAN" ("Connector enhancer of kinase suppressor of ras 1" "CNKSR1"))
 (define-protein "CR1_HUMAN" ("Complement receptor type 1" "CR1"))
-(define-protein "CR2_HUMAN" ("Complement receptor type 3" "CR3"))
+(define-protein "CR2_HUMAN" ("Complement receptor type 3" "CR2"))
 (define-protein "CR3_HUMAN" ("Complement receptor type 3" "CR3"))
 (define-protein "Q6P493_HUMAN" ("PTPRK" "DEP1" "RPTPk")) ;; not sure these are all synonmyms -- RPTPk is a rat protein, but we have 
 
@@ -163,7 +163,6 @@
 
 ;; Guanine "CHEBI:16235"
 ;; nucleotide "CHEBI:36976"
-(def-bio "GEF" protein :synonyms ("guanine nucleotide exchange factors"))
 
 
 
@@ -215,6 +214,8 @@
 
 (def-bio "RasGEF" protein
   :synonyms ("Ras-GEF" "Ras GEF")) ;; should do that automagically
+
+(noun ("GEF" "guanine nucleotide exchange factor" "guanyl-nucleotide-exchange factor") :super nucleotide-exchange-factor)
 
 
 (define-protein "MP2K5_HUMAN" ("MAP2K5" "MP2K5_HUMAN" "MAP kinase kinase 5" "MAPKK 5" "MEK5"))
