@@ -109,9 +109,7 @@
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
     ;; the loading of amounts
-    (if *lattice-points*
-      (gload "collections;loader")
-      (gload "collections;loader")))
+    (gload "collections;loader"))
 
   (gate-grammar *kinds*
     (gload "kinds;loader"))
@@ -146,9 +144,9 @@
     (gload "numbers;loader"))
 
   (gate-grammar *amounts*
-    (if *lattice-points*
-      (gload "amounts;loader")
-      (gload "amounts;loader")))
+    (gload "amounts;loader"))
+  
+  (gload "sit-rules;loader")
 
   (gate-grammar *numbers*
     (unless *lattice-points*
@@ -171,14 +169,10 @@
     (gload "titles;loader"))
 
   (gate-grammar *money*
-    (if *lattice-points*
-      (gload "money;loader")
-      (gload "money;loader")))
+    (gload "money;loader"))
 
   (gate-grammar *finance*
-    (if *lattice-points*
-      (gload "finance;loader")
-      (gload "finance;loader")))
+    (gload "finance;loader"))
 
   (gate-grammar *pronoun-objects*
     (gload "pronouns;loader"))
@@ -227,10 +221,6 @@
 
   (gate-grammar *ISR*
     (gload "isr;loader"))
-
-  (gate-grammar *biology* ;; or *c3* or *ISR*, gate-grammar
-    ;; uses this argument to determine where to store the rules
-    (gload "sit-rules;loader"))
 
   (gate-grammar *blocks-world*
     (gload "blocks;loader"))

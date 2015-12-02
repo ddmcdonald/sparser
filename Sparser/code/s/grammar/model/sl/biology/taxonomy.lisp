@@ -539,7 +539,13 @@
   :realization
   (:noun "micro-rna"))
 
-(define-category phospholipid :specializes molecule
+(define-category lipid :specializes molecule
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "lipid")
+  :realization (:common-noun name))
+
+(define-category phospholipid :specializes lipid
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "phospholipid")

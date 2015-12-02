@@ -39,9 +39,9 @@
 
 ;;lipids
 ;; in EGFR signaling comments
-(noun ("PIP2" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
-
+(noun ("DAG" "diacylglycerol") :super lipid)
 (noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
+(noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
 (noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate") :super phospholipid)
 
 ;; new nouns and verbs used in Ras model comments
@@ -131,7 +131,8 @@
 ;;proteins from comments -- TO-DO move out to proteins file and do correctly
 (define-protein "LAMTOR2" ("LAMTOR2" "MEK partner 1" "MP1"))
 (define-protein "LAMTOR3" ("LAMTOR3"))
-(define-protein "KBTBD7 E3 RING" ("KBTBD7 E3 RING"))
+(define-protein "KBTBD7 E3 RING" ("KBTBD7 E3 RING" ))
+(define-protein "KBTB7_HUMAN" ("KBTBD7"))
 
 ;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
 (noun "asides" :super abstract)

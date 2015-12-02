@@ -138,7 +138,10 @@
      (defun pnf (p)
        (declare (ignore p)))
      (defun try-princing-name (w s id)
-       (declare (ignore w s id))))
+       (declare (ignore w s id)))
+     (defvar *pnf-routine* nil)
+     (defvar *treat-single-Capitalized-words-as-names* nil)
+)
 
    (unless *numbers*
      (defun construct-temporary-number (word digit-string lisp-number)

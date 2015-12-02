@@ -16,6 +16,7 @@
 (noun  "catenin" :super protein-family)
 (noun "integrin" :super protein-family)
 (noun "RAS GAP" :super protein-family)
+(noun ("CaMK" "CaM kinase" "CAMK" "CaM-kinase") :super protein-family)
 
 (def-family "ASPP"
   :members ("ASPP1" "ASPP2")
@@ -64,3 +65,4 @@
 (def-bio "growth factor" protein-family)
 (def-bio "growth-factor" protein-family)
 (def-bio "growth receptor" protein-family)
+(def-bio "endophilin" protein-family)

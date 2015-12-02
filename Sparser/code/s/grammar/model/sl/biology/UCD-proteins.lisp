@@ -1995,6 +1995,8 @@
 
 (define-protein "PHAG1_HUMAN"
  ("PR:Q9NWQ8"
+  "CBP/PAG"
+  "Cbp/PAG"
   "Phosphoprotein associated with glycosphingolipid-enriched microdomains 1"
   "Csk-binding protein" "Transmembrane adapter protein PAG"
   "Transmembrane phosphoprotein Cbp" "Csk"))

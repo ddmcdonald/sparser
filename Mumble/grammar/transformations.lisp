@@ -9,8 +9,8 @@
 (defun do-any-label-driven-transformations (labels phrase-node)
   "Called from process-slot just after the realization-cycle has
    updated the contents. The labels are from the slot"
-  (push-debug `(,labels ,phrase-node)) 
-  (break "transform: ~a" labels))
+  (push-debug `(,labels ,phrase-node)) ;;  (break "transform: ~a" labels)
+)
 
 
 #+ignore

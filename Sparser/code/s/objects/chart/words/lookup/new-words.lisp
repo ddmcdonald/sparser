@@ -100,6 +100,8 @@
          (unless morph-keyword ;; n.b. returns a list of the affix and its POS
            (setq morph-keyword (affix-checker (word-pname word))))
          (setf (word-morphology word) morph-keyword)
+         ;(lsp-break "unknown word: ~a" word)
+         ;(track-unknown-words-by-sentence word)
          (if *introduce-brackets-for-unknown-words-from-their-suffixes*
            (cond
             ((and *big-mechanism*

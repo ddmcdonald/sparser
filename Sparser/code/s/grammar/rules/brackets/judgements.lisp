@@ -284,6 +284,7 @@
     (setq
      ends-the-segment? ;; mitigate right-margin creep
      (cond
+      ((eq previous-word *source-start*) nil)
       ((word-definitively-ends-segment next-word) t)
 
       ((eq ]  phrase].)   t)

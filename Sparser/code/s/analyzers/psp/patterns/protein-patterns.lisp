@@ -34,20 +34,30 @@
 
 
 (defun make-bio-complex (start-pos end-pos)
-  (declare (special category::protein category::bio-complex))
+  (declare (special category::protein category::bio-complex 
+                    category::nucleotide category::ion
+                    category::small-molecule))
   (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
-         (referent (find-or-make-individual 'bio-complex)))
+         (referent (find-or-make-individual 'bio-complex))
+         (nucleotides nil))
+                   
     (cond
      ((loop for edge in edges
         always
         (let ((ref (edge-referent edge)))
-          (cond
-           ((and (individual-p ref) (itypep ref category::protein))
-            (setq referent 
-                  (bind-dli-variable 'component ref referent)))
-           ((word-p ref) t)
-           (t nil))))
+          (or
+           (when 
+               (individual-p ref) 
+             (cond ((itypep ref category::nucleotide)
+                    (when
+                        (null nucleotides) ;; only one nucleotide per complex -- not GDP:GTP
+                      (setq referent (bind-dli-variable 'component ref referent))
+                      (setq nucleotides ref)))
+                   ((or (itypep ref category::protein) (itypep ref category::protein-family)
+                              (itypep ref category::small-molecule) (itypep ref category::ion))
+                     (setq referent (bind-dli-variable 'component ref referent)))))
+           (when (word-p ref) t))))
       (tr :making-a-bio-complex start-pos end-pos)
       (make-ns-edge start-pos end-pos category::bio-complex
                     :form category::n-bar

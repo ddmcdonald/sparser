@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  April 2015
+;;;  Version:  December 2015
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -32,7 +32,8 @@
 ;; in-file flages from Grok work. Added *dbg-print*. 4/24/14 updated definition
 ;; of *forest-level-protocol*. 8/30/14 added flags to enable the new
 ;; forest level protocol. 10/29/14 added more flags to control its lower levels.
-;; 4/26/15 added *reading-populated-document*. 
+;; 4/26/15 added *reading-populated-document*. 12/1/15 Pulling is scattered
+;; parameter definitions and setting them to nil. 
 
 (in-package :sparser)
 
@@ -54,16 +55,18 @@
   "Guards ad-hoc debugging statements, i.e. temporary info that
    won't be converted to traces.")
 
-
 (defparameter *display-article-name* t
   "Looked for during runs over document streams.  If the flag is
    on, the name of the article will be printed to *standard-output*
    at the start of the scan.")
 
-
 (defparameter *copy-text-to-walking-window* t
   "Flag controlling whether the text of the article appears in a
    article window.")
+
+(defparameter *print-forest-after-doing-forest* nil
+  "Gates the printing in new-forest-driver")
+
 
 
 ;;;----------------------------------------------------------------------
@@ -156,26 +159,55 @@
   "Controls whether we proceed to chunk the sentence after we 
    have used sentence-sweep-loop to form its terminal edges.")
 
-(defparameter *parse-chunk-interior-online* t
+(defparameter *parse-chunk-interior-online* nil
   "Gates the option to parse the interior of a chunk
    just after the chunk is created. Referenced in
    identify-chunks")
 
-(defparameter *parse-chunked-treetop-forest* t
+(defparameter *big-mechanism-ngs* nil
+  "use new interpreter for interior of NGs (only called for 
+   NGs without a spanning edge)")
+
+(defparameter *whack-a-rule* nil
+  "In the multi-pass control structure this controls the
+   use of the rule-cycle that tries all applicable rules  
+   from the right to the left.")
+
+(defun whack-a-rule (&optional (yes? t))
+  (setq *whack-a-rule* yes?))
+
+(defparameter *allow-form-conjunction-heuristic* nil
+  "A switch to determine whether we allow two edges to conjoin 
+  based on having the same form category. This is overly
+  agressive when running inline (in after-actions of PTS)
+  but valuable when there's more perspective in which cases
+  it will be shallow bound.")
+
+(defparameter *parse-chunked-treetop-forest* nil
   "Dependent on chunking, gates the option to go on and
    complete the analysis by doing the forest level.
    This is also dependent on new-forest-protocol? 
    returning non-nil")
 
-(defparameter *sweep-sentence-treetops* t
+(defparameter *sweep-sentence-treetops* nil
   "Goes with the new-forest-driver (8/14) and must be on for 
    anything to happen. Gates the treetop sweep to determine
    the layout.")
 
-(defparameter *island-driving* t
+(defparameter *island-driving* nil
   "The set that follows the sweep in the new forest protocol.
    Won't be seen if sweep flag is down. Gates the actual
    parsing of treetops.")
+
+(defparameter *return-after-doing-forest-level* nil
+  "Governs whether the forest driver should make a call into the
+   scanning level when it's finished or simply return. The call
+   is appropriate when running incrementally, the return is for
+   the alternative where all the earlier operations were done 
+   an entire sentences at a time. Compare to the equivalent
+   parameter *return-after-doing-segment* usef for PTS. Probably
+   should merge them.")
+
 
 (defparameter *reading-populated-document* nil
   "Master parameter that differentiates reading from a character

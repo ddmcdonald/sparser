@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.16 June 2014
+;;;  Version:  5.16 June 2015
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -406,7 +406,9 @@ have to be tail recursion to the next thing to do.
   (tr :check-segment-finished-hook)
   (let ((convering-edge (edge-over-segment)))
     (when convering-edge
-      (when (eq (edge-category convering-edge)
+      ;;/// wants a proper hook so we don't need the tile grammar
+      ;; to be loaded.
+      #+ignore(when (eq (edge-category convering-edge)
                 category::title)
         (consider-converting-title-to-person convering-edge)))))
 

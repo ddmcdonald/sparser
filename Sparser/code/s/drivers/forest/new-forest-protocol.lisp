@@ -7,14 +7,15 @@
 
 ;; Initiated 8/4/14. 8/9/14 Simple display version working.
 ;; Starting on sweeper 8/30/14. New arguments to island driver
-;; 9/26/14 to let it do multiple passes. 10/22/14 Convert to a
-;; method so can either call with a position or a sentence
+;; 9/26/14 to let it do multiple passes. 10/22/14 Converted to a
+;; method so can either call with a position or a sentence.
+;; 12/1/15 Pulled parameter
 
 (in-package :sparser)
 
+
 (defun new-forest-protocol? ()
   (eq *forest-level-protocol* :new-forest-protocol))
-
 ;; re-eval with each edit
 ; (what-to-do-at-the-forest-level :new-forest-protocol)
 ;
@@ -27,19 +28,6 @@
     (unless sentence
       (error "Why isn't (sentence) returning one? Check settings."))
     (new-forest-driver sentence)))
-
-(defparameter *return-after-doing-forest-level* nil
-  "Governs whether the forest driver should make a call into the
-   scanning level when it's finished or simply return. The call
-   is appropriate when running incrementally, the return is for
-   the alternative where all the earlier operations were done 
-   an entire sentences at a time. Compare to the equivalent
-   parameter *return-after-doing-segment* usef for PTS. Probably
-   should merge them.")
-
-
-(defparameter *print-forest-after-doing-forest* nil
-  "Gates the printing in new-forest-driver")
 
 (defmethod new-forest-driver ((sentence sentence))
   (declare (special *return-after-doing-forest-level*))

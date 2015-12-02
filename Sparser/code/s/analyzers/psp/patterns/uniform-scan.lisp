@@ -162,7 +162,7 @@
               (let* ((end-edge (left-treetop-at end-pos))
                      (end-cat (when (edge-p end-edge)(cat-sym (edge-category end-edge)))))
                 (or
-                 (when (eq end-cat 'protein)
+                 (when (memq end-cat '(protein protein-family small-molecule ion nucleotide))
                    (ns-protein-pattern-resolve  start-pos end-pos edges
                                                 hyphen-positions slash-positions
                                                 colon-positions other-punct))

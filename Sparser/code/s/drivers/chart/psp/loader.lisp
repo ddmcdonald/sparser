@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.11 April 2015
+;;;  Version:  5.11 November 2015
 
 ;; initiated summer 1990
 ;;  3.0  (9/2/92) bumped to 3 and moved in the newly rationalized set
@@ -33,6 +33,7 @@
 ;;  5.11 (11/17/14) Broke [multi-scan] out of [no-brackets-protocol]
 ;;        as part of breaking that pass down into smaller parts.
 ;;       (4/28/15) Bumped [no-brackets-protocol] to 1
+;;       (11/30/15) Adding incremental for CwC
 
 (in-package :sparser)
 
@@ -49,6 +50,7 @@
 (lload "psp-drivers;trigger")
 
 (lload "psp-drivers;c3-protocol")
+(lload "psp-drivers;incremental")
 (lload "psp-drivers;bio-entity-scan")
 (lload "psp-drivers;no-brackets-protocol")
 (lload "psp-drivers;multi-scan")

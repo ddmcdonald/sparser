@@ -403,9 +403,13 @@
   (setq *sweep-sentence-treetops* t
         *chunk-sentence-into-phrases* t
         *parse-chunk-interior-online* t
+        *big-mechanism-ngs* t
+        *parse-chunk-interior-online* t
         *parse-chunked-treetop-forest* t
         *sweep-sentence-treetops* t
+        *allow-form-conjunction-heuristic* t
         *island-driving* t)
+  (whack-a-rule t)
 
   ;; make sure we notice periods
   (period-hook-on)
@@ -444,18 +448,21 @@
   
   ;; Probably the best starting point, but needs to have C3 state
   ;; apparatus loaded. Dies while setting up the sentence content
-  ;(establish-kind-of-chart-processing-to-do :c3-protocol)
+  ; (establish-kind-of-chart-processing-to-do :c3-protocol)
   (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
 
   (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
   (setq *segment-scan/forest-level-transition-protocol*
         :move-when-segment-can-never-extend-rightwards)
 
-  (designate-sentence-container :simple)
+  (designate-sentence-container :situation)
   (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
   ;; consider some standard extras
 
-  (setq *c3* t) ;;/// has effects on references, but needs checking
+  ;;(setq *c3* t) if set, there's a call in referent-from-unary-rule
+  ;; to call incorporate-referent-into-the-situation which is too 
+  ;; strong right now -- pushes onto pegs
+
   (turn-off-debugging-flags)
   (setq *switch-setting* :blocks-world))
 
