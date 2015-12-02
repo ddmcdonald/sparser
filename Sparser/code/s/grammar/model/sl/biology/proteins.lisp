@@ -55,7 +55,7 @@
 (define-protein "CR1_HUMAN" ("Complement receptor type 1" "CR1"))
 (define-protein "CR2_HUMAN" ("Complement receptor type 3" "CR2"))
 (define-protein "CR3_HUMAN" ("Complement receptor type 3" "CR3"))
-(define-protein "Q6P493_HUMAN" ("PTPRK" "DEP1" "RPTPk")) ;; not sure these are all synonmyms -- RPTPk is a rat protein, but we have 
+(define-protein "Q6P493_HUMAN" ("Receptor-type tyrosine-protein phosphatase kappa" "PTPRK" "DEP1" "RPTPk")) ;; not sure these are all synonmyms -- RPTPk is a rat protein, but we have 
 
 
 
