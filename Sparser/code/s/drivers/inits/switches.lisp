@@ -448,8 +448,8 @@
   
   ;; Probably the best starting point, but needs to have C3 state
   ;; apparatus loaded. Dies while setting up the sentence content
-  (establish-kind-of-chart-processing-to-do :c3-protocol)
-  ;(establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+  ; (establish-kind-of-chart-processing-to-do :c3-protocol)
+  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
 
   (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
   (setq *segment-scan/forest-level-transition-protocol*
