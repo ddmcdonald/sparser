@@ -920,7 +920,8 @@ it is created from N-terminus to C-terminus.|#
 
 (def-synonym calcium-ion
              (:noun "Ca2+"))
-
+(def-synonym calcium-ion
+             (:noun "Ca(2+)"))
 
 (define-category calcium-complex :specializes bio-complex
   :bindings(component (category-named 'calcium-ion)))
@@ -929,6 +930,18 @@ it is created from N-terminus to C-terminus.|#
 
 (define-category calcium-calmodulin-complex :specializes calcium-complex
   :bindings (component (category-named 'calmodulin)))
+
+(def-synonym calcium-calmodulin-complex
+             (:noun "Ca2+/CaM"))
+
+(def-synonym calcium-calmodulin-complex
+             (:noun "Ca2+/calmodulin"))
+
+(def-synonym calcium-calmodulin-complex 
+             (:noun "Ca2+-calmodulin"))
+
+(def-synonym calcium-calmodulin-complex
+             (:noun "calcium/calmodulin"))
 
 
 ; From the ERK abstract:
