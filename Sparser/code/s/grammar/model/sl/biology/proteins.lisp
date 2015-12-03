@@ -55,7 +55,7 @@
 (define-protein "CR1_HUMAN" ("Complement receptor type 1" "CR1"))
 (define-protein "CR2_HUMAN" ("Complement receptor type 3" "CR2"))
 (define-protein "CR3_HUMAN" ("Complement receptor type 3" "CR3"))
-(define-protein "Q6P493_HUMAN" ("PTPRK" "DEP1" "RPTPk")) ;; not sure these are all synonmyms -- RPTPk is a rat protein, but we have 
+(define-protein "Q6P493_HUMAN" ("Receptor-type tyrosine-protein phosphatase kappa" "PTPRK" "DEP1" "RPTPk")) ;; not sure these are all synonmyms -- RPTPk is a rat protein, but we have 
 
 
 
@@ -111,7 +111,8 @@
 
 (def-bio "p52" protein)  ;; :identifier ??
 
-;;(def-bio "p53" protein :mitre-link "Uniprot:P04637")
+(define-protein "P53_HUMAN" ("tumor protein p53" "p53" "cellular tumor antigen p53" "phosphoprotein p53" "tumor suppressor p53" "antigen NY-CO-13"
+                             "transformation-related protein 53" "TRP53" "BCC7"))
 
 (def-bio "p38 SAPK" protein)
 
@@ -1354,8 +1355,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "GROA_HUMAN" ("cytokines" "Growth-regulated alpha protein" "C-X-C motif chemokine 1" "GRO-alpha(1-73)" "Melanoma growth stimulatory activity" "MGSA" "Neutrophil-activating protein 3" "NAP-3")) 
 (define-protein "GRP78_HUMAN" ("78 kDa glucose-regulated protein" "GRP-78" "Endoplasmic reticulum lumenal Ca(2+)-binding protein grp78" "Heat shock 70 kDa protein 5" "Immunoglobulin heavy chain-binding protein" "BiP")) 
 (define-protein "GRTP1_HUMAN" ("TBC1D6" "GRTP1")) 
-(define-protein "GSK3A_HUMAN" ("GSK3" "Glycogen synthase kinase-3 alpha" "GSK-3 alpha" "Serine/threonine-protein kinase GSK3A")) 
-(define-protein "GSK3B_HUMAN" ("GSK3B")) 
+(define-protein "GSK3A_HUMAN" ("GSK3" "Glycogen synthase kinase-3 alpha" "GSK-3 alpha" "Serine/threonine-protein kinase GSK3A"))  
 (define-protein "GSLG1_HUMAN" ("antiserum" "Golgi apparatus protein 1" "CFR-1" "Cysteine-rich fibroblast growth factor receptor" "E-selectin ligand 1" "ESL-1" "Golgi sialoglycoprotein MG-160")) 
 (define-protein "GSTA2_HUMAN" ( "Glutathione S-transferase A2" "GST HA subunit 2" "GST class-alpha member 2" "GST-gamma" "GSTA2-2" "GTH2")) 
 (define-protein "GSTO1_HUMAN" ( "Glutathione S-transferase omega-1" "GSTO-1" "Glutathione S-transferase omega 1-1" "GSTO 1-1" "Glutathione-dependent dehydroascorbate reductase" "Monomethylarsonic acid reductase" "MMA(V) reductase" "S-(Phenacyl)glutathione reductase" "SPG-R")) 
