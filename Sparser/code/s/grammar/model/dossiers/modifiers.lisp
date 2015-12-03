@@ -823,7 +823,9 @@
 (define-adjective "conceptual")
 (define-adjective "confluent")
 (define-adjective "consistent") ;with
-(define-adjective "constitutive")
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "constitutive"))
 (define-adjective "continual")
 (define-adjective "continuous") ; process-y
 (define-adjective "counterintuitive")
