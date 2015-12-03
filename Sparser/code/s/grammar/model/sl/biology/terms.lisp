@@ -366,6 +366,7 @@
   (:adj "consistent"
         :s subject
         :with theme))
+(adj "constitutive" :super bio-predication)
 (define-adverb "constitutively")
 (noun "content" :super measurement)
 (noun "control" :super bio-method)
@@ -451,7 +452,12 @@
      (:adj "effective"
            :against against)) ;; keyword: (ive ADJ) 
 
-(noun "effector" :super protein) ;; NOT SURE WHAT THE RIGHT SUPER is
+(define-category effector :specializes protein ;; NOT SURE WHAT THE RIGHT SUPER is
+  :binds ((for-process bio-process))
+  :realization
+  (:noun "effector" 
+         :for for-process
+         :in for-process))
 
 (define-category efficacy :specializes bio-predication
   :realization
