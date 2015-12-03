@@ -4,13 +4,14 @@
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;versions:v2.3:loaders:"
-;;;  version:  June 2015
+;;;  version:  December 2015
 
 ;; 4/3/97 added a case for dm&p. 8/17/97 added lots of cases as part of preparing
 ;; a license with the segmenter but not the model.  2/22/10 added construct-
 ;; temporary-number to support :just-bracketing mode. Added bunch more 4/1/12.
 ;; Fixed ill-formed declare 1/28/13. More for omitting grammar modules 6/16/14
 ;; and more 8/10/14. And again 3/2/15. 6/29/15 *description-lattice* cases.
+;; 12/2/15 biology cases
 
 (in-package :sparser)
 
@@ -23,6 +24,14 @@
 (when *description-lattice*
   (defun bind-variable (var value object)
     (declare (ignore var value object))))
+
+(unless (memq :biology-loaded *features*)
+  (defun in-ras2-model? (i) (declare (ignore i))) ;; Rusty's workspace
+  (defun post-translation-file-from-card (card number) ;; Biology workspace
+    (declare (ignore card number)))
+  (defun do-cards ())
+)
+
 (unless *companies*
   (defun establish-companies-as-part-of-the-background (list)
     (declare (ignore list)))
