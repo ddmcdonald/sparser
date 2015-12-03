@@ -100,7 +100,7 @@
         (return-from collect-no-space-segment-into-word nil))
       
       (multiple-value-bind (end-pos hyphen-positions slash-positions
-                                    colon-positions other-punct edges)
+                            colon-positions other-punct edges)
                            (sweep-to-end-of-ns-regions start-pos long-edge)
         ;; Sweep from the very beginning just to be sure we catch any
         ;; marked punctuation there. 
@@ -139,11 +139,7 @@
         (tr :looking-at-ns-segment start-pos end-pos)
         
         (multiple-value-bind (layout edge)
-                             (let
-                                 ((*allow-pure-syntax-rules* nil)
-                                  (*allow-form-rules* nil))
-                               (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
-                               (parse-between-scan-boundaries start-pos end-pos))
+                             (parse-between-nospace-scan-boundaries start-pos end-pos)
           (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
           (cond
            ((eq layout :single-span)  ;; Do nothing. It's already known
@@ -162,6 +158,11 @@
               (let* ((end-edge (car (last edges)))
                      (end-cat (when (edge-p end-edge)(cat-sym (edge-category end-edge)))))
                 (or
+                 (when (punctuation-final-in-ns-span? end-pos)
+                   (setq end-pos (chart-position-before end-pos))
+                   (ns-pattern-dispatch start-pos end-pos edges
+                                        hyphen-positions slash-positions
+                                        colon-positions other-punct))
                  (when (memq end-cat '(protein protein-family small-molecule ion nucleotide))
                    (ns-protein-pattern-resolve  start-pos end-pos edges
                                                 hyphen-positions slash-positions
@@ -172,10 +173,10 @@
                                               colon-positions other-punct))
                  (ns-pattern-dispatch start-pos end-pos edges
                                       hyphen-positions slash-positions
-                                      colon-positions other-punct))))
+                                      colon-positions other-punct)))))))
             
-            (when *collect-ns-examples*
-              (update-ns-examples start-pos)))))
+        (when *collect-ns-examples*
+          (update-ns-examples start-pos))
         end-pos))))
 
 
@@ -190,26 +191,14 @@
   ;; dispatch. Every path is expected to form an edge over the
   ;; span one way or another.
   (let* ((edges (remove-non-edges unsorted-edges))
-         ;;/// unclear why, but edge-sort seems wedged
-         ;; (sort (copy-list unsorted-edges) #'edge-sort))
          (pattern (characterize-words-in-region start-pos end-pos edges))
          (words (words-between start-pos end-pos)))
-    (push-debug `(,unsorted-edges)) ; 
-    ;;(break "edges = ~a" edges)
     (when edges
-      (setq pattern (convert-mixed-pattern-edges-to-labels pattern))
-      (push-debug `(,pattern ,edges ,start-pos ,end-pos))
-      (tr :ns-pattern-includes-edges edges))
+      (tr :ns-pattern-includes-edges edges)
+      (setq pattern (convert-mixed-pattern-edges-to-labels pattern)))
     (tr :segment-ns-pattern pattern)
 
     (cond 
-     #+ignore(edges ;;/// remove once dispersal debugged
-      (tr :ns-sort-out-pattern-with-edges)
-      (ns-sort-out-pattern-with-edges 
-       pattern start-pos end-pos edges words
-       hyphen-positions slash-positions
-       colon-positions other-punct))
-              
      ((eq :double-quote (car pattern))
       (tr :ns-scare-quote)
       (scare-quote-specialist start-pos ;; leading-quote-pos

@@ -16,8 +16,8 @@
 (defun resolve-colon-pattern (pattern words edges 
                               colon-positions start-pos end-pos)
   ;; called from ns-pattern-dispatch when the only puctuation is a colon
-  ;; (push-debug `(,pattern ,words ,edges ,colon-positions ,start-pos ,end-pos))
-  ;; (break "starting colon pattern: ~a" pattern)
+   (push-debug `(,pattern ,words ,edges ,colon-positions ,start-pos ,end-pos))
+  ;;(break "starting colon pattern: ~a" pattern)
   (cond
    ((null (cdr colon-positions))
     (one-colon-ns-patterns
