@@ -317,7 +317,9 @@
 
 (define-category negative-bio-control :specializes bio-control
   :restrict ((object (:or biological bio-rhetorical))) ;; "lowered the possibility"
-  :realization (:verb "negatively controls"  :etf (svo-passive)))
+  :binds ((inhibited-process bio-process))
+  :realization (:verb "negatively controls"  :etf (svo-passive)
+                      :from inhibited-process))
 
 (define-category positive-bio-control :specializes bio-control
   :restrict ((object (:or biological bio-rhetorical))) ;; "raised the possibility"
@@ -426,7 +428,7 @@
   :binds ((controlType))
   :realization
   (:verb "catalyze" :noun "catalysis" 
-         :etf(svo-passive of-nominal) ));;/// "catalyysis of phosphorylation by MEK"
+         :etf(svo-passive) ));;/// "catalyysis of phosphorylation by MEK"
 
 (define-category kinase-activity :specializes catalysis
   :binds ((enzyme protein))
@@ -631,7 +633,8 @@
          :etf pre-mod
          :m nucleotide
          :m substrate
-         :of substrate))
+         :of substrate
+         :for substrate))
 
 (def-synonym kinase
              (:noun "kinase"
@@ -687,12 +690,12 @@
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
 (define-category molecule-load :specializes caused-bio-process
- :binds (;;(object molecule) ;; the nucleotyde that moves
-         (substrate biological))
- :realization
- (:noun "loading"
-  :etf (of-nominal)
-  :onto substrate))
+  :binds (;;(object molecule) ;; the nucleotyde that moves
+          (substrate biological))
+  :realization
+  (:noun "loading"
+         :of object
+         :onto substrate))
 ;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
 
