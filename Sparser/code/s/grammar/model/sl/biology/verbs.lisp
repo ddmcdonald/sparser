@@ -1159,12 +1159,23 @@
   (:verb "dampen"
          :etf (svo-passive)))
 
+(define-category bio-insert :specializes caused-bio-process
+  :binds ((substrate (:or protein protein-domain molecular-location))
+          (between residue-on-protein)
+          (after residue-on-protein))
+  :realization 
+  (:verb "insert" :noun"insertion" 
+         :etf (svo-passive) 
+         :into substrate
+         :between between))
+
 (define-category interact :specializes bio-process
   :binds ((interactor biological)) 
   :realization 
   (:verb "interact" :noun"interaction" 
          :etf (sv) 
-         :with interactor))
+         :with interactor
+         :between interactor))
 
 (define-category interfere :specializes negative-bio-control
     :realization
@@ -1286,6 +1297,14 @@
   (:verb   "mediate" :noun "mediation"
    :etf (svo-passive)
    :via process))
+
+(define-category migration :specializes bio-transport
+  :realization 
+  (:verb "migrate" 
+   :noun "migration" 
+   :etf (svo-passive) 
+   ))
+
 
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
 
