@@ -692,6 +692,7 @@
 
 (noun "membrane" :super cellular-location)
 (noun "method" :super bio-method)
+(noun "miR-26A" :super micro-rna)
 (noun "miR-26A2" :super micro-rna)
 (def-synonym miR-26A2
              (:noun "MIR26A2"))
