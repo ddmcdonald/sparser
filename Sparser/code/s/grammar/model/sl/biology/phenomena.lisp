@@ -822,6 +822,15 @@ it is created from N-terminus to C-terminus.|#
 
 ;; added in notion of direct-bindee for "A binds B" as opposed to "A binds to B"
 
+(define-category multimerize :specializes binding ;; generalization for dimerize, polymerize, trimerize
+  :binds ((monomer (:or monomer protein)))
+  :realization
+  (:verb "multimerizeXXX" ;; need this (perhaps) for etf and :s and :o
+   :etf (sv)
+   :s monomer
+   :o monomer
+   :of monomer
+   :with monomer))
 
 ; From the ERK abstract:
 ; #1 "Dimerization-independent" (in title)
@@ -830,56 +839,42 @@ it is created from N-terminus to C-terminus.|#
 ; #7 "dimerization of ERK1"
 ; #8 "did not detect dimerization of GFP-ERK1-WT upon activation"
 ; #10 "is a consequence of delayed phosphorylation of ERK by MEK rather than dimerization."
-(define-category dimerize :specializes binding
-  :binds ((monomer (:or monomer protein)))
+(define-category dimerize :specializes multimerize
   :realization
   (:verb "dimerize" 
    :noun "dimerization"
-   :etf (sv of-nominal)
-   :s monomer
-   :o monomer
-   :of monomer
-   :with monomer))
+   :etf (sv)))
 
-(define-category heterodimerize :specializes binding
-  :binds ((monomer protein))
+(define-category heterodimerize :specializes multimerize
   :realization
   (:verb "heterodimerize" 
    :noun "heterodimerization"
-   :etf (sv of-nominal)
-   :s monomer
-   :o monomer
-   :of monomer
-   :with monomer))
+   :etf (sv)))
 
-(define-category homodimerize :specializes binding
-  :binds ((monomer protein))
+(define-category homodimerize :specializes multimerize
   :realization
   (:verb "homodimerize" 
    :noun "homodimerization"
-   :etf (sv of-nominal)
-   :s monomer
-   :o monomer
-   :of monomer
-   :with monomer))
+   :etf (sv)))
 
-(define-category homo/heterodimerize :specializes binding
-  :binds ((monomer protein))
+(define-category homo/heterodimerize :specializes multimerize
   :realization
   (:verb "homo/heterodimerize" 
    :noun "homo/heterodimerization"
-   :etf (sv of-nominal)
-   :s monomer
-   :o monomer
-   :of monomer
-   :with monomer))
+   :etf (sv)))
 
 (def-synonym homo/heterodimerize
              (:noun "homo- or heterodimerization"
                     :verb "homo- or heterodimerize"
-                    :etf (sv of-nominal)))
+                    :etf (sv)))
 (def-synonym homo/heterodimerize
              (:noun "homo- and heterodimerization"))
+
+(define-category oligomerize :specializes multimerize
+  :realization
+  (:verb "oligomerize" 
+   :noun "oligomerization"
+   :etf (sv)))
 
 (define-category bio-complex 
   ;; changed -- complexes are not molecules, but associated groups of
@@ -904,12 +899,7 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "tricomplex"
-         :etf pre-mod
-         :premod component
-         :m component
-         :with component
-         :of component
-         :between component))
+         :etf pre-mod))
 
 
 ;; from EDGFR comments
@@ -957,7 +947,7 @@ it is created from N-terminus to C-terminus.|#
   :realization
   (:verb "dimerize" 
    :noun "dimerization"
-   :etf (sv of-nominal)
+   :etf (sv)
    :s monomer
    :o monomer
    :of monomer))
