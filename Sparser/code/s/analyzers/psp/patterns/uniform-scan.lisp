@@ -159,7 +159,7 @@
             ;;  the pattern (ambiguity) and only one of the edges satisfies a pattern
             ;; this is not done cleanly, and needs some pair-programming
             (catch :punt-on-nospace-without-resolution
-              (let* ((end-edge (left-treetop-at end-pos))
+              (let* ((end-edge (car (last edges)))
                      (end-cat (when (edge-p end-edge)(cat-sym (edge-category end-edge)))))
                 (or
                  (when (memq end-cat '(protein protein-family small-molecule ion nucleotide))
