@@ -399,6 +399,13 @@
                   (individual-p (edge-referent edge-after)))
                  t)
                 (t (lsp-break "conjunction-problem")) ))
+              (and
+               (safe-itypep label-before 'protein)
+               (safe-itypep label-after 'protein))
+              (and
+               (safe-itypep label-before 'bio-complex)
+               (safe-itypep label-after 'bio-complex))
+              #+ignore
               (and (or (safe-itypep label-before 'protein)
                        (safe-itypep label-before 'bio-complex))  ;; allow for protein and kinase
                    (or
@@ -466,9 +473,9 @@
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
   (let ((reject?
-        (or (and (member (cat-symbol before)
-                         `(category::protein category::residue-on-protein 
-                           category::other category::fragment))
+        (or (and (member (cat-name before)
+                         `(protein residue-on-protein bio-complex
+                           other fragment))
                  (not (eq before after)))
             (and (category-p before)
                  (category-p after)
