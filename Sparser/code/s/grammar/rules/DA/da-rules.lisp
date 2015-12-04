@@ -120,15 +120,23 @@
         ;; now remake the collection
         (let ((new-conjunct 
                (apply #'referent-of-two-conjoined-edges new-items)))
-          (setf (edge-referent vp-edge) new-conjunct))))
+          ;; vp-ref MUST be updated here
+          (setq vp-ref new-conjunct)
+          (setf (edge-referent vp-edge) vp-ref))))
 
      (t ;; simple vp
       (unpack-subject-control clause-ref vp-ref vp-edge)))
 
     ;; Say that the clause is causally-related-to the vp.
     ;; Which is pretty weak, but it's already in place
+    ;; THIS NEXT CALL PRODUCES NIL WHEN CLAUSE-REF IS A COLLECTION (from a conjunction of clauses)
+    ;; as in 
+    ;;"The human genome encodes at least 10 proteins that bind RAS and activate its intrinsic GTPase activity, 
+    ;;  resulting in the formation of inactive RAS:GDP and attenuating RAS signaling (reviewed in King et al, 2013)."
     (setq clause-ref (add-adjunctive-clause-to-s clause-ref vp-ref))
-      
+    ;; we really need to create a new "category::causally-related" and fill in
+    ;; two variables, cause and effect, and then use that as the :referent below
+    ;; 
     (let ((edge (make-binary-edge/explicit-rule-components
                  s-edge vp-edge
                  :category (edge-category s-edge)
