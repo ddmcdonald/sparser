@@ -232,6 +232,23 @@
       ))
 
 
+;;;------------------------
+;;; final punctunctuation?
+;;;-----------------------
+
+(defun punctuation-final-in-ns-span? (end-pos)
+  "Check for whether there is final punctuation (that we want
+   to remove) in the span. Return non-nil if so. Called from 
+   collect-no-space-segment-into-word as one of its pre-dispatch
+   checks."
+  (let ((final-word (pos-terminal (chart-position-before end-pos))))
+    ;; We want to keep hyphens and +. What about a final slash?
+    ;; Ex. in present slash code is "c-Raf/ MAPK-mediated [6]."
+    ;; where a repair is probably better. So just doing colon
+    ;; right now. 
+    (tr :dropping-final-punct-of-ns-span final-word)
+    (eq final-word *the-punctuation-colon*)))
+
 
 
 ;;;----------

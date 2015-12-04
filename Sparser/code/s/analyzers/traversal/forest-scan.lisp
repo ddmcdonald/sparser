@@ -25,19 +25,22 @@
 (in-package :sparser)
 
 
-(defun parse-between-scan-boundaries (left-bound right-bound)
+(defun parse-between-nospace-scan-boundaries (left-bound right-bound)
   ;; Called from collect-no-space-segment-into-word to look for
   ;; a parse between where the no-space sequence starts and where
   ;; it ends. Provides for different alg. 
   (push-debug `(,left-bound ,right-bound)) ;(break "parse-between ns-scans")
-  (let ((edge (catch :done-parsing-region
-                (parse-from-to/topmost left-bound right-bound))))
-    (let ((layout (analyze-segment-layout
-                   ;; /// it ought to be possible to keep a running model of this
-                   ;; rather than have to recalculate it here
-                   left-bound right-bound)))
-      (values layout
-              edge))))
+  (let ((*allow-pure-syntax-rules* nil)
+        (*allow-form-rules* nil))
+    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+    (let ((edge (catch :done-parsing-region
+                  (parse-from-to/topmost left-bound right-bound))))
+      (let ((layout (analyze-segment-layout
+                     ;; /// it ought to be possible to keep a running model of this
+                     ;; rather than have to recalculate it here
+                     left-bound right-bound)))
+        (values layout
+                edge)))))
 
 (defun parse-between-parentheses-boundaries (left-bound right-bound)
   ;; Called from do-paired-punctuation-interior to look for

@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "blocks-world"
 ;;;    Module:  "init;versions:v4:config:grammars:"
-;;;   version:  October 2013
+;;;   version:  December 2015
 
 ;; 10/6/15 Starting with the C3 configuration, which incorporates
-;; location. 
+;; location. Added mid-level-ontology 12/3/15
 
 (defun blocks-world-module-choices ())  ;; for meta-.
 
@@ -101,6 +101,7 @@
 (include-grammar-module  *model-core*)
 
 (include-grammar-module  *kinds*)
+(include-grammar-module  *mid-level-ontology*)
 (include-grammar-module  *standard-adjuncts*)
   (include-grammar-module  *approximators*)
   (include-grammar-module  *frequency*)

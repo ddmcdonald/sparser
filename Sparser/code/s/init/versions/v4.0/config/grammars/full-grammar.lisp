@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "full grammar"
 ;;;    Module:  "init;versions:v2.7:config:grammars:"
-;;;   version:  October 2015
+;;;   version:  December 2015
 
 ;; 7/18/92 v2.3 blocked out the gl and Tipster grammar
 ;; 12/4 pulled word options made irrelevant in master-loader
@@ -30,7 +30,7 @@
 ;; 7/19/11 added *generic-military*. 8/31/11 added *default-quantifier-semantics*.
 ;; 12/15/11 added *hurricanes*. 10/16/13 added *qualities*, sl's for strider,
 ;; grok. 11/30/13 *waypoints*. 6/4/14 *NIH* => *biology* 10/6/15 *blocks-world*
-
+;; 12/3/15 added *mid-level-ontology*
 
 (in-package :sparser)
 
@@ -143,10 +143,11 @@
 (include-grammar-module  *model-core*)
 
 (include-grammar-module  *kinds*)
+(include-grammar-module  *mid-level-ontology*)
 (include-grammar-module  *standard-adjuncts*)
-  (include-grammar-module  *approximators*)
-  (include-grammar-module  *frequency*)
-  (include-grammar-module  *sequencers*)
+(include-grammar-module  *approximators*)
+(include-grammar-module  *frequency*)
+(include-grammar-module  *sequencers*)
 
 (include-grammar-module *qualities*)
 

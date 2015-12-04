@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "logicals"
 ;;;   Module:  "init:versions:v4.0:loaders:"
-;;;  version:  October 2015
+;;;  version:  December 2015
 
 ;; 4/21/92 added new,  5/10 broke apart CA/HA,  7/18 promoted all the
 ;; directories under "names;" up to "core;",  7/23 added tools;time
@@ -44,7 +44,7 @@
 ;; 8/15/10 added one-offs under words. 11/12/10 removed poirot, added mumble-
 ;; interface. 7/19/11 added mil; for sl;military. 8/31/11 added syntax-quant;
 ;; 12/15/11 added hurricanes. 11/30/13 *waypoints*. 6/4/14 NIH -> biology
-;; 10/6/15 added blocks
+;; 10/6/15 added blocks. 12/3/15 added mid-level. 
 
 
 (in-package :sparser)
@@ -288,6 +288,7 @@
 (def-logical-pathname "ad-tableau;"   "model;core:")
 
 (def-logical-pathname "kinds;"        "core;kinds:")
+(def-logical-pathname "mid-level;"    "core;mid-level:")
 (def-logical-pathname "numbers;"      "core;numbers:")
 (def-logical-pathname "amounts;"      "core;amounts:")
 (def-logical-pathname "qualities;"    "core;qualities:")

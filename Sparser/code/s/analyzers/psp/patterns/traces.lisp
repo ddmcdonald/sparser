@@ -457,3 +457,9 @@
   (when *trace-ns-sequences* 
     (trace-msg "[ns] Making a two-part-label: ~s"
                (string-of-words-between start-pos end-pos))))
+
+(deftrace :dropping-final-punct-of-ns-span (final-word)
+  (when *trace-ns-sequences* 
+    (trace-msg "[ns] Dropping the final ~s and looking for pattern ~
+                     on remainder" (word-pname final-word))))
+
