@@ -14,11 +14,11 @@
 (defun c3-grammar-module-choices ()) ;; for meta-.
 
 
-;; (include-grammar-module  *other*)
+(include-grammar-module  *other*)
 
 (include-grammar-module  *testing*)
 (include-grammar-module  *citations*)
-;;(include-grammar-module  *miscellaneous*)
+(include-grammar-module  *miscellaneous*)
 
 
 ;;;-----------------------------------
@@ -104,6 +104,7 @@
 (include-grammar-module  *model-core*)
 
 (include-grammar-module  *kinds*)
+(include-grammar-module  *mid-level-ontology*)
 (include-grammar-module  *standard-adjuncts*)
   (include-grammar-module  *approximators*)
   (include-grammar-module  *frequency*)
