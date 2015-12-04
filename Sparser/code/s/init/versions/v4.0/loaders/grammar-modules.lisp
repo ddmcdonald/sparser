@@ -36,7 +36,7 @@
 ;; 12/15/11 added *hurricanes*. 10/8/13 added *qualities*, *middle-east*,
 ;; *Banking*, *ISR*. 11/30/13 *waypoints*.
 ;; 6/4/14 Removed *NIH* as redundant with *biology*, brought here from
-;; a workspace. 10/6/15 added *blocks-world*
+;; a workspace. 10/6/15 added *blocks-world*. 12/3/15 added *mid-level-ontology*
 
 (in-package :sparser)
 
@@ -190,6 +190,10 @@
                         :name "kinds"
                         :parent *model-core*
                         )
+
+(define-grammar-module  *mid-level-ontology*
+                        :name "mid-level ontology"
+                        :parent *model-core*)
 
 (define-grammar-module  *standard-adjuncts*
                         :name "adjuncts"

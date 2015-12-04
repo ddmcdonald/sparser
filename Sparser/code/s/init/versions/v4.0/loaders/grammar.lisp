@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;versions:v<>:loaders:"
-;;;   version:  October 2015
+;;;   version:  December 2015
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -52,12 +52,12 @@
 ;; collections so plural realizations would work. 5/25/14 added a call to make temporal
 ;; sequences among the final operations after dossiers are loaded. 6/1/14 added
 ;; more temporal bits that late. 6/4/14 Removed NIH. 6/15/14 Adding more grammar
-;; module gates so we get a better tally of who many words, etc. we have. 12/10/14
+;; module gates so we get a better tally of how  many words, etc. we have. 12/10/14
 ;; moved 1st-kinds in front of collections, which led to adjustments in the construction
 ;; of plurals for the lemmas in 1st-kinds. 1/30/15 had to change conditionalization
 ;; on situation to get text structure to load. 9/22/15 Want to refer to the upper model
 ;; in the categories that are defined with the words so moved kinds;1st-loader ahead
-;; of words. 10/6/15 added blocks-world.
+;; of words. 10/6/15 added blocks-world. 12/3/15 added mid-level
 
 
 (in-package :sparser)
@@ -113,6 +113,9 @@
 
   (gate-grammar *kinds*
     (gload "kinds;loader"))
+
+  (gate-grammar *mid-level-ontology*
+    (gload "mid-level;loader"))
 
   (gate-grammar *proper-names*
     (gload "names;loader")
