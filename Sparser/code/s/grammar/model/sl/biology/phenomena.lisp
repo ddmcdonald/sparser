@@ -16,7 +16,6 @@
 ;; 5/29/15 Added the rest of the Mitre-designated modification features
 
 (in-package :sparser)
-
 (define-category signal-propagation
                  :specializes bio-process
   :binds ((direction pathway-direction))
@@ -846,19 +845,19 @@ it is created from N-terminus to C-terminus.|#
    :noun "dimerization"
    :etf (sv)))
 
-(define-category heterodimerize :specializes oligomerize
+(define-category heterodimerize :specializes dimerize
   :realization
   (:verb "heterodimerize" 
    :noun "heterodimerization"
    :etf (sv)))
 
-(define-category homodimerize :specializes oligomerize
+(define-category homodimerize :specializes dimerize
   :realization
   (:verb "homodimerize" 
    :noun "homodimerization"
    :etf (sv)))
 
-(define-category homo/heterodimerize :specializes oligomerize
+(define-category homo/heterodimerize :specializes dimerize
   :realization
   (:verb "homo/heterodimerize" 
    :noun "homo/heterodimerization"
@@ -871,11 +870,6 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym homo/heterodimerize
              (:noun "homo- and heterodimerization"))
 
-(define-category oligomerize :specializes oligomerize
-  :realization
-  (:verb "oligomerize" 
-   :noun "oligomerization"
-   :etf (sv)))
 
 (define-category bio-complex 
   ;; changed -- complexes are not molecules, but associated groups of
