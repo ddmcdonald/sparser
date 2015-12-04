@@ -3,14 +3,14 @@
 ;;;
 ;;;      File:  "loader"
 ;;;    Module:  grammar/model/sl/blocks
-;;;   version:  October 2015
+;;;   version:  December 2015
 
-;; Initiated 10/6/15
+;; Initiated 10/6/15. Added vocabulary 12/3/15.
 
 (in-package :sparser)
 
 (when (find-package :mumble)
-  (gload "blocks;experiments"))
-; (gload "blocks;xx")
+  (gload "blocks;experiments")
+  (gload "blocks;vocabulary"))
 ; (gload "blocks;xx")
 
