@@ -822,11 +822,12 @@ it is created from N-terminus to C-terminus.|#
 
 ;; added in notion of direct-bindee for "A binds B" as opposed to "A binds to B"
 
-(define-category multimerize :specializes binding ;; generalization for dimerize, polymerize, trimerize
+(define-category oligomerize :specializes binding ;; generalization for dimerize, polymerize, trimerize
   :binds ((monomer (:or monomer protein)))
   :realization
-  (:verb "multimerizeXXX" ;; need this (perhaps) for etf and :s and :o
+  (:verb "oligomerize" ;; need this (perhaps) for etf and :s and :o
    :etf (sv)
+   :noun "oligomerization"
    :s monomer
    :o monomer
    :of monomer
@@ -845,19 +846,19 @@ it is created from N-terminus to C-terminus.|#
    :noun "dimerization"
    :etf (sv)))
 
-(define-category heterodimerize :specializes multimerize
+(define-category heterodimerize :specializes oligomerize
   :realization
   (:verb "heterodimerize" 
    :noun "heterodimerization"
    :etf (sv)))
 
-(define-category homodimerize :specializes multimerize
+(define-category homodimerize :specializes oligomerize
   :realization
   (:verb "homodimerize" 
    :noun "homodimerization"
    :etf (sv)))
 
-(define-category homo/heterodimerize :specializes multimerize
+(define-category homo/heterodimerize :specializes oligomerize
   :realization
   (:verb "homo/heterodimerize" 
    :noun "homo/heterodimerization"
@@ -870,7 +871,7 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym homo/heterodimerize
              (:noun "homo- and heterodimerization"))
 
-(define-category oligomerize :specializes multimerize
+(define-category oligomerize :specializes oligomerize
   :realization
   (:verb "oligomerize" 
    :noun "oligomerization"
