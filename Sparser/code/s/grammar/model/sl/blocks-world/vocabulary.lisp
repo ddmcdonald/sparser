@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2015 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "vocabulary"
-;;;    Module:  grammar/model/sl/blocks
+;;;    Module:  grammar/model/sl/blocks-world/
 ;;;   version:  December 2015
 
 ;; Initiated 12/3/15.
