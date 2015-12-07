@@ -236,7 +236,7 @@
 ;;;-----------------
 ;;; bundle creators
 ;;;-----------------
-
+#|
 (instantiate-type (bundle-creator
 		   (#:bc-)
 		   ("#<bundle-creator ~a ~a>" bc
@@ -264,12 +264,12 @@
       (setf (bc-function bc) fn)
       (setf (gethash name *symbols-to-bundle-creators*) bc)
       bc)))
-
+|#
 
 ;;;--------------------
 ;;; template resources
 ;;;--------------------
-
+#|
 (instantiate-type (template-resource
 		   (#:tr-)
 		   ("#<template-resource ~a ~a>" tr
@@ -362,7 +362,7 @@
 	     (template (eval form))) 
 	(setf (tr-template tr) template) (break "tr")
 	tr))))
-
+|#
 
 
 
@@ -376,7 +376,7 @@
 ;; to link up with Sparser output much sooner than later, they're likely
 ;; to be drastically refactored once it's clear how that is going to fall
 ;; out. 
-
+#|
 (instantiate-type (rhetorical-resource
 		   (#:rr-)
 		   ("#<rhetorical-resource ~a ~a>" rr
@@ -385,8 +385,5 @@
   (name)
   (parameters)
   (cases))
-
-
-
-
+|#
 
