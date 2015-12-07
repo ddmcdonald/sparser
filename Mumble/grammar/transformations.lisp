@@ -38,3 +38,17 @@
     (let ((predicate-slot (next subject-slot)))
       (setf (first-constituent clause) predicate-slot))))
 
+(defmethod add-dummy-subject ((dtn derivation-tree-node))
+  "Called from the command accessory. That accessory will call
+   remove-subject, but given the present timing in realize-dtn
+   the phrase is expanded before the accessories apply, and the
+   expander (build-phrase) will expect a subject. 
+   This checks whether there already is a value for the subject
+   parameter (s) and adds a dummy if there isn't."
+  (let ((complements (complements dtn))
+        (s-var (parameter-named 's)))
+    (unless (find s-var complements 
+                  :key #'(lambda (comp) (phrase-parameter comp)))
+      (let ((trace (build-trace 'dummy)))
+        (make-complement-node 's trace dtn)))))
+
