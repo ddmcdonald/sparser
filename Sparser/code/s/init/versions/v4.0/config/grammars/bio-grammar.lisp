@@ -120,6 +120,7 @@
 (include-grammar-module  *model-core*)
 
 (include-grammar-module  *kinds*)
+(include-grammar-module  *mid-level-ontology*)
 (include-grammar-module  *standard-adjuncts*)
   (include-grammar-module  *approximators*)
   (include-grammar-module  *frequency*)

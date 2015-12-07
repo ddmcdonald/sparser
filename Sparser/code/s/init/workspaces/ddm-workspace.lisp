@@ -55,8 +55,8 @@
 ;; (ddm-load-article-2)  (find-corpus-sents "")
 
 (defun ddm-load-blocks-world ()
-  (ddm-load "grammar/models/sl/blocks/vocabulary.lisp")
-  (ddm-load "grammar/models/sl/blocks/experiments.lisp")
+  (ddm-load "grammar/model/sl/blocks-world/vocabulary.lisp")
+  (ddm-load "grammar/model/sl/blocks-world/experiments.lisp")
 )
 
 (defun ddm-relevant-mumble ()
@@ -77,6 +77,8 @@
 (defun ddm-configurations ()
   (ddm-ed "init/versions/v4.0/config/grammars/c3-configuration.lisp")
   (ddm-ed "init/versions/v4.0/config/grammars/full-grammar.lisp")
+  (ddm-ed "init/versions/v4.0/config/grammars/bio-grammar.lisp")
+)
 
 (defun ddm-no-spaces ()
   (ddm-ed "analyzers/psp/patterns/loader.lisp")
