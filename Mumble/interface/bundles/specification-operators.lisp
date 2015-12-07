@@ -88,6 +88,7 @@
 
 (def-accessory-operator command 
   (add-accessory base :command)
+  (add-dummy-subject base)
   base )
 
 (def-accessory-operator question 
