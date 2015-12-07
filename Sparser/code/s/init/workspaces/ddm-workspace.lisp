@@ -54,8 +54,12 @@
 ;; (compare-to-snapshots)
 ;; (ddm-load-article-2)  (find-corpus-sents "")
 
+(defun ddm-load-blocks-world ()
+  (ddm-load "grammar/models/sl/blocks/vocabulary.lisp")
+  (ddm-load "grammar/models/sl/blocks/experiments.lisp")
+)
 
-(defun load-relevant-mumble ()
+(defun ddm-relevant-mumble ()
   (ddm-ed "grammar/model/sl/blocks-world/experiments.lisp")
   (m-ed "loader.lisp")
   (m-ed "grammar/transformations.lisp")
@@ -69,6 +73,10 @@
   (m-ed "interface/bundles/accessory-processing.lisp")
   (m-ed "interface/derivations/discourse-reference.lisp")
   (ddm-ed "interface/mumble/rspec-gophers.lisp"))
+
+(defun ddm-configurations ()
+  (ddm-ed "init/versions/v4.0/config/grammars/c3-configuration.lisp")
+  (ddm-ed "init/versions/v4.0/config/grammars/full-grammar.lisp")
 
 (defun ddm-no-spaces ()
   (ddm-ed "analyzers/psp/patterns/loader.lisp")
@@ -89,7 +97,7 @@
   (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
   (ddm-ed "drivers/chart/psp/multi-scan.lisp")
   (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
-
+  ;;
   (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
   (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
 
