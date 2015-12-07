@@ -88,6 +88,7 @@
 
 (load (concatenate 'string *mumble-location* "derivation-trees/make.lisp"))
 (load (concatenate 'string *mumble-location* "derivation-trees/builders.lisp"))
+(load (concatenate 'string *mumble-location* "derivation-trees/operators.lisp"))
 ;; Sparser-dependent and needs rethinking anyway
 ;(load (concatenate 'string *mumble-location* "derivation-trees/conversions.lisp"))
 
@@ -109,7 +110,7 @@
 (load (concatenate 'string *mumble-location* "interface/derivations/discourse-reference.lisp"))
 
 (load (concatenate 'string *mumble-location* "interface/bundles/specification-operators.lisp"))
-(load (concatenate 'string *mumble-location* "interface/bundles/operators-over-specifications.lisp"))
+;; deprecated (load (concatenate 'string *mumble-location* "interface/bundles/operators-over-specifications.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/specification-templates.lisp"))
 
 ;(load (concatenate 'string *mumble-location* "interface/bundles/tree-families.lisp"))
