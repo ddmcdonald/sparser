@@ -23,7 +23,7 @@
     (let ((pair (make-instance 'parameter-value-pair
                   :phrase-parameter parameter
                   :value word)))
-      (make-instance 'saturated-lexical-phrase
+      (make-instance 'saturated-lexicalized-phrase
         :phrase phrase
         :bound `(,pair)))))
 
@@ -41,7 +41,7 @@
     (let ((pair (make-instance 'parameter-value-pair
                   :phrase-parameter parameter
                   :value word)))
-      (make-instance 'partially-saturated-lexical-phrase
+      (make-instance 'partially-saturated-lexicalized-phrase
         :phrase phrase
         :free parameters
         :bound `(,pair)))))
