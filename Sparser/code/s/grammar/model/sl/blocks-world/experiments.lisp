@@ -78,11 +78,12 @@ See Zo code for what that could look like. |#
 ; (say (let-us (build-a-staircase)))
 
 
-;; "a drug targets KRAS"
+;; "a drug to target KRAS" (say (drug-targeting-kras))
 
 (define-word "KRAS" (proper-noun))
 
 (defun drug-targeting-kras ()
+  "Makes an untensed clause. Comes out as an infinitive"
   (let* ((verb-resource (verb "target"))
          (kras-resource (noun "KRAS" 'proper-name))
          (drug-dtn (kind (singular (noun "drug")))))

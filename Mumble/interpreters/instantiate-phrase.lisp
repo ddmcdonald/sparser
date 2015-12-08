@@ -210,13 +210,9 @@
                (derivation-tree-node
                 (let ((root (realize-dtn value)))
                   (knit-phrase-into-tree slot root)))
-               (otherwise 
-                (if (has-realization? value)
-                  (set-contents slot value)
-                  (else
-                    (push-debug `(,contents ,value ,slot ,node))
-                    (mbug "Unexpected parameter value:  ~s => ~s" 
-                          contents value)))))))
+               (saturated-lexicalized-phrase
+                (let ((root (instantiate-lexicalized-phrase value)))
+                  (knit-phrase-into-tree slot root))))))
           (cons (let ((phrase-node (build-phrase contents)))
                   (knit-phrase-into-tree slot phrase-node)))
           (otherwise 
