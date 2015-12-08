@@ -144,7 +144,42 @@
                  :rule-name :attach-trailing-participle-to-clause
                  :referent clause-ref)))
       edge)))
-        
+
+(define-debris-analysis-rule s-comma-np
+  :pattern ( s "," np)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-appositive-np-under-s
+           first second third))
+
+(defun attach-appositive-np-under-s (s-edge comma-edge np-edge)
+  (push-debug `(,s-edge ,comma-edge ,np-edge))
+  ;; (setq s-edge (car *) comma-edge (cadr *) np-edge (caddr *))
+  ;; Look up the right fridge of the s for a proper-noun 
+  (let ((right-fringe-of-s ;; ordered bottom to top
+         (all-edges-on (pos-ends-here (pos-edge-ends-at s-edge))))
+        target )
+    (loop for edge in right-fringe-of-s
+      ;; replace eq with acceptable-appositive?
+      when (eq (edge-form edge) category::proper-noun)
+      do (setq target edge))
+    (when target
+      (let ((new-edge
+             (make-edge-over-long-span 
+              (pos-edge-starts-at target)
+              (pos-edge-ends-at np-edge)
+              (edge-category target)
+              :form (edge-form target)
+              :rule 'attach-appositive-np-under-s
+              :referent (edge-referent target) ;;!!!!
+              :constituents `(,target ,comma-edge ,np-edge))))
+        (tuck-new-edge-under-already-knit
+         target ;; subsumed
+         new-edge
+         s-edge
+         :right)
+        new-edge))))
+
 
 (define-debris-analysis-rule proper-noun-comma-vg+ed-comma
   :pattern (proper-noun "," vp+ed ",")
