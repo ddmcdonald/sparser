@@ -125,7 +125,7 @@
 (define-category transition
   :specializes perdurant
   :documentation
-  "A transition is a process that culminates in a change of state,
+  "A transition is an action that culminates in a change of state,
  often an opposition: open, give, build. 'Lia is walking' is a
  process.  'Lia walked to the store' is a transition. 'Greg built a
  house' is a transition: a sequence of events leading to the existence
