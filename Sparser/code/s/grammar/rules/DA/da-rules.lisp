@@ -48,7 +48,7 @@
 (defun conjoin-two-clauses (s1 s2)
   ;; Since they are full clauses (see ERK#3), there's no content
   ;; to copy from one to the other, just the utility of joining them
-  (conjoin-two-edges s1 s2 :conjoin-s-and-s))
+  (conjoin-two-edges s1 s2 :conjoin-s-and-s :pass 'da-rules))
 
 
 (define-debris-analysis-rule s-and-vp
@@ -80,7 +80,7 @@
     ;; level but it's a place to start. The actual relationship
     ;; could be causes or follows, for which we need to understand
     ;; more to get it right.
-    (conjoin-two-edges s-edge vp-edge :conjoin-clause-and-vp)))
+    (conjoin-two-edges s-edge vp-edge :conjoin-clause-and-vp :pass :conjoin-clause-and-vp)))
 
 
 (define-debris-analysis-rule s-vp+ing

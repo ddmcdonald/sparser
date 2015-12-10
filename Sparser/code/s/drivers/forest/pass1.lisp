@@ -336,7 +336,7 @@
           (let ((heuristic (conjunction-heuristics left-edge right-edge)))
             (if heuristic
               ;; conjoin/2 looks for leftwards
-              (let ((edge (conjoin/2 left-edge right-edge heuristic)))
+              (let ((edge (conjoin/2 left-edge right-edge heuristic :pass 'look-for-short-obvious-conjunctions)))
                 (tr :conjoined-edge edge)
                 edge)
               (tr :no-heuristics-for left-edge right-edge))))))))
@@ -359,15 +359,20 @@
             (let ((*allow-form-conjunction-heuristic* t))
               (declare (special *allow-form-conjunction-heuristic*))
               (let ((heuristic (conjunction-heuristics edge-to-the-left 
-                                                       edge-to-the-right)))
+                                                       edge-to-the-right
+                                                       )))
                 (if heuristic
                   (let ((edge 
-                         (conjoin-two-edges edge-to-the-left edge-to-the-right heuristic)))
+                         (conjoin-two-edges edge-to-the-left edge-to-the-right heuristic
+                                            :pass 'try-spanning-conjunction)))
                     (tr :conjoined-edge edge)
                     edge)
                   (else
                    (tr :no-conjunction-heuristics-applied)
                    nil))))))))))
+
+(defparameter *short-obvious-conjunctions* nil)
+(defparameter *spanning-conjunctions* nil)
 
 #| This was a special case that came up in the Julie sentences. 
    It would be better to make this part of the search that conjoin-two-edges

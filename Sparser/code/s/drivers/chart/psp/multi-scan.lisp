@@ -419,7 +419,7 @@
               (let ((heuristic (conjunction-heuristics left right)))
                 (if heuristic
                     ;; conjoin/2 looks for leftwards
-                    (let ((edge (conjoin/2 left right heuristic)))
+                    (let ((edge (conjoin/2 left right heuristic :pass 'short-conjunctions-sweep)))
                       (tr :conjoined-edge edge)
                       edge)
                     (tr :no-heuristics-for left-edge right-edge))))))))

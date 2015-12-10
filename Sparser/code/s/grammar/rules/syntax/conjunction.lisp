@@ -199,7 +199,8 @@
          (parent-edge (edge-used-in lifted-edge))
          (conjoined-edge (conjoin-two-edges left-edge right-edge
                                             heuristic 
-                                            :do-not-knit t))
+                                            :do-not-knit t
+                                            :pass 'conjoin-and-rethread-edges))
          (new-ev (ecase direction
                    (:left (edge-ends-at conjoined-edge))
                    (:right (edge-starts-at conjoined-edge)))))
@@ -485,18 +486,28 @@
                           (not (itypep before category::process))))))))
     (cond
      (reject?
-      (push (conj-info before after edge-before edge-after) 
+      (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels ) 
             *rejected-form-conjs*)
       t)
      (t
-      (push (conj-info before after edge-before edge-after) *form-conjs*)
+      (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels) *form-conjs*)
       nil))))
 
-(defun conj-info (before after edge-before edge-after)
-  (list before after 
-        (terminals-in-segment/one-string (pos-edge-starts-at edge-before)
-                                         (pos-edge-ends-at edge-after))
-        *p-sent*))
+(defun conj-info (before after edge-before edge-after &key pass)
+  (when (null pass) (lsp-break "unknown-conjunction-pass"))
+  `(,before ,after 
+        ,(actual-characters-of-word (pos-edge-starts-at edge-before)
+                                    (pos-edge-ends-at edge-after)
+                                    nil)
+        ,(or pass 'unknown-pass)
+        ,*p-sent*))
+
+(defun display-conjunctions ()
+  (loop for tag in '(SHORT-CONJUNCTIONS-SWEEP 
+                     LOOK-FOR-SHORT-OBVIOUS-CONJUNCTIONS
+                     TRY-SPANNING-CONJUNCTION :CONJOIN-CLAUSE-AND-VP DA-RULES)
+    do (format t "~&~&_________~&~s~&" tag) 
+    (loop for c in *all-conjunctions* when (eq (fourth c) tag) do (print (third c)))))
 
 
 
@@ -506,7 +517,7 @@
 ;;; dispatch for the possibility of a list
 ;;;----------------------------------------
 
-(defun conjoin/2 (left-edge right-edge heuristic)
+(defun conjoin/2 (left-edge right-edge heuristic &key pass)
 
   ;; We have decided that these two edges conjoin. Now we check
   ;; back to the left to see if these are just the end of a
@@ -514,9 +525,9 @@
   ;; we span the result with one edge and compute a collection
   ;; referent for it. 
 
-  (or (search-for-list-conjunction left-edge right-edge)
+  (or (search-for-list-conjunction left-edge right-edge :pass pass)
       (conjoin-two-edges
-       left-edge right-edge heuristic)))
+       left-edge right-edge heuristic :pass pass)))
 
 
 
@@ -524,7 +535,7 @@
 ;;; making the new edge
 ;;;---------------------
 
-(defun conjoin-two-edges (left-edge right-edge heuristic &key do-not-knit)
+(defun conjoin-two-edges (left-edge right-edge heuristic &key do-not-knit pass)
   (declare (special left-edge right-edge))
   (let ((referent
          (referent-of-two-conjoined-edges
@@ -546,12 +557,13 @@
       (edge-interaction-with-quiescence-check edge)
       (when *save-conjunctions* 
         (push (conj-info (edge-referent left-edge) (edge-referent right-edge)
-                         left-edge right-edge)
+                         left-edge right-edge
+                         :pass pass)
               *all-conjunctions*))
       edge)))
 
 
-(defun conjoin-multiple-edges (edge-list)
+(defun conjoin-multiple-edges (edge-list &key pass)
   (let* ((rightmost-edge (car (last edge-list)))
          (leftmost-edge (car edge-list))
          (referent (referent-of-list-of-conjoined-edges edge-list)))
@@ -568,7 +580,8 @@
       (when *save-conjunctions* 
         (push (conj-info (edge-referent leftmost-edge) 
                          (edge-referent rightmost-edge)
-                         leftmost-edge rightmost-edge)
+                         leftmost-edge rightmost-edge
+                         :pass pass)
               *all-conjunctions*))
       edge )))
 
@@ -579,7 +592,7 @@
 ;;; searching for list conjunctions
 ;;;---------------------------------
 
-(defun search-for-list-conjunction (left-edge right-edge)
+(defun search-for-list-conjunction (left-edge right-edge &key pass)
   ;; Called from Conjoin/2. Return nil if no list is found, signalling
   ;; that it should go ahead with just these two initial edges.
   ;; If a list is found, we call the edge-maker from here.
@@ -589,7 +602,7 @@
           left-edge 
           (chart-position-before (pos-edge-starts-at left-edge)))))
     (when edge-list
-      (conjoin-multiple-edges edge-list))))
+      (conjoin-multiple-edges edge-list :pass pass))))
 
 
 (defun get-another-comma-chain-conj (edges-so-far right-edge left-pos)
