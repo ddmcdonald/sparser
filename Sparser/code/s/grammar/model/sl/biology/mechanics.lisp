@@ -117,9 +117,16 @@
 (defun get-protein-synonyms (id)
   (gethash id *prot-synonyms*))
 
+(defparameter *q-proteins* nil)
+
 (defun make-def-protein (IDS &key documentation (ras2-model nil))
   (let
       ((bpid (best-protein-id IDS)))
+    (loop for id in IDS 
+      when (and (equal id (string-downcase id)) (not (search " " id))
+                (not (find-if #'digit-char-p id)))
+      do (push id *q-proteins*))
+                                  
     `(def-bio ,bpid
               protein
        :synonyms ,(loop for id in IDS unless (or (equal id bpid)(search " " id)) collect id)
