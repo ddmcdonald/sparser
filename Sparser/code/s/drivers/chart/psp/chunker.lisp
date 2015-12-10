@@ -459,17 +459,18 @@
   (declare (special category::quantifier category::det
                     category::which category::what category::parentheses
                     word::comma category::pronoun category::verb+ing
-                    category::ordinal))
+                    category::ordinal category::also))
   (let ((edges (ev-edges (car evlist)))
-        (eform (edge-form e)))
-   ;;(lsp-break "ng-compatible")
+        (eform (when (edge-p e) (edge-form e))))
+    ;;(lsp-break "ng-compatible")
     (not
      (or
       (and (plural-noun-and-present-verb? e)
            (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
              thereis 
              (and
-              (not (eq (cat-name (edge-form ee)) 'verb+ed))
+              (edge-p ee)
+              (not (eq (edge-form ee) category::verb+ed))
               (ng-start? ee))))
       ;;in fact nothing should follow a pronoun (except a possessive pronoun)
       ;;(not (eq category::time-unit (edge-category e))) WHY WAS THIS HERE? WE NEED TO HANDLE "3 HOURS"
@@ -481,14 +482,15 @@
        (loop for ev in evlist
          thereis
          (loop for edge in (ev-edges ev)
-           never (memq (edge-form edge) `(,category::quantifier ,category::det)))))
-
+           never (or (eq (edge-form edge) category::quantifier)
+                     (eq (edge-form edge) category::det)))))
+      
       (loop for edge in edges
         thereis
         (or
-         (eq category::pronoun (edge-form edge))
-         (member (cat-symbol (edge-category edge))
-                 '(category::which category::what))))
+         (eq (edge-form edge) category::pronoun )
+         (eq (edge-category edge) category::which)
+         (eq (edge-category edge) category::what)))
       
       (cond
        ((eq word::comma (edge-category e))
@@ -498,11 +500,12 @@
         ;(not (null evlist))
         t)
        ((and
-         (memq (cat-name eform) '(verb+ed verb+ing))
+         (or (eq eform category::verb+ed)
+             (eq eform category::verb+ing))
          ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
          ;;"RNA interference (RNAi) blocked MEK/ERK activation."
          (or
-          (eq (cat-name (edge-category e)) 'have)
+          (eq (edge-category e) category::have)
           (loop for edge in edges thereis (eq (edge-category edge) category::parentheses))))
         t)
        ((eq category::verb+ing eform)
@@ -510,9 +513,9 @@
        ((eq category::ordinal (edge-category e))
         ;;WORKAROUND -- DAVID
         nil)
-       ((eq (cat-name (edge-category e)) 'modal))
-       ((eq (cat-name eform) 'adverb )
-        (eq (cat-name (edge-category e)) 'also))
+       ((eq (edge-category e) category::modal))
+       ((eq eform category::adverb )
+        (eq (edge-category e) category::also))
        (t
         (not (ng-compatible? (edge-form e) edges))))))))
 
@@ -551,9 +554,9 @@
   (declare (special e category::modifier category::adjective 
                     category::be *big-mechanism* category::parentheses
                     category::that category::verb+ed category::verb+ing
-                    category::preposition category::and))
+                    category::preposition category::and category::also))
   (cond
-   ((eq (cat-name (edge-category e)) 'modal)
+   ((eq (edge-category e) category::modal)
     nil)
    ((and (plural-noun-and-present-verb? e)
          (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
@@ -578,8 +581,8 @@
          (not (and (car *chunks*)
                    (member 'ng (chunk-forms (car *chunks*)))
                    (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
-   ((eq (cat-name (edge-form e)) 'adverb)
-    (not (eq (cat-name (edge-category e)) 'also)))
+   ((eq (edge-form e) category::adverb)
+    (not (eq (edge-category e) category::also)))
    ((ng-start? (edge-form e))
     t)
    ((and (edge-form e)

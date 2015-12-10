@@ -72,8 +72,6 @@
    the form information of a rule that wasn't derived from an 
    ETF's schema.")
 
-(defparameter *collect-forms* nil)
-(defparameter *collected-forms* nil)
 (defparameter *report-form-check-blocks* nil)
 
 
@@ -219,7 +217,6 @@
             (else
              (tr :no-syntactic-rule)))))
 
-      (when *collect-forms* (record-forms rule left-edge right-edge))
       rule)))
 
 
@@ -290,11 +287,7 @@
   ;; This field is set by set-schema-and-rhs-forms which is called by instantiate-rule-schema
   ;; It is used to check that ETF rules are only applied in cased which match the expected
   ;;  syntactic form of the constuents
-  (when (cfr-p rule)
-    (if *only-check-schema-forms*
-      (cfr-rhs-forms rule)
-      (or (cfr-rhs-forms rule) 
-          (loop for c in (cfr-rhs rule) collect (cat-name c))))))
+  (when (cfr-p rule) (cfr-rhs-forms rule)))
 
 (defun rule-lhs-form (rule)
   (when (cfr-p rule)
@@ -309,20 +302,6 @@
         (gethash cat *cat-names*)
         (setf (gethash cat *cat-names*)
               (intern (symbol-name  (cat-symbol cat)) :sparser)))))
-
-
-;;;-------------------------------------------
-;;; recording the edge form that was observed
-;;;-------------------------------------------
-
-(defun record-forms (rule left-edge right-edge)
-  (let ((rf (rule-forms rule)))
-    (when rf
-      (pushnew
-       (list rf
-             (list (cat-name (edge-form left-edge))
-                   (cat-name (edge-form right-edge))))
-       *collected-forms*))))
 
 
 ;;;-----------------------------------

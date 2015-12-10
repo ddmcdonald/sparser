@@ -241,6 +241,7 @@
    to remove) in the span. Return non-nil if so. Called from 
    collect-no-space-segment-into-word as one of its pre-dispatch
    checks."
+  (declare (special *the-punctuation-colon*))
   (let ((final-word (pos-terminal (chart-position-before end-pos))))
     ;; We want to keep hyphens and +. What about a final slash?
     ;; Ex. in present slash code is "c-Raf/ MAPK-mediated [6]."

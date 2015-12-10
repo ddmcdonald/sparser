@@ -43,11 +43,13 @@
 
 (defun second-imposes-relation-on-first? (right-ref right-edge)
   (declare (special category::verb+ed category::adjective))
-  (let* ((form (edge-form right-edge))
-         (form-symbol (cat-name form)))
-    (when (memq form-symbol '(verb+ed ;; assume passive
-                              verb+ing
-                              adjective))
+  (let* ((form (when (edge-p right-edge) 
+                     (edge-form right-edge))))
+    (when (or
+           (eq form category::verb+ed)
+           ;; assume passive
+           (eq form category::verb+ing)
+           (eq form category::adjective))
       ;; now figure out what variable on the second (right)
       ;; should be bound to the first (left)
       (let* ((vars (loop for sc in (super-categories-of right-ref)
@@ -57,9 +59,11 @@
                          (cat-slots (itype-of sc)))))
              (variable 
               (cond
-               ((eq form-symbol 'verb+ed)
+               ((eq form category::verb+ed)
                 (subject-variable right-ref))
-               ((memq form-symbol '(adjective verb+ing))
+               ((or
+                 (eq form category::adjective)
+                 (eq form category::verb+ing))
                 ;; Get the slots on the category of the right-edge
                 ;; and look for a variable that's not for subjects
                 (let ((sv (subject-variable right-ref)))
