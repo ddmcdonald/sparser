@@ -259,17 +259,6 @@
           (sort-frequency-list words-counted))
     (length *sorted-word-entries*)))
 
-(defun redirect-to (filename form)
-  (with-open-file (stream filename
-                   :direction :output
-                   :if-exists :overwrite
-                   :if-does-not-exist :create)
-    (declare (special stream)) 
-    ;; SBCL claims this is an error because it declares a varible from the
-    ;; COMMON-LISP package special
-    (eval form)))
-
-
 (defun readout-frequency-table (&optional (stream *standard-output*))
   "Prime reporting routine if just looking all all the words
    and not comparing word frequencies across documents"
