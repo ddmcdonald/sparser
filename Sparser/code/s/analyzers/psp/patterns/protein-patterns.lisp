@@ -36,7 +36,8 @@
 (defun make-bio-complex (start-pos end-pos)
   (declare (special category::protein category::bio-complex 
                     category::nucleotide category::ion
-                    category::small-molecule))
+                    category::small-molecule
+                    category::protein-family))
   (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
          (referent (find-or-make-individual 'bio-complex))
