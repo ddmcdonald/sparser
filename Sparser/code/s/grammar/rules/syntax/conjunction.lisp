@@ -425,18 +425,18 @@
                           (and
                            (ng-head? edge-before)
                            (ng-head? edge-after)
-                           (and 
-                            (right-treetop-at/edge edge-after)
-                            (eq category::preposition (edge-form (right-treetop-at/edge edge-after)))
-                            (let ((sub-cats (known-subcategorization? (edge-referent (right-treetop-at/edge edge-after)))))
-                              (and 
-                               (assoc (edge-left-daughter (right-treetop-at/edge edge-after)) sub-cats)                                 
-                               (not (assoc (edge-left-daughter (right-treetop-at/edge edge-after)) sub-cats))))
-                            ;;this code blocks conjunction of NG heads that are followed by a preposition --
-                            ;;  because it appears much more likely that the following PP is attached 
-                            ;;  to the second head, not to the conjunction
-                            
-                            )))
+                           (let ((rtta (right-treetop-at/edge edge-after)))
+                             (and (edge-p rtta) 
+                                  (eq category::preposition (edge-form rtta))
+                                  (let ((sub-cats (known-subcategorization? (edge-referent rtta))))
+                                    (and 
+                                     (assoc (edge-left-daughter rtta) sub-cats)                                 
+                                     (not (assoc (edge-left-daughter rtta) sub-cats))))
+                                  ;;this code blocks conjunction of NG heads that are followed by a preposition --
+                                  ;;  because it appears much more likely that the following PP is attached 
+                                  ;;  to the second head, not to the conjunction
+                                  
+                                  ))))
                          (not (conjunction-incompatible-labels
                                label-before label-after edge-before edge-after)))
                 :conjunction/identical-form-labels)))))))
