@@ -114,8 +114,6 @@
    ))
 
 
-
-
 ;;;---------------------
 ;;; Lexicalized phrases
 ;;;---------------------
@@ -131,6 +129,10 @@
     (saturated-lexicalized-phrase)
   ((free)))  ;; list of parameters
 
+
+(defobject lexicalized-attachment (has-name)
+  ((point)
+   (value)))
 
 ;;;---------
 ;;; go'fers
