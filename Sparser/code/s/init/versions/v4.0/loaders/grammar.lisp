@@ -114,8 +114,6 @@
   (gate-grammar *kinds*
     (gload "kinds;loader"))
 
-  (gate-grammar *mid-level-ontology*
-    (gload "mid-level;loader"))
 
   (gate-grammar *proper-names*
     (gload "names;loader")
@@ -133,6 +131,9 @@
 
   (gate-grammar *general-words*
     (gload "words;loader-part"))
+
+  (gate-grammar *mid-level-ontology*
+    (gload "mid-level;loader"))
 
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
@@ -330,6 +331,7 @@
   (when *external-grammar-dossier-files*
     (load *external-grammar-dossier-files*))
 
+  
   ;; KRAQL might not need a gate-grammar invocation...
   ;;(gate-grammar *kraql*
   ;;  (gload "kraql;loader"))
@@ -337,6 +339,7 @@
   (unless (or *just-note-changed-files*
               *copy-file*)
     (postprocess-grammar-indexes))
+  (gload "mid-level;relations")
 
   )) ;; end of Load-the-grammar and the gate in front of it
 

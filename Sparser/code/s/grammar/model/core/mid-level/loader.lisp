@@ -10,4 +10,4 @@
 (in-package :sparser)
 
 (gload "mid-level;ontology")
-(gload "mid-level;relations")
+;(gload "mid-level;relations")
