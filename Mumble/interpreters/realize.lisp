@@ -2,7 +2,7 @@
 
 ;;; MUMBLE-05:  interpreters> realization> realize
 
-;;; Copyright (C) 2005,2010-2013 David D. McDonald
+;;; Copyright (C) 2005,2010-2015 David D. McDonald
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
@@ -13,7 +13,8 @@
 ;; 9/16/09 Added generic method for realization-for. 9/18 revised realize to
 ;; no longer feed instantate-rspec (that level of interpretation belongs in
 ;; realization-for and to take a lexicalized-phrase as a return value
-;; 3/17/11 Tweaking things a little. 12/27/13 tweek to realize-dtn
+;; 3/17/11 Tweaking things a little. 12/27/13 tweek to realize-dtn. And
+;; again 12/9/15.
 
 (in-package :mumble)
 
@@ -80,8 +81,13 @@
 ;;; Derivation Tree Nodes
 ;;;-----------------------
 
-(defun realize-dtn (dtn) 
-  (push-debug `(,dtn)) 
+(defun realize-dtn (dtn)
+  "A derivation-tree node is one of the possible contents of a slot.
+  This expands the dtn to a phrase (or other surface-level resource
+  such as a word) and returns the root node of the phrase to be the
+  new contents of the slot. At this level we just do the data checks,
+  all the heavy lifting is done by dtn-bundle-driver.
+"
   (let ((resource (resource dtn))
         ;;(features (features dtn))
         phrase-type  root-node )
