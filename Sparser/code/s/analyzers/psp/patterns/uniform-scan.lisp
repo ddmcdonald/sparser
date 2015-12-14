@@ -156,18 +156,23 @@
             ;; this is not done cleanly, and needs some pair-programming
             (catch :punt-on-nospace-without-resolution
               (let* ((end-edge (car (last edges)))
-                     (end-cat (when (edge-p end-edge)(cat-sym (edge-category end-edge)))))
+                     (end-cat (when (and
+                                     (edge-p end-edge)
+                                     (category-p (edge-category end-edge)))
+                                (cat-symbol (edge-category end-edge)))))
                 (or
                  (when (punctuation-final-in-ns-span? end-pos)
                    (setq end-pos (chart-position-before end-pos))
                    (ns-pattern-dispatch start-pos end-pos edges
                                         hyphen-positions slash-positions
                                         colon-positions other-punct))
-                 (when (memq end-cat '(protein protein-family small-molecule ion nucleotide))
+                 (when (memq end-cat '(category::protein category::protein-family
+                                                         category::small-molecule category::ion 
+                                                         category::nucleotide))
                    (ns-protein-pattern-resolve  start-pos end-pos edges
                                                 hyphen-positions slash-positions
                                                 colon-positions other-punct))
-                 (when (eq end-cat 'amino-acid)
+                 (when (eq end-cat 'category::amino-acid)
                    (ns-amino-pattern-resolve  start-pos end-pos edges
                                               hyphen-positions slash-positions
                                               colon-positions other-punct))

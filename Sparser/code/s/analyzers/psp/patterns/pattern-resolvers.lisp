@@ -42,7 +42,7 @@
 ;;--- predicate 
 
 (defun second-imposes-relation-on-first? (right-ref right-edge)
-  (declare (special category::verb+ed category::adjective))
+  (declare (special category::verb+ed category::adjective category::verb+ing))
   (let* ((form (when (edge-p right-edge) 
                      (edge-form right-edge))))
     (when (or
