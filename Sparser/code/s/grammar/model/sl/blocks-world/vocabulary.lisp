@@ -15,11 +15,44 @@ protocol is developed. Moreover they are semantically vacuous.  |#
 
 
 ;;--- nouns
-(noun "block" :specializes artifact)
-(noun "staircase" :specializes artifact)
-(noun "table" :specializes artifact)
+(noun "block" :specializes artifact :rule-label artifact)
+(noun "staircase" :specializes artifact :rule-label artifact)
+(noun "table" :specializes artifact :rule-label artifact)
 
 ;;--- Interjections -- see ex. in model/sl/checkpoint/
 (sentential-interjection "good")
 (sentential-interjection "ok")
+
+
+;;--- me and you (hack job)
+
+;;--- Verbs
+
+#| Ignore "let's" for now (1.1), 
+
+1.4  (p "that's good.") -- "that" construed as a relative marker
+
+
+
+;; 1.1 (p "Let's build a staircase.") 
+;;     (p "build a staircase.")
+(define-category build
+  :specializes process
+  ;; we're going through the steps of constucting the
+  ;; staircase. With "lets'" we haven't even started
+  :binds ((agent ;; who does it: 'us', 'you' 'I/me'
+           ) ;;\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+          (artifact ;; what they build
+           artifact))
+  ;;/// short realization requires a v/r for every
+  ;; variable, which means modeling "you" and "us"
+  ;; which is not simple.
+  :realization
+    (:verb ("build" :past-tense "built")
+     :etf (svo)
+     :s agent
+     :o artifact))
+
+|#
+
 
