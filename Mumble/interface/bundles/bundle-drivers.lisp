@@ -97,6 +97,9 @@
     result)
 
 
+
+
+
 (defun process-attachments (dtn root-node)
   (let ((satellite-nodes (adjuncts dtn)))
     (when satellite-nodes
@@ -155,7 +158,17 @@
     (ac :negate      process-negate-accessory      nil)
     (ac :wh-adj      process-wh-adjunct-accessory    t))
   )
-
+;################################################################
+;; Uniform "bundle" driver for DTNs
+
+(defun dtn-bundle-driver (dtn phrase-type)
+  "Called from realize-dtn, which is itself called from 
+  realize when a derivation tree node is the contents of
+  some slot. Return value becomes the new value of the slot.
+"
+)
+
+
 
 ;################################################################
 
