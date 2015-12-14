@@ -28,12 +28,27 @@ protocol is developed. Moreover they are semantically vacuous.  |#
 
 ;;--- Verbs
 
-#| Ignore "let's" for now (1.1), 
+;; (p "Add another block")
 
-1.4  (p "that's good.") -- "that" construed as a relative marker
+(define-category add-to
+  :specializes achievement
+  :instantiates self
+  :binds ((agent social-agent)
+          (theme object)
+          (location location))
+  :realization ((:main-verb "add")
+                (:tree-family vp+adjunct
+                 :mapping ((vg . self)
+                           (vp . self)
+                           (adjunct . physical)
+                           (slot . theme)))))
+
+;; Ignore "let's" for now (1.1), 
+
+;; 1.4  (p "that's good.") -- "that" construed as a relative marker
 
 
-
+#|
 ;; 1.1 (p "Let's build a staircase.") 
 ;;     (p "build a staircase.")
 (define-category build
