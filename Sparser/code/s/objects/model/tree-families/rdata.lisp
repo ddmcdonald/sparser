@@ -201,6 +201,9 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
            ;(push-debug `((:new ,new-rules) (:old ,old-rules)))
            ;(break "forstall stupidness")
             (dolist (cfr old-rules)
+              (when (consp cfr) ;;/// plural doesn't add to rule correctly
+                (if (null (cdr cfr)) (setq cfr (car cfr))
+                    (error "ill-formed old-rules: ~a" old-rules)))
               (unless (member cfr new-rules :test #'eq)
                 (format t "~&~A ~A~%  no longer supported by rdata for ~A"
                         (symbol-name (cfr-symbol cfr)) cfr category)
