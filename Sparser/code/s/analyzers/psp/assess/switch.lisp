@@ -19,8 +19,11 @@
 
 (defun assess-edge-label (label edge)
   (declare (ignore label edge))
-  (break "No definition established for assess-edge-label~
-          An edge protocol must be declared."))
+  (break "No definition established for assess-edge-label ~
+          An edge protocol must be declared.~%Make a call ~
+          to establish-version-of-assess-edge-label with ~
+          one of the values it accepts.~%Usual choice is ~
+          :treetops."))
 
 
 (defun establish-version-of-assess-edge-label (keyword)
