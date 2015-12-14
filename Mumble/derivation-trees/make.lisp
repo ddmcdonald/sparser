@@ -51,18 +51,12 @@
 
 ;;--- base case
 
-(defun make-derivation-tree-node (&key referent)
-  ;; hook for a resource
-  (let ((dtn (make-instance 'derivation-tree-node
-			    :referent referent)))
-    dtn))
-
-
 (defun make-dtn (&key referent resource)
   (let ((dtn (make-instance 'derivation-tree-node
-			    :referent referent
+               :referent referent
                :resource resource)))
     dtn))
+
 
 
 ;;---
@@ -100,22 +94,34 @@ but we don't want to count on that.
 
 |#
 
-(defun make-adjunction-node (ap i dtn)
-  ;; Args are the attachment point, the individual that's its 'value' 
-  ;; (the one we'll look to for the resource that we attach at that spot
-  ;; -- the value we extracted in read-out-rnode) and the
-  ;; derivation-tree-node that we add this ap node to. 
+(defun make-lexicalized-attachment (ap v)
+  "The value 'v' can be anything that is can fill at slot.
+   We ought to do a grammatical type-check though since we
+   have the edge"
   (let ((ap (typecase ap
               (symbol (attachment-point-named ap))
               (attachment-point ap)
               (otherwise
-               (push-debug `(,ap ,i ,dtn))
+               (push-debug `(,ap ,v))
                (error "~a does not name an attachment point" ap)))))
+    (let ((la (make-instance 'lexicalized-attachment
+                :point ap
+                :value v)))
+      ;;/// indexing goes here
+      la)))
+
+
+(defmethod make-adjunction-node ((la lexicalized-attachment)
+                                 (dtn derivation-tree-node))
+  ;; Args are the attachment point, the individual that's its 'value' 
+  ;; (the one we'll look to for the resource that we attach at that spot
+  ;; -- the value we extracted in read-out-rnode) and the
+  ;; derivation-tree-node that we add this ap node to. 
+  (let ((ap (point la))
+        (value (value la)))
     (let ((apn (make-instance 'adjunction-node 
                  :ap ap
-                 :value i
-                 :referent i ;; is this right?
-                 :bkptrs dtn)))
+                 :value value)))                 
       (push apn (adjuncts dtn))
       apn)))
 
