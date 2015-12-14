@@ -97,6 +97,30 @@ See Zo code for what that could look like. |#
 
 ;; "but I don't know of any drug targeting KRAS"
 
+(defun I-know-of-p (complement)
+  (let ((verb-resource (transitive-with-bound-prep 
+                        "know" "of"))
+        (first-singular (mumble-value 'first-person-singular 'pronoun)))
+    (let ((dtn (make-instance 'derivation-tree-node
+                 :referent 'i-know-p
+                 :resource verb-resource)))
+      (make-complement-node 's first-singular dtn)
+      (make-complement-node 'o complement dtn)
+      dtn)))
+;; (say (I-know-of-p (drug-targeting-kras)))
+;;  => "I to know of a drug to target KRAS"
 
+
+;;--- the big red block (SHRDLU favorite)
+
+(defun the-big-red-block ()
+  (let ((block (noun "block"))
+        (big (adjective "big"))
+        (red (adjective "red")))
+    (let ((dtn (make-dtn :resource block)))
+      (make-adjunction-node big dtn)
+      (make-adjunction-node red dtn)
+      dtn)))
+        
 
 
