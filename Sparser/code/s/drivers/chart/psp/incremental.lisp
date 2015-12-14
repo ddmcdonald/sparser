@@ -50,21 +50,8 @@
       (setq position (chart-position-after position))
       (when (eq position last-position)
         (return)))
-
-    ;; After it gets to the head (assumed to be the last constituent
-    ;; but verb groups are more interesting with adverbs and such)
-    ;; are drops out of the loop, we need to span the whole
-    ;; segment with an edge and update the sentential state
-    (let ((edge (c3-process-segment-and-update-state
-                 start-pos last-position)))
-
-      ;; Now that we have analyzed the segment we need to fold in
-      ;; the edge to the left. Like moving to the forest level
-      ;; after every segment. For the ISR experiment there will
-      ;; always be an edge here
-      (roll-up-edges-to-the-left edge) ;; also updates state
-
-      ;; presumably we now just scan the next segment
-      (if *reached-eos*
-        (terminate-chart-level-process)
-        (scan-segment last-position)))))
+ 
+    ;; presumably we now just scan the next segment
+    (if *reached-eos*
+        (terminate-chart-level-process) ; 
+        (incrementally-scan-segment last-position))))
