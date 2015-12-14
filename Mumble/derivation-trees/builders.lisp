@@ -47,7 +47,73 @@
         :bound `(,pair)))))
 
 
+(defgeneric adjective (word)
+  (:documentation "Defines a lexicalized tree for an adjective
+    taken as a simple premodifier. The relationship of something
+    having this property is a different thing, and should have
+    a choice set of some sort since it has several realizations."))
 
+(defmethod adjective ((pname string))
+  "Once the indexing is running (///) this is a find or make
+   on a lexicalized attachment."
+  (let ((word (word-for-string pname 'adjective))
+        (ap (attachment-point-named 'adjective)))
+    (make-lexicalized-attachment ap word)))
+
+
+(defgeneric transitive-with-bound-prep (verb preposition)
+  (:documentation "Lexicalizes the phrase SVPrepO, as in
+    'Mustard in used in lots of salads', where the preposition
+    is specializing the sense of the verb rather than heading
+    a prepositional phrase. The result is open in the 
+    parameters 's' and 'o'."))
+
+(defmethod transitive-with-bound-prep ((verb-pname string)
+                                       (prep-pname string))
+  (let ((verb (word-for-string verb-pname 'verb))
+        (prep (word-for-string prep-pname 'preposition)))
+    ;; Since we are stipulating the phrase in this method
+    ;; we can just know what the open parameters are.
+    (let ((lp (make-instance 'partially-saturated-lexicalized-phrase
+                :phrase (phrase-named 'SVPrepO)
+                :bound (list (make-instance 'parameter-value-pair
+                               ::phrase-parameter (parameter-named 'v)
+                               :value verb)
+                             (make-instance 'parameter-value-pair
+                               ::phrase-parameter (parameter-named 'p)
+                               :value prep))
+                :free (list (parameter-named 's)
+                            (parameter-named 'o)))))
+      lp)))
+
+
+(defgeneric discourse-unit (contents)
+  (:documentation "Given an instance of a valid slot contents,
+    prototypically a dtn for a clause, wrap it in a discourse unit
+    phrase. "))
+
+#| This could be a entry point to the microplanner given
+a message to be expressed. See discussion in make.lisp |#
+
+(defmethod discourse-unit ((dtn derivation-tree-node))
+  "Replace the resource of the input dtn with a saturated-
+  lexicalized-phrase built here by hand that has the input
+  dtn bound to the s parameter.  N.b. this operator can't
+  be run for side-effects on the input dtn because it wants
+  to create (and return) a new one."
+  (let* ((phrase (phrase-named 'first-sentence-of-discourse-unit))
+         (complement (make-instance 'complement-node
+                       :phrase-parmameter (parameter-named 's)
+                       :value dtn))
+         (resource (make-instance 'saturated-lexicalized-phrase
+                     :phrase phrase
+                     :bound `(,complement))))
+    (make-dtn :resource resource))) 
+        
+
+;;;---------------------------
+;;; make a lexicalized-phrase
+;;;---------------------------
 
 (defmacro define-lexicalized-phrase (phrase words arguments)
   `(create-lexicalized-phrase ',phrase ',words ',arguments))
@@ -94,6 +160,11 @@
           (push-debug `(,bound-parameters ,lp))
           (setf (mname lp) (name-composite lp))
           lp)))))
+
+
+;;;-------------------------
+;;; gensym names for things
+;;;-------------------------
 
 (defgeneric name-composite (object)
   (:documentation "Given a newly created object that has
