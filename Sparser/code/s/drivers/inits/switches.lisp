@@ -446,10 +446,18 @@
   (setq *make-edges-over-new-digit-sequences* t)
   (period-hook-on)
   
-  ;; Probably the best starting point, but needs to have C3 state
-  ;; apparatus loaded. Dies while setting up the sentence content
-  ; (establish-kind-of-chart-processing-to-do :c3-protocol)
-  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+  ;; Experimenting with different choices of parsing protocol.
+  ;; Eventually it will be a new one that's incremental and
+  ;; tightly tied to the situation.
+  ;; (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+  (establish-kind-of-chart-processing-to-do :incremental)
+  ;(establish-kind-of-chart-processing-to-do :c3-protocol)
+  ;(setq *c3* nil) ;; If it's set, there's a call in referent-from-unary-rule
+  ;; to call incorporate-referent-into-the-situation which is too 
+  ;; strong right now -- pushes onto pegs
+
+  (setq *chunk-sentence-into-phrases* nil) ;
+  ; invokes (ensure-edge-consistent-with-chunk)
 
   (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
   (setq *segment-scan/forest-level-transition-protocol*
@@ -459,9 +467,6 @@
   (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
   ;; consider some standard extras
 
-  ;;(setq *c3* t) if set, there's a call in referent-from-unary-rule
-  ;; to call incorporate-referent-into-the-situation which is too 
-  ;; strong right now -- pushes onto pegs
 
   (turn-off-debugging-flags)
   (setq *switch-setting* :blocks-world))
@@ -471,6 +476,9 @@
 (defun c3-setting ()
   "Start by turning everthing off"
   (word-frequency-setting) ;; gets most of them
+  (uncontroversial-settings)
+  (establish-type-of-edge-vector-to-use :vector)
+  (establish-version-of-assess-edge-label :treetops)
   (what-to-do-with-unknown-words :ignore) ;; though better to throw an error
   (setq *make-edges-for-unknown-words-from-their-properties* nil
         *use-subtypes* t)
