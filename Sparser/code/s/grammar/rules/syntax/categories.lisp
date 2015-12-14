@@ -571,7 +571,33 @@
 (defmethod adjg-compatible? ((e edge))
   (or
    (adjg-compatible? (edge-form e))
-   (eq category::be (edge-category e))
+   (and
+    (edge-form e) ;; commas have NIL edge-forms
+    ;; these are all for linking/copular verbs like BE, REMAIN, SMELL, BECOME
+    (memq (cat-symbol (edge-form e))
+          '(CATEGORY::VERB
+            CATEGORY::VERB+S
+            CATEGORY::VERB+ED
+            CATEGORY::VERB+ING
+            CATEGORY::VERB+PRESENT
+            CATEGORY::VERB+PASSIVE))
+    (or
+     (memq (cat-symbol (edge-category e))
+           `(category::be
+             category::become
+             category::remain
+             category::stay))
+     (and (eq (cat-symbol (edge-category e)) 'category::have)
+          ;; only allow "have" to create the past tense of a linking verb
+          (let
+              ((next-edge (car (preterminal-edges (pos-edge-ends-at e)))))
+            (and
+             (edge-p next-edge)
+             (memq (cat-symbol (edge-category next-edge)) 
+                   `(category::be
+                     category::become
+                     category::remain
+                     category::stay)))))))
    (eq category::not (edge-category e))))
 
 (defmethod adjg-compatible? ((c referential-category))
