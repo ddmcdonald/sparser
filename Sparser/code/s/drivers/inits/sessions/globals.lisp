@@ -155,7 +155,7 @@
    unknown words is a good way to identify the unknown words in a
    new corpus.")
 
-(defparameter *chunk-sentence-into-phrases* t
+(defparameter *chunk-sentence-into-phrases* nil
   "Controls whether we proceed to chunk the sentence after we 
    have used sentence-sweep-loop to form its terminal edges.")
 
