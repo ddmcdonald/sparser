@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "select"
 ;;;   Module:  "drivers;chart:"
-;;;  Version:  2.4 June 2015
+;;;  Version:  2.4 December 2015
 
 ;; 2.0 (9/12/92) moved up to chart level from psp
 ;; 2.1 (4/7/93) commented out the wsj-headers option
@@ -15,6 +15,7 @@
 ;;     (8/11/14) added :r3-entity-sweep
 ;;     (10/6/14) added :successive-sweeps
 ;;     (6/1/15) Removed the entity sweep. 
+;;     (12/13/15) added :incremental.
 
 (in-package :sparser)
 
@@ -68,6 +69,8 @@
       (ecase chart-protocol
         (:new-toplevel-protocol
          (inititate-top-edges-protocol))
+        (:incremental
+         (initiate-incremental-CwC-protocol))
         (:all-edges
          (initiate-all-edges-protocol))
         (:c3-protocol
