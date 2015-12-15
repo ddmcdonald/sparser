@@ -193,21 +193,20 @@
   ;; float them up to the main verb, //// which will require
   ;; making a note somewhere on the sentence structure reminding
   ;; us to do that after the analysis dust has settled.
+  ;;
   ;; Before doing quantifiers seriously find copy of Kurt vanLehn's
   ;; MS thesis and think about generalized quantifiers.
-  ;;(push-debug `(,quantifier ,head)) (break "fix 'additional cystene'")
+  ;; (push-debug `(,quantifier ,head)) (break "quantifier-noun-compound")
+  ;;  (setq quantifier (car *) head (cadr *))
   (setq head (individual-for-ref head))
-  (if (eq quantifier (word-named "no")) ;; Jan#4 "no increase"
-      ;; in Jan#4 it's a literal
-    (let ((no (find-individual 'quantifier :word "no")))
-      (setq  head (bind-dli-variable 'negation no head))
-      head);; on top
-    (cond
-     ((itypep head 'endurant)
-      (setq  head (bind-dli-variable 'quantifier quantifier head))
-      head)
-     (t ;;//////// drop it on the floor
-      head))))
+  (cond
+   ((itypep quantifier 'no) ;; special handling for negation
+    (setq  head (bind-dli-variable 'negation quantifier head)))
+   ((itypep head 'endurant)
+    (setq  head (bind-dli-variable 'quantifier quantifier head)))
+
+   head))
+
 
 (defun number-noun-compound (number head)
   ;;/// for the moment there is a number variable on
@@ -1235,6 +1234,7 @@ to enhance p53 mediated apoptosis [2].") |#
       s))))
 
 
+
 ;;;------------------------------------------------------------------
 ;;; broad routine for making/adjusting an individual from a category
 ;;;------------------------------------------------------------------
@@ -1258,4 +1258,3 @@ to enhance p53 mediated apoptosis [2].") |#
       (push-debug `(,head))
       (error "Unexpected type of 'head' in individual for ref: ~a~
         ~%  ~a" (type-of head) head)))))
-
