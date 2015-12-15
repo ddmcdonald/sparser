@@ -196,7 +196,7 @@
   (let ((count-list (contents paragraph)))
     (loop for count in count-list
       when (= 1 count) do (incf (parses-with-one-edge quality))
-      when (and (> count t) (<= count 5))
+      when (and (> count 1) (<= count 5))
            do (incf (medium-quality-parses quality))
       when (> count 5) do (incf (horrible-parses quality)))))
 
