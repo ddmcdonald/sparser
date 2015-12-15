@@ -419,6 +419,12 @@
             (let ((form-before (edge-form edge-before))
                   (form-after (edge-form edge-after)))
               (when (and (or (and (eq form-before form-after))
+                             (and
+                              (referential-category-p form-before)
+                              (referential-category-p form-after)
+                              ;; can conjoin proper nouns and NPs (in fact, proper nouns should be NPs)
+                              (member (cat-symbol form-before) '(category::np category::proper-noun))                              
+                              (member (cat-symbol form-after) '(category::np category::proper-noun)))
                              (and (memq form-before *premod-forms*)
                                   (memq form-after *premod-forms*)))
                          (not
