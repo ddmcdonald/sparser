@@ -112,7 +112,15 @@
         (when
             (and 
              (itypep qualifier (itype-of head))
-             (value-of 'name qualifier)) ;; intended as test for proper noun or other specific NP
+             (if
+              (itypep qualifier category::collection)
+              (and
+               ;; conjunction of named items
+               (individual-p (car (value-of 'items qualifier)))
+               (value-of 'name (car (value-of 'items qualifier))))
+              ;; named item
+              (value-of 'name qualifier)));; intended as test for proper noun or other specific NP
+          (revise-parent-edge :form category::proper-noun)
           qualifier)
         (call-compose qualifier head) ;; see note with verb-noun-compound
 
@@ -122,21 +130,21 @@
 
         ;; This case is to benefit marker-categories
         (if (itypep head 'process) ;; poor man's standing for verb?
-          (then
-            (let ((var (object-variable head)))
-              (declare (special var))
-              ;; (lsp-break "noun-noun")
-              (if var ;; really should check for passivizing
-		 (setq  head (bind-dli-variable var qualifier head))
-                 ;; otherwise it's not obvious what to bind
-                 (else
-                   (setq  head (bind-dli-variable 'modifier qualifier head))))
-              head))
-          (else
-            ;; what's the right relationship? Systemics would say
-            ;; they are qualifiers, so perhaps subtype?
-            (setq  head (bind-dli-variable 'modifier qualifier head)) ;; safe
-            head)))))
+            (then
+              (let ((var (object-variable head)))
+                (declare (special var))
+                ;; (lsp-break "noun-noun")
+                (if var ;; really should check for passivizing
+                    (setq  head (bind-dli-variable var qualifier head))
+                    ;; otherwise it's not obvious what to bind
+                    (else
+                      (setq  head (bind-dli-variable 'modifier qualifier head))))
+                head))
+            (else
+              ;; what's the right relationship? Systemics would say
+              ;; they are qualifiers, so perhaps subtype?
+              (setq  head (bind-dli-variable 'modifier qualifier head)) ;; safe
+              head)))))
 
 (defun interpret-premod-to-np (premod head)
   (let ((variable-to-bind
