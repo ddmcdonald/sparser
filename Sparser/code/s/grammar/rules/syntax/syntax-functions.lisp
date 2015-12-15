@@ -203,9 +203,9 @@
    ((itypep quantifier 'no) ;; special handling for negation
     (setq  head (bind-dli-variable 'negation quantifier head)))
    ((itypep head 'endurant)
-    (setq  head (bind-dli-variable 'quantifier quantifier head)))
-
-   head))
+    (setq  head (bind-dli-variable 'quantifier quantifier head))))
+  
+  head)
 
 
 (defun number-noun-compound (number head)
