@@ -384,6 +384,30 @@
 (defun get-category-individual (category)
   (get-tag-for :individual category))
 
+;;;------------------------------------------------------------------
+;;; broad routine for making/adjusting an individual from a category
+;;;------------------------------------------------------------------
+
+(defun individual-for-ref (head)
+  (if *description-lattice*
+   head
+   (typecase head
+     (individual
+      (maybe-copy-individual head))
+     (category
+      (make-individual-for-dm&p head))
+     (cons
+      ;; presumably it's a disjoint value restriction
+      (unless (eq (car head) :or)
+        (error "The 'head' is a cons but it's not a value restriction:~%~a"
+               head))
+      ;; Arbitrily pick the first one
+      (make-individual-for-dm&p (second head)))
+     (otherwise
+      (push-debug `(,head))
+      (error "Unexpected type of 'head' in individual for ref: ~a~
+        ~%  ~a" (type-of head) head)))))
+
 
 ;;;-------------------------
 ;;; special 'make' for DM&P
