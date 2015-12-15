@@ -28,19 +28,24 @@
 
 (defun incrementally-scan-segment (start-pos)
   ;; Not really. This is a direct copy of scan-segment in
-  ;; the c3 protocol with 
+  ;; the c3 protocol with a different rule handler since
+  ;; c3-process-segment-and-update-state is very likely to be
+  ;; heavier than we need, though certainly something like it
+  ;; is where we'll end up.
+  ;;   The chunker is C3's version of the original scheme
+  ;; 
 
 
   ;; Compare to scan-next-segment in the regular protocol.
   ;; This is the fixed point where resume between segments.
   (tr :starting-c3-segment start-pos)
-  (let* ((last-position (read-through-segment-to-end start-pos))
+  (let* ((end-pos (read-through-segment-to-end start-pos))
          ;; first delimit the next segment that starts here
          (position start-pos)
-         (head-position (chart-position-before last-position)))
-    (tr :delimited-c3-segment start-pos last-position)
-    (when (eq start-pos last-position)
-      (push-debug `(,last-position))
+         (head-position (chart-position-before end-pos)))
+    (tr :delimited-c3-segment start-pos end-pos)
+    (when (eq start-pos end-pos)
+      (push-debug `(,end-pos))
       (error "Empty segment?"))
 
     (loop 
@@ -48,10 +53,20 @@
       ;; the situation. Assume that the final word is the head.
       (introduce-next-word position (eq position head-position))
       (setq position (chart-position-after position))
-      (when (eq position last-position)
+      (when (eq position end-pos)
         (return)))
+
+    ;(push-debug `(,start-pos ,end-pos))
+    ;(break "segment finished: ~a" (words-between start-pos end-pos))
+    ;(edges-between start-pos end-pos)
+    
+    ;; The standard segment analysis manages *right-segment-boundary*
+    ;; and *left-segment-boundary* // look at pts updates
+    (let ((coverage (segment-coverage)))
+      (unless (eq coverage :one-edge-over-entire-segment)
+        (c3-segment-parse start-pos end-pos))) ;; includes syntax
  
     ;; presumably we now just scan the next segment
     (if *reached-eos*
         (terminate-chart-level-process) ; 
-        (incrementally-scan-segment last-position))))
+        (incrementally-scan-segment end-pos))))
