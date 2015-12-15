@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.9 September 2015
+;;;   Version:   1.10 December 2015
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -35,6 +35,9 @@
 ;;      and making it one instead of handling it as a adverb which was the
 ;;      case just before this.
 ;;     (9/22/15) Make quantifier specialize operator and moved in a bio mixin
+;; 1.10 (12/15/15) Discovered that quantifiers were being reclaimed so rewrote the
+;;     the def-form to make the quantifier the category, with a matching instance
+;;     (which perhaps it shouldn't have).
 
 (in-package :sparser)
 
@@ -63,6 +66,7 @@
 (define-category  quantifier
   :specializes operator
   :instantiates nil
+  :index (:permanent :key word)
   :binds ((word  :primitive word)))
 
 (define-mixin-category with-quantifier
@@ -81,18 +85,19 @@
     (let* ((form `(define-category ,category-name
                     :specializes ,category::quantifier
                     :instantiates :self
-                    ;;  ??
+                    :index (:permanent :key word)
                     :bindings (word ,word)))
            (category (eval form)))
 
       (unless object
-        (setq object (define-individual 'quantifier
-                        :word word)))
+        (let ((object-form `(define-individual ',category-name
+                               :word ,word)))
+          (setq object (eval object-form))))
 
       (let ((cfr ;; the base rule for the word
              (def-cfr/expr category ;; lhs
                     (list word) ;; rhs
-                :form 'quantifier
+               :form 'quantifier
                :referent object)))
         (push cfr cfrs))
 
