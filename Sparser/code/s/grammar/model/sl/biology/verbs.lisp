@@ -289,7 +289,7 @@
 
 ;; DAVID -- not sure about the relation of basis to base
 (define-category base :specializes bio-rhetorical
-    :binds ((cause biological))
+    :binds ((cause (:or biological bio-rhetorical)))
     :realization
     (:verb "base" ;; keyword: ENDS-IN-ED 
 	   :noun "basis"
