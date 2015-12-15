@@ -107,9 +107,14 @@
              (apply function dereferenced-args)))
         (unless (edge-p result)
           (push-debug `(,result))
-          (error "Application of DA function did not return ~
+          (cond
+           ((null result)
+            (format t "Application of DA function did not return ~
+                  an edge.~%We got a NIl instead"))
+           (t
+            (error "Application of DA function did not return ~
                   an edge.~%We got a ~a instead"
-                 (type-of result)))
+                 (type-of result)))))
         result))))
 
 
