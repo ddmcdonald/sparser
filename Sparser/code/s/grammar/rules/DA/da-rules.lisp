@@ -159,11 +159,13 @@
   (let ((right-fringe-of-s ;; ordered bottom to top
          (all-edges-on (pos-ends-here (pos-edge-ends-at s-edge))))
         target )
+    (declare (special right-fringe-of-s))
     (loop for edge in right-fringe-of-s
       ;; replace eq with acceptable-appositive?
       when (eq (edge-form edge) category::proper-noun)
       do (setq target edge))
-    (when target
+    (cond
+     (target
       (let ((new-edge
              (make-edge-over-long-span 
               (pos-edge-starts-at target)
@@ -178,7 +180,8 @@
          new-edge
          s-edge
          :right)
-        new-edge))))
+        new-edge))
+     (t (lsp-break "attach-appositive-np-under-s fails")))))
 
 
 (define-debris-analysis-rule proper-noun-comma-vg+ed-comma
