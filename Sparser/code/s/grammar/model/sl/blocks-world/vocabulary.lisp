@@ -38,8 +38,8 @@ protocol is developed. Moreover they are semantically vacuous.  |#
           (location location))
   :realization ((:main-verb "add")
                 (:tree-family vp+adjunct
-                 :mapping ((vg . self)
-                           (vp . self)
+                 :mapping ((vg . :self)
+                           (vp . :self)
                            (adjunct . physical)
                            (slot . theme)))))
 
