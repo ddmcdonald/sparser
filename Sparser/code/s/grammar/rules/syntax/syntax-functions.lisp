@@ -101,7 +101,6 @@
 
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
-  (declare (special qualifier head))
   (when (and qualifier head)
     (when nil
       (push-debug `(,qualifier ,head))
@@ -110,7 +109,11 @@
     (setq head (individual-for-ref head))
     (or (and (null qualifier)
              head)
-
+        (when
+            (and 
+             (itypep qualifier (itype-of head))
+             (value-of 'name qualifier)) ;; intended as test for proper noun or other specific NP
+          qualifier)
         (call-compose qualifier head) ;; see note with verb-noun-compound
 
         (interpret-premod-to-np qualifier head)
@@ -1002,7 +1005,10 @@ to enhance p53 mediated apoptosis [2].") |#
                (find-variable-in-category/named
                 'context (category-named 'biological))))))))))))
 
+(defparameter *trivial-subcat-test* nil)
 (defun satisfies-subcat-restriction? (item restriction)
+  (when *trivial-subcat-test*
+    (return-from satisfies-subcat-restriction? t))
   (let ((override-category (override-label (itype-of item))))
     (flet ((subcat-itypep (item category)
              ;; For protein-families and such that are re-written
