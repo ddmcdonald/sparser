@@ -62,7 +62,9 @@
     
     ;; The standard segment analysis manages *right-segment-boundary*
     ;; and *left-segment-boundary* // look at pts updates
-    (let ((coverage (segment-coverage)))
+    ;; /// Nope -- doesn't set right boundary on "no block"
+    ;; so can't call segment-coverage cause it uses the globals
+    (let ((coverage (coverage-over-region start-pos end-pos)))
       (unless (eq coverage :one-edge-over-entire-segment)
         (c3-segment-parse start-pos end-pos))) ;; includes syntax
  
