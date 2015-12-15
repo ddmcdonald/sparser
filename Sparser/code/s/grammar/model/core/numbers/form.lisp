@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "form"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  3.0 July 2015
+;;;  Version:  3.0 December 2015
 
 ;; 2.0  (7/20/92 v2.3) made over to use "real" categories
 ;; 2.1  (10/5) tweeked construct-temporary... to not make a polyword
@@ -29,7 +29,8 @@
 ;; 3.0  (6/28/15) Reorganizing construct-number to define the individual before
 ;;       defing any of the rules that use it as a referent. 
 ;;      (7/2/15) Added reify-digit-word to make sure that digit sequences
-;;       that weren't predefined are remembered.
+;;       that weren't predefined are remembered. 
+;; 3.1  (12/15/15) minor cleanup while reading through code
 
 
 (in-package :sparser)
@@ -121,7 +122,7 @@
        number number (find-individual 'multiplier :name "one")))
 
     ;; Then make the rules
-    (when (not temporary?)
+    (unless temporary?
       (setq rule
             (define-cfr category::digit-sequence `(,word-object-for-digits)
 	      :form (category-named 'number)
@@ -129,7 +130,7 @@
       (setf (cfr-schema rule) schematic-rule)
       (push rule rules))
     (when ones ;; e.g. "three"
-      (when (not temporary?)
+      (unless temporary?
         (setq rule (define-cfr category::ones-number `(,ones)
 		     :form (category-named 'number)
                      :referent number))
@@ -143,7 +144,7 @@
         (setf (cfr-schema rule) schematic-rule)
         (push rule rules)))
     (when teens
-      (when (not temporary?)
+      (unless temporary?
         (setq rule (define-cfr category::teens-number `(,teens)
 		     :form (category-named 'number)
                      :referent number))
@@ -157,7 +158,7 @@
         (setf (cfr-schema rule) schematic-rule)
         (push rule rules)))
     (when tens
-      (when (not temporary?)
+      (unless temporary?
         (setq rule (define-cfr category::tens-number `(,tens)
 		     :form (category-named 'number)
                      :referent number))
