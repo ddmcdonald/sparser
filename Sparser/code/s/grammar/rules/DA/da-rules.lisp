@@ -181,7 +181,9 @@
          s-edge
          :right)
         new-edge))
-     (t (lsp-break "attach-appositive-np-under-s fails")))))
+     (t 
+      ;;(lsp-break "attach-appositive-np-under-s fails")
+      nil))))
 
 
 (define-debris-analysis-rule proper-noun-comma-vg+ed-comma
