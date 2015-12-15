@@ -748,6 +748,11 @@
   (declare (ignore short))
   (list cat))
 
+(defmethod collect-model-description ((str string) &optional (short t))
+  (declare (ignore short))
+  (list str))
+
+
 (defmethod collect-model-description ((w word) &optional (short t))
   (declare (ignore short))
   (word-pname w))
