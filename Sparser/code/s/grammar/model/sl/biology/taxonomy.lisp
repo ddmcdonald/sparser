@@ -564,7 +564,14 @@
 (define-category small-molecule :specializes molecule
   :binds ((entityReference small-molecule-reference)))
 
+(define-category nucleobase :specializes small-molecule 
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "nucleobase")
+  :realization (:common-noun name))
+
 (define-category nucleotide :specializes small-molecule 
+  :binds ((base nucleobase))
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "nucleotide")

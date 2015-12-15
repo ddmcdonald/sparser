@@ -259,7 +259,7 @@
   (:noun "activator"
          :of activated))
 
-(def-bio "adenine" nucleotide)
+(def-bio "adenine" nucleobase)
 (noun "advance" :super bio-process
       :binds ((advancement bio-process))
       :realization 
@@ -379,7 +379,7 @@
 (define-adverb "critically")
 
 (adj "current" :super bio-predication)
-(def-bio "cytosine" nucleotide)
+(def-bio "cytosine" nucleobase)
 
 (define-unit-of-measure "dalton")
 ;;(noun "data" :super bio-entity)
@@ -541,7 +541,7 @@
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
 ;;(noun "growth factor" :super molecule)
-(def-bio "guanine" nucleotide)
+(def-bio "guanine" nucleobase)
 
 (adj "high" :super bio-predication)
 (adj "high-activity" :super bio-predication)
@@ -673,7 +673,7 @@
   (:noun "lysate"
          :from source))
 
-(def-bio "adenine" nucleotide)
+(def-bio "adenine" nucleobase)
 (noun "LPA" :super phospholipid)
 (def-synonym lpa (:noun "lysophosphatidic acid"))
 
