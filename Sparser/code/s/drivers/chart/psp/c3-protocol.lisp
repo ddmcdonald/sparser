@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "C3-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  May 2014
+;;;  version:  December 2015
 
 ;; Initiated 9/18/13 by analogy to inititate-top-edges-protocol.
 ;; 10/9/13 started putting meat on its bones. Debugging segement 
 ;; scan through 1/21/14. Debugging extension of scan into next
 ;; segment through 4/7/14. Tweaking to get all the way to end of
-;; source through 5/11/14. 
+;; source through 5/11/14. Bug fix 12/15/15
 
 (in-package :sparser)
 
@@ -214,7 +214,7 @@
   ;; word because we're going to do ambiguity in the situation,
   ;; and indeed that there is an edge over every word.
   (tr :c3-segment-parse start-position end-position)
-  (let* ((head-edge (edge-starting-at end-position))
+  (let* ((head-edge (edge-ending-at end-position))
          (head-starts-at (pos-edge-starts-at head-edge))
          (edge-just-to-the-left (edge-ending-at head-starts-at))
          (*edges-from-referent-categories* t)
