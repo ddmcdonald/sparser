@@ -101,6 +101,7 @@ When we need adjunction, it's
  the point of view of mumble::realize-dtn."))
 ;; return a dtn
 
+#-sbcl
 (defmethod wrap-in-resource ((dotted-pair cons) ;; from apply-rnode
                              (dtn mumble::derivation-tree-node))
   (let ((keyword (car dotted-pair))
