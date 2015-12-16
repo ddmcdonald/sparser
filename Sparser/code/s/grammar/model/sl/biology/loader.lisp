@@ -31,7 +31,7 @@
 (gload "bio;terms")
 (gload "bio;drugs") ;; needed by verbs
 
-#-:sbcl(gload "bio;rhetoric")
+(gload "bio;rhetoric")
 (gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")

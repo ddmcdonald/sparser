@@ -10,6 +10,8 @@
 ;; 5/7/14 Modified delete-completion-action to not presume that there
 ;; is a completion action. Applied to case of period-hook which is
 ;; not on by default. 
+;; 12/15/2015 SBCL fix -- change label-rule-set to rule-set-for in
+;; define-completion-action.
 
 (in-package :sparser)
 
@@ -28,7 +30,7 @@ each is distinguished by a tag -- the rs field is essentially a plist.
 
 
 (defun define-completion-action (label tag function)
-  (let ((rs (label-rule-set label)))
+  (let ((rs (rule-set-for label)))
     (when (null rs)
       ;(setf (label-rule-set label)
       ;      (setq rs (make-rule-set :backpointer label)))

@@ -276,44 +276,31 @@
 ;;;----------------------------------------------------
 
 (defun post-analysis-operations (sentence)
-  (declare (special *universal-time-start* *universal-time-end*))
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
   (identify-salient-text-structure sentence)
   (when *do-anaphora*
     (handle-any-anaphora sentence))
-  (let ((relevant? ; not sure why the sbcl condition here. (MB)
-          #-:sbcl (assess-relevance sentence)
-          #+:sbcl t))
-;    (format t "~%Sentence ~a is ~:[NOT RELEVANT~;RELEVANT~]" sentence relevant?)
-    
-    (when (and *readout-relations*
-               *index-cards*
-               ;; move removal of irrelevant sentences to after cards
-;;;               relevant?
-;; old              (or *dont-filter-on-discourse-relevance* relevant?)
-               )
-      (push `(,(sentence-string sentence) 
-              ,(all-individuals-in-tts sentence)
-              ,@(when (and (boundp '*current-article*)
-                           *current-article*)
-                  (list *current-article*
-                        *universal-time-start*
-                        *universal-time-end*))
-              ,relevant? ;; added relevance info here. 
-              )
-            *all-sentences*))
+  (when (and *readout-relations* *index-cards*)
+    (push `(,(sentence-string sentence) 
+            ,(all-individuals-in-tts sentence)
+            ,@(when *current-article*
+                `(,*current-article*
+                  ,*universal-time-start*
+                  ,*universal-time-end*))
+            ,(assess-relevance sentence))
+          *all-sentences*))
 
-    (save-missing-subcats)
-     
-    ;; We always retrieve the entities and relations to store
-    ;; with the sentence and accumulate at higher levels
-    (multiple-value-bind (relations entities tt-count)
-                         (identify-relations sentence)
-      ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
-      (set-entities sentence entities)
-      (set-relations sentence relations)
-      (set-tt-count sentence tt-count)))
+  (save-missing-subcats)
+
+  ;; We always retrieve the entities and relations to store
+  ;; with the sentence and accumulate at higher levels
+  (multiple-value-bind (relations entities tt-count)
+      (identify-relations sentence)
+    ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
+    (set-entities sentence entities)
+    (set-relations sentence relations)
+    (set-tt-count sentence tt-count))
 
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))
