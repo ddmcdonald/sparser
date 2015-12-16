@@ -95,14 +95,16 @@
     (typecase resource
       ;; The 'otherwise' case is caught just above.
       ((or phrase lexicalized-phrase)
-       (push-debug `(:realize-dtn ,root-node ,phrase-type))
+       
        ;;(break "after dtn resource instantiated") ;; replace w/ landmark??
        (case (name phrase-type)
          (clause
           (clausal-bundle-driver dtn root-node))
          ((np np/no-det)
           (general-np-bundle-driver dtn root-node))
-         (otherwise 
+         (pp) ;; just the root-node          
+         (otherwise
+          (push-debug `(,root-node ,phrase-type))
           (error "Unexpected name of phrase-type: ~a"
                  (name phrase-type))))))
 
