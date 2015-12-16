@@ -348,14 +348,10 @@
         res)))))
 
 (defun cat-sym (cat)
-  (if
-   (word-p cat)
-   (intern
-    (symbol-name
-     (word-symbol cat)))
-   (intern
-    (symbol-name
-     (cat-symbol cat)))))
+  (etypecase cat
+    (null nil)
+    (category (intern (symbol-name (cat-symbol cat)) :sparser))
+    (word (intern (symbol-name (word-symbol cat)) :sparser))))
 
 (defun edge-rep (edge)
   (cons (and (edge-form edge) 

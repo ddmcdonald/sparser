@@ -344,14 +344,6 @@
       (setq *missing-subcats*
             (nconc pp-pairs *missing-subcats*)))))
 
-(defun cat-sym (cat)
-  (cond ((null cat) nil)
-        ((category-p cat)
-         (if (symbolp (cat-symbol cat))
-           (intern (symbol-name (cat-symbol cat)) :sparser)
-           cat))
-        (t cat)))
-
 (defun write-missing-subcats (outfile)
   (let
       ((missing
