@@ -112,14 +112,16 @@ See Zo code for what that could look like. |#
 
 
 ;;--- the big red block (SHRDLU favorite)
-
+;; (say (the-big-red-block))
 (defun the-big-red-block ()
   (let ((block (noun "block"))
         (big (adjective "big"))
         (red (adjective "red")))
     (let ((dtn (make-dtn :resource block)))
-      (make-adjunction-node big dtn)
       (make-adjunction-node red dtn)
+      ;; it's a push list, so the adjectives, etc. 
+      ;; need to be listed in reverse order
+      (make-adjunction-node big dtn)
       dtn)))
         
 
