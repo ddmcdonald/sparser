@@ -62,21 +62,6 @@
                 obj (type-of obj)))))))
 
 
-
-(defgeneric realization-for (obj)
-  (:documentation "The realization-for method is a hook that allows objects of
- and type to be embedded in a slot, not simply the Mumble-native bundles and
- words. The return value must be something Mumble-native, i.e. acceptable
- to the type options supported by the function realize."))
-
-(defgeneric has-realization? (obj)
-  (:documentation "Used as a gate to establish whether an object somewhere
- in the phrase structure has a realization. Should use the same basic 
- machinery as realization-for since that call will be made shortly
- after this gate is passed. Should be easier to answer and not do anything
- with permanent side-effects."))
-
-
 ;;;-----------------------
 ;;; Derivation Tree Nodes
 ;;;-----------------------
@@ -135,6 +120,38 @@
     (bundle-specification t)
     (kernel-specification t)
     (otherwise nil)))
+
+
+;;;-----------------------
+;;; realization interface
+;;;-----------------------
+
+(defgeneric realization-for (obj)
+  (:documentation "The realization-for method is a hook that allows objects of
+ and type to be embedded in a slot, not simply the Mumble-native bundles and
+ words. The return value must be something Mumble-native, i.e. acceptable
+ to the type options supported by the function realize."))
+
+(defgeneric has-realization? (obj)
+  (:documentation "Used as a gate to establish whether an object somewhere
+ in the phrase structure has a realization. Should use the same basic 
+ machinery as realization-for since that call will be made shortly
+ after this gate is passed. Should be easier to answer and not do anything
+ with permanent side-effects."))
+
+
+;;--- cases where we are already dealing with Mumble-native
+;; stuff, e.g. taken from a DTN with the translation already done.
+;; Motivation is from the check at the top of the attachment process
+
+(defmethod realization-for ((w word))
+  w)
+
+(defmethod realization-for ((slp saturated-lexicalized-phrase))
+  slp)
+
+(defmethod realization-for ((dtn derivation-tree-node))
+  dtn)
 
 
 
