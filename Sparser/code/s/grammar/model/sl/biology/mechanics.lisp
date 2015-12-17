@@ -25,14 +25,14 @@
 ;;;---------------------------
 
 ;; This maps IDs (e.g., "BRAP_HUMAN") to a list of synonyms.
-;; We use #'equalp for case-insensitivity.
+;; We use #'equalp for case-insensitivity. NO -- need to maintain case
 (defvar *bio-synonym-hash* (make-hash-table :test #'equalp))
 
 (defun add-bio-synonyms (id synonyms)
   "Adds the given synonyms under the given ID."
   (let ((existing (gethash id *bio-synonym-hash*)))
     (setf (gethash id *bio-synonym-hash*)
-      (remove-duplicates (append synonyms existing) :test #'equalp))))
+      (remove-duplicates (append synonyms existing) :test #'equal))))
 
 (defun get-bio-synonyms (id)
   "Given an ID, retrieve synonyms (not including the ID)."
