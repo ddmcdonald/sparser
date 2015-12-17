@@ -317,9 +317,7 @@
 (defun is-pp? (edge)
   (and
    (edge-p edge)
-   (eq 'pp 
-       (and (edge-form edge)
-            (simple-label (edge-form edge))))))
+   (eq 'pp (simple-label (edge-form edge)))))
 
 (defun case-pp-search ()
   (let
