@@ -959,6 +959,11 @@ to enhance p53 mediated apoptosis [2].") |#
        
       new-ref)))
 
+(defparameter *label* nil) ;; temporary hack to get the label down to satisfies-subcat-restriction?
+(defparameter *head* nil)
+
+(defparameter *trivial-subcat-test* nil)
+(defparameter *tight-subcats* nil)
 
 (defun subcategorized-variable (head label item)
   (declare (special item *pobj-edge*))
@@ -986,13 +991,25 @@ to enhance p53 mediated apoptosis [2].") |#
     ;;/// prep-comp, etc.
     (let ((subcat-patterns (known-subcategorization? head)))
       (when subcat-patterns
+        (setq *label* label)
+        (setq *head* head)
         (let ( variable )
-          (dolist (entry subcat-patterns)
-            (let ((scr (subcat-restriction entry)))
-              (when (eq label (subcat-label entry))
-                (when (satisfies-subcat-restriction? item scr)
-                  (setq variable (subcat-variable entry))
-                  (return)))))
+          (let ((*trivial-subcat-test* nil))
+            (dolist (entry subcat-patterns)
+              (let ((scr (subcat-restriction entry)))
+                (when (eq label (subcat-label entry))
+                  (when (satisfies-subcat-restriction? item scr)
+                    (setq variable (subcat-variable entry))
+                    (return))))))
+          ;; collect information on failed tests
+          (unless (or variable (null *trivial-subcat-test*))
+            (dolist (entry subcat-patterns)
+              (let ((scr (subcat-restriction entry)))
+                (when (eq label (subcat-label entry))
+                  (when (satisfies-subcat-restriction? item scr)
+                    (setq variable (subcat-variable entry))
+                    (return))))))
+          
           ;;(break "testing subcats")
           (or
            variable
@@ -1012,9 +1029,25 @@ to enhance p53 mediated apoptosis [2].") |#
                (find-variable-in-category/named
                 'context (category-named 'biological))))))))))))
 
-(defparameter *trivial-subcat-test* nil)
 (defun satisfies-subcat-restriction? (item restriction)
   (when *trivial-subcat-test*
+    (let
+        ((*trivial-subcat-test* nil))
+      (if (not (satisfies-subcat-restriction? item restriction))
+          ;; test would have failed -- collect it
+          (pushnew `(,(scat-symbol (itype-of *head*))
+                  ,*label*
+                  ,(scat-symbol restriction)
+                  ,(scat-symbol (itype-of item))
+                  ,(list 
+                    (when *left-edge-into-reference*
+                      (actual-characters-of-word (pos-edge-starts-at *left-edge-into-reference*)
+                                                 (pos-edge-ends-at *left-edge-into-reference*) nil))
+                    (when *right-edge-into-reference*
+                      (actual-characters-of-word (pos-edge-starts-at *right-edge-into-reference*)
+                                                 (pos-edge-ends-at *right-edge-into-reference*) nil))))
+                *tight-subcats*
+                :test #'equal)))
     (return-from satisfies-subcat-restriction? t))
   (let ((override-category (override-label (itype-of item))))
     (flet ((subcat-itypep (item category)
@@ -1042,6 +1075,14 @@ to enhance p53 mediated apoptosis [2].") |#
        ((symbolp restriction) nil) ;; this is the case for :prep subcat-patterns
        (t (error "Unexpected type of subcat restriction: ~a"
                  restriction))))))
+
+(defun scat-symbol (c)
+  (typecase c
+    (referential-category (cat-sym c))
+    (cons (loop for s in c collect (scat-symbol s)))
+    (symbol c)))
+    
+
 
 
 ;;;----------------------
