@@ -32,7 +32,7 @@
     instantiated for document-relative times. See the code
     in rules/content/. "))
 
-(defmethod print-object (stream (index temporal-index))
+(defmethod print-object ((index temporal-index) stream)
   (let* ((dmydow (temporal-index-signature index))
          (day (first dmydow))
          (month (second dmydow))
