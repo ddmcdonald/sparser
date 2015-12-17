@@ -53,7 +53,7 @@ See Zo code for what that could look like. |#
     build))
 
 
-;; "let's X"
+;; "let's X"   (say (let-us (build-a-staircase)))
 
 (defun let-us (dtn-for-eventuality)
   ;; Doing this one differently. The question is what is 
@@ -75,7 +75,58 @@ See Zo code for what that could look like. |#
       (command dtn)
       dtn)))
 
-; (say (let-us (build-a-staircase)))
+
+;;--- the big red block (SHRDLU favorite)
+;; (say (the-big-red-block))
+(defun the-big-red-block ()
+  (let ((block (noun "block"))
+        (big (adjective "big"))
+        (red (adjective "red")))
+    (let ((dtn (make-dtn :resource block)))
+      (make-adjunction-node red dtn)
+      ;; it's a push list, so the adjectives, etc. 
+      ;; need to be listed in reverse order
+      (make-adjunction-node big dtn)
+      dtn)))
+
+
+;; "put a block on the table"  (say (put-block-on-table))
+
+(defun put-something-somewhere (thing location)
+  (let ((dtn (make-instance 'derivation-tree-node
+               :referent 'put-thing-place
+               ;; put: s, o1, o2
+               :resource (verb "put" 'svo1o2))))
+    (command dtn)
+    (make-complement-node 'o1 thing dtn)
+    (make-complement-node 'o2 location dtn)
+    dtn))
+
+(defun a-block ()
+  (let ((dtn (make-instance 'derivation-tree-node
+               :referent 'a-block
+               :resource (noun "block"))))
+    (initially-indefinite dtn)
+    dtn))
+
+(defun the-table ()
+  (let ((dtn (make-instance 'derivation-tree-node
+               :referent 'a-table
+               :resource (noun "table"))))
+    (always-definite dtn)
+    dtn))
+       
+(defun on-something (something)
+  (let ((dtn (make-dtn :resource (prep "on")
+                       :referent 'on-something)))
+    (make-complement-node 'prep-object something dtn)
+    dtn))
+
+(defun put-block-on-table ()
+  (let ((thing (a-block))
+        (location (on-something (the-table))))
+    (put-something-somewhere thing location)))
+
 
 
 ;; "a drug to target KRAS" (say (drug-targeting-kras))
@@ -111,18 +162,6 @@ See Zo code for what that could look like. |#
 ;;  => "I to know of a drug to target KRAS"
 
 
-;;--- the big red block (SHRDLU favorite)
-;; (say (the-big-red-block))
-(defun the-big-red-block ()
-  (let ((block (noun "block"))
-        (big (adjective "big"))
-        (red (adjective "red")))
-    (let ((dtn (make-dtn :resource block)))
-      (make-adjunction-node red dtn)
-      ;; it's a push list, so the adjectives, etc. 
-      ;; need to be listed in reverse order
-      (make-adjunction-node big dtn)
-      dtn)))
         
 
 
