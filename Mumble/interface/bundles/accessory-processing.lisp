@@ -1,5 +1,4 @@
 ;;; -*- Mode: LISP;  Package: MUMBLE; Syntax: Common-lisp; Base: 10 -*-
-;;; $Id: accessory-processing.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 
 ;;; MUMBLE-86:  interface > bundles > accessory-processing
 
@@ -9,6 +8,7 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2015 David D. McDonald  -- all rights reserved
 
 (in-package :mumble)
 
@@ -223,11 +223,15 @@
   (add-label-to np 'proper-name))
 
 (defun process-determiner-accessory (bundle np determiner-policy)
+  (push-debug `(,bundle ,np ,determiner-policy))
   (ecase (name determiner-policy)
     (indefinite-first-mention_definite-subsequent-mentions
-     (if (first-mention? (underlying-object bundle))
+     (let ((referent (etypecase bundle
+                       (referential (referent bundle)) ;; dtn
+                       (specification (underlying-object bundle)))))
+       (if (first-mention? referent)
 	 (set-determiner-state np 'indefinite)
-	 (set-determiner-state np 'definite)))
+	 (set-determiner-state np 'definite))))
     (always-definite 
      (set-determiner-state np 'definite))
     (no-determiner
@@ -238,8 +242,7 @@
     (known-individual 
      (set-determiner-state np 'definite))
     (kind
-     (set-determiner-state np 'indefinite))
-    ))
+     (set-determiner-state np 'indefinite))))
 
 
 (defun process-conjunction-accessory (conjunction node)
