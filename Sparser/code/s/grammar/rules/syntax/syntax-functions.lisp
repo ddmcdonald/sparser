@@ -1078,7 +1078,7 @@ to enhance p53 mediated apoptosis [2].") |#
 
 (defun scat-symbol (c)
   (typecase c
-    (referential-category (cat-sym c))
+    (referential-category (simple-label c))
     (cons (loop for s in c collect (scat-symbol s)))
     (symbol c)))
     

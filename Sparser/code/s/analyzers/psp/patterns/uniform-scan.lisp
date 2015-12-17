@@ -334,13 +334,13 @@
                ((end-edge (left-treetop-at end-pos)))
              (cond
               ((edge-p end-edge)
-               (list  (cat-sym (edge-form end-edge))
-                      (cat-sym (edge-category end-edge))))
+               (list  (simple-label (edge-form end-edge))
+                      (simple-label (edge-category end-edge))))
               ((eq end-edge :MULTIPLE-INITIAL-EDGES)
                (loop for e in (ev-edges  (pos-ends-here end-pos))
                  collect
-                 (list  (cat-sym (edge-form e))
-                        (cat-sym (edge-category e)))))
+                 (list  (simple-label (edge-form e))
+                        (simple-label (edge-category e)))))
               ((word-p end-edge)
                (list end-edge))
               (t
@@ -355,7 +355,7 @@
             (when edge
               (list 
                (edge-rule edge)
-               (cat-sym (edge-category edge))
-               (cat-sym (edge-form edge)))))
+               (simple-label (edge-category edge))
+               (simple-label (edge-form edge)))))
           "<=="
           ,.(car *collect-ns-examples*))))

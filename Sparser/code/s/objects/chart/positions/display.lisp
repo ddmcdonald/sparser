@@ -288,13 +288,13 @@
                (cfr
 		(if *symbolic-rule-names*
 		    (format nil "~A <-- ~s"
-			    (if (eq :syntactic-form (cat-sym (cfr-category rule)))
-				(cat-sym (cfr-form rule))
+			    (if (eq :syntactic-form (simple-label (cfr-category rule)))
+				(simple-label (cfr-form rule))
 				(format nil "~A/~A"
-					(cat-sym (cfr-category rule))
-					(cat-sym (cfr-form rule))))
+					(simple-label (cfr-category rule))
+					(simple-label (cfr-form rule))))
 			    (loop for c in (cfr-rhs rule)
-				 collect (cat-sym c)))
+				 collect (simple-label c)))
 		    (concatenate 'string
                       "rule " (subseq (symbol-name (cfr-symbol rule)) 3))))
                (polyword "polyword")

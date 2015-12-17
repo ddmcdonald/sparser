@@ -319,7 +319,7 @@
    (edge-p edge)
    (eq 'pp 
        (and (edge-form edge)
-            (cat-sym (edge-form edge))))))
+            (simple-label (edge-form edge))))))
 
 (defun case-pp-search ()
   (let
@@ -347,7 +347,10 @@
         (list i (nth (- i 1) *sentences*))
         res)))))
 
-(defun cat-sym (cat)
+;; This function is used to produce a short-form symbol to represent
+;;  any of various items (categories, polywords, words) for printout
+;; It produces a symbol in the :sparser package
+(defun simple-label (cat)
   (etypecase cat
     (null nil)
     (symbol cat)
@@ -356,14 +359,12 @@
     (word (intern (symbol-name (word-symbol cat)) :sparser))))
 
 (defun edge-rep (edge)
-  (cons (and (edge-form edge) 
-             (cat-sym (edge-form edge)))
+  (cons (simple-label (edge-form edge))
         (cons
-         (and (edge-category edge)
-              (cat-sym (edge-category edge)))
+         (simple-label (edge-category edge))
          (and (is-pp? edge)
               (list
-               (cat-sym 
+               (simple-label 
                 (edge-category 
                  (edge-right-daughter edge))))))))
  

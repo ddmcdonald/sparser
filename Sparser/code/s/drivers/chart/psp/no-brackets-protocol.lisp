@@ -350,7 +350,7 @@
         (loop for l in *missing-subcats* 
           when (consp l)
           collect 
-          `(,(cat-sym (car l)) ,(cat-sym (second l)) ,@(cddr l)))))
+          `(,(simple-label (car l)) ,(simple-label (second l)) ,@(cddr l)))))
     (with-open-file (s outfile
                        :direction :output
                        :if-exists :overwrite
