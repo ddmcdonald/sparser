@@ -241,6 +241,14 @@
 
         edge ))))
 
+(defparameter *symbolic-rule-names* nil)
+
+(defun display-edge-as-tree/symbolic-syntax (edge
+					     &optional (offset 0)
+					       (s *standard-output*))
+  (let ((*symbolic-rule-names* t))
+    (display-edge-as-tree/syntax edge offset s)))
+
 (defun display-edge-as-tree/syntax (edge
                                     &optional (offset 0)
                                               (s *standard-output*))
@@ -277,8 +285,18 @@
           (rule-name
            (if rule
              (etypecase rule
-               (cfr (concatenate 'string
-                      "rule " (subseq (symbol-name (cfr-symbol rule)) 3)))
+               (cfr
+		(if *symbolic-rule-names*
+		    (format nil "~A <-- ~s"
+			    (if (eq :syntactic-form (cat-sym (cfr-category rule)))
+				(cat-sym (cfr-form rule))
+				(format nil "~A/~A"
+					(cat-sym (cfr-category rule))
+					(cat-sym (cfr-form rule))))
+			    (loop for c in (cfr-rhs rule)
+				 collect (cat-sym c)))
+		    (concatenate 'string
+                      "rule " (subseq (symbol-name (cfr-symbol rule)) 3))))
                (polyword "polyword")
                (list (if (eq right-daughter :literal-in-a-rule)
                        "literal"
@@ -351,3 +369,12 @@
 
 (defun stree (n)
   (display-edge-as-tree/syntax (edge# n)))
+
+(defun ctree (tree)
+  (if
+   (word-p tree)
+   (print tree)
+   (display-edge-as-tree/symbolic-syntax 
+    (cond
+     ((numberp tree) (edge# tree))
+     ((edge-p tree) tree)))))
