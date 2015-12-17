@@ -350,7 +350,9 @@
 (defun cat-sym (cat)
   (etypecase cat
     (null nil)
+    (symbol cat)
     (category (intern (symbol-name (cat-symbol cat)) :sparser))
+    (polyword (intern (pw-pname cat) :sparser))
     (word (intern (symbol-name (word-symbol cat)) :sparser))))
 
 (defun edge-rep (edge)
