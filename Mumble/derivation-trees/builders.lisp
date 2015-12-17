@@ -50,7 +50,7 @@
 (defgeneric adjective (word)
   (:documentation "Defines a lexicalized tree for an adjective
     taken as a simple premodifier. The relationship of something
-    having this property is a different thing, and should have
+    having this property is a not this but should have
     a choice set of some sort since it has several realizations."))
 
 (defmethod adjective ((pname string))
@@ -59,6 +59,51 @@
   (let ((word (word-for-string pname 'adjective))
         (ap (attachment-point-named 'adjective)))
     (make-lexicalized-attachment ap word)))
+
+
+(defgeneric predicate (word)
+  (:documentation "This is a term with adverbial force
+   that will be incorporated into a phrase as an argument
+   rather than through adjunction. The motivating case
+   is 'together' which describes a state of affairs. 
+   An adverb would modulate the meaning of an eventuality.
+   Returns a saturated lexicalized phrase. Using the
+   phrase for adverb, but it should be customized."))
+
+(defmethod predicate ((pname string))
+  (let ((phrase (phrase-named 'advp))
+        (word (word-for-string pname 'adverb)))
+    (let ((lp (make-instance 'saturated-lexicalized-phrase
+                :phrase phrase
+                :bound `(,(make-instance 'parameter-value-pair
+                            :phrase-parameter (parameter-named 'adv)
+                            :value word)))))
+      ;; index
+      lp)))
+
+
+(defgeneric prep (word)
+  (:documentation "Defines a lexicalized tree for a preposition
+   in that is the head of a prepositional phrase whose complement
+   is a noun phrase. Note that a preposition will often also
+   take a whole eventuality as its complement, and it's not
+   clear right now how to capture this variation (maybe an
+   optional argument that becomes a label that goes on the
+   complement's slot?). Returns a partially saturated lexicalized 
+   phrase that is open in the parameter 'prep-object'."))
+
+(defmethod prep ((pname string))
+  (let ((phrase (phrase-named 'prepositional-phrase))
+        (preposition (word-for-string pname)))
+    (let ((lp (make-instance 'partially-saturated-lexicalized-phrase
+                :phrase phrase
+                :bound `(,(make-instance 'parameter-value-pair
+                            :phrase-parameter (parameter-named 'p)
+                            :value preposition))
+                :free `(,(parameter-named 'prep-object)))))
+      ;; index it
+      lp)))
+
 
 
 (defgeneric transitive-with-bound-prep (verb preposition)
