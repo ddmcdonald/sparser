@@ -138,6 +138,7 @@
           "unless"  
           "until"   
           "upon"
+          "whatever"
           "whether" ;; this is to allow "whether" to be a subordinating conjunction leading to a "whethercomp"
           ))
 
