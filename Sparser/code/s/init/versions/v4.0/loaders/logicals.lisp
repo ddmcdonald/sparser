@@ -148,7 +148,7 @@
 (def-logical-pathname "chart;"        "objects;chart:")
 (def-logical-pathname "word-obj;"     "chart;words:")
 (def-logical-pathname "lookup words;" "word-obj;lookup:")
-(def-logical-pathname "cat;"          "chart;categories1:")
+(def-logical-pathname "cat;"          "chart;categories:")
 (def-logical-pathname "positions;"    "chart;positions:")
 (def-logical-pathname "edges;"        "chart;edges:")
 (def-logical-pathname "ev;"           "chart;edge-vectors:")

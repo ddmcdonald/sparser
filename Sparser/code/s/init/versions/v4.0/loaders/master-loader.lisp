@@ -110,7 +110,7 @@
 (lload "chart;words:loader")
 (lload "lookup words;loader")
   ;; includes fsas for [morphology] and [capitalization]
-(lload "chart;categories1:loader")
+(lload "chart;categories:loader")
 (lload "chart;positions:loader")
 (lload "chart;edges:loader")
 (lload "chart;edge-vectors:loader")
