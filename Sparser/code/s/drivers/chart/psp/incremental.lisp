@@ -33,8 +33,7 @@
   ;; heavier than we need, though certainly something like it
   ;; is where we'll end up.
   ;;   The chunker is C3's version of the original scheme
-  ;; 
-
+  ;; based on configurations of brackets
 
   ;; Compare to scan-next-segment in the regular protocol.
   ;; This is the fixed point where resume between segments.
@@ -47,7 +46,6 @@
     (when (eq start-pos end-pos)
       (push-debug `(,end-pos))
       (error "Empty segment?"))
-
     (loop 
       ;; Then walk through it left-to-right extending
       ;; the situation. Assume that the final word is the head.
@@ -60,15 +58,129 @@
     ;(break "segment finished: ~a" (words-between start-pos end-pos))
     ;(edges-between start-pos end-pos)
     
+    ;; Now parse the interior of the segment.
     ;; The standard segment analysis manages *right-segment-boundary*
     ;; and *left-segment-boundary* // look at pts updates
     ;; /// Nope -- doesn't set right boundary on "no block"
     ;; so can't call segment-coverage cause it uses the globals
     (let ((coverage (coverage-over-region start-pos end-pos)))
-      (unless (eq coverage :one-edge-over-entire-segment)
-        (c3-segment-parse start-pos end-pos))) ;; includes syntax
+      (case coverage ;; mimic PTS
+        ((:one-edge-over-entire-segment ;; all done
+          :null-span
+          :no-edges
+          :discontinuous-edges))
+        (otherwise
+         (incremental-segment-parse start-pos end-pos))) ;; includes syntax
  
+    ;; Now see if we can compose this with its left neighbor,
+    ;; assuming there is one.
+    (unless (= 1 (pos-token-index start-pos))
+      (let ((seg-edge (edge-between start-pos end-pos)))
+        (tr :c3-segment-parse-value seg-edge)
+        (unless seg-edge
+          (error "c3 segment parse did not create an edge between ~
+                  ~a and ~a" start-pos end-pos))
+        (compose-segment-edge seg-edge)))
+
     ;; presumably we now just scan the next segment
     (if *reached-eos*
-        (terminate-chart-level-process) ; 
-        (incrementally-scan-segment end-pos))))
+        (terminate-chart-level-process)
+        (incrementally-scan-segment end-pos)))))
+
+(defun compose-segment-edge (edge)
+  "We've just created this edge. Look for a basis for
+   composing it with the edge to it's left."
+  ;; Works for the VP-based commands of the blocks world.
+  ;; To handle full clauses or more complex text we either
+  ;; flesh out the full C3 model or move to a more adroit
+  ;; parsing protocol
+  (let* ((start-pos (pos-edge-starts-at edge))
+         (left-neighbor (edge-ending-at start-pos)))
+    (unless left-neighbor
+      (push-debug `(,edge))
+      (error "Expected a edge ending at ~a" start-pos))
+    (let* ((left-form (edge-form left-neighbor))
+           (right-form (edge-form edge))
+           (composition-instructions
+            (C3-lookup-composer left-form right-form)))
+      (C3-apply-composition-instructions
+       composition-instructions left-neighbor edge))))
+  
+(defun incremental-segment-parse (start-position end-position)
+  ;; This is a clone of parse-at-the-segment-level, which can't be
+  ;; used as-is because it knits back to segment-parsed1 of the
+  ;; standard protocol. Also we can make different assumptions
+  ;; because, e.g., we know there is only one edge over every
+  ;; word because we're going to do ambiguity in the situation,
+  ;; and indeed that there is an edge over every word.
+  (tr :c3-segment-parse start-position end-position)
+  (let* ((*edges-from-referent-categories* nil)
+         (*allow-pure-syntax-rules* t))
+    (declare (special *allow-pure-syntax-rules* 
+                      *edges-from-referent-categories*))
+    (let ((*left-segment-boundary* start-position)
+          (*right-segment-boundary* end-position)
+          (*rightmost-active-position/segment* end-position)
+          (*return-after-doing-segment* t))
+      (declare (special *left-segment-boundary* 
+                        *right-segment-boundary*
+                        *rightmost-active-position/segment*
+                        *return-after-doing-segment*))
+      (march-back-from-the-right/segment))))
+
+
+(defun C3-lookup-composer (left-form right-form)
+  ;; Lookup the rule that composes these edge. Sort of a hack
+  ;; to avoid walking into the biology-focused syntactic rules.
+  (push-debug `(,left-form ,right-form))
+  (let ((rule (lookup-syntactic-rule `(,left-form ,right-form))))
+    (unless rule
+      (error "No syntactic rule for ~a + ~a" left-form right-form))
+    (unless (memq rule *c3-syntactic-rules*)
+      (push-debug `(,rule))
+      (error "Returned a general syntactic rule: ~a" rule))
+    rule))
+
+(defun C3-apply-composition-instructions (instructions left-edge right-edge)
+  (push-debug `(,instructions ,left-edge ,right-edge))
+  (unless (cfr-p instructions)
+    (break "What's up -- instructions aren't a rule?~a" instructions))
+  (let ((edge (make-completed-binary-edge
+               left-edge right-edge instructions)))
+    ;;// trace
+    edge))
+
+
+(defun fill-compatible-slot (left-ref right-ref)
+#| for "build a staircase" left is a category as it the right
+  12/19/15 2pm  |#
+  ;; presume that the head is on the left.
+  (unless (individual-p left-ref)
+    (setq left-ref (individual-for-ref left-ref)))
+   (unless (individual-p right-ref)
+    (setq right-ref (individual-for-ref right-ref)))
+  (push-debug `(,left-ref ,right-ref)) ;; (setq left-ref (car *) right-ref (cadr *))
+  (break "find compatible")
+  (let ((open-variables (unsaturated? left-ref)))
+    (unless open-variables
+      (error "expected something to be open"))
+    (push-debug `(,open-variables))
+    (break "check compat")
+    left-ref))
+
+
+
+
+
+(defparameter *c3-syntactic-rules*
+  (list 
+   (def-syntax-rule (verb np)
+                    :head :left-edge
+     :form vp
+     :referent (:function fill-compatible-slot left-edge right-edge)))
+  "The specific set of rules to use because (hack hack) their
+   interpretation is controlled without having to fold into the 
+   regular set as should be done when the basics are shaken down.")
+
+
+
