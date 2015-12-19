@@ -458,6 +458,7 @@ or for loading the newer of the compiled or source files.
 (or (boundp 'sparser::*prefer-binaries*)
     (defparameter sparser::*prefer-binaries* ;; see note on this in lload
       #+allegro t
+      #+sbcl t
       #+openmcl nil
       "If non-nil, lload looks for a .fasl version of a file (or whatever
        is appropriate for the Lisp being used) and loads it if there 
@@ -491,6 +492,11 @@ or for loading the newer of the compiled or source files.
        to indicate the date and where the list of changes is to be
        stored"))
 
+(or (boundp 'sparser::*just-count-lines*)
+    (defparameter sparser::*just-count-lines* nil
+      "Controls whether the loading process is actually to be used as
+       an automatic way of counting source lines in the Sparser codebase."))
+
 (or (boundp 'sparser::*copy-file*)
     (defparameter sparser::*copy-file* nil
       "Controls whether the loading process is actually to be used as
@@ -498,7 +504,6 @@ or for loading the newer of the compiled or source files.
        of Sparser into another directory tree, as when specializing the
        system for delivery. The target directory tree to use is burned into
        Lload's subroutines and has to be changed by hand."))
-
 
 (unless (boundp 'sparser::*dont-load-verbose*)
   (defparameter sparser::*dont-load-verbose* nil
@@ -1088,8 +1093,6 @@ or for loading the newer of the compiled or source files.
 	(let ((sparser::*insist-on-binaries* nil)
 	      (sparser::*prefer-binaries* nil)
 	      (sparser::*compile* nil))
-          (declare (special sparser::*compile* sparser::*insist-on-binaries*
-                            sparser::*prefer-binaries*))
 	  (sparser::lload config))
 	(sparser::lload config)))   ;; otherwise we use the binaries or newer.
   

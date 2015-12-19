@@ -60,7 +60,12 @@
 		       (speed 2)    ;; for tail-call-non-self-merge-switch
 		       (debug 1)))  ;; and tail-call-self-merge-switch
 		       
-
+#+:sbcl
+(defun routine-to-compile-file (source-namestring fasl-namestring)
+  (compile-file
+   source-namestring
+   :output-file fasl-namestring
+   :verbose t))
 
 ;;;------------------------------------------
 ;;; standard runtime/debug/... flag settings
