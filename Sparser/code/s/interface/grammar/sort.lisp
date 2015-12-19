@@ -94,9 +94,8 @@
 ;;;-----------
 
 (defun sort-polywords (list-of-polywords)
-  (let ((polywords (copy-list list-of-polywords)))
-    (sort polywords
-          'order-pw-alphabetically/longest-last)))
+  (sort (copy-list list-of-polywords)
+        'order-pw-alphabetically/longest-last))
 
 (defun order-pw-alphabetically/longest-last (pw1 pw2)
   (let* ((words1 (pw-words pw1))
@@ -114,11 +113,8 @@
                          (rest words1) (rest words2)))))))))
 
 (defun order-word-list-alphabetically (words1 words2)
-  (unless (eq (length words1) (length words2))
-    (error "Bad threading: the lists of words should be of the ~
-            same length:~%~A~%~A" words1 words2))
-  (when (null words1)
-    (break "The word lists (now exhausted) were identical"))
+  (unless words1
+    (return-from order-word-list-alphabetically t))
   (let ((w1 (word-pname (first words1)))
         (w2 (word-pname (first words2))))
     (cond ((string< w1 w2) t)
