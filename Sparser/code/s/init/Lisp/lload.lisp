@@ -68,67 +68,12 @@
 
 (in-package :sparser)
 
-;;;---------------------------------------
-;;;  default values for the control flags
-;;;---------------------------------------
-;; The boundp check allows the parameters to have been set in
-;; the configuration file, which will have been loaded before
-;; this one.
-
-(or (boundp '*compile*)
-    (defparameter *compile* nil    ;;...-if-source-is-newer*
-      "Controls whether the loading process is actually to be taken as an
-       automatic way of getting the whole system compiled"))
-
-#|
-  If you're on a machine where you run Sparser in both Franz's Allegro and
-in Clozure, you probably have binaries that were compiled for ACL which
-make absolutely no sense for CCL (which in any event will compile on
-the fly). This feature setting sorts that out.  If we get another lisp
-in the mix (this will blow out) we should revisit the whole treatment. 
-|#
-(or (boundp '*prefer-binaries*)
-    (defparameter *prefer-binaries* 
-      #+allegro t
-      #+openmcl nil
-      "If non nil, lload looks for a .fasl version of a file and loads
-       it if there is one, otherwise it loads the source version."))
-
-(or (boundp '*insist-on-binaries*)
-    (defparameter *insist-on-binaries* nil
-      "A flag read by LLoad that has it just load the fasl version
-       of the files without ever looking at the sources."))
-
-(or (boundp '*just-note-changed-files*)
-    (defparameter *just-note-changed-files* nil
-      "A flag that specializes LLoad to just do comparisons of the 
-       write dates of files rather than load them."))
-
-(unless (boundp '*just-count-lines*)
-  (defparameter *just-count-lines* nil
-    "A flag that specializes LLoad to just count the lines of code
-     in the files it opens rather than load them."))
-
-
-(or (boundp '*copy-file*)
-    (defparameter *copy-file* nil))
-
-
-(or (boundp '*suborn-non-unix-file-characters*)
-    (defparameter *suborn-non-unix-file-characters* t))
-
-
-(unless (fboundp 'special-hacks)
-  (defun special-hacks (raw-namestring namestring)
-    (declare (ignore raw-namestring namestring))))
-
-
 ;;;---------------
 ;;; other globals
 ;;;---------------
 
-(defvar *file-being-lloaded* nil)
-  ;; available to Sparser define forms
+(defvar *file-being-lloaded* nil
+  "Available to Sparser define forms.")
 
 (defvar *raw-form-of-file* nil
   "Lload is called with a file descriptor that typically contains
@@ -182,7 +127,6 @@ in the mix (this will blow out) we should revisit the whole treatment.
     (if (probe-file namestring)
       (let ((*file-being-lloaded* namestring))
         (load namestring)
-        (special-hacks raw-namestring namestring)
         (record-file-write-time namestring)
         (when (and (boundp '*grammar-module-being-loaded*)
                    ;; have to also check if it's bound to allow LLoad
