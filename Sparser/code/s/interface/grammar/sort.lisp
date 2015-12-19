@@ -62,14 +62,15 @@
              (:all-caps
               ;; w2 must have some lowercase letter(s)
               nil)
-             (:mixed-case
+             ((:mixed-case :digits)
               ;; won't try sorting more finely
               (string< (word-pname w1) (word-pname w2)))
              (:initial-letter-capitalized
               (ecase cap2
                 (:lower-case nil)
+                (:single-capitalized-letter nil)
                 (:all-caps t)
-                (:mixed-case
+                ((:initial-letter-capitalized :mixed-case :digits)
                  (string< (word-pname w1) (word-pname w2))))))))))
 
 
