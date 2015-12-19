@@ -113,17 +113,6 @@
     (push :mlisp *features*)
     (push :alisp *features*))) ;; corresponds to :upcase
 
-;;;--------------------------
-;;; create Sparser's package
-;;;--------------------------
-
-(unless (find-package :sparser)
-  (make-package :sparser
-                :use '(common-lisp
-                       ddm-util
-                       #+apple ccl
-                       #+openmcl :ccl)))
-
 ;;;----------------
 ;;; hard filenames
 ;;;----------------

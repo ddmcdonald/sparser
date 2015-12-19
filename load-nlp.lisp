@@ -74,18 +74,12 @@
 ;;  it can be redefined or elaborated here without a problem.
 
 (defpackage :sparser
-  (:use common-lisp
-        ddm-util
-        #+apple ccl
-        #+openmcl :ccl)
-  (:nicknames :sp))
+  (:use :common-lisp :ddm-util #+ccl :ccl)
+  (:nicknames :sp)
+  (:shadow :break :position))
 
-;; 10/10/12 CCL 1.8.1 -- for reasons I fail to fathom, that invocatation of
-;; defpackage does not include ddm-util in the result. Works just fine
-;; in ACL and before installing Lion (for what that's worth).  -- ddm
-#+openmcl (use-package (find-package :ddm-util) (find-package :sparser))
-
-
+(defmacro sparser::position (&rest args)
+  `(common-lisp:position ,@args))
 
 ;; #5 Load Mumble
 

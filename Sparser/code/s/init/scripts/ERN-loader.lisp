@@ -34,11 +34,6 @@
 ;;; overriding flag defaults
 ;;;--------------------------
 
-(unless (find-package :sparser)
-  (make-package :sparser
-                :use #+:apple '(ccl common-lisp)
-                     #+:unix  '(lisp)))  ;; "unix" = Lucid
-
 (defparameter sparser::*lattice-points* t)
 (defparameter sparser::*no-image* t)
 

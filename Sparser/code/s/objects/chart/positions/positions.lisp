@@ -26,9 +26,6 @@
 
 (in-package :sparser)
 
-
-(shadow '(#:position) (find-package :sparser))
-
 (defmacro sparser::position (&rest args)
   `(common-lisp:position ,@args))
 

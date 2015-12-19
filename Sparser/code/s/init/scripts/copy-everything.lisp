@@ -15,18 +15,6 @@
 ;; 6/25 added some bindings so that it will override anything in its load
 ;; script that would stop a copy prematurely.
 
-(in-package :cl-user)
-
-;;;--------------------
-;;; define the package
-;;;--------------------
-
-(or (find-package :sparser)
-    (make-package :sparser
-                  :use #+:apple '(ccl common-lisp)
-                       #+:unix  '(common-lisp)
-                       ))
-
 (in-package :sparser)
 
 ;;;----------------------
