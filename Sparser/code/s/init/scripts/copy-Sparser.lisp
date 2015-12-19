@@ -19,18 +19,6 @@
 
 ;; cloned from [copy everything] 1/22/07 and updated to v2.7
 
-(in-package :cl-user)
-
-;;;--------------------
-;;; define the package
-;;;--------------------
-
-(or (find-package :sparser)
-    (make-package :sparser
-                  :use #+:apple '(ccl common-lisp)
-                       #+:unix  '(common-lisp)
-                       ))
-
 (in-package :sparser)
 
 ;;;----------------------
