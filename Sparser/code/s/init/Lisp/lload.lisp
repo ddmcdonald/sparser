@@ -72,14 +72,15 @@
 ;;; other globals
 ;;;---------------
 
+(defvar *lloaded-files* nil
+  "Truenames of all the lloaded files.")
+
 (defvar *file-being-lloaded* nil
   "Available to Sparser define forms.")
 
 (defvar *raw-form-of-file* nil
   "Lload is called with a file descriptor that typically contains
-   a ddef-logical directory.  It is shorter and easier to index
-   off of.")
-
+a ddef-logical directory. It is shorter and easier to index off of.")
 
 ;;;--------------
 ;;; the routine
@@ -127,6 +128,7 @@
     (if (probe-file namestring)
       (let ((*file-being-lloaded* namestring))
         (load namestring)
+        (push (truename namestring) *lloaded-files*)
         (record-file-write-time namestring)
         (when (and (boundp '*grammar-module-being-loaded*)
                    ;; have to also check if it's bound to allow LLoad
