@@ -17,5 +17,5 @@
        ;; it from cluttering the screen.
        :finished-postprocessing)
 
-
 (setq *loading-whole-system* nil)
+(push :mumble *features*)
