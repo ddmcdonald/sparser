@@ -365,8 +365,8 @@
 
 (define-category change :specializes caused-bio-process
       :binds ((scale bio-scalar)
-              (original-state biological)
-              (resulting-state biological)
+              (original-state bio-state)
+              (resulting-state bio-state)
               ) 
       :realization
       (:verb "change"
@@ -1276,10 +1276,12 @@
 
 
 (define-category maintain :specializes bio-control
-    :realization
-    (:verb "maintain"
-	   :noun "maintenance"
-	   :etf (svo-passive))) 
+  :binds ((state bio-state))
+  :realization
+  (:verb "maintain"
+         :noun "maintenance"
+         :etf (svo-passive)
+         :in state))
 
 (define-category measure :specializes bio-method
   :binds ((method bio-method)
