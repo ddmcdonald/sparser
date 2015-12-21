@@ -127,8 +127,11 @@
 
 ;; (trace-rule-source)
 
+;; to be turned on after January? -- works better than current multiply-edges
+(defparameter *use-trie-multiply* nil)
+
 (defun multiply-edges (left-edge right-edge &optional chunk)
-   ;; Called from the check routines, e.g. check-one-one
+  ;; Called from the check routines, e.g. check-one-one
   ;; Looks for any possibility of composition for these edges first,
   ;; i.e. whether there are the right direction indexes for these,
   ;; and then whether there is a category combination or, barring
@@ -143,81 +146,92 @@
     ;;/// trace  We don't multiply words, only edges
     (return-from multiply-edges nil))
   
-  (if (edge-of-dotted-intermediary right-edge)
-      ;; dotted rules only combine to their right, never to their left
-    (then (tr :right-edge-is-dotted right-edge)
-          ;; "   but the right edge, e~A, is dotted and can't possibly combine"
-          nil)
-      
+    
+  (cond
+   ((edge-of-dotted-intermediary right-edge)
+    ;; dotted rules only combine to their right, never to their left
+    (tr :right-edge-is-dotted right-edge)
+    ;; "   but the right edge, e~A, is dotted and can't possibly combine"
+    nil)
+   ((when *use-trie-multiply* (trie-multiply-edges left-edge right-edge chunk)))
+   (t
     (let* ((left-category-ids (category-ids/rightward left-edge))
            (right-category-ids (category-ids/leftward right-edge))
            (rule (multiply-categories left-category-ids 
                                       right-category-ids
                                       left-edge right-edge)))
-
+      
       ;; Look at possible sourcs of rules from what is likely to be
       ;; the most precise (certainly in terms of referents) to the
       ;; most general. As soon as one of these sources returns
       ;; a valid rule we stop looking at other sourcs.
-
+      
       (if rule ;; from the let statement, multiply-categories
-        (then
-         (tr :found-semantic-rule rule)
-         (if (valid-rule? rule left-edge right-edge chunk)
-          (then 
-           (tr :rule-is-valid))
-          (else 
-           (tr :rule-is-invalid)
-           (setq rule nil))))
-        (else
-         (tr :no-semantic-rule)))
-
+          (then
+            (tr :found-semantic-rule rule)
+            (if (valid-rule? rule left-edge right-edge chunk)
+                (then 
+                  (tr :rule-is-valid))
+                (else 
+                  (tr :rule-is-invalid)
+                  (setq rule nil))))
+          (else
+            (tr :no-semantic-rule)))
+      
       (unless rule
         (setq rule (mult/ids-on-form-label left-edge right-edge))
         (if rule
-          (then
-           (tr :found-rule-of-form rule)
-           (if (valid-rule? rule left-edge right-edge chunk)
-             (tr :rule-is-valid)
-             (else 
-              (tr :rule-is-invalid)
-              (setq rule nil))))
-          (else
-           (tr :no-rule-of-form))))
-        
+            (then
+              (tr :found-rule-of-form rule)
+              (if (valid-rule? rule left-edge right-edge chunk)
+                  (tr :rule-is-valid)
+                  (else 
+                    (tr :rule-is-invalid)
+                    (setq rule nil))))
+            (else
+              (tr :no-rule-of-form))))
+      
       (unless rule ;; fell through
         (when *edges-from-referent-categories*
           ;; Look for a rule in the cross-product 
           ;; of the categories the edges category labels inherit from
           (setq rule (multiply-referents left-edge right-edge))
           (if rule
-            (then
-             (tr :found-rule-from-referent rule)
-             (if (valid-rule? rule left-edge right-edge chunk)
-               (tr :rule-is-valid)
-               (else 
-                (tr :rule-is-invalid)
-                (setq rule nil))))
-            (else 
-             (tr :no-rule-from-referent)))))
-
+              (then
+                (tr :found-rule-from-referent rule)
+                (if (valid-rule? rule left-edge right-edge chunk)
+                    (tr :rule-is-valid)
+                    (else 
+                      (tr :rule-is-invalid)
+                      (setq rule nil))))
+              (else 
+                (tr :no-rule-from-referent)))))
+      
       (unless rule
         (when *allow-pure-syntax-rules*       
           ;; then look for a rule mentioning the form label
           ;; on the two rules
           (setq rule (check-form-form left-edge right-edge))
           (if rule
-            (then
-             (tr :found-syntactic-rule rule)
-             (if (valid-rule? rule left-edge right-edge chunk)
-               (tr :rule-is-valid)
-               (else 
-                (tr :rule-is-invalid)
-                (setq rule nil))))
-            (else
-             (tr :no-syntactic-rule)))))
-
-      rule)))
+              (then
+                (tr :found-syntactic-rule rule)
+                (if (valid-rule? rule left-edge right-edge chunk)
+                    (tr :rule-is-valid)
+                    (else 
+                      (tr :rule-is-invalid)
+                      (setq rule nil))))
+              (else
+                (tr :no-syntactic-rule)))))
+      
+      ;;This code is to test if the new trie-multiply produces identical results to multipl-edges
+      #+ignore
+      (let ((trie-rule (trie-multiply-edges left-edge right-edge chunk)))
+        (declare (special trie-rule))
+        (when (not (eq trie-rule rule)) 
+          (setq left left-edge)
+          (setq right right-edge)
+          (lsp-break "multiply-edges -- trie-rule and rule don't agree")))
+      rule))))
 
 
 

@@ -25,3 +25,4 @@
 (lload "check;many-one")
 (lload "check;one-many")
 (lload "check;many-many")
+(lload "check;trie-multiply")
