@@ -23,7 +23,7 @@
 ;; turn off *edges-from-referent-categories*  -- no longer seems to be needed -- 
 ;;   this speeds up the system by a factor of 3!
 ;; 6/5/2015 added (defvar *whack-a-rule-sentence*)bound in  whack-a-rule-cycle
-;;  so that all-tts knows the boundaries of the current sentence.
+;;  so that all-tts knows the boundaries of the current sentence.s
 ;; 9/18/15 Completely rebuilt the 2d pass. 9/29/15 removed the re-computation
 ;;  of the layout for 2d pass because it wasn't needed and it lost information
 ;;  about the presence of pronouns.
@@ -119,13 +119,16 @@
   (let ((*whack-a-rule-sentence* sentence))
     (declare (special *whack-a-rule-sentence*))
 
-    (let ( rule-and-edges  edge )
+    (let ( rule-and-edges  edge at-least-one-rule)
       (clrhash *rules-for-pairs*)
       (loop
         (setq rule-and-edges (best-treetop-rule sentence))
         (when (null rule-and-edges)
-          (return))
+          (return-from whack-a-rule-cycle at-least-one-rule))
         (setq edge (execute-triple rule-and-edges))
+        (cond
+         (edge (setq at-least-one-rule edge))
+         (t (return-from whack-a-rule-cycle at-least-one-rule)))
         (tr :whacking-triple rule-and-edges edge)))))
 
 (defun execute-triple (triple)
@@ -140,6 +143,23 @@
 ;;; second pass
 ;;;-------------
 
+
+(defun coverage-dispatch (start-pos end-pos)
+  "Look at the new coverage. If we're not done then
+  return a keyword saying what to do next"
+  (let ((coverage (coverage-over-region start-pos end-pos)))
+    (case coverage
+      (:one-edge-over-entire-segment ;; we're done
+       :one-edge-over-entire-segment)
+      ((:all-contiguous-edges :some-adjacent-edges)
+       :apply-rules)
+      (:discontinuous-edges
+       :do-not-apply-rules)
+      (otherwise
+       (break "Unexpected pass-two coverage: ~a" coverage)))))
+
+(defparameter *new-pass2* t)
+
 (defun run-island-checks-pass-two (sentence start-pos end-pos)
   ;; Called from island-driven-forest-parse after it's done everything
   ;; in its phase-one operations. Given the predominance of whack a rule
@@ -151,7 +171,7 @@
   ;;   We won't have gotten here unless the adjacency-driven rule
   ;; application has run out of cases, so we start with DA. We also
   ;; know that the sentence is not spanned by a single edge.
-
+  
   ;; N.b. execute-da-trie does the interleaving between regular parsing
   ;; and a walk over the treetops looking for debris patterns,
   ;; but it's tail-recursive and would require considerable reworking
@@ -160,114 +180,131 @@
   (let* ((treetops (successive-treetops :from start-pos :to end-pos))
          (number-of-treetops (length treetops)))
     (tr :islands-pass-2 number-of-treetops)
-    (labels 
-      ((look-for-da-pattern (tt)
-         "If there is a da pattern that starts at this treetop
-          execute it and return the 'result'"
-         (let ((da-node (trie-for-1st-item tt)))
-           (when da-node
-             (standalone-da-execution da-node tt))))           
+    (if *new-pass2*
+        (new-pass2 sentence start-pos end-pos treetops)
+        (old-pass2 sentence start-pos end-pos treetops number-of-treetops))))
 
-       (whack-new-edge (sentence)
-         "We got a new edge and there are adjacent edge, 
-          try composing them"
-         (whack-a-rule-cycle sentence))
+(defun new-pass2 (sentence start-pos end-pos treetops)
+  (let (da-result)
+    (loop
+      (setq da-result (da-rule-cycle start-pos end-pos treetops))
+      (cond
+       ((null da-result) ;; no DA rules executed -- nothing left to do
+        (tr :no-result-from-da) ; 
+        (return-from new-pass2 t))
+       ((eq (coverage-over-region start-pos end-pos) :one-edge-over-entire-segment)
+        (return-from new-pass2 t)))
+      (when (there-are-conjunctions?) ;; J3 doesn't parse
+        (tr :try-spanning-conjunctions)
+        (let ((*allow-form-conjunction-heuristic* t))
+          (declare (special *allow-form-conjunction-heuristic*))
+          (try-spanning-conjunctions)))
+      (unless
+          (whack-a-rule-cycle sentence)      
+        (return-from new-pass2 t))
+      ;;(when (there-are-conjunctions?) (lsp-break "conjunctions"))
+      (setq treetops (successive-treetops :from start-pos :to end-pos)))))
 
-       (coverage-dispatch (prior-coverage)
-         "Look at the new coverage. If we're not done then
-          return a keyword saying what to do next"
-         (declare (ignore prior-coverage)) ;; possible alg to see if making progress
-         (let ((coverage (coverage-over-region start-pos end-pos)))
-           (case coverage
-             (:one-edge-over-entire-segment ;; we're done
-              (return-from run-island-checks-pass-two t))
-             ((:all-contiguous-edges :some-adjacent-edges)
-              :apply-rules)
-             (:discontinuous-edges
-              :do-not-apply-rules)
-             (otherwise
-              (break "Unexpected pass-two coverage: ~a" coverage))))))
-;;  :one-edge-over-entire-segment  :all-contiguous-edges 
-;; :some-adjacent-edges   :discontinuous-edges
 
-      (let ((ramaining-treetops (copy-list treetops))
-            (tt-count 0)
-            tt  result  coverage  )
+(defun da-rule-cycle (start-pos end-pos treetops)
+  (let (rule-executed?)
+    (loop with result while (setq result (execute-one-da-rule treetops))
+      do
+      (setq rule-executed? t)
+      (when (edge-p result) (tr :p2-da-returned-edge result))
+      (setq treetops (successive-treetops :from start-pos :to end-pos)))
+    rule-executed?))
+
+(defun execute-one-da-rule (treetops)
+  (loop for tt in treetops
+    thereis
+    (progn
+      (tr :trying-da-pattern-on tt)
+      (setq result (look-for-da-pattern  tt))
+      (and result (neq result :trie-exhausted)))))
+
+(defun old-pass2 (sentence start-pos end-pos treetops number-of-treetops)
+  
+  (let ((ramaining-treetops (copy-list treetops))
+        (tt-count 0)
+        tt  result  coverage  )
+    
+    (loop
+      ;; We're looping over successive treetops. When we run out 
+      ;; of tt we're done.
+      (unless ramaining-treetops
+        (tr :no-treetops-remain-exiting)
+        (return))
+      (setq tt (pop ramaining-treetops))
       
-        (loop
-          ;; We're looping over successive treetops. When we run out 
-          ;; of tt we're done.
-          (unless ramaining-treetops
-            (tr :no-treetops-remain-exiting)
-            (return))
-          (setq tt (pop ramaining-treetops))
-
-          (when (>= (incf tt-count) number-of-treetops)
-            ;; belt and suspenders to ensure we don't loop indefinitely
-            (return))
-
-          ;; Start with Debris Analysis to find a pattern over these
-          ;; treetops. We may have to look at several successive tt
-          ;; before we get one
-          (tr :trying-da-pattern-on tt)
-          (setq result (look-for-da-pattern  tt))
-
-          ;; Did that cover everything? (Could only happen on the
-          ;; first iteration.
-          (setq coverage (coverage-over-region start-pos end-pos))
-          (when (eq coverage :one-edge-over-entire-segment)
-            ;; we're done because we've succeeded
-             (return-from run-island-checks-pass-two t))
-
-          ;; Ok. Look at the result of the debris analysis run
-          (cond
-           ((null result)
-            ;; Loop around to try DA on the next tt
-            (tr :no-result-from-da))
-
-           ((edge-p result)
-            ;; If there are any contiguous edges now
-            ;; we should run the rule engine   
-            (tr :p2-da-returned-edge result)
-            (let ((action (coverage-dispatch coverage)))
-              (case action
-                (:do-not-apply-rules
-                 ;; go to the da loop
-                 (tr :p2-no-use-applying-rules))
-                (:apply-rules 
-                 ;; The cycle runs to completion on all the treetops
-                 ;; and does it's own recalulation
-                 (tr :p2-applying-rules)
-                 (whack-new-edge sentence)                 
-                 ;; Once it's done we evaluate the coverage again
-                 ;; to see whether we're done, 
-                 (setq coverage (coverage-over-region start-pos end-pos))
-                 (tr :p2-converage-is coverage)
-                 (when (eq coverage :one-edge-over-entire-segment)
-                   (return-from run-island-checks-pass-two t))
-                 ;; otherwise we update the tracking variables and loop
-                 (setq ramaining-treetops (successive-treetops :from start-pos :to end-pos)
-                       number-of-treetops (length ramaining-treetops)))
-                (otherwise
-                 (error "Unanticipate return from coverage dispatch: ~a" action)))))
-
-           ((keywordp result)
-            (ecase result
-              (:trie-exhausted
-               ;; didn't find anything, if there's a next tt after
-               ;; this one we should look for a pattern starting there
-               (tr :no-result-from-da))
-              (:pattern-matched
-               ;; the function ran, but it didn't return an edge
-               ;; (so it should be revised to do so !!)
-               (lsp-break "pattern matched, but what actually happened?"))))
-           (t
-            (push-debug `(,result ,sentence ,start-pos ,end-pos))
-            (error "Unanticipated type of result: ~a" (type-of result))))
-
-
-          ) ;; the loop
-        ))))
+      (when (>= (incf tt-count) number-of-treetops)
+        ;; belt and suspenders to ensure we don't loop indefinitely
+        (return))
+      
+      ;; Start with Debris Analysis to find a pattern over these
+      ;; treetops. We may have to look at several successive tt
+      ;; before we get one
+      (tr :trying-da-pattern-on tt)
+      (setq result (look-for-da-pattern  tt))
+      
+      ;; Did that cover everything? (Could only happen on the
+      ;; first iteration.
+      (setq coverage (coverage-over-region start-pos end-pos))
+      (when (eq coverage :one-edge-over-entire-segment)
+        ;; we're done because we've succeeded
+        (return-from old-pass2 t))
+      
+      ;; Ok. Look at the result of the debris analysis run
+      (cond
+       ((null result)
+        ;; Loop around to try DA on the next tt
+        (tr :no-result-from-da))
+       
+       ((edge-p result)
+        ;; If there are any contiguous edges now
+        ;; we should run the rule engine   
+        (tr :p2-da-returned-edge result)
+        (let ((action (coverage-dispatch start-pos end-pos)))
+          (case action
+            (:one-edge-over-entire-segment
+             (return-from old-pass2 t))
+            (:do-not-apply-rules
+             ;; go to the da loop
+             (tr :p2-no-use-applying-rules))
+            (:apply-rules 
+             ;; The cycle runs to completion on all the treetops
+             ;; and does it's own recalulation
+             (tr :p2-applying-rules)
+             (whack-a-rule-cycle sentence)
+             ;; Once it's done we evaluate the coverage again
+             ;; to see whether we're done, 
+             (setq coverage (coverage-over-region start-pos end-pos))
+             (tr :p2-converage-is coverage)
+             (when (eq coverage :one-edge-over-entire-segment)
+               (return-from old-pass2 t))
+             ;; otherwise we update the tracking variables and loop
+             (setq ramaining-treetops (successive-treetops :from start-pos :to end-pos)
+                   number-of-treetops (length ramaining-treetops)))
+            (otherwise
+             (error "Unanticipate return from coverage dispatch: ~a" action)))))
+       
+       ((keywordp result)
+        (ecase result
+          (:trie-exhausted
+           ;; didn't find anything, if there's a next tt after
+           ;; this one we should look for a pattern starting there
+           (tr :no-result-from-da))
+          (:pattern-matched
+           ;; the function ran, but it didn't return an edge
+           ;; (so it should be revised to do so !!)
+           (lsp-break "pattern matched, but what actually happened?"))))
+       (t
+        (push-debug `(,result ,sentence ,start-pos ,end-pos))
+        (error "Unanticipated type of result: ~a" (type-of result))))
+      
+      
+      ) ;; the loop
+    ))
 
              
   
