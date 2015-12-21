@@ -118,10 +118,6 @@
 (defun whack-a-rule-cycle (sentence)
   (let ((*whack-a-rule-sentence* sentence))
     (declare (special *whack-a-rule-sentence*))
-    #+ignore ;; copular adjectives now handled by the chunker
-    (let (copula)
-      (loop while (setq copula (copula-rule?))
-        do (execute-triple copula)))
 
     (let ( rule-and-edges  edge )
       (clrhash *rules-for-pairs*)
