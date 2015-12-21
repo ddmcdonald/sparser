@@ -359,7 +359,6 @@
 
 (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super experimental-condition)
-(noun "conformation" :super bio-entity) ;; keyword: (ion N) 
 (adj "consistent" :super bio-relation
   :binds ((subject biological) (theme biological))
   :realization 
