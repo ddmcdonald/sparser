@@ -75,6 +75,89 @@
   (reset-test)
   nil)
 
+(defun test-sent (corpus n &key (quiet t) (stream *standard-output*))
+  (declare (special *overnight-sentences* *jan-dry-run*
+                    *dec-tests* *erk-abstract* *aspp2-whole*
+                    *load-test-sents*
+                    *readout-segments-inline-with-text*))
+  (let*
+      ((*readout-segments-inline-with-text* nil) ;; quiet
+       (sentences
+        (ecase corpus
+          ((:overnight overnight) *overnight-sentences*)
+          ((:dry-run :jan dry-run jan) *jan-dry-run*)
+          ((:dec-test dec-test) *dec-tests*)
+          ((:erk erk) *erk-abstract*)
+          ((:aspp2 aspp2) *aspp2-whole*)
+          ((:load load-test) *load-test-sents*)))
+       (test (nth (- n 1) sentences)))
+    (if quiet
+        (pp (second test))
+        (eval test))
+    (format stream "~&~&________________~&(~s ~s)~&~S~&" corpus n (second test))
+    (loop for chunk in (reverse *chunks*)
+      do (print-segment-and-pending-out-of-segment-words
+          (chunk-start-pos chunk)
+          (chunk-end-pos chunk)
+          stream))
+    (ptree stream)))
+
+(defun save-sent-parse (corpus n)
+  (with-open-file (stream (sent-save-file corpus n)
+                     :direction :output
+                     :if-exists :overwrite
+                     :if-does-not-exist :create)
+    (test-sent corpus n :stream stream)))
+
+
+(defparameter *p-sent* nil)
+(defparameter *sent-snapshots-directory* nil)
+
+(defun save-sent-snapshots (&optional
+                            (corpora '(overnight dec-test dry-run aspp2 erk)))
+  (let ((*sent-snapshots-directory* (create-snapshot-directory)))
+    (loop for c in corpora
+      do (terpri)
+      (print c)
+      (print (save-corpus-sents c)))))
+
+(defun save-corpus-sents (name)
+  (let ((corpus (get-sentence-corpus name))
+        (*sent-snapshots-directory*
+         (or *sent-snapshots-directory*
+             (create-snapshot-directory))))         
+    (unless corpus
+      (error "No sentence corpus has been defined with the name ~a" name))
+    (let* ((variable (corpus-bound-variable corpus))
+           (sentences (eval variable)))
+      (loop for i from 1 to (length sentences)
+        do
+        (save-sent-parse name i)))))
+
+(defun create-snapshot-directory ()
+  (ensure-directories-exist
+   (make-pathname :directory (append (pathname-directory *directory-for-tree-snapshots*)
+                                     (list (dtg-dir))))
+   :verbose t))
+
+(defun create-corpus-directory (corpus)
+  (ensure-directories-exist
+   (make-pathname :directory (append (pathname-directory *sent-snapshots-directory*)
+                                     (list (format nil "~a"  corpus))))
+   :verbose t))
+
+(defun dtg-dir ()
+  (multiple-value-bind (second minute hour date month year day)
+      (decode-universal-time (get-universal-time))
+    (declare (ignore day))
+    (format nil "~4D~2,'0D~2,'0DT~2,'0D~2,'0D~2,'0D"
+            year month date hour minute second)))
+    
+(defun sent-save-file (corpus n)
+  (merge-pathnames
+   (format nil "~a-~a.sparse" corpus n)
+   (create-corpus-directory corpus)))
+
 
 
 ;;;-------------------------------
