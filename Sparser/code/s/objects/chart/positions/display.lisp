@@ -249,6 +249,8 @@
   (let ((*symbolic-rule-names* t))
     (display-edge-as-tree/syntax edge offset s)))
 
+(defparameter *no-edge-info* nil)
+
 (defun display-edge-as-tree/syntax (edge
                                     &optional (offset 0)
                                               (s *standard-output*))
@@ -304,9 +306,9 @@
                (symbol (string-downcase (symbol-name rule))))
              "terminal")))
       
-      (format s "~&~AE~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
+      (format s "~&~A~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
               indentation-space
-              index
+              (if *no-edge-info* "" (format nil "E-~A" index))
               label-string
               start
               end
@@ -370,11 +372,18 @@
 (defun stree (n)
   (display-edge-as-tree/syntax (edge# n)))
 
-(defun ctree (tree)
+(defun ctree (tree &optional (stream *standard-output*))
   (if
    (word-p tree)
-   (print tree)
-   (display-edge-as-tree/symbolic-syntax 
+   (print tree stream)
+   (display-edge-as-tree/symbolic-syntax
     (cond
      ((numberp tree) (edge# tree))
-     ((edge-p tree) tree)))))
+     ((edge-p tree) tree))
+    0
+    stream)))
+
+(defun ptree (&optional  (stream *standard-output*))
+  (loop for tt in (all-tts)
+    do
+    (ctree tt stream)))
