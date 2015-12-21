@@ -193,6 +193,12 @@
 
 (define-category molecule-state :specializes bio-state)
 
+(define-category bio-conformation :specializes molecule-state
+  :realization 
+  (:noun "conformation"))
+
+
+
 
 
 
