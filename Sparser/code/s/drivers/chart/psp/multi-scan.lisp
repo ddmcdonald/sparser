@@ -358,7 +358,7 @@
 
 
 
-(defun look-for-DA-pattern (treetop)  ;; (trace-da)
+#|(defun look-for-DA-pattern (treetop)  ;; (trace-da)
   ;;/// use in look-for-length-three-patterns since this encapsulates
   ;; better probably
   (let ((vertex (trie-for-1st-item treetop)))
@@ -369,8 +369,15 @@
       (else
        ;; trace
        nil))))
+|#
 ;; (p "PIK3CA and BRAF are, in part, regulated.")
 
+(defun look-for-da-pattern (tt)
+  "If there is a da pattern that starts at this treetop
+  execute it and return the 'result'"
+  (let ((da-node (trie-for-1st-item tt)))
+    (when da-node
+      (standalone-da-execution da-node tt))))
 
 ;;;-------------------------
 ;;; 3d pass -- conjunctions
