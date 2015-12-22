@@ -152,6 +152,10 @@
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
 
+(def-form-rule (be subordinate-clause)
+  :form subordinate-clause
+  :referent (:function add-tense/aspect-to-subordinate-clause left-edge right-edge))
+
 ;;---- tns + not
 
 (def-cfr be (be not)

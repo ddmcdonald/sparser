@@ -96,6 +96,11 @@
              :function add-tense/aspect left-edge right-edge))
 
 
+(def-form-rule (have subordinate-clause)
+  :form subordinate-clause
+  :referent (:function add-tense/aspect-to-subordinate-clause left-edge right-edge))
+
+
 
 
 ;;---- tns + not
