@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "launch"
 ;;;   Module:  "init;versions:v4.0:config:"
-;;;  version:  October 2015
+;;;  version:  December 2015
 
 ;; 10/7/94 commented out the call to make objects permanent and move it to the
 ;; save images file. 10/12 turning off the break-outside-coverage flag
@@ -39,6 +39,8 @@
 ;; resources that won't exist when just compiling files. 9/16/13 added c3 setting.
 ;; 10/21/13 Changed the default switch setting to fire, which at the moment
 ;; is the equivalent of making it Strider's settings. 10/7/15 Added *CwC* case.
+;; 12/21/15 Removed switch setting from final-session-setup to be a function
+;; called earlier. Definition is in everything.
 
 (in-package :sparser)
 
@@ -165,22 +167,8 @@
   (setup-session-globals/parser)
 
   (when *load-the-grammar*
-    (setup-session-globals/grammar))
+    (setup-session-globals/grammar)))
 
-  ;;;---------------------------
-  ;;; set the protocol switches
-  ;;;---------------------------
-  (cond
-    (*grok* (grok-setting))
-    (*big-mechanism* (bio-setting))
-    (*CwC* (blocks-world-setting))
-    (*bbn*  (all-edges-setting))
-    (*fire* (fire-setting))
-    (*c3* (c3-setting))
-    (*just-bracketing* (just-bracketing-setting))
-;    (*checkpoint-ops* ;; oops -- points to a grammar module
-;     (checkpoint-ops-setting))
-    (t (fire-setting))))
 
 
 
