@@ -74,6 +74,8 @@
   ;; omitted and then run (perhaps) after the image has been
   ;; launched
 
+  (set-protocol-switches)
+
   (unless (or *just-note-changed-files*
               *copy-file*)
     (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
