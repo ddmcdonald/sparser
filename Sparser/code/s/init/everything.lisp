@@ -995,29 +995,9 @@ or for loading the newer of the compiled or source files.
 
    #| No longer supported configurations unless you go back to
       significantly earlier versions of Sparser
-      (sparser::*assetnet*
-       (sparser::lload "grammar-configurations;AssetNet"))
-
       (sparser::*bbn*
        (sparser::lload "grammar-configurations;bbn"))
-
-      (sparser::*sun*
-       (sparser::lload "grammar-configurations;SUN"))
-
-      (sparser::*apple*
-       (unless (find-package :lingsoft)
-         (make-package :lingsoft
-                       :nicknames '(:ls)))
-       (sparser::lload "grammar-configurations;partial grammar"))
-
-      (sparser::*pure-dm&p-load*
-       (sparser::lload "grammar-configurations;minimal dm&p grammar"))
-
-      (sparser::*public-grammar*
-       (sparser::lload "grammar-configurations;public grammar"))
-
-      (sparser::*academic-grammar*
-       (sparser::lload "grammar-configurations;academic grammar"))  |#
+ |#
 
       (sparser::*load-the-grammar*
        (sparser::lload "grammar-configurations;full grammar"))
@@ -1025,6 +1005,20 @@ or for loading the newer of the compiled or source files.
       (t
        (unless sparser::*compile*
          (break "No grammar configuration file specified"))))
+
+(defun set-protocol-switches ()
+  (cond
+    (*grok* (grok-setting))
+    (*big-mechanism* (bio-setting))
+    (*CwC* (blocks-world-setting))
+    (*bbn*  (all-edges-setting))
+    (*fire* (fire-setting))
+    (*c3* (c3-setting))
+    (*just-bracketing* (just-bracketing-setting))
+;    (*checkpoint-ops* ;; oops -- points to a grammar module
+;     (checkpoint-ops-setting))
+    (t (fire-setting))))
+
 
 
 
