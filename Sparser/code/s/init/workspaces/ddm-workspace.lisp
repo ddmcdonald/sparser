@@ -3,12 +3,24 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  November 2015
+;;;  version:  December 2015
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
+#| individual-for-ref  get-realization-scheme
+ record-any-determiner 
 
+ fill-compatible-slot 
+   analyze-pp indexical-for-state mark-instance-indefinite
+   define-determiner
+ mumble::link-to-underlying-object mumble::remove-subject
+   mumble::dtn-bundle-driver
+   mumble::
+   mumble::
+
+
+|#
 (defun ddm-standard ()  ;;    (ddm-standard)
   ;; (setup-bio) ;; load the bio model etc.
   ;;------
