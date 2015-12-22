@@ -42,10 +42,10 @@
 
 ;;--- passive
 
-(set-ca-action  category::vp/passive  'vp/passive-ca-dispatch)
+(set-ca-action  category::vp+passive  'vp+passive-ca-dispatch)
 
 
-(defun vp/passive-ca-dispatch (vp-edge)
+(defun vp+passive-ca-dispatch (vp-edge)
   (let ((subj-rule (subject-rule (edge-referent vp-edge)
                                  :passive )))
     (when subj-rule

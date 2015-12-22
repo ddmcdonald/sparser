@@ -93,6 +93,7 @@
 ;; 6/8/2015 tweaked ng-head?  to prevent treating <adverb> <vp+ing> as a NG group
 ;; 9/6/15 Added number to the list of categories that aren't relevant in a discourse
 ;;   history. And again 9/24/15
+;;     12/15 changed vg/passive and vp/passive to vg+passive vg+passive
 
 
 (in-package :sparser)
@@ -207,6 +208,7 @@
 (def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
 (def-form-category  vg+passive) ;; vg with an be and V+ED
 (def-form-category  vp+passive) ;; vp with an be and V+ED
+
 (def-form-category  pp)
 (def-form-category  pp-wh-pronoun)
 (def-form-category  advp)
@@ -222,8 +224,7 @@
 (def-form-category  as-comp) ;; to + vp or to+vg
 (def-form-category  prep-comp) ;; {by, for, after, ..} + vg{+ing}
 
-(def-form-category vg/passive)
-(def-form-category vp/passive)
+
 
 
 ;;;------------
@@ -670,8 +671,8 @@
     ;;,category::relative-clause
     ,category::subject-relative-clause
     ,category::pp-relative-clause
-    ,category::vp/passive
-    ,category::vg/passive
+    ,category::vp+passive
+    ,category::vg+passive
     ,category::participle
     ,category::verb+ed
     ,category::verb ;; this covers BE!

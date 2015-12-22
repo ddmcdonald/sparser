@@ -557,9 +557,9 @@
       (then
         (if (equal specialization "+ED")
           (cond ((eq category-name 'vg)
-                 (category-named 'vg/passive))
+                 (category-named 'vg+passive))
                 ((eq category-name 'vp)
-                 (category-named 'vp/passive))
+                 (category-named 'vp+passive))
                 (t (break "Assumption violation:  Only expected 'vg' or 'vp'~
                          ~%to be specialized with '+ed', but the label name~
                          ~%in this case is ~A" category-name)))
