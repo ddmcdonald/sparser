@@ -289,7 +289,7 @@
 (define-mixin-category caused-bio-process
   :specializes bio-process
   :binds
-  ((agent biological) ;; supercedes subject in bio=-process
+  ((agent (:or biological this)) ;; supercedes subject in bio=-process
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
    (at (:or bio-concentration quantity measurement)))
   :realization
