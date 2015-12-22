@@ -336,25 +336,19 @@
 
 (defmethod add-tense/aspect ((aux category) (vg individual))
   (push-debug `(,aux ,vg)) ;;(break "is this right?")
-  (let ((i (find-or-make-aspect-vector vg)))
-    (case (cat-symbol aux)
-      (category::be  ;; be + ing
-       (setq  i (bind-dli-variable 'progressive aux i)))
-      (category::have  ;; have + en
-       (setq  i (bind-dli-variable 'perfect aux i)))
-      (category::past
-       (setq  i (bind-dli-variable 'past t i)))
-      (otherwise
-       (push-debug `(,aux ,vg))
-       (error "Extend add-tense/aspect to handle ~a" aux)))
-    ;;(push-debug `(,i)) (break "look at i")
-    (setq vg (bind-dli-variable 'aspect i vg))
-    vg))
+  ;;(push-debug `(,i)) (break "look at i")
+  (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))
 
 (defmethod add-tense/aspect ((aux individual) (vg individual))
   (push-debug `(,aux ,vg)) ;;(break "is this right?")
-  (let ((i (find-or-make-aspect-vector vg)))
-    (case (cat-symbol (car (indiv-type aux)))
+  (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))
+
+(defun make-vg-aux (aux vg)
+  (let ((aux-cat (if (individual-p aux)
+                     (car (indiv-type aux))
+                     aux))
+        (i (find-or-make-aspect-vector vg)))
+    (case (cat-symbol aux-cat)
       (category::be  ;; be + ing
        (setq  i (bind-dli-variable 'progressive aux i)))
       (category::have  ;; have + en
@@ -364,9 +358,27 @@
       (otherwise
        (push-debug `(,aux ,vg))
        (error "Extend add-tense/aspect to handle ~a" aux)))
-    ;;(push-debug `(,i)) (break "look at i")
-    (setq vg (bind-dli-variable 'aspect i vg))
-    vg))
+    i))
+
+(defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc category))
+  (add-tense/aspect-to-subordinate-clause aux (make-individual-for-dm&p sc)))
+
+(defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc category))
+  (add-tense/aspect-to-subordinate-clause aux (make-individual-for-dm&p sc)))
+
+
+(defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc individual))
+  (push-debug `(,aux ,sc)) ;;(break "is this right?")
+  (let* ((vg (value-of 'comp sc)))
+    (make-subordinate-clause (value-of 'conj sc) 
+                             (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))))
+
+(defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc individual))
+  (push-debug `(,aux ,sc)) ;;(break "is this right?")
+  (let* ((vg (value-of 'comp sc)))
+    (make-subordinate-clause (value-of 'conj sc) 
+                             (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))))
+
 
 
 
@@ -759,9 +771,20 @@ to enhance p53 mediated apoptosis [2].") |#
 ;;;-----------------
 
 (defun assimilate-subject (subj vp)
-  (if (is-passive? (right-edge-for-referent))
-   (assimilate-subcat vp :object subj)
-   (assimilate-subcat vp :subject subj)))
+  ;;(lsp-break "ass")
+  (cond
+   ((itypep vp 'subordinate-clause)
+    (let* ((svp (value-of 'comp vp))
+           (vg-edge (edge-right-daughter (right-edge-for-referent)))
+           (s
+            (if (is-passive? vg-edge)
+                (assimilate-subcat svp :object subj)
+                (assimilate-subcat svp :subject subj))))
+      (when s 
+        (make-subordinate-clause (value-of 'conj vp) s))))
+   ((is-passive? (right-edge-for-referent))
+    (assimilate-subcat vp :object subj))
+   (t (assimilate-subcat vp :subject subj))))
 
 
 ;; special case where the vp is a gerund, and we make it an NP (not sure how often this is right)
@@ -1112,7 +1135,20 @@ to enhance p53 mediated apoptosis [2].") |#
     this picks up all the rest, e.g. 'by being phosphorylated'
     though the head decides what to do with it based on the
     composition. Same design as pps."
-  :index (:temporary :sequential-keys prep comp))
+  :index (:temporary :sequential-keys prep comp)) 
+
+(define-category subordinate-clause
+  :specializes abstract
+  :binds ((conj)
+          (comp))
+  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
+    though the head decides what to do with it based on the
+    composition. Same design as pps."
+  )
+
+(mark-as-form-category category::subordinate-clause)
+
+
 
 
 (define-category pp-relative-clause
@@ -1132,6 +1168,11 @@ to enhance p53 mediated apoptosis [2].") |#
   (make-non-dli-individual
    category::prepositional-phrase
    `((prep ,prep) (pobj ,pobj))))
+
+(defun make-subordinate-clause (conj clause)
+  (make-non-dli-individual
+   category::subordinate-clause
+   `((conj ,conj) (comp ,clause))))
 
 (defun make-pp-relative-clause (pp clause)
   (let* ((binding-instructions
