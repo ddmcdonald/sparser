@@ -444,7 +444,7 @@
   (setq *permit-rules-with-duplicate-rhs* nil)
   (setq *do-general-actions-on-treetops* t)
   (setq *make-edges-over-new-digit-sequences* t)
-  (period-hook-on)
+  ;;(period-hook-on)
   
   ;; Experimenting with different choices of parsing protocol.
   ;; Eventually it will be a new one that's incremental and
@@ -467,7 +467,7 @@
   (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
   ;; consider some standard extras
 
-
+  (setq *description-lattice* nil) ;; leave permanence up in the air
   (turn-off-debugging-flags)
   (setq *switch-setting* :blocks-world))
 
