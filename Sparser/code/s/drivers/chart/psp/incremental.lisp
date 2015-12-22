@@ -132,6 +132,7 @@
 (defun C3-lookup-composer (left-form right-form)
   ;; Lookup the rule that composes these edge. Sort of a hack
   ;; to avoid walking into the biology-focused syntactic rules.
+  (declare (special *c3-syntactic-rules*))
   (push-debug `(,left-form ,right-form))
   (let ((rule (lookup-syntactic-rule `(,left-form ,right-form))))
     (unless rule
@@ -154,33 +155,30 @@
 (defun fill-compatible-slot (left-ref right-ref)
 #| for "build a staircase" left is a category as it the right
   12/19/15 2pm  |#
-  ;; presume that the head is on the left.
+  ;; presume that the head is on the left.///Note that nothing
+  ;; is double-checking this. Fundamental weakness of the protocol
   (unless (individual-p left-ref)
     (setq left-ref (individual-for-ref left-ref)))
    (unless (individual-p right-ref)
     (setq right-ref (individual-for-ref right-ref)))
   (push-debug `(,left-ref ,right-ref)) ;; (setq left-ref (car *) right-ref (cadr *))
-  (break "find compatible")
   (let ((open-variables (unsaturated? left-ref)))
     (unless open-variables
-      (error "expected something to be open"))
+      (error "expected some variable of ~a to be open" left-ref))
     (push-debug `(,open-variables))
-    (break "check compat")
+    (when (cdr open-variables)
+      (error "rewrite loop to compare several variables"))
+    (let ((variable (car open-variables)))
+      (when (compatible-with-variable? variable right-ref)
+        (bind-variable variable right-ref left-ref)))
     left-ref))
 
 
+(defun compatible-with-variable? (var i)
+  (let ((restriction (var-value-restriction var)))
+    (satisfies-subcat-restriction? i restriction)))
 
 
-
-(defparameter *c3-syntactic-rules*
-  (list 
-   (def-syntax-rule (verb np)
-                    :head :left-edge
-     :form vp
-     :referent (:function fill-compatible-slot left-edge right-edge)))
-  "The specific set of rules to use because (hack hack) their
-   interpretation is controlled without having to fold into the 
-   regular set as should be done when the basics are shaken down.")
 
 
 
