@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2015 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "lattice-operations"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.0 August 2015
+;;;   Version:   December 2015
 
 ;; initiated in May 2015
 ;; Code to place referents in a description lattice to facilitate anaphora and other reasoning
@@ -23,12 +23,13 @@
 ;; Added predicate more-specific? which tests relative position
 ;;  (subsumption) in the description lattice.
 ;; 8/12/15 Moved call to use-description-lattice to switches (bio-setting)
-
+;; 12/21/15 Set default value of *description-lattice* to nil to avoid load-
+;;  time gratuitous side-effects.
 
 
 (in-package :sparser)
 
-(defparameter *description-lattice* t)
+(defparameter *description-lattice* nil) ;; set by switch setting
 
 (defun use-description-lattice (&optional (use-it t))
   (setq *index-under-permanent-instances* use-it) 
