@@ -75,7 +75,7 @@
   (reset-test)
   nil)
 
-(defun test-sent (corpus n &key (quiet t) (stream *standard-output*))
+(defun test-sent (corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
   (declare (special *overnight-sentences* *jan-dry-run*
                     *dec-tests* *erk-abstract* *aspp2-whole*
                     *load-test-sents*
@@ -100,7 +100,10 @@
           (chunk-start-pos chunk)
           (chunk-end-pos chunk)
           stream))
-    (ptree stream)))
+    (let
+        ((*no-edge-info* no-edges))
+      (declare (special *no-edge-info*))
+      (ptree stream))))
 
 (defun save-sent-parse (corpus n)
   (with-open-file (stream (sent-save-file corpus n)
