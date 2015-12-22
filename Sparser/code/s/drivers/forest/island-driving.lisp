@@ -216,7 +216,7 @@
     rule-executed?))
 
 (defun execute-one-da-rule (treetops)
-  (loop for tt in treetops
+  (loop with result for tt in treetops
     thereis
     (progn
       (tr :trying-da-pattern-on tt)
