@@ -723,7 +723,8 @@
 (adj "molecular" :super bio-predication) ;; It's realated to molecule, but how exactly? Seems wrong to jump to "is made of molecules"
 (define-adverb "moreover")
 (noun "mortality" :super bio-abstract) ;;/// relationship to "mortal" ??
-(noun "mutagenic approaches" :super bio-method)
+(noun ("mutagenesis" :plural "mutageneses") :super bio-method)
+(noun "mutagenic approaches" :super mutagenesis)
 (adj "mutagenic" :super bio-predication)
 (adj "mutual" :super bio-predication) ;; keyword: (al ADJ) 
 
