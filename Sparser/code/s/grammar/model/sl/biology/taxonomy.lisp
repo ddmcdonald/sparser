@@ -232,8 +232,13 @@
 
 (define-category bio-chemical-entity :specializes bio-entity ;; includes all molecules and complexes   ;; sweeps a lot under the rug
   :mixins (has-UID has-name biological)
-  :index (:permanent :key name)
-  :realization (:common-noun name))
+  :binds ((in-equilibrium-with equilibrium))
+  ;; :index (:permanent :key name)
+  ;; :realization (:common-noun name)
+  :realization
+  (:noun "bio-chemical-entity"
+         :in in-equilibrium-with)
+  )
 
 
 
@@ -480,8 +485,12 @@
     for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
 
-(define-category pathway-direction 
-                 :specializes bio-relation)
+(define-category pathway-direction :specializes bio-relation)
+(define-category equilibrium :specializes bio-relation
+  :binds ((with-species bio-chemical-entity))
+  :realization
+  (:noun ("equilibrium" :plural "equilibria")
+        :with with-species))
 
 (define-category feedback-loop :specializes bio-mechanism
   :binds ((participant biological))
