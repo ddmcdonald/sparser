@@ -143,6 +143,17 @@
 
 
 
-              
+          
+
+(defparameter *c3-syntactic-rules*
+  (list 
+   (def-syntax-rule (verb np)
+                    :head :left-edge
+     :form vp
+     :referent (:function fill-compatible-slot left-edge right-edge)))
+  "The specific set of rules to use because (hack hack) their
+   interpretation is controlled without having to fold into the 
+   regular set as should be done when the basics are shaken down.")
+    
 
 
