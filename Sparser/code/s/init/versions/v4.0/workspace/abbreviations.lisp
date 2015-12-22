@@ -47,9 +47,9 @@
 ;;;     abbreviations of frequently called routines
 ;;;-----------------------------------------------------
 
-(defun d (obj)
+#|(defun d (obj)
   (describe obj)
-  obj)
+  obj)|#
 
 
 (defun e ( &key from to )
