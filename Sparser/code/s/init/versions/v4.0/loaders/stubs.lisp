@@ -21,10 +21,6 @@
     as the end of the load and thereby give any messages that do occur
     real significance.   |#
 
-(when *description-lattice*
-  (defun bind-variable (var value object)
-    (declare (ignore var value object))))
-
 (unless (memq :biology-loaded *features*)
   (defun in-ras2-model? (i) (declare (ignore i))) ;; Rusty's workspace
   (defun post-translation-file-from-card (card number) ;; Biology workspace
