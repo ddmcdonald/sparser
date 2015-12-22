@@ -153,28 +153,12 @@
 (define-category serve :specializes bio-act
   :realization
   (:verb "serve"
-         :etf sv
-         :s actor
-         :at bio
-         :as functionality
-         :by process
-         :on object
-         :through bio
-         :via bio
-         :to-comp tocomp))
+         :etf sv))
 
 (define-category bio-function :specializes bio-act
   :realization
   (:verb "function"
-         :etf sv
-         :s actor
-         :at bio
-         :as functionality
-         :by process
-         :on object
-         :through bio
-         :via bio
-         :to-comp tocomp))
+         :etf sv))
 
 (define-category bio-functionality :specializes bio-quality
   :realization
@@ -1213,12 +1197,14 @@
 	   :etf (svo-passive)))
 
 (define-category know :specializes bio-rhetorical
-    :binds ((topic biological))
+  :binds ((topic biological)
+          (tocomp (:or be biological)))
     :realization
-    (:verb "know"
+    (:verb ("know" :past-tense "known")
 	   :noun "knowledge" 
 	   :etf (svo-passive)
-           :about topic))
+           :about topic
+           :to-comp tocomp))
 
 (delete-noun-cfr (resolve "lead"))
 (delete-noun-cfr (resolve "leads"))
