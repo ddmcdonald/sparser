@@ -365,8 +365,8 @@
 
 (define-category change :specializes caused-bio-process
       :binds ((scale bio-scalar)
-              (original-state bio-state)
-              (resulting-state bio-state)
+              (original biological)
+              (resulting biological)
               ) 
       :realization
       (:verb "change"
@@ -374,8 +374,9 @@
              :in object
              :of object
              :on scale
-             :from original-state
-             :to resulting-state))
+             :from original
+             :to resulting
+             :into resulting))
 
 (def-synonym change
             (:noun "variation"))
@@ -1047,10 +1048,13 @@
   :realization
   (:verb "impact" 
          :etf (svo-passive)
-         :noun "impact"
 	 :s subject
          :o theme
-	 :of theme))
+	 :of theme
+         :on theme))
+
+(def-synonym impact
+             (:noun "impact"))
 
 (define-category impair :specializes negative-bio-control
   :binds ((bio biological)) 
