@@ -491,26 +491,15 @@ similar to an oncogenic RasG12V mutation (9)."))
      `(def-syntax-rule (,n ,v)
                        :head :right-edge
         :form S
-        :referent (:function assimilate-subject left-edge right-edge)))))
+        :referent (:function assimilate-subject left-edge right-edge))))
+  (eval
+   `(def-syntax-rule (,n subordinate-clause)
+                     :head :right-edge
+      :form subordinate-clause
+      :referent (:function assimilate-subject left-edge right-edge))))
 
 ;; TO-DO make a debris rule for NP VP+ING which happens "late"
 
-#|
-(def-syntax-rule (np vg)
-                 :head :right-edge
-  :form subj+verb
-  :referent (:function assimilate-subject left-edge right-edge))
-
-(def-syntax-rule (np vp)
-  :head :right-edge
-  :form s
-  :referent (:function assimilate-subject left-edge right-edge))
-
-(def-syntax-rule (proper-noun vp)
-  :head :right-edge
-  :form s
-  :referent (:function assimilate-subject left-edge right-edge))
-|#
 
 ;;;--------------------------
 ;;; subordinate conjunctions
@@ -519,15 +508,15 @@ similar to an oncogenic RasG12V mutation (9)."))
 ; e.g. the "thus" in 
 ;   (p "SOS promotes the formation of GTP-bound RAS, thus activating this protein.")
 
-(def-syntax-rule (subordinate-conjunction vp+ing)
-                 :head :right-edge
-  :form vp+ing ;; swallow the conjunction. Not grammatical import
-  :referent (:function interpret-subordinator left-edge right-edge))
 
-(def-syntax-rule (subordinate-conjunction vp+ed)
-                 :head :right-edge
-  :form vp+ing ;; swallow the conjunction. Not grammatical import
-  :referent (:function interpret-subordinator left-edge right-edge))
+(loop for vv in '((s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
+                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
+  
+  do
+  (eval `(def-syntax-rule (subordinate-conjunction ,(car vv))
+                          :head :right-edge
+           :form subordinate-clause
+           :referent (:function make-subordinate-clause left-edge right-edge))))
                  
 
 ;;;----------------------
