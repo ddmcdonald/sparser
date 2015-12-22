@@ -41,6 +41,34 @@
        (tr :comma-3tt-pattern edge)
        edge))))
 
+(define-debris-analysis-rule s-comma-pp
+  :pattern ( s "," pp )
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function attach-following-pp-to-clause third first))
+
+(defun attach-following-pp-to-clause (pp clause)
+  (let* ((clause-referent (edge-referent clause))
+         (pobj-edge (edge-right-daughter pp))
+         (pobj-referent (edge-referent pobj-edge))
+         (prep-edge (edge-left-daughter pp))
+         (prep-word (edge-left-daughter prep-edge)))
+    (let ((var-name
+           (subcategorized-variable clause-referent
+                                    prep-word
+                                    pobj-referent)))
+      (when var-name
+        (setq clause-referent 
+              (bind-dli-variable var-name pobj-referent clause-referent))
+        (let ((edge (make-binary-edge/explicit-rule-components
+                     clause pp 
+                     :category (edge-category clause)
+                     :form (edge-form clause)
+                     :rule-name :attach-following-pp-to-clause
+                     :referent clause-referent)))
+          (tr :comma-3tt-pattern edge)
+          edge)))))
+
+
 (define-debris-analysis-rule s-comma-s
   :pattern ( s "," s )
   :action (:function conjoin-two-clauses first third))
@@ -186,6 +214,41 @@
       nil))))
 
 
+(defun attach-pp-to-np-under-s (s-edge comma-edge pp-edge)
+  (push-debug `(,s-edge ,comma-edge ,np-edge))
+  ;; (setq s-edge (car *) comma-edge (cadr *) np-edge (caddr *))
+  ;; Look up the right fridge of the s for a proper-noun 
+  (let ((right-fringe-of-s ;; ordered bottom to top
+         (all-edges-on (pos-ends-here (pos-edge-ends-at s-edge))))
+        target )
+    (declare (special right-fringe-of-s))
+    (loop for edge in right-fringe-of-s
+      ;; replace eq with acceptable-appositive?
+      when (eq (edge-form edge) category::proper-noun)
+      do (setq target edge))
+    (cond
+     (target
+      (let ((new-edge
+             (make-edge-over-long-span 
+              (pos-edge-starts-at target)
+              (pos-edge-ends-at np-edge)
+              (edge-category target)
+              :form (edge-form target)
+              :rule 'attach-appositive-np-under-s
+              :referent (edge-referent target) ;;!!!!
+              :constituents `(,target ,comma-edge ,np-edge))))
+        (tuck-new-edge-under-already-knit
+         target ;; subsumed
+         new-edge
+         s-edge
+         :right)
+        new-edge))
+     (t 
+      ;;(lsp-break "attach-appositive-np-under-s fails")
+      nil))))
+
+
+
 (define-debris-analysis-rule proper-noun-comma-vg+ed-comma
   :pattern (proper-noun "," vp+ed ",")
   :action (:function ;; providing all edges should let the constituents
@@ -237,6 +300,57 @@
       (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
       ;; (push-debug `(,edge)) (break "look at edge")
       edge)))
+
+
+
+
+(define-category event-relation
+  :specializes abstract
+  :binds ((relation)
+          (event)
+          (subordinated-event))
+  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
+    though the head decides what to do with it based on the
+    composition. Same design as pps."
+  )
+
+(mark-as-form-category category::event-relation)
+
+(define-debris-analysis-rule subordinate-comma-clause
+  :pattern (subordinate-clause "," s )
+  :action (:function create-event-relation third first first third))
+
+(define-debris-analysis-rule clause-and-subordinate
+  :pattern ( s and subordinate-clause  )
+  :action (:function create-event-relation  first third first third))
+
+(define-debris-analysis-rule clause-comma-subordinate
+  :pattern ( s "," subordinate-clause  )
+  :action (:function create-event-relation  first third first third))
+
+
+
+(defun create-event-relation (event-edge sub-clause-edge first last)
+  (let* ((conj (value-of 'conj (edge-referent sub-clause-edge)))
+         (event (edge-referent event-edge))
+         (sub-event (value-of 'comp (edge-referent sub-clause-edge)))
+         (new-start-pos (pos-edge-starts-at first))
+         (new-end-pos (pos-edge-ends-at last)))
+    (make-edge-over-long-span
+     new-start-pos ;; the edge vector
+     new-end-pos
+     category::event-relation
+     :form category::event-relation
+     :referent (make-event-relation conj event sub-event)
+     :rule 'create-event-relation
+     :constituents `(,first ,last))))
+
+
+(defun make-event-relation (conj event sub-event)
+  (make-non-dli-individual
+   category::event-relation
+   `((relation ,conj) (event ,event) (subordinated-event ,sub-event))))
+
 
 ;;;--------------------
 ;;; Common subroutines
