@@ -133,7 +133,7 @@
 (DEF-RAS2-PROTEIN "ARHG4_HUMAN" ("ARHG4_HUMAN" "Asef" "KIAA1112" "APC-stimulated guanine nucleotide exchange factor 1" "Asef1" "ARHGEF4")) 
 (DEF-RAS2-PROTEIN "ARHG5_HUMAN" ("ARHG5_HUMAN" "Transforming immortalized mammary oncogene" "Oncogene TIM" "Ephexin-3" "ARHGEF5" "Guanine nucleotide regulatory protein TIM" "TIM" "p60 TIM")) 
 (DEF-RAS2-PROTEIN "ARHG6_HUMAN" ("ARHG6_HUMAN" "KIAA0006" "PIXA" "COOL2" "ARHGEF6" "PAK-interacting exchange factor α" "α-PIX" "Rho guanine nucleotide exchange factor 6" "Alpha-Pix" "COOL-2" "PAK-interacting exchange factor alpha" "Rac/Cdc42 guanine nucleotide exchange factor 6")) 
-(DEF-RAS2-PROTEIN "ARHG7_HUMAN" ("ARHG7_HUMAN" "PAK3BP" "Bη-Pix" "KIAA0142" "COOL1" "PIXB" "ARHGEF7" "P85SPR" "PAK-interacting exchange factor bη" "βpix" "Rho guanine nucleotide exchange factor 7" "Beta-Pix" "COOL-1" "PAK-interacting exchange factor beta" "p85")) 
+(DEF-RAS2-PROTEIN "ARHG7_HUMAN" ("ARHG7_HUMAN" "PAK3BP" "Bη-Pix" "KIAA0142" "COOL1" "Cool-1" "PIXB" "ARHGEF7" "P85SPR" "PAK-interacting exchange factor bη" "βpix" "Rho guanine nucleotide exchange factor 7" "Beta-Pix" "COOL-1" "PAK-interacting exchange factor beta" "p85"))
 (DEF-RAS2-PROTEIN "ARHG8_HUMAN" ("ARHG8_HUMAN" "NET1" "Proto-oncogene p65 Net1" "ARHGEF8" "Rho guanine nucleotide exchange factor 8")) 
 (DEF-RAS2-PROTEIN "ARHG9_HUMAN" ("ARHG9_HUMAN" "KIAA0424" "ARHGEF9" "PEM-2 homolog" "Rac/Cdc42 guanine nucleotide exchange factor 9" "Collybistin" "ARHDH9")) 
 (DEF-RAS2-PROTEIN "ARHGA_HUMAN" ("ARHGA_HUMAN" "ARHGEF10" "KIAA0294")) 
