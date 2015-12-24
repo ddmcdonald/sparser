@@ -1048,6 +1048,8 @@ or for loading the newer of the compiled or source files.
 ;; don't have definitions
 (sparser::lload "loaders;stubs")
 
+(set-protocol-switches)
+
 (push :sparser *features*)
 
 ;; Set up basic sizing parameters

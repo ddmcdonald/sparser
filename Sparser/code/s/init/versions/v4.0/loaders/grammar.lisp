@@ -57,15 +57,15 @@
 ;; of plurals for the lemmas in 1st-kinds. 1/30/15 had to change conditionalization
 ;; on situation to get text structure to load. 9/22/15 Want to refer to the upper model
 ;; in the categories that are defined with the words so moved kinds;1st-loader ahead
-;; of words. 10/6/15 added blocks-world. 12/3/15 added mid-level
-
+;; of words. 10/6/15 added blocks-world. 12/3/15 added mid-level. 12/23/15 put in
+;; special-case aspect of switch settings at very beginning before any individuals
+;; are created.
 
 (in-package :sparser)
 
 
 (when (or *load-the-grammar*  ;; keeps a version like BBN from seeing the
                               ;; undefined functions in here
-
           *delayed-loading-of-the-grammar* )  ;; but let two-stage images see it
 
 (defun load-the-grammar ()
@@ -74,7 +74,14 @@
   ;; omitted and then run (perhaps) after the image has been
   ;; launched
 
-  (set-protocol-switches)
+  (when *big-mechanism*
+    ;; Tried putting the call to set-protocol-switches right here
+    ;; but too many of the things it uses are defined by code that
+    ;; happens to be incidentally loaded as part of the 'grammar'
+    ;; even though it really isn't. This is the only crucial aspect
+    ;; of the setting since it dictates how individuals are indexed
+    ;; and stored. 
+    (use-description-lattice t))
 
   (unless (or *just-note-changed-files*
               *copy-file*)
@@ -340,5 +347,5 @@
               *copy-file*)
     (postprocess-grammar-indexes))
 
-  )) ;; end of Load-the-grammar and the gate in front of it
+  )) ;; end of Load-the-grammar and the when gate in front of it
 
