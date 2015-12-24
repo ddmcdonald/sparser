@@ -388,7 +388,35 @@
 
 (defun bio-setting () ;; copy & specialize of back-named old-bio-setting
   (turn-off-c3)
-  (tuned-grok)
+  (top-edges-setting)
+  
+  ;; (top-edges-setting/ddm)
+  (standard-extras)
+  (setq *make-edges-over-new-digit-sequences* t)
+
+  ;; (grok-setting)
+  (setq *new-dm&p* t)
+  (setq *do-strong-domain-modeling* t)
+  (setq *do-unanalyzed-hyphenated-sequences* t)
+  (use-unknown-words)
+  (setq *treat-single-Capitalized-words-as-names* t)
+  (include-comlex)
+  (setq *do-strong-domain-modeling* t
+        *new-segment-coverage* :full  ;; vs :trivial
+        *reify-implicit-individuals* t
+        *note-text-relations* t)
+  (setq *profligate-creation-of-individuals* t)
+  (setq *allow-pure-syntax-rules* t)
+  ;; NEED TO TURN THIS OFF IN BIO!!
+  (setq *edges-from-referent-categories* t)
+  
+  ;;(tuned-grok)
+  ;(setq *break-on-new-bracket-situations* t)
+  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
+  (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
+  (setq *track-incidence-count-on-bindings* nil) ;; see bind-variable/expr
+  (display-bracketing)
+
   ;; except
   (setq *edges-from-referent-categories* nil ;; should be off in the bio system!
         *note-text-relations* nil
@@ -444,7 +472,7 @@
   (setq *permit-rules-with-duplicate-rhs* nil)
   (setq *do-general-actions-on-treetops* t)
   (setq *make-edges-over-new-digit-sequences* t)
-  ;;(period-hook-on)
+  (period-hook-on)
   
   ;; Experimenting with different choices of parsing protocol.
   ;; Eventually it will be a new one that's incremental and
