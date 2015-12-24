@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.4 June 2015
+;;;   Version:   1.4 December 2015
 
 ;; 1.0 (9/21/92 v2.3) added everything else, in ascii order
 ;; 1.1 (4/9/93) moved newline to required
@@ -16,6 +16,8 @@
 ;;     (4/23/15) underbar? Wrong programming language. Changed it.
 ;; 1.4 (6/5/15) Revived old way of mass-generation of punction for the
 ;;      massive extension of out-of-band characters in alphabet
+;;     (12/22/15) pulled period out to required words and handled
+;;      duplication of the arrow character.
 
 (in-package :sparser)
 
@@ -23,7 +25,7 @@
 (define-punctuation tab  #\tab)             ;; ascii 9
 (define-punctuation linefeed #\Linefeed)    ;; 10
 (define-punctuation new-page #\Page)        ;; 12
-
+;; newline, #13, is defined in grammar/rules/words/required.lisp
 (define-punctuation  exclamation-point   #\! )   ;; 33
 (define-punctuation  double-quote        #\" )   ;; 34
 (define-punctuation  sharp-sign          #\# )   ;; 35
@@ -37,7 +39,7 @@
 (define-punctuation  plus-sign           #\+ )   ;; 43
 (define-punctuation  comma               #\, )   ;; 44
 (define-punctuation  hyphen              #\- )   ;; 45
-(define-punctuation  period              #\. )   ;; 46
+;; period, #46, is defined in grammar/rules/words/required.lisp
 (define-punctuation  forward-slash       #\/ )   ;; 47
 
 (define-punctuation  colon               #\: )   ;; 58
@@ -89,8 +91,7 @@
 (define-punctuation  latin_small_letter_i_with_acute   #\Latin_Small_Letter_I_With_Acute) ;; 237
 (define-punctuation  latin_small_letter_o_with_circumflex   #\Latin_Small_Letter_O_With_Circumflex) ;; 244
 (define-punctuation  latin_small_letter_o_with_diaeresis   #\Latin_Small_Letter_O_With_Diaeresis) ;; 246
-#-allegro
-(define-punctuation  division-sign       #\÷ )   ;; 247
+#-allegro (define-punctuation  division-sign       #\÷ )   ;; 247
 (define-punctuation  latin_small_letter_o_with_stroke   #\Latin_Small_Letter_O_With_Stroke) ;; 248
 (define-punctuation  latin_small_letter_u_with_diaeresis   #\Latin_Small_Letter_U_With_Diaeresis) ;; 252
 
@@ -148,7 +149,7 @@
     (code-char 8545) ;;"Ⅱ" (code = 8545)
     (code-char 8592) ;;"←" #\U+2190
     (code-char 8593) ;;"↑", (code = 8593)
-    (code-char 8594) ;; rightwards arrow
+    ;;(code-char 8594) ;; rightwards arrow  -- defined at end of file
     (code-char 8595) ;;"↓", (code = 8595)
     (code-char 8596) ;;"↔", (code = 8596)
 
@@ -206,11 +207,10 @@
   (dolist (form *out-of-band-punctuation*)
     (let* ((character (eval form)) namestring symbol)
       (if character
-          (setf namestring (char-name character))
-        (warn "Couldn't find code-char ~a" (second form))
-        )
+        (setf namestring (char-name character))
+        (warn "Couldn't find code-char ~a" (second form)))
       (when namestring
-           (setf symbol (intern namestring *word-package*)))
+        (setf symbol (intern namestring *word-package*)))
       (when (and symbol character)
         (when *load-verbose*
           (format t "~&~a ~a" (cadr form) character))
@@ -227,7 +227,6 @@
 ;; Also note difference is choices for Allegro and CCL
 ;; //// where does SBCL come down on this? 
 
-;;////////// This duplicates the definition in the list above
 #+allegro (define-punctuation rightwards-arrow (code-char #x2192))
 #-allegro (define-punctuation rightwards-arrow #\U+2192)
 
