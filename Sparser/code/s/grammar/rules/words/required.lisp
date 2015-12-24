@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2015  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "required"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.2 July 1993
+;;;   Version:   1.2 December 2015
 
 ;; 0.1 (2/15/91 v1.8.1) Added comma and period.
 ;;     (11/17 v2.1) elevated to words; from words;basics:
@@ -12,8 +12,9 @@
 ;; 1.0 (9/21 v2.3) Moved the punctuation over to that file.
 ;; 1.1 (4/7/93) Added defconstants so references to the word package
 ;;      could be removed.
-;; 1.2 (7/15) changed them to defparameters because they were blocking the
+;; 1.2 (7/15/93) changed them to defparameters because they were blocking the
 ;;      compilation
+;;     (12/22/15) Added period and the period hook. 
 
 (in-package :sparser)
 
@@ -39,6 +40,8 @@
 (defparameter *one-space* (number-of-spaces-named 1))
 
 
+;;;--------- newlines
+
 (define-punctuation newline  #\newline)     ;; 13
   ;; "newline" is a pseudo character that lisp supports as a hack to
   ;; transparently reflect whatever the operating system takes as
@@ -50,10 +53,23 @@
 (defparameter *newline* (punctuation-named #\newline))
 
 
-
 (unless (boundp '*sm-paragraph-start*)
   (defvar *paragraph-start* nil
     "Referenced in sort-out-result-of-newline-analysis so it has
      to be available even if its native file -- paragraphs:section-rule
      isn't loaded."))
+
+
+;;;--------- period
+
+(define-punctuation  period  #\. )   ;; 46
+  ;; We need it here in order to setup it options as a sentence
+  ;; delimiter. Would apply to question mark and excl, but they
+  ;; don't occur in the text we're looking at. 
+
+(defun period-hook-on ()
+  (define-completion-action word::period :hook 'period-hook))
+
+(defun period-hook-off ()
+  (delete-completion-action word::period :hook))
 

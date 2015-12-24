@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  April 2015
+;;;   version:  December 2015
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -16,16 +16,12 @@
 ;; when we moved back to the sweep loop. 2/4/15 Added full-caps to the
 ;; options for capitalization of the word after the period. 4/11/15
 ;; moved set-sentence-endpoints to the other sentence operations. 
+;; 12/22/15 Moved the gate functions period-hook-on/-off to grammar/
+;; rules/words/required.lisp so they've be available before the switch-
+;; settings that call them. 
 
 
 (in-package :sparser)
-
-
-(defun period-hook-on ()
-  (define-completion-action word::period :hook 'period-hook))
-
-(defun period-hook-off ()
-  (delete-completion-action word::period :hook))
 
 
 ;;--- state variable
