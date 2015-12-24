@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "punctuation"
 ;;;   Module:  "objects;words:"
-;;;  Version:  0.4 July 2014
+;;;  Version:  0.4 August 2014
 
 ;; originally written in June 1990
 ;; 0.0 (4/23/91 v1.8.4)  Minor tweek to make sure it doesn't overrun an
@@ -15,7 +15,9 @@
 ;;     (7/19/94) added Punctuation? 3/15/13 Putting a guard on it since
 ;;      it's going to be used more broadly and not just passed words
 ;; 0.4 (7/30/14) Simplified definition of punctuation?
-;; 3/21/2015 SBCL caught major time and cons waster -- punctuation-named -- revised so as not to use cons and intern
+;; 3/21/2015 SBCL caught major time and cons waster, punctuation-named.
+;;    revised so as not to use cons and intern
+;; 12/22/15 put in trap to not declare linefeed to be a duplicate of newline
 
 (in-package :sparser)
 
@@ -28,22 +30,13 @@
 (defun get-punct-symbol (character)
   (or (gethash character *punct-table*)
       (setf (gethash character *punct-table*)
-            (intern
-             (coerce (list character) 'string)
-             *word-package*))))
+            (intern (coerce (list character) 'string)
+                    *word-package*))))
 
 (defun punctuation-named (character)
   (unless (characterp character)
     (error "Argument must be a character.~%  ~A is a ~A"
            character (type-of character)))
-  
-  #+ignore ;; old slow code
-  (let* ((string (coerce (list character) 'string))
-         (symbol (intern string *word-package*)))
-    (when (boundp symbol)
-      (print `(punctuation ,character ,symbol))
-      (symbol-value symbol)))
-
   (let* ((symbol (get-punct-symbol character)))    
     (when (boundp symbol)
       (symbol-value symbol))))
@@ -54,12 +47,6 @@
   ;; type predicate
   (has-tag? :punctuation word))
 
-#|  Older version that must predate the current version of the definition
-  (when (word-p word)
-    (let ((pname (word-pname word)))
-      (when (= 1 (length pname))
-        ;; this test reads from the table so its always accurate
-        (punctuation-char? (elt pname 0))))))  |#
 
 ;;;--------------
 ;;; the def form
@@ -116,13 +103,16 @@
                        ~% The second, redundant definition is being ignored."
                     string)
             (else
+              (unless (eq designated-symbol 'word::linefeed)
+                ;; On OSX anyway, linefeed is identical to the symbolic character
+                ;; newline, so it's not redefining newline.
               (format t "~%~%!! redefining the punctuation ~A~
                          ~% The second definition uses the designated ~
                          symbol ~A~
                          ~% the earlier definition used ~A~
                          ~% Both symbols will be bound to the word."
                       string designated-symbol (word-symbol word))
-              (set designated-symbol (word-symbol word))))))
+              (set designated-symbol (word-symbol word)))))))
 
      (values word natural-symbol designated-symbol))))
 
