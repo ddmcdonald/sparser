@@ -53,7 +53,7 @@
 (defun instantiate-linguistic-resource (lexical-resource)
   (let* ((lr-name (lr-name lexical-resource))
 	 (resource
-	  (or (template-resource-named lr-name)
+	  (or ;(template-resource-named lr-name) ;;/// find beter resolution
 	      (linguistic-resource-named lr-name))))
     (unless resource
       (error "There is no lexical-resource named ~a" lr-name))
