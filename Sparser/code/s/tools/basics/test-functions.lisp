@@ -76,10 +76,9 @@
   nil)
 
 (defun test-sent (corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
-  (declare (special *overnight-sentences* *jan-dry-run*
+  (declare (special *chunks* *overnight-sentences* *jan-dry-run*
                     *dec-tests* *erk-abstract* *aspp2-whole*
-                    *load-test-sents*
-                    *readout-segments-inline-with-text*))
+                    *load-test-sents*))
   (let*
       ((*readout-segments-inline-with-text* nil) ;; quiet
        (sentences
@@ -91,6 +90,7 @@
           ((:aspp2 aspp2) *aspp2-whole*)
           ((:load load-test) *load-test-sents*)))
        (test (nth (- n 1) sentences)))
+    (declare (special *readout-segments-inline-with-text*))
     (if quiet
         (pp (second test))
         (eval test))
@@ -138,6 +138,7 @@
         (save-sent-parse name i)))))
 
 (defun create-snapshot-directory ()
+  (declare (special *directory-for-tree-snapshots*))
   (ensure-directories-exist
    (make-pathname :directory (append (pathname-directory *directory-for-tree-snapshots*)
                                      (list (dtg-dir))))
