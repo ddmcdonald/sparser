@@ -554,10 +554,12 @@
   (declare (special e category::modifier category::adjective 
                     category::be *big-mechanism* category::parentheses
                     category::that category::verb+ed category::verb+ing
-                    category::preposition category::and category::also))
+                    category::preposition category::and category::also
+                    category::vp+ed))
   (cond
    ((eq (edge-category e) category::modal)
     nil)
+   ((eq (edge-form e) category::vp+ed) t) ;; this should only happen for NS words like GAP–mediate
    ((and (plural-noun-and-present-verb? e)
          (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
            thereis (ng-start? ee)))
