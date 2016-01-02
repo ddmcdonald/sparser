@@ -148,13 +148,6 @@ those steps sequentially on a single article.
 ;;; Alternative paths to the document corpora
 ;;;-------------------------------------------
 
-(defvar *corpus-paths* '((:jan15 "darpa/January5-TestMaterials")
-                         (:May15 "corpus/2015-5-4_Mitre-articles")
-                         ;; this is the WRONG location -- it does not match
-                         ;; where Jeremy did his work
-                         ;;(:jun15 "darpa/12-month TestMaterials/NXML-model")
-                         (:jun15 "code/evaluation/June2015Materials/Eval_NXML")))
-
 
 ;;; remove slashes from both ends unless just-end = t then just right end.
 (defun remove-end-slashes (string &optional (just-end nil))
