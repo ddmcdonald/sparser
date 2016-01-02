@@ -103,7 +103,7 @@
 ;;;----------------------------
 
 (def-form-rule (be adjective)
-  :form vp
+  :form vg
   :referent (:head right-edge);; :bind (predication right-edge)
 )
 
