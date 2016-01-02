@@ -58,7 +58,8 @@
     ;; TO-DO -- do pair programming review
     (cond
      ((eq (car pattern) :hyphen)
-     (lsp-break "check hyphen pattern")
+      (if (member :hyphen (cdr pattern))
+          (lsp-break "check hyphen pattern"))
       t)
      ;; the cases of -adjective and -verb+ed should be handled here, not by 
      ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
