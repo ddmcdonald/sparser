@@ -102,49 +102,43 @@
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
   (when (and qualifier head)
-    (when nil
-      (push-debug `(,qualifier ,head))
-      (break "check: qualifier = ~a~
-            ~%       head = ~a" qualifier head))
     (setq head (individual-for-ref head))
-    (or (and (null qualifier)
-             head)
-        (when
-            (and 
-             (itypep qualifier (itype-of head))
-             (if
-              (itypep qualifier category::collection)
-              (and
-               ;; conjunction of named items
-               (individual-p (car (value-of 'items qualifier)))
-               (value-of 'name (car (value-of 'items qualifier))))
-              ;; named item
-              (value-of 'name qualifier)));; intended as test for proper noun or other specific NP
-          (revise-parent-edge :form category::proper-noun)
-          qualifier)
-        (call-compose qualifier head) ;; see note with verb-noun-compound
-
-        (interpret-premod-to-np qualifier head)
-        ;; subcat test is here. If there's a :premod subcategorization
-        ;; that's compapatible this gets it.
-
-        ;; This case is to benefit marker-categories
-        (if (itypep head 'process) ;; poor man's standing for verb?
-            (then
-              (let ((var (object-variable head)))
-                (declare (special var))
-                ;; (lsp-break "noun-noun")
-                (if var ;; really should check for passivizing
-                    (setq  head (bind-dli-variable var qualifier head))
-                    ;; otherwise it's not obvious what to bind
-                    (else
-                      (setq  head (bind-dli-variable 'modifier qualifier head))))
-                head))
+    (cond
+     ((word-p head)
+      nil);; this happened with word = HYPHEN, "from FCS-treated cells"
+     ((and 
+       (itypep qualifier (itype-of head))
+       (if
+        (itypep qualifier category::collection)
+        (and
+         ;; conjunction of named items
+         (individual-p (car (value-of 'items qualifier)))
+         (value-of 'name (car (value-of 'items qualifier))))
+        ;; named item
+        (value-of 'name qualifier)));; intended as test for proper noun or other specific NP
+      (revise-parent-edge :form category::proper-noun)
+      qualifier)
+     ((call-compose qualifier head)) ;; see note with verb-noun-compound
+     ((interpret-premod-to-np qualifier head))
+     ;; subcat test is here. If there's a :premod subcategorization
+     ;; that's compapatible this gets it.
+     
+     ;; This case is to benefit marker-categories
+     ((itypep head 'process) ;; poor man's standing for verb?
+      (let ((var (object-variable head)))
+        (declare (special var))
+        ;; (lsp-break "noun-noun")
+        (if var ;; really should check for passivizing
+            (setq  head (bind-dli-variable var qualifier head))
+            ;; otherwise it's not obvious what to bind
             (else
-              ;; what's the right relationship? Systemics would say
-              ;; they are qualifiers, so perhaps subtype?
-              (setq  head (bind-dli-variable 'modifier qualifier head)) ;; safe
-              head)))))
+              (setq  head (bind-dli-variable 'modifier qualifier head))))
+        head))
+     (t
+      ;; what's the right relationship? Systemics would say
+      ;; they are qualifiers, so perhaps subtype?
+      (setq  head (bind-dli-variable 'modifier qualifier head)) ;; safe
+      head))))
 
 (defun interpret-premod-to-np (premod head)
   (let ((variable-to-bind
@@ -250,6 +244,9 @@
 (defun verb-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")
   ;; goes with (verb+ed n-bar-type) syntactic rule
+  (when (null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
+    ;;(lsp-break "*current-chunk*")
+    (return-from verb-noun-compound nil))
   (when nil
     (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
@@ -808,7 +805,7 @@ to enhance p53 mediated apoptosis [2].") |#
   (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
   (let* ((vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge)))
-    ;;(break "assimilate-subject-to-vp+ed")
+    ;;(lsp-break "assimilate-subject-to-vp+ed")
     #+ignore
     (unless *subcat-test* 
       (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
@@ -834,6 +831,7 @@ to enhance p53 mediated apoptosis [2].") |#
        ((or ;; vp has a bound object
          (null (object-variable vp))
          (value-of (object-variable vp) vp)
+         (value-of 'statement vp)
          (itype subj 'pronoun))
         ;; This situation corresponds to composing them as
         ;; subject and predicate, which is what the rule that
@@ -1226,7 +1224,12 @@ to enhance p53 mediated apoptosis [2].") |#
 ;;;---------
 
 (defun make-copular-pp (be-ref pp)
-  (when (null (value-of 'predication be-ref))
+  (when (and
+         (null (value-of 'predication be-ref))
+         (or (not (edge-p *left-edge-into-reference*))
+             ;; case where there is no semantic predication established, but there is a syntactic object
+             ;; e.g. "was the result of defects in the developing embryo"
+             (not (eq (edge-form *left-edge-into-reference*) category::vp))))
     ;; If this is not already a predicate copula ("is a drug")
 
     (let* ((prep (value-of 'prep pp))
@@ -1244,6 +1247,9 @@ to enhance p53 mediated apoptosis [2].") |#
                 (prep ,prep) (pobj ,pobj))))))))
 
 (defun apply-copular-pp (np copular-pp)
+  (when
+   (itypep copular-pp 'subordinate-clause)
+    (setq copular-pp (value-of 'comp copular-pp)))
   (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
          (pobj (value-of 'pobj copular-pp))
          ;;(copula (value-of 'copula copular-pp))

@@ -185,6 +185,13 @@ similar to an oncogenic RasG12V mutation (9)."))
       :referent (:function verb-noun-compound
                            left-edge right-edge)))
   (eval
+   `(def-syntax-rule (vp+ed ,nb)
+                     :head :right-edge
+      :form n-bar
+      :referent (:function verb-noun-compound
+                           left-edge right-edge)))
+
+  (eval
    `(def-syntax-rule (verb+ing ,nb)
                      :head :right-edge
       :form n-bar 
