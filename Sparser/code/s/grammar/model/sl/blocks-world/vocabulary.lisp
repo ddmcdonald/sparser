@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2015 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2015-2016 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  December 2015
+;;;   version:  January 2016
 
 ;; Initiated 12/3/15.
 
@@ -62,6 +62,22 @@ protocol is developed. Moreover they are semantically vacuous.  |#
                 (vp . :self)
                 (adjunct . physical)
                 (slot . artifact)))))
+
+
+
+          
+
+(defparameter *c3-syntactic-rules*
+  (list 
+   (def-syntax-rule (verb np)
+                    :head :left-edge
+     :form vp
+     :referent (:function fill-compatible-slot left-edge right-edge)))
+  "The specific set of rules to use because (hack hack) their
+   interpretation is controlled without having to fold into the 
+   regular set as should be done when the basics are shaken down.")
+    
+
 
 
 

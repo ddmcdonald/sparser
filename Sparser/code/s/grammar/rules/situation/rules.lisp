@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "rules"
 ;;;            grammar/rules/situation/
-;;;  version:  September 2014
+;;;  version:  January 2016
 
 ;; Initiated 3/20/14 to collect all the cases, the grammar, from the
 ;; individual files into one place. Incremental extensions through
-;; 5/12/14. Moved the syntax rules to one place 9/7/14
+;; 5/12/14. Moved the syntax rules to one place 9/7/14.
 
 (in-package :sparser)
 
@@ -141,19 +141,5 @@
 
 
 
-
-
-          
-
-(defparameter *c3-syntactic-rules*
-  (list 
-   (def-syntax-rule (verb np)
-                    :head :left-edge
-     :form vp
-     :referent (:function fill-compatible-slot left-edge right-edge)))
-  "The specific set of rules to use because (hack hack) their
-   interpretation is controlled without having to fold into the 
-   regular set as should be done when the basics are shaken down.")
-    
 
 
