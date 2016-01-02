@@ -42,7 +42,8 @@
 ;;--- predicate 
 
 (defun second-imposes-relation-on-first? (right-ref right-edge)
-  (declare (special category::verb+ed category::adjective category::verb+ing))
+  (declare (special category::verb+ed category::adjective category::verb+ing
+                    category::verb+ed))
   (let* ((form (when (edge-p right-edge) 
                      (edge-form right-edge))))
     (when (or
@@ -90,7 +91,7 @@
 ;; "EphB1-induced", "tyrosine-phosphorylated"
 (defun do-relation-between-first-and-second (left-ref right-ref 
                                              left-edge right-edge)
-  (declare (special category::adjective))
+  (declare (special category::adjective category::verb+ed category::vp+ed))
   (tr :make-right-head-with-agent-left)
   (when (category-p right-ref)
     (setq right-ref (make-individual-for-dm&p right-ref)))
@@ -100,7 +101,9 @@
            (pos-edge-starts-at left-edge)
            (pos-edge-ends-at right-edge)
            (edge-category right-edge)
-           :form category::adjective
+           :form (if (eq (edge-form right-edge) category::verb+ed)
+                     category::vp+ed
+                     category::adjective)
            :referent (bind-dli-variable variable left-ref right-ref)
            :rule 'do-relation-between-first-and-second
            :constituents `(,left-edge ,right-edge))))
