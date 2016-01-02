@@ -151,16 +151,24 @@
   (loop for item in pattern
     when (keywordp item) collect item
     when (edge-p item) 
-    collect (if (one-word-long? item)
-              (convert-edge-to-one-word-characterization item)
-              (edge-category-to-keyword item))))
+    collect (cond
+             ((one-word-long? item)
+              (convert-edge-to-one-word-characterization item))
+             ((category-p (edge-category item))
+              (edge-category-to-keyword item))
+             (t ;; not sure what to do here -- this happend for p14 in
+              ;; as in "Using conditional gene disruption of p14 in mice, we now demonstrate that the p14–MP1-MEK1 signaling complex regulates late endosomal traffic and cellular proliferation."
+              (convert-edge-to-one-word-characterization item)))))
 
 ;;--- go'fers
 
 (defun edge-category-to-keyword (edge)
-  (let* ((symbol (cat-symbol (edge-category edge)))
-         (pname (symbol-name symbol)))
-    (intern pname (find-package :keyword))))
+  (cond
+   ((category-p (edge-category edge))
+    (let* ((symbol (cat-symbol (edge-category edge)))
+           (pname (symbol-name symbol)))
+      (intern pname (find-package :keyword))))
+   (t (break "edge with non-category edge-category ~s" edge))))
 
 (defun convert-edge-to-one-word-characterization (edge)
   ;; Some single-word edges are uniformative, others carry
