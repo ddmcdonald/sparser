@@ -40,7 +40,7 @@
   (setq *length-of-the-token* 1)
 
   (if (symbolp entry)
-    (ecase entry
+    (case entry
       (:space
        (setq *capitalization-of-current-token* :spaces)
        (accumulate-spaces 1))
@@ -64,7 +64,8 @@
                  "~&~%Undefined control character number ~A seen in ~
                   input string"
                  (char-code (elt *character-buffer-in-use*
-                                 (1- *index-of-next-character*)))))))
+                                 (1- *index-of-next-character*))))))
+      (t (error "the value of entry, ~s is not acceotable in do-punctuation" entry) ))
     entry ))
 
 
