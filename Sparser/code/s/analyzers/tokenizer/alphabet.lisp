@@ -993,25 +993,35 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named (code-char 8811))))
     (8839 ;; "⊇" #\U+2287
      (:punctuation . ,(punctuation-named (code-char 8839))))
+    (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;; "⋄"
     (8943 (:punctuation . ,(punctuation-named (code-char 8943)))) ;;"⋯", (code = 8943)
-
     (8901 (:punctuation . ,(punctuation-named (code-char 8901)))) ;;"⋅", (code = 8901)
+    (8902 (:punctuation . ,(punctuation-named (code-char 8902))))
+    (8942 ;; "▪"
+     (:punctuation . ,(punctuation-named (code-char 8942))))
     (8943 ;; "⋯"
      (:punctuation . ,(punctuation-named (code-char 8943))))
+    (9633 (:punctuation . ,(punctuation-named (code-char 9633)))) "□"
     (9651 ;; "△" #\U+25B3
      (:punctuation . ,(punctuation-named (code-char 9651))))
+    (9652 (:punctuation . ,(punctuation-named (code-char 9652)))) "▴"
     (9653 (:punctuation . ,(punctuation-named (code-char 9653)))) ;;"▵", (code = 8901)afffff
     (9658 (:punctuation . ,(punctuation-named (code-char 9658)))) ;;""►", (code = 9658)
+    (9633 ;; "□"
+     (:punctuation . ,(punctuation-named (code-char 9633))))
     (9663 ;; "▿" #\U+25BF
      (:punctuation . ,(punctuation-named (code-char 9663))))
     (9674 ;; "◊" #\U+25CA
      (:punctuation . ,(punctuation-named (code-char 9674))))
     (9675 ;; "○" #\U+25CB
      (:punctuation . ,(punctuation-named (code-char 9675))))
+    (9733 (:punctuation . ,(punctuation-named (code-char 9733)))) ;;"★"
     (9792 ;; "♀" #\U+2640
      (:punctuation . ,(punctuation-named (code-char 9792))))
     (9794 ;; "♂" #\U+2642
      (:punctuation . ,(punctuation-named (code-char 9794))))
+    (9830 ;; "♦"
+     (:punctuation . ,(punctuation-named (code-char 9830))))
     (10794 ;; "⨪" #\U+2A2A
      (:punctuation . ,(punctuation-named (code-char 10794))))
 
@@ -1054,8 +1064,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (format t "~&~%The character \"~a\", (code = ~a) is not in the alphabet yet.~
                  ~%Using a space in its place.~%~%"
             character char-code)
-    (push (cons character char-code)
-          *new-characters-to-define*)
+    (pushnew (cons character char-code)
+          *new-characters-to-define*
+          :test #'equal)
     '(:punctuation . :space)))
 
 
