@@ -57,8 +57,8 @@
         (equal pattern '(:digits :colon :digits)))
     (make-number-colon-number-structure (first edges) (third edges)))
 
-   ((or (equal pattern '(:full :colon))
-        (equal pattern '(:lower :colon))
+   ((or ;;(equal pattern '(:full :colon))
+     ;;(equal pattern '(:lower :colon))
         (equal pattern '(:lower :colon :full))
         (equal pattern '(:lower :colon :lower))
         (equal pattern '(:full :colon :full))
