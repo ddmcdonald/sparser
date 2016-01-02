@@ -728,6 +728,13 @@
   (:verb "drive"
    :etf (svo-passive)))
 
+(define-category direct
+  :specializes bio-control
+  :realization
+  (:verb   "direct" :noun "direction"
+   :etf (svo-passive)))
+
+
 (define-category dysregulate
   :specializes bio-control
   :realization
