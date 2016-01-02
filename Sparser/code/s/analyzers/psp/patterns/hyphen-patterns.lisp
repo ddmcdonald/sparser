@@ -57,6 +57,9 @@
     ;;  satisfies second-imposes-relation-on-first
     ;; TO-DO -- do pair programming review
     (cond
+     ((eq (car pattern) :hyphen)
+     (lsp-break "check hyphen pattern")
+      t)
      ;; the cases of -adjective and -verb+ed should be handled here, not by 
      ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
      (rel-edge
