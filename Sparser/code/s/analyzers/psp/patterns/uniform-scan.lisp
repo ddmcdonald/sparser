@@ -313,7 +313,20 @@
                 (cfr-referent uc-rule))))
      (obo 
       (assemble-category-rule-and-referent-for-an-obo obo (resolve/make words-string)))
+     ((resolve words-string)
+      (let* ((w (resolve words-string))
+	     (rule (car (rs-single-term-rewrites
+			 (if (word-p w) (word-rules w)(pw-rules w))))))
+	(cond
+	  (rule
+	   (format t "***reify-ns-name-as-bio-entity -- NOT redefining word ~s" w)
+	   (values
+	     (cfr-category rule)
+	     rule
+	     w))
+	  (t nil))))
      (t ;; do cap's hack here too?
+
       (let* ((i (reify-bio-entity words-string))
              (cfr (retrieve-single-rule-from-individual i)))
         (values (bio-category-for-reifying)
@@ -352,7 +365,7 @@
   (setf (car *collect-ns-examples*)
         `(, 
           (let ((edge (right-treetop-at start-pos)))
-            (when edge
+            (when (edge-p edge)
               (list 
                (edge-rule edge)
                (simple-label (edge-category edge))
