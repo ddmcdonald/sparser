@@ -309,16 +309,10 @@
    or has a purpose. Expand this comment...")
 
 (define-category bio-mechanism :specializes mechanism
-  :mixins (has-UID has-name biological)
-  :realization 
-  (:common-noun name) ;; for nominal forms
-  ;;restricts ((function bio-process))
-  :documentation "No content by itself, provides a common parent
-  for 'pathway' and potentially things like 'feedback loop', ...")
-
-(def-synonym bio-mechanism
-             (:noun "mechanism"
-                :of function))
+  :mixins (has-name biological)
+  :realization
+  (:noun "mechanism"
+         :of function))
 
 (define-category bio-control :specializes caused-bio-process
  ;; increase in rate vs increase in RAS activity
