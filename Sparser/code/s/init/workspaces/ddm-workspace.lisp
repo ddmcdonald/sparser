@@ -16,6 +16,7 @@
    of 0.34 for KNRK-PAR2 cells 
    and 0.31–0.34 for hBRIE cells."
  (trace-network) (trace-edges) (trace-digits-fsa)
+ install-terminal-edges 
 
  individual-for-ref  get-realization-scheme
  record-any-determiner 
