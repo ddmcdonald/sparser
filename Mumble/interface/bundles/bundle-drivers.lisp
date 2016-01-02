@@ -166,7 +166,7 @@
   realize when a derivation tree node is the contents of
   some slot. Return value becomes the new value of the slot.
 "
-)
+  (values dtn phrase-type))
 
 
 
