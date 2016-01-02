@@ -406,7 +406,10 @@
 
 (defun delete-verb-cfr (word)
   (when word
-    (let ((verb-cfr (find-form-cfr word category::verb)))
+    (let ((verb-cfr (or
+                     (find-form-cfr word category::verb)
+                     (find-form-cfr word category::verb+ed)
+                     (find-form-cfr word category::verb+ing))))
       (when verb-cfr
         (delete/cfr verb-cfr)))))
 
