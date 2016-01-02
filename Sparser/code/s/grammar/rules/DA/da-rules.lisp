@@ -215,8 +215,9 @@
 
 
 (defun attach-pp-to-np-under-s (s-edge comma-edge pp-edge)
-  (push-debug `(,s-edge ,comma-edge ,np-edge))
-  ;; (setq s-edge (car *) comma-edge (cadr *) np-edge (caddr *))
+  (declare (special s-edge comma-edge pp-edge))
+  (push-debug `(,s-edge ,comma-edge ,pp-edge))
+  ;;(setq s-edge (car *) comma-edge (cadr *) pp-edge (caddr *))
   ;; Look up the right fridge of the s for a proper-noun 
   (let ((right-fringe-of-s ;; ordered bottom to top
          (all-edges-on (pos-ends-here (pos-edge-ends-at s-edge))))
@@ -224,19 +225,20 @@
     (declare (special right-fringe-of-s))
     (loop for edge in right-fringe-of-s
       ;; replace eq with acceptable-appositive?
-      when (eq (edge-form edge) category::proper-noun)
+      when (member (edge-form edge) '(category::NP category::proper-noun))
       do (setq target edge))
+    (lsp-break "attach-pp-to-np-under-s")
     (cond
      (target
       (let ((new-edge
              (make-edge-over-long-span 
               (pos-edge-starts-at target)
-              (pos-edge-ends-at np-edge)
+              (pos-edge-ends-at pp-edge)
               (edge-category target)
               :form (edge-form target)
-              :rule 'attach-appositive-np-under-s
+              :rule 'attach-pp-to-np-under-s
               :referent (edge-referent target) ;;!!!!
-              :constituents `(,target ,comma-edge ,np-edge))))
+              :constituents `(,target ,comma-edge ,pp-edge))))
         (tuck-new-edge-under-already-knit
          target ;; subsumed
          new-edge
