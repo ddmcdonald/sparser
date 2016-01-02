@@ -1679,6 +1679,8 @@
            :from source))
 
 (delete-verb-cfr (resolve "report"))
+(delete-verb-cfr (resolve "reported"))
+(delete-verb-cfr (resolve "reporting"))
 
 (define-category report :specializes bio-rhetorical
     :mixins (bio-thatcomp)
