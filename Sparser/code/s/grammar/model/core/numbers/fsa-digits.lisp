@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  6.10 February 2015
+;;;  Version:  6.10 December 2015
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -46,9 +46,11 @@
 ;;       were multiple edges over "3", apparently because it's appeared as
 ;;       a literal somewhere. 
 ;; 6.10 (2/5/15) Computed a referent for hypenated-numbers
-;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
-;;  initial work to produce a lattice of descriptions
-;;  the places where this call is put were determined by the methods where (complete edge) was also called
+;; 5/25/2015 Added call to place-referent-in-lattice around computation of
+;;  edge-referent field
+;;  Initial work to produce a lattice of descriptions
+;;  The places where this call is put were determined by the methods where
+;;    (complete edge) was also called
 
 (in-package :sparser)
 
@@ -63,7 +65,7 @@ the control of the flag *make-edges-over-new-digit-sequences*
 The result is a call to make-edge-over-unknown-digit-sequence, which leads to
 an edge over the word, with the label digit-sequence, nothing in its form field,
 and either a lisp number or a Krisp number as its referent, depending on the
-whether or not the model is loaded.  The category Digit-sequence has the fsa
+whether or not the model is loaded.  The category digit-sequence has the fsa
 field of its rule set set to the Fsa-for-digits, defined here.  If it were
 a known word, the route would have been essentially the same, except that
 the fsa would be identified at the word level rather than the category level.
@@ -101,6 +103,20 @@ the fsa would be identified at the word level rather than the category level.
                      :fsa  `(,*fsa-for-digits*) ))
 
 
+;;;-------
+;;; trace
+;;;-------
+
+(defparameter *trace-digits-fsa* nil)
+(defun trace-digits-fsa ()
+  (setq *trace-digits-fsa* t))
+(defun untrace-digits-fsa ()
+  (setq *trace-digits-fsa* nil))
+
+(deftrace :digit-fsa-scanned (word function)
+  (when *trace-digits-fsa*
+    (trace-msg "scanned ~s in ~a" (word-pname word) function)))
+
 
 
 ;;;-----------------
@@ -134,6 +150,7 @@ the fsa would be identified at the word level rather than the category level.
         *pending-final-hyphen* nil
         *interpretation-of-digit-sequence* :number)
   (zero-the-digits-array)
+  (tr :digit-fsa-scanned (edge-left-daughter treetop) 'digit-fsa)
 
   ;; store the first segment, the one we were called with
   (setf (aref *digit-position-array* 0) treetop)
@@ -187,38 +204,41 @@ the fsa would be identified at the word level rather than the category level.
   ;;   If we see either any of the characters that extend digit sequences
   ;; then we continue, otherwise we declare the digit-sequence finished
   ;; and return.
-  (if (null last-treetop)
-      (break 
-       "what are you doing passing expect-digit-delimiter-as-next-treetop NIL as a last-treetop")
-      (let* ((next-position (ev-position (edge-ends-at last-treetop)))
-             (status (pos-assessed? next-position)))
-        (unless status
-          (scan-next-position))
+  (when (null last-treetop)
+    (break "what are you doing passing expect-digit-delimiter-as-next-~
+            treetop NIL as the last-treetop"))
+
+  (let* ((next-position (ev-position (edge-ends-at last-treetop)))
+         (status (pos-assessed? next-position)))
+    (unless status
+      (scan-next-position))
+    (tr :digit-fsa-scanned (pos-terminal next-position)
+        'expect-digit-delimiter-as-next-treetop)
         
-        (if (null (pos-preceding-whitespace next-position))
-            ;; rule out cases like "47 -", as well as what would probably
-            ;; be misspellings: "47 ,000"
+    (if (null (pos-preceding-whitespace next-position))
+        ;; rule out cases like "47 -", as well as what would probably
+        ;; be misspellings: "47 ,000"
             
-            (let ((word-at-next-position (pos-terminal next-position)))
-              (cond ((eq word-at-next-position word::comma)
-                     (continue-digit-sequence-after-comma
-                      next-cell array next-position))
+      (let ((word-at-next-position (pos-terminal next-position)))
+        (cond ((eq word-at-next-position word::comma)
+               (continue-digit-sequence-after-comma
+                next-cell array next-position))
                     
-                    ((eq word-at-next-position word::period)
-                     (setq *period-within-digit-sequence* t)
-                     (continue-digit-sequence-after-period
-                      next-cell array next-position))
+              ((eq word-at-next-position word::period)
+               (setq *period-within-digit-sequence* t)
+               (continue-digit-sequence-after-period
+                next-cell array next-position))
                     
-                    ((eq word-at-next-position word::hyphen)
-                     (setq *interpretation-of-digit-sequence* :hypenated-numbers)
-                     (continue-digit-sequence-after-hyphen
-                      next-cell array next-position))
+              ((eq word-at-next-position word::hyphen)
+               (setq *interpretation-of-digit-sequence* :hypenated-numbers)
+               (continue-digit-sequence-after-hyphen
+                next-cell array next-position))
                     
-                    (t (values next-position next-cell))))
+              (t (values next-position next-cell))))
             
-            (values next-position  ;; the position at the end of the seq.
-                    next-cell ;; the count on the number of cells filled.
-                    )))))
+      (values next-position  ;; the position at the end of the seq.
+              next-cell ;; the count on the number of cells filled.
+              ))))
 
 
 
@@ -260,7 +280,9 @@ unknown---in any event, we're taking the first edge that is installed.
          (status (pos-assessed? next-position)))
     (unless status
       (scan-next-position))
-    
+    (tr :digit-fsa-scanned (pos-terminal next-position)
+        'continue-digit-sequence-after-comma)
+
     (if (null (pos-preceding-whitespace next-position))
       (if (eq :digits (pos-capitalization next-position))
         (let ((digits-edge
@@ -297,7 +319,9 @@ unknown---in any event, we're taking the first edge that is installed.
          (status (pos-assessed? next-position)))
     (unless status
       (scan-next-position))
-    
+    (tr :digit-fsa-scanned (pos-terminal next-position)
+        'continue-digit-sequence-after-period)
+
     (if (null (pos-preceding-whitespace next-position))
       (if (eq :digits (pos-capitalization next-position))
         (let* ((edges (install-terminal-edges
@@ -574,7 +598,9 @@ unknown---in any event, we're taking the first edge that is installed.
          (status (pos-assessed? next-position)))
     (unless status
       (scan-next-position))
-    
+    (tr :digit-fsa-scanned (pos-terminal next-position)
+        'continue-digit-sequence-after-hyphen)
+
     (if (null (pos-preceding-whitespace next-position))
       (if (eq :digits (pos-capitalization next-position))
         (let ((digits-edge
@@ -622,6 +648,8 @@ unknown---in any event, we're taking the first edge that is installed.
          (status (pos-assessed? next-position)))
     (unless status
       (scan-next-position))
+    (tr :digit-fsa-scanned (pos-terminal next-position)
+        'look-for-hyphen-as-next-treetop)
 
     (if (and (null (pos-preceding-whitespace next-position))
              (eq :punctuation (pos-capitalization next-position)))
