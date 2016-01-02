@@ -8,7 +8,16 @@
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
-#| individual-for-ref  get-realization-scheme
+#| 
+ "In KNRK-PAR2 and hBRIE cells, PAR2 agonists caused a marked 
+  redistribution in the elution profiles that resulted 
+  in the coelution of pERK, raf-1, β-arrestin, and PAR2 
+  in the same fractions, with partition coefficients (σ) 
+   of 0.34 for KNRK-PAR2 cells 
+   and 0.31–0.34 for hBRIE cells."
+ (trace-network) (trace-edges) (trace-digits-fsa)
+
+ individual-for-ref  get-realization-scheme
  record-any-determiner 
 
  fill-compatible-slot 
@@ -18,6 +27,11 @@
    mumble::dtn-bundle-driver
    mumble::
    mumble::
+
+ get-dli
+
+ --- "one"   quantify define-quantifier
+ define-movement-verb
 
 
 |#
