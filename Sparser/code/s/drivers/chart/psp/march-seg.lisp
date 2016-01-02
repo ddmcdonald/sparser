@@ -125,20 +125,29 @@
   ;; 2. select the best one
   ;; 3. spply it
   ;; 4. repeat
-  (let ( triple  edge )
+  (let ( triple  edge blocked-triples triples)
     (clrhash *rules-for-pairs*)
     (loop
-      (setq triple (select-best-triple
-                    (if from-right
-                      (collect-triples-in-segment chunk)
-                      (reverse (collect-triples-in-segment chunk)))))
-      (unless triple
+      (setq triples
+            (if from-right
+                (collect-triples-in-segment chunk)
+                (reverse (collect-triples-in-segment chunk))))
+      (when blocked-triples
+        (setq triples (loop for tr in triples 
+                        unless (member tr blocked-triples)
+                        collect tr)))
+      (setq triple (select-best-triple triples))
+      (when (null triple)
         (return))
       (setq edge (execute-triple triple))
-      (unless edge 
+      (cond
+       ((null edge) 
+        (push triple blocked-triples)
         (push-debug `(,triple))
-        (error "triple did not produce an edge"))
-      (tr :triple-led-to-edge edge))
+        ;;(lsp-break "triple did not produce an edge")
+        )
+       (edge 
+        (tr :triple-led-to-edge edge))))
     (if (eq (segment-coverage) :one-edge-over-entire-segment)
         (segment-parsed1)
         ;; else, then mop up anything else that that couldn't
