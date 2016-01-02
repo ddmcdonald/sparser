@@ -498,6 +498,7 @@
       (:noun "fact"))
 
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
+;;;(adj "fail-proof" :super bio-predication)
 (noun "fate" :super bio-process)
 
 (noun "fetal calf serum" :super experimental-condition)
@@ -954,7 +955,7 @@
            :to situation
            :for beneficiary))
 (noun "spectrometry" :super bio-method)
-(define-category stable :specializes bio-abstract
+(define-category stable :specializes bio-predication
      :binds ((agent biological)(context bio-context))
      :realization
      (:adj "stable" 
