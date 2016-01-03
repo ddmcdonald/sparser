@@ -1,12 +1,12 @@
 ;;; -*- Mode: Lisp; package: MUMBLE; Syntax: Common-lisp; -*-
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2011,2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2015-2016 David D. McDonald  -- all rights reserved
 
 ;; /Mumble/derivation-trees/types.lisp
 
 ;; Initated 9/16/09. Added derivation tree nodes 10/6. 3/9/11 removed
 ;; co: from the defobject calls not that's it's been brought into utils.
-;; Resumed work 10/7/15
+;; Resumed work 10/7/15. 
 
 (in-package :mumble) 
 
