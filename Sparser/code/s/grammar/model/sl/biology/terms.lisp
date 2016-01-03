@@ -44,6 +44,24 @@
 (noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
 (noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate") :super phospholipid)
 
+(define-category orientation-top
+  :realization
+  (:noun "top"))
+(define-category orientation-bottom
+  :realization
+  (:noun "bottom"))
+
+(define-category orientation-left
+  :realization
+  (:noun "left"))
+
+(define-category orientation-right
+  :realization
+  (:noun "right"))
+
+(adj "bound" :super bio-predication)
+(adj "unbound" :super bio-predication)
+
 ;; new nouns and verbs used in Ras model comments
 
 (noun ("stimulus" :plural "stimuli") :super bio-mechanism) 
@@ -412,7 +430,8 @@
 (noun "detail" :super bio-scalar)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
 
-
+(delete-adj-cfr (resolve/make "different"))
+(adj "different" :super bio-relation)
 (noun "difference" :super biological ;;THIS IS DONE SIMPLY TO ALLOW THE VERB ALTER TO TAKE DIFFERENCE AS A SUBJECT
       ;; see sentence 7 of January test "...the differences between the enzymatic and chemical ubiquitination linkers (seven bonds and five bonds, respectively) do not alter GAP–responsiveness..."
       :binds ((compared biological))
@@ -881,7 +900,6 @@
 (noun "responsiveness" :super bio-scalar)
 (noun "restricted substrate" :super bio-predication)
 (adj "rich" :super bio-predication) ;; proline rich region
-(adj "right" :super bio-predication)
 (noun "rna" :super molecule)
 (noun "rnai" :super bio-method)
 (noun "role" :super bio-quality
@@ -1011,9 +1029,7 @@
 
 (noun "tissue" :super bio-context)
 (define-adverb "to this end")
-(define-category orientation-top
-  :realization
-  (:noun "top"))
+
 
 (adj "transient" :super bio-predication)
 (noun "transition state intermediate" :super molecule-state)
