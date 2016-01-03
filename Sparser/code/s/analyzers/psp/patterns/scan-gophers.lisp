@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "scan-gophers"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  November 2015
+;;;  version:  January 2016
 
 ;; initiated 5/15/15 breaking out the region delimiter and pattern
 ;; reader from other files. 7/18/15 Fixed but in collection of
@@ -146,8 +146,7 @@
 
     ((eq word *the-punctuation-colon*)
      ;;(if (next-word-is-digit? position) nil t)
-     (when
-         (pos-after-is-end-of-sequence position)
+     (when (pos-after-is-end-of-sequence position)
        (pushnew word *terminal-ns-punct-encountered*)))
 
     ((or (eq word (punctuation-named #\-))

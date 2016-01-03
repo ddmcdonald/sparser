@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "colon-patterns""
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  November 2015
+;;;  version:  January 2016
 
 ;; Broken out from pattern-gophers 7/19/15. After folding in edges
-;; doing muli-colonn patterns 11/6/15. More abstractoin 11/16.
+;; doing muli-colonn patterns 11/6/15. More abstraction 11/16.
 
 (in-package :sparser)
 
@@ -57,9 +57,7 @@
         (equal pattern '(:digits :colon :digits)))
     (make-number-colon-number-structure (first edges) (third edges)))
 
-   ((or ;;(equal pattern '(:full :colon))
-        ;;(equal pattern '(:lower :colon))
-        (equal pattern '(:lower :colon :full))
+   ((or (equal pattern '(:lower :colon :full))
         (equal pattern '(:lower :colon :lower))
         (equal pattern '(:full :colon :full))
         (equal pattern '(:full :colon :lower)))
