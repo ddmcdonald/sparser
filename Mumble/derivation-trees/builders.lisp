@@ -1,13 +1,14 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2013 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2013-2016 David D. McDonald  All Rights Reserved
 ;;;
 ;;;  /Mumble/derivation-trees/builders.lisp
-;;;  November 2013
+;;;  January 2016
 
 ;; Initated 11/20/13 to package up reusable parameterized
 ;; derivation tree patterns at roughly the level of maximal projections.
 ;; 11/25/15 Moving away or deleting Sparse-oriented code so this can be 
 ;; loaded when the rest of Mumble is loaded rather than afterwards. 
+;; 1/2/15 Added recording word to phase it heads. 
 
 (in-package :mumble)
 
@@ -20,12 +21,15 @@
   (let* ((phrase (phrase-named (or phrase-name 'common-noun)))
          (parameter (car (parameters-to-phrase phrase)))
          (word (word-for-string string 'noun)))
-    (let ((pair (make-instance 'parameter-value-pair
-                  :phrase-parameter parameter
-                  :value word)))
-      (make-instance 'saturated-lexicalized-phrase
-        :phrase phrase
-        :bound `(,pair)))))
+    (let* ((pair (make-instance 'parameter-value-pair
+                   :phrase-parameter parameter
+                   :value word))
+           (lp (make-instance 'saturated-lexicalized-phrase
+                 :phrase phrase
+                 :bound `(,pair))))
+      (record-lexicalized-phrase word lp)
+      lp)))
+
 
 (defgeneric verb (word &optional phrase)
   (:documentation "Given a designator for a verb, return 
@@ -38,13 +42,15 @@
          (parameters (delete parameter
                              (copy-list (parameters-to-phrase phrase))))
          (word (word-for-string string 'verb)))
-    (let ((pair (make-instance 'parameter-value-pair
-                  :phrase-parameter parameter
-                  :value word)))
-      (make-instance 'partially-saturated-lexicalized-phrase
-        :phrase phrase
-        :free parameters
-        :bound `(,pair)))))
+    (let* ((pair (make-instance 'parameter-value-pair
+                   :phrase-parameter parameter
+                   :value word))
+           (lp (make-instance 'partially-saturated-lexicalized-phrase
+                 :phrase phrase
+                 :free parameters
+                 :bound `(,pair))))
+      (record-lexicalized-phrase word lp)
+      lp)))
 
 
 (defgeneric adjective (word)
@@ -54,11 +60,12 @@
     a choice set of some sort since it has several realizations."))
 
 (defmethod adjective ((pname string))
-  "Once the indexing is running (///) this is a find or make
-   on a lexicalized attachment."
-  (let ((word (word-for-string pname 'adjective))
-        (ap (attachment-point-named 'adjective)))
-    (make-lexicalized-attachment ap word)))
+  "This is a find or make on a lexicalized attachment."
+  (let* ((word (word-for-string pname 'adjective))
+         (ap (attachment-point-named 'adjective))
+         (lp (make-lexicalized-attachment ap word)))
+    (record-lexicalized-phrase word lp)
+    lp))
 
 
 (defgeneric predicate (word)
@@ -78,7 +85,7 @@
                 :bound `(,(make-instance 'parameter-value-pair
                             :phrase-parameter (parameter-named 'adv)
                             :value word)))))
-      ;; index
+      (record-lexicalized-phrase word lp)
       lp)))
 
 
@@ -101,7 +108,7 @@
                             :phrase-parameter (parameter-named 'p)
                             :value preposition))
                 :free `(,(parameter-named 'prep-object)))))
-      ;; index it
+      (record-lexicalized-phrase preposition lp)
       lp)))
 
 
@@ -129,6 +136,7 @@
                                :value prep))
                 :free (list (parameter-named 's)
                             (parameter-named 'o)))))
+      ;;//// how to index this?  Sort of has muliple heads
       lp)))
 
 
@@ -202,8 +210,9 @@ a message to be expressed. See discussion in make.lisp |#
                   (make-instance 'saturated-lexicalized-phrase
                     :phrase phrase
                     :bound bound-parameters))))
-          (push-debug `(,bound-parameters ,lp))
           (setf (mname lp) (name-composite lp))
+          (when (null (cdr words)) ;;/// had multiple-head issue
+            (record-lexicalized-phrase (car words) lp))
           lp)))))
 
 
