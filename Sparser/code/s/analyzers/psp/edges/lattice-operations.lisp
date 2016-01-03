@@ -226,7 +226,7 @@
 
 (defun find-or-make-lattice-subordinate (oparent var/name value &optional category)
   ;; Called from bind-dli-variable and returns the new individual and 
-  ;; the new finding
+  ;; the new binding
   (declare (special oparent var/name binding))
   (let* ((parent (if (referential-category-p oparent)
 		   (find-or-make-lattice-description-for-ref-category oparent)
