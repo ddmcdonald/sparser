@@ -106,7 +106,7 @@
     (code-char 776) ;; #\Combining_Diaeresis
     (code-char 834) ;; "͂" #\Combining_Greek_Perispomeni
     (code-char 894)
-
+    ;; (code-char 916) ;; #\Greek_Capital_Letter_Delta
     ;;(code-char 919) ;; "Η" #\Greek_Capital_Letter_Eta
     ;;(code-char 922) ;; "Κ" #\Greek_Capital_Letter_Kappa
     ;;(code-char 931) ;; "Σ"#\Greek_Capital_Letter_Sigma
@@ -175,20 +175,24 @@
     (code-char 8806) ;;"≦", (code = 8806)
     (code-char 8811) ;; "≫" #\U+226B
     (code-char 8839) ;; "⊇" #\U+2287
-
+    (code-char 8900) ;; "⋄"
     (code-char 8901) ;;"⋅", (code = 8901)
+    (code-char 8902) ;;"⋆" (code = 8902)
+    (code-char 8942) 
     (code-char 8943) ;; "⋯"
-
+    (code-char 9633) ;; "□"
+    (code-char 9642) ;; "▪"
     (code-char 9651) ;; "△" #\U+25B3
+    (code-char 9652) ;; "▴" #\U+25B4
     (code-char 9653) ;; "▵"
-    (code-char 9658) ;; "►"
+    (code-char 9658) ;; "►" #\U+2605
     (code-char 9663) ;; "▿" #\U+25BF
     (code-char 9674) ;; "◊" #\U+25CA
     (code-char 9675) ;; "○" #\U+25CB
-
+    (code-char 9733) ;; "★" #\U+25CB
     (code-char 9792) ;; "♀" #\U+2640
     (code-char 9794) ;; "♂" #\U+2642
-
+    (code-char 9830) ;; "♦"
     (code-char 10794) ;; "⨪" #\U+2A2A
     (code-char 10877) ;; "⩽"
     (code-char 10878) ;;"⩾", (code = 10878)

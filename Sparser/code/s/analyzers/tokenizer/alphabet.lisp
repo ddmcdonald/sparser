@@ -995,16 +995,18 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named (code-char 8839))))
     (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;; "⋄"
     (8943 (:punctuation . ,(punctuation-named (code-char 8943)))) ;;"⋯", (code = 8943)
+    (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;;"⋅", (code = 8901)
     (8901 (:punctuation . ,(punctuation-named (code-char 8901)))) ;;"⋅", (code = 8901)
     (8902 (:punctuation . ,(punctuation-named (code-char 8902))))
     (8942 ;; "▪"
      (:punctuation . ,(punctuation-named (code-char 8942))))
     (8943 ;; "⋯"
      (:punctuation . ,(punctuation-named (code-char 8943))))
-    (9633 (:punctuation . ,(punctuation-named (code-char 9633)))) "□"
+    (9633 (:punctuation . ,(punctuation-named (code-char 9633)))) ;; "□"
+    (9642 (:punctuation . ,(punctuation-named (code-char 9642)))) ;; "□"
     (9651 ;; "△" #\U+25B3
      (:punctuation . ,(punctuation-named (code-char 9651))))
-    (9652 (:punctuation . ,(punctuation-named (code-char 9652)))) "▴"
+    (9652 (:punctuation . ,(punctuation-named (code-char 9652)))) ;; "▴"
     (9653 (:punctuation . ,(punctuation-named (code-char 9653)))) ;;"▵", (code = 8901)afffff
     (9658 (:punctuation . ,(punctuation-named (code-char 9658)))) ;;""►", (code = 9658)
     (9633 ;; "□"
