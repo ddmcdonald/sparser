@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  September 2015
+;;;  Version:  January 2016
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -54,7 +54,7 @@
 ;;  getting an appropriate individual for the referent of an edge (creating
 ;;  an individual in the case where the referent is a category, and copying
 ;;  the individual when needed if the referent was an individual) Uniformly
-;;  used this metghod in all places that previously used
+;;  used this method in all places that previously used
 ;;  maybe-copy-individualand/or make-individual-for-dm&p
 ;; 6/2/2015 Key check in assimilate-subject-to-vp-ed that blocks using
 ;;  vp+ed (or vg+ed) as a main verb when there is a missing object -- such
@@ -72,6 +72,7 @@
 ;; mechanism causes stack overflow because of the pushne with equalp...
 ;; Handle locations as premodifiers "nuclear kinase"  9/29/15 abstracted the
 ;; check for a pronoun we should ignore.
+;; 1/2/16 Moved individual-for-ref to individuals/make.lisp
 
 
 (in-package :sparser)
@@ -155,7 +156,6 @@
 
 
 (defun adj-noun-compound (qualifier head)
-  (declare (special qualifier head))
   ;;(lsp-break "adj-noun-compound")
   ;; goes with (adjective n-bar-type) syntactic rule
   (when nil
@@ -165,7 +165,7 @@
   (cond
    ((call-compose qualifier head));; This case is to benefit marker-categories
    ((category-p head)
-    (setq head (make-individual-for-dm&p head))
+    (setq head (individual-for-ref head))
     (or (call-compose qualifier head)
         (interpret-premod-to-np qualifier head)
         (else
@@ -225,7 +225,7 @@
       ;; This case is to benefit marker-categories
       (cond
        ((category-p head)
-        (setq head (make-individual-for-dm&p head))
+        (setq head (individual-for-ref head))
         (or
          (call-compose qualifier head)
          (link-in-verb+ing qualifier head)))
@@ -256,7 +256,7 @@
       ;; This case is to benefit marker-categories
       (cond
        ((category-p head)
-        (setq head (make-individual-for-dm&p head))
+        (setq head (individual-for-ref head))
         (or
          (call-compose qualifier head)
          (link-in-verb qualifier head)))
@@ -293,7 +293,7 @@
 
 (defun absorb-auxiliary (aux vg)
   (when (category-p vg)
-    (setq vg (make-individual-for-dm&p vg)))
+    (setq vg (individual-for-ref vg)))
 
   ;; otherwise the variable is unavailable
   (let ((aux-type (etypecase aux
@@ -326,10 +326,10 @@
 
 
 (defmethod add-tense/aspect ((aux category) (vg category))
-  (add-tense/aspect aux (make-individual-for-dm&p vg)))
+  (add-tense/aspect aux (individual-for-ref vg)))
 
 (defmethod add-tense/aspect ((aux individual) (vg category))
-  (add-tense/aspect aux (make-individual-for-dm&p vg)))
+  (add-tense/aspect aux (individual-for-ref vg)))
 
 (defmethod add-tense/aspect ((aux category) (vg individual))
   (push-debug `(,aux ,vg)) ;;(break "is this right?")
@@ -358,10 +358,10 @@
     i))
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc category))
-  (add-tense/aspect-to-subordinate-clause aux (make-individual-for-dm&p sc)))
+  (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc)))
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc category))
-  (add-tense/aspect-to-subordinate-clause aux (make-individual-for-dm&p sc)))
+  (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc)))
 
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc individual))
