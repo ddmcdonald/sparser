@@ -360,22 +360,20 @@ for every category.
 
 
 ;;**************** So that David can test this new functionality ***********
-;; copy-individual is called from many methods in syntax-functions, to avoid smashing the bindings of basic vocabulary like Ras
-;;  which is defined to create an individual
+
+;; copy-individual is called from many methods in syntax-functions, to
+;; avoid smashing the bindings of basic vocabulary like Ras which is
+;; defined to create an individual
 
 (defparameter *dont-copy-individuals* nil)
 
 (defun maybe-copy-individual (i) ;; &optional subs)
-  (declare (special i))
-  (if
-   (or
-    *dont-copy-individuals*
-    (not (individual-p i)))
+  (if (or *dont-copy-individuals*
+          (not (individual-p i)))
    ;; don't copy things other than individuals
    i
    (let* ((established-type (indiv-type i))
           (new (make-unindexed-individual (car established-type)))) ;; includes shadow
-     (declare (special established-type new))
      (when (cdr established-type) ;; carry over any mix-ins
        (setf (indiv-type  new) established-type))
      (loop for binding in (indiv-binds i)
