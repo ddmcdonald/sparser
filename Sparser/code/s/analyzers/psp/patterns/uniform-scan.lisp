@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  1.1 June 2015
+;;;  version:  January 2016
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -25,7 +25,9 @@
 ;; 1.2 5/15/15 Incorporating edges if they're more than one word long
 ;;   6/1/15 fixed bug in single multi-word edge case. Added some sectioning
 ;;    to make it easier to navigate
-;; 6/28/2015 Mechanism to collect all examples of nospace segments, keyed on *ns-examples*
+;; 6/28/2015 Mechanism to collect all examples of nospace segments, 
+;;    keyed on *ns-examples*
+;; 1/3/16 Tweaked final-colon handling to deal with fencepost.
 
 (in-package :sparser)
 
@@ -161,11 +163,12 @@
                                      (category-p (edge-category end-edge)))
                                 (cat-symbol (edge-category end-edge)))))
                 (or
-                 (when (punctuation-final-in-ns-span? end-pos)
+                 (when (punctuation-final-in-ns-span? end-pos) ;; only fires on colons
                    (setq end-pos (chart-position-before end-pos))
                    (ns-pattern-dispatch start-pos end-pos edges
                                         hyphen-positions slash-positions
-                                        colon-positions other-punct))
+                                        colon-positions other-punct
+                                        :final-colon))
                  (when (memq end-cat '(category::protein category::protein-family
                                                          category::small-molecule category::ion 
                                                          category::nucleotide))
@@ -191,13 +194,22 @@
 
 (defun ns-pattern-dispatch (start-pos end-pos unsorted-edges
                             hyphen-positions slash-positions
-                            colon-positions other-punct)
+                            colon-positions other-punct
+                            &optional final-colon?)
   ;; Subroutine of collect-no-space-segment-into-word that does the
   ;; dispatch. Every path is expected to form an edge over the
   ;; span one way or another.
   (let* ((edges (remove-non-edges unsorted-edges))
          (pattern (characterize-words-in-region start-pos end-pos edges))
          (words (words-between start-pos end-pos)))
+    (when final-colon?
+      ;; If the span the left of the colon is a single word then
+      ;; we have nothing to do. If this is not enough of a check
+      ;; then the next thing to so is to look for whether the 
+      ;; non-colon punctuation parameters have values.
+      (when (null (cdr words))
+        (tr :single-word-followed-by-colon (car words))
+        (return-from ns-pattern-dispatch t))) ;; 
     (when edges
       (tr :ns-pattern-includes-edges edges)
       (setq pattern (convert-mixed-pattern-edges-to-labels pattern)))
