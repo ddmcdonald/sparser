@@ -24,10 +24,13 @@
  fill-compatible-slot 
    analyze-pp indexical-for-state mark-instance-indefinite
    define-determiner
+
  mumble::link-to-underlying-object mumble::remove-subject
    mumble::dtn-bundle-driver
+   mumble::has-name
    mumble::
-   mumble::
+ mumble-phrase  add-etf-mapping  realize-using-name-binding
+ realization-for-triple
 
  get-dli
 
