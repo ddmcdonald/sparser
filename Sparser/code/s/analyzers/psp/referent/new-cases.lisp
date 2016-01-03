@@ -42,6 +42,7 @@
 ;;      supposed to use. 1/12/15 fixed but in that.
 ;;     (4/20/15) in ref/instantiate-individual-with-binding, the reused case got
 ;;      its first instance of the head being a word.
+;;     (1/2/16) Shifting to unwrapped unindexed individual using individual-for-ref
 
 (in-package :sparser)
 
@@ -96,7 +97,7 @@
                 ;; (and done as :instantiate-individual-with-binding).
                 ;; So we just make an unindexed individual and punt
                 ;; the identity question.
-                (let ((i (make-individual-for-dm&p head))
+                (let ((i (individual-for-ref head))
                       ;; make-category-indexed-individual is another option
                       ;; or define something new.
                       (lp (cat-lattice-position head)))
