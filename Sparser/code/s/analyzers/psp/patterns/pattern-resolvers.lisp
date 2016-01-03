@@ -94,7 +94,7 @@
   (declare (special category::adjective category::verb+ed category::vp+ed))
   (tr :make-right-head-with-agent-left)
   (when (category-p right-ref)
-    (setq right-ref (make-individual-for-dm&p right-ref)))
+    (setq right-ref (individual-for-ref right-ref)))
   (let* ((variable (second-imposes-relation-on-first? right-ref right-edge))
          (edge
           (make-ns-edge
