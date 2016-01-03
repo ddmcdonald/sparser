@@ -146,7 +146,9 @@
 
     ((eq word *the-punctuation-colon*)
      ;;(if (next-word-is-digit? position) nil t)
-     (pos-after-is-end-of-sequence position))
+     (when
+         (pos-after-is-end-of-sequence position)
+       (pushnew word *terminal-ns-punct-encountered*)))
 
     ((or (eq word (punctuation-named #\-))
 	 (eq word (punctuation-named #\/))
