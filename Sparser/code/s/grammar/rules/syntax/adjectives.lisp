@@ -26,21 +26,18 @@
 
 (defmethod modifier+noun ((modifier t) (head t)) ;; Kurdish city - name-word city(l
   ;; Look at "nucleotide-free"
-  (declare (special modifier head))
   (tr :modifier+noun_t+t)
   (let ((real-modifier 
          (if (is-shadow modifier)
-             (dereference-shadow-individual modifier)
-             modifier))
+           (dereference-shadow-individual modifier)
+           modifier))
         (real-head 
          (if (is-shadow head)
-             (dereference-shadow-individual head)
-             head)))
-    (declare (special real-modifier real-head))
+           (dereference-shadow-individual head)
+           head)))
     (setq real-head (individual-for-ref real-head))
-    (if
-     (category-p real-modifier)
-     (setq real-modifier (make-individual-for-dm&p real-modifier)))
+    (when (category-p real-modifier)
+     (setq real-modifier (individual-for-ref real-modifier)))
     (setq real-head (bind-dli-variable 'modifier real-modifier real-head))
     real-head))
 
