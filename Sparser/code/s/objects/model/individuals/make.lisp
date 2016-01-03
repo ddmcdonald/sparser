@@ -70,6 +70,8 @@
 ;;     (5/29/14) Added some (now commented out) debugging code to make-simple-individual
 
 (in-package :sparser)
+
+
 ;; this is a global used to turn on and off use of the description lattice
 ;;  the defparameter for this global is defined later in the compilation order
 (defvar *description-lattice*) 
@@ -160,7 +162,7 @@
 (defun def-individual/no-indexing (category &rest symbols-and-values)
   ;; essentially identical to case above except for the indexing
   (etypecase category
-    (referential-category )
+    (referential-category)
     (symbol
      (setq category (category-named category))
      (unless category
@@ -390,19 +392,19 @@
 
 (defun individual-for-ref (head)
   (if *description-lattice*
+   ;; why not use (fom-lattice-description head) 
    head
    (typecase head
      (individual
       (maybe-copy-individual head))
      (category
-      (make-individual-for-dm&p head))
-     (cons
-      ;; presumably it's a disjoint value restriction
+      (make-unindexed-individual head))
+     (cons ;; presumably it's a disjoint value restriction
       (unless (eq (car head) :or)
         (error "The 'head' is a cons but it's not a value restriction:~%~a"
                head))
-      ;; Arbitrily pick the first one
-      (make-individual-for-dm&p (second head)))
+      ;; The first category is supposed to be the 'primary' one
+      (make-unindexed-individual (second head)))
      (otherwise
       (push-debug `(,head))
       (error "Unexpected type of 'head' in individual for ref: ~a~
