@@ -399,7 +399,7 @@
                   (individual-p (edge-referent edge-before))
                   (individual-p (edge-referent edge-after)))
                  t)
-                (t (lsp-break "conjunction-problem")) ))
+                (t (break "conjunction-problem: conjunction of category and individual")) ))
               (and
                (safe-itypep label-before 'protein)
                (safe-itypep label-after 'protein))
