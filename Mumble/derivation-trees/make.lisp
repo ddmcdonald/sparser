@@ -10,6 +10,37 @@
 
 (in-package :mumble)
 
+;;;------------------
+;;; store and access
+;;;------------------
+
+(defparameter *strings-to-lexicalized-phrases*
+  (make-hash-table :test 'equalp))
+
+(defgeneric get-lexicalized-phrase (word)
+  (:documentation "Given a word or a string, return
+   the lexicalized-phrase it grounds."))
+
+(defmethod get-lexicalized-phrase ((pname string))
+  (gethash pname *strings-to-lexicalized-phrases*))
+
+(defmethod get-lexicalized-phrase ((name symbol))
+  (get-lexicalized-phrase (symbol-name name)))
+
+(defgeneric record-lexicalized-phrase (word lp)
+  (:documentation "When a lexicalized phrase is defined,
+   record the association of the head word and the phrase
+   so that it can be retrieved by get-lexicalized-phrase."))
+
+(defmethod record-lexicalized-phrase ((pname string)
+                                      (lp saturated-lexicalized-phrase))
+  ;;/// No provision for heading more than one phrase
+  (setf (gethash pname *strings-to-lexicalized-phrases*) lp))
+
+(defmethod record-lexicalized-phrase ((word word) 
+                                      (lp saturated-lexicalized-phrase))
+  (record-lexicalized-phrase (pname word) lp))
+
 ;;;--------------------------------
 ;;; Operations on derivation trees
 ;;;--------------------------------
@@ -107,7 +138,6 @@ but we don't want to count on that.
     (let ((la (make-instance 'lexicalized-attachment
                 :point ap
                 :value v)))
-      ;;/// indexing goes here
       la)))
 
 
