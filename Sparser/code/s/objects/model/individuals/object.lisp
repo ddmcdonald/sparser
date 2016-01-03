@@ -44,9 +44,11 @@
        (values (car type-field)
                type-field)))
     (model-category i)
-    (polyword (report-bad-itype-of i)     
+    (polyword 
+     (report-bad-itype-of i)     
      nil)
-    (word (report-bad-itype-of i)     
+    (word 
+     (report-bad-itype-of i)     
      nil)
     (null
      (report-bad-itype-of i)     
@@ -56,12 +58,7 @@
      (error "itype-of applied to a ~a rather than ~
              an individual" (type-of i)))))
 
-(defun report-bad-itype-of (i &optional (called-from 'itype-of))
-  (if *break-on-bad-itype-of* 
-      (break "~s applied to ~s rather than an individual" called-from i)
-      (then 
-        (format t "~&--- ~S applied to ~s rather than an individual" called-from i)
-        (format t "~&(setq *break-on-bad-itype-of* T) to cause a break here"))))
+
 
 (defun itypep (i c/s) 
   (if (consp i)
@@ -86,6 +83,15 @@
 
 (defun itype (i c/s)
   (indiv-typep i c/s))
+
+
+(defun report-bad-itype-of (i &optional (called-from 'itype-of))
+  (if *break-on-bad-itype-of* 
+      (break "~s applied to ~s rather than an individual" called-from i)
+      (then 
+        (format t "~&--- ~S applied to ~s rather than an individual" called-from i)
+        (format t "~&(setq *break-on-bad-itype-of* T) to cause a break here"))))
+
 
 
 
