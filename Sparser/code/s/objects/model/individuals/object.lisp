@@ -56,11 +56,12 @@
      (error "itype-of applied to a ~a rather than ~
              an individual" (type-of i)))))
 
-(defun report-bad-itype-of (i)
+(defun report-bad-itype-of (i &optional (called-from 'itype-of))
   (if *break-on-bad-itype-of* 
-      (break "itype-of applied to ~s rather than ~ an individual" i)
-      (format t "@@@ itype-of applied to ~s rather than an individual ~ 
-      (setq *break-on-bad-itype-of* T) to cause a break here" i)))
+      (break "~s applied to ~s rather than an individual" called-from i)
+      (then 
+        (format t "~&--- ~S applied to ~s rather than an individual" called-from i)
+        (format t "~&(setq *break-on-bad-itype-of* T) to cause a break here"))))
 
 (defun itypep (i c/s) 
   (if (consp i)
@@ -75,12 +76,13 @@
        ;; but in most code one won't be able to tell
        (category-inherits-type? i (category-named c/s :break-if-none)))
       (word 
-       (format t "*** itypep applied to a word ~s. Bad referent on edge. Returning NIL." i)
+       (format t "~&*** itypep applied to a word ~s. Bad referent on edge. Returning NIL." i)
+       (report-bad-itype-of i 'itypep)
        nil)
       (otherwise
        (push-debug `(,i ,c/s))
        (error "indiv-typep not applied to an individual:~%~a  ~a"
-              (type-of i) i)))))
+              (type-of i) i))))) 
 
 (defun itype (i c/s)
   (indiv-typep i c/s))
