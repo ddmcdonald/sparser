@@ -677,7 +677,11 @@
                    :type type)))
             collection)))))
 
-
+(defun ref-type (ref)
+  (cond
+   ((individual-p ref) (indiv-type ref))
+   ((category-p ref) (list ref))
+   (t nil)))
 (defun referent-of-list-of-conjoined-edges (edge-list)
   (when (every #'(lambda (e) (not (null e))) edge-list)
 
@@ -685,7 +689,7 @@
            (first-ref (when referents (car referents))))
       (cond
        ((individual-p first-ref)
-        (let ((types (mapcar #'indiv-type referents))
+        (let ((types (mapcar #'ref-type referents))
               (sample-type (indiv-type (car (last referents)))))          
           (when (every #'(lambda (type) (eq type sample-type))
                          referents)
