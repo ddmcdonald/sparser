@@ -209,11 +209,18 @@
       (add-rules-to-category category rules)
       category)))
 
+(defparameter *show-R3-new-verb-definitions* nil)
+(defun show-new-verb-definitions ()
+  (setq *show-R3-new-verb-definitions* t))
+
+(defun dont-show-new-verb-definitions ()
+  (setq *show-R3-new-verb-definitions* t))
 
 (defun setup-verb (word &optional comlex-clause  ambiguous?)
   (declare (special *big-mechanism*))
   (when *big-mechanism*
-    (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, assuming it is a bio-verb~&" word)
+    (when *show-R3-new-verb-definitions*
+      (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, assuming it is a bio-verb~&" word))
     (svo/bio/expr word)
     (return-from setup-verb nil))
   (when (stringp word)
