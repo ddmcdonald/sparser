@@ -49,9 +49,10 @@
       (cat-ops-instantiate ops-str))))
 
 (defun override-label (c)
-  (let ((ops-str (cat-operations c)))
-    (when ops-str
-      (cat-ops-rule-label ops-str))))
+  (when c ;; can get NIL if itype-of returns NIL for a word
+    (let ((ops-str (cat-operations c)))
+      (when ops-str
+        (cat-ops-rule-label ops-str)))))
 
 
 ;;;------------------

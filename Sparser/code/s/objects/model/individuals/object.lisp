@@ -35,6 +35,8 @@
 
 (defun itype-of (i) (i-type-of i))
 
+(defparameter *break-on-bad-itype-of* nil)
+
 (defun i-type-of (i)
   (typecase i
     (individual
@@ -42,11 +44,23 @@
        (values (car type-field)
                type-field)))
     (model-category i)
+    (polyword (report-bad-itype-of i)     
+     nil)
+    (word (report-bad-itype-of i)     
+     nil)
+    (null
+     (report-bad-itype-of i)     
+     nil)
     (otherwise
      (push-debug `(,i))
      (error "itype-of applied to a ~a rather than ~
              an individual" (type-of i)))))
 
+(defun report-bad-itype-of (i)
+  (if *break-on-bad-itype-of* 
+      (break "itype-of applied to ~s rather than ~ an individual" i)
+      (format t "@@@ itype-of applied to ~s rather than an individual ~ 
+      (setq *break-on-bad-itype-of* T) to cause a break here" i)))
 
 (defun itypep (i c/s) 
   (if (consp i)
@@ -60,6 +74,9 @@
        ;; strictly speaking mixins are not organized into taxonomies
        ;; but in most code one won't be able to tell
        (category-inherits-type? i (category-named c/s :break-if-none)))
+      (word 
+       (format t "*** itypep applied to a word ~s. Bad referent on edge. Returning NIL." i)
+       nil)
       (otherwise
        (push-debug `(,i ,c/s))
        (error "indiv-typep not applied to an individual:~%~a  ~a"
