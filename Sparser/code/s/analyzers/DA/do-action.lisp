@@ -110,7 +110,7 @@
           (cond
            ((null result)
             (format t "Application of DA function did not return ~
-                  an edge. We got a NIl instead~&"))
+                  an edge. We got a NIL instead~&"))
            (t
             (error "Application of DA function did not return ~
                   an edge. We got a ~a instead~&"
