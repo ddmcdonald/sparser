@@ -384,9 +384,10 @@ for every category.
       (setf (indiv-type new) established-type))
     (loop for binding in (indiv-binds i)
       do
-      (bind-variable/expr (binding-variable binding) ;; should be obsolete with DLI
-                          (binding-value binding)
-                          new))
+      ;; don't check binding-hook
+      (make/binding (binding-variable binding)
+                    (binding-value binding)
+                    new))
      new))
 
 ;;;---------------------------
