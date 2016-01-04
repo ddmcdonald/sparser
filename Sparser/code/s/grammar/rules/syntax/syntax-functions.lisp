@@ -326,11 +326,11 @@
 
 
 (defmethod add-tense/aspect ((aux category) (vg category))
-  (add-tense/aspect (make-unindexed-individual aux)
-                    (make-unindexed-individual vg)))
+  (add-tense/aspect (individual-for-ref aux)
+                    (individual-for-ref vg)))
 
 (defmethod add-tense/aspect ((aux individual) (vg category))
-  (add-tense/aspect aux (make-unindexed-individual vg)))
+  (add-tense/aspect aux (individual-for-ref vg)))
 
 (defmethod add-tense/aspect ((aux category) (vg individual))
   (push-debug `(,aux ,vg)) ;;(break "is this right?")

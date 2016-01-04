@@ -393,23 +393,23 @@
 ;;;------------------------------------------------------------------
 
 (defun individual-for-ref (head)
-  (if *description-lattice*
-   (fom-lattice-description head)
-   (typecase head
-     (individual
-      (maybe-copy-individual head))
-     (category
-      (make-unindexed-individual head))
-     (cons ;; presumably it's a disjoint value restriction
-      (unless (eq (car head) :or)
-        (error "The 'head' is a cons but it's not a value restriction:~%~a"
-               head))
-      ;; The first category is supposed to be the 'primary' one
-      (make-unindexed-individual (second head)))
-     (otherwise
-      (push-debug `(,head))
-      (error "Unexpected type of 'head' in individual for ref: ~a~
-        ~%  ~a" (type-of head) head)))))
+  (typecase head
+    (individual
+     (if *description-lattice*
+         head
+         (maybe-copy-individual head)))
+    (category
+     (make-unindexed-individual head))
+    (cons ;; presumably it's a disjoint value restriction
+     (unless (eq (car head) :or)
+       (error "The 'head' is a cons but it's not a value restriction:~%~a"
+              head))
+     ;; The first category is supposed to be the 'primary' one
+     (make-unindexed-individual (second head)))
+    (otherwise
+     (push-debug `(,head))
+     (error "Unexpected type of 'head' in individual for ref: ~a~
+       ~%  ~a" (type-of head) head))))
 
 
 ;;;-------------------------
