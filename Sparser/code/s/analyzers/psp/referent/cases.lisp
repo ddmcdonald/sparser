@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "cases"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:  1.9 April 2015
+;;;   Version:  January 2016
 
 ;; (2/27/92 v2.2) fixed a bug in Ref/composite where it was offset
 ;;   by one when extracting a literal from the rule's referent field
@@ -56,7 +56,7 @@
 ;;; bindings on established head
 ;;;------------------------------
 #| The current version of ref/head make a new individual every time
-the head is a referential-category (using make-individual-for-dm&p).
+the head is a referential-category (using individual-for-ref).
 There's a note questioning it, but to do the right thing, which would
 be a find-or-make, we need access to the bindings in the way that
 :instantiate-individual-with-binding has. A temporary check and 
