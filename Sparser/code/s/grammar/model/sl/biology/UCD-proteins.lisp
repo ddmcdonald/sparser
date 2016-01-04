@@ -415,10 +415,6 @@
 
 (define-protein "CD2A2_HUMAN" ("p14ARF"))
 
-(define-protein "CD2_HUMAN"
- ("PR:P06729" "T-cell surface antigen CD2" "Erythrocyte receptor"
-  "LFA-2" "LFA-3 receptor" "Rosette receptor"
-  "T-cell surface antigen T11/Leu-5" "SRBCs"))
 
 (define-protein "CD47_HUMAN"
  ("PR:Q08722" "Leukocyte surface antigen CD47"

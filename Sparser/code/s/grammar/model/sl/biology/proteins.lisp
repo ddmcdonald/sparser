@@ -30,6 +30,18 @@
 
 ;; found in the article set
 
+(define-protein "LCK_HUMAN" ("lck" "Tyrosine-protein kinase Lck" "LCK" "YT16" "Proto-oncogene Lck" "Lck" "p56-LCK"))
+(define-protein "CD2_HUMAN"
+ ("PR:P06729" "T-cell surface antigen CD2" "Erythrocyte receptor" "CD2"
+  "LFA-2" "LFA-3 receptor" "Rosette receptor"
+  "T-cell surface antigen T11/Leu-5" "SRBCs"))
+(define-protein "UBP7_HUMAN" ("HAUSP" "Ubiquitin carboxyl-terminal hydrolase 7" "USP7" "Herpesvirus-associated ubiquitin-specific protease")) 
+(define-protein "UBP4_HUMAN" ("USP4"))
+(define-protein "UBP1_HUMAN" ("USP1"))
+(define-protein "UBP2_HUMAN" ("USP2"))
+(define-protein "UBP3_HUMAN" ("USP3"))
+
+
 
 
 (def-bio "BCR-ABL" protein)
@@ -358,7 +370,6 @@ filligre may be used to distinguish them, etc.
 ;;(def-bio "NF1" protein :mitre-link "Uniprot:P21359")
 	
 
-#+ignore
 (def-bio "IQGAP1" protein
   :mitre-link "Uniprot:P46940")
 
@@ -1145,7 +1156,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "EIF3B_HUMAN" ("eIF3b" "EIF3S9")) 
 (define-protein "EIF3G_HUMAN" ("factor-3" "Eukaryotic translation initiation factor 3 subunit G" "eIF3g" "Eukaryotic translation initiation factor 3 RNA-binding subunit" "eIF-3 RNA-binding subunit" "Eukaryotic translation initiation factor 3 subunit 4" "eIF-3-delta" "eIF3 p42" "eIF3 p44")) 
 (define-protein "EIF3M_HUMAN" ("EIF3M" "hFL-B5" "PCID1" "HFLB5" "eIF3m")) 
-(define-protein "ELAF_HUMAN" ("PI3" "WAP3" "WFDC14")) 
+(define-protein "ELAF_HUMAN" ("PI3" "PI-3" "WAP3" "WFDC14")) 
 (define-protein "ELAV1_HUMAN" ("HuR" "HUR" "ELAVL1")) 
 (define-protein "ELK1_HUMAN" ("Elk-1")) 
 (define-protein "ELK4_HUMAN" ("Elk4" "ETS domain-containing protein Elk-4" "Serum response factor accessory protein 1" "SAP-1" "SRF accessory protein 1")) 

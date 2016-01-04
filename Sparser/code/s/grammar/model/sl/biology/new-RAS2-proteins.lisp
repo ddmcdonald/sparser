@@ -183,7 +183,7 @@
 (DEF-RAS2-PROTEIN "BMPR2_HUMAN" ("BMPR2_HUMAN" "Bone morphogenetic protein receptor type II" "BMPR-2" "BMPR-II" "2.7.11.30" "BMP type-2 receptor" "PPH1" "BMPR2" "BMP type II receptor")) 
 (DEF-RAS2-PROTEIN "BMR1A_HUMAN" ("BMR1A_HUMAN" "BMPR1A" "CD292" "Activin receptor-like kinase 3" "ALK-3" "2.7.11.30" "SKR5" "BMPR-1A" "ALK3" "BMP type-1A receptor" "ACVRLK3" "Serine/threonine-protein kinase receptor R5")) 
 (DEF-RAS2-PROTEIN "BMR1B_HUMAN" ("BMR1B_HUMAN" "CDw293" "2.7.11.30" "BMPR1B" "BMP type-1B receptor" "BMPR-1B")) 
-(DEF-RAS2-PROTEIN "BRAF_HUMAN" ("BRAF_HUMAN" "p94" "RAFB1" "Proto-oncogene B-Raf" "B-RAF" "2.7.11.1" "BRAF1" "BRAF" "BRaf" "v-Raf murine sarcoma viral oncogene homolog B1")) 
+(DEF-RAS2-PROTEIN "BRAF_HUMAN" ("BRAF_HUMAN" "p94" "RAFB1" "Proto-oncogene B-Raf" "B-RAF" "B-Raf" "2.7.11.1" "BRAF1" "BRAF" "BRaf" "v-Raf murine sarcoma viral oncogene homolog B1")) 
 (DEF-RAS2-PROTEIN "BRK1_HUMAN" ("BRK1_HUMAN" "C3orf10" "BRK1")) 
 (DEF-RAS2-PROTEIN "BRPF3_HUMAN" ("BRPF3_HUMAN" "KIAA1286" "BRPF3")) 
 (DEF-RAS2-PROTEIN "BTC_HUMAN" ("BTC_HUMAN" "Betacellulin" "Bηcellulin" "BTC")) 
@@ -243,7 +243,7 @@
 (DEF-RAS2-PROTEIN "CYH1_HUMAN" ("CYH1_HUMAN" "D17S811E" "PH, SEC7 and coiled-coil domain-containing protein 1" "CYTH1" "SEC7 homolog B2-1" "PSCD1")) 
 (DEF-RAS2-PROTEIN "CYH2_HUMAN" ("CYH2_HUMAN" "ARF nucleotide-binding site opener" "ARNO" "CYTH2" "PH, SEC7 and coiled-coil domain-containing protein 2" "Protein ARNO" "PSCD2L" "PSCD2" "ARF exchange factor")) 
 (DEF-RAS2-PROTEIN "CYH3_HUMAN" ("CYH3_HUMAN" "General receptor of phosphoinositides 1" "PH, SEC7 and coiled-coil domain-containing protein 3" "GRP1" "CYTH3" "Grp1" "ARNO3" "ARF nucleotide-binding site opener 3" "PSCD3" "Protein ARNO3")) 
-(DEF-RAS2-PROTEIN "CaMKII family" ("CaMKII family" "CAMKII family")) 
+(DEF-RAS2-PROTEIN "CaMKII family" ("CaMKII family" "CAMKII family" "CaMKII" "CAMKII")) 
 (DEF-RAS2-PROTEIN "CoA" ("CoA")) 
 (DEF-RAS2-PROTEIN "CoR" ("CoR")) 
 (DEF-RAS2-PROTEIN "DAAM1_HUMAN" ("DAAM1_HUMAN" "KIAA0666" "DAAM1")) 
@@ -761,7 +761,7 @@
 (DEF-RAS2-PROTEIN "PLCB3_HUMAN" ("PLCB3_HUMAN" "Phosphoinositide phospholipase C-bη-3" "3.1.4.11" "PLC-bη-3" "Phospholipase C-bη-3" "PLCB3" "PLCβ3" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase beta-3" "Phosphoinositide phospholipase C-beta-3" "Phospholipase C-beta-3" "PLC-beta-3")) 
 (DEF-RAS2-PROTEIN "PLCB4_HUMAN" ("PLCB4_HUMAN" "Phosphoinositide phospholipase C-beta-4" "Phosphoinositide phospholipase C-bη-4" "3.1.4.11" "PLC-beta-4" "PLC-bη-4" "Phospholipase C-beta-4" "Phospholipase C-bη-4" "PLCB4")) 
 (DEF-RAS2-PROTEIN "PLCE1_HUMAN" ("PLCE1_HUMAN" "PPLC" "3.1.4.11" "Phospholipase C-ε-1" "Phosphoinositide phospholipase C-ε-1" "KIAA1516" "PLCE" "PLCE1" "PLC-ε-1" "PLCε1" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase epsilon-1" "Pancreas-enriched phospholipase C" "Phosphoinositide phospholipase C-epsilon-1" "Phospholipase C-epsilon-1" "PLC-epsilon-1")) 
-(DEF-RAS2-PROTEIN "PLCG1_HUMAN" ("PLCγ1" "PLCG1_HUMAN" "PLC-γ-1" "3.1.4.11" "Phospholipase C-γ-1" "Phosphoinositide phospholipase C-γ-1" "PLCG1" "PLC1" "cγ" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase gamma-1" 
+(DEF-RAS2-PROTEIN "PLCG1_HUMAN" ("PLCγ1" "PLCG1_HUMAN" "PLC-γ-1" "Cγ1" "3.1.4.11" "Phospholipase C-γ-1" "Phosphoinositide phospholipase C-γ-1" "PLCG1" "PLC1" "cγ" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase gamma-1" 
  "PLC-148" "Phosphoinositide phospholipase C-gamma-1" "Phospholipase C-II" "PLC-II" "Phospholipase C-gamma-1" "PLC-gamma-1" "phospholipase C-gamma1" "PLGCG1""PLC-gamma1"))
 
 
@@ -795,7 +795,7 @@
 (DEF-RAS2-PROTEIN "RAD1_HUMAN" ("RAD1_HUMAN" "hRAD1" "REC1" "Rad1-like DNA damage checkpoint protein" "DNA repair exonuclease rad1 homolog" "3.1.11.2" "RAD1")) 
 (DEF-RAS2-PROTEIN "RAD9A_HUMAN" ("RAD9A_HUMAN" "DNA repair exonuclease rad9 homolog A" "RAD9A" "hRAD9" "3.1.11.2")) 
 (DEF-RAS2-PROTEIN "RAF1-BRAF" ("RAF1-BRAF")) 
-(DEF-RAS2-PROTEIN "RAF1_HUMAN" ("RAF1_HUMAN" "RAF" "Raf" "Raf-1" "RAF1" "2.7.11.1" "Proto-oncogene c-RAF" "cRaf" "CRaf" "CRAF" "C-RAF")) 
+(DEF-RAS2-PROTEIN "RAF1_HUMAN" ("RAF1_HUMAN" "RAF" "Raf" "Raf-1" "RAF1" "2.7.11.1" "Proto-oncogene c-RAF" "cRaf" "CRaf" "CRAF" "C-RAF" "C-Raf")) 
 (DEF-RAS2-PROTEIN "RAL" ("RAL")) 
 (DEF-RAS2-PROTEIN "RALA_HUMAN" ("RALA_HUMAN" "RALA" "RAL" "Exo84" "Ras-related protein Ral-A")) 
 (DEF-RAS2-PROTEIN "RALB_HUMAN" ("RALB_HUMAN" "RALB")) 

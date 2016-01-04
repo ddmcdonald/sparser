@@ -17,6 +17,10 @@
 (noun "integrin" :super protein-family)
 (noun "RAS GAP" :super protein-family)
 (noun ("CaMK" "CaM kinase" "CAMK" "CaM-kinase") :super protein-family)
+(def-family "IQGAP"
+            :members ("IQGAP1" "IQGAP2" "IQGAP3"))
+(def-family "Jnk"
+               :members ("JNK1" "JNK3A"))
 
 (def-family "ASPP"
   :members ("ASPP1" "ASPP2")
@@ -50,6 +54,7 @@
   :members ("ERK1" "ERK2")
   :long "mitogen activated protein kinase"
   :synonyms ("ERK" "extracellular signal-regulated kinase"
+             "ERK1/2"
              "erk" "mapk"
              "mitogen-activated protein kinase"))
 
