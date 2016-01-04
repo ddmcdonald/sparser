@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions opyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  2.3 May 2014
+;;;  version:  January 2016
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -63,11 +63,13 @@
 ;;      make-a-permanent-individual. 7/1/13 Smidgen of internal doc.
 ;; 2.3 (11/18/13) Revised schema handling in define-individual because of a new kind
 ;;      of cases. Backed out of it 11/20 see notes w/ fn.
-;;     (12/3/13) Hit a new case in applying rdata because of distributed categories
-;;      in C3 so factored the realization out completely and moved original version
-;;      to objects/model/tree-families/driver2. Cleaned up.
-;;     (4/7/14) Modified make-simple-individual to include a shadow
-;;     (5/29/14) Added some (now commented out) debugging code to make-simple-individual
+;; (12/3/13) Hit a new case in applying rdata because of distributed categories
+;;   in C3 so factored the realization out completely and moved original version
+;;   to objects/model/tree-families/driver2. Cleaned up.
+;;  (4/7/14) Modified make-simple-individual to include a shadow
+;;  (5/29/14) Added some (now commented out) debugging code to make-simple-individual
+;;  (1/3/15) changed individual-for-ref to actually make an individual even when
+;;   the description lattice flag is up.
 
 (in-package :sparser)
 
@@ -392,8 +394,7 @@
 
 (defun individual-for-ref (head)
   (if *description-lattice*
-   ;; why not use (fom-lattice-description head) 
-   head
+   (fom-lattice-description head)
    (typecase head
      (individual
       (maybe-copy-individual head))
