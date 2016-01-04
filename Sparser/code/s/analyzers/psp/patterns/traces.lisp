@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  July 2015
+;;;  version:  January 2016
 
 ;; Broken out from driver 2/5/13. Added more cases 9/11/14. Imported
 ;; cases from traces/scan-patterns 7/21/15. 
@@ -99,6 +99,12 @@
   (when *trace-ns-sequences*
     (trace-msg "[ns] Looking at the segment ~s"
                (string-of-words-between start-pos end-pos))))
+
+(deftrace :single-word-followed-by-colon (word)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] Dropped colon after single word ~s~
+              ~%       so returning without pattern check."
+               (word-pname word))))
 
 (deftrace :segment-ns-pattern (pattern)
   (when *trace-ns-sequences*
