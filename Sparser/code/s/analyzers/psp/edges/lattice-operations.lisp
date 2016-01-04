@@ -226,7 +226,7 @@
 
 (defun find-or-make-lattice-subordinate (oparent var/name value &optional category)
   ;; Called from bind-dli-variable and returns the new individual and 
-  ;; the new finding
+  ;; the new binding
   (declare (special oparent var/name binding))
   (let* ((parent (if (referential-category-p oparent)
 		   (find-or-make-lattice-description-for-ref-category oparent)
@@ -238,11 +238,9 @@
     (declare (special parent var dl-vv downlinks))
     (if (null var)
       (return-from find-or-make-lattice-subordinate (values parent nil))
-      ;;(lsp-break "fom-lattice-subordinate")
       (let ((result
              (or (gethash dl-vv downlinks) ;; already there in the hierarchy
-                 (let 
-                     ((new-child (maybe-copy-individual parent)))
+                 (let ((new-child (copy-individual parent)))
                    (setq new-child (old-bind-variable var value new-child))
                    (setf (gethash dl-vv downlinks) new-child)
                    (setf (gethash dl-vv (indiv-uplinks new-child)) parent)

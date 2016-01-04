@@ -369,26 +369,26 @@ for every category.
 
 (defun maybe-copy-individual (i) ;; &optional subs)
   (if (or *dont-copy-individuals*
-          (not (individual-p i)))
-   ;; don't copy things other than individuals
+          (not (individual-p i))) ;; don't copy things other than individuals
    i
-   (let* ((established-type (indiv-type i))
-          (new (make-unindexed-individual (car established-type)))) ;; includes shadow
-     (when (cdr established-type) ;; carry over any mix-ins
-       (setf (indiv-type  new) established-type))
-     (loop for binding in (indiv-binds i)
-       do
-       (bind-variable/expr (binding-variable binding) ;; should be obsolete with DLI
-                           (binding-value binding)
-                           new))
-     ;; The 'binds' bindings are probably intrinsic to the nature of
-     ;; the object we're starting from and wouldn't make sense on
-     ;; the new object since the whole point was to change the type.
-     ;; But the 'bound-in' are relationships from other objects to
-     ;; the one we're cloning, so they will (ought to) continue to be
-     ;; relevant.  ///first case doesn't fall out that neatly, which
-     ;; suggests a knowledge-based, case by case cloning.
-     new)))
+   (copy-individual i)))
+
+(defun copy-individual (i)
+  "Create a new unindex individual with the same type and bindings
+   as the originial. N.b. this is not a copy within the description lattice.
+   See find-or-make-lattice-subordinate which uses this function to
+   make the base individual."
+  (let* ((established-type (indiv-type i))
+         (new (make-unindexed-individual (car established-type))))
+    (when (cdr established-type) ;; carry over any mix-ins
+      (setf (indiv-type new) established-type))
+    (loop for binding in (indiv-binds i)
+      do
+      ;; don't check binding-hook
+      (make/binding (binding-variable binding)
+                    (binding-value binding)
+                    new))
+     new))
 
 ;;;---------------------------
 ;;; Vacuous concept instances

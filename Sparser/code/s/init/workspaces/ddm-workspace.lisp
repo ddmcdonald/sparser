@@ -19,7 +19,7 @@
  install-terminal-edges 
 
  individual-for-ref  get-realization-scheme
- record-any-determiner 
+ record-any-determiner  maybe-copy-individual
 
  fill-compatible-slot 
    analyze-pp indexical-for-state mark-instance-indefinite
