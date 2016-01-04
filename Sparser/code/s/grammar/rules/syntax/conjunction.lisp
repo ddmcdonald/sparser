@@ -472,8 +472,11 @@
 
 (defun show-protein-coercion (e1 e2)
   (format t "~&*** ~s is likely to be a protein, because of conjunction with ~s~&"
-          (edge-string e1)
-          (edge-string e2)))
+          (actual-characters-of-word (pos-edge-starts-at e1)
+                                     (pos-edge-ends-at e1) nil)
+          (actual-characters-of-word (pos-edge-starts-at e2)
+                           (pos-edge-ends-at e2)
+                           nil)))
 
 (defun edge-string (e)
   (get-surface-string-for-individual (edge-referent e)))
