@@ -25,7 +25,7 @@
 ;;;-----------
 
 (defun category-of-psi (psi)
-  (base-category-of-psi psi))
+  psi) ;;(base-category-of-psi psi))
 
 (defun find-variable-in-psi/named (symbol psi)
   (find-variable-in-category/named 
