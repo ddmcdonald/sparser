@@ -195,7 +195,7 @@
                (symbol (string-downcase (symbol-name rule))))
              "terminal")))
       
-      (format s "~&~AE~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
+      (format s "~&~Ae~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
               indentation-space
               index
               label-string
@@ -308,7 +308,7 @@
       
       (format s "~&~A~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
               indentation-space
-              (if *no-edge-info* "" (format nil "E-~A" index))
+              (if *no-edge-info* "" (format nil "e~A" index))
               label-string
               start
               end
