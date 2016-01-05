@@ -107,8 +107,31 @@
 (unless (boundp '*announce-missing-sort-routines*)
   (defparameter *announce-missing-sort-routines* t))
 
-
 (defun sort-individuals-alphabetically (i1 i2)
+  "Predicate for sort. Sorts individuals before other kinds of
+   units, refers back to sort-units-alphabetically if neither
+   unit is an individual. Then sorts by name if the individuals
+   bind the variable name. Finally sorts numerically by id."
+  (cond
+   ((and (not (individual-p i1))
+         (not (individual-p i2)))
+    (sort-units-alphabetically i1 i2))
+   ((not (individual-p i1)) nil)
+   ((not (individual-p i2)) t)
+   ((and (value-of 'name i1)
+         (value-of 'name i2)
+         ;; This sort functionis in core/names/object.lisp
+         ;; which isn't always included in the configuration.
+         (fboundp 'sort-individuals-by-their-name))
+    (sort-individuals-by-their-name i1 i2))
+   (t
+    (sort-by-UID i1 i2))))
+   
+
+
+(defun sort-individuals-alphabetically-for-dm&p (i1 i2)
+  "Extends sort-individuals-alphabetically with an extensive set
+   of category-specific sort routines"
   (cond
    ((and (not (individual-p i1))
          (not (individual-p i2)))
@@ -216,6 +239,8 @@
   ;; individuals. This one's just w/in the category.
   (let ((id1 (indiv-uid i1))
         (id2 (indiv-uid i2)))
+    (unless id1 (error "No UID on individual ~a" id1))
+    (unless id2 (error "No UID on individual ~a" id2))
     (> id1 id2)))
 
 (defun sort-directives-alphabetically (i1 i2)
