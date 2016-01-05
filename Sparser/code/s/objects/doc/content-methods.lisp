@@ -35,7 +35,7 @@
     (let ((*current-paragraph* p))
       (declare (special *current-paragraph*))
       (make-mentions-long-term)
-      (aggregate-bio-terms p)
+      ;(aggregate-bio-terms p)
       (assess-sentence-analysis-quality p))))
 
 (defmethod after-actions ((s section))

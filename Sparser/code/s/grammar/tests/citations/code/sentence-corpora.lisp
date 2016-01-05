@@ -150,9 +150,13 @@ previous records of treetop-counts.
 
 
 ;;--- compare current performance to a snapshot
+
+(defvar *default-snapshot-corpora* '(overnight dec-test dry-run aspp2 erk)
+  "List of corpora to test in COMPARE-TO-SNAPSHOTS.")
+
 (defun compare-to-snapshots (&optional
                              (save-info nil)
-                             (corpora '(overnight dec-test dry-run aspp2 erk)))
+                             (corpora *default-snapshot-corpora*))
   (loop for c in corpora
     do (terpri)
     (print c)
@@ -161,7 +165,7 @@ previous records of treetop-counts.
 
 (defun save-treetop-snapshots (&optional
                              (save-info nil)
-                             (corpora '(overnight dec-test dry-run aspp2 erk)))
+                             (corpora *default-snapshot-corpora*))
   (declare (special *file-for-treetop-snapshots*)(ignore save-info))
   (loop for c in corpora
     do (terpri)
@@ -193,10 +197,8 @@ previous records of treetop-counts.
         do (push (car pair) better))
       (format t "~&Better: ~a~
                  ~%Worse: ~a" better worse)
-      current-pairs))) 
+      (list current-pairs better worse))))
 
-  
-      
 
 ;;--- package runs into snapshots
 
