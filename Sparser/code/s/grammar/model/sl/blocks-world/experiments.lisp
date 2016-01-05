@@ -31,6 +31,8 @@ See Zo code for what that could look like. |#
   (define-lexicalized-phrase SVO ("build") (v))
 )
 
+(setup-lexicalized-trees)
+
 ;;;--------------------------
 ;;; Prebuilt phrases (trees)
 ;;;--------------------------
