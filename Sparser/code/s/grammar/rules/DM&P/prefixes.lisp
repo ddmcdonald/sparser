@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:  "prefixes"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  0.2 February 2007
+;;;   version:  January 2016
 
 ;; initiated 11/14/94 v2.3.
 ;; 0.1 (1/3/95) having approximators yield no information
@@ -14,6 +13,7 @@
 ;;      NP case for "the three.." and "the [X Imaging..]".  2/1 added more np prefixes
 ;;      7/18/96 commented out a query break.
 ;;      2/5/07 Added section-header to Analyze-segment-prefix and fixed ecases
+;;      1/4/16 compiler nit.
 
 (in-package :sparser)
 
@@ -125,6 +125,7 @@
 
 
 (defun subcategorize-np-prefix (form edge)
+  (declare (special *capital-a*))
   (let ((label (edge-category edge))
         (referent (edge-referent edge)))
     (case (cat-symbol form)

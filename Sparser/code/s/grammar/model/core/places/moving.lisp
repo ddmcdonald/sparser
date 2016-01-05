@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2014=6  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "moving"
 ;;;   Module:  "model;core:places:"
-;;;  version:  September 2014
+;;;  version:  January 2016
 
 ;; Intended for modeling movement in direction or w.r.t. some
 ;; spatial feature.
@@ -13,7 +13,8 @@
 ;; convert a name. 4/14/14 Excised the old version of the 'move' category
 ;; in favor of the new one in kinds/movement. 9/26/14 commented out
 ;; def of 'turn' which is now neigher flesh nor fowl from point of view
-;; of an edge former that can compose with auxiliaries. 
+;; of an edge former that can compose with auxiliaries. 1/4/16 compiler
+;; nit.
 
 (in-package :sparser)
 
@@ -34,6 +35,7 @@
   (let* ((symbol (or name (name-to-use-for-category string)))
          (word (define-word string))
          (category (category-named symbol)))
+    (declare (ignore word))
     (let ((form `(define-category ,symbol
                    :specializes move
                    :instantiates move

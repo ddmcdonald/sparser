@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995-1999  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1999,2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "directions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  1.0 November 2007
+;;;  version:  January 2016
 
 ;; initiated in 1/9/95. Added string printer 1/9/96.
 ;; 0.1 (11/25/99) Changed the realizations to use the new schema protocol
@@ -16,6 +15,7 @@
 ;;  for 'standalone-word' and the rules they created instantiated the specific
 ;;  categories rather than the more general 'direction' category which is the
 ;;  better semantic discriptor. 11/1 Added hack from-direction. 
+;; 1/4/16 putting rules on their individuals.
 
 (in-package :sparser)
 
@@ -62,7 +62,7 @@
          (rule (define-cfr category::direction `(,word)
                  :form category::noun
                  :referent i)))
-    ;; stash the rule on the individual's plist?
+    (add-rule-to-individual rule i)
     i))
 
 (def-cfr direction ("the" direction)
@@ -95,9 +95,6 @@
          (rule (define-cfr category::direction `(,word)
                  :form category::np
                  :referent i)))
-    ;; stash the rule on the individual's plist?
+    (add-rule-to-individual rule i)
     i))
-
-
-;; ??????????? (define-standalone-direction "out") -- doesn't pattern the same way
 

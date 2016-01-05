@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: 1.1 November 2014
+;;;   Version: January 2016
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
@@ -195,8 +195,7 @@ to make any semantic or form edges that the grammar dictates.
                  ;; makes it quiet when other things are quiet
                  *readout-segments-inline-with-text*
                  *show-sdm-span-segment*)
-          (format t "~&sdm-span-segment: ~a~%" 
-                  (if *show-edge-string* (edge-string edge) edge)))
+          (format t "~&sdm-span-segment: ~a~%" edge))
       (tr :sdm-span-segment edge)
       edge)))
    

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2010-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2010-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  0.1 November 2013
+;;;  version:  January 2016
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
@@ -11,7 +11,7 @@
 ;; added methods that start with edges. 
 ;; 0.1 (11/18/13) Removed all rnode/psi centric code  out to rnode-centric
 ;;      to clear the decks for working more directly with Krisp objects
-;;      and improvising.
+;;      and improvising. 1/5/16 kill ad-hoc-1 to quiet compiler
 
 (in-package :sparser)
 
@@ -184,6 +184,8 @@
     (unless category (error "no category binding"))
     (ad-hoc-1 category has-determiner i)))
 
+#| 1/4/16 Mine this for concepts, but as written it won't work
+     anymore. 
 (defun ad-hoc-1 (head-category determiner-value i)
   ;; do it all by hand just to see something completely through
   (push-debug `(,head-category ,determiner-value ,i))
@@ -202,7 +204,7 @@
     (setf (mumble::features dtn)
           `(,(convert-determiner-value-to-policy
               determiner-value)))
-    dtn))
+    dtn)) |#
 
 
 

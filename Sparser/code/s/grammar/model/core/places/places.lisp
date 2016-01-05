@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "places"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.1 April 2014
+;;;  version:  January 2016
 
 ;; places -- entities that denote locations
 
@@ -12,7 +12,7 @@
 ;; types of arguments. 
 ;; 0.1 4/14/14 Changed the v/r on type in name-of-location and named-
 ;;   location to be a category rather than 'path-type' (which could
-;;   never have worked). 
+;;   never have worked). 1/4/16 compiler quieting.
 
 (in-package :sparser)
 
@@ -120,6 +120,7 @@ by their type (pond, river, street, town, etc.)
 
 (defun find/named-location (named-location-category
                             binding-instructions)
+  (declare (ignore named-location-category))
   (let ((name (value-of-instr 'name binding-instructions)))
     (find/location-with-name name)))
 
@@ -143,6 +144,7 @@ by their type (pond, river, street, town, etc.)
       type-specific-table)))
 
 (defun reclaim/named-location (i instances named-loc-category)
+  (declare (ignore instances))
   ;; called from unindex-individual
   (let* ((type (value-of 'type i named-loc-category))
          (name (value-of 'name i named-loc-category))
