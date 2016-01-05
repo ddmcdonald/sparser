@@ -9,6 +9,8 @@
 
 (in-package :sparser)
 #| 
+ *run-aggregation-after-action*
+
  "In KNRK-PAR2 and hBRIE cells, PAR2 agonists caused a marked 
   redistribution in the elution profiles that resulted 
   in the coelution of pERK, raf-1, β-arrestin, and PAR2 
