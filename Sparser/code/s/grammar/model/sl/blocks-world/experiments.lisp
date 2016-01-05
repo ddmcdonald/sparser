@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2015 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2015-2016 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "experiments"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  November 2015
+;;;   version:  January 2016
 
 ;; Initiated 10/7/15. 
 
@@ -26,6 +26,11 @@ See Zo code for what that could look like. |#
 (define-word "build" (verb) :ed-form "built")
 (define-word "let" (verb))
 
+(defun setup-lexicalized-trees ()
+  (define-lexicalized-phrase common-noun ("staircase") (n))
+  (define-lexicalized-phrase SVO ("build") (v))
+)
+
 ;;;--------------------------
 ;;; Prebuilt phrases (trees)
 ;;;--------------------------
@@ -37,15 +42,13 @@ See Zo code for what that could look like. |#
    not as the realization of some actually represented source."
   (let* ((staircase
           (make-dtn 
-           :resource (define-lexicalized-phrase common-noun ("staircase") (n))
+           :resource (get-lexicalized-phrase 'staircase)
            :referent 'build-staircase))
          (a-staircase ;; singular and kind set the determiner
           ;; see interface/bundles/operators-over-specifications.lisp
           (kind (singular staircase)))
          (build
-          (make-dtn :resource
-                    (define-lexicalized-phrase SVO ("build") (v)))))
-
+          (make-dtn :resource (get-lexicalized-phrase 'build))))
     ;; connect them
     (make-complement-node 'o a-staircase build) ;; bind argument
     (make-complement-node 's (mumble-value 'first-person-plural 'pronoun) build)
