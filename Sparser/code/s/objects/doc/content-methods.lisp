@@ -31,7 +31,7 @@
   (:documentation "Carry out the actions to be taken when all of
      the children of a given document element have been read."))
 
-(defparameter *run-aggregation-after-action* nil
+(defparameter *run-aggregation-after-action* t
   "Gates call to aggregate-bio-terms in the paragraph after-
    actions. Exposed subtle bugs 1/4/16 so want to only run it
    deliberately to look at those bugs.")
