@@ -9,6 +9,10 @@
 
 (in-package :sparser)
 #| 
+ (asdf:load-system :r3)
+ (asdf:load-system :sparser/blocks-world)
+
+ (r3::run-article-batch :corpus :localization :card-p nil)
  *run-aggregation-after-action*
 
  "In KNRK-PAR2 and hBRIE cells, PAR2 agonists caused a marked 
@@ -246,7 +250,7 @@ but markedly preferred AKT2.")
   (ddm-ed "objects/doc/content.lisp")
   (ddm-ed "drivers/sources/document.lisp")
   (ddm-ed "analyzers/psp/edges/lattice-operations.lisp")
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol1.lisp"))
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
 
 ;; !!! Semtree isn't walking down to report all the
 ;; content in e.g. (p "Ras bound to GTP binds to BRAF.")
