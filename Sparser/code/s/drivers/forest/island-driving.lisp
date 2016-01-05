@@ -221,7 +221,7 @@
     (progn
       (tr :trying-da-pattern-on tt)
       (setq result (look-for-da-pattern  tt))
-      (and result (neq result :trie-exhausted)))))
+      (and result (not (eq result :trie-exhausted))))))
 
 (defun old-pass2 (sentence start-pos end-pos treetops number-of-treetops)
   
