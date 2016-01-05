@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  November 2015
+;;;  Version:  January 2016
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -12,6 +12,7 @@
 ;; after methods. 6/10/15 Added paragraph aggregator. 9/8/15 added
 ;; long-term-ifying mentions to paragraph. 11/3/15 Added local dynamic
 ;; bindings of the current document element to facilitate debugging.
+;; 1/4/16 gating call to paragraph-level aggregation
 
 
 (in-package :sparser)
@@ -30,12 +31,18 @@
   (:documentation "Carry out the actions to be taken when all of
      the children of a given document element have been read."))
 
+(defparameter *run-aggregation-after-action* nil
+  "Gates call to aggregate-bio-terms in the paragraph after-
+   actions. Exposed subtle bugs 1/4/16 so want to only run it
+   deliberately to look at those bugs.")
+
 (defmethod after-actions ((p paragraph))
   (when *apply-document-after-actions*
     (let ((*current-paragraph* p))
       (declare (special *current-paragraph*))
       (make-mentions-long-term)
-      ;(aggregate-bio-terms p)
+      (when *run-aggregation-after-action*
+        (aggregate-bio-terms p))
       (assess-sentence-analysis-quality p))))
 
 (defmethod after-actions ((s section))
