@@ -37,6 +37,25 @@
 
 (in-package :sparser)
 
+;; to be reviewed -- from Localization
+(noun "route" :super bio-mechanism)
+(define-category bio-observation :specializes bio-entity) ;; not really, but what is it
+(noun "band" :super bio-observation) ;; as in chromatography bands?
+(define-category bio-reagent :specializes bio-entity) ;; not really
+(noun "gel" :super bio-reagent)
+(noun "issue" :super bio-rhetorical) ;; not quite, but what 
+(adj "compelling" :super bio-predication)
+(noun "hint" :super bio-rhetorical)
+(define-category bio-preparation :specializes bio-entity)
+(noun "slice" :super bio-preparation) ;; brain slices
+(noun "gain" :super positive-bio-control)
+(adj "unperturbed" :super bio-predication)
+(noun "positioning" :super bio-method)
+(noun "thresholding" :super bio-method)
+(noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
+
+
+
 ;;lipids
 ;; in EGFR signaling comments
 (noun ("DAG" "diacylglycerol") :super lipid)
@@ -61,6 +80,7 @@
 
 (adj "bound" :super bio-predication)
 (adj "unbound" :super bio-predication)
+
 
 ;; new nouns and verbs used in Ras model comments
 
@@ -161,8 +181,10 @@
 #-allegro (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
 (noun "MeHg" :super molecule)
 (def-synonym MeHg (:noun "methyl mercury"))
+(noun "brain" :super bio-organ)
 (noun "colon" :super bio-organ)
 (noun "breast" :super bio-organ)
+(noun "eye" :super bio-organ)
 (noun "prostate" :super bio-organ)
 (noun "kidney" :super bio-organ)
 
@@ -245,6 +267,8 @@
              :of agent
              :to ability))
 
+(noun "abnormality" :super disease)
+
 (noun "absence" :super experimental-condition
       :binds ((absent biological)) 
       :realization
@@ -278,11 +302,6 @@
          :of activated))
 
 (def-bio "adenine" nucleobase)
-(noun "advance" :super bio-process
-      :binds ((advancement bio-process))
-      :realization 
-      (:noun "advance" 
-             :in advancement))
 (adj "additive" :super bio-predication)
 ;;(def-bio "agent" bio-entity)
 (noun "agonist":super bio-entity) ;; keyword: (ist N) 
@@ -325,6 +344,7 @@
 (noun "bacteria" :super species) ;; not really
 (noun "baseline" :super  bio-method)
 (noun "behavior" :super bio-quality)
+(adj "best" :super bio-predication)
 (noun "bifc" :super bio-method)
 (noun "binder" :super bio-entity)
 
@@ -440,7 +460,7 @@
              :between compared))
 
 (adj "diffuse" :super bio-predication) ;; TO-DO better superc
-
+(noun "disorder" :super disease)
 (noun "dna binding" :super bio-process
       :binds ((substrate bio-entity))
       :realization 
@@ -849,8 +869,6 @@
       :realization
       (:noun "radioactivity" :adj "radioactive"
              :of material))
-(noun "range" :super bio-scalar)
-
 
 (adj "rate-limiting" :super bio-predication)
 (define-adverb "readily")
@@ -909,7 +927,6 @@
 (adj "same" :super bio-predication)
 (noun "scaffold" :super protein) 
 (noun "scale" :super bio-scalar)     
-(noun "screen" :super  bio-method)
 (noun "SDS-PAGE"  :super bio-method)
 (adj "selective" :super bio-relation
      :binds ((for biological))
@@ -1013,11 +1030,7 @@
 
 
 (adj "supplementary" :super bio-predication) ;; keyword: (ary ADJ)
-(define-category argument-support :specializes abstract
-  :binds ((argument (:or model statement)))
-  :realization
-  (:noun "support"
-         :for argument))
+
 (noun "surface area" :super molecular-location)
 (define-adverb "surprisingly")
 (adj "synthetic" :super bio-predication)
@@ -1027,7 +1040,7 @@
 (define-adverb "thereby")
 (noun "throughput" :super measurement)
 
-(noun "tissue" :super bio-context)
+(noun "tissue" :super bio-organ)
 (define-adverb "to this end")
 
 

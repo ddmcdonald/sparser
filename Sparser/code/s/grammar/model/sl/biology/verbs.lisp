@@ -82,9 +82,155 @@
                   :o (object biological))))
     (eval form)))
 
+;;; Verbs added temporarily for Localization articles -- to ve reviewed and corrected
+(define-category become :specializes bio-rhetorical
+  :realization (:verb "become" :etf (svo)))
+
+(define-category start :specializes bio-rhetorical
+  :realization (:verb "start" :etf (svo)))
+
+(define-category call :specializes bio-rhetorical
+  :realization (:verb "call" :etf (svo)))
+
+(define-category derive :specializes caused-bio-process
+  :realization 
+  (:verb "derive" :etf (svo-passive)))
+
+(define-category participate :specializes bio-process
+  :realization 
+  (:verb "participate" :etf (sv)))
+
+(define-category think :specializes bio-rhetorical
+  :realization
+  (:verb ("think" :past-tense "thought") :etf (svo-passive)))
+
+(define-category deduce :specializes bio-rhetorical
+  :realization
+  (:verb "deduce"
+         :noun "deduction" :etf (svo-passive)))
+
+(define-category characterize :specializes bio-rhetorical
+  :realization
+  (:verb "characterize"
+         :noun "characterization" :etf (svo-passive)))
+
+(define-category distinguish :specializes bio-method
+  :realization
+  (:verb "distinguish" :etf (svo-passive)))
+
+(define-category die :specializes bio-process ;; actually organism process
+  :realization
+  (:verb "die" :etf (sv)))
+
+(define-category compensate :specializes bio-process ;; actually organism process
+  :binds ((alternate biological))
+  :realization
+  (:verb "compensate" :etf (sv)
+         :for alternate))
+
+(define-category convince :specializes bio-rhetorical
+  :realization
+  (:verb "convince"
+         :noun "conviction" :etf (svo-passive)))
+
+(define-category improve :specializes caused-bio-process ;; actually organism process
+  :realization
+  (:verb "improve" :etf (svo-passive)))
+
+(define-category learning :specializes bio-process ;; actually organism process, also a bio-rhetorical11
+  :realization
+  (:verb "learn" :etf (sv)))
+
+(define-category isolate :specializes bio-method ;; actually organism process
+  :binds ((background biological))
+  :realization
+  (:verb "isolate" :etf (svo-passive)
+         :from background))
+
+(define-category lyse :specializes bio-method ;; actually organism process
+  :realization
+  (:verb "lyse" :etf (svo-passive)))
+
+(define-category lacking :specializes bio-relation
+  :realization
+  (:verb ("lackXXX" ;; don't block noun
+          :third-plural "lacksXXX" ;; don't block noun
+          :past-tense "lacked"
+          :present-participle "lacking")
+         :etf (svo)))
+
+(define-category screen :specializes  bio-method
+  :realization
+  (:verb "screen" :etf (svo-passive)))
+
+(def-synonym screen
+             (:noun "screen"))
+
+          
+(define-category feature :specializes  bio-rhetorical ;; not really -- but WHAT??
+  :realization
+  (:verb "feature" :etf (svo-passive)
+         :noun "feature"))
+
+;; HOW TO DEAL WITH AMBIGUITY WITH PHYSICAL SUPPORT 
+;;  "a 3-fold alpha-helical bundle supporting a triple-stranded anti-parallel beta-sheet"
+(define-category argument-support :specializes bio-rhetorical
+  :binds ((argument (:or model statement)))
+  :realization
+  (:verb "support"
+         :etf (svo-passive)
+         :for argument))
+
+(def-synonym argument-support
+             (:noun "support"))
+
+
+(define-category range :specializes bio-scalar ;; REVIEW!!
+  :binds ((low-value scalar-quantity)
+          (high-value scalar-quantity)
+          (subject biological))
+  :realization
+  (:verb "range"
+         :etf (sv)
+         :s subject
+         :from low-value
+         :to high-value))
+
+(def-synonym range
+             (:noun "range"))
+
+(define-category fil :specializes bio-relation ;; REVIEW!!
+  :realization 
+  (:verb "fill" :etf (svo-passive)))
+
+(define-category surface-line :specializes bio-relation ;; the tissue lining the gut
+  :realization (:verb "line" :etf (svo-passive)))
+
+(define-category mention :specializes bio-rhetorical
+  :realization (:verb "mention" :etf (svo-passive)))
+
+(def-synonym mention
+             (:noun "mention"))
+
+(define-category bio-switch :specializes caused-bio-process
+  :realization
+  (:verb "switch" :etf (svo-passive)))
+
+(def-synonym bio-switch 
+             (:noun "switch"))
+
+(define-category bio-advance :specializes positive-bio-control
+  :realization
+  (:verb "advance" :etf (svo-passive)))
+
+(noun "advance" :super bio-relation)
+
 ;;;--------------------------------------------------------
 ;;; specific verbs (alphabetical except for obvious pairs)
 ;;;--------------------------------------------------------
+
+
+
 
 
 (define-category abrogate :specializes negative-bio-control
@@ -888,6 +1034,11 @@
            :of object
            :on location))
 
+(def-synonym gene-transcript-co-express
+             (:verb ("coexpress" :past-tense "coexpressed")
+                    :etf (svo-passive)
+                    :noun "coexpression"))
+
 (define-category grow :specializes bio-method
   :realization
   (:verb ("grow" :past-tense "grown")
@@ -1055,6 +1206,16 @@
          :for bio
          :in bio
          :of object))
+
+(define-category implicate :specializes bio-rhetorical
+  :binds ((process bio-process))
+    :realization
+    (:verb "implicate" ;; keyword: ENDS-IN-ING 
+	   :noun "implication"
+	   :etf (svo-passive)
+           :in process))
+
+
 
 (define-category incorporate :specializes bio-relation 
   :realization 
