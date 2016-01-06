@@ -102,6 +102,9 @@
              (t
               "unknown sub-categorization source")))))
 
+(defun dsc (x)
+  (display-subcategorization x))
+
 (defmethod display-subcategorization ((category-name symbol))
   (display-subcategorization (category-named category-name :break)))
 
