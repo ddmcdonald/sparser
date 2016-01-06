@@ -221,6 +221,11 @@
   (when *big-mechanism*
     (when *show-R3-new-verb-definitions*
       (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, assuming it is a bio-verb~&" word))
+    (when
+        (and (find-form-cfr word category::common-noun)
+             (not ambiguous?)) ;; words defined ambiguously by COMLEX, and not previously defined as a noun
+      (lsp-break "~&don't introduce a verb conflicting with a known noun ~s~&" word)
+      (return-from setup-verb nil))
     (svo/bio/expr word)
     (return-from setup-verb nil))
   (when (stringp word)
