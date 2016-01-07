@@ -288,115 +288,50 @@
    process of defining something else (e.g. a category) in the
    list of cfrs")
 
-(defun note-grammar-module (obj
-                            &key multiple-definition-is-ok
-                                 source )
+(defun note-grammar-module (obj &key multiple-definition-is-ok source)
   (let ((gm *grammar-module-being-loaded*))
     (when gm
-      ;; should only run when an image is being loaded -- not
-      ;; during all the incremental redefinitions during a 
-      ;; session.  This global is only bound in Load-grammar-module.
-      (let* ((plist (plist-for obj))
-             (entry (cadr (member :grammar-module plist))))
-        (if entry
-          (progn
-            (unless multiple-definition-is-ok
-              (format t "~&~%Multiple definition of ~A~
-                         ~%  earlier definition was in ~A"
-                      obj entry))
-            (if (consp entry) ;; multiple sites already?
-              (rplacd entry
-                      (cons gm
-                            (cdr entry)))
-              (push-onto-plist obj
-                               (list entry gm)
-                               :grammar-module)))
-          (push-onto-plist obj
-                           gm
-                           :grammar-module)))
-
+      (push-onto-plist obj gm :grammar-module)
       (etypecase obj
         (cfr 
-         ;; all kinds of rules fall under this one type, so they
-         ;; have to be distinguished explicitly.  Current assumption
+         ;; All kinds of rules fall under this one type, so they
+         ;; have to be distinguished explicitly. Current assumption
          ;; is that any rule done with a "define" form is internal to
          ;; an object and shouldn't be counted, unless the parameter
          ;; is set. 
-         (case source
-           (:def-cfr (push obj (gmod-cf-rules gm))
-                     (push obj *cfrs-defined*))
+         (ecase source
+           (:def-cfr
+            (push obj (gmod-cf-rules gm))
+            (push obj *cfrs-defined*))
            (:define-cfr
-               (when *count-internal-rules*
-                 (push obj (gmod-cf-rules gm))
-                 (push obj *cfrs-defined*)))
-           (:def-csr (push obj (gmod-cs-rules gm))
-                     (push obj *csrs-defined*))
+            (when *count-internal-rules*
+              (push obj (gmod-cf-rules gm))
+              (push obj *cfrs-defined*)))
+           (:def-csr
+            (push obj (gmod-cs-rules gm))
+            (push obj *csrs-defined*))
            (:define-csr
-               (when *count-internal-rules*
-                 (push obj (gmod-cs-rules gm))
-                 (push obj *cfrs-defined*)))
+            (when *count-internal-rules*
+              (push obj (gmod-cs-rules gm))
+              (push obj *csrs-defined*)))
            (:def-form-rule
-               (push obj (gmod-form-rules gm)) ;;
-               (push obj *form-rules-defined*))
+            (push obj (gmod-form-rules gm))
+            (push obj *form-rules-defined*))
            (:def-syntax-rule
-               (push obj (gmod-syntax-rules gm))
-               (push obj *syntax-rules-defined*))
-           (otherwise
-            (push-debug `(,source obj))
-            (error "Unexpected source: ~a" source))))
-
+            (push obj (gmod-syntax-rules gm))
+            (push obj *syntax-rules-defined*))))
         ((or category referential-category mixin-category)
          (ecase source
            (:def-category
-            (unless (member obj (gmod-non-terminals gm) :test #'eq)
-              (push obj (gmod-non-terminals gm)))
-            (unless (member obj *non-terminals-defined* :test #'eq)
-              (push obj *non-terminals-defined*)))
-
-           (:define-category
-            (unless (member obj (gmod-object-types gm) :test #'eq)
-              (push obj (gmod-object-types gm)))
-            (unless (member obj *objects-defined* :test #'eq)
-              (push obj *objects-defined*)))
-
-           (:referential  ;;///// clones :define-category for now
-            (unless (member obj (gmod-object-types gm) :test #'eq)
-              (push obj (gmod-object-types gm)))
-            (unless (member obj *objects-defined* :test #'eq)
-              (push obj *objects-defined*)))
-
-           (:mixin  ;;///// clones :define-category for now
-            (unless (member obj (gmod-object-types gm) :test #'eq)
-              (push obj (gmod-object-types gm)))
-            (unless (member obj *objects-defined* :test #'eq)
-              (push obj *objects-defined*)))
-
-           (:form   ;; ditto
-            (unless (member obj (gmod-object-types gm) :test #'eq)
-              (push obj (gmod-object-types gm)))
-            (unless (member obj *objects-defined* :test #'eq)
-              (push obj *objects-defined*)))
-
-           (:derived ;; ditto -- these are computed subtypes like plurals
-            (unless (member obj (gmod-object-types gm) :test #'eq)
-              (push obj (gmod-object-types gm)))
-            (unless (member obj *objects-defined* :test #'eq)
-              (push obj *objects-defined*)))
-            
-           (:dotted-rule
-            ;; Since they're just expediencies, we ignore them.
-            ;; If we need them we can get them from the n-ary rules.
-            )
-           (:dm&p
-            )))
-
-        (word     (unless (member obj (gmod-words gm) :test #'eq)
-                    (push obj (gmod-words gm))))
-
-        (polyword (unless (member obj (gmod-polywords gm) :test #'eq)
-                    (push obj (gmod-polywords gm)))))
-
-      gm )))
+            (push obj (gmod-non-terminals gm))
+            (push obj *non-terminals-defined*))
+           ((:define-category :referential :mixin :form :derived)
+            (push obj (gmod-object-types gm))
+            (push obj *objects-defined*))
+           ((:dotted-rule :dm&p))))
+        (word (push obj (gmod-words gm)))
+        (polyword (push obj (gmod-polywords gm))))
+      gm)))
 
 
 ;;;----------------------------------
