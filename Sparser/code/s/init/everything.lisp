@@ -109,37 +109,6 @@
     (push :mlisp *features*)
     (push :alisp *features*))) ;; corresponds to :upcase
 
-;;;----------------
-;;; hard filenames
-;;;----------------
-
-#|
-The hardwired filenames are the values for the parameterized calls to load
-that are made in this file.  All other files are loaded using Sparser's own
-loading facility, which is driven off the function "lload".
-|#
-
-(defvar cl-user::location-of-sparser-directory ;; move to sparser
-  (truename
-   (merge-pathnames
-    (make-pathname :directory '(:relative
-                                :up ;; init
-                                :up ;; s
-                                :up ;; code
-                                ))
-    (make-pathname :directory (pathname-directory *load-truename*))))
-  "Base reference point for all files.")
-
-(defparameter cl-user::location-of-sparser-code-directory
-  (merge-pathnames
-   (make-pathname :directory '(:relative "code"))
-   cl-user::location-of-sparser-directory))
-
-;; Used in conjunction with the MCL-based workbench
-(defvar cl-user::location-of-text-corpora nil)
-(when cl-user::location-of-text-corpora
-  (push :full-corpus *features*))
-
 ;;;----------------------------
 ;;; parameterizing the loading
 ;;;----------------------------
@@ -252,7 +221,6 @@ an automatic way of counting source lines in the Sparser codebase.")
 (defvar *monitor-size* :14-inch
   "Read by workbench routines to establish the size of the windows.")
 
-
 (defvar *nothing-Mac-specific*
   #-:apple t
   #+:apple nil
@@ -260,12 +228,48 @@ an automatic way of counting source lines in the Sparser codebase.")
 on a Mac and use MCL-specific routines. When this flag is on these
 routines are left out of the load.")
 
+;;;----------------
+;;; hard filenames
+;;;----------------
+
+#|
+The hardwired filenames are the values for the parameterized calls to load
+that are made in this file.  All other files are loaded using Sparser's own
+loading facility, which is driven off the function "lload".
+|#
+
+(defvar *sparser-directory*
+  (or (assert (and (equal (pathname-name *load-truename*) "everything")
+                   (equal (last (pathname-directory *load-truename*) 3)
+                          '("code" "s" "init")))
+              (*load-truename*)
+              "Expected to be loaded from code/s/init/everything.")
+      (truename
+       (merge-pathnames
+        (make-pathname :directory '(:relative
+                                    :up ;; init
+                                    :up ;; s
+                                    :up ;; code
+                                    ))
+        (make-pathname :directory (pathname-directory *load-truename*)))))
+  "Base reference point for all files.")
+
+(defparameter *sparser-code-directory*
+  (merge-pathnames
+   (make-pathname :directory '(:relative "code"))
+   *sparser-directory*))
+
+;; Used in conjunction with the MCL-based workbench
+(defvar cl-user::location-of-text-corpora nil)
+(when cl-user::location-of-text-corpora
+  (push :full-corpus *features*))
+
 ;;;--------------------------------------------------------------
 ;;; load source/grammar loaders and logical pathname definitions
 ;;;--------------------------------------------------------------
 
 ;; These are (nearly) the only files loaded by physical pathname.
-(let ((*default-pathname-defaults* cl-user::location-of-sparser-code-directory))
+(let ((*default-pathname-defaults* *sparser-code-directory*))
   (load "s/init/lisp/ddef-logical")
   (load "s/init/lisp/lload")
   (load "s/init/lisp/grammar-module")
@@ -436,7 +440,6 @@ the grammar.")
 from outside Sparser's directory tree. Value should be an object
 that can be passed directly to load without requiring any sort
 of translation, e.g. a fully specified pathname or namestring.")
-
 
 (defvar *custom-launch-time-config-file* nil
   "The contents of this file are loaded and executed as the

@@ -208,7 +208,7 @@
             ((search ":grammar:" f)
              (when (probe-file
                     (concatenate 'string
-                                 cl-user::location-of-sparser-directory
+                                 *sparser-directory*
                                  "grammar"))
                (when (file-in-public-module f)
                  (push f public-files))))))

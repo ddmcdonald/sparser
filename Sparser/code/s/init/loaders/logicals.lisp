@@ -58,7 +58,7 @@
 (defvar *source-root*
   (merge-pathnames
    (make-pathname :directory '(:relative "s"))
-   cl-user::location-of-sparser-code-directory))
+   *sparser-code-directory*))
 
 (defvar *fasl-root*
   (merge-pathnames
@@ -66,7 +66,7 @@
     :directory `(:relative "f"
                  #+asdf3 ,(uiop:implementation-identifier)
                  #-asdf3 ,(substitute #\- #\Space (lisp-implementation-type))))
-   cl-user::location-of-sparser-code-directory))
+   *sparser-code-directory*))
 
 (def-logical-pathname
   (**/* "sparser:source;" :type *lisp-type*)

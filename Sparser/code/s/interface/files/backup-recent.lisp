@@ -50,11 +50,11 @@
                        (month-day-year)
     (let* ((last-backup-file
             (concatenate 'string
-                         cl-user::location-of-Sparser-code-directory
+                         *sparser-code-directory*
                          "s:init:snapshots:time of last backup"))
            (last-upgrade-file
             (concatenate 'string
-                         cl-user::location-of-Sparser-code-directory
+                         *sparser-code-directory*
                          "s:init:snapshots:time of last upgrade"))
            (exact-moment
             (cond ((and (probe-file last-backup-file)
@@ -117,13 +117,13 @@
     (setq changes-file
           (if from-month
             (concatenate 'string
-                         cl-user::location-of-Sparser-code-directory
+                         *sparser-code-directory*
                          "s:init:snapshots:changed on "
                          (format nil "~A/~A/~A - ~A/~A/~A"
                                  from-month from-day from-year
                                  now-month now-day now-year))
             (concatenate 'string
-                         cl-user::location-of-Sparser-code-directory
+                         *sparser-code-directory*
                          "s:init:snapshots:changed on "
                          (format nil "~A/~A/~A"
                                  now-month now-day now-year)))))
@@ -131,12 +131,12 @@
     (setq target-root
           (if from-month
             (concatenate 'string
-                         cl-user::location-of-sparser-directory
+                         *sparser-directory*
                          (format nil "incr ~A/~A/~A - ~A/~A/A:"
                                  from-month from-day from-year
                                  now-month now-day now-year))
             (concatenate 'string
-                         cl-user::location-of-sparser-directory
+                         *sparser-directory*
                          (format nil "incr ~A/~A/~A:"
                                  now-month now-day now-year)))))
                          

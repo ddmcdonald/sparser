@@ -48,7 +48,7 @@
                                (make-pathname
                                 :name (format nil "sparser-~a" (dtg-dir))
                                 :type "image"
-                                :defaults cl-user::location-of-sparser-directory)))
+                                :defaults *sparser-directory*)))
   #+ccl
   (progn
    (setq ccl:*lisp-startup-functions* '(catch-everything-and-run-launch-time-fn))
