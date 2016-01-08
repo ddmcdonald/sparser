@@ -3,7 +3,7 @@
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar"
-;;;    Module:  "init;versions:v<>:loaders:"
+;;;    Module:  "init;loaders;"
 ;;;   version:  December 2015
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
@@ -83,13 +83,11 @@
     ;; and stored. 
     (use-description-lattice t))
 
-  (unless (or *just-note-changed-files*
-              *copy-file*)
-    (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
-    (initialize-cons-resource)
-    (when *include-model-facilities*
-      (initialize-individuals-resource)
-      (establish-binding-resource)))
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
+  (initialize-cons-resource)
+  (when *include-model-facilities*
+    (initialize-individuals-resource)
+    (establish-binding-resource))
 
   (load-grammar-specific-edge-types)
 
@@ -173,7 +171,7 @@
       (gload "companies;loader")))
 
   (gate-grammar *time*  ;; needs find/ordinal
-    (gload "core;time:loader"))
+    (gload "core;time;loader"))
 
   (gate-grammar *titles* ;; needs calculated-time
     (gload "titles;loader"))
@@ -246,7 +244,7 @@
   (gate-grammar *load-Tipster-grammar-into-image*
     (gate-grammar *gl*
       (gload "gl form;loader"))
-    (gload "model;sl:JV:loader")) |#
+    (gload "model;sl;jv;loader")) |#
 
   (gate-grammar *ca*
     (gload "ca;loader"))
@@ -312,7 +310,7 @@
     (gload "DM&P;measure"))
 
   (gload "words;frequency")
-  (gload "words;Porter-stemmer")
+  (gload "words;porter-stemmer")
   (gload "one-offs;loader")
 
   (when *load-dossiers-into-image*
@@ -330,7 +328,7 @@
 
   (gate-grammar *testing*
     (gate-grammar *miscellaneous*
-      (gload "grammar;tests:loader"))
+      (gload "grammar;tests;loader"))
     (gate-grammar *citations*
       (gload "citations;loader")))
 
@@ -344,9 +342,7 @@
   ;;(gate-grammar *kraql*
   ;;  (gload "kraql;loader"))
 
-  (unless (or *just-note-changed-files*
-              *copy-file*)
-    (postprocess-grammar-indexes))
+  (postprocess-grammar-indexes)
 
   )) ;; end of Load-the-grammar and the when gate in front of it
 

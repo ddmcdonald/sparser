@@ -3,7 +3,7 @@
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "master-loader"
-;;;   module:  "init;versions:v2.7:loaders:"
+;;;   module:  "init;loaders;"
 ;;;  Version:   December 2015
 
 ;; 4/21  added loading of chart-drivers;new:loader
@@ -96,51 +96,51 @@
 ;;;--------------------
 ;;; extensions to Lisp
 ;;;--------------------
-(lload "tools;basics:loader")
+(lload "tools;basics;loader")
 (lload "kons;loader")
 
-(lload "objects;traces:ops-loader")
+(lload "objects;traces;ops-loader")
 
 
 ;;;---------
 ;;; objects
 ;;;---------
-(lload "chart;units-labels:loader")
-(lload "rule objs;rule-links:object")
-(lload "chart;words:loader")
+(lload "chart;units-labels;loader")
+(lload "rule objs;rule-links;object")
+(lload "chart;words;loader")
 (lload "lookup words;loader")
   ;; includes fsas for [morphology] and [capitalization]
-(lload "chart;categories:loader")
-(lload "chart;positions:loader")
-(lload "chart;edges:loader")
-(lload "chart;edge-vectors:loader")
-(lload "rule objs;cfr:loader")
-(lload "rule objs;csr:loader")
-(lload "rule objs;rule-links:generic")
+(lload "chart;categories;loader")
+(lload "chart;positions;loader")
+(lload "chart;edges;loader")
+(lload "chart;edge-vectors;loader")
+(lload "rule objs;cfr;loader")
+(lload "rule objs;csr;loader")
+(lload "rule objs;rule-links;generic")
 (lload "pattern-objects;loader")
-(lload "chart;brackets:loader")
+(lload "chart;brackets;loader")
 (unless (eq *loader-mode* :just-the-all-edges-parser)
-  (lload "chart;stack:loader"))
+  (lload "chart;stack;loader"))
 
-(lload "objects;forms:loader")
-(lload "objects;chart:generics:loader")
+(lload "objects;forms;loader")
+(lload "objects;chart;generics;loader")
 
 (when *include-model-facilities*
-  (lload "objects;model:loader"))
+  (lload "objects;model;loader"))
 
 (when (and *orthographic-structure*
            *include-model-facilities*)  ;; uses routines in the model facilities
-  (lload "objects;doc:loader"))
+  (lload "objects;doc;loader"))
 
-(lload "objects;situation:loader")
+(lload "objects;situation;loader")
 
 (when *da*
-  (lload "objects;rules:DA:loader"))
+  (lload "objects;rules;DA;loader"))
 
-(lload "objects;export:loader")
+(lload "objects;export;loader")
 
 ;; No usable content so flushed the directory 9/22/11
-;;(lload "objects;import:loader")
+;;(lload "objects;import;loader")
 
 (when *external-object-files*
   (load *external-object-files*))
@@ -167,45 +167,45 @@
 (lload "fill chart;loader")
 (lload "init chart;loader")
 (gate-grammar *polywords*
-  (gload "fsa;polywords"))
+  (gload "FSA;polywords"))
 (lload "scan;loader")
 (lload "assess;loader")
 (if *lattice-points*
   (lload "check;loader")
   (lload "check;loader"))
-(lload "analyzers;psp:threading:loader")
+(lload "analyzers;psp;threading;loader")
 ;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
 (lload "kinds of edges;loader")
 (lload "complete;loader")
 (lload "referent;loader")
 
-(lload "analyzers;psp:terminate")
+(lload "analyzers;psp;terminate")
 (lload "forest;loader")
 (lload "traversal-routines;loader")
 (lload "scan-patterns;loader")
 
 (when *brackets*
-  (lload "do HA;loader"))
+  (lload "do ha;loader"))
 
 ;;(when *heuristics*
 ;;  These are just enabling fns. they aren't heuristics
-(lload "do CA;loader")
+(lload "do ca;loader")
 
 (when *DM&P*
-  (lload "analyzers;DM&P:loader"))
+  (lload "analyzers;DM&P;loader"))
 
 (when *SDM&P*
-  (lload "analyzers;SDM&P:loader"))
+  (lload "analyzers;SDM&P;loader"))
 
 (when (and *orthographic-structure*
            *include-model-facilities*)
-  (lload "analyzers;context:loader"))
+  (lload "analyzers;context;loader"))
 
 (when *recognize-sections-within-articles*
   (lload "sect;loader"))
 
 (when *da*
-  (lload "analyzers;DA:loader"))
+  (lload "analyzers;da;loader"))
 
 (lload "session-inits;setup")
 
@@ -226,17 +226,15 @@
 
 (defparameter *try-character-type-fsas* nil)
 
-(unless *copy-file*
-  (unless *load-the-grammar*
-    ;; by default leave the character-type -driven fsas off.
-    ;; Routines in the grammar will turn this flag on if
-    ;; the requisite routines are being loaded
-    (setq *try-character-type-fsas* nil)
-    
-    ;; by default make newline characters look like whitespace
-    (setq *newline-is-a-word* nil)
-    (use-return-newline-tokens-fsa)))
+(unless *load-the-grammar*
+  ;; by default leave the character-type -driven fsas off.
+  ;; Routines in the grammar will turn this flag on if
+  ;; the requisite routines are being loaded
+  (setq *try-character-type-fsas* nil)
   
+  ;; by default make newline characters look like whitespace
+  (setq *newline-is-a-word* nil)
+  (use-return-newline-tokens-fsa))
   
 (gate-grammar *miscellaneous*  ;; a daughter of testing
   (gload "gr-tests;parsing"))
@@ -251,23 +249,23 @@
 (lload "articles;loader")
 (unless (eq *loader-mode* :just-the-all-edges-parser)
   (lload "sink-drivers;loader"))
-(lload "drivers;tokens:loader")
+(lload "drivers;tokens;loader")
 (lload "chart-drivers;loader")
-(lload "chart-drivers;psp:loader")
+(lload "chart-drivers;psp;loader")
 (lload "chart-drivers;traversal")
-(lload "chart-drivers;all-edges:loader")
+(lload "chart-drivers;all-edges;loader")
 (lload "forest-drivers;loader")
 
 (gload "sit-rules;compose")
 
 (if *da*
-  (lload "drivers;DA:loader")
-  (lload "drivers;DA:driver")) ;; the dispatch with the switch check
+  (lload "drivers;DA;loader")
+  (lload "drivers;DA;driver")) ;; the dispatch with the switch check
 
 (lload "init-drivers;switches")
  ;; goes after all the other drivers because it references their flags
 
-(lload "objects;traces:cases-loader")
+(lload "objects;traces;cases-loader")
   ;; goes down here rather than with the rest of objects because it
   ;; references zillions of functions.  The "ops" loader is at the
   ;; start of the loading so the macros are defined before they're used.
@@ -324,25 +322,15 @@
 (when *connect-to-the-corpus*
   ;; Loading the set of logicals that define articles in 
   ;; the prestored corpus
-  (if (probe-file (concatenate 'string
-                               (namelist-to-namestring
-                                (expand-logical-pathname "corpus;"))
-                               ":"))
-    (lload "corpus-data;loader")
-    (format t "~%~%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~
-                 ~% The flag *connect-to-the-corpus* it up~
-                 ~% but the corpus directory isn't where it's~
-                 ~% expected to be~
-               ~%~%")))
-
+  (lload "corpus-data;loader"))
 
 
 ;; Convenience files
 ;;
-(lload "version;workspace:abbreviations")
-(lload "version;workspace:traces")
-(lload "version;workspace:display")
-(lload "version;workspace:switch settings")
+(lload "workspace;abbreviations")
+(lload "workspace;traces")
+(lload "workspace;display")
+(lload "workspace;switch settings")
 
 (when *external-workspace-files*
   (load *external-workspace-files*))

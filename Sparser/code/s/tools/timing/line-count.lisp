@@ -42,35 +42,39 @@
   load to go through the master-loader, opening files as dictated
   by the current switch settings."
   (let ((*just-count-lines* t)
-        (*compile* nil)
-        (*insist-on-binaries* nil))
+        (*insist-on-binaries* nil)
+        (*compile* nil))
     (reset-line-count-accumulators)
-    (load cl-user::master-loader)
+    (lload "loaders;master-loader")
     (report-line-counts)))
 
 ;;;----------------
 ;;; embedded calls
 ;;;----------------
 
-(defun just-count-the-lines-of-code (raw-namestring)
-  "Called from lload as the file processor when the flag *just-count-lines*
-  is up. This sets up the file processing and presentations but it offloads
-  the actual counting to a subroutine. Written by c&s on just-note-if-changed."
-  (let ((namestring (expand-namestring raw-namestring)))
-    (multiple-value-bind (line-count toplevel-forms) (lines-in-file namestring)
-      (format t "~%~A~4,2T~A~10,2T~S" toplevel-forms line-count raw-namestring)
-      (incf *total-line-count* line-count)
-      (incf *total-toplevel-forms* toplevel-forms)
-      (incf *total-number-of-files*)
-      (when (load-file? raw-namestring)
-        (load namestring)))))
+(defun load-file-p (filespec)
+  "Return true if filespec names a loader file."
+  (search "load" (pathname-name filespec) :test #'char-equal))
 
-(defun lines-in-file (namestring)
+(defun just-count-the-lines-of-code (filespec &aux
+                                     (filespec (lisp-file filespec)))
+  "Called from lload when the flag *just-count-lines* is up.
+Sets up the file processing and presentations, but offloads
+the actual counting to a subroutine."
+  (multiple-value-bind (line-count toplevel-forms) (lines-in-file filespec)
+    (format t "~%~A~4,2T~A~10,2T~S" toplevel-forms line-count filespec)
+    (incf *total-line-count* line-count)
+    (incf *total-toplevel-forms* toplevel-forms)
+    (incf *total-number-of-files*)
+    (when (load-file-p filespec)
+      (load filespec))))
+
+(defun lines-in-file (filespec)
   "Do the heavy lifting for just-count-the-lines-of-code."
   (let ((lines 0)
         (toplevel-forms 0)
         line  1st-char  line-ends-file?  pending-sharpsign-comment )
-    (with-open-file (file-stream namestring
+    (with-open-file (file-stream filespec
                      :direction :input
                      :if-does-not-exist :error)
       (loop

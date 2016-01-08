@@ -96,71 +96,14 @@
     ;; the corpus information until we're launching the image
     ;; on the target machine and the files (we assume) do exist
 
-    ;; All files participating in the 'corpus' facility are stored
-    ;; in the directory indicated by the sparser logical "corpus;",
-    ;; and we do a sanity check.
-    (if (probe-file (concatenate 'string
-                                 (namelist-to-namestring
-                                  (expand-logical-pathname "corpus;"))
-                                 ":"))
-
-      ;; sanity check for the code itself
-      (when (probe-file (concatenate 'string
-                                     (namelist-to-namestring
-                                      (expand-logical-pathname "corpus-data;"))
-                                     "loader"))
-        (lload "corpus-data;loader"))
-
-
-      (format t "~%~%!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!~
-                 ~% The flag *connect-to-the-corpus* it up~
-                 ~% but the corpus directory isn't where it's~
-                 ~% expected to be~
-                 ~%~%"))))
-
-
-;;////////////// n.b. requires reworking to be O/S independent !!
-;;
-;; [jrye:20151118.1555CST] This is no longer called automatically and
-;; should be considered deprecated.
-(defun load-workspaces ()
-  (let ((namestring
-         (if *sparser-is-an-application?*
-             (concatenate 'string
-                          cl-user::location-of-sparser-directory
-                          (cond
-                            (cl-user::*unix-file-system*
-                             "Workspaces/")
-                            (cl-user::*windows-file-system*
-                             "Workspaces\\")
-                            (t ;; apple
-                             "Workspaces:")))
-
-             (concatenate 'string
-                          cl-user::location-of-sparser-directory
-                          (cond
-                            (cl-user::*unix-file-system*
-                             "code/s/init/workspaces/")
-                            (cl-user::*windows-file-system*
-                             "code\\s\\init\\workspaces\\")
-                            (t
-                             "code:s:init:workspaces:"))))))
-    (when (probe-file namestring)
-      (let ((files (directory (concatenate 'string namestring "*.lisp"))))
-        (mapcar
-         #'(lambda (x)
-             (unless (or (search ".svn" (format nil "~s" x))
-                         (search ".DS_Store" (format nil "~s" x)))
-               (load x)))
-         files)))))
-
-
-
+    (lload "corpus-data;loader")))
 
 ;;;---------------------
 ;;; final setup actions
 ;;;---------------------
 
+(defun load-workspaces ()
+  (map nil #'load (directory "sparser:init;workspaces;*.lisp")))
 
 (defun final-session-setup ()
   ;; Act on the settings makde in Sstandard-configuration-operations
@@ -168,7 +111,6 @@
 
   (when *load-the-grammar*
     (setup-session-globals/grammar)))
-
 
 
 
@@ -186,8 +128,6 @@
 ;; debugged and as delivered shouldn't result in errors.
 
 (standard-configuration-operations)
-
-
 
 
 ;;;------------------------------------------
@@ -226,9 +166,6 @@
       (save-sparser-with-grammar))))
 
 
-
-
-
 ;;;-------------------------------------------------
 ;;; populating the domain model is it isn't already
 ;;;-------------------------------------------------
@@ -256,28 +193,14 @@
         (lload "dossiers;loader")))))
 
 
-
 ;;;-----------------
 ;;; everything else
 ;;;-----------------
 
-;;--- Corpus connection
-
 (eval-when (:load-toplevel :execute)
-
   (when *load-the-grammar*
     ;; No point in doing these systematic analyses unless the grammar is loaded
     (check-for-delayed-connection-to-the-corpus))
-
-  ;;--- Workspace files
-
-  ;; [jrye:20151118.1555CST] Do not auto-load workspaces anymore.
-  (unless *compile*
-    (load-workspaces))
-
-  ;;--- parameters
-
-  (final-session-setup)
-
-) ;; eval-when
+  (load-workspaces)
+  (final-session-setup))
 

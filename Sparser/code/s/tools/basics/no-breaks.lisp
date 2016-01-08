@@ -36,55 +36,40 @@ you can continue from a break (c.f. cerror).
 ;;; take over the break function
 ;;;------------------------------
 
-(defun sparser::break (&optional (format-string "Call to break") &rest args)
-  (apply #'error format-string args))
-
 #| N.b. When we load Sparser we're using this error version of break. |#
-
+(defun break (&optional (format-string "Break.") &rest args)
+  (apply #'error format-string args))
 
 (defun revert-to-regular-break ()
   "Change the definition of sparser::break to the regular one
    taken from the Lisp."
-  (let ((form
-         '(defun sparser::break (format-string &rest args)
-            #+ccl(apply #'ccl::break format-string args)
-            #-ccl(apply #'cl-user::break format-string args))))
-    (eval form)))
+  (defun sparser::break (&optional format-string &rest args)
+    (apply #'cl:break format-string args)))
 
 (defun revert-to-error-break ()
   "Switch back to treating break as an error call."
-  (let ((form
-         '(defun sparser::break (&optional format-string &rest args)
-            (apply #'error format-string args))))
-    (eval form)))
+  (defun sparser::break (&optional format-string &rest args)
+    (apply #'error format-string args)))
 
-
-(defun lsp-break (&rest args)
+(defun lsp-break (&optional format-string &rest args)
   "Alternative with a different name that will always break."
-  #-ccl (apply #'cl-user::break args)
-  #+ccl (apply #'ccl::break args))
-  
-
-
-;;;;---------- Old version. Worked in MCL ----------
-
+  (apply #'cl:break format-string args))
 
 ;;;-----------------------------------
 ;;; globals for saving the old values
 ;;;-----------------------------------
 
-(defconstant *original-fvalue-of-break*
+(defvar *original-fvalue-of-break*
   #+allegro (symbol-function 'lisp:break)
   #-allegro (symbol-function 'break))
              
-(defconstant *original-fvalue-of-error*
+(defvar *original-fvalue-of-error*
   #+allegro (symbol-function 'lisp:error)
   #-allegro (symbol-function 'error))
 
-(defconstant *original-fvalue-of-cerror*
+(defvar *original-fvalue-of-cerror*
   #+allegro (symbol-function 'lisp:cerror)
   #-allegro (symbol-function 'cerror))
-
 
 ;;;----------
 ;;; routines

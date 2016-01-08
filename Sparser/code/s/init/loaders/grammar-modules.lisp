@@ -3,7 +3,7 @@
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar modules"
-;;;    Module:  "init;versions:v4.0:loaders:"
+;;;    Module:  "init;loaders;"
 ;;;   version:  October 2015
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
