@@ -126,19 +126,7 @@
       (break "grammar module ~S needs a princ-name" gmod))
 
     (when files
-      (if *sparser-is-an-application?*
-        ;; The grammar is made available in two different modes as
-        ;; reflected in these flags. The whole thing is opened up
-        ;; to academics, but only designated 'public' files are
-        ;; available to commercial licensees.
-        (if *academic-grammar*
-          (push (make-menu/files files) items)
-
-          (let ((public-files (public-files-filter files)))
-            (when public-files
-              (push (make-menu/files public-files) items))))
-
-        (push (make-menu/files files) items)))
+      (push (make-menu/files files) items))
 
       #| pulling this 3/21/95 until Describe-mod and the
          accumulators produce more interesting information.

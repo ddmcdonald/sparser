@@ -22,20 +22,19 @@
 
 (in-package :sparser)
 
-(lload "tokens;alphabet fns")  ;; new
-(lload "tokens;state")        ;; bumped
-(lload "tokens;punctuation")   ;; new
-(lload "tokens;caps fsa")      ;; new
-(lload "tokens;token FSA")    ;; bumped
+(lload "tokens;alphabet fns")
+(lload "tokens;state")
+(lload "tokens;punctuation")
+(lload "tokens;caps FSA")
+(lload "tokens;token FSA")
 
-(lload "tokens;lookup")       ;; bumped
-(lload "tokens;next token")   ;; bumped
-(lload "tokens;NL buffer")     ;; upstream -- unchanged
+(lload "tokens;lookup")
+(lload "tokens;next token")
+(lload "tokens;NL buffer")
 
 (lload "tokens;testing")
 
 ;; logically part of this module but loaded from master loader
 ;; after all of the objects code and the word definition and
 ;; punctuation files have been loaded
-;;   "tokens;alphabet"  ;; new
-
+;(lload "tokens;alphabet")

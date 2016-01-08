@@ -45,7 +45,7 @@
 (lload "doc;article")
 (lload "doc;sections")
 (lload "doc;section markers")
-(lload "doc;SGML tags")
+(lload "doc;sgml tags")
 (lload "doc;html")
 (lload "doc;marker pairs")
 (lload "doc;invisible markup")

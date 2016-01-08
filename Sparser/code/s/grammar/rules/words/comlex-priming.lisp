@@ -44,19 +44,14 @@
 (defun prime-comlex ()
   ;; called from load-the-grammar, gated by *incorporate-generic-lexicon*
   (establish-version-of-def-word :comlex)
-  (let ((filename (string-append 
-                   cl-user::location-of-sparser-directory
-                   "code/s/grammar/rules/words/one-offs/"
-                   "comlex-def-forms.lisp")))
-    (prime-all-comlex-words filename)
-    (setq *comlex-words-primed* t)))
+  (prime-all-comlex-words "sparser:one-offs;comlex-def-forms.lisp")
+  (setq *comlex-words-primed* t))
 
 (defun prime-all-comlex-words (full-filename) ;;(break "top of prime-all")
   (with-open-file (stream full-filename
                    :direction :input
                    :if-does-not-exist :error)
     (let ((*package* (find-package :sparser)))
-      #-:sbcl(declare (special *package*))
       (do ((entry (read stream nil :eof)
                   (read stream nil :eof)))
           ((eq entry :eof))

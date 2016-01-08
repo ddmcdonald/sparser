@@ -141,8 +141,8 @@
     (gload "dossiers;cities"))
 ;;   (gload "dossiers;city rules"))
   (gate-grammar *US-States*
-    (gload "dossiers;U.S. States")
-    (gload "dossiers;U.S. State rules"))
+    (gload "dossiers;US states")
+    (gload "dossiers;US state rules"))
   (gate-grammar *other-locations*
     (gload "dossiers;regions")))
 
@@ -234,6 +234,4 @@
 
 
 ;;---------- the very last thing to do ----------
-(unless (or *just-note-changed-files*
-              *copy-file*)
-  (declare-all-existing-individuals-permanent))
+(declare-all-existing-individuals-permanent)

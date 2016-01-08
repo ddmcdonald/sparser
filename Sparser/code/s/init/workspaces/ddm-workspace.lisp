@@ -607,7 +607,7 @@ In article 2  "c-termini"
   (ed "/Users/ddm/sparser/README")
   (ed "/Users/ddm/sparser/load-nlp.lisp")
   (ddm-ed "init/everything.lisp")
-  (ddm-ed "init/Lisp/lload.lisp")
+  (ddm-ed "init/lisp/lload.lisp")
   (ddm-ed "init/scripts/compile-everything.lisp"))
 
 ;; Is this ordered right, walking through the edges?

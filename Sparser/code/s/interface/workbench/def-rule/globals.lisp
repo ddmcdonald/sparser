@@ -21,12 +21,10 @@
 (defparameter *rdt/input-field-for-selected-edge* nil
   "Managed by the radio buttons in the rule-population window.")
 
-
 (defparameter *rdt/schema-items-in-table* nil
   "The list of items in the table at any given moment. It starts
    as the list of major categories as populated when postprocessing
    the exploded tree families.")
-
 
 (defparameter *rdt/selected-schema* nil)
 
@@ -43,7 +41,6 @@
    cfrs and saved output are written. It summarizes information
    in the descriptors.")
 
-
 (defparameter *rdt/schema-cases-done* nil)
 
 (defparameter *rdt/schema-cases-remaining* nil)
@@ -52,12 +49,9 @@
   "Holds pointers to the text fields (the window objects) that 
    are not to be changed.")
 
-
 (defparameter *rdt/reference-category* nil
   "The category from which the slot values of the tableau can be
    automatically taken.")
-
-
 
 (defparameter *rdt/mapping* nil
   "Constructed as the schema case is decoded and in reaction to
@@ -76,17 +70,9 @@
    Establishes the initial value of *rdt/mapping* when the
    state of the rule population widets are initialized.")
 
-
 (defparameter *rdt/rules-defined* nil
   "Set in Write-cfr-from-rdt-tableau-values to the list of cfrs
    created by applying the cases of the schema to the mapping.")
 
-
-(unless (boundp '*default-dossier-file*)
-  (defparameter *default-dossier-file*
-         (concatenate 'string
-                      cl-user::location-of-sparser-directory
-                      "code:s:grammar:model:dossiers:new rules")
-               
-    "A default location (within the Sparser directory) for the rules"))
-
+(defvar *default-dossier-file* "dossiers;new rules"
+  "A default location (within the Sparser directory) for the rules.")

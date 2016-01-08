@@ -55,7 +55,7 @@
   ;; has been loaded and the other categories that these files
   ;; reference have been loaded. 
   (gate-grammar *titles-core*
-    (gload "titles;title+co")
+    (gload "titles;title-co")
     ))
 
 
@@ -84,10 +84,10 @@
 ;;(gload "titles;board of directors")
 ;;  Use the one in PCT
 
-(gload "titles;title+co")
-(gload "titles;title+time")
-(gload "titles;title+miscl")
-(gload "titles;pers+title")
+(gload "titles;title-co")
+(gload "titles;title-time")
+(gload "titles;title-miscl")
+(gload "titles;pers-title")
 
 (gload "titles;plural title")
 

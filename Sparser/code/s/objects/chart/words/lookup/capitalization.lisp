@@ -343,7 +343,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
       (then
         (setq *first-letter-is-capitalized* t)
         (is-the-second-letter-capitalized 1 (1- length-of-word)))
-      (if (digit-character c1)
+      (if (digit-char-p c1)
         (setq *digits* t)
         (else
           (are-any-letters-capitalized 1 (1- length-of-word)))))))
@@ -408,19 +408,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
 ;;;--------------
 
 (defun capital-letter (char)
-  (let ((n (char-code char)))
-    (if (>= n ascii-for-capital-A)
-      (if (<= n ascii-for-capital-Z)
-        t
-        nil)
-      nil)))
-
-
-(defun digit-character (c)
-  (let ((ascii-value (char-code c)))
-    (and (>= ascii-value ascii-for-zero)
-         (<= ascii-value ascii-for-nine)))) 
-
+  (<= (char-code #\A) (char-code char) (char-code #\Z)))
 
 (defun lowercase-equivalent-letter (uppercase-letter)
   ;; Does it with arithmetic and char-code lookups.  An indexed 

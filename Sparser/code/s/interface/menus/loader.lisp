@@ -17,10 +17,10 @@
 
 (in-package :sparser)
 
-(lload "interface;menus:corpus")
-(lload "interface;menus:module menu")
-(lload "interface;menus:citations")
-(lload "interface;menus:backup")
-(lload "interface;menus:Sparser")
-(lload "interface;menus:launch")
+(lload "interface;menus;corpus")
+(lload "interface;menus;module menu")
+(lload "interface;menus;citations")
+(lload "interface;menus;backup")
+(lload "interface;menus;sparser")
+(lload "interface;menus;launch")
 

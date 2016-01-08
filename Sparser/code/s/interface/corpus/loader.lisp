@@ -11,7 +11,7 @@
 (in-package :sparser)
 
 (lload "corpus-data;logicals")
-(lload "corpus-data;Who's News logicals")
+(lload "corpus-data;Who's news logicals")
 (lload "corpus-data;doc streams")
 (lload "corpus-data;menu data")
 

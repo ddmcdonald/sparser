@@ -11,6 +11,6 @@
    that is germain to the article as a whole, e.g. the article's date,
    source, topic-company, etc.  |#
 
-(lload "analyzers;context:manage sections")
-(lload "analyzers;context:operations")
+(lload "analyzers;context;manage sections")
+(lload "analyzers;context;operations")
 
