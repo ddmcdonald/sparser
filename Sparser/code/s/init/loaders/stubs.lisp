@@ -3,7 +3,7 @@
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "stubs"
-;;;   Module:  "init;versions:v2.3:loaders:"
+;;;   Module:  "init;loaders;"
 ;;;  version:  December 2015
 
 ;; 4/3/97 added a case for dm&p. 8/17/97 added lots of cases as part of preparing

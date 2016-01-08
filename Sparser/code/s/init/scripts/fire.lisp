@@ -35,8 +35,6 @@
 
 (defparameter sparser::*no-image* t)
 
-#+allegro (defparameter sparser::*binaries-directory-name* "s")
-
 (when nil ;; Ambush
   (defparameter sparser::*keep-number-sequence-raw* t)
   (defparameter sparser::*speech* t)
@@ -74,11 +72,7 @@
 ;;; call the loader
 ;;;-----------------
 
-(load (concatenate 'string
-                   (namestring cl-user::*nlp-home*)
-                   #+apple "Sparser:code:s:init:everything"
-                   #+unix  "Sparser/code/s/init/everything.lisp"
-                   #+mswindows "Sparser\\code\\s\\init\\everything.lisp"))
+(load (merge-pathnames "Sparser/code/s/init/everything.lisp" *nlp-home*))
 
 (in-package :sparser)
 

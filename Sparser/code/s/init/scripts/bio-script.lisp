@@ -34,8 +34,4 @@
 ;;; call the loader
 ;;;-----------------
 
-(load (concatenate 'string
-                   (namestring cl-user::*nlp-home*)
-                   #+apple "Sparser:code:s:init:everything"
-                   #+unix  "Sparser/code/s/init/everything.lisp"
-                   #+mswindows "Sparser\\code\\s\\init\\everything.lisp"))
+(load (merge-pathnames "Sparser/code/s/init/everything.lisp" cl-user::*nlp-home*))

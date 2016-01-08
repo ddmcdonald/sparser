@@ -46,12 +46,11 @@
 ;;; call the loader
 ;;;-----------------
 
-(load (def-string location-of-sparser-directory "code:s:init:everything"))
+(load (merge-pathnames "Sparser/code/s/init/everything.lisp" *nlp-home*))
 
 
 ;;;------------------------
 ;;; bring up the workspace 
 ;;;------------------------
 
-(ed (def-string location-of-sparser-directory "code:s:init:workspaces:ERN"))
-
+(ed (merge-pathnames "Sparser/code/s/init/workspaces/ERN.lisp" *nlp-home*))

@@ -175,13 +175,12 @@
 
 (defvar *grammar-modules-for-menu* nil)
 
-
 (defmacro include-grammar-module (symbol)
   `(include-grammar-module/expr ',symbol))
 
 (defun include-grammar-module/expr (symbol)
-  ;; turns on the flag, and includes the module on the list of
-  ;; modules in the image.   Called from a grammar configuration file.
+  "Turns on the flag, and includes the module on the list of
+modules in the image. Called from a grammar configuration file."
   (let ((gm (grammar-module-named symbol)))
     (unless gm
       (error "There is no grammar module with the name ~A" symbol))
@@ -195,41 +194,34 @@
 ;;; 'public' grammar modules
 ;;;--------------------------
 
-(unless (boundp '*some-gmods-are-public*)
-  (defparameter *some-gmods-are-public* nil
-    "flag reacted to in menu creators and such to make them sensitive
-     to the 'public?' field on the modules and react in various ways."))
+(defvar *some-gmods-are-public* nil
+  "Flag reacted to in menu creators and such to make them sensitive
+to the 'public?' field on the modules and react in various ways.")
 
 (defun public-grammar-module (gm)
-  ;; to be used by analogy to 'include-grammar-module'
-  (setq *some-gmods-are-public* t)
-  (unless (grammar-module-p gm)
-    (error "The argument, ~A, is not a grammar module" gm))
-  (setf (gmod-public? gm) t)
-  gm )
-
+  "To be used by analogy to 'include-grammar-module'"
+  (check-type gm grammar-module)
+  (setf (gmod-public? gm) t
+        *some-gmods-are-public* t)
+  gm)
 
 ;;;-------------------------
 ;;; loading grammar modules
 ;;;-------------------------
 
 (defvar *grammar-module-being-loaded* nil
-  "Bound in Load-grammar-module, which is wrapped around load
-   forms.")
+  "Bound in load-grammar-module, which is wrapped around load forms.")
 
 (defvar *loading-public-grammar-module* nil
-  "Bound in Gate-grammar.")
-
+  "Bound in gate-grammar.")
 
 (defmacro gate-grammar (flag  &rest load-forms)
-  ;; used in the load files to parameterize what actually happens
-  ;; according to what modules have been liscensed by the
-  ;; configuration files.
+  "Used in the load files to parameterize what actually happens
+according to what modules have been licensed by the configuration files."
   (if *some-gmods-are-public*
     `(when ,flag
        (if (gmod-public? ,flag)
          (let ((*insist-on-binaries* nil)
-               (*prefer-binaries* nil)
                (*compile* nil)
                (*loading-public-grammar-module* t))
            (load-grammar-module ',flag ',load-forms))
@@ -237,45 +229,35 @@
     `(when ,flag
        (load-grammar-module ',flag ',load-forms)) ))
 
-
 (defun load-grammar-module (symbol load-forms)
-  (let* ((gm (grammar-module-named symbol))
-         (*grammar-module-being-loaded* gm))
-    (declare (special *grammar-module-being-loaded*))
-    
-    (dolist (form load-forms)
-      (eval form))
-    
-    gm ))
-
+  (let ((*grammar-module-being-loaded* (grammar-module-named symbol)))
+    (dolist (form load-forms *grammar-module-being-loaded*)
+      (eval form))))
 
 (defun record-file-in-grammar-module (namestring)
   ;; called from Check-&-load within LLoad.
   (push namestring
         (gmod-files *grammar-module-being-loaded*)))
 
-
 ;;;--------------------------------------
 ;;; cross-indexing rules against modules
 ;;;--------------------------------------
 
 (defvar *non-terminals-defined* nil
-  "Accumulates categories that have not been identified as being
-   kinds of objects.  Partitions the total list kept in 
-   *categories-defined*. ")
+  "Accumulates categories that have not been identified as kinds of objects.
+Partitions the total list kept in *categories-defined*.")
 
 (defvar *objects-defined* nil
-  "Accumulates categories that have been identified as being
-   kinds of objects.  Partitions the total list kept in 
-   *categories-defined*. ")
+  "Accumulates categories that have been identified as kinds of objects.
+Partitions the total list kept in *categories-defined*.")
 
 (defvar *cfrs-defined* nil
   "Accumulates cfr objects that are actually context-free rules.
-   Partitions the list kept in *context-free-rules-defined*. ")
+Partitions the list kept in *context-free-rules-defined*.")
 
 (defvar *csrs-defined* nil
   "Accumulates cfr objects that are actually context-sensitive rules.
-   Partitions the list kept in *context-free-rules-defined*. ")
+Partitions the list kept in *context-free-rules-defined*.")
 
 (defvar *form-rules-defined* nil
   "Accumulates cfr objects that are form rules.")
@@ -283,10 +265,9 @@
 (defvar *syntax-rules-defined* nil
   "Accumulates cfr objects that are syntax rules.")
 
-(defparameter *count-internal-rules* t
-  "If this switch is set, we include cfrs that are defined in the
-   process of defining something else (e.g. a category) in the
-   list of cfrs")
+(defvar *count-internal-rules* t
+  "If this switch is set, we include cfrs that are defined in the process
+of defining something else (e.g. a category) in the list of cfrs.")
 
 (defun note-grammar-module (obj &key multiple-definition-is-ok source)
   (let ((gm *grammar-module-being-loaded*))
