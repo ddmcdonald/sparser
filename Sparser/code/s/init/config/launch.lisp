@@ -102,8 +102,20 @@
 ;;; final setup actions
 ;;;---------------------
 
-(defun load-workspaces ()
-  (map nil #'load (directory "sparser:init;workspaces;*.lisp")))
+(defun load-workspaces (&key all (script cl-user::script)
+                        (user #+asdf3 (uiop:getenv "LOGNAME")
+                              #-asdf3 nil))
+  (cond (all (map nil #'load (directory "sparser:workspaces;*.lisp")))
+        (t (labels ((workspace (name)
+                      (and name
+                           (sparser-logical-pathname
+                            (format nil "workspaces;~a-workspace.lisp" name))))
+                    (maybe-load-workspace (name)
+                      (let ((workspace (workspace name)))
+                        (when (probe-file workspace)
+                          (load workspace)))))
+             (maybe-load-workspace script)
+             (maybe-load-workspace user)))))
 
 (defun final-session-setup ()
   ;; Act on the settings makde in Sstandard-configuration-operations

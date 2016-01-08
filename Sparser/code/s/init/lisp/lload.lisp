@@ -83,10 +83,11 @@
 ;;;--------------
 
 (defun lload (filespec &aux (filespec (sparser-logical-pathname filespec)))
-  "Load, compile & load, or just count the lines in a Sparser source file."
-  (cond (*insist-on-binaries* (load-fasl-only filespec))
-        (*compile* (compile-&-load filespec))
+  "Load, compile & load, edit, or count the lines in a Sparser source file."
+  (cond (*edit* (ed (lisp-file filespec)))
         (*just-count-lines* (just-count-the-lines-of-code filespec))
+        (*insist-on-binaries* (load-fasl-only filespec))
+        (*compile* (compile-&-load filespec))
         (t (check-&-load filespec))))
 
 (defun check-&-load (filespec &rest args &aux

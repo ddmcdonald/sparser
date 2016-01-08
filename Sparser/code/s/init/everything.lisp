@@ -214,6 +214,9 @@ is compiled and then loaded. The directory where the compiled files
 are to be found is determined by the logical pathname translations
 set up in the \"init;loaders;logicals\" file.")
 
+(defvar *edit* nil
+  "If non-nil, lload invokes the editor instead of loading a source file.")
+
 (defvar *just-count-lines* nil
   "Controls whether the loading process is actually to be used as
 an automatic way of counting source lines in the Sparser codebase.")

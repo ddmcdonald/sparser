@@ -86,6 +86,7 @@
 (def-logical-pathname "loaders;"      "init;loaders;")
 (def-logical-pathname "config;"       "init;config;")
 (def-logical-pathname "workspace;"    "init;workspace;")
+(def-logical-pathname "workspaces;"   "init;workspaces;")
 (def-logical-pathname "grammar-configurations;" "config;grammars;")
 
 (when cl-user::location-of-text-corpora
