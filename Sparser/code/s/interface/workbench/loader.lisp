@@ -44,11 +44,11 @@
   (lload "workbench;text view scrolling")
 
   ;(lload "workbench;edges")
-  (lload "workbench;edge-view:view")
-  (lload "workbench;edge-view:select")
-  (lload "workbench;edge-view:find")
-  (lload "workbench;edge-view:populate")
-  (lload "workbench;edge-view:open close")
+  (lload "workbench;edge-view;view")
+  (lload "workbench;edge-view;select")
+  (lload "workbench;edge-view;find")
+  (lload "workbench;edge-view;populate")
+  (lload "workbench;edge-view;open close")
 
   (lload "workbench;walk")
   (lload "workbench;pause"))
@@ -59,26 +59,26 @@
   (lload "workbench;autodef window")
   (lload "workbench;autodefining")
 
-  (lload "workbench;def rule:globals")
-  (lload "workbench;def rule:schema selection")
-  (lload "workbench;def rule:widgits")
-  (lload "workbench;def rule:rule population window")
-  (lload "workbench;def rule:case setup")
-  (lload "workbench;def rule:field filling")
-  (lload "workbench;def rule:reference category")
-  (lload "workbench;def rule:construct mapping")
-  (lload "workbench;def rule:write cfr"))
+  (lload "workbench;def rule;globals")
+  (lload "workbench;def rule;schema selection")
+  (lload "workbench;def rule;widgits")
+  (lload "workbench;def rule;rule population window")
+  (lload "workbench;def rule;case setup")
+  (lload "workbench;def rule;field filling")
+  (lload "workbench;def rule;reference category")
+  (lload "workbench;def rule;construct mapping")
+  (lload "workbench;def rule;write cfr"))
 
 (if cl-user::*psi-2009*
-  (lload "workbench;def rule:save") ;; for Define-realization
-  (lload "workbench;def rule:save"))
+  (lload "workbench;def rule;save") ;; for Define-realization
+  (lload "workbench;def rule;save"))
 
 (unless *nothing-Mac-specific*
-  (lload "workbench;def rule:control thread")
-  (lload "workbench;def rule:new category?")
-  (lload "workbench;def rule:dossiers")
+  (lload "workbench;def rule;control thread")
+  (lload "workbench;def rule;new category?")
+  (lload "workbench;def rule;dossiers")
 
-  (lload "workbench;def verb:definition widgets")
+  (lload "workbench;def verb;definition widgets")
 
   (lload "workbench;item walk")
   (lload "workbench;API")

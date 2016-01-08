@@ -11,6 +11,6 @@
 
 (in-package :sparser)
 
-(lload "chart;units-labels:units")
-(lload "chart;units-labels:labels")
+(lload "chart;units-labels;units")
+(lload "chart;units-labels;labels")
 

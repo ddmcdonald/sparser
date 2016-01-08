@@ -42,7 +42,7 @@
   (gload "places;city"))
  
 (gate-grammar *US-States*
-  (gload "places;U.S. States"))
+  (gload "places;US states"))
 
 (gate-grammar *other-locations*
   (gload "places;paths")

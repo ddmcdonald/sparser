@@ -36,8 +36,8 @@
 (gload "tree-families;postprocessing")
 
 (gload "tree-families;NP")
-(gload "tree-families;np adjuncts")
-(gload "tree-families;pre-head np modifiers")
+(gload "tree-families;NP adjuncts")
+(gload "tree-families;pre-head NP modifiers")
 (gload "tree-families;of")
 (gload "tree-families;dates")
 (gload "tree-families;season-year")
@@ -50,8 +50,8 @@
 (gload "tree-families;copula patterns")
 (gload "tree-families;that comp")
 
-(gload "tree-families;vp")
-(gload "tree-families;vp-adjuncts")
+(gload "tree-families;VP")
+(gload "tree-families;VP adjuncts")
 
 (gload "tree-families;compounds")
 
@@ -63,8 +63,8 @@
 
 (gload "tree-families;abbreviation")
 (gload "tree-families;families")
-(gload "tree-families;shortcut-mechanics")
-(gload "tree-families;shortcut-expansion")
-(gload "tree-families;shortcut-master")
+(gload "tree-families;shortcut mechanics")
+(gload "tree-families;shortcut expansion")
+(gload "tree-families;shortcut master")
 (gload "tree-families;shortcuts")
 

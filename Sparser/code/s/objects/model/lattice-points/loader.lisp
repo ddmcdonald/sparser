@@ -20,8 +20,8 @@
 
 (in-package :sparser)
 
-(lload "lattice-points;v+v objects")
-(lload "lattice-points;c+v objects")
+(lload "lattice-points;v-v objects")
+(lload "lattice-points;c-v objects")
 (lload "lattice-points;rnodes")
 (lload "lattice-points;printers")
 (lload "lattice-points;annotation")

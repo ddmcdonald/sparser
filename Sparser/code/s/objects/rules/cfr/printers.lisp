@@ -211,7 +211,7 @@
 (defun final-numbers-in-string (string)
   (let ( accumulating-digits )
     (dolist (c (nreverse (coerce string 'list)))
-      (if (digit-character c)
+      (if (digit-char-p c)
         (push c accumulating-digits)
         (return)))
     (coerce accumulating-digits 'string)))

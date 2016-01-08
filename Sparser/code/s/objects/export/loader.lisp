@@ -12,6 +12,6 @@
 ;; Initiated April 2003
 ;; 2/1/05 Fixed typos that kept it from loading
 
-(lload "objects;export:common")
-(lload "objects;export:etf")
-(lload "objects;export:mumble-grammar")
+(lload "objects;export;common")
+(lload "objects;export;etf")
+(lload "objects;export;mumble-grammar")

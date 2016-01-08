@@ -193,12 +193,7 @@
 
         (format *change-data* "~&~%~%(in-package :sparser)~%~%")
 
-        (load (concatenate 'string
-                           (namelist-to-namestring
-                            (expand-logical-pathname "version;"))
-                           ":config:explicitly-loaded-files"))
-
-        (load cl-user::master-loader)
+        (lload "loaders;master-loader")
         
         :finished-checking-changed-files ))))
 

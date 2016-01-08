@@ -103,7 +103,7 @@
          (:biology "scripts/bio-script")
          (:blocks-world "scripts/blocks-world")
          (:grok "scripts/grok")
-         (:c3 "scripts/C3-script")
+         (:c3 "scripts/c3-script")
          (:no-grammar "scripts/no-grammar")
          (:just-dm&p "scripts/just-dmp")
          (:default "everything")))) ;; i.e. no specializing script

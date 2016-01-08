@@ -17,16 +17,9 @@
   "When citations are automatically created from a run this is where
    they are written to.")
 
-(defparameter *menu-cite-outfile*
-              (concatenate 'string
-                           cl-user::location-of-sparser-directory
-                           "code/s/grammar/tests/citations/cases/"
-                           "new ones")
-
+(defparameter *menu-cite-outfile* "citations;new-ones"
   "This is the file they are written to, which may be bound to
    the outstream when automatically writing to a file.")
-
-
 
 ;;; change the location of where citations are written
 

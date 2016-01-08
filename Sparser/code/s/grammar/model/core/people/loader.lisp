@@ -28,7 +28,7 @@
 (gload "people;in-predicate")
 
 ;; Not loaded
-;;   people-rules, people+age
+;;   people-rules, people-age
 
 #| in dossiers;
   (gload "dossiers;person prefixes")

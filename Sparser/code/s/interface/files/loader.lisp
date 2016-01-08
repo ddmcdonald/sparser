@@ -21,14 +21,9 @@
 (lload "file ops;file name")
 (lload "file ops;open-close")
 
-(lload "file ops;read switch")           ;; bumped for 1.0
-(lload "file ops;read chars")            ;; bumped for 1.0
-
+(lload "file ops;read switch")
+(lload "file ops;read chars")
 
 (unless *nothing-Mac-specific*
-  (lload "file ops;copy changed files")
-  (lload "file ops;upgrade")
-  (lload "file ops;backup recent")
-  
   (lload "file ops;list whole tree"))
 

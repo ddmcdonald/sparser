@@ -15,12 +15,9 @@
 ;;; autodef for the whole set (since they don't have a common parent)
 ;;;-------------------------------------------------------------------
 
-(unless (or *just-note-changed-files*
-            *copy-file*)
-  (define-autodef-data 'modifier
-    :display-string "modifier"
-    :not-instantiable t ))
-
+(define-autodef-data 'modifier
+  :display-string "modifier"
+  :not-instantiable t)
 
 ;;;-------------
 ;;; the modules
