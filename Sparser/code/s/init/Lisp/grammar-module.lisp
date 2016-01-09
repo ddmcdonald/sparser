@@ -288,8 +288,7 @@
    process of defining something else (e.g. a category) in the
    list of cfrs")
 
-(defun note-grammar-module (obj &key multiple-definition-is-ok source)
-  (declare (ignore multiple-definition-is-ok))
+(defun note-grammar-module (obj &key source)
   (let ((gm *grammar-module-being-loaded*))
     (when gm
       (push-onto-plist obj gm :grammar-module)
