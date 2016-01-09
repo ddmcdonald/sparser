@@ -26,10 +26,6 @@
 
 (in-package :sparser)
 
-(defmacro sparser::position (&rest args)
-  `(common-lisp:position ,@args))
-
-
 ;;;---------------------------
 ;;;  Positions in the chart
 ;;;---------------------------
@@ -49,8 +45,6 @@
   capitalization
   status-lifo
   assessed? )
-
-
 
 ;;;------------------
 ;;; display routines

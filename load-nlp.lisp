@@ -77,7 +77,8 @@
 ;; Sparser has a data structure called position, which clashes with
 ;; the standard function of the same name. This macro aliases the
 ;; functional value of the former to that of the latter.
-(defmacro sparser::position (&rest args) `(common-lisp:position ,@args))
+(defmacro sparser::position (&rest args)
+  `(common-lisp:position ,@args))
 
 ;; #5 --- Load Mumble.
 ;; Mumble does not currently (2015-12-21) load under SBCL.
