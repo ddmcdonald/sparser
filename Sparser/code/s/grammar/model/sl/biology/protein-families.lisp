@@ -29,6 +29,9 @@
 (def-family "PKC"
             :members ("PKC-alpha" "PKC-delta" "PKC-epsilon"))
 
+(def-family "Cam-PDE 1"
+            :members ("PDE1A_HUMAN" "PDE1B_HUMAN""PDE1C_HUMAN"))
+
 (def-family "cadherin" :members ("CADH1_HUMAN"))
 (def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 
