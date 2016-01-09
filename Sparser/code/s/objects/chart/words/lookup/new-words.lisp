@@ -85,7 +85,7 @@
                   ;; there is a category and edge for every word
                   ;; however trivial it might be.
                    (make-word :symbol symbol
-                              :pname (symbol-name symbol))))
+                              :pname (symbol-name symbol)))))
 
     (setq *word-to-be-defined?* word)
 
