@@ -16,7 +16,6 @@
 
 (in-package :sparser)
 
-;; (lload "positions;parameters")
 (lload "positions;positions")
 (lload "positions;array")
 (lload "positions;generic")
