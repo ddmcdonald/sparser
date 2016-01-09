@@ -961,6 +961,32 @@ it is created from N-terminus to C-terminus.|#
          :of component
          :between component))
 
+(define-category trimer
+  :specializes bio-complex
+  :binds ((component (:or bio-complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :realization
+  (:noun "trimer"
+         :etf pre-mod
+         :premod component
+         :m component
+         :with component
+         :of component
+         :between component))
+
+(define-category tetramer
+  :specializes bio-complex
+  :binds ((component (:or bio-complex small-molecule protein))
+          (componentstoichiometry stoichiometry)) 
+  :realization
+  (:noun "tetramer"
+         :etf pre-mod
+         :premod component
+         :m component
+         :with component
+         :of component
+         :between component))
+
 (define-category monomer
   :specializes bio-complex
   :binds ((component (:or bio-complex small-molecule protein))
