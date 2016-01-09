@@ -20,12 +20,7 @@
 (lload "tf;object")
 (lload "tf;form")
 (lload "tf;def form")
-(if cl-user::*psi-2009*
-  (then
-    (lload "tf;driver")
-    (lload "tf;subrs"))
-  (else
-    (lload "tf;driver")
-    (lload "tf;subrs")))
+(lload "tf;driver")
+(lload "tf;subrs")
 (lload "tf;rdata")
 

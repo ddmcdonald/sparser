@@ -35,16 +35,13 @@
 ;;;  the buffer
 ;;;-----------------
 
-(or (boundp '*word-lookup-buffer-length*)
-    (defparameter *word-lookup-buffer-length* 1000))
+(defvar *word-lookup-buffer-length* 1000
+  "Maximum word length.")
 
-(or (boundp '*word-lookup-buffer*)
-    (defparameter *word-lookup-buffer*
-      (make-array *word-lookup-buffer-length*
-                  :element-type 'character
-                  :fill-pointer 0)))
-
-
+(defvar *word-lookup-buffer*
+  (make-array *word-lookup-buffer-length*
+              :element-type 'character
+              :fill-pointer 0))
 
 (defun resize-word-lookup-buffer (&optional
                                   (length *word-lookup-buffer-length*))

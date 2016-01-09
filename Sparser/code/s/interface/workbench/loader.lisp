@@ -69,9 +69,7 @@
   (lload "workbench;def rule;construct mapping")
   (lload "workbench;def rule;write cfr"))
 
-(if cl-user::*psi-2009*
-  (lload "workbench;def rule;save") ;; for Define-realization
-  (lload "workbench;def rule;save"))
+(lload "workbench;def rule;save") ;; for define-realization
 
 (unless *nothing-Mac-specific*
   (lload "workbench;def rule;control thread")

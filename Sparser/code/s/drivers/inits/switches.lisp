@@ -92,7 +92,6 @@
 (defvar *BREAK-ON-NEW-BRACKET-SITUATIONS*)
 (defvar *ARABIC-NAMES*)
 (defvar *THE-CATEGORY-OF-DIGIT-SEQUENCES*)
-(defvar DA-FOREST-LEVEL)
 (defvar *CAP-SEQ-EDGE-DATA-ROUTINE*)
 
 
@@ -442,8 +441,6 @@
   ;; make sure we notice periods
   (period-hook-on)
 
-  (use-description-lattice t)
-
   ;; Flags that control how the parsing is done
   ;;' *whack-a-rule* t
   ;; *check-forms* t
@@ -615,7 +612,7 @@
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
   (setq *make-edges-for-unknown-words-from-their-suffixes* t)
   (setq *use-segment-edges-as-segment-defaults* t)
-  (what-to-do-at-the-forest-level DA-forest-level)
+  (what-to-do-at-the-forest-level :dm&p-forest-level)
   (setq *do-debris-analysis* t)
   (setq *switch-setting* :debris-analysis))
 

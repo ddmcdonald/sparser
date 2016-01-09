@@ -73,20 +73,9 @@
 
 (in-package :sparser)
 
-
-;; this is a global used to turn on and off use of the description lattice
-;;  the defparameter for this global is defined later in the compilation order
-(defvar *description-lattice*) 
-
-
 ;;;-------------------------------------------------
 ;;; as called from a file for permanent individuals
 ;;;-------------------------------------------------
-
-(defvar *index-under-permanent-instances* nil
-  "A flag that picks out the right sub-field when the category
-   indexes both permanent and temporary individuals.")
-
 
 (defmacro define-with-all-instances-permanent (&rest forms)
   `(with-all-instances-permanent/expr ',forms))
@@ -95,9 +84,6 @@
   (let ((*index-under-permanent-instances* t))
     (dolist (form forms)
       (eval form))))
-
-
-
 
 ;;--- Standard entry point
 

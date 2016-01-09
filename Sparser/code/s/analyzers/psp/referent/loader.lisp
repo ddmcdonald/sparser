@@ -30,14 +30,10 @@
 (lload "referent;driver")
 (lload "referent;dispatch")
 (lload "referent;decode exp")
-(if cl-user::*psi-2009*
-  (lload "referent;unary driver")
-  (lload "referent;unary driver"))
+(lload "referent;unary driver")
 (lload "referent;cases")
 
 (when *include-model-facilities*
   (lload "referent;new decodings")
   (lload "referent;ref-method")
-  (if cl-user::*psi-2009*
-    (lload "referent;new cases")
-    (lload "referent;new cases")))
+  (lload "referent;new cases"))

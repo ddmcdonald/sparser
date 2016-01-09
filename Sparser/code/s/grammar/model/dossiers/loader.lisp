@@ -87,9 +87,8 @@
   (gload "dossiers;irregular verbs"))
 (gate-grammar *known-verbs*
   (gload "dossiers;semantics-free verbs"))
-(gate-grammar (or *adverbs* *adjectives*)
+(gate-grammar *adjectives*
   (gload "dossiers;new content words"))
-
 
 #+ignore(gate-grammar *comparatives* ;; moved to modifiers
   (gload "dossiers;comparatives")

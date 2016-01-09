@@ -1,8 +1,8 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1991-1997,2013,2015  David D. McDonald  -- all rights reserved
 ;;;
-;;;     File:  "ddef-logical"
-;;;   Module:  "init;Lisp;"
+;;;     File:  "logical"
+;;;   Module:  "init;loaders;"
 ;;;  Version:  December 2015
 
 ;; This is a replacement for MCL's Def-logical-pathname

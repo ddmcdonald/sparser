@@ -2,7 +2,7 @@
 ;;; copyright (c) 1991-2005,2014  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "grammar-module"
-;;;    Module:  "init;Lisp:"
+;;;    Module:  "init;loaders;"
 ;;;   version:  1.6 June 2014
 
 ;; initiated 2/9/92 v2.2, finished 2/10
@@ -59,12 +59,10 @@
   citations
   )
 
-
 (defun print-grammar-module-structure (obj stream depth)
   (declare (ignore depth))
-  (write-string "#<grammar-module " stream)
-  (write-string (symbol-name (gmod-symbol obj)) stream)
-  (write-string ">" stream))
+  (print-unreadable-object (obj stream :type t)
+    (write-string (symbol-name (gmod-symbol obj)) stream)))
 
 (defun display-grammar-module (gm &optional (stream *standard-output*))
   (write-string (symbol-name (gmod-symbol gm)) stream))
@@ -107,58 +105,35 @@
   `(define-grammar-module/expr ',symbol nil ',name t))
 
 
-(defun define-grammar-module/expr (symbol
-                                   &optional parent name summary? )
-  (let* (already-defined?
-         (obj (or (setq already-defined?
-                        (grammar-module-named symbol))
-                  (make-grammar-module :symbol symbol)))
-         (parent-module (grammar-module-named parent)))
+(defun define-grammar-module/expr (symbol &optional parent name summary?)
+  (let* ((already-defined? (grammar-module-named symbol))
+         (obj (or already-defined? (make-grammar-module :symbol symbol))))
 
     (when already-defined?
-      (format t "~&~%Redefining the grammar module ~A" symbol))
+      (warn "Redefining the grammar module ~a." symbol))
 
     (when parent
-      (unless parent-module
-        (error "The grammar module ~A, the parent of ~A,~
-                ~%  is undefined." parent symbol))
-      (setf (gmod-parent-module obj) parent-module)
-      (setf (gmod-sub-modules parent-module)
-            (push obj (gmod-sub-modules parent-module))))
+      (let ((parent-module (grammar-module-named parent)))
+        (assert parent-module
+                (symbol parent parent-module)
+                "The grammar module ~a, parent of ~a, is undefined."
+                parent symbol)
+        (setf (gmod-parent-module obj) parent-module)
+        (pushnew obj (gmod-sub-modules parent-module))))
 
     (when summary?
-      (if already-defined?
-        (unless (member obj *summary-grammar-modules*)
-          (push obj *summary-grammar-modules*))
-        (push obj *summary-grammar-modules*)))
+      (pushnew obj *summary-grammar-modules*))
 
     (setf (gmod-princ-name obj)
-          (if name
-            name
-            (clean-up-symbol symbol)))
+          (or name
+              (string-capitalize
+               (substitute #\Space #\- (string-trim "*" symbol)))))
 
     (unless already-defined?
-      (eval `(defparameter ,symbol nil))
+      (eval `(defparameter ,symbol nil
+               ,(format nil "~@(~a~) grammar flag." (gmod-princ-name obj))))
       (setf (gethash symbol *grammar-modules*) obj))
-
-    obj ))
-
-
-;;/// move this
-(defun clean-up-symbol (symbol)
-  ;; returns a string that will look nicer in a menu
-  (let* ((original (symbol-name symbol))
-         (string (string-downcase original)))
-
-    (when (eql (elt original 0) #\*)
-      (setq string (subseq string 1))
-      (when (eql (car (last (coerce original 'list))) #\*)
-        (setq string (subseq string 0 (- (length string) 1)))))
-
-    (when (find #\- original)
-      (setq string (substitute #\space #\- string)))
-
-    string ))
+    obj))
 
 
 ;;;-------------------------------
@@ -182,11 +157,11 @@
   "Turns on the flag, and includes the module on the list of
 modules in the image. Called from a grammar configuration file."
   (let ((gm (grammar-module-named symbol)))
-    (unless gm
-      (error "There is no grammar module with the name ~A" symbol))
+    (assert gm (gm) "There is no grammar module named ~a." symbol)
+    (check-type gm grammar-module)
     (push gm *grammar-modules-in-image*)
     (when *load-verbose*
-      (format t "~&Including grammar module: ~a~%" symbol))
+      (format t "~&; Including grammar module ~a~%" symbol))
     (set symbol gm)))
 
 
@@ -210,34 +185,22 @@ to the 'public?' field on the modules and react in various ways.")
 ;;;-------------------------
 
 (defvar *grammar-module-being-loaded* nil
-  "Bound in load-grammar-module, which is wrapped around load forms.")
+  "Bound to the name of the grammar file being loaded.")
 
-(defvar *loading-public-grammar-module* nil
-  "Bound in gate-grammar.")
+(defmacro gate-grammar (flag &rest load-forms)
+  "Execute load-forms if the given grammar flag is true."
+  (check-type flag (and symbol (not keyword)))
+  `(when ,flag
+     (let ((*grammar-module-being-loaded* (grammar-module-named ',flag)))
+       ,@load-forms)))
 
-(defmacro gate-grammar (flag  &rest load-forms)
-  "Used in the load files to parameterize what actually happens
-according to what modules have been licensed by the configuration files."
-  (if *some-gmods-are-public*
-    `(when ,flag
-       (if (gmod-public? ,flag)
-         (let ((*insist-on-binaries* nil)
-               (*compile* nil)
-               (*loading-public-grammar-module* t))
-           (load-grammar-module ',flag ',load-forms))
-         (load-grammar-module ',flag ',load-forms)))
-    `(when ,flag
-       (load-grammar-module ',flag ',load-forms)) ))
-
-(defun load-grammar-module (symbol load-forms)
-  (let ((*grammar-module-being-loaded* (grammar-module-named symbol)))
-    (dolist (form load-forms *grammar-module-being-loaded*)
-      (eval form))))
-
-(defun record-file-in-grammar-module (namestring)
-  ;; called from Check-&-load within LLoad.
-  (push namestring
-        (gmod-files *grammar-module-being-loaded*)))
+(defun gload (filespec &aux (*compile* nil))
+  "Load a Sparser grammar file."
+  (when (lload filespec)
+    (when *grammar-module-being-loaded*
+      (pushnew filespec (gmod-files *grammar-module-being-loaded*)
+               :test #'equal))
+    filespec))
 
 ;;;--------------------------------------
 ;;; cross-indexing rules against modules

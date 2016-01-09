@@ -9,20 +9,18 @@
 
 (in-package :sparser)
 
+;;;-----------
+;;; the stack
+;;;-----------
 
-;;;-----------------------------------
-;;; the stack: "pending left openers"
-;;;-----------------------------------
-
-(unless (boundp '*maximum-number-of-pending-left-openers*)
-  (defparameter *maximum-number-of-pending-left-openers* 20
-    "This fixes the length of a stack used for pending sgml tags and
-     similar scoping elements that span indefinite lengths that are
-     not well described by context free rules."))
-
+(defvar *maximum-number-of-pending-left-openers* 20
+  "The length of the stack used for pending SGML tags
+and similar scoping elements that span indefinite lengths
+that are not well described by context-free rules.")
 
 (defvar *stack-of-pending-left-openers*
-        (make-array *maximum-number-of-pending-left-openers*))
+  (make-array *maximum-number-of-pending-left-openers*)
+  "Pending left openers.")
 
 
 ;;;-----------------

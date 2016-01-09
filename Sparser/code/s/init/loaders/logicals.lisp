@@ -49,9 +49,9 @@
 
 (in-package :sparser)
 
-;;;------------------------
-;;; init logical pathnames
-;;;------------------------
+;;;------------------------------
+;;; initialize logical pathnames
+;;;------------------------------
 
 (setf (logical-pathname-translations "sparser") nil)
 
@@ -76,9 +76,9 @@
   (**/* "sparser:source;" :type *fasl-type*)
   (**/* *fasl-root* :type *fasl-type*))
 
-;;;------------------------
-;;; load the basic modules
-;;;------------------------
+;;;------------------------------------------
+;;; Sparser initialization logical pathnames
+;;;------------------------------------------
 
 (def-logical-pathname "init;"         "source;init;")
 (def-logical-pathname "images;"       "init;images;")
@@ -88,6 +88,9 @@
 (def-logical-pathname "workspace;"    "init;workspace;")
 (def-logical-pathname "workspaces;"   "init;workspaces;")
 (def-logical-pathname "grammar-configurations;" "config;grammars;")
+
+(defvar cl-user::location-of-text-corpora nil
+  "User-specified location of external corpora.")
 
 (when cl-user::location-of-text-corpora
   (def-logical-pathname "corpus;" cl-user::location-of-text-corpora))

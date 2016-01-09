@@ -41,9 +41,8 @@
   "Toplevel call. Sets up the needed parameters and then calls
   load to go through the master-loader, opening files as dictated
   by the current switch settings."
-  (let ((*just-count-lines* t)
-        (*insist-on-binaries* nil)
-        (*compile* nil))
+  (let ((*compile* nil)
+        (*just-count-lines* t))
     (reset-line-count-accumulators)
     (lload "loaders;master-loader")
     (report-line-counts)))

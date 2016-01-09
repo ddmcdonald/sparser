@@ -63,25 +63,10 @@
 
 (in-package :sparser)
 
-
-(when (or *load-the-grammar*  ;; keeps a version like BBN from seeing the
-                              ;; undefined functions in here
-          *delayed-loading-of-the-grammar* )  ;; but let two-stage images see it
-
 (defun load-the-grammar ()
-  ;; Depending on the value of *load-the-grammar* this routine will
-  ;; either be run now as part of launching Everything, or will be
-  ;; omitted and then run (perhaps) after the image has been
-  ;; launched
-
-  (when *big-mechanism*
-    ;; Tried putting the call to set-protocol-switches right here
-    ;; but too many of the things it uses are defined by code that
-    ;; happens to be incidentally loaded as part of the 'grammar'
-    ;; even though it really isn't. This is the only crucial aspect
-    ;; of the setting since it dictates how individuals are indexed
-    ;; and stored. 
-    (use-description-lattice t))
+  "Depending on the value of *load-the-grammar* this routine will
+either be run now as part of launching Everything, or will be
+omitted and then run (perhaps) after the image has been launched."
 
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
   (initialize-cons-resource)
@@ -157,18 +142,15 @@
     (gload "amounts;loader"))
 
   (gate-grammar *numbers*
-    (unless *lattice-points*
-      ;; this is just a definition for 'fractions' with conflicts with the
-      ;; current treatment of "first quarter"
-      (gload "numbers;loader 2")))
+    ;; this is just a definition for 'fractions' with conflicts with the
+    ;; current treatment of "first quarter"
+    (gload "numbers;loader 2"))
 
   (gate-grammar *people*
     (gload "people;loader"))
 
   (gate-grammar *companies*
-    (if *lattice-points*
-      (gload "companies;loader")
-      (gload "companies;loader")))
+    (gload "companies;loader"))
 
   (gate-grammar *time*  ;; needs find/ordinal
     (gload "core;time;loader"))
@@ -202,9 +184,7 @@
     (gload "Who's News;loader"))
 
   (gate-grammar *ern*
-    (if *lattice-points*
-      (gload "ern;loader")
-      (gload "ern;loader")))
+    (gload "ern;loader"))
 
   (gate-grammar *ambush*
     (gload "ambush;loader"))
@@ -313,10 +293,9 @@
   (gload "words;porter-stemmer")
   (gload "one-offs;loader")
 
-  (when *load-dossiers-into-image*
-    (gload "dossiers;loader")
-    (gate-grammar *whos-news*
-      (whos-news-post-dossiers-loader)))
+  (gload "dossiers;loader")
+  (gate-grammar *whos-news*
+    (whos-news-post-dossiers-loader))
 
   (gate-grammar *time*
     (late-time-files)
@@ -342,7 +321,5 @@
   ;;(gate-grammar *kraql*
   ;;  (gload "kraql;loader"))
 
-  (postprocess-grammar-indexes)
-
-  )) ;; end of Load-the-grammar and the when gate in front of it
+  (postprocess-grammar-indexes))
 

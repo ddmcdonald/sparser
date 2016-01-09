@@ -14,10 +14,8 @@
 ;;; reference variables
 ;;;----------------------
 
-(or (boundp '*the-chart*)
-    (defvar *the-chart* nil
-      "Initialized to (make-a-chart) by Setup-session-globals"))
-
+(defvar *the-chart* nil
+  "Initialized by make-a-chart.")
 
 ;;;------------------
 ;;; state variables

@@ -38,9 +38,12 @@
 ;;; the edge-record proper
 ;;;------------------------
 
-(or (boundp '*maximum-number-of-edges-in-an-edge-vector*)
-    (defparameter *maximum-number-of-edges-in-an-edge-vector* 40))
-
+(defvar *maximum-number-of-edges-in-an-edge-vector* 40
+  "The number of edges that can be piled up on a given position
+(starting or ending there). If this overflows, it is probably
+because of a loop in the phrase structure rules. Note that
+this flag is only meaningful when using 'array' edge-vectors;
+for 'kcons' edge-vectors there is no limit.")
 
 (defun make-edge-vector-array ()
   (error "No value for this switched function.~

@@ -2,9 +2,9 @@
 ;;; copyright (c) 1990-1997,2012-2013  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
-;;;      File;   "lload"
-;;;    Module:   "init;Lisp:"
-;;;   Version:   2.10 May 2013
+;;;      File:  "lload"
+;;;    Module:  "init;loaders;"
+;;;   Version:  January 2016
 
 ;; initiated July 1990
 ;; 1.1  (7/19 v1.8.6)  Added capability to load .fasl or source, preferring
@@ -72,6 +72,21 @@
 ;;; globals for loading
 ;;;---------------------
 
+(defvar *compile* t
+  "If non-nil, lload looks for a .fasl version of a file (or whatever
+is appropriate for the Lisp being used) and loads it if there is one
+and it is newer than the source version; otherwise, the source file
+is compiled and then loaded. The directory where the compiled files
+are to be found is determined by the logical pathname translations
+set up in the \"init;loaders;logicals\" file.")
+
+(defvar *edit* nil
+  "If non-nil, lload invokes the editor instead of loading a source file.")
+
+(defvar *just-count-lines* nil
+  "Controls whether the loading process is actually to be used as
+an automatic way of counting source lines in the Sparser codebase.")
+
 (defvar *lloaded-files* nil
   "The truenames of all the lloaded files.")
 
@@ -86,32 +101,23 @@
   "Load, compile & load, edit, or count the lines in a Sparser source file."
   (cond (*edit* (ed (lisp-file filespec)))
         (*just-count-lines* (just-count-the-lines-of-code filespec))
-        (*insist-on-binaries* (load-fasl-only filespec))
         (*compile* (compile-&-load filespec))
         (t (check-&-load filespec))))
 
 (defun check-&-load (filespec &rest args &aux
                      (filespec (if (pathname-type filespec)
                                  filespec
-                                 (lisp-file filespec))))
+                                 (lisp-file filespec)))
+                     (*file-being-lloaded* filespec))
   "Load a Sparser source file."
-  (let ((*file-being-lloaded* filespec))
-    (when (apply #'load filespec args)
-      (push (truename filespec) *lloaded-files*)
-      (when (and (boundp '*grammar-module-being-loaded*)
-                 ;; have to also check if it's bound to allow LLoad
-                 ;; to be used when the grammar module facility isn't
-                 ;; yet loaded.
-                 *grammar-module-being-loaded*)
-        (record-file-in-grammar-module filespec))
-      filespec)))
+  (when (handler-bind (#+sbcl (style-warning #'muffle-warning))
+          (apply #'load filespec args))
+    (push (truename filespec) *lloaded-files*)
+    filespec))
 
 ;;;----------------------------
 ;;; fasl loading & compilation
 ;;;----------------------------
-
-(defun load-fasl-only (filespec &rest args)
-  (apply #'load (fasl-file filespec) args))
 
 (defun compile-&-load (filespec &rest args &aux
                        (lisp-file (lisp-file filespec))
@@ -126,20 +132,12 @@
                          :output-file (ensure-directories-exist fasl-file)))
          args))
 
-;;;-----------------
-;;; grammar loading
-;;;-----------------
-
-(defun gload (namestring)
-  "Gload should be used in place of lload for any file or module
-that involves the grammar."
-  (let ((*insist-on-binaries* nil)
-        (*compile* nil))
-    (lload namestring)))
-
 ;;;------------------------------------------------------
 ;;;-------------- move !!!!!!!!!!!!!!!!!
 ;;;------------------------------------------------------
+
+(defvar *suppress-duplicate-definition-warning* nil
+  "If false, warn about duplicate definitions in note-file-location.")
 
 (defun note-file-location (object)
   "Called from the definition routines for the various kinds of objects."
@@ -150,9 +148,10 @@ that involves the grammar."
     (let ((entry (cadr (member :file-location plist :test #'equal))))
       (if entry
         (progn
-          (warn "Redefining ~a in ~a.~%~
-                 Previous definition was in ~a."
-                object location entry)
+          (unless *suppress-duplicate-definition-warning*
+            (warn "Redefining ~a in ~a.~%~
+                   Previous definition was in ~a."
+                  object location entry))
           (if (consp entry) ; multiple sites already?
             (rplacd entry (cons location (cdr entry)))
             (push-onto-plist object

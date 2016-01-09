@@ -19,17 +19,20 @@
 
 (in-package :sparser)
 
-
 ;;;----------------------------------
 ;;;  creating a chart from scratch
 ;;;----------------------------------
 
-(unless (boundp '*number-of-positions-in-the-chart*)
-  (defparameter *number-of-positions-in-the-chart* 1000))
+(defvar *number-of-positions-in-the-chart* 20000
+  "The number of words that can be parsed before the chart resource wraps.")
+
+(defvar *make-chart-with-edge-vectors* t
+  "Must be on if any parsing is to be done, but can be off if nothing beyond
+word frequency or other word-level observations are required. If left off,
+the chart will require markedly less space.")
 
 (defun make-position-array ()
   (make-array *number-of-positions-in-the-chart*))
-
 
 (defun make-the-chart ()
   (declare (special *the-chart*))
@@ -38,11 +41,8 @@
 (defun make-a-chart ()
   (let ((array (make-position-array))
         position )
-    (declare (special *number-of-positions-in-the-chart*))
-    (declare (special *make-chart-with-edge-vectors*))
     (dotimes (n *number-of-positions-in-the-chart* array)
-      (setq position (make-position
-                      :array-index n))
+      (setq position (make-position :array-index n))
 
       (when *make-chart-with-edge-vectors*
         (setf (pos-ends-here position)
@@ -54,8 +54,7 @@
                :position position
                :direction :|starting at|)))
 
-      (setf (elt array n)
-            position))))
+      (setf (elt array n) position))))
 
 ;;;--------------------------
 ;;;  per-run initializations

@@ -85,26 +85,31 @@
 ;; so it can override parameter values if it needs to. 12/1/15 Cleaned up now
 ;; meaningless alternative load files on the value of *lattice-points*. Removed
 ;; the commented out C3 gates.
+;; 1/14/16 Added pre- and post-load hooks.
 
 (in-package :sparser)
 
+(defun the-master-loader ()) ;; for meta-point
 
-(defun the-Master-loader () )  ;; for meta-point
+;;;----------------
+;;; pre-load hooks
+;;;----------------
 
-#+:sbcl(setf SB-IMPL::*DEFAULT-EXTERNAL-FORMAT* :utf-8)
+(map nil #'funcall *pre-load-hooks*)
 
 ;;;--------------------
 ;;; extensions to Lisp
 ;;;--------------------
+
 (lload "tools;basics;loader")
 (lload "kons;loader")
 
 (lload "objects;traces;ops-loader")
 
-
 ;;;---------
 ;;; objects
 ;;;---------
+
 (lload "chart;units-labels;loader")
 (lload "rule objs;rule-links;object")
 (lload "chart;words;loader")
@@ -126,10 +131,7 @@
 (lload "objects;chart;generics;loader")
 
 (when *include-model-facilities*
-  (lload "objects;model;loader"))
-
-(when (and *orthographic-structure*
-           *include-model-facilities*)  ;; uses routines in the model facilities
+  (lload "objects;model;loader")
   (lload "objects;doc;loader"))
 
 (lload "objects;situation;loader")
@@ -170,9 +172,7 @@
   (gload "FSA;polywords"))
 (lload "scan;loader")
 (lload "assess;loader")
-(if *lattice-points*
-  (lload "check;loader")
-  (lload "check;loader"))
+(lload "check;loader")
 (lload "analyzers;psp;threading;loader")
 ;; (lload "march;loader") directory & load-file empty so flushed 9/22/11
 (lload "kinds of edges;loader")
@@ -307,26 +307,22 @@
 ;;; optional grammar
 ;;;------------------
 
-(when (or *load-the-grammar*
-          *delayed-loading-of-the-grammar*)
-
-  ;; This defines the function
+(when *load-the-grammar*
   (lload "loaders;grammar")
+  (load-the-grammar)
 
-  (unless *delayed-loading-of-the-grammar*
+  (when *include-model-facilities*
+    (load-delayed-dossiers)
 
-    ;; This call actually does the work
-    (load-the-grammar)))
-
+    ;; This call announces the # of individuals in all the defined categories
+    ;; that have instances (see *referential-categories*)
+    (declare-all-existing-individuals-permanent)))
 
 (when *connect-to-the-corpus*
-  ;; Loading the set of logicals that define articles in 
-  ;; the prestored corpus
+  ;; Load the set of logicals that define articles in the corpus.
   (lload "corpus-data;loader"))
 
-
 ;; Convenience files
-;;
 (lload "workspace;abbreviations")
 (lload "workspace;traces")
 (lload "workspace;display")
@@ -335,3 +331,11 @@
 (when *external-workspace-files*
   (load *external-workspace-files*))
 
+(unless *nothing-Mac-specific*
+  (launch-sparser-menus))
+
+;;;-----------------
+;;; post-load hooks
+;;;-----------------
+
+(map nil #'funcall *post-load-hooks*)

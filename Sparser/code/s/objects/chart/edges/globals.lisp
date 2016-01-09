@@ -17,9 +17,8 @@
 (defparameter *all-edges* nil
   "A resource array, initialized by Initialize-edge-array.")
 
-(unless (boundp '*length-of-edge-resource*)
-  (defparameter *length-of-edge-resource* 500))
-
+(defvar *length-of-edge-resource* 100000
+  "The number of edges that the parser can use before the edge resource wraps.")
 
 ;;;-------------------
 ;;; resource pointers

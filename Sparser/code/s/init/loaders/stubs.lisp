@@ -5,6 +5,9 @@
 ;;;     File:  "stubs"
 ;;;   Module:  "init;loaders;"
 ;;;  version:  December 2015
+;;;
+;;; Provide definitions for functions we know (given the configuration)
+;;; don't have definitions.
 
 ;; 4/3/97 added a case for dm&p. 8/17/97 added lots of cases as part of preparing
 ;; a license with the segmenter but not the model.  2/22/10 added construct-
@@ -117,14 +120,6 @@
   (defun postprocess-tree-families (list )
     (declare (ignore list)))
   )
-
-(unless *sun*
-  (defun next-letter-of-the-alphabet (position)
-    (declare (ignore position)))
-  (defun finished-entry-title (position)
-    (declare (ignore position)))
-  )
-
 
 (ecase *loader-mode*
   (:everything

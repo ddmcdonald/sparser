@@ -29,19 +29,6 @@
 
 (in-package :sparser)
 
-(defparameter *description-lattice* nil) ;; set by switch setting
-
-(defun use-description-lattice (&optional (use-it t))
-  (setq *index-under-permanent-instances* use-it) 
-  ;; all individuals will be permanent, and in description-lattice
-  (setq *description-lattice* use-it))
-
-
-
-(defvar category::top)
-(defvar category::collection)
-
-
 ;;;-----
 ;;; V+V
 ;;;-----
@@ -124,6 +111,7 @@
    (t (lsp-break "what type of base is this? ~s" base))))
 
 (defun find-or-make-lattice-description-for-individual (base)
+  (declare (special category::collection))
   (or
    (get-dli base)
    (if (memq category::collection (indiv-type base)) ;; likely a conjunction
