@@ -134,6 +134,7 @@
                         (format nil "UNIPROT:~A" bpid)
                         bpid)
        :ras2-model ,ras2-model
+       :takes-plurals t
        ,@(if documentation `(:documentation ,documentation)))))
 
 (defun in-ras2-model? (entity)
@@ -373,7 +374,6 @@
                                    &optional greek identifier mitre-link
                                    ras2-model
                                    long synonyms takes-plurals documentation)
-  (declare (special *inihibit-constructing-plural*))
   (let ((label (or (override-label category) category))
         (form (category-named 'proper-noun))
         ;; proper noun makes sense for named protiens and such
@@ -382,6 +382,7 @@
         ;; and passed through in a parameter.
         (*inihibit-constructing-plural* (not takes-plurals))
         rules  i   )
+    (declare (special *inihibit-constructing-plural*))
     ;; There is a bug that I can't sort out with the available evidence
     ;; when redefining a def-bio entity involving a list of rules being
     ;; expected to be a structure. Until there's time to creep up on
@@ -549,7 +550,7 @@
            (t (break "what type of family is this supposed to be?"))))
          (i (def-bio/expr name category-name
              :long long :identifier identifier :synonyms synonyms
-              :takes-plurals t)))
+             :takes-plurals t)))
     (when (consp members)
      (set-family-members i members))
     i))
