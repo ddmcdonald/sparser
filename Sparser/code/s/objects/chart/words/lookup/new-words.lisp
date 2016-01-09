@@ -68,7 +68,7 @@
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
 
 (defparameter *word-to-be-defined?* nil)
-
+(defparameter *show-word-defs* nil)
 (defun make-word/all-properties/or-primed (character-type 
                                            &optional existing-word)
   (declare (special *capitalization-of-current-token*
@@ -85,10 +85,14 @@
                   ;; there is a category and edge for every word
                   ;; however trivial it might be.
                    (make-word :symbol symbol
-                              :pname (symbol-name symbol)))))
+                              :pname (symbol-name symbol))))
 
     (setq *word-to-be-defined?* word)
+
     (catalog/word word symbol)
+    (when *show-word-defs*
+      (format t "~&*** defining new word ~s~&" word))
+
 
     (ecase character-type
       (:number (establish-properties-of-new-digit-sequence word))
