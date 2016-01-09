@@ -157,17 +157,18 @@
           (person . person))
   :index (:sequential-keys country person))
 
-(defmethod relationship-to-country ((c sh::country) (p sh::person))
-  (declare (special *parent-edge-getting-reference*))
-  (let ((country (dereference-shadow-individual c))
-        (person (dereference-shadow-individual p)))
-    (setf (edge-category *parent-edge-getting-reference*)
-          category::person)
-    (setf (edge-form *parent-edge-getting-reference*)
-          category::np)
-    (define-or-find-individual category::nationality
-        :country country :person person)
-    person))
+(when *clos*
+  (defmethod relationship-to-country ((c sh::country) (p sh::person))
+    (declare (special *parent-edge-getting-reference*))
+    (let ((country (dereference-shadow-individual c))
+          (person (dereference-shadow-individual p)))
+      (setf (edge-category *parent-edge-getting-reference*)
+            category::person)
+      (setf (edge-form *parent-edge-getting-reference*)
+            category::np)
+      (define-or-find-individual category::nationality
+                                 :country country :person person)
+      person)))
 
 
 

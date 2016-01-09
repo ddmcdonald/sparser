@@ -45,15 +45,16 @@ should use a category and use methods for the composition
     of associated-with-country, but particular cases of object
     can use more specific relations."))
 
-(defmethod relationship-to-country ((c sh::country) (thing t))
-  (let ((country (dereference-shadow-individual c))
-        (item (dereference-shadow-individual thing)))
-    ;; Person and location versions of this method hack with
-    ;; the form and category of the edge being created.
-    ;; /// Should we do that here? What would it look like?
-    (define-or-find-individual 'associated-with-country
-        :country country :item item)
-    item))
+(when *clos*
+  (defmethod relationship-to-country ((c sh::country) (thing t))
+    (let ((country (dereference-shadow-individual c))
+          (item (dereference-shadow-individual thing)))
+      ;; Person and location versions of this method hack with
+      ;; the form and category of the edge being created.
+      ;; /// Should we do that here? What would it look like?
+      (define-or-find-individual 'associated-with-country
+                                 :country country :item item)
+      item)))
 
 
 

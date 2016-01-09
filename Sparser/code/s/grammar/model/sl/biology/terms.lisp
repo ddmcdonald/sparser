@@ -282,10 +282,11 @@
    :of actor))
 
 (adj "active" :super molecule-state
-     :binds ((molecule molecule))
+     :binds ((activated
+              (:or molecule pathway)))
      :realization 
      (:adj "active"
-           :s molecule))
+           :s activated))
 
 (noun "activity" :super bio-process
       :binds ((theme biological))

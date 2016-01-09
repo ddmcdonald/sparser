@@ -16,13 +16,14 @@
   ;; in methods over them (analyze-pp).
   :specializes operator)
 
-(when *clos*
-  (defgeneric analyze-pp (preposition complement)
-    (:documentation "Computes the referent of a pp created using the
-                    computed-pp ETF. Particular combinations can produced anything
-                    they want. The default is the referent of the complement, which
-                    is equivalent to :daughter right-edge."))
+
+(defgeneric analyze-pp (preposition complement)
+  (:documentation "Computes the referent of a pp created using the
+                  computed-pp ETF. Particular combinations can produced anything
+                  they want. The default is the referent of the complement, which
+                  is equivalent to :daughter right-edge."))
   
+(when *clos*
   (defmethod analyze-pp ((prep sh::prepositional-operator) (complement t))
     (declare (ignore prep))
     (tr :analyze-pp_t+t)

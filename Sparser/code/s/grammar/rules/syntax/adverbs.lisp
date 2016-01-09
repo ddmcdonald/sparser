@@ -31,16 +31,18 @@
 ;; the edge that spans the modifier and what it modifies. Since
 ;; the thing being modified is usually the head, we typically just 
 ;; want to do something to that head and then return it
+
+
+(defgeneric modified (modifier head)
+  (:documentation "Motivated by adverbs like 'just' and 'almost',
+                  but could be used with adjectives or anything else. The default
+                  method creates an instance of the modifies casegory to record
+                  the relationship between the two terms, and then returns the
+                  head. Specific cases (by the category of the specific adverb)
+                  could be more ambitious."))
+  
 (cond
  (*clos*
-  (defgeneric modified (modifier head)
-    (:documentation "Motivated by adverbs like 'just' and 'almost',
-                    but could be used with adjectives or anything else. The default
-                    method creates an instance of the modifies casegory to record
-                    the relationship between the two terms, and then returns the
-                    head. Specific cases (by the category of the specific adverb)
-                    could be more ambitious."))
-  
   (defmethod modified ((adv sh::modifier) (head t))
     (let ((real-adv (dereference-shadow-individual adv))
           (real-head (dereference-shadow-individual head)))
@@ -50,8 +52,12 @@
         (setq real-head (bind-dli-variable 'modifier real-adv real-head)))
       real-head)))
  (t
-  (defun modified (adv head)
-    (bind-dli-variable 'modifier 
-                       (individual-for-ref adv)
-                       (individual-for-ref head)))))
+  (defmethod modified ((adv t) (head t))
+    (let ((real-adv adv)
+          (real-head head))
+      (tr :modified_modifier+t)
+      (when (individual-p head)
+        (setq real-head (individual-for-ref real-head))
+        (setq real-head (bind-dli-variable 'modifier real-adv real-head)))
+      real-head))))
 
