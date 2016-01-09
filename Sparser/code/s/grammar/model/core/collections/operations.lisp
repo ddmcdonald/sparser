@@ -260,18 +260,19 @@
   (:documentation "Given a sequence, return the its
     nth element, given zero-based indexing."))
 
-(def-k-method nth-item ((n integer) (category sequential))
-  ;; Motivating use is pulling the month sequences out of 
-  ;; the month category
-  (let ((value (value-of 'sequence category)))
-    (unless value
-      (push-debug `(,n ,category))
-      (error "No sequence binding on ~a" category))
-    (call-nth-item n value)))
-
-(def-k-method nth-item ((n integer) (seq sequence))
-  (let ((items (value-of 'items seq)))
-    (nth-item n items)))
+(when *clos*
+  (def-k-method nth-item ((n integer) (category sequential))
+    ;; Motivating use is pulling the month sequences out of 
+    ;; the month category
+    (let ((value (value-of 'sequence category)))
+      (unless value
+        (push-debug `(,n ,category))
+        (error "No sequence binding on ~a" category))
+      (call-nth-item n value)))
+  
+  (def-k-method nth-item ((n integer) (seq sequence))
+    (let ((items (value-of 'items seq)))
+      (nth-item n items))))
 
 (defmethod nth-item ((n integer) (items list))
   (nth n items))

@@ -322,7 +322,8 @@
 
   (gate-grammar *time*
     (late-time-files)
-    (make-temporal-sequences))
+    (when *clos*
+      (make-temporal-sequences)))
 
   (when *incorporate-generic-lexicon*
     (prime-comlex))

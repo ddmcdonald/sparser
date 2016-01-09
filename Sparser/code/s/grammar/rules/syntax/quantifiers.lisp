@@ -18,14 +18,15 @@
           (body)))
 
 
-(defgeneric quantify (quantifier body)
-  (:documentation "Provides for specializing the relationship between
- a particular category of quantifier and category of body."))
-
-(defmethod quantify ((q sh::quantifier) (body t))
-  (let ((real-q (dereference-shadow-individual q))
-        (real-body (dereference-shadow-individual body)))
-    (define-individual 'quantified
-        :quantifier real-q
+(when *clos*
+  (defgeneric quantify (quantifier body)
+    (:documentation "Provides for specializing the relationship between
+                    a particular category of quantifier and category of body."))
+  
+  (defmethod quantify ((q sh::quantifier) (body t))
+    (let ((real-q (dereference-shadow-individual q))
+          (real-body (dereference-shadow-individual body)))
+      (define-individual 'quantified
+                         :quantifier real-q
         :body real-body)
-    real-body))
+      real-body)))
