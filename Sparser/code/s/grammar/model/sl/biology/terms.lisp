@@ -1190,9 +1190,9 @@
   :realization
   (:noun "figure"))
 
-(def-synonym article-figure (:noun "fig."))
+(def-synonym article-figure (:noun "Fig."))
 
-(def-synonym article-figure (:noun "fig"))
+(def-synonym article-figure (:noun "Fig"))
 
  
 (def-cfr article-figure (article-figure two-part-label)
