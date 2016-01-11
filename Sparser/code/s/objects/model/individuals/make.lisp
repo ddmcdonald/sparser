@@ -94,8 +94,7 @@
 (defun with-all-instances-permanent/expr (forms)
   (let ((*index-under-permanent-instances* t))
     (dolist (form forms)
-      (eval form))
-    (format t "~&~%~A forms~%" (length forms))))
+      (eval form))))
 
 
 
