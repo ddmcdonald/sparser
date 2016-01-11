@@ -89,6 +89,8 @@
 (load (concatenate 'string *mumble-location* "derivation-trees/make.lisp"))
 (load (concatenate 'string *mumble-location* "derivation-trees/builders.lisp"))
 (load (concatenate 'string *mumble-location* "derivation-trees/operators.lisp"))
+(when (find-package :sparser)
+  (load (concatenate 'string *mumble-location* "derivation-trees/gofers.lisp")))
 ;; Sparser-dependent and needs rethinking anyway
 ;(load (concatenate 'string *mumble-location* "derivation-trees/conversions.lisp"))
 
