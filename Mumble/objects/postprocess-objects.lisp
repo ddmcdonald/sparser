@@ -491,14 +491,17 @@ the virtual machine cleaner."
 
 (defparameter *pnames-to-words* (make-hash-table :test 'equal))
 
+(defun find-word (pname)
+  (gethash pname *pnames-to-words*))
+
 (defun associate-pname-with-word (pname new-word)
   (setf (gethash pname *pnames-to-words*) new-word))
 
 (defun word-for-string (string  &optional pos)
+  ;; This is find-or-make word
   (let ((word (gethash string *pnames-to-words*)))
     (or word 
-	(make-a-new-word string pos))
-    ))
+	(make-a-new-word string pos))))
 
 (define-postprocessing-function word  (W)
   (set-word-labels W (mapcar #'word-label-named (word-labels W))))
