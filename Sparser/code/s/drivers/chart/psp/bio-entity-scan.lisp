@@ -171,6 +171,7 @@ the position. (N.b. there's an incremental trace hook in there.) |#
   ;; called from make-word/all-properties/or-primed when
   ;; *big-mechanism* flag is up and OBO lookup, morphology,
   ;; and Comlex have not applied.
+  (add-new-word-to-catalog word :BgMech-default)
   (let* ((likely-protein? ;; true more often than not given hand inspection
           (memq (word-capitalization word)
                 '(:initial-letter-capitalized 
