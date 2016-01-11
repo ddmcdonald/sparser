@@ -57,6 +57,7 @@ protocol is developed. Moreover they are semantically vacuous.  |#
   :binds ((artifact artifact)) ;; what they build
   :realization
     ((:main-verb ("build" :past-tense "built"))
+     (:mumble ("build" svo :o artifact))
      (:tree-family vp+adjunct
       :mapping ((vg . :self)
                 (vp . :self)
