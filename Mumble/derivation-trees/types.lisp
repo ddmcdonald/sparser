@@ -6,7 +6,7 @@
 
 ;; Initated 9/16/09. Added derivation tree nodes 10/6. 3/9/11 removed
 ;; co: from the defobject calls not that's it's been brought into utils.
-;; Resumed work 10/7/15. 
+;; Resumed work 10/7/15. Generalizing lexicalized types 1/11/16
 
 (in-package :mumble) 
 
@@ -36,7 +36,7 @@
 
 
 ; ?? linguistic-resource: choice-that-selects-this, anchors-adjunctions,
-;                         higher-order-backpointers
+;    higher-order-backpointers
 
 (defobject includes-syntax-driven-choices ()
   ;; Would get filled in with a slot or slots that would layout
@@ -117,9 +117,10 @@
 ;;;---------------------
 ;;; Lexicalized phrases
 ;;;---------------------
-;; These get decoded by instantiate-lexicalized-phrase
 
-(defobject lexicalized-phrase (has-name)
+(defobject lexicalized-resource (has-name) ())
+
+(defobject lexicalized-phrase (lexicalized-resource)
   ((phrase))) ;; a phrase
 
 (defobject saturated-lexicalized-phrase (lexicalized-phrase)
@@ -130,7 +131,7 @@
   ((free)))  ;; list of parameters
 
 
-(defobject lexicalized-attachment (has-name)
+(defobject lexicalized-attachment (lexicalized-resource)
   ((point)
    (value)))
 
