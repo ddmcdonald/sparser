@@ -134,7 +134,7 @@
                         (format nil "UNIPROT:~A" bpid)
                         bpid)
        :ras2-model ,ras2-model
-       :takes-plurals t
+       ;;  :takes-plurals t
        ,@(if documentation `(:documentation ,documentation)))))
 
 (defun in-ras2-model? (entity)
@@ -345,7 +345,8 @@
                  (every #'stringp synonyms))
       (error "The synonyms must be a list of strings")))
   (unless takes-plurals
-    (setq takes-plurals t))
+    (unless (eq kind 'protein)
+      (setq takes-plurals t)))
 
   `(def-bio/expr ,short ',kind
      :documentation ,documentation
@@ -418,13 +419,9 @@
         (handle-mitre-link i mitre-link))
       (when ras2-model
         (setq i (bind-dli-variable 'ras2-model ras2-model i)))
-
       ;; At this point, i has been changed to include the ras2-model
       ;; binding (and the mitre-link binding) if necessary, so we need to use this
-      ;; version of i for all
-
-      ;; This is packaged up some place, but no time to see where
-
+      ;; version of i for all the rules
 
       (cond
        ((and r (cfr-p r))
@@ -448,10 +445,22 @@
 
       (when synonyms ;; quoted list of strings
         (dolist (syn synonyms)
-          (push (define-cfr label `(,(resolve/make syn))
-                  :form form
-                  :referent i)
-                rules)))
+          (let ((word (resolve/make syn)))
+            (push (define-cfr label `(,word)
+                    :form form
+                    :referent i)
+                  rules)
+            ;; 1/12/16 Spews polyword-duplication complaints
+            ;; when applied to proteins
+            (when takes-plurals
+              (let ((plural
+                     (etypecase word
+                       (word (plural-version word))
+                       (polyword (plural-version/pw word)))))
+                (push (define-cfr label `(,plural)
+                        :form form
+                        :referent i)
+                      rules))))))
 
       ;; Now we do that by-hand for the long-form. If the long form needs
       ;; to have a variant with a greek letter in it we'll make two rules.
