@@ -29,7 +29,7 @@
 (defparameter *show-edge-string* nil) ;; if T then print the entire string spanned by the edge 
 
 ; (setq *break-on-illegal-duplicate-rules* t)
-
+(defparameter sparser::*CLOS* nil)
 ;;;-----------------
 ;;; call the loader
 ;;;-----------------

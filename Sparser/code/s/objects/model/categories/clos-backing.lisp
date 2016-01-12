@@ -420,7 +420,7 @@ for every category.
 ;;; macro to sugar shifting representations in defmethod
 ;;;------------------------------------------------------
 
-(defparameter *print-generated-k-method-forms* nil
+(defparameter *print-generated-k-method-forms* t
   "Turn in on when you suspect the generated code is wrong.")
 
 (defmacro def-k-method (name args &body body)
@@ -443,24 +443,24 @@ for every category.
            (let-bindings
             (construct-let-bindings
              dummy-parameters parameters type-restrictions)))
-
+      
       (let* ((caller-name (intern (string-append '#:call- name)
-                                   (find-package :sparser)))
+                                  (find-package :sparser)))
              (caller-form
               `(defun ,caller-name ,parameters
                  (setup-args-and-call-k-method ,@parameters
-                   (funcall #',name left-shadow right-shadow))) ))
+                                               (funcall #',name left-shadow right-shadow))) ))
         (when *print-generated-k-method-forms*
           (pprint caller-form))
         (eval caller-form))
-
-      (let ((form
-             `(defmethod ,name ,method-args
-                (let ,let-bindings
-                  ,@body)) ))
-        (when *print-generated-k-method-forms*
-          (pprint form))
-        (eval form)))))
+      (when *clos*
+        (let ((form
+               `(defmethod ,name ,method-args
+                  (let ,let-bindings
+                    ,@body)) ))
+          (when *print-generated-k-method-forms*
+            (pprint form))
+          (eval form))))))
 
 
 (defun construct-let-bindings (dummy-parameters parameters type-restrictions)
@@ -510,11 +510,14 @@ for every category.
               (push (find-class (c3-var-name (var-shadow lambda-variable)))
                     type-symbols))))
          ((symbolp type-specifier)
-          (if (lisp-type? type-specifier)
-            (push type-specifier type-symbols)
+          (cond
+           ((lisp-type? type-specifier)
+            (push type-specifier type-symbols))
+           (*clos*
             (let ((category (category-named type-specifier :break)))
               (push (get-sclass category)
-                    type-symbols))))
+                    type-symbols)))
+           (t (push type-specifier type-symbols))))
          (t
           (push-debug `(,type-specifier ,arg))
           (error "Can't make sense of k-restriction ~a"
@@ -536,29 +539,36 @@ for every category.
 ;; Used in ref/method and call-redistribute-if-appropriate
 
 (defmacro setup-args-and-call-k-method (left-referent right-referent
-                                        &body body)
-  `(flet ((dispatch-type-of (o)
-           (typecase o
-             (individual (i-type-of o))
-             (category o)
-             (integer o)
-             (word o)
-             (otherwise
-              (push-debug `(,o))
-              (error "Unexpected type of object passed to k-method setup: ~
-                      ~a~%   ~a" (type-of o) o)))))
-     (push-debug `(,left-referent ,right-referent))
-     ;;(format t "~&left=~a right=~a~%" left-referent right-referent)
-     (let* ((left-type (dispatch-type-of ,left-referent))
-            (right-type (dispatch-type-of ,right-referent))
-            (left-shadow (get-nominal-instance (get-sclass left-type)))
-            (right-shadow (get-nominal-instance (get-sclass right-type)))
-            (*shadows-to-individuals*
-             (list (cons left-shadow ,left-referent)
-                   (cons right-shadow ,right-referent))))
-       (declare (special *shadows-to-individuals*))
-       ;; (push-debug `(,left-shadow ,right-shadow))
+                                                      &body body)
+  (cond
+   (*clos*
+    `(flet ((dispatch-type-of (o)
+              (typecase o
+                (individual (i-type-of o))
+                (category o)
+                (integer o)
+                (word o)
+                (otherwise
+                 (push-debug `(,o))
+                 (error "Unexpected type of object passed to k-method setup: ~
+          ~a~%   ~a" (type-of o) o)))))
+       (push-debug `(,left-referent ,right-referent))
+       ;;(format t "~&left=~a right=~a~%" left-referent right-referent)
+       (let* ((left-type (dispatch-type-of ,left-referent))
+              (right-type (dispatch-type-of ,right-referent))
+              (left-shadow (get-nominal-instance (get-sclass left-type)))
+              (right-shadow (get-nominal-instance (get-sclass right-type)))
+              (*shadows-to-individuals*
+               (list (cons left-shadow ,left-referent)
+                     (cons right-shadow ,right-referent))))
+         (declare (special *shadows-to-individuals*))
+         ;; (push-debug `(,left-shadow ,right-shadow))
+         ,@body)))
+   (t
+    `(let ((left-shadow ,left-referent)
+           (right-shadow ,right-referent))
        ,@body)))
+  )
 
 
 ;;--- getting back the individuals from the shadows invoke methods
@@ -571,12 +581,14 @@ for every category.
 
 (defun dereference-shadow-individual (shadow)
   (declare (special *shadows-to-individuals*))
-  (let ((value (cdr (assoc shadow *shadows-to-individuals*))))
-    (unless value
-      (push-debug `(,shadow ,*shadows-to-individuals*))
-      (error "No Krisp value found for nominal instance ~a"
-             shadow))
-    value))
+  (if (not *clos*)
+      shadow ; when (not *clos*) not really a shodow -- actually the individual!!
+      (let ((value (cdr (assoc shadow *shadows-to-individuals*))))
+        (unless value
+          (push-debug `(,shadow ,*shadows-to-individuals*))
+          (error "No Krisp value found for nominal instance ~a"
+                 shadow))
+        value)))
 
 #| Example generated k-method
 (defmethod nth-item ((d-1 integer) (d-2 #<standard-class shadow::sequence>))
