@@ -511,6 +511,8 @@ in the mix (this will blow out) we should revisit the whole treatment.
 ;;-------------- move !!!!!!!!!!!!!!!!!
 ;;------------------------------------------------------
 
+(defparameter *suppress-duplicate-definition-warning* nil) ;; used to suppress "duplicate definition" printouts in note-file-location
+
 (defun note-file-location (object)
   ;; called from the definition routines for the various kinds of
   ;; objects.
@@ -523,18 +525,19 @@ in the mix (this will blow out) we should revisit the whole treatment.
       (return-from note-file-location))
 
     (let ((entry (cadr (member :file-location plist :test #'equal))))
-      (if entry
-        (progn
-          (format t "~&~%Multiple definition of ~A~
-                     ~%  earlier definition was in ~A"
-                  object entry)
-          (if (consp entry) ;; multiple sites already?
-            (rplacd entry
-                    (cons location
-                          (cdr entry)))
-            (push-onto-plist object
-                             (list entry location)
-                             :file-location)))
+      (if (and entry
+                 (not *suppress-duplicate-definition-warning*))
+          (then 
+            (format t "~&~%Multiple definition of ~A~
+      ~%  earlier definition was in ~A"
+                    object entry)
+            (if (consp entry) ;; multiple sites already?
+                (rplacd entry
+                        (cons location
+                              (cdr entry)))
+                (push-onto-plist object
+                                 (list entry location)
+                                 :file-location)))
         (push-onto-plist object
                          location  ;; value
                          :file-location)))))

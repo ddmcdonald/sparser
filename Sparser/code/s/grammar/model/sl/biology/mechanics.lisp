@@ -359,7 +359,9 @@
                           long synonyms takes-plurals ras2-model)
   ;; use find-individual with their names to retrieve these.
   (let* ((word (resolve/make short))
-         (category (category-named kind :break-if-undefined)))
+         (category (category-named kind :break-if-undefined))
+         (*suppress-duplicate-definition-warning* t))
+    (declare (special *suppress-duplicate-definition-warning*))
     (make-typed-bio-entity word category
                           greek identifier mitre-link
                           ras2-model long synonyms takes-plurals documentation)))
