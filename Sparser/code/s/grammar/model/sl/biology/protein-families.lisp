@@ -16,6 +16,8 @@
 (noun  "catenin" :super protein-family)
 (noun "integrin" :super protein-family)
 (noun "RAS GAP" :super protein-family)
+(noun "GAP" :super protein-family)
+
 (noun ("CaMK" "CaM kinase" "CAMK" "CaM-kinase") :super protein-family)
 (def-family "IQGAP"
             :members ("IQGAP1" "IQGAP2" "IQGAP3"))
