@@ -90,7 +90,9 @@
       (error "Entry doesn't begin with :comlex~%  ~a" entry))
 
     (let* ((clauses (cdr entry))
-           (variants (collect-strings-from-comlex-entry string clauses))
+           (variants
+            (unless (string-equal string "be")
+              (collect-strings-from-comlex-entry string clauses)))
            (all-words (pushnew string variants :test #'string-equal)))
 
       ;;(break "check for verb variants")

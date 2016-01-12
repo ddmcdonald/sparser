@@ -89,9 +89,14 @@ e. The symbol is the referent (for the nonce) and we apply a
         (loop for item in (cdr sexp)
           when (symbolp item) do (push item elaborations)
           when (consp item) do (setq core item))
-        (push-debug `(,core ,elaborations))
-        
-))))
+        (let ((dtn (interpret-sexp-core core)))
+          dtn        
+)))))
+
+(defun interpret-sexp-core (core-sexp)
+  (let ((operator (car core-sexp))
+        (arg1 (cadr core-sexp)))
+    ))
 
 (defmethod standalone-speech-act ((speech-act symbol))
   (memq speech-act '(acknowledge)))
@@ -100,4 +105,21 @@ e. The symbol is the referent (for the nonce) and we apply a
   speech-act)
 
 
+#|
+ H: What drug should I use?
+ Bob: I don't know of any 
+   (drugs that address target proteins in pancreatic cancer)
+
+ Bob: But 88% of pancreatic cancer patients have mutated active KRAS
+
+P: patients with pancreatic cancer
+C: cancer cells in P
+K: the KRAS proteins in C
+M: mutated (K, [G12D, G12C, G12V, Q61H])
+Prevelance: 88% of the K are M
+Functional-effect-of(M, active(K))
+
+ the KRAS proteins in 88% of <patients> have mutations that make them active
+
+|#
 

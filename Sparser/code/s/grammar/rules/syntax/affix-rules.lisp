@@ -54,7 +54,10 @@
   ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
   (add-new-word-to-catalog word morph-keyword)
 
+  (setq morph-keyword (no-morph-on-short-words word))
+
   (typecase morph-keyword
+    (null (setup-unknown-word-by-default word))
     (keyword 
      (case morph-keyword
        ;;(:ends-in-s) ;; always ambiguous?

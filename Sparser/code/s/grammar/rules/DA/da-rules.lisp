@@ -327,7 +327,7 @@
   :action (:function create-event-relation  first third first third))
 
 (define-debris-analysis-rule clause-comma-subordinate
-  :pattern ( s "," subordinate-clause  )
+  :pattern ( s "," subordinate-clause )
   :action (:function create-event-relation  first third first third))
 
 
@@ -347,6 +347,33 @@
      :rule 'create-event-relation
      :constituents `(,first ,last))))
 
+(define-debris-analysis-rule clause-comma-subordinate-np
+  :pattern ( s "," subordinate-conjunction np)
+  :action (:function create-event-np-relation  first third fourth first fourth))
+
+
+(defun create-event-np-relation (event-edge sub-edge sub-np-edge first last)
+  (let* ((conj (edge-referent sub-edge))
+         (event (edge-referent event-edge))
+         (sub-event (edge-referent sub-np-edge))
+         (new-start-pos (pos-edge-starts-at first))
+         (new-end-pos (pos-edge-ends-at last)))
+    (when
+        (or
+         (itypep sub-event :process)
+         (itypep sub-event :event-relation))
+      (make-edge-over-long-span
+       new-start-pos ;; the edge vector
+       new-end-pos
+       category::event-relation
+       :form category::event-relation
+       :referent (make-event-relation conj event sub-event)
+       :rule 'create-event-relation
+       :constituents `(,first ,last)))))
+
+(define-debris-analysis-rule clause-comma-subordinate-event-relation
+  :pattern ( s "," subordinate-conjunction event-relation)
+  :action (:function create-event-np-relation  first third fourth first fourth))
 
 (defun make-event-relation (conj event sub-event)
   (make-non-dli-individual

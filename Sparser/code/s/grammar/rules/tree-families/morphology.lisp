@@ -810,7 +810,14 @@
         (vowel? (elt reduced-stem (1- (length reduced-stem))))))))
 
    
-
+(defun no-morph-on-short-words (word)
+  ;; called from assign-morph-brackets-to-unknown-word where
+  ;; it feeds a setq of morph-keyword with either the original
+  ;; or nil if the word sould be stemmed and the morphology
+  ;; it has cannot be trusted to provide part-of-speech 
+  ;; information: "bed", "sing", "this".
+  (unless (one-syllable? (word-pname word))
+    (word-morphology word)))
 
 ;;;-----------------
 ;;; adding suffixes

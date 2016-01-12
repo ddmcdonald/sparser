@@ -27,19 +27,23 @@
 (defmethod get-lexicalized-phrase ((name symbol))
   (get-lexicalized-phrase (symbol-name name)))
 
+
 (defgeneric record-lexicalized-phrase (word lp)
   (:documentation "When a lexicalized phrase is defined,
    record the association of the head word and the phrase
    so that it can be retrieved by get-lexicalized-phrase."))
 
+(defmethod record-lexicalized-phrase ((word word) 
+                                      (lp lexicalized-resource))
+  (record-lexicalized-phrase (pname word) lp))
+
 (defmethod record-lexicalized-phrase ((pname string)
-                                      (lp saturated-lexicalized-phrase))
+                                      (lp lexicalized-resource))
   ;;/// No provision for heading more than one phrase
   (setf (gethash pname *strings-to-lexicalized-phrases*) lp))
 
-(defmethod record-lexicalized-phrase ((word word) 
-                                      (lp saturated-lexicalized-phrase))
-  (record-lexicalized-phrase (pname word) lp))
+
+
 
 ;;;--------------------------------
 ;;; Operations on derivation trees

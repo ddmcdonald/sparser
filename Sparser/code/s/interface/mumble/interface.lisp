@@ -157,8 +157,8 @@
     ;; new experiment 
     (let ((shadow (find-or-make-shadow referent)))
       (or (tailored-edge-realization shadow e referent)
-          (make-derivation-tree-from-bindings
-             referent e)))))
+          ;(make-derivation-tree-from-bindings referent e)
+          ))))
 
 
 ;;; tailored realizations
@@ -169,7 +169,8 @@
 
 
 ;;; from first principles
-
+#| 1/4/16 Mine this for concepts, but as written it won't work
+     anymore. 
 (defun make-derivation-tree-from-bindings (referent edge)
   (case (cat-symbol (edge-form edge))
      (category::np
@@ -184,8 +185,7 @@
     (unless category (error "no category binding"))
     (ad-hoc-1 category has-determiner i)))
 
-#| 1/4/16 Mine this for concepts, but as written it won't work
-     anymore. 
+
 (defun ad-hoc-1 (head-category determiner-value i)
   ;; do it all by hand just to see something completely through
   (push-debug `(,head-category ,determiner-value ,i))

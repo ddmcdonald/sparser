@@ -118,6 +118,9 @@
   :mixins (with-quantifier)
   :binds ((context bio-context)
           (cell-line cell-line)
+          (cell-type cell-type)
+          (organ bio-organ)
+          (preparation preparation)
           (location non-cellular-location)
           (cellular-location cellular-location)
           (molecular-location molecular-location)
@@ -136,11 +139,15 @@
          :upon cellular-location
          :in context
          :in molecular-location
+         :in preparation
          :at molecular-location
          :under context
          :with context
          :in cell-line
+         :in cell-type
+         :in organ
          :from cell-line
+         :from cell-type
          :within cellular-location
          :such\ as examples))
 
@@ -829,8 +836,11 @@
 
 (define-category bio-organ :specializes non-cellular-location
   :mixins (has-UID has-name)
-  :instantiates self
-  :index (:permanent :key name))
+  :binds ((organism organism))
+  :realization
+  (:noun "organ"
+         :in organism
+         :of organism))
 
 (define-category molecular-location  :specializes non-cellular-location
   :binds ((substrate molecule))
@@ -852,7 +862,10 @@
   :realization (:common-noun name)
   :index (:permanent :key name))
 
-
+(define-category cell-type :specializes bio-entity
+  :instantiates self
+  :realization (:common-noun name)
+  :index (:permanent :key name))
 
 ;; used in biopax
 (define-category organism :specializes non-cellular-location
@@ -860,6 +873,9 @@
   :index (:permanent :key name)
   :lemma (:common-noun "organism")
   :realization (:common-noun name))
+
+(def-synonym organism
+             (:noun "animal"))
 
 (define-category species :specializes organism
   :instantiates self 

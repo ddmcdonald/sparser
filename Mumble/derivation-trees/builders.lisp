@@ -8,7 +8,8 @@
 ;; derivation tree patterns at roughly the level of maximal projections.
 ;; 11/25/15 Moving away or deleting Sparse-oriented code so this can be 
 ;; loaded when the rest of Mumble is loaded rather than afterwards. 
-;; 1/2/15 Added recording word to phase it heads. 
+;; 1/2/15 Added recording word to phase it heads. Later, setting up
+;; the basis for parsing and correspondences to Sparser.
 
 (in-package :mumble)
 
@@ -16,6 +17,9 @@
 (defgeneric noun (word &optional phrase)
   (:documentation "Given a designator for a word, return
     a lexicalized phrase for it as a simple np."))
+
+(defmethod noun ((w word) &optional phrase)
+  (noun (pname w) phrase))
 
 (defmethod noun ((string string) &optional phrase-name)
   (let* ((phrase (phrase-named (or phrase-name 'common-noun)))
@@ -31,14 +35,21 @@
       lp)))
 
 
-(defgeneric verb (word &optional phrase)
+(defgeneric verb (word phrase)
   (:documentation "Given a designator for a verb, return 
     a lexicalized phraes for it. The default phrase is SVO, 
     but can be overridden by the optional argument."))
 
-(defmethod verb ((string string) &optional phrase-name)
-  (let* ((phrase (phrase-named (or phrase-name 'SVO)))
-         (parameter (parameter-named 'v))
+(defmethod verb ((w word) phrase)
+  (verb (pname w) phrase))
+
+(defmethod verb ((w word) (phrase phrase))
+  (verb (pname w) phrase))
+
+(defmethod verb ((string string) (phrase phrase))
+  (unless phrase
+    (setq phrase (phrase-named 'SVO)))
+  (let* ((parameter (parameter-named 'v))
          (parameters (delete parameter
                              (copy-list (parameters-to-phrase phrase))))
          (word (word-for-string string 'verb)))
@@ -58,6 +69,9 @@
     taken as a simple premodifier. The relationship of something
     having this property is a not this but should have
     a choice set of some sort since it has several realizations."))
+
+(defmethod adjective ((w word))
+  (adjective (pname w)))
 
 (defmethod adjective ((pname string))
   "This is a find or make on a lexicalized attachment."
@@ -111,6 +125,28 @@
       (record-lexicalized-phrase preposition lp)
       lp)))
 
+(defgeneric interjection (word)
+  (:documentation "As used with the Blocks World, these are
+   standalone words that make assessments, like 'good' or
+   'ok'. There isn't already a phrase for these and I haven't
+   been able to find a TAG account of them. So in lieu of that
+   I'm using the quantifier phrase, which seems to have no
+   actions we wouldn't want."))
+
+(defmethod interjection ((w word))
+  (interjection (pname w)))
+
+(defmethod interjection ((pname string))
+  (let ((phrase (phrase-named 'QP))
+        (word (word-for-string pname 'interjection)))
+    (let ((lp (make-instance 'saturated-lexicalized-phrase
+                :phrase phrase
+                :bound `(,(make-instance 'parameter-value-pair
+                            :phrase-parameter (parameter-named 'q)
+                            :value word)))))
+      (record-lexicalized-phrase word lp)
+      lp)))
+
 
 
 (defgeneric transitive-with-bound-prep (verb preposition)
@@ -161,8 +197,60 @@ a message to be expressed. See discussion in make.lisp |#
          (resource (make-instance 'saturated-lexicalized-phrase
                      :phrase phrase
                      :bound `(,complement))))
-    (make-dtn :resource resource))) 
-        
+    (make-dtn :resource resource)))
+
+
+(defun make-resource-for-sparser-word (pos-tag s-word)
+  ;; called from make-corresponding-lexical-resource which itself
+  ;; is called from dereference-rdata at least.
+  "Need to make a Mumble word for the Sparser word, copying over
+   the information about irregulars (and synonyms?) to Mumble and
+   store the correspondences on both sides. For everything other
+   than verbs, make the appropriate lexicalized phrase."
+  (push-debug `(,pos-tag ,s-word))
+  (when (consp s-word)
+    ;;/// irregulars will be here, can be synonyms too
+    (break "deal with cons word-data: ~a" s-word))
+
+  ;; Make the equivalent Mumble word
+  (let* ((m-pos (case pos-tag
+                  (:verb 'verb)
+                  (:common-noun 'noun)
+                  (:adjective 'adjective)
+                  (:interjection 'interjection)
+                  (otherwise
+                   (error "Don't know a correspondence for ~s ~
+                           as a ~a" (sparser::word-pname s-word)
+                           pos-tag))))
+         (m-word 
+          (get-mumble-word-for-sparser-word s-word m-pos)))
+
+    ;; Make the lexicalized phrases
+    (ecase pos-tag
+      (:verb) ;; done in the category rdata processing
+      (:common-noun (noun m-word))
+      (:adjective (adjective m-word))
+      (:interjection (interjection m-word)))))
+
+(defun setup-verb-from-rdata (pname phrase-name parameter-name variable)
+  ;; called from apply-mumble-rdata. All the symbols are in the
+  ;; Sparser package. The parameter-name is a keyword
+  (declare (ignore parameter-name variable))
+  ;; Need to design the data structure that manages these
+  ;; recording the semantic constraint (variable) on
+
+  (let ((m-word (find-word pname))
+        (phrase (phrase-named (mumble-symbol phrase-name))))
+    (unless m-word
+      (error "The Mumble word for ~s isn't defined yet" pname))
+    (unless phrase
+      (error "There is no phrase named ~a. Wrong spelling?" phrase-name))
+
+    ;; Works for side-effects. We presumably need to do more 
+    ;; indexing to set this up to drive predictive parsing
+    (verb m-word phrase)))
+
+
 
 ;;;---------------------------
 ;;; make a lexicalized-phrase
@@ -173,7 +261,7 @@ a message to be expressed. See discussion in make.lisp |#
 
 (defun create-lexicalized-phrase (phrase-name word-strings argument-names)
   "General scheme for constructing a lexicalized phrase given the
-   name of the phrase and two arguements, the list of word (as strings)
+   name of the phrase, the list of word (as strings)
    that lexicalize it and the list of parameters (as symbols) that
    they're bound to. The two lists have to be correctly ordered."
   (let ((phrase (phrase-named (intern (symbol-name phrase-name)

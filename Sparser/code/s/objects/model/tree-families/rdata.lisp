@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.5 September 2015
+;;;  version:  1.5 January 2016
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -59,6 +59,7 @@
 ;;     (9/22/15) added final value to setup-category-lemma now that it's being
 ;;      called by itself.
 ;;     (11/3/15) Tweaked deref-rdata-word to allow for multiple irregular words
+;;  1/6/16 Folding in specifications for Mumble.
 
 (in-package :sparser)
 
@@ -172,14 +173,22 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 ;;; entry point from the definition of a referential category
 ;;;-----------------------------------------------------------
 
+(defvar *build-mumble-equivalents* nil
+  "If there is data for Mumble included in the realization
+   data (rdata) then we dynamically bind this flag.")
+
+
 (defun setup-rdata (category rdata &optional (delete? t))
   ;; Setup-rdata ia called from decode-category-parameter-list as part of 
   ;; defining a category This routine is responsible for decoding the rdata field,
   ;; the routines in objects/model/tree-families/driver are the ones 
-  ;; that actually create the rules when individualsof this category are
+  ;; that actually create the rules when individuals of this category are
   ;; created. Runs for side-effects on the category object. The function
   ;; that actually makes the rules is make-rules-for-realization-data
  
+ (let ((*build-mumble-equivalents* (includes-mumble-rdata rdata)))
+   (declare (special *build-mumble-equivalents*))
+
   (let ((old-rules
          (when (cat-realization category)
            (cadr (member :rules (cat-realization category))))))
@@ -211,16 +220,24 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
             new-rules)
           ;; Otherwise we add the new ones
           (let ((merged old-rules))
-            (format t "~&~a old rules, ~a new ones"
-                    (length old-rules) 
-                    (length (cadr (member :rules (cat-realization category)))))            
+            (when *load-verbose*
+              (format t "~&Redefining rules for ~a~
+                       ~%~a old rules, ~a new ones"
+                      category
+                      (length old-rules) 
+                      (length (get-rules category))))
             (dolist (cfr new-rules)
               (pushnew cfr merged))
-            (format t "~&~a merged" (length merged))
+            (when *load-verbose*
+              (format t "~&~a merged" (length merged)))
             (let ((cons-cell (member :rules (cat-realization category))))
               (rplaca (cdr cons-cell)
                       merged)
-              merged)))))))
+              merged))))))
+
+   (when *build-mumble-equivalents* ;; for verbs or arg-taking forms
+     (apply-mumble-rdata category rdata))))
+
 
 
 (defun setup-single-rdata (category rdata)
@@ -261,17 +278,17 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 
 
-
-
 ;;--- Check for legal keywords in realization field of a category
 
 (defparameter *legal-word-rdata-keywords*
   '(:main-verb :common-noun :proper-noun
     :quantifier :adjective :interjection
-    :adverb :preposition :word :standalone-word))
+    :adverb :preposition :word :standalone-word
+    ))
 
 (defparameter *legal-rdata-keywords*
   `(:tree-family :mapping :special-case-head :additional-rules
+    :mumble
     ,@*legal-word-rdata-keywords*))
 
 
@@ -279,12 +296,10 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
   (do ((key (car rdata) (car rest))
        (rest (cddr rdata) (cddr rest)))
       ((null key))
-
     (unless (keywordp key)
       (error "Realization data for ~A includes ~A~
               ~%    which is in a keyword position but isn't a keyword"
              category key))
-
     (unless (member key *legal-rdata-keywords*
                     :test #'eq)
       (error "In the realization data for ~A~
@@ -317,14 +332,19 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
     (or value
         (when break?
           (error "No realization schema based on a variable. Check definitions")))))
-;; If I need a third one of these it goes into a macro
+#| For build in the blocks-world this is the list of schema-forms
+  1.  (no-head-word #<etf VP+ADJUNCT> ((vg . #<ref-category BUILD>) (vp . #<ref-category BUILD>) (adjunct . #<ref-category PHYSICAL>) (slot . #<variable artifact>)) nil)
+  2.  (no-head-word nil nil nil)
+  3.  ((verb #<word "build"> past-tense #<word "built">) nil nil nil)
+|#
 (defmethod identify-schema-with-word ((schema-forms cons) &optional break?)
   ;; (:schema (((:common-noun . #<word "waypoint">) nil nil nil))
   (let ((value
          (loop for form in schema-forms
-           as head-field = (first form)
-           as value = (cdr head-field)
-           when (word-p value) return form)))
+           when (and (consp (car form))
+                     (word-p (cadr (car form))))
+           ;; e.g. ((:verb #<word "build"> :past-tense #<word "built">) nil nil nil)
+           return form)))
     (or value
         (when break?
           (error "No realization schema based on a variable. Check definitions")))))
@@ -448,13 +468,17 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
                                preposition
                                word
                                ((:special-case-head  no-head))
-                               ((:additional-rules cases)))
+                               ((:additional-rules cases))
+                               mumble)
 
   "Does the symbols to objects converstion for realization data. 
    Returns the arguments to feed into make-rules-for-realization-data."
 
   ;; called from setup-rdata using 'apply'
 
+  (declare (ignore mumble))
+  ;; The primary mumble information is handled in setup-rdata, 
+  ;; but here we need to handle word-level correspondences. 
   (setq *schematic?* nil)  ;; initialize the flag
   (let ((head-word
          ;; Since we're not going to instantiate the rules for these
@@ -499,6 +523,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
         (tf (exploded-tree-family-named tf-name))
         decoded-mapping  decoded-cases )
 
+    (make-corresponding-lexical-resource head-word)
+
     (when tf-name
       (unless tf
         (error "There is no tree family named ~A~
@@ -518,6 +544,54 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
             decoded-mapping
             decoded-cases
             *schematic?* )))
+
+;;--------------------- move to new file in interface/mumble/ ------------------------
+;;;---------------------------------
+;;; Mumble information within rdata
+;;;---------------------------------
+
+(defun includes-mumble-rdata (rdata)
+  ;; This version expects the rdata to be a list of lists,
+  ;; and is checking for one of them to have the operator 
+  ;; :mumble.
+  (when (consp (car rdata))
+    (assq :mumble rdata)))
+
+(defun apply-mumble-rdata (category rdata)
+  "Provide phrase and argument information (so far only)
+   for verbs. Look up the m-word, which should exist
+   at this point, and create the lexicalized phrase."
+  (push-debug `(,category ,rdata))
+  ;; (setq category (car *) rdata (cadr *))
+  ;; e.g. (:mumble ("build" svo :v artifact))
+  (let* ((mumble-spec (cadr (assq :mumble rdata)))
+         (pname (first mumble-spec))
+         (phrase-name (second mumble-spec))
+         ;; In the general case these are one or more pairs
+         (parameter-name (third mumble-spec))
+         (var-name (fourth mumble-spec))
+         (variable (find-variable-for-category var-name category)))
+    (mumble::setup-verb-from-rdata
+     pname phrase-name parameter-name variable)))
+         
+(defun make-corresponding-lexical-resource (head-word)
+  ;; called from dereference-rdata and makes its own
+  ;; judgement abuot whether its appropriate to create
+  ;; Mumble resources in the present configuration and/or
+  ;; dynamic context.
+  (declare (special *build-mumble-equivalents*))
+  (when (or *build-mumble-equivalents*
+            *CwC*)
+    (let* ((pos-tag (car head-word))
+           (word-or-variable (cdr head-word))
+           (word (when (or (word-p word-or-variable)
+                           (polyword-p word-or-variable))
+                   word-or-variable)))
+      (when word
+        (mumble::make-resource-for-sparser-word pos-tag word)
+        (push-debug `(,word))
+        :done))))
+;;---------------------------------------------
 
 
 
