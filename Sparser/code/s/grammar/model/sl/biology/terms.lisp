@@ -583,6 +583,10 @@
 (def-bio "guanine" nucleobase)
 
 (adj "high" :super bio-predication)
+(define-category HIGHER :specializes bio-relation
+  :realization 
+  (:adj "higher"))
+        
 (adj "high-activity" :super bio-predication)
 (adj "high-throughput" :super bio-predication)
 (noun "HPLC" :super bio-method)
@@ -1041,6 +1045,7 @@
 (noun "throughput" :super measurement)
 
 (noun "tissue" :super bio-organ)
+
 (define-adverb "to this end")
 
 
@@ -1125,6 +1130,9 @@
 (defun def-cell-line (line)
   (def-bio/expr line 'cell-line :takes-plurals nil))
 
+(defun def-cell-type (type)
+  (def-bio/expr type 'cell-type :takes-plurals t))
+
 (def-cell-line "keratin") ;; NOT SURE THIS IS HOW IT IS BEING USED
 
 (def-cell-line "A375")
@@ -1149,11 +1157,12 @@
 (def-cell-line "VMM39")
 (def-cell-line "VMM5A")
 
-(def-cell-line "mouse embryo fibroblast") ;; not sure this is right -- it is a type of cell, but...
+(def-cell-type "mouse embryo fibroblast") ;; CORRECTED -- was not sure this is right -- it is a type of cell, but...
 ;;A fibroblast is a type of cell that synthesizes the extracellular matrix and collagen,[1] 
 ;; the structural framework (stroma) for animal tissues, and plays a critical role in wound healing. 
 ;; Fibroblasts are the most common cells of connective tissue in animals.
-(def-cell-line "fibroblasts")
+(def-cell-type "fibroblasts")
+(def-cell-type "neuron")
 
 
 ;;;------------------
