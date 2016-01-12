@@ -134,7 +134,7 @@
                         (format nil "UNIPROT:~A" bpid)
                         bpid)
        :ras2-model ,ras2-model
-       ;;  :takes-plurals t
+       :takes-plurals t
        ,@(if documentation `(:documentation ,documentation)))))
 
 (defun in-ras2-model? (entity)
@@ -345,8 +345,7 @@
                  (every #'stringp synonyms))
       (error "The synonyms must be a list of strings")))
   (unless takes-plurals
-    (unless (eq kind 'protein)
-      (setq takes-plurals t)))
+    (setq takes-plurals t))
 
   `(def-bio/expr ,short ',kind
      :documentation ,documentation
