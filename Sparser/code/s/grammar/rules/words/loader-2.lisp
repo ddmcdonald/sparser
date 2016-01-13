@@ -1,8 +1,8 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
 ;;;
-;;;      File:   "loader-part2"
-;;;    Module:   "grammar;rules:words:"
+;;;      File:   "loader-2"
+;;;    Module:   "grammar;rules;words;"
 ;;;   Version:   May 2013
 
 ;; Broken out from words;loader1 on 9/16/11. Handles problem of
@@ -20,7 +20,4 @@
   (gload "words;adverbs"))
 
 (gate-grammar *prepositions*
-  (if *include-model-facilities*
-    (gload "words;prepositions")
-    (gload "words;prepositions")))
-
+  (gload "words;prepositions"))

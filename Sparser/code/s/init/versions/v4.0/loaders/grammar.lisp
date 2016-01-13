@@ -137,11 +137,11 @@
     (gload "qualities;loader"))
 
   (gate-grammar *syntax*
-     ;; be & have (etc) reference tree-families
+    ;; be & have (etc) reference tree-families
     (gload "syntax;loader"))
 
   (gate-grammar *general-words*
-    (gload "words;loader-part"))
+    (gload "words;loader 2"))
 
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
@@ -162,7 +162,7 @@
     (unless *lattice-points*
       ;; this is just a definition for 'fractions' with conflicts with the
       ;; current treatment of "first quarter"
-      (gload "numbers;loader 2d part")))
+      (gload "numbers;loader 2")))
 
   (gate-grammar *people*
     (gload "people;loader"))
@@ -291,14 +291,14 @@
        (gload "mumble-interface;loader")))
 
   (gate-grammar *proper-names*
-    (gload "names;loader-2d"))
+    (gload "names;loader 2"))
 
   (gate-grammar *titles*
     (gate-grammar *pct*
       (titles-2d-stage-loader)))
 
   (gate-grammar *kinds*
-    (gload "kinds;2d-loader"))
+    (gload "kinds;loader 2"))
 
   (gate-grammar *standard-adjuncts*
     (gload "adjuncts;rules"))

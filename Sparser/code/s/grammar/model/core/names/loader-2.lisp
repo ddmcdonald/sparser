@@ -1,8 +1,8 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
 ;;;
-;;;     File:  "loader-2d"
-;;;   Module:  "model;core:names:"
+;;;     File:  "loader 2"
+;;;   Module:  "model;core;names;"
 ;;;  version:  2.1 May 1995
 
 ;; 2.0 (6/2/93) brought back into action, again because of references
