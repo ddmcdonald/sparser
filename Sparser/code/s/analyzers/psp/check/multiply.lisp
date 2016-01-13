@@ -129,6 +129,7 @@
 
 ;; to be turned on after January? -- works better than current multiply-edges
 (defparameter *use-trie-multiply* nil)
+(defparameter *use-semantic-rules* nil)
 
 (defun multiply-edges (left-edge right-edge &optional chunk)
   ;; Called from the check routines, e.g. check-one-one
@@ -166,7 +167,7 @@
       ;; most general. As soon as one of these sources returns
       ;; a valid rule we stop looking at other sourcs.
       
-      (if rule ;; from the let statement, multiply-categories
+      (if (and *use-semantic-rules* rule) ;; from the let statement, multiply-categories
           (then
             (tr :found-semantic-rule rule)
             (if (valid-rule? rule left-edge right-edge chunk)
