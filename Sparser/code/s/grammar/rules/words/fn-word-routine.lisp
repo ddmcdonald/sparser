@@ -117,6 +117,9 @@
    you can set this flag to t and it will quiet the complaint
    about redefining an already known category.")
 
+;; turn this on to reduce the number of fomr rules produced for adjectives and other "function terms"
+(defparameter *reduced-form-rules* t) 
+
 (defun define-function-term (string form 
                              &key  brackets super-category
                                    rule-label discriminator
@@ -182,7 +185,7 @@
 
           (when tree-families
             ;; Now knit the category into the correct set of form rules
-            (unless rule-label
+            (unless (or *reduced-form-rules* rule-label)
               ;; But if there's a specified rule-label, e.g. specifying
               ;; 'sequencer' for "next" instead of using the category
               ;; for "next" that we just created, then some other routine
