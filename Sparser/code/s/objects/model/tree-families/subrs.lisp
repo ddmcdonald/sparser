@@ -51,7 +51,7 @@
                        (intern
                         (concatenate 'string
                                      ,prior-string
-                                     (symbol-name (cat-symbol ,decoding))
+                                     (symbol-name (simple-label ,decoding))
                                      (or ,ending
                                          ,following-string))
                         *sparser-source-package*)))
