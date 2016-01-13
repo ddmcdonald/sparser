@@ -779,7 +779,7 @@
 (adj "necessary" :super bio-relation
      :binds ((condition biological)(agent biological)(result biological))
      :realization 
-     (:adj "effective"
+     (:adj "necessary"
            :s condition
            :for agent
            :to result
