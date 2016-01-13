@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "terminal edges"
 ;;;   Module:  "analyzers;psp:assess:"
-;;;  Version:  2.7 July 2015
+;;;  Version:  January 2016
 
 ;; initiated 9/12 v2.3
 ;; 1.1 (10/23) reorganized what kinds of property edges are created
@@ -34,6 +34,8 @@
 ;;      for-unknown with *make-edges-over-new-digit-sequences*. 
 ;;     (7/2/15) Modified preterminals-for-unknown to make a call to
 ;;      reify-digit-word so that new digit sequences are remembered.
+;; (1/13/16) Patched loophole in judgement of known vs. unknown word
+;;   when the word had a polyword fsa but made no edges. Applied to "31".
 
 
 (in-package :sparser)
@@ -54,7 +56,8 @@
         nil )
       (else
         (setq edges
-              (if rule-set
+              (if (and rule-set
+                       (rule-set-with-rules rule-set))
                 (then
                   (tr :install/has-rule-set word)
                   (preterminals-for-known

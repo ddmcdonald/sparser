@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "object"
 ;;;    Module:   "objects;rules:rule links:"
-;;;   Version:   2.0 May 1995
+;;;   Version:   January 2016
 
 ;; 2.0 (9/4/92 v2.3) Changed the names and contents descriptions of the
 ;;      left/right combinations.
 ;;     (5/22/95) added Trivial-rule-set
+;; (1/13/16) added rule-set-with-rules
 
 (in-package :sparser)
 
@@ -34,7 +35,6 @@
   (write-string ">" stream))
 
 
-
 (defun trivial-rule-set (rs)
   (and (null (rs-single-term-rewrites rs))
        (null (rs-right-looking-ids rs))
@@ -43,3 +43,7 @@
        (null (rs-phrase-boundary rs))
        (null (rs-completion-actions rs))))
 
+(defun rule-set-with-rules (rs)
+  (or (rs-single-term-rewrites rs)
+      (rs-right-looking-ids rs)
+      (rs-left-looking-ids rs)))
