@@ -268,6 +268,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 (loop for vv in '((verb+ed vg+ed)
                   (verb+ing vg+ing)
                   (verb+present vg)
+                  (verb vg)
                   (vg vg)
                   (vp vp)
                   (vg+ing vg+ing)
@@ -276,7 +277,7 @@ similar to an oncogenic RasG12V mutation (9)."))
                   (vp+ed vp+ed)
                   (vg+passive vg+passive)
                   (vp+passive vp+passive)
-                  (s s)) 
+                  (s s))
   ;; "here" is used adverbially
   do
   (eval 
@@ -295,7 +296,18 @@ similar to an oncogenic RasG12V mutation (9)."))
    `(def-syntax-rule  (adverb ,(car vv))
                       :head :right-edge
       :form ,(second vv)
-      :referent(:function interpret-adverb+verb left-edge right-edge))))
+      :referent(:function interpret-adverb+verb left-edge right-edge)))
+  (eval
+   `(def-syntax-rule  (,(car vv) adverb)
+                      :head :left-edge
+      :form ,(second vv)
+      :referent(:function interpret-adverb+verb right-edge left-edge))))
+
+
+(def-syntax-rule (comparative adjective)
+                 :head :right-edge
+  :form adjective
+  :referent (:method modified left-edge right-edge))
 
 
 
