@@ -35,21 +35,21 @@
       lp)))
 
 
-(defgeneric verb (word phrase)
+(defgeneric verb (word &optional phrase-name)
   (:documentation "Given a designator for a verb, return 
     a lexicalized phraes for it. The default phrase is SVO, 
     but can be overridden by the optional argument."))
 
-(defmethod verb ((w word) phrase)
-  (verb (pname w) phrase))
+(defmethod verb ((w word) &optional phrase-name)
+  (verb (pname w) phrase-name))
 
-(defmethod verb ((w word) (phrase phrase))
-  (verb (pname w) phrase))
+(defmethod verb ((w word) &optional phrase-name)
+  (verb (pname w) phrase-name))
 
-(defmethod verb ((string string) (phrase phrase))
-  (unless phrase
-    (setq phrase (phrase-named 'SVO)))
-  (let* ((parameter (parameter-named 'v))
+(defmethod verb ((string string) &optional phrase-name)
+  (unless phrase-name (setq phrase-name'SVO))
+  (let* ((phrase (phrase-named phrase-name))
+         (parameter (parameter-named 'v))
          (parameters (delete parameter
                              (copy-list (parameters-to-phrase phrase))))
          (word (word-for-string string 'verb)))
@@ -240,15 +240,15 @@ a message to be expressed. See discussion in make.lisp |#
   ;; recording the semantic constraint (variable) on
 
   (let ((m-word (find-word pname))
-        (phrase (phrase-named (mumble-symbol phrase-name))))
+        (m-phrase-name (mumble-symbol phrase-name)))
     (unless m-word
       (error "The Mumble word for ~s isn't defined yet" pname))
-    (unless phrase
+    (unless (phrase-named m-phrase-name)
       (error "There is no phrase named ~a. Wrong spelling?" phrase-name))
 
     ;; Works for side-effects. We presumably need to do more 
     ;; indexing to set this up to drive predictive parsing
-    (verb m-word phrase)))
+    (verb m-word m-phrase-name)))
 
 
 
