@@ -29,6 +29,7 @@ See Zo code for what that could look like. |#
 (defun setup-lexicalized-trees ()
   (define-lexicalized-phrase common-noun ("staircase") (n))
   (define-lexicalized-phrase SVO ("build") (v))
+ (define-lexicalized-phrase SVOC ("let") (v))
 )
 
 (setup-lexicalized-trees)
@@ -67,7 +68,7 @@ See Zo code for what that could look like. |#
   ;; how to push the pronoun through that function as it's
   ;; presently written. 
   (let* ((let-phrase  ;; s v o c
-          (define-lexicalized-phrase SVOC ("let") (v)))
+         (get-lexicalized-phrase 'let))
          (1st-plural ;; the word
           (mumble-value 'first-person-plural ;; see gramar/pronouns.lisp
                         'pronoun)))
