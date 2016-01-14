@@ -11,6 +11,7 @@
 #| 
  (asdf:load-system :r3)
  (asdf:load-system :sparser/blocks-world)
+ (asdf:load-system :sparser/c3)
 
  (r3::run-article-batch :corpus :localization :card-p nil)
  *run-aggregation-after-action*
@@ -22,7 +23,7 @@
    of 0.34 for KNRK-PAR2 cells 
    and 0.31–0.34 for hBRIE cells."
  (trace-network) (trace-edges) (trace-digits-fsa)
- install-terminal-edges 
+ install-terminal-edges continue-digit-sequence-after-period 
 
  individual-for-ref  get-realization-scheme
  record-any-determiner  maybe-copy-individual
