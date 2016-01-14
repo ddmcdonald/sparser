@@ -420,7 +420,7 @@ for every category.
 ;;; macro to sugar shifting representations in defmethod
 ;;;------------------------------------------------------
 
-(defparameter *print-generated-k-method-forms* t
+(defparameter *print-generated-k-method-forms* nil
   "Turn in on when you suspect the generated code is wrong.")
 
 (defmacro def-k-method (name args &body body)
