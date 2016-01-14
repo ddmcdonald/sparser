@@ -163,9 +163,8 @@
   ;; kind category is region-type
   ;; /// replace with define-type-category-constructor ?
   (let* ((string-for-category #+mlisp string
-                              #+(or :ccl :alisp)(string-upcase string))
-         (symbol (intern string-for-category
-                         (find-package :sparser)))
+                              #-mlisp (string-upcase string))
+         (symbol (intern string-for-category *sparser-source-package*))
          (word (define-word string))
          (category (category-named symbol))
          (new? (null category)))

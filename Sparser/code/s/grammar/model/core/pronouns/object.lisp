@@ -88,8 +88,8 @@
   ;; This adds form information ////and common dereferencing routine
   ;; to the rule that is provided by the regular krisp definition of
   ;; these individuals
-  (let* ((prefix #+(or :ccl :alisp :sbcl) "PRONOUN/"
-                 #+mlisp "pronoun/") ;; or any lisp that preserves case
+  (let* ((prefix #+mlisp "pronoun/"
+                 #-mlisp "PRONOUN/")
          (category-name (concatenate 'string prefix
                                      (symbol-name category-suffix)))
          (category (find-symbol category-name *category-package*))

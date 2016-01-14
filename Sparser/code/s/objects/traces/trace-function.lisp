@@ -51,11 +51,9 @@
              ,@body ))
          (fn (eval fn-exp)))
 
-    (let ((key (if (not (eq 'aa 'AA)) ;; mlisp
-                 (intern (string-downcase 
-                          (symbol-name keyword))
-                         (find-package :keyword))
-                 keyword)))
+    (let ((key #+mlisp (intern (string-downcase (symbol-name keyword))
+                               (find-package :keyword))
+               #-mlisp keyword))
          (setf (gethash key *trace-keyword-to-function*) fn))))
 
 

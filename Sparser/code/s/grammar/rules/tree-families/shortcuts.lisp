@@ -754,7 +754,7 @@ broadly speaking doing for you all the things you might do by hand.
 (defun define-type-category-constructor/expr (type-category)
   (let* ((fn-name
           (intern (string-append #+mlisp "define-"
-                                 #+(or :ccl :alisp) "DEFINE-"
+                                 #-mlisp "DEFINE-"
                                  (symbol-name (cat-symbol type-category)))
                   (find-package :sparser)))
          (form

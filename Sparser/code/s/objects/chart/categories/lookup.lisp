@@ -226,8 +226,8 @@
 (defmethod name-to-use-for-category ((string string))
   "Encapsulates the lisp-specific checks for what case to use."
   (let* ((s #+mlisp string
-            #+(or :ccl :alisp :sbcl)(string-upcase string))
-         (symbol (intern s (find-package :sparser))))
+            #-mlisp (string-upcase string))
+         (symbol (intern s *sparser-source-package*)))
     ;; n.b. not the category package. The pname will be interned there
     ;; as part of creating the category
     symbol))
