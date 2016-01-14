@@ -91,6 +91,7 @@
 (set-ca-action category::comma-year 'check-for-stranded-date)
 
 (defun check-for-stranded-date (comma-year-edge)
+  (declare (special category::date))
   (let* ((position (pos-edge-starts-at comma-year-edge))
          (ev (pos-ends-here position))
          (date-edge (vector-contains-edge-of-category ev category::date)))
