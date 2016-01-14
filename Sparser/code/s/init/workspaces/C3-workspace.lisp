@@ -34,6 +34,8 @@
 ;; 28 "three guys have gotten into black ford suv at wakil"
 ;; 29 "back suv headed west on wakil road"
 
+;; Meta-dot
+; transfer-bindings --loads ISR-methods
 
 ; (just-bracketing-setting)
 ; (word-frequency-setting)
