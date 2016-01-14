@@ -12,6 +12,33 @@
 
 (in-package :sparser)
 
+;;;----------------
+;;; work functions
+;;;----------------
+
+(defun transfer-bindings (old new)
+  ;; Go through the bindings on the old individual, which we are
+  ;; dropping on the floor (perhaps because we replaced a abstract
+  ;; with a concrete), to the new.
+  ;; /// With more information, we would know which bindings should
+  ;; be kept with the old (e.g. name), but now to be safe just making
+  ;; all new bindings with the value of their body changed.
+  ;; Ignoring bound-in's because those are most likely to be
+  ;; intrinsic to the old individual. 
+  (push-debug `(,old ,new))
+  (let* ((bindings-from-new (indiv-binds new)) ;; unlikely
+         (bindings-from-old
+          (loop for b in (indiv-binds old)
+            collect (bind-variable/expr (binding-variable b)
+                                  (binding-value b)
+                                  (binding-body b))))
+         (bindings (if bindings-from-new
+                     (append bindings-from-new
+                             bindings-from-old)
+                     bindings-from-old)))
+    (setf (indiv-binds new) bindings)
+    (values new old))) ;; dispense with return value when debugged
+
 
 ;;;---------
 ;;; methods
@@ -39,28 +66,6 @@
   (add-relation 'made-by head mgfr)
   head)
 
-(defun transfer-bindings (old new)
-  ;; Go through the bindings on the old individual, which we are
-  ;; dropping on the floor (perhaps because we replaced a abstract
-  ;; with a concrete), to the new.
-  ;; /// With more information, we would know which bindings should
-  ;; be kept with the old (e.g. name), but now to be safe just making
-  ;; all new bindings with the value of their body changed.
-  ;; Ignoring bound-in's because those are most likely to be
-  ;; intrinsic to the old individual. 
-  (push-debug `(,old ,new))
-  (let* ((bindings-from-new (indiv-binds new)) ;; unlikely
-         (bindings-from-old
-          (loop for b in (indiv-binds old)
-            collect (bind-variable/expr (binding-variable b)
-                                  (binding-value b)
-                                  (binding-body b))))
-         (bindings (if bindings-from-new
-                     (append bindings-from-new
-                             bindings-from-old)
-                     bindings-from-old)))
-    (setf (indiv-binds new) bindings)
-    (values new old))) ;; dispense with return value when debugged
 
 ;; red + physical
 (def-k-method compose ((color color) (obj motor-vehicle)) ;;physical-surface))
