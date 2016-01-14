@@ -86,7 +86,8 @@
 (defun use-specialized-ng-parser? ()
   ;; Predicate used by parse-at-the-segment-level to determine
   ;; whether to use the specialized big-mech segment parser
-  (declare (special *big-mechanism-ngs* *current-chunk*))
+  (declare (special *big-mechanism-ngs* *current-chunk*
+                    category::det category::quantifier))
   (and *big-mechanism-ngs*
        (or
         (equal (chunk-forms *current-chunk*) '(NG))
@@ -102,7 +103,8 @@
 (defun use-specialized-vg-parser? ()
   ;; Predicate used by parse-at-the-segment-level to determine
   ;; whether to use the specialized big-mech segment parser
-  (declare (special *big-mechanism-ngs* *current-chunk*))
+  (declare (special *big-mechanism-ngs* *current-chunk*
+                    category::det category::quantifier))
   (and *big-mechanism-ngs*
        (or
         (member (chunk-forms *current-chunk*) '((VG) (ADJG)))
