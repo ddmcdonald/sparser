@@ -63,7 +63,7 @@ default to be indefinite determiners (no semantics to speak of).
 |#
 
 (defparameter utt-1.1a '(Propose-goal friendly
-                         (build staircase)))
+                         (build :o staircase)))
 
 #| Expedient 'direct to resources' scheme 
 a. We look at the car of the sexp, see the symbol 'build, and
@@ -79,10 +79,18 @@ e. The symbol is the referent (for the nonce) and we apply a
  purpose-build function to wrap it in kind, singular, and then we
  apply it to the only remain 'o parameter. 
 |#
+(defvar *sentence-type* :statement ;;?? or sort out w/ predicates ??
+  "Holds the toplevel type (loosely speaking) of the utterance
+   (sentence), e.g. :statement, :command, :question, etc. ")
+
+(defvar *speech-act* nil
+  "Holds the speech act for reference by embedded routines")
 
 (defun hack-sexp-reader (sexp)
   "sexp in, dtn out"
-  (let ((speech-act (car sexp)))
+  (let* ((speech-act (car sexp))
+         (*speech-act* speech-act))
+    (declare (special *speech-act*))
     (if (standalone-speech-act speech-act)
       (do-standalone-speech-act speech-act)
       (let ( elaborations core )
@@ -90,13 +98,86 @@ e. The symbol is the referent (for the nonce) and we apply a
           when (symbolp item) do (push item elaborations)
           when (consp item) do (setq core item))
         (let ((dtn (interpret-sexp-core core)))
-          dtn        
+          dtn
 )))))
 
-(defun interpret-sexp-core (core-sexp)
-  (let ((operator (car core-sexp))
-        (arg1 (cadr core-sexp)))
-    ))
+(defun interpret-sexp-core (core-sexp) ;; (build :o staircase)
+  (let* ((operator (car core-sexp))
+         (pairs (cdr core-sexp))
+         (phrase (get-lexicalized-phrase operator)))
+    (unless phrase
+      (error "Undefined term? Cannot retrieve a lexicalized ~
+              resource for the operator ~a" operator))
+    (let ((dtn (make-dtn :resource phrase
+                         ;;//// the instantiated object would be 
+                         ;; a better referent.
+                         :referent core-sexp)))
+
+      ;; fill the variables, constructing DTNs for their values
+      (recursively-expand-tree dtn pairs)
+
+      ;; If any remain unbound, see if the context permits it
+
+      dtn)))
+
+#| Walk through the paramter assignments and look at the
+values. One of the goals is to ensure expressibility, but
+that isn't really going to work without adopting something
+more along the lines of McDonald 1998 and McDonald & Greenbacker 2010. 
+  For CwC the values are unlikely to be deep, so the
+'recursive' part of this rouine can probably be ignored
+For now just worry about the planning of references.
+|#
+(defun recursively-expand-tree (dtn parameter-value-plist)
+  ;; Here we'd keep track of the relation to the DTN of
+  ;; the value we're realizing ('expanding'). It's place
+  ;; in the context of the discourse too. 
+  (do ((parameter-name (car parameter-value-plist) (car rest))
+       (value-exp (cadr parameter-value-plist) (cadr rest))
+       (rest (cddr parameter-value-plist) (cddr rest)))
+      ((null parameter-name))
+    (let ((parameter (parameter-named parameter-name))
+          (value (expand-value value-exp)))
+      (make-complement-node parameter value dtn))))
+
+#| The cons case is for '(any block)'. If it's a symbol
+then it's either the name of a category (on the Sparser side)
+or a designator for a block or other sort of particular. 
+For illustration purposes we can make those keyword symbols
+like they were in Shurdu. 
+|#
+(defun expand-value (value-exp)
+  (typecase value-exp
+    (cons (error "Stub -- expanding the value of the list ~a" value-exp))
+    (keyword (error "stub -- expanding value of keyword ~a" value-exp))
+    (symbol
+     (unless (sparser::category-named value-exp)
+       (error "~a is not the name of a category" value-exp))
+     (plan-referent-to-category value-exp))))
+
+#| At least in the blocks world, a reference to a category
+is effectively a reference to a individual instance of it
+that may or may not exist. E.g. we could be building it
+or (inside 'any') we don't care which one we get.
+ 1. Have individuals of this sort already been mentioned?
+    "another one", "another block", "(do you have) one?"
+ 2. Was that reference recent or long ago? 
+ 3. Is this type salient / in focus ?
+
+
+See should-be-pronominalized-in-present-context
+  If we set focus then we force pronominalization.
+  That routine does so online during the readout. 
+interface/derivations/discourse-reference.lisp 
+  needs real content - mostly stubs    record-reference mentions
+
+|#
+(defun plan-referent-to-category (category-name)
+  )
+     
+
+
+;;--- self contained. Might include "but"
 
 (defmethod standalone-speech-act ((speech-act symbol))
   (memq speech-act '(acknowledge)))
@@ -105,7 +186,7 @@ e. The symbol is the referent (for the nonce) and we apply a
   speech-act)
 
 
-#|
+#|--------------------------------------------------------
  H: What drug should I use?
  Bob: I don't know of any 
    (drugs that address target proteins in pancreatic cancer)
