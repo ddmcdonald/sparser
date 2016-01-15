@@ -96,13 +96,10 @@
     (check-validity-of-individual i peg)
 
     ;; Make the bindings
-    (let ((bindings (transfer-peg-bindings-to-individual peg i))
-          (permanent?
-           (or (permanent-individual? i)
-               (individuals-of-this-category-are-permanent category))))
+    (let ((bindings (transfer-peg-bindings-to-individual peg i)))
 
       ;; index the individual
-      (index-aux/individual i category bindings permanent?)
+      (index/individual i category bindings)
 
       ;;///// "incorporate it" into the situation latent variables
       ;; and attached procedures and all.

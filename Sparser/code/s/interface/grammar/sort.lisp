@@ -51,7 +51,7 @@
     (cond ((and cap1 (null cap2)) t)
           ((and cap2 (null cap1)) nil)
           ((and (null cap1) (null cap2))
-           (order-words-by-symbol w1 w2))
+           (string< (word-symbol w1) (word-symbol w2)))
           (t
            (ecase cap1
              (:lower-case  ;; w2 must have some letter capitalized
@@ -72,22 +72,6 @@
                 (:all-caps t)
                 ((:initial-letter-capitalized :mixed-case :digits)
                  (string< (word-pname w1) (word-pname w2))))))))))
-
-
-(defun order-words-by-symbol (w1 w2)
-  ;; the words don't have pnames or capitalization, but they
-  ;; have to have symbols, e.g. pseudo words for the word frequency
-  ;; facility, section markers.
-  (let ((s1 (symbol-name (word-symbol w1)))
-        (s2 (symbol-name (word-symbol w2))))
-    (cond ((string< s1 s2) t)
-          ((string< s2 s1) nil)
-          (t
-           (y-or-n-p "Sorting words: The words \"~A\" and \"~A\" ~
-                      are indistinguishable.~%    Answer Y to ~
-                      order the first before the second"
-                     w1 w2)))))
-
 
 
 ;;;-----------
@@ -256,21 +240,21 @@
     (> n1 n2)))
 
 (defun sort-dotted-rule-against-regular/by-number (r1 r2)
-  (let* ((base-rule1 (source-of-dotted-rule r1)) ;;(car (cadr (member :dotted-rule (cfr-plist r1)))))
+  (let* ((base-rule1 (source-of-dotted-rule r1))
          (n1 (parse-integer (symbol-name (cfr-symbol base-rule1)) :start 3))
          (n2 (parse-integer (symbol-name (cfr-symbol r2)) :start 3)))
     (> n1 n2)))
 
 (defun sort-regular-rule-against-dotted/by-number (r1 r2)
   (let* ((n1 (parse-integer (symbol-name (cfr-symbol r1)) :start 3))
-         (base-rule2 (source-of-dotted-rule r2)) ;;(car (cadr (member :dotted-rule (cfr-plist r2)))))
+         (base-rule2 (source-of-dotted-rule r2))
          (n2 (parse-integer (symbol-name (cfr-symbol base-rule2)) :start 3)))
     (> n1 n2)))
 
 
 (defun sort-two-dotted-rules-by-number (d1 d2)
-  (let ((r1 (source-of-dotted-rule d1)) ;;(car (cadr (member :dotted-rule (cfr-plist d1)))))
-        (r2 (source-of-dotted-rule d2))) ;;(car (cadr (member :dotted-rule (cfr-plist d2))))))
+  (let ((r1 (source-of-dotted-rule d1))
+        (r2 (source-of-dotted-rule d2)))
 
     (if (eq r1 r2)
       (let ((s1 (subseq (symbol-name (cfr-symbol r1)) 4))

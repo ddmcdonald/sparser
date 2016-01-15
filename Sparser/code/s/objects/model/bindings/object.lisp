@@ -46,12 +46,7 @@
 
 
 (defun binding-count (b)
-  (if (binding-p b)
-    (let ((value (cadr (member :incidence-count (unit-plist b)))))
-      (if value
-        value
-        0 ))
-    0 ))
+  (get-tag :incidence-count b 0))
 
 
 ;;;----------------------------------------------------

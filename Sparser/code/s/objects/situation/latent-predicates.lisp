@@ -52,7 +52,7 @@
 
 
 (defun collect-variables-from-supercs (c)
-  (let ((supercs (or (get-tag-for :super-categories c)
+  (let ((supercs (or (get-tag :super-categories c)
                      (super-categories-of c))))
     (loop for sc in supercs ;; includes base category c
       append (cat-slots sc))))

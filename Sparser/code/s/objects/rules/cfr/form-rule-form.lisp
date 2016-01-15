@@ -261,7 +261,7 @@
     (when schema-to-use
       (setf (schr-form-rule schema-to-use) cfr))
 
-    (setf (cfr-plist cfr) (list :form-rule ))
+    (setf (get-tag :form-rule cfr) t)
     (setf (cfr-completion cfr) edge)
 
     (note-file-location cfr)
@@ -276,9 +276,7 @@
 
 
 (defun form-rule? (cfr)
-  (when (cfr-p cfr)
-    (member :form-rule (cfr-plist cfr))))
-
+  (get-tag :form-rule cfr))
 
 
 (defun revise-cfr-ancilaries (cfr form referent)
@@ -323,7 +321,7 @@
                        this righthand side:~%   ~A" rhs)
                (setq regular-label label)))
            (else
-             (if (member :form-category (unit-plist label))
+             (if (get-tag :form-category label)
                (then
                 (if form-category
                   (error "Form rule: both of the labels in this ~

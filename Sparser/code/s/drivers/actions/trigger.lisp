@@ -43,9 +43,7 @@
   (when *trace-completion-hook*
     (format t "~&Checking for completion actions associated with the ~
                word ~A~%" word))
-  (let ((rule-set (etypecase word
-                    (word (word-rules word))
-                    (polyword (pw-rules word)))))
+  (let ((rule-set (rule-set-for word)))
     (if rule-set
       (etypecase rule-set
         (symbol  ;;e.g. :whitespace

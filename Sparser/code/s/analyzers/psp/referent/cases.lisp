@@ -169,9 +169,7 @@ construction code.
 ;;;-----------
 
 (defun ref/function (rule-field)
-  (let ((n-ary-rule
-         (cadr (member :rolled-out-from
-                       (cfr-plist *rule-being-interpreted*)))))
+  (let ((n-ary-rule (get-tag :rolled-out-from *rule-being-interpreted*)))
     (if n-ary-rule
       (ref/function/n-ary-rules n-ary-rule rule-field)
       (else

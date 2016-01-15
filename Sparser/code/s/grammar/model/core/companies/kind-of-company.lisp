@@ -109,32 +109,25 @@
 ;;; definition form for instances (subtypes)
 ;;;------------------------------------------
 
+;; cf. define-kind-of-subsidiary
 (defun define-kind-of-company (string &key abbrev)
   (let* ((word (define-word/expr string))
          (plural (plural-version word))
-         (symbol (intern string *category-package*))
-         cat  rules  nw )
+         (name (intern string *category-package*))
+         (cat (or (category-named name)
+                  (define-category/expr name
+                    `(:specializes ,category::kind-of-company
+                      :instantiates ,`(,category::company ,name))))))
+    (declare (special category::collection
+                      category::company
+                      category::kind-of-company
+                      category::np-head))
 
     (assign-brackets-as-a-common-noun word)
     (assign-brackets-as-a-common-noun plural)
 
-    (unless (setq cat (category-named symbol))
-      (setq cat (define-category/expr symbol
-                  `(:specializes ,category::kind-of-company
-                    :instantiates ,`(,category::company ,symbol))))
-      (setq rules
-            (list (define-cfr category::kind-of-company
-                              `( ,word )
-                    :form category::np-head
-                    :referent cat )
-
-                  (define-cfr category::kind-of-company
-                              `( ,plural )
-                    :form category::np-head
-                    :referent `(:head ,cat
-                                :subtype ,category::collection))))
-
-      (when (setq nw (find-individual 'name-word :name word))
+    (let ((nw (find-individual 'name-word :name word)))
+      (when nw
         ;; This will be the case when working interactively and
         ;; adding this koc because you see it in a name and want
         ;; to extend the grammar. As part of the name the first time
@@ -145,17 +138,22 @@
         ;; edges. We counteract it by making the nw 'silent'
         ;; by flushing its rule.
         (make-name-word-silent nw))
+
       (when (word-capitalization-variants word)
         (dolist (caps-word (word-capitalization-variants word))
           (when (setq nw (find-individual 'name-word :name caps-word))
-            (make-name-word-silent nw))))
+            (make-name-word-silent nw)))))
 
-      (setf (unit-plist cat)
-            `(:rules ,rules ,@(unit-plist cat)))
+    (setf (get-tag :rules cat)
+          (list (define-cfr category::kind-of-company `(,word)
+                  :form category::np-head
+                  :referent cat)
+                (define-cfr category::kind-of-company `(,plural)
+                  :form category::np-head
+                  :referent `(:head ,cat :subtype ,category::collection))))
 
-      (when abbrev
-        (dolist (abbreviation abbrev)
-          (define-abbreviation string abbreviation)))
+    (when abbrev
+      (dolist (abbreviation abbrev)
+        (define-abbreviation string abbreviation)))
 
-      cat )))
-
+    cat))

@@ -45,5 +45,4 @@
     ((category-of-psi psi) ;; a type has been assigned and can be tracked
      (princ-category (category-of-psi psi) stream))
     (t ))
-  (format stream " ~a" (cadr (member :uid (unit-plist psi)
-				     :test #'eq))))
+  (format stream " ~a" (indiv-uid psi)))

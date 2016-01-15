@@ -32,7 +32,6 @@
 
 (occurs-in-names 'kind-of-subsidiary 'company)
 
-
 (define-autodef-data 'kind-of-subsidiary
   :display-string "kind of subsidiary"
   :form 'define-kind-of-subsidiary
@@ -41,39 +40,29 @@
   :module *subsidiaries*
   :dossier "dossiers;kinds of subsidiaries" )
 
-
+;; cf. define-kind-of-company
 (defun define-kind-of-subsidiary (string)
-  (let ((word (define-word/expr string))
-        (symbol (intern string *category-package*))
-        cat  rules )
+  (let* ((word (define-word/expr string))
+         (plural (plural-version word))
+         (symbol (intern string *category-package*))
+         (cat (or (category-named symbol)
+                  (define-category/expr symbol
+                    `(:specializes ,category::kind-of-subsidiary
+                      :instantiates ,`(,category::company ,symbol))))))
+    (declare (special category::collection
+                      category::company
+                      category::kind-of-subsidiary
+                      category::np-head))
 
-    (unless (setq cat (category-named symbol))
+    (setf (get-tag :rules cat)
+          (list (define-cfr category::kind-of-subsidiary `(,word)
+                  :form category::np-head
+                  :referent cat)
+                (define-cfr category::kind-of-subsidiary `(,plural)
+                  :form category::np-head
+                  :referent `(:head ,cat :subtype ,category::collection))))
 
-      (setq cat (define-category/expr symbol
-                  `(:specializes ,category::kind-of-subsidiary
-                    :instantiates ,`(company ,symbol)
-                    ;; // copy the name binding ??
-                    )))
-
-      (setq rules
-            (list (define-cfr category::kind-of-subsidiary
-                              `( ,word )
-                    :form category::np-head
-                    :referent cat )
-
-                  (define-cfr category::kind-of-subsidiary
-                              `( ,(plural-version word) )
-                    :form category::np-head
-                    :referent `(:head ,cat
-                                :subtype ,category::collection))))
-      (setf (unit-plist cat)
-            `(:rules ,rules ,@(unit-plist cat))))
-
-    cat ))
-
-
-
-
+    cat))
 
 ;; n.b. these have to be ordered after kind-of-subsidiary becaues
 ;; it refers to it in its mapping, and if ordered before the

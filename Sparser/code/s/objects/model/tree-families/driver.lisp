@@ -243,21 +243,16 @@
                     ~%to have a value for its ~A variable.~
                    ~%but it does not." individual head-word-variable))))
       
-        (let ((rules
-               (make-rules-for-rdata category
-                                     head-pair
-                                     etf mapping local-cases
-                                     individual )))
-        
-          ;(add-rules-to-individual
-          (setf (unit-plist individual)
-                `(:rules ,rules ,@(unit-plist individual)))
-          rules )))))
+        (setf (get-tag :rules individual)
+              (make-rules-for-rdata category
+                                    head-pair
+                                    etf mapping local-cases
+                                    individual ))))))
 
 
 (defun retrieve-single-rule-from-individual (i)
   ;; Applies when only a head is supplied
-  (let ((rule-field (get-tag-for :rules i)))
+  (let ((rule-field (get-tag :rules i)))
     (unless rule-field
       (push-debug `(,i))
       (error "No rules recorded for ~a" i))
@@ -465,16 +460,13 @@
          (if (and *convert-eft-form-categories-to-form-rules*
                   (some #'(lambda (c)
                             (when (referential-category-p c)
-                              (member :form-category
-                                      (unit-plist c))))
+                              (get-tag :form-category c)))
                         rhs))
            (def-form-rule/resolved rhs form nil referent)
            (define-cfr lhs rhs :form form :referent referent))))
 
     (when cfr
-      (setf (cfr-plist cfr)
-	    `(:relation ,relation
-			,@(cfr-plist cfr)))
+      (setf (get-tag :relation cfr) relation)
 
       ;; Before 2/28/95 this routine ended by 'push'ing the cfr it
       ;; constructs onto the global. That global is itself then pushed

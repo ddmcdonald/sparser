@@ -146,7 +146,6 @@
 (defun inhibit-completion-when-subsumes (label)
   ;; called from the grammar to setup the subsumption check
   ;; and inhibition on a specific label
-  (push-onto-plist label
-                   t :inhibit-completion-actions-of-subsumer)
+  (setf (get-tag :inhibit-completion-actions-of-subsumer label) t)
   :done)
 

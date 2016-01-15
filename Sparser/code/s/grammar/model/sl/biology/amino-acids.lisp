@@ -71,7 +71,7 @@ ones are gratuitously ambiguous with capitalized initials.
            (one-letter-word (resolve/make one))
            (one-letter-object
             (find-individual 'single-capitalized-letter 
-              :letter one-letter-word))                            
+                             :letter one-letter-word))
            (3-letter-rule
             (define-cfr category::amino-acid `(,three-letter-word)
               :form category::common-noun
@@ -84,17 +84,14 @@ ones are gratuitously ambiguous with capitalized initials.
         (push-debug `(,one-letter-word))
         (break "could not retrieve capitalized-letter"))
       (add-rule-to-individual 3-letter-rule i)
-       (add-rule-to-individual caps-3-letter-rule i)
-      (setf (gethash one-letter-object *single-letters-to-amino-acids*) i)
-      (setf (gethash one-letter-word *single-letters-to-amino-acids*) i)
-      (set-object-property i :one-letter-code one)
-      (set-object-property i :three-letter-code three)
+      (add-rule-to-individual caps-3-letter-rule i)
+      (setf (gethash one-letter-object *single-letters-to-amino-acids*) i
+            (gethash one-letter-word *single-letters-to-amino-acids*) i
+            (get-tag :one-letter-code i) one
+            (get-tag :three-letter-code i) three)
       i)))
-    
-
  
 ;; List from http://www.cryst.bbk.ac.uk/education/AminoAcid/the_twenty.html
-
 (def-amino-acid "alanine" "ala" "A")
 (def-amino-acid "arginine" "arg" "R")
 (def-amino-acid "asparagine" "asn" "N")
@@ -117,8 +114,8 @@ ones are gratuitously ambiguous with capitalized initials.
 (def-amino-acid "valine" "val" "V")
 
 #|
-Sometimes it is not possible two differentiate two closely related amino acids, 
-therefore we have the special cases:
+Sometimes it is not possible to differentiate two closely related amino acids.
+We therefore have the special cases:
   asparagine/aspartic acid - asx - B
   glutamine/glutamic acid - glx - Z
 |#
@@ -152,7 +149,7 @@ therefore we have the special cases:
          ;; given this pattern, there will only be one if there is one
          (capitalized-letter (when variants (car variants)))
          (digit-word (cadr words))
-         (number (get-tag-for :numerical-value digit-word)))
+         (number (get-tag :numerical-value digit-word)))
     (when (and capitalized-letter number)
       (let ((amino-acid (single-letter-is-amino-acid capitalized-letter)))
         (when amino-acid

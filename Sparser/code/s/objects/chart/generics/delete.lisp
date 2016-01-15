@@ -41,12 +41,12 @@
           (polyword (delete/linguistic-object term))
           (word     (delete/linguistic-object term))
           (category
-           (unless (cadr (member :cfrs (cat-plist term)))
+           (unless (get-tag :cfrs term)
              (delete/linguistic-object term))))))
 
     (etypecase lhs
       (category
-       (when (null (cadr (member :cfrs (cat-plist lhs))))
+       (when (null (get-tag :cfrs lhs))
          ;; there are no rules that will form this category
          (delete/linguistic-object (cfr-category cfr))))
       (word ))

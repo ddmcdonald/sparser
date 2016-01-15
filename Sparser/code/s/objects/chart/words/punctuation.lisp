@@ -2,7 +2,7 @@
 ;;; copyright (c) 1992-1994,2013-2014  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation"
-;;;   Module:  "objects;words:"
+;;;   Module:  "objects;words;"
 ;;;  Version:  0.4 August 2014
 
 ;; originally written in June 1990
@@ -28,91 +28,54 @@
 (defparameter *punct-table* (make-hash-table))
 
 (defun get-punct-symbol (character)
+  "Lookup the symbol naming the word associated with a punctuation character."
+  (check-type character character)
   (or (gethash character *punct-table*)
       (setf (gethash character *punct-table*)
-            (intern (coerce (list character) 'string)
-                    *word-package*))))
+            (intern (string character) *word-package*))))
 
 (defun punctuation-named (character)
-  (unless (characterp character)
-    (error "Argument must be a character.~%  ~A is a ~A"
-           character (type-of character)))
-  (let* ((symbol (get-punct-symbol character)))    
-    (when (boundp symbol)
-      (symbol-value symbol))))
-
-
+  "Return the word associated with a punctuation character."
+  (symbol-value (get-punct-symbol character)))
 
 (defun punctuation? (word)
-  ;; type predicate
-  (has-tag? :punctuation word))
-
+  "Punctuation type predicate."
+  (get-tag :punctuation word))
 
 ;;;--------------
 ;;; the def form
 ;;;--------------
 
-(defun define-punctuation/expr (symbol char)
-  ;; Single-character punctuation, like words and digits, goes through
-  ;; the intern-based lookup.  For convenience in writing rules, we
-  ;; also want the option of refering to these #<word>s by more
-  ;; obvious names.
-  ;;   Two symbols will be linked to the word objects made here. The
-  ;; "natural" one uses a pname based on the single-character string
-  ;; make from the punctuation. The other is word-package equivalent
-  ;; of the symbol passed in as the designated symbol to use for, e.g.,
-  ;; the print name.
-
-  (unless (symbolp symbol)
-    (error "The first argument -- the name you are giving to the punct~
-            uation word~%--must be a symbol.~%   ~A is a ~A"
-           symbol (type-of symbol)))
-  (unless (characterp char)
-    (error "The second argument -- the character you are defining a ~
-            punctuation~%word for -- must be a Lisp character object.~
-            ~%  ~A is a ~A" char (type-of char)))
-
-  (let* ((string (coerce (list char) 'string))
-         (designated-symbol (intern (symbol-name symbol) *word-package*))
-         (natural-symbol    (intern string               *word-package*)))
-    (proclaim (list 'special designated-symbol natural-symbol))
-
-    (let ((new? (not (boundp natural-symbol)))
-          (word
-           (if (boundp natural-symbol)
-             (symbol-value natural-symbol)
-             (make-word  :symbol designated-symbol
-                         :pname  string))))
-      (if new?
-        (then
-          ;; record it under the symbol used in this definition, and
-          ;; set up the index for the intern-based lookup using 
-          ;; the natural symbol
-          (catalog/word word designated-symbol)
-          (setf (unit-plist word)
-                (list :use-symbol-name-when-printing
-                      :punctuation))
-          (or (word-rule-set word)
-              (setf (word-rule-set word) (make-rule-set
-                                       :backpointer word)))
-          (set natural-symbol word))
-        (else
-          (if (eq designated-symbol
-                  (word-symbol word))
-            (format t "~%~%!! redefining the punctuation '~A'~
-                       ~% The second, redundant definition is being ignored."
-                    string)
-            (else
-              (unless (eq designated-symbol 'word::linefeed)
-                ;; On OSX anyway, linefeed is identical to the symbolic character
-                ;; newline, so it's not redefining newline.
-              (format t "~%~%!! redefining the punctuation ~A~
-                         ~% The second definition uses the designated ~
-                         symbol ~A~
-                         ~% the earlier definition used ~A~
-                         ~% Both symbols will be bound to the word."
-                      string designated-symbol (word-symbol word))
-              (set designated-symbol (word-symbol word)))))))
-
-     (values word natural-symbol designated-symbol))))
-
+(defun define-punctuation/expr (symbol character)
+  "Single-character punctuation, like words and digits, goes through
+the intern-based lookup. For convenience in writing rules, we also
+want the option of refering to these #<word>s by more obvious names.
+Two symbols will be linked to the word objects made here. The first,
+\"natural\" one is based on the single-character string made from
+the punctuation. The second, \"designated\" symbol is the word-package
+equivalent of the symbol passed in as the name. Both symbols are
+proclaimed special, and have their values set to the designated word."
+  (check-type symbol symbol)
+  (check-type character character)
+  (let* ((string (string character))
+         (natural-symbol (intern string *word-package*))
+         (designated-symbol (intern (symbol-name symbol) *word-package*)))
+    (proclaim `(special ,designated-symbol ,natural-symbol))
+    (values (if (boundp natural-symbol)
+              (then ;; alias an existing definition
+                (let ((word (symbol-value natural-symbol)))
+                  (check-type word (and word (satisfies punctuation?)))
+                  (assert (string= (word-pname word) string)
+                          (word string)
+                          "Invalid alias ~s for punctuation ~a." string word)
+                  (setf (symbol-value designated-symbol) word)))
+              (else ;; make & index a new definition
+                (let ((word (make-word :symbol designated-symbol
+                                       :pname string)))
+                  (catalog/word word designated-symbol)
+                  (establish-rule-set-for word)
+                  (setf (get-tag :punctuation word) t
+                        (get-tag :use-symbol-name-when-printing word) t
+                        (symbol-value natural-symbol) word))))
+            natural-symbol
+            designated-symbol)))

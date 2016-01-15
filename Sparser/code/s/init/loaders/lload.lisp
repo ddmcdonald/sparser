@@ -93,6 +93,9 @@ an automatic way of counting source lines in the Sparser codebase.")
 (defvar *file-being-lloaded* nil
   "Available to Sparser define forms.")
 
+(defvar *suppress-duplicate-definition-warning* nil
+  "If false, warn about duplicate definitions.")
+
 ;;;--------------
 ;;; the routine
 ;;;--------------
@@ -115,6 +118,19 @@ an automatic way of counting source lines in the Sparser codebase.")
     (push (truename filespec) *lloaded-files*)
     filespec))
 
+;;;--------------------------------
+;;; recording definition locations
+;;;--------------------------------
+
+(defun note-file-location (object &optional (location *file-being-lloaded*))
+  "Called from the definition routines for the various kinds of objects."
+  (unless (and *suppress-duplicate-definition-warning*
+               (get-tag :file-location object))
+    (warn "Redefining ~a in ~a.~%~
+           Previous definition was in ~a."
+          object location (get-tag :file-location object)))
+  (setf (get-tag :file-location object) location))
+
 ;;;----------------------------
 ;;; fasl loading & compilation
 ;;;----------------------------
@@ -131,32 +147,3 @@ an automatic way of counting source lines in the Sparser codebase.")
            (compile-file lisp-file
                          :output-file (ensure-directories-exist fasl-file)))
          args))
-
-;;;------------------------------------------------------
-;;;-------------- move !!!!!!!!!!!!!!!!!
-;;;------------------------------------------------------
-
-(defvar *suppress-duplicate-definition-warning* nil
-  "If false, warn about duplicate definitions in note-file-location.")
-
-(defun note-file-location (object)
-  "Called from the definition routines for the various kinds of objects."
-  (let ((plist (plist-for object))
-        (location *file-being-lloaded*))
-    (unless location
-      (return-from note-file-location))
-    (let ((entry (cadr (member :file-location plist :test #'equal))))
-      (if entry
-        (progn
-          (unless *suppress-duplicate-definition-warning*
-            (warn "Redefining ~a in ~a.~%~
-                   Previous definition was in ~a."
-                  object location entry))
-          (if (consp entry) ; multiple sites already?
-            (rplacd entry (cons location (cdr entry)))
-            (push-onto-plist object
-                             (list entry location)
-                             :file-location)))
-        (push-onto-plist object
-                         location ; value
-                         :file-location)))))

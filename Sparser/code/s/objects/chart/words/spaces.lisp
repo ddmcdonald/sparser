@@ -95,9 +95,7 @@
           ;; the calaloging below
           (let ((natural-symbol (intern string *word-package*)))
             (set natural-symbol new-word))
-          (setf (unit-plist new-word)
-                (cons :use-symbol-name-when-printing
-                      (unit-plist new-word)))
+          (setf (get-tag :use-symbol-name-when-printing new-word) t)
 
           (define-to-be-whitespace new-word)
 
@@ -131,11 +129,8 @@
 ;;;------------
 
 (defun spaces-word? (w)
-  (unless (word-p w)
-    (break "Argument must be a word.~%~A is a ~A"
-           w (type-of w)))
+  (check-type w word "a word")
   (eq (word-morphology w) :space))
-
 
 
 ;;;------------------
@@ -143,7 +138,5 @@
 ;;;------------------
 
 (defun number-of-spaces (w)
-  (unless (spaces-word? w)
-    (break "Argument is not a spaces word:~%   ~A" w))
-  (cadr (member :number-of-spaces (unit-plist w))))
-
+  (assert (spaces-word? w))
+  (get-tag :number-of-spaces w))

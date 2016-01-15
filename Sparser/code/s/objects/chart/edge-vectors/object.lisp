@@ -28,6 +28,7 @@
 
 
 (defstruct (edge-vector
+            (:include unit)
             (:conc-name #:ev-)
             (:print-function print-edge-vector-structure))
 
@@ -38,7 +39,6 @@
   position         ;; a #<position>
   direction        ;; a keyword, e.g. :|ending at|
   marker           ;; an expansion site for things like font-shift indicators
-  plist            ;; for annotations such as who put on the boundaries
   )
 
 

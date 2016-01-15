@@ -53,7 +53,7 @@
 
     (let ((nw (make-name-word-for/silent
                word nil :string-is-uppercase t)))
-      (push-onto-plist nw obj :heuristic-company-word)
+      (setf (get-tag :heuristic-company-word nw) obj)
       (values word obj nw))))
 
 ) ;; close gate-grammar
@@ -177,39 +177,27 @@
   :examples "\"manufacturer\" \"contractor\" \"marketer\" \"provider\""
   :dossier "dossiers;co activity nominals-er" )
 
-
-(defun define-co-activity-nominal/er (string
-                                      &key ((:abbrev abbreviations)))
+(defun define-co-activity-nominal/er (string &key abbrev)
   (let* ((word (define-word/expr string))
-        (symbol (intern string *category-package*))
-        (cat (category-named symbol))
-        rules )
+         (plural (plural-version word))
+         (symbol (intern string *category-package*))
+         (cat (or (category-named symbol)
+                  (define-category/expr symbol
+                    `(:specializes ,category::co-activity-nominal/er
+                      :instantiates ,`(,category::company ,symbol))))) )
+    (setf (get-tag :rules cat)
+          (list (define-cfr category::co-activity-nominal/er `(,word)
+                  :form category::np-head
+                  :referent cat)
+                (define-cfr category::co-activity-nominal/er `(,plural)
+                  :form category::np-head
+                  :referent `(:head ,cat :subtype ,category::collection))))
 
-    (unless cat
-      (setq cat (define-category/expr symbol
-                  `(:specializes ,category::co-activity-nominal/er
-                    :instantiates ,`(,category::company ,symbol)
-                    ;; // copy the word binding ??
-                    )))
-      (setq rules
-            (list (define-cfr category::co-activity-nominal/er
-                              `( ,word )
-                    :form category::np-head
-                    :referent cat )
+    (when abbrev
+      (dolist (abbreviation abbrev)
+        (define-abbreviation string abbreviation)))
 
-                  (define-cfr category::co-activity-nominal/er
-                              `( ,(plural-version word) )
-                    :form category::np-head
-                    :referent `(:head ,cat
-                                :subtype ,category::collection))))
-      (setf (unit-plist cat)
-            `(:rules ,rules ,@(unit-plist cat)))
-
-      (when abbreviations
-        (dolist (abbrev-string abbreviations)
-          (define-abbreviation string abbrev-string))))
-
-      cat ))
+      cat))
 
 ) ;; close gate-grammar
 

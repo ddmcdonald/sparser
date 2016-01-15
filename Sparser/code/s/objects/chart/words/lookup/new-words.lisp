@@ -199,15 +199,13 @@
 
 (defun establish-properties-of-new-number-of-spaces (word)
   (setf (word-morphology word) :space)
-  (setf (unit-plist      word)
-        `(:number-of-spaces ,(length (word-pname word))))
+  (setf (get-tag :number-of-spaces word) (length (word-pname word)))
   word )
 
 
 (defun establish-properties-of-new-digit-sequence (word)
   (setf (word-morphology word) :digit)
-  (setf (unit-plist      word)
-        `(:numerical-value ,(parse-integer (word-pname word))))
+  (setf (get-tag :numerical-value word) (parse-integer (word-pname word)))
   word )
 
 (defun word-consists-of-only-digits (word)

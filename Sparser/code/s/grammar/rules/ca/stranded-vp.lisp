@@ -74,12 +74,9 @@
       ;; phrasal cases at the beginning, so this serial search
       ;; isn't so bad
       (if passive?
-        (when (eq :passive
-                  (cadr (member :relation (cfr-plist cfr))))
+        (when (eq :passive (get-tag :relation cfr))
           (return-from subject-rule cfr))
-
-        (when (eq :subject
-                  (cadr (member :relation (cfr-plist cfr))))
+        (when (eq :subject (get-tag :relation cfr))
           (return-from subject-rule cfr))))
 
     (tr :couldnt-find-subject-rule unit type)

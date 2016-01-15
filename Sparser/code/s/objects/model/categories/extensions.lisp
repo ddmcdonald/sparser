@@ -54,7 +54,7 @@
                         :name var-name
                         :value-restriction  restriction
                         :category category)))
-                 (push-onto-plist new-var upper-var :restricts)
+                 (setf (get-tag :restricts new-var) upper-var)
                  new-var)))))
 
 #|  One complication is with anything that uses the set of
@@ -68,7 +68,7 @@ it's not a deal breaker. |#
              collect (def-restriction r-exp))))
       ;; Save the restriction expression
       ;;/// substitute real variables for names
-      (push-onto-plist category restrictions :restrictions)
+      (setf (get-tag :restrictions category) restrictions)
       
       ;; Add in the new variables
       (setf (cat-slots category)
@@ -87,4 +87,4 @@ it's not a deal breaker. |#
 ;;;---------------
 
 (defun store-category-documentation (category documentation)
- (set-object-property category :documentation documentation))
+  (setf (get-tag :documentation category) documentation))

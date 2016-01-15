@@ -273,32 +273,20 @@
 
 
 (defun find/binding (variable value individual)
-  ;; does a binding with this value for the variable exist?
-  ;; Look in the variable's index under this value and see 
-  ;; whether one of the bindings there has this individual
-  ;; as its body
+  "Does a binding with this value for the variable exist?
+Look in the variable's index under this value and see whether
+one of the bindings there has this individual as its body."
   (when (typep variable 'anonymous-variable)
     (setq variable (dereference-variable variable individual)))
-  (let ((instances-ht (var-instances variable)))
-    (let ((bindings (gethash value instances-ht)))
-      ;; /// If the individual gets dicy to identify (being arbitrary)
-      ;; the we probably want to shift to v+v objects.
-      (when bindings
-        (let* ((bindings-on-individual (indiv-binds individual))
-               (binding 
-                (loop for b in bindings-on-individual
-                  when (memq b bindings) return b)))
-          (declare (special *track-incidence-count-on-bindings*))
-          (when binding
-            (when *track-incidence-count-on-bindings*
-              (let ((count-cons
-                     (member :incidence-count (unit-plist binding))))
-                (rplacd count-cons
-                        (cons (1+ (cadr count-cons))
-                              (cddr count-cons)))))
-            binding))))))
-
-
+  (let* ((bindings (gethash value (var-instances variable)))
+         (binding (find-if (lambda (binding) (memq binding bindings))
+                           (indiv-binds individual))))
+    ;; /// If the individual gets dicy to identify (being arbitrary)
+    ;; then we probably want to shift to v+v objects.
+    (declare (special *track-incidence-count-on-bindings*))
+    (when (and binding *track-incidence-count-on-bindings*)
+      (incf (get-tag :incidence-count binding 0)))
+    binding))
 
 
 (defun unindex-binding (b variable value)

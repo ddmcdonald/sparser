@@ -55,8 +55,7 @@
                ;; of the words
                ;;
                (let ((word (symbol-value word-symbol)))
-                 (cond ((member :use-symbol-name-when-printing
-                                (word-plist word))
+                 (cond ((get-tag :use-symbol-name-when-printing word)
                         (symbol-value word-symbol))
                        (t (def-category/expr arg :source source)))))
              (else
@@ -87,8 +86,7 @@
        (if word-symbol
          (then
            (let ((word (symbol-value word-symbol)))
-             (cond ((member :use-symbol-name-when-printing
-                            (word-plist word))
+             (cond ((get-tag :use-symbol-name-when-printing word)
                     (symbol-value word-symbol))
                    (t (resolve-symbol-to-category arg)))))
          (else
@@ -132,6 +130,6 @@
 (defun resolve-form-label (symbol)
   (let ((category (resolve-symbol-to-category symbol)))
     (when category
-      (when (member :form-category (unit-plist category))
-        category ))))
+      (when (get-tag :form-category category)
+        category))))
 

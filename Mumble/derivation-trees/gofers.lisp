@@ -25,10 +25,10 @@
           m-word ))))
 
 (defun stored-mumble-word-for-sparser-word (s-word)
-  (sparser::get-tag-for :mumble-word s-word))
+  (sparser::get-tag :mumble-word s-word))
 
 (defun store-mumble-word-for-sparser-word (s-word m-word)
-  (sparser::set-object-property s-word :mumble-word m-word))
+  (setf (sparser::get-tag :mumble-word s-word) m-word))
 
 
 

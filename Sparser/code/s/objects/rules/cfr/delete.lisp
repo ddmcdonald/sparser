@@ -177,7 +177,7 @@
 
     (if (cfr-completion cfr)
       ;; its a form rule or a context-sensitive rule
-      (if (member :form-rule (cfr-plist cfr))
+      (if (get-tag :form-rule cfr)
         ;; different multipliers are used
         (setq L-id (cdr (rs-right-looking-ids (label-rule-set left-label)))
               R-id (cdr (rs-left-looking-ids  (label-rule-set right-label))))
@@ -243,7 +243,7 @@
   ;; otherwise we delete it as well.
 
   (let* ((pw (first (cfr-rhs cfr)))
-         (rs (pw-rules pw))
+         (rs (rule-set-for pw))
          (single-term-field (rs-single-term-rewrites rs)))
 
     (setf (rs-single-term-rewrites rs)

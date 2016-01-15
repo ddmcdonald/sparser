@@ -20,9 +20,7 @@
 
 (defun close-bracket-already-there (p word)
   (when (ev-boundary (pos-ends-here p))
-    (let ((record
-           (cadr (member :bracket-source (ev-plist (pos-ends-here p))
-                         :test #'eq))))
+    (let ((record (get-tag :bracket-source (pos-ends-here p))))
       (if (consp record)
         (when (member word record :test #'eq)
           (ev-boundary (pos-ends-here p)))
@@ -31,9 +29,7 @@
 
 (defun open-bracket-already-there (p word)
   (when (ev-boundary (pos-starts-here p))
-    (let ((record
-           (cadr (member :bracket-source (ev-plist (pos-starts-here p))
-                         :test #'eq))))
+    (let ((record (get-tag :bracket-source (pos-starts-here p))))
       (if (consp record)
         (when (member word record :test #'eq)
           (ev-boundary (pos-starts-here p)))
@@ -52,9 +48,7 @@
          (bracket (ev-boundary starting-vector))
          (variant (capitalized-correspondent word p)))
     (if bracket
-      (let ((source
-             (cadr (member :bracket-source (ev-plist starting-vector)
-                           :test #'eq))))
+      (let ((source (get-tag :bracket-source starting-vector)))
         (if (not (consp source)) ;; two sources
           (if (or (eq source word)
                   (and variant 
@@ -91,9 +85,7 @@
          (variant (when (word-p word) ;; vs. a form category
                     (capitalized-correspondent word p))))
     (if bracket      
-      (let ((source
-             (cadr (member :bracket-source (ev-plist ending-vector)
-                           :test #'eq))))
+      (let ((source (get-tag :bracket-source ending-vector)))
         (if (not (consp source))
           (if (or (eq source word)
                   (and variant 

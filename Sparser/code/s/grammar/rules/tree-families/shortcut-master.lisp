@@ -351,17 +351,17 @@
 ;;;------------------------------------------------
 
 (defun register-variable (category variable grammatical-relation)
-  (push-onto-plist category variable grammatical-relation))
+  (setf (get-tag grammatical-relation category) variable))
 
 (defmethod subject-variable (label)
   (declare (ignore label)))
 (defmethod subject-variable ((e edge))
   (subject-variable (edge-referent e)))
 (defmethod subject-variable ((c category))
-  (or (get-tag-for :subject-variable c)
+  (or (get-tag :subject-variable c)
       (find-subcat-variable :subject (get-ref-subcategorization c))))
 (defmethod subject-variable ((i individual))
-  (or (get-tag-for :subject-variable (car (indiv-type i)))
+  (or (get-tag :subject-variable (car (indiv-type i)))
       (find-subcat-variable :subject (get-ref-subcategorization i))))
 
 (defmethod object-variable (label)
@@ -369,10 +369,10 @@
 (defmethod object-variable ((e edge))
   (object-variable (edge-referent e)))
 (defmethod object-variable ((c category))
-  (or (get-tag-for :object-variable c)
+  (or (get-tag :object-variable c)
       (find-subcat-variable :object (get-ref-subcategorization c))))
 (defmethod object-variable ((i individual))
-  (or (get-tag-for :object-variable (car (indiv-type i)))
+  (or (get-tag :object-variable (car (indiv-type i)))
       (find-subcat-variable :object (get-ref-subcategorization i))))
 
 (defmethod thatcomp-variable (label)
@@ -385,7 +385,7 @@
   (find-subcat-variable :thatcomp (get-ref-subcategorization i)))
 
 (defmethod complement-variable ((c category))
-  (get-tag-for :complement-variable c))
+  (get-tag :complement-variable c))
 
 
 ;;;---------------------------------------------------------------

@@ -85,37 +85,6 @@
 (defun clean-word (w)
   (setf (word-rule-set w) nil))
 
-;;;-----------------
-;;; syntactic sugar
-;;;-----------------
-
-(defun put-property-on-word (tag value word)
-  (if (polyword-p word)
-    (put-property-on-pw tag value word)
-    (else
-      (unless (symbolp tag)
-        (error "The tag used to label a property on a word must ~
-                be a symbol:~%~A" tag))
-      (let ((established-cons (member tag (label-plist word))))
-        (if established-cons
-          (unless (equal (cadr established-cons) value)
-            (rplacd established-cons
-                    `(,value ,@(cddr established-cons))))
-          (setf (label-plist word)
-                `(,tag ,value ,@(label-plist word))))
-        (label-plist word)))))
-
-
-
-(defun property-of-word (tag word)
-  (if (polyword-p word)
-    (property-of-polyword tag word)
-    (else
-      (unless (symbolp tag)
-        (error "The tag used to access a property on a word must ~
-                be a symbol:~%~A" tag))
-      (cadr (member tag (label-plist word))))))
-
 
 ;;;-------------------
 ;;; display routines
@@ -125,8 +94,7 @@
   (declare (ignore depth))
   (write-string "#<" stream)
   (write-string "word " stream)
-  (if (member :use-symbol-name-when-printing
-              (word-plist obj))
+  (if (get-tag :use-symbol-name-when-printing obj)
     (write-string (symbol-name (word-symbol obj)) stream)
     (else (write-string "\"" stream)
           (write-string (word-pname obj) stream)
@@ -166,7 +134,7 @@
 
   (let ((pname (word-pname w))
         symbol-string )
-    (if (member :use-symbol-name-when-printing (word-plist w))
+    (if (get-tag :use-symbol-name-when-printing w)
       (format stream "~A"
               (if (>= (length (setq symbol-string
                                     (symbol-name (word-symbol w))))

@@ -84,8 +84,7 @@
   (when *trace-network*
     (trace-msg "Scanned ~S at p~A"
                (let ((pname (word-pname word)))
-                 (if (member :use-symbol-name-when-printing
-                             (word-plist word))
+                 (if (get-tag :use-symbol-name-when-printing word)
                    (symbol-name (word-symbol word))
                    pname))
                (pos-token-index position))))
@@ -536,8 +535,7 @@
   (when *trace-network*
     (trace-msg "[N] Assessed ~A between p~A and p~A"
                (let ((pname (word-pname word)))
-                 (if (member :use-symbol-name-when-printing
-                             (word-plist word))
+                 (if (get-tag :use-symbol-name-when-printing word)
                    (symbol-name (word-symbol word))
                    pname))
                (pos-token-index position)

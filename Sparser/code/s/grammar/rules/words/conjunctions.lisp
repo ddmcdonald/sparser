@@ -36,44 +36,31 @@
   :index (:permanent :key word))
 
  
-(defun define-conjunction (string &key brackets form)
+(defun define-conjunction (string &key
+                           (brackets '( ].phrase phrase.[ ))
+                           (form 'subordinate-conjunction))
   ;; Most conjunctions are subordinate conjunctions taking complements
   ;; rather than simple ones composing the phrases on their two sides
   ;; so that's the way the defaults are setup. 
-  (unless brackets
-    (setq brackets '( ].phrase  phrase.[ )))
-  (unless form
-    (setq form 'subordinate-conjunction))
   (let* ((word (define-function-word string
                  :brackets brackets
                  :form form))
          (category-name (name-to-use-for-category string))
-         (object (find-individual form :word word))
          (superc (ecase form
                    (conjunction category::conjunction)
                    (subordinate-conjunction category::subordinate-conjunction)))
-         cfrs )
-
-    (let* ((category-form
-            `(define-category ,category-name
-               :specializes ,superc
-               :instantiates :self
-               :bindings (word ,word)))
-           (category (eval category-form)))
-
-      (unless object
-        (setq object (define-individual form
-                        :word word)))
-
-      (let ((cfr ;; the base rule for the word
-             (def-cfr/expr category ;; lhs
-                    (list word) ;; rhs
+         (category (eval `(define-category ,category-name
+                            :specializes ,superc
+                            :instantiates :self
+                            :bindings (word ,word))))
+         (object (or (find-individual form :word word)
+                     (define-individual form :word word)))
+         (cfr (def-cfr/expr category ;; lhs
+                  (list word)        ;; rhs
                 :form form
-               :referent object)))
-        (push cfr cfrs))
-
-      (push-onto-plist object cfrs :rules)
-      object )))
+                :referent object)))
+    (setf (get-tag :rules object) (list cfr))
+    object))
     
 
 ;;------- simple conjunctions

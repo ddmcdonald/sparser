@@ -173,7 +173,7 @@ places. ]]
               pos-marker lemma
               (cur-string) (sentence-string (sentence)))))
 
-    (put-property-on-word :comlex properties lemma)))
+    (setf (get-tag :comlex lemma) properties)))
 
 
 (defvar *word-to-be-defined?* nil)

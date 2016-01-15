@@ -45,8 +45,7 @@
                :form category::proper-noun
                :referent individual)))
 
-        (setf (unit-plist individual)
-              `(:rule ,rule ,@(unit-plist individual)))
+        (setf (get-tag :rule individual) rule)
         rule)
 
       individual)))

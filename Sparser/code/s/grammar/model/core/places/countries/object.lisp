@@ -68,7 +68,7 @@
           (if (consp aliases)
             (loop for alias in aliases
               do (push (alias-rule alias) rules))))))
-    (push-onto-plist country rules :rules)
+    (setf (get-tag :rules country) rules)
     (when cities
       (dolist (city-string cities)
         (let ((city (define-or-find-individual 'city :name city-string)))

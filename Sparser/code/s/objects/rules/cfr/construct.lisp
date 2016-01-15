@@ -76,20 +76,17 @@
                     *deliberate-duplication*))
   (when (listp cfr)
     (let ((list-of-cfrs cfr))
-      (setq cfr (car (member lhs list-of-cfrs
-                             :key #'cfr-category :test #'eq)))
+      (setq cfr (find lhs list-of-cfrs :key #'cfr-category))
       (unless cfr
         (break "No cfr with the indicated lhs ~A~
                 ~%has been found in the list of rules:~%~A"
                lhs list-of-cfrs))))
   (if *deliberate-duplication*
     (construct-cfr lhs rhs form referent source)
-
     (else
      ;; Check that we're putting the changes on the right object
-     (when (member :n-ary (cfr-plist cfr))
-       (setq cfr 
-             (first (second (cadr (member :n-ary (cfr-plist cfr)))))))
+     (when (nary-rule cfr)
+       (setq cfr (first (intermediaries-of-nary-rule cfr))))
 
      (setf (cfr-form cfr) form)
      (setf (cfr-referent cfr) referent)

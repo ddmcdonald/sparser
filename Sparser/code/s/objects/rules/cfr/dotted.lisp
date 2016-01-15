@@ -29,7 +29,8 @@
 ;;      I wrote that in 1995 with a good understanding of the whole process
 ;;      and the assumption that it would work but wanted to leave in the
 ;;      note/Stub.
-;; 3/21/2015 SBCL caught a frank error - search for SBCL in code below...
+;; 3/21/2015 SBCL caught a frank error - search for SBCL in code below.
+;; 1/16/2016 Revamped to use new plist interface, removed SBCL comment.
 
 (in-package :sparser)
 
@@ -38,82 +39,46 @@
 ;;;--------------------------------------------------------
 
 (defun edge-of-dotted-intermediary (e)
-  ;; is this edge the result of completing a category that was
-  ;; constructed to name the dotted intermediary cases of a
-  ;; nary rule before all of the rhs daughters are found
-  (eq :dotted-intermediary
-      (edge-form e)))
-
+  "Is this edge the result of completing a category that was
+constructed to name the dotted intermediary cases of an N-ary
+rule before all of the rhs daughters are found?"
+  (eq :dotted-intermediary (edge-form e)))
 
 (defun nary-rule (cfr)
-  ;; predicate that checks whether the cfr has more than two immediate
-  ;; constituents
-  (member :n-ary (cfr-plist cfr)))
-
+  "Checks whether the cfr has more than two immediate constituents."
+  (get-tag :n-ary cfr))
 
 (defun dotted-rule (cfr) 
-  ;; predicate.  These rules will exist only because they are needed
-  ;; as an intermediate case in some n-ary rule.  The second case
-  ;; is needed because the first is available only once the cfr
-  ;; is finished, and we sometimes need to ask this question before
-  ;; that
-  (or (member :dotted-rule (cfr-plist cfr))
+  "Predicate for dotted rules. These rules exist only because they are
+needed as an intermediate case in some N-ary rule."
+  ;; The second case is needed because the first is available only once the
+  ;; cfr is finished, and we sometimes need to ask this question before that.
+  (or (get-tag :dotted-rule cfr)
       (eq :dotted-intermediary (cfr-form cfr))))
 
 (defun dotted-rule? (cfr)
-  ;; variant motivated by Sort-cfrs-by-order-of-definition where
-  ;; it turned out that the condition tested in Dotted-rule doesn't
-  ;; get all the cases of cfrs with unusual symbols.
-  (if (dotted-rule cfr)
-    t
-    (if (member :rolled-out-from (cfr-plist cfr))
-      t
-      nil)))
+  "Variant motivated by sort-cfrs-by-order-of-definition, where
+it turned out that the condition tested in dotted-rule doesn't
+get all the cases of cfrs with unusual symbols."
+  (or (dotted-rule cfr)
+      (get-tag :rolled-out-from cfr)))
 
 (defun source-of-dotted-rule (dotted-cfr)
-  (unless (dotted-rule? dotted-cfr)
-    (break "Caller passed in a cfr that wasn't dotted"))
-  (or (car (cadr (member :dotted-rule (cfr-plist dotted-cfr))))
-      (cadr (member :rolled-out-from (cfr-plist dotted-cfr)))))
-
-
-(defun dotted-rule1 (cfr)
-  ;; variant used in Adjudicate-multiple-edges/HA/both-ends because
-  ;; the regular one didn't work on the case of the pw rule for
-  ;; "chief officer" vs. "chief TITLE" in "chief retail services
-  ;; officer"
-  (null (cfr-symbol cfr)))
-
-
-(defun nary-of-dotted-rule (dotted)
-  ;; returns the full rule for which the dotted rule was created
-  (let ((entry (cadr (member :dotted-rule (cfr-plist dotted)))))
-    (first entry)))
-
-(defun intermediaries-of-nary-rule (cfr)
-  (unless (nary-rule cfr)
-    (error "Cannot take intermediaries of a rule that is not N-ary"))
-  (let ((entry (cadr (member :n-ary (cfr-plist cfr)))))
-    (cadr entry)))
-
-(defun set-intermediaries-of-nary-rule (cfr intermediaries)
-  (let ((entry (cadr (member :n-ary (cfr-plist cfr)))))
-    (setf (second entry) intermediaries)))
-
+  (check-type dotted-cfr (satisfies dotted-rule?) "a dotted rule")
+  (or (get-tag :dotted-rule dotted-cfr)
+      (get-tag :rolled-out-from dotted-cfr)))
 
 (defun original-rhs-of-nary-rule (cfr)
-  (unless (nary-rule cfr)
-    (error "Cannot take intermediaries of a rule that is not N-ary"))
-  (let ((entry (cadr (member :n-ary (cfr-plist cfr)))))
-    (car entry)))
+  (check-type cfr (satisfies nary-rule) "an N-ary rule")
+  (first (get-tag :n-ary cfr)))
 
+(defun intermediaries-of-nary-rule (cfr)
+  (check-type cfr (satisfies nary-rule) "an N-ary rule")
+  (second (get-tag :n-ary cfr)))
 
-
-(defun dotted-category (c)
-  ;; SBCL caught this (member #\_ (symbol-name (cat-symbol c)))
-  (find #\_ (symbol-name (cat-symbol c))))
-  
-
+(defun set-intermediaries-of-nary-rule (cfr intermediaries)
+  (check-type cfr (satisfies nary-rule) "an N-ary rule")
+  (setf (second (get-tag :n-ary cfr)) intermediaries))
 
 ;;;-------------------
 ;;; policy parameters
@@ -126,21 +91,17 @@
 ;;   Arbitrarily I've decide to have the remaining rollout come 
 ;; from the left rather than the right.
 
-;(or (boundp '*rollout-naries-from-the-right*)
-;    (defparameter *rollout-naries-from-the-right* nil))
+;(defvar *rollout-naries-from-the-right* nil))
 
-(or (boundp '*rollout-naries-from-the-left*)
-    (defparameter *rollout-naries-from-the-left* t))
+(defvar *rollout-naries-from-the-left* t)
 
 ;;;--------
 ;;; driver
 ;;;--------
 
 (defun create-dotted-intermediaries-of-nary-rule (cfr)
-
-  ;; called from Knit-into-psg-tables.  Drives all the work of
-  ;; setting up a cfr that involves more than two immediate constituents.
-
+  "Called from knit-into-psg-tables. Drives all the work of setting up
+a cfr that involves more than two immediate constituents."
   (let ((rhs (cfr-rhs cfr))
         dotted-rules )
 
@@ -153,9 +114,8 @@
             (append (rollout-naries-from-the-left rhs cfr)
                     dotted-rules)))
 
-    (setf (cfr-plist cfr)
-          `(:n-ary (,rhs ,dotted-rules)
-            ,@(cfr-plist cfr)))
+    (setf (get-tag :n-ary cfr) `(,rhs ,dotted-rules))
+
     cfr ))
 
 ;;;------------------------
@@ -275,11 +235,8 @@
 ;;; constructing dotted rules
 ;;;---------------------------
 
-(unless (boundp '*check-construction-of-nary-rules*)
-  ;; useful in debugging any changes to how n-ary rules are
-  ;; constructed.
-  (defparameter *check-construction-of-nary-rules* nil))
-
+(defvar *check-construction-of-nary-rules* nil
+  "Debug construction of N-ary rules.")
 
 (defun make-dotted-rule (daughters
                          remaining-constituents
@@ -396,12 +353,8 @@
         (break "within Make-dotted-rule")))
 
     (knit-into-psg-tables new-rule)
-
-    (setf (cfr-plist new-rule)
-          (cons :dotted-rule
-                (cons (list
-                       parent-rule daughters remaining-constituents)
-                      (cfr-plist new-rule))))
+    (setf (get-tag :dotted-rule new-rule)
+          `(,parent-rule ,daughters ,remaining-constituents))
 
     (let ((parent-symbol (cfr-symbol parent-rule)))
 
@@ -417,37 +370,17 @@
 
 
 (defun remove-dotted-tag (cfr)
-  ;; Once we have rolled out all the dotted rules, the outer most
-  ;; rule covers the same span as the original rule -- i.e. its dot
-  ;; has move all the way to the end.  In this respect the completion
-  ;; of this rule has the same "solid" status as the completion of
-  ;; a regular unary or binary rule.  To make this plain to the parser
-  ;; we have to remove the evidence it would use to construe the
-  ;; edge as coming from a dotted rule.  At the same time we need
-  ;; a record of the rule's history so that we can manage it properly
-  ;; during deletions and term-overwriting.
-
-  (let* ((the-cons (member :dotted-rule (cfr-plist cfr)))
-         (two-further (cddr the-cons))
-         (original-cfr (car (cadr the-cons))))
-
-    (if the-cons
-      (then
-        (if (eq the-cons (cfr-plist cfr))
-          (setf (cfr-plist cfr) two-further)
-          (else
-            (rplaca the-cons (car two-further))
-            (rplacd the-cons (cdr two-further))))
-        (setf (cfr-plist cfr)
-              (cons :rolled-out-from
-                    (cons original-cfr
-                          (cfr-plist cfr)))))
-      (else
-        (when *check-construction-of-nary-rules*
-          (break/debug "The rule doesn't have a dotted tag ~
-                        so there's nothing to remove"))))))
-
-
+  "Once we have rolled out all the dotted rules, the outermost rule
+covers the same span as the original rule -- i.e., its dot has moved
+all the way to the end. In this respect the completion of this rule
+has the same \"solid\" status as the completion of a regular unary
+or binary rule. To make this plain to the parser, we have to remove
+the evidence it would use to construe the edge as coming from a dotted
+rule. At the same time, we need a record of the rule's history so that
+we can manage it properly during deletions and term-overwriting."
+  (setf (get-tag :rolled-out-from cfr)
+        (prog1 (first (get-tag :dotted-rule cfr))
+          (remove-tag :dotted-rule cfr))))
 
 (defun category-of-dotted-rule (daughters)
   (let ((left-pname (pname-for (first daughters)))

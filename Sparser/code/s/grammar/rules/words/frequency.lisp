@@ -733,7 +733,7 @@
             (error "Unexpected type of stem")))))))))
 
 (defun wf-classification/ignore-caps/known (word position)
-  (if (member :function-word (word-plist word))
+  (if (get-tag :function-word word)
     (if *include-function-words-in-frequency-counts*
       word
       (else (pushnew word *function-words-seen-in-run*)

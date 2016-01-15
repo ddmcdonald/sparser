@@ -258,22 +258,11 @@
             (setq protein (lookup cap-word)))))
       protein)))
 
-(defmethod get-protein ((name word))
-  (let
-      ((rule
-        (car (rs-single-term-rewrites (word-rule-set name)))))
+(defmethod get-protein ((name label))
+  (let ((rule (car (rs-single-term-rewrites (rule-set-for name)))))
     (if (cfr-p rule)
         (cfr-referent rule)
         (find-individual 'protein :name name))))
-
-(defmethod get-protein ((name polyword))
-  (let
-      ((rule
-        (car (rs-single-term-rewrites (pw-rules name)))))
-    (if (cfr-p rule)
-        (cfr-referent rule)
-        (find-individual 'protein :name name))))
-
 
 ;; get rid of misnamed "bio-family" -- it is only used for proteins
 (defmethod get-family ((name word))

@@ -114,7 +114,7 @@
                        :referent referent
                        :schema schema)))
 
-    (setf (cfr-plist cfr) (list :syntax-rule))
+    (setf (get-tag :syntax-rule cfr) t)
 
     (note-file-location cfr)
     (note-grammar-module cfr :source :def-syntax-rule)

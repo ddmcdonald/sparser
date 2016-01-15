@@ -38,16 +38,10 @@
 
 ;;--- package
 
-(or (boundp '*word-package*)
-    (defconstant *word-package*
-                 (or (find-package :word)
-                     (make-package :word
-                                   :nicknames '()
-                                   :use nil))))
-
-;; This package is only used for the symbols used to
-;; index word objects.  There is no code in it.
-
+(defvar *word-package*
+  (or (find-package :word)
+      (make-package :word :nicknames nil :use nil))
+  "A package for the symbols used to index word objects.")
 
 ;;--- files
 

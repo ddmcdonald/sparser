@@ -190,26 +190,21 @@
 
 (defun record-inflections (inflections lemma type)
   (ecase type
-    (:noun  ;; key, value, word
-     (put-property-on-word :noun-inflections inflections lemma))
-    (:verb
-     (put-property-on-word :verb-inflections inflections lemma))))
+    (:noun (setf (get-tag :noun-inflections lemma) inflections))
+    (:verb (setf (get-tag :verb-inflections lemma) inflections))))
 
 (defun record-lemma (inflection lemma type)
   (ecase type
-    (:noun
-     (put-property-on-word :inflection-of-noun inflection lemma))
-    (:verb
-     (put-property-on-word :inflection-of-verb inflection lemma))))
-
+    (:noun (setf (get-tag :inflection-of-noun lemma) inflection))
+    (:verb (setf (get-tag :inflection-of-verb lemma) inflection))))
 
 (defun noun-forms-of (w)
-  (let ((value (property-of-word :noun-inflections w)))
+  (let ((value (get-tag :noun-inflections w)))
     (when value
       (pushnew w value))))
 
 (defun verb-forms-of (w)
-  (let ((value (property-of-word :verb-inflections w)))
+  (let ((value (get-tag :verb-inflections w)))
     (when value
       (pushnew w value))))
 
@@ -261,11 +256,7 @@
 
 #+ignore
 (defun noun/verb-ambiguous? (word) ;; verb/noun-category-name undefined
-  (let ((ambiguity
-         (cadr (member :dis-multiple-pos
-                       ;; this encoding comes from lingsoft data. ///make it generic
-                       ;; regardless of the source
-                       (word-plist word)  :test #'eq))))
+  (let ((ambiguity (get-tag :dis-multiple-pos word)))
     (when ambiguity
       (and (member (verb-category-name) ambiguity)
            (member (noun-category-name) ambiguity)))))
@@ -284,8 +275,7 @@
 (defun determiner? (word)
   ;; ///need to revise their definitions in rules:words; so this
   ;; is easier to compute
-  (or (let ((module (cadr (member :grammar-module
-                                  (unit-plist word)))))
+  (or (let ((module (get-tag :grammar-module word)))
         (when module
           (eq (gmod-symbol module) '*determiners*)))
       (let* ((rs (label-rule-set word))
@@ -503,7 +493,7 @@
 ;;;--------------------
 
 (defun word-stem (word)
-  (cadr (member :stem (unit-plist word))))
+  (get-tag :stem word))
 
 (defmethod stem-form ((s symbol))
   (stem-form (symbol-name s)))
@@ -531,11 +521,7 @@
                    (or attested-stem
                        putative-stem)))
               (if stem
-                (then
-                 (setf (unit-plist word)
-                       `(:stem ,stem ,@(unit-plist word)))
-                 stem)
-                ;; otherwise return the original word
+                (setf (get-tag :stem word) stem)
                 word)))
           ;; without morphology information we can't stem
           word))))
@@ -747,13 +733,7 @@
 (defun test-stemmer (pname)
   (let ((word (word-named pname)))
     (if word
-      (let* ((plist (unit-plist word))
-	     (stem-sublist (member :stem plist)))
-	(when stem-sublist
-	  (if (eq (car plist) :stem)
-	    (setf (unit-plist word) (cddr plist))
-	    (break "stem marker is in the middle of the plist")))
-	word)
+      (remove-tag :stem word)
       (setq word (define-word/expr pname)))
     (stem-form word)))
 
@@ -979,21 +959,14 @@
       (setf (cfr-schema singular-rule) schematic-rule)
       (assign-brackets-as-a-common-noun word)
 
-      (cond
-       ((member :punctuation (etypecase word
-                               (word (word-plist word))
-                               (polyword (pw-plist word))))
-        ;; so we don't pluralize it
-        (list singular-rule))
-       (*inihibit-constructing-plural*
-        (list singular-rule))
-       (t
+      (if (or *inihibit-constructing-plural* (punctuation? word))
+        (list singular-rule)
         (make-cn-rules/aux/plural
-         word special-cases category referent singular-rule schematic-rule))))))
+         word special-cases category referent singular-rule schematic-rule)))))
 
 (defvar *deferred-collection-plurals* nil
   "An alist of word and category for all the plurals created before the
-   category 'collection' was defined, mostly lemmas in the upper model.")
+category 'collection' was defined, mostly lemmas in the upper model.")
 
 (defun make-cn-rules/aux/plural (word special-cases category referent
                                  singular-rule schematic-rule)

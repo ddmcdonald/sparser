@@ -11,7 +11,7 @@
 
 
 (defun edit-object (o)
-  (let ((source-file (cadr (member :file-location (plist-for o)))))
+  (let ((source-file (get-tag :file-location o)))
     (if source-file
       (let* ((window (ed source-file))
              (buffer (ask window (window-buffer)))

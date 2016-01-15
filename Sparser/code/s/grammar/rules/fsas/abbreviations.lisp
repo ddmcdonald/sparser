@@ -36,20 +36,15 @@
                             &optional name-prefix? )
   (let* ((full-word (define-word/expr full-word-string))
          (abbrev-word (define-word/expr abbrev-string))
-         (rs (word-rules abbrev-word)))
-
-    (unless rs
-      (setq rs (setf (word-rule-set abbrev-word)
-                     (make-rule-set :backpointer abbrev-word))))
+         (rs (establish-rule-set-for abbrev-word)))
 
     (unless (member 'abbreviation (rs-fsa rs))
       (setf (rs-fsa rs) (cons 'abbreviation (rs-fsa rs))))
 
     (when name-prefix?
-      (push-onto-plist abbrev-word t :name-prefix))
+      (setf (get-tag :name-prefix abbrev-word) t))
 
-    (let ((correspondences (gethash abbrev-word
-                                    *word/s-for-abbreviation*)))
+    (let ((correspondences (gethash abbrev-word *word/s-for-abbreviation*)))
       (if correspondences
         (if (consp correspondences)
           (unless (member full-word correspondences :test #'eq)
@@ -66,7 +61,7 @@
 
 
 (defun abbreviation-is-a-prefix? (abbrev-word)
-  (get-tag-for :name-prefix abbrev-word))
+  (get-tag :name-prefix abbrev-word))
 
 
 ;;;-----------------------

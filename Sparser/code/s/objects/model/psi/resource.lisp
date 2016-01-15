@@ -85,7 +85,7 @@
                 *next-individual* (car next-cell)))))
     
     ;; don't zero its fields until it's allocated again
-    (setf (unit-plist psi) `(:deallocated t ,@(unit-plist psi)))
+    (setf (get-tag :deallocated psi) t)
     psi ))
 
 
@@ -104,7 +104,7 @@
 
 
 (defun deallocated-psi? (i)
-  (member :deallocated (unit-plist i)))
+  (get-tag :deallocated i))
 
 
 ;;;------------
@@ -140,7 +140,5 @@
 
 (defun psi-object# (n)
   ;; modeled on individual-object# 
-  (find n *active-psi*
-	:key #'(lambda (i)
-		 (cadr (member :uid (unit-plist i))))))
+  (find n *active-psi* :key #'indiv-uid))
 

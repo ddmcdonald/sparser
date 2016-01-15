@@ -79,14 +79,12 @@
                               :third-singular  third-singular/ok
                               :third-plural  third-plural ))
 
-      (setf (unit-plist word)
-            `(:stem ,stem/ok
-              :past-tense ,past-tense/ok
-              :past-participle ,past-participle/ok
-              :present-participle  ,present-participle/ok
-              :third-singular  ,third-singular/ok
-              :third-plural  ,third-plural
-              ,@(word-plist word)))
+      (setf (get-tag :stem word) stem/ok
+            (get-tag :past-tense word) past-tense/ok
+            (get-tag :past-participle word) past-participle/ok
+            (get-tag :present-participle word) present-participle/ok
+            (get-tag :third-singular word) third-singular/ok
+            (get-tag :third-plural word) third-plural)
 
       (if stem/ok
         stem/ok
@@ -100,31 +98,29 @@
 (defun save-irregular-verb-definition (w stream)
   ;; called from Save-word-definition after the dossier has been opened
   ;; and set to the stream and the date information has been written
-  (let* ((plist (unit-plist w)))
-    (when (cadr (member :stem plist :test #'eq))
-      ;; sanity check. If one of them is there, I'll assume that they
-      ;; all are since it's populated by a program.
-      (let ((stem (word-pname (cadr (member :stem plist :test #'eq))))
-            (past (word-pname (cadr (member :past-tense plist :test #'eq))))
-            (past-part (word-pname (cadr (member :past-participle plist :test #'eq))))
-            (pres-part (word-pname (cadr (member :present-participle plist :test #'eq))))
-            (third-sing (word-pname (cadr (member :third-singular plist :test #'eq))))
-            (third-plural (word-pname (cadr (member :third-plural plist :test #'eq)))))
-        
+  (when (get-tag :stem w)
+    ;; sanity check. If one of them is there, I'll assume that they
+    ;; all are since it's populated by a program.
+    (let ((stem (word-pname (get-tag :stem w)))
+          (past (word-pname (get-tag :past-tense w)))
+          (past-part (word-pname (get-tag :past-participle w)))
+          (pres-part (word-pname (get-tag :present-participle w)))
+          (third-sing (word-pname (get-tag :third-singular w)))
+          (third-plural (word-pname (get-tag :third-plural w))))
 
-        (format stream "~&(make-verb-rules/aux2  (define-word \"~A\")~
+      (format stream "~&(make-verb-rules/aux2  (define-word \"~A\")~
                         ~%       (find-or-make-category-object '~A :referential)~
                         ~%       (category-named '~A)"
-                stem stem stem)
-        (format stream "~%  :past-tense \"~A\"~
+              stem stem stem)
+      (format stream "~%  :past-tense \"~A\"~
                         ~%  :past-participle \"~A\"~
                         ~%  :present-participle \"~A\"~
                         ~%  :third-singular \"~A\"~
                         ~%  :third-plural \"~A\" "
-                past past-part pres-part
-                third-sing third-plural )
-        (write-string ")" stream)
-        w ))))
+              past past-part pres-part
+              third-sing third-plural )
+      (write-string ")" stream)
+      w )))
 
 
 (defun write-minimal-irregulars-as-rdata (w stream
@@ -133,21 +129,19 @@
   ;; Writes the smallest set of specifications needed, given
   ;; how the verb was defined. Fits into the ':verb' subfield
   ;; of some rdata field that its caller is writing.
-  (let* ((plist (word-plist w))
-         (stem (cadr (member :stem plist :test #'eq))))
-    (unless stem
-      (break "Threading bug: this routine doesn't make sense ~
-              unless the word~%has been run through a definition ~
-              routine that gives it a stem~%and a property list ~
-              that records its conjugation:~%   ~A~%" w))
-    (let
-      ((past (cadr (member :past-tense plist :test #'eq)))
-       (past-part (cadr (member :past-participle plist :test #'eq)))
-       (pres-part (cadr (member :present-participle plist :test #'eq)))
-       (third-sing (cadr (member :third-singular plist :test #'eq)))
-       (third-plural (cadr (member :third-plural plist :test #'eq)))
-       irregular-past  irregular-past-part  irregular-pres-part
-       irregular-third-sing  irregular-third-plural )
+  (let* ((stem (get-tag :stem w)))
+    (assert stem (stem)
+            "Threading bug: this routine doesn't make sense ~
+             unless the word~%has been run through a definition ~
+             routine that gives it a stem~%and a property list ~
+             that records its conjugation:~%   ~A~%")
+    (let ((past (get-tag :past-tense w))
+          (past-part (get-tag :past-participle w))
+          (pres-part (get-tag :present-participle w))
+          (third-sing (get-tag :third-singular w))
+          (third-plural (get-tag :third-plural w))
+          irregular-past  irregular-past-part  irregular-pres-part
+          irregular-third-sing  irregular-third-plural )
 
       (when (not (eq past (ed-form-of-verb stem)))
         (setq irregular-past past))

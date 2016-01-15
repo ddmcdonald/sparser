@@ -162,7 +162,7 @@
 
 (defun super-categories-of1 (c)
   ;;(format t "~&~%supers-of ~a" c)
-  (or (get-tag-for :super-categories c)
+  (or (get-tag :super-categories c)
       (let* ((lp (cat-lattice-position c))
              (supers
               (cond
@@ -178,7 +178,7 @@
                 (push-debug `(,c ,lp))
                 (error "Unexpected type of object in the lattice-position ~
                         field of ~a~%  ~a  ~a" c (type-of lp) lp)))))
-        (push-onto-plist c supers :super-categories) 
+        (setf (get-tag :super-categories c) supers)
         supers)))
     
              

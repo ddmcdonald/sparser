@@ -35,19 +35,14 @@
   ;; of the prefix even if it appears without the period,
   ;; which is a way of handling that fairly frequent typo.
 
-  (let ((obj
-         (define-individual 'person-version :name abbrev)))
+  (let ((obj (define-individual 'person-version :name abbrev)))
     (if full
       (then
         (define-abbreviation full abbrev) ;; makes the word
-        (let* ((full-word (word-named full))
-               (cfr (define-cfr category::person-version
-                                (list full-word)
+        (setf (get-tag :rules obj)
+              (list (define-cfr category::person-version `(,(word-named full))
                       :form category::noun
-                      :referent obj)))
-          (push-onto-plist obj cfr :rules)))
-
-      (define-abbreviation abbrev abbrev))
-
-    obj ))
-
+                      :referent obj))))
+      (else
+        (define-abbreviation abbrev abbrev)))
+    obj))

@@ -43,9 +43,8 @@ whose sole purpose in life is to be the holder for a section marker.
       (else
         (let ((word (make-word :symbol w-symbol
                                :pname  ""
-                               :plist `(:section-marking-word
-                                        :use-symbol-name-when-printing
-                                        ) )))
+                               :plist `(:section-marking-word t
+                                        :use-symbol-name-when-printing t) )))
 
           (catalog/word word w-symbol)
           (setf (word-rule-set word)

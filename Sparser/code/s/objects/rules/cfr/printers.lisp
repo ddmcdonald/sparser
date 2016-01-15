@@ -73,6 +73,7 @@
      (princ-category (cfr-category cfr) stream))
     (word     (princ-word   (cfr-category cfr) stream))
     (polyword (display-polyword (cfr-category cfr) stream))
+    (symbol   (princ (cfr-category cfr) stream))
     (otherwise
      (push-debug `(,(cfr-category cfr)))
      (error "Unexpected type of lhs of cfr while printing")))
@@ -91,6 +92,7 @@
           (polyword (write-string "\"" stream)
                     (display-polyword item stream)
                     (write-string "\"" stream))
+          (symbol   (princ (cfr-category cfr) stream))
           (otherwise
            (push-debug `(,item)) ; 
            (error "Unexpected item in rhs of cfr while printing")))))))
@@ -101,7 +103,7 @@
      (princ-category term stream))
     (word     (princ-word term stream))
     (polyword (display-polyword term stream))
-    (symbol (princ term stream))
+    (symbol   (princ term stream))
     (otherwise
      (push-debug `(,term))
      (error "unexpected kind of term while printing"))))
@@ -116,8 +118,7 @@
     (word     (princ-word   (cfr-category cfr) stream))
     (polyword (display-polyword (cfr-category cfr) stream)))
   (write-string " -> " stream)
-  (let ((polyword-string
-         (pw-pname (cadr (member :polyword (cfr-plist cfr))))))
+  (let ((polyword-string (pw-pname (get-tag :polyword cfr))))
     (write-char #\" stream)
     (write-string polyword-string stream)
     (write-char #\" stream)))

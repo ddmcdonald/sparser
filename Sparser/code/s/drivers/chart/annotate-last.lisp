@@ -55,8 +55,7 @@
   ;; from Check-for-]-from-word-after.  The plist of the ends-here
   ;; vector has a value, so we check whether the value is annotation
   ;; and if so we call the indicated function. 
-  (let* ((plist (ev-plist (pos-ends-here position-after)))
-         (entry (cadr (member :annotation plist))))
+  (let ((entry (get-tag :annotation (pos-ends-here position-after))))
     (when entry
       (let ((fn (first entry))
             (terms (rest entry)))

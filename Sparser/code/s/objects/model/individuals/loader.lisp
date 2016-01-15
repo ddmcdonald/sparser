@@ -24,9 +24,9 @@
 (lload "individuals;printers")
 (lload "individuals;decode")
 (lload "individuals;find")
+(lload "individuals;make")
 (lload "individuals;index")
 (lload "individuals;delete")
 (lload "individuals;resource")
-(lload "individuals;make")
 (lload "individuals;reclaim")
 

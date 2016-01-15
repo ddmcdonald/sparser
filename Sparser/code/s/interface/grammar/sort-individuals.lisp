@@ -94,7 +94,7 @@
 
 (defun define-sort-function (category-name fn-name)
   (let ((category (category-named category-name t)))
-    (push-onto-plist category fn-name :sort-function)))
+    (setf (get-tag :sort-function category) fn-name)))
 
 
 
@@ -218,7 +218,7 @@
 
           (otherwise
            (cond
-            ((setq sort-fn (get-tag-for :sort-function itype1))
+            ((setq sort-fn (get-tag :sort-function itype1))
              (funcall sort-fn i1 i2))
             ((value-of 'name i1)
              (sort-individuals-by-their-name i1 i2))

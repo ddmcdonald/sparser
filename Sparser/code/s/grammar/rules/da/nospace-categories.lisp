@@ -281,12 +281,12 @@ for each case and define a k-method to make sense of it all.
   (let* ((word (resolve/make string))
          (category (category-named 'no-space-prefix :break))
          (i (find-or-make-individual 'no-space-prefix
-                                     :word word)))
-    (let* ((cfr (def-cfr/expr category (list word)
-                  :form category::common-noun ;; odd, but what alternative?
-                  :referent i)))
-      (push-onto-plist i (list cfr) :rules)
-      word))) ;; to go on the list
+                                     :word word))
+         (cfr (def-cfr/expr category (list word)
+                :form category::common-noun ;; odd, but what alternative?
+                :referent i)))
+    (setf (get-tag :rules i) (list cfr))
+    word)) ;; to go on the list
 
 (defparameter *salient-hyphenated-literals*
   `(

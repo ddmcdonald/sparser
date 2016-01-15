@@ -88,7 +88,7 @@
 
 (defun print-individual/number (n stream)
   (write-string "#<number " stream)
-  (let ((word (cadr (member :digit-sequence (unit-plist n)))))
+  (let ((word (get-tag :digit-sequence n)))
     (cond
      (word (princ-word word stream))
      ((itypep n 'collection)
@@ -106,7 +106,7 @@
 
 
 (defun string/number (n)
-  (let ((word (cadr (member :digit-sequence (unit-plist n)))))
+  (let ((word (get-tag :digit-sequence n)))
     (if word
       (word-pname word)
       (let ((value (value-of 'value n)))
@@ -133,49 +133,33 @@
   (value-of 'value indiv-number))
 
 
-
 ;;;-------------------------------
 ;;; routines for the plist fields
 ;;;-------------------------------
 
 (defun number-ones (number)
-  (get :ones (unit-plist number)))
+  (get-tag :ones number))
 
 (defun set-number-ones (number word)
-  (if (unit-plist number)
-    (setf (unit-plist number)
-          (cons :ones (cons word (unit-plist number))))
-    (setf (unit-plist number) `(:ones ,word))))
-
+  (setf (get-tag :ones number) word))
 
 (defun number-teens (number)
-  (get :teens (unit-plist number)))
+  (get-tag :teens number))
 
 (defun set-number-teens (number word)
-  (if (unit-plist number)
-    (setf (unit-plist number)
-          (cons :teens (cons word (unit-plist number))))
-    (setf (unit-plist number) `(:teens ,word))))
-
+  (setf (get-tag :teens number) word))
 
 (defun number-tens (number)
-  (get :tens (unit-plist number)))
+  (get-tag :tens number))
 
 (defun set-number-tens (number word)
-  (if (unit-plist number)
-    (setf (unit-plist number)
-          (cons :tens (cons word (unit-plist number))))
-    (setf (unit-plist number) `(:tens ,word))))
-
+  (setf (get-tag :tens number) word))
 
 (defun number-multiplicand (number)
-  (get :multiplicand (unit-plist number)))
+  (get-tag :multiplicand number))
 
 (defun set-number-multiplicand (number word)
-  (if (unit-plist number)
-    (setf (unit-plist number)
-          (cons :multiplicand (cons word (unit-plist number))))
-    (setf (unit-plist number) `(:multiplicand ,word))))
+  (setf (get-tag :multiplicand number) word))
 
 
 ;;;--------------
@@ -187,7 +171,7 @@
 (defun find-number (lisp-number)
   (find-individual 'number :value lisp-number))
 
-;; (get-tag-for :numerical-value digit-word))
+;; (get-tag :numerical-value digit-word))
 
 (defmethod find-or-make-number ((word word))
   (find-or-make-number (word-pname word)))

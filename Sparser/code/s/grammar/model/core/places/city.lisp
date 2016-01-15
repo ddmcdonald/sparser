@@ -142,8 +142,7 @@
             (when rules
               (setq rule (cons rule (nreverse rules))))))
 
-        (setf (unit-plist obj)
-              `(:rules ,rules ,@(unit-plist obj)))
+        (setf (get-tag :rules obj) rules)
 
         obj ))))
 

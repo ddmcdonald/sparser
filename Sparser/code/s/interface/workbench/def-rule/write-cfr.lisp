@@ -72,8 +72,7 @@
              (define-cfr lhs (list left-label right-label)
                :form form :referent referent))))
 
-      (setf (cfr-plist cfr)
-          `(:relation ,relation ,@(cfr-plist cfr)))
+      (setf (get-tag :relation cfr) relation)
 
       cfr )))
 

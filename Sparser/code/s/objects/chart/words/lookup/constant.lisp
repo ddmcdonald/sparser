@@ -21,7 +21,7 @@
          (word (make-word
                 :symbol w-symbol
                 :pname ""
-                :plist '(:use-symbol-name-when-printing))))
+                :plist '(:use-symbol-name-when-printing t))))
 
     (setf (word-rule-set word)
           (make-rule-set :backpointer word))

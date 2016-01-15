@@ -51,7 +51,7 @@ for the word and a rule that rewrite to it.
             :form category::wh-pronoun
             :schema (get-schematic-word-rule :word) ;;/// make one for wh ??
             :referent category)))
-    (push-onto-plist category word-rule :rule)
+    (setf (get-tag :rule category) word-rule)
     (values category
             word-rule
             word)))

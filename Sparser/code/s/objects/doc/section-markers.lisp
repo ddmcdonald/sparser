@@ -148,15 +148,7 @@
           ;; The termination action and what it closes will be handled
           ;; automatically when the action fires.
           (let* ((word (sm-word sm))
-                 (rs (rule-set-for word)))
-            (unless rs
-              (setq rs (make-rule-set :backpointer word))
-              (typecase word
-                (word
-                 (setf (word-rule-set word) rs))
-                (polyword (setf (pw-rules word) rs))
-                ((or category referential-category mixin-category)
-                 (setf (cat-rule-set word) rs))))
+                 (rs (establish-rule-set-for word)))
             (if (rs-completion-actions rs)
                 (if (member :section-marker (rs-completion-actions rs))
                     (then

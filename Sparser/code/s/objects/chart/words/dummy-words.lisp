@@ -24,20 +24,13 @@
                           *word-package*)))
 
     (let ((new? (not (boundp w-symbol)))
-          (word
-           (if (boundp w-symbol)
-             (symbol-value w-symbol)
-             (make-word  :symbol w-symbol
-                         :pname  ""))))
+          (word (if (boundp w-symbol)
+                  (symbol-value w-symbol)
+                  (make-word :symbol w-symbol :pname ""))))
       (when new?
         (catalog/word word w-symbol)
-        (setf (unit-plist word)
-              (list :use-symbol-name-when-printing
-                    ;; :sectionizing-marker
-                    ))
-        (setf (word-rule-set word)
-              (make-rule-set
-               :backpointer word)))
+        (establish-rule-set-for word)
+        (setf (get-tag :use-symbol-name-when-printing word) t))
 
       (when capitalization
         (setf (word-capitalization word) capitalization))

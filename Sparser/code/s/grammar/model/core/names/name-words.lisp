@@ -118,7 +118,7 @@
        (eq category::name-word (car (indiv-type obj)))))
 
 (defun name-word-for-word (word)
-  (get-tag-for :name-word word))
+  (get-tag :name-word word))
 
 
 (defun only-known-as-a-name (word)
@@ -187,13 +187,9 @@
                             (list actual-word)
                   :form category::proper-noun
                   :referent name )))
-
-      (setf (unit-plist name)
-            `(:rule ,rule ,@(unit-plist name)))
-      (setf (unit-plist lc-word)
-            `(:name-word ,name ,@(unit-plist lc-word)))
-      (setf (unit-plist actual-word)
-            `(:name-word ,name ,@(unit-plist actual-word)))
+      (setf (get-tag :rule name) rule
+            (get-tag :name-word lc-word) name
+            (get-tag :name-word actual-word) name)
       name )))
 
 (defun define-name-word (word)
@@ -202,19 +198,17 @@
 	 (rule (define-cfr category::name-word (list word)
                   :form category::proper-noun
                   :referent nw )))
-    (setf (unit-plist nw)
-	  `(:rule ,rule ,@(unit-plist nw)))
-    (setf (unit-plist word)
-            `(:name-word ,nw ,@(unit-plist word)))
+    (setf (get-tag :rule nw) rule
+          (get-tag :name-word word) nw)
     nw))
 
 
 (defun make-name-word-silent (nw)
   ;; called by any routine that wants to flush the cfr for the nw
   ;; because it is going to supplant it with its own.
-  (let ((cfr (get-tag-for :rule nw)))
+  (let ((cfr (get-tag :rule nw)))
     (delete/cfr cfr)
-    (remove-property-from nw :rule)
+    (remove-tag :rule nw)
     (let ((word (value-of 'name nw)))
       (when (trivial-rule-set (rule-set-for word))
         (remove-rule-set-from word))
@@ -252,11 +246,9 @@
          (name (define-individual category::name-word
                  :name actual-word)))
 
-    (setf (unit-plist lc-word)
-          `(:name-word ,name ,@(unit-plist lc-word)))
+    (setf (get-tag :name-word lc-word) name)
     (unless use-lowercase-word
-      (setf (unit-plist actual-word)
-            `(:name-word ,name ,@(unit-plist actual-word))))
+      (setf (get-tag :name-word actual-word) name))
     name ))
 
 
@@ -322,10 +314,8 @@
 (defun reclaim/name-word (nw table name-word-category)
   (declare (ignore name-word-category))
   (unless (permanent-individual? nw)
-    (let* ((word (value-of 'name nw))
-           (nw-plist (unit-plist nw))
-           (cfr (cadr (member :rule nw-plist))))
-      
+    (let ((word (value-of 'name nw))
+          (cfr (get-tag :rule nw)))
       (block delete-nw-cfr
         (unless cfr
           (when *break-on-pattern-outside-coverage?*
@@ -337,14 +327,10 @@
             (break "Object listed as the cfr for ~A~%isn't: ~A" nw cfr))
           (return-from delete-nw-cfr))
         (delete/cfr cfr))
-      
-      (when (get-tag-for :name-word word)
-        (remove-property-from word :name-word))
-      
+
+      (remove-tag :name-word word)
       (remhash word table)
-      nw )))
-
-
+      nw)))
 
 
 ;;;---------------------------------------------

@@ -39,7 +39,7 @@
         (assign-bracket/expr word .[np )
         (assign-bracket/expr word ].phrase )
 
-        (let ((cfr (car (get-tag-for :rules q))))
+        (let ((cfr (car (get-tag :rules q))))
           (unless (cfr-p cfr)
             (break "expected the rule for this quantity to be ~
                     on the plist:~%~A~%" q))

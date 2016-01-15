@@ -16,14 +16,10 @@
 
 (in-package :sparser)
 
-;; package for the symbols used for convience in debugging rules
-
-(or (boundp '*phrase-structure-rule-package*)
-    (defconstant *phrase-structure-rule-package*
-                 (or (find-package :rule)
-                     (make-package :rule
-                                   :nicknames '("RULES")
-                                   :use nil))))
+(defvar *phrase-structure-rule-package*
+  (or (find-package :rule)
+      (make-package :rule :nicknames '("RULES") :use nil))
+  "Package for the symbols used for convience in debugging rules.")
 
 (lload "cfr;object")
 (lload "cfr;dotted")

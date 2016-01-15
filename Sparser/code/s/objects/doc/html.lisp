@@ -13,32 +13,20 @@
 ;;--- normally these will be called from the autodef routines
 
 (defun define-html-tag (string)
-
-  (let ((word (resolve-string-to-word/make string))
-        (category-name (intern (concatenate 'string "html/"
-                                            string)
-                               *sparser-source-package*))
-        cat  rule )
-
-    (unless (setq cat (category-named category-name))
-      ;; don't create the object twic
-
-      (setq cat (define-category/expr  category-name
-
-                  `(:specializes ,(category-named 'paired-html-tag)
-                    :instantiates html-tag
-                    :binds ((start-index . (:primitive number)))
-                    :index (:temporary :key start-index))))
-
-      (setq rule (define-cfr  (category-named 'html-tag)
-                              `( ,word )
-                   :form  (category-named 'section-marker)
-                   :referent cat ))
-
-      (setf (unit-plist cat) `(:rules ,(list rule)
-                               ,@(unit-plist cat)))
-
-      cat )))
+  (let* ((word (resolve-string-to-word/make string))
+         (name (intern (concatenate 'string "html/" string) *category-package*))
+         (cat (or (category-named name)
+                  (define-category/expr name
+                    `(:specializes ,(category-named 'paired-html-tag)
+                      :instantiates html-tag
+                      :binds ((start-index . (:primitive number)))
+                      :index (:temporary :key start-index))))))
+    (declare (special category::html-tag category::section-marker))
+    (setf (get-tag :rules cat)
+          (list (define-cfr category::html-tag `(,word)
+                  :form category::section-marker
+                  :referent cat)))
+    cat))
 
  
 

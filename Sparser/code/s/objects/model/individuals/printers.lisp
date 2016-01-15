@@ -50,17 +50,11 @@
     (if type-field
       (cond
        ((eq type-field :never-used)
-        (format stream "#<fresh individual ~A>"
-                (cadr (member :uid (unit-plist indiv)
-                              :test #'eq))))
+        (format stream "#<fresh individual ~A>" (indiv-uid indiv)))
        ((eq type-field :freshly-allocated)
-        (format stream "#<fresh individual ~A>"
-                (cadr (member :uid (unit-plist indiv)
-                              :test #'eq))))
+        (format stream "#<fresh individual ~A>" (indiv-uid indiv)))
        ((deallocated-individual? indiv)
-        (format stream "#<deallocated individual ~A>"
-                (cadr (member :uid (unit-plist indiv)
-                              :test #'eq))))
+        (format stream "#<deallocated individual ~A>" (indiv-uid indiv)))
        (t
         (let* ((operations (cat-operations (first type-field)))
                (special-routine

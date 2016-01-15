@@ -283,27 +283,17 @@ e.g. via DM&P or Fire.
   (let* ((pname (symbol-name s))
          (known? (word-named pname)))
     (unless known? ;; in which case we probably know a lot more than
-      ;; we're going to provide here. 
+                   ;; we're going to provide here.
       (let ((word (resolve-string-to-word/make pname)))
-        (typecase word
-          (word 
-           (setf (label-plist word)
-                 `(:function-word ,form-category ,@(label-plist word))))
-          (polyword
-           (setf (pw-plist word)
-                 `(:function-word ,form-category ,@(pw-plist word))))
-          (otherwise
-           (push-debug `(,word ,s ,form-category ,brackets))
-           (error "Unexpected type for the word corresponding to ~
-                   the symbol ~a: ~a" pname (type-of word))))
-
+        (setf (get-tag :function-word word) form-category)
         (establish-rule-set-for word)
-        (loop for b in brackets ;;//// unless those are bracket objects won't work
-           do (assign-bracket/expr word b))
+        (map nil ;; just for side effect
+             (lambda (bracket) (assign-bracket/expr word bracket))
+             (remove-if-not #'bracket-p brackets))
         word))))
 
-#+ignore ;; going with direct calls into Sparser's morphology
-  ;; machinery. But this is a model of what to do with other POS.
+#+ignore ;; Going with direct calls into Sparser's morphology machinery,
+         ;; but this is a model of what to do with other POS.
 (defmethod define-list-of-symbols-as-verbs ((list-of-symbols cons))
   ;;/// Write it out too?
   (let* ((verb-bracket-symbols '( ].verb  .[verb  mvb].  mvb.[))

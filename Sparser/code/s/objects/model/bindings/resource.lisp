@@ -95,7 +95,7 @@
                 next-cell (cdr next-cell)
                 next-binding (car next-cell)))))
 
-    (setf (unit-plist b) `(:deallocated t ,@(unit-plist b)))
+    (setf (get-tag :deallocated b) t)
     b ))
 
 
@@ -109,7 +109,7 @@
 
 (defun deallocated-binding? (b)
   (if b
-    (member :deallocated (unit-plist b) :test #'eq)
+    (get-tag :deallocated b)
 
     ;; Because of occasional aborts in the middle of things,
     ;; it can happen that a bindings field comes to contain

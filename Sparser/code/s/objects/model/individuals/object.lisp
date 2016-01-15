@@ -158,7 +158,7 @@
 ;; are loaded.  
 
 (defmethod remove-rules-from-category ((i individual))
-  (remove-rules-from-category  (get-tag-for :rules i)))
+  (remove-rules-from-category  (get-tag :rules i)))
 
 (defmethod remove-rules-from-category ((rules list))
   (dolist (rule rules)

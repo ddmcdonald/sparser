@@ -25,10 +25,4 @@ in the definition of word and category.
 (defstruct  (label
              (:include unit))
   symbol
-  rule-set )
-
-
-;; 10/25 temporary until the :include is done for words and polywords
-(defun label-rule-set (obj)
-  (rule-set-for obj))
-
+  rule-set)

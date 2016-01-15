@@ -278,7 +278,7 @@
       (starts-occasional-polyword word)))
 
 (defun starts-occasional-polyword (word)
-  (get-tag-for :occasional-polyword word))
+  (get-tag :occasional-polyword word))
 
 
 
@@ -327,9 +327,7 @@
 ;;  What would be a better place for this?
 
 (defun push-fsa-onto-word (word fn-name)
-  (unless (and word
-	       (word-p word))
-    (error "~a is not a word" word))
+  (check-type word word)
   (let ((rs (word-rules word)))
     (unless rs
       (setq rs (make-rule-set :backpointer word))

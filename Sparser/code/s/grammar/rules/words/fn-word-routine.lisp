@@ -29,36 +29,23 @@
 
 
 (defun function-word? (word)
-  (typecase word
-    (word (cadr (member :function-word (label-plist word))))
-    (polyword
-     (cadr (member :function-word (pw-plist word))))
-    (otherwise
-     nil )))
-
+  (etypecase word
+    ((or word polyword)
+     (get-tag :function-word word))))
 
 (defun define-function-word (string
                              &key ((:brackets bracket-symbols))
                                   ((:form name-of-form-category)))
-  (let ((word (or (when (word-p string) string)
-                  (when (polyword-p string) string)
-                  (resolve-string-to-word/make string)))
+  (let ((word (typecase string
+                ((or word polyword) string)
+                (otherwise (resolve-string-to-word/make string))))
         (form (if name-of-form-category
                 (resolve-form-category name-of-form-category)
-                t )))
-    (etypecase word
-      (word (setf (label-plist word)
-                  `( :function-word ,form ,@(label-plist word) )))
-      (polyword
-       (setf (pw-plist word)
-             `( :function-word ,form ,@(pw-plist word)))))
-
-    (unless (rule-set-for word)
-      (establish-rule-set-for word))
-
+                t)))
+    (setf (get-tag :function-word word) form)
+    (establish-rule-set-for word)
     (assign-brackets-to-word word bracket-symbols)
-
-    word ))
+    word))
 
 
 (defun define-isolated-function-word (string &key form)

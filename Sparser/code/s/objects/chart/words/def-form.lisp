@@ -56,7 +56,8 @@
 
       (when new?
         (catalog/word word symbol))
-      (calculate-properties-of-words-pname/in-buffer word)
+      (when (word-p word)
+        (calculate-properties-of-words-pname/in-buffer word))
       (when new?
         (do-word-canonical-form string word))
 

@@ -310,7 +310,7 @@
     ;; an unknown word via make-word/all-properties/or-primed
     (cond
      (uc-word 
-      (let* ((uc-rule (car (rs-single-term-rewrites (pw-rules uc-word))))
+      (let* ((uc-rule (car (rs-single-term-rewrites (rule-set-for uc-word))))
              (cfr (define-cfr/resolved 
                       (cfr-category uc-rule)
                       (list (resolve/make words-string)) ;; rhs-list-of-categories
@@ -327,8 +327,7 @@
       (assemble-category-rule-and-referent-for-an-obo obo (resolve/make words-string)))
      ((resolve words-string)
       (let* ((w (resolve words-string))
-	     (rule (car (rs-single-term-rewrites
-			 (if (word-p w) (word-rules w)(pw-rules w))))))
+	     (rule (car (rs-single-term-rewrites (rule-set-for w)))))
 	(cond
 	  (rule
 	   (format t "***reify-ns-name-as-bio-entity -- NOT redefining word ~s" w)

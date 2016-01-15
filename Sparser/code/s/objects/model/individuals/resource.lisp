@@ -80,7 +80,7 @@
                 next-individual (car next-cell)))))
     
     ;; don't zero its fields until it's allocated again
-    (setf (unit-plist indiv) `(:deallocated t ,@(unit-plist indiv)))
+    (setf (get-tag :deallocated indiv) t)
     indiv ))
 
 
@@ -88,8 +88,14 @@
 ;;; subroutines
 ;;;-------------
 
+(defun deallocated-individual? (i)
+  (get-tag :deallocated i))
+
+(defun indiv-uid (i)
+  (get-tag :uid i))
+
 (defun initialize-fields/individual (i)
-  (let ((uid (cadr (member :uid (unit-plist i)))))
+  (let ((uid (indiv-uid i)))
     ;; preserve the id that identifies this instance of an individual
     ;; among all individuals ever allocated, zero the rest
     (setf (indiv-plist i) `(:uid ,uid))
@@ -98,9 +104,6 @@
     (setf (indiv-binds i) nil)
     (setf (indiv-bound-in i) nil)
     i ))
-
-(defun deallocated-individual? (i)
-  (member :deallocated (unit-plist i)))
 
 
 ;;;------
@@ -114,16 +117,13 @@
    *number-of-individuals-in-initial-allocation*))
 
 
-(unless (boundp '*number-of-individuals-in-initial-allocation*)
-  (defparameter *number-of-individuals-in-initial-allocation* 100))
+(defvar *number-of-individuals-in-initial-allocation* 100)
 
-(unless (boundp '*number-of-individuals-per-increment*)
-  (defparameter *number-of-individuals-per-increment* 50))
-
+(defvar *number-of-individuals-per-increment* 50)
 
 (defparameter *individual-count* 0
   "Used for both allocated (resource-based) and permanent individuals
-   so that all numbers are uniquely assigned.")
+so that all numbers are uniquely assigned.")
 
 
 (defun allocate-a-rasher-of-individuals
@@ -153,8 +153,8 @@ are done with calls to make-a-permanent-individual just below and just
 'make' a new instance of the structure. Reclaim-able are done by calls
 to allocate-individual.
 
-The usual progression of indexing calls for permanent individuals is
-index-aux/individual => index-to-category => add-permanent-individual
+The usual progression of indexing calls for permanent individuals
+is index-aux/individual => add-permanent-individual.
 
 Regardless of what the category may say about indexing, that function
 uses the two-lists on the plist conception of how things are done. 
@@ -172,21 +172,17 @@ uses the two-lists on the plist conception of how things are done.
     (push individual *permanent-individuals*)
     individual ))
 
-
 (defun permanent-individual? (i)
-  (get-tag-for :permanent i))
+  (get-tag :permanent i))
 
+(defun individuals-of-this-category-are-permanent? (category)
+  "Called by define-individual to set the value of the flag
+*index-under-permanent-instances* which that function binds."
+  (get-tag :instances-are-permanent category))
 
 (defun note-permanence-of-categorys-individuals (category)
-  ;; called from decode-index-field-aux as it reads a category's
-  ;; index field. 
-  (push-onto-plist category t :instances-are-permanent))
-
-(defun individuals-of-this-category-are-permanent (category)
-  ;; called by define-individual to set the value of the flag
-  ;; *index-under-permanent-instances* which that function binds.
-  (get-tag-for :instances-are-permanent
-               category))
+  "Called from decode-index-field-aux as it reads a category's index field."
+  (setf (get-tag :instances-are-permanent category) t))
 
 
 ;;;-----------------
@@ -194,28 +190,7 @@ uses the two-lists on the plist conception of how things are done.
 ;;;-----------------
 
 (defun individual-object# (n)
-  (cond ((find n *active-individuals*
-              :key #'(lambda (i)
-                       (cadr (member :uid (unit-plist i))))))
-
-        ((find n *next-individual*
-              :key #'(lambda (i)
-                       (cadr (member :uid (unit-plist i))))))
-
-        ((find n *permanent-individuals*
-               :key #'(lambda (i)
-                        (cadr (member :uid (unit-plist i))))))
-
-        (t
-         (format t "~%No active or allocated individual with ~
-                    uid #~A" n))))
-
-
-
-(defun indiv-uid (i)
-  (let ((plist (unit-plist i)))
-    (when plist
-      (let ((uid (cadr (member :uid plist))))
-        uid))))
-
-
+  (flet ((find-individual (individuals) (find n individuals :key #'indiv-uid)))
+    (or (find-individual *active-individuals*)
+        (find-individual *next-individual*)
+        (find-individual *permanent-individuals*))))

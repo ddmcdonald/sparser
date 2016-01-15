@@ -99,10 +99,9 @@
          ;; this will make a rule that rewrites the word as the
          ;; category with the category as its referent, but we'll
          ;; make it more specific below.
-         (pronoun (define-individual category
-                    :word pronoun-word))
-         (rule
-          (first (cadr (member :rules (indiv-plist pronoun))))))
+         (pronoun (define-individual category :word pronoun-word))
+
+         (rule (first (get-tag :rules pronoun))))
 
     (setf (cfr-form rule) form-category)
     ;;///(setf (cfr-referent rule) xx )

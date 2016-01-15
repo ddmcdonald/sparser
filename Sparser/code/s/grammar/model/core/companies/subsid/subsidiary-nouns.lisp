@@ -21,8 +21,7 @@ categorization indicating this function. |#
   (etypecase u
     (category
      ;; it's presumably a self-referential word
-     (let ((word (cadr (member :self-referential-word
-                               (cat-plist u)))))
+     (let ((word (get-tag :self-referential-word u)))
        (if word
          (display-word word stream)
          (break "The unit in the subsidiary is a category but not a ~

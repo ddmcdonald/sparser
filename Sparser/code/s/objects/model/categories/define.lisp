@@ -132,7 +132,7 @@
            (loop for symbol in mixins
              collect (category-named symbol :break-if-missing)))))
     
-    (remove-property-from category :super-categories) ;; clear the cache
+    (remove-tag :super-categories category) ;; clear the cache
     
     (when specializes
       (unless specialized-category
@@ -458,7 +458,7 @@
   (cadr (member :rules (cat-realization category))))
 
 (defmethod get-rules ((i individual))
-  (get-tag-for :rules i))
+  (get-tag :rules i))
 
 
 (defun add-rules-to-individual (i rules)
@@ -472,12 +472,12 @@
   (let ((total-rules (get-rules category)))
     (dolist (rule rules)
       (setq total-rules (tail-cons rule total-rules)))
-    (push-onto-plist category total-rules :rules)))
+    (setf (get-tag :rules category) total-rules)))
 
 (defun add-rule-to-category (rule category)
   (let ((rule-list (get-rules category)))
     (if (null rule-list)
-      (push-onto-plist category `(,rule) :rules)
+      (setf (get-tag :rules category) `(,rule))
       (rplacd (last rule-list)
               (list (car (last rule-list)) rule)))))
 

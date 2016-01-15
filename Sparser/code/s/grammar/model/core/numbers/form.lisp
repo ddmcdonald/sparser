@@ -227,12 +227,8 @@
            m )))) ;; the illion
            
 
-    (setf (unit-plist number)
-          (append `(:rules ,rules)
-                  (unit-plist number)))
-    (setf (unit-plist number)
-          (append `(:digit-sequence ,word-object-for-digits)
-                  (unit-plist number)))
+    (setf (get-tag :rules number) rules
+          (get-tag :digit-sequence number) word-object-for-digits)
 
     number ))
 

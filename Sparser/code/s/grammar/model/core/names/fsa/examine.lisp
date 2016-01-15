@@ -89,16 +89,13 @@
 ;;; general property for the easy cases
 ;;;-------------------------------------
 
-(defun occurs-in-names (category &optional kind-of-name &aux
-                        (category (category-named category t)))
-  (push-onto-plist category
-                   (or kind-of-name
-                       t )
-                   :category-is-valid-in-names))
+(defun occurs-in-names (category &optional (kind-of-name t))
+  (setf (get-tag :category-is-valid-in-names (category-named category t))
+        kind-of-name))
 
 
 (defun valid-name-category? (category)
-  (get-tag-for :category-is-valid-in-names category))
+  (get-tag :category-is-valid-in-names category))
 
 
 
@@ -237,7 +234,7 @@
              ;;  category edge labels
                
              (category::name-word
-              (when (get-tag-for :heuristic-company-word
+              (when (get-tag :heuristic-company-word
                                  (edge-referent tt))
                 (setq koc? count)))
 

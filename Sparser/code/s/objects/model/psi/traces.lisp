@@ -44,8 +44,7 @@
 (deftrace :allocating-a-psi-object (psi)
   ;; called from allocate-psi
   (when *trace-psi-construction*
-    (trace-msg "Allocating new psi #~a" 
-	       (cadr (member :uid (unit-plist psi))))))
+    (trace-msg "Allocating new psi #~a" (indiv-uid psi))))
 
 
 ;;--- make-psi and its friends

@@ -179,7 +179,7 @@
   ;; but note the cases in referents-of-list-of-edges show what to do
   ;; with terms that have other meanings
   (flet ((find-or-make-name-word (word)
-           (or (get-tag-for :name-word word)
+           (or (get-tag :name-word word)
                ;;/// versions, initials, company-indicators, 
                ;; inc-terms
                (when (only-known-as-a-name word)

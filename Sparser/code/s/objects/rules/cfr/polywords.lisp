@@ -73,11 +73,8 @@
   (cond
    (*use-occasional-polywords*
     (or (starts-occasional-polyword word) ;; find
-        (let ((initial-state (make-instance 'polyword-state
-                             :word `(,word))))
-          (push-onto-plist word initial-state
-                           :occasional-polyword)
-          initial-state)))
+        (setf (get-tag :occasional-polyword word)
+              (make-instance 'polyword-state :word `(,word)))))
    (t
     (or (starts-polyword word) ;; find 
         (let ((initial-state (make-instance 'polyword-state

@@ -33,16 +33,13 @@
 (defvar *force-case-shift*)
 
 
-(defstruct  (polyword
+(defstruct (polyword
              (:conc-name #:pw-)
+             (:include label)
              (:print-function print-polyword-structure))
-
-  symbol ;; polyword::c-raf
   pname  ;; "C-RAF"
-  rules  ;; a rule-set
   words  ;; (#<word "C"> #<word HYPHEN> #<word "RAF">)
-  fsa
-  plist )
+  fsa )
 
 
 ;;;----------
@@ -51,16 +48,13 @@
 
 (defun print-polyword-structure (obj stream depth)
   (declare (ignore depth))
-  (write-string "#<polyword \"" stream)
-  (write-string (pw-pname obj) stream)
-  (write-string "\" >" stream)
+  (print-unreadable-object (obj stream :type t)
+    (princ-polyword obj stream))
   obj)
 
-(defun princ-polyword (pw stream)
-  (write-string "\"" stream)
-  (write-string (pw-pname pw) stream)
-  (write-string "\"" stream)
-  pw )
+(defun princ-polyword (pw &optional (stream t))
+  (format stream "\"~a\"" (pw-pname pw))
+  pw)
 
 (defun display-polyword (pw stream)
   (write-string (pw-pname pw) stream))
@@ -192,13 +186,12 @@
 
 
 (defun not-all-same-character-type (string)
-
-  ;; Called from, e.g., resolve-string-to-word as part of defining
-  ;; a word to determine whether the string should be treated like
-  ;; a polyword.  Uses the data structures in the tokenizer so that
-  ;; the criteria will be the same as runtime -- i.e. if the string
-  ;; includes characters of more than one type then it will be
-  ;; tokenized as more than one word.
+  "Called from, e.g., resolve-string-to-word as part of defining
+a word to determine whether the string should be treated like
+a polyword.  Uses the data structures in the tokenizer so that
+the criteria will be the same as runtime -- i.e. if the string
+includes characters of more than one type then it will be
+tokenized as more than one word."
 
   (let* ((char-list (coerce string 'list))
          (first-category (car (tokenizer-entry (first char-list)))))
@@ -209,33 +202,6 @@
         (return-from not-all-same-character-type t)))
 
     nil ))
-    
-    
-
-;;;-----------------
-;;; syntactic sugar
-;;;-----------------
-
-(defun put-property-on-pw (tag value word)
-  (unless (symbolp tag)
-    (error "The tag used to label a property on a word must ~
-            be a symbol:~%~A" tag))
-  (let ((established-cons (member tag (pw-plist word))))
-    (if established-cons
-      (unless (equal (cadr established-cons) value)
-        (rplacd established-cons
-                `(,value ,@(cddr established-cons))))
-      (setf (pw-plist word)
-            `(,tag ,value ,@(pw-plist word))))
-    (pw-plist word)))
-
-(defun property-of-polyword (tag pw)
-  (unless (symbolp tag)
-    (error "The tag used to access a property on a word must ~
-            be a symbol:~%~A" tag))
-  (cadr (member tag (pw-plist pw))))
-
-
 
 
 ;;;----------------------------------------------------------
@@ -245,10 +211,7 @@
 (defun index-polyword-fsa-under-trigger (list-of-words
                                          polyword)
   (let* ((first-word (first list-of-words))
-         (rule-set (or (word-rule-set first-word)
-                       (setf (word-rule-set first-word)
-                             (make-rule-set
-                              :backpointer first-word)))))
+         (rule-set (establish-rule-set-for first-word)))
 
     (when (typep rule-set 'word)
       ;; an implicit, pass-through definition of an otherwise unknown
@@ -279,40 +242,20 @@
 ;;; code for printing words and polywords -- moved to after polywords are defined, to reduce warnings in SBCL
 ;;;---------------------------------------------------------------
 
-(defun princ-word (word  &optional (stream *standard-output*))
-  ;; called by routines that want the word presented as a string
-  ;; rather than as an object.
-  ;; Takes polywords as well as words for the convenience of model routines.
+(defun princ-word (word &optional (stream *standard-output*))
+  "Called by routines that want the word presented as a string
+rather than as an object. Takes polywords as well as words for
+the convenience of model routines."
   (if word
-    (if (member :use-symbol-name-when-printing
-                (etypecase word
-                  (word (word-plist word))
-                  (polyword (pw-plist word))))
-      (then
-        (princ (word-symbol word) stream))
-      (else
-        (write-char #\" stream)
-        (etypecase word
-          (word
-           (write-string (word-pname word) stream))
-          (polyword
-           (write-string (pw-pname word) stream)))
-        (write-char #\" stream)))
+    (if (get-tag :use-symbol-name-when-printing word)
+      (princ (word-symbol word) stream)
+      (format stream "\"~a\"" (pname-for word)))
     (write-string "<word>" stream)))
 
 
 (defun word-string (word)
-  ;; copies princ-word, but just returns the string for some other
-  ;; routine to use
+  "Like princ-word, but returns the string instead of printing it."
   (when word
-    (if (member :use-symbol-name-when-printing
-                (etypecase word
-                  (word (word-plist word))
-                  (polyword (pw-plist word))))
-      (then
-        (symbol-name (word-symbol word)))
-      (else
-        (etypecase word
-          (word (word-pname word))
-          (polyword (pw-pname word)))))))
-
+    (if (get-tag :use-symbol-name-when-printing word)
+      (symbol-name (pname-for word))
+      (pname-for word))))

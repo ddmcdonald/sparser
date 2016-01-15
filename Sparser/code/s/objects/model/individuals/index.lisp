@@ -32,19 +32,18 @@
 ;;;------------------------------------------------------
 
 (defun index/permanent-individual (individual category bindings)
-  ;; called from make/permanent-individual
+  "Called from make/permanent-individual."
+  (check-type individual (satisfies permanent-individual?) "permanent")
   (if (listp category)
     (dolist (cat category)
-      (index-aux/individual individual cat bindings :permanent))
-    (index-aux/individual individual category bindings :permanent)))
+      (index-aux/individual individual cat bindings :permanent t))
+    (index-aux/individual individual category bindings :permanent t)))
 
 
 (defun index/individual (individual category bindings)
-  ;; Called from make-simple-individual and friends
+  "Called from make-simple-individual and friends."
   (flet ((index-it (i category bindings)
-           (if (permanent-individual? i)
-             (index-aux/individual i category bindings :permanent)
-             (index-aux/individual i category bindings))))
+           (index-aux/individual i category bindings)))
     (if (listp category)
       (dolist (cat category)
         (index-it individual cat bindings))
@@ -55,96 +54,41 @@
 ;;; driver
 ;;;--------
 
-(defun index-aux/individual (individual
-                             category
-                             bindings
-                             &optional permanent? )
-
+(defun index-aux/individual
+    (individual
+     category
+     bindings
+     &key (permanent
+           (or (permanent-individual? individual)
+               (individuals-of-this-category-are-permanent? category)
+               *index-under-permanent-instances*)))
   (declare (special *index-under-permanent-instances*))
-
   (let* ((operations (cat-operations category))
-	 (fn-data (when operations (cat-ops-index operations))))
-
-    (unless fn-data
-      (setq fn-data (lookup-fn-data-of-parent category)))
-
+         (fn-data (or (and operations (cat-ops-index operations))
+                      (lookup-fn-data-of-parent category))))
     (when fn-data
       (if (listp fn-data)
-        (funcall (car fn-data) (cadr fn-data)
-                 individual category bindings)
+        (funcall (car fn-data) (cadr fn-data) individual category bindings)
         (funcall fn-data individual category bindings)))
-
-    (index-to-category
-     individual
-     category
-     (or permanent?
-         ;; The global will have been bound (if it is) by
-         ;; Define-individual as a consequence of all
-         ;; individuals of this category being permanent.
-         ;; The optional arg is an override mechanism
-         ;; for individuals that would otherwise be
-         ;; temporary
-         *index-under-permanent-instances*))))
-
-
-(defun index-to-category (individual category permanent?)
-
-  ;; called by Index-aux/individual to handle the interaction
-  ;; of this newly allocated individual and the records used
-  ;; by the reclaimation process.
-
-  (let ((instance-list-cons
-         (member :instances (unit-plist category) :test #'eq)))
-
-    (if instance-list-cons
-      (rplacd instance-list-cons
-              `((,individual ,@(cadr instance-list-cons))
-                ,@(cddr instance-list-cons)))
-      (setf (unit-plist category)
-            `(:instances (,individual) ,@(unit-plist category))))
-
-    (when permanent?
+    (push individual (get-tag :instances category))
+    (when permanent
       (add-permanent-individual individual category))))
-
 
 
 ;;;-----------------
 ;;; access routines
 ;;;-----------------
 
-(defun instance# (integer symbol-for-category)
-  (let ((instances (all-instances-of symbol-for-category)))
-    (find integer instances :key #'indiv-id)))
-
-(defun list-instances (symbol-for-category)
-  (let ((category (category-named symbol-for-category)))
-    (unless category
-      (error "There is no category named ~A" symbol-for-category))
-    (let ((instances (all-instances category)))
-      (pl instances)
-      (length instances))))
-
+(defun all-instances (category)
+  "Return all instances of a category."
+  (check-type category category "a category")
+  (typecase (cat-instances category)
+    (null)
+    (hash-table (all-hash-vals (cat-instances category)))
+    (otherwise (get-tag :instances category))))
 
 (defun all-instances-of (symbol-for-category)
-  (let ((category (category-named symbol-for-category)))
-    (unless category
-      (error "There is no category named ~A" symbol-for-category))
-    (all-instances category)))
+  (all-instances (category-named symbol-for-category t)))
 
-(defun all-instances (category)
-  (let ((listing (cat-instances category))
-        (plisting
-         (cadr (member :instances (unit-plist category) :test #'eq))))
-    (cond
-     ((null listing) 
-      nil)
-     ((typep listing 'hash-table)
-      (loop for v being the hash-value of listing
-        collect v))
-     (plisting
-      plisting)
-     (t (push-debug `(,category))
-        (error "Unclear how to collect the instances of ~a"
-               category)))))
-
-
+(defun instance# (id symbol-for-category)
+  (find id (all-instances-of symbol-for-category) :key #'indiv-id))

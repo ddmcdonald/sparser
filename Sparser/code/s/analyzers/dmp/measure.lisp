@@ -575,7 +575,7 @@
       (dolist (b bindings)
         (setq body (binding-body b)
               var (binding-variable b)
-              count (cadr (member :incidence-count (unit-plist b))))
+              count (get-tag :incidence-count b))
         (unless (itype body (category-named 'segment))
           (setq entry (assoc var relationships))
           (if entry

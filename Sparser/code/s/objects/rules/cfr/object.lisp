@@ -17,6 +17,7 @@
 
 
 (defstruct (cfr
+            (:include unit)
             (:print-function print-cfr-structure))
   symbol
   category    ;; the lhs ("parent")
@@ -27,10 +28,7 @@
   relation    ;; the grammatical relation this rule reflects
   referent    ;; the model object the edge will denote
   schema      ;; the case that spawned this rule when it comes from an etf
-  plist
   )
-
-
 
 ;;;------------
 ;;; predicates
@@ -45,31 +43,16 @@
        (= 1 (length (cfr-rhs cfr)))))
 
 (defun polyword-rule? (cfr)
-  (member :polyword (cfr-plist cfr)))
-
-
-(defun has-property/cfr (cfr tag)
-  (let ((plist (cfr-plist cfr)))
-    (when plist
-      (cadr (member tag plist)))))
-
+  (get-tag :polyword cfr))
 
 ;;;----------
 ;;; decoders
 ;;;----------
 
 (defun category-to-apply (rule)
-  "The rule was retrieved by hand and is being used for
-   its parts. This sorts out what to use as the category
-   in the unusual cases."
-  (let ((completion-field (cfr-completion rule)))
-    (cond
-     ((null completion-field)
-      (cfr-category rule))
-     ((eq completion-field :right-edge)
-      (form-rule-head-category rule :right-edge))
-     ((eq completion-field :left-edge)
-      (form-rule-head-category rule :left-edge))
-     (t (push-debug `(,rule))
-        (break "New case - completion fiele = ~a"
-               completion-field)))))
+  "The rule was retrieved by hand and is being used for its parts.
+This sorts out what to use as the category in the unusual cases."
+  (ecase (cfr-completion rule)
+    ((nil) (cfr-category rule))
+    (:right-edge (form-rule-head-category rule :right-edge))
+    (:left-edge (form-rule-head-category rule :left-edge))))

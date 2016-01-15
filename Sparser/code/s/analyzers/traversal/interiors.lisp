@@ -47,22 +47,15 @@
         label cfr )
     (if (eq :multiple-initial-edges daughter-edge)
       (then
-        (let ((edge-vector (ev-edge-vector (pos-starts-here pos-after-open)))
-              plist )
+        (let ((edge-vector (ev-edge-vector (pos-starts-here pos-after-open))))
           (dotimes (i (ev-number-of-edges (pos-starts-here pos-after-open)))
-            (setq label (edge-category (aref edge-vector i))
-                  plist (etypecase label
-                          (category (cat-plist label))
-                          (word (word-plist label))))
-            (when (setq cfr (cadr (member :<_>interpretation plist)))
+            (setq label (edge-category (aref edge-vector i)))
+            (when (setq cfr (get-tag :<_>interpretation label))
               (setq daughter-edge (aref edge-vector i))
               (return)))))
       (else
         (setq label (edge-category daughter-edge)
-              cfr (cadr (member :<_>interpretation (plist-for label))))
-                                 (etypecase label
-                                   (category (cat-plist label))
-                                   (word (word-plist label)))))
+              cfr (get-tag :<_>interpretation label))))
     (if cfr
       (if (cfr-p cfr)
         (then

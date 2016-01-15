@@ -235,7 +235,7 @@ of defining something else (e.g. a category) in the list of cfrs.")
 (defun note-grammar-module (obj &key source)
   (let ((gm *grammar-module-being-loaded*))
     (when gm
-      (push-onto-plist obj gm :grammar-module)
+      (setf (get-tag :grammar-module obj) gm)
       (etypecase obj
         (cfr 
          ;; All kinds of rules fall under this one type, so they

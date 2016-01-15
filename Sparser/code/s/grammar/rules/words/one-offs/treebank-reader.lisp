@@ -437,16 +437,13 @@
 
 
 (defun toplevel-tags (constituents)
-   (let ((list '()))
-     (dolist (c constituents)
-       (push (get-tag c) list))
-     (nreverse list)))
-
-(defun get-tag (sexp)
-  (unless (symbolp (car sexp))
-    (break "Threading bug: sexp doesn't start with a symbol:~
-          ~%~a" sexp))
-  (car sexp))
+  (flet ((get-tag (sexp)
+           (check-type (car sexp) symbol "a valid tag")
+           (car sexp)))
+    (let ((list '()))
+      (dolist (c constituents)
+        (push (get-tag c) list))
+      (nreverse list))))
 
 (defun ic-patterns-for (tag)
   (let ((table (gethash tag *NT-tags-to-patterns*)))

@@ -104,7 +104,7 @@
 
     (let ((*index-under-permanent-instances* ;;t
            (or *index-under-permanent-instances* ;; for recursive calls
-               (individuals-of-this-category-are-permanent category))))
+               (individuals-of-this-category-are-permanent? category))))
       (declare (special *index-under-permanent-instances*))
       (let ((individual
              (find-or-make/individual category binding-instructions)))
@@ -363,12 +363,10 @@
   ;; One-off version of with-all-instances-permanent so we don't
   ;; get it deallocated out from under us.
   (let ((*index-under-permanent-instances* t))
-    (let ((i (make-unindexed-individual category)))
-      (push-onto-plist category i :individual)
-      i)))
+    (setf (get-tag :individual category) (make-unindexed-individual category))))
 
 (defun get-category-individual (category)
-  (get-tag-for :individual category))
+  (get-tag :individual category))
 
 ;;;------------------------------------------------------------------
 ;;; broad routine for making/adjusting an individual from a category
@@ -440,32 +438,9 @@
 ;;;----------------------
 
 (defun next-id (category)
-  (cond
-   ((category-p category)
-    (incf (cat-id-counter category)))
-   (t
-    (break "what is going on in next id -- not a category")
-    (let ((count (getf (unit-plist category) :count)))
-      (if (null count)
-          (then (setf (getf (unit-plist category) :count) 1)
-            1)
-          (incf (getf (unit-plist category) :count))))
-    )))
-    
+  (etypecase category
+    (category (incf (cat-id-counter category)))))
 
-
-(defun reset-category-count (category
-                             &optional number )
-  (cond
-   ((category-p category)
-    (setf (cat-id-counter category) (or number 0)))
-   (t
-    (break "what is going on in next id -- not a category")
-    (let ((count-cons
-           (member :count (unit-plist category))))
-      (when count-cons
-        (if number
-            (rplacd count-cons
-                    `( ,number ,@(cddr count-cons)))
-            (rplacd count-cons
-                    `( nil ,@(cddr count-cons)))))))))
+(defun reset-category-count (category &optional (number 0))
+  (etypecase category
+    (category (setf (cat-id-counter category) number))))

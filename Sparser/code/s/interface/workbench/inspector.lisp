@@ -573,13 +573,13 @@
 (defun princ-in-inspector/word (w stream context)
   ;; does the printing when a table cell contains an XX
   (declare (ignore context))
-  (if (member :use-symbol-name-when-printing (word-plist w))
+  (if (get-tag :use-symbol-name-when-printing w)
     (format stream "~A" (string-downcase (symbol-name (word-symbol w))))
     (format stream "\"~A\"" (word-pname w))))
 
 
 (defun word-princ-string (w)
-  (if (member :use-symbol-name-when-printing (word-plist w))
+  (if (get-tag :use-symbol-name-when-printing w)
     (string-downcase (symbol-name (word-symbol w)))
     (word-pname w)))
 

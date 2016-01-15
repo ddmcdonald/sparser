@@ -153,16 +153,11 @@
            (check-for-left-rollout nil rhs-terms))))
     (if rule
       (then
-        ;; it's probably the final rule in the role out, so we 
-        ;; lookup the 'real' rule it stands in for
+        ;; it's probably the final rule in the roll-out,
+        ;; so we lookup the 'real' rule it stands in for
         (if (listp rule)
-          ;; several rules already have this rhs
-          rule
-
-          (let ((n-ary-rule
-                 (cadr (member :rolled-out-from (cfr-plist rule)))))
-            (or n-ary-rule rule))))
-
+          rule ;; several rules already have this rhs
+          (or (get-tag :rolled-out-from rule) rule)))
       nil )))
 
 

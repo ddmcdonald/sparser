@@ -560,8 +560,7 @@ there were ever to be any.  ///hook into final actions ??  |#
       (word
        (format stream "~&e~A~20,2T~S~%"  ;; had been 33
                (edge-position-in-resource-array tt)
-               (if (member :use-symbol-name-when-printing
-                           (word-plist word-or-category))
+               (if (get-tag :use-symbol-name-when-printing word-or-category)
                  (symbol-name (word-symbol word-or-category))
                  (word-pname word-or-category))))
       (polyword
@@ -624,8 +623,7 @@ there were ever to be any.  ///hook into final actions ??  |#
       (word
        (format stream "~&e~A~20,2T~S"  ;; had been 33
                (edge-position-in-resource-array tt)
-               (if (member :use-symbol-name-when-printing
-                           (word-plist word-or-category))
+               (if (get-tag :use-symbol-name-when-printing word-or-category)
                  (symbol-name (word-symbol word-or-category))
                  (word-pname word-or-category))))
       (polyword
@@ -667,8 +665,7 @@ there were ever to be any.  ///hook into final actions ??  |#
 
     (format stream "~&~A~20,2T~S :: ~A~%"  ;; had been 33
             edge-name-string
-            (if (member :use-symbol-name-when-printing
-                        (word-plist word))
+            (if (get-tag :use-symbol-name-when-printing word)
               (symbol-name (word-symbol word))
               (word-pname word))
             edge-label-string )))

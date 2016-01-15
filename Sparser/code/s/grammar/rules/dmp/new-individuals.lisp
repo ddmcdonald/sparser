@@ -74,25 +74,16 @@
 
 
 (defun terms-word (term)
-  (unless (individual-p term)
-    (break "Argument is not an individual: ~A" term))
+  (check-type term individual "an individual")
   (let ((word (value-of 'word term)))
-    (if word
-      word
-      (case (cat-symbol (first (indiv-type term)))
-        (category::number 
-         (let ((plist (unit-plist term)))
-           (or (cadr (member :ones plist))
-               (cadr (member :teens plist))
-               (cadr (member :tens plist))
-               (cadr (member :multiplicand plist))
-               (break "Can't find the right plist field for the word ~
-                       for a number~%  ~A~%  ~A" plist term))))
-        (otherwise
-         (break "Don't know how to find a print form for a ~
-                 term of type~% ~A -- ~A~%"
-                (first (indiv-type term)) term))))))
-
+    (or word
+        (ecase (cat-symbol (first (indiv-type term)))
+          (category::number
+           (or (get-tag :ones term)
+               (get-tag :teens term)
+               (get-tag :tens term)
+               (get-tag :multiplicand term)
+               (error "Can't find a word for the number ~a" term)))))))
 
 
 ;;;-----------------------------------------
@@ -223,8 +214,7 @@
 ;;/// move once debugged
 (defun rule-executed-by-polyword (pw)
   (let* ((fsa-cfr (pw-fsa pw))
-         (plist (cfr-plist fsa-cfr))
-         (n-ary-field (cadr (member :n-ary plist :test #'eq))))
+         (n-ary-field (get-tag :n-ary fsa-cfr)))
     (first (second n-ary-field))))
 
 

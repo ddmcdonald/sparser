@@ -54,13 +54,10 @@
   
 
 (defun extract-string-from-category (c)
-  (cond ((member :self-referential-word (cat-plist c))
-         (let ((obj (cadr (member :self-referential-word
-                                  (cat-plist c)))))
-           (etypecase obj
-             (polyword (pw-pname obj)))))
-        (t (break/debug
-            "New case for Extract-string-from-category"))))
+  (let ((obj (get-tag :self-referential-word c)))
+    (etypecase obj
+      (null (break/debug "New case for Extract-string-from-category"))
+      (polyword (pw-pname obj)))))
 
 
 

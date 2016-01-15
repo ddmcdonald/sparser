@@ -447,8 +447,7 @@
                  (word-pname (value-of 'name item)))
                 
                 ((indiv-typep item 'number)
-                 ;(word-pname
-                 ; (cadr (member :digit-sequence (unit-plist item))))
+                 ;(word-pname (get-tag :digit-sequence item))
                  (format nil "~A" (value-of 'value item))
                  )
                 

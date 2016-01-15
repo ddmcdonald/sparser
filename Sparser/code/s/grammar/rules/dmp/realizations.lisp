@@ -89,9 +89,7 @@
 ;;--- one word segments
 
 (defun add-rr/only-term-in-segment (i)
-  (let ((record (realization-record i)))
-    (extend-rr i :only-term-in-segment record)))
-
+  (extend-rr i :only-term-in-segment))
 
 
 ;;--- unprefixed two-word segments
@@ -259,20 +257,11 @@
 ;;;---------------------
 
 (defun realization-record (individual)
-  (get-tag-for :realization-record individual))
+  (get-tag :realization-record individual))
 
-(defun extend-rr (individual realization-type &optional existing-record)
+(defun extend-rr (individual realization-type)
   (tr :adding-realization-type individual realization-type)
-  (let ((record (or existing-record
-                    (realization-record individual))))
-    (if record
-      (unless (member realization-type record :test #'eq)
-        (push-onto-plist individual
-                         realization-type
-                         :realization-record))
-      (push-onto-plist individual
-                       (list realization-type)
-                       :realization-record))))
+  (pushnew (get-tag :realization-record individual) realization-type))
 
 ;;;---------
 ;;; display

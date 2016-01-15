@@ -59,10 +59,9 @@
       (cerror "just continue"
               "Deal with part-of in region definitions ~
                now? (\"~a\")" name-string))
- ; Note to self to make sure the ancillary bits to this
- ;       (setf (unit-plist obj)
- ;             `(:rules ,rules ,@(unit-plist obj)))
-    r ))
+    ; Note to self to make sure the ancillary bits to this ...
+    ;(setf (get-tag :rules obj) rules)
+    r))
 
 
 (define-category typed-region  ;; "the Kurdish city of Sulaimaniya

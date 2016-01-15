@@ -42,7 +42,7 @@
 
 (defun word-is-a-preposition? (word)
   ;; depends on the define-function-word setting this up
-  (let ((pos (get-tag-for :function-word word)))
+  (let ((pos (get-tag :function-word word)))
     (when pos
       (or (eq pos category::preposition)
           (eq pos category::spatial-preposition)))))
@@ -75,7 +75,7 @@
               :form (resolve-form-category form)
               :schema (get-schematic-word-rule :preposition)
               :referent category))))
-      (push-onto-plist category word-rule :rule)
+      (setf (get-tag :rule category) word-rule)
       (values category
               word-rule
               word ))))

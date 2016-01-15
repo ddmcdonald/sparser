@@ -191,7 +191,7 @@ returning a new one.
     (setf (binding-value b)     value)
 
     (when *track-incidence-count-on-bindings*
-      (setf (unit-plist b) `(:incidence-count 1 ,(unit-plist b))))
+      (setf (get-tag :incidence-count b) 1))
 
     (index/binding b variable no-index-on-body?)
      b ))

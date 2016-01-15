@@ -11,24 +11,20 @@
 
 (in-package :sparser)
 
+(defun punct-tag (punct-type)
+  (ecase punct-type
+    (:angle-brackets  :interior-of-angle-brackets)
+    (:curly-brackets  :interior-of-curly-brackets)
+    (:square-brackets :interior-of-square-brackets)
+    (:parentheses     :interior-of-parentheses)
+    (:quotation-marks :interior-of-quotation-marks)))
+
 ;;;------------------
 ;;; using a function
 ;;;------------------
 
-(defun define-interior-action (label type function)
-  (ecase type
-    (:angle-brackets
-     (push-onto-plist label function :interior-of-angle-brackets))
-    (:curly-brackets
-     (push-onto-plist label function :interior-of-curly-brackets))
-    (:square-brackets
-     (push-onto-plist label function :interior-of-square-brackets))
-    (:parentheses
-     (push-onto-plist label function :interior-of-parentheses))
-    (:quotation-marks
-     (push-onto-plist label function :interior-of-quotation-marks))))
-
-
+(defun define-interior-action (label punct-type function)
+  (setf (get-tag (punct-tag punct-type) label) function))
 
 
 ;;;------------------------------------
@@ -37,53 +33,19 @@
 
 (defun define-interior-of-paired-punctuation/expr
        (punct-type lhs rhs form referent)
-
-  (unless (= (length rhs) 1)
-    (break "Right now there can only be one term in the righthand ~
-            side of paired punctuation.~
-            ~%  after you correct this, if you continue the ~
-            loading will continue")
-    (return-from define-interior-of-paired-punctuation/expr))
-
-  (let ((plist-tag
-         #| original circa 5/94 and before
-          (case punct-type
-           (:angle-brackets :<_>interpretation)
-           (otherwise
-            (break "The paired-punctuation routines for ~A ~
-                    punctuation is not yet defined.~
-                    ~%  after you correct this, if you continue ~
-                    the loading will continue" punct-type)
-            (return-from
-             define-interior-of-paired-punctuation/expr)))|#
-         (case punct-type
-           (:angle-brackets  :interior-of-angle-brackets)
-           (:curly-brackets  :interior-of-curly-brackets)
-           (:square-brackets :interior-of-square-brackets)
-           (:parentheses     :interior-of-parentheses)
-           (:quotation-marks :interior-of-quotation-marks))
-         ))
-    
-    ;; make a rule, but don't enter it in the table
-    (let ((lhs-category (resolve/make lhs))
-          (rhs-category (resolve/make (car rhs)))
-          (form-category (resolve/make form)))
-      
-      (let ((cfr (make-cfr :category lhs-category
-                           :rhs      (list rhs-category)
-                           :form     form-category
-                           :referent referent)))
-        
-        ;; n.b. this cfr is not indexed.  The only pointer to it
-        ;; will be on the plist of of the rhs label.
-        ;; Also it's execution will be unusual, the cfr is just
-        ;; providing data for execution by the Span-interior code.
-        
-        (let ((plist (cat-plist rhs-category)))
-          (setf (cat-plist rhs-category)
-                (if plist
-                  (cons plist-tag (cons cfr plist))
-                  `(,plist-tag ,cfr))))
-
-        (values cfr rhs-category)))))
+  (assert (= (length rhs) 1)
+          (rhs)
+          "Only one term allowed in the rhs of paired punctuation.")
+  (let* ((lhs-category (resolve/make lhs))
+         (rhs-category (resolve/make (car rhs)))
+         (form-category (resolve/make form))
+         (cfr (make-cfr :category lhs-category
+                        :rhs      (list rhs-category)
+                        :form     form-category
+                        :referent referent)))
+    ;; N.B. this cfr is not indexed. The only pointer to it will be on the
+    ;; plist of of the rhs label. Also, its execution will be unusual - it's
+    ;; just providing data for execution by the Span-interior code.
+    (setf (get-tag (punct-tag punct-type) rhs-category) cfr)
+    (values cfr rhs-category)))
 
