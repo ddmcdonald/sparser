@@ -17,6 +17,7 @@
   :components (;;(:file "lispm") --  Mine for routines not in util
                (:file "package")
                (:file "alists")
+               (:file "hash-tables")
                (:file "strings")
                (:file "list-hacking")
                (:file "predicates")

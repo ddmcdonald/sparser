@@ -21,34 +21,6 @@
 
 (in-package :sparser)
 
-;;; There's probably a better place for these - used here and R3 in this package.
-
-(defun all-hash-keys (ht)
-  (let ((keys nil))
-    (maphash #'(lambda (key val)
-                 (declare (ignore val))
-                 (push key keys))
-             ht)
-    keys))
-
-(defun all-hash-vals (ht)
-  (let ((vals nil))
-    (maphash #'(lambda (key val)
-                 (declare (ignore key))
-                 (push val vals))
-             ht)
-    vals))
-
-
-(defun hash-counts (ht)
-  (let ((key-counts nil))
-    (maphash #'(lambda (key val)
-                 (push (list key (length val)) key-counts))
-             ht)
-    key-counts))
-
-
-
 ;;;----------------
 ;;; Standard setup
 ;;;----------------

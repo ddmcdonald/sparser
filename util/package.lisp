@@ -12,6 +12,11 @@
     (:export #:d 
              #:string-append #:concat
 
+             ;; from hash-tables
+             #:all-hash-keys
+             #:all-hash-vals
+             #:hash-counts
+
              ;; from push-debug
              #:push-debug
              #:pop-debug
