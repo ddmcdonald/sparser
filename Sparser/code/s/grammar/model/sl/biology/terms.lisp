@@ -1147,6 +1147,8 @@
 (def-cell-line "SkMel28")
 (def-cell-line "WM266.4")
 (def-cell-line "WM852")
+(def-cell-line "hBRIE")
+(def-cell-line "HEK293")
 (def-cell-line "HEK293T")
 (def-cell-line "HKe3 ER:HRASV12")
 (def-cell-line "HKe3 ER:HRAS12")
