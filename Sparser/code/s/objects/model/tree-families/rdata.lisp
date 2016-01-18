@@ -156,9 +156,7 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
   `(define-additional-realization/expr ',category ',@rdata))
 
 (defmethod define-additional-realization/expr ((category symbol) rdata)
-  (if (category-named category)
-    (define-additional-realization/expr (category-named category) rdata) ;; nil overrides delete?
-    (break "There is no category named ~a" category))) 
+  (define-additional-realization/expr (category-named category t) rdata))
 
 (defmethod define-additional-realization/expr ((category referential-category) rdata)
   ;; (push-debug `(,rdata ,category)) (break "check")

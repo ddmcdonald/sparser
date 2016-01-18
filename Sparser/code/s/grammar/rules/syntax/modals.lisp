@@ -56,16 +56,9 @@
 ;; to define-function-word in words/aux-verbs
 
 (defmacro define-modal (words &key negatives referent)
-  (let ((ref (when referent
-               (typecase referent
-                 (symbol (category-named referent))
-                 (category referent)
-                 (otherwise (push-debug `(,referent))
-                            (error "Unknown referent specifier: ~a"
-                                   referent))))))
-  `(define-modal/expr ',words 
-     :negatives ',negatives 
-     :referent ',ref)))
+  `(define-modal/expr ',words
+     :negatives ',negatives
+     :referent ',(and referent (category-named referent t))))
 
 (defun define-modal/expr (words &key negatives ((:referent referent-to-use)))
   (unless (consp words) (setq words (list words)))
@@ -91,21 +84,12 @@
           (schema (get-schematic-word-rule :modal)))
 
       (flet ((positive-rule (w)
-               (let ((word (typecase w
+               (let ((word (etypecase w
                              (string (resolve-string-to-word/make w))
                              (word w)
                              (polyword w)
                              (category w)
-                             (symbol
-                              (let ((c (category-named w)))
-                                (unless c
-                                  (push-debug `(,w))
-                                  (error "There is no category named ~a" w))
-                                c))
-                             (otherwise
-                              (push-debug `(,w))
-                              (error "Unknown type of word specifier: ~a~%~a"
-                                     (type-of w) w)))))
+                             (symbol (category-named w t)))))
                  (define-cfr category::modal `(,word)
                    :form form
                    :referent (or referent-to-use

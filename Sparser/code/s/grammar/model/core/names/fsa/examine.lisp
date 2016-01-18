@@ -89,14 +89,8 @@
 ;;; general property for the easy cases
 ;;;-------------------------------------
 
-(defun occurs-in-names (category &optional kind-of-name)
-  (etypecase category
-    (symbol
-     (setq category (category-named category))
-     (unless category
-       (break "No category named ~A has been defined" category)))
-    ((or referential-category mixin-category category)))
-
+(defun occurs-in-names (category &optional kind-of-name &aux
+                        (category (category-named category t)))
   (push-onto-plist category
                    (or kind-of-name
                        t )

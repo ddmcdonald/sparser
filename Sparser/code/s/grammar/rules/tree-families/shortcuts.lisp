@@ -745,11 +745,9 @@ broadly speaking doing for you all the things you might do by hand.
 
 ;;;
 
-(defmacro define-type-category-constructor (name-of-type-category) ;; symbol
-  (let ((type-category (category-named name-of-type-category)))
-    (unless type-category
-      (error "There is no category named ~a" name-of-type-category))
-    `(define-type-category-constructor/expr',type-category)))
+(defmacro define-type-category-constructor (name-of-type-category)
+  `(define-type-category-constructor/expr
+    ',(category-named name-of-type-category t)))
 
 (defun define-type-category-constructor/expr (type-category)
   (let* ((fn-name

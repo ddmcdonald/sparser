@@ -364,17 +364,10 @@
 
 
 (defun all-such-that (category-name var-name value)
-  (let ((category (etypecase category-name
-                    (symbol (category-named category-name))
-                    (referential-category category-name))))
-    (unless category
-      (error "There is no category named ~A" category-name))
-    (let ((variable
-           (decode-variable-name  var-name :category category)))
-      (let ((instances-ht (var-instances variable)))
-        (gethash value instances-ht)))))
-
-
+  (let* ((category (category-named category-name t))
+         (variable (decode-variable-name  var-name :category category))
+         (instances-ht (var-instances variable)))
+    (gethash value instances-ht)))
 
 
 

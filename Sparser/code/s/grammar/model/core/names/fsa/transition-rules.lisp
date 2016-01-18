@@ -194,14 +194,8 @@
   (let ((state (pnf-state-named name-of-state)))
     (unless state
       (break "There is no PNF state with the name ~A" name-of-state))
-    (let ((category (category-named category-name)))
-      (unless category
-        (break "There is no category named ~A" category-name))
-
-      (setf (get (label-symbol state) :classification)
-            category)
-
-      category )))
+    (setf (get (label-symbol state) :classification)
+          (category-named category-name t))))
 
 
 ;;;------------------------------------------------------------

@@ -53,13 +53,3 @@
     (let ((ops-str (cat-operations c)))
       (when ops-str
         (cat-ops-rule-label ops-str)))))
-
-
-;;;------------------
-;;; Other operations
-;;;------------------
-
-;; The other cases are in objecs/chart/categories/lookup,
-(defmethod category-named ((c referential-category) &optional break-if-no-category)
-  (declare (ignore break-if-no-category))
-  c)

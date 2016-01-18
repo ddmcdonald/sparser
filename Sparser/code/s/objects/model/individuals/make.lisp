@@ -150,10 +150,7 @@
   ;; essentially identical to case above except for the indexing
   (etypecase category
     (referential-category)
-    (symbol
-     (setq category (category-named category))
-     (unless category
-       (error "There is no category named ~A" category))))
+    (symbol (setq category (category-named category t))))
   (let* ((individual (make-individual :type `(,category)
                                       :id (next-id category)))
          (binding-instructions

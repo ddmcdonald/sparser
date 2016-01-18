@@ -255,10 +255,8 @@
 
 (defun define-special-printing-routine-for-category/expr (category-name
                                                           short full string)
-  (let ((category (category-named category-name))
+  (let ((category (category-named category-name t))
         (fn-name (name-of-category-print-function category-name)))
-    (unless category
-      (error "There is no category named ~A" category-name))
     (let ((ops (cat-operations category)))
       (setf (cat-ops-print ops) fn-name)
 

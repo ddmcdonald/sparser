@@ -154,36 +154,23 @@
 ;;; find
 ;;;------
 
-(defgeneric category-named (symbol &optional break-if-no-category)
-  (:documentation "This function's primary function is to
-    lookup the category that corresponds to particular symbol.
-    But we don't want it to choke if given a category directly.
-    The break-if-no-category flag, which the caller has to set,
-    is useful to catch typos."))
+(defgeneric category-named (name &optional errorp)
+  (:documentation "Look up a category by name."))
 
-(defmethod category-named ((symbol symbol) &optional break-if-no-category)
-  (let ((c-symbol (if (eq (symbol-package symbol)
-                          *category-package*)
-                    symbol
-                    (find-symbol (symbol-name symbol)
-                                 *category-package*))))
+
+(defmethod category-named ((name symbol) &optional errorp)
+  (let ((c-symbol (if (eq (symbol-package name) *category-package*)
+                    name
+                    (find-symbol (symbol-name name) *category-package*))))
     (if c-symbol
-      (if (boundp c-symbol)
-        (values (symbol-value c-symbol)
-              c-symbol)
-        (else
-          ;(break "The symbol ~A exists, but it is not linked to ~
-          ;        a category~%If this is ok, continue." c-symbol)
-          nil ))
-      (when break-if-no-category
-        (error "There is no category named ~a" symbol)))))
+      (category-named/c-symbol c-symbol errorp)
+      (when errorp
+        (error "There is no category named ~a." name)))))
 
-(defmethod category-named ((c t) &optional break-if-no-category)
-  (if (category-p c)
-    c
-    (when break-if-no-category
-      (error "Argument is neither category nor a symbol:~%~a  ~a"
-             (type-of c) c))))
+
+(defmethod category-named ((c category) &optional errorp)
+  (declare (ignore errorp))
+  c)
 
 
 (defun referential-category-named (symbol)
@@ -193,8 +180,13 @@
         category))))
 
 
-(defun category-named/c-symbol (c-symbol)
-  (symbol-value c-symbol))
+(defun category-named/c-symbol (c-symbol &optional errorp)
+  (handler-bind ((unbound-variable
+                  (lambda (condition)
+                    (declare (ignore condition))
+                    (unless errorp
+                      (return-from category-named/c-symbol nil)))))
+    (symbol-value c-symbol)))
 
 
 ;;;--------
@@ -203,18 +195,12 @@
 
 (defun delete-category (symbol-for-category)
   (multiple-value-bind (category c-symbol)
-                       (category-named symbol-for-category)
-    (unless category
-      (error "There is no category named ~A" symbol-for-category))
-
+                       (category-named symbol-for-category t)
     (delete/category category c-symbol)))
 
 
-(defun delete/category (category
-                        &optional (c-symbol
-                                   (cat-symbol category)))
-  (setq *categories-defined*
-        (delete category *categories-defined*))
+(defun delete/category (category &optional (c-symbol (cat-symbol category)))
+  (setq *categories-defined* (delete category *categories-defined*))
   (unintern c-symbol *category-package*)
   category)
 

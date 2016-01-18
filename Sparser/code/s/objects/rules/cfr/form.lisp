@@ -48,11 +48,8 @@
                (list (or (polyword-named (first rhs-expressions))
                          (define-polyword/expr (first rhs-expressions))))
                (mapcar #'resolve/make rhs-expressions)))
-        (form-object
-         (when form (resolve/make form :source :def-category)))
-        (decoded-referent-exp
-         (when referent (resolve-referent-expression referent))))
-
+        (form-object (and form (resolve/make form :source :def-category)))
+        (decoded-referent-exp (resolve-referent-expression referent)))
     (define-cfr/resolved lhs rhs form-object decoded-referent-exp schema)))
 
 (defun define-cfr/resolved (lhs rhs form-object decoded-referent-exp schema)

@@ -83,15 +83,7 @@
   (unless (consp items)
     (setq items (list items)))
   (let ((collection (make-unindexed-individual category::collection))
-        (category (typecase category-specifier
-                    (symbol (category-named category-specifier))
-                    (category category-specifier)
-                    (otherwise
-                     (error "Unknown type of category-specifier: ~a~%  ~a"
-                            (type-of category-specifier) category-specifier)))))
-    (unless category
-      (error "There is no category named ~s" category-specifier))
-
+        (category (category-named category-specifier t)))
     (setq collection
           (bind-dli-variable 'items items 
                          (bind-dli-variable 'number (length items) collection)))

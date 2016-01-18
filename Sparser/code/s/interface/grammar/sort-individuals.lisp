@@ -93,9 +93,7 @@
 ;;;-----------------------------------------
 
 (defun define-sort-function (category-name fn-name)
-  (let ((category (category-named category-name)))
-    (unless category
-      (break "There is no category named ~A" category-name))
+  (let ((category (category-named category-name t)))
     (push-onto-plist category fn-name :sort-function)))
 
 

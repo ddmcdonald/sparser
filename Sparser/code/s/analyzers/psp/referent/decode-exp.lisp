@@ -36,35 +36,16 @@
 ;;; driver
 ;;;--------
 
-(defun resolve-referent-expression (exp)
+(defun resolve-referent-expression (referent)
   ;; called from Def-cfr/expr to examine the expression as given in
   ;; the file format of rule.  Returns the expression/object to be
   ;; used at runtime.
-  
-  (if (null exp)
-    nil
-    (typecase exp
-      (list (decode-list-referent-expressions exp))
-      (symbol
-       (let ((category (category-named exp)))
-         (unless category
-           (error "The referent expression ~A, being a symbol, should ~
-                   name a category~%but no category with that name ~
-                   has been defined yet." exp))
-         category ))
-      (referential-category
-       exp)
-      (individual
-       exp)
-
-      (otherwise
-       (error "Unexpected TYPE of referent expression:~
-               ~%   ~a~
-               ~%   of type ~a~
-               ~%Check the syntax. Only lists denoting referent expressions ~
-               or symbols ~%denoting categories, categories themselves, ~
-               or individuals are legal."
-              exp (type-of exp))))))
+  (etypecase referent
+    (null)
+    (list (decode-list-referent-expressions referent))
+    (symbol (category-named referent t))
+    (referential-category referent)
+    (individual referent)))
 
 
 ;;;--------

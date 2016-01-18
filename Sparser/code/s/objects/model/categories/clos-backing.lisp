@@ -43,10 +43,7 @@ for every category.
   (gethash c *categories-to-classes*))
 
 (defmethod get-sclass ((s symbol))
-  (let ((c (category-named s)))
-    (unless c (error "No category named ~a" s))
-    (get-sclass c)))
-
+  (get-sclass (category-named s t)))
 
 (defun store-class-for-category (c class)
   (setf (gethash c *categories-to-classes*) class))

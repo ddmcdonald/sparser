@@ -93,9 +93,7 @@
                                  description examples
                                  not-instantiable )
 
-  (let ((category (category-named category-name)))
-    (unless category
-      (error "There is no category named ~A" category-name))
+  (let ((category (category-named category-name t)))
     (let* ((name (cat-symbol category))
            (obj (autodef-named name)))
 
