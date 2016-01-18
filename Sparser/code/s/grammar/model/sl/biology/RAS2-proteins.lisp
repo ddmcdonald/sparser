@@ -274,7 +274,7 @@
 (define-protein "MAML1_HUMAN" ("KIAA0200" "MAML1" "Mam-1")) 
 (define-protein "MAX_HUMAN" ("MAX" "bHLHd4" "BHLHD4")) 
 (define-protein "MEF2D_HUMAN" ("MEF2D")) 
-(define-protein "MP2K1_HUMAN" ("MKK1" "MAP2K1" "PRKMK1" "MEK1" "2.7.12.2")) 
+(define-protein "MP2K1_HUMAN" ("MKK1" "MAP2K1" "PRKMK1" "MEK1" "2.7.12.2" "p45MAPKK" "p45mapkk")) 
 (define-protein "MUC20_HUMAN" ("KIAA1359" "MUC20" "MUC-20")) 
 (define-protein "NADE_HUMAN" ("6.3.5.1" "NADSYN1")) 
 (define-protein "NCKP1_HUMAN" ("HEM2" "p125Nap1" "NAP1" "KIAA0587" "NCKAP1")) 

@@ -17,6 +17,9 @@
 (noun "integrin" :super protein-family)
 (noun "RAS GAP" :super protein-family)
 (noun "GAP" :super protein-family)
+(noun "tyrphostin" :super protein-family) ;; Tyrosine-kinase inhibitor -- actually a drug?
+(noun "CD3" :super protein-family)
+(noun "HLA class I molecule" :super protein-family)
 
 (noun ("CaMK" "CaM kinase" "CAMK" "CaM-kinase") :super protein-family)
 (def-family "IQGAP"

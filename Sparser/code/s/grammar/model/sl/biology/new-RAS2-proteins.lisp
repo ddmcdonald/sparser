@@ -119,7 +119,7 @@
 (DEF-RAS2-PROTEIN "ANGP1_HUMAN" ("ANGP1_HUMAN" "KIAA0003" "ANGPT1" "ANG-1")) 
 (DEF-RAS2-PROTEIN "AOC3_HUMAN" ("AOC3_HUMAN" "AOC3" "1.4.3.21" "VAP1" "adipocytes" "Membrane primary amine oxidase" "Copper amine oxidase" "HPAO" "Semicarbazide-sensitive amine oxidase" "SSAO" "Vascular adhesion protein 1" "VAP-1")) 
 (DEF-RAS2-PROTEIN "APC_HUMAN" ("APC_HUMAN" "APC" "Deleted in polyposis 2.5" "Protein APC" "DP2.5")) 
-(DEF-RAS2-PROTEIN "ARAF_HUMAN" ("ARAF_HUMAN" "A-RAF" "Proto-oncogene A-Raf" "PKS" "2.7.11.1" "ARAF" "ARaf" "Proto-oncogene A-Raf-1" "ARAF1" "PKS2" "Proto-oncogene Pks")) 
+(DEF-RAS2-PROTEIN "ARAF_HUMAN" ("ARAF_HUMAN" "A-RAF" "A-Raf" "Proto-oncogene A-Raf" "PKS" "2.7.11.1" "ARAF" "ARaf" "Proto-oncogene A-Raf-1" "ARAF1" "PKS2" "Proto-oncogene Pks")) 
 (DEF-RAS2-PROTEIN "ARAP3_HUMAN" ("ARAP3_HUMAN" "ARAP3" "CENTD3" "Cnt-d3" "Centaurin-delta-3" "Centaurin-δ-3")) 
 (DEF-RAS2-PROTEIN "ARF1_HUMAN" ("ARF1_HUMAN" "ARF1")) 
 (DEF-RAS2-PROTEIN "ARF4_HUMAN" ("ARF4_HUMAN" "ARF4" "ARF2")) 
@@ -316,7 +316,7 @@
 (DEF-RAS2-PROTEIN "EPO_HUMAN" ("EPO_HUMAN" "EPO" "Epoetin")) 
 (DEF-RAS2-PROTEIN "EPS8_HUMAN" ("EPS8_HUMAN" "EPS8" "Eps8")) 
 (DEF-RAS2-PROTEIN "ERA-ERB" ("ERA-ERB")) 
-(DEF-RAS2-PROTEIN "ERBB2_HUMAN" ("ERBB2_HUMAN" "HER2" "CD340" "2.7.10.1" "MLN19" "ERBB2" "Mηstatic lymph node gene 19 protein" "NEU" "NGL" "c-erbB-2" "Receptor tyrosine-protein kinase erbB-2" "Metastatic lymph node gene 19 protein" "MLN 19" "Proto-oncogene Neu" "Proto-oncogene c-ErbB-2" "Tyrosine kinase-type cell surface receptor HER2" "p185erbB2")) 
+(DEF-RAS2-PROTEIN "ERBB2_HUMAN" ("ERBB2_HUMAN" "HER2" "CD340" "2.7.10.1" "MLN19" "ERBB2" "ErbB-2" "Mηstatic lymph node gene 19 protein" "NEU" "NGL" "c-erbB-2" "Receptor tyrosine-protein kinase erbB-2" "Metastatic lymph node gene 19 protein" "MLN 19" "Proto-oncogene Neu" "Proto-oncogene c-ErbB-2" "Tyrosine kinase-type cell surface receptor HER2" "p185erbB2")) 
 (DEF-RAS2-PROTEIN "ERBB3_HUMAN" ("ERBB3_HUMAN" "2.7.10.1" "HER3" "ERBB3" "EGF-R" "Receptor tyrosine-protein kinase erbB-3" "Proto-oncogene-like protein c-ErbB-3" "Tyrosine kinase-type cell surface receptor HER3")) 
 (DEF-RAS2-PROTEIN "ERBB4_HUMAN" ("ERBB4_HUMAN" "E4ICD" "2.7.10.1" "s80HER4" "4ICD" "HER4" "ERBB4" "ERBB4 intracellular domain" "ErbB-4" "Receptor tyrosine-protein kinase erbB-4" "Proto-oncogene-like protein c-ErbB-4" "Tyrosine kinase-type cell surface receptor HER4" "p180erbB4")) 
 (DEF-RAS2-PROTEIN "EREG_HUMAN" ("EREG_HUMAN" "EPR" "EREG" "Epiregulin")) 
@@ -761,7 +761,7 @@
 (DEF-RAS2-PROTEIN "PLCB3_HUMAN" ("PLCB3_HUMAN" "Phosphoinositide phospholipase C-bη-3" "3.1.4.11" "PLC-bη-3" "Phospholipase C-bη-3" "PLCB3" "PLCβ3" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase beta-3" "Phosphoinositide phospholipase C-beta-3" "Phospholipase C-beta-3" "PLC-beta-3")) 
 (DEF-RAS2-PROTEIN "PLCB4_HUMAN" ("PLCB4_HUMAN" "Phosphoinositide phospholipase C-beta-4" "Phosphoinositide phospholipase C-bη-4" "3.1.4.11" "PLC-beta-4" "PLC-bη-4" "Phospholipase C-beta-4" "Phospholipase C-bη-4" "PLCB4")) 
 (DEF-RAS2-PROTEIN "PLCE1_HUMAN" ("PLCE1_HUMAN" "PPLC" "3.1.4.11" "Phospholipase C-ε-1" "Phosphoinositide phospholipase C-ε-1" "KIAA1516" "PLCE" "PLCE1" "PLC-ε-1" "PLCε1" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase epsilon-1" "Pancreas-enriched phospholipase C" "Phosphoinositide phospholipase C-epsilon-1" "Phospholipase C-epsilon-1" "PLC-epsilon-1")) 
-(DEF-RAS2-PROTEIN "PLCG1_HUMAN" ("PLCγ1" "PLCG1_HUMAN" "PLC-γ-1" "Cγ1" "3.1.4.11" "Phospholipase C-γ-1" "Phosphoinositide phospholipase C-γ-1" "PLCG1" "PLC1" "cγ" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase gamma-1" 
+(DEF-RAS2-PROTEIN "PLCG1_HUMAN" ("PLCγ1" "PLC-γ1" "PLCG1_HUMAN" "PLC-γ-1" "Cγ1" "3.1.4.11" "Phospholipase C-γ-1" "Phosphoinositide phospholipase C-γ-1" "PLCG1" "PLC1" "cγ" "1-phosphatidylinositol 4,5-bisphosphate phosphodiesterase gamma-1" 
  "PLC-148" "Phosphoinositide phospholipase C-gamma-1" "Phospholipase C-II" "PLC-II" "Phospholipase C-gamma-1" "PLC-gamma-1" "phospholipase C-gamma1" "PLGCG1""PLC-gamma1"))
 
 

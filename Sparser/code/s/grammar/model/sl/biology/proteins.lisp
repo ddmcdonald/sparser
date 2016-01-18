@@ -40,9 +40,18 @@
 (define-protein "UBP1_HUMAN" ("USP1"))
 (define-protein "UBP2_HUMAN" ("USP2"))
 (define-protein "UBP3_HUMAN" ("USP3"))
-
-
-
+(define-protein "SRC_HUMAN" ("c-Src" "src" "Src"))
+(define-protein "FYN_HUMAN" ("Fyn" "fyn"))
+(define-protein "FGR_HUMAN" ("Fgr" "fgr" "src2"))
+(define-protein "Q61158_MOUSE" ("Yrk" "yrk"))
+(define-protein "LYN_HUMAN" ("Lyn" "lyn"))
+(define-protein "BLK_HUMAN" ("Blk" "blk"))
+(define-protein "HCK_HUMAN" ("Hck" "hck"))
+(define-protein "LCK_HUMAN" ("Lck" "lck"))
+(define-protein "KSYK_HUMAN" ("Syk" "syk" "p72-Syk"))
+(define-protein "CD28_HUMAN" ("CD28"))
+(define-protein "PTPRC_HUMAN" ("CD45"))
+(define-protein "IRS1_HUMAN" ("IRS1" "IRS-1"))
 
 (def-bio "BCR-ABL" protein)
 (define-protein  "MEK1DD" ("MEK1-DD"));;  a constitutively activated version, MEK1S219D,S223D (MEK1DD)
