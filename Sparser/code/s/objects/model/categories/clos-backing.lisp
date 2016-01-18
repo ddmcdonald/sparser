@@ -540,35 +540,34 @@ for every category.
 
 (defmacro setup-args-and-call-k-method (left-referent right-referent
                                                       &body body)
-  (cond
-   (*clos*
-    `(flet ((dispatch-type-of (o)
-              (typecase o
-                (individual (i-type-of o))
-                (category o)
-                (integer o)
-                (word o)
-                (otherwise
-                 (push-debug `(,o))
-                 (error "Unexpected type of object passed to k-method setup: ~
+  `(cond
+     (*clos*
+      (flet ((dispatch-type-of (o)
+               (typecase o
+                 (individual (i-type-of o))
+                 (category o)
+                 (integer o)
+                 (word o)
+                 (otherwise
+                  (push-debug `(,o))
+                  (error "Unexpected type of object passed to k-method setup: ~
           ~a~%   ~a" (type-of o) o)))))
-       (push-debug `(,left-referent ,right-referent))
-       ;;(format t "~&left=~a right=~a~%" left-referent right-referent)
-       (let* ((left-type (dispatch-type-of ,left-referent))
-              (right-type (dispatch-type-of ,right-referent))
-              (left-shadow (get-nominal-instance (get-sclass left-type)))
-              (right-shadow (get-nominal-instance (get-sclass right-type)))
-              (*shadows-to-individuals*
-               (list (cons left-shadow ,left-referent)
-                     (cons right-shadow ,right-referent))))
-         (declare (special *shadows-to-individuals*))
-         ;; (push-debug `(,left-shadow ,right-shadow))
-         ,@body)))
-   (t
-    `(let ((left-shadow ,left-referent)
-           (right-shadow ,right-referent))
-       ,@body)))
-  )
+        (push-debug `(,left-referent ,right-referent))
+        ;;(format t "~&left=~a right=~a~%" left-referent right-referent)
+        (let* ((left-type (dispatch-type-of ,left-referent))
+               (right-type (dispatch-type-of ,right-referent))
+               (left-shadow (get-nominal-instance (get-sclass left-type)))
+               (right-shadow (get-nominal-instance (get-sclass right-type)))
+               (*shadows-to-individuals*
+                (list (cons left-shadow ,left-referent)
+                      (cons right-shadow ,right-referent))))
+          (declare (special *shadows-to-individuals*))
+          ;; (push-debug `(,left-shadow ,right-shadow))
+          ,@body)))
+     (t
+      (let ((left-shadow ,left-referent)
+            (right-shadow ,right-referent))
+        ,@body))))
 
 
 ;;--- getting back the individuals from the shadows invoke methods
