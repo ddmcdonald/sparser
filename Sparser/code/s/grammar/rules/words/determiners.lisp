@@ -65,6 +65,7 @@
 (define-determiner "either"  :brackets '( ].phrase .[np ))
 (define-determiner "neither" :brackets '( ].phrase .[np ))
 
+(define-determiner "which" :brackets '( ].phrase .[np ))
 
 
 ;; gets its own brackets because of its functional ambiguity
