@@ -13,6 +13,10 @@
  (asdf:load-system :sparser/blocks-world)
  (asdf:load-system :sparser/c3)
 
+ define-cfr/resolved  define-determiner  construct-cfr 
+ setup-lexicalized-trees record-reference sexp-reader
+ c3-location location car-manufacturer can-change-location
+
  (r3::run-article-batch :corpus :localization :card-p nil)
  *run-aggregation-after-action*
 
