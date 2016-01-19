@@ -1,28 +1,32 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "C3-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  March 2014
+;;;  version:  January 2016
 
-;; Initiated 9/16/13. Elaborated through 3/26/14
+;; Initiated 9/16/13. Elaborated through 3/26/14. Picked up again 1/16.
 
 (in-package :sparser)
 
-;;//// Add quantifiers to the C3 grammar
-;; (setq cl-user::script :c3)
-
-;; (load "/Users/ddm/sparser/load-nlp.lisp")
 
 ;; For when we use a load that doesn't set *c3* 
 ;;    (ad-hoc-c3-loader)
+;;/// even in a C3 load this isn't happening. Need to track it down
 (defun ad-hoc-c3-loader ()
   (setq *c3* t)
   (create-ford-motor-company)
   (create-wakil)
   (c3-setting))
 
+;; 1/17/16
+#| On 'ford', even after defining it, get too many arguments to 
+constant-unknown-word as falled from finish-token. But since all
+words are supposed to be known maybe this is a switch setting
+issue? Toplevel call is read-through-segment-to-end starting
+with position before 'black' which went into the chart w/o incident. 
+|#
 ;; 72  (p "black ford suv has entered wakil")
 ;; 73  (p "two people are dismounting.")
 ;; (p "black ford suv has entered wakil. Two people are dismounting.")
