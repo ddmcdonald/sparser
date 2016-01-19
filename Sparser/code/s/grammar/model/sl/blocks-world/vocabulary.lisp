@@ -9,11 +9,6 @@
 
 (in-package :sparser)
 
-#| These are temporary definitions for one of Sparser's conventional
-parsing protocols. Likely to be replaced by TAGs when the CwC-tailored
-protocol is developed. Moreover they are semantically vacuous.  |#
-
-
 ;;--- nouns
 (noun "block" :specializes artifact :rule-label artifact)
 (noun "staircase" :specializes artifact :rule-label artifact)
@@ -23,9 +18,6 @@ protocol is developed. Moreover they are semantically vacuous.  |#
 (sentential-interjection "good")
 (sentential-interjection "ok")
 
-
-;;--- me and you (hack job)
-
 ;;--- Verbs
 
 ;; (p "Add another block")
@@ -33,7 +25,7 @@ protocol is developed. Moreover they are semantically vacuous.  |#
 (define-category add-to
   :specializes achievement
   :instantiates self
-  :binds ((agent social-agent)
+  :binds ((agent physical-agent)
           (theme object)
           (location location))
   :realization ((:main-verb "add")
@@ -65,7 +57,14 @@ protocol is developed. Moreover they are semantically vacuous.  |#
                 (slot . artifact)))))
 
 
-
+;; 1.2 "Put a block on the table"
+(define-category put-something-somewhere
+  :specializes process
+  :binds ((theme physical)
+          (location location)) ;; mixin has-location
+  :realization
+    ((:main-verb "put")
+     (:mumble ("put" svo1o2 :o1 theme :o2 location))))
           
 
 (defparameter *c3-syntactic-rules*
