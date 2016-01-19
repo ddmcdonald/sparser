@@ -46,3 +46,8 @@
 (defmethod mumble-symbol ((name string))
   (intern name (find-package :mumble)))
 
+(defmethod sparser-symbol ((s symbol))
+  (sparser-symbol (symbol-name s)))
+(defmethod sparser-symbol ((name string))
+  (intern name (find-package :sparser)))
+
