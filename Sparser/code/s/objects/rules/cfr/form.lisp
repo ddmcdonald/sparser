@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2011-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "form"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   6.6 March 2013
+;;;   Version:   January 2016
 
 ;; 6.0 (9/4/92 v2.3) Reworked the definition for parsimony with other cases
 ;;      and to have form and referent redone for already existing rules
@@ -20,6 +20,8 @@
 ;; 6.5 (8/3/11) Added a schema keyword so the default can be overriden.
 ;; 6.6 (3/18/13) Refactored def-cfr/expr to break out define-cfr/resolved so
 ;;      there's a resolved entry point with the duplicate check
+;; (1/18/16) Somewhere along the line, the ability to make multiple rules
+;;   (with different referents) for the same word was lost. Put it back.
 
 (in-package :sparser)
 
@@ -52,30 +54,48 @@
         (decoded-referent-exp (resolve-referent-expression referent)))
     (define-cfr/resolved lhs rhs form-object decoded-referent-exp schema)))
 
-(defun define-cfr/resolved (lhs rhs form-object decoded-referent-exp schema)
+(defun define-cfr/resolved (lhs rhs form-object referent schema)
   (let ((existing-cfr (if (null (cdr rhs)) ;; unary rule
                         (lookup/cfr lhs rhs)
                         (lookup/cfr nil rhs))))
 
     (if existing-cfr
-      (if (redefinition-of-rule lhs existing-cfr)
-        (then
-         ;; pick out the rule with the matching lhs (when multiple
-         ;; lhs are allowed) and replace its form and referent
-         (changes-to-known-rule existing-cfr
-                                lhs rhs
-                                form-object
-                                decoded-referent-exp
-                                nil)) ;; source
-        (duplication-check
-         ;; its a new lhs for the rhs so check that it's allowed
-         existing-cfr lhs rhs form-object decoded-referent-exp :def-cfr))
+      (cond
+       ((probably-new-unary-rule? existing-cfr referent)
+        (construct-cfr lhs rhs form-object
+                       referent :def-cfr schema)
+        #+ignore(define-additional-unary-rule lhs rhs form-object
+                                      referent :def-cfr schema))
+       ((redefinition-of-rule lhs existing-cfr)
+        ;; pick out the rule with the matching lhs (when multiple
+        ;; lhs are allowed) and replace its form and referent
+        (changes-to-known-rule existing-cfr
+                               lhs rhs
+                               form-object
+                               referent
+                               nil)) ;; source
+       (t (duplication-check
+           ;; its a new lhs for the rhs so check that it's allowed
+           existing-cfr lhs rhs form-object referent :def-cfr)))
 
       (else ;; new case of the rhs
        (construct-cfr lhs
                       rhs
                       form-object
-                      decoded-referent-exp
+                      referent
                       :def-cfr
                       schema )))))
 
+(defun probably-new-unary-rule? (existing-cfr referent)
+  "A word can have multiple readings, each represented by its own rule."
+  (let* ((rhs (cfr-rhs existing-cfr))
+         (unary? (null (cdr rhs)))
+         (term (when unary? (car rhs)))
+         (word? (when unary? (or (word-p term)
+                                 (polyword-p term)))))
+    (when word?  
+      (not (eq (cfr-referent existing-cfr) referent)))))
+
+#|(defun define-additional-unary-rule (lhs rhs form-object referent
+                                     source schema)
+  ) |#
