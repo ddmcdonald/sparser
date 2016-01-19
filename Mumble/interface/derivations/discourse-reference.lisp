@@ -25,6 +25,16 @@
 (defun record-discourse-context () t)
 
 
+;;;-----------
+;;; focus API
+;;;-----------
+
+(defgeneric set-the-focus (item)
+  (:documentation "External interface to the focus system.
+    Given some criteria, a process has concluded that the
+    item is in focus. The impact of that will be to have
+    the item be pronominalized. Use this method to trigger
+    Mumble machinery that acts on this."))
 
 (defvar *item-in-focus* nil)
 
