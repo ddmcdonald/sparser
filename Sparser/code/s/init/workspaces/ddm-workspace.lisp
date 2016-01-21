@@ -13,7 +13,7 @@
  (asdf:load-system :sparser/blocks-world)
  (asdf:load-system :sparser/c3)
 
- define-cfr/resolved  define-determiner  construct-cfr 
+ define-cfr/resolved  define-determiner  define-wh-pronoun construct-cfr 
  setup-lexicalized-trees record-reference sexp-reader
  c3-location location car-manufacturer can-change-location
 
