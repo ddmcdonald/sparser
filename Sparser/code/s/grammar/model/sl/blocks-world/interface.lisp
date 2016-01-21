@@ -82,6 +82,14 @@ e. The symbol is the referent (for the nonce) and we apply a
  purpose-build function to wrap it in kind, singular, and then we
  apply it to the remaining 'o parameter. 
 |#
+
+(defparameter utt-2 '(propose-goal (put-something-somewhere
+                                    :o1 block :o2 *the-table*)))
+
+;;;----------
+;;; The code
+;;;----------
+
 (defvar *sentence-type* :statement ;;?? or sort out w/ predicates ??
   "Holds the toplevel type (loosely speaking) of the utterance
    (sentence), e.g. :statement, :command, :question, etc. ")
@@ -153,11 +161,15 @@ like they were in Shurdu.
 (defun expand-value (value-exp)
   (typecase value-exp
     (cons (error "Stub -- expanding the value of the list ~a" value-exp))
-    (keyword (error "stub -- expanding value of keyword ~a" value-exp))
     (symbol
-     (unless (sparser::category-named value-exp)
-       (error "~a is not the name of a category" value-exp))
-     (plan-referent-to-category value-exp))))
+     (cond
+      ((sparser::category-named value-exp)
+       (plan-referent-to-category value-exp))
+      (t ;;/// more specificity?
+       (plan-referent-to-individual value-exp))))
+    (otherwise
+     (error "Unanticipated type of value expression: ~a~%~a"
+            (type-of value-exp) value-exp))))
 
 #| At least in the blocks world, a reference to a category
 is effectively a reference to a individual instance of it
@@ -203,6 +215,8 @@ interface/derivations/discourse-reference.lisp
       (initially-indefinite dtn)
       dtn)))
 
+
+(defun plan-referent-to-individual (value-exp))
 
 ;;;-------------
 ;;; speech acts
