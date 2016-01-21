@@ -76,4 +76,19 @@
 
 (in-package :mumble)
 
+;;--- vocabulary
+
+(define-word "build" (verb) :ed-form "built")
+(define-word "let" (verb))
+
+(defun setup-lexicalized-trees ()
+  (define-lexicalized-phrase common-noun ("staircase") (n))
+  (define-lexicalized-phrase SVO ("build") (v))
+  (define-lexicalized-phrase SVOC ("let") (v)))
+
+(setup-lexicalized-trees)
+
+
+
+
 
