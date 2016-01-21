@@ -122,13 +122,36 @@ an automatic way of counting source lines in the Sparser codebase.")
 ;;; recording definition locations
 ;;;--------------------------------
 
+(define-condition redefinition-warning (warning)
+  ((object :reader redefined-object :initarg :object)
+   (previous-location :reader previous-location :initarg :previous-location)
+   (new-location :reader new-location :initarg :new-location))
+  (:documentation "An object is being redefined in a new file.")
+  (:report (lambda (condition stream)
+             (format stream "Redefining ~a~@[in ~a~].~%~
+                             Previous definition was in ~a."
+                     (redefined-object condition)
+                     (new-location condition)
+                     (previous-location condition)))))
+
+(defmacro without-redefinition-warnings (&body forms)
+  "Run FORMS with redefinition warnings muffled."
+  `(handler-bind ((redefinition-warning #'muffle-warning))
+     ,@forms))
+
+(defun file-location (object)
+  (get-tag :file-location object))
+
 (defun note-file-location (object &optional (location *file-being-lloaded*))
   "Called from the definition routines for the various kinds of objects."
-  (unless (and *suppress-duplicate-definition-warning*
-               (get-tag :file-location object))
-    (warn "Redefining ~a in ~a.~%~
-           Previous definition was in ~a."
-          object location (get-tag :file-location object)))
+  (unless location
+    (return-from note-file-location))
+  (let ((previous-location (get-tag :file-location object)))
+    (when (and previous-location (not (equal location previous-location)))
+      (warn 'redefinition-warning
+            :object object
+            :previous-location previous-location
+            :new-location location)))
   (setf (get-tag :file-location object) location))
 
 ;;;----------------------------
