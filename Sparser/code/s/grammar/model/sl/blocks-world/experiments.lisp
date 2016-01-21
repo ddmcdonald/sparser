@@ -23,17 +23,6 @@ in Sparser there is a translation routine. In a better world
 rebuilt from scratch there would be a single word stock.
 See Zo code for what that could look like. |#
 
-(define-word "build" (verb) :ed-form "built")
-(define-word "let" (verb))
-
-(defun setup-lexicalized-trees ()
-  (define-lexicalized-phrase common-noun ("staircase") (n))
-  (define-lexicalized-phrase SVO ("build") (v))
- (define-lexicalized-phrase SVOC ("let") (v))
-)
-
-(setup-lexicalized-trees)
-
 ;;;--------------------------
 ;;; Prebuilt phrases (trees)
 ;;;--------------------------
