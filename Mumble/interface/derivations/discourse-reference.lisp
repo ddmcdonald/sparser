@@ -25,6 +25,32 @@
 (defun record-discourse-context () t)
 
 
+;;;------------
+;;; uniqueness
+;;;------------
+#| If an object is unique we should always use "the".
+ We'll just stipulate that an object is unique. In the
+ blocks world there's really only one -- the table. 
+|#
+
+(defgeneric inique? (item)
+  (:documentation "Is there only one of this item
+   in the situation? For the moment, this should
+   only apply to objects that are always unique, "))
+
+(defvar *unique-objects-in-situation* nil
+  "Hack to avoid type machinery or much thinking to 
+   define the notion of being unique. If it's on
+   this list it's unique")
+
+(defmethod inique? ((item t))
+  (member item *unique-objects-in-situation*
+          :test #'eq))
+
+(defun stipulate-to-be-unique (item)
+  (push item *unique-objects-in-situation*))
+
+
 ;;;-----------
 ;;; focus API
 ;;;-----------
