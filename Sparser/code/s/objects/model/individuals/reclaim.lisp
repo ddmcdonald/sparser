@@ -41,7 +41,7 @@
    to one of those individuals, that is used when reclaiming to
    indicate where to stop when cdr'ing down that list.")
 
-(defvar *rule-count-at-make-permanent* nil
+(defvar *rule-count-at-make-permanent* 0
   "This is set by declare-all-existing-individuals-permanent
    to the rule count at the time. It's checked and acted on
    by redeclare-permanent-individuals-if-necessary")
@@ -67,7 +67,7 @@
 
 (defun redeclare-permanent-individuals-if-necessary ()
   "Called from everything at the very end."
-  (unless (= *rule-count-at-make-permanent* 
+  (unless (= *rule-count-at-make-permanent*
              *next-number-for-phrase-structure-rule*)
     ;; rules have been added, which likely means that more
     ;; individuals have also been added.
