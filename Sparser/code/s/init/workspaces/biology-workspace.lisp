@@ -30,7 +30,6 @@
 
 (defun setup-bio ()
   (bio-setting)
-  (remove-paragraph-marker) ;; #<PSR1155  sgml-label ->  "p"> interfers with "p100"
   (setq *tts-after-each-section* nil)
   (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
   (gate-grammar *biology* ;; sets up stats collection
@@ -688,13 +687,6 @@ those steps sequentially on a single article.
     PMC2422857 PMC2173479 PMC2064505 PMC2064504 PMC3954878 PMC2704372 PMC3245278 PMC2118656 PMC2234022 PMC3271441
     ))
 
-
-
-;; 2/25/14 Have to remove SGML rules, e.g. for 'p' unless it's ok w/in ns-sequences
-(defun remove-paragraph-marker ()
-  (let ((rule (find-cfr 'sgml-label '("p"))))
-    (when rule
-      (delete/cfr rule))))
 
 ;;;-------------
 ;;; OBO => Lisp
