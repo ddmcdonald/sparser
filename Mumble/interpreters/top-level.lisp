@@ -1,10 +1,9 @@
 ;;; -*- Mode: Lisp;  Package: Mumble; Syntax: Common-lisp; base: 10 -*-
-;;; $Id: top-level.lisp 328 2009-11-13 16:38:55Z dmcdonal $
 
 ;;; MUMBLE-05 interpreters> top-level
 
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (C) 2005, 2010 David D. McDonald
+;;; Copyright (C) 2005, 2010, 2016 David D. McDonald
 ;;; Copyright (C) 1985-1988 David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
@@ -39,7 +38,7 @@
   (declare (special *objects-to-references*))
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
-  (clrhash *objects-to-references*)
+  (initial-turn) ;;(clrhash *objects-to-references*)
   (when (boundp '*the-derivation-tree*) ;; backwards compatibility
     (clear-derivation-tree-data)))
 	  

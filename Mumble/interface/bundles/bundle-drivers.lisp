@@ -173,6 +173,9 @@
 ;################################################################
 
 (defun general-np-bundle-driver (dtn np-root)
+  "This code checks the syntactic reasons to use a pronoun to see
+  if any apply, in which case it pre-empts the normal processing
+  and construction of an np."
   (push-debug `(:np ,dtn ,np-root))
   (let* ((dom-clause (dominating-clause))
          (reason-to-pronominalize 
@@ -192,9 +195,7 @@
 		(process-further-specifications (adjuncts dtn))
 		(leaving-previous-context np-root))
 	      np-root))))
-    (when dom-clause
-      (push (referent dtn) (objects-referenced (dominating-clause))))
-    (record-reference (referent dtn) dtn) ;; 2007 code -- needs tons of work
+    (record-reference dtn result dom-clause)
     (push-debug `(:np-bundle ,result))
     result))
 
@@ -242,7 +243,7 @@
 (defun should-be-pronominalized-in-present-context (dtn)
   (let ((grammatical-context (labels *current-position*))
 	(model-level-object (referent dtn)))
-    (when (and model-level-object (mentions model-level-object))
+    (when (and model-level-object (local-mentions model-level-object))
       ;;(break "pronomialize? bundle = ~a" bundle)
       (cond  ((member (slot-label-named 'relative-pronoun) grammatical-context)
 	      'context-requires-a-relative-pronoun )

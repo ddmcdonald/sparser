@@ -83,8 +83,9 @@ e. The symbol is the referent (for the nonce) and we apply a
  apply it to the remaining 'o parameter. 
 |#
 
-(defparameter utt-2 '(propose-goal (put-something-somewhere
-                                    :o1 block :o2 *the-table*)))
+(defparameter utt-2 
+   `(propose-goal (put :o1 block :o2 (location on ,*the-table*))))
+; (sexp-reader utt-2)
 
 ;;;----------
 ;;; The code
@@ -160,13 +161,13 @@ like they were in Shurdu.
 |#
 (defun expand-value (value-exp)
   (typecase value-exp
-    (cons (error "Stub -- expanding the value of the list ~a" value-exp))
+    (cons
+     (plan-reference-to-composite value-exp))
     (symbol
-     (cond
-      ((sparser::category-named value-exp)
-       (plan-referent-to-category value-exp))
-      (t ;;/// more specificity?
-       (plan-referent-to-individual value-exp))))
+     (assert (sparser::category-named value-exp))
+     (plan-reference-to-category value-exp))
+    (sparser::individual
+     (plan-reference-to-individual value-exp))
     (otherwise
      (error "Unanticipated type of value expression: ~a~%~a"
             (type-of value-exp) value-exp))))
@@ -188,7 +189,7 @@ interface/derivations/discourse-reference.lisp
   needs real content - mostly stubs    record-reference mentions
 
 |#
-(defun plan-referent-to-category (category-name)
+(defun plan-reference-to-category (category-name)
   (let ((category (sp::category-named 
                    (sparser-symbol category-name) :break-if-none)))
     ;; first check if there is a mention of this category
@@ -216,7 +217,31 @@ interface/derivations/discourse-reference.lisp
       dtn)))
 
 
-(defun plan-referent-to-individual (value-exp))
+(defun plan-reference-to-individual (i)
+  (push-debug `(,i)) ;;(break "object is ~a" i)
+  (cond
+   ((unique? i)
+    (plan-the-category i))
+   (t (error "Don't yet have a way to refer to ~a" i))))
+
+(defun plan-the-category (i)
+  "Describe the individual as a definite reference to its category."
+  (let* ((category (sp::itype-of i))
+         (phrase (get-lexicalized-phrase
+                  (symbol-name (sp::cat-symbol category))))
+         (dtn (make-dtn :referent i
+                        :resource phrase)))
+    (assert phrase)
+    (always-definite dtn)
+    dtn))
+
+
+(defun plan-reference-to-composite (sexp)
+  (let ((operator (car sexp)))
+    (assert (member operator '(location)))
+    (ecase operator
+      (location )
+)))
 
 ;;;-------------
 ;;; speech acts
