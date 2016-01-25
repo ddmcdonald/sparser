@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2012-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "printers"
 ;;;    Module:   "analyzers;forest:"
-;;;   Version:   0.7 November 2014
+;;;   Version:   January 2014
 
 ;; initiated 11/90
 ;; 0.1 (6/30/91 v1.8.1) Revised TTs to appreciate the possibility of the
@@ -36,6 +36,8 @@
 ;;      to bad. 
 ;; 1/10/2015 method (edge-string ...) possibly redundant, for getting a string with  the edge numer, category and input string covered by and edge
 ;; 3/21/2015 fix error caught by SBCL in print-multiple-edges-tt
+;; 1/21/16 Modified chart region printers to pull from the character buffers
+;;   rather than reconstructing it from words. 
 
 (in-package :sparser)
 
@@ -296,7 +298,7 @@ there were ever to be any.  ///hook into final actions ??  |#
   ;; used by inine LL printer
   (format stream "~&")
   (write-string "[ \"" stream)
-  (write-string (string-of-words-between starts-at ends-at) stream)
+  (write-string (extract-character-between-positions starts-at ends-at) stream)
   (write-string "\" ]" stream)
   (terpri stream))
 
@@ -312,13 +314,13 @@ there were ever to be any.  ///hook into final actions ??  |#
 (define-per-run-init-form
     '(unless *current-document-stream*
        (setq *where-print-segment-left-off* 1)))
-
+; 
 (defun print-segment-and-pending-out-of-segment-words ;; new word-based version
     (start-pos end-pos &optional (stream *standard-output*))
   (when (there-are-words-between-segments start-pos)
-    (print-words-between-segments start-pos stream))
+    (print-characters-between-segments start-pos stream))
   (format stream "[")
-  (write-words-between-positions start-pos end-pos stream)
+  (write-characters-between-positions start-pos end-pos stream)
   (format stream "]")
   (setq *where-print-segment-left-off* (pos-token-index end-pos)))
 
@@ -331,6 +333,10 @@ there were ever to be any.  ///hook into final actions ??  |#
                        (chart-position-after position)))
        ((eq position end-pos) :done)
     (print-word-and-ws position stream)))
+
+(defun print-characters-between-segments (end-pos &optional (stream *standard-output*))
+  (let ((start-pos (chart-position *where-print-segment-left-off*)))
+    (write-characters-between-positions start-pos end-pos stream)))
 
 (defun print-words-between-segments (end-pos &optional (stream *standard-output*))
   (do* ((position (chart-position *where-print-segment-left-off*)
@@ -554,8 +560,7 @@ there were ever to be any.  ///hook into final actions ??  |#
                (edge-position-in-resource-array tt)
                (pname-for word-or-category)
                (pos-token-index (pos-edge-starts-at tt))
-               (terminals-in-segment/one-string (pos-edge-starts-at tt)
-                                                (pos-edge-ends-at tt))
+               (extract-string-spanned-by-edge tt)
                (pos-token-index (pos-edge-ends-at tt))))
       (word
        (format stream "~&e~A~20,2T~S~%"  ;; had been 33
@@ -617,8 +622,7 @@ there were ever to be any.  ///hook into final actions ??  |#
                (edge-position-in-resource-array tt)
                (pname-for word-or-category)
                (pos-token-index (pos-edge-starts-at tt))
-               (terminals-in-segment/one-string (pos-edge-starts-at tt)
-                                                (pos-edge-ends-at tt))
+               (extract-string-spanned-by-edge tt) 
                (pos-token-index (pos-edge-ends-at tt))))
       (word
        (format stream "~&e~A~20,2T~S"  ;; had been 33
