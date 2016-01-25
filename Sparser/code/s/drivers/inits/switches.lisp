@@ -510,6 +510,7 @@
   (establish-kind-of-chart-processing-to-do :c3-protocol)
   (designate-sentence-container :situation)
   (setq *recognize-sections-within-articles* t) ;; otherwise no sentences
+  (setq *description-lattice* nil) ;; leave permanence up in the air
   (setq *c3* t) ;; already on if loaded as c3, this is for changing
   (setq *switch-setting* :c3))
 
