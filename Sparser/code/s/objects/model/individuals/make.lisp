@@ -391,7 +391,7 @@
      (make-unindexed-individual (second head)))
     (otherwise
      (push-debug `(,head))
-     (error "Unexpected type of 'head' in individual for ref: ~a~
+     (lsp-break "Unexpected type of 'head' in individual-for-ref: ~a~
        ~%  ~a" (type-of head) head))))
 
 
