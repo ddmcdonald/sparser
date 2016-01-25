@@ -554,8 +554,10 @@ similar to an oncogenic RasG12V mutation (9)."))
   :form np
   :referent (:function create-howcomp left-edge right-edge))
 
-
-(loop for vv in '((vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
+;; add in S because it can happen that the "THATCOMP" and "WHETHERCOMP" my not be produced until after
+;; the verb element gets promoted to an S
+;; e.g. "interestingly , we observed that in contrast to wild type aspp 2 , aspp 2 ( s 827 a ) remains at the plasma membrane"
+(loop for vv in '((s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
   ;; verb complements 
   do
