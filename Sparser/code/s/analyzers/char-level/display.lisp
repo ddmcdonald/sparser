@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "display"
 ;;;   Module:  "analyzers;char-level:"
-;;;  Version:  1.7 August 2014
+;;;  Version:  January 2016
 
 ;; initiated 1/92, fixed end-of-source glitch 3/13
 ;; Added the straight-through case for a word explicitly 6/26
@@ -21,6 +21,7 @@
 ;;      to work with the token-level 'hiding' of every-terminal tags.
 ;;     (8/24/14) Added actual-characters-of-word to help reify bio entities
 ;;      correctly.  
+;; (1/21/16) Added extract-string-spanned-by-edge to improve look of tts.
 
 
 (in-package :sparser)
@@ -171,6 +172,21 @@
                       *length-accumulated-from-prior-buffers*)))
           (subseq *character-buffer-in-use* start end))))))
 
+
+(defun extract-string-spanned-by-edge (edge)
+  (let* ((start-pos (pos-edge-starts-at edge))
+         (end-pos (pos-edge-ends-at edge))
+         (start (pos-character-index start-pos))
+         (end (pos-character-index end-pos)))
+    (extract-string-from-char-buffers start end)))
+
+(defun extract-character-between-positions (start-pos end-pos)
+  (let ((start (pos-character-index start-pos))
+        (end (pos-character-index end-pos)))
+    (extract-string-from-char-buffers start end)))
+
+(defun write-characters-between-positions (start-pos end-pos stream)
+  (format stream "~a" (extract-string-from-char-buffers start-pos end-pos)))
 
 
 (defun extract-string-from-char-buffers (start end)
