@@ -22,7 +22,7 @@
 
 ;; 1/17/16
 #| On 'ford', even after defining it, get too many arguments to 
-constant-unknown-word as falled from finish-token. But since all
+constant-unknown-word as called from finish-token. But since all
 words are supposed to be known maybe this is a switch setting
 issue? Toplevel call is read-through-segment-to-end starting
 with position before 'black' which went into the chart w/o incident. 

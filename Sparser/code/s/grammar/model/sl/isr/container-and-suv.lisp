@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "container-and-SUV"
 ;;;   Module:  "grammar/sl/ISR/
-;;;  version:  April 2014
+;;;  version:  Januart 2016
 
 ;; Initiated 10/24/13 to breakout the design of SUV and container
 ;; into their own file. Removed space to is own file 11/11/13. 
@@ -17,7 +17,8 @@
 (define-category car-manufacturer
   :specializes maker-of-artifacts
   :restrict ((product motor-vehicle))
-  :index (:permanent :key name))
+  :index (:permanent :key name)
+  :realization (:proper-noun name))
 #| Notes for Ford qua manufacturer of cars, 
 thence as a make of car (vehicle) http://en.wikipedia.org/wiki/Ford
 Ford is a manufacturer
@@ -48,7 +49,8 @@ It has buildings that it does its manufacturing in
   :bindings (type-of 'motor-vehicle) ;;// that quote is an
   ;; quirk of the  likely out-mooded assumptions of the code in
   ;; attach-bindings-to-category
-  :index (:permanent :key name))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
 
 (define-individual 'car-type :name "suv")
 
