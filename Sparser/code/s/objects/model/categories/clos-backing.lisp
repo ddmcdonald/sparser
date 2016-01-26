@@ -441,15 +441,19 @@ for every category.
             (construct-let-bindings
              dummy-parameters parameters type-restrictions)))
       
-      (let* ((caller-name (intern (string-append '#:call- name)
-                                  (find-package :sparser)))
-             (caller-form
-              `(defun ,caller-name ,parameters
-                 (setup-args-and-call-k-method ,@parameters
-                                               (funcall #',name left-shadow right-shadow))) ))
-        (when *print-generated-k-method-forms*
-          (pprint caller-form))
-        (eval caller-form))
+      (let ((caller-name (intern (string-append '#:call- name)
+                                 (find-package :sparser))))
+        ;; It is very convenient to have a calling function,
+        ;; but we only need one. Particularly when it's been defined
+        ;; already before we started writing methods on it.
+        (unless (fboundp caller-name)
+          (let ((caller-form
+                 `(defun ,caller-name ,parameters
+                    (setup-args-and-call-k-method ,@parameters
+                       (funcall #',name left-shadow right-shadow))) ))
+            (when *print-generated-k-method-forms*
+              (pprint caller-form))
+            (eval caller-form))))
       (when *clos*
         (let ((form
                `(defmethod ,name ,method-args
