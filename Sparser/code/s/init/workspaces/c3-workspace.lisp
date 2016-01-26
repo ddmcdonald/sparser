@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
@@ -10,22 +10,30 @@
 
 (in-package :sparser)
 
+;; (asdf:load-system :sparser/c3)
 
-;; For when we use a load that doesn't set *c3* 
 ;;    (ad-hoc-c3-loader)
-;;/// even in a C3 load this isn't happening. Need to track it down
 (defun ad-hoc-c3-loader ()
   (setq *c3* t)
   (create-ford-motor-company)
   (create-wakil)
+  ;; doesn't seem to be loaded when rules/situation/ loads ??
+  (setq *print-generated-k-method-forms* t)
+  (gload "sit-rules;ISR-methods")
+  (setq *break-on-pattern-outside-coverage?* t)
   (c3-setting))
 
-;; 1/17/16
-#| On 'ford', even after defining it, get too many arguments to 
-constant-unknown-word as called from finish-token. But since all
-words are supposed to be known maybe this is a switch setting
-issue? Toplevel call is read-through-segment-to-end starting
-with position before 'black' which went into the chart w/o incident. 
+;; (trace-c3)  referent-from-rule
+;; get-state  => objects/situation/state
+;; add-referent-to-peg => grammar/rules/situation/rules
+;; transfer-bindings => isr-methods
+;; add-relation => objects/situation/situation
+;; bind-variable-on-peg => objects/situation/pegs
+;; c3-segment-parse => drivers/chart/psp/c3-protocol
+;; incorporate-referent-into-the-situation => rules/situation/compose
+
+;; 1/26/16
+#| Need a state transition (etc.) for "entered"
 |#
 ;; 72  (p "black ford suv has entered wakil")
 ;; 73  (p "two people are dismounting.")

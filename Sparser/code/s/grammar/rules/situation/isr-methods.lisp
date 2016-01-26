@@ -47,12 +47,12 @@
 ;; defined. Barring a substantial reorganization of the load order
 ;; it's simplest to include them here. 
 
-                                ;;/// generalize to named-type ?
-(def-k-method compose ((mgfr make-artifacts) (head car-type))
+;; "ford suv"
+(def-k-method compose ((mgfr maker-of-artifacts) (head car-type))
   "If the head (the kind argument) is abstract, then we need to
    make it concrete since a car manufacturers are makers of artifacts
    and those are always physical."
-  (push-debug `(,mgfr ,head))
+  (tr :c3-compose mgfr head)
   (when (itypep head 'named-type)
     (add-relation 'type-of-product mgfr head) ;; Ford makes trucks
     (let ((physical-equivalent (value-of 'type-of category::car-type)))
@@ -75,15 +75,22 @@
   ;; to conceptualize, e.g., the plastic of the car body or
   ;; the clay of the statue. Do these things attribute directly
   ;; to physical, or to an intermediary that holds these properties
-  (push-debug `(,color ,obj))
+  (tr :c3-compose color obj)
   (add-relation 'color obj color)
+  obj)
+
+;; "black ford"
+(def-k-method compose ((color color) (obj car-manufacturer))
+  ;; a car-manufacturer is not something that has a color
+  ;; so we do nothing here, and assume that the color will be
+  ;; taken up by something else
+  (tr :c3-compose color obj)
   obj)
 
 (def-k-method compose ((aux have) (e event))
   ;; corresponds to a form rule. Not clear there's anything to do
   ;; at the situation level that wasn't done with the subtype already
-  (declare (ignore aux))
-  ;;(push-debug `(,e)) (break "bindings on e ?")
+  (tr :c3-compose aux e)
   (when (referential-category-p e)
     ;; This lets the suv get bound as the theme of "enter"
     (setq e (make/individual e nil)))
@@ -92,7 +99,8 @@
 
 ;; can-change-location + move
 (def-k-method compose ((theme can-change-location) (e move))
-  (push-debug `(,theme ,e)) ;;(break "e has theme?")
+  (tr :c3-comopse theme e)
+  ;;(break "e has theme?")
 #| move: when-bound(theme) 
   ;; we know that this is same as when-bound(can-change-location
   ;; Trigger probably goes down in the binding operation itself
@@ -106,7 +114,7 @@
   e )
 
 (def-k-method compose ((e move) (loc container))
-  (push-debug `(,e ,loc)) ;; (setq e (car *) loc (cadr *))
+  (tr :c3-compose e loc)
 #| move: when-bound(to-location)
      assert: (moved-to theme to-location)
 |#

@@ -194,8 +194,11 @@
   (let* ((i (car args))
          (value (cadr args))
          (variable (find-variable-from-individual var-name i)))
+    (unless variable
+      (push-debug `(,var-name ,value ,i))
+      (error "Could not find the variable ~a on ~a" var-name i))
     (let ((b (multiple-value-bind (ii bb)
-                                  (bind-dli-variable variable value i)
+                                  (bind-variable variable value i)
                (declare (ignore ii))
                bb))
           (s (the-situation))) ;; who would know about the level?

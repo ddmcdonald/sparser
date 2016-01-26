@@ -162,7 +162,6 @@
 (defun c3-process-segment-and-update-state (start-pos last-pos)
   ;; called by scan-segment just after it gets out of its
   ;; accumulation loop, which includes the head edge. 
-  (push-debug `(,start-pos ,last-pos))
   ;; Can make the edge by fiat. Take the referent from the
   ;; head edge as put there by incorporate-phrasal-head and
   ;; take the form from the state and the label from the head edge
@@ -172,7 +171,7 @@
   ;; pt) so those relations can be incorporated into the situation
   ;; and we have a normally formed edge instead of this silly
   ;; long-span
-  (let ((edge (c3-segment-parse start-pos (chart-position-before last-pos))))
+  (let ((edge (c3-segment-parse start-pos last-pos)))
     (push-debug `(,edge))
     (set-phrasal-state :initial-state) ;; reset phrase level
     (let* ((new-state (update-situation-state edge 'sentence))
@@ -213,6 +212,7 @@
   ;; because, e.g., we know there is only one edge over every
   ;; word because we're going to do ambiguity in the situation,
   ;; and indeed that there is an edge over every word.
+  (declare (special *trace-c3*))
   (tr :c3-segment-parse start-position end-position)
   (let* ((head-edge (edge-ending-at end-position))
          (head-starts-at (pos-edge-starts-at head-edge))
@@ -221,7 +221,7 @@
          (*allow-pure-syntax-rules* t))
     (declare (special *allow-pure-syntax-rules* 
                       *edges-from-referent-categories*))
-    (push-debug `(,head-edge ,head-starts-at ,edge-just-to-the-left))
+    (when *trace-c3* (tts))
 
     (when (eq (pos-edge-starts-at head-edge)
               start-position)
@@ -233,13 +233,18 @@
     ;;(break "before the loop")
     (let ((right-edge head-edge)
           (left-edge edge-just-to-the-left)
-          edge  )
+          edge  rule )
       (loop
         ;(break "Looking at e~a + e~a"
         ;      (edge-position-in-resource-array left-edge)
         ;      (edge-position-in-resource-array right-edge))
-        (push-debug `(,left-edge ,right-edge)) ;;(break "try by hand")
-        (setq edge (check-one-one left-edge right-edge))
+        ;; Open-coding check-one-one so can see what rule is used
+        (setq rule (multiply-edges left-edge right-edge))
+        (unless rule
+          (tr :c3-no-rule left-edge right-edge))
+        (setq edge (execute-one-one-rule rule
+                                         left-edge
+                                         right-edge))
         ;; N.b. there's a call to compose in there after the referent's
         ;; computed. 
         (unless edge
@@ -247,13 +252,14 @@
           (error "e~a and e~a didn't compose"
                  (edge-position-in-resource-array left-edge)
                  (edge-position-in-resource-array right-edge)))
-        (tr :c3-segment-edge left-edge right-edge edge)
+        (tr :c3-segment-edge left-edge right-edge edge rule)
         (if (eq (pos-edge-starts-at edge) start-position)
           (return)
           (else
            (setq right-edge edge)
            (setq left-edge (edge-ending-at (pos-edge-starts-at edge))))))
       (tr :c3-segment-parse-value edge)
+      (generalize-segment-edge-form-if-needed edge)
       edge)))
 
 

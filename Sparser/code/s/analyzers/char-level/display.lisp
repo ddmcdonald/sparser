@@ -186,7 +186,7 @@
     (extract-string-from-char-buffers start end)))
 
 (defun write-characters-between-positions (start-pos end-pos stream)
-  (format stream "~a" (extract-string-from-char-buffers start-pos end-pos)))
+  (format stream "~a" (extract-character-between-positions start-pos end-pos)))
 
 
 (defun extract-string-from-char-buffers (start end)

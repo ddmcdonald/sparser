@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2010-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.4 February 2015
+;;;  Version:  January 2016
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -28,7 +28,8 @@
 ;;     (2/10/13) added trace-status-history. Bracket variant 4.1.13
 ;;     (5/12/14) Bunch of C3 traces. 8/31/14 Moved forest traces out to forest.
 ;;     Adding traces for the new code through 10/22/14
-;;     (2/8/15) traces for trace-terminals-loop
+;;     (2/8/15) traces for trace-terminals-loop. 1/15/16 tracing k-method application
+
 
 (in-package :sparser)
 
@@ -1059,15 +1060,24 @@
                (pos-token-index start)
                (pos-token-index end))))
 
-(deftrace :c3-segment-edge (left-edge right-edge edge)
+(deftrace :c3-no-rule (left-edge right-edge)
   ;; in c3-segment-parse
   (when *trace-c3*
-    (trace-msg "[c3] e~a,~a + e~a~a => ~a"
+    (trace-msg "[c3] no rule combining ~a and ~a"
+               (edge-position-in-resource-array left-edge)
+               (edge-position-in-resource-array right-edge))))
+
+(deftrace :c3-segment-edge (left-edge right-edge edge rule)
+  ;; in c3-segment-parse
+  (when *trace-c3*
+    (trace-msg "[c3] e ~a (~a) + e~a (~a)~
+              ~%  => ~a  rule = ~a"
                (edge-position-in-resource-array left-edge)
                (edge-category left-edge)
                (edge-position-in-resource-array right-edge)
                (edge-category right-edge)
-               edge)))
+               edge
+               rule)))
 
 (deftrace :c3-segment-parse-value (edge)
   ;; in c3-segment-parse
@@ -1079,6 +1089,11 @@
   (when *trace-c3*
     (trace-msg "[c3] updating the ~a state from ~a to ~a"
                type state new-state)))
+
+(deftrace :c3-compose (left-ref right-ref)
+  ;; In the individual k-methods
+  (when *trace-c3*
+    (trace-msg "[c3] applying compose to ~a and ~a" left-ref right-ref)))
 
 (deftrace :c3-composing (left-ref right-ref)
   ;; in incorporate-composition-into-situation

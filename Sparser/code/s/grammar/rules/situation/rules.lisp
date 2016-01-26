@@ -80,6 +80,7 @@
   (push-debug `(,type ,peg ,value))
   (let ((variable ;; a real one
          (lookup-variable-for-value-type type)))
+    (assert variable)
     (bind-variable-on-peg peg variable value)))
 
 (defun lookup-variable-for-value-type (symbol)
@@ -87,7 +88,7 @@
   ;; the rule's mapping. Probably easily added to the schema.
   (case symbol
     (category::have ;; any pre-head auxiliary
-     (find-variable-in-category 'aspect 'event))
+     (find-variable-in-category 'aspect 'perdurant))
     (category::color
      (find-variable-in-category 'color 'physical-surface))
     (category::car-manufacturer ;; generalize to maker-of-artifacts
@@ -96,6 +97,7 @@
      (push-debug `(,symbol))
      (break "No variable associated with the category symbol ~a"
             symbol))))
+
 
 
 ;;;--------

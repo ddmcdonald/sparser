@@ -1,13 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "specifics"
 ;;;   Module:  "grammar/sl/ISR/
-;;;  version:  May 2014
+;;;  version:  January 2016
 
 ;; Initiated 4/14/14 to hold domain-specific categories.
-;; 5/12/14 Fixed inherited location. 
+;; 5/12/14 Fixed inherited location. 1/25/16 added an explicit
+;; realization to village.
 
 (in-package :sparser)
 
@@ -54,5 +55,6 @@
   ;; they live, streets, squares, commerce (shops, markets, ...)
   ;; industry, etc.
   :mixins (has-name has-spatial-location container)
-  :index (:permanent :key name))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
 

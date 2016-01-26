@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "c3"
 ;;;    Module:  "init;versions:v4:config:grammars:"
-;;;   version:  October 2013
+;;;   version:  January 2016
 
 ;; Initiated 9/16/13 as a cut-down full-grammar so it's easy to
-;; add things back if we need to. Actually done 10/7/13.
+;; add things back if we need to. Actually done 10/7/13. Turned on
+;; SD&P 1/26/16 to use one of its subroutines.
 
 (in-package :sparser)
 
@@ -178,7 +179,7 @@
 ;;;------------------------------
 
 (include-grammar-module  *DM&P*)
-;(include-grammar-module  *SDM&P*)
+(include-grammar-module  *SDM&P*)
 
 
 ;;;--------------------------------------

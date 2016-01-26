@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "state"
 ;;;            objects/situation/
-;;;  version:  October 2013
+;;;  version:  January 2016
 
-;; Initiated 10/9/13. Elaborated 10/10/13
+;; Initiated 10/9/13. Elaborated 10/10/13. Wrote code to handle
+;; forward references to state in define-state 1/26/16.
 
 (in-package :sparser)
 
@@ -62,7 +63,9 @@
       (push-debug `(,entry)) ;(break "decipher entry")
 
       (let ((new-state (cadr entry))
-            (actions (cddr entry))) ;; deprecated if we can get away with i
+            (actions (cddr entry))) ;; deprecated if we can get away with it
+        (when (keywordp new-state)
+          (setq new-state (repair-forward-ref-to-state entry)))
         (tr :state-update state new-state type)
         (when actions
           (push-debug `(,actions ,entry))
@@ -149,5 +152,17 @@
           (push `(,category ,state)
                 entries))))
     (nreverse entries)))
+
+(defun repair-forward-ref-to-state (entry)
+  "Update-situation-state got a keyword when it expected
+  a state, which is what happens when there's a forward
+  reference to a state that's yet to be defined. We fix
+  the entry so it won't happen again and return the state."
+  (let* ((state-keyword (cadr entry))
+         (state (get-state state-keyword)))
+    (assert state)
+    (setf (cadr entry) state)
+    state))
+
 
 
