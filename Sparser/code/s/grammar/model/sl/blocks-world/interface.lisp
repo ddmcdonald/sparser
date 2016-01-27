@@ -67,8 +67,9 @@ default to be indefinite determiners (i.e. no semantics to speak of).
 
 (defparameter utt-1.1a '(propose-goal friendly
                          (build :o staircase)))
+; (sexp-reader utt-1.1a)
 
-#| Expedient 'direct to resources' scheme:
+#| Alternative expedient 'direct to resources' scheme:
 a. We look at the car of the sexp, see the symbol 'build, and
  retrieve its lexicalized tree using it's pname as the key to
  get-lexicalized-phrase. That's a clause open in s and o. 
@@ -76,16 +77,17 @@ b. Make a dtn based on that resource
 c. We 'just know' that we're making a command so we have a function
  take a dtn and bind the subject to the pronoun as in build-a-
  staircase. 
-d. We expect just a cadr ('staircase) in the sexp. So we pull
- that out.
-e. The symbol is the referent (for the nonce) and we apply a
- purpose-build function to wrap it in kind, singular, and then we
- apply it to the remaining 'o parameter. 
+d. An operator like 'build' can take any number of 
+ phrase-level parameters (:o) / value pairs. 
+ 
 |#
 
 (defparameter utt-2 
    `(propose-goal (put :o1 block :o2 (location on ,*the-table*))))
 ; (sexp-reader utt-2)
+
+(defparameter utt-3a '(acknowledge)) ;; "ok"
+(defparameter utt-3b '(good-job) ;; as it spoken to a dog or child
 
 ;;;----------
 ;;; The code
@@ -240,8 +242,34 @@ interface/derivations/discourse-reference.lisp
   (let ((operator (car sexp)))
     (assert (member operator '(location)))
     (ecase operator
-      (location )
-)))
+      (location
+       (plan-reference-to-prepositional-location sexp)))))
+
+;; (location on ,*the-table*)
+(defun plan-reference-to-prepositional-location (sexp)
+  (let* ((prep-pname (cadr sexp))
+         (prep (find-word prep-pname))
+         (comp-sexp (caddr sexp))
+         (comp-dtn (expand-value comp-sexp)))
+    (assert prep)
+    (assert comp-dtn)
+    ;; build the pp by hand. When parsing we can have
+    ;; prepositions that project typed complements
+    ;; but before than no point in reifying them
+    (let* ((phrase (phrase-named 'pp))
+           (dtn (make-dtn :referent sexp :resource phrase))
+           (c-prep (make-instance 'complement-node
+                     :phrase-parameter (parameter-named 'p)
+                     :value prep))
+           (c-comp (make-instance 'complement-node
+                     :phrase-parameter (parameter-named 'prep-object)
+                     :value comp-dtn)))
+      (push c-prep (complements dtn))
+      (push c-comp (complements dtn))
+      dtn)))
+
+  
+
 
 ;;;-------------
 ;;; speech acts
@@ -250,14 +278,29 @@ interface/derivations/discourse-reference.lisp
 ;;--- self contained. Might include "but"
 
 (defmethod standalone-speech-act ((speech-act symbol))
-  (memq speech-act '(acknowledge)))
+  (memq speech-act '(acknowledge good-job)))
 
 (defmethod do-standalone-speech-act ((speech-act symbol))
-  (break "stub: carry out standalone-speech act ~a" speech-act))
+  (ecase speech-act
+    (acknowledge (plan-an-acknowledgement))
+    (good-job (plan-brief-praise))
+))
 
+(defun plan-an-acknowledgement ()
+  (let ((lp (get-lexicalized-phrase 'ok)))
+    (make-dtn :referent 'acknowledge ;;/// no -- more substantial
+              :resource lp)))
+
+(defun plan-brief-praise ()
+  "Ought to be able to fold this into a main text"
+  (let ((lp (get-lexicalized-phrase 'good)))
+    (make-dtn :referent 'brief-praise ;;/// no -- more substantial
+              :resource lp)))
+  
 
 ;;--- for Command 
-(defun instantiate-speech-act (dtn speech-act elaborations) ;; method-ize later
+(defun instantiate-speech-act (dtn speech-act elaborations)
+  ;; method-ize later
   (declare (ignore elaborations))
   (case speech-act
     (propose-goal (command dtn))
