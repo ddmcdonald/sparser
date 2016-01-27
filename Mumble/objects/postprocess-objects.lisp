@@ -491,8 +491,10 @@ the virtual machine cleaner."
 
 (defparameter *pnames-to-words* (make-hash-table :test 'equal))
 
-(defun find-word (pname)
+(defmethod find-word ((pname string))
   (gethash pname *pnames-to-words*))
+(defmethod find-word ((name symbol))
+  (find-word (string-downcase (symbol-name name))))
 
 (defun associate-pname-with-word (pname new-word)
   (setf (gethash pname *pnames-to-words*) new-word))
