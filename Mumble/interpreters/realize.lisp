@@ -102,7 +102,8 @@
           (clausal-bundle-driver dtn root-node))
          ((np np/no-det)
           (general-np-bundle-driver dtn root-node))
-         (pp) ;; just the root-node          
+         (pp) ;; just the root-node 
+         (qp) ;; ditto. Used for interjections
          (otherwise
           (push-debug `(,root-node ,phrase-type))
           (error "Unexpected name of phrase-type: ~a"
