@@ -69,6 +69,22 @@
   (mumble::mumble-value 'first-person-plural 'pronoun))
 
 
+;;---  blocks
+#| This has to meet/merge with Scott's treatment 
+for the individuals. 
+///  Artifact is too immediate since we want to incorporate
+inherited slots for things like color, label, orientation,
+location, membership in structures (staircase), local relations
+with other blocks, mention in utterances, etc. |#
+(define-category block
+  :specializes artifact 
+  :rule-label artifact ;;/// temporary hack for temp parser
+  :mixins (has-name ;; symbols like B1
+           )
+  :index (:permanent :key name)
+  :realization ;; for connection to Mumble
+     (:common-noun "block"))
+
 
 ;;;-----------------------------
 ;;; pre-built lexical resources
@@ -85,10 +101,5 @@
   (define-lexicalized-phrase common-noun ("staircase") (n))
   (define-lexicalized-phrase SVO ("build") (v))
   (define-lexicalized-phrase SVOC ("let") (v)))
-
 (setup-lexicalized-trees)
-
-
-
-
 

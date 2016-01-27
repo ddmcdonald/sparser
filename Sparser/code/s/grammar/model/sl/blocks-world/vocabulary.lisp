@@ -10,7 +10,7 @@
 (in-package :sparser)
 
 ;;--- nouns
-(noun "block" :specializes artifact :rule-label artifact)
+
 (noun "staircase" :specializes artifact :rule-label artifact)
 (noun "table" :specializes artifact :rule-label artifact)
 
