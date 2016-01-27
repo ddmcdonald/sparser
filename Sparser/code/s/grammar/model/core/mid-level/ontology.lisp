@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "ontology"
 ;;;   Module:  "model;core:relations:"
-;;;  version:  December 2015 
+;;;  version:  January 2016
 
 ;; Initiated 12/3/15.
 
@@ -60,7 +60,7 @@ files once an area looks big enough to warrant it.  |#
   :specializes physical  
   :binds ((made-by . maker-of-artifacts))
   ;; also time-created or is it a specialization from the lifetime of Endurant?
-  :realization (:common-noun "artifact"))
+  :lemma (:common-noun "artifact"))
 
 
 
