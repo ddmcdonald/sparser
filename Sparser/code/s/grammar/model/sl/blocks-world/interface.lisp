@@ -87,7 +87,7 @@ d. An operator like 'build' can take any number of
 ; (sexp-reader utt-2)
 
 (defparameter utt-3a '(acknowledge)) ;; "ok"
-(defparameter utt-3b '(good-job) ;; as it spoken to a dog or child
+(defparameter utt-3b '(good-job)) ;; as it spoken to a dog or child
 
 ;;;----------
 ;;; The code
