@@ -131,25 +131,26 @@
   :realization
   (:noun "xxx-dummy"
          :at cellular-location
-         :in non-cellular-location
-         :in species
-         :in cellular-location
-         :on cellular-location
-         :of variant
-         :upon cellular-location
-         :in context
-         :in molecular-location
-         :in preparation
          :at molecular-location
-         :under context
-         :with context
-         :in cell-line
-         :in cell-type
-         :in organ
          :from cell-line
          :from cell-type
+         :in cell-line
+         :in cell-type
+         :in cellular-location
+         :in context
+         :in molecular-location
+         :in non-cellular-location
+         :in organ
+         :in preparation
+         :in species
+         :of variant
+         :on cellular-location
+         :such\ as examples
+         :under context
+         :upon cellular-location
+         :with context
          :within cellular-location
-         :such\ as examples))
+         ))
 
 ;;/// This is OBE given revision to biological. 
 (define-category bio-abstract :specializes biological)
@@ -164,7 +165,6 @@
   :binds ((subject biological)
           (as-comp as-comp))
   :realization (:s subject
-                   :of subject
                    :as-comp as-comp))
 
 (define-category bio-quality :specializes quality
@@ -177,14 +177,28 @@
   :mixins (bio-quality)
   :documentation "Provides a generalization over biological and scalar")
 
+(define-category  measurement  :specializes abstract
+  :instantiates self
+  :binds ((units . unit-of-measure)
+          (quantity  :or quantity number))
+  :realization (:tree-family  quantity+kind
+                :mapping ((quantity . quantity)
+                          (base . units)
+                          (np . :self)
+                          (np-head . unit-of-measure)
+                          (modifier . (number quantity))
+                          (result-type . :self))))
+
+
 ;; Rusty -- where are we supposed to put the two numbers
 ;; or two molecules?  Need example. 
-(define-category ratio  :specializes bio-scalar
-  :binds ((value ratio)
+(define-category ratio  :specializes measurement
+  :binds ((ratio ratio)
           (divisor biological))
   :realization
   (:noun "ratio"
-        :of value
+        :of quantity
+        :of ratio
         :to divisor))
 
 
@@ -209,17 +223,6 @@
 
 
 
-(define-category  measurement  :specializes bio-scalar ;; "10 yards" 
-  :instantiates self
-  :binds ((units . unit-of-measure)
-          (quantity  :or quantity number))
-  :realization (:tree-family  quantity+kind
-                :mapping ((quantity . quantity)
-                          (base . units)
-                          (np . :self)
-                          (np-head . unit-of-measure)
-                          (modifier . (number quantity))
-                          (result-type . :self))))
 
 
 ;;;---------------------------------
@@ -265,18 +268,19 @@
   :binds ((subject biological)
           (following)
           (modifier)
-          (by-means-of (:or bio-process mechanism bio-entity))
-          (manner (:or bio-process bio-mechanism bio-method))
+          (by-means-of (:or bio-process mechanism))
+          (using bio-entity)
+          (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
           (as-comp as-comp)
           (timeperiod (:or time-unit amount-of-time)))
   
   :realization 
   (:noun "process"
          :s subject
-         :of subject
          :by by-means-of
          :through by-means-of
          :via by-means-of
+         :via using
          :in manner
          :as-comp as-comp
          :for timeperiod
@@ -293,7 +297,7 @@
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
-(define-mixin-category caused-bio-process
+(define-category caused-bio-process
   :specializes bio-process
   :binds
   ((agent (:or biological this)) ;; supercedes subject in bio=-process
@@ -304,7 +308,7 @@
       :o object
       :of object
       :by agent     
-      :at at));; can be bio-entity or bio-scalar (and perhaps? bio-process)
+      :at at))
 
 
 (define-category mechanism :specializes endurant
@@ -328,13 +332,13 @@
          :etf (svo-passive)))
 
 (define-category negative-bio-control :specializes bio-control
-  :restrict ((object (:or biological bio-rhetorical))) ;; "lowered the possibility"
+  ;; :restrict ((object (:or biological bio-rhetorical))) ;; "lowered the possibility"
   :binds ((inhibited-process bio-process))
   :realization (:verb "negatively controls"  :etf (svo-passive)
                       :from inhibited-process))
 
 (define-category positive-bio-control :specializes bio-control
-  :restrict ((object (:or biological bio-rhetorical))) ;; "raised the possibility"
+  ;; :restrict ((object (:or biological bio-rhetorical))) ;; "raised the possibility"
   :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
@@ -385,29 +389,25 @@
    (origin cellular-location)
    (destination cellular-location))
   :realization 
-  (:s object
-      :at origin
-      :into destination
-      :to destination
-      :to destination
-      :of object
-      :onto destination
-      :in destination
-      :from origin
-      :m destination
-      :m object))
+  (:at origin
+       :into destination
+       :to destination
+       :onto destination
+       :from origin
+       :m destination
+       :m object))
+
+(define-category bio-self-movement :specializes bio-movement
+  :realization
+  (:s object))
 
 (define-category bio-transport :specializes bio-movement
   :mixins (caused-bio-process)
-  :binds ((mechanism bio-process))
   :realization 
   (;;:verb "transport" 
-   :noun "transport" 
-   ;;:etf (svo-passive) 
-   :by mechanism
-   ))
+   :noun "transport"))
 
-(define-category originate :specializes bio-movement
+(define-category originate :specializes bio-self-movement
   :realization 
   (:verb "originate" 
          :etf (sv)
@@ -416,7 +416,7 @@
    :at origin
    ))
 
-(define-category culminate :specializes bio-movement
+(define-category culminate :specializes bio-self-movement
   :realization 
   (:verb "culminate" 
          :etf (sv)
@@ -479,14 +479,20 @@
   :mixins (has-UID has-name biological)
   :binds ((theme biological)
           (timeperiod (:or time-unit amount-of-time))) ;; this probably belongs higher
-  :realization (:o theme
-                   :of theme ;; for nominals
-                   :for timeperiod) ;; for nominal forms
+  :realization (:for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
 
-(define-category pathway-direction :specializes bio-relation)
+(define-category pathway-direction :specializes bio-relation
+      :binds ((relative-to biological)
+              (pathway pathway))
+      :realization
+      (:noun "upstream"
+             :of relative-to
+             :from relative-to
+             :in pathway))
+
 (define-category equilibrium :specializes bio-relation
   :binds ((with-species bio-chemical-entity))
   :realization
@@ -614,7 +620,8 @@
 (fom-subcategorization category::protein
                        :category category::protein
                        :slots `(:in complex
-                                    :of functionally-related-to))
+                                    ;;:of functionally-related-to
+                                    ))
 
 
 (define-mixin-category protein-method :specializes bio-method)
@@ -851,10 +858,10 @@
          :of substrate))
 
 (define-category protein-domain :specializes molecular-location ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
-  :binds ((substrate (:or bio-entity molecular-location)))
   :instantiates :self
   :realization
   (:noun "domain"
+         :m substrate
          :of substrate))
 
 (define-category cell-line :specializes bio-entity
@@ -958,20 +965,17 @@ the aggregate across the predicate it's in. |#
 ;;//// are these even "bio" at all?
 (delete-noun-cfr (resolve "rate"))
 (define-category process-rate :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
-  :binds ((process bio-process) (components biological))
+  :binds ((components biological))
   :realization 
   (:noun "rate"
-         :of process
          :for components))
 
 (def-synonym process-rate 
              (:noun "kinetics"))
 
 (define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
-  :binds ((process bio-process))
   :realization 
-  (:noun "time course"
-         :of process))
+  (:noun "time course"))
 
 (define-category bio-concentration :specializes bio-scalar
   :realization
@@ -1035,13 +1039,13 @@ the aggregate across the predicate it's in. |#
   :instantiates :self
   :binds ((amino-acid . amino-acid)
           (position number) ;; counting from the N terminus
-          (on-protein . protein))
+          )
   :index (:permanent :sequential-keys amino-acid position)
   :realization
    (:noun "residue"
-   :of on-protein
-   :on on-protein
-   :in on-protein
+   :of substrate
+   :on substrate
+   :in substrate
    :at amino-acid))  ;; this is actually for serine at residue 822 -- this is an "inverse" :at
                     ;;  for use by interpret-pp-as-head-of-np and a form rule in form-rules
 

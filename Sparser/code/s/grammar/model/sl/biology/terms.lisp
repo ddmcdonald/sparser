@@ -91,7 +91,6 @@
                  :specializes bio-relation
   :realization
   (:adj "coincident"
-        :s subject
         :with theme))
 
 (define-category conformational-change
@@ -259,21 +258,16 @@
 
 
 (noun "ability" :super bio-relation
-      :binds ((agent biological)(ability bio-process))
+      :binds ((ability bio-process))
       :realization
       (:noun "ability" :adj "able"
-             :s agent
              :to-comp ability
-             :of agent
+             :of subject
              :to ability))
 
 (noun "abnormality" :super disease)
 
-(noun "absence" :super experimental-condition
-      :binds ((absent biological)) 
-      :realization
-      (:noun "absence"
-             :of absent))
+(noun "absence" :super experimental-condition)
 
 (define-category action :specializes bio-process
   :binds ((actor biological))
@@ -380,29 +374,25 @@
          :for complement))
 
 (adj "common" :super bio-relation
-  :binds ((theme bio-entity))
   :realization 
   (:adj "common"
         :to theme))
 
 ;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
 (define-category component :specializes molecule
-  :binds ((complex bio-complex))
+  :binds ((whole (:or bio-complex bio-process)))
   :realization
   (:noun "component"
-         :of complex))
+         :of whole))
 
 (def-synonym component 
-             (:noun "part"
-                    :of complex))
+             (:noun "part"))
 
 (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super experimental-condition)
 (adj "consistent" :super bio-relation
-  :binds ((subject biological) (theme biological))
   :realization 
   (:adj "consistent"
-        :s subject
         :with theme))
 (adj "constitutive" :super bio-predication)
 (define-adverb "constitutively")
@@ -430,22 +420,24 @@
 (adj "deadliest" :super bio-predication) ;;//// no -- define shortcut, morphology extensions
 ;; to define the whole comparative paradigm
 
+;; "the DSB repair defect", "a defect in sensitivity to GAP–mediated regulation"
 (noun "defect" :super bio-relation
       :realization 
       (:NOUN "defect"
+             :etf (premod)
+             :m theme
              :in theme))
 
 ;; Something is deficient in something else. It needs that
 ;; thing but doesn't have it. Vitamin D, 
 ;; ERK#7 "to be dimerization-deficient in vitro"
 (adj "deficient" :super bio-relation
-     :binds ((missing biological))
   :realization
     (:adj "deficient"
      :noun "deficiency"
      :etf pre-mod
-     :m missing
-     :in missing))
+     :m theme
+     :in theme))
 
 (noun "derivative" :super molecule)
 (noun "detail" :super bio-scalar)
@@ -469,12 +461,9 @@
              :of substrate))
 
 (adj "downstream" :super pathway-direction
-  :binds ((pathway pathway))
   :realization 
-  (:adj "downstream"
-        :from theme
-        :of theme
-        :in pathway))
+  (:adj "downstream"))
+
 (noun "duration" :super bio-scalar)
 (noun "dynamics" :super bio-abstract)
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
@@ -561,10 +550,12 @@
 (noun "forster resonance energy transfer" :super bio-method)
 
 (noun "fragment" :super protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
-      :binds ((whole bio-entity))
+      :binds ((whole bio-entity)
+              (measure measurement))
       :realization
       (:noun "fragment"
-             :of whole))
+             :of whole
+             :of measure))
 
 (adj "free" :super bio-relation
      :binds ((free-of biological))
@@ -603,10 +594,9 @@
 
 
 (adj "identical" :super bio-relation
-     :binds ((comparator biological))
      :realization
      (:adj "identical"
-           :to comparator))
+           :to theme))
 (define-adverb "in part")
 (define-category in-vivo :specializes experimental-condition
   :realization
@@ -780,7 +770,6 @@
      :binds ((condition biological)(agent biological)(result biological))
      :realization 
      (:adj "necessary"
-           :s condition
            :for agent
            :to result
            :to-comp result))
@@ -884,9 +873,8 @@
 (noun "receptor protein-tyrosine kinase" :super kinase)
 (adj "recombinant" :super bio-predication)
 (adj "refractory" :super bio-relation
-     :binds ((treatment biological))
      :realization
-     (:to treatment))
+     (:to theme))
      ;; keyword: (ory ADJ)
 (noun "region" :super molecular-location
       :binds ((bounds biological))
@@ -895,9 +883,8 @@
              :between bounds))
 
 (adj "relative" :super bio-relation
-     :binds ((comparator biological))
      :realization
-     (:to comparator))
+     (:to theme))
 
 (adj "resistant" :super bio-relation
      :binds ((treatment (:or bio-process bio-entity)))
@@ -934,8 +921,7 @@
 (noun "scale" :super bio-scalar)     
 (noun "SDS-PAGE"  :super bio-method)
 (adj "selective" :super bio-relation
-     :binds ((for biological))
-     :realization (:for for))
+     :realization (:for theme))
 
 (adj "sensitive" :super bio-relation
       :binds ((treatment biological))
@@ -960,9 +946,8 @@
 (adj "short-lived" :super bio-predication)
 
 (adj "similar" :super bio-relation
-  :binds ((compared-to biological))
   :realization 
-  (:to compared-to))
+  (:to theme))
 (adj "related" :super similar)
 
 (define-adverb "similarly")
@@ -996,11 +981,8 @@
            :for beneficiary))
 (noun "spectrometry" :super bio-method)
 (define-category stable :specializes bio-predication
-     :binds ((agent biological)(context bio-context))
      :realization
-     (:adj "stable" 
-           :s agent
-           :in context))
+     (:adj "stable"))
 
 (noun "starvation" :super bio-method)
 
@@ -1019,10 +1001,9 @@
 ;;(noun "success" :super bio-abstract) -- make a verb
 
 (adj "suitable" :super bio-relation
-     :binds ((purpose biological))
      :realization
      (:adj "suitable"
-           :for purpose))
+           :for theme))
 
 
 (delete-adj-cfr (resolve/make "sufficient"))
@@ -1078,22 +1059,16 @@
      (:adj "unresponsive"
            :to treatment))
 (define-adverb "until now")
-(noun "upstream" :super bio-context
-      :binds ((relative-to biological)
-              (pathway pathway))
+(noun "upstream" :super pathway-direction
       :realization
-      (:noun "upstream"
-             :of relative-to
-             :in pathway))
+      (:noun "upstream"))
+
 (adj "useful" :super bio-relation
-     :binds ((subject biological)
-             (purpose (:or bio-process bio-method)))
+     :binds ((purpose (:or bio-process bio-method)))
      :realization
      (:adj "useful"
-           :s subject
            :for purpose))
 (noun "variety" :super variant)
-
 
 (adj "wild-type" :super bio-predication)
 (def-synonym wild-type (:adj "wild type"))

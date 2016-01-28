@@ -157,7 +157,8 @@
           :third-plural "lacksXXX" ;; don't block noun
           :past-tense "lacked"
           :present-participle "lacking")
-         :etf (svo)))
+         :etf (svo)
+         :o theme))
 
 (define-category screen :specializes  bio-method
   :realization
@@ -199,12 +200,14 @@
 (def-synonym range
              (:noun "range"))
 
-(define-category fil :specializes bio-relation ;; REVIEW!!
+(define-category fill :specializes bio-relation ;; REVIEW!!
   :realization 
-  (:verb "fill" :etf (svo-passive)))
+  (:verb "fill" :etf (svo-passive)
+         :o theme))
 
 (define-category surface-line :specializes bio-relation ;; the tissue lining the gut
-  :realization (:verb "line" :etf (svo-passive)))
+  :realization (:verb "line" :etf (svo-passive)
+         :o theme))
 
 (define-category mention :specializes bio-rhetorical
   :realization (:verb "mention" :etf (svo-passive)))
@@ -419,7 +422,7 @@
 
 ;; DAVID -- not sure about the relation of basis to base
 (define-category base :specializes bio-rhetorical
-    :binds ((cause (:or biological bio-rhetorical)))
+    :binds ((cause (:or biological bio-rhetorical measurement)))
     :realization
     (:verb "base" ;; keyword: ENDS-IN-ED 
 	   :noun "basis"
@@ -578,9 +581,10 @@
            :to-comp tocomp))
 
 (define-category constitute :specializes bio-relation
-    :realization
-    (:verb "constitute" ;; keyword: ENDS-IN-ED 
-	   :etf (svo)))
+  :realization
+  (:verb "constitute" ;; keyword: ENDS-IN-ED 
+         :etf (svo)
+         :o theme))
 
 (define-category construct :specializes bio-method
     :realization
@@ -591,7 +595,8 @@
 (define-category contain :specializes bio-relation 
      :realization 
      (:verb "contain"  
-            :etf (svo-passive) ))
+            :etf (svo-passive) 
+            :o theme))
 
 (define-category continue :specializes bio-relation
   :binds ((agent biological)
@@ -712,6 +717,7 @@
 (define-category delay :specializes caused-bio-process
     :realization
     (:verb "delay"
+           :noun "delay"
 	   :etf (svo-passive )
            :in object))
 
@@ -819,7 +825,8 @@
   :realization 
   (:verb "dominate" 
   :noun "domination" 
-  :etf (svo-passive) ))
+  :etf (svo-passive)
+  :o theme))
 
 (define-category downregulate
   :specializes negative-bio-control
@@ -1017,14 +1024,12 @@
     (:verb "express"
 	   :noun "expression"
 	   :etf (svo-passive)
-           :from from
-           :in location
-           :of object
-           :on location))
+           :from from))
 
 (define-category gene-transcript-co-express :specializes gene-transcript-express
     :binds ((location bio-location)
-            (from biological))
+            (from biological)
+            (other-protein protein))
     :realization
     (:verb "co-express"
 	   :noun "co-expression"
@@ -1032,7 +1037,8 @@
            :from from
            :in location
            :of object
-           :on location))
+           :on location
+           :with other-protein))
 
 (def-synonym gene-transcript-co-express
              (:verb ("coexpress" :past-tense "coexpressed")
@@ -1060,12 +1066,10 @@
 	   :etf (svo-passive)))  ;; :in bio-context))  <--------------- not in scope
 
 (define-category fail :specializes bio-relation
-  :binds ((agent biological)
-          (process bio-process))
+  :binds ((process bio-process))
   :realization 
   (:verb "fail"  
-         :etf (svo-passive)
-         :s agent
+         :etf (sv)
          :to-comp process))
 ;; mostly passive -- "... are found ..."
 (define-category find :specializes bio-rhetorical
@@ -1075,7 +1079,7 @@
          :noun "finding"
          :etf (svo-passive)))
 
-(define-category follow :specializes bio-relation
+(define-category follow :specializes bio-relation ;; need event relation
   :binds (;; subject and theme inherited from bio-relation
           ;;(subject bio-process) ;; this is the initial process
           ;;(theme bio-process) ;; this is the "following" process
@@ -1083,6 +1087,7 @@
   :realization
   (:verb "follow"
          :etf (svo) 
+         :o theme
          :by by))
 
 (define-category bio-form :specializes caused-bio-process
@@ -1099,8 +1104,7 @@
   (:verb "fraction" ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
          :etf (svo-passive)
          :s agent
-         :o basis
-         :of basis))
+         :o basis))
 
 (def-synonym fraction (:noun "fraction"))
 ;; exchange
@@ -1184,15 +1188,12 @@
          :via antibody))
 
 
-(define-category impact :specializes bio-predication
-  :binds ((subject biological)
-          (theme biological))
+(define-category impact :specializes bio-relation
   :realization
   (:verb "impact" 
          :etf (svo-passive)
-	 :s subject
          :o theme
-	 :of theme
+         :of subject
          :on theme))
 
 (def-synonym impact
@@ -1221,6 +1222,7 @@
   :realization 
   (:verb "incorporate" :noun "incorporation"
          :etf (svo-passive)
+         :o theme
          :into subject))
 
 (define-category increase
@@ -1330,6 +1332,7 @@
   :realization 
   (:verb "interact" :noun"interaction" 
          :etf (sv) 
+         :of subject
          :with interactor
          :between interactor))
 
@@ -1357,12 +1360,14 @@
     :realization
     (:verb "involve" ;; keyword: ENDS-IN-ING 
 	   :etf (svo)
+           :o theme
            :in subject))
 
 (define-category keep :specializes bio-relation
     :realization
     (:verb ("keep" :past-tense "kept")
-	   :etf (svo-passive)))
+	   :etf (svo-passive)
+           :o theme))
 
 (define-category know :specializes bio-rhetorical
   :binds ((topic biological)
@@ -1522,7 +1527,8 @@
     (:verb "need" ;; keyword: ENDS-IN-ED 
 	   :noun "need"
 	   :etf (svo-passive)
-           :for theme
+           :o theme
+           :for result-or-purpose
            :to-comp result-or-purpose))
 
 
@@ -1567,6 +1573,7 @@
          :noun "overlap"
          :etf (svo-passive)
          :with theme
+         :o theme
          :in subject
          :among subject
          :between theme))
@@ -1613,7 +1620,8 @@
     :realization
     (:verb "present"
 	   :noun "presentation"
-	   :etf (svo-passive)))
+	   :etf (svo-passive)
+           :o theme))
 
 (define-category preserve :specializes bio-control
   :realization
@@ -1698,7 +1706,8 @@
     :realization
     (:verb "provide"
 	   :noun "provision"
-	   :etf (svo-passive)))
+	   :etf (svo-passive)
+           :o theme))
 
 (define-category purify :specializes bio-method
   :binds ((bio biological)) 
@@ -1831,7 +1840,8 @@
 (define-category remain :specializes bio-relation
     :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)))
+	   :etf (svo-passive)
+           :o theme))
 
 (def-form-rule (remain adjective)
   :form vp
@@ -1862,6 +1872,7 @@
   :realization
   (:verb "represent" :noun "representation"
          :etf (svo-passive)
+         :o theme
          :in figure))
 
 (define-category require :specializes bio-control
@@ -2119,7 +2130,7 @@
 (def-synonym transition (:noun "transition"))
 
 
-(define-category translate :specializes bio-relation
+(define-category translate :specializes caused-bio-process
   :binds ((initial biological)
           (result biological))
   :realization

@@ -146,7 +146,7 @@
   :form np
   :referent 
   (:head right-edge           
-         :bind (on-protein left-edge)))
+         :bind (substrate left-edge)))
 
 #|
 ;; p38 kinase
@@ -185,14 +185,12 @@
 
 ;;--- bio-predication
 
-(define-category is-bio-entity :specializes bio-predication
-  :binds ((entity biological)
-          (predication biological)))
+(define-category is-bio-entity :specializes bio-relation)
 
 (def-cfr IS-BIO-ENTITY (be biological)
   :form vp
   :referent (:instantiate-individual is-bio-entity
-                :with (predication right-edge)))
+                :with (theme right-edge)))
 
 (def-cfr is-bio-entity (biological is-bio-entity)
   :form s
