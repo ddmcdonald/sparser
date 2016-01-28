@@ -986,6 +986,19 @@ to enhance p53 mediated apoptosis [2].") |#
 
 (defparameter *trivial-subcat-test* nil)
 (defparameter *tight-subcats* nil)
+(defparameter *note-ambiguity* nil)
+
+(defun show-ambiguities ()
+  (setq *note-ambiguity* (list nil))
+  (compare-to-snapshots)
+  (np (setq *dups*
+            (sort *note-ambiguity* #'string<
+                  :key #'(lambda(x)(if (individual-p (car x))(cat-name (itype-of (car x))) "")))))
+  
+  (loop for pat in 
+    (remove-duplicates (loop for x in *dups* collect (list (second x)(fourth x))) :test #'equal)
+    do (terpri)(print pat)))
+
 
 (defun subcategorized-variable (head label item)
   (declare (special item *pobj-edge*))
@@ -1017,39 +1030,57 @@ to enhance p53 mediated apoptosis [2].") |#
         (setq *head* head)
         (let ( variable )
           (let ((*trivial-subcat-test* nil))
-            (dolist (entry subcat-patterns)
-              (let ((scr (subcat-restriction entry)))
-                (when (eq label (subcat-label entry))
-                  (when (satisfies-subcat-restriction? item scr)
-                    (setq variable (subcat-variable entry))
-                    (return))))))
+            (if (and *note-ambiguity* (not *subcat-test*))
+                (let (vars sources)
+                  (loop for entry in subcat-patterns
+                    do
+                    (let ((scr (subcat-restriction entry)))
+                      (when (eq label (subcat-label entry))
+                        (when (satisfies-subcat-restriction? item scr)
+                          (push (subcat-variable entry) vars)
+                          (push (list (subcat-variable entry)(subcat-source entry)) sources)))))
+                  (when (cdr vars)
+                    (push (list head label item sources) *note-ambiguity*))
+                  (setq variable (car vars)))
+                
+                (dolist (entry subcat-patterns)
+                  (let ((scr (subcat-restriction entry)))
+                    (when (eq label (subcat-label entry))
+                      (when (satisfies-subcat-restriction? item scr)
+                        (setq variable (subcat-variable entry))
+                        (return)))))))
           ;; collect information on failed tests
-          (unless (or variable (null *trivial-subcat-test*))
-            (dolist (entry subcat-patterns)
-              (let ((scr (subcat-restriction entry)))
-                (when (eq label (subcat-label entry))
-                  (when (satisfies-subcat-restriction? item scr)
-                    (setq variable (subcat-variable entry))
-                    (return))))))
+          (when *trivial-subcat-test*
+            (unless variable
+              (dolist (entry subcat-patterns)
+                (let ((scr (subcat-restriction entry)))
+                  (when (eq label (subcat-label entry))
+                    (when (satisfies-subcat-restriction? item scr)
+                      (setq variable (subcat-variable entry))
+                      (return)))))))
           
           ;;(break "testing subcats")
+          variable
+          #|
           (or
-           variable
-           (when (or
-                  (eq label (word-named "in"))
-                  (eq label :premod))
-             (cond
-              ((and (itypep head 'physical)
-                    (itypep item 'location))
-               (find-variable-in-category/named 'location category::physical))
-              ((and (itypep head 'biological)
-                    (itypep item 'bio-location))
-               (find-variable-in-category/named
-                'location (category-named 'biological)))
-              ((and (itypep head 'biological)
-                    (itypep item 'bio-context))
-               (find-variable-in-category/named
-                'context (category-named 'biological))))))))))))
+          variable
+          (when (or
+          (eq label (word-named "in"))
+          (eq label :premod))
+          (cond
+          ((and (itypep head 'physical)
+          (itypep item 'location))
+          (find-variable-in-category/named 'location category::physical))
+          ((and (itypep head 'biological)
+          (itypep item 'bio-location))
+          (find-variable-in-category/named
+          'location (category-named 'biological)))
+          ((and (itypep head 'biological)
+          (itypep item 'bio-context))
+          (find-variable-in-category/named
+          'context (category-named 'biological))))))
+          |#
+          ))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
   (when *trivial-subcat-test*
