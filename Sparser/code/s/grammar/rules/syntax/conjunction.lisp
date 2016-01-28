@@ -391,61 +391,58 @@
   (when (and (edge-p edge-before)(edge-p edge-after))
     (let ((label-before (edge-category edge-before))
           (label-after (edge-category edge-after)))
-      (declare (special label-before label-after))
-      (if (or (and
-               (eq label-before label-after)
-               (cond
-                ((eq
-                  (individual-p (edge-referent edge-before))
-                  (individual-p (edge-referent edge-after)))
-                 t)
-                (t (break "conjunction-problem: conjunction of category and individual")) ))
-              (and
-               (safe-itypep label-before 'protein)
-               (safe-itypep label-after 'protein))
-              (and
-               (safe-itypep label-before 'bio-complex)
-               (safe-itypep label-after 'bio-complex))
-              #+ignore
-              (and (or (safe-itypep label-before 'protein)
-                       (safe-itypep label-before 'bio-complex))  ;; allow for protein and kinase
-                   (or
-                    (safe-itypep label-after 'protein)
-                    (safe-itypep label-after 'bio-complex)))
-              (bio-coercion-compatible? label-before label-after edge-before edge-after))
-          :conjunction/identical-adjacent-labels
-          (when *allow-form-conjunction-heuristic*
-            ;;(break "form heuristics allowed. Check backtrace")
-            (let ((form-before (edge-form edge-before))
-                  (form-after (edge-form edge-after)))
-              (when (and (or (and (eq form-before form-after))
-                             (and
-                              (referential-category-p form-before)
-                              (referential-category-p form-after)
-                              ;; can conjoin proper nouns and NPs (in fact, proper nouns should be NPs)
-                              (member (cat-symbol form-before) '(category::np category::proper-noun))                              
-                              (member (cat-symbol form-after) '(category::np category::proper-noun)))
-                             (and (memq form-before *premod-forms*)
-                                  (memq form-after *premod-forms*)))
-                         (not
-                          (and
-                           (ng-head? edge-before)
-                           (ng-head? edge-after)
-                           (let ((rtta (right-treetop-at/edge edge-after)))
-                             (and (edge-p rtta) 
-                                  (eq category::preposition (edge-form rtta))
-                                  (let ((sub-cats (known-subcategorization? (edge-referent rtta))))
-                                    (and 
-                                     (assoc (edge-left-daughter rtta) sub-cats)                                 
-                                     (not (assoc (edge-left-daughter rtta) sub-cats))))
-                                  ;;this code blocks conjunction of NG heads that are followed by a preposition --
-                                  ;;  because it appears much more likely that the following PP is attached 
-                                  ;;  to the second head, not to the conjunction
-                                  
-                                  ))))
-                         (not (conjunction-incompatible-labels
-                               label-before label-after edge-before edge-after)))
-                :conjunction/identical-form-labels)))))))
+      (cond
+       ((or (and
+             (eq label-before label-after)
+             (cond
+              ((eq
+                (individual-p (edge-referent edge-before))
+                (individual-p (edge-referent edge-after)))
+               t)
+              (t (break "conjunction-problem: conjunction of category and individual")) ))
+            (and
+             (safe-itypep label-before 'protein)
+             (safe-itypep label-after 'protein))
+            (and
+             (safe-itypep label-before 'bio-complex)
+             (safe-itypep label-after 'bio-complex))
+            
+            (bio-coercion-compatible? label-before label-after edge-before edge-after))
+        :conjunction/identical-adjacent-labels)
+       (*allow-form-conjunction-heuristic*
+        
+        ;;(break "form heuristics allowed. Check backtrace")
+        (let ((form-before (edge-form edge-before))
+              (form-after (edge-form edge-after)))
+          (when (and (or (and (eq form-before form-after))
+                         (and
+                          (referential-category-p form-before)
+                          (referential-category-p form-after)
+                          ;; can conjoin proper nouns and NPs (in fact, proper nouns should be NPs)
+                          (member (cat-symbol form-before) '(category::np category::proper-noun))                              
+                          (member (cat-symbol form-after) '(category::np category::proper-noun)))
+                         (and (memq form-before *premod-forms*)
+                              (memq form-after *premod-forms*)))
+                     (not
+                      (and
+                       (ng-head? edge-before)
+                       (ng-head? edge-after)
+                       (let ((rtta (right-treetop-at/edge edge-after)))
+                         (and (edge-p rtta) 
+                              (eq category::preposition (edge-form rtta))
+                              (let ((sub-cats (known-subcategorization? (edge-referent rtta))))
+                                (and 
+                                 (assoc (edge-left-daughter rtta) sub-cats)                                 
+                                 (not (assoc (edge-left-daughter rtta) sub-cats))))
+                              ;;this code blocks conjunction of NG heads that are followed by a preposition --
+                              ;;  because it appears much more likely that the following PP is attached 
+                              ;;  to the second head, not to the conjunction
+                              
+                              ))))
+                     
+                     (not (conjunction-incompatible-labels
+                           label-before label-after edge-before edge-after)))
+            :conjunction/identical-form-labels)))))))
 
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
   (declare (special label-after label-before category::bio-entity))
@@ -483,16 +480,29 @@
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
   (let ((reject?
-        (or (and (member (cat-name before)
-                         `(protein residue-on-protein bio-complex
-                           other fragment))
-                 (not (eq before after)))
-            (and (category-p before)
-                 (category-p after)
-                 (or (and (itypep before category::process)
-                          (not (itypep after category::process)))
-                     (and (itypep after category::process)
-                          (not (itypep before category::process))))))))
+         (or (and (member (cat-name before)
+                          `(protein residue-on-protein bio-complex
+                                    other fragment))
+                  (not (eq before after)))
+             (and (category-p before)
+                  (category-p after)
+                  (if
+                   (and (eq (cat-name (edge-form edge-before)) 'vg)
+                        (eq (cat-name (edge-form edge-after)) 'vg))
+                   
+                   (not
+                    (or (and (itypep before category::process)
+                             (itypep after category::process))
+                        (and
+                         (itypep before category::bio-predication)
+                         (itypep after category::bio-predication))))
+                   (not
+                    (equal  (or (itypep before category::process)
+                                (itypep before category::bio-predication)
+                                (itypep before category::modifier))
+                            (or (itypep after category::process)
+                                (itypep after category::bio-predication)
+                                (itypep after category::modifier)))))))))
     (cond
      (reject?
       (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels ) 
