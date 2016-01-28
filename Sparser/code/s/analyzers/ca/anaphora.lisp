@@ -246,8 +246,10 @@
    with or replacing the sentence list of individuals.")
 
 (defclass discourse-mention ()
-  ((di :initarg :i :accessor mention-of
-    :documentation "Backpointer to the individual")
+  ((di :initarg :i :accessor base-description
+    :documentation "Backpointer to the individual which is the base description")
+   (ci :initarg :ci :accessor contextual-description
+    :documentation "Backpointer to the individual which is the base description")
    (location-in-paragraph :initarg :loc :accessor mentioned-where
     :documentation "An encoding of the location at which
      this mention occurred. Given the present implementation,
@@ -271,7 +273,7 @@
 
 (defmethod print-object ((m discourse-mention) stream)
   (print-unreadable-object (m stream) ;; not :type t
-    (let ((i (mention-of m))
+    (let ((i (base-description m))
           (location (mentioned-where m)))
       (format stream "i~a " (indiv-uid i))
       (cond
@@ -392,7 +394,7 @@
   #|  (setq entry (nth 0 *) i (nth 1 *)
         start-pos (nth 2 *) end-pos (nth 3 *))  |#
   (let* ((top-mention (car entry))
-         (top-instance (mention-of top-mention)))
+         (top-instance (base-description top-mention)))
     (tr :extending-dh-entry i)
     (push-debug `(,top-mention ,top-instance)) ;(lsp-break "mentions")
     ;; (setq top-mention (car *) top-instance (cadr *))
@@ -436,7 +438,7 @@
              (tr :extending-with-subsuming-instance i start-pos end-pos)
              (make-new-mention entry i start-pos end-pos))))
 
-          ((more-specific? i top-instance)
+          ((as-specific? i top-instance)
            ;; The object was the very last one of its type to be added.
            ;; Check for this being a larger edge over the same object.
            (cond
@@ -601,8 +603,8 @@
          ;; the list will have an 'extra' record on the front that
          ;; we should get rid of. 
          (new-edge (edge-between start-pos end-pos))
-         (new-i (mention-of new-mention))
-         (old-i (mention-of old-mention))
+         (new-i (base-description new-mention))
+         (old-i (base-description old-mention))
          (old-instance ;; pair of old-i and its edge
           (loop for pair in *lifo-instance-list* ;; or assq
             when (eq (car pair) old-i) return pair)))
