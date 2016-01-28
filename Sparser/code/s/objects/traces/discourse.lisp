@@ -97,7 +97,7 @@
 
 (deftrace :made-mention (m)
   (when *trace-discourse-history-management*
-    (let* ((i (mention-of m))
+    (let* ((i (base-description m))
            (category (itype-of i)))
       (trace-msg "[DH]  mention of a ~a: ~a" 
                  (cat-symbol category)  m))))
