@@ -72,6 +72,12 @@ for the word and a rule that rewrite to it.
 (define-wh-pronoun "whose")
 (define-wh-pronoun "why")
 (define-wh-pronoun "how")
+(define-wh-pronoun "whether")
+
+(define-determiner "which")
+(define-determiner "what")
+(define-determiner "whose")
+
 
 #+ignore ;; this makes it able to start a relative clause -- which is not correct
 (define-wh-pronoun "whether")
