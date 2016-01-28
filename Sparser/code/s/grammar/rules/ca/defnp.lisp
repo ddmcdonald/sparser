@@ -105,7 +105,7 @@
            (ref (when relevant-mention
                   ;; "We propose that when BRAF is inhibited,
                   ;;  it escapes this auto-inhibited fate ..."
-                  (mention-of relevant-mention))))
+                  (base-description relevant-mention))))
       (when ref
         (tr :defnp-returning ref)
         ref)))
