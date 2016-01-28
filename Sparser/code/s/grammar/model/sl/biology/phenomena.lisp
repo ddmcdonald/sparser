@@ -32,7 +32,7 @@
 ; to use it (e.g. in signaling. Maybe the symbol was overwritten ?
 
 
-
+#+ignore
 (define-category modified-protein
   :specializes protein
   :instantiates protein
@@ -43,6 +43,7 @@
   :binds ((protein (:or protein human-protein-family))
           (modification protein))) ;; hack for mUbRas
 
+#+ignore
 (define-category mutated-protein
   :specializes modified-protein
   :instantiates protein
@@ -101,6 +102,8 @@
   (:noun "post-translational modification"
          :o substrate
          :m site
+         :m substrate
+         :m agent
          :of substrate
          :on site
          :at site
@@ -127,65 +130,35 @@
   :index (:temporary :sequential-keys site substrate)
   :realization
   (:verb "acetylate" :noun "acetylation"
-   :etf (svo-passive pre-mod)
-   :s agent
-   :o substrate
-   :m site
-   :of substrate
-   :on site
-   :at site))
+   :etf (svo-passive pre-mod)))
 
 (define-category farnesylation 
   :specializes post-translational-modification 
   :realization 
   (:verb "farnesylate"
          :noun "farnesylation"
-         :etf (svo-passive pre-mod) 
-         :s agent 
-         :o substrate
-         :m site
-         :of substrate
-         :on site
-         :at site))
+         :etf (svo-passive pre-mod) ))
 
 (define-category glycosylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "glycosylate"
      :noun "glycosylation"
-     :etf (svo-passive pre-mod) 
-     :s agent 
-     :o substrate
-     :m site
-     :of substrate
-     :on site
-     :at site))
+     :etf (svo-passive pre-mod)))
 
 (define-category hydoxylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "hydoxylate"
      :noun "hydoxylation"
-     :etf (svo-passive pre-mod) 
-     :s agent 
-     :o substrate
-     :m site
-     :of substrate
-     :on site
-     :at site))
+     :etf (svo-passive pre-mod)))
 
 (define-category methylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "methylate"
      :noun "methylation"
-     :etf (svo-passive pre-mod) 
-     :s agent 
-     :o substrate
-     :m site
-     :of substrate
-     :on site
-     :at site))
+     :etf (svo-passive pre-mod)))
 
 
 ;;--- "phosphorylate"
@@ -198,71 +171,53 @@
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
-   :etf (svo-passive pre-mod)
-   :s agent
-   :o substrate
-   :m site ;; "T669 phosphorylation" in figure-7
-   :of substrate
-   :on site
-   :at site))
+   :etf (svo-passive pre-mod)))
 
 
 (define-category auto-phosphorylate
   :specializes phosphorylation-modification
   :realization
   (:verb "auto-phosphorylate" :noun "auto-phosphorylation"
-   :etf (sv)
-   :s agent))
+   :etf (sv)))
 
 (def-synonym auto-phosphorylate
   (:verb "autophosphorylate" :noun "autophosphorylation"
-   :etf (sv)
-   :s agent))
+   :etf (sv)))
 
 (def-synonym auto-phosphorylate
              (:verb "autophosphosphorylate"
-              :etf (sv) :s agent))
+              :etf (sv)))
 
 (define-category cis-auto-phosphorylate
   :specializes auto-phosphorylate
   :realization
   (:verb "cis-auto-phosphorylate" :noun "cis-auto-phosphorylation"
-   :etf (sv)
-   :s agent))
+   :etf (sv)))
 (def-synonym cis-auto-phosphorylate
              (:verb "cis-autophosphosphorylate"
-              :etf (sv) :s agent
+              :etf (sv)
               :noun "cis-autophosphorylation"))
 
 (define-category trans-auto-phosphorylate
   :specializes auto-phosphorylate
   :realization
   (:verb "trans-auto-phosphorylate" :noun "trans-auto-phosphorylation"
-   :etf (sv)
-   :s agent))
+   :etf (sv)))
    
 (def-synonym trans-auto-phosphorylate
              (:verb "trans-autophosphosphorylate"
-                    :etf (sv) :s agent
+                    :etf (sv)
                     :noun "trans-autophosphorylation"))
 
 (define-category dephosphorylate
   :specializes post-translational-modification
   :realization
   (:verb "dephosphorylate" :noun "dephosphorylation"
-   :etf (svo-passive)
-   :s agent
-   :o substrate
-   :of substrate
-   :at site))
+   :etf (svo-passive)))
 
 (def-synonym dephosphorylate
   (:noun "dephophosphorylation" ;; misplelling from comments
-   :s agent
-   :o substrate
-   :of substrate
-   :at site))
-
+))
 
 (define-category transphosphorylate
   :specializes phosphorylation-modification
@@ -270,13 +225,7 @@
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "transphosphorylate" :noun "transphosphorylation"
-   :etf (svo-passive pre-mod)
-   :s agent
-   :o substrate
-   :m site ;; "T669 phosphorylation" in figure-7
-   :of substrate
-   :on site
-   :at site))
+   :etf (svo-passive pre-mod)))
 
 (define-category hypersphosphorylate
   :specializes phosphorylation-modification
@@ -284,40 +233,21 @@
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "hyperphosphorylate" :noun "hyperphosphorylation"
-   :etf (svo-passive pre-mod)
-   :s agent
-   :o substrate
-   :m site ;; "T669 phosphorylation" in figure-7
-   :of substrate
-   :on site
-   :at site))
-
+   :etf (svo-passive pre-mod)))
 
 (define-category ribosylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "ribosylate"
      :noun "ribosylation"
-     :etf (svo-passive pre-mod) 
-     :s agent 
-     :o substrate
-     :m site
-     :of substrate
-     :on site
-     :at site))
+     :etf (svo-passive pre-mod)))
 
 (define-category sumoylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "sumoylate"
      :noun "sumoylation"
-     :etf (svo-passive pre-mod) 
-     :s agent 
-     :o substrate
-     :m site
-     :of substrate
-     :on site
-     :at site))
+     :etf (svo-passive pre-mod)))
 
 
 ; monoubiquitination increases the population 
@@ -337,13 +267,7 @@
   :realization 
     (:verb "ubiquitinate"
      :noun "ubiquitination"
-     :etf (svo-passive pre-mod) 
-     :s agent 
-     :o substrate
-     :m site
-     :of substrate
-     :on site
-     :at site))
+     :etf (svo-passive pre-mod)))
 
 (def-synonym ubiquitination 
              (:verb "ubiquitylate" 
@@ -354,8 +278,7 @@
   :specializes ubiquitination
   :realization
   (:verb "auto-ubiquitinate" :noun "auto-ubiquitination"
-   :etf (sv)
-   :s agent))
+   :etf (sv)))
 
 (def-synonym auto-ubiquitinate
              (:verb "auto-ubiquitylate" 
@@ -365,8 +288,7 @@
 (def-synonym auto-ubiquitinate 
              (:verb "autoubiquitinate"
                     :etf (sv)
-                    :noun "autoubiquitination"
-                    :s agent))
+                    :noun "autoubiquitination"))
 
 (define-category poly-ubiquitination :specializes ubiquitination
   :realization
@@ -377,8 +299,7 @@
 (def-synonym poly-ubiquitination 
              (:verb "polyubiquitinate"
                     :etf (sv)
-                    :noun "polyubiquitination"
-                    :s agent))
+                    :noun "polyubiquitination"))
 
 
 ;;;------------------------------
@@ -397,7 +318,13 @@
 
 ;; strictly for the rule-label
 (define-category monoubiquitination 
- :specializes post-translational-modification )
+ :specializes post-translational-modification
+  :realization 
+  ;;/// only providing a realization for the result, not the process
+  ;; that leads to the result
+    (:verb "monoubiquitinate" 
+     :noun "monoubiquitination"
+     :etf (svo-passive pre-mod)))
 
 (def-synonym monoubiquitination 
              (:verb "mono-ubiquitylate" 
@@ -412,7 +339,7 @@
 
 
 ;;--- wrapper
-
+#+ignore
 (define-category  monoubiquitinated-protein
   :specializes modified-protein
   :instantiates self
@@ -445,7 +372,7 @@
           ;;/// that 'on' probably goes with 'effect'
      :at site))
 
-
+#+ignore
 (defun define-mUbRas ()
   ;; Defines the abbreviated form and creates the individual
   ;; that the composed form has to resolve to. 
@@ -460,7 +387,7 @@
                   :referent i)))
       (add-rule-to-individual cfr i)
       i)))
-
+#+ignore
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (define-mUbRas))
 
@@ -490,17 +417,14 @@ it is created from N-terminus to C-terminus.|#
 (define-category protein-terminus
   :specializes protein-domain
   :instantiates :self
-  :binds ((protein protein))
   :lemma (:common-noun ("terminus" :plural ("termini" "terminuses")))
   :realization
-    (:noun "terminal"
-     :of protein))
+    (:noun "terminal"))
 
 ;;//////////// These two are essentially identical definitions
 ;; Meed a macro or something 
 (define-category N-terminal ;; amino-terminus
   :specializes protein-terminus
-  :binds ((protein (:or protein bio-entity)))
   :index (:permanent :key protein)
   :realization
     (:etf (pre-mod)
@@ -508,8 +432,7 @@ it is created from N-terminus to C-terminus.|#
             "n-termini"
             "amino terminus"
             "NtA") ;; n-terminal acidic
-     :m protein
-     :of protein))
+     ))
 
 (define-category C-terminal ;; carboxyl-terminus
   :specializes protein-terminus
@@ -518,9 +441,7 @@ it is created from N-terminus to C-terminus.|#
   :realization
     (:etf (pre-mod)
      :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus"
-            "c-termini")
-     :m protein
-     :of protein))
+            "c-termini")))
 
 
 (define-category binding-domain :specializes protein-domain
@@ -530,10 +451,8 @@ it is created from N-terminus to C-terminus.|#
          :m bound-item))
 
 (define-category RBD :specializes binding-domain
-      :binds ((substrate bio-entity))
       :realization 
-      (:noun "RBD"
-             :of substrate)) 
+      (:noun "RBD"))
 (noun "Raf-RBD" :super RBD)
 (noun "G-domain" :super binding-domain) ;; somehow (def-bio "G-domain" protein-segment) did not work
 (noun "BRCT" :super protein-domain)
@@ -821,14 +740,13 @@ it is created from N-terminus to C-terminus.|#
 
 ;; added in notion of direct-bindee for "A binds B" as opposed to "A binds to B"
 
-(define-category oligomerize :specializes binding ;; generalization for dimerize, polymerize, trimerize
-  :binds ((monomer (:or monomer protein)))
+(define-category oligomerize :specializes molecular-function ;; generalization for dimerize, polymerize, trimerize
+  :binds ((monomer protein))
   :realization
   (:verb "oligomerize" ;; need this (perhaps) for etf and :s and :o
    :etf (sv)
    :noun "oligomerization"
    :s monomer
-   :o monomer
    :of monomer
    :with monomer))
 
@@ -929,25 +847,6 @@ it is created from N-terminus to C-terminus.|#
              (:noun "calcium/calmodulin"))
 
 
-; From the ERK abstract:
-; #1 "Dimerization-independent" (in title)
-; #6 "dimerization of ERK"
-; #7 "shown consistently to be dimerization-deficient in vitro"
-; #7 "dimerization of ERK1"
-; #8 "did not detect dimerization of GFP-ERK1-WT upon activation"
-; #10 "is a consequence of delayed phosphorylation of ERK by MEK rather than dimerization."
-(define-category dimerize
-  :specializes binding
-  :binds ((monomer protein))
-  :realization
-  (:verb "dimerize" 
-   :noun "dimerization"
-   :etf (sv)
-   :s monomer
-   :o monomer
-   :of monomer))
-
-
 (define-category dimer
   :specializes bio-complex
   :binds ((component (:or bio-complex small-molecule protein))
@@ -980,19 +879,6 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "tetramer"
-         :etf pre-mod
-         :premod component
-         :m component
-         :with component
-         :of component
-         :between component))
-
-(define-category monomer
-  :specializes bio-complex
-  :binds ((component (:or bio-complex small-molecule protein))
-          (componentstoichiometry stoichiometry)) 
-  :realization
-  (:noun "monomer"
          :etf pre-mod
          :premod component
          :m component
