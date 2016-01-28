@@ -136,7 +136,7 @@
                    (var-symbol var)))
           (polyword
            (format t "~&~4T:~s  v/r: ~a  var: ~a~%"
-                   (word-pname trigger)
+                   (pw-pname trigger)
                    (v/r-symbol v/r)
                    (var-symbol var))))))))
 
@@ -198,12 +198,15 @@
     "Inherit subcategorization patterns from supercategories."
     (setf (subcat-patterns (get-subcategorization label))
           (loop with patterns = '()
-                for sc in (super-categories-of label)
-                as frame = (get-subcategorization sc)
-                when frame
-                do (loop for sp in (subcat-patterns frame)
-                         do (pushnew sp patterns :test #'subcat-pattern-equal))
-                finally (return (nreverse patterns))))))
+            for sc in (super-categories-of label)
+            as frame = (get-subcategorization sc)
+            when frame
+            do (loop for sp in (subcat-patterns frame)
+                 unless (and (member (subcat-label sp) '(:subject :object :premod))
+                             (find-if #'(lambda(x)(eq (subcat-label x) (subcat-label sp)))
+                                      patterns))
+                 do (pushnew sp patterns :test #'subcat-pattern-equal))
+            finally (return (nreverse patterns))))))
 
 (defun fom-subcategorization (label &key form category s o m slots)
   "Find or make a subcategorization frame for the given category."
@@ -213,7 +216,7 @@
       ;; Override inherited special cases with local information
       (flet ((maybe-call-with-v/r (function var-name)
                (when var-name
-                 (let* ((var (variable/category var-name category))
+                 (let* ((var (find-variable-for-category var-name category))
                         (v/r (var-value-restriction var)))
                    (funcall function category v/r var)))))
         (maybe-call-with-v/r #'assign-subject s)
@@ -228,28 +231,35 @@
                           pname)
                          (otherwise
                           (resolve (string-downcase pname))))
-            as var = (variable/category var-name category)
+            as var = (find-variable-for-category var-name category)
             as v/r = (var-value-restriction var)
             do (assign-subcategorization category label v/r var))
 
-      ;; Override value restrictions from local information as necessary
       (setf (subcat-patterns frame)
-            (loop for pattern in (subcat-patterns frame)
-              as label = (subcat-label pattern)
-              as var-name = (and (subcat-variable pattern)(var-name (subcat-variable pattern)))
-              as var = (and var-name (find-variable-in-category var-name category))
-              ;; want the local variable, not an inherited one
-              as v/r = (and var (var-value-restriction var))
-              collect (if (or (null var)
-                              (null v/r)
-                              (eq (subcat-restriction pattern) v/r))
-                          pattern
-                          (progn
-                            (if (or (category-p v/r)
-                                    (and (consp v/r)
-                                         (eq (car v/r) :or)))
-                                (make-subcat-pattern label v/r var category)
-                                (lsp-break "bad v/r")))))))
+            (remove-duplicates (subcat-patterns frame) :test #'equal))
+
+      ;; Override value restrictions from local information as necessary
+      ;; NO LONGER NEEDED -- handled above by use of (find-variable-for-category var-name category)
+      #+ignore
+      (setf (subcat-patterns frame)
+            (remove-duplicates
+             (loop for pattern in (subcat-patterns frame)
+               as label = (subcat-label pattern)
+               as var-name = (and (subcat-variable pattern)(var-name (subcat-variable pattern)))
+               as var = (and var-name (find-variable-in-category var-name category))
+               ;; want the local variable, not an inherited one
+               as v/r = (and var (var-value-restriction var))
+               collect (if (or (null var)
+                               (null v/r)
+                               (eq (subcat-restriction pattern) v/r))
+                           pattern
+                           (progn
+                             (if (or (category-p v/r)
+                                     (and (consp v/r)
+                                          (eq (car v/r) :or)))
+                                 (make-subcat-pattern label v/r var category)
+                                 (lsp-break "bad v/r")))))
+             :test #'equal)))
     frame))
 
 (defun assign-subcat/expr (word form category parameter-plist)
@@ -352,7 +362,8 @@
   (print-unreadable-object (object stream :type nil :identity nil)
     (etypecase (subcat-label object)
       (keyword (princ (subcat-label object) stream))
-      (word (princ-word (subcat-label object) stream)))
+      (word (princ-word (subcat-label object) stream))
+      (polyword (princ-word (subcat-label object) stream)))
     (write-char #\Space stream)
     (princ-variable-value-restriction (subcat-restriction object) stream)
     (write-string " → " stream)
@@ -379,15 +390,17 @@
                       :key #'subcat-label))))
 
 (defun assign-subcategorization (category label restriction variable &key
-                                 replace)
+                                          replace)
   "Install a subcategorization pattern for a value-restriction/variable"
   (check-type category category)
   (check-type label (or category keyword word polyword))
   (check-type restriction (not null))
   (check-type variable (or null lambda-variable))
-  (funcall (if replace #'replace-subcat-pattern #'add-subcat-pattern)
-           (make-subcat-pattern label restriction variable category)
-           (get-subcategorization category)))
+  (let ((variable (find-variable-for-category (var-name variable) category)))
+    ;; if the variable has been restricted locally, then use the local version of the variable
+    (funcall (if replace #'replace-subcat-pattern #'add-subcat-pattern)
+             (make-subcat-pattern label restriction variable category)
+             (get-subcategorization category))))
 
 (defun assign-subject (category v/r variable)
   (assign-subcategorization category :subject v/r variable :replace t))
