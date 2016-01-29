@@ -460,6 +460,22 @@
       (loop for subc in (subcategories-of category)
         do (display-with-subcs subc stream (- depth 1))))
     (pop-indentation)))
+
+(defun tree-below (category &optional (depth -1))
+  (clrhash *category-was-displayed*)
+  (collect-sub-tree category depth))
+
+(defun collect-sub-tree (category &optional (depth -1))
+  (cond
+   ((zerop depth) (if (subcategories-of category)
+                      (list category)
+                      category))
+   ((not (form-category? category))
+    (cons category
+          (when (not (gethash category *category-was-displayed*))
+            (setf (gethash category *category-was-displayed*) t)
+            (loop for subc in (subcategories-of category)
+              collect (collect-sub-tree subc (- depth 1))))))))
   
 
 
