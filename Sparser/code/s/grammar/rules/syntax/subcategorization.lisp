@@ -159,6 +159,9 @@
   "From words or categories to subcategorization objects")
 
 (defmethod subcat-patterns ((sf null)))
+
+(defmethod subcat-patterns ((sf symbol))
+  (subcat-patterns (category-named sf)))
 (defmethod subcat-patterns ((sf category))
   (subcat-patterns (get-subcategorization sf)))
 
