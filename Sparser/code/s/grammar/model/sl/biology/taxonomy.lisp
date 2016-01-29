@@ -363,24 +363,6 @@
       :via method
       :with method))
 
-#+ignore
-(define-category movement ;; like translocation, entry and "binding to membrane"                 
-                 :specializes move
-  :binds
-  ((object)
-   (origin)
-   (destination))
-  :realization 
-  (:s object
-      :at origin
-      :into destination
-      :to destination
-      :to destination
-      :of object
-      :from origin
-      :m destination
-      :m object))
-
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"                 
                  :specializes bio-process
   ;; :mixins (move) this creates an inconsistent taxonomy -- WH -- TO-DO
@@ -399,7 +381,8 @@
 
 (define-category bio-self-movement :specializes bio-movement
   :realization
-  (:s object))
+  (:s object
+      :of object))
 
 (define-category bio-transport :specializes bio-movement
   :mixins (caused-bio-process)

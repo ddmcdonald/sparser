@@ -763,11 +763,13 @@
            :adj "detectable"
 	   :etf (svo-passive)))
 
-(define-category diffuse :specializes bio-transport
+#| ;;only seen use is as an adjective
+(define-category diffuse :specializes bio-self-movement
   :realization 
   (:verb "diffuse" 
    :noun "diffusion" 
-   :etf (svo-passive)))
+   :etf (sv)))
+|#
 
 (define-category digest ;; as in a chemical process for breaking down proteins
   :specializes bio-method
@@ -1426,7 +1428,7 @@
          :into substrate
          :to substrate))
 
-(define-category localization :specializes bio-transport
+(define-category localization :specializes bio-self-movement
   :restrict ((object molecule)) 
   :realization 
   (:verb "localize" 
@@ -1463,12 +1465,11 @@
    :etf (svo-passive)
    :via process))
 
-(define-category migration :specializes bio-transport
+(define-category migration :specializes bio-self-movement
   :realization 
   (:verb "migrate" 
    :noun "migration" 
-   :etf (svo-passive) 
-   ))
+   :etf (sv)))
 
 
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
@@ -1761,11 +1762,9 @@
          :with agent))
 
 (define-category recruit :specializes bio-transport
-  :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "recruit" :noun "recruitment"
-         :etf (svo-passive) 
-         :to substrate))
+         :etf (svo-passive)))
 
 (define-category reduce :specializes negative-bio-control
     :binds ((bio biological))
@@ -2151,10 +2150,7 @@
   :realization 
   (:verb "translocate" 
    :noun "translocation" 
-   :etf (svo-passive) 
-   :s object ;; ERK translocates -- this is not the agent, but the object!
-   :o object
-   :of object))
+   :etf (svo-passive)))
 
 
 
