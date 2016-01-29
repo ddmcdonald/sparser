@@ -123,28 +123,31 @@
           (preparation preparation)
           (location non-cellular-location)
           (cellular-location cellular-location)
-          (molecular-location molecular-location)
+          (site molecular-location)
           (species species) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
-          (variant variant))
+          ;;(variant variant)
+          )
   :realization
   (:noun "xxx-dummy"
          :at cellular-location
-         :at molecular-location
+         :at site
          :from cell-line
          :from cell-type
          :in cell-line
          :in cell-type
          :in cellular-location
          :in context
-         :in molecular-location
+         :in site
          :in non-cellular-location
          :in organ
          :in preparation
          :in species
-         :of variant
+         :m site
+         ;;:of variant
          :on cellular-location
+         :on site
          :such\ as examples
          :under context
          :upon cellular-location

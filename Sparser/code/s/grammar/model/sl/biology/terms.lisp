@@ -748,11 +748,7 @@
   (:noun "mobility"
          :of motile))
 
-(noun "mode" :super bio-method
-      :binds ((process bio-process))
-      :realization
-      (:noun "mode"
-             :of process))
+(noun "mode" :super bio-method)
 (noun "model" :super biological) ;; almost never used as a verb
 (noun "modeling" :super bio-method) ;; but modeling is a nominal that is used
 (adj "molecular" :super bio-predication) ;; It's realated to molecule, but how exactly? Seems wrong to jump to "is made of molecules"

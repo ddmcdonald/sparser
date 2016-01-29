@@ -814,13 +814,12 @@
 
 (define-category dissociate :specializes caused-bio-process
   :binds ((into biological)
-          (substrate (:or bio-complex protein molecule))
-          (site molecular-location))
+          (substrate (:or bio-complex protein molecule)))
   :realization
   (:verb "dissociate" :noun "dissociation"
          :etf (svo-passive)
          :from substrate
-         :from molecular-location
+         :from site
          :into into))
 
 (define-category dominate :specializes bio-relation 
@@ -1434,11 +1433,7 @@
   (:verb "localize" 
    :noun "localization" 
    :etf (svo-passive) 
-   :s object ;; ERK translocates -- this is not the agent, but the object!
-   :o object
-   :of object))
-
-
+   :o object))
 
 (define-category maintain :specializes bio-control
   :binds ((state bio-state))
