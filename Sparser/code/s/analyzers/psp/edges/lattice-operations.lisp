@@ -259,17 +259,19 @@
 
 (defun as-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
   (and
-   (itypep sub-dli (car (itype-of super-dli)))
+   (itypep sub-dli (itype-of super-dli))
    (loop for r in (indiv-restrictions super-dli)
+     as rval = (and (not (category-p r))(dlvv-value r))
      always
-     (or
-      (category-p r)
-      (let
-          ((sub-r
-            (find-if#'(lambda (dlvv) (eq (dlvv-variable dlvv) (dlvv-variable r)))
-                    (indiv-restrictions sub-dli))))
-        (and sub-r
-             (as-specific? (dlvv-value sub-r) (dlvv-value r))))))))
+     (or (null rval)
+         (let* ((sub-r
+                 (find-if #'(lambda (dlvv) (eq (dlvv-variable dlvv) (dlvv-variable r)))
+                          (indiv-restrictions sub-dli)))
+                (srval (and sub-r (dlvv-value sub-r))))
+           (if (or (category-p rval)(individual-p rval))
+               (and (or (category-p srval)(individual-p srval))
+                    (as-specific? srval rval))
+               (equal rval srval)))))))
 ;; was -- incorrectly -- (subsetp  (indiv-restrictions super-dli) (indiv-restrictions sub-dli)))
 
 (defun find-var-from-var/name (var/name category)
