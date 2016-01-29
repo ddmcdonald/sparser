@@ -95,20 +95,14 @@
 
 (define-category post-translational-modification :specializes caused-bio-process
   :binds ((substrate (:or protein residue-on-protein molecular-location)) ;; which protein now has ubiquitin on it
-          (site residue-on-protein)
-          (amino-acid amino-acid)
-          (region region)) ;; which is attached here
+          (amino-acid amino-acid)) ;; which is attached here
   :realization 
   (:noun "post-translational modification"
          :o substrate
-         :m site
          :m substrate
          :m agent
          :of substrate
-         :on site
-         :at site
-         :at amino-acid
-         :of region))
+         :at amino-acid))
 
 (def-synonym post-translational-modification
      (:noun "post-transcriptional modification"))  
