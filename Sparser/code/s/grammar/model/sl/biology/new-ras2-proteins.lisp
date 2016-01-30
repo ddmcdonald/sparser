@@ -576,7 +576,7 @@
 (DEF-RAS2-PROTEIN "KPYR_HUMAN" ("KPYR_HUMAN" "Pyruvate kinase 1" "R-type/L-type pyruvate kinase" "Red cell/liver pyruvate kinase" "PKLR" "Pyruvate kinase isozymes L/R" "PK1" "PKL" "2.7.1.40")) 
 (DEF-RAS2-PROTEIN "KRAS family" ("KRAS family")) 
 (DEF-RAS2-PROTEIN "KS6B1_HUMAN" ("KS6B1_HUMAN" "p70 S6KA" "Serine/threonine-protein kinase 14A" "p70 ribosomal S6 kinase alpha" "p70 ribosomal S6 kinase α" "Ribosomal protein S6 kinase I" "P70S6K1" "2.7.11.1" "p70 S6K-alpha" "p70 S6K-α" "S6K1" "p70-S6K 1" "S6K-beta-1" "S6K-bη-1" "RPS6KB1" "70 kDa ribosomal protein S6 kinase 1" "STK14A" "p70 S6 kinase alpha" "p70 S6 kinase α")) 
-(DEF-RAS2-PROTEIN "KSR1_HUMAN" ("KSR1_HUMAN" "KSR1" "KSR")) 
+(DEF-RAS2-PROTEIN "KSR1_HUMAN" ("KSR1_HUMAN" "KSR1" "KSR" "kinase suppressor of ras 1"))
 (DEF-RAS2-PROTEIN "KSYK_HUMAN" ("KSYK_HUMAN" "SYK" "2.7.10.2" "p72-Syk" "Spleen tyrosine kinase")) 
 (DEF-RAS2-PROTEIN "KTHY_HUMAN" ("KTHY_HUMAN" "2.7.4.9" "TYMK" "DTYMK" "TMPK" "CDC8" "dTMP kinase")) 
 (DEF-RAS2-PROTEIN "LAT_HUMAN" ("LAT_HUMAN" "p36-38" "36 kDa phospho-tyrosine adapter protein" "pp36" "LAT")) 

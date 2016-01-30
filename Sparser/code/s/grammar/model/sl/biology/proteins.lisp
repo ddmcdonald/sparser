@@ -1630,7 +1630,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "LSG1_HUMAN" ("hLsg1" "LSG1")) 
 (define-protein "LST8_HUMAN" ("Lst8" "Target of rapamycin complex subunit LST8" "TORC subunit LST8" "G protein beta subunit-like" "Gable" "Protein GbetaL" "Mammalian lethal with SEC13 protein 8" "mLST8")) 
 (define-protein "LTOR2_HUMAN" ("Ragulator complex protein LAMTOR2" "LAMTOR2" "p14" "Endosomal adaptor protein p14" "MAPBP-interacting protein" ))
-(define-protein "LTOR3_HUMAN" ("MAPKSP1" "Mp1" "MAP2K1IP1" "LAMTOR3")) 
+(define-protein "LTOR3_HUMAN" ("MAPKSP1" "Mp1" "MP1" "MEK1 partner" "MAP2K1IP1" "LAMTOR3")) 
 (define-protein "LY6E_HUMAN" ("tsa" "Lymphocyte antigen 6E" "Ly-6E" "Retinoic acid-induced gene E protein" "RIG-E" "Stem cell antigen 2" "SCA-2" "Thymic shared antigen 1" "TSA-1")) 
 (define-protein "LYAG_HUMAN" ("GAA")) 
 (define-protein "LYAM1_HUMAN" ("L-selectin" "CD62 antigen-like family member L" "Leukocyte adhesion molecule 1" "LAM-1" "Leukocyte surface antigen Leu-8" "Leukocyte-endothelial cell adhesion molecule 1" "LECAM1" "Lymph node homing receptor" "TQ1" "gp90-MEL")) 
