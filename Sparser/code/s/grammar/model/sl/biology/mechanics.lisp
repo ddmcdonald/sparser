@@ -129,7 +129,9 @@
                                   
     `(def-bio ,bpid
               protein
-       :synonyms ,(loop for id in IDS unless (or (equal id bpid)(search " " id)) collect id)
+       :synonyms ,(loop for id in IDS unless (or (equal id bpid)
+						;; (search " " id)
+						 ) collect id)
        :MITRE-LINK ,(if (search "_" bpid)
                         (format nil "UNIPROT:~A" bpid)
                         bpid)
