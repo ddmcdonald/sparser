@@ -269,7 +269,10 @@
 	always
 	  (or (null rval)
 	      (let* ((sub-r
-		      (find-if #'(lambda (dlvv) (eq (dlvv-variable dlvv) (dlvv-variable r)))
+		      (find-if #'(lambda (dlvv)
+				   (when
+				       (not (category-p dlvv))
+				     (eq (dlvv-variable dlvv) (dlvv-variable r))))
 			       (indiv-restrictions sub-dli)))
 		     (srval (and sub-r (dlvv-value sub-r))))
 		(if (or (category-p rval)(individual-p rval))
