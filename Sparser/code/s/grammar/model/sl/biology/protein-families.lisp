@@ -64,18 +64,20 @@
   :synonyms ("ERK" "extracellular signal-regulated kinase"
              "ERK1/2"
              "erk" "mapk"
+             "MAP kinase"
              "mitogen-activated protein kinase"))
 
 (def-family "MAP2K"
   :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7")
-  :long "mitogen activated protein kinase"
+  :synonyms ("mitogen activated protein kinase" "MAP kinase kinase")
   )
 (def-family  "cyclooxygenase" :members ("PGH2_HUMAN"))
 
 
 ;; http://en.wikipedia.org/wiki/Growth_factor
 ;; Again, it's a family, not a particular
-(def-bio "growth factor" protein-family)
-(def-bio "growth-factor" protein-family)
+(def-family "growth-factor" :members ("EGF_HUMAN")
+  :long "growth factor")
+
 (def-bio "growth receptor" protein-family)
 (def-bio "endophilin" protein-family)
