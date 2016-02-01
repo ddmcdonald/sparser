@@ -260,9 +260,13 @@
         (or
          (call-compose qualifier head)
          (link-in-verb qualifier head)))
-       (t
+       ((individual-p head)
         (setq head (individual-for-ref head))
-        (link-in-verb qualifier head)))))
+        (link-in-verb qualifier head))
+       (t
+	;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
+	(break "Can't deal with head whose interpretation is not an individual or category in verb-noun-compound, head is ~s~&" head)
+	nil))))
 
 (defun link-in-verb (qualifier head)
   (let ((object (object-variable qualifier)))
