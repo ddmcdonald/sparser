@@ -1144,7 +1144,7 @@
           (substrate molecule)) ;;the context in which the hydrolysis occurs
   :realization            
   (:verb "hydrolyze" :noun "hydrolysis"
-   :etf (svo-passive pre-mod) 
+   :etf (svo-passive) 
    :m object
    :to goal
    :on substrate))
