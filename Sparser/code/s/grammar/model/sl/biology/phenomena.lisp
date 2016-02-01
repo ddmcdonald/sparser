@@ -210,6 +210,10 @@
    :etf (svo-passive)))
 
 (def-synonym dephosphorylate
+  (:verb "de-phosphorylate" :noun "de-phosphorylation"
+   :etf (svo-passive)))
+
+(def-synonym dephosphorylate
   (:noun "dephophosphorylation" ;; misplelling from comments
 ))
 
