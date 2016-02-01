@@ -91,7 +91,8 @@
         (category::vp+ed)
         (category::pp)
         (category::vg+passive)
-
+	(category::subordinate-clause)
+	
         ;; cases where we want to generalize
 	((category::n-bar
           category::number
@@ -113,6 +114,7 @@
          (setf (edge-form edge) (category-named 'vg+ing)))
         ((category::verb+ed)
          (setf (edge-form edge) (category-named 'vg+ed)))
+
 
 	(otherwise
 	 (unless *cfg-flag*
