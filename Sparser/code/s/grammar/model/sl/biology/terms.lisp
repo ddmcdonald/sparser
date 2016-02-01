@@ -435,7 +435,6 @@
   :realization
     (:adj "deficient"
      :noun "deficiency"
-     :etf pre-mod
      :m theme
      :in theme))
 
@@ -513,7 +512,6 @@
           (subject nucleotide))
   :realization
   (:noun "exchange"
-         :etf pre-mod
          :m subject
          :from state-before
          :to state-after))
@@ -957,7 +955,6 @@
           (residue residue-on-protein))
   :realization
      (:noun "site"
-      :etf pre-mod
       :m process
       :m protein
       :of process
