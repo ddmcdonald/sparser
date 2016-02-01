@@ -102,44 +102,50 @@
 
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
-  (when (and qualifier head)
-    (setq head (individual-for-ref head))
-    (cond
-     ((word-p head)
-      nil);; this happened with word = HYPHEN, "from FCS-treated cells"
-     ((and 
-       (itypep qualifier (itype-of head))
-       (if
-        (itypep qualifier category::collection)
-        (and
-         ;; conjunction of named items
-         (individual-p (car (value-of 'items qualifier)))
-         (value-of 'name (car (value-of 'items qualifier))))
-        ;; named item
-        (value-of 'name qualifier)));; intended as test for proper noun or other specific NP
-      (revise-parent-edge :form category::proper-noun)
-      qualifier)
-     ((call-compose qualifier head)) ;; see note with verb-noun-compound
-     ((interpret-premod-to-np qualifier head))
-     ;; subcat test is here. If there's a :premod subcategorization
-     ;; that's compapatible this gets it.
+  (cond
+    ((and qualifier head
+	  (not (or (category-p head)
+		   (individual-p head))))
+     ;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
+	(break "Can't deal with head whose interpretation is not an individual or category in noun-noun-compound, head is ~s~&" head))
+    ((and qualifier head)
+     (setq head (individual-for-ref head))
+     (cond
+       ((word-p head)
+	nil) ;; this happened with word = HYPHEN, "from FCS-treated cells"
+       ((and 
+	 (itypep qualifier (itype-of head))
+	 (if
+	  (itypep qualifier category::collection)
+	  (and
+	   ;; conjunction of named items
+	   (individual-p (car (value-of 'items qualifier)))
+	   (value-of 'name (car (value-of 'items qualifier))))
+	  ;; named item
+	  (value-of 'name qualifier))) ;; intended as test for proper noun or other specific NP
+	(revise-parent-edge :form category::proper-noun)
+	qualifier)
+       ((call-compose qualifier head)) ;; see note with verb-noun-compound
+       ((interpret-premod-to-np qualifier head))
+       ;; subcat test is here. If there's a :premod subcategorization
+       ;; that's compapatible this gets it.
      
-     ;; This case is to benefit marker-categories
-     ((itypep head 'process) ;; poor man's standing for verb?
-      (let ((var (object-variable head)))
-        (declare (special var))
-        ;; (lsp-break "noun-noun")
-        (if var ;; really should check for passivizing
-            (setq  head (bind-dli-variable var qualifier head))
-            ;; otherwise it's not obvious what to bind
-            (else
-              (setq  head (bind-dli-variable 'modifier qualifier head))))
-        head))
-     (t
-      ;; what's the right relationship? Systemics would say
-      ;; they are qualifiers, so perhaps subtype?
-      (setq  head (bind-dli-variable 'modifier qualifier head)) ;; safe
-      head))))
+       ;; This case is to benefit marker-categories
+       ((itypep head 'process) ;; poor man's standing for verb?
+	(let ((var (object-variable head)))
+	  (declare (special var))
+	  ;; (lsp-break "noun-noun")
+	  (if var ;; really should check for passivizing
+	      (setq  head (bind-dli-variable var qualifier head))
+	      ;; otherwise it's not obvious what to bind
+	      (else
+		(setq  head (bind-dli-variable 'modifier qualifier head))))
+	  head))
+       (t
+	;; what's the right relationship? Systemics would say
+	;; they are qualifiers, so perhaps subtype?
+	(setq  head (bind-dli-variable 'modifier qualifier head)) ;; safe
+	head)))))
 
 (defun interpret-premod-to-np (premod head)
   (let ((variable-to-bind
@@ -1338,8 +1344,7 @@ to enhance p53 mediated apoptosis [2].") |#
 
 (defun make-exist-claim (right-edge)
   (let ((exists (make-unindexed-individual category::there-exists)))
-    (setq  exists (bind-dli-variable 'object (edge-referent right-edge) exists))
-    exists))
+    (bind-dli-variable 'object right-edge exists)))
 
 ;;; Adjuncts for clauses 
 (defun add-adjunctive-clause-to-s (s adjunctive-clause)
