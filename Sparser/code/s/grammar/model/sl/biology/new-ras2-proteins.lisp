@@ -442,7 +442,7 @@
 (DEF-RAS2-PROTEIN "Gq family" ("Gq family")) 
 (DEF-RAS2-PROTEIN "Grb2" ("Grb2")) 
 (DEF-RAS2-PROTEIN "Growth factor receptor" ("Growth factor receptor")) 
-(DEF-RAS2-PROTEIN "Growth factor" ("Growth factor")) 
+;;(DEF-RAS2-PROTEIN "Growth factor" ("Growth factor")) 
 (DEF-RAS2-PROTEIN "Gs family" ("Gs family")) 
 (DEF-RAS2-PROTEIN "GSK-3" ("glycogen synthase kinase-3" "GSK3_CAEEL" "GSK3" )) 
 (DEF-RAS2-PROTEIN "HABP4_HUMAN" ("HABP4_HUMAN" "IHABP4" "Ki-1/57 intracellular antigen" "HABP4" "IHABP-4")) 
