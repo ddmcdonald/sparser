@@ -149,7 +149,7 @@
 
 (defun interpret-premod-to-np (premod head)
   (let ((variable-to-bind
-          (subcategorized-variable head :premod premod)))
+          (subcategorized-variable head :m premod)))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind

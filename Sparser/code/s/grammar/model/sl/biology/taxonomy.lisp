@@ -432,7 +432,7 @@
   :binds ((enzyme protein))
   :realization
   (:noun "kinase activity"
-         :premod enzyme))
+         :m enzyme))
 
 
 (define-category bio-method :specializes process
@@ -514,7 +514,7 @@
   :realization 
   (:noun "agent"
    :of causes
-   :premod causes))
+   :m causes))
 
 
 (define-category bio-context :specializes biological
@@ -671,7 +671,6 @@
           (nucleotide nucleotide))
   :realization
   (:noun "nucleotide exchange factor"
-         :etf pre-mod
          :m nucleotide
          :m substrate
          :of substrate
@@ -680,8 +679,8 @@
 (def-synonym kinase
              (:noun "kinase"
                    :for reaction
-                   :premod protein
-                   :premod residue))
+                   :m protein
+                   :m residue))
 
 (define-category phosphatase :specializes enzyme
                  ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
@@ -694,10 +693,9 @@
 
 (def-synonym phosphatase
              (:noun "phosphatase"
-                    :etf pre-mod
                     :for reaction
-                    :premod protein
-                    :premod residue))
+                    :m protein
+                    :m residue))
 
 (define-category GTPase :specializes enzyme
   :instantiates :self
@@ -715,7 +713,6 @@
   :instantiates :self
   :realization
   (:noun "variant"
-         :etf pre-mod
          :m basis
          :of basis))
 

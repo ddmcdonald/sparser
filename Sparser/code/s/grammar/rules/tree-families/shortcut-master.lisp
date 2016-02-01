@@ -45,7 +45,7 @@
     :whethercomp :with :within :without))
 
 (defparameter *slot-keywords*
-  '(:premod :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp 
+  '(:m :premod :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp 
     :by :in :into :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :upon 
     :via :whethercomp :with :within :without
     :designator))
@@ -136,7 +136,7 @@
                                   mixin restrict rule-label 
                                   obo-id 
                                   etf verb noun adj
-                                  s o c m
+                                  s o c ;;m
                                   prep 
                                   slots ;; a plist with labels like :against :as :at 
                                   ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
@@ -216,7 +216,7 @@
           :s subj-slot  
           :o obj-slot
           :c c
-          :m m
+          ;;:m m
           :prep prep  
           :slots slots)
 
@@ -226,7 +226,7 @@
 
 (defun decode-realization-parameter-list (category
                                           &key etf verb noun adj
-                                          s o c m ;; arguments
+                                          s o c ;; arguments
                                           prep ;; owned preposition
                                           slots ;; a plist with labels like :against :as :at 
                                           ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
@@ -245,11 +245,11 @@
   
   (let* ((sf (fom-subcategorization category
                                     :category category
-                                    :s s :o o :m m
+                                    :s s :o o
                                     :slots slots))
          (subj-pat (find-subcat-pattern :subject sf))
          (obj-pat (find-subcat-pattern :object sf))
-         (m-pat (find-subcat-pattern :premod sf))
+         (m-pat (find-subcat-pattern :m sf))
          substitution-map
          word-map)
     (dolist (schema-name etf)
@@ -297,7 +297,7 @@
             (push `(comp-v/r . ,v/r) substitution-map)
             (register-variable category var :complement-variable)))
 
-        (when m-pat ;; modifier, normally to a head noun
+	(when m-pat ;; modifier, normally to a head noun
           (let ((m-var (subcat-variable m-pat))
                 (m-v/r (subcat-restriction m-pat)))
             (unless m-var (error "No ~a variable associated with ~a"

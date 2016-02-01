@@ -143,7 +143,7 @@
 (defun var-symbol (var)
   (cond ((null var) nil)
         ((consp var) var)
-        (t (cat-symbol var))))
+        (t (var-name var))))
 
 (defun v/r-symbol (v/r)
   (cond ((null v/r) nil)
@@ -211,7 +211,7 @@
                  do (pushnew sp patterns :test #'subcat-pattern-equal))
             finally (return (nreverse patterns))))))
 
-(defun fom-subcategorization (label &key form category s o m slots)
+(defun fom-subcategorization (label &key form category s o slots)
   "Find or make a subcategorization frame for the given category."
   (let ((frame (or (get-subcategorization label)
                    (make-subcategorization label :form form))))
@@ -224,45 +224,25 @@
                    (funcall function category v/r var)))))
         (maybe-call-with-v/r #'assign-subject s)
         (maybe-call-with-v/r #'assign-object o)
-        (maybe-call-with-v/r #'assign-premod m))
-
+        ;;(maybe-call-with-v/r #'assign-premod m)
+	)
+      ;;(lsp-break "1")
       ;; Handle the rest of the slots
       (loop for (pname var-name) on slots by #'cddr
-            as label = (case pname
-                         ((:premod :thatcomp :whethercomp
-                           :to-comp :ifcomp :as-comp)
-                          pname)
-                         (otherwise
-                          (resolve (string-downcase pname))))
-            as var = (find-variable-for-category var-name category)
-            as v/r = (var-value-restriction var)
-            do (assign-subcategorization category label v/r var))
-
+	 as label = (case pname
+		      ((:premod :thatcomp :whethercomp
+				:to-comp :ifcomp :as-comp :m)
+		       pname)
+		      (otherwise
+		       (resolve (string-downcase pname))))
+	 as var = (find-variable-for-category var-name category)
+	 as v/r = (var-value-restriction var)
+	 do (assign-subcategorization category label v/r var))
+      ;;(lsp-break "2")
       (setf (subcat-patterns frame)
             (remove-duplicates (subcat-patterns frame) :test #'equal))
-
-      ;; Override value restrictions from local information as necessary
-      ;; NO LONGER NEEDED -- handled above by use of (find-variable-for-category var-name category)
-      #+ignore
-      (setf (subcat-patterns frame)
-            (remove-duplicates
-             (loop for pattern in (subcat-patterns frame)
-               as label = (subcat-label pattern)
-               as var-name = (and (subcat-variable pattern)(var-name (subcat-variable pattern)))
-               as var = (and var-name (find-variable-in-category var-name category))
-               ;; want the local variable, not an inherited one
-               as v/r = (and var (var-value-restriction var))
-               collect (if (or (null var)
-                               (null v/r)
-                               (eq (subcat-restriction pattern) v/r))
-                           pattern
-                           (progn
-                             (if (or (category-p v/r)
-                                     (and (consp v/r)
-                                          (eq (car v/r) :or)))
-                                 (make-subcat-pattern label v/r var category)
-                                 (lsp-break "bad v/r")))))
-             :test #'equal)))
+      ;;(lsp-break "3")
+      )
     frame))
 
 (defun assign-subcat/expr (word form category parameter-plist)
@@ -412,7 +392,7 @@
   (assign-subcategorization category :object v/r variable :replace t))
 
 (defun assign-premod (category v/r variable)
-  (assign-subcategorization category :premod v/r variable))
+  (assign-subcategorization category :premod v/r variable :replace nil))
 
 
 ;;;-----------

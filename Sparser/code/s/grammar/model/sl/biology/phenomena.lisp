@@ -20,7 +20,7 @@
                  :specializes bio-process
   :binds ((direction pathway-direction))
   :realization (:noun "signal propagation"
-                      :premod direction))
+                      :m direction))
 
 (define-realization-scheme pre-mod premodifier-adds-property 
   ;; used in quarter -- as are a number of other np patterns
@@ -72,7 +72,7 @@
   :realization 
     (:verb ("signal"  :present-participle "xxxsignaling") ;; block "signaling" as a verb
      :noun "signalling"
-     :etf (svo-passive pre-mod)
+     :etf (svo-passive)
      :m agent
      :s agent 
      :o object
@@ -80,27 +80,27 @@
 
 (def-synonym signal ;; Jan.#26
    (:noun "signaling" 
-          :etf pre-mod
           :m agent    
           :to object))
 
 (def-synonym signal ;; Jan.#26
    (:noun "signal" 
-          :etf pre-mod
           :m agent    
           :to object))
 
 
-
-
+;;"It is interesting that various stimuli provoke EGF receptor tyrosine phosphorylation by two distinct means.")
 (define-category post-translational-modification :specializes caused-bio-process
-  :binds ((substrate (:or protein residue-on-protein molecular-location)) ;; which protein now has ubiquitin on it
+  :binds ((substrate (:or protein residue-on-protein))
+          (modification-location molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
   :realization 
   (:noun "post-translational modification"
          :o substrate
+         ;;:m agent somehow this overridew the ones below
+         :m amino-acid
          :m substrate
-         :m agent
+         :m modification-location
          :of substrate
          :at amino-acid))
 
@@ -124,35 +124,35 @@
   :index (:temporary :sequential-keys site substrate)
   :realization
   (:verb "acetylate" :noun "acetylation"
-   :etf (svo-passive pre-mod)))
+   :etf (svo-passive)))
 
 (define-category farnesylation 
   :specializes post-translational-modification 
   :realization 
   (:verb "farnesylate"
          :noun "farnesylation"
-         :etf (svo-passive pre-mod) ))
+         :etf (svo-passive) ))
 
 (define-category glycosylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "glycosylate"
      :noun "glycosylation"
-     :etf (svo-passive pre-mod)))
+     :etf (svo-passive)))
 
 (define-category hydoxylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "hydoxylate"
      :noun "hydoxylation"
-     :etf (svo-passive pre-mod)))
+     :etf (svo-passive)))
 
 (define-category methylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "methylate"
      :noun "methylation"
-     :etf (svo-passive pre-mod)))
+     :etf (svo-passive)))
 
 
 ;;--- "phosphorylate"
@@ -165,7 +165,7 @@
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
-   :etf (svo-passive pre-mod)))
+   :etf (svo-passive)))
 
 
 (define-category auto-phosphorylate
@@ -223,7 +223,7 @@
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "transphosphorylate" :noun "transphosphorylation"
-   :etf (svo-passive pre-mod)))
+   :etf (svo-passive)))
 
 (define-category hypersphosphorylate
   :specializes phosphorylation-modification
@@ -231,21 +231,21 @@
   :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "hyperphosphorylate" :noun "hyperphosphorylation"
-   :etf (svo-passive pre-mod)))
+   :etf (svo-passive)))
 
 (define-category ribosylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "ribosylate"
      :noun "ribosylation"
-     :etf (svo-passive pre-mod)))
+     :etf (svo-passive)))
 
 (define-category sumoylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "sumoylate"
      :noun "sumoylation"
-     :etf (svo-passive pre-mod)))
+     :etf (svo-passive)))
 
 
 ; monoubiquitination increases the population 
@@ -265,11 +265,11 @@
   :realization 
     (:verb "ubiquitinate"
      :noun "ubiquitination"
-     :etf (svo-passive pre-mod)))
+     :etf (svo-passive)))
 
 (def-synonym ubiquitination 
              (:verb "ubiquitylate" 
-                    :etf (svo-passive pre-mod)
+                    :etf (svo-passive)
                     :noun "ubiquitylation"))
 
 (define-category auto-ubiquitinate
@@ -280,7 +280,7 @@
 
 (def-synonym auto-ubiquitinate
              (:verb "auto-ubiquitylate" 
-                    :etf (svo-passive pre-mod)
+                    :etf (svo-passive)
                     :noun "auto-ubiquitylation"))
 
 (def-synonym auto-ubiquitinate 
@@ -291,7 +291,7 @@
 (define-category poly-ubiquitination :specializes ubiquitination
   :realization
   (:verb "poly-ubiquitinate" 
-         :etf (svo-passive pre-mod)
+         :etf (svo-passive)
          :noun "poly-ubiquitylation"))
 
 (def-synonym poly-ubiquitination 
@@ -322,16 +322,16 @@
   ;; that leads to the result
     (:verb "monoubiquitinate" 
      :noun "monoubiquitination"
-     :etf (svo-passive pre-mod)))
+     :etf (svo-passive)))
 
 (def-synonym monoubiquitination 
              (:verb "mono-ubiquitylate" 
-                    :etf (svo-passive pre-mod)
+                    :etf (svo-passive)
                     :noun "mono-ubiquitylation"))
 
 (def-synonym monoubiquitination 
              (:verb "monoubiquitylate" 
-                    :etf (svo-passive pre-mod)
+                    :etf (svo-passive)
                     :noun "monoubiquitylation"))
 
 
@@ -362,7 +362,7 @@
   ;; that leads to the result
     (:verb "monoubiquitinate" 
      :noun "monoubiquitination"
-     :etf (svo-passive pre-mod)
+     :etf (svo-passive)
      :s agent 
      :o protein ;; "monoubiquitinated Ras"
      :m protein ;; Ras monoubiquitination
@@ -425,21 +425,24 @@ it is created from N-terminus to C-terminus.|#
   :specializes protein-terminus
   :index (:permanent :key protein)
   :realization
-    (:etf (pre-mod)
-     :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
-            "n-termini"
-            "amino terminus"
-            "NtA") ;; n-terminal acidic
-     ))
+  (:etf (pre-mod)
+        :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
+          "n-termini"
+          "amino terminus"
+          "NtA") ;; n-terminal acidic
+        :premod context ;; NEEDS TO BE CHANGED -- only here because need :etf (pre-mod), to get synonyms
+         ))
 
 (define-category C-terminal ;; carboxyl-terminus
   :specializes protein-terminus
   :binds ((protein protein))
   :index (:permanent :key protein)
   :realization
-    (:etf (pre-mod)
-     :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus"
-            "c-termini")))
+  (:etf (pre-mod)
+        :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus"
+          "c-termini")
+        :premod context ;; NEEDS TO BE CHANGED -- only here because need :etf (pre-mod), to get synonyms
+        ))
 
 
 (define-category binding-domain :specializes protein-domain
@@ -634,34 +637,31 @@ it is created from N-terminus to C-terminus.|#
 ; the apoptosis pathway
 
 
-(define-category apoptosis  ;; aka cell death
-  :specializes bio-process
-  :binds ((process bio-process)(object biological)) ;; should be cell
-  :realization
-  (:etf pre-mod
-        :noun "apoptosis" :adj "apoptotic"
-        :m process
-        :of object
-        :in object))
+(define-category apoptosis ;; aka cell death
+    :specializes bio-process
+    :binds ((process bio-process)(object biological)) ;; should be cell
+    :realization
+    (:noun "apoptosis" :adj "apoptotic"
+	   :m process
+	   :of object
+	   :in object))
 
 (define-category  autophagy;; like apoptosis
   :specializes bio-process
   :binds ((process bio-process)(object biological)) ;; should be cell
   :realization
-  (:etf pre-mod
-        :noun "autophagy" 
-        :m process
-        :of object))
+  (:noun "autophagy" 
+	 :m process
+	 :of object))
 
 (define-category senescence ;; aka cell death
   :specializes bio-process
   :binds ((process bio-process)(object biological)) ;; should be cell
   :realization
-  (:etf pre-mod
-        :noun "senescence" :adj "senescent"
-        :m process
-        :of object
-        :in object))
+  (:noun "senescence" :adj "senescent"
+	 :m process
+	 :of object
+	 :in object))
 
 
 (adj "pro-apoptotic" :super apoptosis)
@@ -796,8 +796,6 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "complex"
-         :etf pre-mod
-         :premod component
          :m component
          :with component
          :of component
@@ -809,8 +807,7 @@ it is created from N-terminus to C-terminus.|#
   :binds ((component (:or bio-complex small-molecule protein))
           (componentstoichiometry stoichiometry)) 
   :realization
-  (:noun "tricomplex"
-         :etf pre-mod))
+  (:noun "tricomplex"))
 
 
 ;; from EDGFR comments
@@ -851,8 +848,7 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "dimer"
-         :etf pre-mod
-         :premod component
+         :m component
          :m component
          :with component
          :of component
@@ -864,8 +860,7 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "trimer"
-         :etf pre-mod
-         :premod component
+         :m component
          :m component
          :with component
          :of component
@@ -877,8 +872,7 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "tetramer"
-         :etf pre-mod
-         :premod component
+         :m component
          :m component
          :with component
          :of component
@@ -892,8 +886,7 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "heterodimer"
-         :etf pre-mod
-         :premod component
+         :m component
          :m component
          :with component
          :of component
@@ -913,8 +906,7 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "homodimer"
-         :etf pre-mod
-         :premod component
+         :m component
          :m component
          :with component
          :of component
@@ -926,8 +918,7 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "homo/heterodimer"
-         :etf pre-mod
-         :premod component
+         :m component
          :m component
          :with component
          :of component
