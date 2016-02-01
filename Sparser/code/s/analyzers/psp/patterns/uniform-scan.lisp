@@ -311,12 +311,13 @@
     (cond
      (uc-word 
       (let* ((uc-rule (car (rs-single-term-rewrites (rule-set-for uc-word))))
-             (cfr (define-cfr/resolved 
-                      (cfr-category uc-rule)
-                      (list (resolve/make words-string)) ;; rhs-list-of-categories
-                    (cfr-form uc-rule)
-                    (cfr-referent uc-rule)
-                    (cfr-schema uc-rule))))
+             (cfr 
+              (define-cfr/resolved 
+                  (cfr-category uc-rule)
+                  (list (resolve/make words-string))
+                (cfr-form uc-rule)
+                (cfr-referent uc-rule)
+                (cfr-schema uc-rule))))
         (unless (equal (string-upcase words-string) words-string)
           (format t "~%-------Defining no-space-segment ~s as equivalent ~
                      to ~s~%" words-string uc-word))
