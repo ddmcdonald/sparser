@@ -631,8 +631,33 @@
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
 
-(define-category kinase :specializes enzyme
+(define-category post-translational-enzyme :specializes enzyme
+  :binds ((protein protein) 
+          (residue amino-acid)))
+
+
+(define-category kinase :specializes post-translational-enzyme
                  ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
+                 ;;  should be as a "telic" qualia for those molecules which are kinases 
+  :instantiates :self
+  :bindings (uid "GO:0016301") ;; "kinase activity" 
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(define-category ubiquitylase :specializes post-translational-enzyme
+                 ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
+                 ;;  should be as a "telic" qualia for those molecules which are kinases 
+  :realization
+  (:noun "ubiquitylase"))
+
+(define-category ubiquitylase :specializes post-translational-enzyme
+                 ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
+                 ;;  should be as a "telic" qualia for those molecules which are kinases 
+  :realization
+  (:noun "deubiquitylase"))
+
+(define-category deubiquitylase :specializes enzyme
+                 ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
                  ;;  should be as a "telic" qualia for those molecules which are kinases 
   :binds ((protein protein) 
           (residue amino-acid))
