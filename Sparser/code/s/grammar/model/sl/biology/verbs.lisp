@@ -598,6 +598,9 @@
             :etf (svo-passive) 
             :o theme))
 
+(def-synonym contain 
+             (:verb "harbor" :etf (svo-passive)))
+
 (define-category continue :specializes bio-relation
   :binds ((agent biological)
           (process bio-process))
@@ -1807,7 +1810,11 @@
 
 (def-synonym relapse (:noun "relapse"))
 
-
+(define-category rely :specializes bio-relation
+  :realization
+  (:verb "rely"
+         :etf (sv)
+         :on theme))
 
 
 ;;--- "release"  "GO:0023061"
