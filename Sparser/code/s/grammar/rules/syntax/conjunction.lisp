@@ -399,18 +399,10 @@
                 (individual-p (edge-referent edge-before))
                 (individual-p (edge-referent edge-after)))
                t)
-              (t (break "conjunction-problem: conjunction of category and individual")) ))
-            (and
-             (safe-itypep label-before 'protein)
-             (safe-itypep label-after 'protein))
-            (and
-             (safe-itypep label-before 'bio-complex)
-             (safe-itypep label-after 'bio-complex))
-            
+              (t (break "conjunction-problem: conjunction of category and individual")) ))            
             (bio-coercion-compatible? label-before label-after edge-before edge-after))
         :conjunction/identical-adjacent-labels)
-       (*allow-form-conjunction-heuristic*
-        
+       (*allow-form-conjunction-heuristic*   
         ;;(break "form heuristics allowed. Check backtrace")
         (let ((form-before (edge-form edge-before))
               (form-after (edge-form edge-after)))
@@ -447,15 +439,29 @@
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
   (declare (special label-after label-before category::bio-entity))
   (cond
-   ((safe-itypep label-before 'protein)
-    (when (eq (safe-itype-of label-after) category::bio-entity)
-      (show-protein-coercion edge-after edge-before)
-      t))
-   ((safe-itypep label-after 'protein)
-    (when
-        (eq (safe-itype-of label-before) category::bio-entity)
-      (show-protein-coercion edge-before edge-after)
-      t))))
+    ((or
+      (and
+       (safe-itypep label-before 'protein)
+       (safe-itypep label-after 'protein))
+      (and
+       (safe-itypep label-before 'bio-complex)
+       (safe-itypep label-after 'bio-complex))))
+    ((safe-itypep label-before 'protein)
+     (cond
+       ((safe-itypep label-after 'protein))
+       ((eq (safe-itype-of label-after) category::bio-entity)
+	(show-protein-coercion edge-after edge-before)
+	t)
+       ((safe-itypep label-after 'bio-chemical-entity))))
+    ((safe-itypep label-after 'protein)
+     (cond
+       ((eq (safe-itype-of label-before) category::bio-entity)
+	(show-protein-coercion edge-before edge-after)
+	t)
+       ((eq (safe-itype-of label-after) category::bio-entity)
+	(show-protein-coercion edge-after edge-before)
+	t)
+       ))))
 
 (defun safe-itypep (low high)
   (when (or (individual-p low)
