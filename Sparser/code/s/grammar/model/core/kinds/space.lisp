@@ -55,7 +55,7 @@
 
 
 (define-category c3-region
-  :specializes c3-location
+  :specializes location
   :documentation "'Region' is taken abstractly here using the notion of demarcation or
  setting boundaries over some domain to pick out a particular part of
  it. You can have a region of the number line, a region of a
@@ -99,7 +99,7 @@
   ;; Said of something that must have a location
   ;; Supplies a location variable whose value says where
   ;;   this thing is.
-  :binds ((location c3-location)))
+  :binds ((location location)))
   ;; Agnostic about when the value holds. That's recorded elsewhere,
   ;; presumably as a situation/time index
 
