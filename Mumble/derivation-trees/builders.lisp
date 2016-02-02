@@ -176,6 +176,28 @@
       lp)))
 
 
+(defmethod transitive-with-final-adverbial ((verb-pname string)
+                                            (adverb-pname string))
+  "This is for 'push X together'. As noted above for predicate,
+   notions like 'together' are not well characterized by simple
+   conventional terms. The choice of phrase is also wrong or
+   at least inadequate since it's from the transformational family
+   for particles like 'up' as in 'pick up'. Best move (///) is to
+   define a new phrase that explicitly takes adverbial final arguments."
+  (let ((verb (word-for-string verb-pname 'verb))
+        (adverb (word-for-string adverb-pname 'adverb))
+        (term (compound-word-for-indexing verb-pname adverb-pname)))
+    (let ((lp (make-instance 'partially-saturated-lexicalized-phrase
+                :phrase (phrase-named 'SVOP) ;; s v o p
+                :bound (list (pvp 'v verb)
+                             (pvp 'p adverb))
+                :free (list (parameter-named 's)
+                            (parameter-named 'o)))))
+      (record-lexicalized-phrase term lp)
+      lp)))
+
+
+
 (defgeneric discourse-unit (contents)
   (:documentation "Given an instance of a valid slot contents,
     prototypically a dtn for a clause, wrap it in a discourse unit
@@ -307,6 +329,13 @@ a message to be expressed. See discussion in make.lisp |#
 ;;;-------------------------
 ;;; gensym names for things
 ;;;-------------------------
+
+(defun compound-word-for-indexing (&rest word-pnames)
+  "Creates an artificial word by combining the pnames it's passed
+   with hyphens and creating a word."
+  (let ((pname (apply #'strings-to-hyphenated-string word-pnames)))
+    (word-for-string pname)))
+
 
 (defgeneric name-composite (object)
   (:documentation "Given a newly created object that has
