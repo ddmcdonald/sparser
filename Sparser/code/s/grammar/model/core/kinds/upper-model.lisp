@@ -102,6 +102,20 @@
 
 ;;;--- Subcategories of abstract
 
+(define-category abstract-region
+  :instantiates nil
+  :specializes abstract
+  :documentation 
+   "Dolce defines a 'region' class as one of the immediate
+  daughters of 'abstract' (the others include 'fact' and 'set)
+  Region is then divided into 'temporal', 'physical' aka space,
+  and 'abstract'. It's unclear that we need to go that route
+  since it's unclear quite what follows from something being
+  classified as a region. This is called 'abstract-region' to
+  avoid a class with the region in biology/terms.lisp. The bio
+  side should change (///) but that's not pressing.")
+
+
 ; We need an unmarked, equally weighted 'relation' for what holds
 ; among things like the members of a collection or between categories
 ; taken generically. Don't want to assume a standard arity 
