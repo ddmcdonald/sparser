@@ -1,18 +1,19 @@
-;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER
-;;; copyright (c) 1989,1993,2011  David D. McDonald  -- all rights reserved
+;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 1989,1993,2011.2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "syntactic sugar"
 ;;;    module:   /Sparser/util/
-;;;   Version:   July 2011
+;;;   Version:   February 2016
 
 ;; (3/9/11) Reworked to fit in ddm-util. 7/5 fixed old case in
-;; string-append
+;; string-append. 2/1/16 added strings-to-hyphenated-string.
 
 (in-package :ddm-util)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (export '(string-append
             equivalent-uppercase-symbol-with-hyphens
+            strings-to-hyphenated-string
             string-pad-number)))
 
 ;;;----------------------------------------
@@ -43,19 +44,25 @@
 ;;;  converting strings to various symbols by various conventions
 ;;;-----------------------------------------------------------------
 
-(defun equivalent-uppercase-symbol-with-hyphens
-       (string
-        package)
-
+(defun equivalent-uppercase-symbol-with-hyphens (string package)
   (let (accumulated-characters)
     (dolist (c (coerce string 'list))
       (cond ((eq c #\space)
              (push #\- accumulated-characters))
             (t (push c accumulated-characters))))
-
     (let ((new-string
            (coerce (nreverse accumulated-characters) 'string)))
       (intern new-string package))))
+
+(defun strings-to-hyphenated-string (&rest list-of-strings)
+  (let ( accumulated-string )
+    (do ((string (car list-of-strings) (car rest))
+         (rest (cdr list-of-strings) (cdr rest)))
+        ((null string))
+      (push string accumulated-string)
+      (unless (= 0 (length rest))
+        (push "-" accumulated-string)))
+    (apply #'string-append (nreverse accumulated-string))))
 
 
 ;;;-------------------------
