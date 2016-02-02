@@ -46,7 +46,7 @@
 
 ;;; shortcut for making parameter-value-pairs
 
-(defun pvp (paramter-name value)
+(defun pvp (parameter-name value)
   (let ((parameter (parameter-named parameter-name)))
     (make-instance 'paramter-value-pair
       :phrase-parameter parameter
