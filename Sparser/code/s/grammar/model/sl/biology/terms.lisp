@@ -785,6 +785,7 @@
 
 ;; These three want to be synonyms
 (noun "frame" :super bio-entity)
+(adj "oncogenic" :super bio-chemical-entity)
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super open\ reading\ frame)
 (def-synonym open\ reading\ frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
