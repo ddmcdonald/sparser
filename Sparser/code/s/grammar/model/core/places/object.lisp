@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.4 January 2015
+;;;  version:  February 2016
 
 ;; initiated in 10/12/92 v2.3. Added 'kind of location' 1/17/94.  Added location-
 ;; phrase 11/16/95. Added relative-location 11/99. 11/25 Moved in spatial-
@@ -23,46 +23,15 @@
 ;; 0.4 (1/7/15) Finally gave location a specialization of abstract. N.b. that
 ;;   this still needs to be coordinated with kinds/space and the other C3
 ;;   treatments. 
+;; 2/1/16 Started merge wih C3 conception, moving base category and
+;;   friends to core/kinds/space.lisp
 
 (in-package :sparser)
-
-;;;-------------------------------------------------
-;;; base category - not intended to be instantiated
-;;;-------------------------------------------------
-
-(define-category  location
-  :instantiates  self
-  :specializes   abstract
-  :binds ((name . name-of-location)
-          (type-name :primitive word)) ;; see define-type-category-constructor
-              ;; this should go way farther up in the hierarchy
-  :index (:key name))
 
 
 (define-autodef-data 'location
   :display-string "Locations"
   :not-instantiable t)
-
-
-
-;;;------------------------------------------------
-;;; Deictics  -- needs a story about dereferencing
-;;;------------------------------------------------
-
-(define-category  deictic-location 
-  :instantiates  location ;;self
-  :specializes   location
-  :binds ((name :primitive word))
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(define-individual 'deictic-location :name "over there")
-
-(define-individual 'deictic-location :name "over here")
-
-(define-individual 'deictic-location :name "here")
-
-(define-individual 'deictic-location :name "there")
 
 
 ;;;--------------------------

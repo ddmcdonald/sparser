@@ -1,24 +1,20 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "space"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  April 2013
+;;;  version:  February 2016
 
 ;; Broken out of container-and-suv 11/11/13. Moved to kinds 4/14/14 and
-;; included container.  
+;; included container. 2/1/16 merging with the location in places.
 
-(in-package :sparser)
-
-;;--- mini ontology of space.
-;; Merge this into the regular model in /grammar/model/core/places/
-;; at some point when we want to align it with Space-ML or some
-;; hybrid. 
+(in-package :sparser) 
 
 
-(define-category c3-location ;; "place" ??
-  :specializes nil ;; Dolce calls this 'region', which specializes 'abstract'
+(define-category location ;; "place" ??
+  :instantiates self
+  :specializes abstract-region ;; Dolce calls this 'region', which specializes 'abstract'
   ;; The supercategory of the restriction on has-location.location
   ;;  "My wedding ring is on my (left ring) finger" 
   ;;  "My cell phone is in my pocket"
@@ -26,7 +22,36 @@
   ;;  [ David's-cell-phone.location = pocket of his jeans ]
   ;; we need to say "is in", where the choice of preposition is
   ;; idiosyncratically dependent on the category of location
-)
+
+  ;;/// These bindings were on the definition in places/object.
+  ;; They need to be disbursed or thought through more. 
+  ;;/// Also, there are a zillion rules that directly rewrite as
+  ;; 'location' and these also need review and (no doubt) revision
+  :binds ((name . name-of-location)
+          (type-name :primitive word)) ;; see define-type-category-constructor
+              ;; this should go way farther up in the hierarchy
+  :index (:key name))
+
+
+
+;;;------------------------------------------------
+;;; Deictics  -- needs a story about dereferencing
+;;;------------------------------------------------
+
+(define-category  deictic-location 
+  :instantiates  location ;;self
+  :specializes   location
+  :binds ((name :primitive word))
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(define-individual 'deictic-location :name "over there")
+
+(define-individual 'deictic-location :name "over here")
+
+(define-individual 'deictic-location :name "here")
+
+(define-individual 'deictic-location :name "there")
 
 
 (define-category c3-region
@@ -70,7 +95,7 @@
 ;;;------------------
 
 (define-category has-location
-  :specializes nil ;; predicate?  What's the top of these.
+  :specializes relation
   ;; Said of something that must have a location
   ;; Supplies a location variable whose value says where
   ;;   this thing is.
