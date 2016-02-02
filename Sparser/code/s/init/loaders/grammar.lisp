@@ -85,6 +85,9 @@ omitted and then run (perhaps) after the image has been launched."
     ;; the bracket definitions reference syntactic categories
     (gload "brackets;loader"))
 
+  (gate-grammar *tree-families*
+    (gload "tree-families;shortcut-loader"))
+
   (gate-grammar *kinds*
     (gload "kinds;1st-loader")) ;; defines the upper model
 
