@@ -167,7 +167,7 @@
       ;; most general. As soon as one of these sources returns
       ;; a valid rule we stop looking at other sourcs.
       
-      (if (and *use-semantic-rules* rule) ;; from the let statement, multiply-categories
+      (if rule ;; from the let statement, multiply-categories
           (then
             (tr :found-semantic-rule rule)
             (if (valid-rule? rule left-edge right-edge chunk)
@@ -178,7 +178,6 @@
                   (setq rule nil))))
           (else
             (tr :no-semantic-rule)))
-      
       (unless rule
         (setq rule (mult/ids-on-form-label left-edge right-edge))
         (if rule
