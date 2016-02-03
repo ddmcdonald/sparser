@@ -513,6 +513,8 @@
          (query-form (fourth stmt))
          (query-vars (get-stmt-vars query-form))
          (rel-vars (union ans-vars query-vars)))
+    (unless (listp blists)
+      (setf blists '(nil)))
     (apply #'append
            (mapcar
             #'(lambda (blist)
