@@ -34,7 +34,7 @@
 ;;;------------------
 
 (defparameter *def-realization-keywords*
-  '(:verb :noun :adj :etf :s :o :c :m
+  '(:verb :noun :adj :etf :s :alt-s :o :alt-o :c :m
     :binds :realization
     :prep :by
     :premod
@@ -45,7 +45,7 @@
     :whethercomp :with :within :without))
 
 (defparameter *slot-keywords*
-  '(:m :premod :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp 
+  '(:alt-s :alt-o :m :premod :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp 
     :by :in :into :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :upon 
     :via :whethercomp :with :within :without
     :designator))

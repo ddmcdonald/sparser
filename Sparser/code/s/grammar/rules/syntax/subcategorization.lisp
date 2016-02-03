@@ -205,45 +205,67 @@
             as frame = (get-subcategorization sc)
             when frame
             do (loop for sp in (subcat-patterns frame)
-                 unless (and (member (subcat-label sp) '(:subject :object :premod))
-                             (find-if #'(lambda(x)(eq (subcat-label x) (subcat-label sp)))
-                                      patterns))
+		  unless (and nil
+			      (member (subcat-label sp) '(:subject :object :premod))
+			      (find-if #'(lambda(x)(eq (subcat-label x) (subcat-label sp)))
+				       patterns))
                  do (pushnew sp patterns :test #'subcat-pattern-equal))
             finally (return (nreverse patterns))))))
 
 (defun fom-subcategorization (label &key form category s o slots)
+  (declare (special label form category s o slots))
   "Find or make a subcategorization frame for the given category."
   (let ((frame (or (get-subcategorization label)
                    (make-subcategorization label :form form))))
+    (declare (special frame))
+    (setf (subcat-patterns frame) (update-subcat-v/rs label (subcat-patterns frame)))
+
     (when category
-      ;; Override inherited special cases with local information
-      (flet ((maybe-call-with-v/r (function var-name)
-               (when var-name
-                 (let* ((var (find-variable-for-category var-name category))
-                        (v/r (var-value-restriction var)))
-                   (funcall function category v/r var)))))
-        (maybe-call-with-v/r #'assign-subject s)
-        (maybe-call-with-v/r #'assign-object o)
-        ;;(maybe-call-with-v/r #'assign-premod m)
-	)
+      (when s (setq slots `(:subject ,s ,.slots)))
+      (when o (setq slots `(:object ,o ,.slots)))
+      (setq slots (reverse slots))
       ;;(lsp-break "1")
-      ;; Handle the rest of the slots
-      (loop for (pname var-name) on slots by #'cddr
-	 as label = (case pname
-		      ((:premod :thatcomp :whethercomp
+      (loop for (var-name pname) on slots by #'cddr
+        as label = (case pname
+                     ((:subject :object 
+				:premod :thatcomp :whethercomp
 				:to-comp :ifcomp :as-comp :m)
-		       pname)
-		      (otherwise
-		       (resolve (string-downcase pname))))
-	 as var = (find-variable-for-category var-name category)
-	 as v/r = (var-value-restriction var)
-	 do (assign-subcategorization category label v/r var))
-      ;;(lsp-break "2")
+                      pname)
+		     (:alt-s :subject)
+		     (:alt-o :object)
+                     (otherwise
+                      (resolve (string-downcase pname))))
+        as var = (find-variable-for-category var-name category)
+        as v/r = (var-value-restriction var)
+        do 
+         (assign-subcategorization category label v/r var)
+         )
+      
       (setf (subcat-patterns frame)
             (remove-duplicates (subcat-patterns frame) :test #'equal))
-      ;;(lsp-break "3")
+     ;;(lsp-break "2")
       )
     frame))
+
+(defun update-subcat-v/rs (category subcats)
+  (declare (special category subcats))
+  (if
+   (not (category-p category))
+   subcats
+   (loop for pattern in subcats
+      collect
+	(let* ((*pat* pattern)
+	       (label (subcat-label pattern))
+	       (v/r (subcat-restriction pattern))
+	       (var (subcat-variable pattern))
+	       (local-var (find-variable-for-category (var-name var) category))
+	       (local-v/r (var-value-restriction local-var)))
+	  (declare (special *pat* label v/r var local-var local-v/r))
+	       
+	  (if
+	   (eq var local-var)
+	   pattern ;; nothing has changed -- no RESTRICTION on var
+	   (make-subcat-pattern label local-v/r local-var category))))))
 
 (defun assign-subcat/expr (word form category parameter-plist)
   "Form to find or make the appropriate subcategorization frame
