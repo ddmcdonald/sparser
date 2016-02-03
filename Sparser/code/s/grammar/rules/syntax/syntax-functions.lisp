@@ -826,7 +826,7 @@ to enhance p53 mediated apoptosis [2].") |#
     ;; where the criteria is whether the verb is in oblique or tensed
     ;; form. If it turned out to be a RR then we do fairly serious
     ;; surgery on the edge.
-    (when (edge-p (edge-right-daughter vp-edge))
+    ;;(when (edge-p (edge-right-daughter vp-edge))
       ;; The other possibility is :single-term, which indicates
       ;; that we've just got a vg (one one form or another)
       ;; and not a full vp, in which case we're returning nil
@@ -837,13 +837,15 @@ to enhance p53 mediated apoptosis [2].") |#
                   (null (object-variable vp))
                   (value-of (object-variable vp) vp)
                   (itypep subj 'pronoun)))
-         (subcategorized-variable vp :subject subj)))
+            (preceding-that-whether-or-conjunction? (left-edge-for-referent))
+            (subcategorized-variable vp :subject subj)))
        ;; ?????????????
        ((or ;; vp has a bound object
          (null (object-variable vp))
          (value-of (object-variable vp) vp)
          (value-of 'statement vp)
-         (itype subj 'pronoun))
+         (itype subj 'pronoun)
+         (preceding-that-whether-or-conjunction? (left-edge-for-referent)))
         ;; This situation corresponds to composing them as
         ;; subject and predicate, which is what the rule that
         ;; drives this is set up to do. 
@@ -862,8 +864,34 @@ to enhance p53 mediated apoptosis [2].") |#
           (convert-clause-to-reduced-relative))
          (t
           (push-debug `(,vp-form ,vp-edge))
-          (error "Unexpected vp form in np+vp: ~a" vp-form))))))))
+          (error "Unexpected vp form in np+vp: ~a" vp-form)))))))
 
+(defun preceding-that-whether-or-conjunction? (left-edge)
+  (declare (special left-edge))
+  (when
+      (and (edge-p left-edge)
+           (position-p (pos-edge-starts-at left-edge)))
+    (let*
+        ((previous-treetop (left-treetop-at/only-edges (pos-edge-starts-at left-edge)))
+         (prev-form (and (edge-p previous-treetop)
+                         (edge-form previous-treetop)))
+         (prev-cat (and (edge-p previous-treetop)
+                        (edge-category previous-treetop))))
+      (declare (special previous-treetop prev-form prev-cat))
+      (cond
+       ((or
+         (and (category-p prev-form)
+              (member (cat-name prev-form) '(SUBORDINATE-CONJUNCTION CONJUNCTION SPATIO-TEMPORAL-PREPOSITION ADVERB)))
+         (and (category-p prev-cat)
+              (member (cat-name prev-cat) '(THAT)))
+         (and nil
+              (word-p prev-cat)
+              (member (word-symbol prev-cat) '(word::comma))))
+        
+        t)
+       (t
+        ;;(format t "preceding-that-or-whether? prev-form=~s and prev-cat=~s~&" prev-form prev-cat)
+        nil)))))
 
 
 
