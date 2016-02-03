@@ -1516,9 +1516,6 @@
   :form n-bar
   :referent (:head right-edge :function passive-premodifier left-edge right-edge object))
 
-(noun "knock-out" :super mutate)
-(noun "knockout" :super mutate)
-(noun "knockdown" :super mutate)
 
 (define-category need :specializes bio-relation
     :binds ((result-or-purpose process))
