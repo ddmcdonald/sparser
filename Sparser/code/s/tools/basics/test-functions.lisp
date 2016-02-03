@@ -36,44 +36,43 @@
 ;;; Sentence corpus specifiers
 ;;;----------------------------
 ; These specify which corpus a general iterator
-; should run on. 
+					; should run on.
 
-(defun test-overnight ()
+(defun test-corpus (sentences &optional numbers)
+  (setq *sentences* sentences)
+  (reset-test)
+  (loop for i in numbers
+     do
+       (run-test i nil)))
+  
+
+(defun test-overnight (&optional numbers)
   (declare (special *overnight-sentences*))
-  (setq *sentences* *overnight-sentences*)
-  (reset-test)
-  nil)
+  (test-corpus *overnight-sentences* numbers))
 
-(defun test-jan ()
+(defun test-jan (&optional numbers)
   (declare (special *jan-dry-run*))
-  (setq *sentences* *jan-dry-run*)
-  (reset-test)
-  nil)
+  (test-corpus  *jan-dry-run* numbers))
 
-(defun test-dec ()
+(defun test-dry-run (&optional numbers)
+  (test-jan numbers))
+
+(defun test-dec (&optional numbers)
   (declare (special *dec-tests*))
-  (setq *sentences* *dec-tests*)
-  (reset-test)
-  nil)
+  (test-corpus   *dec-tests* numbers))
 
-(defun test-erk ()
+(defun test-erk (&optional numbers)
   (declare (special *erk-abstract*))
-  (setq *sentences* *erk-abstract*)
-  (reset-test)
-  nil)
+  (test-corpus *erk-abstract* numbers))
 
 
-(defun test-aspp2 ()
+(defun test-aspp2 (&optional numbers)
   (declare (special *aspp2-whole*))
-  (setq *sentences* *aspp2-whole*)
-  (reset-test)
-  nil)
+  (test-corpus *aspp2-whole* numbers))
 
-(defun test-load-test ()
+(defun test-load-test (&optional numbers)
   (declare (special *load-test-sents*))
-  (setq *sentences* *load-test-sents*)
-  (reset-test)
-  nil)
+  (test-corpus *load-test-sents* numbers))
 
 (defun test-sent (corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
   (declare (special *chunks* *overnight-sentences* *jan-dry-run*
