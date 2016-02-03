@@ -668,7 +668,20 @@
 (define-category knockdown :specializes bio-process
   :binds ((gene-or-protein (:or protein gene)))
   :realization
-  (:noun "knockdown" :of gene-or-protein))
+  (:noun "knockdown" :of gene-or-protein
+         :m gene-or-protein))
+
+(define-category knock-out  :specializes bio-process
+  :binds ((gene-or-protein (:or protein gene)))
+  :realization
+  (:noun "knock-out" :of gene-or-protein
+         :m gene-or-protein))
+
+(def-synonym knock-out
+             (:noun "knockout"
+                    :of gene-or-protein
+                    :m gene-or-protein))
+
 
 (define-category lack :specializes bio-relation
       :realization (:noun "lack" :of theme))
