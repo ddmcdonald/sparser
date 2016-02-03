@@ -97,10 +97,10 @@
   :realization 
   (:noun "post-translational modification"
          :o substrate
-         ;;:m agent somehow this overridew the ones below
          :m amino-acid
          :m substrate
          :m modification-location
+         :m agent ;;somehow this overridew the ones below
          :of substrate
          :at amino-acid))
 
