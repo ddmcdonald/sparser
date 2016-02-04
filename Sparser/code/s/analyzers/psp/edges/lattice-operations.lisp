@@ -156,11 +156,16 @@
   (or (get-dli base)
       (let ((new-dli (make-dli-for-ref-category base)))
         (loop for c in (immediate-supers base)
-          do (add-downlink (find-or-make-lattice-description-for-ref-category c) new-dli))
+          do 
+          (let
+              ((ip (find-or-make-lattice-description-for-ref-category c))
+               (supers (indiv-all-supers new-dli)))
+            (add-downlink ip new-dli)
+            (setf (gethash ip supers) t)
+            (maphash #'(lambda (k h) (setf (gethash k supers) t)) (indiv-all-supers ip))))
+            
         (setf (indiv-restrictions new-dli) (list base))
 	(set-dli base new-dli))))
-
-
 
 (defparameter *sub-vv* (find-or-make-dlvv-from-var-val :subc nil))
 (defparameter *super-vv* (find-or-make-dlvv-from-var-val :superc nil))
@@ -171,6 +176,7 @@
 
 (defun add-uplink (dli up)
   (push up (gethash *super-vv* (indiv-uplinks dli)))
+  (setf (gethash up (indiv-all-supers dli)) t)
   (push dli (gethash *super-vv* (indiv-downlinks up))))
                  
 (defun find-or-make-lattice-description-for-cat-list (cat-list)
@@ -248,37 +254,45 @@
                      (setq new-child (old-bind-variable var value new-child))
                      (setf (gethash dl-vv downlinks) new-child)
                      (setf (gethash dl-vv (indiv-uplinks new-child)) parent)
+                     (setf (gethash parent (indiv-all-supers new-child)) t)
                      (link-to-other-parents new-child parent dl-vv)
                      (link-to-existing-children new-child parent dl-vv)
                      (setf (indiv-restrictions new-child) (cons dl-vv parent-restrictions))
                      new-child))))
           (pushnew result (gethash var (indiv-all-subs lattice-cat-parent)))
+          (let
+              ((supers (indiv-all-supers result)))
+            (setf (gethash lattice-cat-parent supers) t)
+            (maphash #'(lambda (k h) (setf (gethash k supers) t)) (indiv-all-supers parent)))
           (values
            result
            (get-binding-of var result value))))))
 
 (defun as-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
   (cond
-    ((referential-category-p sub-dli)
-     (and (referential-category-p super-dli)
-	  (itypep sub-dli super-dli)))
-    ((itypep sub-dli (itype-of super-dli))
-     (loop for r in (and (individual-p super-dli)
-			 (indiv-restrictions super-dli))
-	as rval = (and (not (category-p r))(dlvv-value r))
-	always
-	  (or (null rval)
-	      (let* ((sub-r
-		      (find-if #'(lambda (dlvv)
-				   (when
-				       (not (category-p dlvv))
-				     (eq (dlvv-variable dlvv) (dlvv-variable r))))
-			       (indiv-restrictions sub-dli)))
-		     (srval (and sub-r (dlvv-value sub-r))))
-		(if (or (category-p rval)(individual-p rval))
-		    (and (or (category-p srval)(individual-p srval))
-			 (as-specific? srval rval))
-		    (equal rval srval))))))))
+   ((referential-category-p sub-dli)
+    (and (referential-category-p super-dli)
+         (itypep sub-dli super-dli)))
+   ((gethash super-dli (indiv-all-supers sub-dli)) t)
+   ((itypep sub-dli (itype-of super-dli))
+    (when
+        (loop for r in (and (individual-p super-dli)
+                            (indiv-restrictions super-dli))
+          as rval = (and (not (category-p r))(dlvv-value r))
+          always
+          (or (null rval)
+              (let* ((sub-r
+                      (find-if #'(lambda (dlvv)
+                                   (when
+                                       (not (category-p dlvv))
+                                     (eq (dlvv-variable dlvv) (dlvv-variable r))))
+                               (indiv-restrictions sub-dli)))
+                     (srval (and sub-r (dlvv-value sub-r))))
+                (if (or (category-p rval)(individual-p rval))
+                    (and (or (category-p srval)(individual-p srval))
+                         (as-specific? srval rval))
+                    (equal rval srval)))))
+      (setf (gethash super-dli (indiv-all-supers sub-dli)) t)))))
 ;; was -- incorrectly -- (subsetp  (indiv-restrictions super-dli) (indiv-restrictions sub-dli)))
 
 (defun find-var-from-var/name (var/name category)
