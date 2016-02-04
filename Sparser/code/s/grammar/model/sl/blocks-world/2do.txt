@@ -1,0 +1,29 @@
+;; 2/2/16
+;; grammar/core/sl/blocks-world/2do.txt
+
+* Generation per se
+
+Write the lexicalized phrase and attachment for "let's"
+
+Adapt the contraction code to handle "let us" => "let's"
+
+All utterances need to be wrapped in a discourse unit (strictly
+speaking, they need to be embedded in a slot with the label
+sentence) so that the capitalization and final punctuation
+is handled. The method discourse-unit was a start at this, but
+it (or its equivalent) is not part of the sexp-reader setup yet.
+
+Finish the ply-structured discourse history
+
+
+* NLG within TRIPS
+
+Can we yet capture Mumble output stream or words and direct it to the
+correct place?
+
+
+* Needed for the incremental parser
+
+mumble::setup-verb-from-rdata ignore the parameters, and the call to
+in in apply-mumble-rdata doesn't appreciate there will be multiple
+parameter-variable pairs
