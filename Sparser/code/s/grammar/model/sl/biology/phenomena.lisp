@@ -949,30 +949,25 @@ One or both of the while type alleles have been replaced
 with something else
 |#
 
-(define-category knockout-pattern
-  :specializes bio-quality
+(define-category knockout-pattern :specializes bio-quality
   :mixins (has-name)
-  :index (:permanent :key name)
-;; What grammar? -- do the identity by hand rather
-;; than in realization here. 
-)
+  :binds ((gene-or-protein (:or gene protein)))
+  :realization
+  (:m gene-or-protein
+      :for gene-or-protein))
 
-;; N.b. "knockout" etc. are defined in verbs. That's part of
-;; the reason it's called 'knockout-pattern' here
+(define-category -/- :specializes  knockout-pattern
+  :realization
+  (:noun "-/-"))
 
-(defun define-knockout (plus-minus-string)
-  (let* ((word (define-polyword-any-words plus-minus-string))
-         (i (find-or-make-individual 'knockout-pattern
-              :name plus-minus-string))
-         (rule (define-cfr category::knockout-pattern
-                           `(,word)
-                 :form category::adjective ;; "Gab -/- mice"
-                 :referent i)))
-    (add-rule-to-individual rule i)
-    i))
+(define-category +/- :specializes  knockout-pattern
+  :realization
+  (:noun "+/-"))
+(define-category -/+ :specializes  knockout-pattern
+  :realization
+  (:noun "-/+"))
+(define-category +/+ :specializes  knockout-pattern
+  :realization
+  (:noun "+/+"))
 
-(define-knockout "-/-")
-(define-knockout "+/-")
-(define-knockout "-/+")
-(define-knockout "+/+")
 
