@@ -131,6 +131,36 @@
 (defparameter *use-trie-multiply* nil)
 (defparameter *use-semantic-rules* nil)
 
+;; This is part of an experiment to see which semantic rules, other than
+;;  etf rules for NPs and non-etf semantic rules are actually needed in biology,
+;;  given the subcat-frame mechanism
+;; When this parameter is set, the only semantic rules actually applied are those for
+;; NPs, and special purpose rules
+(defparameter *no-etf-rules* nil)
+;; when *no-etf-rules* is set, *semantic-rules-used* collects the actual set of
+;; semantic rules used in processing the snapshot corpora
+(defparameter *semantic-rules-used* nil)
+;; The total set of such rules is:
+#|
+#<PSR45391  modal ->  modal then> 
+#<PSR45413  protein ->  protein point-mutation> 
+#<PSR949  comma-number ->  COMMA number> 
+#<PSR45411  residue-on-protein ->  protein residue-on-protein> 
+#<PSR658  be ->  be not> 
+#<PSR1088  measurement ->  number unit-of-measure> 
+#<PSR1123  comma-year ->  COMMA year> 
+#<PSR45407  residue-on-protein ->  amino-acid number> 
+#<PSR1153  amount-of-time ->  number time-unit> 
+#<PSR942  percent ->  number PERCENT-SIGN> 
+#<PSR44964  article-figure ->  article-figure two-part-label> 
+#<PSR45409  residue-on-protein ->  residue-on-protein number> 
+#<PSR624  do ->  do not> 
+#<PSR44965  article-figure ->  article-figure number> 
+#<PSR952  ordinal ->  "the" ordinal> 
+#<PSR666  there-exists ->  syntactic-there be> 
+|#
+
+
 (defun multiply-edges (left-edge right-edge &optional chunk)
   ;; Called from the check routines, e.g. check-one-one
   ;; Looks for any possibility of composition for these edges first,
@@ -160,16 +190,26 @@
            (right-category-ids (category-ids/leftward right-edge))
            (rule (multiply-categories left-category-ids 
                                       right-category-ids
-                                      left-edge right-edge)))
+                                      left-edge right-edge
+				      chunk)))
       
       ;; Look at possible sourcs of rules from what is likely to be
       ;; the most precise (certainly in terms of referents) to the
       ;; most general. As soon as one of these sources returns
       ;; a valid rule we stop looking at other sourcs.
+      (when (and rule
+		 (or
+		  (and *no-etf-rules*
+		   (cfr-schema rule)
+		   (not (member (schr-lhs (cfr-schema rule)) '(np))))
+		  (eq :syntactic-form (cfr-category rule))))
+	(setq rule nil))
       
       (if rule ;; from the let statement, multiply-categories
           (then
             (tr :found-semantic-rule rule)
+	    (when *no-etf-rules*
+	      (pushnew rule *semantic-rules-used*))
             (if (valid-rule? rule left-edge right-edge chunk)
                 (then 
                   (tr :rule-is-valid))
@@ -223,7 +263,7 @@
               (else
                 (tr :no-syntactic-rule)))))
       
-      ;;This code is to test if the new trie-multiply produces identical results to multipl-edges
+      ;;This code is to test if the new trie-multiply produces identical results to multiply-edges
       #+ignore
       (let ((trie-rule (trie-multiply-edges left-edge right-edge chunk)))
         (declare (special trie-rule))
@@ -445,8 +485,10 @@
 ;; the most semantic case for cfr and csr rules -- do the labels
 ;; in the category field of the edges combine.
 ;;
+
+;; Remove the form rule operations here -- make this a pure semantic rule play
 (defun multiply-categories (left-category-ids right-category-ids
-			    left-edge right-edge)
+			    left-edge right-edge &optional chunk)
   (tr :muliply-categories)
   ;; "[Multiply threading] Called muliply-categories"
   (if (and left-category-ids right-category-ids)
@@ -461,6 +503,7 @@
             ;; "[Multiply]    both edges have category combinations"
 	    (let ((rule (multiply-ids left-label-id
 				      right-label-id)))
+	     
 	      (if rule
 		(then
                  (tr :multiply-succeeded rule left-edge right-edge)
@@ -469,9 +512,12 @@
 		(else
                  (tr :multiply-failed left-edge right-edge)
                  ;; "   which do not combine"
-                 (mult/ids-on-form-label left-edge right-edge)))))
+                 ;;(mult/ids-on-form-label left-edge right-edge)
+		 nil
+		 ))))
 	  (else 
-	    (mult/ids-on-form-label left-edge right-edge)))))
+	    ;;(mult/ids-on-form-label left-edge right-edge)
+	    nil))))
     (else
       (tr :only-L/R-has-category-ids left-category-ids right-category-ids)
       nil)))
