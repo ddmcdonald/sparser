@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index instances"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  2.0 September 2013
+;;;  version:  February 2016
 
 ;; initiated 8/9/94 v2.3 from pieces of other files. Tweeking ...8/19
 ;; (4/20/95) added subr and predicate for permanent objects.
@@ -16,7 +16,8 @@
 ;;     (6/3/13) Added more documentation. Moved permanence of categories
 ;;      code to resouces1.lisp, and improved the in-line documentation.
 ;;     (9/9/13) Put a block into index/individual/key/hash to postpone dealing
-;;      with same first-name, different later part names. 
+;;      with same first-name, different later part names. 2/3/16 Shifted to
+;;     an equal hash table 
 
 (in-package :sparser)
 
@@ -87,7 +88,7 @@
          (let ((var (find-variable-in-category/named
                      (cadr (member :key index-field)) category)))
            (setf (cat-instances category)
-                 (make-hash-table :test #'eql))
+                 (make-hash-table :test #'equal))
            (values `(find/individual/key/hash ,var)
                    `(index/individual/key/hash ,var)
                    `(delete/individual/key/hash ,var))))
@@ -137,7 +138,7 @@
   (let* ((table (cat-instances category)))
     (unless table
       (setq table
-            (setf (cat-instances category) (make-hash-table :test #'eql))))
+            (setf (cat-instances category) (make-hash-table :test #'equal))))
     (unless (hash-table-p table)
       (error "Initialization bug: instances field of ~A~
             ~%is not a hash table" category))
