@@ -71,6 +71,17 @@
   :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7")
   :synonyms ("mitogen activated protein kinase" "MAP kinase kinase")
   )
+
+
+(def-family "PI3-kinase"
+            :members ("PI3K")
+  :synonyms ("phosphatidylinositol-4,5-bisphosphate 3-kinase"
+             "phosphatidylinositide 3-kinase"
+             "phosphatidylinositol-3-kinase"
+             "PI 3-kinase"
+             "PI(3)K"
+             "PI-3K"))
+
 (def-family  "cyclooxygenase" :members ("PGH2_HUMAN"))
 
 
