@@ -116,6 +116,10 @@
   :form np
   :referent (:daughter right-edge))
 
+(def-form-rule (the common-noun/plural)
+  :form np
+  :referent (:daughter right-edge))
+
 (def-form-rule (the np-head)
   :form np
   :referent (:daughter right-edge))
