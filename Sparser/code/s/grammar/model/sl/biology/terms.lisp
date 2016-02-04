@@ -53,6 +53,7 @@
 (noun "positioning" :super bio-method)
 (noun "thresholding" :super bio-method)
 (noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
+(noun "dextran" :super polysaccharide)
 
 
 

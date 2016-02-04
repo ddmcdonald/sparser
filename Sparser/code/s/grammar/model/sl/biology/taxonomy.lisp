@@ -563,6 +563,10 @@
   :lemma (:common-noun "phospholipid")
   :realization (:common-noun name))
 
+(define-category polysaccharide :specializes molecule
+  :realization 
+  (:noun "polysaccharide"))
+
 ;; 'small molecule' should be done with a def-subtype
 ;;/// Start with define-sybtype-derived-category
 (define-category small-molecule-reference :specializes reference-item
