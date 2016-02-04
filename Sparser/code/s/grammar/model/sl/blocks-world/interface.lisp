@@ -89,6 +89,12 @@ d. An operator like 'build' can take any number of
 (defparameter utt-3a '(acknowledge)) ;; "ok"
 (defparameter utt-3b '(good-job)) ;; as it spoken to a dog or child
 
+(defun utt3c-preparation ()
+  "Run this to create the context assumed by utterance 3"
+  (set-the-focus *the-two-blocks-he-put-down*))
+(defparameter utt-3c `(propose-goal
+                       (push-together :o (collection ,*b1* ,*b2*))))
+
 ;;;----------
 ;;; The code
 ;;;----------
@@ -241,10 +247,33 @@ interface/derivations/discourse-reference.lisp
 
 (defun plan-reference-to-composite (sexp)
   (let ((operator (car sexp)))
-    (assert (member operator '(location)))
+    (assert (member operator '(location collection)))
     (ecase operator
       (location
-       (plan-reference-to-prepositional-location sexp)))))
+       (plan-reference-to-prepositional-location sexp))
+      (collection ;; (collection ,*b1* ,*b2*)
+       (create-collection-and-refer-to-it (cdr sexp))))))
+
+#| (set-the-focus *the-two-blocks-he-put-down*)
+   (setq sexp `(collection ,*b1* ,*b2*))
+   (setq items (cdr sexp))
+|#
+(defun create-collection-and-refer-to-it (items)
+  "The arguments are expected ot be Krisp individuals.
+  We find-or-make their collection and the made a
+  DTN. If the collection is in focus we pronominalize,
+  otherwise we enumberate them."
+  (let* ((collection (sp::find-or-make-individual 'sp::collection
+                                                  :items items))
+         (dtn (make-dtn :referent collection)))
+    (push-debug `(,collection ,items))
+    (cond
+     ((in-focus? collection)
+      (setf (resource dtn) (wrap-pronoun 'third-person-plural)))
+     ;; "the (two) blocks"
+     ;; enumeration -- e.g. for the drugs in BioC dialog
+     (t (error "No collection strategy applied")))
+    dtn))
 
 ;; (location on ,*the-table*)
 (defun plan-reference-to-prepositional-location (sexp)

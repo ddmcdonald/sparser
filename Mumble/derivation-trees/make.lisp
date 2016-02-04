@@ -27,6 +27,8 @@
 (defmethod get-lexicalized-phrase ((name symbol))
   (get-lexicalized-phrase (symbol-name name)))
 
+;; There methods with Sparser signatures are in
+;; Sparser/.../interface/mumble/interface.lisp
 
 (defgeneric record-lexicalized-phrase (word lp)
   (:documentation "When a lexicalized phrase is defined,
@@ -36,6 +38,8 @@
 (defmethod record-lexicalized-phrase ((word word) 
                                       (lp lexicalized-resource))
   (record-lexicalized-phrase (pname word) lp))
+
+
 
 (defmethod record-lexicalized-phrase ((pname string)
                                       (lp lexicalized-resource))
@@ -48,7 +52,7 @@
 
 (defun pvp (parameter-name value)
   (let ((parameter (parameter-named parameter-name)))
-    (make-instance 'paramter-value-pair
+    (make-instance 'parameter-value-pair
       :phrase-parameter parameter
       :value value)))
 
