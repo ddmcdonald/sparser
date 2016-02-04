@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "entities"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  January 2016
+;;;   version:  February 2016
 
 ;; Initiated 12/3/15.
 
@@ -14,3 +14,11 @@
 
 (stipulate-to-be-unique *the-table*)
 
+(defvar *b1* (sp::define-individual 'sp::block :name "B1"))
+(defvar *b2* (sp::define-individual 'sp::block :name "B2"))
+
+(defvar *the-two-blocks-he-put-down*
+  (sp::define-individual 'sp::collection
+    :items (list *b1* *b2*)
+    :type (sp::category-named 'sp::collection)
+    :number 2))
