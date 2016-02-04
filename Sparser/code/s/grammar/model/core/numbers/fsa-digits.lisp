@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2003,2011-2016 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  6.10 December 2015
+;;;  Version:  February 2016
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -51,6 +51,7 @@
 ;;  Initial work to produce a lattice of descriptions
 ;;  The places where this call is put were determined by the methods where
 ;;    (complete edge) was also called
+;; 2/3/16 Working on edges-cases in hyphen handline. 
 
 (in-package :sparser)
 
@@ -145,6 +146,7 @@ the fsa would be identified at the word level rather than the category level.
 
 (defun digit-FSA (treetop  ;; the digit-seq. word that triggered the fsas
                   starting-position)  ;; the position just before it
+  (declare (special *interpretation-of-digit-sequence*))
   ;; initialization of flags
   (setq *period-within-digit-sequence* nil
         *pending-final-hyphen* nil
@@ -204,6 +206,7 @@ the fsa would be identified at the word level rather than the category level.
   ;;   If we see either any of the characters that extend digit sequences
   ;; then we continue, otherwise we declare the digit-sequence finished
   ;; and return.
+  (declare (special *interpretation-of-digit-sequence*))
   (when (null last-treetop)
     (break "what are you doing passing expect-digit-delimiter-as-next-~
             treetop NIL as the last-treetop"))
@@ -593,6 +596,7 @@ unknown---in any event, we're taking the first edge that is installed.
 (defun continue-digit-sequence-after-hyphen (index-of-cell-to-fill
                                              array
                                              position-before-hyphen)
+  (declare (special *interpretation-of-digit-sequence*))
 
   (let* ((next-position (chart-position-after position-before-hyphen))
          (status (pos-assessed? next-position)))
