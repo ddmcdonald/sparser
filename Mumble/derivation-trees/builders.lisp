@@ -82,6 +82,17 @@
     lp))
 
 
+(defun wrap-pronoun (pronoun-symbol)
+  "Returns a lexicalized phrase expected to be used as a resource
+  to a DTN that something else builds (which is where the referent
+  is recorded). So this is really just a convenience function."
+  (let ((phrase (phrase-named 'pronominal-np))
+        (pronoun (mumble-value pronoun-symbol 'pronoun)))
+    (make-instance 'saturated-lexicalized-phrase
+      :phrase phrase
+      :bound (list (pvp 'p pronoun)))))
+
+
 (defgeneric predicate (word)
   (:documentation "This is a term with adverbial force
    that will be incorporated into a phrase as an argument
@@ -159,7 +170,8 @@
 (defmethod transitive-with-bound-prep ((verb-pname string)
                                        (prep-pname string))
   (let ((verb (word-for-string verb-pname 'verb))
-        (prep (word-for-string prep-pname 'preposition)))
+        (prep (word-for-string prep-pname 'preposition))
+        (term (compound-word-for-indexing verb-pname prep-pname)))
     ;; Since we are stipulating the phrase in this method
     ;; we can just know what the open parameters are.
     (let ((lp (make-instance 'partially-saturated-lexicalized-phrase
@@ -172,7 +184,7 @@
                                :value prep))
                 :free (list (parameter-named 's)
                             (parameter-named 'o)))))
-      ;;//// how to index this?  Sort of has muliple heads
+      (record-lexicalized-phrase term lp)
       lp)))
 
 
@@ -260,18 +272,30 @@ a message to be expressed. See discussion in make.lisp |#
   (declare (ignore parameter-name variable))
   ;; Need to design the data structure that manages these
   ;; recording the semantic constraint (variable) on
-
   (let ((m-word (find-word pname))
         (m-phrase-name (mumble-symbol phrase-name)))
     (unless m-word
       (error "The Mumble word for ~s isn't defined yet" pname))
     (unless (phrase-named m-phrase-name)
       (error "There is no phrase named ~a. Wrong spelling?" phrase-name))
-
     ;; Works for side-effects. We presumably need to do more 
     ;; indexing to set this up to drive predictive parsing
     (verb m-word m-phrase-name)))
 
+(defun apply-function-data (category function-and-args)
+  "Called from one of the cases in sparser::apply-mumble-rdata
+  just as sugar for a call to a resource-defining Mumble
+  function. Any special handling of the arguments has to be
+  done on the caller side. Designed for the case of just string
+  arguments. Indexes the resource to the category."
+  (let* ((sparser-name (car function-and-args))
+         (fn-name (mumble-symbol sparser-name)))
+    (unless (fboundp fn-name)
+      (error "There is no resource-defining function named ~a"
+             fn-name))
+    (let ((lp (apply fn-name (cdr function-and-args))))
+      (record-lexicalized-phrase category lp)
+      (values lp category))))
 
 
 ;;;---------------------------

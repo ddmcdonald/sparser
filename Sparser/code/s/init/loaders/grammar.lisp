@@ -267,9 +267,7 @@ omitted and then run (perhaps) after the image has been launched."
 
   (when (find-package :mumble)
     (gate-grammar *tree-families*
-       (gload "tree-families;correspondences"))
-    (gate-grammar *tree-families* *reversable*
-       (gload "mumble-interface;loader")))
+       (gload "tree-families;correspondences")))
 
   (gate-grammar *proper-names*
     (gload "names;loader 2"))

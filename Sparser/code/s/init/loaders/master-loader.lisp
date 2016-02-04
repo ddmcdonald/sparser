@@ -283,6 +283,10 @@
 (unless *nothing-Mac-specific*
   (lload "menus;loader"))
 
+(when (find-package :mumble)
+  (gate-grammar *tree-families* *reversable*
+     (gload "mumble-interface;loader")))
+
 (when *external-interface-files*
   (load *external-interface-files*))
 

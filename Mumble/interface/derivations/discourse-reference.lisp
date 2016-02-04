@@ -117,6 +117,7 @@ speakers.
 
 (defmethod set-the-focus ((item t))
   ;;/// check that it's a reasable sort of object?
+  (assert item)
   (setq *item-in-focus* item))
 
 (defun in-focus? (obj)
