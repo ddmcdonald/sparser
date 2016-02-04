@@ -38,6 +38,7 @@
   ;;  1) If binds=nil, then the keys are categories, and the values are dli's for the pairwise joins
   ;;  2) if binds is not null, then the keys are vv items, and the values are the dli for the one less binding
   (all-subs (make-hash-table))
+  (all-supers (make-hash-table))
   restrictions ;; the set of all modifiers as dl-vv pairs, 
             ;; that define this dli -- starts with the
             ;; the referential category or conjunctive set of categories that defines a join
