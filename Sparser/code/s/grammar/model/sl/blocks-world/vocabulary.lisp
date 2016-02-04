@@ -46,6 +46,7 @@
   :specializes process
   ;; we're going through the steps of constucting the
   ;; staircase. With "lets'" we haven't even started
+  :mixins (with-an-agent)
   :binds ((artifact artifact)) ;; what they build
   :realization
     ((:main-verb ("build" :past-tense "built"))
@@ -55,11 +56,22 @@
                 (vp . :self)
                 (adjunct . physical)
                 (slot . artifact)))))
+;  The method for record-lexicalized-phrase that takes
+;  a category is in Sparser/.../interface/mumble/interface.lisp
+;  and for some reason it's not defined when this executes.
+;;/// derive by specialization from push
+(define-category push-together
+  :mixins (with-an-agent)
+  :binds ((items collection))
+  :realization
+    ((:main-verb "push")
+     (:mumble (transitive-with-final-adverbial "push" "together"))))
 
 
 ;; 1.2 "Put a block on the table"
 (define-category put-something-somewhere
   :specializes process
+  :mixins (with-an-agent) ;; adds 'agent' variable
   :binds ((theme physical)
           (location location)) ;; mixin has-location
   :realization

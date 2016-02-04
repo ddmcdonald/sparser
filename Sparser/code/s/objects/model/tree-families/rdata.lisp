@@ -562,12 +562,22 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
   (push-debug `(,category ,rdata))
   ;; (setq category (car *) rdata (cadr *))
   ;; e.g. (:mumble ("build" svo :v artifact))
-  (let* ((mumble-spec (cadr (assq :mumble rdata)))
-         (pname (first mumble-spec))
-         (phrase-name (second mumble-spec))
-         ;; In the general case these are one or more pairs
-         (parameter-name (third mumble-spec))
-         (var-name (fourth mumble-spec))
+  (let ((mumble-spec (cadr (assq :mumble rdata))))
+    (etypecase (first mumble-spec)
+     (string
+      (apply-mumble-phrase-data 
+       category (first mumble-spec) (second mumble-spec) (cddr mumble-spec)))
+     (symbol
+      (apply-mumble-function-data category mumble-spec)))))
+
+(defun apply-mumble-function-data (category function-and-args)
+  (mumble::apply-function-data category function-and-args))
+
+(defun apply-mumble-phrase-data (category pname phrase-name p&v-pairs)
+  ;;/// dropping all the variable data on the floor on the
+  ;; other side, so just writing minimal call here
+  (let* ((parameter-name (car p&v-pairs))
+         (var-name (cadr p&v-pairs))
          (variable (find-variable-for-category var-name category)))
     (mumble::setup-verb-from-rdata
      pname phrase-name parameter-name variable)))
