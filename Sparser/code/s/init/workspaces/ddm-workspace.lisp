@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ddm-workspace"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  January 2016
+;;;  version:  February 2016
 
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
@@ -13,7 +13,11 @@
  (asdf:load-system :sparser/blocks-world)
  (asdf:load-system :sparser/c3)
 
+ decode-for-find-&-index  prepare-category-operations
+ find/individual/key/hash  apply-mumble-rdata
+
  define-cfr/resolved  define-determiner  define-wh-pronoun construct-cfr 
+
  setup-lexicalized-trees record-reference sexp-reader
  c3-location location car-manufacturer can-change-location
 
