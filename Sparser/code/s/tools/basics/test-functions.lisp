@@ -46,31 +46,31 @@
        (run-test i nil)))
   
 
-(defun test-overnight (&optional numbers)
+(defun test-overnight (&rest numbers)
   (declare (special *overnight-sentences*))
   (test-corpus *overnight-sentences* numbers))
 
-(defun test-jan (&optional numbers)
+(defun test-jan (&rest numbers)
   (declare (special *jan-dry-run*))
   (test-corpus  *jan-dry-run* numbers))
 
-(defun test-dry-run (&optional numbers)
+(defun test-dry-run (&rest numbers)
   (test-jan numbers))
 
-(defun test-dec (&optional numbers)
+(defun test-dec (&rest numbers)
   (declare (special *dec-tests*))
   (test-corpus   *dec-tests* numbers))
 
-(defun test-erk (&optional numbers)
+(defun test-erk (&rest numbers)
   (declare (special *erk-abstract*))
   (test-corpus *erk-abstract* numbers))
 
 
-(defun test-aspp2 (&optional numbers)
+(defun test-aspp2 (&rest numbers)
   (declare (special *aspp2-whole*))
   (test-corpus *aspp2-whole* numbers))
 
-(defun test-load-test (&optional numbers)
+(defun test-load-test (&rest numbers)
   (declare (special *load-test-sents*))
   (test-corpus *load-test-sents* numbers))
 
