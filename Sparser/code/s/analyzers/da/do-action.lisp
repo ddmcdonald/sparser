@@ -109,6 +109,7 @@
           (push-debug `(,result))
           (cond
            ((null result)
+            #+ignore
             (format t "Application of DA function did not return ~
                   an edge. We got a NIL instead~&"))
            (t

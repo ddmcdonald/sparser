@@ -319,6 +319,7 @@
                 (cfr-referent uc-rule)
                 (cfr-schema uc-rule))))
         (unless (equal (string-upcase words-string) words-string)
+          #+ignore
           (format t "~%-------Defining no-space-segment ~s as equivalent ~
                      to ~s~%" words-string uc-word))
         (values (cfr-category uc-rule)
