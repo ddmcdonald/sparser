@@ -102,14 +102,14 @@ d. An operator like 'build' can take any number of
 
 (defun sexp-reader (sexp)
   "sexp in, dtn out"
-  (let* ((speech-act (car sexp))
+  (let* ((speech-act (mumble-symbol (car sexp)))
          (*speech-act* speech-act))
     (declare (special *speech-act*))
     (if (standalone-speech-act speech-act)
       (do-standalone-speech-act speech-act)
       (let ( elaborations core )
         (loop for item in (cdr sexp)
-          when (symbolp item) do (push item elaborations)
+          when (symbolp item) do (push (mumble-symbol item) elaborations)
           when (consp item) do (setq core item))
         (let ((dtn (interpret-sexp-core core)))
           ;; Does the speech act dictate the large-scale form
