@@ -2010,6 +2010,14 @@
    :etf (svo-passive)
    :with agent))    ;; by <entity>
 
+(define-category subject :specializes bio-method
+      :binds ((treatment biological))
+      :realization
+      (:verb "subject"
+             :etf (svo-passive)
+             :adj "subject"
+             :to treatment))
+
 (define-category succeed :specializes bio-relation
   :realization
   (:verb "succeed" :noun "success"
