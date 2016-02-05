@@ -102,6 +102,7 @@ d. An operator like 'build' can take any number of
 
 (defun sexp-reader (sexp)
   "sexp in, dtn out"
+  (setq sexp (launder-sexp-symbols-package sexp (find-package :mumble)))
   (let* ((speech-act (mumble-symbol (car sexp)))
          (*speech-act* speech-act))
     (declare (special *speech-act*))
