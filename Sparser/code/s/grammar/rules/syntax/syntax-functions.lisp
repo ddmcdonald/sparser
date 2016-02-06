@@ -168,24 +168,25 @@
     (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
+
   (cond
-   ((call-compose qualifier head));; This case is to benefit marker-categories
-   ((category-p head)
-    (setq head (individual-for-ref head))
-    (or (call-compose qualifier head)
-        (interpret-premod-to-np qualifier head)
-        (else
-          (when (itypep head 'endurant)
-            (setq  head (bind-dli-variable 'modifier qualifier head)))
-          head)))
-   ((interpret-premod-to-np qualifier head))
-   (t ;; Dec#2 has "low nM" which requires coercing 'low'
-    ;; into a number. Right now just falls through
-    (setq head (individual-for-ref head))
-    ;; (when (itypep head 'endurant)
-      (setq  head (bind-dli-variable 'modifier qualifier head)) 
-      ;;)
-    head)))
+    ((call-compose qualifier head)) ;; This case is to benefit marker-categories
+    ((category-p head)
+     (setq head (individual-for-ref head))
+     (or (call-compose qualifier head)
+	 (interpret-premod-to-np qualifier head)
+	 (when ;; (when (itypep head 'endurant)
+	     (find-variable-from-individual 'modifier head)
+	   (setq  head (bind-dli-variable 'modifier qualifier head))))
+     head)
+    ((interpret-premod-to-np qualifier head))
+    (t ;; Dec#2 has "low nM" which requires coercing 'low'
+     ;; into a number. Right now just falls through
+     (setq head (individual-for-ref head))
+     (when ;; (when (itypep head 'endurant)
+	 (find-variable-from-individual 'modifier head)
+       (setq  head (bind-dli-variable 'modifier qualifier head)))
+     head)))
 
 (defun quantifier-noun-compound (quantifier head)
   ;; Not all quantifiers are equivalent. We want to idenify
@@ -203,6 +204,8 @@
    ((itypep quantifier 'no) ;; special handling for negation
     (setq  head (bind-dli-variable 'negation quantifier head)))
    ((itypep head 'endurant)
+    (setq  head (bind-dli-variable 'quantifier quantifier head)))
+   ((itypep head 'perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
     (setq  head (bind-dli-variable 'quantifier quantifier head))))
   
   head)
@@ -1238,7 +1241,7 @@ to enhance p53 mediated apoptosis [2].") |#
    `((prep ,prep) (pobj ,pobj))))
 
 (defun make-subordinate-clause (conj clause)
-  (make-non-dli-individual
+  (make-simple-individual ;;make-non-dli-individual
    category::subordinate-clause
    `((conj ,conj) (comp ,clause))))
 
