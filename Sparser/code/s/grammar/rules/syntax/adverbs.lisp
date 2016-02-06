@@ -54,10 +54,12 @@
  (t
   (defmethod modified ((adv t) (head t))
     (let ((real-adv adv)
-          (real-head head))
+          (real-head
+	   (if (individual-p head)
+	       head
+	       (individual-for-ref head))))
       (tr :modified_modifier+t)
-      (when (individual-p head)
-        (setq real-head (individual-for-ref real-head))
-        (setq real-head (bind-dli-variable 'modifier real-adv real-head)))
+      (setq real-head (individual-for-ref real-head))
+      (setq real-head (bind-dli-variable 'modifier real-adv real-head))
       real-head))))
 
