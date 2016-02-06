@@ -65,24 +65,35 @@ several simple transformations on such namestrings are performed:
    should thus be all lowercase."
   (etypecase pathspec
     (pathname pathspec)
-    (string (handler-case (logical-pathname pathspec)
-              (type-error ()
-                (logical-pathname
-                 (format nil "sparser:~(~a~)"
-                         (remove-if-not #'logical-pathname-char-p
-                                        (substitute #\- #\Space pathspec)))))))))
+    (string 
+     ;; allegro thinks "init;" can be interpreted by fn logical-pathname - 
+     (flet ((lname (pathspec)
+              (format nil "sparser:~(~a~)"
+                          (remove-if-not #'logical-pathname-char-p
+                                         (substitute #\- #\Space pathspec)))))
+     #+allegro
+         (if (string-equal "sparser:" (subseq pathspec (position #\: pathspec)))
+             (logical-pathname pathspec)
+           (logical-pathname (lname pathspec)))
+     #-allegro
+         (handler-case (logical-pathname pathspec)
+           (type-error ()
+             (logical-pathname (lname pathspec))
+             ))))))
+
+
+(defun logical-filenames (pathspec &aux
+                             (pathspec (sparser-logical-pathname pathspec)))
+  (if (directory-p pathspec)
+      (**/* pathspec)
+    pathspec))
 
 (defun def-logical-pathname (logical referent)
   "Define a translation for a set of Sparser logical pathnames.
 Directories are interpreted as naming all files beneath them."
-  (flet ((logical-filenames (pathspec &aux
-                             (pathspec (sparser-logical-pathname pathspec)))
-           (if (directory-p pathspec)
-             (**/* pathspec)
-             pathspec)))
     (pushnew (list (logical-filenames logical) (logical-filenames referent))
              (logical-pathname-translations "sparser")
-             :test #'equal)))
+             :test #'equal))
 
 (defun expand-logical-pathname (namestring)
   "Translate a Sparser logical pathname."

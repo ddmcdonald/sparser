@@ -654,7 +654,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 (setf (elt *character-dispatch-array* 177) ;; #\Plus-Minus_Sign
       `(:punctuation
-        . ,(punctuation-named #\±))) ;;////////////////////////////////////////
+        . ,(punctuation-named (code-char 177)))) ;;//////////////////////////////////////// #\±
 
 ;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 178) ;; superscript two or 'squared' - just use #\2
@@ -932,7 +932,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
     (8243 (:punctuation . ,(punctuation-named (code-char 8243)))) ;;"″", (code = 8243)
     (8260 (:punctuation . ,(punctuation-named (code-char 8260)))) ;; "⁄" #\U+2044
-
+    #-allegro
     (8446 ;;"ℒ", (code = 8446)
      (:punctuation . ,(punctuation-named (code-char 8446))))
     (8451 (:punctuation . ,(punctuation-named (code-char 8451)))) ;;"℃", (code = 8451)

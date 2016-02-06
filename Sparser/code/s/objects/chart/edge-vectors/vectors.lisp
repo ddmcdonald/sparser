@@ -120,7 +120,8 @@
              ~%for ~A, the top edge is ~A~
              ~%and the edge to be deleted is ~A"
              ev (aref array (1- count)) edge))
-     edge )))
+     ) ;; added paren mhb 2/4/16
+     edge ))
 
 
 ;;;--------------------------------------
