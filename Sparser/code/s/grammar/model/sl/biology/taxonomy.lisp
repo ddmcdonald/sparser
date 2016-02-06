@@ -127,6 +127,7 @@
           (species species) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
+	  (modifier)
           ;;(variant variant)
           )
   :realization
@@ -270,7 +271,6 @@
   :mixins (has-UID has-name biological)
   :binds ((subject biological)
           (following)
-          (modifier)
           (by-means-of (:or bio-process mechanism bio-method))
           (using bio-entity)
           (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
