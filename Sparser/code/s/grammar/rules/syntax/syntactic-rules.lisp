@@ -309,6 +309,11 @@ similar to an oncogenic RasG12V mutation (9)."))
   :form adjective
   :referent (:method modified left-edge right-edge))
 
+(def-syntax-rule (adverb adjective)
+                 :head :right-edge
+  :form adjective
+  :referent (:method modified left-edge right-edge))
+
 
 
 
