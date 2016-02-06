@@ -376,7 +376,7 @@
   :action (:function create-event-np-relation  first third fourth first fourth))
 
 (defun make-event-relation (conj event sub-event)
-  (make-non-dli-individual
+  (make-simple-individual ;; make-non-dli-individual
    category::event-relation
    `((relation ,conj) (event ,event) (subordinated-event ,sub-event))))
 
