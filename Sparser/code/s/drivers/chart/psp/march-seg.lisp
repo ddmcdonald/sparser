@@ -43,7 +43,11 @@
   (cond
    ((and *big-mechanism-ngs*
          (member (chunk-forms *current-chunk*) '((VG) (ADJG)) :test #'equal))
-    (interp-big-mech-chunk *current-chunk* nil))
+    ;; no longer do VGs from left to right -- gets the wrong chunking
+    ;;  and doesn't distribute aspect, etc.
+    ;;  gets same results on compare-to-snapshots with this change 5 Feb 2016
+    ;;(interp-big-mech-chunk *current-chunk* nil)
+    (interp-big-mech-chunk *current-chunk* t))
    ((use-specialized-ng-parser?)
     (interp-big-mech-chunk *current-chunk* t))
    ((use-specialized-vg-parser?)
@@ -165,24 +169,24 @@
     
     (let ((non-syntactic-triples
            (loop for triple in triples
-             as rule = (car triple)
-             unless (syntactic-rule? rule)
-             collect triple)))
-      ;(break "non-syntactic-triples = ~a" non-syntactic-triples)
+	      as rule = (car triple)
+	      unless (syntactic-rule? rule)
+	      collect triple)))
+      ;;(break "non-syntactic-triples = ~a" non-syntactic-triples)
       (cond
-       (non-syntactic-triples
-        (let ((selected
-               (if (cdr non-syntactic-triples)
-                 (car (last non-syntactic-triples)) ;; rightmost
-                 (car non-syntactic-triples))))
-          (tr :selected-best-triple selected)
-          selected))
-       (t
-        ;; this default amounts to selecting the rightmost pair
-        ;; that has a rule
-        (let ((rightmost (car (last triples))))
-          (tr :selected-best-triple rightmost)
-          rightmost))))))
+	(non-syntactic-triples
+	 (let ((selected
+		(if (cdr non-syntactic-triples)
+		    (car (last non-syntactic-triples)) ;; rightmost
+		    (car non-syntactic-triples))))
+	   (tr :selected-best-triple selected)
+	   selected))
+	(t
+	 ;; this default amounts to selecting the rightmost pair
+	 ;; that has a rule
+	 (let ((rightmost (car (last triples))))
+	   (tr :selected-best-triple rightmost)
+	   rightmost))))))
 
 
 ;; VGs may want a different order of pairs than NGs
