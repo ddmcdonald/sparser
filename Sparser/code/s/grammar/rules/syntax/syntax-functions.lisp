@@ -172,13 +172,14 @@
   (cond
     ((call-compose qualifier head)) ;; This case is to benefit marker-categories
     ((category-p head)
-     (setq head (individual-for-ref head))
-     (or (call-compose qualifier head)
-	 (interpret-premod-to-np qualifier head)
-	 (when ;; (when (itypep head 'endurant)
-	     (find-variable-from-individual 'modifier head)
-	   (setq  head (bind-dli-variable 'modifier qualifier head))))
-     head)
+     (let ((ihead (individual-for-ref head)))
+       (setq head
+	     (or (call-compose qualifier ihead)
+		 (interpret-premod-to-np qualifier ihead)
+		 (when ;; (when (itypep head 'endurant)
+		     (find-variable-from-individual 'modifier ihead)
+		   (bind-dli-variable 'modifier qualifier ihead))))
+       (or head ihead)))
     ((interpret-premod-to-np qualifier head))
     (t ;; Dec#2 has "low nM" which requires coercing 'low'
      ;; into a number. Right now just falls through
