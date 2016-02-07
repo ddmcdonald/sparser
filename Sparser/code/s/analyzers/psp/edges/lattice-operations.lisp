@@ -319,17 +319,21 @@
 	       (setf (gethash var (indiv-all-subs lattice-cat-parent))
 		     (make-hash-table)))))
     (if (hash-table-p val-supers)
-	(maphash #'(lambda (k h)
-		     (when (interesting-super? k)
-		       (pushnew sub (gethash k subs))))
-		 val-supers)
+	(then
+	  (maphash #'(lambda (k h)
+		       (when (interesting-super? k)
+			 ;;(pushnew sub (gethash k subs)) record all instances so we can get the most recent
+			 (push sub (gethash k subs))))
+		   val-supers)
+	  (pushnew sub (gethash value subs)))
 	(pushnew sub (gethash val-supers subs)))))
 
 (defun interesting-super? (c)
-  (or
-   (not (category-p c))
-   (not (gethash (cat-name c)
-		 (non-phrasal-class-names))))) ;; need to define this
+  (let ((cc (car (gethash c *source-ht*))))
+    (or
+     (not (category-p cc))
+     (not (gethash (cat-name cc)
+		   (non-phrasal-class-names)))))) ;; need to define this
 
 (defun as-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
   (cond
@@ -458,9 +462,42 @@
   (remove-duplicates
    (loop for i in (all-phrasal-dlis) collect (dli-ref-cat i))))
 
+(defun potential-specializations (c)
+  (declare (special c))
+  (let* ((parent (dli-ref-cat c))
+	 last-mod super super-all-subs)
+    (declare (special parent last-mod super super-all-subs))
+    (cond
+      ((eq c parent) ;; in this case c is the dli entry for a referential category like "lysate"
+       (find-all-subs c))
+      ((individual-p c)
+       (maphash #'(lambda (dlvv sc)
+		    (setq last-mod dlvv)
+		    (setq super
+			  (if (eq :super (dlvv-variable dlvv))
+			      c
+			      sc)))
+		(indiv-uplinks c))
+       
+       (setq super-all-subs (gethash (dlvv-variable last-mod) (indiv-all-subs super)))
+       (when super-all-subs
+	 (gethash (dlvv-value last-mod) super-all-subs))))))
+
+(defun hal (ht) (hashtable-to-alist ht))
+       
+		     
+  
+  
+
 #|
 (length (setq missing (loop for ii in (hashtable-to-alist *surface-strings*) unless (get-dli (car ii)) collect ii)))
 (length (setq qq  (loop for i in missing unless (eq (cat-name (itype-of (car i))) 'prepositional-phrase) collect i)))
 
-(length (setq pcd (all-phrasal-dlis)))
+(length (setq apd (all-phrasal-dlis)))
+
+(potential-specializations (car apd))
+(length (setq aapd (loop for a in apd collect (list a (potential-specializations a)))))
+(length (setq napd (loop for a in aapd when (cdr (second a)) collect (list (car a) (length (second a))))))
+(length (setq napd (sort napd #'> :key #'second)))
+
 |#
