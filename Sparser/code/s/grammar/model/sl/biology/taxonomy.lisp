@@ -135,7 +135,7 @@
          :at cellular-location
          :at site
          :from cell-line
-         :from cell-type
+         :from cell-type         
          :in cell-line
          :in cell-type
          :in cellular-location
@@ -145,6 +145,10 @@
          :in organ
          :in preparation
          :in species
+         :m cellular-location
+         :m non-cellular-location
+         :m cell-type
+         :m cell-line
          :m site
          ;;:of variant
          :on cellular-location
