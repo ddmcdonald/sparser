@@ -98,6 +98,7 @@
 
 (defun place-referent-in-lattice (referent edge) ;; THIS IS NOW A NO-OP IN THE DESCRIPTION LATTICE CASE
   (declare (special referent edge))
+  ;; N.b. if anyone revives this. Appreciate that some referents are words
   #+ignore
   (if (and referent *description-lattice* (not (word-p referent)))
       (fom-lattice-description referent)
