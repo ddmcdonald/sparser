@@ -12,6 +12,9 @@ speaking, they need to be embedded in a slot with the label
 sentence) so that the capitalization and final punctuation
 is handled. The method discourse-unit was a start at this, but
 it (or its equivalent) is not part of the sexp-reader setup yet.
+It that machinery doesn't already do it, set *last-item-printed*
+to nil so that it doesn't gratuitously include an extra leading
+space.
 
 Finish the ply-structured discourse history
 
