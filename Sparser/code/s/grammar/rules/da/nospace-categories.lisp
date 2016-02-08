@@ -1,9 +1,9 @@
 ;;;-*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  July 2015
+;;;  Version:  February 2016
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
@@ -18,6 +18,8 @@
 ;;  treatment of it being approximate. 
 ;; 6/8/2015 patched David's hack for -WT
 ;; 7/28/15 Added package-number-plus-error
+;; 2/5/16 Rewrote reify-two-part-label to just use the words. Settles
+;;  hassled with unknown single letters.
 
 (in-package :sparser)
 
@@ -512,34 +514,27 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
           (part-two))
   :index (:sequential-keys part-one part-two))
 
-(defun reify-two-part-label (words edges start-pos end-pos)
-  ;; called from resolve-ns-pattern on (:single-digit :single-lower)
-  ;; and (:single-digit :single-cap) or the reverse.
-  (let* ((elements (loop for edge in edges
-                     when (edge-p edge) collect (edge-referent edge)
-                     when (word-p edge) collect edge))
-         (letter-word (second elements))) ;; still relevant??
-    (let* ((letter
-            (typecase letter-word
-              (individual letter-word)
-              (word (find-individual 'single-capitalized-letter 
-                                     :letter letter-word))
-              (otherwise
-               (push-debug `(,letter-word ,elements ,edges ,words))
-               (error "Unexpected type for letter in two-part label: ~
-                       ~a~%  ~a" (type-of letter-word) letter-word))))
-           (i (find-or-make-individual 'two-part-label
-                 :part-one (first elements)
-                 :part-two letter)))
-      (tr :making-two-part-label start-pos end-pos)
-      (let ((edge (make-ns-edge
-                   start-pos end-pos category::two-part-label
-                   :rule 'reify-two-part-label
-                   :form category::common-noun
-                   :referent i
-                   ;;:constituents edges
-                   )))
-        edge))))
+(defun reify-two-part-label (words edges start-pos end-pos which-is-first)
+  "Called from resolve-ns-pattern. Both words are one character long.
+   The digit may be first or it may be the letter. In the digit case
+   we use its individual in the object. Single lower-case letters don't
+   have categories, so we just use the word. In this case there won't
+   be an edge over the word."
+  (declare (ignore edges which-is-first))
+  ;; which-is-first is either :digit-first or :cap-first
+
+  (let ((i (find-or-make-individual 'two-part-label
+             :part-one (first words)
+             :part-two (second words))))
+    (tr :making-two-part-label start-pos end-pos)
+    (let ((edge (make-ns-edge
+                 start-pos end-pos category::two-part-label
+                 :rule 'reify-two-part-label
+                 :form category::common-noun
+                 :referent i
+                 ;;:constituents edges
+                 )))
+        edge)))
 
 
 
