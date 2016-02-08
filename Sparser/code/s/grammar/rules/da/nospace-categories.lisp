@@ -28,9 +28,10 @@
   "Localy bound to t when the context knows it's inappropriate")
 
 (defun ns-category-for-reifying (default-category)
+  (declare (special category::bio-entity))
   (if (and *big-mechanism*
            (null *inhibit-big-mech-interpretation*))
-    (bio-category-for-reifying)
+    category::bio-entity
     default-category))
 
 

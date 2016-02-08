@@ -304,16 +304,14 @@
   (let* ((words-string (actual-characters-of-word pos-before pos-after words))
          (obo (corresponding-obo words-string))
          (uc-word (resolve (string-upcase words-string))))
-    
-    ;; usually a polyword
-    ;; OBO check/handling matches what is done when it comes in as
-    ;; an unknown word via make-word/all-properties/or-primed
     (cond
-     (uc-word 
+     (uc-word
+      ;; If a full caps version of this character string is defined,
+      ;; then define this other case pattern of the string to mean 
+      ;; the same thing. 
       (let* ((uc-rule (car (rs-single-term-rewrites (rule-set-for uc-word))))
              (cfr 
-              (define-cfr/resolved 
-                  (cfr-category uc-rule)
+              (define-cfr/resolved (cfr-category uc-rule)
                   (list (resolve/make words-string))
                 (cfr-form uc-rule)
                 (cfr-referent uc-rule)
@@ -325,25 +323,37 @@
         (values (cfr-category uc-rule)
                 cfr
                 (cfr-referent uc-rule))))
-     (obo 
-      (assemble-category-rule-and-referent-for-an-obo obo (resolve/make words-string)))
-     ((resolve words-string)
-      (let* ((w (resolve words-string))
-	     (rule (car (rs-single-term-rewrites (rule-set-for w)))))
-	(cond
-	  (rule
-	   (format t "***reify-ns-name-as-bio-entity -- NOT redefining word ~s" w)
-	   (values
-	     (cfr-category rule)
-	     rule
-	     w))
-	  (t nil))))
-     (t ;; do cap's hack here too?
 
-      (let* ((i (reify-bio-entity words-string))
-             (cfr (retrieve-single-rule-from-individual i)))
-        (values (bio-category-for-reifying)
-                cfr
+     (obo
+      ;; OBO check/handling matches what is done when it comes in as
+      ;; an unknown word via make-word/all-properties/or-primed
+      (assemble-category-rule-and-referent-for-an-obo obo (resolve/make words-string)))
+
+     ((resolve words-string) ;; known (poly)word
+      ;; Did we define it as a bio-entity on a previous pass?
+      (let* ((w (resolve words-string))
+             (bio-entity (find-individual 'bio-entity :name w)))
+        (if bio-entity
+          (values category::bio-entity
+                  'reify-ns-name-as-bio-entity
+                  bio-entity)
+          (let ((rule (car (rs-single-term-rewrites (rule-set-for w)))))
+            (lsp-break "known word case: ~a, ~a" words-string rule)
+            (cond
+             (rule
+              ;; (format t "***reify-ns-name-as-bio-entity -- NOT redefining word ~s" w)
+              (values (cfr-category rule)
+                      rule
+                      w))
+             (t nil))))))
+
+     (t ;; by default make a bio-entity
+      ;; Open-code key part of handle-unknown-word-as-bio-entity,
+      ;; which does -not- reify this case in a rule.
+      (let* ((word (resolve/make words-string))
+             (i (find-or-make-individual 'bio-entity :name word)))     
+        (values category::bio-entity
+                'reify-ns-name-as-bio-entity
                 i))))))
 
 

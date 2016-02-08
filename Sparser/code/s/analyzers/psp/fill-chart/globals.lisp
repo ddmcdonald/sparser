@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "analyzers;psp:fill chart:"
-;;;  Version:  August 1994
+;;;  Version:  February 2016
 
-;; 8/30/94 added *first-token-index-still-in-chart*
+;; 8/30/94 added *first-token-index-still-in-chart*. Added
+;; *position-being-filled* 2/5/16
 
 (in-package :sparser)
 
@@ -68,4 +69,12 @@
    for-terminal*when the chart is being filled by a different process
    than the one that scans it.
    Continually increases with sucessive calls to Scan-terminal")
+
+(defvar *position-being-filled* nil
+  "Dynamically bound in add-terminal-to-chart to the chart position
+   object that is going to get the next terminal. Provides a way
+   of communicating the identity of this position down to any
+   pre-chart token or word handling routines. Motivated by the
+   problem of assigning a semantic interpretation to unknown
+   words.")
 

@@ -32,6 +32,95 @@
 ;;; Cases for what-to-do-with-unknown-words
 ;;;-----------------------------------------
 
+(defparameter *word-to-be-defined?* nil
+  "Provides a pointer for recording routines to notice")
+(defparameter *show-word-defs* nil
+  "Controls whether we announce when a word goes through make-word
+   routine. Only unknown words do that, so it can be a useful trace")
+
+(defun make-word/all-properties/or-primed (character-type 
+                                           &optional existing-word)
+  "Motivated by biomedical text. When dealing with unknown words,
+   morphologically-derived word are preferred over extraction from Comlex
+   because they don't have its predilection for POS ambiguity. However
+   some definition is much preferred to none. Also includes special
+   handling when we're in *big-mechanism*."
+  (declare (special *capitalization-of-current-token*
+                    *introduce-brackets-for-unknown-words-from-their-suffixes*))
+
+  (let* ((symbol (make-word-symbol))
+         (word (or existing-word
+                   ;; The caller is find-word, which needs to ensure
+                   ;; that when *edge-for-unknown-words* is up that
+                   ;; there is a category and edge for every word
+                   ;; however trivial it might be.
+                   (make-word :symbol symbol
+                              :pname (symbol-name symbol)))))
+
+    (setq *word-to-be-defined?* word)
+    (when *show-word-defs*
+      (format t "~&*** defining new word ~s~&" word))
+
+    (catalog/word word symbol)
+ 
+    (ecase character-type
+      (:number
+       (establish-properties-of-new-digit-sequence word))
+      (:alphabetical
+       (setf (word-capitalization word) *capitalization-of-current-token*)
+       (let ((morph-keyword (calculate-morphology-of-word/in-buffer))
+             (entry (gethash (symbol-name symbol) *primed-words*)))
+         (unless morph-keyword ;; n.b. returns a list of the affix and its POS
+           (setq morph-keyword (affix-checker (word-pname word))))
+         (setf (word-morphology word) morph-keyword)
+
+         (if *introduce-brackets-for-unknown-words-from-their-suffixes*
+           (cond
+            ((and *big-mechanism*
+                  (suitable-for-and-in-OBO word))
+             (setup-word-denoting-an-OBO word))
+            (morph-keyword
+             (assign-morph-brackets-to-unknown-word
+              word morph-keyword))
+            (entry
+             (unpack-primed-word word symbol entry))
+            (*big-mechanism*
+             (store-word-and-handle-it-later word))
+            (t
+             (setup-unknown-word-by-default word)))
+           (when entry
+             (unpack-primed-word word symbol entry))))))
+    word ))
+; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
+
+
+
+(defun look-for-primed-word-else-all-properties (character-type)
+  (declare (special *capitalization-of-current-token* *primed-words*))
+  (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
+         (word (make-word :symbol symbol
+                          :pname  (symbol-name symbol))))
+    (catalog/word word symbol)
+
+    (ecase character-type
+      (:number
+       (establish-properties-of-new-digit-sequence word))
+      (:alphabetical
+       (let ((entry (gethash (symbol-name symbol) *primed-words*)))
+         (when (and (null entry)
+                    (eq *capitalization-of-current-token*
+                        :initial-letter-capitalized))
+           ;; Sentence-inital capitalization check
+           (let ((cap (string-capitalize (symbol-name symbol))))
+             (setq entry (gethash cap *primed-words*))))
+           
+         (if entry
+           (unpack-primed-word word symbol entry)
+           (make-word/all-properties character-type)))))
+    word))
+;(what-to-do-with-unknown-words :check-for-primed)
+
+
 (defun make-word/all-properties (character-type)
   (declare (special *capitalization-of-current-token*
                     *introduce-brackets-for-unknown-words-from-their-suffixes*))
@@ -64,96 +153,7 @@
              (assign-morph-brackets-to-unknown-word
               word morph-keyword))))))
     word ))
-
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
-
-(defparameter *word-to-be-defined?* nil)
-(defparameter *show-word-defs* nil)
-(defun make-word/all-properties/or-primed (character-type 
-                                           &optional existing-word)
-  (declare (special *capitalization-of-current-token*
-                    *introduce-brackets-for-unknown-words-from-their-suffixes*))
-  ;; Motivated by biomedical text. When dealing with unknown words,
-  ;; morphologically-derived word are preferred to extraction from Comlex
-  ;; because they don't have its predilection for POS ambiguity. However
-  ;; some definition is much preferred to none. 
-
-  (let* ((symbol (make-word-symbol))
-         (word (or existing-word
-                   ;; The caller is find-word, which needs to ensure
-                  ;; that when *edge-for-unknown-words* is up that
-                  ;; there is a category and edge for every word
-                  ;; however trivial it might be.
-                   (make-word :symbol symbol
-                              :pname (symbol-name symbol)))))
-
-    (setq *word-to-be-defined?* word)
-
-    (catalog/word word symbol)
-    (when *show-word-defs*
-      (format t "~&*** defining new word ~s~&" word))
-
-
-    (ecase character-type
-      (:number (establish-properties-of-new-digit-sequence word))
-      (:alphabetical
-       (setf (word-capitalization word)
-             *capitalization-of-current-token*)
-       (let ((morph-keyword (calculate-morphology-of-word/in-buffer))
-             (entry (gethash (symbol-name symbol) *primed-words*)))
-         (unless morph-keyword ;; n.b. returns a list of the affix and its POS
-           (setq morph-keyword (affix-checker (word-pname word))))
-         (setf (word-morphology word) morph-keyword)
-         ;(lsp-break "unknown word: ~a" word)
-         ;(track-unknown-words-by-sentence word)
-         (if *introduce-brackets-for-unknown-words-from-their-suffixes*
-           (cond
-            ((and *big-mechanism*
-                  (suitable-for-and-in-OBO word))
-             (setup-word-denoting-an-OBO word))
-            (morph-keyword
-             (assign-morph-brackets-to-unknown-word
-              word morph-keyword))
-            (entry
-             (unpack-primed-word word symbol entry))
-            (*big-mechanism*
-             (setup-unknown-word-BigMech-default word))
-            (t
-             (setup-unknown-word-by-default word)))
-           (when entry
-             (unpack-primed-word word symbol entry))))))
-    word ))
-
-; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
-
-
-
-(defun look-for-primed-word-else-all-properties (character-type)
-  (declare (special *capitalization-of-current-token* *primed-words*))
-  (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
-         (word (make-word :symbol symbol
-                          :pname  (symbol-name symbol))))
-    (catalog/word word symbol)
-
-    (ecase character-type
-      (:number
-       (establish-properties-of-new-digit-sequence word))
-      (:alphabetical
-       (let ((entry (gethash (symbol-name symbol) *primed-words*)))
-         (when (and (null entry)
-                    (eq *capitalization-of-current-token*
-                        :initial-letter-capitalized))
-           ;; Sentence-inital capitalization check
-           (let ((cap (string-capitalize (symbol-name symbol))))
-             (setq entry (gethash cap *primed-words*))))
-           
-         (if entry
-             (unpack-primed-word word symbol entry)
-             (make-word/all-properties character-type)))))
-    word))
-
-;(what-to-do-with-unknown-words :check-for-primed)
-
 
 
 
@@ -173,7 +173,6 @@
              *capitalization-of-current-token*)))
 
     word ))
-
 ;(what-to-do-with-unknown-words :capitalization-&-digits)
 
 
@@ -187,7 +186,6 @@
 
     (catalog/word word symbol)
     word ))
-
 ;(what-to-do-with-unknown-words :make-word/no-properties)
 
 

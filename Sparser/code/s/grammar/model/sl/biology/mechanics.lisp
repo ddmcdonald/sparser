@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2016 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: November 2015
+;;; version: December 2016
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 ;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
@@ -16,6 +16,7 @@
 ;; 5/16/2015 attempt (not quite working) to define get-mitre-id which
 ;; tries to get the MITRE-LINK value for a protein (for example).
 ;; 11/12/15 Finished bio-entity => protein routine.
+;; 2/5/16 added handle-unknown-word-as-bio-entity
 
 
 (in-package :sparser)
@@ -75,7 +76,6 @@
     do (convert-bio-entity-to-protein edge)))
 
 
-
 (defun reify-p-protein-and-make-edge (words start-pos end-pos)
   ;; Called from resolve-ns-pattern on (:single-cap :digits).
   ;; Looks for a "p" and if it finds it makes a protein.
@@ -85,6 +85,64 @@
     ;; take template from reify-residue-and-make-edge
     (when *work-on-ns-patterns*
       (break "stub: possible p protein?"))))
+
+
+;;;--------------------------------------------
+;;; interpreting unknown words as bio-entities
+;;;--------------------------------------------
+
+#| Given how we used to handle unknown words, we would
+assume that they were bio-entities, since that would at least
+give us something we could refer to in rules particularly
+context sensitive ones. We also burned that into a rule
+so we'd have a remember these as a side-effect across
+sentences and documents. Now (2/5/16) we just lookup the 
+individual for the bio-entity since we may have encountered
+it before and then make the edge but don't record anything
+which means that when we encounter it again we'll repeat
+the process.
+|#
+(defun handle-unknown-word-as-bio-entity (pos-before)
+  "Called from deal-with-unhandled-unknown-words-at, which started
+   out in interpretation of unknown words. See note there."
+  (declare (special category::bio-entity))
+  (let ((word (pos-terminal pos-before))
+        (pos-after (chart-position-after pos-before)))
+    ;; record it in the list of *newly-found-unknown-words*
+    ;; if the *collect-new-words* flag is up.
+    (add-new-word-to-catalog word :BgMech-default)
+
+    (let* ((i (find-or-make-individual 'bio-entity :name word))
+           (edge (install-preterminal-edge 
+                   'handle-unknown-word-as-bio-entity ;; cfr argument
+                   word ;; word we're installing the preterminal over
+                   pos-before
+                   pos-after
+                   category::bio-entity ;; category of edge
+                   category::common-noun ;;/// form ???proper-noun??
+                   i ))) ;; referent
+      ;;/// trace
+      edge)))
+
+#|  This is what we used to do. Notice that it creates a rule
+(defun setup-unknown-word-BigMech-default (word)
+  ;; called from make-word/all-properties/or-primed when
+  ;; *big-mechanism* flag is up and OBO lookup, morphology,
+  ;; and Comlex have not applied.
+  (let* ((likely-protein? ;; true more often than not given hand inspection
+          (memq (word-capitalization word)
+                '(:initial-letter-capitalized 
+                  :all-caps
+                  :mixed-case)))
+         (kind ;;(if likely-protein? 'protein 'bio-entity)
+          ;; wildly overgenerates
+          'bio-entity))
+    (declare (ignore likely-protein?)) ;; needs refined check
+    (let ((i (def-bio/expr (word-pname word) ;; short
+                           kind
+               :takes-plurals nil)))
+      i)))  |#
+
 
 
 ;;;-------------------------------

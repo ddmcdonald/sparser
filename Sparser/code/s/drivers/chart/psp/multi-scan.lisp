@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2015
+;;;  version:  February 2016
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -16,7 +16,7 @@
 ;; 4/19/15 adapting pattern-sweep to the case where two edges from prior
 ;;  pass are over words that aren't separated by a space ("20%")
 ;; 4/28/15 Added scan-words-loop. 8/9/15 added assess-parenthesized-content
-;; and an acronym handler.
+;; and an acronym handler. 2/5/16 Put in a handler for known words.
 
 (in-package :sparser)
 
@@ -35,13 +35,13 @@
 ;; (setq *trace-scan-words-loop* t)
 
 (defun scan-words-loop (position-before word)
+  "Starting at the beginning of a sentence, add words into the
+   chart until a sentence-ending period is encountered.
+   It's a recursive loop. We get out of it when the period-hook
+   runs and throws to :end-of-sentence."
   ;; position-before - word - position-after
   ;; Called from scan-sentences-to-eof which is called from
   ;; initiate-successive-sweeps when it's reading a prepopulated document
-  "Starting at the beginning of a sentence, add words into the
-   chart until a sentence-ending period is encountered.
-   It's a recursive loop. We get out of it we the period-hook
-   runs and throws to :end-of-sentence."
   (simple-eos-check position-before word)  
   (let ((position-after (chart-position-after position-before)))
     (unless (includes-state position-after :scanned)
@@ -60,7 +60,12 @@
     (let ((next-word (pos-terminal position-after)))
       (scan-words-loop position-after next-word))))
 
+
+
 (defun scan-terminals-of-sentence (sentence)
+  "Called from scan-terminals-and-do-core in the path that starts
+   with a prepopulated documents. Provides sentence-based way to
+   initiate scan-terminal-loop as it walks the populated chart"
   (let* ((start-pos (starts-at-pos sentence))
          (first-word (pos-terminal start-pos)))
     (tr :scanning-terminals-of sentence)
@@ -76,6 +81,21 @@
 ;; (trace-terminals-loop)
 
 (defun scan-terminals-loop (position-before word)
+  "Carries out the first layer of analysis by checking for and
+   applying word-level rules. Operates one word at a time
+   in a tail-recursive loop. A word is dirst checked to see
+   whether it initiates a polyword. If so we resume the loop
+   at the position just after the polyword has applied.
+   If no polyword applies or if it is not found, we look for
+   and apply word-level FSAs, notably the digits-fsa. 
+   The next in the succession of checks on a word is
+   whether it has an associated completion rule. The
+   final check is to add any unary edges into the chart
+   and with that check for the application of category-based
+   FSAs.
+     We get out of the loop when the period-hook (fired by
+   the completion actions) indicates that we're reached the
+   end of a sentence and throws to an :end-of-sentence catch."
   (tr :terminal-position position-before word)
             
   (simple-eos-check position-before word)
@@ -128,7 +148,7 @@
     (let ((edges
            (do-just-terminal-edges word position-before position-after)))
       (tr :scanned-terminal-edges edges position-before position-after)
-      ;; from check-preterminal-edges
+      ;; taken from check-preterminal-edges
       (when edges ;; e.g. digit-sequence
         (let ((where-fsa-ended
                (do-any-category-fsas edges position-before)))
@@ -184,7 +204,7 @@
   ;; that it ends at. Returns either that position or nil. 
   (declare (special *use-occasional-polywords*))
   (tr :check-for-polywords word position-before)
-  (set-status :polywords-check position-before)
+  (set-status :polywords-check position-before) ; 
   (let ((initial-state
          (if *use-occasional-polywords*
            (initiates-occasional-polyword word position-before)
@@ -219,11 +239,57 @@
 
 
 
+;; (trace-morphology)
+(defvar *positions-with-unhandled-unknown-words* nil
+  "Part of scheme for delaying assigning a semantic interpetation
+   (and thereby an edge) to an uknown word. ")
+
+(defun store-word-and-handle-it-later (word)
+  "Called from make-word/all-properties/or-primed when the
+   *big-mechanism* flag is up and our next option is the default,
+   which would probably be the wrong thing to do."
+  (declare (special *position-being-filled*)) ;; bound in add-terminal-to-chart
+  (tr :storing-unknown-for-later word *position-being-filled*)
+  (push *position-being-filled*
+        *positions-with-unhandled-unknown-words*)
+  word)
+
+(defun deal-with-unhandled-unknown-words-at (pos-before)
+  "Called at the last action in the pattern-sweep treetop loop.
+   Did we make a record of an unhandled unknown word at position-before.
+   If so, pop that position from the list and figure out what sort
+   of edge to create for it and how (or whether) to record it."
+  (when *positions-with-unhandled-unknown-words*
+    (when (memq pos-before *positions-with-unhandled-unknown-words*)
+      ;; clear the flag
+      (setq *positions-with-unhandled-unknown-words*
+            (delete pos-before *positions-with-unhandled-unknown-words*))
+      ;; If this was going to be covered by a NS edge (the motivating
+      ;; case) that's already happened. It's not clear how to check
+      ;; whether we're inside the span of something larger given 
+      ;; just this position to go on. So just assuming we should
+      ;; do it.
+      (tr :handling-unknown-word-stared-os pos-before)
+      (when *big-mechanism*
+        ;; We're only here because it's a *big-mechanism* case,
+        ;; so we call a function there to do the handling.
+        (handle-unknown-word-as-bio-entity pos-before)))))
+
+(defun clear-unhandled-unknow-words ()
+  "Called after pattern-sweep has looped over the entire sentence,
+   which seems as good a place as any to do this."
+  (setq *positions-with-unhandled-unknown-words* nil))
+
+
+
 ;;;------------------------------
 ;;; 2d pass -- no-space patterns
 ;;;------------------------------
 
-(defun pattern-sweep (sentence)  ;; (trace-terminals-sweep)
+;; (trace-terminals-sweep)
+(defun pattern-sweep (sentence)
+  "Scans the sentence treetop by treetop in a loop.
+   Looks for patterns initiated by no space between words."
   (declare (special *the-punctuation-period* *trace-sweep*))
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
@@ -240,22 +306,25 @@
         ;; e.g. for true ambiguities. 
         (setq treetop (elt (ev-edge-vector treetop)
                            (1- (ev-number-of-edges treetop)))))
-      (when (and (word-p treetop)
-                 (eq treetop *the-punctuation-period*))
-        (tr :terminated-sweep-at position-after)
-        (return))
-      (when (eq position-after end-pos)
-        (tr :terminated-sweep-at position-after)
-        (return))
-      (unless (pos-assessed? position-after)
-        ;; catches bugs in the termination conditions
-        (error "Pattern sweep walked beyond the bounds of the sentence"))
 
       (when *trace-sweep*
         (format t "~&[pattern sweep] p~a ~a p~a~%"
                 (pos-token-index position-before)
                 treetop
                 (pos-token-index position-after)))
+
+      (when (and (word-p treetop)
+                 (eq treetop *the-punctuation-period*))
+        (tr :terminated-sweep-at position-after)
+        (return))
+
+      (when (eq position-after end-pos)
+        (tr :terminated-sweep-at position-after)
+        (return))
+
+      (unless (pos-assessed? position-after)
+        ;; catches bugs in the termination conditions
+        (error "Pattern sweep walked beyond the bounds of the sentence"))
 
       (if (no-space-before-word? position-after)
         (then
@@ -281,13 +350,24 @@
                       (tr :uniform-ns-pattern-failed))))))))
         (else
           (tr :space-before position-after)
-          (look-for-DA-pattern treetop)))
+          ;; (look-for-DA-pattern treetop)
+          ;;/// this isn't properly handled. The return value if
+          ;; there is a pattern and it succeeds is not properly
+          ;; handled -- the standalone-da-execution runs for 
+          ;; side-effects and we don't appreciate them. The
+          ;; more customary eecute-da-trie call shows how the
+          ;; 'result' can be more interesting
+          ))
+
+      (deal-with-unhandled-unknown-words-at position-before)
 
       ;; The pattern could have taken us just past the period
       (when (position-precedes end-pos position-after)
         (return))
         
-      (setq position-before position-after))))
+      (setq position-before position-after))
+
+    (clear-unhandled-unknow-words)))
 
 
 ;;--- subroutines
@@ -583,18 +663,38 @@
           (let ((regular-referent (edge-referent regular-edge))
                 (acronym-referent (edge-referent acronym-edge)))
             (unless (eq regular-referent acronym-referent)
-              ;; it's been predefined. Nothing to do
-              ;; Otherwise we take over the acronym edge
+              ;; If so, it's been predefined. Nothing to do
+              ;; Otherwise, we take over the acronym edge
               ;; and rule and make them look like the regular edge
-              (let* ((rule (edge-rule acronym-edge))
-                     (lowercase-rhs (car (cfr-rhs rule)))
-                     (string (word-pname lowercase-rhs))
-                     (uppercase-word (resolve/make (string-upcase string))))
-                (setf (cfr-category rule) (edge-category regular-edge))
-                (setf (cfr-rhs rule) (list uppercase-word))
-                (setf (cfr-form rule) (edge-form regular-edge))
-                (setf (cfr-referent rule) regular-referent)
-                rule ))))))))
+              ;; if there isn't a real rule we make it from scratch.
+              (let ((rule (edge-rule acronym-edge)))
+                (typecase rule
+                 (cfr
+                  (let* ((lowercase-rhs (car (cfr-rhs rule)))
+                         (string (word-pname lowercase-rhs))
+                         (uppercase-word (resolve/make (string-upcase string))))
+                    (setf (cfr-category rule) (edge-category regular-edge))
+                    (setf (cfr-rhs rule) (list uppercase-word))
+                    (setf (cfr-form rule) (edge-form regular-edge))
+                    (setf (cfr-referent rule) regular-referent)
+                    rule ))
+                  (symbol ;; e.g. reify-ns-name-as-bio-entity
+                    (let ((word (edge-left-daughter acronym-edge))
+                          (rule (edge-rule regular-edge)))
+                      ;;/// presuposes that caller only made the acronym
+                      ;; from one word.
+                      (assert (word-p word))
+                      (let ((rule (define-cfr/resolved
+                                      (cfr-category rule)
+                                      (list word)
+                                    (cfr-form rule)
+                                    (cfr-referent rule)
+                                    (cfr-schema rule))))
+                        ;;// trace
+                        rule)))
+                  (otherwise
+                   (error "rule for acronym is neither a symbol nor ~
+                           a cfr: ~a" rule)))))))))))
 
 
 (defun hide-parenthesis-edge (paren-edge edge-to-immediate-left)

@@ -1,15 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "tokenizer"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  December 2014
+;;;  Version:  February 2016
 
 ;; Initiated 11/90 (v1.5)
 ;; 11/12/14 Adding traces for giving unknown words light content because of
 ;; their morphology and such. More 8/22/14 to cover individual cases
-;; Adding as needed through 12/9/14
+;; Adding as needed through 2/5/16
 
 (in-package :sparser)
 
@@ -23,11 +23,6 @@
 
 (defun untrace-morphology ()
   (setq *trace-morphology* nil))
-
-(deftrace :fw-symbol-bound-to (word)
-  ;; in find-word
-  (when *trace-morphology*
-    (trace-msg "[find] symbol is bound to ~s" (word-pname word))))
 
 (deftrace :fw-no-rule-set (word)
   ;; in find-word
@@ -54,6 +49,19 @@
   ;; in find-word
   (when *trace-morphology*
     (trace-msg "[find] no symbol. Completely unknown")))
+
+(deftrace :storing-unknown-for-later (word pos-before)
+  ;; called from store-word-and-handle-it-later
+  (when *trace-morphology*
+    (trace-msg "Delaying handling of unknown word ~a at p~a"
+               (word-pname word)
+              (pos-token-index pos-before))))
+
+(deftrace :handling-unknown-word-stared-os (pos-before)
+  ;; called from deal-with-unhandled-unknown-words-at
+  (when *trace-morphology*
+    (trace-msg "Handling unknow word at p~a"
+               (pos-token-index pos-before))))
 
 (deftrace :defining-unknown-word-from-morph (word morph-keyword)
   ;; called from assign-morph-brackets-to-unknown-word
