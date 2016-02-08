@@ -234,7 +234,7 @@
   ;; Decoder for the realization part of def-term, for the rdata of
   ;; define-category when it fits this new pattern, and for def-synonym,
   ;; though in that case the *deliberate-duplication* flag will be up.
-  (declare (special *valid-keywords-for-irregular-word-forms*))
+  (declare (special *valid-keywords-for-irregular-word-forms* word::|by|))
   (typecase etf
     (null
      (when verb
@@ -301,7 +301,7 @@
           (let ((m-var (subcat-variable m-pat))
                 (m-v/r (subcat-restriction m-pat)))
             (unless m-var (error "No ~a variable associated with ~a"
-                                 m category))
+                                 m-pat category))
             (push `(modifier-slot . ,m-var) substitution-map)
             (push `(modifier-v/r . ,m-v/r) substitution-map))))
 
