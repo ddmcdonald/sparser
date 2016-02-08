@@ -13,6 +13,13 @@
  (asdf:load-system :sparser/blocks-world)
  (asdf:load-system :sparser/c3)
 
+ make-word/all-properties/or-primed  setup-unknown-word-BigMech-default
+ find-word  resolve-ns-pattern
+ (setq *work-on-ns-patterns* t) (trace-ns-sequences) (trace-scan-patterns)
+ collect-no-space-segment-into-word
+ define-knockout
+ digit-FSA 
+
  decode-for-find-&-index  prepare-category-operations
  find/individual/key/hash  apply-mumble-rdata
 
@@ -43,7 +50,7 @@
  mumble::link-to-underlying-object mumble::remove-subject
    mumble::dtn-bundle-driver
    mumble::has-name
-   mumble::
+   mumble::sexp-reader
  mumble-phrase  add-etf-mapping  realize-using-name-binding
  realization-for-triple
 
@@ -338,7 +345,6 @@ In article 2  "c-termini"
     (let* ((doc-elements
             (funcall fn "3847091" :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
            (article (car doc-elements)))
-      (setq *article* article)
       (sweep-document article)
       (read-epistemic-features article)
       (unless do-not-read
@@ -803,15 +809,15 @@ Worse: (28 13 6 2 1)
 |#
 
 (defun ddm-edge-mechanics ()
-  (ddm-ed "objects/chart/edge-vectors/object2.lisp")
-  (ddm-ed "objects/chart/edge-vectors/vectors2.lisp") ;; has knit routine
-  (ddm-ed "objects/chart/edges/object3.lisp")
-  (ddm-ed "objects/chart/positions/positions1.lisp"))
+  (ddm-ed "objects/chart/edge-vectors/object.lisp")
+  (ddm-ed "objects/chart/edge-vectors/vectors.lisp") ;; has knit routine
+  (ddm-ed "objects/chart/edges/object.lisp")
+  (ddm-ed "objects/chart/positions/positions.lisp"))
 
 
 (defun ddm-vg-elevation ()
   (ddm-ed "grammar/rules/syntax/categories.lisp")
-  (ddm-ed "analyzers/SDM&P/scan1.lisp")
+  (ddm-ed "analyzers/SDM&P/scan.lisp")
   (ddm-ed "grammar/rules/SDM&P/create-categories.lisp"))
 
 (defun ddm-subtyping ()
