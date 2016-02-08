@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "bio-entity-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  May 2015
+;;;  version:  February 2016
 
 ;; 8/11/14 This was intended for a scan that did not include bracket
 ;; checking so we could experiment with an alternative way of doing it.
 ;; That's yet to be written, so taking it over for other purposes.
 ;; 5/26/15 Stripping parts out that conflict with newer material.
 ;; Eventually should probably just drop the file and expunge references
-;; to it once we've gleaned all we can.
+;; to it once we've gleaned all we can. Cont. 2/8/16.
 
 (in-package :sparser)
 
@@ -35,128 +35,26 @@
 
 ; (p "alpha aa bb cc omega. N22 apple BBB")
 
-#+ignore
-(defun initiate-R3-entity-pass ()
-  ;; Copied from inititate-c3-protocol which is already stipped down
-  ;; from the normal inititate-top-edges-protocol driver. 
-  (let* ((p0 (scan-next-position))  ;; status = :scanned
-         (ss (pos-terminal p0)) ;; #<word SOURCE-START>
-         (p1 (scan-next-position)) ;; adds 1st real word
-         (word1 (pos-terminal p1)))
-    (declare (ignore ss))
-    (r3-entity-pass-loop p1 word1)))
-
-#| scan-next-position
-Bumps the indexes into the chart. Does an add-terminal-to-chart if
-there is not already a word at this 'next' position. And returns 
-the position. (N.b. there's an incremental trace hook in there.) |#
-
-#+ignore
-(defun r3-entity-pass-loop (position-before word)
-  (format t "~&Entity loop: p~a ~s"
-          (pos-token-index position-before) (word-pname word))
-  (simple-eos-check position-before word)
-  (let* ((where-pw-ended (polyword-check position-before word))
-         (position-after (or where-pw-ended
-                             ;;(scan-next-position)
-                             (chart-position-after position-before))))
-    ;; We need to look for polywords if only because a term like
-    ;; "p100" is reified as a polyword when we define it as a bio-entity,
-    ;; so we need to recognize it when it occurs the again.
-    (when where-pw-ended
-      (setq position-before where-pw-ended)
-      (unless (includes-state where-pw-ended :scanned)
-        ;; PW can complete without thinking about the
-        ;; word that follows it.
-        (scan-next-position))
-      (setq word (pos-terminal where-pw-ended)))
-    (unless (includes-state position-after :scanned)
-      (scan-next-position))
-
-    (when nil
-      (push-debug `(,position-before ,position-after)) 
-      (break "before = p~a  after= p~a"
-             (pos-token-index position-before)
-             (pos-token-index position-after)))
-
-    (when (no-space-before-word? position-before)
-      ;; If it succeeds we need to restart the loop
-      ;; where it leaves off. 
-      (let ((where-ns-ended (do-no-space-collection position-before)))
-        (when where-ns-ended ;; which will have been scanned
-          (setq position-before where-ns-ended
-                position-after (chart-position-after position-before)))))
-    (unless (includes-state position-after :scanned)
-      (scan-next-position))
-
-    (check-for-full-caps-hack position-before word)
-
-    (let ((next-word (pos-terminal position-after)))
-      (when nil
-        (format t "~&Next step: p~a ~a"
-               (pos-token-index position-after) (word-pname next-word)))
-      (r3-entity-pass-loop position-after next-word))))
-
-
-#+ignore
-(defun do-no-space-collection (position-before)
-  ; lifted from check-for-uniform-no-space-sequence
-  (tr :check-for-uniform-no-space-sequence position-before)
-  (let ((uniform-pos-reached
-         (collect-no-space-sequence-into-word position-before)))
-    uniform-pos-reached))
-      
-(defun check-for-full-caps-hack (position-before word)
-  (when (memq (pos-capitalization position-before)
-              ;; but not :initial-letter-capitalized
-              '(:all-caps :mixed-case))
-    (when *big-mechanism*
-      (reify-fullcaps-as-bio-entity position-before word))))
-
-(defun polyword-check (position-before word)
-  ;; lifted from check-for-polywords where all we want is
-  ;; the fsa to fire if there is one, and to get the position
-  ;; that it ends at. Returns either that position or nil. 
-  (tr :check-for-polywords word position-before)
-  (set-status :polywords-check position-before)
-  (when (word-rules word)
-    (let ((pw-cfr (initiates-polyword word position-before)))
-      (when pw-cfr
-        (let ((position-reached
-               (do-polyword-fsa word pw-cfr position-before)))
-          (push-debug `(,position-reached))
-          ;; Check the status -- cf. adjudicate-result-of-word-fsa
-          ;(break "Polyword succeeded at ~a" position-reached)
-          position-reached)))))
-
-
-(defun simple-eos-check (position-before word)
-  ;; Taken from end-of-source-check but not worrying about the
-  ;; forest or other things to do. In the usual scan, this check
-  ;; is part of check-for-[-from-word-after before anything happens
-  (tr :end-of-source-check word position-before)
-  (when (eq word *end-of-source*)
-    ;; This just does the throw up to chart-based-analysis
-    (terminate-chart-level-process)))
-
-
 
 ;;---- move to somewhere under biology.
 
 (defparameter *created-bio-entities* nil)
 
+#+ignore
 (defvar *bio-category-for-reifying* nil
   "Set the first time it's used. When we convert full caps or a
    no-space term to a bio entity, this is the category used for
    both the type of the new individual and for its label in 
    the chart. Set the first time its needed.")
 
+#+ignore
 (defun bio-category-for-reifying ()
   (or *bio-category-for-reifying*
       (let ((c (category-named 'bio-entity :break-if-none)))
         (setq *bio-category-for-reifying* c)
         c)))
 
+#+ignore
 (defun reify-bio-entity (name)
   (push name *created-bio-entities*)
   (let* ((category (bio-category-for-reifying))
@@ -167,27 +65,8 @@ the position. (N.b. there's an incremental trace hook in there.) |#
       (let ((i (eval form)))
         i))))
 
-(defun setup-unknown-word-BigMech-default (word)
-  ;; called from make-word/all-properties/or-primed when
-  ;; *big-mechanism* flag is up and OBO lookup, morphology,
-  ;; and Comlex have not applied.
-  (add-new-word-to-catalog word :BgMech-default)
-  (let* ((likely-protein? ;; true more often than not given hand inspection
-          (memq (word-capitalization word)
-                '(:initial-letter-capitalized 
-                  :all-caps
-                  :mixed-case)))
-         (kind ;;(if likely-protein? 'protein 'bio-entity)
-          ;; wildly overgenerates
-          'bio-entity))
-    (declare (ignore likely-protein?)) ;; needs refined check
-    (let ((i (def-bio/expr (word-pname word) ;; short
-                           kind
-               :takes-plurals nil)))
-      i)))
 
-
-
+#|
 (defparameter *fullcaps-to-bio-entities* nil ;; an alist
   "It's overkill to introduce edge checking into r3-entity-pass-loop
    so just caching the ones we find here to avoid duplicates")
@@ -209,31 +88,6 @@ the position. (N.b. there's an incremental trace hook in there.) |#
       (let ((edge (install-preterminal-edge
                    cfr word position-before position-after
                    (bio-category-for-reifying) form i)))
-        edge))))
+        edge))))  |#
 
-
-
-;;;-------------
-;;; file driver
-;;;-------------
-
-(defun read-file-for-entities 
-       (filename  
-        &optional (outfile "/Users/ddm/sift/nlp/Sparser/results/bio-entities.lisp"))
-  (let ((*kind-of-chart-processing-to-do* :r3-entity-sweep))
-    (declare (special *kind-of-chart-processing-to-do*))
-    (with-open-file (bio-entities-out outfile
-                     :direction :output
-                     :if-exists :overwrite
-                     :if-does-not-exist :create)
-      (declare (special bio-entities-out))
-      (f filename))))
-
-(defvar bio-entities-out nil)
-
-(defun save-reified-bio-entity-to-file (string kind-symbol)
-  (declare (special bio-entities-out))
-  (when bio-entities-out
-    (format bio-entities-out "~&(def-bio ~s ~a)%~%"
-            string kind-symbol)))
 
