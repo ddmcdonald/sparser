@@ -12,6 +12,23 @@
  (asdf:load-system :r3)
  (asdf:load-system :sparser/blocks-world)
  (asdf:load-system :sparser/c3)
+ 
+ (asdf:load-system :sparser/fire)
+ (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
+ (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
+
+ deal-with-unhandled-unknown-words-at
+ (trace-morphology) (trace-fsas) (trace-terminals-sweep)
+
+
+ find-word  recover-acronym-if-necessary  "GEF" in proteins
+ handle-unknown-word-as-bio-entity  add-terminal-to-chart
+ initiate-successive-sweeps  make-word/all-properties/or-primed 
+ initialize-tokenizer-state  
+ reify-ns-name-as-bio-entity  ns-pattern-dispatch
+
+  initiates-polyword1  do-polyword-fsa
+ 
 
  make-word/all-properties/or-primed  setup-unknown-word-BigMech-default
  find-word  resolve-ns-pattern
@@ -91,6 +108,8 @@
 )
 
 ;; (compare-to-snapshots)
+;; *default-snapshot-corpora* = (overnight dec-test dry-run aspp2 erk)
+;;   (compare-to-snapshot 'overnight)
 ;; (ddm-load-article-2)  (find-corpus-sents "")
 
 (defun ddm-load-blocks-world ()
