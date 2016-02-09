@@ -46,6 +46,7 @@
 ;;; Mumble methods with signatures that need Sparser classes
 ;;;----------------------------------------------------------
 
+#-sbcl
 (defmethod mumble::record-lexicalized-phrase 
            ((category category) (lp mumble::lexicalized-resource))
   (mumble::record-lexicalized-phrase 
