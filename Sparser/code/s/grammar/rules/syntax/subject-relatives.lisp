@@ -169,7 +169,7 @@
                   vp-ref)))
       
       ;; link the rc to the np
-      (setq  np-ref (bind-dli-variable 'modifier vp-ref np-ref))
+      (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
       ;; referent of the combination is the np
       np-ref))))
@@ -193,7 +193,7 @@
                       vp-ref)))      )
       
       ;; link the rc to the np
-      (setq  np-ref (bind-dli-variable 'modifier vp-ref np-ref))
+      (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
       ;; referent of the combination is the np
       np-ref))))
@@ -253,7 +253,7 @@
                    vp-ref)))      )
       
       ;; link the rc to the np
-      (setq  np-ref (bind-dli-variable 'modifier vp-ref np-ref))
+      (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
 
       ;; referent of the combination is the np
       np-ref)))

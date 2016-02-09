@@ -248,7 +248,7 @@
     (setq qualifier (individual-for-ref qualifier))
     (if subject ;; really should check for passivizing
         (setq  qualifier (bind-dli-variable subject head qualifier)))
-    (setq  head (bind-dli-variable 'modifier qualifier head))
+    (setq  head (bind-dli-variable 'predication qualifier head))
     head))
 
 (defun verb-noun-compound (qualifier head)
@@ -283,7 +283,7 @@
     (setq qualifier (individual-for-ref qualifier))
     (when object ;; really should check for passivizing
       (setq  qualifier (bind-dli-variable object head qualifier)))
-    (setq  head (bind-dli-variable 'modifier qualifier head))
+    (setq  head (bind-dli-variable 'verb qualifier head))
     head))
 
 ;;;------------------
@@ -1237,7 +1237,7 @@ to enhance p53 mediated apoptosis [2].") |#
   :index (:temporary :sequential-keys prep pobj))
 
 (defun make-pp (prep pobj)
-  (make-non-dli-individual
+  (make-simple-individual ;;make-non-dli-individual
    category::prepositional-phrase
    `((prep ,prep) (pobj ,pobj))))
 
