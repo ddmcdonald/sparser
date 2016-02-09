@@ -80,10 +80,10 @@
 
 
 
-(defparameter *lattice-ht* (make-hash-table :size 10000 :test #'equal)
+(defparameter *lattice-ht* (make-hash-table :size 30000 :test #'eq)
   "This is the initial way that edge-referent's are linked to the structures that are in the lattice.
    A bit slower than putting a field in the referent, but applicable to all referents, and does not change their structure.")
-(defparameter *source-ht* (make-hash-table :size 5000)
+(defparameter *source-ht* (make-hash-table :size 30000 :test #'eq)
   "Inverse link to *lattice-ht*")
 
 (defun get-dli (ref) (gethash ref *lattice-ht*))
@@ -178,31 +178,42 @@
         (setf (indiv-restrictions new-dli) (list base))
 	(set-dli base new-dli))))
 
-(defparameter *non-phrasal-class-names* nil)
+(defparameter *non-phrasal-classes* nil)
+(defparameter *non-phrasal-class-names*
+  '(NAME DETERMINER PRONOUN TIME KINASE SMALL-MOLECULE PROTEIN-METHOD AMOUNT
+	BIB-REFERENCE MOLECULE-STATE CATALYSIS BIOCHEMICAL-REACTION MODAL
+	MUTATION NAMED-BIO-PROCESS BIO-WHETHERCOMP BIO-IFCOMP DISEASE
+	BIO-OBSERVATION BIO-REAGENT BIO-PREPARATION TYPE-MARKER BIO-AGGREGATE
+	AGGREGATE TAKES-NEG RECEPTOR BIO-ABSTRACT PHOSPHORYLATION-MODIFICATION
+	MECHANISM QUANTIFIER PHOSPHOLIPID LIPID OLIGOMERIZE BIO-SCALAR
+	SCALAR-QUALITY QUALITY BIO-QUALITY BIO-THATCOMP BIO-COMPLEMENT
+	CELLULAR-LOCATION MOLECULAR-FUNCTION BIO-SELF-MOVEMENT BIO-MOVEMENT
+	PREPOSITIONAL-OPERATOR FRACTIONAL-TERM TENSE/ASPECT
+	POST-TRANSLATIONAL-ENZYME ADJECTIVE-ADVERB TUMOR ADVERBIAL
+	POSITIVE-BIO-CONTROL NUCLEOTIDE-EXCHANGE-FACTOR REACTOME-CATEGORY
+	IN-RAS2-MODEL NON-CELLULAR-LOCATION BIO-LOCATION NEGATIVE-BIO-CONTROL
+	CAUSED-BIO-PROCESS BIO-RELATION BIO-PREDICATION STATE BIO-CHEMICAL-ENTITY
+	PHYSICAL-OBJECT MODIFIER OPERATOR BIO-METHOD KIND PHYSICAL ENDURANT
+	HAS-UID RELATION ABSTRACT HAS-NAME BIOLOGICAL WITH-QUANTIFIER
+    BIO-RHETORICAL PERDURANT TOP))
 
-(defun non-phrasal-class-names ()
-  (when (null *non-phrasal-class-names*)
-    (setq *non-phrasal-class-names*
-	  (make-hash-table :test #'eq))
-    (loop for c in 
-	 '(NAME DETERMINER PRONOUN TIME KINASE SMALL-MOLECULE PROTEIN-METHOD AMOUNT
-	   BIB-REFERENCE MOLECULE-STATE CATALYSIS BIOCHEMICAL-REACTION MODAL
-	   MUTATION NAMED-BIO-PROCESS BIO-WHETHERCOMP BIO-IFCOMP DISEASE
-	   BIO-OBSERVATION BIO-REAGENT BIO-PREPARATION TYPE-MARKER BIO-AGGREGATE
-	   AGGREGATE TAKES-NEG RECEPTOR BIO-ABSTRACT PHOSPHORYLATION-MODIFICATION
-	   MECHANISM QUANTIFIER PHOSPHOLIPID LIPID OLIGOMERIZE BIO-SCALAR
-	   SCALAR-QUALITY QUALITY BIO-QUALITY BIO-THATCOMP BIO-COMPLEMENT
-	   CELLULAR-LOCATION MOLECULAR-FUNCTION BIO-SELF-MOVEMENT BIO-MOVEMENT
-	   PREPOSITIONAL-OPERATOR FRACTIONAL-TERM TENSE/ASPECT
-	   POST-TRANSLATIONAL-ENZYME ADJECTIVE-ADVERB TUMOR ADVERBIAL
-	   POSITIVE-BIO-CONTROL NUCLEOTIDE-EXCHANGE-FACTOR REACTOME-CATEGORY
-	   IN-RAS2-MODEL NON-CELLULAR-LOCATION BIO-LOCATION NEGATIVE-BIO-CONTROL
-	   CAUSED-BIO-PROCESS BIO-RELATION BIO-PREDICATION STATE BIO-CHEMICAL-ENTITY
-	   PHYSICAL-OBJECT MODIFIER OPERATOR BIO-METHOD KIND PHYSICAL ENDURANT
-	   HAS-UID RELATION ABSTRACT HAS-NAME BIOLOGICAL WITH-QUANTIFIER
-	   BIO-RHETORICAL PERDURANT TOP)
-       do (setf (gethash c *non-phrasal-class-names*) t)))
-  *non-phrasal-class-names*)
+(defparameter *npc-complete* nil)
+
+(defun non-phrasal-classes ()
+  (when (null *non-phrasal-classes*)
+    (setq *non-phrasal-classes*
+	  (make-hash-table :test #'eq)))
+  (unless
+      (or *npc-complete*
+	  (setq *npc-complete*
+		(loop for c in *non-phrasal-class-names* always
+		     (let ((cat (category-named c)))
+		       (and cat
+			    (gethash  (find-or-make-lattice-description-for-ref-category cat) *non-phrasal-classes*))))))
+    (loop  for c in *non-phrasal-class-names*
+       when (category-named c)
+       do (setf (gethash (find-or-make-lattice-description-for-ref-category (category-named c)) *non-phrasal-classes*) t)))
+  *non-phrasal-classes*)
 
 (defparameter *sub-vv* (find-or-make-dlvv-from-var-val :subc nil))
 (defparameter *super-vv* (find-or-make-dlvv-from-var-val :superc nil))
@@ -284,22 +295,24 @@
     (declare (special parent var dl-vv downlinks))
     (if (null var)
         (return-from find-or-make-lattice-subordinate (values parent nil))
-        (let ((result
-               (or (gethash dl-vv downlinks) ;; already there in the hierarchy
-                   (let ((new-child (copy-individual parent)))
-                     (setq new-child (old-bind-variable var value new-child))
-                     (setf (gethash dl-vv downlinks) new-child)
-                     (setf (gethash dl-vv (indiv-uplinks new-child)) parent)
-                     (setf (gethash parent (indiv-all-supers new-child)) t)
-                     (link-to-other-parents new-child parent dl-vv)
-                     (link-to-existing-children new-child parent dl-vv)
-                     (setf (indiv-restrictions new-child) (cons dl-vv parent-restrictions))
-		     (set-dli new-child new-child)
-                     new-child))))
+        (let* ((result
+		(or (gethash dl-vv downlinks) ;; already there in the hierarchy
+		    (let ((new-child (copy-individual parent)))
+		      (setq new-child (old-bind-variable var value new-child))
+		      (setf (gethash dl-vv downlinks) new-child)
+		      (setf (gethash dl-vv (indiv-uplinks new-child)) parent)
+		      (setf (gethash parent (indiv-all-supers new-child)) t)
+		      (link-to-other-parents new-child parent dl-vv)
+		      (link-to-existing-children new-child parent dl-vv)
+		      (setf (indiv-restrictions new-child) (cons dl-vv parent-restrictions))
+		      (set-dli new-child new-child)
+		      new-child)))
+	       (res-supers (indiv-all-supers result)))
          
-	  (link-sub-super result parent)
-	  (maphash #'(lambda (k h) (link-sub-super result k))
-		   (indiv-all-supers parent))
+	  (setf (gethash parent res-supers) t)
+	  (loop for key being each hash-key of (indiv-all-supers parent)
+	       do (setf (gethash key res-supers) t))
+	  
 	  (all-subs-link result var value lattice-cat-parent)
 	  (values
 	   result
@@ -318,23 +331,23 @@
 	(subs (or
 	       (gethash var (indiv-all-subs lattice-cat-parent))
 	       (setf (gethash var (indiv-all-subs lattice-cat-parent))
-		     (make-hash-table)))))
+		     (make-hash-table :size 100 :test #'equal)))))
     (if (hash-table-p val-supers)
 	(then
 	  (maphash #'(lambda (k h)
 		       (when (interesting-super? k)
 			 ;;(pushnew sub (gethash k subs)) record all instances so we can get the most recent
-			 (push sub (gethash k subs))))
+			 (let ((ksubs (gethash k subs)))
+			   (when (member sub ksubs :test #'eq)
+			     (setf (gethash k subs) (delete sub ksubs :test #'eq :count 1)
+				   ))
+			   (push sub (gethash k subs)))))
 		   val-supers)
 	  (pushnew sub (gethash value subs)))
 	(pushnew sub (gethash val-supers subs)))))
 
 (defun interesting-super? (c)
-  (let ((cc (car (gethash c *source-ht*))))
-    (or
-     (not (category-p cc))
-     (not (gethash (cat-name cc)
-		   (non-phrasal-class-names)))))) ;; need to define this
+  (not (gethash c (non-phrasal-classes))))
 
 (defun as-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
   (cond
@@ -484,13 +497,20 @@
        (when super-all-subs
 	 (gethash (dlvv-value last-mod) super-all-subs))))))
 
+(defun all-specializations (c)
+  (let ((pspecs (potential-specializations c)))
+    (loop for ps in pspecs when (as-specific? ps c) collect ps)))
+
 (defun hal (ht) (hashtable-to-alist ht))
+(defun sur-string (i)(retrieve-surface-string i))
        
 		     
   
   
 
 #|
+(compare-to-snapshots)
+(r3::run-localization)
 (length (setq missing (loop for ii in (hashtable-to-alist *surface-strings*) unless (get-dli (car ii)) collect ii)))
 (length (setq qq  (loop for i in missing unless (eq (cat-name (itype-of (car i))) 'prepositional-phrase) collect i)))
 
@@ -501,4 +521,14 @@
 (length (setq napd (loop for a in aapd when (cdr (second a)) collect (list (car a) (length (second a))))))
 (length (setq napd (sort napd #'> :key #'second)))
 
+
+(compare-to-snapshots)
+(r3::run-localization)
+(length (setq apd (all-phrasal-dlis)))
+(length (setq allpd (loop for a in apd collect (list a (all-specializations a)))))
+(length (setq nallpd (loop for a in allpd when (cdr (second a)) collect (list (car a) (length (second a))))))
+(length (setq nallpd (sort nallpd #'> :key #'second)))
+
+
+(length (setq mmods (loop for phr in apd when (value-of 'modifier phr) collect (list phr (sur-string phr) (value-of 'modifier phr)))))
 |#

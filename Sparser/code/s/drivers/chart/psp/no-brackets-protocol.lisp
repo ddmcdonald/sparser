@@ -312,7 +312,11 @@
 ;;;------------------------------------------------------------
 
 (defun end-of-sentence-processing-cleanup (sentence)
+  (declare (special sentence))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
+  (when *current-article*
+    (save-article-sentence *current-article* sentence))
+  ;;(lsp-break "end of sentence")
   ;; we could do a tts 
   #+ignore(when *readout-segments-inline-with-text* ;; be quiet when others are
     (format t "~&--------------------------~%~%")))
@@ -736,6 +740,10 @@
   (declare (ignore short))
   (word-pname w))
 
+(defmethod collect-model-description ((w polyword) &optional (short t)) ;
+  (declare (ignore short))
+  (pw-pname w))
+
 (defmethod collect-model-description ((cal cons) &optional (short t))
   `(collection :members 
                (,@(loop for l in cal 
@@ -751,7 +759,7 @@
      (value-of 'value i)))
    ((and (itypep i 'protein-family) ;; get rid of bio-family -- misnamed...
          (not (itypep i 'collection)))
-    (if short
+    (if (and nil short)
      `(,i)
      (let ((bindings (indiv-binds i))
            (desc (list i)))

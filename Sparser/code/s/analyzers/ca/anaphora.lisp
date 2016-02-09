@@ -249,7 +249,7 @@
   ((di :initarg :i :accessor base-description
     :documentation "Backpointer to the individual which is the base description")
    (ci :initarg :ci :accessor contextual-description
-    :documentation "Backpointer to the individual which is the base description")
+    :documentation "Backpointer to the individual which is the contextually revised description")
    (location-in-paragraph :initarg :loc :accessor mentioned-where
     :documentation "An encoding of the location at which
      this mention occurred. Given the present implementation,
