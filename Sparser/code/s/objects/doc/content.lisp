@@ -201,22 +201,21 @@
 
 
 
-
+(defclass text-relations ()
+  ((head-relations :initform nil :accessor head-relations)
+   (classifier-heads :initform nil :accessor classifier-head-relations)
+   (modifier-heads :initform nil :accessor modifier-head-relations)
+   (adjacencies :initform nil :accessor adjacency-relations))
+  (:documentation
+   "Provides slots for counting the relations "))
 
 ;;----------- original, clumsy Grok code below here ----------
 
 (defclass text-relation-contents (named-object
-                                  has-content-model;; adds contents slot
+                                  text-relations
                                   container)
-  ((container :initarg :container :accessor container
-     :documentation "The article or doc-set or whatever that this goes with")
-   (head-relations #|:type (or null common-tr-instance)|# ;; unclear why doesn't work
-    ;; since the typep is ok.
-    :initform nil :accessor head-relations)
-   (classifier-heads :initform nil :accessor classifier-head-relations)
-   (modifier-heads :initform nil :accessor modifier-head-relations)
-   (adjacencies :initform nil :accessor adjacency-relations))
-  (:documentation ""))
+  ()
+  (:documentation "Minimal container wrapper around text-relations slots"))
 
 
 (defmethod display ((tc text-relation-contents)) ;; add a stream?
