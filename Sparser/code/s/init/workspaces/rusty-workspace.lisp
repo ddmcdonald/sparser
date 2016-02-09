@@ -223,7 +223,11 @@
 #+:sbcl
 (defun timings(&optional (n 1))
   (setq profns
-        '(
+        '( all-subs-link
+          dli-ref-cat
+          interesting-super?
+          make-hash-table
+          make-individual
           ;;BINDING-BODY
           IS-IN-COMLEX? MAKE-AND-STORE-NOMINAL-INSTANCE NEXT-ID TR/EXPR
           MAKE-BACKING-CLOS-CLASS KCONS NEXT-TREETOP/RIGHTWARD COMPOSE DEALLOCATE-KONS
