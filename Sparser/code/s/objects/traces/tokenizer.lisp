@@ -53,20 +53,40 @@
 (deftrace :storing-unknown-for-later (word pos-before)
   ;; called from store-word-and-handle-it-later
   (when *trace-morphology*
-    (trace-msg "Delaying handling of unknown word ~a at p~a"
+    (trace-msg "[unknown] Delaying handling of unknown word ~a at p~a"
                (word-pname word)
               (pos-token-index pos-before))))
 
 (deftrace :handling-unknown-word-stared-os (pos-before)
   ;; called from deal-with-unhandled-unknown-words-at
   (when *trace-morphology*
-    (trace-msg "Handling unknow word at p~a"
+    (trace-msg "[unknown] Handling unknown word at p~a"
                (pos-token-index pos-before))))
+
+(deftrace :unknown-word-is-known (edge)
+  ;; called from deal-with-unhandled-unknown-words-at
+  (when *trace-morphology*
+    (trace-msg "[unknown]   It's actual known: spanned by ~a" edge)))
+
+(deftrace :unknown-word-is-spanned (edge)
+  ;; called from deal-with-unhandled-unknown-words-at
+  (when *trace-morphology*
+    (trace-msg "[unknown]   Nothing to do. It's been spanned: ~a" edge)))
+
+(deftrace :unknown-word-is-covered ()
+  ;; called from deal-with-unhandled-unknown-words-at
+  (when *trace-morphology*
+    (trace-msg "[unknown]   Some edge covers it.")))
+
+(deftrace :unknown-word-bio-edge (edge)
+  ;; called from handle-unknown-word-as-bio-entity
+  (when *trace-morphology*
+    (trace-msg "[unknown] Put edge over unknown word: ~a" edge)))
 
 (deftrace :defining-unknown-word-from-morph (word morph-keyword)
   ;; called from assign-morph-brackets-to-unknown-word
   (when *trace-morphology*
-    (trace-msg "[Morphology] unknown word ~s keyword: ~a"
+    (trace-msg "[unknown]  unknown word ~s keyword: ~a"
                (word-pname word) morph-keyword)))
 
 (deftrace :defining-as-given-morph (pos-term)

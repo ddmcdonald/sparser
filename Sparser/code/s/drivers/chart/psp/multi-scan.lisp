@@ -262,20 +262,52 @@
   (when *positions-with-unhandled-unknown-words*
     (when (memq pos-before *positions-with-unhandled-unknown-words*)
       ;; clear the flag
+      (push-debug `(,pos-before)) ;(lsp-break "Check for covered at ~a" pos-before)
       (setq *positions-with-unhandled-unknown-words*
             (delete pos-before *positions-with-unhandled-unknown-words*))
-      ;; If this was going to be covered by a NS edge (the motivating
-      ;; case) that's already happened. It's not clear how to check
-      ;; whether we're inside the span of something larger given 
-      ;; just this position to go on. So just assuming we should
-      ;; do it.
-      (tr :handling-unknown-word-stared-os pos-before)
-      (when *big-mechanism*
-        ;; We're only here because it's a *big-mechanism* case,
-        ;; so we call a function there to do the handling.
-        (handle-unknown-word-as-bio-entity pos-before)))))
 
-(defun clear-unhandled-unknow-words ()
+      (tr :handling-unknown-word-stared-os pos-before)
+
+      (let* ((top-edge (right-treetop-at/only-edges pos-before)))
+        (cond
+         ((and top-edge
+               (not (one-word-long? top-edge)))
+          (tr :unknown-word-is-spanned top-edge))
+         (top-edge
+          (tr :unknown-word-is-known top-edge))
+         ((null top-edge)
+          (when *big-mechanism*
+            (cond
+             ((covered-by-nearby-edge pos-before)
+              (tr :unknown-word-is-covered))
+             (t
+              ;; We're only here because it's a *big-mechanism* case,
+              ;; so we call a function there to do the handling.
+              (handle-unknown-word-as-bio-entity pos-before)))))
+         (t
+          (lsp-break "Any reason not to rewrite as bio-entity?")))))))
+
+(defun covered-by-nearby-edge (pos-before)
+  "Does any edge span this position? We're checking this during
+  pattern-sweep (as the last step before looping) so presumably
+  we only care about edges that would have started to our left.
+  We've already looked at the case where there's an edge that
+  starts at this position."
+  (let ((left-neighbor (left-treetop-at/only-edges pos-before)))
+    ;;/// in principle (?) we'd have to do the equivalent of tts
+    ;; to see if anything includes this position.
+    ;; Should probably do a static analysis of the sequence of
+    ;; actions that precede this moment and what they can produce.
+    (when left-neighbor
+      ;; If there's an edge to our immediate left, then it might
+      ;; be used in an longer edge that goes over us.
+      (let* ((neighbors-parent (edge-used-in left-neighbor))
+             (its-end-pos (when neighbors-parent
+                            (pos-edge-ends-at neighbors-parent))))
+        (when its-end-pos
+          (position-precedes pos-before its-end-pos))))))
+
+(defun clear-unhandled-unknown-words ()
   "Called after pattern-sweep has looped over the entire sentence,
    which seems as good a place as any to do this."
   (setq *positions-with-unhandled-unknown-words* nil))
@@ -367,7 +399,7 @@
         
       (setq position-before position-after))
 
-    (clear-unhandled-unknow-words)))
+    (clear-unhandled-unknown-words)))
 
 
 ;;--- subroutines

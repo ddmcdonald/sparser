@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: December 2016
+;;; version: February 2016
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 ;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
@@ -121,7 +121,7 @@ the process.
                    category::bio-entity ;; category of edge
                    category::common-noun ;;/// form ???proper-noun??
                    i ))) ;; referent
-      ;;/// trace
+      (tr :unknown-word-bio-edge edge)
       edge)))
 
 #|  This is what we used to do. Notice that it creates a rule
