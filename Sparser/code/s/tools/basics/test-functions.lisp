@@ -55,7 +55,8 @@
   (test-corpus  *jan-dry-run* numbers))
 
 (defun test-dry-run (&rest numbers)
-  (test-jan numbers))
+  (declare (special *jan-dry-run*))
+  (test-corpus  *jan-dry-run* numbers))
 
 (defun test-dec (&rest numbers)
   (declare (special *dec-tests*))
