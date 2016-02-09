@@ -76,65 +76,79 @@
 ;;--- a/an
 
 (def-form-rule ("a" common-noun)
-  :form np
-  :referent (:daughter right-edge ;; fn not going into referent
-         ;;    :function (mark-instance-indefinite right-edge))
-                       ))
+    :form np
+    :referent (:daughter right-edge
+			 :bind (has-determiner left-edge) ;; fn not going into referent
+			 ;;    :function (mark-instance-indefinite right-edge))
+			 ))
 
 (def-form-rule ("an" common-noun)
-  :form np
-  :referent (:daughter right-edge))
+    :form np
+    :referent (:daughter right-edge
+	       :bind (has-determiner left-edge)))
 
 (def-form-rule ("a" np-head)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule ("an" np-head)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule ("a" n-bar)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule ("an" n-bar)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule ("a" np)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule ("an" np)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 
 ;;--- the (as a referential category, not a literal)
 
 (def-form-rule (the common-noun)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule (the common-noun/plural)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	      :bind (has-determiner left-edge)))
 
 (def-form-rule (the np-head)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule (the n-bar)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule (the np)
   :form np
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 (def-form-rule (the proper-noun)
   :form proper-name
-  :referent (:daughter right-edge))
+  :referent (:daughter right-edge
+	     :bind (has-determiner left-edge)))
 
 
 ;;--- this
@@ -185,18 +199,22 @@
 
 ;;--- that
 
-;; (def-form-rule ("that" common-noun)
-;;   :form np
-;;   :referent (:daughter right-edge))
+ (def-form-rule ("that" common-noun)
+   :form np
+   :referent (:daughter right-edge
+              :bind (has-determiner left-edge)))
 
-;; (def-form-rule ("that" np-head)
-;;   :form np
-;;   :referent (:daughter right-edge))
+ (def-form-rule ("that" np-head)
+     :form np
+     :referent (:daughter right-edge
+		:bind (has-determiner left-edge)))
 
-;; (def-form-rule ("that" n-bar)
-;;   :form np
-;;   :referent (:daughter right-edge))
+ (def-form-rule ("that" n-bar)
+     :form np
+     :referent (:daughter right-edge
+	        :bind (has-determiner left-edge)))
 
-;; (def-form-rule ("that" np)
-;;   :form np
-;;   :referent (:daughter right-edge))
+ (def-form-rule ("that" np)
+     :form np
+     :referent (:daughter right-edge
+	        :bind (has-determiner left-edge)))
