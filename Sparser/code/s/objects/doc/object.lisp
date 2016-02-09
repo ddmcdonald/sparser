@@ -107,6 +107,18 @@
     that apply to the whole article, typically taken from
     the dateline if it's a news article."))
 
+(defparameter *article-sentences* nil)
+
+
+(defun collect-sentences-from-articles ()
+  (when *article-sentences*
+    (let ((as-list (hashtable-to-alist *article-sentences*)))
+      (loop for as-item in as-list collect
+	   (let ((sl-name (intern (format nil "*~s-SENTENCES*" (car as-item)))))
+	     (eval
+	      `(defparameter ,sl-name '(,.(reverse (cdr as-item)))))
+	     sl-name)))))
+
 (defmethod print-object ((a article) stream)
   (print-unreadable-object (a stream :type t)
     (format stream " ~a" (name a))
@@ -334,6 +346,15 @@
    "Represents the content or other interesting features
     of a sentence within the text. If there is an active section or
     paragraph that is parent."))
+
+
+(defmethod save-article-sentence ((article article) (sentence sentence))
+  (unless *article-sentences*
+    (setq *article-sentences* (make-hash-table)))
+  (when (name article)
+    (push sentence (gethash (name article) *article-sentences*))))
+
+
 
 (defmethod print-object ((s sentence) stream)
   (print-unreadable-object (s stream :type t)
