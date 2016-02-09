@@ -740,6 +740,10 @@
   (declare (ignore short))
   (word-pname w))
 
+(defmethod collect-model-description ((w polyword) &optional (short t)) ;
+  (declare (ignore short))
+  (pw-pname w))
+
 (defmethod collect-model-description ((cal cons) &optional (short t))
   `(collection :members 
                (,@(loop for l in cal 
@@ -755,7 +759,7 @@
      (value-of 'value i)))
    ((and (itypep i 'protein-family) ;; get rid of bio-family -- misnamed...
          (not (itypep i 'collection)))
-    (if short
+    (if (and nil short)
      `(,i)
      (let ((bindings (indiv-binds i))
            (desc (list i)))
