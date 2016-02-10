@@ -27,7 +27,7 @@
  initialize-tokenizer-state  
  reify-ns-name-as-bio-entity  ns-pattern-dispatch
 
-  initiates-polyword1  do-polyword-fsa
+ starts-occasional-polyword polyword-check initiates-polyword1  do-polyword-fsa
  
 
  make-word/all-properties/or-primed  setup-unknown-word-BigMech-default
