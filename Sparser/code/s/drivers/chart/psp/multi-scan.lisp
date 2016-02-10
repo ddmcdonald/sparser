@@ -17,6 +17,8 @@
 ;;  pass are over words that aren't separated by a space ("20%")
 ;; 4/28/15 Added scan-words-loop. 8/9/15 added assess-parenthesized-content
 ;; and an acronym handler. 2/5/16 Put in a handler for known words.
+;; 2/10/16 make over polyword-check to open-code its caps-vs-lower check
+;; and try both if needed.
 
 (in-package :sparser)
 
@@ -199,30 +201,48 @@
 
 ;; (trace-fsas)
 (defun polyword-check (position-before word)
-  ;; lifted from check-for-polywords where all we want is
-  ;; the fsa to fire if there is one, and to get the position
-  ;; that it ends at. Returns either that position or nil. 
+  "Lifted from check-for-polywords. Here all we want is for
+   the PW fsa to fire if there is one, and to get the position
+   that it ends at. Returns either that position or nil."
   (declare (special *use-occasional-polywords*))
   (tr :check-for-polywords word position-before)
-  (set-status :polywords-check position-before) ; 
-  (let ((initial-state
-         (if *use-occasional-polywords*
-           (initiates-occasional-polyword word position-before)
-           (initiates-polyword1 word position-before))))
-    ;; This "1" variant calls a "1" variant of capitalized-correspondent
-    ;; which use the position information correctly.
-    (when initial-state
-      (tr :word-initiates-polyword word position-before)
-      (let ((position-reached
-             (do-polyword-fsa word initial-state position-before)))
-        (if position-reached
+  (set-status :polywords-check position-before)
+  
+  ;; 'word' is the canonical lowercase version of the lemma
+  (let* ((ls-initial-state
+          (if *use-occasional-polywords*
+            (starts-occasional-polyword word)
+            (starts-polyword word)))
+         (caps-word (capitalized-correspondent1 
+                     position-before word))
+         (caps-initial-state
+          (when caps-word
+            (if *use-occasional-polywords*
+              (starts-occasional-polyword caps-word)
+              (starts-polyword caps-word)))))
+
+    (when (or ls-initial-state caps-initial-state)
+      ;; Prefer the capitalized version, but if it fails
+      ;; try the lowercase version
+      (let ( position-reached )
+
+        (when caps-initial-state
+          (tr :word-initiates-polyword caps-word position-before)
+          (setq position-reached
+                (do-polyword-fsa caps-word caps-initial-state position-before)))
+
+        (unless position-reached ;; caps succeeded
+          (when ls-initial-state
+            (tr :word-initiates-polyword word position-before)
+            (setq position-reached
+                  (do-polyword-fsa word ls-initial-state position-before))))
+
+        (if position-reached ;; one of them succeeded
           (let ((pw-edge (edge-spanning position-before position-reached)))
-            (unless pw-edge (error "wrong span search"))
+            (unless pw-edge (error "wrong span on polyword search"))
             (tr :pw-was-found position-before position-reached pw-edge))
           (tr :pw-not-found word position-before))
-        ;;(push-debug `(,position-reached))
-        ;; Check the status -- cf. adjudicate-result-of-word-fsa
-        ;(break "Polyword succeeded at ~a" position-reached)
+
         position-reached))))
 
 

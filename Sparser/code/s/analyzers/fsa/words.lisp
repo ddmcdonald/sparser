@@ -250,7 +250,7 @@
                 (polyword-fsa caps-rules-field))))))))
 
 
-(defun initiates-polyword1 (word position-before)
+#+ignore(defun initiates-polyword1 (word position-before)
   ;; Returns the initial state of the polyword or nil
   (or (let ((caps-word (capitalized-correspondent1 
                         position-before word)))
@@ -269,8 +269,7 @@
              (loop for item in fsa-field
                when (typep item 'polyword-state)
                return item))))))))
-
-(defun initiates-occasional-polyword (word position-before)
+#+ignore(defun initiates-occasional-polyword (word position-before)
    (or (let ((caps-word (capitalized-correspondent1 
                         position-before word)))
         (when caps-word

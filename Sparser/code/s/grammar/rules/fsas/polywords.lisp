@@ -100,9 +100,9 @@ grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-s
                            position-before end-pos pw)))
                 (tr :pw-doesnt-extend-taking-complete edge)
                 (return end-pos)))
-          (else
-            (tr :pw-word-doesnt-extend)
-            (return nil))))
+            (else
+              (tr :pw-word-doesnt-extend)
+              (return nil))))
          (t ;; keep looking
           (setq position (chart-position-after position)
                 state next-state)))))))
