@@ -56,10 +56,24 @@
                 (vp . :self)
                 (adjunct . physical)
                 (slot . artifact)))))
-;  The method for record-lexicalized-phrase that takes
-;  a category is in Sparser/.../interface/mumble/interface.lisp
-;  and for some reason it's not defined when this executes.
-;;/// derive by specialization from push
+
+(define-category push
+  :specializes process
+  :mixins (with-an-agent)
+  :binds ((theme physical))
+  :documentation "The meaning of a puah depends largly
+    on what is pushed (= the type of the theme): block
+    wall, door, etc. If the specific action to take
+    is object (sort) specific then co-composition is
+    involved in the interpretation of the literal 
+    directive."
+  :realization
+    ((:main-verb "push")
+     (:mumble ("push" svo :s agent :o theme))))
+
+
+
+
 (define-category push-together
   :mixins (with-an-agent)
   :binds ((items collection))
