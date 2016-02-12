@@ -19,6 +19,10 @@
   :pattern ( pp "," s )
   :action (:function attach-leading-pp-to-clause first third))
 
+(define-debris-analysis-rule pp-s
+  :pattern ( pp  s )
+  :action (:function attach-leading-pp-to-clause first second))
+
 (defun attach-leading-pp-to-clause (pp clause)
  (let* ((clause-referent (edge-referent clause))
         (pobj-edge (edge-right-daughter pp))
@@ -180,28 +184,34 @@
            attach-appositive-np-under-s
            first second third))
 
-(defun attach-appositive-np-under-s (s-edge comma-edge np-edge)
+(defun attach-appositive-np-under-s (s-edge comma-edge np-edge &optional trailing-comma)
   (push-debug `(,s-edge ,comma-edge ,np-edge))
   ;; (setq s-edge (car *) comma-edge (cadr *) np-edge (caddr *))
   ;; Look up the right fridge of the s for a proper-noun 
   (let ((right-fringe-of-s ;; ordered bottom to top
          (all-edges-on (pos-ends-here (pos-edge-ends-at s-edge))))
-        target )
+        target target-ref
+        new-target-ref)
     (declare (special right-fringe-of-s))
     (loop for edge in right-fringe-of-s
       ;; replace eq with acceptable-appositive?
-      when (eq (edge-form edge) category::proper-noun)
+      when (or
+            (eq (edge-form edge) category::proper-noun)
+            (eq (edge-form edge) category::np))
       do (setq target edge))
     (cond
      (target
+      (setq target-ref (edge-referent target))
+      (setq new-target-ref
+            (bind-dli-variable 'appositive-description (edge-referent np-edge) target-ref))
       (let ((new-edge
              (make-edge-over-long-span 
               (pos-edge-starts-at target)
-              (pos-edge-ends-at np-edge)
+              (pos-edge-ends-at (or trailing-comma np-edge))
               (edge-category target)
               :form (edge-form target)
               :rule 'attach-appositive-np-under-s
-              :referent (edge-referent target) ;;!!!!
+              :referent new-target-ref
               :constituents `(,target ,comma-edge ,np-edge))))
         (tuck-new-edge-under-already-knit
          target ;; subsumed
@@ -212,6 +222,89 @@
      (t 
       ;;(lsp-break "attach-appositive-np-under-s fails")
       nil))))
+
+(define-debris-analysis-rule pp-comma-np
+  :pattern ( pp "," np ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+	   attach-appositive-np-under-pp
+           first second third fourth))
+
+(define-debris-analysis-rule pp-comma-proper-noun
+  :pattern ( pp "," proper-noun ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+	   attach-appositive-np-under-pp
+           first second third fourth))
+
+(defun attach-appositive-np-under-pp (pp-edge comma-edge np-edge &optional trailing-comma)
+  (push-debug `(,pp-edge ,comma-edge ,np-edge))
+  ;; (setq pp-edge (car *) comma-edge (cadr *) np-edge (caddr *))
+  ;; Look up the right fridge of the s for a proper-noun 
+  (let ((right-fringe-of-s ;; ordered bottom to top
+         (all-edges-on (pos-ends-here (pos-edge-ends-at pp-edge))))
+        target target-ref
+        new-target-ref)
+    (declare (special right-fringe-of-s))
+    (loop for edge in right-fringe-of-s
+      ;; replace eq with acceptable-appositive?
+      when (or
+            (eq (edge-form edge) category::proper-noun)
+            (eq (edge-form edge) category::np))
+      do (setq target edge))
+    (cond
+     (target
+      (setq target-ref (edge-referent target))
+      (setq new-target-ref
+            (bind-dli-variable 'appositive-description (edge-referent np-edge) target-ref))
+      (let ((new-edge
+             (make-edge-over-long-span 
+              (pos-edge-starts-at target)
+              (pos-edge-ends-at (or trailing-comma np-edge))
+              (edge-category target)
+              :form (edge-form target)
+              :rule 'attach-appositive-np-under-s
+              :referent new-target-ref
+              :constituents `(,target ,comma-edge ,np-edge))))
+        (tuck-new-edge-under-already-knit
+         target ;; subsumed
+         new-edge
+         pp-edge
+         :right)
+        new-edge))
+     (t 
+      ;;(lsp-break "attach-appositive-np-under-s fails")
+      nil))))
+
+(define-debris-analysis-rule np-comma-np
+  :pattern ( np "," np ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-appositive-np-to-np
+           first second third fourth))
+
+(define-debris-analysis-rule np-comma-proper-noun
+  :pattern ( np "," proper-noun ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-appositive-np-to-np
+           first second third fourth))
+
+(defun attach-appositive-np-to-np (target comma-edge np-edge &optional trailing-comma)
+  (let* ((new-target 
+         (bind-dli-variable 'appositive-description (edge-referent np-edge) (edge-referent target)))
+        (new-edge
+         (make-edge-over-long-span 
+          (pos-edge-starts-at target)
+          (pos-edge-ends-at (or trailing-comma np-edge))
+          (edge-category target)
+          :form (edge-form target)
+          :rule 'attach-appositive-np-to-np
+          :referent new-target
+          :constituents (if trailing-comma 
+                            `(,target ,comma-edge ,np-edge, trailing-comma)
+                            `(,target ,comma-edge ,np-edge)))))
+    new-edge))
 
 
 (defun attach-pp-to-np-under-s (s-edge comma-edge pp-edge)
@@ -320,6 +413,10 @@
 
 (define-debris-analysis-rule subordinate-comma-clause
   :pattern (subordinate-clause "," s )
+  :action (:function create-event-relation third first first third))
+
+(define-debris-analysis-rule subordinate-comma-subordinate-clause
+  :pattern (subordinate-clause "," subordinate-clause )
   :action (:function create-event-relation third first first third))
 
 (define-debris-analysis-rule clause-and-subordinate
