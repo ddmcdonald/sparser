@@ -365,11 +365,11 @@
                                     edges-to-right))
         (let ((recursive-pairs 
                (adjacent-tt-pairs1 edges-to-right end-pos)))
-          (let ((retun-value
+          (let ((return-value
                  (if recursive-pairs
                    (nconc pairs recursive-pairs)
                    pairs)))
-            retun-value))))))
+            return-value))))))
 
 (defun form-all-pairs (left-list right-list)
   (let ( pairs )
@@ -418,19 +418,21 @@
   ;; to a semantic label (e.g. "to" and TO), prefer the one
   ;; with the regular label. Happens with prepositional phrases.
   (if (cdr triples) ;; more than one
-    (let ((edges-over-one-word
-           (collect-triples-with-edges-over-one-word triples)))
-      (push-debug `(,edges-over-one-word))
-      (if edges-over-one-word               
-        (if (cdr edges-over-one-word) ;; more than one?
-          (let ((triples-minus-redundant-literals
-                 (remove-redundant-literal-triples edges-over-one-word)))
-            triples-minus-redundant-literals)          
-          triples) ;; only one edge over a single word
-        triples)) ;; none over just one word
-    triples)) ;; only one triple
+      (let ((edges-over-one-word
+	     (collect-triples-with-edges-over-one-word triples)))
+	(push-debug `(,edges-over-one-word))
+	(if edges-over-one-word               
+	    (if (cdr edges-over-one-word) ;; more than one?
+		(let ((triples-minus-redundant-literals
+		       ;;(remove-redundant-literal-triples edges-over-one-word)
+		       triples  ))
+		  triples-minus-redundant-literals)          
+		triples) ;; only one edge over a single word
+	    triples))	 ;; none over just one word
+      triples))		 ;; only one triple
 
 (defun remove-redundant-literal-triples (records)
+  (declare (special records))
   (push-debug `(,records))
   (let ( edge  word  words  word+records  )
     ;; over the same word?            
@@ -559,9 +561,13 @@
   (when (eq (second r-triple) (third l-triple))	
     ;; there is an edge which is being competed for
     (let* ((l-triple-rhs (cfr-rhs (car l-triple)))
-           (l-triple-left (cat-symbol (car l-triple-rhs)))
+           (l-triple-left (if (category-p (car l-triple-rhs))
+			      (cat-symbol (car l-triple-rhs))
+			      (car l-triple-rhs)))
            (r-triple-rhs (cfr-rhs (car r-triple)))
-           (r-triple-left (cat-symbol (car r-triple-rhs)))
+           (r-triple-left (if (category-p (car r-triple-rhs))
+			      (cat-symbol (car r-triple-rhs))
+			      (car r-triple-rhs)))
            (r-triple-right 
             (when (category-p (second r-triple-rhs))
               (cat-symbol (second r-triple-rhs)))))
