@@ -150,29 +150,27 @@
 ;;;-----------------
 ;;/// 10/27/14 This ought to be a method
 (defun apply-subject-relative-clause (np-ref vp-ref)
-  (let ((var (if (is-passive? (right-edge-for-referent))
-               (object-variable vp-ref)
-               (subject-variable vp-ref))))
+  (let (var)
+    (setq np-ref (individual-for-ref np-ref))
     (cond
-     (*subcat-test* (not (null var))) ;; this rule has no semantic restrictions as of now    
-     (var
-      (setq np-ref (individual-for-ref np-ref))
+      (*subcat-test*
+       ;; NO LONGER TRUE (not (null var))) ;; this rule has no semantic restrictions as of now    
+       (if (is-passive? (right-edge-for-referent))
+	   (subcategorized-variable vp-ref :object np-ref)
+	   (subcategorized-variable vp-ref :subject np-ref)))
+
+      ((setq var
+	     (if (is-passive? (right-edge-for-referent))
+		 (subcategorized-variable vp-ref :object np-ref)
+		 (subcategorized-variable vp-ref :subject np-ref)))
+       ;; copy down the upstairs subject
+       ;; Should we check if it was already bound to something?
+       (setq  vp-ref (bind-dli-variable var np-ref vp-ref))      
+       ;; link the rc to the np
+       (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
-      ;; copy down the upstairs subject
-      ;; Should we check if it was already bound to something?
-      (setq  vp-ref (bind-dli-variable var np-ref vp-ref))
-      (else
-        ;; (push-debug `(,np-ref ,vp-ref))
-        ;; (break "Can not find subject var in ~a" vp-ref)
-        (when nil
-          (format t "~&~%No subject variable recorded on ~a~%~%"
-                  vp-ref)))
-      
-      ;; link the rc to the np
-      (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
-      
-      ;; referent of the combination is the np
-      np-ref))))
+       ;; referent of the combination is the np
+       np-ref))))
 
 (defun apply-reduced-relative-clause (np-ref vp-ref)
   (cond
