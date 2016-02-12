@@ -51,7 +51,11 @@
 
 (define-individual 'deictic-location :name "here")
 
-(define-individual 'deictic-location :name "there")
+(if
+ (not (eq :biology common-lisp-user::script)) 
+;; unlikely in bio -- causes problems with construction "THERE IS"
+ (define-individual 'deictic-location :name "there")
+)
 
 
 (define-category c3-region
