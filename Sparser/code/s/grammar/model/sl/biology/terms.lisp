@@ -331,7 +331,6 @@
 
 (noun "approach" :super bio-method)
 
-(define-adverb "as a consequence")
 (noun "consequence" :super bio-quality)
 ;;(define-adverb "as expected") ;; not very common, but avoids a break
 (noun "assay" :super bio-method)
@@ -425,7 +424,6 @@
 (noun "defect" :super bio-relation
       :realization 
       (:NOUN "defect"
-             :etf (premod)
              :m theme
              :in theme))
 
@@ -566,7 +564,6 @@
 
 (adj "further" :super bio-predication)
 (define-adverb "further")
-(define-adverb "furthermore")
 (adj "general" :super bio-predication)
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
@@ -587,7 +584,6 @@
 ;; "However" is actually a subordinate conjunction.
 ;; It can appear in adverbial positions as an interjection
 ;;/// but the correct fix is in the grammar.
-(define-adverb "however")
 
 (noun "human" :super species)
 
@@ -764,7 +760,6 @@
 (noun "model" :super biological) ;; almost never used as a verb
 (noun "modeling" :super bio-method) ;; but modeling is a nominal that is used
 (adj "molecular" :super bio-predication) ;; It's realated to molecule, but how exactly? Seems wrong to jump to "is made of molecules"
-(define-adverb "moreover")
 (noun "mortality" :super bio-abstract) ;;/// relationship to "mortal" ??
 (noun ("mutagenesis" :plural "mutageneses") :super bio-method)
 (noun "mutagenic approaches" :super mutagenesis)
@@ -781,7 +776,7 @@
            :for agent
            :to result
            :to-comp result))
-(define-adverb "nevertheless")
+
 (define-adverb "next")
 (define-unit-of-measure "nM")
 (define-unit-of-measure "nm")
@@ -1024,14 +1019,11 @@
 (adj "synthetic" :super bio-predication)
 (noun "table" :super article-table)
 
-(define-adverb "therefore")
-(define-adverb "thereby")
+
+
 (noun "throughput" :super measurement)
 
 (noun "tissue" :super bio-organ)
-
-(define-adverb "to this end")
-
 
 (adj "transient" :super bio-predication)
 (noun "transition state intermediate" :super molecule-state)
@@ -1060,7 +1052,6 @@
      :realization
      (:adj "unresponsive"
            :to treatment))
-(define-adverb "until now")
 (noun "upstream" :super pathway-direction
       :realization
       (:noun "upstream"))
