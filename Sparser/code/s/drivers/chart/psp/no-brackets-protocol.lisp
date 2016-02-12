@@ -768,7 +768,7 @@
          desc
          (loop for b in bindings 
            unless (member (var-name (binding-variable b))
-                          '(members count))
+                          '(members count ras2-model))
            collect
            (list (var-name(binding-variable b))
                  (collect-model-description (binding-value b) short)))))))
@@ -783,7 +783,7 @@
         (let ((var (binding-variable b))
               (value (binding-value b)))
           (unless (or (memq (var-name var)
-                            '(trailing-parenthetical category))
+                            '(trailing-parenthetical category ras2-model))
                       (typep value 'mixin-category)) ;; has-determiner
             (cond
              ((or (numberp value)
