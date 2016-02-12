@@ -225,6 +225,9 @@
       (when o (setq slots `(:object ,o ,.slots)))
       (setq slots (reverse slots))
       ;;(lsp-break "1")
+      (remove-patterns (append (when (member :subject slots) '(:subject))
+			       (when (member :object slots) '(:object)))
+		       frame)
       (loop for (var-name pname) on slots by #'cddr
         as label = (case pname
                      ((:subject :object 
@@ -246,6 +249,11 @@
      ;;(lsp-break "2")
       )
     frame))
+
+(defun remove-patterns (labels frame)
+  (setf (subcat-patterns frame)
+	(loop for sc in (subcat-patterns frame) unless (member (subcat-label sc) labels :test #'eq)
+	   collect sc)))
 
 (defun update-subcat-v/rs (category subcats)
   (declare (special category subcats))
