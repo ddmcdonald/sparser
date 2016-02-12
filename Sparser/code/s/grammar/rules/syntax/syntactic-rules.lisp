@@ -48,6 +48,11 @@
 
 ;;--- S
 
+(def-syntax-rule (modal subordinate-clause)
+    :head :right-edge
+  :form subordinate-clause
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
 (def-syntax-rule (s to-comp)
                  :head :left-edge
   :form s
@@ -399,7 +404,10 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 
 
-
+(def-form-rule (subordinate-conjunction comma)
+               :head :left-edge
+  :form subordinate-conjunction
+  :referent (:daughter left-edge))
   
 
 #+ignore
@@ -432,7 +440,6 @@ similar to an oncogenic RasG12V mutation (9)."))
       :referent (:function make-pp-relative-clause left-edge right-edge))))
 
 ;;    (unspecified-adjunction np-ref vp-ref)
-
 
 (def-form-rule (comma subject-relative-clause)
                :head :right-edge
@@ -533,7 +540,8 @@ similar to an oncogenic RasG12V mutation (9)."))
 ;   (p "SOS promotes the formation of GTP-bound RAS, thus activating this protein.")
 
 
-(loop for vv in '((s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
+(loop for vv in '((subordinate-clause subordinate-clause) ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
+		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
   
   do
