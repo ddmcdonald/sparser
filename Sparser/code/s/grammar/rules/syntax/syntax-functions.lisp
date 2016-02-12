@@ -83,6 +83,31 @@
 (defvar CATEGORY::COPULAR-PREDICATE)
 
 
+(define-lambda-variable 
+    ;; Used to explicitly mark the type of an individual
+    ;; created to anchor segments created by DM&P rather
+    ;; than core conceptualizations and incorporated sublanguages
+  'predication ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+    ;; Used to explicitly mark the type of an individual
+    ;; created to anchor segments created by DM&P rather
+    ;; than core conceptualizations and incorporated sublanguages
+  'appositive-description ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+    ;; Used to explicitly mark the type of an individual
+    ;; created to anchor segments created by DM&P rather
+    ;; than core conceptualizations and incorporated sublanguages
+  'comp ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+
 
 ; (left-edge-for-referent)
 ; (right-edge-for-referent)
@@ -435,14 +460,18 @@
               (edge-string (right-edge-for-referent)))
         *adverb+vg*)
   (cond
-   ((vg-has-adverb-variable? vg)
-    (setq  vg (bind-dli-variable 'adverb adverb vg))
-    vg)
-   (t (break "can't find adverb slot for ~s on verb ~s"
-                  (edge-string (left-edge-for-referent))
-                  (edge-string (right-edge-for-referent))))
-   ;; don't apply rule to verbs whose interpretation does not have an adverb variable
-   ))
+    ((and ;; block "THERE IS"
+      (itypep vg category::be)
+      (itypep adverb category::deictic-location))
+     nil)
+    ((vg-has-adverb-variable? vg)
+     (setq  vg (bind-dli-variable 'adverb adverb vg))
+     vg)
+    (t (break "can't find adverb slot for ~s on verb ~s"
+	      (edge-string (left-edge-for-referent))
+	      (edge-string (right-edge-for-referent))))
+    ;; don't apply rule to verbs whose interpretation does not have an adverb variable
+    ))
 
 (defun interpret-as-comp (as vp+ed)
   (declare (ignore as))
@@ -1103,25 +1132,6 @@ to enhance p53 mediated apoptosis [2].") |#
           
           ;;(break "testing subcats")
           variable
-          #|
-          (or
-          variable
-          (when (or
-          (eq label (word-named "in"))
-          (eq label :premod))
-          (cond
-          ((and (itypep head 'physical)
-          (itypep item 'location))
-          (find-variable-in-category/named 'location category::physical))
-          ((and (itypep head 'biological)
-          (itypep item 'bio-location))
-          (find-variable-in-category/named
-          'location (category-named 'biological)))
-          ((and (itypep head 'biological)
-          (itypep item 'bio-context))
-          (find-variable-in-category/named
-          'context (category-named 'biological))))))
-          |#
           ))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
@@ -1243,7 +1253,7 @@ to enhance p53 mediated apoptosis [2].") |#
 
 (defun make-subordinate-clause (conj clause)
   (make-simple-individual ;;make-non-dli-individual
-   category::subordinate-clause
+   (itype-of clause)
    `((conj ,conj) (comp ,clause))))
 
 (defun make-pp-relative-clause (pp clause)
