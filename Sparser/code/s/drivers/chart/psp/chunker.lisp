@@ -148,7 +148,8 @@
         (declare (special *chunk*))
         (push-debug `(,*chunk*))
         (tr :parsing-chunk-interior-of *chunk*)
-        (parse-chunk-interior *chunk*)))
+	(when (chunk-forms *chunk*) ;; don't parse a chunk like "EITHER" which has no form...
+	  (parse-chunk-interior *chunk*))))
     (set-sentence-status sentence :chunked)
     (when *record-all-chunks*
       (loop for c in chunks
@@ -509,7 +510,11 @@
           (loop for edge in edges thereis (eq (edge-category edge) category::parentheses))))
         t)
        ((eq category::verb+ing eform)
-        (loop for edge in edges thereis (ng-head? edge)))
+	(loop for edge in edges thereis
+	     (and (ng-head? edge)
+		  ;; rule out demonstrative pronouns
+		  (not (eq (edge-form edge) category::det)))))
+	 
        ((eq category::ordinal (edge-category e))
         ;;WORKAROUND -- DAVID
         nil)
@@ -542,7 +547,12 @@
        (eq (edge-category edge) category::all)))
     (eq name 'category::det))))
 
-
+(defun edge-over-there? (e)
+  (declare (special category::syntactic-there category::deictic-location))
+  (or (eq (edge-category e) category::syntactic-there)
+      (and (eq (edge-category e) category::deictic-location)
+	   (word-p (value-of 'name (edge-referent e)))
+	   (equal (word-pname (value-of 'name (edge-referent e))) "there"))))
 
 (defgeneric ng-start? (label)
   (:documentation "Is a category which can occur inside a NG"))
@@ -551,75 +561,78 @@
 (defmethod ng-start? ((s symbol))
   nil)
 (defmethod ng-start? ((e edge))
-  (declare (special e category::modifier category::adjective 
+  (declare (special e category::modifier category::adjective
                     category::be *big-mechanism* category::parentheses
                     category::that category::verb+ed category::verb+ing
                     category::preposition category::and category::also
                     category::vp+ed))
   (cond
-   ((eq (edge-category e) category::modal)
-    nil)
-   ((eq (edge-form e) category::vp+ed) t) ;; this should only happen for NS words like GAP–mediate
-   ((and (plural-noun-and-present-verb? e)
-         (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
-           thereis (ng-start? ee)))
-    nil)
-   ((or (eq category::modifier (edge-category e))
-        (eq category::adjective (edge-form e)))
-    ;;when the previous chunk was a copula verb (just check for BE at this time)
-    ;; and this is an adjective
-    (not (and (car *chunks*)
-              (member 'vg (chunk-forms (car *chunks*)))
-              (loop for edge in (ev-edges (car (chunk-ev-list (car *chunks*))))
-                thereis
-                (eq category::be (edge-category edge))))))
-   ((eq category::that (edge-category e))
-    ;; it is almost never the case that THAT is a determiner, 
-    ;; it is usually a relative clause marker or a thatcomp marker
-    (and (not *big-mechanism*)
-         (not (and (car *chunks*)
-                   (member 'vg (chunk-forms (car *chunks*)))
-                   (thatcomp-verb (car (chunk-edge-list (car *chunks*))))))
-         (not (and (car *chunks*)
-                   (member 'ng (chunk-forms (car *chunks*)))
-                   (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
-   ((eq (edge-form e) category::adverb)
-    (not (eq (edge-category e) category::also)))
-   ((ng-start? (edge-form e))
-    t)
-   ((and (edge-form e)
-         (eq (cat-symbol (edge-form e)) 'category::wh-pronoun)
-         (member (cat-symbol (edge-referent e)) 
-                 '(category::which category::whose category::what)))
-    t)
-   ((eq category::verb+ed (edge-form e))
-    ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
-    ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
-    ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
-    ;; as opposed to "direct binding to activated forms of RAS"
-    (let ((prev-edge (edge-just-to-left-of e)))
-      (and (not
-            (and (edge-p prev-edge)
-                 (eq category::parentheses (edge-category prev-edge))))
-           (not (and
-                 (car *chunks*)
-                 (member 'ng (chunk-forms (car *chunks*)))
-                 (eq (chunk-end-pos (car *chunks*))
-                     (pos-edge-starts-at e)))))))
-   ((eq category::verb+ing (edge-form e))
-    ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
-    ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
-    (unless (could-be-the-start-of-a-sentence (pos-edge-starts-at e))
-      (let ((prev-edge (edge-just-to-left-of e)))
-        (and (not (and (edge-p prev-edge)
-                       (eq category::parentheses (edge-category prev-edge))))
-             (not (and (edge-p prev-edge)
-                       (or
-                        (eq word::comma (edge-category prev-edge))
-                        (eq category::and (edge-category prev-edge)))))
-             (not (and (edge-p prev-edge)
-                       (or (eq category::preposition (edge-form prev-edge))
-                           (ng-head? prev-edge))))))))))
+    ((or
+      (eq (edge-category e) category::modal)
+      ;;(edge-over-there? e)
+      ) ;; a way to handle ambiguity of THERE to get "THERE IS ..." correct
+     nil)
+    ((eq (edge-form e) category::vp+ed) t) ;; this should only happen for NS words like GAP–mediate
+    ((and (plural-noun-and-present-verb? e)
+	  (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
+	     thereis (ng-start? ee)))
+     nil)
+    ((or (eq category::modifier (edge-category e))
+	 (eq category::adjective (edge-form e)))
+     ;;when the previous chunk was a copula verb (just check for BE at this time)
+     ;; and this is an adjective
+     (not (and (car *chunks*)
+	       (member 'vg (chunk-forms (car *chunks*)))
+	       (loop for edge in (ev-edges (car (chunk-ev-list (car *chunks*))))
+		  thereis
+		    (eq category::be (edge-category edge))))))
+    ((eq category::that (edge-category e))
+     ;; it is almost never the case that THAT is a determiner, 
+     ;; it is usually a relative clause marker or a thatcomp marker
+     (and (not *big-mechanism*)
+	  (not (and (car *chunks*)
+		    (member 'vg (chunk-forms (car *chunks*)))
+		    (thatcomp-verb (car (chunk-edge-list (car *chunks*))))))
+	  (not (and (car *chunks*)
+		    (member 'ng (chunk-forms (car *chunks*)))
+		    (thatcomp-noun (car (chunk-edge-list (car *chunks*))))))))
+    ((eq (edge-form e) category::adverb)
+     (not (eq (edge-category e) category::also)))
+    ((and (edge-form e)
+	  (eq (cat-symbol (edge-form e)) 'category::wh-pronoun)
+	  (member (cat-symbol (edge-referent e)) 
+		  '(category::which category::whose category::what)))
+     t)
+    ((eq category::verb+ed (edge-form e))
+     ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
+     ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
+     ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
+     ;; as opposed to "direct binding to activated forms of RAS"
+     (let ((prev-edge (edge-just-to-left-of e)))
+       (and (not
+	     (and (edge-p prev-edge)
+		  (eq category::parentheses (edge-category prev-edge))))
+	    (not (and
+		  (car *chunks*)
+		  (member 'ng (chunk-forms (car *chunks*)))
+		  (eq (chunk-end-pos (car *chunks*))
+		      (pos-edge-starts-at e)))))))
+    ((eq category::verb+ing (edge-form e))
+     ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
+     ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
+     (unless (could-be-the-start-of-a-sentence (pos-edge-starts-at e))
+       (let ((prev-edge (edge-just-to-left-of e)))
+	 (not (and (edge-p prev-edge)
+		   (or
+		    (eq category::parentheses (edge-category prev-edge))
+		    (eq word::comma (edge-category prev-edge))
+		    (eq category::and (edge-category prev-edge))
+		    (eq category::preposition (edge-form prev-edge))
+		    (eq category::subordinate-conjunction (edge-form prev-edge))
+		    (ng-head? prev-edge)))))))
+    ((ng-start? (edge-form e))
+     t))
+  )
 
 (defmethod ng-start? ((c referential-category))
   (ng-start? (cat-symbol c)))

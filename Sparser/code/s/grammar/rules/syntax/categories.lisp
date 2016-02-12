@@ -462,15 +462,18 @@
 (defmethod ng-head? ((w word))
   nil)
 (defmethod ng-head? ((e edge))
-  (declare (special category::that)) ;; timing. Isn't loaded yet
+  (declare (special e))
   (cond
-   ((eq (edge-form e) CATEGORY::VERB+ING) ; 
+   ((eq (cat-name (edge-form e)) 'VERB+ING) ; 
     (let
         ((end-pos (pos-edge-ends-at e))
          (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
+      (declare (special end-pos prev-edge)) 
       (and
-       (not (and (edge-p prev-edge)(eq (edge-form prev-edge) category::adverb)))
-       (not (eq (edge-form (right-treetop-at/edge end-pos)) category::det))
+       (not (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb)))
+       (let
+	   ((next-edge (right-treetop-at/edge end-pos)))
+	 (not (and (edge-p next-edge)(eq (cat-name (edge-form next-edge )) 'det))))
        (not
         (memq 
          ;; SBCL caught an error here -- led to simplification to use pos-terminal
@@ -479,7 +482,7 @@
    ((ng-head? (edge-form e)) t)
    ((and
      (eq category::det (edge-form e))
-     (eq category::that (edge-category e))))))
+     (member (cat-name(edge-category e)) '(that this these those))))))
 
 (defmethod ng-head? ((c referential-category))
   (ng-head? (cat-symbol c)))
