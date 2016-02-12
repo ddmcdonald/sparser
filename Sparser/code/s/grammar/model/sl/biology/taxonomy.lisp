@@ -128,7 +128,7 @@
           (non-cellular-location non-cellular-location)
           (examples biological)
 	  (modifier)
-	  (predication)
+;;	  (predication)
           ;;(variant variant)
           )
   :realization
