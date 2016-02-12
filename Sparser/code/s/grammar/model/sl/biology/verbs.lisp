@@ -1386,6 +1386,7 @@
 (delete-noun-cfr (resolve "lead"))
 (delete-noun-cfr (resolve "leads"))
 (define-category lead :specializes positive-bio-control
+    :restrict ((agent (:or bio-process bio-method)))
     :binds ((result (:or biological bio-rhetorical)))
     :realization
     (:verb ("lead" :past-tense "led")
