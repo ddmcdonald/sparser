@@ -285,7 +285,6 @@
   :realization 
   (:noun "process"
          :s subject
-         :alt-s by-means-of
          :by by-means-of
          :through by-means-of
          :via by-means-of
@@ -309,12 +308,11 @@
 (define-category caused-bio-process
   :specializes bio-process
   :binds
-  ((agent (:or bio-entity bio-process bio-mechanism drug process-rate)) ;; supercedes subject in bio=-process
+  ((agent (:or bio-entity bio-process bio-mechanism bio-method drug process-rate)) ;; supercedes subject in bio=-process
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
    (at (:or bio-concentration quantity measurement)))
   :realization
   (:s agent
-      :alt-s by-means-of
       :o object
       :of object
       :by agent     
