@@ -1013,7 +1013,9 @@
 (define-adjective "prototypical")
 (define-adjective "quiescent")
 (define-adjective "random")
-(define-adjective "rapid")
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-adjective "rapid"))
 (define-adjective "rare")
 (define-adjective "raw")
 (define-adjective "reactive")
