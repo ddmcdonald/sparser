@@ -205,10 +205,10 @@
             as frame = (get-subcategorization sc)
             when frame
             do (loop for sp in (subcat-patterns frame)
-		  unless (and nil
-			      (member (subcat-label sp) '(:subject :object :premod))
-			      (find-if #'(lambda(x)(eq (subcat-label x) (subcat-label sp)))
-				       patterns))
+		  unless (and
+			  (member (subcat-label sp) '(:subject :object))
+			  (find-if #'(lambda(x)(eq (subcat-label x) (subcat-label sp)))
+				   patterns))
                  do (pushnew sp patterns :test #'subcat-pattern-equal))
             finally (return (nreverse patterns))))))
 
