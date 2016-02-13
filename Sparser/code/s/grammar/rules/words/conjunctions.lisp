@@ -90,8 +90,7 @@
 ;;;------ subordinating conjunctions
 
 (mapcar #'define-conjunction
-        '(
-          "according as"
+        '("according as"
           "albeit"
           "also"
           "although" 

@@ -54,7 +54,8 @@
 (noun "thresholding" :super bio-method)
 (noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
 (noun "dextran" :super polysaccharide)
-
+(define-adverb "barely")
+(define-adverb "a bit more")
 
 
 ;;lipids
@@ -122,8 +123,7 @@
   :realization
   (:noun "size" :of measured-item))
 (noun "surface" :super bio-entity)
-(define-adverb "in contrast") ;; TO-DO handle "in contrast to"
-(define-adverb "by contrast")
+
 (noun fold :super abstract)
 
 ;; only used in phrases like nnn-fold, this is here to suppress the
@@ -159,7 +159,6 @@
 (adj "adjesion" :super bio-predication) ;; TO-DO need to think about how to define "adhere" to structure
 (adj "closed" :super bio-predication)
 (adj "scaffolding" :super bio-predication) ;; "scaffolding protein"
-(adj "scaffold" :super bio-predication);; "scaffold protein"
 (adj "direct" :super bio-predication)
 (adj "spatial" :super bio-predication)
 (adj "resting" :super bio-predication)
@@ -308,7 +307,6 @@
             :for object))
 (noun "allele" :super variant)
 
-(define-adverb "also")
 (adj "also known as" :super bio-predication)
 
 (noun "analog" :super variant)
@@ -332,7 +330,6 @@
 (noun "approach" :super bio-method)
 
 (noun "consequence" :super bio-quality)
-;;(define-adverb "as expected") ;; not very common, but avoids a break
 (noun "assay" :super bio-method)
 (define-adverb "at baseline")
 (adj "background" :super bio-predication)
@@ -867,7 +864,7 @@
       :realization
       (:noun "radioactivity" :adj "radioactive"
              :of material))
-
+(adj "rapid" :super bio-predication)
 (adj "rate-limiting" :super bio-predication)
 (define-adverb "readily")
 (adj "real-time" :super bio-predication)
