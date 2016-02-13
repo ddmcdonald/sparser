@@ -194,7 +194,7 @@
 (define-preposition "in view of")
 (define-preposition "inside" :form 'spatial-preposition)
 (define-preposition "inside of" :form 'spatial-preposition)
-(define-preposition "instead of")
+;;(define-preposition "instead of") make it a conjunction like "but not"
 (define-preposition "into" :form 'spatial-preposition)
 (define-preposition "irrespective of")
 (define-preposition "like")
