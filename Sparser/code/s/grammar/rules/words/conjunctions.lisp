@@ -74,6 +74,9 @@
 (define-conjunction "but not"  :form 'conjunction
   )
 
+(define-conjunction "instead of"  :form 'conjunction
+  )
+
 
 
 ;;------- paired coordinators
@@ -92,7 +95,8 @@
           "albeit"
           "also"
           "although" 
-          "among" 
+          "among"
+	  "as expected"
           "as far as"
           "as if"
           "as soon as"
@@ -101,12 +105,15 @@
           "as though"
           "because"
           "besides"
-          "but"  
+          "but"
+	  "by contrast"
           "even"
           "except"
           "except that"
+	  "finally"
           "furthermore"
           "however"
+	  "in contrast"
           "instead" 
           "inasmuch as"
           "lest"
@@ -121,12 +128,14 @@
           "so"
           "such as"
           "such that"
+	  "surprisingly"
           "therefore"
           "though"
           "till"
           "thereby"
           "thus"  
           "to this end"
+	  "unexpectedly"
           "until"
           "until now"
           "whereas"
@@ -135,6 +144,7 @@
           "until"   
           "upon"
           "whatever"
+	  "when" ;; also a wh-pronoun
           "whether" ;; this is to allow "whether" to be a subordinating conjunction leading to a "whethercomp"
           ))
 
