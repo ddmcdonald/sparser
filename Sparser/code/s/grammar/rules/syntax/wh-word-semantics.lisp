@@ -67,7 +67,9 @@ for the word and a rule that rewrite to it.
 (define-wh-pronoun "which")
 (define-wh-pronoun "what")
 (define-wh-pronoun "where")
-(define-wh-pronoun "when")
+(if
+ (not (eq :biology common-lisp-user::script))
+ (define-wh-pronoun "when"))
 (define-wh-pronoun "whom")
 (define-wh-pronoun "whose")
 (define-wh-pronoun "why")
