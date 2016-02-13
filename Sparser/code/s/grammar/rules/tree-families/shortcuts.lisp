@@ -212,7 +212,14 @@ broadly speaking doing for you all the things you might do by hand.
                     super specializes
                     binds realization
                     instantiates mixin restrict rule-label 
-                    obo-id)
+		 obo-id)
+     (cond
+    ((and super specializes)
+     (lsp-break "defining noun with both :super ~s  and :specialize ~s"
+		super specializes))
+    (t (setq super (or super specializes))))
+   
+
   (typecase name
     (string ;; name is taken from the string
      (unless adj ;; is there a good reason for them to be different?
@@ -225,7 +232,7 @@ broadly speaking doing for you all the things you might do by hand.
      (error "Bad type for 'name'. It should be a string or a symbol")))
   `(adj/expr ',name
         :adj ',adj
-        :super ',super :specializes ',specializes
+        :super ',super ;; :specializes ',specializes
         :binds ',binds :realization ',realization
         :instantiates ',instantiates :mixin ',mixin 
         :restrict ',restrict :rule-label ',rule-label
@@ -233,10 +240,10 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defun adj/expr (name
                  &key adj
-                      super specializes 
-                      binds realization
-                      instantiates mixin 
-                      restrict rule-label obo-id)
+		   super specializes 
+		   binds realization
+		   instantiates mixin 
+		   restrict rule-label obo-id)
 
   (unless (or super specializes)
     (setq  specializes (super-category-for-POS :adjective)))
@@ -251,41 +258,26 @@ broadly speaking doing for you all the things you might do by hand.
       (error "A realization was specified but no variables"))
     (setq realization
           (cons :adj (cons adj realization))))
-    
-  (let ( category )
-    (cond
-     (binds ;; this means that we're doing the equivalent of
-      ;; define-category, with the shortcut realization. 
-      ;; If we exposed the realization parameters we could 
-      ;; determine what the slot and value restrictions were
-      ;; as in decode-def-term-call and use the category making 
-      ;; function. That doesn't seem reasonable, so falling 
-      ;; back to a standard form
-      (let ((form
-            `(define-category ,name
-               :instantiates ,(or instantiates :self)
-               :specializes ,(or super specializes)
-               :rule-label ,rule-label
-               :binds ,binds
-               :restrict ,restrict
-               :mixins ,mixin
-               :realization ,realization)))
-        (setq category (eval form))))
-     (t
-      ;; Essentially the same thing, but with no bindings,
-      ;; just the interited ones
-      (let ((form
-             `(define-category ,name
-                :instantiates ,(or instantiates :self)
-                :specializes ,(or super specializes)
-                :rule-label ,rule-label
-                :restrict ,restrict
-                :mixins ,mixin
-                :realization ,(or realization `(:adjective ,adj)))))
-        (setq category (eval form)))))
-
+  (let* ((form
+	  `(define-category ,name
+	       :specializes ,super
+	       :binds ,binds
+	       :restrict ,restrict
+	       :mixins ,mixin
+	       :realization
+	       ,(if adj `(:adj ,(if (consp adj)
+					  (car adj)
+					  adj)
+				     ,.realization)
+		    realization)))
+	 (category (eval form)))
     (when obo-id
       (setq category (bind-dli-variable 'uid obo-id category)))
+    (dolist (string (when (consp adj)(cdr adj)))
+      (let ((rule-form `(def-cfr/expr ',(cat-name category) '(,string)
+			  ;; can we guess it's a common noun for form?
+			  :referent ,category)))
+	(eval rule-form)))
     category))
 
 
