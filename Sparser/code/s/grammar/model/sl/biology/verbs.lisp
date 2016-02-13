@@ -338,13 +338,13 @@
 ;; clausal roles
 ;; really want to have the form "CRAF allows CRAF to hyperactivate the pathway"  -- want the clausal modiffer
 (define-category allow :specializes bio-control
-    :binds ((process process))
+    :binds ((process (:or biological have process)))
     :realization
     (:verb "allow" ;; keyword: ENDS-IN-ING 
 	   :noun "allowance"
 	   :etf (svo-passive)
            :for object
-           :to-comp object))
+           :to-comp process))
 
 
 "" ;; keyword: (ion N) 
@@ -885,7 +885,7 @@
   (:verb "drive"
    :etf (svo-passive)))
 
-(define-category direct
+(define-category direct-control ;; to avoid conflict with the adjective "direct"
   :specializes bio-control
   :realization
   (:verb   "direct" :noun "direction"
@@ -972,7 +972,8 @@
     :binds ((process bio-process))
     :realization
     (:verb "escape"
-	   :etf (sv)
+	   :etf (svo)
+	   :o process
            :from process
            :noun "escape" 
            :of subject))
@@ -1386,7 +1387,7 @@
 (delete-noun-cfr (resolve "lead"))
 (delete-noun-cfr (resolve "leads"))
 (define-category lead :specializes positive-bio-control
-    :restrict ((agent (:or bio-process bio-method)))
+    :restrict ((agent (:or bio-process bio-method bio-mechanism)))
     :binds ((result (:or biological bio-rhetorical)))
     :realization
     (:verb ("lead" :past-tense "led")
