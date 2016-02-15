@@ -78,12 +78,26 @@ location, membership in structures (staircase), local relations
 with other blocks, mention in utterances, etc. |#
 (define-category block
   :specializes artifact 
-  :rule-label artifact ;;/// temporary hack for temp parser
+  ;;:rule-label artifact
   :mixins (has-name ;; symbols like B1
            )
   :index (:permanent :key name)
   :realization ;; for connection to Mumble
      (:common-noun "block"))
+
+#| An interesting deference between a block and a table is
+that you can't use the table as part of any of the standard
+BW constructions. Only blocks can be used. The affordance for
+supporting other things is also markedly different since
+a block can typically only support a single other block
+(and any stack that starts with it) whereas a table can
+support a substantial number of blocks.
+|#
+(define-category table
+  :specializes artifact
+  :index (:permanent :list)
+  :realization
+     (:common-noun "table"))
 
 
 ;;;-----------------------------
@@ -100,6 +114,8 @@ with other blocks, mention in utterances, etc. |#
 (defun setup-lexicalized-trees ()
   (define-lexicalized-phrase common-noun ("staircase") (n))
   (define-lexicalized-phrase SVO ("build") (v))
-  (define-lexicalized-phrase SVOC ("let") (v)))
+  (define-lexicalized-phrase SVOC ("let") (v))
+  (define-lexicalized-phrase SVBeComp ("be") (v)) ;; s, c
+  )
 (setup-lexicalized-trees)
 

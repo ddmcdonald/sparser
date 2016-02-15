@@ -13,15 +13,9 @@
  make-adjunction-node  feature-driven-prepocessing  realize-dtn
  phrase-structure-execution  process-negate-accessory
  add-further-specification  define-word-stream-action-type
+ instantiate-lexicalized-phrase
 |#
 
-;;;------------
-;;; vocabulary
-;;;------------
-#| Define-lexicalized-phrase build nouns by default. If we start
-in Sparser there is a translation routine. In a better world
-rebuilt from scratch there would be a single word stock.
-See Zo code for what that could look like. |#
 
 ;;;--------------------------
 ;;; Prebuilt phrases (trees)

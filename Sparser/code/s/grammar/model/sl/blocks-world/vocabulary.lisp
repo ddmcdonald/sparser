@@ -12,7 +12,6 @@
 ;;--- nouns
 
 (noun "staircase" :specializes artifact :rule-label artifact)
-(noun "table" :specializes artifact :rule-label artifact)
 
 ;;--- Interjections -- see ex. in model/sl/checkpoint/
 (sentential-interjection "good")
@@ -36,8 +35,6 @@
                            (slot . theme)))))
 
 ;; Ignore "let's" for now (1.1), 
-
-;; 1.4  (p "that's good.") -- "that" construed as a relative marker
 
 
 ;; 1.1 (p "Let's build a staircase.") 

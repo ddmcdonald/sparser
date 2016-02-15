@@ -87,13 +87,36 @@ d. An operator like 'build' can take any number of
 ; (sexp-reader utt-2)
 
 (defparameter utt-3a '(acknowledge)) ;; "ok"
-(defparameter utt-3b '(good-job)) ;; as it spoken to a dog or child
+(defparameter utt-3b '(good-job)) ;; as if spoken to a dog or child
 
 (defun utt3c-preparation ()
   "Run this to create the context assumed by utterance 3"
   (set-the-focus *the-two-blocks-he-put-down*))
 (defparameter utt-3c `(propose-goal
                        (push-together :o (collection ,*b1* ,*b2*))))
+
+#| This is the final thing we say. It's in reply to the
+question "Like this?" said after they've pushed the blocks
+together. Our use of "that" (in "That's good") is to refer
+to the same thing they referred to with "this", which is
+the configuration of blocks they've just created. Alternatively
+it might be a reference to the action they just took.
+Question is how to motivate the demontrative pronouns. 
+The "this" vs. "that" might just be perspective and which
+person is making the reference. (near vs. far)
+|#
+(defparameter utt-4 '(confirm-did-right-thing)) ;; punting
+
+; (test-dialog-1)
+(defun test-dialog-1 ()
+  (say (sexp-reader utt-1.1a))
+  (say (sexp-reader utt-2))
+  (say (sexp-reader utt-3a))
+  (say (sexp-reader utt-3b))
+  (utt3c-preparation)
+  (say (sexp-reader utt-3c))
+  (say (sexp-reader utt-4)))
+
 
 ;;;----------
 ;;; The code
@@ -227,7 +250,6 @@ interface/derivations/discourse-reference.lisp
 
 
 (defun plan-reference-to-individual (i)
-  (push-debug `(,i)) ;;(break "object is ~a" i)
   (cond
    ((unique? i)
     (plan-the-category i))
@@ -269,7 +291,9 @@ interface/derivations/discourse-reference.lisp
     (push-debug `(,collection ,items))
     (cond
      ((in-focus? collection)
-      (setf (resource dtn) (wrap-pronoun 'third-person-plural)))
+      (setf (resource dtn) ;;(wrap-pronoun 'third-person-plural)
+            (mumble-value 'third-person-plural 'pronoun)
+            ))
      ;; "the (two) blocks"
      ;; enumeration -- e.g. for the drugs in BioC dialog
      (t (error "No collection strategy applied")))
@@ -308,12 +332,13 @@ interface/derivations/discourse-reference.lisp
 ;;--- self contained. Might include "but"
 
 (defmethod standalone-speech-act ((speech-act symbol))
-  (memq speech-act '(acknowledge good-job)))
+  (memq speech-act '(acknowledge good-job confirm-did-right-thing)))
 
 (defmethod do-standalone-speech-act ((speech-act symbol))
   (ecase speech-act
     (acknowledge (plan-an-acknowledgement))
     (good-job (plan-brief-praise))
+    (confirm-did-right-thing (construct-that-is-good))
 ))
 
 (defun plan-an-acknowledgement ()
@@ -326,6 +351,26 @@ interface/derivations/discourse-reference.lisp
   (let ((lp (get-lexicalized-phrase 'good)))
     (make-dtn :referent 'brief-praise ;;/// no -- more substantial
               :resource lp)))
+
+(defun construct-that-is-good ()
+  "Total punt -- taking 'that's good' as a conventional reply
+   to other person's action (or the situation/configuration
+   that resulted from the action) to confirm that it was correct.
+   Imagine saying it to a little kid. It probably does indeed
+   refer, but don't want to set all that up yet (2/11/16)."
+  (let* ((lp (get-lexicalized-phrase 'be))
+         (dtn (make-dtn :referent 'that-is-good ;;/// no -- more substantial
+                        :resource lp))
+         (s-comp (make-instance 'complement-node
+                   :phrase-parameter (parameter-named 's)
+                   :value (mumble-value 'that 'pronoun)))
+         (c-comp (make-instance 'complement-node
+                   :phrase-parameter (parameter-named 'c)
+                   :value (plan-brief-praise)))) ;;kind of cheating
+    (push c-comp (complements dtn))
+    (push s-comp (complements dtn))
+    (present-tense dtn)
+    dtn))
   
 
 ;;--- for Command 
