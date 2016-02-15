@@ -1,9 +1,8 @@
 ;;; -*- Mode: Lisp; Package:MUMBLE; Syntax: COMMON-LISP; Base:10; Default-character-style: (:FIX :ROMAN :NORMAL); -*-
-;;; $Id: morphology.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 ;;;
 ;;; Mumble-05:  grammar; morphology
 ;;;
-;;; Copyright (C) 2005,2013 David D. McDonald
+;;; Copyright (C) 2005,2013,2016 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald and the
 ;;;    Mumble Development Group.  All rights reserved.
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
@@ -495,7 +494,8 @@ specified by the *current-phrasal-root*.  Default is THIRD."
 		(label-named 'objective)
 		(label-named 'genitive)
 		(label-named 'possessive-np)
-		(label-named 'possessive))))
+		(label-named 'possessive)
+                (label-named 'direct-object))))
   (let ((governing-label
 	  (or (car (intersection
 		     *the-case-governing-labels*
