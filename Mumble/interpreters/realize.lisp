@@ -69,48 +69,56 @@
 (defun realize-dtn (dtn)
   "A derivation-tree node is one of the possible contents of a slot.
   This expands the dtn to a phrase (or other surface-level resource
-  such as a word) and returns the root node of the phrase to be the
-  new contents of the slot. At this level we just do the data checks,
-  all the heavy lifting is done by dtn-bundle-driver.
-"
-  (let ((resource (resource dtn))
-        ;;(features (features dtn))
-        phrase-type  root-node )
-    (push-debug `(,resource))
+  such as a word) and returns the root node of the phrase (or the
+  word/pronoun/..) to be the new contents of the slot. At this 
+  level we just do the data checks, all the heavy lifting is done by
+  a driver that knows how to how to handle the specific accessories."
+  (let* ((resource (resource dtn))
+         (phrase (typecase resource
+                   (lexicalized-phrase ;; saturated or partially so
+                    (phrase resource))
+                   (phrase resource)
+                   (pronoun)
+                   (otherwise
+                    (break "New/unexpected type of resource in DTN: ~a~%  ~a"
+                           (type-of resource) resource))))
+         (phrase-type
+          (when phrase (caar (definition phrase)))))
+    ;; place for debugging break
 
     ;; Get the phrase instantiated
-    (typecase resource
-      (lexicalized-phrase
-       (let ((phrase (phrase resource)))
-         (setq phrase-type (caar (definition phrase)))
-         (setq root-node (instantiate-lexicalized-phrase resource))))
-      (phrase 
-       (setq phrase-type (caar (definition resource)))
-       (setq root-node (instantiate-phrase-in-dtn resource dtn)))
-      (otherwise
-       (break "New/unexpected type of resource in DTN: ~a~%  ~a"
-	      (type-of resource) resource)))
+    (let ((root-node
+           (etypecase resource
+             (partially-saturated-lexicalized-phrase 
+              ;; some bound parameters, some open
+              (instantiate-phrase-in-dtn resource dtn))
+             (saturated-lexicalized-phrase 
+              ;; no open parameters
+              (instantiate-lexicalized-phrase resource))
+             (phrase 
+              (instantiate-phrase-in-dtn resource dtn))
+             (pronoun
+              resource))))
 
-    ;; Handle features and adjunctions
-    (typecase resource
-      ;; The 'otherwise' case is caught just above.
-      ((or phrase lexicalized-phrase)
-       
-       ;;(break "after dtn resource instantiated") ;; replace w/ landmark??
-       (case (name phrase-type)
-         (clause
-          (clausal-bundle-driver dtn root-node))
-         ((np np/no-det)
-          (general-np-bundle-driver dtn root-node))
-         (pp) ;; just the root-node 
-         (qp) ;; ditto. Used for interjections
-         (otherwise
-          (push-debug `(,root-node ,phrase-type))
-          (error "Unexpected name of phrase-type: ~a"
-                 (name phrase-type))))))
+      ;; Handle features and adjunctions
+      (typecase resource
+        (pronoun)
+        ((or phrase lexicalized-phrase)
+         ;;(break "after dtn resource instantiated") ;; replace w/ landmark??
+         (case (name phrase-type)
+           (clause
+            (clausal-bundle-driver dtn root-node))
+           ((np np/no-det)
+            (general-np-bundle-driver dtn root-node))
+           (pp) ;; just the root-node 
+           (qp) ;; ditto. Used for interjections
+           (otherwise
+            (push-debug `(,root-node ,phrase-type))
+            (error "Unexpected name of phrase-type: ~a"
+                   (name phrase-type))))))
 
-    ;; Pass the node back to be knit-in.
-    root-node))
+      ;; Pass the node/word back to be knit-in by build-phrase
+      root-node)))
 
 
 ;;;--------------
