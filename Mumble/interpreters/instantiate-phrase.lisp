@@ -1,7 +1,7 @@
 ;;; -*- Mode: LISP;  package: MUMBLE;  Syntax: Common-lisp; Base: 10 -*-
 ;;; MUMBLE-05:  interpreters> realization> instantiate-phrase
 
-;;; Copyright (C) 2005,2011-2015 David D. McDonald
+;;; Copyright (C) 2005,2011-2016 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
@@ -26,21 +26,26 @@
 ;;; sorting out the parameters and the values they're bound to
 ;;;------------------------------------------------------------
 
-(defvar *phrase-parameter-argument-list* nil)
+(defvar *phrase-parameter-argument-list* nil
+  "For each phrasal root in turn, this is populated by an alist
+   that maps parameters to their valuess in this instance of
+   the phrase.")
 
 (defun parameter-value (parameter)
+  "Used by phrase builders to retrieve the value of a parameter"
   (declare (special *phrase-parameter-argument-list*)) 
   (cdr (assoc parameter *phrase-parameter-argument-list*)))
 
 (defun parameter-arg-list-from-dtn (dtn)
-  ;;(format t "~&Creating parameter-arg-list-from ~a" dtn)
+  "Given a dtn, lift the parameter/value information from
+   each of its complements and return them as a list of dotted pairs"
   (mapcar #'(lambda (cn)
               (let* ((symbol (phrase-parameter cn))
                      (parameter (etypecase symbol
                                   (parameter symbol)
                                   (symbol (parameter-named symbol))))
                      (value (value cn)))
-                (format t "~&   p: ~a  v: ~a" parameter value)
+                ;;(format t "~&   p: ~a  v: ~a" parameter value)
                 (unless value 
                   (push-debug `(,cn ,parameter ,dtn)) 
                   (error "No value for parameter ~a" parameter))
@@ -48,16 +53,19 @@
 	  (complements dtn)))
 
 (defun pvp-to-list-of-parameter-value-conses (list-of-parameter-value-pairs)
-  ;; Same role as create-phrase-parameter-argument-list except that the
-  ;; call to return-tree-fam-parameter-value argument seems irrelevant
+  "Given a list of parameter-value pair objects, convert them to a
+   list of dotted pairs"
   (mapcar #'(lambda (pvp)
-              `(,(phrase-parameter pvp)
-                 . ,(value pvp)))
+              `(,(phrase-parameter pvp) . ,(value pvp)))
 	  list-of-parameter-value-pairs))
 
 (defun create-phrase-parameter-argument-list (parameter-list argument-list)
+  "Given synchronized lists of parameters and their arguments, return a list 
+   of dotted pairs that combine them. Includes an option to 'reduce' an
+   argument to some form of trace. These were appropriate when working
+   from choice sets where the reductions were stipulated in the choice."
   (mapcar #'(lambda (parameter argument)
-              (when (listp argument)
+              (when (listp arg)
                 (setq argument (reduce-argument argument)))
               (cons parameter 
                     (etypecase argument
@@ -74,20 +82,32 @@
 ;;;--------------
 
 (defmethod instantiate-lexicalized-phrase ((lp saturated-lexicalized-phrase))
-  (let ((phrase (phrase lp)))
-    (let-with-dynamic-extent 
-	((*phrase-parameter-argument-list* 
-	  (pvp-to-list-of-parameter-value-conses (bound lp))))
-      (build-rooted-phrase (definition phrase)))))
-;;
-;;/// should be a more aesthetic factoring here
-;;
+  "All the parameters are bound on the lexicalized phrase"
+  (let ((phrase (phrase lp))
+        (*phrase-parameter-argument-list* 
+         (pvp-to-list-of-parameter-value-conses (bound lp))))
+    (declare (special *phrase-parameter-argument-list*))
+    (build-rooted-phrase (definition phrase))))
+
+(defmethod instantiate-phrase-in-dtn ((lp partially-saturated-lexicalized-phrase)
+                                      (dtn derivation-tree-node))
+  "Some of the paramters are bound on the lp, the rest are given as
+   complements on the dtn"
+  (let ((phrase (phrase lp))
+        (*phrase-parameter-argument-list*
+         (pvp-to-list-of-parameter-value-conses (bound lp))))
+    (declare (special *phrase-parameter-argument-list*))
+    (setq *phrase-parameter-argument-list*
+          (append (parameter-arg-list-from-dtn dtn)
+                  *phrase-parameter-argument-list*))
+    (build-rooted-phrase (definition phrase))))
+
+
 (defmethod instantiate-phrase-in-dtn ((phrase phrase) 
                                       (dtn derivation-tree-node))
-  "Sets up the argument drawing on the complement nodes in the dtn."
-  (let-with-dynamic-extent 
-      ((*phrase-parameter-argument-list*
-        (parameter-arg-list-from-dtn dtn)))
+  "All of the parameters are supplied by the dtn in its complement nodes"
+  (let ((*phrase-parameter-argument-list* (parameter-arg-list-from-dtn dtn)))
+    (declare (special *phrase-parameter-argument-list*))
     (build-rooted-phrase (definition phrase))))
 
 
@@ -209,10 +229,19 @@
                (node (knit-phrase-into-tree slot value))
                (derivation-tree-node
                 (let ((root (realize-dtn value)))
-                  (knit-phrase-into-tree slot root)))
+                  ;; Dispatch here is like the outer one. Consider abstracting
+                  (typecase root
+                    ((or word specification ttrace pronoun)
+                     (set-contents slot value))
+                    (node
+                     (knit-phrase-into-tree slot root))
+                    (otherwise
+                     (error "Unexected type returned from realize-dtn: ~
+                             ~a~%  ~a" (type-of root) root)))))
                (saturated-lexicalized-phrase
                 (let ((root (instantiate-lexicalized-phrase value)))
                   (knit-phrase-into-tree slot root))))))
+
           (cons (let ((phrase-node (build-phrase contents)))
                   (knit-phrase-into-tree slot phrase-node)))
           (otherwise 
