@@ -12,10 +12,26 @@
  (asdf:load-system :r3)
  (asdf:load-system :sparser/blocks-world)
  (asdf:load-system :sparser/c3)
- 
  (asdf:load-system :sparser/fire)
  (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
+
+ (test-overnight 18) (r3::run-localization)  (test-overnight 18)
+Reading document #2 PMC2064696
+*** ")" is likely to be a protein, because of conjunction with "ERK"
+ *current-sentence-string*
+ deal-with-unhandled-unknown-words-at  show-protein-coercion
+ handle-unknown-word-as-bio-entity
+
+ initiate-incremental-CwC-protocol initiate-c3-protocol
+ indexical-for-state -- grammar/rules/situation/rules.lisp:(defun indexical-for-state (state)
+ blocks-world-module-choices 
+
+ make-word/all-properties/or-primed  setup-unknown-word-BigMech-default
+ find-word  resolve-ns-pattern
+ (setq *work-on-ns-patterns* t) (trace-ns-sequences) (trace-scan-patterns)
+ collect-no-space-segment-into-word
+ (trace-lexicon-unpacking) (trace-morphology)
 
  deal-with-unhandled-unknown-words-at
  (trace-morphology) (trace-fsas) (trace-terminals-sweep)
@@ -30,10 +46,7 @@
  starts-occasional-polyword polyword-check initiates-polyword1  do-polyword-fsa
  
 
- make-word/all-properties/or-primed  setup-unknown-word-BigMech-default
- find-word  resolve-ns-pattern
- (setq *work-on-ns-patterns* t) (trace-ns-sequences) (trace-scan-patterns)
- collect-no-space-segment-into-word
+ 
  define-knockout
  digit-FSA 
 
