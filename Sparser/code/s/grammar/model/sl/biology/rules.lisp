@@ -89,6 +89,34 @@
 ;;; raw rules
 
 ;; invitro and in vivo
+(def-cfr biological-in-vivo (protein in-vivo)
+  :referent (:function Interpret-in-vivo-vitro left-edge right-edge))
+
+(def-cfr biological-in-vivo (protein in-vitro)
+  :referent (:function Interpret-in-vivo-vitro left-edge right-edge))
+
+(defun interpret-in-vivo-vitro (protein vitro-vivo)
+  (setq protein (individual-for-ref protein))
+  (setq protein (bind-dli-variable 'context vitro-vivo protein))
+  (revise-parent-edge :form category::np :category category::protein)
+  protein
+)
+
+(def-form-rule (NP category::in-vitro)
+  :form NP
+  :head :left-edge
+  :referent
+  (:head left-edge
+         :bind (context right-edge)))
+
+(def-form-rule (NP category::in-vivo)
+  :form NP
+  :head :left-edge
+  :referent
+  (:head left-edge
+         :bind (context right-edge)))
+
+
 (loop for vv in '((vp vp)
                   (vg vp)
                   (vp+ed vp+ed)
@@ -242,7 +270,7 @@
 
 ;; rules for in vitro and for premodifying adverbs like :recently"
 
-
+#|
 (def-form-rule (S category::in\ vitro)
   :form s
   :head :left-edge
@@ -264,7 +292,7 @@
   :referent
   (:head left-edge
          :bind (context right-edge)))
-#+ignore
+
 (def-form-rule (NP category::in\ vitro)
   :form NP
   :head :left-edge
@@ -272,6 +300,7 @@
   (:head left-edge
          :bind (context right-edge)))
 
+#+ignore
 (def-form-rule (S category::in-vivo)
   :form s
   :head :left-edge
@@ -286,7 +315,7 @@
   :referent
   (:head left-edge
          :bind (context right-edge)))
-
+|#
 
 ;;evidence that "in vivo" can modify an NP is from sentence 3 of the overnight test
 ;; "there are no proteins in vivo that might stabilize ..."
