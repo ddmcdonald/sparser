@@ -352,7 +352,7 @@
   (unless *article-sentences*
     (setq *article-sentences* (make-hash-table)))
   (when (name article)
-    (push sentence (gethash (name article) *article-sentences*))))
+    (push (sentence-string sentence) (gethash (name article) *article-sentences*))))
 
 
 
