@@ -8,10 +8,12 @@
 ;; 10/6/15 Starting with the C3 configuration, which incorporates
 ;; location. Added mid-level-ontology 12/3/15
 
+(in-package :sparser)
+
 (defun blocks-world-module-choices ())  ;; for meta-.
 
 
-;; (include-grammar-module  *other*)
+(include-grammar-module  *other*)
 
 (include-grammar-module  *testing*)
 (include-grammar-module  *citations*)
@@ -118,7 +120,7 @@
 ;  (include-grammar-module  *kinds-of-companies*)
 ;  (include-grammar-module  *company-generalization-words*)
 ;  (include-grammar-module  *company-activity-words*)
-;n  (include-grammar-module  *generic-company-words*)
+;  (include-grammar-module  *generic-company-words*)
 ;  (include-grammar-module  *company-activity-nominals*)
 ;  (include-grammar-module  *subsidiaries*)
 
