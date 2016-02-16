@@ -474,12 +474,14 @@
     (itype-of low)))
 
 (defun show-protein-coercion (e1 e2)
-  (format t "~&*** ~s is likely to be a protein, because of conjunction with ~s~&"
-          (actual-characters-of-word (pos-edge-starts-at e1)
-                                     (pos-edge-ends-at e1) nil)
+  (let ((e1-chars (actual-characters-of-word (pos-edge-starts-at e1)
+                                             (pos-edge-ends-at e1) nil)))
+    ;; (lsp-break "Likely protein: ~a" e1-chars)
+    (format t "~&*** ~s is likely to be a protein, because of conjunction with ~s~&"
+          e1-chars
           (actual-characters-of-word (pos-edge-starts-at e2)
                            (pos-edge-ends-at e2)
-                           nil)))
+                           nil))))
 
 (defun edge-string (e)
   (get-surface-string-for-individual (edge-referent e)))
