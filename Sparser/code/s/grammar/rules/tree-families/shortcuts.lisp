@@ -96,6 +96,109 @@ broadly speaking doing for you all the things you might do by hand.
           ;	      `(:synonyms ,words . ,(cat-realization category)))
           ;	(push-debug `(,category ,i ,rules)) (break "synonyms"))
       i)))
+;; old NP patterns for MUMBLE use
+
+(defmacro common-noun (name
+                &key noun 
+                     super specializes index
+                     binds realization
+                     instantiates mixin restrict rule-label 
+                     obo-id)
+  (typecase name
+    (symbol)
+    (string  ;; (np-head "S338" :super 'residue-on-protein)
+     (setq noun name) ;; preserve it
+     (setq name (name-to-use-for-category name)))
+    (cons
+     (if (stringp (car name))
+       (then
+        (setq noun name)
+        (setq name (name-to-use-for-category (car name))))
+       (error "name parameter is a list of unexpected form: ~a" name)))
+    (otherwise
+     (error "Unexected type for name parameter in noun shortcut: ~a~%~a"
+            (type-of name) name)))
+
+  (when (stringp name)
+    (setq noun name) ;; preserve it
+    (setq name (name-to-use-for-category name)))
+
+  `(common-noun/expr ',name
+         :noun ',noun
+         :super ',super :specializes ',specializes :index ',index
+         :binds ',binds :realization ',realization
+         :instantiates ',instantiates :mixin ',mixin 
+         :restrict ',restrict :rule-label ',rule-label
+         :obo-id ,obo-id))
+
+
+(defun common-noun/expr (name
+                  &key noun
+                       super specializes index
+                       binds realization
+                       instantiates mixin 
+                       restrict rule-label obo-id)
+  (when (stringp name)
+    (setq noun name)
+    (setq name (name-to-use-for-category name)))
+  (unless (or super specializes)
+    (setq  specializes (super-category-for-POS :noun)))
+  (when binds
+    (unless realization
+      (error "Variables were specified (:binds) but not a realization")))
+  (when realization
+    (unless (or binds 
+                ;; should actually check for inherited categories as well
+                (and super (cat-slots (category-named super)))
+                (and specializes (cat-slots (category-named specializes))))
+      (error "A realization was specified but no variables")))
+
+  #+ignore(unless index
+    (setq index '(:temporary)))
+; > Error: No data in index field, (temporary)
+; >        from which to establish operations
+; > While executing: decode-for-find-&-index
+    
+  (let ( category )
+    (cond
+     (binds ;; this means that we're doing the equivalent of
+      ;; define-category, with the shortcut realization. 
+      ;; If we exposed the realization parameters we could 
+      ;; determine what the slot and value restrictions were
+      ;; as in decode-def-term-call and use the category making 
+      ;; function. That doesn't seem reasonable, so falling 
+      ;; back to a standard form
+      (let ((form
+            `(define-category ,name
+               :instantiates ,(or instantiates :self)
+               :specializes ,(or super specializes)
+               :rule-label ,rule-label
+               :binds ,binds
+               ;;:index ,index
+               :restrict ,restrict
+               :mixins ,mixin
+               :realization ,realization)))
+        (setq category (eval form))))
+     (t
+      ;; Essentially the same thing, but with no bindings,
+      ;; just the interited ones
+      (let ((form
+             `(define-category ,name
+                :instantiates ,(or instantiates :self)
+                :specializes ,(or super specializes)
+                :rule-label ,rule-label
+                :index ,index
+                :restrict ,restrict
+                :mixins ,mixin
+                :realization
+                  (:common-noun ,noun))))
+        (setq category (eval form)))))
+    (fom-subcategorization category :category category)  
+    ;; make sure the category inherits subcategorization information
+        
+    (when obo-id
+      (setq category (bind-dli-variable 'uid obo-id category)))
+    category))
 
 
 ;;--- NP patterns
