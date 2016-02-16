@@ -63,13 +63,18 @@
                   (tr :tw-no-unary-rule word)
                   (establish-unknown-word char-type word))
                  ((word-capitalization-variants word)
+                  ;; /// n.b. the :mixed-case version glosses over details
+                  ;; so might consider something more specific if
+                  ;; a miss-match causes us to redefine words with
+                  ;; rules.
                   (let* ((v (capitalized-version
                              word *capitalization-of-current-token*))
                          (variant-rs (when v (rule-set-for v))))
                     (if variant-rs
                       (if (rs-single-term-rewrites variant-rs)
                         word ;; it's good
-                        (establish-unknown-word char-type word)))))
+                        (establish-unknown-word char-type word))
+                      (establish-unknown-word char-type word))))
                  ((eq char-type :number)
                   ;; In the tested cases, a rule set for a number 
                   ;; means that it's been referred to in a polyword
