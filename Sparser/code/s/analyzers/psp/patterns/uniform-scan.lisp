@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  January 2016
+;;;  version:  Feb ruary2016
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -316,10 +316,6 @@
                 (cfr-form uc-rule)
                 (cfr-referent uc-rule)
                 (cfr-schema uc-rule))))
-        (unless (equal (string-upcase words-string) words-string)
-          #+ignore
-          (format t "~%-------Defining no-space-segment ~s as equivalent ~
-                     to ~s~%" words-string uc-word))
         (values (cfr-category uc-rule)
                 cfr
                 (cfr-referent uc-rule))))
@@ -338,14 +334,13 @@
                   'reify-ns-name-as-bio-entity
                   bio-entity)
           (let ((rule (car (rs-single-term-rewrites (rule-set-for w)))))
-            (lsp-break "known word case: ~a, ~a" words-string rule)
             (cond
              (rule
-              ;; (format t "***reify-ns-name-as-bio-entity -- NOT redefining word ~s" w)
               (values (cfr-category rule)
                       rule
-                      w))
-             (t nil))))))
+                      (cfr-referent rule)))
+             (t (push-debug `(,w))
+                (break "Known word, but no associated rule. Figure out what to do")))))))
 
      (t ;; by default make a bio-entity
       ;; Open-code key part of handle-unknown-word-as-bio-entity,
