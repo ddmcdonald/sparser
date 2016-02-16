@@ -264,9 +264,10 @@
           (context)))
 
 (def-cfr there-exists (syntactic-there BE)
-  :form vg
+  :form S
   :referent (:function make-there-exists))
 
+#+ignore
 (def-form-rule (there-exists np)
   :form s
   :referent (:head left-edge
