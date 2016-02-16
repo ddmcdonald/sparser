@@ -1,14 +1,15 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis CwC project
 ;;;
 ;;;     File:  "incremental"
 ;;;            drivers/chart/psp/
-;;;  version:  December 2013
+;;;  version:  February 2016
 
 ;; Initiated 11/30/15 for a new toplevel driver that runs
 ;; incrementally left to right in a grounding situation. 
 ;; 12/13/15 start with skeleton of code taken from C3 protocol. 
+;; Started TAG make-over 2/15/16
 
 (in-package :sparser)
 
@@ -24,7 +25,23 @@
     ;; need them to just to keep straight what the scan does
 
     (setq *reached-eos* nil) ;; initialize
-    (incrementally-scan-segment p1)))
+    ;; (incrementally-scan-segment p1)
+    (state-sensitive-rightward-march p1)))
+
+
+(defun state-sensitive-rightward-march (pos-before)
+  "Step one word at a time. Introduce it's (single) edge,
+   update the state, project its tree, repeat."
+  (unless (pos-terminal pos-before)
+    (scan-next-position))
+  (let ((word-after (pos-terminal pos-before)))
+    (when (eq word-after *end-of-source*)
+      (setq *reached-eos* t)
+      (terminate-chart-level-process))
+    (break "pos-before = ~a" pos-before))
+)
+
+
 
 (defun incrementally-scan-segment (start-pos)
   ;; Not really. This is a direct copy of scan-segment in
