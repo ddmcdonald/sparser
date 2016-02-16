@@ -108,7 +108,9 @@ the process.
   (declare (special category::bio-entity))
   (let ((word (pos-terminal pos-before))
         (pos-after (chart-position-after pos-before)))
-    ;; record it in the list of *newly-found-unknown-words*
+    ;;  (format t "~&Making ~s a bio-entity~%" (word-pname word))
+
+    ;; This will record it in the list of *newly-found-unknown-words*
     ;; if the *collect-new-words* flag is up.
     (add-new-word-to-catalog word :BgMech-default)
 

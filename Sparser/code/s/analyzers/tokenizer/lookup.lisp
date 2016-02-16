@@ -51,6 +51,8 @@
                ((memq :function-word (plist-for word)) ;; "than"
                 ;; (tr :tw-is-a-function-word word) - noisy
                 word)
+               ((punctuation? word) ;; see with Latin A with ring above
+                word)
                ((null (rs-single-term-rewrites rs))
                 ;; This indicates that this word, in its canonical
                 ;; lowercase form, does not have an associated rule.

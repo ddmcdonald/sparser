@@ -419,6 +419,7 @@
         
       (setq position-before position-after))
 
+    ;;/// is this position reached when there's a return from the loop?
     (clear-unhandled-unknown-words)))
 
 

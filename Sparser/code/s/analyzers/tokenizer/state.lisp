@@ -39,7 +39,8 @@
         *category-of-accumulating-token* nil
         *length-of-the-token* 0
         *capitalization-of-current-token* :uncalculated
-        ))
+        )
+  (clear-unhandled-unknown-words))
 
 
 ;;;---------------
