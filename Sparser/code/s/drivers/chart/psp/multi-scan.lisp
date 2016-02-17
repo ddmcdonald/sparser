@@ -662,9 +662,9 @@
            one-edge-over-entire-segment?
            (one-word-long? first-edge)
            (eq (pos-capitalization pos-after-open) :all-caps))
-      (unless edge-to-left
-        (lsp-break "Stub of new case: probable acronym w/o edge to the left"))
-      (when edge-to-left ;; otherwise there's nothing to hide under
+      (unless (and edge-to-left (edge-p edge-to-left))
+        (break "Stub of new case: probable acronym w/o edge to the left - in assess-parenthesized-content"))
+      (when (edge-p edge-to-left) ;; otherwise there's nothing to hide under
         (let* ((ev-after-close (pos-ends-here pos-after-close))
                (ev-to-get-edges-from (edge-starts-at edge-to-left))
                (edges-to-extend (all-edges-on ev-to-get-edges-from))
