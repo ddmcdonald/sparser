@@ -100,10 +100,12 @@
   category::top)
 
 (define-lambda-variable 
-    ;; Used to explicitly mark the type of an individual
-    ;; created to anchor segments created by DM&P rather
-    ;; than core conceptualizations and incorporated sublanguages
   'comp ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+  'subordinate-conjunction ;; name
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
 
@@ -317,6 +319,7 @@
 
 (defun find-or-make-aspect-vector (vg)
   (unless (or (itypep vg 'perdurant)
+	      (itypep vg 'relation) ;; from copular adjectives like "is essential"
               (and (itypep vg 'collection)
                    (let ((vg1 (car (value-of 'items vg))))
                      (itypep vg1 'perdurant))))
@@ -406,15 +409,19 @@
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc individual))
   (push-debug `(,aux ,sc)) ;;(break "is this right?")
+  #+gnore
   (let* ((vg (value-of 'comp sc)))
     (make-subordinate-clause (value-of 'conj sc) 
-                             (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))))
+                             (bind-dli-variable 'aspect (make-vg-aux aux vg) vg)))
+  (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc))
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc individual))
   (push-debug `(,aux ,sc)) ;;(break "is this right?")
+  #+ignore
   (let* ((vg (value-of 'comp sc)))
     (make-subordinate-clause (value-of 'conj sc) 
-                             (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))))
+                             (bind-dli-variable 'aspect (make-vg-aux aux vg) vg)))
+  (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc))
 
 
 
@@ -467,10 +474,12 @@
     ((vg-has-adverb-variable? vg)
      (setq  vg (bind-dli-variable 'adverb adverb vg))
      vg)
-    (t (break "can't find adverb slot for ~s on verb ~s"
+    (t (format t "can't find adverb slot for ~s on verb ~s"
 	      (edge-string (left-edge-for-referent))
-	      (edge-string (right-edge-for-referent))))
-    ;; don't apply rule to verbs whose interpretation does not have an adverb variable
+	      (edge-string (right-edge-for-referent)))
+       ;; may want to block application of rule to verbs whose interpretation does not have an adverb variable
+       vg)
+
     ))
 
 (defun interpret-as-comp (as vp+ed)
@@ -692,7 +701,7 @@ to enhance p53 mediated apoptosis [2].") |#
        (setq s (bind-dli-variable to-comp-var complement s))))
      (t
       (let
-          ((ok? (and (itypep s 'perdurant) (itypep complement 'perdurant))))
+          ((ok? (and s (itypep s 'perdurant) (itypep complement 'perdurant))))
         (cond
          (*subcat-test* ok?)
          (ok?
@@ -815,14 +824,16 @@ to enhance p53 mediated apoptosis [2].") |#
   ;;(lsp-break "ass")
   (cond
    ((itypep vp 'subordinate-clause)
-    (let* ((svp (value-of 'comp vp))
+    (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
            (vg-edge (edge-right-daughter (right-edge-for-referent)))
            (s
             (if (is-passive? vg-edge)
                 (assimilate-subcat svp :object subj)
                 (assimilate-subcat svp :subject subj))))
+      #+ignore
       (when s 
-        (make-subordinate-clause (value-of 'conj vp) s))))
+        (make-subordinate-clause (value-of 'conj vp) s))
+      s))
    ((is-passive? (right-edge-for-referent))
     (assimilate-subcat vp :object subj))
    (t (assimilate-subcat vp :subject subj))))
@@ -869,7 +880,8 @@ to enhance p53 mediated apoptosis [2].") |#
         (or (not (or ;; vp has a bound object
                   (null (object-variable vp))
                   (value-of (object-variable vp) vp)
-                  (itypep subj 'pronoun)))
+		  (and (individual-p subj)
+		       (itypep subj 'pronoun))))
             (preceding-that-whether-or-conjunction? (left-edge-for-referent))
             (subcategorized-variable vp :subject subj)))
        ;; ?????????????
@@ -877,7 +889,8 @@ to enhance p53 mediated apoptosis [2].") |#
          (null (object-variable vp))
          (value-of (object-variable vp) vp)
          (value-of 'statement vp)
-         (itype subj 'pronoun)
+         (and (individual-p subj)
+	      (itypep subj 'pronoun))
          (preceding-that-whether-or-conjunction? (left-edge-for-referent)))
         ;; This situation corresponds to composing them as
         ;; subject and predicate, which is what the rule that
@@ -1077,62 +1090,65 @@ to enhance p53 mediated apoptosis [2].") |#
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
   (cond
-   ((null item)
-    (cond
-     ((and (boundp '*pobj-edge*) *pobj-edge*)
-      (format t "~&*** null item in subcategorized pobj for edge ~s~&" *pobj-edge*))
-     ((eq label :subject)
-      (format t "~&*** null item in subcategorized subject for edge ~s~&" *left-edge-into-reference*))
-     ((eq label :object)
-      (format t "~&*** null item in subcategorized object for edge ~s~&" *right-edge-into-reference*))
-     (t
-      (format t "~&null item in subcategorized-variable~&")))
-    nil)
-   ((consp item)
-    (break "what are you doing passing a CONS as an item, ~s~&" item)
-    nil)
-   (t
-    (when (itypep item 'to-comp)
-      (setq item (value-of 'comp item)))
-    ;;/// prep-comp, etc.
-    (let ((subcat-patterns (known-subcategorization? head)))
-      (when subcat-patterns
-        (setq *label* label)
-        (setq *head* head)
-        (let ( variable )
-          (let ((*trivial-subcat-test* nil))
-            (if (and *note-ambiguity* (not *subcat-test*))
-                (let (vars sources)
-                  (loop for entry in subcat-patterns
-                    do
-                    (let ((scr (subcat-restriction entry)))
-                      (when (eq label (subcat-label entry))
-                        (when (satisfies-subcat-restriction? item scr)
-                          (push (subcat-variable entry) vars)
-                          (push (list (subcat-variable entry)(subcat-source entry)) sources)))))
-                  (when (cdr vars)
-                    (push (list head label item sources) *note-ambiguity*))
-                  (setq variable (car vars)))
+    ((null head)
+     (break "~&null head in call to subcategorized-variable")
+     nil)
+    ((null item)
+     (cond
+       ((and (boundp '*pobj-edge*) *pobj-edge*)
+	(format t "~&*** null item in subcategorized pobj for edge ~s~&" *pobj-edge*))
+       ((eq label :subject)
+	(format t "~&*** null item in subcategorized subject for edge ~s~&" *left-edge-into-reference*))
+       ((eq label :object)
+	(format t "~&*** null item in subcategorized object for edge ~s~&" *right-edge-into-reference*))
+       (t
+	(format t "~&null item in subcategorized-variable~&")))
+     nil)
+    ((consp item)
+     (break "what are you doing passing a CONS as an item, ~s~&" item)
+     nil)
+    (t
+     (when (itypep item 'to-comp)
+       (setq item (value-of 'comp item)))
+     ;;/// prep-comp, etc.
+     (let ((subcat-patterns (known-subcategorization? head)))
+       (when subcat-patterns
+	 (setq *label* label)
+	 (setq *head* head)
+	 (let ( variable )
+	   (let ((*trivial-subcat-test* nil))
+	     (if (and *note-ambiguity* (not *subcat-test*))
+		 (let (vars sources)
+		   (loop for entry in subcat-patterns
+		      do
+			(let ((scr (subcat-restriction entry)))
+			  (when (eq label (subcat-label entry))
+			    (when (satisfies-subcat-restriction? item scr)
+			      (push (subcat-variable entry) vars)
+			      (push (list (subcat-variable entry)(subcat-source entry)) sources)))))
+		   (when (cdr vars)
+		     (push (list head label item sources) *note-ambiguity*))
+		   (setq variable (car vars)))
                 
-                (dolist (entry subcat-patterns)
-                  (let ((scr (subcat-restriction entry)))
-                    (when (eq label (subcat-label entry))
-                      (when (satisfies-subcat-restriction? item scr)
-                        (setq variable (subcat-variable entry))
-                        (return)))))))
-          ;; collect information on failed tests
-          (when *trivial-subcat-test*
-            (unless variable
-              (dolist (entry subcat-patterns)
-                (let ((scr (subcat-restriction entry)))
-                  (when (eq label (subcat-label entry))
-                    (when (satisfies-subcat-restriction? item scr)
-                      (setq variable (subcat-variable entry))
-                      (return)))))))
+		 (dolist (entry subcat-patterns)
+		   (let ((scr (subcat-restriction entry)))
+		     (when (eq label (subcat-label entry))
+		       (when (satisfies-subcat-restriction? item scr)
+			 (setq variable (subcat-variable entry))
+			 (return)))))))
+	   ;; collect information on failed tests
+	   (when *trivial-subcat-test*
+	     (unless variable
+	       (dolist (entry subcat-patterns)
+		 (let ((scr (subcat-restriction entry)))
+		   (when (eq label (subcat-label entry))
+		     (when (satisfies-subcat-restriction? item scr)
+		       (setq variable (subcat-variable entry))
+		       (return)))))))
           
-          ;;(break "testing subcats")
-          variable
-          ))))))
+	   ;;(break "testing subcats")
+	   variable
+	   ))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
   (when *trivial-subcat-test*
@@ -1252,7 +1268,9 @@ to enhance p53 mediated apoptosis [2].") |#
    `((prep ,prep) (pobj ,pobj))))
 
 (defun make-subordinate-clause (conj clause)
-  (make-simple-individual ;;make-non-dli-individual
+  (bind-dli-variable 'subordinate-conjunction conj clause)
+  #+ignore
+  (make-non-dli-individual ;; make-simple-individual
    (itype-of clause)
    `((conj ,conj) (comp ,clause))))
 
