@@ -124,8 +124,9 @@
 (define-comparative "smaller") ;; small smallest
 
 
-
-(define-function-word "than" :form 'conjunction)
+;; THAN is not really a conjunction
+;; and this definition creates a bogus definition
+;; (define-function-word "than" :form 'conjunction)
 
 
 
