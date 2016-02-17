@@ -90,6 +90,13 @@
        (format t "\"~a\" does not name a category" category-name)
        nil))))
 
+(defmacro sc (cat-name)
+  `(super-categories-of
+    (category-named 
+     ,(if (and (consp cat-name) (eq (car cat-name) 'quote))
+	cat-name
+	(list 'quote cat-name)))))
+
 ;(defun iv (variable-name)
 ;  (let ((v (find-variable variable-name)))
 ;    (
