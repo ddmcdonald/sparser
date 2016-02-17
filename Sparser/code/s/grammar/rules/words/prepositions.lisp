@@ -64,10 +64,15 @@
                     :bindings (name ,word)))
            (category (eval expr))
            (word-rule
-            (define-cfr category `(,word)
+	    (def-cfr/expr category `(,word)
               :form (resolve-form-category form)
               :schema (get-schematic-word-rule :preposition)
-              :referent category)))
+              :referent category)
+	     #+ignore ;; this caused redefinition, not new ambiguous definition
+	     (define-cfr category `(,word)
+	       :form (resolve-form-category form)
+	       :schema (get-schematic-word-rule :preposition)
+	       :referent category)))
       (when synonyms
         (dolist (syn-string synonyms)
           (let ((synonym (resolve-string-to-word/make syn-string)))
