@@ -1533,14 +1533,15 @@
 (define-category observe :specializes bio-method
     :mixins (bio-thatcomp)
     :binds ((focused-on biological)
-            (method bio-method))
+            (method (:or bio-method result)))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
 	   :noun "observation"
 	   :etf (svo-passive)
            :by method ;; can also be people..
            :for focused-on
-           :under method))
+           :under method
+	   :with method))
 
 (define-category obtain :specializes bio-method
     :binds ((source biological)
