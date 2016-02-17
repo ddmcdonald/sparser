@@ -354,32 +354,52 @@
                         end-pos)))
 
 (defun adjacent-tt-pairs1 (edges-to-left end-pos)
-  (let* ((random-left-edge (car edges-to-left))
-         (left-ev (edge-ends-at random-left-edge))
-         (left-end-position (ev-position left-ev)))
-    (unless (eq left-end-position end-pos)
-      (let* ((next-ev (pos-starts-here left-end-position))
-             (edges-to-right (tt-edges-starting-at next-ev))
-             pairs )
-        (setq pairs (form-all-pairs edges-to-left
-                                    edges-to-right))
-        (let ((recursive-pairs 
-               (adjacent-tt-pairs1 edges-to-right end-pos)))
-          (let ((return-value
-                 (if recursive-pairs
-                   (nconc pairs recursive-pairs)
-                   pairs)))
-            return-value))))))
+  (when edges-to-left
+    ;; can be nil sometimes -- may want to diagnose cases
+    ;;  seems to happen when running over the edge of a sentence
+    (let* ((random-left-edge (car edges-to-left))
+	   (left-ev (edge-ends-at random-left-edge))
+	   (left-end-position (ev-position left-ev)))
+      (declare (special random-left-edge left-ev left-end-position))
+      (unless (eq left-end-position end-pos)
+	(let* ((next-ev (pos-starts-here left-end-position))
+	       (edges-to-right (tt-edges-starting-at next-ev))
+	       pairs )
+	  (declare (special next-ev edges-to-right))
+	  (when
+	      (member nil edges-to-right)
+	    (lsp-break "bad edge"))
+	  (setq pairs (form-all-pairs edges-to-left
+				      edges-to-right))
+	  (when
+	      (member nil edges-to-right)
+	    (lsp-break "bad edge"))
+	  (let ((recursive-pairs
+		 (when edges-to-right
+		   (adjacent-tt-pairs1 edges-to-right end-pos))))
+	    (let ((return-value
+		   (if recursive-pairs
+		       (nconc pairs recursive-pairs)
+		       pairs)))
+	      return-value)))))))
 
 (defun form-all-pairs (left-list right-list)
   (let ( pairs )
     (loop for left in left-list
-      do (loop for right in right-list
-           do (push (list left right) pairs)))
+       unless (bad-edge? left)
+       do (loop for right in right-list
+	     unless (bad-edge? right)
+	     do (push (list left right) pairs)))
     pairs))
-     
-         
-(defparameter *use-broader-set-of-tts* nil)
+
+(defun bad-edge? (edge)
+  (or
+   (not (edge-p edge)) ;; how can this happen?!@
+   (and
+    (eq :literal-in-a-rule  (edge-right-daughter edge))
+    (not (eq word::comma (edge-referent edge))))))
+
+(defparameter *use-broader-set-of-tts* t)
 
 (defun best-treetop-rule (sentence)
   ;; feeder routine in whack-a-rule-cycle that identifies
@@ -396,6 +416,22 @@
       when (setq rule (rule-for-edge-pair pair))
       do (push (cons rule pair)
                triples))
+    (unless triples
+      (let
+	  ((new-pairs
+	    (loop for pair in (adjacent-tt-pairs sentence)
+	       unless
+		 (or
+		  (member pair pairs :test #'equal)
+		  (eq :literal-in-a-rule (edge-right-daughter (first pair)))
+		  (eq :literal-in-a-rule (edge-right-daughter (second pair))))
+	       collect pair)))
+	(when new-pairs
+	  (format t "~&old set of pairs~s~&new set of pairs: ~s" pairs new-pairs)
+	  (loop for pair in new-pairs 
+	     when (setq rule (rule-for-edge-pair pair))
+	     do (push (cons rule pair)
+		      triples)))))
     (setq triples
           (if *use-broader-set-of-tts*
             (let ((original-triples (copy-list triples))) ;; for trace
