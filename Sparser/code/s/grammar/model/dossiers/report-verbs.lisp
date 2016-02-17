@@ -9,8 +9,11 @@
 
 (in-package :sparser)
 
-(define-report-verb "announce")
-
-(define-report-verb "report")
-
-(define-report-verb '("say" :past-tense "said"))
+(when
+    (not (eq :biology common-lisp-user::script))
+  (define-report-verb "announce")
+  
+  (define-report-verb "report")
+  
+  (define-report-verb '("say" :past-tense "said"))
+  )
