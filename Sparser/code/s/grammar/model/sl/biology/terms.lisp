@@ -37,6 +37,17 @@
 
 (in-package :sparser)
 
+
+;;should be done more generally, but this is a start - need to specify the definite determeiners, and the types of phrases which can be partitives
+;; such as superlatives, numbers, comparatives and combinations thereof
+
+(loop for partitive in '("all" "some" "most" "one")
+  do
+  (loop for def-det in '("the" "these" "those")
+    do 
+    (define-determiner (format nil "~a of ~a" partitive def-det))))
+
+(noun "bradykinin" :super peptide)
 ;; to be reviewed -- from Localization
 (noun "route" :super bio-mechanism)
 (define-category bio-observation :specializes bio-entity) ;; not really, but what is it
@@ -626,10 +637,10 @@
            :against against)) ;; keyword: (ive ADJ) 
 
 (define-category inhibitor 
-                 :specializes bio-entity
+                 :specializes drug
   :binds ((process (:or bio-process pathway bio-mechanism))
           (protein protein))
-  :realization (:noun "inhibitor" :of process :of protein))
+  :realization (:noun "inhibitor" :m process :m protein :of process :of protein))
 (define-category negative-regulator 
                  :specializes inhibitor
   :realization (:noun "negative regulator"))
@@ -1096,8 +1107,6 @@
 (defun def-cell-line (line)
   (def-bio/expr line 'cell-line :takes-plurals nil))
 
-(defun def-cell-type (type)
-  (def-bio/expr type 'cell-type :takes-plurals t))
 
 (def-cell-line "keratin") ;; NOT SURE THIS IS HOW IT IS BEING USED
 
@@ -1125,12 +1134,12 @@
 (def-cell-line "VMM39")
 (def-cell-line "VMM5A")
 
-(def-cell-type "mouse embryo fibroblast") ;; CORRECTED -- was not sure this is right -- it is a type of cell, but...
+;;(def-cell-type "mouse embryo fibroblast") ;; CORRECTED -- was not sure this is right -- it is a type of cell, but...
 ;;A fibroblast is a type of cell that synthesizes the extracellular matrix and collagen,[1] 
 ;; the structural framework (stroma) for animal tissues, and plays a critical role in wound healing. 
 ;; Fibroblasts are the most common cells of connective tissue in animals.
-(def-cell-type "fibroblasts")
-(def-cell-type "neuron")
+(noun "fibroblast" :super cell-type)
+(noun "neuron" :super cell-type)
 
 
 ;;;------------------
