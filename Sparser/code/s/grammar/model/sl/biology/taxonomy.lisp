@@ -887,16 +887,16 @@
   :index (:permanent :key name))
 
 (define-category cell-type :specializes bio-entity
-  :instantiates self
-  :realization (:common-noun name)
-  :index (:permanent :key name))
+  :realization (:noun "cell type" )        
+  )
 
 ;; used in biopax
-(define-category organism :specializes non-cellular-location
-  :instantiates self  
-  :index (:permanent :key name)
-  :lemma (:common-noun "organism")
-  :realization (:common-noun name))
+(define-category organism :specializes biological
+   :mixins (has-name)
+   :instantiates self  
+   :index (:permanent :key name)
+   :lemma (:common-noun "organism")
+   :realization (:common-noun name))
 
 (def-synonym organism
              (:noun "animal"))
