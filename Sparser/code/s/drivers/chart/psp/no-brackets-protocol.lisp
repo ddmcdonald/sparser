@@ -415,8 +415,7 @@
 
           (loop for item in tt-contents
             do (if (or (subject-variable item)
-                       (when (individual-p item)
-                         (itypep item 'bio-process)))
+                       (individual-p item))
                  (push item raw-relations)
                  (pushnew item raw-entities)))))
 

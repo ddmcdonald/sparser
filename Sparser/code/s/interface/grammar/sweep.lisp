@@ -76,7 +76,10 @@
 
 (defun relevant-type-of-individual (i)
   ;; close through propbably not completely correct
-  (itypep i 'biological))
+  (and (individual-p i)
+       (not (itypep i 'prepositional-phrase)))
+  ;;(itypep i 'biological)
+  )
 
 ;;;----------------------
 ;;; collecting the model
