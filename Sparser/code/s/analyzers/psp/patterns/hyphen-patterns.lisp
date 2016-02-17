@@ -283,24 +283,29 @@
   (let* ((left-edge (first edges))
          (right-edge (third edges))
          (left-ref (edge-referent left-edge))) 
-    
     (cond
-     ((not ;; might be a word  -- still??
-       (or (individual-p left-ref) 
-           (category-p left-ref)))
-      (make-bio-pair left-edge right-edge words
-                     pos-before pos-after))
-     ((or (itypep left-ref 'protein)
-          ;;(itypep left-ref 'bio-family) covered by itypep protein ; RAS-GTP
-          (itypep left-ref 'small-molecule) ;; GTP-GDP ???
-          (itypep left-ref 'nucleotide))
-      (make-protein-pair left-edge right-edge words
-                         pos-before pos-after))
-     ((itypep left-ref 'amino-acid)
-      (reify-amino-acid-pair words pos-before pos-after))
-     (t ;(break "two-terms default")
-      (make-bio-pair left-edge right-edge words
-                     pos-before pos-after)))))
+      ((null right-edge)
+       (break "~&bad call to resolve-hyphen-between-two-terms, null right-edge, ~&.......left-edge is ~s, words are ~s, pattern is ~s~&"
+	      left-edge words pattern)
+       nil)
+      (t
+       (cond
+	 ((not ;; might be a word  -- still??
+	   (or (individual-p left-ref) 
+	       (category-p left-ref)))
+	  (make-bio-pair left-edge right-edge words
+			 pos-before pos-after))
+	 ((or (itypep left-ref 'protein)
+	      ;;(itypep left-ref 'bio-family) covered by itypep protein ; RAS-GTP
+	      (itypep left-ref 'small-molecule) ;; GTP-GDP ???
+	      (itypep left-ref 'nucleotide))
+	  (make-protein-pair left-edge right-edge words
+			     pos-before pos-after))
+	 ((itypep left-ref 'amino-acid)
+	  (reify-amino-acid-pair words pos-before pos-after))
+	 (t				;(break "two-terms default")
+	  (make-bio-pair left-edge right-edge words
+			 pos-before pos-after)))))))
 
 (defun resolve-hyphen-between-three-words (pattern words
                                            pos-before pos-after)
