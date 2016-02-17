@@ -22,6 +22,7 @@
 (noun "HLA class I molecule" :super protein-family)
 
 (noun ("CaMK" "CaM kinase" "CAMK" "CaM-kinase") :super protein-family)
+(noun "arrestin" :super protein-family) ;; lots of family members -- put them in some day
 (def-family "IQGAP"
             :members ("IQGAP1" "IQGAP2" "IQGAP3"))
 (def-family "Jnk"
