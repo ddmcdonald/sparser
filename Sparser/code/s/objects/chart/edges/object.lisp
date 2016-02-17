@@ -102,18 +102,23 @@
 ;;;----------------------
 
 (defun set-used-by (daughter edge)
-  (let ((field (edge-used-in daughter)))
-    (if field
-      (etypecase field
-        (cons
-         (setf (edge-used-in daughter)
-               (cons edge field)))
-        (edge
-         (setf (edge-used-in daughter)
-               (list edge field))))
-      (setf (edge-used-in daughter) edge))
+  (cond
+    ((null daughter)
+     (lsp-break "~&null daughter in set-used-by")
+     nil)
+    (t
+     (let ((field (edge-used-in daughter)))
+       (if field
+	   (etypecase field
+	     (cons
+	      (setf (edge-used-in daughter)
+		    (cons edge field)))
+	     (edge
+	      (setf (edge-used-in daughter)
+		    (list edge field))))
+	   (setf (edge-used-in daughter) edge))
 
-    (maybe-suppress-daughters-dh-entry daughter edge)))
+       (maybe-suppress-daughters-dh-entry daughter edge)))))
 
 
 (defun top-edge-used-in (daughter-edge)
