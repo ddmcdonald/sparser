@@ -488,7 +488,9 @@
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
   (let ((reject?
-         (or (and (member (cat-name before)
+         (or (word-p before)
+	     (word-p after)
+	     (and (member (cat-name before)
                           `(protein residue-on-protein bio-complex
                                     other fragment))
                   (not (eq before after)))
