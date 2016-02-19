@@ -105,6 +105,7 @@
                   (pos-edge-ends-at right-edge)
                   label
                   :referent i
+                  :rule 'package-qualifying-pair
                   :constituents (list left-edge right-edge))))
       edge)))
 
@@ -126,7 +127,7 @@
                  (pos-edge-starts-at left-edge)
                  (pos-edge-ends-at right-edge)
                  category
-                 :rule 'nospace-hyphen-specialist
+                 :rule 'make-hyphenated-structure
                  :referent i
                  :constituents `(,left-edge ,right-edge))))
       (revise-form-of-nospace-edge-if-necessary edge right-edge)
@@ -238,7 +239,7 @@
                    (pos-edge-starts-at left-edge)
                    (pos-edge-ends-at right-edge)
                    category
-                   :rule 'nospace-hyphen-triple-specialist
+                   :rule 'make-hyphenated-triple
                    :form category::n-bar
                    :referent i
                    :constituents `(,left-edge ,middle-edge ,right-edge))))
@@ -443,7 +444,7 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
                  (pos-edge-starts-at left-edge)
                  (pos-edge-ends-at right-edge)
                  category
-                 :rule 'nospace-colon-specialist
+                 :rule 'make-number-or-word-colon-structure
                  :form category::n-bar
                  :referent i
                  :constituents `(,left-edge ,right-edge))))
