@@ -119,3 +119,6 @@ support a substantial number of blocks.
   )
 (setup-lexicalized-trees)
 
+
+(define-dtn-operator let-us (let s sp::*you* o sp::*us*) command )
+
