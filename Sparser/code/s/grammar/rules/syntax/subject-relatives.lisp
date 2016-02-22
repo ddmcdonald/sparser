@@ -150,19 +150,19 @@
 ;;;-----------------
 ;;/// 10/27/14 This ought to be a method
 (defun apply-subject-relative-clause (np-ref vp-ref)
-  (let (var)
-    (setq np-ref (individual-for-ref np-ref))
+  (declare (special np-ref vp-ref))
+   (setq np-ref (individual-for-ref np-ref))
+   (let ((var
+	  (if (is-passive? (right-edge-for-referent))
+	      (subcategorized-variable vp-ref :object np-ref)
+	      (subcategorized-variable vp-ref :subject np-ref))))
+   
     (cond
       (*subcat-test*
        ;; NO LONGER TRUE (not (null var))) ;; this rule has no semantic restrictions as of now    
-       (if (is-passive? (right-edge-for-referent))
-	   (subcategorized-variable vp-ref :object np-ref)
-	   (subcategorized-variable vp-ref :subject np-ref)))
+       var)
 
-      ((setq var
-	     (if (is-passive? (right-edge-for-referent))
-		 (subcategorized-variable vp-ref :object np-ref)
-		 (subcategorized-variable vp-ref :subject np-ref)))
+      (var
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
        (setq  vp-ref (bind-dli-variable var np-ref vp-ref))      
