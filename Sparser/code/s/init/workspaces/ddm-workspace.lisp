@@ -16,8 +16,6 @@
  (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
 
- deal-with-unhandled-unknown-words-at  show-protein-coercion
- handle-unknown-word-as-bio-entity
 
  initiate-incremental-CwC-protocol initiate-c3-protocol
  indexical-for-state -- grammar/rules/situation/rules.lisp:(defun indexical-for-state (state)
