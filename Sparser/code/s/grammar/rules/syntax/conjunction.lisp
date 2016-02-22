@@ -813,9 +813,15 @@
         (if (consp expansion)
             (push (list (binding-variable b) expansion) conjunctive-bindings)
             (push (list (binding-variable b) expansion) simple-bindings)))
+      (when conjunctive-bindings
+	(lsp-break "conj"))
       (if (null conjunctive-bindings)
           i
           (expand-conjunctions i simple-bindings conjunctive-bindings))))))
+
+;; Just defined since this is the name I (Rusty) remember -- makes it easier to find
+(defun distribute-conjunctions (i simple-bindings conjunctive-bindings)
+  (expand-conjunctions i simple-bindings conjunctive-bindings))
 
 (defun expand-conjunctions (i simple-bindings conjunctive-bindings)
   (let ((i-list 
