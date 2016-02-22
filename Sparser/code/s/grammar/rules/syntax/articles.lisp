@@ -73,46 +73,49 @@
 ;;; form rules
 ;;;------------
 
+
+;; syntactic rule covering all of these inserted into syntactic-rules.lisp 
+#|
 ;;--- a/an
 
-(def-form-rule ("a" common-noun)
+(def-form-rule (A common-noun)
     :form np
     :referent (:daughter right-edge
 			 :bind (has-determiner left-edge) ;; fn not going into referent
 			 ;;    :function (mark-instance-indefinite right-edge))
 			 ))
 
-(def-form-rule ("an" common-noun)
+(def-form-rule (AN common-noun)
     :form np
     :referent (:daughter right-edge
 	       :bind (has-determiner left-edge)))
 
-(def-form-rule ("a" np-head)
+(def-form-rule (A np-head)
   :form np
   :referent (:daughter right-edge
 	     :bind (has-determiner left-edge)))
 
-(def-form-rule ("an" np-head)
+(def-form-rule (AN np-head)
   :form np
   :referent (:daughter right-edge
 	     :bind (has-determiner left-edge)))
 
-(def-form-rule ("a" n-bar)
+(def-form-rule (A n-bar)
   :form np
   :referent (:daughter right-edge
 	     :bind (has-determiner left-edge)))
 
-(def-form-rule ("an" n-bar)
+(def-form-rule (AN n-bar)
   :form np
   :referent (:daughter right-edge
 	     :bind (has-determiner left-edge)))
 
-(def-form-rule ("a" np)
+(def-form-rule (A np)
   :form np
   :referent (:daughter right-edge
 	     :bind (has-determiner left-edge)))
 
-(def-form-rule ("an" np)
+(def-form-rule (AN np)
   :form np
   :referent (:daughter right-edge
 	     :bind (has-determiner left-edge)))
@@ -218,3 +221,4 @@
      :form np
      :referent (:daughter right-edge
 	        :bind (has-determiner left-edge)))
+|#
