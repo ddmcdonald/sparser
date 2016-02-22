@@ -704,10 +704,10 @@
   (declare (ignore short))
   nil)
 
-(defmethod semtree ((n number) &optional (short t))
+(defmethod semtree ((n number) &optional (short nil))
   (semtree (e# n) short))
 
-(defmethod semtree ((e edge) &optional (short t))
+(defmethod semtree ((e edge) &optional (short nil))
   (semtree (edge-referent e) short))
 
 
@@ -715,11 +715,11 @@
   "Cleared and used by semtree to avoid walking through the
   same individual twice and getting into a loop.")
 
-(defmethod semtree ((i individual) &optional (short t))
+(defmethod semtree ((i individual) &optional (short nil))
   (clrhash *semtree-seen-individuals*)
   (collect-model-description i short))
 
-(defmethod semtree ((i referential-category) &optional (short t))
+(defmethod semtree ((i referential-category) &optional (short nil))
   (clrhash *semtree-seen-individuals*)
   (collect-model-description i short))
 
@@ -752,7 +752,9 @@
   (cond
    ((gethash i *semtree-seen-individuals*)
     (list (list "!recursion!" i)))
-   ((itypep i 'number)
+   ((and
+     (itypep i 'number)
+     (not (itypep i 'ordinal)))
     (if (itypep i 'collection)
      (value-of 'items i)
      (value-of 'value i)))
