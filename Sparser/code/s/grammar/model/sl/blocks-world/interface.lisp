@@ -65,8 +65,7 @@ constituents. And can punt the "any" operator by taking the
 default to be indefinite determiners (i.e. no semantics to speak of).
 |#
 
-(defparameter utt-1.1a '(propose-goal friendly
-                         (build :o staircase)))
+(defparameter utt-1.1a '(propose-goal friendly (build :o staircase)))
 ; (sexp-reader utt-1.1a)
 
 #| Alternative expedient 'direct to resources' scheme:
@@ -83,7 +82,7 @@ d. An operator like 'build' can take any number of
 |#
 
 (defparameter utt-2 
-   `(propose-goal (put :o1 block :o2 (location on ,*the-table*))))
+   '(propose-goal (put :o1 block :o2 (location on :the-table))))
 ; (sexp-reader utt-2)
 
 (defparameter utt-3a '(acknowledge)) ;; "ok"
@@ -92,8 +91,8 @@ d. An operator like 'build' can take any number of
 (defun utt3c-preparation ()
   "Run this to create the context assumed by utterance 3"
   (set-the-focus *the-two-blocks-he-put-down*))
-(defparameter utt-3c `(propose-goal
-                       (push-together :o (collection ,*b1* ,*b2*))))
+(defparameter utt-3c 
+  '(perform (push-together :o (collection :b1 :b2))))
 
 #| This is the final thing we say. It's in reply to the
 question "Like this?" said after they've pushed the blocks
@@ -132,6 +131,7 @@ person is making the reference. (near vs. far)
 (defun sexp-reader (sexp)
   "sexp in, dtn out"
   (setq sexp (launder-sexp-symbols-package sexp (find-package :mumble)))
+  (setq sexp (launder-sexp-to-dereference-keywords sexp))
   (let* ((speech-act (mumble-symbol (car sexp)))
          (*speech-act* speech-act))
     (declare (special *speech-act*))
@@ -146,7 +146,14 @@ person is making the reference. (near vs. far)
           ;; of the utterance? Do the elaborations modulate or
           ;; add to that?
           (instantiate-speech-act dtn speech-act elaborations)
-          dtn)))))
+
+          ;; Wrap the whole thing in a sentence. 
+          ;;/// this is the wrong level to do this at, since in the
+          ;; interesting cases we have several sexp and need to provide
+          ;; a discourse structure to embed them in or for that matter,
+          ;; however, to fold one element within the realization of another
+          ;; like "however" here.
+          (discourse-unit dtn))))))
 
 (defun interpret-sexp-core (core-sexp) ;; (build :o staircase)
   (let* ((operator (car core-sexp))
@@ -335,11 +342,11 @@ interface/derivations/discourse-reference.lisp
   (memq speech-act '(acknowledge good-job confirm-did-right-thing)))
 
 (defmethod do-standalone-speech-act ((speech-act symbol))
-  (ecase speech-act
-    (acknowledge (plan-an-acknowledgement))
-    (good-job (plan-brief-praise))
-    (confirm-did-right-thing (construct-that-is-good))
-))
+  (let ((dtn (ecase speech-act
+               (acknowledge (plan-an-acknowledgement))
+               (good-job (plan-brief-praise))
+               (confirm-did-right-thing (construct-that-is-good)))))
+    (discourse-unit dtn)))
 
 (defun plan-an-acknowledgement ()
   (let ((lp (get-lexicalized-phrase 'ok)))
@@ -379,6 +386,7 @@ interface/derivations/discourse-reference.lisp
   (declare (ignore elaborations))
   (case speech-act
     (propose-goal (command dtn))
+    (perform (command dtn))
     (otherwise 
      (error "Don't know the consequence for the dtn of ~a" speech-act))))
 
