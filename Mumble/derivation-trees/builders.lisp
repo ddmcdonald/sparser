@@ -298,6 +298,87 @@ a message to be expressed. See discussion in make.lisp |#
       (values lp category))))
 
 
+
+;;; dtn => dtn operators
+
+(defmacro define-dtn-operator (name specification &rest operators)
+  `(define-dtn-operator/expr ',name ',specification ',operators))
+
+(defun define-dtn-operator/expr (name specification operators)
+  "Analyzes the specification to identify and find or make a partially
+   saturated lexicalized phrase with just one parameter free.
+   That becomes the body of a function that takes a dtn as its
+   argument, binds it to that parameter and returns the new dtn."
+  ;; Assume is like 'let-us'. Make variants and figure out how
+  ;; to distinguish them as needs be.
+  ;; (push-debug `(,name ,specification ,operators))
+  (let* ((lp (get-lexicalized-phrase (car specification)))
+         (additional-args (cdr specification))
+         (lexicalized-phrase lp)) ;; change if arguments
+    (assert lp)
+    (when additional-args
+      ;;(push-debug `(,additional-args)) (break "test deref pvp")
+      (let ((phrase (phrase lp))
+            (bound (bound lp))
+            (free (copy-list (free lp)))
+            (pvp-list (dereference-pvp-list additional-args)))
+        (loop for pvp in pvp-list
+          as p = (phrase-parameter pvp)
+          do (setq free (delete p free)))
+        (unless free
+          (error "No free parameters left"))
+        (unless (= 1 (length free))
+          (error "Can only be one free parameter"))
+        (setq lexicalized-phrase
+              (make-instance 'partially-saturated-lexicalized-phrase
+                :phrase phrase
+                :bound (append pvp-list bound)
+                :free free))))
+
+    (let* ((free-parameter (car (free lexicalized-phrase)))
+           (fn-name name) ;; hook for varing it if we want
+           (form
+            `(defmethod ,fn-name ((input-dtn derivation-tree))
+               (let* ((dtn (make-dtn :resource ,lexicalized-phrase))
+                      (comp-node (make-instance 'complement-node
+                                   :phrase-parameter ,free-parameter
+                                   :bkptr dtn
+                                   :value input-dtn)))
+                 (push comp-node (complements dtn))
+                 ,(when operators
+                    `(loop for o in ',operators
+                       do (funcall o dtn)))
+                 dtn))))
+      ;; (pprint form) (break "ok?")
+      (eval form)
+      fn-name)))
+
+(defun dereference-pvp-list (parameter-value-pairs)
+  ;;??? add phase as an argument to check these are appropriate parameters?
+  (let ( pvp-list  pvp  parameter  value )
+    (do ((parameter-name (car parameter-value-pairs) (car rest))
+         (value-exp (cadr parameter-value-pairs) (cadr rest))
+         (rest (cddr parameter-value-pairs) (cddr rest)))
+        ((null parameter-name))
+      (setq parameter (parameter-named parameter-name))
+      (assert parameter)
+      (setq value
+            (typecase value-exp
+              (keyword (break "stub -- what's convention on keywords?"))
+              (symbol
+               (if (boundp value-exp)
+                 (eval value-exp)
+                 (error "Parameter value ~a is an unbound symbol" value-exp)))
+              (otherwise
+               (error "Unanticipated type for parameter value expression ~a~%~a"
+                      (type-of value-exp) value-exp))))
+      ;; (format t "~&parameter = ~a  value = ~a  ~%" parameter value)
+      (setq pvp (make-instance 'parameter-value-pair
+                  :phrase-parameter parameter
+                  :value value))
+      (push pvp pvp-list))
+    (nreverse pvp-list)))
+
 ;;;---------------------------
 ;;; make a lexicalized-phrase
 ;;;---------------------------

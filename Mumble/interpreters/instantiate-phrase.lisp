@@ -65,7 +65,7 @@
    argument to some form of trace. These were appropriate when working
    from choice sets where the reductions were stipulated in the choice."
   (mapcar #'(lambda (parameter argument)
-              (when (listp arg)
+              (when (listp argument)
                 (setq argument (reduce-argument argument)))
               (cons parameter 
                     (etypecase argument

@@ -21,27 +21,71 @@
   (let* ((p0 (scan-next-position))  ;; status = :scanned
          (ss (pos-terminal p0)) ;; #<word SOURCE-START>
          (p1 (scan-next-position)))
-    (declare (ignore ss))
-    ;; need them to just to keep straight what the scan does
-
+    (declare (ignore ss)) ;; for debugging if needed
     (setq *reached-eos* nil) ;; initialize
-    ;; (incrementally-scan-segment p1)
     (state-sensitive-rightward-march p1)))
 
 
 (defun state-sensitive-rightward-march (pos-before)
   "Step one word at a time. Introduce it's (single) edge,
    update the state, project its tree, repeat."
+
+  ;; Get the next word
+  (tr :inc-at-position pos-before)
   (unless (pos-terminal pos-before)
     (scan-next-position))
-  (let ((word-after (pos-terminal pos-before)))
-    (when (eq word-after *end-of-source*)
+  (let ((word (pos-terminal pos-before))
+        (pos-after (chart-position-after pos-before)))
+    (tr :inc-looking-at word)
+    (when (eq word *end-of-source*)
       (setq *reached-eos* t)
       (terminate-chart-level-process))
-    (break "pos-before = ~a" pos-before))
-)
+
+    ;; Get the edge(s) over that word
+    (let* ((edges (install-terminal-edges word pos-before pos-after))
+           (form (determine-edge-form-for-state-changes edges pos-before)))
+      (declare (ignore form)) ;; until we work out what the next call is.
+      (tr :inc-edge/s-over-word edges)
+
+      ;; Use the form to update the state, probably both phrasal and
+      ;; sentential. 
+
+      ;; Consider the state of the tree (given the state change),
+      ;; where does the lexicalied phrase headed by this word
+      ;; fit in? 
+
+      ;; Make it so. Besides operations on the tree, this includes
+      ;; operations involving the referent of this edge. 
+      ;; Not the least of which is grounding it in the current situation.
+
+      ;; recurce to handle the next word
+      (state-sensitive-rightward-march pos-after))))
 
 
+
+
+(defun determine-edge-form-for-state-changes (edges pos-before)
+  "Subroutine of state-sensitive-rightward-march that buries the
+   details of having one or more edges created for the word."
+  (cond
+   ((null (cdr edges))
+    (edge-form (car edges)))
+   ((eq :multiple-initial-edges (top-edge-at/starting pos-before))
+    ;; two cases. "a" => a literal edge and a real one
+    ;;/// not going to worry about it yet
+    (let ((top-edge (highest-edge-starting-at pos-before)))
+      (edge-form top-edge)))
+   ;; Case here for two or more "real" edges that reflect
+   ;; different senses of the word -- "one" is strong case in point
+   (t 
+    (error "Need new way to determine edge form at ~a~
+          ~%for ~a" pos-before edges))))
+
+
+
+
+;;------------------- first aborted attempt by sort of using
+;;                    C3's driver 
 
 (defun incrementally-scan-segment (start-pos)
   ;; Not really. This is a direct copy of scan-segment in

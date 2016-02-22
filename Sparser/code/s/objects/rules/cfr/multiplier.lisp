@@ -60,10 +60,11 @@
         ;; If so we just accept the rule and do nothing, since its
         ;; pattern has already been knit in.
         (unless (eq (cfr-category existing-rule/s) ;; old one
-                     (cfr-category cfr)) ;; new one
+                    (cfr-category cfr)) ;; new one
           (complain cfr existing-rule/s)))
-        (t 
-         (complain cfr existing-rule/s))))
+       (t
+        ;;(lsp-break "Other look at duplication")
+        (complain cfr existing-rule/s))))
 
     (let ((target-site (+ left-id right-id)))
       (setf (gethash target-site

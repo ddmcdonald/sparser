@@ -42,9 +42,9 @@
     build))
 
 
-;; "let's X"   (say (let-us (build-a-staircase)))
+;; "let's X"   (say (ex-let-us (build-a-staircase)))
 
-(defun let-us (dtn-for-eventuality)
+(defun ex-let-us (dtn-for-eventuality)
   ;; Doing this one differently. The question is what is 
   ;; the best syntatic sugar. This version open-codes much
   ;; of what's in create-lexicalized-phrase as it wasn't clear

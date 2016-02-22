@@ -16,16 +16,13 @@
  (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
 
- (test-overnight 18) (r3::run-localization)  (test-overnight 18)
-Reading document #2 PMC2064696
-*** ")" is likely to be a protein, because of conjunction with "ERK"
- *current-sentence-string*
- deal-with-unhandled-unknown-words-at  show-protein-coercion
- handle-unknown-word-as-bio-entity
+
+ duplication-check establish-multiplier <== abstract to common core
 
  initiate-incremental-CwC-protocol initiate-c3-protocol
  indexical-for-state -- grammar/rules/situation/rules.lisp:(defun indexical-for-state (state)
- blocks-world-module-choices 
+ blocks-world-module-choices  (gload "sit-rules;rules")
+ update-situation-stateqqqqqqq
 
  make-word/all-properties/or-primed  setup-unknown-word-BigMech-default
  find-word  resolve-ns-pattern

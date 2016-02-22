@@ -76,7 +76,7 @@
   ;; which is awfully specialized. 
   :realization (:tree-family  kind-of-name ;; "strait of Hormous"
                 :mapping ((np . region-type)
-                          (complement . (name name-word)) ;; and what else?
+                          (complement . name) ;; including 'name-word' creates duplicate
                           (result-np . :self))))
 
 (defun give-kind-its-name (region name) ;; left-referent and right-referent

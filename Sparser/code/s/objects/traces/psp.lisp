@@ -1126,6 +1126,18 @@
   (when *trace-c3*
     (trace-msg "[c3] Adding ~a to the situation" i)))
 
+(deftrace :inc-at-position (p)
+  (when *trace-c3*
+    (trace-msg "[c3] position is ~a" p)))
+
+(deftrace :inc-looking-at (word)
+  (when *trace-c3*
+    (trace-msg "[c3]   with word ~s" (word-pname word))))
+
+(deftrace :inc-edge/s-over-word (edges)
+  (when *trace-c3*
+    (trace-msg "[c3]   which introduced ~a" edges)))
+
 
 ;;;------------------------------------------------------------------
 ;;; Traces for the new (9/14) handling of segmentation and scannning
