@@ -29,26 +29,23 @@
 ;;; policy-marking parameters
 ;;;---------------------------
 
-(unless (boundp '*permit-rules-with-duplicate-rhs*)
-  (defparameter *permit-rules-with-duplicate-rhs* nil
+(defvar *permit-rules-with-duplicate-rhs* nil
     "Set by one of the switches routines. Should always be nil
-     unless the 'all-edges' parsing protocol is being used."))
+     unless the 'all-edges' parsing protocol is being used.")
 
 
-(unless (boundp '*dotted-rules-can-duplicate-regular-rules*)
-  (defparameter *dotted-rules-can-duplicate-regular-rules* t
+(defvar *dotted-rules-can-duplicate-regular-rules* t
     "A binary rule may correspond to a prefix of an n-ary rule.
      In this case we will want a dotted-rule that has the same
      rhs at the binary rule, and there is a parsing-time check
      to lookahead to see if the n-ary rule is going to complete
      and in that case take the dotted rule as the analysis of
      the prefix in preference to the binary rule.
-     Standard case: 'chief executive' and 'chief executive officer'" ))
+     Standard case: 'chief executive' and 'chief executive officer'" )
 
-(unless (boundp '*break-on-illegal-duplicate-rules*)
-  (defparameter *break-on-illegal-duplicate-rules* nil
+(defvar *break-on-illegal-duplicate-rules* nil
     "Faciliate debugging and clean up by stopping the load / rule-execution 
-     when an illegal duplicate has been found."))
+     when an illegal duplicate has been found.")
 
 
 ;;;-------------------
