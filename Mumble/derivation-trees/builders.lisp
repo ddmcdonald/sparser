@@ -226,7 +226,7 @@ a message to be expressed. See discussion in make.lisp |#
   to create (and return) a new one."
   (let* ((phrase (phrase-named 'first-sentence-of-discourse-unit))
          (complement (make-instance 'complement-node
-                       :phrase-parmameter (parameter-named 's)
+                       :phrase-parameter (parameter-named 's)
                        :value dtn))
          (resource (make-instance 'saturated-lexicalized-phrase
                      :phrase phrase
