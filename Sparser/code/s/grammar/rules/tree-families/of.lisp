@@ -268,6 +268,6 @@
                          :head left-edge
                          :binds (dependent left-edge
                                  substrate right-edge)))
-          (:pp (prep/complement (prep complement)
+          (:pp (of-/complement ("of" complement)
                     :daughter right-edge
                     :head right-edge))))

@@ -76,7 +76,7 @@
                 :mapping ((dependent . exit)
                           (substrate . throughway)
                           (np . :self)
-                          (prep . "of")
+                         ;; (prep . "of")
                           (complement . location))))
 
 

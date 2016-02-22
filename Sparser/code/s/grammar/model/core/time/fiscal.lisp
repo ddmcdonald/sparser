@@ -1,15 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "fiscal"
 ;;;   Module:  "model;core:time:"
-;;;  version:  2.0 February 2005
+;;;  version:  February 2016
 
 ;; 1.0 (12/15/92 v2.3) setting up for new semantics.
 ;;     (12/20/95) actually putting them in. Elaborating through 1/8/96.
 ;;     (1/13) moved the cs rules.
 ;; 2.0 (7/7/00) Totally reworked for psi and explicit realizations.
 ;;     (2/9/05) Added fiscal.  (2/17) Reworking end-date so that is actually works.
+;; (2/22/16) Renamed 'quarter' to 'fiscal-quarter' to avoid clash with
+;;   the fraction. 
 
 (in-package :sparser)
 
@@ -27,7 +29,7 @@ on the taxonomy of the lattice and probably does it on the fly via form rules. |
 #| It's a specific interval in actual time there for the year is an essential
 part even if it's invariably left out as obvious except in comparisons. |#
 
-(define-category  quarter
+(define-category  fiscal-quarter
   :specializes time
   :instantiates self  ;; ?? generalization to all these fiscal accounting periods?
   :binds ((year . year)

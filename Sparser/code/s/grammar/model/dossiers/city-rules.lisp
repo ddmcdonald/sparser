@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "city rules"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  April 1995
+;;;  version:  February 2016
 
 ;; initiated 4/30/95
 
@@ -17,12 +17,6 @@
 (def-cfr in-city ("in" city)
   :form pp
   :referent (:daughter right-edge))
-
-(def-cfr of-location     ;;of-city
-         ("of" city)
-  :form pp
-  :referent (:daughter right-edge))
-
 
 
 ;;;-------------------------------------------
