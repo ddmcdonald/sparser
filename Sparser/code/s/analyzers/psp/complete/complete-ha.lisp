@@ -35,6 +35,8 @@
 
 (in-package :sparser)
 
+(defparameter *check-semantic-completenes* nil)
+
 ;;;-----------
 ;;; the hook
 ;;;-----------
@@ -75,8 +77,10 @@
 
 (defparameter *diagnose-consp-referents* nil)
 
+
+
 (defun complete-edge/hugin (edge)
-  (declare (special *do-anaphora*)) ;; may be dynamically bound
+  (declare (special *do-anaphora* edge)) ;; may be dynamically bound
 
   (when (and *diagnose-consp-referents*
              (consp (edge-referent edge)))
@@ -93,9 +97,106 @@
                *do-anaphora*) ;; we've not deliberately turned it off
       (add-subsuming-object-to-discourse-history edge)))
   (check-impact-on-quiescence-pointer edge)
+  (when (and
+	 *check-semantic-completeness*
+	 (cond
+	   ((null (edge-rule edge))
+	    ;;(break "null rule on edge")
+	    nil)
+	   (t
+	    (not (ignore-semantic-check? (edge-rule edge))))))
+	 (check-semantic-completeness edge))
   :complete )
 
+(defun ignore-semantic-check? (rule)
+  (or
+      (if (not (cfr-p rule))
+	  (cond
+	    ((polyword-p rule) t)
+	    ((eq rule 'sdm-span-segment)
+	     (format t "~&sdm-span-segment in complete-edge/hugin on ~s~&" *chunk*)
+	     t)
+	    ((member rule '(:number-fsa NOSPACE-COLON-SPECIALIST
+			    MAKE-HYPHENATED-PAIR 
+			    :DEFAULT-EDGE-OVER-PAIRED-PUNCTUATION
+			    KNIT-PARENS-INTO-NEIGHBOR
+			    :CONJUNCTION/IDENTICAL-ADJACENT-LABELS)))
+	    (t
+	     ;;(print rule)
+	     t)))
+      (null (cdr (cfr-rhs rule)))
+      (loop for x in (cfr-rhs rule) thereis (not (category-p x)))
+      (member (cat-name (car (cfr-rhs rule)))
+	      '(that which syntactic-there be))
+      (member (mapcar #'cat-name (cfr-rhs rule))
+	      *ignored-semantic-check-rules*
+	      :test #'equal)))
 
+(defparameter *ignored-semantic-check-rules*
+  '((syntactic-there be)))
+
+
+(defun check-semantic-completeness (edge)
+  (declare (special edge))
+  (let
+      ((left (edge-left-daughter edge))
+       (right (edge-right-daughter edge)))
+    (declare (special left right))
+    (when (and (edge-p left)(edge-p right)
+	       (individual-p (edge-referent left))
+	       (individual-p (edge-referent right)))
+      (let
+	  ((all-sem (semtree edge))
+	   (left-sem (norm-sem left))
+	   (right-sem (norm-sem right)))
+	(declare (special all-sem left-sem right-sem))
+	
+	(cond
+	  ((not (contains-sem? all-sem left-sem))
+	   (if (and (consp left-sem)(itypep (car left-sem) 'pronoun))
+	       (format t "~&rule ~s loses semantics for pronoun ~s in ~a~&" (edge-rule edge) left-sem `(,(car all-sem) ,(second all-sem) "..." ))
+	       (lsp-break "check-semantic-completeness, all-sem does not contain left-sem")))
+	  ((not (contains-sem? all-sem right-sem))
+	   (if (and (consp right-sem)(itypep (car right-sem) 'pronoun))
+	       (format t "~&rule ~s loses semantics for pronoun ~s in ~a~&" (edge-rule edge) right-sem `(,(car all-sem) ,(second all-sem) "..." ) )
+	       (lsp-break "check-semantic-completeness, all-sem does not contain left-sem"))
+	   (lsp-break "check-semantic-completeness, all-sem does not contain right-sem"))
+	  )))))
+
+(defun norm-sem (i)
+  (let
+      ((sem (semtree i nil)))
+    (cond
+      ((not (consp sem)) sem) ;; e.g. 50, for the tree from #<number "50">
+      ((or (itypep (car sem) 'prepositional-phrase)
+	   (itypep (car sem) 'copular-pp))
+       (semtree (value-of 'pobj (car sem))))
+      ((itypep (car sem) 'to-comp)
+       (semtree (value-of 'comp (car sem))))
+      (t sem))))
+
+(defun contains-sem? (all part)
+  (declare (special all part))
+   (cond
+     ((not (consp part))
+      ;; assume that it has been included -- e.g. a number
+      t)
+     ((and
+       (itypep (car all) 'collection)
+       (not (itypep (car all) 'hyphenated-pair)))
+      (or
+       (as-specific?  (car all)(car part))
+       (member (car part) (value-of 'items (car all)))
+       (contains-sem-in-bindings? all part)))
+     ((as-specific? (car all) (car part)))
+     (t (contains-sem-in-bindings? all part))))
+
+(defun contains-sem-in-bindings? (all part)
+  (loop for sall in (cdr all)
+     thereis
+       (and (consp (second sall))
+	    (individual-p (car (second sall)))
+	    (contains-sem? (second sall) part))))
 
 ;;;-------------------
 ;;; subsumption check
