@@ -882,12 +882,17 @@
   (:noun "region"
          :of substrate))
 
-(define-category protein-domain :specializes molecular-location ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
+(define-category protein-domain :specializes molecular-location
+		 ;; not sure this is the correct term, but intended for things like the G1 box and the G-domain 
   :instantiates :self
   :realization
   (:noun "domain"
          :m substrate
          :of substrate))
+(define-category epitope :specializes protein-domain
+		 ;; not sure these are only proteins,
+		 ;; the part of an antigen that is recognized by the immune system
+		 :realization (:noun "epitope"))
 
 (define-category cell-line :specializes bio-entity
   :instantiates self

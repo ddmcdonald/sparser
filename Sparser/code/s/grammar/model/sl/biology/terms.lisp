@@ -47,6 +47,8 @@
     do 
     (define-determiner (format nil "~a of ~a" partitive def-det))))
 
+(noun "HA.11" :super epitope)
+
 (noun "bradykinin" :super peptide)
 ;; to be reviewed -- from Localization
 (noun "route" :super bio-mechanism)
@@ -965,14 +967,16 @@
   :binds ((process bio-process)
           (kinase protein)
 	  (substrate protein)
+	  (kinase-or-substrate protein)
           (residue residue-on-protein))
   :realization
      (:noun "site"
       :m process
-      :m substrate
+      :m residue
+      :m kinase-or-substrate
       :of process
       :for process
-      :in kinase
+      :in substrate
       :on substrate
       :at residue))
 
