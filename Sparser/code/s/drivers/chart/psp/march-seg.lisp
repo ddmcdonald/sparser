@@ -131,29 +131,40 @@
   ;; 2. select the best one
   ;; 3. spply it
   ;; 4. repeat
+
+  (let*
+      (tt
+       (paren-pair (loop for ttl on (treetops-in-current-chunk)
+		      when (and (setq tt (second ttl))
+				(edge-p tt)(category-p (edge-category tt))
+				(eq (cat-name (edge-category tt)) 'parentheses))
+		      do (return ttl))))
+    (declare (special paren-pair))
+    ;;handle internal parens as in "a class ii ( inactive conformation binder ) drug"
+    (when paren-pair (knit-parens-into-neighbor (car paren-pair)(second paren-pair))))
   (let ( triple  edge blocked-triples triples)
     (clrhash *rules-for-pairs*)
     (loop
-      (setq triples
-            (if from-right
-                (collect-triples-in-segment chunk)
-                (reverse (collect-triples-in-segment chunk))))
-      (when blocked-triples
-        (setq triples (loop for tr in triples 
-                        unless (member tr blocked-triples)
-                        collect tr)))
-      (setq triple (select-best-triple triples))
-      (when (null triple)
-        (return))
-      (setq edge (execute-triple triple))
-      (cond
-       ((null edge) 
-        (push triple blocked-triples)
-        (push-debug `(,triple))
-        ;;(lsp-break "triple did not produce an edge")
-        )
-       (edge 
-        (tr :triple-led-to-edge edge))))
+       (setq triples
+	     (if from-right
+		 (collect-triples-in-segment chunk)
+		 (reverse (collect-triples-in-segment chunk))))
+       (when blocked-triples
+	 (setq triples (loop for tr in triples 
+			  unless (member tr blocked-triples)
+			  collect tr)))
+       (setq triple (select-best-triple triples))
+       (when (null triple)
+	 (return))
+       (setq edge (execute-triple triple))
+       (cond
+	 ((null edge) 
+	  (push triple blocked-triples)
+	  (push-debug `(,triple))
+	  ;;(lsp-break "triple did not produce an edge")
+	  )
+	 (edge 
+	  (tr :triple-led-to-edge edge))))
     (if (eq (segment-coverage) :one-edge-over-entire-segment)
         (segment-parsed1)
         ;; else, then mop up anything else that that couldn't
@@ -167,18 +178,17 @@
     ;;(push-debug `(,triples)) (break "triple")
     (tr :n-triples-apply triples)
     
-    (let ((non-syntactic-triples
+    (let ((priority-triples
            (loop for triple in triples
 	      as rule = (car triple)
-	      unless (syntactic-rule? rule)
+	      unless (and
+		      (syntactic-rule? rule)
+		      (not (priority-rule? rule)))
 	      collect triple)))
       ;;(break "non-syntactic-triples = ~a" non-syntactic-triples)
       (cond
-	(non-syntactic-triples
-	 (let ((selected
-		(if (cdr non-syntactic-triples)
-		    (car (last non-syntactic-triples)) ;; rightmost
-		    (car non-syntactic-triples))))
+	(priority-triples
+	 (let ((selected (car (last priority-triples))))
 	   (tr :selected-best-triple selected)
 	   selected))
 	(t
@@ -187,6 +197,12 @@
 	 (let ((rightmost (car (last triples))))
 	   (tr :selected-best-triple rightmost)
 	   rightmost))))))
+
+(defun priority-rule? (rule)
+  (and (cfr-p rule)
+       (category-p (car (cfr-rhs rule)))
+       (member (cat-name (car (cfr-rhs rule)))
+	       '(adverb comparative))))
 
 
 ;; VGs may want a different order of pairs than NGs
@@ -204,6 +220,7 @@
 
 
 (defun segment-rule-check (pair chunk)
+  (declare (special chunk))
   ;; syntactic sugar and tracing for the choice of rule test
   ;; to make. Could start with just simple rules and then
   ;; extend to semantic and then syntactic on successive passes
@@ -211,13 +228,25 @@
         (right-edge (cadr pair)))
     (tr :find-rule-for-edge-pair left-edge right-edge)
     (multiple-value-bind (cached-rule pair-seen)
-                         (gethash pair *rules-for-pairs*)
+	(gethash pair *rules-for-pairs*)
       (let ((rule 
              (if pair-seen
-              cached-rule
-              (setf (gethash pair *rules-for-pairs*)
-                    (multiply-edges left-edge right-edge chunk)))))
-        (if rule
+		 cached-rule
+		 (setf (gethash pair *rules-for-pairs*)
+		       (multiply-edges left-edge right-edge chunk)))))
+	(declare (special rule))
+	(when
+	    (and rule
+		 (equal (chunk-forms chunk) '(NG))
+		 (or
+		  (member (car (cfr-rhs rule)) *VG-HEAD-CATEGORIES*)
+		  (member (car (cfr-rhs rule)) *vp-categories*)
+		  (member (category-named (car (cfr-rhs-forms rule))) *VG-HEAD-CATEGORIES*)
+		  (member (category-named (car (cfr-rhs-forms rule))) *vp-categories*))
+		 (member (cfr-form rule) *VP-CATEGORIES*))
+	  
+	  (setq rule nil))
+	(if rule
             (tr :found-rule-for-pair rule)
             (tr :no-rule-for-pair))
         rule))))
@@ -234,49 +263,6 @@
     collect
     (list (car edges)(second edges))))
 
-#|  What was here, plus my first rewrite of it
-    before backing off to work from first principles
-#+ignore
-(defun best-segment-rule (edges chunk)
-  (let ((pairs (reverse (adjacent-segment-tts edges)))
-        (chunk-type (car (chunk-forms chunk)))
-        pair  rule  rules )
-    (declare (ignore chunk-type)) 
-    ;; chunk-type is for using different criteria for NP vs VP ...
-    (loop
-      (setq pair (car pairs)
-            pairs (cdr pairs))
-      (tr :find-rule-for-edge-pair pair)
-      (setq rule (multiply-edges (car pair) (second pair)))
-      (if rule
-        (then (tr :found-rule-for-pair rule)
-              (push (cons rule pair) rules))
-        (else (tr :no-rule-for-pair)))
-      (when (null pairs)
-        (return)))
-     (car rules)))
-
-#+ignore ;; former best-segment-rule loop
-(defun best-segment-rule (edges chunk)
-  (let ((pairs (reverse (adjacent-segment-tts edges)))
-        (chunk-type (car (chunk-forms chunk)))
-        rule  rules )
-    (let ( rule  rules )
-      (loop for pair in (reverse (adjacent-segment-tts edges))
-        when (setq rule 
-                   (case (car (chunk-forms chunk))
-                     (ng 
-                      ;;(check-form-form (car pair) (second pair))
-                      (multiply-edges (car pair) (second pair)))
-                     (vg 
-                      ;;(rule-for-edge-pair pair) ;; subcat doesnt apply
-                      (multiply-edges (car pair) (second pair)))
-                     (adjg 
-                      ;;(rule-for-edge-pair pair)
-                      (multiply-edges (car pair) (second pair)))))
-        do (push (cons rule pair)
-                 rules))
-      (car rules))))  |#
 
 (defun add-chunk-edges-snapshot ()
   (push (loop for edge in (treetops-in-current-chunk)
