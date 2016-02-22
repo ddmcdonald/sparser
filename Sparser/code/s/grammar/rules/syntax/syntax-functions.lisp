@@ -275,9 +275,9 @@
    ((itypep head 'determiner) ;; "all these"
      (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
    (t
-    (lsp-break "~&can't put a quantifier like ~s on ~s~&"
-	       quantifier head)))
-  
+    (format t "~&@@@@@ verify whether you want to put a quantifier like ~s on ~s~&"
+	    quantifier head)
+     (setq  head (bind-dli-variable 'quantifier quantifier head))))
   head)
 
 
