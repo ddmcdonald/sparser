@@ -17,6 +17,8 @@
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
 
 
+ duplication-check establish-multiplier <== abstract to common core
+
  initiate-incremental-CwC-protocol initiate-c3-protocol
  indexical-for-state -- grammar/rules/situation/rules.lisp:(defun indexical-for-state (state)
  blocks-world-module-choices  (gload "sit-rules;rules")
