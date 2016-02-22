@@ -137,8 +137,7 @@ from define-cfr it depends on whether redefinition-of-rule says yes,
 (defun duplication-msg (existing-cfr proposed-new-lhs)
   ;; Called from Duplication-check and by Establish-multiplier
   ;; Taking it that there's just one existing rule.
-  (when
-   (consp existing-cfr) ;; multiple-rules
+  (when (consp existing-cfr) ;; multiple-rules
    (setq existing-cfr (car existing-cfr)))
   (format t "~&~% Illegal rule duplication:~
              ~%   You can't use the righthand side:~
