@@ -1465,6 +1465,15 @@
    :etf (svo-passive)
    :via process))
 
+
+(define-category mean :specializes bio-rhetorical
+  :mixins (bio-thatcomp)
+  ;; the analysis revealed
+  :realization
+  (:verb ("mean"  :past-tense "meant")
+         :etf (svo)))
+
+
 (define-category migration :specializes bio-self-movement
   :realization 
   (:verb "migrate" 
