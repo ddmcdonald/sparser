@@ -726,10 +726,14 @@
                   (let* ((lowercase-rhs (car (cfr-rhs rule)))
                          (string (word-pname lowercase-rhs))
                          (uppercase-word (resolve/make (string-upcase string))))
-                    (setf (cfr-category rule) (edge-category regular-edge))
-                    (setf (cfr-rhs rule) (list uppercase-word))
-                    (setf (cfr-form rule) (edge-form regular-edge))
-                    (setf (cfr-referent rule) regular-referent)
+                    (when 
+			(or (eq (cat-name (cfr-category rule)) 'bio-entity)
+			    (not (itypep (cfr-category rule) 'biological))) ;; case where there is a definition from outside of biology (e.g. "TRIM")
+		      (format t "~&***Acronym -- attempting to change category of rule ~s to ~s~&" rule (edge-category regular-edge))
+		      (setf (cfr-category rule) (edge-category regular-edge))
+		      (setf (cfr-rhs rule) (list uppercase-word))
+		      (setf (cfr-form rule) (edge-form regular-edge))
+		      (setf (cfr-referent rule) regular-referent))
                     rule ))
                   (symbol ;; e.g. reify-ns-name-as-bio-entity
                     (let ((word (edge-left-daughter acronym-edge))
