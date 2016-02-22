@@ -35,7 +35,7 @@
 
 (in-package :sparser)
 
-(defparameter *check-semantic-completenes* nil)
+(defparameter *check-semantic-completeness* nil)
 
 ;;;-----------
 ;;; the hook
