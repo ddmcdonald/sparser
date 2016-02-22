@@ -430,9 +430,9 @@
 
 
 (defun create-event-relation (event-edge sub-clause-edge first last)
-  (let* ((conj (value-of 'conj (edge-referent sub-clause-edge)))
+  (let* ((conj (value-of 'SUBORDINATE-CONJUNCTION (edge-referent sub-clause-edge)))
          (event (edge-referent event-edge))
-         (sub-event (value-of 'comp (edge-referent sub-clause-edge)))
+         (sub-event (edge-referent sub-clause-edge))
          (new-start-pos (pos-edge-starts-at first))
          (new-end-pos (pos-edge-ends-at last)))
     (make-edge-over-long-span
