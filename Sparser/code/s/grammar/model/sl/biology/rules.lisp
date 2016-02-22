@@ -89,32 +89,37 @@
 ;;; raw rules
 
 ;; invitro and in vivo
+#|
 (def-cfr biological-in-vivo (protein in-vivo)
-  :referent (:function Interpret-in-vivo-vitro left-edge right-edge))
+  
+  :referent (:function interpret-in-vivo-vitro left-edge right-edge))
 
 (def-cfr biological-in-vivo (protein in-vitro)
-  :referent (:function Interpret-in-vivo-vitro left-edge right-edge))
+  :referent (:function interpret-in-vivo-vitro left-edge right-edge))
 
-(defun interpret-in-vivo-vitro (protein vitro-vivo)
-  (setq protein (individual-for-ref protein))
-  (setq protein (bind-dli-variable 'context vitro-vivo protein))
-  (revise-parent-edge :form category::np :category category::protein)
-  protein
-)
+|#
+
+
+(defun interpret-in-vivo-vitro (bio vitro-vivo)
+  (when (or
+	 (itypep bio 'biological)
+	 (itypep bio 'measurement))
+    (setq bio (individual-for-ref bio))
+    (if (find-variable-for-category 'context (itype-of bio))
+	(setq bio (bind-dli-variable 'context vitro-vivo bio))
+	(setq bio (bind-dli-variable 'predication vitro-vivo bio)))
+    bio))
+
 
 (def-form-rule (NP category::in-vitro)
   :form NP
   :head :left-edge
-  :referent
-  (:head left-edge
-         :bind (context right-edge)))
+  :referent (:function interpret-in-vivo-vitro left-edge right-edge))
 
 (def-form-rule (NP category::in-vivo)
   :form NP
   :head :left-edge
-  :referent
-  (:head left-edge
-         :bind (context right-edge)))
+  :referent (:function interpret-in-vivo-vitro left-edge right-edge))
 
 
 (loop for vv in '((vp vp)
@@ -130,12 +135,12 @@
    `(def-form-rule (,(car vv) in-vitro)
                   :head :left-edge
      :form ,(second vv)
-     :referent (:function interpret-vp+in-vi-context left-edge right-edge)))
+     :referent (:function interpret-in-vivo-vitro left-edge right-edge)))
   (eval
    `(def-form-rule (,(car vv) in-vivo)
                   :head :left-edge
      :form ,(second vv)
-     :referent (:function interpret-vp+in-vi-context left-edge right-edge))))
+     :referent (:function interpret-in-vivo-vitro left-edge right-edge))))
 
 
 ;;--- amino acids
