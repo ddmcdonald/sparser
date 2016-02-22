@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "sort"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  0.5 July 2015
+;;;   version:  February 2016
 
 ;; initiated 3/10/92 v2.2, elaborated 3/19,21,26
 ;; 0.1 (6/7/93 v2.3) Added appreciation of form rules to the combined
@@ -19,6 +19,7 @@
 ;;     (1/22/99) tweaked Labels-string to accomodate MCL 4.0. 9/26/11 setting off
 ;;      some more the complaint about identical rules
 ;;     (7/5/15) First draft of sort-bio-terms
+;; 2/21/16 put the anouncement of identical rules under *load-verbose*
 
 (in-package :sparser)
 
@@ -200,8 +201,8 @@
             label2 (pop rhs2))
 
       (when (or (null label1) (null label2))
-        (format t "~&~%Identical rules found:~
-                   ~%~A~%~A~%" r1 r2)
+        (when *load-verbose*
+          (format t "~&~%Sorting: Identical rules found:~%~A~%~A~%" r1 r2))
         (return-from sort-rules-by-rhs/aux t))
 
         ;; This on-the-fly query won't work when the grammar is being
