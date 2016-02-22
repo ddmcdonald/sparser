@@ -609,60 +609,64 @@
               (cat-symbol (second r-triple-rhs)))))
       (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-left r-triple-right))
       ;;(lsp-break "compete")
-      (or
-       (eq category::syntactic-there l-triple-left) ;; competing against a "there BE"
-       (and
-        (equal l-triple-rhs (list category::vg category::np))
-        ;; likely competition against a relative clause or a main clause
-        ;;  accept r-triple as a winner if if is a rightward extension of and NP
-        ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
-        (not (and (edge-form (third r-triple))
-                  (member (cat-symbol (edge-form (third r-triple)))
-                          '(category::pp 
-                            category::relative-clause
-                            category::subject-relative-clause
-                            category::comma-separated-subject-relative-clause)))))
+      (when
+	  (not (and ;; need to generalize this for "high priority" NP post-modifiers
+		(category-p (second r-triple-rhs))
+		(member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))))
+	(or
+	 (eq category::syntactic-there l-triple-left) ;; competing against a "there BE"
+	 (and
+	  (equal l-triple-rhs (list category::vg category::np))
+	  ;; likely competition against a relative clause or a main clause
+	  ;;  accept r-triple as a winner if if is a rightward extension of and NP
+	  ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
+	  (not (and (edge-form (third r-triple))
+		    (member (cat-symbol (edge-form (third r-triple)))
+			    '(category::pp 
+			      category::relative-clause
+			      category::subject-relative-clause
+			      category::comma-separated-subject-relative-clause)))))
        
        
-       (and
-        (prep? l-triple-left)
-        (or
-         (and ;; pp starting a relative clause -- "in which"
-          (memq r-triple-left '(category::which category::who category::whom category::where))
-	  (or (eq r-triple-right 'category::s)
-              (eq (second (cfr-rhs-forms (car r-triple))) 's)))
-         (memq r-triple-right
-               '(category::vg category::vp category::vg+ed category::vp+ed
-                 category::vg+passive category::vp+passive
-                 category::comma-separated-subject-relative-clause))
-         ;; this is needed because the schema based rules generate rules in terms of 
-         ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
-         (memq (second (cfr-rhs-forms (car r-triple)))
-               '(vg vp vg+ed vg+ed vp+ed vg+passive vp+passive
-                    vg/+ed vg/+ed vp/+ed vg/+passive vp/+passive
-                 comma-separated-subject-relative-clause)))
-        (not
-         (and (edge-p (edge-left-daughter (third r-triple)))
-              (eq category::adjective 
-                  (edge-form (edge-left-daughter (third r-triple))))))
-        
-        ;; there must be a constituent which can absorb the result of the left competing rule
-        (let* ((preceding-edge (edge-just-to-left-of (second l-triple)))
-               (sym (and
-                     preceding-edge
-                     (edge-form preceding-edge) ;; got a case with COMMA as a literal edge
-                     (cat-symbol (edge-form preceding-edge)))))
-          (declare (special preceding-edge sym))
+	 (and
+	  (prep? l-triple-left)
 	  (or
-	   (member sym *ng-head-categories*)
-	   (member sym *vg-head-categories*)
-	   (member sym *adjg-head-categories*)
-	   (member sym 
-                   '(category::vp category::vg 
-                     category::vg+ed category::vp+ed 
-                     category::vg+ing category::vp+ing
-                     category::vg+passive category::vp+passive
-                     category::adverb)))))))))
+	   (and ;; pp starting a relative clause -- "in which"
+	    (memq r-triple-left '(category::which category::who category::whom category::where))
+	    (or (eq r-triple-right 'category::s)
+		(eq (second (cfr-rhs-forms (car r-triple))) 's)))
+	   (memq r-triple-right
+		 '(category::vg category::vp category::vg+ed category::vp+ed
+		   category::vg+passive category::vp+passive
+		   category::comma-separated-subject-relative-clause))
+	   ;; this is needed because the schema based rules generate rules in terms of 
+	   ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
+	   (memq (second (cfr-rhs-forms (car r-triple)))
+		 '(vg vp vg+ed vg+ed vp+ed vg+passive vp+passive
+		   vg/+ed vg/+ed vp/+ed vg/+passive vp/+passive
+		   comma-separated-subject-relative-clause)))
+	  (not
+	   (and (edge-p (edge-left-daughter (third r-triple)))
+		(eq category::adjective 
+		    (edge-form (edge-left-daughter (third r-triple))))))
+        
+	  ;; there must be a constituent which can absorb the result of the left competing rule
+	  (let* ((preceding-edge (edge-just-to-left-of (second l-triple)))
+		 (sym (and
+		       preceding-edge
+		       (edge-form preceding-edge) ;; got a case with COMMA as a literal edge
+		       (cat-symbol (edge-form preceding-edge)))))
+	    (declare (special preceding-edge sym))
+	    (or
+	     (member sym *ng-head-categories*)
+	     (member sym *vg-head-categories*)
+	     (member sym *adjg-head-categories*)
+	     (member sym 
+		     '(category::vp category::vg 
+		       category::vg+ed category::vp+ed 
+		       category::vg+ing category::vp+ing
+		       category::vg+passive category::vp+passive
+		       category::adverb))))))))))
 
 (defun prep? (cat)
   (memq cat '(category::preposition category::spatial-preposition)))
