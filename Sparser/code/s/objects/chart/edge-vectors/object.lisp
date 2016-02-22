@@ -204,7 +204,10 @@
       (:kcons-list
        (car vector))
       (:vector
-       (aref vector (1- (ev-number-of-edges ev)))))))
+       (let ((n (ev-number-of-edges ev)))
+	 (if (<= n 0)
+	     nil
+	     (aref vector (1- n))))))))
 
 (defun lowest-edge (ev)
   (let ((vector (ev-edge-vector ev)))
