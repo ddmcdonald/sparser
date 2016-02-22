@@ -18,10 +18,7 @@
 ; potentiated the effects of PLX4032
 ; following treatment with the MEK inhibitor AZD6244
 ; retaining transcriptional response to vemurafenib and AZD6244
-(define-category drug
-  :specializes molecule
-  :lemma (:common-noun "drug")
-  :realization (:common-noun name))
+
 
 (noun "therapeutics" :super drug) ;; keyword: (ics N) 
 
