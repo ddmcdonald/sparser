@@ -109,6 +109,36 @@
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
 
+(define-lambda-variable 
+  'possessive ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+  'purpose ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+  'quantifier ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+  'det-quantifier ;; as in "all these"
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::determiner)
+
+(define-lambda-variable 
+  'has-determiner ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+  'has-possessive ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
 
 
 ; (left-edge-for-referent)
@@ -130,11 +160,12 @@
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
   (cond
+    ((itypep head 'determiner) nil) ;; had strange case with "some cases this" -- head was "this"
     ((and qualifier head
 	  (not (or (category-p head)
 		   (individual-p head))))
      ;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
-	(break "Can't deal with head whose interpretation is not an individual or category in noun-noun-compound, head is ~s~&" head))
+     (break "Can't deal with head whose interpretation is not an individual or category in noun-noun-compound, head is ~s~&" head))
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
@@ -142,6 +173,8 @@
 	nil) ;; this happened with word = HYPHEN, "from FCS-treated cells"
        ((and 
 	 (itypep qualifier (itype-of head))
+	 (not (indiv-binds head)) ;; head already is modified -- don't replace with proper noun
+	 ;; w.g. "braf mutant a 375 melanoma cell"
 	 (if
 	  (itypep qualifier category::collection)
 	  (and
@@ -234,7 +267,16 @@
    ((itypep head 'endurant)
     (setq  head (bind-dli-variable 'quantifier quantifier head)))
    ((itypep head 'perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
-    (setq  head (bind-dli-variable 'quantifier quantifier head))))
+    (setq  head (bind-dli-variable 'quantifier quantifier head)))
+   ((itypep head 'abstract) ;; we quantify abstract items like "group"
+    (setq  head (bind-dli-variable 'quantifier quantifier head)))
+   ((itypep head 'bio-abstract) ;; we quantify abstract items like "group"
+    (setq  head (bind-dli-variable 'quantifier quantifier head)))
+   ((itypep head 'determiner) ;; "all these"
+     (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
+   (t
+    (lsp-break "~&can't put a quantifier like ~s on ~s~&"
+	       quantifier head)))
   
   head)
 
@@ -606,6 +648,7 @@
         (push (subcat-instance vg prep-word variable-to-bind pp)
               *subcat-info*))
       (setq vg (individual-for-ref vg))
+      (setq pobj-referent (individual-for-ref pobj-referent))
       (setq  vg (bind-dli-variable variable-to-bind pobj-referent vg))
       vg))))
 
@@ -839,6 +882,13 @@ to enhance p53 mediated apoptosis [2].") |#
    (t (assimilate-subcat vp :subject subj))))
 
 
+(defun add-possessive-determiner (poss ng)
+  (cond
+    (*subcat-test* t)
+    (t
+     (bind-dli-variable 'possessive poss (individual-for-ref ng))
+     )))
+
 ;; special case where the vp is a gerund, and we make it an NP (not sure how often this is right)
 (defun assimilate-subject-to-vp-ing (subj vp)
   (unless 
@@ -860,7 +910,6 @@ to enhance p53 mediated apoptosis [2].") |#
   (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
   (let* ((vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge)))
-    ;;(lsp-break "assimilate-subject-to-vp+ed")
     #+ignore
     (unless *subcat-test* 
       (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
@@ -976,6 +1025,31 @@ to enhance p53 mediated apoptosis [2].") |#
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
 
+(defun assimilate-np-to-v-as-object (vg obj)
+  (let
+      ((result
+	(if
+	 (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
+	 (verb-noun-compound vg obj)
+	 (assimilate-object vg obj))))
+    (when (and result (not *subcat-test*))
+      (if
+       (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
+       (revise-parent-edge :category (itype-of obj)
+			   :form category::n-bar
+			   :referent result)
+       (revise-parent-edge :category (itype-of vg)
+			   :form (ecase (cat-name (edge-form (parent-edge-for-referent)))
+				   ((vg vp) category::vp)
+				   ((vp+ing vg+ing) category::vp+ing)
+				   ((vp+ed vg+ed) category::vp+ed))				   
+			   :referent result)
+       ))
+    result))
+    
+
+
+
 (defun assimilate-thatcomp (vg-or-np thatcomp)
   (assimilate-subcat vg-or-np :thatcomp thatcomp))
 
@@ -1036,34 +1110,41 @@ to enhance p53 mediated apoptosis [2].") |#
   (declare (special *ignore-personal-pronouns*
                     category::unknown-grammatical-function))
   (tr :conditioning-anaphor-edge pn-edge)
-  (let* ((original-label (edge-category pn-edge))
-         (relation-label (form-label-corresponding-to-subcat subcat-label))
-         (restriction 
-          (or (var-value-restriction variable)
-              category::unknown-grammatical-function)))
-    (when (consp restriction)
-      ;; the first one after the :or
-      (setq restriction 
-            (or (loop for c in (cdr restriction) 
-                  when (itypep (edge-referent pn-edge) c)
-                  do (return c))
-             (cadr restriction))))
-    (unless relation-label
-      (setq relation-label category::np))
+  (cond
+    ((or
+      (ignore-this-type-of-pronoun (edge-category pn-edge))
+      (member (cat-name (edge-category pn-edge))
+	      '(reflexive/pronoun pronoun/inanimate )))
+     (edge-referent pn-edge))
+    (t
+     (let* ((original-label (edge-category pn-edge))
+	    (relation-label (form-label-corresponding-to-subcat subcat-label))
+	    (restriction 
+	     (or (var-value-restriction variable)
+		 category::unknown-grammatical-function)))
+       (when (consp restriction)
+	 ;; the first one after the :or
+	 (setq restriction 
+	       (or (loop for c in (cdr restriction) 
+		      when (itypep (edge-referent pn-edge) c)
+		      do (return c))
+		   (cadr restriction))))
+       (unless relation-label
+	 (setq relation-label category::np))
  
-    (let ((new-ref (individual-for-ref restriction)))
-      (unless (ignore-this-type-of-pronoun original-label)
-        ;; If we're going to ignore the pronoun we don't want or
-        ;; need to rework its edge
-        (tr :anaphor-conditioned-to new-ref restriction relation-label)
-        ;; Encode the type-restriction in the category label
-        ;; and the grammatical relationship in the form
-        (setf (edge-category pn-edge) restriction)
-        (setf (edge-form pn-edge) relation-label)
-        (setf (edge-referent pn-edge) new-ref)
-        (setf (edge-rule pn-edge) 'condition-anaphor-edge))
+       (let ((new-ref (individual-for-ref restriction)))
+	 (unless 
+	     ;; If we're going to ignore the pronoun we don't want or
+	     ;; need to rework its edge
+	     (tr :anaphor-conditioned-to new-ref restriction relation-label)
+	   ;; Encode the type-restriction in the category label
+	   ;; and the grammatical relationship in the form
+	   (setf (edge-category pn-edge) restriction)
+	   (setf (edge-form pn-edge) relation-label)
+	   (setf (edge-referent pn-edge) new-ref)
+	   (setf (edge-rule pn-edge) 'condition-anaphor-edge))
        
-      new-ref)))
+	 new-ref)))))
 
 (defparameter *label* nil) ;; temporary hack to get the label down to satisfies-subcat-restriction?
 (defparameter *head* nil)
@@ -1301,15 +1382,18 @@ to enhance p53 mediated apoptosis [2].") |#
            (prep-comp 
             (make-simple-individual
              (cond ((eq prep category::to) category::to-comp)
-                   (t category::prep-comp))
+                   (t category::prepositional-phrase))
              binding-instructions)))
       ;; If this starts to make a lot of preposition-specific
       ;; distinctions then we need to refactor and move the
       ;; cond up.
-      (when (eq prep category::to)
-        ;; If this routine starts to make a lot of preposition-specific
-        ;; distinctions then we need to refactor and move the cond up.
-        (revise-parent-edge :form category::to-comp))
+      (if
+       (eq prep category::to)
+       ;; If this routine starts to make a lot of preposition-specific
+       ;; distinctions then we need to refactor and move the cond up.
+       (revise-parent-edge :form category::to-comp)
+       (revise-parent-edge :form category::prepositional-phrase))
+	 
       prep-comp))))
 
 
