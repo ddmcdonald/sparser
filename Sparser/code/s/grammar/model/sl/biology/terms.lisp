@@ -418,9 +418,9 @@
 (def-bio "cytosine" nucleobase)
 
 (define-unit-of-measure "dalton")
-;;(noun "data" :super bio-entity)
-(def-bio "data" bio-entity) ;; need something better
-
+(define-category data :specializes measurement
+		 :realization
+		 (:noun ("datum" :plural "data")))
 (adj "de novo" :super bio-process)
 
 (adj "dead" :super bio-predication)
@@ -963,16 +963,17 @@
 ;; 16 "mUbRas, modified at a single site, "
 (noun "site" :super molecular-location
   :binds ((process bio-process)
-          (protein protein)
+          (kinase protein)
+	  (substrate protein)
           (residue residue-on-protein))
   :realization
      (:noun "site"
       :m process
-      :m protein
+      :m substrate
       :of process
       :for process
-      :in protein
-      :on protein
+      :in kinase
+      :on substrate
       :at residue))
 
 (find-or-make-individual 'qualitative-rate :name "slow")
