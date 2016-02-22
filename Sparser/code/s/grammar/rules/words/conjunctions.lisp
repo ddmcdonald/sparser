@@ -112,6 +112,7 @@
           "except that"
 	  "finally"
           "furthermore"
+          "hence"
           "however"
 	  "in contrast"
           "instead" 
