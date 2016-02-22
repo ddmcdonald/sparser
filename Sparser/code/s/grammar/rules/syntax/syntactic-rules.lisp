@@ -163,8 +163,20 @@ similar to an oncogenic RasG12V mutation (9)."))
                        left-edge right-edge))
 |#
 
-(loop for nb in `(category::NP ,@*n-bar-categories*)
-  do
+(loop for nb in `(category::verb+ing category::NP ,@*n-bar-categories*)
+   do
+  (eval
+   `(def-syntax-rule (det ,nb) 
+	:head :right-edge
+	:form np
+	:referent (:daughter right-edge
+			     :bind (has-determiner left-edge))))
+  (eval
+   `(def-syntax-rule (possessive ,nb) 
+	:head :right-edge
+	:form np
+	:referent (:daughter right-edge
+			     :bind (has-possessive left-edge))))
   (eval 
    `(def-syntax-rule (adjective ,nb) ;; "black suv"
                      :head :right-edge
@@ -226,6 +238,12 @@ similar to an oncogenic RasG12V mutation (9)."))
         :form n-bar 
         :referent (:function noun-noun-compound
                              left-edge right-edge)))))
+
+(def-syntax-rule (quantifier det)   ;; e.g. "all these"
+                     :head :right-edge
+      :form np
+      :referent (:function quantifier-noun-compound
+                           left-edge right-edge))
 
 
 ;;--- NP + PP
@@ -299,6 +317,11 @@ similar to an oncogenic RasG12V mutation (9)."))
   
   (eval
    `(def-syntax-rule  (adverb ,(car vv))
+                      :head :right-edge
+      :form ,(second vv)
+      :referent(:function interpret-adverb+verb left-edge right-edge)))
+  (eval
+   `(def-syntax-rule  (comparative ,(car vv))
                       :head :right-edge
       :form ,(second vv)
       :referent(:function interpret-adverb+verb left-edge right-edge)))
@@ -485,7 +508,7 @@ similar to an oncogenic RasG12V mutation (9)."))
      `(def-syntax-rule (,(car vv) ,nb)
                        :head :left-edge
         :form ,(second vv)
-        :referent (:function assimilate-object left-edge right-edge)))))
+        :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
 
 
 ;; subject 
@@ -542,7 +565,8 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 (loop for vv in '((subordinate-clause subordinate-clause) ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
 		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
-                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
+                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
+		  (verb+present vg))
   
   do
   (eval `(def-syntax-rule (subordinate-conjunction ,(car vv))
