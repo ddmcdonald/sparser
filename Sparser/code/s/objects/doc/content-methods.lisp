@@ -376,6 +376,42 @@
   (level-completed s))
 
 
+
+;;;----------------------------
+;;; records of delayed actions
+;;;----------------------------
+
+#| This is for remembering that there are operations that
+we need to do but couldn't do (or by policy decided not to do)
+while we were in the process of parsing a sentence. When the
+sentence has finished (see the function post-analysis-operations)
+we ought to have enough context to carry these out.
+   The first example is definite NPs. The record is laid down
+by the syntax function determiner-noun and the reader (presently)
+is a case in handle-any-anaphor
+|#
+(defclass records-of-delayed-actions ()
+  ((pending-definite-references
+    :initform nil :accessor pending-def-references
+    :documentation "A list of any edges that were appreciated
+      to be definite references that we consider trying to
+      identify referents for. See determiner-noun for any
+      adjustments to what's stored."))
+  (:documentation "Each field is a kind of phenomena that
+    we can't make a decision about. The simplest thing to
+    put in them is probably the edge that's the locus of
+    the issue, but it's really a decision between the recorder
+    and the function that reads the record."))
+
+(defmethod add-pending-def-ref ((e edge) (s sentence))
+  (let ((contents (contents s)))
+    (push e (pending-def-references contents))))
+
+(defmethod pending-definite-refences ((s sentence))
+  (pending-def-references (contents s)))
+
+
+
 ;;;-------------------
 ;;; table of contents
 ;;;-------------------

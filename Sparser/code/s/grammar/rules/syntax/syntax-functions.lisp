@@ -83,6 +83,11 @@
 (defvar CATEGORY::COPULAR-PREDICATE)
 
 
+; (left-edge-for-referent)
+; (right-edge-for-referent)
+; (parent-edge-for-referent)
+
+
 (define-lambda-variable 
     ;; Used to explicitly mark the type of an individual
     ;; created to anchor segments created by DM&P rather
@@ -140,10 +145,6 @@
   category::top)
 
 
-
-; (left-edge-for-referent)
-; (right-edge-for-referent)
-; (parent-edge-for-referent)
 
 (defparameter *force-modifiers* nil
   "Set to T when you want to accept all PP modifiers
@@ -248,6 +249,33 @@
 	 (find-variable-from-individual 'modifier head)
        (setq  head (bind-dli-variable 'modifier qualifier head)))
      head)))
+
+(defun determiner-noun (determiner head)
+  "Drop indefinite determiners on the ground. Mark definites
+   for later handling."
+  (declare (special *sentence-in-core*))
+  (push-debug `(,determiner ,head))
+  (let* ((parent-edge (parent-edge-for-referent))
+         (det-edge (left-edge-for-referent))
+         (det-word (edge-left-daughter det-edge)))
+    (unless (or (definite-determiner? det-word)
+                (indefinite-determiner? det-word))
+      ;; There are a ton of categories that are defined to be
+      ;; syntactic determiners that deserve their own careful
+      ;; semantic treatment that might funnel through here
+      ;; We can dispatch of the type of the determner:
+      ;; quantity, approximator, etc. Pull them out of the
+      ;; modifiers dossier. 
+      #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
+    (cond
+     ((call-compose determiner head))
+     ((definite-determiner? determiner)
+      (unless *sentence-in-core*
+        (error "Threading bug. No value for *sentence-in-core*"))
+      (add-pending-def-ref parent-edge *sentence-in-core*)))
+    head))
+
+
 
 (defun quantifier-noun-compound (quantifier head)
   ;; Not all quantifiers are equivalent. We want to idenify

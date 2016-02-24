@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  June 2015
+;;;  Version:  February 2016
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
@@ -62,6 +62,7 @@
                             entities-and-relations
                             sentence-discourse-history
                             sentence-text-structure
+                            records-of-delayed-actions
                             accumulate-items ordered)
   ((metadata :initform nil :accessor metadata
     :documentation "Metadata describing choices made by Sparser."))

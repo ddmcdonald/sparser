@@ -1,9 +1,9 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  October 2015
+;;;  Version:  February 2016
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -167,10 +167,10 @@ similar to an oncogenic RasG12V mutation (9)."))
    do
   (eval
    `(def-syntax-rule (det ,nb) 
-	:head :right-edge
-	:form np
-	:referent (:daughter right-edge
-			     :bind (has-determiner left-edge))))
+                     :head :right-edge
+      :form np
+      :referent (:function determiner-noun left-edge right-edge)))
+
   (eval
    `(def-syntax-rule (possessive ,nb) 
 	:head :right-edge

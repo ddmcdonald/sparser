@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2012-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2012-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.1 June 2015
+;;;  Version:  February 2016
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -15,6 +15,8 @@
 ;; 0.1 6/28/15 Pulled all the literal "the" form rules in favor of
 ;;  their equivalents that were make with define-determner.
 ;;  Need to do the same with the indefinites and the others.
+;; February 2006: Commented out form rules in favor of a uniform
+;;  syntactic rule. Made variants of the predicates for other type.
 
 (in-package :sparser)
 
@@ -27,10 +29,11 @@
 ;; loads before this one.
 
 
+;;----- Possible semantic relations
+
 (defun mark-instance-indefinite (arg)
   ;; See hack in record-any-determiner
   (push-debug `(,arg)) (break "indefinite stub"))
-
 
 (define-lambda-variable 'has-determiner nil category::det)
 
@@ -39,7 +42,8 @@
 (define-lambda-variable 'indefinite nil category::indefinite)
 
 
-;;/// this should be checked with treatments in tree-families/NP
+
+;;---- Predicates
 
 ;; See pattern in rules/syntax/categories
 ;; and consumer in record-any-determiner
@@ -50,30 +54,43 @@
 
 (defun populate-in/definite-articles ()
   (setq *indefinite-determiners*
-        (mapcar #'word-named '("a" "an")))
+        (mapcar #'word-named '("a" "A" "an")))
   (setq *definite-determiners*
         ;;/// Can we tell when "that" is being used as
         ;; a determiner vs. as a relative conjunction ?
         (mapcar #'word-named '("the" "this" "these" "those"))))
 
-(defun definite-determiner? (word)
-  (unless *indefinite-determiners* (populate-in/definite-articles))
-  (memq word *definite-determiners*))
+(defun determiner? (word)
+  (or (definite-determiner? word)
+      (indefinite-determiner? word)))
 
 (defun indefinite-determiner? (word)
   (unless *indefinite-determiners* (populate-in/definite-articles))
   (memq word *indefinite-determiners*))
 
-(defun determiner? (word)
-  (or (definite-determiner? word)
-      (indefinite-determiner? word)))
+(defmethod definite-determiner? ((word word))
+  (unless *indefinite-determiners* (populate-in/definite-articles))
+  (memq word *definite-determiners*))
+
+(defmethod definite-determiner? ((i individual))
+  (declare (special category::the category::this
+                    category::these category::those))
+  (memq (cat-symbol (itype-of i))
+        '(category::the category::this
+          category::these category::those)))
+
+(defmethod definite-determiner? ((e edge))
+  ;; it's a polyword like "at least", which is an approximatory.
+  nil)
+
+(defmethod definite-determiner? ((c category))
+  (declare (special category::determiner))
+  (category-inherits-type? c category::determiner))
 
 
 ;;;------------
 ;;; form rules
 ;;;------------
-
-
 ;; syntactic rule covering all of these inserted into syntactic-rules.lisp 
 #|
 ;;--- a/an

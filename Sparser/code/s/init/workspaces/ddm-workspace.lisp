@@ -16,8 +16,15 @@
  (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
 
+ (p "of the two radioactive peaks.")
+ determiner-noun  parsing-status  post-analysis-operations
+ make-sentence-container  handle-any-anaphora  mark-instance-indefinite
+ sentence-content  records-of-delayed-actions  define-determiner determiner?
 
  duplication-check establish-multiplier <== abstract to common core
+
+ mumble::realize-dtn  mumble::discourse-unit-bundle-driver
+ mumble::clear-derivation-tree-data  mumble::in-focus?
 
  initiate-incremental-CwC-protocol initiate-c3-protocol
  indexical-for-state -- grammar/rules/situation/rules.lisp:(defun indexical-for-state (state)

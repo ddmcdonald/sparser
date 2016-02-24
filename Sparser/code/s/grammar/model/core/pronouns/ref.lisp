@@ -42,7 +42,12 @@
 (defun handle-any-anaphora (sentence)
   ;; called from post-analysis-operations with the sentence currently being
   ;; analyzed. 
-  (let ((edge/s (there-are-pronouns)))
+  (let ((edge/s (there-are-pronouns))
+        (defNPs (pending-definite-refences sentence)))
+    (when defNPs
+      (when nil
+        (lsp-break "There are defNP edges in ~a:~%~a"
+                   sentence defNPs)))
     (when edge/s
       ;; It's a push list, so we're going to set the rightmost ones first
       (dolist (edge edge/s)
