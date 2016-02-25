@@ -62,8 +62,11 @@
 (define-determiner "these"  :brackets '( ].phrase .[np ))
 (define-determiner "those"  :brackets '( ].phrase .[np ))
 
+#|
+;; these are quantifiers like ALL and BOTH...
 (define-determiner "either"  :brackets '( ].phrase .[np ))
 (define-determiner "neither" :brackets '( ].phrase .[np ))
+|#
 
 (define-determiner "which" :brackets '( ].phrase .[np ))
 
