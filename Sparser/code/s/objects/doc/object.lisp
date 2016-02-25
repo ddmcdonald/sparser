@@ -440,7 +440,11 @@
         (setf (ends-at-char last) (pos-character-index pos))
         (set-document-index s index)
         ;; tie off the prev contents
-        (setq *previous-sentence* last)))
+        (setq *previous-sentence* last)
+        (when (string-equal "" (sentence-string last))
+          (setf (sentence-string last)
+                (extract-character-between-positions 
+                 (starts-at-pos last) (ends-at-pos last))))))
     ;; 1st sentence in a section (= paragraph) has the
     ;; section as its parent
     (tr :starting-sentence pos)
