@@ -464,6 +464,7 @@
                    :rule-name 'knit-parens-into-neighbor
                    :referent referent)))
         (tr :new-edge-incorporating-parens edge)
+	(update-definite-determiner edge)
         edge )))
    (t
     (format t "Dropping parenthetical ~s on the floor because previous edge  ~s has no interpretation~&"
