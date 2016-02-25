@@ -96,6 +96,7 @@
     (when (and *pronouns* ;; the module is loaded
                *do-anaphora*) ;; we've not deliberately turned it off
       (add-subsuming-object-to-discourse-history edge)))
+  (update-definite-determiner edge)
   (check-impact-on-quiescence-pointer edge)
   (when (and
 	 *check-semantic-completeness*
@@ -127,7 +128,7 @@
       (null (cdr (cfr-rhs rule)))
       (loop for x in (cfr-rhs rule) thereis (not (category-p x)))
       (member (cat-name (car (cfr-rhs rule)))
-	      '(that which syntactic-there be))
+	      '(that which syntactic-there be det))
       (member (mapcar #'cat-name (cfr-rhs rule))
 	      *ignored-semantic-check-rules*
 	      :test #'equal)))
