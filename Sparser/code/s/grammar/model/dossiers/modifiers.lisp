@@ -767,7 +767,7 @@
 ;;;-----
 
 (define-adjective "aberrant")
-(unles (eq :biology common-lisp-user::script)
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "able")) ; want to give "to" tree family? [yes - in biology] "able to do x" .. or no.
 (define-adjective "abnormal")
 (define-adjective "abundant")
