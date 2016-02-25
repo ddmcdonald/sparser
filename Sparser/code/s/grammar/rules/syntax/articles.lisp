@@ -58,7 +58,7 @@
   (setq *definite-determiners*
         ;;/// Can we tell when "that" is being used as
         ;; a determiner vs. as a relative conjunction ?
-        (mapcar #'word-named '("the" "this" "these" "those"))))
+        (mapcar #'word-named '("the" "this" "that" "these" "those"))))
 
 (defun determiner? (word)
   (or (definite-determiner? word)
