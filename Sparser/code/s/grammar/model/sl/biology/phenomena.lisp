@@ -531,14 +531,11 @@ it is created from N-terminus to C-terminus.|#
 
 (define-category  pathway
   :specializes bio-mechanism
-  :instantiates :self
-  :mixins (type-marker biological)
+  ;;:mixins (type-marker biological)
   :binds ((protein-sequence sequence)
-          (pathwayComponent) (pathwayOrder) 
-          (organism (:or organism species)))
-  :index (:permanent :key name)
-  :lemma (:common-noun "pathway")
-  :realization (:common-noun name)
+          (pathwayComponent)
+	  (pathwayOrder))
+  :realization (:noun "patheway")
   :documentation "Pathways are inhibited and activated
    which makes them more like entities than processes.
    They are named according to the sequence of proteins
@@ -546,7 +543,8 @@ it is created from N-terminus to C-terminus.|#
 
 (define-category PathwayStep :specializes bio-process
   :binds ((pathway pathway)
-          (nextStep PathwayStep)       
+          (nextStep PathwayStep)
+	  
           (stepProcess (:or control pathway catalysis 
                             biochemical-reaction bio-transport)))
   :instantiates :self
@@ -576,7 +574,7 @@ it is created from N-terminus to C-terminus.|#
     (setq proteins (nreverse proteins))
     (let ((sequence (create-sequence proteins))
           (name (create-slash-separated-string strings-naming-proteins)))
-      (let ((i (find-or-make-individual 'pathway :name name)))
+      (let ((i (find-or-make-individual 'pathway)))
         ;;/// make a lowercase version?
         (setq i (bind-dli-variable 'protein-sequence sequence i))
         i))))
@@ -597,6 +595,7 @@ it is created from N-terminus to C-terminus.|#
 (def-pathway "MEK" "ERK")
 
 (def-pathway "Raf" "MAPK")
+
 
 
 (define-category step
