@@ -43,7 +43,7 @@
   ;; called from post-analysis-operations with the sentence currently being
   ;; analyzed. 
   (let ((edge/s (there-are-pronouns))
-        (defNPs (pending-definite-refences sentence)))
+        (defNPs (pending-definite-references sentence)))
     (when defNPs
       (when nil
         (lsp-break "There are defNP edges in ~a:~%~a"
