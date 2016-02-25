@@ -42,8 +42,8 @@
 (defun define-approximator/determiner (string &key tree-families)
   (unless tree-families
     (setq tree-families '(generic-np-premodifier)))
-  (define-function-term string 'det
-    :super-category 'approximator
+  (define-function-term string 'approximator
+    ;;:super-category 'approximator
     :tree-families tree-families))
 
 
