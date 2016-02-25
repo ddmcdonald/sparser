@@ -125,7 +125,7 @@
             (adverb *adverb-brackets*)
             (comparative *comparative-brackets*)
             ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
-            (det *default-determiner-brackets*)
+            ((det approximator sequencer) *default-determiner-brackets*)
             (standalone *standalone-brackets*)
             (otherwise
              (break "Need brackets for another syntactic form: ~a" form)))))
