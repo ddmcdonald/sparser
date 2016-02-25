@@ -144,6 +144,11 @@
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
 
+(define-lambda-variable 
+  'approximator ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::number)
+
 
 
 (defparameter *force-modifiers* nil
@@ -250,6 +255,26 @@
        (setq  head (bind-dli-variable 'modifier qualifier head)))
      head)))
 
+(defparameter *dets-seen* nil)
+
+(defun create-partitive-np (quantifier of-pp)
+  (declare (special quantifier of-pp))
+  (let ((pp-edge (right-edge-for-referent)))
+    (when
+	(and
+	 (not (eq (edge-form pp-edge) category::preposition))
+	 (has-definite-determiner? (edge-right-daughter pp-edge)))
+      (cond
+	(*subcat-test* t)
+	(t
+	 (unless *sentence-in-core*
+	   (error "Threading bug. No value for *sentence-in-core*"))
+	 (let ((pobj-ref (edge-referent (edge-right-daughter pp-edge))))
+	   (revise-parent-edge :category (itype-of pobj-ref))
+	   (add-pending-partitive quantifier  (parent-edge-for-referent) *sentence-in-core*)
+	   pobj-ref
+	   ))))))
+
 (defun determiner-noun (determiner head)
   "Drop indefinite determiners on the ground. Mark definites
    for later handling."
@@ -266,13 +291,19 @@
       ;; We can dispatch of the type of the determner:
       ;; quantity, approximator, etc. Pull them out of the
       ;; modifiers dossier. 
+      (pushnew determiner *dets-seen*)
       #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
     (cond
      ((call-compose determiner head))
      ((definite-determiner? determiner)
       (unless *sentence-in-core*
         (error "Threading bug. No value for *sentence-in-core*"))
-      (add-pending-def-ref parent-edge *sentence-in-core*)))
+      ;; NOTE -- IMPORTANT
+      ;; this adds the definite determiner on the N-BAR, and does not, by iteself,
+      ;; mark the complete NP as a definite reference
+      ;; have to do something in complete-edge/hugin
+      ;; call to update-definite-determiner, defined in content-methods
+      (add-pending-def-ref determiner parent-edge *sentence-in-core*)))
     head))
 
 
