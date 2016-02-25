@@ -111,6 +111,7 @@
           (push cfr1 cfrs)
           (push cfr2 cfrs)))
 
+      #+ignore ;; don't handle partitives like this
       (when (memq 'of rules)
         ;; if we make this a conventional cfr, the bracket in front
         ;; of "of" will push us to the segment level before we can
@@ -147,6 +148,14 @@
 (define-quantifier "some"    :brackets '( ].quantifier  .[np ) :rules '(of))
 (define-quantifier "such"    :brackets '( ].quantifier  .[np ))
 
+
+(define-quantifier "neither"     :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "either"     :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "numerous"     :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "various"     :brackets '( ].quantifier  .[np ) :rules '(of))
+(define-quantifier "several"     :brackets '( ].quantifier  .[np ) :rules '(of))
+
+
 (define-quantifier "another" :brackets '( ].quantifier  .[np ) :rules '(det of))
   
 (define-quantifier "additional" :brackets '( ].quantifier  .[np ) :rules '(det the))
@@ -180,4 +189,21 @@
 
 (define-quantifier "none" :brackets '( ].quantifier  phrase.[ ) :rules '(of))
 
+
+;;;----------
+;;; quantity
+;;;----------
+#|  A "quantity", like a number, is the answer to "how many"
+    Quantities distribute exactly like numbers, including their composition
+    to form measurements and their capacity as determiners.  |#
+
+
+;; NOW TREATING SOME OF THESE QUANTITIES ad QUANTIFIERS -- since they can play a role in partitives
+;;  MAYBE THIS SHOULD BE REVIEWED
+
+;;(define-quantity "multiple")
+;;(define-quantity "numerous")
+;;(define-quantity "several")
+;;(define-quantity "unlimited")
+;;(define-quantity "various")
 
