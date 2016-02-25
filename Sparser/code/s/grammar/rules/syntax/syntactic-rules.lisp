@@ -162,6 +162,24 @@ similar to an oncogenic RasG12V mutation (9)."))
   :referent (:function noun-noun-compound
                        left-edge right-edge))
 |#
+(def-syntax-rule (approximator number)
+    :form number
+    :head :right-edge
+    :referent (:daughter right-edge
+			 :bind (approximator left-edge)))
+
+(def-form-rule (quantifier of)
+    :form np
+    :referent (:function create-partitive-np left-edge right-edge))
+
+(def-form-rule (number of)
+    :form np
+    :referent (:function create-partitive-np left-edge right-edge))
+
+;; This is only needed because "One" gives you ONES-NUMBER...
+(def-cfr np (ones-number of)
+  :form np
+  :referent (:function create-partitive-np left-edge right-edge))
 
 (loop for nb in `(category::verb+ing category::NP ,@*n-bar-categories*)
    do
