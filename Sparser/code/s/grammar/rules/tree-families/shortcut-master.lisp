@@ -39,16 +39,17 @@
     :prep :by
     :premod
     :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp :in :into 
-    :of :on :over :onto :such\ as :to :to-comp :thatcomp :through :throughout :toward :towards :under :upon :via 
+    :like
+    :of :on :over :onto :such\ as :to :to-comp :thatcomp :through :throughout :toward :towards :under 
+    :unlike :upon :via 
 
     :designator
     :whethercomp :with :within :without))
 
 (defparameter *slot-keywords*
   '(:alt-s :alt-o :m :premod :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp 
-    :by :in :into :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :upon 
-    :via :whethercomp :with :within :without
-    :designator))
+    :by :in :into :like :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
+    :upon :via :whethercomp :with :within :without :designator))
 
 
 (defun includes-def-realization-keyword (rdata)
