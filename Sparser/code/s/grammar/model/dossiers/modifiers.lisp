@@ -259,12 +259,15 @@
     Quantities distribute exactly like numbers, including their composition
     to form measurements and their capacity as determiners.  |#
 
-(define-quantity "multiple")
-(define-quantity "numerous")
-(define-quantity "several")
-(define-quantity "unlimited")
-(define-quantity "various")
 
+;; NOW TREATING SOME OF THESE QUANTITIES ad QUANTIFIERS -- since they can play a role in partitives
+;;  MAYBE THIS SHOULD BE REVIEWED
+
+(define-quantity "multiple")
+;;(define-quantity "numerous")
+;;(define-quantity "several")
+(define-quantity "unlimited")
+;;(define-quantity "various")
 
 
 ;;;------------
@@ -276,8 +279,11 @@
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
 (define-sequencer/determiner "next")
-(define-sequencer/determiner "subsequent")
-(define-sequencer/determiner "following")
+(when
+    (not (eq :biology common-lisp-user::script))
+  ;; these do not behave like determiners, and "following" needs to be treated like a verb...
+  (define-sequencer/determiner "subsequent")
+  (define-sequencer/determiner "following"))
 
 (define-sequencer/preposition "after")
 (define-sequencer/preposition "before")
