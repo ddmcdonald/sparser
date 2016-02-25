@@ -269,6 +269,7 @@
                   
 
 (def-form-category  det)
+(def-form-category  approximator)
 (def-form-category  n-bar)
 (def-form-category  noun)
 (def-form-category  common-noun)
@@ -335,6 +336,7 @@
 
 (defparameter *ng-start-categories*
   '(CATEGORY::DET
+    CATEGORY::APPROXIMATOR
     CATEGORY::QUANTIFIER
     CATEGORY::QUANTIFIER-OF
     CATEGORY::NUMBER
@@ -363,6 +365,7 @@
 (DEFPARAMETER *NG-INTERNAL-CATEGORIES*
   '(CATEGORY::QUANTIFIER
     CATEGORY::NUMBER
+    CATEGORY::APPROXIMATOR
     CATEGORY::ORDINAL
     CATEGORY::ADVERB
     CATEGORY::ADJECTIVE
@@ -415,7 +418,7 @@
     CATEGORY::PROPER-NOUN
     CATEGORY::PROPER-NAME))
 
-
+(defparameter *all-np-categories* `(category::NP ,@*n-bar-categories*))
 
 (defun thatcomp-verb (edge)
   (declare (special edge))
@@ -863,6 +866,7 @@
 (defun populate-irrelevant-to-discourse-history ()
   (setq *irrelevant-to-discourse-history*
         `(,(category-named 'determiner)
+	   (category-named 'approximator)
           ,(category-named 'prepositional-phrase)
           ,(category-named 'preposition)
           ,(category-named 'spatial-preposition)
