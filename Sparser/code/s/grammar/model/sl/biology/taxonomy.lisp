@@ -128,6 +128,8 @@
           (non-cellular-location non-cellular-location)
           (examples biological)
 	  (modifier)
+	  (like biological)
+	  (unlike biological)
 ;;	  (predication)
           ;;(variant variant)
           )
@@ -159,6 +161,8 @@
          :upon cellular-location
          :with context
          :within cellular-location
+	 :like like
+	 :unlike unlike
          ))
 
 ;;/// This is OBE given revision to biological. 
@@ -322,18 +326,21 @@
 
 
 (define-category mechanism :specializes endurant
-:binds ((function process) ;;  the process typically performed by 
-                           ;; this mechanism in the context of discussion
-        (goal)) ;; the predication that defines the desired end-state?
-  :documentation 
-  "A collection of interacting physical entities that performs an action 
+		 :binds ((process bio-process) ;;  the process typically performed by 
+			 ;; this mechanism in the context of discussion
+			 (goal)) ;; the predication that defines the desired end-state?
+		 :realization
+		 (:m process
+		     :of process
+		     :for process)
+		 :documentation 
+		 "A collection of interacting physical entities that performs an action 
    or has a purpose. Expand this comment...")
 
 (define-category bio-mechanism :specializes mechanism
   :mixins (has-name biological)
   :realization
-  (:noun "mechanism"
-         :of function))
+  (:noun "mechanism"))
 
 (define-category bio-control :specializes caused-bio-process
  ;; increase in rate vs increase in RAS activity
