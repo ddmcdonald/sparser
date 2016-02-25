@@ -139,14 +139,11 @@
     (keyword nil)
     (symbol (if (eq item nil)
               nil
-              (mbug  "Determine-output-stream-object-given-word-stream-object"
-                     "Unexpected symbol passed to the word stream: ~a"
-                     item)))
+              (mbug "Unexpected symbol passed to the word stream: ~a" item)))
     (ttrace nil)
     (possessive-marker item) ;;we already computed its form
     (otherwise
-	(mbug "Unexpected type of object passed to the word stream - ~a" item))
-    ))
+     (mbug "Unexpected type of object passed to the word stream - ~a" item))))
 
 
 (defun dispatch-on-prior-blip (item)
@@ -160,10 +157,9 @@
 	(punctuation-mark)
 	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*))
 	(otherwise
-	  (mbug "dispatch-on-prior-blip"
-	      "A Capitalize-next-word Blip is pending, so we next ~
-               expected to be passed a pname but got a ~A -- ~A"
-	      (type-of item) item))))
+	  (mbug "A Capitalize-next-word Blip is pending, so we next ~
+                 expected to be passed a pname but got a ~a -- ~a"
+                (type-of item) item))))
     (capitalize-and-regenerate
       (typecase  item
 	(string  (capitalize item))	
@@ -171,10 +167,9 @@
 	(punctuation-mark)
 	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*))
 	(otherwise
-	  (mbug "dispatch-on-prior-blip"
-	      "A Capitalize-next-word Blip is pending, so we next ~
-               expected to be passed a pname but got a ~A -- ~A"
-	      (type-of item) item))))
+	  (mbug "A Capitalize-next-word Blip is pending, so we next ~
+                 expected to be passed a pname but got a ~a -- ~a"
+                (type-of item) item))))
     (otherwise
       (typecase  item
 	;;there's no other interaction
@@ -237,9 +232,8 @@
     ;;(fancy-browser (backspace-over mark))
     (glass-tty     (send-text-output-stream-item-to-a-glass-teletype "//^H//"))
     (otherwise
-       (mbug "Send-item-to-physical-word-stream"
-	      "Unexpected class of text output stream - ~a"
-	      (class-of-text-output-stream-supported)))))
+     (mbug "Unexpected class of text output stream - ~a"
+           (class-of-text-output-stream-supported)))))
 
 
 (defun compute-proper-form-of-possessive-marker (last-word)
@@ -311,7 +305,7 @@
         (possessive-marker nil)
         (keyword nil) ;;I think the only keyword is :fresh-line 
         (otherwise
-         (mbug "Unexpected type of item" item)))
+         (mbug "Unexpected type of item -- ~A" item)))
     ;then
     (pass-a-space-to-the-text-output-stream)
     ;else

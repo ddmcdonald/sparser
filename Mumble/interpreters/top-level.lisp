@@ -86,14 +86,14 @@
 
       (let ((new-slot-for-this-turn (slot-for-a-turn content)))
 
-	(when *window-code?*
+	(when window-code?
 	  (paint-ss-into-new-line-buffers new-slot-for-this-turn))
 	  
 	(begin-tracker-run)
 	(phrase-structure-execution new-slot-for-this-turn)
 	(end-tracker-run)
 
-	(when *window-code?*
+	(when window-code?
 	  (let* ((ssd  *surface-structure-display-window*)
 		 (yah  (send ssd :you-are-here-blinker)))
 	    (send yah :set-visibility nil))

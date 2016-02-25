@@ -251,7 +251,7 @@
 
 
 (defun select-and-evaluate-choice-from-tree-fam (rspec tree-fam)
-  (when *window-code?*
+  (when window-code?
     (initialize-tree-fam-window-and-display-tree-fam tree-fam *tree-fam-parameter-argument-list*))
   (let ((chosen (choose-from-choice-set (choices tree-fam))))
     (landmark "Choice taken = " chosen)

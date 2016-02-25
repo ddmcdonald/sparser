@@ -116,82 +116,83 @@ thinking about the future when some kind of "semantic paging" is available.
 
 
 
-(unless (boundp '*upcase*)
-  (defparameter *upcase* (not (eq '|aBc| 'aBc))
-    ;; I've seen an :mlisp feature, but it doesn't appear to be consistent.
-    "The code in Mumble-86 is written in strictly lowercase. But depending 
-     on whether or not  one is running a Lisp that is case sensitive this
-     has an impact on the function names that def-type creates. When this
-     flag is true, they are created as all uppercase."))
+(defvar *upcase* (not (eq '|aBc| 'aBc))
+  "The code in Mumble-86 is written in strictly lowercase. But depending 
+on whether or not  one is running a Lisp that is case sensitive this
+has an impact on the function names that def-type creates. When this
+flag is true, they are created as all uppercase.")
 
 
 
-(eval-when (compile load eval)
-(defstruct  (mcatalog :named (:conc-name nil))
+(defstruct (mobject (:conc-name nil))
   (postprocessed? t)
-  name
-  the-type			;a type
-  members		;a list of objects of that type
+  name)
+
+(defstruct (mcatalog
+	     (:conc-name nil)
+	     (:include mobject))
+  the-type		; a type
+  members		; a list of objects of that type
   )
-)
 
-
-
-(eval-when (compile load eval)
-
-(defstruct  (mtype ;;:named #+lispm (:callable-accessors t) ; needed???
-             (:conc-name nil)
-             (:print-function
-              (lambda (struct stream level)
-                (declare (ignore level))
-                (format stream "#<TYPE ~A>" (name struct)))))
-  (postprocessed? t)          ; boolean:  whether the object needs postprocessing
-  name			;the symbol whose value is the type object
-  storage-type 		;either "temporary", "permanent",
-					;   or "system-overhead"
-  minimal-construction-function ;not relevant here so left nil
-  construction-macro		;the symbol whose fvalue is that macro
-					;///printing-function		
-  type-predicate		;the symbol whose fvalue is that function
-  setters                       ;an alist of the field-names and the setting functions
-  mcatalog			;a catalog
-  properties			;a alist of the symbols that name the
+(defstruct (mtype
+	     (:conc-name nil)
+	     (:include mobject)
+	     (:print-function
+	      (lambda (struct stream level)
+		(declare (ignore level))
+		(print-unreadable-object (struct stream :type t)
+		  (format stream "~a" (name struct))))))
+  storage-type			; either "temporary", "permanent",
+				;   or "system-overhead"
+  minimal-construction-function ; not relevant here so left nil
+  construction-macro		; the symbol whose fvalue is that macro
+				; ///printing-function
+  type-predicate		; the symbol whose fvalue is that function
+  setters			; an alist of the field-names and the setting functions
+  mcatalog			; a catalog
+  properties			; an alist of the symbols that name the
 				;   fields of the type with the text strings
-                                ;   that document them.
-  postprocessing-fn             ;a function of one argument -- an object of
-                                ;  this type -- that postprocesses the raw
-                                ;  definition.
-  re-definition-fn		;a function. args = <object> <tags-&-values>
-    				;  need not be defined.
+				;   that document them.
+  postprocessing-fn		; a function of one argument -- an object of
+				;   this type -- that postprocesses the raw
+				;   definition.
+  re-definition-fn		; a function. args = <object> <tags-&-values>
+				;   need not be defined.
   )
-)
 
 
-(defun define-catalog  (name type)
+(defun define-catalog (name type)
   (let ((the-catalog (make-mcatalog :postprocessed? t
-                                   :name	name
-                                   :the-type	type			  
-                                   :members nil)))
+				    :name	name
+				    :the-type	type
+				    :members nil)))
     (set name the-catalog)
     the-catalog))
 
-;revised version with provision for defining types on top of other types
-
+(defun mtype (symbol)
+  "Return the type-object denoted by a symbol."
+  (let ((type-object (get symbol 'mumble-type-object)))
+    (check-type type-object mtype)
+    type-object))
 
 (defmacro def-type  (type-name storage-type included-type
 		     &body properties-&-documentation)
-  "This version uses Defstruct -- should work in any Common Lisp."
+  "This version uses Defstruct -- should work in any Common Lisp.
+Revised version with provision for defining types on top of other types."
+  (check-type type-name symbol)
+  (check-type storage-type (member temporary permanent system-overhead))
+  (check-type included-type symbol)
+  (check-type properties-&-documentation list)
 
-  (when (eq type-name 'mumble::position)
-    ;; This defstruct appears to overwrites the one in Sparser, package differences
-    ;; not withstanding. Leastways if the Sparser position is not evaluated again
-    ;; after the mumble one, attempts to print them in a backtrace blow out the stack.
-    ;; This gross hack may get around the problem
-    (setq type-name 'mumble::mposition))
-  (when (eq included-type 'position)
-    (setq included-type 'mposition))
-
-  (let* ((type-check-name (intern (string-append type-name (if *upcase* "P" "p"))))
+  (let* ((type-name (case type-name
+		      (position 'mposition)
+		      (otherwise type-name)))
+	 (included-type (case included-type
+			  (position 'mposition)
+			  ((nil) 'mtype)
+			  (otherwise included-type)))
+	 (type-check-name (intern (string-append type-name (if *upcase* "P" "p"))))
          (minimal-construction-fn-name
           (intern (string-append (if *upcase* "MAKE-AN-EMPTY-" "make-an-empty-")
                                  (symbol-name type-name))))
@@ -209,45 +210,36 @@ thinking about the future when some kind of "semantic paging" is available.
                                 property-names))
          ;; was PAIRLIS, but that is not required to use the original order:
          (properties-&-setters (mapcar #'cons property-names setter-names))
-         (included-setters  (if included-type (setters (mtype included-type))))
-         (included-properties  (if included-type (properties (mtype included-type)))))
+         (included-setters  (setters (mtype included-type)))
+         (included-properties (properties (mtype included-type))))
     `(progn
        ;; Create the type and set up all references to it.
        (let ((the-type (make-mtype
-			  :postprocessed? t
-			  :name          ',type-name
-			  :storage-type  ',storage-type
-			  :minimal-construction-function ',minimal-construction-fn-name
-			  :construction-macro ',constructor-macro-name
-			  ;; :printing-function  nil
-			  :type-predicate  ',type-check-name
-			  :setters ',(append included-setters properties-&-setters) 
-			  :mcatalog  ',the-catalog
-			  :properties ',(append included-properties 
-                                    properties-&-documentation)
-			  :postprocessing-fn  nil)))
+			:postprocessed? t
+			:name          ',type-name
+			:storage-type  ',storage-type
+			:minimal-construction-function ',minimal-construction-fn-name
+			:construction-macro ',constructor-macro-name
+			;; :printing-function  nil
+			:type-predicate  ',type-check-name
+			:setters ',(append included-setters properties-&-setters)
+			:mcatalog  ',the-catalog
+			:properties ',(append included-properties properties-&-documentation)
+			:postprocessing-fn  nil)))
 
-	  (do* ((rest ',properties-&-setters (cdr rest))
-            (ps     (car rest) (car rest))
-            (prop   (car ps) (car ps))
-            (setter (cdr ps) (cdr ps))
-            (index  ,(length included-setters) (1+ index)))
-	       ((null rest))
-	    (check-for-real-conflicts prop ',type-name index)
-	    (check-for-real-conflicts setter ',type-name index)
-	    (setf (get prop 'mumble-type-object-for-field) the-type)
-	    (setf (get setter 'mumble-type-object-for-field) the-type))
+	 (do* ((rest ',properties-&-setters (cdr rest))
+	       (ps     (car rest) (car rest))
+	       (prop   (car ps) (car ps))
+	       (setter (cdr ps) (cdr ps))
+	       (index  ,(length included-setters) (1+ index)))
+	      ((null rest))
+	   (check-for-real-conflicts prop ',type-name index)
+	   (check-for-real-conflicts setter ',type-name index)
+	   (setf (get prop 'mumble-type-object-for-field) the-type)
+	   (setf (get setter 'mumble-type-object-for-field) the-type))
 
-      ;;should these be replaced with the standard mechanism, i.e. Create-and-catalog ??
-      (set ',type-name the-type)
-	  (setf (get ',type-name 'mumble-type-object) the-type)
-	  ;; (link-name-to-object ',type-name the-type type)
-	  (let ((old-value (get ',type-name 'mumble-symbol)) ;; <=== 12/10/03 patch
-            new-value ) 
-        (if (consp old-value)
-          (setq new-value (cons the-type old-value))
-          (setq new-value (list the-type old-value)))
-        (setf (get ',type-name 'mumble-symbol) new-value)))
+	 (setf (get ',type-name 'mumble-type-object) the-type)
+	 (link-name-to-object ',type-name the-type (mtype 'mtype)))
 
        (defun ,minimal-construction-fn-name ,(if (member 'name property-names)
                                                '(&optional (name 'anonymous))
@@ -258,27 +250,20 @@ thinking about the future when some kind of "semantic paging" is available.
                                        '(:name name)
                                        nil))))
        (temporarily-inhibit-fdefine-warnings
+	;; This defstruct defines the construction function,
+	;; a "type" symbol to check against with TYPEP,
+	;; and property (slot) accessors.
         (defstruct (,type-name
                      (:conc-name nil)
-                     (:print-function (lambda (struct stream level)
-                                        (declare (ignore level))
-                                        (let ((name-symbol (name struct)))
-                                          (if (symbolp name-symbol)
-                                            (format stream "#<~A ~A>"
-                                                    ',type-name name-symbol)
-                                            (format stream "#<~a ???>"
-                                                    ',type-name)))))
-                     ,@(if included-type
-                        `((:include ,included-type))
-                        nil))
-          ;; This is where the `POSTPROCESSED?' field comes in.  If we have an
-          ;; included type, it will be inherited, not defined locally.
-          ,@(if included-type nil '((postprocessed? nil)))
+                     (:include ,included-type)
+                     (:print-function
+		      (lambda (struct stream level)
+			(declare (ignore level))
+			(print-unreadable-object (struct stream)
+			  (format stream "~a ~a" ',type-name (name struct))))))
           ,@property-names))
-       ;;this defstruct defines the construction function, a "type" symbol to check 
-       ;;against with TYPEP, and access MACROS.
 
-       ;;idiosyncratically named Replace fns.
+       ;; idiosyncratically named Replace fns.
        ,@(mapcar #'(lambda (property-name set-name)
                      `(temporarily-inhibit-fdefine-warnings
                        (defsubst ,set-name (structure new-value)
@@ -298,14 +283,8 @@ thinking about the future when some kind of "semantic paging" is available.
            ;;(or obj (mbug "Could not find value for symbol ~s of type ~s"
            ;;		  symbol ',type-name))
            obj))
- 
-       ;; add the type to the catalog of types
-       (when (not (member ',type-name (members (mcatalog mtype))))
-         (setf (members (mcatalog mtype)) 
-               (cons ',type-name (members (mcatalog mtype)))))
-       ;; "setf" rather than "set-members" because of the bootstrapping
-       ',type-name)
-    ))
+
+       ',type-name)))
 
 
 (defparameter *check-for-type-conflicts* t
@@ -400,14 +379,8 @@ thinking about the future when some kind of "semantic paging" is available.
                 (properties the-vector))))
        (setf (setters the-vector) ps))
 
-     ;; now the redundant attachment
-     ;; ///should be same stuff as Create-and-Catalog
-     (setq mtype the-vector)
      (setf (get 'mtype 'mumble-type-object) the-vector)
-
-     the-vector))
-
-
+     (setq mtype the-vector)))
 
 (do-the-type-of-type-by-hand)
 
@@ -468,7 +441,7 @@ have to keep around temporary repositories for all this stuff.
                                         type-name))))
     (if (= (length parameter-list) 1)
       `(progn (defun ,fn-name ,parameter-list ,@body)
-              (set-postprocessing-fn (type-named ',type-name)
+              (set-postprocessing-fn (mtype ',type-name)
                                      (symbol-function ',fn-name))
               ',fn-name)
       (error "Strange postprocessing parameter-list:  ~s.  ~
@@ -476,23 +449,6 @@ have to keep around temporary repositories for all this stuff.
              parameter-list))))
  
 
-
-;################################################################
-;        symbol denoting a type -> the type-object denoted
-;################################################################
-; ////can be made into a macro (leaving just the type-object) in those cases
-; where the argument is quoted.
-
-(defun mtype (symbol)
-  (if (not (symbolp symbol))
-    (mbug "not called with a symbol - ~A" symbol)
-    (let ((type-object (get symbol 'mumble-type-object)))
-      (when (not (typep type-object 'mtype))
-        (format nil "~A does not denote a type" symbol))
-      type-object)))
-
 ;;; Flag the fact that the type system is loaded.
 
-(defconstant *type-system-loaded* t)   ;; in mumble package
-
-(defconstant cl-user::*type-system-loaded* t)
+(defconstant type-system-loaded t)

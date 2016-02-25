@@ -107,10 +107,10 @@ the bundle."
   (declare (special *pending-discourse-units*))
     (setq *pending-discourse-units* (create-message  message))
     (initialize-mumble)
-    (when *window-code?*
+    (when window-code?
       (initialize-message-window-and-display-message *pending-discourse-units*))
     (mumble *pending-discourse-units*)
-    (when *window-code?*
+    (when window-code?
       (let* ((mdw  *message-display-window*)
 	     (yah  (send mdw :you-are-here-blinker)))
 	(send yah :set-visibility nil))))
