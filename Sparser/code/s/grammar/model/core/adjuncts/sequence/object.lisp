@@ -40,13 +40,14 @@
 
 ;;--- determiners
 
-(defun define-sequencer/determiner (string)
-  (define-function-term string 'det
+(defun define-sequencer/determiner (string) ;; no longer make it a determiner
+  (define-function-term string 'adjective
     :super-category 'sequencer
     :rule-label 'sequencer
     :discriminator 'sequence
     :brackets (list ].quantifier .[np )
     :tree-families '(generic-np-premodifier)))
+
 
 ;; Define-function-term would normally make the needed
 ;; function rules, but when we make we use a generalizing rule-label
@@ -55,16 +56,16 @@
 
 (def-form-rule (sequencer common-noun)
   :form np
-  :referent (:method modifier+noun left-edge right-edge))
+  :referent (:method determiner-noun left-edge right-edge))
 (def-form-rule (sequencer n-bar)
   :form np
-  :referent (:method modifier+noun left-edge right-edge))
+  :referent (:method determiner-noun left-edge right-edge))
 (def-form-rule (sequencer np-head)
   :form np
-  :referent (:method modifier+noun left-edge right-edge))
+  :referent (:method determiner-noun left-edge right-edge))
 (def-form-rule (sequencer np)
   :form np
-  :referent (:method modifier+noun left-edge right-edge))
+  :referent (:method determiner-noun left-edge right-edge))
 
 
 ;;--- prepositions
