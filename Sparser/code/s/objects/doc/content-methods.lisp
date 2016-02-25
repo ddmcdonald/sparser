@@ -396,19 +396,54 @@ is a case in handle-any-anaphor
     :documentation "A list of any edges that were appreciated
       to be definite references that we consider trying to
       identify referents for. See determiner-noun for any
-      adjustments to what's stored."))
+      adjustments to what's stored.")
+   (pending-partitives
+    :initform nil :accessor pending-partitive-references
+    :documentation "A list of any edges that were appreciated
+      to be partitive references of the form <quantifier> of <definite-NP>."))
+  
   (:documentation "Each field is a kind of phenomena that
     we can't make a decision about. The simplest thing to
     put in them is probably the edge that's the locus of
     the issue, but it's really a decision between the recorder
     and the function that reads the record."))
 
-(defmethod add-pending-def-ref ((e edge) (s sentence))
+(defmethod add-pending-def-ref (determiner (e edge) (s sentence))
   (let ((contents (contents s)))
-    (push e (pending-def-references contents))))
+    ;; have to include determiner -- there is a difference between
+    ;; "the proteins", "these proteins" and "those proteins", all of which
+    ;; are definite references
+    (push (list determiner e) (pending-def-references contents))))
 
-(defmethod pending-definite-refences ((s sentence))
+(defmethod pending-definite-references ((s sentence))
   (pending-def-references (contents s)))
+
+(defun has-definite-determiner? (edge)
+  (unless *sentence-in-core*
+    (error "Threading bug. No value for *sentence-in-core*"))
+  (member edge (pending-definite-references *sentence-in-core*) :key #'second))
+
+
+
+(defun update-definite-determiner (edge)
+  (when (and
+	 *sentence-in-core*
+	 (edge-form edge)
+	 (member (cat-symbol (edge-form edge)) *all-np-categories*))
+    (loop for pair in (pending-definite-references *sentence-in-core*)
+       when
+	 (or (eq (second pair) (edge-left-daughter edge))
+	     (eq (second pair) (edge-right-daughter edge)))
+       do
+	 (setf (second pair) edge)
+	 (return t))))
+
+(defmethod add-pending-partitive (quantifier (e edge) (s sentence))
+  (let ((contents (contents s)))
+    (push (list quantifier e) (pending-partitive-references contents))))
+
+(defmethod pending-partitives ((s sentence))
+  (pending-partitive-references (contents s)))
 
 
 
