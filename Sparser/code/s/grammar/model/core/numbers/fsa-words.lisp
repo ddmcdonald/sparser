@@ -88,7 +88,7 @@
 	      (make-completed-unary-edge
 	       (edge-starts-at triggering-edge)  ;; starting vector
 	       (edge-ends-at triggering-edge)    ;; ending vector
-	       :respaning-single-number-word     ;; 'rule'
+	       :number-word-fsa ;; :respaning-single-number-word     ;; 'rule'
 	       triggering-edge                   ;; daughter
 	       category::number                  ;; the edge's label
 	       category::number                  ;; its form
