@@ -824,7 +824,7 @@
 (define-adjective "continual")
 (define-adjective "continuous") ; process-y
 (define-adjective "counterintuitive")
-(unless (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "critical"));; conflicts with needed definition in biology 
 (define-adjective "crucial")
 (define-adjective "cytotoxic")
