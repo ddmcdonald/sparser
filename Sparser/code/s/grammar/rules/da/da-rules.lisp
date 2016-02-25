@@ -50,6 +50,11 @@
   ;; The action can fail. Returning nil ought to suffice
   :action (:function attach-following-pp-to-clause third first))
 
+(define-debris-analysis-rule s-comma-pp-comma
+  :pattern ( s "," pp ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function attach-following-pp-to-clause third first))
+
 (defun attach-following-pp-to-clause (pp clause)
   (let* ((clause-referent (edge-referent clause))
          (pobj-edge (edge-right-daughter pp))
@@ -342,6 +347,43 @@
       ;;(lsp-break "attach-appositive-np-under-s fails")
       nil))))
 
+(define-debris-analysis-rule np-comma-pp-comma
+  :pattern ( np "," pp ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function attach-pp-to-np-with-commas first second third fourth))
+
+(define-debris-analysis-rule proper-noun-comma-pp-comma
+  :pattern ( proper-noun "," pp ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function attach-pp-to-np-with-commas first second third fourth))
+
+
+(defun attach-pp-to-np-with-commas (np-edge comma-edge-1 pp-edge comma-edge-2)
+  (declare (special comma-edge-1 pp-edge comma-edge-2))
+  ;; Look up the right fridge of the s for a proper-noun 
+  (let* ((np (edge-referent np-edge))
+	 (pobj-edge (edge-right-daughter pp-edge))
+	 (pobj-referent (edge-referent pobj-edge))
+	 (prep-edge (edge-left-daughter pp-edge))
+	 (prep-word (edge-left-daughter prep-edge))
+	 (var-name
+	  (subcategorized-variable np
+				   prep-word
+				   pobj-referent)))
+    (cond
+      (var-name
+       (setq np (bind-dli-variable var-name pobj-referent np))
+       (make-edge-over-long-span 
+	(pos-edge-starts-at np-edge)
+	(pos-edge-ends-at comma-edge-2)
+	(edge-category np-edge)
+	:form (edge-form np-edge)
+	:rule 'attach-pp-to-np-with-commas
+	:referent np
+	:constituents `(,np-edge ,comma-edge-1 ,pp-edge ,comma-edge-2)))
+      (t 
+       ;;(lsp-break "attach-pp-to-np-with-commas fails")
+       nil))))
 
 
 (define-debris-analysis-rule proper-noun-comma-vg+ed-comma
