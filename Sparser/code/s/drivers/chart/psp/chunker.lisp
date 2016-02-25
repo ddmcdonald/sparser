@@ -528,7 +528,8 @@
   (ng-compatible? (cat-symbol c) evlist))
 
 (defmethod ng-compatible? ((name symbol) edges)
-  (declare (special category::all category::quantifier-of category::pronoun
+  (declare (special category::all ;;category::quantifier-of
+		    category::pronoun
                     *ng-internal-categories*))
   (or
    (and
@@ -543,7 +544,7 @@
     (loop for edge in edges
       thereis
       (or
-       (eq (edge-category edge) category::quantifier-of)
+       ;;(eq (edge-category edge) category::quantifier-of)
        (eq (edge-category edge) category::all)))
     (eq name 'category::det))))
 
