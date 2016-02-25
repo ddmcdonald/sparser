@@ -331,6 +331,10 @@
     (setq  head (bind-dli-variable 'quantifier quantifier head)))
    ((itypep head 'bio-abstract) ;; we quantify abstract items like "group"
     (setq  head (bind-dli-variable 'quantifier quantifier head)))
+   ((itypep head 'quality) ;; we quantify qualities "some level"
+    (setq  head (bind-dli-variable 'quantifier quantifier head)))
+   ((itypep head 'biological) ;; we quantify things like "such models"
+    (setq  head (bind-dli-variable 'quantifier quantifier head)))
    ((itypep head 'determiner) ;; "all these"
      (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
    (t
