@@ -38,15 +38,6 @@
 (in-package :sparser)
 
 
-;;should be done more generally, but this is a start - need to specify the definite determeiners, and the types of phrases which can be partitives
-;; such as superlatives, numbers, comparatives and combinations thereof
-
-(loop for partitive in '("all" "some" "most" "one")
-  do
-  (loop for def-det in '("the" "these" "those")
-    do 
-    (define-determiner (format nil "~a of ~a" partitive def-det))))
-
 (noun "HA.11" :super epitope)
 
 (noun "bradykinin" :super peptide)
