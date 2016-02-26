@@ -132,13 +132,18 @@ two elements long because there is no phrase named 'sue."
 (defparameter *mumble-symbols* nil
   "Names of all the objects created.")
 
+(defparameter *bad-names* nil
+  "Inappropriate names for Mumble objects.")
+
 (defun link-name-to-object (name object object-type)
   "Links set:
 1. value(name(object)) is set to the object
 2. the mumble-symbol property of the name includes this object
 3. the object is included in the list of members of the type
 4. the object is in the global list *mumble-symbols*"
-  (unless (constantp name)
+  (unless (or (constantp name)
+              (and (eq (symbol-package name) (find-package :common-lisp))
+                   (push name *bad-names*)))
     (set name object))
   (setf (name object) name)
   (pushnew object (get name 'mumble-symbol))
