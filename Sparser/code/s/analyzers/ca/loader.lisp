@@ -20,5 +20,6 @@
 (lload "do CA;actions")
 (lload "do CA;scanners")
 (lload "do CA;search")
+(lload "do CA;discourse-mentions")
 (lload "do CA;anaphora")
 
