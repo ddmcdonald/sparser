@@ -7,6 +7,6 @@ clean:
 # e.g., make grep pattern=foo
 pattern=
 grep:
-	grep --recursive --include="*.lisp" -nHi -e "$(pattern)" Sparser/code/s
+	grep --recursive --include="*.lisp" -nHi -e "$(pattern)" Mumble Sparser/code/s
 
 .PHONY: TAGS clean grep
