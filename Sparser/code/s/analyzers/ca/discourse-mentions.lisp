@@ -89,21 +89,21 @@
   (pos-edge-ends-at e))
 
 (defun update-mention-links (edge)
+  ;; to be defined
+  edge
   )
 
-(defun update-instance-within-sequence (new-mention old-mention edge)
+(defun update-instance-within-sequence (new-mention old-mention start-pos end-pos)
   ;; Have to replace the old individual+edge pair since
   ;; with the dl protocol this is a new individual, not an
   ;; established individual with a new spanning edge
 
   (declare (special *lifo-instance-list*))
 
-  (push-debug `(,new-mention ,old-mention ,edge))
+  (push-debug `(,new-mention ,old-mention ,start-pos ,end-pos))
   ;; (setq new-mention (car *) old-mention (cadr *) start-pos (caddr *) end-pos (cadddr *))
 
-  (let* ((start-pos (pos-edge-starts-at edge))
-         (end-pos (pos-edge-ends-at edge))
-         (redundant-instance (pop *lifo-instance-list*))
+  (let* ((redundant-instance (pop *lifo-instance-list*))
          ;; Because the individuals are virtually always new, even
          ;; when the edges subsume an established edge on its headine,
          ;; the list will have an 'extra' record on the front that
@@ -207,7 +207,33 @@
            ;; whether it has ever been mentioned before.
            (make-new-mention entry i start-pos end-pos))))))
 
+(defun make-new-mention (entry i start-pos end-pos
+                         &optional subsumed-mention)
+  (let* ((location (encode-mention-location start-pos end-pos))
+         (m (make-instance 'discourse-mention
+              :i i :loc location))
+         (previous-mentions (get-history-of-mentions i)))
+    (tr :making-new-mention m)
+    (when subsumed-mention
+      (setf (subsumes-mention m) subsumed-mention)
+      (setf (subsumed-by-mention subsumed-mention) m)
+      (update-instance-within-sequence m subsumed-mention start-pos end-pos))
+    (setf (gethash i *lattice-individuals-to-mentions*)
+          (cons m previous-mentions))
+    (push m *lattice-individuals-mentioned-in-paragraph*)
+    (extend-category-dh-entry entry m)
+    m ))
 
-(defmethod get-history-of-mentions ((i individual))
-  (gethash i *lattice-individuals-to-mentions*))
+
+(defun encode-mention-location (start-pos end-pos)
+  "Encodes the location of a mention in terms of the two positions
+   that span the individual, i.e. the ends of the edge that added it."
+  (cons start-pos end-pos))
+
+
+(defun long-term-mention? (mention)
+  "Has this mention been converted to its long-term form?"
+  (integerp (car (mentioned-where mention))))
+
+
 
