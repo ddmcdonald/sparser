@@ -62,6 +62,8 @@
 
   spanned-words
 
+  mention ;; structure that contains the initial edge-referent and any contextual extensions
+
   )
 
 
