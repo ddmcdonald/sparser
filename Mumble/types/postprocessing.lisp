@@ -76,7 +76,7 @@
   
   (dolist (type-partial-order lattice-descriptor)
     (dolist (type type-partial-order)
-      (let* ((the-type-object (type-named type))
+      (let* ((the-type-object (mtype type))
 	     (function        (postprocessing-fn the-type-object)))
 	(when function
 	  (postprocess-all-objects-of-type the-type-object function))))))
@@ -95,18 +95,14 @@ object."
   (funcall postp-function obj)
   (setf (postprocessed? obj) t))
 
+(defun alphabetize-catalog (catalog)
+  (setf (members catalog) (sort (members catalog) #'string-lessp :key #'name)))
+
 (defun alphabetize-catalogs ()
   (let ((the-type-object-catalog (mcatalog (mtype 'mtype))))
-    ; first, alphabetize the type of type object's catalog
-    (setf (members the-type-object-catalog)
-	  (sort (members the-type-object-catalog)
-		#'string-lessp))
-    ; sort the catalog for every object type
-    (mapcar #'(lambda (object-type)
-		(setf (members (mcatalog (type-named object-type)))
-		      (sort (members (mcatalog (type-named object-type)))
-			    #'string-lessp :key #'name)))
-	    (members the-type-object-catalog))))
+    (alphabetize-catalog the-type-object-catalog)
+    (dolist (object-type (members the-type-object-catalog))
+      (alphabetize-catalog (mcatalog object-type)))))
 
 
 ;################################################################

@@ -339,7 +339,6 @@
   (setq *allow-pure-syntax-rules* t)
   ;; NEED TO TURN THIS OFF IN BIO!!
   (setq *edges-from-referent-categories* t)
-  (turn-off-interfering-rules :grok)
   (setq *switch-setting* :grok))
 
 (defun tuned-grok ()

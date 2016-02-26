@@ -16,6 +16,9 @@
  (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
 
+ period-hook  start-sentence
+ extract-character-between-positions
+
  (p "of the two radioactive peaks.")
  determiner-noun  parsing-status  post-analysis-operations
  make-sentence-container  handle-any-anaphora  mark-instance-indefinite

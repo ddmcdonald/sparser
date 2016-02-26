@@ -72,8 +72,6 @@ the functional value of the former to that of the latter."
 
 ;; #5 --- Load Mumble.
 
-;; Mumble does not currently (2015-12-21) load under SBCL.
-#-sbcl
 (load (merge-pathnames "Mumble/loader.lisp" *nlp-home*))
 
 ;; #6 --- Load Sparser.

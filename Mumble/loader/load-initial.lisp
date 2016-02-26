@@ -12,8 +12,8 @@
 
 (in-package :mumble)
 
-(defconstant *window-code?*
-	     nil  "Defined as a constant, NIL, because there is no way we will ever be 
+(defconstant window-code? nil
+  "Defined as a constant, NIL, because there is no way we will ever be 
 executing window code on anything by a lispmachine, so we may as well let 
 the compiler eliminate some dead code.")
 
@@ -29,8 +29,7 @@ the compiler eliminate some dead code.")
 ;;; on it.
 
 
-(defvar *mumble-initialization-list*
-        nil
+(defvar *mumble-initialization-list* nil
   "A list of functions, all of which will be called after all the Mumble files 
 are loaded.  This way, another system can transparently initialize things after
 Mumble has loaded.  The Tracker does, for instance.")

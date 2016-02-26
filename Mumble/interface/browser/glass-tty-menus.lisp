@@ -40,7 +40,7 @@
 		  (functionp value)))
     (:menu    (progn (when (symbolp value)
 		       (setq value (symbol-value value)))
-		     (if (not *window-code?*)
+		     (if (not window-code?)
 			 (listp value)
 			 (and (instance? value)
 			      (send value :operation-handled-p :choose)))))
@@ -102,7 +102,7 @@ Thus, the item 'foo is equivalent to '(foo :value foo)."
 	  (:eval     (eval arg))
 	  (:funcall  (funcall arg))
 	  (:menu     (progn (if (symbolp arg) (setq arg (symbol-value arg)))
-			    (if *window-code?*
+			    (if window-code?
 				(send arg :choose)
 				(tty-menu-choose arg "Sub-menu:" stream))))
 	  (:buttons  (tty-menu-choose arg "Sub-options:" stream))))))
@@ -116,7 +116,7 @@ Thus, the item 'foo is equivalent to '(foo :value foo)."
   "A menu-choose function which uses either TV:MENU-CHOOSE or 
 TTY-MENU-CHOOSE, depending on the *WINDOW-CODE?* variable.  Using this menu
 function keeps your program from depending on a fancy Lisp machine."
-  (if *window-code?*
+  (if window-code?
       (funcall menu-function item-list preamble)
       (tty-menu-choose item-list preamble stream)))
 (export 'menu-choose)

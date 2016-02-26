@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   April 2015
+;;;   Version:   February 2016
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -15,7 +15,7 @@
 ;; 10/29/14 exposed the comparatives. Forgot why they had been commented out.
 
 ;; Commenting out some word for collision with stronger forms in bio
-;; through 4/20/15
+;; through 4/20/15 and beyond.
 
 
 (in-package :sparser)
@@ -224,10 +224,9 @@
 
 (adj/adv "possible" "possibly" :super-category 'modifier)
 
-(if
- (not (eq :biology common-lisp-user::script))
- (define-adjective "likely") ;could be either adj or adv -- this conflicts with adverb use in biology
- )
+(unless (eq :biology common-lisp-user::script)
+ (define-adjective "likely")) ;could be either adj or adv -- this conflicts with adverb use in biology
+
 (define-adjective "unlikely") 
 
 
@@ -259,15 +258,12 @@
     Quantities distribute exactly like numbers, including their composition
     to form measurements and their capacity as determiners.  |#
 
-
-;; NOW TREATING SOME OF THESE QUANTITIES ad QUANTIFIERS -- since they can play a role in partitives
-;;  MAYBE THIS SHOULD BE REVIEWED
-
 (define-quantity "multiple")
-;;(define-quantity "numerous")
-;;(define-quantity "several")
 (define-quantity "unlimited")
-;;(define-quantity "various")
+
+;; "numerous", "several" "various" moved to quantifiers because
+;; they can be used in partitive constructions
+
 
 
 ;;;------------
@@ -279,11 +275,8 @@
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
 (define-sequencer/determiner "next")
-(when
-    (not (eq :biology common-lisp-user::script))
-  ;; these do not behave like determiners, and "following" needs to be treated like a verb...
-  (define-sequencer/determiner "subsequent")
-  (define-sequencer/determiner "following"))
+(define-sequencer/determiner "subsequent")
+(define-sequencer/determiner "following")
 
 (define-sequencer/preposition "after")
 (define-sequencer/preposition "before")
@@ -351,8 +344,7 @@
 (define-adverb "absolutely")
 (define-adverb "accordingly")
 (define-adverb "accurately")
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adverb "actively")) ;; conflicts with bio domain
 (define-adverb "actually")
 (define-adverb "acutely")
@@ -775,14 +767,12 @@
 ;;;-----
 
 (define-adjective "aberrant")
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "able")) ; want to give "to" tree family? [yes - in biology] "able to do x" .. or no.
 (define-adjective "abnormal")
 (define-adjective "abundant")
 (define-adjective "accurate")
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "active"));; conflicts with bio-domain
 (define-adjective "adaptive")
 (define-adjective "adhesive")
@@ -824,20 +814,17 @@
 ;;(define-adjective "common")
 (define-adjective "complementary")
 (define-adjective "complete")
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "complex")) ;also noun // need noun for biology
 (define-adjective "conceptual")
 (define-adjective "confluent")
 (define-adjective "consistent") ;with
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "constitutive"))
 (define-adjective "continual")
 (define-adjective "continuous") ; process-y
 (define-adjective "counterintuitive")
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "critical"));; conflicts with needed definition in biology 
 (define-adjective "crucial")
 (define-adjective "cytotoxic")
@@ -1020,8 +1007,7 @@
 (define-adjective "prototypical")
 (define-adjective "quiescent")
 (define-adjective "random")
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "rapid"))
 (define-adjective "rare")
 (define-adjective "raw")
@@ -1044,9 +1030,8 @@
 (define-adjective "short")
 (define-adjective "significant")
 (define-adjective "silent") ;in terms of mutation: no resultant change in phenotype
-(if
- (not (eq :biology common-lisp-user::script))
- (define-adjective "similar"));relation
+(unless (eq :biology common-lisp-user::script)
+  (define-adjective "similar"));relation
 (define-adjective "simple")
 (define-adjective "small")
 (define-adjective "solid")
@@ -1085,8 +1070,7 @@
 (define-adjective "unstable")
 (define-adjective "upper" :form 'spatial-adjective)
 (define-adjective "useable")
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (eq :biology common-lisp-user::script)
  (define-adjective "useful"))
 (define-adjective "variable")
 (define-adjective "vast")

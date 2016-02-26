@@ -37,7 +37,9 @@ are stashed on the script symbol's plist for the script function below."
                             (:script-variable ; defaulted above
                              (assert (eql script-variable (car opt-value)))
                              `(,opt-name ,(car opt-value)))
-                            ((:switches :grammar-configuration)
+                            ((:grammar-configuration
+                              :interfering-rules
+                              :switches)
                              `(,opt-name ,(car opt-value))))))))
 
 (pushnew
@@ -68,6 +70,18 @@ are stashed on the script symbol's plist for the script function below."
    (funcall (getf (get 'script script) :switches (constantly nil))))
  *post-load-hooks*)
 
+(pushnew
+ (defun turn-off-rules-interfering-with-script (&optional (script script))
+   "Delete rules that interfere with a particular script."
+   (declare (special script *sets-of-interfering-rules*))
+   (let ((interfering-rules (getf (get 'script script) :interfering-rules)))
+     (when interfering-rules
+       (pushnew (cons script interfering-rules)
+                *sets-of-interfering-rules*
+                :test #'equal)
+       (turn-off-interfering-rules script))))
+ *post-load-hooks*)
+
 (defscript bbn ()
   "Goes with a release of Sparser to BBN in the early 1990s to use
 in conjunction with an early version of Hark. Notable for using the
@@ -82,6 +96,7 @@ in conjunction with an early version of Hark. Notable for using the
    (*description-lattice* t)
    (*index-under-permanent-instances* t))
   (:grammar-configuration "bio-grammar")
+  (:interfering-rules ((sgml-label ("p")))) ; interferes with "p100"
   (:switches bio-setting))
 
 (defscript blocks-world ()
@@ -129,6 +144,7 @@ or associated with a schemea, we would switch both values.")
    (*incorporate-generic-lexicon* t
     "Include the COMLex lexicon."))
   (:grammar-configuration "grok")
+  (:interfering-rules ((comma-number ("," number))))
   (:switches grok-setting))
 
 (defscript just-dm&p ()

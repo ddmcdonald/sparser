@@ -24,31 +24,23 @@ it's been renamed "mclass".
 
 (in-package :mumble)
 
-(eval-when (compile load eval)
-
-(def-type named-object permanent ()
-  (name   "a symbol"))
-)
+(def-type named-object permanent nil)
 
 
 ;################################################################
 ;       Types used constructing the Surface Structure Tree
 ;################################################################
-(eval-when (compile load eval)
 (def-type position temporary named-object
   (next           "the next position--initially the dominating slot")
   (previous       "the previous position--initially the dominating slot")
   (labels         "a list of labels;  the first is the name")  
   (visited-status "nil, entered, or left "))
-)
 
 
-(eval-when (compile load eval)
 (def-type  node     temporary  mposition
   (first-constituent "a slot. The rest of the node's constituents~
                       chain off of this one via next-position.")
   (last-constituent  "the last slot in the phrase dominated by this node"))
-)
 
 (def-type phrasal-root temporary node
   (context-object      "a phrasal-context"))
@@ -72,11 +64,8 @@ it's been renamed "mclass".
 ;     Realization-specifications
 ;################################################################
 
-(eval-when (compile load eval)
 (def-type  specification   temporary named-object
   (underlying-object		"pointer to the obj this is an instance of"))
-)
-
 
 (def-type  kernel-specification   temporary specification
   (arguments			"a list of Realization-specifications")
@@ -106,7 +95,6 @@ it's been renamed "mclass".
 ;               Types used in classes
 ;  each class is a predefined set of annotated choices
 ;################################################################
-(eval-when (compile load eval)
 
 (def-type  mclass permanent named-object
   (parameters  		"a list of the formal parameters")
@@ -120,14 +108,12 @@ it's been renamed "mclass".
 
 (def-type  characteristic    permanent named-object)
 
-(def-type  parameter         pernament named-object)
-)
+(def-type  parameter         permanent named-object)
 
 ;################################################################
 ;               Types used in Realization
 ;################################################################
 
-(eval-when (compile load eval)
 (def-type  tree-family permanent mclass)
 
 
@@ -135,7 +121,6 @@ it's been renamed "mclass".
   (grammatical-characteristics	"a list of grammatical characteristics")
   (argument-characteristics     "a list of characteristic-name argument pairs")
   (required-accessories		"a list of accessory and possibly an argument pairs"))
-)
 
 
 (def-type  curried-tree-family   permanent  tree-family
@@ -159,7 +144,6 @@ it's been renamed "mclass".
 ;               Types for attachment
 ;################################################################
 
-(eval-when (compile load eval)
 (def-type attachment-class  permanent mclass)
 
 (def-type attachment-choice permanent annotated-choice
@@ -169,8 +153,6 @@ it's been renamed "mclass".
 
 (def-type  attachment-point    permanent named-object
   (actions  "a list of actions to be carried out when this ap is used"))
-)
-
 
 					   
 (def-type single-attachment-choice permanent attachment-choice)
@@ -254,16 +236,11 @@ it's been renamed "mclass".
 ;  LABELS
 ;#################################################################
 
-(eval-when (compile load eval)
 (def-type  label   permanent named-object)
-)
 
-
-(eval-when (compile load eval)
 (def-type position-label permanent label
   (word-stream-actions			"a list of word-stream-actions")
   (associated-attachment-points		"a list of attachment-points"))
-)
 
 
 (def-type  node-label   permanent position-label)
@@ -288,10 +265,7 @@ it's been renamed "mclass".
 ;                          words
 ;################################################################
 
-(eval-when (compile load eval)
 (def-type word-stream-item  permanent named-object)
-)
-
 
 (def-type  pronoun    permanent word-stream-item
   (person    "a symbol, (member first second third)")
@@ -301,11 +275,8 @@ it's been renamed "mclass".
               value of the field is a quoted string to be sent to the output
               stream.  For instance, `me' or `I.'"))
 
-
-(eval-when (compile load eval)
 (def-type word-stream-item-with-pname permanent word-stream-item
   (pname		"a string"))
-)
   
 (def-type  word    permanent word-stream-item-with-pname
   (word-labels		"a list of labels")

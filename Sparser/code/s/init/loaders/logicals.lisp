@@ -58,16 +58,6 @@
    (make-pathname :directory '(:relative "s"))
    *sparser-code-directory*))
 
-;;; allegro doesn't think sparser is a host if translations is nil
-;;; so we start it off with a definition for sparser:s;
-
-(eval-when (:load-toplevel :compile-toplevel :execute)
- (setf (logical-pathname-translations "sparser") 
-  `((";s;**;*.*" ,(format nil "~a/**/*.*" *source-root*))))
-)
-
-
-
 (defvar *fasl-root*
   (merge-pathnames
    (make-pathname
@@ -75,6 +65,10 @@
                  #+asdf3 ,(uiop:implementation-identifier)
                  #-asdf3 ,(substitute #\- #\Space (lisp-implementation-type))))
    *sparser-code-directory*))
+
+(setf (logical-pathname-translations "sparser")
+      `(("s;**;*.*.*" ,(**/* *source-root*))
+        ("f;**;*.*.*" ,(**/* *fasl-root*))))
 
 (def-logical-pathname
   (**/* "sparser:source;" :type *lisp-type*)
@@ -84,13 +78,11 @@
   (**/* "sparser:source;" :type *fasl-type*)
   (**/* *fasl-root* :type *fasl-type*))
 
-;;; an intermediate fasl form
+;; an intermediate fasl form
 #+allegro
 (def-logical-pathname
   (**/* "sparser:source;" :type "001")
   (**/* *fasl-root* :type "001"))
-
-
 
 ;;;------------------------------------------
 ;;; Sparser initialization logical pathnames

@@ -204,7 +204,7 @@ a tree-family, or a PARAMETER."
 		       (mbug "Ambiguous choice ~s, with possible values ~s"
 			     choice-name possibles))))
 		(t
-		 (mbug "Choice has illegal type:  ~s" choice-name value)))))))
+		 (mbug "Choice ~s has illegal type:  ~s" choice-name value)))))))
  
 (defun postp-actual-parameter (actual)
   "Of the possible choices, WORDs and PARAMETERs don't take arguments, so the 
@@ -276,7 +276,7 @@ to the tree-familr."
 			     (mbug "Ambiguous choice ~s, with possible values ~s"
 				   item possibles))))
 		      (t
-		       (mbug "Choice has illegal type:  ~s" item value))))  )))
+		       (mbug "Choice ~s has illegal type:  ~s" item value))))  )))
       list)))
 
 
@@ -707,7 +707,7 @@ possessive."
     
     ;;check that definition is now a single list
     (when (not (= (length rest-of-phrase) 1))
-      (mbug "error in phrase definition - ~" definition))
+      (mbug "error in phrase definition: ~s" definition))
 
     (push (parse-phrase (car rest-of-phrase)) processed-phrase)
     (nreverse processed-phrase)

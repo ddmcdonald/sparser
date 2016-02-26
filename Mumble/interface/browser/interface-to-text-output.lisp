@@ -53,9 +53,8 @@
       (fancy-browser (send-text-output-stream-item-to-a-fancy-browser  item))
       (glass-tty     (send-text-output-stream-item-to-a-glass-teletype item))
       (otherwise
-        (mbug "Send-item-to-physical-word-stream"
-	       "Unexpected class of text output stream - ~a"
-	       (class-of-text-output-stream-supported))))))
+        (mbug "Unexpected class of text output stream - ~a"
+              (class-of-text-output-stream-supported))))))
 
 
 ; This is separate from Send-item-to-physical-word-stream so that we can use
@@ -66,9 +65,8 @@
     (fancy-browser (send-text-output-stream-item-to-a-fancy-browser  " "))
     (glass-tty     (send-text-output-stream-item-to-a-glass-teletype " "))
     (otherwise
-       (mbug "Send-item-to-physical-word-stream"
-	      "Unexpected class of text output stream - ~a"
-	      (class-of-text-output-stream-supported)))))
+       (mbug "Unexpected class of text output stream - ~a"
+             (class-of-text-output-stream-supported)))))
 
 
 (defun send-text-output-stream-item-to-a-glass-teletype (item)
