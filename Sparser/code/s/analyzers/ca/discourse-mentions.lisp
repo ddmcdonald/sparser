@@ -207,6 +207,27 @@
            ;; whether it has ever been mentioned before.
            (make-new-mention entry i start-pos end-pos))))))
 
+
+(defun create-discourse-mention (i start-pos end-pos)
+  "Individuals reside in a description lattice. Every new
+  property or relation extends the lattice and in so doing
+  creates a new individual that is more specific than
+  its predecessor. As a result we need to keep the (new)
+  individual as part of the entry, and we need to record
+  this mention in a table from the (new) individual so that
+  we can search back for correspondences from partial individual
+  further up the lattice."
+  ;; The discourse entry for a category is a push list, most
+  ;; recent (and thereafter most specific) first
+  (let* ((location (encode-mention-location start-pos end-pos))
+         (toc (location-in-article-of-current-sentence))
+         (m (make-instance 'discourse-mention
+              :i i :loc location :article toc)))
+    (setf (gethash i *lattice-individuals-to-mentions*) `(,m))
+    (push m *lattice-individuals-mentioned-in-paragraph*)
+    (tr :made-mention m)
+    (list m)))
+
 (defun make-new-mention (entry i start-pos end-pos
                          &optional subsumed-mention)
   (let* ((location (encode-mention-location start-pos end-pos))
@@ -236,4 +257,26 @@
   (integerp (car (mentioned-where mention))))
 
 
+(defun long-term-ify-mention (mention)
+  "Same idea a working with a conventional discourse entry
+   in that we replace positions with their indexes. 
+   The more important long-term location information is position
+   in the article, which was recorded when the mention was made."
+  (let* ((cons (mentioned-where mention))
+         (start-pos (car cons))
+         (end-pos (cdr cons)))
+    (unless (integerp start-pos) ;; already done
+      (setf (mentioned-where mention)
+            (cons (pos-token-index start-pos)
+                  (pos-token-index end-pos))))))
+
+
+(defun search-mentions-by-position (mentions start-pos end-pos)
+  (declare (ignore end-pos))
+  ;;/// 9/13/15 probably an ad-hoc fn we can later dispense with
+  ;; Used by long-term-ify/individual
+  (loop for m in mentions
+    as cons = (mentioned-where m)
+    as start = (car cons)
+    when (eq start start-pos) return m))
 
