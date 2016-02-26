@@ -275,8 +275,9 @@
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
 (define-sequencer/determiner "next")
-(define-sequencer/determiner "subsequent")
-(define-sequencer/determiner "following")
+(unless (eq :biology common-lisp-user::script)
+  (define-sequencer/determiner "subsequent")
+  (define-sequencer/determiner "following"))
 
 (define-sequencer/preposition "after")
 (define-sequencer/preposition "before")
