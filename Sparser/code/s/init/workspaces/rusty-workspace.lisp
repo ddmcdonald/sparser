@@ -220,9 +220,13 @@
       
 (defun mark-examples ()
   (load "~/r3/code/integration/cycorp/aspp2-examples"))
+
+#+:sbcl
+(defvar *profns*)
+
 #+:sbcl
 (defun timings(&optional (n 1))
-  (setq profns
+  (setq *profns*
         '( all-subs-link
           dli-ref-cat
           interesting-super?
@@ -381,7 +385,7 @@
           find-or-make-lattice-subordinate link-to-other-parents link-to-existing-children
           head-referent? same-category? survey-bindings
           ))
-  (eval `(sb-profile::profile ,@profns))
+  (eval `(sb-profile::profile ,@*profns*))
   (setq *allow-tr-tracing* nil)
   (loop for i from 1 to n do
     (compare-to-snapshots))
@@ -406,9 +410,11 @@
     v+v))
 
 (defparameter *vvs* (loop for i from 1 to 20 collect (make-dummy-v+v)))
+#|
 (setq vk (fifth *vvs*))
 (setq nk (unit-plist vk))
 (setq lk (list (vv-variable vk)(vv-value vk)))
+|#
 
 (defun load-vv-tables ()
   (loop for vv in *vvs* do
