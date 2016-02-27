@@ -52,8 +52,6 @@
 
  starts-occasional-polyword polyword-check initiates-polyword1  do-polyword-fsa
  
-
- 
  define-knockout
  digit-FSA 
 
@@ -84,12 +82,15 @@
    analyze-pp indexical-for-state mark-instance-indefinite
    define-determiner
 
+ *build-mumble-equivalents*  setup-rdata  apply-mumble-rdata
+ mumble::setup-verb-from-rdata  mumble::apply-function-data
+ mumble::*mappings-for-category-linked-phrase*
  mumble::link-to-underlying-object mumble::remove-subject
    mumble::dtn-bundle-driver
    mumble::has-name
    mumble::sexp-reader
  mumble-phrase  add-etf-mapping  realize-using-name-binding
- realization-for-triple
+ realization-for-triple  get-lexicalized-phrase
 
  get-dli
 
