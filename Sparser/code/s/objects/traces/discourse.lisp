@@ -48,19 +48,19 @@
     (trace-msg "[DH] adding ~a, new instance of ~a"
                i category)))
 
-(deftrace :adding-new-instance-of-known-object (i start-pos end-pos)
+(deftrace :adding-new-instance-of-known-object (i edge)
   (when *trace-discourse-history-management*
     (trace-msg "[DH] Extending reference to ~a~
               ~%     to be between p~a and p~a" i
-              (pos-token-index start-pos)
-              (pos-token-index end-pos))))
+              (pos-token-index (start-pos edge))
+              (pos-token-index (end-pos edge)))))
 
-(deftrace :extending-with-subsuming-instance (i start-pos end-pos)
+(deftrace :extending-with-subsuming-instance (i edge)
   (when *trace-discourse-history-management*
     (trace-msg "[DH] adding another reference to ~a~
               ~%     between p~a and p~a" i
-              (pos-token-index start-pos)
-              (pos-token-index end-pos))))
+              (pos-token-index (start-pos edge))
+              (pos-token-index (end-pos edge)))))
 
 ;;--- dl variants
 
@@ -69,30 +69,30 @@
   (when *trace-discourse-history-management*
     (trace-msg "[DH] adding ~a to its category's entry" i)))
 
-(deftrace :extending-with-subsuming-instance/dl (i j start-pos end-pos)
+(deftrace :extending-with-subsuming-instance/dl (i j edge)
   (when *trace-discourse-history-management*
     (trace-msg "[DH] i~a is a specialization of ~a ~
               ~%   on larger edge between p~a and p~a" 
                (indiv-uid i) j
-               (pos-token-index start-pos)
-               (pos-token-index end-pos))))
+               (pos-token-index (start-pos edge))
+               (pos-token-index (end-pos edge)))))
 
-(deftrace :exending-span-of-mention (m start-pos end-pos)
+(deftrace :exending-span-of-mention (m edge)
   (when *trace-discourse-history-management*
     (trace-msg "[DH] extending span of ~a to p~a:p~a"
                m
-               (pos-token-index start-pos)
-               (pos-token-index end-pos))))
+               (pos-token-index (start-pos edge))
+               (pos-token-index (end-pos edge)))))
   
 
 ;;--- Mentions
 
-(deftrace :creating-category-dh-entry (category i start-pos end-pos)
+(deftrace :creating-category-dh-entry (category i edge)
   (when *trace-discourse-history-management*
     (trace-msg "[DH] i~a b/w p~a and p~a is 1st entry for ~a"
                (indiv-uid i) 
-               (pos-token-index start-pos)
-               (pos-token-index end-pos)
+               (pos-token-index (start-pos edge))
+               (pos-token-index (end-pos edge))
                category)))
 
 (deftrace :made-mention (m)

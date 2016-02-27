@@ -34,7 +34,6 @@
    (ci :initarg :ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
    (edge :initarg :ei :accessor mention-edge)
-   (containing-edge :accessor containing-edge)
    (location-in-paragraph :initarg :loc :accessor mentioned-where
     :documentation "An encoding of the location at which
      this mention occurred. Given the present implementation,
@@ -77,10 +76,13 @@
         (format stream "?"))))))
 
 (defmethod start-pos ((m discourse-mention))
-  (start-pos (mention-edge m)))
+  ;;(start-pos (mention-edge m))
+  (car (mentioned-where m))
+)
 
 (defmethod end-pos ((m discourse-mention))
-  (end-pos (mention-edge m)))
+  ;;(end-pos (mention-edge m))
+  (cdr (mentioned-where m)))
 
 (defmethod start-pos ((e edge))
   (pos-edge-starts-at e))
@@ -93,22 +95,20 @@
   edge
   )
 
-(defun update-instance-within-sequence (new-mention old-mention start-pos end-pos)
+(defun update-instance-within-sequence (new-mention old-mention edge)
   ;; Have to replace the old individual+edge pair since
   ;; with the dl protocol this is a new individual, not an
   ;; established individual with a new spanning edge
 
   (declare (special *lifo-instance-list*))
 
-  (push-debug `(,new-mention ,old-mention ,start-pos ,end-pos))
-  ;; (setq new-mention (car *) old-mention (cadr *) start-pos (caddr *) end-pos (cadddr *))
+  (push-debug `(,new-mention ,old-mention ,edge))
 
   (let* ((redundant-instance (pop *lifo-instance-list*))
          ;; Because the individuals are virtually always new, even
          ;; when the edges subsume an established edge on its headine,
          ;; the list will have an 'extra' record on the front that
          ;; we should get rid of. 
-         (new-edge (edge-between start-pos end-pos))
          (new-i (base-description new-mention))
          (old-i (base-description old-mention))
          (old-instance ;; pair of old-i and its edge
@@ -123,13 +123,13 @@
       ;; We're going to subvert it. If order matters we can
       ;; do that later. Changes the lifo instance list in place.
       (rplaca old-instance new-i)
-      (rplaca (cdr old-instance) new-edge)
+      (rplaca (cdr old-instance) edge)
       #+ignore(unless (equal old-instance redundant-instance)
         (lsp-break "why is new different?"))
       )))
 
 
-(defun lattice-individuals-extend-dh-entry (entry i start-pos end-pos)
+(defun lattice-individuals-extend-dh-entry (entry i edge)
   ;; Works in terms of mentions rather than regular discourse entries
   ;; that just encode position pairs. If the most recent individual
   ;; of this category is a 'parent' of the new individual and the
@@ -137,29 +137,12 @@
   ;; the sentence-level information about entities/relations (which
   ;; is edge-oriented). In any event we make a new mention for
   ;; this case, chaining the mentions in a case of subsuming edges
-  (push-debug `(,entry ,i ,start-pos ,end-pos))
-  #|  (setq entry (nth 0 *) i (nth 1 *)
-        start-pos (nth 2 *) end-pos (nth 3 *))  |#
+  (push-debug `(,entry ,i ,edge))
   (let* ((top-mention (car entry))
          (top-instance (base-description top-mention)))
     (tr :extending-dh-entry i)
     (push-debug `(,top-mention ,top-instance)) ;(lsp-break "mentions")
     ;; (setq top-mention (car *) top-instance (cadr *))
-
-    (flet ((subsumes-position (mention start-pos end-pos)
-             (let ((old-position (mentioned-where mention)))
-               (cond
-                ((consp old-position)
-                 (let ((last-start# (pos-token-index (car old-position)))
-                       (last-end# (pos-token-index (cdr old-position)))
-                       (start# (pos-token-index start-pos))
-                       (end# (pos-token-index end-pos)))
-                   (or (eql start# last-start#)
-                       (eql end#   last-end#)
-                       (and (<= start# last-start#)
-                            (>= end#   last-end#)))))
-                ;;/// are there other posibilties, or is it always nil?
-                (t nil)))))
 
     ;; If we've referred to this head line referent twice in a row
     ;; then there's either a subsuming edge case or something like
@@ -167,48 +150,63 @@
     ;; mention is different than this one), though in those cases there
     ;; are also likely to be interveening referring individuals. 
     (cond ((eq i top-instance)
-           ;; If we're eq to the most recent entry for this category
-           ;; then we have two cases: [1] The edges subsume and this
-           ;; new edge has for some reason not added any properties
-           ;; to its referent, or [2] the edges are disjoint and
-           ;; we have a new mention
-           (cond
-            ((long-term-mention? top-mention)
-             ;;/// tr
-             (make-new-mention entry i start-pos end-pos))
-            ((subsumes-position top-mention start-pos end-pos)
-             (let ((new-loc (encode-mention-location start-pos end-pos)))
-               ;; "this auto-inhibited fate" w/ no referent for "this"
-               (tr :exending-span-of-mention top-mention start-pos end-pos)
-               (setf (mentioned-where top-mention) new-loc)))
-            (t
-             (tr :extending-with-subsuming-instance i start-pos end-pos)
-             (make-new-mention entry i start-pos end-pos))))
+	   ;; If we're eq to the most recent entry for this category
+	   ;; then we have two cases: [1] The edges subsume and this
+	   ;; new edge has for some reason not added any properties
+	   ;; to its referent, or [2] the edges are disjoint and
+	   ;; we have a new mention
+	   (cond
+	     ((long-term-mention? top-mention)
+	      ;;/// tr
+	      (make-new-mention entry i edge))
+	     ((subsumes-position top-mention edge)
+	      (let ((new-loc (encode-mention-location edge)))
+		;; "this auto-inhibited fate" w/ no referent for "this"
+		(tr :exending-span-of-mention top-mention edge)
+		(setf (mentioned-where top-mention) new-loc)))
+	     (t
+	      (tr :extending-with-subsuming-instance i edge)
+	      (make-new-mention entry i edge))))
 
           ((as-specific? i top-instance)
            ;; The object was the very last one of its type to be added.
            ;; Check for this being a larger edge over the same object.
            (cond
-            ((long-term-mention? top-mention)
-             ;;/// tr
-             (make-new-mention entry i start-pos end-pos))
-            ((subsumes-position top-mention start-pos end-pos)
-             ;; this instance subsumes the prior one
-             (tr :extending-with-subsuming-instance/dl
-                 i top-instance start-pos end-pos)
-             (make-new-mention entry i start-pos end-pos top-mention))
-            (t
-             ;; otherwise it's a new instance
-             (tr :adding-new-instance-of-known-object i start-pos end-pos)
-             (make-new-mention entry i start-pos end-pos))))
+	     ((long-term-mention? top-mention)
+	      ;;/// tr
+	      (make-new-mention entry i edge))
+	     ((subsumes-position top-mention edge)
+	      ;; this instance subsumes the prior one
+	      (tr :extending-with-subsuming-instance/dl
+		  i top-instance edge)
+	      (make-new-mention entry i edge top-mention))
+	     (t
+	      ;; otherwise it's a new instance
+	      (tr :adding-new-instance-of-known-object i edge)
+	      (make-new-mention entry i edge))))
 
           (t
            ;; we make a new mention. The subroutine will appreciate
            ;; whether it has ever been mentioned before.
-           (make-new-mention entry i start-pos end-pos))))))
+           (make-new-mention entry i edge)))))
 
 
-(defun create-discourse-mention (i start-pos end-pos)
+(defmethod subsumes-position ((mention discourse-mention)(edge edge))
+  (cond
+    ((start-pos mention)
+     (let ((last-start# (pos-token-index (start-pos mention)))
+	   (last-end# (pos-token-index (end-pos mention)))
+	   (start# (pos-token-index (start-pos edge)))
+	   (end# (pos-token-index (end-pos edge))))
+       (or (eql start# last-start#)
+	   (eql end#   last-end#)
+	   (and (<= start# last-start#)
+		(>= end#   last-end#)))))
+    ;;/// are there other posibilties, or is it always nil?
+    (t nil)))
+
+
+(defun create-discourse-mention (i edge)
   "Individuals reside in a description lattice. Every new
   property or relation extends the lattice and in so doing
   creates a new individual that is more specific than
@@ -219,26 +217,27 @@
   further up the lattice."
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
-  (let* ((location (encode-mention-location start-pos end-pos))
+  (when (null edge) (lsp-break "null edge in create-discourse-mention"))
+  (let* ((location (encode-mention-location edge))
          (toc (location-in-article-of-current-sentence))
          (m (make-instance 'discourse-mention
-              :i i :loc location :article toc)))
+              :i i :loc location :ei edge :article toc)))
     (setf (gethash i *lattice-individuals-to-mentions*) `(,m))
     (push m *lattice-individuals-mentioned-in-paragraph*)
     (tr :made-mention m)
     (list m)))
 
-(defun make-new-mention (entry i start-pos end-pos
-                         &optional subsumed-mention)
-  (let* ((location (encode-mention-location start-pos end-pos))
+(defun make-new-mention (entry i edge &optional subsumed-mention)
+  (when (null edge) (lsp-break "null edge in create-discourse-mention"))
+  (let* ((location (encode-mention-location edge))
          (m (make-instance 'discourse-mention
-              :i i :loc location))
+              :i i :loc location :ei edge))
          (previous-mentions (get-history-of-mentions i)))
     (tr :making-new-mention m)
     (when subsumed-mention
       (setf (subsumes-mention m) subsumed-mention)
       (setf (subsumed-by-mention subsumed-mention) m)
-      (update-instance-within-sequence m subsumed-mention start-pos end-pos))
+      (update-instance-within-sequence m subsumed-mention edge))
     (setf (gethash i *lattice-individuals-to-mentions*)
           (cons m previous-mentions))
     (push m *lattice-individuals-mentioned-in-paragraph*)
@@ -246,10 +245,15 @@
     m ))
 
 
-(defun encode-mention-location (start-pos end-pos)
+(defmethod encode-mention-location (edge)
   "Encodes the location of a mention in terms of the two positions
    that span the individual, i.e. the ends of the edge that added it."
-  (cons start-pos end-pos))
+  (cons (start-pos edge) (end-pos edge)))
+
+(defun make-mentions-long-term ()
+  (loop for mention in *lattice-individuals-mentioned-in-paragraph*
+    do (long-term-ify-mention mention))
+  (setq *lattice-individuals-mentioned-in-paragraph* nil))
 
 
 (defun long-term-mention? (mention)
@@ -271,12 +275,10 @@
                   (pos-token-index end-pos))))))
 
 
-(defun search-mentions-by-position (mentions start-pos end-pos)
-  (declare (ignore end-pos))
-  ;;/// 9/13/15 probably an ad-hoc fn we can later dispense with
-  ;; Used by long-term-ify/individual
-  (loop for m in mentions
-    as cons = (mentioned-where m)
-    as start = (car cons)
-    when (eq start start-pos) return m))
+(defun search-mentions-by-position (mentions edge)
+  (let ((start-pos (start-pos edge)))
+    ;;/// 9/13/15 probably an ad-hoc fn we can later dispense with
+    ;; Used by long-term-ify/individual
+    (loop for m in mentions
+       when (eq (start-pos m) start-pos) return m)))
 

@@ -279,8 +279,7 @@
 (defun index-section-object-to-discourse-history (so edge)
   (update-discourse-history category::section-object
                             so
-                            (pos-edge-starts-at edge)
-                            (pos-edge-ends-at edge)))
+                            edge))
 
 
 
