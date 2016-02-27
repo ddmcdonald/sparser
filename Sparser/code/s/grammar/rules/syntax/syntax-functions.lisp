@@ -1215,6 +1215,7 @@ to enhance p53 mediated apoptosis [2].") |#
 (defparameter *trivial-subcat-test* nil)
 (defparameter *tight-subcats* nil)
 (defparameter *note-ambiguity* nil)
+(defparameter *dups* nil)
 
 (defun show-ambiguities ()
   (setq *note-ambiguity* (list nil))
