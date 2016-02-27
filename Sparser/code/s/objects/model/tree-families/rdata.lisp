@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  1.5 January 2016
+;;;  version:  February 2016
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -60,6 +60,7 @@
 ;;      called by itself.
 ;;     (11/3/15) Tweaked deref-rdata-word to allow for multiple irregular words
 ;;  1/6/16 Folding in specifications for Mumble.
+;;  2/26/15 reworked apply-mumble-rdata to pass all parameters through
 
 (in-package :sparser)
 
@@ -559,9 +560,12 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
   "Provide phrase and argument information (so far only)
    for verbs. Look up the m-word, which should exist
    at this point, and create the lexicalized phrase."
+  ;; Called from setup-rdata
   (push-debug `(,category ,rdata))
   ;; (setq category (car *) rdata (cadr *))
   ;; e.g. (:mumble ("build" svo :v artifact))
+  ;;      (:mumble ("push" svo :s agent :o theme))
+  ;;      (:mumble (transitive-with-final-adverbial "push" "together"))
   (let ((mumble-spec (cadr (assq :mumble rdata))))
     (etypecase (first mumble-spec)
      (string
@@ -574,13 +578,14 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
   (mumble::apply-function-data category function-and-args))
 
 (defun apply-mumble-phrase-data (category pname phrase-name p&v-pairs)
-  ;;/// dropping all the variable data on the floor on the
-  ;; other side, so just writing minimal call here
-  (let* ((parameter-name (car p&v-pairs))
-         (var-name (cadr p&v-pairs))
-         (variable (find-variable-for-category var-name category)))
-    (mumble::setup-verb-from-rdata
-     pname phrase-name parameter-name variable)))
+  "Subroutine of apply-mumble-rdata to set up the data (dereference
+   the symbols) so that the Mumble side of this."
+  (let ((pairs
+         (loop for (param-name var-name) in p&v-pairs
+           with variable = (find-variable-for-category var-name category)
+           collect `(,param-name . ,variable))))
+    (mumble::setup-verb-from-rdata pname phrase-name category pairs)))
+
          
 (defun make-corresponding-lexical-resource (head-word)
   ;; called from dereference-rdata and makes its own
