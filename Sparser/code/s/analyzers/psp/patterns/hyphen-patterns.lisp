@@ -285,8 +285,8 @@
          (left-ref (edge-referent left-edge))) 
     (cond
       ((null right-edge)
-       (break "~&bad call to resolve-hyphen-between-two-terms, null right-edge, ~&.......left-edge is ~s, words are ~s, pattern is ~s~&"
-	      left-edge words pattern)
+       (break "~&bad call to resolve-hyphen-between-two-terms, null right-edge, ~&.......left-edge is ~s,~&    pattern is ~s~&   words are ~a ~&"
+	      left-edge pattern words)
        nil)
       (t
        (cond
