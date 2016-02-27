@@ -234,6 +234,10 @@ a message to be expressed. See discussion in make.lisp |#
     (make-dtn :resource resource)))
 
 
+;;;-------------------
+;;; Sparser interface
+;;;-------------------
+
 (defun make-resource-for-sparser-word (pos-tag s-word)
   ;; called from make-corresponding-lexical-resource which itself
   ;; is called from dereference-rdata at least.
@@ -266,12 +270,10 @@ a message to be expressed. See discussion in make.lisp |#
       (:adjective (adjective m-word))
       (:interjection (interjection m-word)))))
 
-(defun setup-verb-from-rdata (pname phrase-name parameter-name variable)
+(defun setup-verb-from-rdata (pname phrase-name category pv-pairs)
   ;; called from apply-mumble-rdata. All the symbols are in the
-  ;; Sparser package. The parameter-name is a keyword
-  (declare (ignore parameter-name variable))
-  ;; Need to design the data structure that manages these
-  ;; recording the semantic constraint (variable) on
+  ;; Sparser package. 
+  (break "look at args")
   (let ((m-word (find-word pname))
         (m-phrase-name (mumble-symbol phrase-name)))
     (unless m-word
@@ -280,7 +282,17 @@ a message to be expressed. See discussion in make.lisp |#
       (error "There is no phrase named ~a. Wrong spelling?" phrase-name))
     ;; Works for side-effects. We presumably need to do more 
     ;; indexing to set this up to drive predictive parsing
-    (verb m-word m-phrase-name)))
+    (let ((lp (verb m-word m-phrase-name))
+          (map (loop for (param-name . variable) in pv-pairs
+                 collect (make-instance 'parameter-variable-pair
+                           :var variable
+                           :param (parameter-named param-name)))))
+      (let ((clp (make-instance 'category-linked-phrase
+                   :class category
+                   :lp lp
+                   :map map)))
+        (record-krisp-mapping m-word clp)
+        clp))))
 
 (defun apply-function-data (category function-and-args)
   "Called from one of the cases in sparser::apply-mumble-rdata
@@ -298,8 +310,9 @@ a message to be expressed. See discussion in make.lisp |#
       (values lp category))))
 
 
-
+;;;----------------------
 ;;; dtn => dtn operators
+;;;----------------------
 
 (defmacro define-dtn-operator (name specification &rest operators)
   `(define-dtn-operator/expr ',name ',specification ',operators))
@@ -378,6 +391,8 @@ a message to be expressed. See discussion in make.lisp |#
                   :value value))
       (push pvp pvp-list))
     (nreverse pvp-list)))
+
+
 
 ;;;---------------------------
 ;;; make a lexicalized-phrase
