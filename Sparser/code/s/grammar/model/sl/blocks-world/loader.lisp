@@ -16,5 +16,5 @@
   (gload "blocks;vocabulary")
   (gload "blocks;entities")
   (gload "blocks;interface")
-  (gload "blocks;staging")
+  (gload "blocks;staging"))
 
