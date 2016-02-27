@@ -487,6 +487,7 @@
   (get-surface-string-for-individual (edge-referent e)))
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
+  (declare (special category::bio-predication))
   (let ((reject?
          (or (word-p before)
 	     (word-p after)

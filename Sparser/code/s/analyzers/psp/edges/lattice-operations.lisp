@@ -130,7 +130,7 @@
     ((symbolp c)
      (fom-lattice-description (category-named c)))
     (t
-     (lsp-break "can'f find dli-ref-cat for ~s~&" indiv))))
+     (lsp-break "can'f find dli-ref-cat for ~s~&" c))))
 
 (defun find-or-make-lattice-description-for-individual (base)
   (declare (special category::collection))

@@ -130,6 +130,7 @@ those steps sequentially on a single article.
 
 
 (defun make-corpus-path (corpus-kwd &optional (folderp t))
+  (declare (special *corpus-paths*))
   (let ((path-from-r3-trunk (cond ((stringp corpus-kwd) corpus-kwd)
                                   ((second (assoc corpus-kwd *corpus-paths*)))
                                   (T "corpus/2015-5-4_Mitre-articles"))))
