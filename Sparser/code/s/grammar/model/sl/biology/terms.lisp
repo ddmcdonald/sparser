@@ -38,6 +38,8 @@
 (in-package :sparser)
 
 
+(noun "xref" :super bio-abstract)
+
 (noun "HA.11" :super epitope)
 
 (noun "bradykinin" :super peptide)
