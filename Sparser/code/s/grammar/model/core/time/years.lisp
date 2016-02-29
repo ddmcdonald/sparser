@@ -85,7 +85,7 @@
 ;; but trying the old month+day month+year conception of dates
 ;; so it's not loaded (5/27/14)
 (def-cfr comma-year ("," year)
-  :form apposative
+  :form appositive
   :referent (:daughter right-edge))
 
 (set-ca-action category::comma-year 'check-for-stranded-date)

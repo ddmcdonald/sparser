@@ -7,7 +7,7 @@
 
 ;; initiated in February
 ;; 1.1  (3/19 v1.8.1)  Added a case searching to the right for the pers+title
-;;      cases where the customary apposative has been reversed.
+;;      cases where the customary appositive has been reversed.
 ;; 1.2  (3/22)  Appreciated another case for and/title, fixed case where it
 ;;      expected an edge but got a verb
 ;; 1.3  (3/25)  Added case to notice "[name], [title]", and wrote Compose-

@@ -162,7 +162,7 @@
                         person
                         (pos-edge-starts-at ne-edge)
                         (pos-edge-ends-at ne-edge)
-                        :title-ne-in-apposative-DA)))
+                        :title-ne-in-appositive-DA)))
       (title-person-in-appositive-DA narrow-person-edge))))
 
 (defun title-person-in-appositive-DA (person-edge)
@@ -183,7 +183,7 @@
             before-leading-comma
             after-trailing-comma
             category::person
-            :rule :title-person-in-apposative-DA
+            :rule :title-person-in-appositive-DA
             :form category::appositive
             :referent (edge-referent person-edge)
             :constituents consituents)))

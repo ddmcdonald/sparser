@@ -53,7 +53,7 @@
       obvious syntactic relationship to the clause.")
    (loose-adjectives :initform nil :accessor loose-adjectives
     :documentation "Adjectives that appear outside of
-      a segment. Potential apposative or reduced relatives.")
+      a segment. Potential appositive or reduced relatives.")
    (conjunctions :initform nil :accessor conjunctions
     :documentation "The locations of every conjunct,
       rightmost first")
