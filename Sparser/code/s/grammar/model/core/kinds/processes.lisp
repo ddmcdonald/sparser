@@ -34,7 +34,7 @@
           (circumstance)
           (manner)
           (aspect . tense/aspect-vector) ;; see rules/tense
-          (causally-related-to)
+          ;;(causally-related-to) move this to being a lambda variable defined over TOP
 
           ;; interpret-adverb+verb needs to be improved to diagnose the
           ;; type of adverb but until then, we need to have this variable
