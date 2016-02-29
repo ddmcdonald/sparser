@@ -16,7 +16,7 @@
 ;; 3/29 added another case to Explore/plural-job-event-title
 ;; 4/2  ditto: #<subsidiary>
 ;; 4/2  for Discourse-flesh-out/job-event/variables, backed out of the
-;;      default to look for a missing title or company under the apposative
+;;      default to look for a missing title or company under the appositive
 ;;      of the person.  It had led to more errors than it fixed.
 ;; 4/10 (v1.8.2)  Added Sort-out/by-person and a *passive* flag. Routines
 ;;      that used to just set the person variable now check that flag and
