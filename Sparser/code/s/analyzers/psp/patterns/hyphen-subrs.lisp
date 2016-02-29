@@ -73,8 +73,10 @@
 ;;/// This is surely the same a resolve-slash-segment so they should mergw
 (defun resolve-hyphen-segment (edges start-pos end-pos)
   (if (eq start-pos end-pos) ;; as in "...with β-, γ-, and α-catenins..."
-    (when *work-on-ns-patterns*
-      (break "start-pos and end-pos are identical"))
+    (then 
+      (when *work-on-ns-patterns*
+        (break "start-pos and end-pos are identical"))
+      (throw :punt-on-nospace-without-resolution nil))
     (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
       (or single-edge
           (let ((words (words-between start-pos end-pos))
@@ -89,3 +91,36 @@
                    (break "no result on hyphen segment pattern: ~a" pattern)))
                result)))))))
 
+(defun try-to-resolve-uncovered-ns-edges (start-pos end-pos edges)
+  "One of the words in this span is not covered by an edge.
+   It's a reasonable possibility that one of them corresponds to
+   an unknown word that we've not dealt with yet. If so, deal with
+   it now, and return the list of edges with that edge included."
+  ;;//// This is called from one-hyphen-ns-patterns so there's
+  ;; a lot implicit here 
+  (declare (special *positions-with-unhandled-unknown-words*))
+  (unless *positions-with-unhandled-unknown-words*
+    ;; can't do anything ///might put a trace here
+    edges)
+  (when *positions-with-unhandled-unknown-words*
+    ;; less left-margin creep with this style
+    (let ((left-side (find start-pos *positions-with-unhandled-unknown-words*))
+          (right-side (find (chart-position-before end-pos)
+                            *positions-with-unhandled-unknown-words*)))
+      ;; those are positions
+      (unless (or left-side right-side)
+        ;; either we came from some where else and it's in the interior
+        ;; or it's a different case
+        ;;/// Add words argument to help in sorting this out
+        (return-from try-to-resolve-uncovered-ns-edges edges))
+      (let ((left-edge (when left-side
+                         (handle-unknown-word-as-bio-entity left-side)))
+            (right-edge (when right-side
+                          (handle-unknown-word-as-bio-entity right-side))))
+        (cond
+         ((and left-edge right-edge)
+          (cons left-edge (tail-cons right-edge edges)))
+         (left-edge
+          (cons left-edge edges))
+         (right-edge
+           (tail-cons right-edge edges)))))))

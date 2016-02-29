@@ -14,6 +14,8 @@
 ;;; store and access
 ;;;------------------
 
+;;--- word to its lexicalized phrase 
+
 (defparameter *strings-to-lexicalized-phrases*
   (make-hash-table :test 'equalp))
 
@@ -40,15 +42,42 @@
   (record-lexicalized-phrase (pname word) lp))
 
 
-
 (defmethod record-lexicalized-phrase ((pname string)
                                       (lp lexicalized-resource))
   ;;/// No provision for heading more than one phrase
   (setf (gethash pname *strings-to-lexicalized-phrases*) lp))
 
 
+;;--- Krisp category / lexical head to annotated phrase
 
+(defparameter *mappings-for-category-linked-phrase*
+  (make-hash-table :test 'equal))
+
+(defmethod record-krisp-mapping ((word word) (clp category-linked-phrase))
+  "We need to be able to get to the CLP from both the Sparser and
+   the Mumble words, and from the Krisp category (hidden in the CLP
+   to simplify the signature). Doing string mapping of the words too."
+  (let ((category (linked-category clp))
+        (pname (pname word))
+        (s-word (get-sparser-word-for-mumble-word word)))
+    (setf (gethash category *mappings-for-category-linked-phrase*) clp)
+    (setf (gethash word *mappings-for-category-linked-phrase*) clp)
+    (setf (gethash s-word *mappings-for-category-linked-phrase*) clp)
+    (setf (gethash pname *mappings-for-category-linked-phrase*) clp)))
+
+(defmethod krisp-mapping ((w word))
+  (gethash word *mappings-for-category-linked-phrase*))
+
+(defmethod krisp-mapping ((pname string))
+  (gethash pname *mappings-for-category-linked-phrase*))
+
+
+
+
+
+;;;-------------------------------------------
 ;;; shortcut for making parameter-value-pairs
+;;;-------------------------------------------
 
 (defun pvp (parameter-name value)
   (let ((parameter (parameter-named parameter-name)))

@@ -48,25 +48,46 @@
                                start-pos end-pos)
   (tr :ns-one-hyphen-patterns)
   (tr :ns-edge-pattern pattern)
+  (unless (= 3 (length edges))
+    (setq edges (try-to-resolve-uncovered-ns-edges start-pos end-pos edges)))
+
   (let ((rel-edge
          (loop for i in (ev-edges (pos-ends-here end-pos))
            when (second-imposes-relation-on-first? (edge-referent i) i )
            do (return i))))
-    ;; The code above is intended to catch cases like "isoform-specific" where the lexeme "specific" has two definitions
-    ;; one of which is an obsolete one from the core, and another of which has a sbcat frame and
-    ;;  satisfies second-imposes-relation-on-first
+    ;; The code above is intended to catch cases like "isoform-specific"
+    ;; where the lexeme "specific" has two definitions one of which is an
+    ;; obsolete one from the core, and another of which has a sbcat frame
+    ;; and satisfies second-imposes-relation-on-first
+
     ;; TO-DO -- do pair programming review
     (cond
-     ((eq (car pattern) :hyphen)
-      (if (member :hyphen (cdr pattern))
-          (lsp-break "check hyphen pattern"))
-      t)
-     ;; the cases of -adjective and -verb+ed should be handled here, not by 
-     ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
+     ((not (eq (length edges) (length words)))
+      (when *work-on-ns-patterns*
+        ;; what try-to-resolve-uncovered-ns-edges should have addressed
+        ;; appears to be a problem with it
+        (lsp-break "Word count not equal to edge count"))
+      (throw :punt-on-nospace-without-resolution nil))
+
+     ((= 2 (length pattern))
+      (cond
+       ;; the cases of -adjective and -verb+ed should be handled here, not by 
+       ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
+       ((equal pattern '(:lower :hyphen)) ;; "mono- "
+        (resolve-tailing-stranded-hyphen pattern words start-pos end-pos))
+       ((eq (car pattern) :hyphen)
+        (resolve-initial-stranded-hyphen pattern words start-pos end-pos))
+       ((eq (second pattern) :hyphen)
+        (resolve-tailing-stranded-hyphen pattern words start-pos end-pos))
+       (t (error "One hyphen NS: shouldn't be able to get here"))))        
+
+
      (rel-edge
       (do-relation-between-first-and-second
-       (when (edge-p (first edges))(edge-referent (first edges)))
+       (when (edge-p (first edges))
+         (edge-referent (first edges)))
        (edge-referent rel-edge) (first edges) rel-edge))
+
      ((equal pattern '(:protein :hyphen :protein))
       (make-protein-pair (first edges) (third edges) words start-pos end-pos))
      
@@ -110,7 +131,11 @@
      ((or (equal pattern '(:full :hyphen :full))
           (equal pattern '(:capitalized :hyphen :full)) ;; Rho-GDI
           (equal pattern '(:full :hyphen :capitalized)))
-      (resolve-hyphen-between-two-terms pattern words edges start-pos end-pos))
+      (if (= 3 (length edges))
+        (resolve-hyphen-between-two-terms pattern words edges start-pos end-pos)
+        (lsp-break "edges = ~a" edges))) ;;/// two, not three on "HPB-ALL"
+      
+;;//////////////////////////////////////////
      
      ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
       (resolve-hyphen-between-two-words pattern words start-pos end-pos))
@@ -133,7 +158,7 @@
              words edges pattern hyphen-positions start-pos end-pos)))))
      
      ((eq :no-space-prefix (car pattern))
-      (compose-salient-hyphenated-literals 
+      (compose-salient-hyphenated-literals
        pattern words start-pos end-pos))
      
      ((equal pattern '(:lower :hyphen :lower)) ;; "high-activity"
@@ -145,15 +170,13 @@
       (when *work-on-ns-patterns*
         (break "digit hyphen digit on ~a" words)))
      
-     ((equal pattern '(:lower :hyphen)) ;; "mono- "
-      (resolve-stranded-hyphen pattern words start-pos end-pos))
-     
      ((and *work-on-ns-patterns*
            (memq :hyphen pattern))
       (push-debug `(,pattern ,start-pos ,end-pos))
       (break "New hyphen pattern to resolve: ~a" pattern))
      
-     (t (nospace-hyphen-specialist words edges pattern hyphen-positions start-pos end-pos)))))
+     (t (nospace-hyphen-specialist
+         words edges pattern hyphen-positions start-pos end-pos)))))
 
 
 ;;--- two hyphens
@@ -266,6 +289,7 @@
      (*work-on-ns-patterns*
       (push-debug `(,left-edge ,right-edge ,pattern ,words))
       (break "One of the 'edges' is actualy a (undefined?) word"))
+
      (t ;; bail
       (reify-ns-name-and-make-edge words pos-before pos-after)))))
 
@@ -279,33 +303,38 @@
   ;; but more like some generalized meaning between the two. 
   ;; (N.b. also used with the separator is a slash)
   (declare (ignore pattern))
+
   (tr :resolve-hyphen-between-two-terms words)
   (let* ((left-edge (first edges))
          (right-edge (third edges))
          (left-ref (edge-referent left-edge))) 
+    (unless (= 3 (length edges))
+      ;; If we're called from one-hyphen-ns-patterns we've
+      ;; handled this. Hitting this implies there's another
+      ;; path in here that isn't reacting to the edge count
+      (tr :resolve-hyphen-b/w-two-words/missing-an-edge left-edge right-edge)
+      (throw :punt-on-nospace-without-resolution nil))
+
     (cond
-      ((null right-edge)
-       (break "~&bad call to resolve-hyphen-between-two-terms, null right-edge, ~&.......left-edge is ~s,~&    pattern is ~s~&   words are ~a ~&"
-	      left-edge pattern words)
-       nil)
-      (t
-       (cond
-	 ((not ;; might be a word  -- still??
-	   (or (individual-p left-ref) 
-	       (category-p left-ref)))
-	  (make-bio-pair left-edge right-edge words
-			 pos-before pos-after))
-	 ((or (itypep left-ref 'protein)
-	      ;;(itypep left-ref 'bio-family) covered by itypep protein ; RAS-GTP
-	      (itypep left-ref 'small-molecule) ;; GTP-GDP ???
-	      (itypep left-ref 'nucleotide))
-	  (make-protein-pair left-edge right-edge words
-			     pos-before pos-after))
-	 ((itypep left-ref 'amino-acid)
-	  (reify-amino-acid-pair words pos-before pos-after))
-	 (t				;(break "two-terms default")
-	  (make-bio-pair left-edge right-edge words
-			 pos-before pos-after)))))))
+     ((not ;; might be a word  -- still?? //should be catch it earlier?
+       (or (individual-p left-ref) 
+           (category-p left-ref)))
+      (make-bio-pair left-edge right-edge words
+                     pos-before pos-after))
+
+     ((or (itypep left-ref 'protein) ;; includes bio-family
+          (itypep left-ref 'small-molecule) ;; GTP-GDP ???
+          (itypep left-ref 'nucleotide))
+      (make-protein-pair left-edge right-edge words
+                         pos-before pos-after))
+
+     ((itypep left-ref 'amino-acid)
+      (reify-amino-acid-pair words pos-before pos-after))
+
+     (t	;;(break "two-terms default")
+      (make-bio-pair left-edge right-edge words
+                     pos-before pos-after)))))
+
 
 (defun resolve-hyphen-between-three-words (pattern words
                                            pos-before pos-after)
@@ -325,6 +354,8 @@
           (not (edge-p right-edge)))
       (when *work-on-ns-patterns*
         (break "non-edge in make-hyphenated-triple, ~s ~s ~s" 
-               left-edge middle-edge right-edge)))
+               left-edge middle-edge right-edge))
+      (tr :resolve-hyphen-b/w-two-words/missing-an-edge left-edge right-edge)
+      (throw :punt-on-nospace-without-resolution nil))
      (t
       (make-hyphenated-triple left-edge middle-edge right-edge)))))

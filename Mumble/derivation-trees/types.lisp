@@ -98,20 +98,19 @@
 
 
 (defobject satellite-dt-node ()
+  ;; Holds the value that the parameter gets in this instance.
   ((value)
-     ;; Holds the value that the parameter gets in this instance.
+     
    ))
 
 (defobject adjunction-node (base-dt-node satellite-dt-node)
-  ((ap)
-   ;; points to one of Mumble's attachment-points
-   ))
+  ;; points to one of Mumble's attachment-points
+  ((ap)))
 
 (defobject complement-node (base-dt-node satellite-dt-node)
-  ((phrase-parameter)
-     ;; points to the open parameter that the resource in the derivation
-     ;; tree that this node will fill.
-   ))
+  ;; points to the open parameter that the resource in the derivation
+  ;; tree that this node will fill.
+  ((phrase-parameter)))
 
 
 ;;;---------------------
@@ -143,6 +142,24 @@
   ((phrase-parameter) ;; Mumble parameter struct
    (value)))   ;; anything 
 
+
+;;;
+
+(defclass category-linked-phrase ()
+  ((class :initarg :class :accessor linked-category
+    :documentation "backpointer to the category")
+   (lp :initarg :lp :accessor linked-phrase
+    :documentation "The lexicalized phrase that the parameters
+      apply to. Prototypically a verb.")
+   (map :initarg :map :accessor parameter-variable-map
+    :documentation "List of parameters and variables
+      encoded as parameter-variable pairs")))
+
+(defclass parameter-variable-pair ()
+  ((parameter :initarg :param :accessor corresponding-parameter
+    :documentation "a phrase parameter")
+   (variable :initarg :var :accessor corresponding-variable
+    :documentation "a Krisp variable")))
 
 
 ;;;----------

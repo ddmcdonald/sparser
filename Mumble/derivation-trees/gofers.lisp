@@ -2,26 +2,32 @@
 ;;; Copyright (c) 2013-2016 David D. McDonald  All Rights Reserved
 ;;;
 ;;;  /Mumble/derivation-trees/gofers.lisp
-;;;  January 2016
+;;;  February 2016
 
 ;; Initated 1/7/16 to consolidate usable gofer-type code from files
 ;; that for various reasons (OBE mostly) are not being loaded.
 
 (in-package :mumble)
 
-;;;--------------------------------
-;;; mumble words for sparser words
-;;;--------------------------------
+;;;-----------------------------------------------
+;;; mumble words for sparser words and vice-versa
+;;;-----------------------------------------------
+
+(defvar *sparser-words-for-mumble-words* (make-hash-table)
+  "Given a Mumble word object, return the corresponding 
+  Sparser word if the correspondence has ever been defined.")
+
 
 (defun get-mumble-word-for-sparser-word (s-word &optional pos)
   (or (stored-mumble-word-for-sparser-word s-word)
       (let ((pname (etypecase s-word
                      (sp::word (sp::word-pname s-word))
                      (sp::polyword (sp::pw-pname s-word)))))
-        (unless pos 
+        (unless pos
 	  (setq pos 'mumble::noun))
         (let ((m-word (define-word/expr pname (list pos))))
           (store-mumble-word-for-sparser-word s-word m-word)
+          (setf (gethash m-word *sparser-words-for-mumble-words*) s-word)
           m-word ))))
 
 (defun stored-mumble-word-for-sparser-word (s-word)
@@ -29,6 +35,14 @@
 
 (defun store-mumble-word-for-sparser-word (s-word m-word)
   (setf (sparser::get-tag :mumble-word s-word) m-word))
+
+
+(defun get-sparser-word-for-mumble-word (m-word)
+  (let ((s-word (gethash m-word *sparser-words-for-mumble-words*)))
+    (unless s-word
+      (error "No recorded corresponding Sparser word for Mumble word ~s"
+             (pname m-word)))
+    s-word))
 
 
 

@@ -252,15 +252,20 @@
 
 
 
-(defun resolve-stranded-hyphen (pattern words start-pos end-pos)
+(defun resolve-tailing-stranded-hyphen (pattern words start-pos end-pos)
   ;; called from one-hyphen-ns-patterns for (:lower :hyphen),
   ;; e.g. "mono-"
-  (declare (special *salient-hyphenated-literals*) (ignore start-pos end-pos))
+  (declare (special *salient-hyphenated-literals*))
   (let* ((word (car words))
          (known? (memq word *salient-hyphenated-literals*)))
-    (when *work-on-ns-patterns*
-      (push-debug `(,known? ,pattern))
-      (break "stranded hyphen: define the category etc"))))
+    (cond
+     (known?
+      (compose-salient-hyphenated-literals pattern words
+                                           pos-before pos-after))
+     (t
+      (when *work-on-ns-patterns*
+        (push-debug `(,words ,pattern))
+        (break "stranded hyphen: unknown -- what do we do?"))))))
 
 (defun resolve-initial-stranded-hyphen  (pattern words start-pos end-pos)
   ;; e.g. "-tagged"
@@ -347,7 +352,8 @@ for each case and define a k-method to make sense of it all.
                         (and right
                              (right-treetop-at/only-edges pos-before)))))
           ;;(lsp-break "edge = ~a" edge)
-          (unless edge
+          (cond
+           ((null edge)
             (when *work-on-ns-patterns*
               (push-debug `(,words ,pos-after ,pos-before ,pattern))
               (error "Neither of these words is spanned by an edge. ~
@@ -361,16 +367,17 @@ for each case and define a k-method to make sense of it all.
           ;; is too presumptive of "in as location" to work
           ;; So dripping it on the floor
 
-          (let ((new-edge
-                 (make-edge-over-long-span
-                   pos-before
-                   pos-after
-                   (edge-category edge)
-                   :rule 'compose-salient-hyphenated-literals
-                   :form (edge-form edge)
-                   :referent (edge-referent edge)
-                   :words words)))
-            new-edge))))
+           (edge
+            (let ((new-edge
+                   (make-edge-over-long-span
+                    pos-before
+                    pos-after
+                    (edge-category edge)
+                    :rule 'compose-salient-hyphenated-literals
+                    :form (edge-form edge)
+                    :referent (edge-referent edge)
+                    :words words)))
+              new-edge))))))
 
      (*work-on-ns-patterns*
       (push-debug `(,words ,pos-after ,pos-before ,pattern))
