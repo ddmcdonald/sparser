@@ -414,8 +414,10 @@ similar to an oncogenic RasG12V mutation (9)."))
 ;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
 ;;   e.g. 30 minutes after (treatment)
 (def-form-rule (amount-of-time spatio-temporal-preposition)
-                 :head :right-edge
-  :form spatio-temporal-preposition)
+    :head :right-edge
+    :referent (:daughter right-edge
+			 :bind (amount-of-time left-edge))
+    :form spatio-temporal-preposition)
 
 
 (loop for v in  '(vg vg+ing vg+ed vg+passive vp+passive)
@@ -479,8 +481,6 @@ similar to an oncogenic RasG12V mutation (9)."))
                      :head :right-edge
       :form pp-relative-clause
       :referent (:function make-pp-relative-clause left-edge right-edge))))
-
-;;    (unspecified-adjunction np-ref vp-ref)
 
 (def-form-rule (comma subject-relative-clause)
                :head :right-edge
