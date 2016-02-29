@@ -76,12 +76,23 @@
 ;;;--------
 
 (defparameter *diagnose-consp-referents* nil)
-
+(defparameter *use-discourse-mentions* t)
 
 
 (defun complete-edge/hugin (edge)
-  (declare (special *do-anaphora* edge)) ;; may be dynamically bound
-
+  (declare (special *do-anaphora* edge category::punctuation)) ;; may be dynamically bound
+  (when (and
+	 (null (edge-referent edge))
+	 (not (polyword-p (edge-category edge)))
+	 (not (eq (edge-form edge) category::punctuation))
+	 (not (member (edge-rule edge)
+		      '(:DEFAULT-EDGE-OVER-PAIRED-PUNCTUATION
+			:CONJUNCTION/IDENTICAL-ADJACENT-LABELS ;; happened once, in ""substrate like" and "regulatory" "
+			:APPOSTROPHE-FSA))))
+    (print (list "edge with null referent"
+		 (edge-rule edge)(edge-category edge)(edge-form edge)))
+    ;;(lsp-break "edge with null referent")
+    )
   (when (and *diagnose-consp-referents*
              (consp (edge-referent edge)))
     (break "referent is a CONS~ ~s" (edge-referent edge)))
@@ -94,7 +105,9 @@
 
   (when *include-model-facilities*
     (when (and *pronouns* ;; the module is loaded
-               *do-anaphora*) ;; we've not deliberately turned it off
+               (or
+		*use-discourse-mentions*
+		*do-anaphora*)) ;; we've not deliberately turned it off
       (add-subsuming-object-to-discourse-history edge)))
   (update-mention-links edge)
   (update-definite-determiner edge)
@@ -111,6 +124,7 @@
   :complete )
 
 (defun ignore-semantic-check? (rule)
+  (declare (special *chunk* *ignored-semantic-check-rules*))
   (or
       (if (not (cfr-p rule))
 	  (cond
