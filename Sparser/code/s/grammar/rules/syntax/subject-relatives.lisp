@@ -165,7 +165,10 @@
       (var
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
-       (setq  vp-ref (bind-dli-variable var np-ref vp-ref))      
+       (setq  vp-ref (create-predication-by-binding var np-ref vp-ref
+						    (list 'apply-subject-relative-clause
+							  (parent-edge-for-referent))))
+       
        ;; link the rc to the np
        (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
@@ -182,7 +185,8 @@
       (if object-var
           ;; copy down the upstairs subject
           ;; Should we check if it was already bound to something?
-          (setq  vp-ref (bind-dli-variable object-var np-ref vp-ref))
+          (setq  vp-ref (create-predication-by-binding object-var np-ref vp-ref
+						       (list 'apply-reduced-relative-clause (parent-edge-for-referent))))
           (else
             ;; (push-debug `(,np-ref ,vp-ref))
             ;; (break "Can not find subject var in ~a" vp-ref)
@@ -242,7 +246,9 @@
       (if subject-var
         ;; copy down the upstairs subject
         ;; Should we check if it was already bound to something?
-        (setq  vp-ref (bind-dli-variable subject-var np-ref vp-ref))
+	  (setq  vp-ref (create-predication-by-binding subject-var np-ref vp-ref
+						       (list 'apply-upstairs-np-to-subject-relative
+							     (parent-edge-for-referent))))
         (else
          ;; (push-debug `(,np-ref ,vp-ref))
          ;; (break "Can not find subject var in ~a" vp-ref)
@@ -261,6 +267,7 @@
 ;;; Hobbsian connectives
 ;;;----------------------
 
+#|
 (define-lambda-variable 'unspecified-adjunct nil
   ;; Event already has slots for time, location, purpose,
   ;; modifiers, and aspect (used by tense). This adds another one
@@ -277,6 +284,7 @@
     (setq e1 (individual-for-ref e1))
     (setq  r1 (bind-dli-variable 'unspecified-adjunct r2 r1 category::event))
     r1))
+|#
 
 (define-lambda-variable 'reduced-relative nil
   (category-named 'kind)) ;;/// change when super-category-for-POS
