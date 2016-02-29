@@ -196,8 +196,10 @@
   ;; history of this category is empty, i.e. this is the first
   ;; time an individual of this category has been mentioned.
   (tr :creating-category-dh-entry category i edge)
-  (setf (gethash category *objects-in-the-discourse*)
-        (create-discourse-entry i edge)))
+  (let
+      ((discourse-entry (create-discourse-entry i edge)))
+      (setf (gethash category *objects-in-the-discourse*)
+	  discourse-entry)))
 
 (defun discourse-entry (category)
   (gethash category *objects-in-the-discourse*))

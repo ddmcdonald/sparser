@@ -33,7 +33,8 @@
     :documentation "Backpointer to the individual which is the base description")
    (ci :initarg :ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
-   (edge :initarg :ei :accessor mention-edge)
+   (source :initarg :ms :accessor mention-source)
+   (maximal :initarg :max :accessor :is-maximal)
    (location-in-paragraph :initarg :loc :accessor mentioned-where
     :documentation "An encoding of the location at which
      this mention occurred. Given the present implementation,
@@ -76,16 +77,17 @@
         (format stream "?"))))))
 
 (defmethod start-pos ((m discourse-mention))
-  ;;(start-pos (mention-edge m))
   (car (mentioned-where m))
 )
 
 (defmethod end-pos ((m discourse-mention))
-  ;;(end-pos (mention-edge m))
   (cdr (mentioned-where m)))
 
 (defmethod start-pos ((e edge))
   (pos-edge-starts-at e))
+
+(defmethod start-pos ((c cons))
+  (lsp-break "start-pos handed a list"))
 
 (defmethod end-pos ((e edge))
   (pos-edge-ends-at e))
@@ -206,7 +208,7 @@
     (t nil)))
 
 
-(defun create-discourse-mention (i edge)
+(defun create-discourse-mention (i source)
   "Individuals reside in a description lattice. Every new
   property or relation extends the lattice and in so doing
   creates a new individual that is more specific than
@@ -217,33 +219,49 @@
   further up the lattice."
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
-  (when (null edge) (lsp-break "null edge in create-discourse-mention"))
-  (let* ((location (encode-mention-location edge))
+  (when (null source) (lsp-break "null source in create-discourse-mention"))
+  (let* ((location (encode-mention-location (if (consp source) (second source) source)))
          (toc (location-in-article-of-current-sentence))
          (m (make-instance 'discourse-mention
-              :i i :loc location :ei edge :article toc)))
+			   :i i :loc location :ms source :article toc)))
+    (if (edge-p source) (setf (edge-mention source) m))
     (setf (gethash i *lattice-individuals-to-mentions*) `(,m))
     (push m *lattice-individuals-mentioned-in-paragraph*)
     (tr :made-mention m)
     (list m)))
 
-(defun make-new-mention (entry i edge &optional subsumed-mention)
-  (when (null edge) (lsp-break "null edge in create-discourse-mention"))
-  (let* ((location (encode-mention-location edge))
+
+(defparameter *edge-forms* nil)
+
+(defun make-new-mention (entry i source &optional subsumed-mention)
+  (cond
+    ((null source) (lsp-break "null source in create-discourse-mention"))
+    ((edge-p source) (pushnew (cat-name (edge-form source)) *edge-forms*)))
+  (let* ((location (encode-mention-location source))
          (m (make-instance 'discourse-mention
-              :i i :loc location :ei edge))
+			   :i i :loc location :ms source))
          (previous-mentions (get-history-of-mentions i)))
     (tr :making-new-mention m)
     (when subsumed-mention
       (setf (subsumes-mention m) subsumed-mention)
       (setf (subsumed-by-mention subsumed-mention) m)
-      (update-instance-within-sequence m subsumed-mention edge))
+      (update-instance-within-sequence m subsumed-mention source))
     (setf (gethash i *lattice-individuals-to-mentions*)
           (cons m previous-mentions))
     (push m *lattice-individuals-mentioned-in-paragraph*)
+    (if (edge-p source) (setf (edge-mention source) m))
     (extend-category-dh-entry entry m)
     m ))
 
+(defun max-edge (source)
+  ;; this cannot be run when the mention is created -- the edge is not yet included in another edge!!
+  (or (not (edge-p source))
+      (cond
+	((member (edge-form source) *all-np-categories*)
+	 (not (member (edge-form (edge-used-in source)) *all-np-categories*)))
+	((member (edge-form source) *vp-categories*)
+	 (not (member (edge-form (edge-used-in source)) *vpp-categories*)))
+	(t t))))
 
 (defmethod encode-mention-location (edge)
   "Encodes the location of a mention in terms of the two positions
@@ -272,7 +290,8 @@
     (unless (integerp start-pos) ;; already done
       (setf (mentioned-where mention)
             (cons (pos-token-index start-pos)
-                  (pos-token-index end-pos))))))
+                  (pos-token-index end-pos)))
+      (setf (mention-source mention) nil))))
 
 
 (defun search-mentions-by-position (mentions edge)
