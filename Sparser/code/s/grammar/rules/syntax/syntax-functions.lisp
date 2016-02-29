@@ -149,6 +149,17 @@
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::number)
 
+(define-lambda-variable 
+  'causally-related-to ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+  'amount-of-time ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+
 
 
 (defparameter *force-modifiers* nil
@@ -321,25 +332,22 @@
   ;;  (setq quantifier (car *) head (cadr *))
   (setq head (individual-for-ref head))
   (cond
-   ((itypep quantifier 'no) ;; special handling for negation
-    (setq  head (bind-dli-variable 'negation quantifier head)))
-   ((itypep head 'endurant)
-    (setq  head (bind-dli-variable 'quantifier quantifier head)))
-   ((itypep head 'perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
-    (setq  head (bind-dli-variable 'quantifier quantifier head)))
-   ((itypep head 'abstract) ;; we quantify abstract items like "group"
-    (setq  head (bind-dli-variable 'quantifier quantifier head)))
-   ((itypep head 'bio-abstract) ;; we quantify abstract items like "group"
-    (setq  head (bind-dli-variable 'quantifier quantifier head)))
-   ((itypep head 'quality) ;; we quantify qualities "some level"
-    (setq  head (bind-dli-variable 'quantifier quantifier head)))
-   ((itypep head 'biological) ;; we quantify things like "such models"
-    (setq  head (bind-dli-variable 'quantifier quantifier head)))
-   ((itypep head 'determiner) ;; "all these"
+    ((itypep quantifier 'no) ;; special handling for negation
+     (setq  head (bind-dli-variable 'negation quantifier head)))
+    ((or
+      (itypep head 'endurant)
+      (itypep head 'perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
+      (itypep head 'abstract) ;; we quantify abstract items like "group"
+      (itypep head 'bio-abstract) ;; we quantify abstract items like "group"
+      (itypep head 'quality)	 ;; we quantify qualities "some level"
+      (itypep head 'biological)) ;; we quantify things like "such models"
+     (setq  head (bind-dli-variable 'quantifier quantifier head)))
+    ((itypep head 'determiner) ;; "all these"
      (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
-   (t
-    (format t "~&@@@@@ verify whether you want to put a quantifier like ~s on ~s~&"
-	    quantifier head)
+    (t
+     (format t "~&@@@@@ adding quantifier ~s to ~s~&"
+	     (retrieve-surface-string quantifier)
+	     (retrieve-surface-string head))
      (setq  head (bind-dli-variable 'quantifier quantifier head))))
   head)
 
@@ -375,11 +383,20 @@
         (setq head (individual-for-ref head))
         (link-in-verb+ing qualifier head)))))
 
+(defun create-predication-by-binding (var np-ref vp-ref source)
+  (let
+      ((new-predication
+	(bind-dli-variable var np-ref vp-ref)))
+    (create-discourse-mention new-predication source)
+    ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
+    new-predication))
+
 (defun link-in-verb+ing (qualifier head)
   (let ((subject (subject-variable qualifier)))
     (setq qualifier (individual-for-ref qualifier))
     (if subject ;; really should check for passivizing
-        (setq  qualifier (bind-dli-variable subject head qualifier)))
+        (setq  qualifier (create-predication-by-binding subject head qualifier
+							(list 'link-in-verb+ing (parent-edge-for-referent)))))
     (setq  head (bind-dli-variable 'predication qualifier head))
     head))
 
@@ -414,7 +431,8 @@
   (let ((object (object-variable qualifier)))
     (setq qualifier (individual-for-ref qualifier))
     (when object ;; really should check for passivizing
-      (setq  qualifier (bind-dli-variable object head qualifier)))
+      (setq  qualifier (create-predication-by-binding object head qualifier
+						      (list 'link-in-verb (parent-edge-for-referent)))))
     (setq  head (bind-dli-variable 'predication qualifier head))
     head))
 
@@ -432,11 +450,8 @@
     (break "~s is not an event, tense/aspect only applies to individuals that ~
             inherit from event." vg))
   (or (value-of 'aspect vg)
-      (let ((i (make/individual
+      (make/individual
                 (category-named 'tense/aspect-vector) nil)))
-        (setq vg (individual-for-ref vg))
-        (setq  vg (bind-dli-variable 'aspect i vg))
-        i)))
 
 (defun absorb-auxiliary (aux vg)
   (when (category-p vg)
@@ -514,18 +529,10 @@
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc individual))
   (push-debug `(,aux ,sc)) ;;(break "is this right?")
-  #+gnore
-  (let* ((vg (value-of 'comp sc)))
-    (make-subordinate-clause (value-of 'conj sc) 
-                             (bind-dli-variable 'aspect (make-vg-aux aux vg) vg)))
   (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc))
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc individual))
   (push-debug `(,aux ,sc)) ;;(break "is this right?")
-  #+ignore
-  (let* ((vg (value-of 'comp sc)))
-    (make-subordinate-clause (value-of 'conj sc) 
-                             (bind-dli-variable 'aspect (make-vg-aux aux vg) vg)))
   (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc))
 
 
@@ -605,7 +612,6 @@
                                  as-comp)
                 *subcat-info*))
       (setq vp (individual-for-ref vp))
-      ;;(setq  np (bind-dli-variable variable-to-bind pp np))
       (setq  vp (bind-dli-variable variable-to-bind as-comp vp))
       vp))))
 
@@ -787,7 +793,6 @@
                                  to-comp)
                 *subcat-info*))
       (setq np (individual-for-ref np))
-      ;;(setq  np (bind-dli-variable variable-to-bind pp np))
       (setq  np (bind-dli-variable variable-to-bind to-comp np))
       np))))
 
@@ -884,7 +889,6 @@ to enhance p53 mediated apoptosis [2].") |#
                                      pp)
                     *subcat-info*))
             (setq np (individual-for-ref np))
-            ;;(setq  np (bind-dli-variable variable-to-bind pp np))
             (when variable-to-bind ;; otherwise return nil and fail the rule
               (setq  np (bind-dli-variable variable-to-bind pobj-referent np))
               np))))))))
@@ -917,7 +921,6 @@ to enhance p53 mediated apoptosis [2].") |#
                                  pp)
                 *subcat-info*))
       (setq pobj-referent (individual-for-ref pobj-referent))
-      ;;(setq  np (bind-dli-variable variable-to-bind pp np))
       (setq  pobj-referent (bind-dli-variable variable-to-bind np pobj-referent))
       pobj-referent))))
 
@@ -1413,11 +1416,7 @@ to enhance p53 mediated apoptosis [2].") |#
    `((prep ,prep) (pobj ,pobj))))
 
 (defun make-subordinate-clause (conj clause)
-  (bind-dli-variable 'subordinate-conjunction conj clause)
-  #+ignore
-  (make-non-dli-individual ;; make-simple-individual
-   (itype-of clause)
-   `((conj ,conj) (comp ,clause))))
+  (bind-dli-variable 'subordinate-conjunction conj clause))
 
 (defun make-pp-relative-clause (pp clause)
   (let* ((binding-instructions
@@ -1513,7 +1512,8 @@ to enhance p53 mediated apoptosis [2].") |#
               *subcat-info*))
       (let
           ((predicate (individual-for-ref np)))
-        (setq  predicate (bind-dli-variable variable-to-bind pobj predicate))
+        (setq  predicate (create-predication-by-binding variable-to-bind pobj predicate
+							(list 'apply-copular-pp (parent-edge-for-referent))))
         (make-simple-individual category::copular-predicate
                                 `((predicated-of ,np)
                                   (predicate ,predicate))))))))
