@@ -665,26 +665,26 @@
 
 
 (defparameter *vp-categories*
-  `(,category::s ;; convenient for find-verb
+  `(
+    ,category::participle
+    ,category::pp-relative-clause
+    ,category::s ;; convenient for find-verb
+    ,category::subj+verb
+    ,category::subject-relative-clause
+    ,category::v-bar
+    ,category::verb ;; this covers BE!
+    ,category::verb+ed
+    ,category::verb+ing
+    ,category::verb+object
+    ,category::verb+s ;; added
     ,category::vg 
     ,category::vg+ed
     ,category::vg+ing
+    ,category::vg+passive
     ,category::vp
     ,category::vp+ed
     ,category::vp+ing
-    ,category::subj+verb
-    ,category::verb+object
-    ,category::v-bar
-    ;;,category::relative-clause
-    ,category::subject-relative-clause
-    ,category::pp-relative-clause
     ,category::vp+passive
-    ,category::vg+passive
-    ,category::participle
-    ,category::verb+ed
-    ,category::verb ;; this covers BE!
-    ,category::verb+ing
-    ,category::verb+s ;; added
     )
   "All the form categories that cover verbs")
 
