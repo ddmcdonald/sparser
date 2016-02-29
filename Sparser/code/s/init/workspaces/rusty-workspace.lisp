@@ -482,7 +482,7 @@ NIL
               (analysis-core)
             (error (e)
                    (ignore-errors ;; got an error with something printing once
-                    (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
+                    (format t "~&parse-sentence-carefully -- Error in ~s~%~a~%~%" (current-string) e))))
           (analysis-core)))))
 
 (defun ras2-sentence (s)

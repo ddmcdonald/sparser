@@ -934,7 +934,7 @@ These return the Lisp-based obo entries.
       (error (e)
              (ignore-errors ;; got an error with something printing once
               (when *show-handled-sentence-errors*
-                (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+                (format t "~&create-cards-for-article -- Error in ~s~%~a~%~%" (current-string) e)))))
     ))
 
 (defun create-binding-cards-for-article (*article-id*)
@@ -965,7 +965,7 @@ These return the Lisp-based obo entries.
     (error (e)
            (ignore-errors ;; got an error with something printing once
             (when *show-handled-sentence-errors*
-              (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+              (format t "~&create-binding-cards-for-article -- Error in ~s~%~a~%~%" (current-string) e)))))
   )
 
 
