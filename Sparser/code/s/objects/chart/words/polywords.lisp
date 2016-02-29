@@ -72,7 +72,11 @@
 	  (push "-" with-hyphens)))
       (apply #'concatenate 'string with-hyphens))))
 
-    
+(defmethod pname ((pw polyword))
+  (pw-pname pw))
+
+(defmethod pname ((w word))
+  (word-pname w))
 
 
 ;;;------------
