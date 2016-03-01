@@ -2769,7 +2769,7 @@
 
 (define-protein "PTPRC_HUMAN"
  ("PR:P08575" "Receptor-type tyrosine-protein phosphatase C"
-  "Leukocyte common antigen" "L-CA" "T200" "leukocyte"))
+  "Leukocyte common antigen" "L-CA" "T200" ))
 
 (define-protein "PVRL1_HUMAN"
  ("PR:Q15223" "Nectin-1" "Herpes virus entry mediator C"
