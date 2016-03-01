@@ -580,10 +580,17 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 (defun apply-mumble-phrase-data (category pname phrase-name p&v-pairs)
   "Subroutine of apply-mumble-rdata to set up the data (dereference
    the symbols) so that the Mumble side of this."
-  (let ((pairs
-         (loop for (param-name var-name) in p&v-pairs
-           with variable = (find-variable-for-category var-name category)
-           collect `(,param-name . ,variable))))
+  (let ( pairs  variable )
+    ;; Tried doing this with what I thought was a destructuring loop
+    ;; signature -- loop for (param-name var-name) in p&v-pairs --
+    ;; but it wanted the first parameter to be a list
+    (do ((param-name (car p&v-pairs) (car rest))
+         (var-name (cadr p&v-pairs) (cadr rest))
+         (rest (cddr p&v-pairs) (cddr rest)))
+        ((null param-name))
+      (setq variable (find-variable-for-category var-name category))
+      (assert variable)
+      (push `(,param-name . ,variable) pairs))
     (mumble::setup-verb-from-rdata pname phrase-name category pairs)))
 
          

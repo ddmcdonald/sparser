@@ -273,7 +273,6 @@ a message to be expressed. See discussion in make.lisp |#
 (defun setup-verb-from-rdata (pname phrase-name category pv-pairs)
   ;; called from apply-mumble-rdata. All the symbols are in the
   ;; Sparser package. 
-  (break "look at args")
   (let ((m-word (find-word pname))
         (m-phrase-name (mumble-symbol phrase-name)))
     (unless m-word
