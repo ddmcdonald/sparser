@@ -34,7 +34,7 @@
    (ci :initarg :ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
    (source :initarg :ms :accessor mention-source)
-   (maximal :initarg :max :accessor :is-maximal)
+   (maximal :initarg :max :accessor maximal? :initform :unknown)
    (location-in-paragraph :initarg :loc :accessor mentioned-where
     :documentation "An encoding of the location at which
      this mention occurred. Given the present implementation,
@@ -75,6 +75,25 @@
            (format stream " ill-formed location"))))
        (t
         (format stream "?"))))))
+
+(defun show-mention (m)
+  (list (base-description m) (retrieve-surface-string (base-description m)) (mention-source m)))
+
+
+(defvar *hal*)
+(defun show-mentions ()
+  (setq *hal* (hal *objects-in-the-discourse*))
+  (loop for h in *hal*
+     collect
+       `(,(car h)
+	  ,@(loop for m in (cdr h) when (is-maximal? m)
+	       collect (show-mention m)))))
+
+(defmethod is-maximal? ((m discourse-mention))
+  (when (and (eq (maximal? m) :unknown)
+	     (mention-source m))
+    (setf (maximal? m) (max-edge? (mention-source m))))
+  (maximal? m))
 
 (defmethod start-pos ((m discourse-mention))
   (car (mentioned-where m))
@@ -165,6 +184,7 @@
 	      (let ((new-loc (encode-mention-location edge)))
 		;; "this auto-inhibited fate" w/ no referent for "this"
 		(tr :exending-span-of-mention top-mention edge)
+		(setf (mention-source top-mention) edge)
 		(setf (mentioned-where top-mention) new-loc)))
 	     (t
 	      (tr :extending-with-subsuming-instance i edge)
@@ -253,14 +273,19 @@
     (extend-category-dh-entry entry m)
     m ))
 
-(defun max-edge (source)
+(defun max-edge? (source)
   ;; this cannot be run when the mention is created -- the edge is not yet included in another edge!!
   (or (not (edge-p source))
       (cond
-	((member (edge-form source) *all-np-categories*)
-	 (not (member (edge-form (edge-used-in source)) *all-np-categories*)))
+	((null (edge-used-in source)) t)
+	((member (cat-symbol (edge-form source)) *all-np-categories*)
+	 (or (itypep (edge-referent (edge-used-in source)) 'collection)
+	 (and
+	  (not (eq (edge-referent source) (edge-referent (edge-used-in source))))
+	  (not (member (cat-symbol (edge-form (edge-used-in source)))
+		      *all-np-categories*)))))
 	((member (edge-form source) *vp-categories*)
-	 (not (member (edge-form (edge-used-in source)) *vpp-categories*)))
+	 (not (member (edge-form (edge-used-in source)) *vp-categories*)))
 	(t t))))
 
 (defmethod encode-mention-location (edge)
