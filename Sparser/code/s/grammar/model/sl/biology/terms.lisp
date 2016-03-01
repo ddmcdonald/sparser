@@ -146,7 +146,9 @@
 (adj "conventional" :super bio-predication) ;;"conventinal MAPK cascade"
 (adj "early" :super bio-predication)
 (adj "familial" :super bio-predication)
+(noun "carcinoma" :super cancer)
 (noun "glioblastoma" :super cancer)
+(noun "keratoacanthoma" :super cancer)
 (noun "neurooblastoma" :super cancer)
 (noun "non-small cell lung cancer" :super cancer)
 (noun "isomerase" :super enzyme)
@@ -557,11 +559,7 @@
              :of whole
              :of measure))
 
-(adj "free" :super bio-relation
-     :binds ((free-of biological))
-     :realization 
-     (:adj "free"
-           :of free-of)) ;; keyword: (ive ADJ) 
+;; keyword: (ive ADJ) 
 (adj "full" :super bio-predication)
 (adj "nucleotide-free" :super bio-predication)
 
@@ -1125,6 +1123,7 @@
 (def-cell-line "HKe3 ER:HRASV12")
 (def-cell-line "HKe3 ER:HRAS12")
 (def-cell-line "HKe3")
+(def-cell-line "KNRK")
 (def-cell-line "NIH-3T3")
 (def-cell-line "Saos2")
 (def-cell-line "VMM12")
@@ -1137,6 +1136,8 @@
 ;; the structural framework (stroma) for animal tissues, and plays a critical role in wound healing. 
 ;; Fibroblasts are the most common cells of connective tissue in animals.
 (noun "fibroblast" :super cell-type)
+(noun "leukocyte" :super cell-type)
+(noun "astroocyte" :super cell-type)
 (noun "neuron" :super cell-type)
 
 
