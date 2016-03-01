@@ -29,7 +29,8 @@
 ;;;--------------------------------------------
 
 ;; found in the article set
-
+(define-protein "PEA15_HUMAN" ("PEA-15" "astrocytic phosphoprotein PEA-15"))
+(define-protein "NRG1_HUMAN" ("neuroregulin" "neuregulin")) ;; actually NRG1_HUMAN is the "pro-form" of neuregulin-1, which is obtained by cleaving
 (define-protein "LCK_HUMAN" ("lck" "Tyrosine-protein kinase Lck" "LCK" "YT16" "Proto-oncogene Lck" "Lck" "p56-LCK"))
 (define-protein "CD2_HUMAN"
  ("PR:P06729" "T-cell surface antigen CD2" "Erythrocyte receptor" "CD2"
@@ -1045,7 +1046,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "DCAF6_HUMAN" ("arcap" "DDB1- and CUL4-associated factor 6" "Androgen receptor complex-associated protein" "ARCAP" "IQ motif and WD repeat-containing protein 1" "Nuclear receptor interaction protein" "NRIP")) 
 (define-protein "DCBD2_HUMAN" ("subline" "Discoidin, CUB and LCCL domain-containing protein 2" "CUB, LCCL and coagulation factor V/VIII-homology domains protein 1" "Endothelial and smooth muscle cell-derived neuropilin-like protein")) 
 (define-protein "DCE1_HUMAN" ("Glutamate decarboxylase 1" "67 kDa glutamic acid decarboxylase" "GAD-67" "Glutamate decarboxylase 67 kDa isoform")) 
-(define-protein "DCNL1_HUMAN" ("carcinomas" "DCN1-like protein 1" "DCUN1 domain-containing protein 1" "Defective in cullin neddylation protein 1-like protein 1" "Squamous cell carcinoma-related oncogene")) 
+(define-protein "DCNL1_HUMAN" ("DCN1-like protein 1" "DCUN1 domain-containing protein 1" "Defective in cullin neddylation protein 1-like protein 1" "Squamous cell carcinoma-related oncogene")) 
 (define-protein "DCOR_HUMAN" ("paralogue" "Ornithine decarboxylase" "ODC")) 
 (define-protein "DCTN2_HUMAN" ("DCTN-50" "DCTN50" "DCTN2")) 
 (define-protein "DCTN3_HUMAN" ("DCTN22" "DCTN3" "p22")) 
@@ -1447,7 +1448,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "HS90B_HUMAN" ("HSP90-β" "Heat shock protein HSP 90-beta" "HSP 90" "Heat shock 84 kDa" "HSP 84" "HSP84")) 
 (define-protein "HSDL2_HUMAN" ("HSDL2" "C9orf99")) 
 (define-protein "HSF1_HUMAN" ("HSF-1" "Heat shock factor protein 1" "HSF 1" "Heat shock transcription factor 1" "HSTF 1")) 
-(define-protein "HSH2D_HUMAN" ("lymphocytes" "Hematopoietic SH2 domain-containing protein" "Hematopoietic SH2 protein" "Adaptor in lymphocytes of unknown function X")) 
+(define-protein "HSH2D_HUMAN" ("Hematopoietic SH2 domain-containing protein" "Hematopoietic SH2 protein" "Adaptor in lymphocytes of unknown function X")) 
 (define-protein "HSP71_HUMAN" ("HSP70-1/HSP70-2" "HSPA1A" "HSPA1B" "HSP70.1/HSP70.2" "HSPA1" "HSX70")) 
 (define-protein "HSPB1_HUMAN" ("Hsp27" "Heat shock protein beta-1" "HspB1" "28 kDa heat shock protein" "Estrogen-regulated 24 kDa protein" "Heat shock 27 kDa protein" "HSP 27" "Stress-responsive protein 27" "SRP27")) 
 (define-protein "HTRA2_HUMAN" ("tbid" "Serine protease HTRA2, mitochondrial" "High temperature requirement protein A2" "HtrA2" "Omi stress-regulated endoprotease" "Serine protease 25" "Serine proteinase OMI")) 
