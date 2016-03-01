@@ -1114,6 +1114,17 @@
 (def-synonym fraction (:noun "fraction"))
 ;; exchange
 
+(define-category frees :specializes caused-bio-process
+   :binds ((free-of biological))
+   :realization 
+   (:verb ("free" :past-tense "freed")
+	  :etf (svo-passive)
+	  :of free-of))
+
+(define-category free :specializes bio-relation
+  :binds ((free-of biological))
+  :realization (:adj "free" :of free-of))
+		 
 
 (define-category generate :specializes caused-bio-process
   :binds ((agent (:or biological pronoun/first/plural))
@@ -1724,6 +1735,14 @@
          :etf (svo-passive)
          :from bio
          :with agent))
+
+(define-category put-forward :specializes bio-rhetorical
+   :realization
+   (:verb ("put"
+	   :third-plural "puts"
+	   :past-tense "put"
+	   :present-participle "putting")
+	  :etf (svo-passive)))
 
 (define-category query :specializes bio-method
   :mixins (bio-whethercomp)
