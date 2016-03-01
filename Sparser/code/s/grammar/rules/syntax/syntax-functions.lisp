@@ -370,18 +370,23 @@
     (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-
-  (or (call-compose qualifier head)
-      ;; This case is to benefit marker-categories
-      (cond
-       ((category-p head)
-        (setq head (individual-for-ref head))
-        (or
-         (call-compose qualifier head)
-         (link-in-verb+ing qualifier head)))
-       (t
-        (setq head (individual-for-ref head))
-        (link-in-verb+ing qualifier head)))))
+  (cond
+    (*subcat-test*
+     (or
+      (call-compose qualifier head)
+      (link-in-verb+ing qualifier head)))
+    (t
+     (or (call-compose qualifier head)
+	 ;; This case is to benefit marker-categories
+	 (cond
+	   ((category-p head)
+	    (setq head (individual-for-ref head))
+	    (or
+	     (call-compose qualifier head)
+	     (link-in-verb+ing qualifier head)))
+	   (t
+	    (setq head (individual-for-ref head))
+	    (link-in-verb+ing qualifier head)))))))
 
 (defun create-predication-by-binding (var np-ref vp-ref source)
   (let
@@ -393,12 +398,15 @@
 
 (defun link-in-verb+ing (qualifier head)
   (let ((subject (subject-variable qualifier)))
-    (setq qualifier (individual-for-ref qualifier))
-    (if subject ;; really should check for passivizing
-        (setq  qualifier (create-predication-by-binding subject head qualifier
-							(list 'link-in-verb+ing (parent-edge-for-referent)))))
-    (setq  head (bind-dli-variable 'predication qualifier head))
-    head))
+    (cond
+      (*subcat-test* subject)
+      (t
+       (setq qualifier (individual-for-ref qualifier))
+       (if subject ;; really should check for passivizing
+	   (setq  qualifier (create-predication-by-binding subject head qualifier
+							   (list 'link-in-verb+ing (parent-edge-for-referent)))))
+       (setq  head (bind-dli-variable 'predication qualifier head))
+       head))))
 
 (defun verb-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")
