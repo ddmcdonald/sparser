@@ -13,6 +13,7 @@
 
 
 ;; Protein families
+(noun "HSP90"  :super protein-family) ;; heat-shock proteins
 (noun  "catenin" :super protein-family)
 (noun "integrin" :super protein-family)
 (noun "RAS GAP" :super protein-family)
