@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.24 November 2015
+;;;  Version:  March 2016
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -376,6 +376,7 @@
   ;; Now (10/21/13) the setting we get when we don't specify a special load
   (declare (special *tts-after-each-section*))
   (strider-setting)
+  (setq *note-text-relations* nil) ;; 3/6/16 overly complicated just now
   (setq *tts-after-each-section* nil) ;; turn off Strider default
   (setq *new-segment-coverage* :trivial)
   (setq *after-action-on-segments* 'sdm/analyze-segment)
