@@ -103,11 +103,22 @@
    sentence-processing-core.")
 
 (defun identify-current-sentence (&optional no-break)
+  "Identify and return the sentence that the parser is operating in
+   at the time it is called. This operation is complicatedd by the
+   operations of the period-hook code, which starts a new sentence
+   when the current sentence is terminated, which pushes the sentence
+   functions like (sentence) ahead of the current point of operations.
+   The special *sentence-in-core* is available when we're operating
+   on whole sentences at a time, though not in other modes."
   ;; called from the epistemic collector functions but could
-  ;; be generally useful.
-  (let ((s *sentence-in-core*))
+  ;; be generally useful. 
+  (let ((s *sentence-in-core*)
+        (current *current-sentence*))
     (cond
      ((typep s 'sentence) s)
+     ((and current
+           (null (ends-at-pos current)))
+      current)
      (s (error "Odd type returned for sentence: ~a~%~a"
                (type-of s) s))
      (t

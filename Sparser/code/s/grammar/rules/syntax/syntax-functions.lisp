@@ -307,14 +307,13 @@
     (cond
      ((call-compose determiner head))
      ((definite-determiner? determiner)
-      (unless *sentence-in-core*
-        (error "Threading bug. No value for *sentence-in-core*"))
+      (let ((sentence (identify-current-sentence)))
       ;; NOTE -- IMPORTANT
       ;; this adds the definite determiner on the N-BAR, and does not, by iteself,
       ;; mark the complete NP as a definite reference
       ;; have to do something in complete-edge/hugin
       ;; call to update-definite-determiner, defined in content-methods
-      (add-pending-def-ref determiner parent-edge *sentence-in-core*)))
+      (add-pending-def-ref determiner parent-edge sentence))))
     head))
 
 
