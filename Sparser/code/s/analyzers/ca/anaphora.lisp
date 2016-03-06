@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  3.8 September 2015
+;;;  Version:  March 2016
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -289,8 +289,8 @@
                          (and (<= start# last-start#)
                               (>= end#   last-end#)))
                    (then ;; this instance subsumes the prior one
-                     (rplaca last-pos start-pos)
-                     (rplacd last-pos end-pos))
+                     (rplaca last-pos (position# start#))
+                     (rplacd last-pos (position# end#)))
                    
                    ;; otherwise it's a new new instance
                    (new-instance-of-known-object
