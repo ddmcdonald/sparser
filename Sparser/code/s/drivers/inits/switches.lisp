@@ -378,6 +378,7 @@
   (strider-setting)
   (setq *note-text-relations* nil) ;; 3/6/16 overly complicated just now
   (setq *tts-after-each-section* nil) ;; turn off Strider default
+  (designate-sentence-container :complex) ;;// overkill - separate doc vs sentence
   (setq *new-segment-coverage* :trivial)
   (setq *after-action-on-segments* 'sdm/analyze-segment)
   ;; Have to set after-action explicitly to be sure it takes
