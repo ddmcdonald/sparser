@@ -264,7 +264,9 @@
          (s s1)
          next )
     (loop 
-      (unless (slot-boundp s 'next)
+       (unless (and
+		(slot-boundp s 'next)
+		(next s)) ;; had a NULL next in articel 23 of June -- should investigate
         (return))
       (setq next (next s))
       (when (string-equal (sentence-string next) "")
