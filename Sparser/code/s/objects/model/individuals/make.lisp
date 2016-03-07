@@ -284,7 +284,7 @@
 
 (defun make-simple-individual (category binding-instructions)
   (declare (special *index-under-permanent-instances*))
-  ;;(break "permanent = ~a" *index-under-permanent-instances*)
+  ;; (format t "~&Make-simple  permanent = ~a~%" *index-under-permanent-instances*)
   (let ((individual 
          (cond
           (*description-lattice* (fom-lattice-description category))
