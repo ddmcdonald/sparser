@@ -70,6 +70,13 @@
 
     (let ((category (find-or-make-category-object symbol :referential)))
       (apply #'decode-category-parameter-list category parameter-list)
+      (when
+	  (and
+	   (member :realization parameter-list)
+	   (fboundp 'fom-subcategorization)
+	   (loop for cat in (super-categories-of category)
+		thereis (get-subcategorization cat)))
+	(fom-subcategorization category :category category))
       category )))
 
 
