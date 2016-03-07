@@ -95,11 +95,13 @@
 
 
 
-(defun look-for-primed-word-else-all-properties (character-type)
+(defun look-for-primed-word-else-all-properties (character-type
+                                                 &optional existing-word)
   (declare (special *capitalization-of-current-token* *primed-words*))
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
-         (word (make-word :symbol symbol
-                          :pname  (symbol-name symbol))))
+         (word (or existing-word ;; see find-word
+                   (make-word :symbol symbol
+                              :pname  (symbol-name symbol)))))
     (catalog/word word symbol)
 
     (ecase character-type
