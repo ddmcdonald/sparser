@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2011-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  8.5 December 2015
+;;;  Version:  March 2016
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -312,7 +312,9 @@
                                    :full-segment-scanned))))
 
         ;; Same thing, but reference a different edge for the boundary
-        (let ((right-boundary (pos-edge-ends-at edge-after)))
+        (let ((right-boundary (etypecase edge-after
+                                (edge (pos-edge-ends-at edge-after))
+                                (word (chart-position-after position-after)))))
           (if (scan-another-segment? right-boundary)
             (scan-next-segment *where-the-last-segment-ended*)
             
