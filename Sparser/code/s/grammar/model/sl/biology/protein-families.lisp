@@ -13,6 +13,10 @@
 
 
 ;; Protein families
+(noun "PTK" :super protein-family
+      ;;:synonyms ("protein tyrosine kinase")
+      )
+
 (noun "HSP90"  :super protein-family) ;; heat-shock proteins
 (noun  "catenin" :super protein-family)
 (noun "integrin" :super protein-family)
