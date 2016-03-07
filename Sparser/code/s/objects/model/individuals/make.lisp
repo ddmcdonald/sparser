@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  January 2016
+;;;  version:  March 2016
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -85,46 +85,42 @@
     (dolist (form forms)
       (eval form))))
 
-;;--- Standard entry point
+;;;----------------------
+;;; Standard entry point
+;;;----------------------
 
-(defun define-individual (symbol/psi &rest var-name+value-pairs)
-
-  ;; intended as the standard way to create a permanent individual
-  ;; from toplevel or from code that doesn't have ready access
-  ;; to category and variable objects.   
-
-  (let* ((symbol symbol/psi)
-         (category (etypecase symbol
+(defun define-individual (symbol &rest var-name+value-pairs)
+  "Intended as the standard way to create a permanent individual
+  from toplevel or from code that doesn't have ready access
+  to category and variable objects and needs to use expressions instead.
+  Decodes the variable-name value pairs (binding instructions) and
+  calls find-or-make/individual to look up or create the individual
+  as appropriate. Note that this function also applies the realization
+  data associated with the category, which means that besides 
+  creating an individual is may write rules based onthat individual."
+  (let* ((category (etypecase symbol
                      (symbol (resolve-symbol-to-category/check symbol))
                      (referential-category symbol)))
          (binding-instructions
           (decode-category-specific-binding-instr-exps
-           category
-           var-name+value-pairs)))
-
-    (let ((*index-under-permanent-instances* ;;t
+           category var-name+value-pairs)))
+    (let ((*index-under-permanent-instances*
            (or *index-under-permanent-instances* ;; for recursive calls
                (individuals-of-this-category-are-permanent? category))))
       (declare (special *index-under-permanent-instances*))
       (let ((individual
              (find-or-make/individual category binding-instructions)))
-
         ;;(if *c3*
         ;; This is (probably) irrelevant without restrictions
-        ;; so moving it out of the way. Failed on the determiner "the"
-        ;; and not obvious what would have changed. Expects the rule-set
-        ;; to have a unary rule at this point and it doesn't. 
-        ;;  (apply-distributed-realization-data individual)
-          (apply-single-category-rdata individual category)
-
+        ;; so moving it out of the way. 
+        (apply-single-category-rdata individual category)
         individual))))
-
 
 (defun make-an-individual (symbol 
                            &rest var-name+value-pairs)
-  ;; Just like define-individual in its arguments but is for run-time
-  ;; relations rather than populating categories (e.g. no rdata).
-  ;; This syntax is convenient for calls from code. 
+  "Just like define-individual in its arguments but is for run-time
+  relations rather than populating categories (e.g. no rdata).
+  This syntax is convenient for calls from code."
   (let* ((category
           (etypecase symbol
             (symbol (resolve-symbol-to-category/check symbol))
@@ -135,6 +131,20 @@
          (individual
           (find-or-make/individual category binding-instructions)))
     individual ))
+
+(defun make-temporary-individual (symbol &rest var-name+value-pairs)
+  "Same signature as make-an-individual in that it is intended for
+  run-time relations where we already have values for the variables
+  and only need to look up the variable names. Provides a way to
+  guarentee that the created individual is temporary since it binds
+  the override flag read in index-aux/individual when it would have
+  otherwise taken its cue from the category and make a permanent one."
+  ;;/// ought to scoop out the common core of these three but
+  ;; I'm lazy and expect there to be more changes (ddm 3/7/16)
+  (let ((*override-category-permanent-individuals-assumption* t))
+    (declare (special *override-category-permanent-individuals-assumption*))
+    (apply #'make-an-individual symbol var-name+value-pairs)))
+  
 
 
 ;;;-------------------------------------------------------------------------

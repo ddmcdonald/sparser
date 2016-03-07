@@ -119,6 +119,12 @@ is a safe way to do it.")
   "Pick out the right sub-field when a category indexes
 both permanent and temporary individuals.")
 
+(defvar *override-category-permanent-individuals-assumption* nil
+  "Works with the function individuals-of-this-category-are-permanent?
+to handle cases where we are creating an individual of such a
+category but we know definitively that we want to make a temporary
+individual.")
+
 ;;;-----------------------------------------------------------------------
 ;;; Mutually exclusive application settings.
 ;;; These correspond to alternative system configurations, some of them

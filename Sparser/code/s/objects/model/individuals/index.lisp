@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.8 June 2013
+;;;  version:  March 2016
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (9/18/93) added index/individual/seq-keys
@@ -23,7 +23,7 @@
 ;; 0.7 (6/3/13) Clarifying treatment of permanent vs. reclaim-able
 ;; 0.8 (6/14/13) Generalized all-instances to do hash-tables. 6/17 cleaned up
 ;;      from initially going overboard. 
-
+;; (3/7/16) Put an override check in index-aux/individual. Motivated by numbers
 
 (in-package :sparser)
 
@@ -62,7 +62,8 @@
            (or (permanent-individual? individual)
                (individuals-of-this-category-are-permanent? category)
                *index-under-permanent-instances*)))
-  (declare (special *index-under-permanent-instances*))
+  (declare (special *index-under-permanent-instances*
+                    *override-category-permanent-individuals-assumption*))
   (let* ((operations (cat-operations category))
          (fn-data (or (and operations (cat-ops-index operations))
                       (lookup-fn-data-of-parent category))))
@@ -72,7 +73,8 @@
         (funcall fn-data individual category bindings)))
     (push individual (get-tag :instances category))
     (when permanent
-      (add-permanent-individual individual category))))
+      (unless *override-category-permanent-individuals-assumption*
+        (add-permanent-individual individual category)))))
 
 
 ;;;-----------------

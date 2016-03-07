@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  3.0 December 2015
+;;;  Version:  March 2016
 
 ;; 2.0  (7/20/92 v2.3) made over to use "real" categories
 ;; 2.1  (10/5) tweeked construct-temporary... to not make a polyword
@@ -91,7 +91,7 @@
   (assign-brackets-to-adjective word-object-for-digits) ;; ].adjective .[np
 
   (let ((number (if temporary?
-                  (make-an-individual 'number
+                  (make-temporary-individual 'number
                     :value lisp-number)
                   (define-individual 'number
                     :value lisp-number)))
