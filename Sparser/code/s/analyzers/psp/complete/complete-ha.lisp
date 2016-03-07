@@ -80,7 +80,7 @@
 
 
 (defun complete-edge/hugin (edge)
-  (declare (special *do-anaphora* edge category::punctuation)) ;; may be dynamically bound
+  (declare (special *do-anaphora* category::punctuation)) ;; may be dynamically bound
   (when (and
 	 (null (edge-referent edge))
 	 (not (polyword-p (edge-category edge)))
@@ -105,22 +105,21 @@
 
   (when *include-model-facilities*
     (when (and *pronouns* ;; the module is loaded
-               (or
-		*use-discourse-mentions*
-		*do-anaphora*)) ;; we've not deliberately turned it off
+               (or *use-discourse-mentions*
+                   *do-anaphora*)) ;; we've not deliberately turned it off
       (add-subsuming-object-to-discourse-history edge)))
+
   (update-mention-links edge)
   (update-definite-determiner edge)
   (check-impact-on-quiescence-pointer edge)
-  (when (and
-	 *check-semantic-completeness*
-	 (cond
-	   ((null (edge-rule edge))
-	    ;;(break "null rule on edge")
-	    nil)
-	   (t
-	    (not (ignore-semantic-check? (edge-rule edge))))))
-	 (check-semantic-completeness edge))
+  (when (and *check-semantic-completeness*
+             (cond
+              ((null (edge-rule edge))
+               ;;(break "null rule on edge")
+               nil)
+              (t
+               (not (ignore-semantic-check? (edge-rule edge))))))
+    (check-semantic-completeness edge))
   :complete )
 
 (defun ignore-semantic-check? (rule)
