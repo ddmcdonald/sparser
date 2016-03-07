@@ -89,7 +89,8 @@
                  ((rs-completion-actions rs)
                   (establish-unknown-word char-type word))
                  (t (push-debug `(,word ,rs))
-                    (error "New case in find-word"))))
+                    (lsp-break "New case in find-word")
+		    (establish-unknown-word char-type))))
 
                (t ;; it has a rule-set and none of the 'is unknown' tests 
                   ;; fired so it must be a known word.
