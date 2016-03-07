@@ -177,6 +177,7 @@
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
   (cond
+    (*subcat-test* t)
     ((itypep head 'determiner) nil) ;; had strange case with "some cases this" -- head was "this"
     ((and qualifier head
 	  (not (or (category-p head)
@@ -410,9 +411,12 @@
 (defun verb-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")
   ;; goes with (verb+ed n-bar-type) syntactic rule
-  (when (null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
-    ;;(lsp-break "*current-chunk*")
-    (return-from verb-noun-compound nil))
+  (cond
+    ((null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
+     ;;(lsp-break "*current-chunk*")
+     (return-from verb-noun-compound nil))
+    (*subcat-test*
+     (return-from verb-noun-compound t)))
   (when nil
     (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
@@ -461,36 +465,39 @@
                 (category-named 'tense/aspect-vector) nil)))
 
 (defun absorb-auxiliary (aux vg)
-  (when (category-p vg)
-    (setq vg (individual-for-ref vg)))
+  (cond
+    (*subcat-test* t)
+    (t
+     (when (category-p vg)
+       (setq vg (individual-for-ref vg)))
 
-  ;; otherwise the variable is unavailable
-  (let ((aux-type (etypecase aux
-                    (individual (itype-of aux))
-                    (category aux)))
-        (i (find-or-make-aspect-vector vg)))
+     ;; otherwise the variable is unavailable
+     (let ((aux-type (etypecase aux
+		       (individual (itype-of aux))
+		       (category aux)))
+	   (i (find-or-make-aspect-vector vg)))
 
-    ;; Check for negation
-    (when (value-of 'negation aux)
-      ;;/// RJB has negation on event too -- sort that out
-      (setq  i (bind-dli-variable 'negation (value-of 'negation aux) i)))
+       ;; Check for negation
+       (when (value-of 'negation aux)
+	 ;;/// RJB has negation on event too -- sort that out
+	 (setq  i (bind-dli-variable 'negation (value-of 'negation aux) i)))
 
-    ;; Propagate the auxiliary
-    (case (cat-symbol aux-type)
-      ((category::be-able-to  ;; see modals.lisp
-        category::future
-        category::conditional)
-       (setq  i (bind-dli-variable 'modal aux i)))
-      (category::anonymous-agentive-action) ;; do
-      (category::have
-       (setq  i (bind-dli-variable 'perfect aux i)))
-      (otherwise
-       (push-debug `(,aux ,vg))
-       (error "Assimilate the auxiliary category ~a~%  ~a"
-              aux-type aux)))
-    ;;(push-debug `(,i)) (break "look at i")
-    (setq vg (bind-dli-variable 'aspect i vg))
-    vg))
+       ;; Propagate the auxiliary
+       (case (cat-symbol aux-type)
+	 ((category::be-able-to	;; see modals.lisp
+	   category::future
+	   category::conditional)
+	  (setq  i (bind-dli-variable 'modal aux i)))
+	 (category::anonymous-agentive-action) ;; do
+	 (category::have
+	  (setq  i (bind-dli-variable 'perfect aux i)))
+	 (otherwise
+	  (push-debug `(,aux ,vg))
+	  (error "Assimilate the auxiliary category ~a~%  ~a"
+		 aux-type aux)))
+       ;;(push-debug `(,i)) (break "look at i")
+       (setq vg (bind-dli-variable 'aspect i vg))
+       vg))))
 
 
 
@@ -528,19 +535,23 @@
     i))
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc category))
-  (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc)))
+  (or *subcat-test*
+      (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc category))
-  (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc)))
+  (or *subcat-test*
+      (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
 
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc individual))
-  (push-debug `(,aux ,sc)) ;;(break "is this right?")
-  (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc))
+  (or *subcat-test*
+      ;;(push-debug `(,aux ,sc)) ;;(break "is this right?")
+      (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc)))
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc individual))
-  (push-debug `(,aux ,sc)) ;;(break "is this right?")
-  (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc))
+  (or *subcat-test*
+      ;;(push-debug `(,aux ,sc)) ;;(break "is this right?")
+      (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc)))
 
 
 
@@ -550,12 +561,15 @@
 ;;;-----------------
 
 (defun vg-plus-adjective (vg adj)
-  (setq vg (individual-for-ref vg))
-  (let ((var (object-variable vg)))
-    (if var
-      (setq  vg (bind-dli-variable var adj vg))
-      (setq  vg (bind-dli-variable 'participant adj vg)))
-    vg))
+  (cond
+    (*subcat-test* t)
+    (t
+     (setq vg (individual-for-ref vg))
+     (let ((var (object-variable vg)))
+       (if var
+	   (setq  vg (bind-dli-variable var adj vg))
+	   (setq  vg (bind-dli-variable 'participant adj vg)))
+       vg))))
 
 
 ;;;-------------
@@ -937,7 +951,6 @@ to enhance p53 mediated apoptosis [2].") |#
 ;;;-----------------
 
 (defun assimilate-subject (subj vp)
-  ;;(lsp-break "ass")
   (cond
    ((itypep vp 'subordinate-clause)
     (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
@@ -993,40 +1006,54 @@ to enhance p53 mediated apoptosis [2].") |#
     ;; form. If it turned out to be a RR then we do fairly serious
     ;; surgery on the edge.
     ;;(when (edge-p (edge-right-daughter vp-edge))
-      ;; The other possibility is :single-term, which indicates
-      ;; that we've just got a vg (one one form or another)
-      ;; and not a full vp, in which case we're returning nil
-      ;; so that the rule doesn't go through.
-      (cond
-       (*subcat-test* 
-        (or (not (or ;; vp has a bound object
-                  (null (object-variable vp))
-                  (value-of (object-variable vp) vp)
-		  (and (individual-p subj)
-		       (itypep subj 'pronoun))))
-            (preceding-that-whether-or-conjunction? (left-edge-for-referent))
-            (subcategorized-variable vp :subject subj)))
-       ;; ?????????????
-       ((or ;; vp has a bound object
-         (null (object-variable vp))
-         (value-of (object-variable vp) vp)
-         (value-of 'statement vp)
-         (and (individual-p subj)
-	      (itypep subj 'pronoun))
-         (preceding-that-whether-or-conjunction? (left-edge-for-referent)))
-        ;; This situation corresponds to composing them as
-        ;; subject and predicate, which is what the rule that
-        ;; drives this is set up to do. 
-        (if (is-passive? (right-edge-for-referent))
-            (then 
-              (break "can't have a passive vp+ed")
-              (assimilate-subcat vp :object subj))
-            (assimilate-subcat vp :subject subj)))       
-       (t
-        ;; This should correspond to the reduced relative
-        ;; situation. But we'll check that the vp has
-        ;; the form we expect it to.
-        (cond
+    ;; The other possibility is :single-term, which indicates
+    ;; that we've just got a vg (one one form or another)
+    ;; and not a full vp, in which case we're returning nil
+    ;; so that the rule doesn't go through.
+    (cond
+      (*subcat-test*
+       (cond
+	 ((or (not (or ;; vp has a bound object
+		    (null (object-variable vp))
+		    (value-of (object-variable vp) vp)
+		    (and (individual-p subj)
+			 (or
+			  (itypep subj 'pronoun)
+			  (itypep subj 'number)))))
+	      (preceding-that-whether-or-conjunction? (left-edge-for-referent))
+	      (subcategorized-variable vp :subject subj))
+	  (if (is-passive? (right-edge-for-referent))
+	      (then 
+		(break "can't have a passive vp+ed")
+		(assimilate-subcat vp :object subj))
+	      (assimilate-subcat vp :subject subj)))
+	 ((or (eq vp-form category::vp+ed)
+	      (eq vp-form category::vg+ed))
+	  ;;(convert-clause-to-reduced-relative)
+	  )
+	 (t nil)))
+	 
+      ;; ?????????????
+      ((or ;; vp has a bound object
+	(null (object-variable vp))
+	(value-of (object-variable vp) vp)
+	(value-of 'statement vp)
+	(and (individual-p subj)
+	     (itypep subj 'pronoun))
+	(preceding-that-whether-or-conjunction? (left-edge-for-referent)))
+       ;; This situation corresponds to composing them as
+       ;; subject and predicate, which is what the rule that
+       ;; drives this is set up to do. 
+       (if (is-passive? (right-edge-for-referent))
+	   (then 
+	     (break "can't have a passive vp+ed")
+	     (assimilate-subcat vp :object subj))
+	   (assimilate-subcat vp :subject subj)))       
+      (t
+       ;; This should correspond to the reduced relative
+       ;; situation. But we'll check that the vp has
+       ;; the form we expect it to.
+       (cond
          ((or (eq vp-form category::vp+ed)
               (eq vp-form category::vg+ed))
           (convert-clause-to-reduced-relative))
@@ -1338,6 +1365,11 @@ to enhance p53 mediated apoptosis [2].") |#
       (cond
        ((itypep item category::pronoun/inanimate)
         t)
+       ((itypep item category::number)
+        t)
+       ((itypep item category::pronoun/first/plural)
+	;; BAD -- should add check for agentive verbs
+        t)
        ((consp restriction)
         (cond
          ((eq (car restriction) :or)
@@ -1418,24 +1450,26 @@ to enhance p53 mediated apoptosis [2].") |#
   :index (:temporary :sequential-keys prep pobj))
 
 (defun make-pp (prep pobj)
-  (make-simple-individual ;;make-non-dli-individual
-   category::prepositional-phrase
-   `((prep ,prep) (pobj ,pobj))))
+  (or *subcat-test*
+      (make-simple-individual ;;make-non-dli-individual
+       category::prepositional-phrase
+       `((prep ,prep) (pobj ,pobj)))))
 
 (defun make-subordinate-clause (conj clause)
   (bind-dli-variable 'subordinate-conjunction conj clause))
 
 (defun make-pp-relative-clause (pp clause)
-  (let* ((binding-instructions
-          `((pp ,pp) (clause ,clause)))
-         (pp-rel-clause
-          (make-simple-individual
-              category::pp-relative-clause
-              binding-instructions)))
-    ;; place for trace or further adornment, storing
-    ;; (p "activity of ras.")
-    ;; (break "Look at who is calling make-pp")
-    pp-rel-clause))
+  (or *subcat-test*
+      (let* ((binding-instructions
+	      `((pp ,pp) (clause ,clause)))
+	     (pp-rel-clause
+	      (make-simple-individual
+	       category::pp-relative-clause
+	       binding-instructions)))
+	;; place for trace or further adornment, storing
+	;; (p "activity of ras.")
+	;; (break "Look at who is calling make-pp")
+	pp-rel-clause)))
 
 
 (defun make-prep-comp (prep complement)
