@@ -74,17 +74,23 @@
     (setq verb (word-pname verb)))
   (let* ((category-name (intern (string-upcase verb)
                                 (find-package :sparser)))
-         (form `(def-term ,category-name
-                  :verb ,verb 
-                  :etf (svo-passive)
-                  :super-category bio-process
-                  :s (agent biological)
-                  :o (object biological))))
+
+         (form 	 (unless (category-named category-name)
+		   ;; having some difficulty with redefining verb "leave", and then redefining the category
+		   `(def-term ,category-name
+			:verb ,verb 
+			:etf (svo-passive)
+			:super-category bio-process
+			:s (agent biological)
+			:o (object biological)))))
     (eval form)))
 
 ;;; Verbs added temporarily for Localization articles -- to ve reviewed and corrected
 (define-category become :specializes bio-rhetorical
-  :realization (:verb "become" :etf (svo)))
+    :realization
+    (:verb ("become" :third-plural "becomes" :past-tense "became"
+		     :present-participle "becoming")
+	   :etf (svo)))
 
 (define-category start :specializes bio-rhetorical
   :realization (:verb "start" :etf (svo)))
@@ -1432,7 +1438,7 @@
       :m destination
       :m object)
   :realization
-  (:verb ("leave" :past-tense "left" :present-participle "leaving")
+  (:verb ("leave" :past-tense "left" :third-plural "leaves" :present-participle "leaving")
          :etf (svo)))
 
 (define-category ligate :specializes caused-bio-process 
