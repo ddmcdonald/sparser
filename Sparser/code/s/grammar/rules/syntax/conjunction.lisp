@@ -392,18 +392,17 @@
     (let ((label-before (edge-category edge-before))
           (label-after (edge-category edge-after)))
       (cond
-       ((or (and
-             (eq label-before label-after)
-             (cond
-              ((eq
-                (individual-p (edge-referent edge-before))
-                (individual-p (edge-referent edge-after)))
-               t)
-	      ((and (itypep (edge-referent edge-before) 'xref)
-		    (itypep (edge-referent edge-after) 'xref))
-	       t)
-              (t (break "conjunction-problem: conjunction of category and individual")) ))            
-            (bio-coercion-compatible? label-before label-after edge-before edge-after))
+       ((or (and (eq label-before label-after)
+                 (cond
+                  ((eq (individual-p (edge-referent edge-before))
+                       (individual-p (edge-referent edge-after)))
+                   t)
+                  ((and (itypep (edge-referent edge-before) 'xref)
+                        (itypep (edge-referent edge-after) 'xref))
+                   t)
+                  (t (break "conjunction-problem: conjunction of category and individual"))))
+            (when (eq (script) *big-mechanism*)
+              (bio-coercion-compatible? label-before label-after edge-before edge-after)))
         :conjunction/identical-adjacent-labels)
        (*allow-form-conjunction-heuristic*   
         ;;(break "form heuristics allowed. Check backtrace")
@@ -432,7 +431,6 @@
                               ;;this code blocks conjunction of NG heads that are followed by a preposition --
                               ;;  because it appears much more likely that the following PP is attached 
                               ;;  to the second head, not to the conjunction
-                              
                               ))))
                      
                      (not (conjunction-incompatible-labels
