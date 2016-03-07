@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "experiments"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  January 2016
+;;;   version:  March 2016
 
 ;; Initiated 10/7/15. 
 
@@ -116,39 +116,6 @@
         (location (on-something (the-table))))
     (put-something-somewhere thing location)))
 
-
-
-;; "a drug to target KRAS" (say (drug-targeting-kras))
-
-(define-word "KRAS" (proper-noun))
-
-(defun drug-targeting-kras ()
-  "Makes an untensed clause. Comes out as an infinitive"
-  (let* ((verb-resource (verb "target"))
-         (kras-resource (noun "KRAS" 'proper-name))
-         (drug-dtn (kind (singular (noun "drug")))))
-    (let ((dtn (make-instance 'derivation-tree-node
-                 :referent 'target-kras
-                 :resource verb-resource)))
-      (make-complement-node 's drug-dtn dtn)
-      (make-complement-node 'o kras-resource dtn)
-      dtn)))
-
-
-;; "but I don't know of any drug targeting KRAS"
-
-(defun I-know-of-p (complement)
-  (let ((verb-resource (transitive-with-bound-prep 
-                        "know" "of"))
-        (first-singular (mumble-value 'first-person-singular 'pronoun)))
-    (let ((dtn (make-instance 'derivation-tree-node
-                 :referent 'i-know-p
-                 :resource verb-resource)))
-      (make-complement-node 's first-singular dtn)
-      (make-complement-node 'o complement dtn)
-      dtn)))
-;; (say (I-know-of-p (drug-targeting-kras)))
-;;  => "I to know of a drug to target KRAS"
 
 
         
