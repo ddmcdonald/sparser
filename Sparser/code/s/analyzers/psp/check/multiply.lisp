@@ -219,7 +219,8 @@
                   (setq rule nil))))
           (else
             (tr :no-semantic-rule)))
-      (unless rule
+
+      (unless rule ;; check for form fule
         (setq rule (mult/ids-on-form-label left-edge right-edge))
         (if rule
             (then
@@ -272,6 +273,7 @@
           (setq left left-edge)
           (setq right right-edge)
           (lsp-break "multiply-edges -- trie-rule and rule don't agree")))
+
       rule))))
 
 
