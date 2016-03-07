@@ -403,7 +403,7 @@
                         (itypep (edge-referent edge-after) 'xref))
                    t)
                   (t (break "conjunction-problem: conjunction of category and individual"))))
-            (when (eq (script) *big-mechanism*)
+            (when (eq (script) :biology)
               (bio-coercion-compatible? label-before label-after edge-before edge-after)))
         :conjunction/identical-adjacent-labels)
        (*allow-form-conjunction-heuristic*   
