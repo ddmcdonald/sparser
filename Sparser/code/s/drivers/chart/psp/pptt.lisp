@@ -95,7 +95,7 @@
 
   (let ((rightmost-edge/ev
          (find-rightmost-edge rightmost-position))
-        (*edges-from-referent-categories* t))
+        (*edges-from-referent-categories* nil)) ;;<<<<<<<<<<< had been t
     (declare (special *edges-from-referent-categories*))
 
     (if rightmost-edge/ev
