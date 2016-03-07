@@ -194,6 +194,17 @@
 (noun "eye" :super bio-organ)
 (noun "prostate" :super bio-organ)
 (noun "kidney" :super bio-organ)
+(define-category pancreas :specializes bio-organ
+  :realization
+  (:noun "pancreas" :adj "pancreatic"))
+
+(define-category liver :specializes bio-organ
+  :realization
+  (:noun "liver" :adj "hepatic"))
+
+(define-category lung :specializes bio-organ
+  :realization
+  (:noun "lung"))
 
 (noun "lactate" :super molecule)
 
