@@ -785,10 +785,11 @@
   (:noun "system"))
 
 (define-category disease  :specializes bio-context
-  :instantiates self
-  :index (:permanent :key name)
-  :lemma (:common-noun "disease")
-  :realization (:common-noun name))
+  :binds ((organ bio-organ))
+  :realization (:noun "disease"
+                      :m organ
+                      :of organ
+                      :in organ))
 
 (define-category cancer  :specializes disease
   :instantiates self
