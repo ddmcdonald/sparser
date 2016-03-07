@@ -200,7 +200,21 @@ to the 'public?' field on the modules and react in various ways.")
     (when *grammar-module-being-loaded*
       (pushnew filespec (gmod-files *grammar-module-being-loaded*)
                :test #'equal))
+    (compile-functions)
     filespec))
+
+
+
+
+(defun compile-functions ()
+  (loop for symbol being each symbol in :sparser
+     when (and (fboundp symbol)
+	       (not (special-operator-p symbol))
+	       #+ccl
+	       (not (ccl::frozen-definition-p symbol))
+	       (not (simple-vector-p (symbol-function symbol)))
+	       (not (compiled-function-p (symbol-function symbol))))
+     do (compile symbol)))
 
 ;;;--------------------------------------
 ;;; cross-indexing rules against modules
