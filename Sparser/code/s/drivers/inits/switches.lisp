@@ -337,7 +337,6 @@
         *note-text-relations* t)
   (setq *profligate-creation-of-individuals* t)
   (setq *allow-pure-syntax-rules* t)
-  ;; NEED TO TURN THIS OFF IN BIO!!
   (setq *edges-from-referent-categories* t)
   (setq *switch-setting* :grok))
 
@@ -372,6 +371,7 @@
   (turn-off-debugging-flags)
   (setq *switch-setting* :strider))
 
+
 (defun fire-setting ()
   ;; Now (10/21/13) the setting we get when we don't specify a special load
   (declare (special *tts-after-each-section*))
@@ -379,11 +379,15 @@
   (setq *note-text-relations* nil) ;; 3/6/16 overly complicated just now
   (setq *tts-after-each-section* nil) ;; turn off Strider default
   (designate-sentence-container :complex) ;;// overkill - separate doc vs sentence
+  (setq *check-forms* nil) ;; turn off validity check in multiply-edges'
+  (setq *allow-pure-syntax-rules* nil ;; turn these on selectively in
+        *edges-from-referent-categories* nil) ;; dynamic contexts
   (setq *new-segment-coverage* :trivial)
   (setq *after-action-on-segments* 'sdm/analyze-segment)
   ;; Have to set after-action explicitly to be sure it takes
   ;;  when switching modes a lot. 
   (setq *switch-setting* :fire))
+
 
 
 (defun bio-setting () ;; copy & specialize of back-named old-bio-setting
@@ -400,27 +404,17 @@
   (setq *do-unanalyzed-hyphenated-sequences* t)
   (use-unknown-words)
   (setq *treat-single-Capitalized-words-as-names* t)
-  (include-comlex)
-  (setq *do-strong-domain-modeling* t
-        *new-segment-coverage* :full  ;; vs :trivial
-        *reify-implicit-individuals* t
-        *note-text-relations* t)
-  (setq *profligate-creation-of-individuals* t)
-  (setq *allow-pure-syntax-rules* t)
-  ;; NEED TO TURN THIS OFF IN BIO!!
-  (setq *edges-from-referent-categories* t)
-  
+
   ;;(tuned-grok)
-  ;(setq *break-on-new-bracket-situations* t)
+  (setq *break-on-new-bracket-situations* nil)
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
   (setq *track-incidence-count-on-bindings* nil) ;; see bind-variable/expr
   (display-bracketing)
 
-  ;; except
-  (setq *edges-from-referent-categories* nil ;; should be off in the bio system!
-        *note-text-relations* nil
-        *profligate-creation-of-individuals* nil)
+  (setq *edges-from-referent-categories* nil
+        *allow-pure-syntax-rules* t)
+        
   (include-comlex)
   ;; Get everything primed, but don't use it on the unknown words
   ;; at least not yet. 
@@ -438,21 +432,19 @@
         *allow-form-conjunction-heuristic* t
         *island-driving* t)
   (whack-a-rule t)
+  (setq *check-forms* t)
 
-  ;; make sure we notice periods
-  (period-hook-on)
-
-  ;; Flags that control how the parsing is done
-  ;;' *whack-a-rule* t
-  ;; *check-forms* t
+  (period-hook-on) ;; make sure we notice periods
 
   ;; Set the full set of switches to control what 'after action'
   ;; segment actions we do
   (setq *do-strong-domain-modeling* t
         *new-segment-coverage* :trivial ;; vs. :full or :none
-        ;;*profligate-creation-of-individuals* t
-        ;;*reify-implicit-individuals* t
-        *note-text-relations* t)
+        *reify-implicit-individuals* nil
+        *note-text-relations* nil
+        *profligate-creation-of-individuals* nil
+        *note-text-relations* nil)
+
   ;; Specify where we start (needed as switch settings change)
   (do-strong-domain-modeling)
 
