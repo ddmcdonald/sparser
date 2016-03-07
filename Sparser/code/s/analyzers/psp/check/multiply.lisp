@@ -168,6 +168,8 @@
   ;; and then whether there is a category combination or, barring
   ;; that, a form combination.
   ;; Returns a rule or nil to indicate the edges don't combine.
+  (declare (special *edges-from-referent-categories*
+                    *allow-pure-syntax-rules*))
 
   (tr :multiply-edges left-edge right-edge)
   ;;"[Multiply] Checking (e~A+e~A)  ~A + ~A"
@@ -177,7 +179,6 @@
     ;;/// trace  We don't multiply words, only edges
     (return-from multiply-edges nil))
   
-    
   (cond
    ((edge-of-dotted-intermediary right-edge)
     ;; dotted rules only combine to their right, never to their left
@@ -193,18 +194,18 @@
                                       left-edge right-edge
 				      chunk)))
       
+     (when (and rule
+		 (or (and *no-etf-rules*
+                          (cfr-schema rule)
+                          (not (member (schr-lhs (cfr-schema rule)) '(np))))
+                     (eq :syntactic-form (cfr-category rule))))
+	(setq rule nil))
+
       ;; Look at possible sourcs of rules from what is likely to be
       ;; the most precise (certainly in terms of referents) to the
       ;; most general. As soon as one of these sources returns
       ;; a valid rule we stop looking at other sourcs.
-      (when (and rule
-		 (or
-		  (and *no-etf-rules*
-		   (cfr-schema rule)
-		   (not (member (schr-lhs (cfr-schema rule)) '(np))))
-		  (eq :syntactic-form (cfr-category rule))))
-	(setq rule nil))
-      
+     
       (if rule ;; from the let statement, multiply-categories
           (then
             (tr :found-semantic-rule rule)
