@@ -68,7 +68,7 @@
     (tr :close-paren-seen pos-before-close)
     
     (let* ((open-pos *position-of-pending-open-paren*)
-           (pos-after-open (chart-position-after open-pos)))
+           (pos-after-open (when open-pos (chart-position-after open-pos))))
       (setq *position-of-pending-open-paren*
             (when *pending-open-paren-stack*
               (pop *pending-open-paren-stack*)))
