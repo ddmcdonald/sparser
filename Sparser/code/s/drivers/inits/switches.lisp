@@ -467,8 +467,8 @@
   ;; Experimenting with different choices of parsing protocol.
   ;; Eventually it will be a new one that's incremental and
   ;; tightly tied to the situation.
-  ;; (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
-  (establish-kind-of-chart-processing-to-do :incremental)
+  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+  ;(establish-kind-of-chart-processing-to-do :incremental)
   ;(establish-kind-of-chart-processing-to-do :c3-protocol)
   ;(setq *c3* nil) ;; If it's set, there's a call in referent-from-unary-rule
   ;; to call incorporate-referent-into-the-situation which is too 
