@@ -214,14 +214,13 @@
     (when (eq top-node :multiple-initial-edges)
       ;; arbitrarily take the most recent edge
       (setq top-node (highest-edge right-ev)))
-    (if
-     (null (edge-referent top-node)) ;; happens when the top=node is a parenthetical expression
-     (let*
-         ((prev-edges (pos-ends-here (ev-position (edge-starts-at top-node)))))
-       (if (eq (ev-top-node prev-edges) :multiple-initial-edges)
-           (highest-edge (pos-ends-here (ev-position (edge-starts-at top-node))))
-           (ev-top-node prev-edges)))
-     top-node)))
+    (if (and top-node
+             (null (edge-referent top-node))) ;; happens when the top=node is a parenthetical expression
+      (let* ((prev-edges (pos-ends-here (ev-position (edge-starts-at top-node)))))
+        (if (eq (ev-top-node prev-edges) :multiple-initial-edges)
+          (highest-edge (pos-ends-here (ev-position (edge-starts-at top-node))))
+          (ev-top-node prev-edges)))
+      top-node)))
 
 
 
