@@ -147,7 +147,7 @@
 
 (defclass category-linked-phrase ()
   ((class :initarg :class :accessor linked-category
-    :documentation "backpointer to the category")
+    :documentation "backpointer to the Sparser category")
    (lp :initarg :lp :accessor linked-phrase
     :documentation "The lexicalized phrase that the parameters
       apply to. Prototypically a verb.")
@@ -155,11 +155,23 @@
     :documentation "List of parameters and variables
       encoded as parameter-variable pairs")))
 
+(defmethod print-object ((clp category-linked-phrase) stream)
+  (print-unreadable-object (clp stream)
+    (let ((category (linked-category clp))
+          (lp (linked-phrase clp)))
+      (format stream "clp: ~a ~a" category lp))))
+
 (defclass parameter-variable-pair ()
   ((parameter :initarg :param :accessor corresponding-parameter
     :documentation "a phrase parameter")
    (variable :initarg :var :accessor corresponding-variable
     :documentation "a Krisp variable")))
+
+(defmethod print-object ((pvp parameter-variable-pair) stream)
+  (print-unreadable-object (pvp stream)
+    (let ((param (corresponding-parameter pvp))
+          (var (corresponding-variable pvp)))
+      (format stream "~a : ~a" param var))))
 
 
 ;;;----------
