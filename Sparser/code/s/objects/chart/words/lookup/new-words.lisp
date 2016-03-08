@@ -123,7 +123,7 @@
 ;(what-to-do-with-unknown-words :check-for-primed)
 
 
-(defun make-word/all-properties (character-type)
+(defun make-word/all-properties (character-type &optional existing-word)
   (declare (special *capitalization-of-current-token*
                     *introduce-brackets-for-unknown-words-from-their-suffixes*))
 
@@ -134,8 +134,9 @@
   ;; mixed case version is and use it if the capitalization seems important.
 
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
-         (word (make-word :symbol symbol
-                          :pname  (symbol-name symbol))))
+         (word (or existing-word
+                   (make-word :symbol symbol
+                              :pname  (symbol-name symbol)))))
 
     (catalog/word word symbol)
 
