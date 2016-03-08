@@ -69,35 +69,6 @@
   (mumble::mumble-value 'first-person-plural 'pronoun))
 
 
-;;---  blocks
-#| This has to meet/merge with Scott's treatment 
-for the individuals. 
-///  Artifact is too immediate since we want to incorporate
-inherited slots for things like color, label, orientation,
-location, membership in structures (staircase), local relations
-with other blocks, mention in utterances, etc. |#
-(define-category block
-  :specializes artifact 
-  ;;:rule-label artifact
-  :mixins (has-name ;; symbols like B1
-           )
-  :index (:permanent :key name)
-  :realization ;; for connection to Mumble
-     (:common-noun "block"))
-
-#| An interesting deference between a block and a table is
-that you can't use the table as part of any of the standard
-BW constructions. Only blocks can be used. The affordance for
-supporting other things is also markedly different since
-a block can typically only support a single other block
-(and any stack that starts with it) whereas a table can
-support a substantial number of blocks.
-|#
-(define-category table
-  :specializes artifact
-  :index (:permanent :list)
-  :realization
-     (:common-noun "table"))
 
 
 ;;;-----------------------------
@@ -108,7 +79,6 @@ support a substantial number of blocks.
 
 ;;--- vocabulary
 
-(define-word "build" (verb) :ed-form "built")
 (define-word "let" (verb))
 
 (defun setup-lexicalized-trees ()
