@@ -285,7 +285,10 @@ a message to be expressed. See discussion in make.lisp |#
           (map (loop for (param-name . variable) in pv-pairs
                  collect (make-instance 'parameter-variable-pair
                            :var variable
-                           :param (parameter-named param-name)))))
+                           :param (parameter-named
+                                   ;; they come in as keywords
+                                   (intern (symbol-name param-name) 
+                                           (find-package :mumble)))))))
       (let ((clp (make-instance 'category-linked-phrase
                    :class category
                    :lp lp
