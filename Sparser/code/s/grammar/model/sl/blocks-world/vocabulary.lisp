@@ -56,8 +56,7 @@ support a substantial number of blocks.
   :specializes achievement
   :mixins (with-an-agent)
   :instantiates self
-  :binds ((agent physical-agent)
-          (theme object)
+  :binds ((theme object)
           (goal location))
   :realization ((:main-verb "add")
 		(:mumble ("add" svo :o theme)) 
