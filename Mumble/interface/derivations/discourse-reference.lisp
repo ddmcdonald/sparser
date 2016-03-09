@@ -1,8 +1,8 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
-;;; $Id: discourse-reference.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2016 David D. McDonald  All Rights Reserved
 
-;; initiated 4/24/07
+;; initiated 4/24/07. Completely redone Jan/Feb/March 2016.
 
 (in-package :mumble)
 
@@ -36,34 +36,37 @@ speakers.
   "The turn just prior to the current one. Earlier turns
    we get by chaining along previous links")
 
-(defun next-turn (&key index speaker)
-  (setq *previous-turn* *current-turn*)
+(defun start-next-turn (&key index speaker)
   (let ((turn (make-instance 'turn
                 :index index
-                :speaker speaker)))
-    (setq *current-turn* turn)))
+                :speaker speaker
+                :previous *previous-turn*)))
+    (when *previous-turn*
+      (setf (sp::next *previous-turn*) turn))
+    (setq *previous-turn* *current-turn*)
+    (setq *current-turn* turn)
+    turn))
 
-(defun initial-turn (&key index speaker)
-  "Placeholder if we should do something special here
-   such as marking the previous tun as something
-   other than nil"
-  (next-turn :index index :speaker speaker))
+
+
 
 (defun local-mentions (obj)
-  "Called by should-be-pronominalized-in-present-context"
+  "Called by should-be-pronominalized-in-present-context
+  and indicates that we're getting
+"
   (let ((entry (assoc obj (references *current-turn*)
                       :test #'eq)))
     ;;/// placeholder if we want more done
     entry))
 
 (defun record-reference (dtn result dominating-clause)
+  "Called from general-np-bundle-driver"
   (let ((obj (referent dtn)))
     (when dominating-clause
       (push obj (objects-referenced (dominating-clause))))
     (let ((record (record-discourse-context
                    obj result dominating-clause)))
       (push record (references *current-turn*))
-      ;;(format t "~&Recording reference to ~a~%" obj)
       record)))
 
 (defun record-discourse-context (obj result dom)

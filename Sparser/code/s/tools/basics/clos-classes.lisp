@@ -55,9 +55,9 @@
 ;;---- double linked list
 
 (defclass ordered ()
-  ((previous :initform nil :accessor previous
+  ((previous :initform nil :initarg :previous :accessor previous
     :documentation "Points to the previous adjacent ordered item or nil")
-   (next :initform nil :accessor next
+   (next :initform nil :initarg :next :accessor next
     :documentation "Points to the next adjacent ordered item or nil"))
   (:documentation "Provides links to follow through a sequence
     of anything that has a sense of direction (creation order, scanning

@@ -108,12 +108,29 @@ person is making the reference. (near vs. far)
 
 ; (test-dialog-1)
 (defun test-dialog-1 ()
+  ;; 1. :me "Let's build a staircase."
   (say (sexp-reader utt-1.1a))
+
+  ;; 1. :you "OK"
+  (start-next-turn :speaker *you*)
+
+  ;; 2 :me "Put a block on the table."
   (say (sexp-reader utt-2))
+
+  ;; 2 :you "Here are two."
+  (start-next-turn :speaker *you*)
+
+  ;; 3 :me "Ok. Good. Push them together."
   (say (sexp-reader utt-3a))
   (say (sexp-reader utt-3b))
   (utt3c-preparation)
   (say (sexp-reader utt-3c))
+
+  ;; 3 :you "Like this?"
+  (start-next-turn :speaker *you*)
+
+
+  ;; 4 :me "That's good."
   (say (sexp-reader utt-4)))
 
 

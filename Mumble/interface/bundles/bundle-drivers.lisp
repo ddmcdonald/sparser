@@ -243,61 +243,56 @@
 (defun should-be-pronominalized-in-present-context (dtn)
   (let ((grammatical-context (labels *current-position*))
 	(model-level-object (referent dtn)))
-    (when (and model-level-object (local-mentions model-level-object))
-      ;;(break "pronomialize? bundle = ~a" bundle)
-      (cond  ((member (slot-label-named 'relative-pronoun) grammatical-context)
-	      'context-requires-a-relative-pronoun )
-	     ((and model-level-object
-		   (antecedent-precedes-and-is-a-clausemate model-level-object))
-	      'antecedent-precedes-and-is-within-this-clause )
-	     ((in-focus? model-level-object)
-	      'text-structure-has-marked-reference-reducible)
-	     (t nil)))))
-
+    (cond  ((member (slot-label-named 'relative-pronoun) grammatical-context)
+            'context-requires-a-relative-pronoun )
+           ((and model-level-object
+                 (antecedent-precedes-and-is-a-clausemate model-level-object))
+            'antecedent-precedes-and-is-within-this-clause )
+           ((in-focus? model-level-object)
+            'text-structure-has-marked-reference-reducible)
+           ((local-mentions model-level-object)
+            ;; because we've already checked for clausemates this mention
+            ;; is likely to be in an upstairs clause
+            (c-command? (local-mentions model-level-object)))
+           (t nil))))
 
 (defun antecedent-precedes-and-is-a-clausemate (model-level-object)
   (when (dominating-clause)
     (let ((references-that-precede-in-this-clause
 	    (objects-referenced (dominating-clause))))
-      (let ((result
-             (member model-level-object references-that-precede-in-this-clause)))
-        ;(when result
-        ;  (break))
-        result ))))
+      (member model-level-object references-that-precede-in-this-clause))))
+
+(defun c-command? (mention-record)
+  "Checks whether the previous mention (in this utterance) commands
+   the current position. (we get 'preceded' for free. Returns a
+   symbol saying why to pronominalize or nil if the relation doesn't hold."
+  ;;/// stub
+  (declare (ignore mention-record))
+  nil)
 
 
 (defun dominating-clause ()
-  ;;(when *context-stack*
-    ;;if there's no context stack, then there cannot be
-    ;; a dominating clause
   ;; 7/10/07 Given the code in phrase-structure-execution, there won't be a
   ;; value on the context stack if we haven't yet recursively entered a
   ;; phrasal root. We're asking this question from general-np-bundle-driver,
-  ;; which runs -before- the phrasal root for the NP is created, so this
-  ;; earlier statement doesn't make sense.
-    (let ((first-clause-reached
-	    (dolist (interveening-phrasal-root (cons *current-phrasal-root*
-						     *context-stack*))
-	      (when interveening-phrasal-root
-		(if (member (label-named 'clause)
-			    (labels (node interveening-phrasal-root)))
-		    (return interveening-phrasal-root)))
-	      )))
+  ;; which runs -before- the phrasal root for the NP is created.
+  (dolist (interveening-phrasal-root (cons *current-phrasal-root*
+                                           *context-stack*))
+    (when interveening-phrasal-root
+      (when (member (label-named 'clause)
+                    (labels (node interveening-phrasal-root)))
+        (return interveening-phrasal-root)))))
       
-      first-clause-reached)) ;;)
-
-
-
-(defparameter *never-pronominalize-anything* t 
-  "??don't remember where this is used")
 
 (defun check-for-reflexive (object)
   (when (and (member (label-named 'objective) (labels *current-position*))
 	     (antecedent-precedes-and-is-a-clausemate object))
     (set-labels *current-position*
 		 (nconc (labels *current-position*)
-			(list (label-named 'reflexive))))
-    ))
+			(list (label-named 'reflexive))))))
+
+
+
 
 ;################################################################
 ;     Conjunction Bundles

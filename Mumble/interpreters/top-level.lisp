@@ -34,11 +34,11 @@
 
 (defun initialize-mumble-state ()
   ;; *current-position is initialized in phrase-structure-execution,
-  ;;   where it's set to the initial position that's passed to it.
-  (declare (special *objects-to-references*))
+  ;;   where it's set to the initial position that's passed to it
+  (declare (special *me*))
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
-  (initial-turn) ;;(clrhash *objects-to-references*)
+  (start-next-turn :speaker *me*)
   (when (boundp '*the-derivation-tree*) ;; backwards compatibility
     (clear-derivation-tree-data)))
 	  
@@ -99,6 +99,8 @@
 	    (send yah :set-visibility nil))
 	  (paint-ss-into-new-line-buffers new-slot-for-this-turn))
 	  
+        ;; return value when we've gotten to the other end of
+        ;; the phrase
 	(name new-slot-for-this-turn)))))
 
 
