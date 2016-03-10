@@ -13,21 +13,22 @@
 
 
 ;; Protein families
-(noun "PTK" :super protein-family
-      ;;:synonyms ("protein tyrosine kinase")
-      )
+(def-family "PTK")
 
-(noun "HSP90"  :super protein-family) ;; heat-shock proteins
-(noun  "catenin" :super protein-family)
-(noun "integrin" :super protein-family)
-(noun "RAS GAP" :super protein-family)
-(noun "GAP" :super protein-family)
-(noun "tyrphostin" :super protein-family) ;; Tyrosine-kinase inhibitor -- actually a drug?
-(noun "CD3" :super protein-family)
-(noun "HLA class I molecule" :super protein-family)
+(def-family "GPCR")
 
-(noun ("CaMK" "CaM kinase" "CAMK" "CaM-kinase") :super protein-family)
-(noun "arrestin" :super protein-family) ;; lots of family members -- put them in some day
+(def-family "HSP90") ;; heat-shock proteins
+(def-family  "catenin")
+(def-family "integrin")
+(def-family "RAS GAP")
+(def-family "GAP")
+(def-family "tyrphostin") ;; Tyrosine-kinase inhibitor -- actually a drug?
+(def-family "CD3")
+(def-family "HLA class I molecule")
+
+(def-family "CaMK"
+    :synonyms ("CaM kinase" "CAMK" "CaM-kinase"))
+(def-family "arrestin") ;; lots of family members -- put them in some day
 (def-family "IQGAP"
             :members ("IQGAP1" "IQGAP2" "IQGAP3"))
 (def-family "Jnk"

@@ -594,6 +594,7 @@ the process.
 
 (defun define-family (name &key type species members
                            long identifier synonyms)
+  #+ignore
   (unless members
     (error "It doesn't make sense to define a family without members"))
   (unless type
