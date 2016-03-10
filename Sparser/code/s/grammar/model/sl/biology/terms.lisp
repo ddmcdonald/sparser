@@ -284,15 +284,22 @@
              :of subject
              :to ability))
 
+(def-synonym ability
+      (:noun "capability" :adj "capable"))
+
+(def-synonym ability
+      (:noun "capacity" ))
+
 (noun "abnormality" :super disease)
 
-(noun "absence" :super experimental-condition)
-
-(define-category action :specializes bio-process
-  :binds ((actor biological))
+(define-category absence :specializes experimental-condition
+  :binds ((measurement measurement)
+	  (participant bio-entity))
   :realization
-  (:noun "action"
-   :of actor))
+  (:noun "absence"
+	 :of measurement
+	 :of participant))
+
 
 (adj "active" :super molecule-state
      :binds ((activated
@@ -301,7 +308,7 @@
      (:adj "active"
            :s activated))
 
-(noun "activity" :super bio-process
+(noun "activity" :super other-bio-process
       :binds ((theme biological))
       :realization
       (:noun "activity"
@@ -317,16 +324,15 @@
 
 (def-bio "adenine" nucleobase)
 (adj "additive" :super bio-predication)
-;;(def-bio "agent" bio-entity)
 (noun "agonist":super bio-entity) ;; keyword: (ist N) 
-(define-category affinity :specializes bio-process
+(define-category affinity :specializes bio-relation
      :binds ((object bio-entity))
      :realization
      (:noun "affinity"
             :for object))
 (noun "allele" :super variant)
 
-(adj "also known as" :super bio-predication)
+(adj "also known as" :super bio-relation)
 
 (noun "analog" :super variant)
 (noun ("analysis" :plural "analyses")
@@ -521,7 +527,7 @@
   (:noun "evidence"
          :for fact))
 (noun "example" :super variant)
-(define-category bio-exchange :specializes bio-process
+(define-category bio-exchange :specializes other-bio-process
   :binds ((state-before (:or bio-state variant))
           (state-after (:or bio-state variant))
           (subject nucleotide))
@@ -854,8 +860,15 @@
 (adj "potent" :super bio-relation
   :realization 
   (:adj "potent"))
-  
-(noun "presence" :super experimental-condition) ;; keyword: (ence N) 
+
+(define-category presence :specializes experimental-condition
+  :binds ((measurement measurement)
+	  (participant bio-entity))
+  :realization
+  (:noun "presence"
+	 :of measurement
+	 :of participant))
+
 (adj "present" :super bio-predication  ;; keyword: (ent ADJ)
      :binds ((in-molecule molecule))
      :realization
@@ -1038,7 +1051,7 @@
 
 (adj "transient" :super bio-predication)
 (noun "transition state intermediate" :super molecule-state)
-(define-category translation :specializes bio-process
+(define-category translation :specializes other-bio-process
   :binds ((result bio-entity))
   :realization
   (:of subject

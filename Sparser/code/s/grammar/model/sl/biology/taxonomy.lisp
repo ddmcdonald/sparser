@@ -60,7 +60,7 @@
    in noun noun compounds.")
 
 (define-mixin-category bio-complement
-  :binds ((statement (:or root-bio-process molecule-state be bio-predication 
+  :binds ((statement (:or bio-process molecule-state be bio-predication 
                           bio-method relation bio-rhetorical
                           there-exists)))
   :documentation "Common parent to the other types of biological 
@@ -270,11 +270,12 @@
 (delete-noun-cfr (resolve "process"))
 (delete-noun-cfr (resolve "processes"))
 
-(define-category root-bio-process
+(define-category bio-process
     :specializes process
     :mixins (has-UID has-name biological)
-    :binds ((following)
-	    (by-means-of (:or root-bio-process mechanism bio-method))
+    :binds ((following bio-process)
+	    (preceding bio-process)
+	    (by-means-of (:or bio-process mechanism bio-method))
 	    (using bio-entity)
 	    (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
 	    (as-comp as-comp)
@@ -289,14 +290,18 @@
 	   :in manner
 	   :as-comp as-comp
 	   :for timeperiod
-	   :over timeperiod)
+	   :over timeperiod
+	   :upon following
+	   :after following
+	   :before preceding
+	   )
     :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
 
 
-(define-category bio-process
-                 :specializes root-bio-process
+(define-category other-bio-process
+                 :specializes bio-process
   :mixins (has-UID has-name biological)
   :binds ((subject biological))
   
@@ -310,7 +315,7 @@
 
 
 (define-category named-bio-process
-    :specializes bio-process
+    :specializes other-bio-process
   :realization (:common-noun name) ;; for nominal forms
 
   :documentation "No content by itself, provides a common parent
@@ -318,9 +323,9 @@
     of the grammar patterns.")
 
 (define-category caused-bio-process
-  :specializes root-bio-process
+  :specializes bio-process
   :binds
-  ((agent (:or bio-entity root-bio-process bio-mechanism bio-method drug process-rate
+  ((agent (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
 	       measurement ;; "these data raised the possibility..."
 	       )) ;; supercedes subject in bio=-process
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
@@ -329,12 +334,14 @@
   (:s agent
       :o object
       :of object
+      :m agent
+      :m object
       :by agent     
       :at at))
 
 
 (define-category mechanism :specializes endurant
-		 :binds ((process root-bio-process) ;;  the process typically performed by 
+		 :binds ((process bio-process) ;;  the process typically performed by 
 			 ;; this mechanism in the context of discussion
 			 (goal)) ;; the predication that defines the desired end-state?
 		 :realization
@@ -358,7 +365,7 @@
 
 (define-category negative-bio-control :specializes bio-control
   ;; :restrict ((object (:or biological bio-rhetorical))) ;; "lowered the possibility"
-  :binds ((inhibited-process root-bio-process))
+  :binds ((inhibited-process bio-process))
   :realization (:verb "negatively controls"  :etf (svo-passive)
                       :from inhibited-process))
 
@@ -367,16 +374,17 @@
   :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
+  :mixins (biological)
   :binds ((agent (:or pronoun/first/plural these bio-entity article-figure 
-                      bio-rhetorical
-                      root-bio-process ;; the B-RAFV600E mutation predicts
-                      bio-method  ;; high-throughput functional screens may inform
-                      bio-predication ;; the success of raf and mek inhibitors
-		      measurement ;; these data
-                      ))
-          (object (:or biological pronoun/inanimate))
-          (fig article-figure)
-          (method bio-method))
+		      bio-rhetorical
+		      bio-process ;; the B-RAFV600E mutation predicts
+		      bio-method	;; high-throughput functional screens may inform
+		      bio-predication ;; the success of raf and mek inhibitors
+		      measurement     ;; these data
+		      ))
+	  (object (:or biological pronoun/inanimate))
+	  (fig article-figure)
+	  (method bio-method))
   :realization
   (:s agent
       :o object
@@ -474,7 +482,7 @@
 
 (define-category bio-event :specializes event
   :mixins (has-UID has-name biological)
-  :binds ((process root-bio-process))
+  :binds ((process bio-process))
   :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'acquire, act, addition, counfound etc. that may be the basis
@@ -662,7 +670,7 @@
   :realization (:common-noun name))        
   
 (define-category enzyme :specializes protein ;; what's the relationship to kinase?   ;; not all enzymes are proteins -- there are RNA enzymes
-  :binds ((reaction root-bio-process))
+  :binds ((reaction bio-process))
   :instantiates :self
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
