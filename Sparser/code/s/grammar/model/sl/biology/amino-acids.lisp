@@ -335,8 +335,23 @@ We therefore have the special cases:
 ;;;-----------------
 ;;; point mutations
 ;;;-----------------
+;;--- "mutation"
+;; "mutated oncogenes"
+;; "oncogenic mutations"
+;; "in BRAF mutant thyroid cell"
 
-(define-category mutation :specializes bio-process) ;; there are many types of mutations
+(define-category mutation :specializes caused-bio-process
+  :realization
+  (:verb "mutate" :noun "mutation" 
+   :etf (svo-passive)
+   :in object
+   :into object
+   :on location
+   :to object
+   :within location))
+
+(def-synonym mutation
+    (:noun "mutant"))
 
 (define-category point-mutation :specializes mutation ;; amino-acid position on-protein
   ;; if we had 'mutation' that might be better
