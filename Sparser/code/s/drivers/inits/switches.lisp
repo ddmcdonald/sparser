@@ -242,7 +242,7 @@
   (setq *count-input-lines* t))
 
 (defun turnoff-standard-extras ()
-  (setq *do-forest-level* nil) ;; <-- needs a protocol assignment
+  (setq *do-forest-level* nil)
   (setq *do-heuristic-segment-analysis* nil)
   (setq *do-conceptual-analysis* nil)
   (setq *do-conceptual-analysis* nil)
@@ -463,6 +463,12 @@
   (setq *do-general-actions-on-treetops* t)
   (setq *make-edges-over-new-digit-sequences* t)
   (period-hook-on)
+
+  (setq *ignore-capitalization* t)
+  ;; The proper name facility (PNF) is not included in the blocks world
+  ;; so there is only a stub for it, which behaves quite differently
+  ;; from the real one (duh), leading to obscure error. This keeps
+  ;; us from ever invoking PNF within the new-toplevel-protocol
   
   ;; Experimenting with different choices of parsing protocol.
   ;; Eventually it will be a new one that's incremental and
@@ -470,12 +476,13 @@
   (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
   ;(establish-kind-of-chart-processing-to-do :incremental)
   ;(establish-kind-of-chart-processing-to-do :c3-protocol)
+
   ;(setq *c3* nil) ;; If it's set, there's a call in referent-from-unary-rule
   ;; to call incorporate-referent-into-the-situation which is too 
   ;; strong right now -- pushes onto pegs
 
   (setq *chunk-sentence-into-phrases* nil) ;
-  ; invokes (ensure-edge-consistent-with-chunk)
+  ; that invokes (ensure-edge-consistent-with-chunk)
 
   (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
   (setq *segment-scan/forest-level-transition-protocol*
