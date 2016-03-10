@@ -44,10 +44,10 @@
 ;; "RAS signalling"
 ;; a new mode of Ras activation in which signaling is sustained ...
 (define-category signal
-  :specializes bio-process
+  :specializes other-bio-process
   ;;//// bind it explicitly? :obo-id "GO:0023052"  ;; reasonable stand-in
   :binds ((agent protein) ;;bio-entity) ;; what's doing the signalling
-          (object (:or root-bio-process protein)))  ;; what's being signaled
+          (object (:or bio-process protein)))  ;; what's being signaled
   :realization 
     (:verb ("signal"  :present-participle "xxxsignaling") ;; block "signaling" as a verb
      :noun "signalling"
@@ -469,7 +469,7 @@ it is created from N-terminus to C-terminus.|#
    They are named according to the sequence of proteins
    (protein families) in the causal chain.")
 
-(define-category PathwayStep :specializes bio-process
+(define-category PathwayStep :specializes other-bio-process
   :binds ((pathway pathway)
           (nextStep PathwayStep)
 	  
@@ -526,10 +526,10 @@ it is created from N-terminus to C-terminus.|#
 
 
 (define-category step
-  :specializes bio-process
+  :specializes other-bio-process
   :instantiates :self
   :binds ((pathway pathway)
-          (process root-bio-process))
+          (process bio-process))
   :lemma (:common-noun "step")
   :realization (:common-noun name))
 
@@ -563,8 +563,8 @@ it is created from N-terminus to C-terminus.|#
 
 
 (define-category apoptosis ;; aka cell death
-    :specializes bio-process
-    :binds ((process root-bio-process)) ;; inherits cell-line and cell-type
+    :specializes other-bio-process
+    :binds ((process bio-process)) ;; inherits cell-line and cell-type
     :realization
     (:noun "apoptosis" :adj "apoptotic"
 	   :m process
@@ -572,8 +572,8 @@ it is created from N-terminus to C-terminus.|#
 	   :of cell-line))
 
 (define-category  autophagy;; like apoptosis
-  :specializes bio-process
-  :binds ((process root-bio-process)) ;; should be cell
+  :specializes other-bio-process
+  :binds ((process bio-process)) ;; should be cell
   :realization
   (:noun "autophagy" 
 	 :m process
@@ -581,8 +581,8 @@ it is created from N-terminus to C-terminus.|#
 	 :of cell-line))
 
 (define-category senescence ;; aka cell death
-  :specializes bio-process
-  :binds ((process root-bio-process)(object biological)) ;; should be cell
+  :specializes other-bio-process
+  :binds ((process bio-process)(object biological)) ;; should be cell
   :realization
   (:noun "senescence" :adj "senescent"
 	 :m process
@@ -786,7 +786,7 @@ it is created from N-terminus to C-terminus.|#
 ; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
 ; Dec33: endogenous C-RAF:B-RAF heterodimers
 (define-category heterodimerization
-  :specializes bio-process
+  :specializes other-bio-process
   :instantiates :self
   :lemma (:common-noun "heterodimerization"))
 
@@ -806,7 +806,7 @@ it is created from N-terminus to C-terminus.|#
 ; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
 ; Dec33: endogenous C-RAF:B-RAF heterodimers
 (define-category homodimerization
-  :specializes bio-process
+  :specializes other-bio-process
   :instantiates :self
   :lemma (:common-noun "homodimerization"))
 
