@@ -449,7 +449,19 @@
    (and
     (eq (edge-form e) category::verb+present)
     (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
-      thereis (eq (edge-form ee) category::common-noun/plural)))))
+       thereis (eq (edge-form ee) category::common-noun/plural)))))
+
+(defun singular-noun-and-present-verb? (e)
+  (declare (special category::common-noun))
+  (or
+   (and
+    (eq (edge-form e) category::common-noun)
+    (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
+      thereis (eq (edge-form ee) category::verb+present)))
+   (and
+    (eq (edge-form e) category::verb+present)
+    (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
+      thereis (eq (edge-form ee) category::common-noun)))))
 
 (defgeneric ng-compatible? (label evlist)
   (:documentation "Is a category which can occur inside a NG"))
@@ -566,7 +578,8 @@
                     category::be *big-mechanism* category::parentheses
                     category::that category::verb+ed category::verb+ing
                     category::preposition category::and category::also
-                    category::vp+ed))
+                    category::vp+ed
+		    category::to))
   (cond
     ((or
       (eq (edge-category e) category::modal)
@@ -577,6 +590,11 @@
     ((and (plural-noun-and-present-verb? e)
 	  (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
 	     thereis (ng-start? ee)))
+     nil)
+    ((and (singular-noun-and-present-verb? e)
+	  (let ((prev-edge (edge-just-to-left-of e)))
+	    (and prev-edge
+		 (eq (edge-category prev-edge) category::to))))
      nil)
     ((or (eq category::modifier (edge-category e))
 	 (eq category::adjective (edge-form e)))
