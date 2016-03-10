@@ -201,18 +201,19 @@
     "Inherit subcategorization patterns from supercategories."
     (setf (subcat-patterns (get-subcategorization label))
           (loop with patterns = '()
-            for sc in (super-categories-of label)
+            for sc in (immediate-supers label)
             as frame = (get-subcategorization sc)
             when frame
             do (loop for sp in (subcat-patterns frame)
 		  unless (and
+			  nil ;; allow for ambiguous subject and object
 			  (member (subcat-label sp) '(:subject :object))
 			  (find-if #'(lambda(x)(eq (subcat-label x) (subcat-label sp)))
 				   patterns))
                  do (pushnew sp patterns :test #'subcat-pattern-equal))
             finally (return (nreverse patterns))))))
 
-(defun fom-subcategorization (label &key form category s o slots)
+(defun fom-subcategorization (label &key form category slots)
   (declare (special label form category s o slots))
   "Find or make a subcategorization frame for the given category."
   (let ((frame (or (get-subcategorization label)
@@ -221,32 +222,36 @@
     (setf (subcat-patterns frame) (update-subcat-v/rs label (subcat-patterns frame)))
 
     (when category
-      (when s (setq slots `(:subject ,s ,.slots)))
-      (when o (setq slots `(:object ,o ,.slots)))
+      (when (or (member :s slots :test #'eq)
+		(member :o slots :test #'eq))
+	(setq slots
+	      (subst :subject :s
+		     (subst :object :o (copy-list slots)))))
       (setq slots (reverse slots))
       ;;(lsp-break "1")
-      (remove-patterns (append (when (member :subject slots) '(:subject))
-			       (when (member :object slots) '(:object)))
-		       frame)
+      (let ((pats-to-remove (append (when (member :subject slots) '(:subject))
+			       (when (member :object slots) '(:object)))))
+	(when pats-to-remove
+	  (remove-patterns pats-to-remove frame)))
       (loop for (var-name pname) on slots by #'cddr
-        as label = (case pname
-                     ((:subject :object 
-				:premod :thatcomp :whethercomp
-				:to-comp :ifcomp :as-comp :m)
-                      pname)
-		     (:alt-s :subject)
-		     (:alt-o :object)
-                     (otherwise
-                      (resolve (string-downcase pname))))
-        as var = (find-variable-for-category var-name category)
-        as v/r = (var-value-restriction var)
-        do 
-         (assign-subcategorization category label v/r var)
-         )
+	 as label = (case pname
+		      ((:subject :object 
+				 :premod :thatcomp :whethercomp
+				 :to-comp :ifcomp :as-comp :m)
+		       pname)
+		      ;;(:alt-s :subject)
+		      ;;(:alt-o :object)
+		      (otherwise
+		       (resolve (string-downcase pname))))
+	 as var = (find-variable-for-category var-name category)
+	 as v/r = (var-value-restriction var)
+	 do 
+	   (assign-subcategorization category label v/r var)
+	   )
       
       (setf (subcat-patterns frame)
             (remove-duplicates (subcat-patterns frame) :test #'equal))
-     ;;(lsp-break "2")
+      ;;(lsp-break "2")
       )
     frame))
 

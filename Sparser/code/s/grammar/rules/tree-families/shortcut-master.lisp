@@ -34,7 +34,7 @@
 ;;;------------------
 
 (defparameter *def-realization-keywords*
-  '(:verb :noun :adj :etf :s :alt-s :o :alt-o :c :m
+  '(:verb :noun :adj :etf :s :o :c :m ;;:alt-s  :alt-o 
     :binds :realization
     :prep :by
     :premod
@@ -47,7 +47,9 @@
     :whethercomp :with :within :without))
 
 (defparameter *slot-keywords*
-  '(:alt-s :alt-o :m :premod :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp 
+  '(:s :o
+    ;;:alt-s :alt-o
+    :m :premod :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp 
     :by :in :into :like :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
     :upon :via :whethercomp :with :within :without :designator))
 
@@ -134,14 +136,15 @@
 
 (defun decode-def-term-call (name 
                              &key super-category
-                                  mixin restrict rule-label 
-                                  obo-id 
-                                  etf verb noun adj
-                                  s o c ;;m
-                                  prep 
-                                  slots ;; a plist with labels like :against :as :at 
-                                  ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
-                                  )
+			       mixin restrict rule-label 
+			       obo-id 
+			       etf verb noun adj
+			       ;;s o ;;m
+			       c
+			       prep 
+			       slots ;; a plist with labels like :against :as :at 
+			       ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
+			       )
   ;; Decoder for def-term
   ;; Make the category, then use the independent realization
   ;; machinery to finish it. 
@@ -197,10 +200,10 @@
       is the category of its value restriction. At the moment
       there is a provision for up to three variables. |#
       (multiple-value-setq (subj-slot subj-var)
-        (decode-slot-value s :s))
-      (when o
+        (decode-slot-value (getf slots :s) :s))
+      (when (getf slots :o)
         (multiple-value-setq (obj-slot obj-var)
-          (decode-slot-value o :o)))
+          (decode-slot-value (getf slots :o) :o)))
 
       (let ((category (create-category-for-a-term
                             name superc 
@@ -214,9 +217,7 @@
           :verb verb
           :noun noun
           :adj adj
-          :s subj-slot  
-          :o obj-slot
-          :c c
+          
           ;;:m m
           :prep prep  
           :slots slots)
@@ -227,7 +228,8 @@
 
 (defun decode-realization-parameter-list (category
                                           &key etf verb noun adj
-                                          s o c ;; arguments
+					    ;; s o ;; no longer arguments because they can be duplicated for ambiguity
+					    c
                                           prep ;; owned preposition
                                           slots ;; a plist with labels like :against :as :at 
                                           ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
@@ -246,7 +248,7 @@
   
   (let* ((sf (fom-subcategorization category
                                     :category category
-                                    :s s :o o
+                                    ;;:s s :o o
                                     :slots slots))
          (subj-pat (find-subcat-pattern :subject sf))
          (obj-pat (find-subcat-pattern :object sf))
