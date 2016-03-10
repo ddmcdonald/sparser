@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2011-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  0.1 April 2014
+;;;  version:  March 2016
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -24,25 +24,27 @@
 ;;   is the source of the duplicated rules in the load, so refactored it
 ;;   into a named regions and a relation to its type. 
 ;;   (4/14/14) Fixed instantiation issue in border.
-;; (10/7/15) Conditioned references to countries 
+;; (10/7/15) Conditioned references to countries. (3/10/16) renamed to
+;; free-up 'region' for a more abstract category.
 
 (in-package :sparser)
 
 ;;;-----------------------------------
 ;;; specific places that are regions
-;;;    and nothing more specific
+;;; and not anything more specific
 ;;;-----------------------------------
 
 ;; Dossier of named regions is [regions]
 ;; Dossier of region types and edge types is [location kinds]
 
-(define-category  region    
+(define-category  geographical-region    
   ;; e.g. New England, real places. Should be relatively large, 
   ;; and not have a more specific characterization. 
   ;; The notion of a named-location is similar and some consolidation
   ;; is in order.
   :instantiates  location
-  :specializes  location
+  :specializes location
+  :rule-label location
   :binds ((name :primitive word) 
           (aliases  :primitive list)
           (type . region-type)
@@ -50,9 +52,9 @@
   :index (:permanent :key name)
   :realization (:proper-noun name)) ;; for the predefined ones
 
-(defun define-region (name-string &key part-of aliases)
+(defun define-geographical-region (name-string &key part-of aliases)
   (let ((r (define-named-individual-with-synonyms/expr
-               'region
+               'geographical-region
                (cons name-string aliases))))
     (when part-of
       (push-debug `(,r ,part-of))
@@ -64,10 +66,10 @@
     r))
 
 
-(define-category typed-region  ;; "the Kurdish city of Sulaimaniya
+(define-category typed-region  ;; "the Kurdish city of Sulaimaniya"
   :specializes relation ;;/// probably more specific
   :rule-label region
-  ;; This is a category that fits the way the information is conveyed.
+  ;; This is a category that fits the way the information is packaged.
   ;; We're really identifying something about the region itself,
   ;; but to get it we need to pull it from this relation.
   :binds ((type . region-type)

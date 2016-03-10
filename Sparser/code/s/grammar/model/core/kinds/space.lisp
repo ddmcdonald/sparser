@@ -14,7 +14,7 @@
 
 (define-category location ;; "place" ??
   :instantiates self
-  :specializes abstract-region ;; Dolce calls this 'region', which specializes 'abstract'
+  :specializes abstract-region
   ;; The supercategory of the restriction on has-location.location
   ;;  "My wedding ring is on my (left ring) finger" 
   ;;  "My cell phone is in my pocket"
@@ -58,7 +58,7 @@
 )
 
 
-(define-category c3-region
+(define-category region
   :specializes location
   :documentation "'Region' is taken abstractly here using the notion of demarcation or
  setting boundaries over some domain to pick out a particular part of
@@ -83,12 +83,12 @@
 ; Region for its existence."
            ;; . foundation.feature, or the built-in boundary category
             )
-          (interior . c3-region))
+          (interior . region))
 ;  :realization "region"  "location"  "where"
 )
 
 (define-category spatial-region
-  :specializes c3-region)
+  :specializes region)
 ;; And restricts the 'applicable-domain' of the region
 ;; to a category that refers to space (as opposed to time
 ;; or color). 
@@ -117,7 +117,7 @@
 ;;;----------------
 
 (define-category container
-  :specializes c3-region
+  :specializes region
   :binds ((contents)) ;; endurant?
   :documentation
  "A container is a region that has (at least the potential) to contain

@@ -10,5 +10,5 @@
 (in-package :sparser)
 
 
-(define-region "New England")
+(define-geographical-region "New England")
 
