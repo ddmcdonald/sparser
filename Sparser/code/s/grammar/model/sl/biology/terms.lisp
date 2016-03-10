@@ -855,11 +855,7 @@
   :realization 
   (:adj "potent"))
   
-(noun "presence" :super bio-context
-      :binds ((context biological))
-      :realization 
-      (:noun "presence" 
-             :of context)) ;; keyword: (ence N) 
+(noun "presence" :super experimental-condition) ;; keyword: (ence N) 
 (adj "present" :super bio-predication  ;; keyword: (ent ADJ)
      :binds ((in-molecule molecule))
      :realization

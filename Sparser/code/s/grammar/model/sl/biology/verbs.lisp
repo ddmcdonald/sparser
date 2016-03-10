@@ -81,8 +81,8 @@
 			:verb ,verb 
 			:etf (svo-passive)
 			:super-category bio-process
-			:s (agent biological)
-			:o (object biological)))))
+			:slots (:s subject
+				   :o object)))))
     (eval form)))
 
 ;;; Verbs added temporarily for Localization articles -- to ve reviewed and corrected
@@ -243,7 +243,7 @@
 
 
 (define-category abrogate :specializes negative-bio-control
-  :restrict ((object bio-process))
+  :restrict ((object root-bio-process))
   :realization
   (:verb "abrogate" :noun "abrogation" 
          :etf (svo-passive)))
@@ -287,8 +287,8 @@
   :specializes bio-event
   :binds ((actor bio-entity)
           (object bio-entity)
-          (process bio-process)
-          (functionality bio-process)
+          (process root-bio-process)
+          (functionality root-bio-process)
           (bio biological)
           (tocomp biological))
   :documentation "compare with act as"
@@ -383,7 +383,7 @@
   ;; "<binder> binds to <binde>" the subject moves
   :binds ((object biological)
           (objects biological)
-          (site bio-location))
+          (site molecular-location))
   :realization 
   (:verb "associate"
          :noun "association"
@@ -391,6 +391,7 @@
          :o  object
          :to object
          :via site
+	 :at site
          :with object
          :of object
          :between objects))
@@ -480,7 +481,7 @@
   :specializes caused-bio-process
   :bindings (uid "GO:0003824")
   :binds ((catalyst (:or enzyme bio-complex))
-          (process bio-process))
+          (process root-bio-process))
   :realization
   (:verb "catalyze" :noun "catalysis" :adj "catalytic"
          :etf (svo-passive) 
@@ -609,7 +610,7 @@
 
 (define-category continue :specializes bio-relation
   :binds ((agent biological)
-          (process bio-process))
+          (process root-bio-process))
   :realization 
   (:verb "continue"  
          :etf (svo-passive)
@@ -823,7 +824,8 @@
 
 (define-category dissociate :specializes caused-bio-process
   :binds ((into biological)
-          (substrate (:or bio-complex protein molecule)))
+	  (site molecular-location)
+	  (substrate (:or bio-complex protein molecule)))
   :realization
   (:verb "dissociate" :noun "dissociation"
          :etf (svo-passive)
@@ -975,7 +977,7 @@
 
 
 (define-category escape :specializes bio-process
-    :binds ((process bio-process))
+    :binds ((process root-bio-process))
     :realization
     (:verb "escape"
 	   :etf (svo)
@@ -1077,7 +1079,7 @@
 	   :etf (svo-passive)))  ;; :in bio-context))  <--------------- not in scope
 
 (define-category fail :specializes bio-relation
-  :binds ((process bio-process))
+  :binds ((process root-bio-process))
   :realization 
   (:verb "fail"  
          :etf (sv)
@@ -1094,7 +1096,7 @@
   :binds (;; subject and theme inherited from bio-relation
           ;;(subject bio-process) ;; this is the initial process
           ;;(theme bio-process) ;; this is the "following" process
-          (by (:or bio-method bio-process)))
+          (by (:or bio-method root-bio-process)))
   :realization
   (:verb "follow"
          :etf (svo) 
@@ -1231,7 +1233,7 @@
          :of object))
 
 (define-category implicate :specializes bio-rhetorical
-  :binds ((process bio-process))
+  :binds ((process root-bio-process))
     :realization
     (:verb "implicate" ;; keyword: ENDS-IN-ING 
 	   :noun "implication"
@@ -1404,7 +1406,7 @@
 (delete-noun-cfr (resolve "lead"))
 (delete-noun-cfr (resolve "leads"))
 (define-category lead :specializes positive-bio-control
-    :restrict ((agent (:or bio-process bio-method bio-mechanism)))
+    :restrict ((agent (:or root-bio-process bio-method bio-mechanism)))
     :binds ((result (:or biological bio-rhetorical)))
     :realization
     (:verb ("lead" :past-tense "led")
@@ -1476,7 +1478,7 @@
          :with method))
 
 (define-category mediate :specializes caused-bio-process
-  :binds ((process bio-process))
+  :binds ((process root-bio-process))
   :realization
   (:verb   "mediate" :noun "mediation"
    :etf (svo-passive)
@@ -1501,9 +1503,11 @@
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
 
 (define-category modify :specializes caused-bio-process
+  :binds ((site molecular-location))
   :realization 
   (:verb "modify" :noun "modification"
-         :etf (svo-passive)))
+         :etf (svo-passive)
+	 :at site))
 
 (define-category modulate
   :specializes bio-control
@@ -1616,10 +1620,12 @@
            :with using))
 
 (define-category place :specializes bio-method
+  :binds ((site molecular-location))
   :realization 
   (:verb "place" 
          :noun "placement" 
-         :etf (svo-passive)))
+         :etf (svo-passive)
+	 :at site))
 
 (define-category posit :specializes bio-rhetorical
     :mixins (bio-thatcomp)
@@ -1703,7 +1709,7 @@
 ;; (p "Dimerization of ERK has been proposed as a requirement for nuclear translocation.")
 (define-category propose :specializes bio-rhetorical
     :mixins (bio-thatcomp)
-    :binds ((to-be bio-process))
+    :binds ((to-be root-bio-process))
     :realization
     (:verb "propose"
      :noun "proposal"
@@ -1712,9 +1718,9 @@
 
 
 (define-category protect :specializes caused-bio-process
-    :restrict ((agent (:or protein bio-process))
+    :restrict ((agent (:or protein root-bio-process))
                (object bio-entity))
-  :binds ((protects-against bio-process))
+  :binds ((protects-against root-bio-process))
     :realization
     (:verb "protect"
      :noun "protection"
@@ -1769,7 +1775,7 @@
 
 
 (define-category raise :specializes positive-bio-control
-    :binds ((object (:or bio-process bio-abstract  bio-rhetorical)) 
+    :binds ((object (:or root-bio-process bio-abstract  bio-rhetorical)) 
             (method bio-method)
             (bio biological))
     :realization
@@ -1931,7 +1937,7 @@
 
 
 (define-category result :specializes bio-process
-    :binds ((result (:or bio-process bio-method bio-predication)))
+    :binds ((result (:or root-bio-process bio-method bio-predication)))
     :realization
     (:verb ("result" :third-plural "resultsxxx") ;; block plural form of the verb, because of interaction with noun
 	   :etf (sv)
@@ -2018,7 +2024,7 @@
          :to-comp tocomp))
 
 (define-category stabilize :specializes bio-control
-  :binds ((process bio-process))
+  :binds ((process root-bio-process))
  :realization
   (:verb "stabilize" :noun "stabilization"
          :etf (svo-passive) 
@@ -2254,7 +2260,7 @@
   :etf (svo))
 
 (define-category undergo :specializes bio-process
-  :binds ((process (:or bio-process bio-method)))
+  :binds ((process (:or root-bio-process bio-method)))
   :realization 
   (:verb "undergo" 
          :etf (svo)
@@ -2285,7 +2291,7 @@
 
 (define-category use :specializes bio-method
     :binds ((result biological)
-            (purpose (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
+            (purpose (:or bio-event bio-predication root-bio-process bio-method bio-rhetorical)))
     :realization
     (:verb ("useXXX" :past-tense "used" :present-participle "using") ;; keyword: ENDS-IN-ED 
            :noun "use"

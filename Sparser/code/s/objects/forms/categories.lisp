@@ -45,7 +45,7 @@
   ;; than that one argument.
   (if full-args
     `(define-category/expr ',symbol ',full-args)
-    `(find-or-make-category-object ',symbol :define-category) ))
+    `(find-or-make-category-object ',symbol :define-category)))
 
 
 (defmacro define-mixin-category (symbol &rest full-args)

@@ -32,26 +32,6 @@
 ; to use it (e.g. in signaling. Maybe the symbol was overwritten ?
 
 
-#+ignore
-(define-category modified-protein
-  :specializes protein
-  :instantiates protein
-  :rule-label protein
-  :documentation "Intended as representation of proteins
-    with one or more post-translational modifications."
-  :index (:temporary :sequential-keys protein modification)
-  :binds ((protein (:or protein human-protein-family))
-          (modification protein))) ;; hack for mUbRas
-
-#+ignore
-(define-category mutated-protein
-  :specializes modified-protein
-  :instantiates protein
-  :rule-label protein
-  :index (:temporary :sequential-keys protein modification)
-  :binds ((protein protein)
-          (mutation point-mutation)))
-
 
 ;;---------- signalling 
 ;; (setq *break-on-illegal-duplicate-rules* t)
@@ -67,8 +47,7 @@
   :specializes bio-process
   ;;//// bind it explicitly? :obo-id "GO:0023052"  ;; reasonable stand-in
   :binds ((agent protein) ;;bio-entity) ;; what's doing the signalling
-          (object (:or bio-process protein)))  ;; what's being signaled
-  :index (:permanent :key agent) ;; 
+          (object (:or root-bio-process protein)))  ;; what's being signaled
   :realization 
     (:verb ("signal"  :present-participle "xxxsignaling") ;; block "signaling" as a verb
      :noun "signalling"
@@ -88,21 +67,28 @@
           :m agent    
           :to object))
 
-
 ;;"It is interesting that various stimuli provoke EGF receptor tyrosine phosphorylation by two distinct means.")
 (define-category post-translational-modification :specializes caused-bio-process
-  :binds ((substrate (:or protein residue-on-protein))
-          (modification-location molecular-location)
+  :binds ((substrate protein)
+	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
   :realization 
   (:noun "post-translational modification"
          :o substrate
+	 :o site
          :m amino-acid
          :m substrate
-         :m modification-location
+         :m site
          :m agent ;;somehow this overridew the ones below
          :of substrate
-         :at amino-acid))
+         :at amino-acid
+	 :at site
+	 :in site
+	 :m site
+	 :on site))
+
+
+				    
 
 (def-synonym post-translational-modification
      (:noun "post-transcriptional modification"))  
@@ -115,13 +101,10 @@
   (:verb "transform" :noun "transformation" 
   :etf (svo-passive)))
 
-
 (define-category phosphorylation-modification :specializes post-translational-modification)
 
 (define-category acetylation
   :specializes post-translational-modification
-  :instantiates self
-  :index (:temporary :sequential-keys site substrate)
   :realization
   (:verb "acetylate" :noun "acetylation"
    :etf (svo-passive)))
@@ -162,7 +145,6 @@
 (define-category phosphorylate
   :specializes phosphorylation-modification
   :instantiates self
-  :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
    :etf (svo-passive)))
@@ -220,7 +202,6 @@
 (define-category transphosphorylate
   :specializes phosphorylation-modification
   :instantiates self
-  :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "transphosphorylate" :noun "transphosphorylation"
    :etf (svo-passive)))
@@ -228,7 +209,6 @@
 (define-category hypersphosphorylate
   :specializes phosphorylation-modification
   :instantiates self
-  :index (:permanent :sequential-keys site substrate)
   :realization
   (:verb "hyperphosphorylate" :noun "hyperphosphorylation"
    :etf (svo-passive)))
@@ -337,57 +317,7 @@
 
 
 ;;--- wrapper
-#+ignore
-(define-category  monoubiquitinated-protein
-  :specializes modified-protein
-  :instantiates self
-  :bindings (modification (get-protein "ubiquitin"))
-  ;;/// bindings go with a process, so this will need 
-  ;; cleanup / merge when process/result is sorted out syntematically.
-  :binds ((site residue-on-protein)
-          ;; I dont' recall textual evidence for an agent
-          ;; that causes the action (that leads to this result)
-          ;; but the rule schema requires it
-          ;; N.b. this is open in protein
-          (agent biological))
-  :documentation "Strictly speaking this is just a ubiquitinated
-    protein since there no representation of the molecule count.
-    I'd like another countable modification before venturing a
-    conceptualization to use. Note that this is open in
-    its value for the protein"
-  :index (:permanent :key protein)
-  :rule-label monoubiquitinate
-  :realization 
-  ;;/// only providing a realization for the result, not the process
-  ;; that leads to the result
-    (:verb "monoubiquitinate" 
-     :noun "monoubiquitination"
-     :etf (svo-passive)
-     :s agent 
-     :o protein ;; "monoubiquitinated Ras"
-     :m protein ;; Ras monoubiquitination
-     :on protein ;; the effects of monoubiquitination on Ras are ...
-          ;;/// that 'on' probably goes with 'effect'
-     :at site))
 
-#+ignore
-(defun define-mUbRas ()
-  ;; Defines the abbreviated form and creates the individual
-  ;; that the composed form has to resolve to. 
-  (let* ((ras (get-protein "Ras"))
-         (i (find-or-make-individual 'monoubiquitinated-protein
-               :protein ras))
-         (word (resolve/make "mUbRas")))
-
-    ;; want to pattern just like a vanila protein
-    (let ((cfr (define-cfr category::protein `(,word)
-                  :form category::proper-noun
-                  :referent i)))
-      (add-rule-to-individual cfr i)
-      i)))
-#+ignore
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (define-mUbRas))
 
 
 ;;;-------------------
@@ -423,7 +353,6 @@ it is created from N-terminus to C-terminus.|#
 ;; Meed a macro or something 
 (define-category N-terminal ;; amino-terminus
   :specializes protein-terminus
-  :index (:permanent :key protein)
   :realization
   (:etf (pre-mod)
         :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
@@ -436,7 +365,6 @@ it is created from N-terminus to C-terminus.|#
 (define-category C-terminal ;; carboxyl-terminus
   :specializes protein-terminus
   :binds ((protein protein))
-  :index (:permanent :key protein)
   :realization
   (:etf (pre-mod)
         :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus"
@@ -548,7 +476,6 @@ it is created from N-terminus to C-terminus.|#
           (stepProcess (:or control pathway catalysis 
                             biochemical-reaction bio-transport)))
   :instantiates :self
-  :index (:permanent :key name)
   :lemma (:common-noun "step")
   :realization (:common-noun name))
 
@@ -601,9 +528,8 @@ it is created from N-terminus to C-terminus.|#
 (define-category step
   :specializes bio-process
   :instantiates :self
-  :index (:permanent :key name)
   :binds ((pathway pathway)
-          (process bio-process))
+          (process root-bio-process))
   :lemma (:common-noun "step")
   :realization (:common-noun name))
 
@@ -638,29 +564,30 @@ it is created from N-terminus to C-terminus.|#
 
 (define-category apoptosis ;; aka cell death
     :specializes bio-process
-    :binds ((process bio-process)(object biological)) ;; should be cell
+    :binds ((process root-bio-process)) ;; inherits cell-line and cell-type
     :realization
     (:noun "apoptosis" :adj "apoptotic"
 	   :m process
-	   :of object
-	   :in object))
+	   :of cell-type
+	   :of cell-line))
 
 (define-category  autophagy;; like apoptosis
   :specializes bio-process
-  :binds ((process bio-process)(object biological)) ;; should be cell
+  :binds ((process root-bio-process)) ;; should be cell
   :realization
   (:noun "autophagy" 
 	 :m process
-	 :of object))
+	 :of cell-type
+	 :of cell-line))
 
 (define-category senescence ;; aka cell death
   :specializes bio-process
-  :binds ((process bio-process)(object biological)) ;; should be cell
+  :binds ((process root-bio-process)(object biological)) ;; should be cell
   :realization
   (:noun "senescence" :adj "senescent"
 	 :m process
-	 :of object
-	 :in object))
+	 :of cell-type
+	 :of cell-line))
 
 
 (adj "pro-apoptotic" :super apoptosis)
@@ -786,12 +713,12 @@ it is created from N-terminus to C-terminus.|#
              (:noun "homo- and heterodimerization"))
 
 
-(define-category bio-complex 
+(define-category bio-complex   :specializes bio-chemical-entity
   ;; changed -- complexes are not molecules, but associated groups of
   ;; molecules, often preteins, but not always
-  :specializes bio-chemical-entity
   :mixins (reactome-category)
-  :binds ((component (:or bio-complex small-molecule protein protein-domain ion)) ;; ion is for things like Ca2+-calmodulin
+  :binds ((component
+	   (:or bio-complex small-molecule protein protein-domain ion)) ;; ion is for things like Ca2+-calmodulin
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "complex"
@@ -803,8 +730,6 @@ it is created from N-terminus to C-terminus.|#
 (define-category tricomplex
   :specializes bio-complex
   :mixins (reactome-category)
-  :binds ((component (:or bio-complex small-molecule protein))
-          (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "tricomplex"))
 
@@ -841,55 +766,22 @@ it is created from N-terminus to C-terminus.|#
              (:noun "calcium/calmodulin"))
 
 
-(define-category dimer
-  :specializes bio-complex
-  :binds ((component (:or bio-complex small-molecule protein))
-          (componentstoichiometry stoichiometry)) 
+(define-category dimer :specializes bio-complex
   :realization
   (:noun "dimer"
-         :m component
-         :m component
-         :with component
-         :of component
-         :between component))
+))
 
-(define-category trimer
-  :specializes bio-complex
-  :binds ((component (:or bio-complex small-molecule protein))
-          (componentstoichiometry stoichiometry)) 
+(define-category trimer :specializes bio-complex
   :realization
-  (:noun "trimer"
-         :m component
-         :m component
-         :with component
-         :of component
-         :between component))
+  (:noun "trimer"))
 
-(define-category tetramer
-  :specializes bio-complex
-  :binds ((component (:or bio-complex small-molecule protein))
-          (componentstoichiometry stoichiometry)) 
+(define-category tetramer :specializes bio-complex
   :realization
-  (:noun "tetramer"
-         :m component
-         :m component
-         :with component
-         :of component
-         :between component))
+  (:noun "tetramer"))
 
-
-
-(define-category heterodimer
-  :specializes dimer
-  :binds ((component (:or bio-complex small-molecule protein))
-          (componentstoichiometry stoichiometry)) 
+(define-category heterodimer :specializes dimer
   :realization
-  (:noun "heterodimer"
-         :m component
-         :m component
-         :with component
-         :of component
-         :between component))
+  (:noun "heterodimer"))
 
 ; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
 ; Dec33: endogenous C-RAF:B-RAF heterodimers
@@ -899,29 +791,13 @@ it is created from N-terminus to C-terminus.|#
   :lemma (:common-noun "heterodimerization"))
 
 
-(define-category homodimer
-  :specializes dimer
-  :binds ((component (:or bio-complex small-molecule protein))
-          (componentstoichiometry stoichiometry)) 
+(define-category homodimer :specializes dimer 
   :realization
-  (:noun "homodimer"
-         :m component
-         :m component
-         :with component
-         :of component
-         :between component))
+  (:noun "homodimer"))
 
-(define-category homo/heterodimer
-  :specializes dimer
-  :binds ((component (:or bio-complex small-molecule protein))
-          (componentstoichiometry stoichiometry)) 
+(define-category homo/heterodimer :specializes dimer
   :realization
-  (:noun "homo/heterodimer"
-         :m component
-         :m component
-         :with component
-         :of component
-         :between component))
+  (:noun "homo/heterodimer"))
 
 (def-synonym homo/heterodimer
              (:noun "homo-heterodimer"))
@@ -932,7 +808,7 @@ it is created from N-terminus to C-terminus.|#
 (define-category homodimerization
   :specializes bio-process
   :instantiates :self
-  :lemma (:common-noun "homorodimerization"))
+  :lemma (:common-noun "homodimerization"))
 
 
 ;;;-----------------------------------

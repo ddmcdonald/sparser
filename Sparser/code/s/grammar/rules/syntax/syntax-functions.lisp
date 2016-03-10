@@ -1365,7 +1365,9 @@ to enhance p53 mediated apoptosis [2].") |#
       (cond
        ((itypep item category::pronoun/inanimate)
         t)
-       ((itypep item category::number)
+       ((and
+	 (itypep item category::number)
+	 (not (itypep item category::ordinal)))
         t)
        ((itypep item category::pronoun/first/plural)
 	;; BAD -- should add check for agentive verbs

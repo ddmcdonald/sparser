@@ -70,15 +70,15 @@
 
     (let ((category (find-or-make-category-object symbol :referential)))
       (apply #'decode-category-parameter-list category parameter-list)
-      (when
-	  (and
-	   (member :realization parameter-list)
-	   (fboundp 'fom-subcategorization)
-	   (loop for cat in (super-categories-of category)
-		thereis (get-subcategorization cat)))
-	(fom-subcategorization category :category category))
+      (fom-subcategorization-if-needed category)
       category )))
 
+(defun fom-subcategorization-if-needed (category)
+  (when (and	  
+	 (fboundp 'fom-subcategorization)
+	 (loop for cat in (immediate-supers category)
+	    thereis (get-subcategorization cat)))
+    (fom-subcategorization category :category category)))
 
 (defun define-mixin-category/expr (symbol parameter-list)
   ;; called from define-mixin-category.
@@ -117,7 +117,7 @@
 ;;; workhorse
 ;;;-----------
 
-(defun decode-category-parameter-list (category
+(defun decode-category-parameter-list (Category
                                        &key mixins
                                        documentation
                                        instantiates

@@ -60,7 +60,7 @@
    in noun noun compounds.")
 
 (define-mixin-category bio-complement
-  :binds ((statement (:or bio-process molecule-state be bio-predication 
+  :binds ((statement (:or root-bio-process molecule-state be bio-predication 
                           bio-method relation bio-rhetorical
                           there-exists)))
   :documentation "Common parent to the other types of biological 
@@ -123,7 +123,6 @@
           (preparation preparation)
           (location non-cellular-location)
           (cellular-location cellular-location)
-          (site molecular-location)
           (species species) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
@@ -136,14 +135,12 @@
   :realization
   (:noun "xxx-dummy"
          :at cellular-location
-         :at site
          :from cell-line
          :from cell-type         
          :in cell-line
          :in cell-type
          :in cellular-location
          :in context
-         :in site
          :in non-cellular-location
          :in organ
          :in preparation
@@ -152,10 +149,8 @@
          :m non-cellular-location
          :m cell-type
          :m cell-line
-         :m site
          ;;:of variant
          :on cellular-location
-         :on site
          :such\ as examples
          :under context
          :upon cellular-location
@@ -275,31 +270,44 @@
 (delete-noun-cfr (resolve "process"))
 (delete-noun-cfr (resolve "processes"))
 
+(define-category root-bio-process
+    :specializes process
+    :mixins (has-UID has-name biological)
+    :binds ((following)
+	    (by-means-of (:or root-bio-process mechanism bio-method))
+	    (using bio-entity)
+	    (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
+	    (as-comp as-comp)
+	    (timeperiod (:or time-unit amount-of-time)))
+  
+    :realization 
+    (:noun "process"
+	   ;; :by by-means-of find out what uses this
+	   :through by-means-of
+	   :via by-means-of
+	   :via using
+	   :in manner
+	   :as-comp as-comp
+	   :for timeperiod
+	   :over timeperiod)
+    :documentation "No content by itself, provides a common parent
+  for 'processing', 'ubiquitization', etc. that may be the basis
+  of the grammar patterns.")
+
+
 (define-category bio-process
-                 :specializes process
+                 :specializes root-bio-process
   :mixins (has-UID has-name biological)
-  :binds ((subject biological)
-          (following)
-          (by-means-of (:or bio-process mechanism bio-method))
-          (using bio-entity)
-          (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
-          (as-comp as-comp)
-          (timeperiod (:or time-unit amount-of-time)))
+  :binds ((subject biological))
   
   :realization 
-  (:noun "process"
-         :s subject
-         :by by-means-of
-         :through by-means-of
-         :via by-means-of
-         :via using
-         :in manner
-         :as-comp as-comp
-         :for timeperiod
-         :over timeperiod)
+  (:noun "processXXX"
+         :s subject)
   :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
+
+
 
 (define-category named-bio-process
     :specializes bio-process
@@ -310,9 +318,9 @@
     of the grammar patterns.")
 
 (define-category caused-bio-process
-  :specializes bio-process
+  :specializes root-bio-process
   :binds
-  ((agent (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
+  ((agent (:or bio-entity root-bio-process bio-mechanism bio-method drug process-rate
 	       measurement ;; "these data raised the possibility..."
 	       )) ;; supercedes subject in bio=-process
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
@@ -326,7 +334,7 @@
 
 
 (define-category mechanism :specializes endurant
-		 :binds ((process bio-process) ;;  the process typically performed by 
+		 :binds ((process root-bio-process) ;;  the process typically performed by 
 			 ;; this mechanism in the context of discussion
 			 (goal)) ;; the predication that defines the desired end-state?
 		 :realization
@@ -350,7 +358,7 @@
 
 (define-category negative-bio-control :specializes bio-control
   ;; :restrict ((object (:or biological bio-rhetorical))) ;; "lowered the possibility"
-  :binds ((inhibited-process bio-process))
+  :binds ((inhibited-process root-bio-process))
   :realization (:verb "negatively controls"  :etf (svo-passive)
                       :from inhibited-process))
 
@@ -361,7 +369,7 @@
 (define-category bio-rhetorical :specializes event
   :binds ((agent (:or pronoun/first/plural these bio-entity article-figure 
                       bio-rhetorical
-                      bio-process ;; the B-RAFV600E mutation predicts
+                      root-bio-process ;; the B-RAFV600E mutation predicts
                       bio-method  ;; high-throughput functional screens may inform
                       bio-predication ;; the success of raf and mek inhibitors
 		      measurement ;; these data
@@ -466,7 +474,7 @@
 
 (define-category bio-event :specializes event
   :mixins (has-UID has-name biological)
-  :binds ((process bio-process))
+  :binds ((process root-bio-process))
   :realization (:common-noun name) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'acquire, act, addition, counfound etc. that may be the basis
@@ -534,13 +542,15 @@
 
 (define-category bio-context :specializes biological
   :binds ((process process)
-          (entity bio-entity))
+          (entity bio-entity)
+	  (quantitative-condition bio-scalar))
   :mixins (has-name)
   :realization
   (:noun "context"
          ;; "yielded sustained C-RAF(S338) and ERK phosphorylation in the context of drug treatment"
          :of process
-         :of entity))
+         :of entity
+	 :of quantitative-condition))
 
 (define-category bio-location  :specializes biological
   :mixins (has-UID has-name)
@@ -621,7 +631,8 @@
   :binds ((species species)
           (mutation point-mutation)
           (complex bio-complex)
-          (functionally-related-to protein))
+          (functionally-related-to protein)
+	  (site molecular-location))
   :mixins (  reactome-category  in-ras2-model )
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
@@ -631,6 +642,7 @@
                        :category category::protein
                        :slots `(:in complex
                                     ;;:of functionally-related-to
+				    :m site
                                     ))
 
 
@@ -650,7 +662,7 @@
   :realization (:common-noun name))        
   
 (define-category enzyme :specializes protein ;; what's the relationship to kinase?   ;; not all enzymes are proteins -- there are RNA enzymes
-  :binds ((reaction bio-process))
+  :binds ((reaction root-bio-process))
   :instantiates :self
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
@@ -882,7 +894,9 @@
          :in organism
          :of organism))
 
-(define-category molecular-location  :specializes non-cellular-location
+;; molecular-location is no longer treated as a "non-cellular location"
+;; but as a top level of bio-location
+(define-category molecular-location  :specializes bio-location
   :binds ((substrate molecule))
   :instantiates self
   :index (:permanent :key name)
