@@ -76,6 +76,7 @@
 (populate-ns-informative-categories)
 
 
+#|
 ;;--- a type rule
 
 (def-cfr enzyme (bio-process enzyme)
@@ -83,7 +84,7 @@
   :referent (:head right-edge 
              :function passive-premodifier left-edge right-edge patient))
 
-
+|#
 
 ;;;
 ;;; raw rules
