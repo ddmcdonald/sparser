@@ -209,7 +209,8 @@
        ;; that's compapatible this gets it.
      
        ;; This case is to benefit marker-categories
-       ((itypep head 'process) ;; poor man's standing for verb?
+       (nil
+	(itypep head 'process) ;; poor man's standing for verb?
 	(let ((var (object-variable head)))
 	  (declare (special var))
 	  ;; (lsp-break "noun-noun")
@@ -649,14 +650,6 @@
 
 
 
-(defun interpret-vp+in-vi-context (vv context)
-  (cond
-   (*subcat-test* (itypep vv 'bio-process))
-   (t
-    (setq vv (individual-for-ref vv))
-    (setq  vv (bind-dli-variable 'context context vv))
-    vv)))
-
 ;;;---------
 ;;; VG + PP
 ;;;---------
@@ -719,11 +712,12 @@
           (or (subcategorized-variable vg prep-word pobj-referent)
               (and (itypep pp 'upon-condition)
                    'circumstance)
-              (when (or
+              #+ignore
+	      (when (or
                      (eq prep-word (word-named "upon"))
                      (eq prep-word (word-named "following")))
-                (when (and (itypep vg 'bio-process)
-                           (itypep pobj-referent 'bio-process))
+                (when (and (itypep vg 'root-bio-process) ;; IGNORE THIS
+                           (itypep pobj-referent 'root-bio-process))
                   'following))
 
               ;; or if we are making a last ditch effore
