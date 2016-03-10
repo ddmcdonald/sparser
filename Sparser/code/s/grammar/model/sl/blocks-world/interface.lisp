@@ -3,26 +3,34 @@
 ;;;
 ;;;      File:  "interface"
 ;;;    Module:  grammar/model/sl/blocks
-;;;   version:  January 2016
+;;;   version:  March 2016
 
 ;; Initiated 1/2/16.
 
 (in-package :mumble)
+
+;;;--------------------------------------------------
+;;; The canned messages for Dialog-1, and their form
+;;;--------------------------------------------------
 
 #| For the KQML expressions that TRIPS uses, the specification
 of what to say will be given as an s-expression.
 
 Whether we read it over a stream or are passed it fully formed
 remains tbd, this assumes we get the entire s-exp using symbols
-in the t.b.d. package. 
+and we'll have to appreciate their package. However there's now
+an operation at the beginnng of the specification processing that
+launders all the symbols into the mumble package. 
 
 Each s-exp corresponds to a single utterance. An acknowledgement
 followed by an elaboration is two sexp just so we don't have
 to worry about combining them. (That's a separate problem we
-can put off.)
+can put off till after the PI meeting perhaps?)
 
-The first thing in the s-exp is a symbol indicating the speech
-act to make. For something like Confirm that could be sufficient.
+The first thing in the s-exp is a symbol naming the speech
+act to make. For something like Confirm that could be sufficient
+to provide a basis for selecting a text to say.
+.
 Any elaborations to the speech act should follow it. The general
 story on elaborations would be to take Ed Hovy's thesis as the
 starting point and see whether any old code can be repurposed.
@@ -37,14 +45,15 @@ they were keyword-based function calls (so we don't have to worry
 about which argument is which).
 
 Speech acts that are directives will come out as imperatives 
-and we don't have to include the "you" portion. 
+and we don't have to include the "you" portion. That fact is burned
+in rather than deliberated and corresponds to making them commands
 
 |#
 
 ;; build a staircase
 
 (defparameter utt-1.1 '(propose-goal friendly
-                         (build :artifact (any staircase))))
+                         (build :artifact (a staircase))))
 
 #| To handle embedded terms like (any staircase) we need to 
 recursively handle arguments before we handle the operator,
@@ -61,7 +70,7 @@ selection criteria)
 
   As a shortcut, given that all that's needed are commands,
 could use positional arguments, interpreted as the post-verbal
-constituents. And can punt the "any" operator by taking the
+constituents. And can punt the "a" operator by taking the
 default to be indefinite determiners (i.e. no semantics to speak of).
 |#
 
@@ -81,6 +90,10 @@ d. An operator like 'build' can take any number of
  
 |#
 
+;; N.b. the 'a' or 'any' operator isn't actually being used.
+;; Without yet being able to tie what we say to their subsequent
+;; action, I've just cut a corner.
+
 (defparameter utt-2 
    '(propose-goal (put :o1 block :o2 (location on :the-table))))
 ; (sexp-reader utt-2)
@@ -88,9 +101,7 @@ d. An operator like 'build' can take any number of
 (defparameter utt-3a '(acknowledge)) ;; "ok"
 (defparameter utt-3b '(good-job)) ;; as if spoken to a dog or child
 
-(defun utt3c-preparation ()
-  "Run this to create the context assumed by utterance 3"
-  (set-the-focus *the-two-blocks-he-put-down*))
+
 (defparameter utt-3c 
   '(perform (push-together :o (collection :b1 :b2))))
 
@@ -104,30 +115,47 @@ Question is how to motivate the demontrative pronouns.
 The "this" vs. "that" might just be perspective and which
 person is making the reference. (near vs. far)
 |#
-(defparameter utt-4 '(confirm-did-right-thing)) ;; punting
+(defparameter utt-4 '(confirm-did-right-thing)) ;; punting on real treatment
+
+;;;--------------------------------------------------------------------------
+;;; whole dialog as smoke test. Notice by-hand context for user's utterances
+;;;--------------------------------------------------------------------------
 
 ; (test-dialog-1)
 (defun test-dialog-1 ()
+
+  (initialize-nlg-discourse-history)
+
   ;; 1. :me "Let's build a staircase."
-  (say (sexp-reader utt-1.1a))
+  (say (sexp-reader utt-1.1a)) ;; Mumble initialization starts a turn
 
   ;; 1. :you "OK"
-  (start-next-turn :speaker *you*)
+  (start-next-turn :speaker sp::*you*) ;; but these we need to do explicitly
 
   ;; 2 :me "Put a block on the table."
   (say (sexp-reader utt-2))
 
   ;; 2 :you "Here are two."
-  (start-next-turn :speaker *you*)
+  (start-next-turn :speaker sp::*you*)
+  (record-unadorned-mention *b1*)
+  (record-unadorned-mention *b2*)
+  (record-unadorned-mention *the-two-blocks-he-put-down*)
+  (set-the-focus *the-two-blocks-he-put-down*)
 
   ;; 3 :me "Ok. Good. Push them together."
-  (say (sexp-reader utt-3a))
-  (say (sexp-reader utt-3b))
-  (utt3c-preparation)
+  ;;(say (sexp-reader utt-3a))
+  ;;(say (sexp-reader utt-3b))
+  ;;  First good reason to create a text structure out of these
+  ;;  three 'things to say'.   Mechanically, since each call to
+  ;; sexp-reader initiates a new turn, and focus is properly
+  ;; defined as a fact about the previous turn, making these
+  ;; spurious extra turns moves the one with the focus statement
+  ;; too far away and the collection strategy fails (errors out)
+  ;; because it's just got that one option at the moment.
   (say (sexp-reader utt-3c))
 
   ;; 3 :you "Like this?"
-  (start-next-turn :speaker *you*)
+  (start-next-turn :speaker sp::*you*)
 
 
   ;; 4 :me "That's good."
@@ -135,17 +163,20 @@ person is making the reference. (near vs. far)
 
 
 ;;;----------
+;;;----------
 ;;; The code
+;;;----------
 ;;;----------
 
 (defvar *sentence-type* :statement ;;?? or sort out w/ predicates ??
   "Holds the toplevel type (loosely speaking) of the utterance
-   (sentence), e.g. :statement, :command, :question, etc. ")
+   (the sentence), e.g. :statement, :command, :question, etc. ")
 
 (defvar *speech-act* nil
   "Holds the speech act for reference by embedded routines")
 
 
+;;--- Entry point for 'messages' -- the sexps we expect TRIPS to route
 
 (defun sexp-reader (sexp)
   "sexp in, dtn out"
@@ -158,16 +189,23 @@ person is making the reference. (near vs. far)
   ;; 3. Switch from variables to parameters
 ;;///////////////  (setq sexp (launder-sexp-to-switch-to-parameters sexp))
 
-  (let* ((speech-act (mumble-symbol (car sexp)))
+  ;; 4. Start our turn
+  (start-next-turn :speaker sp::*me*)
+
+  (let* ((speech-act (car sexp))
          (*speech-act* speech-act))
     (declare (special *speech-act*))
     (if (standalone-speech-act speech-act)
       (do-standalone-speech-act speech-act)
       (let ( elaborations core )
+        ;; e.g. (propose-goal (put :o1 block :o2 (location on :the-table)))
         (loop for item in (cdr sexp)
           when (symbolp item) do (push (mumble-symbol item) elaborations)
           when (consp item) do (setq core item))
+
         (let ((dtn (interpret-sexp-core core)))
+          ;; interpret the core sexp to produce a DTN
+
           ;; Does the speech act dictate the large-scale form
           ;; of the utterance? Do the elaborations modulate or
           ;; add to that?
@@ -178,8 +216,9 @@ person is making the reference. (near vs. far)
           ;; interesting cases we have several sexp and need to provide
           ;; a discourse structure to embed them in or for that matter,
           ;; however, to fold one element within the realization of another
-          ;; like "however" here.
+          ;; like the "however" in this sentence
           (discourse-unit dtn))))))
+
 
 (defun interpret-sexp-core (core-sexp) ;; (build :o staircase)
   (let* ((operator (car core-sexp))
@@ -194,20 +233,21 @@ person is making the reference. (near vs. far)
                          :referent core-sexp)))
       ;; fill the variables, constructing DTNs for their values
       (recursively-expand-tree dtn pairs)
-      ;;\\\ If any remain unbound, see if the context permits it
+      ;; To do: If any remain unbound, see if the context permits it
       dtn)))
+
 
 #| Walk through the paramter assignments and look at the
 values. One of the goals is to ensure expressibility, but
 that isn't really going to work without adopting something
 more along the lines of McDonald 1998 and McDonald & Greenbacker 2010. 
   For CwC the values are unlikely to be deep, so the
-'recursive' part of this routine can probably be ignored
+'recursive' part of this routine can probably be ignored.
 For now just worry about the planning of references.
 |#
 (defun recursively-expand-tree (dtn parameter-value-plist)
   ;; Here we'd keep track of the relation to the DTN of
-  ;; the value we're realizing ('expanding'). It's place
+  ;; the value we're realizing ('expanding'). And its place
   ;; in the context of the discourse too. 
   (do ((parameter-name (car parameter-value-plist) (car rest))
        (value-exp (cadr parameter-value-plist) (cadr rest))
@@ -215,19 +255,20 @@ For now just worry about the planning of references.
       ((null parameter-name))
     (let ((parameter (parameter-named 
                       (mumble-symbol parameter-name))) ;; flush keyword
-          (value (expand-value value-exp)))
+          (value (expand-value value-exp))) ;; does all the work
       (make-complement-node parameter value dtn))))
 
-#| The cons case is for '(any block)'. If it's a symbol
-then it's either the name of a category (on the Sparser side)
-or a designator for a block or other sort of particular. 
-For illustration purposes we can make those keyword symbols
-like they were in Shurdu. 
+
+#| Symbols are assumed to be the names of categories and
+are realized as indefinite nps ("a block") [[ a/any goes here ]]
+Real things in the world such as particular blocks or the table 
+are represented by their Krisp individuals. Lists are for locations
+or collections.
 |#
 (defun expand-value (value-exp)
   (typecase value-exp
     (cons
-     (plan-reference-to-composite value-exp))
+     (plan-reference-to-composite value-exp)) ;; dispatch
     (symbol
      (assert (sparser::category-named value-exp))
      (plan-reference-to-category value-exp))
@@ -237,54 +278,80 @@ like they were in Shurdu.
      (error "Unanticipated type of value expression: ~a~%~a"
             (type-of value-exp) value-exp))))
 
+
 #| At least in the blocks world, a reference to a category
 is effectively a reference to a individual instance of it
 that may or may not exist. E.g. we could be building it
-or (inside 'any') we don't care which one we get.
+or (inside 'a') we don't care which one we get.
+
+But we need to check for this sort of context because a shorter,
+more contextually appropriate / fluent phrase may be better
  1. Have individuals of this sort already been mentioned?
     "another one", "another block", "(do you have) one?"
  2. Was that reference recent or long ago? 
- 3. Is this type salient / in focus ?
-
-
-See should-be-pronominalized-in-present-context
-  If we set focus then we force pronominalization.
-  That routine does so online during the readout. 
-interface/derivations/discourse-reference.lisp 
-  needs real content - mostly stubs    record-reference mentions
-
+ 3. Is this category salient / in focus ?
 |#
 (defun plan-reference-to-category (category-name)
   (let ((category (sp::category-named 
-                   (sparser-symbol category-name) :break-if-none)))
-    ;; first check if there is a mention of this category
-    ;; in the recent discourse => "another one", "one more"
+                   (sparser-symbol category-name) :break-if-none))
 
-    ;; Otherwise get the tree. Here we're just presuming
-    ;; that we're getting an NP. We could probably confirm
-    ;; it by knowledge that would be stored on the clause's
-    ;; phrase and the current argument that organizes parsing
-    ;; Of course, though, if we guarenteed that this is 
-    ;; a category we're realizing then we only get into trouble
-    ;; with verbal complements or other sorts of embedded clauses.
-    (let* ((phrase (get-lexicalized-phrase category-name))
-           (dtn (make-dtn :referent category ;; the Krisp object
-                          :resource phrase)))
-      ;; No we need to add the information that various 
-      ;; pronoun and agreement functions what to have.
-      ;; This is world knowledge, so we ought to be able
-      ;; to stash it in the ontology and query for it.
-      (neuter-&-third-person dtn)
-      (singular dtn)
+        ;; first check if there is a mention of this category
+        ;; in the recent discourse => "another one", "one more"
+        (assumed-types (assumed-object-types)))
 
-      ;; If this is the first mention, then use an indefinite
-      (initially-indefinite dtn)
-      dtn)))
+    (cond
+     ((memq category assumed-types)
+      (plan-how-to-use-One category))
 
+     (t
+      ;; Otherwise lookup the tree. Here we're just presuming
+      ;; that we're getting an NP. We could probably confirm
+      ;; it by knowledge that would be stored on the clause's
+      ;; phrase and the current argument that organizes parsing
+      ;; Of course, though, if we guarenteed that this is 
+      ;; a category we're realizing then we only get into trouble
+      ;; with verbal complements or other sorts of embedded clauses.
+      (let* ((phrase (get-lexicalized-phrase category-name))
+             (dtn (make-dtn :referent category ;; the Krisp object
+                            :resource phrase)))
+        ;; No we need to add the information that various 
+        ;; pronoun and agreement functions what to have.
+        ;; This is world knowledge, so we ought to be able
+        ;; to stash it in the ontology and query for it.
+        (neuter-&-third-person dtn)
+        (singular dtn)
+        
+        ;; If this is the first mention, then use an indefinite,
+        ;; on the other hand a later mention will be in a context
+        ;; that will likely move us down the "one" path.
+        ;; In any event this is Mumble's operator
+        (initially-indefinite dtn)
+
+        ;; Add our choice to the discourse history
+        (record-use-of-object-type category)
+
+        dtn)))))
+
+(defun plan-how-to-use-One (category)
+  "Return a dtn with the word 'one' as its resource and the
+  category as its referent. The question is what's going one
+  when the correct thing to say is 'another one' or 'one more'
+  and where/when does that additional term come in?"
+  (record-use-of-object-type category) ;; but it's not quite as strong (????)
+  (let ((dtn (make-dtn :referent category
+                       :resource (mumble-value 'replacitive-one/singular 'pronoun))))
+    ;; See QGSL #6.55 for 'substitute one' I think we can just
+    ;; use the pronoun and it will be understood correctly
+    (neuter-&-third-person dtn)
+    (singular dtn)
+    dtn))
+
+
+;;--- specific individuals -- corresponding to particulars in the scene
 
 (defun plan-reference-to-individual (i)
   (cond
-   ((unique? i)
+   ((unique? i) ;; "the table"
     (plan-the-category i))
    (t (error "Don't yet have a way to refer to ~a" i))))
 
@@ -309,13 +376,10 @@ interface/derivations/discourse-reference.lisp
       (collection ;; (collection ,*b1* ,*b2*)
        (create-collection-and-refer-to-it (cdr sexp))))))
 
-#| (set-the-focus *the-two-blocks-he-put-down*)
-   (setq sexp `(collection ,*b1* ,*b2*))
-   (setq items (cdr sexp))
-|#
+
 (defun create-collection-and-refer-to-it (items)
   "The arguments are expected ot be Krisp individuals.
-  We find-or-make their collection and the made a
+  We find-or-make their collection and then make a
   DTN. If the collection is in focus we pronominalize,
   otherwise we enumberate them."
   (let* ((collection (sp::find-or-make-individual 'sp::collection
@@ -325,11 +389,10 @@ interface/derivations/discourse-reference.lisp
     (cond
      ((in-focus? collection)
       (setf (resource dtn) ;;(wrap-pronoun 'third-person-plural)
-            (mumble-value 'third-person-plural 'pronoun)
-            ))
+            (mumble-value 'third-person-plural 'pronoun)))
      ;; "the (two) blocks"
      ;; enumeration -- e.g. for the drugs in BioC dialog
-     (t (error "No collection strategy applied")))
+     (t (error "No defined collection strategy applied")))
     dtn))
 
 ;; (location on ,*the-table*)
@@ -342,7 +405,7 @@ interface/derivations/discourse-reference.lisp
     (assert comp-dtn)
     ;; build the pp by hand. When parsing we can have
     ;; prepositions that project typed complements
-    ;; but before than no point in reifying them
+    ;; but before that there's no point in reifying them
     (let* ((phrase (phrase-named 'pp))
            (dtn (make-dtn :referent sexp :resource phrase))
            (c-prep (make-instance 'complement-node
@@ -388,7 +451,7 @@ interface/derivations/discourse-reference.lisp
 (defun construct-that-is-good ()
   "Total punt -- taking 'that's good' as a conventional reply
    to other person's action (or the situation/configuration
-   that resulted from the action) to confirm that it was correct.
+   that resulted from the action) in order to confirm that it was correct.
    Imagine saying it to a little kid. It probably does indeed
    refer, but don't want to set all that up yet (2/11/16)."
   (let* ((lp (get-lexicalized-phrase 'be))
@@ -406,9 +469,9 @@ interface/derivations/discourse-reference.lisp
     dtn))
   
 
-;;--- for Command 
+;;--- just for Command right now
 (defun instantiate-speech-act (dtn speech-act elaborations)
-  ;; method-ize later
+  ;;// method-ize when there are more of these
   (declare (ignore elaborations))
   (case speech-act
     (propose-goal (command dtn))

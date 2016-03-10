@@ -35,10 +35,8 @@
 (defun initialize-mumble-state ()
   ;; *current-position is initialized in phrase-structure-execution,
   ;;   where it's set to the initial position that's passed to it
-  (declare (special *me*))
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
-  (start-next-turn :speaker *me*)
   (when (boundp '*the-derivation-tree*) ;; backwards compatibility
     (clear-derivation-tree-data)))
 	  
