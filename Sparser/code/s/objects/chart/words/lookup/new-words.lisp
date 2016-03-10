@@ -22,7 +22,7 @@
 ;;     (6/9/15) Added another case to it.
 
 (in-package :sparser)
-(defvar *primed-words*)
+
 
 (defun unknown-word? (word)
   (null (word-rules word)))
@@ -46,6 +46,7 @@
    some definition is much preferred to none. Also includes special
    handling when we're in *big-mechanism*."
   (declare (special *capitalization-of-current-token*
+                    *primed-words* ;; Comlex table
                     *introduce-brackets-for-unknown-words-from-their-suffixes*))
 
   (let* ((symbol (make-word-symbol))
@@ -97,7 +98,8 @@
 
 (defun look-for-primed-word-else-all-properties (character-type
                                                  &optional existing-word)
-  (declare (special *capitalization-of-current-token* *primed-words*))
+  (declare (special *capitalization-of-current-token* 
+                    *primed-words*))
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (or existing-word ;; see find-word
                    (make-word :symbol symbol
@@ -136,7 +138,7 @@
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
          (word (or existing-word
                    (make-word :symbol symbol
-                              :pname  (symbol-name symbol)))))
+                              :pname (symbol-name symbol)))))
 
     (catalog/word word symbol)
 
@@ -160,13 +162,14 @@
 
 
 
-(defun make-word/capitalization-&-digits (character-type)
+(defun make-word/capitalization-&-digits (character-type &optional existing-word)
   ;; just like the all-properties version except that it does not
   ;; consider morphology
   (declare (special *capitalization-of-current-token*))
   (let* ((symbol (make-word-symbol))  ;;reads out the lookup buffer
-         (word (make-word :symbol symbol
-                          :pname  (symbol-name symbol))))
+         (word (or existing-word
+                   (make-word :symbol symbol
+                              :pname (symbol-name symbol)))))
     (catalog/word word symbol)
 
     (ecase character-type
@@ -180,13 +183,13 @@
 
 
 
-(defun make-word/no-properties (character-type)
+(defun make-word/no-properties (character-type &optional existing-word)
   ;; just sets up the word, doesn't calculate any of its properties
   (declare (ignore character-type))
   (let* ((symbol (make-word-symbol))
-         (word (make-word :symbol symbol
-                          :pname  (symbol-name symbol))))
-
+         (word (or existing-word
+                   (make-word :symbol symbol 
+                              :pname  (symbol-name symbol)))))
     (catalog/word word symbol)
     word ))
 ;(what-to-do-with-unknown-words :make-word/no-properties)
