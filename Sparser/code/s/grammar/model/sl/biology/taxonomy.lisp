@@ -374,7 +374,7 @@
   :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
-  :mixins (biological)
+  :mixins (biological bio-thatcomp bio-whethercomp)
   :binds ((agent (:or pronoun/first/plural these bio-entity article-figure 
 		      bio-rhetorical
 		      bio-process ;; the B-RAFV600E mutation predicts
