@@ -127,8 +127,7 @@ speakers.
   in a higher clause. That distinction is hard to do
   unless we own the parser/generator, and even then I'm
   not entirely sure of the use case."
-  (let ((entry (assoc obj (references *current-turn*)
-                      :test #'eq)))
+  (let ((entry (and *current-turn* (assoc obj (references *current-turn*)))))
     ;;/// unclear yet what older Mumble code would
     ;; actually want to know. See c-command stub function
     entry))
@@ -138,12 +137,14 @@ speakers.
   ;;/// we need to work up more use cases so we can
   ;; determine how much structure might bo into a 'mention-record'
   (let ((obj (referent dtn)))
-    (when dominating-clause
-      (push obj (objects-referenced (dominating-clause))))
-    (let ((record (record-discourse-context
-                   obj result dominating-clause)))
-      (push record (references *current-turn*))
-      record)))
+    (when obj
+     (when dominating-clause
+       (push obj (objects-referenced (dominating-clause))))
+     (when *current-turn*
+       (let ((record (record-discourse-context
+                      obj result dominating-clause)))
+         (push record (references *current-turn*))
+         record)))))
 
 (defun record-discourse-context (obj result dom)
   "Work in progress since it's not clear what to consider.
