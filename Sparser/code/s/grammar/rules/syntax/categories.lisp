@@ -460,6 +460,13 @@
    ;; (break "THATCOMP?")
     nil)))
 
+(defun preceding-det-or-prep (e)
+  (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
+     thereis
+       (or (eq (cat-name (edge-form ee)) 'det)
+	   (memq (cat-name (edge-category ee))
+		 '(preposition spatial-preposition)))))
+
 (defgeneric ng-head? (label)
   (:documentation "Is a category which can occur as the head of an NG"))
 (defmethod ng-head? ((w word))
@@ -467,25 +474,28 @@
 (defmethod ng-head? ((e edge))
   (declare (special e))
   (cond
-   ((eq (cat-name (edge-form e)) 'VERB+ING) ; 
-    (let
-        ((end-pos (pos-edge-ends-at e))
-         (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
-      (declare (special end-pos prev-edge)) 
-      (and
-       (not (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb)))
-       (let
-	   ((next-edge (right-treetop-at/edge end-pos)))
-	 (not (and (edge-p next-edge)(eq (cat-name (edge-form next-edge )) 'det))))
-       (not
-        (memq 
-         ;; SBCL caught an error here -- led to simplification to use pos-terminal
-         (word-symbol (pos-terminal (pos-edge-ends-at e)))
-         '(WORD::|that| WORD::|which| WORD::|whose|))))))
-   ((ng-head? (edge-form e)) t)
-   ((and
-     (eq category::det (edge-form e))
-     (member (cat-name(edge-category e)) '(that this these those))))))
+    ((and
+      (plural-noun-and-present-verb? e)
+      (preceding-det-or-prep e)))
+    ((eq (cat-name (edge-form e)) 'VERB+ING) ; 
+     (let
+	 ((end-pos (pos-edge-ends-at e))
+	  (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
+       (declare (special end-pos prev-edge)) 
+       (and
+	(not (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb)))
+	(let
+	    ((next-edge (right-treetop-at/edge end-pos)))
+	  (not (and (edge-p next-edge)(eq (cat-name (edge-form next-edge )) 'det))))
+	(not
+	 (memq 
+	  ;; SBCL caught an error here -- led to simplification to use pos-terminal
+	  (word-symbol (pos-terminal (pos-edge-ends-at e)))
+	  '(WORD::|that| WORD::|which| WORD::|whose|))))))
+    ((ng-head? (edge-form e)) t)
+    ((and
+      (eq category::det (edge-form e))
+      (member (cat-name(edge-category e)) '(that this these those))))))
 
 (defmethod ng-head? ((c referential-category))
   (ng-head? (cat-symbol c)))
@@ -517,10 +527,7 @@
 (defmethod vg-start? ((e edge))
   (if
    (plural-noun-and-present-verb? e)
-   (not (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
-          thereis (or (ng-start? ee)
-                      (memq (cat-name (edge-category ee)) 
-                            '(category::preposition category::spatial-preposition)))))
+   (not (preceding-det-or-prep e))
    (vg-compatible? e)))
 
 (defgeneric vg-compatible? (label)
