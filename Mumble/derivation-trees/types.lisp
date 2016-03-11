@@ -179,14 +179,14 @@
 ;;;----------
 
 (defmethod print-object ((dtn base-dt-node) stream)
-  (let ((r (referent dtn)))
-    (format stream "#<dtn for ~a>" r)))
+  (print-unreadable-object (dtn stream)
+    (format stream "dtn for ~a" (or (referent dtn) "null referent"))))
 
 (defmethod print-object ((slp saturated-lexicalized-phrase) stream)
   (print-unreadable-object (slp stream)
     (cond
      ((and (typep slp 'has-name) (mname slp))
-      (format stream "<slp ~a>" (mname slp)))
+      (format stream "slp ~a" (mname slp)))
      (t
       (format stream "slp: ~a" (name (phrase slp)))
       (loop for pvp in (bound slp)
@@ -195,18 +195,20 @@
                    (value pvp)))))))
 
 (defmethod print-object ((pvp parameter-value-pair) stream)
-  (print-unreadable-object (pvp stream ) ;; :type t)
+  (print-unreadable-object (pvp stream)
     (format stream "pvp: ~a = ~a" 
             (name (phrase-parameter pvp)) (value pvp))))
 
 (defmethod print-object ((cn complement-node) stream)
-  (let ((parameter (phrase-parameter cn))
-        (value (value cn)))
-    (format stream "#<complement ~a = ~a>"
-            (if parameter (name parameter) "<nil parameter>")
-            value)))
+  (print-unreadable-object (cn stream)
+    (let ((parameter (phrase-parameter cn))
+          (value (value cn)))
+      (format stream "complement ~a = ~a"
+              (if parameter (name parameter) "null parameter")
+              value))))
 
 (defmethod print-object ((an adjunction-node) stream)
-  (let ((ap (ap an)))
-    (format stream "#<adjunct ~a = ~a>"
-            (if ap (name ap) "<nill AP>") (value an))))
+  (print-unreadable-object (an stream)
+    (let ((ap (ap an)))
+      (format stream "adjunct ~a = ~a"
+              (if ap (name ap) "null AP") (value an)))))
