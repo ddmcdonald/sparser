@@ -128,6 +128,10 @@
   :pattern ( s "," vp+ing )
   :action (:function attach-trailing-participle-to-clause first third))
 
+(define-debris-analysis-rule s-and-vp+ing
+  :pattern ( s and vp+ing )
+  :action (:function attach-trailing-participle-to-clause first third))
+
 (defun attach-trailing-participle-to-clause (s-edge vp-edge)
   ;; The participle (vp+ing) is presumably missing it's subject,
   ;; which we'll take to be the whole clause. 
