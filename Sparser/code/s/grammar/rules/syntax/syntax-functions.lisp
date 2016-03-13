@@ -1272,7 +1272,7 @@ to enhance p53 mediated apoptosis [2].") |#
 		(word (word-pname key))
 		(polyword (pw-pname key))
 		(symbol key)))))
-     do (terpri)(print pat))))
+     do (terpri)(print pat)))
 
 (defun subcategorized-variable (head label item)
   (declare (special item *pobj-edge*))
