@@ -147,6 +147,7 @@
   :instantiates self
   :realization
   (:verb "phosphorylate" :noun "phosphorylation"
+	 :adj "phospho-"
    :etf (svo-passive)))
 
 
