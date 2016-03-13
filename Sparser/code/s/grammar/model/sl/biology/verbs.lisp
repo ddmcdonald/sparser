@@ -1897,16 +1897,13 @@
          :in figure))
 
 (define-category require :specializes bio-control
-    :binds ((requires biological)
-            (requirement (:or biological process)))
+    :binds ((requirement (:or biological process)))
     :realization
     (:verb "require"
 	   :noun "requirement"
 	   :etf (svo-passive)
-	   :s requires
 	   :o requirement
-           :for requires
-           :of requires))
+           :for requirement))
 
 (define-category resist :specializes caused-bio-process
     :realization
@@ -1919,7 +1916,7 @@
 (define-category result :specializes other-bio-process
     :binds ((result (:or bio-process bio-method bio-predication)))
     :realization
-    (:verb ("result" :third-plural "resultsxxx") ;; block plural form of the verb, because of interaction with noun
+    (:verb ("result" :third-plural "results") ;; block plural form of the verb, because of interaction with noun
 	   :etf (sv)
            :from subject 
 	   :in result))
@@ -2211,9 +2208,10 @@
 
 
 (define-category treatment :specializes bio-method
+  :restrict ((object (:or species cell-line cell-type))) ;; the variable "disease" specializes "object" and has special prepositions
   :binds ((treatment biological)
-          (modifier (:or bio-predication modifier))
-          (disease disease))
+	  (disease disease)
+          (modifier (:or bio-predication modifier)))
   :realization
   (:verb "treat" :noun "treatment"
          :etf (svo-passive)

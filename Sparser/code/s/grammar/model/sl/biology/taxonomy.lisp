@@ -397,9 +397,12 @@
       :via method
       :with method))
 
+(define-category over-ridden) ;; this is used only for over-riding inherited variables
+
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"                 
                  :specializes bio-process
-  ;; :mixins (move) this creates an inconsistent taxonomy -- WH -- TO-DO
+		 ;; :mixins (move) this creates an inconsistent taxonomy -- WH -- TO-DO
+  :restrict ((cellular-location over-ridden))
   :binds
   ((object (:or bio-entity bio-chemical-entity))
    (origin cellular-location)
@@ -460,10 +463,8 @@
          :etf(svo-passive) ));;/// "catalyysis of phosphorylation by MEK"
 
 (define-category kinase-activity :specializes catalysis
-  :binds ((enzyme protein))
   :realization
-  (:noun "kinase activity"
-         :m enzyme))
+  (:noun "kinase activity"))
 
 
 (define-category bio-method :specializes process

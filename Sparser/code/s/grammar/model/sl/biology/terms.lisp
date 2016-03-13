@@ -293,12 +293,10 @@
 (noun "abnormality" :super disease)
 
 (define-category absence :specializes experimental-condition
-  :binds ((measurement measurement)
-	  (participant bio-entity))
+  :binds ((measurement measurement))
   :realization
   (:noun "absence"
-	 :of measurement
-	 :of participant))
+	 :of measurement))
 
 
 (adj "active" :super molecule-state
@@ -728,6 +726,7 @@
 ;; "(RasGEFs) lower the transition energy for ..."
 
 (define-category lysate :specializes bio-entity
+  :restrict ((cell-line over-ridden))
   :binds ((source cell-line))
   :realization
   (:noun "lysate"
@@ -747,6 +746,7 @@
 (def-synonym mass-spectrometry (:noun "mass spectrometry"))
              
 (noun "means" :super bio-method
+      :restrict ((object over-ridden))
       :binds ((process bio-process))
       :realization
       (:noun "means"
@@ -825,6 +825,7 @@
              :of process))
 
 (noun "panel" :super bio-method
+      :restrict ((object over-ridden))
       :binds ((component molecule)) ;; this should be for genes and proteins
       :realization
       (:noun "panel"
@@ -862,12 +863,10 @@
   (:adj "potent"))
 
 (define-category presence :specializes experimental-condition
-  :binds ((measurement measurement)
-	  (participant bio-entity))
+  :binds ((measurement measurement))
   :realization
   (:noun "presence"
-	 :of measurement
-	 :of participant))
+	 :of measurement))
 
 (adj "present" :super bio-predication  ;; keyword: (ent ADJ)
      :binds ((in-molecule molecule))

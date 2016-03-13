@@ -1251,14 +1251,28 @@ to enhance p53 mediated apoptosis [2].") |#
 (defun show-ambiguities ()
   (setq *note-ambiguity* (list nil))
   (compare-to-snapshots)
+  (display-subcat-ambiguities))
+
+
+(defun display-subcat-ambiguities ()
   (np (setq *dups*
             (sort *note-ambiguity* #'string<
                   :key #'(lambda(x)(if (individual-p (car x))(cat-name (itype-of (car x))) "")))))
   
-  (loop for pat in 
-    (remove-duplicates (loop for x in *dups* collect (list (second x)(fourth x))) :test #'equal)
-    do (terpri)(print pat)))
-
+  (loop for pat in
+       (sort
+	(loop for pat in 
+	     (remove-duplicates (loop for x in *dups* collect (list (second x)(fourth x))) :test #'equal)
+	   collect pat)
+	#'string<
+	:key
+	#'(lambda (p)
+	    (let ((key (car p)))
+	      (etypecase key
+		(word (word-pname key))
+		(polyword (pw-pname key))
+		(symbol key)))))
+     do (terpri)(print pat))))
 
 (defun subcategorized-variable (head label item)
   (declare (special item *pobj-edge*))
@@ -1294,17 +1308,38 @@ to enhance p53 mediated apoptosis [2].") |#
 	 (let ( variable )
 	   (let ((*trivial-subcat-test* nil))
 	     (if (and *note-ambiguity* (not *subcat-test*))
-		 (let (vars sources)
-		   (loop for entry in subcat-patterns
+		 (let (vars sources pats over-ridden)
+		   (loop for pat in subcat-patterns
 		      do
-			(let ((scr (subcat-restriction entry)))
-			  (when (eq label (subcat-label entry))
+			(let ((scr (subcat-restriction pat)))
+			  (when (eq label (subcat-label pat))
 			    (when (satisfies-subcat-restriction? item scr)
-			      (push (subcat-variable entry) vars)
-			      (push (list (subcat-variable entry)(subcat-source entry)) sources)))))
-		   (when (cdr vars)
-		     (push (list head label item sources) *note-ambiguity*))
-		   (setq variable (car vars)))
+			      (push pat pats)))))
+		   (loop for pat in pats
+		      do
+			(loop for p in pats
+			   when
+			     (and (not  (eq (subcat-restriction p) (subcat-restriction pat)))
+				  (not (consp (subcat-restriction p)))
+				  (if
+				   (consp (subcat-restriction pat))
+				   (loop for i in (cdr (subcat-restriction pat))
+				      thereis (itypep i (subcat-restriction p)))
+				   (itypep (subcat-restriction pat) (subcat-restriction p))))
+			   do (push p over-ridden)))
+
+		   (setq pats (loop for p in pats unless (member p over-ridden) collect p))
+		   (cond
+		     ((cdr pats) 
+		      (unless (itypep item 'number)
+			;; these are mostly bad parses with a dangling number -- we should collect them
+			(push (list head label item
+				    (loop for pat in pats collect
+					 (list (subcat-variable pat)(subcat-source pat))))
+			      *note-ambiguity*))
+		      (setq variable (subcat-variable (car pats))))
+		     (pats
+		      (setq variable (subcat-variable (car pats))))))
                 
 		 (dolist (entry subcat-patterns)
 		   (let ((scr (subcat-restriction entry)))
