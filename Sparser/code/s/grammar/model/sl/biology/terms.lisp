@@ -276,7 +276,7 @@
 ;; actually an isotope -- need to adjust taxonomy 
 
 
-(noun "ability" :super bio-relation
+(define-category ability :specializes bio-relation
       :binds ((ability bio-process))
       :realization
       (:noun "ability" :adj "able"
@@ -284,11 +284,11 @@
              :of subject
              :to ability))
 
-(def-synonym ability
-      (:noun "capability" :adj "capable"))
-
-(def-synonym ability
-      (:noun "capacity" ))
+(define-category capability :specializes ability
+  :restrict ((subject bio-entity))
+  :realization
+  (:noun "capability" :adj "capable"
+	 :of ability))
 
 (noun "abnormality" :super disease)
 
@@ -354,6 +354,14 @@
 
 (noun "consequence" :super bio-quality)
 (noun "assay" :super bio-method)
+
+(define-category aspect :specializes bio-mechanism
+  :binds ((whole (:or bio-mechanism bio-process)))
+  :realization
+  (:noun "aspect"
+         :of whole))
+
+
 (define-adverb "at baseline")
 (adj "background" :super bio-predication)
 (noun "bacteria" :super species) ;; not really
