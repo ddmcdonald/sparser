@@ -66,7 +66,7 @@
     (setf (gethash pname *mappings-for-category-linked-phrase*) clp)))
 
 (defmethod krisp-mapping ((w word))
-  (gethash word *mappings-for-category-linked-phrase*))
+  (gethash w *mappings-for-category-linked-phrase*))
 
 (defmethod krisp-mapping ((pname string))
   (gethash pname *mappings-for-category-linked-phrase*))
@@ -206,15 +206,11 @@ but we don't want to count on that.
 
 (defmethod make-complement-node ((parameter parameter)
                                  i (dtn derivation-tree-node))
-  (let* ((lexp (resource dtn))
-         (free-variables (free lexp))
-         (cn (make-instance 'complement-node
-               :phrase-parameter parameter
-               :bkptrs dtn)))
+  (let ((cn (make-instance 'complement-node
+              :phrase-parameter parameter
+              :bkptrs dtn)))
     (setf (value cn) i) ;; could have folded these into the make-instance call
     (setf (referent cn) i) ;; ditto
-    (push cn (bound lexp))
-    (setf (free lexp) (remove parameter free-variables))
     (push cn (complements dtn))
     cn))
 
@@ -223,23 +219,8 @@ but we don't want to count on that.
 ;;;-----------------------------------------
 
 (defmacro def-accessory-operator (name &rest body)
-  `(def-accessory-operator/expr ',name ',body))
-
-(defun def-accessory-operator/expr (name body)
-  (let* ((lexp-form
-         `(defmethod ,name ((base lexicalized-phrase))
-            (let ((dtn (make-instance 'derivation-tree-node
-                         :resource base)))
-              (,name dtn))))
-         (dtn-form
-          `(defmethod ,name ((base derivation-tree-node))
-             ,@body)))
-    ;; (push-debug `(,lexp-form ,dtn-form)) (break "check forms")
-    (eval lexp-form)
-    (eval dtn-form)
-    :accessory-operator))
-
-
+  `(defmethod ,name ((base derivation-tree-node))
+     ,@body))
 
 
 
