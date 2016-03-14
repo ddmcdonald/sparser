@@ -231,7 +231,8 @@ a message to be expressed. See discussion in make.lisp |#
          (resource (make-instance 'saturated-lexicalized-phrase
                      :phrase phrase
                      :bound `(,complement))))
-    (make-dtn :resource resource)))
+    (make-dtn :resource resource
+              :referent (referent dtn))))
 
 
 ;;;-------------------
@@ -349,22 +350,25 @@ a message to be expressed. See discussion in make.lisp |#
                 :phrase phrase
                 :bound (append pvp-list bound)
                 :free free))))
+    ;;(push-debug `(,lexicalized-phrase)) (break "look at lp")
 
     (let* ((free-parameter (car (free lexicalized-phrase)))
            (fn-name name) ;; hook for varing it if we want
            (form
             `(defmethod ,fn-name ((input-dtn derivation-tree))
-               (let* ((dtn (make-dtn :resource ,lexicalized-phrase))
+               (let* ((dtn (make-dtn 
+                            :resource ,lexicalized-phrase
+                            :referent (cons ',name (referent input-dtn))))
                       (comp-node (make-instance 'complement-node
                                    :phrase-parameter ,free-parameter
-                                   :bkptr dtn
+                                   :bkptrs dtn
                                    :value input-dtn)))
                  (push comp-node (complements dtn))
                  ,(when operators
                     `(loop for o in ',operators
                        do (funcall o dtn)))
                  dtn))))
-      ;; (pprint form) (break "ok?")
+      ;;(pprint form) (break "ok?")
       (eval form)
       fn-name)))
 
