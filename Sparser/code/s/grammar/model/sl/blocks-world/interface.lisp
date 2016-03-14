@@ -209,7 +209,7 @@ person is making the reference. (near vs. far)
           ;; Does the speech act dictate the large-scale form
           ;; of the utterance? Do the elaborations modulate or
           ;; add to that?
-          (instantiate-speech-act dtn speech-act elaborations)
+          (setq dtn (instantiate-speech-act dtn speech-act elaborations))
 
           ;; Wrap the whole thing in a sentence. 
           ;;/// this is the wrong level to do this at, since in the
@@ -228,8 +228,6 @@ person is making the reference. (near vs. far)
       (error "Undefined term? Cannot retrieve a lexicalized ~
               resource for the operator ~a" operator))
     (let ((dtn (make-dtn :resource phrase
-                         ;;//// the instantiated object would be 
-                         ;; a better referent.
                          :referent core-sexp)))
       ;; fill the variables, constructing DTNs for their values
       (recursively-expand-tree dtn pairs)
@@ -469,13 +467,27 @@ more contextually appropriate / fluent phrase may be better
     dtn))
   
 
-;;--- just for Command right now
+
 (defun instantiate-speech-act (dtn speech-act elaborations)
   ;;// method-ize when there are more of these
-  (declare (ignore elaborations))
-  (case speech-act
-    (propose-goal (command dtn))
-    (perform (command dtn))
-    (otherwise 
-     (error "Don't know the consequence for the dtn of ~a" speech-act))))
+  (let ((dtn-to-return dtn))
+    (case speech-act
+      (propose-goal 
+       (command dtn)) ;; these don't change the identity of the dtn
+      (perform
+       (command dtn))
+      (otherwise 
+       (error "Don't know the consequence for the dtn of ~a" speech-act)))
+    (when elaborations
+      ;; only token, completely ad-hoc cases. Only purpose is
+      ;; to illustrate modulating a core message (base eventuality)
+      ;; by applying operations to it that add prefixes or interjections
+      ;; like "please". Not worth going any real distance down this
+      ;; road before working out what general story we should have
+      ;; about this stuff.
+      ;; (push-debug `(,elaborations)) (break "look at elaborations")
+      (cond
+       ((memq 'friendly elaborations)
+        (setq dtn-to-return (let-us dtn)))))
+    dtn-to-return))
 
