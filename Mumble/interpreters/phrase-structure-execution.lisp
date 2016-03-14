@@ -87,6 +87,7 @@
 	     (realization-cycle new-contents position)
 	     new-contents)))
     (typecase contents
+      (null (error "empty contents at ~a" position))
       (derivation-tree-node
        (realize-and-knit contents))
       ((or phrasal-root node word pronoun tense-marker ttrace)

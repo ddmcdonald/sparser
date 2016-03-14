@@ -28,7 +28,6 @@
   "This is called from realization-cycle and returns the 'new-contents'
  of the slot, i.e. either a node of a refined object subject to a recursive
  call to realize."
-  (push-debug `(:realize ,obj))
   (typecase obj
     (derivation-tree-node
      (realize-dtn obj))
@@ -50,8 +49,11 @@
             (realize instantiation))
            (derivation-tree-node
             (realize-dtn instantiation))
-           (word instantiation)
+           ((or word pronoun) instantiation)
            ;;(pronoun instantiation)
+           (null
+            (push-debug `(,obj))
+            (break "Realization-for ~a returned nil" obj))
            (otherwise
             (push-debug `(,instantiation))
             (break "New type of result from realization-for: ~a~%~a"
@@ -73,6 +75,7 @@
   word/pronoun/..) to be the new contents of the slot. At this 
   level we just do the data checks, all the heavy lifting is done by
   a driver that knows how to how to handle the specific accessories."
+  (landmark 'realizing dtn)
   (let* ((resource (resource dtn))
          (phrase (typecase resource
                    (lexicalized-phrase ;; saturated or partially so
@@ -87,6 +90,7 @@
     ;; place for debugging break
 
     ;; Get the phrase instantiated
+    (landmark 'resource resource)
     (let ((root-node
            (etypecase resource
              (partially-saturated-lexicalized-phrase 
@@ -119,6 +123,8 @@
                    (name phrase-type))))))
 
       ;; Pass the node/word back to be knit-in by build-phrase
+      ;;(push-debug `(,root-node ,dtn))
+      ;;(break "Returning from realization of ~a" dtn)
       root-node)))
 
 
