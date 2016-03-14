@@ -65,7 +65,7 @@
       ;; with the derivation tree node for which they are the referent.
 
 
-(defobject base-dt-node (referential)
+(defobject base-dt-node (referential derivation-tree)
   ;; This is the top of the derivation tree taxonomy. 
   ;; The 'referent' slot from referential points back to the Individual
   ;; or whatever we're realizing. The 'resource' slot points to the
@@ -96,12 +96,9 @@
     ;; Mumble has a set of features. This can be just an unordered list
    ))
 
-
 (defobject satellite-dt-node ()
   ;; Holds the value that the parameter gets in this instance.
-  ((value)
-     
-   ))
+  ((value)))
 
 (defobject adjunction-node (base-dt-node satellite-dt-node)
   ;; points to one of Mumble's attachment-points
@@ -125,8 +122,7 @@
 (defobject saturated-lexicalized-phrase (lexicalized-phrase)
   ((bound))) ;; list of parameter-value-pair
 
-(defobject partially-saturated-lexicalized-phrase 
-    (saturated-lexicalized-phrase)
+(defobject partially-saturated-lexicalized-phrase  (saturated-lexicalized-phrase)
   ((free)))  ;; list of parameters
 
 
@@ -155,24 +151,12 @@
     :documentation "List of parameters and variables
       encoded as parameter-variable pairs")))
 
-(defmethod print-object ((clp category-linked-phrase) stream)
-  (print-unreadable-object (clp stream)
-    (let ((category (linked-category clp))
-          (lp (linked-phrase clp)))
-      (format stream "clp: ~a ~a" category lp))))
 
 (defclass parameter-variable-pair ()
   ((parameter :initarg :param :accessor corresponding-parameter
     :documentation "a phrase parameter")
    (variable :initarg :var :accessor corresponding-variable
     :documentation "a Krisp variable")))
-
-(defmethod print-object ((pvp parameter-variable-pair) stream)
-  (print-unreadable-object (pvp stream)
-    (let ((param (corresponding-parameter pvp))
-          (var (corresponding-variable pvp)))
-      (format stream "~a : ~a" param var))))
-
 
 ;;;----------
 ;;; printers
@@ -184,15 +168,23 @@
 
 (defmethod print-object ((slp saturated-lexicalized-phrase) stream)
   (print-unreadable-object (slp stream)
-    (cond
-     ((and (typep slp 'has-name) (mname slp))
-      (format stream "slp ~a" (mname slp)))
-     (t
-      (format stream "slp: ~a" (name (phrase slp)))
-      (loop for pvp in (bound slp)
-        do (format stream "~&  ~a = ~a"
-                   (name (phrase-parameter pvp))
-                   (value pvp)))))))
+    (format stream "lp ~a" (if (typep slp 'has-name)
+                             (mname slp)
+                              (name (phrase slp))))
+    (print-lp-bound-values slp stream)))
+
+(defmethod print-object ((lp partially-saturated-lexicalized-phrase) stream)
+  (print-unreadable-object (lp stream)
+    (format stream "lp: ~a" (name (phrase lp)))
+    (format stream " ~a" (mapcar #'name (free lp)))
+    (print-lp-bound-values lp stream)))
+
+(defmethod print-lp-bound-values ((lp saturated-lexicalized-phrase) stream)
+  (loop for pvp in (bound lp)
+    do (format stream " ~a = ~a"
+               (name (phrase-parameter pvp))
+               (value pvp))))
+
 
 (defmethod print-object ((pvp parameter-value-pair) stream)
   (print-unreadable-object (pvp stream)
@@ -212,3 +204,17 @@
     (let ((ap (ap an)))
       (format stream "adjunct ~a = ~a"
               (if ap (name ap) "null AP") (value an)))))
+
+
+(defmethod print-object ((pvp parameter-variable-pair) stream)
+  (print-unreadable-object (pvp stream)
+    (let ((param (corresponding-parameter pvp))
+          (var (corresponding-variable pvp)))
+      (format stream "~a : ~a" param var))))
+
+(defmethod print-object ((clp category-linked-phrase) stream)
+  (print-unreadable-object (clp stream)
+    (let ((category (linked-category clp))
+          (lp (linked-phrase clp)))
+      (format stream "clp: ~a ~a" category lp))))
+
