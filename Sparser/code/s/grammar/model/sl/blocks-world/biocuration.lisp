@@ -57,6 +57,8 @@ Functional-effect-of(M, active(K))
 ;; "a drug to target KRAS" (say (drug-targeting-kras))
 
 (define-word "KRAS" (proper-noun))
+(define-word "Raf" (proper-noun))
+
 
 (defun drug-targeting-kras ()
   "Makes an untensed clause. Comes out as an infinitive"
@@ -70,6 +72,8 @@ Functional-effect-of(M, active(K))
       (make-complement-node 'o kras-resource dtn)
       dtn)))
 
+;; need "there <be>"
+;; tag questions (add accessory like 'command' to say it's a q, handler to run and edit tree strucx)
 
 ;; "but I don't know of any drug targeting KRAS"
 
@@ -83,6 +87,16 @@ Functional-effect-of(M, active(K))
       (make-complement-node 's first-singular dtn)
       (make-complement-node 'o complement dtn)
       dtn)))
+;; negate function takes a dtn as argument
+
+;; (say (negate (I-know-of-p (drug-targeting-kras))))
+
+;;find question accessory (say (question (blah (blah))))
+;; question accesssory presumes a phrasal root, that the phrase is built. changes state to marked as aux preposed.
+
+;; need to set up a partitive construction
+
+
 ;; (say (I-know-of-p (drug-targeting-kras)))
 ;;  => "I to know of a drug to target KRAS"
 

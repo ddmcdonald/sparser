@@ -25,7 +25,16 @@ with other blocks, mention in utterances, etc. |#
            )
   :index (:permanent :key name)
   :realization ;; for connection to Mumble
-     (:common-noun "block"))
+  (:common-noun "block"))
+
+#|
+(define-category drug
+    :specializes
+  :mixins (has-name) ;; e.g. Dabrafenib
+  :index (:permanent :key name)
+  :realization
+  (:common-noun "drug"))
+|#
 
 #| An interesting deference between a block and a table is
 that you can't use the table as part of any of the standard
@@ -47,6 +56,8 @@ support a substantial number of blocks.
 ;;--- Interjections -- see ex. in model/sl/checkpoint/
 (sentential-interjection "good")
 (sentential-interjection "ok")
+(sentential-interjection "yes")
+
 
 ;;--- Verbs
 
@@ -101,8 +112,6 @@ support a substantial number of blocks.
      (:mumble ("push" svo :s agent :o theme))))
 
 
-
-
 (define-category push-together
   :mixins (with-an-agent)
   :binds ((items collection))
@@ -121,6 +130,33 @@ support a substantial number of blocks.
     ((:main-verb "put")
      (:mumble ("put" svo1o2 :o1 theme :o2 location))))
           
+;; maybe move up to mid-level..
+#|
+(define-category propose
+    :specializes achievement
+  :mixins (with-an-agent)
+  :binds ((statement  ))
+  :realization
+  ((:main-verb "propose")
+   (:mumble ("propose" svscomp :o statement))
+   (:tree-family )))
+
+(define-category show
+    :specializes achievement
+    :binds ((statement ))
+    :realization
+    ((:main-verb "show")
+     (:mumble ("show" svscomp :s ? :o statement))))
+
+(define-category suggest
+    :specializes achievement
+  :mixins
+  :binds
+  :realization
+  ((:main-verb "suggest")
+   (:mumble ("suggest" svscomp :s ? :o statement))))
+|#
+
 
 (defparameter *c3-syntactic-rules*
   (list 
