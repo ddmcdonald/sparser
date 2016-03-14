@@ -33,8 +33,10 @@
 
 (defun parameter-value (parameter)
   "Used by phrase builders to retrieve the value of a parameter"
-  (declare (special *phrase-parameter-argument-list*)) 
-  (cdr (assoc parameter *phrase-parameter-argument-list*)))
+  (declare (special *phrase-parameter-argument-list*))
+  (let ((value (cdr (assoc parameter *phrase-parameter-argument-list*))))
+    (landmark 'value-of-parameter parameter value)
+    value))
 
 (defun parameter-arg-list-from-dtn (dtn)
   "Given a dtn, lift the parameter/value information from
@@ -45,7 +47,7 @@
                                   (parameter symbol)
                                   (symbol (parameter-named symbol))))
                      (value (value cn)))
-                ;;(format t "~&   p: ~a  v: ~a" parameter value)
+                (landmark 'parameter+value parameter value)
                 (unless value 
                   (push-debug `(,cn ,parameter ,dtn)) 
                   (error "No value for parameter ~a" parameter))
@@ -87,6 +89,7 @@
         (*phrase-parameter-argument-list* 
          (pvp-to-list-of-parameter-value-conses (bound lp))))
     (declare (special *phrase-parameter-argument-list*))
+    ;(break "1 dtn = ~a" dtn)
     (build-rooted-phrase (definition phrase))))
 
 (defmethod instantiate-phrase-in-dtn ((lp partially-saturated-lexicalized-phrase)
@@ -100,6 +103,7 @@
     (setq *phrase-parameter-argument-list*
           (append (parameter-arg-list-from-dtn dtn)
                   *phrase-parameter-argument-list*))
+    ;(break "3 dtn = ~a" dtn)
     (build-rooted-phrase (definition phrase))))
 
 
@@ -108,32 +112,9 @@
   "All of the parameters are supplied by the dtn in its complement nodes"
   (let ((*phrase-parameter-argument-list* (parameter-arg-list-from-dtn dtn)))
     (declare (special *phrase-parameter-argument-list*))
+    ;(break "2 dtn = ~a" dtn)
     (build-rooted-phrase (definition phrase))))
 
-
-#| Old type-checking code
-  (let ((parameters (parameters-to-phrase phrase))
-        (param-arg-list (bound-parameters lp))
-        (links (down-links tpn)))
-    (mapcar #'(lambda (pair)
-                (unless (lemmap (cdr pair))
-                  (break "The bound-parameters are not simple")))
-            param-arg-list)
-    (dolist (link links)
-      (let ((parameter (link-label link))
-            (value (node link)))
-        (unless (assoc parameter param-arg-list :test #'eq)
-          ;; trust the bound-parameters, this is a redundancy that probably should
-          ;; be eliminated.
-          (etypecase value ;; check for valid values
-            (word)
-            (text-plan-node))
-          (push (cons parameter value)
-                param-arg-list))))
-    (dolist (parameter parameters)
-      (unless (assoc parameter param-arg-list :test #'eq)
-        (break "We're missing a value for the parameter ~a" parameter))))
-|#
    
 ;; Perhaps ignore this. The call to create-phrase-parameter-argument-list
 ;; invokes choice and choice-set machinery in /interpreters/realize that may
@@ -150,6 +131,11 @@
 (defun instantiate-phrase (phrase arguments)
   ;; Mostly here to quiet the compiler
   (old-instantiate-phrase phrase arguments))
+
+
+;;;---------------
+;;; rooted phrase
+;;;---------------
 
 (defun build-rooted-phrase (definition)
   (let*-with-dynamic-extent 
@@ -193,6 +179,10 @@
     comp-slot))
 
 
+;;;-----------------------------------------------------------
+;;; Actually instantiate the phrase by walking its definition
+;;;-----------------------------------------------------------
+
 (defun build-phrase (definition &optional phrasal-root-node)
   (let*-with-dynamic-extent ((remaining-definition definition)
                              (node-label (pop remaining-definition))
@@ -208,22 +198,25 @@
          ((null remaining-definition)
           (set-last-constituent node previous-position)
           (set-next previous-position node))
-      (set-name slot (name slot-label))
+      (set-name slot (name slot-label)) 
+      ;(format t "~&slot: ~a" (name slot-label))
       (set-labels slot (list slot-label))
       (set-visited-status slot 'new)
       (if (eq previous-position node)
         (set-links-for-first-constituent node slot)
         (set-links-for-slot previous-position slot))
+
       (let* ((contents (pop remaining-definition)))
+        ;(format t "~&contents: ~a" contents)
         (typecase contents
           (word (set-contents slot contents))
           ;; (pronoun (set-contents slot contents))
           (parameter
            (let ((value (parameter-value contents)))
-             (unless value
-               (push-debug `(,contents ,*phrase-parameter-argument-list*))
-               (break "parameter-value of ~a returned nil." contents))
              (typecase value
+               (null 
+                (push-debug `(,contents ,*phrase-parameter-argument-list*))
+                (break "parameter-value of ~a returned nil" contents))
                ((or word specification ttrace pronoun)
                 (set-contents slot value))
                (node (knit-phrase-into-tree slot value))
@@ -231,8 +224,10 @@
                 (let ((root (realize-dtn value)))
                   ;; Dispatch here is like the outer one. Consider abstracting
                   (typecase root
+                    (null
+                     (error "realization of ~a returned nil" value))
                     ((or word specification ttrace pronoun)
-                     (set-contents slot value))
+                     (set-contents slot root))
                     (node
                      (knit-phrase-into-tree slot root))
                     (otherwise
@@ -240,15 +235,33 @@
                              ~a~%  ~a" (type-of root) root)))))
                (saturated-lexicalized-phrase
                 (let ((root (instantiate-lexicalized-phrase value)))
-                  (knit-phrase-into-tree slot root))))))
+                  (knit-phrase-into-tree slot root)))
+               (otherwise
+                (let ((result (realize value)))
+                  ;; if there's no realization that will be noticed
+                  ;; and complained about inside the call to realize
+                  (if result
+                    (set-contents slot result)
+                    (else ;; so we shouldn't get here
+                      ;; but nothing wrong with extra care
+                      (push-debug `(,value ,contents ,slot))
+                      (error "Unhandled value: ~a  ~a"
+                             (type-of value) value))))))))
 
           (cons (let ((phrase-node (build-phrase contents)))
                   (knit-phrase-into-tree slot phrase-node)))
+
           (otherwise 
            (push-debug `(,contents ,slot ,node))
-           (mbug "Unexpected contents--~A" contents)))	
+           (mbug "Unexpected contents--~A" contents)))
+
         (when (keywordp (car remaining-definition))
-          (process-label-keywords slot))))
+          (process-label-keywords slot))
+
+        (let ((check (contents slot)))
+          (unless check
+            (error "No content added to slot ~a" slot))
+          #+ignore(format t "The content of ~a is ~a" slot check))))
     node))
 
 
@@ -324,3 +337,46 @@
           (push item position-list))))))
 
 
+(defvar *objects-reached-in-path* nil)
+
+(defun been-here-before? (item)
+  (when (memq item *objects-reached-in-path*)
+    (break "returned to ~a" item))
+  (push item *objects-reached-in-path*))
+
+(defun print-tree-path (root)
+  (setq *objects-reached-in-path* nil)
+  (trace-out-tree root))
+
+(defmethod trace-out-tree ((root phrasal-root)
+                           &optional (stream *standard-output*))
+  (been-here-before? root)
+  (format stream "~a -> " (name root))
+  (trace-out-tree (first-constituent root)))
+
+(defmethod trace-out-tree ((slot slot)
+                           &optional (stream *standard-output*))
+  (been-here-before? slot)
+  (format stream "~a -> " (name slot))
+  (trace-out-tree (contents slot))
+  (let ((next (next slot)))
+    (trace-out-tree next)))
+
+(defmethod trace-out-tree ((node node)
+                           &optional (stream *standard-output*))
+  (been-here-before? node)
+  (format stream "~a -> " (name node))
+  (trace-out-tree (contents node)))
+
+(defmethod trace-out-tree ((word word)
+                           &optional (stream *standard-output*))
+  (format stream "~a -> " word))
+
+(defmethod trace-out-tree ((pn pronoun)
+                           &optional (stream *standard-output*))
+  (format stream "~a -> " pn))
+
+(defmethod trace-out-tree ((unknown t)
+                           &optional (stream *standard-output*))
+  (declare (ignore stream))
+  (break "Need a mentod for ~a" (type-of unknown)))
