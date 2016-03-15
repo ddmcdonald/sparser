@@ -104,7 +104,7 @@
 ;;;------------------------------------
 
 (define-category  anonymous-agentive-action
-  :specializes linguistic
+  :specializes event
   :instantiates self
   :mixins (takes-neg))
 ;; Has sort of an anaphoric feel sometimes, 
