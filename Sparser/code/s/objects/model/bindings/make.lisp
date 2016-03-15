@@ -95,9 +95,12 @@ returning a new one.
   ;; bind-dli-variable returns the resulting individual as its first (primary) value
   ;; it returns the binding object as its second (secondary) value
   (declare (special *description-lattice*))
+  (when (consp var/name)
+    (setq value `(:variables ,var/name :value ,value))
+    (setq var/name 'under-determined))
   (if *description-lattice*
-    (find-or-make-lattice-subordinate individual var/name value category)
-    (old-bind-variable var/name value individual category)))
+      (find-or-make-lattice-subordinate individual var/name value category)
+      (old-bind-variable var/name value individual category)))
 
 (defun bind-variable (var/name value individual &optional category)
   "Standard way of binding a variable on an individual. What actually
