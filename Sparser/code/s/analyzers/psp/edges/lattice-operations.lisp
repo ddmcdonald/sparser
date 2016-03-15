@@ -62,7 +62,9 @@
   (let
       ((all-dlvvs nil))
     (maphash #'(lambda(k v)
+                 (declare (ignore k))
                  (maphash #'(lambda(kk vv)
+                              (declare (ignore kk))
                               (push vv all-dlvvs))
                           v))
              *dl-vv-from-variable*)
@@ -140,8 +142,8 @@
     (find-or-make-lattice-description-for-collection base) ;; not quite right -- ehat to do here?
     (let* ((lattice-cat-entry (dli-ref-cat base))
            (current-dli lattice-cat-entry)
-           (dl-vvs nil))
-      (declare (special lattice-cat-entry current-dll dll-vvs))
+           ) ;;(dl-vvs nil))
+      (declare (special lattice-cat-entry current-dll #|dll-vvs|#))
       ;; bindings = NIL can happen for VGs -- possibly because of the
       ;; creation of an individual for the referent-category in the
       ;; interpretation process
@@ -173,7 +175,9 @@
                (supers (indiv-all-supers new-dli)))
             (add-downlink ip new-dli)
             (setf (gethash ip supers) t)
-            (maphash #'(lambda (k h) (setf (gethash k supers) t)) (indiv-all-supers ip))))
+            (maphash #'(lambda (k h)
+                         (declare (ignore h))
+                         (setf (gethash k supers) t)) (indiv-all-supers ip))))
             
         (setf (indiv-restrictions new-dli) (list base))
 	(set-dli base new-dli))))
@@ -335,6 +339,7 @@
     (if (hash-table-p val-supers)
 	(then
 	  (maphash #'(lambda (k h)
+                       (declare (ignore h))
 		       (when (interesting-super? k)
 			 ;;(pushnew sub (gethash k subs)) record all instances so we can get the most recent
 			 (let ((ksubs (gethash k subs)))
