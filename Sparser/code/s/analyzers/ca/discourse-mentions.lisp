@@ -19,8 +19,11 @@
    mention locations, but may have other uses such as mergine
    with or replacing the sentence list of individuals.")
 
-(defmethod get-history-of-mentions ((i individual))
+(defun mention-history (i)
   (gethash i *lattice-individuals-to-mentions*))
+
+(defun (setf mention-history) (i val)
+  (setf (gethash i *lattice-individuals-to-mentions*) val))
 
 (defvar *lattice-individuals-mentioned-in-paragraph* nil
   "List of mentions within the current paragraph. Most recent
@@ -33,6 +36,7 @@
     :documentation "Backpointer to the individual which is the base description")
    (ci :initarg :ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
+   (restriction :accessor mention-restriction)
    (source :initarg :ms :accessor mention-source)
    (maximal :initarg :max :accessor maximal? :initform :unknown)
    (location-in-paragraph :initarg :loc :accessor mentioned-where
@@ -60,21 +64,23 @@
   (print-unreadable-object (m stream) ;; not :type t
     (let ((i (base-description m))
           (location (mentioned-where m)))
-      (format stream "i~a " (indiv-uid i))
+      (format stream "mention: ~s" i)
       (cond
-       ((consp location) ;; w/in paragraph
-        (typecase (car location)
-          (position
-           (format stream "p~a p~a"
-                   (pos-token-index (car location))
-                   (pos-token-index (cdr location))))
-          (integer
-           (format stream "~a ~a"
-                   (car location) (cdr location)))
-          (otherwise
-           (format stream " ill-formed location"))))
-       (t
-        (format stream "?"))))))
+	((mention-source m)
+	 (format stream "~s" (mention-source m)))
+	((consp location) ;; w/in paragraph
+	 (typecase (car location)
+	   (position
+	    (format stream "p~a p~a"
+		    (pos-token-index (car location))
+		    (pos-token-index (cdr location))))
+	   (integer
+	    (format stream "~a ~a"
+		    (car location) (cdr location)))
+	   (otherwise
+	    (format stream " ill-formed location"))))
+	(t
+	 (format stream "?"))))))
 
 (defun show-mention (m)
   (list (base-description m) (retrieve-surface-string (base-description m)) (mention-source m)))
@@ -185,7 +191,8 @@
 		;; "this auto-inhibited fate" w/ no referent for "this"
 		(tr :exending-span-of-mention top-mention edge)
 		(setf (mention-source top-mention) edge)
-		(setf (mentioned-where top-mention) new-loc)))
+		(setf (mentioned-where top-mention) new-loc)
+		(setf (edge-mention edge) top-mention)))
 	     (t
 	      (tr :extending-with-subsuming-instance i edge)
 	      (make-new-mention entry i edge))))
@@ -259,15 +266,13 @@
     ((edge-p source) (pushnew (cat-name (edge-form source)) *edge-forms*)))
   (let* ((location (encode-mention-location source))
          (m (make-instance 'discourse-mention
-			   :i i :loc location :ms source))
-         (previous-mentions (get-history-of-mentions i)))
+			   :i i :loc location :ms source)))
     (tr :making-new-mention m)
     (when subsumed-mention
       (setf (subsumes-mention m) subsumed-mention)
       (setf (subsumed-by-mention subsumed-mention) m)
       (update-instance-within-sequence m subsumed-mention source))
-    (setf (gethash i *lattice-individuals-to-mentions*)
-          (cons m previous-mentions))
+    (push m (mention-history i))
     (push m *lattice-individuals-mentioned-in-paragraph*)
     (if (edge-p source) (setf (edge-mention source) m))
     (extend-category-dh-entry entry m)
