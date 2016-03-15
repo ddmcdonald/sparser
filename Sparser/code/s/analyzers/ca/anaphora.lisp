@@ -108,22 +108,26 @@
                  (when operations
                    (cat-ops-instantiate operations))))
 
-           (unless (irrelevant-category-for-dh primary-category obj)
-             (when instantiates
-               ;; Besides being relevant, a category definition
-               ;; has to mark how individuals of that category should
-               ;; be indexed in the discourse history -- what
-               ;; category do the "instantiate" (which could be :self)
-               (record-instance-within-sequence obj edge)
-               (update-discourse-history instantiates
-                                         obj edge)
-               (dolist (category other-categories)
-                 (when category
-                   ;; there's a Nil in the list sometimes
-                   (update-category-discourse-history 
-                    category obj edge)))))))
+	   (cond
+	     ((and (irrelevant-category-for-dh primary-category obj) instantiates)
+	      ;; Besides being relevant, a category definition
+	      ;; has to mark how individuals of that category should
+	      ;; be indexed in the discourse history -- what
+	      ;; category do the "instantiate" (which could be :self)
+	      (record-instance-within-sequence obj edge)
+	      (update-discourse-history instantiates
+					obj edge)
+	      (dolist (category other-categories)
+		(when category
+		  ;; there's a Nil in the list sometimes
+		  (update-category-discourse-history 
+		   category obj edge))))
+	     (*use-discourse-mentions*
+	      (update-discourse-history instantiates obj edge)))))
 
-        (referential-category )
+        (referential-category
+	 (when *use-discourse-mentions*
+	      (update-discourse-history obj obj edge)))
         (mixin-category )
         (category )
 ;        (section-marker )
@@ -157,6 +161,7 @@
 ;(setq *trace-discourse-history* t) category::person
 ;(setq *trace-discourse-history* nil)
 ; (trace-pronouns) -- managing the entries
+
 
 (defun update-discourse-history (category new-instance edge)
   ;; called from add-subsuming-object-to-discourse-history when it has
@@ -544,8 +549,7 @@ saturated? is a good entry point. |#
   (unless (individual-p i)
     (error "Argument must be an individual.~%~A is not" i))
   (cond
-   (*description-lattice*
-    (get-history-of-mentions i))
+   (*description-lattice* (mention-history i))
    (t ;; conventional, rigid individuals
     (let* ((primary-category (car (indiv-type i)))
            (operations (cat-operations primary-category))
@@ -767,7 +771,7 @@ saturated? is a good entry point. |#
   (cond
    (*description-lattice*
     ;; 1st find the mention, then modify it.
-    (let ((mentions (get-history-of-mentions i)))
+    (let ((mentions (mention-history i)))
       (push-debug `(,edge ,mentions ,i))
       (let ((m (search-mentions-by-position mentions edge)))
         (when m
