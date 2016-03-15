@@ -36,6 +36,7 @@
 (defparameter *def-realization-keywords*
   '(:verb :noun :adj :etf :s :o :c :m ;;:alt-s  :alt-o 
     :binds :realization
+    :control-relations
     :prep :by
     :premod
     :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp :in :into 
@@ -47,7 +48,7 @@
     :whethercomp :with :within :without))
 
 (defparameter *slot-keywords*
-  '(:s :o
+  '(:s :o 
     ;;:alt-s :alt-o
     :m :premod :about :across :after :against :among :as :as-comp :at :before :between :during :for :from :ifcomp 
     :by :in :into :like :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
@@ -228,6 +229,7 @@
 
 (defun decode-realization-parameter-list (category
                                           &key etf verb noun adj
+					    control-relations  
 					    ;; s o ;; no longer arguments because they can be duplicated for ambiguity
 					    c
                                           prep ;; owned preposition
@@ -255,6 +257,7 @@
          (m-pat (find-subcat-pattern :m sf))
          substitution-map
          word-map)
+    (setf (control-relations sf) control-relations)
     (dolist (schema-name etf)
       ;; Iterate through the etf, adding to the substituions and word list
       (let* ((rschema (get-realization-scheme schema-name))
