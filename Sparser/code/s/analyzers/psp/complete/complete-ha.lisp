@@ -76,7 +76,9 @@
 ;;;--------
 
 (defparameter *diagnose-consp-referents* nil)
-(defparameter *use-discourse-mentions* t)
+
+(defparameter *use-discourse-mentions* t
+  "This parameter turns on the discourse-mention mechanism")
 
 
 (defun complete-edge/hugin (edge)
@@ -103,11 +105,11 @@
   ;; Should this be inside the subsumption check ?
   (note-surface-string edge)
 
-  (when *include-model-facilities*
-    (when (and *pronouns* ;; the module is loaded
-               (or *use-discourse-mentions*
-                   *do-anaphora*)) ;; we've not deliberately turned it off
-      (add-subsuming-object-to-discourse-history edge)))
+  (when (or *use-discourse-mentions*
+	    (and *include-model-facilities*
+	     *pronouns* ;; the module is loaded
+	     *do-anaphora*)) ;; we've not deliberately turned it off
+    (add-subsuming-object-to-discourse-history edge))
 
   (update-mention-links edge)
   (update-definite-determiner edge)
