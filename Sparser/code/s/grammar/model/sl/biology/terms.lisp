@@ -282,13 +282,15 @@
       (:noun "ability" :adj "able"
              :to-comp ability
              :of subject
-             :to ability))
+             :to ability
+	     :control-relations (subject ability)))
 
 (define-category capability :specializes ability
   :restrict ((subject bio-entity))
   :realization
   (:noun "capability" :adj "capable"
-	 :of ability))
+	 :of ability
+	 :control-relations (subject ability)))
 
 (noun "abnormality" :super disease)
 
