@@ -84,7 +84,8 @@
       category?")
    (subcategorizations :initform nil :accessor subcat-patterns
     :documentation "A list of subcategorization specifications
-      that apply to the word sense that this frame is for."))
+      that apply to the word sense that this frame is for.")
+   (control-relations :initarg :controls :initform nil :accessor control-relations))
   (:documentation "A single pattern among what may be several
     alternative subcategorization patterns for a given word."))
 
@@ -101,6 +102,15 @@
               `(for the form ,(applies-to sc)))
              (t
               "unknown sub-categorization source")))))
+
+(defmethod control-relations ((cat category))
+  (and (get-subcategorization cat)
+       (control-relations (get-subcategorization cat))))
+
+(defmethod control-relations ((i individual))
+  (control-relations (itype-of i)))
+
+    
 
 (defun dsc (x)
   (display-subcategorization x))
@@ -205,11 +215,6 @@
             as frame = (get-subcategorization sc)
             when frame
             do (loop for sp in (subcat-patterns frame)
-		  unless (and
-			  nil ;; allow for ambiguous subject and object
-			  (member (subcat-label sp) '(:subject :object))
-			  (find-if #'(lambda(x)(eq (subcat-label x) (subcat-label sp)))
-				   patterns))
                  do (pushnew sp patterns :test #'subcat-pattern-equal))
             finally (return (nreverse patterns))))))
 
@@ -512,13 +517,7 @@
      (edge-string (right-edge-for-referent)))))
 
 (defun edge-for-referent (ref)
-  (cond
-   ((eq ref (edge-referent (left-edge-for-referent)))
-    (left-edge-for-referent))
-   ((eq ref (edge-referent (right-edge-for-referent)))
-    (right-edge-for-referent))
-   (t
-    (break "edge-for-referent"))))
+  (mention-source (car (mention-history ref))))
 
 (defun save-cat-string (cat cat-string)
   (push cat-string (gethash cat *ref-cat-text*)))
