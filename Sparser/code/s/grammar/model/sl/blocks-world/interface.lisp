@@ -380,18 +380,46 @@ more contextually appropriate / fluent phrase may be better
   We find-or-make their collection and then make a
   DTN. If the collection is in focus we pronominalize,
   otherwise we enumberate them."
-  (let* ((collection (sp::find-or-make-individual 'sp::collection
+  (let ((collection (sp::find-or-make-individual 'sp::collection
                                                   :items items))
          (dtn (make-dtn :referent collection)))
     (push-debug `(,collection ,items))
-    (cond
-     ((in-focus? collection)
-      (setf (resource dtn) ;;(wrap-pronoun 'third-person-plural)
-            (mumble-value 'third-person-plural 'pronoun)))
-     ;; "the (two) blocks"
+    (plan-reference-to-collection collection)))
+
+(defun plan-reference-to-collection (collection)
+  (cond
+   ((in-focus? collection)
+    (let ((dtn (make-dtn
+                :referent collection
+                :resource (mumble-value 'third-person-plural 'pronoun))))
+      ;; history done by general-np-bundle-driver
+      dtn))
+   ;; How do we decide between describing the collection
+   ;; and enumerating it?
+
+   (t ;; "the (two) blocks" 
+    ;; Can omit the count is it's known
+    ;; Can use just the number if the fact of the collection is known
+    (let* ((type (sp::value-of 'sp::type collection))
+           (count (sp::value-of 'sp::number collection)) ;; simple Lisp number
+           (phrase (get-lexicalized-phrase
+                    (symbol-name (sp::cat-symbol type))))
+           (dtn (make-dtn :referent collection
+                          :resource phrase)))
+      (plural dtn) ;; "blocks"
+
+      ;; If we want to omit the number, that goes here.
+;      (let ((number (reference-to-a-number count)))
+;        ;; now we have to set it up to attach as a determiner
+;        number)
+
+      dtn))
+
      ;; enumeration -- e.g. for the drugs in BioC dialog
-     (t (error "No defined collection strategy applied")))
-    dtn))
+     (t (error "No defined collection strategy applied"))))
+
+
+
 
 ;; (location on ,*the-table*)
 (defun plan-reference-to-prepositional-location (sexp)
