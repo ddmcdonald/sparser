@@ -26,8 +26,8 @@
 ;; This whole loader is gated on *location* by the master loader
 
 
+(gload "places;object")
 
-  (gload "places;object")
 (gate-grammar *locations-core*
   (gload "places;directions")
   (gload "places;relational")

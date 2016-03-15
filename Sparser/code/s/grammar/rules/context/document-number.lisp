@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1993,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2012,2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "document number"
 ;;;   Module:  "analyzers;context:"
-;;;  Version:  December 1993 (4/12)
+;;;  Version:  March 2016
 
 ;; populated 6/25/92
 ;; (12/28 v2.3) stubbed another case
@@ -16,9 +16,9 @@
 ;;; Assession numbers
 ;;;-------------------
 
-(define-category  Assession-number
+(define-category  assession-number
   :specializes nil
-  :instantiates nil
+  :instantiates original-document-structure
   :binds ((date . date)
           (index-number . number))
   :index (:sequential-keys date index-number))

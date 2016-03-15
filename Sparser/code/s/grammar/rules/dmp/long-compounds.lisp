@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "long compounds"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  November 1994
+;;;   version:  March 2016
 
 ;; initiated 11/16/94 v2.3 by consolidating from other files
 
@@ -15,7 +15,7 @@
 ;;;------------------------------------------------------------------
 
 (define-category  unanalyzed-compound
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((terms . sequence))
   :index (:key terms))

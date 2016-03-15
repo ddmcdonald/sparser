@@ -1,13 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "of"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  October 1994
+;;;   version:  March 2016
 
 ;; initiated 8/23/94 v2.3, broken out from [sibling relations]
 ;; 9/28 moved out refernt-of-segment to [segments].  10/5 added gate to keep it
-;; from acting in other modes than dm&p.  10/24 def head was mult-edges
+;; from acting in other modes than dm&p.  10/24/94 def head was mult-edges
 
 (in-package :sparser)
 
@@ -64,7 +64,7 @@
 
 
 (define-category  genitive
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((owner . anything)  ;; the color of [window borders]
           (owned . anything)) ;; the [color] of window borders
@@ -118,7 +118,8 @@
 
 ;; // Could we have a sensible rule? //could we drive from it rather
 ;; than from this treetop aftion?
-(define-category of-phrase)
+(define-category of-phrase
+  :specializes text-relationship)
 
 (defun span-of-phrase (referent edge-before edge-after)
   (make-edge-over-long-span

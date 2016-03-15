@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "article"
 ;;;   Module:  "grammar;rules:context:"
-;;;  Version:  September 1995
+;;;  Version:  March 2016
 
 ;; initiated 12/15/93 v2.3.  Substantial work started 8/17/94. Tweeking ..9/15
-;; 5/13/95 added permanent-instances wrapper.  9/19 filled out Deallocate-current
+;; 5/13/95 added permanent-instances wrapper.  9/19/95 filled out Deallocate-current
 ;; -article stub and reviewed Set-the-current-article
 
 (in-package :sparser)
@@ -34,7 +34,7 @@
 
 (define-category  text-under-analysis
   :instantiates nil
-  :specializes nil
+  :specializes original-document-structure
   :binds ((uid  :primitive (:or pathname integer))
           (file :primitive pathname)
           )

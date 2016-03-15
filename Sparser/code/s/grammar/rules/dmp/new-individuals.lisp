@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995, 2010  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2010,2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:  "new individuals"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  1.4 February 2007
+;;;   version:  March 2016
 
 ;; initiated 3/28/94 v2.3
 ;; 1.0 (8/4) Redesigning the category structure for terms
@@ -24,12 +23,19 @@
 (defvar *VERBS/DH*)
 (defvar *NON-VERBS/DH*)
 
+
+(define-category text-relationship
+  :specializes linguistic
+  :documentation "Provides a common category for all
+  of the categories used in the DM&P process.")
+
+
 ;;;-------------------------------------------------------
 ;;; the category all the individuals will be instances of
 ;;;-------------------------------------------------------
 
 (define-category  term
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((word  :primitive word)
           (rewrite-rule  :primitive cfr)

@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:  "segments"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  February 2007
+;;;   version:  March 2016
 
 ;; initiated 3/28/94 v2.3.  (7/12) added interesting labels to the segments
 ;; (8/2) tweeked printer definitions, cont ... 8/10.  8/23 added verb+object-segment
@@ -35,7 +34,7 @@
 
 
 (define-category  segment
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((form . anything)
           (ends-at    :primitive fixnum)
@@ -115,26 +114,42 @@
 ;;; heuristic labels for segments
 ;;;-------------------------------
 
-(define-category  one-word-segment)
-(define-category  two-word-segment)
-(define-category  multi-word-segment)
+(define-category  one-word-segment
+  :specializes segment)
+(define-category  two-word-segment
+  :specializes segment)
+(define-category  multi-word-segment
+  :specializes segment)
 
-(define-category  np-segment)
-(define-category  n/v-segment)
-(define-category  verb-segment)
-(define-category  participle-segment)
-(define-category  past-tense-verb-segment)
-(define-category  infinitive-segment)
-(define-category  adverb-segment)
-(define-category  capitalized-segment)
+(define-category  np-segment
+  :specializes segment)
+(define-category  n/v-segment
+  :specializes segment)
+(define-category  verb-segment
+  :specializes segment)
+(define-category  participle-segment
+  :specializes segment)
+(define-category  past-tense-verb-segment
+  :specializes segment)
+(define-category  infinitive-segment
+  :specializes segment)
+(define-category  adverb-segment
+  :specializes segment)
+(define-category  capitalized-segment
+  :specializes segment)
 
-(define-category  subj+verb-segment)
-(define-category  subj+vp-segment)
-(define-category  verb+object-segment)
+(define-category  subj+verb-segment
+  :specializes segment)
+(define-category  subj+vp-segment
+  :specializes segment)
+(define-category  verb+object-segment
+  :specializes segment)
 
-(define-category section-segment)
+(define-category section-segment
+  :specializes segment)
 
-(define-category  no-analysis)
+(define-category  no-analysis
+  :specializes segment)
 
 
 

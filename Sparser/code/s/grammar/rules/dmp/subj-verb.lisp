@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "subj+verb"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  August 1994
+;;;   version:  March 2016
 
 ;; initiated 8/23/94 v2.3, broken out from [sibling relations]
 
@@ -14,7 +14,7 @@
 ;;;--------------------------------------------
 
 (define-category  subject-verb
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((subject)
           (verb))

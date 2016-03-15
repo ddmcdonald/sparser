@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2015 David D. McDonald 
+;;; Copyright (c) 2010-2016 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.4 August 2015
+;;;  version:  March 2016
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -136,6 +136,17 @@
  meta-properties if we were to get serious about following Guarino &
  Welty's distinctions in their 'A Formal Ontology of Properties' paper
  from 2000.")
+
+(define-category linguistic
+  :instantiates nil
+  :specializes abstract
+  :documentation
+  "A converting class for categories that we create and instantiate
+  whose meaning is a linguistic or text-organizational structure
+  or imposes a linguistic relationship. Note that as a rule many
+  of the relations and organizing structures that were done with
+  categories earlier are now being done with conventional structures
+  like CLOS classes.")
 
 
 ;;;-----------------------------------------------------

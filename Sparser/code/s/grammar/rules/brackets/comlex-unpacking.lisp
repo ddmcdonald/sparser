@@ -115,6 +115,7 @@ places. ]]
 (defparameter *complain-about-words-missing-from-comlex* nil)
 
 (defmethod standalone-lexicon-unpacker ((s string))
+  (declare (special *primed-words*))
   (let ((w (word-named s)))
     (unless w (error "There is no defined word spelled ~s" s))
     (let ((entry (gethash s *primed-words*)))
@@ -384,6 +385,7 @@ places. ]]
   (get-comlex-entry (word-symbol w)))
 
 (defmethod get-comlex-entry ((s symbol))
+  (declare (special *primed-words*))
   (gethash (symbol-name s) *primed-words*))
 
 

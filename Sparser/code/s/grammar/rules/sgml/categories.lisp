@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991,1992,1993,1994,1995,1996 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996, 2016 D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:SGML:"
-;;;  Version:  September 1995
+;;;  Version:  March 2016
 
 ;; initiated 10/19/91, tweeked 10/21,10/30. fixed typo 10/31.
 ;; Added section-marker 5/22/92.  Added html category set 9/20/95
@@ -12,7 +12,8 @@
 (in-package :sparser)
 
 
-(define-category section-marker)
+(define-category section-marker
+  :specializes original-document-structure)
   ;; needed for the mechanics of defining sgml tags
 
 
@@ -20,15 +21,20 @@
 ;;; These are what go over the whole phrase
 ;;;-----------------------------------------
 
-(def-category SGML-tag/start :lattice-position :non-terminal)
-(def-category SGML-tag/end   :lattice-position :non-terminal)
+(define-category SGML-tag/start
+  :specializes original-document-structure)
+(define-category SGML-tag/end
+  :specializes original-document-structure)
+
 
 ;;;----------------------------------------------------
 ;;; These labels are for spanning the tag words,
 ;;; not the whole tag phrase within its angle brackets 
 ;;;----------------------------------------------------
 
-(def-category SGML-label :lattice-position :non-terminal)
+(define-category SGML-label
+  :specializes original-document-structure)
+
 
 
 
@@ -40,7 +46,7 @@
 
 (define-category  html-markup-element
   :instantiates nil
-  :specializes nil )
+  :specializes original-document-structure )
 
 
 (define-category  html-attribute

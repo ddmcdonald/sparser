@@ -381,10 +381,8 @@ more contextually appropriate / fluent phrase may be better
   DTN. If the collection is in focus we pronominalize,
   otherwise we enumberate them."
   (let ((collection (sp::find-or-make-individual 'sp::collection
-                                                  :items items))
-         (dtn (make-dtn :referent collection)))
-    (push-debug `(,collection ,items))
-    (plan-reference-to-collection collection)))
+                                                 :items items))
+    (plan-reference-to-collection collection))))
 
 (defun plan-reference-to-collection (collection)
   (cond
@@ -401,7 +399,7 @@ more contextually appropriate / fluent phrase may be better
     ;; Can omit the count is it's known
     ;; Can use just the number if the fact of the collection is known
     (let* ((type (sp::value-of 'sp::type collection))
-           (count (sp::value-of 'sp::number collection)) ;; simple Lisp number
+           ;;(count (sp::value-of 'sp::number collection)) ;; simple Lisp number
            (phrase (get-lexicalized-phrase
                     (symbol-name (sp::cat-symbol type))))
            (dtn (make-dtn :referent collection

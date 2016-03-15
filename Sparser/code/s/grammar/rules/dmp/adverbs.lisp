@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1995,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2014,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "adverbs"
 ;;;   Module:  "grammar;rules:DM&P:"
-;;;  version:  September 2014
+;;;  version:  March 2016
 
 ;; initiated 12/1/94.  Added syntax rule 12/30.  Fixed edge-vector case 1/3/95.
 ;; Moved the syntax rule to a standard place 9/7/14. 
@@ -15,7 +15,7 @@
 ;;;--------
 
 (define-category  adverb-verb
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((verb)
           (adverb))

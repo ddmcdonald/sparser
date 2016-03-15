@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1994-1997  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; $Id$
 ;;;
 ;;;      File:  "loader"
 ;;;    Module:  "grammar;rules:DM&P:"

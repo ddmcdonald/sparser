@@ -1,10 +1,10 @@
-;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP)
-;;; copyright (c) 1991-2003,2010-2015 David D. McDonald  -- all rights reserved
+;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
+;;; copyright (c) 1991-2003,2010-2016 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   December 2015
+;;;  Version:   March 2016
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -84,8 +84,9 @@
 ;; *external-testing-files* ahead of other two forms in the testing section
 ;; so it can override parameter values if it needs to. 12/1/15 Cleaned up now
 ;; meaningless alternative load files on the value of *lattice-points*. Removed
-;; the commented out C3 gates.
-;; 1/14/16 Added pre- and post-load hooks.
+;; the commented out C3 gates. 1/14/16 Added pre- and post-load hooks. Moved in
+;; the upper model just before the loading of document objects because there
+;; are now category definitions there that are properly linked to it.
 
 (in-package :sparser)
 
@@ -130,9 +131,11 @@
 (lload "objects;forms;loader")
 (lload "objects;chart;generics;loader")
 
-(when *include-model-facilities*
-  (lload "objects;model;loader")
-  (lload "objects;doc;loader"))
+(lload "objects;model;loader") ;; defines Krisp
+(gate-grammar *kinds*
+  (gload "kinds;1st-loader")) ;; defines the upper model
+
+(lload "objects;doc;loader") ;; refers to upper categories
 
 (lload "objects;situation;loader")
 

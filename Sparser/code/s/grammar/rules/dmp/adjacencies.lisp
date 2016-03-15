@@ -1,13 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "adjacencies"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  November 1994
+;;;   version:  March 2016
 
 ;; initiated 8/23/94 v2.3, broken out from [sibling relations]
 ;; 9/27 adding a category to hold unanalyzed n-term sequences.
-;; 0.1 (11/13) hacked to force pairs to be reified when first seen.
+;; 0.1 (11/13/94) hacked to force pairs to be reified when first seen.
 
 (in-package :sparser)
 
@@ -83,7 +83,7 @@
 
 
 (define-category  Paired-in-long-segment
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((pmt/first)     ;; the one on the left of the pair
           (pmt/second))   ;; the one on the right

@@ -1,13 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "infinitives"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  0.1 September 1994
+;;;   version:  March 2016
 
 ;; initiated 8/2/94 v2.3.  8/25 added an object and more cases
 ;; tweeked ...9/6
-;; 0.1 (9/12) put in gates for when to do the conversion to verbs automatically
+;; 0.1 (9/12/94) put in gates for when to do the conversion to verbs automatically
 ;;      and when to query first.
 
 (in-package :sparser)
@@ -37,7 +37,7 @@
 #| citations:   "NP uses to highlight NP"    |#
 
 (define-category  infinitive-relation
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((verb))
   :index (:temporary :key verb))

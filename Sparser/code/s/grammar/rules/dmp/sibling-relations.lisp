@@ -1,14 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "sibling relations"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  July 1994
+;;;   version:  March 2016
 
 ;; initiated 3/28/94 v2.3. Started fleshing it out 7/13. Cont. 8/4.
 ;; Added 'of' 8/7.  added adjacent-in-multiterm-seg 8/8.  added 
 ;; nil-checks 8/12. Patching for spurious cases in the segments passed
-;; to 'of' routine ...8/23
+;; to 'of' routine ...8/23/94
 
 ;;///////// 2/3/10  It appears that this is never loaded anymore and was
 ;; unpacked into several files
@@ -71,7 +71,7 @@
 
 
 (define-category  Paired-in-long-segment
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((pmt/first)     ;; the one on the left of the pair
           (pmt/second))   ;; the one on the right
@@ -153,7 +153,7 @@
 ;;;--------------------------------------------
 
 (define-category  subject-verb
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((subject)
           (verb))

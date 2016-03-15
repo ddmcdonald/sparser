@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1998,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1998,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.7 January 2015
+;;;  Version:  March 2016
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -45,7 +45,7 @@
 ;; Needs a better name
 (define-category  tense/aspect-vector
   :instantiates nil
-  :specializes  abstract
+  :specializes  linguistic
   :binds ((occurs-at-moment) ;; future, past
           (modal)
           (present)
@@ -59,7 +59,7 @@
 
 (define-category  tense/aspect
   :instantiates nil
-  :specializes  abstract)
+  :specializes  linguistic)
 
 
 (define-category  future
@@ -104,7 +104,7 @@
 ;;;------------------------------------
 
 (define-category  anonymous-agentive-action
-  :specializes event
+  :specializes linguistic
   :instantiates self
   :mixins (takes-neg))
 ;; Has sort of an anaphoric feel sometimes, 

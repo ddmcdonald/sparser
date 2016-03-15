@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "sections"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.1 November 1994
+;;;  Version:  March 2016
 
 ;; initiated 8/17/94 v2.3
 ;; 0.1 (11/30) Added token-index variable and sort routine
@@ -17,7 +17,7 @@
 
 (define-category  section-object     ;; "section" is a form-category (?)
   :instantiates nil
-  :specializes nil
+  :specializes original-document-structure
 
           ;; These v/rs are too complex for the implemented decoder 
   :binds ((type) ;;  :primitive (:or section-marker keyword))

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "tracking"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  July 1994
+;;;   version:  March 2016
 
 ;; initiated 7/27/94 v2.3
 
@@ -15,7 +15,7 @@
 
 (define-category  subsequent-reference
   :instantiates nil
-  :specializes nil )
+  :specializes text-relationship )
 
 
 ;; This is tricky since there will typically be several edges made for

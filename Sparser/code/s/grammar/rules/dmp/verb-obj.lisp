@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "verb+obj"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  November 1994
+;;;   version:  March 2016
 
 ;; initiated 8/23/94 v2.3, broken out from [sibling relations].
-;; Tweeked 11/21
+;; Tweeked 11/21/94
 
 (in-package :sparser)
 
@@ -15,7 +15,7 @@
 ;;;------------------------------------------
 
 (define-category  verb-object
-  :specializes nil
+  :specializes text-relationship
   :instantiates self
   :binds ((verb)
           (object))

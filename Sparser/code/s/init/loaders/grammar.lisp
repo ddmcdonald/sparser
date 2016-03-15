@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2000,2010-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2000,2010-2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  December 2015
+;;;   version:  March 2016
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -59,7 +59,7 @@
 ;; in the categories that are defined with the words so moved kinds;1st-loader ahead
 ;; of words. 10/6/15 added blocks-world. 12/3/15 added mid-level. 12/23/15 put in
 ;; special-case aspect of switch settings at very beginning before any individuals
-;; are created.
+;; are created. 3/15/16 Moved kinds 1st loader out to the master loader.
 
 (in-package :sparser)
 
@@ -87,9 +87,6 @@ omitted and then run (perhaps) after the image has been launched."
 
   (gate-grammar *tree-families*
     (gload "tree-families;shortcut-loader"))
-
-  (gate-grammar *kinds*
-    (gload "kinds;1st-loader")) ;; defines the upper model
 
   (gate-grammar *general-words*
     (gload "words;loader")
