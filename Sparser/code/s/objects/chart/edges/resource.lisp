@@ -344,5 +344,5 @@
   (setf (edge-right-daughter edge)  nil)
   (setf (edge-used-in edge)         nil)
   (setf (edge-constituents edge)    nil)
-  (setf (edge-spanned-words edge)   nil))
-
+  (setf (edge-spanned-words edge)   nil)
+  (setf (edge-mention edge) nil))
