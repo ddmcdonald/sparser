@@ -54,11 +54,44 @@ Functional-effect-of(M, active(K))
 ;;; experiments (-not- the equivalent messages)
 ;;;----------------------------------------------
 
-;; "a drug to target KRAS" (say (drug-targeting-kras))
+
 
 (define-word "KRAS" (proper-noun))
 (define-word "Raf" (proper-noun))
 
+#|
+(defun pancreatic-cancer-patient ()
+  "Singular. How to do compound nouns?"
+  (let ((patient (noun "patient"))
+       )))
+
+(defun percent-of-something ()
+   (let ((percent (noun "percent"))
+	 (number ?})
+
+	 |#
+
+(defun pancreatic-cancer ()
+  (let ((pancreatic (adjective "pancreatic"))
+	(cancer (noun "cancer")))
+    (let ((dtn (make-dtn :resource cancer)))
+      (make-adjunction-node pancreatic dtn)
+      dtn)))
+
+ 
+
+
+;; Not ideal. For percents, 'of' should be complement	 
+(defun of-something (something)
+  (let ((dtn (make-dtn :resource (prep "of")
+		       :referent 'of-something)))
+    (make-complement-node 'prep-object something dtn)
+    dtn))
+
+
+
+
+;; "a drug to target KRAS" (say (drug-targeting-kras))
 
 (defun drug-targeting-kras ()
   "Makes an untensed clause. Comes out as an infinitive"
