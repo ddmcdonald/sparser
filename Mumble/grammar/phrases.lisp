@@ -2000,6 +2000,34 @@
    sentence s))
    
 
+;;;-----------------------------------
+;;; constructions with dummy subjects
+;;;-----------------------------------
+
+;; "There is a cat on the mat" ("On the mat is a cat")
+
+(define-phrase There-be-s-comp (s c)
+  (clause :set-state (:aux-state initial)
+    subject "there"
+    predicate (vp
+               verb "be"
+               subject s :additional-labels (nominative) ;;?? objective ??
+               complement-of-be c
+		 :additional-labels (objective))))
+
+;; Hard to sort out whether there should be other xomplwmwnra
+;; that we substitute into or whether that material is 
+;; attached to the subject (the cat) as a modifier.
+
+;; This is a cat
+(define-phrase There-be-s (s)
+  (clause :set-state (:aux-state initial)
+    subject "there"
+    predicate (vp
+               verb "be"
+               subject s :additional-labels (nominative)))) ;;?? objective ??
+
+
 
 
 ;;;---------------------------------------------------------------------
