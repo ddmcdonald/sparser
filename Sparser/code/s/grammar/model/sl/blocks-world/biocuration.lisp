@@ -64,7 +64,7 @@ Functional-effect-of(M, active(K))
   "Makes an untensed clause. Comes out as an infinitive"
   (let* ((verb-resource (verb "target"))
          (kras-resource (noun "KRAS" 'proper-name))
-         (drug-dtn (kind (singular (noun "drug")))))
+         (drug-dtn (noun "drug")))
     (let ((dtn (make-instance 'derivation-tree-node
                  :referent 'target-kras
                  :resource verb-resource)))
