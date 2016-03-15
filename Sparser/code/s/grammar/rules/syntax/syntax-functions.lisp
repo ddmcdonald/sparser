@@ -159,6 +159,11 @@
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
 
+(define-lambda-variable 
+  'under-determined ;; name
+    nil ;; used to hold information on ambiguous variable bindings
+  category::top)
+
 
 
 
@@ -371,31 +376,10 @@
     (push-debug `(,qualifier ,head))
     (break "check: qualifier = ~a~
    ~%       head = ~a" qualifier head))
-  (cond
-    (*subcat-test*
      (or
       (call-compose qualifier head)
       (link-in-verb+ing qualifier head)))
-    (t
-     (or (call-compose qualifier head)
-	 ;; This case is to benefit marker-categories
-	 (cond
-	   ((category-p head)
-	    (setq head (individual-for-ref head))
-	    (or
-	     (call-compose qualifier head)
-	     (link-in-verb+ing qualifier head)))
-	   (t
-	    (setq head (individual-for-ref head))
-	    (link-in-verb+ing qualifier head)))))))
 
-(defun create-predication-by-binding (var np-ref vp-ref source)
-  (let
-      ((new-predication
-	(bind-dli-variable var np-ref vp-ref)))
-    (create-discourse-mention new-predication source)
-    ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
-    new-predication))
 
 (defun link-in-verb+ing (qualifier head)
   (let ((subject (subject-variable qualifier)))
@@ -408,6 +392,14 @@
 							   (list 'link-in-verb+ing (parent-edge-for-referent)))))
        (setq  head (bind-dli-variable 'predication qualifier head))
        head))))
+
+(defun create-predication-by-binding (var np-ref vp-ref source)
+  (let
+      ((new-predication
+	(bind-dli-variable var np-ref vp-ref)))
+    (create-discourse-mention new-predication source)
+    ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
+    new-predication))
 
 (defun verb-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")
@@ -425,19 +417,12 @@
 
   (or (call-compose qualifier head)
       ;; This case is to benefit marker-categories
-      (cond
-       ((category-p head)
-        (setq head (individual-for-ref head))
-        (or
-         (call-compose qualifier head)
-         (link-in-verb qualifier head)))
-       ((individual-p head)
-        (setq head (individual-for-ref head))
-        (link-in-verb qualifier head))
-       (t
+      (call-compose qualifier head)
+      (link-in-verb qualifier head)
+      (progn
 	;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
 	(break "Can't deal with head whose interpretation is not an individual or category in verb-noun-compound, head is ~s~&" head)
-	nil))))
+	nil)))
 
 (defun link-in-verb (qualifier head)
   (let ((object (object-variable qualifier)))
@@ -788,18 +773,14 @@
 
 
 (defun adjoin-tocomp-to-vg (vg tocomp)
-  (assimilate-subcat vg :to-comp tocomp))
+  (assimilate-subcat vg :to-comp  (value-of 'comp tocomp)))
 
 (defun interpret-to-comp-adjunct-to-np (np to-comp)
   (declare (special np to-comp))
-  (let* ((pp-edge (right-edge-for-referent))
-         (comp-edge (edge-right-daughter pp-edge))
+  (let* ((complement (value-of 'comp to-comp))
          (variable-to-bind
           ;; test if there is a known interpretation of the NP/PP combination
-          (subcategorized-variable
-           np :to-comp
-           (edge-referent comp-edge))))
-    (declare (special pp-edge comp-edge variable-to-bind))
+          (subcategorized-variable np :to-comp complement)))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
@@ -833,38 +814,6 @@ to enhance p53 mediated apoptosis [2].") |#
          (ok?
           (setq s (bind-dli-variable 'purpose complement s))
           s)))))))
-
-
-#+ignore
-(defun adjoin-tocomp-to-vg (vg pp)
-  ;; The VG is the head. We ask whether it subcategorizes for
-  ;; the preposition in this PP and if so whether the complement
-  ;; of the preposition satisfies the specified value restriction.
-  ;; Otherwise we check for some anticipated cases and then
-  ;; default to binding modifier.
-  (let* ((pp-edge (right-edge-for-referent))
-         (prep-edge (edge-left-daughter pp-edge))
-         (prep-word (edge-left-daughter prep-edge))
-         (pobj-edge (edge-right-daughter pp-edge))
-         (pobj-referent (edge-referent pobj-edge))
-         (variable-to-bind
-          (loop for category in (indiv-type vg)
-            do
-            (let
-                ((var
-                  (find-variable-for-category 'in-order-to category)))
-              (when var (return var))))))
-
-    (cond
-     (*subcat-test* variable-to-bind)
-     (variable-to-bind
-      (when *collect-subcat-info*
-        (push (subcat-instance vg prep-word variable-to-bind pp)
-              *subcat-info*))
-      (setq vg (individual-for-ref vg))
-      (setq  vg (bind-dli-variable variable-to-bind pobj-referent vg))
-      vg))))
-
 
 
 ;;;---------
@@ -1166,8 +1115,7 @@ to enhance p53 mediated apoptosis [2].") |#
     (otherwise nil)))
 
 (defun assimilate-subcat (head subcat-label item)
-  (let ((item-edge (edge-for-referent item))
-        (variable-to-bind
+  (let ((variable-to-bind
          ;; test if there is a known interpretation of the NP+VP combination
          (subcategorized-variable head subcat-label item)))
     (cond
@@ -1175,23 +1123,20 @@ to enhance p53 mediated apoptosis [2].") |#
      (variable-to-bind
       (collect-subcat-statistics head subcat-label variable-to-bind item)
       (setq head (individual-for-ref head))
-      (when (is-anaphoric? item)
-        #+ignore(when (and (var-value-restriction variable-to-bind)
-                   (not (consp (var-value-restriction variable-to-bind))))
-          ;; this fails when we have BE -- needs to be fixed...            
-          (break "what's the condition with this break about 'be' ??"))
-        (when *do-anaphora*
-          (setq item (condition-anaphor-edge
-                      item-edge subcat-label variable-to-bind))))
-
+      (setq item
+	     (condition-anaphor-edge item subcat-label (var-value-restriction variable-to-bind)))
       (setq  head (bind-dli-variable variable-to-bind item head))
       head))))
- 
+
+(defun apply-control-or-raise (head label item)
+  (declare (special head label item))
+  (lsp-break "apply-control-or-raise")
+  nil)
 
 
-(defun condition-anaphor-edge (pn-edge subcat-label variable)
+(defun condition-anaphor-edge (item subcat-label v/r)
   ;; We now know the restriction that any candidate referent for this
-  ;; pronoun has to satisfy, and we know the variable it has to bind. This
+  ;; pronoun has to satisfy, and we know the v/r of the variable it has to bind. This
   ;; edge was recorded in the layout as a pronoun and will be retrieved in
   ;; the pass that does the search after all the parsing has finished, so
   ;; this is the edge that we work with. We need to record this
@@ -1203,42 +1148,49 @@ to enhance p53 mediated apoptosis [2].") |#
   ;; identify the referent at moment the pronoun is encountered.
   (declare (special *ignore-personal-pronouns*
                     category::unknown-grammatical-function))
-  (tr :conditioning-anaphor-edge pn-edge)
+
   (cond
-    ((or
-      (ignore-this-type-of-pronoun (edge-category pn-edge))
-      (member (cat-name (edge-category pn-edge))
-	      '(reflexive/pronoun pronoun/inanimate )))
-     (edge-referent pn-edge))
-    (t
-     (let* ((original-label (edge-category pn-edge))
-	    (relation-label (form-label-corresponding-to-subcat subcat-label))
-	    (restriction 
-	     (or (var-value-restriction variable)
-		 category::unknown-grammatical-function)))
-       (when (consp restriction)
-	 ;; the first one after the :or
-	 (setq restriction 
-	       (or (loop for c in (cdr restriction) 
-		      when (itypep (edge-referent pn-edge) c)
-		      do (return c))
-		   (cadr restriction))))
-       (unless relation-label
-	 (setq relation-label category::np))
+    ((and *do-anaphora* (is-anaphoric? item))
+     (let ((pn-edge (edge-for-referent item)))
+       (tr :conditioning-anaphor-edge pn-edge)
+       (cond
+	 ((or
+	   (ignore-this-type-of-pronoun (edge-category pn-edge))
+	   (member (cat-name (edge-category pn-edge))
+		   '(reflexive/pronoun pronoun/inanimate )))
+	  item)
+	 (*constrain-pronouns-using-mentions*
+	  (setf (mention-restriction (car (mention-history item))) v/r)
+	  item)
+	 (t
+	  (let* ((original-label (edge-category pn-edge))
+		 (relation-label (form-label-corresponding-to-subcat subcat-label))
+		 (restriction 
+		  (or v/r category::unknown-grammatical-function)))
+	    (when (consp restriction)
+	      ;; the first one after the :or
+	      (setq restriction 
+		    (or (loop for c in (cdr restriction) 
+			   when (itypep (edge-referent pn-edge) c)
+			   do (return c))
+			(cadr restriction))))
+	    (unless relation-label
+	      (setq relation-label category::np))
  
-       (let ((new-ref (individual-for-ref restriction)))
-	 (unless 
-	     ;; If we're going to ignore the pronoun we don't want or
-	     ;; need to rework its edge
-	     (tr :anaphor-conditioned-to new-ref restriction relation-label)
-	   ;; Encode the type-restriction in the category label
-	   ;; and the grammatical relationship in the form
-	   (setf (edge-category pn-edge) restriction)
-	   (setf (edge-form pn-edge) relation-label)
-	   (setf (edge-referent pn-edge) new-ref)
-	   (setf (edge-rule pn-edge) 'condition-anaphor-edge))
+	    (let ((new-ref (individual-for-ref restriction)))
+	      (unless 
+		  ;; If we're going to ignore the pronoun we don't want or
+		  ;; need to rework its edge
+		  (tr :anaphor-conditioned-to new-ref restriction relation-label)
+		;; Encode the type-restriction in the category label
+		;; and the grammatical relationship in the form
+		(setf (edge-category pn-edge) restriction)
+		(setf (edge-form pn-edge) relation-label)
+		(setf (edge-referent pn-edge) new-ref)
+		(setf (edge-rule pn-edge) 'condition-anaphor-edge))
        
-	 new-ref)))))
+	      new-ref))))))
+    (t item)))
 
 (defparameter *label* nil) ;; temporary hack to get the label down to satisfies-subcat-restriction?
 (defparameter *head* nil)
@@ -1334,10 +1286,11 @@ to enhance p53 mediated apoptosis [2].") |#
 		      (unless (itypep item 'number)
 			;; these are mostly bad parses with a dangling number -- we should collect them
 			(push (list head label item
+				    (sentence-string *sentence-in-core*)
 				    (loop for pat in pats collect
 					 (list (subcat-variable pat)(subcat-source pat))))
 			      *note-ambiguity*))
-		      (setq variable (subcat-variable (car pats))))
+		      (setq variable (mapcar #'subcat-variable pats)))
 		     (pats
 		      (setq variable (subcat-variable (car pats))))))
                 

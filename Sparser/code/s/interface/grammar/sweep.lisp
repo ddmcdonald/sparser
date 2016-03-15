@@ -64,7 +64,13 @@
     (symbol nil)
     (individual `(,item))
     (category nil)
-    (cons (strip-model-description item))
+    (cons
+     (cond
+       ((eq (car item) 'under-determined)
+	(strip-model-description
+	 (adhoc-resolve-under-determined item)))
+       (t
+	(strip-model-description item))))
     (number)
     (string)
     (word)
