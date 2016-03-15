@@ -1,35 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
-;;;
-;;;     File:  "no-brackets-protocol"
-;;;   Module:  "drivers/chart/psp/"
-;;;  version:  1.0 July 2015
 
-;; Initiated 10/5/14, starting from the code for detecting bio-entities.
-;; 10/29/14 added flags to turn off various steps so lower ones
-;; could be independently tested. 11/18/14 Reflecting the decomposition
-;; of the sweep into a succession of sweeps. 12/18/15 code to create trees 
-;; of semantics for treetops -- collect-model-description and semantic-tts.
-;; 1/11/15 Moving that code out to interface/grammar/sweep and refining 
-;; how it's used. 
-;; 1/12/2015 Handle circular structures in seemtree -- needed for verb+ed premodifiers, among others
-;; 1.18.2015 fix collection of description of individuals when modifiers referents are categories and not individuals as in "catalytic domains"
-;; 1/18/2015 code (a bit sketchy) to extract all entities and all relations after parsing a sentence -- entities-in and relations-in
-;; tweaks to all-entities and all-relations. 
-;; 4/16/15 Fanout from change in treatment of PPs. 
-;; 1.0 4/28/15 Bumped to re-factor. 
-;; 5/2/2015 update semtree to support indiv-pattern for pattern matching
-;; 5/13/2015 code related to semtree that will (eventually) fin the material needed for MITRE's index cards
-;;  itypes-under, process-under, individuals-under...
-;; 5/25/2015 collect information to make MITRE index cards
-;; 6/8/2015 Catching errors in get-string-from-local-edge-cache
-;; 6/10/15 Rearranging to make globals and their management more apparent
-;;  and cleaning up debugging code
-;; 7/10/2015 new parameter *dont-filter-on-discourse-relevance* that turns off use of discourse relevance filtering
-;; to see how many cards that has surpressed
-;; 7/20/15 Tweak to note-surface-string to keep it from returning nil.
-
-(in-package :sparser)
 
 ;;; Sweep to introduce minimal edges over the text, one sentence
 ;;; at a time, covering all unary rules, polywords, word-driven
