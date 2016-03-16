@@ -681,7 +681,8 @@
              :into concept))
 
 (adj "integrative" :super bio-predication) ;; keyword: (ive ADJ) 
-(adj "intriguing" :super bio-predication) ;; keyword: ENDS-IN-ING 
+(adj "intriguing" :super bio-predication) ;; keyword: ENDS-IN-ING
+(noun "isoelectric focussing" :super bio-method)
 (noun "isoform" :super variant)
 (adj "kinase-dead" :super bio-predication)
 
@@ -1069,6 +1070,7 @@
 (noun "tumor" :super non-cellular-location)
 (noun "tumor formation" :super named-bio-process)
 (noun "tumorigenesis" :super named-bio-process)
+(noun "two-dimensional isoelectric focussing" :super bio-method)
 (adj "unable" :super bio-relation
      :binds ((capability bio-process))
      :realization
