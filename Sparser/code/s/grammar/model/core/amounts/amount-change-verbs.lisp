@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2012,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "amount-change verbs"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  December 1995
+;;;  Version:  March 2016
 
 ;; initiated 12/22/95. Finished 12/26
 ;; (3/31/05) Added noun variants in ad-hoc but workable way. 4/1/12 blocked
@@ -17,6 +17,7 @@
 
 (define-category change-in-amount-verb
   :instantiates self
+  :specializes transition ;; feels too coarse a classification
   :binds ((name  :primitive (:or word polyword))
           (direction . direction))
   :index (:permanent :key name)
@@ -24,6 +25,7 @@
 
 (define-category change-in-amount-noun
   :instantiates self
+  :specializes transition ;; feels too coarse a classification
   :binds ((name  :primitive (:or word polyword))
           (direction . direction))
   :index (:permanent :key name)

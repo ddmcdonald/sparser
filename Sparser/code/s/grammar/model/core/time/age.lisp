@@ -1,16 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "age"
 ;;;   Module:  "model;core:time:"
-;;;  version:  1.1 October 1994
+;;;  version:  March 2016
 
 ;; 0.1 (7/18 v1.8.6) Flushed the CA routines as redundant w/ the CS rules
 ;; 0.2 (4/16/92 v2.2) added two more rules to handle "60-year-old"
 ;; 0.3 (5/16 v2.2) Commented out the "year" rules in favor of time-unit rules
 ;; 1.0 (12/15/92 v2.3) setting up for new semantics
 ;; 1.1 (4/27/94) doing that. 
-;;     (10/6) really doing it
+;;     (10/6/94) really doing it
 
 (in-package :sparser)
 #|
@@ -38,7 +38,7 @@
 
 
 (define-category  age   ;; in the abstract, -not- someone being a certain age
-  :specializes nil
+  :specializes quality ;; has to be something that has the age. Also a measurement
   :instantiates self
   :binds ((age . amount-of-time))
   :index (:sequential-keys age)
@@ -63,7 +63,7 @@
 ;;simple copy of the "old" treatment
 ;;lacks an interpretation of number of years of age, however
 (define-category  age-ago   ;; in the abstract, -not- someone being a certain age
-  :specializes nil
+  :specializes quality
   :instantiates self
   :binds ((age-ago . amount-of-time))
   :index (:sequential-keys age-ago)

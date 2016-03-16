@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2000 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2000,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "unit of measure"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  1.0 September 2000
+;;;  Version:  March 2016
 
 ;; initiated 9/18/93 v2.3.  10/24/94 added defdata
 ;; 1.0 (9/6/00) Reworked indexing.
@@ -15,7 +15,7 @@
 ;;;--------
 
 (define-category  unit-of-measure
-  :specializes nil
+  :specializes abstract ;; basically a typed number that applies to scalars
   :instantiates self
   :binds ((name :primitive word))
   :realization (:common-noun name))

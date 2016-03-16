@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  February 2013
+;;;  Version:  March 2016
 
 ;; completely made over 9/18/93 in new semantics
 ;; 12/22/95 added adjuncts that appear in the ERN domain. They'll probably
@@ -22,7 +22,7 @@
 ;;;--------
 
 (define-category amount
-  :specializes nil
+  :specializes abstract ;; delimits a region in a quantity space
   :instantiates self
   :binds ((measurement . measurement)
           (stuff)
