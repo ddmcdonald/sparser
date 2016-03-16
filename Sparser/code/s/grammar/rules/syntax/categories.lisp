@@ -464,8 +464,9 @@
   (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
      thereis
        (or (eq (cat-name (edge-form ee)) 'det)
-	   (memq (cat-name (edge-category ee))
-		 '(preposition spatial-preposition)))))
+	   (and (category-p (edge-category ee))
+		(memq (cat-name (edge-category ee))
+		 '(preposition spatial-preposition))))))
 
 (defgeneric ng-head? (label)
   (:documentation "Is a category which can occur as the head of an NG"))
