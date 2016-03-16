@@ -123,7 +123,7 @@
 		  (update-category-discourse-history 
 		   category obj edge))))
 	     (*use-discourse-mentions*
-	      (update-discourse-history instantiates obj edge)))))
+	      (update-discourse-history primary-category obj edge)))))
 
         (referential-category
 	 (when *use-discourse-mentions*
