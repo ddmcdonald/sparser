@@ -254,6 +254,10 @@ For now just worry about the planning of references.
     (let ((parameter (parameter-named 
                       (mumble-symbol parameter-name))) ;; flush keyword
           (value (expand-value value-exp))) ;; does all the work
+      (assert parameter)
+      (unless value
+        (push-debug `(,value-exp))
+        (error "No reaization returned for ~a" value-exp))
       (make-complement-node parameter value dtn))))
 
 
@@ -381,8 +385,8 @@ more contextually appropriate / fluent phrase may be better
   DTN. If the collection is in focus we pronominalize,
   otherwise we enumberate them."
   (let ((collection (sp::find-or-make-individual 'sp::collection
-                                                 :items items))
-    (plan-reference-to-collection collection))))
+                                                 :items items)))
+    (plan-reference-to-collection collection)))
 
 (defun plan-reference-to-collection (collection)
   (cond
