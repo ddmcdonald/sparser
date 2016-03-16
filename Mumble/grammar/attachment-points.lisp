@@ -108,6 +108,11 @@ by KEY-POSITION.
   link (next)
   new-slot (prepcomp))
 
+(define-splicing-attachment-point np-prep-adjunct
+    reference-labels (np-head)
+    link (next)
+    new-slot (prep))
+
 (define-splicing-attachment-point of-complement 
   reference-labels (np-head adverb)
   link (next)
