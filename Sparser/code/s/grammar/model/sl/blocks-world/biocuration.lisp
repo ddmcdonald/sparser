@@ -54,10 +54,10 @@ Functional-effect-of(M, active(K))
 ;;; experiments (-not- the equivalent messages)
 ;;;----------------------------------------------
 
+(in-package :mumble)
 
-
-(define-word "KRAS" (proper-noun))
-(define-word "Raf" (proper-noun))
+(noun "KRAS" 'proper-name)
+(noun "Raf" 'proper-name)
 
 #|
 (defun pancreatic-cancer-patient ()
@@ -78,7 +78,21 @@ Functional-effect-of(M, active(K))
       (make-adjunction-node pancreatic dtn)
       dtn)))
 
- 
+
+;; "patients with pancreatic cancer"
+(defun with-something (something)
+  (let ((dtn (make-dtn :resource (prep "with")
+		       :referent 'with-something)))
+    (make-complement-node 'prep-object something dtn)
+    dtn))
+
+
+(defun patient-with-pancreatic-cancer ()
+  (let ((with-pc (make-lexicalized-attachment 'np-prep-adjunct (with-something (pancreatic-cancer)))))
+    (let ((dtn (make-dtn :resource (noun "patient")
+			 :referent 'patient)))
+      (make-adjunction-node with-pc dtn)
+      dtn)))
 
 
 ;; Not ideal. For percents, 'of' should be complement	 
@@ -89,6 +103,15 @@ Functional-effect-of(M, active(K))
     dtn))
 
 
+;; "patients have mutation in.."
+(defun have-mutation (subject)
+  (let ((verb-resource (verb "have"))
+	(mutation-resource (noun "mutation")))
+    (let ((dtn (make-dtn :referent 'have-mutation
+			 :resource verb-resource)))
+      (make-complement-node 's subject dtn)
+      (make-complement-node 'o mutation-resource dtn)
+      dtn)))
 
 
 ;; "a drug to target KRAS" (say (drug-targeting-kras))
@@ -120,14 +143,10 @@ Functional-effect-of(M, active(K))
       (make-complement-node 's first-singular dtn)
       (make-complement-node 'o complement dtn)
       dtn)))
-;; negate function takes a dtn as argument
 
 ;; (say (negate (I-know-of-p (drug-targeting-kras))))
 
-;;find question accessory (say (question (blah (blah))))
 ;; question accesssory presumes a phrasal root, that the phrase is built. changes state to marked as aux preposed.
-
-;; need to set up a partitive construction
 
 
 ;; (say (I-know-of-p (drug-targeting-kras)))
