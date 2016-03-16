@@ -741,14 +741,17 @@
                       ;;/// presuposes that caller only made the acronym
                       ;; from one word.
                       (assert (word-p word))
-                      (let ((rule (define-cfr/resolved
-                                      (cfr-category rule)
-                                      (list word)
-                                    (cfr-form rule)
-                                    (cfr-referent rule)
-                                    (cfr-schema rule))))
-                        ;;// trace
-                        rule)))
+		      (when (cfr-p rule)
+			;; have a case where previous edge was a conjunction, and the "rule" was a symbol
+			;;  "xxx and neuregulin (nrg) ..."
+			(let ((rule (define-cfr/resolved
+					(cfr-category rule)
+					(list word)
+				      (cfr-form rule)
+				      (cfr-referent rule)
+				      (cfr-schema rule))))
+			  ;;// trace
+			  rule))))
                   (otherwise
                    (error "rule for acronym is neither a symbol nor ~
                            a cfr: ~a" rule)))))))))))
