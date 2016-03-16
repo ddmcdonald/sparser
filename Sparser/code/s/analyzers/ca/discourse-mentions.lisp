@@ -22,7 +22,7 @@
 (defun mention-history (i)
   (gethash i *lattice-individuals-to-mentions*))
 
-(defun (setf mention-history) (i val)
+(defun (setf mention-history) (val i)
   (setf (gethash i *lattice-individuals-to-mentions*) val))
 
 (defvar *lattice-individuals-mentioned-in-paragraph* nil
@@ -187,6 +187,8 @@
 	      ;;/// tr
 	      (make-new-mention entry i edge))
 	     ((subsumes-position top-mention edge)
+	      (make-new-mention entry i edge top-mention)
+	      #+ignore
 	      (let ((new-loc (encode-mention-location edge)))
 		;; "this auto-inhibited fate" w/ no referent for "this"
 		(tr :exending-span-of-mention top-mention edge)
@@ -251,6 +253,7 @@
          (toc (location-in-article-of-current-sentence))
          (m (make-instance 'discourse-mention
 			   :i i :loc location :ms source :article toc)))
+    (push m (mention-history i))
     (if (edge-p source) (setf (edge-mention source) m))
     (setf (gethash i *lattice-individuals-to-mentions*) `(,m))
     (push m *lattice-individuals-mentioned-in-paragraph*)
