@@ -298,30 +298,31 @@
    for later handling."
   (declare (special *sentence-in-core*))
   (push-debug `(,determiner ,head))
-  (let* ((parent-edge (parent-edge-for-referent))
-         (det-edge (left-edge-for-referent))
-         (det-word (edge-left-daughter det-edge)))
-    (unless (or (definite-determiner? det-word)
-                (indefinite-determiner? det-word))
-      ;; There are a ton of categories that are defined to be
-      ;; syntactic determiners that deserve their own careful
-      ;; semantic treatment that might funnel through here
-      ;; We can dispatch of the type of the determner:
-      ;; quantity, approximator, etc. Pull them out of the
-      ;; modifiers dossier. 
-      (pushnew determiner *dets-seen*)
-      #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
-    (cond
-     ((call-compose determiner head))
-     ((definite-determiner? determiner)
-      (let ((sentence (identify-current-sentence)))
-      ;; NOTE -- IMPORTANT
-      ;; this adds the definite determiner on the N-BAR, and does not, by iteself,
-      ;; mark the complete NP as a definite reference
-      ;; have to do something in complete-edge/hugin
-      ;; call to update-definite-determiner, defined in content-methods
-      (add-pending-def-ref determiner parent-edge sentence))))
-    head))
+  (or *subcat-test*
+      (let* ((parent-edge (parent-edge-for-referent))
+	     (det-edge (left-edge-for-referent))
+	     (det-word (edge-left-daughter det-edge)))
+	(unless (or (definite-determiner? det-word)
+		    (indefinite-determiner? det-word))
+	  ;; There are a ton of categories that are defined to be
+	  ;; syntactic determiners that deserve their own careful
+	  ;; semantic treatment that might funnel through here
+	  ;; We can dispatch of the type of the determner:
+	  ;; quantity, approximator, etc. Pull them out of the
+	  ;; modifiers dossier. 
+	  (pushnew determiner *dets-seen*)
+	  #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
+	(cond
+	  ((call-compose determiner head))
+	  ((definite-determiner? determiner)
+	   (let ((sentence (identify-current-sentence)))
+	     ;; NOTE -- IMPORTANT
+	     ;; this adds the definite determiner on the N-BAR, and does not, by iteself,
+	     ;; mark the complete NP as a definite reference
+	     ;; have to do something in complete-edge/hugin
+	     ;; call to update-definite-determiner, defined in content-methods
+	     (add-pending-def-ref determiner parent-edge sentence))))
+	head)))
 
 
 
