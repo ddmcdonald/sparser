@@ -25,12 +25,54 @@
 (defvar *b9* (sp::define-individual 'sp::block :name "B9"))
 (defvar *b10* (sp::define-individual 'sp::block :name "B10"))
 
-
 (defvar *the-two-blocks-he-put-down*
   (sp::define-individual 'sp::collection
     :items (list *b1* *b2*)
     :type (sp::category-named 'sp::collection)
     :number 2))
+
+(defvar *apparatus-blocks*
+  (loop for corp in '("Adidas"
+                      "BMW"
+                      "Burger King"
+                      "Coke"
+                      "Esso"
+                      "Heineken"
+                      "HP"
+                      "McDonalds"
+                      "Mercedes"
+                      "Nvidia"
+                      "Pepsi"
+                      "Shell"
+                      "SRI"
+                      "Starbucks"
+                      "Stella Artois"
+                      "Target"
+                      "Texaco"
+                      "Toyota"
+                      "Twitter"
+                      "UPS")
+        as id = (intern (substitute #\- #\Space (string-upcase corp)) :keyword)
+        as name = (format nil "the ~a block" corp)
+        as block = (sp::define-individual 'sp::block :name name)
+        do (setf (sp::indiv-id block) id)
+        collect block))
+
+(defun block-id (obj)
+  (sp::indiv-id obj))
+
+(defun block-name (obj)
+  (sp::pname-for (sp::value-of 'sp::name obj)))
+
+(defun apparatus-block (id)
+  (find id *apparatus-blocks*
+        :key #'block-id
+        :test #'string-equal))
+
+(defun apparatus-block-named (name)
+  (find name *apparatus-blocks*
+        :key #'block-name
+        :test #'string-equal))
 
 ;;--- linking across programs
 
