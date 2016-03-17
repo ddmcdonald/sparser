@@ -15,6 +15,13 @@
   (gload "blocks;experiments")
   (gload "blocks;vocabulary")
   (gload "blocks;entities")
+
+  (gload "blocks;specialists")
+  (gload "blocks;speech-acts")
+
+  (gload "blocks;test-messages")
+
   (gload "blocks;interface")
+
   (gload "blocks;staging")
   (gload "blocks;biocuration"))
