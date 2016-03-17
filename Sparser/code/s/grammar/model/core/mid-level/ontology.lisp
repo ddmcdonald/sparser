@@ -58,6 +58,7 @@ files once an area looks big enough to warrant it.  |#
 
 (define-category artifact
   :specializes physical  
+  :mixins (has-name)
   :binds ((made-by . maker-of-artifacts))
   ;; also time-created or is it a specialization from the lifetime of Endurant?
   :lemma (:common-noun "artifact"))

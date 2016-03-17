@@ -21,8 +21,6 @@ with other blocks, mention in utterances, etc. |#
 (define-category block
   :specializes artifact 
   ;;:rule-label artifact
-  :mixins (has-name ;; symbols like B1
-           )
   :index (:permanent :key name)
   :realization ;; for connection to Mumble
   (:common-noun "block"))
