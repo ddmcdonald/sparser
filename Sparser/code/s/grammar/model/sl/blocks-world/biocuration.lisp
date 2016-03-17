@@ -59,17 +59,6 @@ Functional-effect-of(M, active(K))
 (noun "KRAS" 'proper-name)
 (noun "Raf" 'proper-name)
 
-#|
-(defun pancreatic-cancer-patient ()
-  "Singular. How to do compound nouns?"
-  (let ((patient (noun "patient"))
-       )))
-
-(defun percent-of-something ()
-   (let ((percent (noun "percent"))
-	 (number ?})
-
-	 |#
 
 (defun pancreatic-cancer ()
   (let ((pancreatic (adjective "pancreatic"))
@@ -94,6 +83,38 @@ Functional-effect-of(M, active(K))
       (make-adjunction-node with-pc dtn)
       dtn)))
 
+;; "percent of patients with pancreatic cancer"
+;; (say (percent-of-something (patient-with-pancreatic-cancer)))
+(defun percent-of-something (something)
+  (let ((of-s (make-lexicalized-attachment 'np-prep-adjunct (of-something something))))
+    (let ((dtn (make-dtn :resource (noun "percent")
+			 :referent 'percent)))
+      (make-adjunction-node of-s dtn)
+      dtn)))
+
+#|
+THIS NEEDS WORK
+
+; add in-complement to np-head and define the slot label
+(defun mutation-in-KRAS ()
+  (let ((in-kras (make-lexicalized-attachment 'np-prep-complement (in-something (noun "KRAS")))))
+    (let ((dtn (make-dtn :resource (noun "mutation")
+			 :referent 'mutation)))
+      (make-complement-node 'in-complement  in-kras dtn)
+      dtn)))
+;; or just make an adjunct
+
+
+|#
+
+
+
+(defun in-something (something)
+    (let ((dtn (make-dtn :resource (prep "in")
+		       :referent 'in-something)))
+    (make-complement-node 'prep-object something dtn)
+    dtn))
+
 
 ;; Not ideal. For percents, 'of' should be complement	 
 (defun of-something (something)
@@ -103,16 +124,26 @@ Functional-effect-of(M, active(K))
     dtn))
 
 
-;; "patients have mutation in.."
-(defun have-mutation (subject)
+(defun mutation-in-KRAS ()
+  (let ((kras (make-dtn :resource (noun "KRAS" 'proper-name)))
+	(in-kras (make-lexicalized-attachment 'np-prep-adjunct (in-something kras))))
+    (let ((dtn (make-dtn :resource (noun "mutation")
+			 :referent 'mutation)))
+      (make-adjunction-node in-kras dtn)
+      dtn)))
+
+;; "..patients have mutation in kras"
+(defun have-mutation-in-kras (subject)
   (let ((verb-resource (verb "have"))
-	(mutation-resource (noun "mutation")))
+	(mutation-resource (mutation-in-kras)))
     (let ((dtn (make-dtn :referent 'have-mutation
 			 :resource verb-resource)))
       (make-complement-node 's subject dtn)
       (make-complement-node 'o mutation-resource dtn)
       dtn)))
 
+
+;; (say (present-tense (have-mutation-in-kras (percent-of-something (patient-with-pancreatic-cancer)))))
 
 ;; "a drug to target KRAS" (say (drug-targeting-kras))
 
@@ -128,11 +159,7 @@ Functional-effect-of(M, active(K))
       (make-complement-node 'o kras-resource dtn)
       dtn)))
 
-;; need "there <be>"
-;; tag questions (add accessory like 'command' to say it's a q, handler to run and edit tree strucx)
-
 ;; "but I don't know of any drug targeting KRAS"
-
 (defun I-know-of-p (complement)
   (let ((verb-resource (transitive-with-bound-prep 
                         "know" "of"))
@@ -145,8 +172,6 @@ Functional-effect-of(M, active(K))
       dtn)))
 
 ;; (say (negate (I-know-of-p (drug-targeting-kras))))
-
-;; question accesssory presumes a phrasal root, that the phrase is built. changes state to marked as aux preposed.
 
 
 ;; (say (I-know-of-p (drug-targeting-kras)))
