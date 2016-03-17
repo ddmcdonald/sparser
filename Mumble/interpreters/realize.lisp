@@ -116,6 +116,7 @@
             (general-np-bundle-driver dtn root-node))
            (pp) ;; just the root-node 
            (qp) ;; ditto. Used for interjections
+           (conjunction)
            (discourse-unit) ;;/// discourse-unit-bundle-driver
            (otherwise
             (push-debug `(,root-node ,phrase-type))

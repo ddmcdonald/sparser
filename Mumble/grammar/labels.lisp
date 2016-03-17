@@ -353,6 +353,8 @@
 
 (define-slot-label number)
 
+(define-slot-label item)
+
 (define-slot-label relative-pronoun
    grammatical-constraints (relative-pronoun))
 
