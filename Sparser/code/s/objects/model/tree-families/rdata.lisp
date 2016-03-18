@@ -557,22 +557,27 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
     (assq :mumble rdata)))
 
 (defun apply-mumble-rdata (category rdata)
-  "Provide phrase and argument information (so far only)
+  "Entry point from setup-rdata.
+   Provide phrase and argument information (so far only)
    for verbs. Look up the m-word, which should exist
    at this point, and create the lexicalized phrase."
   ;; Called from setup-rdata
-  (push-debug `(,category ,rdata))
+  ;; (push-debug `(,category ,rdata))
   ;; (setq category (car *) rdata (cadr *))
+ (let ((mumble-spec (cadr (assq :mumble rdata))))
+    (decode-mumble-spec category mumble-spec)))
+
+(defun decode-mumble-spec (category mumble-spec)
+  "Entry point from decode-realization-parameter-list"
   ;; e.g. (:mumble ("build" svo :v artifact))
   ;;      (:mumble ("push" svo :s agent :o theme))
   ;;      (:mumble (transitive-with-final-adverbial "push" "together"))
-  (let ((mumble-spec (cadr (assq :mumble rdata))))
-    (etypecase (first mumble-spec)
-     (string
-      (apply-mumble-phrase-data 
-       category (first mumble-spec) (second mumble-spec) (cddr mumble-spec)))
-     (symbol
-      (apply-mumble-function-data category mumble-spec)))))
+  (etypecase (first mumble-spec)
+    (string
+     (apply-mumble-phrase-data 
+      category (first mumble-spec) (second mumble-spec) (cddr mumble-spec)))
+    (symbol
+     (apply-mumble-function-data category mumble-spec))))
 
 (defun apply-mumble-function-data (category function-and-args)
   (mumble::apply-function-data category function-and-args))
@@ -595,10 +600,9 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
          
 (defun make-corresponding-lexical-resource (head-word)
-  ;; called from dereference-rdata and makes its own
   ;; judgement abuot whether its appropriate to create
   ;; Mumble resources in the present configuration and/or
-  ;; dynamic context.
+  ;; dynamic conptext.
   (declare (special *build-mumble-equivalents*))
   (when (or *build-mumble-equivalents*
             *CwC*)
@@ -609,8 +613,16 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
                    word-or-variable)))
       (when word
         (mumble::make-resource-for-sparser-word pos-tag word)
-        (push-debug `(,word))
         :done))))
+
+(defun make-shortcut-corresponding-resource (word pos-tag)
+  "Called from decode-realization-parameter-list"
+  (when *build-mumble-equivalents*
+    (mumble::make-resource-for-sparser-word pos-tag word)
+    :done)) ;; keep this on the stack
+
+
+
 ;;---------------------------------------------
 
 

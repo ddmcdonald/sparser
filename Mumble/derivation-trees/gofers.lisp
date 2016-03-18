@@ -43,13 +43,9 @@
       ;; If we didn't store one with get-mumble-word-for-sparser-word
       ;; maybe there is one anyway and we'll just do that now.
       (let ((word (sp::word-named (pname m-word))))
-        (cond
-         (word
+        (when word
           (setq s-word word)
-          (setf (gethash m-word *sparser-words-for-mumble-words*) s-word))
-         (t
-          (error "No recorded corresponding Sparser word for Mumble word ~s"
-                 (pname m-word))))))
+          (setf (gethash m-word *sparser-words-for-mumble-words*) s-word))))
     s-word))
 
 
