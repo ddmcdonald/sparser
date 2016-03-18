@@ -16,6 +16,8 @@
   (typecase obj
     (word     (word-pname obj))
     (polyword (pw-pname obj))
+    #+mumble
+    (mumble::word (mumble::pname obj))
     ((or category referential-category mixin-category)
      (symbol-name (cat-symbol obj)))
     (individual ;; subsumes psi
