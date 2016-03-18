@@ -76,18 +76,18 @@ Functional-effect-of(M, active(K))
     dtn))
 
 
-(defun patient-with-pancreatic-cancer ()
+(defun patients-with-pancreatic-cancer ()
   (let ((with-pc (make-lexicalized-attachment 'np-prep-adjunct (with-something (pancreatic-cancer)))))
-    (let ((dtn (make-dtn :resource (noun "patient")
+    (let ((dtn (make-dtn :resource (noun "patients")
 			 :referent 'patient)))
       (make-adjunction-node with-pc dtn)
       dtn)))
 
 ;; "percent of patients with pancreatic cancer"
-;; (say (percent-of-something (patient-with-pancreatic-cancer)))
-(defun percent-of-something (something)
+;; (say (percent-of-something 88 (patients-with-pancreatic-cancer)))
+(defun percent-of-something (n something)
   (let ((of-s (make-lexicalized-attachment 'np-prep-adjunct (of-something something))))
-    (let ((dtn (make-dtn :resource (noun "percent")
+    (let ((dtn (make-dtn :resource (noun (format nil "~d percent" n))
 			 :referent 'percent)))
       (make-adjunction-node of-s dtn)
       dtn)))
@@ -125,12 +125,12 @@ THIS NEEDS WORK
 
 
 (defun mutation-in-KRAS ()
-  (let ((kras (make-dtn :resource (noun "KRAS" 'proper-name)))
-	(in-kras (make-lexicalized-attachment 'np-prep-adjunct (in-something kras))))
-    (let ((dtn (make-dtn :resource (noun "mutation")
-			 :referent 'mutation)))
-      (make-adjunction-node in-kras dtn)
-      dtn)))
+  (let* ((kras (make-dtn :resource (noun "KRAS" 'proper-name)))
+         (in-kras (make-lexicalized-attachment 'np-prep-adjunct (in-something kras)))
+         (dtn (make-dtn :resource (noun "a mutation")
+                        :referent 'mutation)))
+    (make-adjunction-node in-kras dtn)
+    dtn))
 
 ;; "..patients have mutation in kras"
 (defun have-mutation-in-kras (subject)
@@ -143,10 +143,20 @@ THIS NEEDS WORK
       dtn)))
 
 
-;; (say (present-tense (have-mutation-in-kras (percent-of-something (patient-with-pancreatic-cancer)))))
+;; (say (present-tense (have-mutation-in-kras (plural (percent-of-something 88 (patients-with-pancreatic-cancer))))))
+
+(defun drug-to-treat-pancreatic-cancer ()
+  (let* ((cancer (pancreatic-cancer))
+         (verb (verb "treat"))
+         (drug (noun "drug")))
+    (let ((dtn (make-instance 'derivation-tree-node
+                              :referent 'drug-to-treat-pancreatic-cancer
+                              :resource verb)))
+      (make-complement-node 's drug dtn)
+      (make-complement-node 'o cancer dtn)
+      dtn)))
 
 ;; "a drug to target KRAS" (say (drug-targeting-kras))
-
 (defun drug-targeting-kras ()
   "Makes an untensed clause. Comes out as an infinitive"
   (let* ((verb-resource (verb "target"))
@@ -159,7 +169,8 @@ THIS NEEDS WORK
       (make-complement-node 'o kras-resource dtn)
       dtn)))
 
-;; "but I don't know of any drug targeting KRAS"
+;; "I don't know of any drug targeting KRAS"
+;; (say (negate (present-tense (I-know-of-p (drug-targeting-kras)))))
 (defun I-know-of-p (complement)
   (let ((verb-resource (transitive-with-bound-prep 
                         "know" "of"))
@@ -170,10 +181,3 @@ THIS NEEDS WORK
       (make-complement-node 's first-singular dtn)
       (make-complement-node 'o complement dtn)
       dtn)))
-
-;; (say (negate (I-know-of-p (drug-targeting-kras))))
-
-
-;; (say (I-know-of-p (drug-targeting-kras)))
-;;  => "I to know of a drug to target KRAS"
-
