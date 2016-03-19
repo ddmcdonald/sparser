@@ -17,9 +17,6 @@
   (push (cons field new-state) state-list))
 
 (defun change-state (field new-state state-list )
-  (unless (state-value field state-list)
-    (break "Revise the caller. The state-list is nil~
-          ~%field = ~a   new-state = ~a" field new-state))
   ;; This line worked with a nil from the assoc in Lispmachine lisp
   (setf (cdr (assoc field state-list)) new-state)
   state-list)
