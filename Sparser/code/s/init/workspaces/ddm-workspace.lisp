@@ -10,7 +10,7 @@
 (in-package :sparser)
 #| 
  (asdf:load-system :r3)
- (asdf:load-system :sparser/blocks-world)
+ (asdf:load-system :clic/bw)   (asdf:load-system :sparser/blocks-world)
  (asdf:load-system :sparser/c3)
  (asdf:load-system :sparser/fire)
  (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
@@ -29,8 +29,31 @@
 
  duplication-check establish-multiplier <== abstract to common core
 
+ decode-realization-parameter-list  mumble::setup-verb-from-rdata
+
  mumble::realize-dtn  mumble::discourse-unit-bundle-driver
  mumble::clear-derivation-tree-data  mumble::in-focus?
+ mumble::build-phrase  mumble::current-subject  mumble::process-negate-accessory
+
+(say (negate (present-tense (i-know-of-p (drug-targeting-kras)))))
+;; Contractions
+ mumble::morphologically-specialize-&-say-it
+ mumble::send-to-output-stream  mumble::process-word-stream-actions
+ mumble::general-np-bundle-driver  mumble::start-next-turn
+ mumble::sexp-reader
+ mumble::
+ mumble::
+ mumble::
+
+ *build-mumble-equivalents*  setup-rdata  apply-mumble-rdata
+ mumble::setup-verb-from-rdata  mumble::apply-function-data
+ mumble::*mappings-for-category-linked-phrase*
+ mumble::link-to-underlying-object mumble::remove-subject
+   mumble::dtn-bundle-driver
+   mumble::has-name
+   mumble::sexp-reader
+ mumble-phrase  add-etf-mapping  realize-using-name-binding
+ realization-for-triple  get-lexicalized-phrase
 
  initiate-incremental-CwC-protocol initiate-c3-protocol
  indexical-for-state -- grammar/rules/situation/rules.lisp:(defun indexical-for-state (state)
@@ -84,16 +107,6 @@
  fill-compatible-slot 
    analyze-pp indexical-for-state mark-instance-indefinite
    define-determiner
-
- *build-mumble-equivalents*  setup-rdata  apply-mumble-rdata
- mumble::setup-verb-from-rdata  mumble::apply-function-data
- mumble::*mappings-for-category-linked-phrase*
- mumble::link-to-underlying-object mumble::remove-subject
-   mumble::dtn-bundle-driver
-   mumble::has-name
-   mumble::sexp-reader
- mumble-phrase  add-etf-mapping  realize-using-name-binding
- realization-for-triple  get-lexicalized-phrase
 
  get-dli
 
