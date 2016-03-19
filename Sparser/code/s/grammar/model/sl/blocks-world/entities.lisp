@@ -77,7 +77,7 @@
 (defun find-block-named (name)
   (find name *all-blocks*
         :key #'block-name
-        :test #'string-equal))
+        :test (lambda (x y) (search x y :test #'char-equal))))
 
 ;;--- linking across programs
 
