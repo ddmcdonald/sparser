@@ -24,6 +24,8 @@
 (defvar *b8* (sp::define-individual 'sp::block :name "B8"))
 (defvar *b9* (sp::define-individual 'sp::block :name "B9"))
 (defvar *b10* (sp::define-individual 'sp::block :name "B10"))
+(defvar *b11* (sp::define-individual 'sp::block :name "B11"))
+(defvar *b12* (sp::define-individual 'sp::block :name "B12"))
 
 (defvar *the-two-blocks-he-put-down*
   (sp::define-individual 'sp::collection
@@ -34,7 +36,7 @@
 (defvar *apparatus-blocks*
   (loop for corp in '("Adidas"
                       "BMW"
-                      "Burger King"
+                      "BurgerKing"
                       "Coke"
                       "Esso"
                       "Heineken"
@@ -46,17 +48,20 @@
                       "Shell"
                       "SRI"
                       "Starbucks"
-                      "Stella Artois"
+                      "StellaArtois"
                       "Target"
                       "Texaco"
                       "Toyota"
                       "Twitter"
                       "UPS")
-        as id = (intern (substitute #\- #\Space (string-upcase corp)) :keyword)
-        as name = (format nil "the ~a block" corp)
-        as block = (sp::define-individual 'sp::block :name name)
-        do (setf (sp::indiv-id block) id)
+        as block = (sp::define-individual 'sp::block
+                       :name (format nil "the ~a block" corp))
+        do (setf (sp::indiv-id block) (intern (string-upcase corp) :keyword))
         collect block))
+
+(defvar *all-blocks*
+  (append (list *b1* *b2* *b3* *b4* *b5* *b6* *b7* *b8* *b9* *b10* *b11* *b12*)
+          *apparatus-blocks*))
 
 (defun block-id (obj)
   (sp::indiv-id obj))
@@ -64,13 +69,13 @@
 (defun block-name (obj)
   (sp::pname-for (sp::value-of 'sp::name obj)))
 
-(defun apparatus-block (id)
-  (find id *apparatus-blocks*
+(defun find-block (id)
+  (find id *all-blocks*
         :key #'block-id
-        :test #'string-equal))
+        :test #'equalp))
 
-(defun apparatus-block-named (name)
-  (find name *apparatus-blocks*
+(defun find-block-named (name)
+  (find name *all-blocks*
         :key #'block-name
         :test #'string-equal))
 
@@ -87,7 +92,9 @@
     (:b7 . ,*b7*)
     (:b8 . ,*b8*)
     (:b9 . ,*b9*)
-    (:b10 . ,*b10*))
+    (:b10 . ,*b10*)
+    (:b11 . ,*b11*)
+    (:b12 . ,*b12*))
   "Keyword to Krisp interchange table")
 
 (defun launder-sexp-to-dereference-keywords (sexp)
