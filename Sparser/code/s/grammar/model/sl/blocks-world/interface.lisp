@@ -9,18 +9,10 @@
 
 (in-package :mumble)
 
-;;;----------
-;;;----------
-;;; The code
-;;;----------
-;;;----------
-
-(defvar *sentence-type* :statement ;;?? or sort out w/ predicates ??
-  "Holds the toplevel type (loosely speaking) of the utterance
-   (the sentence), e.g. :statement, :command, :question, etc. ")
-
-(defvar *speech-act* nil
-  "Holds the speech act for reference by embedded routines")
+#| The entry point sexp-reader decodes a "message" s-expression that
+specifies a simple utterance (see "test-messages file) and returns
+a dtn that has been wrapped in a discourse unit. 
+|#
 
 
 ;;--- Entry point for 'messages' -- the sexps we expect TRIPS to route
@@ -33,15 +25,11 @@
   ;; 2. for specific individuals, retrive them from their keyword form
   (setq sexp (launder-sexp-to-dereference-keywords sexp))
 
-  ;; 3. Switch from variables to parameters
-;;///////////////  (setq sexp (launder-sexp-to-switch-to-parameters sexp))
-
-  ;; 4. Start our turn
+  ;; 3. Start our turn
   (start-next-turn :speaker sp::*me*)
 
-  (let* ((speech-act (car sexp))
-         (*speech-act* speech-act))
-    (declare (special *speech-act*))
+  ;; 4. Unpack the rest of the sexp.
+  (let* ((speech-act (car sexp)))
     (if (standalone-speech-act speech-act)
       (do-standalone-speech-act speech-act)
       (let ( elaborations core )
