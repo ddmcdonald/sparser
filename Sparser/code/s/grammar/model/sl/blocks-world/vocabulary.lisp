@@ -55,7 +55,7 @@ support a substantial number of blocks.
 (sentential-interjection "good")
 (sentential-interjection "ok")
 (sentential-interjection "yes")
-
+(sentential-interjection "hello")
 
 ;;--- Verbs
 
