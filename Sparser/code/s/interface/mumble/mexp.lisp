@@ -126,7 +126,7 @@ two values: the compiled expression and a possibly augmented context.")
 (defmethod mexp-w/head ((expr cons) (head (eql 'and)) &key context)
   "Compile a conjunction. Only handles two-item conjunctions right now,
 but could easily be extended to use CONJUNCTION-S for higher arities."
-  (destructuring-bind (operation y x) expr
+  (destructuring-bind (operation y x) expr ; reverse order of conjuncts
     (assert (eql operation head))
     (multiple-value-setq (x context) (mexp x :context context))
     (multiple-value-setq (y context) (mexp y :context context))
