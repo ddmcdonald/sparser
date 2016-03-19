@@ -33,13 +33,11 @@
 
 (defun define-movement-verb (string  &optional name)
   (let* ((symbol (or name (name-to-use-for-category string)))
-         (word (define-word string))
          (category (category-named symbol)))
-    (declare (ignore word))
     (let ((form `(define-category ,symbol
                    :specializes move
                    :instantiates move
-                   :binds ((to-location . location)
+                   :binds (;; inherits from-location, to-location from move
                            (via-path . path)
                            (for-distance . measurement) ;; distance?
                            (in-direction . direction)
@@ -115,8 +113,9 @@
 
 (define-movement-verb "travel")
 
-;; (define-movement-verb "turn")
-;; See sl/biology/verbs.lisp
+(unless (eq (script) :biology) ;; See sl/biology/verbs.lisp
+  (define-movement-verb "turn"))
+
 
 
 

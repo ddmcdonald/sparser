@@ -52,8 +52,8 @@ Cases:
   :specializes accomplishment
   ;; realization -- "move" and "movement"
   :restrict ((theme can-change-location))
-  :binds ((from-location) ;; source - the theme's former location
-          (to-location) ;; goal - its new location
+  :binds ((from-location location) ;; source - the theme's former location
+          (to-location location) ;; goal - its new location
           ;; See set of variables in define-movement-verb that
           ;; could all be inherited.///modulo when their restriction
           ;; were loaded: via-path, for-distance, in-direction
