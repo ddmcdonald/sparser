@@ -221,19 +221,9 @@
                 (set-contents slot value))
                (node (knit-phrase-into-tree slot value))
                (derivation-tree-node
-                (let ((root (realize-dtn value)))
-                  ;; Dispatch here is like the outer one. Consider abstracting
-                  (typecase root
-                    (null
-                     (error "realization of ~a returned nil" value))
-                    ((or word specification ttrace pronoun)
-                     (set-contents slot root))
-                    (node
-                     (knit-phrase-into-tree slot root))
-                    (otherwise
-                     (error "Unexected type returned from realize-dtn: ~
-                             ~a~%  ~a" (type-of root) root)))))
+                (set-contents slot value))
                (saturated-lexicalized-phrase
+                ;;/// should this be just put in the slot too?
                 (let ((root (instantiate-lexicalized-phrase value)))
                   (knit-phrase-into-tree slot root)))
                (otherwise
@@ -247,10 +237,8 @@
                       (push-debug `(,value ,contents ,slot))
                       (error "Unhandled value: ~a  ~a"
                              (type-of value) value))))))))
-
           (cons (let ((phrase-node (build-phrase contents)))
                   (knit-phrase-into-tree slot phrase-node)))
-
           (otherwise 
            (push-debug `(,contents ,slot ,node))
            (mbug "Unexpected contents--~A" contents)))
