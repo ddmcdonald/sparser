@@ -32,7 +32,7 @@
   (:method (object (context spire::container))
     (car (spire::q `(isa ?x ,object) :context context :answer '?x))))
 
-(defgeneric mexp-w/head (expr head &key context))
+(defgeneric mexp-w/head (expr head &key context &allow-other-keys))
 (defgeneric mexp (expr &key context &allow-other-keys)
   (:documentation "Compile a Mumble expression to a realizable phrase.
 Compound expressions are punted to MEXP-W/HEAD. Methods should return
