@@ -206,7 +206,8 @@
       (:single-span
        (pull-out-date-from-edge
         (ev-top-node (pos-starts-here start-pos))))
-      (:contiguous-edges
+      #+ignore(:contiguous-edges
+               ;;/// look in old off-line code for this
        (pull-date-out-of-edge-sequence start-pos end-pos)))))
 
 

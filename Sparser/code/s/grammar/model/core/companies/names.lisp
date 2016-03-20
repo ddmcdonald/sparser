@@ -197,9 +197,7 @@
     ;; appreciation of "service"
 
     (let ((name (value-of 'name company)))
-      (setq company
-            (bind-dli-value 'name
-                            (mark-company-name-as-taking-the name)))
+      (setq company (mark-company-name-as-taking-the name))
       company )))
 
 
