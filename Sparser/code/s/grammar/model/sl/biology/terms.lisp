@@ -520,7 +520,6 @@
   (:noun "efficacy"
          :of subject))
 
-(noun "EGF" :super protein)
 (adj "endogenous" :super bio-predication) ;; keyword: (ous ADJ) 
 
 
