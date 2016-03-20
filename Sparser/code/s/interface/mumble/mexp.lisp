@@ -23,7 +23,7 @@
 
 (defgeneric find-in-context (object context)
   (:method (object (context list))
-    (cdr (assoc object context)))
+    (cdr (assoc object context :test #'string-equal)))
   #+spire
   (:method (object (context symbol))
     (when context

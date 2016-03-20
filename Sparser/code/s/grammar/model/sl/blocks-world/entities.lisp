@@ -75,7 +75,7 @@
         :test #'equalp))
 
 (defun find-block-named (name)
-  (find name *all-blocks*
+  (find (string name) *all-blocks*
         :key #'block-name
         :test (lambda (x y) (search x y :test #'char-equal))))
 
