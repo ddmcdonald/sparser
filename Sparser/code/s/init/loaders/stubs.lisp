@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2012-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2012-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;loaders;"
-;;;  version:  December 2015
+;;;  version:  March 2016
 ;;;
 ;;; Provide definitions for functions we know (given the configuration)
 ;;; don't have definitions.
@@ -29,6 +29,11 @@
   (defun post-translation-file-from-card (card number) ;; Biology workspace
     (declare (ignore card number)))
   (defun do-cards ())
+  (defun define-bio (word kind)
+    (declare (ignore word kind)))
+  (defun setup-acronym-for-bio-entity (ref1 ref2)
+    (declare (ignore ref1 ref2)))
+  (defun svo/bio/expr (word) (declare (ignore word)))
 )
 
 (unless *companies*

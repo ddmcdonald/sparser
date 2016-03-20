@@ -439,7 +439,7 @@
 (defparameter *ref-counts* (make-hash-table))
 
 (defun survey-bindings ()
-  (setq *dlis* (all-dlis*))
+  (setq *dlis* (all-dlis))
   (format t "There are ~S dlis" (length *dlis*))
   (setq *bmax* 0)
   (setq *maxb* nil)
