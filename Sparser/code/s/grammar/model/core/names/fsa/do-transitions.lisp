@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "do transitions"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  1.12 September 2013
+;;;  version:  March 2016
 
 ;; -.3 (12/17/93) added a catch to handle the fact that the capitalization of
 ;;      headers will catch them up in the initial scan.  (12/22) fixed a ramification
@@ -293,7 +293,7 @@
 (defun do-pnf-edge (category referent starting-position ending-position
                     &optional rule)
   (unless category
-    (setq category (itype-of referent)))
+    (setq category (category-for-edge-given-referent referent)))
   (let ((edge (edge-over-proper-name
                starting-position
                ending-position
@@ -307,6 +307,14 @@
                 :to ending-position))))
     edge ))
 
+
+(defun category-for-edge-given-referent (i)
+  ;;/// will apply to other kinds of named entities, but haven't
+  ;; looked to see what this set would be
+  (let ((base-category (itype-of i)))
+    (case (cat-symbol base-category)
+      (category::named-location category::location)
+      (otherwise base-category))))
 
 (defun category-for-edge-given-name-type (category-of-name name)
   (case (cat-symbol category-of-name)
