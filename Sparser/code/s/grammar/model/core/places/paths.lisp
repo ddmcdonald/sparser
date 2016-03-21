@@ -52,7 +52,7 @@
                 :mapping ((result-type . :self)
                           (np . :self)
                           (first . (country US-state))
-                          (second . number)
+                          (second . (number path-type))
                           (item1 . authority)
                            (item2 . number))))
 
