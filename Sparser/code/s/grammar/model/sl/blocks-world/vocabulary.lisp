@@ -52,6 +52,7 @@ support a substantial number of blocks.
 (noun "staircase" :specializes artifact :rule-label artifact)
 
 ;;--- Interjections -- see ex. in model/sl/checkpoint/
+(sentential-interjection "done")
 (sentential-interjection "good")
 (sentential-interjection "ok")
 (sentential-interjection "yes")
