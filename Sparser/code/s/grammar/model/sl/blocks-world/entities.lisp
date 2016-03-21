@@ -74,8 +74,14 @@
         :key #'block-id
         :test #'equalp))
 
+(defun strip-prefix-and-suffix (string &aux (string (string string)))
+  "Cf. CLIC::MAKE-APPARATUS-BLOCK-NAME"
+  (let* ((p (position #\- string))
+         (s (position #\- string :from-end t :start (if p (1+ p) 0))))
+    (subseq string (if p (1+ p) 0) s)))
+
 (defun find-block-named (name)
-  (find (string name) *all-blocks*
+  (find (strip-prefix-and-suffix name) *all-blocks*
         :key #'block-name
         :test (lambda (x y) (search x y :test #'char-equal))))
 
