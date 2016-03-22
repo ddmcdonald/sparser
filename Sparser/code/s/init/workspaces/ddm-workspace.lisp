@@ -17,6 +17,8 @@
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
 
 
+ classify-&-record-span  <<< good entry point into middle of PNF
+
  one-hyphen-ns-patterns  resolve-tailing-stranded-hyphen  nospace-hyphen-specialist
 
  period-hook  start-sentence
@@ -34,6 +36,7 @@
  mumble::realize-dtn  mumble::discourse-unit-bundle-driver
  mumble::clear-derivation-tree-data  mumble::in-focus?
  mumble::build-phrase  mumble::current-subject  mumble::process-negate-accessory
+ mumble::plan-reference-to-category ;; blocks-world/specialists
 
 (say (negate (present-tense (i-know-of-p (drug-targeting-kras)))))
 ;; Contractions
