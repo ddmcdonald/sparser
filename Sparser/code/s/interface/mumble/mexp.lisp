@@ -73,7 +73,8 @@ two values: the compiled expression and a possibly augmented context.")
 (defmethod mexp ((expr string) &key context)
   "Strings denote words."
   (values (make-dtn :referent (find-word expr)
-                    :resource (get-lexicalized-phrase expr))
+                    :resource (or (get-lexicalized-phrase expr)
+                                  (noun expr)))
           context))
 
 (defmethod mexp ((expr symbol) &rest args &key context)
