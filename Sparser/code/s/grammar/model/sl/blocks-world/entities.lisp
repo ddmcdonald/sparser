@@ -14,18 +14,14 @@
 
 (stipulate-to-be-unique *the-table*)
 
-(defvar *b1* (sp::define-individual 'sp::block :name "B1"))
-(defvar *b2* (sp::define-individual 'sp::block :name "B2"))
-(defvar *b3* (sp::define-individual 'sp::block :name "B3"))
-(defvar *b4* (sp::define-individual 'sp::block :name "B4"))
-(defvar *b5* (sp::define-individual 'sp::block :name "B5"))
-(defvar *b6* (sp::define-individual 'sp::block :name "B6"))
-(defvar *b7* (sp::define-individual 'sp::block :name "B7"))
-(defvar *b8* (sp::define-individual 'sp::block :name "B8"))
-(defvar *b9* (sp::define-individual 'sp::block :name "B9"))
-(defvar *b10* (sp::define-individual 'sp::block :name "B10"))
-(defvar *b11* (sp::define-individual 'sp::block :name "B11"))
-(defvar *b12* (sp::define-individual 'sp::block :name "B12"))
+(defvar *numbered-blocks*
+  (loop for block-number from 1 to 32
+        as block-name = (format nil "B~d" block-number)
+        as var-name = (format nil "*~a*" block-name)
+        collect (symbol-value
+                 (eval `(defvar ,(intern var-name :mumble)
+                          (sp::define-individual 'sp::block
+                                                 :name ,block-name))))))
 
 (defvar *the-two-blocks-he-put-down*
   (sp::define-individual 'sp::collection
@@ -60,8 +56,7 @@
         collect block))
 
 (defvar *all-blocks*
-  (append (list *b1* *b2* *b3* *b4* *b5* *b6* *b7* *b8* *b9* *b10* *b11* *b12*)
-          *apparatus-blocks*))
+  (append *numbered-blocks* *apparatus-blocks*))
 
 (defun block-id (obj)
   (sp::indiv-id obj))
@@ -74,14 +69,12 @@
         :key #'block-id
         :test #'equalp))
 
-(defun strip-prefix-and-suffix (string &aux (string (string string)))
-  "Cf. CLIC::MAKE-APPARATUS-BLOCK-NAME"
-  (let* ((p (position #\- string))
-         (s (position #\- string :from-end t :start (if p (1+ p) 0))))
-    (subseq string (if p (1+ p) 0) s)))
-
-(defun find-block-named (name)
-  (find (strip-prefix-and-suffix name) *all-blocks*
+(defun find-block-named (name &aux
+                         (name (etypecase name
+                                 (integer (format nil "B~d" name))
+                                 (symbol (string name))
+                                 (string name))))
+  (find name *all-blocks*
         :key #'block-name
         :test (lambda (x y) (search x y :test #'char-equal))))
 
