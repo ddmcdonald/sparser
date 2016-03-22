@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996, 2010  David D. McDonald
+;;; copyright (c) 1992-1996, 2010, 2016  David D. McDonald
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC.
-;;; $Id$
 ;;;
 ;;;     File:  "newline"
 ;;;   Module:  "analyzers;psp:fill chart:"
-;;;  Version:  0.8 February 2010
+;;;  Version:  March 2016
 
 ;; initiated 8/91 v1.2
 ;; (11/1 v2.0.1) Reordered the clauses by their frequency of occurance
@@ -72,7 +71,7 @@
    terminal or treated as whitespace")
 
 
-(defparameter *newline-delimits-paragraphs* t
+(defparameter *newline-delimits-paragraphs* nil
   "A flag read in Sort-out-result-of-newline-analysis to determine
    whether the newline word delimits a paragraph (and does not get
    added to the chart)")
