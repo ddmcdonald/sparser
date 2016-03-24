@@ -33,15 +33,155 @@
     ;; need them to just to keep straight what the scan does
 
     (setq *reached-eos* nil) ;; initialize
-    (scan-segment p1)))
+    (new-scan-segment p1)))
+
+
+(defun setup-and-delimit-next-chunk (pos-before)
+  "Return the position just after the last item"
+
+  ;; 1st prime the pump
+  (unless (pos-terminal pos-before)
+    (scan-next-position))
+  (let ((word (pos-terminal pos-before))
+        (pos-after (chart-position-after pos-before)))
+    (tr :inc-looking-at word)
+    (format t "~&scanned ~a at ~a~%" word pos-before)
+    ;; eos check -- eos terminates its segment
+    (when (eq word *end-of-source*)
+      (setq *reached-eos* t)
+      (lsp-break "reached eos")
+      (return-from setup-and-delimit-next-chunk pos-before))
+
+    (install-terminal-edges word pos-before pos-after)
+    (let* ((ev (pos-starts-here pos-before))
+           (forms (starting-forms ev *chunk-forms*)))
+
+      ;; "black" could start an adjp
+      ;(assert (null (cdr forms)))
+      (format t "~&chunk starting form: ~a"  (car forms))
+
+      (loop
+        ;; The word we just made the edges for is
+        ;; part of the segment. The question is whether
+        ;; the next word is
+        (setq pos-before pos-after
+              pos-after (chart-position-after pos-before))
+        (unless (pos-terminal pos-before)
+          (scan-next-position))
+        (setq word (pos-terminal pos-before))
+        (format t "~&scanned ~a at ~a~%" word pos-before)
+        (when (eq word *end-of-source*) ;; flet
+          (setq *reached-eos* t)
+          ;;(lsp-break "reached eos")
+          (return-from setup-and-delimit-next-chunk pos-before))
+
+        (let* ((next-edges
+                (install-terminal-edges word pos-before pos-after))
+               (form (determine-edge-form-for-state-changes next-edges pos-before)))
+          ;; given what the form of the (edge over the) previous word
+          ;; was. If the form of this new edge compatible with it?
+          ;; If so, extend the chunk, if not we're done.
+          (format t "~&next form: ~a~%" form)
+
+          ;; When we get an incompatible form we've gone
+          ;; one word further that the end of the segment,
+          ;; e.g. to the "has" in the standard example
+          (unless (compatible-form? (car forms) form)
+            (format t "~&Ending segment at ~a" pos-before)
+            (return-from setup-and-delimit-next-chunk pos-before))
+
+          (format t "~&looping: ~a chunk extended by ~a at ~a~%"
+                     (car forms) form pos-before))))))
+
+(defun compatible-form? (form-type form)
+  ;; compare to compatible-head?
+  (declare (special *vg-word-categories*
+                    category::det category::approximator
+                    category::number category::adjective
+                    category::common-noun category::proper-noun))
+  (assert (category-p form))
+  (let ((form-name (cat-symbol form)))
+    (ecase form-type
+      (ng ;; cf. ng-compatible? or *ng-head-categories*
+       (memq form-name '(category::det
+                         category::approximator
+                         category::number
+                         category::adjective
+                         category::common-noun
+                         category::proper-noun)))
+      (vg
+       (memq form-name *vg-word-categories*))
+      (adjp
+       (lsp-break "not ready to handle an adjp")))))
+    
 
 
 
+
+(defun new-scan-segment (start-pos)
+  ;; Looks like state-sensitive-rightward-march while
+  ;; using the criteria of the chunker to delimit the segment
+  (tr :starting-c3-segment start-pos)
+  (let* ((last-position
+         (setup-and-delimit-next-chunk start-pos))
+         (head-position (chart-position-before last-position))
+         (position start-pos)
+         edge )
+
+    (tr :delimited-c3-segment start-pos last-position)
+    (when (eq start-pos last-position)
+      (push-debug `(,last-position))
+      (error "Empty segment?"))
+
+    ;; Loop over the successive (single-word) edges in the
+    ;; segment. Bind *this-is-the-head* over the final one.
+    ;; This takes the place of the hook in referent-from-unary-rule
+    ;; that was based the prior design where we delimited
+    ;; the segment before we made its edges
+    (loop
+      (setq edge (top-edge-at/starting position))
+      (let ((*this-is-the-head* (eq position head-position))
+            (referent (edge-referent edge))
+            (rule (edge-rule edge)))
+        (declare (special *this-is-the-head*))
+        (incorporate-referent-into-the-situation 
+         referent rule edge)
+        (when (eq position head-position)
+          (return))
+        (setq position (chart-position-after position))))
+
+    ;; After it gets to the head (assumed to be the last constituent
+    ;; but verb groups are more interesting with adverbs and such)
+    ;; are drops out of the loop, we need to span the whole
+    ;; segment with an edge and update the sentential state
+    (let ((edge (c3-process-segment-and-update-state
+                 start-pos last-position)))
+
+      ;; Now that we have analyzed the segment we need to fold in
+      ;; the edge to the left. Like moving to the forest level
+      ;; after every segment. For the ISR experiment there will
+      ;; always be an edge here
+      (roll-up-edges-to-the-left edge) ;; also updates state
+
+      ;; presumably we now just scan the next segment
+      (if *reached-eos*
+        (terminate-chart-level-process)
+        (new-scan-segment last-position)))))
+
+#+ignore
 (defun scan-segment (start-pos)
   ;; Compare to scan-next-segment in the regular protocol.
   ;; This is the fixed point where resume between segments.
   (tr :starting-c3-segment start-pos)
-  (let* ((last-position (read-through-segment-to-end start-pos))
+  (let* ((last-position
+          ;; This version is unable to terminate the segment
+          ;; of "has entered" when it gets to "wakil" even
+          ;; though wakil has an ].np on it.
+          ;; That could be a bitch to debug, so doing
+          ;; it in manner more like the chunker does
+          ;;   (read-through-segment-to-end start-pos)
+          (chunk-one-segment start-pos)
+)
          ;; first delimit the next segment that starts here
          (position start-pos)
          (head-position (chart-position-before last-position)))
@@ -136,7 +276,12 @@
           ;; This does set-status :brackets-from-word-introduced on the position
           (introduce-leading-brackets word-after position-before)
           (setq ] (]-on-position-because-of-word? position-before word-after))
-          (set-status :]-from-word-after-checked position-before))
+          (set-status :]-from-word-after-checked position-before)
+          (setq skip-]-check nil))
+
+        (push-debug `(,] ,position-before))
+        ;;  (setq ] (car *) position-before (cadr *))
+        (lsp-break "position = ~a" position-before)
 
         (if (and ] (bracket-ends-the-segment? ] position-before))                     
           (then
