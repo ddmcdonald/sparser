@@ -447,9 +447,18 @@
     (push-debug `(,vg))
     (break "~s is not an event, tense/aspect only applies to individuals that ~
             inherit from event." vg))
-  (or (value-of 'aspect vg)
-      (make/individual
-                (category-named 'tense/aspect-vector) nil)))
+  (let ((known-aspect (value-of 'aspect vg)))
+    ;; In "has entered" the individual for enter has aspect = #<category have>
+    ;; that value should probably be replaced with this vector or the
+    ;; original rule rewriten to FoM a tense/aspect-vevtor on its head
+    ;; though that means that if that is followed up with absorb-auxiliary
+    ;; that routine has to see if variables are already bound
+    (cond
+     ((and known-aspect (itypep known-aspect 'tense/aspect-vector))
+      known-aspect)
+     (t 
+       (make/individual (category-named 'tense/aspect-vector) nil)))))
+
 
 (defun absorb-auxiliary (aux vg)
   (cond
@@ -463,6 +472,7 @@
 		       (individual (itype-of aux))
 		       (category aux)))
 	   (i (find-or-make-aspect-vector vg)))
+       (assert (itypep i ''tense/aspect-vector))
 
        ;; Check for negation
        (when (value-of 'negation aux)
