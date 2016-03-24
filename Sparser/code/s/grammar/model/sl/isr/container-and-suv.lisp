@@ -35,6 +35,7 @@ It has buildings that it does its manufacturing in
   :specializes artifact
   :mixins (physical-surface ;;// has to be generalized 
            object
+           named-type ;; "Honda"
            has-spatial-location ;;// commits us to actual object
            spatial-region
            container
