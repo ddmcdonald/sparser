@@ -88,11 +88,13 @@
   ;; the rule's mapping. Probably easily added to the schema.
   (case symbol
     (category::have ;; any pre-head auxiliary
-     (find-variable-in-category 'aspect 'perdurant))
+     (find-variable-for-category 'aspect 'perdurant))
     (category::color
-     (find-variable-in-category 'color 'physical-surface))
+     (find-variable-for-category 'color 'physical-surface))
     (category::car-manufacturer ;; generalize to maker-of-artifacts
-     (find-variable-in-category 'made-by 'artifact))
+     (find-variable-for-category 'made-by 'artifact))
+    (category::car-type
+     (find-variable-for-category 'type-of category::car-type))
     (otherwise
      (push-debug `(,symbol))
      (break "No variable associated with the category symbol ~a"
@@ -110,6 +112,8 @@
 
 (define-state :assembling-np phrase ;; "Ford" (but actually "ford")
   ((proper-noun :assembling-np)
+   (common-noun :assembling-np)
+   (verb+s :assembling-vg)
    ))
 
 (define-state :initial-state phrase ;; "black"
@@ -122,6 +126,7 @@
 
 (define-state :assembling-vg phrase
   ((verb+s :assembling-vg)
+   (verb+ed :assembling-vg)
    ))
 
 
@@ -133,7 +138,8 @@
 (define-state :np-complement-seen sentence nil)
 
 (define-state :verb-seen sentence
-  ((proper-noun :np-complement-seen)))
+  ((proper-noun :np-complement-seen)
+   (common-noun :np-complement-seen)))
 
 (define-state :subject-seen sentence
   ((vg :verb-seen)))
