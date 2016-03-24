@@ -25,7 +25,7 @@
 
 ;; (trace-c3)  referent-from-rule
 ;; get-state  => objects/situation/state
-;; add-referent-to-peg => grammar/rules/situation/rules
+;; add-referent-to-peg => grammar/rules/situation/rules -- Has the states
 ;; transfer-bindings => isr-methods
 ;; add-relation => objects/situation/situation
 ;; bind-variable-on-peg => objects/situation/pegs
@@ -33,8 +33,28 @@
 ;; incorporate-referent-into-the-situation => rules/situation/compose
 
 ;; 1/26/16
-#| Need a state transition (etc.) for "entered"
+#| Need a state transition (etc.) for "entered" |#
+;; 3/22/16
+#| given that, the problem is that scan-segment thinks that
+the head of the segment is "wakil" rather than "entered"
+Problem appears to be that read-through-segment-to-end didn't
+know that the segment started as a vg and so the ].np on "wakil"
+terminates it.
+
+
+;; 3/23/16
+After rebuilding the segment delimiter and accomodating its fanount
+(moved inferences of unary rules), all the compose methods are running
+and crying out for 'call next method' to separate inferences on
+location vs on container (more specific kind of location)
+
+Bug -- the parsing operation (which starts with tts) duplicates
+the bindings on the (temporary !!??) motor-vehicle. So it must not
+be making a new one each time (and reclamation doesn't see them)
+Or it could be a loop that's making the zillion of them since
+there's a multi second pause at that point every time
 |#
+
 ;; 72  (p "black ford suv has entered wakil")
 ;; 73  (p "two people are dismounting.")
 ;; (p "black ford suv has entered wakil. Two people are dismounting.")
@@ -48,6 +68,7 @@
 
 ;; Meta-dot
 ; transfer-bindings --loads ISR-methods
+; when-binding-hook  with-bindings
 
 ; (just-bracketing-setting)
 ; (word-frequency-setting)
