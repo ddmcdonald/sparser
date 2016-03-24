@@ -145,6 +145,8 @@
                                                    (referent t)
                                                    (rule t) ;; what's the super type of rules?
                                                    (parent-edge edge))
+  ;; called from referent-from-rule when *c3* is non-nil
+
   ;;/// May not need all these parameters
   (push-debug `(,left-ref ,right-ref ,referent ,rule ,parent-edge))
   ;; *edges-from-referent-categories*
