@@ -52,7 +52,7 @@
   "If the head (the kind argument) is abstract, then we need to
    make it concrete since a car manufacturers are makers of artifacts
    and those are always physical."
-  (tr :c3-compose mgfr head)
+  (tr :c3-composing mgfr head)
   (when (itypep head 'named-type)
     (add-relation 'type-of-product mgfr head) ;; Ford makes trucks
     (let ((physical-equivalent (value-of 'type-of category::car-type)))
@@ -75,7 +75,7 @@
   ;; to conceptualize, e.g., the plastic of the car body or
   ;; the clay of the statue. Do these things attribute directly
   ;; to physical, or to an intermediary that holds these properties
-  (tr :c3-compose color obj)
+  (tr :c3-composing color obj)
   (add-relation 'color obj color)
   obj)
 
@@ -84,13 +84,13 @@
   ;; a car-manufacturer is not something that has a color
   ;; so we do nothing here, and assume that the color will be
   ;; taken up by something else
-  (tr :c3-compose color obj)
+  (tr :c3-composing color obj)
   obj)
 
-(def-k-method compose ((aux have) (e event))
+(def-k-method compose ((aux have) (e perdurant))
   ;; corresponds to a form rule. Not clear there's anything to do
   ;; at the situation level that wasn't done with the subtype already
-  (tr :c3-compose aux e)
+  (tr :c3-composing aux e)
   (when (referential-category-p e)
     ;; This lets the suv get bound as the theme of "enter"
     (setq e (make/individual e nil)))
@@ -99,8 +99,13 @@
 
 ;; can-change-location + move
 (def-k-method compose ((theme can-change-location) (e move))
-  (tr :c3-comopse theme e)
-  ;;(break "e has theme?")
+  (tr :c3-composing theme e)
+  ;; This is run by referent-from-rule as alternative to the
+  ;; realization specified by the rule. Returns the edge referent
+  ;;/// in current protocol theme won't be bound, but might be
+  (bind-variable 'theme theme e)
+  e)
+
 #| move: when-bound(theme) 
   ;; we know that this is same as when-bound(can-change-location
   ;; Trigger probably goes down in the binding operation itself
@@ -111,10 +116,10 @@
 |#
   ;; This gets us right into event transitions and situation chaining
   ;; since location(suv) is a functor, so putting it off
-  e )
+  
 
 (def-k-method compose ((e move) (loc container))
-  (tr :c3-compose e loc)
+  (tr :c3-composing e loc)
 #| move: when-bound(to-location)
      assert: (moved-to theme to-location)
 |#
@@ -122,4 +127,5 @@
     (unless theme
       (error "We lost the theme binding somewhere"))
     (add-relation 'present-location theme loc)
+    (break "note individuals")
     e))
