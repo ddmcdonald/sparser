@@ -152,7 +152,6 @@
       (let ((v (capitalized-correspondent1 position-before label)))
         (when v
           (tr :switched-to-capitalized-variant label v)
-          (format t "~&converted to ~a" v)
           (setq label v)))))
 
   (flet ((assign-before (label)
