@@ -40,7 +40,11 @@
 ;;; finding
 ;;;---------
 
-(defun find-variable-for-category (variable-name category)
+(defmethod find-variable-for-category ((variable-name symbol) (cat-name symbol))
+  (find-variable-for-category variable-name
+                              (category-named cat-name :error-if-missing)))
+
+(defmethod find-variable-for-category ((variable-name symbol) (category category))
   "The prefered way to access variables from their name."
   (when (eq (symbol-package variable-name) (find-package :keyword))
     ;; Happens when coming in from find-individual
