@@ -137,6 +137,10 @@
 (set-generic-treetop-action word::|and|
                             'conjoin-adjacent-like-treetops)
 
+;; Case of "and" ("or") spanned by a unary edge
+(set-generic-treetop-action category::conjunction
+                            'conjoin-adjacent-like-treetops)
+
 (defun conjoin-adjacent-like-treetops (position-after)
   ;; Called by invoking the treetop-action above during the
   ;; forest scan. Timing of the segment scan prohibited running
