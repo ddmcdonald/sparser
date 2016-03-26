@@ -29,4 +29,5 @@
   (switch-to-embedded-parsing-protocol :scan-for-closing-markup-tag))
 
 (defun end-preserve-spacing-section (sm-edge)
-  (break))
+  (declare (ignore sm-edge))
+  (break "stub"))
