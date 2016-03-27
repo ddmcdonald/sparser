@@ -354,7 +354,8 @@
                            &optional (stream *standard-output*))
   (been-here-before? node)
   (format stream "~a -> " (name node))
-  (trace-out-tree (contents node)))
+  (trace-out-tree (first-constituent node))
+  (trace-out-tree (next (first-constituent node))))
 
 (defmethod trace-out-tree ((word word)
                            &optional (stream *standard-output*))
