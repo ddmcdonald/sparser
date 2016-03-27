@@ -195,6 +195,7 @@
 		(process-further-specifications (adjuncts dtn))
 		(leaving-previous-context np-root))
 	      np-root))))
+    #+sparser
     (record-reference dtn result dom-clause)
     (push-debug `(:np-bundle ,result))
     result))
@@ -248,8 +249,10 @@
            ((and model-level-object
                  (antecedent-precedes-and-is-a-clausemate model-level-object))
             'antecedent-precedes-and-is-within-this-clause )
+           #+sparser
            ((in-focus? model-level-object)
             'text-structure-has-marked-reference-reducible)
+           #+sparser
            ((local-mentions model-level-object)
             ;; because we've already checked for clausemates this mention
             ;; is likely to be in an upstairs clause

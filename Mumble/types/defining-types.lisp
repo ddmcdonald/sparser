@@ -131,9 +131,11 @@ flag is true, they are created as all uppercase.")
 (defstruct (mcatalog
 	     (:conc-name nil)
 	     (:include mobject))
-  the-type		; a type
-  members		; a list of objects of that type
-  )
+  the-type ; a type
+  members) ; a list of objects of that type
+
+(defmethod make-load-form ((object mcatalog) &optional environment)
+  (make-load-form-saving-slots object :environment environment))
 
 (defstruct (mtype
 	     (:conc-name nil)
@@ -212,7 +214,7 @@ Revised version with provision for defining types on top of other types."
          (properties-&-setters (mapcar #'cons property-names setter-names))
          (included-setters  (setters (mtype included-type)))
          (included-properties (properties (mtype included-type))))
-    `(progn
+    `(eval-when (:compile-toplevel :load-toplevel :execute)
        ;; Create the type and set up all references to it.
        (let ((the-type (make-mtype
 			:postprocessed? t

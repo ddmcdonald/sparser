@@ -20,8 +20,6 @@
 (setup-session-globals/parser)
 (setup-session-globals/grammar)
 
-;; Sparser is now loaded & launched; encode that fact as a feature.
-(push :sparser *features*)
 (when cl-user::location-of-text-corpora
   (push :full-corpus *features*))
 

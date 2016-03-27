@@ -252,15 +252,11 @@ a message to be expressed. See discussion in make.lisp |#
     (break "deal with cons word-data: ~a" s-word))
 
   ;; Make the equivalent Mumble word
-  (let* ((m-pos (case pos-tag
+  (let* ((m-pos (ecase pos-tag
                   (:verb 'verb)
                   (:common-noun 'noun)
                   (:adjective 'adjective)
-                  (:interjection 'interjection)
-                  (otherwise
-                   (error "Don't know a correspondence for ~s ~
-                           as a ~a" (sparser::word-pname s-word)
-                           pos-tag))))
+                  (:interjection 'interjection)))
          (m-word 
           (get-mumble-word-for-sparser-word s-word m-pos)))
 

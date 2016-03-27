@@ -12,10 +12,5 @@
 
 (in-package :mumble)
 
-(progn (mumble::postprocess-entire-system)
-       ;; the return value is a list of all the objects - this keeps
-       ;; it from cluttering the screen.
-       :finished-postprocessing)
-
+(postprocess-entire-system)
 (setq *loading-whole-system* nil)
-(push :mumble *features*)

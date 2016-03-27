@@ -3,9 +3,7 @@
 ;; image. This load process has no way to unload or to intelligently
 ;; overwrite the results from a prior load.
 
-(defpackage :sparser-asd
-  (:use :asdf
-        :common-lisp))
+(defpackage :sparser-asd (:use :asdf :common-lisp))
 (in-package :sparser-asd)
 
 ;; ------------------------------------------------------------

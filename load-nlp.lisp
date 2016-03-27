@@ -15,7 +15,7 @@
 ;; 1. Records the location of this file as *nlp-home*
 ;; 2. Loads ASDF and pushes two file locations onto the ASDF registry
 ;; 3. Loads the utilities using ASDF
-;; 4. Creates the SPARSER package
+;; 4. Creates the Sparser package
 ;; 5. Loads Mumble
 ;; 6. Chooses a specializing script and loads Sparser
 
@@ -42,15 +42,15 @@
            asdf:*central-registry*))
 
 ;; #3 --- Load the utilities. Note that their exported symbols are
-;; in the DDM-UTIL package, which is also the name of its ASDF file.
+;; in the DDM-UTIL package, which is also the name of its ASD file.
 
-(asdf:operate 'asdf:load-op :ddm-util)
+(asdf:load-system :ddm-util)
 
-;; #4 --- Create the sparser package.
+;; #4 --- Create the Sparser package.
 ;; We do this here so that the package is available for reference
-;; in Mumble's code. When Sparser/Mumble are part of another
-;; system its package may have already have been defined, but
-;; it can be redefined or elaborated here without a problem.
+;; in Mumble's code. We push the Sparser feature here, too--even
+;; though Sparser is probably not yet loaded--so that Mumble can
+;; detect when it's safe to use symbols in the Sparser package.
 
 (defpackage :sparser
   (:nicknames :sp)
@@ -64,6 +64,8 @@
    :category-named :cat-realization :edge-referent
    :exploded-tree-family))
 
+(pushnew :sparser *features*)
+
 (defmacro sparser::position (&rest args)
   "Sparser has a data structure called position, which clashes
 with the standard function of the same name. This macro aliases
@@ -72,7 +74,7 @@ the functional value of the former to that of the latter."
 
 ;; #5 --- Load Mumble.
 
-(load (merge-pathnames "Mumble/loader.lisp" *nlp-home*))
+(asdf:load-system :mumble)
 
 ;; #6 --- Load Sparser.
 
