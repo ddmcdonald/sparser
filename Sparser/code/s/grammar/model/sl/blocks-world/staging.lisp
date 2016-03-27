@@ -28,8 +28,7 @@
   (when (cdr descriptions-of-content-to-express)
     (error "More than one thing to express. Not ready for that yet."))
   (setq descriptions-of-content-to-express 
-        (launder-sexp-symbols-package descriptions-of-content-to-express
-                                      (find-package :mumble)))
+        (reintern-symbols descriptions-of-content-to-express :mumble))
   (let* ((description (car descriptions-of-content-to-express))
          (classification (car description))
          (content (cadr description))

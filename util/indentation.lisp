@@ -9,17 +9,8 @@
 
 (in-package :ddm-util)
 
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (export '(emit-line emit-line-continue
-            push-indentation pop-indentation
-            with-indentation
-            initialize-indentation
-            get-indentation
-            string-of-N-spaces)
-          (find-package :ddm-util)))
-
 (defparameter *indent-strings*
-  `((0 . "")
+  '((0 . "")
     (1 . " ")
     (2 . "  ")
     (3 . "   ")
@@ -68,15 +59,11 @@
     (46 . "                                              ")
     (47 . "                                               ")
     (48 . "                                                ")
-    (49 . "                                                 ")
-    ))
+    (49 . "                                                 ")))
 
-;;;------ small hack for handling the indentation ------
-    
 (defun emit-line (stream string &rest args)
   (let ((text (apply #'format nil string args)))
-    (format stream "~&~a~a"
-	    (get-indentation) text)))
+    (format stream "~&~a~a" (get-indentation) text)))
 
 (defun emit-line-continue (stream string &rest args)
   (apply #'format stream string args))
@@ -85,11 +72,11 @@
 (defvar *indent-delta* 2)
 
 (defun push-indentation (&optional (delta *indent-delta*))
-  (setq *indentation* (+ *indentation* delta)))
+  (incf *indentation* delta))
 
 (defun pop-indentation (&optional (delta *indent-delta*))
-  (setq *indentation* (- *indentation* delta))
-  (when (<= *indentation* 0)
+  (decf *indentation* delta)
+  (when (minusp *indentation*)
     (setq *indentation* 0)))
 
 (defmacro with-indentation (n &body body)
@@ -102,14 +89,9 @@
   (setq *indentation* 0))
 
 (defun get-indentation ()
-  (let ((s (cdr (assoc *indentation* *indent-strings*))))
-    (or s "")))
+  (or (cdr (assoc *indentation* *indent-strings*)) ""))
 
 (defun string-of-N-spaces (n)
-  (let ((s (cdr (assoc n *indent-strings*))))
-    (unless s
-      (error "Add more cases, a string of length ~A ~
-              was requested." n))
-    s))
+  (or (cdr (assoc n *indent-strings*)) ""))
 
 

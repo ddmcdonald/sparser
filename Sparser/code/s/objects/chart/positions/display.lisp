@@ -170,8 +170,7 @@
         (right-daughter (edge-right-daughter edge))
         (constituents (edge-constituents edge)))
     
-    (let ((indentation-space (string-of-N-spaces offset))
-          (label-string (typecase label
+    (let ((label-string (typecase label
                           ((or category referential-category mixin-category)
                            (cat-symbol label))
                           (word 
@@ -195,8 +194,8 @@
                (symbol (string-downcase (symbol-name rule))))
              "terminal")))
       
-      (format s "~&~Ae~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
-              indentation-space
+      (format s "~&~VTe~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
+              offset
               index
               label-string
               start
@@ -266,8 +265,7 @@
         (right-daughter (edge-right-daughter edge))
         (constituents (edge-constituents edge)))
     
-    (let ((indentation-space (string-of-N-spaces offset))
-          (label-string (typecase label
+    (let ((label-string (typecase label
                           ((or category referential-category mixin-category)
                            (format nil
                                    "~A/~A"
@@ -306,8 +304,8 @@
                (symbol (string-downcase (symbol-name rule))))
              "terminal")))
       
-      (format s "~&~A~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
-              indentation-space
+      (format s "~&~VT~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
+              offset
               (if *no-edge-info* "" (format nil "e~A" index))
               label-string
               start
@@ -352,19 +350,11 @@
 
         edge ))))
 
-
 (defun display-word-in-tree (word offset s)
-  (format s "~&~A\"~A\"" 
-          (string-of-N-spaces offset)
-          (word-pname word)))
-  
+  (format s "~&~VT\"~A\"" offset (word-pname word)))
 
 (defun display-pw-in-tree (word offset s)
-  (format s "~&~A\"~A\"" 
-          (string-of-N-spaces offset)
-          (pw-pname word)))
-
-
+  (format s "~&~VT\"~A\"" offset (pw-pname word)))
 
 (defun tree (n)
   (display-edge-as-tree (edge# n)))

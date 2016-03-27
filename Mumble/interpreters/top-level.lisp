@@ -76,7 +76,7 @@
 (defun mumble  (content)
   (declare (special *mumbling?*))
   (if *mumbling?*
-    (sorry "Already Mumbling; can't run Mumble recursively")
+    (error "Can't run Mumble recursively.")
     (let-with-dynamic-extent ((*mumbling?*  t))
       (when (consp content)
 	(setq *pending-rspecs* (cdr content)

@@ -20,7 +20,7 @@ a dtn that has been wrapped in a discourse unit.
 (defun sexp-reader (sexp)
   "sexp in, dtn out"
   ;; 1st get the symbols in our package
-  (setq sexp (launder-sexp-symbols-package sexp (find-package :mumble)))
+  (setq sexp (reintern-symbols sexp :mumble))
 
   ;; 2. for specific individuals, retrive them from their keyword form
   (setq sexp (launder-sexp-to-dereference-keywords sexp))

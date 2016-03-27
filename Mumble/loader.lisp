@@ -46,7 +46,6 @@
 (load (concatenate 'string *mumble-location* "objects/short-printers.lisp"))
 
 (load (concatenate 'string *mumble-location* "util/tracker-stub"))
-(load (concatenate 'string *mumble-location* "util/debug-stack"))
 
 (load (concatenate 'string *mumble-location* "interface/bundles/standalone/defining-demos.lisp"))
 (load (concatenate 'string *mumble-location* "interface/bundles/standalone/specification-language.lisp"))

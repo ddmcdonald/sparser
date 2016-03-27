@@ -17,19 +17,9 @@
 
 (in-package :sparser)
 
-#-ddm-utils (lload "sugar;loader")
-#-ddm-utils (lload "basic tools;time")
 (lload "basic tools;no breaks")
-#-ddm-utils (lload "basic tools;debug stack")
-#-ddm-utils (lload "basic tools;SFL Clos")
 (lload "basic tools;sorting")
 (lload "basic tools;clos-classes")
 (lload "basic tools;clos-operations")
 (lload "basic tools;resource")
 (lload "basic tools;test-functions")
-;; [sfriedman:20150515.0915CST] Removing this, and loading from R3 external.
-;;(lload "basic tools;xmls")
-;;(lload "basic tools;xmlrep-helpers")
-
-
-

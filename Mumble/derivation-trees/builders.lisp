@@ -459,9 +459,7 @@ a message to be expressed. See discussion in make.lisp |#
 (defun compound-word-for-indexing (&rest word-pnames)
   "Creates an artificial word by combining the pnames it's passed
    with hyphens and creating a word."
-  (let ((pname (apply #'strings-to-hyphenated-string word-pnames)))
-    (word-for-string pname)))
-
+  (word-for-string (format nil "~{~a~^-~}" word-pnames)))
 
 (defgeneric name-composite (object)
   (:documentation "Given a newly created object that has

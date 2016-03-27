@@ -161,9 +161,9 @@ identical.  Have to think about the right way to remedy this. ///"
 	(case (length mvalues)
 	  (0  (error "~s is not the name of a known realization function." sexp))
 	  (1  (car mvalues))
-	  (t  (comment
-		(error "The realization function named ~s, could be any of ~s"
-		       sexp mvalues))
+	  (t  (cerror "Take the first one."
+                      "The realization function named ~s, could be any of ~s"
+                      sexp mvalues)
 	      (car mvalues))))
       (error "~s should be a symbol, the name of a Mumble realization function."
 	     sexp)))
@@ -198,7 +198,7 @@ identical.  Have to think about the right way to remedy this. ///"
       (let* ((ac-type    (accessory-type-named (pop raw)))
 	     (ac-value   (and (possible-values ac-type)
 			      (translate-accessory-value (pop raw) ac-type))))
-	(apush ac-type ac-value assoc-list)))
+	(push (cons ac-type ac-value) assoc-list)))
     assoc-list))
 
 
@@ -233,6 +233,5 @@ identical.  Have to think about the right way to remedy this. ///"
   (cdr (assoc sexp *rspec-alist* :test #'equal)))
 
 (defun add-mention (sexp value)
-  (setf *rspec-alist* 
-        (add-association sexp value *rspec-alist*)))
+  (push (cons sexp value) *rspec-alist*))
 

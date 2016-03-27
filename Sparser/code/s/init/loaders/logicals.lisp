@@ -318,7 +318,6 @@
 
 (def-logical-pathname "tools;"        "source;tools;")
 (def-logical-pathname "basic-tools;"  "tools;basics;")
-(def-logical-pathname "sugar;"        "basic-tools;syntactic-sugar;")
 (def-logical-pathname "measuring;"    "tools;timing;")
 (def-logical-pathname "kons;"         "tools;cons-resource;")
 

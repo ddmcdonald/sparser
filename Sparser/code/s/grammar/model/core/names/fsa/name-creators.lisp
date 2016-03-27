@@ -629,8 +629,7 @@
                (setq the (cdr (pop remaining-items))))
               (category::name-word
                (if name/s
-                 (add-to-the-end-of-the-list
-                  (cdr (pop remaining-items)) name/s)
+                 (tail-cons (cdr (pop remaining-items)) name/s)
                  (setq name/s (list (cdr (pop remaining-items))))))
               (category::generic-co-word
                (cdr (pop remaining-items)))

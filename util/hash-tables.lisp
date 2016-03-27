@@ -1,30 +1,33 @@
-;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Package: DDM-UTIL -*-
+;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: DDM-UTIL -*-
 ;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
 
 (in-package :ddm-util)
 
-(defun all-hash-keys (ht)
+(defun all-hash-keys (hash-table &aux keys)
   "Return a list of the keys in a hash table."
-  (let ((keys nil))
-    (maphash #'(lambda (key val)
-                 (declare (ignore val))
-                 (push key keys))
-             ht)
-    keys))
+  (maphash (lambda (key val)
+             (declare (ignore val))
+             (push key keys))
+           hash-table)
+  keys)
 
-(defun all-hash-vals (ht)
+(defun all-hash-vals (hash-table &aux vals)
   "Return a list of the values in a hash table."
-  (let ((vals nil))
-    (maphash #'(lambda (key val)
-                 (declare (ignore key))
-                 (push val vals))
-             ht)
-    vals))
+  (maphash (lambda (key val)
+             (declare (ignore key))
+             (push val vals))
+           hash-table)
+  vals)
 
-(defun hash-counts (ht)
-  "Return a list of (KEY LENGTH) pairs for a sequence-valued hash table."
-  (let ((counts nil))
-    (maphash #'(lambda (key val)
-                 (push `(,key ,(length val)) counts))
-             ht)
-    counts))
+(defun hashtable-to-alist (hash-table &aux alist)
+  (maphash (lambda (key val)
+             (push (cons key val) alist))
+           hash-table)
+  alist)
+
+(defun hash-counts (hash-table &aux counts)
+  "Return an alist of (KEY . LENGTH) pairs for a sequence-valued hash table."
+  (maphash (lambda (key val)
+             (push (cons key (length val)) counts))
+           hash-table)
+  counts)

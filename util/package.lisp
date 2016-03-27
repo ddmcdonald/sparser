@@ -1,5 +1,5 @@
-;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Base:10; -*-
-;;; Copyright (c) 2011-2014 David D. McDonald All Rights Reserved
+;;; -*- Mode: Lisp; Syntax: COMMON-LISP; -*-
+;;; Copyright (c) 2011-2016 David D. McDonald. All Rights Reserved.
 
 ;; initiated 3/8/11. Pulled in file-local exports 10/6/14 in effort
 ;; to accommodate changes in MCL 10.0
@@ -7,62 +7,77 @@
 (in-package :cl-user)
 
 (defpackage :ddm-util
-    (:use :common-lisp
-          #+ccl :ccl)
-    (:export #:d 
-             #:string-append #:concat
+  (:use :common-lisp #+ccl :ccl)
+  (:export ;; util
+           #:d
+           #:then #:else
+           #:reintern-symbols
+           #:break-up-at
+           #:defobject
+           #:until
+           #:dbind
+           #:defsubst
+           #:let-with-dynamic-extent
+           #:let*-with-dynamic-extent
+           #:temporarily-inhibit-fdefine-warnings
+           #:cond-every
+           #:add1 #:sub1
+           #:mbug
 
-             ;; from hash-tables
-             #:all-hash-keys
-             #:all-hash-vals
-             #:hash-counts
+           ;; lists
+           #:ensure-list
+           #:append-new
+           #:mapappend
+           #:pl
+           #:tail-cons
+           #:quote-every-second-one
+           #:assq #:memq #:memq/assq
+           #:alist-to-plist
+           #:plist-to-alist
+           #:deep-copy
+           #:flatten #:flattenc
 
-             ;; from push-debug
-             #:push-debug
-             #:pop-debug
-             #:peek-debug
-             #:clear-debug
+           ;; strings
+           #:string-append
 
-             ;; from then-and-else
-             #:then
-             #:else
+           ;; hash-tables
+           #:all-hash-keys
+           #:all-hash-vals
+           #:hashtable-to-alist
+           #:hash-counts
 
-	  ;; n.b. there are other MISC.LISP lispm-era utils not yet
-	  ;; checked out and carried forward
-             #:append-new
-             #:keys-of-association-list 
-             #:tail-cons #:deep-copy
-             #:flatten #:flattenc
-             #:sexp-contains-symbol #:split-list-on-first-keyword
-             #:gensymbol
-             #:launder-sexp-symbols-package
-             #:ordinal-ending
-             #:string->list-of-symbols #:string->Java-style-symbol
-             #:sexp->string
-             #:upcase-first-lettr #:capitalize-symbol
-             #:replace-periods-with-underbars #:replace-bad-URI-characters
-             #:ends-in
-             ;; unchecked goes here
-             #:hashtable-to-alist
-             #:break-up-at
-             #:defobject
-             #:symbol-name-string-lessp
-             #:until 
-             #:dbind #:defsubst
-             #:let-with-dynamic-extent #:let-with-dynamic-extent-unless-bound
-             #:let*-with-dynamic-extent 
-             #:comment
-             #:temporarily-inhibit-fdefine-warnings 
-             #:cond-every
-             #:apush #:add-association #:remove-association #:delete-association
-             #:*tabbed-format-column* #:tabbed-format #:format-fully-qualified
-             #:add1 #:sub1
-             #:newline
-             #:list-hash-table
-             #:mbug #:mbreak #:sorry
+           ;; indentation
+           #:emit-line #:emit-line-continue
+           #:push-indentation #:pop-indentation
+           #:with-indentation
+           #:initialize-indentation
+           #:get-indentation
+           #:string-of-N-spaces
 
-             ;; auto-gen
-             #:instantiate-type
-             #:*data-structure-for-auto-gen*
-             #:set-auto-gen-symbol-package
-             ))
+           ;; indexed-object
+           #:obj#
+           #:index-object
+           #:indexed-object
+           #:indexed-object-index
+
+           ;; push-debug
+           #:push-debug
+           #:pop-debug
+           #:peek-debug
+           #:clear-debug
+
+           ;; auto-gen
+           #:instantiate-type
+           #:set-auto-gen-symbol-package
+           #:*data-structure-for-auto-gen*
+
+           ;; time
+           #:decoded-to-encoded-time
+           #:date-as-formatted-string
+           #:time-as-formatted-string
+           #:month-day
+           #:month-day-year
+           #:date-&-time-as-formatted-string
+           #:day-&-month-as-formatted-string
+           #:day-month-&-year-as-formatted-string
+           #:write-time-readably))

@@ -253,7 +253,7 @@
          (else
            (print-trie-subnetwork next-node indent stream)
            (dolist (alt remainder)
-             (format stream "~&~A" (string-of-n-spaces (1+ indent)))
+             (format stream "~&~VT" (1+ indent))
              (print-trie-subnetwork alt (1+ indent) stream)))))
       (keyword
        (format stream "~A)" next-node)))))

@@ -39,13 +39,8 @@
   (when *open-stream-of-source-characters*
     (close-character-source-file))
   (let* ((*initial-region* :header)
-         (filename (concatenate
-                    'string
-                    "WSJ"
-                    (string-pad-number number 3)
-                    ".TXT"))
-         (namestring
-          (concatenate 'string logical-pathname filename)))
+         (filename (format nil "WSJ~3,'0D.TXT" number))
+         (namestring (concatenate 'string logical-pathname filename)))
 
     (format t "~%~%~%analyzing ~A~%~%" namestring)
     (analyze-text-from-file namestring)))

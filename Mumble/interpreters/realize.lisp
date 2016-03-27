@@ -280,7 +280,7 @@
 		(mbug "~A not a valid symbol or keyword" C)
 		(funcall c arguments)))	  
     (tree-family
-      (mbreak "first example of a realization class as a choice"))))
+      (mbug "first example of a realization class as a choice"))))
 
 
 ;################################################################

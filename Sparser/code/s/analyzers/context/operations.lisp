@@ -26,8 +26,7 @@
                  ;; the root so does not have a fake first daughter, 
                  ;; all the others do
                  (cdr daughters)))
-      (format t "~&~A" (string-of-n-spaces indentation))
-      (format t "~A" d)
+      (format t "~&~VT~A" indentation d)
       (when (value-of 'daughters d)
         (walk-section-objects-daughters-print-indented
          d (+ 5 indentation))))))

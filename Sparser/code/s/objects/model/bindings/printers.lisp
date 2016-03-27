@@ -47,12 +47,10 @@
 ;;; pretty printing a binding as part of some other structure
 ;;;-----------------------------------------------------------
 
-(defun princ-binding (b  &optional (stream *standard-output*)
-                                   (indentation 0))
+(defun princ-binding (b  &optional (stream *standard-output*) (indentation 0))
   ;; show the binding from the perspective of it's body
-  (when indentation
-    (format stream "~&")
-    (write-string (string-of-n-spaces indentation) stream))
+  (when (plusp indentation)
+    (format stream "~&~VT" indentation))
   (let ((length-of-the-variable
          (princ-variable (binding-variable b) stream)))
     (write-string " = " stream)
@@ -104,13 +102,11 @@
               body)))))
 
 
-(defun princ-bound-in (b  &optional (stream *standard-output*)
-                                   (indentation 0))
+(defun princ-bound-in (b &optional (stream *standard-output*) (indentation 0))
   ;; show the binding from the perspective of what the body
   ;; is to the value:
-  (when indentation
-    (format stream "~&")
-    (write-string (string-of-n-spaces indentation) stream))
+  (when (plusp indentation)
+    (format stream "~&~VT" indentation))
   (princ-variable (binding-variable b) stream)
   (write-string " of " stream)
   (princ-individual (binding-body b) stream))

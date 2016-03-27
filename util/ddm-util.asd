@@ -14,27 +14,14 @@
 
 (defsystem :ddm-util
   :serial t
-  :components (;;(:file "lispm") --  Mine for routines not in util
-               (:file "package")
-               (:file "alists")
-               (:file "hash-tables")
-               (:file "strings")
-               (:file "list-hacking")
-               (:file "predicates")
-               (:file "then-and-else")
-               (:file "time")
+  :components ((:file "package")
                (:file "util")
-               (:file "walk-directories")
-               (:file "push-debug")
-               (:file "indexed-object")
+               (:file "lists")
+               (:file "strings")
+               (:file "hash-tables")
                (:file "indentation")
-               ;; (:file "csv-read")
-               (:file "auto-gen")))
-
-(defmethod perform :after ((op load-op)
-                           (component
-                            (eql (find-component (find-system :ddm-util)
-                                                 "auto-gen"))))
-  (push :ddm-utils *features*))
-
-
+               (:file "indexed-object")
+               (:file "push-debug")
+               (:file "auto-gen")
+               (:file "time"))
+  :perform (load-op :after (o c) (pushnew :ddm-utils *features*)))

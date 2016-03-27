@@ -61,7 +61,4 @@
 (defun sort/categories (&optional
                         (list-of-categories
                          (copy-list *categories-defined*)))
-  (sort list-of-categories
-        #'symbol-name-string-lessp
-        :key #'cat-symbol))
-
+  (sort list-of-categories #'string-lessp :key #'cat-symbol))

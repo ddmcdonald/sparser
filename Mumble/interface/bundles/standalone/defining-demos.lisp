@@ -97,11 +97,15 @@ the bundle."
 		     :documentation
 		     ,(format nil "~a~%~a" text-produced reason-for-this-demo))
 		   *demo-choice-item-list*
-		   :key #'car)
-	  (setf *demo-sexps* (add-association ',demo-name ',rspec-list *demo-sexps*))
+		   :key #'car
+                   :test #'equal)
+          (pushnew '(,demo-name . ,rspec-list)
+                   *demo-sexps*
+                   :key #'car
+                   :test #'equal)
 	  ;;(record-source-file-name ',demo-name 'def-demo-rspec)
 	  (defun ,demo-name ()
-	      (mumble-a-demo ',rspec-list))))
+            (mumble-a-demo ',rspec-list))))
 
 (defun mumble-a-demo (message)
   (declare (special *pending-discourse-units*))

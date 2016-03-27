@@ -78,10 +78,7 @@
   (when entry
     (etypecase entry
       (cons
-       (let ((items (mapcar #'make-corpus-menu-items
-                            (cadr entry))))
-         (when (some-item/s-in-list-is-nil items)
-           (setq items (remove-nils-from-list items)))
+       (let ((items (remove nil (mapcar #'make-corpus-menu-items (cadr entry)))))
          (when items
            (make-instance 'menu
              :menu-title (car entry)
