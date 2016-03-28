@@ -5,15 +5,12 @@
 
 ;; initiated 3/30/07. Tweaked 2/18/11. Moved out ddm-util package
 ;; and added package file 3/8/11. Folded in bunch of Sparser util
-;; files 3/9/11.
+;; files 3/9/11. Added test system 3/28/16.
 
-(defpackage :ddm-util-asdf
-  (:use :common-lisp :asdf))
-
+(defpackage :ddm-util-asdf (:use :asdf :common-lisp))
 (in-package :ddm-util-asdf)
 
 (defsystem :ddm-util
-  :serial t
   :components ((:file "package")
                (:file "util")
                (:file "lists")
@@ -24,4 +21,12 @@
                (:file "push-debug")
                (:file "auto-gen")
                (:file "time"))
+  :in-order-to ((test-op (test-op :ddm-util-tests)))
   :perform (load-op :after (o c) (pushnew :ddm-utils *features*)))
+
+(defsystem :ddm-util-tests
+  :serial t
+  :depends-on (:ddm-util)
+  :components ((:file "../test/rt")
+               (:file "../test/util"))
+  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
