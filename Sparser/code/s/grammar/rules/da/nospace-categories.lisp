@@ -260,8 +260,7 @@
          (known? (memq word *salient-hyphenated-literals*)))
     (cond
      (known?
-      (compose-salient-hyphenated-literals pattern words
-                                           pos-before pos-after))
+      (compose-salient-hyphenated-literals pattern words start-pos end-pos))
      (t
       (when *work-on-ns-patterns*
         (push-debug `(,words ,pattern))
