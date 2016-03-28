@@ -41,7 +41,10 @@
              (find/person-with-name name))
 
             (category::name-of-location
-             (find/location-with-name name))
+             ;; violates the find here, make below pattern of this
+             ;; code. But seems easiest to do category-based
+             ;; locations all in one place
+             (find-or-make-named-type-of-location name))
 
 ;;            (category::hurricane
 ;;             (find/hurricane-with-name name))

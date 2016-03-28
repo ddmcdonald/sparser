@@ -531,8 +531,8 @@
 
    (t
     ;;--- examine evidence for a way to categorize the name
-    (let ( name
-           (category
+    (let (name
+          (category
             (cond (inc-term? category::company-name)
                   (title category::person-name)
                   (location-head category::location)
