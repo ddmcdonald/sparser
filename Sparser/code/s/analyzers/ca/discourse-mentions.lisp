@@ -30,9 +30,10 @@
    first. Mostly needed as a resource to 'long-term-ify' 
    mention locations, but may have other uses such as mergine
    with or replacing the sentence list of individuals.")
-
+(defparameter *mention-uid* 0)
 (defclass discourse-mention ()
-  ((di :initarg :i :accessor base-description
+  ((uid :initarg :uid :accessor mention-uid)
+   (di :initarg :i :accessor base-description
     :documentation "Backpointer to the individual which is the base description")
    (ci :initarg :ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
@@ -64,10 +65,13 @@
   (print-unreadable-object (m stream) ;; not :type t
     (let ((i (base-description m))
           (location (mentioned-where m)))
-      (format stream "mention: ~s" i)
+      (format stream "m:~s ~s"
+	      (mention-uid m)
+	      i)
       (cond
+	
 	((mention-source m)
-	 (format stream "~s" (mention-source m)))
+	 (format stream " ~s" (mention-source m)))
 	((consp location) ;; w/in paragraph
 	 (typecase (car location)
 	   (position
@@ -252,6 +256,7 @@
   (let* ((location (encode-mention-location (if (consp source) (second source) source)))
          (toc (location-in-article-of-current-sentence))
          (m (make-instance 'discourse-mention
+			   :uid (incf *mention-uid*)
 			   :i i :loc location :ms source :article toc)))
     (push m (mention-history i))
     (if (edge-p source) (setf (edge-mention source) m))
@@ -269,6 +274,7 @@
     ((edge-p source) (pushnew (cat-name (edge-form source)) *edge-forms*)))
   (let* ((location (encode-mention-location source))
          (m (make-instance 'discourse-mention
+			   :uid (incf *mention-uid*)
 			   :i i :loc location :ms source)))
     (tr :making-new-mention m)
     (when subsumed-mention
@@ -280,6 +286,10 @@
     (if (edge-p source) (setf (edge-mention source) m))
     (extend-category-dh-entry entry m)
     m ))
+
+(defun m# (uid)
+  (maphash #'(lambda(i ml)(let ((m (find uid ml :key #'mention-uid))) (when m (return-from m# m))))
+	   *lattice-individuals-to-mentions))
 
 (defun max-edge? (source)
   ;; this cannot be run when the mention is created -- the edge is not yet included in another edge!!
