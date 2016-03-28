@@ -34,8 +34,10 @@
                                        prep-word
                                        pobj-referent)
               'modifier)))
-     (setq clause-referent 
-           (bind-dli-variable var-name pobj-referent clause-referent))
+     (setq clause-referent
+	   (if (is-collection? clause-referent)
+	       (distribute-pp-to-conjoined-clauses var-name pobj-referent clause-referent)
+	       (bind-dli-variable var-name pobj-referent clause-referent)))
      (let ((edge (make-binary-edge/explicit-rule-components
                   pp clause
                   :category (edge-category clause)
@@ -44,6 +46,16 @@
                   :referent clause-referent)))
        (tr :comma-3tt-pattern edge)
        edge))))
+
+(defun distribute-pp-to-conjoined-clauses (var-name pobj-referent clause-referent)
+  (let ((clauses  (value-of 'items clause-referent)))(make-an-individual
+						      'collection
+						      :items
+						      (loop for c in clauses
+							 collect (bind-dli-variable var-name pobj-referent c))
+						      :number (length clauses)
+						      :type (itype-of (car clauses)))))
+    
 
 (define-debris-analysis-rule s-comma-pp
   :pattern ( s "," pp )
