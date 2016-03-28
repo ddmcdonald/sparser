@@ -1,12 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
-;;; $Id:$
+;;; copyright (c) 2011,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "paths"
 ;;;   Module:  "model;core:places:"
-;;;  version:  July 2011
+;;;  version:  March 2016
 
-;; initated 7/13/11
+;; initated 7/13/11. Finished effort to reify the types 3/16.
 
 (in-package :sparser)
 
@@ -35,6 +34,28 @@
 (define-type-category-constructor path-type) ;; creates define-path-type 
 
 ;; dossier is [path-types]
+
+(defun find-or-make-named-type-of-location (location-name)
+  (let ((type (value-of 'type location-name)))
+    (push-debug `(,location-name ,type));; (lsp-break "type = ~a" type)
+    (cond
+     ((not (category-p type))
+      (or (find/location-with-name location-name)
+          (make/location-with-name location-name)))
+     ((or (itypep type 'path-type)) ;;(itypep type 'region-type))
+      (let ((symbol (cat-name type)))
+        ;; doesn't seem to be a make with correct
+        ;; factoring to take the category directly
+        (or (find-individual symbol :name location-name)
+          (let ((i (make-an-individual symbol :name location-name)))
+            ;; The automatic indexing will have run 
+            ;; (push-debug `(,i)) (break "look at individual")
+            i))))
+     (t
+      ;; not sure what this would be. Letting it fall through
+      ;; to 
+      (find/location-with-name location-name)))))
+
 
 ;;;------------------
 ;;; highway patterns

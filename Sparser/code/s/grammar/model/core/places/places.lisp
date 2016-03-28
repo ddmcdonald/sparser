@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "places"
 ;;;   Module:  "model;core:places:"
-;;;  version:  January 2016
+;;;  version:  March 2016
 
 ;; places -- entities that denote locations
 
@@ -37,9 +37,14 @@ by their type (pond, river, street, town, etc.)
   :index (:permanent :key sequence))
 
 (defun make-location-name (items location-head)
-  ;; Called from categorize-and-form-name
-  ;; Returns a name. The object with that name is created in 
-  ;; establish-referent-of-pn, keying off the category of the name
+  "If the head names a category (e.g. 'road' or any other
+   sort of path) then we create an individual of that type
+   and set this as its name. Othewise we just make the name.
+   The return value is passed to classify-&-record-span as
+   the result. categorize-and-form-name is our caller. If we
+   just return a name the conversion to a NE with that name
+   is done by keying off the category of the name."
+  ;;//// let the establish-referent do the work.
   ;;/// type-checks on location-head: (:or region-type path-type)
   (let* ((sequence (define-sequence items))
          (name (define-individual 'name-of-location

@@ -183,9 +183,13 @@
             (do-pnf-edge nil result starting-position ending-position))
 
            (otherwise
-            (push-debug `(,result ,starting-position ,ending-position))
-            (error "examine-capitalized-sequence returned a new category ~
-                    of individual: ~a"  (itype-of result)))))
+            (cond ;; there are too potentially too many of these to list
+             ((itypep result 'path-type) ;; road, river, ...
+              (do-pnf-edge nil result starting-position ending-position))
+             (t
+              (push-debug `(,result ,starting-position ,ending-position))
+              (error "examine-capitalized-sequence returned a new category ~
+                      of individual: ~a"  (itype-of result)))))))
 
         (cons ;; some sort of encoding
          (cond
@@ -314,7 +318,9 @@
   (let ((base-category (itype-of i)))
     (case (cat-symbol base-category)
       (category::named-location category::location)
-      (otherwise base-category))))
+      (otherwise 
+       (cond ((itypep i 'path-type) category::location)
+             (t base-category))))))
 
 (defun category-for-edge-given-name-type (category-of-name name)
   (case (cat-symbol category-of-name)
