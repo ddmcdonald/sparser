@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "da-rules"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  November 2015
+;;;  Version:  March 2016
 
 ;; initiated 9/18/15 for da patterns and interpreters that had been
 ;; stashed in biology. Small tweaks and additions of the same kind
@@ -111,6 +111,13 @@
 (defun conjoin-clause-and-vp (s-edge vp-edge)
   ;; get the value of the subject or (perhaps) the subject
   ;; variable of the s. Look up the s variable of the vp
+  (unless s-edge
+    ;; This occurred when s-and-vp was run middle-out from
+    ;; the conjunction. The constituent to the left of the
+    ;; "and" was not an 's' so we should never have gotten
+    ;; here. /// Need to take a serious look at that
+    ;; matching code
+    (throw :no-da-pattern-matched :trie-exhausted))
   (let* ((s-subj-var (subject-variable s-edge))
          (vp-subj-var (subject-variable vp-edge))
          (s-ref (edge-referent s-edge))
