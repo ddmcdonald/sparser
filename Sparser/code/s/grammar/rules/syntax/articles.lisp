@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  February 2016
+;;;  Version:  March 2016
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -91,8 +91,11 @@
 ;;;------------
 ;;; form rules
 ;;;------------
-;; syntactic rule covering all of these inserted into syntactic-rules.lisp 
-#|
+;; syntactic rule covering all of these inserted into 
+;; syntactic-rules.lisp 
+
+(when (eq (script) :fire)
+  (progn
 ;;--- a/an
 
 (def-form-rule (A common-noun)
@@ -238,4 +241,5 @@
      :form np
      :referent (:daughter right-edge
 	        :bind (has-determiner left-edge)))
-|#
+
+    )) ;; when, progn
