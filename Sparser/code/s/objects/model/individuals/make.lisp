@@ -127,10 +127,14 @@
             (referential-category symbol)))
          (binding-instructions
           (decode-category-specific-binding-instr-exps
-           category var-name+value-pairs))
-         (individual
-          (find-or-make/individual category binding-instructions)))
-    individual ))
+           category var-name+value-pairs)))
+    (let ((*index-under-permanent-instances*
+           (or *index-under-permanent-instances* ;; for recursive calls
+               (individuals-of-this-category-are-permanent? category))))
+      (declare (special *index-under-permanent-instances*))
+      ;; make and return individual
+      (find-or-make/individual category binding-instructions))))
+
 
 (defun make-temporary-individual (symbol &rest var-name+value-pairs)
   "Same signature as make-an-individual in that it is intended for
