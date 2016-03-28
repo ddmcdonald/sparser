@@ -246,12 +246,14 @@
 (defun find-or-make-lattice-description-for-collection (indiv-collection)
   (or
    (get-dli indiv-collection)
-   (let ((new-dli (make-individual :id (incf *dl-lattice-index*) :type (indiv-type indiv-collection))))
+   (let ((new-dli (make-individual :id (incf *dl-lattice-index*) :type collection)))
      (add-uplink new-dli (dli-ref-cat indiv-collection))
-     (loop for member in (value-of 'members indiv-collection)
+     (loop for member in (value-of 'items indiv-collection)
        do
        (add-downlink new-dli (fom-lattice-description member)))
      (set-dli indiv-collection new-dli))))
+
+
 
 
 (defun filter-bindings (bindings)
