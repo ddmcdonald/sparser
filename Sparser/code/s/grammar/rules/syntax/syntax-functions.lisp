@@ -565,8 +565,8 @@
 
 (defparameter *adverb+vg* nil)
 
-(defun interpret-adverb+verb (adverb vg)
-  (declare (special adverb vg))
+(defun interpret-adverb+verb (adverb vg) 
+  (declare (special category::deictic-location))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   ;; "direct binding" has a specitif meaning
   ;;/// so there should be a compose method to deal with that
@@ -1134,6 +1134,7 @@ to enhance p53 mediated apoptosis [2].") |#
   (lsp-break "apply-control-or-raise")
   nil)
 
+(defparameter *constrain-pronouns-using-mentions* t)
 
 (defun condition-anaphor-edge (item subcat-label v/r)
   ;; We now know the restriction that any candidate referent for this
@@ -1215,7 +1216,7 @@ to enhance p53 mediated apoptosis [2].") |#
   (loop for pat in
        (sort
 	(loop for pat in 
-	     (remove-duplicates (loop for x in *dups* collect (list (second x)(fourth x))) :test #'equal)
+	     (remove-duplicates (loop for x in *dups* collect (list (second x)(fifth x))) :test #'equal)
 	   collect pat)
 	#'string<
 	:key
@@ -1316,6 +1317,7 @@ to enhance p53 mediated apoptosis [2].") |#
 	   ))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
+  (declare (special category::pronoun/first/plural category::ordinal))
   (when *trivial-subcat-test*
     (let
         ((*trivial-subcat-test* nil))
