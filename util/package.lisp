@@ -30,7 +30,7 @@
            #:mapappend
            #:pl
            #:tail-cons
-           #:quote-every-second-one
+           #:quote-every-other-one
            #:assq #:memq #:memq/assq
            #:alist-to-plist
            #:plist-to-alist

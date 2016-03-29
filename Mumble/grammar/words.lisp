@@ -250,7 +250,7 @@ IRREGULARITIES:
 (define-word "chase" (verb) )
 (define-word "bury" (verb) )
 (define-word "free" (verb) )
-(define-word "snap" (verb) double )
+(define-word "snap" (verb) double t )
 (define-word "bite" (verb)  ed-form "bit"   en-form "bitten"  )
 (define-word "buy" (verb)  ed-form "bought"
 	                   en-form "bought"

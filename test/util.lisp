@@ -97,9 +97,13 @@ C
   (tail-cons :x nil)
   (:x))
 
-(deftest quote-every-second-one
-  (quote-every-second-one '(:a 1 :b 2 :c 3))
+(deftest (quote-every-other-one :odd)
+  (quote-every-other-one '(:a 1 :b 2 :c 3) :odd)
   (:a '1 :b '2 :c '3))
+
+(deftest (quote-every-other-one :even)
+  (quote-every-other-one '(:a 1 :b 2 :c 3) :even)
+  (':a 1 ':b 2 ':c 3))
 
 (deftest assq
   (assq :c '((:a . 1) (:b . 2) (:c . 3)))

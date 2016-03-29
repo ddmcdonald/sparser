@@ -19,7 +19,7 @@
 
 (defmacro def-text-relation (name supercs &rest key-arg-pairs)
   `(def-text-relation/expr ',name ',supercs
-     ,@(quote-every-second-one key-arg-pairs)))
+     ,@(quote-every-other-one key-arg-pairs :odd)))
 
 (defun def-text-relation/expr (name names-of-supercs
                                &key doc

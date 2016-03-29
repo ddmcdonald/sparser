@@ -49,11 +49,16 @@
     (setq list (list item)))
   list)
 
-(defun quote-every-second-one (list)
+(defun quote-every-other-one (list &optional (which :odd))
   "For hacking macros."
-  (loop initially (assert (evenp (length list)) (list) "Odd list length.")
+  (loop with quotep = (ecase which
+                        (:even #'evenp)
+                        (:odd #'oddp))
+        initially (assert (evenp (length list)) (list) "Odd list length.")
         for item in list and index upfrom 0
-        collect (if (evenp index) item `(quote ,item))))
+        collect (if (funcall quotep index)
+                  `(quote ,item)
+                  item)))
 
 (unless (fboundp 'assq) ;; already present in Clozure
   (defun assq (item alist)

@@ -44,26 +44,6 @@
       (create-and-catalog symbol 'parameter 'name symbol)))
 
 
-;; 3/13/99 - ddm
-;; At this point I've started to need to funcall object definitions,
-;; specifically words, which meant rewriting the basic macro to
-;; shift it to the style in Sparser where the macro is immediately
-;; rewritten as a function with identical args (and suitable for
-;; funcall). Unfortunately this doesn't work well if there is an
-;; &rest plist tail where the tags are symbols (rather than keywords),
-;; hence this adjustment routine.
-(defun quote-odd-elements (list)
-  ;; i.e. changes (plural "mice") to ('plural "mice")
-  (let ((odd? t)  revised-list )
-    (dolist (element list)
-      (if odd?
-        (push `(quote ,element) revised-list)
-        (push element revised-list))
-      (setq odd? (not odd?)))          
-    (nreverse revised-list)))
-
-
-
 ;#################################################################
 ;   Bundle-types
 ;#################################################################
@@ -477,7 +457,8 @@ the virtual machine cleaner."
 
 
 (defmacro  define-word  ( pname word-labels &rest irregularities )
-  `(define-word/expr ,pname ',word-labels ,@(quote-odd-elements irregularities)))
+  `(define-word/expr ,pname ',word-labels
+     ,@(quote-every-other-one irregularities :even)))
 
 (defun define-word/expr ( pname word-labels &rest irregularities )
   (let* ((name (intern pname))  ;;(string-upcase pname)

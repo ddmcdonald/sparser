@@ -26,7 +26,7 @@
         (break "check need to switch to defINE-category~
                 ~%  or put in :lattice-position :non-terminal"))
       `(def-category/expr/toplevel ',symbol
-         ,@(quote-every-second-one keys)) ))
+         ,@(quote-every-other-one keys :odd)) ))
   (else
     (defmacro def-category (symbol)
       `(def-category/expr ',symbol :source :def-category))))
