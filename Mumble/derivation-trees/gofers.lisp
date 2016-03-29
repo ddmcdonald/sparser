@@ -20,9 +20,7 @@
 
 (defun get-mumble-word-for-sparser-word (s-word &optional pos)
   (or (stored-mumble-word-for-sparser-word s-word)
-      (let ((pname (etypecase s-word
-                     (sp::word (sp::word-pname s-word))
-                     (sp::polyword (sp::pw-pname s-word)))))
+      (let ((pname (sparser::pname-for s-word)))
         (unless pos
 	  (setq pos 'mumble::noun))
         (let ((m-word (define-word/expr pname (list pos))))
@@ -53,11 +51,8 @@
     s-word))
 
 
-
-;; Probably don't want to use this
-
 (defmethod find-or-make-word ((s string))
-  (break "who is calling find-or-make-word(string) ?")
+  "You probably don't want to use this."
   (or (word-for-string s)
       (define-word/expr s '(noun))))
 

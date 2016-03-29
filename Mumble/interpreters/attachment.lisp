@@ -26,7 +26,7 @@
 the realization-function of the rspec accordingly."
   (landmark 'attaching-via-attachment-fn rspec attachment-function)
   (unless (rspec? rspec)
-    (setq rspec (realization-for rspec)))
+    (setq rspec (realize rspec)))
   (let-with-dynamic-extent ((*bundle-being-attached* rspec))
     (multiple-value-bind (ap usable-choices)
                          (etypecase attachment-function

@@ -15,32 +15,8 @@
 
 (in-package :sparser)
 
-;; N.b. there's a check that the mumble code is loaded (package define)
+;; N.b. there's a check that the mumble code is loaded (package defined)
 ;; in the grammar loader that brings this code in. 
-
-;;;-------------------------
-;;; is there a realization?
-;;;-------------------------
-
-(defmethod mumble::has-realization? ((c referential-category))
-  (when *do-not-use-psi*
-    (cat-realization c)))
-
-(defmethod mumble::has-realization? ((i individual))
-  (when *do-not-use-psi*
-    (indiv-binds i)))
-
-(defmethod mumble::has-realization? ((e edge))
-  (let ((referent (edge-referent e)))
-    (unless referent
-      (error "No referent on the edge ~a" e))
-    (mumble::has-realization? referent)))
-
-(defmethod mumble::has-realization? ((b binding))
-  b)
-
-(defmethod mumble::has-realization? ((w word))
-  w)
 
 ;;;----------------------------------------------------------
 ;;; Mumble methods with signatures that need Sparser classes
@@ -54,22 +30,6 @@
 (defmethod get-lexicalized-phrase ((category category))
   (mumble::get-lexicalized-phrase 
    (symbol-name (cat-symbol category))))
-
-;;;-----------------------------
-;;; Construct DTN (or whatever)
-;;;-----------------------------
-
-;;--- realization-for
-;; Called from mumble::realize -- has to return something
-;; that it can consume
-
-
-(defmethod mumble::realization-for ((o t))
-  (push-debug `(,o))
-  (error "There is no realization-for method for~
-        ~%the object ~a~
-        ~%of type ~a" o (type-of o)))
-
 
 ;;;-----------------------------------------
 ;;; realizations for classes of individuals
@@ -137,27 +97,14 @@
 ;;--- names
 
 (defun realize-using-name-binding (i)
-  (let ((name (value-of 'name i)))
-    (when name
-      (if (word-p name)
-        (mumble::get-mumble-word-for-sparser-word name)
-        (else
-         (format t "Complex name value for ~a~
-                  ~%  ~a" i name))))))
+  )
 
 ;; need number and unit-rate-of-change for args
 
 
 
-(defmethod mumble::realization-for ((i individual))
-  ;; 1st look for a tailored realization
-  ;; 2d does this have a name?
-  ;; 3d make a defNP from the name of the category
-  (or (tailored-individual-realization i) ;; 1st
-      (realize-using-name-binding i)
-      (else 
-       (push-debug `(,i))
-       (break "no tailored realization or name for ~a" i))))
+(defmethod mumble::realize ((i individual))
+  (mumble::get-mumble-word-for-sparser-word (value-of 'name i)))
 
 
 
@@ -165,7 +112,7 @@
 ;;; experiment on 4/5/13 that wasn't completed
 ;;;--------------------------------------------
 
-(defmethod mumble::realization-for ((e edge))
+(defmethod mumble::realize ((e edge))
   (let ((referent (edge-referent e)))
     ;; new experiment 
     (let ((shadow (find-or-make-shadow referent)))

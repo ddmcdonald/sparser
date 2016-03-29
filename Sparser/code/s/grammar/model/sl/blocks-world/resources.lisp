@@ -59,18 +59,14 @@
 (defvar *you*
   (define-individual 'interlocutor :name "person-qua-interlocutor"))
 (defvar *us*
-  (define-individual 'interlocutor :name "us-anld-person-qua-interlocutors"))
-
-(defmethod mumble::has-realization? ((i (eql *me*))) t)
-(defmethod mumble::has-realization? ((i (eql *you*))) t)
-(defmethod mumble::has-realization? ((i (eql *us*))) t)
+  (define-individual 'interlocutor :name "me-and-you-qua-interlocutors"))
 
 (in-package :mumble) ;; too many symbols will want qualifying
-(defmethod realization-for ((i (eql sp::*me*)))
+(defmethod realize ((i (eql sp::*me*)))
   (mumble-value 'first-person-singular 'pronoun))
-(defmethod realization-for ((i (eql sp::*you*)))
+(defmethod realize ((i (eql sp::*you*)))
   (mumble-value 'second-person-singular 'pronoun))
-(defmethod realization-for ((i (eql sp::*us*)))
+(defmethod realize ((i (eql sp::*us*)))
   (mumble-value 'first-person-plural 'pronoun))
 
 

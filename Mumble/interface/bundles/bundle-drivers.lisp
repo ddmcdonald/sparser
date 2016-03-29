@@ -87,7 +87,7 @@
   root-node)
 
   #+ignore
-  (let ((result (realize-kernel-specification (head bundle)))) ;; ignored
+  (let ((result (realize (head bundle))))
     ;; see realize.lisp
     (set-backpointer-of-root result bundle)
     (entering-new-context result)
@@ -381,7 +381,7 @@
 (defun modifier-bundle-driver (bundle)
   ;identical to clausal-bundle-driver
   (landmark 'realizing-bundle-specification bundle)
-  (let ((result (realize-kernel-specification (head bundle))))
+  (let ((result (realize (head bundle))))
     (when (nodep result)
       (set-backpointer-of-root result bundle)
       (when (further-specifications bundle)
@@ -397,7 +397,7 @@
     (mbug "The head of the bundle ~A was expected to be a kernel ~
            specification but it is ~A instead"
 	  bundle (head bundle)))
-  (let ((result (realize-kernel-specification (head bundle))))
+  (let ((result (realize (head bundle))))
     (when (nodep result)
       (set-backpointer-of-root result bundle)
       (entering-new-context result)
@@ -415,7 +415,7 @@
 (defun general-bundle-driver (bundle)
   ;identical to clausal-bundle-driver
   (landmark 'realizing-bundle-specification bundle)
-  (let ((result (realize-kernel-specification (head bundle))))
+  (let ((result (realize (head bundle))))
     (when (nodep result)
       (set-backpointer-of-root result bundle)
       (when (further-specifications bundle)
@@ -433,7 +433,7 @@
 
 (defun minimal-bundle-driver (bundle)
   (landmark 'realizing-bundle-specification bundle)
-  (let ((result (realize-kernel-specification (head bundle))))
+  (let ((result (realize (head bundle))))
     (when (nodep result)
       (set-backpointer-of-root result bundle))
     result))

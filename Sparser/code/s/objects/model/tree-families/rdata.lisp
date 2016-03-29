@@ -846,7 +846,7 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 #+mumble
 (defun find-word-realization-within-category-realization (category)
-  (let ((realization (mumble::realization-for category)))
+  (let ((realization (mumble::realize category)))
     (when realization
       (dolist (element realization nil)
         (unless (eq element :rules)

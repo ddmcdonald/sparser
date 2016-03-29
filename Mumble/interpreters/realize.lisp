@@ -14,7 +14,7 @@
 ;; no longer feed instantate-rspec (that level of interpretation belongs in
 ;; realization-for and to take a lexicalized-phrase as a return value
 ;; 3/17/11 Tweaking things a little. 12/27/13 tweek to realize-dtn. And
-;; again 12/9/15.
+;; again 12/9/15. 3/29/16 Make realize generic, replace realization-for.
 
 (in-package :mumble)
 
@@ -24,109 +24,55 @@
 ;                       REALIZE
 ;#################################################################
 
-(defun realize (obj)
-  "This is called from realization-cycle and returns the 'new-contents'
- of the slot, i.e. either a node of a refined object subject to a recursive
- call to realize."
-  (typecase obj
-    (derivation-tree-node
-     (realize-dtn obj))
-    (bundle-specification
-     (let-with-dynamic-extent ((*bundle-being-realized* obj))
-       (landmark 'Realizing-bundle-specification obj)
-       (funcall (driver (bundle-type obj)) obj)))
-    (kernel-specification
-     (landmark 'Realizing-kernel-specification obj)
-     (realize-kernel-specification obj))
-    (otherwise
-     (if (has-realization? obj)
-       (let ((instantiation (realization-for obj)))
-         (typecase instantiation
-           (phrasal-root instantiation)
-           (lexicalized-phrase ;; new 9/18/09
-            (instantiate-lexicalized-phrase instantiation))
-           ((or bundle-specification kernel-specification)
-            (realize instantiation))
-           (derivation-tree-node
-            (realize-dtn instantiation))
-           ((or word pronoun) instantiation)
-           ;;(pronoun instantiation)
-           (null
-            (push-debug `(,obj))
-            (break "Realization-for ~a returned nil" obj))
-           (otherwise
-            (push-debug `(,instantiation))
-            (break "New type of result from realization-for: ~a~%~a"
-                   (type-of instantiation) instantiation))))
-       (else
-         (push-debug `(,obj))
-         (break "No result from realization-for on ~a~%of type ~a"
-                obj (type-of obj)))))))
-
+(defgeneric realize (obj)
+  (:documentation "This is called from realization-cycle and returns
+the 'new contents' of the slot, i.e. either a node or a refined object
+to be recursively realized.")
+  (:method :before (obj) (landmark 'realizing obj))
+  (:method (obj) nil) ; say nothing by default
+  (:method ((obj string)) (word-for-string obj))
+  (:method ((obj word)) obj)
+  (:method ((obj phrasal-root)) obj)
+  (:method ((obj pronoun)) obj)
+  (:method ((obj saturated-lexicalized-phrase)) obj)
+  (:method ((obj lexicalized-phrase)) (instantiate-lexicalized-phrase obj))
+  (:method ((obj bundle-specification) &aux (*bundle-being-realized* obj))
+    (funcall (driver (bundle-type obj)) obj)))
 
 ;;;-----------------------
 ;;; Derivation Tree Nodes
 ;;;-----------------------
 
-(defun realize-dtn (dtn)
+(defmethod realize ((dtn derivation-tree-node))
   "A derivation-tree node is one of the possible contents of a slot.
-  This expands the dtn to a phrase (or other surface-level resource
-  such as a word) and returns the root node of the phrase (or the
-  word/pronoun/..) to be the new contents of the slot. At this 
-  level we just do the data checks, all the heavy lifting is done by
-  a driver that knows how to how to handle the specific accessories."
-  (landmark 'realizing dtn)
+This expands the dtn to a phrase (or other surface-level resource
+such as a word) and returns the root node of the phrase (or the
+word/pronoun/..) to be the new contents of the slot. At this level
+we just do the data checks, all the heavy lifting is done by a driver
+that knows how to how to handle the specific accessories."
   (let* ((resource (resource dtn))
-         (phrase (typecase resource
-                   (lexicalized-phrase ;; saturated or partially so
-                    (phrase resource))
-                   (phrase resource)
-                   (pronoun)
-                   (otherwise
-                    (break "New/unexpected type of resource in DTN: ~a~%  ~a"
-                           (type-of resource) resource))))
-         (phrase-type
-          (when phrase (caar (definition phrase)))))
-    ;; place for debugging break
-
-    ;; Get the phrase instantiated
+         (root-node (typecase resource
+                      (partially-saturated-lexicalized-phrase
+                       (instantiate-phrase-in-dtn resource dtn))
+                      (saturated-lexicalized-phrase
+                       (instantiate-lexicalized-phrase resource))
+                      (phrase
+                       (instantiate-phrase-in-dtn resource dtn))
+                      (otherwise
+                       resource))))
     (landmark 'resource resource)
-    (let ((root-node
-           (etypecase resource
-             (partially-saturated-lexicalized-phrase 
-              ;; some bound parameters, some open
-              (instantiate-phrase-in-dtn resource dtn))
-             (saturated-lexicalized-phrase 
-              ;; no open parameters
-              (instantiate-lexicalized-phrase resource))
-             (phrase 
-              (instantiate-phrase-in-dtn resource dtn))
-             (pronoun
-              resource))))
 
-      ;; Handle features and adjunctions
-      (typecase resource
-        (pronoun)
-        ((or phrase lexicalized-phrase)
-         ;;(break "after dtn resource instantiated") ;; replace w/ landmark??
-         (case (name phrase-type)
-           (clause
-            (clausal-bundle-driver dtn root-node))
-           ((np np/no-det)
-            (general-np-bundle-driver dtn root-node))
-           (pp) ;; just the root-node 
-           (qp) ;; ditto. Used for interjections
-           (conjunction)
-           (discourse-unit) ;;/// discourse-unit-bundle-driver
-           (otherwise
-            (push-debug `(,root-node ,phrase-type))
-            (error "Unexpected name of phrase-type: ~a"
-                   (name phrase-type))))))
+    ;; Handle features and adjunctions
+    (let* ((phrase (typecase resource
+                     (lexicalized-phrase (phrase resource))
+                     (phrase resource)))
+           (phrase-type (and phrase (caar (definition phrase)))))
+      (case (and phrase-type (name phrase-type))
+        (clause (clausal-bundle-driver dtn root-node))
+        ((np np/no-det) (general-np-bundle-driver dtn root-node))))
 
-      ;; Pass the node/word back to be knit-in by build-phrase
-      ;;(push-debug `(,root-node ,dtn))
-      ;;(break "Returning from realization of ~a" dtn)
-      root-node)))
+    ;; Pass the node/word back to be knit-in by build-phrase
+    root-node))
 
 
 ;;;--------------
@@ -141,69 +87,9 @@
     (otherwise nil)))
 
 
-;;;-----------------------
-;;; realization interface
-;;;-----------------------
-
-(defgeneric realization-for (obj)
-  (:documentation "The realization-for method is a hook that allows objects of
- and type to be embedded in a slot, not simply the Mumble-native bundles and
- words. The return value must be something Mumble-native, i.e. acceptable
- to the type options supported by the function realize."))
-
-(defgeneric has-realization? (obj)
-  (:documentation "Used as a gate to establish whether an object somewhere
- in the phrase structure has a realization. Should use the same basic 
- machinery as realization-for since that call will be made shortly
- after this gate is passed. Should be easier to answer and not do anything
- with permanent side-effects."))
-
-
-;;--- cases where we are already dealing with Mumble-native
-;; stuff, e.g. taken from a DTN with the translation already done.
-;; Motivation is from the check at the top of the attachment process
-
-(defmethod realization-for ((w word))
-  w)
-
-(defmethod realization-for ((slp saturated-lexicalized-phrase))
-  slp)
-
-(defmethod realization-for ((dtn derivation-tree-node))
-  dtn)
-
-
-
 ;################################################################
 ;              Executing tree-families
 ;################################################################
-
-(defun realize-kernel-specification (rspec)
-  (push-debug `(,rspec))
-  #+ignore ;; OBE in this form -- needs massive overhaul
-  (if (typep rspec 'unpacked-phrasal-root)
-    (let ((phrase (uppr-phrase rspec))
-	  (ordered-arguments (uppr-parameter-values rspec)))
-      ;;(break "phrase = ~a" phrase)
-      (let ((result ;; copied from execute-choice
-	     (instantiate-phrase phrase ordered-arguments)))
-	(set-original-rspec (context-object result) rspec)
-	result))
-    (let ((rfun (realization-function rspec)))
-      (typecase rfun 
-	(curried-tree-family
-	 (add-the-bindings-and-evaluate-its-tree-family rspec rfun))
-	(tree-family
-	 (evaluate-its-tree-family rspec rfun))
-	(single-choice
-	 (if (choice-is-acceptable rfun)
-	     (execute-choice (choice rfun) (arguments rspec) rspec)
-	     (mbug "Realization function ~s for ~s is not an acceptable choice"
-		   rfun rspec)))
-	(otherwise
-	 (break "New type of rspec passed to realize-kernel-specification: ~a~%~a"
-		(type-of rspec) rspec))))))
-
 
 ;;; In these two functions, *tree-fam-parameter-argument-list* is dynamically bound
 ;;; because RETURN-tree-fam-PARAMETER-VALUE makes special reference to that

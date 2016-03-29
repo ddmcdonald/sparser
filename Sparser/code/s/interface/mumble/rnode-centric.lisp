@@ -21,14 +21,14 @@
 ; has been the case since early in 2013. This file accumulates all of
 ; that code in one place, freeing up the other files to go forward.
 
-
+#|
 (defmethod mumble::has-realization? ((i psi))
   (unless *annotate-realizations*
     (error "You have to set *annotate-realizations* to t"))
   (let ((lp (psi-lp i)))
     (lp-realizations lp)))
 
-#| Primary (old) entry points
+;; Primary (old) entry points
 (defmethod mumble::has-realization? ((i individual))
   ;; Called from mumble::realize
   (unless *annotate-realizations*

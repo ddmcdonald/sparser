@@ -175,7 +175,7 @@
 	(unless referent
 	  (break "Threading (design) problem - referent is nil"))
 	(let* ((arg-value (funcall fn referent))
-	       (arg-rspec (realization-for arg-value)))
+	       (arg-rspec (realize arg-value)))
 	  (unless arg-rspec
 	    (break "There is no realization specification for ~a" arg-value))
 	  (let ((specification (instantiate-rspec arg-rspec arg-value)))

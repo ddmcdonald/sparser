@@ -59,6 +59,7 @@
        (do-any-label-driven-transformations labels contents)
        (do-all-word-stream-actions labels 'new)
        (etypecase contents
+         (null)
          (word-stream-item
           (morphologically-specialize-&-say-it contents labels))
          (mposition
@@ -87,19 +88,11 @@
 	     (realization-cycle new-contents position)
 	     new-contents)))
     (typecase contents
-      (null (error "empty contents at ~a" position))
-      (derivation-tree-node
-       (realize-and-knit contents))
+      (null)
       ((or phrasal-root node word pronoun tense-marker ttrace)
        contents)
-      ((or bundle-specification kernel-specification)
-       (realize-and-knit contents))
       (otherwise
-       (if (has-realization? contents)
-	     (realize-and-knit contents)
-         (else 
-           (push-debug `(,contents ,position))
-           (break "No realization for ~a" contents)))))))
+       (realize-and-knit contents)))))
 
 (defun do-all-word-stream-actions (labels visited-status)
   (dolist (label labels)
