@@ -1,7 +1,4 @@
 ;;; -*-  Mode: LISP; Base: 10; Syntax: Common-lisp -*-
-;;; $Id: text-output.lisp 100 2007-07-04 14:31:27Z dmcdonal $
-
-(in-package :mumble)
 
 ;;; MUMBLE-86  interpreters; text-output
 
@@ -16,8 +13,10 @@
 ;;  6/7/95 uncommented fancy-browser option in flush-last-punctuation-mark-from-text-
 ;;    output-stream
 ;;  8/13/99 Introduced cases into Precede-item-with-space-if-appropriate to 
-;;    accomodate new punctuation types that don't take spaces after themselves;;  5/5/03 Added code-level documentation
+;;    accomodate new punctuation types that don't take spaces after themselves
+;;  5/5/03 Added code-level documentation
 
+(in-package :mumble)
 
 ; There are two kinds of things that have to happen in the management of
 ; the word stream: linguistic things and software things.  We try to layer
@@ -116,23 +115,21 @@
   "If there is an interaction between the current item and the last one
    that should change the way the current one is printed (e.g. capitalization),
    then the change is computed here and returned."
-
   (unless (eq *last-item* 'beginning-of-utterance)
-    (etypecase  *last-item*
+    (etypecase *last-item*
       (blip              (dispatch-on-prior-blip item))
       (string            (dispatch-on-prior-word item))
       (punctuation-mark  (dispatch-on-prior-punctuation-mark item))
-      (ttrace             nil)
+      (ttrace            nil)
       (possessive-marker nil)
-      (keyword nil)
-      )))
+      (keyword nil))))
 
 (defun determine-output-stream-object-given-word-stream-object (item)
   "This may turn out to be one big no-op, but it's a useful hook while
    waiting to see if there's an ultimately more cogent design for the
    whole word-stream level of processing (e.g. muck with the flow through
    Morphology."
-  (typecase  item
+  (typecase item
     (blip  nil) ;;i.e. print nothing
     (string  item) ;;i.e. the print name of a word
     (punctuation-mark  (pname item))
@@ -145,14 +142,23 @@
     (otherwise
      (mbug "Unexpected type of object passed to the word stream - ~a" item))))
 
+(defgeneric word-ends-in-s (word)
+  (:method ((word word)) (word-ends-in-s (pname word)))
+  (:method ((word string)) (char= (char word (1- (length word))) #\s)))
+
+(defun vowel-like-onset (string &optional (vowels "aeiou"))
+  (find (char string 0) vowels :test #'char=))
+
+(defun convert-a-to-an ()
+  (send-item-to-physical-word-stream "n"))
 
 (defun dispatch-on-prior-blip (item)
   (case  (name *last-item*)
 	 ;;To save hassle with the key of this case, we extract the name
 	 ;;field of the blip, which gives us a symbol to work from
     (capitalize-the-next-word
-      (typecase  item
-	(string  (capitalize item))
+      (typecase item
+	(string (string-capitalize item))
 	(blip)
 	(punctuation-mark)
 	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*))
@@ -161,7 +167,7 @@
                  expected to be passed a pname but got a ~a -- ~a"
                 (type-of item) item))))
     (capitalize-and-regenerate
-      (typecase  item
+      (typecase item
 	(string  (capitalize item))	
 	(blip)
 	(punctuation-mark)
@@ -171,14 +177,14 @@
                  expected to be passed a pname but got a ~a -- ~a"
                 (type-of item) item))))
     (otherwise
-      (typecase  item
+      (typecase item
 	;;there's no other interaction
 	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*)))
        )))
 
 
 (defun dispatch-on-prior-word (item)
-  (typecase  item
+  (typecase item
     (string (cond ((string-equal "a" *last-item*)
                    (if (vowel-like-onset item)
                      (convert-A-to-AN)
@@ -250,15 +256,6 @@
        "'s" ))
     (otherwise "")))
 
-
-(defun word-ends-in-s (word)
-  (let ((string (pname word)))
-    (let ((last-char (elt string (1- (length string)))))
-      (eql last-char #\s))))
-
-
-
-
 (defun precede-item-with-space-if-appropriate (item)
   ;; If this monster case statement returns nil then don't print a preceding
   ;; space.
@@ -310,15 +307,3 @@
     (pass-a-space-to-the-text-output-stream)
     ;else
     nil))
-
-
-(defun convert-a-to-an ()
-   (send-item-to-physical-word-stream "n"))
-
-(defun vowel-like-onset (string)
-  (find (first-letter string)
-	'("a" "e" "i" "o" "u")
-	:test #'equal))
-
-(defun first-letter (string)
-  (subseq string 0 1))
