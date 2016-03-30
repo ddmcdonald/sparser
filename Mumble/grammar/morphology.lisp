@@ -1,4 +1,4 @@
-;;; -*- Mode: Lisp; Package:MUMBLE; Syntax: COMMON-LISP; Base:10; Default-character-style: (:FIX :ROMAN :NORMAL); -*-
+;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Package:MUMBLE; -*-
 ;;;
 ;;; Mumble-05:  grammar; morphology
 ;;;
@@ -16,95 +16,65 @@
 ;;  12/28/13 Code wanted to pluralize every noun. Dropped that since it
 ;;   appears that there's no way to do plural on demand. MWM may have hacked
 ;;   a short-cut. 
+;;  3/30/16 afp - Restored plural processing code.
 
 (in-package :mumble)
 
-(defun morphologically-specialize-&-say-it (item labels)
-  (unless (word-stream-itemp item)
-    (break "Something other than a word was passed through: ~a" item))
-  (etypecase item
-    (word
-     (cond  
-      ((and (part-of-speech 'verb item)
-            (gerund-position labels))
-       (ing-form item))
-      ((and (part-of-speech 'verb item)
-            (verb-position labels))
-       (verb-morphology item (name (car labels))))
-      
-      ;;not sure of the generality of this
-      ((and (part-of-speech 'verb item)
-            (comp-of-be-position labels))
-       (predicate-adjective item))
-      
-      ((and (or (part-of-speech 'noun item)
-                (part-of-speech 'proper-noun item))
-            (noun-position labels))
-       ;; Why is it this specific in the ancient code and doesn't
-       ;; just accept the POS?
-       ;; It always pluralized.
-       ;;    (noun-morphology-plural item)
-       ;;//// Need to see an explicit marker
-       ;; that the word should be pluralized in this case.
-       ;; Presumably a feature on the slot
-       (send-to-output-stream (pname item) item))
-       
-      
-      (t (send-to-output-stream (pname item) item) )))
-    (tense-marker (process-tense item))
-    (pronoun  (pronoun-morphology item labels))
-    (ttrace  (process-trace item (name (car labels))))))
+(defvar *verb-labels* '(verb tense-modal have+en be+ing be+en))
+(defvar *noun-labels* '(np-head compound-noun-head))
+(defvar *case-labels* '(nominative objective genitive
+                        possessive-np possessive direct-object))
 
+(defun label-intersection (slot-labels label-names)
+  (intersection slot-labels (mapcar #'slot-label-named label-names)))
+
+(defun verb-labels (slot-labels)
+  (label-intersection slot-labels *verb-labels*))
+
+(defun noun-labels (slot-labels)
+  (label-intersection slot-labels *noun-labels*))
+
+(defun comp-of-be-labels (slot-labels)
+  (label-intersection slot-labels '(complement-of-be)))
+  
+(defun gerund-labels (slot-labels)
+  (label-intersection slot-labels '(gerund)))
+
+(defun case-from-labels (slot-labels)
+  (or (find (label-named 'reflexive) slot-labels)
+      (ecase (name (first (case-governing-labels slot-labels)))
+        ((nil))
+        (possessive 'possessive-np) ;; Q&G pg 209
+        ((pred-nom object objective direct-object prep-obj) 'objective)
+        ((subject nominative) 'nominative))))
+
+(defun case-governing-labels (slot-labels)
+  (or (label-intersection slot-labels *case-labels*)
+      (label-intersection (labels (previous (node *current-phrasal-root*)))
+                          *case-labels*)))
 
 (defun part-of-speech (category word)
-  (member (word-label-named category) (word-labels word)))
+  (find (word-label-named category) (word-labels word)))
 
-
-;; the functions which use these variables (verb-position and 
-;;  noun-position) initialize them the first time the functions
-;;  are called.  They can't be initialized in the definitions
-;;  as this code is not postprocessed.
-
-(defparameter *verb-labels* nil)
-
-(defparameter *noun-labels* nil)
-
-;; these functions are used to distintuish ambiguous words
-;; (i.e. attack as a noun and a verb).  They check the 
-;; labels on the current position to see if its more likely
-;; it takes a noun or verb (no other clashes have presented
-;; a problem as yet.  [mwm 11-3-87]
-
-(defun verb-position (labels)
-  (when (null *verb-labels*)
-	(setq *verb-labels*
-	      (list (slot-label-named 'verb)
-		    (slot-label-named 'tense-modal)
-		    (slot-label-named 'have+en)
-		    (slot-label-named 'be+ing)
-		    (slot-label-named 'be+en)
-		    ;;others?
-		    )))
-  (intersection labels *verb-labels*))
-
-(defun noun-position (labels)
-  (when (null *noun-labels*)
-	(setq *noun-labels*
-	      (list (slot-label-named 'np-head)
-		    (slot-label-named 'compound-noun-head)
-		    ;;others?
-		    )))
-  (intersection labels  *noun-labels*))
-
-(defun comp-of-be-position (labels)
-  (member (slot-label-named 'complement-of-be)
-	  labels))
-  
-(defun gerund-position (labels)
-  (member (slot-label-named 'gerund)
-	  labels))
-
-
+(defun morphologically-specialize-&-say-it (item labels)
+  (etypecase item
+    (pronoun (pronoun-morphology item labels))
+    (tense-marker (process-tense item))
+    (ttrace (process-trace item (name (car labels))))
+    (word (cond ((and (part-of-speech 'verb item)
+                      (gerund-labels labels))
+                 (ing-form item))
+                ((and (part-of-speech 'verb item)
+                      (comp-of-be-labels labels))
+                 (en-form item))
+                ((and (part-of-speech 'verb item)
+                      (verb-labels labels))
+                 (verb-morphology item (name (car labels))))
+                ((and (or (part-of-speech 'noun item)
+                          (part-of-speech 'proper-noun item))
+                      (noun-labels labels))
+                 (noun-morphology item))
+                (t (send-to-output-stream (pname item) item))))))
 
 ;#################################################################
 ;  VERB GROUP MORPHOLOGY
@@ -113,10 +83,10 @@
 (defun set-tense-state (the-tense-marker)
   (ecase (name the-tense-marker)
     (past    (set-aux-state 'past-tense))
-    (present  (set-aux-state 'present-tense))))
+    (present (set-aux-state 'present-tense))))
   
 (defun process-tense (tense-marker)
-  (ecase  (aux-state)
+  (ecase (aux-state)
     (initial
      (set-tense-state tense-marker))
     (prepose-aux
@@ -135,7 +105,6 @@
        (set-aux-state 'unmarked)))
     (unmarked)))
 
-
 (defun verb-morphology (contents slot-name)
   (ecase slot-name 
     (tense-modal (process-modal contents))
@@ -145,10 +114,9 @@
     (verb        (process-verb contents))))
 
 (defun process-modal (modal)
-  (ecase  (aux-state)
+  (ecase (aux-state)
     (initial (send-to-output-stream (pname modal) modal)
 	     (set-aux-state 'unmarked))))
-
 
 (defun process-past-participle (verb)
   (ecase (aux-state)
@@ -175,7 +143,6 @@
     (initial (send-to-output-stream "to")
 	     (send-to-output-stream (pname verb) verb)))
   (set-aux-state 'passive))
-
 
 (defun process-verb (verb)
   (ecase (aux-state)
@@ -237,7 +204,6 @@
 	(append-suffix verb "ing" '("ee" "eing") '("e" "ing")))
     verb))
 
-
 (defun irregular-form (form word)
   (check-type form symbol)
   (check-type word word)
@@ -265,32 +231,23 @@
 (defun set-aux-state (new-state)
   (set-state *current-phrasal-root*
 	     (change-state :aux-state new-state (state *current-phrasal-root*))))
-
-
-(defmacro double-final-letter-p (word)
-   "test whether final letter of word should be doubled before adding suffix
-    in some cases"
-   `(member 'double (irregularities ,word)))
 
 (defun append-suffix (word normal-suffix &rest exceptions)
-   "Adds a suffix to WORD, doubling the final letter [normally a consonant] if
-    necessary.  The suffix is NORMAL-SUFFIX, unless the ending of WORD matches a 
-    template in one of the EXCEPTIONS.
-    Each exception is a pair of strings: (<template> <suffix>), e.g.:
-	(append-suffix \"fry\" \"ed\" '(\"e\" \"ed\") '(\"y\" \"ied\"))
-		=> \"fried\"
-	(append-suffix \"kiss\" \"ed\" '(\"e\" \"ed\") '(\"y\" \"ied\"))
-		=> \"kissed\"
-	(append-suffix \"model\" \"ed\")
-		=> \"modelled\"
-    The exceptions are optional."
-   
+  "Adds a suffix to WORD, doubling the final letter [normally a consonant]
+if necessary. The suffix is NORMAL-SUFFIX, unless the ending of WORD matches
+a template in one of the EXCEPTIONS.
+
+Each exception is a pair of strings: (<template> <suffix>), e.g.:
+  (append-suffix \"fry\" \"ed\" '(\"e\" \"ed\") '(\"y\" \"ied\")) => \"fried\"
+  (append-suffix \"kiss\" \"ed\" '(\"e\" \"ed\") '(\"y\" \"ied\")) => \"kissed\"
+  (append-suffix \"model\" \"ed\") => \"modelled\"
+The exceptions are optional."
    (let* ((pname (etypecase word
                    (string word)
                    (word (pname word))))
           (length (length (the string pname))))
-     (if (double-final-letter-p word)
-         (setq pname (string-append pname (last-letter pname))))
+     (when (irregular-form 'double word)
+       (setq pname (string-append pname (char pname (1- length)))))
      (dolist (oddcase exceptions (string-append pname normal-suffix))
        (dbind (template suffix) oddcase
 	  (let ((root-length (- length (length template))))
@@ -298,11 +255,7 @@
 	      (return (string-append (subseq pname 0 root-length)
 				     suffix))))))))
 
-(defun last-letter (word)
-  (char word (sub1 (length word))))
-
-
-(defsubst current-subject ()
+(defun current-subject ()
   (let* ((positions (position-table *current-phrasal-root*))
 	 (subject-position (cdr (assoc 'subject positions)))
 	 (subject-contents (contents subject-position)))
@@ -310,82 +263,60 @@
       (specification subject-contents)
       (word-stream-item subject-contents)
       (node subject-contents)
-      (slot (if (eq (name (next subject-contents))
-		    'clause)
+      (slot (if (eq (name (next subject-contents)) 'clause)
 		(next subject-contents)
-		(mbug "unknown subject contents")))
-      )))
+		(mbug "unknown subject contents"))))))
 
 (defun number-of-current-subject ()
-  "Returns the NUMBER (singular or plural) of the current subject, as specified
-by the *current-phrasal-root*.  Default is SINGULAR."
+  "Return the NUMBER (singular or plural) of the current subject,
+as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
   (let ((subj (current-subject)))
     (the (member singular plural)
-	 (or (etypecase  subj
+	 (or (etypecase subj
 	       (specification
                 (let ((acc (get-accessory-value ':number subj)))
-                  (when acc
-                    (name acc))))
+                  (and acc (name acc))))
 	       (node
-		 (let ((phrase-type (name subj)))
-		   (case phrase-type
-		     (np
-		       (or (state-value :number (state (context-object subj)))
-			   'singular))
-		     (conjunction
-		       (or (state-value :number (state (context-object subj)))
-			   'singular))
-		     (clause 'singular))))
+                (let ((phrase-type (name subj)))
+                  (case phrase-type
+                    (np (state-value :number (state (context-object subj))))
+                    (conjunction (state-value :number (state (context-object subj)))))))
 	       (ttrace
                 (let ((orig (original-specification subj)))
                   (etypecase orig
                     (bundle-specification
-                     (let ((acc (get-accessory-value ':number orig )))
-                       (when acc
-                         (name acc))))
-                    (pronoun              (number orig)))))
-	       (pronoun   (number subj)))
+                     (let ((acc (get-accessory-value ':number orig)))
+                       (and acc (name acc))))
+                    (pronoun (number orig)))))
+	       (pronoun (number subj)))
 	     'singular))))
 
-
 (defun person-of-current-subject ()
-  "Returns the PERSON (first, second or third) of the current subject, as 
-specified by the *current-phrasal-root*.  Default is THIRD."
-  (let ((subj  (current-subject)))
+  "Return the PERSON (first, second or third) of the current subject,
+as specified by the *CURRENT-PHRASAL-ROOT*. Default is THIRD."
+  (let ((subj (current-subject)))
     (the (member first second third)
 	 (or (etypecase subj
 	       (bundle-specification
-		 (let ((acc (get-accessory-value ':person subj)))
-		   (when acc
-		     (name acc))))
+                (let ((acc (get-accessory-value ':person subj)))
+                  (and acc (name acc))))
 	       (node
-		 (let ((phrase-type
-			 (name subj)))
-		   (case phrase-type
-		     (np (state-value
-			   :person
-			   (state (context-object subj))))
-		     (clause 'third))
-		   ))
-
-	       (ttrace    (let ((orig (original-specification subj)))
-			   (etypecase orig
-			     (bundle-specification
-			       (let ((acc (get-accessory-value ':person orig)))
-				 (when acc
-				   (name acc))))
-			     (pronoun (person orig)))))
-	       (pronoun  (person subj)))
+                (let ((phrase-type (name subj)))
+                  (case phrase-type
+                    (np (state-value :person (state (context-object subj)))))))
+	       (ttrace
+                (let ((orig (original-specification subj)))
+                  (etypecase orig
+                    (bundle-specification
+                     (let ((acc (get-accessory-value ':person orig)))
+                       (and acc (name acc))))
+                    (pronoun (person orig)))))
+	       (pronoun (person subj)))
 	     'third))))
-
-
-
-
-
 
 (defun process-trace (item slot-name)
   (if (pname item)
-      (SEND-TO-OUTPUT-STREAM (pname item) item)
+      (send-to-output-stream (pname item) item)
       ;;check to see if this is a verb group slot
       ;;and any state changes are required
       (case slot-name 
@@ -393,125 +324,36 @@ specified by the *current-phrasal-root*.  Default is THIRD."
 	(have+en     (set-aux-state 'past-participle))
 	(be+ing      (set-aux-state 'present-participle))
 	(be+en       (set-aux-state 'passive))
-	(verb        (set-aux-state 'initial) ))
-      ))
+	(verb        (set-aux-state 'initial)))))
 
-;#################################################################
-;   PREDICATE ADJECTIVE MORPHOLOGY
-;#################################################################
-
-(defun predicate-adjective (verb)
-  (en-form verb))
-
-
-(defun gerund-form (verb)
-  (ing-form verb))
-
-
 ;#################################################################
 ;   NOUN MORPHOLOGY
 ;#################################################################
 
-
-(defun noun-morphology-plural  (word)
-  (let* ((root (cdr (assoc 'np (position-table *current-phrasal-root*))))
-	 (state-list (state (context-object root))))
-    (case (state-value :number state-list)
-      (singular (send-to-output-stream (pname word) word))
-      (plural (plural-form word))
+(defun noun-morphology (word)
+  "Maybe pluralize a noun."
+  (let ((root (cdr (assoc 'np (position-table *current-phrasal-root*)))))
+    (case (state-value :number (state (context-object root)))
+      (plural (send-to-output-stream (or (irregular-form 'plural word)
+                                         (append-suffix word "s" '("y" "ies")))
+                                     word))
       (otherwise (send-to-output-stream (pname word) word)))))
-
-(defun plural-form (noun)
-  (send-to-output-stream
-    (or (irregular-form 'plural noun)
-	(append-suffix noun "s" '("y" "ies")))
-    noun))
-
-
-;#################################################################
-;   CAPITALIZATION
-;#################################################################
-
-(defun capitalize (pname)
-  "returns a new string with its first letter in upper case"
-  (let ((new-string (subseq pname 0)))
-    (setf (char new-string 0) (char-upcase (char new-string 0)))
-    new-string))
-
 
 ;################################################################
 ;                PRONOUN MORPHOLOGY
 ;################################################################
 
 (defun pronoun-morphology (pronoun local-labels)
-  ;;nominitive is the default case
-  (let* ((desired-case   (determine-case-from-labels local-labels))
-	 (cases           (cases pronoun))
-         (actual-pronoun
-	   (if (stringp cases) ;;the pn is unaffected by case
-	     (then cases)
-	     (else
-                (case desired-case
-		  (nominative     (nominative    cases))
-		  (objective      (objective     cases))
-		  (genitive       (genitive      cases))
-		  (reflexive      (reflexive     cases))
-		 
-		  (possessive-np  (possessive-np cases))
-		  (otherwise     (nominative    cases) ))))))
-
-    (send-to-output-stream (the string actual-pronoun) pronoun)))
-
-
-(defun determine-case-from-labels (slot-labels)
-  (let* ((case-label (case-governing-label slot-labels))
-	(slot-name (when case-label (name case-label))))
-    (if (member (label-named 'reflexive) slot-labels)
-	'reflexive
-	(when slot-name
-	  (case slot-name
-	    ((subject nominative) 'nominative)
-	    (possessive
-             ;; ddm 6/8/95 Q&G pg 209 says it's the determiner function
-             ;; of the possessive -- originally here it was 'genitive
-             'possessive-np)
-	    ((pred-nom object objective direct-object
-		       prep-obj)   'objective)
-	    (otherwise
-	      (mbug "Never expected a pronoun in a slot labeled ~s~%~
-                         Consider extending DETERMINE-CASE-FROM-LABELS."
-		    slot-name)))))))	   
-
-(defparameter *the-case-governing-labels* nil)
-
-
-(defun case-governing-label (the-label-list-on-a-slot)
-  (when (null *the-case-governing-labels*)
-    ;;have to initialize the list by hand given we
-    ;;don't postprocess code
-    (setq *the-case-governing-labels*
-	  (list (label-named 'nominative)
-		(label-named 'objective)
-		(label-named 'genitive)
-		(label-named 'possessive-np)
-		(label-named 'possessive)
-                (label-named 'direct-object))))
-  (let ((governing-label
-	  (or (car (intersection
-		     *the-case-governing-labels*
-		     the-label-list-on-a-slot))
-	      (look-for-case-on-slot-above-phrase
-		*current-phrasal-root*))))
-    (when (null governing-label)
-      #+ignore
-      (mbug
-	"Current position - ~A - is not marked for case"
-	*current-position))
-    governing-label))
-
-
-(defun look-for-case-on-slot-above-phrase (root)
-  (let ((dominating-slot (previous (node root))))
-    (car (intersection *the-case-governing-labels*
-		       (labels dominating-slot)))))
-
+  "Nominative is the default case for pronouns."
+  (let ((cases (cases pronoun)))
+    (send-to-output-stream
+      (if (stringp cases) ;; the pn is unaffected by case
+          cases
+          (case (case-from-labels local-labels)
+            (nominative     (nominative    cases))
+            (objective      (objective     cases))
+            (genitive       (genitive      cases))
+            (reflexive      (reflexive     cases))
+            (possessive-np  (possessive-np cases))
+            (otherwise      (nominative    cases))))
+      pronoun)))
