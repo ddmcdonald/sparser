@@ -95,4 +95,12 @@
 
                ;; Postprocesses everything and sets the flag to nil.
                (:file "loader/load-final"))
-  :perform (load-op :after (o c) (pushnew :mumble *features*)))
+  :perform (load-op :after (o c) (pushnew :mumble *features*))
+  :in-order-to ((test-op (test-op :mumble-tests))))
+
+(defsystem :mumble-tests
+  :serial t
+  :depends-on (:mumble)
+  :components ((:file "../test/rt")
+               (:file "../test/mumble"))
+  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
