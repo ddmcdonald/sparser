@@ -29,6 +29,7 @@
 (in-package :sparser)
 
 (gload "time;object")
+(gload "time;interval")
 (gload "time;units")
 (gload "time;weekdays")
 (gload "time;months")
@@ -37,7 +38,6 @@
 (gload "time;day-in-month")
 (gload "time;month-in-year")
 (gload "time;dates")
-(gload "time;interval")
 
 (gload "time;seasons")
 (gload "time;season-year")
