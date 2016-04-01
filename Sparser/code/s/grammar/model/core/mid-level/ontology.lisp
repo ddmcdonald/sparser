@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ontology"
 ;;;   Module:  "model;core:relations:"
-;;;  version:  January 2016
+;;;  version:  April 2016
 
 ;; Initiated 12/3/15.
 
@@ -26,6 +26,17 @@ files once an area looks big enough to warrant it.  |#
  it names. The type-of variable indicates what actual kind of thing
  to instantiate when we have reason to deference this type to something
  physical.")
+
+
+(define-category index
+  :specializes name
+  :instantiates nil
+  :documentation "Functions as a selector by picking out
+ one of some set or segence of things because they have
+ this 'index'. Could be used for stree addresses, social 
+ security numbers, serial numbers, etc. Could be used for
+ a 'cursor' that changes as we iterate over some sequence.
+ Motivating case is position-in-a sequence in numbers/ordinals.lisp")
 
 
 ;;;-----------
