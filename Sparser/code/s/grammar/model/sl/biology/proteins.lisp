@@ -69,7 +69,8 @@
 (define-protein "PHLP2_HUMAN" ("PHLPP2" "PH domain leucine-rich repeat-containing protein phosphatase 2" "PHLPP-like"))
 (define-protein "MARK3_HUMAN" ("MARK3"))
 (define-protein "WDR83_HUMAN" ("WDR83" "MAPK organizer 1"))
-(define-protein "I17RD_HUMAN" ("IL-17 receptor D" "IL-17RD" "IL17RD" "IL17Rhom" "Interleukin-17 receptor-like protein" "Sef homolog" "hSef"))
+(define-protein "I17RD_HUMAN" ("IL-17 receptor D" "IL-17RD" "IL17RD" "IL17Rhom" "Interleukin-17 receptor-like protein" "Sef homolog" "hSef" "Sef" ;; this is actually a mouse protein, but people refer to hSef as Sef
+						  ))
 (define-protein "ITPR1_HUMAN" ("IP3R" "IP3 receptor isoform 1" "IP3 receptor" "IPSR 1"))
 (define-protein "DUS5_HUMAN" ("DUSP5" "Dual specificity protein phosphatase 5" "Dual specificity protein phosphatase hVH3"))
 (define-protein "DUS8_HUMAN" ("DUSP8" "Dual specificity protein phosphatase 8" "Dual specificity protein phosphatase hVH-5"))

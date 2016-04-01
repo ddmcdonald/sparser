@@ -1942,7 +1942,7 @@
  ("PR:P01298" "Pancreatic prohormone" "Pancreatic polypeptide" "PP"))
 
 (define-protein "PAR2_HUMAN"
- ("PR:P55085" "Proteinase-activated receptor 2" "PAR-2"
+ ("PR:P55085" "Proteinase-activated receptor 2" "PAR-2" "PAR2"
   "Coagulation factor II receptor-like 1"
   "G-protein coupled receptor 11" "Thrombin receptor-like 1"
   "proteinase"))
