@@ -35,17 +35,23 @@
 
   ;; We always retrieve the entities and relations to store
   ;; with the sentence and accumulate at higher levels
-  (multiple-value-bind (relations entities tt-count)
+  (multiple-value-bind (relations entities tt-count treetops)
       (identify-relations sentence)
     ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
     (set-entities sentence entities)
     (set-relations sentence relations)
-    (set-tt-count sentence tt-count))
+    (set-tt-count sentence tt-count)
+    (interpret-treetops-in-context treetops))
 
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))
 
+(defparameter *interpret-in-context* t)
 
+(defun interpret-treetops-in-context (treetops)
+  (when *interpret-in-context*
+    (loop for tt in treetops when (edge-p tt)
+       do (interpret-in-context tt))))
 
 ;;;------------------------------------------------------------
 ;;; final operations on sentence before moving to the next one
@@ -63,24 +69,6 @@
 
 
 
-;;;---------------------------------------------------------------------
-(defun create-sexpr-parse-tree (edge)
-  (when
-      (edge-p edge) ;; drop out word edges like "by
-    (cond
-      ((edge-p (edge-left-daughter edge))
-       `(,edge
-	 ,(create-sexpr-parse-tree (edge-left-daughter edge))
-	 ,(create-sexpr-parse-tree (edge-right-daughter edge))))
-      ((edge-p (edge-right-daughter edge))
-       `(,edge
-	 ,(create-sexpr-parse-tree (edge-left-daughter edge))
-	 ,(create-sexpr-parse-tree (edge-right-daughter edge))))
-      ((edge-constituents edge)
-       `(,edge
-	 ,@(mapcar #'create-sexpr-parse-tree
-		   (edge-constituents edge))))
-      (t (list edge)))))
 
 ;;;_______________________________________________
 
@@ -124,7 +112,6 @@
 |#
 
 
-
 (defvar *lambda-var* nil)
 
 (defgeneric interpret-in-context (item-to-be-interpreted)
@@ -133,7 +120,11 @@
 Bind the contextual-description of the associated mention (if any) to the contextual interpretation of the item in the context."))
 
 (defmethod interpret-in-context ((e edge))
-  (interpret-in-context (dependency-tree e)))
+    (if (and (category-p (edge-category e))
+	     (member (cat-name (edge-category e)) '(quotation parentheses dash)))
+      ;; we don't interpret such quoted strings
+      nil
+      (interpret-in-context (dependency-tree e nil))))
 
 (defmethod interpret-in-context ((c category))
   "This may get more complex, so that e.g. protein categories may be interpreted metonymically as complexes..."
@@ -142,6 +133,10 @@ Bind the contextual-description of the associated mention (if any) to the contex
 (defmethod interpret-in-context ((i individual))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   i)
+
+(defmethod interpret-in-context ((s string))
+  "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
+  s)
 
 (defmethod interpret-in-context ((s symbol))
   (case s
@@ -167,22 +162,22 @@ Bind the contextual-description of the associated mention (if any) to the contex
 (defun reinterp-item-using-bindings (interp bindings)
   (declare (special interp bindings category::collection))
   (let ((interps (list interp)))
-    (loop for b in bindings
+    (loop for (var val) in bindings
+	 ;; as *ival* ... (when done debugging)
        do
-	 (let* ((var  (car b))
-		(val (second b))
-		(*b* ;; recursively interpret the bound value in the current context
+	 (let* ((*ival* ;; recursively interpret the bound value in the current context
 		 (if (eq var 'predication)
 		     (reinterp-predication val interp)
 		     (interp-in-context val))))
-	   (declare (special *b* var val))
+	   (declare (special *ival*))
 	   (setq interps
 		 (loop for i in interps
 		    nconc
-		      (if (is-collection? *b*)
-			  (loop for c in (value-of 'items *b*)
+		      (if (is-collection? *ival*)
+			  ;; This is the code that does a "distribution" of conjunctions
+			  (loop for c in (value-of 'items *ival*)
 			     collect (bind-dli-variable var c i))
-			  (list (bind-dli-variable var *b* i)))))))
+			  (list (bind-dli-variable var *ival* i)))))))
     (if (cdr interps) ;; a collection
 	(make-an-individual 'collection
 			    :items interps
@@ -191,7 +186,11 @@ Bind the contextual-description of the associated mention (if any) to the contex
 	(car interps))))
 
 (defun is-collection? (i)
-  (and (individual-p i) (itypep i 'collection)))
+  (and (individual-p i)
+       (itypep i 'collection)
+       (not (itypep i 'hyphenated-pair))
+       (not (itypep i 'hyphenated-triple))
+       (not (itypep i 'two-part-label))))
 
 (defun reinterp-predication (pred *lambda-var*)
   (declare (special *lambda-var*))
@@ -210,6 +209,13 @@ Bind the contextual-description of the associated mention (if any) to the contex
   (declare (special collection-mention))
   (or
    (special-collection-interp collection-mention)
+   (when
+       (or
+	(itypep (base-description (car collection-mention)) 'slashed-sequence)
+	(itypep (base-description (car collection-mention)) 'hyphenated-pair)
+	(itypep (base-description (car collection-mention)) 'two-part-label)
+	(itypep (base-description (car collection-mention)) 'hyphenated-triple))
+     (base-description (car collection-mention)))
    (let*
        ((other-modifiers
 	 (loop for m in (cdr collection-mention)
@@ -223,15 +229,19 @@ Bind the contextual-description of the associated mention (if any) to the contex
 	       (reinterp-item-using-bindings (interp-in-context m)
 					     other-modifiers)))))
      (declare (special other-modifiers items mod-items))
-     (setf (contextual-description (car collection-mention))
-	   (make-an-individual 'collection
-			       :items mod-items
-			       :number (length mod-items)
-			       :type (itype-of (car mod-items)))))))
+     (if (null mod-items)
+	 ;; happened in "(Figure 1B, left and middle panels)"
+	 (base-description (car collection-mention))
+	 (setf (contextual-description (car collection-mention))
+	       (make-an-individual 'collection
+				   :items mod-items
+				   :number (length mod-items)
+				   :type (itype-of (car mod-items))))))))
 
 (defparameter *special-collection-interp* t
   "Turns on the interpretaion of some protein collections as pathways or complexes. Should be massively generalized")
 
+;;; THIS IS BIO-SPECIFIC CODE -- figure out how to segregate it appropriately
 (defun special-collection-interp (dt)
   (let
       ((i (base-description (car dt))))
@@ -241,6 +251,8 @@ Bind the contextual-description of the associated mention (if any) to the contex
 	     (search "/" (retrieve-surface-string i)))
       (interpret-as-pathway-or-complex dt))))
 
+;; in principle, could be a pathway or a complex, and we should consult the biopax+ model, or something like that
+;;  this is version -2
 (defun interpret-as-pathway-or-complex (dt)
   (let*
       ((proteins (base-description (car dt)))
@@ -270,13 +282,15 @@ Bind the contextual-description of the associated mention (if any) to the contex
 (defun align-dependency-and-edges (edge &optional bindings)
   (dependency-tree edge bindings))
 
-(defmethod dependency-tree ((n number) &optional bindings &aux binding)
+(defmethod dependency-tree ((n number) &optional bindings)
   (dependency-tree (e# n) bindings))
 
-(defmethod dependency-tree ((x t) &optional bindings &aux binding)
-  (if (eq x :long-span)
-      (lsp-break "long-span")
-      nil))
+(defmethod dependency-tree ((x t) &optional bindings)
+  (cond
+    ((eq x :long-span)
+     (cerror "long-span"))
+    ((null x) nil)
+    (t nil)))
 
 (defmethod dependency-tree ((e edge) &optional bindings &aux binding)
   (cond
@@ -335,20 +349,22 @@ Bind the contextual-description of the associated mention (if any) to the contex
       (t dbindings))))
 
 (defun dependency-tree-daughters (daughters bindings)
-  (when daughters
-    (loop for edge in daughters
-       nconc
-	 (let ((forest (dependency-tree (arg-edge edge) (or bindings `((:dummy nil))))))
-	   (setq bindings (set-difference bindings (find-bindings forest) :test #'equal))
-	   forest))))
+  (loop for edge in daughters
+     nconc
+       (let ((forest (dependency-tree (arg-edge edge) bindings)))
+	 (setq bindings (set-difference bindings (find-bindings forest) :test #'equal))
+	 (if (and (consp forest)
+		  (not (consp (car forest))))
+	     nil
+	     forest))))
 
 (defun mark-lambda-binding (dtr)
   `(,(car dtr)
      ,@(loop for binding in (cdr dtr)
 	  collect
 	    `(,(car binding)
-	       ,(typecase (when (consp (second binding))(car (second binding)))
-			  (discourse-mention (second binding))
+	       ,(typecase (second binding)
+			  ((cons discourse-mention) (second binding))
 			  (t '**LAMBDA-VAR**))))))
 
 (defmethod arg-edge ((e edge))
@@ -370,6 +386,9 @@ Bind the contextual-description of the associated mention (if any) to the contex
 	   d)))
 
 (defmethod expand-bindings ((c category))
+  nil)
+
+(defmethod expand-bindings ((n null))
   nil)
 
 (defmethod expand-bindings ((i individual))
