@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
-
+;;; Copyright (c) 2016 SIFT, LLC.  All Rights Reserved
+;;;
 ;;;    File: "call-signs"
 ;;;  Module: "grammar/model/sl/ambush/
-;;; version: July 2007
+;;; version: April 2016
 
 ;; Call signs, acknowledgements, the base comms protocol.
 
@@ -23,6 +23,7 @@
 
 (define-category call-sign
   :instantiates self
+  :specializes linguistic
   :binds ((base . call-word)
 	  (number . number-sequence))
   ;; Unclear whether the realization is a generalizable pattern,
@@ -37,6 +38,7 @@
 
 (define-category call-word
   :instantiates self
+  :specializes linguistic
   :binds ((word :primitive word))
   ;; Proper noun is close to what these are, and by including
   ;; a realization we get the rule for free.
@@ -72,6 +74,7 @@
 (define-category this-is  ;; yuck, but what's better?
   :instantiates self
   :binds ((call-sign . call-sign))
+  :specializes linguistic
   :index (:temporary :sequential-keys call-sign))
 
 (def-cfr this-is ("this" "is"))
@@ -95,6 +98,7 @@
 
 (define-category call-to/from
   :instantiates self
+  :specializes linguistic
   :binds ((to . call-sign)
 	  (from . call-sign))
   :index (:temporary :sequential-keys from to))

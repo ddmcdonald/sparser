@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
-
+;;; Copyright (c) 2016 SIFT, LLC.  All Rights Reserved
+;;;
 ;;;    File: "contact"
 ;;;  Module: "grammar/model/sl/ambush/
-;;; version: September 2007
+;;; version: April 2016
 
-;; Citations collected 8/1/07. Started in on it 9/4
+;; Citations collected 8/1/07. Started in on it 9/4/07
 
 (in-package :sparser)
 
@@ -18,6 +18,7 @@
 
 (define-category contact-from
   :instantiates self
+  :specializes linguistic
   :binds ((where . direction)))
 
 

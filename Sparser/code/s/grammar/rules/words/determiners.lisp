@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "determiners"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.7 October 2014
+;;;   Version:   April 2016
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 0.1 (6/8) added Define-determiner
@@ -20,6 +20,7 @@
 
 
 (define-category determiner
+  :specializes linguistic
   :binds ((word  :primitive word)))
 ;; This is for functions/methods as a supercategory,
 ;; as distinct from the form category 'det'
