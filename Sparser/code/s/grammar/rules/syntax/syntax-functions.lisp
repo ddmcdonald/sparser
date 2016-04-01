@@ -472,7 +472,7 @@
 		       (individual (itype-of aux))
 		       (category aux)))
 	   (i (find-or-make-aspect-vector vg)))
-       (assert (itypep i ''tense/aspect-vector))
+       (assert (itypep i 'tense/aspect-vector))
 
        ;; Check for negation
        (when (value-of 'negation aux)
