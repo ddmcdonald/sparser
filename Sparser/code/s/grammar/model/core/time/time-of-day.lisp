@@ -1,12 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "time-of-day"
 ;;;   Module:  "model;core:time:"
-;;;  version:  September 2013
+;;;  version:  April 2016
 
 ;; initiated 8/27/08 (CG). 9/23/13 Adding and revising a lot.
+;; 4/1/16 Added specialization
 
 (in-package :sparser)
 
@@ -16,7 +17,7 @@
 
 (define-category phase-of-day
   :instantiates  self
-  :specializes  nil
+  :specializes  time-interval
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
@@ -32,7 +33,7 @@
 
 (define-category time-of-day
   :instantiates  self
-  :specializes  nil
+  :specializes  time-interval
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
@@ -48,7 +49,7 @@
 
 (define-category meal-time ;; sort of similar "having a late dinner"
   :instantiates  self   ;; but lots more content
-  :specializes  nil     ;; and patterning needs to be done
+  :specializes  time-of-day
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
@@ -64,9 +65,11 @@
 
 (define-category numeric-time
   :instantiates  self
-  :specializes  nil
+  :specializes  time-of-day
   :binds ((name :primitive word))
   :index (:permanent :key name)
+  :documentation "Intended for 'a.m.' and such, but needs
+    work. See dossiers/time-of-day.lisp"
   :realization (:common-noun name))
 
 (defmacro def-numeric-time (string) 
@@ -80,7 +83,8 @@
 
 (define-category timezone
   :instantiates  self
-  :specializes  nil
+  :specializes  region ;; get the geographical aspect
+  :mixins (sequential cyclic)
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
@@ -105,9 +109,8 @@ string should go to the same object rather than create new ones.
 The simplest way to do that is to create a category that specializes
 timezone.  |#
 
-
-
-;;/// There can be offsets from any timezone (Nepal is central India + 20 minutes), so these can be generalized.
+;;/// There can be offsets from any timezone 
+;; (Nepal is central India + 20 minutes), so these can be generalized.
 
 ;;;-----------------------
 ;;; offsets from Coordinated Universal Time

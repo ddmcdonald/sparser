@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:sequence:"
-;;;  version:  0.4 May 2014
+;;;  version:  April 20146
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/15/92 v2.3) setting up for new semantics
@@ -26,6 +26,7 @@
 
 (define-category sequencer
   :instantiates  modifier
+  :specializes modifier
   :binds ((name :primitive word)
           (relation :primitive word)) ;;added this variable in for interval relationships
   :index (:key name :permanent)
@@ -74,8 +75,7 @@
   (let ((word (resolve-string-to-word/make string))
         sequencer )
     (if (setq sequencer
-              (find-individual 'sequencer
-                               :name word))
+              (find-individual 'sequencer :name word))
       sequencer
       (else
         (setq sequencer (define-individual 'sequencer

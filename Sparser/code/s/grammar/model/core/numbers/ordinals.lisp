@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  3.2 September 2013
+;;;  Version:  April 2016
 
 ;; initiated [ordinals1] 9/18/93 v2.3 as completely new treatment
 ;; 1.0 (1/7/94) redesigned as specialized categories
@@ -22,7 +22,7 @@
 ;; 3.2 (9/18/13) Replaced the *load-ad-hoc-rules* gate on the 'nd' rules at the
 ;;      bottom with nil since it's unclear how they work: /// need a no-space
 ;;      criteria added to them, then we get "23rd" with some assurance. 
-;;      Added ordinal+common-noun form rule - flow of referents needs work
+;;      Added ordinal+common-noun form/ rule - flow of referents needs work
 ;;RJB 12/13/2014 
 ;;     create new category post-ordinal for Roman numeral ordinals like I, II, III and IV
 ;;     these can occur after the head, and do not become the head, while the previous ordinals like first, second etc. are prenominal
@@ -30,7 +30,7 @@
 (in-package :sparser)
 
 ;;;---------
-;;; objects
+;;; object
 ;;;---------
 
 #| It's called 'ordinal' because that's the natural term for the words
@@ -49,14 +49,6 @@
           (roman-numeral :primitive word))
   :realization (:quantifier word))
 
-(define-category  post-ordinal
-  :instantiates self
-  :specializes number
-  :binds ((number number)
-          (word  :primitive word)
-          (roman-numeral :primitive word))
-  )
-
 (defun string/ordinal (category)
   ;; see special check in String-for that gets us here
   (let ((number (value-of 'number category))
@@ -64,9 +56,14 @@
     (format nil "~A" number)))
 
 
+
+;;;-----------------------
+;;; ordinals as selectors
+;;;-----------------------
+
 (define-category  position-in-a-sequence
   :instantiates self
-  ;;  ? what would this specialize ??
+  :specializes index
   :binds ((number . ordinal)
           (item)
           (sequence . sequence)))
@@ -85,6 +82,15 @@
              :instantiate-individual position-in-a-sequence
              :with (number left-edge
                     item right-edge)))
+
+
+
+(define-category  post-ordinal
+  :instantiates self
+  :specializes number
+  :binds ((number number)
+          (word  :primitive word)
+          (roman-numeral :primitive word)))
 
 ;; New rule for post ordinals
 (def-form-rule (common-noun post-ordinal)

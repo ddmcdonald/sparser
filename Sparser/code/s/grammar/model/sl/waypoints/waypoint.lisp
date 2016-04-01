@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 SIFT LLC.  -- all rights reserved
+;;; copyright (c) 2013,2016 SIFT LLC.  -- all rights reserved
 ;;; This file is part of the SIFT CANTO project
 ;;;
 ;;;     File:  "waypoint"
 ;;;            grammar/model/sl/waypoints/
-;;;  version:  December 2013
+;;;  version:  April 2016
 
 ;; Initiated 10/25/13. Pulled out ancilary parts to other files 12/2/13
 ;; and added subtypes of waypoint for the WP types.
@@ -54,15 +54,14 @@
 
 (define-category waypoint
   :instantiates self
-  ;; ignoring what it might specialize
-  :binds ((nname :primitive word) ;; "nn" to simplify NLG side
-          (type) ;; value 
-
+  :specializes location
+  :mixins (has-name)
+  :binds ((type) ;; value 
           ;; "It is an entry point
           ;(radius . distance-in-miles)
           ;(restrictions 
           )
-  :index (:permanent :key nname)
+  :index (:permanent :key name)
 
   ;; This double definition of lexical realizations, one for
   ;; the word that refers to the class, and one for the waypoint
@@ -71,7 +70,7 @@
   ;; the schema field, maybe even make it an object to avoid all
   ;; the message list parsing.
   :realization ((:common-noun "waypoint")
-                (:proper-noun nname)))
+                (:proper-noun name)))
 
 ;;;----------------------
 ;;; subtypes of waypoint
@@ -80,7 +79,7 @@
 ;; ; "It is an entry point"
 ;;
 (define-category entry-waypoint
-  :instantiates wapoints 
+  :instantiates waypoint
   :specializes waypoint
   ;;/// we ought to be able to inherit indexing rules
   ;; but we're not going to instantiate this in this fast pass
@@ -88,7 +87,7 @@
   :realization (:common-noun "entry point"))
 
 (define-category target-waypoint
-  :instantiates wapoints 
+  :instantiates wapoint
   :specializes waypoint
   :realization (:common-noun "target"))
 

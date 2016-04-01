@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
-
+;;; Copyright (c) 2016 SIFT, LLC.  All Rights Reserved
+;;;
 ;;;    File: "protocols"
 ;;;  Module: "grammar/model/sl/ambush/
-;;; version: August 2007
+;;; version: April 2016
 
 ;; Initiated 8/9/07. Added polar answers 8/14
 
@@ -14,7 +14,8 @@
 ;;; "affirmative"
 ;;;---------------
 
-(define-category answer-to-a-question 
+(define-category answer-to-a-question
+  :specializes linguistic
   :binds ((question)))
 
 (define-category answer-is-affirmative
@@ -37,11 +38,13 @@
 ;; the build-in category of the same name.
 
 (define-category respond-in-sequence
+  :specializes linguistic
   :instantiates self)
 ;; It should inherit from action and be caught up in form rules that
 ;; scarf up who's issuing this command
 
 (define-category respond
+  :specializes linguistic
   :instantiates self
   ;; inherits from action -- and gets form rules there, but unlike
   ;; just above this form is just a VG since we're not trying to

@@ -45,7 +45,7 @@
 ;;-- Acknowledgements
 (define-category  acknowledgement
   :instantiates  self
-  :specializes   nil 
+  :specializes   linguistic
   :binds ((name :primitive word))
   :realization (:interjection name))
 
@@ -56,7 +56,7 @@
 ;;-- Greetings
 (define-category  greeting
   :instantiates  self
-  :specializes   nil 
+  :specializes   linguistic
   :binds ((name :primitive word))
   :realization (:interjection name))
 
