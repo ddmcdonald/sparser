@@ -54,6 +54,7 @@
 (define-per-run-init-form '(set-line-length-to-adjust-to))
 
 (defun set-line-length-to-adjust-to ()
+  (declare (special *default-line-length*))
   (setq *line-length-to-adjust-to*
         (if *text-out*
           ;; if the workbench is up, use its length

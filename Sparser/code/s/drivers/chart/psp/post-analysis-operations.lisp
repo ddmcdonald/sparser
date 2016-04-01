@@ -288,7 +288,7 @@ Bind the contextual-description of the associated mention (if any) to the contex
 (defmethod dependency-tree ((x t) &optional bindings)
   (cond
     ((eq x :long-span)
-     (cerror "long-span"))
+     (cerror "long-span" nil))
     ((null x) nil)
     (t nil)))
 

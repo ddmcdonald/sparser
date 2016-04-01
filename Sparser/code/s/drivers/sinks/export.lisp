@@ -82,6 +82,7 @@
 ;; see Do-generic-actions-off-treetop
 
 (defun export-bindings/recursively (edge)
+  (declare (special *batch-salient-object-export*))
 ;(format t "export-bindings/recursively edge: ~A~%" edge)
   (tr :exporting-referent edge)
   (let ((referent (edge-referent edge))
@@ -101,6 +102,7 @@
 ;;;----------------------------------
 
 (defun export-object-toplevel (obj wording-string)
+  (declare (special *export-in-demo-mode*))
 ;(format t "export-object-toplevel obj: ~A wording-string: ~A~%" obj wording-string)
   (tr :exporting obj)
   (when *export-in-demo-mode*
@@ -138,6 +140,7 @@
 |#
 
 (defun export-object (obj)
+  (declare (special *export-as-return-value*))
 ;(format t "export-object obj: ~A~%" obj)
   (cond
     ((word-p obj)
@@ -180,6 +183,7 @@
 	       (type-of obj) obj))))))
 
 (defun export-psi (psi)
+  (declare (special *export-as-return-value*))
 ;(format t "export-psi psi: ~A~%" psi)
   (let ((v+v (filter-out-cv (psi-v+v psi))))
     (if *export-as-return-value*
@@ -205,6 +209,7 @@
 
 
 (defun export-individual (i)
+  (declare (special *export-as-return-value*))  
 ;(format t "export-individual i: ~A~%" i)
   (let ((bindings (indiv-binds i)))
     (if *export-as-return-value*
@@ -351,6 +356,7 @@
 (defun export-tuple (name-for-individual
 		     name-for-variable
 		     name-for-value)
+  (declare (special *export-as-return-value*))
 ;(format t "export-tuple individual: ~A variable: ~A value: ~A~%" name-for-individual name-for-variable name-for-value)
   (if *export-as-return-value*
     `(,name-for-variable ,name-for-value)

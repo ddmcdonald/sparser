@@ -287,6 +287,7 @@ have to be tail recursion to the next thing to do.
 
 
 (defun after-action-on-segments (coverage)
+  (declare (special *after-action-on-segments*))
   ;; called from segment-finished
   (tr :after-action-on-segments)
   (funcall *after-action-on-segments* coverage))
@@ -296,6 +297,7 @@ have to be tail recursion to the next thing to do.
 
 ;; 0th (do-domain-modeling-and-population)
 (defun do-domain-modeling-and-population ()
+  (declare (special *after-action-on-segments*))
   ;; This is 1995 code, which, while reasonably well documented,
   ;; isn't the way of the future
   (setq *after-action-on-segments* 'dm/analyze-segment))
@@ -303,6 +305,7 @@ have to be tail recursion to the next thing to do.
 
 ;; 1st (do-strong-domain-modeling)
 (defun do-strong-domain-modeling ()
+  (declare (special *after-action-on-segments*))
   "Should be 'do-simple-domain-modeling' in constrast to the 'strong'
    DM&P of 1995. Consults the parameter *new-segment-coverage* to determine
    what to do:
@@ -316,6 +319,7 @@ have to be tail recursion to the next thing to do.
 
 ;; 2d (do-reify-implicit-individuals-in-segment)
 (defun do-reify-implicit-individuals-in-segment ()
+  (declare (special *after-action-on-segments*))
   "Looks for criteria that warrant taking a segment that's headed
    by a category and converting it to an individual. The criteria
    is established in this function, and convert-referent-to-individual
@@ -325,6 +329,7 @@ have to be tail recursion to the next thing to do.
 
 ;; 3d (do-note-text-relations-in-segment)
 (defun do-note-text-relations-in-segment ()
+  (declare (special *after-action-on-segments*))
   "Looks at the head of the segment and pairwise at the words
    within it (and the edge as a whole if it's spanned) to record
    their relationships. Records are done using the note function."
@@ -333,6 +338,7 @@ have to be tail recursion to the next thing to do.
 
 ;; 4th (do-normal-segment-finished-options)
 (defun do-normal-segment-finished-options ()
+  (declare (special *after-action-on-segments*))
   "Looks for conjunction with the prior segment if there's a pending
    conjunction (check-out-possible-conjunction). Runs the 
    check-segment-finished-hook function."

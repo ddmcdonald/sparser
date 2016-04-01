@@ -18,6 +18,7 @@
 
 
 (defun establish-type-of-edge-vector-to-use (keyword)
+  (declare (special *edge-vector-type*))
   (ecase keyword
     (:vector
      (setf (symbol-function 'make-edge-vector-array)

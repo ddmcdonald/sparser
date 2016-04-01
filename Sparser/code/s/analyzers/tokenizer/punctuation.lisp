@@ -34,7 +34,7 @@
   ;; should be accumulated since spaces can occur in sequences, or
   ;; it's one of the special markers, or it's meaningless and
   ;; ignored.
-  (declare (special *source-exhausted*))
+  (declare (special *source-exhausted* *break-on-meaningless-characters*))
 
   (setq *capitalization-of-current-token* :punctuation)
   (setq *length-of-the-token* 1)

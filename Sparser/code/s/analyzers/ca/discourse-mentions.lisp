@@ -20,9 +20,11 @@
    with or replacing the sentence list of individuals.")
 
 (defun mention-history (i)
+  (declare (special *lattice-individuals-to-mentions*))
   (gethash i *lattice-individuals-to-mentions*))
 
 (defun (setf mention-history) (val i)
+  (declare (special *lattice-individuals-to-mentions*))
   (setf (gethash i *lattice-individuals-to-mentions*) val))
 
 (defvar *lattice-individuals-mentioned-in-paragraph* nil
@@ -92,6 +94,7 @@
 
 (defvar *hal*)
 (defun show-mentions ()
+  (declare (special *objects-in-the-discourse*))
   (setq *hal* (hal *objects-in-the-discourse*))
   (loop for h in *hal*
      collect
@@ -242,6 +245,7 @@
 
 
 (defun create-discourse-mention (i source)
+  (declare (special *lattice-individuals-to-mentions*))
   "Individuals reside in a description lattice. Every new
   property or relation extends the lattice and in so doing
   creates a new individual that is more specific than
@@ -269,6 +273,7 @@
 (defparameter *edge-forms* nil)
 
 (defun make-new-mention (entry i source &optional subsumed-mention)
+  (declare (special *lattice-individuals-to-mentions*))
   (cond
     ((null source) (lsp-break "null source in create-discourse-mention"))
     ((edge-p source) (pushnew (cat-name (edge-form source)) *edge-forms*)))
@@ -288,10 +293,12 @@
     m ))
 
 (defun m# (uid)
+  (declare (special *lattice-individuals-to-mentions*))
   (maphash #'(lambda(i ml)(let ((m (find uid ml :key #'mention-uid))) (when m (return-from m# m))))
-	   *lattice-individuals-to-mentions))
+	   *lattice-individuals-to-mentions*))
 
 (defun max-edge? (source)
+  (declare (special *all-np-categories* *vp-categories*))
   ;; this cannot be run when the mention is created -- the edge is not yet included in another edge!!
   (or (not (edge-p source))
       (cond

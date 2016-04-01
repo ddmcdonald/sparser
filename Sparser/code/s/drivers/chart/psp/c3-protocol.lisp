@@ -37,6 +37,7 @@
 
 
 (defun setup-and-delimit-next-chunk (pos-before)
+  (declare (special *chunk-forms*))
   "Return the position just after the last item"
 
   ;; 1st prime the pump

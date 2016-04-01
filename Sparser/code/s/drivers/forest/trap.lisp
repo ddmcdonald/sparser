@@ -29,6 +29,7 @@
 
 
 (defun do-treetop (tt next-position &key moment)
+  (declare (special *debug-treetops*))
   ;; called from do-treetop-triggers which is organizing the walk using
   ;; its subroutine do-treetop-loop
 

@@ -231,7 +231,7 @@
 ; (setq *trace-check-for-actions* nil)
 
 ; (setq *debug-known-non-fatal-errors* t)
-(setq *debug-known-non-fatal-errors* nil)
+(defparameter *debug-known-non-fatal-errors* nil)
 
 
 ; *character-buffer-in-use*

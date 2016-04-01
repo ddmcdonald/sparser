@@ -421,6 +421,7 @@ is a case in handle-any-anaphor
   (pending-def-references (contents s)))
 
 (defun has-definite-determiner? (edge)
+  (declare (special *sentence-in-core*))
   (unless *sentence-in-core*
     (error "Threading bug. No value for *sentence-in-core*"))
   (member edge (pending-definite-references *sentence-in-core*) :key #'second))
@@ -428,6 +429,7 @@ is a case in handle-any-anaphor
 
 
 (defun update-definite-determiner (edge)
+  (declare (special *all-np-categories* *sentence-in-core*))
   (when (and
 	 *sentence-in-core*
 	 (edge-form edge)

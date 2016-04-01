@@ -22,10 +22,13 @@
       (apply #'remove item sequence
              :test (complement test) keyword-args)))
 
+#| 
+duplicated below 
 ;; a useful equality check.
 (defun set-equal (list-1 list-2 &key (key #'identity) (test #'eql))
   "Returns t, when list-1 and list-2 contain the same elements."
   (null (set-exclusive-or list-1 list-2 :key key :test test)))
+|#
 
 ;;;---------------------------------------------------------------------------
 ;;; Cache functionality

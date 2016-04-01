@@ -72,6 +72,7 @@
 ;;; predicates for unusual edge-types
 ;;;-----------------------------------
 
+#+ignore
 (defun literal-edge? (e)
   ;; just having a word as its label isn't enough since
   ;; they can come from abbreviations as well.
