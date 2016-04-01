@@ -347,6 +347,7 @@
          (end-pos (ends-at-pos sentence))
          (rightmost-pos start-pos)
          (tt-count 0)
+	 treetops
          raw-entities  raw-relations  tt-contents
          treetop  referent  pos-after    )
     (when nil
@@ -356,40 +357,41 @@
 
     ;; modeled on sweep-sentence-treetops
     (loop
-      (multiple-value-setq (treetop pos-after) ;; multiple?
-        (next-treetop/rightward rightmost-pos))
+       (multiple-value-setq (treetop pos-after) ;; multiple?
+	 (next-treetop/rightward rightmost-pos))
       
-      (incf tt-count)
-      (when nil
-        (format t "~&[relations] tt = ~a~%" treetop))
+       (incf tt-count)
+       (push treetop treetops)
+       (when nil
+	 (format t "~&[relations] tt = ~a~%" treetop))
 
-      (when (edge-p treetop)
-        (setq referent (edge-referent treetop))
+       (when (edge-p treetop)
+	 (setq referent (edge-referent treetop))
 
-        (when referent
-          (initalize-model-collection)
-          (setq tt-contents (collect-model referent))
+	 (when referent
+	   (initalize-model-collection)
+	   (setq tt-contents (collect-model referent))
 
-          (loop for item in tt-contents
-	     do (cond
-		  ((and (consp item)
-			(eq (car item) 'under-determined))
-		   ;; residual ambiguity
-		   (push
-		    (adhoc-resolve-under-determined item)
-		    raw-entities))
-		  ((or (subject-variable item)
-                       (individual-p item))
-		   (push item raw-relations))
-		  (t
-		   (pushnew item raw-entities))))))
+	   (loop for item in tt-contents
+	      do (cond
+		   ((and (consp item)
+			 (eq (car item) 'under-determined))
+		    ;; residual ambiguity
+		    (push
+		     (adhoc-resolve-under-determined item)
+		     raw-entities))
+		   ((or (subject-variable item)
+			(individual-p item))
+		    (push item raw-relations))
+		   (t
+		    (pushnew item raw-entities))))))
 
-      (when (eq pos-after end-pos)
-        (return))
-      (when (position-precedes end-pos pos-after)
-        ;; we overshot somehow
-        (return))
-      (setq rightmost-pos pos-after))
+       (when (eq pos-after end-pos)
+	 (return))
+       (when (position-precedes end-pos pos-after)
+	 ;; we overshot somehow
+	 (return))
+       (setq rightmost-pos pos-after))
 
     ;; (push-debug `(,raw-entities ,raw-relations))
     ;; (setq raw-entities (car *) raw-relations (cadr *))
@@ -400,7 +402,8 @@
           (entities (strip-model-descriptions raw-entities)))
       (values relations
               entities
-              tt-count))))
+              tt-count
+	      (reverse treetops)))))
 
 (defun adhoc-resolve-under-determined (item)
   `(,(var-name (car (getf (second (second item)) :variables)))
