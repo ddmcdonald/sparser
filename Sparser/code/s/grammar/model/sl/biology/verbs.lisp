@@ -1897,13 +1897,14 @@
          :in figure))
 
 (define-category require :specializes bio-control
-    :binds ((requirement (:or biological process)))
+  :binds ((requirement (:or biological process))
+	  (purpose biological))
     :realization
     (:verb "require"
 	   :noun "requirement"
 	   :etf (svo-passive)
 	   :o requirement
-           :for requirement))
+           :for purpose))
 
 (define-category resist :specializes caused-bio-process
     :realization
