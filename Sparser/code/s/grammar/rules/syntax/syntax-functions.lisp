@@ -997,12 +997,19 @@ to enhance p53 mediated apoptosis [2].") |#
 	(preceding-that-whether-or-conjunction? (left-edge-for-referent)))
        ;; This situation corresponds to composing them as
        ;; subject and predicate, which is what the rule that
-       ;; drives this is set up to do. 
-       (if (is-passive? (right-edge-for-referent))
-	   (then 
-	     (break "can't have a passive vp+ed")
-	     (assimilate-subcat vp :object subj))
-	   (assimilate-subcat vp :subject subj)))       
+       ;; drives this is set up to do.
+       (let
+	   ((result
+	     (if (is-passive? (right-edge-for-referent))
+		 (then 
+		   (break "can't have a passive vp+ed")
+		   (assimilate-subcat vp :object subj))
+		 (assimilate-subcat vp :subject subj))))
+	 (or result
+	     (progn (format t "**** can't interpret ~s ~s"
+			    (retrieve-surface-string subj)
+			    (retrieve-surface-string vp))
+		    vp))))
       (t
        ;; This should correspond to the reduced relative
        ;; situation. But we'll check that the vp has
@@ -1359,6 +1366,13 @@ to enhance p53 mediated apoptosis [2].") |#
               (t (eq category override-category)))))
       (cond
        ((itypep item category::pronoun/inanimate)
+        t)
+       ((or
+	 (itypep item category::this)
+	 (itypep item category::that)
+	 (itypep item category::these)
+	 (itypep item category::those)
+	 )
         t)
        ((and
 	 (itypep item category::number)
