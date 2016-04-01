@@ -44,6 +44,7 @@
                            *schema-being-instantiated*))))
 
     (note-file-location cfr)
+    (note-category-for-word cfr)
     (note-grammar-module cfr :source source)
 
     (knit-into-psg-tables cfr)
@@ -94,3 +95,38 @@
                                 *schema-being-instantiated*))
      cfr )))
 
+;;; temporary code to save realizations of categories
+(defparameter *category-realizations* (make-hash-table :size 2000))
+
+(defun note-category-for-word (cfr)
+  (when (and
+	 (referential-category-p (cfr-category cfr))
+	 (unary-rule? cfr))
+    (push (car (cfr-rhs cfr))
+	  (gethash (cat-name (cfr-category cfr)) *category-realizations*))))
+
+(defun get-category-realizations (cat)
+  (loop for item in
+       (typecase cat
+	 (symbol (gethash cat *category-realizations*))
+	 (category (gethash (cat-name cat) *category-realizations*)))
+     collect
+       (typecase item
+	 (word (word-pname item))
+	 (polyword (pw-pname item)))))
+
+(defmethod get-cat-tree-realizations ((cat-tree cons) &optional (depth -1))
+     (let
+	 ((realizations (get-category-realizations (car cat-tree))))
+       `(,(if realizations (list (car cat-tree) realizations) (car cat-tree))
+	  ,@(loop for ct in (cdr cat-tree)
+	       collect (get-cat-tree-realizations ct)))))
+
+(defmethod get-cat-tree-realizations ((cat-name symbol) &optional (depth -1))
+  (get-cat-tree-realizations (tree-below cat-name depth)))
+
+(defmethod get-cat-tree-realizations ((cat category) &optional (depth -1))
+  (if
+   (get-category-realizations cat)
+   `(,cat ,(get-category-realizations cat))
+   cat))
