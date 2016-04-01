@@ -481,7 +481,7 @@
   for 'liquid chromatography', etc. that may be the basis
   of the grammar patterns.")
 
-(define-category bio-event :specializes event
+(define-category bio-event :specializes bio-process
   :mixins (has-UID has-name biological)
   :binds ((process bio-process))
   :realization (:common-noun name) ;; for nominal forms
