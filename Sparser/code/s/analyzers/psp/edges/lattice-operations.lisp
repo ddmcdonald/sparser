@@ -244,9 +244,10 @@
     (immediate-supers c1)))
 
 (defun find-or-make-lattice-description-for-collection (indiv-collection)
+  (declare (special category::collection))
   (or
    (get-dli indiv-collection)
-   (let ((new-dli (make-individual :id (incf *dl-lattice-index*) :type collection)))
+   (let ((new-dli (make-individual :id (incf *dl-lattice-index*) :type category::collection)))
      (add-uplink new-dli (dli-ref-cat indiv-collection))
      (loop for member in (value-of 'items indiv-collection)
        do
