@@ -123,7 +123,7 @@
 
 
 (define-category transition
-  :specializes perdurant
+  :specializes process
   :documentation
   "A transition is an action that culminates in a change of state,
  often an opposition: open, give, build. 'Lia is walking' is a
