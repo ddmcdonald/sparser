@@ -16,7 +16,12 @@
  (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
 
+ (loop for c in *referential-categories* when (null (super-categories-of c)) collect c)
+ workout-the-relationships-among-the-categories
 
+ collection-of-type/dh string/ordinal first-item-of-sequence
+ make-months-sequence spread-sequence-across-ordinals  today
+ 
  classify-&-record-span  <<< good entry point into middle of PNF
 
  one-hyphen-ns-patterns  resolve-tailing-stranded-hyphen  nospace-hyphen-specialist
