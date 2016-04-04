@@ -10,7 +10,7 @@
 (in-package :mumble)
 
 #| Table is defined in vocabulary.lisp as a Sparser category.|#
-(defvar *the-table* (sp::define-individual 'sp::table))
+(defvar *the-table* (sp::make-an-individual 'sp::table))
 
 (stipulate-to-be-unique *the-table*)
 
@@ -18,16 +18,17 @@
   (loop for block-number from 1 to 32
         as block-name = (format nil "B~d" block-number)
         as var-name = (format nil "*~a*" block-name)
-        collect (symbol-value
-                 (eval `(defvar ,(intern var-name :mumble)
-                          (sp::define-individual 'sp::block
-                                                 :name ,block-name))))))
+        as var = (intern var-name :mumble)
+        as block = (sp::make-an-individual 'sp::block :name block-name)
+        do (proclaim `(special ,var))
+           (set var block)
+        collect block))
 
 (defvar *the-two-blocks-he-put-down*
-  (sp::define-individual 'sp::collection
-    :items (list *b1* *b2*)
-    :type (sp::category-named 'sp::collection)
-    :number 2))
+  (sp::make-an-individual 'sp::collection
+                          :items (list *b1* *b2*)
+                          :type (sp::category-named 'sp::collection)
+                          :number 2))
 
 (defvar *apparatus-blocks*
   (loop for corp in '("Adidas"
@@ -50,8 +51,8 @@
                       "Toyota"
                       "Twitter"
                       "UPS")
-        as block = (sp::define-individual 'sp::block
-                       :name (format nil "the ~a block" corp))
+        as name = (format nil "the ~a block" corp)
+        as block = (sp::make-an-individual 'sp::block :name name)
         do (setf (sp::indiv-id block) (intern (string-upcase corp) :keyword))
         collect block))
 
