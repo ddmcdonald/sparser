@@ -22,31 +22,30 @@
 ;   GLOBAL VARIABLES
 ;#################################################################
 
-;; *current-position* keeps a pointer to the current position of the phrase
-;; structure execution process it is mainly used for debugging.  It's also used
-;; by the new browser, to disambiguate multiple occurrences of objects
-
-(defvar *current-position* nil)
+(defvar *current-position* nil
+  "Keeps a pointer to the current position of the phrase structure execution process.
+It is mainly used for debugging. It's also used by the new browser, to disambiguate
+multiple occurrences of objects")
 
 (defvar *current-phrasal-root* nil)
 
 (defvar *context-stack* nil)
 
 (defun initialize-mumble-state ()
-  ;; *current-position is initialized in phrase-structure-execution,
-  ;;   where it's set to the initial position that's passed to it
+  ;; *current-position* is initialized in phrase-structure-execution,
+  ;; where it's set to the initial position that's passed to it.
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
   (when (boundp '*the-derivation-tree*) ;; backwards compatibility
     (clear-derivation-tree-data)))
-	  
 
 (defvar *pending-discourse-units* nil)
-;; Unvarnished hack from ancient days. See planning code in 
-;; YS for a better scheme that doesn't have too much overhead
-;; even for simplest cases. *pending-rspecs* is read in
-;; phrase-structure-execution and adds another sentence.
-(defvar *pending-rspecs* nil)
+
+(defvar *pending-rspecs* nil
+  "Unvarnished hack from ancient days. See planning code in YS
+for a better scheme that doesn't have too much overhead even for
+simplest cases. *pending-rspecs* is read in phrase-structure-execution
+and adds another sentence.")
 
 
 ;#################################################################
@@ -54,17 +53,14 @@
 ;#################################################################
 
 (defgeneric say (object)
-  (:documentation "Parameterized entry point to one call to mumble.
- Specific variations on this method can include whatever preprocessing
- is appropriate to that object class. Ultimately there must be a call
- to (initialize-mumble-state) and then to (mumble obj)."))
-
-(defmethod say ((obj t))
-  (initialize-mumble-state)
-  (mumble obj))
-
-
-
+  (:documentation "Parameterized entry point for one call to mumble.
+Specific variations on this method can include whatever preprocessing
+is appropriate to that object class.")
+  (:method :before (object)
+    (initialize-output-stream)
+    (initialize-mumble-state))
+  (:method (object)
+    (mumble object)))
 
 ;#################################################################
 ;                     the call to Mumble
@@ -101,7 +97,6 @@
         ;; the phrase
 	(name new-slot-for-this-turn)))))
 
-
 (defun slot-for-a-turn (contents)
   (make-slot :name 	     'turn
              :next    	      nil
@@ -109,9 +104,6 @@
              :labels  	      (list (slot-label-named 'turn))
              :visited-status  'new
              :contents        contents))
-
-
-
 
 ;;;################################################################
 ;;;               Initializations to Mumble 
@@ -122,11 +114,7 @@
 ;;   *clear-for-each-mumble-call?* gates whether the window is 
 ;;    cleared before each call to mumble.
 ;;  Otherwise (when no window is defined) the output just goes to
-;;    the lisp listener.  In that case, reset-display just puts 
-;;    two blank lines before sending text to the stream.  (may not
-;;    be necessary)
+;;    standard output.
 
 (defun initialize-mumble ()
-  (reset-display)
   (initialize-output-stream))
-

@@ -59,6 +59,7 @@
 
 
 (defun initialize-output-stream ()
+  (reset-display *mumble-text-output*)
   (setq *last-item*          'beginning-of-utterance)
   (setq *last-item-printed*  'beginning-of-utterance)
   (setq *last-word* nil))
@@ -76,7 +77,7 @@
 (defun send-to-output-stream (item &optional word-object)
   (if (keywordp item)
     ;;e.g. :fresh-line
-    (progn (send-item-to-physical-word-stream item)   
+    (progn (send-item-to-physical-word-stream item *mumble-text-output*)   
            (update-the-stream-vector item nil))
     (let ((modified-item (adjust-if-interacts-with-last-item item)))
       ;;This both tests for an interaction and carries it out.
@@ -86,12 +87,11 @@
       (let ((string-to-actually-send
              (determine-output-stream-object-given-word-stream-object
               (or modified-item item))))
-        
-        (send-item-to-physical-word-stream  string-to-actually-send)
+        (send-item-to-physical-word-stream string-to-actually-send *mumble-text-output*)
+
         ;;This is responsible for typographic matters: seeing that it fits
         ;;on the line, putting spaces between words, etc.
         ;;It also handles any data collection for mouse-sensitivity purposes.
-        
         (if (and (blipp *last-item*)
                  (eq (name *last-item*) 'capitalize-and-regenerate)
 		 ;; This blip is part of the machinery for capitalizing
@@ -101,8 +101,7 @@
           (then
             (update-the-stream-vector item word-object)
             (send-to-output-stream (blip-named 'capitalize-and-regenerate)))
-          (else (update-the-stream-vector item word-object)))
-        ))))
+          (else (update-the-stream-vector item word-object)))))))
 
 
 ;   At present there aren't so many items that have an influence on the item
@@ -113,34 +112,21 @@
 
 (defun adjust-if-interacts-with-last-item (item)
   "If there is an interaction between the current item and the last one
-   that should change the way the current one is printed (e.g. capitalization),
-   then the change is computed here and returned."
-  (unless (eq *last-item* 'beginning-of-utterance)
-    (etypecase *last-item*
-      (blip              (dispatch-on-prior-blip item))
-      (string            (dispatch-on-prior-word item))
-      (punctuation-mark  (dispatch-on-prior-punctuation-mark item))
-      (ttrace            nil)
-      (possessive-marker nil)
-      (keyword nil))))
+that should change the way the current one is printed (e.g. capitalization),
+then the change is computed here and returned."
+  (typecase *last-item*
+    (blip              (dispatch-on-prior-blip item))
+    (string            (dispatch-on-prior-word item))
+    (punctuation-mark  (dispatch-on-prior-punctuation-mark item))))
 
 (defun determine-output-stream-object-given-word-stream-object (item)
   "This may turn out to be one big no-op, but it's a useful hook while
-   waiting to see if there's an ultimately more cogent design for the
-   whole word-stream level of processing (e.g. muck with the flow through
-   Morphology."
+waiting to see if there's an ultimately more cogent design for the whole
+word-stream level of processing (e.g. muck with the flow through morphology)."
   (typecase item
-    (blip  nil) ;;i.e. print nothing
-    (string  item) ;;i.e. the print name of a word
-    (punctuation-mark  (pname item))
-    (keyword nil)
-    (symbol (if (eq item nil)
-              nil
-              (mbug "Unexpected symbol passed to the word stream: ~a" item)))
-    (ttrace nil)
-    (possessive-marker item) ;;we already computed its form
-    (otherwise
-     (mbug "Unexpected type of object passed to the word stream - ~a" item))))
+    (string item)
+    (possessive-marker item)
+    (punctuation-mark (pname item))))
 
 (defgeneric word-ends-in-s (word)
   (:method ((word word)) (word-ends-in-s (pname word)))
@@ -150,61 +136,34 @@
   (find (char string 0) vowels :test #'char=))
 
 (defun convert-a-to-an ()
-  (send-item-to-physical-word-stream "n"))
+  (send-item-to-physical-word-stream "n" *mumble-text-output*))
 
 (defun dispatch-on-prior-blip (item)
-  (case  (name *last-item*)
-	 ;;To save hassle with the key of this case, we extract the name
-	 ;;field of the blip, which gives us a symbol to work from
-    (capitalize-the-next-word
+  (case (name *last-item*)
+    ((capitalize-the-next-word capitalize-and-regenerate)
       (typecase item
 	(string (string-capitalize item))
-	(blip)
-	(punctuation-mark)
-	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*))
-	(otherwise
-	  (mbug "A Capitalize-next-word Blip is pending, so we next ~
-                 expected to be passed a pname but got a ~a -- ~a"
-                (type-of item) item))))
-    (capitalize-and-regenerate
-      (typecase item
-	(string  (capitalize item))	
-	(blip)
-	(punctuation-mark)
-	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*))
-	(otherwise
-	  (mbug "A Capitalize-next-word Blip is pending, so we next ~
-                 expected to be passed a pname but got a ~a -- ~a"
-                (type-of item) item))))
+	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*))))
     (otherwise
       (typecase item
-	;;there's no other interaction
-	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*)))
-       )))
-
+	(possessive-marker (compute-proper-form-of-possessive-marker *last-word*))))))
 
 (defun dispatch-on-prior-word (item)
   (typecase item
     (string (cond ((string-equal "a" *last-item*)
-                   (if (vowel-like-onset item)
-                     (convert-A-to-AN)
-                     nil))
+                   (when (vowel-like-onset item)
+                     (convert-A-to-AN)))
                   ((string-equal "not" item)
-                   ;; hard-wired contraction that isn't optional
+                   ;; hard-wired mandatory contraction
                    (check-for-contraction *last-item*))
-                  (t nil) ;;i.e. no interaction
-                  ))
-    (possessive-marker (compute-proper-form-of-possessive-marker *last-word*))
-    (otherwise  ;;only words interact with prior words
-     nil)))
-
+                  (t nil))) ;; i.e., no interaction
+    (possessive-marker (compute-proper-form-of-possessive-marker *last-word*))))
 
 (defun check-for-contraction  (last-item)
   (cond ((or (string-equal "may" last-item)
              (string-equal "will" last-item))
-	 ;; This should be generalized to any modal, which would
-	 ;; require having access to the word object and not
-	 ;; just it's print name. 
+	 ;; This should be generalized to any modal, which would require having
+	 ;; access to the word object and not just its print name.
          " not")
         ((string-equal "can" last-item)
          "'t")
@@ -212,9 +171,9 @@
 
 (defun dispatch-on-prior-punctuation-mark (item)
   "Last-Item was a punctuation mark; now determine what to do with ITEM:
-   if it's not a punctuation mark, ignore it (maybe output a space?), else:
+if it's not a punctuation mark, ignore it (maybe output a space?), else:
    ., -> ,      .? -> ?         .! -> !
-   ,. -> .      ?. -> ?         !. -> !" ;;??? would the last two occur ever?
+   ,. -> .      ?. -> ?         !. -> !"
   (typecase item
     (punctuation-mark
       (case (name item)
@@ -231,79 +190,31 @@
     (otherwise nil))) ;;prior punctuation only influences following
                       ;;punctuation.
 
-
 (defun flush-last-punctuation-mark-from-text-output-stream (mark)
   (declare (ignore mark))
-  (case  (class-of-text-output-stream-supported)
-    ;;(fancy-browser (backspace-over mark))
-    (glass-tty     (send-text-output-stream-item-to-a-glass-teletype "//^H//"))
-    (otherwise
-     (mbug "Unexpected class of text output stream - ~a"
-           (class-of-text-output-stream-supported)))))
-
+  (send-item-to-physical-word-stream #\Backspace *mumble-text-output*))
 
 (defun compute-proper-form-of-possessive-marker (last-word)
-  "Should check whether the source of the phrase being marked is
-   a plural object and if so return just apostrophe.
-   ...but it doesn't yet."
+  "Should check whether the source of the phrase being marked is a
+plural object, and if so return just apostrophe ... but it doesn't yet."
   (typecase last-word
-    ;;prounouns are already marked for case
-    (pronoun "")
-    ;;still needs to check if word ends in s
-    (word
-     (if (word-ends-in-s last-word)
-       "'"
-       "'s" ))
+    (word (if (word-ends-in-s last-word) "'" "'s"))
     (otherwise "")))
 
 (defun precede-item-with-space-if-appropriate (item)
-  ;; If this monster case statement returns nil then don't print a preceding
-  ;; space.
-  (if (typecase item
-        (string
-         (typecase *last-item-printed*
-           (string
-            (if (string-equal item "not")
-		;; This anticipates that we're going to contract it,
-		;; but we don't always (e.g. after modals) so it's
-		;; going to make mistakes. 
-              nil
-              t))
-           (punctuation-mark 
-            (if (or (eq (name *last-item-printed*) 'comma-without-following-space)
-                    (eq (name *last-item-printed*) 'period-without-following-space))
-              nil
-              t))
-           (possessive-marker t)
-           (keyword (not (eq *last-item-printed* :fresh-line)))
-           (symbol (if (eq *last-item-printed* 'beginning-of-utterance)
-                     nil
-                     (mbug "Unexpected type of item prior to a ~A -- ~A"
-                           item *last-item-printed*)))
-           (otherwise
-            (mbug ;"precede-item-with-space-if-appropriate"
-                  "Unexpected type of item prior to a ~A -- ~A"
-                  item *last-item-printed*))))
-        (punctuation-mark
-         (typecase *last-item-printed*
-           (string  nil)
-           (punctuation-mark nil)
-           (possessive-marker nil)
-           (keyword (not (eq *last-item-printed* :fresh-line)))
-           (symbol (if (eq *last-item-printed* 'beginning-of-utterance)
-                     nil
-                     (mbug "Unexpected type of item prior to a ~A -- ~A"
-                           item *last-item-printed*)))
-           (otherwise
-            (mbug "Unexpected type of item prior to a ~A -- ~A"
-                  item *last-item-printed*))))
-        (ttrace nil)
-        (blip  (eq (name item) 'capitalize-the-next-word))
-        (possessive-marker nil)
-        (keyword nil) ;;I think the only keyword is :fresh-line 
-        (otherwise
-         (mbug "Unexpected type of item -- ~A" item)))
-    ;then
-    (pass-a-space-to-the-text-output-stream)
-    ;else
-    nil))
+  (when (typecase item
+          (string
+           (typecase *last-item-printed*
+             (string
+              ;; This anticipates that we're going to contract it,
+              ;; but we don't always (e.g. after modals), so it's
+              ;; going to make mistakes. 
+              (string-not-equal item "not"))
+             (punctuation-mark
+              (case (name *last-item-printed*)
+                ((comma-without-following-space period-without-following-space) nil)
+                (otherwise t)))
+             (possessive-marker t)
+             ((eql :fresh-line) nil)
+             ((eql beginning-of-utterance) nil))))
+    (pass-a-space-to-the-text-output-stream)))
