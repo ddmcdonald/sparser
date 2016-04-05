@@ -1,16 +1,17 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "C3-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  December 2015
+;;;  version:  March 2016
 
 ;; Initiated 9/18/13 by analogy to inititate-top-edges-protocol.
 ;; 10/9/13 started putting meat on its bones. Debugging segement 
 ;; scan through 1/21/14. Debugging extension of scan into next
 ;; segment through 4/7/14. Tweaking to get all the way to end of
-;; source through 5/11/14. Bug fix 12/15/15
+;; source through 5/11/14. Bug fix 12/15/15 Tweaked segment scanner
+;; a lot through April. 
 
 (in-package :sparser)
 
@@ -33,27 +34,33 @@
     ;; need them to just to keep straight what the scan does
 
     (setq *reached-eos* nil) ;; initialize
-    (new-scan-segment p1)))
+    (scan-segment p1)))
 
 
 (defun setup-and-delimit-next-chunk (pos-before)
-  (declare (special *chunk-forms*))
   "Return the position just after the last item"
+  (declare (special *chunk-forms*))
+  ;; Caller should check for eos since we're always 
+  ;; going to end one position ahead of the end
+  ;; of the chunk
 
   ;; 1st prime the pump
   (unless (pos-terminal pos-before)
     (scan-next-position))
+
   (let ((word (pos-terminal pos-before))
         (pos-after (chart-position-after pos-before)))
     (tr :inc-looking-at word)
-    (format t "~&scanned ~a at ~a~%" word pos-before)
+    (format t "~&Start: scanned ~a at ~a~%" word pos-before)
+
     ;; eos check -- eos terminates its segment
     (when (eq word *end-of-source*)
       (setq *reached-eos* t)
-      (lsp-break "reached eos")
+      ;; (lsp-break "reached eos")
       (return-from setup-and-delimit-next-chunk pos-before))
 
     (install-terminal-edges word pos-before pos-after)
+
     (let* ((ev (pos-starts-here pos-before))
            (forms (starting-forms ev *chunk-forms*)))
 
@@ -67,13 +74,17 @@
         ;; the next word is
         (setq pos-before pos-after
               pos-after (chart-position-after pos-before))
+
         (unless (pos-terminal pos-before)
           (scan-next-position))
+
         (setq word (pos-terminal pos-before))
-        (format t "~&scanned ~a at ~a~%" word pos-before)
-        (when (eq word *end-of-source*) ;; flet
+        (format t "~&Loop: scanned ~a at ~a~%" word pos-before)
+
+        (when (eq word *end-of-source*)
           (setq *reached-eos* t)
-          ;;(lsp-break "reached eos")
+          ;; (lsp-break "reached eos in loop")
+          ;; have to handle the final segnent
           (return-from setup-and-delimit-next-chunk pos-before))
 
         (let* ((next-edges
@@ -84,6 +95,14 @@
           ;; If so, extend the chunk, if not we're done.
           (format t "~&next form: ~a~%" form)
 
+          (when (null forms)
+            ;; we've scanned something that is not an np, vg, or adjp
+            ;; so we should skip over it. That means leaving
+            ;; this loop returning the position after the word/edges
+            ;; we're skipping
+            (format t "~&Skipping it~%")
+            (return-from setup-and-delimit-next-chunk :skip))
+
           ;; When we get an incompatible form we've gone
           ;; one word further that the end of the segment,
           ;; e.g. to the "has" in the standard example
@@ -93,6 +112,7 @@
 
           (format t "~&looping: ~a chunk extended by ~a at ~a~%"
                      (car forms) form pos-before))))))
+
 
 (defun compatible-form? (form-type form)
   ;; compare to compatible-head?
@@ -119,12 +139,11 @@
 
 
 
-(defun new-scan-segment (start-pos)
+(defun scan-segment (start-pos)
   ;; Looks like state-sensitive-rightward-march while
   ;; using the criteria of the chunker to delimit the segment
   (tr :starting-c3-segment start-pos)
-  (let* ((last-position
-         (setup-and-delimit-next-chunk start-pos))
+  (let* ((last-position (setup-and-delimit-next-chunk start-pos))
          (head-position (chart-position-before last-position))
          (position start-pos)
          edge )
@@ -167,55 +186,9 @@
       ;; presumably we now just scan the next segment
       (if *reached-eos*
         (terminate-chart-level-process)
-        (new-scan-segment last-position)))))
-
-#+ignore
-(defun scan-segment (start-pos)
-  ;; Compare to scan-next-segment in the regular protocol.
-  ;; This is the fixed point where resume between segments.
-  (tr :starting-c3-segment start-pos)
-  (let* ((last-position
-          ;; This version is unable to terminate the segment
-          ;; of "has entered" when it gets to "wakil" even
-          ;; though wakil has an ].np on it.
-          ;; That could be a bitch to debug, so doing
-          ;; it in manner more like the chunker does
-          ;;   (read-through-segment-to-end start-pos)
-          (chunk-one-segment start-pos)
-)
-         ;; first delimit the next segment that starts here
-         (position start-pos)
-         (head-position (chart-position-before last-position)))
-    (tr :delimited-c3-segment start-pos last-position)
-    (when (eq start-pos last-position)
-      (push-debug `(,last-position))
-      (error "Empty segment?"))
-
-    (loop 
-      ;; Then walk through it left-to-right extending
-      ;; the situation. Assume that the final word is the head.
-      (introduce-next-word position (eq position head-position))
-      (setq position (chart-position-after position))
-      (when (eq position last-position)
-        (return)))
-
-    ;; After it gets to the head (assumed to be the last constituent
-    ;; but verb groups are more interesting with adverbs and such)
-    ;; are drops out of the loop, we need to span the whole
-    ;; segment with an edge and update the sentential state
-    (let ((edge (c3-process-segment-and-update-state
-                 start-pos last-position)))
-
-      ;; Now that we have analyzed the segment we need to fold in
-      ;; the edge to the left. Like moving to the forest level
-      ;; after every segment. For the ISR experiment there will
-      ;; always be an edge here
-      (roll-up-edges-to-the-left edge) ;; also updates state
-
-      ;; presumably we now just scan the next segment
-      (if *reached-eos*
-        (terminate-chart-level-process)
         (scan-segment last-position)))))
+
+
 
 
 (defun introduce-next-word (position-before head-word?)
