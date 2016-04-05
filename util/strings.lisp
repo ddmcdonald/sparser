@@ -13,4 +13,5 @@
 
 (defun string-append (&rest list-of-strings)
   "Sugar for (concatenate 'string ...)"
-  (apply #'concatenate 'string (mapcar #'princ-to-string list-of-strings)))
+  (with-standard-io-syntax
+    (apply #'concatenate 'string (mapcar #'princ-to-string list-of-strings))))
