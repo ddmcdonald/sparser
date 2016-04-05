@@ -73,3 +73,23 @@
     (make-complement-node 'o o v)
     (mumble-says v))
   "I bought milk")
+
+(deftest (ask bought milk)
+  (let ((s *me*)
+	(v (question (past-tense (make-dtn :resource (verb (find-word "buy"))))))
+	(o (make-dtn :resource (noun "milk"))))
+    (make-complement-node 's s v)
+    (make-complement-node 'o o v)
+    (mumble-says v))
+  "did I buy milk")
+
+
+#+(or)
+(deftest (say love myself)
+  (let ((s *me*)
+	(v (present-tense (make-dtn :resource (verb "love"))))
+	(o *me* ))
+    (make-complement-node 's s v)
+    (make-complement-node 'o o v)
+    (mumble-said v))
+  "I love myself")
