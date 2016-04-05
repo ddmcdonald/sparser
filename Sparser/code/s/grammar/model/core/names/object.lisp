@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.1 August 2015
+;;;  version:  April 2016
 
 ;; initiated 5/28/93 v2.3. Broke name word routines out to their own file 4/20/95. 
 ;; 0.1 (5/2) added an explicit name-creator to hack "and".   5/12 remodularized
@@ -24,7 +24,7 @@
 
 
 (in-package :sparser)
-(defvar *PNF-SCAN-STARTS-HERE*)
+
 
 ;;;-----------------------------------------------
 ;;; common super-class for things that have names
@@ -36,8 +36,7 @@
 ;;   This is a mix-in class in my regular code
 (define-category  named-object
   :instantiates :self
-  ;; for people and companies and uncategorized-names the
-  ;; name is based on a sequence. See core/names/object.lisp
+  :specializes endurant
   :binds ((name . name))
   :index (:permanent :key name)) ;; instances field is now a table
 
@@ -223,6 +222,7 @@
   ;; at the point in the sequence when "and" was seen.
   ;; We split the items there and make two name objects, then
   ;; we package them into a collection and return it.
+  (declare (special *pnf-scan-starts-here*))
   (let* ((2d-half (copy-list (nthcdr and-index items)))
          (1st-half (nreverse
                     (nthcdr (1+ (length 2d-half))

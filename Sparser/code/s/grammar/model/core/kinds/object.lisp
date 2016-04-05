@@ -1,7 +1,6 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1999,2011-2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1999,2011-2012,2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:kinds:"
@@ -13,7 +12,7 @@
 ;; the category uppercase. Soaked up the name variable with an explicit
 ;; binding.
 ;; 0.1 (8/13/07) Reworked it considerably to handle the case where there
-;;      is already a category corresponding to the 'unknown' work. Motivated
+;;      is already a category corresponding to the 'unknown' word. Motivated
 ;;      by "city".  4/13/09 Added 'individual', but it probably doesn't belong
 ;;      here. 5/20 added 'modifier' slot to it.
 ;;     (2/9/11) Upcased the string in find-or-define-kind for creating
@@ -105,14 +104,6 @@
       category)))
     
 
-
-;;;--------------------------------
-;;; other stuff ///////// move it?
-;;;--------------------------------
-
-(define-category compound-word
-  :instantiates self
-  :binds ((list-of-words :primitive list)))
 
 
 

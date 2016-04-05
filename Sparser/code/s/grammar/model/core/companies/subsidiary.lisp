@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "subsidiary"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  1.1 September 1995
+;;;  version:  April 2016
 
 ;; initiated 1/20/94 v2.3. Reordered 5/3
 ;; 0.1 (7/22) call to setup the compound 'instantiates' field was wrong
@@ -13,7 +13,7 @@
 ;; 1.0 (5/17) revised the parent/subsid case to use the label subsidiary-type
 ;; 1.1 (8/9) revised it again for another set of labels and now it's good
 ;;      for BONE.
-;;     (9/12) added module to autodef data
+;;     (9/12/95) added module to autodef data
 
 (in-package :sparser)
 
@@ -129,7 +129,7 @@
 ;;;------------------------------------------
 
 (define-category  subsidiary/parent
-  :specializes nil
+  :specializes relation
   :instantiates self
   :binds ((parent . company)
           (subsidiary . company))

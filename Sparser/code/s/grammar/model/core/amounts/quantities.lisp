@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "quantities"
 ;;;   module:  "model;core:amounts:"
-;;;  Version:  February 2016
+;;;  Version:  April 2016
 
 ;; initiated 9/18/93 v2.3.  11/16/93 added form category to rule.
 ;; 2/23/16 Should these be quantifiers rather than determiners?
@@ -19,7 +19,7 @@
 ;;;--------
 
 (define-category  quantity
-  :specializes nil
+  :specializes abstract
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)

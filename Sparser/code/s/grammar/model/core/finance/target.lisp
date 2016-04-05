@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "target"
 ;;;   Module:  "model;core:finance:"
-;;;  Version:  December 2011
+;;;  Version:  April 2016
 
 ;; initiated 12/15/11
 
@@ -13,6 +13,7 @@
 
 (define-category target ;; the word by itself
   :instantiates self
+  :specializes financial-datum
   :realization ((:common-noun "target")))
 
 (define-category target-at-time
