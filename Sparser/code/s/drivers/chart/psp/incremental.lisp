@@ -23,7 +23,8 @@
          (p1 (scan-next-position)))
     (declare (ignore ss)) ;; for debugging if needed
     (setq *reached-eos* nil) ;; initialize
-    (state-sensitive-rightward-march p1)))
+    ;;(state-sensitive-rightward-march p1)
+    (delimit-and-collect-successive-chunks p1)))
 
 
 (defun state-sensitive-rightward-march (pos-before)
@@ -61,7 +62,82 @@
       ;; recurce to handle the next word
       (state-sensitive-rightward-march pos-after))))
 
+#|
+  (p "put a block on the table")
+  (do-normal-segment-finished-options)
 
+                    source-start
+e0    PUT-SOMETHING-SOMEWHERE 1 "put " 2
+e6    BLOCK         2 "a block " 4
+e4 e5               "on" :: #<word "on">, ON
+e10   TABLE         5 "the table" 7
+                    end-of-source
+|#
+
+(defun delimit-and-collect-successive-chunks (start-pos)
+  (let ( edges  forms )
+    (flet ((store-edge (start end)
+             (let ((edge (edge-between start end)))
+               (format t "~&storing ~a~%" edge)
+               (push (edge-form edge) forms)
+               (push edge edges))))
+      (loop
+        (let ((end-pos (setup-and-delimit-next-chunk start-pos))
+              coverage )
+          (when (eq end-pos :skip)
+            ;; delimit call hit a preposition or some such
+            ;; and knew that it couldn't start a segment 
+            ;; with it. We still need to collect it
+            ;; n.b..always moves ahead by one position
+            (store-edge start-pos (chart-position-after start-pos))
+            (setq start-pos (chart-position-after start-pos))
+            (format t "~&skipping to ~a~%" start-pos)
+            (setq end-pos (setup-and-delimit-next-chunk start-pos)))
+
+          (when (eq end-pos :done)
+            ;; eos found by delimit call
+            (lsp-break "we're done"))
+
+          (format t "~&parsing segment from ~a to ~a~%" start-pos end-pos)
+          (parse-segment-interior start-pos end-pos)
+          
+          (setq coverage (segment-coverage))
+          (format t "~&coverage = ~a~%" coverage)
+          (case coverage
+            (:one-edge-over-entire-segment
+             (store-edge start-pos end-pos))
+            (otherwise
+             (push-debug `(,start-pos ,end-pos))
+             (lsp-break "Didn't expect coverage = ~a" coverage)))
+
+          (when *reached-eos*
+            ;;(lsp-break "now-what")
+            (return))
+          
+          (setq start-pos end-pos)))
+
+      (sort-out-incr-forest (nreverse edges) (nreverse forms))
+)))
+
+(defun parse-segment-interior (start-pos end-pos)
+  ;; cf. parse-chunk-interior which works from a chunk
+  (declare (special *left-segment-boundary*
+                    *right-segment-boundary*))
+  (setq *left-segment-boundary* start-pos
+        *right-segment-boundary* end-pos)
+  (let ((*return-after-doing-segment* t))
+    (declare (special *return-after-doing-segment*))
+    (pts)))
+
+
+(defun sort-out-incr-forest (edges forms)
+  (declare (special category::verb))
+  (push-debug `(,edges ,forms))
+  (cond
+   ;; test the idea on imperatives
+   ((eq (car forms) category::verb)
+    (verb-driven-incr-parse edges))
+   (t (break "Stub: form of first edge is ~a" (car forms)))))
 
 
 (defun determine-edge-form-for-state-changes (edges pos-before)
@@ -81,8 +157,61 @@
     (error "Need new way to determine edge form at ~a~
           ~%for ~a" pos-before edges))))
 
+(defun verb-driven-incr-parse (edges)
+  "The first edge is the list is a verb. The rest will be
+   arguments or adjuncts to it. Look up the semantic constraints
+   of the verb from its Mumble data and walk through the
+   edges. If something doesn't fit then we stop and report
+   what we've got so far."
+  (let* ((first-edge (car edges)) ;; we're assuming it's verb not vg
+         (category (edge-referent first-edge))
+         (linked-phrase (mumble::krisp-mapping categorY))
+         (lp (mumble::linked-phrase linked-phrase))
+         (map (mumble::parameter-variable-map linked-phrase)))
+    (push-debug `(,lp ,map))
+    (break "ready to predict")))
 
+#|
+map = (#<#<parameter o2> : #<variable location>> 
+       #<#<parameter o1> : #<variable theme>>)
+lp =
+  <lp: svo1o2 (s o1 o2) v = #<word put>>
+  Class: #<standard-class mumble::partially-saturated-lexicalized-phrase>
+  Wrapper: #<ccl::class-wrapper mumble::partially-saturated-lexicalized-phrase #x30200139E8DD>
+  Instance slots
+  mumble::mname: nil
+  mumble::phrase: #<phrase svo1o2>
+  mumble::bound: (#<pvp: v = #<word put>>)
+  mumble::free: (#<parameter s> #<parameter o1> #<parameter o2>)
 
+(setq phrase (mumble::phrase lp))
+#<phrase svo1o2>
+1 > (d *)
+#<phrase svo1o2>
+Type: mumble::phrase
+Class: #<structure-class mumble::phrase>
+postprocessed?: t
+name: mumble::svo1o2
+storage-type: nil
+minimal-construction-function: nil
+construction-macro: nil
+type-predicate: nil
+setters: nil
+mcatalog: nil
+properties: nil
+postprocessing-fn: nil
+re-definition-fn: nil
+parameters-to-phrase: (#<parameter s> #<parameter v> #<parameter o1>
+                       #<parameter o2>)
+definition: ((#<node-label clause> :set-state (:aux-state mumble::initial)
+              #<slot-label subject> #<parameter s> :additional-labels
+              (#<slot-label nominative>) #<slot-label predicate>
+              (#<node-label vp> #<slot-label verb> #<parameter v>
+               #<slot-label direct-object> #<parameter o1> :additional-labels
+               (#1=#<slot-label objective>) #<slot-label second-object>
+               #<parameter o2> :additional-labels (#1#))))
+
+|#
 
 ;;------------------- first aborted attempt by sort of using
 ;;                    C3's driver 
