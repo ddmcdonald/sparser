@@ -16,6 +16,12 @@
  (ed "Users/ddm/sift/nlp/Sparser/workspaces/fire.lisp")
  (load "Users/ddm/sparser/Sparser/code/s/grammar/model/sl/blocks-world.loader")
 
+
+  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+  initiate-incremental-CwC-protocol  (establish-kind-of-chart-processing-to-do :incremental)
+  initiate-c3-protocol  (establish-kind-of-chart-processing-to-do :c3-protocol)
+
+
  (loop for c in *referential-categories* when (null (super-categories-of c)) collect c)
  workout-the-relationships-among-the-categories
 
