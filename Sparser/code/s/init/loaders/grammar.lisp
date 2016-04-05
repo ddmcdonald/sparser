@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  March 2016
+;;;   version:  April 2016
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -60,6 +60,7 @@
 ;; of words. 10/6/15 added blocks-world. 12/3/15 added mid-level. 12/23/15 put in
 ;; special-case aspect of switch settings at very beginning before any individuals
 ;; are created. 3/15/16 Moved kinds 1st loader out to the master loader.
+;; 4/5/16 Moved finance after ERN which implies that ERN should move to core.
 
 (in-package :sparser)
 
@@ -161,9 +162,6 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *money*
     (gload "money;loader"))
 
-  (gate-grammar *finance*
-    (gload "finance;loader"))
-
   (gate-grammar *pronoun-objects*
     (gload "pronouns;loader"))
 
@@ -185,6 +183,9 @@ omitted and then run (perhaps) after the image has been launched."
 
   (gate-grammar *ern*
     (gload "ern;loader"))
+  (gate-grammar *finance*
+    (gload "finance;loader"))
+
 
   (gate-grammar *ambush*
     (gload "ambush;loader"))

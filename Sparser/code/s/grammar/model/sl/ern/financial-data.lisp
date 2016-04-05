@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "financial data"
 ;;;   Module:  "model;sl:ERN:"
-;;;  Version:  2.0 September 2013
+;;;  Version:  April 2016
 
 ;; initiated 12/20/95. Elaborated through 1/9/96
 ;; 1.0 (7/12/98) Started to rework the files into the new era of lattice-points.
@@ -21,7 +21,7 @@
  such as '(net) income, not any of the relationships that involve them.  |#
 
 (define-category financial-datum
-  :specializes nil
+  :specializes amount
   :instantiates self
   :binds ((name :primitive (:or word polyword)))
   :realization ((:common-noun name)
@@ -51,7 +51,7 @@
 ;;------- qualifiers: "net", "gross", "per-share"
 
 (define-category financial-qualifier
-  :specializes nil
+  :specializes modifier
   :instantiates self
   :binds ((name :primitive (:or word polyword)))
   :index (:permanent :key name)

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2003  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2003,2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "earnings report"
 ;;;   Module:  "model;sl:ERN:"
-;;;  Version:  2.0 April 2003
+;;;  Version:  April 2016
 
 ;; initiated 12/20/95. Elaborated through 1/8/96
 ;; 1.0 (7/12/98) Started to rework the files into the new era of lattice-points.
@@ -20,7 +20,7 @@
 ;;;--------------------------------------------------------------------
 
 (define-category company-financial
-  :specializes nil )
+  :specializes quality )
 
 (define-autodef-data 'company-financial
   :module *finance*

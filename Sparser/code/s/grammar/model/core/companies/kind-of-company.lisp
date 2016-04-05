@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "kind of company"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  0.6 July 2013
+;;;  version:  April 2016
 
 ;; initiated 5/23/93 v2.3, added some rules 6/14
 ;; 0.1 (1/20/94) redid them as subtypes rather than individuals by analogy
@@ -33,8 +33,8 @@
 
 (define-category  kind-of-company
   :instantiates self
-  :specializes nil
-  :binds ((name  :primitive word))
+  :specializes named-type
+  :mixins (has-name)
   :index (:permanent :key name)
   :realization (:tree-family np-common-noun
                 :mapping ((np . company-descriptor)
@@ -56,7 +56,7 @@
 
 (define-category  kind-of-company/phrase
   :instantiates self
-  :specializes nil
+  :specializes named-type
   :binds ((base)
           (modifier))
   :index (:permanent :sequential-keys base modifier))
@@ -78,6 +78,7 @@
 
 (defun define-kind-of-company-phrase (multi-word-string)
   ;; Called from Autodefine-word.
+  (declare (ignore multi-word-string))
   (break "stub -- function has flit")
   #+ignore
   (define-by-filling-out-an-etf
