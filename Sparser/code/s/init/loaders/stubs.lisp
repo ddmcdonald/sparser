@@ -79,6 +79,9 @@
   (defun make/location-with-name (name)
     (declare (ignore name))))
 
+(unless *locations-core*
+  (defun find-or-make-named-type-of-location (name)
+    (declare (ignore name))))
 
 (unless *c3*
   (defun create-wakil ())
