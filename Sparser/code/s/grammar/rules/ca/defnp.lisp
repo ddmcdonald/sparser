@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "defNP"
 ;;;   Module:  "grammar;rules:CA:"
-;;;  Version:  March 2016
+;;;  Version:  April 2016
 
 ;; initiated 6/13/93 v2.3.  3/30/94 set the ignore flag to t as the default
 ;; 0.1 (4/19/95) stopped them from adding the 'not-in-discourse' category
@@ -21,7 +21,7 @@
 (define-category  known-in-discourse
   ;; stand-in subtype when you can't dereference the phrase
   ;; ///indexing and later reconsideration have yet to be throught through
-  :specializes nil
+  :specializes linguistic
   :instantiates self )
 
 ;; (trace-pronouns)

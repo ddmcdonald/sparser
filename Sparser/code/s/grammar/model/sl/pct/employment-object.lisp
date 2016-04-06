@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "employment object"
 ;;;   Module:  "model;sl:pct:"
-;;;  version:  June 1993
+;;;  version:  April 2016
 
 ;; initiated 6/11/93 v2.3
 
@@ -15,7 +15,7 @@
 
 (define-category  employed-as
   :instantiates :self
-  :specializes nil
+  :specializes relation ;;/// inadequate -- needs modeling
   :binds ((person . person)
           (position . position))
   :index (:special-case :find find/employed-as

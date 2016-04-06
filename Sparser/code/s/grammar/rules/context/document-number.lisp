@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "document number"
 ;;;   Module:  "analyzers;context:"
-;;;  Version:  March 2016
+;;;  Version:  April 2016
 
 ;; populated 6/25/92
 ;; (12/28 v2.3) stubbed another case
@@ -17,7 +17,7 @@
 ;;;-------------------
 
 (define-category  assession-number
-  :specializes nil
+  :specializes index
   :instantiates original-document-structure
   :binds ((date . date)
           (index-number . number))

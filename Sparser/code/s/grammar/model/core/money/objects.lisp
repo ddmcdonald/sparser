@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1999  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1999,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "objects"
 ;;;   Module:  "model;core:money:"
-;;;  version:  1.2 September 1999
+;;;  version:  April 2016
 
 ;; initiated 10/22/93 v2.3 from treatment of 11/91. Added a sort routine 11/15/95
 ;; Added a proper definition for stuff like "cents" 1/16/96
@@ -22,7 +22,7 @@
 ;;;---------
 
 (define-category  denomination/money
-  :specializes  nil
+  :specializes  name
   :instantiates :self
   :binds ((name  :primitive word))
   :index (:permanent :key name)

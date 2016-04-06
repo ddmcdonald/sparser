@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:finance:"
-;;;  Version:  December 2011
+;;;  Version:  April 2016
 
 ;; initiated 12/14/11
 
@@ -25,7 +25,7 @@
 ;; the rule-label 'stock' in corporate-stock
 
 (define-category corporate-stock
-  :specializes nil  ;; thing with a value ?? share-of-stock ????
+  :specializes share-of-stock ;;/// not at all right level of abstraction
   :instantiates self
   :rule-label stock
   :binds ()

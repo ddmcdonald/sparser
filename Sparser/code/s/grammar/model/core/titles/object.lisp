@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2013,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  2.0 September 2013
+;;;  version:  April 2016
 
 ;; initiated 6/10/93 v2.3.  Moved out the print macro 1/6/94 to help the
 ;; compiler.  1/18 added title-heads and title-modifiers
@@ -48,14 +48,14 @@
 
 (define-category  title-modifier
   :instantiates self
-  :specializes nil
+  :specializes modifier
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:adjective name))
 
 (define-category title-status
   :instantiates self
-  :specializes nil ;; ?? All status terms have uniform impact?
+  :specializes modifier ;; inadequate for modeling
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:adjective name))

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012,2016 David D. McDonald  -- all rights reserved
 
 ;;;     File:  "authorities"
 ;;;   Module:  model/sl/military
-;;;  version:  November 2012
+;;;  version:  April 2016
 
 ;; Initiated 2/2/07. Mostly done 2/22. Moved in to generic military and tweaked 11/24/12
 
@@ -14,23 +14,27 @@
 ;;; categories
 ;;;------------
 
-(define-category authority
+(define-category authority ;; as in command authority -- who's in charge
   :instantiates self
+  :specializes company ;;// organization would be better, but we don't have it
   :binds ((name :primitive word))
   :index (:permanent :key name))
 
 (define-category command  ;; USCENTCOM
   :instantiates self
+  :specializes authority
   :binds ((name :primitive word))
   :index (:permanent :key name))
 
 (define-category agency   ;; NSA
   :instantiates self
+  :specializes authority
   :binds ((name :primitive word))
   :index (:permanent :key name))
 
 (define-category service  ;; US Army
   :instantiates self
+  :specializes authority
   :binds ((name :primitive word))
   :index (:permanent :key name))
 
@@ -84,6 +88,7 @@
 
 (define-category commander
   :instantiates self
+  :specializes military-rank
   :binds ((unit))) ;; what they command
 
 (def-cfr commander ("commander" authority)

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "rules"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  0.1 October 2013
+;;;  version:  April 2016
 
 ;; initited 6/15/93, starting over from scratch. 3/17/05 These are
 ;; interacting with rules made automatically from the etf schemas,
@@ -113,7 +113,7 @@
 
 (define-category plays-role-for
   :instantiates self
-  ;;  :specializes  ????
+  :specializes relation ;;/// inadequate -- needs modeling
   ;; This should be the top of a set of generated categories
   ;; based on the the title. For now we just stash it and
   ;; index on it.  "college" needs two of these?

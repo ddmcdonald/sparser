@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005, 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011,2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "job events"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.3 January 2011
+;;;  version:  April 2016
 
 ;; initiated 6/15/93 v2.3 with "retire", "confirm", "succeed", and "remain".
 ;; 5/2/95 automatically entered "appoint", refining it by hand 5/28.
@@ -127,7 +126,7 @@
 
 (define-category  succeed-to-job
   :instantiates  job-event
-  :specializes nil
+  :specializes job-event ;;/// insufficient for reasoning
 
   :binds ((person-leaving . person)
           (person-arriving . person))
@@ -153,7 +152,7 @@
 
 (define-category  remain-in-job
   :instantiates  job-event
-  :specializes nil
+  :specializes retain-position
 
   :binds ((person . person)
           (position . position-at-co))

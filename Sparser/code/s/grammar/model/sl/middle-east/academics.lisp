@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2016 David D. McDonald  -- all rights reserved
 ;;;
-;;;      File:   "months"
+;;;      File:   "academics"
 ;;;    Module:   "sl;middle-east"
-;;;   version:   September 2013
+;;;   version:   April 2016
 
 ;; initiated 9/3/13 because they were being taken to be people with very
 ;; odd results. Only discovered by decoding a possessive
@@ -14,7 +14,7 @@
 
 (define-category academic-degree
   :instantiates self
- ;; :specializes  ?? what
+  :specializes title
   :binds ((name :primitive word))
   :realization (:common-noun name))
 

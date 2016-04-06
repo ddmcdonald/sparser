@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012-2013,2016  David D. McDonald  -- all rights reserved
 
 ;;;     File:  "ranks"
 ;;;   Module:  model/sl/military
-;;;  version:  August 2013
+;;;  version:  April 2016
 
 ;; Initiated 3/8/07. Added rules to compose the rank 3/22. Moved in to 
 ;; generic military and tweaked 11/24/12. Fixed abbreviations 11/30/12.
@@ -20,6 +20,7 @@
 
 (define-category military-rank
   :instantiates :self
+  :specializes title ;;/// not really right. Related to academic-degree
   :rule-label title
   :binds ((name :primitive word)
 	  (abbreviations  :primitive list))

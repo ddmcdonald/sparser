@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "cases"
 ;;;    Module:   "sl;disease:"
-;;;   version:   December 2013
+;;;   version:   April 2016
 
 ;;category to represent 'cases' - states where individuals are infected by some pathogen
 ;;often confused with MILITARY-FORCE, because sparser believes the plural of "cas" is "cases" (ironically this would be the 'correct' plural of it)
@@ -18,6 +18,7 @@
 
 (define-category cases ;; the head word by itself
   :instantiates self
+  :specializes time-interval
   :realization ((:common-noun "case")))
 
 ;;captures simple case of "cases of X"
