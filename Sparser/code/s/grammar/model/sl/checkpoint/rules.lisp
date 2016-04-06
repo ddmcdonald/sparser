@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2013,2016 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;    File: "rules"
@@ -8,7 +8,7 @@
 
 ;; Initiated 4/28/09. Elaborated through 8/14/09. 9/28/11 Commenting out the rules
 ;; involving locations while waiting for a better, more general, treatment.
-;; Commenting out still more rules that assume too much.
+;; Commenting out still more rules that assume too much. Ditto 4/5/16
 
 (in-package :sparser)
 
@@ -179,6 +179,8 @@
 ;  :referent (:head right-edge
 ;             :bind (location . left-edge)))
 
+
+#|
 (def-cfr event ("where" event)
   :form s
   :referent (:instantiate-individual question
@@ -223,7 +225,7 @@
   :form s
   :referent (:head left-edge ; ??
              :bind (content . right-edge)))
-
+|#
 
 ;; Some more location rules
 
