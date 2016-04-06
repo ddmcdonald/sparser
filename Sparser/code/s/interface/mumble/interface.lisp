@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  February 2016
+;;;  version:  April 2016
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
@@ -28,6 +28,14 @@
 
 (defmethod get-lexicalized-phrase ((category category))
   (mumble::get-lexicalized-phrase (symbol-name (cat-symbol category))))
+
+
+(defmethod mumble::krisp-mapping ((w word))
+  (mumble::krisp-mapping (word-pname w)))
+
+(defmethod mumble::krisp-mapping ((c category))
+  (gethash c mumble::*mappings-for-category-linked-phrase*))
+
 
 ;;;-----------------------------------------
 ;;; realizations for classes of individuals
