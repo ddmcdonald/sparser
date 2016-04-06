@@ -797,7 +797,7 @@ saturated? is a good entry point. |#
                                                 workbench?
                                                 start-index
                                                 end-index))       
-          (when (eq (car cell) start-pos)
+          (when (eq (car cell) start-index)
 ;          (when (eq *trace-discourse-history* (itype-of i))
 ;            (break "old person"))
  
