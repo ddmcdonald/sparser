@@ -94,7 +94,7 @@
     (category::car-manufacturer ;; generalize to maker-of-artifacts
      (find-variable-for-category 'made-by 'artifact))
     (category::car-type
-     (find-variable-for-category 'type-of category::car-type))
+     (find-variable-for-category 'type-of 'car-type))
     (otherwise
      (push-debug `(,symbol))
      (break "No variable associated with the category symbol ~a"
