@@ -121,7 +121,9 @@ Bind the contextual-description of the associated mention (if any) to the contex
 
 (defmethod interpret-in-context ((e edge))
     (if (and (category-p (edge-category e))
-	     (member (cat-name (edge-category e)) '(quotation parentheses dash)))
+	     (member (cat-name (edge-category e))
+		     '(quotation parentheses dash
+		       square-brackets)))
       ;; we don't interpret such quoted strings
       nil
       (interpret-in-context (dependency-tree e nil))))
