@@ -502,6 +502,7 @@ it is created from N-terminus to C-terminus.|#
     (setq proteins (nreverse proteins))
     (let ((sequence (create-sequence proteins))
           (name (create-slash-separated-string strings-naming-proteins)))
+      (declare (ignore name)) ;; should this be used somehow?
       (let ((i (find-or-make-individual 'pathway)))
         ;;/// make a lowercase version?
         (setq i (bind-dli-variable 'protein-sequence sequence i))
