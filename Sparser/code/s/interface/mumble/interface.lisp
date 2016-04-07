@@ -22,18 +22,19 @@
 ;;; Mumble methods with signatures that need Sparser classes
 ;;;----------------------------------------------------------
 
-(defmethod mumble::record-lexicalized-phrase 
-           ((category category) (lp mumble::lexicalized-resource))
-  (mumble::record-lexicalized-phrase 
-   (symbol-name (cat-symbol category)) lp))
+(defmethod mumble::record-lexicalized-phrase ((category category)
+                                              (lp mumble::lexicalized-resource))
+  (mumble::record-lexicalized-phrase (symbol-name (cat-symbol category)) lp))
 
 (defmethod get-lexicalized-phrase ((category category))
-  (mumble::get-lexicalized-phrase 
-   (symbol-name (cat-symbol category))))
+  (mumble::get-lexicalized-phrase (symbol-name (cat-symbol category))))
 
 ;;;-----------------------------------------
 ;;; realizations for classes of individuals
 ;;;-----------------------------------------
+
+(defmethod mumble::realize ((i individual))
+  (get-mumble-word-for-sparser-word (value-of 'name i)))
      
 (defgeneric tailored-individual-realization (individual)
   (:documentation "Looks for a type-specific realization
@@ -92,21 +93,6 @@
               ~%from a number individual: ~a" n)))))
     
 |#   
-
-
-;;--- names
-
-(defun realize-using-name-binding (i)
-  )
-
-;; need number and unit-rate-of-change for args
-
-
-
-(defmethod mumble::realize ((i individual))
-  (mumble::get-mumble-word-for-sparser-word (value-of 'name i)))
-
-
 
 ;;;--------------------------------------------
 ;;; experiment on 4/5/13 that wasn't completed

@@ -11,13 +11,11 @@
 (in-package :sparser)
 
 (lload "mumble-interface;rspec-gophers")
+(lload "mumble-interface;gofers")
+(lload "mumble-interface;krisp-mapping")
+(lload "mumble-interface;rdata")
 (lload "mumble-interface;interface")
 (lload "mumble-interface;binding-centric")
-
 (lload "mumble-interface;rnode-centric")
 (lload "mumble-interface;mexp")
-;(lload "mumble-interface;XX")
-;(lload "mumble-interface;XX")
-;(lload "mumble-interface;XX")
-
-
+(lload "mumble-interface;discourse-reference")

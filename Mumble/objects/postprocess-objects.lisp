@@ -486,6 +486,11 @@ the virtual machine cleaner."
     (or word 
 	(make-a-new-word string pos))))
 
+(defmethod find-or-make-word ((s string))
+  "You probably don't want to use this."
+  (or (word-for-string s)
+      (define-word/expr s '(noun))))
+
 (define-postprocessing-function word  (W)
   (set-word-labels W (mapcar #'word-label-named (word-labels W))))
 

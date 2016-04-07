@@ -1,12 +1,10 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; -*-
-;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-
-(defpackage :mumble-loader (:use :asdf :common-lisp))
-(in-package :mumble-loader)
+;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved.
+;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
 
 (defsystem :mumble
   :description "The Mumble-86 natural language generation system."
-  :depends-on ("ddm-util")
+  :depends-on (:ddm-util)
   :serial t
   :components ((:file "package")
 
@@ -59,13 +57,10 @@
                (:file "grammar/punctuation-marks")
                (:file "grammar/morphology") ;; ok up to here
                (:file "grammar/word-stream-actions")
-               #+sparser (:file "grammar/numbers")
 
                (:file "derivation-trees/make")
                (:file "derivation-trees/builders")
                (:file "derivation-trees/operators")
-               #+sparser (:file "derivation-trees/gofers")
-               #+(and sparser (or)) (:file "derivation-trees/conversions")
 
                (:file "interface/bundles/accessory-types")
                (:file "interface/bundles/accessory-processing")
@@ -73,16 +68,11 @@
                (:file "interface/bundles/bundle-drivers")
                (:file "interface/bundles/constructing-bundles")
 
-               ;;  These reference Sparser, and need massive re-org. / consolidation
-               #+(or) (:file "interface/tsro/gofers")
-               #+(or) (:file "interface/tsro/map-translations")
-
                ;; These were thrown together for SELF and now feel like a short-cut that should
                ;; be removed in favor of derivation trees. Types file has pieces to re-use. And/or are
                ;; called by code that remains underconsideration but might go away
                (:file "interface/derivations/types")
                #+(or) (:file "interface/derivations/rspec-interpretation")
-               #+sparser (:file "interface/derivations/discourse-reference")
 
                (:file "interface/bundles/specification-operators")
                #+(or) (:file "interface/bundles/operators-over-specifications") ;; deprecated
@@ -97,6 +87,15 @@
                (:file "loader/load-final"))
   :perform (load-op :after (o c) (pushnew :mumble *features*))
   :in-order-to ((test-op (test-op :mumble-tests))))
+
+(defsystem :mumble/sparser
+  :description "Mumble components that depend on Sparser."
+  :depends-on (:mumble :sparser)
+  :components ((:file "grammar/numbers")
+               (:file "interface/bundles/bundle-drivers") ;; reload to pick up Sparser specifics
+               #+(or) (:file "derivation-trees/conversions")
+               #+(or) (:file "interface/tsro/gofers")
+               #+(or) (:file "interface/tsro/map-translations")))
 
 (defsystem :mumble-tests
   :serial t

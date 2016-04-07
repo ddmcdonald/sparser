@@ -46,20 +46,10 @@ will help you get everything up & running in no time.
 Installation & Setup
 ====================
 
-1. Install the root directory "sparser" wherever you like.
-We recommend (and the default configuration assumes) that
-you keep it in your home directory, e.g., as ~/sparser/.
-
-When you checkout the master repository to that root location, 
-it should contain three immediate subdirectories: "Mumble", 
-"Sparser", and "util", as well as this README file, the
-LICENSE file, and the file load-nlp.lisp.
-
-2. If you installed the "sparser" directory somewhere
-other than your home directory, you'll need to modify
-the file paths in the "ASDF setup" section of the
-"load-nlp.lisp" file to match your configuration.
- 
+When you checkout the master repository, it should contain four
+immediate subdirectories: "Mumble", "Sparser", "util", and "test",
+as well as this README file, the LICENSE file, and the "sparser.asd"
+file which contains the Sparser ASDF system definitions.
 
 Loading Sparser
 ====================
@@ -79,8 +69,8 @@ see sparser/Sparser/init/scripts/compile-everything.lisp.
 
 1. Start Lisp.
 
-2. Load the "sparser/load-nlp.lisp" file, e.g. run
-  (load "/Users/<your home dir>/sparser/load-nlp.lisp").
+2. Load Sparser using ASDF; e.g., run
+  (asdf:load-system :sparser).
 
 3. Switch over to the Sparser namespace by executing
   (in-package :sparser).

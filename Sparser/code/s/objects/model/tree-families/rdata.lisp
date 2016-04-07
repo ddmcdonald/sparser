@@ -544,76 +544,6 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
             decoded-cases
             *schematic?* )))
 
-;;--------------------- move to new file in interface/mumble/ ------------------------
-;;;---------------------------------
-;;; Mumble information within rdata
-;;;---------------------------------
-
-(defun includes-mumble-rdata (rdata)
-  ;; This version expects the rdata to be a list of lists,
-  ;; and is checking for one of them to have the operator 
-  ;; :mumble.
-  (when (consp (car rdata))
-    (assq :mumble rdata)))
-
-(defun apply-mumble-rdata (category rdata)
-  "Provide phrase and argument information (so far only)
-   for verbs. Look up the m-word, which should exist
-   at this point, and create the lexicalized phrase."
-  ;; Called from setup-rdata
-  (push-debug `(,category ,rdata))
-  ;; (setq category (car *) rdata (cadr *))
-  ;; e.g. (:mumble ("build" svo :v artifact))
-  ;;      (:mumble ("push" svo :s agent :o theme))
-  ;;      (:mumble (transitive-with-final-adverbial "push" "together"))
-  (let ((mumble-spec (cadr (assq :mumble rdata))))
-    (etypecase (first mumble-spec)
-     (string
-      (apply-mumble-phrase-data 
-       category (first mumble-spec) (second mumble-spec) (cddr mumble-spec)))
-     (symbol
-      (apply-mumble-function-data category mumble-spec)))))
-
-(defun apply-mumble-function-data (category function-and-args)
-  (mumble::apply-function-data category function-and-args))
-
-(defun apply-mumble-phrase-data (category pname phrase-name p&v-pairs)
-  "Subroutine of apply-mumble-rdata to set up the data (dereference
-   the symbols) so that the Mumble side of this."
-  (let ( pairs  variable )
-    ;; Tried doing this with what I thought was a destructuring loop
-    ;; signature -- loop for (param-name var-name) in p&v-pairs --
-    ;; but it wanted the first parameter to be a list
-    (do ((param-name (car p&v-pairs) (car rest))
-         (var-name (cadr p&v-pairs) (cadr rest))
-         (rest (cddr p&v-pairs) (cddr rest)))
-        ((null param-name))
-      (setq variable (find-variable-for-category var-name category))
-      (assert variable)
-      (push `(,param-name . ,variable) pairs))
-    (mumble::setup-verb-from-rdata pname phrase-name category pairs)))
-
-         
-(defun make-corresponding-lexical-resource (head-word)
-  ;; called from dereference-rdata and makes its own
-  ;; judgement abuot whether its appropriate to create
-  ;; Mumble resources in the present configuration and/or
-  ;; dynamic context.
-  (declare (special *build-mumble-equivalents*))
-  (when (or *build-mumble-equivalents*
-            *CwC*)
-    (let* ((pos-tag (car head-word))
-           (word-or-variable (cdr head-word))
-           (word (when (or (word-p word-or-variable)
-                           (polyword-p word-or-variable))
-                   word-or-variable)))
-      (when word
-        (mumble::make-resource-for-sparser-word pos-tag word)
-        (push-debug `(,word))
-        :done))))
-;;---------------------------------------------
-
-
 
 (defun deref-rdata-word (string-or-symbol category)
   (declare (special *schematic?*)) ;; flag in the caller
@@ -844,7 +774,6 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
         (values etf word-pattern))))
 
-#+mumble
 (defun find-word-realization-within-category-realization (category)
   (let ((realization (mumble::realize category)))
     (when realization

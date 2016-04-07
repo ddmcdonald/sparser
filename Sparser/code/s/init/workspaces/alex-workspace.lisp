@@ -47,13 +47,7 @@
 
 ;;; Sparser loaders
 
-(defvar *nlp-home*
-  (pathname (or (uiop:getenv "NLP_HOME")
-                (probe-file "~/sift/sparser/")
-                (error "Can't find Sparser.")))
-  "The root directory of the Sparser source tree.")
-
-(defun sparser (&key dribble dump setup test)
+(defun sparser (&key dribble dump test)
   "Load Sparser."
   (declare (special script))
   (when dribble (dribble (merge-pathnames dribble *nlp-home*)))
@@ -63,16 +57,19 @@
   (handler-bind ((style-warning #'muffle-warning) ; shut up, SBCL
                  (undefined-function #'continue)  ; from Mumble
                  (unbound-variable #'continue))   ; these, too
-    (when (load (merge-pathnames "load-nlp.lisp" *nlp-home*))
-      (prog1 (in-package "SPARSER")
-        (when setup (funcall (intern setup)))
-        (when test (funcall (intern test)))
+    (when (asdf:load-system (format nil "sparser/~(~a~)" script))
+      (prog1 (in-package :sparser)
+        (when test (uiop:symbol-call :sparser test))
         (when dribble (dribble))
-        (when dump (uiop:dump-image (merge-pathnames dump *nlp-home*)))))))
+        (when dump (uiop:dump-image
+                    (asdf:system-relative-pathname :sparser dump)))))))
 
-(defun bio (&rest args &key
-            (setup "SETUP-BIO")
-            (test "COMPARE-TO-SNAPSHOTS") &allow-other-keys)
+(defun bio (&rest args &key (test "COMPARE-TO-SNAPSHOTS") &allow-other-keys)
   (declare (special script))
   (setq script :biology)
-  (apply #'sparser :setup setup :test test args))
+  (apply #'sparser :test test args))
+
+(defun bw (&rest args)
+  (declare (special script))
+  (setq script :blocks-world)
+  (apply #'sparser args))

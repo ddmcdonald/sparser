@@ -35,7 +35,8 @@ more contextually appropriate / fluent phrase may be better
 |#
 (defun plan-reference-to-category (category-name)
   (let ((category (sp::category-named 
-                   (sparser-symbol category-name) :break-if-none))
+                   (sp::sparser-symbol category-name)
+                   :break-if-none))
 
         ;; first check if there is a mention of this category
         ;; in the recent discourse => "another one", "one more"

@@ -1,10 +1,10 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CL-USER COMMON-LISP) -*-
+;;; -*- Mode: LISP; Syntax: Common-Lisp -*-
 ;;; copyright (c) 1989-2005,2010-2015 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "everything"
 ;;;    Module:   "init;"
-;;;   Version:   October 2015
+;;;   Version:   April 2016
 ;;;
 ;;;  This is the preloader.  Launching this file loads one or
 ;;;  another version of the entire system, as determined by the
@@ -95,7 +95,31 @@
 ;; 10/7/15 added *CwC* and made a consistency pass for readability.
 ;; 1/11/16 radically refactored.
 
+(in-package :cl-user)
+
+(defpackage :sparser
+  (:documentation "The Sparser source package.")
+  (:nicknames :sp)
+  (:use :common-lisp :ddm-util #+ccl :ccl)
+  (:shadow :break :position)
+  (:import-from :common-lisp-user :script)
+  (:export
+   :p :ie :e#
+   :tr :deftrace :trace-msg
+   :lload :def-logical-pathname
+   :category-named :cat-realization :edge-referent
+   :exploded-tree-family))
+
 (in-package :sparser)
+
+(defparameter *sparser-source-package*
+  (find-package :sparser))
+
+(defmacro position (&rest args)
+  "Sparser has a data structure called position, which clashes
+with the standard function of the same name. This macro aliases
+the functional value of the former to that of the latter."
+  `(common-lisp:position ,@args))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   ;; Allegro comes in two favors: alisp, which has an ANSI-compiliant
@@ -110,25 +134,8 @@
   #+sbcl
   (setq sb-impl::*default-external-format* :utf-8))
 
-(defvar *mumble-package*
-  (or (find-package :mumble)
-      (defpackage :mumble (:use :common-lisp :ddm-util)))
-  "Mumble source package.")
-
-(defvar *sparser-source-package*
-  (find-package :sparser) ; defined in load-nlp
-  "Sparser source package.")
-
-(defvar *sparser-directory*
-  (or (assert (and (equal (pathname-name *load-truename*) "everything")
-                   (equal (last (pathname-directory *load-truename*) 3)
-                          '("code" "s" "init")))
-              (*load-truename*)
-              "Expected to be loaded from code/s/init/everything.")
-      (truename
-       (merge-pathnames
-        (make-pathname :directory '(:relative :up :up :up)) ; code/s/init
-        (make-pathname :directory (pathname-directory *load-truename*)))))
+(defparameter *sparser-directory*
+  (asdf:system-relative-pathname :sparser "Sparser/")
   "Base reference point for all Sparser source files.")
 
 (defparameter *sparser-code-directory*

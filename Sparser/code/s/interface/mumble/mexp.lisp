@@ -80,7 +80,7 @@ two values: the compiled expression and a possibly augmented context.")
 (defmethod mexp ((expr symbol) &rest args &key context)
   "Symbols name either individuals in the current context or Sparser categories."
   (apply #'mexp (or (find-in-context expr context)
-                    (sp::category-named (sparser-symbol expr) t))
+                    (sp::category-named (sp::sparser-symbol expr) t))
          args))
 
 (defmethod mexp ((expr sp::category) &key context)
@@ -94,7 +94,7 @@ two values: the compiled expression and a possibly augmented context.")
   (values (make-dtn :referent expr
                     :resource (let ((name (sp::value-of 'sp::name expr)))
                                 (if name
-                                  (noun (get-mumble-word-for-sparser-word name))
+                                  (noun (sp::get-mumble-word-for-sparser-word name))
                                   (get-lexicalized-phrase (sp::pname-for expr)))))
           context))
 
@@ -148,8 +148,8 @@ Otherwise, try to compile the head and attach the arguments as
 named parameters."
   (destructuring-bind (operation &rest args) expr
     (assert (eq operation head))
-    (if (fboundp (mumble-symbol operation))
-      (values (apply (fdefinition (mumble-symbol operation))
+    (if (fboundp (sp::mumble-symbol operation))
+      (values (apply (fdefinition (sp::mumble-symbol operation))
                      (mapcar (lambda (arg)
                                (multiple-value-setq (expr context)
                                  (mexp arg :context context)))
@@ -157,7 +157,7 @@ named parameters."
               context)
       (loop with dtn = (mexp operation :context context)
             for (parameter-name value) on args by #'cddr
-            do (make-complement-node (mumble-symbol parameter-name)
+            do (make-complement-node (sp::mumble-symbol parameter-name)
                                      (mexp value :context context)
                                      dtn)
             finally (return (values dtn context))))))
