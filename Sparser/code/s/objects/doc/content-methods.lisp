@@ -65,7 +65,9 @@
 
 
 (defun do-section-level-after-actions (s)
-  (summarize-bio-terms s))
+  (summarize-parse-performance s)
+  (summarize-bio-terms s)
+  (show-parse-performance s))
 
 
 
@@ -200,13 +202,36 @@
     
 
 (defun grade-sentence-tt-counts (paragraph quality)
-  (let ((count-list (contents paragraph)))
+  (let ((count-list (sentence-tt-count (contents paragraph))))
     (loop for count in count-list
       when (= 1 count) do (incf (parses-with-one-edge quality))
       when (and (> count 1) (<= count 5))
            do (incf (medium-quality-parses quality))
-      when (> count 5) do (incf (horrible-parses quality)))))
+       when (> count 5) do (incf (horrible-parses quality)))))
 
+(defun add-parse-quality-grades (source sink)
+  "Expects to be part of a loop where the sink content object
+   is added to by a sucession of sources"
+  (let ((current-great (parses-with-one-edge sink))
+        (current-medium (medium-quality-parses sink))
+        (current-horrible (horrible-parses sink)))
+    (setf (parses-with-one-edge sink)
+          (+ current-great (parses-with-one-edge source)))
+    (setf (medium-quality-parses sink)
+          (+ current-medium (medium-quality-parses source)))
+    (setf (horrible-parses sink)
+          (+ current-horrible (horrible-parses source)))))
+
+(defun aggregate-parse-performance (doc-element content)
+  "Add the 'grades' of each of the children to the grades
+   in the sentence-parse-quality fields of this level."
+  (when (typep content 'sentence-parse-quality)
+    ;; rule out title-text and such the caller could feed us
+    (dolist (child (children doc-element))
+      (let ((child-content (contents child)))
+        (when (typep child-content 'sentence-parse-quality)
+          (add-parse-quality-grades child-content content))))))
+             
 (defmethod summarize-parse-performance ((e document-element))
   (let ((content (contents e))
         (children (children e)))
@@ -216,8 +241,18 @@
           (paragraph
            (grade-sentence-tt-counts child content))
           ((or section section-of-sections article)
-           (break "foo")))))))
+           (aggregate-parse-performance e content)))))))
 
+(defun show-parse-performance (doc-element
+                               &optional (stream *standard-output*))
+  (let ((content (contents doc-element)))
+    (if (not (typep content 'sentence-parse-quality))
+      (format stream "~a does not record parse quality" doc-element)
+      (let ((great (parses-with-one-edge content))
+            (medium (medium-quality-parses content))
+            (horrible (horrible-parses content)))
+        (format stream "~&~a: ~a, ~a, ~a~%"
+                doc-element great medium horrible)))))
 
           
       

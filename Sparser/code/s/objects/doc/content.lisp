@@ -93,6 +93,7 @@
 
 (defclass paragraph-content (container aggregated-bio-terms
                              epistemic-state discourse-relations
+                             sentence-parse-quality
                              sentence-tt-counts)
   ()
   (:documentation "Will want a bunch more structure just over
