@@ -47,10 +47,9 @@
 
 ;;; Sparser loaders
 
-(defun sparser (&key dribble dump test)
+(defun sparser (&key dump test)
   "Load Sparser."
   (declare (special script))
-  (when dribble (dribble (merge-pathnames dribble *nlp-home*)))
   (progn
     (format t "~&Loading Sparser/~a...~%" script)
     (force-output))
@@ -60,7 +59,6 @@
     (when (asdf:load-system (format nil "sparser/~(~a~)" script))
       (prog1 (in-package :sparser)
         (when test (uiop:symbol-call :sparser test))
-        (when dribble (dribble))
         (when dump (uiop:dump-image
                     (asdf:system-relative-pathname :sparser dump)))))))
 

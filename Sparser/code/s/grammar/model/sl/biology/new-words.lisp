@@ -65,13 +65,13 @@
     (format s "~&))~&")))
       
 (defparameter *UCD-tag-directory* 
-  (string-append *r3-trunk* "code/evaluation/June2015Materials/Eval_tag_lists/*.tags"))
+  (string-append cl-user::*r3-trunk* "code/evaluation/June2015Materials/Eval_tag_lists/*.tags"))
 
 (defparameter *tag-file-ids* (generate-id-list-from-directory-listing *UCD-TAG-DIRECTORY*))
 
 (defun read-tag-file (id)
   (with-open-file
-      (s (string-append *r3-trunk* "code/evaluation/June2015Materials/Eval_tag_lists/" id ".tags")
+      (s (string-append cl-user::*r3-trunk* "code/evaluation/June2015Materials/Eval_tag_lists/" id ".tags")
          :direction :input)
     (read s)))
 

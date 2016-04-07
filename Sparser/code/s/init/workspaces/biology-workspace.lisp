@@ -29,36 +29,35 @@
 ; (setup-bio) ;; load the bio model etc.
 
 (defun setup-bio ()
-  (bio-setting)
-  (setq *tts-after-each-section* nil)
-  (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
-  (gate-grammar *biology* ;; sets up stats collection
-                (gload "bio;loader"))
-  (load-obo-terms)
-  (load-bio-corpora)
-  (declare-all-existing-individuals-permanent)
-  (push :biology-loaded *features*)
-  )
+  (unless (find :biology-loaded *features*)
+    (bio-setting)
+    (setq *tts-after-each-section* nil)
+    (setq *note-text-relations* nil) ;; plist-for passed :uncalculated noting "[1-3]"
+    (gate-grammar *biology*          ;; sets up stats collection
+      (gload "bio;loader"))
+    (load-obo-terms)
+    (load-bio-corpora)
+    (declare-all-existing-individuals-permanent)
+    (push :biology-loaded *features*)))
 
-(defun define-r3-path-if-needed ()
-  "The function r3-path is bound in <r3 trunk>/code/load.lisp
-   and defined relative to the directory just above that location,
-   i.e. *r3-trunk*. This defines the function if it isn't already."
-  (unless (fboundp 'cl-user::r3-path)
-    (unless (boundp 'cl-user::*r3-trunk*)
-      (error "No value defined for cl-user::*r3-trunk*"))
-    (defun cl-user::r3-path (relative-path)
-      (merge-pathnames relative-path cl-user::*r3-trunk*)))
-  (unless (fboundp 'cl-user::r3-load)
-    (defun cl-user::r3-load (source-path)
-      (load (cl-user::r3-path source-path)))))
+(defvar cl-user::*r3-trunk*
+  (truename (asdf:system-relative-pathname :r3 ".."))
+  "String identifing the location of the R3 trunk
+on your machine, including a final slash. Should be
+set in your personal workspace file, e.g.
+(defvar *r3-trunk* \"/Users/ddm/ws/R3/r3/trunk/\")")
 
+(unless (fboundp 'cl-user::r3-path)
+  (defun cl-user::r3-path (relative-path)
+    (merge-pathnames relative-path cl-user::*r3-trunk*)))
 
+(unless (fboundp 'cl-user::r3-load)
+  (defun cl-user::r3-load (source-path)
+    (load (cl-user::r3-path source-path))))
 
 ;;; copied from ddm-load-corpora in ddm-workspace.
  
 (defun load-bio-corpora ()
-  (define-r3-path-if-needed)
   (cl-user::r3-load "code/grammar-tests/December-text-passages.lisp")
   (cl-user::r3-load "code/grammar-tests/January Dry Run passages.lisp")
   (cl-user::r3-load "code/grammar-tests/ERK-translocation.lisp")
@@ -104,16 +103,6 @@ those steps sequentially on a single article.
 
 (defvar *read-articles* nil
   "Holds all of the articles we've parsed")
-
-;; This should be set in your personal workspace file,
-;; e.g. (setq *r3-trunk* "/Users/ddm/ws/R3/r3/trunk/")
-(defvar *r3-trunk*)
-(if (boundp 'cl-user::*r3-trunk*)
-    (setf *r3-trunk* cl-user::*r3-trunk*)
-    (setf *r3-trunk* nil))
-;  "String identifing the location of the trunk on
-;  your machine, including a final slash"
-
 
 ;;;-------------------------------------------
 ;;; Alternative paths to the document corpora
