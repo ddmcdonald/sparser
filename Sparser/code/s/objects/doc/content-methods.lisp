@@ -66,8 +66,7 @@
 
 (defun do-section-level-after-actions (s)
   (summarize-parse-performance s)
-  (summarize-bio-terms s)
-  (show-parse-performance s))
+  (summarize-bio-terms s))
 
 
 

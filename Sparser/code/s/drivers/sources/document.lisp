@@ -133,6 +133,8 @@
               (read-from-document sec))))))
     (when (actually-reading)
       (after-actions a))
+    (when (and *show-section-printouts* (actually-reading))
+      (show-parse-performance a))
     a))
 
 (defmethod read-from-document ((ss section-of-sections))
@@ -172,7 +174,8 @@
       (when (actually-reading)
         (after-actions ss))
       (when *show-section-printouts*
-        (format t "~&~%--------- finished section of sections ~a~%" ss)))))
+        (format t "~&~%--------- finished section of sections ~a~%" ss)
+        (when (actually-reading) (show-parse-performance ss))))))
 
 (defmethod read-from-document ((tt title-text))
   ;; not sure what to do with title-text when it appears as a section in a section-of-sections
@@ -220,7 +223,8 @@
       (when (actually-reading)
         (after-actions s))
       (when *show-section-printouts*
-        (format t "~%--------- finished section ~a~%~%" s)))))
+        (format t "~%--------- finished section ~a~%~%" s)
+        (when (actually-reading) (show-parse-performance s))))))
 
 (defmethod read-from-document ((p paragraph))
   (when *show-section-printouts*
