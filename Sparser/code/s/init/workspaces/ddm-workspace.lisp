@@ -402,9 +402,10 @@ In article 2  "c-termini"
 
 
 
-; (setq *show-section-printouts* t)
+;; (setq *show-section-printouts* t)
+;; (show-parse-performance X)
+;; (ddm-load-article-2 t)
 
-; (ddm-load-article-2 t)
 (defun ddm-load-article-2 (&optional do-not-read)
   (load-xml-to-doc-if-necessary)
   (let ((fn (intern (symbol-name '#:make-sparser-doc-structure)
