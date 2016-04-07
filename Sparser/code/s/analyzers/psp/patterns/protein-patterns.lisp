@@ -73,7 +73,7 @@
   (make-bio-complex start-pos end-pos))
 
 (defun make-protein-collection (start-pos end-pos)
-  (declare (special category::protein))
+  (declare (special category::protein category::collection))
   (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
          proteins)
@@ -100,7 +100,7 @@
       nil))))
 
 (defun make-amino-collection (start-pos end-pos)
-  (declare (special category::amino-acid))
+  (declare (special category::amino-acid category::collection))
   (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
          aminos)

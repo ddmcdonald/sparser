@@ -578,7 +578,7 @@
                     category::be *big-mechanism* category::parentheses
                     category::that category::verb+ed category::verb+ing
                     category::preposition category::and category::also
-                    category::vp+ed
+                    category::vp+ed category::subordinate-conjunction
 		    category::to))
   (cond
     ((or

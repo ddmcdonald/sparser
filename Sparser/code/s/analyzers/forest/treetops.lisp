@@ -393,6 +393,7 @@
     pairs))
 
 (defun bad-edge? (edge)
+  (declare (special word::comma))
   (or
    (not (edge-p edge)) ;; how can this happen?!@
    (and
