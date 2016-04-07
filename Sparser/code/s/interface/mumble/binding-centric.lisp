@@ -13,7 +13,7 @@
   "The only reason to realize a category is to retrieve
 its name to provide a head word."
   (let ((s-word (extract-word-from-category-definition c)))
-    (mumble::get-mumble-word-for-sparser-word s-word)))
+    (get-mumble-word-for-sparser-word s-word)))
 
 (defmethod mumble::realize ((w word))
   (mumble::find-or-make-word (pname-for w)))

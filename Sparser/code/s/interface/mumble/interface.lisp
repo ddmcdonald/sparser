@@ -84,7 +84,7 @@
         (actual-number (value-of 'value n)))
     (cond
      (digits-word
-      (mumble::get-mumble-word-for-sparser-word digits-word))
+      (get-mumble-word-for-sparser-word digits-word))
      (actual-number
       (let ((number-string (format nil "~a" actual-number)))
         (mumble::find-or-make-word number-string))) ;; digit pos???
