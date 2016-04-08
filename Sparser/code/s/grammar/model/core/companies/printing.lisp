@@ -18,29 +18,6 @@
 ;;; printing companies
 ;;;---------------------
 
-(define-special-printing-routine-for-category  company
-  :full ((let ((name (value-of 'name obj)))
-           (if name
-             (then
-               (write-string "#<company " stream)
-               (write-string (string/company obj) stream)
-               (format stream "  ~A,~A>"
-                       (indiv-id obj) (indiv-uid obj)))
-               
-             (format stream "#<company  ~A>"
-                     (indiv-uid obj)))))
-
-  :short ((let ((name (value-of 'name obj)))
-           (if name
-             (then
-               (write-string "#<" stream)
-               (write-string (string/company obj) stream)
-               (format stream "  ~A>" (indiv-id obj)))
-               
-             (format stream "#<company  ~A>"
-                     (indiv-uid obj))))))
-
-
 (defun string/company (c)
   (let ((name (value-of 'name c)))
     (if name
@@ -64,21 +41,37 @@
       "")))
 
 
+(define-special-printing-routine-for-category  company
+  :full ((let ((name (value-of 'name obj)))
+           (if name
+             (then
+               (write-string "#<company " stream)
+               (write-string (string/company obj) stream)
+               (format stream "  ~A,~A>"
+                       (indiv-id obj) (indiv-uid obj)))
+               
+             (format stream "#<company  ~A>"
+                     (indiv-uid obj)))))
+
+  :short ((let ((name (value-of 'name obj)))
+           (if name
+             (then
+               (write-string "#<" stream)
+               (write-string (string/company obj) stream)
+               (format stream "  ~A>" (indiv-id obj)))
+               
+             (format stream "#<company  ~A>"
+                     (indiv-uid obj))))))
+
+
 
 ;;;------------------------
 ;;; printing company names
 ;;;------------------------
 
-;(define-special-printing-routine-for-category  company-name
-;  )
-
-
 (defun princ-company-name (name stream)
-  (let ((first-name (value-of 'first-word name))
-        (rest (value-of 'rest name))
-        (inc-term (value-of 'inc-term name)))
+  (let ((first-name (value-of 'first-word name)))
     (princ-name-word first-name stream)))
-
 
 (defun princ-name-word (nw stream)
   (let ((word (value-of 'name nw)))

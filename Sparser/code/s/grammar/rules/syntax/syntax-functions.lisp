@@ -1165,9 +1165,6 @@ to enhance p53 mediated apoptosis [2].") |#
   ;; the correct referent once we've identified it. Kind of Rube Goldberg
   ;; -esque, but it's the price we pay for delaying rather than trying to
   ;; identify the referent at moment the pronoun is encountered.
-  (declare (special *ignore-personal-pronouns*
-                    category::unknown-grammatical-function))
-
   (cond
     ((and *do-anaphora* (is-anaphoric? item))
      (let ((pn-edge (edge-for-referent item)))
@@ -1182,20 +1179,16 @@ to enhance p53 mediated apoptosis [2].") |#
 	  (setf (mention-restriction (car (mention-history item))) v/r)
 	  item)
 	 (t
-	  (let* ((original-label (edge-category pn-edge))
-		 (relation-label (form-label-corresponding-to-subcat subcat-label))
-		 (restriction 
-		  (or v/r category::unknown-grammatical-function)))
+	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label) category::np))
+                (restriction (or v/r category::unknown-grammatical-function)))
+            (declare (special category::np category::unknown-grammatical-function))
 	    (when (consp restriction)
 	      ;; the first one after the :or
 	      (setq restriction 
 		    (or (loop for c in (cdr restriction) 
-			   when (itypep (edge-referent pn-edge) c)
-			   do (return c))
-			(cadr restriction))))
-	    (unless relation-label
-	      (setq relation-label category::np))
- 
+                              when (itypep (edge-referent pn-edge) c)
+                              do (return c))
+			(cadr restriction)))) 
 	    (let ((new-ref (individual-for-ref restriction)))
 	      (unless 
 		  ;; If we're going to ignore the pronoun we don't want or
@@ -1279,7 +1272,7 @@ to enhance p53 mediated apoptosis [2].") |#
 	 (let ( variable )
 	   (let ((*trivial-subcat-test* nil))
 	     (if (and *note-ambiguity* (not *subcat-test*))
-		 (let (vars sources pats over-ridden)
+		 (let (pats over-ridden)
 		   (loop for pat in subcat-patterns
 		      do
 			(let ((scr (subcat-restriction pat)))

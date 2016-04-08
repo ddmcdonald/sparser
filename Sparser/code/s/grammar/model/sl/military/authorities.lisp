@@ -50,6 +50,7 @@
 
 (defun define-instance-of-a-kind-of-authority (category-name 
 					       name other-names)
+  (declare (ignore other-names))
   (let* ((word (resolve-string-to-word/make name))
 	 (i (define-individual category-name :name word)))
     (define-cfr (category-named 'authority) `(,word)

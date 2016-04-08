@@ -568,11 +568,18 @@
 	   (equal (word-pname (value-of 'name (edge-referent e))) "there"))))
 
 (defgeneric ng-start? (label)
-  (:documentation "Is a category which can occur inside a NG"))
+  (:documentation "Is a category which can occur inside a NG?"))
+
 (defmethod ng-start? ((w word))
   nil)
-(defmethod ng-start? ((s symbol))
-  nil)
+
+(defmethod ng-start? ((name symbol))
+  (declare (special *ng-start-categories*))
+  (memq name *ng-start-categories*))
+
+(defmethod ng-start? ((c referential-category))
+  (ng-start? (cat-symbol c)))
+
 (defmethod ng-start? ((e edge))
   (declare (special e category::modifier category::adjective
                     category::be *big-mechanism* category::parentheses
@@ -650,11 +657,4 @@
 		    (eq category::subordinate-conjunction (edge-form prev-edge))
 		    (ng-head? prev-edge)))))))
     ((ng-start? (edge-form e))
-     t))
-  )
-
-(defmethod ng-start? ((c referential-category))
-  (ng-start? (cat-symbol c)))
-(defmethod ng-start? ((name symbol))
-  (declare (special *ng-start-categories*))
-  (memq name *ng-start-categories*))
+     t)))

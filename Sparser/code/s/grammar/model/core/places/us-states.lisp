@@ -61,7 +61,7 @@
                  (define-individual 'US-state :name name-string)))
         (state-word (define-word name-string))
         adj-word  abbrev-word  abbrev-words  alias-word  alias-words  rules )
-
+    (declare (ignore state-word))
     ;;(make-name-word-for/silent state-word)
     ;;;;  make it use the state 4/19/95
     ;; this is so we can use the name of the state, qua name, when

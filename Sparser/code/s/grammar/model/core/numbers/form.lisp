@@ -85,6 +85,7 @@
 
 (defun construct-number (string word-object-for-digits lisp-number
                          ones teens tens multiplicand temporary?)
+  (declare (special category::digit-sequence))
 
   (unless word-object-for-digits
     (setq word-object-for-digits (define-word string)))

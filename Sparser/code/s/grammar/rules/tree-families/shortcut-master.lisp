@@ -149,6 +149,7 @@
   ;; Decoder for def-term
   ;; Make the category, then use the independent realization
   ;; machinery to finish it. 
+  (declare (ignore c))
   (labels 
       ((compute-superc-name (verb noun adj)
          ;; default used if explicit superc isn't supplied.

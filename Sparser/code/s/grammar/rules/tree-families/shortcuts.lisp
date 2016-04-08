@@ -278,6 +278,7 @@ broadly speaking doing for you all the things you might do by hand.
 		    binds realization
 		    instantiates mixin 
 		    restrict rule-label obo-id)
+  (declare (ignore rule-label instantiates index))
   (when (stringp name)
     (setq noun name)
     (setq name (name-to-use-for-category name)))
@@ -347,7 +348,7 @@ broadly speaking doing for you all the things you might do by hand.
 		   binds realization
 		   instantiates mixin 
 		   restrict rule-label obo-id)
-
+  (declare (ignore rule-label instantiates))
   (unless (or super specializes)
     (setq  specializes (super-category-for-POS :adjective)))
   (when binds

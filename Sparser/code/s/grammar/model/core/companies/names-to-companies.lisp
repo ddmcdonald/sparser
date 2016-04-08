@@ -22,6 +22,7 @@
 
 (defun interpret-name-as-company (name)
   ;; standard call to use in cs rules
+  (declare (special *default-company*))
   (if (category-p name) ;; "name/unknown-pattern"
     *default-company*
     (interpret-name-as-company/aux name)))

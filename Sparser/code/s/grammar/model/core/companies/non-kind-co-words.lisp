@@ -178,6 +178,7 @@
   :dossier "dossiers;co activity nominals-er" )
 
 (defun define-co-activity-nominal/er (string &key abbrev)
+  (declare (special category::company category::co-activity-nominal/er))
   (let* ((word (define-word/expr string))
          (plural (plural-version word))
          (symbol (intern string *category-package*))

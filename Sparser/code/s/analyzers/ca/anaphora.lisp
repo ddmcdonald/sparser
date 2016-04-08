@@ -649,13 +649,8 @@ saturated? is a good entry point. |#
   ;; lookup the discourse history record corresponding to this instance
   ;; of the individual.
   (let ((individual (edge-referent edge)))
-    (unless (individual-p individual)
-      (break "Bad assumption: this operation only applies to ~
-              individuals.~%However the referent of~%   ~A~
-              ~%is~%   ~A" edge individual))
+    (check-type individual individual)
     (let ((entry (individuals-discourse-entry individual))
-          (start-pos (start-pos edge))
-          ;(end-pos (pos-edge-ends-at edge))  ?? do we need this check ??
           instance-record  instance-start )
 
       ;; prime the loop

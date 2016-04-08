@@ -195,8 +195,8 @@
 
    (defun form-rule-completion (a b c d)
      (declare (ignore a b c d)))
-   (defun form-rule-completion/explicit-lhs (a b c d)
-     (declare (ignore a b c d)))
+   (defun form-rule-completion/explicit-lhs (a b c d e)
+     (declare (ignore a b c d e)))
    (defun make-edge-based-on-morphology (a b c)
      (declare (ignore a b c)))
    (defun make-edge-over-unknown-digit-sequence (a b)

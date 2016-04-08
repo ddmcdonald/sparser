@@ -11,9 +11,7 @@
 
 
 (defun string/money (m)
-  (let ((number (value-of 'number m))
-        (currency (value-of 'currency m)))
-
+  (let ((number (value-of 'number m)))
     ;; hack hack hack
     (format nil "$~A" (string/number number))))
 

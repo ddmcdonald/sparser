@@ -89,6 +89,7 @@
 		:form category::np
 		:rule :infer-person-from-rank-prefix
 		:referent person)))
+          (declare (ignore edge))
 	  (parse-at-the-segment-level *right-segment-boundary*))))))
 
 

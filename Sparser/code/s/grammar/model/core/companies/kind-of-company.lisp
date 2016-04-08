@@ -92,9 +92,11 @@
 (defun save-kind-of-company/phrase (stream-to-standard-dossier
                                     tree-family
                                     mapping)
-  (declare (ignore mapping))
+  (declare (ignore stream-to-standard-dossier tree-family mapping)
+           (special *rdt/result-category*))
   (let ((category-name (symbol-name (cat-symbol *rdt/result-category*))))
-    (break "stub -- function isnt' around anymore")
+    (declare (ignore category-name))
+    (break "stub -- function isn't around anymore")
     #+ignore
     (save-definition-of-a-category
      stream-to-standard-dossier

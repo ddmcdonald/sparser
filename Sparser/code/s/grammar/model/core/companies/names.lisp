@@ -314,18 +314,9 @@
 
 (defun name-of-company/items (item/s)
   ;; Is there a company with this name, given here just as
-  ;; a list of items. 
-  (unless (consp item/s)
-    (break "Assumption violation: expected the argument to be ~
-            a list:~%  ~A~%" item/s))
-
-  (if (null (cdr item/s))
-    ;; Then we've got only one item
-    ()
-
-    (else
-      (format t "~&~%Stub: Name-of-company/items -- not yet looking ~
-                 for whether~%Company-name item sequences conjoined ~
-                 with 'and' already name companies.~%Assuming that ~
-                 this one doesn't:~%  ~A~%~%")
-      nil )))
+  ;; a list of items.
+  (assert (null (cdr item/s))
+          (item/s)
+          "Name-of-company/items is not yet looking for whether~%~
+           Company-name item sequences conjoined with 'and' already name companies.~%~
+           Assuming that this one doesn't: ~A." (car item/s)))
