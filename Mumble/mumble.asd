@@ -41,6 +41,7 @@
                (:file "interpreters/attachment")
                (:file "interpreters/position-path-operations")
                (:file "interpreters/state")
+               (:file "interpreters/discourse-reference")
 
                ;; sets *loading-whole-system* to t to avoid incremental postprocessing
                (:file "loader/load-midpoint")
@@ -92,7 +93,6 @@
   :description "Mumble components that depend on Sparser."
   :depends-on (:mumble :sparser)
   :components ((:file "grammar/numbers")
-               (:file "interface/bundles/bundle-drivers") ;; reload to pick up Sparser specifics
                #+(or) (:file "derivation-trees/conversions")
                #+(or) (:file "interface/tsro/gofers")
                #+(or) (:file "interface/tsro/map-translations")))

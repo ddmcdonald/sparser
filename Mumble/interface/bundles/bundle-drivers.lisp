@@ -188,14 +188,13 @@
             (else
               ;;n.b. any embedded planning
               ;;  would be triggered here.
-	      (unless (pronounp np-root) ;;i.e. one that's deliberately choosen
-		(set-backpointer-of-root  np-root dtn)
-		(entering-new-context np-root)
-		(process-np-accessories np-root dtn)
-		(process-further-specifications (adjuncts dtn))
-		(leaving-previous-context np-root))
-	      np-root))))
-    #+sparser
+              (unless (pronounp np-root) ;;i.e. one that's deliberately choosen
+                (set-backpointer-of-root  np-root dtn)
+                (entering-new-context np-root)
+                (process-np-accessories np-root dtn)
+                (process-further-specifications (adjuncts dtn))
+                (leaving-previous-context np-root))
+              np-root))))
     (record-reference dtn result dom-clause)
     (push-debug `(:np-bundle ,result))
     result))
@@ -244,20 +243,18 @@
 (defun should-be-pronominalized-in-present-context (dtn)
   (let ((grammatical-context (labels *current-position*))
 	(model-level-object (referent dtn)))
-    (cond  ((member (slot-label-named 'relative-pronoun) grammatical-context)
-            'context-requires-a-relative-pronoun )
-           ((and model-level-object
-                 (antecedent-precedes-and-is-a-clausemate model-level-object))
-            'antecedent-precedes-and-is-within-this-clause )
-           #+sparser
-           ((in-focus? model-level-object)
-            'text-structure-has-marked-reference-reducible)
-           #+sparser
-           ((local-mentions model-level-object)
-            ;; because we've already checked for clausemates this mention
-            ;; is likely to be in an upstairs clause
-            (c-command? (local-mentions model-level-object)))
-           (t nil))))
+    (cond ((member (slot-label-named 'relative-pronoun) grammatical-context)
+           'context-requires-a-relative-pronoun )
+          ((and model-level-object
+                (antecedent-precedes-and-is-a-clausemate model-level-object))
+           'antecedent-precedes-and-is-within-this-clause)
+          ((in-focus? model-level-object)
+           'text-structure-has-marked-reference-reducible)
+          ((local-mentions model-level-object)
+           ;; because we've already checked for clausemates this mention
+           ;; is likely to be in an upstairs clause
+           (c-command? (local-mentions model-level-object)))
+          (t nil))))
 
 (defun antecedent-precedes-and-is-a-clausemate (model-level-object)
   (when (dominating-clause)

@@ -78,19 +78,12 @@ speakers.
 ;;; focus API
 ;;;-----------
 
-(defgeneric set-the-focus (item)
-  (:documentation "External interface to the focus system.
-    Given some criteria, a process has concluded that the
-    item is in focus. The impact of that will be to have
-    the item be pronominalized. Use this method to trigger
-    Mumble machinery that acts on this."))
-
 (defmethod set-the-focus ((item t))
   ;;/// check that it's a reasable sort of object?
   (assert item)
   (setf (object-in-focus *current-turn*) item))
 
-(defun in-focus? (obj)
+(defmethod in-focus? (obj)
   "Called by should-be-pronominalized-in-present-context
   but determined by a discourse-level assessment of the
   situation. We asking this during the current turn so the
@@ -104,8 +97,8 @@ speakers.
 ;;; what -kinds- of objects (events) have we been talking about
 ;;;-------------------------------------------------------------
 
-(defun record-use-of-object-type (category)
-  (push category (object-types-referenced *current-turn*)))
+(defmethod record-use-of-object-type ((type sp::category))
+  (push type (object-types-referenced *current-turn*)))
 
 (defun assumed-object-types ()
   "There's an aspect of decay here, but don't have enough
@@ -120,7 +113,7 @@ speakers.
 ;;; history of particular objects
 ;;;-------------------------------
 
-(defun local-mentions (obj)
+(defmethod local-mentions (obj)
   "Called by should-be-pronominalized-in-present-context
   which is written to expect this object to have been
   mentioned earlier in the ongoing utterance, probably
@@ -132,21 +125,16 @@ speakers.
     ;; actually want to know. See c-command stub function
     entry))
 
-(defun record-reference (dtn result dominating-clause)
+(defmethod record-reference progn (dtn result dom)
   "Called from general-np-bundle-driver"
   ;;/// we need to work up more use cases so we can
   ;; determine how much structure might bo into a 'mention-record'
-  (let ((obj (referent dtn)))
-    (when obj
-     (when dominating-clause
-       (push obj (objects-referenced (dominating-clause))))
-     (when *current-turn*
-       (let ((record (record-discourse-context
-                      obj result dominating-clause)))
-         (push record (references *current-turn*))
-         record)))))
+  (when *current-turn*
+    (let ((record (record-discourse-context obj result dom)))
+      (push record (references *current-turn*))
+      record)))
 
-(defun record-discourse-context (obj result dom)
+(defmethod record-discourse-context (obj result dom)
   "Work in progress since it's not clear what to consider.
    Set up as an alist on the object"
   ;; the current slot isn't available while we're building ????
@@ -154,7 +142,7 @@ speakers.
          ,dom)) ;; the clause that immediately dominated it
 
 
-(defun record-unadorned-mention (obj &optional result)
+(defmethod record-unadorned-mention (obj result)
   "When we're simulating the other side of the conversation we don't
    have anything like a dominating clause or other functional 
    information.  This it to just let you push the objects on
@@ -165,25 +153,19 @@ speakers.
 ;;;------------
 ;;; uniqueness
 ;;;------------
+
 #| If an object is unique we should always use "the".
  We'll just stipulate that an object is unique. In the
  blocks world there's really only one -- the table. 
 |#
 
-(defgeneric unique? (item)
-  (:documentation "Is there only one of this item
-   in the situation? For the moment, this should
-   only apply to objects that are always unique, "))
-
 (defvar *unique-objects-in-situation* nil
   "Hack to avoid type machinery or much thinking to 
    define the notion of being unique. If it's on
-   this list it's unique")
+   this list it's unique.")
 
-(defmethod unique? ((item t))
-  (member item *unique-objects-in-situation*
-          :test #'eq))
+(defmethod unique? (item)
+  (member item *unique-objects-in-situation*))
 
-(defun stipulate-to-be-unique (item)
+(defmethod stipulate-to-be-unique (item)
   (push item *unique-objects-in-situation*))
-
