@@ -259,13 +259,11 @@ The exceptions are optional."
   (let* ((positions (position-table *current-phrasal-root*))
 	 (subject-position (cdr (assoc 'subject positions)))
 	 (subject-contents (contents subject-position)))
-    (etypecase subject-contents
-      (specification subject-contents)
-      (word-stream-item subject-contents)
-      (node subject-contents)
+    (typecase subject-contents
       (slot (if (eq (name (next subject-contents)) 'clause)
-		(next subject-contents)
-		(mbug "unknown subject contents"))))))
+              (next subject-contents)
+              (mbug "unknown subject contents")))
+      (t subject-contents))))
 
 (defun number-of-current-subject ()
   "Return the NUMBER (singular or plural) of the current subject,
@@ -273,7 +271,7 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
   (let ((subj (current-subject)))
     (the (member singular plural)
 	 (or (etypecase subj
-	       (specification
+	       ((or specification derivation-tree-node)
                 (let ((acc (get-accessory-value ':number subj)))
                   (and acc (name acc))))
 	       (node
@@ -297,7 +295,7 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is THIRD."
   (let ((subj (current-subject)))
     (the (member first second third)
 	 (or (etypecase subj
-	       (bundle-specification
+	       ((or specification derivation-tree-node)
                 (let ((acc (get-accessory-value ':person subj)))
                   (and acc (name acc))))
 	       (node

@@ -14,17 +14,16 @@
 
 
 (defun process-question-accessory ()
-  (unless (not (lexical-subject))
+  (when (lexical-subject)
     (set-state *current-phrasal-root*
-	       (change-state
-		 ':aux-state 'prepose-aux (state *current-phrasal-root*)))
+	       (change-state :aux-state 'prepose-aux
+                             (state *current-phrasal-root*)))
     (let* ((cur-ap (splicing-attachment-point-named 'tense-modal))
 	   (new-ap (splicing-attachment-point-named 'preposed-tense-modal))
 	   (position (cdr (assoc cur-ap (available-aps *current-phrasal-root*)))))
       (setf (available-aps *current-phrasal-root*)
             (delete cur-ap (available-aps *current-phrasal-root*)))
-      (push (cons new-ap position) (available-aps *current-phrasal-root*)))
-      )
+      (push (cons new-ap position) (available-aps *current-phrasal-root*))))
   (add-label-to *current-position* 'question))
 
 
@@ -50,12 +49,9 @@
   (let* ((subject-position
 	   (cdr (assoc 'subject (position-table *current-phrasal-root*))))
 	 (contents (contents subject-position)))
-    (etypecase contents
+    (typecase contents
       (ttrace nil)
-      (node t)
-      (word-stream-item t)
-      (specification t) ;; Is this a reasonable presumption?
-      )))
+      (t contents))))
 
 (defun process-tense-modal-accessory (value)
   (let* ((ap (return-tense-modal-attachment-point))
