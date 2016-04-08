@@ -11,6 +11,7 @@
 
 (in-package :sparser)
 
+(gload "finance;financial-data")
 (gload "finance;per share")
 (gload "finance;stock")
 (gload "finance;elaborations to money")
