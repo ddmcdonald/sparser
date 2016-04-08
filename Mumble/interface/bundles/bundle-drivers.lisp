@@ -287,11 +287,7 @@
 (defun check-for-reflexive (object)
   (when (and (member (label-named 'objective) (labels *current-position*))
 	     (antecedent-precedes-and-is-a-clausemate object))
-    (set-labels *current-position*
-		 (nconc (labels *current-position*)
-			(list (label-named 'reflexive))))))
-
-
+    (push (label-named 'reflexive) (labels *current-position*))))
 
 
 ;################################################################

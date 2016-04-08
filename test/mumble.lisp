@@ -126,12 +126,12 @@
     (mumble-says dtn))
   "I bought a book and I read it")
 
-#+(or) ; no reflexives yet
-(deftest (say love myself)
-  (let ((s *me*)
-	(v (present-tense (make-dtn :resource (verb "love"))))
-	(o *me*))
-    (make-complement-node 's s v)
-    (make-complement-node 'o o v)
-    (mumble-says v))
-  "I love myself")
+(deftest (say cat loves itself)
+  (let* ((cat (neuter-&-third-person
+               (singular (make-dtn :referent :cat
+                                   :resource (noun "cat")))))
+         (love (present-tense (make-dtn :resource (verb "love")))))
+    (make-complement-node 's (always-definite cat) love)
+    (make-complement-node 'o cat love)
+    (mumble-says love))
+  "the cat loves itself")

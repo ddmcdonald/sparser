@@ -41,7 +41,7 @@
   (label-intersection slot-labels '(gerund)))
 
 (defun case-from-labels (slot-labels)
-  (or (find (label-named 'reflexive) slot-labels)
+  (or (and (find (label-named 'reflexive) slot-labels) 'reflexive)
       (ecase (name (first (case-governing-labels slot-labels)))
         ((nil))
         (possessive 'possessive-np) ;; Q&G pg 209

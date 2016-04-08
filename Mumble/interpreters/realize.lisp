@@ -69,10 +69,8 @@ that knows how to how to handle the specific accessories."
            (phrase-type (and phrase (caar (definition phrase)))))
       (case (and phrase-type (name phrase-type))
         (clause (clausal-bundle-driver dtn root-node))
-        ((np np/no-det) (general-np-bundle-driver dtn root-node))))
-
-    ;; Pass the node/word back to be knit-in by build-phrase
-    root-node))
+        ((np np/no-det) (general-np-bundle-driver dtn root-node))
+        (otherwise root-node)))))
 
 
 ;;;--------------
