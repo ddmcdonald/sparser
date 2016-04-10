@@ -41,9 +41,6 @@
      (apply-mumble-function-data category mumble-spec))))
 
 (defun apply-mumble-function-data (category function-and-args)
-  (apply-function-data category function-and-args))
-
-(defun apply-mumble-function-data (category function-and-args)
   "Sugar for a call to a resource-defining Mumble function.
    Any special handling of the arguments has to be done on the caller side.
    Designed for the case of just string arguments. Indexes the resource
