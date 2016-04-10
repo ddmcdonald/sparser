@@ -219,11 +219,8 @@ previous records of treetop-counts.
 
 ;;--- write the snapshot to a file 
 
-(unless (boundp '*directory-for-tree-snapshots*)
-  (defparameter *directory-for-tree-snapshots*
-    (make-pathname :directory (pathname-directory *load-truename*))
-    "Unless an alternative value has already been provided, assume
-     that the snapshot files is in the same directory as this file."))
+(defvar *directory-for-tree-snapshots*
+  (asdf:system-relative-pathname :sparser ""))
 
 (defparameter *file-for-treetop-snapshots*
   (merge-pathnames "corpora-snapshots.lisp"

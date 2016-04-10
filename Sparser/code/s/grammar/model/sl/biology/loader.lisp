@@ -19,6 +19,7 @@
 ;; so all elements can go in one place. 8/3/15 added [methods] to
 ;; avoid load-time category dependencies. It must be loaded last.
 ;; 10/8/15 added examples. 10/26/15 added citations.
+;; 4/10/16 moved new-words to R3.
 
 (in-package :sparser)
 
@@ -35,12 +36,7 @@
 (gload "bio;doc-structure")
 (gload "bio;switches")
 (gload "bio;rules")
-;;; now only defined in r3 system. 
-;(when (find-package :xmls) ;; need this for reading xml files
-;  (gload "bio;parse-biopax"))
-;(gload "bio;find-extension.lisp")
 
-(gload "bio;new-words")
 (gload "bio;UCD-proteins")
 (gload "bio;protein-families")
 (gload "bio;phenomena") ;; after proteins
