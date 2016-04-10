@@ -231,14 +231,6 @@
   :referent (:head right-edge
                    :bind (entity left-edge)))
 
-(define-category have :specializes state
-  :binds ((possessor biological)
-	  (thing-possessed biological))
-  :realization
-  (:verb "have" 
-         :etf (svo)
-         :s possessor
-         :o thing-possessed))
 
 ;;--- expediency
 

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "have"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.4 September 2015
+;;;  Version:  April 2016
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3.  Fleshed out 6/4.
 ;; Added negative contractions 1/11/94.  7/21 switch aux rule to use
@@ -20,7 +20,6 @@
 ;; 5/30-2015 update to take into accoun addition of new passive categories
 ;; 9/22/15 Turned back on the subtypes
 
-
 (in-package :sparser)
 
 
@@ -31,10 +30,16 @@
 (define-category  have
   :instantiates  self
   :specializes   state
-  :binds ((possessor)
-	  (thing-possessed))
+  :binds ((possessor top)
+	  (thing-possessed top))
   :mixins (takes-neg)
-  :index (:temporary :list))
+  :index (:temporary :list)
+  :realization
+     (:verb "have" 
+      :etf (svo)
+      :mumble ("have" svo :s possessor :o thing-possessed)
+      :s possessor
+      :o thing-possessed))
 
 (register-variable category::have
  (find-variable-in-category 'possessor 'have)
