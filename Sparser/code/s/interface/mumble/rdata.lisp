@@ -22,18 +22,25 @@
    for verbs. Look up the m-word, which should exist
    at this point, and create the lexicalized phrase."
   ;; Called from setup-rdata
-  (push-debug `(,category ,rdata))
+  ;; (push-debug `(,category ,rdata))
   ;; (setq category (car *) rdata (cadr *))
+  (let ((mumble-spec (cadr (assq :mumble rdata))))
+    (decode-mumble-spec category mumble-spec)))
+
+(defun decode-mumble-spec (category mumble-spec)
+  "Entry point from decode-realization-parameter-list"
   ;; e.g. (:mumble ("build" svo :v artifact))
   ;;      (:mumble ("push" svo :s agent :o theme))
   ;;      (:mumble (transitive-with-final-adverbial "push" "together"))
-  (let ((mumble-spec (cadr (assq :mumble rdata))))
-    (etypecase (first mumble-spec)
-     (string
-      (apply-mumble-phrase-data 
-       category (first mumble-spec) (second mumble-spec) (cddr mumble-spec)))
-     (symbol
-      (apply-mumble-function-data category mumble-spec)))))
+  (etypecase (first mumble-spec)
+    (string
+     (apply-mumble-phrase-data 
+      category (first mumble-spec) (second mumble-spec) (cddr mumble-spec)))
+    (symbol
+     (apply-mumble-function-data category mumble-spec))))
+
+(defun apply-mumble-function-data (category function-and-args)
+  (mumble::apply-function-data category function-and-args))
 
 (defun apply-mumble-function-data (category function-and-args)
   "Sugar for a call to a resource-defining Mumble function.
@@ -88,17 +95,25 @@
                           (polyword-p word-or-variable))
                       word-or-variable)))
       (when word
-        (push-debug `(,word))
-        (let* ((m-pos (ecase pos-tag
-                        (:verb 'mumble::verb)
-                        (:common-noun 'mumble::noun)
-                        (:adjective 'mumble::adjective)
-                        (:interjection 'mumble::interjection)))
-               (m-word (get-mumble-word-for-sparser-word word m-pos)))
+        (make-resource-for-sparser-word word pos-tag)))))
 
-          ;; Make the lexicalized phrases
-          (ecase pos-tag
-            (:verb) ;; done in the category rdata processing
-            (:common-noun (mumble::noun m-word))
-            (:adjective (mumble::adjective m-word))
-            (:interjection (mumble::interjection m-word))))))))
+(defun make-shortcut-corresponding-resource (word pos-tag)
+  (when *build-mumble-equivalents*
+    (make-resource-for-sparser-word pos-tag word)
+    :done)) ;; keep this on the stack
+
+(defun make-resource-for-sparser-word (word pos-tag)
+  (push-debug `(,word))
+  (let* ((m-pos (ecase pos-tag
+                  (:verb 'mumble::verb)
+                  (:common-noun 'mumble::noun)
+                  (:adjective 'mumble::adjective)
+                  (:interjection 'mumble::interjection)))
+         (m-word (get-mumble-word-for-sparser-word word m-pos)))
+
+    ;; Make the lexicalized phrases
+    (ecase pos-tag
+      (:verb) ;; done in the category rdata processing
+      (:common-noun (mumble::noun m-word))
+      (:adjective (mumble::adjective m-word))
+      (:interjection (mumble::interjection m-word)))))
