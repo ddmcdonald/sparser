@@ -304,12 +304,14 @@ omitted and then run (perhaps) after the image has been launched."
   (when *incorporate-generic-lexicon*
     (prime-comlex))
 
+  (gate-grammar *biology*
+    (gload "bio;loader"))
+
   (gate-grammar *testing*
     (gate-grammar *miscellaneous*
       (gload "grammar;tests;loader"))
     (gate-grammar *citations*
       (gload "citations;loader")))
-
 
   (when *external-grammar-files*
     (load *external-grammar-files*))

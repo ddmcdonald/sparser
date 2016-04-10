@@ -24,17 +24,15 @@
     as the end of the load and thereby give any messages that do occur
     real significance.   |#
 
-(unless (memq :biology-loaded *features*)
-  (defun in-ras2-model? (i) (declare (ignore i))) ;; Rusty's workspace
-  (defun post-translation-file-from-card (card number) ;; Biology workspace
-    (declare (ignore card number)))
-  (defun do-cards ())
+(unless *biology*
+  (defun in-ras2-model? (i) ;; Rusty's workspace
+    (declare (ignore i)))
   (defun define-bio (word kind)
     (declare (ignore word kind)))
   (defun setup-acronym-for-bio-entity (ref1 ref2)
     (declare (ignore ref1 ref2)))
-  (defun svo/bio/expr (word) (declare (ignore word)))
-)
+  (defun svo/bio/expr (word)
+    (declare (ignore word))))
 
 (unless *companies*
   (defun establish-companies-as-part-of-the-background (list)

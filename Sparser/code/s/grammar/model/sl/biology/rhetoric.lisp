@@ -33,11 +33,7 @@ contains irrelevant information.")
   (pushnew `(,reason
 	     ,(sentence-string sentence)
 	     ,(all-individuals-in-tts sentence)
-	     ,@(when (and (boundp '*current-article*)
-			  *current-article*)
-		     (list *current-article*
-			   *universal-time-start*
-			   *universal-time-end*)))
+	     ,*current-article*)
 	   *all-irrelevant-sentences*
 	   :key #'second))
 

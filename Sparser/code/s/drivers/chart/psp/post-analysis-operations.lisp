@@ -24,10 +24,7 @@
   (when (and *readout-relations* *index-cards*)
     (push `(,(sentence-string sentence) 
             ,(all-individuals-in-tts sentence)
-            ,@(when *current-article*
-                `(,*current-article*
-                  ,*universal-time-start*
-                  ,*universal-time-end*))
+            ,*current-article*
             ,(assess-relevance sentence))
           *all-sentences*))
 

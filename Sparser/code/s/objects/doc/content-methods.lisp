@@ -186,11 +186,10 @@
     in reading. At the sentence level and aggregated at
     higher levels of document structure."))
 
-
 (defclass sentence-tt-counts ()
-  ((count-list :initform 0 :accessor sentence-tt-count
-    :documentation "The counts for each sentence in 
-      a paragraph")))
+  ((count-list :initform '()
+               :accessor sentence-tt-count
+               :documentation "The counts for each sentence in a paragraph")))
    
 (defmethod assess-sentence-analysis-quality ((p paragraph))
   (let* ((sentences (sentences-in-paragraph p))
