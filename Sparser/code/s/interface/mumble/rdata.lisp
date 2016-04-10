@@ -40,7 +40,7 @@
      (apply-mumble-function-data category mumble-spec))))
 
 (defun apply-mumble-function-data (category function-and-args)
-  (mumble::apply-function-data category function-and-args))
+  (apply-function-data category function-and-args))
 
 (defun apply-mumble-function-data (category function-and-args)
   "Sugar for a call to a resource-defining Mumble function.
