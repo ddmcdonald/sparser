@@ -43,7 +43,7 @@
     :like
     :of :on :over :onto :such\ as :to :to-comp :thatcomp :through :throughout :toward :towards :under 
     :unlike :upon :via 
-
+    :mumble
     :designator
     :whethercomp :with :within :without))
 
@@ -115,7 +115,8 @@
     (apply #'decode-realization-parameter-list category 
            `(,@kw :slots ,slots))))
 
-;;--- call rerouted from define-category
+
+;;--- entry point from decode-category-parameter-list 
 
 (defun setup-shortcut-rdata (category key-value-pairs)
   ;; called from decode-category-parameter-list when the rdata
@@ -236,7 +237,7 @@
                                           prep ;; owned preposition
                                           slots ;; a plist with labels like :against :as :at 
                                           ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
-                                          )
+                                          mumble)
   ;; Decoder for the realization part of def-term, for the rdata of
   ;; define-category when it fits this new pattern, and for def-synonym,
   ;; though in that case the *deliberate-duplication* flag will be up.
@@ -248,6 +249,10 @@
     (cons)
     (symbol (setq etf (list etf)))  
     (otherwise (error "The :etf parameter must be a symbol or a list")))
+
+  (when mumble
+    (when *build-mumble-equivalents*
+      (decode-mumble-spec category mumble)))
   
   (let* ((sf (fom-subcategorization category
                                     :category category
@@ -333,6 +338,7 @@
                (special-cases (when (consp noun) (cdr noun)))
                (cn-rules (make-cn-rules/aux word category category
                                             special-cases)))
+          (make-shortcut-corresponding-resource word :common-noun)
           (add-rules-to-category category cn-rules))))
 
     (when adj
@@ -341,6 +347,7 @@
       (unless (assq :adjective word-map)
         (let* ((word (resolve/make adj))
                (adj-rules (make-rules-for-adjectives word category category)))
+          (make-shortcut-corresponding-resource word :adjective)
           (add-rules-to-category category adj-rules))))
 
     (when (or etf substitution-map word-map)
