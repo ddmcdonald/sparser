@@ -260,15 +260,13 @@
 
 
 (defun select-appropriate-pronoun (bundle reason-for-selection)
-  (ecase  reason-for-selection
+  (ecase reason-for-selection
     (context-requires-a-relative-pronoun
-      (select-appropriate-relative-pronoun bundle))
-    (antecedent-precedes-and-is-within-this-clause
-      (select-appropriate-personal-pronoun bundle))
-    (text-structure-has-marked-reference-reducible
-      (select-appropriate-personal-pronoun bundle))
-    ))
-
+     (select-appropriate-relative-pronoun bundle))
+    ((antecedent-precedes-and-is-within-this-clause
+      text-structure-has-marked-reference-reducible
+      object-is-in-focus)
+     (select-appropriate-personal-pronoun bundle))))
 
 (defun select-appropriate-personal-pronoun (bundle)
   (let ((number (name (get-accessory-value ':number bundle t)))

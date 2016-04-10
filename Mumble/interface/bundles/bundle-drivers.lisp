@@ -158,19 +158,15 @@
     (ac :negate      process-negate-accessory      nil)
     (ac :wh-adj      process-wh-adjunct-accessory    t))
   )
-;################################################################
+
+;################################################################
 ;; Uniform "bundle" driver for DTNs
 
 (defun dtn-bundle-driver (dtn phrase-type)
   "Called from realize-dtn, which is itself called from 
   realize when a derivation tree node is the contents of
-  some slot. Return value becomes the new value of the slot.
-"
+  some slot. Return value becomes the new value of the slot."
   (values dtn phrase-type))
-
-
-
-;################################################################
 
 (defun general-np-bundle-driver (dtn np-root)
   "This code checks the syntactic reasons to use a pronoun to see
@@ -179,23 +175,21 @@
   (push-debug `(:np ,dtn ,np-root))
   (let* ((dom-clause (dominating-clause))
          (reason-to-pronominalize 
-          (should-be-pronominalized-in-present-context dtn))
+          (should-be-pronominalized-in-present-context? dtn))
          (result
           (if reason-to-pronominalize
             (then (when dom-clause
                     (check-for-reflexive (referent dtn)))
                   (select-appropriate-pronoun dtn reason-to-pronominalize))
-            (else
-              ;;n.b. any embedded planning
-              ;;  would be triggered here.
-              (unless (pronounp np-root) ;;i.e. one that's deliberately choosen
+            (else ;; any embedded planning would be triggered here.
+              (unless (pronounp np-root) ;; i.e. one that's deliberately choosen
                 (set-backpointer-of-root  np-root dtn)
                 (entering-new-context np-root)
                 (process-np-accessories np-root dtn)
                 (process-further-specifications (adjuncts dtn))
                 (leaving-previous-context np-root))
               np-root))))
-    (record-reference dtn result dom-clause)
+    (mention (referent dtn) result dom-clause)
     (push-debug `(:np-bundle ,result))
     result))
 
@@ -240,55 +234,62 @@
 ;                    Choosing pronouns
 ;################################################################
 
-(defun should-be-pronominalized-in-present-context (dtn)
+(defun should-be-pronominalized-in-present-context? (dtn)
   (let ((grammatical-context (labels *current-position*))
-	(model-level-object (referent dtn)))
+	(object (referent dtn)))
     (cond ((member (slot-label-named 'relative-pronoun) grammatical-context)
-           'context-requires-a-relative-pronoun )
-          ((and model-level-object
-                (antecedent-precedes-and-is-a-clausemate model-level-object))
+           'context-requires-a-relative-pronoun)
+          ((null object)
+           nil)
+          ((or (antecedent-precedes-and-is-a-clausemate? object)
+               (antecedent-precedes-and-is-conjoined-to? object))
            'antecedent-precedes-and-is-within-this-clause)
-          ((in-focus? model-level-object)
-           'text-structure-has-marked-reference-reducible)
-          ((local-mentions model-level-object)
-           ;; because we've already checked for clausemates this mention
-           ;; is likely to be in an upstairs clause
-           (c-command? (local-mentions model-level-object)))
-          (t nil))))
+          ((in-focus? object)
+           'object-is-in-focus)
+          ((some #'c-command? (local-mentions object))
+           'text-structure-has-marked-reference-reducible))))
 
-(defun antecedent-precedes-and-is-a-clausemate (model-level-object)
+(defun antecedent-precedes-and-is-a-clausemate? (object)
+  "Cats lick themselves"
   (when (dominating-clause)
-    (let ((references-that-precede-in-this-clause
-	    (objects-referenced (dominating-clause))))
-      (member model-level-object references-that-precede-in-this-clause))))
+    (member object (objects-referenced (dominating-clause)))))
 
-(defun c-command? (mention-record)
-  "Checks whether the previous mention (in this utterance) commands
-   the current position. (we get 'preceded' for free. Returns a
-   symbol saying why to pronominalize or nil if the relation doesn't hold."
-  ;;/// stub
-  (declare (ignore mention-record))
+(defun antecedent-precedes-and-is-conjoined-to? (object)
+  "I bought a book and I read it"
+  (do ((node (and *current-phrasal-root* (node *current-phrasal-root*))
+             (next node)))
+      ((null node))
+    ;; Accept references in the second conjunct
+    ;; to objects referenced in the first.
+    (when (and (eql (name node) 'conjunction)
+               (not (eql (first-constituent node) *current-phrasal-root*)))
+      (return (member object (objects-referenced
+                              (context-object
+                               (contents (first-constituent node)))))))))
+
+(defun c-command? (mention)
+  "Checks whether some previous mention (in this utterance) c-commands
+   the current position. Returns a symbol saying why to pronominalize
+   or nil if the relation doesn't hold."
+  (declare (ignore mention)) ;; stub
   nil)
-
 
 (defun dominating-clause ()
   ;; 7/10/07 Given the code in phrase-structure-execution, there won't be a
   ;; value on the context stack if we haven't yet recursively entered a
   ;; phrasal root. We're asking this question from general-np-bundle-driver,
   ;; which runs -before- the phrasal root for the NP is created.
-  (dolist (interveening-phrasal-root (cons *current-phrasal-root*
-                                           *context-stack*))
-    (when interveening-phrasal-root
+  (dolist (intervening-phrasal-root (cons *current-phrasal-root*
+                                          *context-stack*))
+    (when intervening-phrasal-root
       (when (member (label-named 'clause)
-                    (labels (node interveening-phrasal-root)))
-        (return interveening-phrasal-root)))))
+                    (labels (node intervening-phrasal-root)))
+        (return intervening-phrasal-root)))))
       
-
 (defun check-for-reflexive (object)
-  (when (and (member (label-named 'objective) (labels *current-position*))
-	     (antecedent-precedes-and-is-a-clausemate object))
-    (push (label-named 'reflexive) (labels *current-position*))))
-
+  (and (memq (label-named 'objective) (labels *current-position*))
+       (antecedent-precedes-and-is-a-clausemate? object)
+       (push (label-named 'reflexive) (labels *current-position*))))
 
 ;################################################################
 ;     Conjunction Bundles

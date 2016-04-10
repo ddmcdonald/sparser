@@ -78,19 +78,15 @@ speakers.
 ;;; focus API
 ;;;-----------
 
-(defmethod set-the-focus ((item t))
-  ;;/// check that it's a reasable sort of object?
-  (assert item)
-  (setf (object-in-focus *current-turn*) item))
+(defmethod set-the-focus ((object sp::individual) &key)
+  (setf (object-in-focus *current-turn*) object))
 
-(defmethod in-focus? (obj)
+(defmethod in-focus? or ((object sp::individual) &key)
   "Called by should-be-pronominalized-in-present-context
   but determined by a discourse-level assessment of the
   situation. We asking this during the current turn so the
   answer is established by the prior turn."
-  (when *previous-turn*
-    (eq obj (object-in-focus *previous-turn*))))
-  
+  (and *previous-turn* (eq object (object-in-focus *previous-turn*))))
 
 
 ;;;-------------------------------------------------------------
@@ -106,66 +102,3 @@ speakers.
   previous turn."
   (when *previous-turn*
     (object-types-referenced *previous-turn*)))
-
-
-
-;;;-------------------------------
-;;; history of particular objects
-;;;-------------------------------
-
-(defmethod local-mentions (obj)
-  "Called by should-be-pronominalized-in-present-context
-  which is written to expect this object to have been
-  mentioned earlier in the ongoing utterance, probably
-  in a higher clause. That distinction is hard to do
-  unless we own the parser/generator, and even then I'm
-  not entirely sure of the use case."
-  (let ((entry (and *current-turn* (assoc obj (references *current-turn*)))))
-    ;;/// unclear yet what older Mumble code would
-    ;; actually want to know. See c-command stub function
-    entry))
-
-(defmethod record-reference progn (dtn result dom)
-  "Called from general-np-bundle-driver"
-  ;;/// we need to work up more use cases so we can
-  ;; determine how much structure might bo into a 'mention-record'
-  (when *current-turn*
-    (let ((record (record-discourse-context obj result dom)))
-      (push record (references *current-turn*))
-      record)))
-
-(defmethod record-discourse-context (obj result dom)
-  "Work in progress since it's not clear what to consider.
-   Set up as an alist on the object"
-  ;; the current slot isn't available while we're building ????
-  `(,obj ,result ;; how it was realized
-         ,dom)) ;; the clause that immediately dominated it
-
-
-(defmethod record-unadorned-mention (obj result)
-  "When we're simulating the other side of the conversation we don't
-   have anything like a dominating clause or other functional 
-   information.  This it to just let you push the objects on
-   without making too much up."
-  (let ((record `(,obj ,result)))
-    (push record (references *current-turn*))))
-
-;;;------------
-;;; uniqueness
-;;;------------
-
-#| If an object is unique we should always use "the".
- We'll just stipulate that an object is unique. In the
- blocks world there's really only one -- the table. 
-|#
-
-(defvar *unique-objects-in-situation* nil
-  "Hack to avoid type machinery or much thinking to 
-   define the notion of being unique. If it's on
-   this list it's unique.")
-
-(defmethod unique? (item)
-  (member item *unique-objects-in-situation*))
-
-(defmethod stipulate-to-be-unique (item)
-  (push item *unique-objects-in-situation*))

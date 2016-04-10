@@ -313,3 +313,12 @@ it's been renamed "mclass".
 (def-type  table-entry-for-classes  permanent
                               object-to-specification-table-entry
   (argument-expressions-to-the-template  "a list of expressions"))
+
+;################################################################
+; Mentions
+;################################################################
+
+(def-type mention temporary named-object
+  (object-mentioned "the object that was mentioned")
+  (mention-realization "the way it was mentioned")
+  (mention-dominating-clause "the clause above it"))

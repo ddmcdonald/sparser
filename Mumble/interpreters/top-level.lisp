@@ -36,6 +36,8 @@ multiple occurrences of objects")
   ;; where it's set to the initial position that's passed to it.
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
+  (setq *current-focus* nil)
+  (setq *mentions* nil)
   (when (boundp '*the-derivation-tree*) ;; backwards compatibility
     (clear-derivation-tree-data)))
 
