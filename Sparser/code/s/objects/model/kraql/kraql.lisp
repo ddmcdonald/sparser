@@ -359,8 +359,9 @@ duplicated below
                     (indiv-type individual))))))
 
 (defun immediate-individual-categories (individual)
-  (let ((itype (indiv-type individual)))
-    (if (listp itype) itype (list itype))))
+  (when (individual-p individual)
+    (let ((itype (indiv-type individual)))
+      (if (listp itype) itype (list itype)))))
 
 (defun body-isa-helper (stmt blists cat-fn)
   (let* ((bound-vars (get-bound-vars blists))
