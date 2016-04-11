@@ -202,7 +202,7 @@
 
 (defun grade-sentence-tt-counts (paragraph quality)
   (let ((count-list (sentence-tt-count (contents paragraph))))
-    (loop for count in count-list
+    (loop for count in (when (consp count-list) count-list) ;; not sure why this was 0 and not a list in some cases
       when (= 1 count) do (incf (parses-with-one-edge quality))
       when (and (> count 1) (<= count 5))
            do (incf (medium-quality-parses quality))
