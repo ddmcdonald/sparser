@@ -35,7 +35,7 @@ a dtn that has been wrapped in a discourse unit.
       (let ( elaborations core )
         ;; e.g. (propose-goal (put :o1 block :o2 (location on :the-table)))
         (loop for item in (cdr sexp)
-          when (symbolp item) do (push (mumble-symbol item) elaborations)
+          when (symbolp item) do (push (sp::mumble-symbol item) elaborations)
           when (consp item) do (setq core item))
 
         (let ((dtn (interpret-sexp-core core)))
@@ -87,7 +87,7 @@ For now just worry about the planning of references.
        (rest (cddr parameter-value-plist) (cddr rest)))
       ((null parameter-name))
     (let ((parameter (parameter-named 
-                      (mumble-symbol parameter-name))) ;; flush keyword
+                      (sp::mumble-symbol parameter-name))) ;; flush keyword
           (value (expand-value value-exp))) ;; does all the work
       (assert parameter)
       (unless value
