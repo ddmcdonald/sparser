@@ -1,10 +1,10 @@
 
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "entities"
 ;;;   Module:  "grammar/sl/ISR/
-;;;  version:  December 2013
+;;;  version:  April 2016
 
 ;; Broken out of container-and-suv 11/11/13. 12/3/13 made the
 ;; words lowercase to side-step more code.
@@ -23,6 +23,8 @@
 ;     :product 
      ))
 
+
+(define-individual 'car-type :name "suv")
 
 (defun create-wakil ()
   (define-individual 'village

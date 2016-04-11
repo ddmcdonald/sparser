@@ -107,6 +107,9 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *kinds*
     (gload "kinds;loader"))
 
+  (gate-grammar *qualities*
+    (gload "qualities;loader"))
+  
   (gate-grammar *mid-level-ontology*
     (gload "mid-level;loader"))
 
@@ -116,9 +119,6 @@ omitted and then run (perhaps) after the image has been launched."
 
   (gate-grammar *standard-adjuncts*
     (gload "adjuncts;loader"))
-
-  (gate-grammar *qualities*
-    (gload "qualities;loader"))
 
   (gate-grammar *syntax*
     ;; be & have (etc) reference tree-families
@@ -143,7 +143,7 @@ omitted and then run (perhaps) after the image has been launched."
     (gload "amounts;loader"))
 
   (gate-grammar *numbers*
-    ;; this is just a definition for 'fractions' with conflicts with the
+    ;; this is just a definition for 'fractions' whick conflicts with the
     ;; current treatment of "first quarter"
     (gload "numbers;loader 2"))
 
@@ -208,9 +208,9 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *Banking*
     (gload "banking;loader"))
 
+  (isr-required-categories)
   (gate-grammar *ISR*
     (gload "isr;loader"))
-  
   (gload "sit-rules;loader") ;; depends on ISR categories
 
   (gate-grammar *blocks-world*

@@ -14,8 +14,8 @@
 
 (in-package :sparser)
 
-(gload "isr;draft-categories")
-(gload "isr;container-and-SUV")
+;(gload "isr;draft-categories")
+;(gload "isr;container-and-SUV")
 (gload "isr;specifics")
 (gload "isr;entities")
 
