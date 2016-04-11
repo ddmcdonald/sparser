@@ -453,6 +453,8 @@
           ;; need both indices to extract the string
           (let ((string (extract-string-from-char-buffers 
                          start-index end-index)))
+	    (setf (gethash edge *surface-strings*) string)
+
             (when nil
               (format t "~&Suface string for ~a set to ~s on e~a~%"
                       referent string 
