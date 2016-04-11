@@ -116,7 +116,9 @@ in conjunction with an early version of Hark. Notable for using the
   "Loads Sparser in the right configuration for completing the ERN grammar
 and setting up to do style work by collecting statistics."
   (:parameters
-   (*lattice-points* t)))
+   (*lattice-points* t))
+  (:grammar-configuration "full grammar")
+  (:switches top-edges-setting/ddm))
 
 (defscript fire ()
   "FIRE stands for 'Free-text Information and Relation Extraction'.
@@ -159,4 +161,5 @@ or associated with a schemea, we would switch both values.")
   "Load an otherwise normal parsing engine, but with no grammar
 beyond that which the parser requires for its own operation."
   (:parameters (*just-bracketing* t))
-  (:grammar-configuration "just-bracketing"))
+  (:grammar-configuration "just-bracketing")
+  (:switches just-bracketing-setting))
