@@ -158,7 +158,7 @@ Bind the contextual-description of the associated mention (if any) to the contex
 	       (reinterp-item-using-bindings
 		(dli-ref-cat (base-description (car dt)))
 		(cdr dt)))))
-    (t (lsp-break "~&***what sort of dt in ~s~&" dt))))
+    (t (break "~&***what sort of dt in ~s~&" dt))))
 
 
 (defun reinterp-item-using-bindings (interp bindings)
