@@ -24,8 +24,15 @@
     (setf (gethash s-word *mappings-for-category-linked-phrase*) clp)
     (setf (gethash pname *mappings-for-category-linked-phrase*) clp)))
 
+(defmethod krisp-mapping ((c sp::category))
+  (gethash c *mappings-for-category-linked-phrase*))
+
 (defmethod krisp-mapping ((w word))
+  (gethash w *mappings-for-category-linked-phrase*))
+
+(defmethod krisp-mapping ((w sp::word))
   (gethash w *mappings-for-category-linked-phrase*))
 
 (defmethod krisp-mapping ((pname string))
   (gethash pname *mappings-for-category-linked-phrase*))
+
