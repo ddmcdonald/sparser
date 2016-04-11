@@ -14,6 +14,7 @@
 (defun includes-mumble-rdata (rdata)
   "Expects the rdata to be a list of lists, and checks
    for one of them to have the operator :mumble."
+  ;; Called by setup-rdata 
   (when (consp (car rdata))
     (assq :mumble rdata)))
 
