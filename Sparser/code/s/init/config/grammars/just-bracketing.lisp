@@ -97,13 +97,14 @@
 ;(include-grammar-module  *conjunction*)
 ;(include-grammar-module  *relative-clauses*)
 (include-grammar-module  *possessive*)
-
+(include-grammar-module  *default-quantifier-semantics*)
 
 ;;;-----------------------
 ;;; core semantic modules
 ;;;-----------------------
 
 (include-grammar-module  *kinds*)
+(include-grammar-module  *mid-level-ontology*)
 (include-grammar-module  *standard-adjuncts*)
 (include-grammar-module  *approximators*)
 (include-grammar-module  *frequency*)

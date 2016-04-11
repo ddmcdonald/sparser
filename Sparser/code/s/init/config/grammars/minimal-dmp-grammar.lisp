@@ -91,6 +91,7 @@
 (include-grammar-module  *conjunction*)
 (include-grammar-module  *relative-clauses*)
 (include-grammar-module  *possessive*)
+(include-grammar-module  *default-quantifier-semantics*)
 
 
 ;;;-----------------------
