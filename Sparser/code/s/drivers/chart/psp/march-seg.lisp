@@ -81,6 +81,7 @@
 (defun compatible-with-chunk (edge chunk)
   (declare (special *vg-word-categories*))
   (cond
+   ((null (edge-form edge)))
    ((equal (chunk-forms chunk) '(vg))
     (member (cat-symbol (edge-form edge)) *vg-word-categories*))
    ((equal (chunk-forms chunk) '(ng))

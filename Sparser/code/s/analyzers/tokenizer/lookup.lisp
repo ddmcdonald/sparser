@@ -77,7 +77,7 @@
                         word ;; it's good
                         (establish-unknown-word char-type word))
                       (establish-unknown-word char-type word))))
-                 ((eq char-type :number)
+                 ((memq char-type '(:number :alphabetical))
                   ;; In the tested cases, a rule set for a number 
                   ;; means that it's been referred to in a polyword
                   ;; and the rule set holds a pw-state in its fsa field.
@@ -89,7 +89,8 @@
                  ((rs-completion-actions rs)
                   (establish-unknown-word char-type word))
                  (t (push-debug `(,word ,rs))
-                    (lsp-break "New case in find-word")
+                    (cerror "Use it anyway."
+                            "New char-type ~a in find-word." char-type)
 		    (establish-unknown-word char-type))))
 
                (t ;; it has a rule-set and none of the 'is unknown' tests 

@@ -120,9 +120,6 @@
       ;; makes the section-of-section objects as needed
       (sweep-for-embedded-sections a))
     (install-contents a)
-    (when (and *show-article-progress*
-               (not *sentence-making-sweep*))
-      (format t "read-from-document ~a~&" (name a)))
     (let ((count 0))
       (dolist (sec (children a))
         (set-document-index sec (incf count))

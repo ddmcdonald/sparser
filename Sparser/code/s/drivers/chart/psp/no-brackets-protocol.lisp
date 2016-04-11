@@ -349,11 +349,7 @@
          (tt-count 0)
 	 treetops
          raw-entities  raw-relations  tt-contents
-         treetop  referent  pos-after    )
-    (when nil
-      ;; add a space to separate these traces from the
-      ;; summary that was just printed
-      (format t "~%"))
+         treetop  referent  pos-after )
 
     ;; modeled on sweep-sentence-treetops
     (loop
@@ -362,8 +358,6 @@
       
        (incf tt-count)
        (push treetop treetops)
-       (when nil
-	 (format t "~&[relations] tt = ~a~%" treetop))
 
        (when (edge-p treetop)
 	 (setq referent (edge-referent treetop))
@@ -454,13 +448,7 @@
           (let ((string (extract-string-from-char-buffers 
                          start-index end-index)))
 	    (setf (gethash edge *surface-strings*) string)
-
-            (when nil
-              (format t "~&Suface string for ~a set to ~s on e~a~%"
-                      referent string 
-                      (edge-position-in-resource-array edge)))
-            (setf (gethash referent *surface-strings*)
-                  string))
+            (setf (gethash referent *surface-strings*) string))
 
           (setf (gethash referent *surface-strings*) ""))))))
 
@@ -481,7 +469,7 @@
   ;; Most all entities should have gotten their surface string
   ;; recorded when their edge passed through complete. 
   ;; This provides a minimal value for the others.
-  (let ((name (value-of 'name i)))
+  (let ((name (and (individual-p i) (value-of 'name i))))
     (if name
       (etypecase name
         (string name)

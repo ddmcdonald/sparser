@@ -111,28 +111,25 @@
 (defun fom-lattice-description (base)
   ;; Called with the category of the to-be-make individual
   ;; from make-simple-individual and from make-individual-for-dm&p
-  (cond
-   ((get-dli base))
-   ((referential-category-p base)
-    (find-or-make-lattice-description-for-ref-category base))
-   ((individual-p base)
-    (if (indiv-binds base)
-     (find-or-make-lattice-description-for-individual base)
-     (find-or-make-lattice-description-for-cat-list (indiv-type base))))
-   ((consp base) ;; a join of categories
-    (find-or-make-lattice-description-for-cat-list base))
-   (t (lsp-break "what type of base is this? ~s" base))))
+  (cond ((null base))
+        ((get-dli base))
+        ((referential-category-p base)
+         (find-or-make-lattice-description-for-ref-category base))
+        ((individual-p base)
+         (if (indiv-binds base)
+           (find-or-make-lattice-description-for-individual base)
+           (find-or-make-lattice-description-for-cat-list (indiv-type base))))
+        ((consp base) ;; a join of categories
+         (find-or-make-lattice-description-for-cat-list base))))
 
 (defun dli-ref-cat (c)
-  (cond
-    ((individual-p c)
-     (find-or-make-lattice-description-for-cat-list (indiv-type c)))
-    ((category-p c)
-     (fom-lattice-description c))
-    ((symbolp c)
-     (fom-lattice-description (category-named c)))
-    (t
-     (lsp-break "can'f find dli-ref-cat for ~s~&" c))))
+  (cond ((null c))
+        ((individual-p c)
+         (find-or-make-lattice-description-for-cat-list (indiv-type c)))
+        ((category-p c)
+         (fom-lattice-description c))
+        ((symbolp c)
+         (fom-lattice-description (category-named c)))))
 
 (defun find-or-make-lattice-description-for-individual (base)
   (declare (special category::collection))
@@ -283,7 +280,6 @@
          (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
          (downlinks (indiv-downlinks parent)))
     (declare (special parent var dl-vv downlinks))
-    ;;(lsp-break "fom-lattice-subordinate")
     (when dl-vv
       (gethash dl-vv downlinks))))
 

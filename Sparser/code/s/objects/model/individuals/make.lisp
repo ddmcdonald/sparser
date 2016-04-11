@@ -387,7 +387,8 @@
 ;;;------------------------------------------------------------------
 
 (defun individual-for-ref (head)
-  (typecase head
+  (etypecase head
+    (null)
     (individual
      (if *description-lattice*
          head
@@ -396,17 +397,9 @@
      (if *description-lattice*
          (find-or-make-lattice-description-for-ref-category head)
          (make-unindexed-individual head)))
-    (cons ;; presumably it's a disjoint value restriction
-     (unless (eq (car head) :or)
-       (error "The 'head' is a cons but it's not a value restriction:~%~a"
-              head))
-     (lsp-break "individual-for-ref :or")
+    ((cons (eql :or))
      ;; The first category is supposed to be the 'primary' one
-     (make-unindexed-individual (second head)))
-    (otherwise
-     (push-debug `(,head))
-     (lsp-break "Unexpected type of 'head' in individual-for-ref: ~a~
-       ~%  ~a" (type-of head) head))))
+     (make-unindexed-individual (second head)))))
 
 
 ;;;-------------------------

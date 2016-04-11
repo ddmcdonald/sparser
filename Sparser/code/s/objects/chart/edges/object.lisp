@@ -107,7 +107,7 @@
 (defun set-used-by (daughter edge)
   (cond
     ((null daughter)
-     (lsp-break "~&null daughter in set-used-by")
+     (break "null daughter in set-used-by")
      nil)
     (t
      (let ((field (edge-used-in daughter)))
@@ -148,32 +148,25 @@
     (loop
       (setq e/w (right-treetop-at ending-position))
       (etypecase e/w
+        (null)
         (edge (set-used-by e/w parent-edge)
               (setq ending-position (pos-edge-ends-at e/w))
               (push e/w edges))
         (word (setq ending-position
                     (chart-position-after ending-position)))
-        (symbol
-         (if (eq e/w :multiple-initial-edges)
-           (then
-             (dolist (e (all-preterminals-at ending-position))
-               (set-used-by e parent-edge))
-             (setq ending-position
-                   (chart-position-after ending-position)))
-           (break "Bad data structure: unknown symbol returned ~
-                   as treetop:~%~A" e/w))))
+        ((eql :multiple-initial-edges)
+         (dolist (e (all-preterminals-at ending-position))
+           (set-used-by e parent-edge))
+         (setq ending-position (chart-position-after ending-position))))
       (when first-tt?
         (unless (edge-left-daughter parent-edge)
           (setf (edge-left-daughter parent-edge) e/w))
         (setq first-tt? nil))
-
-
       (when (eq ending-position final-position)
         (return))
       (when (> (pos-token-index ending-position)
                index-of-final-position)
         (break "treetop loop has gone past its final position")))
-
     edges ))
 
 
@@ -269,10 +262,7 @@
        (when (and max (> max 0))
          (do* ((i (decf max) (decf max))
                (edge (aref vector i) (aref vector i)))
-              ((< i 0)
-               (break "Bad assumption about data structure:~
-                       ~%There is no preterminal edge at p~A"
-                      (pos-token-index p)))
+              ((< i 0))
            (when (eq (pos-edge-ends-at edge) next-position)
              (return edge))))))))
 

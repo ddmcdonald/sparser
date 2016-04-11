@@ -491,23 +491,32 @@
 
 (defun subcat-instance (head subcat-label var raw-item)
   ;; makes a record of the subcatgorization relationship
+  (declare (optimize debug))
   (let* ((raw-item-edge (edge-for-referent raw-item))
          (item
-          (if (eq (edge-form raw-item-edge) category::pp)
+          (if (and (edge-p raw-item-edge)
+                   (eq (edge-form raw-item-edge) category::pp)
+                   (edge-p (edge-right-daughter raw-item-edge)))
             (edge-referent (edge-right-daughter raw-item-edge))
             raw-item))
          (head-cat 
           (if (individual-p head)
             (itype-of head)
             head))
+         (head-name
+          (if (edge-p (edge-for-referent head))
+            (edge-string (edge-for-referent head))
+            ""))
          (item-cat
           (if (individual-p item)
             (itype-of item)
-            item)))
-    (save-cat-string head-cat 
-     (edge-string (edge-for-referent head)))
-    (save-cat-string item-cat
-     (edge-string (edge-for-referent raw-item)))
+            item))
+         (item-name
+          (if (edge-p (edge-for-referent raw-item))
+            (edge-string (edge-for-referent raw-item))
+            "")))
+    (save-cat-string head-cat head-name)
+    (save-cat-string item-cat item-name)
     (list
      (cat-name head-cat)
      subcat-label

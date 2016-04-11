@@ -496,6 +496,9 @@ is a case in handle-any-anaphor
      if that has not already been done. 
      Called by the read-from-document for each element type."))
 
+(defmethod set-document-index (element index)
+  (declare (ignore element index)))
+
 (defmethod set-document-index ((a article) index)
   (declare (ignore index))
   (unless (toc-index a)

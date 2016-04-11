@@ -581,8 +581,8 @@
   (ng-start? (cat-symbol c)))
 
 (defmethod ng-start? ((e edge))
-  (declare (special e category::modifier category::adjective
-                    category::be *big-mechanism* category::parentheses
+  (declare (special category::modifier category::adjective category::adverb
+                    category::be category::parentheses
                     category::that category::verb+ed category::verb+ing
                     category::preposition category::and category::also
                     category::vp+ed category::subordinate-conjunction
@@ -626,7 +626,8 @@
      (not (eq (edge-category e) category::also)))
     ((and (edge-form e)
 	  (eq (cat-symbol (edge-form e)) 'category::wh-pronoun)
-	  (member (cat-symbol (edge-referent e)) 
+          (category-p (edge-referent e))
+	  (member (cat-symbol (edge-referent e))
 		  '(category::which category::whose category::what)))
      t)
     ((eq category::verb+ed (edge-form e))

@@ -107,7 +107,7 @@
                     (push-that tt))
                    ((null prior-tt)
                     (set-subject tt))
-                   ((and prior-tt
+                   ((and (edge-p prior-tt)
                          (< count 3) ;; <adv> , <np>
                          (category-p (edge-category prior-tt)) 
                          ;; :SBCL errored on case where edge has a word as its category
