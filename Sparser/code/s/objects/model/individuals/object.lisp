@@ -98,13 +98,12 @@
 ;;--- Does the actual search
 
 (defun indiv-typep (i category/symbol)
-  ;; analogous to Typep -- does this individual include this
-  ;; category in its type field
+  "Analogous to typep: does this individual include this category
+in its type field?"
   (declare (special *break-on-pattern-outside-coverage?*
                     category::collection category::sequence))
   (let ((category (category-named category/symbol :break-if-none))
-        (type-field (indiv-type i)))
-
+        (type-field (and (individual-p i) (indiv-type i))))
     (when (or (memq category::collection type-field)
               (memq category::sequence type-field))
       ;; of course, one can ask a collection whether it is 
