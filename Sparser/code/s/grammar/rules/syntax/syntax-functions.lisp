@@ -238,7 +238,7 @@
      (*subcat-test* variable-to-bind)
      (variable-to-bind
       (when *collect-subcat-info*
-        (push (subcat-instance head variable-to-bind premod premod)
+        (push (subcat-instance head :m variable-to-bind premod)
               *subcat-info*))
       (setq head (individual-for-ref head))
       (setq  head (bind-dli-variable variable-to-bind premod head))
