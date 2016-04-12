@@ -109,11 +109,16 @@
                    (cat-ops-instantiate operations))))
 
 	   (cond
-	     ((and (irrelevant-category-for-dh primary-category obj) instantiates)
+	     ((and (relevant-category-for-dh primary-category)
+                   instantiates)
 	      ;; Besides being relevant, a category definition
 	      ;; has to mark how individuals of that category should
 	      ;; be indexed in the discourse history -- what
-	      ;; category do the "instantiate" (which could be :self)
+	      ;; category should individuals of that category
+              ;; "instantiate". It could be this category
+              ;; (the :instantiates :self case), or it could be
+              ;; a more general category (e.g. :instantiates location
+              ;; in the location model)
 	      (record-instance-within-sequence obj edge)
 	      (update-discourse-history instantiates
 					obj edge)
@@ -963,20 +968,15 @@ saturated? is a good entry point. |#
 ;;; filter out grammatical categories
 ;;;-----------------------------------
 
-(defun irrelevant-category-for-dh (category i)
-  ;; Return non-nil for any category that should not be recorded
-  ;; in the discourse history. 
-  (declare (ignore i)
-           (special *irrelevant-to-discourse-history*))
+(defun relevant-category-for-dh (category)
+  "Some categories are irrelevant and should never be recorded
+   in the discourse history (see global). Return nil if the
+   category is on this list."
+  (declare (special *irrelevant-to-discourse-history*))
   (unless *irrelevant-to-discourse-history*
     (populate-irrelevant-to-discourse-history))
   (let ((supers (super-categories-of category)))
-    ;(push-debug `(,category ,i))
-    ;(break "category = ~a~
-    ;      ~%supers = ~a" category supers)))
     (loop for c in *irrelevant-to-discourse-history*
       when (memq c supers)
-      do (when nil (format t "~&Ignoring ~a~%" i))
-      (return-from irrelevant-category-for-dh t))
-    nil))
-
+      do (return-from relevant-category-for-dh nil))
+    t))
