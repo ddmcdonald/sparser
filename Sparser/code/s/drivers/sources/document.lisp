@@ -127,7 +127,13 @@
           (let ((*current-section* sec))
             (declare (special *current-section*))
             (catch 'do-next-paragraph ;; article 3058384 starts with paragraphs
-              (read-from-document sec))))))
+              (read-from-document sec))
+
+            (when (typep sec 'paragraph)
+              (when (actually-reading)
+                (after-actions sec)))
+
+))))
     (when (actually-reading)
       (after-actions a))
     (when (and *show-section-printouts* (actually-reading))
@@ -161,6 +167,11 @@
         (unless section (return))
         (catch 'do-next-paragraph
           (read-from-document section))
+
+         (when (typep section 'paragraph)
+           (when (actually-reading)
+             (after-actions section)))
+         
         (setq previous-section section)
         (setq section (car remaining)
               remaining (cdr remaining))

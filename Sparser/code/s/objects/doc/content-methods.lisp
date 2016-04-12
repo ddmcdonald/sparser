@@ -190,6 +190,7 @@
   ((count-list :initform '()
                :accessor sentence-tt-count
                :documentation "The counts for each sentence in a paragraph")))
+
    
 (defmethod assess-sentence-analysis-quality ((p paragraph))
   (let* ((sentences (sentences-in-paragraph p))
