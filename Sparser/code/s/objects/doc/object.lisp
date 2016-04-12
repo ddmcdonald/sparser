@@ -269,6 +269,20 @@
     by patterns of newlines. See sort-out-result-of-newline-analysis"))
 
 (define-resource paragraph)
+#| There's a bug in the name-assignment routine of the resource
+code. It's ought to have make a unique name for the paragraph
+based on its count within the resource. Instead it makes the
+same name (paragraph-0) every time. Hence this specialized 
+printer. |#
+(defmethod print-object ((p paragraph) stream)
+  (print-unreadable-object (p stream :type t)
+    (format stream "~a" (doc-index p))
+    (when (and (slot-boundp p 'starts-at-pos)
+               (starts-at-pos p))
+      (format stream " p~a" (pos-token-index (starts-at-pos p))))
+    (when (and (slot-boundp p 'ends-at-pos)
+               (ends-at-pos p))
+      (format stream "--p~a" (pos-token-index (ends-at-pos p))))))
 
 (defun allocate-paragraph ()
   (allocate-next-instance (get-resource :paragraph)))
