@@ -26,8 +26,10 @@
               :resource (ecase pos
                           (adj (adjective word))
                           (noun (noun word))
+			  (prep (prep word))
                           (verb (verb word))))))
 
+(defun about () (make-simple-dtn "about" 'prep))
 (defun book () (make-simple-dtn "book" 'noun))
 (defun bone () (make-simple-dtn "bone" 'noun))
 (defun buy () (make-simple-dtn "buy" 'verb))
@@ -155,3 +157,16 @@
     (make-complement-node 'o cats lick)
     (mumble-says lick))
   "cats lick themselves")
+
+(deftest (say cat bought book self)
+  (let* ((buy (past-tense (buy)))
+	 (cat (always-definite (neuter-&-third-person (singular (cat)))))
+	 (about (about))
+	 (about-cat (make-lexicalized-attachment 'np-prep-complement about))
+	 (book (initially-indefinite (neuter-&-third-person (singular (book))))))
+    (make-complement-node 'prep-object cat about)
+    (make-adjunction-node about-cat book)
+    (make-complement-node 's cat buy)
+    (make-complement-node 'o book buy)
+    (mumble-says buy))
+  "the cat bought a book about itself")
