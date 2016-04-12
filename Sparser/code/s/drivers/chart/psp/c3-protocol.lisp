@@ -136,6 +136,47 @@
        (lsp-break "not ready to handle an adjp")))))
     
 
+(defgeneric escan (chart-item)
+  (:documentation "'e' as in Earley. The item will be
+       a word eventually. Right now it's an edge.
+       Move the dot to the other end of the item and move
+       other aspects of the state as appropriate"))
+
+(defmethod escan ((e edge))
+  (let ((end-pos (pos-edge-ends-at e))
+        (state (current-incremental-state)))
+    (setf (dot state) end-pos)))
+
+(defgeneric epredict (item)
+  (:documentation
+   "Given the item, set up its prediction"))
+
+(defmethod epredict ((e edge))
+  "Depending on what state we're in, Look up the phrase 
+  that goes with the referent of this edge and set up
+  its projection."
+  (let* ((state (current-incremental-state))
+         (interp-state (state-of-interpretation state)))
+    (case interp-state
+      (:initial
+       (let* ((referent (edge-referent e))
+              (type (etypecase referent
+                      (individual (itype-of referent))
+                      (category referent)))
+              (mapping (mumble::krisp-mapping type)))
+         (push-debug `(,mapping))
+         (break "checkpoint")))
+
+      (otherwise
+       (push-debug `(,state ,e))
+       (error "Don't know what to predict in the state ~a"
+              interp-state)))))
+
+(defgeneric ecomplete (item)
+  (:documentation
+   "We've just finished the analysis of item."))
+
+
 
 
 

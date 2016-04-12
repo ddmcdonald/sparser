@@ -23,6 +23,7 @@
          (p1 (scan-next-position)))
     (declare (ignore ss)) ;; for debugging if needed
     (setq *reached-eos* nil) ;; initialize
+    (initialize-incremental-state p1)
     ;;(state-sensitive-rightward-march p1)
     (delimit-and-collect-successive-chunks p1)))
 
@@ -163,15 +164,28 @@ e10   TABLE         5 "the table" 7
    of the verb from its Mumble data and walk through the
    edges. If something doesn't fit then we stop and report
    what we've got so far."
-  (let* ((first-edge (car edges)) ;; we're assuming it's verb not vg
+  (let ((first-edge (car edges))) ;; we're assuming it's verb not vg
+    (push-debug `(,first-edge ,edges))
+    (break "start hand simulation")))
+
+#|
+    (epredict first-edge)
+    ;; look up corresponding lexicalized phrase and set it up
+
+    (escan first-edge) ;; move the dot
+
+    ;; Since we're going by already delimited and interpreted
+    ;; edges (for the most part), the edge represents
+    ;; the completion of an implicit prediction
+    (ecomplete first-edge) ;; make instance, 
+
          (category (edge-referent first-edge))
-         (linked-phrase (mumble::krisp-mapping categorY))
+         (linked-phrase (mumble::krisp-mapping category))
          (lp (mumble::linked-phrase linked-phrase))
          (map (mumble::parameter-variable-map linked-phrase)))
     (push-debug `(,lp ,map))
-    (break "ready to predict")))
 
-#|
+
 map = (#<#<parameter o2> : #<variable location>> 
        #<#<parameter o1> : #<variable theme>>)
 lp =
