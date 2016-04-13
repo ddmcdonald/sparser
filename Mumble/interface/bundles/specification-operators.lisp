@@ -28,6 +28,16 @@
 
 ;################  Setting NP Accessories ################
 
+(def-accessory-operator  fem-&-third-person 
+  (add-accessory base :gender 'feminine)
+  (add-accessory base :person 'third)
+  base)
+
+(def-accessory-operator  masc-&-third-person 
+  (add-accessory base :gender 'masculine)
+  (add-accessory base :person 'third)
+  base)
+
 (def-accessory-operator  neuter-&-third-person 
   (add-accessory base :gender 'neuter)
   (add-accessory base :person 'third)

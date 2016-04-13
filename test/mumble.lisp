@@ -30,6 +30,7 @@
                           (verb (verb word))))))
 
 (defun about () (make-simple-dtn "about" 'prep))
+(defun barber () (masc-&-third-person (singular (make-simple-dtn "barber" 'noun))))
 (defun book () (make-simple-dtn "book" 'noun))
 (defun bone () (make-simple-dtn "bone" 'noun))
 (defun buy () (make-simple-dtn "buy" 'verb))
@@ -39,7 +40,10 @@
 (defun like () (make-simple-dtn "like" 'verb))
 (defun mouse () (make-simple-dtn "mouse" 'noun))
 (defun milk () (make-simple-dtn "milk" 'noun))
+(defun shave () (make-simple-dtn "shave" 'verb))
+(defun simon () (masc-&-third-person (singular (make-simple-dtn "Simon" 'noun))))
 (defun snap () (make-simple-dtn "snap" 'verb))
+(defun want () (make-simple-dtn "want" 'verb))
 
 (deftest (say nil)
   (mumble-says nil)
@@ -158,15 +162,50 @@
     (mumble-says lick))
   "cats lick themselves")
 
-(deftest (say cat bought book self)
+(deftest (say simon bought book self)
   (let* ((buy (past-tense (buy)))
-	 (cat (always-definite (neuter-&-third-person (singular (cat)))))
+	 (simon (simon))
 	 (about (about))
-	 (about-cat (make-lexicalized-attachment 'np-prep-complement about))
+	 (about-simon (make-lexicalized-attachment 'np-prep-complement about))
 	 (book (initially-indefinite (neuter-&-third-person (singular (book))))))
-    (make-complement-node 'prep-object cat about)
-    (make-adjunction-node about-cat book)
-    (make-complement-node 's cat buy)
+    (make-complement-node 'prep-object simon about)
+    (make-adjunction-node about-simon book)
+    (make-complement-node 's simon buy)
     (make-complement-node 'o book buy)
     (mumble-says buy))
-  "the cat bought a book about itself")
+  "Simon bought a book about himself")
+
+;; It magically says the right thing,
+;; but is this the way to do it?
+;; no tense on 'shave' or unmarked-clause?
+(deftest (say simon want barber shave)
+  (let ((barber (always-definite (barber)))
+	(simon (simon))
+	(want (present-tense (want)))
+	(shave (shave)))
+    (make-complement-node 's simon want)
+    (make-complement-node 'o shave want)
+    (make-complement-node 's barber shave)
+    (make-complement-node 'o barber shave) 
+    (mumble-says want))
+  "Simon wants the barber to shave himself")
+
+
+#+(or)
+(deftest (say shave simon )
+  (let ((barber (always-definite (barber)))
+	(simon (simon))
+	(want (present-tense (want)))
+	(shave (shave)))
+    (make-complement-node 's simon want)
+    (make-complement-node 'o shave  want)
+    (make-complement-node 's barber shave)
+    (make-complement-node 'o simon shave)
+    (make-complement-node 'c shave want)
+    (mumble-says want))
+  "Simon wants the barber to shave him")
+
+#+(or)
+("Simon wants his (simon's) milk")
+
+
