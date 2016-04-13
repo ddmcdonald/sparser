@@ -175,9 +175,6 @@
     (mumble-says buy))
   "Simon bought a book about himself")
 
-;; It magically says the right thing,
-;; but is this the way to do it?
-;; no tense on 'shave' or unmarked-clause?
 (deftest (say simon want barber shave)
   (let ((barber (always-definite (barber)))
 	(simon (simon))
@@ -201,3 +198,30 @@
     (make-complement-node 'o simon shave)
     (mumble-says want))
   "Simon wants the barber to shave him")
+
+(deftest (say simon likes his cat)
+  (let ((cat (neuter-&-third-person (singular (cat))))
+        (simons-cat (make-dtn :referent :cat
+                              :resource (phrase-named 'possessive-np)))
+        (simon (simon))
+        (like (present-tense (like))))
+    (make-complement-node 'p simon simons-cat)
+    (make-complement-node 'n cat simons-cat)
+    (make-complement-node 's simon like)
+    (make-complement-node 'o simons-cat like)
+    (mumble-says like))
+  "Simon likes his cat")
+
+(deftest (say simon likes the barbers cat)
+  (let ((barber (always-definite (barber)))
+        (cat (neuter-&-third-person (singular (cat))))
+        (barbers-cat (make-dtn :referent :cat
+                               :resource (phrase-named 'possessive-np)))
+        (simon (simon))
+        (like (present-tense (like))))
+    (make-complement-node 'p barber barbers-cat)
+    (make-complement-node 'n cat barbers-cat)
+    (make-complement-node 's simon like)
+    (make-complement-node 'o barbers-cat like)
+    (mumble-says like))
+  "Simon likes the barber's cat")
