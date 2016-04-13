@@ -71,7 +71,6 @@
 	      (mention-uid m)
 	      i)
       (cond
-	
 	((mention-source m)
 	 (format stream " ~s" (mention-source m)))
 	((consp location) ;; w/in paragraph
@@ -87,6 +86,11 @@
 	    (format stream " ill-formed location"))))
 	(t
 	 (format stream "?"))))))
+
+(defmethod contextual-description ((e edge))
+  (contextual-description (edge-mention e)))
+
+
 
 (defun show-mention (m)
   (list (base-description m) (retrieve-surface-string (base-description m)) (mention-source m)))
