@@ -82,22 +82,9 @@
 
 
 (defun complete-edge/hugin (edge)
+  ;;  Norse mythology?! http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
   (declare (special *do-anaphora* category::punctuation)) ;; may be dynamically bound
-  (when (and
-	 (null (edge-referent edge))
-	 (not (polyword-p (edge-category edge)))
-	 (not (eq (edge-form edge) category::punctuation))
-	 (not (member (edge-rule edge)
-		      '(:DEFAULT-EDGE-OVER-PAIRED-PUNCTUATION
-			:CONJUNCTION/IDENTICAL-ADJACENT-LABELS ;; happened once, in ""substrate like" and "regulatory" "
-			:APPOSTROPHE-FSA))))
-    (print (list "edge with null referent"
-		 (edge-rule edge)(edge-category edge)(edge-form edge)))
-    ;;(lsp-break "edge with null referent")
-    )
-  (when (and *diagnose-consp-referents*
-             (consp (edge-referent edge)))
-    (break "referent is a CONS~ ~s" (edge-referent edge)))
+  (check-edge-completion-validity edge)
 
   (unless (subsumption-check/complete edge)
     (check-for-completion-actions/category (edge-category edge)
@@ -123,6 +110,21 @@
                (not (ignore-semantic-check? (edge-rule edge))))))
     (check-semantic-completeness edge))
   :complete )
+
+(defun check-edge-completion-validity (edge)
+  (when (and
+	 (null (edge-referent edge))
+	 (not (polyword-p (edge-category edge)))
+	 (not (eq (edge-form edge) category::punctuation))
+	 (not (member (edge-rule edge)
+		      '(:DEFAULT-EDGE-OVER-PAIRED-PUNCTUATION
+			:CONJUNCTION/IDENTICAL-ADJACENT-LABELS ;; happened once, in ""substrate like" and "regulatory" "
+			:APPOSTROPHE-FSA))))
+    (break "edge with null referent")
+    )
+  (when (and *diagnose-consp-referents*
+             (consp (edge-referent edge)))
+    (break "referent is a CONS~ ~s" (edge-referent edge))))
 
 (defun ignore-semantic-check? (rule)
   (declare (special *chunk* *ignored-semantic-check-rules*))
@@ -237,27 +239,25 @@
                (assoc (edge-category edge)
                       *instances-of-subsumption-relevant-edges*)))
           (if entry
-            (let ((old-start (first (cdr entry)))
-                  (old-end   (second (cdr entry)))
-                  (new-start (pos-token-index (pos-edge-starts-at edge)))
-                  (new-end (pos-token-index (pos-edge-ends-at edge))))
-              (let ((subsumes?
-                     (unless (>= new-start old-end)
-                       (and (<= new-start old-start)
-                            (>= new-end old-end)))))
-                (if subsumes?
-                  (then
-                   (rplacd entry `(,new-start ,new-end))
-                   t )
-                  (else
-                   (rplacd entry `(,new-start ,new-end))
-                   nil ))))
-            (else
-             (push `(,(edge-category edge)
-                     . (,(pos-token-index (pos-edge-starts-at edge))
-                        ,(pos-token-index (pos-edge-ends-at edge))))
-                   *instances-of-subsumption-relevant-edges*)
-             nil )))))))
+	      (let ((new-start (pos-token-index (pos-edge-starts-at edge)))
+		    (new-end (pos-token-index (pos-edge-ends-at edge))))
+		(if
+		 (subsumes-interval new-start
+				    new-end
+				    (first (cdr entry))
+				    (second (cdr entry)))
+		 (then
+		   (rplacd entry `(,new-start ,new-end))
+		   t )
+		 (else
+		   (rplacd entry `(,new-start ,new-end))
+		   nil )))
+	      (else
+		(push `(,(edge-category edge)
+			 . (,(pos-token-index (pos-edge-starts-at edge))
+			     ,(pos-token-index (pos-edge-ends-at edge))))
+		      *instances-of-subsumption-relevant-edges*)
+		nil )))))))
 
 
 
