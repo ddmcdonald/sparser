@@ -109,3 +109,7 @@
     pronoun ))
 
 
+(defun is-pronoun? (ref)
+  (and
+   (individual-p ref)
+   (itypep ref 'pronoun)))
