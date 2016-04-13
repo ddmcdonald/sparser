@@ -206,10 +206,8 @@
   ;; history of this category is empty, i.e. this is the first
   ;; time an individual of this category has been mentioned.
   (tr :creating-category-dh-entry category i edge)
-  (let
-      ((discourse-entry (create-discourse-entry i edge)))
-      (setf (gethash category *objects-in-the-discourse*)
-	  discourse-entry)))
+  (setf (gethash category *objects-in-the-discourse*)
+	(create-discourse-entry i edge)))
 
 (defun discourse-entry (category)
   (gethash category *objects-in-the-discourse*))
@@ -315,6 +313,12 @@
            (new-object-of-established-category
             category entry individual edge)))))
 
+(defun subsumes-interval (start# end# last-start# last-end#)
+  (cond
+    ((< start# last-start#)
+     (>= end# last-end#))
+    ((eql start# last-start#)
+     (> end# last-end#))))
 
 (defun new-object-of-established-category (category categories-entry
                                            individual edge)
@@ -394,7 +398,25 @@
 (defun record-dl-instance-within-sequence (i edge)
   ;; Called with every call to add-subsuming-object-to-discourse-history
   ;; with out regard to prior subuming mentions
-  (push `(,i ,edge) *lifo-instance-list*))
+  (let* ((i-type (itype-of i))
+	 (subsumed-item
+	  (loop for pair in *lifo-instance-list*
+	     when
+	       (and (equal (itype-of (car pair)) i-type)
+		    (edge-p (second pair))
+		    (edge-starts-at (second pair)) ;; the edge is still active
+		    (subsumes-interval
+		     (pos-token-index (start-pos edge))
+		     (pos-token-index (end-pos edge))
+		     (pos-token-index (start-pos (second pair)))
+		     (pos-token-index (end-pos (second pair)))))
+	       do (return pair))))
+    (cond
+      (subsumed-item
+       (setf (car subsumed-item) i)
+       (setf (second subsumed-item) edge))
+      (t
+	 (push `(,i ,edge) *lifo-instance-list*)))))
 
 (defun cleanup-lifo-instance-list ()
   ;; called from end-of-sentence-processing-cleanup and
@@ -590,11 +612,7 @@ saturated? is a good entry point. |#
         *lattice-individuals-mentioned-in-paragraph* nil)
   (clrhash *objects-in-the-discourse*)
   (clrhash *lattice-individuals-to-mentions*))
- #| Attempting to deallocate the kconses is leading to circularities
-    in the kcons resource, so for the moment just flushing the whole
-    table and leaving it to GC to handle
-  (maphash #'clear-discourse-history-entry
-             *objects-in-the-discourse*))|#
+
 
 (defun clear-discourse-history-entry (category category-entry)  ;; tag, value
   ;; deallocate the conses in the entry, then flush the entry

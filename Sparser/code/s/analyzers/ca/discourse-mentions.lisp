@@ -138,8 +138,7 @@
 
   (push-debug `(,new-mention ,old-mention ,edge))
 
-  (let* ((redundant-instance (pop *lifo-instance-list*))
-         ;; Because the individuals are virtually always new, even
+  (let* (;; Because the individuals are virtually always new, even
          ;; when the edges subsume an established edge on its headine,
          ;; the list will have an 'extra' record on the front that
          ;; we should get rid of. 
@@ -148,7 +147,7 @@
          (old-instance ;; pair of old-i and its edge
           (loop for pair in *lifo-instance-list* ;; or assq
             when (eq (car pair) old-i) return pair)))
-    (declare (ignore redundant-instance))
+
     ;;
     ;(unless old-instance
     ;  (error "No record of old mention in *lifo-instance-list*"))
@@ -163,6 +162,37 @@
       )))
 
 
+(defun lattice-individuals-extend-dh-entry (entry i edge)
+  (let ((subsumed-mention
+	 (when (individual-p i)
+	   (if
+	    (edge-left-daughter edge)
+	    (cond
+	      ((and (edge-p (edge-left-daughter edge))
+		    (is-dl-child? i (edge-referent (edge-left-daughter edge))))
+	       (edge-mention (edge-left-daughter edge)))
+	      ((and
+		(edge-p (edge-right-daughter edge))
+		(is-dl-child? i (edge-referent (edge-right-daughter edge))))
+	       (edge-mention (edge-right-daughter edge))))
+	    (loop for e in (edge-constituents edge)
+	       when (is-dl-child? i (edge-referent e))
+	       do (return (edge-mention e)))))))
+    (make-new-mention entry i edge subsumed-mention)))
+    
+		 
+(defun is-dl-child? (child? parent?)
+  (cond
+    ((category-p parent?)
+     (itypep child? parent?))
+    ((maphash #'(lambda (dlvv sc)
+		  (when (eq sc parent?)
+		    (return-from is-dl-child? t)))
+	      (indiv-uplinks child?))
+     t)
+    (t nil)))
+
+#+ignore
 (defun lattice-individuals-extend-dh-entry (entry i edge)
   ;; Works in terms of mentions rather than regular discourse entries
   ;; that just encode position pairs. If the most recent individual
@@ -194,14 +224,7 @@
 	      ;;/// tr
 	      (make-new-mention entry i edge))
 	     ((subsumes-position top-mention edge)
-	      (make-new-mention entry i edge top-mention)
-	      #+ignore
-	      (let ((new-loc (encode-mention-location edge)))
-		;; "this auto-inhibited fate" w/ no referent for "this"
-		(tr :exending-span-of-mention top-mention edge)
-		(setf (mention-source top-mention) edge)
-		(setf (mentioned-where top-mention) new-loc)
-		(setf (edge-mention edge) top-mention)))
+	      (make-new-mention entry i edge top-mention))
 	     (t
 	      (tr :extending-with-subsuming-instance i edge)
 	      (make-new-mention entry i edge))))
@@ -232,14 +255,11 @@
 (defmethod subsumes-position ((mention discourse-mention)(edge edge))
   (cond
     ((start-pos mention)
-     (let ((last-start# (pos-token-index (start-pos mention)))
-	   (last-end# (pos-token-index (end-pos mention)))
-	   (start# (pos-token-index (start-pos edge)))
-	   (end# (pos-token-index (end-pos edge))))
-       (or (eql start# last-start#)
-	   (eql end#   last-end#)
-	   (and (<= start# last-start#)
-		(>= end#   last-end#)))))
+     (subsumes-interval
+      (pos-token-index (start-pos edge))
+      (pos-token-index (end-pos edge))
+      (pos-token-index (start-pos mention))
+      (pos-token-index (end-pos mention))))
     ;;/// are there other posibilties, or is it always nil?
     (t nil)))
 
@@ -282,19 +302,25 @@
 			   :uid (incf *mention-uid*)
 			   :i i :loc location :ms source)))
     (tr :making-new-mention m)
-    (when subsumed-mention
-      (setf (subsumes-mention m) subsumed-mention)
-      (setf (subsumed-by-mention subsumed-mention) m)
-      (update-instance-within-sequence m subsumed-mention source))
+    (cond
+      (subsumed-mention
+       (setf (subsumes-mention m) subsumed-mention)
+       (setf (subsumed-by-mention subsumed-mention) m)
+       ;;(unless (member subsumed-mention entry)  (lsp-break "huh"))
+       ;; happened for "protein kinase" where the kinase was not stored
+       (nsubstitute m subsumed-mention entry)
+       (update-instance-within-sequence m subsumed-mention source))
+      (t (extend-category-dh-entry entry m)))
     (push m (mention-history i))
     (push m *lattice-individuals-mentioned-in-paragraph*)
     (if (edge-p source) (setf (edge-mention source) m))
-    (extend-category-dh-entry entry m)
     m ))
 
 (defun m# (uid)
   (declare (special *lattice-individuals-to-mentions*))
-  (maphash #'(lambda(i ml)(let ((m (find uid ml :key #'mention-uid))) (when m (return-from m# m))))
+  (maphash #'(lambda(i ml)
+	       (let ((m (find uid ml :key #'mention-uid)))
+		 (when m (return-from m# m))))
 	   *lattice-individuals-to-mentions*))
 
 (defun max-edge? (source)
