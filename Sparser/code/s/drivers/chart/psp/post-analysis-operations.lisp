@@ -148,13 +148,22 @@ Bind the contextual-description of the associated mention (if any) to the contex
  bound elements in the bindings of the dt, then rebuild the interpretation of the dt from those reinterpreted bindings."
   (typecase (car dt)
     (discourse-mention
-     (if (and (individual-p (base-description (car dt)))
+     (cond
+       ((and (individual-p (base-description (car dt)))
 	      (itypep (base-description (car dt)) 'collection))
-	 (reinterpret-collection-with-modifiers dt)
+	(reinterpret-collection-with-modifiers dt))
+       ((is-pronoun? (base-description (car dt)))
+					;(lsp-break "pronoun")
+	(setf (contextual-description (car dt))
+	       (reinterp-item-using-bindings
+		(dli-ref-cat (base-description (car dt)))
+		(cdr dt)))
+	)
+       (t
 	 (setf (contextual-description (car dt))
 	       (reinterp-item-using-bindings
 		(dli-ref-cat (base-description (car dt)))
-		(cdr dt)))))
+		(cdr dt))))))
     (t (break "~&***what sort of dt is ~s~&" dt))))
 
 
