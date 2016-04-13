@@ -49,7 +49,7 @@
 
 (def-family "MEK" 
   :members ("MEK1" "MEK2")
-  :synonyms ("MEK1/2"))
+  :synonyms ("MEK1/2" "MAPKK"))
 
 (def-family "NF-AT" :members ("NFAT5_HUMAN")) 
 (def-family "poly(ADP–ribose)" :members ("PARP1_HUMAN" "PARP2_HUMAN" "PARP3_HUMAN"))
