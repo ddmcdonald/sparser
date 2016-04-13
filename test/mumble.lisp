@@ -188,11 +188,9 @@
     (make-complement-node 's barber shave)
     (make-complement-node 'o barber shave) 
     (mumble-says want))
-  "Simon wants the barber to shave himself")
+   "Simon wants the barber to shave himself")
 
-
-#+(or)
-(deftest (say shave simon )
+(deftest (say simon want barber shave)
   (let ((barber (always-definite (barber)))
 	(simon (simon))
 	(want (present-tense (want)))
@@ -201,11 +199,5 @@
     (make-complement-node 'o shave  want)
     (make-complement-node 's barber shave)
     (make-complement-node 'o simon shave)
-    (make-complement-node 'c shave want)
     (mumble-says want))
   "Simon wants the barber to shave him")
-
-#+(or)
-("Simon wants his (simon's) milk")
-
-

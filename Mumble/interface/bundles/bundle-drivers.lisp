@@ -268,11 +268,12 @@
                                (contents (first-constituent node)))))))))
 
 (defun c-command? (mention)
-  "Checks whether some previous mention (in this utterance) c-commands
-   the current position. Returns a symbol saying why to pronominalize
-   or nil if the relation doesn't hold."
-  (declare (ignore mention)) ;; stub
-  nil)
+  "Has the object been mentioned by some previous dominating phrase
+   (i.e., which c-commands this phrase)?"
+  (loop with object = (object-mentioned mention)
+        for context in *context-stack*
+        when (member object (objects-referenced context))
+          return it))
 
 (defun dominating-clause ()
   ;; 7/10/07 Given the code in phrase-structure-execution, there won't be a
