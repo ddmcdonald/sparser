@@ -1166,14 +1166,11 @@ to enhance p53 mediated apoptosis [2].") |#
   ;; -esque, but it's the price we pay for delaying rather than trying to
   ;; identify the referent at moment the pronoun is encountered.
   (cond
-    ((and *do-anaphora* (is-anaphoric? item))
+    ((and *do-anaphora* (is-pronoun? item))
      (let ((pn-edge (edge-for-referent item)))
        (tr :conditioning-anaphor-edge pn-edge)
        (cond
-	 ((or
-	   (ignore-this-type-of-pronoun (edge-category pn-edge))
-	   (member (cat-name (edge-category pn-edge))
-		   '(reflexive/pronoun pronoun/inanimate )))
+	 ((ignore-this-type-of-pronoun (edge-category pn-edge))
 	  item)
 	 (*constrain-pronouns-using-mentions*
 	  (setf (mention-restriction (car (mention-history item))) v/r)
@@ -1578,10 +1575,6 @@ to enhance p53 mediated apoptosis [2].") |#
   (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
     (and (> (length cat-string) 3)
          (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
-
-(defun is-anaphoric? (item)
-  (itypep item category::pronoun))
- 
 
 
 ;;;-----------------
