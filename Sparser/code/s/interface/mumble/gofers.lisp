@@ -41,3 +41,4 @@
 (defgeneric sparser-symbol (symbol)
   (:method ((s symbol)) (sparser-symbol (symbol-name s)))
   (:method ((name string)) (intern name :sparser)))
+

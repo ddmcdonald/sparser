@@ -168,16 +168,21 @@ e10   TABLE         5 "the table" 7
     (push-debug `(,first-edge ,edges))
     (break "start hand simulation")))
 
+; (escan first-edge) ;; move the dot and call complete from the scan
+;   in this example, need to also appreciate that we're verb initial
+;   and flag this as an imperative. 
+; (ecomplete first-edge) ;; make instance
+; (epredict first-edge)
 #|
-    (epredict first-edge)
+    
     ;; look up corresponding lexicalized phrase and set it up
 
-    (escan first-edge) ;; move the dot
+
 
     ;; Since we're going by already delimited and interpreted
     ;; edges (for the most part), the edge represents
     ;; the completion of an implicit prediction
-    (ecomplete first-edge) ;; make instance, 
+
 
          (category (edge-referent first-edge))
          (linked-phrase (mumble::krisp-mapping category))

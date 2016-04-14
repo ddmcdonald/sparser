@@ -145,7 +145,18 @@
 (defmethod escan ((e edge))
   (let ((end-pos (pos-edge-ends-at e))
         (state (current-incremental-state)))
-    (setf (dot state) end-pos)))
+    (setf (dot state) end-pos)
+    (pop-predicted-path e)))
+
+(defgeneric pop-predicted-path (item)
+  (:documentation "Look at the predicted path. Depending on what
+    the item is (roughly a word vs. an edge), pop off the successive
+    elements of the path until we reach either the lexicalized word
+    or a parameter."))
+
+(defmethod pop-predicted-path ((e edge))
+  (push-debug `(,e)) (break "starting the pop"))
+
 
 (defgeneric epredict (item)
   (:documentation
@@ -164,18 +175,36 @@
                       (individual (itype-of referent))
                       (category referent)))
               (mapping (mumble::krisp-mapping type)))
+         (assert mapping)
          (push-debug `(,mapping))
-         (break "checkpoint")))
-
+         (instantiate-predictions mapping)))
       (otherwise
        (push-debug `(,state ,e))
        (error "Don't know what to predict in the state ~a"
               interp-state)))))
 
+(defun instantiate-predictions (mapping) ;; a category-linked-phrase
+  "Look up the phrase and run its phrase structure
+   and variable restriction out into the context."
+  ;; Ignore possibility of several trees
+  ;; Starting with the simplest starting state, i.e. sentence
+  ;; start, which fits the situation in the caller right now
+  (let* ((state (current-incremental-state))
+         (lp (mumble::linked-phrase mapping)) ;; lexicalized phrase
+         (phrase (mumble::phrase lp))         
+         (alist (mumble::parameter-variable-map mapping)))
+    (setf (predicted-path state) 
+          (copy-list
+           ;; make a copy so we don't munge the version that Mumble uses
+           (car (mumble::definition phrase))))
+    (setf (predicted-path state)
+          (incorporate-lexicalizations-into-predicted-path lp))
+    (setf (predicted-parameter-bindings state) alist)))
+
+
 (defgeneric ecomplete (item)
   (:documentation
    "We've just finished the analysis of item."))
-
 
 
 

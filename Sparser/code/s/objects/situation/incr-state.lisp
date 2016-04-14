@@ -26,6 +26,16 @@
    (state :initform :initial :accessor state-of-interpretation
     :documentation "Where are we in this analysis")
 
+   (path :initform nil :accessor predicted-path
+    :documentation "The position-path of the predicted phrase,
+      with its initial elements popped off given how far into it
+      we've gotten with the scan. If we've completed it the
+      value will be nil.")
+   (bindings :initform nil :accessor predicted-parameter-bindings
+    :documentation "An alist of parameter and value that goes
+      with the predicted path. Lexicalized parameters go to
+      mumble::word. Open parameters to go variables.")
+
 
    (parent :initform nil :accessor parent-state
     :documentation "Points to the dominating state (if any)
