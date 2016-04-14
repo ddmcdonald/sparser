@@ -164,13 +164,16 @@ previous records of treetop-counts.
 
 
 (defun save-treetop-snapshots (&optional
-                             (save-info nil)
-                             (corpora *default-snapshot-corpora*))
-  (declare (special *file-for-treetop-snapshots*)(ignore save-info))
+				 (save-info nil)
+				 (corpora *default-snapshot-corpora*))
+  (declare (ignore save-info))
   (loop for c in corpora
-    do (terpri)
-    (print c)
-    (print (save-treetop-snapshot c *file-for-treetop-snapshots*))))
+     do (terpri)
+       (print c)
+       (print (save-treetop-snapshot
+	       c
+	       (merge-pathnames "corpora-snapshots.lisp"
+				*directory-for-tree-snapshots*)))))
 
 
 (defmethod compare-to-snapshot ((name symbol) &optional (save-info nil))
@@ -222,11 +225,6 @@ previous records of treetop-counts.
 (defvar *directory-for-tree-snapshots*
   (asdf:system-relative-pathname :sparser ""))
 
-(defparameter *file-for-treetop-snapshots*
-  (merge-pathnames "corpora-snapshots.lisp"
-                   *directory-for-tree-snapshots*)
-  "This file is in the loader for citations so it will always be
-   included in a load of Sparser")
 
 (defparameter *file-for-treetop-semantic-snapshots*
   (merge-pathnames "treetop-semantic-records.lisp"
@@ -235,7 +233,9 @@ previous records of treetop-counts.
    included in a load of Sparser")
 
 (defmethod save-treetop-snapshot ((name symbol) 
-                                  &optional (file *file-for-treetop-snapshots*))
+                                  &optional
+				    (file   (merge-pathnames "corpora-snapshots.lisp"
+							     *directory-for-tree-snapshots*)))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
