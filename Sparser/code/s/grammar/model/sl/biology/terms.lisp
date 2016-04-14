@@ -1028,7 +1028,6 @@
   (:noun "substrate"
          :of enzyme
          :for enzyme))
-;;(noun "success" :super bio-abstract) -- make a verb
 
 (adj "suitable" :super bio-relation
      :realization
@@ -1096,6 +1095,15 @@
      (:adj "useful"
            :for purpose))
 (noun "variety" :super variant)
+
+(noun "way" :super bio-method
+      :restrict ((object over-ridden))
+      :binds ((process bio-process))
+      :realization
+      (:noun "way"
+             :of process))
+
+;; need to handle "for X to Y" as a to-comp
 
 (adj "wild-type" :super bio-predication)
 (def-synonym wild-type (:adj "wild type"))
