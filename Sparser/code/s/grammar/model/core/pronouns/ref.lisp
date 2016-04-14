@@ -83,11 +83,7 @@
 ;; (trace-treetops-sweep)
 ;; (trace-paragraphs) ;; period hook
 
-(defparameter *ignore-personal-pronouns* t
-  "Ignore situational deictics like 'I' or 'we' or 'you'.
-   They need a completely different treatment that maps
-   them to specific entities. There are drafts of this
-   in grammar/rules/.")
+
 
 (defun ignore-this-type-of-pronoun (label)
   "If we're ignoring personal pronouns then is the label on

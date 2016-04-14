@@ -315,14 +315,12 @@
  categories, and if there are makes a form rule instead of the normal cfr."))
 
 
-;; obsolete?? 11/25
 (defparameter *do-heuristic-boundary-detection* nil
   "Set as part of the switch settings, read within Do-treetops")
 
 (defparameter *do-completion-actions* t
   "Set as part of the switch settings, read within Complete.")
 
-;; obsolete?? 11/1
 (defparameter *check-action-triggers-during-completion* t
   "Flag examined during completion to determine whether the
    hook for external actions, Check-for-triggered-action,
@@ -369,6 +367,17 @@
   "Read in check routines to look at or ignore the cases when more
    than on edge over a terminal has a rule that extends it.")
 
+(defparameter *interpret-in-context* nil
+  "If applicable (not called in every parsing protocol), adds a
+   post sentence analysis sweep over the treetops to identify intended
+   meeanings from literal referents.")
+
+(defparameter *constrain-pronouns-using-mentions* nil
+  "Compute pronoun referents on basis of mentions. See pronoun case of
+   interpret-in-context.")
+
+(defparameter *ignore-personal-pronouns* t
+  "Ignore situational deictics like 'I' or 'we' or 'you'.")
 
 ;;;---------
 ;;; readout

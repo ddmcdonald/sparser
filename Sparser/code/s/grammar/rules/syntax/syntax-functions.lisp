@@ -1151,7 +1151,7 @@ to enhance p53 mediated apoptosis [2].") |#
   (lsp-break "apply-control-or-raise")
   nil)
 
-(defparameter *constrain-pronouns-using-mentions* t)
+
 
 (defun condition-anaphor-edge (item subcat-label v/r)
   ;; We now know the restriction that any candidate referent for this

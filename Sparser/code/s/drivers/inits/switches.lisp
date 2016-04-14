@@ -431,6 +431,12 @@
         *sweep-sentence-treetops* t
         *allow-form-conjunction-heuristic* t
         *island-driving* t)
+
+  (setq *constrain-pronouns-using-mentions* t
+        *ignore-personal-pronouns* t)
+
+  (setq *interpret-in-context* t)
+
   (whack-a-rule t)
   (setq *check-forms* t)
 

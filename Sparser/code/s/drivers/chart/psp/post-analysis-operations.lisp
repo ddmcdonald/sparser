@@ -9,7 +9,6 @@
 
 (in-package :sparser)
 
-(defparameter *interpret-in-context* t)
 
 (defun interpret-treetops-in-context (treetops)
   (when *interpret-in-context*
