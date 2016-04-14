@@ -198,14 +198,13 @@
 	 (itypep qualifier (itype-of head))
 	 (not (indiv-binds head)) ;; head already is modified -- don't replace with proper noun
 	 ;; w.g. "braf mutant a 375 melanoma cell"
-	 (if
-	  (itypep qualifier category::collection)
-	  (and
-	   ;; conjunction of named items
-	   (individual-p (car (value-of 'items qualifier)))
-	   (value-of 'name (car (value-of 'items qualifier))))
-	  ;; named item
-	  (value-of 'name qualifier))) ;; intended as test for proper noun or other specific NP
+	 (if (itypep qualifier category::collection)
+	     (and
+	      ;; conjunction of named items
+	      (individual-p (car (value-of 'items qualifier)))
+	      (value-of 'name (car (value-of 'items qualifier))))
+	     ;; named item
+	     (value-of 'name qualifier))) ;; intended as test for proper noun or other specific NP
 	(revise-parent-edge :form category::proper-noun)
 	qualifier)
        ((call-compose qualifier head)) ;; see note with verb-noun-compound
@@ -395,9 +394,8 @@
        head))))
 
 (defun create-predication-by-binding (var np-ref vp-ref source)
-  (let
-      ((new-predication
-	(bind-dli-variable var np-ref vp-ref)))
+  (let ((new-predication
+	 (bind-dli-variable var np-ref vp-ref)))
     (create-discourse-mention new-predication source)
     ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
     new-predication))
@@ -807,10 +805,9 @@
   ;; Tbese are very likely to be purpose clauses. A sufficient test
   ;; for that is the the s and the complement are both eventualities
   ;; (aka perdurants). 
-#| (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS signalling 
-to enhance p53 mediated apoptosis [2].") |#
-  (let*
-      ((complement (value-of 'comp tocomp))
+  #| (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS signalling 
+  to enhance p53 mediated apoptosis [2].") |#
+  (let* ((complement (value-of 'comp tocomp))
        (to-comp-var ;; e.g. for "acts to dampen..."
         (subcategorized-variable s :to-comp complement)))
     (cond
@@ -818,15 +815,27 @@ to enhance p53 mediated apoptosis [2].") |#
       (or *subcat-test*
        (setq s (bind-dli-variable to-comp-var complement s))))
      (t
-      (let
-          ((ok? (and s (itypep s 'perdurant) (itypep complement 'perdurant))))
+      (let ((ok? (and s (itypep s 'perdurant) (itypep complement 'perdurant))))
         (cond
          (*subcat-test* ok?)
          (ok?
           (setq s (bind-dli-variable 'purpose complement s))
           s)))))))
 
-
+(defun interpret-for-to-comp (for-pp to-comp)
+  (let* ((complement (value-of 'comp to-comp))
+	 (for-subj (value-of 'pobj for-pp))
+	 (subj-var
+	  (subcategorized-variable complement :subject for-subj)))
+    (if *subcat-test*
+	subj-var
+	(let ((new-comp ))
+	  (make-simple-individual
+	   category::to-comp
+	   `((prep ,(value-of 'prep to-comp))
+	     (comp ,(bind-dli-variable subj-var for-subj complement))))))))
+		
+	    
 ;;;---------
 ;;; NP + PP
 ;;;---------
@@ -936,10 +945,9 @@ to enhance p53 mediated apoptosis [2].") |#
       t ;;   *subcat-test*
     (format t "~&----assimilate-subject-to-vp-ing make an NP for ~s and ~s---~&  in ~s~&" 
             subj vp
-            (if
-             (> (length (sentence-string *sentence-in-core*)) 0)
-             (sentence-string *sentence-in-core*)
-             *string-from-analyze-text-from-string*)))
+            (if (> (length (sentence-string *sentence-in-core*)) 0)
+		(sentence-string *sentence-in-core*)
+		*string-from-analyze-text-from-string*)))
   (if (is-passive? (right-edge-for-referent))
       (assimilate-subcat vp :object subj)
       (assimilate-subcat vp :subject subj)))
@@ -998,13 +1006,12 @@ to enhance p53 mediated apoptosis [2].") |#
        ;; This situation corresponds to composing them as
        ;; subject and predicate, which is what the rule that
        ;; drives this is set up to do.
-       (let
-	   ((result
-	     (if (is-passive? (right-edge-for-referent))
-		 (then 
-		   (break "can't have a passive vp+ed")
-		   (assimilate-subcat vp :object subj))
-		 (assimilate-subcat vp :subject subj))))
+       (let ((result
+	      (if (is-passive? (right-edge-for-referent))
+		  (then 
+		    (break "can't have a passive vp+ed")
+		    (assimilate-subcat vp :object subj))
+		  (assimilate-subcat vp :subject subj))))
 	 (or result
 	     (progn (format t "**** can't interpret ~s ~s"
 			    (retrieve-surface-string subj)
@@ -1027,27 +1034,26 @@ to enhance p53 mediated apoptosis [2].") |#
   (when
       (and (edge-p left-edge)
            (position-p (pos-edge-starts-at left-edge)))
-    (let*
-        ((previous-treetop (left-treetop-at/only-edges (pos-edge-starts-at left-edge)))
-         (prev-form (and (edge-p previous-treetop)
-                         (edge-form previous-treetop)))
-         (prev-cat (and (edge-p previous-treetop)
-                        (edge-category previous-treetop))))
+    (let* ((previous-treetop (left-treetop-at/only-edges (pos-edge-starts-at left-edge)))
+	   (prev-form (and (edge-p previous-treetop)
+			   (edge-form previous-treetop)))
+	   (prev-cat (and (edge-p previous-treetop)
+			  (edge-category previous-treetop))))
       (declare (special previous-treetop prev-form prev-cat))
       (cond
-       ((or
-         (and (category-p prev-form)
-              (member (cat-name prev-form) '(SUBORDINATE-CONJUNCTION CONJUNCTION SPATIO-TEMPORAL-PREPOSITION ADVERB)))
-         (and (category-p prev-cat)
-              (member (cat-name prev-cat) '(THAT)))
-         (and nil
-              (word-p prev-cat)
-              (member (word-symbol prev-cat) '(word::comma))))
+	((or
+	  (and (category-p prev-form)
+	       (member (cat-name prev-form) '(SUBORDINATE-CONJUNCTION CONJUNCTION SPATIO-TEMPORAL-PREPOSITION ADVERB)))
+	  (and (category-p prev-cat)
+	       (member (cat-name prev-cat) '(THAT)))
+	  (and nil
+	       (word-p prev-cat)
+	       (member (word-symbol prev-cat) '(word::comma))))
         
-        t)
-       (t
-        ;;(format t "preceding-that-or-whether? prev-form=~s and prev-cat=~s~&" prev-form prev-cat)
-        nil)))))
+	 t)
+	(t
+	 ;;(format t "preceding-that-or-whether? prev-form=~s and prev-cat=~s~&" prev-form prev-cat)
+	 nil)))))
 
 
 
@@ -1057,12 +1063,12 @@ to enhance p53 mediated apoptosis [2].") |#
 
 (defun interpret-subordinator (conj eventuality)
   "Goes with (subordinate-conjunction vp+ing) rule and others like it.
-   The effect of the subordinate conjunction strictly depends on
-   the conjunction or its class, so most of the work will be done
-   by the method. If there's no applicable method then we mark
-   the conjunction as a modifier just to keep it around. My reading
-   of Quirk et al. is that the ones that we're most interested in
-   have an adverbial function in structuring the discourse (19.55)."
+  The effect of the subordinate conjunction strictly depends on
+  the conjunction or its class, so most of the work will be done
+  by the method. If there's no applicable method then we mark
+  the conjunction as a modifier just to keep it around. My reading
+  of Quirk et al. is that the ones that we're most interested in
+  have an adverbial function in structuring the discourse (19.55)."
   (or (call-compose conj eventuality)
       eventuality)) ;; for the moment dropping it on the floor
 
@@ -1087,25 +1093,22 @@ to enhance p53 mediated apoptosis [2].") |#
   (assimilate-subcat vg :object obj))
 
 (defun assimilate-np-to-v-as-object (vg obj)
-  (let
-      ((result
-	(if
-	 (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
-	 (verb-noun-compound vg obj)
-	 (assimilate-object vg obj))))
+  (let ((result
+	 (if (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
+	     (verb-noun-compound vg obj)
+	     (assimilate-object vg obj))))
     (when (and result (not *subcat-test*))
-      (if
-       (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
-       (revise-parent-edge :category (itype-of obj)
-			   :form category::n-bar
-			   :referent result)
-       (revise-parent-edge :category (itype-of vg)
-			   :form (ecase (cat-name (edge-form (parent-edge-for-referent)))
-				   ((vg vp) category::vp)
-				   ((vp+ing vg+ing) category::vp+ing)
-				   ((vp+ed vg+ed) category::vp+ed))				   
-			   :referent result)
-       ))
+      (if (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
+	  (revise-parent-edge :category (itype-of obj)
+			      :form category::n-bar
+			      :referent result)
+	  (revise-parent-edge :category (itype-of vg)
+			      :form (ecase (cat-name (edge-form (parent-edge-for-referent)))
+				      ((vg vp) category::vp)
+				      ((vp+ing vg+ing) category::vp+ing)
+				      ((vp+ed vg+ed) category::vp+ed))				   
+			      :referent result)
+	  ))
     result))
     
 
@@ -1327,23 +1330,22 @@ to enhance p53 mediated apoptosis [2].") |#
 (defun satisfies-subcat-restriction? (item restriction)
   (declare (special category::pronoun/first/plural category::ordinal))
   (when *trivial-subcat-test*
-    (let
-        ((*trivial-subcat-test* nil))
+    (let ((*trivial-subcat-test* nil))
       (if (not (satisfies-subcat-restriction? item restriction))
           ;; test would have failed -- collect it
           (pushnew `(,(scat-symbol (itype-of *head*))
-                  ,*label*
-                  ,(scat-symbol restriction)
-                  ,(scat-symbol (itype-of item))
-                  ,(list 
-                    (when *left-edge-into-reference*
-                      (actual-characters-of-word (pos-edge-starts-at *left-edge-into-reference*)
-                                                 (pos-edge-ends-at *left-edge-into-reference*) nil))
-                    (when *right-edge-into-reference*
-                      (actual-characters-of-word (pos-edge-starts-at *right-edge-into-reference*)
-                                                 (pos-edge-ends-at *right-edge-into-reference*) nil))))
-                *tight-subcats*
-                :test #'equal)))
+		      ,*label*
+		      ,(scat-symbol restriction)
+		      ,(scat-symbol (itype-of item))
+		      ,(list 
+			(when *left-edge-into-reference*
+			  (actual-characters-of-word (pos-edge-starts-at *left-edge-into-reference*)
+						     (pos-edge-ends-at *left-edge-into-reference*) nil))
+			(when *right-edge-into-reference*
+			  (actual-characters-of-word (pos-edge-starts-at *right-edge-into-reference*)
+						     (pos-edge-ends-at *right-edge-into-reference*) nil))))
+		   *tight-subcats*
+		   :test #'equal)))
     (return-from satisfies-subcat-restriction? t))
   (let ((override-category (override-label (itype-of item))))
     (flet ((subcat-itypep (item category)
@@ -1378,7 +1380,7 @@ to enhance p53 mediated apoptosis [2].") |#
           (loop for type in (cdr restriction)
             thereis (subcat-itypep item type)))
          (t (error "subcat-restriction on is a cons but it ~
-                    does not start with :or~%  ~a"
+  does not start with :or~%  ~a"
                    restriction))))
        ((category-p restriction)
         (subcat-itypep item restriction))
@@ -1404,12 +1406,12 @@ to enhance p53 mediated apoptosis [2].") |#
   :binds ((prep)
           (pobj))
   :documentation "Provides a scafolding to hold
-   a generic prepositional phrase as identified by
-   the pp rules in grammar/rules/syntactic-rules.
-   Primary consumer is the subcategorization checking
-   code below. Note that if we make these with an
-   unindexed individual (in make-pp) then the index
-   information doesn't come into play"
+  a generic prepositional phrase as identified by
+  the pp rules in grammar/rules/syntactic-rules.
+  Primary consumer is the subcategorization checking
+  code below. Note that if we make these with an
+  unindexed individual (in make-pp) then the index
+  information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
 (mark-as-form-category category::prepositional-phrase)
 
@@ -1419,9 +1421,9 @@ to enhance p53 mediated apoptosis [2].") |#
   :binds ((prep)
           (comp))
   :documentation "If to-comp picks up infinitive complements
-    this picks up all the rest, e.g. 'by being phosphorylated'
-    though the head decides what to do with it based on the
-    composition. Same design as pps."
+  this picks up all the rest, e.g. 'by being phosphorylated'
+  though the head decides what to do with it based on the
+  composition. Same design as pps."
   :index (:temporary :sequential-keys prep comp)) 
 
 (define-category subordinate-clause
@@ -1429,8 +1431,8 @@ to enhance p53 mediated apoptosis [2].") |#
   :binds ((conj)
           (comp))
   :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
-    though the head decides what to do with it based on the
-    composition. Same design as pps."
+  though the head decides what to do with it based on the
+  composition. Same design as pps."
   )
 
 (mark-as-form-category category::subordinate-clause)
@@ -1443,12 +1445,12 @@ to enhance p53 mediated apoptosis [2].") |#
   :binds ((pp)
           (clause))
   :documentation "Provides a scafolding to hold
-   a generic pp-relative clause such as 'in which ERK is phosphorylated
-   in grammar/rules/syntactic-rules.
-   Primary consumer is the subcategorization checking
-   code below. Note that if we make these with an
-   unindexed individual (in make-pp) then the index
-   information doesn't come into play"
+  a generic pp-relative clause such as 'in which ERK is phosphorylated
+  in grammar/rules/syntactic-rules.
+  Primary consumer is the subcategorization checking
+  code below. Note that if we make these with an
+  unindexed individual (in make-pp) then the index
+  information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
 
 (defun make-pp (prep pobj)
@@ -1553,8 +1555,7 @@ to enhance p53 mediated apoptosis [2].") |#
       (when *collect-subcat-info*
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
-      (let
-          ((predicate (individual-for-ref np)))
+      (let ((predicate (individual-for-ref np)))
         (setq  predicate (create-predication-by-binding variable-to-bind pobj predicate
 							(list 'apply-copular-pp (parent-edge-for-referent))))
         (make-simple-individual category::copular-predicate
@@ -1596,9 +1597,9 @@ to enhance p53 mediated apoptosis [2].") |#
 ;;; Adjuncts for clauses 
 (defun add-adjunctive-clause-to-s (s adjunctive-clause)
   "If the clause (s) denotes a perdurant it will have a variable
-   we can use to declare that it is causally related to the adjunct
-   usually, it appears, because it causes it or creates the conditions
-   that make it possible."
+  we can use to declare that it is causally related to the adjunct
+  usually, it appears, because it causes it or creates the conditions
+  that make it possible."
   ;;//// needs a lot more work on this relation
   (let* ((variable-to-bind 
           (find-variable-for-category 
