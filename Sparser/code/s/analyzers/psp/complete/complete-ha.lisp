@@ -116,6 +116,7 @@
 	 (null (edge-referent edge))
 	 (not (polyword-p (edge-category edge)))
 	 (not (eq (edge-form edge) category::punctuation))
+	 (not (eq (edge-category edge) category::dash))
 	 (not (member (edge-rule edge)
 		      '(:DEFAULT-EDGE-OVER-PAIRED-PUNCTUATION
 			:CONJUNCTION/IDENTICAL-ADJACENT-LABELS ;; happened once, in ""substrate like" and "regulatory" "
