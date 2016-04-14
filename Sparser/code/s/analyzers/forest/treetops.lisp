@@ -623,7 +623,9 @@
 	  ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
 	  (not (and (edge-form (third r-triple))
 		    (member (cat-symbol (edge-form (third r-triple)))
-			    '(category::pp 
+			    '(category::pp
+			      ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
+			      category::to-comp
 			      category::relative-clause
 			      category::subject-relative-clause
 			      category::comma-separated-subject-relative-clause)))))
