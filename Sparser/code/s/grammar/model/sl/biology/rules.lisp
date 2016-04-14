@@ -259,6 +259,7 @@
 |#
 
 
+#+ignore
 (def-cfr adverb (adverb comma)
   :form adverb
   :referent (:head left-edge))
