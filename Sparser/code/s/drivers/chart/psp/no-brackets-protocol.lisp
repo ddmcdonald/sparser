@@ -280,7 +280,56 @@
       (ignore-errors ;; got an error with something printing once
        (when *show-handled-sentence-errors*
          (format t "~&Error in ~s~%~a~%~%" (current-string) e))))))
-           
+
+
+;;;----------------------------------------------------
+;;; operations after the regular analysis has finished
+;;;----------------------------------------------------
+
+(defun post-analysis-operations (sentence)
+  (when *scan-for-unsaturated-individuals*
+    (sweep-for-unsaturated-individuals sentence))
+  (identify-salient-text-structure sentence)
+  (when *do-anaphora*
+    (handle-any-anaphora sentence))
+  (when (and *readout-relations* *index-cards*)
+    (push `(,(sentence-string sentence) 
+            ,(all-individuals-in-tts sentence)
+            ,*current-article*
+            ,(assess-relevance sentence))
+          *all-sentences*))
+
+  (save-missing-subcats)
+
+  ;; We always retrieve the entities and relations to store
+  ;; with the sentence and accumulate at higher levels
+  (multiple-value-bind (relations entities tt-count treetops)
+      (identify-relations sentence)
+    ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
+    (set-entities sentence entities)
+    (set-relations sentence relations)
+    (set-tt-count sentence tt-count)
+    (interpret-treetops-in-context treetops))
+
+  (when *do-discourse-relations*
+    (establish-discourse-relations sentence)))
+
+
+;;;------------------------------------------------------------
+;;; final operations on sentence before moving to the next one
+;;;------------------------------------------------------------
+
+(defun end-of-sentence-processing-cleanup (sentence)
+  (declare (special sentence))
+  (set-discourse-history sentence (cleanup-lifo-instance-list))
+  (when *current-article*
+    (save-article-sentence *current-article* sentence)))
+
+
+
+;;;---------------------------------------------
+;;; track missing subcategorization information
+;;;---------------------------------------------
 
 (defun save-missing-subcats ()
   (declare (special category::pp))

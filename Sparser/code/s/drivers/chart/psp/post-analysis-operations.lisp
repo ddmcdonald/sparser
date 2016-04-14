@@ -1,47 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "pos-analysis-operations"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  1.0 March 2016
+;;;  version:  April 2016
 
 ;; all code for post-processing of sentences 
 
-
 (in-package :sparser)
-
-
-;;;----------------------------------------------------
-;;; operations after the regular analysis has finished
-;;;----------------------------------------------------
-
-(defun post-analysis-operations (sentence)
-  (when *scan-for-unsaturated-individuals*
-    (sweep-for-unsaturated-individuals sentence))
-  (identify-salient-text-structure sentence)
-  (when *do-anaphora*
-    (handle-any-anaphora sentence))
-  (when (and *readout-relations* *index-cards*)
-    (push `(,(sentence-string sentence) 
-            ,(all-individuals-in-tts sentence)
-            ,*current-article*
-            ,(assess-relevance sentence))
-          *all-sentences*))
-
-  (save-missing-subcats)
-
-  ;; We always retrieve the entities and relations to store
-  ;; with the sentence and accumulate at higher levels
-  (multiple-value-bind (relations entities tt-count treetops)
-      (identify-relations sentence)
-    ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
-    (set-entities sentence entities)
-    (set-relations sentence relations)
-    (set-tt-count sentence tt-count)
-    (interpret-treetops-in-context treetops))
-
-  (when *do-discourse-relations*
-    (establish-discourse-relations sentence)))
 
 (defparameter *interpret-in-context* t)
 
@@ -49,20 +15,6 @@
   (when *interpret-in-context*
     (loop for tt in treetops when (edge-p tt)
        do (interpret-in-context tt))))
-
-;;;------------------------------------------------------------
-;;; final operations on sentence before moving to the next one
-;;;------------------------------------------------------------
-
-(defun end-of-sentence-processing-cleanup (sentence)
-  (declare (special sentence))
-  (set-discourse-history sentence (cleanup-lifo-instance-list))
-  (when *current-article*
-    (save-article-sentence *current-article* sentence))
-  ;;(lsp-break "end of sentence")
-  ;; we could do a tts 
-  #+ignore(when *readout-segments-inline-with-text* ;; be quiet when others are
-    (format t "~&--------------------------~%~%")))
 
 
 
@@ -113,8 +65,10 @@
 
 (defgeneric interpret-in-context (item-to-be-interpreted)
   (:documentation
-   "Recursively interpret item-to-be-interpreted in the given context (structure of context still to be defined).
-Bind the contextual-description of the associated mention (if any) to the contextual interpretation of the item in the context."))
+   "Recursively interpret item-to-be-interpreted in the given context 
+(structure of context still to be defined).
+Bind the contextual-description of the associated mention (if any) to
+the contextual interpretation of the item in the context."))
 
 (defmethod interpret-in-context ((e edge))
     (if (and (category-p (edge-category e))
@@ -143,29 +97,59 @@ Bind the contextual-description of the associated mention (if any) to the contex
      *lambda-var*)
     (t s)))
 
-(defmethod interpret-in-context ((dt cons))
-  "For the moment, lists are of the form (<mention> ... bindings). First recursively interpret the
- bound elements in the bindings of the dt, then rebuild the interpretation of the dt from those reinterpreted bindings."
-  (typecase (car dt)
-    (discourse-mention
-     (cond
-       ((and (individual-p (base-description (car dt)))
-	      (itypep (base-description (car dt)) 'collection))
-	(reinterpret-collection-with-modifiers dt))
-       ((is-pronoun? (base-description (car dt)))
-					;(lsp-break "pronoun")
-	(setf (contextual-description (car dt))
-	       (reinterp-item-using-bindings
-		(dli-ref-cat (base-description (car dt)))
-		(cdr dt)))
-	)
-       (t
-	 (setf (contextual-description (car dt))
-	       (reinterp-item-using-bindings
-		(dli-ref-cat (base-description (car dt)))
-		(cdr dt))))))
-    (t (break "~&***what sort of dt is ~s~&" dt))))
 
+#| Pronoun examples to test (convert to regression tests when working)
+
+(p "Ras is a membrane bound protein. When inactive, it is bound to the small molecule GDP.")
+
+(p "The phosphorylated ERK protein then translocates to the nucleus
+where it regulates gene expression.")
+|#
+
+(defmethod interpret-in-context ((dt cons))
+  "For the moment, lists are of the form (<mention>
+ ... bindings). First recursively interpret the bound elements in the
+ bindings of the dt, then rebuild the interpretation of the dt from
+ those reinterpreted bindings."
+  (let ((mention (car dt)))
+    (typecase mention
+      (discourse-mention
+       (cond
+         ((and (individual-p (base-description mention))
+               (itypep (base-description mention) 'collection))
+          ;; distribute conjunctions
+          (reinterpret-collection-with-modifiers dt))
+
+         ((is-pronoun? (base-description mention))
+          (when (slot-boundp mention 'restriction)
+            ;; This goes with the check done in condition-anaphor-edge
+            ;; to ignore personal pronouns. If we refactored the actual
+            ;; check -- ignore-this-type-of-pronoun -- we could reframe
+            ;; this in more direct forms and protect is against someone
+            ;; changing the details of the class.
+            (let* ((restriction (mention-restriction mention))
+                   (types (etypecase restriction
+                            ((cons (eql :or)) (cdr restriction))
+                            (category (list restriction))))
+                   (interpretation
+                    (or (find-pronoun-in-lifo-instance types)
+                        #| apply some other technique |# )))
+              (when interpretation
+                (setf (contextual-description mention)
+                      (car interpretation))))))
+         (t
+          (setf (contextual-description mention)
+                (reinterp-item-using-bindings
+                 (dli-ref-cat (base-description mention))
+                 (cdr dt))))))
+      (t (break "~&***what sort of dt is ~s~&" dt)))))
+
+(defun find-pronoun-in-lifo-instance (types)
+  (declare (special *lifo-instance-list))  
+  (loop for type in types
+     when (find-if #'(lambda (i) (itypep i type)) *lifo-instance-list*
+                   :key #'car)
+     return it))
 
 (defun reinterp-item-using-bindings (interp bindings)
   (declare (special interp bindings category::collection))
@@ -217,24 +201,22 @@ Bind the contextual-description of the associated mention (if any) to the contex
   (declare (special collection-mention))
   (or
    (special-collection-interp collection-mention)
-   (when
-       (or
-	(itypep (base-description (car collection-mention)) 'slashed-sequence)
-	(itypep (base-description (car collection-mention)) 'hyphenated-pair)
-	(itypep (base-description (car collection-mention)) 'two-part-label)
-	(itypep (base-description (car collection-mention)) 'hyphenated-triple))
+   (when (or
+          (itypep (base-description (car collection-mention)) 'slashed-sequence)
+          (itypep (base-description (car collection-mention)) 'hyphenated-pair)
+          (itypep (base-description (car collection-mention)) 'two-part-label)
+          (itypep (base-description (car collection-mention)) 'hyphenated-triple))
      (base-description (car collection-mention)))
-   (let*
-       ((other-modifiers
-	 (loop for m in (cdr collection-mention)
-	    unless (member (car m) '(items type number))
-	    collect m))
-	(items (cdr (assoc 'items (cdr collection-mention))))
-	(mod-items
-	 (loop for m in items
-	    nconc
-	      (expand-collection-into-list-if-needed
-	       (reinterp-item-using-bindings (interp-in-context m)
+   (let* ((other-modifiers
+           (loop for m in (cdr collection-mention)
+              unless (member (car m) '(items type number))
+              collect m))
+          (items (cdr (assoc 'items (cdr collection-mention))))
+          (mod-items
+           (loop for m in items
+              nconc
+                (expand-collection-into-list-if-needed
+                 (reinterp-item-using-bindings (interp-in-context m)
 					     other-modifiers)))))
      (declare (special other-modifiers items mod-items))
      (if (null mod-items)
@@ -251,30 +233,27 @@ Bind the contextual-description of the associated mention (if any) to the contex
 
 ;;; THIS IS BIO-SPECIFIC CODE -- figure out how to segregate it appropriately
 (defun special-collection-interp (dt)
-  (let
-      ((i (base-description (car dt))))
-    (when
-	(and *special-collection-interp*
-	     (or (itypep i 'protein) (itypep i 'protein-family))
-	     (search "/" (retrieve-surface-string i)))
+  (let ((i (base-description (car dt))))
+    (when (and *special-collection-interp*
+               (or (itypep i 'protein) (itypep i 'protein-family))
+               (search "/" (retrieve-surface-string i)))
       (interpret-as-pathway-or-complex dt))))
 
 ;; in principle, could be a pathway or a complex, and we should consult the biopax+ model, or something like that
 ;;  this is version -2
 (defun interpret-as-pathway-or-complex (dt)
-  (let*
-      ((proteins (base-description (car dt)))
-       (pathway (make-an-individual
-		 'pathway
-		 :protein-sequence
-		 (make-an-individual 'sequence
-				     :items (value-of 'items proteins)
-				     :number (value-of 'number proteins)
-				     :type (value-of 'type proteins))))
-       (other-modifiers
-	(loop for m in (cdr dt)
-	   unless (member (car m) '(items type number))
-	   collect m)))
+  (let* ((proteins (base-description (car dt)))
+         (pathway (make-an-individual
+                   'pathway
+                   :protein-sequence
+                   (make-an-individual 'sequence
+                                       :items (value-of 'items proteins)
+                                       :number (value-of 'number proteins)
+                                       :type (value-of 'type proteins))))
+         (other-modifiers
+          (loop for m in (cdr dt)
+             unless (member (car m) '(items type number))
+             collect m)))
     (reinterp-item-using-bindings pathway
 				  other-modifiers)))
 
@@ -322,11 +301,9 @@ Bind the contextual-description of the associated mention (if any) to the contex
 
 
 (defun binding-match (ref binding)
-  (declare (special ref binding))
   (case (car binding)
     (predication
-     (if
-      (category-p ref)
+     (if (category-p ref)
       ;; as in "untreated cells" where the predicate has only one binding
       (eq ref (itype-of (second binding)))
       (eq ref (cdar (hal (indiv-uplinks (second binding))))))) ;; (second binding)
@@ -334,17 +311,17 @@ Bind the contextual-description of the associated mention (if any) to the contex
 
 (defun dependency-tree-root (edge &optional
 				    (bindings (expand-bindings (edge-referent edge))))
-  (let* 
-      ((idaughters (important-edge-daughters edge))
-       (daughters
-	(when idaughters
-	  (merge-item-lists
-	   (dependency-tree-daughters
-	    idaughters
-	    bindings)))))
+  (let* ((idaughters (important-edge-daughters edge))
+         (daughters
+          (when idaughters
+            (merge-item-lists
+             (dependency-tree-daughters
+              idaughters
+              bindings)))))
     `(,(edge-mention edge)
        ,@(append daughters
-		 (loop for b in bindings unless (member (car b) daughters :key #'car)
+		 (loop for b in bindings
+                    unless (member (car b) daughters :key #'car)
 		    collect b)))))
 
 (defun merge-item-lists (dbindings)
@@ -387,7 +364,8 @@ Bind the contextual-description of the associated mention (if any) to the contex
        (or (edge-constituents edge)
 	   (list (edge-left-daughter edge)
 		 (edge-right-daughter edge)))
-     when (and (edge-p d) (not (eq (cat-name (edge-form d)) 'det)))
+     when (and (edge-p d)
+               (not (eq (cat-name (edge-form d)) 'det)))
      collect
        (if (eq (cat-name (edge-form d)) 'pp)
 	   (edge-right-daughter d)
@@ -420,8 +398,7 @@ Bind the contextual-description of the associated mention (if any) to the contex
 
 
 (defun find-bindings (tree)
-  (when
-      (consp tree)
+  (when (consp tree)
     (if (symbolp (car tree))
 	`((,(car tree)
 	    ,(if (not (consp (second tree)))
