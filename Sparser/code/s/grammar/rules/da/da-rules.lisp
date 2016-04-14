@@ -15,6 +15,27 @@
 ;;; debris analysis rules and their interpretations
 ;;;-------------------------------------------------
 
+(define-debris-analysis-rule to-comp-comma-s
+    :pattern (to-comp "," s)
+    :action (:function attach-to-comp-comma-to-s  first second third))
+
+(defun attach-to-comp-comma-to-s (to-comp-edge comma-edge s-edge)
+  (let* ((s (edge-referent s-edge))
+	 (complement (value-of 'comp (edge-referent to-comp-edge)))
+	 (to-comp-var ;; e.g. for "acts to dampen..."
+	  (or
+	    (subcategorized-variable s :to-comp complement)
+	    'purpose)))
+    (make-edge-over-long-span 
+     (pos-edge-starts-at to-comp-edge)
+     (pos-edge-ends-at s-edge)
+     (edge-category s-edge)
+     :form (edge-form s-edge)
+     :rule 'attach-to-comp-comma-to-s
+     :referent (bind-dli-variable to-comp-var complement s)
+     :constituents `(,to-comp-edge ,comma-edge ,s-edge))))
+
+
 (define-debris-analysis-rule pp-comma-s
   :pattern ( pp "," s )
   :action (:function attach-leading-pp-to-clause first third))
@@ -440,6 +461,8 @@
   :pattern ( "," adverb "," )
   :action (:function respan-edge-around-one-word second first third))
 
+
+
 (defun respan-edge-around-one-word (word-edge left-term right-term)
   (let ((word-category (edge-category word-edge))
         (word-form (edge-form word-edge))
@@ -462,6 +485,29 @@
       edge)))
 
 
+(define-debris-analysis-rule comma-adverb-comma
+  :pattern (adverb "," )
+  :action (:function respan-edge-around-adverb-comma first second))
+
+(defun respan-edge-around-adverb-comma (word-edge comma)
+  (let ((word-category (edge-category word-edge))
+        (word-form (edge-form word-edge))
+        (word-referent (edge-referent word-edge))
+        (new-start-pos (pos-edge-starts-at word-edge))
+        (new-end-pos (chart-position-after (pos-edge-ends-at word-edge))))
+    (let ((edge (make-completed-unary-edge
+                 ;; We're ignoring the commas in the edge structure
+                 ;;/// this is usually an interjection, how could we
+                 ;; indicate that
+                 (pos-starts-here new-start-pos) ;; the edge vector
+                 (pos-ends-here new-end-pos)
+                 :respan-edge-around-one-word ;; rule
+                 word-edge ;; daughter
+                 word-category 
+                 word-form
+                 word-referent)))
+      (setf (edge-constituents edge) `(,word-edge ,comma))
+      edge)))
 
 
 (define-category event-relation
@@ -492,6 +538,10 @@
   :pattern ( s "," subordinate-clause )
   :action (:function create-event-relation  first third first third))
 
+(define-debris-analysis-rule clause-subordinate
+  :pattern ( s subordinate-clause )
+  :action (:function create-event-relation  first second first second))
+
 
 
 (defun create-event-relation (event-edge sub-clause-edge first last)
@@ -504,7 +554,7 @@
      new-start-pos ;; the edge vector
      new-end-pos
      category::event-relation
-     :form category::event-relation
+     :form category::s
      :referent (make-event-relation conj event sub-event)
      :rule 'create-event-relation
      :constituents `(,first ,last))))
