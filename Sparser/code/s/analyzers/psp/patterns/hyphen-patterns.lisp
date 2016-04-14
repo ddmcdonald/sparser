@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "hyphen-patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  July 2015
+;;;  version:  April 2016
 
 ;; Broken out from patterns 7/20/15. 11/2/15 fanout from converting
 ;; edge patterns early. 
@@ -114,10 +114,10 @@
      ((equal pattern `(:amino-acid :hyphen :digits))
       (reify-residue (first edges) (third edges) start-pos end-pos))
      
-     (*work-on-ns-patterns*
-      (when (memq :protein pattern) ;; :protein :hyphen :kinase PI3–Kinase
-        (push-debug `(,edges ,start-pos ,end-pos ,hyphen-positions ,words))
-        (lsp-break "new hypen pattern with protein: ~a" pattern)))
+     ((and *work-on-ns-patterns*
+           (memq :protein pattern)) ;; :protein :hyphen :kinase PI3–Kinase
+      (push-debug `(,edges ,start-pos ,end-pos ,hyphen-positions ,words))
+      (lsp-break "new hypen pattern with protein: ~a" pattern))
      
      ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
           (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
@@ -134,8 +134,6 @@
       (if (= 3 (length edges))
         (resolve-hyphen-between-two-terms pattern words edges start-pos end-pos)
         (lsp-break "edges = ~a" edges))) ;;/// two, not three on "HPB-ALL"
-      
-;;//////////////////////////////////////////
      
      ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
       (resolve-hyphen-between-two-words pattern words start-pos end-pos))
@@ -167,8 +165,9 @@
         (resolve-hyphen-between-two-words pattern words start-pos end-pos)))
      
      ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
-      (when *work-on-ns-patterns*
-        (break "digit hyphen digit on ~a" words)))
+      ;; 4/14/16 Appears to be a bug in the state space of digit-FSA that keeps
+      ;; it from handling these.
+      (make-hyphenated-number (first edges) (third edges) words))
      
      ((and *work-on-ns-patterns*
            (memq :hyphen pattern))
