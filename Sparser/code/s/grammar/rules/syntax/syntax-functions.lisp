@@ -1167,16 +1167,18 @@ to enhance p53 mediated apoptosis [2].") |#
   ;; identify the referent at moment the pronoun is encountered.
   (cond
     ((and *do-anaphora* (is-pronoun? item))
-     (let ((pn-edge (edge-for-referent item)))
+     (let* ((pn-edge (edge-for-referent item))
+            (ignore? (ignore-this-type-of-pronoun (edge-category pn-edge))))
        (tr :conditioning-anaphor-edge pn-edge)
        (cond
-	 ((ignore-this-type-of-pronoun (edge-category pn-edge))
+	 (ignore?
 	  item)
 	 (*constrain-pronouns-using-mentions*
 	  (setf (mention-restriction (car (mention-history item))) v/r)
 	  item)
 	 (t
-	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label) category::np))
+	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
+                                    category::np))
                 (restriction (or v/r category::unknown-grammatical-function)))
             (declare (special category::np category::unknown-grammatical-function))
 	    (when (consp restriction)
@@ -1185,19 +1187,18 @@ to enhance p53 mediated apoptosis [2].") |#
 		    (or (loop for c in (cdr restriction) 
                               when (itypep (edge-referent pn-edge) c)
                               do (return c))
-			(cadr restriction)))) 
+			(cadr restriction))))
 	    (let ((new-ref (individual-for-ref restriction)))
-	      (unless 
-		  ;; If we're going to ignore the pronoun we don't want or
-		  ;; need to rework its edge
-		  (tr :anaphor-conditioned-to new-ref restriction relation-label)
+	      (unless ignore?
+                ;; If we're going to ignore the pronoun we don't want or
+                ;; need to rework its edge
+                (tr :anaphor-conditioned-to new-ref restriction relation-label)
 		;; Encode the type-restriction in the category label
 		;; and the grammatical relationship in the form
 		(setf (edge-category pn-edge) restriction)
 		(setf (edge-form pn-edge) relation-label)
 		(setf (edge-referent pn-edge) new-ref)
 		(setf (edge-rule pn-edge) 'condition-anaphor-edge))
-       
 	      new-ref))))))
     (t item)))
 
