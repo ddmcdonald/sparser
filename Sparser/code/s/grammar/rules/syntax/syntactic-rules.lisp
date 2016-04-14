@@ -58,6 +58,11 @@
   :form s
   :referent (:function interpret-to-comp-adjunct-to-s left-edge right-edge))
 
+(def-form-rule (for to-comp)
+    :form to-comp
+    :referent (:function interpret-for-to-comp left-edge right-edge))
+
+
 (def-form-rule (as vp+ed)
                :head :right-edge
   :form as-comp
