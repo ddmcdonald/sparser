@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "subject relatives"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  version:  June 2015
+;;;  version:  April 2016
 
 ;; initiated 6/18/93 v2.3
 ;; (8/9/07) Well something else can go in this file, but just now this
@@ -83,12 +83,11 @@
           (let ((edge
                  (make-completed-unary-edge
                   start-ev end-ev
-                  nil ;; rule
+                  'who-subject-relative-clause-operation ;; rule
                   wh-edge ;; daughter
                   category::who ;; category
                   category::wh-pronoun ;; form
                   np-referent))) ;; referent
-            (push-debug `(,edge))
             edge))))))
 
 
@@ -103,24 +102,21 @@
   ;; and any other relations that make sense given the
   ;; particulars of the predicate. 
   (declare (special *parent-edge-getting-reference*))
-  (if
-   *subcat-test*
-   t
-   (let ((parent *parent-edge-getting-reference*)
-         ;; renaming to help make things clear
-         (subject wh-referent)
-         (event predicate-referent))
-     (push-debug `(,subject ,event ,parent))
-     ;;(lsp-break "compose-wh-with-vp")
+  (if *subcat-test*
+    t
+    (let ((parent *parent-edge-getting-reference*)
+          ;; renaming to help make things clear
+          (subject wh-referent)
+          (event predicate-referent))
+      (push-debug `(,subject ,event ,parent))
+      ;;(lsp-break "compose-wh-with-vp")
      
-     (add-subject-relation event subject)
+      (add-subject-relation event subject)
      
-     ;; Referent of the whole edge is the referent of the
-     ;; predicate, now with a binding to reflect the relationship
-     ;; to the subject (... or should it be called something else?)
-     event)))
-
-
+      ;; Referent of the whole edge is the referent of the
+      ;; predicate, now with a binding to reflect the relationship
+      ;; to the subject (... or should it be called something else?)
+      event)))
 (defun add-subject-relation (event subject)
   ;;/// where should these go?
   (push-debug `(,subject ,event))

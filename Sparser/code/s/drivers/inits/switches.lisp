@@ -435,7 +435,8 @@
   (setq *constrain-pronouns-using-mentions* t
         *ignore-personal-pronouns* t)
 
-  (setq *interpret-in-context* t)
+  (setq *use-discourse-mentions* t
+        *interpret-in-context* t)
 
   (whack-a-rule t)
   (setq *check-forms* t)

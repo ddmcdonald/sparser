@@ -20,6 +20,14 @@
   (per-article-initializations)
   )
 
+#| 4/14/16
+There's a completion rule on "who" in grammar/rules/syntax/subject-relatives.lisp
+If (inhibit-completion-when-subsumes category::who) isn't working correctly
+it will keep creating edges over "who" until the limit on the vector
+is reached.
+(p "An early study of hearts from people who died from ischemic heart disease.")
+|#
+
 #|
 
 (Establish-kind-of-chart-processing-to-do :new-toplevel-protocol)

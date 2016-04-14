@@ -295,8 +295,6 @@
    referent, and single-term rule for a word when it is unpacked.
    See unpack-primed-word and its subroutines.")
 
-
-
 (unless (boundp '*new-dm&p*)
   (defparameter *new-dm&p* nil
     "Set as part of the switch settings, read within Segment-finished.
@@ -371,6 +369,9 @@
   "If applicable (not called in every parsing protocol), adds a
    post sentence analysis sweep over the treetops to identify intended
    meeanings from literal referents.")
+
+(defparameter *use-discourse-mentions* nil
+  "This parameter turns on the discourse-mention mechanism")
 
 (defparameter *constrain-pronouns-using-mentions* nil
   "Compute pronoun referents on basis of mentions. See pronoun case of
