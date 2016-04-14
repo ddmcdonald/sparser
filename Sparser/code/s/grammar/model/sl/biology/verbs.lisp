@@ -1681,6 +1681,9 @@
            :of object))
 
 (define-category propagate :specializes bio-transport
+		 ;; propagating the pro-apoptotic signal from RAS to p53
+   :restrict ((origin (:or cellular-location protein))
+		 (destination (:or cellular-location protein)))
   :realization 
   (:verb "propagate" 
    :noun "propagation" 
