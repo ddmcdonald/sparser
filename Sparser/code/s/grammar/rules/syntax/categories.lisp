@@ -597,24 +597,27 @@
             CATEGORY::VERB+ING
             CATEGORY::VERB+PRESENT
             CATEGORY::VERB+PASSIVE))
-    (or
-     (memq (cat-symbol (edge-category e))
-           `(category::be
-             category::become
-             category::remain
-             category::stay))
-     (and (eq (cat-symbol (edge-category e)) 'category::have)
-          ;; only allow "have" to create the past tense of a linking verb
-          (let
-              ((next-edge (car (preterminal-edges (pos-edge-ends-at e)))))
-            (and
-             (edge-p next-edge)
-             (memq (cat-symbol (edge-category next-edge)) 
-                   `(category::be
-                     category::become
-                     category::remain
-                     category::stay)))))))
-   (eq category::not (edge-category e))))
+    (and
+     (category-p (edge-category e)) ;; sometimes get comma edges
+     (or
+      (memq (cat-symbol (edge-category e))
+	    `(category::be
+	      category::become
+	      category::remain
+	      category::stay))
+      (and (eq (cat-symbol (edge-category e)) 'category::have)
+	   ;; only allow "have" to create the past tense of a linking verb
+	   (let
+	       ((next-edge (car (preterminal-edges (pos-edge-ends-at e)))))
+	     (and
+	      (edge-p next-edge)
+	      (category-p (edge-category next-edge))
+	      (memq (cat-symbol (edge-category next-edge)) 
+		    `(category::be
+		      category::become
+		      category::remain
+		      category::stay)))))
+      (eq category::not (edge-category e)))))))
 
 (defmethod adjg-compatible? ((c referential-category))
   (adjg-compatible? (cat-symbol c)))
