@@ -23,7 +23,15 @@
 
 
 (in-package :sparser)
+(defparameter *potential-proteins-from-articles*
+  '("calponin-3" "CsA" "4EBP" "c-Fos" "C/EBP" "Ets" "Egr" "Blnk" "Rab" "pStat3" "Stat3α" "ephrinB2/Fc" "TIF2" "CLK" "tropomyosin" "SUMO2" "LMNA" "HSP60" "PIPKIγ87" "H2B2E"  "Wnt ligand" "LDH-B" "SLC20A1" "CD22" "TβR-II" "Smad6N" "acetyltransferase" "GCN5" "Y4F" "Rac-GEF""p55γ" "PTPMEG" "αIIb" "PknG" "MviN" "FadD32" "GroS" "γ-GCSh" "ΔN-RILP" "phospholipase C-γ2" "phalloidin" "p85β" "meIF3f" "ZDHHC7" "XDshΔDEP" "Smad6C" "NHP2L1" "ISG15" "IRF7" "IRF-7""HT1080" "HSP10" "HDAC3" "DLG3" "FRS-2" "TrkB" "CFM-1""CD72" "CBP/Ep300" "Abeta" "PRB" "PAK6" "PAK4" "PknA" "PknB" "14-3-3ζ" "14-3-3ε" "14-3-3τ" "6 –RILP" "ABIN2" "ACK" "ACK2" "AHR" "AICD" "AMSH" "AP-2" "APH1" "ARNT" "ATP" "AXIN2" "Abi1wt" "Abl" "Ac-YVAD-CHO" "Ack" "Ack1" "Ack1-HA" "B/AKT" "B56γ-PP2A" "B56γ1" "B56γ3" "BRCC36" "BRMS1" "Btk" "CAT-D" "CCT1" "CCT3" "CD38" "CD4/CXCR4" "CD40" "CD95" "CDK3" "CFM-4" "CFM-5" "CL100" "CLEC17A" "COMMD1" "CRM-1" "CSF-1" "CSF-1R" "CSN5" "Cas" "Cef" "Co-Smads" "Cos7" "Crk" "Csr" "Cyr61" "Cyropyrin" "C–γ1" "DAPI" "DDX3" "DH" "DKK1" "DLD1" "DLG1" "DMPK" "DTX" "E3b1" "ECC-1" "ECC1" "EEA1" "EPS15" "ETH" "Epo" "Evl-1" "F-actin" "FBP1" "FGF" "FOXO" "FRS-2" "FUSE-binding protein 1" "FhaA" "Filopodia" "Fos" "Freud1/Aki1" "Fz" "Fzs" "GAT" "GATA4" "GCHM" "GD25" "GSK-3β" "GSK3β" "GST-PAK-Cdc42" "GW9662" "GroEL2" "H2AX" "H2B1L" "HDAC1" "HDAC2" "HEK293N" "HIF-1α" "HIPK3" "HLA" "HNF4α" "HSP70" "HT-1080" "I-Smads" "IFN" "IFNβ" "IKKε" "IL-1" "IRF" "IRF-3" "IRF3" "ITGB1#2" "ITGB3#2" "ITGB5#2" "Icam1" "IκB" "JNK/ SAPK" "JNK/SAPK" "JNK1/2" "K-ras" "KCl" "KIAA0323" "KIAA1217" "KLESS" "KMTs" "KPC1/2" "KRT5" "KasA" "KasB" "LAPC-4" "LIMK" "LRP6" "LY/PDBu" "LY292004" "Lactacystin" "M-CSF" "MAP4" "MDA" "MICAL1" "MRCK" "MRF4" "MUC5" "MYSM1" "Med1" "Met" "MmpS3" "Mtb" "Muc5AC" "Muc5AC/B" "Muc5B" "Myosin" "NDFIP2" "NEDD8" "NES" "NIC" "NKCC2" "NPHP1" "NPHP4" "NQO1" "Nod-1" "Nox1-dependent" "NoxA1" "ORP1L" "PAK" "PAK1/2" "PAK5" "PC-3" "PC12" "PCK1" "PDBu" "PDLIM5" "PEN2" "PIPKIγ90" "PIX" "PKC’s" "PLC-γ2" "PP1" "PP2" "PP2AA" "PP2AC" "PPARγ" "PR-1" "PRIP" "PSA" "PSTPIP1" "PTPH1" "Pen-2" "Pim" "PknA" "PknB" "Pool" "PstP" "PtdIns4P" "RBM10" "RIG-I" "RILP" "RNF4" "RPA14" "RPS27" "Rac" "Rad3" "RanGAP" "Rfz2" "Rho" "RhoA" "S1333A-ATR" "SB203580" "SFKs" "SGK1-CA." "SGK2" "SLPI" "SMYD3" "SPI-2" "SRRM2" "SSH1L" "STAM-2" "STEAP1" "STPKs" "SYNJ1" "SYNJ2" "Sendai" "Shb" "Shugosin" "Smad6/7" "Smad7/6" "Smad7C" "Smad7N" "Snell" "SrcKM" "SrcYF" "Stat-3" "TAK1" "TBK1" "TCA3" "TCF4" "TCR→" "TEPA" "TGF-β" "TGII" "TJAP1" "TLR" "TLR3" "TLR7" "TLRs" "TNFα" "TRAF2" "TRAF3" "TTR" "Tks5/Fish" "TrkC" "TβR-I" "UBXD8" "UIM" "UQCRC2" "USP54" "Vav-1" "WNK1" "WNK2" "Wnt" "Wnt-11" "Wnt-4" "Wnt–β" "XDshΔDEP" "XDshΔPDZ" "XWnt-5A" "Xenopus Fz-7" "Xfz7" "adriamycin" "arrestin-2" "arrestin-2/3" "bcl-x" "bombesin" "calyculin" "cathepsin-D" "cdkn2a" "cdkn2b" "ced-3" "ced-9" "chondroitin" "condensaton" "cytohesin-1" "dok4/5" "ephrinB2" "estrogen" "exocrine" "exoproteases" "glutathione-S-transferase" "gonadotropin" "hemolysin" "hepatocyte nuclear factor 4α" "heregulin" "hyp-RPA" "ionomycin" "kinesin" "lactacystin" "leptomycin" "mRFP" "mUbRas" "mot-2" "mut" "myosin" "nectin-1" "nmMLCK" "nuclease" "oestrogen" "p110β" "p120" "p120RasGAP" "p16" "p21Rac1" "p27 1–170" "p300" "p35/Cdk5 and 32 P" "p35/Cdk5" "p38 MAPK" "p50" "p53−/−" "p62 DOK" "p62 dok" "p70 s6k" "p70S6K" "p70s6k" "p75NTR" "p80" "p85α" "p97/Gab2" "pERK5" "pT" "pVV16:" "phorbol" "phosphoSer-9" "phosphoprofilin" "phosphorylation-mediated" "plasma membrane–binding" "platelet" "polyvalent antigen" "pp60src" "pp60src" "proteasome" "proteasomes" "rPP2A" "rad-3-related" "rrnAP1" "steroid receptor coactivator-1" "synuclein" "talin" "trkB" "tyrosine-kinase" "ΔRIG-I" "α-Syn" "α-syn" "β-actin" "β-adaptin" "βIII"))
 
+(defun define-potential-proteins ()
+  (loop for w in *potential-proteins-from-articles*
+     do
+       (eval `(noun ,w  :super protein))))
+
+(define-potential-proteins)
 ;;;--------------------------------------------
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
@@ -2080,7 +2088,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "Q6DEN2_HUMAN" ("DPYSL3 protein")) 
 (define-protein "Q6FH11_HUMAN" ("HMOX1 protein" "Heme oxygenase (Decycling) 1")) 
 (define-protein "Q6FI27_HUMAN" ("Gsk3β" "GSK3B protein" "GSK3beta isoform" "Glycogen synthase kinase 3 beta, isoform CRA_b" "cDNA FLJ75266, highly similar to Homo sapiens glycogen synthase kinase 3 beta, mRNA")) 
-(define-protein "Q6P3U7_HUMAN" ("rxra" "RXRA protein")) 
+(define-protein "Q6P3U7_HUMAN" ("rxra" "RXRα" "RXRA protein")) 
 (define-protein "Q708E1_HUMAN" ("c-Myb" "C-myb v-myb myeloblastosis viral oncogene homologue (avian), exon 1 and joined CDS" "Transcriptional activator Myb" "V-myb myeloblastosis viral oncogene homolog (Avian), isoform CRA_d" "V-myb myeloblastosis viral oncogene homologue (Avian)")) 
 (define-protein "Q79354_9HIV1" ("K29" "Gag protein")) 
 (define-protein "Q79360_9HIV1" ("K88" "Gag protein")) 
@@ -2427,7 +2435,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "ST1A2_HUMAN" ("1A2" "Sulfotransferase 1A2" "ST1A2" "Aryl sulfotransferase 2" "Phenol sulfotransferase 2" "Phenol-sulfating phenol sulfotransferase 2" "P-PST 2")) 
 (define-protein "ST2A1_HUMAN" ("catabolism" "Bile salt sulfotransferase" "Dehydroepiandrosterone sulfotransferase" "DHEA-ST" "Hydroxysteroid Sulfotransferase" "HST" "ST2" "ST2A3" "Sulfotransferase 2A1" "ST2A1")) 
 (define-protein "ST2B1_HUMAN" ("2B1" "Sulfotransferase family cytosolic 2B member 1" "ST2B1" "Sulfotransferase 2B1" "Alcohol sulfotransferase" "Hydroxysteroid sulfotransferase 2")) 
-(define-protein "ST5_HUMAN" ("hela" "Suppression of tumorigenicity 5 protein" "DENN domain-containing protein 2B" "HeLa tumor suppression 1")) 
+(define-protein "ST5_HUMAN" ("Suppression of tumorigenicity 5 protein" "DENN domain-containing protein 2B" "HeLa tumor suppression 1")) 
 (define-protein "STAG1_HUMAN" ("STAG1" "SA1")) 
 (define-protein "STAG2_HUMAN" ("Scc3" "Cohesin subunit SA-2" "SCC3 homolog 2" "Stromal antigen 2")) 
 (define-protein "STALP_HUMAN" ("AMSHLP" "KIAA1373" "STAMBPL1" "AMSH-LP")) 
@@ -2680,7 +2688,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "VEGFB_HUMAN" ("vegfb" "Vascular endothelial growth factor B" "VEGF-B" "VEGF-related factor" "VRF")) 
 (define-protein "VGFR1_HUMAN" ("VEGFR1" "Vascular endothelial growth factor receptor 1" "VEGFR-1" "Fms-like tyrosine kinase 1" "FLT-1" "Tyrosine-protein kinase FRT" "Tyrosine-protein kinase receptor FLT" "FLT" "Vascular permeability factor receptor")) 
 (define-protein "VHL_HUMAN" ("Hippel–Lindau" "Von Hippel-Lindau disease tumor suppressor" "Protein G7" "pVHL")) 
-(define-protein "VILI_HUMAN" ("lamellipodia" "Villin-1")) 
+(define-protein "VILI_HUMAN" ("Villin-1")) 
 (define-protein "VINEX_HUMAN" ("vinexin-α" "Vinexin" "SH3-containing adapter molecule 1" "SCAM-1" "Sorbin and SH3 domain-containing protein 3")) 
 (define-protein "VISL1_HUMAN" ("VILIP" "VSNL1" "VLP-1" "HLP3" "VISL1")) 
 (define-protein "VKOR1_HUMAN" ("dithiothreitol" "Vitamin K epoxide reductase complex subunit 1" "Vitamin K1 2,3-epoxide reductase subunit 1")) 
