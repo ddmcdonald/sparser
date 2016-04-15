@@ -13,14 +13,14 @@
 (defun interpret-treetops-in-context (treetops)
   (when *interpret-in-context*
     (loop for tt in treetops when (edge-p tt)
-       do (interpret-in-context tt))))
+       do (interpret-in-context tt nil nil))))
 
 
 
 
 ;;;_______________________________________________
 
-#|
+
 (defgeneric contextual-interpretation (item)
   (:documentation
    "Return the currently available contextual interpretation of th object -- the base-description if no contextual interpretation has been made."))
@@ -57,40 +57,55 @@
       *lambda-var*)
      (t s))
    t))
-|#
 
 
 (defvar *lambda-var* nil)
 
-(defgeneric interpret-in-context (item-to-be-interpreted)
+(defgeneric interpret-in-context (item-to-be-interpreted variable container)
   (:documentation
    "Recursively interpret item-to-be-interpreted in the given context 
 (structure of context still to be defined).
 Bind the contextual-description of the associated mention (if any) to
 the contextual interpretation of the item in the context."))
 
-(defmethod interpret-in-context ((e edge))
+(defmethod interpret-in-context ((item word) variable container)
+  (declare (ignore variable container))
+  item)
+
+(defmethod interpret-in-context ((item polyword) variable container)
+  (declare (ignore variable container))
+  item)
+
+(defmethod interpret-in-context ((item number) variable container)
+  (declare (ignore variable container))
+  item)
+
+(defmethod interpret-in-context ((e edge) variable container)
     (if (and (category-p (edge-category e))
 	     (member (cat-name (edge-category e))
 		     '(quotation parentheses dash
 		       square-brackets)))
       ;; we don't interpret such quoted strings
       nil
-      (interpret-in-context (dependency-tree e nil))))
+      (interpret-in-context (dependency-tree e nil) variable container)))
 
-(defmethod interpret-in-context ((c category))
+(defmethod interpret-in-context ((c category) variable container)
+  (declare (ignore variable container))
   "This may get more complex, so that e.g. protein categories may be interpreted metonymically as complexes..."
   c)
 
-(defmethod interpret-in-context ((i individual))
+(defmethod interpret-in-context ((i individual) variable container)
+    (declare (ignore variable container))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   i)
 
-(defmethod interpret-in-context ((s string))
+(defmethod interpret-in-context ((s string) variable container)
+    (declare (ignore variable container))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   s)
 
-(defmethod interpret-in-context ((s symbol))
+(defmethod interpret-in-context ((s symbol) variable container)
+    (declare (ignore variable container))
   (case s
     (**LAMBDA-VAR** ;; the marker for the argument of a predicate which is being applied to the predicated item
      *lambda-var*)
@@ -105,7 +120,7 @@ the contextual interpretation of the item in the context."))
 where it regulates gene expression.")
 |#
 
-(defmethod interpret-in-context ((dt cons))
+(defmethod interpret-in-context ((dt cons) variable container)
   "For the moment, lists are of the form (<mention>
  ... bindings). First recursively interpret the bound elements in the
  bindings of the dt, then rebuild the interpretation of the dt from
@@ -117,7 +132,7 @@ where it regulates gene expression.")
          ((and (individual-p (base-description mention))
                (itypep (base-description mention) 'collection))
           ;; distribute conjunctions
-          (reinterpret-collection-with-modifiers dt))
+          (reinterpret-collection-with-modifiers dt variable container))
 
          ((is-pronoun? (base-description mention))
           (when (slot-boundp mention 'restriction)
@@ -129,18 +144,26 @@ where it regulates gene expression.")
             (let* ((restriction (mention-restriction mention))
                    (types (etypecase restriction
                             ((cons (eql :or)) (cdr restriction))
-                            (category (list restriction))))
+                            (category (list restriction))
+			    (null
+			     (if (and (eq variable 'subject)
+				      (itypep (base-description container) 'be))
+				 nil
+				 (lsp-break "~&NIL restriction -- var: ~s, container:~s~&" variable container)))))
                    (interpretation
-                    (or (find-pronoun-in-lifo-instance types)
-                        #| apply some other technique |# )))
-              (when interpretation
-                (setf (contextual-description mention)
-                      (car interpretation))))))
+		    (when types
+		      (or (find-pronoun-in-lifo-instance types)
+			  #| apply some other technique |# ))))
+              (if interpretation
+		  (setf (contextual-description mention) (car interpretation))
+		  ;; if interpretation is NIL then we have failed to find a pronominal referent
+		  (setf (contextual-description mention) (base-description mention))))))
          (t
           (setf (contextual-description mention)
                 (reinterp-item-using-bindings
                  (dli-ref-cat (base-description mention))
-                 (cdr dt))))))
+                 (cdr dt)
+		 mention)))))
       (t (break "~&***what sort of dt is ~s~&" dt)))))
 
 (defun find-pronoun-in-lifo-instance (types)
@@ -150,7 +173,7 @@ where it regulates gene expression.")
                    :key #'car)
      return it))
 
-(defun reinterp-item-using-bindings (interp bindings)
+(defun reinterp-item-using-bindings (interp bindings mention)
   (declare (special interp bindings category::collection))
   (let ((interps (list interp)))
     (loop for (var val) in bindings
@@ -158,8 +181,8 @@ where it regulates gene expression.")
        do
 	 (let* ((*ival* ;; recursively interpret the bound value in the current context
 		 (if (eq var 'predication)
-		     (reinterp-predication val interp)
-		     (interp-in-context val))))
+		     (reinterp-predication val mention)
+		     (interpret-in-context val var mention))))
 	   (declare (special *ival*))
 	   (setq interps
 		 (loop for i in interps
@@ -185,21 +208,14 @@ where it regulates gene expression.")
 
 (defun reinterp-predication (pred *lambda-var*)
   (declare (special *lambda-var*))
-  (interpret-in-context pred))
+  (interpret-in-context pred nil nil))
 
-(defun interp-in-context (item)
-  (cond
-    ((or ;; these items do not need to be re-interpreted in context
-      (word-p item)
-      (polyword-p item)
-      (numberp item))
-     item)
-    (t (interpret-in-context item))))
 
-(defun reinterpret-collection-with-modifiers (collection-mention)
+
+(defun reinterpret-collection-with-modifiers (collection-mention variable container)
   (declare (special collection-mention))
   (or
-   (special-collection-interp collection-mention)
+   (special-collection-interp collection-mention variable container)
    (when (or
           (itypep (base-description (car collection-mention)) 'slashed-sequence)
           (itypep (base-description (car collection-mention)) 'hyphenated-pair)
@@ -215,8 +231,9 @@ where it regulates gene expression.")
            (loop for m in items
               nconc
                 (expand-collection-into-list-if-needed
-                 (reinterp-item-using-bindings (interp-in-context m)
-					     other-modifiers)))))
+                 (reinterp-item-using-bindings (interpret-in-context m variable container)
+					       other-modifiers
+					       collection-mention)))))
      (declare (special other-modifiers items mod-items))
      (if (null mod-items)
 	 ;; happened in "(Figure 1B, left and middle panels)"
@@ -231,16 +248,16 @@ where it regulates gene expression.")
   "Turns on the interpretaion of some protein collections as pathways or complexes. Should be massively generalized")
 
 ;;; THIS IS BIO-SPECIFIC CODE -- figure out how to segregate it appropriately
-(defun special-collection-interp (dt)
+(defun special-collection-interp (dt var container)
   (let ((i (base-description (car dt))))
     (when (and *special-collection-interp*
                (or (itypep i 'protein) (itypep i 'protein-family))
                (search "/" (retrieve-surface-string i)))
-      (interpret-as-pathway-or-complex dt))))
+      (interpret-as-pathway-or-complex dt var container))))
 
 ;; in principle, could be a pathway or a complex, and we should consult the biopax+ model, or something like that
 ;;  this is version -2
-(defun interpret-as-pathway-or-complex (dt)
+(defun interpret-as-pathway-or-complex (dt var container)
   (let* ((proteins (base-description (car dt)))
          (pathway (make-an-individual
                    'pathway
@@ -254,7 +271,8 @@ where it regulates gene expression.")
              unless (member (car m) '(items type number))
              collect m)))
     (reinterp-item-using-bindings pathway
-				  other-modifiers)))
+				  other-modifiers
+				  container)))
 
 
 (defun expand-collection-into-list-if-needed (interp)
