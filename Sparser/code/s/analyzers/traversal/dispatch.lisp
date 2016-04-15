@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1996,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2011-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "dispatch"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  0.3 August 2015
+;;;  Version:  April 2016
 
 ;; initiated 6/15/94 v2.3.  9/26 Fixed :multiple-initial-edges bug
 ;; 9/13/95 fleshed out stub for hook being a cfr. 9/15 fixed a bug.
@@ -77,7 +77,10 @@
                        (eq (edge-form first-edge) (category-named 'np)))
              ;; if so, then there's probably a hook for it and
              ;; we leave it alone.
-             (lsp-break "About to convert ordinary word to proper name")
+             ;; Alternatively, in some text-types it's the thing
+             ;; to do. C.f. WHO for the World Health Organization
+             (unless *treat-single-Capitalized-words-as-names*
+               (lsp-break "About to convert ordinary word to proper name"))
              (convert-ordinary-word-edge-to-proper-name first-edge)))))
 
       (:contiguous-edges
