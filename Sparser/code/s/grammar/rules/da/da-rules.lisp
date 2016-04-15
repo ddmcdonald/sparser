@@ -485,7 +485,7 @@
       edge)))
 
 
-(define-debris-analysis-rule comma-adverb-comma
+(define-debris-analysis-rule adverb-comma
   :pattern (adverb "," )
   :action (:function respan-edge-around-adverb-comma first second))
 
@@ -511,10 +511,11 @@
 
 
 (define-category event-relation
-  :specializes abstract
+  :specializes perdurant
   :binds ((relation)
           (event)
-          (subordinated-event))
+          (subordinated-event)
+	  (adverb))
   :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
     though the head decides what to do with it based on the
     composition. Same design as pps."
