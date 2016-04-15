@@ -305,51 +305,57 @@
          (obo (corresponding-obo words-string))
          (uc-word (resolve (string-upcase words-string))))
     (cond
-     (uc-word
-      ;; If a full caps version of this character string is defined,
-      ;; then define this other case pattern of the string to mean 
-      ;; the same thing. 
-      (let* ((uc-rule (car (rs-single-term-rewrites (rule-set-for uc-word))))
-             (cfr 
-              (define-cfr/resolved (cfr-category uc-rule)
-                  (list (resolve/make words-string))
-                (cfr-form uc-rule)
-                (cfr-referent uc-rule)
-                (cfr-schema uc-rule))))
-        (values (cfr-category uc-rule)
-                cfr
-                (cfr-referent uc-rule))))
+      ((and uc-word
+	    (rule-set-for uc-word)
+	    ;; have cases where there is no rule! (e.g. for the word <word ASTERISK>
+	    (car (rs-single-term-rewrites (rule-set-for uc-word))))
+       ;; If a full caps version of this character string is defined,
+       ;; then define this other case pattern of the string to mean 
+       ;; the same thing. 
+       (let* ((rs (rule-set-for uc-word))
+	      (uc-rule (and rs (car (rs-single-term-rewrites rs))))
+	      (cfr 
+	       (when uc-rule
+		 (define-cfr/resolved (cfr-category uc-rule)
+		     (list (resolve/make words-string))
+		   (cfr-form uc-rule)
+		   (cfr-referent uc-rule)
+		   (cfr-schema uc-rule)))))
+	 (values (cfr-category uc-rule)
+		 cfr
+		 (cfr-referent uc-rule))))
 
-     (obo
-      ;; OBO check/handling matches what is done when it comes in as
-      ;; an unknown word via make-word/all-properties/or-primed
-      (assemble-category-rule-and-referent-for-an-obo obo (resolve/make words-string)))
+      (obo
+       ;; OBO check/handling matches what is done when it comes in as
+       ;; an unknown word via make-word/all-properties/or-primed
+       (assemble-category-rule-and-referent-for-an-obo obo (resolve/make words-string)))
 
-     ((resolve words-string) ;; known (poly)word
-      ;; Did we define it as a bio-entity on a previous pass?
-      (let* ((w (resolve words-string))
-             (bio-entity (find-individual 'bio-entity :name w)))
-        (if bio-entity
-          (values category::bio-entity
-                  'reify-ns-name-as-bio-entity
-                  bio-entity)
-          (let ((rule (car (rs-single-term-rewrites (rule-set-for w)))))
-            (cond
-             (rule
-              (values (cfr-category rule)
-                      rule
-                      (cfr-referent rule)))
-             (t (push-debug `(,w))
-                (break "Known word, but no associated rule. Figure out what to do")))))))
+      ((resolve words-string) ;; known (poly)word
+       ;; Did we define it as a bio-entity on a previous pass?
+       (let* ((w (resolve words-string))
+	      (bio-entity (find-individual 'bio-entity :name w)))
+	 (if bio-entity
+	     (values category::bio-entity
+		     'reify-ns-name-as-bio-entity
+		     bio-entity)
+	     (let* ((rs (rule-set-for w))
+		    (rule (and rs (car (rs-single-term-rewrites rs)))))
+	       (cond
+		 (rule
+		  (values (cfr-category rule)
+			  rule
+			  (cfr-referent rule)))
+		 (t (push-debug `(,w))
+		    (break "Known word, but no associated rule. Figure out what to do")))))))
 
-     (t ;; by default make a bio-entity
-      ;; Open-code key part of handle-unknown-word-as-bio-entity,
-      ;; which does -not- reify this case in a rule.
-      (let* ((word (resolve/make words-string))
-             (i (find-or-make-individual 'bio-entity :name word)))     
-        (values category::bio-entity
-                'reify-ns-name-as-bio-entity
-                i))))))
+      (t ;; by default make a bio-entity
+       ;; Open-code key part of handle-unknown-word-as-bio-entity,
+       ;; which does -not- reify this case in a rule.
+       (let* ((word (resolve/make words-string))
+	      (i (find-or-make-individual 'bio-entity :name word)))     
+	 (values category::bio-entity
+		 'reify-ns-name-as-bio-entity
+		 i))))))
 
 
 ;;;------------------------------------
