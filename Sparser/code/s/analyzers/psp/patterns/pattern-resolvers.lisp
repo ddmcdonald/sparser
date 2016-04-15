@@ -102,8 +102,10 @@
            (pos-edge-ends-at right-edge)
            (edge-category right-edge)
            :form (if (eq (edge-form right-edge) category::verb+ed)
-                     category::vp+ed
-                     category::adjective)
+                     (if (itypep left-ref 'no-space-prefix)
+			 category::verb+ed
+			 category::vp+ed)
+		     category::adjective)
            :referent (bind-dli-variable variable left-ref right-ref)
            :rule 'do-relation-between-first-and-second
            :constituents `(,left-edge ,right-edge))))
