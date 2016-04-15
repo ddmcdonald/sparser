@@ -2083,13 +2083,17 @@
   :binds ((destination biological))
   :realization
   (:verb ("targetXX" :third-plural "targetsXX" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
-         :noun "target"
          :etf (svo-passive)
          :s agent
          :o object
          :of object
          :to destination))
 
+(define-category target-protein :specializes protein
+		 :binds ((agent (:or protein drug)))
+		 :realization
+		 (:noun "target"
+			:of agent))
 
 (define-category tend :specializes bio-rhetorical
    ;; :mixins (bio-tocomp) working on this.. other comps not working.
