@@ -467,6 +467,7 @@
 	(update-definite-determiner edge)
         edge )))
    (t
+    #+ignore
     (format t "Dropping parenthetical ~s on the floor because previous edge  ~s has no interpretation~&"
             paren-edge left-neighbor )
     nil
