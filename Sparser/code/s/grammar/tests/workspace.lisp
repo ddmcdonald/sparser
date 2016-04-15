@@ -26,6 +26,10 @@ If (inhibit-completion-when-subsumes category::who) isn't working correctly
 it will keep creating edges over "who" until the limit on the vector
 is reached.
 (p "An early study of hearts from people who died from ischemic heart disease.")
+
+This should have a thin_space character around the equal sign
+(p " SYK mRNA was significantly down-regulated by piceatannol treatment in UPN-1 and MAVER-1 (59% and 75% reduction; p  = 0.047 and p  = 0.01 respectively).")
+
 |#
 
 #|

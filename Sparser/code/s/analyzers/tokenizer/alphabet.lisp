@@ -896,9 +896,13 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8194 (:punctuation . ,(punctuation-named (code-char 8194)))) ;;" ", (code = 8194)
 
     (8197 (:punctuation . ,(punctuation-named (code-char 8197)))) ;;" ", (code = 8197)
-    (8201 (:punctuation . ,(punctuation-named (code-char 8201)))) ;;" ", (code = 8201)
-    (8202 (:punctuation . ,(punctuation-named (code-char 8202)))) ;;" ", (code = 8202)
-    (8208 (:punctuation . ,(punctuation-named (code-char 8208)))) ;;"‐", (code = 8208)
+    (8201 (:punctuation . ;; ,(punctuation-named (code-char 8201)))) ;;" ", (code = 8201)
+                   :space)) 
+    (8202 (:punctuation . ;; ,(punctuation-named (code-char 8202)))) ;;" ", (code = 8202)
+                   :space))   
+    (8208 (:punctuation . ;;,(punctuation-named (code-char 8208)))) ;;"‐", (code = 8208)
+                   :space))
+                                              
     
     (8211  ;; en dash
      (:punctuation . ,(punctuation-named #\- )))

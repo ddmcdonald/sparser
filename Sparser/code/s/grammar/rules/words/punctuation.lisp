@@ -120,9 +120,10 @@
     (code-char 8194) ;; whitespace?
     (code-char 8197) ;; whitespace?
 
-    (code-char 8201)
-    (code-char 8202)
-    (code-char 8203) ;;  "​"
+    (code-char 8201) ;; thin_space U2009
+    (code-char 8202) ;; hair_space 
+    (code-char 8203) ;; zero width space
+    
     (code-char 8208)
     (code-char 8212) ;; em dash, html: &mdash;
     (code-char 8213) ;;"―"
