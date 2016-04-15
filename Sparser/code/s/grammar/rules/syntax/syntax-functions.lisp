@@ -211,19 +211,6 @@
        ((interpret-premod-to-np qualifier head))
        ;; subcat test is here. If there's a :premod subcategorization
        ;; that's compapatible this gets it.
-     
-       ;; This case is to benefit marker-categories
-       (nil
-	(itypep head 'process) ;; poor man's standing for verb?
-	(let ((var (object-variable head)))
-	  (declare (special var))
-	  ;; (lsp-break "noun-noun")
-	  (if var ;; really should check for passivizing
-	      (setq  head (bind-dli-variable var qualifier head))
-	      ;; otherwise it's not obvious what to bind
-	      (else
-		(setq  head (bind-dli-variable 'modifier qualifier head))))
-	  head))
        (t
 	;; what's the right relationship? Systemics would say
 	;; they are qualifiers, so perhaps subtype?
@@ -245,13 +232,6 @@
 
 
 (defun adj-noun-compound (qualifier head)
-  ;;(lsp-break "adj-noun-compound")
-  ;; goes with (adjective n-bar-type) syntactic rule
-  (when nil
-    (push-debug `(,qualifier ,head))
-    (break "check: qualifier = ~a~
-   ~%       head = ~a" qualifier head))
-
   (cond
     ((call-compose qualifier head)) ;; This case is to benefit marker-categories
     ((category-p head)
@@ -1177,7 +1157,8 @@
 	 (ignore?
 	  item)
 	 (*constrain-pronouns-using-mentions*
-	  (setf (mention-restriction (car (mention-history item))) v/r)
+	  ;;(format t "~&setting mention-restriction of ~s to ~s~&" (edge-mention pn-edge) v/r)
+	  (setf (mention-restriction (edge-mention pn-edge)) v/r)
 	  item)
 	 (t
 	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
