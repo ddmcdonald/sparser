@@ -85,9 +85,11 @@
       (edge (set-used-by daughter edge)))
 
     (setf (edge-category edge)  (or category
-                                    (cfr-category rule)))
+				    (and (cfr-p rule) (cfr-category rule))))
     (setf (edge-form edge)      (or form
-                                    (cfr-form rule)))
+				    ;; case for comma
+				    (and (word-p category) category)
+				    (and (cfr-p rule) (cfr-form rule))))
     (setf (edge-referent edge)  
           (place-referent-in-lattice
            (or referent
