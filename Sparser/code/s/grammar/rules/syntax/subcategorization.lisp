@@ -526,33 +526,35 @@
      (retrieve-surface-string (right-edge-for-referent)))))
 
 (defun edge-for-referent (ref)
-  (if
-   (car (mention-history ref))
-   ;; when we have completed edges, this works
-   ;; but in the middle of interpretation, when we try to collect information with subcat-instance
-   ;; we need to fall back on the old code below
-   (mention-source (car (mention-history ref)))
-   (else
-     (let*
-	 ((left-edge (left-edge-for-referent))
-	  (left-ref (edge-referent left-edge))
-	  (right-edge (right-edge-for-referent))
-	  (right-ref (edge-referent right-edge)))
-       (cond
-	 ((or
-	   (eq ref left-ref)
-	   (eq ref (value-of 'comp left-ref))
-	   (and (category-p left-ref)
-		(eq ref (individual-for-ref left-ref))))
-	  left-edge)
-	 ((or
-	   (eq ref right-ref)
-	   (eq ref (value-of 'comp right-ref))
-	   (and (category-p right-ref)
-		(eq ref (individual-for-ref right-ref))))
-	  right-edge)
-	 (t
-	  (break "edge-for-referent")))))))
+  ;;  (if
+  ;;   (car (mention-history ref))
+  ;; when we have completed edges, this works
+  ;; but in the middle of interpretation, when we try to collect information with subcat-instance
+  ;; we need to fall back on the old code below
+  ;;   (mention-source (car (mention-history ref)))
+  ;;   (else
+  (let*
+      ((left-edge (left-edge-for-referent))
+       (left-ref (edge-referent left-edge))
+       (right-edge (right-edge-for-referent))
+       (right-ref (edge-referent right-edge)))
+    (cond
+      ((or
+	(eq ref left-ref)
+	(eq ref (value-of 'comp left-ref))
+	(and (category-p left-ref)
+	     (eq ref (individual-for-ref left-ref))))
+       left-edge)
+      ((or
+	(eq ref right-ref)
+	(eq ref (value-of 'comp right-ref))
+	(and (category-p right-ref)
+	     (eq ref (individual-for-ref right-ref))))
+       right-edge)
+      (t
+       (break "edge-for-referent")))
+    ;;))
+    ))
 
 (defun save-cat-string (cat cat-string)
   (push cat-string (gethash cat *ref-cat-text*)))
