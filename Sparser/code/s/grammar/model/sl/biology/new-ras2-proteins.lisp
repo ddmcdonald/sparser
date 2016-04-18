@@ -243,7 +243,7 @@
 (DEF-RAS2-PROTEIN "CYH1_HUMAN" ("CYH1_HUMAN" "D17S811E" "PH, SEC7 and coiled-coil domain-containing protein 1" "CYTH1" "SEC7 homolog B2-1" "PSCD1")) 
 (DEF-RAS2-PROTEIN "CYH2_HUMAN" ("CYH2_HUMAN" "ARF nucleotide-binding site opener" "ARNO" "CYTH2" "PH, SEC7 and coiled-coil domain-containing protein 2" "Protein ARNO" "PSCD2L" "PSCD2" "ARF exchange factor")) 
 (DEF-RAS2-PROTEIN "CYH3_HUMAN" ("CYH3_HUMAN" "General receptor of phosphoinositides 1" "PH, SEC7 and coiled-coil domain-containing protein 3" "GRP1" "CYTH3" "Grp1" "ARNO3" "ARF nucleotide-binding site opener 3" "PSCD3" "Protein ARNO3")) 
-(DEF-RAS2-PROTEIN "CaMKII family" ("CaMKII family" "CAMKII family" "CaMKII" "CAMKII")) 
+(DEF-RAS2-PROTEIN "CaMKII family" ("CaMKII family" "CAMKII family" "CaMKII" "CAMKII" "calcium/calmodulin-dependent protein kinase II")) 
 (DEF-RAS2-PROTEIN "CoA" ("CoA")) 
 (DEF-RAS2-PROTEIN "CoR" ("CoR")) 
 (DEF-RAS2-PROTEIN "DAAM1_HUMAN" ("DAAM1_HUMAN" "KIAA0666" "DAAM1")) 
