@@ -346,7 +346,12 @@
 			  rule
 			  (cfr-referent rule)))
 		 (t (push-debug `(,w))
-		    (break "Known word, but no associated rule. Figure out what to do")))))))
+		    (format t "~&^^^^^^^^^^^^^ Known word ~s, but no associated rule. Probably a part of a polyword, now defining it as a bio-entity~&" w)
+		    (let* ((i ))
+		      (values category::bio-entity
+			      'reify-ns-name-as-bio-entity
+			      (find-or-make-individual 'bio-entity :name w)))))))))
+
 
       (t ;; by default make a bio-entity
        ;; Open-code key part of handle-unknown-word-as-bio-entity,
