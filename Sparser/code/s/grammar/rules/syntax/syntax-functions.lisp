@@ -182,7 +182,7 @@
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
   (cond
-    (*subcat-test* t)
+    (*subcat-test* (not (and (individual-p head) (itypep head 'determiner))))
     ((itypep head 'determiner) nil) ;; had strange case with "some cases this" -- head was "this"
     ((and qualifier head
 	  (not (or (category-p head)
@@ -233,6 +233,8 @@
 
 (defun adj-noun-compound (qualifier head)
   (cond
+    (*subcat-test* (not (and (individual-p head) (itypep head 'determiner))))
+    ((itypep head 'determiner) nil) ;; had strange case with "some cases this" -- head was "this"
     ((call-compose qualifier head)) ;; This case is to benefit marker-categories
     ((category-p head)
      (let ((ihead (individual-for-ref head)))
@@ -579,16 +581,17 @@
       (itypep vg category::be)
       (itypep adverb category::deictic-location))
      nil)
+    (*subcat-test*
+     (cond
+       ((vg-has-adverb-variable? vg) t)
+       (t
+	(format t "~&can't find adverb slot for ~s on verb ~s~&"
+		(edge-string (left-edge-for-referent))
+		(edge-string (right-edge-for-referent)))
+	nil)))
     ((vg-has-adverb-variable? vg)
-     (setq  vg (bind-dli-variable 'adverb adverb vg))
-     vg)
-    (t (format t "can't find adverb slot for ~s on verb ~s"
-	      (edge-string (left-edge-for-referent))
-	      (edge-string (right-edge-for-referent)))
-       ;; may want to block application of rule to verbs whose interpretation does not have an adverb variable
-       vg)
-
-    ))
+     (setq  vg (bind-dli-variable 'adverb adverb vg)))
+    (t vg)))
 
 (defun interpret-as-comp (as vp+ed)
   (declare (ignore as))
@@ -894,21 +897,23 @@
 ;;;-----------------
 
 (defun assimilate-subject (subj vp)
-  (cond
-   ((itypep vp 'subordinate-clause)
-    (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
-           (vg-edge (edge-right-daughter (right-edge-for-referent)))
-           (s
-            (if (is-passive? vg-edge)
-                (assimilate-subcat svp :object subj)
-                (assimilate-subcat svp :subject subj))))
-      #+ignore
-      (when s 
-        (make-subordinate-clause (value-of 'conj vp) s))
-      s))
-   ((is-passive? (right-edge-for-referent))
-    (assimilate-subcat vp :object subj))
-   (t (assimilate-subcat vp :subject subj))))
+  (when
+      (and subj vp) ;; have had cases of uninterpreted VPs
+    (cond
+      ((itypep vp 'subordinate-clause)
+       (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
+	      (vg-edge (edge-right-daughter (right-edge-for-referent)))
+	      (s
+	       (if (is-passive? vg-edge)
+		   (assimilate-subcat svp :object subj)
+		   (assimilate-subcat svp :subject subj))))
+	 #+ignore
+	 (when s 
+	   (make-subordinate-clause (value-of 'conj vp) s))
+	 s))
+      ((is-passive? (right-edge-for-referent))
+       (assimilate-subcat vp :object subj))
+      (t (assimilate-subcat vp :subject subj)))))
 
 
 (defun add-possessive-determiner (poss ng)
@@ -993,7 +998,7 @@
 		    (assimilate-subcat vp :object subj))
 		  (assimilate-subcat vp :subject subj))))
 	 (or result
-	     (progn (format t "**** can't interpret ~s ~s"
+	     (progn (format t "~&**** assimilate-subject-to-vp-ed can't interpret ~s ~s~&"
 			    (retrieve-surface-string subj)
 			    (retrieve-surface-string vp))
 		    vp))))
@@ -1077,19 +1082,21 @@
 	 (if (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
 	     (verb-noun-compound vg obj)
 	     (assimilate-object vg obj))))
-    (when (and result (not *subcat-test*))
-      (if (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
-	  (revise-parent-edge :category (itype-of obj)
-			      :form category::n-bar
-			      :referent result)
-	  (revise-parent-edge :category (itype-of vg)
-			      :form (ecase (cat-name (edge-form (parent-edge-for-referent)))
-				      ((vg vp) category::vp)
-				      ((vp+ing vg+ing) category::vp+ing)
-				      ((vp+ed vg+ed) category::vp+ed))				   
-			      :referent result)
-	  ))
-    result))
+    (cond
+      (*subcat-test* result)
+      (result
+       (if (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
+	   (revise-parent-edge :category (itype-of obj)
+			       :form category::n-bar
+			       :referent result)
+	   (revise-parent-edge :category (itype-of vg)
+			       :form (ecase (cat-name (edge-form (parent-edge-for-referent)))
+				       ((vg vp) category::vp)
+				       ((vp+ing vg+ing) category::vp+ing)
+				       ((vp+ed vg+ed) category::vp+ed))				   
+			       :referent result)
+	   )
+       result))))
     
 
 
