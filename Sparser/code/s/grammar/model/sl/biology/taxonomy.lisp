@@ -258,7 +258,14 @@
          :in in-equilibrium-with)
   )
 
+(define-category dna-motif :specializes bio-chemical-entity
+		 ;; enhancers, promoters, etc., also response elements
+		 )
 
+
+(define-category dna-response-element :specializes dna-motif
+		 :realization
+		 (:noun "response element"))
 
 (define-category ion :specializes bio-chemical-entity
   :binds ((molecule molecule)))
@@ -375,7 +382,14 @@
 
 (define-category bio-rhetorical :specializes event
   :mixins (biological bio-thatcomp bio-whethercomp)
-  :binds ((agent (:or pronoun/first/plural these bio-entity article-figure 
+  :binds ((agent (:or pronoun/first/plural
+		      pronoun/plural ;; "they"
+		      organism ;; "these animals showed..."
+		      these
+		      bio-entity
+		      bio-location ;; "the Y561 site displayed no difference..."
+		      evidence
+		      article-figure
 		      bio-rhetorical
 		      bio-process ;; the B-RAFV600E mutation predicts
 		      bio-method	;; high-throughput functional screens may inform
@@ -689,17 +703,9 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
-(define-category ubiquitylase :specializes post-translational-enzyme
-                 ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
-                 ;;  should be as a "telic" qualia for those molecules which are kinases 
-  :realization
-  (:noun "ubiquitylase"))
+(noun "phosphatase" :super post-translational-enzyme)
 
-(define-category ubiquitylase :specializes post-translational-enzyme
-                 ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
-                 ;;  should be as a "telic" qualia for those molecules which are kinases 
-  :realization
-  (:noun "deubiquitylase"))
+(noun "ubiquitylase" :super post-translational-enzyme)
 
 (define-category deubiquitylase :specializes enzyme
                  ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
