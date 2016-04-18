@@ -1363,6 +1363,12 @@
 	   :noun "interrogation"
 	   :etf (svo-passive)))
 
+(define-category intrigue :specializes bio-rhetorical
+    :mixins (bio-thatcomp)
+    :realization
+    (:verb "intrigue"
+	   :etf (svo-passive)))
+
 (define-category investigate :specializes bio-method 
   :mixins (bio-whethercomp)
   :realization
@@ -1439,6 +1445,24 @@
          :etf (svo-passive)
          :into substrate
          :to substrate))
+
+
+(define-category link :specializes caused-bio-process 
+  :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :realization 
+  (:verb "link" :noun "linkage" 
+         :etf (svo-passive)
+         :into substrate
+         :to substrate))
+
+(define-category cross-link :specializes caused-bio-process 
+  :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :realization 
+  (:verb "cross-link" :noun "cross-linkage" 
+         :etf (svo-passive)
+         :into substrate
+         :to substrate))
+
 
 (define-category localization :specializes bio-self-movement
   :restrict ((object molecule)) 
@@ -1545,7 +1569,6 @@
 	    (ingredient-condition bio-entity))
     :realization
     (:verb "observe" ;; keyword: ENDS-IN-ED 
-	   :noun "observation"
 	   :etf (svo-passive)
            :by method ;; can also be people..
            :for focused-on
@@ -2000,9 +2023,14 @@
   :binds ((tocomp (:or be biological)))
   ;; it was shown that
   :realization
-  (:verb ("show" :past-tense "shown")
+  (:verb ("show" :past-tense "showed" :past-participle "shown")
          :etf (svo-passive)
          :to-comp tocomp))
+
+(define-category reveal :specializes show
+		 :realization
+		 (:verb "reveal"
+			:etf (svo-passive)))
 
 (define-category stabilize :specializes bio-control
   :binds ((process bio-process))
@@ -2082,7 +2110,7 @@
 (define-category target :specializes caused-bio-process
   :binds ((destination biological))
   :realization
-  (:verb ("targetXX" :third-plural "targetsXX" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
+  (:verb ("target" :third-plural "targets" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
          :etf (svo-passive)
          :s agent
          :o object
