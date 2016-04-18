@@ -279,6 +279,8 @@
                           (polyword
                            (concatenate
                             'string "\"" (pw-pname label) "\"" ))
+			  (da-rule
+			   (concatenate 'string "\"" (da-name label) "\"" ))
 			  (otherwise
 			   (break "New case of label: ~a~%~a" 
 				  (type-of label) label))))
@@ -301,7 +303,8 @@
                (list (if (eq right-daughter :literal-in-a-rule)
                        "literal"
                        (format nil "~A" rule)))
-               (symbol (string-downcase (symbol-name rule))))
+               (symbol (string-downcase (symbol-name rule)))
+	       (da-rule (format nil "\"~a\"" (da-name rule) )))
              "terminal")))
       
       (format s "~&~VT~A ~A  ~30,2Tp~A - p~A  ~40,2T~A~%"
