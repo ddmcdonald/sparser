@@ -1,13 +1,13 @@
-  1 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-  2 ;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
-  3 ;;;
-  4 ;;;    File: "UCD-proteins2"
-  5 ;;;  Module: "grammar/model/sl/biology/
-  6 ;;; version: August 2015
-  7 
-  8 ;; Definitions of proteins from the MITRE June test set, initially determined by the UCD tagging pipeline
-  9 ;; Refined by merging with UniProt-based definitions August 2015
- 10 
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;;
+;;;    File: "UCD-proteins2"
+;;;  Module: "grammar/model/sl/biology/
+;;; version: August 2015
+
+;; Definitions of proteins from the MITRE June test set, initially determined by the UCD tagging pipeline
+;; Refined by merging with UniProt-based definitions August 2015
+
 
 (define-protein "4EBP1_HUMAN"
  ("PR:Q13541"
