@@ -80,11 +80,14 @@
     (format stream "#<dl-vv ~a + ~a>"
             (if (symbolp (dlvv-variable dl-vv))
                 (dlvv-variable dl-vv)
-                (string-downcase (symbol-name (var-name (dlvv-variable dl-vv)))))
+                (string-downcase
+                 (symbol-name
+                  (etypecase (dlvv-variable dl-vv)
+                    (lambda-variable
+                     (var-name (dlvv-variable dl-vv)))
+                    (anonymous-variable
+                     (avar-name (dlvv-variable dl-vv)))))))
             (dlvv-value dl-vv))))
-
-
-
 
 (defparameter *lattice-ht* (make-hash-table :size 600000 :test #'eq)
   "This is the initial way that edge-referent's are linked to the structures that are in the lattice.
