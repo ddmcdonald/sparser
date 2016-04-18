@@ -286,7 +286,7 @@ similar to an oncogenic RasG12V mutation (9)."))
       :referent (:function interpret-to-comp-adjunct-to-np left-edge right-edge))))
 
 ;;--- adverbs
-
+#|
 (def-syntax-rule  (vg adverb)
   :head :left-edge
   :form vg
@@ -302,7 +302,7 @@ similar to an oncogenic RasG12V mutation (9)."))
   :form vg+ed
   :referent (:function interpret-adverb+verb right-edge left-edge))
 
-#+ignore
+
 (def-syntax-rule  (adverb infinitive) 
                   ;;??? what's the test example?
                   ;; can't find one -- but if this was added recently, it must have 
@@ -310,6 +310,7 @@ similar to an oncogenic RasG12V mutation (9)."))
   :head :right-edge
   :form infinitive
   :referent (:function interpret-adverb+verb left-edge right-edge))
+|#
 
 (loop for vv in '((verb+ed vg+ed)
                   (verb+ing vg+ing)
