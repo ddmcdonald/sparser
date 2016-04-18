@@ -550,22 +550,25 @@
 
         (unless (or (word-p left-edge)
                     (word-p right-edge))
-          (dolist (left (if (edge-vector-p left-edge) 
-                            (ev-edges left-edge)
-                            (list left-edge)))
-            (dolist (right (if (edge-vector-p right-edge) 
-                               (ev-edges right-edge)
-                               (list right-edge)))
-              (let ((heuristic (conjunction-heuristics left right)))
-                (if heuristic
-                    ;; conjoin/2 looks for leftwards
-                    (let ((edge (conjoin/2 left right heuristic :pass 'short-conjunctions-sweep)))
-                      (tr :conjoined-edge edge)
-                      edge)
-                    (tr :no-heuristics-for left-edge right-edge))))))))
+          (create-short-conjunction-edge-if-possible left-edge right-edge))))
     ;; zero it to avoid confusing the pass through a later sentence
     (setq *pending-conjunction* nil)))
 
+
+(defun create-short-conjunction-edge-if-possible (left-edge right-edge)
+  (dolist (left (if (edge-vector-p left-edge) 
+		    (ev-edges left-edge)
+		    (list left-edge)))
+    (dolist (right (if (edge-vector-p right-edge) 
+		       (ev-edges right-edge)
+		       (list right-edge)))
+      (let ((heuristic (conjunction-heuristics left right)))
+	(if heuristic
+	    ;; conjoin/2 looks for leftwards
+	    (let ((edge (conjoin/2 left right heuristic :pass 'short-conjunctions-sweep)))
+	      (tr :conjoined-edge edge)
+	      (return-from create-short-conjunction-edge-if-possible edge))
+	    (tr :no-heuristics-for left-edge right-edge))))))
 
 
 ;;;-------------------------
@@ -729,7 +732,9 @@
                     (when 
 			(or (eq (cat-name (cfr-category rule)) 'bio-entity)
 			    (not (itypep (cfr-category rule) 'biological))) ;; case where there is a definition from outside of biology (e.g. "TRIM")
-		      (format t "~&***Acronym -- attempting to change category of rule ~s to ~s~&" rule (edge-category regular-edge))
+		      (when
+			  (not (eq (cat-name (cfr-category rule)) 'bio-entity))
+			(format t "~&***Acronym -- attempting to change category of rule ~s to ~s~&" rule (edge-category regular-edge)))
 		      (setf (cfr-category rule) (edge-category regular-edge))
 		      (setf (cfr-rhs rule) (list uppercase-word))
 		      (setf (cfr-form rule) (edge-form regular-edge))
