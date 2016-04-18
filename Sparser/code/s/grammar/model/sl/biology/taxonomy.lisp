@@ -163,6 +163,31 @@
 ;;/// This is OBE given revision to biological. 
 (define-category bio-abstract :specializes biological)
 
+
+(define-category evidence :specializes bio-abstract
+  :binds ((fact biological))
+  :realization
+  (:noun "evidence"
+         :for fact))
+
+(define-category experiment-data :specializes evidence
+		 :mixins (biological)
+		 :realization
+		 (:noun "experiment"))
+
+(define-category analysis-data :specializes evidence
+		 :realization
+		 (:noun ("analysis" :plural "analyses")))
+
+(define-category study-data :specializes evidence
+		 :realization
+		 (:noun ("study" :plural "studies")))
+
+(define-category observation :specializes evidence
+		 :realization
+		 (:noun "observation"))
+
+
 (define-category bio-predication :specializes state 
   :mixins (biological)
   ;;/// This category is unlikely to be doing interesting
