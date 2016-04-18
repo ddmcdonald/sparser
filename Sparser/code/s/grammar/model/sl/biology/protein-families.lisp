@@ -14,6 +14,7 @@
 
 ;; Protein families
 (def-family "PTK")
+(def-family "TRIM")
 
 (def-family "GPCR")
 
