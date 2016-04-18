@@ -59,6 +59,7 @@
 ;;;----------------
 
 (defparameter *save-conjunctions* nil)
+(defparameter *show-protein-coercions* nil)
 (defun save-conjunctions (&optional (yes? t))
   (setq *save-conjunctions* yes?))
 (defparameter *collect-conjunctions* nil)
@@ -396,17 +397,32 @@
   ;; developed
   (when (and (edge-p edge-before)(edge-p edge-after))
     (let ((label-before (edge-category edge-before))
-          (label-after (edge-category edge-after)))
+          (label-after (edge-category edge-after))
+	  (ref-before (edge-referent edge-before))
+	  (ref-after (edge-referent edge-after)))
       (cond
        ((or (and (eq label-before label-after)
                  (cond
-                  ((eq (individual-p (edge-referent edge-before))
-                       (individual-p (edge-referent edge-after)))
+                  ((eq (individual-p ref-before)
+                       (individual-p ref-after))
                    t)
-                  ((and (itypep (edge-referent edge-before) 'xref)
-                        (itypep (edge-referent edge-after) 'xref))
+                  ((and (itypep ref-before 'xref)
+                        (itypep ref-after 'xref))
                    t)
-                  (t (break "conjunction-problem: conjunction of category and individual"))))
+		  ((or (itypep ref-before 'protein)
+		       (itypep ref-after 'protein))
+		   ;;cases like "actin-related protein and γ-tubulin "
+		   ;; when the premodifier on "protein" is dropped
+		   t)
+		  ((or ;; phosphorylated or non-phosphorylated
+		    (and (individual-p ref-before)
+			(category-p ref-after)
+			(itypep ref-before ref-after))
+		    (and (individual-p ref-after)
+			(category-p ref-before)
+			(itypep ref-before ref-before)))
+		   t)
+                  (t (break "conjunction-problem: conjunction of category and individual ~s and ~s" ref-before ref-after))))
             (when (eq (script) :biology)
               (bio-coercion-compatible? label-before label-after edge-before edge-after)))
         :conjunction/identical-adjacent-labels)
@@ -480,15 +496,19 @@
             (referential-category-p low))
     (itype-of low)))
 
+
 (defun show-protein-coercion (e1 e2)
-  (let ((e1-chars (actual-characters-of-word (pos-edge-starts-at e1)
-                                             (pos-edge-ends-at e1) nil)))
-    ;; (lsp-break "Likely protein: ~a" e1-chars)
-    (format t "~&*** ~s is likely to be a protein, because of conjunction with ~s~&"
-          e1-chars
-          (actual-characters-of-word (pos-edge-starts-at e2)
-                           (pos-edge-ends-at e2)
-                           nil))))
+  (when
+      *show-protein-coercions*
+    (let ((e1-chars (actual-characters-of-word (pos-edge-starts-at e1)
+					       (pos-edge-ends-at e1) nil)))
+      ;; (lsp-break "Likely protein: ~a" e1-chars)
+      (format t "~&*** ~s is likely a protein -- conjoined with ~s in ~s~&"
+	      e1-chars
+	      (actual-characters-of-word (pos-edge-starts-at e2)
+					 (pos-edge-ends-at e2)
+					 nil)
+	      (sentence-string *sentence-in-core*)))))
 
 (defun edge-string (e)
   (get-surface-string-for-individual (edge-referent e)))
