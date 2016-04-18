@@ -63,6 +63,29 @@
 (define-adverb "barely")
 (define-adverb "a bit more")
 
+(define-category positive :specializes bio-relation
+  :realization
+  (:adj "positive"
+	:for theme))
+
+(define-category negative :specializes bio-relation
+  :realization
+  (:adj "negative"
+	:for theme))
+
+(define-category equivalent :specializes bio-relation
+  :realization
+  (:adj "equivalent"
+	:to theme))
+
+(define-category prerequisite :specializes bio-relation
+  :realization
+  (:adj "prerequisite" ;;deacetylation of GR by HDAC2 may be prerequisite for GR association with the p65–NF-κB–activated complex
+	:noun "prerequisite"
+	:for theme))
+
+
+(adj "wide" :super bio-predication)
 
 ;;lipids
 ;; in EGFR signaling comments
@@ -139,7 +162,9 @@
 (adj "acidic" :super bio-predication)
 (adj "adaptor" :super bio-predication) ;; "adaptor protein"
 (adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"
-
+(noun "anaphylaxis" :super disease)
+(noun "metaplasia" :super disease)
+(noun "hyperplasia" :super disease)
 (noun "anchor" :super molecule) ;; "cytoplasmic anchor"
 (adj "apparent" :super bio-predication) ;; perhaps need :rhetorical predication"
 (adj "asymmetric" :super bio-predication)
@@ -259,6 +284,8 @@
 ;;> Error: Unexpected POS marker: 'QUANT' on #<word "lesser">
 ;; While executing: #<STANDARD-METHOD UNAMBIGUOUS-COMLEX-PRIMED-DECODER (WORD T)>, in process Listener(4).
 (noun ("mouse" :plural "mice") :super species)
+(noun "Xenopus" :super species)
+(noun "zebrafish" :super species)
 
 (noun "immunoblotting" :super bio-method)
 (noun "sequential immunoblotting" :super bio-method)
@@ -528,11 +555,7 @@
 
 (define-adverb "even")
 
-(define-category evidence :specializes bio-abstract
-  :binds ((fact biological))
-  :realization
-  (:noun "evidence"
-         :for fact))
+
 (noun "example" :super variant)
 (define-category bio-exchange :specializes other-bio-process
   :binds ((state-before (:or bio-state variant))
@@ -604,6 +627,11 @@
 (adj "high-throughput" :super bio-predication)
 (noun "HPLC" :super bio-method)
 (def-synonym HPLC (:noun "high performance liquid chromatography"))
+(noun "SCX" :super bio-method)
+(def-synonym SCX (:noun "strong cation exchange chromatography"))
+(noun "FRET" :super bio-method)
+(def-synonym fret (:noun "fluorescence resonance energy transfer"))
+
 (adj "housekeeping" :super bio-predication)
 
 ;; "However" is actually a subordinate conjunction.
@@ -1145,8 +1173,11 @@
 (def-cell-line "keratin") ;; NOT SURE THIS IS HOW IT IS BEING USED
 
 (def-cell-line "A375")
+(def-cell-line "A431D")
+(def-cell-line "A431")
 (def-cell-line "D04")
 (def-cell-line "D25")
+(def-cell-line "DU-145")
 (def-cell-line "MM415")
 (def-cell-line "MM485")
 (def-cell-line "OUMS-23")
