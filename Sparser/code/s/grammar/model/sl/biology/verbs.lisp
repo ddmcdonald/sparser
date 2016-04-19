@@ -288,7 +288,7 @@
   :binds ((actor bio-entity)
           (object bio-entity)
           (process bio-process)
-          (functionality bio-process)
+          (functionality (:or  bio-process bio-entity))
           (bio biological)
           (tocomp biological))
   :documentation "compare with act as"
