@@ -391,6 +391,7 @@ it is created from N-terminus to C-terminus.|#
 
 (noun "SH2" :super protein-domain)
 (noun "SH3" :super protein-domain)
+(noun "PTB domain" :super protein-domain)
 
 (noun "g1" :super protein-domain)
 (noun "g2" :super protein-domain)
@@ -398,8 +399,6 @@ it is created from N-terminus to C-terminus.|#
 (noun "g4" :super protein-domain)
 (noun "g5" :super protein-domain)
 (noun ("pleckstrin-homology domain" "pleckstrin homology domain" "PH domain" "pleckstrin-homology") :super protein-domain)
-
-
 
 (define-category DBD :specializes binding-domain
       :binds ((substrate bio-entity))
@@ -419,6 +418,14 @@ it is created from N-terminus to C-terminus.|#
 (define-category shuttling-domain :specializes protein-domain
   :realization
   (:noun "shuttling domain"))
+
+(define-category protein-targeting-domain :specializes protein-domain
+    :binds ((target (:or cellular-location molecular-location protein))
+	    (substrate protein))
+   :realization
+   (:noun "targeting domain"
+	  :m target
+	  :of substrate))
 
 (define-category NtA-region :specializes protein-domain
   :realization
@@ -625,7 +632,7 @@ it is created from N-terminus to C-terminus.|#
           (direct-bindee (:or bio-chemical-entity protein-domain))
           (site molecular-location)
           (domain protein-domain)
-          (cell-site cellular-location)
+          (cell-location cellular-location)
           (complex bio-complex))
   :realization 
   (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
@@ -637,8 +644,8 @@ it is created from N-terminus to C-terminus.|#
          :of bindee
          :via site
          :at site
-         :at cell-site
-         :to cell-site
+         :at cell-location
+         :to cell-location
          :to domain
          :with bindee
          :through domain
@@ -767,6 +774,16 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym calcium-calmodulin-complex
              (:noun "calcium/calmodulin"))
 
+
+(define-category monomer :specializes bio-complex ;; a funny sort of complex, but needed to get conjunction of "monomers and dimers"
+  :realization
+  (:noun "monomer"
+	 ))
+
+(define-category dimer :specializes bio-complex
+  :realization
+  (:noun "dimer"
+	 ))
 
 (define-category dimer :specializes bio-complex
   :realization
