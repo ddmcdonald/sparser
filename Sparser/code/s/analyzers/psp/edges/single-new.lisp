@@ -84,18 +84,24 @@
       (polyword )
       (edge (set-used-by daughter edge)))
 
+    ;; DA rules and edges formed by code rather than conventional
+    ;; rules will often have symbols in their rule fields
+    ;; that correspond to the function making the edge.
     (setf (edge-category edge)  (or category
-				    (and (cfr-p rule) (cfr-category rule))))
+                                    (unless (symbolp rule)
+                                      (cfr-category rule))))
     (setf (edge-form edge)      (or form
-				    ;; case for comma
-				    (and (word-p category) category)
-				    (and (cfr-p rule) (cfr-form rule))))
+				    (when (word-p category) ;; case for comma
+                                      category)
+                                    (unless (symbolp rule)
+                                      (cfr-form rule))))
     (setf (edge-referent edge)  
           (place-referent-in-lattice
            (or referent
                (referent-from-unary-rule
                 edge rule daughter))
            edge))
+    
     (complete edge)
     
     (when *trace-edge-creation*
@@ -107,7 +113,9 @@
                 (edge (edge-position-in-resource-array daughter)))
               rule))
     
-    (assess-edge-label (or category (cfr-category rule))
+    (assess-edge-label (or category
+                           (unless (symbolp rule)
+                             (cfr-category rule)))
                        edge)
     edge ))
 
