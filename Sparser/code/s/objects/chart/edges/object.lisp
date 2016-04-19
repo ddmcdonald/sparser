@@ -210,13 +210,17 @@
   (let* ((ev1 (pos-starts-here p1))
          (ev2 (pos-ends-here p2))
          (topmost-at-p1 (ev-top-node ev1)))
-    (when topmost-at-p1
-      (when (eq topmost-at-p1 :multiple-initial-edges)
-        (setq topmost-at-p1 (elt (ev-edge-vector ev1)
-                                 (1- (ev-number-of-edges ev1)))))
-      (when (eq (edge-ends-at topmost-at-p1)
-                ev2)
-        topmost-at-p1))))
+    (cond ((and (eq topmost-at-p1 :multiple-initial-edges)
+		(<= (ev-number-of-edges ev1) 0))
+	   (break "~&no edges between position ~s and ~s~&" p1 p2)
+	   nil)
+	  (topmost-at-p1
+	   (when (eq topmost-at-p1 :multiple-initial-edges)
+	     (setq topmost-at-p1 (elt (ev-edge-vector ev1)
+				      (1- (ev-number-of-edges ev1)))))
+	   (when (eq (edge-ends-at topmost-at-p1)
+		     ev2)
+	     topmost-at-p1)))))
 
 
 (defun continuous-edges-between (p1 p2)
