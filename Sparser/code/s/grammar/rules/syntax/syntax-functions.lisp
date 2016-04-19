@@ -1529,6 +1529,7 @@
                 (prep ,prep) (pobj ,pobj))))))))
 
 (defun apply-copular-pp (np copular-pp)
+  (declare (special category::copular-predicate))
   (when
    (itypep copular-pp 'subordinate-clause)
     (setq copular-pp (value-of 'comp copular-pp)))
@@ -1546,6 +1547,7 @@
       (let ((predicate (individual-for-ref np)))
         (setq  predicate (create-predication-by-binding variable-to-bind pobj predicate
 							(list 'apply-copular-pp (parent-edge-for-referent))))
+	(revise-parent-edge :category category::copular-predicate)
         (make-simple-individual category::copular-predicate
                                 `((predicated-of ,np)
                                   (predicate ,predicate))))))))
