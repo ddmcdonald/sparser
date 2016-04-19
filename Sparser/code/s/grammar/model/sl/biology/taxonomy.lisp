@@ -116,7 +116,7 @@
    it spans such a wide range of things it will not fit into
    an upper-model category. It's real job is to contribute slots."
   :mixins (with-quantifier)
-  :binds ((context bio-context)
+  :binds ((context (:or bio-context experiment-data))
           (cell-line cell-line)
           (cell-type cell-type)
           (organ bio-organ)
@@ -226,13 +226,15 @@
 ;; Rusty -- where are we supposed to put the two numbers
 ;; or two molecules?  Need example. 
 (define-category ratio  :specializes measurement
-  :binds ((ratio ratio)
-          (divisor biological))
-  :realization
-  (:noun "ratio"
-        :of quantity
-        :of ratio
-        :to divisor))
+ :binds ((measured hyphenated-triple)
+	 (ratio (:or ratio number-colon-number))
+	 (divisor biological))
+   :realization
+   (:noun "ratio"
+	  :m measured
+	  :of quantity
+	  :of ratio
+	  :to divisor))
 
 
 
@@ -357,9 +359,10 @@
 (define-category caused-bio-process
   :specializes bio-process
   :binds
-  ((agent (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
-	       measurement ;; "these data raised the possibility..."
-	       )) ;; supercedes subject in bio=-process
+  ((agent ;; supercedes subject in bio=-process
+    (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
+	 measurement ;; "these data raised the possibility..."
+	 molecular-location)) ;; membrane targeting domains that facilitate interaction with the plasma membrane
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
    (at (:or bio-concentration quantity measurement)))
   :realization
@@ -422,8 +425,10 @@
 		      measurement     ;; these data
 		      ))
 	  (object (:or biological pronoun/inanimate))
+	  (ratio-condition ratio)
 	  (fig article-figure)
-	  (method bio-method))
+	  (method bio-method)
+	  (by-means-of (:or bio-process mechanism bio-method)))
   :realization
   (:s agent
       :o object
@@ -433,8 +438,11 @@
       :by method
       :through method
       :under method
+      :in by-means-of
+      :from by-means-of
       :via method
-      :with method))
+      :with method
+      :at ratio-condition))
 
 (define-category over-ridden) ;; this is used only for over-riding inherited variables
 
@@ -680,7 +688,8 @@
           (mutation point-mutation)
           (complex bio-complex)
           (functionally-related-to protein)
-	  (site molecular-location))
+	  (site molecular-location)
+	  (equilibrium-state equilibrium))
   :mixins (  reactome-category  in-ras2-model )
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
@@ -689,6 +698,7 @@
 (fom-subcategorization category::protein
                        :category category::protein
                        :slots `(:in complex
+				    :in equilibrium-state
                                     ;;:of functionally-related-to
 				    :m site
                                     ))
