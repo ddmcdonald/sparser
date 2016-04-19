@@ -518,9 +518,15 @@
   (let ((reject?
          (or (word-p before)
 	     (word-p after)
-	     (and (member (cat-name before)
-                          `(protein residue-on-protein bio-complex
-                                    other fragment))
+	     (and (or
+		   (itypep before 'protein)
+		   (itypep before 'residue-on-protein)
+		   (itypep before 'fragment)
+
+		   (itypep after 'protein)
+		   (itypep after 'residue-on-protein)
+		   (itypep after 'fragment)
+		   ) ;;??                                  other
                   (not (eq before after)))
              (and (category-p before)
                   (category-p after)
@@ -542,13 +548,13 @@
                                 (itypep after category::bio-predication)
                                 (itypep after category::modifier)))))))))
     (cond
-     (reject?
-      (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels ) 
-            *rejected-form-conjs*)
-      t)
-     (t
-      (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels) *form-conjs*)
-      nil))))
+      (reject?
+       (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels ) 
+	     *rejected-form-conjs*)
+       t)
+      (t
+       (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels) *form-conjs*)
+       nil))))
 
 (defun conj-info (before after edge-before edge-after &key pass)
   (when (null pass) (lsp-break "unknown-conjunction-pass"))
