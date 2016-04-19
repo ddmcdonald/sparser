@@ -149,9 +149,16 @@
       (setq e/w (right-treetop-at ending-position))
       (etypecase e/w
         (null)
-        (edge (set-used-by e/w parent-edge)
-              (setq ending-position (pos-edge-ends-at e/w))
-              (push e/w edges))
+        (edge
+         (let ((edge-end-pos (pos-edge-ends-at e/w)))
+           (when (> (pos-token-index edge-end-pos) index-of-final-position)
+             ;; If there are unaccounted for edges within the
+             ;; span, e.g. from no-space operations, then the
+             ;; treetop-at call can go too far. 
+             (return))
+           (set-used-by e/w parent-edge)
+           (setq ending-position edge-end-pos)
+           (push e/w edges)))
         (word (setq ending-position
                     (chart-position-after ending-position)))
         ((eql :multiple-initial-edges)

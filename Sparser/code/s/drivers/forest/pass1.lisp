@@ -429,6 +429,13 @@
 (defun knit-parens-into-neighbor (left-neighbor paren-edge)
   (declare (special left-neighbor paren-edge))
   (tr :parens-after left-neighbor paren-edge)
+  (when (eq (pos-edge-ends-at left-neighbor)
+            (pos-edge-ends-at paren-edge))
+    ;; already knit. If this is called from interp-big-mech-chunk it's
+    ;; possible that assess-parenthesized-content may have already
+    ;; done the kniting when it's called from span-parentheses on
+    ;; a likely acronym. 
+    (return-from knit-parens-into-neighbor nil))
   (cond
    ((and (edge-p left-neighbor)
          (edge-referent left-neighbor)

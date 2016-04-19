@@ -123,7 +123,7 @@
                          (eq (edge-form (car edges)) category::quantifier))))))))))
 
 
-(defun interp-big-mech-chunk (chunk from-right)
+(defun interp-big-mech-chunk (chunk from-right &aux tt)
   ;;(push-debug `(,chunk)) (break "interp chunk: ~a" chunk)
   (when *save-chunk-edges*
     (add-chunk-edges-snapshot))
@@ -133,16 +133,18 @@
   ;; 3. spply it
   ;; 4. repeat
 
-  (let*
-      (tt
-       (paren-pair (loop for ttl on (treetops-in-current-chunk)
-		      when (and (setq tt (second ttl))
-				(edge-p tt)(category-p (edge-category tt))
-				(eq (cat-name (edge-category tt)) 'parentheses))
-		      do (return ttl))))
-    (declare (special paren-pair))
-    ;;handle internal parens as in "a class ii ( inactive conformation binder ) drug"
-    (when paren-pair (knit-parens-into-neighbor (car paren-pair)(second paren-pair))))
+  (let ((paren-pair (loop for ttl on (treetops-in-current-chunk)
+                       when (and (setq tt (second ttl))
+                                 (edge-p tt)
+                                 (category-p (edge-category tt))
+                                 (eq (cat-name (edge-category tt)) 'parentheses))
+                       do (return ttl))))
+
+    ;;handle internal parens as in
+    ;; "a class ii ( inactive conformation binder ) drug"
+    (when paren-pair
+      (knit-parens-into-neighbor (car paren-pair)(second paren-pair))))
+  
   (let ( triple  edge blocked-triples triples)
     (clrhash *rules-for-pairs*)
     (loop
