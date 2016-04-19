@@ -37,6 +37,11 @@
 
 (in-package :sparser)
 
+(define-category exclusivity :specializes bio-relation ;; this is actually a lot more general
+  :binds ((alternative biological))
+  :realization
+  (:noun "exclusivity" :adj "exclusive"
+	 :with alternative))
 
 (noun "xref" :super bio-abstract)
 
@@ -126,7 +131,7 @@
 
 (define-category conformational-change
                  :specializes bio-process ;;TO-DO  not sure this is the best choice, but can't think of one better
-  :binds ((structure bio-entity))
+  :binds ((structure (:or bio-entity molecular-location)))
   :realization
   (:noun "conformational change"
          :in structure
@@ -437,10 +442,11 @@
 
 ;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
 (define-category component :specializes molecule
-  :binds ((whole (:or bio-complex bio-process)))
+		 :binds ((whole (:or bio-complex bio-process)))
   :realization
   (:noun "component"
-         :of whole))
+         :of whole
+	 :in whole))
 
 (def-synonym component 
              (:noun "part"))
@@ -567,7 +573,6 @@
          :from state-before
          :to state-after))
 
-(noun "exclusivity" :super bio-abstract) ;; keyword: (ity N)
 (noun "extent" :super bio-scalar) 
 
 (define-category fact :specializes bio-rhetorical
@@ -615,7 +620,7 @@
 (adj "general" :super bio-predication)
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
-;;(noun "growth factor" :super molecule)
+
 (def-bio "guanine" nucleobase)
 
 (adj "high" :super bio-predication)
