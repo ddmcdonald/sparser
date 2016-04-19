@@ -1011,6 +1011,90 @@
                (pos-token-index from)
                (pos-token-index to))))
 
+(defvar *delimit-incr-segments* nil)
+
+(defun trace-incr-segments ()
+  (setq *delimit-incr-segments* t))
+(defun untrace-incr-segments ()
+  (setq *delimit-incr-segments* nil))
+
+(deftrace :incseg-start (word p)
+  (when *delimit-incr-segments*
+    (trace-msg "[seg] Start: scanned ~a at p~a"
+               word (pos-token-index p))))
+
+(deftrace :inseg-chunk-start-form (category)
+  (when *delimit-incr-segments*
+    (trace-msg "[seg] chunk starting form: ~a" category)))
+
+(deftrace :inseg-loop-scan (word pos-before)
+  (when *delimit-incr-segments*
+    (trace-msg "[seg] Loop: scanned ~a at p~a"
+               word (pos-token-index pos-before))))
+
+(deftrace :inseg-installed-edges (edges)
+  (when *delimit-incr-segments*
+    (trace-msg "[seg] installed ~a edges over it" (length edges))))
+
+(deftrace :inseg-next-form (category)
+  (when *delimit-incr-segments*
+    (trace-msg "[seg] next form: ~a" category)))
+
+(deftrace :inseg-finished-on-null-form ()
+  (when *delimit-incr-segments*
+    (trace-msg "[seg] Terminating segment because forms is null")))
+
+(deftrace :inseg-finish-incompatible (p)
+  (when *delimit-incr-segments*
+    (trace-msg "[seg] Terminating segment at p~a because form ~
+                doesn't extend it" (pos-token-index p))))
+
+(deftrace :inseg-loop-with-at (form-cat form pos-before)
+  (when *delimit-incr-segments*
+    (trace-msg "[seg] looping: ~a chunk extended by ~a at p~a"
+               form-cat form (pos-token-index pos-before))))
+
+(deftrace :inseg-storing-edge (edge)
+  (when *delimit-incr-segments*
+    (trace-msg "[collect] storing e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :inseg-parsing-between (start-pos end-pos)
+  (when *delimit-incr-segments*
+    (trace-msg "[collect] parsing between p~a and p~a"
+               (pos-token-index start-pos)
+               (pos-token-index end-pos))))
+
+(deftrace :inseg-skip-to (p)
+  (when *delimit-incr-segments*
+    (trace-msg "[collect] skipping ahead to p~a"
+               (pos-token-index p))))
+
+(deftrace :inseg-at-eos ()
+  (when *delimit-incr-segments*
+    (trace-msg "[collect] Finished")))
+
+(deftrace :inseg-edge-collector-resume-at (p)
+  (when *delimit-incr-segments*
+    (trace-msg "[collect] Looping for next-seg starting at p~a"
+               (pos-token-index p))))
+
+
+
+(deftrace :inc-at-position (p)
+  (when (or *trace-c3* *delimit-incr-segments*)
+    (trace-msg "[c3] position is ~a" p)))
+
+(deftrace :inc-looking-at (word)
+  (when (or *trace-c3* *delimit-incr-segments*)
+    (trace-msg "[c3]   with word ~s" (word-pname word))))
+
+(deftrace :inc-edge/s-over-word (edges)
+  (when *trace-c3*
+    (trace-msg "[c3]   which introduced ~a" edges)))
+
+
+
 (deftrace :c3-segment-scan-start (start-pos start-bracket)
   ;; called from read-through-segment-to-end
   (when *trace-c3*
@@ -1125,18 +1209,6 @@
   ;; called from add-entity
   (when *trace-c3*
     (trace-msg "[c3] Adding ~a to the situation" i)))
-
-(deftrace :inc-at-position (p)
-  (when *trace-c3*
-    (trace-msg "[c3] position is ~a" p)))
-
-(deftrace :inc-looking-at (word)
-  (when *trace-c3*
-    (trace-msg "[c3]   with word ~s" (word-pname word))))
-
-(deftrace :inc-edge/s-over-word (edges)
-  (when *trace-c3*
-    (trace-msg "[c3]   which introduced ~a" edges)))
 
 
 ;;;------------------------------------------------------------------

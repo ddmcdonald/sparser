@@ -25,7 +25,62 @@
     (setq *reached-eos* nil) ;; initialize
     (initialize-incremental-state p1)
     ;;(state-sensitive-rightward-march p1)
-    (delimit-and-collect-successive-chunks p1)))
+    (multiple-value-bind (edges forms)
+                         (delimit-and-collect-successive-chunks p1)
+      (incrementally-parse-chunks edges forms))))
+#|
+  (p "put a block on the table")
+  (do-normal-segment-finished-options)
+  (trace-incr-segments)
+
+                    source-start
+e0    PUT-SOMETHING-SOMEWHERE 1 "put " 2
+e6    BLOCK         2 "a block " 4
+e4 e5               "on" :: #<word "on">, ON
+e10   TABLE         5 "the table" 7
+                    end-of-source
+|#
+
+(defvar *incr-edges-test* nil
+  "Global to stash edges on to expedite debugging")
+
+(defun incrementally-parse-chunks (edges forms)
+  (declare (special category::verb))
+  (push-debug `(,edges ,forms))
+  (setq *incr-edges-test* edges)
+  (tts)
+  (terminate-chart-level-process)
+  :pump-is-primed)
+
+#|
+  (cond
+   ;; test the idea on imperatives
+   ((eq (car forms) category::verb)
+    (verb-driven-incr-parse edges))
+   (t (break "Stub: form of first edge is ~a" (car forms)))))
+
+
+(defun verb-driven-incr-parse (edges)
+  "The first edge is the list is a verb. The rest will be
+   arguments or adjuncts to it. Look up the semantic constraints
+   of the verb from its Mumble data and walk through the
+   edges. If something doesn't fit then we stop and report
+   what we've got so far."
+  (let ((edge-sequence (copy-list edges)))
+    (flet ((next-edge ()
+             (pop edge-sequence)))
+      ;; 1st prime the pump
+      (e
+
+  (let ((first-edge (car edges))) ;; we're assuming it's verb not vg
+    (push-debug `(,first-edge ,edges))
+    (break "start hand simulation")))
+|#
+; (escan first-edge) ;; move the dot and call complete from the scan
+;   in this example, need to also appreciate that we're verb initial
+;   and flag this as an imperative. 
+; (ecomplete first-edge) ;; make instance
+; (epredict first-edge)
 
 
 (defun state-sensitive-rightward-march (pos-before)
@@ -63,25 +118,24 @@
       ;; recurce to handle the next word
       (state-sensitive-rightward-march pos-after))))
 
-#|
-  (p "put a block on the table")
-  (do-normal-segment-finished-options)
-
-                    source-start
-e0    PUT-SOMETHING-SOMEWHERE 1 "put " 2
-e6    BLOCK         2 "a block " 4
-e4 e5               "on" :: #<word "on">, ON
-e10   TABLE         5 "the table" 7
-                    end-of-source
-|#
 
 (defun delimit-and-collect-successive-chunks (start-pos)
+  (declare (special *reached-eos*))
   (let ( edges  forms )
     (flet ((store-edge (start end)
              (let ((edge (edge-between start end)))
-               (format t "~&storing ~a~%" edge)
+               (tr :inseg-storing-edge edge)
                (push (edge-form edge) forms)
-               (push edge edges))))
+               (push edge edges)))
+           (parse-segment-interior (start-pos end-pos)
+             ;; cf. parse-chunk-interior which works from a chunk
+             (declare (special *left-segment-boundary*
+                               *right-segment-boundary*))
+             (setq *left-segment-boundary* start-pos
+                   *right-segment-boundary* end-pos)
+             (let ((*return-after-doing-segment* t))
+               (declare (special *return-after-doing-segment*))
+               (pts))))
       (loop
         (let ((end-pos (setup-and-delimit-next-chunk start-pos))
               coverage )
@@ -92,14 +146,14 @@ e10   TABLE         5 "the table" 7
             ;; n.b..always moves ahead by one position
             (store-edge start-pos (chart-position-after start-pos))
             (setq start-pos (chart-position-after start-pos))
-            (format t "~&skipping to ~a~%" start-pos)
+            (tr :inseg-skip-to start-pos)
             (setq end-pos (setup-and-delimit-next-chunk start-pos)))
 
           (when (eq end-pos :done)
             ;; eos found by delimit call
             (lsp-break "we're done"))
 
-          (format t "~&parsing segment from ~a to ~a~%" start-pos end-pos)
+          (tr :inseg-parsing-between start-pos end-pos)
           (parse-segment-interior start-pos end-pos)
           
           (setq coverage (segment-coverage))
@@ -112,67 +166,15 @@ e10   TABLE         5 "the table" 7
              (lsp-break "Didn't expect coverage = ~a" coverage)))
 
           (when *reached-eos*
-            ;;(lsp-break "now-what")
+            (tr :inseg-at-eos)
             (return))
           
+          (tr :inseg-edge-collector-resume-at end-pos)
           (setq start-pos end-pos)))
+      ;;(lsp-break "ok")
+      (values (nreverse edges)
+              (nreverse forms)))))
 
-      (sort-out-incr-forest (nreverse edges) (nreverse forms))
-)))
-
-(defun parse-segment-interior (start-pos end-pos)
-  ;; cf. parse-chunk-interior which works from a chunk
-  (declare (special *left-segment-boundary*
-                    *right-segment-boundary*))
-  (setq *left-segment-boundary* start-pos
-        *right-segment-boundary* end-pos)
-  (let ((*return-after-doing-segment* t))
-    (declare (special *return-after-doing-segment*))
-    (pts)))
-
-
-(defun sort-out-incr-forest (edges forms)
-  (declare (special category::verb))
-  (push-debug `(,edges ,forms))
-  (cond
-   ;; test the idea on imperatives
-   ((eq (car forms) category::verb)
-    (verb-driven-incr-parse edges))
-   (t (break "Stub: form of first edge is ~a" (car forms)))))
-
-
-(defun determine-edge-form-for-state-changes (edges pos-before)
-  "Subroutine of state-sensitive-rightward-march that buries the
-   details of having one or more edges created for the word."
-  (cond
-   ((null (cdr edges))
-    (edge-form (car edges)))
-   ((eq :multiple-initial-edges (top-edge-at/starting pos-before))
-    ;; two cases. "a" => a literal edge and a real one
-    ;;/// not going to worry about it yet
-    (let ((top-edge (highest-edge-starting-at pos-before)))
-      (edge-form top-edge)))
-   ;; Case here for two or more "real" edges that reflect
-   ;; different senses of the word -- "one" is strong case in point
-   (t 
-    (error "Need new way to determine edge form at ~a~
-          ~%for ~a" pos-before edges))))
-
-(defun verb-driven-incr-parse (edges)
-  "The first edge is the list is a verb. The rest will be
-   arguments or adjuncts to it. Look up the semantic constraints
-   of the verb from its Mumble data and walk through the
-   edges. If something doesn't fit then we stop and report
-   what we've got so far."
-  (let ((first-edge (car edges))) ;; we're assuming it's verb not vg
-    (push-debug `(,first-edge ,edges))
-    (break "start hand simulation")))
-
-; (escan first-edge) ;; move the dot and call complete from the scan
-;   in this example, need to also appreciate that we're verb initial
-;   and flag this as an imperative. 
-; (ecomplete first-edge) ;; make instance
-; (epredict first-edge)
 #|
     
     ;; look up corresponding lexicalized phrase and set it up

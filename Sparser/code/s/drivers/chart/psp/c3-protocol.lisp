@@ -37,9 +37,26 @@
     (scan-segment p1)))
 
 
+(defun determine-edge-form-for-state-changes (edges pos-before)
+  "Subroutine of state-sensitive-rightward-march that buries the
+   details of having one or more edges created for the word."
+  (cond
+   ((null (cdr edges))
+    (edge-form (car edges)))
+   ((eq :multiple-initial-edges (top-edge-at/starting pos-before))
+    ;; two cases. "a" => a literal edge and a real one
+    ;;/// not going to worry about it yet
+    (let ((top-edge (highest-edge-starting-at pos-before)))
+      (edge-form top-edge)))
+   ;; Case here for two or more "real" edges that reflect
+   ;; different senses of the word -- "one" is strong case in point
+   (t 
+    (error "Need new way to determine edge form at ~a~
+          ~%for ~a" pos-before edges))))
+
 (defun setup-and-delimit-next-chunk (pos-before)
   "Return the position just after the last item"
-  (declare (special *chunk-forms*))
+  (declare (special *chunk-forms* *reached-eos*))
   ;; Caller should check for eos since we're always 
   ;; going to end one position ahead of the end
   ;; of the chunk
@@ -50,13 +67,12 @@
 
   (let ((word (pos-terminal pos-before))
         (pos-after (chart-position-after pos-before)))
-    (tr :inc-looking-at word)
-    (format t "~&Start: scanned ~a at ~a~%" word pos-before)
+    (tr :incseg-start word pos-before)
 
     ;; eos check -- eos terminates its segment
-    (when (eq word *end-of-source*)
+    #+ignore(when (eq word *end-of-source*)
       (setq *reached-eos* t)
-      ;; (lsp-break "reached eos")
+      (lsp-break "1st reached eos")
       (return-from setup-and-delimit-next-chunk pos-before))
 
     (install-terminal-edges word pos-before pos-after)
@@ -66,7 +82,7 @@
 
       ;; "black" could start an adjp
       ;(assert (null (cdr forms)))
-      (format t "~&chunk starting form: ~a"  (car forms))
+      (tr :inseg-chunk-start-form (car forms))
 
       (loop
         ;; The word we just made the edges for is
@@ -79,39 +95,40 @@
           (scan-next-position))
 
         (setq word (pos-terminal pos-before))
-        (format t "~&Loop: scanned ~a at ~a~%" word pos-before)
+        (tr :inseg-loop-scan word pos-before)
 
         (when (eq word *end-of-source*)
           (setq *reached-eos* t)
-          ;; (lsp-break "reached eos in loop")
+          ;;(lsp-break "reached eos in loop")
           ;; have to handle the final segnent
           (return-from setup-and-delimit-next-chunk pos-before))
 
         (let* ((next-edges
                 (install-terminal-edges word pos-before pos-after))
                (form (determine-edge-form-for-state-changes next-edges pos-before)))
+          (tr :inseg-installed-edges next-edges)
+          (tr :inseg-next-form form)
+
           ;; given what the form of the (edge over the) previous word
           ;; was. If the form of this new edge compatible with it?
           ;; If so, extend the chunk, if not we're done.
-          (format t "~&next form: ~a~%" form)
 
           (when (null forms)
             ;; we've scanned something that is not an np, vg, or adjp
             ;; so we should skip over it. That means leaving
             ;; this loop returning the position after the word/edges
-            ;; we're skipping
-            (format t "~&Skipping it~%")
+            ;; we're skipping. Prepositions will do this
+            (tr :inseg-finished-on-null-form)
             (return-from setup-and-delimit-next-chunk :skip))
 
           ;; When we get an incompatible form we've gone
           ;; one word further that the end of the segment,
           ;; e.g. to the "has" in the standard example
           (unless (compatible-form? (car forms) form)
-            (format t "~&Ending segment at ~a" pos-before)
+            (tr :inseg-finish-incompatible pos-before)
             (return-from setup-and-delimit-next-chunk pos-before))
 
-          (format t "~&looping: ~a chunk extended by ~a at ~a~%"
-                     (car forms) form pos-before))))))
+          (tr :inseg-loop-with-at (car forms) form pos-before))))))
 
 
 (defun compatible-form? (form-type form)
@@ -135,6 +152,8 @@
       (adjp
        (lsp-break "not ready to handle an adjp")))))
     
+
+;;; incremental routines
 
 (defgeneric escan (chart-item)
   (:documentation "'e' as in Earley. The item will be
