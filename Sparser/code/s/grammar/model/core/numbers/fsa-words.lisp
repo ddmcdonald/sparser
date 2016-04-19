@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1999,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1999,2012-2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa words"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  0.4 September 2013
+;;;  Version:  April 2016
 
 ;; initiated (redesigned from scratch) 11/30/93 v2.3, finished the first
 ;; version with stubs for the multi-word case 12/6.  Fixed a bug 1/14/94.
@@ -57,12 +57,11 @@
         ;; a frequent enough case that it's worth looking for right
         ;; here. Also lets us get around the fact that if we waited
         ;; the number-word's original category would have been respanned
-        ;; as a number and the pattern would be lost.
-        (then
-          (unless (eq (edge-category triggering-edge)
-                      (category-named 'multiplier))
-            (break "Unexpected situation: number + something-other-than-~
-                    multiplier:~%  ~a" triggering-edge))
+          ;; as a number and the pattern would be lost.
+        (when (eq (edge-category triggering-edge)
+                  (category-named 'multiplier))
+          ;; compare: "11 two-component systems". Suspenders to go with
+          ;; this belt for that case would be to notice the no-space hyphen.
           (let ((rule (multiply-labels (category-named 'number)
                                        (category-named 'multiplier))))
             (unless rule
