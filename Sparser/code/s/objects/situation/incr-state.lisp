@@ -56,3 +56,7 @@
 (defun initialize-incremental-state (pos)
   (let ((ic (make-instance 'incremental-state :initial-pos pos)))
     (setf *current-incremental-state* ic)))
+
+(defun pending-prediction ()
+  (predicted-path (current-incremental-state)))
+

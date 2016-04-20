@@ -49,45 +49,40 @@
   (let* ((pairs (bound lp)) ;; parameter - value pairs
          (path (sp::predicted-path (sp::current-incremental-state))))
     (assert path) ;; should already be in place    
-    (setq path (car path)) ;; temporary
     (let ( modified )
       (loop for pvp in pairs
         do (setq modified
                  (subst (value pvp) (phrase-parameter pvp) path)))
       modified)))
 
-#|
-      (loop
-        (when (null item)
-          (return))
-        (format t "~%item = ~a" item)
-        (typecase item
-          (cons
-           (tail-cons
-            (incorporate-lexicalizations-into-predicted-path1
-            item parameter-count bound-parameters)
-            left-prefix))
-          (node-label (tail-cons item left-prefix))
-          (keyword
-           ;; e.g. :set-state (:aux-state mumble::initial) 
-           (tail-cons item left-prefix)
-           (tail-cons (pop pending-path) left-prefix))
-          (slot-label (tail-cons item left-prefix))
-          (parameter
-           (cond
-            ((memq item bound-parameters)
-             (let* ((pvp (find item pairs :key #'phrase-parameter))
-                    (value (when pvp (value pvp))))
-               (assert pvp)
-               (assert (word-p value))
-               (tail-cons value left-prefix) ;; convert now?
-               (when (= 0 (decf parameter-count))
-                 (return))))
-            (t (tail-cons item left-prefix))))
-          (otherwise
-           (break "Unexpected type of item in position path: ~a~%~a"
-                  (type-of item) item)))
-        (setq item (pop pending-path))) |#
+(defun ppp-1 (head-word path)
+  ;;/// position would find the word if it worked on trees
+  (let ((item (pop path)))
+    (loop
+      (format t "~&item = ~a~%" item)
+      (etypecase item
+        (node-label) ;;///
+        (keyword ;; :set-state (:aux-state mumble::initial)
+         (pop path))
+        (slot-label) ;;/// attachment points if dominates
+        (parameter) ;; irrelevant on a word search
+        (cons
+         (ppp-1 head-word item))
+        (word
+         ;; We're assuming we've succeeded.
+         ;; And that we could be a few levels down in the
+         ;; node recursion, so we need to stash our
+         ;; results and throw
+         ;; Simplified (?) assumption that there will
+         ;; only be one word
+         (assert (eq head-word ;; sparser word
+                     (sp::get-sparser-word-for-mumble-word item)))
+         (setf (sp::predicted-path (sp::current-incremental-state))
+               path)
+         (throw :found-lexical-head t)))
+      (setq item (pop path))
+      (unless item
+        (error "we've exhausted the path")))))
 
 ;; not going to be used?
 (defun merge-lp-clp-parameter-specs (lexicalized-phrase catgory-linked-phrase)

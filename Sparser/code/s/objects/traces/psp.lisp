@@ -1011,12 +1011,22 @@
                (pos-token-index from)
                (pos-token-index to))))
 
+
+
 (defvar *delimit-incr-segments* nil)
 
 (defun trace-incr-segments ()
   (setq *delimit-incr-segments* t))
 (defun untrace-incr-segments ()
   (setq *delimit-incr-segments* nil))
+
+(defvar *trace-earley* nil)
+
+(defun trace-earley ()
+  (setq *trace-earley* t))
+(defun untrace-earley ()
+  (setq *trace-earley* nil))
+
 
 (deftrace :incseg-start (word p)
   (when *delimit-incr-segments*
@@ -1079,8 +1089,6 @@
     (trace-msg "[collect] Looping for next-seg starting at p~a"
                (pos-token-index p))))
 
-
-
 (deftrace :inc-at-position (p)
   (when (or *trace-c3* *delimit-incr-segments*)
     (trace-msg "[c3] position is ~a" p)))
@@ -1092,6 +1100,18 @@
 (deftrace :inc-edge/s-over-word (edges)
   (when *trace-c3*
     (trace-msg "[c3]   which introduced ~a" edges)))
+
+
+(deftrace :prediction-trigger (edge interp-state)
+  (when *trace-earley*
+    (trace-msg "[e] Predicting from e~a in ~a"
+               (edge-position-in-resource-array edge)
+               interp-state)))
+
+(deftrace :predicted-path (lp)
+  (when *trace-earley*
+    (trace-msg "[e]   based on ~a" lp)))
+
 
 
 

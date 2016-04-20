@@ -174,7 +174,26 @@
     or a parameter."))
 
 (defmethod pop-predicted-path ((e edge))
-  (push-debug `(,e)) (break "starting the pop"))
+  (push-debug `(,e))
+  ;; Limited case. Wants to find a one-word lexicalized head
+  (let* ((head-word (edge-left-daughter e))
+         (state (current-incremental-state))
+         (path (predicted-path state)))
+    (push-debug `(,path ,head-word))
+    ;; We'll be walking into syntactic contexts as we pass
+    ;; though node labels. These need to be instantiated
+    ;; somehow
+    (catch :found-lexical-head
+      (mumble::ppp-1 head-word path))
+
+    ;; If that was a verb, then the top of the
+    ;; remaining path is the slot and parameter
+    ;; for the next argument.
+      
+    ;; we're operating over edges, so we know
+    ;; that this prediction is complete (so to speak)
+    ;; and we should act on it.
+    ))
 
 
 (defgeneric epredict (item)
@@ -187,6 +206,7 @@
   its projection."
   (let* ((state (current-incremental-state))
          (interp-state (state-of-interpretation state)))
+    (tr :prediction-trigger e interp-state)
     (case interp-state
       (:initial
        (let* ((referent (edge-referent e))
@@ -212,6 +232,7 @@
          (lp (mumble::linked-phrase mapping)) ;; lexicalized phrase
          (phrase (mumble::phrase lp))         
          (alist (mumble::parameter-variable-map mapping)))
+    (tr :predicted-path lp)
     (setf (predicted-path state) 
           (copy-list
            ;; make a copy so we don't munge the version that Mumble uses

@@ -49,28 +49,26 @@ e10   TABLE         5 "the table" 7
   (push-debug `(,edges ,forms))
   (setq *incr-edges-test* edges)
   (tts)
-  (terminate-chart-level-process)
-  :pump-is-primed)
-
-#|
-  (cond
-   ;; test the idea on imperatives
-   ((eq (car forms) category::verb)
-    (verb-driven-incr-parse edges))
-   (t (break "Stub: form of first edge is ~a" (car forms)))))
-
-
-(defun verb-driven-incr-parse (edges)
-  "The first edge is the list is a verb. The rest will be
-   arguments or adjuncts to it. Look up the semantic constraints
-   of the verb from its Mumble data and walk through the
-   edges. If something doesn't fit then we stop and report
-   what we've got so far."
-  (let ((edge-sequence (copy-list edges)))
+  (let ((edge-sequence (copy-list edges))
+        (state (current-incremental-state)))
     (flet ((next-edge ()
              (pop edge-sequence)))
-      ;; 1st prime the pump
-      (e
+      ;; 1st prime the pump. We should start by
+      ;; scanning, but there's nothing to scan
+      ;; until we have a prediction in place
+      (unless (pending-prediction)
+        (epredict (car edges)))
+      (loop
+        (let ((edge (next-edge)))
+          (unless edge
+            (lsp-break "More to do?")
+            (terminate-chart-level-process))
+          (escan edge)
+          (ecomplete edge)
+          (lsp-break "now what?"))))))
+
+
+#|
 
   (let ((first-edge (car edges))) ;; we're assuming it's verb not vg
     (push-debug `(,first-edge ,edges))
