@@ -45,7 +45,9 @@
 ;;; stray case to think through
 ;;;-----------------------------
 
-(def-cfr of-time ("of" time))
+(def-cfr of-time ("of" time)
+  :form pp
+  :referent (:daughter right-edge))
 
 ;;;--------------------------
 ;;; combination with clauses
