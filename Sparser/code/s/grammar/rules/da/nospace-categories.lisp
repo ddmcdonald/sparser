@@ -308,8 +308,7 @@ for each case and define a k-method to make sense of it all.
 (defun define-no-space-prefix (string)
   (let* ((word (resolve/make string))
          (category (category-named 'no-space-prefix :break))
-         (i (find-or-make-individual 'no-space-prefix
-                                     :word word))
+         (i (find-or-make-individual 'no-space-prefix :word word))
          (cfr (def-cfr/expr category (list word)
                 :form category::common-noun ;; odd, but what alternative?
                 :referent i)))
@@ -320,6 +319,7 @@ for each case and define a k-method to make sense of it all.
   `(
     ,(define-no-space-prefix "auto")
     ,(define-no-space-prefix "co") ;; co-occurring
+    ,(define-no-space-prefix "de") ;; de-repressing 
     ,(define-no-space-prefix "di")
     ,(define-no-space-prefix "mono")
     ,(define-no-space-prefix "re") ;; "re-activate"
