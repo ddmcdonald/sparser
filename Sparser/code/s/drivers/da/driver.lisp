@@ -73,7 +73,10 @@
                (tr :starts-da-pattern-with tt) ;; "[DA check] ~A starts a DA pattern" 
                (execute-da-trie 1st-vertex tt position next-position))
               
+              #+ignore
               ((setq arc (is-an-item-anywhere-in-a-trie tt))
+               ;; Middle-out needs serious revision.
+               ;; See results in Pierre Vinken sentence
                (push-debug `(,arc))
                (tr :starts-da-pattern/middle-out tt)
                (execute-trie-middle-out arc tt position next-position))
