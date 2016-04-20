@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  December 2015
+;;;   version:  April 2016
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -111,9 +111,12 @@
         ;; goes with the incremental protocol when waiting
         ;; for an entire sentence to be chunked before
         ;; rolling any of them up.
-        (new-forest-driver position-before))))
-    (tr :period-at-p-not-eos position-after))
-  (setq *position-before-last-period* position-before))
+        (new-forest-driver position-before)))
+      (setq *position-before-last-period* position-before))
+    
+    (else
+      (tr :period-at-p-not-eos position-after)
+      (handle-period-as-initial position-before))))
 
 
 ;;--- Sentences
