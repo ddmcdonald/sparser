@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "ref-method"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   May 2014
+;;;   Version:   April 2016
 
 ;; created 9/1/11. 10/3 Adapting to getting categories as arguments, e.g.
 ;; in the case of prepositions. 11/8/12 Adjusted argument order to match
@@ -24,23 +24,32 @@
 (defun ref/method (rule-field left-referent right-referent)
   (declare (special *shadows-to-individuals*))
 
-  ;; Assuming two-argument binary rules for now
-  (unless (= 3 (length rule-field))
-    (error "Method calls restricted to two arguments.~
+  (cond
+    (*clos* ;; flag controling whether we construct methods
+
+     ;; Assuming two-argument binary rules for now
+     (unless (= 3 (length rule-field))
+       (error "Method calls restricted to two arguments.~
          ~%%This is different:~%   ~a" rule-field))
     
-    (let ((method (car rule-field)))
-      (tr :calling-method method)
-      (setup-args-and-call-k-method 
-       left-referent right-referent
-       (let ((referent
-              ;; Have to get the order of arguments correct
-              (cond
-               ((equal (cdr rule-field) '(left-referent right-referent))
-                (funcall method left-shadow right-shadow))
-               ((equal (cdr rule-field) '(right-referent left-referent))
-                (funcall method right-shadow left-shadow))
-               (t (push-debug `(,rule-field))
-                  (error "Unanticipated layout of the rule field ~
-         in a method call:~%  ~a" (cdr rule-field))))))
-         referent))))
+     (let ((method (car rule-field)))
+       (tr :calling-method method)
+       (setup-args-and-call-k-method 
+           left-referent right-referent
+         (let ((referent
+                ;; Have to get the order of arguments correct
+                (cond
+                  ((equal (cdr rule-field) '(left-referent right-referent))
+                   (funcall method left-shadow right-shadow))
+                  ((equal (cdr rule-field) '(right-referent left-referent))
+                   (funcall method right-shadow left-shadow))
+                  (t (push-debug `(,rule-field))
+                     (error "Unanticipated layout of the rule field ~
+                            in a method call:~%  ~a" (cdr rule-field))))))
+           referent))))
+    (t
+     ;; If we can't apply the method we still have to provide
+     ;; a referent. Most of these are right headed, so if we're
+     ;; going to ignore one of the arguments, this seems best.
+     right-referent)))
+
