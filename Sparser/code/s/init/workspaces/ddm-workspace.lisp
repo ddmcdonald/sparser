@@ -21,6 +21,7 @@
   initiate-incremental-CwC-protocol  (establish-kind-of-chart-processing-to-do :incremental)
   initiate-c3-protocol  (establish-kind-of-chart-processing-to-do :c3-protocol)
 
+ (r3::break-in-articles) (r3::do-june-no-cards :start 1 :n 15)
 
  (loop for c in *referential-categories* when (null (super-categories-of c)) collect c)
  workout-the-relationships-among-the-categories
