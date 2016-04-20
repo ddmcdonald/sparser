@@ -421,7 +421,7 @@
   ;; bind to their left though.
   ;;/// Mine from model/core/names/parens-after-name.lisp
   (dolist (paren-edge (parentheses (layout)))
-    (let ((left-neighbor (left-treetop-at/edge paren-edge)))
+    (let ((left-neighbor (left-treetop-at/only-edges paren-edge)))
       (when left-neighbor ;; conceivably it could be sentence initial
         ;; but its more likely to be an edge than not        
         (knit-parens-into-neighbor left-neighbor paren-edge)))))

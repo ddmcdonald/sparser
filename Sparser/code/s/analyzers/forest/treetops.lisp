@@ -122,9 +122,11 @@
 
 
 ;;;--- variants that handle multiple-initial-edges for you
+(defmethod right-treetop-at/only-edges ((e edge))
+  (right-treetop-at/only-edges (pos-edge-ends-at e)))
 
-(defun right-treetop-at/only-edges (position)
-  (let* ((ev (pos-starts-here position))
+(defmethod right-treetop-at/only-edges ((p position))
+  (let* ((ev (pos-starts-here p))
          (top-node (ev-top-node ev)))
     (cond ((eq top-node :multiple-initial-edges)
            (elt (ev-edge-vector ev)
@@ -132,9 +134,11 @@
           (top-node top-node)
           (t nil))))
 
+(defmethod left-treetop-at/only-edges ((e edge))
+  (left-treetop-at/only-edges (pos-edge-starts-at e)))
 
-(defun left-treetop-at/only-edges (position)
-  (let* ((ev (pos-ends-here position))
+(defmethod left-treetop-at/only-edges ((p position))
+  (let* ((ev (pos-ends-here p))
          (top-node (ev-top-node ev)))
     (cond ((eq top-node :multiple-initial-edges)
            (elt (ev-edge-vector ev)
