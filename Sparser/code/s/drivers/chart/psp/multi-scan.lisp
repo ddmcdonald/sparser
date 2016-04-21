@@ -639,6 +639,11 @@
 (defvar *pending-acronyms* nil
   "If we have walked over what appears to be an acronym to be
   handled later, this stores the needed information.")
+
+(define-per-run-init-form
+    ;; see per-article-initializations as called from analysis-core
+    '(setq *pending-acronyms* nil))
+
    
 (defun assess-parenthesized-content (paren-edge
                                      pos-before-open pos-after-open
@@ -666,28 +671,24 @@
            (one-word-long? first-edge)
            (eq (pos-capitalization pos-after-open) :all-caps))
       (unless (and edge-to-left (edge-p edge-to-left))
-        (break "Stub of new case: probable acronym w/o edge to the left - in assess-parenthesized-content"))
+        (break "Stub of new case: probable acronym w/o edge to ~
+                the left - in assess-parenthesized-content"))
       (when (edge-p edge-to-left) ;; otherwise there's nothing to hide under
         (let* ((ev-after-close (pos-ends-here pos-after-close))
                (ev-to-get-edges-from (edge-starts-at edge-to-left))
                (edges-to-extend (all-edges-on ev-to-get-edges-from))
                (ev-of-edge (edge-ends-at edge-to-left)))
+          
           ;; There may be more than one edge just before the open,
           ;; i.e. it's top-node is :multiple-initial-eges. We need to
           ;; make all of them longer because which of these edges is
           ;; going to be selected by the chunker can't be determined here.
-
           (loop for edge in edges-to-extend
             ;; Move the edge over the parentheses
-            do 
-            (knit-edge-into-position edge ev-after-close)
-            (setf (edge-ends-at edge) ev-after-close))
-
-;          (knit-edge-into-position edge-to-left ev-after-close)
-;          (setf (edge-ends-at edge-to-left) ev-after-close)
+            do (knit-edge-into-position edge ev-after-close)
+               (setf (edge-ends-at edge) ev-after-close))
 
           ;; save the information we need to recover it all
-          ;;(lsp-break "*pending-acronyms*")
           (push `(,pos-before-open ,paren-edge ,first-edge ,ev-of-edge)
                 *pending-acronyms*))))
      (*hide-parentheses*
