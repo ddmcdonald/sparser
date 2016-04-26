@@ -1101,19 +1101,74 @@
   (when *trace-c3*
     (trace-msg "[c3]   which introduced ~a" edges)))
 
+;;--- predict
+
+(deftrace :epredict (edge)
+  (when *trace-earley*
+    (trace-msg "[predict] applying predict to ~a~
+              ~%          in state ~a" edge (dot-state))))
 
 (deftrace :prediction-trigger (edge interp-state)
   (when *trace-earley*
-    (trace-msg "[e] Predicting from e~a in ~a"
+    (trace-msg "[predict] Predicting from e~a in ~a"
                (edge-position-in-resource-array edge)
                interp-state)))
 
 (deftrace :predicted-path (lp)
   (when *trace-earley*
-    (trace-msg "[e]   based on ~a" lp)))
+    (trace-msg "[predict]   based on ~a" lp)))
+
+;;-- scan
+
+(deftrace :escan (edge)
+  (when *trace-earley*
+    (trace-msg "[scan] scanning ~a~
+              ~%       in state ~a" edge (dot-state))))
+
+(deftrace :moving-dot (pos)
+  (when *trace-earley*
+    (trace-msg "[scan] Scan moving the dot to p~a"
+               (pos-token-index pos))))
+
+(deftrace :popping-path-to (head-word)
+  (when *trace-earley*
+    (trace-msg "[scan] Rolling up predicted path to ~s"
+               (word-pname head-word))))
+
+(deftrace :incr-expecting-var-type (variable v/r)
+  (when *trace-earley*
+    (trace-msg "[scan] Now expecting a constituent of type ~a~
+               ~% to fill ~a slot"
+               v/r variable)))
+
+(deftrace :ecomplete (edge)
+  (when *trace-earley*
+    (trace-msg "[complete] completing ~a~
+              ~%           in state ~a" edge (dot-state))))
+
+(deftrace :incr-instantiated-category (i category)
+  (when *trace-earley*
+    (trace-msg "[complete] Instantiated ~a as ~a"
+               (cat-name category) i)))
+
+(deftrace :next-edge-is (edge)
+  (when *trace-earley*
+    (trace-msg "[parse] The next edge is e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :current-incr-state-is ()
+  (when *trace-earley*
+    (trace-msg "[parse] The current state is ~a"
+               (dot-state))))
+  
+
+(deftrace :setting-dot-state-to (keyword)
+  (when *trace-earley*
+    (trace-msg "[state] changing the state to ~a" keyword)))
 
 
 
+;;---------------------- C3 traces
 
 (deftrace :c3-segment-scan-start (start-pos start-bracket)
   ;; called from read-through-segment-to-end

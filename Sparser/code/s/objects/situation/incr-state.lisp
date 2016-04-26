@@ -36,6 +36,20 @@
       with the predicted path. Lexicalized parameters go to
       mumble::word. Open parameters to go variables.")
 
+   (i :initform nil :accessor individual
+    :documentation "The individual that this constituent
+      denotes.")
+   (next-slot :initform nil :accessor pending-slot
+    :documentation "As we walk down the position path, this
+      is the slot-label of the next constituent. It can identify
+      plausible adjunctions")
+   (next-type :initform nil :accessor pending-type-requirement
+    :documentation "As we walk down a position-path, this is
+      the type that the next constituent must satisfy")
+   (next-variable :initform nil :accessor pending-variable
+    :documentation "As we walk down a position-path, this is
+      the variable we'll bind if the type is satisfied.")
+
 
    (parent :initform nil :accessor parent-state
     :documentation "Points to the dominating state (if any)
@@ -59,4 +73,11 @@
 
 (defun pending-prediction ()
   (predicted-path (current-incremental-state)))
+
+(defun set-dot-state (keyword)
+  (tr :setting-dot-state-to keyword)
+  (setf (state-of-interpretation (current-incremental-state)) keyword))
+
+(defun dot-state ()
+  (state-of-interpretation (current-incremental-state)))
 

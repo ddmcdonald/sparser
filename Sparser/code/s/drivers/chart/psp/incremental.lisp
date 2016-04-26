@@ -31,7 +31,7 @@
 #|
   (p "put a block on the table")
   (do-normal-segment-finished-options)
-  (trace-incr-segments)
+  (trace-incr-segments) (trace-earley)
 
                     source-start
 e0    PUT-SOMETHING-SOMEWHERE 1 "put " 2
@@ -49,36 +49,29 @@ e10   TABLE         5 "the table" 7
   (push-debug `(,edges ,forms))
   (setq *incr-edges-test* edges)
   (tts)
-  (let ((edge-sequence (copy-list edges))
-        (state (current-incremental-state)))
+  (let ((edge-sequence (copy-list edges)))
     (flet ((next-edge ()
              (pop edge-sequence)))
       ;; 1st prime the pump. We should start by
       ;; scanning, but there's nothing to scan
       ;; until we have a prediction in place
       (unless (pending-prediction)
-        (epredict (car edges)))
+        (let ((e1 (next-edge)))
+          (epredict e1)
+          (update-parser-state e1)
+          (escan e1)
+          (ecomplete e1)))
       (loop
         (let ((edge (next-edge)))
+          (tr :next-edge-is edge)
+          (tr :current-incr-state-is)
           (unless edge
             (lsp-break "More to do?")
             (terminate-chart-level-process))
           (escan edge)
-          (ecomplete edge)
-          (lsp-break "now what?"))))))
+          (ecomplete edge))))))
 
 
-#|
-
-  (let ((first-edge (car edges))) ;; we're assuming it's verb not vg
-    (push-debug `(,first-edge ,edges))
-    (break "start hand simulation")))
-|#
-; (escan first-edge) ;; move the dot and call complete from the scan
-;   in this example, need to also appreciate that we're verb initial
-;   and flag this as an imperative. 
-; (ecomplete first-edge) ;; make instance
-; (epredict first-edge)
 
 
 (defun state-sensitive-rightward-march (pos-before)
@@ -155,7 +148,7 @@ e10   TABLE         5 "the table" 7
           (parse-segment-interior start-pos end-pos)
           
           (setq coverage (segment-coverage))
-          (format t "~&coverage = ~a~%" coverage)
+          ;; (format t "~&coverage = ~a~%" coverage)
           (case coverage
             (:one-edge-over-entire-segment
              (store-edge start-pos end-pos))
@@ -173,64 +166,7 @@ e10   TABLE         5 "the table" 7
       (values (nreverse edges)
               (nreverse forms)))))
 
-#|
-    
-    ;; look up corresponding lexicalized phrase and set it up
 
-
-
-    ;; Since we're going by already delimited and interpreted
-    ;; edges (for the most part), the edge represents
-    ;; the completion of an implicit prediction
-
-
-         (category (edge-referent first-edge))
-         (linked-phrase (mumble::krisp-mapping category))
-         (lp (mumble::linked-phrase linked-phrase))
-         (map (mumble::parameter-variable-map linked-phrase)))
-    (push-debug `(,lp ,map))
-
-
-map = (#<#<parameter o2> : #<variable location>> 
-       #<#<parameter o1> : #<variable theme>>)
-lp =
-  <lp: svo1o2 (s o1 o2) v = #<word put>>
-  Class: #<standard-class mumble::partially-saturated-lexicalized-phrase>
-  Wrapper: #<ccl::class-wrapper mumble::partially-saturated-lexicalized-phrase #x30200139E8DD>
-  Instance slots
-  mumble::mname: nil
-  mumble::phrase: #<phrase svo1o2>
-  mumble::bound: (#<pvp: v = #<word put>>)
-  mumble::free: (#<parameter s> #<parameter o1> #<parameter o2>)
-
-(setq phrase (mumble::phrase lp))
-#<phrase svo1o2>
-1 > (d *)
-#<phrase svo1o2>
-Type: mumble::phrase
-Class: #<structure-class mumble::phrase>
-postprocessed?: t
-name: mumble::svo1o2
-storage-type: nil
-minimal-construction-function: nil
-construction-macro: nil
-type-predicate: nil
-setters: nil
-mcatalog: nil
-properties: nil
-postprocessing-fn: nil
-re-definition-fn: nil
-parameters-to-phrase: (#<parameter s> #<parameter v> #<parameter o1>
-                       #<parameter o2>)
-definition: ((#<node-label clause> :set-state (:aux-state mumble::initial)
-              #<slot-label subject> #<parameter s> :additional-labels
-              (#<slot-label nominative>) #<slot-label predicate>
-              (#<node-label vp> #<slot-label verb> #<parameter v>
-               #<slot-label direct-object> #<parameter o1> :additional-labels
-               (#1=#<slot-label objective>) #<slot-label second-object>
-               #<parameter o2> :additional-labels (#1#))))
-
-|#
 
 ;;------------------- first aborted attempt by sort of using
 ;;                    C3's driver 

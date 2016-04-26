@@ -153,7 +153,11 @@
        (lsp-break "not ready to handle an adjp")))))
     
 
+;;;----------------------
 ;;; incremental routines
+;;;----------------------
+
+;;--- scan
 
 (defgeneric escan (chart-item)
   (:documentation "'e' as in Earley. The item will be
@@ -162,10 +166,65 @@
        other aspects of the state as appropriate"))
 
 (defmethod escan ((e edge))
+  (tr :escan e)
   (let ((end-pos (pos-edge-ends-at e))
-        (state (current-incremental-state)))
-    (setf (dot state) end-pos)
-    (pop-predicted-path e)))
+        (dot (current-incremental-state)))
+    (tr :moving-dot end-pos)
+    (setf (dot dot) end-pos)
+    (cond
+     ((eq (dot-state) :pending-individual)
+      ;; The the next constituent is probably one of its arguments,
+      ;; so we should confirm than and layout what they are.
+      (let* ((path (predicted-path dot))
+             (top-item (car path))
+             (referent (edge-referent e))
+             (prediction (when (category-p referent)
+                           (mumble::krisp-mapping referent))))
+        (cond
+         (prediction ;; stub
+          (push-debug `(,path ,prediction ,top-item))
+          (lsp-break "~a makes a prediction" referent)
+          :foo)
+         (t
+          (unless (pending-variable dot)
+            ;; the state says we completed a verb
+            ;; This operation will set up what's needed
+            ;; to take up the next argument and set
+            ;; the state to :expecting-argument to be
+            ;; taken up by complete
+            (setup-anticipated-arg-if-appropriate))))))
+     ((pending-prediction)
+      ;;//// Not specific enough !!
+      (pop-predicted-path e))
+     (t
+      (push-debug `(,e))
+      (break "Need more guidance on what to do")))))
+
+(defun setup-anticipated-arg-if-appropriate ()
+  (let* ((dot (current-incremental-state))  
+         (path (predicted-path dot))
+         (top-item (car path)))
+    ;; It's appropriate if the top item is a slot label
+    ;;/// though don't know the alternative yet
+    (cond
+     ((typep top-item 'mumble::slot-label)
+      (let* ((slot-label (car path))
+             (parameter (cadr path))
+             (mapping (predicted-parameter-bindings dot))
+             (variable (mumble::variable-for-parameter
+                        parameter mapping))
+             (v/r (var-value-restriction variable)))
+        ;;(push-debug `(,mapping ,parameter ,slot-label))
+        ;;(break "debug")
+        (setf (pending-slot dot) slot-label)
+        (setf (pending-variable dot) variable)
+        (setf (pending-type-requirement dot) v/r)
+        (tr :incr-expecting-var-type variable v/r)
+        (set-dot-state :expecting-argument))) ;;<<<<<<<
+     (t
+      (push-debug `(,top-item ,path))
+      (break "top-item was actually: ~a" top-item)
+      :foo))))
 
 (defgeneric pop-predicted-path (item)
   (:documentation "Look at the predicted path. Depending on what
@@ -174,27 +233,21 @@
     or a parameter."))
 
 (defmethod pop-predicted-path ((e edge))
-  (push-debug `(,e))
   ;; Limited case. Wants to find a one-word lexicalized head
   (let* ((head-word (edge-left-daughter e))
          (state (current-incremental-state))
          (path (predicted-path state)))
-    (push-debug `(,path ,head-word))
     ;; We'll be walking into syntactic contexts as we pass
     ;; though node labels. These need to be instantiated
     ;; somehow
-    (catch :found-lexical-head
-      (mumble::ppp-1 head-word path))
+    (tr :popping-path-to head-word)
+    (catch :found-lexical-head ; 
+      (mumble::ppp-1 head-word path))))
 
-    ;; If that was a verb, then the top of the
-    ;; remaining path is the slot and parameter
-    ;; for the next argument.
-      
-    ;; we're operating over edges, so we know
-    ;; that this prediction is complete (so to speak)
-    ;; and we should act on it.
-    ))
 
+
+
+;;--- predict
 
 (defgeneric epredict (item)
   (:documentation
@@ -204,6 +257,7 @@
   "Depending on what state we're in, Look up the phrase 
   that goes with the referent of this edge and set up
   its projection."
+  (tr :epredict e)
   (let* ((state (current-incremental-state))
          (interp-state (state-of-interpretation state)))
     (tr :prediction-trigger e interp-state)
@@ -213,10 +267,16 @@
               (type (etypecase referent
                       (individual (itype-of referent))
                       (category referent)))
-              (mapping (mumble::krisp-mapping type)))
-         (assert mapping)
-         (push-debug `(,mapping))
-         (instantiate-predictions mapping)))
+              (mapping (mumble::krisp-mapping type))
+              (word (edge-left-daughter e))
+              (lp (mumble::lexicalized-head word))) 
+         (cond
+          (mapping
+           (instantiate-predictions mapping))
+          (lp
+           (push-debug `(,lp)) (break "lp"))
+          (t ;; is this an error?
+           ))))
       (otherwise
        (push-debug `(,state ,e))
        (error "Don't know what to predict in the state ~a"
@@ -242,12 +302,64 @@
     (setf (predicted-parameter-bindings state) alist)))
 
 
+;;--- complete
+
 (defgeneric ecomplete (item)
   (:documentation
    "We've just finished the analysis of item."))
 
+(defmethod ecomplete ((e edge))
+  "We've finished the constituent we were working on 
+   so now we incorporated it into the state of the parser"
+  (declare (special category::verb))
+  (tr :ecomplete e)
+  (let* ((dot (current-incremental-state))
+         (state (state-of-interpretation dot)))
+    (case state
+      (:mvb-identified
+       (let ((form (edge-form e))
+             (category (edge-referent e)))
+         (assert (eq form category::verb) (e)
+                 "Expected this edge to be a verb: ~a" e)
+         ;; Make an instance and install it, then change the
+         ;; state to reflect that
+         (let ((i (make-unindexed-individual category)))
+           (tr :incr-instantiated-category i category)
+           (setf (individual dot) i)
+           (set-dot-state :pending-individual)))) ;;<<<<<<<<
+      (:expecting-argument
+       ;; Is the referent of this edge of the expected
+       ;; type? If so, bind the variable
+       (let ((restriction (pending-type-requirement dot))
+             (ref (edge-referent e)))
+         (cond
+          ((itypep ref restriction)
+           (let ((var (pending-variable dot))
+                 (i (individual dot))
+                 (obj (etypecase ref
+                        ;; hook for larger transformations
+                        (individual ref)
+                        (category
+                         ;;/// completely inadequate to express
+                         ;; what's going on when we started from
+                         ;; a skolem.
+                         (make-unindexed-individual ref)))))
+             (bind-variable var obj i)))
+          (t (push-debug `(,ref ,restriction ,dot))
+             (break "not satisfied. Maybe we predict?")
+             :foo))))
+      (otherwise
+       (push-debug `(,dot ,e))
+       (error "Don't know how to complete when the state is ~a" state)))))
 
 
+
+
+
+
+;;;--------------------
+;;; C3 segment scanner
+;;;--------------------
 
 (defun scan-segment (start-pos)
   ;; Looks like state-sensitive-rightward-march while

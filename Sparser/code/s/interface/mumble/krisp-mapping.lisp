@@ -37,6 +37,15 @@
   (gethash pname *mappings-for-category-linked-phrase*))
 
 
+(defgeneric variable-for-parameter (parameter source)
+  (:method ((p parameter) (mapping list))
+    (variable-for-parameter
+     p (find p mapping :key #'corresponding-parameter :test #'eq)))
+  (:method ((p parameter) (pair parameter-variable-pair))
+    (declare (ignore p))
+    (corresponding-variable pair)))
+
+
 ;;;------------------------------------
 ;;; helpers for the incremental parser
 ;;;------------------------------------
@@ -55,11 +64,15 @@
                  (subst (value pvp) (phrase-parameter pvp) path)))
       modified)))
 
+(defvar *trace-popping-predicted-path* nil
+  "Ad-hoc trace for pp1")
+
 (defun ppp-1 (head-word path)
   ;;/// position would find the word if it worked on trees
   (let ((item (pop path)))
     (loop
-      (format t "~&item = ~a~%" item)
+      (when *trace-popping-predicted-path*
+        (format t "~&item = ~a~%" item))
       (etypecase item
         (node-label) ;;///
         (keyword ;; :set-state (:aux-state mumble::initial)

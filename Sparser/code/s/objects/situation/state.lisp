@@ -42,6 +42,18 @@
 ;;; drivers 
 ;;;---------
 
+(defmethod update-parser-state ((e edge))
+  "Called from the Earley parser. Unlike the C3 state change 
+   these changes will typically trigger actions, not just
+   change the name of the state."
+  (let* ((form (edge-form e))
+         (dot (current-incremental-state))
+         (current-state (state-of-interpretation dot)))
+    (let ((new-state
+           (parser-state-transition current-state form)))
+      (set-dot-state new-state))))
+
+
 (defmethod update-situation-state ((edge edge) (type symbol))
   ;; called from incorporate-referent-into-the-situation on
   ;; edges over individual words (or polywords). Also called
