@@ -1380,7 +1380,7 @@
     (:verb "involve" ;; keyword: ENDS-IN-ING 
 	   :etf (svo)
            :o theme
-           :in subject))
+           :in theme))
 
 (define-category keep :specializes bio-relation
     :realization
