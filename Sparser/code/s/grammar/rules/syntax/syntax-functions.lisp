@@ -556,7 +556,7 @@
 (defparameter *adverb+vg* nil)
 
 (defun interpret-adverb+verb (adverb vg) 
-  (declare (special category::deictic-location))
+  (declare (special category::deictic-location category::pp))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   ;; "direct binding" has a specitif meaning
   ;;/// so there should be a compose method to deal with that
@@ -577,18 +577,36 @@
               (edge-string (right-edge-for-referent)))
         *adverb+vg*)
   (cond
-    ((and ;; block "THERE IS"
-      (itypep vg category::be)
-      (itypep adverb category::deictic-location))
+    ((or
+      (and ;; block "THERE IS"
+       (itypep vg category::be)
+       (itypep adverb category::deictic-location))
+      (eq (edge-form (left-edge-for-referent)) category::pp))
      nil)
     (*subcat-test*
      (cond
        ((vg-has-adverb-variable? vg) t)
+       ((and
+	 (itypep vg 'collection)
+	 (loop for vg-item in (value-of 'items vg)
+	    always (vg-has-adverb-variable? vg)))
+	t)
        (t
-	(format t "~&can't find adverb slot for ~s on verb ~s~&"
+	(break "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
 		(edge-string (left-edge-for-referent))
-		(edge-string (right-edge-for-referent)))
+		(edge-string (right-edge-for-referent))
+		(sentence-string *sentence-in-core*))
 	nil)))
+    ((itypep vg 'collection)
+     (let ((new-items
+	    (loop for item in (value-of 'items vg)
+	       collect
+		 (bind-dli-variable 'adverb adverb item))))
+       (setq vg
+	     (make-an-individual 'collection
+				 :items new-items
+			    :number (length new-items)
+			    :type (itype-of (car new-items))))))
     ((vg-has-adverb-variable? vg)
      (setq  vg (bind-dli-variable 'adverb adverb vg)))
     (t vg)))
@@ -900,17 +918,18 @@
   (when
       (and subj vp) ;; have had cases of uninterpreted VPs
     (cond
-      ((itypep vp 'subordinate-clause)
+      ((eq (edge-form (right-edge-for-referent)) (category-named 'subordinate-clause))
        (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
-	      (vg-edge (edge-right-daughter (right-edge-for-referent)))
-	      (s
-	       (if (is-passive? vg-edge)
-		   (assimilate-subcat svp :object subj)
-		   (assimilate-subcat svp :subject subj))))
-	 #+ignore
-	 (when s 
-	   (make-subordinate-clause (value-of 'conj vp) s))
-	 s))
+	      (vg-edge (edge-right-daughter (right-edge-for-referent))))
+	 (if (is-passive? vg-edge)
+	     (when
+		 (and (object-variable vg-edge)
+		      (null (value-of (object-variable vg-edge) svp)))
+	       (assimilate-subcat svp :object subj))
+	     (when
+		 (and (subject-variable vg-edge)
+		      (null (value-of (subject-variable vg-edge) svp)))
+	       (assimilate-subcat svp :subject subj)))))
       ((is-passive? (right-edge-for-referent))
        (assimilate-subcat vp :object subj))
       (t (assimilate-subcat vp :subject subj)))))
@@ -1239,7 +1258,7 @@
     ((null item)
      (cond
        ((and (boundp '*pobj-edge*) *pobj-edge*)
-	(format t "~&*** null item in subcategorized pobj for edge ~s~&" *pobj-edge*))
+	(break "~&*** null item in subcategorized pobj for edge ~s~&" *pobj-edge*))
        ((eq label :subject)
 	(format t "~&*** null item in subcategorized subject for edge ~s~&" *left-edge-into-reference*))
        ((eq label :object)
@@ -1507,11 +1526,12 @@
 
 (defun make-copular-pp (be-ref pp)
   (when (and
-         (null (value-of 'predication be-ref))
          (or (not (edge-p *left-edge-into-reference*))
              ;; case where there is no semantic predication established, but there is a syntactic object
              ;; e.g. "was the result of defects in the developing embryo"
-             (not (eq (edge-form *left-edge-into-reference*) category::vp))))
+             (not (eq (edge-form *left-edge-into-reference*) category::vp)))
+	 (null (value-of 'predication be-ref))
+         )
     ;; If this is not already a predicate copula ("is a drug")
 
     (let* ((prep (value-of 'prep pp))
@@ -1564,9 +1584,13 @@
 ;;;-----------------------
 
 (defun is-passive? (edge)
-  (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
-    (and (> (length cat-string) 3)
-         (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))
+  (cond
+    ((eq (edge-form edge) (category-named 'subordinate-clause))
+     (is-passive? (edge-right-daughter edge)))
+    (t
+     (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
+       (and (> (length cat-string) 3)
+	    (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))))
 
 
 ;;;-----------------
