@@ -348,7 +348,10 @@ it is created from N-terminus to C-terminus.|#
   :instantiates :self
   :lemma (:common-noun ("terminus" :plural ("termini" "terminuses")))
   :realization
-    (:noun "terminal"))
+  (:noun "terminal"))
+
+(def-synonym protein-terminus
+    (:noun "very end"))
 
 ;;//////////// These two are essentially identical definitions
 ;; Meed a macro or something 
