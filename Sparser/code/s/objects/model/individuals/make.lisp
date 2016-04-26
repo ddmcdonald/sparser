@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  March 2016
+;;;  version:  April 2016
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/23) Tweeked an internal call w/in Define-individual to fit lower change
@@ -319,14 +319,14 @@
   (let ((individual (allocate-individual))
         (*description-lattice* nil)
         (*index-under-permanent-instances* nil))
-    (declare (special *index-under-permanent-instances*))
+    (declare (special *index-under-permanent-instances*
+                      *description-lattice*))
     (setf (indiv-type individual) (list category))
     (setf (indiv-id   individual) (next-id category))
     (multiple-value-bind (bindings new-indiv)
                          (apply-bindings individual binding-instructions)
-      (declare (ignore bindings))
       (setq individual new-indiv)
-      ;;(index/individual individual category bindings)
+      (index/individual individual category bindings)
       (create-shadow individual)
       individual )))
 
