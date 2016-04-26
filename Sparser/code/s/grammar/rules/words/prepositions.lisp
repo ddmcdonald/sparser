@@ -67,12 +67,7 @@
 	    (def-cfr/expr category `(,word)
               :form (resolve-form-category form)
               :schema (get-schematic-word-rule :preposition)
-              :referent category)
-	     #+ignore ;; this caused redefinition, not new ambiguous definition
-	     (define-cfr category `(,word)
-	       :form (resolve-form-category form)
-	       :schema (get-schematic-word-rule :preposition)
-	       :referent category)))
+              :referent category)))
       (when synonyms
         (dolist (syn-string synonyms)
           (let ((synonym (resolve-string-to-word/make syn-string)))
@@ -80,6 +75,7 @@
               :form (resolve-form-category form)
               :schema (get-schematic-word-rule :preposition)
               :referent category))))
+      (make-corresponding-mumble-resource word :prep)
       (setf (get-tag :rule category) word-rule)
       (values category
               word-rule
