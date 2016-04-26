@@ -124,9 +124,12 @@
    complement's slot?). Returns a partially saturated lexicalized 
    phrase that is open in the parameter 'prep-object'."))
 
+(defmethod prep ((w word))
+  (prep (pname w)))
+
 (defmethod prep ((pname string))
   (let ((phrase (phrase-named 'prepositional-phrase))
-        (preposition (word-for-string pname)))
+        (preposition (word-for-string pname 'preposition)))
     (let ((lp (make-instance 'partially-saturated-lexicalized-phrase
                 :phrase phrase
                 :bound `(,(make-instance 'parameter-value-pair
