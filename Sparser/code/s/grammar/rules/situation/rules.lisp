@@ -148,6 +148,17 @@
   ((np :subject-seen)))
 
 
+(defmethod parser-state-transition ((state (eql :initial))
+                                    (form (eql category::verb)))
+  "If we're starting with a verb then this is a command"
+  (format t "~&It's a command~%")
+  (format t "~&And this is the main verb~%")
+  (set-dot-state :mvb-identified))
+
+(defmethod parser-state-transition ((state t) (form t))
+  (push-debug `(,state ,form))
+  (error "No transition defined for ~a given ~a" state form))
+
 
 
 
