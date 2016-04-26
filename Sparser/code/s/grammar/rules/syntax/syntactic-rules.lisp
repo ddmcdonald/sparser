@@ -570,11 +570,13 @@ similar to an oncogenic RasG12V mutation (9)."))
                        :head :right-edge
         :form S
         :referent (:function assimilate-subject left-edge right-edge))))
-  (eval
-   `(def-syntax-rule (,n subordinate-clause)
-                     :head :right-edge
-      :form subordinate-clause
-      :referent (:function assimilate-subject left-edge right-edge))))
+     ;; I don't really believe that you can have a subject befor the subordinate conjunction -- prove it
+     ;; OK -- proven -- "we thus tested whether ..."
+     (eval
+      `(def-syntax-rule (,n subordinate-clause)
+	   :head :right-edge
+	   :form subordinate-clause
+	   :referent (:function assimilate-subject left-edge right-edge))))
 
 ;; TO-DO make a debris rule for NP VP+ING which happens "late"
 
