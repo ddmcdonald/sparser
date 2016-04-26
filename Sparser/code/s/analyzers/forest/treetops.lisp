@@ -637,6 +637,8 @@
        
 	 (and
 	  (prep? l-triple-left)
+	  (not (eq (edge-category (second l-triple)) (category-named 'as)))
+	  ;; almost always a use of "as" as a subordinate conjunction
 	  (or
 	   (and ;; pp starting a relative clause -- "in which"
 	    (memq r-triple-left '(category::which category::who category::whom category::where))
