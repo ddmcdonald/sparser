@@ -103,10 +103,11 @@
     (code-char 339) ;; "œ" #\Latin_Small_Ligature_Oe 
     (code-char 697) ;; "ʹ" #\Modifier_Letter_Prime
     (code-char 710) ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
+    (code-char 729) ;;
     (code-char 772) ;; #\Combining_Macron
     (code-char 776) ;; #\Combining_Diaeresis
     (code-char 834) ;; "͂" #\Combining_Greek_Perispomeni
-    (code-char 894)
+    (code-char 894) ;; #\Dot_Above
     ;; (code-char 916) ;; #\Greek_Capital_Letter_Delta
     ;;(code-char 919) ;; "Η" #\Greek_Capital_Letter_Eta
     ;;(code-char 922) ;; "Κ" #\Greek_Capital_Letter_Kappa

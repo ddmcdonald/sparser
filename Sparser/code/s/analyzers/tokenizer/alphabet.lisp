@@ -805,7 +805,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named (code-char 710))))
     
     (729 ;; #\Dot_Above
-     (:punctuation . #\*)) ;;"˙", (code = 729)
+     (:punctuation . ,(punctuation-named (code-char 729)))) ;; #\*)) ;;"˙", (code = 729)
     (730 ;; #\Ring_Above
      (:punctuation . (punctuation-named (code-char 730))))
     (732 ;; #\Small_Tilde
