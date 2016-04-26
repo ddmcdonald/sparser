@@ -58,12 +58,15 @@
    the symbols) so that the Mumble side of this."
   (let ((m-word (mumble::find-word pname))
         (m-phrase-name (mumble-symbol phrase-name)))
-    (assert m-word (pname)
-            "The Mumble word for ~s isn't defined yet" pname)
     (assert (mumble::phrase-named m-phrase-name) (phrase-name)
             "There is no Mumble phrase named ~a." phrase-name)
-    ;; Works for side-effects. We presumably need to do more 
-    ;; indexing to set this up to drive predictive parsing
+    (unless m-word
+      (let ((sparser-word (resolve pname)))
+        (assert sparser-word (pname)
+                "There is no word in Sparser for ~a" pname)
+        (setq m-word (get-mumble-word-for-sparser-word sparser-word))))
+
+    ;; Works for side-effects.
     (let* ((lp (mumble::verb m-word m-phrase-name))
            (map (loop for (param-name var-name) on p&v-pairs by #'cddr
                       as param = (mumble::parameter-named (mumble-symbol param-name))
@@ -95,9 +98,16 @@
       (when word
         (make-resource-for-sparser-word word pos-tag)))))
 
-(defun make-shortcut-corresponding-resource (word pos-tag)
-  (when *build-mumble-equivalents*
-    (make-resource-for-sparser-word pos-tag word)
+(defun make-corresponding-mumble-resource (word pos-tag)
+  ;; As called from decode-realization-parameter-list which is
+  ;; the central place 'shortcut' realization specification
+  ;; handling that everything goes through. 
+  ;; Notice that the word and tag are organized differently
+  ;; which is why we can't use the other form (which fits
+  ;; 'regular' specifications).
+  (when (or *build-mumble-equivalents*
+            *CwC*)
+    (make-resource-for-sparser-word word pos-tag)
     :done)) ;; keep this on the stack
 
 (defun make-resource-for-sparser-word (word pos-tag)
@@ -106,6 +116,7 @@
                   (:verb 'mumble::verb)
                   (:common-noun 'mumble::noun)
                   (:adjective 'mumble::adjective)
+                  (:prep 'mumble::preposition)
                   (:interjection 'mumble::interjection)))
          (m-word (get-mumble-word-for-sparser-word word m-pos)))
 
@@ -114,4 +125,7 @@
       (:verb) ;; done in the category rdata processing
       (:common-noun (mumble::noun m-word))
       (:adjective (mumble::adjective m-word))
+      (:prep (mumble::prep m-word))
       (:interjection (mumble::interjection m-word)))))
+
+

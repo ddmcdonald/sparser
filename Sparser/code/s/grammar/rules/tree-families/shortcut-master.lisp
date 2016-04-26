@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "shortcut-master"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.0 May 2015
+;;;  version:  April 2016
 
 ;; Initiated 9/14/14 to make more flexible, complete shortcuts.
 ;; 11/11/14 added keyword for obo-id.
@@ -338,7 +338,7 @@
                (special-cases (when (consp noun) (cdr noun)))
                (cn-rules (make-cn-rules/aux word category category
                                             special-cases)))
-          (make-shortcut-corresponding-resource word :common-noun)
+          (make-corresponding-mumble-resource word :common-noun)
           (add-rules-to-category category cn-rules))))
 
     (when adj
@@ -347,7 +347,7 @@
       (unless (assq :adjective word-map)
         (let* ((word (resolve/make adj))
                (adj-rules (make-rules-for-adjectives word category category)))
-          (make-shortcut-corresponding-resource word :adjective)
+          (make-corresponding-mumble-resource word :adjective)
           (add-rules-to-category category adj-rules))))
 
     (when (or etf substitution-map word-map)
