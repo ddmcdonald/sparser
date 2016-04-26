@@ -78,6 +78,16 @@
   (:adj "negative"
 	:for theme))
 
+(define-category true :specializes bio-relation
+  :realization
+  (:adj "true"
+	:for theme))
+
+(define-category false :specializes bio-relation
+  :realization
+  (:adj "false"
+	:for theme))
+
 (define-category equivalent :specializes bio-relation
   :realization
   (:adj "equivalent"
