@@ -90,10 +90,12 @@ returning a new one.
 |#
 
 (defun bind-dli-variable (var/name value individual &optional category)
-  ;;new name for method in transition -- makes it easier to tell when other calls
-  ;; have been edited to use the new "contract" -- 
-  ;; bind-dli-variable returns the resulting individual as its first (primary) value
-  ;; it returns the binding object as its second (secondary) value
+  "New name for method in transition -- makes it easier to tell when other calls
+   have been edited to use the new 'contract' -- 
+   bind-dli-variable returns the resulting individual as its first (primary) value
+   it returns the binding object as its second (secondary) value.
+   Note that if *description-lattice* is nil this becomes a call to
+   the 'old' variable binding protocol."
   (declare (special *description-lattice*))
   (when (consp var/name)
     (setq value `(:variables ,var/name :value ,value))
