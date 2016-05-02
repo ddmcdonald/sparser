@@ -37,8 +37,13 @@
             (tr :initial-fired-fsa new-position)
             new-position)
 
-          (let ((initial (find-individual 'initial :word letter)))
-            (unless initial
+          (let* ((capital
+                  (if (eq (word-capitalization letter)
+                          :single-capitalized-letter)
+                      letter
+                      (car (word-capitalization-variants letter))))
+                 (initial (find-individual 'initial :word capital)))
+            (unless initial (push-debug `(,letter ,capital))
               (break "Should be an initial for the letter: ~A"
                      (pos-terminal prior-position)))
 
