@@ -94,10 +94,6 @@
 
 ;; New rule for post ordinals
 (def-form-rule (common-noun post-ordinal)
-  ;; possible ETF: designated-instance-of-set ("class II")
-  ;;  or modifier-creates-definite-individual ("last year")
-  ;; The point is to create the position-in-a-sequence while
-  ;; leaving the common-noun as the head.  
   :form n-bar
   :head :left-edge
   :referent (:head left-edge
@@ -105,11 +101,7 @@
              :with (number right-edge
                            item left-edge)))
 ;; "sites I and II"
-(def-form-rule (common-noun/plural post-ordinal)
-  ;; possible ETF: designated-instance-of-set ("class II")
-  ;;  or modifier-creates-definite-individual ("last year")
-  ;; The point is to create the position-in-a-sequence while
-  ;; leaving the common-noun as the head.  
+(def-form-rule (common-noun/plural post-ordinal)  
   :form n-bar
   :head :left-edge
   :referent (:head left-edge
