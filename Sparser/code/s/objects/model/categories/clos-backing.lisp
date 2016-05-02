@@ -371,7 +371,7 @@ for every category.
    (copy-individual i)))
 
 (defun copy-individual (i)
-  "Create a new unindex individual with the same type and bindings
+  "Create a new unindexed individual with the same type and bindings
    as the originial. N.b. this is not a copy within the description lattice.
    See find-or-make-lattice-subordinate which uses this function to
    make the base individual."
