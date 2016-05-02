@@ -240,7 +240,7 @@
         (push (subcat-instance head :m variable-to-bind premod)
               *subcat-info*))
       (setq head (individual-for-ref head))
-      (setq  head (bind-dli-variable variable-to-bind premod head))
+      (setq head (bind-dli-variable variable-to-bind premod head))
       head))))
 
 
@@ -456,7 +456,8 @@
      ((and known-aspect (itypep known-aspect 'tense/aspect-vector))
       known-aspect)
      (t 
-       (make/individual (category-named 'tense/aspect-vector) nil)))))
+      (make/individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<
+       (category-named 'tense/aspect-vector) nil)))))
 
 
 (defun absorb-auxiliary (aux vg)
@@ -1455,7 +1456,7 @@
   :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
   though the head decides what to do with it based on the
   composition. Same design as pps."
-  )
+  :index (:temporary :sequential-keys conj comp))
 
 (mark-as-form-category category::subordinate-clause)
 
@@ -1477,7 +1478,7 @@
 
 (defun make-pp (prep pobj)
   (or *subcat-test*
-      (make-simple-individual ;;make-non-dli-individual
+      (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
        category::prepositional-phrase
        `((prep ,prep) (pobj ,pobj)))))
 
@@ -1489,7 +1490,7 @@
       (let* ((binding-instructions
 	      `((pp ,pp) (clause ,clause)))
 	     (pp-rel-clause
-	      (make-simple-individual
+	      (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	       category::pp-relative-clause
 	       binding-instructions)))
 	;; place for trace or further adornment, storing
@@ -1513,7 +1514,7 @@
      (let* ((binding-instructions
 	     `((prep ,prep) (comp ,complement)))
 	    (prep-comp 
-	     (make-simple-individual
+	     (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	      category::prepositional-phrase
 	      binding-instructions)))
        ;; If this starts to make a lot of preposition-specific
@@ -1521,7 +1522,6 @@
        ;; cond up.
        (revise-parent-edge :form category::prepositional-phrase)	 
        prep-comp))))
-
 
 ; Called from whack-a-rule-cycle => copula-rule?
 ;       => test-subcat-rule => ref/function
@@ -1538,13 +1538,12 @@
 (defun make-copular-pp (be-ref pp)
   (when (and
          (or (not (edge-p *left-edge-into-reference*))
-             ;; case where there is no semantic predication established, but there is a syntactic object
+             ;; case where there is no semantic predication established,
+             ;; but there is a syntactic object
              ;; e.g. "was the result of defects in the developing embryo"
              (not (eq (edge-form *left-edge-into-reference*) category::vp)))
-	 (null (value-of 'predication be-ref))
-         )
+	 (null (value-of 'predication be-ref)))
     ;; If this is not already a predicate copula ("is a drug")
-
     (let* ((prep (value-of 'prep pp))
            (pobj (value-of 'pobj pp)))
       (cond
@@ -1554,7 +1553,7 @@
         ;; this is NOT a copular PP
         (and prep pobj))
        (t
-        (make-non-dli-individual
+        (make-simple-individual ;;<<<<<<<<<<
               category::copular-pp
               `((copula ,be-ref)
                 (prep ,prep) (pobj ,pobj))))))))
@@ -1569,7 +1568,6 @@
          (pobj (value-of 'pobj copular-pp))
          ;;(copula (value-of 'copula copular-pp))
          (variable-to-bind (subcategorized-variable np prep pobj)))
-    (declare (special prep pobj))
     (cond
      (*subcat-test* variable-to-bind)
      (t
@@ -1577,12 +1575,15 @@
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
       (let ((predicate (individual-for-ref np)))
-        (setq  predicate (create-predication-by-binding variable-to-bind pobj predicate
-							(list 'apply-copular-pp (parent-edge-for-referent))))
+        (setq predicate
+              (create-predication-by-binding
+               variable-to-bind pobj predicate
+               (list 'apply-copular-pp (parent-edge-for-referent))))
 	(revise-parent-edge :category category::copular-predicate)
-        (make-simple-individual category::copular-predicate
-                                `((predicated-of ,np)
-                                  (predicate ,predicate))))))))
+        (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+         category::copular-predicate
+         `((predicated-of ,np)
+           (predicate ,predicate))))))))
 
 (defun get-word-for-prep (prep-val)
   (resolve/make ;; needs to be a word for the subcat frame!
@@ -1613,11 +1614,11 @@
   (let ((exists 
          (if *description-lattice*
           (fom-lattice-description category::there-exists)
-          (make-unindexed-individual category::there-exists))))
+          (make-unindexed-individual category::there-exists)))) ;;<<<<<<<<<<
     exists))
 
 (defun make-exist-claim (right-edge)
-  (let ((exists (make-unindexed-individual category::there-exists)))
+  (let ((exists (make-unindexed-individual category::there-exists))) ;;<<<<<<<
     (bind-dli-variable 'object right-edge exists)))
 
 ;;; Adjuncts for clauses 
@@ -1633,6 +1634,6 @@
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
-            (setq s (bind-dli-variable variable-to-bind adjunctive-clause s))
+      (setq s (bind-dli-variable variable-to-bind adjunctive-clause s))
       s))))
 
