@@ -110,14 +110,10 @@
       (declare (special *index-under-permanent-instances*))
       (let ((individual
              (find-or-make/individual category binding-instructions)))
-        ;;(if *c3*
-        ;; This is (probably) irrelevant without restrictions
-        ;; so moving it out of the way. 
         (apply-single-category-rdata individual category)
         individual))))
 
-(defun make-an-individual (symbol 
-                           &rest var-name+value-pairs)
+(defun make-an-individual (symbol &rest var-name+value-pairs)
   "Just like define-individual in its arguments but is for run-time
   relations rather than populating categories (e.g. no rdata).
   This syntax is convenient for calls from code."
@@ -297,68 +293,53 @@
 ;;--- Constructor 
 
 (defun make-simple-individual (category binding-instructions)
-  (declare (special *index-under-permanent-instances*))
-  ;; (format t "~&Make-simple  permanent = ~a~%" *index-under-permanent-instances*)
-  (let ((individual 
-         (cond
-          (*description-lattice* (fom-lattice-description category))
-          (*index-under-permanent-instances* (make-a-permanent-individual))
-          (t (allocate-individual)))))
+  (declare (special *description-lattice* *index-under-permanent-instances*))
+  (let* ((*index-under-permanent-instances*
+          (or *index-under-permanent-instances*
+              (individuals-of-this-category-are-permanent? category)))
+         (individual 
+          (cond
+            (*description-lattice* (fom-lattice-description category))
+            (*index-under-permanent-instances* (make-a-permanent-individual))
+            (t (allocate-individual)))))
     (unless *description-lattice*
       (setf (indiv-type individual) (list category))
       (setf (indiv-id   individual) (next-id category)))
     (multiple-value-bind (bindings new-indiv)
                          (apply-bindings individual binding-instructions)
       (setq individual new-indiv)
-      (index/individual individual category bindings)
+      (unless *description-lattice*
+        (index/individual individual category bindings))
       (create-shadow individual)
       individual )))
 
-(defun make-non-dli-individual (category binding-instructions &optional (non-permanent nil))
-  (declare (ignore non-permanent))
-  (let ((individual (allocate-individual))
-        (*description-lattice* nil)
-        (*index-under-permanent-instances* nil))
-    (declare (special *index-under-permanent-instances*
-                      *description-lattice*))
-    (setf (indiv-type individual) (list category))
-    (setf (indiv-id   individual) (next-id category))
-    (multiple-value-bind (bindings new-indiv)
-                         (apply-bindings individual binding-instructions)
-      (setq individual new-indiv)
-      (index/individual individual category bindings)
-      (create-shadow individual)
-      individual )))
+
 
 (defun make-throw-away-individual (category)
-  (break "~&~%Trapped a call to make-throw-away-individual~
-        ~%Just 'continue' from this break. It's only purpose~
-        ~%is bookeeping.~%~%")
-  (make-unindexed-temporary-individual category))
-
-(defun make-trivial-individual (category)
-  (break "~&~%Trapped a call to make-trivial-individual~
-        ~%Just 'continue' from this break. It's only purpose~
-        ~%is bookeeping.~%~%")
-  (make-unindexed-temporary-individual category))
-
-(defun make-unindexed-temporary-individual (category)
-  (declare (ignore category))
-  (break "Replace with call to make-unindexed-individual"))
+  ;; Grep says only called by the name creator functions in
+  ;; model/core/names/fsa/name-creators.lisp
+  (make-unindexed-individual category))
 
 (defun make-unindexed-individual (category)
-  ;; called as a variation on define-individual by routines that
-  ;; do their own indexing and don't want to go through the
-  ;; standard mechanisms.  
-  (let ((individual (if *index-under-permanent-instances*
-                      (make-a-permanent-individual)
-                      (allocate-individual))))
+  "Called as a variation on define-individual by routines that
+   do their own indexing and don't want to go through the
+   standard mechanisms. Note that all variable binding is
+   done after this individual is created since it doesn't
+   take a binding list."
+  (declare (special *index-under-permanent-instances*))
+  (let ((individual
+         (if (or *index-under-permanent-instances*
+                 (individuals-of-this-category-are-permanent? category))
+           (make-a-permanent-individual)
+           (allocate-individual))))
     (setf (indiv-type individual) (list category))
     (setf (indiv-id   individual) (next-id category))
     (create-shadow individual)
     individual ))
 
 
+
+;; Only called for PSI.  Remove when they are totally removed
 (defun subtype-individual (i subtype-category)
   ;; We are building a new individual that differs from its source
   ;; individual only in its category.  In particular we copy its
@@ -374,10 +355,9 @@
 (defun make-category-indexed-individual (category)
   "Make a simple individual (no binding instructions, etc) that is
    stored on the category's plist."
-  ;; One-off version of with-all-instances-permanent so we don't
-  ;; get it deallocated out from under us.
-  (let ((*index-under-permanent-instances* t))
-    (setf (get-tag :individual category) (make-unindexed-individual category))))
+  ;; Moved permanent instances flag to callers, e.g. make-dli-for-join
+  (setf (get-tag :individual category)
+        (make-unindexed-individual category)))
 
 (defun get-category-individual (category)
   (get-tag :individual category))
@@ -387,16 +367,29 @@
 ;;;------------------------------------------------------------------
 
 (defun individual-for-ref (head)
+  "Standard individual-creating call from syntax functions.
+   They will often be working with a head consitituent whose
+   referent will be a category. To provide a binding site for
+   modifiers we need to replace it with categories with individuals."
   (etypecase head
     (null)
     (individual
-     (if *description-lattice*
-         head
-         (maybe-copy-individual head)))
+     head)  ;; non-DL case called maybe-copy-individual     
     (category
-     (if *description-lattice*
-         (find-or-make-lattice-description-for-ref-category head)
-         (make-unindexed-individual head)))
+     (cond
+       (*description-lattice*
+        (cond
+         ((individuals-of-this-category-are-permanent? head)
+          (find-or-make-lattice-description-for-ref-category head))
+         (t ;; temporaries to be reclaimed.
+          ;; Not stored in DL. Need to force temporary-ness
+          (let ((*override-category-permanent-individuals-assumption* t)
+                (*index-under-permanent-instances* nil))
+            (declare (special *override-category-permanent-individuals-assumption*
+                              *index-under-permanent-instances*))
+            (make-unindexed-individual head)))))
+       (t ;; may well not be the proper choice
+         (make-unindexed-individual head))))
     ((cons (eql :or))
      ;; The first category is supposed to be the 'primary' one
      (make-unindexed-individual (second head)))))
@@ -407,13 +400,11 @@
 ;;;-------------------------
 
 (defun make-individual-for-dm&p (category)
-  ;; This is a placeholder so when the decision about what to
-  ;; really do make we only have to change this one place
-  (if *description-lattice*
-   (fom-lattice-description category)
-   (let ((i (make-unindexed-individual category)))
-     (bind-category-of-instance i category)
-     i)))
+  "Specialized version specific to Doman Modeling & Populating mode"
+  ;;/// look for much earlier version(s)
+  (let ((i (make-unindexed-individual category)))
+    (bind-category-of-instance i category)
+    i))
 
 
 ;;;--------------------------
