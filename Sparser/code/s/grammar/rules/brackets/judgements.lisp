@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2003,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2003,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  1.11 October 2014
+;;;  Version:  April 2016
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -467,6 +467,7 @@
                ((word-is-an-article previous-word) nil) ;; no head yet
                ((eq (pos-capitalization position) :digits) ;; it's a number
                 nil)
+               ((= 0 word-count) nil) ;; something should follow this adjective
                (t (break  "new case of adjective after np-start"))))
              ((segment-started-as-vg?)
               t)
@@ -477,7 +478,7 @@
              ((eq bracket-opening-segment phrase.[)
               ;; np's are usually sentence initial, so keep it open
               nil)
-             ((= 0 word-count) nil) ;; something should follow this adjective
+             ((= 0 word-count) nil)
              (t (if *break-on-new-bracket-situations*
                   (then
                    (push-debug `(,position ,*bracket-opening-segment*
