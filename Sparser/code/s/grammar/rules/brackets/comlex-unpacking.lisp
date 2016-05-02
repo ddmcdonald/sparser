@@ -274,6 +274,12 @@ places. ]]
         (setup-common-noun lemma clauses :ambiguous)
         (setup-verb lemma clauses :ambiguous))
       (assign-noun-verb-brackets lemma clauses))
+
+     ((equal combinations '(noun pronoun verb)) ;; ignore pn
+      (when *edge-for-unknown-words*
+        (setup-common-noun lemma clauses :ambiguous)
+        (setup-verb lemma clauses :ambiguous))
+      (assign-noun-verb-brackets lemma clauses))
      
      ((equal combinations '(sconj verb)) ;; "provide"
       ;; sconj is a weak analysis. /// look for other cases
