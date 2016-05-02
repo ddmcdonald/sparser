@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "printing"
 ;;;   Module:  "model;core:names:"
-;;;  version:  0.2 February 2014
+;;;  version:  April 2016
 
 ;; initiated 2/1/94 v2.3, breaking the special fns out of specific files
 ;; (4/5) stubbed a generic printer.  10/3 added string-printers
@@ -15,7 +15,6 @@
 ;;      string-for routine. 
 
 (in-package :sparser)
-(defvar CATEGORY::NAME-OF-LOCATION)
 
 
 (defun string-for/name (n)
@@ -39,6 +38,7 @@
 
 (defun string-for/name/individual (name)
   ;; Caller has to know this is an individual
+  (declare (special category::name-of-location))
   (case (cat-symbol (itype-of name))
     (category::name-word 
      (string/name-word name))
@@ -50,7 +50,7 @@
     ((category::person-name/first-last
       category::person-name)
      (let ((string (string/person-name name)))
-       (format nil "~a" string)))
+       (format nil "~a ~a" string (indiv-uid name))))
     (category::name-of-location
      (let ((seq (value-of 'sequence name category::name-of-location)))
        (string/sequence seq)))
@@ -66,6 +66,7 @@
 (define-special-printing-routine-for-category  name-word
   :full ((write-string "#<name-word " stream)
          (princ-word (value-of 'name obj) stream)
+         (format stream " ~a" (indiv-uid obj))
          (write-string ">" stream))
   :short ((write-string "#<" stream)
           (princ-word (value-of 'name obj) stream)
@@ -83,6 +84,7 @@
 (define-special-printing-routine-for-category  single-capitalized-letter
   :full ((write-string "#<single-capitalized-letter " stream)
          (princ-word (value-of 'letter obj) stream)
+         (format stream " ~a" (indiv-uid obj))
          (write-string ">" stream))
 
   :short ((write-string "#<" stream)
@@ -100,6 +102,7 @@
     :full ((write-string "#<initial " stream)
            (princ-word (value-of 'word obj) stream)
            (write-string "." stream)
+           (format stream " ~a" (indiv-uid obj))
            (write-string ">" stream))
     
     :short ((write-string "#<\"" stream)
@@ -117,6 +120,7 @@
   :full   ((write-string "#<uncategorized-name " stream)
            (write-string (string/sequence
                           (value-of 'name/s obj)) stream)
+           (format stream " ~a" (indiv-uid obj))
            (write-string ">" stream))
   :short  ((format stream "#<~A>"
                    (string/sequence (value-of 'name/s obj)))))
