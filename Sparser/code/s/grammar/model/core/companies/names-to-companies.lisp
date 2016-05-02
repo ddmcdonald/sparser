@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1995-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-2005,2013-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "names to companies"
 ;;;   Module:  "model;core:companies:"
-;;;  version:  March 2005
+;;;  version:  April 2016
 
 ;; initiated 4/12/95.  Tweeked 5/3.  5/9 Added case of a word for when it's a
 ;; capitalized-word that's being converted.  5/29 added an anouncement when it's
@@ -32,16 +32,18 @@
     (individual
      (ecase (cat-symbol (itype-of name))
        (category::uncategorized-name
-        (let* ((sequence (value-of 'name/s name)))
+        (let ((sequence (value-of 'name/s name)))
           (unless sequence
             (break "Assumption violated: name is not based on ~
                     a sequence:~%  ~A" name))
-          
           (let ((company-name (define-individual 'company-name
                                 :sequence sequence)))
-
             (or (find/company-with-name company-name)
                 (make/company-with-name company-name)))))
+
+       (category::named-object
+        (let ((inner-name (value-of 'name name)))
+          (interpret-name-as-company/aux inner-name)))
        
        ((or category::sequence category::collection)
         (format t "~&~%--------------------------------------~
@@ -56,7 +58,6 @@
           (dolist (item items)
             (push (interpret-name-as-company item)
                   companies))
-          
           (define-individual 'collection
             :items (nreverse companies)
             :number (length companies)
@@ -69,6 +70,7 @@
                      :sequence (define-sequence (list name))))))
           (or (find/company-with-name company-name)
               (make/company-with-name company-name))))))
+
     (word
      (let* ((nw (define-individual 'name-word
                   :name name))
