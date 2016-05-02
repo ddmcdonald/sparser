@@ -9,6 +9,8 @@
 
 (in-package :sparser)
 
+(defparameter *do-expansion-in-context* nil)
+;; turn it off until it is fully operational -- but check in the bulk of the code
 
 (defun interpret-treetops-in-context (treetops)
   (when *interpret-in-context*
@@ -50,6 +52,8 @@
       (values (contextual-description m) t)
       (values (base-description m) nil)))
 
+(defparameter *lambda-var* nil)
+
 (defmethod contextual-interpretation ((s symbol))
   (values
    (case s
@@ -59,7 +63,6 @@
    t))
 
 
-(defvar *lambda-var* nil)
 
 (defgeneric interpret-in-context (item-to-be-interpreted variable container)
   (:documentation
@@ -81,13 +84,14 @@ the contextual interpretation of the item in the context."))
   item)
 
 (defmethod interpret-in-context ((e edge) variable container)
-    (if (and (category-p (edge-category e))
-	     (member (cat-name (edge-category e))
-		     '(quotation parentheses dash
-		       square-brackets)))
-      ;; we don't interpret such quoted strings
-      nil
-      (interpret-in-context (dependency-tree e nil) variable container)))
+  (if (category-p (edge-category e))
+      (if (member (cat-name (edge-category e))
+		  '(quotation parentheses dash
+		    square-brackets semicolon))
+	  ;; we don't interpret such quoted strings
+	  nil
+	  (interpret-in-context (new-dt e nil) variable container))
+      ))
 
 (defmethod interpret-in-context ((c category) variable container)
   (declare (ignore variable container))
@@ -126,6 +130,9 @@ where it regulates gene expression.")
  bindings of the dt, then rebuild the interpretation of the dt from
  those reinterpreted bindings."
   (let ((mention (car dt)))
+    #+ignore
+    (format t "~&interpret-in-context on phrase ~s~&"
+	    (retrieve-surface-string (mention-source mention)))
     (typecase mention
       (discourse-mention
        (cond
@@ -158,6 +165,13 @@ where it regulates gene expression.")
 		  (setf (contextual-description mention) (car interpretation))
 		  ;; if interpretation is NIL then we have failed to find a pronominal referent
 		  (setf (contextual-description mention) (base-description mention))))))
+	 ((let ((elliptical? (expandable-interpretation-in-context mention container)))
+	    #+ignore
+	    (format t "~&for phrase ~s, elliptical? is ~s~&"
+		    (retrieve-surface-string (mention-source mention))
+		    elliptical?)
+	    (when elliptical?
+	      (setf (contextual-description mention) elliptical?))))
          (t
           (setf (contextual-description mention)
                 (reinterp-item-using-bindings
@@ -214,35 +228,44 @@ where it regulates gene expression.")
 
 (defun reinterpret-collection-with-modifiers (collection-mention variable container)
   (declare (special collection-mention))
-  (or
-   (special-collection-interp collection-mention variable container)
-   (when (or
-          (itypep (base-description (car collection-mention)) 'slashed-sequence)
-          (itypep (base-description (car collection-mention)) 'hyphenated-pair)
-          (itypep (base-description (car collection-mention)) 'two-part-label)
-          (itypep (base-description (car collection-mention)) 'hyphenated-triple))
-     (base-description (car collection-mention)))
-   (let* ((other-modifiers
-           (loop for m in (cdr collection-mention)
-              unless (member (car m) '(items type number))
-              collect m))
-          (items (cdr (assoc 'items (cdr collection-mention))))
-          (mod-items
-           (loop for m in items
-              nconc
-                (expand-collection-into-list-if-needed
-                 (reinterp-item-using-bindings (interpret-in-context m variable container)
-					       other-modifiers
-					       collection-mention)))))
-     (declare (special other-modifiers items mod-items))
-     (if (null mod-items)
-	 ;; happened in "(Figure 1B, left and middle panels)"
-	 (base-description (car collection-mention))
-	 (setf (contextual-description (car collection-mention))
-	       (make-an-individual 'collection
-				   :items mod-items
-				   :number (length mod-items)
-				   :type (itype-of (car mod-items))))))))
+  (let ((mention (car collection-mention)))
+    (or
+     (special-collection-interp collection-mention variable container)
+     (when (or
+	    (itypep (base-description (car collection-mention)) 'slashed-sequence)
+	    (itypep (base-description (car collection-mention)) 'hyphenated-pair)
+	    (itypep (base-description (car collection-mention)) 'two-part-label)
+	    (itypep (base-description (car collection-mention)) 'hyphenated-triple))
+       (base-description mention))
+     (let* ((other-modifiers
+	     (loop for binding in (cdr collection-mention)
+		unless (member (car binding) '(items type number))
+		collect
+		  (let* ((var (first binding))
+			 (val (second binding))
+			 (*rcwm-var* var))
+		    (declare (special *rwcm-var*))
+		    (if (eq var 'predication)
+			(reinterp-predication val mention)
+			(interpret-in-context val var mention))
+		    binding)))
+	    (items (second (assoc 'items (cdr collection-mention))))
+	    (mod-items
+	     (loop for m in items
+		nconc
+		  (expand-collection-into-list-if-needed
+		   (reinterp-item-using-bindings (interpret-in-context m variable container)
+						 other-modifiers
+						 collection-mention)))))
+       (declare (special other-modifiers items mod-items))
+       (if (null mod-items)
+	   ;; happened in "(Figure 1B, left and middle panels)"
+	   (base-description (car collection-mention))
+	   (setf (contextual-description (car collection-mention))
+		 (make-an-individual 'collection
+				     :items mod-items
+				     :number (length mod-items)
+				     :type (itype-of (car mod-items)))))))))
 
 (defparameter *special-collection-interp* t
   "Turns on the interpretaion of some protein collections as pathways or complexes. Should be massively generalized")
@@ -283,8 +306,178 @@ where it regulates gene expression.")
 
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
+(defparameter *lambda-val* nil)
+(defparameter *report-on-multiple-edges-for-interp* nil)
+(defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
+  (declare (special parent-edges child-interp))
+  (let (poss-edges
+	(parent-edge (car parent-edges)))
+    (declare (special parent-edge poss-edges))
+    ;; allow for the fact the items like "669" have two edges
+    ;; spanning the same positions
+    (loop for m in (mention-history child-interp)
+       do
+	 (let ((m-edge (mention-source m)))
+	   (when (and (edge-p m-edge)	(contained-edge? parent-edge m-edge))
+	     (unless (redundant-edge m-edge poss-edges)
+	       (push m-edge poss-edges)))))
+    (unless poss-edges
+      (setq poss-edges (find-edges-inside-matching parent-edge child-interp)))
+    (cond ((null poss-edges)
+	   (cond
+	     ((known-no-edge-pattern parent-edge child-interp)
+	      nil)
+	     ((cdr parent-edges)
+	      (let ((edges (relevant-edges (cdr parent-edges) child-interp allow-null-edge)))
+		(or edges
+		    (find-edges-inside-matching parent-edge child-interp)
+		    (when (individual-p child-interp)
+		      (lsp-break "~&1) no internal edge for ~s in ~s~&"
+				 child-interp parent-edge)
+		      nil)
+		    nil)))
+	     (*lambda-val* (lambda-val? child-interp *lambda-val*))
+	     (t		
+	      (unless (or allow-null-edge
+			  (not (individual-p child-interp)))
+		;; happens for premodifying v+ing
+		;; where the edge has a category edge-representation,
+		;; not an individual
+		(lsp-break "~&no internal edge for ~s in ~s~&"
+			   child-interp parent-edge))
+	      nil)))
+	  ((cdr poss-edges)
+	   ;; appositive cases like "endogenous C-RAF phosphorylation at S338, an event required for C-RAF activation, "
+	   (when (and
+		    *report-on-multiple-edges-for-interp*
+		    (not (member (edge-rule parent-edge)
+				 '(ATTACH-APPOSITIVE-NP-TO-NP KNIT-PARENS-INTO-NEIGHBOR))))
+	     (format t "~&^^^^multiple internal edges for ~s in ~s~&   ~s~&"
+			child-interp parent-edge poss-edges))
+	   (list (car poss-edges)))
+	  (t poss-edges))))
+
+(defun lambda-val? (i lv)
+  (when lv
+    (or (and (eq i lv) (list '**lambda-var**))
+	(lambda-val? i (dli-parent lv)))))
+
+(defun find-edges-inside-matching (edge interp)
+  (when (edge-p edge)
+    (cond ((eq interp (edge-referent edge)) (list edge))
+	  ((and (category-p (edge-referent edge))
+		;; the purified phospho-specific antibody,
+		(eq interp (get-dli (edge-referent edge))))
+	   (list edge))
+	  ((and
+	    (edge-left-daughter edge)
+	    (find-edges-inside-matching (edge-left-daughter edge) interp)))
+	  ((and
+	    (edge-right-daughter edge)
+	    (find-edges-inside-matching (edge-right-daughter edge) interp)))
+	  ((edge-constituents edge)
+	   (loop for e in (edge-constituents edge)
+	      when (edge-p e)
+	      do (when
+		     (setq edge (find-edges-inside-matching e interp))
+		   (return-from find-edges-inside-matching edge)))))))
+
+(defun redundant-edge (m-edge poss-edges)
+  (loop for ee on poss-edges
+     do
+       (cond ((contained-edge? (car ee) m-edge)
+	      (return-from redundant-edge t))
+	     ((contained-edge? m-edge (car ee))
+	      (setf (car ee) m-edge)
+	      (return-from redundant-edge t))
+	     ((and (eq (start-pos m-edge)(start-pos (car ee)))
+		   (eq (end-pos m-edge)(end-pos (car ee))))
+	      (cond ((and (eq (edge-category m-edge) (category-named 'number))
+			  (eq (edge-category (car ee)) (category-named 'digit-sequence)))
+		     (setf (car ee) m-edge)
+		     (return-from redundant-edge t))
+		    ((and (eq (edge-category m-edge)(category-named 'digit-sequence))
+			  (eq (edge-category (car ee)) (category-named 'number)))
+		     (return-from redundant-edge t))
+		    ((eq (edge-category m-edge)(category-named 'modifier))
+		     (return-from redundant-edge t))
+		    ((eq (edge-category (car ee))(category-named 'modifier))
+		     (setf (car ee) m-edge)
+		     (return-from redundant-edge t))
+		    (t
+		     #+ignore (format t "~& ~s and ~s have the same span and interp"
+				      (car ee) m-edge)
+		     (setf (car ee) m-edge)
+		    (return-from redundant-edge t))))))
+  nil)
+
+(defun relevant-mention (parent-edges child-interp)
+  (let ((c-edge (car (relevant-edges parent-edges child-interp))))
+    (when c-edge (edge-mention c-edge))))
+
+
+(defun known-no-edge-pattern (parent-edge child-interp)
+  ;; these are case where the interpretation of the parent edge
+  ;; contains some "computed" version of the interpretation of the
+  ;; child edge -- e.g. the map from "T" to "threonine"
+  (or (not (or (individual-p child-interp)
+	       (category-p child-interp)))
+      (itypep child-interp 'tense/aspect-vector)
+      (and (itypep child-interp 'amino-acid)
+	   (individual-p (edge-referent parent-edge))
+	   (or (itypep (edge-referent parent-edge) 'residue-on-protein)
+	       (itypep (edge-referent parent-edge) 'point-mutation)
+	       (itypep (edge-referent parent-edge) 'phosphorylated-amino-acid)))))
+
+(defun contained-edge? (parent child?)
+  (subsumes-interval
+   (pos-token-index (start-pos parent))
+   (pos-token-index (end-pos parent))
+   (pos-token-index (start-pos child?))
+   (pos-token-index (end-pos child?))))
+
+(defun new-dt (parent-edges &optional interp)
+  ;; for convenience, to let new-dt be called with treetop
+  (if (edge-p parent-edges) (setq parent-edges (list parent-edges)))  
+  (let ((parent-edge (car parent-edges)))
+    (when (edge-p parent-edge)
+      (unless interp (setq interp (edge-referent parent-edge)))
+      (cons (edge-mention parent-edge)
+	    (when (individual-p interp)
+	      (loop for b in (indiv-old-binds interp)
+		 collect
+		   (list (var-name (binding-variable b))
+			 (case (var-name (binding-variable b))
+			   ((predication predicate)
+			    (let* ((pred (binding-value b))
+				   (parent (dli-parent pred))
+				   (p-edge 
+				    (car (relevant-edges parent-edges parent t))))
+			      (let ((*lambda-val* interp))
+				(declare (special *lambda-val*))
+				(if p-edge
+				    (new-dt (cons p-edge parent-edges) pred)
+				    (new-dt parent-edges pred)))))
+			   (type (binding-value b))
+			   (number (binding-value b))
+			   (prep (binding-value b))
+			   (items 
+			    (loop for conjunct in (binding-value b)
+			       collect
+				 (let ((c-edge
+					(car (relevant-edges parent-edges conjunct))))
+				   (if c-edge
+				       (new-dt (cons c-edge parent-edges))
+				       (list conjunct)))))
+			   (t
+			    (let* ((val (binding-value b))
+				   (val-edge (car (relevant-edges parent-edges val))))
+			      (if (edge-p val-edge)
+				  (new-dt (cons val-edge parent-edges) val)
+				  val)))))))))))
+
 (defun align-dependency-and-edges (edge &optional bindings)
-  (dependency-tree edge bindings))
+  (new-dt edge bindings))
 
 (defmethod dependency-tree ((n number) &optional bindings)
   (dependency-tree (e# n) bindings))
@@ -323,8 +516,12 @@ where it regulates gene expression.")
      (if (category-p ref)
       ;; as in "untreated cells" where the predicate has only one binding
       (eq ref (itype-of (second binding)))
-      (eq ref (cdar (hal (indiv-uplinks (second binding))))))) ;; (second binding)
+      (eq ref (dli-parent (second binding))))) ;; (second binding)
     (t (eq ref (second binding)))))
+
+(defun dli-parent (item)
+  (when (individual-p item)
+    (cdar (hal (indiv-uplinks item)))))
 
 (defun dependency-tree-root (edge &optional
 				    (bindings (expand-bindings (edge-referent edge))))
@@ -427,4 +624,59 @@ where it regulates gene expression.")
 	(loop for tr in tree nconc (find-bindings tr)))))
 
 
+;;; ------ Handle interpretations that are elliptical or incomplete (determinable only in context)
+;;; If the base-description of an edge is more general (less completely specified) than some recent description
+;;;  it is often (always?) the case in journal articles that it is being used as an eliptical co-reference to the prior description, and
+;;;  should be replaced by that description
 
+(defun predication? (desc)
+  (loop for b in (indiv-bound-in desc)
+     thereis (eq 'predication (var-name (binding-variable b)))))
+
+
+(defun expandable-interpretation-in-context (mention container)
+  (declare (special mention container))
+  (let ((desc (base-description mention)))
+    (if (consp container) (setq container (car container)))
+  (cond ((or
+	  (not (individual-p desc))
+	  (and container
+	       (not (eq (mention-source mention) (mention-source container)))
+	       (np-head-edge? (mention-source mention)
+			      (mention-source container)))) 
+	 (return-from expandable-interpretation-in-context nil))
+	((category-p desc) (setq desc (individual-for-ref desc))) ;; sometimes the base-description is just a category -- treat it as an indivicual
+	)
+  (let ((specializations
+	 (remove-if #'predication? (all-mentioned-specializations desc))))
+    (declare (special specializations))
+    (when (eq desc (i# 13344))
+      (lsp-break "T669 phosphorylation"))
+    (setq specializations
+	  (loop for s in specializations
+	     unless (loop for m in (mention-history s)
+		       thereis (np-containing-edge? (mention-source mention)
+						   (mention-source m)))
+	     collect s))
+    (when specializations
+      (loop for sp in specializations
+	   when *do-expansion-in-context*
+	 do
+	   (format t "~&perhaps expand referent of ~s to ~s in sentence:~&~s~&"
+		   (retrieve-surface-string desc)
+		   (retrieve-surface-string sp)
+		   (sentence-string *sentence-in-core*)))
+      ;;(lsp-break "expandable")
+      nil))))
+
+(defun np-containing-edge? (edge np-edge)
+  (or (eq edge np-edge)
+      (and (edge-p np-edge)
+	   (or
+	    (np-containing-edge? edge (edge-left-daughter np-edge))
+	    (np-containing-edge? edge (edge-right-daughter np-edge))))))
+
+(defun np-head-edge? (edge np-edge)
+  (or (eq edge np-edge)
+      (and (edge-p np-edge)
+	   (np-head-edge? edge (edge-right-daughter np-edge)))))
