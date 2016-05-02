@@ -493,6 +493,7 @@
   ;; makes a record of the subcatgorization relationship
   (declare (optimize debug))
   (let* ((raw-item-edge (edge-for-referent raw-item))
+         (head-edge (edge-for-referent head))
          (item
           (if (and (edge-p raw-item-edge)
                    (eq (edge-form raw-item-edge) category::pp)
@@ -504,16 +505,16 @@
             (itype-of head)
             head))
          (head-name
-          (if (edge-p (edge-for-referent head))
-            (edge-string (edge-for-referent head))
+          (if (edge-p head-edge)
+            (edge-string head-edge)
             ""))
          (item-cat
           (if (individual-p item)
             (itype-of item)
             item))
          (item-name
-          (if (edge-p (edge-for-referent raw-item))
-            (edge-string (edge-for-referent raw-item))
+          (if (edge-p raw-item-edge)
+            (edge-string raw-item-edge)
             "")))
     (save-cat-string head-cat head-name)
     (save-cat-string item-cat item-name)
@@ -533,28 +534,23 @@
   ;; we need to fall back on the old code below
   ;;   (mention-source (car (mention-history ref)))
   ;;   (else
-  (let*
-      ((left-edge (left-edge-for-referent))
-       (left-ref (edge-referent left-edge))
-       (right-edge (right-edge-for-referent))
-       (right-ref (edge-referent right-edge)))
+  (let* ((left-edge (left-edge-for-referent))
+         (left-ref (edge-referent left-edge))
+         (right-edge (right-edge-for-referent))
+         (right-ref (edge-referent right-edge)))
     (cond
-      ((or
-	(eq ref left-ref)
-	(eq ref (value-of 'comp left-ref))
-	(and (category-p left-ref)
-	     (eq ref (individual-for-ref left-ref))))
+      ((or (eq ref left-ref)
+           (eq ref (value-of 'comp left-ref))
+           (and (category-p left-ref)
+                (itypep ref left-ref))) ;; (eq ref (individual-for-ref left-ref))
        left-edge)
-      ((or
-	(eq ref right-ref)
-	(eq ref (value-of 'comp right-ref))
-	(and (category-p right-ref)
-	     (eq ref (individual-for-ref right-ref))))
+      ((or (eq ref right-ref)
+           (eq ref (value-of 'comp right-ref))
+           (and (category-p right-ref) ;; (eq ref (individual-for-ref right-ref))
+                (itypep ref right-ref)))
        right-edge)
       (t
-       (break "edge-for-referent")))
-    ;;))
-    ))
+       (break "edge-for-referent - new case?")))))
 
 (defun save-cat-string (cat cat-string)
   (push cat-string (gethash cat *ref-cat-text*)))
