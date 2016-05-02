@@ -39,8 +39,8 @@
 ;;;------
 
 (defun binding-of-individual (variable individual)
-  ;; return the binding of the designated variable in the
-  ;; "binds" field of this individual
+  "Return the binding of the designated variable in the
+   'binds' field of this individual."
   (etypecase variable
     (symbol
      (let ((name variable)
@@ -59,6 +59,8 @@
 
 
 (defun binding-of-bindings (var list-of-bindings)
+  "Given a list of bindings, return the first one in the list
+   that binds the designated variable."
   (let ((variable (etypecase var
                     (symbol (lambda-variable-named var))
                     (lambda-variable var))))
@@ -85,6 +87,7 @@
 
 
 
+;;/// merge with bindng-of-bindings
 (defun find/binding-of-variable (variable list-of-bindings category)
   ;; does one of the bindings in this list involve this variable?
   ;; If there is more than one, pass back a list 
