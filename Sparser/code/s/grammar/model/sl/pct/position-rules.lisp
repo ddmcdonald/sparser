@@ -77,11 +77,13 @@
                category::title)))
 
        (let ((entry (discourse-entry lookup)))
-         (if (> (length entry) 1)
-           (break "More than one title/collection antecedant.~
-                   Extend the alg.")
-           (let ((obj (car (first entry))))
-             obj )))))))
+         (when (> (length entry) 1)
+           (when *break-on-new-cases*
+             (push-debug `(,obj ,entry))
+             (break "More than one title/collection antecedant.~
+                     Extend the alg.")))
+         (let ((obj (car (first entry))))
+           obj ))))))
         
 
 
