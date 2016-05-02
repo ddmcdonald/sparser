@@ -176,7 +176,7 @@ We therefore have the special cases:
                 :starting-position start-pos
                 :ending-position end-pos
                 :category category::residue-on-protein
-                :form category::np
+                :form category::n-bar ;; must be n-bar, otherwise it will not act as a premodifier in an NP
                 :rule-name :reify-residue
                 :referent residue)))
               edge))
