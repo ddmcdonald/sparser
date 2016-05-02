@@ -73,7 +73,6 @@
     (index-sequence sequence)
     sequence))
 
-;;/// Need make-over as with sequence
 (defun create-collection (items category-specifier)
   ;; The individual is unindexed because it's only used as the
   ;; value of bindings and the provides their indentity
