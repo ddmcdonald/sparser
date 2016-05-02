@@ -86,20 +86,6 @@
 
 |#
 
-;;;
-;;; raw rules
-
-;; invitro and in vivo
-#|
-(def-cfr biological-in-vivo (protein in-vivo)
-  
-  :referent (:function interpret-in-vivo-vitro left-edge right-edge))
-
-(def-cfr biological-in-vivo (protein in-vitro)
-  :referent (:function interpret-in-vivo-vitro left-edge right-edge))
-
-|#
-
 
 (defun interpret-in-vivo-vitro (bio vitro-vivo)
   (when (or
@@ -112,16 +98,6 @@
     bio))
 
 
-(def-form-rule (NP category::in-vitro)
-  :form NP
-  :head :left-edge
-  :referent (:function interpret-in-vivo-vitro left-edge right-edge))
-
-(def-form-rule (NP category::in-vivo)
-  :form NP
-  :head :left-edge
-  :referent (:function interpret-in-vivo-vitro left-edge right-edge))
-
 
 (loop for vv in '((vp vp)
                   (vg vp)
@@ -130,7 +106,9 @@
                   (verb+ed vg+ed) ;; somehow "phosphorylated" stops being elevated
                                   ;; to vg+ed after we run the June corpus
                   (vp+ing vp+ing)
-                  (vg+ing vp+ing))
+                  (vg+ing vp+ing)
+		  (proper-noun np)
+		  (np np))
   do
   (eval
    `(def-form-rule (,(car vv) in-vitro)
@@ -215,21 +193,6 @@
   :left-context mutant
   :form proper-noun
   :referent (:function convert-bio-entity-to-protein right-edge))
-
-
-;;--- bio-predication
-
-(define-category is-bio-entity :specializes bio-relation)
-
-(def-cfr IS-BIO-ENTITY (be biological)
-  :form vp
-  :referent (:instantiate-individual is-bio-entity
-                :with (theme right-edge)))
-
-(def-cfr is-bio-entity (biological is-bio-entity)
-  :form s
-  :referent (:head right-edge
-                   :bind (entity left-edge)))
 
 
 ;;--- expediency
