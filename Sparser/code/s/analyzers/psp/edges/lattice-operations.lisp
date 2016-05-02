@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "lattice-operations"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   December 2015
+;;;   Version:   May 2016
 
 ;; initiated in May 2015
 ;; Code to place referents in a description lattice to facilitate anaphora and other reasoning
@@ -133,10 +133,9 @@
 
 (defun find-or-make-lattice-description-for-individual (base)
   (declare (special category::collection))
-  (or
-   (get-dli base)
-   (if (memq category::collection (indiv-type base)) ;; likely a conjunction
-    (find-or-make-lattice-description-for-collection base) ;; not quite right -- ehat to do here?
+  (or (get-dli base)
+      (if (memq category::collection (indiv-type base)) ;; likely a conjunction
+          (find-or-make-lattice-description-for-collection base) ;; not quite right -- ehat to do here?
     (let* ((lattice-cat-entry (dli-ref-cat base))
            (current-dli lattice-cat-entry)
            ) ;;(dl-vvs nil))
@@ -151,25 +150,29 @@
       (set-dli base current-dli)))))
 
 
-;; The next two methods create a PERMANENT individual
+
 (defun make-dli-for-ref-category (category)
-  (make-category-indexed-individual category))
+  (let ((*index-under-permanent-instances* t))
+    (declare (special *index-under-permanent-instances*))
+    (make-category-indexed-individual category)))
 
 (defun make-dli-for-join (category-list)
-  (let ((new-dli (make-category-indexed-individual (car category-list))))
-    (setf (indiv-restrictions new-dli) (append category-list nil)) ;; copy the list in case it is in use elsewhere
-    (loop for c in (cdr category-list)
-       do (pushnew c (indiv-type new-dli) ))
-    new-dli))
+  (let ((*index-under-permanent-instances* t))
+    (declare (special *index-under-permanent-instances*))
+    (let ((new-dli (make-category-indexed-individual (car category-list))))
+      (setf (indiv-restrictions new-dli) (append category-list nil))
+      ;; copy the list in case it is in use elsewhere
+      (loop for c in (cdr category-list)
+         do (pushnew c (indiv-type new-dli) ))
+      new-dli)))
 
 (defun find-or-make-lattice-description-for-ref-category (base)
   (or (get-dli base)
       (let ((new-dli (make-dli-for-ref-category base)))
         (loop for c in (immediate-supers base)
           do 
-          (let
-              ((ip (find-or-make-lattice-description-for-ref-category c))
-               (supers (indiv-all-supers new-dli)))
+          (let ((ip (find-or-make-lattice-description-for-ref-category c))
+                (supers (indiv-all-supers new-dli)))
             (add-downlink ip new-dli)
             (setf (gethash ip supers) t)
             (maphash #'(lambda (k h)
@@ -294,8 +297,12 @@
          (parent-restrictions (indiv-restrictions parent))
          (var (find-var-from-var/name var/name (or category parent)))
          (dl-vv (when var (find-or-make-dlvv-from-var-val var value)))
-         (downlinks (indiv-downlinks parent)))
-    (declare (special parent var dl-vv downlinks))
+         (downlinks (indiv-downlinks parent))
+         ;; need to make sure copy-individual makes permanent ones
+         (*index-under-permanent-instances* t))
+
+    (declare (special *index-under-permanent-instances*
+                      parent var dl-vv downlinks))
     (if (null var)
         (return-from find-or-make-lattice-subordinate (values parent nil))
         (let* ((result
