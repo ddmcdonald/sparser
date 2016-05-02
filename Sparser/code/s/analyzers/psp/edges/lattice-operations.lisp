@@ -492,20 +492,29 @@
        (find-all-subs c))
       ((individual-p c)
        (maphash #'(lambda (dlvv sc)
-		    (setq last-mod dlvv)
-		    (setq super
-			  (if (eq :super (dlvv-variable dlvv))
-			      c
-			      sc)))
+		    (when dlvv
+		      (setq last-mod dlvv)
+		      (setq super
+			    (if (eq :super (dlvv-variable dlvv))
+				c
+				sc))))
 		(indiv-uplinks c))
        
-       (setq super-all-subs (gethash (dlvv-variable last-mod) (indiv-all-subs super)))
-       (when super-all-subs
-	 (gethash (dlvv-value last-mod) super-all-subs))))))
+       (when last-mod
+	 (setq super-all-subs (gethash (dlvv-variable last-mod) (indiv-all-subs super)))
+	 (when super-all-subs
+	   (gethash (dlvv-value last-mod) super-all-subs)))))))
 
 (defun all-specializations (c)
   (let ((pspecs (potential-specializations c)))
-    (loop for ps in pspecs when (as-specific? ps c) collect ps)))
+    (loop for ps in pspecs when (and  (as-specific? ps c)(not (eq ps c))) collect ps)))
+
+(defun all-mentioned-specializations (c)
+  (let ((pspecs (potential-specializations c)))
+    (loop for ps in pspecs when
+	 (and  (mention-history ps)
+	       (as-specific? ps c)(not (eq ps c)))
+       collect ps)))
 
 (defun hal (ht) (hashtable-to-alist ht))
 (defun sur-string (i)(retrieve-surface-string i))
