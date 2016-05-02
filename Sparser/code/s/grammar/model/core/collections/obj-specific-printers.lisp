@@ -1,13 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993,1994,1995 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "obj specific printers"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  0.1 April 1995
+;;;  version:  April 2016
 
 ;; initiated 6/10/93 v2.3.  Moved in the generic routines 2/28/95
 ;; 0.1 (4/13) tweeked string/sequence to notice a null argument. 
-;;     (5/22) tweeking collection
+;;     (5/22/95) tweeking collection
 
 (in-package :sparser)
 
@@ -18,10 +18,9 @@
 (define-special-printing-routine-for-category  sequence
   :full ((let ((*print-short* t))
            (write-string "#<sequence " stream)
-           (format stream "~A " (indiv-id obj))
            (dolist (item (value-of 'items obj))
              (format stream "~A " item))
-           (format stream "~A>" (indiv-id obj))))
+           (format stream "~A>" (indiv-uid obj))))
 
   :short ((let ((*print-short* t))
             (write-string "#<" stream)
@@ -35,7 +34,7 @@
            (write-string "#<collection " stream)
            (dolist (item (value-of 'items obj))
              (format stream "~A " item))
-           (format stream "~A>" (indiv-id obj))))
+           (format stream "~A>" (indiv-uid obj))))
 
   :short ((let ((*print-short* t))
             (write-string "#<" stream)
