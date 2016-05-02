@@ -40,6 +40,7 @@
    (ci :initarg :ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
    (restriction :accessor mention-restriction)
+   (non-dli-modifiers :accessor mention-non-dli-modifiers :initform nil) ;; the determiner of a NP -- not included in the interpretation of the NP when discourse-mentions are used!!
    (source :initarg :ms :accessor mention-source)
    (maximal :initarg :max :accessor maximal? :initform :unknown)
    (location-in-paragraph :initarg :loc :accessor mentioned-where
@@ -168,20 +169,19 @@
 
 (defun lattice-individuals-extend-dh-entry (entry i edge)
   (let ((subsumed-mention
-	 (when (individual-p i)
-	   (if
-	    (edge-left-daughter edge)
-	    (cond
-	      ((and (edge-p (edge-left-daughter edge))
-		    (is-dl-child? i (edge-referent (edge-left-daughter edge))))
-	       (edge-mention (edge-left-daughter edge)))
-	      ((and
-		(edge-p (edge-right-daughter edge))
-		(is-dl-child? i (edge-referent (edge-right-daughter edge))))
-	       (edge-mention (edge-right-daughter edge))))
-	    (loop for e in (edge-constituents edge)
-	       when (is-dl-child? i (edge-referent e))
-	       do (return (edge-mention e)))))))
+	 (if
+	  (edge-left-daughter edge)
+	  (cond
+	    ((and (edge-p (edge-left-daughter edge))
+		  (is-dl-child? i (edge-referent (edge-left-daughter edge))))
+	     (edge-mention (edge-left-daughter edge)))
+	    ((and
+	      (edge-p (edge-right-daughter edge))
+	      (is-dl-child? i (edge-referent (edge-right-daughter edge))))
+	     (edge-mention (edge-right-daughter edge))))
+	  (loop for e in (edge-constituents edge)
+	     when (is-dl-child? i (edge-referent e))
+	     do (return (edge-mention e))))))
     (make-new-mention entry i edge subsumed-mention)))
     
 		 
@@ -189,71 +189,15 @@
   (cond
     ((category-p parent?)
      (itypep child? parent?))
+    ((category-p child?)
+     ;; should not happen
+     nil)
     ((maphash #'(lambda (dlvv sc)
 		  (when (eq sc parent?)
 		    (return-from is-dl-child? t)))
 	      (indiv-uplinks child?))
      t)
     (t nil)))
-
-#+ignore
-(defun lattice-individuals-extend-dh-entry (entry i edge)
-  ;; Works in terms of mentions rather than regular discourse entries
-  ;; that just encode position pairs. If the most recent individual
-  ;; of this category is a 'parent' of the new individual and the
-  ;; new position subsumes the parent's location then we update
-  ;; the sentence-level information about entities/relations (which
-  ;; is edge-oriented). In any event we make a new mention for
-  ;; this case, chaining the mentions in a case of subsuming edges
-  (push-debug `(,entry ,i ,edge))
-  (let* ((top-mention (car entry))
-         (top-instance (base-description top-mention)))
-    (tr :extending-dh-entry i)
-    (push-debug `(,top-mention ,top-instance)) ;(lsp-break "mentions")
-    ;; (setq top-mention (car *) top-instance (cadr *))
-
-    ;; If we've referred to this head line referent twice in a row
-    ;; then there's either a subsuming edge case or something like
-    ;; a reflexive or possessive prooun (where the location of the
-    ;; mention is different than this one), though in those cases there
-    ;; are also likely to be interveening referring individuals. 
-    (cond ((eq i top-instance)
-	   ;; If we're eq to the most recent entry for this category
-	   ;; then we have two cases: [1] The edges subsume and this
-	   ;; new edge has for some reason not added any properties
-	   ;; to its referent, or [2] the edges are disjoint and
-	   ;; we have a new mention
-	   (cond
-	     ((long-term-mention? top-mention)
-	      ;;/// tr
-	      (make-new-mention entry i edge))
-	     ((subsumes-position top-mention edge)
-	      (make-new-mention entry i edge top-mention))
-	     (t
-	      (tr :extending-with-subsuming-instance i edge)
-	      (make-new-mention entry i edge))))
-
-          ((as-specific? i top-instance)
-           ;; The object was the very last one of its type to be added.
-           ;; Check for this being a larger edge over the same object.
-           (cond
-	     ((long-term-mention? top-mention)
-	      ;;/// tr
-	      (make-new-mention entry i edge))
-	     ((subsumes-position top-mention edge)
-	      ;; this instance subsumes the prior one
-	      (tr :extending-with-subsuming-instance/dl
-		  i top-instance edge)
-	      (make-new-mention entry i edge top-mention))
-	     (t
-	      ;; otherwise it's a new instance
-	      (tr :adding-new-instance-of-known-object i edge)
-	      (make-new-mention entry i edge))))
-
-          (t
-           ;; we make a new mention. The subroutine will appreciate
-           ;; whether it has ever been mentioned before.
-           (make-new-mention entry i edge)))))
 
 
 (defmethod subsumes-position ((mention discourse-mention)(edge edge))
@@ -267,6 +211,14 @@
     ;;/// are there other posibilties, or is it always nil?
     (t nil)))
 
+(defun update-mention-referent (edge referent)
+  ;; the function convert-referent-to-individual
+  ;;  changes the referent of an edge from a category to an individual
+  ;; we need to update the discourse mention
+  (let ((mention (edge-mention edge)))
+    (setf (base-description mention) referent)
+    (push mention (mention-history referent))))
+    
 
 (defun create-discourse-mention (i source)
   (declare (special *lattice-individuals-to-mentions*))
@@ -281,11 +233,10 @@
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
   (when (null source) (lsp-break "null source in create-discourse-mention"))
-  (let* ((location (encode-mention-location (if (consp source) (second source) source)))
-         (toc (location-in-article-of-current-sentence))
-         (m (make-instance 'discourse-mention
-			   :uid (incf *mention-uid*)
-			   :i i :loc location :ms source :article toc)))
+  (let ((m (make-mention i source)))
+    (when (non-dli-mod-for i)
+      (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
+      (setf (non-dli-mod-for i) nil))
     (push m (mention-history i))
     (if (edge-p source) (setf (edge-mention source) m))
     (setf (gethash i *lattice-individuals-to-mentions*) `(,m))
@@ -293,7 +244,12 @@
     (tr :made-mention m)
     (list m)))
 
-
+(defun make-mention (i source)
+  (let* ((location (encode-mention-location (if (consp source) (second source) source)))
+         (toc (location-in-article-of-current-sentence)))
+    (make-instance 'discourse-mention
+		   :uid (incf *mention-uid*)
+		   :i i :loc location :ms source :article toc)))
 (defparameter *edge-forms* nil)
 
 (defun make-new-mention (entry i source &optional subsumed-mention)
@@ -301,10 +257,7 @@
   (cond
     ((null source) (lsp-break "null source in create-discourse-mention"))
     ((edge-p source) (pushnew (cat-name (edge-form source)) *edge-forms*)))
-  (let* ((location (encode-mention-location source))
-         (m (make-instance 'discourse-mention
-			   :uid (incf *mention-uid*)
-			   :i i :loc location :ms source)))
+  (let* ((m (make-mention i source)))
     (tr :making-new-mention m)
     (cond
       (subsumed-mention
@@ -312,6 +265,11 @@
        (setf (subsumed-by-mention subsumed-mention) m)
        ;;(unless (member subsumed-mention entry)  (lsp-break "huh"))
        ;; happened for "protein kinase" where the kinase was not stored
+       (setf (mention-non-dli-modifiers m)
+	     (mention-non-dli-modifiers subsumed-mention))
+       (when (non-dli-mod-for i)
+	 (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
+	 (setf (non-dli-mod-for i) nil))
        (nsubstitute m subsumed-mention entry)
        (update-instance-within-sequence m subsumed-mention source))
       (t (extend-category-dh-entry entry m)))
