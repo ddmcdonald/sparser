@@ -64,6 +64,17 @@
                *index-under-permanent-instances*)))
   (declare (special *index-under-permanent-instances*
                     *override-category-permanent-individuals-assumption*))
+  (when nil ;;permanent
+    (format t "~&Indexing ~a~
+               ~%  special = ~a~
+               ~%  category is permanent = ~a~
+               ~%  permanent indiv = ~a~%"
+            individual *index-under-permanent-instances*
+            (individuals-of-this-category-are-permanent? category)
+            (permanent-individual? individual))
+    (push-debug `(,individual ,category))
+    (lsp-break "~a" individual))
+
   (let* ((operations (cat-operations category))
          (fn-data (or (and operations (cat-ops-index operations))
                       (lookup-fn-data-of-parent category))))
