@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "do transitions"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  March 2016
+;;;  version:  April 2016
 
 ;; -.3 (12/17/93) added a catch to handle the fact that the capitalization of
 ;;      headers will catch them up in the initial scan.  (12/22) fixed a ramification
@@ -327,7 +327,7 @@
     (category::person-name   category::person)
     (category::company-name  category::company)
     (category::name-of-location category::location)
-    (category::uncategorized-name category::named-object)
+    (category::uncategorized-name category::name)
     (category::collection
      (let ((sample (first (value-of 'items name))))
        (category-for-edge-given-name-type (itype-of sample) sample)))
