@@ -551,7 +551,8 @@
   (or
    (vg-compatible? (edge-form e))
    (eq category::not (edge-category e))
-   (eq category::then (edge-category e))))
+   ;;(eq category::then (edge-category e))
+   ))
 
 (defmethod vg-compatible? ((c referential-category))
   (vg-compatible? (cat-symbol c)))
