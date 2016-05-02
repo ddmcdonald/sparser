@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "tokenizer"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  February 2016
+;;;  Version:  April 2016
 
 ;; Initiated 11/90 (v1.5)
 ;; 11/12/14 Adding traces for giving unknown words light content because of
@@ -29,6 +29,39 @@
   (when *trace-morphology*
     (trace-msg "[find] ~s does not have a rule set" (word-pname word))))
 
+(deftrace :fw-no-rule-set/no-variants (word)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] ~s does not have a rule set ~
+                and no capitalization variants" (word-pname word))))
+
+(deftrace :fw-no-rule-set/no-variant-with-rs (word variant)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] ~s does not have a rule set ~
+               and its variants ~a don't have a rule set either"
+               (word-pname word) variant)))
+
+(deftrace :fw-no-rule-set/lc (word)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] ~s does not have a rule set. ~
+                token capitalization is :lower-case" (word-pname word))))
+
+(deftrace :fw-no-rule-set/variant-wrong-cap (word variant cap)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] The is a capitalization variant of ~s: ~a~
+              ~%   but it doesn't match the capitalization ~
+              of this position: ~a" (word-pname word)
+              variant cap)))
+
+(deftrace :fw-variant-has-rule-set (word variant)
+  ;; in find-word
+  (when *trace-morphology*
+    (trace-msg "[find] no rule set for ~s~
+              ~%       but ~a has one" (word-pname word) variant)))
+
 (deftrace :tw-is-a-function-word (word)
   ;; in find-word
   (when *trace-morphology*
@@ -47,8 +80,10 @@
 
 (deftrace :fw-no-symbol ()
   ;; in find-word
+  (declare (special *word-lookup-buffer*))
   (when *trace-morphology*
-    (trace-msg "[find] no symbol. Completely unknown")))
+    (trace-msg "[find] \"~a\" no symbol. Completely unknown"
+               *word-lookup-buffer*)))
 
 (deftrace :storing-unknown-for-later (word pos-before)
   ;; called from store-word-and-handle-it-later
