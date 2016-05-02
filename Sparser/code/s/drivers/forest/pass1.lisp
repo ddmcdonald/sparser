@@ -426,6 +426,9 @@
         ;; but its more likely to be an edge than not        
         (knit-parens-into-neighbor left-neighbor paren-edge)))))
 
+;; no longer bind parentheticals to a variable on the preceding edge
+(defparameter *bind-parens-into-semantics* nil)
+
 (defun knit-parens-into-neighbor (left-neighbor paren-edge)
   (declare (special left-neighbor paren-edge))
   (tr :parens-after left-neighbor paren-edge)
@@ -439,53 +442,54 @@
     ;; a likely acronym. 
     (return-from knit-parens-into-neighbor nil))
   (cond
-   ((and (edge-p left-neighbor)
-         (edge-referent left-neighbor)
-         (or
-          (individual-p (edge-referent left-neighbor))
-          (category-p (edge-referent left-neighbor))))
-    (let* ((referent ;; DAVID -- THIS IS WHERE WE COPY THE BASE ITEM TO AVOID SMASHING IT
-            (individual-for-ref (edge-referent left-neighbor)))
-           (constituents (edge-constituents paren-edge))
-           (count (when constituents ;;///review the code to guarentee this
-                    ;; count is a crude 1st-cut distinction in what's inside 
-                    ;; the parens
-                    (- (length constituents) 2)))
-           (paren-referent (referent-of-parenthetical-expression
-                            count paren-edge)))
+    ((and (edge-p left-neighbor)
+	  (edge-referent left-neighbor)
+	  (or
+	   (individual-p (edge-referent left-neighbor))
+	   (category-p (edge-referent left-neighbor))))
+     (let* ((referent ;; DAVID -- THIS IS WHERE WE COPY THE BASE ITEM TO AVOID SMASHING IT
+	     (individual-for-ref (edge-referent left-neighbor)))
+	    (constituents (edge-constituents paren-edge))
+	    (count (when constituents ;;///review the code to guarentee this
+		     ;; count is a crude 1st-cut distinction in what's inside 
+		     ;; the parens
+		     (- (length constituents) 2)))
+	    (paren-referent (referent-of-parenthetical-expression
+			     count paren-edge)))
       
-      (when (and (individual-p paren-referent)
-                 (individual-p referent))
-        (setq referent
-              (bind-dli-variable (lambda-variable-named 'trailing-parenthetical) ;; obsolete in DLI case
-                                 paren-referent
-                                 referent)))
-      ;;// now knit it in. A form rule would be best. It could handle the
-      ;; binding as well, but j9 shows that the neighbor is not always
-      ;; going to be obvious.
-      (let ((edge (make-chart-edge ;; very drawn out version. More reason for rule
-                   :left-edge left-neighbor
-                   :right-edge paren-edge
-                   :starting-position (pos-edge-starts-at left-neighbor)
-                   :ending-position (pos-edge-ends-at paren-edge)
-                   :category (edge-category left-neighbor)
-                   :form (edge-form left-neighbor)
-                   :rule-name 'knit-parens-into-neighbor
-                   :referent referent)))
-        (tr :new-edge-incorporating-parens edge)
-	(update-definite-determiner edge)
-        edge )))
-   (t
-    #+ignore
-    (format t "Dropping parenthetical ~s on the floor because previous edge  ~s has no interpretation~&"
-            paren-edge left-neighbor )
-    nil
-    ;; See discussion in hide-parenthesis-edge
-    ;; We may have the timing of this wrong since there should usually be a
-    ;; spanned chunk to the left.
-    ;; Quashing the error message since it's just too noisy.
-    ;;(format t "~&Can't knit paren item ~s into non-edge ~s" paren-edge left-neighbor)
-    )))
+       (when (and (individual-p paren-referent)
+		  (individual-p referent))
+        
+	 (if *bind-parens-into-semantics*
+	     (setq referent (bind-dli-variable (lambda-variable-named 'trailing-parenthetical) ;; obsolete in DLI case
+					       paren-referent
+					       referent))))
+       ;;// now knit it in. A form rule would be best. It could handle the
+       ;; binding as well, but j9 shows that the neighbor is not always
+       ;; going to be obvious.
+       (let ((edge (make-chart-edge ;; very drawn out version. More reason for rule
+		    :left-edge left-neighbor
+		    :right-edge paren-edge
+		    :starting-position (pos-edge-starts-at left-neighbor)
+		    :ending-position (pos-edge-ends-at paren-edge)
+		    :category (edge-category left-neighbor)
+		    :form (edge-form left-neighbor)
+		    :rule-name 'knit-parens-into-neighbor
+		    :referent referent)))
+	 (tr :new-edge-incorporating-parens edge)
+	 (update-definite-determiner edge)
+	 edge )))
+    (t
+     #+ignore
+     (format t "Dropping parenthetical ~s on the floor because previous edge  ~s has no interpretation~&"
+	     paren-edge left-neighbor )
+     nil
+     ;; See discussion in hide-parenthesis-edge
+     ;; We may have the timing of this wrong since there should usually be a
+     ;; spanned chunk to the left.
+     ;; Quashing the error message since it's just too noisy.
+     ;;(format t "~&Can't knit paren item ~s into non-edge ~s" paren-edge left-neighbor)
+     )))
 
 (defun referent-of-parenthetical-expression (count paren-edge)
   ;; If there's one interior edge return it's referent. 
