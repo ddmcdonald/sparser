@@ -59,7 +59,7 @@
 ;;; the subcategorization frame exists for ASSIGN-SUBJECT.
 (assert (fom-subcategorization category::be))
 (assign-subject category::be category::biological (variable/category 'subject category::be))
-(assign-object category::be category::biological (variable/category 'predication category::be))
+(assign-object category::be category::biological (variable/category 'predicate category::be))
 
 ;;;---------------------------
 ;;; macros for standard cases
