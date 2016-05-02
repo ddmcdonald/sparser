@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  March 2016
+;;;  version:  April 2016
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -45,8 +45,6 @@
 ; to stop.
 
 (define-category top
-  ;; Need these empty values to ensure that a shadow CLOS clase
-  ;; is creates for it, i.e. to make it a non-trivial class.
   :instantiates nil
   :specializes nil
   :binds ((modifier)
@@ -166,14 +164,6 @@
   on the number and diversity of variables in the ontology
   as per C3.")
 
-
-(define-category  name
-  :specializes quality 
-  :instantiates self
-  :documentation "This is the root for all (real) names.
-   Something has a (real) name, which is why it's a quality.")
-
-
 (define-category named-type  ;; "Honda"
   :specializes has-name ;; n.b. just simple names
   :binds ((type-of :primitive category))
@@ -185,8 +175,19 @@
  physical.")
 
 
+(define-category designator
+  :specializes quality
+  :documentation "Provides a generalization over diffent
+  kinds of things that pick out instances from some set.")
+
+(define-category  name
+  :specializes designator 
+  :instantiates self
+  :documentation "This is the root for all (real) names.
+   Something has a (real) name, which is why it's a quality.")
+
 (define-category index
-  :specializes name
+  :specializes designator
   :instantiates nil
   :documentation "Functions as a selector by picking out
  one of some set or segence of things because they have
