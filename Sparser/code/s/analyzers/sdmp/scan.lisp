@@ -221,8 +221,12 @@ to make any semantic or form edges that the grammar dictates.
                  (make-individual-for-dm&p (or super
                                                referent)))))
         (*description-lattice*
-         (setf (edge-referent edge)
-               (fom-lattice-description referent))))
+	 (setq referent (fom-lattice-description referent))
+         (setf (edge-referent edge) referent)
+	 ;; the discourse-mention had a category as its interpretation
+	 ;; and the new referent does not have that mention on its mention-history
+	 ;; correct that
+	 (update-mention-referent Edge referent)))
        referent)
       ;; These cases are original from 2009 and 
       ;; not reconsidered yet.
