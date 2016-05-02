@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.2 September 2015
+;;;  Version:  May 2016
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -122,13 +122,15 @@
   :specializes be
   :binds ((copula)
           (prep)
-          (pobj)))
+          (pobj))
+  :index (:temporary :list))
 
 (define-category  copular-predicate
   :specializes be
   :binds ((predicate)
           (predicated-of)
-          (copula)))
+          (copula))
+  :index (:temporary :list))
 
 (def-form-rule (be pp)
   :form vp
@@ -261,7 +263,8 @@
 (define-category there-exists ;; There is a cat on the mat"
   :specializes relation
   :binds ((object)
-          (context)))
+          (context))
+  :index (:temporary :list))
 
 (def-cfr there-exists (syntactic-there BE)
   :form S
