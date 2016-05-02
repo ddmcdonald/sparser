@@ -207,6 +207,7 @@
 (adj "adjesion" :super bio-predication) ;; TO-DO need to think about how to define "adhere" to structure
 (adj "closed" :super bio-predication)
 (adj "scaffolding" :super bio-predication) ;; "scaffolding protein"
+(delete-adj-cfr (resolve "direct"))
 (adj "direct" :super bio-predication)
 (adj "spatial" :super bio-predication)
 (adj "resting" :super bio-predication)
@@ -861,6 +862,7 @@
   (:noun "number"))
 
 (define-adverb "notably")
+(delete-adj-cfr (resolve "novel"))
 (adj "novel" :super bio-predication)
 
 ;; These three want to be synonyms
@@ -960,6 +962,7 @@
              :between bounds))
 
 (adj "relative" :super bio-relation
+     :restrict ((subject scalar-quality))
      :realization
      (:to theme))
 
