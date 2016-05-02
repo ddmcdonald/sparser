@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2013-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "subseq ref"
 ;;;   Module:  "model;core:names:fsa:"
-;;;  version:  0.3 September 2013
+;;;  version:  April 2016
 
 ;; broken out from [names:fsa:record] 6/8/93 v2.3
 ;; (1/7/94) patched around earlier indexing bug in Item-in-a-known-name
@@ -360,26 +360,22 @@
 
 
 (defun names-based-on-sequence (sequence)
-  (or (let ((references (who-binds 'sequence sequence)))
+  (or (let ((references (who-binds 'sequence sequence))) ;; name/s
         ;; (whole) sequences linked-to by names and by 
         ;; an ordinal for each item
         (when references
-          (push-debug `(,references))
-          (let ((name-refs (loop for ref in references
-                             when (itypep ref 'name)
-                             collect ref)))
+          (let ((name-refs
+                 (loop for ref in references
+                    when (itypep ref 'name)
+                    collect ref)))
             name-refs)))
-      (list (name-based-on-sequence/uncategorized sequence))))
+      (let ((uncat-name
+             (name-based-on-sequence/uncategorized sequence)))
+        (when uncat-name
+          (list uncat-name)))))
 
 (defun entities-with-names (names)
   (loop for name in names
     append (who-binds 'name name)))
 
-
-
-        
-        
-
-
-                                      
 
