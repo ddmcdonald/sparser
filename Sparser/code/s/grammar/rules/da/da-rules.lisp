@@ -23,7 +23,8 @@
 
 (defun attach-to-comp-comma-to-s (to-comp-edge comma-edge s-edge)
   (let* ((s (edge-referent s-edge))
-	 (complement (value-of 'comp (edge-referent to-comp-edge)))
+	 (complement  ;;(value-of 'comp (edge-referent to-comp-edge))
+	   (edge-referent to-comp-edge))
 	 (to-comp-var ;; e.g. for "acts to dampen..."
 	  (or
 	    (subcategorized-variable s :to-comp complement)
@@ -51,40 +52,102 @@
 	 (pobj-edge (edge-right-daughter pp))
 	 (pobj-referent (edge-referent pobj-edge))
 	 (prep-edge (edge-left-daughter pp))
+	 (prep-word (edge-left-daughter prep-edge)))
+    (if (is-collection? clause-referent)
+	(or
+	 (distribute-pp-to-conjoined-clauses pp clause prep-word pobj-referent clause-referent)
+	 (distribute-pp-to-first-conjoined-clause pp clause))
+	(let (edge
+	      (var-name
+	       (or
+		(subcategorized-variable clause-referent prep-word pobj-referent)
+		(failed-pp-attachment pp clause-referent))))
+	  (when var-name
+	    (setq clause-referent
+		  (bind-dli-variable var-name pobj-referent clause-referent))
+	    (setq edge (make-binary-edge/explicit-rule-components
+			pp clause
+			:category (edge-category clause)
+			:form (edge-form clause)
+			:rule-name :attach-leading-pp-to-clause
+			:referent clause-referent))
+	    (tr :comma-3tt-pattern edge)
+	    edge)))))
+
+(defun failed-pp-attachment (pp clause-referent)
+  (when *show-failed-fronted-pp-attachment*
+    (format t "~&~&<<<<<<<>>>>>> attaching leading PP ~s to clause ~s without defined variable~&"
+	    (retrieve-surface-string pp)
+	    (retrieve-surface-string clause-referent)))
+  nil)
+
+(defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent)
+  (let* ((clauses  (value-of 'items clause-referent))
+	 (vars (loop for clause in clauses
+		  collect
+		    (or
+		     (subcategorized-variable clause
+					      prep-word
+					      pobj-referent)
+		     ;; otherwise, not all the clauses will accept the PP
+		     (return-from distribute-pp-to-conjoined-clauses nil))))
+	 (new-interp
+	  (make-an-individual
+	   'collection
+	   :items
+	   (loop for c in clauses as var-name in vars
+	      collect
+		(let* ((new-c (bind-dli-variable var-name pobj-referent c))
+		       (c-mention (relevant-mention (list clause) c)))
+		  ;; create a mention-history for the new interpretation
+		  (when c-mention
+		    (setf (base-description c-mention) new-c)
+		    (push c-mention (mention-history new-c)))
+		  new-c))
+	   :number (length clauses)
+	   :type (itype-of (car clauses))))
+	 edge)
+    (setq edge (make-binary-edge/explicit-rule-components
+		pp clause
+		:category (edge-category clause)
+		:form (edge-form clause)
+		:rule-name :attach-leading-pp-to-clause
+		:referent new-interp))
+    (tr :comma-3tt-pattern edge)
+    edge))
+
+(defun distribute-pp-to-first-conjoined-clause (pp clause)
+  (let* ((left-clause (edge-left-daughter clause))
+	 (pobj-edge (edge-right-daughter pp))
+	 (prep-edge (edge-left-daughter pp))
+	 (pobj-referent (edge-referent pobj-edge))
 	 (prep-word (edge-left-daughter prep-edge))
 	 (var-name
-	  (cond
-	    ((subcategorized-variable clause-referent
-				      prep-word
-				      pobj-referent))
-	    (t (when *show-failed-fronted-pp-attachment*
-		 (format t "~&~&<<<<<<<>>>>>>>>> attaching leading PP ~s to clause ~s without defined variable~&"
-			 (retrieve-surface-string pp)
-			 (retrieve-surface-string clause-referent)))
-	       'modifier
-	       nil))))
+	  (or
+	   (subcategorized-variable left-clause prep-word pobj-referent)
+	   (failed-pp-attachment pp left-clause)))
+	 new-left new-items new-interp new-edge)
     (when var-name
-      (setq clause-referent
-	    (if (is-collection? clause-referent)
-		(distribute-pp-to-conjoined-clauses var-name pobj-referent clause-referent)
-		(bind-dli-variable var-name pobj-referent clause-referent)))
-      (let ((edge (make-binary-edge/explicit-rule-components
-		   pp clause
-		   :category (edge-category clause)
-		   :form (edge-form clause)
-		   :rule-name :attach-leading-pp-to-clause
-		   :referent clause-referent)))
-	(tr :comma-3tt-pattern edge)
-	edge))))
-
-(defun distribute-pp-to-conjoined-clauses (var-name pobj-referent clause-referent)
-  (let ((clauses  (value-of 'items clause-referent)))(make-an-individual
-						      'collection
-						      :items
-						      (loop for c in clauses
-							 collect (bind-dli-variable var-name pobj-referent c))
-						      :number (length clauses)
-						      :type (itype-of (car clauses)))))
+      (setq new-left (when var-name (bind-dli-variable var-name pobj-referent left-clause)))
+      (setq new-items
+	    (cons new-left (cdr (value-of 'items (edge-referent clause)))))
+      (setq new-interp
+	    (make-an-individual
+	     'collection
+	     :items new-items
+	     :number (length new-items)
+	     :type (itype-of (car new-items))))
+      (setq new-edge
+	    (when var-name
+	      (make-binary-edge/explicit-rule-components
+	       pp left-clause
+	       :category (edge-category clause)
+	       :form (edge-form clause)
+	       :rule-name :attach-leading-pp-to-clause
+	       :referent)))
+      (tuck-new-edge-under-already-knit left-clause new-edge clause :left)
+      clause)))
+  
     
 
 (define-debris-analysis-rule s-comma-pp
@@ -107,7 +170,7 @@
            (subcategorized-variable clause-referent
                                     prep-word
                                     pobj-referent)))
-      (when var-name
+      (and var-name
         (setq clause-referent 
               (bind-dli-variable var-name pobj-referent clause-referent))
         (let ((edge (make-binary-edge/explicit-rule-components

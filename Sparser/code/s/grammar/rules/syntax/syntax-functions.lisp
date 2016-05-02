@@ -97,6 +97,11 @@
   category::top)
 
 (define-lambda-variable 
+  'predicate ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
     ;; Used to explicitly mark the type of an individual
     ;; created to anchor segments created by DM&P rather
     ;; than core conceptualizations and incorporated sublanguages
@@ -175,6 +180,14 @@
   "Set to T when we are executing the referent function
    as a predicate, not as part of interpretation of an NP or VP")
 
+;;; --- part of mechanism to hang on to "modifiers" that should not be incorporated in description-lattice individuals
+;;;  These include determiners and parentheticals
+;;; see operations in create-discourse-mention and extend-discourse-mention
+
+(defparameter *non-dli-mod-ht* (make-hash-table)) ;; holds determiners for NPs until they are put in the discourse mention
+(defun non-dli-mod-for (i) (gethash i *non-dli-mod-ht*))
+(defun (setf non-dli-mod-for) (det i) (setf (gethash i *non-dli-mod-ht*) det))
+
 ;;;-------------------
 ;;; noun premodifiers
 ;;;-------------------
@@ -232,10 +245,16 @@
 
 
 (defun adj-noun-compound (qualifier head)
+  (when (category-p head) (setq head (individual-for-ref head)))
   (cond
-    (*subcat-test* (not (and (individual-p head) (itypep head 'determiner))))
-    ((itypep head 'determiner) nil) ;; had strange case with "some cases this" -- head was "this"
+    (*subcat-test*
+     (and
+      (not (and (individual-p head) (itypep head 'determiner)))
+      (not (itypep head 'determiner)) ;; had strange case with "some cases this" -- head was "this"
+      (or (subcategorized-variable head :m qualifier)
+	  (subcategorized-variable qualifier :subject head))))
     ((call-compose qualifier head)) ;; This case is to benefit marker-categories
+    #+ignore
     ((category-p head)
      (let ((ihead (individual-for-ref head)))
        (setq head
@@ -248,11 +267,9 @@
     ((interpret-premod-to-np qualifier head))
     (t ;; Dec#2 has "low nM" which requires coercing 'low'
      ;; into a number. Right now just falls through
-     (setq head (individual-for-ref head))
-     (when ;; (when (itypep head 'endurant)
-	 (find-variable-from-individual 'modifier head)
-       (setq  head (bind-dli-variable 'modifier qualifier head)))
-     head)))
+     (let ((predicate (bind-dli-variable :subject head qualifier)))
+       (setq  head (bind-dli-variable 'predication predicate head))
+       head))))
 
 (defparameter *dets-seen* nil)
 
@@ -274,8 +291,9 @@
 	   pobj-ref
 	   ))))))
 
+
 (defun determiner-noun (determiner head)
-  "Drop indefinite determiners on the ground. Mark definites
+  "NO LONGER Drop indefinite determiners on the ground. Mark definites
    for later handling."
   (declare (special *sentence-in-core*))
   (push-debug `(,determiner ,head))
@@ -293,6 +311,7 @@
 	  ;; modifiers dossier. 
 	  (pushnew determiner *dets-seen*)
 	  #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
+	(setf (non-dli-mod-for head) (list 'determiner determiner))
 	(cond
 	  ((call-compose determiner head))
 	  ((definite-determiner? determiner)
@@ -783,11 +802,12 @@
 
 
 (defun adjoin-tocomp-to-vg (vg tocomp)
-  (assimilate-subcat vg :to-comp  (value-of 'comp tocomp)))
+  (assimilate-subcat vg :to-comp  tocomp ;;(value-of 'comp tocomp)
+		     ))
 
 (defun interpret-to-comp-adjunct-to-np (np to-comp)
   (declare (special np to-comp))
-  (let* ((complement (value-of 'comp to-comp))
+  (let* ((complement to-comp) ;;(value-of 'comp to-comp))
          (variable-to-bind
           ;; test if there is a known interpretation of the NP/PP combination
           (subcategorized-variable np :to-comp complement)))
@@ -808,7 +828,7 @@
   ;; (aka perdurants). 
   #| (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS signalling 
   to enhance p53 mediated apoptosis [2].") |#
-  (let* ((complement (value-of 'comp tocomp))
+  (let* ((complement tocomp);; no longer bury interpretation (value-of 'comp tocomp))
        (to-comp-var ;; e.g. for "acts to dampen..."
         (subcategorized-variable s :to-comp complement)))
     (cond
@@ -824,17 +844,13 @@
           s)))))))
 
 (defun interpret-for-to-comp (for-pp to-comp)
-  (let* ((complement (value-of 'comp to-comp))
+  (let* ((complement to-comp) ;;(value-of 'comp to-comp))
 	 (for-subj (value-of 'pobj for-pp))
 	 (subj-var
 	  (subcategorized-variable complement :subject for-subj)))
     (if *subcat-test*
 	subj-var
-	(let ((new-comp ))
-	  (make-simple-individual
-	   category::to-comp
-	   `((prep ,(value-of 'prep to-comp))
-	     (comp ,(bind-dli-variable subj-var for-subj complement))))))))
+	(bind-dli-variable subj-var for-subj complement))))
 		
 	    
 ;;;---------
@@ -1264,14 +1280,13 @@
        ((eq label :object)
 	(format t "~&*** null item in subcategorized object for edge ~s~&" *right-edge-into-reference*))
        (t
-	(format t "~&null item in subcategorized-variable~&")))
+	(lsp-break "~&null item in subcategorized-variable~&")))
      nil)
     ((consp item)
      (break "what are you doing passing a CONS as an item, ~s~&" item)
      nil)
     (t
-     (when (itypep item 'to-comp)
-       (setq item (value-of 'comp item)))
+     ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
      ;;/// prep-comp, etc.
      (let ((subcat-patterns (known-subcategorization? head)))
        (when subcat-patterns
@@ -1489,27 +1504,23 @@
   (declare (special category::to category::prep-comp))
   ;;(push-debug `(,prep ,complement)) (break "where prep?") 
   (cond
-   (*subcat-test*
-    (and prep complement))
-   (t
-    (let* ((binding-instructions
-            `((prep ,prep) (comp ,complement)))
-           (prep-comp 
-            (make-simple-individual
-             (cond ((eq prep category::to) category::to-comp)
-                   (t category::prepositional-phrase))
-             binding-instructions)))
-      ;; If this starts to make a lot of preposition-specific
-      ;; distinctions then we need to refactor and move the
-      ;; cond up.
-      (if
-       (eq prep category::to)
-       ;; If this routine starts to make a lot of preposition-specific
-       ;; distinctions then we need to refactor and move the cond up.
-       (revise-parent-edge :form category::to-comp)
-       (revise-parent-edge :form category::prepositional-phrase))
-	 
-      prep-comp))))
+    (*subcat-test*
+     (and prep complement))
+    ((eq prep category::to)
+     (revise-parent-edge :form category::to-comp)
+     complement)
+    (t
+     (let* ((binding-instructions
+	     `((prep ,prep) (comp ,complement)))
+	    (prep-comp 
+	     (make-simple-individual
+	      category::prepositional-phrase
+	      binding-instructions)))
+       ;; If this starts to make a lot of preposition-specific
+       ;; distinctions then we need to refactor and move the
+       ;; cond up.
+       (revise-parent-edge :form category::prepositional-phrase)	 
+       prep-comp))))
 
 
 ; Called from whack-a-rule-cycle => copula-rule?
@@ -1551,7 +1562,8 @@
 (defun apply-copular-pp (np copular-pp)
   (declare (special category::copular-predicate))
   (when
-   (itypep copular-pp 'subordinate-clause)
+      (itypep copular-pp 'subordinate-clause)
+    ;; this may no longer work -- get an example and test it
     (setq copular-pp (value-of 'comp copular-pp)))
   (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
          (pobj (value-of 'pobj copular-pp))
