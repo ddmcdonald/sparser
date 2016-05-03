@@ -74,18 +74,21 @@
     (setq verb (word-pname verb)))
   (let* ((category-name (intern (string-upcase verb)
                                 (find-package :sparser)))
+         (form (unless (category-named category-name)
+                 ;; having some difficulty with redefining verb "leave",
+                 ;; and then redefining the category
+                 `(def-term ,category-name
+		     :verb ,verb 
+                     :etf (svo-passive)
+                     :super-category bio-process
+                     :slots (:s subject :o object)))))
+    (when form
+      (let ((category (eval form)))
+        (note-permanence-of-categorys-individuals category)
+        category))))
 
-         (form 	 (unless (category-named category-name)
-		   ;; having some difficulty with redefining verb "leave", and then redefining the category
-		   `(def-term ,category-name
-			:verb ,verb 
-			:etf (svo-passive)
-			:super-category bio-process
-			:slots (:s subject
-				   :o object)))))
-    (eval form)))
 
-;;; Verbs added temporarily for Localization articles -- to ve reviewed and corrected
+;;; Verbs added temporarily for Localization articles -- to be reviewed and corrected
 (define-category become :specializes bio-rhetorical
     :realization
     (:verb ("become" :third-plural "becomes" :past-tense "became"

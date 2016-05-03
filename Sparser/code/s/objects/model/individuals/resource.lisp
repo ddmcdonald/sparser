@@ -177,13 +177,34 @@ uses the two-lists on the plist conception of how things are done.
 
 (defun individuals-of-this-category-are-permanent? (category)
   "Called by define-individual to set the value of the flag
-*index-under-permanent-instances* which that function binds."
+   *index-under-permanent-instances* which that function binds."
   (get-tag :instances-are-permanent category))
 
 (defun note-permanence-of-categorys-individuals (category)
   "Called from decode-index-field-aux as it reads a category's index field."
   (setf (get-tag :instances-are-permanent category) t))
 
+(defun note-impermanence-of-categorys-individuals (category)
+  "Called from decode-index-field-aux as it reads a category's index field."
+  (setf (get-tag :instances-are-temporary category) t))
+
+
+(defmethod unmarked-category-makes-permanent-individuals ((c referential-category))
+  (unless (get-tag :instances-are-temporary c)
+    (note-permanence-of-categorys-individuals c)))
+
+(defmethod unmarked-category-makes-permanent-individuals ((c category))
+  "Doesn't make sense for form or mixin categories. The other cases in
+   find-or-make-category-object aren't in use or the definition source
+   needs substantial review."
+  (declare (ignore c))
+  nil)
+
+(defmethod unmarked-category-makes-permanent-individuals ((gmod grammar-module))
+  (loop for c in (gmod-object-types gmod)
+     do (unmarked-category-makes-permanent-individuals c))
+  (loop for c in (gmod-non-terminals gmod)
+     do (unmarked-category-makes-permanent-individuals c)))
 
 ;;;-----------------
 ;;; absolute lookup

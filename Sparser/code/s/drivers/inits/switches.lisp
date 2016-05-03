@@ -455,6 +455,10 @@
   ;; Specify where we start (needed as switch settings change)
   (do-strong-domain-modeling)
 
+  (let ((gmod (grammar-module-named '*biology*)))
+    (assert gmod () "The biology grammar module is not available")
+    (unmarked-category-makes-permanent-individuals gmod))
+
   (designate-sentence-container :complex)
   (setq *switch-setting* :biology))
 

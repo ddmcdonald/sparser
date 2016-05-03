@@ -44,7 +44,8 @@
 (defun decode-index-field-aux (category index-field)
   ;; a category's instances will be considered temporary unless
   ;; there is an explicit tag to indicate that they are permanent
-  (cond ((member :temporary index-field))
+  (cond ((member :temporary index-field)
+         (note-impermanence-of-categorys-individuals category))
         ((member :permanent index-field)
          (note-permanence-of-categorys-individuals category)))
   (decode-rest-of-index-field category index-field))
