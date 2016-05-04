@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "hyphen-patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  April 2016
+;;;  version:  May 2016
 
 ;; Broken out from patterns 7/20/15. 11/2/15 fanout from converting
 ;; edge patterns early. 
@@ -167,6 +167,11 @@
      ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
       ;; 4/14/16 Appears to be a bug in the state space of digit-FSA that keeps
       ;; it from handling these.
+      (make-hyphenated-number (first edges) (third edges) words))
+
+     ((equal pattern '(:digits :hyphen :digits)) ;; "824-832"
+      ;; This should be caught by the digit-fsa, but if it's not
+      ;; this forestalls it going out as a bio-entity.
       (make-hyphenated-number (first edges) (third edges) words))
      
      ((and *work-on-ns-patterns*
