@@ -116,9 +116,18 @@ the fsa would be identified at the word level rather than the category level.
 
 (deftrace :digit-fsa-scanned (word function)
   (when *trace-digits-fsa*
-    (trace-msg "scanned ~s in ~a" (word-pname word) function)))
+    (trace-msg "[digits] scanned ~s in ~a" (word-pname word) function)))
 
+(deftrace :digit-fsa-returned-to-start (end-pos number-of-segments)
+  (when *trace-digits-fsa*
+    (trace-msg "[digits] Returned to make edge over ~a segements ~
+                ending at p~a" number-of-segments (pos-token-index end-pos))))
 
+(deftrace :digit-fsa-returning (reason function)
+  (when *trace-digits-fsa*
+    (trace-msg "[digits] returning from ~a~
+              ~%    because ~a"
+               function reason)))
 
 ;;;-----------------
 ;;; state variables
@@ -165,7 +174,9 @@ the fsa would be identified at the word level rather than the category level.
                         1  ;; the array cell to put the next word into
                         *digit-position-array*
                         treetop)  ;; the first digit-seq. 
-                        
+
+    (tr :digit-fsa-returned-to-start ending-position number-of-segments)
+
     (ecase *interpretation-of-digit-sequence*
       (:number
        (span-digits-number starting-position
@@ -187,6 +198,8 @@ the fsa would be identified at the word level rather than the category level.
                       :left left-ref :right right-ref)))
            (make-chart-edge :starting-position starting-position
                             :ending-position ending-position
+                            :left-daughter left-edge
+                            :right-daughter right-edge
                             :category (category-named 'hyphenated-number)
                             :form category::number
                             :referent  i
@@ -206,7 +219,10 @@ the fsa would be identified at the word level rather than the category level.
   ;;   If we see either any of the characters that extend digit sequences
   ;; then we continue, otherwise we declare the digit-sequence finished
   ;; and return.
-  (declare (special *interpretation-of-digit-sequence*))
+  (declare (special *interpretation-of-digit-sequence*
+                    *the-punctuation-hyphen*
+                    *the-punctuation-period*
+                    *the-punctuation-comma*))
   (when (null last-treetop)
     (break "what are you doing passing expect-digit-delimiter-as-next-~
             treetop NIL as the last-treetop"))
@@ -223,25 +239,30 @@ the fsa would be identified at the word level rather than the category level.
         ;; be misspellings: "47 ,000"
             
       (let ((word-at-next-position (pos-terminal next-position)))
-        (cond ((eq word-at-next-position word::comma)
+        (cond ((eq word-at-next-position *the-punctuation-comma*)
                (continue-digit-sequence-after-comma
                 next-cell array next-position))
                     
-              ((eq word-at-next-position word::period)
+              ((eq word-at-next-position *the-punctuation-period*)
                (setq *period-within-digit-sequence* t)
                (continue-digit-sequence-after-period
                 next-cell array next-position))
                     
-              ((eq word-at-next-position word::hyphen)
+              ((eq word-at-next-position *the-punctuation-hyphen*)
                (setq *interpretation-of-digit-sequence* :hypenated-numbers)
                (continue-digit-sequence-after-hyphen
                 next-cell array next-position))
                     
-              (t (values next-position next-cell))))
-            
-      (values next-position  ;; the position at the end of the seq.
-              next-cell ;; the count on the number of cells filled.
-              ))))
+              (t (tr :digit-fsa-returning :unanticipated-character
+                     'expect-digit-delimiter-as-next-treetop)
+                 (values next-position next-cell))))
+
+      (else
+        (tr :digit-fsa-returning :preceding-whitespace
+            'expect-digit-delimiter-as-next-treetop)        
+        (values next-position  ;; the position at the end of the seq.
+                next-cell ;; the count on the number of cells filled.
+                )))))
 
 
 
@@ -302,8 +323,12 @@ unknown---in any event, we're taking the first edge that is installed.
                                                   array
                                                   digits-edge))
         (else
+          (tr :digit-fsa-returning :non-digit-word
+              'continue-digit-sequence-after-comma)
           (values position-of-delimiter next-cell)))
       (else
+        (tr :digit-fsa-returning :preceding-whitespace
+            'continue-digit-sequence-after-comma)
         (values position-of-delimiter next-cell)))))
 
 
@@ -349,9 +374,13 @@ unknown---in any event, we're taking the first edge that is installed.
                                                   array
                                                   digits-edge))
         (else
+          (tr :digit-fsa-returning :non-digit-word
+              'continue-digit-sequence-after-period)
           (setq *period-within-digit-sequence* nil)
           (values position-of-delimiter next-cell)))
       (else
+        (tr :digit-fsa-returning :preceding-whitespace
+            'continue-digit-sequence-after-period)
         (setq *period-within-digit-sequence* nil)
         (values position-of-delimiter next-cell)))))
 
@@ -626,6 +655,8 @@ unknown---in any event, we're taking the first edge that is installed.
         ;; should drop the final hyphen and return the position after
         ;; the last digit.
         (else
+          (tr :digit-fsa-returning :no-digits-after-hyphen
+            'continue-digit-sequence-after-hyphen)
           (unless (> index-of-cell-to-fill 2)
             (setq *interpretation-of-digit-sequence* :number))
           (values position-before-hyphen index-of-cell-to-fill)))
@@ -633,6 +664,8 @@ unknown---in any event, we're taking the first edge that is installed.
       ;; ditto, but the reason is that there is whitespace after the
       ;; last digit so we assume that the sequence is broken
       (else
+        (tr :digit-fsa-returning :preceding-whitespace
+            'continue-digit-sequence-after-hyphen)
         (unless (> index-of-cell-to-fill 2)
             (setq *interpretation-of-digit-sequence* :number))
         (values position-before-hyphen index-of-cell-to-fill)))))
@@ -648,6 +681,8 @@ unknown---in any event, we're taking the first edge that is installed.
   ;; the items.  If there's a final hyphen with no following digit-seq,
   ;; we strand it.
 
+  (declare (special *the-punctuation-hyphen*))
+  
   (let* ((next-position (chart-position-after position-before-last-digit-seq))
          (status (pos-assessed? next-position)))
     (unless status
@@ -658,14 +693,20 @@ unknown---in any event, we're taking the first edge that is installed.
     (if (and (null (pos-preceding-whitespace next-position))
              (eq :punctuation (pos-capitalization next-position)))
 
-      (if (eq word::hyphen (pos-terminal next-position))
+      (if (eq *the-punctuation-hyphen* (pos-terminal next-position))
         (continue-digit-sequence-after-hyphen (1+ index-of-cell-to-fill)
                                               array
                                               next-position)
 
-        (values (chart-position-after position-before-last-digit-seq)
-                index-of-cell-to-fill))
+        (else
+          (tr :digit-fsa-returning :word-is-not-hyphen
+            'look-for-hyphen-as-next-treetop)
+          (values (chart-position-after position-before-last-digit-seq)
+                  index-of-cell-to-fill)))
 
-      (values (chart-position-after position-before-last-digit-seq)
-              index-of-cell-to-fill))))
+      (else
+        (tr :digit-fsa-returning :preceding-whitespace
+            'look-for-hyphen-as-next-treetop)
+        (values (chart-position-after position-before-last-digit-seq)
+                index-of-cell-to-fill)))))
 
