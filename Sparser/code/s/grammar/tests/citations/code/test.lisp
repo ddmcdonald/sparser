@@ -26,14 +26,19 @@
     (format stream "~&~%Testing \"~A\"~
                     ~%   " string)
 
-    ;; if we get a lisp error from this, tuffers.
-    (pp string)
-    (when official-bracketing
-      (format stream "~&   bracketing:  ~a"
-              (match-bracketing-to-citation official-bracketing)))
-    (when official-tts
-      (format stream "~&   treetops:  ~a"
-              (match-chart-to-citation official-tts)))))
+    (handler-case
+        (progn
+          (pp string)
+          (when official-bracketing
+            (format stream "~&   bracketing:  ~a"
+                    (match-bracketing-to-citation official-bracketing)))
+          (when official-tts
+            (format stream "~&   treetops:  ~a"
+                    (match-chart-to-citation official-tts))))
+      (error (e)
+        (format t "~&Error in citation ~s:~%  ~a"
+                string e)))))
+
 
 (defun match-bracketing-to-citation (official-bracketing)
   (let ((bracketing (bracketing-tree)))
