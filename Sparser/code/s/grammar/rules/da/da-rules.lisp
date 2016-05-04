@@ -144,7 +144,7 @@
 	       :category (edge-category clause)
 	       :form (edge-form clause)
 	       :rule-name :attach-leading-pp-to-clause
-	       :referent)))
+	       :referent new-interp)))
       (tuck-new-edge-under-already-knit left-clause new-edge clause :left)
       clause)))
   
