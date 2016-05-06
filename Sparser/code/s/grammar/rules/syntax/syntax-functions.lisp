@@ -371,15 +371,9 @@
 
 
 (defun verb+ing-noun-compound (qualifier head)
-  ;;(break "verb-noun-compound")
-  ;; goes with (verb+ed n-bar-type) syntactic rule
-  (when nil
-    (push-debug `(,qualifier ,head))
-    (break "check: qualifier = ~a~
-   ~%       head = ~a" qualifier head))
-     (or
-      (call-compose qualifier head)
-      (link-in-verb+ing qualifier head)))
+  (or
+   (call-compose qualifier head)
+   (link-in-verb+ing qualifier head)))
 
 
 (defun link-in-verb+ing (qualifier head)
@@ -406,23 +400,15 @@
   ;; goes with (verb+ed n-bar-type) syntactic rule
   (cond
     ((null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
-     ;;(lsp-break "*current-chunk*")
-     (return-from verb-noun-compound nil))
-    (*subcat-test*
-     (return-from verb-noun-compound t)))
-  (when nil
-    (push-debug `(,qualifier ,head))
-    (break "check: qualifier = ~a~
-   ~%       head = ~a" qualifier head))
-
-  (or (call-compose qualifier head)
-      ;; This case is to benefit marker-categories
-      (call-compose qualifier head)
-      (link-in-verb qualifier head)
-      (progn
-	;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
-	(break "Can't deal with head whose interpretation is not an individual or category in verb-noun-compound, head is ~s~&" head)
-	nil)))
+     nil)
+    (*subcat-test* (object-variable qualifier))
+    (t (or (call-compose qualifier head)
+	   ;; This case is to benefit marker-categories
+	   (link-in-verb qualifier head)
+	   (progn
+	     ;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
+	     (break "Can't deal with head whose interpretation is not an individual or category in verb-noun-compound, head is ~s~&" head)
+	     nil)))))
 
 (defun link-in-verb (qualifier head)
   (let ((object (object-variable qualifier)))
@@ -608,8 +594,7 @@
        ((vg-has-adverb-variable? vg) t)
        ((and
 	 (itypep vg 'collection)
-	 (loop for vg-item in (value-of 'items vg)
-	    always (vg-has-adverb-variable? vg)))
+	 (vg-has-adverb-variable? (car (value-of 'items vg))))
 	t)
        (t
 	(break "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
@@ -618,15 +603,7 @@
 		(sentence-string *sentence-in-core*))
 	nil)))
     ((itypep vg 'collection)
-     (let ((new-items
-	    (loop for item in (value-of 'items vg)
-	       collect
-		 (bind-dli-variable 'adverb adverb item))))
-       (setq vg
-	     (make-an-individual 'collection
-				 :items new-items
-			    :number (length new-items)
-			    :type (itype-of (car new-items))))))
+     (bind-dli-variable 'adverb adverb vg))
     ((vg-has-adverb-variable? vg)
      (setq  vg (bind-dli-variable 'adverb adverb vg)))
     (t vg)))
@@ -1066,10 +1043,7 @@
 	  (and (category-p prev-form)
 	       (member (cat-name prev-form) '(SUBORDINATE-CONJUNCTION CONJUNCTION SPATIO-TEMPORAL-PREPOSITION ADVERB)))
 	  (and (category-p prev-cat)
-	       (member (cat-name prev-cat) '(THAT)))
-	  (and nil
-	       (word-p prev-cat)
-	       (member (word-symbol prev-cat) '(word::comma))))
+	       (member (cat-name prev-cat) '(THAT))))
         
 	 t)
 	(t
