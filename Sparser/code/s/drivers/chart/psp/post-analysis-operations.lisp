@@ -9,16 +9,19 @@
 
 (in-package :sparser)
 
-(defparameter *do-expansion-in-context* nil)
+(defparameter *do-expansion-in-context* t)
 ;; turn it off until it is fully operational -- but check in the bulk of the code
 
 (defun interpret-treetops-in-context (treetops)
   (when *interpret-in-context*
     (loop for tt in treetops when (edge-p tt)
-       do (interpret-in-context tt nil nil))))
-
-
-
+       when (and (category-p (edge-category tt))
+		 (not
+		  (member (cat-name (edge-category tt))
+			  ;; we don't interpret such quoted strings
+			  '(quotation parentheses dash  square-brackets semicolon))))
+       do
+	 (interpret-in-context (new-dt tt nil) nil nil))))
 
 ;;;_______________________________________________
 
@@ -26,9 +29,6 @@
 (defgeneric contextual-interpretation (item)
   (:documentation
    "Return the currently available contextual interpretation of th object -- the base-description if no contextual interpretation has been made."))
-(defmethod contextual-interpretation ((c cons))
-  (contextual-interpretation (car c)))
-
 
 (defmethod contextual-interpretation ((p polyword))
   p)
@@ -62,59 +62,49 @@
      (t s))
    t))
 
-
-
-(defgeneric interpret-in-context (item-to-be-interpreted variable container)
+(defgeneric interpret-in-context (item-to-be-interpreted variable containing-mentions)
   (:documentation
    "Recursively interpret item-to-be-interpreted in the given context 
 (structure of context still to be defined).
 Bind the contextual-description of the associated mention (if any) to
 the contextual interpretation of the item in the context."))
 
-(defmethod interpret-in-context ((item word) variable container)
-  (declare (ignore variable container))
+(defmethod interpret-in-context ((item word) variable containing-mentions)
+  (declare (ignore variable containing-mentions))
   item)
 
-(defmethod interpret-in-context ((item polyword) variable container)
-  (declare (ignore variable container))
+(defmethod interpret-in-context ((item polyword) variable containing-mentions)
+  (declare (ignore variable containing-mentions))
   item)
 
-(defmethod interpret-in-context ((item number) variable container)
-  (declare (ignore variable container))
+(defmethod interpret-in-context ((item number) variable containing-mentions)
+  (declare (ignore variable containing-mentions))
   item)
 
-(defmethod interpret-in-context ((e edge) variable container)
-  (if (category-p (edge-category e))
-      (if (member (cat-name (edge-category e))
-		  '(quotation parentheses dash
-		    square-brackets semicolon))
-	  ;; we don't interpret such quoted strings
-	  nil
-	  (interpret-in-context (new-dt e nil) variable container))
-      ))
-
-(defmethod interpret-in-context ((c category) variable container)
-  (declare (ignore variable container))
+(defmethod interpret-in-context ((c category) variable containing-mentions)
+  (declare (ignore variable containing-mentions))
   "This may get more complex, so that e.g. protein categories may be interpreted metonymically as complexes..."
   c)
 
-(defmethod interpret-in-context ((i individual) variable container)
-    (declare (ignore variable container))
+(defmethod interpret-in-context ((i individual) variable containing-mentions)
+    (declare (ignore variable containing-mentions))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   i)
 
-(defmethod interpret-in-context ((s string) variable container)
-    (declare (ignore variable container))
+(defmethod interpret-in-context ((s string) variable containing-mentions)
+    (declare (ignore variable containing-mentions))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   s)
 
-(defmethod interpret-in-context ((s symbol) variable container)
-    (declare (ignore variable container))
+(defmethod interpret-in-context ((s symbol) variable containing-mentions)
+    (declare (ignore variable containing-mentions))
   (case s
     (**LAMBDA-VAR** ;; the marker for the argument of a predicate which is being applied to the predicated item
      *lambda-var*)
     (t s)))
 
+(defun dt-mention (dt) (car dt))
+(defun dt-bindings (dt) (cdr dt))
 
 #| Pronoun examples to test (convert to regression tests when working)
 
@@ -124,60 +114,29 @@ the contextual interpretation of the item in the context."))
 where it regulates gene expression.")
 |#
 
-(defmethod interpret-in-context ((dt cons) variable container)
+(defmethod interpret-in-context ((dt cons) variable containing-mentions)
   "For the moment, lists are of the form (<mention>
  ... bindings). First recursively interpret the bound elements in the
  bindings of the dt, then rebuild the interpretation of the dt from
  those reinterpreted bindings."
-  (let ((mention (car dt)))
-    #+ignore
-    (format t "~&interpret-in-context on phrase ~s~&"
-	    (retrieve-surface-string (mention-source mention)))
+  (let* ((mention (dt-mention dt))
+	 (base (base-description mention))
+	 (bindings (dt-bindings dt)))
     (typecase mention
       (discourse-mention
-       (cond
-         ((and (individual-p (base-description mention))
-               (itypep (base-description mention) 'collection))
-          ;; distribute conjunctions
-          (reinterpret-collection-with-modifiers dt variable container))
-
-         ((is-pronoun? (base-description mention))
-          (when (slot-boundp mention 'restriction)
-            ;; This goes with the check done in condition-anaphor-edge
-            ;; to ignore personal pronouns. If we refactored the actual
-            ;; check -- ignore-this-type-of-pronoun -- we could reframe
-            ;; this in more direct forms and protect is against someone
-            ;; changing the details of the class.
-            (let* ((restriction (mention-restriction mention))
-                   (types (etypecase restriction
-                            ((cons (eql :or)) (cdr restriction))
-                            (category (list restriction))
-			    (null
-			     (if (and (eq variable 'subject)
-				      (itypep (base-description container) 'be))
-				 nil
-				 (lsp-break "~&NIL restriction -- var: ~s, container:~s~&" variable container)))))
-                   (interpretation
-		    (when types
-		      (or (find-pronoun-in-lifo-instance types)
-			  #| apply some other technique |# ))))
-              (if interpretation
-		  (setf (contextual-description mention) (car interpretation))
-		  ;; if interpretation is NIL then we have failed to find a pronominal referent
-		  (setf (contextual-description mention) (base-description mention))))))
-	 ((let ((elliptical? (expandable-interpretation-in-context mention container)))
-	    #+ignore
-	    (format t "~&for phrase ~s, elliptical? is ~s~&"
-		    (retrieve-surface-string (mention-source mention))
-		    elliptical?)
-	    (when elliptical?
-	      (setf (contextual-description mention) elliptical?))))
-         (t
-          (setf (contextual-description mention)
-                (reinterp-item-using-bindings
-                 (dli-ref-cat (base-description mention))
-                 (cdr dt)
-		 mention)))))
+       (setf (contextual-description mention)
+	     (cond
+	       ((is-collection? base)
+		;; distribute conjunctions
+		(reinterpret-collection-with-modifiers dt variable containing-mentions))
+	       ((is-pronoun? base)
+		(interpret-pronoun-in-context dt variable containing-mentions))
+	       ((expandable-interpretation-in-context dt variable containing-mentions))
+	       (t
+		(reinterp-item-using-bindings
+		 dt
+		 variable
+		 containing-mentions)))))
       (t (break "~&***what sort of dt is ~s~&" dt)))))
 
 (defun find-pronoun-in-lifo-instance (types)
@@ -187,101 +146,117 @@ where it regulates gene expression.")
                    :key #'car)
      return it))
 
-(defun reinterp-item-using-bindings (interp bindings mention)
-  (declare (special interp bindings category::collection))
-  (let ((interps (list interp)))
-    (loop for (var val) in bindings
-	 ;; as *ival* ... (when done debugging)
-       do
-	 (let* ((*ival* ;; recursively interpret the bound value in the current context
-		 (if (eq var 'predication)
-		     (reinterp-predication val mention)
-		     (interpret-in-context val var mention))))
-	   (declare (special *ival*))
-	   (setq interps
-		 (loop for i in interps
-		    nconc
-		      (if (is-collection? *ival*)
-			  ;; This is the code that does a "distribution" of conjunctions
-			  (loop for c in (value-of 'items *ival*)
-			     collect (bind-dli-variable var c i))
-			  (list (bind-dli-variable var *ival* i)))))))
-    (if (cdr interps) ;; a collection
-	(make-an-individual 'collection
-			    :items interps
-			    :number (length interps)
-			    :type (itype-of (car interps)))
-	(car interps))))
+(defun interpret-pronoun-in-context (dt variable containing-mentions)
+  (let ((mention (dt-mention dt)))
+    (when (slot-boundp mention 'restriction)
+      ;; This goes with the check done in condition-anaphor-edge
+      ;; to ignore personal pronouns. If we refactored the actual
+      ;; check -- ignore-this-type-of-pronoun -- we could reframe
+      ;; this in more direct forms and protect is against someone
+      ;; changing the details of the class.
+      (let* ((restriction (mention-restriction mention))
+	     (types (etypecase restriction
+		      ((cons (eql :or)) (cdr restriction))
+		      (category (list restriction))
+		      (null
+		       (if (and (eq variable 'subject)
+				(itypep (base-description containing-mentions) 'be))
+			   nil
+			   (lsp-break
+			    "~&NIL restriction -- var: ~s, containing-mentions:~s~&"
+			    variable containing-mentions)))))
+	     (interpretation
+	      (when types
+		(or (find-pronoun-in-lifo-instance types)
+		    #| apply some other technique |# ))))
+	(if interpretation
+	    (car interpretation)
+	    ;; if interpretation is NIL then we have failed to find a pronominal referent
+	    (base-description mention))))))
+
+(defun itypep-or (i type-list)
+  (loop for type in type-list thereis (itypep i type)))
+
+(defun reinterpret-collection-with-modifiers (dt var containing-mentions)
+  (let ((mention (dt-mention dt))
+	(bindings (dt-bindings dt)))
+    (or
+     (special-collection-interp dt var containing-mentions)
+     (when (itypep-or (base-description mention)
+		      '(slashed-sequence hyphenated-pair two-part-label hyphenated-triple))
+       (base-description mention))
+     (reinterp-list-using-bindings
+      (loop for m in (second (assoc 'items bindings))
+	 nconc
+	   (let ((interp (interpret-in-context m var containing-mentions)))
+	     (if (is-collection? interp)
+		 (copy-list (value-of 'items interp))
+		 (list interp))))
+      var
+      (loop for (var val) in bindings
+	 unless (member var '(items type number))
+	 collect (list var (interpret-val-in-context var val containing-mentions)))
+      containing-mentions))))
+
+
+(defun reinterp-item-using-bindings (dt var containing-mentions)
+  (let* ((mention (dt-mention dt))
+	 (interp (dli-ref-cat (base-description mention))))
+    (if (and (individual-p interp)
+	     (itypep interp 'hyphenated-number))
+	;; hyphenated numbers are special, and broken...
+	interp
+	;; this allows for creation of new collections by distribution of internal collections
+	(reinterp-list-using-bindings (list interp) var (dt-bindings dt) (cons mention containing-mentions)))))
+
+(defun reinterp-list-using-bindings (interps var bindings containing-mentions)
+  (loop for (var val) in bindings
+     do
+       (let* ((ival (interpret-val-in-context var val containing-mentions)))
+	 (setq interps
+	       (loop for i in interps
+		  nconc
+		    (if (is-collection? ival)
+			;; This is the code that does a "distribution" of conjunctions
+			(loop for c in (value-of 'items ival)
+			   collect (bind-dli-variable var c i))
+			(list (bind-dli-variable var ival i)))))))
+  (if (cdr interps) ;; a collection
+      (make-an-individual 'collection
+			  :items interps
+			  :number (length interps)
+			  :type (itype-of (car interps)))
+      (car interps)))
+
+(defun interpret-val-in-context (var val-dt containing-mentions)
+   ;; recursively interpret the bound value in the current context
+  (if (eq var 'predication)
+      (let ((*lambda-var* (car containing-mentions))) ;; HUH!!
+	(declare (special *lambda-var*))
+	(interpret-in-context val-dt nil containing-mentions))
+      (interpret-in-context val-dt var containing-mentions)))
 
 (defun is-collection? (i)
   (and (individual-p i)
        (itypep i 'collection)
-       (not (itypep i 'hyphenated-pair))
-       (not (itypep i 'hyphenated-triple))
-       (not (itypep i 'two-part-label))))
+       (not (itypep-or i '(hyphenated-pair hyphenated-triple two-part-label)))))
 
-(defun reinterp-predication (pred *lambda-var*)
-  (declare (special *lambda-var*))
-  (interpret-in-context pred nil nil))
-
-
-
-(defun reinterpret-collection-with-modifiers (collection-mention variable container)
-  (declare (special collection-mention))
-  (let ((mention (car collection-mention)))
-    (or
-     (special-collection-interp collection-mention variable container)
-     (when (or
-	    (itypep (base-description (car collection-mention)) 'slashed-sequence)
-	    (itypep (base-description (car collection-mention)) 'hyphenated-pair)
-	    (itypep (base-description (car collection-mention)) 'two-part-label)
-	    (itypep (base-description (car collection-mention)) 'hyphenated-triple))
-       (base-description mention))
-     (let* ((other-modifiers
-	     (loop for binding in (cdr collection-mention)
-		unless (member (car binding) '(items type number))
-		collect
-		  (let* ((var (first binding))
-			 (val (second binding))
-			 (*rcwm-var* var))
-		    (declare (special *rwcm-var*))
-		    (if (eq var 'predication)
-			(reinterp-predication val mention)
-			(interpret-in-context val var mention))
-		    binding)))
-	    (items (second (assoc 'items (cdr collection-mention))))
-	    (mod-items
-	     (loop for m in items
-		nconc
-		  (expand-collection-into-list-if-needed
-		   (reinterp-item-using-bindings (interpret-in-context m variable container)
-						 other-modifiers
-						 collection-mention)))))
-       (declare (special other-modifiers items mod-items))
-       (if (null mod-items)
-	   ;; happened in "(Figure 1B, left and middle panels)"
-	   (base-description (car collection-mention))
-	   (setf (contextual-description (car collection-mention))
-		 (make-an-individual 'collection
-				     :items mod-items
-				     :number (length mod-items)
-				     :type (itype-of (car mod-items)))))))))
 
 (defparameter *special-collection-interp* t
   "Turns on the interpretaion of some protein collections as pathways or complexes. Should be massively generalized")
 
 ;;; THIS IS BIO-SPECIFIC CODE -- figure out how to segregate it appropriately
-(defun special-collection-interp (dt var container)
-  (let ((i (base-description (car dt))))
+(defun special-collection-interp (dt var containing-mentions)
+  (let ((i (base-description (dt-mention dt))))
     (when (and *special-collection-interp*
                (or (itypep i 'protein) (itypep i 'protein-family))
                (search "/" (retrieve-surface-string i)))
-      (interpret-as-pathway-or-complex dt var container))))
+      (interpret-as-pathway-or-complex dt var containing-mentions))))
 
 ;; in principle, could be a pathway or a complex, and we should consult the biopax+ model, or something like that
 ;;  this is version -2
-(defun interpret-as-pathway-or-complex (dt var container)
-  (let* ((proteins (base-description (car dt)))
+(defun interpret-as-pathway-or-complex (dt var containing-mentions)
+  (let* ((proteins (base-description (dt-mention dt)))
          (pathway (make-an-individual
                    'pathway
                    :protein-sequence
@@ -289,20 +264,14 @@ where it regulates gene expression.")
                                        :items (value-of 'items proteins)
                                        :number (value-of 'number proteins)
                                        :type (value-of 'type proteins))))
-         (other-modifiers
-          (loop for m in (cdr dt)
+         (bindings
+          (loop for m in (dt-bindings dt)
              unless (member (car m) '(items type number))
              collect m)))
-    (reinterp-item-using-bindings pathway
-				  other-modifiers
-				  container)))
-
-
-(defun expand-collection-into-list-if-needed (interp)
-  (if (itypep interp 'collection)
-      (copy-list (value-of 'items interp))
-      (list interp)))
-		 
+    (reinterp-list-using-bindings (list pathway)
+				  var
+				  bindings
+				  (cons (dt-mention dt) containing-mentions))))
 
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
@@ -331,7 +300,9 @@ where it regulates gene expression.")
 	      (let ((edges (relevant-edges (cdr parent-edges) child-interp allow-null-edge)))
 		(or edges
 		    (find-edges-inside-matching parent-edge child-interp)
-		    (when (individual-p child-interp)
+		    (when (and
+			   (individual-p child-interp)
+			   (not allow-null-edge))
 		      (lsp-break "~&1) no internal edge for ~s in ~s~&"
 				 child-interp parent-edge)
 		      nil)
@@ -423,6 +394,7 @@ where it regulates gene expression.")
   (or (not (or (individual-p child-interp)
 	       (category-p child-interp)))
       (itypep child-interp 'tense/aspect-vector)
+      (itypep child-interp 'hyphenated-triple)
       (and (itypep child-interp 'amino-acid)
 	   (individual-p (edge-referent parent-edge))
 	   (or (itypep (edge-referent parent-edge) 'residue-on-protein)
@@ -634,39 +606,38 @@ where it regulates gene expression.")
      thereis (eq 'predication (var-name (binding-variable b)))))
 
 
-(defun expandable-interpretation-in-context (mention container)
-  (declare (special mention container))
-  (let ((desc (base-description mention)))
-    (if (consp container) (setq container (car container)))
+(defun expandable-interpretation-in-context (dt var containing-mentions)
+  (let* ((mention (dt-mention dt))
+	 (interp (base-description mention)))
   (cond ((or
-	  (not (individual-p desc))
-	  (and container
-	       (not (eq (mention-source mention) (mention-source container)))
-	       (np-head-edge? (mention-source mention)
-			      (mention-source container)))) 
+	  (not (individual-p interp))
+	  (and mention (car containing-mentions)
+	       (mention-source mention)
+	       (mention-source (car containing-mentions))))
 	 (return-from expandable-interpretation-in-context nil))
-	((category-p desc) (setq desc (individual-for-ref desc))) ;; sometimes the base-description is just a category -- treat it as an indivicual
-	)
+	((category-p interp)
+	 ;; sometimes the base-description is just a category -- treat it as an indivicual
+	 (setq interp (individual-for-ref interp))))
   (let ((specializations
-	 (remove-if #'predication? (all-mentioned-specializations desc))))
+	 (remove-if #'predication?
+		    (all-mentioned-specializations mention containing-mentions))))
     (declare (special specializations))
-    (when (eq desc (i# 13344))
+    (when (eq interp (i# 13344))
       (lsp-break "T669 phosphorylation"))
     (setq specializations
 	  (loop for s in specializations
 	     unless (loop for m in (mention-history s)
 		       thereis (np-containing-edge? (mention-source mention)
-						   (mention-source m)))
+						    (mention-source m)))
 	     collect s))
     (when specializations
       (loop for sp in specializations
 	   when *do-expansion-in-context*
 	 do
 	   (format t "~&perhaps expand referent of ~s to ~s in sentence:~&~s~&"
-		   (retrieve-surface-string desc)
+		   (retrieve-surface-string interp)
 		   (retrieve-surface-string sp)
 		   (sentence-string *sentence-in-core*)))
-      ;;(lsp-break "expandable")
       nil))))
 
 (defun np-containing-edge? (edge np-edge)
