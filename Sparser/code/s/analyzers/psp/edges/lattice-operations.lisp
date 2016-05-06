@@ -494,34 +494,48 @@
   (let* ((parent (dli-ref-cat c))
 	 last-mod super super-all-subs)
     (declare (special parent last-mod super super-all-subs))
-    (cond
-      ((eq c parent) ;; in this case c is the dli entry for a referential category like "lysate"
-       (find-all-subs c))
-      ((individual-p c)
-       (maphash #'(lambda (dlvv sc)
-		    (when dlvv
-		      (setq last-mod dlvv)
-		      (setq super
-			    (if (eq :super (dlvv-variable dlvv))
-				c
-				sc))))
-		(indiv-uplinks c))
-       
-       (when last-mod
-	 (setq super-all-subs (gethash (dlvv-variable last-mod) (indiv-all-subs super)))
-	 (when super-all-subs
-	   (gethash (dlvv-value last-mod) super-all-subs)))))))
+    (loop for sc in (find-all-subs (dli-ref-cat c))
+       when (and (not (eq sc c))
+		 (as-specific? sc c))
+	 collect sc)))
 
 (defun all-specializations (c)
   (let ((pspecs (potential-specializations c)))
     (loop for ps in pspecs when (and  (as-specific? ps c)(not (eq ps c))) collect ps)))
 
-(defun all-mentioned-specializations (c)
-  (let ((pspecs (potential-specializations c)))
-    (loop for ps in pspecs when
-	 (and  (mention-history ps)
-	       (as-specific? ps c)(not (eq ps c)))
-       collect ps)))
+(defparameter *show-am-specs* nil)
+(defun all-mentioned-specializations (c-mention containing-mentions)
+  (let* ((edge (mention-source c-mention))
+	 (c (base-description c-mention))
+	 (pspecs (potential-specializations c))
+	 (am-specs
+	  (loop for ps in pspecs when
+	       (and  (mention-history ps)
+		     (as-specific? ps c)
+		     (not (eq ps c))
+		     (loop for cm in containing-mentions
+			never (eq ps (base-description cm)))
+		     (loop for ps-mention in (mention-history ps)
+			  thereis (earlier? ps-mention c-mention)))
+	     collect ps)))
+    (declare (special pspecs am-specs))
+    (when (and am-specs *show-am-specs*)
+      (format t
+	      "~& ~s (~s) has specializations ~&~s~&"
+	      c (sur-string c)
+	      (loop for s in am-specs collect (list s (sur-string s))))
+      (lsp-break "all-mentioned-specializations"))
+    am-specs))
+
+(defun earlier? (poss-mention source-mention)
+  (cond
+    ((mention-source source-mention) ;; source-mention still has an edge
+     (or
+      (not (mention-source poss-mention))
+      (edge-precedes (mention-source poss-mention)
+		     (mention-source source-mention))))
+    (t nil)))
+    
 
 (defun hal (ht) (hashtable-to-alist ht))
 (defun sur-string (i)(retrieve-surface-string i))
