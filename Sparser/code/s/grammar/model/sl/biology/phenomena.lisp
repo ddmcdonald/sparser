@@ -670,6 +670,7 @@ it is created from N-terminus to C-terminus.|#
 	   :noun "assembly"
 	   :etf (svo-passive)
 	   :s binder
+	   :m bindee
 	   :o bindee
            :into result
            :of bindee))
