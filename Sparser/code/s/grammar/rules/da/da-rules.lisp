@@ -427,6 +427,83 @@
                             `(,target ,comma-edge ,np-edge)))))
     new-edge))
 
+(define-debris-analysis-rule s-commma-subj-relative
+    :pattern (s "," subject-relative-clause)
+    :action (:function attach-commma-subj-relative-to-s first second third))
+
+(defun attach-commma-subj-relative-to-s (s-edge comma-edge srel-edge)
+  (let* ((s (edge-referent s-edge))
+	 (s-rel	;;(value-of 'comp (edge-referent to-comp-edge))
+	  (edge-referent srel-edge)))
+    (let ((s-var (subcategorized-variable s-rel :subject s)))
+      (cond (s-var
+	     (make-edge-over-long-span 
+	      (pos-edge-starts-at s-edge)
+	      (pos-edge-ends-at srel-edge)
+	      (edge-category s-edge)
+	      :form (edge-form s-edge)
+	      :rule 'attach-commma-subj-relative-to-s
+	      :referent
+	      (bind-dli-variable 'predication
+				 (bind-dli-variable s-var s s-rel)
+				 s)
+	      :constituents `(,s-edge ,comma-edge ,srel-edge)))
+	    (t
+	     (let ((right-fringe-of-s ;; ordered bottom to top
+		    (all-edges-on (pos-ends-here (pos-edge-ends-at s-edge))))
+		   target)
+	       (declare (special right-fringe-of-s))
+	       (loop for edge in right-fringe-of-s
+		  ;; replace eq with acceptable-appositive?
+		  when (member (edge-form edge) '(category::NP category::proper-noun))
+		  do (setq target edge))
+	       (when target
+		 (let* ((target-ref (edge-referent target))
+			(t-var
+			 (subcategorized-variable s-rel :subject target-ref)))
+		   (when t-var
+		     (let ((new-edge
+			    (make-edge-over-long-span 
+			     (pos-edge-starts-at target)
+			     (pos-edge-ends-at srel-edge)
+			     (edge-category target)
+			     :form (edge-form target)
+			     :rule 'attach-commma-subj-relative-to-s
+			     :referent
+			     (bind-dli-variable :predication
+						(bind-dli-variable t-var
+								   target-ref
+								   s-rel)
+						target-ref)
+			     :constituents `(,target ,comma-edge ,srel-edge))))
+		       (tuck-new-edge-under-already-knit
+			target ;; subsumed
+			new-edge
+			s-edge
+			:right)
+		       new-edge))))))))))
+
+(define-debris-analysis-rule np-commma-subj-relative
+    :pattern (np "," subject-relative-clause)
+    :action (:function attach-commma-subj-relative-to-np first second third))
+
+(defun attach-commma-subj-relative-to-np (np-edge comma-edge srel-edge)
+  (let* ((np (edge-referent np-edge))
+	 (s-rel	(edge-referent srel-edge))
+	 (s-var (subcategorized-variable s-rel :subject np)))
+      (when s-var
+	(make-edge-over-long-span 
+	 (pos-edge-starts-at np-edge)
+	 (pos-edge-ends-at srel-edge)
+	 (edge-category np-edge)
+	 :form (edge-form np-edge)
+	 :rule 'attach-commma-subj-relative-to-np
+	 :referent
+	 (bind-dli-variable 'predication
+			    (bind-dli-variable s-var np s-rel)
+			    np)
+	      :constituents `(,np-edge ,comma-edge ,srel-edge)))))
+
 
 (defun attach-pp-to-np-under-s (s-edge comma-edge pp-edge)
   (declare (special s-edge comma-edge pp-edge))

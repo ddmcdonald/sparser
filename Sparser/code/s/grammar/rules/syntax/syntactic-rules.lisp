@@ -488,6 +488,7 @@ similar to an oncogenic RasG12V mutation (9)."))
       :form pp-relative-clause
       :referent (:function make-pp-relative-clause left-edge right-edge))))
 
+#+ignore
 (def-form-rule (comma subject-relative-clause)
                :head :right-edge
   :form comma-separated-subject-relative-clause
@@ -507,8 +508,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 (loop for nb in `(category::np ,@*n-bar-categories*)
   do
-  (loop for src in '(category::subject-relative-clause 
-                     category::comma-separated-subject-relative-clause
+  (loop for src in '(category::subject-relative-clause
                      ;;vp+ing vp+ed ;; reduced relative clauses
                      )
     do
@@ -518,10 +518,6 @@ similar to an oncogenic RasG12V mutation (9)."))
       :form np
       :referent (:function apply-subject-relative-clause left-edge right-edge)))))
 
-(def-syntax-rule (s comma-separated-subject-relative-clause)
-  :head :left-edge
-  :form s
-  :referent (:function add-adjunctive-clause-to-s left-edge right-edge))
 
 ;;--- direct object
 (loop for nb in `(category::np ,category::pronoun category::reflexive/pronoun vp+ing vg+ing ,@*n-bar-categories*)
