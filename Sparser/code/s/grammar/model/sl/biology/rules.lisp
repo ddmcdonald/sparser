@@ -88,9 +88,8 @@
 
 
 (defun interpret-in-vivo-vitro (bio vitro-vivo)
-  (when (or
-	 (itypep bio 'biological)
-	 (itypep bio 'measurement))
+  (when (or (itypep bio 'biological)
+            (itypep bio 'measurement))
     (setq bio (individual-for-ref bio))
     (if (find-variable-for-category 'context (itype-of bio))
 	(setq bio (bind-dli-variable 'context vitro-vivo bio))
@@ -130,8 +129,7 @@
 ;; Gly33
 (def-cfr residue-on-protein (amino-acid number)
   :form proper-noun
-  :referent (:head left-edge
-             :instantiate-individual residue-on-protein
+  :referent (:instantiate-individual residue-on-protein
              :with (amino-acid left-edge
                     position right-edge)))
 
@@ -149,16 +147,14 @@
 
 (def-cfr residue-on-protein (residue-on-protein hyphenated-number)
   :form proper-noun
-  :referent (:head left-edge
-             :instantiate-individual residue-on-protein
+  :referent (:instantiate-individual residue-on-protein
              :with (amino-acid left-edge
                     position right-edge)))
 
 (def-cfr residue-on-protein (protein residue-on-protein)
   :form np
-  :referent 
-  (:head right-edge           
-         :bind (substrate left-edge)))
+  :referent (:head right-edge           
+             :bind (substrate left-edge)))
 
 #|
 ;; p38 kinase
@@ -198,11 +194,6 @@
 ;;--- expediency
 
 (def-cfr rate-of-process (rate-of-process-of release)
-  ;;//// The semantic-composition based on 'release' being 
-  ;; a subtype of 'process' is not working. This is an
-  ;; expedient in the meantime. 
-  ;; See rules in measurements.lisp that want to be in 
-  ;; a fancy ETF.
   :form np
   :referent (:head left-edge
              :bind (process right-edge)))
