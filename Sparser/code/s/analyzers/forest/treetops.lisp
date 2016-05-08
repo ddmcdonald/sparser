@@ -422,14 +422,11 @@
       do (push (cons rule pair)
                triples))
     (unless triples
-      (let
-	  ((new-pairs
-	    (loop for pair in (adjacent-tt-pairs sentence)
-	       unless
-		 (or
-		  (member pair pairs :test #'equal)
-		  (eq :literal-in-a-rule (edge-right-daughter (first pair)))
-		  (eq :literal-in-a-rule (edge-right-daughter (second pair))))
+      (let ((new-pairs
+             (loop for pair in (adjacent-tt-pairs sentence)
+                unless (or (member pair pairs :test #'equal)
+                           (eq :literal-in-a-rule (edge-right-daughter (first pair)))
+                           (eq :literal-in-a-rule (edge-right-daughter (second pair))))
 	       collect pair)))
 	(when new-pairs
 	  (format t "~&old set of pairs~s~&new set of pairs: ~s" pairs new-pairs)
@@ -443,7 +440,7 @@
               (push-debug `(,original-triples))
               (remove-surplus-literal-compositions triples))
             triples))
-    ;;(break "triples")
+    ;; (break "triples")
     (let ((triple (filter-rules-by-local-competition triples)))
       (tr :filter-selected-triple triple)
       triple)))
