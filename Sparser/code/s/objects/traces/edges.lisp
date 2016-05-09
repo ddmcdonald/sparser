@@ -503,27 +503,61 @@
 ;;; in the best-edge calculations
 ;;;-------------------------------
 
+(deftrace :interpeting-chunk (chunk from-right?)
+  ;; called from interp-big-mech-chunk
+  (when (or *parse-edges* *trace-chunker*)
+    (trace-msg "Parsing the chunk ~a ~a"
+               chunk
+               (if from-right? "from the right"
+                   "from the left"))))
+
 (deftrace :find-rule-for-edge-pair (left right)
-  ;; called from 
+  ;; called from segment-rule-check
   (when *parse-edges*
     (trace-msg "Checking for rule composing e~a and e~a"
                (edge-position-in-resource-array left)
                (edge-position-in-resource-array right))))
 
+(deftrace :not-using-rule/verb-in-np-context (rule)
+  ;; called from segment-rule-check
+  (when *parse-edges*
+    (trace-msg "  NP context. Ruling out rule ~a" rule)))
+
 (deftrace :found-rule-for-pair (rule)
+  ;; called from segment-rule-check
   (when *parse-edges*
     (trace-msg "  found ~a" rule)))
 
 (deftrace :no-rule-for-pair ()
+  ;; called from segment-rule-check
   (when *parse-edges*
     (trace-msg "  no rule found")))
 
 (deftrace :n-triples-apply (triples)
+  ;; called from select-best-triple
   (when *parse-edges*
     (trace-msg "There are ~a triples to choose from:~{~&  ~a~}"
                (length triples) triples)))
 
+(deftrace :n-priority-triples (triples)
+  ;; called from select-best-triple
+  (when *parse-edges*
+    (trace-msg "Selecting from ~a priority triples:~{~&  ~a~}"
+               (length triples) triples)))
+
+(deftrace :n-default-triples (triples)
+  ;; called from select-best-triple
+  (when *parse-edges*
+    (trace-msg "Selecting from ~a default triples:~{~&  ~a~}"
+               (length triples) triples)))
+
+(deftrace :selecting-first-for-adjg ()
+  ;; called from select-best-triple
+  (when *parse-edges*
+    (trace-msg "Selecting the leftmost triple")))
+
 (deftrace :selected-best-triple (triple)
+  ;; called from select-best-triple
   (when *parse-edges*
     (let ((rule (car triple))
           (left (cadr triple))

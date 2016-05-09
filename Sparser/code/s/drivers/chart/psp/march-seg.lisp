@@ -133,17 +133,18 @@
   ;; 3. spply it
   ;; 4. repeat
 
+  (tr :interpeting-chunk chunk from-right)
+
   (let ((paren-pair (loop for ttl on (treetops-in-current-chunk)
                        when (and (setq tt (second ttl))
                                  (edge-p tt)
                                  (category-p (edge-category tt))
                                  (eq (cat-name (edge-category tt)) 'parentheses))
                        do (return ttl))))
-
     ;;handle internal parens as in
     ;; "a class ii ( inactive conformation binder ) drug"
     (when paren-pair
-      (knit-parens-into-neighbor (car paren-pair)(second paren-pair))))
+      (knit-parens-into-neighbor (car paren-pair) (second paren-pair))))
   
   (let ( triple  edge blocked-triples triples)
     (clrhash *rules-for-pairs*)
@@ -156,7 +157,7 @@
 	 (setq triples (loop for tr in triples 
 			  unless (member tr blocked-triples)
 			  collect tr)))
-       (setq triple (select-best-triple triples))
+       (setq triple (select-best-triple triples chunk))
        (when (null triple)
 	 (return))
        (setq edge (execute-triple triple))
@@ -173,30 +174,48 @@
         ;; else, then mop up anything else that that couldn't
         (march-back-from-the-right/segment))))
 
-(defun select-best-triple (triples)
+(defun select-best-triple (triples chunk)
   ;; decision-making goes here, e.g. the types of edges involved,
   ;; their position within the segment, their probablility of
   ;; being correct given priors, the kind of rule being used.
   (when triples
-    ;;(push-debug `(,triples)) (break "triple")
+    (push-debug `(,triples)) ;;(lsp-break "triple")
     (tr :n-triples-apply triples)
     
-    (let ((priority-triples
+    (let ((non-syntactic-triples
            (loop for triple in triples
 	      as rule = (car triple)
-	      unless (and
-		      (syntactic-rule? rule)
-		      (not (priority-rule? rule)))
-	      collect triple)))
-      ;;(break "non-syntactic-triples = ~a" non-syntactic-triples)
+	      unless (syntactic-rule? rule)
+	      collect triple))
+          (priority-triples
+           (loop for triple in triples
+              as rule = (car triple)
+              when (priority-rule? rule)
+              collect triple)))
+      
+      (when nil
+        (break "non-syntactic-triples = ~a~
+              ~%prority-triples = ~a"
+               non-syntactic-triples
+               priority-triples))
+
       (cond
-	(priority-triples
+	(priority-triples ;; "was rapidly phosphorylated"
+         (tr :n-priority-triples priority-triples)
 	 (let ((selected (car (last priority-triples))))
 	   (tr :selected-best-triple selected)
 	   selected))
+        ((memq 'adjg (chunk-forms chunk))
+         ;; The verb or aux is on the left, take the first rule
+         ;; "has been unclear"
+         (tr :selecting-first-for-adjg)
+         (let ((leftmost (car triples)))
+           (tr :selected-best-triple leftmost)
+           leftmost))
 	(t
 	 ;; this default amounts to selecting the rightmost pair
 	 ;; that has a rule
+         (tr :n-default-triples triples)
 	 (let ((rightmost (car (last triples))))
 	   (tr :selected-best-triple rightmost)
 	   rightmost))))))
@@ -237,22 +256,31 @@
 		 cached-rule
 		 (setf (gethash pair *rules-for-pairs*)
 		       (multiply-edges left-edge right-edge chunk)))))
-	(declare (special rule))
-	(when
-	    (and rule
-		 (equal (chunk-forms chunk) '(NG))
-		 (or
-		  (member (car (cfr-rhs rule)) *VG-HEAD-CATEGORIES*)
-		  (member (car (cfr-rhs rule)) *vp-categories*)
-		  (member (category-named (car (cfr-rhs-forms rule))) *VG-HEAD-CATEGORIES*)
-		  (member (category-named (car (cfr-rhs-forms rule))) *vp-categories*))
-		 (member (cfr-form rule) *VP-CATEGORIES*))
-	  
-	  (setq rule nil))
-	(if rule
+
+        ;; criteria for not using that rule
+        (when (and rule
+                   (equal (chunk-forms chunk) '(NG))
+                   ;; When we're parsing an NP,
+                   ;; rule out rules for verb-like things
+                   (rule-is-for-a-verb? rule)
+                   (member (cfr-form rule) *vp-categories*))
+          (tr :not-using-rule/verb-in-np-context rule)
+          (setq rule nil))
+        (if rule
             (tr :found-rule-for-pair rule)
             (tr :no-rule-for-pair))
         rule))))
+
+(defun rule-is-for-a-verb? (rule)
+  ;; used as a filter in segment-rule-check when it's making an np
+  (or (member (car (cfr-rhs rule)) *vg-head-categories*)
+      (member (car (cfr-rhs rule)) *vp-categories*)
+      (member (category-named (car (cfr-rhs-forms rule)))
+              *vg-head-categories*)
+      (member (category-named (car (cfr-rhs-forms rule)))
+              *vp-categories*)))
+
+
   
 (defun adjacent-segment-tts (edges)
   ;; Walk over all of the treetops in the segment, working from the left,
