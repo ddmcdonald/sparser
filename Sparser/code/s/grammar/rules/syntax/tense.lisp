@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2016
+;;;  Version:  May 2016
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -160,4 +160,9 @@
 
 (def-form-rule (do verb)
   :form verb
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
+;; for "does not <vg>"
+(def-form-rule (do vg)
+  :form vg
   :referent (:function absorb-auxiliary left-edge right-edge))
