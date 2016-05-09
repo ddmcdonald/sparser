@@ -1,9 +1,9 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013-2014 David D. McDonald all rights reserved
+;;; Copyright (c) 2013-2016 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "gofers"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: August 2014
+;;;   Version: May 2016
 
 ;; Broken out of scan1 2/28/13. 3/13/13 added word-to-left-of-head,
 ;; edge-to-left-of-head. Coping with polyword at end of segment 3/14.
@@ -14,6 +14,7 @@
 ;;RJB 12/13/2014 fixed edge-over-segment-suffix to handle case where last edge is a parenthetical -- which has no
 ;; referent at the moment, and probably should not act like the head of the segment created by sdm-span-segment
 ;; in any case
+
 (in-package :sparser)
 
 ;;;-------
@@ -233,8 +234,8 @@
          (top-node (ev-top-node left-pos-start)))
     (when (eq top-node :multiple-initial-edges)
       ;; arbitrarily take the most recent edge
-      (setq top-node (highest-edge left-pos-start))
-      top-node)))
+      (setq top-node (highest-edge left-pos-start)))
+    top-node))
 
 (defun segment-minimal-prefix ()
   ;; The segment is covered by an edge or at least a large part
