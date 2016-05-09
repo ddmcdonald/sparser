@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  March 2016
+;;;  Version:  May 2016
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -363,6 +363,7 @@
   ;;   Need to adapt the segment-level switches and do this better
   (setq *allow-da-to-look-under-edges* nil)
   ;;   /// arc-matches-tt? needs to adjust the next tt
+  (setq *peek-rightward* t) ;; see drivers/chart/psp/tuck-right.lisp
   (period-hook-on)
   (designate-sentence-container :simple)
   ;; misc. display settings

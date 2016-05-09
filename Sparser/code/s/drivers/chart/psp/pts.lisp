@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "pts"                  ;; "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  5.16 June 2015
+;;;  Version:  May 2016
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -187,12 +187,8 @@
 ;;; decide what to do next
 ;;;------------------------
 
-(defparameter *peek-rightward* t ;; stopgap while debugging
-  "After a segment is completely finished and the coverage
-  is incomplete, should we use march-peeking-rightward to
-  look for compositions that the leftward march may have missed")
-
 (defun segment-finished (coverage)
+  (declare (special *peek-rightward*))
   (tr :segment-finished coverage)
   (tidy-up-segment-globals coverage)
   (if (eq coverage :null-span)

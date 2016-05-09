@@ -500,6 +500,13 @@
                (pos-token-index *right-segment-boundary*))))
 
 
+(deftrace :peeking-rightward-with (edge)
+  ;; called from march-peeking-rightward which is called
+  ;; from segment-finished when *peek-rightward* is up.
+  (when (or *trace-network* *trace-segments*)
+    (trace-msg "Peeking to the right from e~a"
+               (edge-position-in-resource-array edge))))
+
 
 ;;;-----------------
 ;;; debris analysis

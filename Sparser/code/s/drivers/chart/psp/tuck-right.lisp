@@ -1,9 +1,9 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "tuck-right"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  September 2013
+;;;  version:  May 2016
 
 ;; Initiated 9/21/13. 9/23/13 Probably have it debugged
 
@@ -26,12 +26,20 @@ that locus reliably, hence the site in segment-finished before any
 post-segment processing happens.
 |#
 
+
+(defvar *peek-rightward* nil
+  "After a segment is completely finished, if the coverage
+  is incomplete, should we use march-peeking-rightward to
+  look for compositions that the leftward march may have missed.
+  Checked in segment-finished as modified for Strider.")
+
 (defun march-peeking-rightward (coverage)
   ;; Called from segment-finished when we know that the coverage
   ;; leaves some possibility for further composition, i.e. we've
   ;; rulled out :null-span and :one-edge-over-entire-segment before
   ;; calling this. 
   ;; Presently handles just one case that's surprizingly frequent
+  (declare (special *left-segment-boundary *right-segment-boundary*))
   (case coverage
     (:discontinuous-edges) ;; unlikely we can do anything
     (:some-adjacent-edges) 
@@ -39,10 +47,19 @@ post-segment processing happens.
      ;(treetops-in-current-segment)
      ;(break "some-adjacent-edges"))
     (:all-contiguous-edges
-     (let ((right-edge (edge-over-segment-suffix)))
+     (assert *right-segment-boundary*)
+     (let ((right-edge (right-treetop-at *right-segment-boundary*)))
+       ;; The right edge had been determined by calling
+       ;; (edge-over-segment-suffix), but that loses
+       ;; information about multiple initial edges
        (when right-edge
+         (when (eq right-edge :multiple-initial-edges)
+           (push-debug `(,*left-segment-boundary ,*right-segment-boundary*))
+           (break "Have to rewrite peek-rightward to accommodate ~
+                   multiple initial edges on the right end."))
          (let ((adjacent-edge (edge-just-to-left-of right-edge)))
            (when adjacent-edge
+             (tr :peeking-rightward-with right-edge)
              (peek-rightward adjacent-edge right-edge))))))))
 
 (defun peek-rightward (left-edge right-edge)
