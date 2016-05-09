@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "syntax rules"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   April 2015
+;;;   Version:   May 2016
 
 ;; cloned from [form-rules form] 12/30/94  v2.3 
 ;; Rolled in stubbed specified schema 4/9/13. 
@@ -133,7 +133,7 @@
 
 (defun syntactic-rule? (cfr)
   (when (cfr-p cfr)
-    (eq (cfr-category cfr) :syntactic-form))) ;; faster
-    ;;(member :syntax-rule (cfr-plist cfr))))
-
+    ;; Compare to form-rule? Both types of rules
+    ;; have the identical keyword in their lhs.
+    (get-tag :syntax-rule cfr)))
 
