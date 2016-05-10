@@ -363,7 +363,9 @@
   (display-edge-as-tree (edge# n)))
 
 (defun stree (n)
-  (display-edge-as-tree/syntax (edge# n)))
+  (if (edge-p n)
+      (display-edge-as-tree/syntax n)
+      (display-edge-as-tree/syntax (edge# n))))
 
 (defun ctree (tree &optional (stream *standard-output*))
   (if
