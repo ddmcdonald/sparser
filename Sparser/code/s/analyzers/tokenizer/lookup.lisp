@@ -128,7 +128,7 @@
 
       (t
        (cond ;; Biology handler has more stringent requirements?
-         ((and char-type (eq (script) :biology))
+         ((and char-type (current-script :biology))
           ;; The test is really "do we require that this word is
           ;; associated with a category and will be covered by
           ;; an edge when it is scanned.
