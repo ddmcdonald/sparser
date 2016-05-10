@@ -198,7 +198,7 @@ similar to an oncogenic RasG12V mutation (9)."))
    `(def-syntax-rule (possessive ,nb) 
 	:head :right-edge
 	:form np
-	:referent (:daughter right-edge
+	:referent (:head right-edge
 			     :bind (has-possessive left-edge))))
   (eval 
    `(def-syntax-rule (adjective ,nb) ;; "black suv"
@@ -421,7 +421,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 ;;   e.g. 30 minutes after (treatment)
 (def-form-rule (amount-of-time spatio-temporal-preposition)
     :head :right-edge
-    :referent (:daughter right-edge
+    :referent (:head right-edge
 			 :bind (amount-of-time left-edge))
     :form spatio-temporal-preposition)
 
