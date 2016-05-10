@@ -348,7 +348,10 @@
       (itypep head 'bio-abstract) ;; we quantify abstract items like "group"
       (itypep head 'quality)	 ;; we quantify qualities "some level"
       (itypep head 'biological)) ;; we quantify things like "such models"
-     (setq  head (bind-dli-variable 'quantifier quantifier head)))
+     (setf (non-dli-mod-for head) (list 'quantifier quantifier))
+     ;; don't use KRISP variables for quanitifiers -- put them in the mention
+     ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
+     )
     ((itypep head 'determiner) ;; "all these"
      (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
     (t
@@ -366,7 +369,10 @@
   ;; See notes on forming plurals in morphology1
   (setq head (individual-for-ref head))
   (when (itypep head 'endurant) ;; J34: "Histone 2B"
-    (setq  head (bind-dli-variable 'number number head)))
+    ;;    ~600 kinase
+    (setf (non-dli-mod-for head) (list 'number number))
+    ;;(setq  head (bind-dli-variable 'number number head))
+    )
   head)
 
 
@@ -390,7 +396,8 @@
 
 (defun create-predication-by-binding (var np-ref vp-ref source)
   (let ((new-predication
-	 (bind-dli-variable var np-ref vp-ref)))
+	 (bind-dli-variable var '*lambda-var* ;;np-ref
+			    vp-ref)))
     (create-discourse-mention new-predication source)
     ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
     new-predication))
