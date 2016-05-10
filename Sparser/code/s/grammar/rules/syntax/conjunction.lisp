@@ -423,7 +423,7 @@
 			(itypep ref-before ref-before)))
 		   t)
                   (t (break "conjunction-problem: conjunction of category and individual ~s and ~s" ref-before ref-after))))
-            (when (eq (script) :biology)
+            (when (current-script :biology)
               (bio-coercion-compatible? label-before label-after edge-before edge-after)))
         :conjunction/identical-adjacent-labels)
        (*allow-form-conjunction-heuristic*   
