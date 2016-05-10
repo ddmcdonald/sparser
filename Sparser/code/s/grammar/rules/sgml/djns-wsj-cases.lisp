@@ -170,6 +170,7 @@
 
 (defun analyze-segment-as-headline (start-pos end-pos)
   (let ((layout (analyze-segment-layout start-pos end-pos)))
+    (declare (ignore layout))
     :analysis-of-headline-not-written ))
 
 
@@ -217,6 +218,7 @@
 
 (defun analyze-segment-as-CO-field (start-pos end-pos)
   (let ((layout (analyze-segment-layout start-pos end-pos)))
+    (declare (ignore layout))
     :analysis-of-CO-field-not-written ))
 
 
@@ -264,6 +266,7 @@
 
 (defun analyze-segment-as-Industry-field (start-pos end-pos)
   (let ((layout (analyze-segment-layout start-pos end-pos)))
+    (declare (ignore layout))
     :analysis-of-Industry-field-not-written ))
 
 
@@ -318,6 +321,7 @@
 
 (defun analyze-segment-as-Government-field (start-pos end-pos)
   (let ((layout (analyze-segment-layout start-pos end-pos)))
+    (declare (ignore layout))
     :analysis-of-Government-field-not-written ))
 
 
