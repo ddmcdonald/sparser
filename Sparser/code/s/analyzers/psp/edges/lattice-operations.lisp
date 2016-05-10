@@ -177,7 +177,8 @@
             (setf (gethash ip supers) t)
             (maphash #'(lambda (k h)
                          (declare (ignore h))
-                         (setf (gethash k supers) t)) (indiv-all-supers ip))))
+                         (setf (gethash k supers) t))
+		     (indiv-all-supers ip))))
             
         (setf (indiv-restrictions new-dli) (list base))
 	(set-dli base new-dli))))
@@ -360,6 +361,8 @@
 (defun interesting-super? (c)
   (not (gethash c (non-phrasal-classes))))
 
+(defparameter *not-as-specific* (make-hash-table :size 20000))
+
 (defun as-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
   (or
    (eq sub-dli super-dli)
@@ -367,26 +370,29 @@
      ((referential-category-p sub-dli)
       (and (referential-category-p super-dli)
 	   (itypep sub-dli super-dli)))
-     ((gethash super-dli (indiv-all-supers sub-dli)) t)
+     ((gethash super-dli (indiv-not-super sub-dli))
+      nil)
+     ((gethash super-dli (indiv-all-supers sub-dli)))
      ((itypep sub-dli (itype-of super-dli))
-      (when
-	  (loop for r in (and (individual-p super-dli)
-			      (indiv-restrictions super-dli))
-	     as rval = (and (not (category-p r))(dlvv-value r))
-	     always
-	       (or (null rval)
-		   (let* ((sub-r
-			   (find-if #'(lambda (dlvv)
-					(when
-					    (not (category-p dlvv))
-					  (eq (dlvv-variable dlvv) (dlvv-variable r))))
-				    (indiv-restrictions sub-dli)))
-			  (srval (and sub-r (dlvv-value sub-r))))
-		     (if (or (category-p rval)(individual-p rval))
-			 (and (or (category-p srval)(individual-p srval))
-			      (as-specific? srval rval))
-			 (equal rval srval)))))
-	(setf (gethash super-dli (indiv-all-supers sub-dli)) t))))))
+      (cond ((loop for r in (and (individual-p super-dli)
+				 (indiv-restrictions super-dli))
+		as rval = (and (not (category-p r))(dlvv-value r))
+		always
+		  (or (null rval)
+		      (let* ((sub-r
+			      (find-if #'(lambda (dlvv)
+					   (when
+					       (not (category-p dlvv))
+					     (eq (dlvv-variable dlvv) (dlvv-variable r))))
+				       (indiv-restrictions sub-dli)))
+			     (srval (and sub-r (dlvv-value sub-r))))
+			(if (or (category-p rval)(individual-p rval))
+			    (and (or (category-p srval)(individual-p srval))
+				 (as-specific? srval rval))
+			    (equal rval srval)))))
+	     (setf (gethash super-dli (indiv-all-supers sub-dli)) t))
+	    (t (setf (gethash super-dli (indiv-not-super sub-dli)) t)
+	       nil))))))
 ;; was -- incorrectly -- (subsetp  (indiv-restrictions super-dli) (indiv-restrictions sub-dli)))
 
 (defun find-var-from-var/name (var/name parent)
@@ -468,17 +474,9 @@
   (find-all-subs (dli-ref-cat c)))
 
 (defmethod find-all-subs ((i individual))
-  (let*
-      ((var-hts (mapcar #'cdr (hashtable-to-alist (indiv-all-subs i)))))
-    (remove-duplicates
-     (loop for ht in var-hts
-	append
-	  (let (l)
-	    (loop for vv in
-		 (mapcar #'cdr (hashtable-to-alist ht))
-	       do
-		 (loop for v in vv do (pushnew v l)))
-	    l)))))
+  (loop for m in *lattice-individuals-mentioned-in-paragraph*
+     when (as-specific? (base-description m) i)
+     collect i))
 
 
 (defun all-phrasal-dlis ()
@@ -489,42 +487,21 @@
   (remove-duplicates
    (loop for i in (all-phrasal-dlis) collect (dli-ref-cat i))))
 
-(defun potential-specializations (c)
-  (declare (special c))
-  (let* ((parent (dli-ref-cat c))
-	 last-mod super super-all-subs)
-    (declare (special parent last-mod super super-all-subs))
-    (loop for sc in (find-all-subs (dli-ref-cat c))
-       when (and (not (eq sc c))
-		 (as-specific? sc c))
-	 collect sc)))
-
-(defun all-specializations (c)
-  (let ((pspecs (potential-specializations c)))
-    (loop for ps in pspecs when (and  (as-specific? ps c)(not (eq ps c))) collect ps)))
-
-(defparameter *show-am-specs* nil)
-(defun all-mentioned-specializations (c-mention containing-mentions)
-  (let* ((edge (mention-source c-mention))
-	 (c (base-description c-mention))
-	 (pspecs (potential-specializations c))
-	 (am-specs
-	  (loop for ps in pspecs when
-	       (and  (mention-history ps)
-		     (as-specific? ps c)
-		     (not (eq ps c))
-		     (loop for cm in containing-mentions
-			never (eq ps (base-description cm)))
-		     (loop for ps-mention in (mention-history ps)
-			  thereis (earlier? ps-mention c-mention)))
-	     collect ps)))
+(defun all-mentioned-specializations (c c-mention containing-mentions)
+  (let* ((am-specs
+	  (remove-duplicates
+	   (loop for m in *lattice-individuals-mentioned-in-paragraph*
+	      as ps = (base-description m)
+	      when
+		(and  (not (eq ps c))
+		      (as-specific? ps c)
+		      (mention-history ps)
+		      (loop for cm in containing-mentions
+			 never (eq ps (base-description cm)))
+		      (loop for ps-mention in (mention-history ps)
+			 thereis (earlier? ps-mention c-mention)))
+	      collect ps))))
     (declare (special pspecs am-specs))
-    (when (and am-specs *show-am-specs*)
-      (format t
-	      "~& ~s (~s) has specializations ~&~s~&"
-	      c (sur-string c)
-	      (loop for s in am-specs collect (list s (sur-string s))))
-      (lsp-break "all-mentioned-specializations"))
     am-specs))
 
 (defun earlier? (poss-mention source-mention)
@@ -544,27 +521,3 @@
   
   
 
-#|
-(compare-to-snapshots)
-(r3::run-localization)
-(length (setq missing (loop for ii in (hashtable-to-alist *surface-strings*) unless (get-dli (car ii)) collect ii)))
-(length (setq qq  (loop for i in missing unless (eq (cat-name (itype-of (car i))) 'prepositional-phrase) collect i)))
-
-(length (setq apd (all-phrasal-dlis)))
-
-(potential-specializations (car apd))
-(length (setq aapd (loop for a in apd collect (list a (potential-specializations a)))))
-(length (setq napd (loop for a in aapd when (cdr (second a)) collect (list (car a) (length (second a))))))
-(length (setq napd (sort napd #'> :key #'second)))
-
-
-(compare-to-snapshots)
-(r3::run-localization)
-(length (setq apd (all-phrasal-dlis)))
-(length (setq allpd (loop for a in apd collect (list a (all-specializations a)))))
-(length (setq nallpd (loop for a in allpd when (cdr (second a)) collect (list (car a) (length (second a))))))
-(length (setq nallpd (sort nallpd #'> :key #'second)))
-
-
-(length (setq mmods (loop for phr in apd when (value-of 'modifier phr) collect (list phr (sur-string phr) (value-of 'modifier phr)))))
-|#

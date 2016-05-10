@@ -10,7 +10,10 @@
 (in-package :sparser)
 
 (defparameter *do-expansion-in-context* t)
-;; turn it off until it is fully operational -- but check in the bulk of the code
+
+;; show when interpretation of a phrase is changed by context
+(defparameter *show-contextual-replacements* nil)
+
 
 (defun interpret-treetops-in-context (treetops)
   (when *interpret-in-context*
@@ -123,20 +126,23 @@ where it regulates gene expression.")
 	 (base (base-description mention))
 	 (bindings (dt-bindings dt)))
     (typecase mention
-      (discourse-mention
-       (setf (contextual-description mention)
-	     (cond
-	       ((is-collection? base)
-		;; distribute conjunctions
-		(reinterpret-collection-with-modifiers dt variable containing-mentions))
-	       ((is-pronoun? base)
-		(interpret-pronoun-in-context dt variable containing-mentions))
-	       ((expandable-interpretation-in-context dt variable containing-mentions))
-	       (t
-		(reinterp-item-using-bindings
-		 dt
-		 variable
-		 containing-mentions)))))
+      (discourse-mention       
+       (cond
+	 ((slot-boundp mention 'ci)
+	  ;; dt was already contextually interpreted --
+	  ;;  this happens with conjunction distribution/expansion
+	  (contextual-interpretation mention))
+	 ((is-collection? base)
+	  ;; distribute conjunctions
+	  (setf (contextual-description mention)
+		(reinterpret-collection-with-modifiers dt variable containing-mentions)))
+	 ((is-pronoun? base)
+	  (setf (contextual-description mention)
+		(interpret-pronoun-in-context dt variable containing-mentions)))
+	 (t
+	  (setf (contextual-description mention) 
+		(reinterp-item-using-bindings dt variable containing-mentions))
+	  (expand-interpretation-in-context-if-needed dt variable containing-mentions))))
       (t (break "~&***what sort of dt is ~s~&" dt)))))
 
 (defun find-pronoun-in-lifo-instance (types)
@@ -188,7 +194,7 @@ where it regulates gene expression.")
      (reinterp-list-using-bindings
       (loop for m in (second (assoc 'items bindings))
 	 nconc
-	   (let ((interp (interpret-in-context m var containing-mentions)))
+	   (let ((interp (interpret-item-in-context m var containing-mentions)))
 	     (if (is-collection? interp)
 		 (copy-list (value-of 'items interp))
 		 (list interp))))
@@ -198,6 +204,14 @@ where it regulates gene expression.")
 	 collect (list var (interpret-val-in-context var val containing-mentions)))
       containing-mentions))))
 
+
+(defun interpret-item-in-context (dt var containing-mentions)
+  #+ignore ;; remove soon - just here for debugging
+  (when (and (eq (caar (dt-bindings dt)) 'object)
+	     (itypep (base-description (car (second (car (dt-bindings dt)))))
+		     'phosphorylate))
+    (lsp-break "~&interpret-item ~s~&" dt))
+  (interpret-in-context dt var containing-mentions))
 
 (defun reinterp-item-using-bindings (dt var containing-mentions)
   (let* ((mention (dt-mention dt))
@@ -278,10 +292,8 @@ where it regulates gene expression.")
 (defparameter *lambda-val* nil)
 (defparameter *report-on-multiple-edges-for-interp* nil)
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
-  (declare (special parent-edges child-interp))
   (let (poss-edges
 	(parent-edge (car parent-edges)))
-    (declare (special parent-edge poss-edges))
     ;; allow for the fact the items like "669" have two edges
     ;; spanning the same positions
     (loop for m in (mention-history child-interp)
@@ -606,39 +618,85 @@ where it regulates gene expression.")
      thereis (eq 'predication (var-name (binding-variable b)))))
 
 
-(defun expandable-interpretation-in-context (dt var containing-mentions)
+(defun expand-interpretation-in-context-if-needed (dt var containing-mentions)
+  (declare (special dt var containing-mentions))
   (let* ((mention (dt-mention dt))
-	 (interp (base-description mention)))
-  (cond ((or
-	  (not (individual-p interp))
-	  (and mention (car containing-mentions)
-	       (mention-source mention)
-	       (mention-source (car containing-mentions))))
-	 (return-from expandable-interpretation-in-context nil))
-	((category-p interp)
-	 ;; sometimes the base-description is just a category -- treat it as an indivicual
-	 (setq interp (individual-for-ref interp))))
+	 (edge (mention-source mention))
+	 (interp (contextual-interpretation mention))
+	 (spec-mentions (spec-mentions interp mention containing-mentions)))
+    (declare (special edge mention interp spec-mentions))
+    (when (or
+	   (and (edge-p (mention-source (car dt)))
+		(category-p (edge-form (mention-source (car dt))))
+		(member (cat-name (edge-form (mention-source (car dt))))
+			'(preposition)))
+	   (not (individual-p interp))
+	   (not (is-maximal? mention))
+	   #+ignore ;; can't recall what this was intended to block
+	   (and mention
+		(car containing-mentions)
+		(mention-source mention)
+		(mention-source (car containing-mentions))))
+      (return-from expand-interpretation-in-context-if-needed interp))
+    (cond
+      ((cdr spec-mentions)
+       (when *show-contextual-replacements*
+	 (format t "~%--- Suppressing contextual interpretation due to ambiguous interpretations of ~s in:~%~s~%"
+		 (or (note-surface-string edge)
+		     (sur-string interp))
+		 (sentence-string *sentence-in-core*)))
+       ;;(lsp-break "ambiguous")
+       )
+      (spec-mentions
+       (when (null (note-surface-string edge)) (lsp-break "Null edge string"))
+       (when *show-contextual-replacements*
+	 (format t "~%(   ~s     ===>  ~s)~% in sentence:~%  ~s~%"
+		 (nl->space (or (note-surface-string edge) (sur-string interp)))
+		 (nl->space (or (when (edge-p (mention-source (car spec-mentions)))
+				  (sur-string (mention-source (car spec-mentions))))
+				(sur-string (base-description (car spec-mentions)))))
+		 (nl->space (sentence-string *sentence-in-core*))))
+       (contextual-interpretation (car spec-mentions)))
+      (t interp))))
+
+(defun replace-all (string part replacement &key (test #'char=))
+  "Returns a new string in which all the occurences of the part 
+is replaced with replacement."
+  (with-output-to-string (out)
+    (loop with part-length = (length part)
+          for old-pos = 0 then (+ pos part-length)
+          for pos = (search part string
+                            :start2 old-pos
+                            :test test)
+          do (write-string string out
+                           :start old-pos
+                           :end (or pos (length string)))
+          when pos do (write-string replacement out)
+       while pos)))
+
+(defparameter *nl-str* "
+")
+
+(defun nl->space (str)
+  (replace-all str *nl-str* " "))
+
+(defun spec-mentions (c c-mention containing-mentions)
   (let ((specializations
 	 (remove-if #'predication?
-		    (all-mentioned-specializations mention containing-mentions))))
-    (declare (special specializations))
-    (when (eq interp (i# 13344))
-      (lsp-break "T669 phosphorylation"))
-    (setq specializations
-	  (loop for s in specializations
-	     unless (loop for m in (mention-history s)
-		       thereis (np-containing-edge? (mention-source mention)
-						    (mention-source m)))
-	     collect s))
-    (when specializations
-      (loop for sp in specializations
-	   when *do-expansion-in-context*
-	 do
-	   (format t "~&perhaps expand referent of ~s to ~s in sentence:~&~s~&"
-		   (retrieve-surface-string interp)
-		   (retrieve-surface-string sp)
-		   (sentence-string *sentence-in-core*)))
-      nil))))
+		    (all-mentioned-specializations c c-mention containing-mentions)))
+	spec-mentions)
+    (loop for s in specializations
+       unless (np-containing-mention? s c-mention)
+       do (loop for m in (mention-history s)
+	     when (is-maximal? m)
+	     do (push m  spec-mentions)))
+    spec-mentions))
+
+(defun np-containing-mention? (s mention)
+  (loop for m in (mention-history s)
+     thereis
+       (np-containing-edge? (mention-source mention)
+			    (mention-source m))))
 
 (defun np-containing-edge? (edge np-edge)
   (or (eq edge np-edge)

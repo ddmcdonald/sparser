@@ -8,16 +8,17 @@
 ;;;
 
 
-(defvar *lattice-individuals-to-mentions* (make-hash-table :size 10000)
-  "Maps from description lattice individuals to a push-list of 
-  the places they have been mentioned, encoded as 'mention'
-  objects.")
-
 (defvar *lattice-individuals-mentioned-in-paragraph* nil
   "List of mentions within the current paragraph. Most recent
    first. Mostly needed as a resource to 'long-term-ify' 
    mention locations, but may have other uses such as mergine
    with or replacing the sentence list of individuals.")
+
+;;; mention-history storage
+(defvar *lattice-individuals-to-mentions* (make-hash-table :size 10000)
+  "Maps from description lattice individuals to a push-list of 
+  the places they have been mentioned, encoded as 'mention'
+  objects.")
 
 (defun mention-history (i)
   (declare (special *lattice-individuals-to-mentions*))
@@ -26,6 +27,13 @@
 (defun (setf mention-history) (val i)
   (declare (special *lattice-individuals-to-mentions*))
   (setf (gethash i *lattice-individuals-to-mentions*) val))
+
+(defun m# (uid)
+  (declare (special *lattice-individuals-to-mentions*))
+  (maphash #'(lambda(i ml)
+	       (let ((m (find uid ml :key #'mention-uid)))
+		 (when m (return-from m# m))))
+	   *lattice-individuals-to-mentions*))
 
 (defvar *lattice-individuals-mentioned-in-paragraph* nil
   "List of mentions within the current paragraph. Most recent
@@ -110,8 +118,27 @@
 (defmethod is-maximal? ((m discourse-mention))
   (when (and (eq (maximal? m) :unknown)
 	     (mention-source m))
-    (setf (maximal? m) (max-edge? (mention-source m))))
+    (setf (maximal? m)
+	  (cond
+	    ((and
+	      (edge-p (mention-source m))
+	      (category-p (edge-form (mention-source m)))
+	      (eq (cat-name (edge-form (mention-source m))) 'thatcomp))
+	     nil)
+	    ((s-mention? m)
+	     ;; don't want to get ssuper-maximal S edges that include relative clauses or premodifying contextual
+	     ;; PPs as in
+	     ;; "In untreated cells, EGFR is phosphorylated at T669 by MEK/ERK, which inhibits activation of EGFR and ERBB3"
+	     ;; just want EGFR is phosphorylated at T669 by MEK/ERK
+	     (or (not (subsumes-mention m))
+		 (not (s-mention? (subsumes-mention m)))))
+	    (t (max-edge? (mention-source m))))))
   (maximal? m))
+
+(defun s-mention? (m)
+  (and (edge-p (mention-source m))
+       (category-p (edge-form (mention-source m)))
+       (eq (cat-name (edge-form (mention-source m))) 's)))
 
 (defmethod start-pos ((m discourse-mention))
   (car (mentioned-where m))
@@ -152,22 +179,15 @@
          (old-instance ;; pair of old-i and its edge
           (loop for pair in *lifo-instance-list* ;; or assq
             when (eq (car pair) old-i) return pair)))
-
-    ;;
-    ;(unless old-instance
-    ;  (error "No record of old mention in *lifo-instance-list*"))
-    ;;/// Broken out let us make one modification to ignore this case
     (when old-instance
       ;; We're going to subvert it. If order matters we can
       ;; do that later. Changes the lifo instance list in place.
       (rplaca old-instance new-i)
       (rplaca (cdr old-instance) edge)
-      #+ignore(unless (equal old-instance redundant-instance)
-        (lsp-break "why is new different?"))
       )))
 
 
-(defun lattice-individuals-extend-dh-entry (entry i edge)
+(defun lattice-individuals-extend-dh-entry (category i edge)
   (let ((subsumed-mention
 	 (if
 	  (edge-left-daughter edge)
@@ -182,7 +202,7 @@
 	  (loop for e in (edge-constituents edge)
 	     when (is-dl-child? i (edge-referent e))
 	     do (return (edge-mention e))))))
-    (make-new-mention entry i edge subsumed-mention)))
+    (make-new-mention category i edge subsumed-mention)))
     
 		 
 (defun is-dl-child? (child? parent?)
@@ -221,7 +241,6 @@
     
 
 (defun create-discourse-mention (i source)
-  (declare (special *lattice-individuals-to-mentions*))
   "Individuals reside in a description lattice. Every new
   property or relation extends the lattice and in so doing
   creates a new individual that is more specific than
@@ -239,7 +258,6 @@
       (setf (non-dli-mod-for i) nil))
     (push m (mention-history i))
     (if (edge-p source) (setf (edge-mention source) m))
-    (setf (gethash i *lattice-individuals-to-mentions*) `(,m))
     (push m *lattice-individuals-mentioned-in-paragraph*)
     (tr :made-mention m)
     (list m)))
@@ -252,38 +270,35 @@
 		   :i i :loc location :ms source :article toc)))
 (defparameter *edge-forms* nil)
 
-(defun make-new-mention (entry i source &optional subsumed-mention)
-  (declare (special *lattice-individuals-to-mentions*))
+(defun make-new-mention (category i source &optional subsumed-mention)
   (cond
     ((null source) (lsp-break "null source in create-discourse-mention"))
     ((edge-p source) (pushnew (cat-name (edge-form source)) *edge-forms*)))
   (let* ((m (make-mention i source)))
     (tr :making-new-mention m)
-    (cond
-      (subsumed-mention
-       (setf (subsumes-mention m) subsumed-mention)
-       (setf (subsumed-by-mention subsumed-mention) m)
-       ;;(unless (member subsumed-mention entry)  (lsp-break "huh"))
-       ;; happened for "protein kinase" where the kinase was not stored
-       (setf (mention-non-dli-modifiers m)
-	     (mention-non-dli-modifiers subsumed-mention))
-       (when (non-dli-mod-for i)
-	 (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
-	 (setf (non-dli-mod-for i) nil))
-       (nsubstitute m subsumed-mention entry)
-       (update-instance-within-sequence m subsumed-mention source))
-      (t (extend-category-dh-entry entry m)))
+    (if subsumed-mention
+	(subsume-mention category m source subsumed-mention)
+	(push m (discourse-entry category)))
     (push m (mention-history i))
     (push m *lattice-individuals-mentioned-in-paragraph*)
     (if (edge-p source) (setf (edge-mention source) m))
     m ))
 
-(defun m# (uid)
-  (declare (special *lattice-individuals-to-mentions*))
-  (maphash #'(lambda(i ml)
-	       (let ((m (find uid ml :key #'mention-uid)))
-		 (when m (return-from m# m))))
-	   *lattice-individuals-to-mentions*))
+(defun subsume-mention (category m source subsumed-mention)
+  (setf (subsumes-mention m) subsumed-mention)
+  (setf (subsumed-by-mention subsumed-mention) m)
+  (update-non-dli-modifiers m subsumed-mention (base-description m))
+  ;;categories only list (currently) maximal phrases
+  (nsubstitute m subsumed-mention (discourse-entry category))
+  (update-instance-within-sequence m subsumed-mention source))
+
+(defun update-non-dli-modifiers (m subsumed-mention i)
+  "For the description lattice, some modifiers like determiners and quantifiers are not stored as variables on the individual, but are stored on the mention"
+  (setf (mention-non-dli-modifiers m)
+	(mention-non-dli-modifiers subsumed-mention))
+  (when (non-dli-mod-for i)
+    (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
+    (setf (non-dli-mod-for i) nil)))
 
 (defun max-edge? (source)
   (declare (special *all-np-categories* *vp-categories*))
@@ -292,7 +307,9 @@
       (cond
 	((null (edge-used-in source)) t)
 	((member (cat-symbol (edge-form source)) *all-np-categories*)
-	 (or (itypep (edge-referent (edge-used-in source)) 'collection)
+	 (or
+	  (and (individual-p (edge-referent (edge-used-in source)))
+	       (itypep (edge-referent (edge-used-in source)) 'collection))
 	 (and
 	  (not (eq (edge-referent source) (edge-referent (edge-used-in source))))
 	  (not (member (cat-symbol (edge-form (edge-used-in source)))

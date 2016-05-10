@@ -45,6 +45,7 @@
             ;; that is at the top of this branch, 
             ;; then adds all bindings (as dli-vv's) that
             ;; distingusih this individual from its bare category parent
+  (not-super (make-hash-table :size 100 :test #'eq))
 
   shadow
   )

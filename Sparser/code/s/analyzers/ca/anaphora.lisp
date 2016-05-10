@@ -191,11 +191,8 @@
       
       (let ((entry (discourse-entry category)))
         (if entry
-          (extend-entry-in-discourse-history
-           entry category new-instance edge)
-          (create-entry-in-discourse-history
-           category new-instance edge))
-        
+          (extend-entry-in-discourse-history category new-instance edge)
+          (create-entry-in-discourse-history category new-instance edge))
         category ))))
 
 
@@ -206,11 +203,14 @@
   ;; history of this category is empty, i.e. this is the first
   ;; time an individual of this category has been mentioned.
   (tr :creating-category-dh-entry category i edge)
-  (setf (gethash category *objects-in-the-discourse*)
+  (setf (discourse-entry category)
 	(create-discourse-entry i edge)))
 
 (defun discourse-entry (category)
   (gethash category *objects-in-the-discourse*))
+
+(defun (setf discourse-entry) (val category)
+  (setf (gethash category *objects-in-the-discourse*) val))
 
 
 ;;;--------------------------
@@ -237,24 +237,11 @@
                        nil))
          nil))
 
-(defun extend-category-dh-entry (entry m)
-  (push-debug `(,entry ,m))
-  ;; The symbol entry points to the first cons cell in the
-  ;; list of entries
-  (let ((entry-car (car entry))
-        (entry-cdr (cdr entry)))
-    (push-debug `(,entry ,m)) ;(lsp-break "what's wrong with replaca")
-    (rplaca entry m)
-    (rplacd entry (cons entry-car entry-cdr))
-    entry))
-
-
 ;;;--------------------------
 ;;; Extend discourse history
 ;;;--------------------------
 
-(defun extend-entry-in-discourse-history (entry category
-                                          new-individual edge)
+(defun extend-entry-in-discourse-history (category new-individual edge)
   ;; Called from update-discourse-history
   ;; There have been earlier instances of indivdiuals of this category
   ;; in the discourse history. This may be a further instance of an
@@ -264,15 +251,13 @@
   ;; will usually involve a subsuming (larger) edge. 
   (declare (special *description-lattice*))
   (if *description-lattice*
-    (lattice-individuals-extend-dh-entry
-     entry new-individual edge)
-    (conventional-individuals-extend-dh-entry 
-     entry category new-individual edge)))
+    (lattice-individuals-extend-dh-entry category new-individual edge)
+    (conventional-individuals-extend-dh-entry category new-individual edge)))
 
 
-(defun conventional-individuals-extend-dh-entry (entry category
-                                                 individual edge)
-  (let ( individuals-entry )
+(defun conventional-individuals-extend-dh-entry (category individual edge)
+  (let ((entry (discourse-entry category))
+	individuals-entry )
     (cond ((eq (caar entry) individual)
            ;; The object was the very last one of its type to be added.
            ;; Check for this being a larger edge over the same object
