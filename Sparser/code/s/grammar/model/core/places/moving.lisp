@@ -103,7 +103,7 @@
   :action (:function convert-name-to-place-name third))
 
 
-(when (eq (script) :fire)
+(when (current=script :fire)
   (define-debris-analysis-rule move+to+named-object
       :pattern ( move "to" named-object )
       :action (:function convert-name-to-place-name third)))
@@ -121,7 +121,7 @@
 
 (define-movement-verb "travel")
 
-(unless (eq (script) :biology) ;; See sl/biology/verbs.lisp
+(unless (current-script :biology) ;; See sl/biology/verbs.lisp
   (define-movement-verb "turn"))
 
 

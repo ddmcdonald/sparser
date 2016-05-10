@@ -94,7 +94,7 @@
 ;; syntactic rule covering all of these inserted into 
 ;; syntactic-rules.lisp 
 
-(unless (eq (script) :biology)
+(unless (current-script :biology)
   (progn
 ;;--- a/an
 

@@ -63,6 +63,8 @@ are stashed on the script symbol's plist for the script function below."
        (when doc-p (setf (documentation name 'variable) doc)))))
  *pre-load-hooks*)
 
+(defun current-script (script-name) (eq script script-name)) ;; hide the non-starred global
+
 (pushnew
  (defun set-script-switches (&optional (script script))
    "Set script-specified switches."

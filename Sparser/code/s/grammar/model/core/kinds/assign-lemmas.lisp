@@ -55,7 +55,7 @@
 
 (define-individual 'deictic-location :name "here")
 
-(unless (eq (script) :biology)
+(unless (current-script :biology)
   ;; unlikely in bio -- causes problems with construction "THERE IS"
  (define-individual 'deictic-location :name "there"))
 
