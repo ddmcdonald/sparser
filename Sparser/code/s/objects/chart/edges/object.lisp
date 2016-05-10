@@ -457,13 +457,18 @@
 (defun edge-precedes (left-edge right-edge)
   ;; does the "left-edge" end earlier (or the same as) the "right"
   ;; edge starts?
-  (let ((left-end (pos-edge-ends-at left-edge))
-        (right-start (pos-edge-starts-at right-edge)))
-    (cond ((eq left-end right-start)
-           t)
-          ((position-precedes left-end right-start)
-           t)
-          (t nil))))
+  (when
+      ;; had some cases where there were discourse-mentions whose 'source'
+      ;;  was the cons (LINK-IN_EDGE ...)
+      (and (edge-p left-edge)
+	   (edge-p right-edge))
+    (let ((left-end (pos-edge-ends-at left-edge))
+	  (right-start (pos-edge-starts-at right-edge)))
+      (cond ((eq left-end right-start)
+	     t)
+	    ((position-precedes left-end right-start)
+	     t)
+	    (t nil)))))
 
 
 ;; (sort <list of edges> #'edge-sort)
