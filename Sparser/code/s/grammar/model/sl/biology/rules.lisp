@@ -140,11 +140,13 @@
              :bind (amino-acid left-edge)))
 
 ;; residues 104 and 147
+#+ignore ;; not needed -- the conjunction of numbers solves this problem
 (def-cfr residue-on-protein (residue-on-protein number)
   :form n-bar
   :referent (:head left-edge
              :bind (position right-edge)))
 
+#+ignore
 (def-cfr residue-on-protein (residue-on-protein hyphenated-number)
   :form proper-noun
   :referent (:instantiate-individual residue-on-protein
