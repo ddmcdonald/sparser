@@ -406,14 +406,16 @@ unknown---in any event, we're taking the first edge that is installed.
   ;; Check for a leading period (indicating that we've got a decimal
   ;; value rather than one that starts as a regular (>1) number)
   ;; but don't back over newlines.
+  (declare (special *the-punctuation-period*))
+  
   (when (and (eq (pos-terminal (chart-position-before starting-position))
-		 word::period)
+		 *the-punctuation-period*)
 	     (null (pos-preceding-whitespace starting-position)))
     ;; but avoid the periods after abbreviations
     (when (or (not (ev-top-node (pos-ends-here starting-position)))
               (eq (edge-category 
                    (ev-top-node (pos-ends-here starting-position)))
-                  word::period)) ;; literal edge
+                 *the-punctuation-period*)) ;; literal edge
       (setq *period-within-digit-sequence* t)
       (setq starting-position (chart-position-before starting-position))))
 
@@ -440,8 +442,7 @@ unknown---in any event, we're taking the first edge that is installed.
       ;; compound digit strings, for which it passed through a constructed
       ;; string to be the compound: (format nil "~A" net-value)
 
-      (setf (edge-referent edge) 
-            (place-referent-in-lattice number-object edge))
+      (setf (edge-referent edge) number-object edge)
       (setf (edge-rule edge) :number-fsa)
 
       (complete edge)
