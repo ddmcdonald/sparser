@@ -618,6 +618,8 @@ where it regulates gene expression.")
      thereis (eq 'predication (var-name (binding-variable b)))))
 
 
+(defparameter *catch-null-surface-strings* nil)
+
 (defun expand-interpretation-in-context-if-needed (dt var containing-mentions)
   (declare (special dt var containing-mentions))
   (let* ((mention (dt-mention dt))
@@ -648,7 +650,8 @@ where it regulates gene expression.")
        ;;(lsp-break "ambiguous")
        )
       (spec-mentions
-       (when (null (note-surface-string edge)) (lsp-break "Null edge string"))
+       (when *catch-null-surface-strings*
+	 (when (null (note-surface-string edge)) (lsp-break "Null edge string")))
        (when *show-contextual-replacements*
 	 (format t "~%(   ~s     ===>  ~s)~% in sentence:~%  ~s~%"
 		 (nl->space (or (note-surface-string edge) (sur-string interp)))
