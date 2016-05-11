@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  2.7 June 2015
+;;;  Version:  May 2016
 
 ;; 2.0  (7/16/92 v2.3) bumped [percentages] to 1 to install new regime
 ;;      7/19 bumped nearly everything else to make it over to new categories
@@ -37,3 +37,5 @@
 ;; and in dossiers:
 (gload "dossiers;numbers")
 (gload "dossiers;ordinals")
+
+(gload "numbers;citations")
