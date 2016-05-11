@@ -103,7 +103,7 @@
   :action (:function convert-name-to-place-name third))
 
 
-(when (current=script :fire)
+(when (current-script :fire)
   (define-debris-analysis-rule move+to+named-object
       :pattern ( move "to" named-object )
       :action (:function convert-name-to-place-name third)))
