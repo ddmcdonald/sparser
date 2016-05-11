@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1999.2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1999.2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "digits"
 ;;;   Module:  "grammar;rules:edges:"
-;;;  Version:  1.12 December 2014
+;;;  Version:  May 2016
 
 ;;1.1  (1/3/91 v1.6) Moved to this file the routine that's called from
 ;;     assessing unknown digit sequences.
@@ -66,6 +66,9 @@
               (set-used-by leftmost-daughter edge))
             (set-used-by/anonymous-daughters
              starting-position ending-position edge)))
+
+    (setf (edge-constituents edge)
+          (treetops-between starting-position ending-position))
 
     (knit-edge-into-positions edge starting-vector ending-vector)
 
