@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "h-n-scanner"   e.g. "H5N1" or 
 ;;;    Module:   "sl;disease:"
-;;;   version:   July 2014
+;;;   version:   May 2016
 
 ;; initiated 5/6/13. Rebuilt as a no-space pattern fsa 7/28/14
 
@@ -30,7 +30,9 @@ combinations are possible e.g. H1N1, H7N2, H6N9 and etc.  |#
   ;; we know this is a virus, but couldn't find the definition (ddm 7/28/14)
   :index (:permanent :sequential-keys H-number N-number))
 
-(defun find-or-make-avian-flu (h n) (break "got here"))
+(defun find-or-make-avian-flu (start-pos reached-pos &rest args)
+  (push-debug `(,start-pos ,reached-pos ,args)) (break "make avian"))
+;  (find-or-make-individual 'avian-flu
 
 
 ;;;---------
@@ -53,7 +55,20 @@ combinations are possible e.g. H1N1, H7N2, H6N9 and etc.  |#
 
 ; (trace-ns-sequences)
   
-#|  It doesn't work because of an ordering issue at the lowest level
+#| Trace below shows the bug in the scan seauence where the "1"
+is closing the segment started by "was[", which strands the "H" 
+in with the "was" without having gotten the chance to look for
+the combination. 
+  That is, check-for-]-from-word-after needs to be modified
+so that it it's about to close the segment and call pts it first
+makes a check like check-for/initiate-scan-patterns does.
+It could be conditioned on no-space-before-word? or maybe
+also on the word we've just passed (the "H"), which went 
+through a somewhat different path since it was passed through
+PNF. 
+    Try defining a lower-case variant on the ns pattern
+to determine whether PNF is the fly in the works.
+
 
 ? (trace-ns-sequences)
 t
@@ -62,89 +77,7 @@ t
 t
 
 ? (p "it was H1N1 virus")
-[scan] Inititate-top-edges-protocol
-[scan] Setting status of p0 to :scanned
-[scan] check-word-level-fsa-trigger #<position0 0 "">
-[scan] Setting status of p0 to :word-level-fsa-triggers
-[scan] cwlft-cont #<position0 0 "">
-[scan] Setting status of p0 to :word-fsas-done
-[scan] word-level-actions #<word SOURCE-START>
-[scan] Setting status of p0 to :word-level-actions
-[scan] No word at p1 yet. Calling scan-next-position
-[scan] Setting status of p1 to :scanned
-[scan] Setting status of p1 to :scanned-from-word-actions
-[scan] Setting status of p0 to :word-completed
-[scan] introduce-terminal-edges #<word SOURCE-START>
-[scan] Setting status of p0 to :preterminals-installed
-[scan] introduce-right-side-brackets: "#<word SOURCE-START>"
-[scan] introduce-trailing-brackets "#<word SOURCE-START>"
-[scan] Setting status of p1 to :brackets-from-prior-word-introduced
-[scan] check-for-]-from-prior-word: p1
-[scan] Setting status of p1 to :]-from-prior-word-checked
-[scan] check-for-[-from-prior-word: p1
-[scan] Setting status of p1 to :[-from-prior-word-checked
-[scan] adjudicate-new-open-bracket phrase.[
 
-
-[scan] scan-next-pos #<position1 1 "it">
-[scan] introduce-leading-brackets "it"
-[scan] Setting status of p1 to :brackets-from-word-introduced
-[scan] check-for-]-from-word-after p1 "it"
-[scan] Trailing-hidden-markup-check #<position1 1 "it">
-[scan] Trailing-hidden-annotation-check #<position1 1 "it">
-[scan] Setting status of p1 to :]-from-word-after-checked
-[scan] bracket-ends-the-segment? ].pronoun
-[scan] pts
-[scan] segment-finished: p1 to p1
-[scan] tidy-up-segment-globals
-[scan] return-to-scan-level-from-null-span: p1
-
-Returning to the word level at p1 from a null span
-[scan] check-for-[-from-word-after p1 "it"
-[scan] check for end of source #<position1 1 "it">
-[scan] Setting status of p1 to :[-from-word-after-checked
-[scan] adjudicate-new-open-bracket .[np
-[scan] Leading-hidden-markup-check #<position1 1 "it">
-[scan] check-for-polywords starting with "#<word "it">" at p1
-[scan] Setting status of p1 to :polywords-check
-[scan] check-for/initiate-scan-patterns: p1
-[scan] Setting status of p1 to :no-space-patterns
-[scan] no whitespace at p1. Initiating scan-pattern check.
-[scan] check-for-uniform-no-space-sequence #<position1 1 "it">
-[ns] first word: #<word SOURCE-START>, second word: #<word "it">
-[scan] Setting status of p2 to :scanned
-[ns] dropping out of the loop: whitespace before #<position2 2 "was">
-[scan] check-word-level-fsa-trigger #<position1 1 "it">
-[scan] Setting status of p1 to :word-level-fsa-triggers
-[scan] cwlft-cont #<position1 1 "it">
-[scan] Setting status of p1 to :word-fsas-done
-[scan] word-level-actions #<word "it">
-[scan] Setting status of p1 to :word-level-actions
-[scan] Setting status of p1 to :word-completed
-[scan] introduce-terminal-edges #<word "it">
-[scan] Setting status of p1 to :preterminals-installed
-[scan] Check-preterminal-edges #<position1 1 "it">
-[scan] Introduce-leading-brackets-from-edge-form-labels #<position1 1 "it">
-[scan] introduce-leading-brackets "pronoun"
-[scan] Setting status of p1 to :brackets-from-word-introduced
-[scan] check-edge-fsa-trigger it at p1
-[scan] Setting status of p1 to :edge-fsa-checked
-[scan] Setting status of p1 to :edge-fsas-done
-[scan] introduce-right-side-brackets: "#<word "it">"
-[scan] introduce-trailing-brackets "#<word "it">"
-[scan] Setting status of p2 to :brackets-from-prior-word-introduced
-[scan] check-for-]-from-prior-word: p2
-[scan] Setting status of p2 to :]-from-prior-word-checked
-[scan] bracket-ends-the-segment? np].
-[scan] pts
-[it]
-[scan] segment-finished: p1 to p2
-[scan] tidy-up-segment-globals
-[scan] after-action-on-segments
-[scan] normal-segment-finished-options
-[scan] check-segment-finished-hook
-[scan] sf-action/spanned-segment1
-[scan] moved-to-forest-level: p2
 [forest] PPTT
 try-parsing-tt: #<edge0 1 pronoun/inanimate 2>
 March-back-from-the-right/forest called at p1
