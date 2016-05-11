@@ -104,6 +104,18 @@
           (top-node top-node)
           (t (pos-terminal position)))))
 
+(defun right-treetop-edge-at (position)
+  (let* ((vector (pos-starts-here position))
+         (top-node (ev-top-node vector)))
+    (cond
+     (top-node
+      (if (eq top-node :multiple-initial-edges)
+       (highest-edge vector)
+       top-node))
+     (t
+      (pos-terminal position)))))
+
+
 ;;//// these are redundant with the ones just below
 ;;  grep for them and change one or the other
 
@@ -337,16 +349,7 @@
                       (null (pos-terminal ending-position)))
             (all-tts ending-position stop-pos)))))
 
-(defun right-treetop-edge-at (position)
-  (let* ((vector (pos-starts-here position))
-         (top-node (ev-top-node vector)))
-    (cond
-     (top-node
-      (if (eq top-node :multiple-initial-edges)
-       (highest-edge vector)
-       top-node))
-     (t
-      (pos-terminal position)))))
+
 
 (defun adjacent-tt-pairs (sentence)
   ;;(push-debug `(,sentence)) (break "tt")
