@@ -364,35 +364,36 @@
 (defparameter *not-as-specific* (make-hash-table :size 20000))
 
 (defun as-specific? (sub-dli super-dli) ;; super-dli lies above sub-dli in the description lattice
-  (or
-   (eq sub-dli super-dli)
-   (cond
-     ((referential-category-p sub-dli)
-      (and (referential-category-p super-dli)
-	   (itypep sub-dli super-dli)))
-     ((gethash super-dli (indiv-not-super sub-dli))
-      nil)
-     ((gethash super-dli (indiv-all-supers sub-dli)))
-     ((itypep sub-dli (itype-of super-dli))
-      (cond ((loop for r in (and (individual-p super-dli)
-				 (indiv-restrictions super-dli))
-		as rval = (and (not (category-p r))(dlvv-value r))
-		always
-		  (or (null rval)
-		      (let* ((sub-r
-			      (find-if #'(lambda (dlvv)
-					   (when
-					       (not (category-p dlvv))
-					     (eq (dlvv-variable dlvv) (dlvv-variable r))))
-				       (indiv-restrictions sub-dli)))
-			     (srval (and sub-r (dlvv-value sub-r))))
-			(if (or (category-p rval)(individual-p rval))
-			    (and (or (category-p srval)(individual-p srval))
-				 (as-specific? srval rval))
-			    (equal rval srval)))))
-	     (setf (gethash super-dli (indiv-all-supers sub-dli)) t))
-	    (t (setf (gethash super-dli (indiv-not-super sub-dli)) t)
-	       nil))))))
+  (when sub-dli
+    (or
+     (eq sub-dli super-dli)
+     (cond
+       ((referential-category-p sub-dli)
+	(and (referential-category-p super-dli)
+	     (itypep sub-dli super-dli)))
+       ((gethash super-dli (indiv-not-super sub-dli))
+	nil)
+       ((gethash super-dli (indiv-all-supers sub-dli)))
+       ((itypep sub-dli (itype-of super-dli))
+	(cond ((loop for r in (and (individual-p super-dli)
+				   (indiv-restrictions super-dli))
+		  as rval = (and (not (category-p r))(dlvv-value r))
+		  always
+		    (or (null rval)
+			(let* ((sub-r
+				(find-if #'(lambda (dlvv)
+					     (when
+						 (not (category-p dlvv))
+					       (eq (dlvv-variable dlvv) (dlvv-variable r))))
+					 (indiv-restrictions sub-dli)))
+			       (srval (and sub-r (dlvv-value sub-r))))
+			  (if (or (category-p rval)(individual-p rval))
+			      (and (or (category-p srval)(individual-p srval))
+				   (as-specific? srval rval))
+			      (equal rval srval)))))
+	       (setf (gethash super-dli (indiv-all-supers sub-dli)) t))
+	      (t (setf (gethash super-dli (indiv-not-super sub-dli)) t)
+		 nil)))))))
 ;; was -- incorrectly -- (subsetp  (indiv-restrictions super-dli) (indiv-restrictions sub-dli)))
 
 (defun find-var-from-var/name (var/name parent)
@@ -474,6 +475,7 @@
   (find-all-subs (dli-ref-cat c)))
 
 (defmethod find-all-subs ((i individual))
+  (declare (special *lattice-individuals-mentioned-in-paragraph*))
   (loop for m in *lattice-individuals-mentioned-in-paragraph*
      when (as-specific? (base-description m) i)
      collect i))
@@ -488,6 +490,7 @@
    (loop for i in (all-phrasal-dlis) collect (dli-ref-cat i))))
 
 (defun all-mentioned-specializations (c c-mention containing-mentions)
+  (declare (special *lattice-individuals-mentioned-in-paragraph*))
   (let* ((am-specs
 	  (remove-duplicates
 	   (loop for m in *lattice-individuals-mentioned-in-paragraph*
@@ -516,8 +519,3 @@
 
 (defun hal (ht) (hashtable-to-alist ht))
 (defun sur-string (i)(retrieve-surface-string i))
-       
-		     
-  
-  
-
