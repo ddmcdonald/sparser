@@ -62,7 +62,8 @@
 (defmethod contextual-interpretation ((s symbol))
   (values
    (case s
-     (**lambda-var** ;; the marker for the argument of a predicate which is being applied to the predicated item
+     (**lambda-var**
+      ;; the marker for the argument of a predicate which is being applied to the predicated item
       *lambda-var*)
      (t s))
    t))
@@ -101,7 +102,7 @@ the contextual interpretation of the item in the context."))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   s)
 
-(defmethod interpret-in-context ((s symbol) variable containing-mentions)
+(defun interpret-symbol-in-context (s variable containing-mentions)
     (declare (ignore variable containing-mentions))
   (case s
     (**LAMBDA-VAR** ;; the marker for the argument of a predicate which is being applied to the predicated item
@@ -187,6 +188,8 @@ where it regulates gene expression.")
 (defun itypep-or (i type-list)
   (loop for type in type-list thereis (itypep i type)))
 
+(defparameter *break-on-null-interp* nil)
+
 (defun reinterpret-collection-with-modifiers (dt var containing-mentions)
   (declare (special dt var containing-mentions))
   (let ((mention (dt-mention dt))
@@ -203,7 +206,7 @@ where it regulates gene expression.")
 		 (*var* var)
 		 (interp (interpret-item-in-context *m* *var* containing-mentions)))
 	     (declare (special interp *m* *var*))
-	     (cond ((null interp) (lsp-break "null interp"))
+	     (cond ((and *break-on-null-interp* (null interp)) (lsp-break "null interp"))
 		   ((is-collection? interp)
 		    (copy-list (value-of 'items interp)))
 		   (t (list interp)))))
@@ -220,7 +223,9 @@ where it regulates gene expression.")
 	     (itypep (base-description (car (second (car (dt-bindings dt)))))
 		     'phosphorylate))
     (lsp-break "~&interpret-item ~s~&" dt))
-  (interpret-in-context dt var containing-mentions))
+  (if (symbolp dt)
+      (interpret-symbol-in-context dt var containing-mentions)
+      (interpret-in-context dt var containing-mentions)))
 
 (defun reinterp-item-using-bindings (dt var containing-mentions)
   (let* ((mention (dt-mention dt))
@@ -256,12 +261,16 @@ where it regulates gene expression.")
       (car interps)))
 
 (defun interpret-val-in-context (var val-dt containing-mentions)
-   ;; recursively interpret the bound value in the current context
+  ;; recursively interpret the bound value in the current context
   (if (eq var 'predication)
       (let ((*lambda-var* (car containing-mentions))) ;; HUH!!
 	(declare (special *lambda-var*))
-	(interpret-in-context val-dt nil containing-mentions))
-      (interpret-in-context val-dt var containing-mentions)))
+	(if (symbolp val-dt)
+	    (interpret-symbol-in-context val-dt nil containing-mentions)
+	    (interpret-in-context val-dt nil containing-mentions)))
+      (if (symbolp val-dt)
+	  (interpret-symbol-in-context val-dt nil containing-mentions)
+	  (interpret-in-context val-dt var containing-mentions))))
 
 (defun is-collection? (i)
   (and (individual-p i)
@@ -303,6 +312,7 @@ where it regulates gene expression.")
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
 (defparameter *lambda-val* nil)
+(defparameter *break-on-null-edge* nil)
 (defparameter *report-on-multiple-edges-for-interp* nil)
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
   (let (poss-edges
@@ -328,8 +338,8 @@ where it regulates gene expression.")
 		    (when (and
 			   (individual-p child-interp)
 			   (not allow-null-edge)
-			   (and child-interp
-				(not (itypep child-interp 'number))))
+			   child-interp
+			   (not (itypep child-interp 'number)))
 		      (lsp-break "~&1) no internal edge for ~s in ~s~&"
 				 child-interp parent-edge)
 		      nil)
@@ -343,8 +353,9 @@ where it regulates gene expression.")
 		;; happens for premodifying v+ing
 		;; where the edge has a category edge-representation,
 		;; not an individual
-		(lsp-break "~&no internal edge for ~s in ~s~&"
-			   child-interp parent-edge))
+		(when *break-on-null-edge*
+		  (lsp-break "~&no internal edge for ~s in ~s~&"
+			     child-interp parent-edge)))
 	      nil)))
 	  ((cdr poss-edges)
 	   ;; appositive cases like "endogenous C-RAF phosphorylation at S338, an event required for C-RAF activation, "
