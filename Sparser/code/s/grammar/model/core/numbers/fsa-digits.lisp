@@ -442,7 +442,8 @@ unknown---in any event, we're taking the first edge that is installed.
       ;; compound digit strings, for which it passed through a constructed
       ;; string to be the compound: (format nil "~A" net-value)
 
-      (setf (edge-referent edge) number-object edge)
+      (setf (edge-referent edge) number-object)
+      
       (setf (edge-rule edge) :number-fsa)
 
       (complete edge)
