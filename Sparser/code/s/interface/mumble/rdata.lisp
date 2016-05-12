@@ -25,20 +25,23 @@
   ;; Called from setup-rdata
   ;; (push-debug `(,category ,rdata))
   ;; (setq category (car *) rdata (cadr *))
-  (let ((mumble-spec (cadr (assq :mumble rdata))))
+  (let ((mumble-spec (cadr (if (keywordp (car rdata))
+                             (member :mumble rdata)
+                             (assq :mumble rdata)))))
     (decode-mumble-spec category mumble-spec)))
 
 (defun decode-mumble-spec (category mumble-spec)
   "Entry point from decode-realization-parameter-list"
-  ;; e.g. (:mumble ("build" svo :v artifact))
+  ;; e.g. (:mumble ("build" svo :o artifact))
   ;;      (:mumble ("push" svo :s agent :o theme))
   ;;      (:mumble (transitive-with-final-adverbial "push" "together"))
-  (etypecase (first mumble-spec)
-    (string
-     (apply-mumble-phrase-data 
-      category (first mumble-spec) (second mumble-spec) (cddr mumble-spec)))
-    (symbol
-     (apply-mumble-function-data category mumble-spec))))
+  (when (cdr mumble-spec)
+    (etypecase (car mumble-spec)
+      (string
+       (apply-mumble-phrase-data
+        category (car mumble-spec) (cadr mumble-spec) (cddr mumble-spec)))
+      (symbol
+       (apply-mumble-function-data category mumble-spec)))))
 
 (defun apply-mumble-function-data (category function-and-args)
   "Sugar for a call to a resource-defining Mumble function.

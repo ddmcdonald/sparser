@@ -213,18 +213,16 @@
 (defun select-auxiliary-to-induce ()
   (let* ((position-table (position-table *current-phrasal-root*))
 	 (passive-aux    (cdr (assoc 'be+en position-table)))
-	 (verb           (cdr (assoc 'verb  position-table)))
-	 (word-be (word-named 'be)))
-
+	 (verb           (cdr (assoc 'verb  position-table))))
     (cond (passive-aux
 	   (prog1 (contents passive-aux)
 		  (set-contents passive-aux
 				(ttrace-named 'aux-trace))))
-	  ((eq (contents verb) word-be)
+	  ((eq (contents verb) (word-for-string "be" 'verb))
 	   (prog1 (contents verb)
 		  (set-contents verb
 				(ttrace-named 'aux-trace))))
-	  (t (word-for-string "do")))))
+	  (t (word-for-string "do" 'verb)))))
 
 (defun aux-state  ()
   (state-value :aux-state (state *current-phrasal-root*)))

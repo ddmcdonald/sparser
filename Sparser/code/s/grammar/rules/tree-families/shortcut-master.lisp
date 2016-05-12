@@ -250,10 +250,6 @@
     (symbol (setq etf (list etf)))  
     (otherwise (error "The :etf parameter must be a symbol or a list")))
 
-  (when mumble
-    (when *build-mumble-equivalents*
-      (decode-mumble-spec category mumble)))
-  
   (let* ((sf (fom-subcategorization category
                                     :category category
                                     ;;:s s :o o
@@ -357,6 +353,10 @@
       (apply-rdata-mappings category etf
                             :args substitution-map
                             :word-keys word-map))
+
+    (when mumble
+      (when *build-mumble-equivalents*
+        (decode-mumble-spec category mumble)))
 
     category))
 
