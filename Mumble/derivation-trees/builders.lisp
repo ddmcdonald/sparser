@@ -46,8 +46,7 @@
 (defmethod verb ((w word) &optional phrase-name)
   (verb (pname w) phrase-name))
 
-(defmethod verb ((string string) &optional phrase-name)
-  (unless phrase-name (setq phrase-name'SVO))
+(defmethod verb ((string string) &optional (phrase-name 'svo))
   (let* ((phrase (phrase-named phrase-name))
          (parameter (parameter-named 'v))
          (parameters (delete parameter

@@ -461,30 +461,30 @@ the virtual machine cleaner."
      ,@(quote-every-other-one irregularities :even)))
 
 (defun define-word/expr ( pname word-labels &rest irregularities )
-  (let* ((name (intern pname))  ;;(string-upcase pname)
+  (let* ((name (intern pname :mumble))
          (object (create-and-catalog
                     name 'word
                     'name name
                     'pname pname
                     'word-labels word-labels
-                    'irregularities  irregularities)))
-       (associate-pname-with-word pname object)))
+                    'irregularities irregularities)))
+       (associate-pname-with-word pname object (car word-labels))))
 
 (defparameter *pnames-to-words* (make-hash-table :test 'equal))
 
-(defmethod find-word ((pname string))
-  (gethash pname *pnames-to-words*))
-(defmethod find-word ((name symbol))
-  (find-word (string-downcase (symbol-name name))))
+(defgeneric find-word (name &optional pos)
+  (:method ((name symbol) &optional (pos 'noun))
+    (find-word (string-downcase (symbol-name name)) pos))
+  (:method ((pname string) &optional (pos 'noun))
+    (gethash (list pos pname) *pnames-to-words*)))
 
-(defun associate-pname-with-word (pname new-word)
-  (setf (gethash pname *pnames-to-words*) new-word))
+(defun associate-pname-with-word (pname new-word &optional (pos 'noun))
+  (setf (gethash (list pos pname) *pnames-to-words*) new-word))
 
-(defun word-for-string (string  &optional pos)
-  ;; This is find-or-make word
-  (let ((word (gethash string *pnames-to-words*)))
-    (or word 
-	(make-a-new-word string pos))))
+(defun word-for-string (string &optional (pos 'noun))
+  "This is find-or-make word"
+  (or (gethash (list pos string) *pnames-to-words*)
+      (make-a-new-word string pos)))
 
 (defmethod find-or-make-word ((s string))
   "You probably don't want to use this."
@@ -494,19 +494,19 @@ the virtual machine cleaner."
 (define-postprocessing-function word  (W)
   (set-word-labels W (mapcar #'word-label-named (word-labels W))))
 
-
-(defun make-a-new-word (word &optional pos)
+(defun make-a-new-word (word &optional (pos 'noun))
   ;;very limited version of the original pop-up menu version in Spokesman
-  (let* ((name (if (stringp word) (intern word) word))
+  (let* ((name (if (stringp word)
+                 (intern word :mumble)
+                 word))
 	 (pname (string word))
-         (labels (or pos 'noun))
 	 (new-word (create-and-catalog
 		    name 'word
 		    'name name
 		    'pname pname
-		    'word-labels (list labels)
+		    'word-labels (list pos)
 		    'irregularities  nil)))
-    (associate-pname-with-word pname new-word)
+    (associate-pname-with-word pname new-word pos)
     new-word))
 
 

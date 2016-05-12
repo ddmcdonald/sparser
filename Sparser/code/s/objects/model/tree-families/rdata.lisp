@@ -172,10 +172,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 ;;; entry point from the definition of a referential category
 ;;;-----------------------------------------------------------
 
-(defvar *build-mumble-equivalents* nil
-  "If there is data for Mumble included in the realization
-   data (rdata) then we dynamically bind this flag.")
-
+(defvar *build-mumble-equivalents* t
+  "Build Mumble realization information from category definitions.")
 
 (defun setup-rdata (category rdata &optional (delete? t))
   ;; Setup-rdata ia called from decode-category-parameter-list as part of 
@@ -185,9 +183,6 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
   ;; created. Runs for side-effects on the category object. The function
   ;; that actually makes the rules is make-rules-for-realization-data
  
- (let ((*build-mumble-equivalents* (includes-mumble-rdata rdata)))
-   (declare (special *build-mumble-equivalents*))
-
   (let ((old-rules
          (when (cat-realization category)
            (cadr (member :rules (cat-realization category))))))
@@ -234,10 +229,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
                       merged)
               merged))))))
 
-   (when *build-mumble-equivalents* ;; for verbs or arg-taking forms
-     (apply-mumble-rdata category rdata))))
-
-
+  (when *build-mumble-equivalents* ;; for verbs or arg-taking forms
+    (apply-mumble-rdata category rdata)))
 
 (defun setup-single-rdata (category rdata)
   ;; 1st check for spelling errors in the keywords
