@@ -51,7 +51,9 @@
   i)
 
 (defmethod contextual-interpretation ((m discourse-mention))
-  (if (slot-boundp m 'ci)
+  (if (and
+       (slot-boundp m 'ci)
+       (contextual-description m))
       (values (contextual-description m) t)
       (values (base-description m) nil)))
 
@@ -117,7 +119,8 @@ the contextual interpretation of the item in the context."))
 where it regulates gene expression.")
 |#
 
-(defmethod interpret-in-context ((dt cons) variable containing-mentions)
+(defmethod interpret-in-context ((dt cons) var containing-mentions)
+  (declare (special dt var containing-mentions))
   "For the moment, lists are of the form (<mention>
  ... bindings). First recursively interpret the bound elements in the
  bindings of the dt, then rebuild the interpretation of the dt from
@@ -125,6 +128,7 @@ where it regulates gene expression.")
   (let* ((mention (dt-mention dt))
 	 (base (base-description mention))
 	 (bindings (dt-bindings dt)))
+    (declare (special mention base bindings))
     (typecase mention
       (discourse-mention       
        (cond
@@ -135,14 +139,14 @@ where it regulates gene expression.")
 	 ((is-collection? base)
 	  ;; distribute conjunctions
 	  (setf (contextual-description mention)
-		(reinterpret-collection-with-modifiers dt variable containing-mentions)))
+		(reinterpret-collection-with-modifiers dt var containing-mentions)))
 	 ((is-pronoun? base)
 	  (setf (contextual-description mention)
-		(interpret-pronoun-in-context dt variable containing-mentions)))
+		(interpret-pronoun-in-context dt var containing-mentions)))
 	 (t
 	  (setf (contextual-description mention) 
-		(reinterp-item-using-bindings dt variable containing-mentions))
-	  (expand-interpretation-in-context-if-needed dt variable containing-mentions))))
+		(reinterp-item-using-bindings dt var containing-mentions))
+	  (expand-interpretation-in-context-if-needed dt var containing-mentions))))
       (t (break "~&***what sort of dt is ~s~&" dt)))))
 
 (defun find-pronoun-in-lifo-instance (types)
@@ -184,6 +188,7 @@ where it regulates gene expression.")
   (loop for type in type-list thereis (itypep i type)))
 
 (defun reinterpret-collection-with-modifiers (dt var containing-mentions)
+  (declare (special dt var containing-mentions))
   (let ((mention (dt-mention dt))
 	(bindings (dt-bindings dt)))
     (or
@@ -194,10 +199,14 @@ where it regulates gene expression.")
      (reinterp-list-using-bindings
       (loop for m in (second (assoc 'items bindings))
 	 nconc
-	   (let ((interp (interpret-item-in-context m var containing-mentions)))
-	     (if (is-collection? interp)
-		 (copy-list (value-of 'items interp))
-		 (list interp))))
+	   (let* ((*m* m)
+		 (*var* var)
+		 (interp (interpret-item-in-context *m* *var* containing-mentions)))
+	     (declare (special interp *m* *var*))
+	     (cond ((null interp) (lsp-break "null interp"))
+		   ((is-collection? interp)
+		    (copy-list (value-of 'items interp)))
+		   (t (list interp)))))
       var
       (loop for (var val) in bindings
 	 unless (member var '(items type number))
@@ -227,13 +236,17 @@ where it regulates gene expression.")
   (loop for (var val) in bindings
      do
        (let* ((ival (interpret-val-in-context var val containing-mentions)))
+	 (declare (special ival))
 	 (setq interps
 	       (loop for i in interps
 		  nconc
 		    (if (is-collection? ival)
 			;; This is the code that does a "distribution" of conjunctions
 			(loop for c in (value-of 'items ival)
-			   collect (bind-dli-variable var c i))
+			   collect
+			     (let ((bound-val (bind-dli-variable var c i)))
+			       (when (null bound-val) (lsp-break "bad conjunction distribution"))
+			       bound-val))
 			(list (bind-dli-variable var ival i)))))))
   (if (cdr interps) ;; a collection
       (make-an-individual 'collection
@@ -314,7 +327,9 @@ where it regulates gene expression.")
 		    (find-edges-inside-matching parent-edge child-interp)
 		    (when (and
 			   (individual-p child-interp)
-			   (not allow-null-edge))
+			   (not allow-null-edge)
+			   (and child-interp
+				(not (itypep child-interp 'number))))
 		      (lsp-break "~&1) no internal edge for ~s in ~s~&"
 				 child-interp parent-edge)
 		      nil)
@@ -322,7 +337,9 @@ where it regulates gene expression.")
 	     (*lambda-val* (lambda-val? child-interp *lambda-val*))
 	     (t		
 	      (unless (or allow-null-edge
-			  (not (individual-p child-interp)))
+			  (not (individual-p child-interp))
+			  (and child-interp ;; happens in a small number of cases -- just ignore them
+			       (itypep child-interp 'number)))
 		;; happens for premodifying v+ing
 		;; where the edge has a category edge-representation,
 		;; not an individual
