@@ -504,6 +504,7 @@
 ;;;-------------------------------
 
 (deftrace :interpeting-chunk (chunk from-right?)
+  (declare (special *trace-chunker*))
   ;; called from interp-big-mech-chunk
   (when (or *parse-edges* *trace-chunker*)
     (trace-msg "Parsing the chunk ~a ~a"
