@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  July 2015
+;;;  Version:  May 2016
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -60,9 +60,13 @@
    :documentation "Provides a title slot for the Title-text 
       of the entity.")))
 
+;;;---------------
+;;; String mix-in
+;;;---------------
+
 (defclass string-holder ()
   ((content-string :initform "" :accessor content-string
-                   :documentation "The text content of the element")))
+   :documentation "The text content of the element")))
 
 ;;;----------
 ;;; Titles
@@ -79,7 +83,6 @@
     (when (slot-boundp title 'content-string)
       (format stream "~s" (content-string title)))))
 
-
 (define-resource title-text)
 
 (defun initialize-title-text-resource ()
@@ -87,6 +90,30 @@
 
 (defun allocate-title-text ()
   (allocate-next-instance (get-resource :title-text)))
+
+(defun extract-titles-from-other-elements (doc-elements)
+  "In some nmxl documents, some sections can have multiple 'titles'.
+   If that is the case, then we merge the text of those
+   title-text objects into a single new object.
+   Returns the (possibly merged) title and the other,
+   non-title elements."
+  (let* ((titles (loop for e in doc-elements
+                   when (typep e 'title-text)
+                   collect e))
+         (title (if (null (cdr titles))
+                  (car titles)
+                  (let* ((texts (loop for tt in titles
+                                   collect (title-sentence tt)))
+                         (tt (make-instance 'title-text)))
+                    (setf (title-sentence tt)
+                          (apply #'string-append texts))
+                    tt)))
+         (rest (loop for e in doc-elements
+                  unless (typep e 'title-text)
+                  collect e)))
+    (values title rest)))
+
+
 
 ;;;-----------------------------------
 ;;; Articles (whole documents/files)
@@ -107,23 +134,12 @@
     that apply to the whole article, typically taken from
     the dateline if it's a news article."))
 
-(defparameter *article-sentences* nil)
-
-
-(defun collect-sentences-from-articles ()
-  (when *article-sentences*
-    (let ((as-list (hashtable-to-alist *article-sentences*)))
-      (loop for as-item in as-list collect
-	   (let ((sl-name (intern (format nil "*~s-SENTENCES*" (car as-item)))))
-	     (eval
-	      `(defparameter ,sl-name '(,.(reverse (cdr as-item)))))
-	     sl-name)))))
-
 (defmethod print-object ((a article) stream)
   (print-unreadable-object (a stream :type t)
     (format stream " ~a" (name a))
     (when (article-date a)
-      (format stream " ~a" (article-date a)))))
+      (unless (string-equal (article-date a) "date-unknown")
+        (format stream " ~a" (article-date a))))))
 
 (define-resource article)
 
@@ -169,6 +185,18 @@
     (add-to-document-set obj)
     (initialize-sections) ;; make the 1st section
     obj))
+
+
+(defparameter *article-sentences* nil)
+
+(defun collect-sentences-from-articles ()
+  (when *article-sentences*
+    (let ((as-list (hashtable-to-alist *article-sentences*)))
+      (loop for as-item in as-list collect
+	   (let ((sl-name (intern (format nil "*~s-SENTENCES*" (car as-item)))))
+	     (eval
+	      `(defparameter ,sl-name '(,.(reverse (cdr as-item)))))
+	     sl-name)))))
 
 
 ;;;----------
