@@ -66,29 +66,61 @@
 
 (defun do-section-level-after-actions (s)
   (summarize-parse-performance s)
-  (summarize-bio-terms s))
-
+  (add-bio-term-counts s)
+  (sort-bio-terms s (contents s))
+  s)
 
 
 ;;;------------------------------------
 ;;; aggregating entities and relations
 ;;;------------------------------------
 
-(defgeneric summarize-bio-terms (document-element)
-  (:documentation "The sentence's contents have aggregated into
-     instances of aggregated-bio-terms on their paragraphs. 
-     At levels above the paragraph we just lump all of that content
-     together without doing anything more interesting (for now)."))
+(defgeneric add-bio-term-counts (document-element)
+  (:documentation "Sweep through the daughers of the document
+   tallying the terms they record and the incident count
+   of each term. Add tallies of terms to arrive at incident
+   count at this level of the document. Writen as method
+   to provide the option to do different things at different
+   levels."))
 
-(defmethod summarize-bio-terms ((s section))
-  s)
+(defmethod add-bio-term-counts ((d document-element))
+  (let ((sink (contents d))
+        (daughters
+         (loop for c in (children d)
+            unless (typep c 'title-text)
+            collect c)))
+    (loop for next in daughters
+       do (accumulate-terms-and-add-counts
+           sink (contents next)))
+    d))
 
-(defmethod summarize-bio-terms ((ss section-of-sections))
-  ss)
+(defun accumulate-terms-and-add-counts (sink source)
+  (assert (typep sink 'aggregated-bio-terms))
+  (assert (typep source 'aggregated-bio-terms))
+  (add-new-terms-or-add-counts 'proteins sink source)
+  (add-new-terms-or-add-counts 'residues sink source)
+  (add-new-terms-or-add-counts 'bio-processes sink source)
+  (add-new-terms-or-add-counts 'other sink source)
+  sink)
 
-(defmethod summarize-bio-terms ((a article))
-  a)
-  
+(defun add-new-terms-or-add-counts (field sink source)
+  (let ((source-terms (slot-value source field))
+        (sink-terms (slot-value sink field)))
+    (loop for source-term in source-terms
+       do (let* ((term (car source-term))
+                 (sink-term (assq term sink-terms)))
+            (cond
+              (sink-term
+               (let ((sink-count (cdr sink-term))
+                     (source-count (cdr source-term)))
+                 (rplacd sink-term
+                         (+ sink-count source-count))))
+               (t
+                (push source-term
+                      (slot-value sink field))))))
+    sink))
+
+    
 
 ;;--- sentences => paragraph contents
 
@@ -114,26 +146,34 @@
 
 
 (defun aggregate-sentence-bio-terms (s p)
+  "Given a sentence s and paragraph p retrieve the entities
+   and relations from s and store them on p."
   (aggregate-terms p (get-entities s))
   (aggregate-terms p (get-relations s)))
 
 (defun aggregate-terms (paragraph terms)
+  "Store the terms in the content object of the paragraph
+   using slots determined by the function aggregation-target
+   that tries to make a useful breakdown by type.
+   We record the number of times each term was mentioned
+   in the paragraph so we can accumulate by count in
+   larger sections."
   (when terms
     (let ((c (contents paragraph)))
       (dolist (term terms)
         (let ((slot (aggregation-target term)))
-          (when slot
-          (let ((bucket (slot-value c slot)))
-            (cond
-             ((null bucket)
-              (let* ((entry `(,term . 1))
-                     (bucket `( ,entry  )))
-                (setf (slot-value c slot) bucket)))
-             (t
-              (let ((entry (when bucket (get-from-bucket term bucket))))
-                (if entry
-                  (incf-bucket-entry entry)
-                  (make-bucket-entry term bucket slot c))))))))))))
+          (when slot ;; ignoring categories and literals
+            (let ((bucket (slot-value c slot)))
+              (cond
+                ((null bucket)
+                 (let* ((entry `(,term . 1))
+                        (bucket `( ,entry  )))
+                   (setf (slot-value c slot) bucket)))
+                (t
+                 (let ((entry (when bucket (get-from-bucket term bucket))))
+                   (if entry
+                     (incf-bucket-entry entry)
+                     (make-bucket-entry term bucket slot c))))))))))))
 
 (defun aggregation-target (i)
   ;; Return the name of the slot that this individual 
