@@ -39,13 +39,13 @@ previous records of treetop-counts.
          (*readout-segments* nil)
          (*readout-segments-inline-with-text* nil) ;; quiet
          (*show-article-progress* nil) ;; document handling
-         (*show-section-printouts* nil)
+         ;; (*show-section-printouts* nil)
          (*display-word-stream* nil)
          (*trace-lexicon-unpacking* nil)
          (*trace-morphology* nil)
          (*workshop-window* t)) ;; block tts in p
      (declare (special *readout-relations* *readout-segments*
-                       *show-article-progress* *show-section-printouts* 
+                       *show-article-progress* #|*show-section-printouts*|# 
                        *readout-segments-inline-with-text*
                        *display-word-stream*
                        *trace-lexicon-unpacking* *trace-morphology*
