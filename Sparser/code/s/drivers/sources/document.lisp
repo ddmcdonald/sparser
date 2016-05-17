@@ -1,9 +1,9 @@
  ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   September 2015
+;;;  Version:   May 2016
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
@@ -27,7 +27,7 @@
   "Tracks entering and exiting sections of any type
   including paragraphs")
 
-(defparameter *show-article-progress* t
+(defparameter *show-article-progress* nil
   "Announce what article we're working on")
 
 (defvar *current-section-title* nil
@@ -128,12 +128,9 @@
             (declare (special *current-section*))
             (catch 'do-next-paragraph ;; article 3058384 starts with paragraphs
               (read-from-document sec))
-
             (when (typep sec 'paragraph)
               (when (actually-reading)
-                (after-actions sec)))
-
-))))
+                (after-actions sec)))))))
     (when (actually-reading)
       (after-actions a))
     (when (and *show-section-printouts* (actually-reading))
@@ -146,47 +143,46 @@
    each of the sections in order, and handles its own title 
    if there is one."
   (install-contents ss)
-  (let* ((subsections (children ss))
-         (title (when (typep (car subsections) 'title-text)
-                   (car subsections)))
-         (count (copy-list '(a b c d e f g h i j))))
-    (when title
-      (setf (title ss) title)
-      (setq subsections (cdr subsections)))
-    (when *show-section-printouts*
-      (format t "~&--------- starting section of sections ~a~%" ss))
-    (let ((*section-of-sections* ss)
-          (*current-section-title* title)
-          (section (car subsections))
-          (remaining (cdr subsections))
+  (when *show-section-printouts*
+    (format t "~&--------- starting section of sections ~a~%" ss))
+  (multiple-value-bind (title subsections)
+      (extract-titles-from-other-elements (children ss))
+    (let ((count (copy-list '(a b c d e f g h i j))))
+      (let ((*section-of-sections* ss)
+            (*current-section-title* title)
+            (section (car subsections))
+            (remaining (cdr subsections))
           previous-section)
-      (declare (special *current-section-title*
-                        *section-of-sections*))
-      (set-document-index section (pop count))
-      (loop
-        (unless section (return))
-        (catch 'do-next-paragraph
-          (read-from-document section))
+        (declare (special *current-section-title*
+                          *section-of-sections*))
+        (set-document-index section (pop count))
+        (loop
+           (unless section (return))
+           (catch 'do-next-paragraph
+             (read-from-document section))
 
-         (when (typep section 'paragraph)
-           (when (actually-reading)
-             (after-actions section)))
+           (when (typep section 'paragraph)
+             (when (actually-reading)
+               (after-actions section)))
          
-        (setq previous-section section)
-        (setq section (car remaining)
-              remaining (cdr remaining))
-        (when section
-          (set-document-index section (pop count))
-          (setf (previous section) previous-section)
-          (setf (next previous-section) section)))
-      (when (actually-reading)
-        (after-actions ss))
-      (when *show-section-printouts*
-        (format t "~&~%--------- finished section of sections ~a~%" ss)
-        (when (actually-reading) (show-parse-performance ss))))))
+           (setq previous-section section)
+           (setq section (car remaining)
+                 remaining (cdr remaining))
+           (when section
+             (set-document-index section (pop count))
+             (setf (previous section) previous-section)
+             (setf (next previous-section) section)))
+        (when (actually-reading)
+          (after-actions ss))
+        (when *show-section-printouts*
+          (format t "~&~%--------- finished section of sections ~a~%" ss)
+          (when (actually-reading) (show-parse-performance ss)))))))
 
 (defmethod read-from-document ((tt title-text))
-  ;; not sure what to do with title-text when it appears as a section in a section-of-sections
+  ;; not sure what to do with title-text when it appears
+  ;; as a section in a section-of-sections. Where do we put
+  ;; the results and how to we know to collect them?
+  (declare (ignore tt))
   nil)
 
 (defmethod read-from-document ((s section))
@@ -196,45 +192,58 @@
   (install-contents s)
   (when *show-section-printouts*
     (format t "~&~%--------- starting section ~a~%" s))
-  (let* ((*current-section* s)
-         (all-children (children s))
-         (title (loop for child in all-children
-                  when (typep child 'title-text) return child))
-         (paragraphs (loop for child in all-children
-                       when (typep child 'paragraph)
-                       collect child))
-         (paragraph (car paragraphs))
-         (remaining (cdr paragraphs))
-         (count 0)
-         previous-paragraph )
-    (declare (special *current-section*))
-    (when title 
-      (setf (title s) title))
-    (when title
-      (when (actually-reading)
-        (parse-section-title title)))
-    (let ((*current-section-title* title))
-      (declare (special *current-section-title*))
-      (loop
-        (unless paragraph (return))
-        (set-document-index paragraph (incf count))
-        (catch 'do-next-paragraph
-          (read-from-document paragraph))
+  (multiple-value-bind (title paragraphs)
+      (extract-titles-from-other-elements (children s))
+    (let* ((*current-section* s)
+           (paragraph (car paragraphs))
+           (remaining (cdr paragraphs))
+           (count 0)
+           previous-paragraph )
+      (declare (special *current-section*))
+      
+      (when title
         (when (actually-reading)
-          (after-actions paragraph))
-        (setq previous-paragraph paragraph)
-        (setq paragraph (car remaining)
-              remaining (cdr remaining))
-        (when paragraph
-          (setf (previous paragraph) previous-paragraph)
-          (setf (next previous-paragraph) paragraph)))
-      (when (actually-reading)
-        (after-actions s))
-      (when *show-section-printouts*
-        (format t "~%--------- finished section ~a~%~%" s)
-        (when (actually-reading) (show-parse-performance s))))))
+          (parse-section-title title)))
+      
+      (let ((*current-section-title* title))
+        (declare (special *current-section-title*))
+        (loop
+           (unless paragraph (return))
+           (typecase paragraph
+             (paragraph
+              (set-document-index paragraph (incf count))
+              (catch 'do-next-paragraph
+                (read-from-document paragraph))
+              (when (actually-reading)
+                (after-actions paragraph)))
+             
+             (section
+              (read-from-document paragraph))
+             
+             (otherwise
+              (push-debug `(,s ,paragraph ,title))
+              (error "Did not expect a ~a as a child of a section"
+                     (type-of paragraph))))
+
+           (setq previous-paragraph paragraph)
+           (setq paragraph (car remaining)
+                 remaining (cdr remaining))
+           (when paragraph
+             (setf (previous paragraph) previous-paragraph)
+             (setf (next previous-paragraph) paragraph)))
+      
+        (when (actually-reading)
+          (after-actions s))
+        (when *show-section-printouts*
+          (format t "~%--------- finished section ~a~%~%" s)
+          (when (actually-reading) (show-parse-performance s)))))))
 
 (defmethod read-from-document ((p paragraph))
+  "Once all the sentences in the paragraph have been
+   handled control is passed by a throw to the tag
+   'do-next-paragraph. The usual point is in the section
+   reader but it could also be the section-of-sections reader
+   in some odd cases."
   (when *show-section-printouts*
     (format t "~&~%--------- starting paragraph ~a~%" p))
   (let ((*reading-populated-document* t)
@@ -248,13 +257,9 @@
     (install-contents p)
     (let ((text (content-string p)))
       (initialize-sentences) ;; set up or reuse the 1st sentence
+      
       ;; lifted from analyze-text-from-string 
       (establish-character-source/string text)
-      ;; Once all the sentences in the paragraph have been
-      ;; handled control is passed by a throw to the tag
-      ;; 'do-next-paragraph. The usual point is in the section
-      ;; reader but it could also be the section-of-sections reader
-      ;; in some odd cases.
       (analysis-core))))
 
 
@@ -324,28 +329,25 @@
 
 (defgeneric recurse-through-document (source fn in-results?)
   (:documentation "recurses through document structure applying fn"))
+
 (defmethod recurse-through-document ((a article) fn in-results?)
   (declare (ignore in-results?))
- (loop for child in (children a)
-    do (recurse-through-document child fn nil)))
+  (loop for child in (children a)
+     do (recurse-through-document child fn nil)))
+
 (defmethod recurse-through-document ((ss section-of-sections) fn in-results?)
-  (declare (special ss))
-  (let
-      ((ir (or in-results? (in-results? ss))))
+  (let ((ir (or in-results? (in-results? ss))))
     (loop for child in (children ss)
       do (recurse-through-document child fn ir))))
 
 (defmethod recurse-through-document ((tt title-text) fn in-results?)
-  (declare (ignore tt fn in-results?))
-  ;;(print `(title-text , (content-string tt)))
-  )
+  (declare (ignore tt fn in-results?)))
+
 (defmethod recurse-through-document ((s section) fn in-results?)
-  (declare (special s in-results?))
   (when in-results?
     (break "rtd s"))
-  (if (and in-results? (slot-boundp s 'title))
-      (funcall fn (title s)))
-      
+  (when (and in-results? (slot-boundp s 'title))
+    (funcall fn (title s)))      
   (loop for child in (children s)
     do (recurse-through-document child fn (or in-results? (in-results? s)))))
 
@@ -415,11 +417,8 @@
     "experimental procedures"
     "funding"
     )
-  
-  
   "Contains a list of section titles or title fragments that
   name sections we want to skip over")
-
 
 ;;; let's not ignore these for now. 
 (defparameter *method-section-names*
@@ -427,7 +426,6 @@
     "materials and methods"
     "methods summary"
     "methods"))
-
 
 (defparameter *ignore-methods-sections* t)
 
@@ -440,9 +438,7 @@
         (let ((title-object (title section))
               (sections-to-ignore (append *sections-to-ignore*
                                           (if *ignore-methods-sections*
-                                              *method-section-names*)))
-                                            
-              )
+                                              *method-section-names*))))
           (when nil
             ;; teething problem with abstract
             (unless title-object
@@ -470,7 +466,7 @@
 ;;;--------------------------------
 ;;; sections-of-sections detection
 ;;;--------------------------------
-
+  
 (defun sweep-for-embedded-sections (a)
   (let* ((sections (loop for child in (children a)
                     unless (typep child 'title-text)
