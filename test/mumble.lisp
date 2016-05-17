@@ -175,7 +175,7 @@
     (mumble-says buy))
   "Simon bought a book about himself")
 
-(deftest (say simon want barber shave)
+(deftest (say simon want barber shave self)
   (let ((barber (always-definite (barber)))
 	(simon (simon))
 	(want (present-tense (want)))
