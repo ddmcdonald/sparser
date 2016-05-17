@@ -340,8 +340,9 @@ where it regulates gene expression.")
 			   (not allow-null-edge)
 			   child-interp
 			   (not (itypep child-interp 'number)))
-		      (lsp-break "~&1) no internal edge for ~s in ~s~&"
-				 child-interp parent-edge)
+                      (when *break-on-null-edge*
+                        (lsp-break "~&1) no internal edge for ~s in ~s~&"
+                                   child-interp parent-edge))
 		      nil)
 		    nil)))
 	     (*lambda-val* (lambda-val? child-interp *lambda-val*))
