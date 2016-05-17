@@ -115,10 +115,14 @@
   (when (or *trace-scan-patterns*)
     (trace-msg "[scan] scanned p~A" (pos-token-index p))))
 
-(deftrace :no-whitespace-at-pos-pattern-search-scanned (next-word)
+#+ignore(deftrace :no-whitespace-at-pos-pattern-search-scanned (next-word)
   (when (or *trace-scan-patterns*)
     (trace-msg "[scan] no whitespace in front of \"~A\""
                (word-pname next-word))))
+(deftrace :no-whitespace-at-pos-pattern-search-scanned (next-pos)
+  (when (or *trace-scan-patterns*)
+    (trace-msg "[scan] no whitespace in front of p~a"
+               (pos-token-index next-pos))))
 
 (deftrace :pattern-search-terminated-by-non-extension ()
   ;; called from Terminate-scan-pattern-search
