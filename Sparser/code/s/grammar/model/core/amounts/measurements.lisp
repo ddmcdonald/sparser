@@ -170,7 +170,7 @@ and the word can stand by itself "that distance"
   :binds ((process . process)
           (value . rate))
   ;;:index (:sequential-keys process value)
-  :documentation "Gives the rate at which some process in taking place.
+  :documentation "Gives the rate at which some process in taking place. ; 
     only makes sense when there's a particlar process. Could have
     several of these about the same process, some with qualitative 
     measures and some with quantitative."
