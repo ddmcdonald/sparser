@@ -24,13 +24,13 @@
   (:method ((word string) pos &key (referent (intern word :mumble)))
     (make-dtn :referent referent
               :resource (ecase pos
-                          (adj (adjective word))
                           (noun (noun word))
 			  (prep (prep word))
                           (verb (verb word))))))
 
 (defun about () (make-simple-dtn "about" 'prep))
 (defun barber () (masc-&-third-person (singular (make-simple-dtn "barber" 'noun))))
+(defun big () (adjective "big"))
 (defun book () (make-simple-dtn "book" 'noun))
 (defun bone () (make-simple-dtn "bone" 'noun))
 (defun buy () (make-simple-dtn "buy" 'verb))
@@ -69,6 +69,17 @@
     (make-complement-node 'o bone snap)
     (mumble-says snap))
   "I snap the bone")
+
+(deftest (say snapped big bone)
+  (let ((me (me))
+	(snap (past-tense (snap)))
+	(bone (always-definite (singular (bone))))
+	(big (big)))
+    (make-complement-node 's me snap)
+    (make-complement-node 'o bone snap)
+    (make-adjunction-node big bone)
+    (mumble-says snap))
+  "I snapped the big bone")
 
 (deftest (say snapped bone)
   (let ((me (me))
