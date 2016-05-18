@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "initialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 August 2013
+;;;  version:  May 2016
 
 ;; initiated 11/29/97. Moved code in from other files 7/7/98. 9/3/99 renamed
 ;; Construct-self-lattice-point to avoid brain-dead conflict with the
@@ -49,12 +49,12 @@
 
     (when specializes
       (let ((super-lp (cat-lattice-position specializes)))
-        (if
-         (top-lattice-point-p super-lp) ;; SBCL caught error here
+        ;; If you specialize a form category there won't be
+        ;; anything to record subtypes on because they are
+        ;; intentionally flat.
+        (when (top-lattice-point-p super-lp)
          (pushnew `(,category ,lp)
-                  (lp-subtypes super-lp))
-         (print `(trying to add ,category to subtypes of ,(cat-name super-lp)
-                         which is not a top-lattice-position)))))
+                  (lp-subtypes super-lp)))))
 
     lp ))
 
