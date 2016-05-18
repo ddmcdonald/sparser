@@ -119,6 +119,8 @@
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
       (sweep-for-embedded-sections a))
+    (when (actually-reading)
+      (clean-out-history-and-temp-objects))
     (install-contents a)
     (let ((count 0))
       (dolist (sec (children a))

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1996,2013,2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  2.16 March 2013
+;;;  Version:  May 2016
 
 ;; 1.1  (3/28/91 v1.8.1)  Added Clear-individuals, and improved the
 ;;      conditionalization according to the load-time switches
@@ -81,6 +81,11 @@
 
     (when *include-model-facilities*
       (unless *accumulate-content-across-documents*
+        ;; See description on this variable, but note
+        ;; that is also set to t when reading documents
+        ;; in the paragraph case of read-from-document.
+        ;; In this case there is a special clean-out
+        ;; call at article start.
         (clean-out-history-and-temp-objects))))
 
     ;; These flags are grammar modules
