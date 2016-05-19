@@ -43,7 +43,7 @@
   (let ((edge (next-edge-from-resource))
         (category (cfr-category rule)))
 
-    (when (null (edge-starts-at left-edge)) ;; it's the earlier of the two edges
+    (when (deactivated? left-edge) ;; it's the earlier of the two edges
       (error "The edge-resource is completely full~
               ~%This parse cannot be completed. You must enlarge~
               ~%the size of the resource to parse this text.~%"))

@@ -21,7 +21,7 @@
   (write-string "#<edge" stream)
   (princ (edge-position-in-resource-array obj) stream)
   (write-string " " stream)
-  (if (null (edge-starts-at obj))
+  (if (deactivated? obj)
     (then
       (write-string "inactive, resource " stream)
       (princ (edge-position-in-resource-array obj) stream))

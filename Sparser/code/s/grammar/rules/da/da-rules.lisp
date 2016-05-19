@@ -101,8 +101,7 @@
 		       (c-mention (relevant-mention (list clause) c)))
 		  ;; create a mention-history for the new interpretation
 		  (when c-mention
-		    (setf (base-description c-mention) new-c)
-		    (push c-mention (mention-history new-c)))
+		    (update-mention-referent c-mention new-c t))
 		  new-c))
 	   :number (length clauses)
 	   :type (itype-of (car clauses))))

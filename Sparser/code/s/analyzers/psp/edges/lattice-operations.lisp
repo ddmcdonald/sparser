@@ -367,6 +367,8 @@
   (when sub-dli
     (or
      (eq sub-dli super-dli)
+     (and (category-p super-dli) ;; happens in calls from check-consistent-mention
+	  (itypep sub-dli super-dli))
      (cond
        ((referential-category-p sub-dli)
 	(and (referential-category-p super-dli)

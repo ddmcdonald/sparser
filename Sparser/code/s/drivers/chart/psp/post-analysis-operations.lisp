@@ -102,7 +102,7 @@ the contextual interpretation of the item in the context."))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   s)
 
-(defun interpret-symbol-in-context (s variable containing-mentions)
+(defun interpret-atom-in-context (s variable containing-mentions)
     (declare (ignore variable containing-mentions))
   (case s
     (**LAMBDA-VAR** ;; the marker for the argument of a predicate which is being applied to the predicated item
@@ -137,6 +137,10 @@ where it regulates gene expression.")
 	  ;; dt was already contextually interpreted --
 	  ;;  this happens with conjunction distribution/expansion
 	  (contextual-interpretation mention))
+	 ((itypep-or base '(hyphenated-pair hyphenated-triple two-part-label))
+	  ;; not sure what to do for such things -- example ER-β is a hyphenated pair
+	  (setf (contextual-description mention) base)
+	  base)
 	 ((is-collection? base)
 	  ;; distribute conjunctions
 	  (setf (contextual-description mention)
@@ -171,7 +175,9 @@ where it regulates gene expression.")
 		      (category (list restriction))
 		      (null
 		       (if (and (eq variable 'subject)
-				(itypep (base-description containing-mentions) 'be))
+				(itypep (base-description
+					 (car containing-mentions))
+					'be))
 			   nil
 			   (lsp-break
 			    "~&NIL restriction -- var: ~s, containing-mentions:~s~&"
@@ -188,7 +194,7 @@ where it regulates gene expression.")
 (defun itypep-or (i type-list)
   (loop for type in type-list thereis (itypep i type)))
 
-(defparameter *break-on-null-interp* nil)
+(defparameter *break-on-null-interp* t)
 
 (defun reinterpret-collection-with-modifiers (dt var containing-mentions)
   (declare (special dt var containing-mentions))
@@ -218,14 +224,23 @@ where it regulates gene expression.")
 
 
 (defun interpret-item-in-context (dt var containing-mentions)
-  #+ignore ;; remove soon - just here for debugging
-  (when (and (eq (caar (dt-bindings dt)) 'object)
-	     (itypep (base-description (car (second (car (dt-bindings dt)))))
-		     'phosphorylate))
-    (lsp-break "~&interpret-item ~s~&" dt))
-  (if (symbolp dt)
-      (interpret-symbol-in-context dt var containing-mentions)
-      (interpret-in-context dt var containing-mentions)))
+  (when dt
+    (typecase dt
+      (symbol (interpret-atom-in-context dt var containing-mentions))
+      (polyword (interpret-atom-in-context dt var containing-mentions))
+      (word (interpret-atom-in-context dt var containing-mentions))
+      (number (interpret-atom-in-context dt var containing-mentions))
+      (cons
+       (typecase (car dt)
+	 (discourse-mention (interpret-in-context dt var containing-mentions))
+	 (cons
+	  (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
+	 (null
+	  (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
+	 (t (lsp-break "~%Strange value in interpret-item-in-context: ~s~%"
+		    dt)
+	    dt)))
+      (t (interpret-in-context dt var containing-mentions)))))
 
 (defun reinterp-item-using-bindings (dt var containing-mentions)
   (let* ((mention (dt-mention dt))
@@ -266,11 +281,11 @@ where it regulates gene expression.")
       (let ((*lambda-var* (car containing-mentions))) ;; HUH!!
 	(declare (special *lambda-var*))
 	(if (symbolp val-dt)
-	    (interpret-symbol-in-context val-dt nil containing-mentions)
+	    (interpret-atom-in-context val-dt nil containing-mentions)
 	    (interpret-in-context val-dt nil containing-mentions)))
       (if (symbolp val-dt)
-	  (interpret-symbol-in-context val-dt nil containing-mentions)
-	  (interpret-in-context val-dt var containing-mentions))))
+	  (interpret-atom-in-context val-dt nil containing-mentions)
+	  (interpret-in-context val-dt nil containing-mentions))))
 
 (defun is-collection? (i)
   (and (individual-p i)
@@ -315,18 +330,10 @@ where it regulates gene expression.")
 (defparameter *break-on-null-edge* nil)
 (defparameter *report-on-multiple-edges-for-interp* nil)
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
-  (let (poss-edges
-	(parent-edge (car parent-edges)))
+  (let* ((parent-edge (car parent-edges))
+	 (poss-edges (poss-edges child-interp parent-edge)))
     ;; allow for the fact the items like "669" have two edges
-    ;; spanning the same positions
-    (loop for m in (mention-history child-interp)
-       do
-	 (let ((m-edge (mention-source m)))
-	   (when (and (edge-p m-edge)	(contained-edge? parent-edge m-edge))
-	     (unless (redundant-edge m-edge poss-edges)
-	       (push m-edge poss-edges)))))
-    (unless poss-edges
-      (setq poss-edges (find-edges-inside-matching parent-edge child-interp)))
+    ;; spanning the same positions   
     (cond ((null poss-edges)
 	   (cond
 	     ((known-no-edge-pattern parent-edge child-interp)
@@ -340,9 +347,8 @@ where it regulates gene expression.")
 			   (not allow-null-edge)
 			   child-interp
 			   (not (itypep child-interp 'number)))
-                      (when *break-on-null-edge*
-                        (lsp-break "~&1) no internal edge for ~s in ~s~&"
-                                   child-interp parent-edge))
+                        (format t "~&1) no internal edge for ~s in ~s~&"
+                                   child-interp parent-edge)
 		      nil)
 		    nil)))
 	     (*lambda-val* (lambda-val? child-interp *lambda-val*))
@@ -354,9 +360,8 @@ where it regulates gene expression.")
 		;; happens for premodifying v+ing
 		;; where the edge has a category edge-representation,
 		;; not an individual
-		(when *break-on-null-edge*
-		  (lsp-break "~&no internal edge for ~s in ~s~&"
-			     child-interp parent-edge)))
+		  (format t "~&B) no internal edge for ~s in ~s~&"
+			     child-interp parent-edge))
 	      nil)))
 	  ((cdr poss-edges)
 	   ;; appositive cases like "endogenous C-RAF phosphorylation at S338, an event required for C-RAF activation, "
@@ -368,6 +373,21 @@ where it regulates gene expression.")
 			child-interp parent-edge poss-edges))
 	   (list (car poss-edges)))
 	  (t poss-edges))))
+
+(defun poss-edges (child-interp parent-edge)
+  (declare (special child-interp parent-edge))
+  (if
+   (deactivated? parent-edge) ;; don't know why we should have an inactive parent
+   (lsp-break "inactive parent edge in poss-edges")
+   (let (poss-edges)
+     (loop for m in (mention-history child-interp)
+	do
+	  (when (contained-edge? parent-edge (mention-source m))
+	      (unless (redundant-edge (mention-source m) poss-edges)
+		(push (mention-source m) poss-edges))))
+     (unless poss-edges
+       (setq poss-edges (find-edges-inside-matching parent-edge child-interp)))
+     poss-edges)))
 
 (defun lambda-val? (i lv)
   (when lv
@@ -443,11 +463,15 @@ where it regulates gene expression.")
 	       (itypep (edge-referent parent-edge) 'phosphorylated-amino-acid)))))
 
 (defun contained-edge? (parent child?)
-  (subsumes-interval
-   (pos-token-index (start-pos parent))
-   (pos-token-index (end-pos parent))
-   (pos-token-index (start-pos child?))
-   (pos-token-index (end-pos child?))))
+  (and (edge-p parent)
+       (edge-starts-at parent)
+       (edge-p child?)
+       (edge-starts-at child?)
+       (subsumes-interval
+	(pos-token-index (start-pos parent))
+	(pos-token-index (end-pos parent))
+	(pos-token-index (start-pos child?))
+	(pos-token-index (end-pos child?)))))
 
 (defun new-dt (parent-edges &optional interp)
   ;; for convenience, to let new-dt be called with treetop
@@ -657,17 +681,9 @@ where it regulates gene expression.")
 	 (spec-mentions (spec-mentions interp mention containing-mentions)))
     (declare (special edge mention interp spec-mentions))
     (when (or
-	   (and (edge-p (mention-source (car dt)))
-		(category-p (edge-form (mention-source (car dt))))
-		(member (cat-name (edge-form (mention-source (car dt))))
-			'(preposition)))
+	   (cat-mention? mention 'preposition)
 	   (not (individual-p interp))
-	   (not (is-maximal? mention))
-	   #+ignore ;; can't recall what this was intended to block
-	   (and mention
-		(car containing-mentions)
-		(mention-source mention)
-		(mention-source (car containing-mentions))))
+	   (not (is-maximal? mention)))
       (return-from expand-interpretation-in-context-if-needed interp))
     (cond
       ((cdr spec-mentions)
@@ -677,7 +693,7 @@ where it regulates gene expression.")
 		     (sur-string interp))
 		 (sentence-string *sentence-in-core*)))
        ;;(lsp-break "ambiguous")
-       )
+       interp)
       (spec-mentions
        (when *catch-null-surface-strings*
 	 (when (null (note-surface-string edge)) (lsp-break "Null edge string")))

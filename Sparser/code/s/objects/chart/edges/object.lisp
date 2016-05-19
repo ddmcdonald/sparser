@@ -98,8 +98,6 @@
     (dotted-rule (edge-rule e))))
 
 
-
-
 ;;;----------------------
 ;;; special Set routines
 ;;;----------------------
