@@ -2258,6 +2258,10 @@
          :of disease
          :with treatment))
 
+(define-category bio-trigger :specializes positive-bio-control
+  :realization
+  (:verb "trigger" :etf (svo-passive)))
+
 
 ;;This is almost never used as a verb -- only as "truncating...mutation" and "...truncation of ..."
 (define-category truncate :specializes caused-bio-process
