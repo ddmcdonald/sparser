@@ -277,15 +277,18 @@ where it regulates gene expression.")
 
 (defun interpret-val-in-context (var val-dt containing-mentions)
   ;; recursively interpret the bound value in the current context
-  (if (eq var 'predication)
-      (let ((*lambda-var* (car containing-mentions))) ;; HUH!!
-	(declare (special *lambda-var*))
-	(if (symbolp val-dt)
-	    (interpret-atom-in-context val-dt nil containing-mentions)
-	    (interpret-in-context val-dt nil containing-mentions)))
-      (if (symbolp val-dt)
-	  (interpret-atom-in-context val-dt nil containing-mentions)
-	  (interpret-in-context val-dt nil containing-mentions))))
+  (case var
+    (predication
+     (let ((*lambda-var* (car containing-mentions))) ;; HUH!!
+       (declare (special *lambda-var*))
+       (if (symbolp val-dt)
+	   (interpret-atom-in-context val-dt nil containing-mentions)
+	   (interpret-in-context val-dt nil containing-mentions))))
+    (middle val-dt)
+    (t
+     (if (symbolp val-dt)
+	 (interpret-atom-in-context val-dt var containing-mentions)
+	 (interpret-in-context val-dt var containing-mentions)))))
 
 (defun is-collection? (i)
   (and (individual-p i)
