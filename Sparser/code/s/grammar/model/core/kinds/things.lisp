@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  January 2015
+;;;  version:  May 2016
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -84,6 +84,30 @@
    Agentive objects are usually constituted of (are made out of) regular
  Object's. People have bodies. Robots are assembled out of engines and
  sensors and such (Legos). ") ;; n.b. "Mossad agent"
+
+;; Replaceement for agent mixin /// find all users of the mixin
+(define-category physical-agent
+  :specializes physical-object
+  :documentation ;; from Dolce ExtDnS_397 agentive-physical-object
+    "Within Physical objects, a special place have those to which
+ we ascribe generic intentionality (compatibly to Brentano's 
+ distinction, the ability to internally represent a description). 
+ These are called Agentive, as opposite to Non-agentive. 
+ In general, we assume that agentive objects are constituted by 
+ non-agentive objects: an organism is constituted by bodily organs, 
+ a robot is constituted by some machinery, and so on. 
+ Among non-agentive physical objects we have for example houses, 
+ bodily organs, pieces of wood, etc. Generic agentivity is defined 
+ here in a wide sense as implying representation or conception 
+ (to be characterized in a dedicated - but not developed as yet - 
+ ontology of mind). A representation or conception only requires 
+ intentionality in Brentano's terms (i.e., the ability to represent 
+ something to oneself). See also 'rational physical object'.")
+
+(define-mixin-category with-an-agent
+  :specializes attribute
+  :binds ((agent physical-agent)))
+;; Dolce has 'agency' as the union of physical and social agent
 
 
 (define-category feature
