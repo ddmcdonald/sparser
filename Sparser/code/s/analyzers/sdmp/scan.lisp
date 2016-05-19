@@ -226,7 +226,7 @@ to make any semantic or form edges that the grammar dictates.
 	 ;; the discourse-mention had a category as its interpretation
 	 ;; and the new referent does not have that mention on its mention-history
 	 ;; correct that
-	 (update-mention-referent Edge referent)))
+	 (update-edge-mention-referent Edge referent)))
        referent)
       ;; These cases are original from 2009 and 
       ;; not reconsidered yet.

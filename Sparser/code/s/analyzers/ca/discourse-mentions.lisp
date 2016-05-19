@@ -20,13 +20,20 @@
   the places they have been mentioned, encoded as 'mention'
   objects.")
 
+(defparameter *check-consistent-mentions* nil
+  "when set, checks to see that all mentions start and remain consistent
+with the referent of their mention-source -- failures have indicated a lack
+of proper resetting of context")
+
 (defun mention-history (i)
   (declare (special *lattice-individuals-to-mentions*))
   (gethash i *lattice-individuals-to-mentions*))
 
-(defun (setf mention-history) (val i)
+(defun (setf mention-history) (mentions i)
   (declare (special *lattice-individuals-to-mentions*))
-  (setf (gethash i *lattice-individuals-to-mentions*) val))
+  (when *check-consistent-mentions*
+    (loop for m in mentions do (check-consistent-mention m)))
+  (setf (gethash i *lattice-individuals-to-mentions*) mentions))
 
 (defun m# (uid)
   (declare (special *lattice-individuals-to-mentions*))
@@ -120,29 +127,27 @@
 	     (mention-source m))
     (setf (maximal? m)
 	  (cond
-	    ((and
-	      (edge-p (mention-source m))
-	      (category-p (edge-form (mention-source m)))
-	      (eq (cat-name (edge-form (mention-source m))) 'thatcomp))
+	    ((cat-mention? m 'thatcomp)
 	     nil)
-	    ((s-mention? m)
+	    ((cat-mention? m 's)
 	     ;; don't want to get ssuper-maximal S edges that include relative clauses or premodifying contextual
 	     ;; PPs as in
 	     ;; "In untreated cells, EGFR is phosphorylated at T669 by MEK/ERK, which inhibits activation of EGFR and ERBB3"
 	     ;; just want EGFR is phosphorylated at T669 by MEK/ERK
 	     (or (not (subsumes-mention m))
-		 (not (s-mention? (subsumes-mention m)))))
+		 (not (cat-mention? (subsumes-mention m) 's))))
 	    (t (max-edge? (mention-source m))))))
   (maximal? m))
 
-(defun s-mention? (m)
-  (and (edge-p (mention-source m))
-       (category-p (edge-form (mention-source m)))
-       (eq (cat-name (edge-form (mention-source m))) 's)))
+(defun cat-mention? (m name-spec)
+  (let ((form-cat (and (edge-p (mention-source m))(edge-form (mention-source m)))))
+    (and form-cat
+	 (if (consp name-spec)
+	     (member (cat-name form-cat) name-spec)
+	     (eq (cat-name form-cat) name-spec)))))
 
 (defmethod start-pos ((m discourse-mention))
-  (car (mentioned-where m))
-)
+  (car (mentioned-where m)))
 
 (defmethod end-pos ((m discourse-mention))
   (cdr (mentioned-where m)))
@@ -231,14 +236,28 @@
     ;;/// are there other posibilties, or is it always nil?
     (t nil)))
 
-(defun update-mention-referent (edge referent)
+(defun update-edge-mention-referent (edge referent)
   ;; the function convert-referent-to-individual
   ;;  changes the referent of an edge from a category to an individual
   ;; we need to update the discourse mention
-  (let ((mention (edge-mention edge)))
+  (update-mention-referent (edge-mention edge) referent))
+
+(defparameter *dont-check-inconsistent-mentions* nil)
+(defun check-consistent-mention (mention)
+  (unless
+      (or *dont-check-inconsistent-mentions*
+	  (not (edge-p (mention-source mention)))
+	  (deactivated? (mention-source mention))
+	  (as-specific? (base-description mention)
+			(edge-referent (mention-source mention))))
+    (lsp-break "test-inconsistent-mention-edge-referent got inconsistent edge and interp")))
+
+(defun update-mention-referent (mention referent &optional dont-check-inconsistent)
+  (let ((*dont-check-inconsistent-mentions* dont-check-inconsistent))
     (setf (base-description mention) referent)
-    (push mention (mention-history referent))))
-    
+    (push mention (mention-history referent)) ;;calls check-consistent-mention
+    ;; just returning this to help understand traces
+    (list mention referent)))
 
 (defun create-discourse-mention (i source)
   "Individuals reside in a description lattice. Every new
@@ -256,18 +275,20 @@
     (when (non-dli-mod-for i)
       (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
       (setf (non-dli-mod-for i) nil))
-    (push m (mention-history i))
-    (if (edge-p source) (setf (edge-mention source) m))
     (push m *lattice-individuals-mentioned-in-paragraph*)
     (tr :made-mention m)
     (list m)))
 
 (defun make-mention (i source)
   (let* ((location (encode-mention-location (if (consp source) (second source) source)))
-         (toc (location-in-article-of-current-sentence)))
-    (make-instance 'discourse-mention
-		   :uid (incf *mention-uid*)
-		   :i i :loc location :ms source :article toc)))
+         (toc (location-in-article-of-current-sentence))
+	 (m (make-instance 'discourse-mention
+			   :uid (incf *mention-uid*)
+			   :i i :loc location :ms source :article toc)))
+    (push m (mention-history i)) ;; calls     (check-consistent-mention m)
+    (if (edge-p source) (setf (edge-mention source) m))
+    m))
+
 (defparameter *edge-forms* nil)
 
 (defun make-new-mention (category i source &optional subsumed-mention)
@@ -279,7 +300,6 @@
     (if subsumed-mention
 	(subsume-mention category m source subsumed-mention)
 	(push m (discourse-entry category)))
-    (push m (mention-history i))
     (push m *lattice-individuals-mentioned-in-paragraph*)
     (if (edge-p source) (setf (edge-mention source) m))
     m ))
@@ -301,22 +321,29 @@
     (setf (non-dli-mod-for i) nil)))
 
 (defun max-edge? (source)
-  (declare (special *all-np-categories* *vp-categories*))
+  (declare (special source *all-np-categories* *vp-categories*))
   ;; this cannot be run when the mention is created -- the edge is not yet included in another edge!!
   (or (not (edge-p source))
-      (cond
-	((null (edge-used-in source)) t)
-	((member (cat-symbol (edge-form source)) *all-np-categories*)
-	 (or
-	  (and (individual-p (edge-referent (edge-used-in source)))
-	       (itypep (edge-referent (edge-used-in source)) 'collection))
-	 (and
-	  (not (eq (edge-referent source) (edge-referent (edge-used-in source))))
-	  (not (member (cat-symbol (edge-form (edge-used-in source)))
-		      *all-np-categories*)))))
-	((member (edge-form source) *vp-categories*)
-	 (not (member (edge-form (edge-used-in source)) *vp-categories*)))
-	(t t))))
+      (let* ((used-in (edge-used-in source))
+	     (uir (and (edge-p used-in)(edge-referent used-in))))
+	(declare (special used-in uir))
+	(cond
+	  ((null used-in) t)
+	  ((not (edge-p used-in)) ;; in some cases the edge-used-in field contains a list!!
+	   nil)
+	  ((and (category-p (edge-form source))
+		(member (cat-symbol (edge-form source)) *all-np-categories*))
+	   (or
+	    (and (individual-p uir)
+		 (itypep uir 'collection))
+	    (and
+	     (not (eq (edge-referent source) uir))
+	     (category-p (edge-form used-in))
+	     (not (member (cat-symbol (edge-form used-in))
+			  *all-np-categories*)))))
+	  ((member (edge-form source) *vp-categories*)
+	   (not (member (edge-form (edge-used-in source)) *vp-categories*)))
+	  (t t)))))
 
 (defmethod encode-mention-location (edge)
   "Encodes the location of a mention in terms of the two positions
