@@ -47,7 +47,9 @@ of proper resetting of context")
    first. Mostly needed as a resource to 'long-term-ify' 
    mention locations, but may have other uses such as mergine
    with or replacing the sentence list of individuals.")
+
 (defparameter *mention-uid* 0)
+
 (defclass discourse-mention ()
   ((uid :initarg :uid :accessor mention-uid)
    (di :initarg :i :accessor base-description
@@ -81,22 +83,23 @@ of proper resetting of context")
 
 (defmethod print-object ((m discourse-mention) stream)
   (print-unreadable-object (m stream) ;; not :type t
-    (let ((i (base-description m))
-          (location (mentioned-where m)))
-      (format stream "m:~s ~s"
+    (let ((i (base-description m)) ;; mention of what individual
+          (location (mentioned-where m)) ;; at what paragraph position
+          (article-loc (mentioned-in-article-where m))) ;; toc of sentence in doc
+      (format stream "m:~s i~a ~a ~a"
 	      (mention-uid m)
-	      i)
+              (indiv-uid i) (string-for i) article-loc)
       (cond
 	((mention-source m)
 	 (format stream " ~s" (mention-source m)))
 	((consp location) ;; w/in paragraph
 	 (typecase (car location)
 	   (position
-	    (format stream "p~a p~a"
+	    (format stream " p~a-p~a"
 		    (pos-token-index (car location))
 		    (pos-token-index (cdr location))))
 	   (integer
-	    (format stream "~a ~a"
+	    (format stream " ~a-~a"
 		    (car location) (cdr location)))
 	   (otherwise
 	    (format stream " ill-formed location"))))
@@ -109,7 +112,9 @@ of proper resetting of context")
 
 
 (defun show-mention (m)
-  (list (base-description m) (retrieve-surface-string (base-description m)) (mention-source m)))
+  (list (base-description m) ;; individual 
+        (retrieve-surface-string (base-description m))
+        (mention-source m)))
 
 
 (defvar *hal*)
@@ -170,10 +175,7 @@ of proper resetting of context")
   ;; Have to replace the old individual+edge pair since
   ;; with the dl protocol this is a new individual, not an
   ;; established individual with a new spanning edge
-
   (declare (special *lifo-instance-list*))
-
-  (push-debug `(,new-mention ,old-mention ,edge))
 
   (let* (;; Because the individuals are virtually always new, even
          ;; when the edges subsume an established edge on its headine,
@@ -194,8 +196,7 @@ of proper resetting of context")
 
 (defun lattice-individuals-extend-dh-entry (category i edge)
   (let ((subsumed-mention
-	 (if
-	  (edge-left-daughter edge)
+	 (if (edge-left-daughter edge)
 	  (cond
 	    ((and (edge-p (edge-left-daughter edge))
 		  (is-dl-child? i (edge-referent (edge-left-daughter edge))))
@@ -244,16 +245,37 @@ of proper resetting of context")
 
 (defparameter *dont-check-inconsistent-mentions* nil)
 (defun check-consistent-mention (mention)
-  (unless
+  (declare (special *dont-check-inconsistent-mentions*))
+  (unless *dont-check-inconsistent-mentions*
+    (let ((source (mention-source mention)))
+      (when (edge-p source)
+        (unless (deactivated? source)
+          ;; The source is a regular edge in the chart.
+          ;; We could get into trouble if the edge resource
+          ;; recycled when the mention identity was still
+          ;; determined by an edge
+          (let ((base-individual (base-description mention))
+                (edge-referent (edge-referent (mention-source mention))))
+            (unless (as-specific? base-individual ;; sub-dli
+                                  edge-referent)  ;; super-dli
+              ;; n.b. this stops document reading
+              (lsp-break "check-consistent-mention: ~
+                         ~%   the base, ~a~
+                         ~%   is not as specific as the source, ~a~
+                         ~%   in the mention ~a"
+                         base-individual edge-referent mention))))))))
+                        
+  #+ignore (unless ;; original logic
       (or *dont-check-inconsistent-mentions*
 	  (not (edge-p (mention-source mention)))
 	  (deactivated? (mention-source mention))
 	  (as-specific? (base-description mention)
 			(edge-referent (mention-source mention))))
-    (lsp-break "test-inconsistent-mention-edge-referent got inconsistent edge and interp")))
+    (lsp-break "test-inconsistent-mention-edge-referent got inconsistent edge and interp"))
 
 (defun update-mention-referent (mention referent &optional dont-check-inconsistent)
   (let ((*dont-check-inconsistent-mentions* dont-check-inconsistent))
+    (declare (special *dont-check-inconsistent-mentions*))
     (setf (base-description mention) referent)
     (push mention (mention-history referent)) ;;calls check-consistent-mention
     ;; just returning this to help understand traces
@@ -280,13 +302,21 @@ of proper resetting of context")
     (list m)))
 
 (defun make-mention (i source)
-  (let* ((location (encode-mention-location (if (consp source) (second source) source)))
+  (let* ((location (encode-mention-location
+                    (if (consp source) (second source) source)))
          (toc (location-in-article-of-current-sentence))
 	 (m (make-instance 'discourse-mention
 			   :uid (incf *mention-uid*)
-			   :i i :loc location :ms source :article toc)))
-    (push m (mention-history i)) ;; calls     (check-consistent-mention m)
-    (if (edge-p source) (setf (edge-mention source) m))
+			   :i i
+                           :loc location
+                           :ms source
+                           :article toc)))
+    #+ignore ;; useful for tracking down odd cases
+    (when (= (indiv-uid i) 4188)
+      (lsp-break "Made mention ~a" m))
+    (push m (mention-history i)) ;; calls (check-consistent-mention m)
+    (when (edge-p source)
+      (setf (edge-mention source) m))
     m))
 
 (defparameter *edge-forms* nil)
@@ -301,7 +331,6 @@ of proper resetting of context")
 	(subsume-mention category m source subsumed-mention)
 	(push m (discourse-entry category)))
     (push m *lattice-individuals-mentioned-in-paragraph*)
-    (if (edge-p source) (setf (edge-mention source) m))
     m ))
 
 (defun subsume-mention (category m source subsumed-mention)
@@ -355,24 +384,25 @@ of proper resetting of context")
     do (long-term-ify-mention mention))
   (setq *lattice-individuals-mentioned-in-paragraph* nil))
 
-
 (defun long-term-mention? (mention)
   "Has this mention been converted to its long-term form?"
   (integerp (car (mentioned-where mention))))
-
 
 (defun long-term-ify-mention (mention)
   "Same idea a working with a conventional discourse entry
    in that we replace positions with their indexes. 
    The more important long-term location information is position
    in the article, which was recorded when the mention was made."
-  (let* ((cons (mentioned-where mention))
-         (start-pos (car cons))
-         (end-pos (cdr cons)))
-    (unless (integerp start-pos) ;; already done
+  (unless (long-term-mention? mention)
+    (let* ((cons (mentioned-where mention))
+           (start-pos (car cons))
+           (end-pos (cdr cons))
+           (edge (mention-source mention)))
       (setf (mentioned-where mention)
             (cons (pos-token-index start-pos)
                   (pos-token-index end-pos)))
+      (when (and edge (edge-p edge))
+        (setf (edge-mention edge) nil))
       (setf (mention-source mention) nil))))
 
 
