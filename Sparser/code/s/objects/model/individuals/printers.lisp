@@ -297,9 +297,9 @@
               (string-for/name i))
              (t
               ;; Dangerous to have breaks/error in print function
-              (unless *grok* ;; can't have this in the output
+              #+ignore ;; very noisy in biology
                 (format t "~&String-for -- The printer ~A isn't defined ~
-                             yet~%" fn-name))
+                             yet~%" fn-name)
               "" ))))
 
     ((or referential-category mixin-category category)
