@@ -151,7 +151,8 @@ Otherwise, try to compile the head and attach the arguments as
 named parameters."
   (destructuring-bind (operation &rest args) expr
     (assert (eq operation head))
-    (if (fboundp (sp::mumble-symbol operation))
+    (if (and (symbolp operation)
+	     (fboundp (sp::mumble-symbol operation)))
       (values (apply (fdefinition (sp::mumble-symbol operation))
                      (mapcar (lambda (arg)
                                (multiple-value-setq (expr context)
