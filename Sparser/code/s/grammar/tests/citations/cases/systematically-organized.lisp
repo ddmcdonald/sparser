@@ -29,10 +29,6 @@
 ;;; measurement & amounts
 ;;;-----------------------
 
-(define-citation "17 tons"
-  (1 MEASUREMENT 3))
-
-
 ;;;-------
 ;;; money
 ;;;-------
