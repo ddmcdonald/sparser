@@ -592,7 +592,10 @@ saturated? is a good entry point. |#
 ;;;---------------
 
 (defun initialize-discourse-history ()
-  (declare (special *lifo-instance-list*))
+  (declare (special *lifo-instance-list*
+                    *lattice-individuals-mentioned-in-paragraph*
+                    *objects-in-the-discourse*
+                    *lattice-individuals-to-mentions*))
   (setq *lifo-instance-list* nil
         *lattice-individuals-mentioned-in-paragraph* nil)
   (clrhash *objects-in-the-discourse*)
@@ -743,7 +746,6 @@ saturated? is a good entry point. |#
             ;; As also checked for in the When below, if the edge resource
             ;; is recycling faster, then there will already have been a
             ;; call to long-term-ify so there's nothing for us to do.
-            
             (setq referent (edge-referent edge))
             
             ;(when (= (pos-token-index position-to-clear) 54)
@@ -775,7 +777,6 @@ saturated? is a good entry point. |#
    (*description-lattice*
     ;; 1st find the mention, then modify it.
     (let ((mentions (mention-history i)))
-      (push-debug `(,edge ,mentions ,i))
       (let ((m (search-mentions-by-position mentions edge)))
         (when m
           ;; if it's not there we're not going to have a problem
