@@ -119,6 +119,7 @@
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
       (sweep-for-embedded-sections a))
+    (set-document-index a :ignore)
     (when (actually-reading)
       (clean-out-history-and-temp-objects))
     (install-contents a)
@@ -274,31 +275,38 @@
   (declare (special *trap-error-skip-sentence*))
   (let* ((string (content-string title))
          (length (length string)))
-    ;; We could parse them all, but really should have a model
-    ;; of biomedical journal titles before we do that, so until
-    ;; then, making a heuristic limitation on minimal length
-    (when (> length 20)
-      ;; Does it end in a period? Othewise add one. 
-      (unless (eql #\. (char string (1- length)))
-        (setq string (string-append string ".")))
-      (let ((*reading-section-title* t)
-            (*recognize-sections-within-articles* nil) ;; turn of doc init
-            (*accumulate-content-across-documents* t)) ;; don't clear history
-        (declare (special *reading-section-title*
-                          *recognize-sections-within-articles*
-                          *accumulate-content-across-documents*))
-        (establish-character-source/string string)
-        (when *show-section-printouts*
-          (format t "~&~%About to parse section title%"))
-        (if *trap-error-skip-sentence*
-          (handler-case
-              (analysis-core)
-            (error (e)
-               (ignore-errors ;; got an error with something printing once
-                (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
-          (analysis-core))
-        (let ((s (identify-current-sentence)))
-          (setf (title-sentence title) s))))))
+    (when (= length 0) ;; null string
+      (return-from parse-section-title title))
+    ;; Does it end in a period? Othewise add one. 
+    (unless (eql #\. (char string (1- length)))
+      (setq string (string-append string ".")))
+    (let ((*reading-section-title* t)
+          (*recognize-sections-within-articles* nil) ;; turn of doc init
+          (*accumulate-content-across-documents* t)) ;; don't clear history
+      (declare (special *reading-section-title*
+                        *recognize-sections-within-articles*
+                        *accumulate-content-across-documents*))
+      (establish-character-source/string string)
+      (when *show-section-printouts*
+        (format t "~&~%About to parse section title: ~s%" string))
+      (if *trap-error-skip-sentence*
+        (handler-case
+            (analysis-core)
+          (error (e)
+            (ignore-errors ;; got an error with something printing once
+              (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
+        (analysis-core))
+
+      ;; Strictly speaking, the title should act like
+      ;; a paragraph, including the accumulation of
+      ;; entities, but particularly including clearing
+      ;; edges from any mentions that still have them.
+      ;; Othewise the mention will be misconstrued when the
+      ;; next paragraph begins, since the edge will have
+      ;; be reused with a different value.
+      (make-mentions-long-term)
+
+      title)))
 
 
 
