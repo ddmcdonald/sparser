@@ -180,11 +180,14 @@
   "Set to T when we are executing the referent function
    as a predicate, not as part of interpretation of an NP or VP")
 
-;;; --- part of mechanism to hang on to "modifiers" that should not be incorporated in description-lattice individuals
-;;;  These include determiners and parentheticals
+;;; --- part of mechanism to hang on to "modifiers" that should not be
+;;;     incorporated in description-lattice individuals
+;;; These include determiners and parentheticals
 ;;; see operations in create-discourse-mention and extend-discourse-mention
 
-(defparameter *non-dli-mod-ht* (make-hash-table)) ;; holds determiners for NPs until they are put in the discourse mention
+(defparameter *non-dli-mod-ht* (make-hash-table)
+  "Holds determiners for NPs until they are put in
+   the discourse mention")
 (defun non-dli-mod-for (i) (gethash i *non-dli-mod-ht*))
 (defun (setf non-dli-mod-for) (det i) (setf (gethash i *non-dli-mod-ht*) det))
 
@@ -276,10 +279,8 @@
 (defun create-partitive-np (quantifier of-pp)
   (declare (special quantifier of-pp))
   (let ((pp-edge (right-edge-for-referent)))
-    (when
-	(and
-	 (not (eq (edge-form pp-edge) category::preposition))
-	 (has-definite-determiner? (edge-right-daughter pp-edge)))
+    (when (and (not (eq (edge-form pp-edge) category::preposition))
+               (has-definite-determiner? (edge-right-daughter pp-edge)))
       (cond
 	(*subcat-test* t)
 	(t
