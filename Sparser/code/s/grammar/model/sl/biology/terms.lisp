@@ -662,6 +662,11 @@
      (:adj "identical"
            :to theme))
 (define-adverb "in part")
+
+(define-category in-situ :specializes experimental-condition
+  :realization  ;; could also be considered as a location
+  (:adj "in situ"))
+
 (define-category in-vivo :specializes experimental-condition
   :realization
   (:adj "in vivo"))
