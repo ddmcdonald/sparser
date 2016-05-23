@@ -14,6 +14,53 @@
 
 (in-package :sparser)
 
+(defun show-dli-stats ()
+  (setq *counts* (make-hash-table))
+  (setq *examples* (make-hash-table))
+  (maphash #'(lambda (k v)(incf (gethash (length (indiv-old-binds v)) *counts* 0))) *lattice-ht*)
+  (maphash #'(lambda (k v)(push v (gethash (length (indiv-old-binds v)) *examples*))) *lattice-ht*)
+  (loop for i from 0 to 10 do (print (list i (gethash i *counts*))))
+  (setq *max-all-supers* 0)
+  (setq *total-all-supers* 0)
+  (setq *m-all-subs* nil)
+  (maphash #'(lambda (k v)
+	       (when (> (hash-table-count (indiv-all-supers v)) *max-all-supers*)
+		 (setq *max-all-supers* (hash-table-count (indiv-all-supers v))))
+	       (incf *total-all-supers* (hash-table-count (indiv-all-supers v)))
+	       )
+	   *lattice-ht*)
+  (print `(*max-all-subs*
+	   ,*max-all-subs*
+	   *av-all-subs*
+	   ,(/ *total-all-subs* (+ 0.0 (hash-table-count *lattice-ht*)))
+
+	   *max-all-supers*
+	   ,*max-all-supers*
+	   *av-all-supers*
+	   ,(/ *total-all-supers* (+ 0.0 (hash-table-count *lattice-ht*)))
+	   )))
+
+(defun bind-vars (i)
+  (loop for b in (indiv-old-binds i)
+     collect (var-name (binding-variable b))))
+
+(defparameter *bv-ht* (make-hash-table :test #'equal))
+(defparameter *nbv-ht* (make-hash-table :test #'equal))
+
+(defun all-bvs ()
+  (maphash #'(lambda (k v)
+	       (incf (gethash (bind-vars v) *bv-ht* 0)))
+	   *lattice-ht*)
+  (maphash #'(lambda (k v)
+	       (pushnew (bind-vars v)
+			(gethash (norm-bv (bind-vars v)) *nbv-ht*)
+			:test #'equal))
+	   *lattice-ht*)
+  (hal *nbv-ht*))
+
+(defun norm-bv (bv)
+  (sort bv #'string< ))
+
 
 (defun rusty()
   (setup-bio) ;; load the bio model etc.
