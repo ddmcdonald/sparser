@@ -30,13 +30,11 @@ of the interactive workbench it had on earlier versions of
 the Mac, using Sparser requires that you have a working knowledge
 of Lisp and are comforable reading code. 
 
-Note that as of this writing, the primary Sparser developers
-are using it as a component within DPARPA
 
 
 *************************
 * How to install & run  *
-* Version of 8/23/15    *
+* Version of 5/23/16    *
 *************************
 
 Thank you for downloading Sparser. This short guide
@@ -46,26 +44,39 @@ will help you get everything up & running in no time.
 Installation & Setup
 ====================
 
-When you checkout the master repository, it should contain four
-immediate subdirectories: "Mumble", "Sparser", "util", and "test",
-as well as this README file, the LICENSE file, and the "sparser.asd"
-file which contains the Sparser ASDF system definitions.
+After cloning Sparser, the toplevel of the sparser directory tree will
+have four immediate subdirectories: "Mumble", "Sparser", "util", and
+"test", as well as this README file, the LICENSE file, and the
+"sparser.asd" file which contains the Sparser ASDF system definitions.
 
 Loading Sparser
 ====================
 
 You need to have a modern implementation of Common Lisp
-already installed. Sparser has been primarily tested on 
-Intel-based Mac OS X using Clozure (www.clozure.com) and
-Allegro (www.franz.com). It also runs under SBCL though
-there are a few incompatibilities that remain to be
-worked through.
+already installed. Sparser is know to run in SBCL (sbcl.org),
+Clozure (www.clozure.com) and Allegro (www.franz.com).
+We develop primarily on Intel-based Macs under OS X and XXXXXX Alex XXXX
+Sparser has been used with Windows in the past. Now that we
+are using ASDF for toplevel loading and Lisp pathnames for
+handling file compilation and module loading we don't expect
+that loading and running in Windows would be problem, but
+as of this writing we have not actually tested it.
 
-We recommend Clozure because it automatically compiles 
-functions as it loads them. If you use Allegro, you will
-need to explicitly compile the core of Sparser to avoid
-blowing out the stack on a text longer than about 30 words,
-see sparser/Sparser/init/scripts/compile-everything.lisp.
+1. Setup ASDF
+
+You need is to have ASDF loaded and Sparser's location included in its
+source registry so that ASDF can locate the .asd file. This example
+assumes that your local copy of Sparser is at toplevel in your home
+directory.
+
+(require :asdf)
+(asdf:initialize-source-registry
+ '(:source-registry
+    (:tree (:home "sparser"))
+       :inherit-configuration))
+
+That specification never changes so we include it as part of our
+Lisp init files.
 
 1. Start Lisp.
 
