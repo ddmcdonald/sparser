@@ -9,10 +9,14 @@
 
 (in-package :sparser)
 
-(defparameter *do-expansion-in-context* t)
-
-;; show when interpretation of a phrase is changed by context
+;; noisy reporting of situations interesting to Rusty
+(defparameter *report-on-multiple-edges-for-interp* nil)
 (defparameter *show-contextual-replacements* nil)
+
+;; breaks on situations interesting to Rusty
+(defparameter *break-on-null-interp* nil)
+(defparameter *break-on-null-edge* nil)
+(defparameter *break-on-null-surface-strings* nil)
 
 
 (defun interpret-treetops-in-context (treetops)
@@ -22,7 +26,7 @@
 		 (not
 		  (member (cat-name (edge-category tt))
 			  ;; we don't interpret such quoted strings
-			  '(quotation parentheses dash  square-brackets semicolon))))
+			  '(quotation parentheses dash  square-brackets semicolon comma))))
        do
 	 (interpret-in-context (new-dt tt nil) nil nil))))
 
@@ -33,40 +37,13 @@
   (:documentation
    "Return the currently available contextual interpretation of th object -- the base-description if no contextual interpretation has been made."))
 
-(defmethod contextual-interpretation ((p polyword))
-  p)
-
-(defmethod contextual-interpretation ((w word))
-  w)
-
-(defmethod contextual-interpretation ((n number))
-  n)
-
-(defmethod contextual-interpretation ((c category))
-  c)
-
-(defmethod contextual-interpretation ((i individual))
-  "This seems to happen only for cases where the individual is created by a rule such as the one that parses T669 and produces 'threonine' from the T"
-  (print i)
-  i)
-
+;; This is the only version of this generic still called
 (defmethod contextual-interpretation ((m discourse-mention))
   (if (and
        (slot-boundp m 'ci)
        (contextual-description m))
       (values (contextual-description m) t)
       (values (base-description m) nil)))
-
-(defparameter *lambda-var* nil)
-
-(defmethod contextual-interpretation ((s symbol))
-  (values
-   (case s
-     (**lambda-var**
-      ;; the marker for the argument of a predicate which is being applied to the predicated item
-      *lambda-var*)
-     (t s))
-   t))
 
 (defgeneric interpret-in-context (item-to-be-interpreted variable containing-mentions)
   (:documentation
@@ -101,6 +78,8 @@ the contextual interpretation of the item in the context."))
     (declare (ignore variable containing-mentions))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   s)
+
+(defvar *lambda-var*)
 
 (defun interpret-atom-in-context (s variable containing-mentions)
     (declare (ignore variable containing-mentions))
@@ -174,7 +153,9 @@ where it regulates gene expression.")
 		      ((cons (eql :or)) (cdr restriction))
 		      (category (list restriction))
 		      (null
-		       (if (and (eq variable 'subject)
+		       (if (and (or
+				 (eq variable 'subject)
+				 (eq variable 'predicate)) ;; comes from bad parse for "were it not for..."
 				(itypep (base-description
 					 (car containing-mentions))
 					'be))
@@ -194,7 +175,6 @@ where it regulates gene expression.")
 (defun itypep-or (i type-list)
   (loop for type in type-list thereis (itypep i type)))
 
-(defparameter *break-on-null-interp* t)
 
 (defun reinterpret-collection-with-modifiers (dt var containing-mentions)
   (declare (special dt var containing-mentions))
@@ -230,6 +210,7 @@ where it regulates gene expression.")
       (polyword (interpret-atom-in-context dt var containing-mentions))
       (word (interpret-atom-in-context dt var containing-mentions))
       (number (interpret-atom-in-context dt var containing-mentions))
+      ;; get this with "metaplasia and hyperplasia" -- maybe want to do more here
       (cons
        (typecase (car dt)
 	 (discourse-mention (interpret-in-context dt var containing-mentions))
@@ -237,6 +218,7 @@ where it regulates gene expression.")
 	  (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
 	 (null
 	  (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
+	 (referential-category (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
 	 (t (lsp-break "~%Strange value in interpret-item-in-context: ~s~%"
 		    dt)
 	    dt)))
@@ -330,8 +312,6 @@ where it regulates gene expression.")
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
 (defparameter *lambda-val* nil)
-(defparameter *break-on-null-edge* nil)
-(defparameter *report-on-multiple-edges-for-interp* nil)
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
   (let* ((parent-edge (car parent-edges))
 	 (poss-edges (poss-edges child-interp parent-edge)))
@@ -363,8 +343,9 @@ where it regulates gene expression.")
 		;; happens for premodifying v+ing
 		;; where the edge has a category edge-representation,
 		;; not an individual
+		(when *break-on-null-edge*
 		  (format t "~&B) no internal edge for ~s in ~s~&"
-			     child-interp parent-edge))
+			     child-interp parent-edge)))
 	      nil)))
 	  ((cdr poss-edges)
 	   ;; appositive cases like "endogenous C-RAF phosphorylation at S338, an event required for C-RAF activation, "
@@ -488,7 +469,7 @@ where it regulates gene expression.")
 		 collect
 		   (list (var-name (binding-variable b))
 			 (case (var-name (binding-variable b))
-			   ((predication predicate)
+			   (predication
 			    (let* ((pred (binding-value b))
 				   (parent (dli-parent pred))
 				   (p-edge 
@@ -673,9 +654,6 @@ where it regulates gene expression.")
   (loop for b in (indiv-bound-in desc)
      thereis (eq 'predication (var-name (binding-variable b)))))
 
-
-(defparameter *catch-null-surface-strings* nil)
-
 (defun expand-interpretation-in-context-if-needed (dt var containing-mentions)
   (declare (special dt var containing-mentions))
   (let* ((mention (dt-mention dt))
@@ -698,7 +676,7 @@ where it regulates gene expression.")
        ;;(lsp-break "ambiguous")
        interp)
       (spec-mentions
-       (when *catch-null-surface-strings*
+       (when *break-on-null-surface-strings*
 	 (when (null (note-surface-string edge)) (lsp-break "Null edge string")))
        (when *show-contextual-replacements*
 	 (format t "~%(   ~s     ===>  ~s)~% in sentence:~%  ~s~%"
