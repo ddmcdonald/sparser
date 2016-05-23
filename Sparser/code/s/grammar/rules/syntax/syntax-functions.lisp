@@ -711,7 +711,7 @@
           ;; test if there is a known interpretation of the VG/PP combination
           (or (subcategorized-variable vg prep-word pobj-referent)
               (and (itypep pp 'upon-condition)
-                   'circumstance)
+                   (find-variable-for-category 'context (itype-of vg)));; circumstance)
               #+ignore
 	      (when (or
                      (eq prep-word (word-named "upon"))
@@ -981,15 +981,13 @@
     (cond
       (*subcat-test*
        (cond
-	 ((or (not (or ;; vp has a bound object
-		    (null (object-variable vp))
-		    (value-of (object-variable vp) vp)
-		    (and (individual-p subj)
-			 (or
-			  (itypep subj 'pronoun)
-			  (itypep subj 'number)))))
-	      (preceding-that-whether-or-conjunction? (left-edge-for-referent))
-	      (subcategorized-variable vp :subject subj))
+	 ((or ;; vp has a bound object
+	   (null (object-variable vp))
+	   (value-of (object-variable vp) vp)
+	   (value-of 'statement vp)
+	   (and (individual-p subj)
+		(itypep subj 'pronoun))
+	   (preceding-that-whether-or-conjunction? (left-edge-for-referent)))
 	  (if (is-passive? (right-edge-for-referent))
 	      (then 
 		(break "can't have a passive vp+ed")
@@ -1022,7 +1020,7 @@
 	     (progn (format t "~&**** assimilate-subject-to-vp-ed can't interpret ~s ~s~&"
 			    (retrieve-surface-string subj)
 			    (retrieve-surface-string vp))
-		    vp))))
+		    nil))))
       (t
        ;; This should correspond to the reduced relative
        ;; situation. But we'll check that the vp has
@@ -1523,7 +1521,8 @@
              ;; case where there is no semantic predication established,
              ;; but there is a syntactic object
              ;; e.g. "was the result of defects in the developing embryo"
-             (not (eq (edge-form *left-edge-into-reference*) category::vp)))
+             (not (member (cat-name (edge-form *left-edge-into-reference*))
+			  '(s vp thatcomp))))
 	 (null (value-of 'predication be-ref)))
     ;; If this is not already a predicate copula ("is a drug")
     (let* ((prep (value-of 'prep pp))
