@@ -49,4 +49,5 @@
 
 (gload "bio;citations")
 (gload "bio;examples.lisp") ;; no definitions in here
+(gload "bio;talking-about-a-model.lisp");; no definitions in here
 
