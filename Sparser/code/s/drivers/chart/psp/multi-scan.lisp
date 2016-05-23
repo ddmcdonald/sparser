@@ -735,7 +735,9 @@
 			    (not (itypep (cfr-category rule) 'biological))) ;; case where there is a definition from outside of biology (e.g. "TRIM")
 		      (when
 			  (not (eq (cat-name (cfr-category rule)) 'bio-entity))
-			(format t "~&***Acronym -- attempting to change category of rule ~s to ~s~&" rule (edge-category regular-edge)))
+			(format t "~&***Acronym -- attempting to change category of rule ~s to ~s~%  in ~s~%" rule
+				(edge-category regular-edge)
+				(sentence-string *sentence-in-core*)))
 		      (setf (cfr-category rule) (edge-category regular-edge))
 		      (setf (cfr-rhs rule) (list uppercase-word))
 		      (setf (cfr-form rule) (edge-form regular-edge))
