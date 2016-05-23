@@ -72,6 +72,7 @@
   :binds ((substrate protein)
 	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
+  :restrict ((agent (:or protein bio-process bio-mechanism)))
   :realization 
   (:noun "post-translational modification"
          :o substrate
@@ -79,7 +80,7 @@
          :m amino-acid
          :m substrate
          :m site
-         :m agent ;;somehow this overridew the ones below
+         :m agent ;;somehow this overrides the ones below
          :of substrate
          :at amino-acid
 	 :at site
