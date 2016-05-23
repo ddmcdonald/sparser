@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  4.6 May 2015
+;;;  Version:  May 2016
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -25,6 +25,7 @@
 
 
 (defun unknown-word? (word)
+  ;; Correct to first-order, but see computations in find-word
   (null (word-rules word)))
 
 
@@ -80,6 +81,11 @@
             ((and *big-mechanism*
                   (suitable-for-and-in-OBO word))
              (setup-word-denoting-an-OBO word))
+            ((and *big-mechanism*
+                  (eq *capitalization-of-current-token*
+                      :all-caps)) ;; potential acronym
+             ;; Don't swallow regular words unnecessarily
+             (store-word-and-handle-it-later word))
             (morph-keyword
              (assign-morph-brackets-to-unknown-word
               word morph-keyword))
