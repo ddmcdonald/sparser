@@ -81,3 +81,10 @@
 (defun dot-state ()
   (state-of-interpretation (current-incremental-state)))
 
+(defgeneric move-dot (position)
+  (:documentation "Move the dot up to this position,
+     indicating that everything to the left has been done.")
+  (:method ((pos position))
+    (tr :moving-dot pos)
+    (setf (dot (current-incremental-state)) pos)))
+

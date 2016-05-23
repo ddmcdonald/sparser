@@ -1158,6 +1158,12 @@
     (trace-msg "[complete] Instantiated ~a as ~a"
                (cat-name category) i)))
 
+(deftrace :incr-binding-variable (var value i)
+  ;; in ecomplete
+  (when *trace-earley*
+    (trace-msg "[complete] binding ~a to ~a as a ~a"
+               value i var)))
+
 (deftrace :next-edge-is (edge)
   (when *trace-earley*
     (trace-msg "[parse] The next edge is e~a"

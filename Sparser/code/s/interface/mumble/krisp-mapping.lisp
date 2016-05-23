@@ -97,7 +97,33 @@
       (unless item
         (error "we've exhausted the path")))))
 
-;; not going to be used?
+(defun sp::pop-path-to-next-slot (path state)
+  "As called from walk-path-over-this-argument we have just
+  completed the constituent that goes with the slot-label etc
+  that is presently at the top of the path. Now pop that
+  off. The question will be whether there is anything left
+  on the path after we do this."
+  ;; Caller has checked that the car of the path is correct
+  (let ((item (pop path)))
+    (loop
+      (when *trace-popping-predicted-path*
+        (format t "~&item = ~a~%" item))
+      (etypecase item
+        (parameter )
+        (keyword ;; :additional-labels
+         (pop path)) ;; get its argument
+        (slot-label
+         ;; we're done because we've found the
+         ;; next slot in the path
+         (setf (sp::predicted-path state) path)
+         (throw :finished-path-walk :found-slot)))
+      (setq item (pop path))
+      (when (null item)
+        (throw :finished-path-walk :path-exhausted)))))
+
+
+
+;; not going to be used, but keep around a while for parts
 (defun merge-lp-clp-parameter-specs (lexicalized-phrase catgory-linked-phrase)
   "Both arguments dictate how phrase parameters map to values."
   (let ((pvps (bound lexicalized-phrase)) ;; parameter-value-pair's
