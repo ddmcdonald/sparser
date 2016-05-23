@@ -324,7 +324,7 @@
 	  (loop for key being each hash-key of (indiv-all-supers parent)
 	       do (setf (gethash key res-supers) t))
 	  
-	  (all-subs-link result var value lattice-cat-parent)
+	  ;;(all-subs-link result var value lattice-cat-parent)
 	  (values
 	   result
 	   (get-binding-of var result value))))))
@@ -333,6 +333,7 @@
   (let ((supers (indiv-all-supers sub)))
     (setf (gethash super supers) t)))
 
+#+ignore
 (defun all-subs-link (sub var value lattice-cat-parent)
   (declare (special sub var value lattice-cat-parent))
   (let ((val-supers
@@ -470,6 +471,7 @@
   (maphash #'(lambda(e dli)(declare (ignore e))(push dli *dlis*)) *lattice-ht*)
   *dlis*)
 
+#|
 (defgeneric find-all-subs (c)
   )
 
@@ -481,7 +483,7 @@
   (loop for m in *lattice-individuals-mentioned-in-paragraph*
      when (as-specific? (base-description m) i)
      collect i))
-
+|#
 
 (defun all-phrasal-dlis ()
   (all-dlis)
