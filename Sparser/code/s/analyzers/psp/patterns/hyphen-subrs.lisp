@@ -99,10 +99,7 @@
   ;;//// This is called from one-hyphen-ns-patterns so there's
   ;; a lot implicit here 
   (declare (special *positions-with-unhandled-unknown-words*))
-  (unless *positions-with-unhandled-unknown-words*
-    ;; can't do anything ///might put a trace here
-    edges)
-  (when *positions-with-unhandled-unknown-words*
+  (if *positions-with-unhandled-unknown-words*
     ;; less left-margin creep with this style
     (let ((left-side (find start-pos *positions-with-unhandled-unknown-words*))
           (right-side (find (chart-position-before end-pos)
@@ -123,4 +120,5 @@
          (left-edge
           (cons left-edge edges))
          (right-edge
-           (tail-cons right-edge edges)))))))
+          (tail-cons right-edge edges)))))
+    edges))

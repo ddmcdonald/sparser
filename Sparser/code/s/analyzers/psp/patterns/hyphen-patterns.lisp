@@ -66,7 +66,7 @@
       (when *work-on-ns-patterns*
         ;; what try-to-resolve-uncovered-ns-edges should have addressed
         ;; appears to be a problem with it
-        (lsp-break "Word count not equal to edge count"))
+        (break "Word count not equal to edge count"))
       (throw :punt-on-nospace-without-resolution nil))
 
      ((= 2 (length pattern))
@@ -110,6 +110,17 @@
       ;;/// should be something better for a case lke this if we know
       ;; something about the the siginificane of the number
       (make-bio-pair (first edges) (third edges) words start-pos end-pos))
+
+     ((equal pattern '(:protein :hyphen  ;; "BRAF-V600E"
+                       :single-cap :digits :single-cap))
+      (let ((point-mutation (reify-point-mutation
+                             (cddr words)
+                             (chart-position-before
+                              (chart-position-before
+                               (chart-position-before end-pos)))
+                             end-pos)))
+        (make-edge-over-mutated-protein (first edges) point-mutation
+                                        start-pos end-pos)))
      
      ((equal pattern `(:amino-acid :hyphen :digits))
       (reify-residue (first edges) (third edges) start-pos end-pos))
@@ -117,13 +128,14 @@
      ((and *work-on-ns-patterns*
            (memq :protein pattern)) ;; :protein :hyphen :kinase PI3–Kinase
       (push-debug `(,edges ,start-pos ,end-pos ,hyphen-positions ,words))
-      (lsp-break "new hypen pattern with protein: ~a" pattern))
+      (break "new hypen pattern with protein: ~a" pattern))
      
      ((or (equal pattern '(:full :hyphen :single-lower)) ;; TGF-b
           (equal pattern '(:capitalized :hyphen :single-digit)) ;; Sur-8, Bcl-2
           (equal pattern '(:full :hyphen :digits)) ;; "CI-1040" actually a drug
           (equal pattern '(:full :hyphen :single-digit :single-lower)) ;; IL-1a
-          (equal pattern '(:full :hyphen :single-digit :single-digit))) ;;/// IL-1a -bug somewhere
+          (equal pattern '(:full :hyphen :single-digit :single-digit)))
+                          ;;/// IL-1a -bug somewhere
       ;; We accept these as terms that won't deccompose or involve
       ;; a rule. Experience may show that to be false, but it's a start
       (reify-ns-name-and-make-edge words start-pos end-pos))
@@ -133,7 +145,7 @@
           (equal pattern '(:full :hyphen :capitalized)))
       (if (= 3 (length edges))
         (resolve-hyphen-between-two-terms pattern words edges start-pos end-pos)
-        (lsp-break "edges = ~a" edges))) ;;/// two, not three on "HPB-ALL"
+        (break "Hyphen: more than three edges: ~a" edges))) ;;/// two, not three on "HPB-ALL"
      
      ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
       (resolve-hyphen-between-two-words pattern words start-pos end-pos))

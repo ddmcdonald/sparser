@@ -362,14 +362,11 @@ We therefore have the special cases:
   :lemma (common-noun "point mutation")
   :index (:permanent :sequential-keys new-amino-acid position))
 
-
-(defun reify-point-mutation-and-make-edge (words pos-before pos-after)
-  ;; Called from resolve-ns-pattern when the pattern is either
-  ;; '(:single-cap :digits :single-cap) or '(:single-lower :digits :single-lower)
-  (push-debug `(,words ,pos-before ,pos-after))
+(defun reify-point-mutation (words pos-before pos-after)
   (let ((edges (treetops-between pos-before pos-after)))
     (unless (= 3 (length edges))
-      (error "Should be three edges for a point mutation but there are ~a" (length edges)))
+      (error "Should be three edges for a point mutation but there are ~a"
+             (length edges)))
     ;; Capital letters will have Single-capitalized-letter's as referent.
     ;; Lowercase is much less predictable. 
     (let* ((edge1 (car edges))
@@ -389,18 +386,28 @@ We therefore have the special cases:
                                  (itypep ref2 'number))
                           ref2
                           (find-or-make-number ref2))))
-            (let* ((i (make-point-mutation aa2 aa1 number))
-                   (edge
-                    (make-edge-over-long-span
-                     pos-before
-                     pos-after
-                     category::point-mutation
-                     :rule :reify-point-mutation-and-make-edge
-                     :form category::np
-                     :referent i
-                     :constituents `(,edge1 ,edge2 ,edge3))))
-                ;;/// trace
-                edge)))))))
+            (make-point-mutation aa2 aa1 number)))))))  ;;edge1 edge2 edge3
+;;/// this refactoring doesn't return the
+;; edges that the edge-maker has wanted so its constituents
+;; are cleanly indicated.
+(defun reify-point-mutation-and-make-edge (words pos-before pos-after)
+  ;; Called from resolve-ns-pattern when the pattern is either
+  ;; '(:single-cap :digits :single-cap) or '(:single-lower :digits :single-lower)
+  (let ((i (reify-point-mutation words pos-before pos-after)))
+    (when i
+      ;; the letters might not designated amino acids
+      (let ((edge
+             (make-edge-over-long-span
+              pos-before
+              pos-after
+              category::point-mutation
+              :rule :reify-point-mutation-and-make-edge
+              :form category::np
+              :referent i
+             ;; :constituents `(,edge1 ,edge2 ,edge3)
+              )))
+        ;;/// trace
+        edge))))
               
 
 (defun make-point-mutation (original replacement residue-number)
@@ -409,4 +416,17 @@ We therefore have the special cases:
     :new-amino-acid replacement
     :position residue-number))
 
-
+(defun make-edge-over-mutated-protein (protein-edge point-mutation
+                                       start-pos end-pos)
+  (push-debug `(,protein-edge ,point-mutation ,start-pos ,end-pos))
+  (let* ((protein (edge-referent protein-edge))
+         (i (bind-variable 'mutation point-mutation protein)))
+    (let ((edge
+           (make-edge-over-long-span
+            start-pos
+            end-pos
+            category::protein
+            :form category::np
+            :referent i
+            :rule 'make-edge-over-mutated-protein)))
+      edge)))

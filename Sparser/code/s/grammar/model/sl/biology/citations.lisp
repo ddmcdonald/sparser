@@ -14,4 +14,14 @@
   (1 INDUCE 5))
 
 (define-citation "Y420."
-  (1 RESIDUE-ON-PROTEIN 3))
+    (1 RESIDUE-ON-PROTEIN 3))
+
+(define-citation "PLX4032."
+    (1 DRUG 3))
+
+(define-citation "~60."
+  (1 NUMBER 3))
+
+
+(define-citation "BRAF-V600E."
+  (1 PROTEIN 6))
