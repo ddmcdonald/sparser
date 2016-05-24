@@ -295,6 +295,9 @@
               (funcall fn-name i))
              ((value-of 'name i)
               (string-for/name i))
+	     ((or (individual-p i)
+		  (referential-category-p i))
+	      (format nil "~a" i))
              (t
               ;; Dangerous to have breaks/error in print function
               #+ignore ;; very noisy in biology
