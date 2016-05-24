@@ -216,6 +216,18 @@
   (:verb "hyperphosphorylate" :noun "hyperphosphorylation"
    :etf (svo-passive)))
 
+(define-category unphosphorylate
+  :specializes post-translational-modification
+  :realization
+  (:verb "unphosphorylate"
+	 :etf (svo-passive)))
+
+(define-category double-phosphorylate
+  :specializes post-translational-modification
+  :realization
+  (:verb "double-phosphorylate"
+	 :etf (svo-passive)))
+
 (define-category ribosylation 
  :specializes post-translational-modification 
   :realization 
