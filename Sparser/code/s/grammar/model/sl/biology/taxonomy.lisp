@@ -617,10 +617,15 @@
   ;; makes more sense for ATP than H20, but not worrying about whether
   ;; we're doing organic or inorganic chemistry. 
   :instantiates :self
+  :binds ((molecule-type molecule))
   :bindings (uid "CHEBI:36357")
   :index (:permanent :key name)
-  :lemma (:common-noun "molecule")
+  ;;:lemma (:common-noun "molecule")
   :realization (:common-noun name))
+
+(def-synonym molecule
+    (:noun "molecule"
+	   :of molecule-type))
 
 (define-category drug
   :specializes molecule
@@ -1081,7 +1086,18 @@ the aggregate across the predicate it's in. |#
          :for components))
 
 (def-synonym process-rate 
-             (:noun "kinetics"))
+    (:noun "kinetics"))
+
+
+;; binding rate, dissociation rate, catalysis rate (from Ben Gyori)
+(define-category binding-rate :specializes process-rate
+		 :realization (:noun "binding rate"))
+
+(define-category dissociation-rate :specializes process-rate
+		 :realization (:noun "dissociation rate"))
+
+(define-category catalysis-rate :specializes process-rate
+		 :realization (:noun "catalysis rate"))
 
 (define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
   :realization 
