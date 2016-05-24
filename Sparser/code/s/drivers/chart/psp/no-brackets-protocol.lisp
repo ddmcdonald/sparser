@@ -706,59 +706,53 @@
 
 ;;----- semtree methods
 
-(defmethod semtree ((x null) &optional short)
-  (declare (ignore short))
+(defmethod semtree ((x null))
   nil)
 
-(defmethod semtree ((w word) &optional short)
-  (declare (ignore short))
+(defmethod semtree ((w word))
   nil)
 
-(defmethod semtree ((n number) &optional (short nil))
-  (semtree (e# n) short))
+(defmethod semtree ((n number))
+  (semtree (e# n)))
 
-(defmethod semtree ((e edge) &optional (short nil))
-  (semtree (edge-referent e) short))
+(defmethod semtree ((e edge))
+  (semtree (edge-referent e)))
 
 
 (defparameter *semtree-seen-individuals* (make-hash-table)
   "Cleared and used by semtree to avoid walking through the
   same individual twice and getting into a loop.")
 
-(defmethod semtree ((i individual) &optional (short nil))
+(defmethod semtree ((i individual))
   (clrhash *semtree-seen-individuals*)
-  (collect-model-description i short))
+  (collect-model-description i))
 
-(defmethod semtree ((i referential-category) &optional (short nil))
+(defmethod semtree ((i referential-category))
   (clrhash *semtree-seen-individuals*)
-  (collect-model-description i short))
+  (collect-model-description i))
 
 
 ;;----- collect-model-description mentods
 
-(defmethod collect-model-description ((cat category) &optional (short t))
-  (declare (ignore short))
+(defmethod collect-model-description ((cat category))
   (list cat))
 
-(defmethod collect-model-description ((str string) &optional (short t))
-  (declare (ignore short))
+(defmethod collect-model-description ((str string))
   (list str))
 
 
-(defmethod collect-model-description ((w word) &optional (short t))
-  (declare (ignore short))
+(defmethod collect-model-description ((w word))
   (word-pname w))
 
-(defmethod collect-model-description ((w polyword) &optional (short t)) ;
-  (declare (ignore short))
+(defmethod collect-model-description ((w polyword)) ;
   (pw-pname w))
 
-(defmethod collect-model-description ((cal cons) &optional (short t))
+(defmethod collect-model-description ((cal cons))
   `(collection :members 
                (,@(loop for l in cal 
-                    collect (collect-model-description l short)))))     
+                    collect (collect-model-description l)))))     
 
-(defmethod collect-model-description ((i individual) &optional (short t))
+(defmethod collect-model-description ((i individual))
   (cond
    ((gethash i *semtree-seen-individuals*)
     (list (list "!recursion!" i)))
@@ -781,7 +775,7 @@
                           '(members count ras2-model))
            collect
            (list (var-name(binding-variable b))
-                 (collect-model-description (binding-value b) short))))))
+                 (collect-model-description (binding-value b)))))))
    (t  
     (let ((bindings (indiv-binds i))
           (desc (list i)))
@@ -811,17 +805,16 @@
                  (if (itypep value 'prepositional-phrase)
                   (push (list (var-name var) ; 
                               (collect-model-description
-                               (value-of 'pobj value)
-                               short))
+                               (value-of 'pobj value)))
                         desc)
                   (push (list (var-name var)
-                              (collect-model-description value short))
+                              (collect-model-description value))
                         desc)))
                 (word)
                 (polyword)
                 (category
                  (push (list (var-name var)
-                             (collect-model-description value short))
+                             (collect-model-description value))
                        desc))
                 (cons
                  (push
@@ -829,7 +822,7 @@
                         `(collection 
                           (:members 
                            (,@(loop for item in value 
-                                collect (collect-model-description item short))))))
+                                collect (collect-model-description item))))))
                   desc))
                 (rule-set) ;; the word "anti" presently does this
                 ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)

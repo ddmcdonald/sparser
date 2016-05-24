@@ -47,14 +47,16 @@
      do
        (run-test i nil)))
 
-(defun sem-test-corpus (sentences &optional numbers)
-  (setq *sentences* sentences)
-  (reset-test)
-  (if (null numbers)
-      (setq numbers (loop for i from 1 to (length sentences) collect i)))
-  (loop for i in numbers
-     do
-       (sem-test i)))
+(defun sem-test-corpus (sentences &optional numbers (suppress-indiv-uid nil))
+  (let ((*suppress-indiv-uids* suppress-indiv-uid))
+    (declare (special *suppress-indiv-uids*))
+    (setq *sentences* sentences)
+    (reset-test)
+    (if (null numbers)
+	(setq numbers (loop for i from 1 to (length sentences) collect i)))
+    (loop for i in numbers
+       do
+	 (sem-test i))))
   
 
 (defun test-overnight (&rest numbers)
@@ -92,29 +94,50 @@
                     *load-test-sents*))
   (let*
       ((*readout-segments-inline-with-text* nil) ;; quiet
-       (sentences
-        (ecase corpus
-          ((:overnight overnight) *overnight-sentences*)
-          ((:dry-run :jan dry-run jan) *jan-dry-run*)
-          ((:dec-test dec-test) *dec-tests*)
-          ((:erk erk) *erk-abstract*)
-          ((:aspp2 aspp2) *aspp2-whole*)
-          ((:load load-test) *load-test-sents*)))
-       (test (nth (- n 1) sentences)))
+       (sent (get-sentence corpus n)))
     (declare (special *readout-segments-inline-with-text*))
     (if quiet
-        (pp (second test))
-        (eval test))
-    (format stream "~&~&________________~&(~s ~s)~&~S~&" corpus n (second test))
-    (loop for chunk in (reverse *chunks*)
-      do (print-segment-and-pending-out-of-segment-words
-          (chunk-start-pos chunk)
-          (chunk-end-pos chunk)
-          stream))
-    (let
-        ((*no-edge-info* no-edges))
-      (declare (special *no-edge-info*))
-      (ptree stream))))
+        (pp sent)
+        (eval `(p ,sent)))
+    (show-heading sent corpus n stream)
+    (show-chunks stream)
+    (show-canonical-syntax-tree stream no-edges)))
+
+(defun sent-parse (sent &key (stream *standard-output*))
+  (let ((*readout-segments-inline-with-text* nil)) ;; quiet
+    (pp sent)
+    (show-sent-heading sent nil nil stream)
+    (show-chunks stream)
+    (show-canonical-syntax-tree stream t)))
+
+(defun get-sentence (corpus n)
+  (let ((sentences
+	 (ecase corpus
+	   ((:overnight overnight) *overnight-sentences*)
+	   ((:dry-run :jan dry-run jan) *jan-dry-run*)
+	   ((:dec-test dec-test) *dec-tests*)
+	   ((:erk erk) *erk-abstract*)
+	   ((:aspp2 aspp2) *aspp2-whole*)
+	   ((:load load-test) *load-test-sents*))))
+    (second (nth (- n 1) sentences))))
+
+(defun show-sent-heading (sent corpus n stream)
+  (format stream "~&~&________________~&~a~&~S~&"
+	  (if (null corpus) "" (format nil "(~s ~s)" corpus n))
+	  sent))
+
+(defun show-chunks (stream)
+  (loop for chunk in (reverse *chunks*)
+     do (print-segment-and-pending-out-of-segment-words
+	 (chunk-start-pos chunk)
+	 (chunk-end-pos chunk)
+	 stream)))
+
+(defun show-canonical-syntax-tree (stream &optional (no-edges t))
+  (let
+      ((*no-edge-info* no-edges))
+    (declare (special *no-edge-info*))
+    (ptree stream)))
 
 (defun save-sent-parse (corpus n)
   (with-open-file (stream (sent-save-file corpus n)
@@ -348,8 +371,12 @@
    (t
     (loop for elt in tree sum (tree-size elt)))))
 
+(defparameter *no-small-trees* nil)
+
 (defun small? (tree)
-  (< (tree-size tree) 5))
+  (declare (special *no-small-trees*))
+  (and (not *no-small-trees*)
+       (< (tree-size tree) 5)))
 
 (defun print-tree (tree &optional (last nil) (indent 0) (stream t)(tight nil))
   (if
@@ -382,6 +409,7 @@
 
     
 (defun format-item (item stream)
+  (declare (special *suppress-indiv-uids*))
   (typecase item
     (psi (push-debug `(,item))
          (error "Something gerated a PSI and it shouldn't have: ~a" item))
@@ -392,13 +420,15 @@
                                 (polyword (pw-pname name))
                                 (otherwise "")))))
        (if name
-          (format stream "~(~a-~a ~s~)"
-                  (cat-symbol (car (indiv-type item)))
-                  (indiv-uid item)
-                  pname)
-          (format stream "~(~a-~a~)"
-                  (cat-symbol (car (indiv-type item)))
-                  (indiv-uid item)))))
+	   (format stream "~(~a~a~a ~s~)"
+		   (cat-symbol (car (indiv-type item)))
+		   (if *suppress-indiv-uids* "" "-")
+		   (maybe-indiv-uid item)
+		   pname)
+	   (format stream "~(~a~a~a~)"
+		   (cat-symbol (car (indiv-type item)))
+		   (if *suppress-indiv-uids* "" "-")
+		   (maybe-indiv-uid item)))))
 
     (otherwise
      (format stream "~(~S~)" item))))

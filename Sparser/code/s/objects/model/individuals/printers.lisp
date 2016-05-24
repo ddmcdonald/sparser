@@ -44,17 +44,24 @@
 ;;; value as a structure
 ;;;----------------------
 
+(defparameter *suppress-indiv-uids* nil) ;; set to T for canonical semtree printouts
+(defun maybe-indiv-uid (indiv)
+  (if *suppress-indiv-uids*
+      ""
+      (indiv-uid indiv)))
+
+
 (defun print-individual-structure (indiv stream depth)
   (declare (ignore depth))
   (let ((type-field (indiv-type indiv)))
     (if type-field
       (cond
        ((eq type-field :never-used)
-        (format stream "#<fresh individual ~A>" (indiv-uid indiv)))
+        (format stream "#<fresh individual ~A>" (maybe-indiv-uid indiv)))
        ((eq type-field :freshly-allocated)
-        (format stream "#<fresh individual ~A>" (indiv-uid indiv)))
+        (format stream "#<fresh individual ~A>" (maybe-indiv-uid indiv)))
        ((deallocated-individual? indiv)
-        (format stream "#<deallocated individual ~A>" (indiv-uid indiv)))
+        (format stream "#<deallocated individual ~A>" (maybe-indiv-uid indiv)))
        (t
         (let* ((operations (cat-operations (first type-field)))
                (special-routine
@@ -73,7 +80,7 @@
                   (princ-category category stream)
                   (write-string "type-not-handled" stream))
                 (write-string " " stream))
-              (format stream "~A>" (indiv-uid indiv))))))))
+              (format stream "~A>" (maybe-indiv-uid indiv))))))))
       (else
         ;; a freshly allocated individual has no type
         (write-string "#<empty individual>" stream)))))
@@ -87,7 +94,7 @@
 (defun princ-individual (i stream)
   (princ-category (car (indiv-type i)) stream)
   (write-string "-" stream)
-  (princ (indiv-uid i) stream))
+  (princ (maybe-indiv-uid i) stream))
 
 
 
@@ -124,7 +131,7 @@
                    (or (display-name? i)
                        (name-of-individual i)))
            "")
-          (indiv-uid i)))
+          (maybe-indiv-uid i)))
 
 
 ;;--- Vanilla cases
@@ -149,7 +156,7 @@
   ;; have a name field, which we assume is bound to a word. 
   ;; This routine is put on the ops-printer field of the category
   ;; at the time the category is defined.
-  (declare (special *print-short*))
+  (declare (special *print-short* *suppress-indiv-uids*))
 
   (write-string "#<" stream)
 
@@ -186,7 +193,10 @@
          (princ-category category stream)
          (write-string " " stream))))
 
-    (format stream " ~A" (indiv-uid i))
+    (format stream " ~A"
+	    (if *suppress-indiv-uids*
+		""
+		(maybe-indiv-uid i)))
     (write-string ">" stream)))
 
 
@@ -366,7 +376,7 @@
          (bound-in-bindings (indiv-bound-in i)))
 
     (format stream "~&~a  ~a"
-            (indiv-uid i)
+            (maybe-indiv-uid i)
             (if (permanent-individual? i) :permanent :temporary))
     (format stream "~&  ~{~a ~}" category-names)
     (when binds-bindings
