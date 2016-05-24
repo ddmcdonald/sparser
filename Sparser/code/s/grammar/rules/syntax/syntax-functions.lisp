@@ -409,7 +409,7 @@
   (cond
     ((null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
      nil)
-    (*subcat-test* (object-variable qualifier))
+    (*subcat-test* (subcategorized-variable qualifier :object head))
     (t (or (call-compose qualifier head)
 	   ;; This case is to benefit marker-categories
 	   (link-in-verb qualifier head)
@@ -419,10 +419,11 @@
 	     nil)))))
 
 (defun link-in-verb (qualifier head)
-  (let ((object (object-variable qualifier)))
+  (let ((var (subcategorized-variable qualifier :object head)
+	  #+ignore (object-variable qualifier head)))
     (setq qualifier (individual-for-ref qualifier))
-    (when object ;; really should check for passivizing
-      (setq  qualifier (create-predication-by-binding object head qualifier
+    (when var ;; really should check for passivizing
+      (setq  qualifier (create-predication-by-binding var head qualifier
 						      (list 'link-in-verb (parent-edge-for-referent)))))
     (setq  head (bind-dli-variable 'predication qualifier head))
     head))
