@@ -69,7 +69,7 @@
 
 ;;"It is interesting that various stimuli provoke EGF receptor tyrosine phosphorylation by two distinct means.")
 (define-category post-translational-modification :specializes caused-bio-process
-  :binds ((substrate protein)
+  :binds ((substrate (:or protein variant)) ;; allow variant to pick up "phosphorylated fraction"
 	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
   :restrict ((agent (:or protein bio-process bio-mechanism)))
@@ -83,6 +83,7 @@
          :m agent ;;somehow this overrides the ones below
          :of substrate
          :at amino-acid
+	 :on amino-acid ;;"BRAF that is phosphorylated on serine and tyrosine."
 	 :at site
 	 :in site
 	 :m site
