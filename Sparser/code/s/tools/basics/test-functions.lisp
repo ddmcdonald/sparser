@@ -41,9 +41,20 @@
 (defun test-corpus (sentences &optional numbers)
   (setq *sentences* sentences)
   (reset-test)
+  (if (null numbers)
+      (setq numbers (loop for i from 1 to (length sentences) collect i)))
   (loop for i in numbers
      do
        (run-test i nil)))
+
+(defun sem-test-corpus (sentences &optional numbers)
+  (setq *sentences* sentences)
+  (reset-test)
+  (if (null numbers)
+      (setq numbers (loop for i from 1 to (length sentences) collect i)))
+  (loop for i in numbers
+     do
+       (sem-test i)))
   
 
 (defun test-overnight (&rest numbers)
