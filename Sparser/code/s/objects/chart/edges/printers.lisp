@@ -15,18 +15,19 @@
 
 (in-package :sparser)
 
+(defparameter *no-edge-numbers* nil)
 
 (defun print-edge-structure (obj stream depth)
   (declare (ignore depth))
   (write-string "#<edge" stream)
-  (princ (edge-position-in-resource-array obj) stream)
+  (unless *no-edge-numbers* (princ (edge-position-in-resource-array obj) stream))
   (write-string " " stream)
   (if (deactivated? obj)
     (then
       (write-string "inactive, resource " stream)
       (princ (edge-position-in-resource-array obj) stream))
     (else
-      (princ-edge-vector-position-number (edge-starts-at obj) stream)
+	(princ-edge-vector-position-number (edge-starts-at obj) stream)
       (write-string " " stream)
       (let ((label (edge-category obj)))
         (typecase label

@@ -99,8 +99,9 @@
     (if quiet
         (pp sent)
         (eval `(p ,sent)))
-    (show-heading sent corpus n stream)
+    (show-sent-heading sent corpus n stream)
     (show-chunks stream)
+    (show-sem-forest stream no-edges)
     (show-canonical-syntax-tree stream no-edges)))
 
 (defun sent-parse (sent &key (stream *standard-output*))
@@ -295,18 +296,21 @@
             (show-sem-forest)
             )))))
 
-(defun show-sem-forest ()
-  (loop for edge-tree in
-              (tts-edge-semantics)
-              do
-              (terpri)
-              (if (small? (second edge-tree))
-                  (then
-                    (format t "~&~s" (car edge-tree))
-                    (print-tree (second edge-tree) t 0 t t))
-                  (else
-                    (format t "-----  ~s" (car edge-tree))
-                    (print-tree (second edge-tree))))))
+(defun show-sem-forest (&optional (stream *standard-output*) (no-edges nil))
+  (let ((*no-edge-numbers* no-edges)
+	(*suppress-indiv-uids* t))
+    (declare (special *no-edge-numbers* *suppress-indiv-uids*))
+    (loop for edge-tree in
+	 (tts-edge-semantics)
+       do
+	 (format stream "~%")
+	 (if (small? (second edge-tree))
+	     (then
+	       (format stream "~&~s" (car edge-tree))
+	       (print-tree (second edge-tree) t 0 stream t))
+	     (else
+	       (format stream "-----  ~s" (car edge-tree))
+	       (print-tree (second edge-tree) nil 0 stream))))))
 
 
 (defun sem-test (n &optional (sentences *sentences*))
