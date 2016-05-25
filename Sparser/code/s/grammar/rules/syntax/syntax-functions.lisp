@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  January 2016
+;;;  Version:  May 2016
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -198,13 +198,17 @@
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
   (cond
-    (*subcat-test* (not (and (individual-p head) (itypep head 'determiner))))
-    ((itypep head 'determiner) nil) ;; had strange case with "some cases this" -- head was "this"
+    (*subcat-test* (not (and (individual-p head)
+                             (itypep head 'determiner))))
+    ((itypep head 'determiner)
+     ;; had strange case with "some cases this" -- head was "this"
+     nil)
     ((and qualifier head
 	  (not (or (category-p head)
 		   (individual-p head))))
      ;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
-     (break "Can't deal with head whose interpretation is not an individual or category in noun-noun-compound, head is ~s~&" head))
+     (break "Can't deal with head whose interpretation is not ~
+             an individual or category in noun-noun-compound, head is ~s~&" head))
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
@@ -213,7 +217,7 @@
        ((and 
 	 (itypep qualifier (itype-of head))
 	 (not (indiv-binds head)) ;; head already is modified -- don't replace with proper noun
-	 ;; w.g. "braf mutant a 375 melanoma cell"
+	 ;; e.g. "braf mutant a 375 melanoma cell"
 	 (if (itypep qualifier category::collection)
 	     (and
 	      ;; conjunction of named items
@@ -243,7 +247,7 @@
         (push (subcat-instance head :m variable-to-bind premod)
               *subcat-info*))
       (setq head (individual-for-ref head))
-      (setq head (bind-dli-variable variable-to-bind premod head))
+      (setq head (bind-variable variable-to-bind premod head))
       head))))
 
 
@@ -1245,6 +1249,9 @@
      do (terpri)(print pat)))
 
 (defun subcategorized-variable (head label item)
+  "Returns the variable on the HEAD that is subcategorized for
+   the ITEM when it has the grammatical relation LABEL to
+   the head."
   (declare (special item *pobj-edge*))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
@@ -1256,11 +1263,14 @@
     ((null item)
      (cond
        ((and (boundp '*pobj-edge*) *pobj-edge*)
-	(break "~&*** null item in subcategorized pobj for edge ~s~&" *pobj-edge*))
+	(break "~&*** null item in subcategorized pobj for ~
+                 edge ~s~&" *pobj-edge*))
        ((eq label :subject)
-	(format t "~&*** null item in subcategorized subject for edge ~s~&" *left-edge-into-reference*))
+	(format t "~&*** null item in subcategorized subject ~
+                 for edge ~s~&" *left-edge-into-reference*))
        ((eq label :object)
-	(format t "~&*** null item in subcategorized object for edge ~s~&" *right-edge-into-reference*))
+	(format t "~&*** null item in subcategorized object ~
+                  for edge ~s~&" *right-edge-into-reference*))
        (t
 	(lsp-break "~&null item in subcategorized-variable~&")))
      nil)
@@ -1288,10 +1298,9 @@
 		      do
 			(loop for p in pats
 			   when
-			     (and (not  (eq (subcat-restriction p) (subcat-restriction pat)))
+			     (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
 				  (not (consp (subcat-restriction p)))
-				  (if
-				   (consp (subcat-restriction pat))
+				  (if (consp (subcat-restriction pat))
 				   (loop for i in (cdr (subcat-restriction pat))
 				      thereis (itypep i (subcat-restriction p)))
 				   (itypep (subcat-restriction pat) (subcat-restriction p))))
@@ -1317,6 +1326,7 @@
 		       (when (satisfies-subcat-restriction? item scr)
 			 (setq variable (subcat-variable entry))
 			 (return)))))))
+           
 	   ;; collect information on failed tests
 	   (when *trivial-subcat-test*
 	     (unless variable
@@ -1328,8 +1338,7 @@
 		       (return)))))))
           
 	   ;;(break "testing subcats")
-	   variable
-	   ))))))
+	   variable ))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
   (declare (special category::pronoun/first/plural category::ordinal))
