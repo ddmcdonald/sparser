@@ -336,12 +336,6 @@
   (when *trace-ns-sequences*
     (trace-msg "[ns] Looking at one hyphen patterns")))
 
-
-
-
-
-
-
 (deftrace :ns-two-hyphen-patterns ()
   (when *trace-ns-sequences*
     (trace-msg "[ns] Looking at two hyphen patterns")))
@@ -364,9 +358,11 @@
     (trace-msg "[ns hyphen] Punting. Can't work with word referent: ~a" ref)))
 
 
-(deftrace :make-right-head-with-agent-left ()
+(deftrace :make-right-head-with-agent-left (var)
+  ;; called in do-relation-between-first-and-second
   (when *trace-ns-sequences*
-    (trace-msg "[ns hyphen] Applying make-right-head-with-agent-left")))
+    (trace-msg "[ns hyphen] Binding the first to the ~a variable of the second"
+               (princ-variable/string var))))
 
 (deftrace :ns-found-subject-var-in (variable right-ref)
   (when *trace-ns-sequences*
