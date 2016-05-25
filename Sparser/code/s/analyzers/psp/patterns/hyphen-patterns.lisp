@@ -51,25 +51,31 @@
   (unless (= 3 (length edges))
     (setq edges (try-to-resolve-uncovered-ns-edges start-pos end-pos edges)))
 
-  (let ((rel-edge
-         (loop for i in (ev-edges (pos-ends-here end-pos))
-           when (second-imposes-relation-on-first? (edge-referent i) i )
-           do (return i))))
+  (let* ((left-edge (first edges))
+         (rel-edge
+          (when (and left-edge (edge-p left-edge)) ;; not a word
+            (loop for i in (ev-edges (pos-ends-here end-pos))
+               when (and (edge-referent i) ;; "anti-p53" #87 in ASPP2
+                         (second-imposes-relation-on-first?
+                          (edge-referent left-edge) (edge-referent i) i ))
+               do (return i)))))
     ;; The code above is intended to catch cases like "isoform-specific"
     ;; where the lexeme "specific" has two definitions one of which is an
     ;; obsolete one from the core, and another of which has a sbcat frame
     ;; and satisfies second-imposes-relation-on-first
 
     ;; TO-DO -- do pair programming review
-    (cond
-     ((not (eq (length edges) (length words)))
+    (unless (eq (length edges) (length words))
       (when *work-on-ns-patterns*
+        (push-debug `(,edges ,words ,start-pos ,end-pos))
         ;; what try-to-resolve-uncovered-ns-edges should have addressed
         ;; appears to be a problem with it
-        (break "Word count not equal to edge count"))
+        (break "Word count (~a) not equal to edge count (~a)"
+               (length words) (length edges)))
       (throw :punt-on-nospace-without-resolution nil))
 
-     ((= 2 (length pattern))
+    (cond
+      ((= 2 (length pattern))
       (cond
        ;; the cases of -adjective and -verb+ed should be handled here, not by 
        ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
@@ -281,7 +287,7 @@
       (compose-salient-hyphenated-literals ;; "re-activate"
        pattern words pos-before pos-after))
 
-     ((second-imposes-relation-on-first? right-ref right-edge)
+     ((second-imposes-relation-on-first? left-ref right-ref right-edge)
       (do-relation-between-first-and-second
        left-ref right-ref left-edge right-edge))
 

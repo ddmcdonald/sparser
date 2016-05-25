@@ -201,7 +201,9 @@
   ;; span one way or another.
   (let* ((edges (remove-non-edges unsorted-edges))
          (pattern (characterize-words-in-region start-pos end-pos edges))
-         (words (words-between start-pos end-pos)))
+         (words (if edges
+                  (effective-words-given-edges unsorted-edges start-pos end-pos)
+                  (words-between start-pos end-pos))))
     (when final-colon?
       ;; If the span the left of the colon is a single word then
       ;; we have nothing to do. If this is not enough of a check
@@ -209,7 +211,7 @@
       ;; non-colon punctuation parameters have values.
       (when (null (cdr words))
         (tr :single-word-followed-by-colon (car words))
-        (return-from ns-pattern-dispatch t))) ;; 
+        (return-from ns-pattern-dispatch t)))
     (when edges
       (tr :ns-pattern-includes-edges edges)
       (setq pattern (convert-mixed-pattern-edges-to-labels pattern)))

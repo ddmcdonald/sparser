@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "charaterize-words"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  November 2015
+;;;  version:  May 2016
 
 ;; initiated 5/15/15 breaking out the routines that look at the words
 ;; and characterize them as patterns to drive the matcher. Moved in
@@ -185,6 +185,43 @@
         (characterize-word-type position word))))))
 
 
-
+;; "EphB1-induced."  "pThr202/Tyr204" dec#46
+(defun effective-words-given-edges (edges start-pos end-pos)
+  "Return a list of the words between the two positions but
+   allowing for polywords, e.g. protein edges"
+  ;; called from ns-pattern-dispatch -- sort of open-codes
+  ;; a variant on words-between and edges-between
+  (let* ((pos start-pos)
+         (edge-copy (copy-list edges))
+         (edge (pop edge-copy))
+         (next-pos (chart-position-after start-pos))
+         longer? words )
+    ;;(push-debug `(,edges ,start-pos ,end-pos))
+    (loop
+       (when (eq pos end-pos) (return))
+       ;;(format t "~&edge = ~a next-pos = ~a" edge next-pos)
+       (cond
+         ((word-p edge) ;; e.g. in "non-radioactivity" overnight #13
+          (push edge words))
+         ((not (eq (pos-edge-ends-at edge) next-pos))
+          ;;(format t "~&longer: edge = ~a" edge)
+          (let* ((long-string (string-of-words-between
+                               pos (pos-edge-ends-at edge)))
+                 (long-word (resolve/make long-string)))
+            (setq longer? t)
+            (push long-word words)))
+         ((eq (pos-edge-ends-at edge) next-pos)
+          ;;(format t "~&same size: edge = ~a" edge)
+          (push (pos-terminal pos) words)))
+       (cond
+         (longer?          
+          (setq pos (pos-edge-ends-at edge)
+                next-pos (chart-position-after pos)
+                longer? nil))
+         (t
+          (setq pos (chart-position-after pos)
+                next-pos (chart-position-after next-pos))))
+       (setq edge (pop edge-copy)))
+    (nreverse words)))
 
 
