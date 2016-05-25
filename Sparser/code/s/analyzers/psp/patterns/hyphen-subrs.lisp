@@ -18,7 +18,7 @@
   ;; Cleanup case in one-hyphen-ns-patterns when no defined pattern
   ;; has matched. Usually a pattern should match, so we should
   ;; trap these before we get here. 
-  ;(push-debug `(,edges ,pattern))
+  ;(push-debug `(,edges ,pattern))                                        ;
   ;(lsp-break "call to nospace-hyphen-specialist")
   (cond
    ((= 3 (length edges))
