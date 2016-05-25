@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "pattern-resolvers"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  November 2015
+;;;  version:  May 2016
 
 ;; Initiated 11/12/15 to collect up and rationalized the subroutines
 ;; used after a pattern has matched to determine what we really have.
@@ -41,16 +41,21 @@
 
 ;;--- predicate 
 
-(defun second-imposes-relation-on-first? (right-ref right-edge)
+(defun second-imposes-relation-on-first? (left-ref right-ref right-edge)
+  "If it's reasonable to take the second as the head, return
+   the variable it would use to compose with the first."
   (declare (special category::verb+ed category::adjective category::verb+ing
                     category::verb+ed))
-  (let* ((form (when (edge-p right-edge) 
-                     (edge-form right-edge))))
-    (when (or
-           (eq form category::verb+ed)
-           ;; assume passive
-           (eq form category::verb+ing)
-           (eq form category::adjective))
+  (let* ((form (when (edge-p right-edge)
+                 (edge-form right-edge)))
+         (subcat-var (subcategorized-variable right-ref :m left-ref)))
+
+    (when subcat-var
+      (return-from second-imposes-relation-on-first? subcat-var))
+
+    (when (or (eq form category::verb+ed) ;; assume passive
+              (eq form category::verb+ing)
+              (eq form category::adjective))
       ;; now figure out what variable on the second (right)
       ;; should be bound to the first (left)
       (let* ((vars (loop for sc in (super-categories-of right-ref)
@@ -62,16 +67,15 @@
               (cond
                ((eq form category::verb+ed)
                 (subject-variable right-ref))
-               ((or
-                 (eq form category::adjective)
-                 (eq form category::verb+ing))
+               ((or (eq form category::adjective)
+                    (eq form category::verb+ing))
                 ;; Get the slots on the category of the right-edge
                 ;; and look for a variable that's not for subjects
                 (let ((sv (subject-variable right-ref)))
                   (loop for v in vars 
                     when (not (eq v sv)) do (return v)))))))
         ;; Which variable this is really depends on the two referents.
-        ;; For the induced example its an agent (= subject). But the
+        ;; For the "induced" example its an agent (= subject). But the
         ;; tyrosine goes on the site variable of the phosphoryate.
         ;; For right now, binding the subject and letting the chips
         ;; fall as they may. Elevating the right edge as the head
@@ -92,25 +96,26 @@
 (defun do-relation-between-first-and-second (left-ref right-ref 
                                              left-edge right-edge)
   (declare (special category::adjective category::verb+ed category::vp+ed))
-  (tr :make-right-head-with-agent-left)
   (when (category-p right-ref)
     (setq right-ref (individual-for-ref right-ref)))
-  (let* ((variable (second-imposes-relation-on-first? right-ref right-edge))
-         (edge
-          (make-ns-edge
-           (pos-edge-starts-at left-edge)
-           (pos-edge-ends-at right-edge)
-           (edge-category right-edge)
-           :form (if (eq (edge-form right-edge) category::verb+ed)
+  (let ((variable (second-imposes-relation-on-first?
+                   left-ref right-ref right-edge)))
+    (tr :make-right-head-with-agent-left variable)
+    (let ((edge
+           (make-ns-edge
+            (pos-edge-starts-at left-edge)
+            (pos-edge-ends-at right-edge)
+            (edge-category right-edge)
+            :form (if (eq (edge-form right-edge) category::verb+ed)
                      (if (itypep left-ref 'no-space-prefix)
 			 category::verb+ed
 			 category::vp+ed)
 		     category::adjective)
-           :referent (bind-dli-variable variable left-ref right-ref)
-           :rule 'do-relation-between-first-and-second
-           :constituents `(,left-edge ,right-edge))))
-    (tr :no-space-made-edge edge)
-    edge))
+            :referent (bind-variable variable left-ref right-ref)
+            :rule 'do-relation-between-first-and-second
+            :constituents `(,left-edge ,right-edge))))
+      (tr :no-space-made-edge edge)
+      edge)))
 
 
 
