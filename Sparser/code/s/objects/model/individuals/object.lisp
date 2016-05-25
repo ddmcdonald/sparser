@@ -35,8 +35,29 @@
 
 (defun itype-of (i) (i-type-of i))
 
-(defparameter *break-on-bad-itype-of* nil)
 
+#| i-type-of should be replaced with itype-of
+Davidsmcbookpro:s ddm$ grep "(i-type-of" **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
+analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
+analyzers/psp/referent/new-cases.lisp:    (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
+grammar/rules/dmp/access-routines.lisp:         (case (cat-symbol (i-type-of verb-segment))
+grammar/rules/dmp/display.lisp:     (case (cat-symbol (i-type-of obj))
+grammar/rules/dmp/display.lisp:          (i-type-of obj))
+grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
+grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
+grammar/rules/syntax/conjunction.lisp:                            (individual (i-type-of left-ref))
+grammar/rules/syntax/conjunction.lisp:                             (individual (i-type-of right-ref))
+objects/model/categories/clos-backing.lisp:                 (individual (i-type-of o))
+objects/model/individuals/object.lisp:(defun itype-of (i) (i-type-of i))
+objects/model/individuals/object.lisp:             (values t (i-type-of i)))))))
+objects/model/individuals/object.lisp:  (cat-symbol (i-type-of i)))
+objects/model/individuals/reclaim.lisp:      (pushnew (i-type-of i) augmented-list))
+grammar/model/core/people/printers.lisp:                (ecase (cat-symbol (i-type-of version-obj))
+grammar/model/core/places/places.lisp:                     (i-type-of name) name)))))
+grammar/model/core/titles/rules.lisp:                 (i-type-of possessive) 
+grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
+|#
 (defun i-type-of (i)
   (typecase i
     (individual
@@ -59,7 +80,73 @@
              an individual" (type-of i)))))
 
 
-
+(defun itype (i c/s)
+  (indiv-typep i c/s))
+#| This should also change to be itypep -- by analogy to typep
+nalyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
+analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
+analyzers/psp/referent/new-cases.lisp:    (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
+grammar/rules/dmp/access-routines.lisp:         (case (cat-symbol (i-type-of verb-segment))
+grammar/rules/dmp/display.lisp:     (case (cat-symbol (i-type-of obj))
+grammar/rules/dmp/display.lisp:          (i-type-of obj))
+grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
+grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
+grammar/rules/syntax/conjunction.lisp:                            (individual (i-type-of left-ref))
+grammar/rules/syntax/conjunction.lisp:                             (individual (i-type-of right-ref))
+objects/model/categories/clos-backing.lisp:                 (individual (i-type-of o))
+objects/model/individuals/object.lisp:(defun itype-of (i) (i-type-of i))
+objects/model/individuals/object.lisp:             (values t (i-type-of i)))))))
+objects/model/individuals/object.lisp:  (cat-symbol (i-type-of i)))
+objects/model/individuals/reclaim.lisp:      (pushnew (i-type-of i) augmented-list))
+grammar/model/core/people/printers.lisp:                (ecase (cat-symbol (i-type-of version-obj))
+grammar/model/core/places/places.lisp:                     (i-type-of name) name)))))
+grammar/model/core/titles/rules.lisp:                 (i-type-of possessive) 
+grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
+Davidsmcbookpro:s ddm$ 
+Davidsmcbookpro:s ddm$ 
+Davidsmcbookpro:s ddm$ grep "(itype " **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+analyzers/context/operations.lisp:                (itype so 'section-object)
+analyzers/context/operations.lisp:                (itype so 'paragraph))
+analyzers/dmp/measure.lisp:          ((and (itype h1 'pair-term) (itype h2 'term))
+analyzers/dmp/measure.lisp:          ((and (itype h1 'term) (itype h2 'pair-term))
+analyzers/dmp/measure.lisp:          ((and (itype h1 'term) (itype h2 'term))
+analyzers/dmp/measure.lisp:          ((and (itype h1 'pair-term) (itype h2 'pair-term))
+analyzers/dmp/measure.lisp:        (unless (itype body (category-named 'segment))
+grammar/rules/dmp/measure.lisp:          ((and (itype h1 'pair-term) (itype h2 'term))
+grammar/rules/dmp/measure.lisp:          ((and (itype h1 'term) (itype h2 'pair-term))
+grammar/rules/dmp/measure.lisp:          ((and (itype h1 'term) (itype h2 'term))
+grammar/rules/dmp/measure.lisp:          ((and (itype h1 'pair-term) (itype h2 'pair-term))
+grammar/rules/dmp/measure.lisp:        (unless (itype body (category-named 'segment))
+grammar/rules/dmp/pair-terms.lisp:    (+ (if (itype head 'term)
+grammar/rules/dmp/pair-terms.lisp:       (if (itype other 'term)
+grammar/rules/dmp/pair-terms.lisp:  (cond ((and (itype i1 'pair-term)
+grammar/rules/dmp/pair-terms.lisp:              (itype  i2 'pair-term))
+grammar/rules/dmp/pair-terms.lisp:        ((and (itype i1 'term)
+grammar/rules/dmp/pair-terms.lisp:              (itype i2 'term))
+grammar/rules/dmp/pair-terms.lisp:        ((and (itype i1 'pair-term)
+grammar/rules/dmp/pair-terms.lisp:              (itype i2 'term))
+grammar/rules/dmp/pair-terms.lisp:        ((and (itype i1 'term)
+grammar/rules/dmp/pair-terms.lisp:              (itype i2 'pair-term))
+grammar/rules/dmp/segments.lisp:    (if (itype s 'segment)
+grammar/rules/dmp/you.lisp:         (cond ((itype vp-segment 'segment)
+grammar/rules/dmp/you.lisp:               ((itype vp-segment 'verb-object)
+objects/model/bindings/object.lisp:                (individual (itype body category))
+objects/model/kraql/kraql.lisp:    (let ((itype (indiv-type individual)))
+grammar/model/core/collections/obj-specific-printers.lisp:      (unless (itype s 'sequence)
+grammar/model/core/collections/operations.lisp:  (unless (itype sequence 'sequence)
+grammar/model/core/companies/names.lisp:  (when (itype company 'company)
+grammar/model/core/companies/object.lisp:   ((itype name 'company)
+grammar/model/core/companies/object.lisp:   ((itype name 'person)
+grammar/model/core/companies/object.lisp:   ((itype name 'name-word)
+grammar/model/core/companies/object.lisp:  (when (itype name 'collection)
+grammar/model/core/companies/object.lisp:  (unless (itype name 'company-name)
+grammar/model/core/names/object.lisp:      (if (and (itype name1 'name) (itype name2 'name))
+grammar/model/sl/biology/amino-acids.lisp:                   (unless (itype number-exp 'number)
+grammar/model/sl/ern/discourse-heuristics.lisp:          (if (itype (value-of 'change chg) 'change-by-amount)
+grammar/model/sl/ern/discourse-heuristics.lisp:                (if (itype (value-of 'amount amt-of-chg) 'percent)
+grammar/model/sl/ern/stream-through-driver.lisp:  (when (itype obj (category-named 'qualified-financial-data))
+grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorized-name)
+|#
 (defun itypep (i c/s) 
   (if (consp i)
     (error "what are you doing passing a CONS to itypep: ~s~&" i)
@@ -81,16 +168,23 @@
        (error "indiv-typep not applied to an individual:~%~a  ~a"
               (type-of i) i))))) 
 
-(defun itype (i c/s)
-  (indiv-typep i c/s))
+
+(defparameter *complain-about-odd-args-to-itypep* nil
+  "Do we 'report' it when something is passed to itypep
+   or itype-of that isn't an individual ora category,
+   or just return nil.")
+
+(defparameter *break-on-bad-itype-of* nil
+  "Break on bad itypep rather than just report.")
 
 
 (defun report-bad-itype-of (i &optional (called-from 'itype-of))
-  (if *break-on-bad-itype-of* 
+  (when *complain-about-odd-args-to-itypep*
+    (if *break-on-bad-itype-of* 
       (break "~s applied to ~s rather than an individual" called-from i)
       (then 
         (format t "~&--- ~S applied to ~s rather than an individual" called-from i)
-        (format t "~&(setq *break-on-bad-itype-of* T) to cause a break here"))))
+        (format t "~&(setq *break-on-bad-itype-of* T) to cause a break here")))))
 
 
 
