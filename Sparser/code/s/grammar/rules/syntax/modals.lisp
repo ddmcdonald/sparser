@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1996,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1996,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "modals"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2015
+;;;  Version:  May 2016
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3. Populated w/o semantics 1/11/94
 ;; Given a mix-in interpretation 7/11.  8/2 pulled the check for whether 'modal'
@@ -163,6 +163,25 @@
   :referent (:function absorb-auxiliary left-edge right-edge))
 
 
+;;--- modal + verb+ed
+;; This is spurious in a proper grammar, but if an infinitive form
+;; is mis-labeled as a past tense then we'll get here gratuitously
+;; e.g. LS: "set"
+
+(def-syntax-rule (modal verb+ed)
+                :head :right-edge
+  :form vg
+  :referent (:function absorb-auxiliary left-edge right-edge))
+
+
+;;; ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
+;; drop the "then" on the floor
+
+(def-cfr modal (modal then)
+  :form modal
+  :referent (:head left-edge))
+
+
 
 
 #|
@@ -220,17 +239,6 @@ They might well work as straight-up cfr rules, and that's a case
              ;;:subtype might
                    ))
 |#
-
-
-;;--- modal + verb+ed
-;; This is spurious in a proper grammar, but if an infinitive form
-;; is mis-labeled as a past tense then we'll get here gratuitously
-;; e.g. LS: "set"
-
-(def-syntax-rule (modal verb+ed)
-                :head :right-edge
-  :form vg
-  :referent (:function absorb-auxiliary left-edge right-edge))
 
 
 #|

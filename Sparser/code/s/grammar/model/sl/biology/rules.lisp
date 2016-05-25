@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2016 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2015
+;;; version: May 2016
 
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
@@ -23,13 +23,6 @@
 
 
 (in-package :sparser)
-
-;;; ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
-;; drop the "then" on the floor
-
-(def-cfr modal (modal then)
-  :form modal
-  :referent (:head left-edge))
 
 
 ;;; 'free' variables
@@ -310,5 +303,4 @@
   :form adjective
   :referent 
   (:head right-edge :bind (negation left-edge)))
-
 
