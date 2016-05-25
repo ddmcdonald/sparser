@@ -22,6 +22,10 @@
 (define-citation "~60."
   (1 NUMBER 3))
 
+(define-citation "serine-phosphorylated BRAF."
+    ;; Sem-tree should show an amino-acid. This
+    ;; tests the calulation in second-imposes-relation-on-first?
+    (1 PROTEIN 5))
 
 (define-citation "BRAF-V600E."
   (1 PROTEIN 6))
