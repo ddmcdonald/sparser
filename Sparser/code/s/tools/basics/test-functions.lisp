@@ -182,11 +182,13 @@
 
 (defun save-sent-snapshots (&optional
                             (corpora '(overnight dec-test dry-run aspp2 erk)))
+  "Top-level sentence syntax/semantics snapshot creation routine."
   (let ((*sent-snapshots-directory* (create-snapshot-directory)))
     (loop for c in corpora
       do (terpri)
-      (print c)
-      (print (save-corpus-sents c)))))
+         (print c)
+         (print (save-corpus-sents c))
+      finally (return *sent-snapshots-directory*))))
 
 (defun save-corpus-sents (name)
   (let ((corpus (get-sentence-corpus name))
@@ -198,8 +200,8 @@
     (let* ((variable (corpus-bound-variable corpus))
            (sentences (eval variable)))
       (loop for i from 1 to (length sentences)
-        do
-        (save-sent-parse name i)))))
+            do (save-sent-parse name i)
+            finally (return *sent-snapshots-directory*)))))
 
 (defun create-snapshot-directory ()
   (declare (special *directory-for-tree-snapshots*))
@@ -226,7 +228,33 @@
    (format nil "~a-~a.sparse" corpus n)
    (create-corpus-directory corpus)))
 
+(defun bless-sent-snapshots (&optional (directory (save-sent-snapshots))
+                             (link-name "gold") &aux
+                             (link (merge-pathnames
+                                    (make-pathname :name link-name
+                                                   :directory '(:relative :up))
+                                    directory)))
+  "Make a symbolic link to a blessed snapshot directory."
+  (assert (directory-p directory) (directory) "Not a directory.")
+  (ignore-errors (delete-file link))
+  #+sbcl (sb-posix:symlink (enough-namestring directory *directory-for-tree-snapshots*)
+                           (namestring link))
+  #-sbcl (error "Don't know how to make a symbolic link.")
+  (truename link))
 
+(defun compare-sent-snapshots (directory &optional (gold "gold/"))
+  (let* ((*default-pathname-defaults* *directory-for-tree-snapshots*)
+         (gold (merge-pathnames gold))
+         (cwd (uiop:getcwd)))
+    (unwind-protect
+         (progn
+           (uiop:chdir *directory-for-tree-snapshots*)
+           (uiop:run-program (format nil "diff -qrw '~a' '~a'"
+                                     (enough-namestring gold)
+                                     (enough-namestring directory))
+                             :ignore-error-status t
+                             :output *standard-output*))
+      (uiop:chdir cwd))))
 
 ;;;-------------------------------
 ;;; general iterators and friends
