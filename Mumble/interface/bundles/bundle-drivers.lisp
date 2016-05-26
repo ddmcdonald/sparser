@@ -263,9 +263,10 @@
     ;; to objects referenced in the first.
     (when (and (eql (name node) 'conjunction)
                (not (eql (first-constituent node) *current-phrasal-root*)))
-      (return (member object (objects-referenced
-                              (context-object
-                               (contents (first-constituent node)))))))))
+      (let ((contents (contents (first-constituent node))))
+        (when (phrasal-root-p contents)
+          (return (member object (objects-referenced
+                                  (context-object contents)))))))))
 
 (defun c-command? (mention)
   "Has the object been mentioned by some previous dominating phrase

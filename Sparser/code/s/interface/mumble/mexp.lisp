@@ -91,11 +91,13 @@ two values: the compiled expression and a possibly augmented context.")
 
 (defmethod mexp ((expr sp::individual) &key context)
   "Individuals name themselves."
-  (values (make-dtn :referent expr
-                    :resource (let ((name (sp::value-of 'sp::name expr)))
-                                (if name
-                                  (noun (sp::get-mumble-word-for-sparser-word name))
-                                  (get-lexicalized-phrase (sp::pname-for expr)))))
+  (values (neuter-&-third-person
+           (singular
+            (make-dtn :referent expr
+                      :resource (let ((name (sp::value-of 'sp::name expr)))
+                                  (if name
+                                    (noun (sp::get-mumble-word-for-sparser-word name))
+                                    (get-lexicalized-phrase (sp::pname-for expr)))))))
           context))
 
 (defgeneric mexp-type (type)
@@ -119,7 +121,9 @@ two values: the compiled expression and a possibly augmented context.")
 
 (macrolet ((define-article (article in/definite)
              `(defmethod mexp-w/head ((expr cons) (head (eql ',article)) &key context)
-                (,in/definite (in/definite-mexp expr :context context)))))
+                (multiple-value-bind (expr context)
+                    (in/definite-mexp expr :context context)
+                  (values (neuter-&-third-person (singular (,in/definite expr))) context)))))
   (define-article a initially-indefinite)
   (define-article any initially-indefinite)
   (define-article the always-definite))
@@ -136,10 +140,9 @@ but could easily be extended to use CONJUNCTION-S for higher arities."
                           :resource conjunction)))
       (make-complement-node 'one x dtn)
       (make-complement-node 'two y dtn)
-      (values (if more
-                (mexp `(and ,dtn ,@more) :context context)
-                dtn)
-              context))))
+      (if more
+        (mexp `(and ,dtn ,@more) :context context)
+        (values dtn context)))))
 
 (defmethod mexp-w/head ((expr cons) head &key context)
   "General compound mexpression compiler.
@@ -155,11 +158,12 @@ named parameters."
                                  (mexp arg :context context)))
                              args))
               context)
-      (loop with dtn = (mexp operation :context context)
+      (loop with dtn and i
+            initially (multiple-value-setq (dtn context)
+                        (mexp operation :context context))
             for (parameter-name value) on args by #'cddr
-            do (make-complement-node (sp::mumble-symbol parameter-name)
-                                     (mexp value :context context)
-                                     dtn)
+            do (multiple-value-setq (i context) (mexp value :context context))
+               (make-complement-node (sp::mumble-symbol parameter-name) i dtn)
             finally (return (values dtn context))))))
 
 (defun prepositional-location (prep object &key context)
