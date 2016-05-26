@@ -100,8 +100,11 @@
         (pp sent)
         (eval `(p ,sent)))
     (show-sent-heading sent corpus n stream)
-    (show-chunks stream)
+    (format stream "~%~%;;; ---------- Results of chunking:~%")
+    (np (reverse *chunks*) stream)
+    (format stream "~%~%;;; ------------ Semantics of treetops~%")
     (show-sem-forest stream no-edges)
+    (format stream "~%~%;;; ----------- Syntactic structure of parse~%~%")
     (show-canonical-syntax-tree stream no-edges)))
 
 (defun sent-parse (sent &key (stream *standard-output*))
@@ -123,8 +126,9 @@
     (second (nth (- n 1) sentences))))
 
 (defun show-sent-heading (sent corpus n stream)
-  (format stream "~&~&________________~&~a~&~S~&"
-	  (if (null corpus) "" (format nil "(~s ~s)" corpus n))
+  (format stream "~&~&________________~&~a~%~%~s~&"
+	  (if (null corpus) ""
+	      (format nil "Corpus: ~s Sentence#: ~s" corpus n))
 	  sent))
 
 (defun show-chunks (stream)
