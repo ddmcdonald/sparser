@@ -99,20 +99,43 @@
     (if quiet
         (pp sent)
         (eval `(p ,sent)))
-    (show-sent-heading sent corpus n stream)
-    (format stream "~%~%;;; ---------- Results of chunking:~%")
-    (np (reverse *chunks*) stream)
-    (format stream "~%~%;;; ------------ Semantics of treetops~%")
-    (show-sem-forest stream no-edges)
-    (format stream "~%~%;;; ----------- Syntactic structure of parse~%~%")
-    (show-canonical-syntax-tree stream no-edges)))
+    (display-sent-results sent corpus n :stream stream)))
 
-(defun sent-parse (sent &key (stream *standard-output*))
+(defun display-sent-parse (sent corpus n &key (stream *standard-output*))
   (let ((*readout-segments-inline-with-text* nil)) ;; quiet
     (pp sent)
-    (show-sent-heading sent nil nil stream)
-    (show-chunks stream)
-    (show-canonical-syntax-tree stream t)))
+    (display-sent-results sent corpus n :stream stream)))
+
+(defun display-sent-results (sent corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
+  (show-sent-heading sent corpus n stream)
+  (display-chunks stream)
+  (show-sem-syn-forest stream)
+  )
+
+(defun show-sem-syn-forest (&optional (stream *standard-output*) (no-edges t))
+  (loop for edge in (all-tts)
+     do
+       (let
+	   ((*no-edge-info* no-edges)
+	    (*suppress-indiv-uids* t)
+	    (ref (edge-referent edge)))
+	 (declare (special *no-edge-info* *suppress-indiv-uids*))
+	 (format stream "~%~s~% --- ~s~%" edge (extract-string-spanned-by-edge edge))
+	 (if (word-p ref)
+	     (format stream "  ~s" ref)
+	     (pprint (semtree ref) stream))
+	 (format stream "~%~%------ Edge syntactic tree:~%")
+	 (ctree edge stream)
+	 (format stream "~%~%"))))
+
+(defun old-display-sent (sent corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
+  (show-sent-heading sent corpus n stream)
+  (format stream "~%~%;;; ---------- Results of chunking:~%")
+  (display-chunks stream)
+  (format stream "~%~%;;; ------------ Semantics of treetops~%")
+  (show-sem-forest stream no-edges)
+  (format stream "~%~%;;; ----------- Syntactic structure of parse~%~%")
+  (show-canonical-syntax-tree stream no-edges))
 
 (defun get-sentence (corpus n)
   (let ((sentences
@@ -126,17 +149,19 @@
     (second (nth (- n 1) sentences))))
 
 (defun show-sent-heading (sent corpus n stream)
-  (format stream "~&~&________________~&~a~%~%~s~&"
+  (format stream "~a~%~%~s~&"
 	  (if (null corpus) ""
 	      (format nil "Corpus: ~s Sentence#: ~s" corpus n))
 	  sent))
 
-(defun show-chunks (stream)
+(defun display-chunks (stream)
+  (format stream ";;; ---------- Results of chunking:~%")
   (loop for chunk in (reverse *chunks*)
      do (print-segment-and-pending-out-of-segment-words
 	 (chunk-start-pos chunk)
 	 (chunk-end-pos chunk)
-	 stream)))
+	 stream))
+  (format stream "~%"))
 
 (defun show-canonical-syntax-tree (stream &optional (no-edges t))
   (let
