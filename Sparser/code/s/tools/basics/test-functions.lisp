@@ -228,6 +228,7 @@
    (format nil "~a-~a.sparse" corpus n)
    (create-corpus-directory corpus)))
 
+#+sbcl (require :sb-posix)
 (defun bless-sent-snapshots (&optional (directory (save-sent-snapshots))
                              (link-name "gold") &aux
                              (link (merge-pathnames
