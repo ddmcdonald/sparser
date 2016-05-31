@@ -46,6 +46,11 @@
    the variable it would use to compose with the first."
   (declare (special category::verb+ed category::adjective category::verb+ing
                     category::verb+ed))
+  (when (or (word-p left-ref) (word-p right-ref)) ;; e.g. "-tagged"
+    (return-from second-imposes-relation-on-first? nil))
+  (unless (and left-ref right-ref)
+    (return-from second-imposes-relation-on-first? nil))
+
   (let* ((form (when (edge-p right-edge)
                  (edge-form right-edge)))
          (subcat-var (subcategorized-variable right-ref :m left-ref)))
@@ -100,6 +105,8 @@
     (setq right-ref (individual-for-ref right-ref)))
   (let ((variable (second-imposes-relation-on-first?
                    left-ref right-ref right-edge)))
+    (unless variable
+      (return-from do-relation-between-first-and-second nil))
     (tr :make-right-head-with-agent-left variable)
     (let ((edge
            (make-ns-edge
