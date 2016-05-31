@@ -247,9 +247,10 @@
     ;; We want to keep hyphens and +. What about a final slash?
     ;; Ex. in present slash code is "c-Raf/ MAPK-mediated [6]."
     ;; where a repair is probably better. So just doing colon
-    ;; right now. 
-    (tr :dropping-final-punct-of-ns-span final-word)
-    (eq final-word *the-punctuation-colon*)))
+    ;; right now.
+    (when (eq final-word *the-punctuation-colon*)
+      (tr :dropping-final-punct-of-ns-span final-word)
+      t)))
 
 
 
