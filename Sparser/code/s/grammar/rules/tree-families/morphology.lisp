@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.13 June 2015
+;;;  version:  May 2016
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -110,7 +110,7 @@
                               override-category
                                category))
                            category)))
-    (when (and (consp (cdr head-word)) ;; not (:adjective . #<word "black">
+    (when (and (consp (cdr head-word))
                (cddr head-word))
       ;; Two cases, multiple words and a single word with irregularities
       ;; We assume if they know to specify irregulars at all they
@@ -247,7 +247,7 @@
 
 
 (defun verb? (word)
-  (let ((rs (word-rules word)))
+  (let ((rs (rule-set-for word)))
     (when rs
       (let ((brackets (rs-phrase-boundary rs)))
         (when brackets
@@ -399,10 +399,10 @@
              (typecase raw
                (word raw)
                (polyword raw)
-               (string (define-word/expr raw))
+               (string (resolve/make raw))
                (cons
                 (loop for r in raw
-                  when (stringp r) do (setq r (define-word/expr r))
+                  when (stringp r) do (setq r (resolve/make r))
                   collect r))
                (otherwise
                 (break "Unexpected type: ~a~%  ~a" (type-of raw) raw))))
@@ -805,13 +805,13 @@
 
 (defmethod s-form-of-verb ((base word))
   (let* ((s-form-pname (s-form-of-verb (word-pname base)))
-         (word (define-word/expr s-form-pname)))
+         (word (resolve/make s-form-pname)))
     (assign-brackets-as-a-main-verb word)
     word ))
 
 (defmethod s-form-of-verb ((base polyword))
   (let* ((s-form-pname (s-form-of-verb (pw-pname base)))
-         (word (define-polyword/expr s-form-pname)))
+         (word (resolve/make s-form-pname)))
     (assign-brackets-as-a-main-verb word)
     word ))
 
@@ -824,13 +824,13 @@
 
 (defmethod ed-form-of-verb ((word word))
   (let* ((ed-pname (ed-form-of-verb (word-pname word)))
-         (word (define-word/expr ed-pname)))
+         (word (resolve/make ed-pname)))
     (assign-brackets-as-a-main-verb word)
     word ))
 
 (defmethod ed-form-of-verb ((word polyword))
   (let* ((ed-pname (ed-form-of-verb (pw-pname word)))
-         (word (define-polyword/expr ed-pname)))
+         (word (resolve/make ed-pname)))
     (assign-brackets-as-a-main-verb word)
     word ))
 
@@ -866,13 +866,13 @@
 
 (defmethod ing-form-of-verb ((word word))
   (let* ((ing-pname (ing-form-of-verb (word-pname word)))
-         (word (define-word/expr ing-pname)))
+         (word (resolve/make ing-pname)))
     (assign-brackets-as-a-main-verb word)
     word ))
 
 (defmethod ing-form-of-verb ((word polyword))
   (let* ((ing-pname (ing-form-of-verb (pw-pname word)))
-         (word (define-polyword/expr ing-pname)))
+         (word (resolve/make ing-pname)))
     (assign-brackets-as-a-main-verb word)
     word ))
     
@@ -1241,7 +1241,6 @@ category 'collection' was defined, mostly lemmas in the upper model.")
 
 
 ;;;-------------------------------------------------------
-
 ;;; deictic time ("Wednesday", "immediately", "tomorrow")
 ;;;-------------------------------------------------------
 
