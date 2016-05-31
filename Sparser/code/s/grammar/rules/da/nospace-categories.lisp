@@ -272,25 +272,48 @@
 ;;; stranded hyphens
 ;;;------------------
 
-(defun resolve-tailing-stranded-hyphen (pattern words start-pos end-pos)
+(defun resolve-trailing-stranded-hyphen (pattern edges words start-pos end-pos)
   ;; called from one-hyphen-ns-patterns for (:lower :hyphen),
   ;; e.g. "mono-"
   (declare (special *salient-hyphenated-literals*))
   (let* ((word (car words))
          (known? (memq word *salient-hyphenated-literals*)))
+    (tr :resolve-hyphen-trailing word)
     (cond
      (known?
       (compose-salient-hyphenated-literals pattern words start-pos end-pos))
-     (t
-      (when *work-on-ns-patterns*
-        (push-debug `(,words ,pattern))
-        (break "stranded hyphen: unknown -- what do we do?"))))))
+     (t   ;; "p53- independent manner" (even though it's a typo)
+      ;; Same as in initial hyphens We cover the edge
+      (let* ((edge-to-elevate (first edges))
+             (new-edge (make-edge-over-long-span
+                        start-pos end-pos
+                        (edge-category edge-to-elevate)
+                        :form (edge-form edge-to-elevate)
+                        :referent (edge-referent edge-to-elevate)
+                        :constituents edges)))
+        (tr :no-space-made-edge new-edge)
+        new-edge)))))
 
-(defun resolve-initial-stranded-hyphen  (pattern words start-pos end-pos)
-  ;; e.g. "-tagged"
-  (when *work-on-ns-patterns*
-    (push-debug `(,pattern ,words ,start-pos ,end-pos))
-    (break "do initial stranded hyphen")))
+;; e.g. "-tagged" in
+;; "green fluorescent protein (GFP)-tagged ERK1" (ERK #4)
+(defun resolve-initial-stranded-hyphen  (pattern edges start-pos end-pos)
+  "It connects to something on its left. At the level of no-space
+   handling we're not in a posiion to know what that is.
+   /// Instead we should note that we have one of these and where
+   so that a follow-on process can make the connection.
+   Right now just do the first step and swallow the hyphen
+   in the manner of a daughter rule."
+  
+  (let ((edge-to-elevate (second edges)))
+    (tr :resolve-hyphen-before edge-to-elevate)
+    (let ((new-edge (make-edge-over-long-span
+                     start-pos end-pos
+                     (edge-category edge-to-elevate)
+                     :form (edge-form edge-to-elevate)
+                     :referent (edge-referent edge-to-elevate)
+                     :constituents edges)))
+      (tr :no-space-made-edge new-edge)
+      new-edge)))
 
 #| Define the notion of a prefix (or no-space-prefix) that
 can compose with its suffix and apply a general-purpose
@@ -318,11 +341,12 @@ for each case and define a k-method to make sense of it all.
 (defparameter *salient-hyphenated-literals*
   `(
     ,(define-no-space-prefix "auto")
-    ,(define-no-space-prefix "co") ;; co-occurring
-    ,(define-no-space-prefix "de") ;; de-repressing 
-    ,(define-no-space-prefix "di")
-    ,(define-no-space-prefix "mono")
-    ,(define-no-space-prefix "re") ;; "re-activate"
+     ,(define-no-space-prefix "co") ;; co-occurring
+     ,(define-no-space-prefix "de") ;; de-repressing 
+     ,(define-no-space-prefix "di")
+     ,(define-no-space-prefix "mono")
+     ,(define-no-space-prefix "non") ;; non-radioactive
+     ,(define-no-space-prefix "re") ;; "re-activate"
     ))
 
 (defun some-word-is-a-salient-hyphenated-literal (words)
