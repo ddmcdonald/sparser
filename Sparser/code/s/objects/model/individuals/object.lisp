@@ -37,6 +37,7 @@
 
 
 #| i-type-of should be replaced with itype-of
+
 Davidsmcbookpro:s ddm$ grep "(i-type-of" **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
 analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
 analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
@@ -83,6 +84,7 @@ grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
 (defun itype (i c/s)
   (indiv-typep i c/s))
 #| This should also change to be itypep -- by analogy to typep
+
 nalyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
 analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
 analyzers/psp/referent/new-cases.lisp:    (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
@@ -159,14 +161,12 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
        ;; strictly speaking mixins are not organized into taxonomies
        ;; but in most code one won't be able to tell
        (category-inherits-type? i (category-named c/s :break-if-none)))
-      (word 
-       (format t "~&*** itypep applied to a word ~s. Bad referent on edge. Returning NIL." i)
+      (word
        (report-bad-itype-of i 'itypep)
        nil)
       (otherwise
-       (push-debug `(,i ,c/s))
-       (error "indiv-typep not applied to an individual:~%~a  ~a"
-              (type-of i) i))))) 
+       (report-bad-itype-of i 'itypep)
+       nil))))
 
 
 (defparameter *complain-about-odd-args-to-itypep* nil
@@ -176,7 +176,6 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
 
 (defparameter *break-on-bad-itype-of* nil
   "Break on bad itypep rather than just report.")
-
 
 (defun report-bad-itype-of (i &optional (called-from 'itype-of))
   (when *complain-about-odd-args-to-itypep*
