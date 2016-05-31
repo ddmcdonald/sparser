@@ -173,7 +173,7 @@
 ;; the code in morphology just as its used by ETF.
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
-  ;; (push-debug `(,word ,comlex-clause ,ambiguous?)) (break "setup noun")
+  ;;(push-debug `(,word ,comlex-clause ,ambiguous?)) (lsp-break "setup noun")
   (let ((marked-plural
          (when comlex-clause (explicit-plurals comlex-clause)))
         (category-name (name-to-use-for-category word))
@@ -187,7 +187,7 @@
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    (let* ((category 
+    (let ((category 
             (if (category-named category-name)
               (then
                 (when *break-on-pattern-outside-coverage?*
@@ -198,16 +198,26 @@
                 (category-named category-name))
               (define-category/expr category-name
                                     `(:specializes ,super-category
-                                      :instantiates :self))))
-           (rules
-            (make-cn-rules/aux ;; we don't need to decipher the 'word'
-             word
-             category ;; lhs
-             category ;; referent
-             marked-plural))) ;; special-cases
-      (mark-as-constructed-category-for-word category super-category)
-      (add-rules-to-category category rules)
-      category)))
+                                                   :instantiates :self))))
+          (rs (rule-set-for word)))
+
+      #+ignore(when rs
+        (push-debug `(,rs))
+        (describe rs)
+        (lsp-break "word already has rule set"))
+
+      (let ((rules (make-cn-rules/aux
+                    word
+                    category ;; lhs
+                    category ;; referent
+                    marked-plural))) ;; special-cases
+        (mark-as-constructed-category-for-word category super-category)
+        (when rs ;; could start out as nil
+          (unless (eq (rule-set-for word) rs)
+            (push-debug `(,word ,rs))
+            (error "Rule set for ~a changed by making rules" word)))
+        (add-rules-to-category category rules)
+        category))))
 
 (defparameter *show-R3-new-verb-definitions* nil)
 (defun show-new-verb-definitions ()
@@ -225,10 +235,14 @@
                ;; words defined ambiguously by COMLEX, and not previously defined as a noun
                (not ambiguous?))
       ;; 2/16/16 fires on "immunoblot" in doc #10 of the localization set.
-      ;; (lsp-break "~&don't introduce a verb conflicting with a known noun ~s~&" word)
+      ;;(lsp-break "~&don't introduce a verb conflicting with a known noun ~s~&" word)
       (return-from setup-verb nil))
-    (svo/bio/expr word)
+    (let ((rs (rule-set-for word)))      
+      #+ignore(when rs (push-debug `(,rs))(lsp-break "Already has a rule-set: ~a" word))
+      (svo/bio/expr word)
+      #+ignore(when rs (push-debug `(,word))(lsp-break "Afterwards")))
     (return-from setup-verb nil))
+
   (when (stringp word)
     (setq word (resolve/make word)))
   (let ((special-cases
@@ -248,10 +262,9 @@
                         "Setup: The category named ~a already exists."
                         category-name))
               (category-named category-name))
-            
             (define-category/expr category-name
                                   `(:specializes ,super-category
-                                                 :instantiates :self)))))
+                                    :instantiates :self)))))
       ;; Adds the rule to the category itself
       (apply #'define-main-verb (cat-symbol category)
              :infinitive (word-pname word)
