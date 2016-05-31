@@ -205,9 +205,18 @@
           (push edge words))
          ((not (eq (pos-edge-ends-at edge) next-pos))
           ;;(format t "~&longer: edge = ~a" edge)
-          (let* ((long-string (string-of-words-between
-                               pos (pos-edge-ends-at edge)))
-                 (long-word (resolve/make long-string)))
+          (let* ((long-string
+                  (trim-whitespace
+                   (extract-character-between-positions
+                    pos (pos-edge-ends-at edge))))
+                 (long-word (resolve long-string)))
+            ;; It's not a good idea to make these polywords
+            ;; since going forward they would take precedence
+            ;; over the compositional edge without providing
+            ;; the content that the edge does. 
+            #+ignore(unless long-word
+              (tr :ns-making-word-to-match-edge edge long-string)
+              (setq long-word (resolve/make long-string)))
             (setq longer? t)
             (push long-word words)))
          ((eq (pos-edge-ends-at edge) next-pos)
