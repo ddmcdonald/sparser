@@ -326,6 +326,12 @@
   (when *trace-ns-sequences*
     (trace-msg "[ns] finished at position ~a" next-position)))
 
+(deftrace :ns-making-word-to-match-edge (edge long-string)
+  ;; called from effective-words-given-edges
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] creating a polyword for ~s~
+              ~%       to go with ~a" long-string edge)))
+
 
 
 (deftrace :ns-edge-pattern (label-pattern)
@@ -377,8 +383,14 @@
     (trace-msg "[ns hyphen] applying rule: ~a" rule)))
 
 
+(deftrace :resolve-hyphen-trailing (word)
+   (when *trace-ns-sequences*
+     (trace-msg "[ns hyphen] handling stranded hyphen trailing after ~s"
+                (pname-for word))))
 
-
+(deftrace :resolve-hyphen-before (edge)
+  (when *trace-ns-sequences*
+     (trace-msg "[ns hyphen] handling stranded hyphen before ~a" edge)))
 
 
 
