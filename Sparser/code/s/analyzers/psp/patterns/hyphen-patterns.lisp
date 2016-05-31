@@ -48,12 +48,15 @@
                                start-pos end-pos)
   (tr :ns-one-hyphen-patterns)
   (tr :ns-edge-pattern pattern)
-  (unless (= 3 (length edges))
+  #+ignore(unless (= 3 (length edges))
+            ;; if we allow trailing or leading hyphens then
+            ;; this is wrong. Also produced the wrong edges when applied
+            ;; to "p53-"
     (setq edges (try-to-resolve-uncovered-ns-edges start-pos end-pos edges)))
 
   (let* ((left-edge (first edges))
          (rel-edge
-          (when (and left-edge (edge-p left-edge)) ;; not a word
+          (when (and left-edge (edge-p left-edge)) ;; rule out words
             (loop for i in (ev-edges (pos-ends-here end-pos))
                when (and (edge-referent i) ;; "anti-p53" #87 in ASPP2
                          (second-imposes-relation-on-first?
@@ -80,11 +83,11 @@
        ;; the cases of -adjective and -verb+ed should be handled here, not by 
        ;; composed-by-usable-rule, which makes "MAPK-dependent" be a protein
        ((equal pattern '(:lower :hyphen)) ;; "mono- "
-        (resolve-tailing-stranded-hyphen pattern words start-pos end-pos))
+        (resolve-trailing-stranded-hyphen pattern edges words start-pos end-pos))
        ((eq (car pattern) :hyphen)
-        (resolve-initial-stranded-hyphen pattern words start-pos end-pos))
+        (resolve-initial-stranded-hyphen pattern edges start-pos end-pos))
        ((eq (second pattern) :hyphen)
-        (resolve-tailing-stranded-hyphen pattern words start-pos end-pos))
+        (resolve-trailing-stranded-hyphen pattern edges words start-pos end-pos))
        (t (error "One hyphen NS: shouldn't be able to get here"))))        
 
 
