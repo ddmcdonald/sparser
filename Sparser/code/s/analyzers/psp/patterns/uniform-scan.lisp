@@ -38,7 +38,7 @@
 (unless (boundp '*uniformly-scan-all-no-space-token-sequences*)
   (defparameter *uniformly-scan-all-no-space-token-sequences* nil
     "Gates this simpler alternative / complement to the pattern-driven
-    scheme. Sort of a generic 'super' tokenizer"))
+     scheme. Sort of a generic 'super' tokenizer"))
 
 (unless (boundp '*parser-interior-of-no-space-token-sequence*)
   (defparameter *parser-interior-of-no-space-token-sequence* t
@@ -52,7 +52,7 @@
 (defparameter *collect-ns-examples* nil
   "if non-null, collect all ns examples that contain #\- or #\/.
    Called from collect-no-space-segment-into-word just before
-  it sets up the dispatch.")
+   it sets up the dispatch.")
 
 
 ;;;------------
@@ -217,6 +217,12 @@
       (setq pattern (convert-mixed-pattern-edges-to-labels pattern)))
     (tr :segment-ns-pattern pattern)
 
+    (unless hyphen-positions
+      (when (memq :hyphen pattern)
+        ;; Final hyphen isn't being recorded by the scan.
+        ;; "p53- independent" in ASPP2 #65
+        (setq hyphen-positions (list (chart-position-before end-pos)))))
+
     (cond 
      ((eq :double-quote (car pattern))
       (tr :ns-scare-quote)
@@ -303,6 +309,7 @@
   ;; called from reify-ns-name-and-make-edge when *big-mechanism*
   ;; flag is up. Responsible for returning the category to use,
   ;; the rule, and the referent so that the caller can make an edge
+  (declare (special *sentence-in-core* category::bio-entity))
   (let* ((words-string (actual-characters-of-word pos-before pos-after words))
          (obo (corresponding-obo words-string))
          (uc-word (resolve (string-upcase words-string))))
@@ -348,11 +355,13 @@
 			  rule
 			  (cfr-referent rule)))
 		 (t (push-debug `(,w))
-		    (format t "~&^^^^^^^^^^^^^ Known word ~s, but no associated rule. Probably a part of a polyword, now defining it as a bio-entity~%  in ~s~%" w (sentence-string *sentence-in-core*))
-		    (let* ((i ))
-		      (values category::bio-entity
-			      'reify-ns-name-as-bio-entity
-			      (find-or-make-individual 'bio-entity :name w)))))))))
+		    (format t "~&^^^^^^ Known word ~s, but no associated rule. ~
+                              Probably a part of a polyword, now defining it ~
+                              as a bio-entity~%  in ~s~%"
+                            w (sentence-string *sentence-in-core*))
+                    (values category::bio-entity
+                            'reify-ns-name-as-bio-entity
+                            (find-or-make-individual 'bio-entity :name w))))))))
 
 
       (t ;; by default make a bio-entity
