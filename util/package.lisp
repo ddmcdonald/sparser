@@ -39,6 +39,11 @@
 
            ;; strings
            #:string-append
+           #:*whitespace-chars*
+           #:remove-leading-whitespace
+           #:remove-trailing-whitespace
+           #:trim-whitespace
+           #:contains-whitespace
 
            ;; hash-tables
            #:all-hash-keys
