@@ -60,7 +60,8 @@
         (let ((subcat (cadr (assq :subc (cdr pos-entry)))))
           (when subcat
             (push-debug `(,category ,word ,subcat)) 
-            (break "stub")))))))
+            ;; (lsp-break "stub")
+            ))))))
 
 
 ;;;-----------------------------------
