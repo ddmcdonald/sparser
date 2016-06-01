@@ -338,7 +338,6 @@
                  :specializes bio-process
   :mixins (has-UID has-name biological)
   :binds ((subject biological))
-  
   :realization 
   (:noun "processXXX"
          :s subject)
@@ -351,7 +350,6 @@
 (define-category named-bio-process
     :specializes other-bio-process
   :realization (:common-noun name) ;; for nominal forms
-
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
@@ -444,7 +442,8 @@
       :with method
       :at ratio-condition))
 
-(define-category over-ridden) ;; this is used only for over-riding inherited variables
+(define-category over-ridden)
+;; this is used only for over-riding inherited variables
 
 (define-category bio-movement ;; like translocation, entry and "binding to membrane"                 
                  :specializes bio-process
@@ -743,6 +742,12 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+(def-synonym kinase
+             (:noun "kinase"
+                   :for reaction
+                   :m protein
+                   :m residue))
+
 (noun "phosphatase" :super post-translational-enzyme)
 
 (noun "ubiquitylase" :super post-translational-enzyme)
@@ -767,11 +772,6 @@
          :of substrate
          :for substrate))
 
-(def-synonym kinase
-             (:noun "kinase"
-                   :for reaction
-                   :m protein
-                   :m residue))
 
 (define-category phosphatase :specializes enzyme
                  ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
@@ -1112,45 +1112,6 @@ the aggregate across the predicate it's in. |#
   (:noun "strength"))
 
 
-
-
-
-
-
-;;--- referents for type kinds, v.s. the particulars
-;;/// Need these if we want bio-type as a label in the
-;; grammar. Otherwise lemmas on categories can carry
-;; the burden
-#| bio-type gets an 'Inconsistent superclasses' error making
-   it's clos shadow class. Have to look up the problem
-
- has-name is a relation, as it has-UID, so the def-class
- superc list is (abstract relation relation) 
- Relation is a subclass of abstract, so it's (super sub sub)
-
-(define-category bio-type :specializes abstract
-  :mixins (has-UID has-name)
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(define-individual 'bio-type
-  :name "molecule")
-
-(define-individual 'bio-type
-  :name "amino acid")
-
-(define-individual 'bio-type
-  :name "protein")
-
-(define-individual 'bio-type
-  :name "kinase")
-|#
-
-(define-category bib-reference
-   :specializes abstract) ;; to allow "et al." to be easily ignored
-
-(define-category article-table
-   :specializes abstract) ;; to allow "et al." to be easily ignored
 
 (def-realization protein
   :noun "protein"
