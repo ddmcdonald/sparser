@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   February 2016
+;;;   Version:   June 2016
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -274,7 +274,7 @@
 
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
-(define-sequencer/determiner "next")
+(define-sequencer/determiner "next") ;; adv? "next to"
 (unless (eq :biology common-lisp-user::script)
   (define-sequencer/determiner "subsequent")
   (define-sequencer/determiner "following"))
@@ -375,8 +375,7 @@
 (define-adverb "basically")
 (define-adverb "beautifully")
 (define-adverb "bilaterally")
-(define-adverb "biochemically")
-(define-adverb "biologically")
+
 (define-adverb "briefly")
 (define-adverb "broadly")
 (define-adverb "by necessity")
@@ -388,7 +387,7 @@
 (define-adverb "certainly")
 (define-adverb "characteristically")
 (define-adverb "cheaply")
-(define-adverb "chemically")
+
 (define-adverb "chronologically")
 (define-adverb "circularly")
 (define-adverb "clearly")
@@ -443,7 +442,7 @@
 (define-adverb "effectively")
 (define-adverb "efficiently")
 (define-adverb "electrically")
-(define-adverb "endosymbiotically")
+
 (define-adverb "energetically")
 (define-adverb "entirely") ;;hmm
 (define-adverb "environmentally")
@@ -498,7 +497,7 @@
 (define-adverb "highly") ;; might move to approx. 
 (define-adverb "historically")
 (define-adverb "hitherto")
-(define-adverb "homeostatically")
+
 (define-adverb "hugely")
 (define-adverb "hypothetically")
 (define-adverb "ideally")
@@ -565,11 +564,11 @@
 (define-adverb "measurably")
 (define-adverb "medically")
 (define-adverb "merely") ;;
-(define-adverb "metabolically")
+
 (define-adverb "metaphorically")
 (define-adverb "mildly")
 (define-adverb "minimally")
-(define-adverb "mitotically")
+
 (define-adverb "moderately") ;;degree?
 (define-adverb "modestly")
 (define-adverb "morbidly")
@@ -793,20 +792,19 @@
 (define-adjective "avian")
 (define-adjective "basal")
 (define-adjective "beneficial")
-(define-adjective "bioactive")
-(define-adjective "biological")
+
 (define-adjective "bona fide")
 (define-adjective "broad")
-(define-adjective "cancerous")
+
 (define-adjective "canonical")
 (define-adjective "capable") ;of
-(define-adjective "catalytic")
+
 (define-adjective "causal")
 (define-adjective "cellular") ;cell
 (define-adjective "central" :form 'spatial-adjective)
 (define-adjective "certain") ;interesting
 (define-adjective "chimeric")
-(define-adjective "chromosomal") ;chromosome
+
 (define-adjective "chronic")
 (define-adjective "circumstantial")
 (define-adjective "clear")
@@ -854,19 +852,16 @@
 (define-adjective "economical")
 (define-adjective "efficient")
 (define-adjective "elaborate")
-(define-adjective "embryonic")
-(define-adjective "endothelial") ; endothelium is noun
+
 (define-adjective "entire")
 (define-adjective "environmental")
-(define-adjective "epidermal")
-(define-adjective "epigenetic")
-(define-adjective "epithelial")
+
 (define-adjective "evasive")
 (define-adjective "eventual" :form 'temporal-adjective)
 (define-adjective "excessive")
 (define-adjective "experimental")
 (define-adjective "extensive")
-(define-adjective "extracellular" :form 'spatial-adjective)
+
 (define-adjective "extraordinary")
 (define-adjective "extreme")
 (define-adjective "extrinsic")
@@ -879,8 +874,7 @@
 (define-adjective "full-blown")
 (define-adjective "functional")
 (define-adjective "fundamental")
-(define-adjective "genetic")
-(define-adjective "genomic") ;genome
+
 (define-adjective "genuine")
 (define-adjective "given")
 (define-adjective "good")
@@ -888,18 +882,15 @@
 (define-adjective "gross")
 (define-adjective "harmful")
 (define-adjective "heavy")
-(define-adjective "hematopoietic")
+
 (define-adjective "heritable")
-(define-adjective "heterotypic")
-(define-adjective "histopathological")
-(define-adjective "homeostatic")
+
 (define-adjective "hybrid")
 (define-adjective "hyperactive")
 (define-adjective "hyperresponsive")
 (define-adjective "hypoxic") ;low-oxygen
 (define-adjective "ill")
-(define-adjective "immune")
-(define-adjective "immunosuppressive")
+
 (define-adjective "implicit")
 (define-adjective "important")
 (define-adjective "impressive")
@@ -921,8 +912,7 @@
 (define-adjective "intact")
 (define-adjective "integral")
 (define-adjective "interconnected")
-(define-adjective "intracellular" :form 'spatial-adjective)
-(define-adjective "intratumoral" :form 'spatial-adjective)
+
 (define-adjective "intrinsic")
 (define-adjective "invisible")
 (define-adjective "irreparable")
@@ -941,34 +931,27 @@
 (define-adjective "malignant")
 (define-adjective "maximal")
 (define-adjective "mechanistic")
-(define-adjective "medical")
-(define-adjective "metabolic")
-(define-adjective "metastatic")
-(define-adjective "mitochondrial")
-(define-adjective "mitogenic")
-(define-adjective "molecular")
+
 (define-adjective "morphological")
-(define-adjective "multicellular")
+
 (define-adjective "multistep")
-;(define-adjective "mutagenic")
+
 (define-adjective "nascent")
 (define-adjective "national")
 (define-adjective "natural")
 (define-adjective "nearby" :form 'spatial-adjective)
 (define-adjective "necessary")
-(define-adjective "necrotic")
+
 (define-adjective "neighboring" :form 'spatial-adjective)
-(define-adjective "neoplastic")
+
 (define-adjective "new")
 (define-adjective "nominal")
-(define-adjective "non-neoplastic")
-(define-adjective "nonclonal")
-(define-adjective "nonmutational")
+
 (define-adjective "normal")
 (define-adjective "notable")
 (define-adjective "null")
 (define-adjective "obscure")
-(define-adjective "oncogenic")
+
 (define-adjective "ongoing")
 (define-adjective "organismic")
 (define-adjective "original")
@@ -979,32 +962,27 @@
 (define-adjective "paradoxical")
 (define-adjective "particular")
 (define-adjective "passive")
-(define-adjective "pericellular" :form 'spatial-adjective)
-(define-adjective "peritumoral" :form 'spatial-adjective)
+
 (define-adjective "permissive")
 (define-adjective "perpendicular" :form 'spatial-adjective)
 (define-adjective "persistent")
-(define-adjective "physiologic")
-(define-adjective "pituitary")
+
 (define-adjective "poor")
 (define-adjective "potent")
 (define-adjective "powerful")
 ; (define-adjective "precise") in nfkb
 (define-adjective "preeminent")
-(define-adjective "premalignant")
-(define-adjective "preneoplastic")
+
 (define-adjective "prevalent")
 (define-adjective "primary")
-(define-adjective "proangiogenic")
-(define-adjective "proapoptotic") ;should explicitly relate to apoptosis?
+
 (define-adjective "professional") ;with 'phagocyte' means something special
-(define-adjective "proinflammatory") 
-(define-adjective "proliferative") ;opposite: "antiproliferative" or "nonproliferative"
+
 (define-adjective "prominent")
 (define-adjective "proper")
 (define-adjective "prospective")
 (define-adjective "protective")
-(define-adjective "proteolytic")
+
 (define-adjective "prototypical")
 (define-adjective "quiescent")
 (define-adjective "random")
@@ -1022,9 +1000,7 @@
 (define-adjective "regulatory")
 (define-adjective "related")
 (define-adjective "remarkable")
-(define-adjective "renal") ;kidney
-(define-adjective "replicative") 
-(define-adjective "resistant")
+
 (define-adjective "reversible")
 (define-adjective "selective")
 (define-adjective "senescent")
@@ -1036,11 +1012,11 @@
 (define-adjective "simple")
 (define-adjective "small")
 (define-adjective "solid")
-(define-adjective "somatic")
+
 (define-adjective "specific")
 (define-adjective "spontaneous")
 (define-adjective "stable")
-(define-adjective "stromal") ;stroma
+
 (define-adjective "structural")
 (define-adjective "subcritical")
 (define-adjective "suboptimal")
@@ -1052,15 +1028,11 @@
 (define-adjective "surgical")
 (define-adjective "susceptible")
 (define-adjective "systematic")
-(define-adjective "telomeric") ;telomere
-(define-adjective "therapeutic") ;related to therapy
-(define-adjective "tractable")
-(define-adjective "transcriptional") ;transcription: process
+
 (define-adjective "transformative")
 (define-adjective "transitive")
 (define-adjective "transitory")
-(define-adjective "transmembrane")
-(define-adjective "tumorigenic") ;tumorigenesis
+
 (define-adjective "two-dimensional") ;synonym "2D", is this spatial?
 (define-adjective "unanticipated")
 (define-adjective "unbalanced")

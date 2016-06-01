@@ -37,26 +37,90 @@
 
 (in-package :sparser)
 
-(define-category exclusivity :specializes bio-relation ;; this is actually a lot more general
-  :binds ((alternative biological))
-  :realization
-  (:noun "exclusivity" :adj "exclusive"
-	 :with alternative))
+;; Moved in from dossiers/modifiers.lisp
+(define-adverb "biochemically")
+(define-adverb "biologically")
+(define-adverb "chemically")
+(define-adverb "endosymbiotically")
+(define-adverb "enzymatically")
+(define-adverb "homeostatically")
+(define-adverb "metabolically")
+(define-adverb "mitotically")
 
-(noun "xref" :super bio-abstract)
+(define-adjective "bioactive")
+;; (define-adjective "biological") -- never never. Kills the mixin
+(define-adjective "cancerous")
+(define-adjective "catalytic")
+(define-adjective "chromosomal") ;chromosome
+(define-adjective "embryonic")
+(define-adjective "endothelial") ; endothelium is noun
+(define-adjective "epidermal")
+(define-adjective "epigenetic")
+(define-adjective "epithelial")
+(define-adjective "extracellular" :form 'spatial-adjective)
+(define-adjective "genetic")
+(define-adjective "genomic") ;genome
+(define-adjective "hematopoietic")
+(define-adjective "heterotypic")
+(define-adjective "histopathological")
+(define-adjective "homeostatic")
+(define-adjective "immune")
+(define-adjective "immunosuppressive")
+(define-adjective "intracellular" :form 'spatial-adjective)
+(define-adjective "intratumoral" :form 'spatial-adjective)
+(define-adjective "medical")
+(define-adjective "metabolic")
+(define-adjective "metastatic")
+(define-adjective "mitochondrial")
+(define-adjective "mitogenic")
+(define-adjective "molecular")
+(define-adjective "multicellular")
+(define-adjective "necrotic")
+(define-adjective "neoplastic")
+;;(define-adjective "non-neoplastic")
+(define-adjective "nonclonal")
+(define-adjective "nonmutational")
+(define-adjective "oncogenic")
+(define-adjective "pericellular" :form 'spatial-adjective)
+(define-adjective "peritumoral" :form 'spatial-adjective)
+(define-adjective "physiologic")
+(define-adjective "pituitary")
+(define-adjective "premalignant")
+(define-adjective "preneoplastic")
+(define-adjective "proangiogenic")
+(define-adjective "proapoptotic") ;should explicitly relate to apoptosis?
+(define-adjective "proinflammatory") 
+(define-adjective "proliferative") ;opposite: "antiproliferative" or "nonproliferative"
+(define-adjective "proteolytic")
+(define-adjective "renal") ;kidney
+(define-adjective "replicative") 
+(define-adjective "resistant")
+(define-adjective "somatic")
+(define-adjective "stromal") ;stroma
+(define-adjective "telomeric") ;telomere
+(define-adjective "therapeutic") ;related to therapy
+(define-adjective "tractable")
+(define-adjective "transcriptional") ;transcription: process
+(define-adjective "transmembrane")
+(define-adjective "tumorigenic") ;tumorigenesis
+
+
+
+
 
 (noun "HA.11" :super epitope)
 
 (noun "bradykinin" :super peptide)
 ;; to be reviewed -- from Localization
-(noun "route" :super bio-mechanism)
+
+
 (define-category bio-observation :specializes bio-entity) ;; not really, but what is it
 (noun "band" :super bio-observation) ;; as in chromatography bands?
+
 (define-category bio-reagent :specializes bio-entity) ;; not really
 (noun "gel" :super bio-reagent)
-(noun "issue" :super bio-rhetorical) ;; not quite, but what 
-(adj "compelling" :super bio-predication)
-(noun "hint" :super bio-rhetorical)
+
+
 (define-category bio-preparation :specializes bio-entity)
 (noun "slice" :super bio-preparation) ;; brain slices
 (noun "gain" :super positive-bio-control)
@@ -65,28 +129,8 @@
 (noun "thresholding" :super bio-method)
 (noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
 (noun "dextran" :super polysaccharide)
-(define-adverb "barely")
-(define-adverb "a bit more")
 
-(define-category positive :specializes bio-relation
-  :realization
-  (:adj "positive"
-	:for theme))
 
-(define-category negative :specializes bio-relation
-  :realization
-  (:adj "negative"
-	:for theme))
-
-(define-category true :specializes bio-relation
-  :realization
-  (:adj "true"
-	:for theme))
-
-(define-category false :specializes bio-relation
-  :realization
-  (:adj "false"
-	:for theme))
 
 (define-category equivalent :specializes bio-relation
   :realization
@@ -100,29 +144,12 @@
 	:for theme))
 
 
-(adj "wide" :super bio-predication)
-
 ;;lipids
 ;; in EGFR signaling comments
 (noun ("DAG" "diacylglycerol") :super lipid)
 (noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
 (noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
 (noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate") :super phospholipid)
-
-(define-category orientation-top
-  :realization
-  (:noun "top"))
-(define-category orientation-bottom
-  :realization
-  (:noun "bottom"))
-
-(define-category orientation-left
-  :realization
-  (:noun "left"))
-
-(define-category orientation-right
-  :realization
-  (:noun "right"))
 
 (adj "bound" :super bio-predication)
 (adj "unbound" :super bio-predication)
@@ -158,20 +185,13 @@
 
 (noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
 (noun "bond" :super bio-entity) ;; chemical bond -- not 
-;; want something for magnitude, size, etc. TO-DO
-(adj "single" :super abstract)
-(adj "double" :super abstract)
 (adj "dual-specificity" :super bio-predication)
-(define-category size :specializes abstract
-  :binds ((measured-item biological))
-  :realization
-  (:noun "size" :of measured-item))
-(noun "surface" :super bio-entity)
 
+
+;;/// N.b. the rule is written over the literal "fold"
 (noun fold :super abstract)
-
 ;; only used in phrases like nnn-fold, this is here to suppress the
-;;  attempt to ascribe a biological meanig to the verb
+;;  attempt to ascribe a biological meaning to the verb
 
 
 (adj "acidic" :super bio-predication)
@@ -184,7 +204,7 @@
 (adj "apparent" :super bio-predication) ;; perhaps need :rhetorical predication"
 (adj "asymmetric" :super bio-predication)
 (adj "conventional" :super bio-predication) ;;"conventinal MAPK cascade"
-(adj "early" :super bio-predication)
+
 (adj "familial" :super bio-predication)
 (noun "carcinoma" :super cancer)
 (noun "glioblastoma" :super cancer)
@@ -205,14 +225,11 @@
 (adj "inhibitory" :super bio-predication)
 (adj "obligatory" :super bio-predication)
 (adj "adjesion" :super bio-predication) ;; TO-DO need to think about how to define "adhere" to structure
-(adj "closed" :super bio-predication)
+
 (adj "scaffolding" :super bio-predication) ;; "scaffolding protein"
-(delete-adj-cfr (resolve "direct"))
-(adj "direct" :super bio-predication)
-(adj "spatial" :super bio-predication)
 (adj "resting" :super bio-predication)
 (define-adverb "sterically")
-(define-adverb "uniquely")
+
 
 ;;proteins from comments -- TO-DO move out to proteins file and do correctly
 (define-protein "LAMTOR2" ("LAMTOR2" "MEK partner 1" "MP1"))
@@ -221,11 +238,7 @@
 (define-protein "KBTB7_HUMAN" ("KBTBD7"))
 
 ;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
-(noun "asides" :super abstract)
-(noun "backs" :super abstract)
-(noun "cans" :super abstract)
-(noun "downs" :super abstract)
-(noun "ups" :super abstract)
+
 #-allegro (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
 (noun "MeHg" :super molecule)
 (def-synonym MeHg (:noun "methyl mercury"))
@@ -266,7 +279,7 @@
 ;;(def-synonym not (:adj "non"))
 
 (noun "CML" :super disease)
-(noun "the next day" :specializes abstract)
+
 (noun  "blotting" :super bio-method)
 
 (noun  "pipetting" :super bio-method)
@@ -283,22 +296,13 @@
 (noun  "microscope" :super bio-method)
 
 (adj  "dimensional" :super bio-predication)
-(adj  "exclusive" :super bio-predication)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define-category bio-amount :specializes bio-scalar
-  :realization
-  (:noun "amount"))
 
-(adj "forward" :super bio-predication) ;; added to avoid problem with complex lookup
-;;Error: Comlex -- new POS combination for "#<word "forward">:: (ADJECTIVE ADVERB ADVPART NOUN VERB)
 (noun "bar" :super abstract) 
 ;;Error: Comlex -- new POS combination for "#<word "bar">:: (NOUN PREP VERB)
-(adj "lesser" :super bio-predication)
-;;> Error: Unexpected POS marker: 'QUANT' on #<word "lesser">
-;; While executing: #<STANDARD-METHOD UNAMBIGUOUS-COMLEX-PRIMED-DECODER (WORD T)>, in process Listener(4).
 (noun ("mouse" :plural "mice") :super species)
 (noun "Xenopus" :super species)
 (noun "zebrafish" :super species)
@@ -319,21 +323,6 @@
 ;; actually an isotope -- need to adjust taxonomy 
 
 
-(define-category ability :specializes bio-relation
-      :binds ((ability bio-process))
-      :realization
-      (:noun "ability" :adj "able"
-             :to-comp ability
-             :of subject
-             :to ability
-	     :control-relations (subject ability)))
-
-(define-category capability :specializes ability
-  :restrict ((subject bio-entity))
-  :realization
-  (:noun "capability" :adj "capable"
-	 :of ability
-	 :control-relations (subject ability)))
 
 (noun "abnormality" :super disease)
 
@@ -351,13 +340,6 @@
      (:adj "active"
            :s activated))
 
-(noun "activity" :super other-bio-process
-      :binds ((theme biological))
-      :realization
-      (:noun "activity"
-             :of subject
-             :towards theme
-             :on theme))
 
 (define-category activator :specializes molecule
   :binds ((activated molecule))
@@ -375,7 +357,6 @@
             :for object))
 (noun "allele" :super variant)
 
-(adj "also known as" :super bio-relation)
 
 (noun "analog" :super variant)
 (noun ("analysis" :plural "analyses")
@@ -411,8 +392,7 @@
 (adj "background" :super bio-predication)
 (noun "bacteria" :super species) ;; not really
 (noun "baseline" :super  bio-method)
-(noun "behavior" :super bio-quality)
-(adj "best" :super bio-predication)
+
 (noun "bifc" :super bio-method)
 (noun "binder" :super bio-entity)
 
@@ -434,8 +414,7 @@
 (adj "clinical" :super bio-predication)
 (adj "pre-clinical" :super bio-predication)
 
-(adj "close" :super bio-predication)
-(define-unit-of-measure "cm")
+
 (adj "cognate" :super bio-predication)
 
 (adj "combinatorial" :super bio-predication) ;; keyword: (al ADJ) 
@@ -446,10 +425,6 @@
   (:noun "complementation"
          :for complement))
 
-(adj "common" :super bio-relation
-  :realization 
-  (:adj "common"
-        :to theme))
 
 ;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
 (define-category component :specializes molecule
@@ -464,35 +439,21 @@
 
 (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super experimental-condition)
-(adj "consistent" :super bio-relation
-  :realization 
-  (:adj "consistent"
-        :with theme))
+
 (adj "constitutive" :super bio-predication)
 (define-adverb "constitutively")
-(noun "content" :super measurement)
+
 (noun "control" :super bio-method)
 
-(adj "critical" :super bio-relation
-  :realization 
-  (:adj "critical"
-        :to theme
-        :for theme))
-(define-adverb "critically")
 
-(adj "current" :super bio-predication)
 (def-bio "cytosine" nucleobase)
 
-(define-unit-of-measure "dalton")
+
 (define-category data :specializes measurement
 		 :realization
 		 (:noun ("datum" :plural "data")))
 (adj "de novo" :super bio-process)
 
-(adj "dead" :super bio-predication)
-
-(adj "deadliest" :super bio-predication) ;;//// no -- define shortcut, morphology extensions
-;; to define the whole comparative paradigm
 
 ;; "the DSB repair defect", "a defect in sensitivity to GAP–mediated regulation"
 (noun "defect" :super bio-relation
@@ -515,14 +476,7 @@
 (noun "detail" :super bio-scalar)
 (noun "development" :super bio-process) ;; keyword: (ment N) 
 
-(delete-adj-cfr (resolve/make "different"))
-(adj "different" :super bio-relation)
-(noun "difference" :super biological ;;THIS IS DONE SIMPLY TO ALLOW THE VERB ALTER TO TAKE DIFFERENCE AS A SUBJECT
-      ;; see sentence 7 of January test "...the differences between the enzymatic and chemical ubiquitination linkers (seven bonds and five bonds, respectively) do not alter GAP–responsiveness..."
-      :binds ((compared biological))
-      :realization
-      (:noun "difference"
-             :between compared))
+
 
 (adj "diffuse" :super bio-predication) ;; TO-DO better superc
 (noun "disorder" :super disease)
@@ -532,11 +486,7 @@
       (:noun "dna binding"
              :of substrate))
 
-(adj "downstream" :super pathway-direction
-  :realization 
-  (:adj "downstream"))
 
-(noun "duration" :super bio-scalar)
 (noun "dynamics" :super bio-abstract)
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
@@ -570,10 +520,8 @@
 (adj "enzymatic" :super bio-predication)
 
 
-(define-adverb "even")
 
 
-(noun "example" :super variant)
 (define-category bio-exchange :specializes other-bio-process
   :binds ((state-before (:or bio-state variant))
           (state-after (:or bio-state variant))
@@ -599,7 +547,6 @@
 (def-synonym category::fetal\ calf\ serum  (:noun "FCS"))
 
 
-(define-adverb "finally")
 
 
 (define-category fluorescence :specializes bio-process
@@ -610,7 +557,6 @@
 (noun "fluorescence correlation spectroscopy measurements" :super bio-method)
 (noun "fluorescence microscopy" :super bio-method)
 
-(noun "form" :super variant)
 
 (noun "forster resonance energy transfer" :super bio-method)
 
@@ -623,21 +569,16 @@
              :of measure))
 
 ;; keyword: (ive ADJ) 
-(adj "full" :super bio-predication)
+
 (adj "nucleotide-free" :super bio-predication)
 
-(adj "further" :super bio-predication)
-(define-adverb "further")
+
 (adj "general" :super bio-predication)
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
 
 (def-bio "guanine" nucleobase)
 
-(adj "high" :super bio-predication)
-(define-category HIGHER :specializes bio-relation
-  :realization 
-  (:adj "higher"))
         
 (adj "high-activity" :super bio-predication)
 (adj "high-throughput" :super bio-predication)
@@ -657,12 +598,6 @@
 (noun "human" :super species)
 
 
-(adj "identical" :super bio-relation
-     :realization
-     (:adj "identical"
-           :to theme))
-(define-adverb "in part")
-
 (define-category in-situ :specializes experimental-condition
   :realization  ;; could also be considered as a location
   (:adj "in situ"))
@@ -675,25 +610,12 @@
   (:adj "in vitro"))
 
 
-(delete-adj-cfr (resolve/make "important"))
-(define-category importance :specializes bio-rhetorical
-      :realization
-      (:noun "importance"
-             :adj "important"))
-
-(define-category significance :specializes bio-rhetorical
-      :realization
-      (:noun "significance"
-             :adj "significant"))
 
 (adj "inactive" :super molecule-state
      :binds ((molecule molecule))
      :realization 
      (:adj "inactive"
            :s molecule))
-(adj "independent" :super bio-relation
-  :realization 
-  (:adj "independent"))
 
 (adj "inducible" :super bio-predication) ;; keyword: (ible ADJ) 
 (adj "ineffective" :super bio-relation
@@ -711,7 +633,6 @@
                  :specializes inhibitor
   :realization (:noun "negative regulator"))
 
-(adj "initial" :super bio-predication)
 (adj "insensitive" :super bio-relation
       :realization
       (:adj "insensitive"
@@ -755,34 +676,12 @@
                     :m gene-or-protein))
 
 
-(define-category lack :specializes bio-relation
-      :realization (:noun "lack" :of theme))
-(adj "least" :super bio-predication)
 (adj "least-selective" :super bio-predication) ;; just to get through
-(noun "length" :super bio-scalar)
-(noun "level" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 
-;;is likely to be mediated by
-;;is likely that this possible feedback
-;;will likely be useful
-(define-category likely :specializes bio-relation
-  :realization
-  (:adj "likely" 
-        :to-comp theme))
-(define-adverb "likely")
 
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "liquid chromatography" :super bio-method)
 (adj "living" :super abstract)
-(adj "long" :super bio-predication)
-(adj "long-term" :super bio-predication)
-
-
-(adj "low" :super bio-predication)
-(define-comparative "lower")
-;;--- "lower"  ("raise")
-;;/// N.b. the adjective variant is commented out in the modifiers dossier
-;; "(RasGEFs) lower the transition energy for ..."
 
 (define-category lysate :specializes bio-entity
   :restrict ((cell-line over-ridden))
@@ -810,10 +709,8 @@
       :realization
       (:noun "means"
              :of process))
-(adj "measurable" :super bio-predication) ;; keyword: (able ADJ) 
 
 (define-adverb "mechanistically")
-;;(delete-adj-cfr (resolve/make "independent"))
 
 (noun "membrane" :super cellular-location)
 (noun "method" :super bio-method)
@@ -825,8 +722,7 @@
 (def-synonym miR-26A1
              (:noun "MIR26A1"))
 (noun "mitogen" :super molecule)
-(define-unit-of-measure "mL")
-(define-unit-of-measure "ml")
+
 (define-category mobility :specializes bio-process
   :binds ((motile bio-entity))
   :realization
@@ -843,7 +739,6 @@
 (adj "mutagenic" :super bio-predication)
 (adj "mutual" :super bio-predication) ;; keyword: (al ADJ) 
 
-(define-adverb "namely")
 (adj "native" :super bio-predication)
 (noun "natural growth conditions" :super experimental-condition)
 (adj "necessary" :super bio-relation
@@ -854,21 +749,13 @@
            :to result
            :to-comp result))
 
-(define-adverb "next")
-(define-unit-of-measure "nM")
-(define-unit-of-measure "nm")
+
 (noun "NMR" :super bio-method)
 (def-synonym NMR (:noun "NMR analyses"))
 
-(delete-noun-cfr (resolve/make "number"))
-(delete-noun-cfr (resolve/make "numbers"))
-(define-category bio-number :specializes measurement
-  :realization
-  (:noun "number"))
+
 
 (define-adverb "notably")
-(delete-adj-cfr (resolve "novel"))
-(adj "novel" :super bio-predication)
 
 ;; These three want to be synonyms
 (noun "frame" :super bio-entity)
@@ -912,11 +799,6 @@
       :realization
       (:noun "population"
              :of element))  
-(noun "position" :super residue-on-protein)
-(define-category possibility :specializes bio-rhetorical
-      :mixins (bio-thatcomp)
-      :realization
-      (:noun "possibility"))
 
 (adj "potent" :super bio-relation
   :realization 
@@ -934,10 +816,7 @@
      (:adj "present"
            :in in-molecule))
 (adj "prevalent" :super bio-predication)
-(define-adverb "primarily") ;; keyword: ENDS-IN-LY 
-(adj "prior" :super bio-relation
-  :binds ((prior-event  bio-process))
-  :realization (:to prior-event))
+
 (noun "proportion" :super bio-scalar)
 (noun "proto-oncogene" :super oncogene)
 (adj "putative" :super bio-predication)
@@ -947,9 +826,7 @@
       :realization
       (:noun "radioactivity" :adj "radioactive"
              :of material))
-(adj "rapid" :super bio-predication)
 (adj "rate-limiting" :super bio-predication)
-(define-adverb "readily")
 (adj "real-time" :super bio-predication)
 (def-synonym real-time (:adj "real time"))
 (noun "receptor" :super protein)
@@ -960,11 +837,7 @@
      :realization
      (:to theme))
      ;; keyword: (ory ADJ)
-(noun "region" :super molecular-location
-      :binds ((bounds biological))
-      :realization
-      (:noun "region"
-             :between bounds))
+
 
 (adj "relative" :super bio-relation
      :restrict ((subject scalar-quality))
@@ -1001,7 +874,6 @@
       :binds ((process bio-process))
       :realization
       (:in process))
-(adj "same" :super bio-predication)
 (noun "scaffold" :super protein) 
 (noun "scale" :super bio-scalar)     
 (noun "SDS-PAGE"  :super bio-method)
@@ -1024,12 +896,6 @@
 (noun "setting" :super bio-context)
 (adj "short-lived" :super bio-predication)
 
-(adj "similar" :super bio-relation
-  :realization 
-  (:to theme))
-(adj "related" :super similar)
-
-(define-adverb "similarly")
  
 ;; Jan 29 "two MAPK phosphorylation sites in ASPP1 and ASPP2."
 ;; Jan 14 "mutation of the primary site of monoubiquitination"
@@ -1050,8 +916,6 @@
       :in substrate
       :on substrate
       :at residue))
-
-(find-or-make-individual 'qualitative-rate :name "slow")
 
 
 (adj "specific" :super bio-relation
@@ -1100,7 +964,7 @@
 (noun "surface area" :super molecular-location)
 (define-adverb "surprisingly")
 (adj "synthetic" :super bio-predication)
-(noun "table" :super article-table)
+
 
 
 
@@ -1126,9 +990,7 @@
      (:adj "unable"
            :to-comp capability))
            
-(adj "unclear" :super bio-rhetorical)
-(adj "unexpected" :super bio-rhetorical)
-(define-adverb "unexpectedly") ;; TO-DO wants to be  :super-category 'bio-rhetorical)
+
 (adj "unknown" :super bio-predication)
 (adj "unmodified" :super bio-predication)
 (adj "unresponsive" :super bio-relation
@@ -1136,9 +998,6 @@
      :realization
      (:adj "unresponsive"
            :to treatment))
-(noun "upstream" :super pathway-direction
-      :realization
-      (:noun "upstream"))
 
 (adj "useful" :super bio-relation
      :binds ((purpose (:or bio-process bio-method)))
@@ -1241,10 +1100,14 @@
 ;;;------------------
 ;;; Units of measure
 ;;;------------------
-
 ;;-- see model/dossiers/units-of-measure.lisp for more forms.
 
-
+(define-unit-of-measure "dalton")
+(define-unit-of-measure "cm")
+(define-unit-of-measure "mL")
+(define-unit-of-measure "ml")
+(define-unit-of-measure "nM")
+(define-unit-of-measure "nm")
 (define-unit-of-measure "mm")
 #+ccl (define-unit-of-measure "μm")
 ;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
@@ -1258,12 +1121,15 @@
 ;;;-------------------------------------------------------
 
 
+(define-category bib-reference
+   :specializes abstract) ;; to allow "et al." to be easily ignored
 
-;; Not quite right -- DAVID -- how do I make "et al." be a word that is the head of a bibliographic reference
-(define-category bib-reference 
-  :specializes bio-abstract)
+(define-category article-table
+   :specializes abstract) ;; to allow "et al." to be easily ignored
 
 (noun "et al." :super bib-reference)
+
+(noun "xref" :super bib-reference)
 
 
 (define-category article-figure
@@ -1287,6 +1153,8 @@
   :referent (:head left-edge
              :bind (label right-edge)))
 
+
+(noun "table" :super article-table)
 
 
 (define-category article-table
@@ -1349,7 +1217,6 @@
 "group";;ambiguous between (NOUN VERB)
 "constitute"
 "response"
-"high";;ambiguous between (ADJECTIVE ADVERB)
 "engender"
 "target";;ambiguous between (NOUN VERB)
 "observation"
