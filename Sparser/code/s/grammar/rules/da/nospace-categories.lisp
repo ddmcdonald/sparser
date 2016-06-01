@@ -347,7 +347,8 @@ for each case and define a k-method to make sense of it all.
      ,(define-no-space-prefix "mono")
      ,(define-no-space-prefix "non") ;; non-radioactive
      ,(define-no-space-prefix "re") ;; "re-activate"
-    ))
+     ))
+;; "anti" defined in biology/terms as an adjective
 
 (defun some-word-is-a-salient-hyphenated-literal (words)
   ;; called as a test cond in resolve-hyphen-between-two-words
