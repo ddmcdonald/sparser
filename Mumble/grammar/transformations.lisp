@@ -9,7 +9,14 @@
 (defun do-any-label-driven-transformations (labels phrase-node)
   "Called from process-slot just after the realization-cycle has
    updated the contents. The labels are from the slot"
-  (push-debug `(,labels ,phrase-node)) ;;  (break "transform: ~a" labels)
+  (push-debug `(,labels ,phrase-node))
+  (cond
+    ((find 'relative-clause labels :key #'name)
+     (let* ((subject-slot-contents (contents (first-constituent phrase-node)))
+	    (trace (build-trace subject-slot-contents)))
+       (set-contents (first-constituent phrase-node) trace))
+     )
+    (t (format t "~&transform: ~a" labels)))
 )
 
 
