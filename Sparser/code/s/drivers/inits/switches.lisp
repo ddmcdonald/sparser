@@ -104,7 +104,10 @@
    alternatives together")
 
 
-(defun switch-settings (&optional full? (stream *standard-output*) )
+(defun switch-settings (&optional full? (stream *standard-output*))
+  (declare (special *treat-single-Capitalized-words-as-names*
+                    *pnf-routine*
+))
   (format stream "~&~%Sparser switch settings:")
   (format stream " ~A" *switch-setting*)
   (format stream "~%              Chart-level protocol: ~A"
@@ -201,53 +204,13 @@
 
 (defun use-unknown-words ()
   (setq *make-edges-for-unknown-words-from-their-properties* t)
-  (setq  *introduce-brackets-for-unknown-words-from-their-suffixes* t))
+  (setq *make-edges-for-unknown-words-from-their-suffixes* t)
+  (setq *introduce-brackets-for-unknown-words-from-their-suffixes* t))
 
 (defun ignore-unknown-words ()
   (setq *make-edges-for-unknown-words-from-their-properties* nil)
+  (setq *make-edges-for-unknown-words-from-their-suffixes* nil)
   (setq *introduce-brackets-for-unknown-words-from-their-suffixes* nil))
-
-
-(defun all-edges-setting ()
-  ;; n.b. hasn't been tested since ~1996
-  (uncontroversial-settings)
-  (what-to-do-with-unknown-words :capitalization-&-digits)
-  (establish-type-of-edge-vector-to-use :kcons-list)
-  (establish-version-of-assess-edge-label :all-edges)
-  (establish-kind-of-chart-processing-to-do :all-edges)
-  (setq *permit-rules-with-duplicate-rhs* t)
-  (setq *dotted-rules-can-duplicate-regular-rules* nil)
-  (setq *do-general-actions-on-treetops* nil)
-  (setq *switch-setting* :all-edges))
-
-(defun top-edges-setting ()
-  (uncontroversial-settings)
-  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
-  (establish-type-of-edge-vector-to-use :vector)  
-  (establish-version-of-assess-edge-label :treetops)
-  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
-  (setq *permit-rules-with-duplicate-rhs* nil)
-  (setq *dotted-rules-can-duplicate-regular-rules* t)
-  (setq *do-general-actions-on-treetops* t)
-  (setq *switch-setting* :top-edges))
-
-
-(defun standard-extras ()  ;; n.b. doesn't stand by itself
-  (setq *do-forest-level* t) ;; <-- needs a protocol assignment
-  (setq *do-heuristic-segment-analysis* *ha*)
-  (setq *do-conceptual-analysis* *ca*)
-  (setq *do-debris-analysis* *da*)
-  (setq *do-completion-actions* t)
-  (setq *no-segment-level-operations* nil)
-  (setq *count-input-lines* t))
-
-(defun turnoff-standard-extras ()
-  (setq *do-forest-level* nil)
-  (setq *do-heuristic-segment-analysis* nil)
-  (setq *do-conceptual-analysis* nil)
-  (setq *do-conceptual-analysis* nil)
-  (setq *no-segment-level-operations* t)
-  (setq *count-input-lines* nil))
 
 (defun include-comlex ()
   (setq *incorporate-generic-lexicon* t)
@@ -265,121 +228,138 @@
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology))
 
 
-;;---- Specific cases
+(defun standard-extras ()  ;; n.b. doesn't stand by itself
+  (setq *do-forest-level* t) ;; <-- needs a protocol assignment
+  (setq *do-heuristic-segment-analysis* *ha*)
+  (setq *do-conceptual-analysis* *ca*)
+  (setq *do-debris-analysis* *da*)
+  (setq *do-completion-actions* t)
+  (setq *no-segment-level-operations* nil)
+  (setq *count-input-lines* t))
 
-(defun top-edges-setting/ddm ()
-  (turn-off-c3)
-  (top-edges-setting)
-  (standard-extras)
-  ;; this setting can be called as a way to negate the effects
-  ;; of other settings such as DM&P to get back to a state
-  ;; where the sublanguage-based extraction is setup for. As a
-  ;; result we have to set a lot more items than if we were
-  ;; starting from scratch and hadn't already run any of the
-  ;; more specific settings
-  (setq *use-segment-edges-as-segment-defaults* nil)
-  (ignore-unknown-words)
-  (setq *make-edges-over-new-digit-sequences* t)
-  (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
-  (setq *segment-scan/forest-level-transition-protocol*
-        :move-when-segment-can-never-extend-rightwards)
+(defun turnoff-standard-extras ()
+  (setq *do-forest-level* nil)
+  (setq *do-heuristic-segment-analysis* nil)
+  (setq *do-conceptual-analysis* nil)
   (setq *do-debris-analysis* nil)
-  (setq *do-domain-modeling-and-population* nil)
-  (setq *new-dm&p* nil)
-  (setq *do-strong-domain-modeling* nil)
+  (setq *no-segment-level-operations* t)
+  (setq *count-input-lines* nil))
 
+
+(defun all-edges-setting ()
+  ;; n.b. hasn't been tested since ~1996
+  (what-to-do-with-unknown-words :capitalization-&-digits)
+  (establish-type-of-edge-vector-to-use :kcons-list)
+  (establish-version-of-assess-edge-label :all-edges)
+  (establish-kind-of-chart-processing-to-do :all-edges)
+  (setq *permit-rules-with-duplicate-rhs* t)
+  (setq *dotted-rules-can-duplicate-regular-rules* nil)
+  (setq *do-general-actions-on-treetops* nil)
+  (setq *switch-setting* :all-edges))
+
+(defun top-edges-setting ()
+  (establish-type-of-edge-vector-to-use :vector)  
+  (establish-version-of-assess-edge-label :treetops)
+  (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
+  (setq *permit-rules-with-duplicate-rhs* nil)
+  (setq *dotted-rules-can-duplicate-regular-rules* t)
+  (setq *do-general-actions-on-treetops* t)
+  (setq *switch-setting* :top-edges))
+
+(defun sublanguage-settings ()
+  (ignore-unknown-words)
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
   (setq *ignore-capitalization* nil)
   (setq *treat-single-Capitalized-words-as-names* nil)
-  (setq *keep-number-sequence-raw* nil)
-  (setq *speech* nil)
-  (establish-pnf-routine :scan-classify-record)
-  (setq *switch-setting* :top-edges/with-extras-and-negatives
-        *current-analysis-mode* :no-dm&p))
+  (setq *make-edges-over-new-digit-sequences* t)
+  (establish-pnf-routine :scan-classify-record))
 
-(defun answer-setting ()
-  ;;(DM&P-setting)
-  ;; 2/7/07 DM&P-setting is creating a lot of small nit-picking bugs and muddying
-  ;; the waters by burying the new vocabulary under generic 'terms' and
-  ;; 'segments'. Need to find some middle ground, possibly based on the
-  ;; newer notion of 'kind' in model/core.
-  ;;   Going to try working outward from old standby.
-  (top-edges-setting/ddm)
-  (setq *do-strong-domain-modeling* t)
-  (setq *introduce-brackets-for-unknown-words-from-their-suffixes* t)
-  (setq *make-edges-for-unknown-words-from-their-suffixes* t)
-  (setq *uniformly-scan-all-no-space-token-sequences* t)
-  (setq *debug-treetops* nil)
-  (setq *annotate-realizations* nil)
-  (setq *switch-setting* :answer
-        *current-analysis-mode* :no-dm&p))
+(defun incremental-settings ()
+  (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
+  (setq *segment-scan/forest-level-transition-protocol*
+        :move-when-segment-can-never-extend-rightwards))
 
-;; N.b. *do-strong-domain-modeling* will pre-empt doing
-;; *do-domain-modeling-and-population* when we do the dispatch
-;; in segment-finished
-
-(defun grok-setting ()
-  "Similar to answer and fire, but with annotations and ..."
-  (top-edges-setting/ddm)
-  (setq *new-dm&p* t)
-  (setq *do-strong-domain-modeling* t)
-  (setq *do-unanalyzed-hyphenated-sequences* t)
-  (use-unknown-words)
-  (setq *treat-single-Capitalized-words-as-names* t)
-  (setq *annotate-realizations* nil)
-  (setq *do-conceptual-analysis* nil) ;; probably need finer resolution
-  (setq *switch-setting* :fire)
-  ;; that was the former fire-setting parts above here
-  (setq *annotate-realizations* t)
-  (include-comlex)
+(defun segment-analysis-settings ()  
+  (setq *after-action-on-segments* 'sdm/analyze-segment)
   (setq *do-strong-domain-modeling* t
         *new-segment-coverage* :full  ;; vs :trivial
         *reify-implicit-individuals* t
         *note-text-relations* t)
-  (setq *profligate-creation-of-individuals* t)
+  (setq *profligate-creation-of-individuals* t))
+
+(defun turn-off-segment-analysis-settings ()
+  (setq *after-action-on-segments* 'normal-segment-finished-options)
+  ;; That really enough. But in detail...
+  (setq *do-strong-domain-modeling* nil
+        *reify-implicit-individuals* nil
+        *note-text-relations* nil
+        *do-domain-modeling-and-population* nil))
+  
+
+
+(defun use-default-settings ()
+  (uncontroversial-settings)
+  (ignore-unknown-words) ;; vs. (use-unknown-words)
+  (top-edges-setting)
+  (standard-extras)
+  (ignore-comlex)
+  (sublanguage-settings)
+  (incremental-settings))
+  
+;;---- Specific cases
+
+(defun top-edges-setting/ddm ()
+  (use-default-settings)
+  (setq *use-segment-edges-as-segment-defaults* nil)
+  ;; Governs whether Trivially-span-current-segment does so
+  (setq *switch-setting* :top-edges-setting/ddm
+        *current-analysis-mode* :no-dm&p))
+
+
+(defun grok-setting ()
+  "Similar to answer and fire, but with annotations and ..."
+  (use-default-settings)
+  ;; except for
+  (use-unknown-words)
+  ;; plus
+  (setq *do-unanalyzed-hyphenated-sequences* t)
+  (include-comlex)
+  (shallow-debris-settings)
+  (setq *do-conceptual-analysis* nil) ;; probably need finer resolution
   (setq *allow-pure-syntax-rules* t)
-  (setq *edges-from-referent-categories* t)
   (setq *switch-setting* :grok))
+
 
 (defun tuned-grok ()
   "Simplifications to Grok while we work things out"
-  (turn-off-c3)
   (grok-setting)
-  (progn ;; these are temporary overrides while we debug bracketing
-    (setq *annotate-realizations* nil)
-    (setq *new-dm&p* nil)) ;; these two from (former) fire-setting
-  (setq *break-on-new-bracket-situations* t)
+  ;; except
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
   (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
-  (setq *track-incidence-count-on-bindings* nil) ;; see bind-variable/expr
-  (display-bracketing)
+  (setq *load-ad-hoc-rules* t)
   (setq *switch-setting* :tuned-grok))
 
+
 (defun strider-setting ()
-  (declare (special *tts-after-each-section*))
   (tuned-grok)
-  (setq *do-debris-analysis* t)
+  ;; plus
   (setq *arabic-names* t)
-  (setq *do-domain-modeling-and-population* t) ;; ignores null referents
-  ;;   Need to adapt the segment-level switches and do this better
   (setq *allow-da-to-look-under-edges* nil)
   ;;   /// arc-matches-tt? needs to adjust the next tt
   (setq *peek-rightward* t) ;; see drivers/chart/psp/tuck-right.lisp
   (period-hook-on)
   (designate-sentence-container :simple)
-  ;; misc. display settings
-  (setq *tts-after-each-section* t)
-  (setq *dbg-print* nil)
-  (turn-off-debugging-flags)
   (setq *switch-setting* :strider))
 
 
+
 (defun fire-setting ()
-  ;; Now (10/21/13) the setting we get when we don't specify a special load
-  (declare (special *tts-after-each-section*))
-  (strider-setting)
+  (tuned-grok)
   (setq *note-text-relations* nil) ;; 3/6/16 overly complicated just now
-  (setq *tts-after-each-section* nil) ;; turn off Strider default
   (designate-sentence-container :complex) ;;// overkill - separate doc vs sentence
+  (setq *do-strong-domain-modeling* t
+        *treat-single-capitalized-words-as-names* t)
+  (period-hook-on)
   (setq *check-forms* nil) ;; turn off validity check in multiply-edges'
   (setq *allow-pure-syntax-rules* nil ;; turn these on selectively in
         *edges-from-referent-categories* nil) ;; dynamic contexts
@@ -417,8 +397,6 @@
         *allow-pure-syntax-rules* t)
         
   (include-comlex)
-  ;; Get everything primed, but don't use it on the unknown words
-  ;; at least not yet. 
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
 
   (setq *kind-of-chart-processing-to-do* :successive-sweeps)
@@ -560,7 +538,7 @@
   (establish-version-of-complete :ca/ha)
   (setq *count-input-lines* nil)
   (establish-word-frequency-classification
-   ;; :standard 'standard-wf-classification)
+   ;;:standard 'standard-wf-classification)
    :ignore-capitalization 'wf-classification/ignore-caps)
   (setq *switch-setting* :word-frequency))
 
@@ -576,8 +554,7 @@
   (setq *ignore-capitalization* t) ;; turns off PNF
   (establish-version-of-capitalization-dispatch :no-op) ;; exposed when not doing PNF
   (establish-version-of-assess-edge-label :treetops) ;; vs. all-edges
-  (setq *annotate-realizations* nil)
-  (setq  *the-category-of-digit-sequences* category::number)
+  (setq *the-category-of-digit-sequences* category::number)
   (use-return-newline-tokens-fsa) ;; it's returned as a regular whitespace char.
   (establish-kind-of-chart-processing-to-do :new-toplevel-protocol)
   (setq *no-segment-level-operations* t)
@@ -595,29 +572,44 @@
 
 (defun ambush-setting ()
   (fire-setting)
-  (setq *keep-number-sequence-raw* t)
+  (setq *keep-number-sequence-raw* t) ;; call signs
   (setq *speech* t)
   (setq *switch-setting* :ambush))
+
+(defun answer-setting ()
+  ;;(DM&P-setting)
+  ;; 2/7/07 DM&P-setting is creating a lot of small nit-picking bugs and muddying
+  ;; the waters by burying the new vocabulary under generic 'terms' and
+  ;; 'segments'. Need to find some middle ground, possibly based on the
+  ;; newer notion of 'kind' in model/core.
+  ;;   Going to try working outward from old standby.
+  (use-default-settings)
+  (segment-analysis-settings)
+  (use-unknown-words)
+  (setq *uniformly-scan-all-no-space-token-sequences* t)
+  (setq *switch-setting* :answer
+        *current-analysis-mode* :no-dm&p))
+;; N.b. *do-strong-domain-modeling* will pre-empt doing
+;; *do-domain-modeling-and-population* when we do the dispatch
+;; in segment-finished
 
 (defun checkpoint-ops-setting ()
   (top-edges-setting)
   ;; maybe (setq *do-forest-level* nil) 
   (what-to-do-at-the-forest-level :parse-forest-and-do-treetops) ;; otherwise
-  (setq *annotate-realizations* nil)
-  ;;(setq *keep-number-sequence-raw* t) ??
+  (setq *keep-number-sequence-raw* t) ;; for call signs
   (setq *speech* t)
   (setq *switch-setting* :checkpoint-ops))
 
 (defun poirot-interface-setting ()
   (top-edges-setting)
   (what-to-do-at-the-forest-level :parse-forest-and-do-treetops)
-  (setq *annotate-realizations* nil)
-  (setq *speech* nil)
 ;  (establish-pnf-routine :scan-classify-record) ;; for real names
   ;; There are capitalized letter sequences such as "MOB"
   (establish-pnf-routine :scan/ignore-boundaries)
   (setq *switch-setting* :poirot-interface
         *current-analysis-mode* :no-dm&p))
+
 
 (defun debris-analysis-setting ()
   (top-edges-setting)
@@ -628,7 +620,6 @@
   (what-to-do-at-the-forest-level :dm&p-forest-level)
   (setq *do-debris-analysis* t)
   (setq *switch-setting* :debris-analysis))
-
 
 (defun dm&p-setting ()
   (debris-analysis-setting)
@@ -665,6 +656,7 @@
 
 (defun standard-bbn-settings ()
   ;; These are mostly overrides to what's set in top/all -edges
+  (uncontroversial-settings)
   (setq *ignore-capitalization* t)
   (setq *do-forest-level* nil)
   (setq *do-debris-analysis* nil)
@@ -677,14 +669,14 @@
 
 
 (defun all-edges-setting/bbn ()
-  (all-edges-setting)
   (standard-bbn-settings)
+  (all-edges-setting)
   (setq *switch-setting* :all-edges/bbn
         *current-analysis-mode* :no-dm&p))
 
 (defun segmenter-settings/bbn ()
-  (top-edges-setting)
   (standard-bbn-settings)
+  (top-edges-setting)
   (setq *switch-setting* :top-edges/bbn
         *current-analysis-mode* :no-dm&p))
 

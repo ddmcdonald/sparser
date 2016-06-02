@@ -84,6 +84,7 @@ are stashed on the script symbol's plist for the script function below."
        (turn-off-interfering-rules script))))
  *post-load-hooks*)
 
+
 (defscript bbn ()
   "Goes with a release of Sparser to BBN in the early 1990s to use
 in conjunction with an early version of Hark. Notable for using the
@@ -112,41 +113,22 @@ in conjunction with an early version of Hark. Notable for using the
   (:switches c3-setting))
 
 (defscript default ()
-  (:grammar-configuration "full grammar"))
+  (:grammar-configuration "full grammar")
+  (:switches use-default-settings))
 
 (defscript ern ()
   "Loads Sparser in the right configuration for completing the ERN grammar
 and setting up to do style work by collecting statistics."
-  (:parameters
-   (*lattice-points* t))
   (:grammar-configuration "full grammar")
   (:switches top-edges-setting/ddm))
 
 (defscript fire ()
   "FIRE stands for 'Free-text Information and Relation Extraction'.
 It is essentially GROK going forward."
-  (:parameters
-   (*load-ad-hoc-rules* t)
-   (*do-strong-domain-modeling* t)
-   (*new-dm&p* t)
-   (*treat-single-capitalized-words-as-names* t)
-   (*annotate-realizations* nil))
   (:grammar-configuration "full grammar")
   (:switches fire-setting))
 
 (defscript grok ()
-  "Settings for the GROK project. Among other customizations,
-turns off the partially saturated-individuals facility in favor
-of only using ordinary bindings."
-  (:parameters
-   (*load-ad-hoc-rules* t
-    "Allows loading rules that don't have annotations for NLG.
-We ultimately want to set this to nil, but not yet.")
-   (*annotate-realizations* nil
-    "Goes with load ad-hoc rules. If every rule was derived from
-or associated with a schemea, we would switch both values.")
-   (*incorporate-generic-lexicon* t
-    "Include the COMLex lexicon."))
   (:grammar-configuration "grok")
   (:interfering-rules ((comma-number ("," number))))
   (:switches grok-setting))
