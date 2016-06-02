@@ -34,8 +34,10 @@ to be recursively realized.")
   (:method ((obj word)) obj)
   (:method ((obj phrasal-root)) obj)
   (:method ((obj pronoun)) obj)
-  (:method ((obj saturated-lexicalized-phrase)) obj)
-  (:method ((obj lexicalized-phrase)) (instantiate-lexicalized-phrase obj))
+  (:method ((obj saturated-lexicalized-phrase))
+    (instantiate-lexicalized-phrase obj))
+  (:method ((obj lexicalized-phrase)) ;; questionable. Needs targeted test
+    (instantiate-lexicalized-phrase obj))
   (:method ((obj bundle-specification) &aux (*bundle-being-realized* obj))
     (funcall (driver (bundle-type obj)) obj)))
 
