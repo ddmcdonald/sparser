@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: January 2016
+;;;   Version: June 2016
 
 ;;;----------------------------
 ;;; parameterizing the loading
@@ -95,7 +95,7 @@ painstaking care to route everything through a realization schema.
 If a purely analysis-driven project requires being more ad-hoc,
 then this switch will gate those rules.")
 
-(defvar *incorporate-generic-lexicon* t
+(defvar *incorporate-generic-lexicon* nil
   "When non-nil, we finish off the loading of the grammar by including
 almost purely lexical knowledge about a horde of words.")
 
