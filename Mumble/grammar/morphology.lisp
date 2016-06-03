@@ -282,7 +282,7 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
 	       (ttrace
                 (let ((orig (original-specification subj)))
                   (etypecase orig
-                    (bundle-specification
+                    ((or specification derivation-tree-node)
                      (let ((acc (get-accessory-value ':number orig)))
                        (and acc (name acc))))
                     (pronoun (number orig)))))
@@ -305,9 +305,9 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is THIRD."
 	       (ttrace
                 (let ((orig (original-specification subj)))
                   (etypecase orig
-                    (bundle-specification
-                     (let ((acc (get-accessory-value ':person orig)))
-                       (and acc (name acc))))
+                    ((or specification derivation-tree-node)
+		     (let ((acc (get-accessory-value ':person orig)))
+		       (and acc (name acc))))
                     (pronoun (person orig)))))
 	       (pronoun (person subj)))
 	     'third))))

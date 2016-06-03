@@ -54,14 +54,13 @@
   (ecase (visited-status position)
     (new
      (landmark '(:before process-slot) position nil (contents position))
-     (let ((contents (realization-cycle (contents position) position))
-           (labels   (labels position)))
-       (do-any-label-driven-transformations labels contents)
-       (do-all-word-stream-actions labels 'new)
+     (let ((contents (realization-cycle (contents position) position)))
+       (do-any-label-driven-transformations contents position)
+       (do-all-word-stream-actions (labels position) 'new)
        (etypecase contents
          (null)
          (word-stream-item
-          (morphologically-specialize-&-say-it contents labels))
+          (morphologically-specialize-&-say-it contents (labels position)))
          (mposition
           (update-current-position (contents position)))))
      (set-visited-status position 'entered))

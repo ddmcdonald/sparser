@@ -6,19 +6,15 @@
 
 (in-package :mumble)
 
-(defun do-any-label-driven-transformations (labels phrase-node)
+(defun do-any-label-driven-transformations (phrase-node position)
   "Called from process-slot just after the realization-cycle has
-   updated the contents. The labels are from the slot"
-  (push-debug `(,labels ,phrase-node))
+   updated the contents."
   (cond
-    ((find 'relative-clause labels :key #'name)
+    ((find 'relative-clause (labels position) :key #'name)
      (let* ((subject-slot-contents (contents (first-constituent phrase-node)))
 	    (trace (build-trace subject-slot-contents)))
-       (set-contents (first-constituent phrase-node) trace))
-     )
-    (t (format t "~&transform: ~a" labels)))
-)
-
+      (set-contents (first-constituent phrase-node) trace)
+      (push (slot-label-named 'that) (labels position))))))
 
 #+ignore
 (defun feature-driven-prepocessing (features dtn)
@@ -54,8 +50,7 @@
    parameter (s) and adds a dummy if there isn't."
   (let ((complements (complements dtn))
         (s-var (parameter-named 's)))
-    (unless (find s-var complements 
-                  :key #'(lambda (comp) (phrase-parameter comp)))
+    (unless (find s-var complements :key #'phrase-parameter)
       (let ((trace (build-trace 'dummy)))
         (make-complement-node 's trace dtn)))))
 

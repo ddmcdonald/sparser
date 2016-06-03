@@ -69,7 +69,7 @@
 		 (or (not (wsa-condition action))
 		     (funcall (wsa-condition action))))
         (funcall (ws-action (action-type action)) object)
-
+  
 	#+ignore
 	(case (name action)
 	  (function-word   (send-to-output-stream (pname object)))
