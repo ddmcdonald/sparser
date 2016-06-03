@@ -15,7 +15,7 @@
 ;; 3/11/13 Commented out number-of-instances because of conflict with new generic fn
 
 (in-package :sparser)
-(defvar *vb/obj-sorted-by-frequency*)
+
 ;;;--------------
 ;;; quick things
 ;;;--------------
@@ -610,6 +610,7 @@
 
 (defvar *what-you-do* nil)
 (defun what-do-You-do ()
+  (declare (special *you*))
   (let ( s/v  verb  verbs )
     (dolist (s/v-entry *subj-vb/dh*)
       (setq s/v (first s/v-entry))
@@ -725,6 +726,7 @@
 
 
 (defun sort-vb/obj-by-frequency ( &optional (instances *vb-obj/dh*) )
+  (declare (special  *vb/obj-sorted-by-frequency*))
   (let ((copy (copy-list instances)))
     (setq *vb/obj-sorted-by-frequency*
           (sort copy
