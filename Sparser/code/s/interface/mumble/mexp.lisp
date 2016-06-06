@@ -177,3 +177,9 @@ named parameters."
     (make-complement-node 'p (find-word prep) dtn)
     (make-complement-node 'prep-object object dtn)
     (values dtn context)))
+
+(defun restrict (subject predicate &key context)
+  "For restrictive relative clauses, e.g. 'drug that targets KRAS'"
+  (make-adjunction-node (make-lexicalized-attachment 'restrictive-relative-clause predicate)
+			subject)
+  (values subject context))
