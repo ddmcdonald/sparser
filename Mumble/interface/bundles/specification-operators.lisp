@@ -84,6 +84,10 @@
   (add-accessory base :tense-modal "will")
   base )
 
+(def-accessory-operator can 
+  (add-accessory base :tense-modal "can")
+  base )
+
 (def-accessory-operator progressive 
   (add-accessory base :progressive)
   base )
