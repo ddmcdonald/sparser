@@ -1100,13 +1100,15 @@
   (:verb "fail"  
          :etf (sv)
          :to-comp process))
+
 ;; mostly passive -- "... are found ..."
 (define-category find :specializes bio-rhetorical
   :mixins (bio-thatcomp)
   :realization
   (:verb ("find" :past-tense "found")
          :noun "finding"
-         :etf (svo-passive)))
+         :etf (svo-passive)
+	 :mumble ("find" svo)))
 
 (define-category follow :specializes bio-relation ;; need event relation
   :binds (;; subject and theme inherited from bio-relation
@@ -2120,12 +2122,13 @@
 (define-category target :specializes caused-bio-process
   :binds ((destination biological))
   :realization
-  (:verb ("target" :third-plural "targets" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED 
-         :etf (svo-passive)
-         :s agent
-         :o object
-         :of object
-         :to destination))
+  (:verb ("target" :third-plural "targets" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED
+   :mumble ("target" svo)
+   :etf (svo-passive)
+   :s agent
+   :o object
+   :of object
+   :to destination))
 
 (define-category target-protein :specializes protein
 		 :binds ((agent (:or protein drug)))
