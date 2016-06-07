@@ -6,7 +6,7 @@
 ;;;    Mumble Development Group.  All rights reserved.
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
 ;;;    non-commercial purposes.
-;;; Copyright (c) 2005,2011-2013 David D. McDonald
+;;; Copyright (c) 2005,2011-2016 David D. McDonald
 
 ;; Changelog
 ;;  6/6/95 added VP-one-arg/not-passive.  11/30/97 added set of SVPO phrases
@@ -1507,64 +1507,66 @@
    (np-head n :additional-labels (possessive-np))))
 
 (define-phrase Abstract-np (n) ;; minimal phrase over an abstract noun
-  (np/no-det
+  (np  ;; np/no-det -- see labels file. Alternative would block 
+   ;; determiner word-stream action by using something analogous
+   ;; to the :additional-labels or :set-state annotations.
    np-head n))
 
 (define-phrase singleton-np (n) ;; has no attachment points
-  (np/no-det
+  (np ;; np/no-det
    head n))
 
 (define-phrase vocative (n)
-  (np/no-det
+  (np ;; np/no-det
    np-head n))
 
 
 ;;--- pre-built NP patterns
 
 (define-phrase det-np (d n)  
-  (np/no-det
+  (np ;; np/no-det
    determiner d
    np-head h))
 
-(define-phrase number-np (n h)
-  (np/no-det
-   number n
-   np-head h))
+(define-phrase number-np (number n)
+  (np ;; np/no-det
+   number number
+   np-head n))
 
 (define-phrase possessive-np (p n) ;; compare phrase-schema possessed-np
-  (np/no-det
+  (np ;; np/no-det
    possessive p
    np-head n))
 
-(define-phrase NP-head-first-compound-noun (head other) ;; "$10"
+(define-phrase NP-head-first-compound-noun (n other) ;; "$10"
   (np
    np-head (nbar
-            compound-noun-head head
+            compound-noun-head n
             common-noun other)))
 
 
-(define-phrase quantifier-head (head number)
+(define-phrase quantifier-head (n number)
   (np
    quantifier (qp
                (number number))
-   np-head head))
+   np-head n))
 
 
-(define-phrase qualifier-head (head qualifier)
+(define-phrase qualifier-head (n qualifier)
   (np
    qualifier qualifier
-   np-head head))
+   np-head n))
 
-(define-phrase head-qualifier (head qualifier) 
+(define-phrase head-qualifier (n qualifier) 
   ;; kind of ad-hoc. Goes with np+postmodifier 
   ;; for fragments like "60 in January"
   (np
-   np-head head
+   np-head n
    qualifier qualifier))
 
 
 (define-phrase determined-np (d n)
-  (np/no-det
+  (np ;; np/no-det
    determiner d
    np-head n))
 
