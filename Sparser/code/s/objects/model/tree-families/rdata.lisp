@@ -428,6 +428,7 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
              (word-arg `(,keyword ,head-word))
              (rules (head-word-rule-construction-dispatch
                      word-arg category category)))
+        (setf (get-tag :lemma category) word-arg)
         (add-rules-to-category category rules)
         :done)))))
 
@@ -515,7 +516,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
         (tf (exploded-tree-family-named tf-name))
         decoded-mapping  decoded-cases )
 
-    (make-corresponding-lexical-resource head-word)
+    (when head-word
+      (make-corresponding-lexical-resource head-word category))
 
     (when tf-name
       (unless tf
