@@ -269,6 +269,7 @@
 (defun sublanguage-settings ()
   (ignore-unknown-words)
   (what-to-do-with-unknown-words :capitalization-digits-&-morphology)
+  (designate-sentence-container :simple)
   (setq *ignore-capitalization* nil)
   (setq *treat-single-Capitalized-words-as-names* nil)
   (setq *make-edges-over-new-digit-sequences* t)
@@ -299,7 +300,6 @@
 
 (defun use-default-settings ()
   (uncontroversial-settings)
-  (ignore-unknown-words) ;; vs. (use-unknown-words)
   (top-edges-setting)
   (standard-extras)
   (ignore-comlex)
@@ -324,7 +324,7 @@
   ;; plus
   (setq *do-unanalyzed-hyphenated-sequences* t)
   (include-comlex)
-  (shallow-debris-settings)
+  (segment-analysis-settings)
   (setq *do-conceptual-analysis* nil) ;; probably need finer resolution
   (setq *allow-pure-syntax-rules* t)
   (setq *switch-setting* :grok))
@@ -371,20 +371,26 @@
 
 
 
-(defun bio-setting () ;; copy & specialize of back-named old-bio-setting
-  (turn-off-c3)
+(defun bio-setting ()
+  ;; from (use-default-settings) with the obvious change
+  ;; to take new words
+  (uncontroversial-settings)
   (top-edges-setting)
-  
-  ;; (top-edges-setting/ddm)
   (standard-extras)
-  (setq *make-edges-over-new-digit-sequences* t)
+  (include-comlex)
 
+  ;; cherry-pick, vary from sublangage-settings
+  (use-unknown-words)
+  (setq *make-edges-over-new-digit-sequences* t)
+  (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
+  (designate-sentence-container :complex)
+  (setq *treat-single-Capitalized-words-as-names* t)
+  
   ;; (grok-setting)
   (setq *new-dm&p* t)
   (setq *do-strong-domain-modeling* t)
   (setq *do-unanalyzed-hyphenated-sequences* t)
-  (use-unknown-words)
-  (setq *treat-single-Capitalized-words-as-names* t)
+  
 
   ;;(tuned-grok)
   (setq *break-on-new-bracket-situations* nil)
@@ -395,9 +401,6 @@
 
   (setq *edges-from-referent-categories* nil
         *allow-pure-syntax-rules* t)
-        
-  (include-comlex)
-  (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
 
   (setq *kind-of-chart-processing-to-do* :successive-sweeps)
   (what-to-do-at-the-forest-level :new-forest-protocol)
@@ -410,15 +413,14 @@
         *sweep-sentence-treetops* t
         *allow-form-conjunction-heuristic* t
         *island-driving* t)
+  
+  (whack-a-rule t)
+  (setq *check-forms* t)
 
   (setq *constrain-pronouns-using-mentions* t
         *ignore-personal-pronouns* t)
-
   (setq *use-discourse-mentions* t
         *interpret-in-context* t)
-
-  (whack-a-rule t)
-  (setq *check-forms* t)
 
   (period-hook-on) ;; make sure we notice periods
 
@@ -438,7 +440,6 @@
     (assert gmod () "The biology grammar module is not available")
     (unmarked-category-makes-permanent-individuals gmod))
 
-  (designate-sentence-container :complex)
   (setq *switch-setting* :biology))
 
 
