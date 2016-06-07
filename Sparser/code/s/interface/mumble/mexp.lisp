@@ -152,6 +152,7 @@ named parameters."
   (destructuring-bind (operation &rest args) expr
     (assert (eq operation head))
     (if (and (symbolp operation)
+	     (not (eq (symbol-package operation) (find-package :cl)))
 	     (fboundp (sp::mumble-symbol operation)))
       (values (apply (fdefinition (sp::mumble-symbol operation))
                      (mapcar (lambda (arg)
