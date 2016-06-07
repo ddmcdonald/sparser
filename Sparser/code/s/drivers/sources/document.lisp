@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   May 2016
+;;;  Version:   June 2016
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
@@ -44,8 +44,10 @@
   ;; we are actually reading. This gates the parsing of
   ;; titles and the population of the discourse history.
   (declare (special *sentence-making-sweep* *scanning-epistemic-features*))
-  (and (not *sentence-making-sweep*)
-       (not *scanning-epistemic-features*)))
+  (cond
+    (*sentence-making-sweep* nil)
+    (*scanning-epistemic-features* nil)
+    (t t)))
 
 
 ;;;-------------------------------------------------
@@ -71,8 +73,8 @@
   (let ((*sentence-making-sweep* t) ;; sweep that makes the sentences
         (*sections-to-ignore* nil)) ;; e.g. methods
     (declare (special *sentence-making-sweep* *sections-to-ignore*))
-    (when *show-article-progress*
-      (format t "~&Sweeping document ~a~%" (name doc)))
+    (when (or *show-article-progress* *show-section-printouts*)
+      (format t "~&~%~%Sweeping document ~a~%" (name doc)))
     (read-from-document doc)
     doc))
 
@@ -97,6 +99,8 @@
     (declare (special *scanning-epistemic-features*
                       *use-occasional-polywords*
                       *sweep-for-patterns*))
+    (when (or *show-article-progress* *show-section-printouts*)
+      (format t "~&~%~%Reading Epistemic features in ~a~%" (name a)))
     (read-from-document a)
     a))
 
@@ -121,6 +125,9 @@
       (sweep-for-embedded-sections a))
     (set-document-index a :ignore)
     (when (actually-reading)
+      (when (or *show-article-progress* *show-section-printouts*)
+        (format t "~&=============================================~%~
+                  ~%Actually Reading ~a~%" (name a)))
       (clean-out-history-and-temp-objects))
     (install-contents a)
     (let ((count 0))
