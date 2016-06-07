@@ -470,15 +470,7 @@ where it regulates gene expression.")
 		   (list (var-name (binding-variable b))
 			 (case (var-name (binding-variable b))
 			   (predication
-			    (let* ((pred (binding-value b))
-				   (parent (dli-parent pred))
-				   (p-edge 
-				    (car (relevant-edges parent-edges parent t))))
-			      (let ((*lambda-val* interp))
-				(declare (special *lambda-val*))
-				(if p-edge
-				    (new-dt (cons p-edge parent-edges) pred)
-				    (new-dt parent-edges pred)))))
+			     (predication-binding-value b interp parent-edges))			    
 			   (type (binding-value b))
 			   (number (binding-value b))
 			   (prep (binding-value b))
@@ -496,6 +488,17 @@ where it regulates gene expression.")
 			      (if (edge-p val-edge)
 				  (new-dt (cons val-edge parent-edges) val)
 				  val)))))))))))
+
+(defun predication-binding-value (b interp parent-edges)
+  (let* ((pred (binding-value b))
+	 (parent (dli-parent pred))
+	 (p-edge 
+	  (car (relevant-edges parent-edges parent t))))
+    (let ((*lambda-val* interp))
+      (declare (special *lambda-val*))
+      (if p-edge
+	  (new-dt (cons p-edge parent-edges) pred)
+	  (new-dt parent-edges pred)))))
 
 (defun align-dependency-and-edges (edge &optional bindings)
   (new-dt edge bindings))
