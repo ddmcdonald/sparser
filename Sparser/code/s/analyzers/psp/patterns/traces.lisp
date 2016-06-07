@@ -171,7 +171,7 @@
 
 (deftrace :defaulting-two-word-hyphen ()
   (when *trace-ns-sequences*
-    (trace-msg "[ns]   Using the default hyphenated structure: bio-entity")))
+    (trace-msg "[ns]   Using the default hyphenated structure")))
 
 (deftrace :salient-hyphenated-literal ()
   (when *trace-ns-sequences*

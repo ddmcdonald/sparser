@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "nospace-categories"
 ;;;   Module:  "grammar;rules:DA:"
-;;;  Version:  April 2016
+;;;  Version:  June 2016
 
 ;; Created 10/7/14 to hold categories and routines used by the
 ;; nospace character specialists (analyzers/psp/patterns/) since
@@ -121,12 +121,15 @@
 
     (when (eq (edge-category left-edge)
               (edge-category right-edge))
-      (setq i (bind-dli-variable 'type (edge-category left-edge)
-                             i category::sequence)))
+      ;;/// when does this ever happen? 
+      (setq i (bind-variable
+               'type (edge-category left-edge) i category::sequence)))
+    
     (let ((edge (make-ns-edge
                  (pos-edge-starts-at left-edge)
                  (pos-edge-ends-at right-edge)
                  category
+                 :form (edge-form right-edge)
                  :rule 'make-hyphenated-structure
                  :referent i
                  :constituents `(,left-edge ,right-edge))))
