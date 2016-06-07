@@ -309,6 +309,7 @@
     :mixins (has-UID has-name biological)
     :binds ((following bio-process)
 	    (preceding bio-process)
+	    (during bio-process)
 	    (by-means-of (:or bio-process mechanism bio-method))
 	    (using bio-entity)
 	    (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
@@ -328,6 +329,7 @@
 	   :upon following
 	   :after following
 	   :before preceding
+	   :during during
 	   )
     :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
