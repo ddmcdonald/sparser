@@ -163,6 +163,7 @@
 (define-quantifier "others"     :brackets '( ].quantifier  .[np ) :rules '(the))
 
 ;;///////////////// don't belong here! want to be 'nominals' or some such
+#|
 (define-function-word "something" :brackets '( ].quantifier  .[np ))
 (define-function-word "someone"   :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "nothing"   :brackets '( ].quantifier  .[np ))
@@ -171,8 +172,8 @@
 (define-function-word "anyone"    :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "everything"   :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "everyone"  :brackets '( ].quantifier  .[np  np]. ))
+|#
 
-  
 
 (define-quantifier "no" :brackets '( ].quantifier  .[np )) 
 
