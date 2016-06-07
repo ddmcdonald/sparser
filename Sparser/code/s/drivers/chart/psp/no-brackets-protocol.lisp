@@ -146,6 +146,7 @@
         (let ((*pre-read-all-sentences* t))
           (declare (special *pre-read-all-sentences*))
           (catch 'sentences-finished
+            ;; throw done by simple-eos-check
             (scan-sentences-to-eof s1))))
 
       (if *sentence-making-sweep*
@@ -229,11 +230,13 @@
 ;;;----------------------------
 
 (defun scan-sentences-to-eof (first-sentence)
-  ;; Called from initiate-successive-sweeps when we're
-  ;; in the initial sweep phase and need to identify
-  ;; and populate the sentences of the paragraphs.
-  ;; Does scan-next-terminal and detects sentence boundaries 
-  ;; but no substantive processing.
+  "Called from initiate-successive-sweeps when we're
+   in the initial sweep phase and need to identify
+   and populate the sentences of the paragraphs.
+   Does scan-next-terminal and detects sentence boundaries 
+   but no substantive processing. Does not return.
+   We leave the loop via a throw to sentences-finished
+   from simple-eos-check from inside scan-words-loop."
   (tr :start-scan-to-eof first-sentence)
   (let ((sentence first-sentence))
     (loop
