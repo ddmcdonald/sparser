@@ -85,7 +85,7 @@
       (mumble::record-krisp-mapping m-word clp)
       clp)))
          
-(defun make-corresponding-lexical-resource (head-word)
+(defun make-corresponding-lexical-resource (head-word category)
   "Called from dereference-rdata and makes its own
    judgement abuot whether its appropriate to create
    Mumble resources in the present configuration and/or
@@ -95,9 +95,19 @@
             *CwC*)
     (let* ((pos-tag (car head-word))
            (word-or-variable (cdr head-word))
-           (word (and (or (word-p word-or-variable)
-                          (polyword-p word-or-variable))
-                      word-or-variable)))
+           (word (etypecase word-or-variable
+                   ((or word polyword) word-or-variable)
+                   (list (car word-or-variable))
+                   (lambda-variable
+                    (let ((lemma (or (get-tag :lemma category)
+                                     (list :common-noun
+                                           (let ((name (cat-name category)))
+                                             (make-word :symbol name
+                                                        :pname (string-downcase
+                                                                (symbol-name name))))))))
+                      (assert (= (length lemma) 2) (lemma) "Improper lemma.")
+                      (setq pos-tag (car lemma))
+                      (cadr lemma))))))
       (when word
         (make-resource-for-sparser-word word pos-tag)))))
 
