@@ -64,6 +64,9 @@
 (def-form-rule (sequencer np-head)
   :form np
   :referent (:method determiner-noun left-edge right-edge))
+
+#+ignore ;;THIS ALLOWS FOR "during the process"
+
 (def-form-rule (sequencer np)
   :form np
   :referent (:method determiner-noun left-edge right-edge))
