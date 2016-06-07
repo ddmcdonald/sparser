@@ -109,8 +109,7 @@
   Generic characterizations of proteins and small molecules, etc. which have
   OBO identifiers, but are not localized to cellular locations.")
 
-(define-mixin-category biological
-  :lemma (:adjective "biological")
+(define-category biological
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories, Because
    it spans such a wide range of things it will not fit into
@@ -132,8 +131,7 @@
 ;;	  (predication)
           ;;(variant variant)
           )
-  :realization
-  (:noun "xxx-dummy"
+  :realization (:adj "biological"
          :at cellular-location
          :from cell-line
          :from cell-type         
