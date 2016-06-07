@@ -120,6 +120,7 @@
   (declare (special *sentence-making-sweep* *sections-to-ignore*))
   (let ((*current-article* a)) ;; sets up the function (article)
     (declare (special *current-article*))
+    (setq *all-paragraphs* nil)
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
       (sweep-for-embedded-sections a))
@@ -248,6 +249,8 @@
           (format t "~%--------- finished section ~a~%~%" s)
           (when (actually-reading) (show-parse-performance s)))))))
 
+
+(defparameter *all-paragraphs* nil)
 (defmethod read-from-document ((p paragraph))
   "Once all the sentences in the paragraph have been
    handled control is passed by a throw to the tag
@@ -264,6 +267,7 @@
                       *recognize-sections-within-articles*
                       *accumulate-content-across-documents*
                       *current-paragraph*))
+    (push p *all-paragraphs*)
     (install-contents p)
     (let ((text (content-string p)))
       (initialize-sentences) ;; set up or reuse the 1st sentence
@@ -278,8 +282,11 @@
   "Flag for the benefit of assess-relevance. The content
    of a section title is always relevant.")
 
+(defparameter *dont-parse-titles* t) ;; parsing titles currently smashes random paragraphs!
 (defun parse-section-title (title)
   (declare (special *trap-error-skip-sentence*))
+  (when *dont-parse-titles* 
+    (return-from parse-section-title title))
   (let* ((string (content-string title))
          (length (length string)))
     (when (= length 0) ;; null string
@@ -297,12 +304,12 @@
       (when *show-section-printouts*
         (format t "~&~%About to parse section title: ~s%" string))
       (if *trap-error-skip-sentence*
-        (handler-case
-            (analysis-core)
-          (error (e)
-            (ignore-errors ;; got an error with something printing once
-              (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
-        (analysis-core))
+          (handler-case
+              (analysis-core)
+            (error (e)
+              (ignore-errors ;; got an error with something printing once
+                (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
+          (analysis-core))
 
       ;; Strictly speaking, the title should act like
       ;; a paragraph, including the accumulation of
@@ -311,9 +318,8 @@
       ;; Othewise the mention will be misconstrued when the
       ;; next paragraph begins, since the edge will have
       ;; be reused with a different value.
-      (make-mentions-long-term)
-
-      title)))
+      (make-mentions-long-term))
+    title))
 
 
 
@@ -388,6 +394,16 @@
         nil)))))
 
 
+(defgeneric document-tree (source)
+  (:documentation "recurses through document structure applying fn"))
+
+(defmethod document-tree ((hc has-children))
+    (cons hc
+          (loop for child in (children hc)
+             collect (document-tree child))))
+
+(defmethod document-tree ((hc t))
+    (list hc))
 
 (defparameter *results-section-titles* nil)
 (defparameter *relevant-titles* nil)
