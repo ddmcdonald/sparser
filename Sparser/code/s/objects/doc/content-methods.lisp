@@ -132,6 +132,17 @@
   (:documentation "Collects the entities and relations of
      the document layer below them summarizes them as
      tables of individuals and their count."))
+#|
+(defgeneric display-top-bio-terms (document-element
+                                   &optional (stream *standard-output*))
+  (:method ((a article))
+    (let* ((c (contents a))
+           (proteins (aggregated-proteins c)))
+      (format stream "~&~a~% Top 5 proteins:~[ ~a]~%"
+              a 
+|#
+
+            
 
 (defmethod aggregate-bio-terms ((p paragraph))
   "Collect the raw lists of entities and relations from 
