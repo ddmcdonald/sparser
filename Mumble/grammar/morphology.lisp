@@ -81,6 +81,7 @@
 ;#################################################################
 
 (defun set-tense-state (the-tense-marker)
+
   (ecase (name the-tense-marker)
     (past    (set-aux-state 'past-tense))
     (present (set-aux-state 'present-tense))))
