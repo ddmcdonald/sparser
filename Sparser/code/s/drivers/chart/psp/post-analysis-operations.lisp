@@ -738,3 +738,10 @@ is replaced with replacement."
   (or (eq edge np-edge)
       (and (edge-p np-edge)
 	   (np-head-edge? edge (edge-right-daughter np-edge)))))
+
+
+;;; Code to integrate with Spire
+
+(defgeneric expand-krisp (indiv)
+  (:method-combination or)
+  (:method or (indiv) (declare (ignore indiv))))
