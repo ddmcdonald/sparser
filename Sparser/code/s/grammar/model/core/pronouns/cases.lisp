@@ -73,3 +73,15 @@
 (define-pronoun "itself"     'inanimate      'reflexive/pronoun)
 (define-pronoun "themselves" 'plural         'reflexive/pronoun)
 
+
+;; These are not function words, but act like pronouns
+(noun "something")
+(noun "nothing" )
+(noun "anything")
+(noun "everything")
+;; not sure what these should be -- definitely not inanimate
+(noun "someone")
+(noun "no one" )
+(noun "anyone" )
+(noun "everyone")
+  
