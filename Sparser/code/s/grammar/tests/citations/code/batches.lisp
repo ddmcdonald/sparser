@@ -1,17 +1,19 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "batches"
 ;;;   Module:  "grammar;tests:citations:code:"
-;;;  version:  August 2013
+;;;  version:  June 2016
 
 ;; initiated 12/23/93 v2.3. 8/19/13 Added test-modules-citations.
 
 (in-package :sparser)
 
 (defun test-all-citations ()
-  (dolist (c *citations-defined*)
-    (test-citation c)))
+  (loop for gmod in *grammar-modules-in-image*
+       do (test-modules-citations gmod)))
+;  (dolist (c *citations-defined*)
+;    (test-citation c)))
 
 (defgeneric test-modules-citations (gmod)
   (:documentation "Run test-citation over all the citations
@@ -25,8 +27,7 @@
 
 (defmethod test-modules-citations ((gmod grammar-module))
   (let ((citations (gmod-citations gmod)))
-    (unless citations
-      (error "No citations listed with ~a" gmod))
-    (dolist (c citations)
-      (test-citation c))))
+    (when citations
+      (dolist (c citations)
+        (test-citation c)))))
 
