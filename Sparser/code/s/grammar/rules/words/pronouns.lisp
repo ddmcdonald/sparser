@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:   "pronouns"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.4 December 2012
+;;;   Version:   June 2016
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 0.1 (6/18/93) added  .[np  np]. brackets
@@ -64,6 +63,17 @@
 ;; locatives
 (define-function-word "here"  :brackets '( ].pronoun  .[np  np]. ))
 (define-function-word "there" :brackets '( ].pronoun  .[np  np]. ))
+
+
+;; indefinites
+(define-function-word "something" :brackets '( ].quantifier  .[np ))
+(define-function-word "someone"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "nothing"   :brackets '( ].quantifier  .[np ))
+(define-function-word "no one"    :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "anything"  :brackets '( ].quantifier  .[np ))
+(define-function-word "anyone"    :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "everything"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "everyone"  :brackets '( ].quantifier  .[np  np]. ))
 
 ) ;; eval-when
 

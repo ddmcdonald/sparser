@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.10 December 2015
+;;;   Version:   June 2016
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -162,17 +162,6 @@
 (define-quantifier "other"      :brackets '( ].quantifier  .[np ) :rules '(det the))
 (define-quantifier "others"     :brackets '( ].quantifier  .[np ) :rules '(the))
 
-;;///////////////// don't belong here! want to be 'nominals' or some such
-#|
-(define-function-word "something" :brackets '( ].quantifier  .[np ))
-(define-function-word "someone"   :brackets '( ].quantifier  .[np  np]. ))
-(define-function-word "nothing"   :brackets '( ].quantifier  .[np ))
-(define-function-word "no one"    :brackets '( ].quantifier  .[np  np]. ))
-(define-function-word "anything"  :brackets '( ].quantifier  .[np ))
-(define-function-word "anyone"    :brackets '( ].quantifier  .[np  np]. ))
-(define-function-word "everything"   :brackets '( ].quantifier  .[np  np]. ))
-(define-function-word "everyone"  :brackets '( ].quantifier  .[np  np]. ))
-|#
 
 
 (define-quantifier "no" :brackets '( ].quantifier  .[np )) 

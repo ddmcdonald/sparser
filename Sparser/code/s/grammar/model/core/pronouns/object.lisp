@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  1.0 July 2011
+;;;  version:  June 2016
 
 ;; 1.0 (7/11/94) completely redone from scratch. (7/22) made 'pronoun' a referential
 ;;      category so it would pass the filter in the discourse history.
@@ -23,7 +22,12 @@
   ;; never instantiated itself, just provides a common supercategory
   ;; for the discourse history
   :instantiates nil
-  :specializes nil)
+  :specializes linguistic)
+
+
+(defun is-pronoun? (ref)
+  (when (individual-p ref)
+   (itypep ref 'pronoun)))
 
 
 #| The category will be the basis of the referent.  Most syntactic properties
@@ -80,9 +84,9 @@
 
 
 
-;;;---------------
-;;; defining form
-;;;---------------
+;;;-----------------------------------------
+;;; defining form for conventional pronouns
+;;;-----------------------------------------
 
 (defun define-pronoun (string category-suffix form)
   ;; This adds form information ////and common dereferencing routine
@@ -109,7 +113,39 @@
     pronoun ))
 
 
-(defun is-pronoun? (ref)
-  (and
-   (individual-p ref)
-   (itypep ref 'pronoun)))
+;;;-----------------------------------------------
+;;; Indefinite pronouns: Quirk et al. 645 pg. 376
+;;;-----------------------------------------------
+
+(define-category indefinite-pronoun
+  :specializes pronoun
+  :instantiates pronoun
+  :binds ((word :primitive word))
+  :index (:permanent :key word)
+  :realization (:word word)
+  :documentation "See Quirk et al. #645, p.376, 
+ e.g. 'something', 'no one', 'each'. These are odd ducks
+ that are both like quantifiers in terms of how they
+ compose and like pronouns in that they will get a
+ specific value in context. Quirk lays out a large
+ set of properties that they have and which differentiate
+ them. Ignoring that for now pending a use-case.")
+
+(defun define-indefinite-pronoun (string)
+  ;; There's much to be said for doing these in the same
+  ;; style as quantifiers (define-quantifier) because they're
+  ;; behaviours will all be specific to the pronoun.
+  ;; For the moment just making them instances so there's
+  ;; something on the board to tally and see patterns on.
+  (let* ((word (resolve string)) ;; see words/pronouns.lisp
+         (i (find-or-make-individual 'indefinite-pronoun
+                                     :word string))
+         (rs (when word (rule-set-for word)))
+         (rule (when rs (car (rs-single-term-rewrites rs)))))
+    (assert rule (string) "find-or-make-individual did not ~
+                           make a rule for ~s" string)
+    (setf (cfr-form rule) category::pronoun)
+    (values i rule)))
+
+
+

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "cases"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  1.2 March 2013
+;;;  version:  June 2016
 
 ;; 1.0 (7/11/94) completely redone from scratch.
 ;; 1.1 (6/27/96) made "i" into "I" so that it would be correctly recognized.
@@ -74,14 +74,14 @@
 (define-pronoun "themselves" 'plural         'reflexive/pronoun)
 
 
-;; These are not function words, but act like pronouns
-(noun "something")
-(noun "nothing" )
-(noun "anything")
-(noun "everything")
-;; not sure what these should be -- definitely not inanimate
-(noun "someone")
-(noun "no one" )
-(noun "anyone" )
-(noun "everyone")
-  
+
+;;-- indefinites
+
+(define-indefinite-pronoun "something")
+(define-indefinite-pronoun "someone")
+(define-indefinite-pronoun "nothing")
+(define-indefinite-pronoun "no one")
+(define-indefinite-pronoun "anything")
+(define-indefinite-pronoun "anyone")
+(define-indefinite-pronoun "everything")
+(define-indefinite-pronoun "everyone")
