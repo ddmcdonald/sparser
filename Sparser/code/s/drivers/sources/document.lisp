@@ -120,7 +120,6 @@
   (declare (special *sentence-making-sweep* *sections-to-ignore*))
   (let ((*current-article* a)) ;; sets up the function (article)
     (declare (special *current-article*))
-    (setq *all-paragraphs* nil)
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
       (sweep-for-embedded-sections a))
@@ -329,22 +328,18 @@
 
 (defun title-of-current-section-is (partial-string)
   (declare (special *current-section-title*))
-; (format t "~%Testing title: ~s" *current-section-title*)
-
   (let* ((title *current-section-title*)
          (title-string (when title (content-string title))))
     (when title-string
       (search partial-string title-string :test #'equalp))))
 
-
 (defun exact-title-of-current-section-is (string)
   (declare (special *current-section-title*))
-; (format t "~%Testing title: ~s" *current-section-title*)
-
   (let* ((title *current-section-title*)
          (title-string (when title (content-string title))))
     (when title-string
       (string-equal string title-string))))
+
 
 ;;;---------------------------------------
 ;;; walking a function through a document
@@ -378,20 +373,17 @@
   (declare (ignore p fn in-results?))
   nil)
 
+
+
 (defun in-results? (s)
-  ;; Are we in a results section>
-  (declare (special s))
+  ;; Are we in a results section?
   (when (slot-boundp s 'title)
     (let ((title 
            (if (stringp (title s)) 
              (title s)
              (content-string (title s)))))
-      (cond
-       ((member (string-downcase title)'("results") :test #'equal)
-        t)
-       (t
-        ;;(print (list 'results? title))
-        nil)))))
+      (member (string-downcase title)'("results") :test #'equal))))
+
 
 
 (defgeneric document-tree (source)
@@ -405,6 +397,7 @@
 (defmethod document-tree ((hc t))
     (list hc))
 
+
 (defparameter *results-section-titles* nil)
 (defparameter *relevant-titles* nil)
 
@@ -413,28 +406,10 @@
     (recurse-through-document a #'collect-relevant-titles nil)  
     (push (list (name a) *relevant-titles*)
           *results-section-titles*)))
+
 (defun collect-relevant-titles (title)
   (push (content-string title) *relevant-titles*))
           
-  
-
-#|
-(defparameter *show-paragraph-sents* t)
-
-(defun show-paragraph-sents (p)
-  (when *show-paragraph-sents*
-  (format t "Paragraph sents: ~&")
-  (let
-      ((sent (if (consp (children p))
-                 (if (cdr (children p))
-                     (second (children p))
-                     (car (children p)))
-                 (children p))))
-    (declare (special sent))
-    (print sent)
-    (loop while (setq sent (next sent))
-      do (print sent)))))
-|#
 
 
 
@@ -444,39 +419,35 @@
 ;;//// needs a setter
 
 (defparameter *sections-to-ignore* 
-  '(
-    "authors' contributions"
+  '("authors' contributions"
     "competing interests"
     "experimental procedures"
-    "funding"
-    )
+    "funding")
   "Contains a list of section titles or title fragments that
-  name sections we want to skip over")
+   name sections we want to skip over")
 
-;;; let's not ignore these for now. 
+;;; Optionally ignore these.
 (defparameter *method-section-names*
     '("method"
-    "materials and methods"
-    "methods summary"
-    "methods"))
+      "materials and methods"
+      "methods summary"
+      "methods"))
 
 (defparameter *ignore-methods-sections* t)
 
 (defun ignore-this-document-section (section)
   (when *sections-to-ignore*
-    (unless (typep section 'paragraph) ;; happens sometimes
+    (unless (typep section 'paragraph)
+      ;; A paragraph at the level of the article is not
+      ;; a section we could consider ignoring
+
       (when (slot-boundp section 'title)
         ;(push-debug `(,section))
         ;(error "title of section hasn't been set"))
         (let ((title-object (title section))
               (sections-to-ignore (append *sections-to-ignore*
-                                          (if *ignore-methods-sections*
-                                              *method-section-names*))))
-          (when nil
-            ;; teething problem with abstract
-            (unless title-object
-              (push-debug `(,section))
-              (error "Section somehow doesn't have a title object")))
+                                          (when *ignore-methods-sections*
+                                            *method-section-names*))))
           (when title-object
             (let ((title-string 
                    (string-downcase
@@ -487,7 +458,7 @@
                        (push-debug `(,title-object))
                        (error "Unexpected type of title: ~a~%~a"
                               (type-of title-object) title-object))))))
-              ;;(format t "~&---- Section title: ~S~&" title-string)
+              
               (dolist (ignore-substring sections-to-ignore nil)
                 (when (search ignore-substring title-string
                               :test #'equalp)
