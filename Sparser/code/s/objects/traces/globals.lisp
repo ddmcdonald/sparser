@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  August 2014
+;;;  Version:  June 2016
 
 ;; initiated 8/18/93 v2.3, added found when loading 8/24.
 ;; 3/28/94 added *trace-DM&P*.  5/5 added *trace-network-flow.
@@ -47,6 +47,17 @@
 (defparameter *trace-segment-summary* nil
   "may be obsolete -- checked in :segment-delimited")
 
+(defparameter *trace-find-word* nil
+  "For the checks made by find-word for rules sets, etc. that
+   determine whether a word is 'known' or should be passed
+   through the morphology handlers.")
+
+(defparameter *trace-delay-unknown-judgment* nil
+  "When the domain has substantial instances of compound
+   word (see 'no-space' handler), the lowest level of
+   token retrieval will regard fragments of these words
+   as 'unknown'. It should however wait before acting on
+   those fragments since in context they may be compounds.")
 
 (defparameter *trace-morphology* nil
   "For any lowlevel actions driven by a word's morphology or Comlex")
