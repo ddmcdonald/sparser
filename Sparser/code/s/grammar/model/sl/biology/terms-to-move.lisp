@@ -61,10 +61,7 @@ be biology specific, since they aren't. |#
 ;; want something for magnitude, size, etc. TO-DO
 (adj "single" :super abstract)
 (adj "double" :super abstract)
-(define-category size :specializes abstract
-  :binds ((measured-item biological))
-  :realization
-  (:noun "size" :of measured-item))
+
 
 ;; "high";;ambiguous between (ADJECTIVE ADVERB)
 
