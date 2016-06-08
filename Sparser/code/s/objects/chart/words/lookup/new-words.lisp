@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  May 2016
+;;;  Version:  June 2016
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -22,11 +22,6 @@
 ;;     (6/9/15) Added another case to it.
 
 (in-package :sparser)
-
-
-(defun unknown-word? (word)
-  ;; Correct to first-order, but see computations in find-word
-  (null (word-rules word)))
 
 
 ;;;-----------------------------------------
@@ -95,8 +90,11 @@
              (store-word-and-handle-it-later word))
             (t
              (setup-unknown-word-by-default word)))
+
+           ;; else
            (when entry
              (unpack-primed-word word symbol entry))))))
+    
     word ))
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
 

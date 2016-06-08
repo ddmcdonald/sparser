@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2012-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2012-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  3.2 October 2013
+;;;  Version:  June 2016
 
 ;; 3.0 (6/2/93) changed the object to inherit from label
 ;; 3.1 (7/19) added wrapping data-check on Word-string to catch the
@@ -16,9 +16,7 @@
 ;;     (10/9/13) Added word-with-single-edge-rules? for C3's benefit
 ;; SBCL 3/21/2015  -- code for printing words and polywords -- moved to after polywords are defined, to reduce warnings in SBCL
 
-
 (in-package :sparser)
-
 
 ;;;--------
 ;;; object
@@ -56,6 +54,10 @@
 
 (defun known-word? (w)
   (label-rule-set w))
+
+(defun unknown-word? (word)
+  ;; Correct to first-order, but see computations in find-word
+  (null (word-rules word)))
 
 (defun word-mentioned-in-rules? (w)
   (let ((rs (word-rules w)))
