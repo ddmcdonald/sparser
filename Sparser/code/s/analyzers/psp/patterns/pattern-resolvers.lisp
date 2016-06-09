@@ -55,44 +55,56 @@
                  (edge-form right-edge)))
          (subcat-var (subcategorized-variable right-ref :m left-ref)))
 
+    #+ignore
     (when subcat-var
       (return-from second-imposes-relation-on-first? subcat-var))
-
-    (when (or (eq form category::verb+ed) ;; assume passive
-              (eq form category::verb+ing)
-              (eq form category::adjective))
-      ;; now figure out what variable on the second (right)
-      ;; should be bound to the first (left)
-      (let* ((vars (loop for sc in (super-categories-of right-ref)
-                     append
-                     (if (category-p sc)
-                         (cat-slots sc) ;; what case??
-                         (cat-slots (itype-of sc)))))
-             (variable 
-              (cond
-               ((eq form category::verb+ed)
-                (subject-variable right-ref))
-               ((or (eq form category::adjective)
-                    (eq form category::verb+ing))
-                ;; Get the slots on the category of the right-edge
-                ;; and look for a variable that's not for subjects
-                (let ((sv (subject-variable right-ref)))
-                  (loop for v in vars 
-                    when (not (eq v sv)) do (return v)))))))
-        ;; Which variable this is really depends on the two referents.
-        ;; For the "induced" example its an agent (= subject). But the
-        ;; tyrosine goes on the site variable of the phosphoryate.
-        ;; For right now, binding the subject and letting the chips
-        ;; fall as they may. Elevating the right edge as the head
-        ;; but making it an adjective overall. 
-        (unless variable
-          ;;/// clear motivation for structure on variables on perhaps
-          ;; on the mixing in of categories for this same purpose
-          ;; Default to modifier ??
-          (setq variable
-                ;; applies if there's just one variable on category
-                (single-on-variable-on-category right-ref)))
-        variable))))
+    (cond
+      ((or (eq form category::verb+ed) ;; assume passive
+	   (eq form category::verb+ing)
+	   (eq form category::adjective))
+       ;; now figure out what variable on the second (right)
+       ;; should be bound to the first (left)
+       (let* ((vars (loop for sc in (super-categories-of right-ref)
+		       append
+			 (if (category-p sc)
+			     (cat-slots sc) ;; what case??
+			     (cat-slots (itype-of sc)))))
+	      (variable 
+	       (cond
+		 ((eq form category::verb+ed)
+		  (subject-variable right-ref))
+		 ((or (eq form category::adjective)
+		      (eq form category::verb+ing))
+		  ;; Get the slots on the category of the right-edge
+		  ;; and look for a variable that's not for subjects
+		  (or (object-variable right-ref) ;; if there is an object variable, use it
+		      (let ((sv (subject-variable right-ref)))
+			(loop for v in vars 
+			   when (not (eq v sv)) do (return v))))))))
+	 ;; Which variable this is really depends on the two referents.
+	 ;; For the "induced" example its an agent (= subject). But the
+	 ;; tyrosine goes on the site variable of the phosphoryate.
+	 ;; For right now, binding the subject and letting the chips
+	 ;; fall as they may. Elevating the right edge as the head
+	 ;; but making it an adjective overall. 
+	 (unless (and
+		  variable
+		  (satisfies-subcat-restriction?
+		   left-ref
+		   (var-value-restriction
+		    (find-variable-for-category
+		     (var-name variable)
+		     (if (individual-p right-ref)
+			 (itype-of right-ref)
+			 right-ref)))))
+	   ;;/// clear motivation for structure on variables on perhaps
+	   ;; on the mixing in of categories for this same purpose
+	   ;; Default to modifier ??
+	   (setq variable
+		 ;; applies if there's just one variable on category
+		 (single-on-variable-on-category right-ref)))
+	 variable))
+      (subcat-var subcat-var))))
 
 
 ;;--- follow-up routine that does it
