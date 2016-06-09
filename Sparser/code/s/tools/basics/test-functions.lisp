@@ -120,7 +120,7 @@
 	    (*suppress-indiv-uids* t)
 	    (ref (edge-referent edge)))
 	 (declare (special *no-edge-info* *suppress-indiv-uids*))
-	 (format stream "~%~s~% --- ~s~%" edge (extract-string-spanned-by-edge edge))
+	 (format stream "~% --- ~s~%"  (extract-string-spanned-by-edge edge))
 	 (if (word-p ref)
 	     (format stream "  ~s" ref)
 	     (pprint (semtree ref) stream))
