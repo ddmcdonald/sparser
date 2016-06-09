@@ -370,12 +370,37 @@
     (trace-msg "[ns hyphen] Binding the first to the ~a variable of the second"
                (princ-variable/string var))))
 
+(deftrace :ns-no-variable-relating-them (left-ref right-ref)
+  ;; called in do-relation-between-first-and-second
+  (when *trace-ns-sequences*
+    (trace-msg "[ns hyphen] No identified relationship between ~a and ~a"
+               left-ref right-ref)))
+(deftrace :ns-second-subcategizes-for-first (subcat-var)
+  ;; called by second-imposes-relation-on-first?
+  (when *trace-ns-sequences*
+    (trace-msg "[ns hyphen] the second subcategories for the first using ~a"
+               subcat-var)))
+(deftrace :ns-using-subject-variable-of (right-ref)
+  ;; called by second-imposes-relation-on-first?
+  (when *trace-ns-sequences*
+    (trace-msg "[ns hyphen] using the subject variable of ~a" right-ref)))
+(deftrace :ns-using-non-subject-variable-of (right-ref)
+  ;; called by second-imposes-relation-on-first?
+  (when *trace-ns-sequences*
+    (trace-msg "[ns hyphen] trying for a variable that isn't the subject ~
+                of ~a" right-ref)))
+(deftrace :ns-used-the-single-variable-on (right-ref)
+   ;; called by second-imposes-relation-on-first?
+  (when *trace-ns-sequences*
+    (trace-msg "[ns hyphen] using the single variable on ~a" right-ref)))
+
 (deftrace :ns-found-subject-var-in (variable right-ref)
   (when *trace-ns-sequences*
     (trace-msg "[ns hyphen] Found subject ~a in ~a" variable right-ref)))
 (deftrace :ns-no-subject-var-in (right-ref)
   (when *trace-ns-sequences*
     (trace-msg "[ns hyphen] No subject variable in ~a"  right-ref)))
+
 
 
 (deftrace :ns-found-usable-rule (rule)

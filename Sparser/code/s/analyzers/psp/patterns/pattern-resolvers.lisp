@@ -54,10 +54,6 @@
   (let* ((form (when (edge-p right-edge)
                  (edge-form right-edge)))
          (subcat-var (subcategorized-variable right-ref :m left-ref)))
-
-    #+ignore
-    (when subcat-var
-      (return-from second-imposes-relation-on-first? subcat-var))
     (cond
       ((or (eq form category::verb+ed) ;; assume passive
 	   (eq form category::verb+ing)
@@ -72,11 +68,13 @@
 	      (variable 
 	       (cond
 		 ((eq form category::verb+ed)
+                  (tr :ns-using-subject-variable-of right-ref)
 		  (subject-variable right-ref))
 		 ((or (eq form category::adjective)
 		      (eq form category::verb+ing))
 		  ;; Get the slots on the category of the right-edge
 		  ;; and look for a variable that's not for subjects
+                  ;;(tr :ns-using-non-subject-variable-of right-ref)
 		  (or (object-variable right-ref) ;; if there is an object variable, use it
 		      (let ((sv (subject-variable right-ref)))
 			(loop for v in vars 
@@ -102,9 +100,14 @@
 	   ;; Default to modifier ??
 	   (setq variable
 		 ;; applies if there's just one variable on category
-		 (single-on-variable-on-category right-ref)))
+		 (single-on-variable-on-category right-ref))
+           (when variable
+            (tr :ns-used-the-single-variable-on right-ref)))
 	 variable))
-      (subcat-var subcat-var))))
+      
+      (subcat-var
+       (tr :ns-second-subcategizes-for-first subcat-var)
+       subcat-var))))
 
 
 ;;--- follow-up routine that does it
@@ -118,6 +121,7 @@
   (let ((variable (second-imposes-relation-on-first?
                    left-ref right-ref right-edge)))
     (unless variable
+      (tr :ns-no-variable-relating-them left-ref right-ref)
       (return-from do-relation-between-first-and-second nil))
     (tr :make-right-head-with-agent-left variable)
     (let ((edge
