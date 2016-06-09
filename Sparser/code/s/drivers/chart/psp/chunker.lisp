@@ -525,7 +525,9 @@
 	(loop for edge in edges thereis
 	     (and (ng-head? edge)
 		  ;; rule out demonstrative pronouns
-		  (not (eq (edge-form edge) category::det)))))
+		  ;; "such co-occurring events"
+		  (not (eq (edge-form edge) category::det))
+		  (not (eq (edge-form edge) category::quantifier)))))
 	 
        ((eq category::ordinal (edge-category e))
         ;;WORKAROUND -- DAVID
