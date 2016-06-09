@@ -186,7 +186,10 @@ similar to an oncogenic RasG12V mutation (9)."))
   :form np
   :referent (:function create-partitive-np left-edge right-edge))
 
-(loop for nb in `(category::verb+ing category::NP ,@*n-bar-categories*)
+(loop for nb in `(category::verb+ing
+		  ;;category::NP don't want to apply most modifiers to NPs
+		  ;; in particular, block "THAT <NP>"
+		  ,@*n-bar-categories*)
    do
   (eval
    `(def-syntax-rule (det ,nb) 
@@ -261,6 +264,20 @@ similar to an oncogenic RasG12V mutation (9)."))
         :form n-bar 
         :referent (:function noun-noun-compound
                              left-edge right-edge)))))
+
+;; These two are special cases where we do want to attach post-modifiers to full NPs
+
+(def-syntax-rule (np ap) ;; "RAS in vivo"
+                     :head :left-edge
+      :form n-bar
+      :referent (:function adj-noun-compound
+                           right-edge left-edge ))
+
+(def-syntax-rule (np adjective) ;; "RAS in vivo"
+                     :head :left-edge
+      :form n-bar
+      :referent (:function adj-noun-compound
+                           right-edge left-edge ))
 
 (def-syntax-rule (quantifier det)   ;; e.g. "all these"
                      :head :right-edge
