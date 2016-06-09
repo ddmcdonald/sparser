@@ -94,7 +94,6 @@
 (define-adjective "proteolytic")
 (define-adjective "renal") ;kidney
 (define-adjective "replicative") 
-(define-adjective "resistant")
 (define-adjective "somatic")
 (define-adjective "stromal") ;stroma
 (define-adjective "telomeric") ;telomere
@@ -844,10 +843,11 @@
      :realization
      (:to theme))
 
-(adj "resistant" :super bio-relation
+(define-category resistant :specializes bio-relation
      :binds ((treatment (:or bio-process bio-entity)))
      :realization
      (:adj "resistant"
+	   :noun "resistance"
            :to treatment))
 
 (noun "response" :super bio-process
@@ -855,9 +855,17 @@
             (agent biological)) ;; (:or biological drug)))
     :realization
     (;; :verb "respond" cant get the right :etf for verbs
-     :noun "response" :adj "responsive"
+     :noun "response"
      :of beneficiary
      :to agent))
+
+(define-category responsive :specializes bio-relation
+     :binds ((treatment (:or bio-process bio-entity)))
+     :realization
+     (:adj "responsive"
+	   :noun "responsiveness"
+           :to treatment))
+  
 
 (adj "responsible" :super bio-predication ;; adj/noun "resposibility"
   :binds ((subject biological)(theme bio-entity))
@@ -1133,7 +1141,7 @@
 
 
 (define-category article-figure
-  :specializes bio-abstract
+  :specializes visual-representation
   :binds ((label two-part-label))
   :realization
   (:noun "figure"))
@@ -1141,6 +1149,19 @@
 (def-synonym article-figure (:noun "Fig."))
 
 (def-synonym article-figure (:noun "Fig"))
+
+(define-category arrow :specializes visual-representation
+		 :realization
+		 (:noun "arrow"))
+
+(define-category star :specializes visual-representation
+		 :realization
+		 (:noun "star"))
+
+(define-category diagram :specializes visual-representation
+		 :realization
+		 (:noun "diagram"))
+
 
  
 (def-cfr article-figure (article-figure two-part-label)

@@ -90,6 +90,19 @@
   :realization (:ifcomp statement)
   :documentation "Similar to bio-whethercomp.")
 
+(define-mixin-category event-relation :specializes event ;; put in here since we don't want to modify EVENT yet
+  :binds ((following process)
+	  (preceding process)
+	  (during process)
+	  (timeperiod (:or time-unit amount-of-time)))
+  :realization (:for timeperiod
+		 :over timeperiod
+		 :upon following
+		 :after following
+		 :upon following
+		 :before preceding
+		 :during during))
+
 
 (define-mixin-category reactome-category
    :mixins (has-name)
@@ -161,6 +174,10 @@
 ;;/// This is OBE given revision to biological. 
 (define-category bio-abstract :specializes biological)
 
+(define-category visual-representation :specializes bio-abstract
+		 ;; figures, arrows, stars, etc.
+		 :realization
+		 (:noun "observation"))
 
 (define-category evidence :specializes bio-abstract
   :binds ((fact biological))
@@ -193,7 +210,7 @@
   ;; Made it inherit from event because that provided
   ;; almost all the slots.
   ;; Aspect was annotated with "will likely be useful"
-  :binds ((subject biological)
+  :binds ((subject (:or biological visual-representation))
           (as-comp as-comp))
   :realization (:s subject
                    :as-comp as-comp))
@@ -304,16 +321,12 @@
 
 (define-category bio-process
     :specializes process
-    :mixins (has-UID has-name biological)
-    :binds ((following bio-process)
-	    (preceding bio-process)
-	    (during bio-process)
-	    (by-means-of (:or bio-process mechanism bio-method))
+    :mixins (has-UID has-name biological event-relation)
+    :binds ((by-means-of (:or bio-process mechanism bio-method))
 	    (using bio-entity)
 	    (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
 	    (as-comp as-comp)
-	    (timeperiod (:or time-unit amount-of-time)))
-  
+	    (target (:or protein gene)))
     :realization 
     (:noun "process"
 	   ;; :by by-means-of find out what uses this
@@ -322,13 +335,7 @@
 	   :via using
 	   :in manner
 	   :as-comp as-comp
-	   :for timeperiod
-	   :over timeperiod
-	   :upon following
-	   :after following
-	   :before preceding
-	   :during during
-	   )
+	   :at target)
     :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
@@ -359,6 +366,7 @@
   :binds
   ((agent ;; supercedes subject in bio=-process
     (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
+	 bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
 	 measurement ;; "these data raised the possibility..."
 	 molecular-location)) ;; membrane targeting domains that facilitate interaction with the plasma membrane
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
@@ -407,7 +415,7 @@
   :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
-  :mixins (biological bio-thatcomp bio-whethercomp)
+  :mixins (biological bio-thatcomp bio-whethercomp event-relation)
   :binds ((agent (:or pronoun/first/plural
 		      pronoun/plural ;; "they"
 		      organism ;; "these animals showed..."
@@ -421,7 +429,7 @@
 		      bio-method	;; high-throughput functional screens may inform
 		      bio-predication ;; the success of raf and mek inhibitors
 		      measurement     ;; these data
-		      ))
+		      visual-representation))
 	  (object (:or biological pronoun/inanimate))
 	  (ratio-condition ratio)
 	  (fig article-figure)
@@ -517,12 +525,14 @@
   :mixins (has-UID has-name biological)
   :binds ((agent (:or pronoun/first/plural biological))
           (object (:or biological measurement))
+	  (result-or-purpose bio-process)
           (timeperiod (:or time-unit amount-of-time)))
   :realization (:s agent
                    :o object
                    :by agent
                    :of object
-                   :for timeperiod) ;; for nominal forms
+                   :for timeperiod
+		   :to-comp result-or-purpose) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
   for 'liquid chromatography', etc. that may be the basis
   of the grammar patterns.")
@@ -540,9 +550,8 @@
           :for process))
 
 (define-category bio-relation :specializes bio-predication
-  :mixins (has-UID has-name biological)
-  :binds ((theme biological)
-          (timeperiod (:or time-unit amount-of-time))) ;; this probably belongs higher
+  :mixins (has-UID has-name biological event-relation)
+  :binds ((theme biological)) ;; this probably belongs higher
   :realization (:for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'constitute, contains etc. that may be the basis
@@ -982,8 +991,14 @@
 
 (define-category cell-line :specializes bio-entity
   :instantiates self
+  :binds ((with-protein protein))	 
   :realization (:common-noun name)
   :index (:permanent :key name))
+
+(fom-subcategorization category::cell-line
+                       :category category::cell-line
+                       :slots `(:with with-protein))
+
 
 (define-category cell-type :specializes bio-entity
   :realization (:noun "cell type" ))

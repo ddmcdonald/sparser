@@ -289,6 +289,7 @@
   ;; N.b. "bio-" implies that there's an unmarked "act" as well, and it's a bit cumbersome
   :specializes other-bio-process
   :binds ((actor bio-entity)
+	  (co-actor bio-entity)
           (object bio-entity)
           (process bio-process)
           (functionality (:or  bio-process bio-entity))
@@ -300,6 +301,7 @@
 	 :etf sv
 	 :noun "action"
 	 :s actor
+	 :with co-actor
 	 :at bio
 	 :as functionality
 	 :by process
@@ -457,12 +459,11 @@
 
 ;; "call"  assigns a name in passive "X is called N"
 
-#+ignore
 (define-category co-operate :specializes bio-process 
   :binds ((agent biological)
           (co-operator biological)) 
   :realization 
-  (:verb ("co-operate" :third-plural "co-operates")
+  (:verb "co-operate"
          :noun"co-operation" 
          :etf (sv) 
          :s agent 
@@ -642,15 +643,10 @@
                       :to object
                       :to-comp object))
 
-(define-category cooperate :specializes other-bio-process
-  :binds ((co-subject biological)
-          (to-achieve biological))
+(define-category cooperate :specializes bio-act
   :realization
   (:verb "cooperate" :noun "cooperation"
-         :etf (sv)
-         :with co-subject
-         :to-comp to-achieve))
-  
+         :etf (sv)))  
 
 (define-category correspond :specializes bio-relation
   :binds ((property common-noun))
@@ -1918,12 +1914,12 @@
 
 ;;TO-DO -- fix this one
 (define-category represent :specializes bio-relation
-  :binds ((figure article-figure))
+  :binds ((visual-presentation visual-presentation))
   :realization
   (:verb "represent" :noun "representation"
          :etf (svo-passive)
          :o theme
-         :in figure))
+         :in visual-presentation))
 
 (define-category require :specializes bio-control
   :binds ((requirement (:or biological process))
