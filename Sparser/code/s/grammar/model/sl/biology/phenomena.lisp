@@ -820,14 +820,6 @@ it is created from N-terminus to C-terminus.|#
   :realization
   (:noun "heterodimer"))
 
-; Dec32: C-RAF activation and heterodimerization with B-RAF constitute critical components
-; Dec33: endogenous C-RAF:B-RAF heterodimers
-(define-category heterodimerization
-  :specializes other-bio-process
-  :instantiates :self
-  :lemma (:common-noun "heterodimerization"))
-
-
 (define-category homodimer :specializes dimer 
   :realization
   (:noun "homodimer"))
