@@ -467,6 +467,16 @@
                      direct-object o1 :additional-labels (objective)
                      second-object o2 :additional-labels (objective))))
 
+#| "... make the shirt purple" |#
+
+(define-phrase SVO-ADJ (s v o adj)
+  (clause :set-state (:aux-state initial)
+	  subject s :additional-labels (nominative)
+	  predicate (vp
+                     verb v
+                     direct-object o :additional-labels (objective)
+                     adjective adj :additional-labels (predicate-adjective))))
+
 
 
 
@@ -608,7 +618,6 @@
 ;###########################################################
 ;    for dative passives
 ;  "the book was bought for peter"
-
 
 (define-phrase S-V-ForIO-SIMPLE-PASSIVE (s v io)
   (clause :set-state (:aux-state initial)
