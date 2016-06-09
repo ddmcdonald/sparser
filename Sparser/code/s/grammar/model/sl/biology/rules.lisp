@@ -177,6 +177,10 @@
   :referent (:head right-edge
              :bind (mutation left-edge)))
 
+(def-cfr protein (protein number)
+  :form NP
+  :referent (:head left-edge
+             :bind (variant-number right-edge)))
 
 ;;--- CS rule for protein
 
