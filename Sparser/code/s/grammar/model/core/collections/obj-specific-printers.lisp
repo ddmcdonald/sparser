@@ -34,7 +34,7 @@
            (write-string "#<collection " stream)
            (dolist (item (value-of 'items obj))
              (format stream "~A " item))
-           (format stream "~A>" (indiv-uid obj))))
+           (format stream "~A>" (maybe-indiv-uid obj))))
 
   :short ((let ((*print-short* t))
             (write-string "#<" stream)
