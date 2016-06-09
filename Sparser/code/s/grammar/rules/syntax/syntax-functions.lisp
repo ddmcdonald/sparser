@@ -261,16 +261,6 @@
       (or (subcategorized-variable head :m qualifier)
 	  (subcategorized-variable qualifier :subject head))))
     ((call-compose qualifier head)) ;; This case is to benefit marker-categories
-    #+ignore
-    ((category-p head)
-     (let ((ihead (individual-for-ref head)))
-       (setq head
-	     (or (call-compose qualifier ihead)
-		 (interpret-premod-to-np qualifier ihead)
-		 (when ;; (when (itypep head 'endurant)
-		     (find-variable-from-individual 'modifier ihead)
-		   (bind-dli-variable 'modifier qualifier ihead))))
-       (or head ihead)))
     ((interpret-premod-to-np qualifier head))
     (t ;; Dec#2 has "low nM" which requires coercing 'low'
      ;; into a number. Right now just falls through
