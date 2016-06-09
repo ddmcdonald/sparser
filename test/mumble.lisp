@@ -15,8 +15,11 @@
             :resource (mumble-value 'first-person-singular 'pronoun)))
 
 (defun conjoin (a b)
-  (make-dtn :referent `(and ,a ,b)
-            :resource (phrase-named 'two-item-conjunction)))
+  (let ((conj (make-dtn :referent `(and ,a ,b)
+			:resource (phrase-named 'two-item-conjunction))))
+    (make-complement-node 'one a conj)
+    (make-complement-node 'two b conj)
+    conj))
 
 (defgeneric make-simple-dtn (word pos &key)
   (:method ((word word) pos &rest args)
@@ -137,8 +140,6 @@
     (make-complement-node 'o milk drink)
     (make-complement-node 's me like)
     (make-complement-node 'o cat like)
-    (make-complement-node 'one drink conj)
-    (make-complement-node 'two like conj)
     (mumble-says conj))
   "I don't drink milk and I like cats")
 
@@ -152,8 +153,6 @@
     (make-complement-node 'o book buy)
     (make-complement-node 's me read)
     (make-complement-node 'o book read)
-    (make-complement-node 'one buy conj)
-    (make-complement-node 'two read conj)
     (mumble-says conj))
   "I bought a book and I read it")
 
