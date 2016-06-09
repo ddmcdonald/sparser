@@ -460,13 +460,19 @@
    ;; (break "THATCOMP?")
     nil)))
 
-(defun preceding-det-or-prep (e)
+(defun preceding-det-prep-poss-or-adj (e)
   (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
      thereis
-       (or (eq (cat-name (edge-form ee)) 'det)
+       (or (member (cat-name (edge-form ee)) '(det possessive adjective number
+					       verb+ed verb+ing))
 	   (and (category-p (edge-category ee))
 		(memq (cat-name (edge-category ee))
 		      '(preposition spatial-preposition))))))
+
+(defun followed-by-verb (e)
+  (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
+     thereis
+       (member (cat-name (edge-form ee)) '(verb))))
 
 (defun preceding-adverb (e)
   (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
@@ -483,11 +489,15 @@
   (declare (special e))
   (when (not (preceding-adverb e))
     (cond
-      ((and
-	(or (plural-noun-and-present-verb? e)
-	    (singular-noun-and-present-verb? e)
-	    )
-	(preceding-det-or-prep e)))
+      ((or (plural-noun-and-present-verb? e)
+	   (singular-noun-and-present-verb? e))
+       ;; fix logic error -- if we hav a noun-verb ambiduity,
+       ;; then we must check the following --
+       ;; the only time we treat the word as a noun is if it immediately follows a det or prep
+       ;; cf. "RAS results in" vs "the results..."
+       (or
+	(preceding-det-prep-poss-or-adj e)
+	(followed-by-verb e)))
       ((eq (cat-name (edge-form e)) 'VERB+ING) ; 
        (let
 	   ((end-pos (pos-edge-ends-at e))
@@ -537,8 +547,11 @@
 
 (defmethod vg-start? ((e edge))
   (if
-   (plural-noun-and-present-verb? e)
-   (not (preceding-det-or-prep e))
+   (or (plural-noun-and-present-verb? e)
+       (singular-noun-and-present-verb? e))
+   (and
+    (not (preceding-det-prep-poss-or-adj e))
+    (not (followed-by-verb e)))
    (vg-compatible? e)))
 
 (defgeneric vg-compatible? (label)
