@@ -304,6 +304,13 @@
            attach-appositive-np-under-s
            first second third))
 
+(define-debris-analysis-rule s-comma-np-comma
+  :pattern ( s "," np ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-appositive-np-under-s
+           first second third fourth))
+
 (defun attach-appositive-np-under-s (s-edge comma-edge np-edge &optional trailing-comma)
   (push-debug `(,s-edge ,comma-edge ,np-edge))
   ;; (setq s-edge (car *) comma-edge (cadr *) np-edge (caddr *))
@@ -324,7 +331,8 @@
       (setq target-ref (edge-referent target))
       (setq new-target-ref
             (bind-dli-variable 'appositive-description (edge-referent np-edge) target-ref))
-      (let ((new-edge
+      (let ((dominating (edge-used-in target))
+	    (new-edge
              (make-edge-over-long-span 
               (pos-edge-starts-at target)
               (pos-edge-ends-at (or trailing-comma np-edge))
@@ -335,10 +343,10 @@
               :constituents `(,target ,comma-edge ,np-edge))))
         (tuck-new-edge-under-already-knit
          target ;; subsumed
-         new-edge
-         s-edge
+	  new-edge
+	  dominating ;;was the s-edge, but that is not the dominating edge
          :right)
-        new-edge))
+	s-edge))
      (t 
       ;;(lsp-break "attach-appositive-np-under-s fails")
       nil))))
@@ -383,7 +391,7 @@
               (pos-edge-ends-at (or trailing-comma np-edge))
               (edge-category target)
               :form (edge-form target)
-              :rule 'attach-appositive-np-under-s
+              :rule 'attach-appositive-np-under-pp
               :referent new-target-ref
               :constituents `(,target ,comma-edge ,np-edge))))
         (tuck-new-edge-under-already-knit
@@ -393,7 +401,7 @@
          :right)
         new-edge))
      (t 
-      ;;(lsp-break "attach-appositive-np-under-s fails")
+      ;;(lsp-break "attach-appositive-np-under-pp fails")
       nil))))
 
 (define-debris-analysis-rule np-comma-np
@@ -477,7 +485,7 @@
 			     :constituents `(,target ,comma-edge ,srel-edge))))
 		       (tuck-new-edge-under-already-knit
 			target ;; subsumed
-			new-edge
+			(edge-used-in target)
 			s-edge
 			:right)
 		       new-edge))))))))))
@@ -532,7 +540,7 @@
         (tuck-new-edge-under-already-knit
          target ;; subsumed
          new-edge
-         s-edge
+         (edge-used-in target)
          :right)
         new-edge))
      (t 
