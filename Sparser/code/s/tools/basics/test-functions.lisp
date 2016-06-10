@@ -123,10 +123,27 @@
 	 (format stream "~% --- ~s~%"  (extract-string-spanned-by-edge edge))
 	 (if (word-p ref)
 	     (format stream "  ~s" ref)
-	     (pprint (semtree ref) stream))
+	     (print-sem-tree (semtree ref) stream))
 	 (format stream "~%~%------ Edge syntactic tree:~%")
 	 (ctree edge stream)
 	 (format stream "~%~%"))))
+
+(defun print-sem-tree (sem-tree &optional (stream *standard-output*))
+  (let ((*suppress-indiv-uids* t))
+    (declare (special *suppress-indiv-uids*))
+    (cond ((consp sem-tree)
+	   (cond ((null (cdr sem-tree)) (format stream " ~s" (car sem-tree)))
+		 (t
+		  (emit-line stream (format nil "(~s"
+					    (if (individual-p (car sem-tree))
+						(cat-symbol (itype-of (car sem-tree)))
+						(car sem-tree))))
+		  (push-indentation)
+		  (loop for item in (cdr sem-tree) do (print-sem-tree item stream))
+		  (format stream ")")
+		  (pop-indentation))))
+	  (t (format stream " ~s" sem-tree)))))
+
 
 (defun old-display-sent (sent corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
   (show-sent-heading sent corpus n stream)
