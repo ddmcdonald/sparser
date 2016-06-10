@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  discourse"mentions"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  1.0 February 2016
+;;;  Version:  June 2016
 ;;;
 
 
@@ -22,8 +22,8 @@
 
 (defparameter *check-consistent-mentions* nil
   "when set, checks to see that all mentions start and remain consistent
-with the referent of their mention-source -- failures have indicated a lack
-of proper resetting of context")
+   with the referent of their mention-source -- failures have indicated a lack
+   of proper resetting of context")
 
 (defun mention-history (i)
   (declare (special *lattice-individuals-to-mentions*))
@@ -42,13 +42,10 @@ of proper resetting of context")
 		 (when m (return-from m# m))))
 	   *lattice-individuals-to-mentions*))
 
-(defvar *lattice-individuals-mentioned-in-paragraph* nil
-  "List of mentions within the current paragraph. Most recent
-   first. Mostly needed as a resource to 'long-term-ify' 
-   mention locations, but may have other uses such as mergine
-   with or replacing the sentence list of individuals.")
 
-(defparameter *mention-uid* 0)
+(defparameter *mention-uid* 0) ;;/// needs to be reset at some point
+;;/// and cross-article and per-article long term has to be
+;; worked out
 
 (defclass discourse-mention ()
   ((uid :initarg :uid :accessor mention-uid)
@@ -69,7 +66,9 @@ of proper resetting of context")
    (location-in-article :initarg :article :accessor mentioned-in-article-where
     :documentation "When reading a text represented as an
      article, this encodes the location of the sentence that
-     the mention is part of in the style of table-of-contents label")
+     the mention is part of in the style of table-of-contents label.
+     6/8/16 changed value to a cons of the ToC string and the current
+     paragraph. See make-mention")
    (subsumes :initform nil :accessor subsumes-mention
     :documentation "If the edge for this mention extends
      the edge of the previous mention (i.e. we're walking
@@ -85,7 +84,7 @@ of proper resetting of context")
   (print-unreadable-object (m stream) ;; not :type t
     (let ((i (base-description m)) ;; mention of what individual
           (location (mentioned-where m)) ;; at what paragraph position
-          (article-loc (mentioned-in-article-where m))) ;; toc of sentence in doc
+          (article-loc (car (mentioned-in-article-where m)))) ;; toc of sentence in doc
       (format stream "m:~s i~a ~a ~a"
 	      (mention-uid m)
               (indiv-uid i) (string-for i) article-loc)
@@ -106,16 +105,18 @@ of proper resetting of context")
 	(t
 	 (format stream "?"))))))
 
+(defmethod mention-paragraph-location ((m discourse-mention))
+  (let ((loc (mentioned-in-article-where m)))
+    (when (consp loc)
+      (cdr loc))))
+
 (defmethod contextual-description ((e edge))
   (contextual-description (edge-mention e)))
-
-
 
 (defun show-mention (m)
   (list (base-description m) ;; individual 
         (retrieve-surface-string (base-description m))
         (mention-source m)))
-
 
 (defvar *hal*)
 (defun show-mentions ()
@@ -290,6 +291,8 @@ of proper resetting of context")
   this mention in a table from the (new) individual so that
   we can search back for correspondences from partial individual
   further up the lattice."
+  ;; Cannonical caller is create-discourse-entry which checks which
+  ;; style of individual is being used and dispatches.
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
   (when (null source) (lsp-break "null source in create-discourse-mention"))
@@ -302,6 +305,7 @@ of proper resetting of context")
     (list m)))
 
 (defun make-mention (i source)
+  (declare (special *current-paragraph*))
   (let* ((location (encode-mention-location
                     (if (consp source) (second source) source)))
          (toc (location-in-article-of-current-sentence))
@@ -310,7 +314,7 @@ of proper resetting of context")
 			   :i i
                            :loc location
                            :ms source
-                           :article toc)))
+                           :article (cons toc *current-paragraph*) )))
     #+ignore ;; useful for tracking down odd cases
     (when (= (indiv-uid i) 4188)
       (lsp-break "Made mention ~a" m))
