@@ -12,7 +12,7 @@
 
 #| N.b. this is utterly devoid of real meaning |#
 
-(define-category size
+(define-category size-value
   :specializes quality
   :instantiates self
   :binds ((name :primitive word))
@@ -25,7 +25,7 @@
 ")
 
 (defun define-size (string) ;; syntactic sugar
-  (define-or-find-individual 'size :name string))
+  (define-or-find-individual 'size-value :name string))
 
 ;; a few cases as need for trival blocks world
 (define-size "big")

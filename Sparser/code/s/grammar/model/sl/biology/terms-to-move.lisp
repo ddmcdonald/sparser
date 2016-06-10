@@ -62,6 +62,12 @@ be biology specific, since they aren't. |#
 (adj "single" :super abstract)
 (adj "double" :super abstract)
 
+;; merge this attrivute predicate with its
+;; set of values in core/qualities/size.lisp
+(define-category size :specializes abstract
+  :binds ((measured-item biological))
+  :realization
+  (:noun "size" :of measured-item))
 
 ;; "high";;ambiguous between (ADJECTIVE ADVERB)
 
