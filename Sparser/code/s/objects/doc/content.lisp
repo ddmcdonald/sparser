@@ -136,6 +136,10 @@
   (unless (contents p)
     (setf (contents p) (make-instance 'paragraph-content :in p))))
 
+(defmethod install-contents ((te title-text))
+  (unless (contents te)
+    (setf (contents te) (make-instance 'paragraph-content :in te))))
+
 
 #|   Definition for Grok
   "Supplies the content field of an article"

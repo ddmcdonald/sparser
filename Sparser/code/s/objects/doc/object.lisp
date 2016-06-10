@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  May 2016
+;;;  Version:  June 2016
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -73,9 +73,7 @@
 ;;;----------
 
 (defclass title-text (document-element named-object string-holder)
-  ((sentence :initform nil :accessor title-sentence
-    :documentation "When we're parsing long titles, the results
-      and context are stored in this."))
+  ()
   (:documentation "A title of a section or article."))
 
 (defmethod print-object ((title title-text) stream)
@@ -99,19 +97,69 @@
    non-title elements."
   (let* ((titles (loop for e in doc-elements
                    when (typep e 'title-text)
-                   collect e))
+                    collect e))
+         (multiple? nil)
          (title (if (null (cdr titles))
                   (car titles)
                   (let* ((texts (loop for tt in titles
-                                   collect (title-sentence tt)))
+                                   collect (content-string tt)))
                          (tt (make-instance 'title-text)))
-                    (setf (title-sentence tt)
+                    (setq multiple? t)
+                    (setf (content-string tt)
                           (apply #'string-append texts))
                     tt)))
          (rest (loop for e in doc-elements
                   unless (typep e 'title-text)
                   collect e)))
-    (values title rest)))
+    
+    (when multiple? (push-debug `(,titles ,title)) (lsp-break "mutliples"))
+    ;;/// Maybe operate on the parent here rather than make them do it.
+    
+    #+ignore(unless (contents title)   
+      ;; This gets called on each pass
+      (setup-title-as-sentence-container title))
+    (values title rest multiple?)))
+
+(defun setup-title-as-sentence-container (title)
+  (install-contents title) ;; like paragraph
+  (let ((s (make-instance 'sentence)) ;; permanent
+        (string (content-string title)))
+    ;;/// look at some cases of multiple titles
+    ;; to see if they want to be multple sentences
+    (unless (eql #\. (char string (1- (length string))))
+      (setq string (string-append string "."))
+      (setf (content-string title) string))
+
+    ;; cribing from start-sentence
+    (setf (contents s) (make-sentence-container s))
+    (setf (starts-at-pos s) (position# 0))
+    (setf (starts-at-char s) 1)
+    (setf (previous s) nil)
+    (setf (parent s) title)
+    (setf (children title) s)
+
+    ;; Now we have to 'pre-populate' the sentence so that
+    ;; we get a valid ends-at-pos value and get the
+    ;; proper value for its string. This entails pretending
+    ;; that we're in pre-scanning mode. ///Worth considering
+    ;; whether to just drop these into the regular pass
+    ;; rather than simulating it. 
+
+    (let (;;; (*reading-populated-document* t) ;; for period-hook ??
+          (*sentence-making-sweep* t) 
+          (*pre-read-all-sentences* t) ;; for simple-eos-check
+          (*current-paragraph* title)) ;; for initialize-sentences
+      (declare (special *sentence-making-sweep*
+                        *pre-read-all-sentences*
+                        *current-paragraph*))
+      (initialize-sentences)
+      (establish-character-source/string string)
+      (catch 'sentences-finished
+         (scan-sentences-to-eof s))
+
+      (lsp-break "look at sentence structure")
+      title)))
+
 
 
 
@@ -187,16 +235,6 @@
     obj))
 
 
-(defparameter *article-sentences* nil)
-
-(defun collect-sentences-from-articles ()
-  (when *article-sentences*
-    (let ((as-list (hashtable-to-alist *article-sentences*)))
-      (loop for as-item in as-list collect
-	   (let ((sl-name (intern (format nil "*~s-SENTENCES*" (car as-item)))))
-	     (eval
-	      `(defparameter ,sl-name '(,.(reverse (cdr as-item)))))
-	     sl-name)))))
 
 
 ;;;----------
@@ -390,18 +428,13 @@ printer. |#
     paragraph that is parent."))
 
 
-(defmethod save-article-sentence ((article article) (sentence sentence))
-  (unless *article-sentences*
-    (setq *article-sentences* (make-hash-table)))
-  (when (name article)
-    (push (sentence-string sentence) (gethash (name article) *article-sentences*))))
-
-
-
 (defmethod print-object ((s sentence) stream)
   (print-unreadable-object (s stream :type t)
-    (format stream "p~a -- "
-            (pos-token-index (starts-at-pos s))) ;; !! recycles !!
+    (if (and (slot-boundp s 'starts-at-pos)
+             (starts-at-pos s))
+      (format stream "p~a -- "
+              (pos-token-index (starts-at-pos s)))
+      (format stream "? -- "))
     (if (and (slot-boundp s 'ends-at-pos)
                (ends-at-pos s))
       (format stream "p~a" (pos-token-index(ends-at-pos s)))
@@ -513,6 +546,14 @@ printer. |#
       ;; that the rest have been as well
       (prepopulated? first-sentence))))
 
+(defmethod prepopulated? ((tt title-text))
+  ;;(push-debug `(,tt)) (lsp-break "prepopulated? tt")
+  (let ((first-sentence (children tt)))
+    (when first-sentence
+      ;; Let's assume that if the first one has been handled
+      ;; that the rest have been as well
+      (prepopulated? first-sentence))))
+
 (defmethod prepopulated? ((s sentence))
   "The string is set by a call from the period-hook, so it
    can't have a value unless we've swept over the sentence
@@ -545,6 +586,30 @@ printer. |#
       ;; the cross-buffer code is robust.
       (setf (sentence-string sentence) substring)
       sentence)))
+
+
+
+;;--- Gathering sentence lists (as strings) from an article
+
+(defparameter *article-sentences* nil)
+
+(defun collect-sentences-from-articles ()
+  (when *article-sentences*
+    (let ((as-list (hashtable-to-alist *article-sentences*)))
+      (loop for as-item in as-list
+         collect
+	   (let ((sl-name (intern (format nil "*~s-SENTENCES*" (car as-item)))))
+	     (eval
+	      `(defparameter ,sl-name '(,.(reverse (cdr as-item)))))
+	     sl-name)))))
+
+(defmethod save-article-sentence ((article article) (sentence sentence))
+  (unless *article-sentences*
+    (setq *article-sentences* (make-hash-table)))
+  (when (name article)
+    (push (sentence-string sentence)
+          (gethash (name article) *article-sentences*))))
+
 
 
 ;;;--------------

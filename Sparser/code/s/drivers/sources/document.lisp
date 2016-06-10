@@ -100,7 +100,8 @@
                       *use-occasional-polywords*
                       *sweep-for-patterns*))
     (when (or *show-article-progress* *show-section-printouts*)
-      (format t "~&~%~%Reading Epistemic features in ~a~%" (name a)))
+      (format t "~&=============================================~%~
+                 ~%~%Reading Epistemic features in ~a~%" (name a)))
     (read-from-document a)
     a))
 
@@ -118,7 +119,7 @@
 
 (defmethod read-from-document ((a article))
   (declare (special *sentence-making-sweep* *sections-to-ignore*))
-  (let ((*current-article* a)) ;; sets up the function (article)
+  (let ((*current-article* a))
     (declare (special *current-article*))
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
@@ -127,9 +128,12 @@
     (when (actually-reading)
       (when (or *show-article-progress* *show-section-printouts*)
         (format t "~&=============================================~%~
-                  ~%Actually Reading ~a~%" (name a)))
+                   ~%Actually Reading ~a~%" (name a)))
+      ;; This clears the -previous- run's history and objects
       (clean-out-history-and-temp-objects))
     (install-contents a)
+    
+    ;; --- parsing the title of the paper goes here ------
     (let ((count 0))
       (dolist (sec (children a))
         (set-document-index sec (incf count))
@@ -155,8 +159,13 @@
   (install-contents ss)
   (when *show-section-printouts*
     (format t "~&--------- starting section of sections ~a~%" ss))
-  (multiple-value-bind (title subsections)
+  (multiple-value-bind (title subsections) ;; multiple-titles?
       (extract-titles-from-other-elements (children ss))
+
+    (when title
+      (when (actually-reading)
+        (parse-section-title title)))
+    
     (let ((count (copy-list '(a b c d e f g h i j))))
       (let ((*section-of-sections* ss)
             (*current-section-title* title)
@@ -188,12 +197,6 @@
           (format t "~&~%--------- finished section of sections ~a~%" ss)
           (when (actually-reading) (show-parse-performance ss)))))))
 
-(defmethod read-from-document ((tt title-text))
-  ;; not sure what to do with title-text when it appears
-  ;; as a section in a section-of-sections. Where do we put
-  ;; the results and how to we know to collect them?
-  (declare (ignore tt))
-  nil)
 
 (defmethod read-from-document ((s section))
   "The children of a section are paragraphs. Read through each
@@ -202,7 +205,7 @@
   (install-contents s)
   (when *show-section-printouts*
     (format t "~&~%--------- starting section ~a~%" s))
-  (multiple-value-bind (title paragraphs)
+  (multiple-value-bind (title paragraphs) ;; multiple-titles?
       (extract-titles-from-other-elements (children s))
     (let* ((*current-section* s)
            (paragraph (car paragraphs))
@@ -249,7 +252,8 @@
           (when (actually-reading) (show-parse-performance s)))))))
 
 
-(defparameter *all-paragraphs* nil)
+
+
 (defmethod read-from-document ((p paragraph))
   "Once all the sentences in the paragraph have been
    handled control is passed by a throw to the tag
@@ -266,7 +270,6 @@
                       *recognize-sections-within-articles*
                       *accumulate-content-across-documents*
                       *current-paragraph*))
-    (push p *all-paragraphs*)
     (install-contents p)
     (let ((text (content-string p)))
       (initialize-sentences) ;; set up or reuse the 1st sentence
@@ -276,51 +279,56 @@
       (analysis-core))))
 
 
-
 (defvar *reading-section-title* nil
   "Flag for the benefit of assess-relevance. The content
    of a section title is always relevant.")
 
-(defparameter *dont-parse-titles* t) ;; parsing titles currently smashes random paragraphs!
+(defparameter *dont-parse-titles* t
+  "parsing titles had been reclaiming paragraphs!")
+
 (defun parse-section-title (title)
-  (declare (special *trap-error-skip-sentence*))
   (when *dont-parse-titles* 
     (return-from parse-section-title title))
-  (let* ((string (content-string title))
-         (length (length string)))
-    (when (= length 0) ;; null string
-      (return-from parse-section-title title))
-    ;; Does it end in a period? Othewise add one. 
-    (unless (eql #\. (char string (1- length)))
-      (setq string (string-append string ".")))
-    (let ((*reading-section-title* t)
-          (*recognize-sections-within-articles* nil) ;; turn of doc init
-          (*accumulate-content-across-documents* t)) ;; don't clear history
-      (declare (special *reading-section-title*
-                        *recognize-sections-within-articles*
-                        *accumulate-content-across-documents*))
-      (establish-character-source/string string)
-      (when *show-section-printouts*
-        (format t "~&~%About to parse section title: ~s%" string))
-      (if *trap-error-skip-sentence*
-          (handler-case
-              (analysis-core)
-            (error (e)
-              (ignore-errors ;; got an error with something printing once
-                (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
-          (analysis-core))
+  (when *show-section-printouts*
+    (format t "~&~%About to parse section title: ~s%"
+            (content-string title)))
+  (let ((*reading-populated-document* t)
+        (*reading-section-title* t)
+        (*recognize-sections-within-articles* nil) ;; turn of doc init
+        (*accumulate-content-across-documents* t) ;; don't clear history
+        (*current-paragraph* title)) ;; for initialize-sentencse
+    (declare (special *reading-populated-document*
+                      *reading-section-title*
+                      *recognize-sections-within-articles*
+                      *accumulate-content-across-documents*
+                      *current-paragraph*))
 
-      ;; Strictly speaking, the title should act like
-      ;; a paragraph, including the accumulation of
-      ;; entities, but particularly including clearing
-      ;; edges from any mentions that still have them.
-      ;; Othewise the mention will be misconstrued when the
-      ;; next paragraph begins, since the edge will have
-      ;; be reused with a different value.
-      (make-mentions-long-term))
+    (initialize-sentences)
+    ;;(lsp-break "value of a call to sentence ??")
+    ;; For the setup on the title-text object see
+    ;; setup-title-as-sentence-container
+    (establish-character-source/string (content-string title))
+
+    (catch 'do-next-paragraph
+      ;; The throw is done in sweep-successive-sentences-from
+      ;; when it believes that it's run out of sentences
+      ;; to handle.      
+      (analysis-core))
+    
+    (after-actions title)
+    
     title))
 
 
+(defmethod read-from-document ((tt title-text))
+  "This case would be called if a the loop over daughters
+   in an larger document element (e.g. section) still
+   had a title-text included in its list. That should
+   no longer happen assuming that they all use
+   extract-titles-from-other-elements to determine what
+   they actually loop over."
+  (declare (ignore tt))
+  nil)
 
 ;;;-----------------------------
 ;;; Identifying current section

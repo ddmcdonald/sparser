@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  January 2016
+;;;  Version:  June 2016
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -13,7 +13,6 @@
 ;; long-term-ifying mentions to paragraph. 11/3/15 Added local dynamic
 ;; bindings of the current document element to facilitate debugging.
 ;; 1/4/16 gating call to paragraph-level aggregation
-
 
 (in-package :sparser)
 
@@ -25,16 +24,14 @@
   "Gates whether to run after actions. Makes it possible to commit
   the file while they're still being debugged.")
 
-;; (setq *apply-document-after-actions* t)
-
-(defgeneric after-actions (document-element)
-  (:documentation "Carry out the actions to be taken when all of
-     the children of a given document element have been read."))
-
 (defparameter *run-aggregation-after-action* t
   "Gates call to aggregate-bio-terms in the paragraph after-
    actions. Exposed subtle bugs 1/4/16 so want to only run it
    deliberately to look at those bugs.")
+
+(defgeneric after-actions (document-element)
+  (:documentation "Carry out the actions to be taken when all of
+     the children of a given document element have been read."))
 
 (defmethod after-actions ((p paragraph))
   (when *apply-document-after-actions*
@@ -44,6 +41,16 @@
       (when *run-aggregation-after-action*
         (aggregate-bio-terms p))
       (assess-sentence-analysis-quality p))))
+
+(defmethod after-actions ((te title-text))
+  (when *apply-document-after-actions*
+    ;;/// should it also bind *current-paragraph* ?
+    (make-mentions-long-term)
+    (push-debug `(,te))
+    (lsp-break "after parsing ~a" te)
+    (when *run-aggregation-after-action*
+      (aggregate-bio-terms te))
+    (assess-sentence-analysis-quality te)))
 
 (defmethod after-actions ((s section))
   (when *apply-document-after-actions*
