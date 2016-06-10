@@ -54,6 +54,7 @@
   (let* ((form (when (edge-p right-edge)
                  (edge-form right-edge)))
          (subcat-var (subcategorized-variable right-ref :m left-ref)))
+
     (cond
       ((or (eq form category::verb+ed) ;; assume passive
 	   (eq form category::verb+ing)
