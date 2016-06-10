@@ -244,6 +244,7 @@
              (first-word (pos-terminal start-pos)))
         (tr :scan-to-eof-start-pos start-pos)
         (catch :end-of-sentence
+          ;; Throw from period-hook
           (scan-words-loop start-pos first-word))
         (setq sentence (next sentence))))))
 
