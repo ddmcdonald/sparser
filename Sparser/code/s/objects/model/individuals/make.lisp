@@ -378,9 +378,13 @@
     (category
      (cond
        (*description-lattice*
-        (cond
-         ((individuals-of-this-category-are-permanent? head)
-          (find-or-make-lattice-description-for-ref-category head))
+	(find-or-make-lattice-description-for-ref-category head)
+	;; was previously written as the cond below -- but there are too many cases
+	;;  depending on individual-for-ref creating a dli
+        #+ignore
+	(cond
+	  ((individuals-of-this-category-are-permanent? head)
+	   (find-or-make-lattice-description-for-ref-category head))
          (t ;; temporaries to be reclaimed.
           ;; Not stored in DL. Need to force temporary-ness
           (let ((*override-category-permanent-individuals-assumption* t)
