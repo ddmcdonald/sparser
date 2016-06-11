@@ -133,16 +133,30 @@
     (declare (special *suppress-indiv-uids*))
     (cond ((consp sem-tree)
 	   (cond ((null (cdr sem-tree)) (format stream " ~s" (car sem-tree)))
+		 ((and (cdr sem-tree) (null (cddr sem-tree))
+		       (consp (second sem-tree)) (eq (second (second sem-tree)) '*lambda-var*))
+			     (format stream " (~a (~a ~a))" (cat-string (car sem-tree))
+				     (cat-string (car (second sem-tree)))
+				     (cat-string (second (second sem-tree)))))
 		 (t
-		  (emit-line stream (format nil "(~s"
-					    (if (individual-p (car sem-tree))
-						(cat-symbol (itype-of (car sem-tree)))
-						(car sem-tree))))
+		  (emit-line stream (format nil "(~a" (cat-string (car sem-tree))))
 		  (push-indentation)
-		  (loop for item in (cdr sem-tree) do (print-sem-tree item stream))
+		  (loop for item in
+		       (if (eq (car sem-tree) 'items)  ;; simplify printout of the ITEMS in a collection
+			   (second (second (second sem-tree)))
+			   (cdr sem-tree))
+		     do (print-sem-tree item stream))
 		  (format stream ")")
 		  (pop-indentation))))
 	  (t (format stream " ~s" sem-tree)))))
+
+(defun cat-string (cat?)
+  (cond ((individual-p cat?)
+	 (string-downcase (cat-symbol (itype-of cat?))))
+	((category-p cat?)
+	 (string-downcase (cat-symbol cat?)))
+	((symbolp cat?) (string-downcase cat?))
+	(t cat?)))
 
 
 (defun old-display-sent (sent corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
