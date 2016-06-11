@@ -112,7 +112,7 @@
                   unless (typep e 'title-text)
                   collect e)))
     
-    (when multiple? (push-debug `(,titles ,title)) (lsp-break "mutliples"))
+    ;;(when multiple? (push-debug `(,titles ,title)) (lsp-break "mutliples"))
     ;;/// Maybe operate on the parent here rather than make them do it.
     
     #+ignore(unless (contents title)   
@@ -145,17 +145,19 @@
     ;; whether to just drop these into the regular pass
     ;; rather than simulating it. 
 
-    (let (;;; (*reading-populated-document* t) ;; for period-hook ??
+    (let ((*reading-populated-document* t) ;; for period-hook ??
           (*sentence-making-sweep* t) 
           (*pre-read-all-sentences* t) ;; for simple-eos-check
           (*current-paragraph* title)) ;; for initialize-sentences
-      (declare (special *sentence-making-sweep*
+      (declare (special *reading-populated-document*
+                        *sentence-making-sweep*
                         *pre-read-all-sentences*
                         *current-paragraph*))
-      (initialize-sentences)
-      (establish-character-source/string string)
-      (catch 'sentences-finished
-         (scan-sentences-to-eof s))
+      (initialize-sentences) (push-debug `(,s ,string)) (lsp-break "1")
+      (establish-character-source/string string) (lsp-break "2")
+      
+     ; (catch 'sentences-finished
+     ;    (scan-sentences-to-eof s))
 
       (lsp-break "look at sentence structure")
       title)))
