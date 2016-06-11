@@ -37,6 +37,12 @@ We could treat this a a property (inherited variable)
 on physical objects -- would benefit from a organized
 notion of dimension since height/weight/etc are also
 properties.
+ -- "the size of the modification" (dry-run #18),
+"the size of Trump's ego", "the size of the effect"
+
+So it's not phys. obj.  It's more like if we talk about
+the size of something we're imposing a perspective on it
+that it's a measurable scalar. 
 
 (define-category size :specializes abstract
   :binds ((measured-item biological))
