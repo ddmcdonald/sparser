@@ -630,7 +630,8 @@
 			    '(category::pp
 			      ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
 			      category::to-comp
-			      category::relative-clause
+			      category::where-relative-clause
+			      category::when-relative-clause
 			      category::subject-relative-clause
 			      category::comma-separated-subject-relative-clause)))))
        

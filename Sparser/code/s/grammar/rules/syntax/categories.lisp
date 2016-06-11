@@ -183,6 +183,8 @@
 
 ;;(def-form-category relative-clause)
 (def-form-category subject-relative-clause)
+(def-form-category where-relative-clause)
+(def-form-category when-relative-clause)
 (def-form-category comma-separated-subject-relative-clause)
 (def-form-category pp-relative-clause)
 (def-form-category thatcomp)
@@ -706,6 +708,8 @@
     ,category::s ;; convenient for find-verb
     ,category::subj+verb
     ,category::subject-relative-clause
+    ,category::where-relative-clause
+    ,category::when-relative-clause
     ,category::v-bar
     ,category::verb ;; this covers BE!
     ,category::verb+ed
@@ -819,6 +823,8 @@
     ,category::pp
     ;;,category::relative-clause
     ,category::subject-relative-clause
+    ,category::where-relative-clause
+    ,category::when-relative-clause
     ,category::pp-relative-clause
     ,category::thatcomp
     ,category::subordinate-conjunction))
@@ -841,6 +847,8 @@
     ,category::n-bar
     ;;,category::relative-clause
     ,category::subject-relative-clause
+    ,category::where-relative-clause
+    ,category::when-relative-clause
     ,category::pp-relative-clause
     ,category::thatcomp
     ,category::pp
