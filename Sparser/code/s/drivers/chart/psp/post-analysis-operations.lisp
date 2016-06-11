@@ -244,11 +244,17 @@ where it regulates gene expression.")
 		  nconc
 		    (if (is-collection? ival)
 			;; This is the code that does a "distribution" of conjunctions
-			(loop for c in (value-of 'items ival)
-			   collect
-			     (let ((bound-val (bind-dli-variable var c i)))
-			       (when (null bound-val) (lsp-break "bad conjunction distribution"))
-			       bound-val))
+			(if (eq var 'predication) ;; here the conjunction is taken as joint assertion
+			    (loop for c in (value-of 'items ival)
+			       do
+				 (setq i (bind-dli-variable var c i))
+			       finally (return (list i)))
+			    ;; below, the conjunction is treated as alternatives
+			    (loop for c in (value-of 'items ival)
+			       collect
+				 (let ((bound-val (bind-dli-variable var c i)))
+				   (when (null bound-val) (lsp-break "bad conjunction distribution"))
+				   bound-val)))
 			(list (bind-dli-variable var ival i)))))))
   (if (cdr interps) ;; a collection
       (make-an-individual 'collection
@@ -260,6 +266,7 @@ where it regulates gene expression.")
 (defun interpret-val-in-context (var val-dt containing-mentions)
   ;; recursively interpret the bound value in the current context
   (case var
+    #+ignore
     (predication
      (let ((*lambda-var* (car containing-mentions))) ;; HUH!!
        (declare (special *lambda-var*))
@@ -331,7 +338,7 @@ where it regulates gene expression.")
 			   child-interp
 			   (not (itypep child-interp 'number)))
                         (format t "~&1) no internal edge for ~s in ~s~&"
-                                   child-interp parent-edge)
+				child-interp parent-edge)
 		      nil)
 		    nil)))
 	     (*lambda-val* (lambda-val? child-interp *lambda-val*))
@@ -378,18 +385,37 @@ where it regulates gene expression.")
     (or (and (eq i lv) (list '**lambda-var**))
 	(lambda-val? i (dli-parent lv)))))
 
+
+(defun dli-parent (item)
+  (when (individual-p item)
+    (cdar (hal (indiv-uplinks item)))))
+
+(defun lambda-pred (interp)
+  (and (individual-p interp)
+       (consp (indiv-old-binds interp))
+       (eq '*lambda-var* (binding-value (car (indiv-old-binds interp))))))
+
 (defun find-edges-inside-matching (edge interp)
   (when (edge-p edge)
     (cond ((eq interp (edge-referent edge)) (list edge))
+	  ((and (category-p (edge-referent edge)) ;; "a possible strategy" -- possible is a predicate
+		(eq (get-dli (edge-referent edge)) interp)
+		(list edge)))	   
+	  ((and
+	    (lambda-pred interp)
+	    (if
+	     (category-p (edge-referent edge))
+	     (when (itypep interp (edge-referent edge)) (list edge))
+	     (when (eq (dli-parent interp) (edge-referent edge)) (list edge)))))
 	  ((and (category-p (edge-referent edge))
 		;; the purified phospho-specific antibody,
 		(eq interp (get-dli (edge-referent edge))))
 	   (list edge))
 	  ((and
-	    (edge-left-daughter edge)
+	    (edge-p (edge-left-daughter edge))
 	    (find-edges-inside-matching (edge-left-daughter edge) interp)))
 	  ((and
-	    (edge-right-daughter edge)
+	    (edge-p (edge-right-daughter edge))
 	    (find-edges-inside-matching (edge-right-daughter edge) interp)))
 	  ((edge-constituents edge)
 	   (loop for e in (edge-constituents edge)
@@ -469,8 +495,7 @@ where it regulates gene expression.")
 		 collect
 		   (list (var-name (binding-variable b))
 			 (case (var-name (binding-variable b))
-			   (predication
-			     (predication-binding-value b interp parent-edges))			    
+			   ;; (predication (predication-binding-value b interp parent-edges))			    
 			   (type (binding-value b))
 			   (number (binding-value b))
 			   (prep (binding-value b))
@@ -503,150 +528,7 @@ where it regulates gene expression.")
 (defun align-dependency-and-edges (edge &optional bindings)
   (new-dt edge bindings))
 
-(defmethod dependency-tree ((n number) &optional bindings)
-  (dependency-tree (e# n) bindings))
-
-(defmethod dependency-tree ((x t) &optional bindings)
-  (cond
-    ((eq x :long-span)
-     (cerror "long-span" nil))
-    ((null x) nil)
-    (t nil)))
-
-(defmethod dependency-tree ((e edge) &optional bindings &aux binding)
-  (cond
-    ((and (not (edge-p (edge-left-daughter e)))
-	  (null (edge-constituents e))
-	  (null (edge-mention e)))
-     nil)
-    ((null bindings)
-     (dependency-tree-root e))
-    ((setq binding (car (member (edge-referent e) bindings :test #'binding-match)))
-     `((,(car binding)
-	 ,(if (eq (car binding) 'predication)
-	      (mark-lambda-binding
-	       (dependency-tree-root e (expand-bindings (second binding))))
-	      (dependency-tree-root e)))))
-    (t
-     ;; this edge does not contribute a dependency directly -- maybe its subtree does
-     (let ((daughters (important-edge-daughters e)))
-       (when daughters
-	 (dependency-tree-daughters daughters bindings))))))
-
-
-(defun binding-match (ref binding)
-  (case (car binding)
-    (predication
-     (if (category-p ref)
-      ;; as in "untreated cells" where the predicate has only one binding
-      (eq ref (itype-of (second binding)))
-      (eq ref (dli-parent (second binding))))) ;; (second binding)
-    (t (eq ref (second binding)))))
-
-(defun dli-parent (item)
-  (when (individual-p item)
-    (cdar (hal (indiv-uplinks item)))))
-
-(defun dependency-tree-root (edge &optional
-				    (bindings (expand-bindings (edge-referent edge))))
-  (let* ((idaughters (important-edge-daughters edge))
-         (daughters
-          (when idaughters
-            (merge-item-lists
-             (dependency-tree-daughters
-              idaughters
-              bindings)))))
-    `(,(edge-mention edge)
-       ,@(append daughters
-		 (loop for b in bindings
-                    unless (member (car b) daughters :key #'car)
-		    collect b)))))
-
-(defun merge-item-lists (dbindings)
-  (let ((items-bindings (loop for db in dbindings when (eq (car db) 'items)
-			   collect db)))
-    (cond
-      (items-bindings
-       `((items ,@(loop for i in items-bindings collect (second i)))
-	 ,@(set-difference dbindings items-bindings)))
-      (t dbindings))))
-
-(defun dependency-tree-daughters (daughters bindings)
-  (loop for edge in daughters
-     nconc
-       (let ((forest (dependency-tree (arg-edge edge) bindings)))
-	 (setq bindings (set-difference bindings (find-bindings forest) :test #'equal))
-	 (if (and (consp forest)
-		  (not (consp (car forest))))
-	     nil
-	     forest))))
-
-(defun mark-lambda-binding (dtr)
-  `(,(car dtr)
-     ,@(loop for binding in (cdr dtr)
-	  collect
-	    `(,(car binding)
-	       ,(typecase (second binding)
-			  ((cons discourse-mention) (second binding))
-			  (t '**LAMBDA-VAR**))))))
-
-(defmethod arg-edge ((e edge))
-  (if (eq (cat-name (edge-form e)) 'pp)
-      (edge-right-daughter e)
-      e))
-(defmethod arg-=edge ((x t))
-  nil)
-
-(defun important-edge-daughters (edge)
-  (loop for d in
-       (or (edge-constituents edge)
-	   (list (edge-left-daughter edge)
-		 (edge-right-daughter edge)))
-     when (and (edge-p d)
-               (not (eq (cat-name (edge-form d)) 'det)))
-     collect
-       (if (eq (cat-name (edge-form d)) 'pp)
-	   (edge-right-daughter d)
-	   d)))
-
-(defmethod expand-bindings ((c category))
-  nil)
-
-(defmethod expand-bindings ((n null))
-  nil)
-
-(defmethod expand-bindings ((i individual))
-  (loop for b in (indiv-binds i)
-     nconc
-       (let ((var (var-name (binding-variable b))))
-	 (case var
-	   (predication `((,var ,(binding-value b))))
-	   (under-determined
-	    `((,(getf (binding-value b) :variables) ,(getf (binding-value b) :value))))
-	   (items ;; expand binding of items into on per element
-	    (loop for item in (binding-value b)
-	       collect
-		 `(,var ,item)))
-	   (t `((,var ,(binding-value b))))))))
-
-
-(defmethod find-dependents ((x t))
-  (declare (ignore x))
-  nil)
-
-
-(defun find-bindings (tree)
-  (when (consp tree)
-    (if (symbolp (car tree))
-	`((,(car tree)
-	    ,(if (not (consp (second tree)))
-		 (second tree)
-		 (typecase (car (second tree))
-		   (discourse-mention
-		    (base-description (car (second tree))))
-		   (t nil)))))
-	(loop for tr in tree nconc (find-bindings tr)))))
-
+;;; DELETED OBSOLETE AND CONFUSING CODE
 
 ;;; ------ Handle interpretations that are elliptical or incomplete (determinable only in context)
 ;;; If the base-description of an edge is more general (less completely specified) than some recent description
