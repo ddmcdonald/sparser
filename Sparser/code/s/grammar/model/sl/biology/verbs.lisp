@@ -156,6 +156,17 @@
   (:verb "isolate" :etf (svo-passive)
          :from background))
 
+(define-category immunoblot :specializes bio-method ;; actually organism process
+  :binds ((object bio-entity)
+	  (tested-for bio-chemical-entity))
+  :realization
+  (:verb "immunoblot" :etf (svo-passive)
+	 :o object
+         :for tested-for))
+
+
+
+
 (define-category lyse :specializes bio-method ;; actually organism process
   :realization
   (:verb "lyse" :etf (svo-passive)))
