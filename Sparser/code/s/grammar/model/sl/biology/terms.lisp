@@ -676,7 +676,8 @@
 
 
 (adj "least-selective" :super bio-predication) ;; just to get through
-
+;;In biochemistry, a protein ligand is an atom, a molecule or an ion that can bind to a specific site (the binding site) on a protein. 
+(noun "ligand" :super bio-chemical-entity)
 
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "liquid chromatography" :super bio-method)
