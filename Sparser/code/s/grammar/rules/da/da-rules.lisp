@@ -452,7 +452,7 @@
 	      :rule 'attach-commma-subj-relative-to-s
 	      :referent
 	      (bind-dli-variable 'predication
-				 (bind-dli-variable s-var s s-rel)
+				 (bind-dli-variable s-var '*lambda-var* s-rel)
 				 s)
 	      :constituents `(,s-edge ,comma-edge ,srel-edge)))
 	    (t
@@ -479,7 +479,74 @@
 			     :referent
 			     (bind-dli-variable :predication
 						(bind-dli-variable t-var
-								   target-ref
+								   '*lambda-var*
+								   s-rel)
+						target-ref)
+			     :constituents `(,target ,comma-edge ,srel-edge))))
+		       (tuck-new-edge-under-already-knit
+			target ;; subsumed
+			(edge-used-in target)
+			s-edge
+			:right)
+		       new-edge))))))))))
+
+(define-debris-analysis-rule s-commma-where-relative
+    :pattern (s "," where-relative-clause)
+    :action (:function attach-commma-where-when-relative-to-s first second third))
+
+(define-debris-analysis-rule s-commma-when-relative
+    :pattern (s "," when-relative-clause)
+    :action (:function attach-commma-where-when-relative-to-s first second third))
+
+(defun attach-commma-where-when-relative-to-s (s-edge comma-edge srel-edge)
+  (let* ((s (edge-referent s-edge))
+	 (s-rel	;;(value-of 'comp (edge-referent to-comp-edge))
+	  (edge-referent srel-edge)))
+    (let ((s-var (subcategorized-variable s-rel
+					  (if (eq (edge-form srel-edge) 'where-relative-clause)
+					      :where
+					      :when)
+					  s)))
+      (cond (s-var
+	     (make-edge-over-long-span 
+	      (pos-edge-starts-at s-edge)
+	      (pos-edge-ends-at srel-edge)
+	      (edge-category s-edge)
+	      :form (edge-form s-edge)
+	      :rule 'attach-commma-where-when-relative-to-s
+	      :referent
+	      (bind-dli-variable 'predication
+				 (bind-dli-variable s-var '*lambda-var* s-rel)
+				 s)
+	      :constituents `(,s-edge ,comma-edge ,srel-edge)))
+	    (t
+	     (let ((right-fringe-of-s ;; ordered bottom to top
+		    (all-edges-on (pos-ends-here (pos-edge-ends-at s-edge))))
+		   target)
+	       (declare (special right-fringe-of-s))
+	       (loop for edge in right-fringe-of-s
+		  ;; replace eq with acceptable-appositive?
+		  when (member (edge-form edge) '(category::NP category::proper-noun))
+		  do (setq target edge))
+	       (when target
+		 (let* ((target-ref (edge-referent target))
+			(t-var
+			 (subcategorized-variable s-rel
+						  (if (eq (edge-form srel-edge) 'where-relative-clause)
+						      :where
+						      :when) target-ref)))
+		   (when t-var
+		     (let ((new-edge
+			    (make-edge-over-long-span 
+			     (pos-edge-starts-at target)
+			     (pos-edge-ends-at srel-edge)
+			     (edge-category target)
+			     :form (edge-form target)
+			     :rule 'attach-commma-subj-relative-to-s
+			     :referent
+			     (bind-dli-variable :predication
+						(bind-dli-variable t-var
+								   '*lambda-var*
 								   s-rel)
 						target-ref)
 			     :constituents `(,target ,comma-edge ,srel-edge))))
@@ -507,7 +574,7 @@
 	 :rule 'attach-commma-subj-relative-to-np
 	 :referent
 	 (bind-dli-variable 'predication
-			    (bind-dli-variable s-var np s-rel)
+			    (bind-dli-variable s-var '*lambda-var* s-rel)
 			    np)
 	      :constituents `(,np-edge ,comma-edge ,srel-edge)))))
 
@@ -699,6 +766,18 @@
   :pattern ( s subordinate-clause )
   :action (:function create-event-relation  first second first second))
 
+(define-debris-analysis-rule when-relative-clause-comma
+               :pattern (when-relative-clause "," s)
+	       :action (:function create-event-relation  first third first third))
+
+(define-debris-analysis-rule where-relative-clause-comma
+               :pattern (where-relative-clause "," s)
+	       :action (:function create-event-relation  first third first third))
+
+
+(define-debris-analysis-rule s-when-relative-clause
+               :pattern (s when-relative-clause)
+	       :action (:function create-event-relation  second first first second))
 
 
 (defun create-event-relation (event-edge sub-clause-edge first last)
