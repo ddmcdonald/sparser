@@ -486,24 +486,31 @@ similar to an oncogenic RasG12V mutation (9)."))
 ;;--- Relative clauses
 
 (loop for v in '(vp vp+passive vg+passive vg)
-  do
-  (loop for rel in '(which who whom where that) ;;  when this is more often used as a subordinate conjunction
-    do
-    (eval
-     `(def-form-rule (,rel ,v) 
-                     :head :right-edge
-        :form subject-relative-clause
-        :referent (:function compose-wh-with-vp left-edge right-edge))))
-  (def-form-rule (where s) 
+   do
+     (loop for rel in '(which who whom  that) ;;  (where, when) this is more often used as a subordinate conjunction
+	do
+	  (eval
+	   `(def-form-rule (,rel ,v) 
+		:head :right-edge
+		:form subject-relative-clause
+		:referent (:function compose-wh-with-vp left-edge right-edge))))
+     (eval
+      `(def-syntax-rule (pp-wh-pronoun ,v) 
+	   :head :right-edge
+	   :form pp-relative-clause
+	   :referent (:function make-pp-relative-clause left-edge right-edge))))
+
+;; this is not a subject relative -- the subject already exists
+(def-form-rule (where s) 
                  :head :right-edge
-    :form subject-relative-clause
-    :referent (:function compose-wh-with-vp left-edge right-edge))
-  
-  (eval
-   `(def-syntax-rule (pp-wh-pronoun ,v) 
-                     :head :right-edge
-      :form pp-relative-clause
-      :referent (:function make-pp-relative-clause left-edge right-edge))))
+    :form where-relative-clause
+    :referent (:function make-subordinate-clause left-edge right-edge))
+
+(def-form-rule (when s) 
+                 :head :right-edge
+    :form when-relative-clause
+    :referent (:function make-subordinate-clause left-edge right-edge))
+
 
 #+ignore
 (def-form-rule (comma subject-relative-clause)
