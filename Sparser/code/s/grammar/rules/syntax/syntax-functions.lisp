@@ -264,7 +264,15 @@
     ((interpret-premod-to-np qualifier head))
     (t ;; Dec#2 has "low nM" which requires coercing 'low'
      ;; into a number. Right now just falls through
-     (let ((predicate (bind-dli-variable :subject head qualifier)))
+     (let ((predicate #+ignore
+	     (bind-dli-variable :subject '*lambda-var* qualifier)
+	     (if (and
+		  (not (is-collection? qualifier))
+		  (find-variable-for-category :subject (itype-of qualifier)))
+		 (create-predication-by-binding :subject '*lambda-var* qualifier
+						(list 'adj-noun-compound (left-edge-for-referent)))
+		 (individual-for-ref qualifier))
+	     ))
        (setq  head (bind-dli-variable 'predication predicate head))
        head))))
 
@@ -389,13 +397,13 @@
        (setq  head (bind-dli-variable 'predication qualifier head))
        head))))
 
-(defun create-predication-by-binding (var np-ref vp-ref source)
-  (let ((new-predication
-	 (bind-dli-variable var '*lambda-var* ;;np-ref
-			    vp-ref)))
-    (create-discourse-mention new-predication source)
-    ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
-    new-predication))
+(defun create-predication-by-binding (var val pred source)
+  (let ((new-predication (bind-dli-variable var '*lambda-var* pred)))
+    (cond (new-predication
+	   (create-discourse-mention new-predication source)
+	   ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
+	   new-predication)
+	  (t pred))))
 
 (defun verb-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")
@@ -1381,7 +1389,11 @@
         (cond
          ((eq (car restriction) :or)
           (loop for type in (cdr restriction)
-            thereis (subcat-itypep item type)))
+	     thereis (subcat-itypep item type)))
+	 ((eq (car restriction) :primitive)
+	  ;; this is usually meant for NAME (a WORD) or
+	  ;; other special cases
+	  nil)
          (t (error "subcat-restriction on is a cons but it ~
   does not start with :or~%  ~a"
                    restriction))))
