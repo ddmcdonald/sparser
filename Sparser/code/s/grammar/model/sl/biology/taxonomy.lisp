@@ -62,7 +62,8 @@
 (define-mixin-category bio-complement
   :binds ((statement (:or bio-process molecule-state be bio-predication 
                           bio-method relation bio-rhetorical
-                          there-exists)))
+                          there-exists
+			  event-relation)))
   :documentation "Common parent to the other types of biological 
     complements to share the same standard set of bindings.")
 
@@ -204,7 +205,7 @@
 
 
 (define-category bio-predication :specializes state 
-  :mixins (biological)
+  :mixins (biological event-relation)
   ;;/// This category is unlikely to be doing interesting
   ;; work for us. Need to review where it's used. 
   ;; Made it inherit from event because that provided
