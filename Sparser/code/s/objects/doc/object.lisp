@@ -153,6 +153,10 @@
                         *sentence-making-sweep*
                         *pre-read-all-sentences*
                         *current-paragraph*))
+      ;; from Analysis core
+      (initialize-tokenizer-state)
+      (initialize-chart-state)
+
       (initialize-sentences) (push-debug `(,s ,string)) (lsp-break "1")
       (establish-character-source/string string) (lsp-break "2")
       
