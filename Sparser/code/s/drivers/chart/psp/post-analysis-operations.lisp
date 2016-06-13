@@ -234,45 +234,39 @@ where it regulates gene expression.")
 	;; this allows for creation of new collections by distribution of internal collections
 	(reinterp-list-using-bindings (list interp) var (dt-bindings dt) (cons mention containing-mentions)))))
 
-(defun reinterp-list-using-bindings (interps var bindings containing-mentions)
-  (loop for (var val) in bindings
-     do
-       (let* ((ival (interpret-val-in-context var val containing-mentions)))
-	 (declare (special ival))
-	 (setq interps
-	       (loop for i in interps
-		  nconc
-		    (if (is-collection? ival)
-			;; This is the code that does a "distribution" of conjunctions
-			(if (eq var 'predication) ;; here the conjunction is taken as joint assertion
-			    (loop for c in (value-of 'items ival)
-			       do
-				 (setq i (bind-dli-variable var c i))
-			       finally (return (list i)))
-			    ;; below, the conjunction is treated as alternatives
-			    (loop for c in (value-of 'items ival)
-			       collect
-				 (let ((bound-val (bind-dli-variable var c i)))
-				   (when (null bound-val) (lsp-break "bad conjunction distribution"))
-				   bound-val)))
-			(list (bind-dli-variable var ival i)))))))
-  (if (cdr interps) ;; a collection
-      (make-an-individual 'collection
-			  :items interps
-			  :number (length interps)
-			  :type (itype-of (car interps)))
-      (car interps)))
+(defun reinterp-list-using-bindings (initial-interps var bindings containing-mentions)
+  (let ((interps initial-interps))
+    (loop for (var val) in (reverse bindings) ;; the value of indiv-old-binds is created by PUSH operations -- it is in reverse order!
+       do
+	 (let* ((ival (interpret-val-in-context var val containing-mentions)))
+	   (declare (special ival))
+	   (setq interps
+		 (loop for i in interps
+		    nconc
+		      (if (is-collection? ival)
+			  ;; This is the code that does a "distribution" of conjunctions
+			  (if (eq var 'predication) ;; here the conjunction is taken as joint assertion
+			      (loop for c in (value-of 'items ival)
+				 do
+				   (setq i (bind-dli-variable var c i))
+				 finally (return (list i)))
+			      ;; below, the conjunction is treated as alternatives
+			      (loop for c in (value-of 'items ival)
+				 collect
+				   (let ((bound-val (bind-dli-variable var c i)))
+				     (when (null bound-val) (lsp-break "bad conjunction distribution"))
+				     bound-val)))
+			  (list (bind-dli-variable var ival i)))))))
+    (if (cdr interps) ;; a collection
+	(make-an-individual 'collection
+			    :items interps
+			    :number (length interps)
+			    :type (itype-of (car interps)))
+	(car interps))))
 
 (defun interpret-val-in-context (var val-dt containing-mentions)
   ;; recursively interpret the bound value in the current context
   (case var
-    #+ignore
-    (predication
-     (let ((*lambda-var* (car containing-mentions))) ;; HUH!!
-       (declare (special *lambda-var*))
-       (if (symbolp val-dt)
-	   (interpret-atom-in-context val-dt nil containing-mentions)
-	   (interpret-in-context val-dt nil containing-mentions))))
     (middle val-dt)
     (t
      (if (symbolp val-dt)
@@ -341,7 +335,7 @@ where it regulates gene expression.")
 				child-interp parent-edge)
 		      nil)
 		    nil)))
-	     (*lambda-val* (lambda-val? child-interp *lambda-val*))
+	     ;;(*lambda-val* (lambda-val? child-interp *lambda-val*))
 	     (t		
 	      (unless (or allow-null-edge
 			  (not (individual-p child-interp))
@@ -425,6 +419,7 @@ where it regulates gene expression.")
 		   (return-from find-edges-inside-matching edge)))))))
 
 (defun redundant-edge (m-edge poss-edges)
+  (declare (special category::number category::digit-sequence category::modifier))
   (loop for ee on poss-edges
      do
        (cond ((contained-edge? (car ee) m-edge)
@@ -434,16 +429,16 @@ where it regulates gene expression.")
 	      (return-from redundant-edge t))
 	     ((and (eq (start-pos m-edge)(start-pos (car ee)))
 		   (eq (end-pos m-edge)(end-pos (car ee))))
-	      (cond ((and (eq (edge-category m-edge) (category-named 'number))
-			  (eq (edge-category (car ee)) (category-named 'digit-sequence)))
+	      (cond ((and (eq (edge-category m-edge) category::number)
+			  (eq (edge-category (car ee)) category::digit-sequence))
 		     (setf (car ee) m-edge)
 		     (return-from redundant-edge t))
-		    ((and (eq (edge-category m-edge)(category-named 'digit-sequence))
-			  (eq (edge-category (car ee)) (category-named 'number)))
+		    ((and (eq (edge-category m-edge) category::digit-sequence)
+			  (eq (edge-category (car ee)) category::number))
 		     (return-from redundant-edge t))
-		    ((eq (edge-category m-edge)(category-named 'modifier))
+		    ((eq (edge-category m-edge) category::modifier)
 		     (return-from redundant-edge t))
-		    ((eq (edge-category (car ee))(category-named 'modifier))
+		    ((eq (edge-category (car ee)) category::modifier)
 		     (setf (car ee) m-edge)
 		     (return-from redundant-edge t))
 		    (t
@@ -495,7 +490,6 @@ where it regulates gene expression.")
 		 collect
 		   (list (var-name (binding-variable b))
 			 (case (var-name (binding-variable b))
-			   ;; (predication (predication-binding-value b interp parent-edges))			    
 			   (type (binding-value b))
 			   (number (binding-value b))
 			   (prep (binding-value b))
@@ -504,6 +498,7 @@ where it regulates gene expression.")
 			       collect
 				 (let ((c-edge
 					(car (relevant-edges parent-edges conjunct))))
+				   ;;(print (list conjunct c-edge))
 				   (if c-edge
 				       (new-dt (cons c-edge parent-edges))
 				       (list conjunct)))))
@@ -549,7 +544,8 @@ where it regulates gene expression.")
     (when (or
 	   (cat-mention? mention 'preposition)
 	   (not (individual-p interp))
-	   (not (is-maximal? mention)))
+	   ;;(not (is-maximal? mention))
+	   )
       (return-from expand-interpretation-in-context-if-needed interp))
     (cond
       ((cdr spec-mentions)
@@ -570,7 +566,8 @@ where it regulates gene expression.")
 				  (sur-string (mention-source (car spec-mentions))))
 				(sur-string (base-description (car spec-mentions)))))
 		 (nl->space (sentence-string *sentence-in-core*))))
-       (contextual-interpretation (car spec-mentions)))
+       (setf (contextual-description (car dt))
+	     (contextual-interpretation (car spec-mentions))))
       (t interp))))
 
 (defun replace-all (string part replacement &key (test #'char=))
@@ -595,14 +592,16 @@ is replaced with replacement."
   (replace-all str *nl-str* " "))
 
 (defun spec-mentions (c c-mention containing-mentions)
+  (declare (special c c-mention containing-mentions))
   (let ((specializations
 	 (remove-if #'predication?
 		    (all-mentioned-specializations c c-mention containing-mentions)))
 	spec-mentions)
+    (declare (special specializations spec-mentions))
     (loop for s in specializations
        unless (np-containing-mention? s c-mention)
        do (loop for m in (mention-history s)
-	     when (is-maximal? m)
+	     ;;when (is-maximal? m)  we now only have maximal mentions in the list
 	     do (push m  spec-mentions)))
     spec-mentions))
 
