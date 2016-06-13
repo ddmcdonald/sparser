@@ -117,6 +117,9 @@
 (defmethod contextual-description ((e edge))
   (contextual-description (edge-mention e)))
 
+(defmethod contextual-description ((n number))
+  (contextual-description (edge-mention (e# n))))
+
 (defun show-mention (m)
   (list (base-description m) ;; individual 
         (retrieve-surface-string (base-description m))
