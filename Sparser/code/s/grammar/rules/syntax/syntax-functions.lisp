@@ -450,11 +450,11 @@
     ;; though that means that if that is followed up with absorb-auxiliary
     ;; that routine has to see if variables are already bound
     (cond
-     ((and known-aspect (itypep known-aspect 'tense/aspect-vector))
-      known-aspect)
-     (t 
-      (make/individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<
-       (category-named 'tense/aspect-vector) nil)))))
+      ((and known-aspect (itypep known-aspect 'tense/aspect-vector))
+       known-aspect)
+      (t 
+       (make/individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<
+	category::tense/aspect-vector nil)))))
 
 
 (defun absorb-auxiliary (aux vg)
@@ -920,10 +920,11 @@
 ;;;-----------------
 
 (defun assimilate-subject (subj vp)
+  (declare (special category::subordinate-clause))
   (when
       (and subj vp) ;; have had cases of uninterpreted VPs
     (cond
-      ((eq (edge-form (right-edge-for-referent)) (category-named 'subordinate-clause))
+      ((eq (edge-form (right-edge-for-referent)) category::subordinate-clause)
        (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
 	      (vg-edge (edge-right-daughter (right-edge-for-referent))))
 	 (if (is-passive? vg-edge)
@@ -1590,8 +1591,9 @@
 ;;;-----------------------
 
 (defun is-passive? (edge)
+  (declare (special category::subordinate-clause))
   (cond
-    ((eq (edge-form edge) (category-named 'subordinate-clause))
+    ((eq (edge-form edge) category::subordinate-clause)
      (is-passive? (edge-right-daughter edge)))
     (t
      (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
