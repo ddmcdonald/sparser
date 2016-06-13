@@ -28,7 +28,6 @@
   (declare (ignore object))
   (send-to-output-stream *the-possessive-marker*))
 
-
 (define-word-stream-action-type determiner
   (declare (ignore object))
   (print-determiner (state *current-phrasal-root*)))

@@ -293,6 +293,9 @@
   word-stream-actions ((add-possessive-ending final nil not-a-pronoun-contents))
   )
 
+(define-slot-label percent
+  word-stream-actions ((punctuation final percent)))
+
 (define-slot-label nominal-premodifier
    grammatical-constraints (np )
      associated-attachment-points
