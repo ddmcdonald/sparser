@@ -1337,6 +1337,10 @@
 		       (return)))))))
           
 	   ;;(break "testing subcats")
+	   (when (and *note-ambiguity* (consp variable))
+	     (format t "~%ambiguous subcats for attaching ~s to ~s with ~s:~%   ~s~%"
+		     item  head  label variable)
+	     (setq variable (car variable)))
 	   variable ))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
@@ -1568,16 +1572,15 @@
       (when *collect-subcat-info*
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
-      (let ((predicate (individual-for-ref np)))
-        (setq predicate
-              (create-predication-by-binding
-               variable-to-bind pobj predicate
-               (list 'apply-copular-pp (parent-edge-for-referent))))
+      (let ((predicate (bind-dli-variable
+			variable-to-bind
+			pobj
+			(individual-for-ref np))))
 	(revise-parent-edge :category category::copular-predicate)
         (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
          category::copular-predicate
-         `((predicated-of ,np)
-           (predicate ,predicate))))))))
+         `((predicate ,predicate)
+	   (predicated-of ,np))))))))
 
 (defun get-word-for-prep (prep-val)
   (resolve/make ;; needs to be a word for the subcat frame!
