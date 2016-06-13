@@ -14,6 +14,10 @@
    mention locations, but may have other uses such as mergine
    with or replacing the sentence list of individuals.")
 
+(defvar *maximal-lattice-mentions-in-paragraph* nil
+  "Hash-table organized by category of maximal projections mentions from within the current paragraph. Most recent
+   first.")
+
 ;;; mention-history storage
 (defvar *lattice-individuals-to-mentions* (make-hash-table :size 10000)
   "Maps from description lattice individuals to a push-list of 
@@ -196,21 +200,7 @@
 
 
 (defun lattice-individuals-extend-dh-entry (category i edge)
-  (let ((subsumed-mention
-	 (if (edge-left-daughter edge)
-	  (cond
-	    ((and (edge-p (edge-left-daughter edge))
-		  (is-dl-child? i (edge-referent (edge-left-daughter edge))))
-	     (edge-mention (edge-left-daughter edge)))
-	    ((and
-	      (edge-p (edge-right-daughter edge))
-	      (is-dl-child? i (edge-referent (edge-right-daughter edge))))
-	     (edge-mention (edge-right-daughter edge))))
-	  (loop for e in (edge-constituents edge)
-	     when (is-dl-child? i (edge-referent e))
-	     do (return (edge-mention e))))))
-    (make-new-mention category i edge subsumed-mention)))
-    
+  (make-mention i edge category))
 		 
 (defun is-dl-child? (child? parent?)
   (cond
@@ -265,14 +255,6 @@
                          ~%   is not as specific as the source, ~a~
                          ~%   in the mention ~a"
                          base-individual edge-referent mention))))))))
-                        
-  #+ignore (unless ;; original logic
-      (or *dont-check-inconsistent-mentions*
-	  (not (edge-p (mention-source mention)))
-	  (deactivated? (mention-source mention))
-	  (as-specific? (base-description mention)
-			(edge-referent (mention-source mention))))
-    (lsp-break "test-inconsistent-mention-edge-referent got inconsistent edge and interp"))
 
 (defun update-mention-referent (mention referent &optional dont-check-inconsistent)
   (let ((*dont-check-inconsistent-mentions* dont-check-inconsistent))
@@ -295,54 +277,91 @@
   ;; style of individual is being used and dispatches.
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
-  (when (null source) (lsp-break "null source in create-discourse-mention"))
   (let ((m (make-mention i source)))
     (when (non-dli-mod-for i)
       (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
       (setf (non-dli-mod-for i) nil))
-    (push m *lattice-individuals-mentioned-in-paragraph*)
     (tr :made-mention m)
     (list m)))
 
-(defun make-mention (i source)
-  (declare (special *current-paragraph*))
+(defun make-mention (i source &optional category)
+  (declare (special *current-paragraph* category::prepositional-phrase))
+  (if (null source) (lsp-break "null source in make-mention"))
+  ;; either don't create a mention for NPs with category references (like "the cell")
+  ;;  or make them have individuals as references
+  (if (null category) (setq category (itype-of i)))
   (let* ((location (encode-mention-location
-                    (if (consp source) (second source) source)))
-         (toc (location-in-article-of-current-sentence))
+		    (if (consp source) (second source) source)))
+	 (toc (location-in-article-of-current-sentence))
 	 (m (make-instance 'discourse-mention
 			   :uid (incf *mention-uid*)
 			   :i i
-                           :loc location
-                           :ms source
-                           :article (cons toc *current-paragraph*) )))
+			   :loc location
+			   :ms source
+			   :article (cons toc *current-paragraph*) )))
     #+ignore ;; useful for tracking down odd cases
     (when (= (indiv-uid i) 4188)
       (lsp-break "Made mention ~a" m))
+    (tr :making-new-mention m)
     (push m (mention-history i)) ;; calls (check-consistent-mention m)
     (when (edge-p source)
-      (setf (edge-mention source) m))
+      (setf (edge-mention source) m)
+      (push m *lattice-individuals-mentioned-in-paragraph*)
+      (let ((subsumed-mention (subsumed-mention? i source)))
+	(cond (subsumed-mention
+	       (subsume-mention category m source subsumed-mention)
+	       (let ((limip
+		      (member subsumed-mention
+			      (gethash category *maximal-lattice-mentions-in-paragraph*))))
+		 (cond (limip (setf (car limip) m))
+		       (t
+			(push m (gethash category *maximal-lattice-mentions-in-paragraph*)))
+		       ;;(lsp-break "huh -- subsumed-mention not found in paragraph")
+		       #| this happens in some stange, as yet unalyzed cases caused by ambiguities in the morphology such as
+		       SP> (stree 166)
+		       e166 STRESS-KIND/N-BAR       p45 - p47   rule 292
+		       e75 FOLLOWE/VERB+ING        p45 - p46   rule 60812
+		       "following"
+		       e78 STRESS-KIND/COMMON-NOUN   p46 - p47   rule 61433
+		       "stress"
+		       #<edge166 45 stress-kind 47>
+		       SP> (stree 167)
+		       e167 STRESS-KIND/N-BAR       p45 - p47   rule 292
+		       e76 FOLLOW/VERB+ING         p45 - p46   rule 57362
+		       "following"
+		       e78 STRESS-KIND/COMMON-NOUN   p46 - p47   rule 61433
+		       "stress"
+		       #<edge167 45 stress-kind 47>
+			
+		       where the same edge (78) is under two alternative edges
+		       |#
+			)))
+	      (t
+	       (when category (push m (discourse-entry category)))
+	       (unless (eq (edge-form source) category::prepositional-phrase)
+		 (push m (gethash category *maximal-lattice-mentions-in-paragraph*)))))))
     m))
 
-(defparameter *edge-forms* nil)
+(defun subsumed-mention? (i edge)
+  (if (edge-left-daughter edge)
+      (cond
+	((and (edge-p (edge-left-daughter edge))
+	      (is-dl-child? i (edge-referent (edge-left-daughter edge))))
+	 (edge-mention (edge-left-daughter edge)))
+	((and (edge-p (edge-right-daughter edge))
+	      (is-dl-child? i (edge-referent (edge-right-daughter edge))))
+	 (edge-mention (edge-right-daughter edge))))
+      (loop for e in (edge-constituents edge)
+	 when (is-dl-child? i (edge-referent e))
+	 do (return (edge-mention e)))))
 
-(defun make-new-mention (category i source &optional subsumed-mention)
-  (cond
-    ((null source) (lsp-break "null source in create-discourse-mention"))
-    ((edge-p source) (pushnew (cat-name (edge-form source)) *edge-forms*)))
-  (let* ((m (make-mention i source)))
-    (tr :making-new-mention m)
-    (if subsumed-mention
-	(subsume-mention category m source subsumed-mention)
-	(push m (discourse-entry category)))
-    (push m *lattice-individuals-mentioned-in-paragraph*)
-    m ))
 
 (defun subsume-mention (category m source subsumed-mention)
   (setf (subsumes-mention m) subsumed-mention)
   (setf (subsumed-by-mention subsumed-mention) m)
   (update-non-dli-modifiers m subsumed-mention (base-description m))
   ;;categories only list (currently) maximal phrases
-  (nsubstitute m subsumed-mention (discourse-entry category))
+  (when category (nsubstitute m subsumed-mention (discourse-entry category)))
   (update-instance-within-sequence m subsumed-mention source))
 
 (defun update-non-dli-modifiers (m subsumed-mention i)
