@@ -754,7 +754,11 @@
 (defmethod collect-model-description ((cal cons))
   `(collection :members 
                (,@(loop for l in cal 
-                    collect (collect-model-description l)))))     
+		     collect (collect-model-description l)))))
+
+(defparameter *print-sem-tree* nil
+  "Set to T to change the structures extracted for collections, to allow psemtree to produce better output,
+without damaging other code.")
 
 (defmethod collect-model-description ((i individual))
   (cond
@@ -762,10 +766,13 @@
     (list (list "!recursion!" i)))
    ((and
      (itypep i 'number)
-     (not (itypep i 'ordinal)))
-    (if (itypep i 'collection)
+     (not (itypep i 'ordinal))
+     (not *print-sem-tree*))
+    (if
+     (itypep i 'collection)
      (value-of 'items i)
      (value-of 'value i)))
+   	
    ((and (eq script :biology)
          (itypep i 'protein-family) ;; get rid of bio-family -- misnamed...
          (not (itypep i 'collection)))
