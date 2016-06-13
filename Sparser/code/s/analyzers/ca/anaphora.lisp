@@ -594,10 +594,15 @@ saturated? is a good entry point. |#
 (defun initialize-discourse-history ()
   (declare (special *lifo-instance-list*
                     *lattice-individuals-mentioned-in-paragraph*
+		    *maximal-lattice-mentions-in-paragraph*
                     *objects-in-the-discourse*
                     *lattice-individuals-to-mentions*))
   (setq *lifo-instance-list* nil
         *lattice-individuals-mentioned-in-paragraph* nil)
+  (if (and (boundp '*maximal-lattice-mentions-in-paragraph*)
+	   (hash-table-p *maximal-lattice-mentions-in-paragraph*))
+      (clrhash *maximal-lattice-mentions-in-paragraph*)
+      (setq *maximal-lattice-mentions-in-paragraph* (make-hash-table :size 1000)))
   (clrhash *objects-in-the-discourse*)
   (clrhash *lattice-individuals-to-mentions*))
 
@@ -647,10 +652,11 @@ saturated? is a good entry point. |#
 ;;;--------------------
 
 (defun maybe-suppress-daughters-dh-entry (daughter parent)
+  (declare (special category::person))
   ;; called from Set-used-by
   (when (edge-p daughter)
     (when (individual-p (edge-referent daughter))
-      (when (eq (edge-category parent) (category-named 'person))
+      (when (eq (edge-category parent) category::person)
         ;(break "1")
         ;(remove-history-of-instance/edge daughter)
 
