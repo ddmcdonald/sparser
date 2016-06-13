@@ -183,28 +183,22 @@ We therefore have the special cases:
 
 
 (defun make-residue-on-protein (amino-acid number-exp)
+
   ;; Open-code the find-or-make to put under microscope
   #|  (find-or-make-individual 'residue-on-protein
                            :amino-acid amino-acid
                            :position number) |#
-  (let ((number (typecase number-exp
+  (let* ((res (fom-lattice-description category::residue-on-protein))
+	 (number (typecase number-exp
                   (number (find-or-make-number number-exp))
                   (word (find-or-make-number number-exp))
                   (individual
                    (unless (itype number-exp 'number)
                      (error "individual should be of type number"))
                    number-exp))))
-    ;; From define-or-find-individual
-    (let* ((category (category-named 'residue-on-protein :break-if-missing))
-           (binding-plist `(:amino-acid ,amino-acid :position ,number))
-           (binding-instructions
-            (decode-category-specific-binding-instr-exps
-             category binding-plist))
-           (i (find/individual category binding-instructions)))
-      (unless i
-        (setq i (apply #'define-individual category binding-plist)))
-      ;;(push-debug `(,i ,binding-plist))
-      i)))
+    (setq res (bind-dli-variable :amino-acid amino-acid res))
+    (setq res (bind-dli-variable :position number res))
+    res))
 
 
 ;;;------------------------------------
