@@ -29,6 +29,8 @@
 
 (define-punctuation-mark comma "," )
 
+(define-punctuation-mark percent "%")
+
 
 ;; These two are more of a meta punctuation mark because they get a localized
 ;; interpretation. See Print-punctuation.

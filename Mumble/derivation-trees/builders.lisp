@@ -18,22 +18,28 @@
   (:documentation "Given a designator for a word, return
     a lexicalized phrase for it as a simple np."))
 
-(defmethod noun ((w word) &optional phrase)
-  (noun (pname w) phrase))
-
-(defmethod noun ((string string) &optional phrase-name)
+(defmethod noun (word &optional phrase-name)
   (let* ((phrase (phrase-named (or phrase-name 'common-noun)))
-         (parameter (car (parameters-to-phrase phrase)))
-         (word (word-for-string string 'noun)))
-    (let* ((pair (make-instance 'parameter-value-pair
+         (parameter (parameter-named 'n))
+	 (parameters (remove parameter (parameters-to-phrase phrase)))
+         (word (typecase word
+		 (string (word-for-string word 'noun))
+		 (word word)))
+	 (pair (make-instance 'parameter-value-pair
                    :phrase-parameter parameter
                    :value word))
-           (lp (make-instance 'saturated-lexicalized-phrase
-                 :phrase phrase
-                 :bound `(,pair))))
-      (record-lexicalized-phrase word lp)
-      lp)))
-
+	 (lp (if parameters
+		 (make-instance 'partially-saturated-lexicalized-phrase
+				:phrase phrase
+				:free parameters
+				:bound `(,pair))
+		 (make-instance 'saturated-lexicalized-phrase
+				:phrase phrase
+				:bound `(,pair)))))
+    (when word
+      (record-lexicalized-phrase word lp))
+    lp))
+ 
 
 (defgeneric verb (word &optional phrase-name)
   (:documentation "Given a designator for a verb, return 
@@ -49,8 +55,7 @@
 (defmethod verb ((string string) &optional (phrase-name 'svo))
   (let* ((phrase (phrase-named phrase-name))
          (parameter (parameter-named 'v))
-         (parameters (delete parameter
-                             (copy-list (parameters-to-phrase phrase))))
+         (parameters (remove parameter (parameters-to-phrase phrase)))
          (word (word-for-string string 'verb)))
     (let* ((pair (make-instance 'parameter-value-pair
                    :phrase-parameter parameter

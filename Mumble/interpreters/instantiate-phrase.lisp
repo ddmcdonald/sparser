@@ -214,9 +214,7 @@
           (parameter
            (let ((value (parameter-value contents)))
              (typecase value
-               (null 
-                (push-debug `(,contents ,*phrase-parameter-argument-list*))
-                (break "parameter-value of ~a returned nil" contents))
+               (null) 
                ((or word specification ttrace pronoun)
                 (set-contents slot value))
                (node (knit-phrase-into-tree slot value))
@@ -242,14 +240,8 @@
           (otherwise 
            (push-debug `(,contents ,slot ,node))
            (mbug "Unexpected contents--~A" contents)))
-
         (when (keywordp (car remaining-definition))
-          (process-label-keywords slot))
-
-        (let ((check (contents slot)))
-          (unless check
-            (error "No content added to slot ~a" slot))
-          #+ignore(format t "The content of ~a is ~a" slot check))))
+          (process-label-keywords slot))))
     node))
 
 

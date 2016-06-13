@@ -1582,6 +1582,11 @@
      quantifier quant
      of-complement comp ))
 
+(define-phrase percent (amount n)
+  (np
+   percent amount
+   np-head n))
+
 
 ;;-- motivated by dates
 
