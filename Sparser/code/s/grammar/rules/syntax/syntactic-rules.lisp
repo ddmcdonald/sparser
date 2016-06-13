@@ -500,6 +500,15 @@ similar to an oncogenic RasG12V mutation (9)."))
 	   :form pp-relative-clause
 	   :referent (:function make-pp-relative-clause left-edge right-edge))))
 
+(loop for rel in '(which who whom)
+   do
+     (eval
+      `(def-form-rule (,rel subordinate-clause) 
+	   :head :right-edge
+	   :form subject-relative-clause
+	   :referent (:function compose-wh-with-vp left-edge right-edge))))
+
+
 ;; this is not a subject relative -- the subject already exists
 (def-form-rule (where s) 
                  :head :right-edge
