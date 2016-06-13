@@ -338,6 +338,7 @@
     CHECK-KNOWN-WORD-FOR-WORD-FSAS
     DETERMINE-HEAD-REFERENT
     SUBSUMES-INTERVAL
+    SUBSUMES-MENTION
     CHARACTER-ENTRY
     INSTANCE-COUNTER
     PRONOUN-CATEGORY?
@@ -1398,6 +1399,13 @@
   (setq *allow-tr-tracing* nil)
   (loop for i from 1 to n do
     (compare-to-snapshots))
+  (sb-profile:report))
+#+:sbcl
+(defun x-timings(x &optional (n 1))
+  (setq *profns* *sp-fns*)
+  (eval `(sb-profile::profile ,@*profns*))
+  (setq *allow-tr-tracing* nil)
+  (eval x)
   (sb-profile:report))
 
 (defparameter *nht* (make-hash-table :test #'eql))
