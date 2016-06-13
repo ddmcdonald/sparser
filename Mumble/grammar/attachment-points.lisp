@@ -227,7 +227,7 @@ by KEY-POSITION.
 
 
 (define-lowering-attachment-point quantifier-OF  ;; "all of the ..."
-  new-phrase (np_quant-head_of-comp)
+  new-phrase (partitive)
   key-position (of-complement))
 
 

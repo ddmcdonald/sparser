@@ -1587,6 +1587,10 @@
    percent amount
    np-head n))
 
+(define-phrase partitive (det n)
+  (np
+   quantifier det
+   of-complement n))
 
 ;;-- motivated by dates
 
