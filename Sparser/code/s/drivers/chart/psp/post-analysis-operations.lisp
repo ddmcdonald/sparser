@@ -142,35 +142,37 @@ where it regulates gene expression.")
 
 (defun interpret-pronoun-in-context (dt variable containing-mentions)
   (let ((mention (dt-mention dt)))
-    (when (slot-boundp mention 'restriction)
-      ;; This goes with the check done in condition-anaphor-edge
-      ;; to ignore personal pronouns. If we refactored the actual
-      ;; check -- ignore-this-type-of-pronoun -- we could reframe
-      ;; this in more direct forms and protect is against someone
-      ;; changing the details of the class.
-      (let* ((restriction (mention-restriction mention))
-	     (types (etypecase restriction
-		      ((cons (eql :or)) (cdr restriction))
-		      (category (list restriction))
-		      (null
-		       (if (and (or
-				 (eq variable 'subject)
-				 (eq variable 'predicate)) ;; comes from bad parse for "were it not for..."
-				(itypep (base-description
-					 (car containing-mentions))
-					'be))
-			   nil
-			   (lsp-break
-			    "~&NIL restriction -- var: ~s, containing-mentions:~s~&"
-			    variable containing-mentions)))))
-	     (interpretation
-	      (when types
-		(or (find-pronoun-in-lifo-instance types)
-		    #| apply some other technique |# ))))
-	(if interpretation
-	    (car interpretation)
-	    ;; if interpretation is NIL then we have failed to find a pronominal referent
-	    (base-description mention))))))
+    (if (slot-boundp mention 'restriction)
+	;; This goes with the check done in condition-anaphor-edge
+	;; to ignore personal pronouns. If we refactored the actual
+	;; check -- ignore-this-type-of-pronoun -- we could reframe
+	;; this in more direct forms and protect is against someone
+	;; changing the details of the class.
+	(let* ((restriction (mention-restriction mention))
+	       (types (etypecase restriction
+			((cons (eql :or)) (cdr restriction))
+			(category (list restriction))
+			(null
+			 (if (and (or
+				   (eq variable 'subject)
+				   (eq variable 'predicate)) ;; comes from bad parse for "were it not for..."
+				  (itypep (base-description
+					   (car containing-mentions))
+					  'be))
+			     nil
+			     (lsp-break
+			      "~&NIL restriction -- var: ~s, containing-mentions:~s~&"
+			      variable containing-mentions)))))
+	       (interpretation
+		(when types
+		  (or (find-pronoun-in-lifo-instance types)
+		      #| apply some other technique |# ))))
+	  (if interpretation
+	      (car interpretation)
+	      ;; if interpretation is NIL then we have failed to find a pronominal referent
+	      (base-description mention)))
+	(base-description mention)
+	)))
 
 (defun itypep-or (i type-list)
   (loop for type in type-list thereis (itypep i type)))
@@ -200,7 +202,7 @@ where it regulates gene expression.")
       (loop for (var val) in bindings
 	 unless (member var '(items type number))
 	 collect (list var (interpret-val-in-context var val containing-mentions)))
-      containing-mentions))))
+      (cons mention containing-mentions)))))
 
 
 (defun interpret-item-in-context (dt var containing-mentions)
@@ -257,12 +259,21 @@ where it regulates gene expression.")
 				     (when (null bound-val) (lsp-break "bad conjunction distribution"))
 				     bound-val)))
 			  (list (bind-dli-variable var ival i)))))))
-    (if (cdr interps) ;; a collection
-	(make-an-individual 'collection
-			    :items interps
-			    :number (length interps)
-			    :type (itype-of (car interps)))
-	(car interps))))
+    (cond ((cdr interps) ;; a collection
+	   (when (is-maximal? (car containing-mentions))
+	     ;; create new mentions for each of the expanded interpretations
+	     ;; e.g " MAPK phosphorylation sites in ASPP1 and ASPP2" expands to
+	     ;; "MAPK phosphorylation site in ASPP1" and "MAPK phosphorylation site in ASPP2"
+	     (loop for interp in interps
+		do
+		  (setf (contextual-description (make-mention interp (mention-source (car containing-mentions))))
+			interp)))
+	   (make-an-individual 'collection
+			       :items interps
+			       :number (length interps)
+			       :type (itype-of (car interps))))
+	  (t
+	   (car interps)))))
 
 (defun interpret-val-in-context (var val-dt containing-mentions)
   ;; recursively interpret the bound value in the current context
@@ -479,6 +490,7 @@ where it regulates gene expression.")
 	(pos-token-index (end-pos child?)))))
 
 (defun new-dt (parent-edges &optional interp)
+  (declare (special category::copular-predicate))
   ;; for convenience, to let new-dt be called with treetop
   (if (edge-p parent-edges) (setq parent-edges (list parent-edges)))  
   (let ((parent-edge (car parent-edges)))
@@ -502,12 +514,14 @@ where it regulates gene expression.")
 				   (if c-edge
 				       (new-dt (cons c-edge parent-edges))
 				       (list conjunct)))))
-			   (t
-			    (let* ((val (binding-value b))
-				   (val-edge (car (relevant-edges parent-edges val))))
-			      (if (edge-p val-edge)
-				  (new-dt (cons val-edge parent-edges) val)
-				  val)))))))))))
+			   (t 
+			      (let* ((val (binding-value b))
+				     (val-edge (car (relevant-edges parent-edges val))))
+				(cond ((edge-p val-edge)
+				       (new-dt (cons val-edge parent-edges) val))
+				      ((eq category::copular-predicate (edge-category (car parent-edges)))
+				       (new-dt parent-edges val))
+				      (t val val))))))))))))
 
 (defun predication-binding-value (b interp parent-edges)
   (let* ((pred (binding-value b))
