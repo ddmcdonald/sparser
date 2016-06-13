@@ -103,22 +103,37 @@
                   (car titles)
                   (let* ((texts (loop for tt in titles
                                    collect (content-string tt)))
-                         (tt (make-instance 'title-text)))
+                         (tt (make-instance 'title-text))
+                         (text-strings ;; pad witt space
+                          (loop for text in texts
+                               collect (string-append text " "))))
                     (setq multiple? t)
                     (setf (content-string tt)
-                          (apply #'string-append texts))
+                          (apply #'string-append text-strings))
                     tt)))
          (rest (loop for e in doc-elements
                   unless (typep e 'title-text)
                   collect e)))
+
+    ;; (run-an-article :id "3640864" :corpus :localization :epi nil :read nil)
+    (when multiple?
+      (replace-title-text-in-multiples title titles))
+
+    (when title
+      (cond
+        ((= (length (content-string title)) 0)
+         ;; This causes a cascade of problems at many points.
+         ;; Solution would appear to be to splice out this element
+         ;; and proceed as if it didn't exist.
+         (remove-title-text-from-document title)
+         (setq title nil))
+        (t
+         (unless (contents title) ;; unless we already did this ...
+           (setup-title-as-sentence-container title)))))
     
-    ;;(when multiple? (push-debug `(,titles ,title)) (lsp-break "mutliples"))
-    ;;/// Maybe operate on the parent here rather than make them do it.
-    
-    #+ignore(unless (contents title)   
-      ;; This gets called on each pass
-      (setup-title-as-sentence-container title))
     (values title rest multiple?)))
+
+
 
 (defun setup-title-as-sentence-container (title)
   (install-contents title) ;; like paragraph
@@ -132,7 +147,7 @@
 
     ;; cribing from start-sentence
     (setf (contents s) (make-sentence-container s))
-    (setf (starts-at-pos s) (position# 0))
+    (setf (starts-at-pos s) (position# 1))
     (setf (starts-at-char s) 1)
     (setf (previous s) nil)
     (setf (parent s) title)
@@ -153,19 +168,48 @@
                         *sentence-making-sweep*
                         *pre-read-all-sentences*
                         *current-paragraph*))
-      ;; from Analysis core
+      
+      ;; How much of analysis-core can we get away with leaving out?      
       (initialize-tokenizer-state)
       (initialize-chart-state)
 
-      (initialize-sentences) (push-debug `(,s ,string)) (lsp-break "1")
-      (establish-character-source/string string) (lsp-break "2")
-      
-     ; (catch 'sentences-finished
-     ;    (scan-sentences-to-eof s))
+      ;; From read-from-document(paragraph)
+      (initialize-sentences)
+      (establish-character-source/string string)
 
-      (lsp-break "look at sentence structure")
-      title)))
+      ;; Top of, e.g. initiate-successive-sweeps
+      (scan-next-position) ;; pull the source-start word into the chart
+      (scan-next-position) ;; adds 1st real word into the chart
 
+      ;; from scan-sentences-to-eof
+      (let* ((p1 (position# 1))
+             (word (pos-terminal p1)))
+        
+        (catch 'sentences-finished
+          ;; Is there one sentence in the title or two?
+          ;; If there are two, then after catching the end of
+          ;; sentence we have to resume the scan. We could try
+          ;; to make scan-sentences-to-eof word, or replicate
+          ;; the essence of what it does without working in
+          ;; terms of sentence objects.
+          (catch :end-of-sentence
+            (scan-words-loop p1 word)))
+
+        title))))
+
+(defun replace-title-text-in-multiples (replacement tt-to-remove)
+  (let* ((first (car tt-to-remove))
+         (parent (parent first))
+         (daughters (children parent)))
+    (loop for tt in tt-to-remove
+       do (setq daughters (remove tt daughters)))
+    (setf (children parent) (cons replacement daughters))))
+
+(defun remove-title-text-from-document (tt)
+  (let* ((parent (parent tt))
+         (daughters (children parent)))
+    (assert (eq tt (first daughters)))
+    (setf (children parent) (cdr daughters))))
 
 
 
@@ -239,7 +283,6 @@
     (add-to-document-set obj)
     (initialize-sections) ;; make the 1st section
     obj))
-
 
 
 

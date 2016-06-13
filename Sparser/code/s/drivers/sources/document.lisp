@@ -283,28 +283,23 @@
   "Flag for the benefit of assess-relevance. The content
    of a section title is always relevant.")
 
-(defparameter *dont-parse-titles* t
-  "parsing titles had been reclaiming paragraphs!")
-
 (defun parse-section-title (title)
-  (when *dont-parse-titles* 
+  (unless (> (length (content-string title)) 0) 
     (return-from parse-section-title title))
   (when *show-section-printouts*
-    (format t "~&~%About to parse section title: ~s%"
+    (format t "~&~%About to parse section title: ~s~%"
             (content-string title)))
   (let ((*reading-populated-document* t)
         (*reading-section-title* t)
         (*recognize-sections-within-articles* nil) ;; turn of doc init
         (*accumulate-content-across-documents* t) ;; don't clear history
-        (*current-paragraph* title)) ;; for initialize-sentencse
+        (*current-paragraph* title)) ;; for initialize-sentences
     (declare (special *reading-populated-document*
                       *reading-section-title*
                       *recognize-sections-within-articles*
                       *accumulate-content-across-documents*
                       *current-paragraph*))
-
     (initialize-sentences)
-    ;;(lsp-break "value of a call to sentence ??")
     ;; For the setup on the title-text object see
     ;; setup-title-as-sentence-container
     (establish-character-source/string (content-string title))
@@ -314,9 +309,7 @@
       ;; when it believes that it's run out of sentences
       ;; to handle.      
       (analysis-core))
-    
     (after-actions title)
-    
     title))
 
 

@@ -46,8 +46,8 @@
   (when *apply-document-after-actions*
     ;;/// should it also bind *current-paragraph* ?
     (make-mentions-long-term)
-    (push-debug `(,te))
-    (lsp-break "after parsing ~a" te)
+    ;;(push-debug `(,te))
+    ;;(lsp-break "after parsing ~a" te)
     (when *run-aggregation-after-action*
       (aggregate-bio-terms te))
     (assess-sentence-analysis-quality te)))
@@ -92,10 +92,7 @@
 
 (defmethod add-bio-term-counts ((d document-element))
   (let ((sink (contents d))
-        (daughters
-         (loop for c in (children d)
-            unless (typep c 'title-text)
-            collect c)))
+        (daughters (children d)))
     (loop for next in daughters
        do (accumulate-terms-and-add-counts
            sink (contents next)))
@@ -162,6 +159,10 @@
       (aggregate-sentence-bio-terms s p)
       (sort-bio-terms p (contents p)))))
 
+(defmethod aggregate-bio-terms ((tt title-text))
+  (let ((s (children tt)))
+    (aggregate-sentence-bio-terms s tt)
+    (sort-bio-terms tt (contents tt))))
 
 (defun aggregate-sentence-bio-terms (s p)
   "Given a sentence s and paragraph p retrieve the entities
@@ -256,6 +257,13 @@
          (tt-list (loop for s in sentences
                     collect (get-tt-count s))))
     (setf (sentence-tt-count content) tt-list)))
+
+(defmethod assess-sentence-analysis-quality ((tt title-text))
+  ;; presuming it's just one sentence long
+  (let* ((sentence (children tt))
+         (content (contents tt))
+         (count (get-tt-count sentence)))
+    (setf (sentence-tt-count content) count)))
     
 
 (defun grade-sentence-tt-counts (paragraph quality)
@@ -295,7 +303,7 @@
     (when (typep content 'sentence-parse-quality)
       (dolist (child children)
         (typecase child
-          (paragraph
+          ((or paragraph title-text)
            (grade-sentence-tt-counts child content))
           ((or section section-of-sections article)
            (aggregate-parse-performance e content)))))))
