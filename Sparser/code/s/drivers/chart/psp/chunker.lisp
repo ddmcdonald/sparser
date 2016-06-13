@@ -358,6 +358,8 @@
                 (loop for edge in (ev-edges ev)
                   thereis (and
                            (vg-head? edge)
+			               (referential-category-p (edge-category edge))
+			               ;; have strange cases like "completed" as an edge in PMC3640864
                            (not (member (cat-symbol (edge-category edge)) 
                                         '(category::be category::have category::do category::modal)))))))))
     (adjg (adjg-compatible? edge))))
