@@ -368,7 +368,7 @@
   (when sub-dli
     (or
      (eq sub-dli super-dli)
-     (and (category-p super-dli) ;; happens in calls from check-consistent-mention
+     (and (referential-category-p super-dli) ;; happens in calls from check-consistent-mention
 	  (itypep sub-dli super-dli))
      (cond
        ((referential-category-p sub-dli)
@@ -471,20 +471,6 @@
   (maphash #'(lambda(e dli)(declare (ignore e))(push dli *dlis*)) *lattice-ht*)
   *dlis*)
 
-#|
-(defgeneric find-all-subs (c)
-  )
-
-(defmethod find-all-subs ((c referential-category))
-  (find-all-subs (dli-ref-cat c)))
-
-(defmethod find-all-subs ((i individual))
-  (declare (special *lattice-individuals-mentioned-in-paragraph*))
-  (loop for m in *lattice-individuals-mentioned-in-paragraph*
-     when (as-specific? (base-description m) i)
-     collect i))
-|#
-
 (defun all-phrasal-dlis ()
   (all-dlis)
   (loop for i in *dlis* when (retrieve-surface-string i) collect i))
@@ -494,10 +480,10 @@
    (loop for i in (all-phrasal-dlis) collect (dli-ref-cat i))))
 
 (defun all-mentioned-specializations (c c-mention containing-mentions)
-  (declare (special *lattice-individuals-mentioned-in-paragraph*))
+  (declare (special *maximal-lattice-mentions-in-paragraph* c c-mention containing-mentions))
   (let* ((am-specs
 	  (remove-duplicates
-	   (loop for m in *lattice-individuals-mentioned-in-paragraph*
+	   (loop for m in (gethash (itype-of c) *maximal-lattice-mentions-in-paragraph*)
 	      as ps = (base-description m)
 	      when
 		(and  (not (eq ps c))
@@ -508,7 +494,7 @@
 		      (loop for ps-mention in (mention-history ps)
 			 thereis (earlier? ps-mention c-mention)))
 	      collect ps))))
-    (declare (special pspecs am-specs))
+    (declare (special am-specs))
     am-specs))
 
 (defun earlier? (poss-mention source-mention)
