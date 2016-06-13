@@ -57,8 +57,6 @@
 				 quantifier-postmod quantifier-of
                                  predicative-you))
 
-(define-node-label np/no-det) ;; for "there", "home"
-
 (define-node-label vp
    associated-attachment-points (vp-prep-complement purpose-clause
                                  interpose-verb-phrase

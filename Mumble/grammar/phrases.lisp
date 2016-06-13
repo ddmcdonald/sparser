@@ -1516,34 +1516,32 @@
    (np-head n :additional-labels (possessive-np))))
 
 (define-phrase Abstract-np (n) ;; minimal phrase over an abstract noun
-  (np  ;; np/no-det -- see labels file. Alternative would block 
-   ;; determiner word-stream action by using something analogous
-   ;; to the :additional-labels or :set-state annotations.
+  (np  
    np-head n))
 
 (define-phrase singleton-np (n) ;; has no attachment points
-  (np ;; np/no-det
+  (np
    head n))
 
 (define-phrase vocative (n)
-  (np ;; np/no-det
+  (np
    np-head n))
 
 
 ;;--- pre-built NP patterns
 
 (define-phrase det-np (d n)  
-  (np ;; np/no-det
+  (np
    determiner d
    np-head h))
 
 (define-phrase number-np (number n)
-  (np ;; np/no-det
+  (np
    number number
    np-head n))
 
 (define-phrase possessive-np (p n) ;; compare phrase-schema possessed-np
-  (np ;; np/no-det
+  (np
    possessive p
    np-head n))
 
@@ -1575,7 +1573,7 @@
 
 
 (define-phrase determined-np (d n)
-  (np ;; np/no-det
+  (np
    determiner d
    np-head n))
 
