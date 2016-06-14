@@ -79,7 +79,11 @@
 		  (or (object-variable right-ref) ;; if there is an object variable, use it
 		      (let ((sv (subject-variable right-ref)))
 			(loop for v in vars 
-			   when (not (eq v sv)) do (return v))))))))
+			   when (not (eq v sv)) do (return v)))))))
+	      (right-cat
+	       (if (individual-p right-ref)
+		   (itype-of right-ref)
+		   right-ref)))
 	 ;; Which variable this is really depends on the two referents.
 	 ;; For the "induced" example its an agent (= subject). But the
 	 ;; tyrosine goes on the site variable of the phosphoryate.
@@ -91,19 +95,21 @@
 		  (satisfies-subcat-restriction?
 		   left-ref
 		   (var-value-restriction
-		    (find-variable-for-category
-		     (var-name variable)
-		     (if (individual-p right-ref)
-			 (itype-of right-ref)
-			 right-ref)))))
+		    (find-variable-for-category (var-name variable) right-cat))))
 	   ;;/// clear motivation for structure on variables on perhaps
 	   ;; on the mixing in of categories for this same purpose
 	   ;; Default to modifier ??
 	   (setq variable
 		 ;; applies if there's just one variable on category
-		 (single-on-variable-on-category right-ref))
-           (when variable
-            (tr :ns-used-the-single-variable-on right-ref)))
+		 (or
+		  (single-on-variable-on-category right-ref)
+		  (loop for sp in (subcat-patterns right-cat)
+		     when (satisfies-subcat-restriction?
+			   left-ref
+			   (subcat-restriction sp))
+		     do (return (subcat-variable sp))))))
+	 (when variable
+	   (tr :ns-used-the-single-variable-on right-ref))
 	 variable))
       
       (subcat-var
