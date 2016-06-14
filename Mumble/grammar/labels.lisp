@@ -51,11 +51,11 @@
 (define-node-label relative-clause)
 
 (define-node-label np
-   word-stream-actions ((determiner initial))
-   associated-attachment-points (possessive determiner
-                                 quantifier-premod quantifier-of
-				 quantifier-postmod quantifier-of
-                                 predicative-you))
+  word-stream-actions ((determiner initial))
+  associated-attachment-points (possessive determiner
+					   quantifier-premod quantifier-of
+					   quantifier-postmod quantifier-of
+					   predicative-you))
 
 (define-node-label vp
    associated-attachment-points (vp-prep-complement purpose-clause
