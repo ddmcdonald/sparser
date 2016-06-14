@@ -257,7 +257,8 @@
   "I like cats that drink milk")
 
 (deftest (say mutation that makes active)
-  (let* ((simon (simon))
+  (let* ((percent (make-dtn :resource (noun nil 'percent)))
+	 (patients (plural (make-dtn :resource (noun "patient" 'partitive))))
 	 (have (present-tense (have)))
 	 (mutation (initially-indefinite (singular (mutation))))
 	 (in (in))
@@ -267,8 +268,9 @@
 					:resource (verb "make" 'svo-adj))))
 	 (that-make (make-lexicalized-attachment 'restrictive-relative-clause make))
 	 (active (active)))
-
-    (make-complement-node 's simon have) 
+    (make-complement-node 'amount "88" percent)
+    (make-complement-node 's patients have)
+    (make-complement-node 'quant percent patients)
     (make-complement-node 'o mutation have)
     (make-adjunction-node in-kras mutation)
     (make-complement-node 'prep-object kras in)
@@ -277,4 +279,4 @@
     (make-complement-node 'o kras make) 
     (make-complement-node 'adj active make)
     (mumble-says have))
-  "Simon has a mutation in KRAS that makes it active") 
+  "88% of patients have a mutation in KRAS that makes it active") 
