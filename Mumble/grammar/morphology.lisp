@@ -21,7 +21,7 @@
 (in-package :mumble)
 
 (defvar *verb-labels* '(verb tense-modal have+en be+ing be+en))
-(defvar *noun-labels* '(np-head compound-noun-head))
+(defvar *noun-labels* '(np-head compound-noun-head of-complement))
 (defvar *case-labels* '(nominative objective genitive
                         possessive-np possessive direct-object))
 
