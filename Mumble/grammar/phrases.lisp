@@ -1577,19 +1577,14 @@
    determiner d
    np-head n))
 
-(define-phrase np_quant-head_of-comp (quant comp)  ; used by Quantifier-of lowering AP
-  (np
-     quantifier quant
-     of-complement comp ))
-
 (define-phrase percent (amount n)
   (np
    percent amount
    np-head n))
 
-(define-phrase partitive (det n)
+(define-phrase partitive (quant n)
   (np
-   quantifier det
+   quantifier quant
    of-complement n))
 
 ;;-- motivated by dates
