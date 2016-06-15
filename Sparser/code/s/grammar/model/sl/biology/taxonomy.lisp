@@ -538,6 +538,15 @@
   for 'liquid chromatography', etc. that may be the basis
   of the grammar patterns.")
 
+(define-category immune-method :specializes bio-method
+  :binds ((antibody antibody)
+	  (tested-for bio-chemical-entity))
+  :realization
+  (:with antibody
+	 :via antibody
+	 :for tested-for))
+
+
 (define-category bio-event :specializes bio-process
   :mixins (has-UID has-name biological)
   :binds ((process bio-process))
@@ -717,8 +726,6 @@
 				    :m site
                                     ))
 
-
-(define-mixin-category protein-method :specializes bio-method)
 
 ;; grounds "encode"
 (define-category gene :specializes bio-entity ;;// case in point
@@ -988,9 +995,11 @@
   ;; the part of an antigen that is recognized by the immune system
   :realization (:noun "epitope"))
 
+(define-category cell-entity :specializes physical-object
+		 :mixins (biological has-name))
 
 
-(define-category cell-line :specializes bio-entity
+(define-category cell-line :specializes cell-entity
   :instantiates self
   :binds ((with-protein protein))	 
   :realization (:common-noun name)
@@ -1001,7 +1010,7 @@
                        :slots `(:with with-protein))
 
 
-(define-category cell-type :specializes bio-entity
+(define-category cell-type :specializes cell-entity
   :realization (:noun "cell type" ))
 
 ;; used in biopax
@@ -1160,7 +1169,7 @@ the aggregate across the predicate it's in. |#
 
 (def-synonym residue-on-protein
              (:noun "position"))
-(def-synonym residue-on-protein
+(def-synonym amino-acid
              (:noun "amino acid"))
 
 

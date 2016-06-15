@@ -131,7 +131,7 @@
   :realization
   (:verb "die" :etf (sv)))
 
-(define-category compensate :specializes other-bio-process ;; actually organism process
+(define-category compensate :specializes other-bio-process
   :binds ((alternate biological))
   :realization
   (:verb "compensate" :etf (sv)
@@ -142,32 +142,30 @@
   (:verb "convince"
          :noun "conviction" :etf (svo-passive)))
 
-(define-category improve :specializes bio-method ;; actually organism process
+(define-category improve :specializes bio-method
   :realization
   (:verb "improve" :etf (svo-passive)))
 
-(define-category learning :specializes bio-method ;; actually organism process, also a bio-rhetorical11
+(define-category learning :specializes bio-rhetorical
   :realization
   (:verb "learn" :etf (sv)))
 
-(define-category isolate :specializes bio-method ;; actually organism process
+(define-category isolate :specializes bio-method
   :binds ((background biological))
   :realization
   (:verb "isolate" :etf (svo-passive)
          :from background))
 
-(define-category immunoblot :specializes bio-method ;; actually organism process
+(define-category immunoblot :specializes immune-method
   :binds ((object bio-entity)
 	  (tested-for bio-chemical-entity))
   :realization
   (:verb "immunoblot" :etf (svo-passive)
-	 :o object
-         :for tested-for))
+	 :noun "immunoblotting"
+         :for tested-for
+	 ))
 
-
-
-
-(define-category lyse :specializes bio-method ;; actually organism process
+(define-category lyse :specializes bio-method
   :realization
   (:verb "lyse" :etf (svo-passive)))
 
@@ -546,15 +544,12 @@
             (:verb "convert" :etf (svo-passive)))
 
 
-(define-category coimmunoprecipitate :specializes bio-method
-  :binds ((origin bio-location)
-          (antibody bio-entity))
+(define-category coimmunoprecipitate :specializes immune-method
+  :binds ((origin bio-location))
   :realization 
   (:verb "coimmunoprecipitate" :noun "coimmunoprecipitation"
          :etf (svo-passive) 
-         :from origin
-         :with antibody
-         :via antibody))
+         :from origin))
 
 (define-category compare :specializes bio-method
   :binds ((comparator biological)
@@ -782,7 +777,7 @@
 	   :noun "description"
 	   :etf (svo-passive)))
 
-(define-category detect :specializes bio-method
+(define-category detect :specializes immune-method ;; not only, but should allow for antibodies
     :realization
     (:verb "detect" ;; keyword: ENDS-IN-ED 
 	   :noun "detection"
@@ -1049,6 +1044,7 @@
 (define-category gene-transcript-express :specializes caused-bio-process
     :binds ((location bio-location)
             (from biological))
+    :restrict ((agent (:or bio-entity cell-line)))
     :realization
     (:verb "express"
 	   :noun "expression"
@@ -1201,6 +1197,7 @@
 
 
 (define-category identify :specializes bio-method
+    :mixins (immune-method)
     :binds ((to-be biological)
             (method bio-method))
     :realization
@@ -1217,15 +1214,12 @@
   (:verb "illustrate"
          :etf (svo-passive)))
 
-(define-category immunoprecipitate :specializes bio-method
-  :binds ((origin bio-location)
-          (antibody bio-entity))
+(define-category immunoprecipitate :specializes immune-method
+  :binds ((origin bio-location))
   :realization 
   (:verb "immunoprecipitate" :noun "immunoprecipitation"
          :etf (svo-passive)
-         :from origin
-         :with antibody
-         :via antibody))
+         :from origin))
 
 
 (define-category impact :specializes bio-relation
@@ -1791,7 +1785,7 @@
 
 
 (define-category raise :specializes positive-bio-control
-    :binds ((object (:or bio-process bio-abstract  bio-rhetorical)) 
+    :binds ((object (:or bio-process bio-abstract  bio-rhetorical antibody)) 
             (method bio-method)
             (bio biological))
     :realization
@@ -2254,7 +2248,7 @@
 
 
 (define-category treatment :specializes bio-method
-  :restrict ((object (:or species cell-line cell-type))) ;; the variable "disease" specializes "object" and has special prepositions
+  :restrict ((object (:or species cell-entity))) ;; the variable "disease" specializes "object" and has special prepositions
   :binds ((treatment biological)
 	  (disease disease)
           (modifier (:or bio-predication modifier)))
