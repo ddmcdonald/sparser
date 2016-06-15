@@ -46,6 +46,17 @@
 
 (in-package :sparser)
 
+;; new rule for numbered items -- needs review
+(def-syntax-rule (np number)   ;; should be allowable as a form rule
+  :form np
+  :head :left-edge
+  :referent (:function make-ordinal-item right-edge left-edge))
+
+(def-form-rule (np hyphenated-number)  
+  :form np
+  :head :left-edge
+  :referent (:function make-ordinal-item right-edge left-edge))
+
 ;;--- S
 
 (def-syntax-rule (modal subordinate-clause)
