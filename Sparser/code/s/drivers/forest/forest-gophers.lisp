@@ -244,34 +244,28 @@
   (let ((daughter (edge-right-daughter edge)))
     (when daughter
       (cond
-       ((edge-p daughter)
-        (walk-down-right-headline daughter))
-       ((symbolp daughter)
-        (cond
-         ((eq daughter :digit-based-number) 
-          nil)
-         ((eq daughter :single-term)
-          edge)
-         ((eq daughter :single-digit-sequence)
-          edge)
-         ((eq daughter :literal-in-a-rule)
-          edge)
-         ((eq daughter :context-sensitive)
-          edge)
-         ((eq daughter :long-span)
-          (let ((constituents (edge-constituents edge)))
-            (unless constituents (error "no constituents on long span ~a" edge))            
-            (let ((last-constituent (car (last constituents))))
-              (etypecase last-constituent
-                (word nil)
-                (edge
-                 (if (eq (edge-right-daughter last-constituent) :single-term)
-                   last-constituent
-                   (walk-down-right-headline last-constituent)))))))
-         (t (push-debug `(,edge ,daughter))
-            (error "Unexpected symbol in headline walk: ~a" daughter))))
-       (t (push-debug `(,edge ,daughter))
-          (error "Unexpected case in headline walk: ~a" daughter))))))
+	((edge-p daughter)
+	 (walk-down-right-headline daughter))
+	((symbolp daughter)
+	 (case daughter
+	   ((:digit-based-number :single-term :single-digit-sequence
+				 :literal-in-a-rule :context-sensitive
+				 :morphology-based-edge)
+	    edge)
+	   (:long-span
+	    (let ((constituents (edge-constituents edge)))
+	      (unless constituents (error "no constituents on long span ~a" edge))            
+	      (let ((last-constituent (car (last constituents))))
+		(etypecase last-constituent
+		  (word nil)
+		  (edge
+		   (if (eq (edge-right-daughter last-constituent) :single-term)
+		       last-constituent
+		       (walk-down-right-headline last-constituent)))))))
+	   (t (push-debug `(,edge ,daughter))
+	      (error "Unexpected symbol in headline walk: ~s" daughter))))
+	(t (push-debug `(,edge ,daughter))
+	   (error "Unexpected case in headline walk: ~s" daughter))))))
 
 
 (defun find-copular-vp (vp-edges)
