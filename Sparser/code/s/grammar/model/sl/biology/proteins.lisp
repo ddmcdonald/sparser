@@ -1802,7 +1802,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "NGLY1_HUMAN" ("fmk" "Peptide-N(4)-(N-acetyl-beta-glucosaminyl)asparagine amidase" "PNGase" "hPNGase" "N-glycanase 1" "Peptide:N-glycanase")) 
 (define-protein "NIBL1_HUMAN" ("FAM129B" "MINERVA" "Meg-3" "C9orf88")) 
 (define-protein "NICA_HUMAN" ("NCSTN" "KIAA0253")) 
-(define-protein "NIP7_HUMAN" ("kd" "60S ribosome subunit biogenesis protein NIP7 homolog" "KD93")) 
+(define-protein "NIP7_HUMAN" ("60S ribosome subunit biogenesis protein NIP7 homolog" "KD93")) 
 (define-protein "NIPA3_HUMAN" ("nipa" "Magnesium transporter NIPA3" "NIPA-like protein 1" "Non-imprinted in Prader-Willi/Angelman syndrome region protein 3")) 
 (define-protein "NIPS1_HUMAN" ("NipSnap1" "NIPSNAP1")) 
 (define-protein "NIPS2_HUMAN" ("NipSnap2" "GBAS" "NIPSNAP2")) 
