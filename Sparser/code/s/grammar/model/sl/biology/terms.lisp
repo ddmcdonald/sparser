@@ -306,7 +306,6 @@
 (noun "Xenopus" :super species)
 (noun "zebrafish" :super species)
 
-(noun "immunoblotting" :super bio-method)
 (noun "sequential immunoblotting" :super bio-method)
 (noun "immunofluorescence" :super bio-method)
 
@@ -366,7 +365,6 @@
 (adj "anti" :super bio-predication)
 
 (define-category antibody :specializes protein
-  :mixins (protein-method) ;; just to say that this is a bio-method
   :binds ((antigen molecule))
   :realization
   (:noun "antibody"
@@ -919,7 +917,9 @@
      (:noun "site"
       :m process
       :m residue
-      :m kinase-or-substrate
+      :m kinase
+      :m substrate
+      ;;:m kinase-or-substrate
       :of process
       :for process
       :in substrate
@@ -1118,7 +1118,9 @@
 (define-unit-of-measure "nM")
 (define-unit-of-measure "nm")
 (define-unit-of-measure "mm")
+(define-unit-of-measure "kD")
 #+ccl (define-unit-of-measure "μm")
+#+sbcl (define-unit-of-measure "μm")
 ;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
 
 (define-unit-of-measure "kb")
