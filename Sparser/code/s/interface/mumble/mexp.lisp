@@ -171,11 +171,10 @@ named parameters."
 (defun prepositional-location (prep object &key context)
   "E.g., on the table."
   (check-type prep symbol) ; (member in on to)
-  (let* ((pp (or (get-lexicalized-phrase prep)
-                 (prep (string-downcase (symbol-name prep)))))
-         (dtn (make-dtn :referent object
-                        :resource pp)))
-    (make-complement-node 'p (find-word prep) dtn)
+  (let* ((pname (string-downcase (symbol-name prep)))
+         (pp (or (get-lexicalized-phrase prep) (prep pname)))
+         (dtn (make-dtn :referent object :resource pp)))
+    (make-complement-node 'p (word-for-string pname 'prep) dtn)
     (make-complement-node 'prep-object object dtn)
     (values dtn context)))
 
