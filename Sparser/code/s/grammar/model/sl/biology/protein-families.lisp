@@ -85,6 +85,7 @@
             :members ("PI3K")
   :synonyms ("phosphatidylinositol-4,5-bisphosphate 3-kinase"
              "phosphatidylinositide 3-kinase"
+	     "phosphatidylinositol 3-kinase"
              "phosphatidylinositol-3-kinase"
              "PI 3-kinase"
              "PI(3)K"
