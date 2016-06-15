@@ -69,23 +69,27 @@
   `(svo/bio/expr ,verb))
 
 (defun svo/bio/expr (verb)
+  (declare (special category::bio-process))
   (when (word-p verb) 
     ;; came in from setup-verb
     (setq verb (word-pname verb)))
-  (let* ((category-name (intern (string-upcase verb)
-                                (find-package :sparser)))
-         (form (unless (category-named category-name)
-                 ;; having some difficulty with redefining verb "leave",
-                 ;; and then redefining the category
-                 `(def-term ,category-name
+  (let ((category-name (intern (string-upcase verb)
+                               (find-package :sparser))))
+    (when (category-named category-name) ;; e.g. 'time
+      ;; had some difficulty with redefining verb "leave",
+      ;; and then redefining the category
+      (setq category-name
+            (construct-disambiguating-category-name
+             category-name category::bio-process)))
+
+    (let* ((form `(def-term ,category-name
 		     :verb ,verb 
                      :etf (svo-passive)
                      :super-category bio-process
-                     :slots (:s subject :o object)))))
-    (when form
-      (let ((category (eval form)))
-        (note-permanence-of-categorys-individuals category)
-        category))))
+                     :slots (:s subject :o object)))
+           (category (eval form)))
+      (note-permanence-of-categorys-individuals category)
+      category)))
 
 
 ;;; Verbs added temporarily for Localization articles -- to be reviewed and corrected
