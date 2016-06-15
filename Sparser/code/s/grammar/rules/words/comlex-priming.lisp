@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2014 David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2010-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  0.23October 2014
+;;;  Version:  October 2016
 
 ;; Extracted from one-offs/comlex 12/3/12.
 ;; 0.1 (8/12/13) Wrapped the eval of the def-word expression in an
@@ -41,6 +41,7 @@
 ;; Comlex verb data.   As part of that, figure out what happens if
 ;; we've already expanded the word (e.g. via /dossiers/irregular-verbs)
 ;; when we want to fold it into the realization of a category.
+
 (defun prime-comlex ()
   ;; called from load-the-grammar, gated by *incorporate-generic-lexicon*
   (establish-version-of-def-word :comlex)
