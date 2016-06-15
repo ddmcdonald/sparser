@@ -128,14 +128,14 @@
   (clause :set-state (:aux-state initial)
     subject s  :additional-labels (nominative)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v)))
 
 (define-phrase SVO-SIMPLE-PASSIVE-for-inf (s v)
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (for-subject objective)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v)))
 
 (define-phrase SVO-SIMPLE-PASSIVE-subj-rel (wh s v)
@@ -143,7 +143,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v)))
 
 
@@ -152,14 +152,14 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v)))
 
 (define-phrase S-V-DO-SIMPLE-PASSIVE (s v do)
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		direct-object do
 		  :additional-labels (objective))))
@@ -169,7 +169,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		direct-object do
 		  :additional-labels (objective))))
@@ -179,7 +179,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		direct-object do
 		  :additional-labels (objective))))
@@ -189,7 +189,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (for-subject objective)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		direct-object do
 		  :additional-labels (objective))))
@@ -199,7 +199,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		direct-object do :additional-labels (objective))))
 
@@ -208,7 +208,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		direct-object do
 		  :additional-labels (objective))))
@@ -623,7 +623,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative) 
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (for-dative objective))))
 
@@ -633,7 +633,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (for-dative objective))))
 
@@ -643,7 +643,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (for-dative objective))))
 
@@ -652,7 +652,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (for-subject objective)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (for-dative objective) )))
 
@@ -662,7 +662,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (for-dative objective))))
 
@@ -672,7 +672,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (for-dative))))
 
@@ -750,7 +750,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative) 
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (to-dative objective))))
 
@@ -760,7 +760,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (to-dative objective))))
 
@@ -770,7 +770,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (to-dative objective))))
 
@@ -779,7 +779,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (for-subject objective)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (to-dative objective) )))
 
@@ -789,7 +789,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (to-dative objective))))
 
@@ -799,7 +799,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		indirect-object io :additional-labels (to-dative))))
 
@@ -891,7 +891,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		verb "be"
+		verb ("be" verb)
 		complement-of-be c
 		:additional-labels (objective))))
 
@@ -900,7 +900,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		verb "be"
+		verb ("be" verb)
 		complement-of-be c
 		:additional-labels (objective))))
 
@@ -909,7 +909,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		verb "be"
+		verb ("be" verb)
 		complement-of-be c
 		:additional-labels (objective))))
 
@@ -918,7 +918,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		verb "be"
+		verb ("be" verb)
 		complement-of-be c
 		:additional-labels (objective))))
 
@@ -927,7 +927,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		verb "be"
+		verb ("be" verb)
 		complement-of-be c
 		:additional-labels (objective))))
 
@@ -1052,7 +1052,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		inf-comp c)))
 
@@ -1062,7 +1062,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		inf-comp c)))
 
@@ -1071,7 +1071,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 	       inf-comp c)))
 
@@ -1079,7 +1079,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (for-subject objective)
     predicate (vp
-		be+en  "be"
+		be+en  ("be" verb)
 		verb v
 		inf-comp c)))
 
@@ -1323,7 +1323,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v
 		prepcomp (pp
 			   prep pr
@@ -1336,7 +1336,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v
 		prepcomp (pp
 			   prep pr
@@ -1349,7 +1349,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v	
 		prepcomp (pp
 			   prep pr
@@ -1361,7 +1361,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v
 		prepcomp (pp
 			   prep pr
@@ -1373,7 +1373,7 @@
   (clause :set-state (:aux-state initial)
     subject s :additional-labels (nominative)
     predicate (vp
-		be+en "be"
+		be+en ("be" verb)
 		verb v
 		prepcomp (pp
 			   prep pr
@@ -2021,9 +2021,9 @@
 
 (define-phrase There-be-s-comp (s c)
   (clause :set-state (:aux-state initial)
-    subject "there"
+    subject ("there" pronoun)
     predicate (vp
-               verb "be"
+               verb ("be" verb)
                subject s :additional-labels (nominative) ;;?? objective ??
                complement-of-be c
 		 :additional-labels (objective))))
@@ -2035,9 +2035,9 @@
 ;; This is a cat
 (define-phrase There-be-s (s)
   (clause :set-state (:aux-state initial)
-    subject "there"
+    subject ("there" pronoun)
     predicate (vp
-               verb "be"
+               verb ("be" verb)
                subject s :additional-labels (nominative)))) ;;?? objective ??
 
 

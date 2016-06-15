@@ -345,8 +345,11 @@ a message to be expressed. See discussion in make.lisp |#
     (unless phrase
       (break "There is no surface phrase named ~a" phrase-name))
     (let* ((phrase-parameters (mumble::parameters-to-phrase phrase))
+           (pos (ecase (car argument-names)
+                  (n 'noun)
+                  (v 'verb)))
            (words (loop for string in word-strings
-                    collect (word-for-string string))));; defaults to noun
+                        collect (word-for-string string pos))))
       (let ((copy-of-words (copy-list words))
             (copy-of-args (copy-list argument-names))
             open bound)
