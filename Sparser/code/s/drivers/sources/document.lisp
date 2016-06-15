@@ -205,7 +205,7 @@
   (install-contents s)
   (when *show-section-printouts*
     (format t "~&~%--------- starting section ~a~%" s))
-  (multiple-value-bind (title paragraphs) ;; multiple-titles?
+  (multiple-value-bind (title paragraphs)
       (extract-titles-from-other-elements (children s))
     (let* ((*current-section* s)
            (paragraph (car paragraphs))

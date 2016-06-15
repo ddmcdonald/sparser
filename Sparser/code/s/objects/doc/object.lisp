@@ -95,6 +95,7 @@
    title-text objects into a single new object.
    Returns the (possibly merged) title and the other,
    non-title elements."
+  (declare (special *sentence-making-sweep*))
   (let* ((titles (loop for e in doc-elements
                    when (typep e 'title-text)
                     collect e))
@@ -117,7 +118,12 @@
 
     ;; (run-an-article :id "3640864" :corpus :localization :epi nil :read nil)
     (when multiple?
-      (replace-title-text-in-multiples title titles))
+      (when *sentence-making-sweep*
+        (let ((parent (replace-title-text-in-multiples
+                       title ;; newly created, merged title
+                       titles))) ;; originals to excise
+          (push-debug `(,parent ,titles ,title))
+          #+ignore(lsp-break "parent's children: ~a" (children parent)))))
 
     (when title
       (cond
@@ -203,7 +209,9 @@
          (daughters (children parent)))
     (loop for tt in tt-to-remove
        do (setq daughters (remove tt daughters)))
-    (setf (children parent) (cons replacement daughters))))
+    #+ignore(lsp-break "daughters = ~a" daughters)
+    (setf (children parent) (cons replacement daughters))
+    parent))
 
 (defun remove-title-text-from-document (tt)
   (let* ((parent (parent tt))
