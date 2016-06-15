@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  December 2015
+;;;  Version:  June 2016
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -288,7 +288,6 @@
   the corresponding individual. Also see reify-implicit-
   individuals-in-segment, which has the same mission just
   with more explicit cases, which has proved tedious to debug.")
-
 
 (defparameter *edge-for-unknown-words* t
   "This switch dictates whether or not we create a category,
