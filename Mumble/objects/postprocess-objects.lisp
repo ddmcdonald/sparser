@@ -702,28 +702,25 @@ possessive."
 
     
 (defun parse-phrase (definition)
-  (let (processed-phrase
-	(rest-of-phrase definition))
+  (let (processed-phrase (rest-of-phrase definition))
     (declare (special processed-phrase rest-of-phrase))
-
-  (let ((node (pop rest-of-phrase)))
-    (push (node-label-named node) processed-phrase)
-    (postprocess-position-keywords 'node-label)
-    (do ((slot (pop rest-of-phrase) (pop rest-of-phrase)))
-	((null rest-of-phrase))
-      (push (slot-label-named slot) processed-phrase)
-      (let* ((contents (pop rest-of-phrase))
-	     (postprocessed-contents
-	       (typecase contents
-		 (string (word-for-string contents))
-		 (symbol
-		   (parameter-named contents))
-		 (cons  (parse-phrase contents))
-		 (otherwise
-		   (mbug "unknown type of contents - ~a" contents)))))
-	(push postprocessed-contents processed-phrase))
-      (postprocess-position-keywords 'slot-label)))
-  (nreverse processed-phrase)))
+    (let ((node (pop rest-of-phrase)))
+      (push (node-label-named node) processed-phrase)
+      (postprocess-position-keywords 'node-label)
+      (do ((slot (pop rest-of-phrase) (pop rest-of-phrase)))
+          ((null rest-of-phrase))
+        (push (slot-label-named slot) processed-phrase)
+        (let* ((contents (pop rest-of-phrase))
+               (postprocessed-contents
+                (etypecase contents
+                  (symbol (parameter-named contents))
+                  (string (word-for-string contents))
+                  ((cons string (cons symbol null))
+                   (word-for-string (car contents) (cadr contents)))
+                  (cons (parse-phrase contents)))))
+          (push postprocessed-contents processed-phrase))
+        (postprocess-position-keywords 'slot-label)))
+    (nreverse processed-phrase)))
 
 
  
