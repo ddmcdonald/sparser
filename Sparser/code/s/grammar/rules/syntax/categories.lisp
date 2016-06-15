@@ -404,7 +404,8 @@
     ;; not sure about these -- think of "the largest" as an NP
     ;; CATEGORY::COMPARATIVE -- this causes problems with MORE
     CATEGORY::SUPERLATIVE
-    CATEGORY::NUMBER ;; 'HOW many do you want? I want 3'
+    ;; CATEGORY::NUMBER ;; 'HOW many do you want? I want 3'
+    ;; need to handle this case specially, but want numbers to be post-modifiers...
     CATEGORY::POST-ORDINAL ;; But only for roman numerals
     CATEGORY::THAT
     CATEGORY::NP
@@ -515,6 +516,15 @@
 	    ;; SBCL caught an error here -- led to simplification to use pos-terminal
 	    (word-symbol (pos-terminal (pos-edge-ends-at e)))
 	    '(WORD::|that| WORD::|which| WORD::|whose|))))))
+      ((and (eq (edge-form e) category::number)
+	    (or (not (boundp '*chunk*))
+		(null *chunk*)
+		(null (cdr (chunk-ev-list *chunk*)))
+		(and
+		 (category-p (edge-form (car (ev-edges (second (chunk-ev-list *chunk*))))))
+		(member (cat-name (edge-form (car (ev-edges (second (chunk-ev-list *chunk*))))))
+			'(quantifier det)))))
+       t)		
       ((ng-head? (edge-form e)) t)
       ((and
 	(eq category::det (edge-form e))
