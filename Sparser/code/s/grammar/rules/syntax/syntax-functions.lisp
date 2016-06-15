@@ -105,6 +105,14 @@
     ;; Used to explicitly mark the type of an individual
     ;; created to anchor segments created by DM&P rather
     ;; than core conceptualizations and incorporated sublanguages
+  'ordinal ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
+    ;; Used to explicitly mark the type of an individual
+    ;; created to anchor segments created by DM&P rather
+    ;; than core conceptualizations and incorporated sublanguages
   'appositive-description ;; name
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
@@ -351,7 +359,7 @@
       (itypep head 'bio-abstract) ;; we quantify abstract items like "group"
       (itypep head 'quality)	 ;; we quantify qualities "some level"
       (itypep head 'biological)) ;; we quantify things like "such models"
-     (setf (non-dli-mod-for head) (list 'quantifier quantifier))
+     (setf  (non-dli-mod-for head) (list 'quantifier quantifier))
      ;; don't use KRISP variables for quanitifiers -- put them in the mention
      ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
      )
@@ -572,23 +580,24 @@
 
 (defparameter *adverb+vg* nil)
 
-(defun interpret-adverb+verb (adverb vg) 
+(defun interpret-adverb+verb (adverb vg-phrase) 
   (declare (special category::deictic-location category::pp))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   ;; "direct binding" has a specitif meaning
   ;;/// so there should be a compose method to deal with that
 
   ;; default
-  (setq vg (individual-for-ref vg))
-  #|need to diagnose among
-  (time)
-  (location)
-  (purpose)
-  (circumstance)
-  (manner)
-  (aspect . tense/aspect)
-  BUT UNTIL THEN, JUST BIND THE ADVERB
-  |#
+  (let
+      ((vg (individual-for-ref vg-phrase)))
+    #|need to diagnose among
+    (time)
+    (location)
+    (purpose)
+    (circumstance)
+    (manner)
+    (aspect . tense/aspect)
+    BUT UNTIL THEN, JUST BIND THE ADVERB
+    |#
   #+ignore
   (push (list (edge-string (left-edge-for-referent))
               (edge-string (right-edge-for-referent)))
@@ -602,10 +611,10 @@
      nil)
     (*subcat-test*
      (cond
-       ((vg-has-adverb-variable? vg) t)
+       ((vg-has-adverb-variable? vg vg-phrase adverb) t)
        ((and
 	 (itypep vg 'collection)
-	 (vg-has-adverb-variable? (car (value-of 'items vg))))
+	 (vg-has-adverb-variable? (car (value-of 'items vg)) vg-phrase adverb))
 	t)
        (t
 	(break "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
@@ -615,9 +624,9 @@
 	nil)))
     ((itypep vg 'collection)
      (bind-dli-variable 'adverb adverb vg))
-    ((vg-has-adverb-variable? vg)
+    ((vg-has-adverb-variable? vg vg-phrase adverb)
      (setq  vg (bind-dli-variable 'adverb adverb vg)))
-    (t vg)))
+    (t vg))))
 
 (defun interpret-as-comp (as vp+ed)
   (declare (ignore as))
@@ -640,7 +649,7 @@
       (setq  vp (bind-dli-variable variable-to-bind as-comp vp))
       vp))))
 
-(defun vg-has-adverb-variable? (vg)
+(defun vg-has-adverb-variable? (vg vg-phrase adverb)
   (cond
    ((individual-p vg)
      (loop for category in (indiv-type vg)
@@ -649,7 +658,10 @@
     ((referential-category-p vg)
      (find-variable-for-category 'adverb vg))
     (t
-     (lsp-break "what type of thing is the vg ~s" vg))))
+     (error "Trying to add adverb to verbal element whose semantics won't take ~s.~% Semantics is ~s, ~%surface string is ~s"
+	    adverb
+	    vg-phrase
+	    (sur-string vg)))))
 
 
 
@@ -1340,6 +1352,8 @@
 	   (when (and *note-ambiguity* (consp variable))
 	     (format t "~%ambiguous subcats for attaching ~s to ~s with ~s:~%   ~s~%"
 		     item  head  label variable)
+	     (when (itypep item 'number)
+	       (lsp-break "number ambiguity"))
 	     (setq variable (car variable)))
 	   variable ))))))
 
@@ -1478,6 +1492,10 @@
       (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
        category::prepositional-phrase
        `((prep ,prep) (pobj ,pobj)))))
+
+(defun make-ordinal-item (ordinal item)
+  (setf (non-dli-mod-for item) (list 'ordinal ordinal))
+  item)
 
 (defun make-subordinate-clause (conj clause)
   (bind-dli-variable 'subordinate-conjunction conj clause))
