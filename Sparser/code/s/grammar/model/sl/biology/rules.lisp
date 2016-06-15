@@ -126,6 +126,12 @@
              :with (amino-acid left-edge
                     position right-edge)))
 
+(def-cfr residue-on-protein (amino-acid hyphenated-number)
+  :form proper-noun
+  :referent (:instantiate-individual residue-on-protein
+             :with (amino-acid left-edge
+                    position right-edge)))
+
 ;; "Lys residues"
 (def-cfr residue-on-protein (amino-acid residue-on-protein)
   :form n-bar
