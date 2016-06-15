@@ -173,16 +173,10 @@
 ;; the code in morphology just as its used by ETF.
 
 (defun setup-common-noun (word &optional comlex-clause ambiguous?)
-  ;;(push-debug `(,word ,comlex-clause ,ambiguous?)) (lsp-break "setup noun")
   (let ((marked-plural
          (when comlex-clause (explicit-plurals comlex-clause)))
         (category-name (name-to-use-for-category word))
         (super-category (super-category-for-POS :noun)))
-    ;;/// refactor to detect plural=*none* and set
-    ;;  *inihibit-constructing-plural*
-    ;(when marked-plural
-    ;  (push-debug `(,word ,marked-plural ,comlex-clause))
-    ;  (lsp-break "really plural? ~s" marked-plural))
     (when ambiguous?
       (setq category-name
             (construct-disambiguating-category-name
@@ -201,11 +195,6 @@
                                                    :instantiates :self))))
           (rs (rule-set-for word)))
 
-      #+ignore(when rs
-        (push-debug `(,rs))
-        (describe rs)
-        (lsp-break "word already has rule set"))
-
       (let ((rules (make-cn-rules/aux
                     word
                     category ;; lhs
@@ -222,7 +211,6 @@
 (defparameter *show-R3-new-verb-definitions* nil)
 (defun show-new-verb-definitions ()
   (setq *show-R3-new-verb-definitions* t))
-
 (defun dont-show-new-verb-definitions ()
   (setq *show-R3-new-verb-definitions* t))
 
@@ -230,18 +218,16 @@
   (declare (special *big-mechanism*))
   (when *big-mechanism*
     (when *show-R3-new-verb-definitions*
-      (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, assuming it is a bio-verb~&" word))
+      (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, ~
+                 assuming it is a bio-verb~&" word))
     (when (and (find-form-cfr word category::common-noun)
-               ;; words defined ambiguously by COMLEX, and not previously defined as a noun
+               ;; words defined ambiguously by COMLEX, and not previously
+               ;; defined as a noun
                (not ambiguous?))
       ;; 2/16/16 fires on "immunoblot" in doc #10 of the localization set.
-      ;;(lsp-break "~&don't introduce a verb conflicting with a known noun ~s~&" word)
       (return-from setup-verb nil))
-    (let ((rs (rule-set-for word)))      
-      #+ignore(when rs (push-debug `(,rs))(lsp-break "Already has a rule-set: ~a" word))
-      (svo/bio/expr word)
-      #+ignore(when rs (push-debug `(,word))(lsp-break "Afterwards")))
-    (return-from setup-verb nil))
+    (svo/bio/expr word)
+    (return-from setup-verb word))
 
   (when (stringp word)
     (setq word (resolve/make word)))
