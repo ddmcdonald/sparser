@@ -892,7 +892,8 @@
   (let* ((length (length pname))
          (last-letter (elt pname (1- length)))
          (2d-to-last (elt pname (- length 2)))
-         (3d-to-last (elt pname (- length 3)))
+         (3d-to-last (when (>= length 3) ;; "ax"
+                       (elt pname (- length 3))))
          (ends-in-a-consonant? (consonant? last-letter))
          (number-of-vowels (count-vowels pname))
          (double nil))
