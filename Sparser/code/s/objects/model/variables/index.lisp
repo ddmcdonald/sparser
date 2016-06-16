@@ -147,8 +147,10 @@
     (unless (setq v (find-variable-in-category name-symbol category))
       (setq v (make-disjunctive-lambda-variable
 	       :name name-symbol
+	       :variables vars
 	       :value-restriction (intersection-of-vrs vars category)
 	       :category (find-super-category-with-variables category vars))))
+    v
     ))
 
 (defun find-super-category-with-variables (category vars)
@@ -164,17 +166,17 @@
 
 (defun local-v/r-for (var category)
   (var-value-restriction
-   (find-variable-for-category (var-name (car vars)) category)))
+   (find-variable-for-category (var-name var) category)))
 
 (defun intersect-v/rs (vr1 vr2)
   (cond
     ((and (consp vr1) (eq (car vr1) :or))
      (cond
        ((and (consp vr2) (eq (car vr2) :or))
-	(let (vr
-	      (loop for v1 in (cdr vr1)
-		    when (loop for v2 in (cdr vr2) thereis (or (eq v1 v2) (itypep v1 v2)))
-		    collect v1))
+	(let ((vr
+	       (loop for v1 in (cdr vr1)
+		  when (loop for v2 in (cdr vr2) thereis (or (eq v1 v2) (itypep v1 v2)))
+		  collect v1)))
 	  (if (cdr vr) (cons :or vr) (car vr))))
        ((loop for v1 in (cdr vr1) thereis (or (eq v1 vr2) (itypep vr2 v1)))
 	vr2)))

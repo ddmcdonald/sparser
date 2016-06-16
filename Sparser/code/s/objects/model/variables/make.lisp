@@ -68,7 +68,7 @@
       ((member v bindings))
       (t (tail-cons v bindings)))
 
-    (register-var-name-to-category-list (var-name name-symbol v) v category)
+    (register-var-name-to-category-list (var-name v) v category)
 
     v))
       

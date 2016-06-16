@@ -38,7 +38,7 @@
   shadow ;; instance for use in k-methods
   )
 
-(defstruct (disjunctive-variable
+(defstruct (disjunctive-lambda-variable
 	     (:include lambda-variable)
 	     (:conc-name #:dvar-)
 	     (:print-function print-disjunctive-lambda-variable-structure))

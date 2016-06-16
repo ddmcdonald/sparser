@@ -911,7 +911,7 @@
   :binds ((process bio-process)
           (kinase protein)
 	  (substrate protein)
-	  (kinase-or-substrate protein)
+	  ;;(kinase-or-substrate protein)
           (residue residue-on-protein))
   :realization
      (:noun "site"
@@ -1072,6 +1072,7 @@
 (def-cell-line "MM415")
 (def-cell-line "MM485")
 (def-cell-line "OUMS-23")
+(def-cell-line "PC12") ;; want to get effect of  :synonyms ("PC 12") as well
 (def-cell-line "RPMI-7951")
 (def-cell-line "SkMel24")
 (def-cell-line "SkMel28")

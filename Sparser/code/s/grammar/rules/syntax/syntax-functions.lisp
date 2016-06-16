@@ -1230,18 +1230,20 @@
 
 (defparameter *trivial-subcat-test* nil)
 (defparameter *tight-subcats* nil)
-(defparameter *note-ambiguity* nil)
 (defparameter *dups* nil)
 
+(defparameter *ambiguous-variables* nil)
+
+
 (defun show-ambiguities ()
-  (setq *note-ambiguity* (list nil))
+  (setq *ambiguous-variables* (list nil))
   (compare-to-snapshots)
   (display-subcat-ambiguities))
 
 
 (defun display-subcat-ambiguities ()
   (np (setq *dups*
-            (sort *note-ambiguity* #'string<
+            (sort *ambiguous-variables* #'string<
                   :key #'(lambda(x)(if (individual-p (car x))(cat-name (itype-of (car x))) "")))))
   
   (loop for pat in
@@ -1291,13 +1293,14 @@
     (t
      ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
      ;;/// prep-comp, etc.
-     (let ((subcat-patterns (known-subcategorization? head)))
+     (let ((category (itype-of head))
+	   (subcat-patterns (known-subcategorization? head)))
        (when subcat-patterns
 	 (setq *label* label)
 	 (setq *head* head)
 	 (let ( variable )
 	   (let ((*trivial-subcat-test* nil))
-	     (if (and *note-ambiguity* (not *subcat-test*))
+	     (if (and *ambiguous-variables* (not *subcat-test*))
 		 (let (pats over-ridden)
 		   (loop for pat in subcat-patterns
 		      do
@@ -1326,7 +1329,7 @@
 				    (sentence-string *sentence-in-core*)
 				    (loop for pat in pats collect
 					 (list (subcat-variable pat)(subcat-source pat))))
-			      *note-ambiguity*))
+			      *ambiguous-variables*))
 		      (setq variable (mapcar #'subcat-variable pats)))
 		     (pats
 		      (setq variable (subcat-variable (car pats))))))
@@ -1349,12 +1352,13 @@
 		       (return)))))))
           
 	   ;;(break "testing subcats")
-	   (when (and *note-ambiguity* (consp variable))
+	   (when (and *ambiguous-variables* (consp variable))
+	     (setq variable (define-disjunctive-lambda-variable variable category))
+			     
 	     (format t "~%ambiguous subcats for attaching ~s to ~s with ~s:~%   ~s~%"
 		     item  head  label variable)
-	     (when (itypep item 'number)
-	       (lsp-break "number ambiguity"))
-	     (setq variable (car variable)))
+	     ;;(when (itypep item 'number)  (lsp-break "number ambiguity"))
+	     )
 	   variable ))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
