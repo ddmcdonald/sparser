@@ -489,7 +489,7 @@
 (defmethod ng-head? ((w word))
   nil)
 (defmethod ng-head? ((e edge))
-  (declare (special e))
+  (declare (special *chunk*))
   (when (not (preceding-adverb e))
     (cond
       ((or (plural-noun-and-present-verb? e)
