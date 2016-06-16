@@ -143,7 +143,7 @@
     (loop for n in (cdr vars) do
 	 (setq name-symbol (format nil "~A-OR-~A" name-symbol (var-name n))))
     (setq name-symbol (intern name-symbol))
-    (lsp-break "find/make-disjunctive-lambda-variable-for-category")
+    ;;(lsp-break "find/make-disjunctive-lambda-variable-for-category")
     (unless (setq v (find-variable-in-category name-symbol category))
       (setq v (make-disjunctive-lambda-variable
 	       :name name-symbol
