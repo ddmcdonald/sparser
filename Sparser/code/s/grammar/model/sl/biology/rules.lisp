@@ -183,6 +183,7 @@
   :referent (:head right-edge
              :bind (mutation left-edge)))
 
+#+ignore
 (def-cfr protein (protein number)
   :form NP
   :referent (:head left-edge
