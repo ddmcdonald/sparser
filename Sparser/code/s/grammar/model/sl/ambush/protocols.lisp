@@ -21,12 +21,12 @@
 (define-category answer-is-affirmative
   :instantiates self
   :specializes answer-to-a-question 
-  :realization (:word "affirmative"))
+  :realization (:interjection "affirmative"))
 
 (define-category answer-is-negative
   :instantiates answer-to-a-question 
   :specializes answer-to-a-question 
-  :realization (:word "negative"))
+  :realization (:interjection "negative"))
 
 
 
