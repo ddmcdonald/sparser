@@ -52,7 +52,17 @@
   :head :left-edge
   :referent (:function make-ordinal-item right-edge left-edge))
 
+(def-syntax-rule (proper-noun number)   ;; should be allowable as a form rule
+  :form np
+  :head :left-edge
+  :referent (:function make-ordinal-item right-edge left-edge))
+
 (def-form-rule (np hyphenated-number)  
+  :form np
+  :head :left-edge
+  :referent (:function make-ordinal-item right-edge left-edge))
+
+(def-form-rule (proper-noun hyphenated-number)  
   :form np
   :head :left-edge
   :referent (:function make-ordinal-item right-edge left-edge))
