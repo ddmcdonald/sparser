@@ -83,10 +83,10 @@
 
 (defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent)
   (let* ((clauses  (value-of 'items clause-referent))
-	 (vars (loop for clause in clauses
+	 (vars (loop for c in clauses
 		  collect
 		    (or
-		     (subcategorized-variable clause
+		     (subcategorized-variable c
 					      prep-word
 					      pobj-referent)
 		     ;; otherwise, not all the clauses will accept the PP
@@ -123,7 +123,7 @@
 	 (prep-word (edge-left-daughter prep-edge))
 	 (var-name
 	  (or
-	   (subcategorized-variable left-clause prep-word pobj-referent)
+	   (subcategorized-variable (edge-referent left-clause) prep-word pobj-referent)
 	   (failed-pp-attachment pp left-clause)))
 	 new-left new-items new-interp new-edge)
     (when var-name
