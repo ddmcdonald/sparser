@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2014 David D. McDonald
+;;; Copyright (c) 2010-2016 David D. McDonald
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  June 2014
+;;;  Version:  June 2016
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
@@ -86,25 +86,28 @@ places. ]]
   (continue-unpacking-lexical-entry word entry))
 
 (defun continue-unpacking-lexical-entry (instance-word entry)
-  (let* ((instance-string (word-pname instance-word))
-         (lemma-string (cadr entry))
-         (lemma-word (if (string= (word-pname instance-word)
-                                  lemma-string)
-                       instance-word
-                       (resolve-string-to-word/make lemma-string)))
-         (clauses (cddr entry)))
-    (tr :unpacking lemma-word)
-    (cond
-      ((= (length clauses) 1)
-       (unambiguous-comlex-primed-decoder lemma-word (car clauses)))
-      ((string-equal lemma-string instance-string)
-       (ambiguous-comlex-primed-decoder lemma-word clauses))
-      (t ;; maybe there's a quicker disambiguation based on
-       ;; this irregular form /// or maybe not
-       ;;(or (look-for-and-decode-comlex-irregular instance-string clauses)
-       (ambiguous-comlex-primed-decoder lemma-word clauses)))
-    (push instance-word *comlex-primed-words*)
-    instance-word ))
+  (let ((*source-of-unknown-words-definition* :comlex))
+    (declare (special *source-of-unknown-words-definition*))  
+    (let* ((instance-string (word-pname instance-word))
+           (lemma-string (cadr entry))
+           (lemma-word (if (string= (word-pname instance-word)
+                                   lemma-string)
+                          instance-word
+                          (resolve-string-to-word/make lemma-string)))
+           (clauses (cddr entry)))
+      (tr :unpacking lemma-word)
+      (cond
+        ((= (length clauses) 1)
+         (unambiguous-comlex-primed-decoder lemma-word (car clauses)))
+        ((string-equal lemma-string instance-string)
+         (ambiguous-comlex-primed-decoder lemma-word clauses))
+        (t ;; maybe there's a quicker disambiguation based on
+         ;; this irregular form /// or maybe not
+         ;;(or (look-for-and-decode-comlex-irregular instance-string clauses)
+         (ambiguous-comlex-primed-decoder lemma-word clauses)))
+      (push instance-word *comlex-primed-words*)
+      (add-new-word-to-catalog lemma-word :comlex)
+      instance-word )))
 
 
 (defgeneric standalone-lexicon-unpacker (word)

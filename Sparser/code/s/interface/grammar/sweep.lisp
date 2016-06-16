@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald -- all rights reserved
 ;;;
 ;;;      File:   "sweep"
 ;;;    Module:   interface/grammar/
-;;;   Version:   November 2015
+;;;   Version:   June 2016
 
 ;; Routines for sweeping down through the structure of Krisp referents.
 ;; Initiated 1/11/15 with code from December. 
@@ -188,8 +188,11 @@
 ;   suitable-for-and-in-OBO => setup-word-denoting-an-OBO
 (defun add-new-word-to-catalog (word source)
   (declare (ignore source)) ;; Comlex vs. morphology vs. ...
+  (mark-definition-source word) ;; replaces ignore argument
   (when *collect-new-words*
     (push word *newly-found-unknown-words*)))
+
+
   
 ; (f "/Users/ddm/ws/R3/ws/Mitre December texts/passage 1.txt")
 ; (setq *sweep-for-sentences* t)

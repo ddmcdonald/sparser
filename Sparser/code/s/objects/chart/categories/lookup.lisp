@@ -96,7 +96,8 @@
           (catalog/category category c-symbol)
           (note-file-location category)
           (note-grammar-module category :source source)
-
+          (mark-definition-source word) ;; for morph or comlex sources
+          
           (when *CLOS*  ;; CLOS backing
             (case source
               (:referential) ;; done in decode-category-parameter-list
