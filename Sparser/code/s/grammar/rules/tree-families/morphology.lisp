@@ -769,6 +769,17 @@
   ;; or just counting the number of vowels as a stand-in for syllables
   (>= 4 (length pname)))
 
+(defun count-vowels (pname)
+  "Basic uestion is how many CV's are there as a sort of
+   syllable count. //can observe more features in the 
+   process, like doubled vowels, vowel initial ..."
+  (let ((count 0))
+    (loop for i from 0 to (1- (length pname))
+       as c = (aref pname i)
+       when (vowel? c) do (incf count))
+    count))
+         
+
 
 (defun stem-with-final-consonant/s-stripped (pname)
   (if (= (length pname) 0)
@@ -878,24 +889,53 @@
     
 
 (defmethod ing-form-of-verb ((pname string))
-  (let ((last-letter (elt pname (1- (length pname)))))
+  (let* ((length (length pname))
+         (last-letter (elt pname (1- length)))
+         (2d-to-last (elt pname (- length 2)))
+         (3d-to-last (elt pname (- length 3)))
+         (ends-in-a-consonant? (consonant? last-letter))
+         (number-of-vowels (count-vowels pname))
+         (double nil))
+    ;; http://dictionary.cambridge.org/us/grammar/british-grammar/spelling
 
-    (case last-letter
-      (#\e
-       (setq pname (subseq pname 0 (1- (length pname))))))
+    ;; list the reasong not to double and by default
+    ;; we'll double a final consonant. 
+    (cond
+      ((eql #\e last-letter)
+       (setq pname (subseq pname 0 (1- (length pname))))
+       ;; "ie" => "ying
+       (when (eql 2d-to-last #\i)
+         (setq pname (string-append pname "y"))))
+      
+      ((eql #\w last-letter)) ;; "snow"
+      ((eql #\x last-letter))
+      ((eql #\y last-letter)) ;; "play"
 
-    (when (consonant? last-letter)
-      (when (one-syllable? pname)
-        ;; double the final consonant -- in general it gets
-        ;; doubled whenever the final syllable is stressed,
-        ;; but that's a lot to deduce just from the spelling
-        ;; of the stem, though the two-vowel check helps.
-        (unless (v-of-final-vc-is-two-vowels? pname)
-          (setq pname (string-append
-                       pname
-                       (coerce (list last-letter) 'string))))))
+      (ends-in-a-consonant? ;; something to double
+       (cond
+         ((= 1 number-of-vowels)
+          (cond
+            ((vowel? 2d-to-last) "put" "run" "get"
+             ;; applies to ading "-er", "-en" "-ish"
+             (setq double t))))
+         
+          ((and (vowel? 2d-to-last) (vowel? 3d-to-last))
+           (setq double nil)) ;; "remain" "dream" "need"
+          ((consonant? 2d-to-last)
+           (setq double nil)) ;; "start" "burn"
 
+          ;; when more that one syllable depends on placement
+          ;; of the stress. What resource could provide that?
+          (t
+           (setq double t)))))
+    
+    (when double
+      (setq pname (string-append pname
+                                 last-letter)))
     (string-append pname "ing")))
+
+
+
 
 
 ;(ing-form-of-verb (define-word "describe"))
