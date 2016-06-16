@@ -56,6 +56,21 @@
        name-symbol v category)
 
       v)))
+
+(defun define-disjunctive-lambda-variable (vars category)
+  (let* ((v (find/make-disjunctive-lambda-variable-for-category vars category))
+	 (cat (var-category v))
+	 (bindings (cat-slots category)))
+
+    (cond
+      ((null bindings)
+       (setf (cat-slots category) `(,v)))
+      ((member v bindings))
+      (t (tail-cons v bindings)))
+
+    (register-var-name-to-category-list (var-name name-symbol v) v category)
+
+    v))
       
 
 

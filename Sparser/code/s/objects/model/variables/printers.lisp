@@ -44,6 +44,17 @@
 ;                                        stream)
       (write-string ">" stream))))
 
+(defun print-disjunctive-lambda-variable-structure (obj stream depth)
+  (declare (ignore depth))
+  (write-string "#<d-variable" stream)
+  (write-string (princ-variable/string obj) stream)
+  (write-string " [" stream)
+  (loop for vv on (dvar-variables obj)
+     do
+       (write-string (var-name (car vv)) stream)
+       (when (cdr vv) (write-string ", " stream)))
+  (write-string ">" stream))
+
 
 (defun princ-variable (v stream)
   (let ((string (princ-variable/string v)))
