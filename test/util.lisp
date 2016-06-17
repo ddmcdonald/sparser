@@ -134,6 +134,10 @@ C
   (plist-to-alist '(:a 1 :b 2 :c 3) :not-dotted)
   ((:a 1) (:b 2) (:c 3)))
 
+(deftest reverse-plist
+  (reverse-plist '(:a 1 :b 2 :c 3))
+  (:c 3 :b 2 :a 1))
+
 (deftest deep-copy
   (let* ((l1 '(:a (:b :c) (:d (:e (:f)))))
          (l2 (deep-copy l1)))

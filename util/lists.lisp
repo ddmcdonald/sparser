@@ -99,6 +99,12 @@ and memq when it sees atoms."
                   (list tag value)
                   (cons tag value))))
 
+(defun reverse-plist (plist)
+  (loop with reverse
+        for (tag value) on plist by #'cddr
+        do (setq reverse (list* tag value reverse))
+        finally (return reverse)))
+
 (defun deep-copy (l)
   (if (consp l)
     (cons (deep-copy (car l))

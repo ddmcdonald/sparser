@@ -35,6 +35,7 @@
            #:assq #:memq #:memq/assq
            #:alist-to-plist
            #:plist-to-alist
+           #:reverse-plist
            #:deep-copy
            #:flatten #:flattenc
            #:all-the-same
