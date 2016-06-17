@@ -36,6 +36,7 @@
            #:alist-to-plist
            #:plist-to-alist
            #:reverse-plist
+           #:choose
            #:deep-copy
            #:flatten #:flattenc
            #:all-the-same

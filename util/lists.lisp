@@ -105,6 +105,10 @@ and memq when it sees atoms."
         do (setq reverse (list* tag value reverse))
         finally (return reverse)))
 
+(defun choose (sequence &optional (random-state *random-state*))
+  "Return a random element of the sequence."
+  (elt sequence (random (length sequence) random-state)))
+
 (defun deep-copy (l)
   (if (consp l)
     (cons (deep-copy (car l))
