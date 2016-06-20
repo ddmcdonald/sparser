@@ -147,6 +147,7 @@
 (define-preposition "except for") 
 (define-preposition "exclusive of")
 ;; This is more of an adverb, no? (define-preposition "far" :form 'spatial-preposition)
+(define-preposition "following")
 (define-preposition "for" )
 (define-preposition "for sake of")
 (define-preposition "for the sake of")
