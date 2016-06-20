@@ -158,11 +158,12 @@
   )
 
 (defun intersection-of-vrs (vars category)
-  (let ((v/r (local-v/r-for (car vars) category)))
-    (loop for var in (cdr vars)
-       do
-	 (setq v/r (intersect-v/rs v/r (local-v/r-for var category))))
-    v/r))
+  (when (not (itypep category 'collection))
+    (let ((v/r (local-v/r-for (car vars) category)))
+      (loop for var in (cdr vars)
+	 do
+	   (setq v/r (intersect-v/rs v/r (local-v/r-for var category))))
+      v/r)))
 
 (defun local-v/r-for (var category)
   (var-value-restriction
