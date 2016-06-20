@@ -183,6 +183,7 @@
 
 ;;(def-form-category relative-clause)
 (def-form-category subject-relative-clause)
+(def-form-category subordinate-relative-clause)
 (def-form-category where-relative-clause)
 (def-form-category when-relative-clause)
 (def-form-category comma-separated-subject-relative-clause)
@@ -558,12 +559,16 @@
     CATEGORY::NOUN/VERB-AMBIGUOUS))
 
 (defmethod vg-start? ((e edge))
+  (declare (special category::to))
   (if
    (or (plural-noun-and-present-verb? e)
        (singular-noun-and-present-verb? e))
    (and
     (not (preceding-det-prep-poss-or-adj e))
-    (not (followed-by-verb e)))
+    (not (followed-by-verb e))
+    (not (let ((prev-edge (edge-just-to-left-of e)))
+	   (and prev-edge
+		(eq (edge-category prev-edge) category::to)))))
    (vg-compatible? e)))
 
 (defgeneric vg-compatible? (label)
@@ -665,7 +670,15 @@
 (defmethod adjg-head? ((w word))
   t)
 (defmethod adjg-head? ((e edge))
-  (adjg-head? (edge-form e)))
+  (when
+      (not (prev-adj e))
+    (adjg-head? (edge-form e))))
+
+(defun prev-adj (e)
+  (declare (special category::adjective))
+  (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
+     thereis (eq (edge-form ee) category::adjective)))
+
 (defmethod adjg-head? ((c referential-category))
   (adjg-head? (cat-symbol c)))
 (defmethod adjg-head? ((name symbol))
