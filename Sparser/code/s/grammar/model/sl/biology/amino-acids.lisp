@@ -335,6 +335,7 @@ We therefore have the special cases:
 ;; "in BRAF mutant thyroid cell"
 
 (define-category mutation :specializes caused-bio-process
+  :restrict ((object (:or protein gene molecular-location)))
   :realization
   (:verb "mutate" :noun "mutation" 
    :etf (svo-passive)
