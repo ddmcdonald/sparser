@@ -283,8 +283,13 @@ be biology specific, since they aren't. |#
 (define-category likely :specializes bio-relation
   :realization
   (:adj "likely" 
-        :to-comp theme))
-(define-adverb "likely")
+        :to-comp theme
+	:thatcomp theme))
+;; almost never an adverb in our texts
+;; need a good way to distinguish the cases
+;; "is likely to ..." vs "is likely due..."
+;; want the POS to be based on category of next word...
+;;(define-adverb "likely")
 
 
 
