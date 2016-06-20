@@ -90,7 +90,8 @@
                   np-referent))) ;; referent
             edge))))))
 
-
+(define-category copular-pp-rel-clause :specializes abstract
+  :binds ((copular-pp copular-pp)))
 
 (defun compose-wh-with-vp (wh-referent predicate-referent)
   ;; We've just completed the composition of a wh term and
@@ -101,22 +102,29 @@
   ;; return value, and we want to record the subj+verb relation
   ;; and any other relations that make sense given the
   ;; particulars of the predicate. 
-  (declare (special *parent-edge-getting-reference*))
+  (declare (special *parent-edge-getting-reference* category::copular-pp-rel-clause))
   (if *subcat-test*
-    t
-    (let ((parent *parent-edge-getting-reference*)
-          ;; renaming to help make things clear
-          (subject wh-referent)
-          (event predicate-referent))
-      (push-debug `(,subject ,event ,parent))
-      ;;(lsp-break "compose-wh-with-vp")
+      t
+      (if (itypep predicate-referent 'copular-pp)
+	  (let ((i (fom-lattice-description category::copular-pp-rel-clause)))
+	    (setq i (bind-dli-variable 'copular-pp predicate-referent i))
+	    (revise-parent-edge :category category::copular-pp-rel-clause)
+	    i)
+	  (let ((parent *parent-edge-getting-reference*)
+		;; renaming to help make things clear
+		(subject wh-referent)
+		(event predicate-referent))
+	    (push-debug `(,subject ,event ,parent))
+	    ;;(lsp-break "compose-wh-with-vp")
      
-      (add-subject-relation event subject)
+	    (add-subject-relation event subject)
      
-      ;; Referent of the whole edge is the referent of the
-      ;; predicate, now with a binding to reflect the relationship
-      ;; to the subject (... or should it be called something else?)
-      event)))
+	    ;; Referent of the whole edge is the referent of the
+	    ;; predicate, now with a binding to reflect the relationship
+	    ;; to the subject (... or should it be called something else?)
+	    event))))
+
+
 (defun add-subject-relation (event subject)
   ;;/// where should these go?
   (push-debug `(,subject ,event))
@@ -146,12 +154,17 @@
 ;;;-----------------
 ;;/// 10/27/14 This ought to be a method
 (defun apply-subject-relative-clause (np-ref vp-ref)
-  (declare (special np-ref vp-ref))
-   (setq np-ref (individual-for-ref np-ref))
-   (let ((var
-	  (if (is-passive? (right-edge-for-referent))
-	      (subcategorized-variable vp-ref :object np-ref)
-	      (subcategorized-variable vp-ref :subject np-ref))))
+  (declare (special category::have))
+  ;; block "histone 2B ... had high levels ..."
+  (when (and (eq (edge-category (right-edge-for-referent)) category::have)
+	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
+    (return-from apply-subject-relative-clause nil))
+  
+  (setq np-ref (individual-for-ref np-ref))
+  (let ((var
+	 (if (is-passive? (right-edge-for-referent))
+	     (subcategorized-variable vp-ref :object np-ref)
+	     (subcategorized-variable vp-ref :subject np-ref))))
    
     (cond
       (*subcat-test*
@@ -227,10 +240,17 @@
   (let ((parent (parent-edge-for-referent))
         (np-edge (left-edge-for-referent))
         (vp-edge (right-edge-for-referent)))
+    (declare (special np-edge vp-edge))
     (unless (eq (edge-category parent)
                 (edge-category vp-edge))
       ;; This can happen if we're mistakenly getting
       ;; here in a *subcat-test*
+      #+ignore
+      (format t "~%convert-clause-to-reduced-relative fired on ~s ~s~%  in ~s~%"
+	      (note-surface-string np-edge)
+	      (note-surface-string vp-edge)
+	      (sentence-string *sentence-in-core*))
+      #+ignore
       (error "Timing may be wrong with when referent is ~
               computed and edge parts are assembled. Parent S ~
               is not a projection of VP."))
