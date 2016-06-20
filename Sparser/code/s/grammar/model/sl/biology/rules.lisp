@@ -121,31 +121,37 @@
 
 ;; Gly33
 (def-cfr residue-on-protein (amino-acid number)
-  :form proper-noun
+  :form np
   :referent (:instantiate-individual residue-on-protein
              :with (amino-acid left-edge
                     position right-edge)))
 
 (def-cfr residue-on-protein (amino-acid hyphenated-number)
-  :form proper-noun
-  :referent (:instantiate-individual residue-on-protein
-             :with (amino-acid left-edge
-                    position right-edge)))
+  :form np
+  :referent (:function multi-amino-acids left-edge right-edge))
+
+(defun multi-amino-acids (amino-acid hyphenated-positions)
+  (declare (special category::residue-on-protein))
+  (let ((res (fom-lattice-description category::residue-on-protein)))
+    (bind-dli-variable 'position
+		       hyphenated-positions
+		       #+ignore
+		       (list (value-of 'left hyphenated-positions)
+			       (value-of 'right hyphenated-positions))
+			 (bind-dli-variable 'amino-acid amino-acid res))))
 
 ;; "Lys residues"
 (def-cfr residue-on-protein (amino-acid residue-on-protein)
-  :form n-bar
+  :form np
   :referent (:head right-edge
              :bind (amino-acid left-edge)))
 
 ;; residues 104 and 147
-#+ignore ;; not needed -- the conjunction of numbers solves this problem
 (def-cfr residue-on-protein (residue-on-protein number)
   :form n-bar
   :referent (:head left-edge
              :bind (position right-edge)))
 
-#+ignore
 (def-cfr residue-on-protein (residue-on-protein hyphenated-number)
   :form proper-noun
   :referent (:instantiate-individual residue-on-protein
