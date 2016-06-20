@@ -101,6 +101,7 @@
 		 :upon following
 		 :after following
 		 :upon following
+		 :following following
 		 :before preceding
 		 :during during))
 
@@ -301,6 +302,9 @@
          :in in-equilibrium-with)
   )
 
+(define-category dna :specializes bio-chemical-entity
+		 :realization (:noun "DNA"))
+
 (define-category dna-motif :specializes bio-chemical-entity
 		 ;; enhancers, promoters, etc., also response elements
 		 )
@@ -371,7 +375,8 @@
 	 measurement ;; "these data raised the possibility..."
 	 molecular-location)) ;; membrane targeting domains that facilitate interaction with the plasma membrane
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
-   (at (:or bio-concentration quantity measurement)))
+   (at (:or bio-concentration quantity measurement))
+   (extent bio-scalar))
   :realization
   (:s agent
       :o object
@@ -379,7 +384,8 @@
       :m agent
       :m object
       :by agent     
-      :at at))
+      :at at
+      :to extent))
 
 
 (define-category mechanism :specializes endurant
@@ -698,35 +704,6 @@
   :lemma (:common-noun "nucleotide")
   :realization (:common-noun name))
 
-(define-category peptide :specializes molecule
-  :instantiates :self
-  :index (:permanent :key name)
-  :lemma (:common-noun "peptide")
-  :realization (:common-noun name))
-
-(define-category protein :specializes peptide  ;; this is not clearly true
-  :instantiates :self
-  :bindings (uid "CHEBI:36080")
-  :binds ((species species)
-          (mutation point-mutation)
-          (complex bio-complex)
-          (functionally-related-to protein)
-	  (site molecular-location)
-	  (equilibrium-state equilibrium))
-  :mixins (  reactome-category  in-ras2-model )
-  :index (:permanent :key name)
-  :lemma (:common-noun "protein")
-  :realization (:common-noun name))
-
-(fom-subcategorization category::protein
-                       :category category::protein
-                       :slots `(:in complex
-				    :in equilibrium-state
-                                    ;;:of functionally-related-to
-				    :m site
-                                    ))
-
-
 ;; grounds "encode"
 (define-category gene :specializes bio-entity ;;// case in point
   :instantiates :self
@@ -740,80 +717,6 @@
   :lemma (:common-noun "oncogene")
   :realization (:common-noun name))        
   
-(define-category enzyme :specializes protein ;; what's the relationship to kinase?   ;; not all enzymes are proteins -- there are RNA enzymes
-  :binds ((reaction bio-process))
-  :instantiates :self
-  :lemma (:common-noun "enzyme")
-  :realization (:common-noun name))
-
-(define-category post-translational-enzyme :specializes enzyme
-  :binds ((protein protein) 
-          (residue amino-acid)))
-
-
-(define-category kinase :specializes post-translational-enzyme
-                 ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
-                 ;;  should be as a "telic" qualia for those molecules which are kinases 
-  :instantiates :self
-  :bindings (uid "GO:0016301") ;; "kinase activity" 
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(def-synonym kinase
-             (:noun "kinase"
-                   :for reaction
-                   :m protein
-                   :m residue))
-
-(noun "phosphatase" :super post-translational-enzyme)
-
-(noun "ubiquitylase" :super post-translational-enzyme)
-
-(define-category deubiquitylase :specializes enzyme
-                 ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
-                 ;;  should be as a "telic" qualia for those molecules which are kinases 
-  :binds ((protein protein) 
-          (residue amino-acid))
-  :instantiates :self
-  :bindings (uid "GO:0016301") ;; "kinase activity" 
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(define-category nucleotide-exchange-factor :specializes enzyme
-  :binds ((substrate protein)
-          (nucleotide nucleotide))
-  :realization
-  (:noun "nucleotide exchange factor"
-         :m nucleotide
-         :m substrate
-         :of substrate
-         :for substrate))
-
-
-(define-category phosphatase :specializes enzyme
-                 ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
-                 ;;  should be as a "telic" qualia for those molecules which are kinases 
-  :binds ((protein protein) 
-          (residue amino-acid))
-  :instantiates :self
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(def-synonym phosphatase
-             (:noun "phosphatase"
-                    :for reaction
-                    :m protein
-                    :m residue))
-
-(define-category GTPase :specializes enzyme
-  :instantiates :self
-  :index (:permanent :key name)
-  :lemma (:common-noun "GTPase")
-  :realization (:common-noun name))
-
-(def-synonym GTPase
-   (:noun "gtpase"))
-
 
 (define-category variant :specializes bio-chemical-entity
   ;; not sure this is the correct term, but intended for things like "forms of ras" 
@@ -988,6 +891,111 @@
      (:noun "domain"
       :m substrate
       :of substrate))
+
+(define-category peptide :specializes molecule
+  :binds ((residue residue-on-protein))
+  :realization
+  (:noun "peptide"
+	 :with residue))
+(def-synonym peptide (:noun "polypeptide"))
+
+(define-category protein :specializes peptide  ;; this is not clearly true
+  :instantiates :self
+  :bindings (uid "CHEBI:36080")
+  :binds ((species species)
+          (mutation point-mutation)
+          (complex bio-complex)
+          (functionally-related-to protein)
+	  (site molecular-location)
+	  (equilibrium-state equilibrium)
+	  (state bio-state))
+  :mixins (  reactome-category  in-ras2-model )
+  :index (:permanent :key name)
+  :lemma (:common-noun "protein")
+  :realization (:common-noun name))
+
+(fom-subcategorization category::protein
+                       :category category::protein
+                       :slots `(:in complex
+				    :in equilibrium-state
+                                    ;;:of functionally-related-to
+				    :m site
+				    :in state
+                                    ))
+
+(define-category enzyme :specializes protein ;; what's the relationship to kinase?   ;; not all enzymes are proteins -- there are RNA enzymes
+  :binds ((reaction bio-process))
+  :instantiates :self
+  :lemma (:common-noun "enzyme")
+  :realization (:common-noun name))
+
+(define-category post-translational-enzyme :specializes enzyme
+  :binds ((protein protein) 
+          (residue amino-acid)))
+
+
+(define-category kinase :specializes post-translational-enzyme
+                 ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
+                 ;;  should be as a "telic" qualia for those molecules which are kinases 
+  :instantiates :self
+  :bindings (uid "GO:0016301") ;; "kinase activity" 
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(def-synonym kinase
+             (:noun "kinase"
+                   :for reaction
+                   :m protein
+                   :m residue))
+
+(noun "phosphatase" :super post-translational-enzyme)
+
+(noun "ubiquitylase" :super post-translational-enzyme)
+
+(define-category deubiquitylase :specializes enzyme
+                 ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
+                 ;;  should be as a "telic" qualia for those molecules which are kinases 
+  :binds ((protein protein) 
+          (residue amino-acid))
+  :instantiates :self
+  :bindings (uid "GO:0016301") ;; "kinase activity" 
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(define-category nucleotide-exchange-factor :specializes enzyme
+  :binds ((substrate protein)
+          (nucleotide nucleotide))
+  :realization
+  (:noun "nucleotide exchange factor"
+         :m nucleotide
+         :m substrate
+         :of substrate
+         :for substrate))
+
+
+(define-category phosphatase :specializes enzyme
+                 ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
+                 ;;  should be as a "telic" qualia for those molecules which are kinases 
+  :binds ((protein protein) 
+          (residue amino-acid))
+  :instantiates :self
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(def-synonym phosphatase
+             (:noun "phosphatase"
+                    :for reaction
+                    :m protein
+                    :m residue))
+
+(define-category GTPase :specializes enzyme
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "GTPase")
+  :realization (:common-noun name))
+
+(def-synonym GTPase
+   (:noun "gtpase"))
 
 (define-category epitope
   :specializes protein-domain
