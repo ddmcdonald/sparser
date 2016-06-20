@@ -97,12 +97,19 @@ returning a new one.
    Note that if *description-lattice* is nil this becomes a call to
    the 'old' variable binding protocol."
   (declare (special *description-lattice*))
-  (when (consp var/name)
-    (setq value `(:variables ,var/name :value ,value))
-    (setq var/name 'under-determined))
-  (if *description-lattice*
+  (if (not (individual-p individual)) (setq individual (individual-for-ref individual)))
+  (let
+      ((ambiguous-binding
+	(loop for binding in (indiv-old-binds individual)
+	   when (and (disjunctive-lambda-variable-p (binding-variable binding))
+		     (loop for v in (dvar-variables (binding-variable binding))
+			thereis (or (eq v var/name) (eq (var-name v) var/name))))
+	   do (return binding))))
+    (when  ambiguous-binding
+      (setq individual (perform-local-variable-disambiguation ambiguous-binding var/name individual)))
+    (if *description-lattice*
       (find-or-make-lattice-subordinate individual var/name value category)
-      (old-bind-variable var/name value individual category)))
+      (old-bind-variable var/name value individual category))))
 
 (defun bind-variable (var/name value individual &optional category)
   "Standard way of binding a variable on an individual. What actually
@@ -110,9 +117,43 @@ returning a new one.
    we return the individual that has the new binding."
   (declare (special *description-lattice*))
   (if *description-lattice*
-    (find-or-make-lattice-subordinate individual var/name value category)
-    (old-bind-variable var/name value individual category)))
+      (find-or-make-lattice-subordinate individual var/name value category)
+      (old-bind-variable var/name value individual category)))
 
+(defun perform-local-variable-disambiguation (ambiguous-binding var/name i)
+  (declare (special ambiguous-binding var/name))
+  (let* ((established-type (indiv-type i))
+	 (new (make-unindexed-individual (car established-type)))
+	 (ambig-var (binding-variable ambiguous-binding))
+	 (ambig-variables (dvar-variables ambig-var)))
+    (declare (special new))
+    (when (cdr established-type) ;; carry over any mix-ins
+      (setf (indiv-type new) established-type))
+    (loop for binding in (reverse (indiv-binds i))
+       ;; make/binding operates by a push operation
+       ;; on the indiv-binds list, so we must do this in reverse
+       ;; order to get the same list on the copy!!
+       ;; RJB discovered this error on 6/12/2016
+       do
+       ;; don't check binding-hook
+	 (setq new
+	       (bind-dli-variable
+		(disambiguated-variable binding ambiguous-binding ambig-variables var/name)
+		(binding-value binding)
+		new)))
+    new))
+
+(defun disambiguated-variable (binding ambiguous-binding ambig-variables var/name)
+  (if (eq binding ambiguous-binding)
+      (if (cddr ambig-variables)
+	  ;; still ambiguous
+	  (progn (format t "~%still ambiguous ~s~%" ambig-variables)
+		 (car ambig-variables)) ;;
+	  (loop for v in ambig-variables
+	     when (not (or (eq v var/name)
+			   (eq (var-name v) var/name)))
+	     do (return v)))
+      (binding-variable binding)))
 
 (defun old-bind-variable (var/name value individual
                           &optional category)
