@@ -79,14 +79,11 @@ the contextual interpretation of the item in the context."))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   s)
 
-(defvar *lambda-var*)
+(defconstant **lambda-var** '*lambda-var*)
 
 (defun interpret-atom-in-context (s variable containing-mentions)
-    (declare (ignore variable containing-mentions))
-  (case s
-    (**LAMBDA-VAR** ;; the marker for the argument of a predicate which is being applied to the predicated item
-     *lambda-var*)
-    (t s)))
+  (declare (ignore variable containing-mentions))
+  s)
 
 (defun dt-mention (dt) (car dt))
 (defun dt-bindings (dt) (cdr dt))
@@ -323,7 +320,6 @@ where it regulates gene expression.")
 
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
-(defparameter *lambda-val* nil)
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
   (let* ((parent-edge (car parent-edges))
 	 (poss-edges (poss-edges child-interp parent-edge)))
@@ -346,7 +342,6 @@ where it regulates gene expression.")
 				child-interp parent-edge)
 		      nil)
 		    nil)))
-	     ;;(*lambda-val* (lambda-val? child-interp *lambda-val*))
 	     (t		
 	      (unless (or allow-null-edge
 			  (not (individual-p child-interp))
@@ -387,7 +382,7 @@ where it regulates gene expression.")
 
 (defun lambda-val? (i lv)
   (when lv
-    (or (and (eq i lv) (list '**lambda-var**))
+    (or (and (eq i lv) (list **lambda-var**))
 	(lambda-val? i (dli-parent lv)))))
 
 
@@ -398,7 +393,7 @@ where it regulates gene expression.")
 (defun lambda-pred (interp)
   (and (individual-p interp)
        (consp (indiv-old-binds interp))
-       (eq '*lambda-var* (binding-value (car (indiv-old-binds interp))))))
+       (eq **lambda-var** (binding-value (car (indiv-old-binds interp))))))
 
 (defun find-edges-inside-matching (edge interp)
   (when (edge-p edge)
@@ -522,17 +517,6 @@ where it regulates gene expression.")
 				      ((eq category::copular-predicate (edge-category (car parent-edges)))
 				       (new-dt parent-edges val))
 				      (t val val))))))))))))
-
-(defun predication-binding-value (b interp parent-edges)
-  (let* ((pred (binding-value b))
-	 (parent (dli-parent pred))
-	 (p-edge 
-	  (car (relevant-edges parent-edges parent t))))
-    (let ((*lambda-val* interp))
-      (declare (special *lambda-val*))
-      (if p-edge
-	  (new-dt (cons p-edge parent-edges) pred)
-	  (new-dt parent-edges pred)))))
 
 (defun align-dependency-and-edges (edge &optional bindings)
   (new-dt edge bindings))
