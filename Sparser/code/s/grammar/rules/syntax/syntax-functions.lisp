@@ -173,11 +173,9 @@
   category::top)
 
 (define-lambda-variable 
-  'under-determined ;; name
-    nil ;; used to hold information on ambiguous variable bindings
+  'copular-verb ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
-
-
 
 
 (defparameter *force-modifiers* nil
@@ -272,17 +270,21 @@
     ((interpret-premod-to-np qualifier head))
     (t ;; Dec#2 has "low nM" which requires coercing 'low'
      ;; into a number. Right now just falls through
-     (let ((predicate #+ignore
-	     (bind-dli-variable :subject '*lambda-var* qualifier)
+     (let ((predicate 
 	     (if (and
 		  (not (is-collection? qualifier))
 		  (find-variable-for-category :subject (itype-of qualifier)))
-		 (create-predication-by-binding :subject '*lambda-var* qualifier
+		 (create-predication-by-binding :subject **lambda-var** qualifier
 						(list 'adj-noun-compound (left-edge-for-referent)))
 		 (individual-for-ref qualifier))
 	     ))
        (setq  head (bind-dli-variable 'predication predicate head))
        head))))
+
+(defun adj-postmodifies-noun (n adj)
+  ;; to be more picky about which adjectives can post-modify a noun
+  (unless (itypep adj 'following-adj)
+    (adj-noun-compound adj n)))
 
 (defparameter *dets-seen* nil)
 
@@ -406,7 +408,7 @@
        head))))
 
 (defun create-predication-by-binding (var val pred source)
-  (let ((new-predication (bind-dli-variable var '*lambda-var* pred)))
+  (let ((new-predication (bind-dli-variable var **lambda-var** pred)))
     (cond (new-predication
 	   (create-discourse-mention new-predication source)
 	   ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
@@ -727,15 +729,7 @@
           (or (subcategorized-variable vg prep-word pobj-referent)
               (and (itypep pp 'upon-condition)
                    (find-variable-for-category 'context (itype-of vg)));; circumstance)
-              #+ignore
-	      (when (or
-                     (eq prep-word (word-named "upon"))
-                     (eq prep-word (word-named "following")))
-                (when (and (itypep vg 'root-bio-process) ;; IGNORE THIS
-                           (itypep pobj-referent 'root-bio-process))
-                  'following))
-
-              ;; or if we are making a last ditch effore
+	      ;; or if we are making a last ditch effore
               (and *force-modifiers*
                    'modifier))))
     (declare (special *pobj-edge*))
@@ -980,6 +974,69 @@
   (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
   (let* ((vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge)))
+    ;; We have to determine whether this is an s (which the rule
+    ;; that's being invoked assumes) or actually a reduced relative,
+    ;; where the criteria is whether the verb is in oblique or tensed
+    ;; form. If it turned out to be a RR then we do fairly serious
+    ;; surgery on the edge.
+    ;;(when (edge-p (edge-right-daughter vp-edge))
+    ;; The other possibility is :single-term, which indicates
+    ;; that we've just got a vg (one one form or another)
+    ;; and not a full vp, in which case we're returning nil
+    ;; so that the rule doesn't go through.
+    (cond
+      (*subcat-test*
+       (cond
+	 ((and
+	   ;; vp has a subject
+	   (subject-variable vp)
+	   (not (value-of (subject-variable vp) vp)) ;; which is not bound
+	   (subcategorized-variable vp :subject subj)
+	   (or (not (object-variable vp))
+	       (value-of (object-variable vp) vp)
+	       (value-of 'statement vp)
+	       (preceding-that-whether-or-conjunction? (left-edge-for-referent)))) ;; case for S not reduced relative
+	  t)
+	 ((and ;; vp has a bound subject -- NP can fill object
+	   (subject-variable vp)
+	   (value-of (subject-variable vp) vp)
+	   (subcategorized-variable vp :object subj))
+	  t)
+	 (t nil)))
+	 
+      ((and
+	   ;; vp has a subject
+	   (subject-variable vp)
+	   (not (value-of (subject-variable vp) vp)) ;; which is not bound
+	   (subcategorized-variable vp :subject subj)
+	   (or (not (object-variable vp))
+	       (value-of (object-variable vp) vp)
+	       (value-of 'statement vp)
+	       (preceding-that-whether-or-conjunction? (left-edge-for-referent))))
+       (assimilate-subcat vp :subject subj))
+      ((and ;; vp has a bound subject -- NP can fill object
+	(subject-variable vp)
+	(value-of (subject-variable vp) vp)
+	(subcategorized-variable vp :object subj))
+       (setq  vp
+	      (create-predication-by-binding (subcategorized-variable vp :object subj)
+					     subj vp
+					     (list 'apply-subject-relative-clause
+						   (parent-edge-for-referent))))
+       
+       ;; link the rc to the np
+       (setq  subj (bind-dli-variable 'predication vp subj))
+       (revise-parent-edge :form category::np :category (itype-of subj))
+       subj)
+      (t nil))))
+       
+       
+
+#+ignore
+(defun obsolete-assimilate-subject-to-vp-ed (subj vp)
+  (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
+  (let* ((vp-edge (right-edge-for-referent))
+         (vp-form (edge-form vp-edge)))
     #+ignore
     (unless *subcat-test* 
       (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
@@ -1009,10 +1066,6 @@
 		(break "can't have a passive vp+ed")
 		(assimilate-subcat vp :object subj))
 	      (assimilate-subcat vp :subject subj)))
-	 ((or (eq vp-form category::vp+ed)
-	      (eq vp-form category::vg+ed))
-	  ;;(convert-clause-to-reduced-relative)
-	  )
 	 (t nil)))
 	 
       ;; ?????????????
@@ -1037,7 +1090,7 @@
 			    (retrieve-surface-string subj)
 			    (retrieve-surface-string vp))
 		    nil))))
-      (t
+      (nil
        ;; This should correspond to the reduced relative
        ;; situation. But we'll check that the vp has
        ;; the form we expect it to.
@@ -1232,7 +1285,7 @@
 (defparameter *tight-subcats* nil)
 (defparameter *dups* nil)
 
-(defparameter *ambiguous-variables* nil)
+(defparameter *ambiguous-variables* (list nil))
 
 
 (defun show-ambiguities ()
@@ -1260,6 +1313,8 @@
 		(polyword (pw-pname key))
 		(symbol key)))))
      do (terpri)(print pat)))
+
+(defparameter *show-over-ridden-ambiguities* nil)
 
 (defun subcategorized-variable (head label item)
   "Returns the variable on the HEAD that is subcategorized for
@@ -1294,14 +1349,15 @@
      ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
      ;;/// prep-comp, etc.
      (let ((category (itype-of head))
-	   (subcat-patterns (known-subcategorization? head)))
+	   (subcat-patterns (known-subcategorization? head))
+	   over-ridden)
        (when subcat-patterns
 	 (setq *label* label)
 	 (setq *head* head)
 	 (let ( variable )
 	   (let ((*trivial-subcat-test* nil))
 	     (if (and *ambiguous-variables* (not *subcat-test*))
-		 (let (pats over-ridden)
+		 (let (pats)
 		   (loop for pat in subcat-patterns
 		      do
 			(let ((scr (subcat-restriction pat)))
@@ -1315,22 +1371,23 @@
 			     (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
 				  (not (consp (subcat-restriction p)))
 				  (if (consp (subcat-restriction pat))
-				   (loop for i in (cdr (subcat-restriction pat))
-				      thereis (itypep i (subcat-restriction p)))
-				   (itypep (subcat-restriction pat) (subcat-restriction p))))
+				      (loop for i in (cdr (subcat-restriction pat))
+					 thereis (itypep i (subcat-restriction p)))
+				      (itypep (subcat-restriction pat) (subcat-restriction p))))
 			   do (push p over-ridden)))
-
+		   #+ignore
 		   (setq pats (loop for p in pats unless (member p over-ridden) collect p))
 		   (cond
-		     ((cdr pats) 
-		      (unless (itypep item 'number)
-			;; these are mostly bad parses with a dangling number -- we should collect them
-			(push (list head label item
-				    (sentence-string *sentence-in-core*)
-				    (loop for pat in pats collect
-					 (list (subcat-variable pat)(subcat-source pat))))
-			      *ambiguous-variables*))
-		      (setq variable (mapcar #'subcat-variable pats)))
+		     ((cdr pats)
+		      (setq variable (mapcar #'subcat-variable pats))
+		      (if (itypep item 'number)
+			  (setq variable (car variable))
+			  ;; these are mostly bad parses with a dangling number -- we should collect them
+			  (push (list head label item
+				      (sentence-string *sentence-in-core*)
+				      (loop for pat in pats collect
+					   (list (subcat-variable pat)(subcat-source pat))))
+				*ambiguous-variables*)))
 		     (pats
 		      (setq variable (subcat-variable (car pats))))))
                 
@@ -1353,12 +1410,20 @@
           
 	   ;;(break "testing subcats")
 	   (when (and *ambiguous-variables* (consp variable))
-	     (setq variable (define-disjunctive-lambda-variable variable category))
+	     (cond (over-ridden
+		    (cond ((or (equal '(agent object) (mapcar #'var-name variable))(equal '(object agent) (mapcar #'var-name variable)))
+			   (setq variable (loop for v in variable when (eq 'object (var-name v)) do (return v))))
+			  (t (when *show-over-ridden-ambiguities*
+			       (format t "~%over-ridden ambiguity now preserved~%  ambiguous subcats for attaching ~s to ~s with ~s:~%  ~s~%   ~s~%"
+				       item  head  label variable (sentence-string *sentence-in-core*)))
+			     (setq variable (define-disjunctive-lambda-variable variable category)))))
+		   (t 
+		    (setq variable (define-disjunctive-lambda-variable variable category)))))
 			     
-	     (format t "~%ambiguous subcats for attaching ~s to ~s with ~s:~%   ~s~%"
-		     item  head  label variable)
-	     ;;(when (itypep item 'number)  (lsp-break "number ambiguity"))
-	     )
+	   #+ignore
+	   (format t "~%ambiguous subcats for attaching ~s to ~s with ~s:~%   ~s~%"
+		   item  head  label variable)
+	   ;;(when (itypep item 'number)  (lsp-break "number ambiguity"))
 	   variable ))))))
 
 (defun satisfies-subcat-restriction? (item restriction)
