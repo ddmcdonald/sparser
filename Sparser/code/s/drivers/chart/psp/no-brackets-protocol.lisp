@@ -421,12 +421,6 @@
 
 	   (loop for item in tt-contents
 	      do (cond
-		   ((and (consp item)
-			 (eq (car item) 'under-determined))
-		    ;; residual ambiguity
-		    (push
-		     (adhoc-resolve-under-determined item)
-		     raw-entities))
 		   ((or (subject-variable item)
 			(individual-p item))
 		    (push item raw-relations))
@@ -451,11 +445,6 @@
               entities
               tt-count
 	      (reverse treetops)))))
-
-(defun adhoc-resolve-under-determined (item)
-  `(,(var-name (car (getf (second (second item)) :variables)))
-     ,(getf (second (second item)) :value)))
-
 
 ;;;---------------------------
 ;;; Helper code for the cards
@@ -760,6 +749,8 @@
   "Set to T to change the structures extracted for collections, to allow psemtree to produce better output,
 without damaging other code.")
 
+(defparameter *show-words-and-polywords* nil)
+
 (defmethod collect-model-description ((i individual))
   (cond
    ((gethash i *semtree-seen-individuals*)
@@ -805,11 +796,6 @@ without damaging other code.")
                   (symbolp value)
                   (stringp value))
               (push (list (var-name var) value) desc))
-             ((eq (var-name var) 'under-determined)
-	      (push (list
-		     (getf value :variables)
-		     (collect-model-description (getf value :value)))
-		    desc))
 	     (t
               (typecase value
                 (individual 
@@ -821,8 +807,8 @@ without damaging other code.")
                   (push (list (var-name var)
                               (collect-model-description value))
                         desc)))
-                (word)
-                (polyword)
+                (word (when *show-words-and-polywords* (push (list (var-name var) value) desc)))
+                (polyword (when *show-words-and-polywords* (push (list (var-name var) value) desc)))
                 (category
                  (push (list (var-name var)
                              (collect-model-description value))
