@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  May 2016
+;;;  Version:  June 2016
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -106,14 +106,16 @@
 
 (defun switch-settings (&optional full? (stream *standard-output*))
   (declare (special *treat-single-Capitalized-words-as-names*
-                    *pnf-routine*
-))
+                    *pnf-routine* *break-policy*
+                    ))
   (format stream "~&~%Sparser switch settings:")
   (format stream " ~A" *switch-setting*)
   (format stream "~%              Chart-level protocol: ~A"
           *kind-of-chart-processing-to-do*)
   (format stream "~%                     unknown words: ~A"
           *unknown-word-policy*) ;; :check-for-primed = Comlex
+  (format stream "~%             break function policy: ~a"
+          *break-policy*)
   (format stream "~%       capitalization FSA dispatch: ~A"
           *version-of-capitalization-dispatch*)
   (format stream "~%                       PNF routine: ~A"
@@ -299,6 +301,8 @@
 
 
 (defun use-default-settings ()
+  "What we use with an unqualified asdf load of Sparser"
+  (revert-to-regular-break)
   (uncontroversial-settings)
   (top-edges-setting)
   (standard-extras)
@@ -372,6 +376,7 @@
 
 
 (defun bio-setting ()
+  (revert-to-error-break) ;; also the loader default
   ;; from (use-default-settings) with the obvious change
   ;; to take new words
   (uncontroversial-settings)
@@ -696,9 +701,7 @@
 (defun update-analysis-mode (new-mode)
   ;; called from Check-wigets-and-close-pref-dialog as part of
   ;; sorting out the 'analysis alternatives'
-
   (ecase *switch-setting*  ;; the current one
-
     ((or :top-edges/with-extras-and-negatives :top-edges)
      (ecase new-mode
        (:no-dm&p

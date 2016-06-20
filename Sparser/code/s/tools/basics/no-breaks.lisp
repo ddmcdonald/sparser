@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(sparser LISP) -*-
-;;; copyright (c) 1990-1991,2011-2015 David D. McDonald -- all rights reserved
+;;; copyright (c) 1990-1991,2011-2016 David D. McDonald -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "no breaks"
 ;;;    Module:   "tools:basics"
-;;;   Version:   June 2015
+;;;   Version:   June 2016
 
 ;; Original version 2/1991 for CTI.
 ;; 7/22/09 brought package out of the dark ages. 10/8/09 Added on-error setup.
@@ -20,10 +20,10 @@
 (in-package :sparser)
 
 #| There are handlers for calls to error and related conditions
-that catch the call that let us continue (error-trapped-scan-and-core
-is the latest example). 
+that catch the condition thatand let us continue, for instance
+error-trapped-scan-and-core used in document parsing. 
    But break is different and will always invoke the error-handling
-machinery. Unless we take steps it will always blow through any error
+machinery. Unless we take steps, it will always blow through any error
 handler. That what this code is all about. We make our own version of
 'break' by shadowing the definition we get fom the Lisp and use a
 function we define here in the :sparser package. 
@@ -36,6 +36,11 @@ you can continue from a break (c.f. cerror).
 ;;; take over the break function
 ;;;------------------------------
 
+(defvar *break-policy* :error
+  "Provides an easily viewed 'status' for whether we are
+ treating break as an error (:error), of as a conventional
+ break that can be continued (:break).")
+
 #| N.b. When we load Sparser we're using this error version of break. |#
 (defun break (&optional (format-string "Break.") &rest args)
   (apply #'error format-string args))
@@ -43,11 +48,13 @@ you can continue from a break (c.f. cerror).
 (defun revert-to-regular-break ()
   "Change the definition of sparser::break to the regular one
    taken from the Lisp."
+  (setq *break-policy* :break)
   (defun sparser::break (&optional format-string &rest args)
     (apply #'cl:break format-string args)))
 
 (defun revert-to-error-break ()
   "Switch back to treating break as an error call."
+  (setq *break-policy* :error)
   (defun sparser::break (&optional format-string &rest args)
     (apply #'error format-string args)))
 
