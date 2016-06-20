@@ -399,7 +399,7 @@
          new-edge
          pp-edge
          :right)
-        new-edge))
+        pp-edge))
      (t 
       ;;(lsp-break "attach-appositive-np-under-pp fails")
       nil))))
@@ -411,8 +411,22 @@
            attach-appositive-np-to-np
            first second third fourth))
 
+(define-debris-analysis-rule proper-noun-comma-np
+  :pattern ( proper-noun "," np ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-appositive-np-to-np
+           first second third fourth))
+
 (define-debris-analysis-rule np-comma-proper-noun
   :pattern ( np "," proper-noun ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-appositive-np-to-np
+           first second third fourth))
+
+(define-debris-analysis-rule proper-noun-comma-proper-noun
+  :pattern ( proper-noun "," proper-noun ",")
   ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-appositive-np-to-np
@@ -452,7 +466,7 @@
 	      :rule 'attach-commma-subj-relative-to-s
 	      :referent
 	      (bind-dli-variable 'predication
-				 (bind-dli-variable s-var '*lambda-var* s-rel)
+				 (bind-dli-variable s-var **lambda-var** s-rel)
 				 s)
 	      :constituents `(,s-edge ,comma-edge ,srel-edge)))
 	    (t
@@ -467,7 +481,8 @@
 	       (when target
 		 (let* ((target-ref (edge-referent target))
 			(t-var
-			 (subcategorized-variable s-rel :subject target-ref)))
+			 (subcategorized-variable s-rel :subject target-ref))
+			(dominating (edge-used-in target)))
 		   (when t-var
 		     (let ((new-edge
 			    (make-edge-over-long-span 
@@ -479,16 +494,16 @@
 			     :referent
 			     (bind-dli-variable :predication
 						(bind-dli-variable t-var
-								   '*lambda-var*
+								   **lambda-var**
 								   s-rel)
 						target-ref)
 			     :constituents `(,target ,comma-edge ,srel-edge))))
 		       (tuck-new-edge-under-already-knit
 			target ;; subsumed
-			(edge-used-in target)
-			s-edge
+			new-edge
+			dominating
 			:right)
-		       new-edge))))))))))
+		       s-edge))))))))))
 
 (define-debris-analysis-rule s-commma-where-relative
     :pattern (s "," where-relative-clause)
@@ -516,7 +531,7 @@
 	      :rule 'attach-commma-where-when-relative-to-s
 	      :referent
 	      (bind-dli-variable 'predication
-				 (bind-dli-variable s-var '*lambda-var* s-rel)
+				 (bind-dli-variable s-var **lambda-var** s-rel)
 				 s)
 	      :constituents `(,s-edge ,comma-edge ,srel-edge)))
 	    (t
@@ -534,7 +549,8 @@
 			 (subcategorized-variable s-rel
 						  (if (eq (edge-form srel-edge) 'where-relative-clause)
 						      :where
-						      :when) target-ref)))
+						      :when) target-ref))
+			(dominating (edge-used-in target)))
 		   (when t-var
 		     (let ((new-edge
 			    (make-edge-over-long-span 
@@ -546,16 +562,17 @@
 			     :referent
 			     (bind-dli-variable :predication
 						(bind-dli-variable t-var
-								   '*lambda-var*
+								   **lambda-var**
 								   s-rel)
 						target-ref)
 			     :constituents `(,target ,comma-edge ,srel-edge))))
 		       (tuck-new-edge-under-already-knit
 			target ;; subsumed
-			(edge-used-in target)
+			new-edge
+			dominating
 			s-edge
 			:right)
-		       new-edge))))))))))
+		       s-edge))))))))))
 
 (define-debris-analysis-rule np-commma-subj-relative
     :pattern (np "," subject-relative-clause)
@@ -574,7 +591,7 @@
 	 :rule 'attach-commma-subj-relative-to-np
 	 :referent
 	 (bind-dli-variable 'predication
-			    (bind-dli-variable s-var '*lambda-var* s-rel)
+			    (bind-dli-variable s-var **lambda-var** s-rel)
 			    np)
 	      :constituents `(,np-edge ,comma-edge ,srel-edge)))))
 
@@ -595,7 +612,8 @@
     (lsp-break "attach-pp-to-np-under-s")
     (cond
      (target
-      (let ((new-edge
+      (let ((dominating (edge-used-in target))
+	    (new-edge
              (make-edge-over-long-span 
               (pos-edge-starts-at target)
               (pos-edge-ends-at pp-edge)
@@ -607,9 +625,9 @@
         (tuck-new-edge-under-already-knit
          target ;; subsumed
          new-edge
-         (edge-used-in target)
+         dominating
          :right)
-        new-edge))
+        s-edge))
      (t 
       ;;(lsp-break "attach-appositive-np-under-s fails")
       nil))))
@@ -678,6 +696,127 @@
                   :constituents `(,np ,intial-comma ,vp+ed ,final-comma))))
       edge)))
 
+
+(define-debris-analysis-rule np-vp+ed
+  :pattern (np vp+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           attach-restrictive-relative-clause first second))
+
+(defun attach-restrictive-relative-clause (np vp+ed)
+  (declare (special category::np))
+  (unless (adverb-at? (pos-edge-starts-at vp+ed))
+    ;; this test is a heuristic, to block
+    ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
+    (let* ((np-ref (edge-referent np))
+	   (vp-ref (edge-referent vp+ed))
+	   (modified-vp-ref (unpack-subject-control np-ref vp-ref vp+ed))
+	   (modified-np-ref (bind-dli-variable 'predication modified-vp-ref np-ref)))
+      (setf (edge-referent np) modified-np-ref)
+      (let* ((category-to-use (edge-category np))
+	     (form-to-use category::np)
+	     (edge (make-edge-over-long-span
+		    (pos-edge-starts-at np)
+		    (pos-edge-ends-at vp+ed)
+		    category-to-use
+		    :form form-to-use
+		    :referent modified-np-ref
+		    :rule 'attach-restrictive-relative-clause
+		    :constituents `(,np ,vp+ed))))
+	edge))))
+
+(defun adverb-at? (position)
+  (declare (special category::adverb))
+  (loop for e in (all-edges-on (pos-starts-here position))
+       thereis (and (edge-p e) (eq (edge-form e) category::adverb))))
+
+(define-debris-analysis-rule pp-vg+ed
+  :pattern (pp vp+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           attach-restrictive-relative-clause-to-pp first second))
+
+(defun attach-restrictive-relative-clause-to-pp (pp-edge vp+ed)
+  (declare (special category::np))
+  (let ((right-fringe-of-pp ;; ordered bottom to top
+         (all-edges-on (pos-ends-here (pos-edge-ends-at pp-edge))))
+        target target-ref
+        new-target-ref)
+    (declare (special right-fringe-of-pp))
+    (loop for edge in right-fringe-of-pp
+       ;; replace eq with acceptable-appositive?
+       when (or
+	     (eq (edge-form edge) category::proper-noun)
+	     (eq (edge-form edge) category::np))
+       do (setq target edge))
+    (cond
+      (target       
+       (let* ((np-ref (edge-referent target))
+	      (vp-ref (edge-referent vp+ed))
+	      (modified-vp-ref (unpack-subject-control np-ref vp-ref vp+ed))
+	      (modified-np-ref (bind-dli-variable 'predication modified-vp-ref np-ref)))
+	 (setf (edge-referent target) modified-np-ref)
+	 (let* ((category-to-use (edge-category target))
+		(form-to-use category::np)
+		(new-edge (make-edge-over-long-span
+			   (pos-edge-starts-at target)
+			   (pos-edge-ends-at vp+ed)
+			   category-to-use
+			   :form form-to-use
+			   :referent modified-np-ref
+			   :rule 'attach-restrictive-relative-clause
+			   :constituents `(,target ,vp+ed))))
+	   (tuck-new-edge-under-already-knit
+	    target ;; subsumed
+	    new-edge
+	    pp-edge
+	    :right)
+	   pp-edge))))))
+
+
+(define-debris-analysis-rule s-vg+ed
+  :pattern (s vp+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           attach-restrictive-relative-clause-to-s first second))
+
+(defun attach-restrictive-relative-clause-to-s (s-edge vp+ed)
+  (declare (special category::np))
+  (let ((right-fringe-of-s ;; ordered bottom to top
+         (all-edges-on (pos-ends-here (pos-edge-ends-at s-edge))))
+        target target-ref
+        new-target-ref)
+    (declare (special right-fringe-of-s))
+    (loop for edge in right-fringe-of-s
+       ;; replace eq with acceptable-appositive?
+       when (or
+	     (eq (edge-form edge) category::proper-noun)
+	     (eq (edge-form edge) category::np))
+       do (setq target edge))
+    (cond
+      (target       
+       (let* ((dominating (edge-used-in target))
+	      (np-ref (edge-referent target))
+	      (vp-ref (edge-referent vp+ed))
+	      (modified-vp-ref (unpack-subject-control np-ref vp-ref vp+ed))
+	      (modified-np-ref (bind-dli-variable 'predication modified-vp-ref np-ref)))
+	 (setf (edge-referent target) modified-np-ref)
+	 (let* ((category-to-use (edge-category target))
+		(form-to-use category::np)
+		(new-edge (make-edge-over-long-span
+			   (pos-edge-starts-at target)
+			   (pos-edge-ends-at vp+ed)
+			   category-to-use
+			   :form form-to-use
+			   :referent modified-np-ref
+			   :rule 'attach-restrictive-relative-clause-to-s
+			   :constituents `(,target ,vp+ed))))
+	   (tuck-new-edge-under-already-knit
+	    target ;; subsumed
+	    new-edge
+	    dominating
+	    :right)
+	   s-edge))))))
 
 
 (define-debris-analysis-rule comma-adverb-comma
@@ -766,6 +905,8 @@
   :pattern ( s subordinate-clause )
   :action (:function create-event-relation  first second first second))
 
+
+
 (define-debris-analysis-rule when-relative-clause-comma
                :pattern (when-relative-clause "," s)
 	       :action (:function create-event-relation  first third first third))
@@ -778,7 +919,6 @@
 (define-debris-analysis-rule s-when-relative-clause
                :pattern (s when-relative-clause)
 	       :action (:function create-event-relation  second first first second))
-
 
 (defun create-event-relation (event-edge sub-clause-edge first last)
   (let* ((conj (value-of 'SUBORDINATE-CONJUNCTION (edge-referent sub-clause-edge)))
@@ -794,6 +934,43 @@
      :referent (make-event-relation conj event sub-event)
      :rule 'create-event-relation
      :constituents `(,first ,last))))
+
+(define-debris-analysis-rule clause-subordinate-relative-clause
+  :pattern ( s subordinate-relative-clause )
+  :action (:function create-subject-relative-event-relation  first second first second))
+
+(defun create-subject-relative-event-relation (s sub-clause-edge first last)
+  (let* ((right-fringe-of-s ;; ordered bottom to top
+	  (all-edges-on (pos-ends-here (pos-edge-ends-at s))))
+	 target target-ref
+	 new-target-ref
+	 (conj (value-of 'SUBORDINATE-CONJUNCTION (edge-referent sub-clause-edge)))
+	 (event (edge-referent s))
+	 (sub-event (edge-referent sub-clause-edge))
+	 (new-start-pos (pos-edge-starts-at first))
+	 (new-end-pos (pos-edge-ends-at last)))
+    (declare (special right-fringe-of-s))
+    (loop for edge in right-fringe-of-s
+       ;; replace eq with acceptable-appositive?
+       when (and
+	     (or
+	      (eq (edge-form edge) category::proper-noun)
+	      (eq (edge-form edge) category::np))
+	     (subcategorized-variable sub-event :subject (edge-referent edge)))
+       do (setq target edge))
+    (when target 
+      (setq sub-event (bind-dli-variable (subcategorized-variable sub-event :subject (edge-referent target))
+					 (edge-referent target)
+					 sub-event))
+					 
+      (make-edge-over-long-span
+       new-start-pos ;; the edge vector
+       new-end-pos
+       category::event-relation
+       :form category::s
+       :referent (make-event-relation conj event sub-event)
+       :rule 'create-event-relation
+       :constituents `(,first ,last)))))
 
 (define-debris-analysis-rule clause-comma-subordinate-np
   :pattern ( s "," subordinate-conjunction np)
@@ -836,6 +1013,6 @@
 (defun unpack-subject-control (subject vp vp-edge)
   (let* ((downstairs-subj-var (subject-variable vp))
          (new-vp-ref (bind-dli-variable
-                      downstairs-subj-var subject vp)))
+                      downstairs-subj-var **lambda-var** vp)))
     (setf (edge-referent vp-edge) new-vp-ref)
     new-vp-ref))
