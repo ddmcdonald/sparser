@@ -197,19 +197,23 @@
 (adj "adaptor" :super bio-predication) ;; "adaptor protein"
 (adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"
 (noun "anaphylaxis" :super disease)
+(adj "banded" :super bio-predication)
 (noun "metaplasia" :super disease)
 (noun "hyperplasia" :super disease)
 (noun "anchor" :super molecule) ;; "cytoplasmic anchor"
 (adj "apparent" :super bio-predication) ;; perhaps need :rhetorical predication"
 (adj "asymmetric" :super bio-predication)
 (adj "conventional" :super bio-predication) ;;"conventinal MAPK cascade"
-
+(adj "double-stranded" :super bio-predication)
+(adj "single-stranded" :super bio-predication)
 (adj "familial" :super bio-predication)
 (noun "carcinoma" :super cancer)
 (noun "glioblastoma" :super cancer)
 (noun "keratoacanthoma" :super cancer)
 (noun "neurooblastoma" :super cancer)
 (noun "non-small cell lung cancer" :super cancer)
+(adj "nonsignaling" :super bio-predication)
+;;(def-synoynm nonsignaling (:adj "nonsignalling"))
 (noun "isomerase" :super enzyme)
 (noun "ligaase" :super enzyme)
 (noun "ubiquitinase" :super enzyme)
@@ -389,7 +393,7 @@
 (adj "background" :super bio-predication)
 (noun "bacteria" :super species) ;; not really
 (noun "baseline" :super  bio-method)
-
+(adj "bandee" :super bio-predication)
 (noun "bifc" :super bio-method)
 (noun "binder" :super bio-entity)
 
@@ -469,11 +473,9 @@
      :m theme
      :in theme))
 
+(noun "denaturing gel electrophoresis" :super bio-method)
 (noun "derivative" :super molecule)
 (noun "detail" :super bio-scalar)
-(noun "development" :super bio-process) ;; keyword: (ment N) 
-
-
 
 (adj "diffuse" :super bio-predication) ;; TO-DO better superc
 (noun "disorder" :super disease)
@@ -487,17 +489,12 @@
 (noun "dynamics" :super bio-abstract)
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
-(noun "effect" :super bio-process
-      :binds ((effector biological)(effectee biological))
-      :realization
-      (:noun "effect" 
-             :of effector
-             :on effectee))
+
 (adj "effective" :super bio-relation
-     :binds ((against biological))
      :realization 
      (:adj "effective"
-           :against against)) ;; keyword: (ive ADJ) 
+           :against theme
+	   :on theme))
 
 (define-category effector :specializes protein ;; NOT SURE WHAT THE RIGHT SUPER is
   :binds ((for-process bio-process))
@@ -543,6 +540,11 @@
 (noun "fetal calf serum" :super experimental-condition)
 (def-synonym category::fetal\ calf\ serum  (:noun "FCS"))
 
+;; we dropped out "follow" as a verb in biology, in favor of using "following" as a
+;;  "preposition" and as an adjective
+;;(adj "following" :super bio-predication)
+(define-category following-adj :specializes abstract
+  :realization (:adj "following"))
 
 
 
@@ -569,7 +571,7 @@
 
 (adj "nucleotide-free" :super bio-predication)
 
-
+(noun "gel electrophoresis" :super bio-method)
 (adj "general" :super bio-predication)
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
 (noun "group" :super bio-abstract)
@@ -649,6 +651,7 @@
 (adj "integrative" :super bio-predication) ;; keyword: (ive ADJ) 
 (adj "intriguing" :super bio-predication) ;; keyword: ENDS-IN-ING
 (noun "isoelectric focussing" :super bio-method)
+
 (noun "isoform" :super variant)
 (adj "kinase-dead" :super bio-predication)
 
@@ -933,6 +936,7 @@
      (:adj "specific"
            :to situation
            :for beneficiary))
+(adj "speckled" :super bio-predication)
 (noun "spectrometry" :super bio-method)
 (define-category stable :specializes bio-predication
      :realization

@@ -549,11 +549,17 @@
 
 
 (define-category coimmunoprecipitate :specializes immune-method
-  :binds ((origin bio-location))
+  :binds ((origin bio-location)
+	  (co-precipitant protein))
   :realization 
-  (:verb "coimmunoprecipitate" :noun "coimmunoprecipitation"
+  (:verb "co-immunoprecipitate" :noun "co-immunoprecipitation"
          :etf (svo-passive) 
-         :from origin))
+         :from origin
+	 :with co-precipitant))
+
+(def-synonym coimmunoprecipitate
+    (:noun "coimmunoprecipitation"
+	   :verb "coimmunoprecipitate" :etf (svo-passive) ))
 
 (define-category compare :specializes bio-method
   :binds ((comparator biological)
@@ -626,7 +632,8 @@
             :o theme))
 
 (def-synonym contain 
-             (:verb "harbor" :etf (svo-passive)))
+    (:verb ("harbor" :past-tense "harbored" :present-participle "harboring")
+	   :etf (svo-passive)))
 
 (define-category continue :specializes bio-relation
   :binds ((agent biological)
@@ -887,11 +894,16 @@
   :specializes negative-bio-control
   :realization
   (:verb   "compromise"
-   :etf (svo-passive)))
+	   :etf (svo-passive)))
+
+(define-category development :specializes caused-bio-process
+  :realization (:verb "develop"
+		      :etf (svo-passive)
+		      :noun "development"))
 
 (define-category limit :specializes negative-bio-control
   :realization
-  (:verb ("limit" :past-tense "limited")
+  (:verb ("limit" :past-tense "limited" :present-participle "limiting")
          :etf (svo-passive)))   
 
 ;;actually want to define 
@@ -920,6 +932,17 @@
   :realization
   (:verb   "dysregulate" :noun "dysregulation"
    :etf (svo-passive)))
+
+(define-category effect :specializes bio-control
+  :restrict ((object (:or bio-process bio-entity))) ;; add this, to disambiguate :on, and not have an ambiguity with :object
+  :realization
+  (:verb "effect"
+	 :etf (svo-passive)
+	 :of agent
+	 :on object))
+
+(def-synonym effect
+    (:noun "effect"))
 
 (define-category elevate
   :specializes positive-bio-control
@@ -1110,6 +1133,7 @@
          :etf (svo-passive)
 	 :mumble ("find" svo)))
 
+#+ignore
 (define-category follow :specializes bio-relation ;; need event relation
   :binds (;; subject and theme inherited from bio-relation
           ;;(subject bio-process) ;; this is the initial process
@@ -1337,7 +1361,7 @@
 
 (define-category dampen :specializes negative-bio-control
   :realization 
-  (:verb "dampen"
+  (:verb ("dampen" :past-tense "dampened" :present-participle "dampening")
          :etf (svo-passive)))
 
 (define-category bio-insert :specializes caused-bio-process
@@ -1522,6 +1546,11 @@
    :noun "migration" 
    :etf (sv)))
 
+(define-category co-migrate :specializes bio-self-movement
+  :realization 
+  (:verb "co-migrate" ;; NOT YET WORKING -- generates polywords in APPLY-REALIZATION-SCHEME :past-tense "co-migrated" :present-participle "co-migrating")
+   :noun "co-migration" 
+   :etf (sv)))
 
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
 
@@ -2019,6 +2048,20 @@
            :to-comp tocomp))
 
 (def-synonym seem (:verb "appear" :etf (svo)))
+
+(def-form-rule (seem adjective)
+  :form vg
+  :referent (:function make-copular-adjective left-edge right-edge)
+)
+
+(def-form-rule (seem ap)
+  :form vp
+  :referent (:function make-copular-adjective left-edge right-edge))
+
+(defun make-copular-adjective (copula adjective)
+  (let ((i (individual-for-ref adjective)))
+    (bind-dli-variable :copular-verb copula i)))
+
 
 (define-category bio-sequence :specializes bio-method
     :binds ((method bio-method))
