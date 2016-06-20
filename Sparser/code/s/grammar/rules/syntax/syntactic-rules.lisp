@@ -1,4 +1,4 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
@@ -234,14 +234,14 @@ similar to an oncogenic RasG12V mutation (9)."))
    `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
                      :head :left-edge
       :form n-bar
-      :referent (:function adj-noun-compound
-                           right-edge left-edge )))
+      :referent (:function adj-postmodifies-noun
+                           left-edge right-edge )))
   (eval
    `(def-syntax-rule (,nb ap) ;; "RAF activation downstream of RAS" 
                      :head :left-edge
       :form n-bar
-      :referent (:function adj-noun-compound
-                           right-edge left-edge )))
+      :referent (:function adj-postmodifies-noun
+                           left-edge right-edge )))
   (eval
    `(def-syntax-rule (verb+ed ,nb)
                      :head :right-edge
@@ -526,7 +526,7 @@ similar to an oncogenic RasG12V mutation (9)."))
      (eval
       `(def-form-rule (,rel subordinate-clause) 
 	   :head :right-edge
-	   :form subject-relative-clause
+	   :form subordinate-relative-clause
 	   :referent (:function compose-wh-with-vp left-edge right-edge))))
 
 
@@ -560,17 +560,6 @@ similar to an oncogenic RasG12V mutation (9)."))
   :referent (:function apply-pp-relative-clause left-edge right-edge))
 
 
-(loop for nb in `(category::np ,@*n-bar-categories*)
-  do
-  (loop for src in '(category::subject-relative-clause
-                     ;;vp+ing vp+ed ;; reduced relative clauses
-                     )
-    do
-    (eval 
-   `(def-syntax-rule (,nb ,src)
-                     :head :left-edge
-      :form np
-      :referent (:function apply-subject-relative-clause left-edge right-edge)))))
 
 
 ;;--- direct object
@@ -587,6 +576,20 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 ;; subject 
 ;;--- subject + verb
+
+(loop for nb in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
+   do
+     (loop for src in '(category::subject-relative-clause
+			vp+ing ;; vp+ed ;; reduced relative clauses
+			)
+	do
+	  (eval 
+	   `(def-syntax-rule (,nb ,src)
+		:head :left-edge
+		:form np
+		:referent (:function apply-subject-relative-clause left-edge right-edge)))))
+
+;; must handle vp+ed object-relative below
 
 (loop for n in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
   do
