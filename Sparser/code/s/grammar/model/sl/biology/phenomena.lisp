@@ -72,7 +72,8 @@
   :binds ((substrate (:or protein variant)) ;; allow variant to pick up "phosphorylated fraction"
 	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
-  :restrict ((agent (:or protein bio-process bio-mechanism)))
+  :restrict ((agent (:or protein bio-process bio-mechanism))
+	     (object s)) ;; trying to BLOCK object by giving it an impossible class
   :realization 
   (:noun "post-translational modification"
          :o substrate
@@ -82,6 +83,7 @@
          :m site
          :m agent ;;somehow this overrides the ones below
          :of substrate
+	 :of site
          :at amino-acid
 	 :on amino-acid ;;"BRAF that is phosphorylated on serine and tyrosine."
 	 :at site
@@ -133,11 +135,12 @@
      :etf (svo-passive)))
 
 (define-category methylation 
- :specializes post-translational-modification 
+  :specializes post-translational-modification
+  :restrict ((substrate (:or protein variant dna gene)))
   :realization 
-    (:verb "methylate"
-     :noun "methylation"
-     :etf (svo-passive)))
+  (:verb "methylate"
+	 :noun "methylation"
+	 :etf (svo-passive)))
 
 
 ;;--- "phosphorylate"
