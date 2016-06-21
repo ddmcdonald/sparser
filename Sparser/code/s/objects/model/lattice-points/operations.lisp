@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2016 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.2 October 2015
+;;;  version:  June 2016
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -131,6 +131,10 @@
      on the category's property list. If the category isn't
      in the lattice (e.g. it's a form category) then this
      returns a singleton list."))
+
+(defmethod super-categories-of ((name symbol))
+  (let ((c (category-named name :error-if-none)))
+    (super-categories-of c)))
 
 (defmethod super-categories-of ((c referential-category))
   (if (cat-lattice-position c)
