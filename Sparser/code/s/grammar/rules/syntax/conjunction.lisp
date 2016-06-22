@@ -630,14 +630,15 @@
   (let* ((rightmost-edge (car (last edge-list)))
          (leftmost-edge (car edge-list))
          (referent (referent-of-list-of-conjoined-edges edge-list)))
-
-    (let ((edge (make-chart-edge
-                 :starting-position (pos-edge-starts-at leftmost-edge)
-                 :ending-position (pos-edge-ends-at rightmost-edge)
-                 :category (edge-category leftmost-edge)
+    ;; the previous version of this lost edges -- it did not set up the edge-constituents
+    (let ((edge (make-edge-over-long-span
+                 (pos-edge-starts-at leftmost-edge)
+                 (pos-edge-ends-at rightmost-edge)
+                 (edge-category leftmost-edge)
+                 :constituents edge-list
                  :form (edge-form leftmost-edge)
                  :referent referent
-                 :rule-name 'conjoin-multiple-edges)))
+                 :rule 'conjoin-multiple-edges)))
       (tr :conjoining-multiple-edges/comma edge)
       (edge-interaction-with-quiescence-check edge)
       (when *save-conjunctions* 
