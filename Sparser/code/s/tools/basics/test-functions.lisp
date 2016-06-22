@@ -118,9 +118,14 @@
        (let
 	   ((*no-edge-info* no-edges)
 	    (*suppress-indiv-uids* t)
-	    (ref (edge-referent edge)))
+	    (ref (if (edge-p edge)
+                     (edge-referent edge)
+                     edge)))
 	 (declare (special *no-edge-info* *suppress-indiv-uids*))
-	 (format stream "~% --- ~s~%"  (extract-string-spanned-by-edge edge))
+	 (format stream "~% --- ~s~%"
+                 (if (edge-p edge)
+                     (extract-string-spanned-by-edge edge)
+                     edge))
 	 (if (word-p ref)
 	     (format stream "  ~s" ref)
 	     (print-sem-tree (semtree ref) stream))
@@ -197,7 +202,8 @@
 	   ((:dec-test dec-test) *dec-tests*)
 	   ((:erk erk) *erk-abstract*)
 	   ((:aspp2 aspp2) *aspp2-whole*)
-	   ((:load load-test) *load-test-sents*))))
+	   ((:load load-test) *load-test-sents*)
+           ((:comments comments) *comments*))))
     (second (nth (- n 1) sentences))))
 
 (defun show-sent-heading (sent corpus n stream)
