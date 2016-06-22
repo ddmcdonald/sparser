@@ -532,7 +532,7 @@ is a case in handle-any-anaphor
   (declare (special *all-np-categories* *sentence-in-core*))
   (when (and
 	 *sentence-in-core*
-	 (edge-form edge)
+	 (category-p (edge-form edge))
 	 (member (cat-symbol (edge-form edge)) *all-np-categories*))
     (loop for pair in (pending-definite-references *sentence-in-core*)
        when
