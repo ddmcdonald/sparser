@@ -881,6 +881,20 @@
   a rough assessment of the relative salience of
   different edge parents (edge-used-in).")
 
+
+
+(define-category event-relation
+  :specializes perdurant
+  :binds ((relation)
+          (event)
+          (subordinated-event)
+	  (adverb))
+  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
+    though the head decides what to do with it based on the
+    composition. Same design as pps."
+  )
+
+(mark-as-form-category category::event-relation)
 ;;;------------------------------------
 ;;; bracket introduction by form rules
 ;;;------------------------------------
