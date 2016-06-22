@@ -92,7 +92,7 @@
   :documentation "Similar to bio-whethercomp.")
 
 (define-mixin-category event-relation :specializes event ;; put in here since we don't want to modify EVENT yet
-  :binds ((following process)
+  :binds ((following (:or process bio-mechanism)) ;; bi-mechanism is for a stimulus
 	  (preceding process)
 	  (during process)
 	  (timeperiod (:or time-unit amount-of-time)))
