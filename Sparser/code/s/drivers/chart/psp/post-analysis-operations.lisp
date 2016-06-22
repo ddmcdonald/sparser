@@ -102,33 +102,37 @@ where it regulates gene expression.")
  ... bindings). First recursively interpret the bound elements in the
  bindings of the dt, then rebuild the interpretation of the dt from
  those reinterpreted bindings."
-  (let* ((mention (dt-mention dt))
-	 (base (base-description mention))
-	 (bindings (dt-bindings dt)))
-    (declare (special mention base bindings))
-    (typecase mention
-      (discourse-mention       
-       (cond
-	 ((slot-boundp mention 'ci)
-	  ;; dt was already contextually interpreted --
-	  ;;  this happens with conjunction distribution/expansion
-	  (contextual-interpretation mention))
-	 ((itypep-or base '(hyphenated-pair hyphenated-triple two-part-label))
-	  ;; not sure what to do for such things -- example ER-β is a hyphenated pair
-	  (setf (contextual-description mention) base)
-	  base)
-	 ((is-collection? base)
-	  ;; distribute conjunctions
-	  (setf (contextual-description mention)
-		(reinterpret-collection-with-modifiers dt var containing-mentions)))
-	 ((is-pronoun? base)
-	  (setf (contextual-description mention)
-		(interpret-pronoun-in-context dt var containing-mentions)))
-	 (t
-	  (setf (contextual-description mention) 
-		(reinterp-item-using-bindings dt var containing-mentions))
-	  (expand-interpretation-in-context-if-needed dt var containing-mentions))))
-      (t (break "~&***what sort of dt is ~s~&" dt)))))
+  (if (equal dt '(nil))
+      (progn
+        (format t "passed (NIL) to interpret-in-context")
+        nil)
+      (let* ((mention (dt-mention dt))
+             (base (base-description mention))
+             (bindings (dt-bindings dt)))
+        (declare (special mention base bindings))
+        (typecase mention
+          (discourse-mention       
+           (cond
+             ((slot-boundp mention 'ci)
+              ;; dt was already contextually interpreted --
+              ;;  this happens with conjunction distribution/expansion
+              (contextual-interpretation mention))
+             ((itypep-or base '(hyphenated-pair hyphenated-triple two-part-label))
+              ;; not sure what to do for such things -- example ER-β is a hyphenated pair
+              (setf (contextual-description mention) base)
+              base)
+             ((is-collection? base)
+              ;; distribute conjunctions
+              (setf (contextual-description mention)
+                    (reinterpret-collection-with-modifiers dt var containing-mentions)))
+             ((is-pronoun? base)
+              (setf (contextual-description mention)
+                    (interpret-pronoun-in-context dt var containing-mentions)))
+             (t
+              (setf (contextual-description mention) 
+                    (reinterp-item-using-bindings dt var containing-mentions))
+              (expand-interpretation-in-context-if-needed dt var containing-mentions))))
+          (t (break "~&***what sort of dt is ~s~&" dt))))))
 
 (defun find-pronoun-in-lifo-instance (types)
   (declare (special *lifo-instance-list))  
@@ -157,7 +161,7 @@ where it regulates gene expression.")
 					   (car containing-mentions))
 					  'be))
 			     nil
-			     (lsp-break
+			     (error
 			      "~&NIL restriction -- var: ~s, containing-mentions:~s~&"
 			      variable containing-mentions)))))
 	       (interpretation
@@ -340,6 +344,7 @@ where it regulates gene expression.")
 			   (not (itypep child-interp 'number)))
                         (format t "~&1) no internal edge for ~s in ~s~&"
 				child-interp parent-edge)
+                        (error "relevant-edges")
 		      nil)
 		    nil)))
 	     (t		
