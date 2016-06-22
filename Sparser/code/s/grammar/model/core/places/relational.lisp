@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2013,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relational"
 ;;;   Module:  "model;core:places:"
-;;;  version:  March 2013
+;;;  version:  June 2016
 
 ;; Extracted from object file 7/21/11. Evicerated it 9/28 in lieu of
 ;; doing something more nuanced. Removed the category/individuals
@@ -29,13 +29,26 @@
   :specializes location
   :binds ((place)
           (functor :primitive word)) ;;  spatial-orientation))
-   :realization (:tree-family content-pp
-                 :mapping ((type . :self)
-                           (articulator . functor)
-                           (item . place)
-                           (pp . :self)
-                           (preposition . ("in" "on")) ;; what else is imortant?
-                           (complement . np))))
+   :realization ((:tree-family content-pp
+                  :mapping ((type . :self)
+                            (articulator . functor)
+                            (item . place)
+                            (pp . :self)
+                            (preposition . ("in" "on")) ;; what else is imortant?
+                            (complement . np)))
+                 (:mumble (prepositional-phrase :p functor
+                                                :prep-object place))))
+
+(defmethod def-relative-location ((prep-name string) (n number))
+  (let ((prep (word-named prep-name))
+        (i (individual-object# n)))
+    (assert (word-is-a-preposition? prep))
+    (def-relative-location prep i)))
+
+(defmethod def-relative-location ((prep word) (i individual))
+  (find-or-make-individual 'relative-location
+                           :functor prep
+                           :place i))
 
 #|
 (def-cfr relative-location ("in" region)
