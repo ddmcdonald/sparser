@@ -2994,7 +2994,7 @@
   "Organic cation transporter 2" "hOCT2"))
 
 (define-protein "S2A4R_HUMAN"
- ("PR:Q9NR83" "SLC2A4 regulator" "GLUT4 enhancer factor" "GEF"
+ ("PR:Q9NR83" "SLC2A4 regulator" "GLUT4 enhancer factor" ;; "GEF"
   "Huntington disease gene regulatory region-binding protein 1"
   "HDBP-1" "GEFs"))
 
