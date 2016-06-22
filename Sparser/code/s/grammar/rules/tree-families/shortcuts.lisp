@@ -295,7 +295,8 @@ broadly speaking doing for you all the things you might do by hand.
 	       :restrict ,restrict
 	       :mixins ,mixin
 	       :realization
-	       ,(if noun `(:noun ,(if (consp noun)
+	       ,(if noun `(:noun ,(if (and (consp noun)
+                                           (not (member :plural noun)))
 				      (car noun)
 				      noun)
 				 ,.realization)
@@ -303,10 +304,12 @@ broadly speaking doing for you all the things you might do by hand.
 	 (category (eval form)))
     (when obo-id
       (setq category (bind-dli-variable 'uid obo-id category)))
-    (dolist (string (when (consp noun)(cdr noun)))
-      (let ((rule-form `(def-cfr/expr ',(cat-name category) '(,string)
-			   ;; can we guess it's a common noun for form?
-			  :referent ,category)))
+    (dolist (string (when (and (consp noun)
+                               (not (member :plural noun)))
+                      (cdr noun)))
+      (let ((rule-form
+             `(def-synonym ,(cat-name category) (:noun ,string))))
+        (print rule-form)
 	(eval rule-form)))
     category))
 
