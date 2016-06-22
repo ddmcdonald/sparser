@@ -901,7 +901,7 @@
 	   :etf (svo-passive)))
 
 (define-category development :specializes caused-bio-process
-  :realization (:verb "develop"
+  :realization (:verb ("develop" :present-participle "developing" :past-tense "developed")
 		      :etf (svo-passive)
 		      :noun "development"))
 
@@ -1137,17 +1137,13 @@
          :etf (svo-passive)
 	 :mumble ("find" svo)))
 
-#+ignore
-(define-category follow :specializes bio-relation ;; need event relation
-  :binds (;; subject and theme inherited from bio-relation
-          ;;(subject bio-process) ;; this is the initial process
-          ;;(theme bio-process) ;; this is the "following" process
-          (by (:or bio-method bio-process)))
+(define-category follow-xx :specializes abstract ;; this is intended to suppress definitions of "followed" and "follows"
+  :binds ((blocking determiner))
   :realization
-  (:verb "follow"
-         :etf (svo) 
-         :o theme
-         :by by))
+  (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
+                   :third-plural "follows")
+         :etf (sv)
+         :s blocking))
 
 (define-category bio-form :specializes caused-bio-process
   :realization
