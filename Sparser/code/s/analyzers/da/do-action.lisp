@@ -42,7 +42,9 @@
       (:make-edge-over-whole-span
        (execute-edge-over-whole-span-exp (cdr form)))
       (:function
-       (bind-context-and-apply-da-function-action (cdr form)))
+       (standardized-apply-da-function-action rule)
+       ;;(bind-context-and-apply-da-function-action (cdr form))
+       )
       (otherwise
        (push-debug `(,form ,rule))
        (error "Unexpected key in schematic-da-action: ~a"
@@ -90,6 +92,54 @@
           ;; ( word  pos-before  pos-after )
           (first tt)))))))
 
+(defvar *edge-spec*)
+(defvar *new-edge*)
+(defvar *current-da-rule*)
+(defun standardized-apply-da-function-action (rule)
+  (declare (special *current-da-rule*))
+  (setq *current-da-rule* rule)
+  (let* ((form (da-action-description rule))
+         (fn (second form))
+         (constituents
+          (loop for tta in *tt-alist*
+               as i from 1 to (length (da-pattern-description rule))
+             collect (cdr tta))))
+    (when (symbolp fn)
+      (unless (fboundp fn)
+        (error "The function ~a is not defined" fn)))
+    ;; The args are expected to be symbols for ordinals that
+    ;; were vetted when the rule was defined
+    (push-debug `(,fn ,constituents))
+    (tr :da-applying-fn-to-args fn constituents)
+    (when (setq *edge-spec* (apply fn constituents)) ;; can be nil if rule fails
+      (setq *new-edge*
+            (make-edge-over-long-span
+             (pos-edge-starts-at
+              (or (edge-spec-target *edge-spec*)
+                  (first constituents)))
+             (pos-edge-ends-at (car (last constituents)))
+             (edge-spec-category *edge-spec*)
+             :form (edge-spec-form *edge-spec*)
+             :referent (edge-spec-referent *edge-spec*)
+             :rule (da-name rule)
+             :constituents
+             (constituents-between
+              (or (edge-spec-target *edge-spec*)
+                  (first constituents))
+              (car (last constituents)))))
+      (cond ((edge-spec-dominating *edge-spec*)
+             (tuck-new-edge-under-already-knit
+              (edge-spec-target *edge-spec*)
+              *new-edge*
+              (edge-spec-dominating *edge-spec*)
+              (edge-spec-direction *edge-spec*))
+             (edge-spec-dominating *edge-spec*))
+            (t *new-edge*)))))
+
+(defun constituents-between (first-const last-const)
+  (cons first-const
+        (treetops-between (pos-edge-ends-at first-const)
+                          (pos-edge-ends-at last-const))))
 
 (defun bind-context-and-apply-da-function-action (form)
   (let ((function (car form))
