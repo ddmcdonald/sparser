@@ -350,6 +350,7 @@
      :etf (svo-passive)))
 
 (define-category addition :specializes caused-bio-process
+  :mixins (bio-thatcomp)
   :binds ((added biological))
   :realization
   (:verb "add" :noun "addition"

@@ -40,6 +40,9 @@
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
 
+;; from MITRE example
+(define-protein "MAZ_HUMAN" ("SAF-1" "SAF1"))
+
 ;; found in the article set
 (define-protein "PEA15_HUMAN" ("PEA-15" "astrocytic phosphoprotein PEA-15"))
 (define-protein "NRG1_HUMAN" ("neuroregulin" "neuregulin")) ;; actually NRG1_HUMAN is the "pro-form" of neuregulin-1, which is obtained by cleaving
