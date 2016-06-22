@@ -163,6 +163,7 @@
 		  (push-indentation)
 		  (loop for item in
 		       (if (eq (car sem-tree) 'items) ;; simplify printout of the ITEMS in a collection
+			   ;; temproary to simplify comparisons
 			   (second (second (second sem-tree)))
 			   (cdr sem-tree))
 		     do (print-sem-tree item stream))

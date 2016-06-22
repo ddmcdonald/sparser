@@ -380,6 +380,7 @@ for every category.
     (when (cdr established-type) ;; carry over any mix-ins
       (setf (indiv-type new) established-type))
     (loop for binding in (reverse (indiv-binds i))
+       ;; temporarily revert to simplify comparisons (indiv-binds i)
        ;; make/binding operates by a push operation
        ;; on the indiv-binds list, so we must do this in reverse
        ;; order to get the same list on the copy!!
