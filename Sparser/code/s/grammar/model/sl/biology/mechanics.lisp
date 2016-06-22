@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "mechanics"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: February 2016
+;;; version: June 2016
 
 ;; Initiated 3/2/14. 5/22/14 Added synonyms field to def-bio.
 ;; 6/9/14 Pulled types out from regular kinds. 7/24/14 reorganized.
@@ -33,7 +33,7 @@
   "Adds the given synonyms under the given ID."
   (let ((existing (gethash id *bio-synonym-hash*)))
     (setf (gethash id *bio-synonym-hash*)
-      (remove-duplicates (append synonyms existing) :test #'equal))))
+          (remove-duplicates (append synonyms existing) :test #'equal))))
 
 (defun get-bio-synonyms (id)
   "Given an ID, retrieve synonyms (not including the ID)."
@@ -425,7 +425,12 @@ the process.
 (defun make-typed-bio-entity (word category
                                    &optional greek identifier mitre-link
                                    ras2-model
-                                   long synonyms takes-plurals documentation)
+                                     long synonyms takes-plurals documentation)
+  
+  (unless (find-variable-for-category 'name category)
+    (error "Cannot use the def-bio form with the category ~a~
+            because it does not provide a 'name' variable" category))
+  
   (let ((label (or (override-label category) category))
         (form (category-named 'proper-noun))
         ;; proper noun makes sense for named protiens and such
@@ -457,7 +462,7 @@ the process.
     ;; as a common noun that has this individual as its referent.
     ;; Ignoring brackets since this runs with the new chunker
 
-    ;; Add synonyms.
+    ;; Add synonyms to the table for this head term
     (when synonyms
       (add-bio-synonyms (word-string word) synonyms))
 
