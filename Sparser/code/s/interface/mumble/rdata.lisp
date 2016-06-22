@@ -36,12 +36,26 @@
   ;;      (:mumble ("push" svo :s agent :o theme))
   ;;      (:mumble (transitive-with-final-adverbial "push" "together"))
   (when (cdr mumble-spec)
-    (etypecase (car mumble-spec)
-      (string
-       (apply-mumble-phrase-data
-        category (car mumble-spec) (cadr mumble-spec) (cddr mumble-spec)))
-      (symbol
-       (apply-mumble-function-data category mumble-spec)))))
+    (let ((operator (car mumble-spec)))
+      (etypecase operator
+        (string
+         (apply-mumble-phrase-data/verb
+          category (car mumble-spec) (cadr mumble-spec) (cddr mumble-spec)))
+        (symbol
+         (cond
+          ;; We might not be specifying a lexicalized head and instead
+          ;; getting all the parts from the bindings. This will be
+          ;; the name of a phrase followed by the usual pairs
+          ((mumble::phrase-named (mumble-symbol operator))
+           (apply-mumble-phrase-data 
+            category
+            (mumble::phrase-named (mumble-symbol operator))
+            (cdr mumble-spec)))
+          ((fboundp (mumble-symbol operator))
+           (apply-mumble-function-data category mumble-spec))
+          (t (push-debug `(,mumble-spec ,category))
+             (error "Cannot decode this specification for the category ~
+                     ~a~%  ~a" category mumble-spec))))))))
 
 (defun apply-mumble-function-data (category function-and-args)
   "Sugar for a call to a resource-defining Mumble function.
@@ -56,7 +70,39 @@
       (mumble::record-lexicalized-phrase category lp)
       (values lp category))))
 
-(defun apply-mumble-phrase-data (category pname phrase-name p&v-pairs)
+
+(defun apply-mumble-phrase-data (category phrase-name p&v-pairs)
+  "Designed for relative-location, where we want a PP with all of its
+   parts coming fron the values of the variables on a instance of one."
+  ;; e.g. (:mumble (prepositional-phrase :p functor :prep-object place))
+  (let* ((phrase (etypecase phrase-name
+                   (mumble::phrase phrase-name)
+                   (symbol
+                    (mumble::phrase-named (mumble-symbol phrase-name)))))
+         (clp (make-instance 'mumble::category-linked-phrase
+                :class category))
+         (map (loop for (param-name var-name) on p&v-pairs by #'cddr
+                as param = (mumble::parameter-named (mumble-symbol param-name))
+                as var = (find-variable-for-category var-name category)
+                do (assert var (var-name) "No variable named ~a in category ~a.")
+                collect (make-instance 'mumble::parameter-variable-pair
+                          :var var
+                          :param param)))
+         ;; Make a partially saturated LP that open in all its parameters
+         ;; which is make for a uniform procedure we applying it. 
+         (lp (make-instance 'mumble::partially-saturated-lexicalized-phrase
+               :phrase phrase
+               :free (mumble::parameters-to-phrase phrase))))
+    (setf (mumble::linked-phrase clp) lp)
+    (setf (mumble::parameter-variable-map clp) map)
+
+    ;; Store the CLP on the category for realize to find
+    (setf (get-tag :mumble category) clp)
+    clp))
+        
+
+;;/// to-do -- generalize away from assumption that it's always a verb
+(defun apply-mumble-phrase-data/verb (category pname phrase-name p&v-pairs)
   "Subroutine of apply-mumble-rdata to set up the data (dereference
    the symbols) so that the Mumble side of this."
   (let ((m-word (mumble::find-word pname))

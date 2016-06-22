@@ -34,8 +34,25 @@
 ;;;-----------------------------------------
 
 (defmethod mumble::realize ((i individual))
-  (get-mumble-word-for-sparser-word (value-of 'name i)))
-     
+  (let ((primary-category (car (indiv-type i))))
+    (cond
+      ;; Check for focus
+      ;; Check for knowwn / same type as recent
+      ((get-tag :mumble primary-category)
+       (mumble::realize-via-category-linked-phrase
+        primary-category i))
+      (t ;; caller will signal the error
+       nil))))
+
+;;  (get-mumble-word-for-sparser-word (value-of 'name i)))
+
+
+
+
+;;;---------------------------------------------------------
+;;; experiment in K-method based realizations on categories
+;;;---------------------------------------------------------
+
 (defgeneric tailored-individual-realization (individual)
   (:documentation "Looks for a type-specific realization
    'specialist' that will handle the derivation tree all

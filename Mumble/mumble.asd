@@ -93,6 +93,7 @@
   :description "Mumble components that depend on Sparser."
   :depends-on (:mumble :sparser)
   :components ((:file "grammar/numbers")
+               (:file "derivation-trees/interface")
                #+(or) (:file "derivation-trees/conversions")
                #+(or) (:file "interface/tsro/gofers")
                #+(or) (:file "interface/tsro/map-translations")))
