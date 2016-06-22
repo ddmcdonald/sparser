@@ -334,3 +334,49 @@
                       (list (symbol-value '].verb)
                             (symbol-value '.[verb )))
 
+;;;--------------------------
+;;; hedged copular relations
+;;;--------------------------
+
+
+#| Have to figure out an equivalent of biological in the restriction.
+Examples in the localization articles -- exhaustive list
+
+  "Mouse embryo fibroblasts (MEFs) isolated from ERK1 knockout mice 
+seemed to proliferate faster than control cells."
+  "These experiments seem to indicate that the proliferative signal 
+is mediated by ERK2."
+  "Bradykinin stimulation of protein kinase C seems to be 
+such a required pathway."
+  "this mechanism seems unlikely at present."
+  "Therefore, it seems unlikely that the receptor is simply 
+phosphorylated by Src."
+  "but rather seem dependent on phosphatidylinositol 
+3-kinase activity."
+  "The initiating event seems to be an influx of extracellular Ca."
+  "UV seems to provoke receptor activation."
+  "the possible role of ligand involvement would seem unlikely."
+  "While UV does seem to mimic growth factor activation of the receptor."
+  "this interaction seems to be of  low stoichiometry."
+
+(define-category seem :specializes bio-rhetorical
+    :binds ((tocomp (:or be biological)))
+    :realization
+    (:verb "seem"
+	   :etf (svo)
+           :to-comp tocomp))
+
+(def-synonym seem (:verb "appear" :etf (svo)))
+
+(def-form-rule (seem adjective)
+  :form vg
+  :referent (:function make-copular-adjective left-edge right-edge))
+
+(def-form-rule (seem ap)
+  :form vp
+  :referent (:function make-copular-adjective left-edge right-edge))
+
+(defun make-copular-adjective (copula adjective)
+  (let ((i (individual-for-ref adjective)))
+    (bind-dli-variable :copular-verb copula i)))
+|#

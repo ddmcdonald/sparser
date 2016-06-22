@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2016 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "verbs1"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2015
+;;; version: June 2016
 
 ;; verbs initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 12/3/14.
@@ -58,8 +58,12 @@
 ;;; definition of is-bio-entity. The call to FOM-SUBCATEGORIZATION ensures that
 ;;; the subcategorization frame exists for ASSIGN-SUBJECT.
 (assert (fom-subcategorization category::be))
-(assign-subject category::be category::biological (variable/category 'subject category::be))
-(assign-object category::be category::biological (variable/category 'predicate category::be))
+(assign-subject category::be
+                category::biological
+                (variable/category 'subject category::be))
+(assign-object category::be
+               category::biological
+               (variable/category 'predicate category::be))
 
 ;;;---------------------------
 ;;; macros for standard cases
@@ -2040,6 +2044,9 @@
 	   :etf (svo-passive)
            :for study))
 
+;; N.b. trying to move "seem" et al to the general vocabulary,
+;;  Now copied over to syntax/be.lisp while figuring out
+;;  how to get the equivalent of biological for the restriction
 (define-category seem :specializes bio-rhetorical
     :binds ((tocomp (:or be biological)))
     :realization
@@ -2051,8 +2058,7 @@
 
 (def-form-rule (seem adjective)
   :form vg
-  :referent (:function make-copular-adjective left-edge right-edge)
-)
+  :referent (:function make-copular-adjective left-edge right-edge))
 
 (def-form-rule (seem ap)
   :form vp
@@ -2061,6 +2067,9 @@
 (defun make-copular-adjective (copula adjective)
   (let ((i (individual-for-ref adjective)))
     (bind-dli-variable :copular-verb copula i)))
+;;<<< end forms queued to move to be.lisp
+
+
 
 
 (define-category bio-sequence :specializes bio-method
