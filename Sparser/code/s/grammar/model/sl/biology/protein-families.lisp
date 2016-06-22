@@ -99,5 +99,4 @@
 (def-family "growth-factor" :members ("EGF_HUMAN")
   :long "growth factor")
 
-(def-bio "growth receptor" protein-family)
 (def-bio "endophilin" protein-family)
