@@ -589,17 +589,22 @@
   ;;/// so there should be a compose method to deal with that
 
   ;; default
-  (let
-      ((vg (individual-for-ref vg-phrase)))
-    #|need to diagnose among
-    (time)
-    (location)
-    (purpose)
-    (circumstance)
-    (manner)
-    (aspect . tense/aspect)
-    BUT UNTIL THEN, JUST BIND THE ADVERB
-    |#
+  (cond ((word-p vg-phrase)
+         (format t "vg-phrase ~s is not a category or an individual, can't attach adverb"
+                 vg-phrase)
+         vg-phrase)
+        (t
+         (let
+             ((vg (individual-for-ref vg-phrase)))
+           #|need to diagnose among
+           (time)
+           (location)
+           (purpose)    
+           (circumstance)
+           (manner)
+           (aspect . tense/aspect)
+           BUT UNTIL THEN, JUST BIND THE ADVERB
+           |#
   #+ignore
   (push (list (edge-string (left-edge-for-referent))
               (edge-string (right-edge-for-referent)))
@@ -628,7 +633,7 @@
      (bind-dli-variable 'adverb adverb vg))
     ((vg-has-adverb-variable? vg vg-phrase adverb)
      (setq  vg (bind-dli-variable 'adverb adverb vg)))
-    (t vg))))
+    (t vg))))))
 
 (defun interpret-as-comp (as vp+ed)
   (declare (ignore as))
