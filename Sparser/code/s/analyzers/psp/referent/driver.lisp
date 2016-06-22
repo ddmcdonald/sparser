@@ -85,62 +85,83 @@
 ;;; the driver
 ;;;------------
 
+(defparameter *show-referent-for-edge-gaps* nil)
+(defun referent-for-edge (edge)
+  (cond ((and (symbolp (edge-rule edge))
+              (eq :long-span (edge-right-daughter edge)))
+         (when *show-referent-for-edge-gaps*
+           (format t "~% referent-for-edge appplied to a da-rule edge ~s~% with rule ~s and constituents ~s~%" edge (edge-rule edge) (edge-constituents edge)))
+         (edge-referent edge) ;; PUNT right now
+         )
+        (t
+         (referent-from-rule
+          (edge-left-daughter edge)
+          (edge-right-daughter edge)
+          edge
+          (edge-rule edge)))))
+   
+         
+
 (defun referent-from-rule (left-edge
                            right-edge
                            parent-edge
                            rule
                            &key left-ref
-                                right-ref )
+                             right-ref )
   (declare (special *c3*))
 
   (setq *referent* nil) ;; cleanup from last time
+  (if (eq rule :conjunction/identical-adjacent-labels)
+      (referent-of-two-conjoined-edges
+       (edge-referent left-edge)
+       (edge-referent right-edge))
 
-  (unless *no-referent-calculations*
-    (let ((*left-edge-into-reference*       left-edge)
-          (*right-edge-into-reference*      right-edge)
-          (*parent-edge-getting-reference*  parent-edge)
-          (*rule-being-interpreted*         rule)
-          (*head-edge* nil)  ;; set in ref/head
-          (*arg-edge* nil)   ;; ditto
-          (left-referent  (or left-ref
-                              (edge-referent left-edge)))
-          (right-referent (or right-ref
-                              (edge-referent right-edge)))
-          (rule-field (cfr-referent rule)))
+      (unless *no-referent-calculations*
+        (let ((*left-edge-into-reference*       left-edge)
+              (*right-edge-into-reference*      right-edge)
+              (*parent-edge-getting-reference*  parent-edge)
+              (*rule-being-interpreted*         rule)
+              (*head-edge* nil) ;; set in ref/head
+              (*arg-edge* nil)  ;; ditto
+              (left-referent  (or left-ref
+                                  (edge-referent left-edge)))
+              (right-referent (or right-ref
+                                  (edge-referent right-edge)))
+              (rule-field (cfr-referent rule)))
 
-      (declare (special 
-                *left-edge-into-reference* *right-edge-into-reference*
-                *parent-edge-getting-reference* *rule-being-interpreted*
-                *head-edge* *arg-edge*))
+          (declare (special 
+                    *left-edge-into-reference* *right-edge-into-reference*
+                    *parent-edge-getting-reference* *rule-being-interpreted*
+                    *head-edge* *arg-edge*))
                         
-      (when (not (null rule-field))
-        (if (listp rule-field)
-          (then
-            (if (listp (first rule-field))
-              (walk-through-referent-actions 
-               rule-field left-referent right-referent right-edge)
-              (else  ;; just one action
-                (setq *referent*
-                      (dispatch-on-rule-field-keys
-                       rule-field left-referent right-referent right-edge)))))
+          (when (not (null rule-field))
+            (if (listp rule-field)
+                (then
+                  (if (listp (first rule-field))
+                      (walk-through-referent-actions 
+                       rule-field left-referent right-referent right-edge)
+                      (else ;; just one action
+                        (setq *referent*
+                              (dispatch-on-rule-field-keys
+                               rule-field left-referent right-referent right-edge)))))
 
-          (else ;; direct pointer to referent
-            (setq *referent* rule-field)
-            (annotate-individual *referent* :immediate-referent)))
+                (else ;; direct pointer to referent
+                  (setq *referent* rule-field)
+                  (annotate-individual *referent* :immediate-referent)))
 
-        (call-redistribute-if-appropriate left-referent right-referent)
+            (call-redistribute-if-appropriate left-referent right-referent)
 
-        (when *c3*
-          (let ((result (incorporate-composition-into-situation 
-                         left-referent right-referent 
-                         *referent* rule parent-edge)))
-            (when result
-              (unless (eq result *referent*)
-                (setq *referent* result)))))
+            (when *c3*
+              (let ((result (incorporate-composition-into-situation 
+                             left-referent right-referent 
+                             *referent* rule parent-edge)))
+                (when result
+                  (unless (eq result *referent*)
+                    (setq *referent* result)))))
 
-        (if (null *referent*)
-         :abort-edge
-         *referent* )))))
+            (if (null *referent*)
+                :abort-edge
+                *referent* ))))))
 
 (defun walk-through-referent-actions  (rule-field 
                                        left-referent right-referent 
