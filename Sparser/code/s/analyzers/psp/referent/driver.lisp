@@ -111,7 +111,9 @@
   (declare (special *c3*))
 
   (setq *referent* nil) ;; cleanup from last time
-  (if (eq rule :conjunction/identical-adjacent-labels)
+  (if (or
+       (eq rule :conjunction/identical-adjacent-labels)
+       (eq rule :conjunction/identical-form-labels))
       (referent-of-two-conjoined-edges
        (edge-referent left-edge)
        (edge-referent right-edge))
