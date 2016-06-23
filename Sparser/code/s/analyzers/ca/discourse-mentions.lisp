@@ -281,9 +281,6 @@
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
   (let ((m (make-mention i source)))
-    (when (non-dli-mod-for i)
-      (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
-      (setf (non-dli-mod-for i) nil))
     (tr :made-mention m)
     (list m)))
 
@@ -308,7 +305,7 @@
     (tr :making-new-mention m)
     (push m (mention-history i)) ;; calls (check-consistent-mention m)
     (when (edge-p source)
-      (setf (edge-mention source) m)
+      (setf (edge-mention source) m)     
       (push m *lattice-individuals-mentioned-in-paragraph*)
       (let ((subsumed-mention (subsumed-mention? i source)))
 	(cond (subsumed-mention
@@ -341,6 +338,9 @@
 			)))
 	      (t
 	       (when category (push m (discourse-entry category)))
+               (when (non-dli-mod-for i)
+                 (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
+                 (setf (non-dli-mod-for i) nil))
 	       (unless (eq (edge-form source) category::prepositional-phrase)
 		 (push m (gethash category *maximal-lattice-mentions-in-paragraph*)))))))
     m))
