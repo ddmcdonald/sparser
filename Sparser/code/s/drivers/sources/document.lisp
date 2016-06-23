@@ -121,10 +121,10 @@
   (declare (special *sentence-making-sweep* *sections-to-ignore*))
   (let ((*current-article* a))
     (declare (special *current-article*))
+    (set-document-index a :ignore)
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
       (sweep-for-embedded-sections a))
-    (set-document-index a :ignore)
     (when (actually-reading)
       (when (or *show-article-progress* *show-section-printouts*)
         (format t "~&=============================================~%~
