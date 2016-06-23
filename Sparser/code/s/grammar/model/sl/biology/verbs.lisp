@@ -1507,6 +1507,23 @@
    :etf (svo-passive) 
    :o object))
 
+(define-category lose :specializes negative-bio-control
+  :restrict ((object (:or protein gene)) )
+  :realization 
+  (:verb ("lose" :present-participle "losing" :past-participle "lost"
+                 :past-tense "lost")
+   :noun "loss" 
+   :etf (svo-passive) 
+   :o object
+   :of object))
+
+
+(define-category lower :specializes negative-bio-control
+  :restrict ((object bio-process))
+  :realization
+  (:verb "lower" :noun "lowering" 
+         :etf (svo-passive)))
+
 (define-category maintain :specializes bio-control
   :binds ((state bio-state))
   :realization
@@ -1986,7 +2003,8 @@
     (:verb ("result" :third-plural "results") ;; block plural form of the verb, because of interaction with noun
 	   :etf (sv)
            :from subject 
-	   :in result))
+	   :in result
+           :of subject))
 
 (def-synonym result (:noun "result"))
 
