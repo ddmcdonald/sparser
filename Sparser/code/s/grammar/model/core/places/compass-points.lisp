@@ -80,7 +80,7 @@
 (define-additional-realization relative-location
   ;; category defined in places/relational)
   (:tree-family simple-of-complement
-   :mapping ((np-item . functor)
+   :mapping ((np-item . prep)
              (of-item . place)
              (np . location)
              (complement . location)
