@@ -47,7 +47,8 @@
   :specializes other-bio-process
   ;;//// bind it explicitly? :obo-id "GO:0023052"  ;; reasonable stand-in
   :binds ((agent protein) ;;bio-entity) ;; what's doing the signalling
-          (object (:or bio-process protein)))  ;; what's being signaled
+          (object (:or bio-process protein))
+          (intermediary (:or bio-process protein)))  ;; what's being signaled
   :realization 
     (:verb ("signal"  :present-participle "xxxsignaling") ;; block "signaling" as a verb
      :noun "signalling"
@@ -55,7 +56,9 @@
      :m agent
      :s agent 
      :o object
-     :to object))
+     :to object
+     :via intermediary
+     :through intermediary))
 
 (def-synonym signal ;; Jan.#26
    (:noun "signaling" 
