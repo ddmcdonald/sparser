@@ -206,13 +206,15 @@
       (setq treetops (successive-treetops :from start-pos :to end-pos)))))
 
 
-(defun da-rule-cycle (start-pos end-pos treetops)
+(defun da-rule-cycle (start-pos end-pos treetops &optional once-only?)
   (let (rule-executed?)
     (loop with result while (setq result (execute-one-da-rule treetops))
-      do
-      (setq rule-executed? t)
-      (when (edge-p result) (tr :p2-da-returned-edge result))
-      (setq treetops (successive-treetops :from start-pos :to end-pos)))
+       do
+         (setq rule-executed? t)
+         (when (edge-p result)
+           (tr :p2-da-returned-edge result))
+         (setq treetops (successive-treetops :from start-pos :to end-pos))
+         (when once-only? (return t)))
     rule-executed?))
 
 (defun execute-one-da-rule (treetops)
