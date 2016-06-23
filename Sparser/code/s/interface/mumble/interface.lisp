@@ -18,6 +18,23 @@
 ;; N.b. there's a check that the mumble code is loaded (package defined)
 ;; in the grammar loader that brings this code in. 
 
+;;;-----------------------------------------
+;;; realizations for classes of individuals
+;;;-----------------------------------------
+
+(defmethod mumble::realize ((i individual))
+  (let ((primary-category (car (indiv-type i))))
+    (cond ;; Check for focus, known object, same type as recent, etc.
+      ((get-tag :mumble primary-category)
+       (mumble::realize-via-category-linked-phrase primary-category i))
+      (t (let ((label (or (value-of 'name i)
+                          (value-of 'word i)
+                          (pname-for primary-category))))
+           (etypecase label
+             (string (mumble::word-for-string label))
+             (word (get-mumble-word-for-sparser-word label))
+             (mumble::word label)))))))
+
 ;;;----------------------------------------------------------
 ;;; Mumble methods with signatures that need Sparser classes
 ;;;----------------------------------------------------------
@@ -26,27 +43,8 @@
                                               (lp mumble::lexicalized-resource))
   (mumble::record-lexicalized-phrase (symbol-name (cat-symbol category)) lp))
 
-(defmethod get-lexicalized-phrase ((category category))
+(defmethod mumble::get-lexicalized-phrase ((category category))
   (mumble::get-lexicalized-phrase (symbol-name (cat-symbol category))))
-
-;;;-----------------------------------------
-;;; realizations for classes of individuals
-;;;-----------------------------------------
-
-(defmethod mumble::realize ((i individual))
-  (let ((primary-category (car (indiv-type i))))
-    (cond
-      ;; Check for focus
-      ;; Check for knowwn / same type as recent
-      ((get-tag :mumble primary-category)
-       (mumble::realize-via-category-linked-phrase
-        primary-category i))
-      (t ;; caller will signal the error
-       nil))))
-
-;;  (get-mumble-word-for-sparser-word (value-of 'name i)))
-
-
 
 
 ;;;---------------------------------------------------------

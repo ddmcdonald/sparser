@@ -24,19 +24,19 @@
 ;;; relative (prepositional) locations
 ;;;------------------------------------
 
-(define-category  relative-location  ;; "above the house"
+(define-category relative-location  ;; "above the house"
   :instantiates self
   :specializes location
   :binds ((place)
-          (functor :primitive word)) ;;  spatial-orientation))
+          (prep :primitive word))
    :realization ((:tree-family content-pp
                   :mapping ((type . :self)
-                            (articulator . functor)
+                            (articulator . prep)
                             (item . place)
                             (pp . :self)
                             (preposition . ("in" "on")) ;; what else is imortant?
                             (complement . np)))
-                 (:mumble (prepositional-phrase :p functor
+                 (:mumble (prepositional-phrase :p prep
                                                 :prep-object place))))
 
 (defmethod def-relative-location ((prep-name string) (n number))
@@ -47,7 +47,7 @@
 
 (defmethod def-relative-location ((prep word) (i individual))
   (find-or-make-individual 'relative-location
-                           :functor prep
+                           :prep prep
                            :place i))
 
 #|
@@ -56,13 +56,13 @@
 ;;  :head :right-edge
   :referent (:instantiate-individual relative-location
              :with (place right-edge
-                    functor left-edge)))
+                    prep left-edge)))
 |#
 (def-form-rule (spatio-temporal-preposition location)
   :form pp
   :head :right-edge
   :referent (:instantiate-individual relative-location
              :with (place right-edge
-                    functor left-edge)))
+                    prep left-edge)))
 
 
