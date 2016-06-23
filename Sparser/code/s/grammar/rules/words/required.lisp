@@ -68,7 +68,8 @@
   ;; don't occur in the text we're looking at. 
 
 (defun period-hook-on ()
-  (define-completion-action word::period :hook 'period-hook))
+  (define-completion-action word::period :hook 'period-hook)
+  (define-completion-action word::QUESTION-MARK :hook 'period-hook))
 
 (defun period-hook-off ()
   (delete-completion-action word::period :hook))
