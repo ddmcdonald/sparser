@@ -178,6 +178,9 @@
 (defun e# (n)
   (edge# n))
 
+(defun em# (n)
+  (edge-mention (edge# n)))
+
 (defun i# (n)
   (individual-object# n))
 
