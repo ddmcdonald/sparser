@@ -712,3 +712,10 @@ similar to an oncogenic RasG12V mutation (9)."))
    `(def-form-rule (,nb copular-pp)
                    :form s
       :referent (:function apply-copular-pp left-edge right-edge))))
+
+
+;; handle "RAS not bound to ERK"
+(def-form-rule (not verb+ed)
+  :form vg+ed
+  :referent (:head right-edge
+             :bind (negation left-edge)))
