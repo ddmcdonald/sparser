@@ -40,6 +40,9 @@
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
 
+;; from Ben Gyori
+(define-protein "DUS6_HUMAN" ("DUSP6" "DUSP-6"))
+
 ;; from MITRE example
 (define-protein "MAZ_HUMAN" ("SAF-1" "SAF1"))
 
@@ -212,6 +215,9 @@
 ;;/// are these small molecules like GDP or are the larger? -- protein
 ;; And these are families of particulars, not the particulars that are
 ;;  actually doing participating in the reactions
+
+(noun "tyrosine kinase" :super kinase)
+(noun "threonine kinase" :super kinase)
 
 (def-bio "RasGRF1" protein :synonyms ( "RASGRF1") :mitre-link "Uniprot:Q13972")
 
