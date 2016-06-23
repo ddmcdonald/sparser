@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-1995,2012-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2012-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  1.1 August 2015
+;;;  Version:  June 2016
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
@@ -11,13 +11,6 @@
 ;;     typo 10/24. (4/22/12) Compiler fix. (8/10/15) another one.
 
 (in-package :sparser)
-(defvar WORD::\s)
-(defvar WORD::\t)
-(defvar WORD::|re|)
-(defvar WORD::|ve|)
-(defvar WORD::|ll|)
-(defvar WORD::\m)
-
 
 ;;;------------
 ;;; categories
@@ -59,7 +52,9 @@
   ;; We check here whether there's an "s", "t", "re", or "ll" just after it,
   ;; without any interveening space.
   (declare (ignore single-quote)
-           (special category::verb category::modal))
+           (special category::verb category::modal
+                    word::|s| word::|t| word::|re|
+                    word::|ve| word::|ll| word::|m| ))
   (when *trace-fsas*
     (format t "~&Starting FSA for |'s_or't| at p~A~%"
             (pos-token-index starting-position)))

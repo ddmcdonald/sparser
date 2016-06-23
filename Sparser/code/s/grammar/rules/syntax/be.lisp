@@ -232,6 +232,13 @@
 ;;; contractions with other closed class words
 ;;;--------------------------------------------
 
+#| This operation has two steps. First the CS rule changes
+the apostrophe-s (see apostrophe-fsa) into the word "is".
+Then in the edge construction process (e.g. make-default-binary-edge)
+the call to complete is immediately followed by a call to
+assess-edge-label, which rewrites the word as the category BE.
+|#
+
 ;;--- "there"
 (def-csr apostrophe-s  "is"
   :left-context "there" )
@@ -241,9 +248,9 @@
 #|  Prefer the form rule that combines with an NP to the left.
     That will get the pronoun interpretation of "it" into the
     chart, which has more potential even if the contruction 
-    turns out to be cleft.
+    turns out to be cleft.        |#
 (def-csr apostrophe-s "is"
-  :left-context "it" )         |#
+  :left-context "it" ) 
 
 
 ;;--- "that"    ;; glossed as a determiner for bracketing purposes

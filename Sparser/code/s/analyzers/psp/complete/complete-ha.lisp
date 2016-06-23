@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:   "complete HA"
 ;;;    Module:   "analyzers;psp:complete:"
-;;;   Version:   April 2016
+;;;   Version:   June 2016
 
 ;; 1.1  (5/2 v1.8.4)  Modified Complete-edge to check the quiescent
 ;;      position of the forest-level parser
@@ -187,12 +187,13 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
 (defun valid-referent? (edge)
   "Trap cases where an edge that should have a referent doesn't.
    And for the posibility of the referent being a cons"
-  (declare (special category::punctuation category::dash))
+  (declare (special category::punctuation category::dash word::|is|))
   (when (null (edge-referent edge))
     ;; It doesn't have a referent. Is that ok?
     (unless (or (polyword-p (edge-category edge))
                 (eq (edge-form edge) category::punctuation)
                 (eq (edge-category edge) category::dash)
+                (eq (edge-category edge) word::|is|) ;; for CS rules in be.lisp
                 (member (edge-rule edge)
                         '(:default-edge-over-paired-punctuation
                           :conjunction/identical-adjacent-labels
