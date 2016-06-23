@@ -209,7 +209,8 @@
 	   ((:erk erk) *erk-abstract*)
 	   ((:aspp2 aspp2) *aspp2-whole*)
 	   ((:load load-test) *load-test-sents*)
-           ((:comments comments) *comments*))))
+           ((:comments comments) *comments*)
+           ((:gyori gyori) *gyori*))))
     (second (nth (- n 1) sentences))))
 
 (defun show-sent-heading (sent corpus n stream)
