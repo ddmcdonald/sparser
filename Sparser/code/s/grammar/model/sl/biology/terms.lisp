@@ -150,7 +150,7 @@
 (noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
 (noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate") :super phospholipid)
 
-(adj "bound" :super bio-predication)
+;;(adj "bound" :super bio-predication) it is the past tense of bind
 (adj "unbound" :super bio-predication)
 
 
@@ -188,7 +188,7 @@
 
 
 ;;/// N.b. the rule is written over the literal "fold"
-(noun fold :super abstract)
+(noun "fold" :super abstract)
 ;; only used in phrases like nnn-fold, this is here to suppress the
 ;;  attempt to ascribe a biological meaning to the verb
 
