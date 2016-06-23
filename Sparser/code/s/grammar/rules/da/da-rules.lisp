@@ -601,6 +601,16 @@
        :referent modified-np-ref
        ))))
 
+
+(define-debris-analysis-rule np-vp+ed
+  :pattern (proper-noun vp+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           proper-noun-vp+ed first second))
+
+(defun proper-noun-vp+ed (proper-noun vp+ed)
+  (np-vp+ed proper-noun vp+ed))
+
 (defun adverb-at? (position)
   (declare (special category::adverb))
   (loop for e in (all-edges-on (pos-starts-here position))
