@@ -351,14 +351,14 @@
     (cat-name (cfr-form rule))))
 
 ;; speedup pointed out by SBCL profiling
-(defparameter *cat-names* (make-hash-table :size 500))
+(defparameter *cat-names* (make-hash-table :size 1000))
 
 (defun cat-name (cat)
-  (and cat ;; words don't have edge-forms
-       (or
-        (gethash cat *cat-names*)
-        (setf (gethash cat *cat-names*)
-              (intern (symbol-name  (cat-symbol cat)) :sparser)))))
+  (when (category-p cat) ;; words don't have edge-forms
+    (or
+     (gethash cat *cat-names*)
+     (setf (gethash cat *cat-names*)
+           (intern (symbol-name  (cat-symbol cat)) :sparser)))))
 
 
 ;;;-----------------------------------
