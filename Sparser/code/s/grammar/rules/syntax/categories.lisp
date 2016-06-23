@@ -466,12 +466,14 @@
 
 (defun preceding-det-prep-poss-or-adj (e)
   (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
-     thereis
-       (or (member (cat-name (edge-form ee)) '(det possessive adjective number
-					       verb+ed verb+ing))
-	   (and (category-p (edge-category ee))
-		(memq (cat-name (edge-category ee))
-		      '(preposition spatial-preposition))))))
+     thereis (det-prep-poss-or-adj? ee)))
+
+(defun det-prep-poss-or-adj? (ee)
+  (or (member (cat-name (edge-form ee)) '(det possessive adjective number
+                                          verb+ed verb+ing))
+      (and
+       (member (cat-name (edge-form ee))
+               '(preposition spatial-preposition)))))
 
 (defun followed-by-verb (e)
   (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
@@ -493,6 +495,12 @@
   (declare (special *chunk*))
   (when (not (preceding-adverb e))
     (cond
+      ((and
+        (eq (cat-name (edge-form e)) 'quantifier)
+        (itypep (edge-referent e) 'not))
+       nil)
+      ((eq (cat-name (edge-form e)) 'verb+ed)
+       nil)
       ((or (plural-noun-and-present-verb? e)
 	   (singular-noun-and-present-verb? e))
        ;; fix logic error -- if we hav a noun-verb ambiduity,
@@ -560,16 +568,24 @@
 
 (defmethod vg-start? ((e edge))
   (declare (special category::to))
-  (if
-   (or (plural-noun-and-present-verb? e)
-       (singular-noun-and-present-verb? e))
-   (and
-    (not (preceding-det-prep-poss-or-adj e))
-    (not (followed-by-verb e))
-    (not (let ((prev-edge (edge-just-to-left-of e)))
-	   (and prev-edge
-		(eq (edge-category prev-edge) category::to)))))
-   (vg-compatible? e)))
+  (cond
+    ((plural-noun-and-present-verb? e)
+     (and
+      (not (preceding-det-prep-poss-or-adj e))
+      (or
+       (not (plural-noun-not-present-verb e))
+       (some-edge-satisfying? (edges-after e) #'clear-np-start?)
+       (not (ng-compatible? e nil))
+       (not (ng-head? e)))))
+    ((singular-noun-and-present-verb? e)
+     (and
+      (not (preceding-det-prep-poss-or-adj e))
+      (not (followed-by-verb e))
+      (not (let ((prev-edge (edge-just-to-left-of e)))
+             (and prev-edge
+                  (eq (edge-category prev-edge) category::to))))))
+    (t
+     (vg-compatible? e))))
 
 (defgeneric vg-compatible? (label)
  (:documentation "Is a category which can occur inside a VG"))
