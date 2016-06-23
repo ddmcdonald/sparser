@@ -1521,8 +1521,12 @@
 (define-category lower :specializes negative-bio-control
   :restrict ((object bio-process))
   :realization
-  (:verb "lower" :noun "lowering" 
+  (:verb "lower" :noun "lowering"
          :etf (svo-passive)))
+(define-category lower-adj :specializes bio-predication
+  :realization
+  (:adj "lower"))
+
 
 (define-category maintain :specializes bio-control
   :binds ((state bio-state))
