@@ -88,14 +88,15 @@
   (declare (special *load-test-sents*))
   (test-corpus *load-test-sents* numbers))
 
-(defun test-sent (corpus n &key (no-edges t) (quiet t) (stream *standard-output*))
+(defun test-sent (corpus n &key (no-syn-tree t) (no-edges t) (quiet t) (stream *standard-output*))
   (declare (special *chunks* *overnight-sentences* *jan-dry-run*
                     *dec-tests* *erk-abstract* *aspp2-whole*
                     *load-test-sents*))
   (let*
       ((*readout-segments-inline-with-text* nil) ;; quiet
-       (sent (get-sentence corpus n)))
-    (declare (special *readout-segments-inline-with-text*))
+       (sent (get-sentence corpus n))
+       (*show-syn-tree* (not no-syn-tree)))
+    (declare (special *show-syn-tree* *readout-segments-inline-with-text*))
     (if quiet
         (pp sent)
         (eval `(p ,sent)))
@@ -112,7 +113,9 @@
   (show-sem-syn-forest stream)
   )
 
-(defun show-sem-syn-forest (&optional (stream *standard-output*) (no-edges t))
+(defparameter *show-syn-tree* t)
+(defun show-sem-syn-forest (&optional  (stream *standard-output*) (no-edges t))
+  (declare (special *show-syn-tree*))
   (loop for edge in (all-tts)
      do
        (let
@@ -129,10 +132,13 @@
 	 (if (word-p ref)
 	     (format stream "  ~s" ref)
 	     (print-sem-tree (semtree ref) stream))
-	 (format stream "~%~%------ Edge syntactic tree:~%")
-	 (ctree edge stream)
+	 
+	 (when *show-syn-tree*
+           (format stream "~%~%------ Edge syntactic tree:~%")
+           (ctree edge stream))
 	 (format stream "~%~%"))))
 
+#+ignore
 (defun psemtree (st-item &optional (stream *standard-output*))
   (let* ((*print-sem-tree* t)
 	 (item
