@@ -179,7 +179,7 @@
 		  when (loop for v2 in (cdr vr2) thereis (or (eq v1 v2) (itypep v1 v2)))
 		  collect v1)))
 	  (if (cdr vr) (cons :or vr) (car vr))))
-       ((loop for v1 in (cdr vr1) thereis (or (eq v1 vr2) (itypep vr2 v1)))
+       ((loop for v1 in (cdr vr1) thereis (or (eq v1 vr2) (itypep v1 vr2)))
 	vr2)))
     ((and (consp vr2) (eq (car vr2) :or))
      (when
