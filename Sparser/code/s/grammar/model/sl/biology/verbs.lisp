@@ -135,9 +135,10 @@
   :realization
   (:verb "distinguish" :etf (svo-passive)))
 
-(define-category die :specializes other-bio-process ;; actually organism process
+(define-category die :specializes cellular-process ;; actually organism process
   :realization
-  (:verb "die" :etf (sv)))
+  (:verb "die"
+         :noun "death" :etf (sv)))
 
 (define-category compensate :specializes other-bio-process
   :binds ((alternate biological))
@@ -1048,6 +1049,21 @@
          :etf (svo-passive)
          :for presence-of))
 
+
+(define-category bio-exchange :specializes bio-movement
+  :binds ((state-before (:or bio-state variant))
+          (state-after (:or bio-state variant))
+          (subject nucleotide))
+  :realization
+  (:noun "exchange"
+         :verb "exchange"
+         :etf (svo-passive)
+         :o object
+         :m subject
+         :s subject
+         :from state-before
+         :to state-after))
+
 (define-category exhibit :specializes caused-bio-process
     :realization
     (:verb "exhibit"
@@ -1148,9 +1164,10 @@
 
 (define-category bio-form :specializes caused-bio-process
   :realization
-  (:verb ("formXXX" :third-plural "forms" :past-tense "formed") 
+  (:verb ("form" :third-plural "forms" :past-tense "formed") 
          ;; "form" has never been seen as a verb in the corpus, but "forms" and "formed"
          ;; have been seen
+         ;; NOW: "form" occurs in the Reactome comments
          :noun "formation"
          :etf (svo-passive) ))
 
@@ -1742,7 +1759,7 @@
            :etf (svo-passive)))
 (delete-noun-cfr (resolve "probe"))
 
-(define-category proliferate :specializes other-bio-process
+(define-category proliferate :specializes cellular-process
     :binds ((bio biological))
     :realization
     (:verb "proliferate"
@@ -1752,6 +1769,26 @@
            :through bio
            :with bio
 	   :within bio))
+
+(define-category adhesion :specializes cellular-process
+    :binds ((bio biological))
+    :realization
+    (:verb "adhere"
+	   :etf (sv)
+	   :noun "adhesion"
+           :with bio
+           :to bio))
+
+(define-category transformation :specializes cellular-process
+   :binds ((initial biological)
+           (final biological))
+   :realization
+   (:verb "transform"
+          :etf (sv)
+          :noun "transformation"
+          :from initial
+          :to final
+          :into final))
 
 (define-category prolong :specializes caused-bio-process
   :realization

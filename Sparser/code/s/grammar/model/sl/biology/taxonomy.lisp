@@ -357,7 +357,15 @@
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
 
-
+(define-category cellular-process :specializes bio-process
+  :mixins (has-UID has-name biological)
+  :binds ((subject biological))
+  :realization 
+  (:noun "processYYY"
+         :s subject)
+  :documentation "No content by itself, provides a common parent
+  for 'processing', 'ubiquitization', etc. that may be the basis
+  of the grammar patterns.")
 
 (define-category named-bio-process
     :specializes other-bio-process
@@ -408,7 +416,8 @@
 (define-category bio-control :specializes caused-bio-process
  ;; increase in rate vs increase in RAS activity
   :realization
-  (:verb ("control" :present-participle "controlling" :present-participle "controling") 
+  (:verb ("control" :present-participle "controlling"
+                    :present-participle "controling") 
          :etf (svo-passive)))
 
 (define-category negative-bio-control :specializes bio-control
@@ -466,6 +475,7 @@
   :restrict ((cellular-location over-ridden))
   :binds
   ((object (:or bio-entity bio-chemical-entity))
+   (co-object (:or bio-entity bio-chemical-entity))
    (origin cellular-location)
    (destination cellular-location))
   :realization 
@@ -475,7 +485,8 @@
        :onto destination
        :from origin
        :m destination
-       :m object))
+       :m object
+       :with co-object))
 
 (define-category bio-self-movement :specializes bio-movement
   :realization
@@ -509,9 +520,16 @@
   :bindings (uid "GO:0005488"))
 
 (delete-noun-cfr (resolve "reaction"))
-(define-category chemical-reaction
-  :realization (:noun "reaction") :specializes bio-process ;; for our purposes, since we only have biologically relevant reactions
-  )
+(define-category chemical-reaction :specializes bio-process   ;; for our purposes, since we only have biologically relevant reactions
+   :binds ((reactant bio-chemical-entity)
+           (co-reactant bio-chemical-entity)
+           (result bio-chemical-entity))
+   :realization (:noun "reaction"
+                       :verb "react"
+                       :etf (sv)
+                       :s reactant
+                       :with co-reactant
+                       ))
 
 (define-category biochemical-reaction :specializes chemical-reaction ;; from biopax
   )
@@ -852,6 +870,7 @@
 (define-cellular-location "plasma membrane" "GO_0005886")
 (define-cellular-location "platelet dense granule lumen" "GO_0031089")
 (define-cellular-location "trailing edge" "GO_0031254")
+(define-cellular-location "juxtamembrane" "GO_????")
 
 (define-category stress-granule :specializes cellular-location
   :realization (:noun "SG"))
@@ -962,15 +981,23 @@
   :index (:permanent :key name)
   :realization (:common-noun name))
 
-(define-category nucleotide-exchange-factor :specializes enzyme
+
+;; once "exchange" is defined as a verb, then this becomes a
+;;  special case phrase
+(define-category exchange-factor :specializes enzyme
   :binds ((substrate protein)
           (nucleotide nucleotide))
   :realization
-  (:noun "nucleotide exchange factor"
+  (:noun "exchange factor"
          :m nucleotide
          :m substrate
          :of substrate
          :for substrate))
+
+
+(define-category nucleotide-exchange-factor :specializes exchange-factor
+  :realization
+  (:noun "nucleotide exchange factor"))
 
 
 (define-category phosphatase :specializes enzyme
