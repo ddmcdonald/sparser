@@ -91,9 +91,13 @@
   :realization (:ifcomp statement)
   :documentation "Similar to bio-whethercomp.")
 
-(define-mixin-category event-relation :specializes event ;; put in here since we don't want to modify EVENT yet
-  :binds ((following (:or process bio-mechanism)) ;; bi-mechanism is for a stimulus
-	  (preceding process)
+(define-category event-relation :specializes perdurant ;; put in here since we don't want to modify EVENT yet
+  :binds ((relation)
+          (event)
+          (subordinated-event)
+	  (adverb)
+          (following process)
+          (preceding process)
 	  (during process)
 	  (timeperiod (:or time-unit amount-of-time)))
   :realization (:for timeperiod
@@ -224,7 +228,9 @@
   (:of subject))
 
 (define-category bio-scalar :specializes scalar-quality
+  :binds ((item-measured biological))
   :mixins (bio-quality)
+  :realization (:of item-measured)
   :documentation "Provides a generalization over biological and scalar")
 
 (define-category  measurement  :specializes abstract
@@ -327,8 +333,8 @@
 (define-category bio-process
     :specializes process
     :mixins (has-UID has-name biological event-relation)
-    :binds ((by-means-of (:or bio-process mechanism bio-method))
-	    (using bio-entity)
+    :binds ((by-means-of (:or bio-process mechanism bio-method pathway))
+	    (using protein)
 	    (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
 	    (as-comp as-comp)
 	    (target (:or protein gene)))
@@ -338,6 +344,8 @@
 	   :through by-means-of
 	   :via by-means-of
 	   :via using
+       :through using
+       :through by-means-of
 	   :in manner
 	   :as-comp as-comp
 	   :at target)
@@ -384,8 +392,7 @@
 	 molecular-location));; membrane targeting domains that facilitate interaction with the plasma membrane
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
    (at (:or bio-concentration quantity measurement))
-   (extent bio-scalar)
-   (intermediate (:or protein bio-process pathway)))
+   (extent (:or amount bio-scalar)))
   :realization
   (:s agent
       :o object
@@ -395,8 +402,7 @@
       :by agent     
       :at at
       :to extent
-      :through intermediate
-      :via intermediate))
+      ))
 
 
 (define-category mechanism :specializes endurant
@@ -650,7 +656,7 @@
 (define-category bio-context :specializes biological
   :binds ((process process)
           (entity bio-entity)
-	  (quantitative-condition bio-scalar))
+	  (quantitative-condition (:or amount bio-scalar)))
   :mixins (has-name)
   :realization
   (:noun "context"
