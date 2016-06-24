@@ -248,6 +248,12 @@
 (defun attach-trailing-participle-to-clause-base (s vp)
   (attach-trailing-participle-to-clause-with-conjunction s nil vp))
 
+(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-base
+  :pattern ( subordinate-clause vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-base first second))
+
+(defun attach-trailing-participle-to-subordinate-clause-base (s vp)
+  (attach-trailing-participle-to-clause-with-conjunction s nil vp))
 
 (define-debris-analysis-rule attach-trailing-participle-to-clause-with-conjunction-comma
   :pattern ( s "," vp+ing )
@@ -256,11 +262,25 @@
 (defun attach-trailing-participle-to-clause-with-conjunction-comma (s comma vp)
   (attach-trailing-participle-to-clause-with-conjunction s comma vp))
 
+(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-comma
+  :pattern ( subordinate-clause "," vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-comma first second third))
+
+(defun attach-trailing-participle-to-subordinate-clause-with-conjunction-comma (s comma vp)
+  (attach-trailing-participle-to-clause-with-conjunction s comma vp))
+
 (define-debris-analysis-rule attach-trailing-participle-to-clause-with-conjunction-and
   :pattern ( s and vp+ing )
   :action (:function attach-trailing-participle-to-clause-with-conjunction-and first second third))
 
 (defun attach-trailing-participle-to-clause-with-conjunction-and (s and vp)
+  (attach-trailing-participle-to-clause-with-conjunction s and vp))
+
+(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-and
+  :pattern ( subordinate-clause and vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
+
+(defun attach-trailing-participle-to-subordinate-clause-with-conjunction-and (s and vp)
   (attach-trailing-participle-to-clause-with-conjunction s and vp))
 
 (defun attach-trailing-participle-to-clause-with-conjunction (s-edge conj vp-edge)
