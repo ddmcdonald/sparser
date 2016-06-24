@@ -388,6 +388,15 @@
   (:noun "aspect"
          :of whole))
 
+(define-category axon-guidance :specializes cellular-process
+   :binds ((initial biological)
+           (final biological))
+   :realization
+   (:noun "axon guidance"
+          :from initial
+          :to final
+          :into final))
+
 
 (define-adverb "at baseline")
 (adj "background" :super bio-predication)
@@ -512,19 +521,6 @@
 
 
 (adj "enzymatic" :super bio-predication)
-
-
-
-
-(define-category bio-exchange :specializes other-bio-process
-  :binds ((state-before (:or bio-state variant))
-          (state-after (:or bio-state variant))
-          (subject nucleotide))
-  :realization
-  (:noun "exchange"
-         :m subject
-         :from state-before
-         :to state-after))
 
 (noun "extent" :super bio-scalar) 
 
@@ -978,20 +974,13 @@
 (define-adverb "surprisingly")
 (adj "synthetic" :super bio-predication)
 
-
-
-
 (noun "throughput" :super measurement)
 
 (noun "tissue" :super bio-organ)
 
 (adj "transient" :super bio-predication)
 (noun "transition state intermediate" :super molecule-state)
-(define-category translation :specializes other-bio-process
-  :binds ((result bio-entity))
-  :realization
-  (:of subject
-       :into result))
+
 (noun "trial" :super bio-context)
 (noun "tumor" :super non-cellular-location)
 (noun "tumor formation" :super named-bio-process)
