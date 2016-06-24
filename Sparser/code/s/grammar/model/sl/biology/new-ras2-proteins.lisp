@@ -805,7 +805,7 @@
 (DEF-RAS2-PROTEIN "RAP2A-B" ("RAP2A-B")) 
 (DEF-RAS2-PROTEIN "RAS family" ("RAS family")) 
 (DEF-RAS2-PROTEIN "RAS4B_HUMAN" ("RAS4B_HUMAN" "RASA4B")) 
-(DEF-RAS2-PROTEIN "RASA1_HUMAN" ("RASA1_HUMAN" "Ras p21 protein activator" "RASA1" "RASA" "GAP" "p120GAP" "RasGAP" "GTPase-activating protein" "p120GAP" "p120 GAP")) 
+(DEF-RAS2-PROTEIN "RASA1_HUMAN" ("RASA1_HUMAN" "Ras p21 protein activator" "RASA1" "RASA" "GAP" "p120GAP" "RasGAP" "GTPase-activating protein" "p120GAP" "p120 GAP" "p120-RasGAP" "p120 RasGAP")) 
 (DEF-RAS2-PROTEIN "RASA2_HUMAN" ("RASA2_HUMAN" "RASA2" "GTPase-activating protein 1m" "GAP1m" "RASGAP" "GAP1M")) 
 (DEF-RAS2-PROTEIN "RASH_HUMAN" ("RASH_HUMAN" "HRAS1" "HRAS" "HRas" "GTPase HRas, N-terminally processed" "H-ras" "GTPase HRas" "H-Ras-1" "Ha-Ras" "Transforming protein p21" "c-H-ras" "p21ras")) 
 (DEF-RAS2-PROTEIN "RASK_HUMAN" ("RASK_HUMAN" "KRAS2" "K-RAS" "K-Ras" "GTPase KRas, N-terminally processed" "RASK2" "KRAS" "KRas"  "GTPase KRas" "K-Ras 2" "Ki-Ras" "c-K-ras" "c-Ki-ras")) 
