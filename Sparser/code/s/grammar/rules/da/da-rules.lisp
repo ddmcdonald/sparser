@@ -719,6 +719,14 @@
 (defun subordinate-comma-subordinate-clause (sc comma sc-2)
   (create-event-relation sc-2 sc))
 
+(define-debris-analysis-rule subordinate-semicolon-subordinate-clause
+  :pattern (subordinate-clause ";" subordinate-clause )
+  :action (:function subordinate-comma-subordinate-clause first second third))
+
+(define-debris-analysis-rule subordinate-semicolon-subordinate-clause
+  :pattern (s ";" subordinate-clause )
+  :action (:function subordinate-comma-subordinate-clause first second third))
+
 
 (define-debris-analysis-rule clause-and-subordinate
   :pattern ( s and subordinate-clause  )
