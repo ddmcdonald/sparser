@@ -44,7 +44,7 @@
 (gload "bio;verbs") ;; after phenomena
 
 ;(gload "bio;NFkappaB")
-;(gload "bio;molecules")
+(gload "bio;molecules")
 
 (gload "bio;methods.lisp") ;; this one goes last
 

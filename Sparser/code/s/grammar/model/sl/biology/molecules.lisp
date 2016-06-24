@@ -13,6 +13,7 @@
 ;; have the same spelling, e.g. "camp" -- as in the outdoors.
 ;; It also makes them nouns with noun brackets. 
 ;; Gratuitously it gives them plurals, which they don't take
+#+ignore
 (define-category small-named-molecule
   :instantiates self
   :binds ((name :primitive word))
@@ -20,11 +21,19 @@
 
 ;; These should be spelled out and more precisely categorized.
 ;; In some way that looks plausible if we read it.
-(find-or-make-individual 'small-named-molecule :name "cAMP")
-(find-or-make-individual 'small-named-molecule :name "GTP")
-(find-or-make-individual 'small-named-molecule :name "GDP")
+;;was (find-or-make-individual 'small-named-molecule :name "cAMP")
+(noun "cAMP" :super small-molecule)
 
-(find-or-make-individual 'small-named-molecule :name "ATP")
-(find-or-make-individual 'small-named-molecule :name "ADP")
+(noun "GTP" :super nucleotide)
+(noun "GDP" :super nucleotide)
+
+(noun "AMP" :super nucleotide)
+(noun "ATP" :super nucleotide)
+(noun "ADP" :super nucleotide)
+
+(noun "dUDP" :super small-molecule)
+(noun "dUMP" :super small-molecule)
+(noun "TDP" :super small-molecule)
+(noun "TMP" :super small-molecule)
 
             
