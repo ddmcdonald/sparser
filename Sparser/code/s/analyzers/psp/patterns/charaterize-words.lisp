@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "charaterize-words"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  May 2016
+;;;  version:  June 2016
 
 ;; initiated 5/15/15 breaking out the routines that look at the words
 ;; and characterize them as patterns to drive the matcher. Moved in
@@ -113,6 +113,9 @@
       (when ends-in-s?
         ;; is the remainder a known word?
         ))))
+
+(defun word-starts-with-lowercase-letter? (word)
+  (lowercase-letter? (aref (word-pname word) 0)))
 
 ;;/// move
 (defun keyword-for-word (word)
