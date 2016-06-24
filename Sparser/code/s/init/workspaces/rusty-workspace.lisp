@@ -1579,6 +1579,6 @@ NIL
   (loop for i from 1 to end
      do
        (format t "~%~%__________^^^^^^^^__________~%Processing comment# ~s~%~%" i)
-       (test-sent 'comments i)))
+       (test-sent 'comments i :multi-sent t :no-syn-tree t)))
   
 
