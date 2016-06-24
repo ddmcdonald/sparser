@@ -160,7 +160,7 @@
   :action (:function attach-comma-pp-comma-following-clause third first))
 
 (defun attach-comma-pp-comma-following-clause (clause comma-1 pp comma-2)
-  (attach-pp-following-clause clause clause pp
+  (attach-pp-following-clause clause pp
                               (pos-edge-starts-at clause)
                               (pos-edge-ends-at comma-2)))
 
@@ -853,7 +853,9 @@
     (eq (edge-form edge) category::np))
    ;; test below is because of some strange cases where an item in the
    ;;  fringe in not in the tree
-   (edge-used-in edge)))
+   (edge-used-in edge)
+   ;; test below is to block finding of "FAK" below "phosphorylated FAK"
+   (not (np-target? (edge-used-in edge)))))
 
 (defun right-fringe-of (edge)
   (all-edges-on (pos-ends-here (pos-edge-ends-at edge))))
