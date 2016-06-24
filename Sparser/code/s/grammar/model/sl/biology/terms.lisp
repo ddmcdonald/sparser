@@ -162,7 +162,7 @@
 
 ;; new nouns and verbs used in Ras model comments
 
-(noun ("stimulus" :plural "stimuli") :super bio-mechanism) 
+(noun ("stimulus" :plural "stimuli") :super other-bio-process)
 ;; not sure if this is ontologically correc, but I think it might be close
 
 (define-category coincident 
@@ -807,12 +807,10 @@
   (:adj "potent"))
 
 (define-category presence :specializes experimental-condition
-  :binds ((measurement measurement)
-          (theme bio-chemical-entity))
+  :binds ((measurement measurement))
   :realization
   (:noun "presence"
-	 :of measurement
-         :of theme))
+	 :of measurement))
 
 (adj "present" :super bio-predication  ;; keyword: (ent ADJ)
      :binds ((in-molecule molecule))
