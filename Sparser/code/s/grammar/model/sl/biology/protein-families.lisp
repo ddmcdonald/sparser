@@ -13,6 +13,9 @@
 
 
 ;; Protein families
+(def-family "EPHB receptor"
+    :members ("EPHB1_HUMAN" "EPHB2_HUMAN" "EPHB3_HUMAN" "EPHB4_HUMAN" "EPHB5_HUMAN" "EPHB6_HUMAN"))
+
 (def-family "PTK")
 (def-family "TRIM")
 

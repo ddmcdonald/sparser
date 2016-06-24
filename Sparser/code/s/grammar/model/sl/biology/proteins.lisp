@@ -40,6 +40,26 @@
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
 
+;; from comments
+(define-protein "KAD2_HUMAN" ("adenylate kinase 2" "mitochondrial adenylate kinase 2"))
+
+(define-protein "EFNB1_HUMAN" ("ephrin-B1"))
+
+(define-protein "EFNB2_HUMAN" ("ephrin-B2"))
+
+(define-protein "EFNB3_HUMAN" ("ephrin-B3"))
+
+(define-protein "EPHB1_HUMAN" ("ephrin type-B receptor 1"))
+(define-protein "EPHB2_HUMAN" ("ephrin type-B receptor 2"))
+(define-protein "EPHB3_HUMAN" ("ephrin type-B receptor 3"))
+(define-protein "EPHB4_HUMAN" ("ephrin type-B receptor 4"))
+(define-protein "EPHB5_HUMAN" ("ephrin type-B receptor 5"))
+(define-protein "EPHB6_HUMAN" ("ephrin type-B receptor 6"))
+
+
+
+
+
 ;; from Ben Gyori
 (define-protein "DUS6_HUMAN" ("DUSP6" "DUSP-6"))
 
