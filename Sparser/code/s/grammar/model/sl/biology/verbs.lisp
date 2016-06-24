@@ -2317,9 +2317,18 @@
   :realization
   (:verb "translate"
          :etf (svo-passive)
+         :noun "translation"
          :from initial
          :into result
          :to result))
+
+;; how does this relate to translate
+#+ignore
+(define-category translation :specializes other-bio-process
+  :binds ((result bio-entity))
+  :realization
+  (:of subject
+       :into result))
 
 ; (p "ERK Nuclear Translocation Is Dimerization-independent but Controlled by the Rate of Phosphorylation.")
 ; (p "Upon activation, ERKs translocate from the cytoplasm to the nucleus.")
