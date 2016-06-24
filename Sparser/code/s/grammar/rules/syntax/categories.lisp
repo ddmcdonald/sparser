@@ -483,8 +483,12 @@
 (defun preceding-adverb (e)
   (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
      thereis
-       (and (category-p (edge-form ee))
-	    (eq (cat-name (edge-form ee)) 'adverb))))
+       (eq (cat-name (edge-form ee)) 'adverb)))
+
+(defun preceding-adverb-or-subordinate-conjunction (e)
+  (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
+     thereis
+       (member (cat-name (edge-form ee)) '(adverb subordinate-conjunction))))
 
 
 (defgeneric ng-head? (label)

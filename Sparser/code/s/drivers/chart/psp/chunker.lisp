@@ -645,12 +645,25 @@
            (plural-noun-not-present-verb e))
           ((or
             (eq (edge-category e) category::modal)
-            (and (category-p (edge-category e))
-                 (eq (cat-name (edge-category e)) 'following-adj))
-            ;;(edge-over-there? e)
-            ) ;; a way to handle ambiguity of THERE to get "THERE IS ..." correct
+            (eq (cat-name (edge-category e)) 'following-adj))
            nil)
-          ((eq (edge-form e) category::vp+ed) t) ;; this should only happen for NS words like GAP–mediate
+          ((member (cat-name (edge-form e)) '(vp+ed))
+            ;; this should only happen for NS words like GAP–mediate
+            (not (preceding-adverb-or-subordinate-conjunction e)))
+          ((eq category::verb+ed (edge-form e))
+           ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
+           ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
+           ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
+           ;; as opposed to "direct binding to activated forms of RAS"
+           (let ((prev-edge (edge-just-to-left-of e)))
+             (and (not (preceding-adverb e))
+                  (not (and (edge-p prev-edge)
+                            (eq 'parentheses (cat-name (edge-category prev-edge)))))
+                  (not (and
+                        (car *chunks*)
+                        (member 'ng (chunk-forms (car *chunks*)))
+                        (eq (chunk-end-pos (car *chunks*))
+                            (pos-edge-starts-at e)))))))
           ((or (eq category::modifier (edge-category e))
                (eq category::adjective (edge-form e)))
            ;;when the previous chunk was a copula verb (just check for BE at this time)
@@ -660,7 +673,7 @@
                      (loop for edge in (ev-edges (car (chunk-ev-list (car *chunks*))))
                         thereis
                           (eq category::be (edge-category edge))))))
-          ((eq category::that (edge-category e))
+          ((eq 'that (cat-name (edge-category e)))
            ;; it is almost never the case that THAT is a determiner, 
            ;; it is usually a relative clause marker or a thatcomp marker
            (and (not *big-mechanism*)
@@ -678,20 +691,7 @@
                 (member (cat-symbol (edge-referent e))
                         '(category::which category::whose category::what)))
            t)
-          ((eq category::verb+ed (edge-form e))
-           ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
-           ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
-           ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
-           ;; as opposed to "direct binding to activated forms of RAS"
-           (let ((prev-edge (edge-just-to-left-of e)))
-             (and (not
-                   (and (edge-p prev-edge)
-                        (eq category::parentheses (edge-category prev-edge))))
-                  (not (and
-                        (car *chunks*)
-                        (member 'ng (chunk-forms (car *chunks*)))
-                        (eq (chunk-end-pos (car *chunks*))
-                            (pos-edge-starts-at e)))))))
+          
           ((eq category::verb+ing (edge-form e))
            ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
            ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
