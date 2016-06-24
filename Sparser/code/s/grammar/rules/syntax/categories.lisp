@@ -496,52 +496,50 @@
 (defmethod ng-head? ((w word))
   nil)
 (defmethod ng-head? ((e edge))
-  (declare (special *chunk*))
-  (when (not (preceding-adverb e))
-    (cond
-      ((and
-        (eq (cat-name (edge-form e)) 'quantifier)
-        (itypep (edge-referent e) 'not))
-       nil)
-      ((eq (cat-name (edge-form e)) 'verb+ed)
-       nil)
-      ((or (plural-noun-and-present-verb? e)
-	   (singular-noun-and-present-verb? e))
-       ;; fix logic error -- if we hav a noun-verb ambiduity,
-       ;; then we must check the following --
-       ;; the only time we treat the word as a noun is if it immediately follows a det or prep
-       ;; cf. "RAS results in" vs "the results..."
-       (or
-	(preceding-det-prep-poss-or-adj e)
-	(followed-by-verb e)))
-      ((eq (cat-name (edge-form e)) 'VERB+ING) ; 
-       (let
-	   ((end-pos (pos-edge-ends-at e))
-	    (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
-	 (declare (special end-pos prev-edge)) 
-	 (and
-	  (not (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb)))
-	  (let
-	      ((next-edge (right-treetop-at/edge end-pos)))
-	    (not (and (edge-p next-edge)(eq (cat-name (edge-form next-edge )) 'det))))
-	  (not
-	   (memq 
-	    ;; SBCL caught an error here -- led to simplification to use pos-terminal
-	    (word-symbol (pos-terminal (pos-edge-ends-at e)))
-	    '(WORD::|that| WORD::|which| WORD::|whose|))))))
-      ((and (eq (edge-form e) category::number)
-	    (or (not (boundp '*chunk*))
-		(null *chunk*)
-		(null (cdr (chunk-ev-list *chunk*)))
-		(and
-		 (category-p (edge-form (car (ev-edges (second (chunk-ev-list *chunk*))))))
-		(member (cat-name (edge-form (car (ev-edges (second (chunk-ev-list *chunk*))))))
-			'(quantifier det)))))
-       t)		
-      ((ng-head? (edge-form e)) t)
-      ((and
-	(eq category::det (edge-form e))
-	(member (cat-name(edge-category e)) '(that this these those)))))))
+  (declare (special *chunk* word::comma))
+  (or (and (eq (cat-name (edge-form e)) 'number)
+           (or (null (ev-edges (pos-ends-here (pos-edge-starts-at e)) ))
+               (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
+                  thereis
+                    (or
+                     (eq (edge-form ee) word::comma)
+                     (member (cat-name (edge-form ee)) '(quantifier det adverb))))))
+      (when (not (preceding-adverb e))
+        (cond
+          ((and
+            (eq (cat-name (edge-form e)) 'quantifier)
+            (itypep (edge-referent e) 'not))
+           nil)
+          ((eq (cat-name (edge-form e)) 'verb+ed)
+           nil)
+          ((plural-noun-and-present-verb? e)
+           ;; fix logic error -- if we hav a noun-verb ambiduity,
+           ;; then we must check the following --
+           ;; the only time we treat the word as a noun is if it immediately follows a det or prep
+           ;; cf. "RAS results in" vs "the results..."
+           (or
+            (preceding-det-prep-poss-or-adj e)
+            (followed-by-verb e)))
+          ((singular-noun-and-present-verb? e))
+          ((eq (cat-name (edge-form e)) 'VERB+ING) ; 
+           (let
+               ((end-pos (pos-edge-ends-at e))
+                (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
+             (declare (special end-pos prev-edge)) 
+             (and
+              (not (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb)))
+              (let
+                  ((next-edge (right-treetop-at/edge end-pos)))
+                (not (and (edge-p next-edge)(eq (cat-name (edge-form next-edge )) 'det))))
+              (not
+               (memq 
+                ;; SBCL caught an error here -- led to simplification to use pos-terminal
+                (word-symbol (pos-terminal (pos-edge-ends-at e)))
+                '(WORD::|that| WORD::|which| WORD::|whose|))))))
+          ((ng-head? (edge-form e)) t)
+          ((and
+            (eq category::det (edge-form e))
+            (member (cat-name(edge-category e)) '(that this these those))))))))
 
 (defmethod ng-head? ((c referential-category))
   (ng-head? (cat-symbol c)))
@@ -583,11 +581,13 @@
        (not (ng-head? e)))))
     ((singular-noun-and-present-verb? e)
      (and
-      (not (preceding-det-prep-poss-or-adj e))
-      (not (followed-by-verb e))
-      (not (let ((prev-edge (edge-just-to-left-of e)))
-             (and prev-edge
-                  (eq (edge-category prev-edge) category::to))))))
+      (not (and
+            (preceding-det-prep-poss-or-adj e)
+            ;; allow for "to form GDP"
+            (not
+             (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
+                thereis (eq (cat-name (edge-category ee)) 'to)))))
+      (not (followed-by-verb e))))
     (t
      (vg-compatible? e))))
 

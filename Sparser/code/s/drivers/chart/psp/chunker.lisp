@@ -464,16 +464,17 @@
          do (return ee)))))
 
 (defun singular-noun-and-present-verb? (e)
-  (declare (special category::common-noun))
-  (or
-   (and
-    (eq (edge-form e) category::common-noun)
-    (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
-      thereis (eq (edge-form ee) category::verb+present)))
-   (and
-    (eq (edge-form e) category::verb+present)
-    (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
-      thereis (eq (edge-form ee) category::common-noun)))))
+  (not
+   (null
+    (or
+     (and
+      (eq (cat-name (edge-form e)) 'common-noun)
+      (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
+         thereis (member (cat-name (edge-form ee)) '(verb verb+present))))
+     (and
+      (member (cat-name (edge-form e)) '(verb verb+present))
+      (loop for ee in (ev-edges (pos-starts-here (pos-edge-starts-at e)) )
+         thereis (eq (cat-name (edge-form ee)) 'common-noun)))))))
 
 (defgeneric ng-compatible? (label evlist)
   (:documentation "Is a category which can occur inside a NG"))
@@ -493,10 +494,12 @@
     (cond
       ((plural-noun-and-present-verb? e)
        (plural-noun-not-present-verb e))
+      #+ignore ;; doesn't seem to be applicable, since it only makes sense for cases where ng-start? is called
       ((and (singular-noun-and-present-verb? e)
             (and (edge-just-to-left-of e)
                  (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))
        nil)
+      ((singular-noun-and-present-verb? e))
       ((constrain-following e) nil)
       ((some-edge-satisfying? edges #'pronoun-or-wh-pronoun) nil)
       ((eq word::comma (edge-category e))
@@ -643,6 +646,10 @@
         (cond
           ((plural-noun-and-present-verb? e)
            (plural-noun-not-present-verb e))
+          ((singular-noun-and-present-verb? e)
+           (not
+            (and (edge-just-to-left-of e)
+                 (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to))))
           ((or
             (eq (edge-category e) category::modal)
             (eq (cat-name (edge-category e)) 'following-adj))
