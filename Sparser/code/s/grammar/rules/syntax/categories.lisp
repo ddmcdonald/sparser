@@ -502,8 +502,8 @@
                (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
                   thereis
                     (or
-                     (eq (edge-form ee) word::comma)
-                     (member (cat-name (edge-form ee)) '(quantifier det adverb))))))
+                     (eq (edge-category ee) word::comma)
+                     (member (cat-name (edge-form ee)) '(quantifier det adverb punctuation))))))
       (when (not (preceding-adverb e))
         (cond
           ((and
@@ -908,7 +908,11 @@
   :binds ((relation)
           (event)
           (subordinated-event)
-	  (adverb))
+	  (adverb)
+          (following process)
+          (preceding process)
+	  (during process)
+	  (timeperiod (:or time-unit amount-of-time)))
   :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
     though the head decides what to do with it based on the
     composition. Same design as pps."
