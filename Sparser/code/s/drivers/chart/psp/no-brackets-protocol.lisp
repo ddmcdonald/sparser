@@ -323,9 +323,13 @@
 ;;; final operations on sentence before moving to the next one
 ;;;------------------------------------------------------------
 
+(defparameter *end-of-sentence-display-operation* nil)
+
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special sentence))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
+  (when *end-of-sentence-display-operation*
+    (funcall *end-of-sentence-display-operation* sentence))
   (when *current-article*
     (save-article-sentence *current-article* sentence)))
 

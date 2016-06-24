@@ -95,12 +95,18 @@
   (let*
       ((*readout-segments-inline-with-text* nil) ;; quiet
        (sent (get-sentence corpus n))
-       (*show-syn-tree* (not no-syn-tree)))
-    (declare (special *show-syn-tree* *readout-segments-inline-with-text*))
-    (if quiet
-        (pp sent)
-        (eval `(p ,sent)))
-    (display-sent-results sent corpus n :stream stream)))
+       (*show-syn-tree* (not no-syn-tree))
+       (*end-of-sentence-display-operation*
+        #'(lambda (sent)
+            (display-sent-results sent corpus n :stream stream))))
+    (declare (special *show-syn-tree* *readout-segments-inline-with-text*
+                      *end-of-sentence-display-operation*))
+    (cond
+      (quiet
+       (format stream "~%~%____________________________~%~s~%~%" sent)
+       (pp sent))
+      (t
+        (eval `(p ,sent))))))
 
 (defun display-sent-parse (sent corpus n &key (stream *standard-output*))
   (let ((*readout-segments-inline-with-text* nil)) ;; quiet
