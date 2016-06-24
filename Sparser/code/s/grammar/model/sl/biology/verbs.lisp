@@ -99,7 +99,7 @@
 ;;; Verbs added temporarily for Localization articles -- to be reviewed and corrected
 (define-category become :specializes bio-rhetorical
     :realization
-    (:verb ("become" :third-plural "becomes" :past-tense "became"
+    (:verb ("become" :third-singular "becomes" :past-tense "became"
 		     :present-participle "becoming")
 	   :etf (svo)))
 
@@ -181,7 +181,7 @@
 (define-category lacking :specializes bio-relation
   :realization
   (:verb ("lackXXX" ;; don't block noun
-          :third-plural "lacksXXX" ;; don't block noun
+          :third-singular "lacksXXX" ;; don't block noun
           :past-tense "lacked"
           :present-participle "lacking")
          :etf (svo)
@@ -1051,8 +1051,8 @@
 
 
 (define-category bio-exchange :specializes bio-movement
-  :binds ((state-before (:or bio-state variant))
-          (state-after (:or bio-state variant))
+  :binds ((state-before (:or nucleotide bio-state variant))
+          (state-after (:or nucleotide bio-chemical-entity bio-state variant))
           (subject nucleotide))
   :realization
   (:noun "exchange"
@@ -1061,6 +1061,7 @@
          :o object
          :m subject
          :s subject
+         :of state-before
          :from state-before
          :to state-after))
 
@@ -1070,10 +1071,14 @@
 	   :etf (svo-passive)))
 
 (define-category exist :specializes bio-predication
-    :realization
-    (:verb "exist"
-           :noun "existence"
-	   :etf (sv)))
+  :binds ((measurement measurement)
+          (theme bio-chemical-entity))
+  :realization
+  (:verb "exist"
+         :noun "existence"
+         :etf (sv)
+	 :of measurement
+         :of theme))
 
 (define-category expect :specializes bio-rhetorical
     :realization
@@ -1138,6 +1143,8 @@
     (:verb ("favor" :past-tense "favored") ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)))  ;; :in bio-context))  <--------------- not in scope
 
+(def-synonym favor (:verb "favour" :etf (svo-passive)))
+
 (define-category fail :specializes bio-relation
   :binds ((process bio-process))
   :realization 
@@ -1158,13 +1165,13 @@
   :binds ((blocking determiner))
   :realization
   (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
-                   :third-plural "follows")
+                   :third-singular "follows")
          :etf (sv)
          :s blocking))
 
 (define-category bio-form :specializes caused-bio-process
   :realization
-  (:verb ("form" :third-plural "forms" :past-tense "formed") 
+  (:verb "form"
          ;; "form" has never been seen as a verb in the corpus, but "forms" and "formed"
          ;; have been seen
          ;; NOW: "form" occurs in the Reactome comments
@@ -1310,7 +1317,7 @@
 (define-category increase
                  :specializes positive-bio-control
   :realization
-  (:verb ("increase"  :third-plural "increases"  :past-tense "increased"
+  (:verb ("increase"  :third-singular "increases"  :past-tense "increased"
           :present-participle "increasing")
          :etf (svo-passive)
          :for object
@@ -1487,7 +1494,7 @@
       :m destination
       :m object)
   :realization
-  (:verb ("leave" :past-tense "left" :third-plural "leaves" :present-participle "leaving")
+  (:verb ("leave" :past-tense "left" :third-singular "leaves" :present-participle "leaving")
          :etf (svo)))
 
 (define-category ligate :specializes caused-bio-process 
@@ -1500,12 +1507,22 @@
 
 
 (define-category link :specializes caused-bio-process 
-  :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :binds ((substrate bio-entity)
+          (linked-processes bio-process)
+          (process bio-process)
+          (co-process bio-process)
+          (linked-process bio-process))
+                         ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "link" :noun "linkage" 
          :etf (svo-passive)
+         :s process
          :into substrate
-         :to substrate))
+         :to substrate
+         :to co-process
+         :between linked-processes))
+
+(def-synonym link (:noun "link"))
 
 (define-category cross-link :specializes caused-bio-process 
   :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
@@ -1855,7 +1872,7 @@
 (define-category put-forward :specializes bio-rhetorical
    :realization
    (:verb ("put"
-	   :third-plural "puts"
+	   :third-singular "puts"
 	   :past-tense "put"
 	   :present-participle "putting")
 	  :etf (svo-passive)))
@@ -2041,7 +2058,7 @@
 (define-category result :specializes other-bio-process
     :binds ((result (:or bio-process bio-method bio-predication)))
     :realization
-    (:verb ("result" :third-plural "results") ;; block plural form of the verb, because of interaction with noun
+    (:verb ("result" :third-singular "results") ;; block plural form of the verb, because of interaction with noun
 	   :etf (sv)
            :from subject 
 	   :in result
@@ -2228,7 +2245,7 @@
 (define-category target :specializes caused-bio-process
   :binds ((destination biological))
   :realization
-  (:verb ("target" :third-plural "targets" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED
+  (:verb ("target" :third-singular "targets" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED
    :mumble ("target" svo)
    :etf (svo-passive)
    :s agent
