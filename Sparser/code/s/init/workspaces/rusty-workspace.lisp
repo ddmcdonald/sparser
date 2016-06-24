@@ -1575,3 +1575,10 @@ NIL
         (show-sentences))))
 
 
+(defun test-comments (&optional (end (length *comments*)))
+  (loop for i from 1 to end
+     do
+       (format t "~%~%__________^^^^^^^^__________~%Processing comment# ~s~%~%" i)
+       (test-sent 'comments i)))
+  
+
