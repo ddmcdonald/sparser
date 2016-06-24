@@ -228,9 +228,7 @@
   (:of subject))
 
 (define-category bio-scalar :specializes scalar-quality
-  :binds ((item-measured biological))
   :mixins (bio-quality)
-  :realization (:of item-measured)
   :documentation "Provides a generalization over biological and scalar")
 
 (define-category  measurement  :specializes abstract

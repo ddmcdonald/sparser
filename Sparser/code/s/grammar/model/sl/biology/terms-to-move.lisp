@@ -148,7 +148,7 @@ be biology specific, since they aren't. |#
   (:noun "amount"))
 
 (define-category duration :specializes bio-scalar
-  :restrict ((item-measured (:or process bio-method bio-mechanism)))
+  :restrict ((subject (:or process bio-method bio-mechanism)))
   :realization
   (:noun "duration"))
 
