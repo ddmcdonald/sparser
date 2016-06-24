@@ -88,25 +88,31 @@
   (declare (special *load-test-sents*))
   (test-corpus *load-test-sents* numbers))
 
-(defun test-sent (corpus n &key (no-syn-tree t) (no-edges t) (quiet t) (stream *standard-output*))
+(defun test-sent (corpus n &key (multi-sent nil) (no-syn-tree nil) (no-edges t) (quiet t) (stream *standard-output*))
   (declare (special *chunks* *overnight-sentences* *jan-dry-run*
                     *dec-tests* *erk-abstract* *aspp2-whole*
                     *load-test-sents*))
   (let*
       ((*readout-segments-inline-with-text* nil) ;; quiet
-       (sent (get-sentence corpus n))
+       (sent (clean-some-xml-from-string (get-sentence corpus n)))
        (*show-syn-tree* (not no-syn-tree))
        (*end-of-sentence-display-operation*
+        (when multi-sent
         #'(lambda (sent)
-            (display-sent-results sent corpus n :stream stream))))
+            (display-sent-results sent corpus n :stream stream)))))
     (declare (special *show-syn-tree* *readout-segments-inline-with-text*
                       *end-of-sentence-display-operation*))
     (cond
       (quiet
-       (format stream "~%~%____________________________~%~s~%~%" sent)
-       (pp sent))
+       (if no-syn-tree (format stream "~%~%____________________________~%~s~%~%" sent))
+       (pp sent)
+       (unless multi-sent
+         (display-sent-results sent corpus n :stream stream)))
       (t
-        (eval `(p ,sent))))))
+       (eval `(p ,sent))))))
+
+(defun clean-some-xml-from-string (str)
+  (replace-all (replace-all str "<br>" " ") "'" ""))
 
 (defun display-sent-parse (sent corpus n &key (stream *standard-output*))
   (let ((*readout-segments-inline-with-text* nil)) ;; quiet
@@ -223,7 +229,9 @@
   (format stream "~a~%~%~s~&"
 	  (if (null corpus) ""
 	      (format nil "Corpus: ~s Sentence#: ~s" corpus n))
-	  sent))
+          (if (stringp sent)
+              sent
+              (sentence-string  sent))))
 
 (defun display-chunks (stream)
   (format stream ";;; ---------- Results of chunking:~%")
