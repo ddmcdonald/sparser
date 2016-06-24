@@ -186,6 +186,14 @@ C
         #'string-lessp :key #'car)
   ((:a . 3) (:b . 2)))
 
+(deftest copy-hash-table
+  (loop with table = (make-test-hash)
+        with copy = (copy-hash-table table)
+        for key being each hash-key of table using (hash-value val)
+        initially (assert (not (eq table copy)) (table copy) "Not a copy.")
+        always (eq (gethash key copy) val))
+  t)
+
 ;; time
 
 (defun test-time ()

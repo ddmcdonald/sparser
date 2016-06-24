@@ -59,6 +59,7 @@
            #:all-hash-vals
            #:hashtable-to-alist
            #:hash-counts
+           #:copy-hash-table
 
            ;; indentation
            #:emit-line #:emit-line-continue

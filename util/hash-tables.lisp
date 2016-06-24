@@ -31,3 +31,14 @@
              (push (cons key (length val)) counts))
            hash-table)
   counts)
+
+(defun copy-hash-table (hash-table &aux
+                        (copy (make-hash-table
+                               :test (hash-table-test hash-table)
+                               :size (hash-table-size hash-table)
+                               :rehash-size (hash-table-rehash-size hash-table)
+                               :rehash-threshold (hash-table-rehash-threshold hash-table))))
+  (maphash (lambda (key val)
+             (setf (gethash key copy) val))
+           hash-table)
+  copy)
