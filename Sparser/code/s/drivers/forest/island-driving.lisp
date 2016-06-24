@@ -187,7 +187,7 @@
 (defun new-pass2 (sentence start-pos end-pos treetops)
   (let (da-result)
     (loop
-      (setq da-result (da-rule-cycle start-pos end-pos treetops))
+      (setq da-result (da-rule-cycle start-pos end-pos treetops t))
       (cond
        ((null da-result) ;; no DA rules executed -- nothing left to do
         (tr :no-result-from-da) ; 
@@ -200,7 +200,9 @@
           (declare (special *allow-form-conjunction-heuristic*))
           (try-spanning-conjunctions)))
       (unless
-          (whack-a-rule-cycle sentence)      
+          (or
+           (whack-a-rule-cycle sentence)
+           da-result)
         (return-from new-pass2 t))
       ;;(when (there-are-conjunctions?) (lsp-break "conjunctions"))
       (setq treetops (successive-treetops :from start-pos :to end-pos)))))
