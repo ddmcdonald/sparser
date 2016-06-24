@@ -122,6 +122,11 @@
 ;;--- Sentences
 
 (defun period-marks-sentence-end? (position-after)
+  "The position-after is the position with the 
+   terminal (word) that comes just after the period.
+   Look ahead for evidence that this instance of a
+   period marks the end of a sentence. Returns nil
+   if this isn't the end of the ongoing sentence."
   ;; What other capitalization cases could count?
   ;; Does the amount of space between the words matter?
   ;;   (pos-preceding-whitespace position-after)
@@ -134,8 +139,79 @@
   (or (eq (pos-terminal position-after) *end-of-source*)
       (memq (pos-capitalization position-after)
             '(:initial-letter-capitalized
-              :all-caps))))
+              :single-capitalized-letter
+              :all-caps))
+      (lookahead-for-period-as-eos position-after)))
 
 
+;; (trace-eos-lookahead)
 
+(defun lookahead-for-period-as-eos (pos-after)
+  "Subroutine of period-marks-sentence-end?.
+  We have ruled out this position holding the eos or holding a word
+  that's capitalized. Look for possibly domain-specific conditions
+  that would permit us to conclude the period we just scanned
+  indicates the end of a sentence."
+  (declare (special *big-mechanism*))
+  (let ((word-just-after-period (pos-terminal pos-after))
+        (word-just-before-period
+         (pos-terminal
+          (chart-position-before (chart-position-before pos-after))))
+        (caps (pos-capitalization pos-after))
+        (next-pos (chart-position-after pos-after)))
+    (tr :eos-lookahead word-just-before-period word-just-after-period caps)
 
+    ;; 1. Look at the word just before the period
+    ;; "Dr."
+    ;; In a load that included people, these would be defined
+    ;; in dossiers/person-prefixes.lisp
+    ;;(memq word-just-before-period *person-prefixes*) 
+
+    ;; 2. Look at the word just after the period
+    ;; We know that the word after the period is neither
+    ;; capitalized nor all caps. It could be :mixed-case
+    ;; or lowercase.
+    
+    ;; If it's more than one character long ("cAMP") and
+    ;; it's not lowercase (poor-man's preceding abbrev check)
+    ;; then let's just take it
+    (when (> (length (pname word-just-after-period)) 1)
+      (cond
+        ((eq caps :lower-case)
+         (tr :eos-following-lowercase)
+         (return-from lookahead-for-period-as-eos nil))
+        (t
+         (tr :eos-mult-char-next-word)
+         (return-from lookahead-for-period-as-eos t))))
+    
+    ;; If it's one character long, then it must be touching
+    ;; the following word, and we check for periods (and what else?)
+    ;; First get the second word after the period
+    (unless (has-been-status? :scanned pos-after)
+      (scan-next-position))
+    (let ((next-word (pos-terminal pos-after)))
+      (tr :eos-next-word next-word)
+
+      (unless (no-space-before-word? next-pos)
+        (tr :eos-separated-by-space)
+        (return-from lookahead-for-period-as-eos nil))
+
+      (when (eq next-word *end-of-source*)
+        (tr :eos-reached-eos)
+        (return-from lookahead-for-period-as-eos nil))
+      (when (eq next-word *the-punctuation-period*)
+        (tr :eos-followed-by-a-period)
+        (return-from lookahead-for-period-as-eos nil))
+
+      ;; We know that the second word after the period
+      ;; is touching the word just after the period
+      ;; and the obvious cases have been looked for
+
+      ;; Lets just take it. If there turn out to be issues
+      ;; we'll call (characterize-word-type pos-after next-word)))
+      ;; and look more closely
+      (tr :eos-fall-through-accept)
+      t)))
+
+  
+    
