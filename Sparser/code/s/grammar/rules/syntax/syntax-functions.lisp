@@ -582,6 +582,9 @@
 
 (defparameter *adverb+vg* nil)
 
+(defparameter *subordinating-adverbs*
+  '(consequently))
+
 (defun interpret-adverb+verb (adverb vg-phrase) 
   (declare (special category::deictic-location category::pp))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
@@ -589,51 +592,49 @@
   ;;/// so there should be a compose method to deal with that
 
   ;; default
-  (cond ((word-p vg-phrase)
-         (format t "vg-phrase ~s is not a category or an individual, can't attach adverb"
-                 vg-phrase)
-         vg-phrase)
-        (t
-         (let
-             ((vg (individual-for-ref vg-phrase)))
-           #|need to diagnose among
-           (time)
-           (location)
-           (purpose)    
-           (circumstance)
-           (manner)
-           (aspect . tense/aspect)
-           BUT UNTIL THEN, JUST BIND THE ADVERB
-           |#
-  #+ignore
-  (push (list (edge-string (left-edge-for-referent))
-              (edge-string (right-edge-for-referent)))
-        *adverb+vg*)
-  (cond
-    ((or
-      (and ;; block "THERE IS"
-       (itypep vg category::be)
-       (itypep adverb category::deictic-location))
-      (eq (edge-form (left-edge-for-referent)) category::pp))
-     nil)
-    (*subcat-test*
-     (cond
-       ((vg-has-adverb-variable? vg vg-phrase adverb) t)
-       ((and
-	 (itypep vg 'collection)
-	 (vg-has-adverb-variable? (car (value-of 'items vg)) vg-phrase adverb))
-	t)
-       (t
-	(break "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
-		(edge-string (left-edge-for-referent))
-		(edge-string (right-edge-for-referent))
-		(sentence-string *sentence-in-core*))
-	nil)))
-    ((itypep vg 'collection)
-     (bind-dli-variable 'adverb adverb vg))
-    ((vg-has-adverb-variable? vg vg-phrase adverb)
-     (setq  vg (bind-dli-variable 'adverb adverb vg)))
-    (t vg))))))
+  (if (word-p vg-phrase)
+      (then (format t "vg-phrase ~s is not a category or an individual, can't attach adverb"
+                    vg-phrase)
+            vg-phrase)
+      (let
+          ((vg (individual-for-ref vg-phrase)))
+        #|need to diagnose among
+        (time)
+        (location)
+        (purpose)    
+        (circumstance)
+        (manner)
+        (aspect . tense/aspect)
+        BUT UNTIL THEN, JUST BIND THE ADVERB
+        |#
+
+        (cond
+          ((or
+            (and ;; block "THERE IS"
+             (itypep vg category::be)
+             (itypep adverb category::deictic-location))
+            (eq (edge-form (left-edge-for-referent)) category::pp))
+           nil)
+          (*subcat-test*
+           (cond
+             ((vg-has-adverb-variable? vg vg-phrase adverb) t)
+             ((and
+               (itypep vg 'collection)
+               (vg-has-adverb-variable? (car (value-of 'items vg)) vg-phrase adverb))
+              t)
+             (t
+              (break "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
+                     (edge-string (left-edge-for-referent))
+                     (edge-string (right-edge-for-referent))
+                     (sentence-string *sentence-in-core*))
+              nil)))
+          ((member (cat-name adverb) *subordinating-adverbs*)
+           (bind-dli-variable 'subordinate-conjunction adverb vg))
+          ((itypep vg 'collection)
+           (bind-dli-variable 'adverb adverb vg))
+          ((vg-has-adverb-variable? vg vg-phrase adverb)
+           (setq  vg (bind-dli-variable 'adverb adverb vg)))
+          (t vg)))))
 
 (defun interpret-as-comp (as vp+ed)
   (declare (ignore as))
