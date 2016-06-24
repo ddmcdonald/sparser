@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2014-2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "alphabet fns"
 ;;;   Module:  "analyzers;tokenizer:"
-;;;  Version:  0.3 July 2014
+;;;  Version:  June 2016
 
 ;; initiated 9/21/92 v2.3
 ;; (4/20/93) added Set-tokenizer-table-entry
@@ -112,6 +112,18 @@
             (eql c #\^B)
             (eql c #\^D))
     (tokenizer-entry c)))
+
+(defun lowercase-letter? (c)
+  ;; (character-entry #\p) = (:alphabetical :lowercase . #\p)
+  (assert (characterp c))
+  (let ((code (char-code c)))
+    (when (> code 96) ;; a = 97
+      (> 123 code))))
+#| tests
+(lowercase-letter? #\a)  (lowercase-letter? #\z)
+(lowercase-letter? #\`)  (lowercase-letter? #\{)
+|#
+;; Lowercase Greek starts with 945 and ends with 969 
 
 
 
