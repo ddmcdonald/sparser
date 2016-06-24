@@ -44,7 +44,7 @@
 ;; "RAS signalling"
 ;; a new mode of Ras activation in which signaling is sustained ...
 (define-category signal
-  :specializes other-bio-process
+  :specializes cellular-process
   ;;//// bind it explicitly? :obo-id "GO:0023052"  ;; reasonable stand-in
   :binds ((agent protein) ;;bio-entity) ;; what's doing the signalling
           (object (:or bio-process protein))
@@ -102,6 +102,7 @@
 (def-synonym post-translational-modification
      (:noun "post-transcriptional fate"))  
 
+#+ignore ;; not sure if this is a post-translational process or a cellular-process
 (define-category transformation
   :specializes  post-translational-modification
   :realization
@@ -407,19 +408,19 @@ it is created from N-terminus to C-terminus.|#
       (:noun "RBD"))
 (noun "Raf-RBD" :super RBD)
 (noun "G-domain" :super binding-domain) ;; somehow (def-bio "G-domain" protein-segment) did not work
-(noun "BRCT" :super protein-domain)
-(noun "BRCT1" :super protein-domain)
-(noun "BRCT2" :super protein-domain)
+(noun ("BRCT" "BRCT domain") :super protein-domain)
+(noun ("BRCT1" "BRCT1 domain") :super protein-domain)
+(noun ("BRCT2" "BRCT2 domain") :super protein-domain)
 
-(noun "SH2" :super protein-domain)
-(noun "SH3" :super protein-domain)
+(noun ("SH2" "SH2 domain") :super protein-domain)
+(noun ("SH3" "SH3 domain") :super protein-domain)
 (noun "PTB domain" :super protein-domain)
 
-(noun "g1" :super protein-domain)
-(noun "g2" :super protein-domain)
-(noun "g3" :super protein-domain)
-(noun "g4" :super protein-domain)
-(noun "g5" :super protein-domain)
+(noun ("g1" "g1 domain") :super protein-domain)
+(noun ("g2" "g2 domain") :super protein-domain)
+(noun ("g3" "g3 domain") :super protein-domain)
+(noun ("g4" "g4 domain") :super protein-domain)
+(noun ("g5" "g5 domain") :super protein-domain)
 (noun ("pleckstrin-homology domain" "pleckstrin homology domain" "PH domain" "pleckstrin-homology") :super protein-domain)
 
 (define-category DBD :specializes binding-domain
@@ -499,7 +500,7 @@ it is created from N-terminus to C-terminus.|#
    They are named according to the sequence of proteins
    (protein families) in the causal chain.")
 
-(define-category PathwayStep :specializes other-bio-process
+(define-category PathwayStep :specializes cellular-process
   :binds ((pathway pathway)
           (nextStep PathwayStep)
 	  
@@ -557,7 +558,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 (define-category step
-  :specializes other-bio-process
+  :specializes cellular-process
   :instantiates :self
   :binds ((pathway pathway)
           (process bio-process))
@@ -594,7 +595,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 (define-category apoptosis ;; aka cell death
-    :specializes other-bio-process
+    :specializes cellular-process
     :binds ((process bio-process)) ;; inherits cell-line and cell-type
     :realization
     (:noun "apoptosis" :adj "apoptotic"
@@ -603,7 +604,7 @@ it is created from N-terminus to C-terminus.|#
 	   :of cell-line))
 
 (define-category  autophagy;; like apoptosis
-  :specializes other-bio-process
+  :specializes cellular-process
   :binds ((process bio-process)) ;; should be cell
   :realization
   (:noun "autophagy" 
@@ -612,7 +613,7 @@ it is created from N-terminus to C-terminus.|#
 	 :of cell-line))
 
 (define-category senescence ;; aka cell death
-  :specializes other-bio-process
+  :specializes cellular-process
   :binds ((process bio-process)(object biological)) ;; should be cell
   :realization
   (:noun "senescence" :adj "senescent"
