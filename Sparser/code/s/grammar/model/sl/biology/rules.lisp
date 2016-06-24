@@ -314,10 +314,5 @@
   :form n-bar ;; requires a determiner 
   :referent 
   (:head right-edge :bind (quantifier left-edge)))
-                   
-(def-form-rule (not adjective) 
-  :head :right-edge 
-  :form adjective
-  :referent 
-  (:head right-edge :bind (negation left-edge)))
+  
 

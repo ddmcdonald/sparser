@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "adjectives"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2015
+;;;  Version:  June 2016
 
 ;; Initiated 1/22/13 to provides a place for the generic method for premodifiers.
 ;; 6/1/14 added traces. 
@@ -108,7 +108,11 @@
   :form n-bar
   :referent (:method modifier+noun left-edge right-edge))
 
-
+                 
+(def-form-rule (not adjective) 
+  :head :right-edge 
+  :form adjective
+  :referent (:head right-edge :bind (negation left-edge)))
 
 
 #| Originals
