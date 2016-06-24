@@ -272,7 +272,9 @@ be biology specific, since they aren't. |#
 
 (adj "similar" :super bio-relation
   :realization 
-  (:to theme))
+  (:noun "similarity"
+         :to theme))
+
 (adj "related" :super similar)
 
 (define-adverb "similarly")

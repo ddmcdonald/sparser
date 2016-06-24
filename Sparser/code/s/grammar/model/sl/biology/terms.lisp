@@ -37,6 +37,10 @@
 
 (in-package :sparser)
 
+(adj "deoxy" :super bio-predication)
+(noun "chemical product" :super bio-chemical-entity)
+
+
 ;; Moved in from dossiers/modifiers.lisp
 (define-adverb "biochemically")
 (define-adverb "biologically")
@@ -126,6 +130,7 @@
 (adj "unperturbed" :super bio-predication)
 (noun "positioning" :super bio-method)
 (noun "thresholding" :super bio-method)
+(noun "whole cell extract" :super bio-method)
 (noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
 (noun "dextran" :super polysaccharide)
 
@@ -146,6 +151,7 @@
 ;;lipids
 ;; in EGFR signaling comments
 (noun ("DAG" "diacylglycerol") :super lipid)
+(noun "Sphingosine" :super lipid)
 (noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
 (noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
 (noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate") :super phospholipid)
@@ -176,11 +182,9 @@
 (def-synonym conformational-change 
              (:noun "allosteric change"))
 
-(define-category guanyl-nucleotide-exchange :specializes bio-process
-  :binds ((substrate (:or protein bio-complex)))
+(define-category guanyl-nucleotide-exchange :specializes nucleotide-exchange
   :realization
-  (:noun "guanyl-nucleotide exchange"
-         :on substrate))
+  (:noun "guanyl-nucleotide exchange"))
 
 (noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
 (noun "bond" :super bio-entity) ;; chemical bond -- not 
@@ -397,6 +401,7 @@
           :to final
           :into final))
 
+(noun "neurite outgrowth" :super cellular-process)
 
 (define-adverb "at baseline")
 (adj "background" :super bio-predication)
@@ -802,10 +807,12 @@
   (:adj "potent"))
 
 (define-category presence :specializes experimental-condition
-  :binds ((measurement measurement))
+  :binds ((measurement measurement)
+          (theme bio-chemical-entity))
   :realization
   (:noun "presence"
-	 :of measurement))
+	 :of measurement
+         :of theme))
 
 (adj "present" :super bio-predication  ;; keyword: (ent ADJ)
      :binds ((in-molecule molecule))

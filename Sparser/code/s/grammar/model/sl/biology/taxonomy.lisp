@@ -381,10 +381,11 @@
     (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
 	 bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
 	 measurement ;; "these data raised the possibility..."
-	 molecular-location)) ;; membrane targeting domains that facilitate interaction with the plasma membrane
+	 molecular-location));; membrane targeting domains that facilitate interaction with the plasma membrane
    (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
    (at (:or bio-concentration quantity measurement))
-   (extent bio-scalar))
+   (extent bio-scalar)
+   (intermediate (:or protein bio-process pathway)))
   :realization
   (:s agent
       :o object
@@ -393,7 +394,9 @@
       :m object
       :by agent     
       :at at
-      :to extent))
+      :to extent
+      :through intermediate
+      :via intermediate))
 
 
 (define-category mechanism :specializes endurant
@@ -414,11 +417,13 @@
   (:noun "mechanism"))
 
 (define-category bio-control :specializes caused-bio-process
- ;; increase in rate vs increase in RAS activity
+  ;; increase in rate vs increase in RAS activity
+  :binds ((multiplier fold))
   :realization
   (:verb ("control" :present-participle "controlling"
                     :present-participle "controling") 
-         :etf (svo-passive)))
+         :etf (svo-passive)
+         :by multiplier))
 
 (define-category negative-bio-control :specializes bio-control
   ;; :restrict ((object (:or biological bio-rhetorical))) ;; "lowered the possibility"
@@ -541,7 +546,11 @@
   (:verb "catalyze" :noun "catalysis" 
          :etf(svo-passive) ));;/// "catalyysis of phosphorylation by MEK"
 
-(define-category kinase-activity :specializes catalysis
+(define-category enzyme-activity :specializes catalysis
+  :realization
+  (:noun "enzyme activity"))
+
+(define-category kinase-activity :specializes enzyme-activity
   :realization
   (:noun "kinase activity"))
 
@@ -720,6 +729,19 @@
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "nucleotide")
+  :realization (:common-noun name))
+
+(define-category nucleoside :specializes small-molecule 
+  :binds ((base nucleobase))
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "nucleoide")
+  :realization (:common-noun name))
+
+(define-category orthophosphate :specializes small-molecule 
+  :instantiates :self
+  :index (:permanent :key name)
+  :lemma (:common-noun "orthophosphate")
   :realization (:common-noun name))
 
 ;; grounds "encode"
@@ -943,10 +965,14 @@
                                     ))
 
 (define-category enzyme :specializes protein ;; what's the relationship to kinase?   ;; not all enzymes are proteins -- there are RNA enzymes
-  :binds ((reaction bio-process))
+  :binds ((reaction bio-process)
+          (enzyme-activity enzyme-activity))
   :instantiates :self
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
+
+(def-synonym enzyme
+    (:with enzyme-activity))
 
 (define-category post-translational-enzyme :specializes enzyme
   :binds ((protein protein) 
@@ -998,6 +1024,13 @@
 (define-category nucleotide-exchange-factor :specializes exchange-factor
   :realization
   (:noun "nucleotide exchange factor"))
+
+(define-category nucleotide-exchange :specializes bio-process
+  :binds ((substrate (:or protein bio-complex)))
+  :realization
+  (:noun "nucleotide exchange"
+         :on substrate
+         :from substrate))
 
 
 (define-category phosphatase :specializes enzyme

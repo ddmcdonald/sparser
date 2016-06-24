@@ -28,12 +28,30 @@
 (noun "GDP" :super nucleotide)
 
 (noun "AMP" :super nucleotide)
+(noun "dAMP" :super nucleotide)
 (noun "ATP" :super nucleotide)
+(noun "dATP" :super nucleotide)
 (noun "ADP" :super nucleotide)
+(noun "dADP" :super nucleotide)
 
-(noun "dUDP" :super small-molecule)
-(noun "dUMP" :super small-molecule)
+
+(noun "dCDP" :super nucleotide)
+(noun "CDP" :super nucleotide)
+(noun "dUDP" :super nucleotide)
+(noun "UDP" :super nucleotide)
+(noun "dGMP" :super nucleotide)
+(noun "GMP" :super nucleotide)
+(noun "CMP" :super nucleotide)
+(noun "dCMP" :super nucleotide)
+(noun "dUMP" :super nucleotide)
+(noun "UMP" :super nucleotide)
 (noun "TDP" :super small-molecule)
 (noun "TMP" :super small-molecule)
+(noun "cytidine monophosphate" :super nucleotide)
+(noun "thymidine monophosphate" :super nucleotide)
+(noun "uridine monophosphate" :super nucleotide)
+
+
+
 
             

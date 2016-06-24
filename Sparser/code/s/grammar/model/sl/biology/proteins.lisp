@@ -41,6 +41,11 @@
 ;;;--------------------------------------------
 
 ;; from comments
+(define-protein "KAD1_HUMAN" ("adenylate kinase 1" "AK1"))
+(define-protein "KCY_HUMAN" ("Cytosolic UMP-CMP kinase" "Cytosolic UMP-CMP kinase 1" "CMPK1"))
+(define-protein "SPHK1_HUMAN" ("sphingosine kinase" "sphingosine kinase 1"))
+(define-protein "KGUA-HUMAN" ("GUK1" "guanylate kinase" "guanylate kinase 1"))
+(define-protein "5NT1A_HUMAN" ("5'-nucleotidase IA" "NT5C1A"))
 (define-protein "KAD2_HUMAN" ("adenylate kinase 2" "mitochondrial adenylate kinase 2"))
 
 (define-protein "EFNB1_HUMAN" ("ephrin-B1"))

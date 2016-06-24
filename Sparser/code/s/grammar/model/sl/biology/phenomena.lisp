@@ -675,6 +675,8 @@ it is created from N-terminus to C-terminus.|#
          :between binding-set
          :in complex))
 
+(def-synonym binding (:noun "binding event"))
+
 (delete-verb-cfr (resolve "assemble"))
 (delete-verb-cfr (resolve "assembles"))
 (delete-verb-cfr (resolve "assembled"))
@@ -829,6 +831,14 @@ it is created from N-terminus to C-terminus.|#
 (define-category homodimer :specializes dimer 
   :realization
   (:noun "homodimer"))
+
+(define-category homotriamer :specializes trimer 
+  :realization
+  (:noun "homotriamer"))
+
+(define-category homotetramer :specializes tetramer 
+  :realization
+  (:noun "homotetramer"))
 
 (define-category homo/heterodimer :specializes dimer
   :realization
