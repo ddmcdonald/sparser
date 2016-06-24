@@ -95,7 +95,8 @@
    title-text objects into a single new object.
    Returns the (possibly merged) title and the other,
    non-title elements."
-  (declare (special *sentence-making-sweep*))
+  (declare (special *sentence-making-sweep*
+                    *current-document-element*))
   (let* ((titles (loop for e in doc-elements
                    when (typep e 'title-text)
                     collect e))
@@ -125,17 +126,22 @@
           (push-debug `(,parent ,titles ,title))
           #+ignore(lsp-break "parent's children: ~a" (children parent)))))
 
+    (when (= (length (content-string title)) 0)
+      ;; This causes a cascade of problems at many points.
+      ;; Solution appears to be to splice out this element
+      ;; and proceed as if it didn't exist.
+      (remove-title-text-from-document title)
+      (setq title nil))
+
     (when title
-      (cond
-        ((= (length (content-string title)) 0)
-         ;; This causes a cascade of problems at many points.
-         ;; Solution would appear to be to splice out this element
-         ;; and proceed as if it didn't exist.
-         (remove-title-text-from-document title)
-         (setq title nil))
-        (t
-         (unless (contents title) ;; unless we already did this ...
-           (setup-title-as-sentence-container title)))))
+      ;; rest is nil in "Supporting Information" in ASPP2
+      (let ((parent *current-document-element*))
+        (setf (parent title) parent)
+        (set-document-index title "title")))
+
+    (when title
+      (unless (contents title) ;; unless we already did this ...
+        (setup-title-as-sentence-container title)))
     
     (values title rest multiple?)))
 

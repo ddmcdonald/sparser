@@ -577,6 +577,11 @@ is a case in handle-any-anaphor
   (unless (toc-index ss)
     (let* ((parent (parent ss))
            (parent-toc (toc-index parent)))
+      ;; The problem these checked for has been fixed,
+      ;; but that's not to say some change might bring it back
+      #+ignore(unless parent-toc
+        (lsp-break "Null toc in parent ~a of ~a"
+                   parent ss))
       (setf (doc-index ss) index)
       (setf (toc-index ss)
             (format nil "~a.~a" parent-toc index)))))
@@ -586,14 +591,28 @@ is a case in handle-any-anaphor
   (unless (toc-index s)
     (let* ((parent (parent s))
            (parent-toc (toc-index parent)))
+      #+ignore(unless parent-toc
+        (lsp-break "Null toc in parent ~a of ~a"
+                   parent s))
       (setf (doc-index s) index)
       (setf (toc-index s)
+            (format nil "~a.~a" parent-toc index)))))
+
+(defmethod set-document-index ((tt title-text) index)
+  (unless (toc-index tt)
+    (let* ((parent (parent tt))
+           (parent-toc (toc-index parent)))
+      (setf (doc-index tt) index)
+      (setf (toc-index tt)
             (format nil "~a.~a" parent-toc index)))))
 
 (defmethod set-document-index ((p paragraph) (index integer))
   (unless (toc-index p)
     (let* ((parent (parent p))
            (parent-toc (toc-index parent)))
+      #+ignore(unless parent-toc
+        (lsp-break "Null toc in parent ~a of ~a"
+                   parent p))
       (setf (doc-index p) index)
       (setf (toc-index p)
             (format nil "~a.p~a" parent-toc index)))))
@@ -605,6 +624,9 @@ is a case in handle-any-anaphor
   (unless (toc-index p)
     (let* ((parent (parent p))
            (parent-toc (toc-index parent)))
+      #+ignore(unless parent-toc
+        (lsp-break "Null toc in parent ~a of ~a"
+                   parent p))
       (setf (doc-index p) index)
       (setf (toc-index p)
             (format nil "~a.~a" parent-toc index)))))
@@ -613,9 +635,13 @@ is a case in handle-any-anaphor
   (unless (toc-index s)
     (let* ((parent (parent s))
            (parent-toc (toc-index parent)))
+      #+ignore(unless parent-toc
+        (lsp-break "Null toc in parent ~a of ~a"
+                   parent s))
       (setf (doc-index s) index)
       (setf (toc-index s)
             (format nil "~a.s~a" parent-toc index)))))
+
 
 (defun location-in-article-of-current-sentence ()
   "Looks up the sentence we are presently working on
@@ -626,5 +652,4 @@ is a case in handle-any-anaphor
   (when *reading-populated-document*
     (let ((s (identify-current-sentence)))
       (toc-index s))))
-
 

@@ -35,6 +35,12 @@
    provided that the section (or section-of-sections) has one.
    See title-of-currect-section-is.")
 
+(defvar *current-document-element* nil
+  ;; motivated by pathological case in extract-titles-from-other-elements
+  ;; where it needs a 'parent' but the obvious method doesn't work
+  "Bound in each read-from-document method to the specific
+   document object being operated on.")
+
 
 ;;--- context
 
@@ -119,8 +125,10 @@
 
 (defmethod read-from-document ((a article))
   (declare (special *sentence-making-sweep* *sections-to-ignore*))
-  (let ((*current-article* a))
-    (declare (special *current-article*))
+  (let ((*current-article* a)
+        (*current-document-element* a))
+    (declare (special *current-article*
+                      *current-document-element*))
     (set-document-index a :ignore)
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
@@ -156,6 +164,8 @@
    that has section objects as its children. This reads through
    each of the sections in order, and handles its own title 
    if there is one."
+  (let ((*current-document-element* ss))
+    (declare (special *current-document-element*))
   (install-contents ss)
   (when *show-section-printouts*
     (format t "~&--------- starting section of sections ~a~%" ss))
@@ -195,13 +205,15 @@
           (after-actions ss))
         (when *show-section-printouts*
           (format t "~&~%--------- finished section of sections ~a~%" ss)
-          (when (actually-reading) (show-parse-performance ss)))))))
+          (when (actually-reading) (show-parse-performance ss))))))))
 
 
 (defmethod read-from-document ((s section))
   "The children of a section are paragraphs. Read through each
   of the paragraphs in sequence after first reading through the
   section title if there is one."
+  (let ((*current-document-element* s))
+    (declare (special *current-document-element*))
   (install-contents s)
   (when *show-section-printouts*
     (format t "~&~%--------- starting section ~a~%" s))
@@ -249,7 +261,7 @@
           (after-actions s))
         (when *show-section-printouts*
           (format t "~%--------- finished section ~a~%~%" s)
-          (when (actually-reading) (show-parse-performance s)))))))
+          (when (actually-reading) (show-parse-performance s))))))))
 
 
 
@@ -265,10 +277,12 @@
   (let ((*reading-populated-document* t)
         (*recognize-sections-within-articles* nil) ;; turn of doc init
         (*accumulate-content-across-documents* t)  ;; don't clear history
+        (*current-document-element* p)
         (*current-paragraph* p)) ;; read by sentence-maker
     (declare (special *reading-populated-document*
                       *recognize-sections-within-articles*
                       *accumulate-content-across-documents*
+                      *current-document-element*
                       *current-paragraph*))
     (install-contents p)
     (let ((text (content-string p)))
@@ -293,11 +307,13 @@
         (*reading-section-title* t)
         (*recognize-sections-within-articles* nil) ;; turn of doc init
         (*accumulate-content-across-documents* t) ;; don't clear history
+        (*current-document-element* title)
         (*current-paragraph* title)) ;; for initialize-sentences
     (declare (special *reading-populated-document*
                       *reading-section-title*
                       *recognize-sections-within-articles*
                       *accumulate-content-across-documents*
+                      *current-document-element*
                       *current-paragraph*))
     (initialize-sentences)
     ;; For the setup on the title-text object see
@@ -499,13 +515,15 @@
         (let ((ss (allocate-section-of-sections)))
           (setf (parent ss) a)
           (setf (children ss) its-children)
-          (let ((title? (when (typep (car its-children) 'title-text)
+          (loop for child in its-children
+             do (setf (parent child) ss))
+          #+ignore(let ((title? (when (typep (car its-children) 'title-text)
                           ;;/// searching for it would be more robust
                           (car its-children))))
             (if title?
               (setf (title ss) title?)
-              (setf (title ss) (make-unknown-title)))
-            (setq child ss))))
+              (setf (title ss) (make-unknown-title))))
+          (setq child ss)))
       (push child actual-children)
       (when previous-child
         (setf (previous child) previous-child)
