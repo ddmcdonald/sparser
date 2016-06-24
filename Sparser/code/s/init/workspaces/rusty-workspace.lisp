@@ -1573,5 +1573,5 @@ NIL
     (if r2p
         (np r2p)
         (show-sentences))))
-      
+
 
