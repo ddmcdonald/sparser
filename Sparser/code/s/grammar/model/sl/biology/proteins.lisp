@@ -241,6 +241,7 @@
 ;; And these are families of particulars, not the particulars that are
 ;;  actually doing participating in the reactions
 
+(noun "serine/threonine kinase" :super kinase)
 (noun "tyrosine kinase" :super kinase)
 (noun "threonine kinase" :super kinase)
 
