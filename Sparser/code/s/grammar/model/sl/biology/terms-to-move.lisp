@@ -147,9 +147,22 @@ be biology specific, since they aren't. |#
   :realization
   (:noun "amount"))
 
-(noun "duration" :super bio-scalar)
+(define-category duration :specializes bio-scalar
+  :restrict ((item-measured (:or process bio-method bio-mechanism)))
+  :realization
+  (:noun "duration"))
+
 (noun "length" :super bio-scalar)
 (noun "level" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
+(define-category period :specializes amount-of-time
+  :binds ((context bio-context)
+          (state bio-state))
+  :realization (:noun "period"
+                      :m context
+                      :in context
+                      :in state))
+
+(noun ("period of time" :plural "periods of time") :super period)
 
 
 ;;--- bio-rhetorical
