@@ -654,6 +654,22 @@ similar to an oncogenic RasG12V mutation (9)."))
            :referent (:function make-subordinate-clause left-edge right-edge))))
 
 
+(loop for vv in '((subordinate-clause subordinate-clause) ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
+		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
+                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
+		  (verb+present vg))
+  
+   do
+     (eval `(def-form-rule (before ,(car vv))
+                :head :right-edge
+                :form subordinate-clause
+                :referent (:function make-subordinate-clause left-edge right-edge)))
+     (eval `(def-form-rule (after ,(car vv))
+                :head :right-edge
+                :form subordinate-clause
+                :referent (:function make-subordinate-clause left-edge right-edge))))
+
+
 ;;;----------------------
 ;;; "that" and "whether" and "how"
 ;;;----------------------
