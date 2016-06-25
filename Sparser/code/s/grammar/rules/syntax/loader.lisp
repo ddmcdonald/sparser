@@ -43,6 +43,7 @@
   (gload "syntax-vg;tense")
   (gload "syntax-vg;have")
   (gload "syntax-vg;be")
+  (gload "syntax-vg;copulars")
   (gload "syntax-vg;modals")   ;; references #<have>
   (gload "syntax-vg;adverbs"))
 

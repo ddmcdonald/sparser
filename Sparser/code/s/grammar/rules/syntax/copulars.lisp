@@ -36,8 +36,9 @@ phosphorylated by Src."
 (define-category copula :specializes abstract) ;; not sure what to do beyond this
 
 (defun make-copular-def (word-string)
-  (let ((verb (intern word-string)))
+  (let ((verb (intern (string-upcase word-string))))
     `(progn
+       #+ignore
        (define-category ,verb :specializes copula
                         :binds ((tocomp t)
                                 (subject t)
@@ -57,6 +58,7 @@ phosphorylated by Src."
            :form vp
            :referent (:function make-copular-adjective left-edge right-edge)))))
 
+#+ignore ;; do this in the biology/verbs.lisp file for now
 (loop for v in '("seem" "appear" "remain"
                  "become" "stay")
      do
