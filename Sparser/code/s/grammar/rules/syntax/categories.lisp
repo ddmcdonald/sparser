@@ -506,10 +506,14 @@
                      (member (cat-name (edge-form ee)) '(quantifier det adverb punctuation))))))
       (when (not (preceding-adverb e))
         (cond
-          ((and
-            (eq (cat-name (edge-form e)) 'quantifier)
-            (itypep (edge-referent e) 'not))
-           nil)
+          ((eq (cat-name (edge-form e)) 'quantifier)
+           (and
+            (not (itypep (edge-referent e) 'not))
+            (or
+             (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
+                  thereis
+                     (eq (cat-name (edge-form ee)) 'det))
+             (not (chunk-ev-list *chunk*)))))
           ((eq (cat-name (edge-form e)) 'verb+ed)
            nil)
           ((plural-noun-and-present-verb? e)
