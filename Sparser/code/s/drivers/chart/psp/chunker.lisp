@@ -494,11 +494,8 @@
     (cond
       ((plural-noun-and-present-verb? e)
        (plural-noun-not-present-verb e))
-      #+ignore ;; doesn't seem to be applicable, since it only makes sense for cases where ng-start? is called
-      ((and (singular-noun-and-present-verb? e)
-            (and (edge-just-to-left-of e)
-                 (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))
-       nil)
+      ((singular-noun-and-present-verb? e)
+       (not (preceding-pronoun-or-which? e)))
       ((singular-noun-and-present-verb? e))
       ((constrain-following e) nil)
       ((some-edge-satisfying? edges #'pronoun-or-wh-pronoun) nil)
@@ -556,12 +553,14 @@
 
 
 (defun plural-noun-not-present-verb (e)
-  (and
-   (not (some-edge-satisfying? (edges-before e) #'np-end-edge))
-   (or
-    (some-edge-satisfying? (edges-before e) #'non-det-or-verb-ng-start?)
-    (not
-     (some-edge-satisfying? (edges-after e) #'non-det-or-verb-ng-start?)))))
+  (or
+   (null (edges-before e)) ;; sentence initial
+   (and
+    (not (some-edge-satisfying? (edges-before e) #'np-end-edge))
+    (or
+     (some-edge-satisfying? (edges-before e) #'non-det-or-verb-ng-start?)
+     (not
+      (some-edge-satisfying? (edges-after e) #'non-det-or-verb-ng-start?))))))
                                    
 (defun pronoun-or-wh-pronoun (edge)
   (or
