@@ -103,6 +103,15 @@
 		     :present-participle "becoming")
 	   :etf (svo)))
 
+(eval (make-copular-def "become"))
+
+(define-category stay :specializes bio-rhetorical
+    :realization
+    (:verb "stay"
+	   :etf (svo)))
+
+(eval (make-copular-def "stay"))
+
 (define-category start :specializes bio-rhetorical
   :realization (:verb "start" :etf (svo)))
 
@@ -180,8 +189,8 @@
 
 (define-category lacking :specializes bio-relation
   :realization
-  (:verb ("lackXXX" ;; don't block noun
-          :third-singular "lacksXXX" ;; don't block noun
+  (:verb ("lack" ;; don't block noun
+          :third-singular "lacks" ;; don't block noun
           :past-tense "lacked"
           :present-participle "lacking")
          :etf (svo)
@@ -540,6 +549,7 @@
       :realization
       (:verb "change"
              :etf (svo-passive)
+             :noun "change"
              :in object
              :of object
              :on scale
@@ -1055,22 +1065,6 @@
          :for presence-of))
 
 
-(define-category bio-exchange :specializes bio-movement
-  :binds ((state-before (:or nucleotide bio-state variant))
-          (state-after (:or nucleotide bio-chemical-entity bio-state variant))
-          (subject nucleotide))
-  :realization
-  (:noun "exchange"
-         :verb "exchange"
-         :etf (svo-passive)
-         :o object
-         :m subject
-         :s subject
-         :of state-before
-         :from state-before
-         :to state-after))
-
-
 
 (define-category exhibit :specializes caused-bio-process
     :realization
@@ -1238,6 +1232,10 @@
   (:verb "hydrolyze" :noun "hydrolysis"
    :etf (svo-passive) 
    ))
+
+(def-synonym hydrolyze
+    (:verb "hydrolyse"
+           :etf (svo-passive)))
 
 (define-category bio-hyperactivate
   :specializes bio-activate
@@ -2017,6 +2015,8 @@
 	   :etf (svo-passive)
            :o theme))
 
+(eval (make-copular-def "remain"))
+#+ignore
 (def-form-rule (remain adjective)
   :form vp
   :referent (:head right-edge);; :bind (predication right-edge)
@@ -2141,9 +2141,7 @@
 
 (def-synonym seem (:verb "appear" :etf (svo)))
 
-(def-form-rule (seem adjective)
-  :form vg
-  :referent (:function make-copular-adjective left-edge right-edge))
+(eval (make-copular-def "seem"))
 
 (def-form-rule (seem ap)
   :form vp
