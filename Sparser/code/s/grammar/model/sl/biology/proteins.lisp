@@ -241,9 +241,9 @@
 ;; And these are families of particulars, not the particulars that are
 ;;  actually doing participating in the reactions
 
-(noun "serine/threonine kinase" :super kinase)
-(noun "tyrosine kinase" :super kinase)
-(noun "threonine kinase" :super kinase)
+;;(noun "serine/threonine kinase" :super kinase)
+;;(noun "tyrosine kinase" :super kinase)
+;;(noun "threonine kinase" :super kinase)
 
 (def-bio "RasGRF1" protein :synonyms ( "RASGRF1") :mitre-link "Uniprot:Q13972")
 
