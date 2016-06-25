@@ -1701,12 +1701,9 @@
 ;;; There + BE
 ;;;-----------------
 
-(defun make-there-exists ()
-  (let ((exists 
-         (if *description-lattice*
-          (fom-lattice-description category::there-exists)
-          (make-unindexed-individual category::there-exists)))) ;;<<<<<<<<<<
-    exists))
+(defun make-there-exists (predication)
+  (make-an-individual 'there-exists
+                      :predication predication))
 
 (defun make-exist-claim (right-edge)
   (let ((exists (make-unindexed-individual category::there-exists))) ;;<<<<<<<

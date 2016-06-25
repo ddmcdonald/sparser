@@ -275,7 +275,7 @@ assess-edge-label, which rewrites the word as the category BE.
 
 (def-cfr there-exists (syntactic-there BE)
   :form S
-  :referent (:function make-there-exists))
+  :referent (:function make-there-exists right-edge))
 
 #+ignore
 (def-form-rule (there-exists np)
