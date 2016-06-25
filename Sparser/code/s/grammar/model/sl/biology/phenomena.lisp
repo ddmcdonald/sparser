@@ -43,8 +43,7 @@
 
 ;; "RAS signalling"
 ;; a new mode of Ras activation in which signaling is sustained ...
-(define-category signal
-  :specializes cellular-process
+(define-category signal :specializes cellular-process
   ;;//// bind it explicitly? :obo-id "GO:0023052"  ;; reasonable stand-in
   :binds ((agent protein) ;;bio-entity) ;; what's doing the signalling
           (object (:or bio-process protein)))  ;; what's being signaled
@@ -66,6 +65,9 @@
    (:noun "signal" 
           :m agent    
           :to object))
+
+(noun "import signal" :super signal)
+(noun "export signal" :super signal)
 
 ;;"It is interesting that various stimuli provoke EGF receptor tyrosine phosphorylation by two distinct means.")
 (define-category post-translational-modification :specializes caused-bio-process
@@ -370,6 +372,9 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym protein-terminus
     (:noun "very end"))
 
+(def-synonym protein-terminus
+    (:noun "taild"))
+
 ;;//////////// These two are essentially identical definitions
 ;; Meed a macro or something 
 (define-category N-terminal ;; amino-terminus
@@ -377,6 +382,7 @@ it is created from N-terminus to C-terminus.|#
   :realization
   (:etf (pre-mod)
         :noun ("n-terminal" "n-terminus" "N-terminal" "N-terminus"
+                            "N-tail"
           "n-termini"
           "amino terminus"
           "NtA") ;; n-terminal acidic
@@ -388,7 +394,7 @@ it is created from N-terminus to C-terminus.|#
   :realization
   (:etf (pre-mod)
         :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus"
-          "c-termini")
+          "c-termini" "C-tail" "c-tail")
         :premod context ;; NEEDS TO BE CHANGED -- only here because need :etf (pre-mod), to get synonyms
         ))
 
@@ -645,10 +651,10 @@ it is created from N-terminus to C-terminus.|#
   ;;:obo-id 
   :bindings (uid "GO:0005488")
   ;; "<binder> binds to <bindee>" the subject moves
-  :binds ((binder (:or molecule protein-domain bio-chemical-entity))
-          (bindee (:or molecule protein-domain bio-chemical-entity))
-          (binding-set (:or bio-chemical-entity protein-domain)) ;; this is conjunctive, as in "binding between X and Y"
-          (direct-bindee (:or bio-chemical-entity protein-domain))
+  :binds ((binder (:or molecule protein-domain bio-chemical-entity molecular-location))
+          (bindee (:or molecule protein-domain bio-chemical-entity molecular-location))
+          (binding-set (:or bio-chemical-entity protein-domain molecular-location)) ;; this is conjunctive, as in "binding between X and Y"
+          (direct-bindee (:or bio-chemical-entity protein-domain molecular-location))
           (site molecular-location)
           (domain protein-domain)
           (cell-location cellular-location)
