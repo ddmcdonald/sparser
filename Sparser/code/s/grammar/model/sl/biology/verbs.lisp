@@ -306,11 +306,11 @@
 (define-category bio-act
   ;; N.b. "bio-" implies that there's an unmarked "act" as well, and it's a bit cumbersome
   :specializes other-bio-process
-  :binds ((actor bio-entity)
+  :binds ((actor (:or bio-entity bio-location))
 	  (co-actor bio-entity)
           (object bio-entity)
           (process bio-process)
-          (functionality (:or  bio-process bio-entity))
+          (functionality (:or  bio-process bio-entity bio-location))
           (bio biological)
           (tocomp biological))
   :documentation "compare with act as"
@@ -550,8 +550,13 @@
 (def-synonym change
             (:noun "variation"))
 
-(def-synonym change
-            (:verb "convert" :etf (svo-passive)))
+(define-category conversion :specializes change   ;; for our purposes, since we only have biologically relevant reactions
+   :realization (:noun "conversion"
+                       :verb "convert"
+                       :etf (svo-passive)
+                       :to resulting
+                       ))
+
 
 
 (define-category coimmunoprecipitate :specializes immune-method
@@ -1065,6 +1070,8 @@
          :from state-before
          :to state-after))
 
+
+
 (define-category exhibit :specializes caused-bio-process
     :realization
     (:verb "exhibit"
@@ -1226,15 +1233,11 @@
 ;;  and GDP (di-phosphate) is the result.
 ;;  "gtp hydrolysis on ras"
 ;; "GO:0019514"
-(define-category hydrolyze :specializes caused-bio-process
-  :binds ((goal molecule) ;; the resulting chemical
-          (substrate molecule)) ;;the context in which the hydrolysis occurs
+(define-category hydrolyze :specializes chemical-reaction
   :realization            
   (:verb "hydrolyze" :noun "hydrolysis"
    :etf (svo-passive) 
-   :m object
-   :to goal
-   :on substrate))
+   ))
 
 (define-category bio-hyperactivate
   :specializes bio-activate
@@ -1921,6 +1924,7 @@
          :with agent))
 
 (define-category recruit :specializes bio-transport
+  :restrict ((destination (:or cellular-location bio-chemical-entity)))
   :realization 
   (:verb "recruit" :noun "recruitment"
          :etf (svo-passive)))
@@ -1944,6 +1948,14 @@
      :etf (svo-passive)
      :in theme
      :for theme))
+
+(define-category regulator :specializes bio-chemical-entity ;; more general than this
+                 ;; anything which can be said to regulate a process
+;; functional term (agent of regulate)
+  :binds ((theme biological))
+  :realization
+  (:noun "regulator"
+         :of theme))
 
 
 (define-category inter-regulate
