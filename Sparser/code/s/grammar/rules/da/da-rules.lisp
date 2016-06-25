@@ -887,3 +887,89 @@
 
 (defun right-fringe-of (edge)
   (all-edges-on (pos-ends-here (pos-edge-ends-at edge))))
+
+#+ignore
+(define-debris-analysis-rule np-comma-np-comma-and-np
+  :pattern ( np "," np "," and np)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           np-comma-np-comma-and-np
+           first second third fourth))
+
+(define-debris-analysis-rule s-comma-np-comma-and-np
+  :pattern ( s "," np "," and np)  
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           s-comma-np-comma-and-np
+           first second third fourth fifth sixth))
+
+(defun s-comma-np-comma-and-np ( s comma-1 np-1 comma-2 and-wd np-2)
+  (let* ((target (find-target-satisfying (right-fringe-of s) #'np-target?))
+         (collection
+          (make-an-individual 'collection
+                              :items `(,(edge-referent target)
+                                        ,(edge-referent np-1)
+                                        ,(edge-referent np-2))
+			       :number 3
+			       :type (itype-of (edge-referent target)))))
+    (when target
+      (make-edge-spec 
+       :category (edge-category target)
+       :form (edge-form target)
+       :referent collection
+       :target target
+       :dominating (edge-used-in target)
+       :direction :right))
+    ))
+
+
+;; low priority rules for treating present-participles as subjects -- try to get the subject of the participials first
+
+(defun make-subj-vp-rule-pair (subj vp)
+  (let ((rule-name (intern (format nil "~s-~s" subj vp))))
+    `(progn
+       (define-debris-analysis-rule ,rule-name
+           :pattern (,subj ,vp)
+           ;; The action can fail. Returning nil ought to suffice
+           :action (:function ,rule-name first second))
+
+       (defun ,rule-name (,subj ,vp)
+         (let* ((*right-edge-into-reference* ,vp)
+                (*left-edge-into-reference* ,subj)
+                (ref (assimilate-subject (edge-referent ,subj) (edge-referent ,vp))))
+           (declare (special *right-edge-into-reference* *left-edge-into-reference*))
+           (when ref
+             (make-edge-spec 
+              :category (edge-category ,vp)
+              :form 's
+              :referent ref)))))))
+
+(loop for subj in '(vp+ing vg+ing)
+   do
+     (loop for vp in '(vp vg vp+passive vg+passive)
+        do
+          (eval (make-subj-vp-rule-pair subj vp))))
+
+(defun make-subj-vp+ing-rule-pair (subj)
+  (let ((rule-name (intern (format nil "~s-VP+ING" subj))))
+    `(progn
+       (define-debris-analysis-rule ,rule-name
+           :pattern (,subj vp+ing)
+           ;; The action can fail. Returning nil ought to suffice
+           :action (:function ,rule-name first second))
+
+       (defun ,rule-name (,subj  host-vp)
+         (let* ((*right-edge-into-reference* host-vp)
+                (*left-edge-into-reference* ,subj)
+                (ref (assimilate-subject-to-vp-ing (edge-referent ,subj) (edge-referent host-vp))))
+           (declare (special *right-edge-into-reference* *left-edge-into-reference*))
+           (when ref
+             (make-edge-spec 
+              :category (edge-category host-vp)
+              :form 's
+              :referent ref)))))))
+
+
+(loop for subj in '(vp+ing vg+ing)
+   do
+     (eval (make-subj-vp+ing-rule-pair subj)))

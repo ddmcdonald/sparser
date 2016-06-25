@@ -591,7 +591,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 ;; must handle vp+ed object-relative below
 
-(loop for n in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
+(loop for n in `(np pronoun  ,@*n-bar-categories*)
   do
   (eval
    `(def-syntax-rule (,n vp+ed)
@@ -606,7 +606,7 @@ similar to an oncogenic RasG12V mutation (9)."))
       :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
 
 
-(loop for n in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
+(loop for n in `(np pronoun  ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
   do
   (when nil
     (eval ;; this is the gerund form of the verb as an NP!!!
