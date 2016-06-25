@@ -54,6 +54,10 @@
 (noun "uridine monophosphate" :super nucleotide)
 
 
+(noun "(deoxy)cytidine monophosphate" :super nucleotide)
+(noun "(deoxy)thymidine monophosphate" :super nucleotide)
+(noun "(deoxy)uridine monophosphate" :super nucleotide)
+
 
 
             
