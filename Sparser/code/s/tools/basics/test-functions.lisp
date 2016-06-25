@@ -208,7 +208,7 @@
                (format nil "<~a ~a>" cat-str
                        (typecase name
                          (word (pname-for name))
-                         (poly-word (pname-for name))
+                         (polyword (pname-for name))
                          (t name)))
                cat-str)))
 	((category-p cat?)
