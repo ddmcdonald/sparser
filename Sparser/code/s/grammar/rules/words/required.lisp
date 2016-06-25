@@ -63,10 +63,12 @@
 
 ;;;--------- period
 
-(define-punctuation  period  #\. )   ;; 46
-  ;; We need it here in order to setup it options as a sentence
-  ;; delimiter. Would apply to question mark and excl, but they
-  ;; don't occur in the text we're looking at. 
+;; We need these here in order to setup the options as a sentence
+;; delimiter. Would apply any other sentence-terminating punctuation
+;; should we encounter it.
+
+(define-punctuation period  #\. )   ;; 46
+(define-punctuation question-mark #\? )   ;; 63
 
 (defun period-hook-on ()
   ;; The question mark is defined later, but this function

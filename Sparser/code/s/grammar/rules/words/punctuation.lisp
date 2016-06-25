@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.4 December 2015
+;;;   Version:   June 2016
 
 ;; 1.0 (9/21/92 v2.3) added everything else, in ascii order
 ;; 1.1 (4/9/93) moved newline to required
@@ -47,7 +47,7 @@
 (define-punctuation  open-angle-bracket  #\< )   ;; 60
 (define-punctuation  equal-sign          #\= )   ;; 61
 (define-punctuation  close-angle-bracket #\> )   ;; 62
-(define-punctuation  question-mark       #\? )   ;; 63
+;; question mark, #63, defined in the require words
 (define-punctuation  ampersand           #\@ )   ;; 64
 
 
