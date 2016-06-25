@@ -342,8 +342,8 @@
 	   :through by-means-of
 	   :via by-means-of
 	   :via using
-       :through using
-       :through by-means-of
+           :through using
+           :through by-means-of
 	   :in manner
 	   :as-comp as-comp
 	   :at target)
@@ -368,7 +368,8 @@
   :binds ((subject biological))
   :realization 
   (:noun "processYYY"
-         :s subject)
+         :s subject
+         :of subject)
   :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
@@ -529,21 +530,20 @@
   :bindings (uid "GO:0005488"))
 
 (delete-noun-cfr (resolve "reaction"))
-(define-category chemical-reaction :specializes bio-process   ;; for our purposes, since we only have biologically relevant reactions
-   :binds ((reactant bio-chemical-entity)
-           (co-reactant bio-chemical-entity)
+(define-category chemical-reaction :specializes caused-bio-process   ;; for our purposes, since we only have biologically relevant reactions
+   :binds ((co-reactant bio-chemical-entity)
            (result bio-chemical-entity))
    :realization (:noun "reaction"
                        :verb "react"
                        :etf (sv)
-                       :s reactant
                        :with co-reactant
+                       :to result
                        ))
 
 (define-category biochemical-reaction :specializes chemical-reaction ;; from biopax
   )
 
-(define-category catalysis :specializes biochemical-reaction
+(define-category catalysis :specializes chemical-reaction
   :mixins (bio-control)
   :binds ((controlType))
   :realization
@@ -557,7 +557,6 @@
 (define-category kinase-activity :specializes enzyme-activity
   :realization
   (:noun "kinase activity"))
-
 
 (define-category bio-method :specializes process
   :mixins (has-UID has-name biological)
@@ -968,19 +967,25 @@
 				    :in state
                                     ))
 
+
+
+
 (define-category enzyme :specializes protein ;; what's the relationship to kinase?   ;; not all enzymes are proteins -- there are RNA enzymes
-  :binds ((reaction bio-process)
+  :binds ((enzyme protein)
+          (reaction bio-process)
           (enzyme-activity enzyme-activity))
   :instantiates :self
   :lemma (:common-noun "enzyme")
   :realization (:common-noun name))
 
 (def-synonym enzyme
-    (:with enzyme-activity))
+    (:with enzyme-activity
+           :m enzyme
+           ))
 
 (define-category post-translational-enzyme :specializes enzyme
-  :binds ((protein protein) 
-          (residue amino-acid)))
+  :binds ((residue residue-on-protein)
+          (amino-acid amino-acid)))
 
 
 (define-category kinase :specializes post-translational-enzyme
@@ -994,8 +999,8 @@
 (def-synonym kinase
              (:noun "kinase"
                    :for reaction
-                   :m protein
-                   :m residue))
+                   :m residue
+                   :m amino-acid))
 
 (noun "phosphatase" :super post-translational-enzyme)
 
@@ -1004,8 +1009,6 @@
 (define-category deubiquitylase :specializes enzyme
                  ;; a ubiquitalyse is a molecule, not an activity -- the link to GO:0016301"
                  ;;  should be as a "telic" qualia for those molecules which are kinases 
-  :binds ((protein protein) 
-          (residue amino-acid))
   :instantiates :self
   :bindings (uid "GO:0016301") ;; "kinase activity" 
   :index (:permanent :key name)
@@ -1017,6 +1020,7 @@
 (define-category exchange-factor :specializes enzyme
   :binds ((substrate protein)
           (nucleotide nucleotide))
+  :restrict ((enzyme determiner)) ;; BLOCK THIS
   :realization
   (:noun "exchange factor"
          :m nucleotide
@@ -1036,12 +1040,11 @@
          :on substrate
          :from substrate))
 
+(noun "GDP to GTP exchange" :super nucleotide-exchange)
 
 (define-category phosphatase :specializes enzyme
                  ;; a kinase is a molecule, not an activity -- the link to GO:0016301"
                  ;;  should be as a "telic" qualia for those molecules which are kinases 
-  :binds ((protein protein) 
-          (residue amino-acid))
   :instantiates :self
   :index (:permanent :key name)
   :realization (:common-noun name))
@@ -1049,7 +1052,6 @@
 (def-synonym phosphatase
              (:noun "phosphatase"
                     :for reaction
-                    :m protein
                     :m residue))
 
 (define-category GTPase :specializes enzyme
