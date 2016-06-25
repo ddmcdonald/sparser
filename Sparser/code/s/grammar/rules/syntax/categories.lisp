@@ -475,6 +475,13 @@
        (member (cat-name (edge-form ee))
                '(preposition spatial-preposition)))))
 
+(defun preceding-pronoun-or-which? (e)
+  (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
+     thereis
+       (or
+        (eq (cat-name (edge-category ee)) 'which)
+        (eq (cat-name (edge-form ee)) 'pronoun))))
+
 (defun followed-by-verb (e)
   (loop for ee in (ev-edges (pos-starts-here (pos-edge-ends-at e)) )
      thereis
@@ -524,7 +531,8 @@
            (or
             (preceding-det-prep-poss-or-adj e)
             (followed-by-verb e)))
-          ((singular-noun-and-present-verb? e))
+          ((singular-noun-and-present-verb? e)
+           (not (preceding-pronoun-or-which? e)))
           ((eq (cat-name (edge-form e)) 'VERB+ING) ; 
            (let
                ((end-pos (pos-edge-ends-at e))
@@ -584,14 +592,16 @@
        (not (ng-compatible? e nil))
        (not (ng-head? e)))))
     ((singular-noun-and-present-verb? e)
-     (and
-      (not (and
-            (preceding-det-prep-poss-or-adj e)
-            ;; allow for "to form GDP"
-            (not
-             (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
-                thereis (eq (cat-name (edge-category ee)) 'to)))))
-      (not (followed-by-verb e))))
+     (or
+      (preceding-pronoun-or-which? e)
+      (and
+       (not (and
+             (preceding-det-prep-poss-or-adj e)
+             ;; allow for "to form GDP"
+             (not
+              (loop for ee in (ev-edges (pos-ends-here (pos-edge-starts-at e)) )
+                 thereis (eq (cat-name (edge-category ee)) 'to)))))
+       (not (followed-by-verb e)))))
     (t
      (vg-compatible? e))))
 
