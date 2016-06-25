@@ -198,6 +198,16 @@
   :pattern ( s and vp )
   :action (:function conjoin-clause-and-vp first second third))
 
+
+;; this should see if there is a buried VP on the right fringe and do a conjunction there
+;; e.g.
+#+ignore
+"This state is considered to be a short-lived transition state intermediate 
+     in vivo [36] based on the relatively high GTP:GDP ratio in vivo [37], 
+     the ability of GTP to dissociate the GEF-Ras complex in vitro [31], 
+     and the assumption that there are no proteins in vivo that might stabilize 
+     nucleotide-free Ras and prevent GTP loading. "
+
 (defun conjoin-clause-and-vp (s-edge  and vp-edge)
   ;; get the value of the subject or (perhaps) the subject
   ;; variable of the s. Look up the s variable of the vp
@@ -621,8 +631,7 @@
        :referent modified-np-ref
        ))))
 
-
-(define-debris-analysis-rule np-vp+ed
+(define-debris-analysis-rule pronoun-vp+ed
   :pattern (proper-noun vp+ed )
   :action (:function ;; providing all edges should let the constituents
            ;; field keep them connected in the web graph
@@ -630,6 +639,38 @@
 
 (defun proper-noun-vp+ed (proper-noun vp+ed)
   (np-vp+ed proper-noun vp+ed))
+
+
+(define-debris-analysis-rule np-vg+ed
+  :pattern (np vg+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           np-vg+ed first second))
+
+(defun np-vg+ed (np vg+ed)
+  (declare (special category::vg+ed))
+  (unless (adverb-at? (pos-edge-starts-at vg+ed))
+    ;; this test is a heuristic, to block
+    ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
+    (let* ((*right-edge-into-reference* vg+ed)
+           (*left-edge-into-reference* np)
+           (interp (assimilate-subject (edge-referent np)
+                                       (edge-referent vg+ed))))
+      (declare (special *right-edge-into-reference* *left-edge-into-reference*))
+      (when interp
+        (make-edge-spec
+         :category (edge-category vg+ed)
+         :form category::vg+ed
+         :referent interp
+         )))))
+
+
+(define-debris-analysis-rule proper-noun-vg+ed
+  :pattern (proper-noun vg+ed )
+  :action (:function proper-noun-vg+ed first second))
+
+(defun proper-noun-vg+ed (pronoun vg+ed)
+  (np-vg+ed pronoun vg+ed))
 
 (defun adverb-at? (position)
   (declare (special category::adverb))
@@ -662,13 +703,13 @@
 
 
 
-(define-debris-analysis-rule s-vg+ed
+(define-debris-analysis-rule s-vp+ed
   :pattern (s vp+ed )
   :action (:function ;; providing all edges should let the constituents
            ;; field keep them connected in the web graph
-           s-vg+ed first second))
+           s-vp+ed first second))
 
-(defun s-vg+ed (s-edge vp+ed)
+(defun s-vp+ed (s-edge vp+ed)
   (let ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?)))
     (when target       
       (make-edge-spec
@@ -681,6 +722,14 @@
        :dominating (edge-used-in target)
        :direction :right))))
 
+(define-debris-analysis-rule s-comma-vp+ed
+  :pattern (s "," vp+ed )
+  :action (:function ;; providing all edges should let the constituents
+           ;; field keep them connected in the web graph
+           s-comma-vp+ed first second third))
+
+(defun s-comma-vp+ed (s comma vp+ed)
+  (s-vp+ed s vp+ed))
 
 (define-debris-analysis-rule comma-adverb-comma
   :pattern ( "," adverb "," )
@@ -941,7 +990,7 @@
            (when ref
              (make-edge-spec 
               :category (edge-category ,vp)
-              :form 's
+              :form category::s
               :referent ref)))))))
 
 (loop for subj in '(vp+ing vg+ing)
@@ -966,10 +1015,12 @@
            (when ref
              (make-edge-spec 
               :category (edge-category host-vp)
-              :form 's
+              :form category::s
               :referent ref)))))))
 
 
 (loop for subj in '(vp+ing vg+ing)
    do
      (eval (make-subj-vp+ing-rule-pair subj)))
+
+
