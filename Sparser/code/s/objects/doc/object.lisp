@@ -101,18 +101,19 @@
                    when (typep e 'title-text)
                     collect e))
          (multiple? nil)
-         (title (if (null (cdr titles))
-                  (car titles)
-                  (let* ((texts (loop for tt in titles
-                                   collect (content-string tt)))
-                         (tt (make-instance 'title-text))
-                         (text-strings ;; pad witt space
-                          (loop for text in texts
+         (title (when titles
+                  (if (null (cdr titles))
+                    (car titles)
+                    (let* ((texts (loop for tt in titles
+                                     collect (content-string tt)))
+                           (tt (make-instance 'title-text))
+                           (text-strings ;; pad witt space
+                            (loop for text in texts
                                collect (string-append text " "))))
-                    (setq multiple? t)
-                    (setf (content-string tt)
-                          (apply #'string-append text-strings))
-                    tt)))
+                      (setq multiple? t)
+                      (setf (content-string tt)
+                            (apply #'string-append text-strings))
+                      tt))))
          (rest (loop for e in doc-elements
                   unless (typep e 'title-text)
                   collect e)))
@@ -126,13 +127,14 @@
           (push-debug `(,parent ,titles ,title))
           #+ignore(lsp-break "parent's children: ~a" (children parent)))))
 
-    (when (= (length (content-string title)) 0)
-      ;; This causes a cascade of problems at many points.
-      ;; Solution appears to be to splice out this element
-      ;; and proceed as if it didn't exist.
-      (remove-title-text-from-document title)
-      (setq title nil))
-
+    (when title
+      (when (= (length (content-string title)) 0)
+        ;; This causes a cascade of problems at many points.
+        ;; Solution appears to be to splice out this element
+        ;; and proceed as if it didn't exist.
+        (remove-title-text-from-document title)
+        (setq title nil)))
+      
     (when title
       ;; rest is nil in "Supporting Information" in ASPP2
       (let ((parent *current-document-element*))
