@@ -37,6 +37,14 @@
 
 (in-package :sparser)
 
+;;from pathway comments
+(define-category member :specializes abstract ;; NOT SURE WHAT TO DO HERE
+ :mixins (biological)
+ :binds ((set biological))
+ :realization
+ (:noun "member"
+        :of set))
+
 (adj "deoxy" :super bio-predication)
 (noun "chemical product" :super bio-chemical-entity)
 
@@ -779,7 +787,18 @@
       :realization
       (:noun "panel"
              :of component))
-(noun "paradigm" :super bio-abstract)
+
+(define-category paradigm :specializes process
+   :mixins (biological)
+  ;; not sure this is the correct term, but intended for things like "forms of ras" 
+  :binds ((basis bio-process)) ;; can be a gene or protein, or something else
+  :instantiates :self
+  :realization
+  (:noun "paradigm"
+         :m basis
+         :of basis
+         :for basis))
+
 (noun "paradox" :super bio-entity)
 
 (adj "parallel" :super bio-predication)
