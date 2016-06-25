@@ -78,5 +78,5 @@
 (defun period-hook-off ()
   (declare (special word::period word::question-mark))
   (delete-completion-action word::period :hook)
-  (delete-completion-action word::question-mark))
+  (delete-completion-action word::question-mark :hook))
 
