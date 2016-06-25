@@ -930,6 +930,7 @@
       :on substrate
       :at residue))
 
+(noun "docking site" :super site)
 
 (adj "specific" :super bio-relation
      :binds ((situation biological)(beneficiary biological))
@@ -951,7 +952,7 @@
       (:noun "strategy"
              :for goal))
 
-(define-category substrate :specializes bio-entity
+(define-category substrate :specializes bio-chemical-entity
       :binds ((enzyme protein))
   :realization
   (:noun "substrate"
