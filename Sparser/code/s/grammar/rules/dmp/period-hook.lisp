@@ -153,19 +153,26 @@
   that would permit us to conclude the period we just scanned
   indicates the end of a sentence."
   (declare (special *big-mechanism*))
-  (let ((word-just-after-period (pos-terminal pos-after))
-        (word-just-before-period
-         (pos-terminal
-          (chart-position-before (chart-position-before pos-after))))
-        (caps (pos-capitalization pos-after))
-        (next-pos (chart-position-after pos-after)))
-    (tr :eos-lookahead word-just-before-period word-just-after-period caps)
+  (let* ((word-just-after-period (pos-terminal pos-after))
+         (position-back-one
+          (chart-position-before (chart-position-before pos-after)))
+         (word-just-before-period
+          (pos-terminal position-back-one))
+         (pre-caps (pos-capitalization position-back-one))
+         (post-caps (pos-capitalization pos-after))
+         (next-pos (chart-position-after pos-after)))
+    (tr :eos-lookahead word-just-before-period word-just-after-period post-caps)
 
     ;; 1. Look at the word just before the period
     ;; "Dr."
     ;; In a load that included people, these would be defined
     ;; in dossiers/person-prefixes.lisp
-    ;;(memq word-just-before-period *person-prefixes*) 
+    ;;(memq word-just-before-period *person-prefixes*)
+
+    ;; The period could be a decimal point, which would
+    ;; mean there were digits to either side. 
+    (when (and (eq pre-caps :digits) (eq post-caps :digits))
+      (return-from lookahead-for-period-as-eos nil))
 
     ;; 2. Look at the word just after the period
     ;; We know that the word after the period is neither
@@ -177,7 +184,7 @@
     ;; then let's just take it
     (when (> (length (pname word-just-after-period)) 1)
       (cond
-        ((eq caps :lower-case)
+        ((eq post-caps :lower-case)
          (tr :eos-following-lowercase)
          (return-from lookahead-for-period-as-eos nil))
         (t
