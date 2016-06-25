@@ -182,7 +182,13 @@
 			  (cat-string (car (second sem-tree)))
 			  (cat-string (second (second sem-tree)))))
 		 (t
-		  (emit-line stream (format nil "(~a" (cat-string (car sem-tree))))
+                  (emit-line stream
+                             (format nil "(~a" (cat-string (car sem-tree)
+                                                           (and
+                                                            (consp (cdr sem-tree))
+                                                            (consp (cadr sem-tree))
+                                                            (not (assoc 'name (cdr sem-tree)))))))
+                             
 		  (push-indentation)
 		  (loop for item in
 		       (if (eq (car sem-tree) 'items) ;; simplify printout of the ITEMS in a collection
@@ -194,9 +200,17 @@
 		  (pop-indentation))))
 	  (t (format stream " ~s" sem-tree)))))
 
-(defun cat-string (cat?)
+(defun cat-string (cat? &optional with-name)
   (cond ((individual-p cat?)
-	 (string-downcase (cat-symbol (itype-of cat?))))
+         (let* ((cat-str (string-downcase (cat-symbol (itype-of cat?))))
+                (name (when with-name (value-of 'name cat?))))
+           (if name
+               (format nil "<~a ~a>" cat-str
+                       (typecase name
+                         (word (pname-for name))
+                         (poly-word (pname-for name))
+                         (t name)))
+               cat-str)))
 	((category-p cat?)
 	 (string-downcase (cat-symbol cat?)))
 	((symbolp cat?) (string-downcase cat?))
