@@ -222,6 +222,10 @@ where it regulates gene expression.")
 	 (null
 	  (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
 	 (referential-category (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
+         (individual (format t "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
+                             (car dt)
+                             (sentence-string *sentence-in-core*))
+                     (error "~%Strange value in interpret-item-in-context: ~s~%"))
 	 (t (lsp-break "~%Strange value in interpret-item-in-context: ~s~%"
 		    dt)
 	    dt)))
