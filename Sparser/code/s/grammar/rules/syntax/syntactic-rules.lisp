@@ -652,7 +652,7 @@ similar to an oncogenic RasG12V mutation (9)."))
                           :head :right-edge
            :form subordinate-clause
            :referent (:function make-subordinate-clause left-edge right-edge))))
-                 
+
 
 ;;;----------------------
 ;;; "that" and "whether" and "how"
