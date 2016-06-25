@@ -453,6 +453,7 @@
 		      bio-rhetorical
 		      bio-process ;; the B-RAFV600E mutation predicts
 		      bio-method	;; high-throughput functional screens may inform
+                      bio-mechanism    ;; "this pathway describes ..."
 		      bio-predication ;; the success of raf and mek inhibitors
 		      measurement     ;; these data
 		      visual-representation))
@@ -936,6 +937,10 @@
       :m substrate
       :of substrate))
 
+(def-synonym protein-domain
+    (:noun "region"))
+
+
 (define-category peptide :specializes molecule
   :binds ((residue residue-on-protein))
   :realization
@@ -1033,7 +1038,26 @@
   :realization
   (:noun "nucleotide exchange factor"))
 
-(define-category nucleotide-exchange :specializes bio-process
+
+(define-category bio-exchange :specializes bio-movement
+  :binds ((state-before (:or nucleotide bio-state variant))
+          (state-after (:or nucleotide bio-chemical-entity bio-state variant))
+          (subject nucleotide))
+  :realization
+  (:noun "exchange"
+         :verb "exchange"
+         :etf (svo-passive)
+         :o object
+         :m subject
+         :s subject
+         :of state-before
+         :from state-before
+         :to state-after))
+
+(def-synonym bio-exchange
+    (:noun "turnover"))
+
+(define-category nucleotide-exchange :specializes bio-exchange
   :binds ((substrate (:or protein bio-complex)))
   :realization
   (:noun "nucleotide exchange"
