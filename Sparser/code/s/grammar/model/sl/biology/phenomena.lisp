@@ -69,7 +69,7 @@
 
 ;;"It is interesting that various stimuli provoke EGF receptor tyrosine phosphorylation by two distinct means.")
 (define-category post-translational-modification :specializes caused-bio-process
-  :binds ((substrate (:or protein variant)) ;; allow variant to pick up "phosphorylated fraction"
+  :binds ((substrate (:or protein variant bio-complex)) ;; allow variant to pick up "phosphorylated fraction"
 	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
   :restrict ((agent (:or protein bio-process bio-mechanism))
@@ -385,7 +385,6 @@ it is created from N-terminus to C-terminus.|#
 
 (define-category C-terminal ;; carboxyl-terminus
   :specializes protein-terminus
-  :binds ((protein protein))
   :realization
   (:etf (pre-mod)
         :noun ("c-terminal" "c-terminus" "C-terminal" "C-terminus"

@@ -25,7 +25,9 @@
 (noun "cAMP" :super small-molecule)
 
 (noun "GTP" :super nucleotide)
+(noun "dGTP" :super nucleotide)
 (noun "GDP" :super nucleotide)
+(noun "dGDP" :super nucleotide)
 
 (noun "AMP" :super nucleotide)
 (noun "dAMP" :super nucleotide)
