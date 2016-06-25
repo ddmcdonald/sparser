@@ -88,7 +88,7 @@
   (declare (special *load-test-sents*))
   (test-corpus *load-test-sents* numbers))
 
-(defun test-sent (corpus n &key (multi-sent nil) (no-syn-tree nil) (no-edges t) (quiet t) (stream *standard-output*))
+(defun test-sent (corpus n &key (multi-sent t) (no-syn-tree nil) (no-edges t) (quiet t) (stream *standard-output*))
   (declare (special *chunks* *overnight-sentences* *jan-dry-run*
                     *dec-tests* *erk-abstract* *aspp2-whole*
                     *load-test-sents*))
@@ -227,6 +227,8 @@
   (show-canonical-syntax-tree stream no-edges))
 
 (defun get-sentence (corpus n)
+  (declare (special *pathway-comments* *erk-abstract* *gyori* *load-test-sents*
+                       *overnight-sentences*))
   (let ((sentences
 	 (ecase corpus
 	   ((:overnight overnight) *overnight-sentences*)
@@ -236,7 +238,8 @@
 	   ((:aspp2 aspp2) *aspp2-whole*)
 	   ((:load load-test) *load-test-sents*)
            ((:comments comments) *comments*)
-           ((:gyori gyori) *gyori*))))
+           ((:gyori gyori) *gyori*)
+           ((:pathways :pathway-comments pathways) *pathway-comments*))))
     (second (nth (- n 1) sentences))))
 
 (defun show-sent-heading (sent corpus n stream)
@@ -267,7 +270,7 @@
                      :direction :output
                      :if-exists :overwrite
                      :if-does-not-exist :create)
-    (test-sent corpus n :stream stream)))
+    (test-sent corpus n :stream stream :multi-sent nil)))
 
 
 (defparameter *p-sent* nil)
