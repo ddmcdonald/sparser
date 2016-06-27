@@ -122,7 +122,8 @@
 ;; "EphB1-induced", "tyrosine-phosphorylated"
 (defun do-relation-between-first-and-second (left-ref right-ref 
                                              left-edge right-edge)
-  (declare (special category::adjective category::verb+ed category::vp+ed))
+  (declare (special category::adjective category::verb+ed category::vp+ed
+                    category::n-bar))
   (when (category-p right-ref)
     (setq right-ref (individual-for-ref right-ref)))
   (let ((variable (second-imposes-relation-on-first?
@@ -136,11 +137,15 @@
             (pos-edge-starts-at left-edge)
             (pos-edge-ends-at right-edge)
             (edge-category right-edge)
-            :form (if (eq (edge-form right-edge) category::verb+ed)
-                     (if (itypep left-ref 'no-space-prefix)
-			 category::verb+ed
-			 category::vp+ed)
-		     category::adjective)
+            :form (cond ((eq (edge-form right-edge) category::verb+ed)
+                         (if (itypep left-ref 'no-space-prefix)
+                             category::verb+ed
+                             category::vp+ed))
+                        ((member (cat-name (edge-form right-edge))
+                                 '(common-noun common-noun/plural proper-noun))
+                         category::n-bar)
+                        (t
+                         category::adjective))
             :referent (bind-variable variable left-ref right-ref)
             :rule 'do-relation-between-first-and-second
             :constituents `(,left-edge ,right-edge))))
