@@ -654,7 +654,7 @@ it is created from N-terminus to C-terminus.|#
   :binds ((binder (:or molecule protein-domain bio-chemical-entity molecular-location))
           (bindee (:or molecule protein-domain bio-chemical-entity molecular-location))
           (binding-set (:or bio-chemical-entity protein-domain molecular-location)) ;; this is conjunctive, as in "binding between X and Y"
-          (direct-bindee (:or bio-chemical-entity protein-domain molecular-location))
+          (direct-bindee (:or molecule protein-domain bio-chemical-entity molecular-location))
           (site molecular-location)
           (domain protein-domain)
           (cell-location cellular-location)
@@ -665,6 +665,7 @@ it is created from N-terminus to C-terminus.|#
          :etf (svo-passive) 
          :s binder
          :o  direct-bindee
+         :m direct-bindee
          :to bindee
          :of bindee
          :via site
