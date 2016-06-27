@@ -1331,6 +1331,10 @@
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
+  (loop while
+       (edge-p label) ;; can happen for edges over polywords like "such as"
+     do
+       (setq label (edge-left-daughter label)))
   (cond
     ((null head)
      (break "~&null head in call to subcategorized-variable")
@@ -1358,6 +1362,8 @@
      (or
       (find-subcat-var item label head)
       (and (is-collection? head)
+           (value-of 'items head)
+           (car (last (value-of 'items head))) ;; fooled by the WORD sequence
            (find-subcat-var item label
                             (car (last (value-of 'items head))))))
       
