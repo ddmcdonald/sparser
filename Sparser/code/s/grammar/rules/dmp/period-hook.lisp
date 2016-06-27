@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  April 2016
+;;;   version:  June 2016
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -124,7 +124,7 @@
 (defun period-marks-sentence-end? (position-after)
   "The position-after is the position with the 
    terminal (word) that comes just after the period.
-   Look ahead for evidence that this instance of a
+   Look for evidence that this instance of a
    period marks the end of a sentence. Returns nil
    if this isn't the end of the ongoing sentence."
   ;; What other capitalization cases could count?
@@ -172,7 +172,9 @@
     ;; The period could be a decimal point, which would
     ;; mean there were digits to either side. 
     (when (and (eq pre-caps :digits) (eq post-caps :digits))
-      (return-from lookahead-for-period-as-eos nil))
+      (if (no-space-before-word? pos-after)
+        (return-from lookahead-for-period-as-eos nil)
+        (return-from lookahead-for-period-as-eos t))) ;; ".. Ser259. 14-3-3 .."
 
     ;; 2. Look at the word just after the period
     ;; We know that the word after the period is neither
