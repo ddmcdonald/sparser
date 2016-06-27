@@ -104,13 +104,11 @@
 
 (def-form-rule (be adjective)
   :form vg
-  :referent (:head right-edge);; :bind (predication right-edge)
-)
+  :referent  (:function make-copular-adjective left-edge right-edge))
 
 (def-form-rule (be ap)
   :form vp
-  :referent (:head right-edge);; :bind (predication right-edge)
-)
+  :referent (:function make-copular-adjective left-edge right-edge))
   
 
 ;;;-------------------------------
