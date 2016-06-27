@@ -149,24 +149,34 @@ grammar/model/sl/ern/discourse-heuristics.lisp:                (if (itype (value
 grammar/model/sl/ern/stream-through-driver.lisp:  (when (itype obj (category-named 'qualified-financial-data))
 grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorized-name)
 |#
+
+;; generalize itype-p to take disjunctive types
 (defun itypep (i c/s) 
-  (if (consp i)
-    (error "what are you doing passing a CONS to itypep: ~s~&" i)
-    (typecase i
-      (individual
-       (indiv-typep i c/s))
-      (referential-category
-       (category-inherits-type? i (category-named c/s :break-if-none)))
-      (mixin-category
-       ;; strictly speaking mixins are not organized into taxonomies
-       ;; but in most code one won't be able to tell
-       (category-inherits-type? i (category-named c/s :break-if-none)))
-      (word
-       (report-bad-itype-of i 'itypep)
-       nil)
-      (otherwise
-       (report-bad-itype-of i 'itypep)
-       nil))))
+  (cond
+    ((consp i)
+     (error "what are you doing passing a CONS to itypep: ~s~&" i))
+    ((consp c/s)
+     (if (eq (car c/s) :or)
+         (loop for c in (cdr c/s)
+            thereis (itypep i c))
+         (error "~%bad super-type ~s in itype-p for ~s~%"
+                c/s i)))
+    (t
+     (typecase i
+       (individual
+        (indiv-typep i c/s))
+       (referential-category
+        (category-inherits-type? i (category-named c/s :break-if-none)))
+       (mixin-category
+        ;; strictly speaking mixins are not organized into taxonomies
+        ;; but in most code one won't be able to tell
+        (category-inherits-type? i (category-named c/s :break-if-none)))
+       (word
+        (report-bad-itype-of i 'itypep)
+        nil)
+       (otherwise
+        (report-bad-itype-of i 'itypep)
+        nil)))))
 
 
 (defparameter *complain-about-odd-args-to-itypep* nil
