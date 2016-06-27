@@ -615,6 +615,7 @@
   (or
    (vg-compatible? (edge-form e))
    (eq category::not (edge-category e))
+   (eq category::time (edge-category e))
    ;;(eq category::then (edge-category e))
    ))
 
