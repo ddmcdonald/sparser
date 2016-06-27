@@ -92,14 +92,22 @@
   (declare (special *chunks* *overnight-sentences* *jan-dry-run*
                     *dec-tests* *erk-abstract* *aspp2-whole*
                     *load-test-sents*))
+  (psem (clean-some-xml-from-string (get-sentence corpus n))
+        :corpus corpus :n n
+        :multi-sent multi-sent
+        :no-syn-tree no-syn-tree
+        :no-edges no-edges
+        :quiet quiet
+        :stream stream))
+
+(defun psem (sent &key (corpus nil)(n 0)(multi-sent t) (no-syn-tree nil) (no-edges t) (quiet t) (stream *standard-output*))
   (let*
       ((*readout-segments-inline-with-text* nil) ;; quiet
-       (sent (clean-some-xml-from-string (get-sentence corpus n)))
        (*show-syn-tree* (not no-syn-tree))
        (*end-of-sentence-display-operation*
         (when multi-sent
-        #'(lambda (sent)
-            (display-sent-results sent corpus n :stream stream)))))
+          #'(lambda (sent)
+              (display-sent-results sent corpus n :stream stream)))))
     (declare (special *show-syn-tree* *readout-segments-inline-with-text*
                       *end-of-sentence-display-operation*))
     (cond
@@ -110,6 +118,7 @@
          (display-sent-results sent corpus n :stream stream)))
       (t
        (eval `(p ,sent))))))
+  
 
 (defun clean-some-xml-from-string (str)
   (replace-all (replace-all str "<br>" " ") "'" ""))
