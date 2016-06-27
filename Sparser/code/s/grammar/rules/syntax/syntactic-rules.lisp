@@ -645,7 +645,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 (loop for vv in '((subordinate-clause subordinate-clause) ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
 		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
-		  (verb+present vg))
+		  )
   
   do
   (eval `(def-syntax-rule (subordinate-conjunction ,(car vv))
@@ -653,6 +653,11 @@ similar to an oncogenic RasG12V mutation (9)."))
            :form subordinate-clause
            :referent (:function make-subordinate-clause left-edge right-edge))))
 
+
+(def-syntax-rule (subordinate-conjunction verb+present)
+                          :head :right-edge
+           :form vg
+           :referent (:function make-subordinate-clause left-edge right-edge))
 
 (loop for vv in '((subordinate-clause subordinate-clause) ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
 		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
@@ -735,3 +740,13 @@ similar to an oncogenic RasG12V mutation (9)."))
   :form vg+ed
   :referent (:head right-edge
              :bind (negation left-edge)))
+
+
+(def-form-rule (time vg) ;; for "may now bind ..."
+    :form vg
+    :referent (:function add-time-adjunct left-edge right-edge))
+
+
+(def-form-rule (time verb) ;; for "may now bind ..."
+    :form vg
+    :referent (:function add-time-adjunct left-edge right-edge))
