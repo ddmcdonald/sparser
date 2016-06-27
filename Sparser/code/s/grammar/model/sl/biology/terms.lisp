@@ -38,6 +38,8 @@
 (in-package :sparser)
 
 ;;from pathway comments
+
+(adj "'open'" :super bio-relation)
 (define-category member :specializes abstract ;; NOT SURE WHAT TO DO HERE
  :mixins (biological)
  :binds ((set biological))
@@ -349,7 +351,7 @@
 
 (adj "active" :super molecule-state
      :binds ((activated
-              (:or molecule pathway)))
+              (:or molecule pathway bio-state))) ;; allow "the conformation is active"
      :realization 
      (:adj "active"
            :s activated))
