@@ -95,6 +95,21 @@
 (defvar *edge-spec*)
 (defvar *new-edge*)
 (defvar *current-da-rule*)
+
+;;must deal with null rule effect produced by do-relation-between-first-and-second
+;; in "The Raf-1 molecule contains an additional p21ras-binding domain (RBD), a second serine phosphorylation site at S621 (S2) and two tyrosine phosphorylation sites (at 340, Y1 and 341, Y2)."
+;;over "p21ras-binding domain"
+#| Note that edges 51 and 10 have the same start and end
+SP> (stree 51)
+ e51 BINDING-DOMAIN/N-BAR     p9 - p18    do-relation-between-first-and-second
+  e10 PROTEIN/PROPER-NOUN     p9 - p18    rule 14460
+    e9 "p21ras"               p9 - p18    polyword
+      "p21ras"
+  e13 BINDING-DOMAIN/COMMON-NOUN    p13 - p15   rule 55420
+    e12 "binding domain"      p13 - p15   polyword
+      "binding domain"
+|#
+
 (defun standardized-apply-da-function-action (rule)
   (declare (special *current-da-rule*))
   (setq *current-da-rule* rule)
@@ -102,8 +117,10 @@
          (fn (second form))
          (constituents
           (loop for tta in *tt-alist*
-               as i from 1 to (length (da-pattern-description rule))
+             as i from 1 to (length (da-pattern-description rule))
              collect (cdr tta))))
+
+
     (when (symbolp fn)
       (unless (fboundp fn)
         (error "The function ~a is not defined" fn)))
@@ -112,29 +129,39 @@
     (push-debug `(,fn ,constituents))
     (tr :da-applying-fn-to-args fn constituents)
     (when (setq *edge-spec* (apply fn constituents)) ;; can be nil if rule fails
-      (setq *new-edge*
-            (make-edge-over-long-span
-             (pos-edge-starts-at
-              (or (edge-spec-target *edge-spec*)
-                  (first constituents)))
-             (pos-edge-ends-at (car (last constituents)))
-             (edge-spec-category *edge-spec*)
-             :form (edge-spec-form *edge-spec*)
-             :referent (edge-spec-referent *edge-spec*)
-             :rule (da-name rule)
-             :constituents
-             (constituents-between
-              (or (edge-spec-target *edge-spec*)
-                  (first constituents))
-              (car (last constituents)))))
-      (cond ((edge-spec-dominating *edge-spec*)
-             (tuck-new-edge-under-already-knit
-              (edge-spec-target *edge-spec*)
-              *new-edge*
-              (edge-spec-dominating *edge-spec*)
-              (edge-spec-direction *edge-spec*))
-             (edge-spec-dominating *edge-spec*))
-            (t *new-edge*)))))
+      (let ((target (edge-spec-target *edge-spec*))
+            (dominating (edge-spec-dominating *edge-spec*)))
+        ;; see long note above
+        (when (and target dominating)
+          (when (eq (edge-starts-at target) (edge-starts-at dominating))
+            (when (eq (edge-ends-at target) (edge-ends-at dominating))
+              (setq target dominating)
+              (setq dominating (edge-used-in dominating)))))
+    
+        
+        (setq *new-edge*
+              (make-edge-over-long-span
+               (pos-edge-starts-at
+                (or target
+                    (first constituents)))
+               (pos-edge-ends-at (car (last constituents)))
+               (edge-spec-category *edge-spec*)
+               :form (edge-spec-form *edge-spec*)
+               :referent (edge-spec-referent *edge-spec*)
+               :rule (da-name rule)
+               :constituents
+               (constituents-between
+                (or target
+                    (first constituents))
+                (car (last constituents)))))
+        (cond (dominating
+               (tuck-new-edge-under-already-knit
+                target
+                *new-edge*
+                dominating
+                (edge-spec-direction *edge-spec*))
+               dominating)
+              (t *new-edge*))))))
 
 (defun constituents-between (first-const last-const)
   (cons first-const
