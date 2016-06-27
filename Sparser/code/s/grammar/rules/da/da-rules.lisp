@@ -611,6 +611,39 @@
        ;;(lsp-break "attach-pp-to-np-with-commas fails")
        nil))))
 
+(define-debris-analysis-rule pp-comma-pp-comma
+  :pattern ( pp "," pp ",")
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function pp-comma-pp-comma first second third fourth))
+
+(defun pp-comma-pp-comma (pp-1-edge comma-edge-1 pp-2-edge comma-edge-2)
+  (declare (special np-edge comma-edge-1 pp-edge comma-edge-2))
+  ;; Look up the right fridge of the s for a proper-noun 
+  (let* ((np-edge (edge-right-daughter pp-1-edge))
+         (np (edge-referent np-edge))
+	 (pobj-2-edge (edge-right-daughter pp-2-edge))
+	 (pobj-2-referent (edge-referent pobj-2-edge))
+	 (prep-2-edge (edge-left-daughter pp-2-edge))
+	 (prep-2-word (edge-left-daughter prep-2-edge))
+	 (var-name
+	  (subcategorized-variable np
+				   prep-2-word
+				   pobj-2-referent)))
+    (cond
+      (var-name
+       (setq np (bind-dli-variable var-name pobj-2-referent np))
+       (make-edge-spec 
+	:category (edge-category np-edge)
+	:form (edge-form np-edge)
+	:referent np
+        :target np-edge
+        :dominating (edge-used-in np-edge)
+        :direction :right
+        ))
+      (t 
+       ;;(lsp-break "attach-pp-to-np-with-commas fails")
+       nil))))
+
 
 (define-debris-analysis-rule proper-noun-comma-vg+ed-comma
   :pattern (proper-noun "," vp+ed ",")
