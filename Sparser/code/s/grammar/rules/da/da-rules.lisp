@@ -348,6 +348,17 @@
 (defun attach-comma-appositive-np-under-s (s comma np)
   (attach-appositive-np-under-s s comma np (pos-edge-ends-at np)))
 
+(define-debris-analysis-rule attach-comma-appositive-proper-noun-under-s
+  :pattern ( s "," proper-noun)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-comma-appositive-proper-noun-under-s
+           first second third))
+
+(defun attach-comma-appositive-proper-noun-under-s (s comma np)
+  (attach-appositive-np-under-s s comma np (pos-edge-ends-at np)))
+
+
 (define-debris-analysis-rule attach-comma-appositive-np-comma-under-s
   :pattern ( s "," np ",")
   ;; The action can fail. Returning nil ought to suffice
@@ -359,17 +370,22 @@
 (defun attach-appositive-np-under-s (s-edge comma-edge np-edge end-pos)
   (push-debug `(,s-edge ,comma-edge ,np-edge))
   ;; (setq s-edge (car *) comma-edge (cadr *) np-edge (caddr *))
-  ;; Look up the right fridge of the s for a proper-noun 
-  (let ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?)))
-    (when target
-      (make-edge-spec 
-       :category (edge-category target)
-       :form (edge-form target)
-       :referent (bind-dli-variable 'appositive-description (edge-referent np-edge)
-                                    (edge-referent target))
-       :target target
-       :dominating (edge-used-in target)
-       :direction :right))))
+  ;; Look up the right fridge of the s for a proper-noun
+  (unless
+      ;;DEC-TEST-2 "Sorafenib is a drug that inhibits V600EBRAF at 40 nM, CRAF at 13 nM,
+      ;; don't treat CRAF as an appositive
+      (loop for e in (ev-edges (pos-starts-here end-pos))
+         thereis (member (cat-name (edge-form e)) '(spatial-preposition preposition pp)))
+    (let ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?)))
+      (when target
+        (make-edge-spec 
+         :category (edge-category target)
+         :form (edge-form target)
+         :referent (bind-dli-variable 'appositive-description (edge-referent np-edge)
+                                      (edge-referent target))
+         :target target
+         :dominating (edge-used-in target)
+         :direction :right)))))
 
 (define-debris-analysis-rule attach-appositive-comma-np-comma-under-pp
   :pattern ( pp "," np ",")
@@ -573,7 +589,7 @@
   (attach-pp-to-np-with-commas np comma-1 pp comma-2))
 
 (defun attach-pp-to-np-with-commas (np-edge comma-edge-1 pp-edge comma-edge-2)
-  (declare (special comma-edge-1 pp-edge comma-edge-2))
+  (declare (special np-edge comma-edge-1 pp-edge comma-edge-2))
   ;; Look up the right fridge of the s for a proper-noun 
   (let* ((np (edge-referent np-edge))
 	 (pobj-edge (edge-right-daughter pp-edge))
