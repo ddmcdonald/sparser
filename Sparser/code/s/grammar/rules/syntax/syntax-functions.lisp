@@ -924,6 +924,7 @@
                 *subcat-info*))
       (setq pobj-referent (individual-for-ref pobj-referent))
       (setq  pobj-referent (bind-dli-variable variable-to-bind np pobj-referent))
+      (revise-parent-edge :category (itype-of pobj-referent))
       pobj-referent))))
 
 
@@ -1354,104 +1355,118 @@
     (t
      ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
      ;;/// prep-comp, etc.
-     (let ((category (itype-of head))
-	   (subcat-patterns (known-subcategorization? head))
-	   over-ridden)
-       (when subcat-patterns
-	 (setq *label* label)
-	 (setq *head* head)
-	 (let ( variable )
-	   (let ((*trivial-subcat-test* nil))
-	     (if (and *ambiguous-variables* (not *subcat-test*))
-		 (let (pats)
-		   (loop for pat in subcat-patterns
-		      do
-			(let ((scr (subcat-restriction pat)))
-			  (when (eq label (subcat-label pat))
-			    (when (satisfies-subcat-restriction? item scr)
-			      (push pat pats)))))
-		   (loop for pat in pats
-		      do
-			(loop for p in pats
-			   when
-			     (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
-				  (not (consp (subcat-restriction p)))
-				  (if (consp (subcat-restriction pat))
-				      (loop for i in (cdr (subcat-restriction pat))
-					 thereis (itypep i (subcat-restriction p)))
-				      (itypep (subcat-restriction pat) (subcat-restriction p))))
-			   do (push p over-ridden)))
-		   #+ignore
-		   (setq pats (loop for p in pats unless (member p over-ridden) collect p))
-		   (cond
-		     ((cdr pats)
-		      (setq variable (mapcar #'subcat-variable pats))
-		      (if (itypep item 'number)
-			  (setq variable (car variable))
-			  ;; these are mostly bad parses with a dangling number -- we should collect them
-			  (push (list head label item
-				      (sentence-string *sentence-in-core*)
-				      (loop for pat in pats collect
-					   (list (subcat-variable pat)(subcat-source pat))))
-				*ambiguous-variables*)))
-		     (pats
-		      (setq variable (subcat-variable (car pats))))))
-                
-		 (dolist (entry subcat-patterns)
-		   (let ((scr (subcat-restriction entry)))
-		     (when (eq label (subcat-label entry))
-		       (when (satisfies-subcat-restriction? item scr)
-			 (setq variable (subcat-variable entry))
-			 (return)))))))
-           
-	   ;; collect information on failed tests
-	   (when *trivial-subcat-test*
-	     (unless variable
-	       (dolist (entry subcat-patterns)
-		 (let ((scr (subcat-restriction entry)))
-		   (when (eq label (subcat-label entry))
-		     (when (satisfies-subcat-restriction? item scr)
-		       (setq variable (subcat-variable entry))
-		       (return)))))))
-          
-	   ;;(break "testing subcats")
-	   (when (and *ambiguous-variables* (consp variable))
-	     (cond (over-ridden
-		    (cond ((or (equal '(agent object) (mapcar #'var-name variable))(equal '(object agent) (mapcar #'var-name variable)))
-			   (setq variable (loop for v in variable when (eq 'object (var-name v)) do (return v))))
-			  (t (when *show-over-ridden-ambiguities*
-			       (format t "~%over-ridden ambiguity now preserved~%  ambiguous subcats for attaching ~s to ~s with ~s:~%  ~s~%   ~s~%"
-				       item  head  label variable (sentence-string *sentence-in-core*)))
-			     (setq variable (define-disjunctive-lambda-variable variable category)))))
-		   (t 
-		    (setq variable (define-disjunctive-lambda-variable variable category)))))
-			     
-	   #+ignore
-	   (format t "~%ambiguous subcats for attaching ~s to ~s with ~s:~%   ~s~%"
-		   item  head  label variable)
-	   ;;(when (itypep item 'number)  (lsp-break "number ambiguity"))
-	   variable ))))))
+     (or
+      (find-subcat-var item label head)
+      (and (is-collection? head)
+           (find-subcat-var item label
+                            (car (last (value-of 'items head))))))
+      
+      )))
+
+(defun find-subcat-var (item label head)
+  (declare (special item label head))
+  (let ((category (itype-of head))
+        (subcat-patterns (known-subcategorization? head)))
+    (declare (special category subcat-patterns))
+    (when subcat-patterns
+      (setq *label* label)
+      (setq *head* head)
+      (let ( variable over-ridden
+                      (*trivial-subcat-test* nil))
+        (if (and *ambiguous-variables* (not *subcat-test*))
+            (let (pats sover-ridden)
+              (loop for pat in subcat-patterns
+                 as scr = (subcat-restriction pat)
+                 do
+                   (when (eq label (subcat-label pat))
+                     (when (satisfies-subcat-restriction? item scr)
+                       (push pat pats))))
+              (setq over-ridden (check-overridden-vars pats))
+              (setq pats (loop for p in pats unless (member p over-ridden) collect p))
+              (setq variable (variable-from-pats item head label pats subcat-patterns)))
+            (dolist (entry subcat-patterns)
+              (let ((scr (subcat-restriction entry)))
+                (when (eq label (subcat-label entry))
+                  (when (satisfies-subcat-restriction? item scr)
+                    (setq variable (subcat-variable entry))
+                    (return))))))
+        (when (and *ambiguous-variables* (consp variable))
+          (setq variable
+                (if over-ridden
+                    (cond ((or
+                            (equal '(agent object)
+                                   (mapcar #'var-name variable))
+                            (equal '(object agent) (mapcar #'var-name variable)))
+                           (loop for v in variable when (eq 'object (var-name v)) do (return v)))
+                          (t
+                           (announce-over-ridden-ambiguitiesitem head label variable)
+                           (define-disjunctive-lambda-variable variable category)))
+                    (define-disjunctive-lambda-variable variable category))))
+        variable ))))
+
+(defun announce-over-ridden-ambiguities (item head label variable)
+  (when *show-over-ridden-ambiguities*
+    (format t
+            "~%over-ridden ambiguity now preserved~%  ambiguous subcats for attaching ~s to ~s with ~s:~%  ~s~%   ~s~%"
+            item  head  label variable (sentence-string *sentence-in-core*))))
+
+(defun variable-from-pats (item head label pats subcat-patterns)
+  (let (variable)
+    (cond
+      ((cdr pats)
+       (setq variable (mapcar #'subcat-variable pats))
+       (if (itypep item 'number)
+           (setq variable (car variable))
+           ;; these are mostly bad parses with a dangling number -- we should collect them
+           (push (list head label item
+                       (sentence-string *sentence-in-core*)
+                       (loop for pat in pats collect
+                            (list (subcat-variable pat)(subcat-source pat))))
+                 *ambiguous-variables*)))
+      (pats
+       (setq variable (subcat-variable (car pats)))))
+    (when *trivial-subcat-test* 
+      (unless variable
+        (dolist (entry subcat-patterns)
+          (let ((scr (subcat-restriction entry)))
+            (when (eq label (subcat-label entry))
+              (when (satisfies-subcat-restriction? item scr)
+                (setq variable (subcat-variable entry))
+                (return)))))))
+    variable))
+
+
+(defun check-overridden-vars (pats)
+  (cond
+    ((and
+      (eq (length pats) 2)
+      (eq (subcat-label (first pats)) :m)
+      (member (var-name (subcat-variable (first pats))) '(agent object))
+      (member (var-name (subcat-variable (second pats))) '(agent object)))
+     (if (eq (var-name (subcat-variable (first pats))) 'object)
+         (list (second pats))
+         (list (first pats))))
+    (t
+     (let (over-ridden)
+       (loop for pat in pats
+          do
+            (loop for p in pats
+               when
+                 (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
+                      (not (consp (subcat-restriction p)))
+                      (if (consp (subcat-restriction pat))
+                          (loop for i in (cdr (subcat-restriction pat))
+                             thereis (itypep i (subcat-restriction p)))
+                          (itypep (subcat-restriction pat) (subcat-restriction p))))
+               do (push p over-ridden)))
+       over-ridden))))
 
 (defun satisfies-subcat-restriction? (item restriction)
   (declare (special category::pronoun/first/plural category::ordinal))
-  (when *trivial-subcat-test*
-    (let ((*trivial-subcat-test* nil))
-      (if (not (satisfies-subcat-restriction? item restriction))
-          ;; test would have failed -- collect it
-          (pushnew `(,(scat-symbol (itype-of *head*))
-		      ,*label*
-		      ,(scat-symbol restriction)
-		      ,(scat-symbol (itype-of item))
-		      ,(list 
-			(when *left-edge-into-reference*
-			  (actual-characters-of-word (pos-edge-starts-at *left-edge-into-reference*)
-						     (pos-edge-ends-at *left-edge-into-reference*) nil))
-			(when *right-edge-into-reference*
-			  (actual-characters-of-word (pos-edge-starts-at *right-edge-into-reference*)
-						     (pos-edge-ends-at *right-edge-into-reference*) nil))))
-		   *tight-subcats*
-		   :test #'equal)))
+  (when (and *trivial-subcat-test*
+             (note-failed-tests item restriction))
     (return-from satisfies-subcat-restriction? t))
+    
   (let ((override-category (override-label (itype-of item))))
     (flet ((subcat-itypep (item category)
              ;; For protein-families and such that are re-written
@@ -1460,42 +1475,57 @@
              ;; of the reach of the override we should do something
              ;; different with it.
              (cond
-              ((itypep item category)) ;; handles conjunctions
-              (t (eq category override-category)))))
+               ((itypep item category)) ;; handles conjunctions
+               (t (eq category override-category)))))
       (cond
-       ((itypep item category::pronoun/inanimate)
-        t)
-       ((or
-	 (itypep item category::this)
-	 (itypep item category::that)
-	 (itypep item category::these)
-	 (itypep item category::those)
-	 )
-        t)
-       ((and
-	 (itypep item category::number)
-	 (not (itypep item category::ordinal)))
-        t)
-       ((itypep item category::pronoun/first/plural)
-	;; BAD -- should add check for agentive verbs
-        t)
-       ((consp restriction)
-        (cond
-         ((eq (car restriction) :or)
-          (loop for type in (cdr restriction)
-	     thereis (subcat-itypep item type)))
-	 ((eq (car restriction) :primitive)
-	  ;; this is usually meant for NAME (a WORD) or
-	  ;; other special cases
-	  nil)
-         (t (error "subcat-restriction on is a cons but it ~
+        ((itypep item '(:or pronoun/inanimate this that these those))
+         t)
+        ((and
+          (itypep item 'number)
+          (not (itypep item 'ordinal)))
+         t)
+        ((itypep item 'pronoun/first/plural)
+         ;; BAD -- should add check for agentive verbs
+         t)
+        ((consp restriction)
+         (cond
+           ((eq (car restriction) :or)
+            (loop for type in (cdr restriction)
+               thereis (subcat-itypep item type)))
+           ((eq (car restriction) :primitive)
+            ;; this is usually meant for NAME (a WORD) or
+            ;; other special cases
+            nil)
+           (t (error "subcat-restriction on is a cons but it ~
   does not start with :or~%  ~a"
-                   restriction))))
-       ((category-p restriction)
-        (subcat-itypep item restriction))
-       ((symbolp restriction) nil) ;; this is the case for :prep subcat-patterns
-       (t (error "Unexpected type of subcat restriction: ~a"
-                 restriction))))))
+                     restriction))))
+        ((category-p restriction)
+         (subcat-itypep item restriction))
+        ((symbolp restriction) nil) ;; this is the case for :prep subcat-patterns
+        (t (error "Unexpected type of subcat restriction: ~a"
+                  restriction))))))
+
+(defun note-failed-tests (item restriction)
+  ;; return non-null when tests failed
+  (let ((*trivial-subcat-test* nil))
+    (when
+        (not (satisfies-subcat-restriction? item restriction))
+      ;; test would have failed -- collect it
+      (pushnew `(,(scat-symbol (itype-of *head*))
+                  ,*label*
+                  ,(scat-symbol restriction)
+                  ,(scat-symbol (itype-of item))
+                  ,(list 
+                    (when *left-edge-into-reference*
+                      (actual-characters-of-word
+                       (pos-edge-starts-at *left-edge-into-reference*)
+                       (pos-edge-ends-at *left-edge-into-reference*) nil))
+                    (when *right-edge-into-reference*
+                      (actual-characters-of-word
+                       (pos-edge-starts-at *right-edge-into-reference*)
+                       (pos-edge-ends-at *right-edge-into-reference*) nil))))
+               *tight-subcats*
+               :test #'equal))))
 
 (defun scat-symbol (c)
   (typecase c
@@ -1725,3 +1755,14 @@
       (setq s (bind-dli-variable variable-to-bind adjunctive-clause s))
       s))))
 
+
+
+(defun add-time-adjunct (time vp)
+
+  ;; treat both "now" and "then" as subordinate conjunctions
+  ;; rather than time
+  (if (member (cat-name (edge-form (left-edge-for-referent)))
+              '(adjunct subordinate-conjunction))
+      (bind-dli-variable 'subordinate-conjunction time (individual-for-ref vp))
+      (bind-dli-variable 'time time (individual-for-ref vp)))
+  )
