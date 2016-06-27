@@ -102,21 +102,27 @@
 ;;; special Set routines
 ;;;----------------------
 
+
 (defun set-used-by (daughter edge)
+  (when (eq (edge-used-in edge) daughter)
+    (lsp-break "circularity detected in set-used-by"))
+            
   (cond
     ((null daughter)
      (break "null daughter in set-used-by")
      nil)
     (t
+     (setf (edge-used-in daughter) edge)
+     #+ignore ;; DON't MAKE MULTIPLE PARENTS ANY MORE
      (let ((field (edge-used-in daughter)))
        (if field
-	   (etypecase field
-	     (cons
-	      (setf (edge-used-in daughter)
-		    (cons edge field)))
-	     (edge
-	      (setf (edge-used-in daughter)
-		    (list edge field))))
+           (etypecase field
+             (cons
+              (setf (edge-used-in daughter)
+                    (cons edge field)))
+             (edge
+              (setf (edge-used-in daughter)
+                    (list edge field))))
 	   (setf (edge-used-in daughter) edge))
 
        (maybe-suppress-daughters-dh-entry daughter edge)))))
