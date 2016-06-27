@@ -177,6 +177,7 @@
 ;;; ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
 ;; drop the "then" on the floor
 
+#+ignore ;; we need to handle this now RJB 5/26/2016
 (def-cfr modal (modal then)
   :form modal
   :referent (:head left-edge))
