@@ -144,11 +144,10 @@
           (species species) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
+          (excluding biological) ;; nucleotide-free Ras but not GTP-loaded Ras
 	  (modifier)
 	  (like biological)
 	  (unlike biological)
-;;	  (predication)
-          ;;(variant variant)
           )
   :realization (:adj "biological"
          :at cellular-location
@@ -169,6 +168,7 @@
          ;;:of variant
          :on cellular-location
          :such\ as examples
+         :but\ not excluding
          :under context
          :upon cellular-location
          :with context
@@ -554,16 +554,14 @@
   (:noun "kinase activity"))
 
 (define-category bio-method :specializes process
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID has-name biological event-relation)
   :binds ((agent (:or pronoun/first/plural biological))
           (object (:or biological measurement))
-	  (result-or-purpose bio-process)
-          (timeperiod (:or time-unit amount-of-time)))
+	  (result-or-purpose bio-process))
   :realization (:s agent
                    :o object
                    :by agent
                    :of object
-                   :for timeperiod
 		   :to-comp result-or-purpose) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
   for 'liquid chromatography', etc. that may be the basis
