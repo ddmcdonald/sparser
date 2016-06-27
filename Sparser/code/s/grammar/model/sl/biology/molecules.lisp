@@ -22,14 +22,18 @@
 ;; These should be spelled out and more precisely categorized.
 ;; In some way that looks plausible if we read it.
 ;;was (find-or-make-individual 'small-named-molecule :name "cAMP")
-(noun "cAMP" :super small-molecule)
+
+
+
 
 (noun "GTP" :super nucleotide)
 (noun "dGTP" :super nucleotide)
 (noun "GDP" :super nucleotide)
 (noun "dGDP" :super nucleotide)
 
-(noun "AMP" :super nucleotide)
+(noun ("AMP" "adenosine 3',5'-monophosphate") :super nucleotide)
+(noun ("cAMP" "cyclic adenosine 3',5'-monophosphate") :super small-molecule)
+
 (noun "dAMP" :super nucleotide)
 (noun "ATP" :super nucleotide)
 (noun "dATP" :super nucleotide)

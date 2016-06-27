@@ -39,7 +39,7 @@
 
 ;;from pathway comments
 
-(adj "'open'" :super bio-relation)
+(adj "open" :super bio-relation)
 (define-category member :specializes abstract ;; NOT SURE WHAT TO DO HERE
  :mixins (biological)
  :binds ((set biological))
@@ -402,16 +402,7 @@
   (:noun "aspect"
          :of whole))
 
-(define-category axon-guidance :specializes cellular-process
-   :binds ((initial biological)
-           (final biological))
-   :realization
-   (:noun "axon guidance"
-          :from initial
-          :to final
-          :into final))
 
-(noun "neurite outgrowth" :super cellular-process)
 
 (define-adverb "at baseline")
 (adj "background" :super bio-predication)

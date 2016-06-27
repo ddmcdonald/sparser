@@ -61,6 +61,7 @@
 (define-protein "EPHB5_HUMAN" ("ephrin type-B receptor 5"))
 (define-protein "EPHB6_HUMAN" ("ephrin type-B receptor 6"))
 
+(define-protein "PKA" ("cAMP-dependent protein kinase")) ;; not a well defined protein, but mentioned in pathway comments
 
 
 
