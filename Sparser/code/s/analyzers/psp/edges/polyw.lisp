@@ -37,6 +37,10 @@
     
     (setf (edge-referent edge) nil)
 
+    (setf (edge-left-daughter edge) polyword)
+    (setf (edge-left-daughter edge) polyword)
+    (setf (edge-right-daughter edge) :SINGLE-TERM)
+
     (complete edge)
     
     (when *trace-edge-creation*
