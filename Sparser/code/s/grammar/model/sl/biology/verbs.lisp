@@ -1995,13 +1995,16 @@
  :binds ((from (:or molecule pathway))
          (bio biological))
  :realization
- (:verb "release" :noun "release"
+ (:verb "release"
   :etf (svo-passive)
   ;; Comlex: (np-pp :pval ("in" "into" "from" "to"))
   ;;  and a lot of others
   :from from
   :into bio
   :of object))
+
+(def-synonym  molecule-release
+    (:noun "release"))
 
 (define-category relieve :specializes negative-bio-control
   :realization
@@ -2183,6 +2186,10 @@
   (:verb "stabilize" :noun "stabilization"
          :etf (svo-passive) 
          :upon process))
+
+(def-synonym stabilize
+    (:verb "stabilise"
+           :etf (svo-passive)))
 
 (define-category starve :specializes bio-method
     :binds ((nutrient biological))
