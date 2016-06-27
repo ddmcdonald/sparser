@@ -32,7 +32,10 @@
      (setf (edge-used-in subsumed-edge) new-edge)
 
      ;; plug in top-edge in place of subsumed-edge
-     (set-used-by new-edge dominating-edge)
+     ;; this method creates lists of edges -- don't do that now
+     ;;(set-used-by new-edge dominating-edge)
+
+     (setf (edge-used-in new-edge) dominating-edge)
 
      #|
      ;; replace old subsumed daughter (... presumes binary)
