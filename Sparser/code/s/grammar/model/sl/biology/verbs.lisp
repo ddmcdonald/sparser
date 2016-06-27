@@ -144,11 +144,6 @@
   :realization
   (:verb "distinguish" :etf (svo-passive)))
 
-(define-category die :specializes cellular-process ;; actually organism process
-  :realization
-  (:verb "die"
-         :noun "death" :etf (sv)))
-
 (define-category compensate :specializes other-bio-process
   :binds ((alternate biological))
   :realization
@@ -499,7 +494,7 @@
          :of agent))
 
 
-(define-category open :specializes caused-bio-process 
+(define-category bio-open :specializes caused-bio-process 
   :realization 
   (:verb "open"
          :etf (svo-passive)))
@@ -1777,36 +1772,6 @@
            :etf (svo-passive)))
 (delete-noun-cfr (resolve "probe"))
 
-(define-category proliferate :specializes cellular-process
-    :binds ((bio biological))
-    :realization
-    (:verb "proliferate"
-	   :noun "proliferation"
-	   :etf (sv)
-           :in bio
-           :through bio
-           :with bio
-	   :within bio))
-
-(define-category adhesion :specializes cellular-process
-    :binds ((bio biological))
-    :realization
-    (:verb "adhere"
-	   :etf (sv)
-	   :noun "adhesion"
-           :with bio
-           :to bio))
-
-(define-category transformation :specializes cellular-process
-   :binds ((initial biological)
-           (final biological))
-   :realization
-   (:verb "transform"
-          :etf (sv)
-          :noun "transformation"
-          :from initial
-          :to final
-          :into final))
 
 (define-category prolong :specializes caused-bio-process
   :realization

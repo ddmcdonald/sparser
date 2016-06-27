@@ -559,8 +559,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 
-(define-category step
-  :specializes cellular-process
+(define-category step :specializes cellular-process
   :instantiates :self
   :binds ((pathway pathway)
           (process bio-process))
@@ -587,44 +586,6 @@ it is created from N-terminus to C-terminus.|#
 ; inhibition of HER3 transcription
 ; "enhances the transcription function of p53"
 
-;;;-----------
-;;; Apoptosis
-;;;-----------
-; "RAS can enhance the apoptotic function of p53"
-; intracellular apoptotic signaling
-; apoptotic signals
-; the apoptosis pathway
-
-
-(define-category apoptosis ;; aka cell death
-    :specializes cellular-process
-    :binds ((process bio-process)) ;; inherits cell-line and cell-type
-    :realization
-    (:noun "apoptosis" :adj "apoptotic"
-	   :m process
-	   :of cell-type
-	   :of cell-line))
-
-(define-category  autophagy;; like apoptosis
-  :specializes cellular-process
-  :binds ((process bio-process)) ;; should be cell
-  :realization
-  (:noun "autophagy" 
-	 :m process
-	 :of cell-type
-	 :of cell-line))
-
-(define-category senescence ;; aka cell death
-  :specializes cellular-process
-  :binds ((process bio-process)(object biological)) ;; should be cell
-  :realization
-  (:noun "senescence" :adj "senescent"
-	 :m process
-	 :of cell-type
-	 :of cell-line))
-
-
-(adj "pro-apoptotic" :super apoptosis)
 
 
 
@@ -893,4 +854,92 @@ with something else
   :realization
   (:noun "+/+"))
 
+
+;; Cellular processes
+
+;;;-----------
+;;; Apoptosis
+;;;-----------
+; "RAS can enhance the apoptotic function of p53"
+; intracellular apoptotic signaling
+; apoptotic signals
+; the apoptosis pathway
+
+
+
+(define-category adhesion :specializes cellular-process
+    :realization
+    (:verb "adhere"
+	   :etf (sv)
+	   :noun "adhesion"))
+
+(define-category apoptosis ;; aka cell death
+    :specializes cellular-process
+    :realization
+    (:noun "apoptosis" :adj "apoptotic"))
+
+(define-category axon-guidance :specializes cellular-process
+   :binds ((initial biological)
+           (final biological))
+   :realization
+   (:noun "axon guidance"
+          :from initial
+          :to final
+          :into final))
+
+(define-category death :specializes cellular-process ;; actually organism process
+  :realization
+  (:verb "die"
+         :noun "death" :etf (sv)))
+
+(define-category division :specializes cellular-process
+    :realization
+    (:verb "divide"
+	   :noun "division"
+	   :etf (sv)))
+
+(define-category proliferation :specializes cellular-process
+    :realization
+    (:verb "proliferate"
+	   :noun "proliferation"
+	   :etf (sv)))
+
+(define-category transformation :specializes cellular-process
+   :binds ((initial biological)
+           (final biological))
+   :realization
+   (:verb "transform"
+          :etf (sv)
+          :noun "transformation"
+          :from initial
+          :to final
+          :into final))
+
+(noun "autophagy" :super cellular-process)
+(noun "cell growth" :super cellular-process)
+(noun "cellular growth" :super cellular-process)
+(noun "motility" :super cellular-process)
+(noun "neurite outgrowth" :super cellular-process)
+(noun "senescence" :super cellular-process)
+(noun "survival" :super cellular-process)
+(adj "pro-apoptotic" :super apoptosis)
+
+(def-synonym adhesion (:noun "cell adhesion"))
+(def-synonym adhesion (:noun "cellular adhesion"))
+(def-synonym adhesion (:noun "cell–cell adhesion"))
+(def-synonym apoptosis (:noun "cell death"))
+(def-synonym apoptosis (:noun "cellular death"))
+(def-synonym division (:noun "cell division"))
+(def-synonym division (:noun "cellular division"))
+(def-synonym motility (:noun "cell motility"))
+(def-synonym motility (:noun "cell movement"))
+(def-synonym motility (:noun "cellular motility"))
+(def-synonym motility (:noun "cellular movement"))
+(def-synonym proliferation (:noun "cell proliferation"))
+(def-synonym proliferation (:noun "cellular proliferation"))
+(def-synonym senescence (:adj "senescent"))
+(def-synonym senescence (:noun "cell senescence"))
+(def-synonym senescence (:noun "cellular senescence"))
+(def-synonym survival (:noun "cell survival"))
+(def-synonym survival (:noun "cellular survival"))
 
