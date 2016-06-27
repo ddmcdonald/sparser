@@ -71,11 +71,9 @@
 (define-conjunction "or"  :form 'conjunction
   :brackets '( ].conjunction conjunction.[ ))
 
-(define-conjunction "but not"  :form 'conjunction
-  )
+;;(define-conjunction "but not"  :form 'conjunction) works more simply as a "preposition"
 
-(define-conjunction "instead of"  :form 'conjunction
-  )
+(define-conjunction "instead of"  :form 'conjunction)
 
 
 
@@ -132,7 +130,7 @@
           "prior to"
           "since"
           "so"
-          "such as"
+          ;;"such as"
           "such that"
 	  "surprisingly"
           "than" ;; much better than we could have expected

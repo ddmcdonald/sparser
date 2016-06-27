@@ -131,6 +131,7 @@
 (define-preposition "besides")
 (define-preposition "between" :form 'spatial-preposition)
 (define-preposition "beyond" :form 'spatial-preposition)
+(define-preposition "but not" )
 (define-preposition "by" )
 (define-preposition "by means of")
 (define-preposition "by virtue of")
