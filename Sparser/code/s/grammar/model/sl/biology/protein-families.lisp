@@ -18,6 +18,8 @@
 
 (def-family "PTK")
 (def-family "TRIM")
+(def-family "CREB"
+    :synonyms ("cAMP response element-binding protein"))
 
 (def-family "GPCR")
 
