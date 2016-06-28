@@ -41,6 +41,7 @@
 ;;;--------------------------------------------
 
 ;; from comments
+(define-protein "FZD8_HUMAN" ("Fzd8" "FZD8"))
 (define-protein "KAD1_HUMAN" ("adenylate kinase 1" "AK1"))
 (define-protein "KCY_HUMAN" ("Cytosolic UMP-CMP kinase" "Cytosolic UMP-CMP kinase 1" "CMPK1"))
 (define-protein "SPHK1_HUMAN" ("sphingosine kinase" "sphingosine kinase 1"))
