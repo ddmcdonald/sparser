@@ -401,63 +401,63 @@
 	  (ref-before (edge-referent edge-before))
 	  (ref-after (edge-referent edge-after)))
       (cond
-       ((or (and (eq label-before label-after)
-                 (cond
-                  ((eq (individual-p ref-before)
-                       (individual-p ref-after))
-                   t)
-                  ((and (itypep ref-before 'xref)
-                        (itypep ref-after 'xref))
-                   t)
-		  ((or (itypep ref-before 'protein)
-		       (itypep ref-after 'protein))
-		   ;;cases like "actin-related protein and γ-tubulin "
-		   ;; when the premodifier on "protein" is dropped
-		   t)
-		  ((or ;; phosphorylated or non-phosphorylated
-		    (and (individual-p ref-before)
-			(category-p ref-after)
-			(itypep ref-before ref-after))
-		    (and (individual-p ref-after)
-			(category-p ref-before)
-			(itypep ref-before ref-before)))
-		   t)
-                  (t (break "conjunction-problem: conjunction of category and individual ~s and ~s" ref-before ref-after))))
-            (when (current-script :biology)
-              (bio-coercion-compatible? label-before label-after edge-before edge-after)))
-        :conjunction/identical-adjacent-labels)
-       (*allow-form-conjunction-heuristic*   
-        ;;(break "form heuristics allowed. Check backtrace")
-        (let ((form-before (edge-form edge-before))
-              (form-after (edge-form edge-after)))
-          (when (and (or (and (eq form-before form-after))
-                         (and
-                          (referential-category-p form-before)
-                          (referential-category-p form-after)
-                          ;; can conjoin proper nouns and NPs (in fact, proper nouns should be NPs)
-                          (member (cat-symbol form-before) '(category::np category::proper-noun))                              
-                          (member (cat-symbol form-after) '(category::np category::proper-noun)))
-                         (and (memq form-before *premod-forms*)
-                              (memq form-after *premod-forms*)))
-                     (not
-                      (and
-                       (ng-head? edge-before)
-                       (ng-head? edge-after)
-                       (let ((rtta (right-treetop-at/edge edge-after)))
-                         (and (edge-p rtta) 
-                              (eq category::preposition (edge-form rtta))
-                              (let ((sub-cats (known-subcategorization? (edge-referent rtta))))
-                                (and 
-                                 (assoc (edge-left-daughter rtta) sub-cats)                                 
-                                 (not (assoc (edge-left-daughter rtta) sub-cats))))
-                              ;;this code blocks conjunction of NG heads that are followed by a preposition --
-                              ;;  because it appears much more likely that the following PP is attached 
-                              ;;  to the second head, not to the conjunction
-                              ))))
+        ((or (and (eq label-before label-after)
+                  (cond
+                    ((eq (individual-p ref-before)
+                         (individual-p ref-after))
+                     t)
+                    ((and (itypep ref-before 'xref)
+                          (itypep ref-after 'xref))
+                     t)
+                    ((or (itypep ref-before 'protein)
+                         (itypep ref-after 'protein))
+                     ;;cases like "actin-related protein and γ-tubulin "
+                     ;; when the premodifier on "protein" is dropped
+                     t)
+                    ((or ;; phosphorylated or non-phosphorylated
+                      (and (individual-p ref-before)
+                           (category-p ref-after)
+                           (itypep ref-before ref-after))
+                      (and (individual-p ref-after)
+                           (category-p ref-before)
+                           (itypep ref-before ref-before)))
+                     t)
+                    (t (break "conjunction-problem: conjunction of category and individual ~s and ~s" ref-before ref-after))))
+             (when (current-script :biology)
+               (bio-coercion-compatible? label-before label-after edge-before edge-after)))
+         :conjunction/identical-adjacent-labels)
+        (*allow-form-conjunction-heuristic*   
+         ;;(break "form heuristics allowed. Check backtrace")
+         (let ((form-before (edge-form edge-before))
+               (form-after (edge-form edge-after)))
+           (when (and (or (and (eq form-before form-after))
+                          (and
+                           (referential-category-p form-before)
+                           (referential-category-p form-after)
+                           ;; can conjoin proper nouns and NPs (in fact, proper nouns should be NPs)
+                           (member (cat-symbol form-before) '(category::np category::proper-noun))                              
+                           (member (cat-symbol form-after) '(category::np category::proper-noun)))
+                          (and (memq form-before *premod-forms*)
+                               (memq form-after *premod-forms*)))
+                      (not
+                       (and
+                        (ng-head? edge-before)
+                        (ng-head? edge-after)
+                        (let ((rtta (right-treetop-at/edge edge-after)))
+                          (and (edge-p rtta) 
+                               (eq category::preposition (edge-form rtta))
+                               (not
+                                (eq
+                                 (loop for pat in (known-subcategorization? (edge-referent edge-after))
+                                    thereis
+                                      (equal (edge-left-daughter rtta) (subcat-label pat)))
+                                 (loop for pat in (known-subcategorization? (edge-referent edge-before))
+                                    thereis
+                                      (equal (edge-left-daughter rtta) (subcat-label pat)))))))))
                      
-                     (not (conjunction-incompatible-labels
-                           label-before label-after edge-before edge-after)))
-            :conjunction/identical-form-labels)))))))
+                      (not (conjunction-incompatible-labels
+                            label-before label-after edge-before edge-after)))
+             :conjunction/identical-form-labels)))))))
 
 (defun bio-coercion-compatible? (label-before label-after edge-before edge-after)
   (declare (special label-after label-before category::bio-entity))
