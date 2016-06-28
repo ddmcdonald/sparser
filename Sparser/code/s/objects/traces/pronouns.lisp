@@ -37,6 +37,11 @@
     (trace-msg "Conditioning pronoun edge e~a"
                (edge-position-in-resource-array pn-edge))))
 
+(deftrace :recording-pn-mention-v/r (value-restriction)
+  ;; called from condition-anaphor-edge 
+  (when *tracing-pronouns*
+    (trace-msg "  Its value restriction is ~a" value-restriction)))
+
 (deftrace :anaphor-conditioned-to (new-ref restriction relation-label)
   ;; called from condition-anaphor-edge 
   (when *tracing-pronouns*

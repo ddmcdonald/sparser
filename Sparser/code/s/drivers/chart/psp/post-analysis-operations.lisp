@@ -185,6 +185,7 @@ where it regulates gene expression.")
            (lsp-break "no type information"))
          nil)
         (t (let ((ref (find-pronoun-in-lifo-instance types)))
+             (when ref (tr :pronoun-resolved-to ref))
              (or ref
                  (when *work-on-di-pronouns*
                    (lsp-break "Need another technique")))))))))

@@ -1256,7 +1256,7 @@
 	 (ignore?
 	  item)
 	 (*constrain-pronouns-using-mentions*
-	  ;;(format t "~&setting mention-restriction of ~s to ~s~&" (edge-mention pn-edge) v/r)
+          (tr :recording-pn-mention-v/r v/r)
 	  (setf (mention-restriction (edge-mention pn-edge)) v/r)
 	  item)
 	 (t
@@ -1271,6 +1271,7 @@
                               when (itypep (edge-referent pn-edge) c)
                               do (return c))
 			(cadr restriction))))
+            (tr :recording-pn-mention-v/r restriction)
 	    (let ((new-ref (individual-for-ref restriction)))
 	      (unless ignore?
                 ;; If we're going to ignore the pronoun we don't want or
