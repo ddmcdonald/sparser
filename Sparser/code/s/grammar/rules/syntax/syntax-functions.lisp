@@ -163,7 +163,7 @@
   category::number)
 
 (define-lambda-variable 
-  'causally-related-to ;; name
+  'cause-of ;; name
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
 
@@ -1405,7 +1405,7 @@
                             (equal '(object agent) (mapcar #'var-name variable)))
                            (loop for v in variable when (eq 'object (var-name v)) do (return v)))
                           (t
-                           (announce-over-ridden-ambiguitiesitem head label variable)
+                           (announce-over-ridden-ambiguities item head label variable)
                            (define-disjunctive-lambda-variable variable category)))
                     (define-disjunctive-lambda-variable variable category))))
         variable ))))
@@ -1754,7 +1754,7 @@
   ;;//// needs a lot more work on this relation
   (let* ((variable-to-bind 
           (find-variable-for-category 
-           'causally-related-to (itype-of s))))
+           'cause-of (itype-of s))))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
