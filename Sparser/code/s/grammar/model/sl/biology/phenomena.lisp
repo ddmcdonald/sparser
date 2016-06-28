@@ -721,6 +721,9 @@ it is created from N-terminus to C-terminus.|#
           (componentstoichiometry stoichiometry)) 
   :realization
   (:noun "complex"
+         ;; verb form is very rare, and causes problems
+         ;;:verb ("complex" :third-singular "complexXXX") :etf (sv) ;; we have a comment with is complexed with SOS,
+         ;;:s component
          :m component
          :with component
          :of component
@@ -918,6 +921,7 @@ with something else
 (noun "autophagy" :super cellular-process)
 (noun "cell growth" :super cellular-process)
 (noun "cellular growth" :super cellular-process)
+(noun "differentiation" :super cellular-process)
 (noun "motility" :super cellular-process)
 (noun "neurite outgrowth" :super cellular-process)
 (noun "senescence" :super cellular-process)
