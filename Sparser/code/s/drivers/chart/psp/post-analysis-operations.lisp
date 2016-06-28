@@ -104,7 +104,7 @@ where it regulates gene expression.")
  those reinterpreted bindings."
   (if (equal dt '(nil))
       (progn
-        (format t "passed (NIL) to interpret-in-context")
+        (format t "~&passed (NIL) to interpret-in-context~%")
         nil)
       (let* ((mention (dt-mention dt))
              (base (base-description mention))
@@ -126,13 +126,71 @@ where it regulates gene expression.")
               (setf (contextual-description mention)
                     (reinterpret-collection-with-modifiers dt var containing-mentions)))
              ((is-pronoun? base)
-              (setf (contextual-description mention)
-                    (interpret-pronoun-in-context dt var containing-mentions)))
+              (let ((interpretation
+                     (interpret-pronoun-in-context dt var containing-mentions))) 
+                (setf (contextual-description mention)
+                      (if interpretation
+                         (car interpretation)
+                         (base-description mention)))))
              (t
               (setf (contextual-description mention) 
                     (reinterp-item-using-bindings dt var containing-mentions))
               (expand-interpretation-in-context-if-needed dt var containing-mentions))))
           (t (break "~&***what sort of dt is ~s~&" dt))))))
+
+
+(defparameter *work-on-di-pronouns* nil)
+
+(defun interpret-pronoun-in-context (dt variable containing-mentions)
+  (push-debug `(,dt ,variable ,containing-mentions))
+  (let* ((mention (dt-mention dt))
+         (pronoun (base-description mention))
+         (edge (mention-source mention)))
+
+    (push-debug `(,edge ,pronoun))
+    (tr :dt-dereference-pn pronoun edge)
+    
+    (unless (slot-boundp mention 'restriction)
+      (tr :dt-no-restriction)
+      (when *work-on-di-pronouns*
+        (lsp-break "no restriction"))
+      (return-from interpret-pronoun-in-context nil))
+      
+    (let* ((restriction (mention-restriction mention))
+           ;; This goes with the check done in condition-anaphor-edge
+           ;; to ignore personal pronouns. If we refactored the actual
+           ;; check -- ignore-this-type-of-pronoun -- we could reframe
+           ;; this in more direct forms and protect is against someone
+           ;; changing the details of the class.
+           (types (etypecase restriction
+                    ((cons (eql :or)) (cdr restriction))
+                    (category (list restriction))
+                    (null
+                     (if (and (or (eq variable 'subject)
+                                   ;; comes from bad parse for "were it not for..."
+                                  (eq variable 'predicate))
+                              (itypep (base-description
+                                       (car containing-mentions))
+                                      'be))
+                         nil
+                         (error
+                          "~&NIL restriction -- var: ~s, ~
+                           containing-mentions:~s~&"
+                          variable containing-mentions))))))
+      (tr :dt-restriction-on-pronoun types)
+      (cond
+        ((null types)
+         (tr :dt-no-type-information)
+         (when *work-on-di-pronouns*
+           (lsp-break "no type information"))
+         nil)
+        (t (let ((ref (find-pronoun-in-lifo-instance types)))
+             (or ref
+                 (when *work-on-di-pronouns*
+                   (lsp-break "Need another technique")))))))))
+
+		   
+
 
 (defun find-pronoun-in-lifo-instance (types)
   (declare (special *lifo-instance-list))  
@@ -140,40 +198,6 @@ where it regulates gene expression.")
      when (find-if #'(lambda (i) (itypep i type)) *lifo-instance-list*
                    :key #'car)
      return it))
-
-(defun interpret-pronoun-in-context (dt variable containing-mentions)
-  (let ((mention (dt-mention dt)))
-    (if (slot-boundp mention 'restriction)
-	;; This goes with the check done in condition-anaphor-edge
-	;; to ignore personal pronouns. If we refactored the actual
-	;; check -- ignore-this-type-of-pronoun -- we could reframe
-	;; this in more direct forms and protect is against someone
-	;; changing the details of the class.
-	(let* ((restriction (mention-restriction mention))
-	       (types (etypecase restriction
-			((cons (eql :or)) (cdr restriction))
-			(category (list restriction))
-			(null
-			 (if (and (or
-				   (eq variable 'subject)
-				   (eq variable 'predicate)) ;; comes from bad parse for "were it not for..."
-				  (itypep (base-description
-					   (car containing-mentions))
-					  'be))
-			     nil
-			     (error
-			      "~&NIL restriction -- var: ~s, containing-mentions:~s~&"
-			      variable containing-mentions)))))
-	       (interpretation
-		(when types
-		  (or (find-pronoun-in-lifo-instance types)
-		      #| apply some other technique |# ))))
-	  (if interpretation
-	      (car interpretation)
-	      ;; if interpretation is NIL then we have failed to find a pronominal referent
-	      (base-description mention)))
-	(base-description mention)
-	)))
 
 (defun itypep-or (i type-list)
   (loop for type in type-list thereis (itypep i type)))

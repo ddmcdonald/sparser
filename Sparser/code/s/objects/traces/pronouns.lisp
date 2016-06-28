@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pronouns"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  September 2015
+;;;  Version:  June 2016
 
 ;; Initiated 9/1/13. Added DefNP cases 3/6/15. Added more for tracking
 ;; the progress of handling the pronoun through various cases 9/29/15
@@ -45,6 +45,25 @@
               ~%  grammatical relation: ~a"
                new-ref restriction relation-label)))
 
+
+;;--- Decoding mentions -- interpret-pronoun-in-context
+
+(deftrace :dt-dereference-pn (pronoun edge)
+  (when *tracing-pronouns*
+    (trace-msg "Pronoun: ~a on ~a" pronoun edge)))
+
+(deftrace :dt-no-restriction ()
+  (when *tracing-pronouns*
+    (trace-msg "Can't deference -- no restriction recorded")))
+
+(deftrace :dt-no-type-information ()
+  (when *tracing-pronouns*
+    (trace-msg "Can't deference -- no type information")))
+
+(deftrace :dt-restriction-on-pronoun (types)
+  (when *tracing-pronouns*
+    (trace-msg "The type constraint is ~a" types)))
+  
 
 ;;--- ref4 - doing the anaphora
 
