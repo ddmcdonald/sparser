@@ -322,7 +322,7 @@
      (t ;; simple vp
       (make-lambda-predicate vp-edge)))
 
-    ;; Say that the clause is causally-related-to the vp.
+    ;; Say that the clause is cause-of the vp.
     ;; Which is pretty weak, but it's already in place
     ;; THIS NEXT CALL PRODUCES NIL WHEN CLAUSE-REF IS A COLLECTION (from a conjunction of clauses)
     ;; as in 
