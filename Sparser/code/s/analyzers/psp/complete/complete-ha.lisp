@@ -117,11 +117,22 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
   (update-definite-determiner edge) ;; recording function
 
   (maybe-check-semantic-completeness edge)
+  ;; a place to put code to capture information about the way that various
+  ;;  NP semantics are typically expressed
+  (record-generation-information edge)
 
   ;; keep this on the stack
   :complete )
 
+(defparameter *name-realizations* nil ;;(make-hash-table :size 1000)
+  )
 
+(defun record-generation-information (edge)
+  (when (and *name-realizations*
+             (member (cat-name (edge-form edge)) '(np proper-noun))
+             (value-of 'name (edge-referent edge)))
+    (push (extract-string-spanned-by-edge (car (right-fringe-of edge)))
+          (gethash (value-of 'name (edge-referent edge)) *name-realizations*))))
 
 ;;;-------------------
 ;;; subsumption check
