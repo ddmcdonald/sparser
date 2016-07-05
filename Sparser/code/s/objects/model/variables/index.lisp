@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1995,2010-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2010-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  2.2 January 2015
+;;;  version:  June 20156
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -36,9 +36,9 @@
  name provided that they are associated with different categories. |#
 
 
-;;;---------
-;;; finding
-;;;---------
+;;;------------------------------------------------
+;;; find the variable anywhere up the superc chain
+;;;------------------------------------------------
 
 (defmethod find-variable-for-category ((variable-name symbol) (cat-name symbol))
   (find-variable-for-category variable-name
@@ -66,41 +66,6 @@
   (find-variable-for-category variable-name (first (indiv-type i))))
 
 
-
-(defgeneric find-variable-in-category (name category)
-  (:documentation "Given a symbol that names a variable, return
-    the actual variable on the indicated category. Alternative
-    methods provide other ways to getting to the category.
-    This method does -not- search beyond the category itself"))
-
-(defmethod find-variable-in-category (symbol (i individual))
-  (loop for category in (indiv-type i)
-    thereis (find-variable-in-category symbol category)))
-#|
-  (let ((type (indiv-type i)))
-    (if (null (cadr type))
-      (find-variable-in-category symbol (car type))
-      (else
-        (push-debug `(,symbol ,i ,type))
-        (error "New case: multi-valued type")))) |#
-
-(defmethod find-variable-in-category (symbol (category model-category))
-  (let ((variables (cat-slots category)))
-    (when variables
-      (find symbol variables :key #'var-name))))
-
-(defmethod find-variable-in-category (symbol (category-name symbol))
-  (let ((category (category-named category-name :break-if-missing)))
-    (let ((variables (cat-slots category)))
-      (when variables
-        (find symbol variables :key #'var-name)))))
-
-(defmethod find-variable-in-category (symbol (lp lattice-point))
-  (let ((category (base-category-of-lp lp)))
-    (find-variable-in-category symbol category)))
-  
-
-;;--- mixins
 (defun find-variable-in-mixins (variable-name category)
   (let ((mixin-categories (cat-mix-ins category)))
     (when mixin-categories
@@ -116,6 +81,50 @@
             (return-from find-variable-in-mixins var)))))))
 
 
+(defun super-category-has-variable-named (variable-name base-category)
+  (let ((supercs (super-categories-of base-category))
+        variables  target-variable )
+    (dolist (category supercs nil)
+      (setq variables (cat-slots category))
+      (when variables
+        (setq target-variable
+              (find variable-name variables :key #'var-name))
+        (when target-variable
+          (return-from super-category-has-variable-named target-variable))))))
+
+
+;;;--------------------------------------------
+;;; find the variable directly on the category
+;;;--------------------------------------------
+
+(defgeneric find-variable-in-category (name category)
+  (:documentation "Given a symbol that names a variable, return
+    the actual variable on the indicated category. Alternative
+    methods provide other ways to getting to the category.
+    This method does -not- search beyond the category itself"))
+
+(defmethod find-variable-in-category (symbol (i individual))
+  (loop for category in (indiv-type i)
+    thereis (find-variable-in-category symbol category)))
+
+(defmethod find-variable-in-category (symbol (lp lattice-point))
+  (let ((category (base-category-of-lp lp)))
+    (find-variable-in-category symbol category)))
+
+(defmethod find-variable-in-category (symbol (category model-category))
+  (let ((variables (cat-slots category)))
+    (when variables
+      (find symbol variables :key #'var-name))))
+
+(defmethod find-variable-in-category (symbol (category-name symbol))
+  (let ((category (category-named category-name :break-if-missing)))
+    (let ((variables (cat-slots category)))
+      (when variables
+        (find symbol variables :key #'var-name)))))
+  
+
+
+
 ;;;--------------------
 ;;; internal Make form
 ;;;--------------------
@@ -128,7 +137,7 @@
           ~%Variables are only defined relative to categories." name-symbol))
   (let ((v (find-variable-in-category name-symbol category)))
     (if v
-      (setf (var-value-restriction v) restriction) ;; pro
+      (setf (var-value-restriction v) restriction)
 
       (setq v (make-lambda-variable
                :name  name-symbol
@@ -136,13 +145,18 @@
 	       :category category )))
     v))
 
+
+
+;;;---------------------------------------
+;;; variables that represent disjunctions
+;;;---------------------------------------
+
 (defun find/make-disjunctive-lambda-variable-for-category (vars category)
   (let ((name-symbol (format nil "~a" (var-name (car vars))))
 	v)
-    (declare (special name-symbol v))
     (loop for n in (cdr vars) do
 	 (setq name-symbol (format nil "~A-OR-~A" name-symbol (var-name n))))
-    (setq name-symbol (intern name-symbol))
+    (setq name-symbol (intern name-symbol (find-package :sparser)))
     ;;(lsp-break "find/make-disjunctive-lambda-variable-for-category")
     (unless (setq v (find-variable-in-category name-symbol category))
       (setq v (make-disjunctive-lambda-variable
@@ -150,19 +164,19 @@
 	       :variables vars
 	       :value-restriction (intersection-of-vrs vars category)
 	       :category (find-super-category-with-variables category vars))))
-    v
-    ))
+    v))
 
 (defun find-super-category-with-variables (category vars)
-  category ;; for the moment
-  )
+  category) ;; for the moment
+  
 
 (defun intersection-of-vrs (vars category)
   (when (not (itypep category 'collection))
     (let ((v/r (local-v/r-for (car vars) category)))
       (loop for var in (cdr vars)
-	 do
-	   (setq v/r (intersect-v/rs v/r (local-v/r-for var category))))
+         as local = (local-v/r-for var category)
+         when (and v/r local)
+	 do (setq v/r (intersect-v/rs v/r local)))
       v/r)))
 
 (defun local-v/r-for (var category)
@@ -171,19 +185,24 @@
 
 (defun intersect-v/rs (vr1 vr2)
   (cond
-    ((and (consp vr1) (eq (car vr1) :or))
+    ((and (consp vr1)
+          (eq (car vr1) :or))
      (cond
-       ((and (consp vr2) (eq (car vr2) :or))
+       ((and (consp vr2)
+             (eq (car vr2) :or))
 	(let ((vr
 	       (loop for v1 in (cdr vr1)
-		  when (loop for v2 in (cdr vr2) thereis (or (eq v1 v2) (itypep v1 v2)))
+		  when (loop for v2 in (cdr vr2)
+                          thereis (or (eq v1 v2) (itypep v1 v2)))
 		  collect v1)))
 	  (if (cdr vr) (cons :or vr) (car vr))))
-       ((loop for v1 in (cdr vr1) thereis (or (eq v1 vr2) (itypep v1 vr2)))
+       ((loop for v1 in (cdr vr1)
+           thereis (or (eq v1 vr2) (itypep v1 vr2)))
 	vr2)))
-    ((and (consp vr2) (eq (car vr2) :or))
-     (when
-	 (loop for v2 in (cdr vr2) thereis (or (eq v2 vr1) (itypep vr1 v2)))
+    ((and (consp vr2)
+          (eq (car vr2) :or))
+     (when (loop for v2 in (cdr vr2)
+              thereis (or (eq v2 vr1) (itypep vr1 v2)))
        vr1))
     ((itypep vr1 vr2) vr1)
     ((itypep vr2 vr1) vr2)))
