@@ -1,12 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "canonical"
 ;;;   Module:  "objects;words:lookup"
-;;;  Version:  0.1 November 1992
+;;;  Version:  July 2016
 
 ;; initiated 1/16/92
-;; 0.1 (11/23 v2.3) Added case for digits
+;; 0.1 (11/23/92 v2.3) Added case for digits
 
 (in-package :sparser)
 
@@ -33,7 +33,10 @@
           (then
             (setf (word-capitalization-variants lc-word)
                   (cons word
-                        (word-capitalization-variants lc-word))))
+                        (word-capitalization-variants lc-word)))
+            (setf (word-capitalization-variants word)
+                  (cons lc-word
+                        (word-capitalization-variants word))))
           (else
             (setq lc-word (define-word/expr lc-string))
             (setf (word-capitalization-variants lc-word)
