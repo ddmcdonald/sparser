@@ -222,8 +222,8 @@ similar to an oncogenic RasG12V mutation (9)."))
    `(def-syntax-rule (possessive ,nb) 
 	:head :right-edge
 	:form np
-	:referent (:head right-edge
-			     :bind (has-possessive left-edge))))
+	:referent (:function possessive-np left-edge right-edge)))
+
   (eval 
    `(def-syntax-rule (adjective ,nb) ;; "black suv"
                      :head :right-edge

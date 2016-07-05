@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  May 2016
+;;;  Version:  July 2016
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -87,6 +87,22 @@
 ; (right-edge-for-referent)
 ; (parent-edge-for-referent)
 
+;;;------------
+;;; parameters
+;;;------------
+
+(defparameter *force-modifiers* nil
+  "Set to T when you want to accept all PP modifiers
+  to NPs and VPs")
+
+(defparameter *subcat-test* nil
+  "Set to T when we are executing the referent function
+   as a predicate, not as part of interpretation of an NP or VP")
+
+
+;;;----------------------
+;;; unattached variables
+;;;----------------------
 
 (define-lambda-variable 
     ;; Used to explicitly mark the type of an individual
@@ -124,11 +140,6 @@
 
 (define-lambda-variable 
   'subordinate-conjunction ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
-  category::top)
-
-(define-lambda-variable 
-  'possessive ;; name
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
 
@@ -178,13 +189,10 @@
   category::top)
 
 
-(defparameter *force-modifiers* nil
-  "Set to T when you want to accept all PP modifiers
-  to NPs and VPs")
 
-(defparameter *subcat-test* nil
-  "Set to T when we are executing the referent function
-   as a predicate, not as part of interpretation of an NP or VP")
+;;;----------------------------
+;;; place to stash determiners
+;;;----------------------------
 
 ;;; --- part of mechanism to hang on to "modifiers" that should not be
 ;;;     incorporated in description-lattice individuals
@@ -194,8 +202,11 @@
 (defparameter *non-dli-mod-ht* (make-hash-table)
   "Holds determiners for NPs until they are put in
    the discourse mention")
-(defun non-dli-mod-for (i) (gethash i *non-dli-mod-ht*))
-(defun (setf non-dli-mod-for) (det i) (setf (gethash i *non-dli-mod-ht*) det))
+(defun non-dli-mod-for (i)
+  (gethash i *non-dli-mod-ht*))
+(defun (setf non-dli-mod-for) (det i)
+  (setf (gethash i *non-dli-mod-ht*) det))
+
 
 ;;;-------------------
 ;;; noun premodifiers
@@ -204,8 +215,9 @@
 (defun noun-noun-compound (qualifier head)
   ;; goes with (common-noun common-noun) syntactic rule
   (cond
-    (*subcat-test* (not (and (individual-p head)
-                             (itypep head 'determiner))))
+    (*subcat-test*
+     (not (and (individual-p head)
+               (itypep head 'determiner))))
     ((itypep head 'determiner)
      ;; had strange case with "some cases this" -- head was "this"
      nil)
@@ -220,27 +232,27 @@
      (cond
        ((word-p head)
 	nil) ;; this happened with word = HYPHEN, "from FCS-treated cells"
-       ((and 
-	 (itypep qualifier (itype-of head))
-	 (not (indiv-binds head)) ;; head already is modified -- don't replace with proper noun
-	 ;; e.g. "braf mutant a 375 melanoma cell"
-	 (if (itypep qualifier category::collection)
-	     (and
-	      ;; conjunction of named items
-	      (individual-p (car (value-of 'items qualifier)))
-	      (value-of 'name (car (value-of 'items qualifier))))
-	     ;; named item
-	     (value-of 'name qualifier))) ;; intended as test for proper noun or other specific NP
+       ((and (itypep qualifier (itype-of head))
+             (not (indiv-binds head))
+             ;; head already is modified -- don't replace with proper noun
+             ;; e.g. "braf mutant a 375 melanoma cell"
+             (if (itypep qualifier category::collection)
+               (and ;; conjunction of named items
+                (individual-p (car (value-of 'items qualifier)))
+                (value-of 'name (car (value-of 'items qualifier))))
+               ;; named item
+               (value-of 'name qualifier)))
+        ;; intended as test for proper noun or other specific NP
 	(revise-parent-edge :form category::proper-noun)
 	qualifier)
-       ((call-compose qualifier head)) ;; see note with verb-noun-compound
+       ((call-compose qualifier head))
        ((interpret-premod-to-np qualifier head))
        ;; subcat test is here. If there's a :premod subcategorization
        ;; that's compapatible this gets it.
        (t
 	;; what's the right relationship? Systemics would say
 	;; they are qualifiers, so perhaps subtype?
-	(setq  head (bind-dli-variable 'modifier qualifier head)) ;; safe
+	(setq head (bind-variable 'modifier qualifier head)) ;; safe
 	head)))))
 
 (defun interpret-premod-to-np (premod head)
@@ -338,6 +350,22 @@
 	head)))
 
 
+(defun possessive-np (possessive head)
+  "Treating it as equialent to an 'of' treatment of genitive"
+  (declare (special word::|of|))
+  (or
+   *subcat-test*
+   (call-compose possessive head)
+   (let ((var (subcategorized-variable head word::|of| possessive)))
+     (if var
+       (setq head (bind-variable var possessive head))
+       (else
+         ;; trace goes here
+         (setq head (bind-variable 'modifier possessive head))))
+     head)))
+
+
+
 
 (defun quantifier-noun-compound (quantifier head)
   ;; Not all quantifiers are equivalent. We want to idenify
@@ -353,7 +381,7 @@
   (setq head (individual-for-ref head))
   (cond
     ((itypep quantifier 'no) ;; special handling for negation
-     (setq  head (bind-dli-variable 'negation quantifier head)))
+     (setq head (bind-dli-variable 'negation quantifier head)))
     ((or
       (itypep head 'endurant)
       (itypep head 'perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
@@ -571,8 +599,8 @@
      (setq vg (individual-for-ref vg))
      (let ((var (object-variable vg)))
        (if var
-	   (setq  vg (bind-dli-variable var adj vg))
-	   (setq  vg (bind-dli-variable 'participant adj vg)))
+	   (setq vg (bind-dli-variable var adj vg))
+	   (setq vg (bind-dli-variable 'participant adj vg)))
        vg))))
 
 
@@ -954,13 +982,6 @@
       (t (assimilate-subcat vp :subject subj)))))
 
 
-(defun add-possessive-determiner (poss ng)
-  (cond
-    (*subcat-test* t)
-    (t
-     (bind-dli-variable 'possessive poss (individual-for-ref ng))
-     )))
-
 ;; special case where the vp is a gerund, and we make it an NP (not sure how often this is right)
 (defun assimilate-subject-to-vp-ing (subj vp)
   (unless 
@@ -1111,9 +1132,8 @@
 
 (defun preceding-that-whether-or-conjunction? (left-edge)
   (declare (special left-edge))
-  (when
-      (and (edge-p left-edge)
-           (position-p (pos-edge-starts-at left-edge)))
+  (when (and (edge-p left-edge)
+             (position-p (pos-edge-starts-at left-edge)))
     (let* ((previous-treetop (left-treetop-at/only-edges (pos-edge-starts-at left-edge)))
 	   (prev-form (and (edge-p previous-treetop)
 			   (edge-form previous-treetop)))
@@ -1123,7 +1143,9 @@
       (cond
 	((or
 	  (and (category-p prev-form)
-	       (member (cat-name prev-form) '(SUBORDINATE-CONJUNCTION CONJUNCTION SPATIO-TEMPORAL-PREPOSITION ADVERB)))
+	       (member (cat-name prev-form)
+                       '(SUBORDINATE-CONJUNCTION CONJUNCTION
+                         SPATIO-TEMPORAL-PREPOSITION ADVERB)))
 	  (and (category-p prev-cat)
 	       (member (cat-name prev-cat) '(THAT))))
         
@@ -1186,8 +1208,7 @@
 				       ((vg vp) category::vp)
 				       ((vp+ing vg+ing) category::vp+ing)
 				       ((vp+ed vg+ed) category::vp+ed))				   
-			       :referent result)
-	   )
+			       :referent result))
        result))))
     
 
@@ -1286,9 +1307,6 @@
 	      new-ref))))))
     (t item)))
 
-(defparameter *label* nil) ;; temporary hack to get the label down to satisfies-subcat-restriction?
-(defparameter *head* nil)
-
 (defparameter *trivial-subcat-test* nil)
 (defparameter *tight-subcats* nil)
 (defparameter *dups* nil)
@@ -1332,10 +1350,8 @@
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
-  (loop while
-       (edge-p label) ;; can happen for edges over polywords like "such as"
-     do
-       (setq label (edge-left-daughter label)))
+  (loop while (edge-p label) ;; can happen for edges over polywords like "such as"
+     do (setq label (edge-left-daughter label)))
   (cond
     ((null head)
      (break "~&null head in call to subcategorized-variable")
@@ -1366,9 +1382,11 @@
            (value-of 'items head)
            (car (last (value-of 'items head))) ;; fooled by the WORD sequence
            (find-subcat-var item label
-                            (car (last (value-of 'items head))))))
-      
-      )))
+                            (car (last (value-of 'items head)))))))))
+
+
+(defparameter *label* nil) ;; temporary hack to get the label down to satisfies-subcat-restriction?
+(defparameter *head* nil)
 
 
 (defparameter *subcat-use* nil ;; (make-hash-table :size 2000)
@@ -1404,15 +1422,16 @@
     (when subcat-patterns
       (setq *label* label)
       (setq *head* head)
-      (let ( variable over-ridden
-                      (*trivial-subcat-test* nil))
-        (if (and *ambiguous-variables* (not *subcat-test*))
-            (let (pats sover-ridden)
+      (let ((*trivial-subcat-test* nil)
+            variable  over-ridden)
+        (if (and *ambiguous-variables*
+                 (not *subcat-test*))
+            (let ( pats  sover-ridden )
               (loop for pat in subcat-patterns
-                 do
-                   (when (eq label (subcat-label pat))
-                     (when (satisfies-subcat-restriction? item pat)
-                       (push pat pats))))
+                 as scr = (subcat-restriction pat)
+                 do (when (eq label (subcat-label pat))
+                      (when (satisfies-subcat-restriction? item scr)
+                        (push pat pats))))
               (setq over-ridden (check-overridden-vars pats))
               (setq pats (loop for p in pats unless (member p over-ridden) collect p))
               (setq variable (variable-from-pats item head label pats subcat-patterns)))
@@ -1420,31 +1439,38 @@
                 (when (eq label (subcat-label entry))
                   (when (satisfies-subcat-restriction? item entry)
                     (setq variable (subcat-variable entry))
-                    (return)))))
-        (when (and *ambiguous-variables* (consp variable))
+                    (return))))))
+        
+        (when (and *ambiguous-variables*
+                   (consp variable))
           (setq variable
                 (if over-ridden
-                    (cond ((or
-                            (equal '(agent object)
-                                   (mapcar #'var-name variable))
-                            (equal '(object agent) (mapcar #'var-name variable)))
-                           (loop for v in variable when (eq 'object (var-name v)) do (return v)))
-                          (t
-                           (announce-over-ridden-ambiguities item head label variable)
-                           (define-disjunctive-lambda-variable variable category)))
+                    (cond
+                      ((or (equal '(agent object)
+                                  (mapcar #'var-name variable))
+                           (equal '(object agent)
+                                  (mapcar #'var-name variable)))
+                       (loop for v in variable
+                          when (eq 'object (var-name v))
+                          do (return v)))
+                      (t
+                       (announce-over-ridden-ambiguities item head label variable)
+                       (define-disjunctive-lambda-variable variable category)))
+                    ;; else
                     (define-disjunctive-lambda-variable variable category))))
-        (when (and *subcat-use* variable)
-          (record-subcat-use *label* category variable))
-        variable ))))
+        
+        variable )))
+
 
 (defun announce-over-ridden-ambiguities (item head label variable)
   (when *show-over-ridden-ambiguities*
-    (format t
-            "~%over-ridden ambiguity now preserved~%  ambiguous subcats for attaching ~s to ~s with ~s:~%  ~s~%   ~s~%"
-            item  head  label variable (sentence-string *sentence-in-core*))))
+    (format t "~%over-ridden ambiguity now preserved~
+               ~%  ambiguous subcats for attaching ~s to ~s ~
+                 with ~s:~%  ~s~%   ~s~%"
+            item head label variable (sentence-string *sentence-in-core*))))
 
 (defun variable-from-pats (item head label pats subcat-patterns)
-  (let (variable)
+  (let ( variable )
     (cond
       ((cdr pats)
        (setq variable (mapcar #'subcat-variable pats))
@@ -1509,74 +1535,91 @@
       (return-from satisfies-subcat-restriction? t))
     (flet ((subcat-itypep (item category)
              ;; For protein-families and such that are re-written
-             ;; as a more general catgory (protein). There's no
+             ;; as a more general catgory (e.g. protein). There's no
              ;; provision for inheritance, but if we need it because
              ;; of the reach of the override we should do something
              ;; different with it.
              (cond
                ((itypep item category)) ;; handles conjunctions
                (t (eq category override-category)))))
-      (or
-       (itypep item '(:or pronoun/inanimate this that these those))
-       (and
-        (itypep item 'number)
-        (not (itypep item 'ordinal)))
-       (itypep item 'pronoun/first/plural) ;; BAD -- should add check for agentive verbs
-       (cond
-         ((and (consp restriction)
-               ;; this is usually meant for NAME (a WORD) or
-               ;; other special cases
-               (eq (car restriction) :primitive))
+      (cond
+        ((itypep item '(:or this that these those))
+         t)
+        (;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
+         (itypep item 'pronoun) ;; of any sort
+         t)
+        ((and (itypep item 'number)
+              (not (itypep item 'ordinal)))
+         t)
+        ((consp restriction)
+         (cond
+           ((eq (car restriction) :or)
+            (loop for type in (cdr restriction)
+               thereis (subcat-itypep item type)))
+           ((eq (car restriction) :primitive)
+            ;; this is usually meant for NAME (a WORD) or
+            ;; other special cases
+            nil)
+           (t (error "subcat-restriction on is a cons but it ~
+                      does not start with :or~%  ~a"
+                     restriction))))
+        ((category-p restriction)
+         (subcat-itypep item restriction))
+        ((symbolp restriction) ;; this is the case for :prep subcat-patterns
           nil)
-         ((and (consp restriction)
-               ;; this is usually meant for NAME (a WORD) or
-               ;; other special cases
-               (not (eq (car restriction) :primitive)))
-          (if (eq (car restriction) :or)
-              (loop for type in (cdr restriction)
-                 thereis (subcat-itypep item type))
-              (error "subcat-restriction on is a cons but it does not start with :or~%  ~a"
-                     restriction)))
-         ((category-p restriction)
-          (when
-              (subcat-itypep item restriction)
-            (if (and *biological-tests*
-                     (eq (cat-name restriction) 'biological))
-                (pushnew (list source var (itype-of item))
-                         *biological-tests*
-                         :test #'equal))
-            t))
-         ((symbolp restriction) nil) ;; this is the case for :prep subcat-patterns
-         (t (error "Unexpected type of subcat restriction: ~a"
-                   restriction)))))))
+        (t (error "Unexpected type of subcat restriction: ~a"
+                  restriction))))))
+
+(defun check-overridden-vars (pats)
+  (cond
+    ((and
+      (eq (length pats) 2)
+      (eq (subcat-label (first pats)) :m)
+      (member (var-name (subcat-variable (first pats))) '(agent object))
+      (member (var-name (subcat-variable (second pats))) '(agent object)))
+     (if (eq (var-name (subcat-variable (first pats))) 'object)
+         (list (second pats))
+         (list (first pats))))
+    (t
+     (let (over-ridden)
+       (loop for pat in pats
+          do
+            (loop for p in pats
+               when
+                 (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
+                      (not (consp (subcat-restriction p)))
+                      (if (consp (subcat-restriction pat))
+                          (loop for i in (cdr (subcat-restriction pat))
+                             thereis (itypep i (subcat-restriction p)))
+                          (itypep (subcat-restriction pat) (subcat-restriction p))))
+               do (push p over-ridden)))
+       over-ridden))))
 
 (defun note-failed-tests (item restriction)
   ;; return non-null when tests failed
   (let ((*trivial-subcat-test* nil))
-    (when
-        (not (satisfies-subcat-restriction? item restriction))
-      ;; test would have failed -- collect it
-      (pushnew `(,(scat-symbol (itype-of *head*))
-                  ,*label*
-                  ,(scat-symbol restriction)
-                  ,(scat-symbol (itype-of item))
-                  ,(list 
-                    (when *left-edge-into-reference*
-                      (actual-characters-of-word
-                       (pos-edge-starts-at *left-edge-into-reference*)
-                       (pos-edge-ends-at *left-edge-into-reference*) nil))
-                    (when *right-edge-into-reference*
-                      (actual-characters-of-word
-                       (pos-edge-starts-at *right-edge-into-reference*)
-                       (pos-edge-ends-at *right-edge-into-reference*) nil))))
-               *tight-subcats*
-               :test #'equal))))
-
-(defun scat-symbol (c)
-  (typecase c
-    (referential-category (simple-label c))
-    (cons (loop for s in c collect (scat-symbol s)))
-    (symbol c)))
+    (flet ((scat-symbol (c)
+             (typecase c
+               (referential-category (simple-label c))
+               (cons (loop for s in c collect (scat-symbol s)))
+               (symbol c))))
+      (when (not (satisfies-subcat-restriction? item restriction))
+        ;; test would have failed -- collect it
+        (pushnew `(,(scat-symbol (itype-of *head*))
+                    ,*label*
+                    ,(scat-symbol restriction)
+                    ,(scat-symbol (itype-of item))
+                    ,(list 
+                      (when *left-edge-into-reference*
+                        (actual-characters-of-word
+                         (pos-edge-starts-at *left-edge-into-reference*)
+                         (pos-edge-ends-at *left-edge-into-reference*) nil))
+                      (when *right-edge-into-reference*
+                        (actual-characters-of-word
+                         (pos-edge-starts-at *right-edge-into-reference*)
+                         (pos-edge-ends-at *right-edge-into-reference*) nil))))
+                 *tight-subcats*
+                 :test #'equal)))))
     
 
 
@@ -1803,11 +1846,9 @@
 
 
 (defun add-time-adjunct (time vp)
-
   ;; treat both "now" and "then" as subordinate conjunctions
   ;; rather than time
   (if (member (cat-name (edge-form (left-edge-for-referent)))
               '(adjunct subordinate-conjunction))
       (bind-dli-variable 'subordinate-conjunction time (individual-for-ref vp))
-      (bind-dli-variable 'time time (individual-for-ref vp)))
-  )
+      (bind-dli-variable 'time time (individual-for-ref vp))))
