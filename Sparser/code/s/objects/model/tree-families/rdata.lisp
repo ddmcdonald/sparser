@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  February 2016
+;;;  version:  July 2016
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -177,8 +177,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 (defun setup-rdata (category rdata &optional (delete? t))
   ;; Setup-rdata ia called from decode-category-parameter-list as part of 
-  ;; defining a category This routine is responsible for decoding the rdata field,
-  ;; the routines in objects/model/tree-families/driver are the ones 
+  ;; defining a category This routine is responsible for decoding the rdata field.
+  ;; The routines in objects/model/tree-families/driver are the ones 
   ;; that actually create the rules when individuals of this category are
   ;; created. Runs for side-effects on the category object. The function
   ;; that actually makes the rules is make-rules-for-realization-data
@@ -258,16 +258,31 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
     (let ((rules (make-rules-for-realization-data ;; <<< does the work
                   category head-word etf mapping local-cases)))
       (if store?
-        (setf (cat-realization category)
+        (record-realization-data
+           category head-word etf mapping rules local-cases)        
+        (values head-word etf mapping local-cases rules)))))
+
+
+(defclass realization-data (named-object)
+  ((etf
+    :documentation "Points to the etf if one was used")
+   (mapping
+    :documentation "A completely dereferenced mapping from
+      an individual as a instance of a category to the ")
+   )
+  (:documentation "Compare to realization-scheme class in rules/
+ tree-families/families.lisp or realization-node in objects/model/
+ lattice-points/structure.lisp. Goal is to replace the haphazard
+ distribution of category or individual level realization information
+ as lists with one can be directly accessed."))
+
+(defun record-realization-data (category head-word etf mapping rules local-cases)
+  (setf (cat-realization category)
               `(:schema (,head-word
                          ,etf
                          ,mapping
                          ,local-cases)
-                :rules ,rules))
-        (values head-word etf mapping local-cases rules)))))
-
-
-
+                :rules ,rules)))
 
 
 ;;--- Check for legal keywords in realization field of a category
