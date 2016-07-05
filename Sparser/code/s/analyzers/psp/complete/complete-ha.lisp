@@ -128,11 +128,52 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
   )
 
 (defun record-generation-information (edge)
+  (declare (special *name-realizations* *return-after-doing-forest-level*))
   (when (and *name-realizations*
+             *return-after-doing-forest-level*
              (member (cat-name (edge-form edge)) '(np proper-noun))
              (value-of 'name (edge-referent edge)))
-    (push (extract-string-spanned-by-edge (car (right-fringe-of edge)))
-          (gethash (value-of 'name (edge-referent edge)) *name-realizations*))))
+    (let* ((realizations
+            (gethash (value-of 'name (edge-referent edge)) *name-realizations*))
+           (head-edge (get-np-head-edge edge))
+           (head-string (and head-edge
+                             (extract-string-spanned-by-edge head-edge)))
+           (count (assoc head-string realizations :test #'equalp)))
+      (cond (count (incf (second count)))
+            (t (push (list head-string 1)
+                     (gethash (value-of 'name (edge-referent edge)) *name-realizations*)))))))
+
+(defun get-np-head-edge (np-edge)
+  (declare (special np-edge))
+  (let* ((np-chunk
+          (loop for chunk in (reverse *chunks*)
+             when (and (<= (pos-token-index (pos-edge-starts-at np-edge))
+                           (pos-token-index (chunk-start-pos chunk)))
+                       (>= (pos-token-index (pos-edge-ends-at np-edge))
+                           (1- (pos-token-index (chunk-end-pos chunk)))))
+             do (return chunk)))
+         (head-edge
+          (when np-chunk ;; have problems with hyphenated items like "GDP-bound"
+          (find-np-type-edge (chunk-ev-list np-chunk)))))
+           
+    (declare (special np-chunk ev head-edge))
+    (when nil ;;(null head-edge)
+      (lsp-break "null head-edge"))
+    head-edge))
+
+
+(defun find-np-type-edge (ev-list)
+  (loop for ev in ev-list
+     do
+       (loop for i from 0 to (1- (ev-number-of-edges ev))
+          do
+            (if
+             (and
+              (edge-p (elt (ev-edge-vector ev) i))
+              (member (cat-name (edge-form (elt (ev-edge-vector ev) i)))
+                      '(common-noun common-noun/plural proper-noun)))
+             (return-from find-np-type-edge
+               (elt (ev-edge-vector ev) i))))))
 
 ;;;-------------------
 ;;; subsumption check
