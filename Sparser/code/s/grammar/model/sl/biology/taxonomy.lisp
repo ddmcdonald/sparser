@@ -219,7 +219,7 @@
   :binds ((subject (:or biological visual-representation))
           (as-comp as-comp))
   :realization (:s subject
-                   :as-comp as-comp))
+                :as-comp as-comp))
 
 (define-category bio-quality :specializes quality
   :mixins (biological)
@@ -230,18 +230,6 @@
 (define-category bio-scalar :specializes scalar-quality
   :mixins (bio-quality)
   :documentation "Provides a generalization over biological and scalar")
-
-(define-category  measurement  :specializes abstract
-  :instantiates self
-  :binds ((units . unit-of-measure)
-          (quantity  :or quantity number))
-  :realization (:tree-family  quantity+kind
-                :mapping ((quantity . quantity)
-                          (base . units)
-                          (np . :self)
-                          (np-head . unit-of-measure)
-                          (modifier . (number quantity))
-                          (result-type . :self))))
 
 
 ;; Rusty -- where are we supposed to put the two numbers
@@ -264,9 +252,11 @@
   :realization
   (:adj "cyclic"))
 
-(define-category bio-state :specializes bio-predication ;; for things like "activated state"
+(define-category bio-state :specializes bio-predication
+                 ;; for things like "activated state"
   :realization
-  (:noun "state"))
+  (:noun "state"
+   :of subject)) ;; subject in on bio-predication
 
 (define-category molecule-state :specializes bio-state)
 
