@@ -19,10 +19,7 @@ space.
 Finish the ply-structured discourse history
 
 
-* NLG within TRIPS
 
-Can we yet capture Mumble output stream or words and direct it to the
-correct place?
 
 
 * Needed for the incremental parser
