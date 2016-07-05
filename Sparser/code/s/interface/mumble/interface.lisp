@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "/interface/mumble/"
-;;;  version:  February 2016
+;;;  version:  June 2016
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
@@ -33,6 +33,7 @@
            (etypecase label
              (string (mumble::word-for-string label))
              (word (get-mumble-word-for-sparser-word label))
+             (polyword (get-mumble-word-for-sparser-word label))
              (mumble::word label)))))))
 
 ;;;----------------------------------------------------------
