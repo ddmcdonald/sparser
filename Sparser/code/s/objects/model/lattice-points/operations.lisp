@@ -257,18 +257,6 @@
     0))
 
 
-(defun super-category-has-variable-named (variable-name base-category)
-  (let ((supercs (super-categories-of base-category))
-        variables  target-variable )
-    (dolist (category supercs nil)
-      (setq variables (cat-slots category))
-      (when variables
-        (setq target-variable
-              (find variable-name variables :key #'var-name))
-        (when target-variable
-          (return-from super-category-has-variable-named target-variable))))))
-
-
 
 
 
@@ -380,7 +368,6 @@
 ;;;-----------
 
 (defparameter *category->daughters* (make-hash-table :test #'eq))
-
 
 (defun daughters-of-category (c)
   (gethash c *category->daughters*))
