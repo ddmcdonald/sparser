@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2016 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   2.6 April 2015
+;;;   Version:   July 2016
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -80,28 +80,10 @@
 (defparameter *no-referent-calculations* nil)
 
 
-
 ;;;------------
 ;;; the driver
 ;;;------------
-
-(defparameter *show-referent-for-edge-gaps* nil)
-(defun referent-for-edge (edge)
-  (cond ((and (symbolp (edge-rule edge))
-              (eq :long-span (edge-right-daughter edge)))
-         (when *show-referent-for-edge-gaps*
-           (format t "~% referent-for-edge appplied to a da-rule edge ~s~% with rule ~s and constituents ~s~%" edge (edge-rule edge) (edge-constituents edge)))
-         (edge-referent edge) ;; PUNT right now
-         )
-        (t
-         (referent-from-rule
-          (edge-left-daughter edge)
-          (edge-right-daughter edge)
-          edge
-          (edge-rule edge)))))
-   
          
-
 (defun referent-from-rule (left-edge
                            right-edge
                            parent-edge
@@ -111,6 +93,8 @@
   (declare (special *c3*))
 
   (setq *referent* nil) ;; cleanup from last time
+
+  
   (if (or
        (eq rule :conjunction/identical-adjacent-labels)
        (eq rule :conjunction/identical-form-labels))
@@ -215,6 +199,25 @@
 
 
 
+(defparameter *show-referent-for-edge-gaps* nil)
+(defun referent-for-edge (edge)
+  (cond ((and (symbolp (edge-rule edge))
+              (eq :long-span (edge-right-daughter edge)))
+         (when *show-referent-for-edge-gaps*
+           (format t "~% referent-for-edge appplied to a da-rule ~
+                      edge ~s~% with rule ~s and constituents ~s~%"
+                   edge (edge-rule edge) (edge-constituents edge)))
+         ;; PUNT right now
+         (edge-referent edge))
+        (t
+         (referent-from-rule
+          (edge-left-daughter edge)
+          (edge-right-daughter edge)
+          edge
+          (edge-rule edge)))))
+   
+
+
 ;;;---------------------------------
 ;;; syntactic sugar for the globals
 ;;;---------------------------------
@@ -281,5 +284,5 @@
 (defmethod redistribute ((left t) (right t))
   (declare (ignore left right))
   nil)
-       
+
 
