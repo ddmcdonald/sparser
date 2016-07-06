@@ -77,6 +77,13 @@
 (defmethod pname ((w word))
   (word-pname w))
 
+(defmethod pname ((s symbol))
+  s)
+
+(defmethod pname ((s string))
+  s)
+
+
 
 ;;;------------
 ;;; cataloging
@@ -103,6 +110,7 @@
 
 
 (defun un-catalog/polyword (polyword symbol)
+  (declare (special *polyword-package*))
   (setq *polywords-defined*
         (delete polyword *polywords-defined*))
   (makunbound symbol)
@@ -115,6 +123,7 @@
 ;;;----------
 
 (defun delete-polyword (multi-word-string)
+  (declare (special *polyword-package*))
   ;; external form intended for use at toplevel
   (let* ((symbol (find-symbol multi-word-string *polyword-package*)))
     (unless symbol
@@ -150,7 +159,7 @@
 ;;;-----------------
 
 (defun polyword-named (multi-word-string)
-  (declare (special *force-case-shift*))
+  (declare (special *force-case-shift* *polyword-package*))
   (when *force-case-shift*
     (setq multi-word-string (force-case-of-word-string multi-word-string)))
   (let* ((symbol (find-symbol multi-word-string *polyword-package*)))
