@@ -225,7 +225,7 @@ where it regulates gene expression.")
          (individual (format t "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
                              (car dt)
                              (sentence-string *sentence-in-core*))
-                     (error "~%Strange value in interpret-item-in-context: ~s~%"))
+                     (error "~%Strange value in interpret-item-in-context: ~s~%" dt))
 	 (t (lsp-break "~%Strange value in interpret-item-in-context: ~s~%"
 		    dt)
 	    dt)))
