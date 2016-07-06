@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "words"
 ;;;   Module:  "analyzers;FSA:"
-;;;  Version:  3.0 November 2015
+;;;  Version:  July 2016
 
 ;; 5/5/93 v2.3, typed in hard copy of 11/24/92 that had been lost in
 ;;  disk crash
@@ -191,7 +191,7 @@
               (dispatch-off-capitalization-data
                actual-state relevant-variant position))))
 
-        (let ((subsumer (subsuming-variant actual-state variants)))
+        (let ((subsumer (subsuming-variant actual-state variants lc-word)))
           (if subsumer
             (check-known-word-for-word-fsas 
              subsumer (word-rules subsumer) position)
@@ -218,7 +218,7 @@
             (check-known-word-for-word-fsas word-with-rules
                                             rs
                                             position)))
-        (let ((subsumer (subsuming-variant actual-state variants)))
+        (let ((subsumer (subsuming-variant actual-state variants lc-word)))
           (when subsumer ;; it's known by definition
             (check-known-word-for-word-fsas 
              subsumer (word-rules subsumer) position)))))))

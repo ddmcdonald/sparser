@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1996,2012-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1996,2012-2016 David D. McDonald  -- all rights reserved
 
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  0.5 October 2014
+;;;  Version:  July 2016
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -105,10 +105,10 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
           ;; because of word" in "a seven-day deadline"
           (or (find caps-type variants      ;; exact match
                     :key #'word-capitalization)
-              (subsuming-variant caps-type variants)))))))
+              (subsuming-variant caps-type variants lc-word)))))))
 
 
-(defun subsuming-variant (actual-state defined-variants)
+(defun subsuming-variant (actual-state defined-variants lc-word)
   ;; returns one of the variants if its capitalization is defined to
   ;; be a reasonable subsumer for what we actually have in this case.
   ;; We know that the actual state isn't lowercase and we've already
@@ -133,7 +133,8 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (:single-capitalized-letter nil)
                (:mixed-case (return word)) ;; (Knowledge) Factory -> "FACTory"
                (otherwise
-                (break "new case for :initial-letter-capitalized: ~a" actual-state))))
+                (break "For ~s: new case for :initial-letter-capitalized: ~a"
+                       (word-pname lc-word) actual-state))))
 
             (:mixed-case
              (case actual-state
@@ -142,7 +143,8 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (:single-capitalized-letter nil)
                (:all-caps (return word)) ;; "SKMEL" -> "SkMei"
                (otherwise
-                (break "new case for :mixed-case: ~a" actual-state))))
+                (break "For ~s: new case for :mixed-case: ~a"
+                       (word-pname lc-word) actual-state))))
 
             (:all-caps
              (case actual-state
@@ -150,7 +152,8 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (:mixed-case (return word))
                (:single-capitalized-letter (return word))
                (otherwise
-                (break "new case for :all-caps ~a" actual-state))))
+                (break "For ~s: new case for :all-caps ~a"
+                       (word-pname lc-word) actual-state))))
 
             (:single-capitalized-letter
              (case actual-state
@@ -158,11 +161,12 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (:mixed-case (return word))
                (:all-caps (return word))
                (otherwise
-                (break "new case for single cap'd"))))
+                (break "For ~s: new case for single capitalized letter"
+                       (word-pname lc-word)))))
             
             (otherwise
-             (error "New variant-state of capitalization: ~a"
-                    variants-state))))))))
+             (error "For ~s: New variant-state of capitalization: ~a"
+                    (word-pname lc-word) variants-state))))))))
 
 
 
