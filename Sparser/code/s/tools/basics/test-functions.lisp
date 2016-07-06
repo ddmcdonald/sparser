@@ -192,11 +192,7 @@
 			  (cat-string (second (second sem-tree)))))
 		 (t
                   (emit-line stream
-                             (format nil "(~a" (cat-string (car sem-tree)
-                                                           (and
-                                                            (consp (cdr sem-tree))
-                                                            (consp (cadr sem-tree))
-                                                            (not (assoc 'name (cdr sem-tree)))))))
+                             (format nil "(~a" (cat-string (car sem-tree) t)))
                              
 		  (push-indentation)
 		  (loop for item in
@@ -204,6 +200,7 @@
 			   ;; temproary to simplify comparisons
 			   (second (second (second sem-tree)))
 			   (cdr sem-tree))
+                       unless (and (consp item) (member (car item) '(name uid)))
 		     do (print-sem-tree item stream))
 		  (format stream ")")
 		  (pop-indentation))))
@@ -237,7 +234,7 @@
 
 (defun get-sentence (corpus n)
   (declare (special *pathway-comments* *erk-abstract* *gyori* *load-test-sents*
-                       *overnight-sentences*))
+                       *overnight-sentences* *comments*))
   (let ((sentences
 	 (ecase corpus
 	   ((:overnight overnight) *overnight-sentences*)
@@ -260,6 +257,7 @@
               (sentence-string  sent))))
 
 (defun display-chunks (stream)
+  (declare (special *chunks*))
   (format stream ";;; ---------- Results of chunking:~%")
   (loop for chunk in (reverse *chunks*)
      do (print-segment-and-pending-out-of-segment-words
@@ -343,6 +341,7 @@
                                     (make-pathname :name link-name
                                                    :directory '(:relative :up))
                                     directory)))
+  (declare (special *directory-for-tree-snapshots*))
   "Make a symbolic link to a blessed snapshot directory."
   (assert (directory-p directory) (directory) "Not a directory.")
   (ignore-errors (delete-file link))
@@ -352,6 +351,7 @@
   (truename link))
 
 (defun compare-sent-snapshots (directory &optional (gold "gold/"))
+  (declare (special *directory-for-tree-snapshots*))
   (let* ((*default-pathname-defaults* *directory-for-tree-snapshots*)
          (gold (merge-pathnames gold))
          (cwd (uiop:getcwd)))
