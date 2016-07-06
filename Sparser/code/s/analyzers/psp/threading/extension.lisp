@@ -24,6 +24,7 @@
 
 
 (defun scan-another-segment? (right-boundary)
+  (declare (special *segment-scan/forest-level-transition-protocol*))
   ;; called from the subroutines spawned from segment-finished
   ;; These routines return non-nil if the there is some reason to
   ;; continue scanning segments rather than move to the forest level
