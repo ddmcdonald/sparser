@@ -158,6 +158,13 @@ to make any semantic or form edges that the grammar dictates.
 	    *right-segment-boundary*
 	    label
 	    :form (cond
+                    ((not (member 'ng (chunk-forms *current-chunk*)))
+                     (cond
+                       ((or
+                         (member 'adjg (chunk-forms *current-chunk*))
+                         (member 'vg (chunk-forms *current-chunk*)))
+                        (category-named 'vg))
+                       (t (lsp-break "strange call to sdm-span-segment"))))
 		    ((eq start-pos *left-segment-boundary*)
 		     (category-named 'np))
 		    ((= 1 (number-of-terminals-between 
