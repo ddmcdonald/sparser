@@ -1151,6 +1151,7 @@
    :specializes abstract) ;; to allow "et al." to be easily ignored
 
 (noun "et al." :super bib-reference)
+(noun "et al.," :super bib-reference)
 
 (noun "xref" :super bib-reference)
 
