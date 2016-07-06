@@ -1576,6 +1576,7 @@ NIL
 
 
 (defun test-comments (&optional (end (length *comments*)))
+  (declare (special *comments*))
   (loop for i from 1 to end
      do
        (format t "~%~%__________^^^^^^^^__________~%Processing comment# ~s~%~%" i)
