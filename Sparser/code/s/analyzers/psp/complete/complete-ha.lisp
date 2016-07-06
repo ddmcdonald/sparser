@@ -125,23 +125,28 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
   :complete )
 
 (defparameter *name-realizations* nil ;;(make-hash-table :size 1000)
-  )
+)
+(defparameter *null-name-realizations* nil)
 
 (defun record-generation-information (edge)
   (declare (special *name-realizations* *return-after-doing-forest-level*))
   (when (and *name-realizations*
              *return-after-doing-forest-level*
-             (member (cat-name (edge-form edge)) '(np proper-noun))
-             (value-of 'name (edge-referent edge)))
-    (let* ((realizations
-            (gethash (value-of 'name (edge-referent edge)) *name-realizations*))
+             (member (cat-name (edge-form edge)) '(np proper-noun)))
+    (let* ((ref (edge-referent edge))
+           (name (or (value-of 'name ref)
+                     (cat-name (itype-of ref))))
+           (pname (etypecase name (word (pname name)) (polyword (pname name)) (symbol name)))
+           (realizations (gethash pname *name-realizations*))
            (head-edge (get-np-head-edge edge))
            (head-string (and head-edge
-                             (extract-string-spanned-by-edge head-edge)))
+                             (string-trim
+                              '(#\Space #\Tab #\Newline)
+                              (extract-string-spanned-by-edge head-edge))))
            (count (assoc head-string realizations :test #'equalp)))
       (cond (count (incf (second count)))
             (t (push (list head-string 1)
-                     (gethash (value-of 'name (edge-referent edge)) *name-realizations*)))))))
+                     (gethash pname *name-realizations*)))))))
 
 (defun get-np-head-edge (np-edge)
   (declare (special np-edge))
@@ -157,24 +162,43 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
           (find-np-type-edge (chunk-ev-list np-chunk)))))
            
     (declare (special np-chunk ev head-edge))
-    (when nil ;;(null head-edge)
-      (lsp-break "null head-edge"))
+    (when (null head-edge)
+      (let* ((ref (edge-referent np-edge))
+             (name (or (value-of 'name ref)
+                       (cat-name (itype-of ref))))
+             (pname (etypecase name (word (pname name)) (polyword (pname name)) (symbol name)))
+             (examples (assoc pname *null-name-realizations* :test #'equalp)))
+        ;;(lsp-break "null head edge in get-np-head-edge")
+        (if examples
+            (push (sentence-string *sentence-in-core*)
+                  (cdr examples))
+            (push (list pname (sentence-string *sentence-in-core*))
+                  *null-name-realizations*))))
     head-edge))
 
 
 (defun find-np-type-edge (ev-list)
-  (loop for ev in ev-list
+  (loop for np-span from 1 to 4
      do
-       (loop for i from 0 to (1- (ev-number-of-edges ev))
+       (loop for ev in ev-list
           do
-            (if
-             (and
-              (edge-p (elt (ev-edge-vector ev) i))
-              (member (cat-name (edge-form (elt (ev-edge-vector ev) i)))
-                      '(common-noun common-noun/plural proper-noun)))
-             (return-from find-np-type-edge
-               (elt (ev-edge-vector ev) i))))))
-
+            (loop for i from 0 to (1- (ev-number-of-edges ev))
+               do
+                 (let ((e (elt (ev-edge-vector ev) i)))
+                   (when (edge-p e)
+                     (cond
+                       ((or
+                         (member (cat-name (edge-form e))
+                                 '(common-noun common-noun/plural proper-noun))
+                         (and (<= (pos-token-index (pos-edge-ends-at e))
+                                  (+ np-span (pos-token-index (pos-edge-starts-at e)))) ;; catch "histone 2B"
+                              (member (cat-name (edge-form e)) '(np))))
+                        (return-from find-np-type-edge
+                          (elt (ev-edge-vector ev) i)))
+                       ((eq (edge-rule e) 'KNIT-PARENS-INTO-NEIGHBOR)
+                        (return-from find-np-type-edge
+                          (edge-left-daughter e))))))))))
+ 
 ;;;-------------------
 ;;; subsumption check
 ;;;-------------------
