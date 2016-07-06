@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "slash-patterns"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  July 2015
+;;;  version:  July 2016
 
 ;; Broken out from patter-gophers 7/19/15
 
@@ -44,6 +44,11 @@
 
    ((equal pattern '(:full :forward-slash :full))
     (resolve-hyphen-between-two-terms pattern words edges pos-before pos-after))
+
+   ((equal pattern '(:full :forward-slash :single-lower)) ;; "BALB/c"
+    ;; probably a variant of a protein, but that requires the 'full' portion
+    ;; to be recognized as a protein ///pick up again when doing morph.decomp.
+    (reify-ns-name-and-make-edge words pos-before pos-after))
 
    (*work-on-ns-patterns* 
     (push-debug `(,pattern ,pos-before ,pos-after))
