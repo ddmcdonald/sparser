@@ -17,7 +17,7 @@
 ;;;-------------------------------------
 
 (defun initialize-edge-vector (ev)
-  ;; called from Bump-&-add-word
+  ;; called from Bump-&-store-word
   ;; The position and direction are immutable. Everything else
   ;; get's zero'd
 
