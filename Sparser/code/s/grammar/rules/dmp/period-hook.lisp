@@ -161,7 +161,7 @@
          (pre-caps (pos-capitalization position-back-one))
          (post-caps (pos-capitalization pos-after))
          (next-pos (chart-position-after pos-after)))
-    (tr :eos-lookahead word-just-before-period word-just-after-period post-caps)
+    (tr :eos-lookahead-start word-just-before-period word-just-after-period post-caps)
 
     ;; 1. Look at the word just before the period
     ;; "Dr."

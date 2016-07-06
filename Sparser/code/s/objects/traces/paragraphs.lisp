@@ -77,7 +77,7 @@
 
 
 
-(deftrace :eos-lookahead (word-just-before word-just-after caps)
+(deftrace :eos-lookahead-start (word-just-before word-just-after caps)
   (when *trace-period-eos-lookahead*
     (trace-msg "[eos] The word just before the period is ~s~
               ~%      The word after is ~s and its capitalization is ~a"
