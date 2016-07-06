@@ -166,7 +166,7 @@ previous records of treetop-counts.
 (defun save-treetop-snapshots (&optional
 				 (save-info nil)
 				 (corpora *default-snapshot-corpora*))
-  (declare (ignore save-info))
+  (declare (ignore save-info *directory-for-tree-snapshots*))
   (loop for c in corpora
      do (terpri)
        (print c)
@@ -236,6 +236,7 @@ previous records of treetop-counts.
                                   &optional
 				    (file   (merge-pathnames "corpora-snapshots.lisp"
 							     *directory-for-tree-snapshots*)))
+  (declare (special *directory-for-tree-snapshots*))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
@@ -243,6 +244,7 @@ previous records of treetop-counts.
 
 (defmethod save-treetop-snapshot ((corpus sentence-corpus)
                                   &optional (file *file-for-treetop-snapshots*))
+  (declare (special *file-for-treetop-snapshots*))
   (let ((snapshot (make-treetop-snapshot corpus)))
     (with-open-file (stream file
                      :direction :output
@@ -387,14 +389,16 @@ previous records of treetop-counts.
 
 
 (defmethod save-treetop-semantic-snapshot ((name symbol) 
-                                  &optional (file *file-for-treetop-semantic-snapshots*))
+                                           &optional (file *file-for-treetop-semantic-snapshots*))
+  (declare (special *file-for-treetop-semantic-snapshots*))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
     (save-treetop-semantic-snapshot corpus file)))
 
 (defmethod save-treetop-semantic-snapshot ((corpus sentence-corpus)
-                                  &optional (file *file-for-treetop-semantic-snapshots*))
+                                           &optional (file *file-for-treetop-semantic-snapshots*))
+  (declare (special *file-for-treetop-semantic-snapshots*))
   (let ((snapshot (make-treetop-semantic-snapshot corpus)))
     (with-open-file (stream file
                      :direction :output
@@ -417,6 +421,7 @@ previous records of treetop-counts.
         
 ;;; RUSTY added these utility functions
 (defun all-corpus-sentences ()
+  (declare (special *sentence-corpus-table*))
   (let ((scvars nil)) 
     (maphash #'(lambda(key val) 
                  (push (list key (corpus-bound-variable val)) scvars)) 
