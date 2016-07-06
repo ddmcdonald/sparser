@@ -338,6 +338,10 @@
 ;;; 2d pass -- no-space patterns
 ;;;------------------------------
 
+(defparameter *break-on-nospace-pathology* nil
+  "Gates breaks that involve suspected failures to clean positions
+   when they're recycled.")
+
 ;; (trace-terminals-sweep)
 (defun pattern-sweep (sentence)
   "Scans the sentence treetop by treetop in a loop.
@@ -380,6 +384,17 @@
 
       (if (no-space-before-word? position-after)
         (then
+          (cond
+            ((eq position-after position-before)
+             (when *break-on-nospace-pathology*
+               (push-debug `(treetop position-after))
+               (lsp-break "Pattern-sweep: Going to loop on position ~a"
+                          position-before))
+             ;; we could (return) and drop out of this loop, but then
+             ;; the same thing will hang up the parenthesis sweep,
+             ;; so best to fail the whole sentence.
+             (error "Pathology in edge-vectors would cause loops"))
+            (t
           (tr :no-space-at position-after)
           ;; "no whitespace at P, Initating scan-pattern check"
           (let ((where-pattern-scan-ended
@@ -399,7 +414,7 @@
                       (tr :successful-uniform-ns-reached where-uniform-ns-ended)
                       (setq position-after where-uniform-ns-ended))
                     (else
-                      (tr :uniform-ns-pattern-failed))))))))
+                      (tr :uniform-ns-pattern-failed))))))))))
         (else
           (tr :space-before position-after)
           ;; (look-for-DA-pattern treetop)

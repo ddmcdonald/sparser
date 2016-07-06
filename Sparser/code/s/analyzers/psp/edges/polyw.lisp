@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "polyw"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:   1.0 September 1992
+;;;  Version:   July 2016
 
 ;; 1.0 (9/7/92 v2.3) flushed out of date field references
 
@@ -24,10 +24,18 @@
   ;; actions, which makes it very hard to pass down the rule to the
   ;; process that builds and links in the polyword.
 
+  (declare (special word::|et al.| *break-on-nospace-pathology*))
+
+  (when *break-on-nospace-pathology*
+    (when (eq (pw-symbol polyword) 'word::|et al.|)
+      (push-debug `(,starting-vector ,ending-vector ,polyword))
+      (lsp-break "Reached et al.")))
+
   (let ((edge (next-edge-from-resource)))
     (knit-edge-into-positions edge
                               starting-vector
                               ending-vector)
+
     (setf (edge-category  edge) polyword)
     (setf (edge-starts-at edge) starting-vector)
     (setf (edge-ends-at   edge) ending-vector)
@@ -38,8 +46,7 @@
     (setf (edge-referent edge) nil)
 
     (setf (edge-left-daughter edge) polyword)
-    (setf (edge-left-daughter edge) polyword)
-    (setf (edge-right-daughter edge) :SINGLE-TERM)
+    (setf (edge-right-daughter edge) :single-term)
 
     (complete edge)
     
