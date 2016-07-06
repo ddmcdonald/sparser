@@ -1369,6 +1369,31 @@
       
       )))
 
+
+(defparameter *subcat-use* (make-hash-table :size 2000))
+
+(defun record-subcat-use (l category variable)
+  (let* ((label (pname l))
+         (c-name (cat-name category))
+         (v-name (var-name variable))
+         (var-alist (or
+                     (assoc v-name (gethash c-name *subcat-use*))
+                     (car (push (list v-name (list label 0))
+                                (gethash c-name *subcat-use*)))))
+         (l-val (assoc label (cdr var-alist))))
+    (if l-val
+        (incf (second l-val))
+        (nconc var-alist (list (list label 1))))))
+
+(defun show-subcat-use ()
+  (let ((hh (hal *subcat-use*)))
+    (loop for h in hh
+       do
+         (setf (cdr h)
+               (sort (cdr h) #'string< :key #'car)))
+    (np (sort hh #'string< :key #'car))))
+
+
 (defun find-subcat-var (item label head)
   (declare (special item label head))
   (let ((category (itype-of head))
@@ -1382,20 +1407,18 @@
         (if (and *ambiguous-variables* (not *subcat-test*))
             (let (pats sover-ridden)
               (loop for pat in subcat-patterns
-                 as scr = (subcat-restriction pat)
                  do
                    (when (eq label (subcat-label pat))
-                     (when (satisfies-subcat-restriction? item scr)
+                     (when (satisfies-subcat-restriction? item pat)
                        (push pat pats))))
               (setq over-ridden (check-overridden-vars pats))
               (setq pats (loop for p in pats unless (member p over-ridden) collect p))
               (setq variable (variable-from-pats item head label pats subcat-patterns)))
             (dolist (entry subcat-patterns)
-              (let ((scr (subcat-restriction entry)))
                 (when (eq label (subcat-label entry))
-                  (when (satisfies-subcat-restriction? item scr)
+                  (when (satisfies-subcat-restriction? item entry)
                     (setq variable (subcat-variable entry))
-                    (return))))))
+                    (return)))))
         (when (and *ambiguous-variables* (consp variable))
           (setq variable
                 (if over-ridden
@@ -1408,6 +1431,7 @@
                            (announce-over-ridden-ambiguities item head label variable)
                            (define-disjunctive-lambda-variable variable category)))
                     (define-disjunctive-lambda-variable variable category))))
+        (when variable (record-subcat-use *label* category variable))
         variable ))))
 
 (defun announce-over-ridden-ambiguities (item head label variable)
@@ -1434,11 +1458,10 @@
     (when *trivial-subcat-test* 
       (unless variable
         (dolist (entry subcat-patterns)
-          (let ((scr (subcat-restriction entry)))
             (when (eq label (subcat-label entry))
-              (when (satisfies-subcat-restriction? item scr)
+              (when (satisfies-subcat-restriction? item entry)
                 (setq variable (subcat-variable entry))
-                (return)))))))
+                (return))))))
     variable))
 
 
@@ -1467,13 +1490,20 @@
                do (push p over-ridden)))
        over-ridden))))
 
-(defun satisfies-subcat-restriction? (item restriction)
+(defparameter *biological-tests* nil)
+
+(defun satisfies-subcat-restriction? (item pat-or-v/r)
   (declare (special category::pronoun/first/plural category::ordinal))
-  (when (and *trivial-subcat-test*
-             (note-failed-tests item restriction))
-    (return-from satisfies-subcat-restriction? t))
-    
-  (let ((override-category (override-label (itype-of item))))
+  (let ((restriction
+         (if (subcat-pattern-p pat-or-v/r)
+             (subcat-restriction pat-or-v/r)
+             pat-or-v/r))
+        (source (when (subcat-pattern-p pat-or-v/r) (subcat-source pat-or-v/r)))
+        (var (when (subcat-pattern-p pat-or-v/r) (subcat-variable pat-or-v/r)))
+        (override-category (override-label (itype-of item))))
+    (when (and *trivial-subcat-test*
+               (note-failed-tests item restriction))
+      (return-from satisfies-subcat-restriction? t))
     (flet ((subcat-itypep (item category)
              ;; For protein-families and such that are re-written
              ;; as a more general catgory (protein). There's no
@@ -1483,33 +1513,39 @@
              (cond
                ((itypep item category)) ;; handles conjunctions
                (t (eq category override-category)))))
-      (cond
-        ((itypep item '(:or pronoun/inanimate this that these those))
-         t)
-        ((and
-          (itypep item 'number)
-          (not (itypep item 'ordinal)))
-         t)
-        ((itypep item 'pronoun/first/plural)
-         ;; BAD -- should add check for agentive verbs
-         t)
-        ((consp restriction)
-         (cond
-           ((eq (car restriction) :or)
-            (loop for type in (cdr restriction)
-               thereis (subcat-itypep item type)))
-           ((eq (car restriction) :primitive)
-            ;; this is usually meant for NAME (a WORD) or
-            ;; other special cases
-            nil)
-           (t (error "subcat-restriction on is a cons but it ~
-  does not start with :or~%  ~a"
-                     restriction))))
-        ((category-p restriction)
-         (subcat-itypep item restriction))
-        ((symbolp restriction) nil) ;; this is the case for :prep subcat-patterns
-        (t (error "Unexpected type of subcat restriction: ~a"
-                  restriction))))))
+      (or
+       (itypep item '(:or pronoun/inanimate this that these those))
+       (and
+        (itypep item 'number)
+        (not (itypep item 'ordinal)))
+       (itypep item 'pronoun/first/plural) ;; BAD -- should add check for agentive verbs
+       (cond
+         ((and (consp restriction)
+               ;; this is usually meant for NAME (a WORD) or
+               ;; other special cases
+               (eq (car restriction) :primitive))
+          nil)
+         ((and (consp restriction)
+               ;; this is usually meant for NAME (a WORD) or
+               ;; other special cases
+               (not (eq (car restriction) :primitive)))
+          (if (eq (car restriction) :or)
+              (loop for type in (cdr restriction)
+                 thereis (subcat-itypep item type))
+              (error "subcat-restriction on is a cons but it does not start with :or~%  ~a"
+                     restriction)))
+         ((category-p restriction)
+          (when
+              (subcat-itypep item restriction)
+            (if (and *biological-tests*
+                     (eq (cat-name restriction) 'biological))
+                (pushnew (list source var (itype-of item))
+                         *biological-tests*
+                         :test #'equal))
+            t))
+         ((symbolp restriction) nil) ;; this is the case for :prep subcat-patterns
+         (t (error "Unexpected type of subcat restriction: ~a"
+                   restriction)))))))
 
 (defun note-failed-tests (item restriction)
   ;; return non-null when tests failed
