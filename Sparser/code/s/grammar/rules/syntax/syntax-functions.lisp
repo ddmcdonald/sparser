@@ -1439,7 +1439,7 @@
                 (when (eq label (subcat-label entry))
                   (when (satisfies-subcat-restriction? item entry)
                     (setq variable (subcat-variable entry))
-                    (return))))))
+                    (return)))))
         
         (when (and *ambiguous-variables*
                    (consp variable))
@@ -1459,7 +1459,7 @@
                     ;; else
                     (define-disjunctive-lambda-variable variable category))))
         
-        variable )))
+        variable ))))
 
 
 (defun announce-over-ridden-ambiguities (item head label variable)
