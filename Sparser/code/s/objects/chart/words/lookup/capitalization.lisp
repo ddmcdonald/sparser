@@ -163,6 +163,13 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (otherwise
                 (break "For ~s: new case for single capitalized letter"
                        (word-pname lc-word)))))
+
+            (:lower-case ;; CRAF from craf in Dec#2
+             (case actual-state
+               (:all-caps (return word))
+               (otherwise
+                (break "For ~s: new case for :lowercase ~a"
+                       (word-pname lc-word) actual-state))))
             
             (otherwise
              (error "For ~s: New variant-state of capitalization: ~a"
