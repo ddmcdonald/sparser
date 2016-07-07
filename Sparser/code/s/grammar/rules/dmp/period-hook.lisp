@@ -43,6 +43,8 @@
 
 (defparameter *break-on-next-sentence* nil
   "Flag to cut in when we want to see something")
+(defparameter *break-on-next-sentence-status* nil
+  "For debugging the state of the sentence's status")
 
 ;; (trace-paragraphs)
 
@@ -75,17 +77,20 @@
         (push-debug `(,s))
         (break "sentence: ~a" s))
 
+      (setq *position-before-last-period* position-before)
+      
       (cond
        ;; First dispatch is by 'mode' -- either we going sentence
        ;; by sentence at the lower levels (sweeps) or we're scanning
        ;; phrases incrementally and then going to the forest level 
-       ;; at the sentence boundary (new-forest-level
+       ;; at the sentence boundary (new-forest-protocol?)
        ((sucessive-sweeps?)
-        (when nil
-          (format t "~&======= at p~a the status of~
-                     ~%    ~a is ~a~%"
-                  (pos-token-index position-before)
-                  s (parsing-status s)))
+        (when *break-on-next-sentence-status*
+          (push-debug `(,s))
+          (lsp-break "~&======= at p~a the status of~
+                      ~%    ~a is ~a~%"
+                     (pos-token-index position-before)
+                     s (parsing-status s)))
         (case (parsing-status s)
           ;; this is the sentence that we're finishing
           (:initial
@@ -111,8 +116,7 @@
         ;; goes with the incremental protocol when waiting
         ;; for an entire sentence to be chunked before
         ;; rolling any of them up.
-        (new-forest-driver position-before)))
-      (setq *position-before-last-period* position-before))
+        (new-forest-driver position-before))))
     
     (else
       (tr :period-at-p-not-eos position-after)
@@ -134,7 +138,7 @@
   ;; If a sentence does start with, e.g. "p52" then we'll
   ;; not see it without a much more careful management of
   ;; non-final periods that this permits. 
-  (unless (has-been-status? :scanned position-after)
+  (unless (pos-terminal position-after)
     (scan-next-position))
   (or (eq (pos-terminal position-after) *end-of-source*)
       (memq (pos-capitalization position-after)

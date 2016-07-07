@@ -108,12 +108,14 @@
                              (chart-position-after position-before))))
     (when where-pw-ended
       (tr :scanned-pw-ended-at word where-pw-ended)
-      (setq position-before where-pw-ended)
+      ;;(setq position-before where-pw-ended)
+      (setq position-before where-pw-ended
+            position-after (chart-position-after where-pw-ended))
       (unless (includes-state where-pw-ended :scanned)
         ;; PW can complete without thinking about the
         ;; word that follows it.
         (scan-next-position))
-      (setq word (pos-terminal where-pw-ended)))
+      (setq word (pos-terminal position-before)))
 
     (unless (includes-state position-after :scanned)
       (scan-next-position))
@@ -127,11 +129,15 @@
       (when where-fsa-ended
         (tr :word-fsa-ended-at word where-fsa-ended)
         (setq position-after where-fsa-ended
+              ;;/// compare to new values used with PW
               position-before (chart-position-before where-fsa-ended))
         (unless (includes-state where-fsa-ended :scanned)
           (scan-next-position))
         (setq word (pos-terminal where-fsa-ended))))
 
+    (when (eq position-before position-after)
+      (error "before and after are identically ~a" position-after))
+    
     (tr :scan-completing word position-before position-after)
     (complete-word/hugin word position-before position-after)
     ;; (setq *trace-completion-hook* t)
