@@ -325,11 +325,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
     (record-local-cases-rdata rr local-cases)
     ;; This is what the rule-creators are working from. 
     (setf (cat-realization category)
-          `(:schema (,head-word
-                     ,etf
-                     ,mapping
-                     ,local-cases)
-                    :rules ,rules))
+          `(:schema (,head-word ,etf ,mapping ,local-cases)
+            :rules ,rules))
     rr))
 
 (defun fom-realization-data (category)
@@ -865,56 +862,3 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
             (setq does-appear? t)))))
     does-appear?))
 
-
-
-;;;--------------------------------------
-;;; decoding category realization fields
-;;;--------------------------------------
-;; This code was originally in tsro gophers
-
-(defun analyze-realization-data (category)
-  ;; called from standard-tsro-via-category and from various
-  ;; definition routines that want their words handled by
-  ;; the standard mechanisms
-  (when (cat-realization category)
-    ;; // the organization of this plist is not particularly coherent
-    (let ((realization-data (cat-realization category))
-          schema  etf  word-pattern)
-      (do ((item (first realization-data) (first rest))
-           (next-item (second realization-data) (second rest))
-           (rest (cdr realization-data) (cdr rest)))
-          ((null item)) ;; there can be multiple schema
-        ;; first case that was written
-        (when (and (consp item)
-                   (eq (car item) :schema))
-          (setq schema (second item)))
-
-        ;; Ordinal is like this
-        (when (eq item :schema)
-          (setq schema next-item))
-
-        (when schema
-          (dolist (term schema)
-            (when (typep term 'exploded-tree-family)
-              (push term etf))
-            (when (and (consp term)
-                       (keywordp (first term))
-                       (defined-type-of-single-word (first term)))
-              (setq word-pattern term)))
-          (setq schema nil)))
-
-        (values etf word-pattern))))
-
-(defun find-word-realization-within-category-realization (category)
-  (let ((realization (mumble::realize category)))
-    (when realization
-      (dolist (element realization nil)
-        (unless (eq element :rules)
-          (when (eq (car element) :schema)
-            (let* ((schema (second element))
-                   (first-term (first schema))) ;; too arbitrary !!
-              (unless (eq first-term :no-head-word)
-                (when (keywordp (car first-term))
-                  (return-from find-word-realization-within-category-realization
-                    (and (sparser::word-p (cdr first-term))
-                         (cdr first-term))))))))))))
