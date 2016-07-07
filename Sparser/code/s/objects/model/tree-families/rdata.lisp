@@ -263,27 +263,149 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
         (values head-word etf mapping local-cases rules)))))
 
 
+;;;----------------------------
+;;; Recording realization data
+;;;----------------------------
+
 (defclass realization-data (named-object)
-  ((etf
+  ((category :initarg :category :accessor rdata-for
+    :documentation "Provides backpointer and basis for print form")
+   (etf :initform nil :initarg :etf :accessor rdata-etf
     :documentation "Points to the etf if one was used")
-   (mapping
+   (mapping :initform nil :initarg :map :accessor rdata-mapping
     :documentation "A completely dereferenced mapping from
-      an individual as a instance of a category to the ")
-   )
+      an individual as a instance of a category to the variables 
+      used in that case.")
+   (locals :initform nil :accessor rdata-local-rules
+    :documentation "The rules that are written out in direct form
+      to cover cases not incorporated in the ETF of the realization.")
+   (subcats :initform nil :accessor rdata-subcat-frames
+    :documentation "List of all the known subcategorization patterns")
+   (head-word :initform nil :initarg :head :accessor rdata-head
+    :documentation "The word specified in the realization, if any.")
+   (irregulars :initform nil :accessor rdata-head-irregulars
+    :documentation "plist of marked irregular forms")
+   (head-pos :initform nil :accessor rdata-head-pos
+    :documentation "If there is a head word this is its part of speech"))
   (:documentation "Compare to realization-scheme class in rules/
  tree-families/families.lisp or realization-node in objects/model/
  lattice-points/structure.lisp. Goal is to replace the haphazard
  distribution of category or individual level realization information
- as lists with one can be directly accessed."))
+ as lists with a new one that is consistent and can be directly accessed."))
+
+(defmethod print-object ((r realization-data) stream)
+  (print-unreadable-object (r stream)
+    (format stream "rdata for ~a" (cat-name (rdata-for r)))))
+
+(defgeneric get-rdata (item)
+  (:documentation "Retrieve the record of realization data from
+    the item, usually a category.")
+  (:method ((name symbol))
+    (get-rdata (category-named name :error-if-nil)))
+  (:method ((c category))
+    (get-tag :rdata c)))
+
+(defgeneric store-rdata (item rr)
+  (:documentation "Save the realization data record (rr) on the item,
+     which is usually a category. Makes provisions for a category
+     having several different rdata")
+  (:method ((name symbol) rr)
+    (store-rdata (category-named name :error-if-nil) rr))
+  (:method ((c category) rr)
+    "Look for an existing record. Decide whether we're updating
+     an established one or adding a new one. If so change the type"
+    (setf (get-tag :rdata c) rr)))
 
 (defun record-realization-data (category head-word etf mapping rules local-cases)
-  (setf (cat-realization category)
-              `(:schema (,head-word
-                         ,etf
-                         ,mapping
-                         ,local-cases)
-                :rules ,rules)))
+  "Called by dereference-and-store?-rdata-schema to stash the rdata
+   for later use in making rules, e.g. by apply-realization-schema-to-individual
+   and its variants in driver.lisp"
+  (let ((rr (make-realization-data-record category :etf etf :map mapping)))
+    (record-rdata-head rr head-word)
+    (record-local-cases-rdata rr local-cases)
+    ;; This is what the rule-creators are working from. 
+    (setf (cat-realization category)
+          `(:schema (,head-word
+                     ,etf
+                     ,mapping
+                     ,local-cases)
+                    :rules ,rules))
+    rr))
 
+(defun fom-realization-data (category)
+  (assert (category-p category))
+  (or (get-rdata category)
+      (make-realization-data-record category)))
+
+(defun make-realization-data-record (category &key etf map)
+  (let ((rr (make-instance 'realization-data
+              :category category :etf etf :map map)))
+    (store-rdata category rr)
+    rr))
+
+(defun record-rdata-head (rr word)
+  (typecase word
+    (word
+     (setf (rdata-head rr) word))
+    (polyword
+     (setf (rdata-head rr) word))
+    (cons
+     ;; (:adjective . #<variable name>)
+     (cond
+       ((and (keywordp (car word)) (lambda-variable-p (cdr word)))
+        (setf (rdata-head rr) (cdr word))
+        (setf (rdata-head-pos rr) (car word)))
+       ((and (keywordp (car word))
+             (or (word-p (cdr word))
+                 (polyword-p (cdr word))))
+        (setf (rdata-head rr) (cdr word))
+        (setf (rdata-head-pos rr) (car word)))
+       ((and (keywordp (car word))
+             (word-p (cadr word))
+             (some #'keywordp (cddr word)))
+        (setf (rdata-head rr) (cadr word))
+        (setf (rdata-head-pos rr) (car word))
+        (setf (rdata-head-irregulars rr) (cddr word)))
+       ((and (listp (cdr word))
+             (> (length word) 2)
+             (every #'(lambda (w) (or (word-p w) (polyword-p w)))
+                    word))
+        (setf (rdata-head rr) (cadr word)))
+       (t
+        (push-debug `(,word))
+        (lsp-break "New cons head-word case: ~a" word))))
+    (keyword
+     (case word
+       (:no-head-word)
+       (otherwise
+        (push-debug `(,word))
+        (lsp-break "new keyword head case: ~a" word))))
+    (otherwise
+     (push-debug `(,word))
+     (lsp-break "new type of head word: ~a~% ~a"
+                (type-of word) word))))
+
+
+(defun record-rdata-irregulars (rr irregulars-plist)
+  (setf (rdata-head-irregulars rr) irregulars-plist))
+
+(defgeneric add-subcats-to-rdata (category)
+  (:documentation "Once its probably the case that all the subcat data 
+    for a given realization has been accumulated, copy it over to the
+    realization-data-record of the category, refactoring as needed.")
+  (:method ((c category))
+    (let ((rr (fom-realization-data c))
+          (sf (get-subcategorization c)))
+      (setf (rdata-subcat-frames rr) sf))))
+
+(defun record-local-cases-rdata (rr local-cases)
+  (setf (rdata-local-rules rr) local-cases))
+      
+
+
+;;;-------------
+;;; Data checks
+;;;-------------
 
 ;;--- Check for legal keywords in realization field of a category
 
@@ -754,9 +876,9 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
   ;; called from standard-tsro-via-category and from various
   ;; definition routines that want their words handled by
   ;; the standard mechanisms
-  (when (sparser::cat-realization category)
+  (when (cat-realization category)
     ;; // the organization of this plist is not particularly coherent
-    (let ((realization-data (sparser::cat-realization category))
+    (let ((realization-data (cat-realization category))
           schema  etf  word-pattern)
       (do ((item (first realization-data) (first rest))
            (next-item (second realization-data) (second rest))
@@ -773,12 +895,11 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
         (when schema
           (dolist (term schema)
-            (when (typep term 'sparser::exploded-tree-family)
+            (when (typep term 'exploded-tree-family)
               (push term etf))
             (when (and (consp term)
                        (keywordp (first term))
-                       (sparser::defined-type-of-single-word 
-                         (first term)))
+                       (defined-type-of-single-word (first term)))
               (setq word-pattern term)))
           (setq schema nil)))
 

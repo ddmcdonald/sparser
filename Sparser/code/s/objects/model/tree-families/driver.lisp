@@ -78,9 +78,11 @@
 (in-package :sparser)
 
 (defparameter *dont-check-forms-for-etf*
-  '(ITEM+IDIOMATIC-HEAD ;; head is idiomaticmatic, like % or percent, or old as in "5 years old"
-                        ;; can't predict the form category of the head, so just trust the rule writer
-    ))
+  '(ITEM+IDIOMATIC-HEAD)
+  "If thw head is idiomaticmatic, like % or percent, 
+   or old as in '5 years old' you can't predict the 
+   form category of the head, so just trust the rule writer")
+    
 
 (defun dont-check-rule-form-for-etf-named (etf-name)
   ;; The given ETF is to be trusted not to be applied in inappropriate syntactic
@@ -105,26 +107,19 @@
   ;; colateral damage from the timing of multiple rdata sets.
   (make-rules-for-rdata
      category head-word exploded-tf mapping local-cases)
-  
   #+ignore  ;; original
   (if (cat-realization category)
     (revising-rules-from-rdata
      category head-word exploded-tf mapping local-cases)
     (make-rules-for-rdata
-     category head-word exploded-tf mapping local-cases))
-  )
+     category head-word exploded-tf mapping local-cases)) )
 
-
-;; No longer used 7/23/98
-(defun revising-rules-from-rdata
+(defun revising-rules-from-rdata ;; No longer used 7/23/98. See above
        (category head-word exploded-tf mapping local-cases)
-
   ;; Any re-evaluation of a category's definition may involve
   ;; a revision of the rules that are implied by its rdata.
   ;; This checks that any rules no longer implied are deleted.
-
-  (let* ((rdata (cat-realization category))
-         (old-rules (cadr (member :rules rdata)))
+  (let* ((old-rules (get-rules category))
          (new-rules (make-rules-for-rdata
                      category head-word exploded-tf mapping local-cases)))
     (dolist (cfr old-rules)

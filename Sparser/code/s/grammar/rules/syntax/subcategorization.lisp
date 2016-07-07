@@ -225,7 +225,8 @@
   (let ((frame (or (get-subcategorization label)
                    (make-subcategorization label :form form))))
     (declare (special frame))
-    (setf (subcat-patterns frame) (update-subcat-v/rs label (subcat-patterns frame)))
+    (setf (subcat-patterns frame)
+          (update-subcat-v/rs label (subcat-patterns frame)))
 
     (when category
       (when (or (member :s slots :test #'eq)
@@ -234,11 +235,12 @@
 	      (subst :subject :s
 		     (subst :object :o (copy-list slots)))))
       (setq slots (reverse slots))
-      ;;(lsp-break "1")
+
       (let ((pats-to-remove (append (when (member :subject slots) '(:subject))
 			       (when (member :object slots) '(:object)))))
 	(when pats-to-remove
 	  (remove-patterns pats-to-remove frame)))
+      
       (loop for (var-name pname) on slots by #'cddr
 	 as label = (case pname
 		      ((:subject :object 
@@ -251,25 +253,22 @@
 		       (resolve (string-downcase pname))))
 	 as var = (find-variable-for-category var-name category)
 	 as v/r = (var-value-restriction var)
-	 do 
-	   (assign-subcategorization category label v/r var)
-	   )
+	 do (assign-subcategorization category label v/r var))
       
       (setf (subcat-patterns frame)
-            (remove-duplicates (subcat-patterns frame) :test #'equal))
-      ;;(lsp-break "2")
-      )
+            (remove-duplicates (subcat-patterns frame) :test #'equal)))
+
     frame))
 
 (defun remove-patterns (labels frame)
   (setf (subcat-patterns frame)
-	(loop for sc in (subcat-patterns frame) unless (member (subcat-label sc) labels :test #'eq)
+	(loop for sc in (subcat-patterns frame)
+           unless (member (subcat-label sc) labels :test #'eq)
 	   collect sc)))
 
 (defun update-subcat-v/rs (category subcats)
   (declare (special category subcats))
-  (if
-   (not (category-p category))
+  (if (not (category-p category))
    subcats
    (loop for pattern in subcats
       collect
@@ -281,10 +280,9 @@
 	       (local-v/r (var-value-restriction local-var)))
 	  (declare (special *pat* label v/r var local-var local-v/r))
 	       
-	  (if
-	   (eq var local-var)
-	   pattern ;; nothing has changed -- no RESTRICTION on var
-	   (make-subcat-pattern label local-v/r local-var category))))))
+	  (if (eq var local-var)
+	    pattern ;; nothing has changed -- no RESTRICTION on var
+            (make-subcat-pattern label local-v/r local-var category))))))
 
 (defun assign-subcat/expr (word form category parameter-plist)
   "Form to find or make the appropriate subcategorization frame
@@ -444,8 +442,7 @@
   (known-subcategorization? (edge-category e)))
 
 (defmethod known-subcategorization? ((i individual))
-  (let
-      ((sc (get-ref-subcategorization i)));; (known-subcategorization? (itype-of i))
+  (let ((sc (get-ref-subcategorization i)));; (known-subcategorization? (itype-of i))
     (when sc (subcat-patterns sc))))
 
 (defmethod known-subcategorization? ((c category))

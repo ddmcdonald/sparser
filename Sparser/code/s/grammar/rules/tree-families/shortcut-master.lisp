@@ -355,6 +355,8 @@
                             :args substitution-map
                             :word-keys word-map))
 
+    (add-subcats-to-rdata category)
+
     (when mumble
       (when *build-mumble-equivalents*
         (decode-mumble-spec category mumble)))
