@@ -1370,7 +1370,8 @@
       )))
 
 
-(defparameter *subcat-use* (make-hash-table :size 2000))
+(defparameter *subcat-use* nil ;; (make-hash-table :size 2000)
+  )
 
 (defun record-subcat-use (l category variable)
   (let* ((label (pname l))
@@ -1431,7 +1432,8 @@
                            (announce-over-ridden-ambiguities item head label variable)
                            (define-disjunctive-lambda-variable variable category)))
                     (define-disjunctive-lambda-variable variable category))))
-        (when variable (record-subcat-use *label* category variable))
+        (when (and *subcat-use* variable)
+          (record-subcat-use *label* category variable))
         variable ))))
 
 (defun announce-over-ridden-ambiguities (item head label variable)
