@@ -164,14 +164,10 @@
           ;; sentence.
           ;;/// that deserves an independent check
           (or
-           (let*
-               ((pair (list left-neighbor prep-edge))
-                (rule (rule-for-edge-pair pair)))
-             (declare (special pair rule))
+           (let* ((pair (list left-neighbor prep-edge))
+                  (rule (rule-for-edge-pair pair)))
              ;;(break "premodifier for prep ~a" preposition)
-             (when
-                 rule
-              
+             (when rule
                (execute-one-one-rule
                 rule
                 left-neighbor
