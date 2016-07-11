@@ -273,6 +273,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
                 (member (edge-rule edge)
                         '(:default-edge-over-paired-punctuation
                           :conjunction/identical-adjacent-labels
+                          :stub-for-parse-number-sequence
                           ;; happened once, in ""substrate like" and "regulatory" "
                           :appostrophe-fsa)))
       (push-debug `(,edge))
