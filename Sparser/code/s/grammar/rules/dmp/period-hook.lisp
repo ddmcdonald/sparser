@@ -24,7 +24,7 @@
 (in-package :sparser)
 
 
-;;--- state variable
+;;--- state variables
 
 (defvar *position-before-last-period* nil
   "Records what its name suggests. Updated with each call to
@@ -37,14 +37,14 @@
    ongoing sentence is finished before it updates this state variable.
    Read by could-be-the-start-of-a-sentence,")
 
-
-
-;;--- Basic hook function. Invoked by completion of a period
-
 (defparameter *break-on-next-sentence* nil
   "Flag to cut in when we want to see something")
 (defparameter *break-on-next-sentence-status* nil
   "For debugging the state of the sentence's status")
+
+
+
+;;--- Basic hook function. Invoked by completion of a period
 
 ;; (trace-paragraphs)
 
@@ -145,12 +145,12 @@
             '(:initial-letter-capitalized
               :single-capitalized-letter
               :all-caps))
-      (lookahead-for-period-as-eos position-after)))
+      (period-marks-sentence-end?/look-deeper position-after)))
 
 
 ;; (trace-eos-lookahead)
 
-(defun lookahead-for-period-as-eos (pos-after)
+(defun period-marks-sentence-end?/look-deeper (pos-after)
   "Subroutine of period-marks-sentence-end?.
   We have ruled out this position holding the eos or holding a word
   that's capitalized. Look for possibly domain-specific conditions
@@ -168,17 +168,15 @@
     (tr :eos-lookahead-start word-just-before-period word-just-after-period post-caps)
 
     ;; 1. Look at the word just before the period
-    ;; "Dr."
-    ;; In a load that included people, these would be defined
-    ;; in dossiers/person-prefixes.lisp
-    ;;(memq word-just-before-period *person-prefixes*)
+    (when (implicit-abbreviation? word-just-before-period)
+      (return-from period-marks-sentence-end?/look-deeper nil))
 
     ;; The period could be a decimal point, which would
     ;; mean there were digits to either side. 
     (when (and (eq pre-caps :digits) (eq post-caps :digits))
-      (if (no-space-before-word? pos-after)
-        (return-from lookahead-for-period-as-eos nil)
-        (return-from lookahead-for-period-as-eos t))) ;; ".. Ser259. 14-3-3 .."
+      (if (no-space-before-word? pos-after) ;; ".. Ser259. 14-3-3 .."
+        (return-from period-marks-sentence-end?/look-deeper nil)
+        (return-from period-marks-sentence-end?/look-deeper t)))
 
     ;; 2. Look at the word just after the period
     ;; We know that the word after the period is neither
@@ -192,10 +190,10 @@
       (cond
         ((eq post-caps :lower-case)
          (tr :eos-following-lowercase)
-         (return-from lookahead-for-period-as-eos nil))
+         (return-from period-marks-sentence-end?/look-deeper nil))
         (t
          (tr :eos-mult-char-next-word)
-         (return-from lookahead-for-period-as-eos t))))
+         (return-from period-marks-sentence-end?/look-deeper t))))
     
     ;; If it's one character long, then it must be touching
     ;; the following word, and we check for periods (and what else?)
@@ -207,14 +205,14 @@
 
       (unless (no-space-before-word? next-pos)
         (tr :eos-separated-by-space)
-        (return-from lookahead-for-period-as-eos nil))
+        (return-from period-marks-sentence-end?/look-deeper nil))
 
       (when (eq next-word *end-of-source*)
         (tr :eos-reached-eos)
-        (return-from lookahead-for-period-as-eos nil))
+        (return-from period-marks-sentence-end?/look-deeper nil))
       (when (eq next-word *the-punctuation-period*)
         (tr :eos-followed-by-a-period)
-        (return-from lookahead-for-period-as-eos nil))
+        (return-from period-marks-sentence-end?/look-deeper nil))
 
       ;; We know that the second word after the period
       ;; is touching the word just after the period
@@ -226,5 +224,36 @@
       (tr :eos-fall-through-accept)
       t)))
 
+
+
+(defparameter *permit-ad-hoc-abbreviations*
+  (eq :biology common-lisp-user::script)
+  "Should be up if a 'proper' set of abbreviations isn't available.
+ For instance there's a list of *person-prefixes is the dossier
+ of that name, and in modes where that's loaded we should go the
+ high road on all abbreviations.")
+
+(defvar *words-observed-to-confuse-eos*
+  '("Dr"
+    "nr" ;; funding from grant nr. 175.010.2007.012
+    ))
+
+(defun vivify-words-observed-to-confuse-eos ()
+  (let ((words (loop for s in *words-observed-to-confuse-eos*
+                  collect (resolve/make s))))
+    (setq *words-observed-to-confuse-eos* words)))
   
-    
+(defun implicit-abbreviation? (word)
+  "Intended for configurations where we don't already have
+   a substandial stock of abbreviations defined and/or 
+   abbreviations aren't being looked for and so doing their
+   on processing of the period that directly follows them.
+   Compare with routines in rules/FSAs/abbreviations.lisp.
+   Return t if the word is one of an anticipated set of
+   abbreviations."
+  (when *permit-ad-hoc-abbreviations*
+    (when (stringp (car *words-observed-to-confuse-eos*))
+      (vivify-words-observed-to-confuse-eos))
+    (memq word *words-observed-to-confuse-eos*)))
+
+
