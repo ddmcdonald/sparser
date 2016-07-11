@@ -439,7 +439,8 @@
 ;;;-----------
 
 (defmethod known-subcategorization? ((e edge))
-  (known-subcategorization? (edge-category e)))
+  (when (edge-category e)
+    (known-subcategorization? (edge-category e))))
 
 (defmethod known-subcategorization? ((i individual))
   (let ((sc (get-ref-subcategorization i)));; (known-subcategorization? (itype-of i))
