@@ -25,7 +25,7 @@
 (define-category  number
   :instantiates  self
   :specializes   abstract
-  :mixins (takes-numerical-value)
+  :binds ((value :primitive number))
   :index (:key value))
 (mark-as-form-category 'number)
 
