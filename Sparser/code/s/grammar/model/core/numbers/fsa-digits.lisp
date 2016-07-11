@@ -133,7 +133,13 @@ the fsa would be identified at the word level rather than the category level.
 ;;; state variables
 ;;;-----------------
 
-(defvar *period-within-digit-sequence* nil)
+(defvar *period-within-digit-sequence* nil
+  "Boolean used to indicate that there is a decimal point")
+
+(defvar *multiple-periods-within-digit-sequence* nil
+  "Will show up in situations where the digit sequence is recording
+   something other than a number such as a serial number or
+   raw web address")
 
 (defvar *pending-final-hyphen* nil)
 
@@ -148,6 +154,12 @@ the fsa would be identified at the word level rather than the category level.
           nil)
     *digit-position-array* ))
 
+(defun record-period-in-digit-sequence ()
+  (cond
+    ((null *period-within-digit-sequence*)
+     (setq *period-within-digit-sequence* t))
+    (t ;; already saw at least one
+     (setq *multiple-periods-within-digit-sequence* t))))
 
 ;;;--------
 ;;; driver
@@ -158,6 +170,7 @@ the fsa would be identified at the word level rather than the category level.
   (declare (special *interpretation-of-digit-sequence*))
   ;; initialization of flags
   (setq *period-within-digit-sequence* nil
+        *multiple-periods-within-digit-sequence* nil
         *pending-final-hyphen* nil
         *interpretation-of-digit-sequence* :number)
   (zero-the-digits-array)
@@ -244,7 +257,7 @@ the fsa would be identified at the word level rather than the category level.
                 next-cell array next-position))
                     
               ((eq word-at-next-position *the-punctuation-period*)
-               (setq *period-within-digit-sequence* t)
+               (record-period-in-digit-sequence)
                (continue-digit-sequence-after-period
                 next-cell array next-position))
                     
@@ -403,11 +416,11 @@ unknown---in any event, we're taking the first edge that is installed.
   ;; and then does the rest of the edge-initiated events (completion
   ;; and assessment) and returns the ending position.
 
+  (declare (special *the-punctuation-period*))
+  
   ;; Check for a leading period (indicating that we've got a decimal
   ;; value rather than one that starts as a regular (>1) number)
   ;; but don't back over newlines.
-  (declare (special *the-punctuation-period*))
-  
   (when (and (eq (pos-terminal (chart-position-before starting-position))
 		 *the-punctuation-period*)
 	     (null (pos-preceding-whitespace starting-position)))
@@ -443,7 +456,6 @@ unknown---in any event, we're taking the first edge that is installed.
       ;; string to be the compound: (format nil "~A" net-value)
 
       (setf (edge-referent edge) number-object)
-      
       (setf (edge-rule edge) :number-fsa)
 
       (complete edge)
