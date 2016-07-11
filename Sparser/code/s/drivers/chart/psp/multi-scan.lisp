@@ -108,6 +108,17 @@
                              (chart-position-after position-before))))
     (when where-pw-ended
       (tr :scanned-pw-ended-at word where-pw-ended)
+      (setq position-before where-pw-ended)
+      (unless (includes-state where-pw-ended :scanned)
+        ;; PW can complete without thinking about the
+        ;; word that follows it.
+        (scan-next-position))
+      (setq word (pos-terminal where-pw-ended)))
+
+    #| Version that fixed problem of calling no-space processing
+       when the beginning and end positions are identical
+    (when where-pw-ended
+      (tr :scanned-pw-ended-at word where-pw-ended)
       ;;(setq position-before where-pw-ended)
       (setq position-before where-pw-ended
             position-after (chart-position-after where-pw-ended))
@@ -115,7 +126,7 @@
         ;; PW can complete without thinking about the
         ;; word that follows it.
         (scan-next-position))
-      (setq word (pos-terminal position-before)))
+      (setq word (pos-terminal position-before))) |#
 
     (unless (includes-state position-after :scanned)
       (scan-next-position))
@@ -135,8 +146,9 @@
           (scan-next-position))
         (setq word (pos-terminal where-fsa-ended))))
 
-    (when (eq position-before position-after)
-      (error "before and after are identically ~a" position-after))
+    #+ignore(when (eq position-before position-after)
+      (error "Scan-terminals-loop: before and after positions are
+              the same: ~a" position-after))
     
     (tr :scan-completing word position-before position-after)
     (complete-word/hugin word position-before position-after)
