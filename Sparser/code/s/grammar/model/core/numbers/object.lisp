@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  1.3 January 2015
+;;;  Version:  July 2016
 
 ;; 1.2 (7/19/92 v2.3) made over as "real" category. 8/4/94 finished princ routine
 ;;     (10/3) improved the printer.  11/15/95 added a sort routine.
@@ -18,10 +18,14 @@
 ;;; objects
 ;;;---------
 
+(define-mixin-category takes-numerical-value
+  :specializes abstract
+  :binds ((value :primitive number)))
+
 (define-category  number
   :instantiates  self
   :specializes   abstract
-  :binds  ((value :primitive number))
+  :mixins (takes-numerical-value)
   :index (:key value))
 (mark-as-form-category 'number)
 
@@ -29,8 +33,7 @@
 (define-category multiplier
   :instantiates self
   :specializes number
-  :binds ((name :primitive word)
-          (value number))
+  :mixins (has-name)
   :index (:key name)
   :realization (:common-noun name))
 

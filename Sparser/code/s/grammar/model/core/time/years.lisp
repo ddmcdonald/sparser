@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "years"
 ;;;   Module:  "model;core:time:"
-;;;  version:  2.2 May 2014
+;;;  version:  July 2016
 
 ;; initiated in February 1991
 ;; 0.1 (4/9 v1.8.2)  Added the years from 1959 to 1979
@@ -27,8 +27,8 @@
 (define-category year
   :specializes time
   :instantiates self
-  :binds ((name  :primitive word)
-          (year-of-century :primitive number))
+  :mixins (has-name takes-numerical-value)
+  :binds ((year-of-century :primitive number))
   :realization (:common-noun name)) ;; strands the 2 digit version!
 
 
@@ -36,13 +36,15 @@
 ;;; defining form
 ;;;---------------
 
-(defun define-year (string integer)
+(defun define-year (string integer)  ;; e.g. "2015" & 15
   (let ((word (define-word string))
+        (number (find-or-make-number string))
         year )
 
     (unless (setq year (find-individual 'year :name word))
       (setq year (define-individual 'year
                    :name word
+                   :value (value-of 'value number)
                    :year-of-century integer)))
     year ))
 
@@ -51,9 +53,9 @@
 ;;; making years from context
 ;;;---------------------------
 
-;;csr for year from javan-online.text
-;;captures instances of "the year 90"
-;;this works, but has no referent.  
+;; csr for year from javan-online.text
+;; captures instances of "the year 90"
+
 (def-csr number year
   :left-context time-unit
   :form np
@@ -75,7 +77,7 @@
 ; In the standard pattern for dates, "June 26, 2004", the comma will
 ; terminate the segment. If there's more in the segment than just the
 ; month-day combination (e.g. "for [its fiscal 2004 third quarter
-; ended June 26, 2004"), then the date edge of the date->date comma-year
+; ended June 26], 2004"), then the date edge of the date->date comma-year
 ; rule will be covered before the comma-year can see it. 
 ; So we look under the hood of the edge-vector and extend the date
 ; edge if we find one.   ////Consider whether this should be a standard
