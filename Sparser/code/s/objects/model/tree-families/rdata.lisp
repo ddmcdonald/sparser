@@ -397,7 +397,45 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 (defun record-local-cases-rdata (rr local-cases)
   (setf (rdata-local-rules rr) local-cases))
-      
+
+#| Notes for organizing the change-over
+
+The etf, mapping, and word info tend to be used as a group,
+and effectively control the entire process of creating the
+semantic rules.  
+
+The rules seem to just be accessed and handled as a group
+They can be moved over to the plist routines that are used now
+in all new code or easily revised code. Change these first.
+
+--- Existing calls on the realization field of the category
+    (where we stash instances of the class once we've changed over
+avidsmcbookpro:s ddm$ grep "(cat-realization " **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+interface/mumble/rnode-centric.lisp:  (let* ((realization-field (cat-realization c))
+interface/mumble/rspec-gophers.lisp:  (let ((realization-field (cat-realization c)))
+grammar/rules/CA/extract-subj.lisp:             (schema (cadr (member :schema (cat-realization type)))))
+grammar/rules/CA/stranded-vp.lisp:         (rules (cadr (member :rules (cat-realization type)))))
+grammar/rules/tree-families/shortcuts.lisp:          ;	(setf (cat-realization category)
+grammar/rules/tree-families/shortcuts.lisp:          ;	      `(:synonyms ,words . ,(cat-realization category)))
+objects/model/categories/define.lisp:  (cadr (member :rules (cat-realization category))))
+objects/model/tree-families/driver.lisp:  (if (cat-realization category)
+objects/model/tree-families/driver.lisp:  (let* ((rdata (cat-realization category))
+objects/model/tree-families/driver.lisp:  (let ((realization-data (cat-realization category))
+objects/model/tree-families/rdata.lisp:         (when (cat-realization category)
+objects/model/tree-families/rdata.lisp:           (cadr (member :rules (cat-realization category))))))
+objects/model/tree-families/rdata.lisp:           (cadr (member :rules (cat-realization category)))))
+objects/model/tree-families/rdata.lisp:            (let ((cons-cell (member :rules (cat-realization category))))
+objects/model/tree-families/rdata.lisp:    (setf (cat-realization category)
+objects/model/tree-families/rdata.lisp:    (setf (cat-realization category)
+objects/model/tree-families/rdata.lisp:  (let ((rdata  (cat-realization category)))
+objects/model/tree-families/rdata.lisp:  (let ((rdata  (cat-realization category)))
+objects/model/tree-families/rdata.lisp:  (when (cat-realization category)
+objects/model/tree-families/rdata.lisp:    (let ((realization-data (cat-realization category))
+grammar/model/core/kinds/object.lisp:	       (caadr (memq :rules (cat-realization category)))))))
+grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-realization category)))
+
+
+|#
 
 
 ;;;-------------
