@@ -466,11 +466,13 @@
 ;;; Collecting instances and statistics
 ;;;-------------------------------------
 
-(defparameter *collect-subcat-info* t
+(defparameter *collect-subcat-info* nil
   "A flag that governs whether we collect subcategorization
   statistics")
 
-(defparameter *subcat-info* nil)
+(defparameter *subcat-info* nil
+  "Where information collected about subcategorizations is stored.")
+
 (defparameter *ref-cat-text* (make-hash-table))
 
 (defun save-subcat-info (&optional filename)
