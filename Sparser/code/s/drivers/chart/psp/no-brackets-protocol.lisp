@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  1.0 July 2015
+;;;  version:  July 2016
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -42,14 +42,15 @@
 ;; called from chart-based-analysis where there is a catch to 
 ;; terminate chart parsing. 
 
-;; 6/28/2015 The *missing-subcats* parameter, when non-null causes the saving of all cases where a PP 
-;; is not absorbed by a preceding NP or VP
 
-(defparameter *missing-subcats* '(()))
+
+(defparameter *missing-subcats* '(())
+  "When non-null, this causes the saving of all cases where a PP 
+   is not absorbed by a preceding NP or VP")
 
 
 (defun sucessive-sweeps? ()
-  ;; syntactic sugar for a mode detector. Cf. new-forest-protocol?
+  "syntactic sugar for a mode detector. Cf. new-forest-protocol?"
   (eq *kind-of-chart-processing-to-do* :successive-sweeps))
 
 ;;;---------
@@ -59,9 +60,14 @@
 (defvar *universal-time-start*)
 (defvar *universal-time-end*)
 
-;;parameters controlling the collection of information for MITRE index cards
-(defparameter *all-sentences* nil)
-(defparameter *index-cards* t)
+(defparameter *all-sentences* nil
+  "Used in post-analysis-operations to accumulate the raw material
+   that we make cards from.")
+
+(defparameter *index-cards* nil
+  "Read in post-analysis-operations as part of the guard on whether we
+   collect the all sentences data.")
+
 
 (defparameter *show-handled-sentence-errors* t
   "Printing the error that's caught by the handler in 
@@ -69,7 +75,6 @@
   time cost in CCL. This gates that operation so that 
   the error and the sentence it applies to will only be
   printed if this flag is t.")
-
 
 (defparameter *trap-error-skip-sentence* nil
   "Governs whether we let errors happen. If it's nill they
@@ -310,15 +315,16 @@
 
   (save-missing-subcats)
 
-  ;; We always retrieve the entities and relations to store
-  ;; with the sentence and accumulate at higher levels
-  (multiple-value-bind (relations entities tt-count treetops)
-      (identify-relations sentence)
-    ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
-    (set-entities sentence entities)
-    (set-relations sentence relations)
-    (set-tt-count sentence tt-count)
-    (interpret-treetops-in-context treetops))
+  (when *collect-model*
+    ;; We always retrieve the entities and relations to store
+    ;; with the sentence and accumulate at higher levels
+    (multiple-value-bind (relations entities tt-count treetops)
+        (identify-relations sentence)
+      ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
+      (set-entities sentence entities)
+      (set-relations sentence relations)
+      (set-tt-count sentence tt-count)
+      (interpret-treetops-in-context treetops)))
 
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))

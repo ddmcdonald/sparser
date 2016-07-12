@@ -393,10 +393,9 @@
   
   ;; (grok-setting)
   (setq *new-dm&p* t)
-  (setq *do-strong-domain-modeling* t)
+
   (setq *do-unanalyzed-hyphenated-sequences* t)
   
-
   ;;(tuned-grok)
   (setq *break-on-new-bracket-situations* nil)
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
@@ -411,13 +410,16 @@
   (what-to-do-at-the-forest-level :new-forest-protocol)
   (setq *sweep-sentence-treetops* t
         *chunk-sentence-into-phrases* t
-        *parse-chunk-interior-online* t
         *big-mechanism-ngs* t
         *parse-chunk-interior-online* t
         *parse-chunked-treetop-forest* t
         *sweep-sentence-treetops* t
-        *allow-form-conjunction-heuristic* t
         *island-driving* t)
+
+  (setq *collect-model* t) ;; populate document structure
+  ;; with entities and relations
+
+  (setq *allow-form-conjunction-heuristic* t)
   
   (whack-a-rule t)
   (setq *check-forms* t)
@@ -437,11 +439,10 @@
         *note-text-relations* nil
         *profligate-creation-of-individuals* nil
         *note-text-relations* nil)
-
   ;; Specify where we start (needed as switch settings change)
   (do-strong-domain-modeling)
 
-  ;;/// Much too strong. Move out to the setting
+  ;;/// Much too strong. Move out to the script
   #+ignore(let ((gmod (grammar-module-named '*biology*)))
     (assert gmod () "The biology grammar module is not available")
     (unmarked-category-makes-permanent-individuals gmod))

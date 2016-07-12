@@ -383,10 +383,15 @@
 ;;; readout
 ;;;---------
 
+(defparameter *collect-model* t
+  "In the post-analysis-operations function used in the successive 
+   sweeps, and particularly when we're reading documents, this
+   controls whether we collect entities and relations from the
+   treetops of the analysis.")
+
 (defparameter *display-salient-objects* t
   "Flag controlling whether after an article is analyzed its accumulated
    list of salient objects is displayed to *standard-output*")
-
 
 (defparameter *vet-records* nil
   "Flag gating the checking of the records for the salient objects found
