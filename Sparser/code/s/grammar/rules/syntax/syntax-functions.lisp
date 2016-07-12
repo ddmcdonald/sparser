@@ -1458,7 +1458,8 @@
                        (define-disjunctive-lambda-variable variable category)))
                     ;; else
                     (define-disjunctive-lambda-variable variable category))))
-        
+        (when (and variable *subcat-use*)
+          (record-subcat-use label (itype-of head) variable))
         variable ))))
 
 
