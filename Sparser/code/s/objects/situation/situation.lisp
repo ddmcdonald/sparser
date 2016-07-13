@@ -58,7 +58,8 @@
 
 ;;--- Sentence level
 
-(defclass sentence-situation (core-situation ordered has-parent)
+(defclass sentence-situation (core-situation ordered
+                              has-parent parsing-status)
   ((sentence-state :type state 
                    :initform (state-named :initial-sentence-state)
                    :accessor sentence-state
