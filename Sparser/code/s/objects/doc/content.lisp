@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "content"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  February 2016
+;;;  Version:  July 2016
 
 ;; initiated 3/13/13. Elaborated through 3/29/13. 9/17/13 fan-out
 ;; from sections make-over. 10/2/19 Fleshed out general notion of
@@ -86,9 +86,7 @@
 ; (designate-sentence-container :complex)  ;; run with every change
 ;
 (defun make-sentence-content-container (sentence)
-  (make-instance 'sentence-content
-    :in sentence
-    :level :initial))
+  (make-instance 'sentence-content :in sentence))
 
 
 (defclass paragraph-content (container aggregated-bio-terms
