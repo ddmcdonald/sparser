@@ -242,7 +242,7 @@
 
 
 (defun segment-rule-check (pair chunk)
-  (declare (special chunk))
+  (declare (special *vp-categories*))
   ;; syntactic sugar and tracing for the choice of rule test
   ;; to make. Could start with just simple rules and then
   ;; extend to semantic and then syntactic on successive passes
@@ -272,9 +272,12 @@
         rule))))
 
 (defun rule-is-for-a-verb? (rule)
-  ;; used as a filter in segment-rule-check when it's making an np
-  (or (member (car (cfr-rhs rule)) *vg-head-categories*)
-      (member (car (cfr-rhs rule)) *vp-categories*)
+  "Used as a filter in segment-rule-check when it's making an np"
+  (declare (special *vg-head-categories* *vp-categories*))
+  (or (member (car (cfr-rhs rule))
+              *vg-head-categories*)
+      (member (car (cfr-rhs rule))
+              *vp-categories*)
       (member (category-named (car (cfr-rhs-forms rule)))
               *vg-head-categories*)
       (member (category-named (car (cfr-rhs-forms rule)))

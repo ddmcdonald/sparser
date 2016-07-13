@@ -53,7 +53,7 @@
 
 (defun define-segment-heuristic/expr (name test body)
   (let ((h (make-segment-heuristic :name name)))
-    (format t "~&~%~%>>> Registering segment heuristic: ~a <<<<~%~%~%"
+    #+ignore(format t "~&~%~%>>> Registering segment heuristic: ~a <<<<~%~%~%"
 	    name)
     (let* ((test-name (intern (string-append (symbol-name name) "-TEST")))
 	   (test-form `(defun ,test-name ()

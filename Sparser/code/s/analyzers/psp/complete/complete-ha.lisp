@@ -118,8 +118,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
     (update-definite-determiner edge)) ;; recording function
 
   (maybe-check-semantic-completeness edge)
-  ;; a place to put code to capture information about the way that various
-  ;;  NP semantics are typically expressed
+  
   (record-generation-information edge)
 
   ;; keep this on the stack
@@ -135,6 +134,8 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
 (defparameter *null-name-realizations* nil)
 
 (defun record-generation-information (edge)
+  "A place to put code to capture information about the way that various
+   NP semantics are typically expressed."
   (declare (special *name-realizations* *return-after-doing-forest-level*))
   (when (and *name-realizations*
              *return-after-doing-forest-level*
@@ -155,7 +156,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
                      (gethash pname *name-realizations*)))))))
 
 (defun get-np-head-edge (np-edge)
-  (declare (special np-edge))
+  (declare (special *chunks* *sentence-in-core*))
   (let* ((np-chunk
           (loop for chunk in (reverse *chunks*)
              when (and (<= (pos-token-index (pos-edge-starts-at np-edge))
