@@ -5,7 +5,7 @@
 ;;;
 ;;;      File:   "complete HA"
 ;;;    Module:   "analyzers;psp:complete:"
-;;;   Version:   June 2016
+;;;   Version:   July 2016
 
 ;; 1.1  (5/2 v1.8.4)  Modified Complete-edge to check the quiescent
 ;;      position of the forest-level parser
@@ -114,7 +114,8 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
 
   (note-surface-string edge)
 
-  (update-definite-determiner edge) ;; recording function
+  (when *use-discourse-mentions*
+    (update-definite-determiner edge)) ;; recording function
 
   (maybe-check-semantic-completeness edge)
   ;; a place to put code to capture information about the way that various
@@ -123,6 +124,11 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
 
   ;; keep this on the stack
   :complete )
+
+
+;;;----------------
+;;; record keeping
+;;;----------------
 
 (defparameter *name-realizations* nil ;;(make-hash-table :size 1000)
 )
