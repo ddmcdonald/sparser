@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "job events"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  April 2016
+;;;  version:  July 2016
 
 ;; initiated 6/15/93 v2.3 with "retire", "confirm", "succeed", and "remain".
 ;; 5/2/95 automatically entered "appoint", refining it by hand 5/28.
@@ -74,9 +74,10 @@
                 :main-verb "resign"
 
                 :additional-rules
-                  ((:pp-adjunct (s (s as-title)
+                (#| duplicates additional-rule just above
+                 (:pp-adjunct (s (s as-title)
                                  :head left-referent
-                                 :binds (position  right-referent)))
+                                 :binds (position  right-referent))) |#
                    (:pp-adjunct (s (s as-position-at-co)
                                  :head left-referent
                                  :binds (position  right-referent))))
@@ -244,6 +245,8 @@
 
 ;;--- "join"
 
+#| The as-title rule that this creates duplicates
+   the marker category in core/title/rules/
 (define-category  join-company
   :instantiates job-event
   :specializes  get-position
@@ -270,4 +273,4 @@
                 (patient . company)
                 (goal . title))
 
-      :main-verb "join" ))
+      :main-verb "join" )) |#

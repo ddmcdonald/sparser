@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "duplicates"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   0.8 June 2015
+;;;   Version:   July 2016
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 0.1 (11/1) fixed polarity of dotted rules can be duplicated.
@@ -34,7 +34,7 @@
      unless the 'all-edges' parsing protocol is being used.")
 
 
-(defvar *dotted-rules-can-duplicate-regular-rules* t
+(defvar *dotted-rules-can-duplicate-regular-rules* nil
     "A binary rule may correspond to a prefix of an n-ary rule.
      In this case we will want a dotted-rule that has the same
      rhs at the binary rule, and there is a parsing-time check
@@ -43,7 +43,7 @@
      the prefix in preference to the binary rule.
      Standard case: 'chief executive' and 'chief executive officer'" )
 
-(defvar *break-on-illegal-duplicate-rules* nil
+(defvar *break-on-illegal-duplicate-rules* t
     "Faciliate debugging and clean up by stopping the load / rule-execution 
      when an illegal duplicate has been found.")
 
@@ -136,12 +136,14 @@ from define-cfr it depends on whether redefinition-of-rule says yes,
   ;; Taking it that there's just one existing rule.
   (when (consp existing-cfr) ;; multiple-rules
    (setq existing-cfr (car existing-cfr)))
-  (format t "~&~% Illegal rule duplication:~
+  (format t "~&~% Illegal rule duplication in the file~
+             ~%       ~a~
              ~%   You can't use the righthand side:~
              ~%      ~A~
              ~%   with the new lefthand side label ~a~
              ~%   Because ~a already uses that rhs~
              ~%   but with the lhs ~a"
+     *file-being-lloaded*          
      (cfr-rhs existing-cfr) proposed-new-lhs 
      (cfr-symbol existing-cfr)
      (cfr-category existing-cfr)))
