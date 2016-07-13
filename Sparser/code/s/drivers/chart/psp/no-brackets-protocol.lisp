@@ -301,9 +301,13 @@
 ;;;----------------------------------------------------
 
 (defun post-analysis-operations (sentence)
+  (declare (special *index-cards*))
+  
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
+  
   (identify-salient-text-structure sentence)
+  
   (when *do-anaphora*
     (handle-any-anaphora sentence))
   (when (and *readout-relations* *index-cards*)
