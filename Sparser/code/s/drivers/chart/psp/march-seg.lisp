@@ -470,13 +470,7 @@
               (march-back-from-the-right/segment))))
 
          (topnode-field
-          (tr :seg-march/single-ends-at topnode-field)
-          #+ignore
-          (when
-              (and
-               *current-chunk*
-               (setq rule (one-one/just-check-edges topnode-field edge))
-               ))
+          (tr :seg-march/single-ends-at topnode-field)          
           (if (setq new-edge
                     (check-one-one topnode-field edge))
             (if (setq boundaries
