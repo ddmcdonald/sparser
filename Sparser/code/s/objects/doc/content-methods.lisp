@@ -450,7 +450,8 @@
 ;;;---------------------
 
 (defclass parsing-status ()
-  ((level-completed :initarg :level :accessor level-completed
+  ((level-completed :initform :initial :initarg :level
+                    :accessor level-completed
     :documentation "The parsing is tiered into successive levels
       of analysis. Which one have we completed for this level of
       document structure?
