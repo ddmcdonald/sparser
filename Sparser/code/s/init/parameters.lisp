@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: June 2016
+;;;   Version: July 2016
 
 ;;;----------------------------
 ;;; parameterizing the loading
@@ -43,6 +43,11 @@ is looked at in bind-variable/expr.")
   "If non-nil, we look for edge label combinations off the labels
 provided by the referent (often more general than the category)
 including composite referents.")
+
+(defvar *allow-form-rules* t
+  "Permits checking category labels against grammar ('form') labels
+   when looking for rules of composition. See subroutine of
+   multiply-edges: mult/ids-on-form-label")
 
 (defvar *allow-pure-syntax-rules* nil
   "Permits looking for combinations off the form labels of the two edges.

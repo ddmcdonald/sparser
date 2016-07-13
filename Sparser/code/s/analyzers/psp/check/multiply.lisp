@@ -59,11 +59,12 @@
 ;;  dont-check-rule-form-for-etf-named with the name of the family
 
 (in-package :sparser)
+
 (defparameter *check-chunk-forms* t
   "This enables checking the form of the result of a semantic rule, as well as the form of the RHS, to reduce the mis-use
  of ETF derived rules for clauses that are applied when a participle modifies an NG")
 
-(defparameter *check-forms* t
+(defparameter *check-forms* nil
   "When this is T, ensure that all rules are only applied to 
    compatible syntactic forms")
 
@@ -182,10 +183,11 @@
   (cond
    ((edge-of-dotted-intermediary right-edge)
     ;; dotted rules only combine to their right, never to their left
-    (tr :right-edge-is-dotted right-edge)
     ;; "   but the right edge, e~A, is dotted and can't possibly combine"
+    (tr :right-edge-is-dotted right-edge)
     nil)
-   ((when *use-trie-multiply* (trie-multiply-edges left-edge right-edge chunk)))
+   (*use-trie-multiply*
+    (trie-multiply-edges left-edge right-edge chunk))
    (t
     (let* ((left-category-ids (category-ids/rightward left-edge))
            (right-category-ids (category-ids/leftward right-edge))
@@ -538,11 +540,6 @@
 ;;; rule edge checks, but looking at form labels too
 ;;;------------------------------------------------------
 
-(defparameter *allow-form-rules* t)
-;; We've checked category label against category label.
-;; Now we're trying category label against form label but
-;; using category ids rather than form ids
-;;
 (defun mult/ids-on-form-label (left-edge right-edge)
   (tr :mult/ids-on-form-label)
   (when *allow-form-rules*
