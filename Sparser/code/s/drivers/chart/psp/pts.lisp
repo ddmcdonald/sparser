@@ -82,8 +82,6 @@
   (let ((coverage (segment-coverage)))
     (unless (eq coverage :null-span)
       (when *record-bracketing-progress*
-        ;; [sfriedman:20121215.1242CST] N.B. this is recorded in
-        ;;   reverse order for efficiency.  Consume in reverse.
         (kpush (kcons (pos-array-index *left-segment-boundary*)
                       (pos-array-index *right-segment-boundary*))
                *bracketing-progress*))
@@ -142,20 +140,24 @@
 
 
 (defun ensure-edge-consistent-with-chunk ()
-  (when (member (chunk-forms *current-chunk*) '((ng) (vg)) :test #'equal)
+  "Remove treetop edges that don't go with the chunk"
+  (when (member (chunk-forms *current-chunk*)
+                '((ng) (vg)) :test #'equal)
     (let* ((segment-treetops 
-            (treetops-in-segment (chunk-start-pos *current-chunk*)(chunk-end-pos *current-chunk*)))
+            (treetops-in-segment (chunk-start-pos *current-chunk*)
+                                 (chunk-end-pos *current-chunk*)))
            treetops-to-remove )
       (loop for e in segment-treetops do
         (cond
          ((edge-vector-p e)
-          (loop for ee in (ev-edges e) unless (compatible-with-chunk ee *current-chunk*)
-            do (push ee treetops-to-remove)))
+          (loop for ee in (ev-edges e)
+             unless (compatible-with-chunk ee *current-chunk*)              
+             do (push ee treetops-to-remove)))
          ((not (compatible-with-chunk e *current-chunk*))
           (push e treetops-to-remove))))
+      (when treetops-to-remove
       ;; these will be different only in the case where the chunk
       ;; limits the treetops because of POS
-      (when treetops-to-remove
         (loop for e in treetops-to-remove when (edge-p e)
           do (remove-edge-from-chart e))))))
         
