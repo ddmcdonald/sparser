@@ -1010,6 +1010,10 @@
                                         ,(edge-referent np-2))
 			       :number 3
 			       :type (itype-of (edge-referent target)))))
+    (setq collection
+          (if *description-lattice*
+                (find-or-make-lattice-description-for-collection collection)
+                collection ))
     (when target
       (make-edge-spec 
        :category (edge-category target)

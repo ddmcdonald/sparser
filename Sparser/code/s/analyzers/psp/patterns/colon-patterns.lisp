@@ -95,10 +95,13 @@
         (when (memq :bio-entity pattern)
           (convert-bio-entity-to-protein segments))
         (let* ((proteins (loop for edge in segments
-                           collect (edge-referent edge)))
-               (i (find-or-make-individual 'collection
-                   :type category::protein
-                   :items proteins))
+                            collect (edge-referent edge)))
+               (collection (find-or-make-individual 'collection
+                                                    :type category::protein
+                                                    :items proteins))
+               (i (if *description-lattice*
+                      (find-or-make-lattice-description-for-collection collection)
+                      collection))
                (edge (make-ns-edge
                       start-pos end-pos category::protein
                       :referent i :rule 'multi-colon-ns-patterns

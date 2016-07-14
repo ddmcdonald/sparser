@@ -733,7 +733,9 @@
                    :items (list left-ref right-ref)
                    :number 2
                    :type type)))
-            collection)))))
+            (if *description-lattice*
+                (find-or-make-lattice-description-for-collection collection)
+                collection ))))))
 
 (defun ref-type (ref)
   (cond
@@ -755,10 +757,12 @@
                   (adjudicate-specializations/list referents types)))
           (let ((collection
                  (define-or-find-individual 'collection
-                   :items referents
-                   :number (length referents)
-                   :type sample-type)))
-            collection )))
+                     :items referents
+                     :number (length referents)
+                     :type sample-type)))
+            (if *description-lattice*
+                (find-or-make-lattice-description-for-collection collection)
+                collection ))))
 
        ;; "biochemical, molecular and immunological approaches"
        ((category-p first-ref)
@@ -772,7 +776,9 @@
                  :items referents
                  :number (length referents)
                  :type (category-of (first referents)))))
-            collection ))
+          (if *description-lattice*
+                (find-or-make-lattice-description-for-collection collection)
+                collection )))
 
        (t
         (tr :conjoined-edges-dont-have-individuals-as-referents)
