@@ -193,18 +193,25 @@
 		 (t
                   (emit-line stream
                              (format nil "(~a" (cat-string (car sem-tree) t)))
-                             
-		  (push-indentation)
-		  (loop for item in
-		       (if (eq (car sem-tree) 'items) ;; simplify printout of the ITEMS in a collection
-			   ;; temproary to simplify comparisons
-			   (second (second (second sem-tree)))
-			   (cdr sem-tree))
-                       unless (and (consp item) (member (car item) '(name uid)))
-		     do (print-sem-tree item stream))
-		  (format stream ")")
-		  (pop-indentation))))
-	  (t (format stream " ~s" sem-tree)))))
+                  (cond ((and (null (cddr sem-tree))
+                              (consp (second sem-tree))
+                              (eq (car (second sem-tree)) 'name))
+                         (format stream " (~a ~s))"
+                                 (string-downcase (car (second sem-tree)))
+                                 (second (second sem-tree))))
+                        (t
+                         (push-indentation)
+                         (loop for item in
+                              (if (eq (car sem-tree) 'items) ;; simplify printout of the ITEMS in a collection
+                                  ;; temproary to simplify comparisons
+                                  (second (second (second sem-tree)))
+                                  (cdr sem-tree))
+                            unless (and (not *for-spire*) (consp item) (member (car item) '(name uid)))
+                            do (print-sem-tree item stream))
+                         (format stream ")")
+                         (pop-indentation))
+                        ))
+                 (t (format stream " ~s" sem-tree)))))))
 
 (defun cat-string (cat? &optional with-name)
   (cond ((individual-p cat?)
@@ -220,6 +227,7 @@
 	((category-p cat?)
 	 (string-downcase (cat-symbol cat?)))
 	((symbolp cat?) (string-downcase cat?))
+        ((consp cat?) (cat-string (car cat?)))
 	(t cat?)))
 
 
