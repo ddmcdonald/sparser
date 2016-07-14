@@ -54,6 +54,7 @@
 (lload "psp-drivers;incremental")
 (lload "psp-drivers;bio-entity-scan")
 (lload "psp-drivers;no-brackets-protocol")
+(lload "psp-drivers;semantic-extraction")
 (lload "psp-drivers;post-analysis-operations")
 (lload "psp-drivers;multi-scan")
 (lload "psp-drivers;chunker")
