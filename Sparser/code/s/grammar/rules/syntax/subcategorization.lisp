@@ -589,3 +589,47 @@
 
 
 
+;;;---------------------------------------------
+;;; track missing subcategorization information
+;;;---------------------------------------------
+
+(defun save-missing-subcats ()
+  (declare (special category::pp))
+  (when *missing-subcats*
+    (let* ((ee (reverse (all-tts))) 
+           (pp-pairs 
+            (loop for e on ee by #'cddr 
+              when 
+              (and (edge-p (car e))
+                   (eq category::pp (edge-form (car e)))
+                   (cdr e) 
+                   (edge-p (second e))
+                   (or (vp-category? (second e) )(noun-category? (second e))))
+              collect 
+              (list (edge-category (second e))
+                    (value-of 'prep (edge-referent (car e)))
+                    (value-of 'pobj (edge-referent (car e)))
+                    (actual-characters-of-word (pos-edge-starts-at (second e))
+                                               (pos-edge-ends-at (second e)) nil)
+                    (actual-characters-of-word (pos-edge-starts-at (car e))
+                                               (pos-edge-ends-at (car e)) nil)))))
+      (setq *missing-subcats*
+            (nconc pp-pairs *missing-subcats*)))))
+
+(defun write-missing-subcats (outfile)
+  (let
+      ((missing
+        (loop for l in *missing-subcats* 
+          when (consp l)
+          collect 
+          `(,(simple-label (car l)) ,(simple-label (second l)) ,@(cddr l)))))
+    (with-open-file (s outfile
+                       :direction :output
+                       :if-exists :overwrite
+                       :if-does-not-exist :create)
+      (np missing s))))
+  
+
+  
+
+
