@@ -1583,3 +1583,26 @@ NIL
        (test-sent 'comments i :multi-sent t :no-syn-tree t)))
   
 
+(defparameter *nt-cfrs* nil)
+(defparameter *rhs1-ht* (make-hash-table :size 1000))
+(defparameter *rhs2-ht* (make-hash-table :size 1000))
+
+(defun index-semantic-rules ()
+  (setq *nt-cfrs*
+        (loop for r in *cfrs-defined*
+           when (and (cdr (cfr-rhs r)) (category-p (car (cfr-rhs r))))
+           collect r))
+  (clrhash *rhs1-ht*)
+  (clrhash *rhs2-ht*)
+  (loop for r in *nt-cfrs* do 
+       (push (cons r (mapcar #'cat-name (cfr-rhs r)))
+             (gethash (cat-name (car (cfr-rhs r))) *rhs1-ht*)))
+  (loop for r in *nt-cfrs* do 
+       (push (cons r (mapcar #'cat-name (cfr-rhs r)))
+             (gethash (cat-name (second (cfr-rhs r))) *rhs2-ht*))))
+
+(defun find-semantic-rules-starting-with (cat-name)
+  (gethash cat-name *rhs1-ht*))
+
+(defun find-semantic-rules-ending-with (cat-name)
+  (gethash cat-name *rhs2-ht*))
