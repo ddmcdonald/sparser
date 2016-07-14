@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2000,2010-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2000,2010-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "full grammar"
 ;;;    Module:  "init;versions:v2.7:config:grammars:"
-;;;   version:  December 2015
+;;;   version:  July 2016
 
 ;; 7/18/92 v2.3 blocked out the gl and Tipster grammar
 ;; 12/4 pulled word options made irrelevant in master-loader
@@ -264,6 +264,7 @@
 (include-grammar-module *ISR*)
 (include-grammar-module *waypoints*)
 (include-grammar-module *blocks-world*)
+(include-grammar-module *biocuration*)
 
 (include-grammar-module  *load-Tipster-grammar-into-image*)
 (include-grammar-module  *jv/phrases*)

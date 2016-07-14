@@ -25,7 +25,42 @@ BOB: Yes, my model shows that Erk is inactivated.
      When the feedback loop is included in the model, ERK remains active.
 |#
 
+"I want to find a molecular treatment for pancreatic cancer."
+"What drug could I use?"
+"What proteins might lead to the development of pancreatic cancer."
 
+<R T="00:01:49.28" S="DAGENT">
+(REQUEST :CONTENT (INTERPRET-SPEECH-ACT :CONTENT (ONT::ASK-WHAT-IS :CONTENT ONT::V32862 :CONTEXT ((ONT::A ONT::V32862 :INSTANCE-OF ONT::MEDICATION :NAME W::DRUG :RULE -SIMPLE-REF :SUCHTHAT ONT::V32902) (ONT::RELN ONT::V32902 :INSTANCE-OF ONT::USE :RULE -RULE1B :AFFECTED ONT::V32862 :TENSE W::PRES :MODALITY (:* ONT::CONDITIONAL W::COULD) :FORCE ONT::POSSIBLE)) :ACTIVE-GOAL ONT::V32109)) :REPLY-WITH IO-33172)
+</R>
+
+<S T="00:01:49.36" R="DTDA">
+(REQUEST :CONTENT (FIND-TREATMENT :DISEASE (CANCER)) :REPLY-WITH BA-QUERY-32 :sender SPG-AGENT)
+</S>
+<R T="00:02:03.96" S="DTDA">
+(reply :content ((SUCCESS :protein (:name PIK3CA :hgnc PIK3CA) :prevalence 0.22 :functional-effect ACTIVE) (SUCCESS :drugs ((:name NVP-BKM120) (:name GSK2126458) (:name BYL719) (:name XL147 :chebi_id 71957) (:name A66) (:name GSK1059615 :chebi_id 71955) (:name PI103 :chebi_id 90524) (:name ZSTK474 :chebi_id 90545) (:name GDC-0941)))) :receiver SPG-AGENT :in-reply-to BA-QUERY-32)
+<S T="00:02:03.99" R="SPG-AGENT">
+
+(REQUEST :CONTENT (GENERATE :CONTENT (ONT::TELL :CONTENT BA-QUERY-32) :CONTEXT ((RELN BA-QUERY-32 :INSTANCE-OF LOOK-UP :QUERY (FIND-TREATMENT :DISEASE (CANCER)) :ANSWER (SUCCESS :DRUGS ((:NAME NVP-BKM120) (:NAME GSK2126458) (:NAME BYL719) (:NAME XL147 :CHEBI_ID 71957) (:NAME A66) (:NAME GSK1059615 :CHEBI_ID 71955) (:NAME PI103 :CHEBI_ID 90524) (:NAME ZSTK474 :CHEBI_ID 90545) (:NAME GDC-0941)))))) :sender DAGENT)
+</S>
+
+
+<S T="00:02:35.36" R="SPG-AGENT">
+(REQUEST :CONTENT (GENERATE :CONTENT (ONT::TELL :CONTENT BA-QUERY-56) :CONTEXT ((RELN BA-QUERY-56 :INSTANCE-OF LOOK-UP :QUERY (FIND-DISEASE-TARGETS :DISEASE (CANCER)) :ANSWER (SUCCESS :PROTEIN (:NAME PIK3CA :HGNC PIK3CA) :PREVALENCE 0.22 :FUNCTIONAL-EFFECT ACTIVE)))) :sender DAGENT)
+</S>
+"22% of pancreatic cancer patients have a mutation in PIK3CA."
+
+"Are there any drugs targeting KRAS?"
+
+<R T="00:02:49.82" S="DTDA">
+(reply :content (SUCCESS :drugs ()) :receiver SPG-AGENT :in-reply-to BA-QUERY-80)
+</R>
+
+<S T="00:02:49.93" R="DAGENT">
+(TELL :RECEIVER DAGENT :CONTENT (REPORT :CONTENT (FAILURE :WHAT BA-QUERY-80 :AS (SUBGOAL :OF C00003)) :CONTEXT ((RELN BA-QUERY-80 :INSTANCE-OF LOOK-UP :QUERY (FIND-TARGET-DRUG :TARGET (KRAS)) :ANSWER (SUCCESS :DRUGS NIL)))) :IN-REPLY-TO IO-38690 :sender SPG-AGENT)
+</S>
+
+"Let's build a model of the KRAS neighborhood."
+"I know that KRAS activates Raf, Raf activates Mek and Mek activates Erk."
 
 #|--------------------------------------------------------
          Thinking through what's being skipped over in 

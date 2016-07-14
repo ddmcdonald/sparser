@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  April 2016
+;;;   version:  July 2016
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -216,6 +216,8 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *blocks-world*
     (gload "blocks;loader"))
 
+  (gate-grammar *biocuration*
+    (gload "biocuration;loader"))
 
   (gate-grammar *waypoints*
     (gload "waypoints;loader"))

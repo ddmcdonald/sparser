@@ -1,10 +1,10 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2010-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2010-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar modules"
 ;;;    Module:  "init;loaders;"
-;;;   version:  October 2015
+;;;   version:  July 2016
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
 ;; 5/11/93 added refinements in words and syntax
@@ -465,6 +465,9 @@
   :name "Blocks World"
   :parent *sublanguages*)
 
+(define-grammar-module *biocuration*
+  :name "Biocuration"
+  :parent *sublanguages*)
 
 
 
