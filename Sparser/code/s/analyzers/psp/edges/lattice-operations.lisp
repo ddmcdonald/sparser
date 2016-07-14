@@ -85,6 +85,8 @@
 (defparameter *lattice-ht* (make-hash-table :size 30000 :test #'eq)
   "This is the initial way that edge-referent's are linked to the structures that are in the lattice.
    A bit slower than putting a field in the referent, but applicable to all referents, and does not change their structure.")
+
+(defparameter *lattice-ht-for-collections* (make-hash-table :size 3000 :test #'equal))
 (defparameter *source-ht* (make-hash-table :size 30000 :test #'eq)
   "Inverse link to *lattice-ht*")
 
@@ -246,17 +248,25 @@
 
 (defun find-or-make-lattice-description-for-collection (indiv-collection)
   (declare (special category::collection))
-  (or
-   (get-dli indiv-collection)
-   (let ((new-dli (make-individual :id (incf *dl-lattice-index*) :type category::collection)))
-     (add-uplink new-dli (dli-ref-cat indiv-collection))
-     (loop for member in (value-of 'items indiv-collection)
-       do
-       (add-downlink new-dli (fom-lattice-description member)))
-     (set-dli indiv-collection new-dli))))
+  (let ((members (value-of 'items indiv-collection)))
+    (or
+     (get-dli indiv-collection)
+     (gethash members *lattice-ht-for-collections*)
+     (let ((new-dli (copy-individual indiv-collection)))
+       (add-uplink new-dli (dli-ref-cat indiv-collection))
+       (loop for member in members
+          do
+            (add-downlink new-dli (fom-lattice-description member)))
+       (setf (gethash members *lattice-ht-for-collections*) new-dli)
+       (set-dli indiv-collection new-dli)))))
 
-
-
+(defun make-lattice-description-from-collection-members (members)
+  (find-or-make-lattice-description-for-collection
+   (define-or-find-individual 'collection
+       :items members
+       :number (length members)
+       :type (itype-of (car members)))))
+  
 
 (defun filter-bindings (bindings)
   (declare (special bindings))
