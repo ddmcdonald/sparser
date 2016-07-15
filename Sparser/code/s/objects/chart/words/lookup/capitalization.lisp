@@ -167,6 +167,10 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
             (:lower-case ;; CRAF from craf in Dec#2
              (case actual-state
                (:all-caps (return word))
+               (:initial-letter-capitalized
+                ;; Would be better to distinguish sentence-inital
+                ;; from used as a proper name: "4-monophosphate (Sigma)"
+                (return word))
                (otherwise
                 (break "For ~s: new case for :lowercase ~a"
                        (word-pname lc-word) actual-state))))
