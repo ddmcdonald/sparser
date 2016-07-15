@@ -265,15 +265,21 @@
       (tr :has-single-term-rewrites word single-term-rules)
       (dolist (cfr single-term-rules)
         (if (word-p (cfr-category cfr))
-          (if edge-for-literal
-            (then ;; we've already installed this one, but
-              ;; we can improve it's description
-              (if (edge-rule edge-for-literal)
-                (push cfr (edge-rule edge-for-literal))
-                (setf (edge-rule edge-for-literal) cfr)))
-            (push (install-preterminal-edge
-                   cfr word position-scanned next-position)
-                  single-term-edges))
+          (cond
+            ((punctuation? word)
+             (push (install-punctuation-edge
+                    cfr word position-scanned next-position)
+                   single-term-edges))
+            (edge-for-literal
+             ;; we've already installed this one, but
+             ;; we can improve it's description
+             (if (edge-rule edge-for-literal)
+               (push cfr (edge-rule edge-for-literal))
+               (setf (edge-rule edge-for-literal) cfr)))
+            (t
+             (push (install-preterminal-edge
+                    cfr word position-scanned next-position)
+                   single-term-edges)))
           (else
             (push (install-preterminal-edge
                    cfr word position-scanned next-position)

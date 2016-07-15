@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  2.5 March 2005
+;;;  Version:  July 2016
 
 ;;  1.1  (v1.5)  Added files for the edge-creating routines that had
 ;;        been embedded in other code so that it could all be centralized.
@@ -36,8 +36,6 @@
 ;;        grammar directory to smooth the process of delayed grammar loading.
 ;;       (3/14/05) Added [looking under].
 
-;;5/25/2015 Load initial code for description lattice
-
 (in-package :sparser)
 
 (gload "kinds of edges;single-new")
@@ -64,4 +62,5 @@
   (gload "grammar edge types;form rules")
   (gload "grammar edge types;CA")
   (gload "grammar edge types;pnf")
-  (gload "grammar edge types;pronouns"))
+  (gload "grammar edge types;pronouns")
+  (gload "grammar edge types;punctuation"))

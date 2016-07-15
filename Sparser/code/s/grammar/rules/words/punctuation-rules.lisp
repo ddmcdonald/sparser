@@ -1,21 +1,33 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2006-2007  BBN Solutions LLC.  -- all rights reserved
-;;; $Id$
+;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2006-2007 BBN Solutions LLC.  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation rules"
 ;;;   Module:  "grammar;rules:words:"
-;;;  Version:  0.0 November 2006
+;;;  Version:  July 2016
+
+;; 11/2006 version had a generic treetop action for hyphen
+;; that was just an unfinished stub.
 
 (in-package :sparser)
 
-;;;-------
-;;; N - N
-;;;-------
+(defun create-punctuation-edge-rule (character)
+  "Type-checking and uniform layout around standard rule-creating
+   code."
+  (let ((word (etypecase character
+                (character (punctuation-named character))
+                (word (assert (punctuation? character))
+                      character))))
+    
+    (let ((rule (define-cfr word `(,word)
+                  :form (category-named 'punctuation)
+                  :referent word)))
+      
+      (setf (get-tag :rules word) `(,rule))
+      
+      (values word
+              rule))))
 
-(set-ca-action (word-named "-") 'hyphen-ca-hook)
 
-(set-generic-treetop-action (word-named "-") 'hyphen-ca-hook)
+(create-punctuation-edge-rule #\:)
 
-(defun hyphen-ca-hook (edge-over-hyphen)
-  (push-debug `(,edge-over-hyphen))
-  (break "hyphen-ca-hook -- stub"))
