@@ -364,7 +364,8 @@
 (defun pattern-sweep (sentence)
   "Scans the sentence treetop by treetop in a loop.
    Looks for patterns initiated by no space between words."
-  (declare (special *the-punctuation-period* *trace-sweep*))
+  (declare (special *sentence-terminating-punctuation*
+                    *trace-sweep*))
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
         treetop  position-after  multiple?  )
@@ -388,7 +389,7 @@
                 (pos-token-index position-after)))
 
       (when (and (word-p treetop)
-                 (eq treetop *the-punctuation-period*))
+                 (memq treetop *sentence-terminating-punctuation*))
         (tr :terminated-sweep-at position-after)
         (return))
 
@@ -406,7 +407,7 @@
             ((eq position-after position-before)
              (when *break-on-nospace-pathology*
                (push-debug `(treetop position-after))
-               (lsp-break "Pattern-sweep: Going to loop on position ~a"
+               (lsp-break "Pattern-sweep: would loop on position ~a"
                           position-before))
              ;; we could (return) and drop out of this loop, but then
              ;; the same thing will hang up the parenthesis sweep,
