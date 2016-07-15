@@ -25,6 +25,7 @@ BOB: Yes, my model shows that Erk is inactivated.
      When the feedback loop is included in the model, ERK remains active.
 |#
 
+#|
 "I want to find a molecular treatment for pancreatic cancer."
 "What drug could I use?"
 "What proteins might lead to the development of pancreatic cancer."
@@ -61,7 +62,7 @@ BOB: Yes, my model shows that Erk is inactivated.
 
 "Let's build a model of the KRAS neighborhood."
 "I know that KRAS activates Raf, Raf activates Mek and Mek activates Erk."
-
+|#
 #|--------------------------------------------------------
          Thinking through what's being skipped over in 
          this one simple remark. Suggests enthymemes could
