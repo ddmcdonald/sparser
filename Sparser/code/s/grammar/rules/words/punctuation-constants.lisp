@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "punctuation-constants"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   July 2015
+;;;   Version:   July 2016
 
 ;; Broken out from punctuation1 1/29/15 because the ACL compiler
 ;; doesn't know how to serialize a word object. Added right-arrow 4/23/15.
@@ -21,6 +21,7 @@
 (defparameter *the-punctuation-comma* (punctuation-named #\,))
 (defparameter *the-punctuation-colon* (punctuation-named #\:))
 (defparameter *the-punctuation-semicolon* (punctuation-named #\;))
+(defparameter *the-punctuation-question-mark* (punctuation-named #\?))
 
 (defparameter *the-punctuation-hyphen* (punctuation-named #\-))
 
@@ -35,7 +36,10 @@
 (defparameter *punctuation-words*
   `(,*the-punctuation-period* ,*the-punctuation-comma*
     ,*the-punctuation-colon* ,*the-punctuation-semicolon*
-    ,*the-punctuation-hyphen* ))
+    ,*the-punctuation-hyphen* ,*the-punctuation-question-mark*))
+
+(defparameter *sentence-terminating-punctuation*
+  `(,*the-punctuation-period* ,*the-punctuation-question-mark*))
 
 (defun edge-over-punctuation? (edge)
   (memq (edge-category edge) *punctuation-words*))
