@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "time-of-day"
 ;;;   Module:  "model;core:time:"
-;;;  version:  April 2016
+;;;  version:  July 2016
 
 ;; initiated 8/27/08 (CG). 9/23/13 Adding and revising a lot.
 ;; 4/1/16 Added specialization
@@ -112,6 +112,9 @@ timezone.  |#
 ;;/// There can be offsets from any timezone 
 ;; (Nepal is central India + 20 minutes), so these can be generalized.
 
+#| This old scheme of Charlie G's calls into rollout-naries-from-the-left
+   and then hits a gratuitous duplication on the second rule because it
+   shares a prefix with the first
 ;;;-----------------------
 ;;; offsets from Coordinated Universal Time
 ;;;-----------------------
@@ -131,5 +134,5 @@ timezone.  |#
 (def-cfr timezone ("GMT" hyphen number))
 (def-cfr timezone ("GMT" hyphen number colon number))
 (def-cfr timezone ("GMT"))
-
+|#
 
