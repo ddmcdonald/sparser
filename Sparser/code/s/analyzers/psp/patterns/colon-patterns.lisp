@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "colon-patterns""
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  January 2016
+;;;  version:  July 2016
 
 ;; Broken out from pattern-gophers 7/19/15. After folding in edges
 ;; doing muli-colonn patterns 11/6/15. More abstraction 11/16.
@@ -30,7 +30,7 @@
       (one-colon-ns-patterns pattern1 words edges1 colon-positions start-pos end-pos)))
    (t
     (multi-colon-ns-patterns
-     words edges colon-positions start-pos end-pos))))
+     pattern words edges colon-positions start-pos end-pos))))
 
 ;;;-----------
 ;;; one colon
@@ -77,10 +77,10 @@
 ;;; more than one colon
 ;;;---------------------
 
-(defun multi-colon-ns-patterns (words edges colon-positions start-pos end-pos)
+(defun multi-colon-ns-patterns (pattern words edges colon-positions start-pos end-pos)
   ;; called from ns-patterns/edge-colon-edge when the only punctuation
   ;; in the sequence is colon. Do a divide and recombine
-  (declare (special category::protein)(ignore edges))
+  (declare (special category::protein))
   ;; (push-debug `(,words ,edges ,colon-positions ,start-pos ,end-pos))
   ;; (setq pattern (nth 0 *) words (nth 1 *) edges (nth 2 *) colon-positions (nth 3 *) pos-before (nth 4 *) pos-after (nth 5 *))
   (let ((segments (divide-colon-sequence
@@ -107,8 +107,13 @@
                       :referent i :rule 'multi-colon-ns-patterns
                       :constituents segments :words words)))
           edge))
+       (*work-on-ns-patterns*
+        (push-debug `(,pattern ,edges ,words ,colon-positions ,start-pos ,end-pos))
+        ;; In localization: "in CHCl 3 /CH 3 OH/NH 4 OH/H 2 O(45:35:7:3)"
+        (lsp-break "Another multi-colon pattern: ~a" pattern))
        (t
-        (break "another multi-colon pattern: ~a" pattern))))))
+        (tr :no-ns-pattern-matched)
+        (reify-ns-name-and-make-edge words start-pos end-pos))))))
 
 
 ;;--- dividing the ns sequence by colon position
