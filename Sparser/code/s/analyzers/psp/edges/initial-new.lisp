@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992,1993,1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "initial"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:   1.5 November 1994
+;;;  Version:   July 2016
 
 ;; 1.1 (4/21/91 v1.8.4)  Changed the arguments
 ;;     (9/12/92 v2.3) improved the documentation
@@ -11,7 +11,7 @@
 ;; 1.3 (2/24/94) added pro-forma daughters
 ;; 1.4 (3/15) started improving information about literals
 ;;     (5/25) added type predicate
-;; 1.5 (11/16) added form category when word is a function word
+;; 1.5 (11/16/94) added form category when word is a function word
 
 (in-package :sparser)
 
@@ -39,6 +39,10 @@
     (setf (edge-starts-at edge) starting-vector)
     (setf (edge-ends-at edge)   ending-vector)
 
+    #+ignore ;; confuses the innocent
+    ;; Put something here if we can keep track of the rules
+    ;; that are being interpreted that mention this word
+    ;; as a literal.
     (let ((ll-rules (rs-left-looking-ids rule-set))
           (rl-rules (rs-right-looking-ids rule-set)))
       (setf (edge-rule edge)
