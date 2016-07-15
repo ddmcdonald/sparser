@@ -70,6 +70,10 @@
    initiate scan-terminal-loop as it walks the populated chart"
   (let* ((start-pos (starts-at-pos sentence))
          (first-word (pos-terminal start-pos)))
+    (unless first-word ;; 7/14/16: ends with polyword followed by "?"
+      (error "Handling at the end of the previous sentence ~
+              did not do lookahead correctly: ~a"
+             (previous sentence)))
     (tr :scanning-terminals-of sentence)
     (catch :end-of-sentence
       (scan-terminals-loop start-pos first-word))))
