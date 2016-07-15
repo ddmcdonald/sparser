@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2014-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form rules"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  0.4 June 2015
+;;;  Version:  July 2016
 
 ;; initiated 10/12/92 v2.3
 ;; 0.1 (6/4/93) allowed a default if the rule doesn't specify the form
@@ -75,7 +75,7 @@
           nil )
 
         (else          
-          (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
+          (setf (edge-referent edge) referent)
           (complete edge)
           
           (when *trace-edge-creation*

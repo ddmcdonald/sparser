@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2013-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pnf"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  0.2 August 2013
+;;;  Version:  July 2016
 
 ;; initiated 5/28/93 v2.3)
 ;; 0.1 (2/24/94) added daughter and used-in encoding
@@ -56,8 +56,7 @@
     (setf (edge-right-daughter edge) :proper-name)
     (setf (edge-constituents edge) daughters)
 
-    (setf (edge-referent edge) 
-      (place-referent-in-lattice referent edge))
+    (setf (edge-referent edge) referent)
     (when *trace-edge-creation*
       (format t "~&creating ~A for a proper name"
               edge))

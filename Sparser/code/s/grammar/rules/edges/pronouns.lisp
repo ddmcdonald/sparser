@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1991  Content Technologies Inc.
-;;; copyright (c) 1992  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "pronouns"
 ;;;    Module:   "analyzers;psp:"
-;;;   Version:   1.1 May 1993
+;;;   Version:   July 2016
 
 ;; initiated 1/91
 ;; 1.0 (9/7/92 v2.3) flushed out of date field references
@@ -38,7 +38,7 @@
     (set-used-by pn-edge edge)
 
     (setf (edge-form edge)     form)
-    (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
+    (setf (edge-referent edge) referent)
 
     (when *trace-edge-creation*
       (format t "~&~%creating ~A from ~A~
