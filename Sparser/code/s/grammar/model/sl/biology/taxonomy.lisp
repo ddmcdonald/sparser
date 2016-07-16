@@ -430,7 +430,8 @@
 		      pronoun/plural ;; "they"
 		      organism ;; "these animals showed..."
 		      these
-		      bio-entity
+		      ;; bio-entity too general -- leads to problems with created semantic rules
+                      bio-chemical-entity
 		      bio-location ;; "the Y561 site displayed no difference..."
 		      evidence
 		      article-figure
