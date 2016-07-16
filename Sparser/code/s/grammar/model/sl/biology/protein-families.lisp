@@ -13,6 +13,11 @@
 
 
 ;; Protein families
+(def-family "SMAD" ;; there are a bunch of these, but we will ignore them for the moment
+    )
+
+(def-family "DUSP" ;; there are a bunch of these, but we will ignore them for the moment
+    )
 (def-family "EPHB receptor"
     :members ("EPHB1_HUMAN" "EPHB2_HUMAN" "EPHB3_HUMAN" "EPHB4_HUMAN" "EPHB5_HUMAN" "EPHB6_HUMAN"))
 
