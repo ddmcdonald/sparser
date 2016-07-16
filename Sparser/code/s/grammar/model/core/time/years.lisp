@@ -64,9 +64,9 @@
   :referent (:function make-year-from-constituent right-edge))
 
 (defun make-year-from-constituent (number)
-  (let ((string (string/number number))
-        (integer (number-value number)))
-    (define-year string integer)))
+  (let ((string (string/number number)))
+    (when string 
+      (define-year string (number-value number)))))
 
 
 

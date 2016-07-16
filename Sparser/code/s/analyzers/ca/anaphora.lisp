@@ -141,7 +141,11 @@
         (polyword )
         (fixnum )
         (float )
-        (cons ) ;; "-fold" 
+        (cons ) ;; "-fold"
+        (boolean
+         ;; happened in PMC3522295,
+         ;; bizarre "mating type-switched strain PJ69–4A"
+         )
         (otherwise
          (unless *external-referents*
            (error "Unexpected type of object being added to ~

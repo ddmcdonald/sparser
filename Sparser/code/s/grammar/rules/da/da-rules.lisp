@@ -403,7 +403,8 @@
   ;; (setq pp-edge (car *) comma-edge (cadr *) np-edge (caddr *))
   ;; Look up the right fridge of the s for a proper-noun 
   (let ((target (find-target-satisfying (right-fringe-of pp-edge) #'np-target?)))
-    (format t "dominating-edge for ~s is ~s" target (edge-used-in target))
+    ;; don't know why this is prinitng out -- remove it
+    ;;(format t "dominating-edge for ~s is ~s" target (edge-used-in target))
     (when target
       (make-edge-spec 
        :category (edge-category target)

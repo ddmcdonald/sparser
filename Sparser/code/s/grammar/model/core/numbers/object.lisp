@@ -111,9 +111,10 @@
 (defun string/number (n)
   (let ((word (get-tag :digit-sequence n)))
     (if word
-      (word-pname word)
-      (let ((value (value-of 'value n)))
-        (format nil "~A" value)))))
+        (word-pname word)
+        (let ((value (value-of 'value n)))
+          (when value ;; can be nil -- don't want to produce "NIL"
+            (format nil "~A" value))))))
 
 
 ;;;--------------

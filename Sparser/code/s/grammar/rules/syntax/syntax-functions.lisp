@@ -427,6 +427,10 @@
   (let ((subject (subject-variable qualifier)))
     (cond
       (*subcat-test* subject)
+      ((word-p qualifier)
+       ;; probably a case of an unknown verb+ing created by morphology
+       ;;  like "mating" in PMC3522295
+       )
       (t
        (setq qualifier (individual-for-ref qualifier))
        (if subject ;; really should check for passivizing
@@ -621,8 +625,9 @@
 
   ;; default
   (if (word-p vg-phrase)
-      (then (format t "vg-phrase ~s is not a category or an individual, can't attach adverb"
+      (then (format t "vg-phrase ~s is not a category or an individual,~% probably defined by morphology, can't attach adverb~%"
                     vg-phrase)
+            
             vg-phrase)
       (let
           ((vg (individual-for-ref vg-phrase)))
