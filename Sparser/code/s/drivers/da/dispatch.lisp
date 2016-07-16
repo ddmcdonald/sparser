@@ -21,15 +21,19 @@
 
 (defun standalone-da-execution (1st-vertex tt)
   ;; run and return rather than thread back into 
-  (let ((pos-before (pos-edge-starts-at tt))
-        (pos-after  (pos-edge-ends-at tt)))
-    (initialize-da-search)
-    (initialize-da-action-globals tt pos-before pos-after)
-    (let ((result
-           (catch :da-pattern-matched
-             (catch :no-da-pattern-matched
-               (check-for-extension-from-vertex 1st-vertex tt)))))
-      result)))
+  (when (edge-p tt)
+    ;; avoid error caused by lack of edge over COMMA in
+    ;;  (reviewed in Gutkind et al., 1998)
+    ;; in PMC2156131 
+    (let ((pos-before (pos-edge-starts-at tt))
+          (pos-after  (pos-edge-ends-at tt)))
+      (initialize-da-search)
+      (initialize-da-action-globals tt pos-before pos-after)
+      (let ((result
+             (catch :da-pattern-matched
+               (catch :no-da-pattern-matched
+                 (check-for-extension-from-vertex 1st-vertex tt)))))
+        result))))
 
 
 
