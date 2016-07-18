@@ -730,7 +730,10 @@
                                           right-ref right-type)))
           (let ((collection
                  (define-or-find-individual 'collection
-                   :items (list left-ref right-ref)
+                     ;; This is needed for roundtripping to Spire structures
+                     ;; CHECK WITH DAVID FOR WHY THESE WERE FORCED TO BE CATEGORIES
+                     :items (list (maybe-make-individual left-ref)
+                                  (maybe-make-individual right-ref))
                    :number 2
                    :type type)))
             (if *description-lattice*
@@ -749,40 +752,47 @@
            (first-ref (and referents (first referents)))
            (last-ref (and referents (first (last referents)))))
       (cond
-       ((individual-p first-ref)
-        (let ((types (mapcar #'ref-type referents))
-              (sample-type (ref-type last-ref)))
-          (when (every #'(lambda (type) (eq type sample-type)) referents)
-            (setq sample-type
-                  (adjudicate-specializations/list referents types)))
-          (let ((collection
-                 (define-or-find-individual 'collection
-                     :items referents
-                     :number (length referents)
-                     :type sample-type)))
-            (if *description-lattice*
-                (find-or-make-lattice-description-for-collection collection)
-                collection ))))
+        ((individual-p first-ref)
+         (let ((types (mapcar #'ref-type referents))
+               (sample-type (ref-type last-ref)))
+           (when (every #'(lambda (type) (eq type sample-type)) referents)
+             (setq sample-type
+                   (adjudicate-specializations/list referents types)))
+           (let ((collection
+                  (define-or-find-individual 'collection
+                      :items referents
+                      :number (length referents)
+                      ;; not sure what this is supposed to be doing -- it
+                      ;;  makes the type field of the collection a list
+                      ;;  which is inconsistent with other caes
+                      ;;  The function adjudicate-specializations/list is a stub
+                      ;;  so I am just going to change this to be consistent with
+                      ;;  other cases
+                      ;;:type sample-type
+                      :type (itype-of first-ref))))
+             (if *description-lattice*
+                 (find-or-make-lattice-description-for-collection collection)
+                 collection ))))
 
-       ;; "biochemical, molecular and immunological approaches"
-       ((category-p first-ref)
-        ;;/// Finding a type would be a matter of finding their
-        ;; common super-type and that's unlikely given the 
-        ;; excessively flat category structure we tend to have.
-        ;; Still, the check routines expect a type so we pick
-        ;; the first one.
-        (let ((collection
-               (define-or-find-individual 'collection
-                 :items referents
-                 :number (length referents)
-                 :type (category-of (first referents)))))
-          (if *description-lattice*
-                (find-or-make-lattice-description-for-collection collection)
-                collection )))
+        ;; "biochemical, molecular and immunological approaches"
+        ((category-p first-ref)
+         ;;/// Finding a type would be a matter of finding their
+         ;; common super-type and that's unlikely given the 
+         ;; excessively flat category structure we tend to have.
+         ;; Still, the check routines expect a type so we pick
+         ;; the first one.
+         (let ((collection
+                (define-or-find-individual 'collection
+                    :items referents
+                    :number (length referents)
+                    :type (category-of (first referents)))))
+           (if *description-lattice*
+               (find-or-make-lattice-description-for-collection collection)
+               collection )))
 
-       (t
-        (tr :conjoined-edges-dont-have-individuals-as-referents)
-        nil )))))
+        (t
+         (tr :conjoined-edges-dont-have-individuals-as-referents)
+         nil )))))
 
 
 
