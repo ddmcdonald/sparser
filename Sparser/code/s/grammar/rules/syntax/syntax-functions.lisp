@@ -1383,6 +1383,7 @@
      ;;/// prep-comp, etc.
      (or
       (find-subcat-var item label head)
+      #+ignore ;; this should be done by a DA rule, which does a tuck
       (and (is-collection? head)
            (value-of 'items head)
            (car (last (value-of 'items head))) ;; fooled by the WORD sequence

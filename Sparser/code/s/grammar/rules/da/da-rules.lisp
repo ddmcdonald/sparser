@@ -956,6 +956,60 @@
    category::event-relation
    `((relation ,conj) (event ,event) (subordinated-event ,sub-event))))
 
+(define-debris-analysis-rule np-conj-pp
+    ;; for the case where the rightmost NP in a conjunction can
+    ;; take a PP, but was conjoined early
+    :pattern (np pp)
+    :action (:function np-conj-pp first second))
+
+(defun np-conjunction-edge? (e)
+  (and (eq (edge-form e) category::np)
+       (individual-p (edge-referent e))
+       (collection-p (edge-referent e))))
+
+(defun np-conj-pp (np-containing-edge pp-edge)
+  (let ((np-conj-edge
+         (find-target-satisfying
+          (right-fringe-of np-containing-edge)
+          #'np-conjunction-edge?)))
+    (declare (special np-conj-edge))
+    (when np-conj-edge
+      (let* ((np-ref (edge-referent np-conj-edge))
+             (prep (identify-preposition pp-edge))
+             (*pobj-edge* (edge-right-daughter pp-edge))
+             (pobj-referent (edge-referent *pobj-edge*))
+             (label (identify-preposition pp-edge))
+             (last-np
+              (and np-ref
+                   (value-of 'items np-ref)
+                   (car (last (value-of 'items np-ref)))))
+             (var-to-bind
+              (find-subcat-var pobj-referent label last-np))
+             (target
+              (when var-to-bind
+                (cond
+                  ((edge-p (edge-right-daughter np-conj-edge))
+                   (edge-right-daughter np-conj-edge))
+                  ((edge-constituents np-conj-edge)
+                   (car (last (edge-constituents np-conj-edge))))))))
+        (declare (special np-ref label last-np))
+        (when (and var-to-bind target)
+          (make-edge-spec
+           :category (itype-of last-np)
+           :form category::np
+           :referent (bind-dli-variable var-to-bind pobj-referent last-np)
+           :target target
+           :dominating (edge-used-in target)
+           :direction :right
+           ))))))
+
+(define-debris-analysis-rule s-with-np-conj-pp
+    ;; for the case where the rightmost NP in a conjunction can
+    ;; take a PP, but was conjoined early
+    :pattern (s pp)
+    :action (:function np-conj-pp first second))
+
+
 
 ;;;--------------------
 ;;; Common subroutines
