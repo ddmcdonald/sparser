@@ -368,17 +368,21 @@
 ;;----- collect-model-description mentods
 
 (defmethod collect-model-description ((cat category))
-  (list cat))
+  cat)
 
 (defmethod collect-model-description ((str string))
-  (list str))
+  str)
 
 
 (defmethod collect-model-description ((w word))
-  (word-pname w))
+  (if *for-spire*
+      w
+      (word-pname w)))
 
 (defmethod collect-model-description ((w polyword)) ;
-  (pw-pname w))
+  (if *for-spire*
+      w
+      (pw-pname w)))
 
 (defmethod collect-model-description ((cal cons))
   `(collection :members 
@@ -411,7 +415,7 @@ without damaging other code.")
       (not *print-sem-tree*)
       (not *for-spire*))
      (if
-      (itypep i 'collection)
+      (collection-p  i)
       (value-of 'items i)
       (value-of 'value i)))
    	
@@ -424,12 +428,13 @@ without damaging other code.")
        (append
         desc
         (loop for b in bindings 
-           unless (member (var-name (binding-variable b))
-                          '(members count ras2-model))
+           unless (and (not *for-spire*)
+                       (member (var-name (binding-variable b))
+                          '(members count ras2-model)))
            collect
              (list (var-name(binding-variable b))
                    (collect-model-description (binding-value b)))))))
-    ((itypep i 'collection)
+    ((collection-p i)
      (setf (gethash i *semtree-seen-individuals*) t)
      (collect-model-description-for-collection i))
     (t  
@@ -443,14 +448,16 @@ without damaging other code.")
           as var-name = (var-name var)
           as value = (binding-value b)
           do
-            (unless (or (memq var-name
-                              '(trailing-parenthetical category ras2-model))
+            (unless (or (and (not *for-spire*)
+                             (memq var-name
+                              '(trailing-parenthetical category ras2-model)))
                         (typep value 'mixin-category)) ;; has-determiner
               (if (or (numberp value)(symbolp value) (stringp value))
                   (push (list var-name value) desc)
                   (typecase value
                     (individual 
-                     (if (itypep value 'prepositional-phrase)
+                     (if (and (not *for-spire*)
+                              (itypep value 'prepositional-phrase))
                          (push (list var-name ; 
                                      (collect-model-description
                                       (value-of 'pobj value)))
@@ -458,7 +465,8 @@ without damaging other code.")
                          (push (list var-name
                                      (collect-model-description value))
                                desc)))
-                    (word (cond (*for-spire* (push (list var-name value) desc))
+                    (word (cond (*for-spire*
+                                 (push (list var-name value) desc))
                                 (*show-words-and-polywords* (push (list var-name value) desc) )))
                     (polyword (cond (*for-spire* (push (list var-name value) desc))
                                 (*show-words-and-polywords* (push (list var-name value) desc) )))
@@ -482,12 +490,13 @@ without damaging other code.")
        as var  = (binding-variable b)
        as var-name = (var-name var)
        as value = (binding-value b)
+       as vv-pair = `(,var-name ,value)
        do
          (unless (or (memq var-name '(trailing-parenthetical category ras2-model))
                      (typep value 'mixin-category)) ;; has-determiner
            (case var-name
-             (type nil)
-             (number nil)
+             (type (if *for-spire* (push vv-pair desc)))
+             (number (if *for-spire* (push vv-pair desc)))
              (items
               (let ((member-descs (mapcar #'collect-model-description value)))
                 (push
@@ -495,29 +504,31 @@ without damaging other code.")
                      `(:members ,.member-descs)
                      `(,var-name (collection (:members (,@ member-descs)))))
                  desc)))
-             (if (or (numberp value) (symbolp value) (stringp value))
-                 (push `(,var-name value) desc)
-                 (typecase value
-                   (individual 
-                    (push (list var-name
-                                (collect-model-description
-                                 (if (itypep value 'prepositional-phrase)
-                                     (value-of 'pobj value)
-                                     value)))
-                          desc))
-                   (word (when *show-words-and-polywords* (push `(,var-name ,value) desc)))
-                   (polyword (when *show-words-and-polywords* (push `(,var-name ,value) desc)))
-                   (category
-                    (push `(,var-name ,(collect-model-descriptiOn value)) desc))
-                   (cons (lsp-break "how did we get a CONS ~s as a value for variable ~s~%"
-                                    value var-name))
-                   (rule-set) ;; the word "anti" presently does this
-                   ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
-                   (otherwise
-                    (push-debug `(,value ,b ,i))
-                    ;;(break "Unexpected type of value of a binding: ~a" value)
-                    (format t "~&~%Collect model: ~
-                            Unexpected type of value of a binding: ~a~%~%" value)))))))
+             (t
+              (if (or (numberp value) (symbolp value) (stringp value))
+                  (push vv-pair desc)
+                  (typecase value
+                    (individual 
+                     (push (list var-name
+                                 (collect-model-description
+                                  (if (and (not *for-spire*)
+                                           (itypep value 'prepositional-phrase))
+                                      (value-of 'pobj value)
+                                      value)))
+                           desc))
+                    (word (when *show-words-and-polywords* (push vv-pair desc)))
+                    (polyword (when *show-words-and-polywords* (push vv-pair desc)))
+                    (category
+                     (push `(,var-name ,(collect-model-description value)) desc))
+                    (cons (lsp-break "how did we get a CONS ~s as a value for variable ~s~%"
+                                     value var-name))
+                    (rule-set) ;; the word "anti" presently does this
+                    ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
+                    (otherwise
+                     (push-debug `(,value ,b ,i))
+                     ;;(break "Unexpected type of value of a binding: ~a" value)
+                     (format t "~&~%Collect model: ~
+                            Unexpected type of value of a binding: ~a~%~%" value))))))))
     (reverse desc)))
 
 ;;;--------------------
