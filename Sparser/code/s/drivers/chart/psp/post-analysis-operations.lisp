@@ -121,7 +121,7 @@ where it regulates gene expression.")
               ;; not sure what to do for such things -- example ER-β is a hyphenated pair
               (setf (contextual-description mention) base)
               base)
-             ((is-collection? base)
+             ((is-basic-collection? base)
               ;; distribute conjunctions
               (setf (contextual-description mention)
                     (reinterpret-collection-with-modifiers dt var containing-mentions)))
@@ -142,6 +142,7 @@ where it regulates gene expression.")
 (defparameter *work-on-di-pronouns* nil)
 
 (defun interpret-pronoun-in-context (dt variable containing-mentions)
+  (declare (special category::be))
   (push-debug `(,dt ,variable ,containing-mentions))
   (let* ((mention (dt-mention dt))
          (pronoun (base-description mention))
@@ -171,7 +172,7 @@ where it regulates gene expression.")
                                   (eq variable 'predicate))
                               (itypep (base-description
                                        (car containing-mentions))
-                                      'be))
+                                      category::be))
                          nil
                          (error
                           "~&NIL restriction -- var: ~s, ~
@@ -221,7 +222,7 @@ where it regulates gene expression.")
 		 (interp (interpret-item-in-context *m* *var* containing-mentions)))
 	     (declare (special interp *m* *var*))
 	     (cond ((and *break-on-null-interp* (null interp)) (lsp-break "null interp"))
-		   ((is-collection? interp)
+		   ((is-basic-collection? interp)
 		    (copy-list (value-of 'items interp)))
 		   (t (list interp)))))
       var
@@ -275,7 +276,7 @@ where it regulates gene expression.")
 	   (setq interps
 		 (loop for i in interps
 		    nconc
-		      (if (is-collection? ival)
+		      (if (is-basic-collection? ival)
 			  ;; This is the code that does a "distribution" of conjunctions
 			  (if (eq var 'predication) ;; here the conjunction is taken as joint assertion
 			      (loop for c in (value-of 'items ival)
@@ -314,10 +315,15 @@ where it regulates gene expression.")
 	 (interpret-atom-in-context val-dt var containing-mentions)
 	 (interpret-in-context val-dt var containing-mentions)))))
 
-(defun is-collection? (i)
+(defun is-basic-collection? (i)
+  (declare (special category::hyphenated-pair
+                    category::hyphenated-triple
+                    category::two-part-label))
   (and (individual-p i)
-       (itypep i 'collection)
-       (not (itypep-or i '(hyphenated-pair hyphenated-triple two-part-label)))))
+       (collection-p i)
+       (not (itypep-or i '(category::hyphenated-pair
+                           category::hyphenated-triple
+                           category::two-part-label)))))
 
 
 (defparameter *special-collection-interp* t
@@ -354,6 +360,7 @@ where it regulates gene expression.")
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
+  (declare (special category::number))
   (let* ((parent-edge (car parent-edges))
 	 (poss-edges (poss-edges child-interp parent-edge)))
     ;; allow for the fact the items like "669" have two edges
@@ -370,7 +377,7 @@ where it regulates gene expression.")
 			   (individual-p child-interp)
 			   (not allow-null-edge)
 			   child-interp
-			   (not (itypep child-interp 'number)))
+			   (not (itypep child-interp category::number)))
                         (format t "~&1) no internal edge for ~s in ~s~&"
 				child-interp parent-edge)
                         (error "relevant-edges")
@@ -380,7 +387,7 @@ where it regulates gene expression.")
 	      (unless (or allow-null-edge
 			  (not (individual-p child-interp))
 			  (and child-interp ;; happens in a small number of cases -- just ignore them
-			       (itypep child-interp 'number)))
+			       (itypep child-interp category::number)))
 		;; happens for premodifying v+ing
 		;; where the edge has a category edge-representation,
 		;; not an individual
@@ -494,13 +501,15 @@ where it regulates gene expression.")
 
 
 (defun known-no-edge-pattern (parent-edge child-interp)
+  (declare (special category::tense/aspect-vector
+                    category::hyphenated-triple))
   ;; these are case where the interpretation of the parent edge
   ;; contains some "computed" version of the interpretation of the
   ;; child edge -- e.g. the map from "T" to "threonine"
   (or (not (or (individual-p child-interp)
 	       (category-p child-interp)))
-      (itypep child-interp 'tense/aspect-vector)
-      (itypep child-interp 'hyphenated-triple)
+      (itypep child-interp category::tense/aspect-vector)
+      (itypep child-interp category::hyphenated-triple)
       (and (itypep child-interp 'amino-acid)
 	   (individual-p (edge-referent parent-edge))
 	   (or (itypep (edge-referent parent-edge) 'residue-on-protein)

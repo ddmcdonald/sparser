@@ -186,7 +186,8 @@
   (:method ((ref-object category))
     (get-subcategorization ref-object))
   (:method ((ref-object individual))
-    (if (itypep ref-object 'collection)
+    (declare (special category::collection))
+    (if (collection-p ref-object)
       (let ((conj-type (value-of 'type ref-object)))
         (when conj-type
           ;; If there isn't a type, then this was either a badly

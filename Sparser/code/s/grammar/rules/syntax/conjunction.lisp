@@ -522,10 +522,6 @@
 		   (itypep before 'protein)
 		   (itypep before 'residue-on-protein)
 		   (itypep before 'fragment)
-
-		   (itypep after 'protein)
-		   (itypep after 'residue-on-protein)
-		   (itypep after 'fragment)
 		   ) ;;??                                  other
                   (not (eq before after)))
              (and (category-p before)
@@ -852,7 +848,7 @@
    ((or (referential-category-p i) 
         (not (individual-p i)))
     i)
-   ((itypep i 'collection)
+   ((collection-p i)
     (value-of 'items i))
    (t ;; must be an individual which is not a collection -- 
     ;; return either a list of individuals that is the result of expanding

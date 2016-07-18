@@ -65,6 +65,9 @@
     (assoc item alist :test #'eq)))
 
 (unless (fboundp 'memq)
+  (defmacro memq (item list)
+    `(member ,item ,list :test #'eq))
+  #+ignore
   (defun memq (item list)
     (member item list :test #'eq)))
 

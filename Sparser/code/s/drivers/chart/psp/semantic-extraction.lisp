@@ -403,15 +403,15 @@ without damaging other code.")
       `(,i)))
 
 (defmethod collect-model-description ((i individual))
-  (declare (special script))
+  (declare (special script category::number category::ordinal))
   (cond
     ((gethash i *semtree-seen-individuals*)
      (if *for-spire*
          (indiv-or-type i)
          `(("!recursion!" ,i))))
     ((and
-      (itypep i 'number)
-      (not (itypep i 'ordinal))
+      (itypep i category::number)
+      (not (itypep i category::ordinal))
       (not *print-sem-tree*)
       (not *for-spire*))
      (if
@@ -421,7 +421,7 @@ without damaging other code.")
    	
     ((and (eq script :biology)
           (itypep i 'protein-family) ;; get rid of bio-family -- misnamed...
-          (not (itypep i 'collection)))
+          (not (collection-p i)))
      (let ((bindings (indiv-binds i))
            (desc (indiv-or-type i)))
        (declare (special bindings desc))

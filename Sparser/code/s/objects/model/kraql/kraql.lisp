@@ -762,9 +762,6 @@ duplicated below
 (defun collection-items (indiv)
   (when (collection-p indiv)
     (value-of 'items indiv)))
-
-(defun collection-p (item)
-  (itypep item 'collection))
     
 
 (defun kraql-body-item (stmt blists)

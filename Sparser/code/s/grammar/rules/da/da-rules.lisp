@@ -46,7 +46,7 @@
 	 (pobj-referent (edge-referent pobj-edge))
 	 (prep-edge (edge-left-daughter pp))
 	 (prep-word (edge-left-daughter prep-edge)))
-    (if (is-collection? clause-referent)
+    (if (is-basic-collection? clause-referent)
 	(or
 	 (distribute-pp-to-conjoined-clauses pp clause prep-word pobj-referent clause-referent
                                              'attach-leading-pp-to-clause)

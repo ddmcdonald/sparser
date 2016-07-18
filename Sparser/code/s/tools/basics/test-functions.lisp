@@ -181,7 +181,7 @@
 	   (cond ((null (cdr sem-tree)) (format stream " ~s" (car sem-tree)))
 		 ((and (individual-p (car sem-tree))
 		       (itypep (car sem-tree) 'number)
-		       (not (is-collection? (car sem-tree))))
+		       (not (collection-p (car sem-tree))))
 		  (format stream " ~s" (value-of 'value (car sem-tree))))
 		 ((and (cdr sem-tree)
 		       (null (cddr sem-tree))

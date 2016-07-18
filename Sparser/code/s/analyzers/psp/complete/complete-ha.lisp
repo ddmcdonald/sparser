@@ -320,6 +320,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
   '((syntactic-there be)))
 
 (defun maybe-check-semantic-completeness (edge)
+  (declare (special category::pronoun))
   (when (and *check-semantic-completeness*
              (edge-rule edge)
              (not (ignore-semantic-check? (edge-rule edge))))
@@ -334,7 +335,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
           (cond
             ((not (contains-sem? all-sem left-sem))
              (if (and (consp left-sem)
-                      (itypep (car left-sem) 'pronoun))
+                      (itypep (car left-sem) category::pronoun))
                  (format t "~&rule ~s loses semantics for pronoun ~s in ~a~&"
                          (edge-rule edge) left-sem
                          `(,(car all-sem) ,(second all-sem)  "..." ))
@@ -342,7 +343,7 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
                              not contain left-sem")))
             ((not (contains-sem? all-sem right-sem))
              (if (and (consp right-sem)
-                      (itypep (car right-sem) 'pronoun))
+                      (itypep (car right-sem) category::pronoun))
                  (format t "~&rule ~s loses semantics for pronoun ~s in ~a~&"
                          (edge-rule edge) right-sem `(,(car all-sem) ,(second all-sem) "..." ) )
                  (lsp-break "check-semantic-completeness, all-sem does ~
@@ -351,24 +352,27 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
                          not contain right-sem"))))))))
 
 (defun norm-sem (i)
+  (declare (special category::prepositional-phrase category::copular-pp
+                    category::to-comp))
   (let ((sem (semtree i nil)))
     (cond
       ((not (consp sem)) sem) ;; e.g. 50, for the tree from #<number "50">
-      ((or (itypep (car sem) 'prepositional-phrase)
-	   (itypep (car sem) 'copular-pp))
+      ((or (itypep (car sem) category::prepositional-phrase)
+	   (itypep (car sem) category::copular-pp))
        (semtree (value-of 'pobj (car sem))))
-      ((itypep (car sem) 'to-comp)
+      ((itypep (car sem) category::to-comp)
        (semtree (value-of 'comp (car sem))))
       (t sem))))
 
 (defun contains-sem? (all part)
+  (declare (special category::hyphenated-pair))
   (cond
     ((not (consp part))
      ;; assume that it has been included -- e.g. a number
      t)
     ((and
-      (itypep (car all) 'collection)
-      (not (itypep (car all) 'hyphenated-pair)))
+      (collection-p (car all))
+      (not (itypep (car all) category::hyphenated-pair)))
      (or
       (as-specific?  (car all)(car part))
       (member (car part) (value-of 'items (car all)))

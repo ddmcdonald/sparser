@@ -178,7 +178,7 @@
   
 
 (defun intersection-of-vrs (vars category)
-  (when (not (itypep category 'collection))
+  (when (not (collection-p category))
     (let ((v/r (local-v/r-for (car vars) category)))
       (loop for var in (cdr vars)
          as local = (local-v/r-for var category)

@@ -82,6 +82,10 @@
 (defvar CATEGORY::COPULAR-PP)
 (defvar CATEGORY::COPULAR-PREDICATE)
 
+;; moved here, out of KRAQL -- should be put in a more apprpriate place (DAVID?)
+(defun collection-p (item)
+  (declare (special category::collection))
+  (itypep item category::collection))
 
 ; (left-edge-for-referent)
 ; (right-edge-for-referent)
@@ -213,12 +217,13 @@
 ;;;-------------------
 
 (defun noun-noun-compound (qualifier head)
+  (declare (special category::determiner))
   ;; goes with (common-noun common-noun) syntactic rule
   (cond
     (*subcat-test*
      (not (and (individual-p head)
-               (itypep head 'determiner))))
-    ((itypep head 'determiner)
+               (itypep head category::determiner))))
+    ((itypep head category::determiner)
      ;; had strange case with "some cases this" -- head was "this"
      nil)
     ((and qualifier head
@@ -236,7 +241,7 @@
              (not (indiv-binds head))
              ;; head already is modified -- don't replace with proper noun
              ;; e.g. "braf mutant a 375 melanoma cell"
-             (if (itypep qualifier category::collection)
+             (if (collection-p qualifier)
                (and ;; conjunction of named items
                 (individual-p (car (value-of 'items qualifier)))
                 (value-of 'name (car (value-of 'items qualifier))))
@@ -270,12 +275,13 @@
 
 
 (defun adj-noun-compound (qualifier head)
+  (declare (special category::determiner))
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
      (and
-      (not (and (individual-p head) (itypep head 'determiner)))
-      (not (itypep head 'determiner)) ;; had strange case with "some cases this" -- head was "this"
+      (not (and (individual-p head) (itypep head category::determiner)))
+      (not (itypep head  category::determiner)) ;; had strange case with "some cases this" -- head was "this"
       (or (subcategorized-variable head :m qualifier)
 	  (subcategorized-variable qualifier :subject head))))
     ((call-compose qualifier head)) ;; This case is to benefit marker-categories
@@ -284,7 +290,7 @@
      ;; into a number. Right now just falls through
      (let ((predicate 
 	     (if (and
-		  (not (is-collection? qualifier))
+		  (not (is-basic-collection? qualifier))
 		  (find-variable-for-category :subject (itype-of qualifier)))
 		 (create-predication-by-binding :subject **lambda-var** qualifier
 						(list 'adj-noun-compound (left-edge-for-referent)))
@@ -294,8 +300,9 @@
        head))))
 
 (defun adj-postmodifies-noun (n adj)
+  (declare (special category::following-adj))
   ;; to be more picky about which adjectives can post-modify a noun
-  (unless (itypep adj 'following-adj)
+  (unless (itypep adj category::following-adj)
     (adj-noun-compound adj n)))
 
 (defparameter *dets-seen* nil)
@@ -368,6 +375,8 @@
 
 
 (defun quantifier-noun-compound (quantifier head)
+  (declare (special category::no category::endurant category::perdurant
+                    category::abstract category::quality category::determiner))
   ;; Not all quantifiers are equivalent. We want to idenify
   ;; cases of negation ("no increase") and eventually probably
   ;; float them up to the main verb, //// which will require
@@ -380,20 +389,20 @@
   ;;  (setq quantifier (car *) head (cadr *))
   (setq head (individual-for-ref head))
   (cond
-    ((itypep quantifier 'no) ;; special handling for negation
+    ((itypep quantifier category::no) ;; special handling for negation
      (setq head (bind-dli-variable 'negation quantifier head)))
     ((or
-      (itypep head 'endurant)
-      (itypep head 'perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
-      (itypep head 'abstract) ;; we quantify abstract items like "group"
+      (itypep head category::endurant)
+      (itypep head category::perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
+      (itypep head category::abstract) ;; we quantify abstract items like "group"
       (itypep head 'bio-abstract) ;; we quantify abstract items like "group"
-      (itypep head 'quality)	 ;; we quantify qualities "some level"
+      (itypep head category::quality)	 ;; we quantify qualities "some level"
       (itypep head 'biological)) ;; we quantify things like "such models"
      (setf  (non-dli-mod-for head) (list 'quantifier quantifier))
      ;; don't use KRISP variables for quanitifiers -- put them in the mention
      ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
      )
-    ((itypep head 'determiner) ;; "all these"
+    ((itypep head category::determiner) ;; "all these"
      (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
     (t
      (format t "~&@@@@@ adding quantifier ~s to ~s~&"
@@ -404,12 +413,13 @@
 
 
 (defun number-noun-compound (number head)
+  (declare (special category::endurant))
   ;;/// for the moment there is a number variable on
   ;; endurant we can bind. Going forward we should automatically
   ;; make a composite individual using a collection.
   ;; See notes on forming plurals in morphology1
   (setq head (individual-for-ref head))
-  (when (itypep head 'endurant) ;; J34: "Histone 2B"
+  (when (itypep head category::endurant) ;; J34: "Histone 2B"
     ;;    ~600 kinase
     (setf (non-dli-mod-for head) (list 'number number))
     ;;(setq  head (bind-dli-variable 'number number head))
@@ -477,11 +487,13 @@
 ;;;------------------
 
 (defun find-or-make-aspect-vector (vg)
-  (unless (or (itypep vg 'perdurant)
-	      (itypep vg 'relation) ;; from copular adjectives like "is essential"
-              (and (itypep vg 'collection)
+  (declare (special category::perdurant category::relation
+                    category::collection category::tense/aspect-vector))
+  (unless (or (itypep vg category::perdurant)
+	      (itypep vg category::relation) ;; from copular adjectives like "is essential"
+              (and (collection-p vg)
                    (let ((vg1 (car (value-of 'items vg))))
-                     (itypep vg1 'perdurant))))
+                     (itypep vg1 category::perdurant))))
     (push-debug `(,vg))
     (break "~s is not an event, tense/aspect only applies to individuals that ~
             inherit from event." vg))
@@ -492,7 +504,7 @@
     ;; though that means that if that is followed up with absorb-auxiliary
     ;; that routine has to see if variables are already bound
     (cond
-      ((and known-aspect (itypep known-aspect 'tense/aspect-vector))
+      ((and known-aspect (itypep known-aspect category::tense/aspect-vector))
        known-aspect)
       (t 
        (make/individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -500,6 +512,7 @@
 
 
 (defun absorb-auxiliary (aux vg)
+  (declare (special category::tense/aspect-vector))
   (cond
     (*subcat-test* t)
     (t
@@ -511,7 +524,7 @@
 		       (individual (itype-of aux))
 		       (category aux)))
 	   (i (find-or-make-aspect-vector vg)))
-       (assert (itypep i 'tense/aspect-vector))
+       (assert (itypep i category::tense/aspect-vector))
 
        ;; Check for negation
        (when (value-of 'negation aux)
@@ -652,7 +665,7 @@
            (cond
              ((vg-has-adverb-variable? vg vg-phrase adverb) t)
              ((and
-               (itypep vg 'collection)
+               (collection-p vg)
                (vg-has-adverb-variable? (car (value-of 'items vg)) vg-phrase adverb))
               t)
              (t
@@ -663,7 +676,7 @@
               nil)))
           ((member (cat-name adverb) *subordinating-adverbs*)
            (bind-dli-variable 'subordinate-conjunction adverb vg))
-          ((itypep vg 'collection)
+          ((collection-p vg)
            (bind-dli-variable 'adverb adverb vg))
           ((vg-has-adverb-variable? vg vg-phrase adverb)
            (setq  vg (bind-dli-variable 'adverb adverb vg)))
@@ -857,6 +870,7 @@
       np))))
 
 (defun interpret-to-comp-adjunct-to-s (s tocomp)
+  (declare (special category::perdurant category::endurant))
   ;; Tbese are very likely to be purpose clauses. A sufficient test
   ;; for that is the the s and the complement are both eventualities
   ;; (aka perdurants). 
@@ -870,7 +884,7 @@
       (or *subcat-test*
        (setq s (bind-dli-variable to-comp-var complement s))))
      (t
-      (let ((ok? (and s (itypep s 'perdurant) (itypep complement 'perdurant))))
+      (let ((ok? (and s (itypep s category::perdurant) (itypep complement category::perdurant))))
         (cond
          (*subcat-test* ok?)
          (ok?
@@ -1064,77 +1078,6 @@
       (t nil))))
        
        
-
-#+ignore
-(defun obsolete-assimilate-subject-to-vp-ed (subj vp)
-  (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
-  (let* ((vp-edge (right-edge-for-referent))
-         (vp-form (edge-form vp-edge)))
-    #+ignore
-    (unless *subcat-test* 
-      (pushnew  (list subj vp (sentence-string *sentence-in-core*)) *vp-ed-sentences*
-                :test #'equalp))
-    ;; We have to determine whether this is an s (which the rule
-    ;; that's being invoked assumes) or actually a reduced relative,
-    ;; where the criteria is whether the verb is in oblique or tensed
-    ;; form. If it turned out to be a RR then we do fairly serious
-    ;; surgery on the edge.
-    ;;(when (edge-p (edge-right-daughter vp-edge))
-    ;; The other possibility is :single-term, which indicates
-    ;; that we've just got a vg (one one form or another)
-    ;; and not a full vp, in which case we're returning nil
-    ;; so that the rule doesn't go through.
-    (cond
-      (*subcat-test*
-       (cond
-	 ((or ;; vp has a bound object
-	   (null (object-variable vp))
-	   (value-of (object-variable vp) vp)
-	   (value-of 'statement vp)
-	   (and (individual-p subj)
-		(itypep subj 'pronoun))
-	   (preceding-that-whether-or-conjunction? (left-edge-for-referent)))
-	  (if (is-passive? (right-edge-for-referent))
-	      (then 
-		(break "can't have a passive vp+ed")
-		(assimilate-subcat vp :object subj))
-	      (assimilate-subcat vp :subject subj)))
-	 (t nil)))
-	 
-      ;; ?????????????
-      ((or ;; vp has a bound object
-	(null (object-variable vp))
-	(value-of (object-variable vp) vp)
-	(value-of 'statement vp)
-	(and (individual-p subj)
-	     (itypep subj 'pronoun))
-	(preceding-that-whether-or-conjunction? (left-edge-for-referent)))
-       ;; This situation corresponds to composing them as
-       ;; subject and predicate, which is what the rule that
-       ;; drives this is set up to do.
-       (let ((result
-	      (if (is-passive? (right-edge-for-referent))
-		  (then 
-		    (break "can't have a passive vp+ed")
-		    (assimilate-subcat vp :object subj))
-		  (assimilate-subcat vp :subject subj))))
-	 (or result
-	     (progn (format t "~&**** assimilate-subject-to-vp-ed can't interpret ~s ~s~&"
-			    (retrieve-surface-string subj)
-			    (retrieve-surface-string vp))
-		    nil))))
-      (nil
-       ;; This should correspond to the reduced relative
-       ;; situation. But we'll check that the vp has
-       ;; the form we expect it to.
-       (cond
-         ((or (eq vp-form category::vp+ed)
-              (eq vp-form category::vg+ed))
-          (convert-clause-to-reduced-relative))
-         (t
-          (push-debug `(,vp-form ,vp-edge))
-          (error "Unexpected vp form in np+vp: ~a" vp-form)))))))
-
 (defun preceding-that-whether-or-conjunction? (left-edge)
   (declare (special left-edge))
   (when (and (edge-p left-edge)
@@ -1381,14 +1324,8 @@
     (t
      ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
      ;;/// prep-comp, etc.
-     (or
-      (find-subcat-var item label head)
-      #+ignore ;; this should be done by a DA rule, which does a tuck
-      (and (is-collection? head)
-           (value-of 'items head)
-           (car (last (value-of 'items head))) ;; fooled by the WORD sequence
-           (find-subcat-var item label
-                            (car (last (value-of 'items head)))))))))
+     (find-subcat-var item label head)
+     )))
 
 
 (defparameter *label* nil) ;; temporary hack to get the label down to satisfies-subcat-restriction?
@@ -1477,11 +1414,12 @@
             item head label variable (sentence-string *sentence-in-core*))))
 
 (defun variable-from-pats (item head label pats subcat-patterns)
+  (declare (special category::number))
   (let ( variable )
     (cond
       ((cdr pats)
        (setq variable (mapcar #'subcat-variable pats))
-       (if (itypep item 'number)
+       (if (itypep item category::number)
            (setq variable (car variable))
            ;; these are mostly bad parses with a dangling number -- we should collect them
            (push (list head label item
@@ -1529,7 +1467,9 @@
 (defparameter *biological-tests* nil)
 
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
-  (declare (special category::pronoun/first/plural category::ordinal))
+  (declare (special category::pronoun/first/plural category::ordinal
+                    category::this category::that category::these category::those
+                    category::pronoun category::number category::ordinal))
   (let ((restriction
          (if (subcat-pattern-p pat-or-v/r)
              (subcat-restriction pat-or-v/r)
@@ -1550,13 +1490,17 @@
                ((itypep item category)) ;; handles conjunctions
                (t (eq category override-category)))))
       (cond
-        ((itypep item '(:or this that these those))
+        ((or
+          (itypep item category::this)
+          (itypep item category::that)
+          (itypep item category::these)
+          (itypep item category::those))
          t)
         (;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
-         (itypep item 'pronoun) ;; of any sort
+         (itypep item category::pronoun) ;; of any sort
          t)
-        ((and (itypep item 'number)
-              (not (itypep item 'ordinal)))
+        ((and (itypep item category::number)
+              (not (itypep item category::ordinal)))
          t)
         ((consp restriction)
          (cond

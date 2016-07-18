@@ -131,7 +131,9 @@
   nil)
 
 
-(defun assimilate-appositive (np appositive) ;; their referent
+(defun assimilate-appositive (np appositive)
+  (declare (special category::event))
+  ;; their referent
   ;; The case in point is the relative clause in *iraqi-girl*,
   ;; but this ought to apply to any post-nominal phrase, particularly
   ;; verb-centric reduced relatives. 
@@ -140,7 +142,7 @@
   ;; also applies to the np (particularly the event's time
   ;; and location) and the participation in the event per se.
   (push-debug `(,np ,appositive))
-  (when (itypep appositive 'event)
+  (when (itypep appositive category::event)
     ;; Setup the event relation
     ;; Copy up time, location, and anything else that's
     ;; to the point
@@ -277,7 +279,7 @@
   ;; used by refactor-s-for-buried-relative which is tied to
   ;; a debris analysis pattern. Purpose is to compute and 
   ;; return the referent. Pattern is ( s "that" vp )
-  (if (itypep vp-ref 'collection)
+  (if (collection-p vp-ref)
     (let ((items (value-of 'items vp-ref)))
       (dolist (item-vp-ref items)
         (apply-upstairs-np-to-subject-relative np-ref item-vp-ref)))
