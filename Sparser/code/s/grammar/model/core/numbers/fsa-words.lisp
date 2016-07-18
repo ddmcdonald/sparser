@@ -40,6 +40,7 @@
 ;;;--------
 
 (defun number-word-fsa (triggering-edge starting-position)
+  (declare (special category::multiplier category::number))
   ;; the subroutines build the edges and dictate the return position.
   ;; Since we've at least got one number here it won't make sense
   ;; to return Nil. 
@@ -58,12 +59,10 @@
         ;; here. Also lets us get around the fact that if we waited
         ;; the number-word's original category would have been respanned
           ;; as a number and the pattern would be lost.
-        (when (eq (edge-category triggering-edge)
-                  (category-named 'multiplier))
+        (when (eq (edge-category triggering-edge) category::multiplier)
           ;; compare: "11 two-component systems". Suspenders to go with
           ;; this belt for that case would be to notice the no-space hyphen.
-          (let ((rule (multiply-labels (category-named 'number)
-                                       (category-named 'multiplier))))
+          (let ((rule (multiply-labels category::number category::multiplier)))
             (unless rule
               (break "Unexpected situation: no definition for number -> ~
                       number multiplier"))
@@ -310,13 +309,13 @@
       (push number numbers))
     (setq numbers (nreverse numbers))
     (let* ((sequence (define-sequence numbers))
-	   (referent (define-or-find-individual (category-named 'sequence-of-numbers)
+	   (referent (define-or-find-individual category::sequence-of-numbers
 		       :numbers sequence)))
       (make-chart-edge
        :starting-position starting-position
        :ending-position end-of-number-word-sequence
-       :category (category-named 'sequence-of-numbers)
-       :form (category-named 'number)
+       :category category::sequence-of-numbers
+       :form category::number
        :rule-name :raw-number-sequence-fsa
        :referent referent)
 

@@ -593,7 +593,7 @@
     do (return (car tail))))
 
 (defun losing-competition? (l-triple r-triple)
-  (declare (special r-triple l-triple))
+  (declare (special r-triple l-triple category::as))
   ;; goal here is to put off subject attachment until the subject 
   ;; is as large as possible.
   ;; Don't do right-to-left activation for the subj+verb rules
@@ -638,7 +638,7 @@
        
 	 (and
 	  (prep? l-triple-left)
-	  (not (eq (edge-category (second l-triple)) (category-named 'as)))
+	  (not (eq (edge-category (second l-triple)) category::as))
 	  ;; almost always a use of "as" as a subordinate conjunction
 	  (or
 	   (and ;; pp starting a relative clause -- "in which"

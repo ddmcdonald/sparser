@@ -213,7 +213,7 @@ the fsa would be identified at the word level rather than the category level.
                             :ending-position ending-position
                             :left-daughter left-edge
                             :right-daughter right-edge
-                            :category (category-named 'hyphenated-number)
+                            :category category::hyphenated-number
                             :form category::number
                             :referent  i
                             :rule 'digit-fsa)))))
