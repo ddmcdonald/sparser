@@ -1606,3 +1606,11 @@ NIL
 
 (defun find-semantic-rules-ending-with (cat-name)
   (gethash cat-name *rhs2-ht*))
+
+
+(defun spire-roundtrip-corpus (corpus)
+  (loop for p in
+       (eval (corpus-bound-variable (get-sentence-corpus corpus)))
+     do (print (second p))
+       (funcall (intern "ROUNDTRIP-TEST" (find-package :spire))
+                (second p))))
