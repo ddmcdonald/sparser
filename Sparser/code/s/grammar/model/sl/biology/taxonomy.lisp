@@ -128,7 +128,7 @@
   Generic characterizations of proteins and small molecules, etc. which have
   OBO identifiers, but are not localized to cellular locations.")
 
-(define-category biological
+(define-category biological :specializes top
   :documentation "Provides a generalization over bio entities
    and processes by being mixed into those categories, Because
    it spans such a wide range of things it will not fit into
@@ -637,14 +637,14 @@
 (define-category bio-context :specializes biological
   :binds ((process process)
           (entity bio-entity)
-	  (quantitative-condition (:or amount bio-scalar)))
+          (quantitative-condition (:or amount bio-scalar)))
   :mixins (has-name)
   :realization
   (:noun "context"
          ;; "yielded sustained C-RAF(S338) and ERK phosphorylation in the context of drug treatment"
          :of process
          :of entity
-	 :of quantitative-condition))
+         :of quantitative-condition))
 
 (define-category bio-location  :specializes biological
   :mixins (has-UID has-name)
