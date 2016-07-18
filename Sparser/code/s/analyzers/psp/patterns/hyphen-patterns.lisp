@@ -68,7 +68,7 @@
     ;; and satisfies second-imposes-relation-on-first
 
     ;; TO-DO -- do pair programming review
-    (unless (eq (length edges) (length words))
+    #+ignore(unless (eq (length edges) (length words))
       (when *work-on-ns-patterns*
         (push-debug `(,edges ,words ,start-pos ,end-pos))
         ;; what try-to-resolve-uncovered-ns-edges should have addressed
@@ -91,7 +91,7 @@
        (t (error "One hyphen NS: shouldn't be able to get here"))))        
 
 
-     (rel-edge
+     ((and rel-edge (= 2 (length edges)))
       (do-relation-between-first-and-second
        (when (edge-p (first edges))
          (edge-referent (first edges)))
@@ -188,7 +188,7 @@
      ((equal pattern '(:single-digit :hyphen :single-digit)) ;; "6-8" in a reference
       ;; 4/14/16 Appears to be a bug in the state space of digit-FSA that keeps
       ;; it from handling these.
-      (make-hyphenated-number (first edges) (third edges) words))
+      (make-hyphenated-number (first edges) (third edges) words))   
 
      ((equal pattern '(:digits :hyphen :digits)) ;; "824-832"
       ;; This should be caught by the digit-fsa, but if it's not
@@ -197,8 +197,15 @@
      
      ((and *work-on-ns-patterns*
            (memq :hyphen pattern))
-      (push-debug `(,pattern ,start-pos ,end-pos))
-      (break "New hyphen pattern to resolve: ~a" pattern))
+      (cond
+        ((equal pattern '(:single-digit :single-lower :hyphen :bio-entity)) ;; "4a-phorbol"
+         (lsp-break "label type of entity, e.g. '4a-phorbo'"))
+        ((equal pattern '(:number :hyphen :lower)) ;; "12,13-dicanoate"
+         ;; problem is that dicanoate doesn't have any interpretation/edge
+         (lsp-break "Sort out adequate scheme for final word"))
+        (t
+         (push-debug `(,pattern ,start-pos ,end-pos))
+         (break "New hyphen pattern to resolve: ~a" pattern))))
      
      (t (nospace-hyphen-specialist
          words edges pattern hyphen-positions start-pos end-pos)))))
