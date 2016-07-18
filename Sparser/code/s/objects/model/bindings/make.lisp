@@ -121,14 +121,9 @@ returning a new one.
       (old-bind-variable var/name value individual category)))
 
 (defun perform-local-variable-disambiguation (ambiguous-binding var/name i)
-  (declare (special ambiguous-binding var/name))
-  (let* ((established-type (indiv-type i))
-	 (new (make-unindexed-individual (car established-type)))
+  (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
 	 (ambig-var (binding-variable ambiguous-binding))
 	 (ambig-variables (dvar-variables ambig-var)))
-    (declare (special new))
-    (when (cdr established-type) ;; carry over any mix-ins
-      (setf (indiv-type new) established-type))
     (loop for binding in (reverse (indiv-binds i))
        ;; make/binding operates by a push operation
        ;; on the indiv-binds list, so we must do this in reverse
