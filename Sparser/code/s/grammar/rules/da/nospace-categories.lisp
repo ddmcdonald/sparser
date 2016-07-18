@@ -88,12 +88,17 @@
 ;;; routines that make them 
 ;;;-------------------------
 
+(defun maybe-make-individual (r)
+  (if  (referential-category-p r)
+       (individual-for-ref r)
+       r))
+
 (defun package-qualifying-pair (left-edge right-edge)
   ;; as called from resolve-protein-hyphen-pair for
   ;; something like EGFR-positive as the default when
   ;; nothing stronger applied
-  (let ((left-ref (edge-referent left-edge))
-        (right-ref (edge-referent right-edge)))
+  (let ((left-ref (maybe-make-individual (edge-referent left-edge)))
+        (right-ref (maybe-make-individual (edge-referent right-edge))))
     (let* ((label (edge-category left-edge))
            (i (find-or-make-individual 'qualifying-pair
                  :head left-ref
@@ -114,8 +119,8 @@
   ;; resolve-hyphen-between-two-words when it has no better 
   ;; idea for what to do.
   (let ((i (find-or-make-individual 'hyphenated-pair
-             :left (edge-referent left-edge)
-             :right (edge-referent right-edge)))
+             :left (maybe-make-individual (edge-referent left-edge))
+             :right (maybe-make-individual (edge-referent right-edge))))
         (category
          (ns-category-for-reifying category::hyphenated-pair)))
 
@@ -150,8 +155,8 @@
                     (category category-name)
                     (symbol
                      (category-named category-name :break-if-none))))
-        (left-ref (edge-referent left-edge))
-        (right-ref (edge-referent right-edge)))
+        (left-ref (maybe-make-individual (edge-referent left-edge)))
+        (right-ref (maybe-make-individual (edge-referent right-edge))))
     (tr :making-ns-pair-on category)
 
     (when (or (word-p left-ref)
@@ -212,8 +217,8 @@
            (bio-pair 'bio-pair)
            (otherwise
             (error "Unanticipated type of hyphenated-pair: ~a" cat-name))))
-        (left-ref (edge-referent left-edge))
-        (right-ref (edge-referent right-edge)))
+        (left-ref (maybe-make-individual (edge-referent left-edge)))
+        (right-ref (maybe-make-individual (edge-referent right-edge))))
 
     (let* ((i (find-or-make-individual pair-category 
                                        :left left-ref
@@ -236,8 +241,8 @@
    the same situation."
   (declare (special category::hyphenated-number category::number))
   (let ((i (find-or-make-individual 'hyphenated-number
-                                    :left (edge-referent left-edge)
-                                    :right (edge-referent right-edge))))
+                                    :left (maybe-make-individual (edge-referent left-edge))
+                                    :right (maybe-make-individual (edge-referent right-edge)))))
     (let ((edge (make-ns-edge
                  (pos-edge-starts-at left-edge)
                  (pos-edge-ends-at right-edge)
@@ -252,9 +257,9 @@
 
 (defun make-hyphenated-triple (left-edge middle-edge right-edge)
   (let ((i (find-or-make-individual 'hyphenated-triple
-             :left (edge-referent left-edge)
-             :middle (edge-referent middle-edge)
-             :right (edge-referent right-edge)))
+             :left (maybe-make-individual (edge-referent left-edge))
+             :middle (maybe-make-individual (edge-referent middle-edge))
+             :right (maybe-make-individual (edge-referent right-edge))))
         (category
          (ns-category-for-reifying category::hyphenated-triple)))
      (let ((edge (make-ns-edge
@@ -292,7 +297,7 @@
                         start-pos end-pos
                         (edge-category edge-to-elevate)
                         :form (edge-form edge-to-elevate)
-                        :referent (edge-referent edge-to-elevate)
+                        :referent (maybe-make-individual (edge-referent edge-to-elevate))
                         :constituents edges)))
         (tr :no-space-made-edge new-edge)
         new-edge)))))
@@ -313,7 +318,7 @@
                      start-pos end-pos
                      (edge-category edge-to-elevate)
                      :form (edge-form edge-to-elevate)
-                     :referent (edge-referent edge-to-elevate)
+                     :referent (maybe-make-individual (edge-referent edge-to-elevate))
                      :constituents edges)))
       (tr :no-space-made-edge new-edge)
       new-edge)))
@@ -422,7 +427,7 @@ for each case and define a k-method to make sense of it all.
                     (edge-category edge)
                     :rule 'compose-salient-hyphenated-literals
                     :form (edge-form edge)
-                    :referent (edge-referent edge)
+                    :referent (maybe-make-individual (edge-referent edge))
                     :words words)))
               new-edge))))))
 
@@ -480,10 +485,10 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
              (ecase type
                (:word 'word-colon-word)
                (:number 'number-colon-number))
-             :left (edge-referent left-edge)
-             :right (edge-referent right-edge)
-             :items (list (edge-referent left-edge)
-                          (edge-referent right-edge)))))
+             :left (maybe-make-individual (edge-referent left-edge))
+             :right (maybe-make-individual (edge-referent right-edge))
+             :items (list (maybe-make-individual (edge-referent left-edge))
+                          (maybe-make-individual (edge-referent right-edge))))))
     (ecase type
      (:number
       (setq i (bind-dli-variable 'type category::number
@@ -534,7 +539,7 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
 (defun package-slashed-sequence (edges words start-pos end-pos)
   (push-debug `(,edges ,words ,start-pos ,end-pos))
   (let* ((elements (loop for edge in edges
-                     collect (edge-referent edge)))
+                     collect (maybe-make-individual (edge-referent edge))))
          (i (find-or-make-individual 'slashed-sequence :items elements))
          (common-category
           (when (eq (edge-category (first edges))
