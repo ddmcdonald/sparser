@@ -63,7 +63,14 @@
 
 
 (defun find-variable-from-individual (variable-name i)
-  (find-variable-for-category variable-name (first (indiv-type i))))
+  (if (collection-p i)
+      (if (member variable-name '(items type number))
+          (find-variable-for-category variable-name (itype-of i))
+          (find-variable-for-category variable-name
+                                      ;; wrt variables, the type of
+                                      ;; a collection is given by its TYPE variable
+                                      (or (value-of 'type i) (itype-of i))))
+      (find-variable-for-category variable-name (itype-of i))))
 
 
 (defun find-variable-in-mixins (variable-name category)
