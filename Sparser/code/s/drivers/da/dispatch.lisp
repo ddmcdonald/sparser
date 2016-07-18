@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2011-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "dispatch"
 ;;;   Module:  "drivers;DA:"
-;;;  Version:  October 2014
+;;;  Version:  July 2016
 
 ;; initiated 10/27/94 v2.3.  Moved it and gave it some flesh 5/5/95
 ;; 1.0 (5/19) redid them as tail recursion and removed an interveening layer.
@@ -20,21 +20,24 @@
 ;;;-------------------------
 
 (defun standalone-da-execution (1st-vertex tt)
-  ;; run and return rather than thread back into 
-  (when (edge-p tt)
-    ;; avoid error caused by lack of edge over COMMA in
-    ;;  (reviewed in Gutkind et al., 1998)
-    ;; in PMC2156131 
-    (let ((pos-before (pos-edge-starts-at tt))
-          (pos-after  (pos-edge-ends-at tt)))
-      (initialize-da-search)
-      (initialize-da-action-globals tt pos-before pos-after)
-      (let ((result
-             (catch :da-pattern-matched
-               (catch :no-da-pattern-matched
-                 (check-for-extension-from-vertex 1st-vertex tt)))))
-        result))))
-
+  "Run and return rather than thread back into the scan."
+  (unless (edge-p tt)
+    ;; e.g. "(reviewed in Gutkind et al., 1998)" in PMC2156131
+    ;;/// We should be able to work with words just fine, but
+    ;; that will require passing position information to this
+    ;; routine or its equivalent. The requires a change to
+    ;; do-rule-cycle and to whatever calls look-for-da-pattern
+    ;; in the initial sweeps
+    (return-from standalone-da-execution nil))
+  (let ((pos-before (pos-edge-starts-at tt))
+        (pos-after  (pos-edge-ends-at tt)))
+    (initialize-da-search)
+    (initialize-da-action-globals tt pos-before pos-after)
+    (let ((result
+           (catch :da-pattern-matched
+             (catch :no-da-pattern-matched
+               (check-for-extension-from-vertex 1st-vertex tt)))))
+      result)))
 
 
 (defun execute-da-trie (1st-vertex tt pos-before pos-after)
