@@ -763,9 +763,9 @@ duplicated below
   (when (collection-p indiv)
     (value-of 'items indiv)))
 
-(defun collection-p (indiv)
-  (when (individual-p indiv)
-    (find 'category::collection (mapcar #'cat-symbol (indiv-type indiv)))))
+(defun collection-p (item)
+  (itypep item 'collection))
+    
 
 (defun kraql-body-item (stmt blists)
   "Select item(s) from a collection if it's a collection, otherwise bind to itself"
