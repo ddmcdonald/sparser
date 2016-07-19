@@ -48,7 +48,7 @@
                                start-pos end-pos)
   (tr :ns-one-hyphen-patterns)
   (tr :ns-edge-pattern pattern)
-  #+ignore(unless (= 3 (length edges))
+  (unless (= 3 (length edges))
             ;; if we allow trailing or leading hyphens then
             ;; this is wrong. Also produced the wrong edges when applied
             ;; to "p53-"
@@ -67,7 +67,10 @@
     ;; obsolete one from the core, and another of which has a sbcat frame
     ;; and satisfies second-imposes-relation-on-first
 
-    ;; TO-DO -- do pair programming review
+    ;;/// Constantly getting mismatch between edges and words.
+    ;; Needs a systematic review to work out the purposes we're putting
+    ;; them to and catalog how we get mismatches and whether it
+    ;; really matters
     #+ignore(unless (eq (length edges) (length words))
       (when *work-on-ns-patterns*
         (push-debug `(,edges ,words ,start-pos ,end-pos))
@@ -91,7 +94,7 @@
        (t (error "One hyphen NS: shouldn't be able to get here"))))        
 
 
-     ((and rel-edge (= 2 (length edges)))
+     ((and rel-edge (= 3 (length edges)))  ;; "Dimerization-independent" ERK #1
       (do-relation-between-first-and-second
        (when (edge-p (first edges))
          (edge-referent (first edges)))
