@@ -311,14 +311,20 @@
    so that a follow-on process can make the connection.
    Right now just do the first step and swallow the hyphen
    in the manner of a daughter rule."
-  
-  (let ((edge-to-elevate (second edges)))
+  (declare (special category::verb+ed category::adjective))
+  (let* ((edge-to-elevate (second edges))
+         (form (edge-form edge-to-elevate)))    
     (tr :resolve-hyphen-before edge-to-elevate)
+    (when (eq form category::verb+ed)
+      ;; As the final element in a hyhenated phrase this is almost
+      ;; certainly going to function as a premodifier. 
+      (setq form category::adjective))
     (let ((new-edge (make-edge-over-long-span
                      start-pos end-pos
                      (edge-category edge-to-elevate)
-                     :form (edge-form edge-to-elevate)
-                     :referent (maybe-make-individual (edge-referent edge-to-elevate))
+                     :form form
+                     :referent (maybe-make-individual
+                                (edge-referent edge-to-elevate))
                      :constituents edges)))
       (tr :no-space-made-edge new-edge)
       new-edge)))
