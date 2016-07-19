@@ -432,21 +432,24 @@
    (call-compose qualifier head)
    (link-in-verb+ing qualifier head)))
 
-
 (defun link-in-verb+ing (qualifier head)
   (let ((subject (subject-variable qualifier)))
     (cond
       (*subcat-test* subject)
       ((word-p qualifier)
        ;; probably a case of an unknown verb+ing created by morphology
-       ;;  like "mating" in PMC3522295
-       )
+       ;;  like "mating" in PMC352229
+       ;; "the complementary mating type-switched strain PJ69–4A"
+       ;; Dropping it on the floor seems ok since we don't know
+       ;; what it means
+       head)
       (t
        (setq qualifier (individual-for-ref qualifier))
-       (if subject ;; really should check for passivizing
-	   (setq  qualifier (create-predication-by-binding subject head qualifier
-							   (list 'link-in-verb+ing (parent-edge-for-referent)))))
-       (setq  head (bind-dli-variable 'predication qualifier head))
+       (when subject ;; really should check for passivizing
+         (setq qualifier (create-predication-by-binding
+                          subject head qualifier
+                          (list 'link-in-verb+ing (parent-edge-for-referent)))))
+       (setq head (bind-dli-variable 'predication qualifier head))
        head))))
 
 (defun create-predication-by-binding (var val pred source)
