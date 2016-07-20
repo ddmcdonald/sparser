@@ -269,9 +269,9 @@
      (select-appropriate-personal-pronoun bundle))))
 
 (defun select-appropriate-personal-pronoun (bundle)
-  (let ((number (name (get-accessory-value ':number bundle t)))
-	(person (name (get-accessory-value ':person bundle t)))
-	(gender (name (get-accessory-value ':gender bundle t))))
+  (let ((number (mname (or (get-accessory-value ':number bundle) 'singular)))
+	(person (mname (or (get-accessory-value ':person bundle) 'third)))
+	(gender (mname (or (get-accessory-value ':gender bundle) 'neuter))))
     (select-personal-pronoun number person gender)))
 
 (defun select-personal-pronoun (number person gender)

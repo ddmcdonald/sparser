@@ -128,6 +128,10 @@ flag is true, they are created as all uppercase.")
   (postprocessed? t)
   name)
 
+(defgeneric mname (object)
+  (:method ((object mobject)) (name object))
+  (:method ((object symbol)) object))
+
 (defstruct (mcatalog
 	     (:conc-name nil)
 	     (:include mobject))

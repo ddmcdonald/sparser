@@ -269,7 +269,7 @@ The exceptions are optional."
 as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
   (let ((subj (current-subject)))
     (the (member singular plural)
-	 (or (etypecase subj
+	 (or (typecase subj
 	       ((or specification derivation-tree-node)
                 (let ((acc (get-accessory-value ':number subj)))
                   (and acc (name acc))))
@@ -293,7 +293,7 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
 as specified by the *CURRENT-PHRASAL-ROOT*. Default is THIRD."
   (let ((subj (current-subject)))
     (the (member first second third)
-	 (or (etypecase subj
+	 (or (typecase subj
 	       ((or specification derivation-tree-node)
                 (let ((acc (get-accessory-value ':person subj)))
                   (and acc (name acc))))
