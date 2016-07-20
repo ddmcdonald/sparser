@@ -206,7 +206,8 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
 in its type field?"
   (declare (special *break-on-pattern-outside-coverage?*
                     category::collection category::sequence))
-  (let ((category (category-named category/symbol :break-if-none))
+  (let ((category (or (category-named category/symbol)
+                      (return-from indiv-typep nil)))
         (type-field (and (individual-p i) (indiv-type i))))
     (when (or (memq category::collection type-field)
               (memq category::sequence type-field))
