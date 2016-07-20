@@ -84,8 +84,7 @@
 	       (knit-phrase-into-tree position new-contents)
 	       (set-contents position new-contents))
 	     (landmark 'replace-message-with-result contents position new-contents)
-	     (realization-cycle new-contents position)
-	     new-contents)))
+	     (realization-cycle new-contents position))))
     (typecase contents
       (null)
       ((or phrasal-root node word pronoun tense-marker ttrace)
