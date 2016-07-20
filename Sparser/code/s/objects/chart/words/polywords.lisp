@@ -200,21 +200,25 @@
 
 (defun not-all-same-character-type (string)
   "Called from, e.g., resolve-string-to-word as part of defining
-a word to determine whether the string should be treated like
-a polyword.  Uses the data structures in the tokenizer so that
-the criteria will be the same as runtime -- i.e. if the string
-includes characters of more than one type then it will be
-tokenized as more than one word."
+   a word to determine whether the string should be treated like
+   a polyword. Uses the data structures in the tokenizer so that
+   the criteria will be the same as runtime -- i.e. if the string
+   includes characters of more than one type then it will be
+   tokenized as more than one word."
+  (when (> (length string) 1)
+    
+    (when (all-punctuation-chars? string) ;; e.g.  "-/+"
+      (return-from not-all-same-character-type t))
 
-  (let* ((char-list (coerce string 'list))
-         (first-category (car (tokenizer-entry (first char-list)))))
+    (let* ((char-list (coerce string 'list))
+           (first-category (car (tokenizer-entry (first char-list)))))
 
-    (dolist (char (rest char-list))
-      (unless (eq first-category
-                  (car (tokenizer-entry char)))
-        (return-from not-all-same-character-type t)))
-
-    nil ))
+      (dolist (char (rest char-list))
+        (unless (eq first-category
+                    (car (tokenizer-entry char)))
+          (return-from not-all-same-character-type t)))
+      
+      nil )))
 
 
 ;;;----------------------------------------------------------
