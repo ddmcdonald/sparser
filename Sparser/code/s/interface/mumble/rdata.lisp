@@ -95,10 +95,7 @@
                :free (mumble::parameters-to-phrase phrase))))
     (setf (mumble::linked-phrase clp) lp)
     (setf (mumble::parameter-variable-map clp) map)
-
-    ;; Store the CLP on the category for realize to find
-    (setf (get-tag :mumble category) clp)
-    clp))
+    (setf (get-tag :mumble category) clp)))
         
 
 ;;/// to-do -- generalize away from assumption that it's always a verb
@@ -129,7 +126,7 @@
                                :lp lp
                                :map map)))
       (mumble::record-krisp-mapping m-word clp)
-      clp)))
+      (setf (get-tag :mumble category) clp))))
          
 (defun make-corresponding-lexical-resource (head-word category)
   "Called from dereference-rdata and makes its own
