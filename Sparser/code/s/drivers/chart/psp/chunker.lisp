@@ -249,42 +249,47 @@
          possible-heads)
     (declare (special *chunk*))
     
-    (until
-        (or (chunk-end-pos *chunk*) ; 
-            (eq pos sentence-end))
-        (find-consistent-edges *chunk*)
+    (loop until
+         (or (chunk-end-pos *chunk*)    ; 
+             (eq pos sentence-end))
+       do
       
-      (when
-          forms ;; chunk still valid for at least one category
-        (setf (chunk-forms *chunk*) forms)
-        (push ev (chunk-ev-list *chunk*))
-        (setq pos (pos-ev-ends-at ev forms))
-        (loop for ch in (compatible-heads forms ev pos) 
-          do (push ch possible-heads)))
+         (when
+             forms ;; chunk still valid for at least one category
+           (setf (chunk-forms *chunk*) forms)
+           (push ev (chunk-ev-list *chunk*))
+           (setq pos (pos-ev-ends-at ev forms))
+           (loop for ch in (compatible-heads forms ev pos) 
+              do (push ch possible-heads)))
 
-      (if (or
-           (null forms) ;; indicates syntactic category of edge inconsistent with possible forms for chunk
-           (eq pos sentence-end)) 
-          ;;  chunk must end at or before this pos-before
+         (if (or
+              ;; indicates syntactic category of edge inconsistent with possible forms for chunk
+              (null forms) 
+              (eq pos sentence-end)) 
+             ;;  chunk must end at or before this pos-before
           
-          (let
-              ((head (best-head (chunk-forms *chunk*) possible-heads))) 
-            (cond
-             (head
-              ;; the chunk has a head for at least one of the consistent forms
-              ;; complete this chunk -- signaling end of until loop
-              (setf (chunk-end-pos *chunk*) (second head))
-              (setf (chunk-forms *chunk*) (list (first head)))
-              (tr :delimited-chunk *chunk*))
-             (t
-              ;;(break "HUH2")
-              (setf (chunk-end-pos *chunk*) pos)
-              (setf (chunk-forms *chunk*) nil)
-              (tr :delimited-ill-formed-chunk *chunk*))))
-          (else     
-            (setq ev (pos-starts-here pos))
-            (tr :chunk-loop-next-edge ev)
-            (setq forms (remaining-forms ev *chunk*)))))))
+             (let
+                 ((head (best-head (chunk-forms *chunk*) possible-heads))) 
+               (cond
+                 (head
+                  ;; the chunk has a head for at least one of the consistent forms
+                  ;; complete this chunk -- signaling end of until loop
+                  (setf (chunk-end-pos *chunk*) (second head))
+                  (setf (chunk-forms *chunk*) (list (first head)))
+                  (tr :delimited-chunk *chunk*))
+                 (t
+                  ;;(break "HUH2")
+                  (setf (chunk-end-pos *chunk*) pos)
+                  (setf (chunk-forms *chunk*) nil)
+                  (tr :delimited-ill-formed-chunk *chunk*))))
+             (else     
+               (setq ev (pos-starts-here pos))
+               (tr :chunk-loop-next-edge ev)
+               (setq forms (remaining-forms ev *chunk*))))
+
+       finally
+         (return 
+           (find-consistent-edges *chunk*)))))
 
 (defun pos-ev-ends-at (ev forms)
   (declare (ignore forms))
@@ -301,14 +306,12 @@
     
 
 (defun compatible-edge? (ev forms ev-list)
-  (let (edge)
-    (loop for form in forms
-      when 
-      (loop for e in (ev-edges ev)    
-        thereis
-        (setq edge (compatible-edge-form? e form ev-list t)))
-      do
-      (return edge))))
+  (loop for e in (ev-edges ev)    
+     when
+       (loop for form in forms
+          always (compatible-edge-form? e form ev-list t))
+     do
+       (return e)))
 
 (defun best-head (forms possible-heads)
   ;; eventually might want to find rightmost head, or use some other measure
