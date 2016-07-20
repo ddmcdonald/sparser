@@ -88,11 +88,6 @@
 ;;; routines that make them 
 ;;;-------------------------
 
-(defun maybe-make-individual (r)
-  (if  (referential-category-p r)
-       (individual-for-ref r)
-       r))
-
 (defun package-qualifying-pair (left-edge right-edge)
   ;; as called from resolve-protein-hyphen-pair for
   ;; something like EGFR-positive as the default when

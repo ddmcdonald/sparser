@@ -398,6 +398,11 @@
      ;; The first category is supposed to be the 'primary' one
      (make-unindexed-individual (second head)))))
 
+(defun maybe-make-individual (r)
+  (if (referential-category-p r)
+    (individual-for-ref r)
+    r))
+
 
 ;;;-------------------------
 ;;; special 'make' for DM&P
