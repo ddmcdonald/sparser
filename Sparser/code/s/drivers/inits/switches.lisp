@@ -482,7 +482,8 @@
   (uncontroversial-settings)
   (top-edges-setting)
   (ignore-comlex)
-  (setq *description-lattice* nil) ;; leave permanence up in the air
+  (setq *description-lattice* t)
+  (use-post-analysis-mentions-for-pronouns)
 
   (sublanguage-settings) ;; except
   (setq *ignore-capitalization* t)
