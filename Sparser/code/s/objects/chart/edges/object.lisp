@@ -496,9 +496,5 @@
 
 
 (defun edge-length (edge)
-  (let* ((ev-start (edge-starts-at edge))
-	 (ev-end (edge-ends-at edge))
-	 (pos-start (ev-position ev-start))
-	 (pos-end (ev-position ev-end)))
-    (- (pos-token-index pos-end) 
-       (pos-token-index pos-start))))
+  (- (pos-token-index (ev-position (edge-ends-at edge))) 
+     (pos-token-index (ev-position (edge-starts-at edge)))))

@@ -278,9 +278,9 @@
               *vg-head-categories*)
       (member (car (cfr-rhs rule))
               *vp-categories*)
-      (member (category-named (car (cfr-rhs-forms rule)))
+      (member (car (cfr-rhs-forms rule))
               *vg-head-categories*)
-      (member (category-named (car (cfr-rhs-forms rule)))
+      (member (car (cfr-rhs-forms rule))
               *vp-categories*)))
 
 

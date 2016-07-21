@@ -294,7 +294,7 @@
 (defun assemble-raw-number-sequence (starting-position
 				     end-of-number-word-sequence
 				     prior-number-edge)
-  (declare (ignore prior-number-edge))
+  (declare (ignore prior-number-edge)(special category::sequence-of-numbers))
   ;; n.b. this is an fsa, so we're obligated to return a position
   (let ( numbers )
     (do ((position starting-position (chart-position-after position))

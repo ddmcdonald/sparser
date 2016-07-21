@@ -965,7 +965,7 @@
 (defun np-conjunction-edge? (e)
   (and (eq (edge-form e) category::np)
        (individual-p (edge-referent e))
-       (collection-p (edge-referent e))))
+       (is-basic-collection? (edge-referent e))))
 
 (defun np-conj-pp (np-containing-edge pp-edge)
   (let ((np-conj-edge

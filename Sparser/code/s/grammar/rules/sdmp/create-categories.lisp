@@ -41,7 +41,7 @@
 	((category::common-noun
           category::common-noun/plural
           category::proper-noun) ;; over a name-word 
-	 (setf (edge-form edge) (category-named 'np-head)))
+	 (setf (edge-form edge) category::np-head))
 	(category::modal) ;; "can can they ...
 	(category::verb) ;; "are are"
 	(category::vg) ;; staying here w/o better evidence
@@ -102,7 +102,7 @@
           category::common-noun/plural
           category::np-head
           category::det) ;; "that"
-	 (setf (edge-form edge) (category-named 'np)))
+	 (setf (edge-form edge) category::np))
         
 	((category::verb 
           category::verb+s 
@@ -110,11 +110,11 @@
           category::verb+present
           category::verb+passive
           category::modal)
-	 (setf (edge-form edge) (category-named 'vg)))
+	 (setf (edge-form edge) category::vg))
         ((category::verb+ing)
-         (setf (edge-form edge) (category-named 'vg+ing)))
+         (setf (edge-form edge) category::vg+ing))
         ((category::verb+ed)
-         (setf (edge-form edge) (category-named 'vg+ed)))
+         (setf (edge-form edge) category::vg+ed))
 
 
 	(otherwise

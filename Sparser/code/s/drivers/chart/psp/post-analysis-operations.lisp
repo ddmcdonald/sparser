@@ -117,7 +117,9 @@ where it regulates gene expression.")
               ;; dt was already contextually interpreted --
               ;;  this happens with conjunction distribution/expansion
               (contextual-interpretation mention))
-             ((itypep-or base '(hyphenated-pair hyphenated-triple two-part-label))
+             ((or (itypep base category::hyphenated-pair)
+                  (itypep base category::hyphenated-triple)
+                  (itypep base category::two-part-label))
               ;; not sure what to do for such things -- example ER-β is a hyphenated pair
               (setf (contextual-description mention) base)
               base)
@@ -261,7 +263,7 @@ where it regulates gene expression.")
   (let* ((mention (dt-mention dt))
 	 (interp (dli-ref-cat (base-description mention))))
     (if (and (individual-p interp)
-	     (itypep interp 'hyphenated-number))
+	     (itypep interp category::hyphenated-number))
 	;; hyphenated numbers are special, and broken...
 	interp
 	;; this allows for creation of new collections by distribution of internal collections
@@ -321,9 +323,9 @@ where it regulates gene expression.")
                     category::two-part-label))
   (and (individual-p i)
        (collection-p i)
-       (not (itypep-or i '(category::hyphenated-pair
-                           category::hyphenated-triple
-                           category::two-part-label)))))
+       (not (or (itypep i category::hyphenated-pair)
+                (itypep i category::hyphenated-triple)
+                (itypep i category::two-part-label)))))
 
 
 (defparameter *special-collection-interp* t

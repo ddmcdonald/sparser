@@ -160,6 +160,10 @@
 
 
 (defmethod category-named ((name symbol) &optional errorp)
+  #|
+  (format t "~%~% category-named ~s~%" name)
+  (sb-debug::map-backtrace #'print :count 5 :start 0)
+  |#
   (let ((c-symbol (if (eq (symbol-package name) *category-package*)
                     name
                     (find-symbol (symbol-name name) *category-package*))))

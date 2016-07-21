@@ -113,7 +113,7 @@
 
 
 ;;--- generic type check
-
+#+ignore ;; why was this ever here -- it over-rides the perfectly good function defined when the defstruct category is defined
 (defun category-p (unit)
   (or (typep unit 'mixin-category)
       (typep unit 'subtyped-category)

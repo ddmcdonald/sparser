@@ -26,8 +26,9 @@
 
 
 (defun is-pronoun? (ref)
+  (declare (special category::pronoun))
   (when (individual-p ref)
-   (itypep ref 'pronoun)))
+    (itypep ref category::pronoun)))
 
 
 #| The category will be the basis of the referent.  Most syntactic properties

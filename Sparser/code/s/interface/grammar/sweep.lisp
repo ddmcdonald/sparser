@@ -78,7 +78,7 @@
 (defun relevant-type-of-individual (i)
   ;; close through propbably not completely correct
   (and (individual-p i)
-       (not (itypep i 'prepositional-phrase)))
+       (not (itypep i category::prepositional-phrase)))
   ;;(itypep i 'biological)
   )
 
@@ -122,7 +122,7 @@
   (unless (gethash i *individuals-seen*)
     (let ((bindings (indiv-binds i))
           objects )
-      (push (if (itypep i 'number)
+      (push (if (itypep i category::number)
               (value-of 'value i)
               i)
             objects)
@@ -137,8 +137,8 @@
             (typecase value
               (individual 
                (cond
-                ((itypep value 'unclear) nil)
-                ((itypep value 'prepositional-phrase)
+                ;;((itypep value 'unclear) nil)
+                ((itypep value category::prepositional-phrase)
                  (push (list var-name
                              (collect-model-description (value-of 'pobj value)))
                        objects))

@@ -983,18 +983,19 @@
   "Populated by call from irrelevant-category-for-dh")
 
 (defun populate-irrelevant-to-discourse-history ()
-  (setq *irrelevant-to-discourse-history*
-        `(,(category-named 'determiner)
-	   (category-named 'approximator)
-          ,(category-named 'prepositional-phrase)
-          ,(category-named 'preposition)
-          ,(category-named 'spatial-preposition)
-          ,(category-named 'pronoun)
-          ,(category-named 'conjunction) ;; Observed cases just covered "and"
+  (when (null *irrelevant-to-discourse-history*)
+    (setq *irrelevant-to-discourse-history*
+          `(,(category-named 'determiner)
+             (category-named 'approximator)
+             ,(category-named 'prepositional-phrase)
+             ,(category-named 'preposition)
+             ,(category-named 'spatial-preposition)
+             ,(category-named 'pronoun)
+             ,(category-named 'conjunction) ;; Observed cases just covered "and"
 
-          ,(category-named 'single-capitalized-letter)
-          ,(category-named 'number)
-          )))
+             ,(category-named 'single-capitalized-letter)
+             ,(category-named 'number)
+             ))))
 
 ;;;----------------------------------------
 ;;; instances of part-of-speech categories
