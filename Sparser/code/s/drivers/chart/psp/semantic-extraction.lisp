@@ -368,7 +368,9 @@
 ;;----- collect-model-description mentods
 
 (defmethod collect-model-description ((cat category))
-  cat)
+  (if *for-spire*
+      `(category ,(cat-name cat))
+      cat))
 
 (defmethod collect-model-description ((str string))
   str)
@@ -376,12 +378,12 @@
 
 (defmethod collect-model-description ((w word))
   (if *for-spire*
-      w
+      `(wd ,(word-pname w))
       (word-pname w)))
 
 (defmethod collect-model-description ((w polyword)) ;
   (if *for-spire*
-      w
+      `(pw ,(pw-pname w))
       (pw-pname w)))
 
 (defmethod collect-model-description ((cal cons))
@@ -432,7 +434,7 @@ without damaging other code.")
                        (member (var-name (binding-variable b))
                           '(members count ras2-model)))
            collect
-             (list (var-name(binding-variable b))
+             (list (var-name (binding-variable b))
                    (collect-model-description (binding-value b)))))))
     ((collection-p i)
      (setf (gethash i *semtree-seen-individuals*) t)
@@ -466,10 +468,12 @@ without damaging other code.")
                                      (collect-model-description value))
                                desc)))
                     (word (cond (*for-spire*
-                                 (push (list var-name value) desc))
+                                 (push `(,var-name (wd ,(word-pname value))) desc))
                                 (*show-words-and-polywords* (push (list var-name value) desc) )))
-                    (polyword (cond (*for-spire* (push (list var-name value) desc))
-                                (*show-words-and-polywords* (push (list var-name value) desc) )))
+                    (polyword (cond (*for-spire*
+                                     (push `(,var-name (pw ,(pw-pname value))) desc))
+                                    (*show-words-and-polywords*
+                                     `(push (list var-name value) desc) )))
                     (category
                      (push `(,var-name ,(collect-model-description value)) desc))
                     (cons  (lsp-break "how did we get a CONS ~s as a value for variable ~s~%"
@@ -490,7 +494,10 @@ without damaging other code.")
        as var  = (binding-variable b)
        as var-name = (var-name var)
        as value = (binding-value b)
-       as vv-pair = `(,var-name ,value)
+       as vv-pair = `(,var-name
+                      ,(if (and *for-spire* (category-p value))
+                           `(category ,(cat-name value))
+                          value))
        do
          (unless (or (memq var-name '(trailing-parenthetical category ras2-model))
                      (typep value 'mixin-category)) ;; has-determiner
