@@ -66,27 +66,6 @@
 (defvar *all-chunk-edges* nil)
 
 
-(defun treetops-in-current-chunk ()
-  ;; like  treetops-in-current-segment  but takes into account the chunk forms
-  (loop for ev in
-    (treetops-in-segment *left-segment-boundary*
-                         *right-segment-boundary*)
-    collect
-    (cond ((edge-p ev) ev)
-          ((edge-vector-p ev)
-           (loop for e in (ev-edges ev)
-             when (compatible-with-chunk e *current-chunk*)
-             do (return e))))))
-
-(defun compatible-with-chunk (edge chunk)
-  (declare (special *vg-word-categories*))
-  (cond
-   ((null (edge-form edge)))
-   ((equal (chunk-forms chunk) '(vg))
-    (member (cat-symbol (edge-form edge)) *vg-word-categories*))
-   ((equal (chunk-forms chunk) '(ng))
-    (not (member (cat-symbol (edge-form edge)) *vg-word-categories*)))
-   (t t)))
 
 (defun use-specialized-ng-parser? ()
   ;; Predicate used by parse-at-the-segment-level to determine
@@ -233,7 +212,7 @@
 (defun collect-triples-in-segment (chunk)
   ;; Executed multiple times because it's recalculated with
   ;; every rule execution
-  (let ((pairs (adjacent-segment-tts (treetops-in-current-chunk)))
+  (let ((pairs (adjacent-tts (treetops-in-current-chunk)))
         rule )
     ;;(push-debug `(,pairs)) (break "pairs = ~a" pairs)
     (loop for pair in pairs
@@ -284,10 +263,35 @@
               *vp-categories*)))
 
 
-  
+
+(defun treetops-in-current-chunk ()
+  "Treetops-in-segment (in analyzers/forest/printers.lisp) guarentees
+   that the treetops will be ordered left to right. It relies on
+   next-treetop/rightward to do its walk, so some of the values it
+   returns will be edge-vectors rather than edges."
+  ;; like  treetops-in-current-segment  but takes into account the chunk forms
+  (loop for ev in
+    (treetops-in-segment *left-segment-boundary*
+                         *right-segment-boundary*)
+    collect
+    (cond ((edge-p ev) ev)
+          ((edge-vector-p ev)
+           (loop for e in (ev-edges ev)
+             when (compatible-with-chunk e *current-chunk*)
+             do (return e))))))
+
+(defun compatible-with-chunk (edge chunk)
+  (declare (special *vg-word-categories*))
+  (cond
+   ((null (edge-form edge)))
+   ((equal (chunk-forms chunk) '(vg))
+    (member (cat-symbol (edge-form edge)) *vg-word-categories*))
+   ((equal (chunk-forms chunk) '(ng))
+    (not (member (cat-symbol (edge-form edge)) *vg-word-categories*)))
+   (t t)))
+
+;;%%%%%% replacing with adjacent-tts whose code is identical
 (defun adjacent-segment-tts (edges)
-  ;; Walk over all of the treetops in the segment, working from the left,
-  ;; and collect every pair of adjacent edges.
   (loop for edges on edges 
     while (cdr edges) 
     when (and 
