@@ -168,9 +168,7 @@
 ;;--- accessors
 
 (defun psr# (n)
-  (let ((symbol (intern (string-append *cfr-symbol-prefix*
-                                       (format nil "~a" n))
-			*phrase-structure-rule-package*)))
+  (let ((symbol (make-cfr-symbol n)))
     (eval symbol)))
 
 (defun p# (n)

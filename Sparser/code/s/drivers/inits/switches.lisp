@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  June 2016
+;;;  Version:  July 2016
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -106,12 +106,19 @@
 
 (defun switch-settings (&optional full? (stream *standard-output*))
   (declare (special *treat-single-Capitalized-words-as-names*
-                    *pnf-routine* *break-policy*
+                    *pnf-routine* *break-policy* *description-lattice*
+                    *allow-pure-syntax-rules* *CLOS*
                     ))
   (format stream "~&~%Sparser switch settings:")
   (format stream " ~A" *switch-setting*)
   (format stream "~%              Chart-level protocol: ~A"
           *kind-of-chart-processing-to-do*)
+  (format stream "~&               use syntactic rules: ~a"
+          *allow-pure-syntax-rules*)
+  (format stream "~&              CLOS methods enabled: ~a"
+          *CLOS*)
+  (format stream "~&       use the Description Lattice: ~a"
+          *description-lattice*)
   (format stream "~%                     unknown words: ~A"
           *unknown-word-policy*) ;; :check-for-primed = Comlex
   (format stream "~%             break function policy: ~a"
@@ -335,7 +342,7 @@
 
 ;;(defun turn-off-parsing-protocol-for-documents ()
 ;; Strictly speaking, all we need to do it change the kind of
-;; chart parsing to a different one. If there some other leakage?
+;; chart parsing to a different one. Is there some other leakage?
 
 ;;;----------------
 ;;; Specific cases

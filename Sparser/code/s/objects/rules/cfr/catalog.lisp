@@ -52,10 +52,12 @@
 (defvar *cfr-symbol-prefix* "PSR-")
 
 (defun gen-cfr-symbol ()
-  (let ((number
-         (incf *next-number-for-phrase-structure-rule*)))
-    (intern (concatenate 'string
-                         *cfr-symbol-prefix*
-                         (format nil "~A" number))
-            *phrase-structure-rule-package*)))
+  (let ((number (incf *next-number-for-phrase-structure-rule*)))
+    (make-cfr-symbol number)))
+
+(defun make-cfr-symbol (number)
+  (intern (concatenate 'string
+                       *cfr-symbol-prefix*
+                       (format nil "~A" number))
+          *phrase-structure-rule-package*))
 
