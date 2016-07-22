@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "attribute"
 ;;;   Module:  "grammar/core/qualities/
-;;;  version:  January 2014
+;;;  version:  July 2016
 
 ;; Initiated 11/21/13. 12/2/13 Added the "the radius is 2.5 miles" case.
 ;; Finished debugging basic patter 12/16/13. 1/7/14 Looks like it both
@@ -23,6 +23,7 @@ them quickly.
 
 |#
 
+#|  Move to kinds/attribution.lisp 7/20/16
 (define-category attribute-of-entity
   :rule-label attribute
   ;; completely unclear how this fits in. It's a tuple of convenience
@@ -31,7 +32,7 @@ them quickly.
   :instantiates :self
   :binds ((attribute)
           (entity))
-  :index (:sequential-keys entity attribute))
+  :index (:sequential-keys entity attribute)) |#
 
 
 (defmacro def-attribution (attr-word super-category 

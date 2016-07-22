@@ -209,7 +209,7 @@
    :binds ((dependent)
            (substrate)))
 
-;
+
 (define-category operator
   :specializes relation
   :binds ((name :primitive word)))
@@ -262,31 +262,10 @@
   :binds ((term)
           (operator . operator)))
 
-(define-category  attribute-value
-  ;; as in 'attribute-value pair'
-  :specializes predication ;;/// re-think the variables there
-  :binds ((attribute . attribute)
-          (value))
-  :index (:permanent :sequential-keys attribute value))
-
 
 ;;;------------------------------------------------
 ;;;--------- subcategories of quality -------------
 ;;;------------------------------------------------
-
-;; n.b. the directory model/core/qualities/ has color should have
-;; other such things.
-
-(define-category  attribute
-  :instantiates :self
-  ;; Sort of the same thing as a predicate but emphasizes the
-  ;; point that it will be an attribute of 'something', which is
-  ;; a narrower notion than predicate.
-  ;; Sort out with operator discussion just below.
-  :specializes quality
-  ;; in some cases a sublass of attribute will specialize
-  ;; scalar quality. 
-  :binds ((name :primitive word)))
 
 
 (define-category scalar-quality

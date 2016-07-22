@@ -3,13 +3,17 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  April 2016
+;;;  version:  July 2016
 
 ;; Initiated 12/3/15
 
 (in-package :sparser)
 
+
 (gload "mid-level;ontology")
+
+#+mumble(gload "mid-level;interlocutor")
+
 (gload "mid-level;relations")
 
 (defun isr-required-categories ()

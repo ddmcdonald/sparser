@@ -4,16 +4,21 @@
 ;;;
 ;;;     File:  "size"
 ;;;   Module:  "grammar/core/qualities/
-;;;  version:  June 2015
+;;;  version:  July 2015
 
 ;; Initiated 12/3/15, on the model of color.
 
 (in-package :sparser)
 
-#| N.b. this is utterly devoid of real meaning |#
+(define-category size
+  :specializes attribute-type
+  :binds ((size size))
+  :realization (:common-noun "size")
+  :documentation "")
+
 
 (define-category size-value
-  :specializes quality
+  :specializes attribute
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
@@ -21,8 +26,12 @@
   :documentation "This is for representing the qualitative
  values for sizes. It's analogous to a measurement of
  a scalar like length. It is not attributing this size
- to some object. That is is the purpose of XXXXX
-")
+ to some object. That is is the purpose of xxx
+   In Dolce's terms, this is defining the 'region' that
+ contains the possible values of a size. ")
+
+
+;;--- actual size values
 
 (defun define-size (string) ;; syntactic sugar
   (define-or-find-individual 'size-value :name string))
@@ -30,6 +39,7 @@
 ;; a few cases as need for trival blocks world
 (define-size "big")
 (define-size "little")
+
 
 #| lifted from biology/terms-to-move
 
@@ -48,5 +58,4 @@ that it's a measurable scalar.
   :binds ((measured-item biological))
   :realization
   (:noun "size" :of measured-item))
-
 |#

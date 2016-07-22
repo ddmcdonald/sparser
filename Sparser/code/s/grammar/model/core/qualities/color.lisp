@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "color"
 ;;;   Module:  "grammar/core/qualities/
-;;;  version:  October 2013
+;;;  version:  September 2016
 
 ;; Initiated 10/9/13. 8/10/15 Make it specialize quality.
 
@@ -14,15 +14,15 @@
 ;;; color per-se
 ;;;--------------
 
-(define-category color
-  :specializes quality
+(define-category color-value
+  :specializes attribute
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:adjective name))
 
 (defun define-color (string) ;; syntactic sugar
-  (define-or-find-individual 'color :name string))
+  (define-or-find-individual 'color-value :name string))
 
 ;;--- move to a dossier before growing this list by too much more
 (define-color "black")

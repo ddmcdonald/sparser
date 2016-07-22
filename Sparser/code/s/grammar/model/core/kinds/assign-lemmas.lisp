@@ -10,6 +10,9 @@
 
 (in-package :sparser)
 
+;;;--------
+;;; lemmas
+;;;--------
 
 (defmacro assign-lemma (category-name word-expr)
   `(assign-lemma/expr ',category-name ',word-expr))
@@ -37,10 +40,34 @@
 (assign-lemma has-name (:proper-noun "name"))
 
 
+;;;------------------
+;;; realization data
+;;;------------------
+
+#| incomplete experiment
+(define-realization1 attribute-value
+  ((:tree-family be-description
+    ;; This covers "is red"
+    :mapping ((result . :self)
+              (description . value)
+              (vp . :self)
+              (complement np adjective ap)))
+   (:tree-family
+    ;; This covers '(the) speed (is (150 knots))'
+    :mapping((result . :self)
+                             (subject . attribute)
+                             (predicate . value)
+                             (np/subject . ,category-name) ;; speed
+                             (vp . ,predicate-names)))))) ;
+|#
 
 ;;;------------------------------------------------
 ;;; Deictics  -- needs a story about dereferencing
 ;;;------------------------------------------------
+;; These are here (rather than inside model/core/places/)
+;; so that they are accessible to a biology (R3) load
+;; of the system without requiring it to incorporate all
+;; the other parts of the location module. 
 
 (define-category  deictic-location 
   :instantiates  location ;;self
