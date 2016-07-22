@@ -224,7 +224,9 @@
 ;(include-grammar-module  *jv/relations-via-categories*)
 ;(include-grammar-module  *gl*)
 ;(include-grammar-module *waypoints*)
+
 (include-grammar-module *blocks-world*)
+(include-grammar-module *biocuration*)
 
 ;(include-grammar-module  *load-Tipster-grammar-into-image*)
 ;(include-grammar-module  *jv/phrases*)
