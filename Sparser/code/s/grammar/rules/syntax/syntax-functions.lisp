@@ -226,27 +226,41 @@
     ((itypep head category::determiner)
      ;; had strange case with "some cases this" -- head was "this"
      nil)
+    ((word-p head)
+     nil) ;; this happened with word = HYPHEN, "from FCS-treated cells"
     ((and qualifier head
 	  (not (or (category-p head)
 		   (individual-p head))))
-     ;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
+     ;; Have cases like "pp170" where the head has a PW as referent.
+     ;; Don't know what to  do
      (break "Can't deal with head whose interpretation is not ~
              an individual or category in noun-noun-compound, head is ~s~&" head))
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
-       ((word-p head)
-	nil) ;; this happened with word = HYPHEN, "from FCS-treated cells"
+       ((and (itypep head 'knockout-pattern)
+             (itypep qualifier 'protein))
+        (setq qualifier (bind-variable 'cell-line ;; ???
+                                       head qualifier))
+        qualifier)
+       ;;/// There are a lot of knockout patterns. Enumerating them
+       ;; like this is going to get old. Feels like motivation for
+       ;; from-rule generated methods, all using a standard schema to
+       ;; indicate what variable to use, head & form, etc
+       ((and (itypep qualifier 'knockout-pattern)
+             (itypep head 'mouse))
+        (setq head (bind-variable 'cell-line qualifier head))
+        head)
        ((and (itypep qualifier (itype-of head))
              (not (indiv-binds head))
              ;; head already is modified -- don't replace with proper noun
              ;; e.g. "braf mutant a 375 melanoma cell"
              (if (collection-p qualifier)
-               (and ;; conjunction of named items
-                (individual-p (car (value-of 'items qualifier)))
-                (value-of 'name (car (value-of 'items qualifier))))
-               ;; named item
-               (value-of 'name qualifier)))
+                 (and ;; conjunction of named items
+                  (individual-p (car (value-of 'items qualifier)))
+                  (value-of 'name (car (value-of 'items qualifier))))
+                 ;; named item
+                 (value-of 'name qualifier)))
         ;; intended as test for proper noun or other specific NP
 	(revise-parent-edge :form category::proper-noun)
 	qualifier)
@@ -754,7 +768,7 @@
        ((and ;; "30 minutes after stimulation ..."
          (edge-p (edge-left-daughter prep-edge))
          (itypep (edge-referent (edge-left-daughter prep-edge))
-                 'amount-of-time) 
+                 'amount-of-time)
          (edge-p (edge-right-daughter prep-edge))
          (memq (cat-name (edge-form (edge-right-daughter prep-edge)))
                '(preposition spatio-temporal-preposition spatial-preposition)))
@@ -912,15 +926,18 @@
   (push-debug `(,np ,pp))
   (cond
    ((null np) 
-    (break "null interpretation in interpret-pp-adjunct-to-np edge ~s~&" *left-edge-into-reference*)
+    (break "null interpretation for NP in interpret-pp-adjunct-to-np edge ~s~&"
+           *left-edge-into-reference*)
     nil)
    (t
-    (or (when (and np pp) (call-compose np pp)) ;; guard against passing a null NP to call-compose
+    (or (when (and np pp) (call-compose np pp))
+        ;; guard against passing a null NP to call-compose
         ;; Rusty - this is the hook that allows for a custom interpretation
         ;; of the meaning of this pair. If you look up at verb-noun-compound
         ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
         ;; In general it's a hook for any knowledge we have about particular
         ;; cases / co-composition
+
         (let* ((pp-edge (right-edge-for-referent))
                (prep-edge (edge-left-daughter pp-edge))
                (prep-word (edge-left-daughter prep-edge))
@@ -937,8 +954,7 @@
            (*subcat-test* variable-to-bind)
            (variable-to-bind
             (when *collect-subcat-info*
-              (push (subcat-instance np prep-word variable-to-bind
-                                     pp)
+              (push (subcat-instance np prep-word variable-to-bind pp)
                     *subcat-info*))
             (setq np (individual-for-ref np))
             (when variable-to-bind ;; otherwise return nil and fail the rule
@@ -1685,13 +1701,6 @@
        (revise-parent-edge :form category::prepositional-phrase)	 
        prep-comp))))
 
-; Called from whack-a-rule-cycle => copula-rule?
-;       => test-subcat-rule => ref/function
-; Called from whack-a-rule-cycle => best-treetop-rule
-;       => rule-for-edge-pair => test-subcat-rule => ref/function
-; Called from whack-a-rule-cycle => execute-one-one-rule
-;       => form-rule-completion => referent-from-rule
-;            => dispatch-on-rule-fields => ref/function
 
 ;;;---------
 ;;; be + PP
