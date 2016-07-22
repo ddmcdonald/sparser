@@ -1,11 +1,10 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(CTI-source LISP) -*-
-;;; copyright (c) 1990  Content Technologies Inc.  -- all rights reserved
-;;; copyright (c) 1991 David D. McDonald  -- all rights reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
+;;; copyright (c) 1990 Content Technologies Inc.  -- all rights reserved
+;;; copyright (c) 1991,2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "catalog"
 ;;;    Module:   "objects;rules:cfr:"   ;; "context free rules"
-;;;   Version:   1.0   August 1990
-;;;
+;;;   Version:   July 2016
 
 (in-package :sparser)
 
@@ -28,8 +27,7 @@
 ;;;-----------------------
 
 (defun catalog/cfr (cfr r-symbol)
-  (push cfr
-        *context-free-rules-defined*)
+  (push cfr *context-free-rules-defined*)
   (set r-symbol cfr)
   (proclaim `(special ,r-symbol))
   (setf (cfr-symbol cfr) r-symbol)
@@ -51,11 +49,13 @@
 
 (defvar *next-number-for-phrase-structure-rule* 0)
 
+(defvar *cfr-symbol-prefix* "PSR-")
+
 (defun gen-cfr-symbol ()
   (let ((number
          (incf *next-number-for-phrase-structure-rule*)))
     (intern (concatenate 'string
-                         "PSR"
+                         *cfr-symbol-prefix*
                          (format nil "~A" number))
             *phrase-structure-rule-package*)))
 
