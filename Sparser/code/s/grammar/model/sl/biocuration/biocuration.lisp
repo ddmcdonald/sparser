@@ -25,44 +25,148 @@ BOB: Yes, my model shows that Erk is inactivated.
      When the feedback loop is included in the model, ERK remains active.
 |#
 
-#|
+#|  Lifted from a long transcript
 "I want to find a molecular treatment for pancreatic cancer."
 "What drug could I use?"
 "What proteins might lead to the development of pancreatic cancer."
 
 <R T="00:01:49.28" S="DAGENT">
-(REQUEST :CONTENT (INTERPRET-SPEECH-ACT :CONTENT (ONT::ASK-WHAT-IS :CONTENT ONT::V32862 :CONTEXT ((ONT::A ONT::V32862 :INSTANCE-OF ONT::MEDICATION :NAME W::DRUG :RULE -SIMPLE-REF :SUCHTHAT ONT::V32902) (ONT::RELN ONT::V32902 :INSTANCE-OF ONT::USE :RULE -RULE1B :AFFECTED ONT::V32862 :TENSE W::PRES :MODALITY (:* ONT::CONDITIONAL W::COULD) :FORCE ONT::POSSIBLE)) :ACTIVE-GOAL ONT::V32109)) :REPLY-WITH IO-33172)
+(REQUEST 
+ :CONTENT
+    (INTERPRET-SPEECH-ACT 
+     :CONTENT (ONT::ASK-WHAT-IS
+               :CONTENT ONT::V32862
+               :CONTEXT ((ONT::A ONT::V32862 
+                            :INSTANCE-OF ONT::MEDICATION 
+                            :NAME W::DRUG 
+                            :RULE -SIMPLE-REF 
+                            :SUCHTHAT ONT::V32902)
+                         (ONT::RELN ONT::V32902
+                                    :INSTANCE-OF ONT::USE
+                                    :RULE -RULE1B
+                                    :AFFECTED ONT::V32862
+                                    :TENSE W::PRES
+                                    :MODALITY (:* ONT::CONDITIONAL W::COULD)
+                                    :FORCE ONT::POSSIBLE))
+               :ACTIVE-GOAL ONT::V32109)) :REPLY-WITH IO-33172)
 </R>
 
 <S T="00:01:49.36" R="DTDA">
-(REQUEST :CONTENT (FIND-TREATMENT :DISEASE (CANCER)) :REPLY-WITH BA-QUERY-32 :sender SPG-AGENT)
+(REQUEST
+ :CONTENT (FIND-TREATMENT
+           :DISEASE (CANCER))
+ :REPLY-WITH BA-QUERY-32 :sender SPG-AGENT)
 </S>
-<R T="00:02:03.96" S="DTDA">
-(reply :content ((SUCCESS :protein (:name PIK3CA :hgnc PIK3CA) :prevalence 0.22 :functional-effect ACTIVE) (SUCCESS :drugs ((:name NVP-BKM120) (:name GSK2126458) (:name BYL719) (:name XL147 :chebi_id 71957) (:name A66) (:name GSK1059615 :chebi_id 71955) (:name PI103 :chebi_id 90524) (:name ZSTK474 :chebi_id 90545) (:name GDC-0941)))) :receiver SPG-AGENT :in-reply-to BA-QUERY-32)
-<S T="00:02:03.99" R="SPG-AGENT">
 
-(REQUEST :CONTENT (GENERATE :CONTENT (ONT::TELL :CONTENT BA-QUERY-32) :CONTEXT ((RELN BA-QUERY-32 :INSTANCE-OF LOOK-UP :QUERY (FIND-TREATMENT :DISEASE (CANCER)) :ANSWER (SUCCESS :DRUGS ((:NAME NVP-BKM120) (:NAME GSK2126458) (:NAME BYL719) (:NAME XL147 :CHEBI_ID 71957) (:NAME A66) (:NAME GSK1059615 :CHEBI_ID 71955) (:NAME PI103 :CHEBI_ID 90524) (:NAME ZSTK474 :CHEBI_ID 90545) (:NAME GDC-0941)))))) :sender DAGENT)
-</S>
+<R T="00:02:03.96" S="DTDA">
+(reply
+ :content ((SUCCESS
+            :protein (:name PIK3CA :hgnc PIK3CA)
+            :prevalence 0.22
+            :functional-effect ACTIVE)
+           (SUCCESS
+            :drugs ((:name NVP-BKM120) (:name GSK2126458)
+                    (:name BYL719) (:name XL147 :chebi_id 71957)
+                    (:name A66) (:name GSK1059615 :chebi_id 71955)
+                    (:name PI103 :chebi_id 90524) (:name ZSTK474 :chebi_id 90545)
+                    (:name GDC-0941))))
+ :receiver SPG-AGENT :in-reply-to BA-QUERY-32)
 
 
 <S T="00:02:35.36" R="SPG-AGENT">
-(REQUEST :CONTENT (GENERATE :CONTENT (ONT::TELL :CONTENT BA-QUERY-56) :CONTEXT ((RELN BA-QUERY-56 :INSTANCE-OF LOOK-UP :QUERY (FIND-DISEASE-TARGETS :DISEASE (CANCER)) :ANSWER (SUCCESS :PROTEIN (:NAME PIK3CA :HGNC PIK3CA) :PREVALENCE 0.22 :FUNCTIONAL-EFFECT ACTIVE)))) :sender DAGENT)
+(REQUEST 
+ :CONTENT (GENERATE 
+           :CONTENT (ONT::TELL :CONTENT BA-QUERY-56) 
+           :CONTEXT ((RELN BA-QUERY-56 
+                           :INSTANCE-OF LOOK-UP 
+                           :QUERY (FIND-DISEASE-TARGETS 
+                                   :DISEASE (CANCER)) 
+                           :ANSWER (SUCCESS 
+                                    :PROTEIN (:NAME PIK3CA :HGNC PIK3CA)
+                                    :PREVALENCE 0.22 
+                                    :FUNCTIONAL-EFFECT ACTIVE)))) 
+:sender DAGENT)
 </S>
+
 "22% of pancreatic cancer patients have a mutation in PIK3CA."
 
 "Are there any drugs targeting KRAS?"
+|#
 
-<R T="00:02:49.82" S="DTDA">
-(reply :content (SUCCESS :drugs ()) :receiver SPG-AGENT :in-reply-to BA-QUERY-80)
-</R>
+#|  From Jeff 6/14/16
+This one is insane because we were supposed to look up treatments for
+PANCREATIC-CANCER, but instead we asked the bioagents about CANCER. So
+according to the script we should respond: "I don't know of any drugs
+that treat pancreatic cancer." Obviously, we found several drugs in this
+case. The query (an instance of look-up) is what we actually sent to the
+bioagents.
 
-<S T="00:02:49.93" R="DAGENT">
-(TELL :RECEIVER DAGENT :CONTENT (REPORT :CONTENT (FAILURE :WHAT BA-QUERY-80 :AS (SUBGOAL :OF C00003)) :CONTEXT ((RELN BA-QUERY-80 :INSTANCE-OF LOOK-UP :QUERY (FIND-TARGET-DRUG :TARGET (KRAS)) :ANSWER (SUCCESS :DRUGS NIL)))) :IN-REPLY-TO IO-38690 :sender SPG-AGENT)
-</S>
+(REQUEST
+ :CONTENT (GENERATE
+           :CONTENT (ONT::TELL
+                     :CONTENT BA-QUERY-30)
+           :CONTEXT ((RELN BA-QUERY-30
+                           :INSTANCE-OF LOOK-UP
+                           :QUERY (FIND-TREATMENT
+                                   :DISEASE (CANCER))
+                           :ANSWER (SUCCESS
+                                    :DRUGS ((:NAME NVP-BKM120) (:NAME GSK2126458)
+                                            (:NAME BYL719) (:NAME XL147 :CHEBI_ID 71957)
+                                            (:NAME A66)
+                                            (:NAME GSK1059615 :CHEBI_ID 71955)
+                                            (:NAME PI103 :CHEBI_ID 90524)
+                                            (:NAME ZSTK474 :CHEBI_ID 90545)
+                                            (:NAME GDC-0941))))))
+ :sender DAGENT)
+
+
+------------------------------------------------------------
+Again we are off script here. We were supposed to not find any drugs. So
+then, when the user asks if we know of any proteins that affect
+pancreatic cancer, we should say something about KRAS affecting 88% of
+pancreatic cancer patients. In this case, the bioagents tell us that
+PIK3CA affects 22% of CANCER patients.
+
+(REQUEST
+ :CONTENT (GENERATE
+           :CONTENT (ONT::TELL
+                     :CONTENT BA-QUERY-55)
+           :CONTEXT ((RELN BA-QUERY-55
+                           :INSTANCE-OF LOOK-UP
+                           :QUERY (FIND-DISEASE-TARGETS :DISEASE (CANCER))
+                           :ANSWER (SUCCESS
+                                    :PROTEIN (:NAME PIK3CA :HGNC PIK3CA)
+                                    :PREVALENCE 0.22
+                                    :FUNCTIONAL-EFFECT ACTIVE))))
+ :sender DAGENT)
+
+We should say: It looks like PIK3CA is implicated in 22% of cancer
+cases. [or something...]
+
+------------------------------------------------------------
+Continuing with the schizophrenic conversation, we make a non sequitur
+and ask if there are any drugs that target KRAS.
+
+(REQUEST
+ :CONTENT (GENERATE
+           :CONTENT (ONT::TELL
+                     :CONTENT (ONT::FAIL
+                               :FORMAL BA-QUERY-80
+                               :TENSE PAST))
+           :CONTEXT ((RELN BA-QUERY-80
+                           :INSTANCE-OF LOOK-UP
+                           :QUERY (FIND-TARGET-DRUG :TARGET (KRAS))
+                           :ANSWER (SUCCESS :DRUGS NIL))))
+ :sender DAGENT)
+
+We should say: I couldn't find any drugs that target KRAS.
 
 "Let's build a model of the KRAS neighborhood."
 "I know that KRAS activates Raf, Raf activates Mek and Mek activates Erk."
 |#
+
+
+
 #|--------------------------------------------------------
          Thinking through what's being skipped over in 
          this one simple remark. Suggests enthymemes could
@@ -102,7 +206,27 @@ Functional-effect-of(M, active(K))
     (let ((dtn (make-dtn :resource cancer)))
       (make-adjunction-node pancreatic dtn)
       dtn)))
+#| (p "pancreatic cancer.")
+[pancreatic cancer]
 
+e2    CANCER        1 "pancreatic cancer" 3
+                    period
+
+sp> (stree 2)
+ e2 cancer/np                 p1 - p3   rule 290
+  e0 pancreas/adjective       p1 - p2   rule 44726
+    "pancreatic"
+  e1 cancer/common-noun       p2 - p3   rule 2683
+    "cancer"
+
+(pprint (semtree 2)) =>
+  (#<cancer 12561> (organ #<ref-category PANCREAS>))
+
+(dcr 'cancer)
+    :"of"  v/r: bio-organ  var: organ
+    :m  v/r: bio-organ  var: organ
+    :"in"  v/r: bio-organ  var: organ
+|#
 
 ;; "patients with pancreatic cancer"
 (defun with-something (something)
@@ -118,8 +242,22 @@ Functional-effect-of(M, active(K))
 			 :referent 'patient)))
       (make-adjunction-node with-pc dtn)
       dtn)))
+#| (p "patients with pancreatic cancer.")
+[patients ]with [pancreatic cancer]
 
-;; "percent of patients with pancreatic cancer"
+e6    PATIENT       1 "patients with pancreatic cancer" 5
+                    period
+(#<patient 12565> 
+   (context (#<cancer 12561> 
+               (organ #<ref-category PANCREAS>))))
+
+(dcr 'patient)
+    :"with"  v/r: (or #<ref-category BIO-CONTEXT>
+                   #<ref-category EXPERIMENT-DATA>)  var: context
+  It's the bio-context that does it. 
+|#
+
+;; "88 percent of patients with pancreatic cancer"
 ;; (say (percent-of-something 88 (patients-with-pancreatic-cancer)))
 (defun percent-of-something (n something)
   (let ((of-s (make-lexicalized-attachment 'np-prep-adjunct (of-something something))))
