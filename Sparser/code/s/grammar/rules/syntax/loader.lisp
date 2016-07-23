@@ -32,6 +32,7 @@
   ;;  but it needs to be loaded before bracket definitions that
   ;;  reference these categories, so it's been moved into the
   ;;  master loader
+  (gload "syntax;category-predicates")
   (gload "syntax;subcategorization")
   (gload "syntax;syntax-functions")
   (gload "syntax;syntactic rules"))
