@@ -25,10 +25,16 @@
   :specializes linguistic)
 
 
-(defun is-pronoun? (ref)
+(defmethod is-pronoun? ((ref individual))
   (declare (special category::pronoun))
   (when (individual-p ref)
     (itypep ref category::pronoun)))
+
+(defmethod is-pronoun? ((e edge))
+  (is-pronoun? (edge-ref e)))
+
+(defmethod is-pronoun? ((e t))
+  nil)
 
 
 #| The category will be the basis of the referent.  Most syntactic properties
