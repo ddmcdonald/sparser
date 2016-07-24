@@ -80,10 +80,15 @@
 ;;------- paired coordinators
 ;;/// How do we represent their paired-ness ?
 
+(define-conjunction "nor"  :form 'conjunction)
+
+
 (mapcar #'define-conjunction
-        '("neither" "nor"
+        '("neither" ;; "nor" handle neither/nor by da rules?
           "if" "then" 
           ))
+
+
 
 ;;;------ subordinating conjunctions
 
