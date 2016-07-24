@@ -939,8 +939,7 @@
         ;; cases / co-composition
 
         (let* ((pp-edge (right-edge-for-referent))
-               (prep-edge (edge-left-daughter pp-edge))
-               (prep-word (edge-left-daughter prep-edge))
+               (prep-word (identify-preposition pp-edge))
                (*pobj-edge* (edge-right-daughter pp-edge))
                (pobj-referent (edge-referent *pobj-edge*))
                (variable-to-bind
@@ -965,8 +964,7 @@
 (defun interpret-pp-as-head-of-np (np pp)
   (push-debug `(,np ,pp))
   (let* ((pp-edge (right-edge-for-referent))
-         (prep-edge (edge-left-daughter pp-edge))
-         (prep-word (edge-left-daughter prep-edge))
+         (prep-word (identify-preposition pp-edge))
          (pobj-edge (edge-right-daughter pp-edge))
          (pobj-referent (edge-referent pobj-edge))
          (variable-to-bind
@@ -1006,7 +1004,11 @@
       ((eq (edge-form (right-edge-for-referent)) category::subordinate-clause)
        (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
 	      (vg-edge (edge-right-daughter (right-edge-for-referent))))
-	 (if (is-passive? vg-edge)
+	 (if (and (edge-p vg-edge)
+                  ;; vg-edge is :long-span for cases where the
+                  ;;  subordinate clause is a conjunction
+                  ;; HANDLE THESE CORRECTLY
+                  (is-passive? vg-edge))
 	     (when
 		 (and (object-variable vg-edge)
 		      (null (value-of (object-variable vg-edge) svp)))
@@ -1052,38 +1054,11 @@
     ;; so that the rule doesn't go through.
     (cond
       (*subcat-test*
-       (cond
-	 ((and
-	   ;; vp has a subject
-	   (subject-variable vp)
-	   (not (value-of (subject-variable vp) vp)) ;; which is not bound
-	   (subcategorized-variable vp :subject subj)
-	   (or (not (object-variable vp))
-	       (value-of (object-variable vp) vp)
-	       (value-of 'statement vp)
-	       (preceding-that-whether-or-conjunction? (left-edge-for-referent)))) ;; case for S not reduced relative
-	  t)
-	 ((and ;; vp has a bound subject -- NP can fill object
-	   (subject-variable vp)
-	   (value-of (subject-variable vp) vp)
-	   (subcategorized-variable vp :object subj))
-	  t)
-	 (t nil)))
-	 
-      ((and
-	   ;; vp has a subject
-	   (subject-variable vp)
-	   (not (value-of (subject-variable vp) vp)) ;; which is not bound
-	   (subcategorized-variable vp :subject subj)
-	   (or (not (object-variable vp))
-	       (value-of (object-variable vp) vp)
-	       (value-of 'statement vp)
-	       (preceding-that-whether-or-conjunction? (left-edge-for-referent))))
+       (or (can-fill-vp-subject? vp subj) ;; case for S not reduced relative
+           (can-fill-vp-object? vp subj)))
+      ((can-fill-vp-subject? vp subj)
        (assimilate-subcat vp :subject subj))
-      ((and ;; vp has a bound subject -- NP can fill object
-	(subject-variable vp)
-	(value-of (subject-variable vp) vp)
-	(subcategorized-variable vp :object subj))
+      ((can-fill-vp-object? vp subj)
        (setq  vp
 	      (create-predication-by-binding (subcategorized-variable vp :object subj)
 					     subj vp
@@ -1095,8 +1070,25 @@
        (revise-parent-edge :form category::np :category (itype-of subj))
        subj)
       (t nil))))
+
+
+(defun can-fill-vp-subject? (vp subj)
+  (and
+   ;; vp has a subject
+   (subject-variable vp)
+   (not (value-of (subject-variable vp) vp)) ;; which is not bound
+   (subcategorized-variable vp :subject subj)
+   (or (not (object-variable vp))
+       (value-of (object-variable vp) vp)
+       (value-of 'statement vp)
+       (preceding-that-whether-or-conjunction? (left-edge-for-referent)))))
        
-       
+(defun can-fill-vp-object? (vp subj)
+  (and ;; vp has a bound subject -- NP can fill object
+   (subject-variable vp)
+   (value-of (subject-variable vp) vp)
+   (subcategorized-variable vp :object subj)))
+
 (defun preceding-that-whether-or-conjunction? (left-edge)
   (declare (special left-edge))
   (when (and (edge-p left-edge)
@@ -1458,30 +1450,7 @@
     variable))
 
 
-(defun check-overridden-vars (pats)
-  (cond
-    ((and
-      (eq (length pats) 2)
-      (eq (subcat-label (first pats)) :m)
-      (member (var-name (subcat-variable (first pats))) '(agent object))
-      (member (var-name (subcat-variable (second pats))) '(agent object)))
-     (if (eq (var-name (subcat-variable (first pats))) 'object)
-         (list (second pats))
-         (list (first pats))))
-    (t
-     (let (over-ridden)
-       (loop for pat in pats
-          do
-            (loop for p in pats
-               when
-                 (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
-                      (not (consp (subcat-restriction p)))
-                      (if (consp (subcat-restriction pat))
-                          (loop for i in (cdr (subcat-restriction pat))
-                             thereis (itypep i (subcat-restriction p)))
-                          (itypep (subcat-restriction pat) (subcat-restriction p))))
-               do (push p over-ridden)))
-       over-ridden))))
+
 
 (defparameter *biological-tests* nil)
 
@@ -1685,16 +1654,13 @@
 
 (defun make-pp-relative-clause (pp clause)
   (or *subcat-test*
-      (let* ((binding-instructions
-	      `((pp ,pp) (clause ,clause)))
-	     (pp-rel-clause
-	      (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	       category::pp-relative-clause
-	       binding-instructions)))
-	;; place for trace or further adornment, storing
-	;; (p "activity of ras.")
-	;; (break "Look at who is calling make-pp")
-	pp-rel-clause)))
+      	      
+      ;; place for trace or further adornment, storing
+      ;; (p "activity of ras.")
+      ;; (break "Look at who is calling make-pp")
+      (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<
+       category::pp-relative-clause
+       `((pp ,pp) (clause ,clause)))))
 
 
 (defun make-prep-comp (prep complement)
@@ -1709,17 +1675,13 @@
      (revise-parent-edge :form category::to-comp)
      complement)
     (t
-     (let* ((binding-instructions
-	     `((prep ,prep) (comp ,complement)))
-	    (prep-comp 
-	     (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	      category::prepositional-phrase
-	      binding-instructions)))
-       ;; If this starts to make a lot of preposition-specific
-       ;; distinctions then we need to refactor and move the
-       ;; cond up.
-       (revise-parent-edge :form category::prepositional-phrase)	 
-       prep-comp))))
+     ;; If this starts to make a lot of preposition-specific
+     ;; distinctions then we need to refactor and move the
+     ;; cond up.
+     (revise-parent-edge :form category::prepositional-phrase)	 
+     (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      category::prepositional-phrase
+      `((prep ,prep) (comp ,complement))))))
 
 
 ;;;---------
