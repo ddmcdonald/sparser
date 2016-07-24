@@ -430,7 +430,13 @@
          ;;(break "form heuristics allowed. Check backtrace")
          (let ((form-before (edge-form edge-before))
                (form-after (edge-form edge-after)))
-           (when (and (or (and (eq form-before form-after))
+           (when (and (or (and (eq form-before form-after)
+                               ;; don't conjoin prepositional phrases until rest of system can deal with them
+                               (not (eq form-before category::pp))
+                               ;; this avoids a break in adjoining conjoined PPs
+                               ;; to NPs and clauses -- the real fix should be
+                               ;; at the point of the break...
+                               )
                           (and
                            (referential-category-p form-before)
                            (referential-category-p form-after)
