@@ -22,16 +22,29 @@
   :instantiates self
   :binds ((name :primitive word))
   :index (:permanent :key name)
+  :rule-label size  ;;// would 'attribute' be more useful?
   :realization (:adjective name)
   :documentation "This is for representing the qualitative
  values for sizes. It's analogous to a measurement of
  a scalar like length. It is not attributing this size
  to some object. That is is the purpose of xxx
    In Dolce's terms, this is defining the 'region' that
- contains the possible values of a size. ")
+ contains the possible values of a size.")
 
 
-;;--- actual size values
+(define-category size-is
+  :specializes attribute-value
+  ;; pre-bind the size category to the attribute (?)
+  ;;  (value size-value)
+  :documentation "")
+
+(define-category size-of
+  :specializes attribute-of-entity
+  ;;  (attribution . size-is)
+  ;; Something about what can take a size.
+  )
+
+;;--- actual size values (move to dossier for qualities)
 
 (defun define-size (string) ;; syntactic sugar
   (define-or-find-individual 'size-value :name string))
