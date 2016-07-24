@@ -46,121 +46,54 @@
 
 (in-package :sparser)
 
-;; new rule for numbered items -- needs review
-(def-syntax-rule (np number)   ;; should be allowable as a form rule
-  :form np
-  :head :left-edge
-  :referent (:function make-ordinal-item right-edge left-edge))
+;;; to review and fix or remove
+#+ignore
+(def-form-rule (comma subject-relative-clause)
+               :head :right-edge
+  :form comma-separated-subject-relative-clause
+  :referent (:daughter right-edge))
 
-(def-syntax-rule (proper-noun number)   ;; should be allowable as a form rule
-  :form np
-  :head :left-edge
-  :referent (:function make-ordinal-item right-edge left-edge))
 
-(def-form-rule (np hyphenated-number)  
-  :form np
-  :head :left-edge
-  :referent (:function make-ordinal-item right-edge left-edge))
+#+ignore ;; not yet ready
+(def-syntax-rule (np pp-relative-clause)
+    :head :left-edge
+    :form np
+    :referent (:function apply-pp-relative-clause left-edge right-edge))
 
-(def-form-rule (proper-noun hyphenated-number)  
-  :form np
-  :head :left-edge
-  :referent (:function make-ordinal-item right-edge left-edge))
+
+#+ignore
+(def-syntax-rule (preposition s) ;;//// "GTP loading" or subj+verb
+                 :head :left-edge
+  :form pp
+  :referent (:function apply-preposition-to-complement left-edge right-edge))
+
 
 ;;--- S
 
-(def-syntax-rule (modal subordinate-clause)
-    :head :right-edge
-  :form subordinate-clause
-  :referent (:function absorb-auxiliary left-edge right-edge))
 
+
+
+;;; 
 (def-syntax-rule (s to-comp)
-                 :head :left-edge
-  :form s
-  :referent (:function interpret-to-comp-adjunct-to-s left-edge right-edge))
-
-(def-form-rule (for to-comp)
-    :form to-comp
-    :referent (:function interpret-for-to-comp left-edge right-edge))
+    :head :left-edge
+    :form s
+    :referent (:function interpret-to-comp-adjunct-to-s left-edge right-edge))
 
 
-(def-form-rule (as vp+ed)
-               :head :right-edge
-  :form as-comp
-  :referent 
-  (:function interpret-adverb+verb left-edge right-edge))
-
-(def-form-rule (as vg+ed)
-               :head :right-edge
-  :form as-comp
-  :referent 
-  (:function interpret-adverb+verb left-edge right-edge))
 
 #| This is too potent to use in a leftward sweep
    because it catches things early
 (def-syntax-rule (np vp)
-                 :head :right-edge
-  :form s
-  ;;/// what sort of relationships are possible
-  ;; between these. The VP could be a reduced
-  ;; relative so would need to look at its form.
-  :referent (:daughter right-edge))
+    :head :right-edge
+    :form s
+  ;;/// what sort of relationships are possible ;
+  ;; between these. The VP could be a reduced ;
+  ;; relative so would need to look at its form. ;
+    :referent (:daughter right-edge))
 |#
-
-;;--- vg's
-
-;; The treatment of modals was being revamped in May 2013
-;; but composition rules weren't finished thinking there should be
-;; a schema. Can't wait for that
 
 
 ;;--- predicate adjective
-
-;; For 'be' there's the form rule psr235
-#+ignore
-(def-syntax-rule (vg adjective) ;;/// adjp
-                 :head :left-edge
-  :form vp
-  ;; referent should try to geneate a predicate
-  :referent (:head left-edge
-             :function vg-plus-adjective left-edge right-edge))
-
-
-;;--- PP complement
-
-(loop for vv in '((vg vp)
-                  (vp vp)
-                  (vg+ing vp+ing)
-                  (vp+ing vp+ing)
-                  (vg+ed vp+ed)
-                  (vp+ed vp+ed)
-                  (vg+passive vp+passive)
-                  (vp+passive vp+passive))
-  do
-  (eval
-   `(def-syntax-rule (,(car vv) pp)
-                     :head :left-edge
-      :form ,(second vv)
-      :referent (:function adjoin-pp-to-vg left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (,(car vv) to-comp)
-                     :head :left-edge
-      :form ,(second vv)
-      :referent (:function adjoin-tocomp-to-vg left-edge right-edge)))
-  
-  (eval
-   `(def-syntax-rule (,(car vv) as-comp)
-                     :head :left-edge
-      :form ,(second vv)
-      :referent (:function adjoin-ascomp-to-vg left-edge right-edge)))
-
-  (eval
-   `(def-syntax-rule (,(car vv) prep-comp)
-                     :head :left-edge
-      :form ,(second vv)
-      :referent (:function adjoin-prepcomp-to-vg left-edge right-edge)))
-)
-
 
 #| normally copular adjectives become VPs, but in 
 (5 (P "Therefore, mUbRas is insensitive to GAP–mediated regulation, 
@@ -170,23 +103,20 @@ similar to an oncogenic RasG12V mutation (9)."))
 |#
 
 (def-syntax-rule (adjective pp)
-                 :head :left-edge
-  :form ap
-  :referent (:function adjoin-pp-to-vg left-edge right-edge))
-
-
+    :head :left-edge
+    :form ap
+    :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
 ;;---- Nouns's and their pre-modifiers
 
-
 #|
-(def-syntax-rule (n-bar common-noun)  ;; "GAP–mediated GTP hydrolysis"
-                 :head :right-edge
-  ;;////// Changes to the leading n-bar because of change to
-  ;; form of stuff like "GAP-mediated" goes here. ddd/rjb
-  :form n-bar
-  :referent (:function noun-noun-compound
-                       left-edge right-edge))
+(def-syntax-rule (n-bar common-noun)  ;; "GAP–mediated GTP hydrolysis" ;
+    :head :right-edge
+  ;;////// Changes to the leading n-bar because of change to ;
+  ;; form of stuff like "GAP-mediated" goes here. ddd/rjb ;
+    :form n-bar
+    :referent (:function noun-noun-compound
+                         left-edge right-edge))
 |#
 (def-syntax-rule (approximator number)
     :form number
@@ -194,161 +124,146 @@ similar to an oncogenic RasG12V mutation (9)."))
     :referent (:daughter right-edge
 			 :bind (approximator left-edge)))
 
+;;; Partitive NPs
 (def-form-rule (quantifier of)
     :form np
     :referent (:function create-partitive-np left-edge right-edge))
 
-(def-form-rule (number of)
-    :form np
-    :referent (:function create-partitive-np left-edge right-edge))
+(def-cfr np (number of)
+  :form np
+  :referent (:function create-partitive-np left-edge right-edge))
 
-;; This is only needed because "One" gives you ONES-NUMBER...
 (def-cfr np (ones-number of)
   :form np
   :referent (:function create-partitive-np left-edge right-edge))
 
-(loop for nb in `(category::verb+ing
-		  ;;category::NP don't want to apply most modifiers to NPs
-		  ;; in particular, block "THAT <NP>"
+(def-syntax-rule (quantifier det) ;; e.g. "all these"
+    :head :right-edge
+    :form np
+    :referent (:function quantifier-noun-compound
+                         left-edge right-edge))
+
+;;; Rules for creating NPs by adding determiners or possessives
+
+(loop for nb in `(category::verb+ing ;; treat present-participles as noun-like
 		  ,@*n-bar-categories*)
    do
-  (eval
-   `(def-syntax-rule (det ,nb) 
-                     :head :right-edge
-      :form np
-      :referent (:function determiner-noun left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (det ,nb) 
+           :head :right-edge
+           :form np
+           :referent (:function determiner-noun left-edge right-edge)))
+     
+     (eval
+      `(def-syntax-rule (possessive ,nb) 
+           :head :right-edge
+           :form np
+           :referent (:function possessive-np left-edge right-edge))))
 
-  (eval
-   `(def-syntax-rule (possessive ,nb) 
-	:head :right-edge
-	:form np
-	:referent (:function possessive-np left-edge right-edge)))
+
+;;; rules for creating n-bar edges -- all premodifiers to the head of an NP,
+;;;  as well as simple adjectival post-modifiers like "in vivo", "offshore"
+
+(loop for nb in `(category::verb+ing ;; treat present-participles as noun-like
+		  ,@*n-bar-categories*)
+   do
 
   (eval 
    `(def-syntax-rule (adjective ,nb) ;; "black suv"
-                     :head :right-edge
-      :form n-bar
-      :referent (:function adj-noun-compound
-                           left-edge right-edge)))
+        :head :right-edge
+        :form n-bar
+        :referent (:function adj-noun-compound left-edge right-edge)))
   (eval
    `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
-                     :head :left-edge
-      :form n-bar
-      :referent (:function adj-postmodifies-noun
-                           left-edge right-edge )))
+        :head :left-edge
+        :form n-bar
+        :referent (:function adj-postmodifies-noun left-edge right-edge)))
   (eval
    `(def-syntax-rule (,nb ap) ;; "RAF activation downstream of RAS" 
-                     :head :left-edge
-      :form n-bar
-      :referent (:function adj-postmodifies-noun
-                           left-edge right-edge )))
+        :head :left-edge
+        :form n-bar
+        :referent (:function adj-postmodifies-noun left-edge right-edge )))
   (eval
    `(def-syntax-rule (verb+ed ,nb)
-                     :head :right-edge
-      :form n-bar
-      :referent (:function verb-noun-compound
-                           left-edge right-edge)))
+        :head :right-edge
+        :form n-bar
+        :referent (:function verb-noun-compound left-edge right-edge)))
   (eval
    `(def-syntax-rule (vp+ed ,nb)
-                     :head :right-edge
-      :form n-bar
-      :referent (:function verb-noun-compound
-                           left-edge right-edge)))
+        :head :right-edge
+        :form n-bar
+        :referent (:function verb-noun-compound left-edge right-edge)))
 
   (eval
    `(def-syntax-rule (verb+ing ,nb)
-                     :head :right-edge
-      :form n-bar 
-      :referent (:function verb+ing-noun-compound
-                           left-edge right-edge)))
+        :head :right-edge
+        :form n-bar 
+        :referent (:function verb+ing-noun-compound left-edge right-edge)))
   (eval
    `(def-syntax-rule (quantifier ,nb)
-                     :head :right-edge
-      :form n-bar 
-      :referent (:function quantifier-noun-compound
-                           left-edge right-edge)))
+        :head :right-edge
+        :form n-bar 
+        :referent (:function quantifier-noun-compound left-edge right-edge)))
   ;; this rule seemed to generate bad parses of things like 1C, 
   ;; and not to be terribly useful...
   ;; but should be OK now
   (eval
    `(def-syntax-rule (number ,nb)
-                     :head :right-edge
-      :form n-bar 
-      :referent (:function number-noun-compound
-                           left-edge right-edge)))
+        :head :right-edge
+        :form n-bar 
+        :referent (:function number-noun-compound
+                             left-edge right-edge)))
 
   (loop for nbmod in *n-bar-categories*
     do   
     (eval
      `(def-syntax-rule (,nbmod ,nb) 
-                       :head :right-edge
-        :form n-bar 
-        :referent (:function noun-noun-compound
-                             left-edge right-edge)))))
+          :head :right-edge
+          :form n-bar 
+          :referent (:function noun-noun-compound left-edge right-edge)))))
 
 ;; These two are special cases where we do want to attach post-modifiers to full NPs
+;;; (these occur because the determiner is combined with the n-bar before we see the
+;;;   post-modifying adjective)
 
 (def-syntax-rule (np ap) ;; "RAS in vivo"
-                     :head :left-edge
-      :form n-bar
-      :referent (:function adj-noun-compound
-                           right-edge left-edge ))
+    :head :left-edge
+    :form n-bar
+    :referent (:function adj-noun-compound
+                         right-edge left-edge ))
 
 (def-syntax-rule (np adjective) ;; "RAS in vivo"
-                     :head :left-edge
-      :form n-bar
-      :referent (:function adj-noun-compound
-                           right-edge left-edge ))
-
-(def-syntax-rule (quantifier det)   ;; e.g. "all these"
-                     :head :right-edge
-      :form np
-      :referent (:function quantifier-noun-compound
-                           left-edge right-edge))
+    :head :left-edge
+    :form n-bar
+    :referent (:function adj-noun-compound right-edge left-edge ))
 
 
-;;--- NP + PP
+
+
+;;--- NP + PP -- postmodifiers
 
 
 (loop for nb in `(category::NP ,@*n-bar-categories*)
   do
   (eval 
    `(def-syntax-rule (,nb pp)
-                     :head :left-edge
-      :form np
-      :referent (:function interpret-pp-adjunct-to-np left-edge right-edge)))
+        :head :left-edge
+        :form np
+        :referent (:function interpret-pp-adjunct-to-np left-edge right-edge)))
   (eval 
    `(def-syntax-rule (,nb to-comp)
-                     :head :left-edge
-      :form np
-      :referent (:function interpret-to-comp-adjunct-to-np left-edge right-edge))))
-
-;;--- adverbs
-#|
-(def-syntax-rule  (vg adverb)
-  :head :left-edge
-  :form vg
-  :referent (:function interpret-adverb+verb right-edge left-edge))
-
-(def-syntax-rule  (vg+ing adverb)
-  :head :left-edge
-  :form vg+ing
-  :referent (:function interpret-adverb+verb right-edge left-edge))
-
-(def-syntax-rule  (vg+ed adverb)
-  :head :left-edge
-  :form vg+ed
-  :referent (:function interpret-adverb+verb right-edge left-edge))
+        :head :left-edge
+        :form np
+        :referent (:function interpret-to-comp-adjunct-to-np left-edge right-edge))))
 
 
-(def-syntax-rule  (adverb infinitive) 
-                  ;;??? what's the test example?
-                  ;; can't find one -- but if this was added recently, it must have 
-                  ;; been for a reason (RJB)
-  :head :right-edge
-  :form infinitive
-  :referent (:function interpret-adverb+verb left-edge right-edge))
-|#
+;;; Rules for VG, VP and S
+
+;;;--------
+;;; VG
+;;;--------
+
+;;; Rules for constructing VGs (and some hangers on for adverbials and deictic locations on S as a whole)
 
 (loop for vv in '((verb+ed vg+ed)
                   (verb+ing vg+ing)
@@ -367,47 +282,152 @@ similar to an oncogenic RasG12V mutation (9)."))
   do
   (eval 
    `(def-form-rule (deictic-location ,(car vv))
-                   :head :right-edge
-      :form ,(second vv)
-      :referent(:function interpret-adverb+verb left-edge right-edge)))
+        :head :right-edge
+        :form ,(second vv)
+        :referent (:function interpret-adverb+verb left-edge right-edge)))
   (eval 
    `(def-form-rule (,(car vv) deictic-location)
-                   :head :left-edge
+        :head :left-edge
       
-      :form ,(second vv)
-      :referent(:function interpret-adverb+verb right-edge left-edge)))
+        :form ,(second vv)
+        :referent (:function interpret-adverb+verb right-edge left-edge)))
   
   (eval
    `(def-syntax-rule  (adverb ,(car vv))
-                      :head :right-edge
-      :form ,(second vv)
-      :referent(:function interpret-adverb+verb left-edge right-edge)))
+        :head :right-edge
+        :form ,(second vv)
+        :referent (:function interpret-adverb+verb left-edge right-edge)))
   (eval
    `(def-syntax-rule  (comparative ,(car vv))
-                      :head :right-edge
-      :form ,(second vv)
-      :referent(:function interpret-adverb+verb left-edge right-edge)))
+        :head :right-edge
+        :form ,(second vv)
+        :referent (:function interpret-adverb+verb left-edge right-edge)))
   (eval
    `(def-syntax-rule  (,(car vv) adverb)
-                      :head :left-edge
-      :form ,(second vv)
-      :referent(:function interpret-adverb+verb right-edge left-edge))))
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function interpret-adverb+verb right-edge left-edge))))
+
+;;;--------
+;;; SUBJECT 
+;;;--------
 
 
-(def-syntax-rule (comparative adjective)
-                 :head :right-edge
-  :form adjective
-  :referent (:method modified left-edge right-edge))
+;;--- subject + verb for relative clauses
 
-(def-syntax-rule (adverb adjective)
-                 :head :right-edge
-  :form adjective
-  :referent (:method modified left-edge right-edge))
+(loop for nb in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
+   do
+     (loop for src in '(category::subject-relative-clause
+			vp+ing ;; vp+ed ;; reduced relative clauses
+			)
+	do
+	  (eval 
+	   `(def-syntax-rule (,nb ,src)
+		:head :left-edge
+		:form np
+		:referent (:function apply-subject-relative-clause left-edge right-edge)))))
+
+;; must handle vp+ed object-relative below
+
+(loop for n in `(np pronoun  ,@*n-bar-categories*)
+  do
+  (eval
+   `(def-syntax-rule (,n vp+ed)
+        :head :right-edge
+        :form S
+        :referent (:function assimilate-subject-to-vp-ed left-edge right-edge)))
+
+  (eval
+   `(def-syntax-rule (,n vg+ed) ;; that we used
+        :head :right-edge
+        :form S
+        :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
+
+
+(loop for n in `(np pronoun  ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
+  do
+  (when nil
+    (eval ;; this is the gerund form of the verb as an NP!!!
+   `(def-syntax-rule (,n vp+ing)
+        :head :right-edge
+        :form np
+        :referent (:function assimilate-subject-to-vp-ing left-edge right-edge))))
+  (loop for v in '(vp vg vp+passive vg+passive 
+                      ;; vg+ing ;; TO-DO see if this change imporves or damages things
+                      )
+    do
+    (eval
+     `(def-syntax-rule (,n ,v)
+          :head :right-edge
+          :form S
+          :referent (:function assimilate-subject left-edge right-edge))))
+     ;; I don't really believe that you can have a subject befor the subordinate conjunction -- prove it
+     ;; OK -- proven -- "we thus tested whether ..."
+     (eval
+      `(def-syntax-rule (,n subordinate-clause)
+	   :head :right-edge
+	   :form subordinate-clause
+	   :referent (:function assimilate-subject left-edge right-edge))))
+
+;;;--------
+;;; DIRECT OBJECT
+;;;--------
+
+(loop for nb in `(vp+ing vg+ing ;; allow present-participles (gerunds) as objects
+                         category::np ,category::pronoun category::reflexive/pronoun ,@*n-bar-categories*)
+  do
+  (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
+    do
+    (eval 
+     `(def-syntax-rule (,(car vv) ,nb)
+          :head :left-edge
+          :form ,(second vv)
+          :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
 
 
 
+;;;--------
+;;; PP and CLAUSAL COMPLEMENTS to VGs and VPs (verb-like elements)
+;;;--------
 
-;;--- prepositional phrases
+(loop for vv in '((vg vp)
+                  (vp vp)
+                  (vg+ing vp+ing)
+                  (vp+ing vp+ing)
+                  (vg+ed vp+ed)
+                  (vp+ed vp+ed)
+                  (vg+passive vp+passive)
+                  (vp+passive vp+passive))
+  do
+  (eval
+   `(def-syntax-rule (,(car vv) pp)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-pp-to-vg left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (,(car vv) to-comp)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-tocomp-to-vg left-edge right-edge)))
+  
+  (eval
+   `(def-syntax-rule (,(car vv) as-comp)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-ascomp-to-vg left-edge right-edge)))
+
+  (eval
+   `(def-syntax-rule (,(car vv) prep-comp)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function adjoin-prepcomp-to-vg left-edge right-edge)))
+     )
+
+;;; ---------------------------------------------------------
+;;; PREPOSITIONAL PHRASES
+;;; ---------------------------------------------------------
+
+
 (loop for nb in `(category::np 
                   category::pronoun 
                   category::reflexive/pronoun 
@@ -415,21 +435,19 @@ similar to an oncogenic RasG12V mutation (9)."))
   do
   (eval 
    `(def-syntax-rule (preposition ,nb)
-                     :head :left-edge
-      :form pp
-      :referent (:function make-pp left-referent right-referent)))
+        :head :left-edge
+        :form pp
+        :referent (:function make-pp left-referent right-referent)))
   (eval
-   `(def-syntax-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
-                     :head :left-edge
-      :form pp
-      :referent (:function make-pp left-referent right-referent)))
+   `(def-syntax-rule (spatial-preposition ,nb)
+        :head :left-edge
+        :form pp
+        :referent (:function make-pp left-referent right-referent)))
   (eval
-   `(def-syntax-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
-                     :head :left-edge
-      :form pp
-      ;; I suppose we need a generic relationship here for
-      ;; a proper referent
-      :referent (:function make-pp left-referent right-referent))))
+   `(def-syntax-rule (spatio-temporal-preposition ,nb)
+        :head :left-edge
+        :form pp
+        :referent (:function make-pp left-referent right-referent))))
 
 
 ;; "by who" or "in who" etc. is very non standard, so this
@@ -438,21 +456,21 @@ similar to an oncogenic RasG12V mutation (9)."))
   do
   (eval 
    `(def-form-rule (preposition ,nb)
-                     :head :left-edge
-      :form pp-wh-pronoun
-      :referent (:function make-pp left-referent right-referent)))
+        :head :left-edge
+        :form pp-wh-pronoun
+        :referent (:function make-relativized-pp left-referent right-referent)))
   (eval
    `(def-form-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
-                     :head :left-edge
-      :form pp-wh-pronoun
-      :referent (:function make-pp left-referent right-referent)))
+        :head :left-edge
+        :form pp-wh-pronoun
+        :referent (:function make-relativized-pp left-referent right-referent)))
   (eval
    `(def-form-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
-                     :head :left-edge
-      :form pp-wh-pronoun
-      ;; I suppose we need a generic relationship here for
-      ;; a proper referent
-      :referent (:function make-pp left-referent right-referent))))
+        :head :left-edge
+        :form pp-wh-pronoun
+        ;; I suppose we need a generic relationship here for
+        ;; a proper referent
+        :referent (:function make-relativized-pp left-referent right-referent))))
 
 
 ;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
@@ -460,48 +478,43 @@ similar to an oncogenic RasG12V mutation (9)."))
 (def-form-rule (amount-of-time spatio-temporal-preposition)
     :head :right-edge
     :referent (:head right-edge
-			 :bind (amount-of-time left-edge))
+                     :bind (amount-of-time left-edge))
     :form spatio-temporal-preposition)
 
 
 (loop for v in  '(vg vg+ing vg+ed vg+passive vp+passive)
   do
-  (eval `(def-syntax-rule (preposition ,v)
-                          :head :left-edge
-           :form prep-comp ;;//////////////////////////
-           :referent (:function make-prep-comp left-referent right-referent))))
+     (eval `(def-syntax-rule (preposition ,v)
+                ;; this really is only for TO, but can't do it as a form rule
+                ;;  because the semantics of the entire PP with a TO preposition
+                ;;  is TO, and that can absorb the follwoing vg/vp/...
+             :head :left-edge
+             :form prep-comp ;;//////////////////////////
+             :referent (:function make-prep-comp left-referent right-referent))))
                
 (def-syntax-rule (preposition vp) ;;/// to + infinitive-comp ??
-               :head :left-edge   ;; Make this one more specfiic?
-  :form prep-comp ;;//////////////////////////
-  :referent (:function make-prep-comp left-referent right-referent))
+    :head :left-edge              ;; Make this one more specfiic?
+    :form prep-comp               ;;//////////////////////////
+    :referent (:function make-prep-comp left-referent right-referent))
 
 
 (def-syntax-rule (preposition vp+ing) 
-                 :head :left-edge
-  :form pp
-  ;; Code only works for "upon". Intended to use compositional method
-  :referent (:function apply-preposition-to-complement left-edge right-edge))
+    :head :left-edge
+    :form pp
+    ;; Code only works for "upon". Intended to use compositional method
+    :referent (:function apply-preposition-to-complement left-edge right-edge))
 
 (def-syntax-rule (preposition vg+ing) ;; J3 hydrolysis maybe elevate?
-                 :head :left-edge
-  :form pp
-  ;; Code only works for "upon"
-  :referent (:function apply-preposition-to-complement left-edge right-edge))
+    :head :left-edge
+    :form pp
+    ;; Code only works for "upon"
+    :referent (:function apply-preposition-to-complement left-edge right-edge))
 
 
 
-(def-form-rule (subordinate-conjunction comma)
-               :head :left-edge
-  :form subordinate-conjunction
-  :referent (:daughter left-edge))
+
   
 
-#+ignore
-(def-syntax-rule (preposition s) ;;//// "GTP loading" or subj+verb
-                 :head :left-edge
-  :form pp
-  :referent (:function apply-preposition-to-complement left-edge right-edge))
 
 
 ;;--- Relative clauses
@@ -532,164 +545,100 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 ;; this is not a subject relative -- the subject already exists
 (def-form-rule (where s) 
-                 :head :right-edge
+    :head :right-edge
     :form where-relative-clause
     :referent (:function make-subordinate-clause left-edge right-edge))
 
 (def-form-rule (when s) 
-                 :head :right-edge
+    :head :right-edge
     :form when-relative-clause
     :referent (:function make-subordinate-clause left-edge right-edge))
 
 
-#+ignore
-(def-form-rule (comma subject-relative-clause)
-               :head :right-edge
-  :form comma-separated-subject-relative-clause
-  :referent (:daughter right-edge))
 
 (def-form-rule (comma pp-relative-clause)
-               :head :right-edge
-  :form pp-relative-clause
-  :referent (:daughter right-edge))
-
-#+ignore ;; not yet ready
-(def-syntax-rule (np pp-relative-clause)
-                 :head :left-edge
-  :form np
-  :referent (:function apply-pp-relative-clause left-edge right-edge))
+    :head :right-edge
+    :form pp-relative-clause
+    :referent (:daughter right-edge))
 
 
-
-
-;;--- direct object
-(loop for nb in `(category::np ,category::pronoun category::reflexive/pronoun vp+ing vg+ing ,@*n-bar-categories*)
-  do
-  (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
-    do
-    (eval 
-     `(def-syntax-rule (,(car vv) ,nb)
-                       :head :left-edge
-        :form ,(second vv)
-        :referent (:function assimilate-np-to-v-as-object left-edge right-edge)))))
-
-
-;; subject 
-;;--- subject + verb
-
-(loop for nb in `(np pronoun vp+ing vg+ing ,@*n-bar-categories*)
-   do
-     (loop for src in '(category::subject-relative-clause
-			vp+ing ;; vp+ed ;; reduced relative clauses
-			)
-	do
-	  (eval 
-	   `(def-syntax-rule (,nb ,src)
-		:head :left-edge
-		:form np
-		:referent (:function apply-subject-relative-clause left-edge right-edge)))))
-
-;; must handle vp+ed object-relative below
-
-(loop for n in `(np pronoun  ,@*n-bar-categories*)
-  do
-  (eval
-   `(def-syntax-rule (,n vp+ed)
-                     :head :right-edge
-      :form S
-      :referent (:function assimilate-subject-to-vp-ed left-edge right-edge)))
-
-  (eval
-   `(def-syntax-rule (,n vg+ed) ;; that we used
-                     :head :right-edge
-      :form S
-      :referent (:function assimilate-subject-to-vp-ed left-edge right-edge))))
-
-
-(loop for n in `(np pronoun  ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
-  do
-  (when nil
-    (eval ;; this is the gerund form of the verb as an NP!!!
-   `(def-syntax-rule (,n vp+ing)
-                       :head :right-edge
-        :form np
-        :referent (:function assimilate-subject-to-vp-ing left-edge right-edge))))
-  (loop for v in '(vp vg vp+passive vg+passive 
-                      ;; vg+ing #+ignore ;; TO-DO see if this change imporves or damages things
-                      )
-    do
-    (eval
-     `(def-syntax-rule (,n ,v)
-                       :head :right-edge
-        :form S
-        :referent (:function assimilate-subject left-edge right-edge))))
-     ;; I don't really believe that you can have a subject befor the subordinate conjunction -- prove it
-     ;; OK -- proven -- "we thus tested whether ..."
-     (eval
-      `(def-syntax-rule (,n subordinate-clause)
-	   :head :right-edge
-	   :form subordinate-clause
-	   :referent (:function assimilate-subject left-edge right-edge))))
 
 ;; TO-DO make a debris rule for NP VP+ING which happens "late"
 
 
 ;;;--------------------------
-;;; subordinate conjunctions
+;;; subordinate clauses and conjunctions
 ;;;--------------------------
 ; These frequently have rhetorical or temporal force
 ; e.g. the "thus" in 
 ;   (p "SOS promotes the formation of GTP-bound RAS, thus activating this protein.")
 
+;;; subordinate clauses 
+(def-syntax-rule (modal subordinate-clause)
+    :head :right-edge
+    :form subordinate-clause
+    :referent (:function absorb-auxiliary left-edge right-edge))
 
-(loop for vv in '((subordinate-clause subordinate-clause) ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
-		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
-                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
-		  )
-  
-  do
-  (eval `(def-syntax-rule (subordinate-conjunction ,(car vv))
-                          :head :right-edge
-           :form subordinate-clause
-           :referent (:function make-subordinate-clause left-edge right-edge))))
+(def-form-rule (subordinate-conjunction comma)
+    :head :left-edge
+    :form subordinate-conjunction
+    :referent (:daughter left-edge))
 
-
-(def-syntax-rule (subordinate-conjunction verb+present)
-                          :head :right-edge
-           :form vg
-           :referent (:function make-subordinate-clause left-edge right-edge))
 
 (loop for vv in '((subordinate-clause subordinate-clause) ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
 		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
 		  (verb+present vg))
-  
    do
-     (eval `(def-form-rule (before ,(car vv))
+     (loop for prep in '(before after)
+        do
+          (eval
+           `(def-form-rule (,prep ,(car vv))
                 :head :right-edge
                 :form subordinate-clause
-                :referent (:function make-subordinate-clause left-edge right-edge)))
-     (eval `(def-form-rule (after ,(car vv))
+                :referent (:function make-subordinate-clause left-edge right-edge))))
+     
+     (eval `(def-syntax-rule (subordinate-conjunction ,(car vv))
                 :head :right-edge
                 :form subordinate-clause
                 :referent (:function make-subordinate-clause left-edge right-edge))))
 
 
 ;;;----------------------
-;;; "that" and "whether" and "how"
+;;; clause-based complements "to", "for-to", "that" and "whether" and "how"
 ;;;----------------------
               
 (def-form-rule (that s)
-  :form thatcomp
-  :referent (:function create-thatcomp left-edge right-edge));; (:head right-edge))
+    :form thatcomp
+    :referent (:function create-thatcomp left-edge right-edge)) ;; (:head right-edge))
 
 (def-form-rule (whether s)
-  :form whethercomp
-  :referent (:function create-whethercomp left-edge right-edge))
+    :form whethercomp
+    :referent (:function create-whethercomp left-edge right-edge))
 
 (def-form-rule (how s)
-  :form np
-  :referent (:function create-howcomp left-edge right-edge))
+    :form np
+    :referent (:function create-howcomp left-edge right-edge))
+
+
+(def-form-rule (for to-comp)
+    :form to-comp
+    :referent (:function interpret-for-to-comp left-edge right-edge))
+
+
+(def-form-rule (as vp+ed)
+    :head :right-edge
+    :form as-comp
+    :referent 
+    (:function interpret-adverb+verb left-edge right-edge))
+
+(def-form-rule (as vg+ed)
+    :head :right-edge
+    :form as-comp
+    :referent 
+    (:function interpret-adverb+verb left-edge right-edge))
+
+
 
 ;; add in S because it can happen that the "THATCOMP" and "WHETHERCOMP" my not be produced until after
 ;; the verb element gets promoted to an S
@@ -700,19 +649,19 @@ similar to an oncogenic RasG12V mutation (9)."))
   do
   (eval
    `(def-syntax-rule (,(car vv) thatcomp)
-                     :head :left-edge
-      :form ,(second vv)
-      :referent (:function assimilate-thatcomp left-edge right-edge)))
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function assimilate-thatcomp left-edge right-edge)))
   (eval
    `(def-syntax-rule (,(car vv) whethercomp)
-                     :head :left-edge
-      :form ,(second vv)
-      :referent (:function assimilate-whethercomp left-edge right-edge)))
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function assimilate-whethercomp left-edge right-edge)))
   (eval
    `(def-syntax-rule (,(car vv) verbal-adjunct)
-                     :head :left-edge
-      :form ,(second vv)
-      :referent (:function assimilate-whethercomp left-edge right-edge))))
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function assimilate-whethercomp left-edge right-edge))))
 
 
 
@@ -721,25 +670,25 @@ similar to an oncogenic RasG12V mutation (9)."))
   do
   (eval
    `(def-syntax-rule (,nb thatcomp)
-                     :head :left-edge
-      :form np
-      :referent (:function assimilate-thatcomp left-edge right-edge)))
+        :head :left-edge
+        :form np
+        :referent (:function assimilate-thatcomp left-edge right-edge)))
   (eval
    `(def-syntax-rule (,nb whethercomp)
-                     :head :left-edge
-      :form np
-      :referent (:function assimilate-whethercomp left-edge right-edge)))
+        :head :left-edge
+        :form np
+        :referent (:function assimilate-whethercomp left-edge right-edge)))
   (eval 
    `(def-form-rule (,nb copular-pp)
-                   :form s
-      :referent (:function apply-copular-pp left-edge right-edge))))
+        :form s
+        :referent (:function apply-copular-pp left-edge right-edge))))
 
 
 ;; handle "RAS not bound to ERK"
 (def-form-rule (not verb+ed)
-  :form vg+ed
-  :referent (:head right-edge
-             :bind (negation left-edge)))
+    :form vg+ed
+    :referent (:head right-edge
+                     :bind (negation left-edge)))
 
 
 (def-form-rule (time vg) ;; for "may now bind ..."
@@ -750,3 +699,39 @@ similar to an oncogenic RasG12V mutation (9)."))
 (def-form-rule (time verb) ;; for "may now bind ..."
     :form vg
     :referent (:function add-time-adjunct left-edge right-edge))
+
+
+;;; rules for adjective groups (verb phrases with asjectives as heads)
+
+
+(def-syntax-rule (comparative adjective)
+    :head :right-edge
+    :form adjective
+    :referent (:method modified left-edge right-edge))
+
+(def-syntax-rule (adverb adjective)
+    :head :right-edge
+    :form adjective
+    :referent (:method modified left-edge right-edge))
+
+;;;
+;; new rules for numbered items -- needs review
+(def-syntax-rule (np number) ;; should be allowable as a form rule
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+(def-syntax-rule (proper-noun number) ;; should be allowable as a form rule
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+(def-form-rule (np hyphenated-number)  
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+(def-form-rule (proper-noun hyphenated-number)  
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
