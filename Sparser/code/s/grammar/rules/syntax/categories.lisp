@@ -463,6 +463,7 @@
           `(,(category-named 'determiner)
              (category-named 'approximator)
              ,(category-named 'prepositional-phrase)
+             ,(category-named 'relativized-prepositional-phrase)
              ,(category-named 'preposition)
              ,(category-named 'spatial-preposition)
              ,(category-named 'pronoun)

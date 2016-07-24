@@ -1610,8 +1610,22 @@
   unindexed individual (in make-pp) then the index
   information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
+
 (mark-as-form-category category::prepositional-phrase)
 
+(define-category relativized-prepositional-phrase
+  :specializes prepositional-phrase
+  :binds ((prep)
+          (pobj))
+  :documentation "Provides a scafolding to hold
+  a generic prepositional phrase as identified by
+  the pp rules in grammar/rules/syntactic-rules.
+  Primary consumer is the subcategorization checking
+  code below. Note that if we make these with an
+  unindexed individual (in make-pp) then the index
+  information doesn't come into play"
+  :index (:temporary :sequential-keys prep pobj))
+(mark-as-form-category category::relativized-prepositional-phrase)
 
 (define-category prep-comp
   :specializes abstract
@@ -1654,6 +1668,12 @@
   (or *subcat-test*
       (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
        category::prepositional-phrase
+       `((prep ,prep) (pobj ,pobj)))))
+
+(defun make-relativized-pp (prep pobj)
+  (or *subcat-test*
+      (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
+       category::relativized-prepositional-phrase
        `((prep ,prep) (pobj ,pobj)))))
 
 (defun make-ordinal-item (ordinal item)
