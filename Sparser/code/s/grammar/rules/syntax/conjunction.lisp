@@ -602,16 +602,26 @@
         (form (edge-form left-edge))
         (category (edge-category left-edge)))
 
-    (let ((edge (make-chart-edge
-                 :left-edge left-edge
-                 :left-daughter left-edge
-                 :right-edge right-edge
-                 :right-daughter right-edge
-                 :category category
+    (let ((edge (make-edge-over-long-span
+                 (pos-edge-starts-at left-edge)
+                 (pos-edge-ends-at right-edge)
+                 category
+                 :constituents (all-tts (pos-edge-starts-at left-edge)
+                                        (pos-edge-ends-at right-edge))
                  :form form
                  :referent referent
-                 :rule-name heuristic
-                 :do-not-knit do-not-knit )))
+                 :rule heuristic)
+            #+ignore
+            (make-chart-edge
+             :left-edge left-edge
+             :left-daughter left-edge
+             :right-edge right-edge
+             :right-daughter right-edge
+             :category category
+             :form form
+             :referent referent
+             :rule-name heuristic
+             :do-not-knit do-not-knit )))
       (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (edge-interaction-with-quiescence-check edge)
       (when *save-conjunctions* 
