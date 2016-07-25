@@ -12,7 +12,7 @@
 
 ;; see QGL&S 2.4  They call this pattern a subject plus a subject-complement
 
-(define-category be :instantiates self)
+#+ignore(define-category be :instantiates self)
   ;; this file (all etf files) are loaded before the files of
   ;; syntactic rules where the full def. of 'be' will be given
 

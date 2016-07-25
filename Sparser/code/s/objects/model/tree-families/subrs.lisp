@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998.2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998.2014-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "subrs"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  3.1 November 2014
+;;;  version:  July 2016
 
 ;; initiated 8/4/92 v2.3. Fleshed out 8/28
 ;; 0.1 (6/6/93) Added decoding of symbolic specializations like vg/+ed
@@ -40,7 +40,7 @@
   ;; object from the alist implementing the mapping.
 
   (declare (ignore allow-literals?))
-  ;; 10/17 if we allow a category like 'apostrophe-s' on the same
+  ;; 10/17/94 if we allow a category like 'apostrophe-s' on the same
   ;; principle as allowing literal words, then there's nothing
   ;; to distinguish the regular case from the case of Additional-cases
   ;; for which this flag was designed.
@@ -87,20 +87,7 @@
                    decoding)
 
                   (compose-name 
-                   prior-string following-string ending decoding))
-
-                #|(let ((composed-name
-                       (intern
-                        (concatenate 'string
-                                     prior-string
-                                     (symbol-name (cat-symbol decoding))
-                                     (or ending
-                                         following-string))
-                        *sparser-source-package*)))
-                  
-                  (find-or-make-category-object composed-name
-                                                :def-category))|#
-                )
+                   prior-string following-string ending decoding)))
               (else
                 ;; Returning a null base-label is a signal that
                 ;; we're building a new label by composing the symbols
@@ -116,6 +103,10 @@
                  prior-string following-string)))))
 
          ((setq target (category-named label))
+          (unless target
+            (error "While expanding the rules for ~a, could not ~
+                    find a category named ~a."
+                   category label))
           target )
 
          ((and (symbolp label)

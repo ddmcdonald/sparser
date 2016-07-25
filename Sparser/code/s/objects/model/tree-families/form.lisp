@@ -144,6 +144,10 @@
          decoded-rhs  form-category )
 
     (setq decoded-rhs
+          ;; Filter for valid elements. Replace strings
+          ;; with words. Check the symbols that they will
+          ;; make sense to instantiate-rule-schema and its
+          ;; replace-from-mapping workhorse.
           (mapcar #'(lambda (term)
                       (cond
                        ((member term substitution-terms) term)
@@ -153,7 +157,11 @@
                         term )
                        ((form-category? term) term)
                        ((category-named term)
-                        ;; 10/17/94 ?? is this too broad ??
+                        term )
+                       ((symbolp term)
+                        ;; replace-from-mapping will look for
+                        ;; a corresponding category and throw
+                        ;; an error if it doesn't find one.
                         term )
                        (t (break "The term is ~A, not a string or ~
                                   a substitution term." term))))

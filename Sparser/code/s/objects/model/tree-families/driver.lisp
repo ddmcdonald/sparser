@@ -277,11 +277,10 @@
         (setq rules (head-word-rule-construction-dispatch ;;/// add instantiates check
                       head-word category referent))))
 
-    (when nil ;; needs more layout work
-      (dolist (keyword head-word)
+      #+ignore(dolist (keyword head-word) ;; needs more layout work
         (append (head-word-rule-construction-dispatch 
                  keyword category referent)
-                rules)))
+                rules))
 
     (when exploded-tf
       (dolist (rule-schema (etf-cases exploded-tf))
@@ -323,7 +322,7 @@
                                 category
                                 &key ((:local-cases? category-of-locals)))
 
-  "Decodes the schema and sets up cross-the-board things such as the rules'
+  "Decodes the schema and sets up cross-the-board things such as the rule's
    form and referent. Decodes implicit multi-rules. Returns the list of
    cfr that are created. Real work done by i/r/s-make-the-rule."
 
