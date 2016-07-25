@@ -309,8 +309,12 @@
      ((itypep (edge-referent vp-edge) 'collection)
       ;; distribute this over the conjunction. Need a general way / macro
       ;; for doing this
-      (let* ((daughter-edges (list (edge-left-daughter vp-edge)
-                                   (edge-right-daughter vp-edge)))
+      (let* ((daughter-edges (if (eq :long-span (edge-right-daughter vp-edge))
+                                 (loop for e in (edge-constituents vp-edge)
+                                    unless (eq (edge-form e) category::conjunction)
+                                      collect e)
+                                 (list (edge-left-daughter vp-edge)
+                                   (edge-right-daughter vp-edge))))
              (new-items
               (loop for edge in daughter-edges
                 collect (make-lambda-predicate edge))))
