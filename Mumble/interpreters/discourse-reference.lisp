@@ -17,6 +17,13 @@ criteria based on context or supplied by keyword arguments.")
   (:method or (object &key (focus *current-focus*))
     (and focus (eql object focus))))
 
+(defgeneric type-in-focus? (object &key)
+  (:documentation "References to any object for which this predicate
+returns true will be replaced with a one-anaphor.")
+  (:method-combination or)
+  (:method or (object &key (focus *current-focus*))
+    (and focus (typep object (type-of focus)))))
+
 (defgeneric set-the-focus (object &key)
   (:documentation "Set the current discourse focus.")
   (:method (object &key)

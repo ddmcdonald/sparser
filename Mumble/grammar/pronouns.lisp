@@ -114,6 +114,22 @@
 			     :reflexive     "themselves"
 			     :possessive-np "theirs"))
 
+(defparameter *personal-pronouns*
+  '((singular . ((first  . ((masculine   . first-person-singular)
+                            (feminine . first-person-singular)))
+                 (second .  ((masculine   . second-person-singular)
+                             (feminine . second-person-singular)))
+                 (third  .  ((masculine   . third-person-singular-masculine)
+                             (feminine . third-person-singular-feminine)
+                             (neuter . third-person-singular-neuter) ))))
+    (plural  . ((first  .  ((masculine   . first-person-plural)
+                            (feminine . first-person-plural)))
+                (second .  ((masculine   . second-person-plural)
+                            (feminine . second-person-plural)))
+                (third  .  ((masculine   . third-person-plural)
+                            (feminine . third-person-plural)
+                            (neuter . third-person-plural)) ))))
+  "Personal pronouns indexed by number, person, and gender.")
 
 ;################################################################
 ;              Relative/Interrogative pronouns
@@ -265,46 +281,32 @@
      (select-appropriate-relative-pronoun bundle))
     ((antecedent-precedes-and-is-within-this-clause
       text-structure-has-marked-reference-reducible
-      object-is-in-focus)
+      object-is-in-focus type-is-in-focus)
      (select-appropriate-personal-pronoun bundle))))
 
 (defun select-appropriate-personal-pronoun (bundle)
-  (let ((number (mname (or (get-accessory-value ':number bundle) 'singular)))
-	(person (mname (or (get-accessory-value ':person bundle) 'third)))
-	(gender (mname (or (get-accessory-value ':gender bundle) 'neuter))))
-    (select-personal-pronoun number person gender)))
-
-(defun select-personal-pronoun (number person gender)
-  (let ((pronoun-name
-         (cdr (assoc gender
-		(cdr (assoc person
-		        (cdr (assoc number
-                                             
-            '((singular . ((first  . ((masculine   . first-person-singular)
-                                      (feminine . first-person-singular)))
-                           (second .  ((masculine   . second-person-singular)
-                                       (feminine . second-person-singular)))
-                           (third  .  ((masculine   . third-person-singular-masculine)
-                                       (feminine . third-person-singular-feminine)
-                                       (neuter . third-person-singular-neuter) ))))
-              (plural  . ((first  .  ((masculine   . first-person-plural)
-                                      (feminine . first-person-plural)))
-                          (second .  ((masculine   . second-person-plural)
-                                      (feminine . second-person-plural)))
-                          (third  .  ((masculine   . third-person-plural)
-                                      (feminine . third-person-plural)
-                                      (neuter . third-person-plural)) ))))
-            ))))))))
-    
-    (if pronoun-name
-      (pronoun-named pronoun-name)
-      (mbug "No pronoun has been defined to have the features:~
-             ~%    number = ~a~
-             ~%    person = ~a~
-             ~%    gender = ~a"
-            number person gender))))
-
-
+  (let ((antecedent (get-accessory-value :antecedent bundle))
+        (number (mname (or (get-accessory-value :number bundle) 'singular)))
+	(person (mname (or (get-accessory-value :person bundle) 'third)))
+	(gender (mname (or (get-accessory-value :gender bundle) 'neuter))))
+    (or (pronoun-named
+         (cond ((and antecedent
+                     (eql person 'third)
+                     (eql gender 'neuter)
+                     (typep bundle 'derivation-tree-node)
+                     (not (eql (referent bundle) antecedent)))
+                (ecase number
+                  (singular 'replacitive-one/singular)
+                  (plural 'replacitive-one/singular)))
+               (t (cdr (assoc gender
+                              (cdr (assoc person
+                                          (cdr (assoc number
+                                                      *personal-pronouns*)))))))))
+        (mbug "No pronoun has been defined to have the features:~
+               ~%    number = ~a~
+               ~%    person = ~a~
+               ~%    gender = ~a"
+              number person gender))))
 
 (defun select-appropriate-relative-pronoun  (bundle)
 ;

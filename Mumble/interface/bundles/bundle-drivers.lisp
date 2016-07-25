@@ -1,5 +1,4 @@
-;;; -*-  Mode: LISP; Package: MUMBLE; Base: 10. ; Syntax: Common-lisp; Default-character-style: (:FIX :ROMAN :NORMAL); -*-
-
+;;; -*-  Mode: LISP; Package: MUMBLE; Base: 10; Syntax: Common-Lisp -*-
 
 ;;; MUMBLE-86:  message-level >  bundle-drivers
 
@@ -179,7 +178,7 @@
          (result
           (if reason-to-pronominalize
             (then (when dom-clause
-                    (check-for-reflexive (referent dtn)))
+                    (check-for-reflexive dtn))
                   (select-appropriate-pronoun dtn reason-to-pronominalize))
             (else ;; any embedded planning would be triggered here.
               (unless (pronounp np-root) ;; i.e. one that's deliberately choosen
@@ -235,26 +234,38 @@
 ;################################################################
 
 (defun should-be-pronominalized-in-present-context? (dtn)
-  (let ((grammatical-context (labels *current-position*))
-	(object (referent dtn)))
-    (cond ((member (slot-label-named 'relative-pronoun) grammatical-context)
-           'context-requires-a-relative-pronoun)
-          ((null object)
-           nil)
-          ((or (antecedent-precedes-and-is-a-clausemate? object)
-               (antecedent-precedes-and-is-conjoined-to? object))
-           'antecedent-precedes-and-is-within-this-clause)
-          ((in-focus? object)
-           'object-is-in-focus)
-          ((some #'c-command? (local-mentions object))
-           'text-structure-has-marked-reference-reducible))))
+  (cond ((member (slot-label-named 'relative-pronoun)
+                 (labels *current-position*))
+         'context-requires-a-relative-pronoun)
+        ((null (referent dtn))
+         nil)
+        ((or (antecedent-precedes-and-is-a-clausemate? dtn)
+             (antecedent-precedes-and-is-conjoined-to? dtn))
+         'antecedent-precedes-and-is-within-this-clause)
+        ((in-focus? (referent dtn))
+         'object-is-in-focus)
+        ((type-in-focus? (referent dtn))
+         'type-is-in-focus)
+        ((some #'c-command? (local-mentions (referent dtn)))
+         'text-structure-has-marked-reference-reducible)))
 
-(defun antecedent-precedes-and-is-a-clausemate? (object)
+(defun is-referenced? (dtn clause)
+  (let* ((object (referent dtn))
+         (others (objects-referenced clause))
+         (other (or (find object others)
+                    (and (not (symbolp object)) ; treat symbols as untyped
+                         (find-if (lambda (other)
+                                    (typep object (type-of other)))
+                                  others)))))
+    (cond (other (add-accessory dtn :antecedent other t) t)
+          (t nil))))
+
+(defun antecedent-precedes-and-is-a-clausemate? (dtn)
   "Cats lick themselves"
   (when (dominating-clause)
-    (member object (objects-referenced (dominating-clause)))))
+    (is-referenced? dtn (dominating-clause))))
 
-(defun antecedent-precedes-and-is-conjoined-to? (object)
+(defun antecedent-precedes-and-is-conjoined-to? (dtn)
   "I bought a book and I read it"
   (do ((node (and *current-phrasal-root* (node *current-phrasal-root*))
              (next node)))
@@ -265,8 +276,7 @@
                (not (eql (first-constituent node) *current-phrasal-root*)))
       (let ((contents (contents (first-constituent node))))
         (when (phrasal-root-p contents)
-          (return (member object (objects-referenced
-                                  (context-object contents)))))))))
+          (return (is-referenced? dtn (context-object contents))))))))
 
 (defun c-command? (mention)
   "Has the object been mentioned by some previous dominating phrase
@@ -288,9 +298,9 @@
                     (labels (node intervening-phrasal-root)))
         (return intervening-phrasal-root)))))
       
-(defun check-for-reflexive (object)
+(defun check-for-reflexive (dtn)
   (and (memq (label-named 'objective) (labels *current-position*))
-       (antecedent-precedes-and-is-a-clausemate? object)
+       (antecedent-precedes-and-is-a-clausemate? dtn)
        (push (label-named 'reflexive) (labels *current-position*))))
 
 ;################################################################

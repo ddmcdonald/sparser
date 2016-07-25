@@ -36,7 +36,7 @@
 (defun barber () (masc-&-third-person (make-simple-dtn "barber" 'noun)))
 (defun be () (make-simple-dtn "be" 'verb))
 (defun big () (adjective "big"))
-(defun book () (make-simple-dtn "book" 'noun))
+(defun book (&rest args) (apply #'make-simple-dtn "book" 'noun args))
 (defun bone () (make-simple-dtn "bone" 'noun))
 (defun buy () (make-simple-dtn "buy" 'verb))
 (defun cat () (make-simple-dtn "cat" 'noun))
@@ -162,7 +162,7 @@
     (mumble-says conj))
   "I don't drink milk and I like cats")
 
-(deftest (say bought and read book)
+(deftest (say bought book and read it)
   (let* ((me (me))
          (buy (past-tense (buy)))
          (read (past-tense (make-simple-dtn "read" 'verb))) ; cf. CL:READ
@@ -174,6 +174,23 @@
     (make-complement-node 'o book read)
     (mumble-says conj))
   "I bought a book and I read it")
+
+(defstruct test-book)
+(defstruct (special-book (:include test-book)))
+
+(deftest (say bought book and read one)
+  (let* ((me (me))
+         (buy (past-tense (buy)))
+         (read (past-tense (make-simple-dtn "read" 'verb)))
+         (book1 (initially-indefinite (book :referent (make-test-book))))
+         (book2 (initially-indefinite (book :referent (make-special-book))))
+         (conj (conjoin buy read)))
+    (make-complement-node 's me buy)
+    (make-complement-node 's me read)
+    (make-complement-node 'o book1 buy)
+    (make-complement-node 'o book2 read)
+    (mumble-says conj))
+  "I bought a book and I read one")
 
 (deftest (say cat licks itself)
   (let ((cat (always-definite (neuter-&-third-person (cat))))

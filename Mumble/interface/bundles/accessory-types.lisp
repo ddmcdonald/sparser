@@ -58,6 +58,9 @@
 (define-accessory-type :in-focus
   ())
 
+(define-accessory-type :antecedent
+  ())
+
 ;;; The possible values for this are a symbol which will be convErted
 ;;; to a label in process-conjunction-accessory
 (define-accessory-type :conjunction   ((label)) )
