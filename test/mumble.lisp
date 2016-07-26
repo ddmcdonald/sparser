@@ -178,6 +178,7 @@
 (defstruct test-book)
 (defstruct (special-book (:include test-book)))
 
+#+(or) ; one-anaphora not yet ready for prime-time
 (deftest (say bought book and read one)
   (let* ((me (me))
          (buy (past-tense (buy)))

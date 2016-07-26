@@ -253,11 +253,12 @@
   (let* ((object (referent dtn))
          (others (objects-referenced clause))
          (other (or (find object others)
+                    #+(or) ; one-anaphora not yet ready for prime-time
                     (and (not (symbolp object)) ; treat symbols as untyped
                          (find-if (lambda (other)
                                     (typep object (type-of other)))
                                   others)))))
-    (cond (other (add-accessory dtn :antecedent other t) t)
+    (cond ((and object other) (add-accessory dtn :antecedent other t) t)
           (t nil))))
 
 (defun antecedent-precedes-and-is-a-clausemate? (dtn)
