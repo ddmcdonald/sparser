@@ -189,6 +189,7 @@ for every category.
              (polyword 'polyword)
              (cfr 'cfr)
              (category 'category)
+             (lambda-variable 'lambda-variable)
              (segment 'segment)
              (symbol 'symbol)
              (otherwise (push-debug `(,v/r))
