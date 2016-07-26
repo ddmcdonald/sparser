@@ -1537,11 +1537,11 @@
 (defun note-failed-tests (item restriction)
   ;; return non-null when tests failed
   (let ((*trivial-subcat-test* nil))
-    (flet ((scat-symbol (c)
-             (typecase c
-               (referential-category (simple-label c))
-               (cons (loop for s in c collect (scat-symbol s)))
-               (symbol c))))
+    (labels ((scat-symbol (c)
+               (typecase c
+                 (referential-category (simple-label c))
+                 (cons (loop for s in c collect (scat-symbol s)))
+                 (symbol c))))
       (when (not (satisfies-subcat-restriction? item restriction))
         ;; test would have failed -- collect it
         (pushnew `(,(scat-symbol (itype-of *head*))
