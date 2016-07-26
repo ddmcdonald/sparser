@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2016
+;;;  Version:  July 2016
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -45,7 +45,7 @@
   :instantiates  self
   :specializes event
   :binds ((subject)
-          (predication))
+          (predicate))
   :mixins (takes-neg)
   :index (:temporary :list))
 
@@ -54,7 +54,7 @@
  :subject-variable)
 
 (register-variable category::be 
- (find-variable-in-category 'object 'be)
+ (find-variable-in-category 'predicate 'be)
  :object-variable)
 
 (defparameter *the-category-to-be* (category-named 'be)
@@ -116,24 +116,35 @@
 ;;;-------------------------------
 ;; "the cat is on the mat"
 
-(define-category  copular-pp
+(define-category copular-pp ;; "the cat is on the mat"
   :specializes be
   :binds ((copula)
           (prep)
           (pobj))
-  :index (:temporary :list))
-
-(define-category  copular-predicate
-  :specializes be
-  :binds ((predicate)
-          (predicated-of)
-          (copula))
+  :documentation "Provides a scaffolding that the syntax function
+    make-copular-pp can use to package preposition and complement
+    it got from a [be-ref + pp] rule."
   :index (:temporary :list))
 
 (def-form-rule (be pp)
   :form vp
   :new-category copular-pp
+  ;; copular-pp is used in a syntatic-rule where it's folded
+  ;; in with all the NP sources and gerundive vps to form rules
+  ;; that call apply-copular-pp to create copular-predicate objects
   :referent (:function make-copular-pp left-edge right-edge))
+
+
+(define-category copular-predicate
+  :specializes be
+  :binds ((predicate)
+          (predicated-of)
+          (copula))
+  :documentation "Provides a scaffolding that the syntax function
+    apply-copular-pp can use to package the predicate it creates
+    from the np in an [np + copular-pp] rule."
+  :index (:temporary :list))
+
 
 
 ;;;----------------------------
@@ -343,6 +354,7 @@ assess-edge-label, which rewrites the word as the category BE.
 ;;; hedged copular relations
 ;;;--------------------------
 
+;; See syntax/copulars.lisp for an effort to generalize this
 
 #| Have to figure out an equivalent of biological in the restriction.
 Examples in the localization articles -- exhaustive list
@@ -380,8 +392,4 @@ phosphorylated by Src."
 (def-form-rule (seem ap)
   :form vp
   :referent (:function make-copular-adjective left-edge right-edge))
-
-(defun make-copular-adjective (copula adjective)
-  (let ((i (individual-for-ref adjective)))
-    (bind-dli-variable :copular-verb copula i)))
 |#
