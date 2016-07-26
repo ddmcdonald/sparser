@@ -25,54 +25,60 @@ construe as a property. The paradigm case for which it's
 intended is for attributes that:
  a. Have a simple name
  b. The values can be expressed as adjectives
- c. Have a particular family of realizations:
+ c. Have a particular family of realizations such as:
     - "the block is red."
     - "the red block"
-    - "red is the color of this block"
-//////////
-  2. Red is a color.
-   3. This block has a color.
-   4. The color of this block has faded.
- 
+    - "the color of this block (is red)"
+    - "red is a color" (only incidentally - not part of attribution)
+
+This treatment builds a lot of individuals for something as 'simple'
+as "the block is red", but it gives us a semantic for every part
+of this set of phrases, which is important in generation where we
+frequently need to distribute parts to different places, notably
+in conjunctions, and want to retain as much knowledge of the whole
+of the relation as possible.
+
+In most cases, there will alo be a simple variable that will 
+hold the attribute and a relation that provides the variable
+to use as a mixin. That might be considered to be redundant
+(or sufficent by itself), but this framework is should provide
+more expressive options than an variable could on its own. 
+
+There had been a facility for automatically generating attribute
+categories and a corresponding semantic grammar from a simple
+description (see model/core/qualities/attribute.lisp). When this
+is shaken down we should do that again.
+
 |#
-#| Implementation
 
-
-It also bears some relationship (as yet undefined)
- to the variable that hold the value -- at least they
- will have the name name. |#
-
-(define-category attribute-type
+;;--- "size", "color"
+;;
+(define-category attribute
   :specializes named-type
   :mixins (has-name)
+  :binds ((var :primitive lambda-variable))
   :instantiates nil
   :documentation "Represents the identity of the attribute
- as such. Corresponds to Dolce's 'quality type'.
+ as such. Corresponds to Dolce's 'quality type'. Refering to
+ an attribute by name ('(its) size') will take us to a
+ specialization of this category.")
 
-Linguistically it can provide the name of the
- attribute.
-")
-
-(define-category  attribute
-  :specializes quality
-  :documentation "This is for values that an attribute
- can take. Dolce would say that this is defines the
- 'region' or 'space' within which the values reside
-
-Sort of the same thing as a predicate 
- or a property but emphasizes the point that it will be
- an attribute of 'something', which is a narrower notion.
- Obvious attributes are color, size, or weight. "
-  ;; 'propensity to over eat'
-  ;; Sort out with operator discussion just below.
-  ;; in some cases a sublass of attribute will specialize
-  ;; scalar quality. 
+;;--- "red", "big"
+;;
+(define-category attribute-value
+  :specializes abstract-region ;; more like point in the region
   :instantiates :self
-  :binds ((name :primitive word)))
+  :mixins (has-name)
+  :binds ((attribute :primitive category)) ;; to the attribute (backptr)
+  :index (:permanent :key name)
+  :documentation "This is for the values that an attribute
+ can take. Dolce would say that this is defines the
+ 'region' or 'space' within which the values reside.")
 
-
-(define-category  attribute-value    
-  :specializes predication
+;;--- "is red"  "(its) color is red"
+;;
+(define-category attribution
+  :specializes predicate
   :documentation "The relationship between some attribute
  and the value that it has. It reflects the value of the
  attribute at a particular moment / in a particular situation
@@ -83,21 +89,32 @@ Sort of the same thing as a predicate
  They should all make referent to the same attribute-value
  instance."  
   :binds ((attribute :primitive category)
-          (value attribute))
+          (value attribute-value))
   :index (:permanent :sequential-keys attribute value))
 
-
-(define-category attribute-of-entity
-  :specializes quality ;;??? what about attribute's superc
+;;--- "the block is red"
+;;
+(define-category has-attribution
+  :specializes predication
   :documentation "The relationship between a particular
  entity (the block in my hand, a waypoint, the caterpillar on
  that branch) and the value of some attribute, packaged
  as as an attribute-value. When the value changes ('the rose
  fades'), that is represented by changing the value of the
- attribute variable to a different instance of attribute-value. 
+ attribution variable to a different instance of attribute-value. 
  Corresponds to the quality ('qt)' relation in Dolce."
   :instantiates :self
-  :binds ((attribution attribute-value))
+  :binds ((entity)
+          (attribution attribution))
+  :index (:sequential-keys attribution entity))
+
+;;--- "the color of the block"
+;;
+(define-category attribute-of-entity
+  :specializes quality
+  :binds ((attribute :primitive category)
           (entity))
-  ;; :rule-label attribute
-  :index (:sequential-keys entity attribution))
+  :documentation "Represents that there is a particular
+ attribute on a particular entity without concern for what
+ value it has."
+  :index (:permanent :sequential-keys attribute entity))

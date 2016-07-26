@@ -10,39 +10,52 @@
 
 (in-package :sparser)
 
+(define-mixin-category has-size
+  :specializes relation
+  :binds ((size size)))
+
 (define-category size
-  :specializes attribute-type
-  :binds ((size size))
+  :specializes attribute
+  :bindings (var (find-variable-for-category 'size 'has-size))
   :realization (:common-noun "size")
-  :documentation "")
+  :documentation "Represents size per se as the identity of
+ the size attribute (quality). Note that the word 'size' will
+ have this category as its referent")
 
 
 (define-category size-value
-  :specializes attribute
-  :instantiates self
-  :binds ((name :primitive word))
-  :index (:permanent :key name)
-  :rule-label size  ;;// would 'attribute' be more useful?
+  :specializes attribute-value
+  :bindings (attribute 'size)
+  :rule-label size  ;;// would 'attribute' be more useful in grammar?
   :realization (:adjective name)
   :documentation "This is for representing the qualitative
  values for sizes. It's analogous to a measurement of
  a scalar like length. It is not attributing this size
- to some object. That is is the purpose of xxx
+ to some object. That is is the purpose of size-of
    In Dolce's terms, this is defining the 'region' that
  contains the possible values of a size.")
 
 
-(define-category size-is
-  :specializes attribute-value
-  ;; pre-bind the size category to the attribute (?)
-  ;;  (value size-value)
-  :documentation "")
+(define-category is-size
+  :specializes attribution
+  :bindings (attribute 'size)
+  :documentation "Instances of this category associate a value
+    with the attribute 'size', representing the fact that
+    in the present circumstances we have a size of a certain
+    value. The result is a predicate.")
+
+(define-category of-size ;; "with-" ??
+  :specializes has-attribution
+  :restrict ((entity has-size)
+             (attribution is-size))
+  :documentation "Says that a particular entity is of a size
+    with a particular value. Anything that makes an instance
+    of this category should also bind the size variable on
+    the entity.")
 
 (define-category size-of
   :specializes attribute-of-entity
-  ;;  (attribution . size-is)
-  ;; Something about what can take a size.
-  )
+  :bindings (attribute 'size))
 
 ;;--- actual size values (move to dossier for qualities)
 

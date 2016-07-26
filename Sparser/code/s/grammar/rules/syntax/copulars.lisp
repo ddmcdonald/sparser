@@ -66,6 +66,21 @@ phosphorylated by Src."
 
 
 (defun make-copular-adjective (copula adjective)
-  (let ((i (individual-for-ref adjective)))
-    (bind-dli-variable :copular-verb copula i)))
+  "Definition is conditionalized to the load to try and minimize
+   disruption."
+  (let ((script common-lisp-user::script)) ;; visible in backtrace
+    ;; 7/25/16 possible values: bbn biology blocks-world c3
+    ;;  default ern fire grok just-dm&p no-grammar
+    (case script
+      (biology
+       ;;/// who else wants this conventional, 'depends on the subject'
+       ;; version of the intepretation?
+       (let ((i (individual-for-ref adjective)))
+         (bind-dli-variable :copular-verb copula i)
+         i))
+      (otherwise
+       ;;/// temp while reloading
+       (let ((i (individual-for-ref adjective)))
+         (bind-dli-variable :copular-verb copula i)
+         i)))))
 

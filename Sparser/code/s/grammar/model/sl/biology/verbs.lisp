@@ -2097,6 +2097,7 @@
 	   :etf (svo-passive)
            :for study))
 
+;;>>>>> copied to syntax/be.lisp
 ;; N.b. trying to move "seem" et al to the general vocabulary,
 ;;  Now copied over to syntax/be.lisp while figuring out
 ;;  how to get the equivalent of biological for the restriction
@@ -2115,9 +2116,6 @@
   :form vp
   :referent (:function make-copular-adjective left-edge right-edge))
 
-(defun make-copular-adjective (copula adjective)
-  (let ((i (individual-for-ref adjective)))
-    (bind-dli-variable :copular-verb copula i)))
 ;;<<< end forms queued to move to be.lisp
 
 
