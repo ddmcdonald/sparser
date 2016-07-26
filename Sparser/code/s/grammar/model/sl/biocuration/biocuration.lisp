@@ -315,7 +315,27 @@ THIS NEEDS WORK
       (make-complement-node 's subject dtn)
       (make-complement-node 'o mutation-resource dtn)
       dtn)))
+#| (p "patients have mutation in K-Ras.")
+[patients ][have ][mutation ]in [K-Ras]
 
+e10   HAVE          1 "patients have mutation in K-Ras" 8
+---- The focus of the statement is on the
+     patients. How do we get that from this? e.g. the mutation
+   is something they have. 
+ (semtree 10)
+(#<have 12559> (possessor (#<patient 9406>))
+ (thing-possessed (#<mutation 12557> (object (#<protein "RASK_HUMAN" 2701>)))))
+
+sp> (p "the K-Ras gene in patients.")
+[the K-Ras gene ]in [patients]
+e9    GENE          1 "the K-Ras gene " 6
+e10   IN            6 "in patients" 8
+
+sp> (p "the gene for K-Ras.")
+[the gene ]for [K-Ras]
+e7    GENE          1 "the gene " 3
+e8    FOR           3 "for K-Ras" 7
+|#
 
 ;; (say (present-tense (have-mutation-in-kras (plural (percent-of-something 88 (patients-with-pancreatic-cancer))))))
 
@@ -342,7 +362,16 @@ THIS NEEDS WORK
       (make-complement-node 's drug-dtn dtn)
       (make-complement-node 'o kras-resource dtn)
       dtn)))
+#| (p "a drug to target KRAS.")
+[a drug ]to [target ][KRAS]
 
+e8    DRUG          1 "a drug " 3
+e10   TO            3 "to target KRAS" 6
+
+-- nothing on 'drug' beyond being a molecule 
+(semtree 10)
+(#<target 12553> (object (#<protein "RASK_HUMAN" 2701>)))
+|#
 ;; "I don't know of any drug targeting KRAS"
 ;; (say (negate (present-tense (I-know-of-p (drug-targeting-kras)))))
 (defun I-know-of-p (complement)
