@@ -31,7 +31,7 @@
     (itypep ref category::pronoun)))
 
 (defmethod is-pronoun? ((e edge))
-  (is-pronoun? (edge-ref e)))
+  (is-pronoun? (edge-referent e)))
 
 (defmethod is-pronoun? ((e t))
   nil)
