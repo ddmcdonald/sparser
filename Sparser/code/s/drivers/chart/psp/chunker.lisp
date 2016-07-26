@@ -635,7 +635,7 @@
     (setf (chunk-edge-list chunk)
           (loop for ev in (chunk-ev-list chunk)
             collect
-            (compatible-edge? ev (chunk-forms chunk)(chunk-ev-list chunk)))))
+            (compatible-edge? ev (chunk-forms chunk)(cdr (member ev (chunk-ev-list chunk)))))))
   chunk)
 
 
@@ -682,7 +682,6 @@
     collect form))
 
 (defun compatible-edge-form? (edge form ev-list remaining-forms?)
-  (declare (special edge form ev-list))
   (case
       form 
     (ng
@@ -699,13 +698,13 @@
          (vg-compatible? edge)
          (not (loop for ev in ev-list
                  thereis
-                   (loop for edge in (ev-edges ev)
+                   (loop for e in (ev-edges ev)
                       thereis
                         (and
-                         (vg-head? (edge-form edge))
-                         (referential-category-p (edge-category edge))
+                         (vg-head? (edge-form e))
+                         (referential-category-p (edge-category e))
                          ;; have strange cases like "completed" as an edge in PMC3640864
-                         (not (member (cat-symbol (edge-category edge)) 
+                         (not (member (cat-symbol (edge-category e)) 
                                       '(category::be category::have
                                         category::do category::modal)))))))))
     (adjg (adjg-compatible? edge))))
