@@ -9,10 +9,10 @@
 
 (in-package :sparser)
 
-
+#|  Bring back after 7/16 make-over settles
 (define-scalar-quality "distance" :super-category named-measure
    :value measurement)
-
+|#
 #|
 There are no airspeed or altitude restrictions.
 The airspeed restriction is between 50 and 200 knots.
@@ -27,7 +27,7 @@ It's a 'rate' --
   which is measured as a quantity of some unit-of-measure
   "per" some time-unit. 
 |#
-(define-scalar-quality "speed" :value (rate number))
+;;(define-scalar-quality "speed" :value (rate number))
 #|
 ;; This makes a predicate -- speed-of, with a simple category
 ;; for its predicate. Need a real category for these predicates
