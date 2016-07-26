@@ -97,8 +97,9 @@
  descriptions, structures assembled out of symbols..")
 
 
-
-;;;--- Subcategories of abstract
+;;;---------------------------
+;;; Subcategories of abstract
+;;;---------------------------
 
 (define-category abstract-region
   :instantiates nil
@@ -147,9 +148,9 @@
   like CLOS classes.")
 
 
-;;;-----------------------------------------------------
-;;; names -- simple and root of real
-;;;-----------------------------------------------------
+;;;---------------------------------------
+;;; names -- simple and root of real ones
+;;;---------------------------------------
 
 (define-category has-name
   :specializes relation 
@@ -184,7 +185,7 @@
   :specializes designator 
   :instantiates self
   :documentation "This is the root for all (real) names.
-   Something has a (real) name, which is why it's a quality.")
+   Something 'has' a (real) name, which is why it's a quality.")
 
 (define-category index
   :specializes designator
@@ -209,10 +210,18 @@
    :binds ((dependent)
            (substrate)))
 
-
+#|  subcategories
+(subcategories-of 'operator)
+(#<ref-category PREPOSITIONAL-OPERATOR> #<ref-category MODAL-OPERATOR>
+                #<ref-category QUANTIFIER> #<ref-category MODIFIER>) |#
 (define-category operator
   :specializes relation
   :binds ((name :primitive word)))
+
+(define-category predicate
+  :specializes relation
+  :documentation "Candidate to relace operator")
+
 ; The intuitions for the notion of 'operator' come ultimately from
 ; logic. This is classification for properties (in this model these
 ; are 'qualities' to stay with the clearest current literature) like
@@ -251,7 +260,7 @@
 
 
 
-; Predication is a category that exists because operator does. It will
+; Predication is a category that exists because predicate does. It will
 ; usually be a mixin on a more conventinal category, but the parser can
 ; always make an instance of it as a 'construction of last resort' if
 ; the syntactic basis for the combination is definitive but there isn't
@@ -259,8 +268,10 @@
 ;
 (define-category predication
   :specializes relation
-  :binds ((term)
-          (operator . operator)))
+  :binds ((predicate predicate)
+          (term))
+  :documentation "Represents the application of the predicate
+ to one or more terms.")
 
 
 ;;;------------------------------------------------
