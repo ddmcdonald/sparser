@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2010-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2010-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "decode"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.7 May 2015
+;;;  version:  July 2016
 
 ;; pulled from [find] 5/25/93 v2.3
 ;; 0.1 (9/18) added referential-categories to the options for decoding
@@ -361,20 +361,29 @@
                         (type-of value-exp)))
        value-exp )
 
-      (category
-       (unless (symbolp value-exp)
-         (v/r-violation "The value ~A was passed in to be bound to the ~
-                         variable~%   ~A~%which is restricted to be a ~
-                         symbol~%but it is a ~A" value-exp variable
-                        (type-of value-exp)))
-       (category-named value-exp :break-if-no-category))
       (string
        (unless (stringp value-exp)
          (v/r-violation "The value ~S was passed in to be bound to the ~
                          variable~%   ~A~%which is restricted to be a ~
-                         symbol~%but it is a ~A" value-exp variable
+                         string~%but it is a ~A" value-exp variable
                          (type-of value-exp)))
-       value-exp)      
+       value-exp)
+      
+      (category
+       (unless (symbolp value-exp)
+         (v/r-violation "Expected to get a symbol that names a category ~
+                         to bind to the variable ~a~%but got a ~a"
+                        variable (type-of value-exp)))
+       (category-named value-exp :break-if-no-category))
+
+      (lambda-variable
+       (unless (lambda-variable-p value-exp)
+         (v/r-violation "The value ~A was passed in to be bound to the ~
+                         variable~%   ~A~%which is restricted to be a ~
+                         lambda variable~%but it is a ~A" value-exp variable
+                         (type-of value-exp)))
+       value-exp )
+      
       (otherwise
        (error "New kind of primitive value restriction: ~A"
               v/r)))))
