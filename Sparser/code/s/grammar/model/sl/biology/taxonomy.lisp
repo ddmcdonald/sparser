@@ -587,6 +587,11 @@
     for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
 
+(define-category aspectual-relation :specializes bio-relation
+  :binds ((action bio-process))
+  :realization (:to-comp action))
+                 
+
 (define-category pathway-direction :specializes bio-relation
       :binds ((relative-to biological)
               (pathway pathway))
