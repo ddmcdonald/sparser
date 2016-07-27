@@ -651,15 +651,14 @@
     (:verb ("harbor" :past-tense "harbored" :present-participle "harboring")
 	   :etf (svo-passive)))
 
-(define-category continue :specializes bio-relation
+(define-category continue :specializes aspectual-relation
   :binds ((agent biological)
           (process bio-process))
   :realization 
   (:verb "continue"  
          :etf (svo-passive)
          :s agent
-         :o process
-         :to-comp theme))
+         :o process))
 
 (define-category contrast :specializes bio-rhetorical
   :binds ((contrasted-with biological))
@@ -1141,12 +1140,11 @@
 
 (def-synonym favor (:verb "favour" :etf (svo-passive)))
 
-(define-category fail :specializes bio-relation
+(define-category fail :specializes aspectual-relation
   :binds ((process bio-process))
   :realization 
   (:verb "fail"  
-         :etf (sv)
-         :to-comp process))
+         :etf (sv)))
 
 ;; mostly passive -- "... are found ..."
 (define-category find :specializes bio-rhetorical
@@ -2247,7 +2245,6 @@
 	   :etf (svo-passive)))
 
 (define-category term :specializes bio-rhetorical
-   ;; :mixins (bio-tocomp) working on this.. other comps not working.
     :realization
     (:verb "term" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)))
