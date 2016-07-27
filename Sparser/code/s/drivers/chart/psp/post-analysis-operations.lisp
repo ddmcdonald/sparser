@@ -176,10 +176,12 @@ where it regulates gene expression.")
                                        (car containing-mentions))
                                       category::be))
                          nil
-                         (error
-                          "~&NIL restriction -- var: ~s, ~
+                         (progn
+                           (warn
+                            "~&NIL restriction -- var: ~s, ~
                            containing-mentions:~s~&"
-                          variable containing-mentions))))))
+                            variable containing-mentions)
+                           nil))))))
       (tr :dt-restriction-on-pronoun types)
       (cond
         ((null types)
