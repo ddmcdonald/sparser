@@ -80,31 +80,10 @@
   (landmark 'realizing-the-head-of-the-bundle dtn)
   (set-backpointer-of-root root-node dtn)
   (entering-new-context root-node)
-  (process-attachments dtn root-node)
+  (process-further-specifications (adjuncts dtn))
   (process-clause-features dtn)
   (leaving-previous-context root-node)
   root-node)
-
-  #+ignore
-  (let ((result (realize (head bundle))))
-    ;; see realize.lisp
-    (set-backpointer-of-root result bundle)
-    (entering-new-context result)
-    (process-clausal-accessories bundle)
-    (process-clausal-further-specifications bundle)
-    (leaving-previous-context result)
-    result)
-
-
-
-
-
-(defun process-attachments (dtn root-node)
-  (let ((satellite-nodes (adjuncts dtn)))
-    (when satellite-nodes
-      (push-debug `(,dtn ,root-node ,satellite-nodes))
-      (break "stub"))))
-
 
 (defun process-clausal-further-specifications (bundle)
   (break "Call to process-clausal-further-specifications. Threaded right?")
