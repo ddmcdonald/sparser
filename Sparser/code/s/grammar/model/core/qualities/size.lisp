@@ -50,7 +50,9 @@
        (defun ,instance-maker (string)
          (define-or-find-individual ',attibute-field-name
              :name string))
-  ))))
+       ))))
+
+(define-the-attribute-size)
 #|
 
 (define-category size
@@ -98,11 +100,11 @@
 #|
 (defun define-size (string) ;; syntactic sugar
   (define-or-find-individual 'size-value :name string))
-
+|#
 ;; a few cases as need for trival blocks world
 (define-size "big")
 (define-size "little")
-|#
+
 
 #| lifted from biology/terms-to-move
 
