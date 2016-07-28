@@ -184,9 +184,10 @@
       (let* ((start-pos (starts-at-pos sentence))
              (first-word (pos-terminal start-pos)))
         (unless first-word
-          (error "Problem with sentence-end handling.~
-                ~%The first word on the new sentence is nil~%~a"
-                 sentence))
+          (cerror "Proceed at your own risk. You'll get an odd error."
+                  "Problem with sentence-end handling.~
+                 ~%The first word on the new sentence is nil~%~a"
+                  sentence))
 
         ;; 1st scan the text into minimal terminal edges.
         ;; The thow is from period-hook, which will also advance
