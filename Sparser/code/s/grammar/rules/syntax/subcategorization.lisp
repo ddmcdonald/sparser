@@ -278,12 +278,12 @@
 	       (v/r (subcat-restriction pattern))
 	       (var (subcat-variable pattern))
 	       (local-var (find-variable-for-category (var-name var) category))
-	       (local-v/r (var-value-restriction local-var)))
+	       (local-v/r (when local-var (var-value-restriction local-var))))
 	  (declare (special *pat* label v/r var local-var local-v/r))
-	       
-	  (if (eq var local-var)
-	    pattern ;; nothing has changed -- no RESTRICTION on var
-            (make-subcat-pattern label local-v/r local-var category))))))
+          (when local-var
+            (if (eq var local-var)
+                pattern ;; nothing has changed -- no RESTRICTION on var
+                (make-subcat-pattern label local-v/r local-var category)))))))
 
 (defun assign-subcat/expr (word form category parameter-plist)
   "Form to find or make the appropriate subcategorization frame
