@@ -452,8 +452,9 @@
          :etf (svo-passive)
          :with object))
 
-
-(define-category attribute :specializes bio-rhetorical
+;; The category 'attribute' is in core/kinds/attribution.lisp.
+;; If we gave that version a lemma it would be the noun reading/
+(define-category attribute/verb :specializes bio-rhetorical
     :binds ((cause biological))
     :realization
     (:verb "attribute" ;; keyword: ENDS-IN-ED 
