@@ -104,7 +104,7 @@ omitted and then run (perhaps) after the image has been launched."
     ;; the loading of amounts
     (gload "collections;loader"))
 
-  (gate-grammar *kinds*
+  (gate-grammar *kinds* ;; upper model
     (gload "kinds;loader"))
 
   (gate-grammar *qualities*
