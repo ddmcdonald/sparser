@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  July 2016
+;;;  Version:  August 2016
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -923,7 +923,6 @@
 ;;;---------
 
 (defun interpret-pp-adjunct-to-np (np pp)
-  (push-debug `(,np ,pp))
   (cond
    ((null np) 
     (break "null interpretation for NP in interpret-pp-adjunct-to-np edge ~s~&"
@@ -942,15 +941,23 @@
                (prep-word (identify-preposition pp-edge))
                (*pobj-edge* (edge-right-daughter pp-edge))
                (pobj-referent (edge-referent *pobj-edge*))
+               (of (word-named "of"))
                (variable-to-bind
                 ;; test if there is a known interpretation of the NP/PP combination
                 (or
                  (subcategorized-variable np prep-word pobj-referent)
+                 (and (eq prep-word of)
+                      (itypep np 'attribute))
                  ;; or if we are making a last ditch effort
                  ;; if not, then return NIL, failing the rule
                  (and *force-modifiers* 'modifier))))
           (cond
-           (*subcat-test* variable-to-bind)
+            (*subcat-test* variable-to-bind)
+            ((and (eq prep-word of) (itypep np 'attribute))
+             ;; The 'owner' of the "of" in this case is the pobj,
+             ;; rather than the np.
+             (find-or-make-individual 'quality-predicate
+                :attribute (itype-of np) :item pobj-referent))
            (variable-to-bind
             (when *collect-subcat-info*
               (push (subcat-instance np prep-word variable-to-bind pp)
