@@ -743,6 +743,8 @@ grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-rea
        (setq *schematic?* t)
        var ))
 
+    (word string-or-symbol)
+
     (string
      (resolve-string-to-word/make string-or-symbol))))
 
