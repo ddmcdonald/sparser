@@ -144,3 +144,87 @@ be added to attribute so it knows how to handle the individuals.
   :index (:permanent :sequential-keys attribute value))
 
 
+
+;;;-----------------------------------
+;;; macro to create simple attributes
+;;;-----------------------------------
+
+(defmacro define-attribute
+    (attribute-name ;; a symbol, e.g. 'size'
+     &key
+       ((:var name-of-variable))
+       ((:mixin name-of-mixin-category))
+       ((:word word-that-denotes-attribute))
+       ((:a-pos attribute-part-of-speech))
+       ((:value-cat name-of-field-category))
+       ((:def-fn name-of-define-fn))
+       ((:value-pos field-part-of-speech))
+       ((:val-rule-label rule-label-for-values)))
+  "Makes the function and three categories required to define
+ an attribute. Constructs names for them based on the symbol that
+ is passed in. Keyword arguments are provided to override the
+ defaults."
+   (flet ((sintern (&rest strings)
+           (intern (apply #'string-append strings)
+                   (find-package :sparser))))
+     (let* ((var-name ;; 'size
+             (or name-of-variable attribute-name))
+            (mixin-name ;; has-size
+             (or name-of-mixin-category
+                 (sintern '#:has- var-name)))
+            (v/r-category ;; 'size
+             ;; must be same as name of attribute class
+             attribute-name)
+            (attribute-word ;; "size"
+             (or word-that-denotes-attribute
+                 (resolve/make
+                  (string-downcase (symbol-name attribute-name)))))
+            (attribute-pos
+             (or attribute-part-of-speech :common-noun))            
+            (attibute-field-name ;; size-value
+             (or name-of-field-category
+                 (sintern var-name '#:-value)))
+            (instance-maker
+             (or name-of-define-fn
+                 (sintern '#:define- var-name)))
+            (field-pos
+             (or field-part-of-speech
+                 :adjective))
+            (field-rule-label ;; size
+             (or rule-label-for-values
+                 attribute-name)))
+       `(progn
+         ;; Suppose the name of the attribute
+         ;; is 'size' and we're using all defaults
+         
+         ;; mixin-name: has-size
+         ;; var-name: size
+         ;; v/r-category: size
+         (define-category ,mixin-name
+           :specializes relation
+           :binds ((,var-name ,v/r-category)))
+
+         ;; attribute-name: size
+         ;; attribute-pos: :common-noun
+         ;; attribute-word: "size"
+         (define-category ,attribute-name
+           :specializes attribute
+           :bindings (var
+                       (find-variable-for-category
+                        ',var-name ',mixin-name))
+           :realization (,attribute-pos ,attribute-word))
+
+         ;; attribute-field-name: size-value
+         ;; attribute-name: size
+         ;; field-rule-label size
+         ;; field-pos: :adjective
+         (define-category ,attibute-field-name
+           :specializes attribute-value
+           :bindings (attribute ',attribute-name)
+           :rule-label ,field-rule-label
+           :realization (,field-pos name))
+
+         ;; instance-maker: define-size
+         (defun ,instance-maker (string)
+           (define-or-find-individual ',attibute-field-name
+               :name string)) ))))

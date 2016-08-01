@@ -14,6 +14,8 @@
 ;;; color per-se
 ;;;--------------
 
+(define-attribute color)
+#|
 (define-category color-value
   :specializes attribute
   :instantiates self
@@ -22,7 +24,7 @@
   :realization (:adjective name))
 
 (defun define-color (string) ;; syntactic sugar
-  (define-or-find-individual 'color-value :name string))
+  (define-or-find-individual 'color-value :name string)) |#
 
 ;;--- move to a dossier before growing this list by too much more
 (define-color "black")
