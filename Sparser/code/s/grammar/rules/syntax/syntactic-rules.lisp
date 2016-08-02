@@ -362,7 +362,7 @@
 (loop for n in `(np pronoun  ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
   do
   (loop for v in '(vp vg vp+passive vg+passive 
-                      ;; vg+ing ;; TO-DO see if this change imporves or damages things
+                      ;; vg+ing ;; TO-DO see if this change improves or damages things
                       )
     do
     (eval
