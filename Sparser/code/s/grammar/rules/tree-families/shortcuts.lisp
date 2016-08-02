@@ -309,7 +309,6 @@ broadly speaking doing for you all the things you might do by hand.
                       (cdr noun)))
       (let ((rule-form
              `(def-synonym ,(cat-name category) (:noun ,string))))
-        (print rule-form)
 	(eval rule-form)))
     category))
 
