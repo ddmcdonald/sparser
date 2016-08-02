@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   July 2016
+;;;   Version:   August 2016
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -94,14 +94,14 @@
 
   (setq *referent* nil) ;; cleanup from last time
 
-  
-  (if (or
-       (eq rule :conjunction/identical-adjacent-labels)
-       (eq rule :conjunction/identical-form-labels))
+  (cond
+    ((or (eq rule :conjunction/identical-adjacent-labels)
+         (eq rule :conjunction/identical-form-labels))
       (referent-of-two-conjoined-edges
        (edge-referent left-edge)
-       (edge-referent right-edge))
+       (edge-referent right-edge)))
 
+    (t
       (unless *no-referent-calculations*
         (let ((*left-edge-into-reference*       left-edge)
               (*right-edge-into-reference*      right-edge)
@@ -147,7 +147,7 @@
 
             (if (null *referent*)
                 :abort-edge
-                *referent* ))))))
+                *referent* )))))))
 
 (defun walk-through-referent-actions  (rule-field 
                                        left-referent right-referent 
