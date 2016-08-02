@@ -1,7 +1,4 @@
 ;;; -*- Syntax: Common-lisp; Mode: LISP; Package: MUMBLE -*-
-;;; $Id: accessory-types.lisp 100 2007-07-04 14:31:27Z dmcdonal $
-
-(in-package :mumble)
 
 ;;; MUMBLE-86:  message-level>accessory-types
 
@@ -11,8 +8,12 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2016 David D. McDonald  -- all rights reserved
 
 ;;7/9/00 Added in-focus.
+
+(in-package :mumble)
+
 
 (define-accessory-type :unmarked
    ())
@@ -24,6 +25,9 @@
    ())
 
 (define-accessory-type :progressive
+   ())
+
+(define-accessory-type :passive
    ())
 
 (define-accessory-type :command
