@@ -288,29 +288,35 @@
       head))))
 
 
-(defun adj-noun-compound (qualifier head)
+(defun adj-noun-compound (adjective head)
   (declare (special category::determiner))
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
-     (and
-      (not (and (individual-p head) (itypep head category::determiner)))
-      (not (itypep head  category::determiner)) ;; had strange case with "some cases this" -- head was "this"
-      (or (subcategorized-variable head :m qualifier)
-	  (subcategorized-variable qualifier :subject head))))
-    ((call-compose qualifier head)) ;; This case is to benefit marker-categories
-    ((interpret-premod-to-np qualifier head))
+     (and ;; had strange case with "some cases this" -- head was "this"
+          ;; so rule out these cases
+          (not (and (individual-p head) (itypep head category::determiner)))
+          (not (itypep head  category::determiner))
+
+          ;; Positive reasons to assume we can compose
+          (or (subcategorized-variable head :m adjective)
+              (subcategorized-variable adjective :subject head)
+              (itypep adjective 'attribute-value))))
+
+    ((call-compose adjective head)) ;; This case is to benefit marker-categories
+    ((itypep adjective 'attribute-value)
+     (handle-attribute-of-head adjective head))
+    ((interpret-premod-to-np adjective head)) ;; normal subcategorization
     (t ;; Dec#2 has "low nM" which requires coercing 'low'
      ;; into a number. Right now just falls through
      (let ((predicate 
-	     (if (and
-		  (not (is-basic-collection? qualifier))
-		  (find-variable-for-category :subject (itype-of qualifier)))
-		 (create-predication-by-binding :subject **lambda-var** qualifier
-						(list 'adj-noun-compound (left-edge-for-referent)))
-		 (individual-for-ref qualifier))
-	     ))
-       (setq  head (bind-dli-variable 'predication predicate head))
+	     (if (and (not (is-basic-collection? adjective))
+                      (find-variable-for-category :subject (itype-of adjective)))
+		 (create-predication-by-binding
+                  :subject **lambda-var** adjective
+                  (list 'adj-noun-compound (left-edge-for-referent)))
+		 (individual-for-ref adjective))))
+       (setq head (bind-dli-variable 'predication predicate head))
        head))))
 
 (defun adj-postmodifies-noun (n adj)

@@ -228,3 +228,32 @@ be added to attribute so it knows how to handle the individuals.
          (defun ,instance-maker (string)
            (define-or-find-individual ',attibute-field-name
                :name string)) ))))
+
+
+
+
+;;; syntax functions
+
+(defun handle-attribute-of-head (attribute-value head)
+  "Called from adj-noun-compound, e.g. 'red block'. The value
+   it returns becomes the referent of the edge that spans them.
+   Arguments are already individuals."
+  ;; We want to know what variable to bind on the head.
+  ;; Some navigation is needed, starting with the category
+  ;; of the individual.
+  (let* ((type-category (itype-of attribute-value))
+         (attribute ;; then we look up the attribute
+          (value-of 'attribute type-category))
+         (variable ;; then retrieve the lambda variable
+          (value-of 'var attribute))
+         (type-restriction-on-head (var-category variable))
+         (v/r-on-value (var-value-restriction variable)))
+    ;; If we are going to worry about those two restrictions
+    ;; as a condition on the applicablity of the rule, then
+    ;; we need to package up the checks as functions we can
+    ;; use independently of this composition machinery
+    (declare (ignore type-restriction-on-head v/r-on-value))
+
+    (setq head (bind-variable variable attribute-value head))
+    head))
+
