@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  January 2016
+;;;   version:  August 2016
 
 ;; Initiated 12/3/15.
 
@@ -19,8 +19,9 @@ inherited slots for things like color, label, orientation,
 location, membership in structures (staircase), local relations
 with other blocks, mention in utterances, etc. |#
 (define-category block
-  :specializes artifact 
-  ;;:rule-label artifact
+  :specializes object
+  :mixins (has-name)
+  :instantiates :self
   :index (:permanent :key name)
   :realization ;; for connection to Mumble
   (:common-noun "block"))
@@ -43,7 +44,7 @@ a block can typically only support a single other block
 support a substantial number of blocks.
 |#
 (define-category table
-  :specializes artifact
+  :specializes object
   :index (:permanent :list)
   :realization
      (:common-noun "table"))

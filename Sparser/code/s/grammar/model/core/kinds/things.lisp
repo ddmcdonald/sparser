@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  May 2016
+;;;  version:  August 2016
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -64,11 +64,6 @@
   "A physical object ('physobj' ??) has a spatial extent,
  and is constitued of something (e.g. the clay in a statue).")
 
-
-(define-category object 
-  :specializes physical-object
-  :documentation
-  "Conventional physical objects: chairs, amoeba, mountains, breaths of air.")
 
 (define-mixin-category agent
   :specializes physical-object

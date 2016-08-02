@@ -12,8 +12,25 @@ files once an area looks big enough to warrant it.  |#
 
 (in-package :sparser)
 
+;;;-------------------------------------------
+;;; ordinary things -- basis for blocks world
+;;;-------------------------------------------
+
+(define-category object 
+  :specializes physical-object
+  :mixins (has-spatial-location ;; adds location variable
+           has-color ;; color
+           has-size  ;; size
+           )
+  :documentation
+  "Conventional physical objects: chairs, amoeba, mountains, 
+ breaths of air, blocks on a table.")
+
+
+
+
 ;;;----------------------------------------------
-;;; "upper midle" ??  Needed by other categories
+;;; "upper middle" ??  Needed by other categories
 ;;;----------------------------------------------
 
 #| color -- on a physical surface. Vs. a weather front or anything else 
@@ -21,6 +38,7 @@ files once an area looks big enough to warrant it.  |#
  transparent. This is a property of physical things that have extend
  so should cluster with others like this |#
 
+;;/// probably OBE -- move to C3 specific file ?
 (define-mixin-category physical-surface
   :specializes quality  ;; maybe border?
   :binds ((color . color))
@@ -59,7 +77,6 @@ files once an area looks big enough to warrant it.  |#
 ;; in the Shetlands knitting sweaters from industrial giants?
  ;; ?? company (corporate entity)
       
-
 (define-category artifact
   :specializes physical  
   :mixins (has-name)
