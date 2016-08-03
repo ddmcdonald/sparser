@@ -37,20 +37,26 @@
 
 
 (define-exploded-tree-family  transitive
-  :description "A verb that requires a subject and a direct object to have 
+    :description "A verb that requires a subject and a direct object to have 
      a complete sentence. This category is intended for verbs that -never- appear 
      in the passive; their subjects will always be agents and their objects themes."
-  :binding-parameters ( agent patient )
-  :labels ( s vp vg np/subject np/object )
-  :cases
-     ((:subject (s  (np/subject vp)
-                 :head right-edge
-                 :binds (agent left-edge)))
+    :binding-parameters ( agent patient )
+    :labels ( s vp vg np/subject np/object )
+    :cases
+    (#+ignore
+     (:subject (s  (np/subject vp)
+                   :head right-edge
+                   :binds (agent left-edge)))
+     (:subject (s  (np/subject vp)
+                   :head right-edge
+                   ;; :binds (agent left-edge)
+                   :function (assimilate-subject left-edge right-edge)))
+   
 
-      (:direct-object (vp  (vg np/object)
-                       :head left-edge
-                       :binds (patient right-edge)))
-      ))
+     (:direct-object (vp  (vg np/object)
+                          :head left-edge
+                          :binds (patient right-edge)))
+     ))
 
 
 
