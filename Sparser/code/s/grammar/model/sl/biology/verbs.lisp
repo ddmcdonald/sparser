@@ -65,6 +65,8 @@
                category::biological
                (variable/category 'predicate category::be))
 
+(assign-subcategorization category::be :to-comp category::biological 'predicate)
+
 ;;;---------------------------
 ;;; macros for standard cases
 ;;;---------------------------
@@ -422,7 +424,7 @@
   (:verb "associate"
          :noun "association"
          :etf (sv) 
-         :o  object
+         ;;:o  object
          :to object
          :via site
 	 :at site
@@ -713,7 +715,7 @@
          (treatment treatment))
  :realization
  (:verb "cycle"
-  :etf (svo-passive)
+  :etf (sv)
   :from from
   :of treatment
   :to to
@@ -876,7 +878,8 @@
   (:verb "dominate" 
   :noun "domination" 
   :etf (svo-passive)
-  :o theme))
+  :o theme
+  :optional-object t))  ;; e.g. "...our kinetic modeling suggests that the GAP defect will dominate."
 
 (define-category downregulate
   :specializes negative-bio-control
@@ -1819,7 +1822,7 @@
 ;; "X provides support for Y" and "X supports process Y"
 (define-category provide :specializes bio-relation
     :restrict ((subject (:or result biological))
-               (theme (:or argument-support biological bio-rhetorical)))
+               (theme (:or insight argument-support biological bio-rhetorical)))
     :realization
     (:verb "provide"
 	   :noun "provision"
@@ -1979,8 +1982,9 @@
 (define-category remain :specializes bio-relation
     :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)
-           :o theme))
+	   :etf (sv)
+           ;; remains to be determined
+           :to-comp theme))
 
 (eval (make-copular-def "remain"))
 #+ignore
@@ -2055,7 +2059,7 @@
   :to state
   :to scalar))
 
-(define-category revert :specializes caused-bio-process
+(define-category revert :specializes bio-process
  :binds ((state bio-state)
          (scalar scalar-quality))
  :realization
@@ -2243,7 +2247,7 @@
     :realization
     (:verb "tend" ;; keyword: ENDS-IN-ED 
 	   :noun "tendency"
-	   :etf (svo-passive)))
+	   :etf (sv)))
 
 (define-category term :specializes bio-rhetorical
     :realization
@@ -2330,13 +2334,17 @@
 ; "the molecular mechanisms that regulate ERK nuclear translocation 
 ;     are not fully understood."
 ; (process on ERK) ... a requirement for nuclear translocation."
-; 11: is directly translated into a delay in nuclear translocation
+                                        ; 11: is directly translated into a delay in nuclear translocation
+
+;; IMPORTANT -- "translocate" does not REQUIRE an object
+;; "Wild-type ASPP2, but not mutant ASPP2 (S827A), translocates to the cytosol"
 (define-category translocation :specializes bio-transport
   :restrict ((object molecule)) 
   :realization 
   (:verb "translocate" 
    :noun "translocation" 
-   :etf (svo-passive)))
+   :etf (svo-passive)
+   :optional-object t))
 
 
 
