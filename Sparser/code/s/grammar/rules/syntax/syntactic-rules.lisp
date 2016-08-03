@@ -355,9 +355,19 @@
            `(def-syntax-rule (,nb ,src)
                 :head :left-edge
                 :form np
-                :referent (:function apply-subject-relative-clause left-edge right-edge)))))
+                :referent (:function apply-subject-relative-clause left-edge right-edge))))
+     
+     (eval
+      `(def-syntax-rule (,nb transitive-clause-without-object)
+           :head :left-edge
+           :form np
+           :referent (:function apply-object-relative-clause left-edge right-edge)))
 
-
+     (eval
+      `(def-syntax-rule (,nb object-relative-clause)
+           :head :left-edge
+           :form np
+           :referent (:function apply-object-relative-clause left-edge right-edge))))
 
 (loop for n in `(np pronoun  ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
   do
@@ -482,15 +492,23 @@
 ;;--- Relative clauses
 ;;;---------------------------
 
+(loop for rel in '(which who whom  that) ;;  (where, when) this is more often used as a subordinate conjunction
+   do
+     (eval
+      `(def-form-rule (,rel transitive-clause-without-object)
+           :head :right-edge
+           :form object-relative-clause
+           :referent (:function compose-wh-with-vp left-edge right-edge)))
+     (loop for v in '(vp vp+passive vg+passive vg)
+        do
+          (eval
+           `(def-form-rule (,rel ,v) 
+                :head :right-edge
+                :form subject-relative-clause
+                :referent (:function compose-wh-with-vp left-edge right-edge)))))
+
 (loop for v in '(vp vp+passive vg+passive vg)
    do
-     (loop for rel in '(which who whom  that) ;;  (where, when) this is more often used as a subordinate conjunction
-	do
-	  (eval
-	   `(def-form-rule (,rel ,v) 
-		:head :right-edge
-		:form subject-relative-clause
-		:referent (:function compose-wh-with-vp left-edge right-edge))))
      (eval
       `(def-syntax-rule (pp-wh-pronoun ,v) 
 	   :head :right-edge
