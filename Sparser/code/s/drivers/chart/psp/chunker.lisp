@@ -404,16 +404,23 @@
   (member (cat-name (edge-form ee)) '(proper-noun pronoun)))
 
 
+(defun singular-det (e)
+  (member (cat-name (edge-category e)) '(a that this)))
+
 (defun plural-noun-not-present-verb (e &optional (edges-before (edges-before e)))
   (or
    (null edges-before) ;; sentence initial
    (and
-    (not (some-edge-satisfying? edges-before #'np-end-edge))
+    (not (or
+          (some-edge-satisfying? edges-before #'np-end-edge)
+          (some-edge-satisfying? edges-before #'singular-det)))
     (or
      (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?)
      (not
       (some-edge-satisfying? edges-before #'non-det-or-verb-ng-start?))))))
                                    
+
+
 (defun pronoun-or-wh-pronoun (edge)
   (or
    (eq (cat-name (edge-form edge)) 'pronoun )
@@ -448,7 +455,9 @@
     (cond
       ((plural-noun-and-present-verb? e)
        (and
-        (not (preceding-det-prep-poss-or-adj e edges-before))
+        (or
+         (some-edge-satisfying? (edges-before e) #'singular-det)
+         (not (preceding-det-prep-poss-or-adj e edges-before)))
         (or
          (not (plural-noun-not-present-verb e))
          (some-edge-satisfying? (edges-after e) #'clear-np-start?)
@@ -788,11 +797,11 @@
 
 (defun thatcomp-verb (edge)
   (loop for pat in (subcat-patterns (edge-category edge))
-     thereis (eq 'thatcomp (subcat-label pat))))
+     thereis (eq :thatcomp (subcat-label pat))))
 
 (defun thatcomp-noun (edge)
   (loop for pat in (subcat-patterns (edge-category edge))
-     thereis (eq 'thatcomp (subcat-label pat))))
+     thereis (eq :thatcomp (subcat-label pat))))
 
 (defun preceding-det-prep-poss-or-adj (e &optional (edges (edges-before e)))
   (loop for ee in edges
