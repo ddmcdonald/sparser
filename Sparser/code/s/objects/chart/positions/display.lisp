@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990-1991  Content Technologies Inc.
-;;; copyright (c) 1992-1994,2012-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2012-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "display"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  0.5 May 2015
+;;;  Version:  August 2016
 
 ;; 0.1 (1/29 v1.8)  Added the key :ends-rather-than-starts? to Display-
 ;;      chart-edges.
@@ -298,7 +298,7 @@
 			    (loop for c in (cfr-rhs rule)
 				 collect (simple-label c)))
 		    (concatenate 'string
-                      "rule " (subseq (symbol-name (cfr-symbol rule)) 3))))
+                      "rule " (subseq (symbol-name (cfr-symbol rule)) 4))))
                (polyword "polyword")
                (list (if (eq right-daughter :literal-in-a-rule)
                        "literal"
