@@ -262,7 +262,7 @@
                  ;; named item
                  (value-of 'name qualifier)))
         ;; intended as test for proper noun or other specific NP
-	(revise-parent-edge :form category::proper-noun)
+        (revise-parent-edge :form category::proper-noun)
 	qualifier)
        ((call-compose qualifier head))
        ((interpret-premod-to-np qualifier head))
@@ -447,7 +447,7 @@
    (link-in-verb+ing qualifier head)))
 
 (defun link-in-verb+ing (qualifier head)
-  (let ((subject (subject-variable qualifier)))
+  (let ((subject (subcategorized-variable head :subject qualifier)))
     (cond
       (*subcat-test* subject)
       ((word-p qualifier)
@@ -1008,6 +1008,13 @@
   (when
       (and subj vp) ;; have had cases of uninterpreted VPs
     (cond
+      ((transitive-vp-missing-object? vp)
+       (when (not *subcat-test*)
+         ;; the edge isn't available and shouldn't be chaged during the test phase
+         (warn "~%transitive verb without object: ~s~%"
+               (extract-string-spanned-by-edge (right-edge-for-referent)))
+         (revise-parent-edge :form category::transitive-clause-without-object))
+       (assimilate-subcat vp :subject subj))
       ((eq (edge-form (right-edge-for-referent)) category::subordinate-clause)
        (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
 	      (vg-edge (edge-right-daughter (right-edge-for-referent))))
@@ -1021,12 +1028,30 @@
 		      (null (value-of (object-variable vg-edge) svp)))
 	       (assimilate-subcat svp :object subj))
 	     (when
-		 (and (subject-variable vg-edge)
-		      (null (value-of (subject-variable vg-edge) svp)))
+                 (missing-subject-vars (edge-referent vg-edge))
 	       (assimilate-subcat svp :subject subj)))))
       ((is-passive? (right-edge-for-referent))
        (assimilate-subcat vp :object subj))
       (t (assimilate-subcat vp :subject subj)))))
+
+(defun transitive-vp-missing-object? (vp)
+  ;; this is a case like "that MEK phosphorylates" which has
+  ;;  a VG, not a VP, and no object -- want to make this a
+  ;;  constituent with a gap
+  (and (not (is-passive? (right-edge-for-referent)))
+       (not (adjective-phrase? (right-edge-for-referent)))
+       (missing-object-vars vp)
+       (not (value-of 'statement vp))
+       (not (thatcomp-verb (right-edge-for-referent)))
+       (not (loop for v in (find-subcat-vars :to-comp vp)
+               thereis (value-of v vp)))))
+
+(defun adjective-phrase? (e)
+  (declare (special category::adjective))
+  (let ((re (and (edge-p e)
+                 (edge-right-daughter e))))
+    (and (edge-p re)
+         (eq category::adjective (edge-form re)))))
 
 
 ;; special case where the vp is a gerund, and we make it an NP (not sure how often this is right)
@@ -1082,18 +1107,18 @@
 (defun can-fill-vp-subject? (vp subj)
   (and
    ;; vp has a subject
-   (subject-variable vp)
-   (not (value-of (subject-variable vp) vp)) ;; which is not bound
+   (missing-subject-vars vp) ;; which is not bound
    (subcategorized-variable vp :subject subj)
-   (or (not (object-variable vp))
-       (value-of (object-variable vp) vp)
-       (value-of 'statement vp)
-       (preceding-that-whether-or-conjunction? (left-edge-for-referent)))))
+   (or
+    ;; can't be a reduced relative, no available object-var
+    (not (object-variable vp)) (bound-object-vars vp)
+    ;; or a statement (clausal complement)
+    (value-of 'statement vp)
+    (preceding-that-whether-or-conjunction? (left-edge-for-referent)))))
        
 (defun can-fill-vp-object? (vp subj)
   (and ;; vp has a bound subject -- NP can fill object
-   (subject-variable vp)
-   (value-of (subject-variable vp) vp)
+   (bound-subject-vars vp)
    (subcategorized-variable vp :object subj)))
 
 (defun preceding-that-whether-or-conjunction? (left-edge)
@@ -1423,6 +1448,33 @@
           (record-subcat-use label (itype-of head) variable))
         variable ))))
 
+(defun find-subcat-vars (label cat)
+  (loop for pat in (subcat-patterns cat)
+     when (eq label (subcat-label pat))
+     collect (subcat-variable pat)))
+
+(defun find-object-vars (cat)
+  (find-subcat-vars :object cat))
+
+(defun find-subject-vars (cat)
+  (find-subcat-vars :subject cat))
+
+(defun missing-object-vars (i)
+  (let ((ov (find-object-vars i)))
+    (and ov
+         (not (get-tag :optional-object (itype-of i)))
+         (not (loop for o in ov thereis (value-of o i))))))
+
+(defun missing-subject-vars (i)
+  (let ((sv (find-subject-vars i)))
+    (and sv
+         (not (loop for s in sv thereis (value-of s i))))))
+
+(defun bound-object-vars (i)
+  (loop for o in (find-object-vars i) thereis (value-of o i)))
+
+(defun bound-subject-vars (i)
+  (loop for s in (find-subject-vars i) thereis (value-of s i)))
 
 (defun announce-over-ridden-ambiguities (item head label variable)
   (when *show-over-ridden-ambiguities*
