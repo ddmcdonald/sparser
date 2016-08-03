@@ -315,13 +315,16 @@
 (define-category bio-process
     :specializes process
     :mixins (has-UID has-name biological event-relation)
-    :binds ((by-means-of (:or bio-process mechanism bio-method pathway))
+    :binds ((subject biological)
+            (by-means-of (:or bio-process mechanism bio-method pathway))
 	    (using protein)
 	    (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
 	    (as-comp as-comp)
 	    (target (:or protein gene)))
     :realization 
     (:noun "process"
+           :s subject
+           :of subject
 	   ;; :by by-means-of find out what uses this
 	   :through by-means-of
 	   :via by-means-of
@@ -339,21 +342,16 @@
 (define-category other-bio-process
                  :specializes bio-process
   :mixins (has-UID has-name biological)
-  :binds ((subject biological))
   :realization 
-  (:noun "processXXX"
-         :s subject)
+  (:noun "processXXX")
   :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
 
 (define-category cellular-process :specializes bio-process
   :mixins (has-UID has-name biological)
-  :binds ((subject biological))
   :realization 
-  (:noun "processYYY"
-         :s subject
-         :of subject)
+  (:noun "processYYY")
   :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
@@ -365,8 +363,11 @@
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
+(define-category blocked-category :specializes top)
+
 (define-category caused-bio-process
   :specializes bio-process
+  :restrict ((subject blocked-category))
   :binds
   ((agent ;; supercedes subject in bio=-process
     (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
@@ -387,17 +388,19 @@
       :to extent
       ))
 
+(define-category caused-biochemical-process :specializes caused-bio-process
+                 :binds ((process-for biochemical-process)))
 
 (define-category mechanism :specializes endurant
-		 :binds ((process bio-process) ;;  the process typically performed by 
-			 ;; this mechanism in the context of discussion
-			 (goal)) ;; the predication that defines the desired end-state?
-		 :realization
-		 (:m process
-		     :of process
-		     :for process)
-		 :documentation 
-		 "A collection of interacting physical entities that performs an action 
+  :binds ((process bio-process) ;;  the process typically performed by 
+          ;; this mechanism in the context of discussion
+          (goal)) ;; the predication that defines the desired end-state?
+  :realization
+  (:m process
+      :of process
+      :for process)
+  :documentation 
+  "A collection of interacting physical entities that performs an action 
    or has a purpose. Expand this comment...")
 
 (define-category bio-mechanism :specializes mechanism
@@ -526,12 +529,24 @@
                        :to result
                        ))
 
-(define-category biochemical-reaction :specializes chemical-reaction ;; from biopax
-  )
 
-(define-category catalysis :specializes chemical-reaction
-  :mixins (bio-control)
-  :binds ((controlType))
+(define-category bio-interaction :specializes bio-process)
+(define-category bio-conversion :specializes bio-interaction)
+
+(define-category biochemical-reaction :specializes bio-conversion ;; from biopax
+                 )
+
+(define-category biopax-entry :specializes top
+                 :binds
+                 ((dataSource)
+                  (xref)))
+
+(define-category catalysis :specializes positive-bio-control
+  :restrict ((object biochemical-reaction))
+  :binds ((controlType)
+          ;;(controlled BiochemicalReaction) from BioPax3
+          ;;(controller (:or protein complex bio-entity)) from BioPax3
+          )
   :realization
   (:verb "catalyze" :noun "catalysis" 
          :etf(svo-passive) ));;/// "catalyysis of phosphorylation by MEK"
@@ -960,7 +975,9 @@
 				    :in state
                                     ))
 
-
+(define-category protein-state :specializes molecule
+  :binds ((protein protein)
+          (post-translational-mod post-translational-modification)))
 
 
 (define-category enzyme :specializes protein ;; what's the relationship to kinase?   ;; not all enzymes are proteins -- there are RNA enzymes
