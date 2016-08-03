@@ -176,6 +176,10 @@
 (defmethod subcat-patterns ((sf category))
   (subcat-patterns (get-subcategorization sf)))
 
+(defmethod subcat-patterns ((i individual))
+  (subcat-patterns (get-subcategorization (itype-of i))))
+
+
 (defun get-subcategorization (label)
   (gethash label *labels-to-their-subcategorization*))
 
@@ -418,8 +422,10 @@
   (check-type category category)
   (check-type label (or category keyword word polyword))
   (check-type restriction (not null))
-  (check-type variable (or null lambda-variable))
-  (let ((variable (find-variable-for-category (var-name variable) category)))
+  (check-type variable (or null lambda-variable symbol))
+  (let ((variable (if (symbolp variable)
+                      (find-variable-for-category variable category)
+                      (find-variable-for-category (var-name variable) category))))
     ;; if the variable has been restricted locally, then use the local version of the variable
     (funcall (if replace #'replace-subcat-pattern #'add-subcat-pattern)
              (make-subcat-pattern label restriction variable category)
