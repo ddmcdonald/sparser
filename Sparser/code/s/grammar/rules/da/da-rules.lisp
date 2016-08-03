@@ -872,6 +872,10 @@
 (defun clause-subordinate (s sc)
   (create-event-relation s sc))
 
+(define-debris-analysis-rule clause-and-clause
+  :pattern ( s and s  )
+  :action (:function clause-and-subordinate  first second third))
+
 
 (define-debris-analysis-rule when-relative-clause-comma
                :pattern (when-relative-clause "," s)
