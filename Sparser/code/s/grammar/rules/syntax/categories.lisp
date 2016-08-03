@@ -183,7 +183,9 @@
 
 ;;(def-form-category relative-clause)
 (def-form-category subject-relative-clause)
+(def-form-category object-relative-clause)
 (def-form-category subordinate-relative-clause)
+(def-form-category transitive-clause-without-object)
 (def-form-category where-relative-clause)
 (def-form-category when-relative-clause)
 (def-form-category comma-separated-subject-relative-clause)
