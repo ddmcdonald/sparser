@@ -625,11 +625,18 @@
      (:adj "ineffective"
            :against against)) ;; keyword: (ive ADJ) 
 
-(define-category inhibitor 
-                 :specializes drug
+(define-category inhibitor :specializes drug
   :binds ((process (:or bio-process pathway bio-mechanism))
           (protein protein))
   :realization (:noun "inhibitor" :m process :m protein :of process :of protein))
+
+
+;; THIS NEEDS WORK
+(define-category repressor :specializes inhibitor
+  :binds ((process (:or bio-process pathway bio-mechanism))
+          (protein protein))
+  :realization (:noun "repressor" :m process :m protein :of process :of protein))
+
 (define-category negative-regulator 
                  :specializes inhibitor
   :realization (:noun "negative regulator"))
