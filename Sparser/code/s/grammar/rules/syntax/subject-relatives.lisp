@@ -124,8 +124,27 @@
 	    ;; to the subject (... or should it be called something else?)
 	    event))))
 
+(defun compose-wh-with-object-relative (wh-referent predicate-referent)
+  (let ((parent *parent-edge-getting-reference*)
+        ;; renaming to help make things clear
+        (object wh-referent)
+        (event predicate-referent))
+    (push-debug `(,subject ,event ,parent))
+    ;;(lsp-break "compose-wh-with-vp")
+     
+    (add-object-relation event object)
+     
+    ;; Referent of the whole edge is the referent of the
+    ;; predicate, now with a binding to reflect the relationship
+    ;; to the subject (... or should it be called something else?)
+    event))
 
 (defun add-subject-relation (event subject)
+  ;;/// where should these go?
+  (push-debug `(,subject ,event))
+  nil)
+
+(defun add-object-relation (event subject)
   ;;/// where should these go?
   (push-debug `(,subject ,event))
   nil)
@@ -178,6 +197,33 @@
        ;; Should we check if it was already bound to something?
        (setq  vp-ref (create-predication-by-binding var np-ref vp-ref
 						    (list 'apply-subject-relative-clause
+							  (parent-edge-for-referent))))
+       
+       ;; link the rc to the np
+       (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
+      
+       ;; referent of the combination is the np
+       np-ref))))
+
+(defun apply-object-relative-clause (np-ref vp-ref)
+  (declare (special category::have))
+  ;; block "histone 2B ... had high levels ..."
+  (when (and (eq (edge-category (right-edge-for-referent)) category::have)
+	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
+    (return-from apply-object-relative-clause nil))
+  
+  (setq np-ref (individual-for-ref np-ref))
+  (let ((var (subcategorized-variable vp-ref :object np-ref)))
+   
+    (cond
+      (*subcat-test*
+       var)
+
+      (var
+       ;; copy down the upstairs subject
+       ;; Should we check if it was already bound to something?
+       (setq  vp-ref (create-predication-by-binding var np-ref vp-ref
+						    (list 'apply-object-relative-clause
 							  (parent-edge-for-referent))))
        
        ;; link the rc to the np
