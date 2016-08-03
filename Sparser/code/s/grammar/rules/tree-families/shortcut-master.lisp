@@ -45,7 +45,9 @@
     :unlike :upon :via 
     :mumble
     :designator
-    :whethercomp :with :within :without))
+    :whethercomp :with :within :without
+    :optional-object ;; for words like "translocate" which can appear with or without objects
+    ))
 
 (defparameter *slot-keywords*
   '(:s :o 
@@ -235,10 +237,11 @@
 					    control-relations  
 					    ;; s o ;; no longer arguments because they can be duplicated for ambiguity
 					    c
-                                          prep ;; owned preposition
-                                          slots ;; a plist with labels like :against :as :at 
-                                          ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
-                                          mumble)
+                                            prep ;; owned preposition
+                                            slots ;; a plist with labels like :against :as :at 
+                                            ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
+                                            mumble
+                                            optional-object)
   ;; Decoder for the realization part of def-term, for the rdata of
   ;; define-category when it fits this new pattern, and for def-synonym,
   ;; though in that case the *deliberate-duplication* flag will be up.
@@ -297,7 +300,8 @@
                 (o-v/r (subcat-restriction obj-pat)))
             (push `(theme-slot . ,o-var) substitution-map)
             (push `(theme-v/r . ,o-v/r) substitution-map)
-            (register-variable category o-var :object-variable)))
+            (register-variable category o-var :object-variable)
+            (register-variable category optional-object :optional-object)))
 
         (when c  ;; complement, e.g. "reported that ..."
           (let* ((var (variable/category c category))
@@ -379,7 +383,7 @@
       (find-subcat-variable :subject (get-ref-subcategorization c))))
 (defmethod subject-variable ((i individual))
   (or (get-tag :subject-variable (car (indiv-type i)))
-      (find-subcat-variable :subject (get-ref-subcategorization i))))
+      (find-subcat-variable :subject i)))
 
 (defmethod object-variable (label)
   (declare (ignore label)))
