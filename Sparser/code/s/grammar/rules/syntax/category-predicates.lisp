@@ -131,6 +131,8 @@
     ,category::s ;; convenient for find-verb
     ,category::subj+verb
     ,category::subject-relative-clause
+    ,category::object-relative-clause
+    ,category::transitive-clause-without-object
     ,category::where-relative-clause
     ,category::when-relative-clause
     ,category::v-bar
