@@ -708,7 +708,7 @@
          :noun "culture"))
 
 (define-category cycle
- :specializes caused-bio-process
+ :specializes bio-process
  :binds ((from biological)
          (to biological)
          (path bio-state)
@@ -2049,6 +2049,11 @@
 
 (def-synonym result (:noun "result"))
 
+(define-category retention :specializes caused-bio-process
+   :realization
+   (:verb "retain"
+          :etf (svo-passive)
+          :noun "retention"))
 
 (define-category return :specializes caused-bio-process
  :binds ((state bio-state)
