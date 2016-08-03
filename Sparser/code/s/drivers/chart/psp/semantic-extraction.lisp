@@ -307,7 +307,7 @@
 (defun entity-p (e)
   (and
    (individual-p e)
-   (not (subject-variable e))
+   (not (find-subject-vars e))
    (not (itypep e 'bio-process))
    (not (itypep e 'predicate))
    (not (itypep e 'is-bio-entity))))
@@ -368,6 +368,7 @@
 ;;----- collect-model-description mentods
 
 (defmethod collect-model-description ((cat category))
+  (declare (special *for-spire*))
   (if *for-spire*
       `(category ,(cat-name cat))
       cat))
@@ -377,11 +378,13 @@
 
 
 (defmethod collect-model-description ((w word))
+  (declare (special *for-spire*))
   (if *for-spire*
       `(wd ,(word-pname w))
       (word-pname w)))
 
 (defmethod collect-model-description ((w polyword)) ;
+  (declare (special *for-spire*))
   (if *for-spire*
       `(pw ,(pw-pname w))
       (pw-pname w)))
