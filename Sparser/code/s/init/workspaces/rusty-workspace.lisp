@@ -5305,7 +5305,7 @@ NIL
         (np r2p)
         (show-sentences))))
 
-
+(defvar *comments*) ;; for some reason the   (declare (special *comments*)) doesn't do the job
 (defun test-comments (&optional (end (length *comments*)))
   (declare (special *comments*))
   (loop for i from 1 to end
