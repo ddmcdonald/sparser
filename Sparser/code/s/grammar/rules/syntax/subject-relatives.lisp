@@ -126,11 +126,8 @@
 
 (defun compose-wh-with-object-relative (wh-referent predicate-referent)
   (let ((parent *parent-edge-getting-reference*)
-        ;; renaming to help make things clear
         (object wh-referent)
         (event predicate-referent))
-    (push-debug `(,subject ,event ,parent))
-    ;;(lsp-break "compose-wh-with-vp")
      
     (add-object-relation event object)
      
