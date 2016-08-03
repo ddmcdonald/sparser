@@ -637,6 +637,11 @@
           (protein protein))
   :realization (:noun "repressor" :m process :m protein :of process :of protein))
 
+(define-category suppressor :specializes inhibitor
+  :binds ((process (:or bio-process pathway bio-mechanism))
+          (protein protein))
+  :realization (:noun "suppressor" :m process :m protein :of process :of protein))
+
 (define-category negative-regulator 
                  :specializes inhibitor
   :realization (:noun "negative regulator"))
