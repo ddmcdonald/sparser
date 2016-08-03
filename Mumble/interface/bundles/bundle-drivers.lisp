@@ -2,7 +2,7 @@
 
 ;;; MUMBLE-86:  message-level >  bundle-drivers
 
-;;; Copyright (C) 1985-2013 David D. McDonald
+;;; Copyright (C) 1985-2016 David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for
@@ -85,15 +85,6 @@
   (leaving-previous-context root-node)
   root-node)
 
-(defun process-clausal-further-specifications (bundle)
-  (break "Call to process-clausal-further-specifications. Threaded right?")
-  ;;really need to think about order of attachments!!!
-  (dolist (fspec (reverse
-		   (further-specifications bundle)))
-   ; (landmark 'Processing-further-specification fspec bundle)
-    (attach (specification fspec)
-	    (attachment-function fspec))))
-
 (defun process-clause-features (dtn)
   (let ((features (features dtn)))
     (when features
@@ -111,6 +102,7 @@
         (ac :command     process-command-accessory     nil)
         (ac :perfect     process-perfect-accessory     nil)
         (ac :progressive process-progressive-accessory nil)
+        (ac :passive     process-passive-accessory     nil)
         (ac :negate      process-negate-accessory      nil)
         (ac :wh-adj      process-wh-adjunct-accessory    t)))))
 ;; If we keep the bundle path alive, 

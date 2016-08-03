@@ -2,7 +2,7 @@
 ;;;
 ;;; MUMBLE-86:  grammar > transformations
 ;;;
-;;; Copyright (c) 2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2016 SIFT LLC. All Rights Reserved
 
 (in-package :mumble)
 
@@ -54,3 +54,67 @@
       (let ((trace (build-trace 'dummy)))
         (make-complement-node 's trace dtn)))))
 
+(defun carry-out-passive-transformation ()
+  "Called from process-passive-accessory to add a slot label
+   that do-any-label-driven-transformations will notice and
+   have us move the object to subject position. 
+   Operates under the assumption that it is called inside
+   the dynamic scope of process-slot's call to the realization-cycle
+   when the resource phrase has been expanded but we haven't
+   begun to walk through it. "
+  ;; Confirm that the phrase has the expected structure.
+  ;; Find the contents of the direct object and the subject slot
+  ;;  and put the direct object in subject position.
+  ;; Splice-out the direct-object position
+  (let ((root *current-phrasal-root*)) ;; a phrasal context
+    (when (phrase-is-a-clause? root)
+      (let* ((positions (position-table root))
+             (subject-slot (cdr (assoc 'subject positions)))
+             (object-slot (cdr (assoc 'direct-object positions)))
+             (object (contents object-slot)))
+        (setf (contents subject-slot) object)
+        (splice-out-slot object-slot)))))
+
+;; (do-test '(say was snapped bone))
+
+(defgeneric splice-out-slot (slot)
+  (:documentation "Used the pointers on the slot to determine
+ what links have to be changed to remove the slot from the
+ position-path structure. Cases lifted from splice-in, which
+ is used by attach-by-splicing to put add a new slot. Its
+ helper functions ensure that all links are changed. To get
+ your head around this it helps to look at the diagram on
+ page 69 of the Mumble-86 documentation.")
+  (:method ((slot slot))
+    (let ((before (previous slot))
+          (after (next slot)))
+      (cond ((and (slotp before) (slotp after))
+             ;;(set-links-for-slot before slot)
+             ;;(set-links-for-slot  slot after)
+             (set-links-for-slot before after))
+          
+            ((and (slotp before) (nodep after))
+             ;;(set-links-for-slot before slot)
+             ;;(set-links-for-last-constituent after slot)
+             (set-links-for-last-constituent after before))
+          
+            ((and (nodep before) (slotp after))
+             ;;(set-links-for-first-constituent before slot)
+             ;;(set-links-for-slot  slot after)
+             (set-links-for-first-constituent before after))
+
+            (t
+             (push-debug `(,before ,after ,slot))
+             (break "Splice-out-slot: unexpected case: ~
+                   ~%  before = ~a~
+                   ~%  after = ~a" before after))))))
+
+          
+(defgeneric phrase-is-a-clause? (phrase)
+  (:documentation "The name field of a node is set in
+ build-phrase to the name of the first node in the
+ definition of the phrase being built.")
+  (:method ((phrase phrasal-root))
+    (eq (name phrase) 'clause))
+  (:method ((context phrasal-context))
+    (phrase-is-a-clause? (node context))))

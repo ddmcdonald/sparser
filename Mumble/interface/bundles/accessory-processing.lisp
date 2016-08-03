@@ -8,7 +8,7 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 
 (in-package :mumble)
 
@@ -28,15 +28,13 @@
 
 
 (defun process-wh-adjunct-accessory (value)
-  ;;value is the specificaiton of the adjunct being
+  ;;value is the specification of the adjunct being
   ;; questioned
   (let* ((ap (splicing-attachment-point-named 'wh-marker))
 	 (active-ap
 	   (assoc ap (available-aps *current-phrasal-root*)))
 	 (position (cdr active-ap)))
-
-    (attach-by-splicing ap position value)
-    ))
+    (attach-by-splicing ap position value)))
 
 (defun process-command-accessory ()
   (let* ((root *current-phrasal-root*)
@@ -70,14 +68,12 @@
       (push (attachment-point-for-next-aux new-position contents)
 	    (available-aps *current-phrasal-root*))
       (push (cons 'tense-marker new-position)
-	    (position-table *current-phrasal-root*))
-      )))
+	    (position-table *current-phrasal-root*)))))
 
 (defun return-tense-modal-attachment-point ()
   (case (state-value ':aux-state (state *current-phrasal-root*))
     (initial (splicing-attachment-point-named 'tense-modal))
-    (prepose-aux (splicing-attachment-point-named 'preposed-tense-modal))
-    ))
+    (prepose-aux (splicing-attachment-point-named 'preposed-tense-modal))))
 
 
 
@@ -147,8 +143,7 @@
 	(splice-in position-before
 		   position-after
 		   (word-for-string "not")
-		   (slot-label-named 'negative)))
-      )))
+		   (slot-label-named 'negative))))))
 
 
 (defun process-perfect-accessory ()
@@ -164,10 +159,9 @@
 	    (available-aps *current-phrasal-root*))
       (push (cons 'have+en new-position)
 	    (position-table *current-phrasal-root*))
-      (if (eq (state-value ':aux-state (state *current-phrasal-root*))
+      (when (eq (state-value ':aux-state (state *current-phrasal-root*))
 	      'prepose-aux)
-	  (change-state ':aux-state 'initial (state *current-phrasal-root*)))
-      )))
+        (change-state ':aux-state 'initial (state *current-phrasal-root*))))))
 
 
 (defun process-progressive-accessory ()
@@ -176,14 +170,35 @@
 	 (position (cdr ap-set))
 	 (contents (word-for-string "be" 'verb)))
     (set-new-slot ap (label-named 'be+ing))
-    (attach-by-splicing ap position contents)
-    (setf (available-aps *current-phrasal-root*)
-          (delete ap (available-aps *current-phrasal-root*)))
-    (push (cons 'be+ing position) (position-table *current-phrasal-root*))
-    (if (eq (state-value ':aux-state (state *current-phrasal-root*))
-	    'prepose-aux)
-	(change-state ':aux-state 'initial (state *current-phrasal-root*)))
-    ))
+    (let ((new-position (attach-by-splicing ap position contents)))
+      (setf (available-aps *current-phrasal-root*)
+            (delete ap (available-aps *current-phrasal-root*)))
+      (push (attachment-point-for-next-aux new-position contents)
+            (available-aps *current-phrasal-root*))
+      (push (cons 'be+ing position)
+            (position-table *current-phrasal-root*))
+      (when (eq (state-value ':aux-state (state *current-phrasal-root*))
+                'prepose-aux)
+        (change-state ':aux-state 'initial (state *current-phrasal-root*))))))
+
+
+(defun process-passive-accessory ()
+  (let* ((ap (splicing-attachment-point-named 'next-aux))
+	 (ap-set (assoc ap (available-aps *current-phrasal-root*)))
+	 (position (cdr ap-set))
+	 (contents (word-for-string "be" 'verb)))
+    (set-new-slot ap (label-named 'be+en))
+    (let ((new-position (attach-by-splicing ap position contents)))
+      (setf (available-aps *current-phrasal-root*)
+            (delete ap (available-aps *current-phrasal-root*)))
+      (push (attachment-point-for-next-aux new-position contents)
+            (available-aps *current-phrasal-root*))
+      (push (cons 'be+en position)
+            (position-table *current-phrasal-root*))
+      (carry-out-passive-transformation)
+      (when (eq (state-value ':aux-state (state *current-phrasal-root*))
+                'prepose-aux)
+        (change-state ':aux-state 'initial (state *current-phrasal-root*))))))
 
 
 (defun attachment-point-for-next-aux (position contents)

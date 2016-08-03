@@ -8,7 +8,7 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2015 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2015-2016 David D. McDonald  All Rights Reserved
 
 ;; Changelog
 ;;   5/25/95 made sure all the functions that operate on bases for side-effects
@@ -94,6 +94,10 @@
 
 (def-accessory-operator had  ;; adds have+en
   (add-accessory base :perfect)
+  base )
+
+(def-accessory-operator passive
+  (add-accessory base :passive)
   base )
 
 (def-accessory-operator unmarked-clause 
