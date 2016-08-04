@@ -1320,7 +1320,8 @@
          :etf (svo-passive)
          :for object
          :in object
-         :of object))
+         :of object
+         :optional-object t))
 ;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
 (def-synonym increase
     (:noun "increase"))
@@ -1496,7 +1497,7 @@
          :etf (svo)))
 
 (define-category ligate :specializes caused-bio-process 
-  :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :binds ((substrate (:or protein residue-on-protein))) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "ligate" :noun "ligation" 
          :etf (svo-passive)
