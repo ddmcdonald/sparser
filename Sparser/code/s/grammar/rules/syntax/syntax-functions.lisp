@@ -1009,6 +1009,9 @@
 ;;; NP + VP
 ;;;-----------------
 
+(defparameter *warn-about-optional-objects* nil
+  "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
+
 (defun assimilate-subject (subj vp)
   (declare (special category::subordinate-clause))
   (when
@@ -1017,8 +1020,9 @@
       ((transitive-vp-missing-object? vp)
        (when (not *subcat-test*)
          ;; the edge isn't available and shouldn't be chaged during the test phase
-         (warn "~%transitive verb without object: ~s~%"
-               (extract-string-spanned-by-edge (right-edge-for-referent)))
+         (when *warn-about-optional-objects*
+           (warn "~%transitive verb without object: ~s~%"
+               (extract-string-spanned-by-edge (right-edge-for-referent))))
          (revise-parent-edge :form category::transitive-clause-without-object))
        (assimilate-subcat vp :subject subj))
       ((eq (edge-form (right-edge-for-referent)) category::subordinate-clause)
