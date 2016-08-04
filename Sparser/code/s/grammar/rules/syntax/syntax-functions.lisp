@@ -1089,6 +1089,8 @@
        (or (can-fill-vp-subject? vp subj) ;; case for S not reduced relative
            (can-fill-vp-object? vp subj)))
       ((can-fill-vp-subject? vp subj)
+       (if (transitive-vp-missing-object? vp)
+           (revise-parent-edge :form category::transitive-clause-without-object))
        (assimilate-subcat vp :subject subj))
       ((can-fill-vp-object? vp subj)
        (setq  vp
@@ -1709,7 +1711,8 @@
   item)
 
 (defun make-subordinate-clause (conj clause)
-  (bind-dli-variable 'subordinate-conjunction conj clause))
+  (when (not (eq category::pp (edge-form (left-edge-for-referent))))
+    (bind-dli-variable 'subordinate-conjunction conj clause)))
 
 (defun make-pp-relative-clause (pp clause)
   (or *subcat-test*
