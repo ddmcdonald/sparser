@@ -741,7 +741,8 @@
   (declare (special category::np))
   (let ((target (find-target-satisfying (right-fringe-of pp-edge) #'np-target?)))
     (declare (special right-fringe-of-pp target target-ref))
-    (when target
+    (when nil
+      target
       (unless (edge-used-in target)
         (lsp-break "null dominating edge ~s" target))
       (make-edge-spec
