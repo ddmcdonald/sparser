@@ -993,7 +993,8 @@
                    (value-of 'items np-ref)
                    (car (last (value-of 'items np-ref)))))
              (var-to-bind
-              (find-subcat-var pobj-referent label last-np))
+              (when last-np
+                (find-subcat-var pobj-referent label last-np)))
              (target
               (when var-to-bind
                 (cond
