@@ -74,7 +74,7 @@
   :binds ((substrate (:or protein variant bio-complex)) ;; allow variant to pick up "phosphorylated fraction"
 	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
-  :restrict ((agent (:or protein bio-process bio-mechanism))
+  :restrict ((agent (:or protein  bio-mechanism)) ;;bio-process
 	     (object s)) ;; trying to BLOCK object by giving it an impossible class
   :realization 
   (:noun "post-translational modification"
