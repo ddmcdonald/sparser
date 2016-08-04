@@ -45,6 +45,7 @@ support a substantial number of blocks.
 |#
 (define-category table
   :specializes object
+  :mixins (has-name)
   :index (:permanent :list)
   :realization
      (:common-noun "table"))
