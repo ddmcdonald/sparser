@@ -21,8 +21,7 @@
 (defmethod reify-text-relation ((tr classifier-head-tr-instance))
   (let* ((head-word (classified-head tr))
          (classifying-word (classifier-of-head tr))
-         (string (string-append (pname-for classifying-word)
-                                "-" (pname-for head-word)))
+         (string (string-append (pname classifying-word) "-" (pname head-word)))
          (category-name (name-to-use-for-category string)))
     (let ((category (define-category/expr category-name
                       '(:specializes category::kind

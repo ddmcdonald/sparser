@@ -941,7 +941,7 @@ saturated? is a good entry point. |#
                  (declare (ignore value))
                  (push key type-list))
              *objects-in-the-discourse*)
-    (sort type-list #'string< :key #'pname-of-category)))
+    (sort type-list #'string< :key #'pname)))
 
 
 (defun print-discourse-history (&optional (stream *standard-output*))

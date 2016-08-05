@@ -24,8 +24,8 @@
 
 (defun get-mumble-word-for-sparser-word (s-word &optional (pos 'mumble::noun))
   (or (stored-mumble-word-for-sparser-word s-word)
-      (let* ((pname (pname-for s-word))
-             (m-word (or (mumble::word-for-string (pname-for s-word) pos)
+      (let* ((pname (pname s-word))
+             (m-word (or (mumble::word-for-string pname pos)
                          (mumble::define-word/expr pname (list pos)))))
         (setf (gethash m-word *sparser-words-for-mumble-words*) s-word
               (stored-mumble-word-for-sparser-word s-word) m-word))))

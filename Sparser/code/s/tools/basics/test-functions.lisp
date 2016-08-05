@@ -223,11 +223,7 @@
          (let* ((cat-str (string-downcase (cat-symbol (itype-of cat?))))
                 (name (when with-name (value-of 'name cat?))))
            (if name
-               (format nil "<~a ~a>" cat-str
-                       (typecase name
-                         (word (pname-for name))
-                         (polyword (pname-for name))
-                         (t name)))
+               (format nil "<~a ~a>" cat-str (pname name))
                cat-str)))
 	((category-p cat?)
 	 (string-downcase (cat-symbol cat?)))

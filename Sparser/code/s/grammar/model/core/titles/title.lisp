@@ -85,8 +85,8 @@
     accumulating-titles))
 
 (defun word-order (w1 w2)
-  (string< (pname-for w1)
-           (pname-for w2)))
+  (string< (pname w1)
+           (pname w2)))
 
 (defun list-the-Titles ()
   (let ((the-titles (all-titles)))

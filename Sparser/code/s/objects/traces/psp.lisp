@@ -106,7 +106,7 @@
   ;; called from introduce-{trailing/leading/}brackets
   (when (or *trace-network* *trace-brackets*)
     (trace-msg "Getting brackets from \"~a\" instead of \"~a\""
-               (pname-for new) (pname-for old))))
+               (pname new) (pname old))))
 
 (deftrace :brackets-introduced (word)
   ;; called from introduce-{trailing/leading/}brackets

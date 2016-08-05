@@ -29,7 +29,7 @@
        (mumble::realize-via-category-linked-phrase primary-category i))
       (t (let ((label (or (value-of 'name i)
                           (value-of 'word i)
-                          (pname-for primary-category))))
+                          (pname primary-category))))
            (etypecase label
              (string (mumble::word-for-string label))
              (word (get-mumble-word-for-sparser-word label))

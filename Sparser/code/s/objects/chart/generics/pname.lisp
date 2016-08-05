@@ -2,27 +2,27 @@
 ;;; copyright (c) 1992-1994,2013  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "pname"
-;;;    Module:   "objects;chart:generics:"
-;;;   Version:   March 2013
+;;;    Module:   "objects;chart;generics;"
+;;;   Version:   August 2016
 
 ;; (9/3/92 v2.3) added referential-category
 ;; (1/6/94) fixed accessor for polywords.  (7/11) added mixin-category
 ;; (3/18/13) Added psi and converted to regular typecase. 
+;; (8/5/16) Replaced pname-for with generic pname.
 
 (in-package :sparser)
 
+(defgeneric pname (object)
+  (:documentation "Return the print-name of an object.")
+  (:method ((object null)) "")
+  (:method ((s string)) s)
+  (:method ((s symbol)) (symbol-name s))
+  (:method ((w word)) (word-pname w))
+  (:method ((pw polyword)) (pw-pname pw))
+  #+mumble
+  (:method ((w mumble::word)) (mumble::pname w)))
 
-(defun pname-for (obj)
-  (typecase obj
-    (word     (word-pname obj))
-    (polyword (pw-pname obj))
-    #+mumble
-    (mumble::word (mumble::pname obj))
-    ((or category referential-category mixin-category)
-     (symbol-name (cat-symbol obj)))
-    (individual ;; subsumes psi
-     (symbol-name (cat-symbol (itype-of obj))))
-    (otherwise
-     (push-debug ``(,obj))
-     (error "Need the pname for new type: ~a" (type-of obj)))))
-
+(declaim (inline pname-for))
+(defun pname-for (object)
+  "Alias for the new generic PNAME."
+  (pname object))

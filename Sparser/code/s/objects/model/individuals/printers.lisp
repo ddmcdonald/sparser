@@ -40,6 +40,13 @@
 
 (in-package :sparser)
 
+;;;--------------------
+;;; generic print-name
+;;;--------------------
+
+(defmethod pname ((i individual))
+  (pname (itype-of i)))
+
 ;;;----------------------
 ;;; value as a structure
 ;;;----------------------

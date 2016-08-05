@@ -419,7 +419,7 @@
 (deftrace :resolve-hyphen-trailing (word)
    (when *trace-ns-sequences*
      (trace-msg "[ns hyphen] handling stranded hyphen trailing after ~s"
-                (pname-for word))))
+                (pname word))))
 
 (deftrace :resolve-hyphen-before (edge)
   (when *trace-ns-sequences*

@@ -97,7 +97,7 @@ two values: the compiled expression and a possibly augmented context.")
                       :resource (let ((name (sp::value-of 'sp::name expr)))
                                   (if name
                                     (noun (sp::get-mumble-word-for-sparser-word name))
-                                    (get-lexicalized-phrase (sp::pname-for expr)))))))
+                                    (get-lexicalized-phrase (sp::pname expr)))))))
           context))
 
 (defgeneric mexp-type (type)

@@ -16,10 +16,10 @@ its name to provide a head word."
     (get-mumble-word-for-sparser-word s-word)))
 
 (defmethod mumble::realize ((w word))
-  (mumble::find-or-make-word (pname-for w)))
+  (mumble::find-or-make-word (pname w)))
 
 (defmethod mumble::realize ((w polyword))
-  (mumble::find-or-make-word (pname-for w)))
+  (mumble::find-or-make-word (pname w)))
 
 (defmethod mumble::realize ((b binding))
   (mumble::make-dtn :referent (realization-for-triple (binding-body b)

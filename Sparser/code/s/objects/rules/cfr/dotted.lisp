@@ -383,8 +383,8 @@ we can manage it properly during deletions and term-overwriting."
           (remove-tag :dotted-rule cfr))))
 
 (defun category-of-dotted-rule (daughters)
-  (let ((left-pname (pname-for (first daughters)))
-        (right-pname (pname-for (second daughters))))
+  (let ((left-pname (pname (first daughters)))
+        (right-pname (pname (second daughters))))
 
     (def-category/expr
       (intern (concatenate 'string

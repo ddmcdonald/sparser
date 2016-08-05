@@ -11,24 +11,12 @@
 
 (in-package :sparser)
 
-
-;;;------------
-;;; components
-;;;------------
-
-(defun pname-of-category (c)
-  (unless (or (referential-category-p c)
-              (mixin-category-p c)
-              (category-p c))
-    (error "~A is not a category or of the expected specialization" c))
-  (symbol-name (cat-symbol c)))
-
-
-
-
 ;;;-------------------------------
 ;;; print routines for categories
 ;;;-------------------------------
+
+(defmethod pname ((c category))
+  (pname (cat-symbol c)))
 
 (defun print-model-category-structures (c stream depth)
   (declare (ignore depth))

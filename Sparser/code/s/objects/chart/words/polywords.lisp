@@ -71,19 +71,6 @@
 	  (push "-" with-hyphens)))
       (apply #'concatenate 'string with-hyphens))))
 
-(defmethod pname ((pw polyword))
-  (pw-pname pw))
-
-(defmethod pname ((w word))
-  (word-pname w))
-
-(defmethod pname ((s symbol))
-  s)
-
-(defmethod pname ((s string))
-  s)
-
-
 
 ;;;------------
 ;;; cataloging
@@ -266,13 +253,10 @@ the convenience of model routines."
   (if word
     (if (get-tag :use-symbol-name-when-printing word)
       (princ (word-symbol word) stream)
-      (format stream "\"~a\"" (pname-for word)))
+      (format stream "\"~a\"" (pname word)))
     (write-string "<word>" stream)))
 
 
 (defun word-string (word)
   "Like princ-word, but returns the string instead of printing it."
-  (when word
-    (if (get-tag :use-symbol-name-when-printing word)
-      (symbol-name (pname-for word))
-      (pname-for word))))
+  (pname word))

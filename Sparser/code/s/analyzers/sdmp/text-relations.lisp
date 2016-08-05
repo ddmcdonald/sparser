@@ -96,8 +96,8 @@
              (format nil "\"~a\" : \"~a\""
                      modifier-pname head-pname))))
     (text-relationships::adjacent
-     (let ((left-pname (pname-for (left-side i)))
-           (right-pname (pname-for (right-side i))))
+     (let ((left-pname (pname (left-side i)))
+           (right-pname (pname (right-side i))))
         (setf (tri-print-args-value i)
              (format nil "\"~a\" : \"~a\""
                      left-pname right-pname))))

@@ -63,7 +63,7 @@
   (sp::indiv-id obj))
 
 (defun block-name (obj)
-  (sp::pname-for (sp::value-of 'sp::name obj)))
+  (sp::pname (sp::value-of 'sp::name obj)))
 
 (defun find-block (id)
   (find id *all-blocks*

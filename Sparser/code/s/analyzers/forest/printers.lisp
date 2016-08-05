@@ -558,7 +558,7 @@ there were ever to be any.  ///hook into final actions ??  |#
            individual)
        (format stream "~&e~A ~6,2t~A~20,2T~A ~S ~A~%" ;; tab had been 30
                (edge-position-in-resource-array tt)
-               (pname-for word-or-category)
+               (pname word-or-category)
                (pos-token-index (pos-edge-starts-at tt))
                (extract-string-spanned-by-edge tt)
                (pos-token-index (pos-edge-ends-at tt))))
@@ -620,7 +620,7 @@ there were ever to be any.  ///hook into final actions ??  |#
            individual)
        (format stream "~&e~A ~6,2t~A~20,2T~A ~S ~A" ;; tab had been 30
                (edge-position-in-resource-array tt)
-               (pname-for word-or-category)
+               (pname word-or-category)
                (pos-token-index (pos-edge-starts-at tt))
                (extract-string-spanned-by-edge tt) 
                (pos-token-index (pos-edge-ends-at tt))))
