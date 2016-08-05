@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  February 2016
+;;;  version:  August 2016
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -71,9 +71,9 @@
   (let* ((start-pos (starts-at-pos sentence))
          (first-word (pos-terminal start-pos)))
     (unless first-word ;; 7/14/16: ends with polyword followed by "?"
-      (error "Handling at the end of the previous sentence ~
-              did not do lookahead correctly: ~a"
-             (previous sentence)))
+      ;; compensate for what that bug kept it from doing
+      (scan-next-position)
+      (setq first-word (pos-terminal start-pos)))
     (tr :scanning-terminals-of sentence)
     (catch :end-of-sentence
       (scan-terminals-loop start-pos first-word))))

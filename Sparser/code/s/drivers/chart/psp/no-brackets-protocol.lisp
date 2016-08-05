@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  July 2016
+;;;  version:  August 2016
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -184,10 +184,14 @@
       (let* ((start-pos (starts-at-pos sentence))
              (first-word (pos-terminal start-pos)))
         (unless first-word
-          (cerror "Proceed at your own risk. You'll get an odd error."
-                  "Problem with sentence-end handling.~
-                 ~%The first word on the new sentence is nil~%~a"
-                  sentence))
+          ;; There is a pending bug (7/16) that happens when a sentence
+          ;; ends in with a polyword followed by a question mark.
+          ;; Fixing the bug appears to be tied up with companion
+          ;; issue where the pointers that walk the sentence in
+          ;; the scan-terminals-loop are identical. First attempts
+          ;; to fix that led to fallback in other polyword processing.
+          (scan-next-position) ;; compensate for the bug
+          (setq first-word (pos-terminal start-pos)))
 
         ;; 1st scan the text into minimal terminal edges.
         ;; The thow is from period-hook, which will also advance
