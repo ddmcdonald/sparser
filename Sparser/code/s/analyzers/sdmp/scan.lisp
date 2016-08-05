@@ -4,7 +4,7 @@
 ;;;
 ;;;      File: "scan"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: January 2016
+;;;   Version: August 2016
 
 ;; Initiated 2/9/07. Completely redone starting 1/21/13. Adding a 
 ;; simpler variation 4/1/13. Which uses make-individual-for-dm&p 4/4
@@ -145,7 +145,9 @@ to make any semantic or form edges that the grammar dictates.
 (defparameter *show-sdm-span-segment* nil)
 
 (defun sdm-span-segment (&optional start-at)
-  (declare (special category::vg category::np category::np-head category::n-bar))
+  (declare (special category::vg category::np category::np-head category::n-bar 
+                    *current-chunk* *right-segment-boundary* *right-segment-boundary*
+))
   ;; Make an edge over the whole segment based largely on the
   ;; properties of its suffix. The edge is presumed to be an NP
   ;; though nothing looks carefully at that.
@@ -159,13 +161,13 @@ to make any semantic or form edges that the grammar dictates.
 	    *right-segment-boundary*
 	    label
 	    :form (cond
-                    ((not (member 'ng (chunk-forms *current-chunk*)))
+                    ((and *current-chunk*
+                          (not (member 'ng (chunk-forms *current-chunk*))))
                      (cond
-                       ((or
-                         (member 'adjg (chunk-forms *current-chunk*))
-                         (member 'vg (chunk-forms *current-chunk*)))
+                       ((or (member 'adjg (chunk-forms *current-chunk*))
+                            (member 'vg (chunk-forms *current-chunk*)))
                         category::vg)
-                       (t (lsp-break "strange call to sdm-span-segment"))))
+                       (t (error "strange call to sdm-span-segment"))))
 		    ((eq start-pos *left-segment-boundary*)
 		     category::np)
 		    ((= 1 (number-of-terminals-between 
