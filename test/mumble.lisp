@@ -113,15 +113,25 @@
     (mumble-says snap))
   "I snapped the big bone")
 
-(deftest (say was snapped bone)
+(deftest (say bone was snapped)
   (let ((me (me))
-        (snap (present-tense (snap)))
+        (snap (past-tense (snap)))
         (bone (always-definite (bone))))
     (make-complement-node 's me snap)
     (make-complement-node 'o bone snap)
     (passive snap)
     (mumble-says snap))
-  "the bone is snapped")
+  "the bone was snapped")
+
+(deftest (say bone that was snapped)
+  (let* ((bone (always-definite (bone)))
+         (snap (past-tense (snap)))
+         (that (make-lexicalized-attachment 'restrictive-relative-clause snap)))
+    (passive snap) ; no subject
+    (make-complement-node 'o bone snap)
+    (make-adjunction-node that bone)
+    (mumble-says bone))
+  "the bone that was snapped")
 
 (deftest (say not drink milk)
   (let ((me (me))
