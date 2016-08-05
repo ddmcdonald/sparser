@@ -32,7 +32,14 @@
   (defun setup-acronym-for-bio-entity (ref1 ref2)
     (declare (ignore ref1 ref2)))
   (defun svo/bio/expr (word)
-    (declare (ignore word))))
+    (declare (ignore word)))
+  ;; next two are in sl/biology/rhetoric.lisp, which could move
+  (defun establish-discourse-relations (sentence)
+    (declare (ignore sentence)))
+  (defun assess-relevance (sentence)
+    (declare (ignore sentence))))
+
+
 
 (unless *companies*
   (defun establish-companies-as-part-of-the-background (list)

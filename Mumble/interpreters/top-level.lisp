@@ -34,6 +34,8 @@ multiple occurrences of objects")
 (defun initialize-mumble-state ()
   ;; *current-position* is initialized in phrase-structure-execution,
   ;; where it's set to the initial position that's passed to it.
+  (declare (special *current-focus* ;; in interpreters/discourse-reference.lisp
+                    *mentions*))
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
   (setq *current-focus* nil)
@@ -106,6 +108,7 @@ is appropriate to that object class.")
              :labels  	      (list (slot-label-named 'turn))
              :visited-status  'new
              :contents        contents))
+
 
 ;;;################################################################
 ;;;               Initializations to Mumble 

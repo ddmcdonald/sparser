@@ -1,16 +1,14 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
+;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "return-value"
 ;;;   Module:  drivers;sinks:
-;;;  version:  April 2009
+;;;  Version:  August 2016
 
-;; Initiated 4/27/09
-;; Modified 9/26/09
+;; Initiated 4/27/09 for checkpoint demo. Modified 9/26/09
 
 (in-package :sparser)
-(defvar *WHERE-THE-LAST-SEGMENT-ENDED*)
 
 ;;;---------
 ;;; globals
@@ -59,10 +57,12 @@
 	(:null-span
 	 (format t "~&referent-of-the-last-edge: No edge where last segment ended~%"))
 	(:discontinuous-edges
-	 (let ((conjunction-point (find-compound-point-for-and 1)))  ;; look for compound sentence
+	 (let ((conjunction-point ;; look for compound sentence
+                (find-compound-point-for-and 1)))
 	   (if conjunction-point
 	       (list 'SA-SEQ
-		     (export-object (edge-referent (highest-edge (pos-ends-here (position# conjunction-point)))))
+		     (export-object (edge-referent 
+                                     (highest-edge (pos-ends-here (position# conjunction-point)))))
 		     (export-object (referent-of-the-last-edge)))
 	       (format t "~&Coverage is ~a. Don't know what to pass on for export.~%" coverage))))
 	(otherwise
@@ -73,6 +73,7 @@
                  ~%Don't know what to pass on for export.~%"))))
 
 (defun referent-of-the-last-edge ()
+  (declare (special *where-the-last-segment-ended*))
   (let ((edge (left-treetop-at/only-edges *where-the-last-segment-ended*)))
     (when edge
       (edge-referent edge))))
@@ -82,10 +83,13 @@
   ;; if found, return the position of this "and" for use as a conjunction in a compound
   ;; sentence in compute-referent-of-last-edge-return
   ;; otherwise, return nil, indicating such a compound sentence construction does not exist
+  (declare (special *next-chart-position-to-scan*))
   (cond ((and (eq (word-named "and") (pos-terminal (position# index)))
-	      (eq :one-edge-over-entire-segment (coverage-over-region (position# 1) (position# index)))
-	      (eq :one-edge-over-entire-segment (coverage-over-region 
-						 (position# (+ index 1)) (position# (1- *next-chart-position-to-scan*)))))
+	      (eq :one-edge-over-entire-segment
+                  (coverage-over-region (position# 1) (position# index)))
+	      (eq :one-edge-over-entire-segment
+                  (coverage-over-region 
+                   (position# (+ index 1)) (position# (1- *next-chart-position-to-scan*)))))
 	 index)
 	((pos-terminal (position# (+ index 2))) (find-compound-point-for-and (+ index 1)))
 	(t nil)))
