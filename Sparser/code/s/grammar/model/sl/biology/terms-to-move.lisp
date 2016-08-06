@@ -141,6 +141,10 @@ be biology specific, since they aren't. |#
   :realization
   (:noun "amount"))
 
+(define-category threshold :specializes bio-scalar
+  :realization
+  (:noun "threshold"))
+
 (define-category duration :specializes bio-scalar
   :restrict ((subject (:or process bio-method bio-mechanism)))
   :realization
@@ -308,9 +312,11 @@ be biology specific, since they aren't. |#
 
 (delete-noun-cfr (resolve/make "number"))
 (delete-noun-cfr (resolve/make "numbers"))
-(define-category bio-number :specializes measurement
+(define-category count-of :specializes measurement
+  :binds ((item-counted biological)) ;; no restrictions now -- needs to be COUNT-NOUN
   :realization
-  (:noun "number"))
+  (:noun "number"
+         :of item-counted))
 
 
 (noun "example" :super variant)
