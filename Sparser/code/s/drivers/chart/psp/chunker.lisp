@@ -322,7 +322,9 @@
       ((plural-noun-and-present-verb? e)
        (plural-noun-not-present-verb e))
       ((singular-noun-and-present-verb? e)
-       (not (preceding-pronoun-or-which? e)))
+       (and
+        (not (preceding-pronoun-or-which? e))
+        (not (sentence-initial? e)))) ;; this is a case of an imperative
       ((singular-noun-and-present-verb? e))
       ((constrain-following e) nil)
       ((some-edge-satisfying? edges #'pronoun-or-wh-pronoun) nil)
@@ -507,8 +509,10 @@
            (plural-noun-not-present-verb e))
           ((singular-noun-and-present-verb? e)
            (not
-            (and (edge-just-to-left-of e)
-                 (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to))))
+            (or
+             (sentence-initial? e) ;; case of imperative verb like "DECREASE"
+             (and (edge-just-to-left-of e)
+                  (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
           ((or
             (eq (edge-category e) category::modal)
             (eq (cat-name (edge-category e)) 'following-adj))
@@ -813,6 +817,15 @@
       (and
        (member (cat-name (edge-form ee))
                '(preposition spatial-preposition)))))
+
+
+(defun sentence-initial? (e)
+  ;; an attempt at this predicate
+  (let* ((start-pos (pos-edge-starts-at e))
+         (ending-at (pos-ends-here start-pos)))
+    (and
+     (edge-vector-p ending-at)
+     (= 0 (ev-number-of-edges ending-at)))))
 
 (defun preceding-pronoun-or-which? (e &optional (edges (edges-before e)))
   (loop for ee in edges
