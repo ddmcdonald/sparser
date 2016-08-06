@@ -19,8 +19,16 @@
 
 (defparameter *string-from-analyze-text-from-string* nil)
 (defun analyze-text-from-string (string)
+  (if *trap-error-skip-sentence*
+      (handler-case
+          (analyze-text-from-string-guts string) 
+        (error (e)
+          (ignore-errors ;; got an error with something printing once
+            (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
+      (analyze-text-from-string-guts string)))
+
+(defun analyze-text-from-string-guts (string)
   (setq *string-from-analyze-text-from-string* string)
   (set-initial-state :name 'text-string)
   (establish-character-source/string string)
   (analysis-core))
-
