@@ -50,7 +50,17 @@
 (adj "deoxy" :super bio-predication)
 (noun "chemical product" :super bio-chemical-entity)
 
-
+;; needed for the Harvard dynamic process model
+(adj "transient" :super scalar-variation)
+(adj "noisy" :super scalar-variation)
+(adj "unchanged" :super scalar-variation)
+(define-category sustained :specializes scalar-variation
+  :binds ((level scalar-quality)
+          (above-level scalar-quality))
+   :realization
+   (:adj "sustained"
+         :at level
+         :above above-level))
 ;; Moved in from dossiers/modifiers.lisp
 (define-adverb "biochemically")
 (define-adverb "biologically")
@@ -580,7 +590,21 @@
 
 (def-bio "guanine" nucleobase)
 
-        
+(define-category high-enough :specializes bio-predication
+  :binds ((result-or-purpose bological))
+  :mixins (post-adj)
+  :realization
+  (:adj "high enough"
+        :to-comp result-or-purpose))
+
+(define-category low-enough :specializes bio-predication
+  :binds ((result-or-purpose bological))
+  :mixins (post-adj)
+  :realization
+  (:adj "low enough"
+        :to-comp result-or-purpose))
+
+(adj "low enough" :super bio-predication)
 (adj "high-activity" :super bio-predication)
 (adj "high-throughput" :super bio-predication)
 (noun "HPLC" :super bio-method)
@@ -604,9 +628,11 @@
   (:adj "in situ"))
 
 (define-category in-vivo :specializes experimental-condition
+  :mixins (post-adj)
   :realization
   (:adj "in vivo"))
 (define-category in-vitro :specializes experimental-condition
+  :mixins (post-adj)
   :realization
   (:adj "in vitro"))
 
@@ -779,7 +805,11 @@
 (noun "open reading frames" :super open\ reading\ frame)
 (def-synonym open\ reading\ frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
 
-(noun "order of magnitude" :super bio-abstract)
+(define-category order-of-magnitude :specializes unit-of-measure
+  :realization
+  (:noun ("order of magnitude"
+          :plural "orders of magnitude")))
+
 (noun "outcome" :super bio-process
       :binds ((process bio-process))
       :realization
@@ -1008,7 +1038,7 @@
 
 (noun "tissue" :super bio-organ)
 
-(adj "transient" :super bio-predication)
+
 (noun "transition state intermediate" :super molecule-state)
 
 (noun "trial" :super bio-context)
