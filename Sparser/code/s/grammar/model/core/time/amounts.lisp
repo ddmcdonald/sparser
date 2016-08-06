@@ -74,6 +74,8 @@
   :index (:sequential-keys portion selector))
 
 
+#+ignore ;; this does not work
+
 (def-cfr fraction-of-amount-of-time (ordinal amount-of-time)
   :form n-bar
   :referent (:instantiate-individual fraction-of-amount-of-time
