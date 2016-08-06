@@ -255,7 +255,8 @@ where it regulates gene expression.")
          (individual (format t "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
                              (car dt)
                              (sentence-string *sentence-in-core*))
-                     (error "~%Strange value in interpret-item-in-context: ~s~%" dt))
+                     (warn "~%Strange value in interpret-item-in-context: ~s~%" dt)
+                     nil)
 	 (t (lsp-break "~%Strange value in interpret-item-in-context: ~s~%"
 		    dt)
 	    dt)))
@@ -384,7 +385,7 @@ where it regulates gene expression.")
 			   (not (itypep child-interp category::number)))
                         (format t "~&1) no internal edge for ~s in ~s~&"
 				child-interp parent-edge)
-                        (error "relevant-edges")
+                        (warn "relevant-edges")
 		      nil)
 		    nil)))
 	     (t		
