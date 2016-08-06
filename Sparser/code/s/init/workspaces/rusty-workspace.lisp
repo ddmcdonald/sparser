@@ -5345,3 +5345,62 @@ NIL
      do (print (second p))
        (funcall (intern "ROUNDTRIP-TEST" (find-package :spire))
                 (second p))))
+
+
+(defparameter *er-signals*
+  '(SUBORDINATED-EVENT
+    SUBORDINATE-CONJUNCTION
+    FOLLOWING
+    PRECEDING
+    DURING
+    RESULT-OR-PURPOSE
+    CAUSING
+    RESULT
+    ALLOW
+    PURPOSE
+    ;;to comp under BIO-ACT
+    CAUSE-OF))
+
+(defun contains-some-of (tree list)
+  (when tree
+    (let ((tail (contains-some-of (cdr tree) list)))
+      (cond
+        ((consp (car tree))
+         (remove-duplicates (append (contains-some-of (car tree) list) tail)))
+        ((member (car tree) list)
+         (pushnew (car tree) tail))
+        (t tail)))))
+
+
+(defun event-relations (text)
+  (with-total-quiet
+    (pp text))
+  (handler-case
+      (loop for tt in (all-tts)
+         append
+           (let* ((ref
+                   (when (and
+                          (sp::edge-p tt)
+                          (sp::individual-p (sp::edge-referent tt)))
+                     (if (sp::itypep (sp::edge-referent tt) 'sparser::prepositional-phrase)
+                         (sparser::edge-referent (sparser::edge-right-daughter tt))
+                         (sp::edge-referent tt))))
+                  (tree (when ref (spire-tree ref)))
+                  (rels (when ref (contains-some-of tree *er-signals*))))
+             (when rels
+               (list (list rels (extract-string-spanned-by-edge tt))))))
+    (error (e)
+      (ignore-errors ;; got an error with something printing once
+        (format t "~&Error in ~s~%~a~%~%" text e)))))
+
+
+(defparameter *ev-r* nil)
+(defun all-event-relations ()
+  (let ((*interpret-in-context* nil)
+        (*trap-error-skip-sentence* t))
+    (declare (special *interpret-in-context* *trap-error-skip-sentence*))
+    (length (setq *ev-r*
+                  (loop for er in
+                       (loop for s in (all-corpus-sentences) append (event-relations (third s)))
+                     when (and (stringp (second er)) (> (length (second er)) 15))
+                     collect er)))))
