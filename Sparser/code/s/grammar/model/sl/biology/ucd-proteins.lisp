@@ -1229,7 +1229,7 @@
   "M-phase phosphoprotein 4" "MPP4"
   "Nuclear factor associated with dsRNA" "NFAR"
   "Nuclear factor of activated T-cells 90 kDa" "NF-AT-90"
-  "Translational control protein 80" "TCP80" "double"))
+  "Translational control protein 80" "TCP80"))
 
 (define-protein "INVO_HUMAN"
  ("involucrin" "PR:000009167" "PR:P07476" "PR:P48997" "PR:P48998"))
