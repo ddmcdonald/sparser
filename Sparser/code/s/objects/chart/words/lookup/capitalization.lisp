@@ -133,7 +133,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (:single-capitalized-letter nil)
                (:mixed-case (return word)) ;; (Knowledge) Factory -> "FACTory"
                (otherwise
-                (break "For ~s: new case for :initial-letter-capitalized: ~a"
+                (warn "For ~s: new case for :initial-letter-capitalized: ~a"
                        (word-pname lc-word) actual-state))))
 
             (:mixed-case
@@ -143,7 +143,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (:single-capitalized-letter nil)
                (:all-caps (return word)) ;; "SKMEL" -> "SkMei"
                (otherwise
-                (break "For ~s: new case for :mixed-case: ~a"
+                (warn "For ~s: new case for :mixed-case: ~a"
                        (word-pname lc-word) actual-state))))
 
             (:all-caps
@@ -152,7 +152,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (:mixed-case (return word))
                (:single-capitalized-letter (return word))
                (otherwise
-                (break "For ~s: new case for :all-caps ~a"
+                (warn "For ~s: new case for :all-caps ~a"
                        (word-pname lc-word) actual-state))))
 
             (:single-capitalized-letter
@@ -161,7 +161,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                (:mixed-case (return word))
                (:all-caps (return word))
                (otherwise
-                (break "For ~s: new case for single capitalized letter"
+                (warn "For ~s: new case for single capitalized letter"
                        (word-pname lc-word)))))
 
             (:lower-case ;; CRAF from craf in Dec#2
@@ -172,11 +172,11 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                 ;; from used as a proper name: "4-monophosphate (Sigma)"
                 (return word))
                (otherwise
-                (break "For ~s: new case for :lowercase ~a"
+                (warn "For ~s: new case for :lowercase ~a"
                        (word-pname lc-word) actual-state))))
             
             (otherwise
-             (error "For ~s: New variant-state of capitalization: ~a"
+             (warn "For ~s: New variant-state of capitalization: ~a"
                     (word-pname lc-word) variants-state))))))))
 
 
