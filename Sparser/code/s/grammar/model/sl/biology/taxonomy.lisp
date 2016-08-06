@@ -91,15 +91,18 @@
   :realization (:ifcomp statement)
   :documentation "Similar to bio-whethercomp.")
 
-(define-category event-relation :specializes perdurant ;; put in here since we don't want to modify EVENT yet
-  :binds ((relation)
-          (event)
-          (subordinated-event)
-	  (adverb)
-          (following process)
+(define-category temporally-localized
+  :binds ((following process)
           (preceding process)
 	  (during process)
-	  (timeperiod (:or time-unit amount-of-time)))
+          (after-timeperiod
+           (:or time-unit time-kind ;; for "any time"
+                amount-of-time))
+          (before-timeperiod
+           (:or time-unit time-kind ;; for "any time"
+                           amount-of-time))
+	  (timeperiod (:or time-unit time-kind ;; for "any time"
+                           amount-of-time)))
   :realization (:for timeperiod
 		 :over timeperiod
 		 :upon following
@@ -107,7 +110,20 @@
 		 :upon following
 		 :following following
 		 :before preceding
-		 :during during))
+		 :during during
+                 :at timeperiod
+                 :over timeperiod
+                 :in timeperiod
+                 :after after-timeperiod
+                 :before before-timeperiod))
+  
+
+(define-category event-relation :specializes perdurant ;; put in here since we don't want to modify EVENT yet
+  :mixins (temporally-localized)
+  :binds ((relation)
+          (event)
+          (subordinated-event)
+	  (adverb)))
 
 
 (define-mixin-category reactome-category
@@ -219,10 +235,15 @@
   :binds ((subject (:or biological visual-representation))
           (as-comp as-comp))
   :realization (:s subject
-                :as-comp as-comp))
+                   :as-comp as-comp))
+
+(define-category scalar-variation :specializes bio-predication
+  :mixins (temporally-localized)
+                 ;;for adjectives like transient, unchanged, sustained
+                 )
 
 (define-category bio-quality :specializes quality
-  :mixins (biological)
+  :mixins (biological temporally-localized)
   :binds ((subject biological)) ;; TO-DO better name?!
   :realization
   (:of subject))
@@ -320,18 +341,20 @@
 	    (using protein)
 	    (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
 	    (as-comp as-comp)
-	    (target (:or protein gene)))
+	    (target (:or protein gene))
+        )
     :realization 
     (:noun "process"
            :s subject
            :of subject
-	   ;; :by by-means-of find out what uses this
+	   :by by-means-of ;;find out what uses this
 	   :through by-means-of
 	   :via by-means-of
 	   :via using
            :through using
            :through by-means-of
 	   :in manner
+
 	   :as-comp as-comp
 	   :at target)
     :documentation "No content by itself, provides a common parent
@@ -410,21 +433,20 @@
 
 (define-category bio-control :specializes caused-bio-process
   ;; increase in rate vs increase in RAS activity
-  :binds ((multiplier fold))
+  :binds ((multiplier (:or fold unit-of-measure)))
   :realization
   (:verb ("control" :present-participle "controlling"
                     :present-participle "controling") 
          :etf (svo-passive)
-         :by multiplier))
+         :by multiplier
+         :m multiplier))
 
 (define-category negative-bio-control :specializes bio-control
-  ;; :restrict ((object (:or biological bio-rhetorical))) ;; "lowered the possibility"
   :binds ((inhibited-process bio-process))
   :realization (:verb "negatively controls"  :etf (svo-passive)
                       :from inhibited-process))
 
 (define-category positive-bio-control :specializes bio-control
-  ;; :restrict ((object (:or biological bio-rhetorical))) ;; "raised the possibility"
   :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
@@ -606,15 +628,17 @@
   :binds ((action bio-process))
   :realization (:to-comp action))
                  
+(define-category post-adj :specializes abstract) ;; used as a marker for adjectives which can follow nouns
 
 (define-category pathway-direction :specializes bio-relation
-      :binds ((relative-to biological)
-              (pathway pathway))
-      :realization
-      (:noun "upstream"
-             :of relative-to
-             :from relative-to
-             :in pathway))
+  :mixins (post-adj)
+  :binds ((relative-to biological)
+          (pathway pathway))
+  :realization
+  (:noun "upstream"
+         :of relative-to
+         :from relative-to
+         :in pathway))
 
 (define-category equilibrium :specializes bio-relation
   :binds ((with-species bio-chemical-entity))
@@ -1208,15 +1232,17 @@ the aggregate across the predicate it's in. |#
 ;;//// are these even "bio" at all?
 (delete-noun-cfr (resolve "rate"))
 (define-category process-rate :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
-  :binds ((components biological))
+                 :binds ((components biological)
+                         (process bio-process))
   :realization 
   (:noun "rate"
-         :for components))
+         :for components
+         :m process))
 
 (def-synonym process-rate 
     (:noun "kinetics"))
 
-
+#|
 ;; binding rate, dissociation rate, catalysis rate (from Ben Gyori)
 (define-category binding-rate :specializes process-rate
 		 :realization (:noun "binding rate"))
@@ -1226,6 +1252,7 @@ the aggregate across the predicate it's in. |#
 
 (define-category catalysis-rate :specializes process-rate
 		 :realization (:noun "catalysis rate"))
+|#
 
 (define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
   :realization 
