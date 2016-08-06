@@ -88,14 +88,17 @@
   :location corpus
   :doc "material from Ben Gyori and Walter Fontana")
 
-(defun test-dynamic-model-sents (&optional (stream *standard-output*))
+(defun test-dynamic-model-sents (&optional (no-sem nil) (stream *standard-output*))
   (let ((*suppress-indiv-uids* t)
 	(*no-small-trees* t))
     (declare (special *suppress-indiv-uids* *no-small-trees*))
     (loop for s in *dynamic-model-sents*
        do
 	 (format stream "~%___________________~%~s~%" (second s))
-	 (eval `(pp ,(second s)))
-	 (show-sem-forest)
+	 (cond (no-sem
+                (eval `(p ,(second s))))
+               (t
+                (eval `(pp ,(second s)))
+                (show-sem-forest)))
 	 (format stream "~%~%~%"))))
 
