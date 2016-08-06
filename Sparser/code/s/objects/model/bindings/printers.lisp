@@ -19,28 +19,22 @@
 
 
 (defun print-binding-structure (b stream depth)
-  (declare (ignore depth))
-  (let ((variable (binding-variable b)))
-    (if variable
-      (cond
-       ((eq variable :fresh-binding)
-        (format stream "#<fresh bindings ~A"
-                (binding-id b)))
-       ((deallocated-binding? b)
-        (format stream "#<~A deallocated binding>"
-                (binding-id b)))
-       (t
-        (format stream "#<~A " (binding-id b))
-        (let ((var   (binding-variable b)))
-          (write-string (string-downcase (var-name var)) stream)
-          (write-string " = " stream)
-          (format stream "~A" (binding-value b)))
-        (write-string ">" stream)))
-
-      (else
-        (format stream "#<~A empty binding>"
-                (binding-id b))))))
-
+  (declare (ignore depth)
+           (special **lambda-var**))
+  (print-unreadable-object (b stream)
+    (format stream "~@[~A ~]" (binding-id b))
+    (let ((variable (binding-variable b))
+          (value (binding-value b)))
+      (cond ((not variable)
+             (format stream "empty binding"))
+            ((eq variable :fresh-binding)
+             (format stream "fresh binding"))
+            ((deallocated-binding? b)
+             (format stream "deallocated binding"))
+            ((eq value **lambda-var**)
+             (format stream "λ.~(~A~)" (var-name variable)))
+            (t
+             (format stream "~(~A~) = ~A" (var-name variable) value))))))
 
 
 ;;;-----------------------------------------------------------
