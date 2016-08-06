@@ -155,8 +155,7 @@
   :instantiates self
   :realization
   (:verb "phosphorylate" :noun "phosphorylation" :adj "phospho-"
-   :etf (svo-passive)
-   :mumble ("phosphorylate" svo :o substrate)))
+   :etf (svo-passive)))
 
 (define-category auto-phosphorylate
   :specializes phosphorylation-modification

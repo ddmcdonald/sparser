@@ -89,6 +89,13 @@
   :perform (load-op :after (o c) (pushnew :mumble *features*))
   :in-order-to ((test-op (test-op :mumble-tests))))
 
+(defsystem :mumble-tests
+  :serial t
+  :depends-on (:mumble)
+  :components ((:file "../test/rt")
+               (:file "../test/mumble"))
+  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
+
 (defsystem :mumble/sparser
   :description "Mumble components that depend on Sparser."
   :depends-on (:mumble :sparser)
@@ -98,9 +105,22 @@
                #+(or) (:file "interface/tsro/gofers")
                #+(or) (:file "interface/tsro/map-translations")))
 
-(defsystem :mumble-tests
-  :serial t
-  :depends-on (:mumble)
-  :components ((:file "../test/rt")
-               (:file "../test/mumble"))
+(defsystem :mumble/biology
+  :description "Generation for the biological domain."
+  :depends-on (:sparser/biology)
+  :in-order-to ((test-op (test-op :mumble/biology-tests))))
+
+(defsystem :mumble/biology-tests
+  :depends-on (:mumble/biology :mumble-tests)
+  :components ((:file "../test/mumble-biology"))
+  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
+
+(defsystem :mumble/blocks-world
+  :description "Generation for the blocks world."
+  :depends-on (:sparser/blocks-world)
+  :in-order-to ((test-op (test-op :mumble/blocks-world-tests))))
+
+(defsystem :mumble/blocks-world-tests
+  :depends-on (:mumble/blocks-world :mumble-tests)
+  :components ((:file "../test/mumble-blocks-world"))
   :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))

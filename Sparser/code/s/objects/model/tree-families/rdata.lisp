@@ -302,6 +302,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
     the item, usually a category.")
   (:method ((name symbol))
     (get-rdata (category-named name :error-if-nil)))
+  (:method ((i individual))
+    (get-rdata (itype-of i)))
   (:method ((c category))
     (get-tag :rdata c)))
 
@@ -382,7 +384,6 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
      (lsp-break "new type of head word: ~a~% ~a"
                 (type-of word) word))))
 
-
 (defun record-rdata-irregulars (rr irregulars-plist)
   (setf (rdata-head-irregulars rr) irregulars-plist))
 
@@ -397,6 +398,23 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 (defun record-local-cases-rdata (rr local-cases)
   (setf (rdata-local-rules rr) local-cases))
+
+(defgeneric rdata-head-word (item)
+  (:method (item)
+    (declare (ignore item)))
+  (:method ((c category))
+    (let ((head (rdata-head (get-rdata c))))
+      (typecase head
+        ((or word polyword) head))))
+  (:method ((i individual))
+    (let* ((rdata (get-rdata i))
+           (head (and rdata (rdata-head rdata))))
+      (etypecase head
+        (null)
+        ((or word polyword) head)
+        (lambda-variable
+         (let ((head-var (find head (indiv-binds i) :key #'binding-variable)))
+           (and head-var (binding-value head-var))))))))
 
 #| Notes for organizing the change-over
 

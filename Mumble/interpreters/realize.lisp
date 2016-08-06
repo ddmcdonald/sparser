@@ -31,7 +31,7 @@ to be recursively realized.")
   (:method :before (obj) (landmark 'realizing obj))
   (:method (obj) nil) ; say nothing by default
   (:method ((obj string)) (word-for-string obj))
-  (:method ((obj integer)) (format nil "~d" obj))
+  (:method ((obj integer)) (format nil "~r" obj))
   (:method ((obj word)) obj)
   (:method ((obj phrasal-root)) obj)
   (:method ((obj pronoun)) obj)

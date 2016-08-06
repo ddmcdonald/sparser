@@ -205,9 +205,10 @@
 ;################################################################
 
 (defun should-be-pronominalized-in-present-context? (dtn)
-  (cond ((member (slot-label-named 'relative-pronoun)
-                 (labels *current-position*))
+  (cond ((memq (slot-label-named 'relative-pronoun) (labels *current-position*))
          'context-requires-a-relative-pronoun)
+        ((memq (slot-label-named 'adjective) (labels *current-position*))
+         nil)
         ((null (referent dtn))
          nil)
         ((or (antecedent-precedes-and-is-a-clausemate? dtn)
