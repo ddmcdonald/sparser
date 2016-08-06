@@ -588,7 +588,7 @@ unknown---in any event, we're taking the first edge that is installed.
            (edge (aref array cell))
            (number
             (if *include-model-facilities*
-              (value-of (variable/category 'value 'number)
+              (value-of 'value
                         (edge-referent edge))
               (edge-referent edge))))
 
