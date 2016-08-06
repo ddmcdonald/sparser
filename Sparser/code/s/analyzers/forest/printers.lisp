@@ -436,7 +436,7 @@ there were ever to be any.  ///hook into final actions ??  |#
     (symbol
      (if (eq tt :multiple-initial-edges)
        (chart-position-after starting-position)
-       (break/debug "Treetop is an unexpected symbol: ~A" tt)))
+       (error "Treetop is an unexpected symbol: ~A" tt)))
     (otherwise
      (error "Unexpected type of tt: ~a~%~a"
             (type-of tt) tt))))
