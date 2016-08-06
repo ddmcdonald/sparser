@@ -77,16 +77,14 @@
 
 (defun print-tree-family-structure (tf stream depth)
   (declare (ignore depth))
-  (write-string "#<etf " stream)
-  (write-string (symbol-name (etf-name tf)) stream)
-  (write-string ">" stream))
+  (print-unreadable-object (tf stream)
+    (format stream "etf ~a" (etf-name tf))))
 
 (defun print-schematic-rule-structures (schr stream depth)
   (declare (ignore depth))
-  (write-string "#<schr " stream)
-  (pretty-print-schr schr stream)
-  (write-string ">" stream))
-
+  (print-unreadable-object (schr stream)
+    (format stream "schr ")
+    (pretty-print-schr schr stream)))
 
 
 ;;;----------
@@ -150,10 +148,10 @@
     (format stream "~s" schr)
     (else
      (princ-rule-term (schr-lhs schr) stream)
-     (write-string " -> " stream)
+     (write-string " →" stream)
      (dolist (term (schr-rhs schr))
-       (princ-rule-term term stream)
-       (write-string " " stream)))))
+       (write-string " " stream)
+       (princ-rule-term term stream)))))
 
 (defun pretty-schr-as-string (schr)
   (with-output-to-string (stream)

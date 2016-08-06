@@ -24,18 +24,9 @@
 
 (defun print-cfr-structure (obj stream depth)
   (declare (ignore depth))
-  (write-string "#<" stream)
-  (write-string (symbol-name (cfr-symbol obj)) stream)
-  (write-string "  " stream)
-  (princ-rewrite-rule obj stream)
-  (write-string ">" stream))
-
-
-(defun print-cfr-structure/just-symbol (obj stream depth)
-  (declare (ignore depth))
-  (write-string "#<" stream)
-  (write-string (symbol-name (cfr-symbol obj)) stream)
-  (write-string ">" stream))
+  (print-unreadable-object (obj stream)
+    (format stream "~a " (symbol-name (cfr-symbol obj)))
+    (princ-rewrite-rule obj stream)))
 
 
 ;;;---------------
@@ -68,16 +59,12 @@
 ;;------ vanila
 
 (defun princ-cfr (cfr stream)
-  (typecase (cfr-category cfr)
-    ((or category referential-category mixin-category)
-     (princ-category (cfr-category cfr) stream))
+  (etypecase (cfr-category cfr)
+    (category (princ-category (cfr-category cfr) stream))
     (word     (princ-word   (cfr-category cfr) stream))
     (polyword (display-polyword (cfr-category cfr) stream))
-    (symbol   (princ (cfr-category cfr) stream))
-    (otherwise
-     (push-debug `(,(cfr-category cfr)))
-     (error "Unexpected type of lhs of cfr while printing")))
-  (write-string " -> " stream)
+    (symbol   (princ (cfr-category cfr) stream)))
+  (write-string " →" stream)
   (let ((rhs (cfr-rhs cfr)))
     (if (typep rhs 'polyword)
       (then (write-string "\"" stream)
@@ -85,39 +72,30 @@
             (write-string "\"" stream))
       (dolist (item (cfr-rhs cfr))
         (write-string " " stream)
-        (typecase item
-          ((or category referential-category mixin-category)
-           (princ-category item stream))
+        (etypecase item
+          (category (princ-category item stream))
           (word     (princ-word   item stream))
           (polyword (write-string "\"" stream)
                     (display-polyword item stream)
                     (write-string "\"" stream))
-          (symbol   (princ (cfr-category cfr) stream))
-          (otherwise
-           (push-debug `(,item)) ; 
-           (error "Unexpected item in rhs of cfr while printing")))))))
+          (symbol   (princ (cfr-category cfr) stream)))))))
 
 (defun princ-rule-term (term stream)
-  (typecase term
-    ((or category referential-category mixin-category)
-     (princ-category term stream))
+  (etypecase term
+    (category (princ-category term stream))
     (word     (princ-word term stream))
     (polyword (display-polyword term stream))
-    (symbol   (princ term stream))
-    (otherwise
-     (push-debug `(,term))
-     (error "unexpected kind of term while printing"))))
+    (symbol   (princ term stream))))
 
 
 ;;------ polyword
 
 (defun princ-polyword-cfr (cfr stream)
   (etypecase (cfr-category cfr)
-    ((or category referential-category mixin-category)
-     (princ-category (cfr-category cfr) stream))
+    (category (princ-category (cfr-category cfr) stream))
     (word     (princ-word   (cfr-category cfr) stream))
     (polyword (display-polyword (cfr-category cfr) stream)))
-  (write-string " -> " stream)
+  (write-string " → " stream)
   (let ((polyword-string (pw-pname (get-tag :polyword cfr))))
     (write-char #\" stream)
     (write-string polyword-string stream)
@@ -130,7 +108,7 @@
 (defun princ-nary-cfr (cfr stream)
   ;; copied from Princ-cfr except for where the rhs comes form
   (princ-rule-term (cfr-category cfr) stream)
-  (write-string " -> " stream)
+  (write-string " →" stream)
   (dolist (item (original-rhs-of-nary-rule cfr))
     (write-string " " stream)
     (princ-rule-term item stream)))
@@ -147,14 +125,14 @@
 
 (defun princ-left-context-csr (csr stream)
   (princ-rule-term (first (cfr-rhs csr)) stream)
-  (write-string " -> " stream)
+  (write-string " → " stream)
   (princ-rule-term (cdr (cfr-completion csr)) stream)
   (write-string " / ___ " stream)
   (princ-rule-term (second (cfr-rhs csr)) stream))
 
 (defun princ-right-context-csr (csr stream)
   (princ-rule-term (second (cfr-rhs csr)) stream)
-  (write-string " -> " stream)
+  (write-string " → " stream)
   (princ-rule-term (cdr (cfr-completion csr)) stream)
   (write-string " / " stream)
   (princ-rule-term (first (cfr-rhs csr)) stream)
@@ -169,7 +147,7 @@
     (if (eq propagated-edge :left-edge)
       (princ-rule-term (first (cfr-rhs cfr)) stream)
       (princ-rule-term (second (cfr-rhs cfr)) stream))
-    (write-string "} -> " stream)
+    (write-string "} → " stream)
     (princ-rule-term (first (cfr-rhs cfr)) stream)
     (write-string " " stream)
     (princ-rule-term (second (cfr-rhs cfr)) stream)))
@@ -182,13 +160,13 @@
 
 (defun princ-rewrite-rule/multipliers (cfr stream)
   (princ-category (cfr-category cfr) stream)
-  (write-string " -> " stream)
+  (write-string " →" stream)
   (dolist (item (cfr-rhs cfr))
+    (write-string " " stream)
     (etypecase item
       (category (princ-category item stream))
       (word     (display-word   item stream))
-      (polyword (display-polyword item stream)))
-    (write-string " " stream)))
+      (polyword (display-polyword item stream)))))
 
 
 ;;;----------------------
