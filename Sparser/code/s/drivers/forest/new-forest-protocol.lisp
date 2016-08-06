@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new-forest-protocol"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  October 2014
+;;;  Version:  August 2016
 
 ;; Initiated 8/4/14. 8/9/14 Simple display version working.
 ;; Starting on sweeper 8/30/14. New arguments to island driver
@@ -23,10 +23,10 @@
   (tr :new-forest-driver rightmost-position)
   (let ((sentence (sentence))
         (pos-before (chart-position-before rightmost-position)))
-    (unless (ends-at-pos sentence) ;; the normal situation
-      (setf (ends-at-pos sentence) pos-before))
     (unless sentence
       (error "Why isn't (sentence) returning one? Check settings."))
+    (unless (ends-at-pos sentence) ;; the normal situation
+      (setf (ends-at-pos sentence) pos-before))
     (new-forest-driver sentence)))
 
 (defmethod new-forest-driver ((sentence sentence))
