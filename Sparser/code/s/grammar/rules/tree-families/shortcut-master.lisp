@@ -39,7 +39,8 @@
     :control-relations
     :prep :by
     :premod
-    :about :across :after :against :among :as :as-comp :at :before :between :but\ not :during :following :for :from :ifcomp :in :into 
+    :about :above :across :after :against :among :as :as-comp :at
+    :below :before :between :but\ not :during :following :for :from :ifcomp :in :into 
     :like
     :of :on :over :onto :such\ as :to :to-comp :thatcomp :through :throughout :toward :towards :under 
     :unlike :upon :via 
@@ -52,8 +53,9 @@
 (defparameter *slot-keywords*
   '(:s :o 
     ;;:alt-s :alt-o
-    :m :premod :about :across :after :against :among :as :as-comp :at :before :between
-    :but\ not :during :following :for :from :ifcomp 
+    :m :premod
+    :about :above :across :after :against :among :as :as-comp :at
+    :before :below :between :but\ not :during :following :for :from :ifcomp 
     :by :in :into :like :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
     :upon :via :whethercomp :with :within :without :designator))
 
