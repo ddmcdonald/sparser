@@ -311,7 +311,7 @@
       ;; for doing this
       (let* ((daughter-edges (if (eq :long-span (edge-right-daughter vp-edge))
                                  (loop for e in (edge-constituents vp-edge)
-                                    unless (eq (edge-form e) category::conjunction)
+                                    unless (eq (cat-name (edge-form e)) 'conjunction)
                                       collect e)
                                  (list (edge-left-daughter vp-edge)
                                    (edge-right-daughter vp-edge))))
@@ -527,7 +527,8 @@
 (defun s-commma-where-when-relative (s-edge comma-edge srel-edge)
   (let* ((s (edge-referent s-edge))
          (s-var (subcategorized-variable (edge-referent srel-edge)
-                                         (if (eq (edge-form srel-edge) 'where-relative-clause)
+                                         (if (eq (cat-name (edge-form srel-edge))
+                                                 'where-relative-clause)
                                              :where
                                              :when)
                                          s)))
@@ -542,10 +543,12 @@
           (t
            (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
                   (t-var (when target
-                           (subcategorized-variable (edge-referent srel-edge)
-                                                    (if (eq (edge-form srel-edge) 'where-relative-clause)
-                                                        :where
-                                                        :when)
+                           (subcategorized-variable
+                            (edge-referent srel-edge)
+                            (if (eq (cat-name (edge-form srel-edge))
+                                    'where-relative-clause)
+                                :where
+                                :when)
                                                     (edge-referent target)))))
              (when t-var
                (make-edge-spec 
@@ -729,7 +732,7 @@
 (defun adverb-at? (position)
   (declare (special category::adverb))
   (loop for e in (all-edges-on (pos-starts-here position))
-       thereis (and (edge-p e) (eq (edge-form e) category::adverb))))
+       thereis (and (edge-p e) (eq (cat-name (edge-form e)) 'adverb))))
 
 (define-debris-analysis-rule pp-vg+ed
     :pattern (pp vp+ed )
@@ -972,7 +975,7 @@
     :action (:function np-conj-pp first second))
 
 (defun np-conjunction-edge? (e)
-  (and (eq (edge-form e) category::np)
+  (and (eq (cat-name (edge-form e)) 'np)
        (individual-p (edge-referent e))
        (is-basic-collection? (edge-referent e))))
 
@@ -1039,9 +1042,7 @@
 
 (defun np-target? (edge)
   (and
-   (or
-    (eq (edge-form edge) category::proper-noun)
-    (eq (edge-form edge) category::np))
+   (member (cat-name (edge-form edge)) '(proper-noun np))
    ;; test below is because of some strange cases where an item in the
    ;;  fringe in not in the tree
    (edge-used-in edge)
@@ -1142,3 +1143,39 @@
      (eval (make-subj-vp+ing-rule-pair subj)))
 
 
+;;;;; make it possible for APs to post-modify NPs, when needed
+
+(define-debris-analysis-rule NP-AP
+    :pattern (NP AP)
+    :action (:function postmodifying-adj first second))
+
+(define-debris-analysis-rule S-AP
+    :pattern (S AP)
+    :action (:function postmodifying-adj first second))
+
+
+(define-debris-analysis-rule VP-AP
+    :pattern (VP AP)
+    :action (:function postmodifying-adj first second))
+
+(define-debris-analysis-rule PP-AP
+    :pattern (PP AP)
+    :action (:function postmodifying-adj first second))
+
+(defun postmodifying-adj (first-edge ap-edge)
+  (let* ((ap (edge-referent ap-edge))
+         (target
+          (find-target-satisfying
+           (right-fringe-of first-edge)
+           #'(lambda (e)
+               (and (np-target? e)
+                    (subcategorized-variable ap :subject (edge-referent e)))))))
+    (when target
+      (let ((ref (adj-postmodifies-noun (edge-referent target) ap ap-edge)))
+        (make-edge-spec
+         :category (edge-category target)
+         :form (edge-form target)
+         :referent ref
+         :target target
+         :dominating (edge-used-in target)
+         :direction :right)))))
