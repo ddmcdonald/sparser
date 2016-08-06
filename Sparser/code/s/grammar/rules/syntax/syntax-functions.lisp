@@ -288,7 +288,7 @@
       head))))
 
 
-(defun adj-noun-compound (adjective head)
+(defun adj-noun-compound (adjective head &optional adj-edge)
   (declare (special category::determiner))
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
@@ -314,16 +314,16 @@
                       (find-variable-for-category :subject (itype-of adjective)))
 		 (create-predication-by-binding
                   :subject **lambda-var** adjective
-                  (list 'adj-noun-compound (left-edge-for-referent)))
+                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
 		 (individual-for-ref adjective))))
        (setq head (bind-dli-variable 'predication predicate head))
        head))))
 
-(defun adj-postmodifies-noun (n adj)
-  (declare (special category::following-adj))
+(defun adj-postmodifies-noun (n adj &optional (adj-edge nil)) ;; adj-edge is set when we are postmodifying
   ;; to be more picky about which adjectives can post-modify a noun
-  (unless (itypep adj category::following-adj)
-    (adj-noun-compound adj n)))
+  (when
+      (or adj-edge (itypep adj 'post-adj))
+    (adj-noun-compound adj n adj-edge)))
 
 (defparameter *dets-seen* nil)
 
@@ -453,24 +453,29 @@
    (link-in-verb+ing qualifier head)))
 
 (defun link-in-verb+ing (qualifier head)
-  (let ((subject (subcategorized-variable head :subject qualifier)))
-    (cond
-      (*subcat-test* subject)
-      ((word-p qualifier)
-       ;; probably a case of an unknown verb+ing created by morphology
-       ;;  like "mating" in PMC352229
-       ;; "the complementary mating type-switched strain PJ69–4A"
-       ;; Dropping it on the floor seems ok since we don't know
-       ;; what it means
-       head)
-      (t
-       (setq qualifier (individual-for-ref qualifier))
-       (when subject ;; really should check for passivizing
-         (setq qualifier (create-predication-by-binding
-                          subject head qualifier
-                          (list 'link-in-verb+ing (parent-edge-for-referent)))))
-       (setq head (bind-dli-variable 'predication qualifier head))
-       head))))
+  (let ((premod-n-variable
+         (subcategorized-variable head :m qualifier)))
+    (if premod-n-variable
+        (bind-dli-variable premod-n-variable qualifier head)
+   
+        (let ((subject (subcategorized-variable head :subject qualifier)))
+          (cond
+            (*subcat-test* subject)
+            ((word-p qualifier)
+             ;; probably a case of an unknown verb+ing created by morphology
+             ;;  like "mating" in PMC352229
+             ;; "the complementary mating type-switched strain PJ69–4A"
+             ;; Dropping it on the floor seems ok since we don't know
+             ;; what it means
+             head)
+            (t
+             (setq qualifier (individual-for-ref qualifier))
+             (when subject ;; really should check for passivizing
+               (setq qualifier (create-predication-by-binding
+                                subject head qualifier
+                                (list 'link-in-verb+ing (parent-edge-for-referent)))))
+             (setq head (bind-dli-variable 'predication qualifier head))
+             head))))))
 
 (defun create-predication-by-binding (var val pred source)
   (let ((new-predication (bind-dli-variable var **lambda-var** pred)))
@@ -1362,7 +1367,7 @@
     ((null item)
      (cond
        ((and (boundp '*pobj-edge*) *pobj-edge*)
-	(break "~&*** null item in subcategorized pobj for ~
+	(warn "~&*** null item in subcategorized pobj for ~
                  edge ~s~&" *pobj-edge*))
        ((eq label :subject)
 	(format t "~&*** null item in subcategorized subject ~
@@ -1371,10 +1376,10 @@
 	(format t "~&*** null item in subcategorized object ~
                   for edge ~s~&" *right-edge-into-reference*))
        (t
-	(lsp-break "~&null item in subcategorized-variable~&")))
+	(warn "~&null item in subcategorized-variable~&")))
      nil)
     ((consp item)
-     (break "what are you doing passing a CONS as an item, ~s~&" item)
+     (warn "what are you doing passing a CONS as an item, ~s~&" item)
      nil)
     (t
      ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
