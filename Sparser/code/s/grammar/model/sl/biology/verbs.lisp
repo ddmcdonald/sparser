@@ -741,14 +741,28 @@
 
 (define-category decrease
   :specializes negative-bio-control
+  :restrict ((object (:or biological scalar-quality)))
   :binds ((theme biological)
-          (level (:or measurement bio-scalar))) 
+          (level (:or measurement bio-scalar value-kind)))
   :realization
   (:verb "decrease" 
    :etf (svo-passive)
    :for theme
    :in theme
    :to level))
+
+(def-synonym decrease (:verb "drop" :etf (svo-passive)))
+
+(define-category make-double :specializes positive-bio-control
+  :restrict ((object (:or biological scalar-quality)))
+  :binds ((theme biological)
+          (level (:or measurement bio-scalar value-kind)))
+  :realization
+  (:verb "double" 
+         :etf (svo-passive)
+         :for theme
+         :in theme
+         :to level))
 
 ;; Potentially problematic since the plural will misparse
 ;; "monoubiquitination decreases". Committing horrible hack
@@ -1312,8 +1326,8 @@
          :o theme
          :into subject))
 
-(define-category increase
-                 :specializes positive-bio-control
+(define-category increase :specializes positive-bio-control
+  :restrict ((object (:or biological scalar-quality)))
   :realization
   (:verb ("increase"  :third-singular "increases"  :past-tense "increased"
           :present-participle "increasing")
@@ -1940,6 +1954,15 @@
          :etf (svo-passive)
          :noun "internalization"))
 
+(define-category reach :specializes bio-relation
+  :restrict ((subject (:or scalar-quality biological))
+             (theme (:or scalar-quality value-kind))) ;; value-kind for "a high value"
+  :realization
+  (:verb "reach"
+         :etf (svo)
+         :o theme))
+
+                 
 
 (define-category relapse :specializes bio-predication
     :realization
@@ -2137,6 +2160,14 @@
 	   :etf (svo-passive)
            :with method))
 
+
+(define-category set-value :specializes caused-bio-process
+  :binds ((value (:or number measurement unit-of-measure)))
+  :realization
+  (:verb "set"
+         :etf (svo-passive)
+         :to value))
+
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show :specializes bio-rhetorical
   :mixins (bio-thatcomp)
@@ -2218,6 +2249,8 @@
 	   :noun "suppression"
 	   :etf (svo-passive))) 
 
+#+ignore
+;; now defined as an adjective since it always occurs as "sustained"
 (define-category sustain :specializes bio-control
     :realization
     (:verb "sustain" ;; keyword: ENDS-IN-ED 
@@ -2423,10 +2456,11 @@
 
 
 ;; base form is "underlie" though...
-(define-category underly :specializes caused-bio-process
+(define-category underly :specializes bio-relation
     :realization
-    (:verb "underly" ;; keyword: ENDS-IN-ING 
-	   :etf (svo-passive)))
+    (:verb ("underlie" :present-participle "underlying") ;; keyword: ENDS-IN-ING 
+	   :etf (svo)
+           :o theme))
 
 (define-category understand :specializes bio-rhetorical
   :realization
