@@ -104,7 +104,7 @@ where it regulates gene expression.")
  those reinterpreted bindings."
   (if (equal dt '(nil))
       (progn
-        (lsp-break "~&passed (NIL) to interpret-in-context~%   in sentence: ~s~%"
+        (error "~&passed (NIL) to interpret-in-context~%   in sentence: ~s~%"
               (sentence-string *sentence-in-core*))
         nil)
       (let* ((mention (dt-mention dt))
