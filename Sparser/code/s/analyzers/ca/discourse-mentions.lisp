@@ -209,7 +209,8 @@
   (cond
     ((category-p parent?)
      (itypep child? parent?))
-    ((category-p child?)
+    ((or (null child?)
+         (category-p child?))
      ;; should not happen
      nil)
     ((maphash #'(lambda (dlvv sc)
@@ -346,6 +347,8 @@
     m))
 
 (defun subsumed-mention? (i edge)
+  (when (null i)
+    (error "null individual in subsumed-mention?"))
   (if (edge-left-daughter edge)
       (cond
 	((and (edge-p (edge-left-daughter edge))
