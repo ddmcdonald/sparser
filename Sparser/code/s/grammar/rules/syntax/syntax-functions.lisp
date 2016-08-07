@@ -417,7 +417,8 @@
       (itypep head category::abstract) ;; we quantify abstract items like "group"
       (itypep head 'bio-abstract) ;; we quantify abstract items like "group"
       (itypep head category::quality)	 ;; we quantify qualities "some level"
-      (itypep head 'biological)) ;; we quantify things like "such models"
+      (itypep head 'biological)  ;; we quantify things like "such models"
+      (itypep head 'time-kind)) ;; we quanitfy things like "some time"
      (setf  (non-dli-mod-for head) (list 'quantifier quantifier))
      ;; don't use KRISP variables for quanitifiers -- put them in the mention
      ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
@@ -425,9 +426,11 @@
     ((itypep head category::determiner) ;; "all these"
      (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
     (t
-     (format t "~&@@@@@ adding quantifier ~s to ~s~&"
+     (cerror "~&@@@@@ adding quantifier ~s to ~s~&"
 	     (retrieve-surface-string quantifier)
-	     (retrieve-surface-string head))
+	     (if (individual-p head)
+                 (retrieve-surface-string head)
+                 "**MISSING**"))
      (setq  head (bind-dli-variable 'quantifier quantifier head))))
   head)
 
@@ -935,48 +938,48 @@
 
 (defun interpret-pp-adjunct-to-np (np pp)
   (cond
-   ((null np) 
-    (break "null interpretation for NP in interpret-pp-adjunct-to-np edge ~s~&"
-           *left-edge-into-reference*)
-    nil)
-   (t
-    (or (when (and np pp) (call-compose np pp))
-        ;; guard against passing a null NP to call-compose
-        ;; Rusty - this is the hook that allows for a custom interpretation
-        ;; of the meaning of this pair. If you look up at verb-noun-compound
-        ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
-        ;; In general it's a hook for any knowledge we have about particular
-        ;; cases / co-composition
+    ((null np) 
+     (break "null interpretation for NP in interpret-pp-adjunct-to-np edge ~s~&"
+            *left-edge-into-reference*)
+     nil)
+    (t
+     (or (when (and np pp) (call-compose np pp))
+         ;; guard against passing a null NP to call-compose
+         ;; Rusty - this is the hook that allows for a custom interpretation
+         ;; of the meaning of this pair. If you look up at verb-noun-compound
+         ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
+         ;; In general it's a hook for any knowledge we have about particular
+         ;; cases / co-composition
 
-        (let* ((pp-edge (right-edge-for-referent))
-               (prep-word (identify-preposition pp-edge))
-               (*pobj-edge* (edge-right-daughter pp-edge))
-               (pobj-referent (edge-referent *pobj-edge*))
-               (of (word-named "of"))
-               (variable-to-bind
-                ;; test if there is a known interpretation of the NP/PP combination
-                (or
-                 (subcategorized-variable np prep-word pobj-referent)
-                 (and (eq prep-word of)
-                      (itypep np 'attribute))
-                 ;; or if we are making a last ditch effort
-                 ;; if not, then return NIL, failing the rule
-                 (and *force-modifiers* 'modifier))))
-          (cond
-            (*subcat-test* variable-to-bind)
-            ((and (eq prep-word of) (itypep np 'attribute))
-             ;; The 'owner' of the "of" in this case is the pobj,
-             ;; rather than the np.
-             (find-or-make-individual 'quality-predicate
-                :attribute (itype-of np) :item pobj-referent))
-           (variable-to-bind
-            (when *collect-subcat-info*
-              (push (subcat-instance np prep-word variable-to-bind pp)
-                    *subcat-info*))
-            (setq np (individual-for-ref np))
-            (when variable-to-bind ;; otherwise return nil and fail the rule
+         (let* ((pp-edge (right-edge-for-referent))
+                (prep-word (identify-preposition pp-edge))
+                (*pobj-edge* (edge-right-daughter pp-edge))
+                (pobj-referent (edge-referent *pobj-edge*))
+                (of (word-named "of"))
+                (variable-to-bind
+                 ;; test if there is a known interpretation of the NP/PP combination
+                 (or
+                  (subcategorized-variable np prep-word pobj-referent)
+                  (and (eq prep-word of)
+                       (itypep np 'attribute))
+                  ;; or if we are making a last ditch effort
+                  ;; if not, then return NIL, failing the rule
+                  (and *force-modifiers* 'modifier))))
+           (cond
+             (*subcat-test*
+              variable-to-bind)
+             ((and (eq prep-word of) (itypep np 'attribute))
+              ;; The 'owner' of the "of" in this case is the pobj,
+              ;; rather than the np.
+              (find-or-make-individual 'quality-predicate
+                                       :attribute (itype-of np) :item pobj-referent))
+             (variable-to-bind
+              (when *collect-subcat-info*
+                (push (subcat-instance np prep-word variable-to-bind pp)
+                      *subcat-info*))
+              (setq np (individual-for-ref np))
               (setq  np (bind-dli-variable variable-to-bind pobj-referent np))
-              np))))))))
+              np)))))))
 
 
 (defun interpret-pp-as-head-of-np (np pp)
@@ -1118,7 +1121,7 @@
        (setq  subj (bind-dli-variable 'predication vp subj))
        (revise-parent-edge :form category::np :category (itype-of subj))
        subj)
-      (t nil))))
+      (t (error "How can this happen? in assimilate-subject-to-vp-ed~%" )))))
 
 
 (defun can-fill-vp-subject? (vp subj)
@@ -1368,15 +1371,22 @@
      (cond
        ((and (boundp '*pobj-edge*) *pobj-edge*)
 	(warn "~&*** null item in subcategorized pobj for ~
-                 edge ~s~&" *pobj-edge*))
+                 edge ~s~&  in sentence: ~s~%" *pobj-edge*
+                 (sentence-string *sentence-in-core*)))
        ((eq label :subject)
-	(format t "~&*** null item in subcategorized subject ~
-                 for edge ~s~&" *left-edge-into-reference*))
+        (warn "~&*** null item in subcategorized subject for ~
+                 clause ~s~&  in sentence: ~s~%"
+              (retrieve-surface-string head)
+              (sentence-string *sentence-in-core*)))
        ((eq label :object)
-	(format t "~&*** null item in subcategorized object ~
-                  for edge ~s~&" *right-edge-into-reference*))
+        (lsp-break "~&*** null item in subcategorized object for ~
+                 clause ~s~&  in sentence: ~s~%"
+              (retrieve-surface-string head)
+              (sentence-string *sentence-in-core*)))
        (t
-	(warn "~&null item in subcategorized-variable~&")))
+        (warn "~&*** null item in subcategorized-variable~& ~
+                 edge ~s~&  in sentence: ~s~%" *pobj-edge*
+                 (sentence-string *sentence-in-core*))))
      nil)
     ((consp item)
      (warn "what are you doing passing a CONS as an item, ~s~&" item)
