@@ -98,6 +98,16 @@
       category)))
 
 
+;;; Verbs added temporarily for load-test -- to be reviewed and corrected
+
+
+;; this is a dummy
+(define-category work-verb :specializes bio-relation
+  :realization
+  (:verb "work"
+         :etf (svo-passive)
+         :o theme))
+
 ;;; Verbs added temporarily for Localization articles -- to be reviewed and corrected
 (define-category become :specializes bio-rhetorical
     :realization
@@ -1117,6 +1127,19 @@
 	   :etf (svo-passive)
            :from from))
 
+
+(define-category gene-code :specializes caused-bio-process
+    :binds ((location bio-location)
+            (from biological)
+            (protein (:or protein variant)))
+    :restrict ((agent (:or bio-entity cell-line)))
+    :realization
+    (:verb "code"
+	   :etf (svo-passive)
+           :from from
+           :for protein))
+
+
 (define-category gene-transcript-co-express :specializes gene-transcript-express
     :binds ((location bio-location)
             (from biological)
@@ -1139,8 +1162,7 @@
 (define-category grow :specializes bio-method
   :realization
   (:verb ("grow" :past-tense "grown")
-         :etf (svo-passive)
-         :noun "growth"))
+         :etf (svo-passive)))
 
 (define-category facilitate
   :specializes positive-bio-control
@@ -1173,13 +1195,14 @@
          :etf (svo-passive)
 	 :mumble ("find" svo)))
 
-(define-category follow-xx :specializes abstract ;; this is intended to suppress definitions of "followed" and "follows"
-  :binds ((blocking determiner))
+(define-category follow :specializes bio-relation
+                 ;; this is intended to suppress definitions of "followed" and "follows"
   :realization
   (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
                    :third-singular "follows")
-         :etf (sv)
-         :s blocking))
+         :etf (svo-passive)
+         :o theme
+         ))
 
 (define-category bio-form :specializes caused-bio-process
   :realization
@@ -2033,6 +2056,7 @@
     :mixins (bio-thatcomp)
     :realization
     (:verb ("report" :past-tense "reported")
+           :noun "report"
 	   :etf (svo-passive)))
 
 ;;TO-DO -- fix this one
@@ -2201,6 +2225,12 @@
            :noun "starvation"
 	   :etf (svo-passive)
            :of nutrient))
+
+(define-category strengthen :specializes caused-bio-process
+  :realization
+  (:verb "strengthening"
+         :etf (svo-passive)
+         ))
 
 (define-category study-bio-method :specializes bio-method
   ;; can study bio-process or bio-entity
@@ -2388,9 +2418,11 @@
 
 
 (define-category transfect :specializes bio-method
+  :binds ((genetic-material biological))
   :realization 
   (:verb "transfect"
-         :etf (svo-passive)))
+         :etf (svo-passive)
+         :with genetic-material))
 
 (define-category trap :specializes bio-method
   :realization 
