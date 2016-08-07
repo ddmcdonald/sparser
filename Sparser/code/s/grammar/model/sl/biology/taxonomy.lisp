@@ -201,29 +201,6 @@
 		 :realization
 		 (:noun "observation"))
 
-(define-category evidence :specializes bio-abstract
-  :binds ((fact biological))
-  :realization
-  (:noun "evidence"
-         :for fact))
-
-(define-category experiment-data :specializes evidence
-		 :mixins (biological)
-		 :realization
-		 (:noun "experiment"))
-
-(define-category analysis-data :specializes evidence
-		 :realization
-		 (:noun ("analysis" :plural "analyses")))
-
-(define-category study-data :specializes evidence
-		 :realization
-		 (:noun ("study" :plural "studies")))
-
-(define-category observation :specializes evidence
-		 :realization
-		 (:noun "observation"))
-
 
 (define-category bio-predication :specializes state 
   :mixins (biological event-relation)
@@ -487,6 +464,32 @@
       :with method
       :at ratio-condition))
 
+(define-category evidence :specializes bio-rhetorical
+  :mixins (bio-thatcomp)
+  :binds ((fact biological))
+  :realization
+  (:verb ("evidenceXX" :past-tense "evidenced")
+         :noun "evidence"
+         :etf (svo-passive)
+         :for fact))
+
+(define-category experiment-data :specializes evidence
+		 :mixins (biological)
+		 :realization
+		 (:noun "experiment"))
+
+(define-category analysis-data :specializes evidence
+		 :realization
+		 (:noun ("analysis" :plural "analyses")))
+
+(define-category study-data :specializes evidence
+		 :realization
+		 (:noun ("study" :plural "studies")))
+
+(define-category observation :specializes evidence
+		 :realization
+		 (:noun "observation"))
+
 (define-category over-ridden)
 ;; this is used only for over-riding inherited variables
 
@@ -709,8 +712,22 @@
     (:noun "molecule"
 	   :of molecule-type))
 
-(define-category drug
-  :specializes molecule
+(define-category medical-treatment :specializes process
+  :binds ((disease disease)
+          (medical-treatment medical-treatment))
+  :mixins (biological)
+  :realization
+  (:noun "medical treatment"
+         :m disease
+         :for disease
+         :for medical-treatment
+         ))
+
+
+(noun "chemotherapy" :super medical-treatment)
+(noun "organ transplant" :super medical-treatment)
+
+(define-category drug :specializes molecule
   :lemma (:common-noun "drug")
   :realization (:common-noun name))
 
