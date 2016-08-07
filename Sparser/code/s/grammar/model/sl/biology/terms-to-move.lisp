@@ -281,9 +281,11 @@ be biology specific, since they aren't. |#
                  :realization (:noun "lack" :of theme))
 
 
-(adj "similar" :super bio-relation
+(define-category similar :specializes bio-relation
+  :mixins (post-adj)
   :realization 
   (:noun "similarity"
+  	:adj "similar"
          :to theme))
 
 (adj "related" :super similar)
