@@ -327,7 +327,12 @@
         (not (sentence-initial? e)))) ;; this is a case of an imperative
       ((singular-noun-and-present-verb? e))
       ((constrain-following e) nil)
-      ((some-edge-satisfying? edges #'pronoun-or-wh-pronoun) nil)
+      ((or
+        (some-edge-satisfying? edges #'pronoun-or-wh-pronoun)
+        (and
+         (some-edge-satisfying? (all-edges-at e) #'preposition?)
+         (not (preceding-determiner? e))))
+       nil)
       ((eq word::comma (edge-category e))
        ;;comma can come in the middle of an NP chunk
        ;; as in "active, GTP-bound Ras"
@@ -427,6 +432,9 @@
   (or
    (eq (cat-name (edge-form edge)) 'pronoun )
    (member (cat-name (edge-category edge)) '(which what))))
+
+(defun preposition? (edge)
+   (eq (cat-name (edge-form edge)) 'preposition))
 
 (defun constrain-following (e)
   (and (category-p (edge-category e))
@@ -601,6 +609,8 @@
                     (eq (cat-name (edge-form ee)) 'det))
                (not (chunk-ev-list *chunk*)))))
             ((eq (cat-name (edge-form e)) 'verb+ed)
+             nil)
+            ((some-edge-satisfying? (all-edges-at e) #'preposition?)
              nil)
             ((plural-noun-and-present-verb? e)
              ;; fix logic error -- if we hav a noun-verb ambiduity,
@@ -833,6 +843,11 @@
        (or
         (eq (cat-name (edge-category ee)) 'which)
         (eq (cat-name (edge-form ee)) 'pronoun))))
+
+(defun preceding-determiner? (e &optional (edges (edges-before e)))
+    (loop for ee in edges
+     thereis
+         (eq (cat-name (edge-form ee)) 'det)))
 
 (defun followed-by-verb (e &optional (edges-after (edges-after e)))
   (loop for ee in edges-after
