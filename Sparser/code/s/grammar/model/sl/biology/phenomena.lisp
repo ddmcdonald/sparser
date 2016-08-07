@@ -664,14 +664,16 @@ it is created from N-terminus to C-terminus.|#
 ;; added in notion of direct-bindee for "A binds B" as opposed to "A binds to B"
 
 (define-category oligomerize :specializes molecular-function ;; generalization for dimerize, polymerize, trimerize
-  :binds ((monomer protein))
+  :binds ((monomer protein)
+          (domain protein-domain))                         
   :realization
   (:verb "oligomerize" ;; need this (perhaps) for etf and :s and :o
    :etf (sv)
    :noun "oligomerization"
    :s monomer
    :of monomer
-   :with monomer))
+   :with monomer
+   :via domain ))
 
 ; From the ERK abstract:
 ; #1 "Dimerization-independent" (in title)
@@ -919,9 +921,20 @@ with something else
           :into final))
 
 (noun "autophagy" :super cellular-process)
-(noun "cell growth" :super cellular-process)
-(noun "cellular growth" :super cellular-process)
+(define-category cell-growth :specializes cellular-process
+  :realization (:noun  "cell growth"))
+(def-synonym cell-growth
+    (:noun "cellular growth"))
+(def-synonym cell-growth
+    (:noun "growth"))
+(def-synonym cell-growth
+    (:noun "growing"))
+
 (noun "differentiation" :super cellular-process)
+
+(def-synonym differentiation
+    (:noun "differentiating"))
+
 (noun "motility" :super cellular-process)
 (noun "neurite outgrowth" :super cellular-process)
 (noun "senescence" :super cellular-process)
