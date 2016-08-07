@@ -31,7 +31,8 @@
 (defun define-drug (drug-name)
   (def-bio/expr drug-name 'drug :takes-plurals nil))
 
-
+;; amazing name for sorafenib
+(define-drug "N -(3-trifluoromethyl-4-chlorophenyl)- N '-(4-(2-methylcarbamoyl pyridin-4-yl)oxyphenyl)urea)")
 (define-drug "AZ3146")
 (define-drug "nocodazole")
 
