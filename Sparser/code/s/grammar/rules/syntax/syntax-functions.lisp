@@ -1121,7 +1121,9 @@
        (setq  subj (bind-dli-variable 'predication vp subj))
        (revise-parent-edge :form category::np :category (itype-of subj))
        subj)
-      (t (error "How can this happen? in assimilate-subject-to-vp-ed~%" )))))
+      (t (warn "Error in sentence: ~s"
+               (sentence-string *sentence-in-core*))
+         (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%" )))))
 
 
 (defun can-fill-vp-subject? (vp subj)
