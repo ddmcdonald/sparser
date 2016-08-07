@@ -161,6 +161,11 @@ previous records of treetop-counts.
                                            #+ignore load-test)
   "List of corpora to test in COMPARE-TO-SNAPSHOTS.")
 
+(defun do-load-test ()
+  (declare (special *default-snapshot-corpora*))
+  (setq *default-snapshot-corpora*
+        '(overnight dec-test dry-run aspp2 erk dynamic-model load-test)))
+
 (defun compare-to-snapshots (&optional
                              (save-info nil)
                              (corpora *default-snapshot-corpora*))
