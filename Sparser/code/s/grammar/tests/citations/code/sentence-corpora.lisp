@@ -114,44 +114,51 @@ previous records of treetop-counts.
     (unless variable
       (error "Corpus not set up with a variable"))
     (with-total-quiet
-        (let ((*do-anaphora* nil) ;; no anaphora on single sentences
-              (index 0) pairs )
-          (declare (special *do-anaphora*))
-          (if save-info
-           (let ((*reading-populated-document* t)
-                 (*recognize-sections-within-articles* nil) ;; turn of doc init
-                 (*accumulate-content-across-documents* t)) ;; doesn't clear history??
-             (declare (special *reading-populated-document*
-                               *recognize-sections-within-articles*
-                               *accumulate-content-across-documents*))
+      (let ((*do-anaphora* nil) ;; no anaphora on single sentences
+            (index 0) pairs )
+        (declare (special *do-anaphora*))
+        (if save-info
+            (let ((*reading-populated-document* t)
+                  (*recognize-sections-within-articles* nil) ;; turn of doc init
+                  (*accumulate-content-across-documents* t)) ;; doesn't clear history??
+              (declare (special *reading-populated-document*
+                                *recognize-sections-within-articles*
+                                *accumulate-content-across-documents*))
              
-             (dolist (exp (eval variable)) ;; (p "...")
-               (setq *p-sent* exp)
-               (incf index)
-               (eval exp)
-               (let ((sentence (previous (sentence))))
-                 ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
-                 (let ((count (length (treetops-between
-                                       (starts-at-pos sentence)
-                                       (ends-at-pos sentence)))))
-                   (push `(,index . ,count) pairs)))))
-           (dolist (exp (eval variable)) ;; (p "...")
-             (setq *p-sent* exp)
-             (incf index)
-             (eval exp)
-             (let ((sentence (previous (sentence))))
-               ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
-               (let ((count (length (treetops-between
-                                     (starts-at-pos sentence)
-                                     (ends-at-pos sentence)))))
-                 (push `(,index . ,count) pairs)))))
-          (nreverse pairs)))))
+              (dolist (exp (eval variable)) ;; (p "...")
+                (setq *p-sent* exp)
+                (incf index)
+                (eval exp)
+                (let ((sentence (previous (sentence))))
+                  ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
+                  (if (null sentence) ;; if we are aborting a sentence when we get an error
+                      (progn (warn "Error during parsing of ~s~%" exp)
+                             (push `(,index . ,0) pairs))
+                      (let ((count (length (treetops-between
+                                            (starts-at-pos sentence)
+                                            (ends-at-pos sentence)))))
+                        (push `(,index . ,count) pairs))))))
+            (dolist (exp (eval variable)) ;; (p "...")
+              (setq *p-sent* exp)
+              (incf index)
+              (eval exp)
+              (let ((sentence (previous (sentence))))
+                ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
+                (if (null sentence) ;; if we are aborting a sentence when we get an error
+                    (progn (warn "Error during parsing of ~s~%" exp)
+                           (push `(,index . ,0) pairs))
+                    (let ((count (length (treetops-between
+                                          (starts-at-pos sentence)
+                                          (ends-at-pos sentence)))))
+                      (push `(,index . ,count) pairs))))))
+        (nreverse pairs)))))
 
 
 
 ;;--- compare current performance to a snapshot
 
-(defvar *default-snapshot-corpora* '(overnight dec-test dry-run aspp2 erk)
+(defparameter *default-snapshot-corpora* '(overnight dec-test dry-run aspp2 erk dynamic-model
+                                           #+ignore load-test)
   "List of corpora to test in COMPARE-TO-SNAPSHOTS.")
 
 (defun compare-to-snapshots (&optional
