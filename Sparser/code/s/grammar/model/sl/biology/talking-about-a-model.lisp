@@ -84,7 +84,7 @@
     ))
 
 
-(define-sentence-corpus :dynamic-model *dynamic-model-sents*
+(define-sentence-corpus dynamic-model *dynamic-model-sents*
   :location corpus
   :doc "material from Ben Gyori and Walter Fontana")
 
