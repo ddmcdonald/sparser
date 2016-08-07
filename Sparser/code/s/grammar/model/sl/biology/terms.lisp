@@ -37,6 +37,16 @@
 
 (in-package :sparser)
 
+(noun "medium" :super experimental-condition)
+(noun "vector" :super bio-method) ;; need a class for experimental materials
+(noun "unstimulated" :super experimental-condition)
+(noun "incubation" :super bio-method)
+(noun "copy number analysis" :super bio-method)
+(noun "mutation profiling" :super bio-method)
+(noun "cell adhesive  structure" :super cellular-location)
+(adj "in excess" :super bio-predication)
+
+
 ;;from pathway comments
 
 (adj "open" :super bio-relation)
@@ -230,6 +240,7 @@
 (adj "conventional" :super bio-predication) ;;"conventinal MAPK cascade"
 (adj "double-stranded" :super bio-predication)
 (adj "single-stranded" :super bio-predication)
+(adj "standard" :super bio-predication)
 (adj "familial" :super bio-predication)
 (noun "carcinoma" :super cancer)
 (noun "glioblastoma" :super cancer)
@@ -556,7 +567,7 @@
 ;;  "preposition" and as an adjective
 ;;(adj "following" :super bio-predication)
 (define-category following-adj :specializes abstract
-  :realization (:adj "following"))
+                 :realization (:adj "following"))
 
 
 
@@ -1115,6 +1126,8 @@
 
 
 (def-cell-line "keratin") ;; NOT SURE THIS IS HOW IT IS BEING USED
+(def-cell-line "cancer cell")
+(def-cell-line "keratinocyte")
 
 (def-cell-line "A375")
 (def-cell-line "A431D")
