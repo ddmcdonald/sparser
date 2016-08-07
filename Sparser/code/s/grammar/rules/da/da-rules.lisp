@@ -43,27 +43,35 @@
 (defun attach-leading-pp-to-clause (pp comma clause)
   (let* ((clause-referent (edge-referent clause))
 	 (pobj-edge (edge-right-daughter pp))
-	 (pobj-referent (edge-referent pobj-edge))
+	 (pobj-referent
+          (if (eq pobj-edge :long-span) ;; conjunction of PPs
+              nil
+              (edge-referent pobj-edge)))
 	 (prep-edge (edge-left-daughter pp))
 	 (prep-word (edge-left-daughter prep-edge)))
-    (if (is-basic-collection? clause-referent)
-	(or
-	 (distribute-pp-to-conjoined-clauses pp clause prep-word pobj-referent clause-referent
-                                             'attach-leading-pp-to-clause)
-	 (distribute-pp-to-first-conjoined-clause pp clause
-                                                  'attach-leading-pp-to-clause))
-	(let (edge
-	      (var-name
-	       (or
-		(subcategorized-variable clause-referent prep-word pobj-referent)
-		(failed-pp-attachment pp clause-referent))))
-	  (when var-name
-	    (setq edge (make-edge-spec
-                        :category (edge-category clause)
-			:form (edge-form clause)
-			:referent (bind-dli-variable var-name pobj-referent clause-referent)))
-	    (tr :comma-3tt-pattern edge)
-	    edge)))))
+    (cond
+      ((null pobj-referent) ;; punt at the moment for conjoined PPs
+       nil)
+      
+      ((is-basic-collection? clause-referent)
+       (or
+        (distribute-pp-to-conjoined-clauses pp clause prep-word pobj-referent clause-referent
+                                            'attach-leading-pp-to-clause)
+        (distribute-pp-to-first-conjoined-clause pp clause
+                                                 'attach-leading-pp-to-clause)))
+      (t
+       (let (edge
+             (var-name
+              (or
+               (subcategorized-variable clause-referent prep-word pobj-referent)
+               (failed-pp-attachment pp clause-referent))))
+         (when var-name
+           (setq edge (make-edge-spec
+                       :category (edge-category clause)
+                       :form (edge-form clause)
+                       :referent (bind-dli-variable var-name pobj-referent clause-referent)))
+           (tr :comma-3tt-pattern edge)
+           edge))))))
 
 (define-debris-analysis-rule attach-leading-pp-no-comma-to-clause
   :pattern ( pp  s )
