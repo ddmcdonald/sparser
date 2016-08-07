@@ -104,7 +104,8 @@ where it regulates gene expression.")
  those reinterpreted bindings."
   (if (equal dt '(nil))
       (progn
-        (format t "~&passed (NIL) to interpret-in-context~%")
+        (lsp-break "~&passed (NIL) to interpret-in-context~%   in sentence: ~s~%"
+              (sentence-string *sentence-in-core*))
         nil)
       (let* ((mention (dt-mention dt))
              (base (base-description mention))
@@ -117,9 +118,9 @@ where it regulates gene expression.")
               ;; dt was already contextually interpreted --
               ;;  this happens with conjunction distribution/expansion
               (contextual-interpretation mention))
-             ((or (itypep base category::hyphenated-pair)
-                  (itypep base category::hyphenated-triple)
-                  (itypep base category::two-part-label))
+             ((or (itypep base 'hyphenated-pair)
+                  (itypep base 'hyphenated-triple)
+                  (itypep base 'two-part-label))
               ;; not sure what to do for such things -- example ER-β is a hyphenated pair
               (setf (contextual-description mention) base)
               base)
@@ -174,7 +175,7 @@ where it regulates gene expression.")
                                   (eq variable 'predicate))
                               (itypep (base-description
                                        (car containing-mentions))
-                                      category::be))
+                                      'be))
                          nil
                          (progn
                            (warn
@@ -252,10 +253,9 @@ where it regulates gene expression.")
 	 (null
 	  (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
 	 (referential-category (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
-         (individual (format t "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
-                             (car dt)
+         (individual (warn "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
+                             dt
                              (sentence-string *sentence-in-core*))
-                     (warn "~%Strange value in interpret-item-in-context: ~s~%" dt)
                      nil)
 	 (t (lsp-break "~%Strange value in interpret-item-in-context: ~s~%"
 		    dt)
@@ -266,7 +266,7 @@ where it regulates gene expression.")
   (let* ((mention (dt-mention dt))
 	 (interp (dli-ref-cat (base-description mention))))
     (if (and (individual-p interp)
-	     (itypep interp category::hyphenated-number))
+	     (itypep interp 'hyphenated-number))
 	;; hyphenated numbers are special, and broken...
 	interp
 	;; this allows for creation of new collections by distribution of internal collections
@@ -280,11 +280,13 @@ where it regulates gene expression.")
 	   (declare (special ival))
 	   (setq interps
 		 (loop for i in interps
+                    when i
 		    nconc
 		      (if (is-basic-collection? ival)
 			  ;; This is the code that does a "distribution" of conjunctions
 			  (if (eq var 'predication) ;; here the conjunction is taken as joint assertion
 			      (loop for c in (value-of 'items ival)
+                                   when i
 				 do
 				   (setq i (bind-dli-variable var c i))
 				 finally (return (list i)))
@@ -292,7 +294,8 @@ where it regulates gene expression.")
 			      (loop for c in (value-of 'items ival)
 				 collect
 				   (let ((bound-val (bind-dli-variable var c i)))
-				     (when (null bound-val) (lsp-break "bad conjunction distribution"))
+				     (when (null bound-val)
+                                       (lsp-break "bad conjunction distribution"))
 				     bound-val)))
 			  (list (bind-dli-variable var ival i)))))))
     (cond ((cdr interps) ;; a collection
@@ -301,8 +304,10 @@ where it regulates gene expression.")
 	     ;; e.g " MAPK phosphorylation sites in ASPP1 and ASPP2" expands to
 	     ;; "MAPK phosphorylation site in ASPP1" and "MAPK phosphorylation site in ASPP2"
 	     (loop for interp in interps
+                  when interp
 		do
-		  (setf (contextual-description (make-mention interp (mention-source (car containing-mentions))))
+		  (setf (contextual-description
+                         (make-mention interp (mention-source (car containing-mentions))))
 			interp)))
 	   (make-an-individual 'collection
 			       :items interps
@@ -310,6 +315,7 @@ where it regulates gene expression.")
 			       :type (itype-of (car interps))))
 	  (t
 	   (car interps)))))
+
 
 (defun interpret-val-in-context (var val-dt containing-mentions)
   ;; recursively interpret the bound value in the current context
@@ -321,14 +327,11 @@ where it regulates gene expression.")
 	 (interpret-in-context val-dt var containing-mentions)))))
 
 (defun is-basic-collection? (i)
-  (declare (special category::hyphenated-pair
-                    category::hyphenated-triple
-                    category::two-part-label))
   (and (individual-p i)
        (collection-p i)
-       (not (or (itypep i category::hyphenated-pair)
-                (itypep i category::hyphenated-triple)
-                (itypep i category::two-part-label)))))
+       (not (or (itypep i 'hyphenated-pair)
+                (itypep i 'hyphenated-triple)
+                (itypep i 'two-part-label)))))
 
 
 (defparameter *special-collection-interp* t
@@ -365,7 +368,6 @@ where it regulates gene expression.")
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
-  (declare (special category::number))
   (let* ((parent-edge (car parent-edges))
 	 (poss-edges (poss-edges child-interp parent-edge)))
     ;; allow for the fact the items like "669" have two edges
@@ -382,32 +384,33 @@ where it regulates gene expression.")
 			   (individual-p child-interp)
 			   (not allow-null-edge)
 			   child-interp
-			   (not (itypep child-interp category::number)))
-                        (format t "~&1) no internal edge for ~s in ~s~&"
-				child-interp parent-edge)
-                        (warn "relevant-edges")
+			   (not (itypep child-interp 'number)))
+                      (warn "~&relevant-edges 1) no internal edge for ~s in ~s~~%   in sentence: ~S~%"
+                            child-interp parent-edge
+                            (sentence-string *sentence-in-core*))
 		      nil)
 		    nil)))
 	     (t		
 	      (unless (or allow-null-edge
 			  (not (individual-p child-interp))
 			  (and child-interp ;; happens in a small number of cases -- just ignore them
-			       (itypep child-interp category::number)))
+			       (itypep child-interp 'number)))
 		;; happens for premodifying v+ing
 		;; where the edge has a category edge-representation,
 		;; not an individual
 		(when *break-on-null-edge*
-		  (format t "~&B) no internal edge for ~s in ~s~&"
-			     child-interp parent-edge)))
+		  (warn "~&relevant-edges 1) no internal edge for ~s in ~s~~%   in sentence: ~S~%"
+                        child-interp parent-edge
+                        (sentence-string *sentence-in-core*))))
 	      nil)))
 	  ((cdr poss-edges)
 	   ;; appositive cases like "endogenous C-RAF phosphorylation at S338, an event required for C-RAF activation, "
 	   (when (and
-		    *report-on-multiple-edges-for-interp*
-		    (not (member (edge-rule parent-edge)
-				 '(ATTACH-APPOSITIVE-NP-TO-NP KNIT-PARENS-INTO-NEIGHBOR))))
+                  *report-on-multiple-edges-for-interp*
+                  (not (member (edge-rule parent-edge)
+                               '(ATTACH-APPOSITIVE-NP-TO-NP KNIT-PARENS-INTO-NEIGHBOR))))
 	     (format t "~&^^^^multiple internal edges for ~s in ~s~&   ~s~&"
-			child-interp parent-edge poss-edges))
+                     child-interp parent-edge poss-edges))
 	   (list (car poss-edges)))
 	  (t poss-edges))))
 
@@ -471,7 +474,6 @@ where it regulates gene expression.")
 		   (return-from find-edges-inside-matching edge)))))))
 
 (defun redundant-edge (m-edge poss-edges)
-  (declare (special category::number category::digit-sequence category::modifier))
   (loop for ee on poss-edges
      do
        (cond ((contained-edge? (car ee) m-edge)
@@ -481,16 +483,16 @@ where it regulates gene expression.")
 	      (return-from redundant-edge t))
 	     ((and (eq (start-pos m-edge)(start-pos (car ee)))
 		   (eq (end-pos m-edge)(end-pos (car ee))))
-	      (cond ((and (eq (edge-category m-edge) category::number)
-			  (eq (edge-category (car ee)) category::digit-sequence))
+	      (cond ((and (eq (cat-name (edge-category m-edge)) 'number)
+			  (eq (cat-name (edge-category (car ee)))'digit-sequence))
 		     (setf (car ee) m-edge)
 		     (return-from redundant-edge t))
-		    ((and (eq (edge-category m-edge) category::digit-sequence)
-			  (eq (edge-category (car ee)) category::number))
+		    ((and (eq (cat-name (edge-category m-edge)) 'digit-sequence)
+			  (eq (cat-name (edge-category (car ee))) 'number))
 		     (return-from redundant-edge t))
-		    ((eq (edge-category m-edge) category::modifier)
+		    ((eq (cat-name (edge-category m-edge)) 'modifier)
 		     (return-from redundant-edge t))
-		    ((eq (edge-category (car ee)) category::modifier)
+		    ((eq (cat-name (edge-category (car ee))) 'modifier)
 		     (setf (car ee) m-edge)
 		     (return-from redundant-edge t))
 		    (t
