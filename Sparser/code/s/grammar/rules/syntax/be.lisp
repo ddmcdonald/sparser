@@ -209,7 +209,12 @@
   ;; is concatentated onto the name of the substituted category
   ;; and a new category constructed with that name.
   
-  (let* ((stem (symbol-name (cat-symbol verb-category)))
+  (let* ((stem (cond ((category-p verb-category)
+                      (symbol-name (cat-symbol verb-category)))
+                     (t
+                      (warn "lookup-passive-counterpart for non-category ~s~%"
+                            verb-category)
+                      (return-from lookup-passive-counterpart nil))))
          (name-of-passive-label
           (or
            (gethash stem *passive-label*)
