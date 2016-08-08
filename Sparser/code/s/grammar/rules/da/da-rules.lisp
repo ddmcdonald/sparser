@@ -174,20 +174,26 @@
 
 (defun attach-pp-following-clause (clause pp start end)
   (let* ((pobj-edge (edge-right-daughter pp))
-         (pobj-referent (edge-referent pobj-edge))
+         (pobj-referent
+          ;; can have conjunction of PPs and get a :long-span here
+          ;; e.g. "with menadione or with both compounds"
+          ;;  punt for now
+          (when (edge-p pobj-edge)
+            (edge-referent pobj-edge)))
          (prep-edge (edge-left-daughter pp))
          (prep-word (edge-left-daughter prep-edge)))
-    (let ((var-name
-           (subcategorized-variable (edge-referent clause)
-                                    prep-word
-                                    pobj-referent)))
-      (when var-name
-        (let ((edge-spec (make-edge-spec
-                     :category (edge-category clause)
-                     :form (edge-form clause)
-                     :referent (bind-dli-variable var-name pobj-referent (edge-referent clause)))))
-          (tr :comma-3tt-pattern edge-spec)
-          edge-spec)))))
+    (when pobj-referent
+      (let ((var-name
+             (subcategorized-variable (edge-referent clause)
+                                      prep-word
+                                      pobj-referent)))
+        (when var-name
+          (let ((edge-spec (make-edge-spec
+                            :category (edge-category clause)
+                            :form (edge-form clause)
+                            :referent (bind-dli-variable var-name pobj-referent (edge-referent clause)))))
+            (tr :comma-3tt-pattern edge-spec)
+            edge-spec))))))
 
 
 (define-debris-analysis-rule interpret-s-comma-s
