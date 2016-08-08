@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "categories"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  0.8 October 2015
+;;;  Version:  August 2016
 
 ;; 0.1 (9/392 v2.3)) Redid them as "form categories", with an indicator on their plists
 ;; 0.2 (10/12) flushed "mvb" for "verb", 10/24 added common-noun/plural
@@ -95,9 +95,7 @@
 ;;   history. And again 9/24/15
 ;;     12/15 changed vg/passive and vp/passive to vg+passive vg+passive
 
-
 (in-package :sparser)
-(defvar CATEGORY::NOT)
 
 
 ;;;----------------------------
@@ -269,6 +267,9 @@
 (def-form-category  infinitive)
 (def-form-category  infinitive-marker) ;; for "to" from Quirk, et al.
 (def-form-category  verb+passive)
+
+(def-form-category  preposed-auxiliary)
+;; marker category to influence other processes
 
 (define-category  mvb)
   ;; 'main verb' - only used as a label on brackets

@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  June 2016
+;;;  Version:  August 2016
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -148,12 +148,30 @@
   "Flag that is up when we are making that sweep through a
    document to drive or inhibit the right set of activities.")
 
-(defparameter *sweep-for-patterns* t
+(defparameter *sweep-for-patterns* nil
   "Checked in sentence-sweep-loop to determine whether we continue
    the analysis after the terminals of a sentence have been entered
    into the chart. Setting this to nil and turning on the traces for
    unknown words is a good way to identify the unknown words in a
    new corpus.")
+
+(defparameter *sweep-for-early-information* nil
+  "Run a pass across primarily the early part of a sentence
+   to look for things like a preposed auxiliary or WH word
+   that's indicative of questions. Presumes that the terminal
+   edges have been introduced into the chart.")
+
+(defparameter *sweep-for-conjunctions* nil
+  "Checked in sentence-processing-core after pattern-sweep has
+   introduced terminal edges into the chart. Looks for conjunctions
+   that were marked in the pattern-sweek and considers applying them.")
+
+(defparameter *sweep-for-parentheses* nil
+  "Checked in sentence-processing-core to control whether or not
+   to sweep through the sentence with the goal of running completion
+   operations on the 'close' instances of paired punctuation.
+   This can then trigger after actions on the content that
+   was spanned.")
 
 (defparameter *chunk-sentence-into-phrases* nil
   "Controls whether we proceed to chunk the sentence after we 

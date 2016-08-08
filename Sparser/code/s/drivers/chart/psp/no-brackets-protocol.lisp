@@ -94,7 +94,7 @@
    *current-sentence* managed by the sentence creation routines
    and returned by the function sentence(). That global
    changes with successive calls to start-sentence from the
-   period hook. As a result, it quickly get ahead of the
+   period hook. As a result, it quickly gets ahead of the
    sentence we are working on whereas this global will not.")
 
 (defvar *current-sentence-string* nil
@@ -126,9 +126,9 @@
       current)
      (s (error "Odd type returned for sentence: ~a~%~a"
                (type-of s) s))
-     (t
-      (unless no-break
-        (break "Need another way to find the current sentence"))))))
+     (t (unless no-break
+          (error "Need another way to find the current sentence"))
+        nil))))
 
 
 ;;;--------
@@ -174,8 +174,11 @@
 ;;;------------------------------------------------------
 
 (defun sentence-sweep-loop ()
-  ;; Called from initiate-successive-sweeps when reading from 
-  ;; a stream of characters
+  "Called from initiate-successive-sweeps when reading from 
+   a stream of characters rather than a pre-structured document.
+   Organizes all the parsing layers from lowest to highest.
+   Expects a first sentence to exist but not to be populated
+"
   (tr :entering-sentence-sweep-loop)
   (let* ((sentence (sentence)) ;; to pass to subroutines
          (*sentence* sentence)) ;; for global reference
@@ -217,8 +220,12 @@
   
   (when *sweep-for-patterns*
     (pattern-sweep sentence)
-    (short-conjunctions-sweep sentence) ;; precede parens
-    (sweep-to-span-parentheses sentence)
+    (when *sweep-for-early-information*
+      (detect-early-information sentence))
+    (when *sweep-for-conjunctions*
+      (short-conjunctions-sweep sentence))
+    (when *sweep-for-parentheses*
+      (sweep-to-span-parentheses sentence))
     (when *trace-island-driving* (tts))
 
     (when *chunk-sentence-into-phrases*

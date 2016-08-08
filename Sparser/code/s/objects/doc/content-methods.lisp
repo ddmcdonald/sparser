@@ -503,13 +503,31 @@ is a case in handle-any-anaphor
    (pending-partitives
     :initform nil :accessor pending-partitive-references
     :documentation "A list of any edges that were appreciated
-      to be partitive references of the form <quantifier> of <definite-NP>."))
+      to be partitive references of the form <quantifier> of <definite-NP>.")
+   (preposed-aux
+    :initform nil :accessor preposed-aux
+    :documentation "The position of a auxiliary or model that was
+      'moved' to 'sentence-initial' to indicate a question."))
   
   (:documentation "Each field is a kind of phenomena that
     we can't make a decision about. The simplest thing to
     put in them is probably the edge that's the locus of
     the issue, but it's really a decision between the recorder
     and the function that reads the record."))
+
+
+(defmethod record-preposed-aux ((p position))
+  (let ((s (identify-current-sentence)))
+    (setf (preposed-aux (contents s)) p)))
+
+(defun preposed-aux? ()
+  "If the delayed action record in the contents of the current sentence
+   records a preposed auxiliary return that auxiliary and the position
+   it is on."
+  (let* ((s (identify-current-sentence))
+         (pos-of-aux (preposed-aux (contents s))))
+    (values (pos-terminal pos-of-aux)
+            pos-of-aux)))
 
 (defmethod add-pending-def-ref (determiner (e edge) (s sentence))
   (let ((contents (contents s)))
@@ -527,14 +545,11 @@ is a case in handle-any-anaphor
     (error "Threading bug. No value for *sentence-in-core*"))
   (member edge (pending-definite-references *sentence-in-core*) :key #'second))
 
-
-
 (defun update-definite-determiner (edge)
   (declare (special *all-np-categories* *sentence-in-core*))
-  (when (and
-	 *sentence-in-core*
-	 (category-p (edge-form edge))
-	 (member (cat-symbol (edge-form edge)) *all-np-categories*))
+  (when (and *sentence-in-core*
+             (category-p (edge-form edge))
+             (member (cat-symbol (edge-form edge)) *all-np-categories*))
     (loop for pair in (pending-definite-references *sentence-in-core*)
        when
 	 (or (eq (second pair) (edge-left-daughter edge))

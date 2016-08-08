@@ -38,7 +38,7 @@
 
 (defun scan-words-loop (position-before word)
   "Starting at the beginning of a sentence, add words into the
-   chart until a sentence-ending period is encountered.
+   chart until a sentence-ending period (or question-mark) is encountered.
    It's a recursive loop. We get out of it when the period-hook
    runs and throws to :end-of-sentence."
   ;; position-before - word - position-after
@@ -89,7 +89,7 @@
 (defun scan-terminals-loop (position-before word)
   "Carries out the first layer of analysis by checking for and
    applying word-level rules. Operates one word at a time
-   in a tail-recursive loop. A word is dirst checked to see
+   in a tail-recursive loop. A word is first checked to see
    whether it initiates a polyword. If so we resume the loop
    at the position just after the polyword has applied.
    If no polyword applies or if it is not found, we look for
@@ -356,6 +356,40 @@
 
 
 
+;;;
+#| (p "What color is the block?")
+   (p "is the block on the table?")
+   (p "did we make a three block stack?")
+   (p "How big is the stack?")
+   (p "How many blocks did you add to the row?")
+   (p "How many blocks are you adding to the row?") ;; "going to add"
+   (p "How many blocks will you add to the row?")
+|#
+(defun detect-early-information (sentence)
+  "Look at the first few edges in the chart. If they indicate
+   that this sentence will be a question, revise their form labels
+   to keep them from being absorbed into a chank accidentally
+   and represent what we aan observe locally here for use
+   in a later stage of processing."
+  (declare (special category::preposed-auxiliary))
+  (push-debug `(,sentence))
+  (let* ((position-before (starts-at-pos sentence))
+         (first-item (next-treetop/rightward position-before))
+         ;; We get an edge-vector is there are multiple edges
+         ;; or a word if there are no edges
+         (form-label (when (edge-p first-item)
+                       (edge-form first-item))))
+    (when form-label
+      (case (cat-symbol form-label)
+        (category::verb
+         (setf (edge-form first-item) category::preposed-auxiliary)
+         (record-preposed-aux position-before))))))
+
+
+
+
+
+
 ;;;------------------------------
 ;;; 2d pass -- no-space patterns
 ;;;------------------------------
@@ -365,6 +399,7 @@
    when they're recycled.")
 
 ;; (trace-terminals-sweep)
+
 (defun pattern-sweep (sentence)
   "Scans the sentence treetop by treetop in a loop.
    Looks for patterns initiated by no space between words."
@@ -622,7 +657,8 @@
   ;; mention in a cfr, as happens for "the" or even ".")
   ;; So we walk through looking for words
 
-  (declare (special *the-punctuation-period* *trace-sweep*))
+  (declare (special *the-punctuation-period* *trace-sweep*
+                    *sentence-terminating-punctuation*))
 
   (let ((position-before (starts-at-pos sentence))
         (end-pos (ends-at-pos sentence))
@@ -640,10 +676,10 @@
         (format t "~&[paren] p~a ~a"
                 (pos-token-index position-before) treetop))
  
-      (when (word-p treetop)
-        (when (eq treetop *the-punctuation-period*)
+      (when (and (word-p treetop)
+                 (memq treetop *sentence-terminating-punctuation*))
           (tr :terminated-sweep-at position-after)
-          (return)))
+          (return))
       
       (word-traversal-hook treetop position-before position-after)
       ;; Traversal actions are managed by a hash table from the word

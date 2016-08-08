@@ -329,6 +329,10 @@
   (what-to-do-at-the-forest-level :new-forest-protocol)
   (setq *kind-of-chart-processing-to-do* :successive-sweeps)
   (setq *sweep-sentence-treetops* t
+        *sweep-for-patterns* t
+        *sweep-for-early-information* t
+        *sweep-for-conjunctions* t
+        *sweep-for-parentheses* t
         *chunk-sentence-into-phrases* t
         *big-mechanism-ngs* t
         *parse-chunk-interior-online* t
