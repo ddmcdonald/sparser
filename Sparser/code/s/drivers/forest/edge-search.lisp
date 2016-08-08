@@ -272,30 +272,31 @@
    semantically valid."
   (tr :can-we-whack-pair pair)
   (multiple-value-bind (cached-rule pair-seen)
-                       (gethash pair *rules-for-pairs*)
+      (gethash pair *rules-for-pairs*)
     (let ((rule 
            (if pair-seen 
-             cached-rule
+               cached-rule
                ;; don't recompute the rule for the pair, saves a lot of time,
                ;; particularly for pairs with no rules
-             (setf (gethash pair *rules-for-pairs*) 
-                   (multiply-edges (car pair) (second pair))))))
+               (setf (gethash pair *rules-for-pairs*) 
+                     (multiply-edges (car pair) (second pair))))))
       (if rule
-        (when (cond
-               ((not (consp (cfr-referent rule))))
-               ((eq :funcall (car (cfr-referent rule)))
-                (test-subcat-rule pair rule))
-               (t ;; most rules have referent slots which are cons cells, 
-                ;; but which are not :funcalls, e.g.
-                ;; (#<PSR12615  select ->  select biological>
-                ;;   ((:head left-referent) 
-                ;;    (:binding (#<variable patient> . right-referent)))) 
-               t ))
-          (tr :whack-pair-with-rule rule)
-          rule)
-        (else
-          (tr :no-rule-to-whack-pair)
-          nil)))))
+          (when (cond
+                  ((not (consp (cfr-referent rule))))
+                  ((eq :funcall (car (cfr-referent rule)))
+                   (or *check-semantic-applicability* ;; we are running semantic checks in the multiply operation
+                       (test-subcat-rule pair rule)))
+                  (t ;; most rules have referent slots which are cons cells, 
+                   ;; but which are not :funcalls, e.g.
+                   ;; (#<PSR12615  select ->  select biological>
+                   ;;   ((:head left-referent) 
+                   ;;    (:binding (#<variable patient> . right-referent)))) 
+                   t ))
+            (tr :whack-pair-with-rule rule)
+            rule)
+          (else
+            (tr :no-rule-to-whack-pair)
+            nil)))))
 
 (defun test-subcat-rule (pair rule)
   ;; This simulates the context above normal rule-driven calls to
