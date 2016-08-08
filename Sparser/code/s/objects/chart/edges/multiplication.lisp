@@ -27,6 +27,7 @@
      sizes are spelled out in the function initial-rule-table-size."))
 
 (defun initial-rule-table-size ()
+  (declare (special *grammar-size*))
   (case *grammar-size* 
     (:base-rules             1500)
     (:sublanguage-rule-set  10000)
