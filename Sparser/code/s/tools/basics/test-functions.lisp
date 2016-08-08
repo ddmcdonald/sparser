@@ -84,6 +84,10 @@
   (declare (special *aspp2-whole*))
   (test-corpus *aspp2-whole* numbers))
 
+(defun test-dynamic-model (&rest numbers)
+  (declare (special *dynamic-model-sents*))
+  (test-corpus *dynamic-model-sents* numbers))
+
 (defun test-load-test (&rest numbers)
   (declare (special *load-test-sents*))
   (test-corpus *load-test-sents* numbers))
@@ -173,6 +177,7 @@
     (print-sem-tree st)))
 
 (defun print-sem-tree (sem-tree &optional (stream *standard-output*))
+  (declare (special *for-spire*))
   (let ((*suppress-indiv-uids* t))
     (declare (special *suppress-indiv-uids*))
     (cond ((individual-p sem-tree)
