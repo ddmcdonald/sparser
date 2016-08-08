@@ -38,7 +38,8 @@
                                        pos-before-open pos-after-open
                                        pos-before-close pos-after-close)
 
-  (declare (special *special-acronym-handling* *allow-large-paired-interiors*))
+  (declare (special *special-acronym-handling* *allow-large-paired-interiors*
+                    *treat-single-Capitalized-words-as-names*))
   (tr :paired-punct-interior type pos-after-open pos-before-close)
 
   (let ((layout (analyze-segment-layout pos-after-open
