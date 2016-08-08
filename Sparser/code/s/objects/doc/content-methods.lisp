@@ -507,7 +507,8 @@ is a case in handle-any-anaphor
    (preposed-aux
     :initform nil :accessor preposed-aux
     :documentation "The position of a auxiliary or model that was
-      'moved' to 'sentence-initial' to indicate a question."))
+      'moved' to 'sentence-initial' to indicate a question, along
+      with its original form label"))
   
   (:documentation "Each field is a kind of phenomena that
     we can't make a decision about. The simplest thing to
@@ -516,9 +517,13 @@ is a case in handle-any-anaphor
     and the function that reads the record."))
 
 
-(defmethod record-preposed-aux ((p position))
-  (let ((s (identify-current-sentence)))
-    (setf (preposed-aux (contents s)) p)))
+(defgeneric record-preposed-aux (position original-form)
+  (:documentation "Store enough information about a preposed verbal
+     element to be able to later reconstruct its properties if it were
+     to be 'moved' back to its standard position in a VG.")
+  (:method ((p position) (original-form category))
+    (let ((s (identify-current-sentence)))
+      (setf (preposed-aux (contents s)) (cons p original-form)))))
 
 (defun preposed-aux? ()
   "If the delayed action record in the contents of the current sentence

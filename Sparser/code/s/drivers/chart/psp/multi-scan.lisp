@@ -358,7 +358,8 @@
 
 ;;;
 #| (p "What color is the block?")
-   (p "is the block on the table?")
+   (p "Is the block on the table?")
+   (p "Could we put on one more?")
    (p "did we make a three block stack?")
    (p "How big is the stack?")
    (p "How many blocks did you add to the row?")
@@ -378,12 +379,22 @@
          ;; We get an edge-vector is there are multiple edges
          ;; or a word if there are no edges
          (form-label (when (edge-p first-item)
-                       (edge-form first-item))))
+                       (edge-form first-item)))
+         (word (when form-label
+                 (find-head-word first-item))))
+
+    (flet ((store-preposed ()
+             (setf (edge-form first-item) category::preposed-auxiliary)
+             (record-preposed-aux position-before form-label)))
+    
     (when form-label
       (case (cat-symbol form-label)
         (category::verb
-         (setf (edge-form first-item) category::preposed-auxiliary)
-         (record-preposed-aux position-before))))))
+         (when (auxiliary-word? word)
+           (store-preposed)))
+        (category::modal
+         (store-preposed)) ;; really relabel?
+        )))))
 
 
 

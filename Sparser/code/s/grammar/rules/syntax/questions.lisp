@@ -33,6 +33,8 @@
 	   :etf (svo-passive)))
 |#
 
+(defun is-this-a-sentence? (sentence) )
+
 
 ;;--- swallowing the inverted auxiliary into WH/be
 
