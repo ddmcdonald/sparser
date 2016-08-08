@@ -19,6 +19,7 @@
 
 (defparameter *string-from-analyze-text-from-string* nil)
 (defun analyze-text-from-string (string)
+  (declare (special *trap-error-skip-sentence*))
   (if *trap-error-skip-sentence*
       (handler-case
           (analyze-text-from-string-guts string) 
