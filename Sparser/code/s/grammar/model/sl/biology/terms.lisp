@@ -566,7 +566,7 @@
 ;; we dropped out "follow" as a verb in biology, in favor of using "following" as a
 ;;  "preposition" and as an adjective
 ;;(adj "following" :super bio-predication)
-(define-category following-adj :specializes abstract
+(define-category following-adj :specializes bio-predication
                  :realization (:adj "following"))
 
 
