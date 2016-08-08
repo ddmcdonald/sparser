@@ -23,6 +23,8 @@
 
 
 (in-package :sparser)
+(defvar *directory-for-tree-snapshots*
+  (asdf:system-relative-pathname :sparser ""))
 
 #| For R3 we have organized our different training and testing
 texts into files that consist of calls to 'p', one for each
@@ -178,7 +180,8 @@ previous records of treetop-counts.
 (defun save-treetop-snapshots (&optional
 				 (save-info nil)
 				 (corpora *default-snapshot-corpora*))
-  (declare (ignore save-info *directory-for-tree-snapshots*))
+  (declare (special *directory-for-tree-snapshots*)
+           (ignore save-info))
   (loop for c in corpora
      do (terpri)
        (print c)
@@ -234,8 +237,7 @@ previous records of treetop-counts.
 
 ;;--- write the snapshot to a file 
 
-(defvar *directory-for-tree-snapshots*
-  (asdf:system-relative-pathname :sparser ""))
+
 
 
 (defparameter *file-for-treetop-semantic-snapshots*
@@ -254,9 +256,9 @@ previous records of treetop-counts.
       (error "No sentence corpus has been defined with the name ~a" name))
     (save-treetop-snapshot corpus file)))
 
+(defvar *file-for-treetop-snapshots*)
 (defmethod save-treetop-snapshot ((corpus sentence-corpus)
                                   &optional (file *file-for-treetop-snapshots*))
-  (declare (special *file-for-treetop-snapshots*))
   (let ((snapshot (make-treetop-snapshot corpus)))
     (with-open-file (stream file
                      :direction :output
