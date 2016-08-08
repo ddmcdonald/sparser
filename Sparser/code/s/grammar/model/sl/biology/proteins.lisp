@@ -1492,7 +1492,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "HOOK2_HUMAN" ("HOOK2" "hHK2" "h-hook2")) 
 (define-protein "HPBP1_HUMAN" ("Hsp70" "Hsp70-binding protein 1" "HspBP1" "Heat shock protein-binding protein 1" "Hsp70-binding protein 2" "HspBP2" "Hsp70-interacting protein 1" "Hsp70-interacting protein 2")) 
 (define-protein "HPRT_HUMAN" ("T/D" "Hypoxanthine-guanine phosphoribosyltransferase" "HGPRT" "HGPRTase")) 
-(define-protein "HPSE_HUMAN" ("faster" "Heparanase" "Endo-glucoronidase" "Heparanase-1" "Hpa1")) 
+(define-protein "HPSE_HUMAN" ( "Heparanase" "Endo-glucoronidase" "Heparanase-1" "Hpa1")) 
 (define-protein "HRK_HUMAN" ("Activator of apoptosis harakiri" "BH3-interacting domain-containing protein 3" "Neuronal death protein DP5")) 
 (define-protein "HS105_HUMAN" ("Hsph1" "Heat shock protein 105 kDa" "Antigen NY-CO-25" "Heat shock 110 kDa protein")) 
 (define-protein "HS90B_HUMAN" ("HSP90-β" "Heat shock protein HSP 90-beta" "HSP 90" "Heat shock 84 kDa" "HSP 84" "HSP84")) 
