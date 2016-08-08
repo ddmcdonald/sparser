@@ -527,12 +527,17 @@ is a case in handle-any-anaphor
 
 (defun preposed-aux? ()
   "If the delayed action record in the contents of the current sentence
-   records a preposed auxiliary return that auxiliary and the position
-   it is on."
+   records a preposed auxiliary return that auxiliary, the position
+   it is on, and its original form."
   (let* ((s (identify-current-sentence))
-         (pos-of-aux (preposed-aux (contents s))))
-    (values (car pos-of-aux)
-            (cdr pos-of-aux))))
+         (preposed-aux-info (preposed-aux (contents s))))
+    (when preposed-aux-info
+      (let ((position (car preposed-aux-info))
+            (original-form (cdr preposed-aux-info)))
+        (values (pos-terminal position)
+                position
+                original-form)))))
+
 
 (defmethod add-pending-def-ref (determiner (e edge) (s sentence))
   (let ((contents (contents s)))
