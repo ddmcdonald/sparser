@@ -426,7 +426,7 @@
     ((itypep head category::determiner) ;; "all these"
      (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
     (t
-     (cerror "~&@@@@@ adding quantifier ~s to ~s~&"
+     (warn "~&@@@@@ adding quantifier ~s to ~s~&"
 	     (retrieve-surface-string quantifier)
 	     (if (individual-p head)
                  (retrieve-surface-string head)
@@ -700,7 +700,7 @@
                (vg-has-adverb-variable? (car (value-of 'items vg)) vg-phrase adverb))
               t)
              (t
-              (break "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
+              (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
                      (edge-string (left-edge-for-referent))
                      (edge-string (right-edge-for-referent))
                      (sentence-string *sentence-in-core*))
@@ -743,10 +743,12 @@
     ((referential-category-p vg)
      (find-variable-for-category 'adverb vg))
     (t
+     #+ignore
      (error "Trying to add adverb to verbal element whose semantics won't take ~s.~% Semantics is ~s, ~%surface string is ~s"
 	    adverb
 	    vg-phrase
-	    (sur-string vg)))))
+	    (sur-string vg))
+     nil)))
 
 
 
@@ -763,7 +765,10 @@
    to identity the preposition in a pp, or prep-complement, etc."
   (declare (special category::preposition edge ))
   (let* ((prep-edge (edge-left-daughter edge))
-         (prep-word (edge-left-daughter prep-edge)))
+         (prep-word (when (edge-p prep-edge)
+                      ;; in case where  (LOOK-FOR-PREP-BINDERS)
+                      ;;  ends up leading to this, the edge is a preposition itself
+                      (edge-left-daughter prep-edge))))
     (declare (special prep-edge prep-word))
     (cond
      ((word-p prep-word)
@@ -793,8 +798,9 @@
                 prep-word))))
      (t
       (push-debug `(,edge ,prep-edge ,prep-word))
-      (break "Unexpected type of preposition: ~a~%~a"
-             (type-of prep-word) prep-word)))))
+      (warn "Unexpected type of preposition: ~a~%~a"
+            (type-of prep-word) prep-word)
+      nil))))
 
 
 (defun adjoin-pp-to-vg (vg pp)
@@ -806,15 +812,17 @@
   (let* ((pp-edge (right-edge-for-referent))
          (prep-word (identify-preposition pp-edge)) 
          (*pobj-edge* (edge-right-daughter pp-edge))
-         (pobj-referent (edge-referent *pobj-edge*))
+         (pobj-referent (when (edge-p *pobj-edge*)
+                          (edge-referent *pobj-edge*)))
          (variable-to-bind
-          ;; test if there is a known interpretation of the VG/PP combination
-          (or (subcategorized-variable vg prep-word pobj-referent)
-              (and (itypep pp 'upon-condition)
-                   (find-variable-for-category 'context (itype-of vg)));; circumstance)
-	      ;; or if we are making a last ditch effore
-              (and *force-modifiers*
-                   'modifier))))
+          (when prep-word
+            ;; test if there is a known interpretation of the VG/PP combination
+            (or (subcategorized-variable vg prep-word pobj-referent)
+                (and (itypep pp 'upon-condition)
+                     (find-variable-for-category 'context (itype-of vg))) ;; circumstance)
+                ;; or if we are making a last ditch effore
+                (and *force-modifiers*
+                     'modifier)))))
     (declare (special *pobj-edge*))
 
     (cond
