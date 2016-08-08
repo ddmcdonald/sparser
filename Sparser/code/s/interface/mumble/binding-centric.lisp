@@ -36,17 +36,11 @@
     (preposition :prep)
     (interjection :interjection)))
 
-(defgeneric lemma (item pos)
-  (:method ((c sp::category) pos)
-    (getf (sp::get-tag :lemma c) (sparser-pos pos)))
-  (:method ((i sp::individual) pos)
-    (lemma (sp::itype-of i) pos)))
-
 (defgeneric label (object &optional pos)
   (:documentation "Produce a Mumble word that denotes the given object.")
   (:method ((i sp::individual) &optional (pos 'noun) &aux
             (raw-label (or (sp::rdata-head-word i)
-                           (lemma i pos)
+                           (sp::lemma i (sparser-pos pos))
                            (sp::value-of 'sp::name i)
                            (sp::value-of 'sp::word i)
                            (string-downcase ; last-ditch guess

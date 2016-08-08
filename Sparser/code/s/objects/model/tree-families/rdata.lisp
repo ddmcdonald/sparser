@@ -583,50 +583,39 @@ grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-rea
 
 ;;--- The word case just by itself
 
-(defun setup-category-lemma (category word-expr)
+(defgeneric lemma (item pos)
+  (:method ((c category) pos)
+    (getf (get-tag :lemma c) pos))
+  (:method ((i individual) pos)
+    (lemma (itype-of i) pos)))
+
+(defgeneric (setf lemma) (word item pos)
+  (:method (word (c category) pos)
+    (setf (getf (get-tag :lemma c) pos) word)))
+
+(defun setup-category-lemma (category lemmata)
   "Used when the name of a category is the same as some word,
-   e.g. 'comparative', and the realization field is used
-   to provide the rspec for the words of instances of the category."
+e.g. 'comparative', and the realization field is used to provide
+the rspec for the words of instances of the category."
   ;;/// look at apply-realization-schema-to-individual for part of
   ;; the old approach to this problem
-  ;; (push-debug `(,category ,word-expr)) (break "top of setup lemma")
-  (cond
-   ((consp (car word-expr)) ;; multiple definitions 
-    (dolist (expr word-expr)
-      (setup-category-lemma category expr)))
-   (t
-    (unless (and (listp word-expr)
-                 (= 2 (length word-expr)))
-      (push-debug `(,category ,word-expr))
-      (error "The lemma value for ~a is not a list of just two items:~
-            ~%  ~a" category word-expr))
-    (let ((keyword (car word-expr))
-          (string (cadr word-expr))) 
-      (unless (keywordp keyword) ;; friendly DWIM
-        (setq keyword (intern (symbol-name keyword) (find-package :keyword))))
-      (unless (memq keyword *legal-word-rdata-keywords*)
-        (error "Unexpected keyword in lemma for ~a:~%~a"
-               category keyword))
-      (typecase string
-        (string)
-        (cons) ;;/// add check for irregular keyword
-        (otherwise 
-         (error "Unexpected type for word argument in lemma for ~a:~%~a ~a"
-                category (type-of string) string)))
-
-      (let* ((head-word (deref-rdata-word string category))
-             (word-arg `(,keyword ,head-word))
-             (rules (head-word-rule-construction-dispatch
-                     word-arg category category)))
-        (setf (get-tag :lemma category) word-arg)
-        (add-rules-to-category category rules)
-        :done)))))
+  (loop for (keyword string) on lemmata by #'cddr
+        do (check-type keyword symbol)
+           (unless (keywordp keyword) ;; friendly DWIM
+             (setq keyword (intern (symbol-name keyword)
+                                   (find-package :keyword))))
+           (assert (memq keyword *legal-word-rdata-keywords*)
+                   (keyword)
+                   "Unexpected keyword ~a in lemma for ~a." keyword category)
+           (check-type string (or string cons))
+           (let* ((head-word (deref-rdata-word string category))
+                  (word-arg `(,keyword ,head-word))
+                  (rules (head-word-rule-construction-dispatch
+                          word-arg category category)))
+             (setf (lemma category keyword) head-word)
+             (add-rules-to-category category rules))))
 
 
-
-
-
-  
 ;;;------------------------------------------------
 ;;; the real driver: symbols -> objects by keyword
 ;;;------------------------------------------------
