@@ -103,6 +103,7 @@
 
 
 (defun interp-big-mech-chunk (chunk from-right &aux tt)
+  (declare (special *rules-for-pairs*))
   ;;(push-debug `(,chunk)) (break "interp chunk: ~a" chunk)
   (when *save-chunk-edges*
     (add-chunk-edges-snapshot))
@@ -221,7 +222,7 @@
 
 
 (defun segment-rule-check (pair chunk)
-  (declare (special *vp-categories*))
+  (declare (special *vp-categories* *rules-for-pairs*))
   ;; syntactic sugar and tracing for the choice of rule test
   ;; to make. Could start with just simple rules and then
   ;; extend to semantic and then syntactic on successive passes
