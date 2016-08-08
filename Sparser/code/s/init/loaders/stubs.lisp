@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "stubs"
 ;;;   Module:  "init;loaders;"
-;;;  version:  March 2016
+;;;  version:  August 2016
 ;;;
 ;;; Provide definitions for functions we know (given the configuration)
 ;;; don't have definitions.
@@ -152,6 +152,10 @@
        (declare (ignore p)))
      (defun try-princing-name (w s id)
        (declare (ignore w s id)))
+     (defun pfwpnf (start end) (declare (ignore start end)))
+     (defun establish-pnf-routine (keyword) (declare (ignore keyword)))
+     (defun handle-period-as-initial (before) (declare (ignore before)))
+     (defun convert-to-canonical-name-form (raw) (declare (ignore raw)))
      (defvar *pnf-routine* nil)
      (defvar *treat-single-Capitalized-words-as-names* nil)
 )
