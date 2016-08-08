@@ -1127,6 +1127,16 @@
 	   :etf (svo-passive)
            :from from))
 
+(define-category gene-transcript-over-express :specializes caused-bio-process
+    :binds ((location bio-location)
+            (from biological))
+    :restrict ((agent (:or bio-entity cell-line)))
+    :realization
+    (:verb "over-express"
+	   :noun "over-expression"
+	   :etf (svo-passive)
+           :from from))
+
 
 (define-category gene-code :specializes caused-bio-process
     :binds ((location bio-location)
