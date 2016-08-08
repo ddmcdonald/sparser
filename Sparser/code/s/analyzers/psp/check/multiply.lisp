@@ -64,6 +64,9 @@
   "This enables checking the form of the result of a semantic rule, as well as the form of the RHS, to reduce the mis-use
  of ETF derived rules for clauses that are applied when a participle modifies an NG")
 
+(defparameter *check-semantic-applicability* t
+  "This enables checking the semantic applicability of syntactic rules and form rules, even when whack-a-rule is not running.")
+
 (defparameter *check-forms* nil
   "When this is T, ensure that all rules are only applied to 
    compatible syntactic forms")
@@ -293,8 +296,16 @@
     (when (and (check-rule-form rule left-edge right-edge) 
                (or (null chunk)
                    (not *check-chunk-forms*)
-                   (check-rule-result-form-against-chunk rule right-edge chunk)))
-      rule)))
+                   (check-rule-result-form-against-chunk rule right-edge chunk))
+               (or (not *check-semantic-applicability*)
+                   (test-semantic-applicability rule left-edge right-edge)))
+      rule)
+    ))
+
+(defun test-semantic-applicability (rule left-edge right-edge)
+  (or (not (and (consp (cfr-referent rule))
+                (eq (car (cfr-referent rule)) :funcall)))
+      (test-subcat-rule (list left-edge right-edge) rule)))
 
 (defun check-rule-form (rule left-edge right-edge) 
   ;; only accept rules that are compatible with their context
