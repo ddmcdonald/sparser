@@ -375,26 +375,31 @@
   (declare (special category::preposed-auxiliary))
   (push-debug `(,sentence))
   (let* ((position-before (starts-at-pos sentence))
-         (first-item (next-treetop/rightward position-before))
-         ;; We get an edge-vector is there are multiple edges
-         ;; or a word if there are no edges
-         (form-label (when (edge-p first-item)
-                       (edge-form first-item)))
-         (word (when form-label
-                 (find-head-word first-item))))
+         (first-item (next-treetop/rightward position-before)))
+    ;; We get an edge-vector is there are multiple edges
+    ;; or a word if there are no edges
+    (let* ((edge (etypecase first-item
+                   (word)
+                   (polyword)
+                   (edge first-item)
+                   (edge-vector (highest-edge first-item))))
+           (form-label (when edge (edge-form edge)))
+           (word (when edge (find-head-word edge))))
 
-    (flet ((store-preposed ()
-             (setf (edge-form first-item) category::preposed-auxiliary)
-             (record-preposed-aux position-before form-label)))
+      (flet ((store-preposed ()
+               (setf (edge-form first-item) category::preposed-auxiliary)
+               (record-preposed-aux position-before form-label)))
     
-    (when form-label
-      (case (cat-symbol form-label)
-        (category::verb
-         (when (auxiliary-word? word)
-           (store-preposed)))
-        (category::modal
-         (store-preposed)) ;; really relabel?
-        )))))
+        (when form-label
+          (case (cat-symbol form-label)
+            (category::verb
+             (when (auxiliary-word? word)
+               (store-preposed)))
+            (category::modal
+             (store-preposed))
+            (category::wh-pronoun
+             (delimit-and-label-initial-wh-term position-before))))))))
+
 
 
 

@@ -33,7 +33,18 @@
 	   :etf (svo-passive)))
 |#
 
+(define-category polar-question
+  :specializes question-core
+  :documentation "This is a labeling category in that it does
+ not add any refinements or extensions to question-core. It just
+ labels the statement as a question: 'is it the case that <statement>'.")
+
+
 (defun is-this-a-sentence? (sentence) )
+
+
+(defun delimit-and-label-initial-wh-term (pos-before) )
+  
 
 
 ;;--- swallowing the inverted auxiliary into WH/be
