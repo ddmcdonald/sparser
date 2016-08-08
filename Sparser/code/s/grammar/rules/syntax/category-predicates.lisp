@@ -1,10 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 1992-1999,2011-2015 David D. McDonald  -- all rights reserved
-;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
+;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  23 July 2016
+;;;  Version:  July 2016
 
 ;; Predicates on synteactic form categories, mostly for the use of the chunker.
 
