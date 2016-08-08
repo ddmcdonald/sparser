@@ -78,7 +78,7 @@
 (defun relevant-type-of-individual (i)
   ;; close through propbably not completely correct
   (and (individual-p i)
-       (not (itypep i category::prepositional-phrase)))
+       (not (itypep i 'prepositional-phrase)))
   ;;(itypep i 'biological)
   )
 
@@ -138,7 +138,7 @@
               (individual 
                (cond
                 ;;((itypep value 'unclear) nil)
-                ((itypep value category::prepositional-phrase)
+                ((itypep value 'prepositional-phrase)
                  (push (list var-name
                              (collect-model-description (value-of 'pobj value)))
                        objects))
