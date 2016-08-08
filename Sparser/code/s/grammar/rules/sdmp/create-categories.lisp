@@ -68,7 +68,7 @@
           category::wh-pronoun
           category::reflexive/pronoun
           ))
-        (category::ap)
+        (category::adjp)
         (category::subordinate-conjunction)
         (category::conjunction)
 	(category::adjunct)
@@ -103,6 +103,11 @@
           category::np-head
           category::det) ;; "that"
 	 (setf (edge-form edge) category::np))
+
+        (category::comparative-adjective
+         category::comparative-adjp)
+        (category::superlative-adjective
+         category::superlative-adjp)
         
 	((category::verb 
           category::verb+s 

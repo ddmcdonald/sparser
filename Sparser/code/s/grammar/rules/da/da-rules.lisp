@@ -1157,35 +1157,35 @@
      (eval (make-subj-vp+ing-rule-pair subj)))
 
 
-;;;;; make it possible for APs to post-modify NPs, when needed
+;;;;; make it possible for ADJPs to post-modify NPs, when needed
 
-(define-debris-analysis-rule NP-AP
-    :pattern (NP AP)
+(define-debris-analysis-rule NP-ADjP
+    :pattern (NP ADJP)
     :action (:function postmodifying-adj first second))
 
-(define-debris-analysis-rule S-AP
-    :pattern (S AP)
+(define-debris-analysis-rule S-ADJP
+    :pattern (S ADJP)
     :action (:function postmodifying-adj first second))
 
 
-(define-debris-analysis-rule VP-AP
-    :pattern (VP AP)
+(define-debris-analysis-rule VP-ADJP
+    :pattern (VP ADJP)
     :action (:function postmodifying-adj first second))
 
-(define-debris-analysis-rule PP-AP
-    :pattern (PP AP)
+(define-debris-analysis-rule PP-ADJP
+    :pattern (PP ADJP)
     :action (:function postmodifying-adj first second))
 
-(defun postmodifying-adj (first-edge ap-edge)
-  (let* ((ap (edge-referent ap-edge))
+(defun postmodifying-adj (first-edge adjp-edge)
+  (let* ((adjp (edge-referent adjp-edge))
          (target
           (find-target-satisfying
            (right-fringe-of first-edge)
            #'(lambda (e)
                (and (np-target? e)
-                    (subcategorized-variable ap :subject (edge-referent e)))))))
+                    (subcategorized-variable adjp :subject (edge-referent e)))))))
     (when target
-      (let ((ref (adj-postmodifies-noun (edge-referent target) ap ap-edge)))
+      (let ((ref (adj-postmodifies-noun (edge-referent target) adjp adjp-edge)))
         (make-edge-spec
          :category (edge-category target)
          :form (edge-form target)

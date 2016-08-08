@@ -217,9 +217,11 @@
 (def-form-category  pp)
 (def-form-category  pp-wh-pronoun)
 (def-form-category  advp)
+(def-form-category  comparative-advp)
+(def-form-category  superlative-advp)
 (def-form-category  adjp)
-(def-form-category  ap) ;; adjective phrase as in "downstream from RAS"
-                        ;; can be used a NP postmod, or join with copula
+(def-form-category  comparative-adjp)
+(def-form-category  superlative-adjp)
 (def-form-category  adjg) ;; for consistency with ng and vg -- could have been adj-bar?
 (def-form-category  qp)
 
@@ -297,6 +299,8 @@
 (def-form-category  reflexive/pronoun)  ;; "yourself"
 
 (def-form-category  adjective)
+(def-form-category  comparative-adjective)
+(def-form-category  superlative-adjective)
 (def-form-category  proper-adjective)
 (def-form-category  comparative)
 (def-form-category  superlative)
@@ -306,6 +310,8 @@
 (def-form-category  deictic-time-word)
 
 (def-form-category  adverb)
+(def-form-category  comparative-adverb)
+(def-form-category  superlative-adverb)
 (def-form-category  modal)
 
 

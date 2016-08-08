@@ -135,66 +135,76 @@
 (loop for nb in `(verb+ing ;; treat present-participles as noun-like
 		  ,@*n-bar-categories*)
    do
-
-  (eval 
-   `(def-syntax-rule (adjective ,nb) ;; "black suv"
-        :head :right-edge
-        :form n-bar
-        :referent (:function adj-noun-compound left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
-        :head :left-edge
-        :form n-bar
-        :referent (:function adj-postmodifies-noun left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (,nb ap) ;; "RAF activation downstream of RAS" 
-        :head :left-edge
-        :form n-bar
-        :referent (:function adj-postmodifies-noun left-edge right-edge )))
-  (eval
-   `(def-syntax-rule (verb+ed ,nb)
-        :head :right-edge
-        :form n-bar
-        :referent (:function verb-noun-compound left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (vp+ed ,nb)
-        :head :right-edge
-        :form n-bar
-        :referent (:function verb-noun-compound left-edge right-edge)))
-
-  (eval
-   `(def-syntax-rule (verb+ing ,nb)
-        :head :right-edge
-        :form n-bar 
-        :referent (:function verb+ing-noun-compound left-edge right-edge)))
-  (eval
-   `(def-syntax-rule (quantifier ,nb)
-        :head :right-edge
-        :form n-bar 
-        :referent (:function quantifier-noun-compound left-edge right-edge)))
-  ;; this rule seemed to generate bad parses of things like 1C, 
-  ;; and not to be terribly useful...
-  ;; but should be OK now
-  (eval
-   `(def-syntax-rule (number ,nb)
-        :head :right-edge
-        :form n-bar 
-        :referent (:function number-noun-compound
-                             left-edge right-edge)))
-
-  (loop for nbmod in *n-bar-categories*
-    do   
-    (eval
-     `(def-syntax-rule (,nbmod ,nb) 
-          :head :right-edge
-          :form n-bar 
-          :referent (:function noun-noun-compound left-edge right-edge)))))
+     
+     (eval 
+      `(def-syntax-rule (adjective ,nb) ;; "black suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function adj-noun-compound left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
+           :head :left-edge
+           :form n-bar
+           :referent (:function adj-postmodifies-noun left-edge right-edge)))
+     (eval 
+      `(def-syntax-rule (comparative-adjective ,nb) ;; "black suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function adj-noun-compound left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (,nb comparative-adjective) ;; "RAS in vivo"
+           :head :left-edge
+           :form n-bar
+           :referent (:function adj-postmodifies-noun left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (,nb adjp) ;; "RAF activation downstream of RAS" 
+           :head :left-edge
+           :form n-bar
+           :referent (:function adj-postmodifies-noun left-edge right-edge )))
+     (eval
+      `(def-syntax-rule (verb+ed ,nb)
+           :head :right-edge
+           :form n-bar
+           :referent (:function verb-noun-compound left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (vp+ed ,nb)
+           :head :right-edge
+           :form n-bar
+           :referent (:function verb-noun-compound left-edge right-edge)))
+     
+     (eval
+      `(def-syntax-rule (verb+ing ,nb)
+           :head :right-edge
+           :form n-bar 
+           :referent (:function verb+ing-noun-compound left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (quantifier ,nb)
+           :head :right-edge
+           :form n-bar 
+           :referent (:function quantifier-noun-compound left-edge right-edge)))
+   ;; this rule seemed to generate bad parses of things like 1C, 
+   ;; and not to be terribly useful...
+   ;; but should be OK now
+     (eval
+      `(def-syntax-rule (number ,nb)
+           :head :right-edge
+           :form n-bar 
+           :referent (:function number-noun-compound
+                                left-edge right-edge)))
+     
+     (loop for nbmod in *n-bar-categories*
+        do   
+          (eval
+           `(def-syntax-rule (,nbmod ,nb) 
+                :head :right-edge
+                :form n-bar 
+                :referent (:function noun-noun-compound left-edge right-edge)))))
 
 ;; These two are special cases where we do want to attach post-modifiers to full NPs
 ;;; (these occur because the determiner is combined with the n-bar before we see the
 ;;;   post-modifying adjective)
 
-(def-syntax-rule (np ap) ;; "RAS in vivo"
+(def-syntax-rule (np adjp) ;; "RAS in vivo"
     :head :left-edge
     :form np
     :referent (:function adj-postmodifies-noun left-edge right-edge ))
@@ -723,7 +733,7 @@
 
 (def-syntax-rule (comparative adjective)
     :head :right-edge
-    :form adjective
+    :form comparative-adjective
     :referent (:method modified left-edge right-edge))
 
 (def-syntax-rule (adverb adjective)
@@ -742,7 +752,7 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 (def-syntax-rule (adjective pp)
     :head :left-edge
-    :form ap
+    :form adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
 

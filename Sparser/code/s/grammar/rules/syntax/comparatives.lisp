@@ -43,6 +43,11 @@
     :tree-families '(pre-adv-adverb pre-adj-adverb)))
                      
 
+(defun define-superlative (string &key rule-label discriminator)
+  (define-function-term string 'superlative
+    :rule-label rule-label
+    :discriminator discriminator
+    :tree-families '(pre-adv-adverb pre-adj-adverb)))
 
 
 

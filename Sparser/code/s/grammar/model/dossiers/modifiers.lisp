@@ -94,12 +94,14 @@
 ;;  ok for now. ///Could we generalize the "than" part? It will certainly
 ;;  have a common interpretation.
 
+(define-comparative "more")
+(define-comparative "most")
+
 ;; These don't combine with adverbs
 ;;
 (define-comparative "fewer")
 (define-comparative "less")
-(define-comparative "more")
-(define-comparative "most")
+
 
 
 ;; Strictly speaking, the "than" cases have different grammatical properties

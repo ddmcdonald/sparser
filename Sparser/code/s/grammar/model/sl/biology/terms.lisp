@@ -45,7 +45,7 @@
 (noun "mutation profiling" :super bio-method)
 (noun "cell adhesive  structure" :super cellular-location)
 (adj "in excess" :super bio-predication)
-
+(adj "abundant" :super bio-predication)
 
 ;;from pathway comments
 

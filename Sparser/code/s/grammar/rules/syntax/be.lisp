@@ -106,7 +106,7 @@
   :form vg
   :referent  (:function make-copular-adjective left-edge right-edge))
 
-(def-form-rule (be ap)
+(def-form-rule (be adjp)
   :form vp
   :referent (:function make-copular-adjective left-edge right-edge))
   
@@ -394,7 +394,7 @@ phosphorylated by Src."
   :form vg
   :referent (:function make-copular-adjective left-edge right-edge))
 
-(def-form-rule (seem ap)
+(def-form-rule (seem adjp)
   :form vp
   :referent (:function make-copular-adjective left-edge right-edge))
 |#

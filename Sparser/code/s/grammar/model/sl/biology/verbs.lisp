@@ -2178,7 +2178,7 @@
 
 (eval (make-copular-def "seem"))
 
-(def-form-rule (seem ap)
+(def-form-rule (seem adjp)
   :form vp
   :referent (:function make-copular-adjective left-edge right-edge))
 

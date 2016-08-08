@@ -54,7 +54,7 @@ phosphorylated by Src."
            :form vg
            :referent (:function make-copular-adjective left-edge right-edge))
 
-       (def-form-rule (,verb ap)
+       (def-form-rule (,verb adjp)
            :form vp
            :referent (:function make-copular-adjective left-edge right-edge)))))
 

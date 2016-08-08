@@ -51,7 +51,7 @@
     :mapping ((result . :self)
               (description . value)
               (vp . :self)
-              (complement np adjective ap)))
+              (complement np adjective adjp)))
    (:tree-family
     ;; This covers '(the) speed (is (150 knots))'
     :mapping((result . :self)
