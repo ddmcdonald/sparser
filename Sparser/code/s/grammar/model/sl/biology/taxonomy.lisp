@@ -348,7 +348,17 @@
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
 
-(define-category cellular-process :specializes bio-process
+(define-category response :specializes bio-process
+    :binds ((beneficiary biological)
+            (agent biological)) ;; (:or biological drug)))
+    :realization
+    (:verb "respond"
+           :etf (sv)
+           :noun "response"
+           :of beneficiary
+           :to agent))
+
+(define-category cellular-process :specializes response
   :mixins (has-UID has-name biological)
   :realization 
   (:noun "cellular response")
@@ -726,7 +736,7 @@
 
 (noun "chemotherapy" :super medical-treatment)
 (noun "organ transplant" :super medical-treatment)
-(noun "therapeutic strategy" :super medical-treatment)
+;;(noun "therapeutic strategy" :super medical-treatment)
 
 (define-category drug :specializes molecule
   :lemma (:common-noun "drug")
