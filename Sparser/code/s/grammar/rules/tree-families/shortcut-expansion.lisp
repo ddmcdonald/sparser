@@ -137,8 +137,7 @@
          (head-keyword (schema-head-keyword scheme))
          (mapping (assemble-scheme-form scheme substitution-map etf category))
          (head-word-pname (cdr (assq head-keyword word-keys)))
-         (rr (make-realization-data-record
-              category :etf etf :map mapping))
+         (rr (make-realization-data category :etf etf :map mapping))
          head-word  irregulars )
     (record-use-of-tf-by etf category)
     (cond
@@ -165,7 +164,7 @@
       (setq head-word (resolve/make head-word-pname)
             irregulars (cdr (assq :irregulars word-keys)))))
     (record-rdata-head rr head-word)
-    (record-rdata-irregulars rr irregulars)
+    (setf (rdata-head-irregulars rr) irregulars)
 
     ;; (push-debug `(,etf ,head-keyword ,head-word ,mapping)) ;(break "1")
     (unless head-word
