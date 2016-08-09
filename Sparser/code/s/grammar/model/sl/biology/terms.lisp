@@ -919,15 +919,6 @@
 	   :noun "resistance"
            :to treatment))
 
-(noun "response" :super bio-process
-    :binds ((beneficiary biological)
-            (agent biological)) ;; (:or biological drug)))
-    :realization
-    (;; :verb "respond" cant get the right :etf for verbs
-     :noun "response"
-     :of beneficiary
-     :to agent))
-
 (define-category responsive :specializes bio-relation
      :binds ((treatment (:or bio-process bio-entity)))
      :realization
