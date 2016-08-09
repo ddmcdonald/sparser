@@ -351,7 +351,7 @@
 (define-category cellular-process :specializes bio-process
   :mixins (has-UID has-name biological)
   :realization 
-  (:noun "processYYY")
+  (:noun "cellular response")
   :documentation "No content by itself, provides a common parent
   for 'processing', 'ubiquitization', etc. that may be the basis
   of the grammar patterns.")
@@ -726,6 +726,7 @@
 
 (noun "chemotherapy" :super medical-treatment)
 (noun "organ transplant" :super medical-treatment)
+(noun "therapeutic strategy" :super medical-treatment)
 
 (define-category drug :specializes molecule
   :lemma (:common-noun "drug")
