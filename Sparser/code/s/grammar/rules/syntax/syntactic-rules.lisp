@@ -734,7 +734,8 @@
 (def-syntax-rule (comparative adjective)
     :head :right-edge
     :form comparative-adjective
-    :referent (:method modified left-edge right-edge))
+    :referent (:head right-edge
+                     :bind (comparative left-edge)))
 
 (def-syntax-rule (adverb adjective)
     :head :right-edge
