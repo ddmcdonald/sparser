@@ -22,7 +22,7 @@
    Specializations elaborate this according to the kind of question
  being asked. The basic split is between polar questions and the
  diverse kinds of WH questions."
-  :binds ((statement perdurant)))
+  :binds ((statement top)))
 
 #| In biology/verbs
 (define-category question :specializes bio-rhetorical
@@ -54,7 +54,6 @@
     ;; span-covered-by-one-edge? -- won't work until we do
     ;; something with the deliberately unparse-able initial
     ;; aux (at least not syntactically).
-    (tts)
     (let* ((start-pos (starts-at-pos sentence))
            (end-pos (ends-at-pos sentence))
            (edge (span-covered-by-one-edge? 
