@@ -62,6 +62,7 @@
 
 ;; needed for the Harvard dynamic process model
 (adj "transient" :super scalar-variation)
+(adj "persistent" :super scalar-variation)
 (adj "noisy" :super scalar-variation)
 (adj "unchanged" :super scalar-variation)
 (define-category sustained :specializes scalar-variation
