@@ -1159,7 +1159,12 @@
 
 ;;;;; make it possible for ADJPs to post-modify NPs, when needed
 
-(define-debris-analysis-rule NP-ADjP
+
+(define-debris-analysis-rule NP-ADJECTIVE
+    :pattern (NP ADJECTIVE)
+    :action (:function postmodifying-adj first second))
+
+(define-debris-analysis-rule NP-ADJP
     :pattern (NP ADJP)
     :action (:function postmodifying-adj first second))
 
@@ -1177,19 +1182,41 @@
     :action (:function postmodifying-adj first second))
 
 (defun postmodifying-adj (first-edge adjp-edge)
-  (let* ((adjp (edge-referent adjp-edge))
-         (target
-          (find-target-satisfying
-           (right-fringe-of first-edge)
-           #'(lambda (e)
-               (and (np-target? e)
-                    (subcategorized-variable adjp :subject (edge-referent e)))))))
-    (when target
-      (let ((ref (adj-postmodifies-noun (edge-referent target) adjp adjp-edge)))
-        (make-edge-spec
-         :category (edge-category target)
-         :form (edge-form target)
-         :referent ref
-         :target target
-         :dominating (edge-used-in target)
-         :direction :right)))))
+  (when (not (preposed-aux?)) ;; if we have a preoposed-aux, this is a question
+    (let* ((adjp (edge-referent adjp-edge))
+           (target
+            (find-target-satisfying
+             (right-fringe-of first-edge)
+             #'(lambda (e)
+                 (and (np-target? e)
+                      (subcategorized-variable adjp :subject (edge-referent e)))))))
+      (when target
+        (let ((ref (adj-postmodifies-noun (edge-referent target) adjp adjp-edge)))
+          (make-edge-spec
+           :category (edge-category target)
+           :form (edge-form target)
+           :referent ref
+           :target target
+           :dominating (edge-used-in target)
+           :direction :right))))))
+#|
+(define-debris-analysis-rule YES-NO-NP-ADjP
+    :pattern (PREPOSED-AUXILIARY NP ADJP)
+    :action (:function yes-no-adj first second third))
+
+(define-debris-analysis-rule YES-NO-NP-ADJECTIVE
+    :pattern (PREPOSED-AUXILIARY NP ADJECTIVE)
+    :action (:function yes-no-adj first second third))
+
+
+(defun yes-no-adj (aux-edge np-edge adjp-edge)
+  (when (preposed-aux?) ;; if we have a preoposed-aux, this is a question
+    (let* ((adjp (edge-referent adjp-edge))
+           (target np-edge))
+      (when target
+        (let ((ref (assimilate-subject (edge-referent target) adjp adjp-edge)))
+          (make-edge-spec
+           :category (edge-category target)
+           :form (edge-form target)
+           :referent ref))))))
+|#
