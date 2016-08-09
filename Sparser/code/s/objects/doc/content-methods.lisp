@@ -531,8 +531,8 @@ is a case in handle-any-anaphor
    it is on."
   (let* ((s (identify-current-sentence))
          (pos-of-aux (preposed-aux (contents s))))
-    (values (pos-terminal pos-of-aux)
-            pos-of-aux)))
+    (values (car pos-of-aux)
+            (cdr pos-of-aux))))
 
 (defmethod add-pending-def-ref (determiner (e edge) (s sentence))
   (let ((contents (contents s)))
