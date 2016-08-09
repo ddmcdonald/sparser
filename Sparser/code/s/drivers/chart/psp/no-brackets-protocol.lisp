@@ -317,6 +317,7 @@
   
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
+
   
   (identify-salient-text-structure sentence)
   
@@ -341,6 +342,8 @@
       (set-relations sentence relations)
       (set-tt-count sentence tt-count)
       (interpret-treetops-in-context treetops)))
+
+  (make-this-a-question-if-appropriate sentence)
 
   (when *do-discourse-relations*
     (establish-discourse-relations sentence)))

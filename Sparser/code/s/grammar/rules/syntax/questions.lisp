@@ -33,17 +33,60 @@
 	   :etf (svo-passive)))
 |#
 
+;;;--------------------------
+;;; polar questions (yes/no)
+;;;--------------------------
+
 (define-category polar-question
   :specializes question-core
   :documentation "This is a labeling category in that it does
  not add any refinements or extensions to question-core. It just
- labels the statement as a question: 'is it the case that <statement>'.")
+ labels the statement as a question: 'is it the case that <statement>'."
+  :instantiates :self
+) ;;// what would we index a question on?
 
 
-(defun is-this-a-sentence? (sentence) )
+(defun make-this-a-question-if-appropriate (sentence)
+  "Called from post-analysis-operations after all parsing and
+   contextual interpretation is finished."
+  (declare (special category::question))
+  (when (preposed-aux?)
+    ;; span-covered-by-one-edge? -- won't work until we do
+    ;; something with the deliberately unparse-able initial
+    ;; aux (at least not syntactically).
+    (tts)
+    (let* ((start-pos (starts-at-pos sentence))
+           (end-pos (ends-at-pos sentence))
+           (edge (span-covered-by-one-edge? 
+                  (chart-position-after start-pos) ;; hack
+                  end-pos)))
+      (when edge
+        (let ((stmt (edge-referent edge))
+              (q (find-or-make-individual 'polar-question)))
+          (setq q (bind-variable 'statement stmt q))
+          (let ((spanning-edge
+                 (make-edge-over-long-span
+                  start-pos end-pos
+                  (edge-category edge)
+                  :rule 'make-this-a-question-if-appropriate
+                  :form category::question
+                  :referent q)))
+            spanning-edge))))))
 
 
-(defun delimit-and-label-initial-wh-term (pos-before) )
+;;;--------------
+;;; WH questions
+;;;--------------
+
+(defun delimit-and-label-initial-wh-term (pos-before)
+  "WH questions virtually always also include inverting subject
+   and object, and the auxiliary will occur right after the
+   possibly lengthy WH phrase has finished. E.g. 'How many
+   people will be going to the party?'. So starting with the WH
+   word, scan forward until you reach an aux. How to best
+   divide up the region between the two largly depends on the
+   identify of the WH and what its asking for."
+  pos-before)
   
 
 
