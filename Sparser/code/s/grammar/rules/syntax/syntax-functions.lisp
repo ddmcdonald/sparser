@@ -1028,12 +1028,12 @@
 (defparameter *warn-about-optional-objects* nil
   "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
 
-(defun assimilate-subject (subj vp)
+(defun assimilate-subject (subj vp &optional (right-edge (right-edge-for-referent)))
   (declare (special category::subordinate-clause))
   (when
       (and subj vp) ;; have had cases of uninterpreted VPs
     (cond
-      ((transitive-vp-missing-object? vp)
+      ((transitive-vp-missing-object? vp right-edge)
        (when (not *subcat-test*)
          ;; the edge isn't available and shouldn't be chaged during the test phase
          (when *warn-about-optional-objects*
@@ -1041,9 +1041,9 @@
                (extract-string-spanned-by-edge (right-edge-for-referent))))
          (revise-parent-edge :form category::transitive-clause-without-object))
        (assimilate-subcat vp :subject subj))
-      ((eq (edge-form (right-edge-for-referent)) category::subordinate-clause)
+      ((eq (edge-form right-edge) category::subordinate-clause)
        (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
-	      (vg-edge (edge-right-daughter (right-edge-for-referent))))
+	      (vg-edge (edge-right-daughter right-edge)))
 	 (if (and (edge-p vg-edge)
                   ;; vg-edge is :long-span for cases where the
                   ;;  subordinate clause is a conjunction
@@ -1056,19 +1056,19 @@
 	     (when
                  (missing-subject-vars (edge-referent vg-edge))
 	       (assimilate-subcat svp :subject subj)))))
-      ((is-passive? (right-edge-for-referent))
+      ((is-passive? right-edge)
        (assimilate-subcat vp :object subj))
       (t (assimilate-subcat vp :subject subj)))))
 
-(defun transitive-vp-missing-object? (vp)
+(defun transitive-vp-missing-object? (vp &optional (right-edge (right-edge-for-referent)))
   ;; this is a case like "that MEK phosphorylates" which has
   ;;  a VG, not a VP, and no object -- want to make this a
   ;;  constituent with a gap
-  (and (not (is-passive? (right-edge-for-referent)))
-       (not (adjective-phrase? (right-edge-for-referent)))
+  (and (not (is-passive? right-edge))
+       (not (adjective-phrase? right-edge))
        (missing-object-vars vp)
        (not (value-of 'statement vp))
-       (not (thatcomp-verb (right-edge-for-referent)))
+       (not (thatcomp-verb right-edge))
        (not (loop for v in (find-subcat-vars :to-comp vp)
                thereis (value-of v vp)))))
 
