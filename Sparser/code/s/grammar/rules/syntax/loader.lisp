@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  3.9 October 2014
+;;;  Version:  August 2016
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -46,7 +46,8 @@
   (gload "syntax-vg;be")
   (gload "syntax-vg;copulars")
   (gload "syntax-vg;modals")   ;; references #<have>
-  (gload "syntax-vg;adverbs"))
+  (gload "syntax-vg;adverbs")
+  (gload "syntax-vg;post-vg-hook"))
 
 
 (gate-grammar *default-semantics-for-NP*

@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "rules"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  April 2016
+;;;  version:  August 2016
 
 ;; initited 6/15/93, starting over from scratch. 3/17/05 These are
 ;; interacting with rules made automatically from the etf schemas,
@@ -149,6 +149,9 @@
 ;;;----------------------------------
 ;;; titles as standing in for people
 ;;;----------------------------------
+
+(define-segment-finished-action title :convert-to-person?
+  consider-converting-title-to-person)
 
 (defun consider-converting-title-to-person (edge)
   ;; Called from check-segment-finished-hook, so we're still

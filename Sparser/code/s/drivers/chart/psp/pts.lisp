@@ -2,9 +2,9 @@
 ;;; copyright (c) 1991-1996,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
-;;;     File:  "pts"                  ;; "parse the segment"
+;;;     File:  "pts"  --  "parse the segment"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  May 2016
+;;;  Version:  August 2016
 
 ;; initiated 4/22/91, extended 4/23, tweeked 4/24,26
 ;; 5/6, "march/seg" saves version that doesn't check for an extensible
@@ -66,6 +66,8 @@
 ;; 8/8/15 considered points at which to site hidden acronym handler
 
 (in-package :sparser)
+
+;; (trace-segments)
 
 (defun pts (&optional boundary-from-edge?)
   ;; called once the boundary to the segment has been
@@ -391,7 +393,7 @@ have to be tail recursion to the next thing to do.
   ;; called from segment-finished when there's one edge over the entire
   ;; segment. 
   (tr :spanned-segment)
-  (check-segment-finished-hook)
+  (segment-finished-hook)
   (if *pending-conjunction*
     (if *do-heuristic-segment-analysis*
       (if (sucessive-sweeps?)
@@ -402,18 +404,6 @@ have to be tail recursion to the next thing to do.
         (setq *pending-conjunction* nil)
         (sf-action/spanned-segment1)))
     (sf-action/spanned-segment1)))
-
-;;/// fleshout and move if it looks generally useful
-(defun check-segment-finished-hook ()
-  ;; Stub of a proper hook. Called from sf-action/spanned-segment
-  (tr :check-segment-finished-hook)
-  (let ((convering-edge (edge-over-segment)))
-    (when convering-edge
-      ;;/// wants a proper hook so we don't need the tile grammar
-      ;; to be loaded.
-      #+ignore(when (eq (edge-category convering-edge)
-                category::title)
-        (consider-converting-title-to-person convering-edge)))))
 
 (defun sf-action/spanned-segment1 ()
   (declare (special *return-after-doing-segment*))
@@ -783,3 +773,81 @@ have to be tail recursion to the next thing to do.
       :discontinuous-edges
       :no-edges )))   |#
 
+
+;;;-----------------------
+;;; Segment-finished hook
+;;;-----------------------
+#| This supplies a category-specific hook for handling operations
+that cannot easily be done by within-segment rules and need to wait
+until the whole segment has been handled before it runs.
+
+Note that there's a within-segment hook that might be useful
+in some cases. Look at (define-segment-heuristic and a fairly good
+write up of how its used in model/sl/military/ranks.lisp.
+
+The edge completion hook could used -after- all of the handling
+of the edge over the segment was comleted. It's code is in
+drivers/actions/, and its usage is thoroughly written up in
+chapter 7 of the Sparser manual. |#
+
+(defvar *segment-finished-functions* (make-hash-table)
+  "Table from categories to lists of tag, function name pairs.")
+
+(defgeneric get-segment-finished-actions (label)
+  (:documentation "Retrieve any actions associated with either
+    the form category or referential category label.")
+  (:method ((c referential-category))
+    (gethash c *segment-finished-functions*))
+  (:method ((name symbol))
+    (get-segment-finished-actions (category-named name :break))))
+
+(defmacro define-segment-finished-action (labels tag function)
+  "More of a FEXPR than a macro."
+  (unless (listp labels) (setq labels `(,labels)))
+  (setq labels (loop for label in labels
+                  collect (category-named label :error-if-missing)))        
+  (assert (keywordp tag))
+  (assert (symbolp function))
+  `(define-segment-finished-action/expr ',labels ,tag ',function))
+
+(defun define-segment-finished-action/expr (labels tag function)
+  (let ((pair (cons tag function)))
+    (loop for label in labels
+        do (let ((entry (gethash label *segment-finished-functions*)))
+             (if entry
+                 (push pair entry)
+                 (setf (gethash label *segment-finished-functions*)
+                       (list pair)))))))
+
+(defun segment-finished-hook ()
+  "Look for any 'segment finished' actions associated with the
+   edge returned by edge-over-segment. This will run all of them,
+   category-actions first, which may be too crude an operation.
+   This hook is invoked in sf-action/spanned-segment, though that
+   location too may need review."
+  (tr :check-segment-finished-hook)
+  (let ((edge (edge-over-segment)))
+    (when edge
+      (let* ((form (edge-form edge))
+             (form-actions (get-segment-finished-actions form))
+             (category (edge-category edge))
+             (category-actions (get-segment-finished-actions category)))
+        (labels ((do-actions (action-list)
+                   (loop for (tag . function-name) in action-list
+                      do (progn
+                           #+ignore(format t "~&executing the ~a action of ~a"
+                                   tag category)
+                           (do-action function-name))))                 
+                 (do-action (function-name)
+                   (assert (fboundp function-name))
+                   (funcall function-name edge)))
+          
+          ;; Assume that actions will always apply. 
+          ;; So this is just a preference order
+          (when category-actions
+            (do-actions category-actions))
+          (when form-actions
+            (do-actions form-actions)))))))
+                          
+             
+ 
