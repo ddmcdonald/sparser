@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2016
+;;;  Version:  August 2016
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -71,6 +71,10 @@
   :instantiates nil
   :specializes  tense/aspect)
 
+(define-category  present
+  :instantiates nil
+  :specializes  tense/aspect)
+
 
 (define-category  progressive    ;; be + ing
   :instantiates nil
@@ -80,7 +84,6 @@
 (define-category  perfect   ;; have + en
   :instantiates nil
   :specializes  tense/aspect )
-
 
 
 ;;;------------
@@ -99,6 +102,7 @@
   :referent (:daughter right-edge))
 
 
+
 ;;;------------------------------------
 ;;;                do
 ;;;------------------------------------
@@ -115,11 +119,11 @@
   :referent  anonymous-agentive-action )
 
 (def-cfr do ("does")
-  :form verb
+  :form verb+present
   :referent  anonymous-agentive-action )
 
 (def-cfr do ("did")
-  :form verb
+  :form verb+past
   :referent  anonymous-agentive-action )
 
 (def-cfr do ("done")
