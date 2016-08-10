@@ -202,9 +202,10 @@ to make any semantic or form edges that the grammar dictates.
 			 (type-of referent) referent))))))
       (when (and *big-mechanism*
                  ;; makes it quiet when other things are quiet
-                 *readout-segments-inline-with-text*
+                 ;;*readout-segments-inline-with-text*
                  *show-sdm-span-segment*)
-          (format t "~&sdm-span-segment: ~a~%" edge))
+        (format t "~&sdm-span-segment: ~s~%"
+                (retrieve-surface-string edge)))
       (tr :sdm-span-segment edge)
       edge)))
    
