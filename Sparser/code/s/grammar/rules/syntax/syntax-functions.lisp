@@ -461,7 +461,7 @@
     (if premod-n-variable
         (bind-dli-variable premod-n-variable qualifier head)
    
-        (let ((subject (subcategorized-variable head :subject qualifier)))
+        (let ((subject (subcategorized-variable  qualifier :subject head)))
           (cond
             (*subcat-test* subject)
             ((word-p qualifier)
