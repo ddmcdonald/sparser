@@ -290,6 +290,14 @@
   "Flag to specify what sort of simpler d&p operation to do
    if any (default).")
 
+(defparameter *delay-generalization-of-verb-edge-form* t
+  "Normally, in SDM&P the form of the spanning edge is generalized
+   early so that by the time we reach the segment-finished hook
+   we have already converted, e.g., a verb+past to a vg. 
+   This flag blocks that action under the assumption that
+   it will happen instead as one of the actions on the hook after
+   the original form has been read out for its tense/aspect information.")
+
 (unless (boundp '*note-text-relations*)
   (defparameter *note-text-relations* nil
     "A switch read in segment-finished. Controls whether we collect

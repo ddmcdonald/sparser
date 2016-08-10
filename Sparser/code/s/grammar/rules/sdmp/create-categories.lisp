@@ -4,7 +4,7 @@
 ;;;
 ;;;      File: "create-categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: March 2016
+;;;   Version: August 2016
 
 ;; Initiated 2/9/07. Elaborated through 8/6. Refactored the head form
 ;; elevator 2/4/08. Added cases through 4/24, then through 6/16.
@@ -56,6 +56,7 @@
 
 
 (defun generalize-segment-edge-form-if-needed (edge)
+  (declare (special *delay-generalization-of-verb-edge-form*))
   (let* ((form-category (edge-form edge))
 	 (symbol (when form-category (cat-symbol form-category))))
     (when symbol
@@ -113,9 +114,11 @@
           category::verb+s 
           ;;category::verb+ed
           category::verb+present
+          category::verb+past
           category::verb+passive
           category::modal)
-	 (setf (edge-form edge) category::vg))
+         (unless *delay-generalization-of-verb-edge-form*
+           (setf (edge-form edge) category::vg)))
         ((category::verb+ing)
          (setf (edge-form edge) category::vg+ing))
         ((category::verb+ed)
