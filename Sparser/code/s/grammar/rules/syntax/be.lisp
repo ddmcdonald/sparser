@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "be"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  July 2016
+;;;  Version:  August 2016
 
 ;; redesigned from scratch 5/12/93 v2.3, completed category's realization
 ;; data 5/27. Added "there's" -> "there is", and negative contractions 1/11/94
@@ -67,24 +67,24 @@
   :referent be )
 
 (def-cfr be ("am")
-  :form verb
+  :form verb+present
   :referent be )
 
 (def-cfr be ("are")
-  :form verb
+  :form verb+present ;; n.b. not worrying about number concord
   :referent be )
 
 (def-cfr be ("is")
-  :form verb
+  :form verb+present
   :referent be )
 
 (def-cfr be ("was")
-  :form verb
+  :form verb+past
   :referent (:head be
              :subtype past))
 
 (def-cfr be ("were")
-  :form verb
+  :form verb+past
   :referent (:head be
              :subtype past))
 
@@ -103,7 +103,7 @@
 ;;;----------------------------
 
 (def-form-rule (be adjective)
-  :form vg
+  :form vg ;; really should be VP like AdjP rule
   :referent  (:function make-copular-adjective left-edge right-edge))
 
 (def-form-rule (be adjp)
