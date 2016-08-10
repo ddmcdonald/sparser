@@ -392,7 +392,8 @@
     
         (when form-label
           (case (cat-symbol form-label)
-            (category::verb
+            ((category::verb category::verb+s category::verb+ed
+              category::verb+ing category::verb+present category::verb+past)
              (when (auxiliary-word? word)
                (store-preposed)))
             (category::modal
