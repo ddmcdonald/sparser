@@ -145,9 +145,9 @@ to make any semantic or form edges that the grammar dictates.
 (defparameter *show-sdm-span-segment* nil)
 
 (defun sdm-span-segment (&optional start-at)
-  (declare (special category::vg category::np category::np-head category::n-bar 
-                    *current-chunk* *right-segment-boundary* *right-segment-boundary*
-))
+  (declare (special category::vg category::np category::np-head
+                    category::n-bar *current-chunk*
+                    *left-segment-boundary* *right-segment-boundary*))
   ;; Make an edge over the whole segment based largely on the
   ;; properties of its suffix. The edge is presumed to be an NP
   ;; though nothing looks carefully at that.
