@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  July 2016
+;;;  Version:  August 2016
 
 ;; Predicates on synteactic form categories, mostly for the use of the chunker.
 
@@ -92,6 +92,7 @@
     CATEGORY::PARENTHESES
     CATEGORY::TIME-UNIT
     CATEGORY::NP))
+
 (defparameter *ng-head-categories*
   '(
     CATEGORY::COMMON-NOUN/PLURAL
@@ -135,9 +136,12 @@
     ,category::where-relative-clause
     ,category::when-relative-clause
     ,category::v-bar
-    ,category::verb ;; this covers BE!
-    ,category::verb+ed
-    ,category::verb+ing
+    ,category::verb
+    ,category::infinitive ;; this covers BE!
+    ,category::verb+present ;; "is"
+    ,category::verb+past ;; "was"
+    ,category::verb+ed  ;; "been"
+    ,category::verb+ing ;; "being"
     ,category::verb+object
     ,category::verb+s ;; added
     ,category::vg 
@@ -155,6 +159,45 @@
 (defparameter *verb+ed-sents* nil)
 (defparameter *suppressed-verb+ed* nil)
 
+(defvar *vg-word-categories*
+  '(CATEGORY::ADVERB 
+    CATEGORY::MODAL
+    CATEGORY::VERB
+    CATEGORY::VERB+S
+    CATEGORY::VERB+ED
+    CATEGORY::VERB+ING
+    CATEGORY::VERB+PRESENT
+    category::verb+past
+    CATEGORY::VERB+PASSIVE
+    CATEGORY::NOUN/VERB-AMBIGUOUS
+    CATEGORY::MODAL
+    category::infinitive
+    CATEGORY::NOT))
+
+(defvar *vg-head-categories*
+  '(CATEGORY::VERB
+    CATEGORY::VERB+S
+    CATEGORY::VERB+ED
+    CATEGORY::VERB+ING
+    CATEGORY::VERB+PRESENT
+    category::verb+past
+    CATEGORY::VERB+PASSIVE
+    CATEGORY::NOUN/VERB-AMBIGUOUS))
+
+(defparameter *plausible-vg-categories*
+  `(,category::vg
+    ,category::vg+ing
+    ,category::vg+ed
+    ,category::vg+passive
+    ,category::verb
+    ,category::verb+s
+    ,category::verb+present
+    ,category::verb+past
+    ,category::verb+passive
+    ,category::modal)
+  "Used in verb-group-final-actions to guard against
+   noun/verb abiguous words triggering the actions of
+   its verb reading even when it's in its noun reading")
 
 
 
@@ -221,50 +264,22 @@
   (declare (ignore w evlist))
   nil)
 
-(defvar *vg-word-categories*
-  '(CATEGORY::ADVERB 
-    CATEGORY::MODAL
-    CATEGORY::VERB
-    CATEGORY::VERB+S
-    CATEGORY::VERB+ED
-    CATEGORY::VERB+ING
-    CATEGORY::VERB+PRESENT
-    CATEGORY::VERB+PASSIVE
-    CATEGORY::NOUN/VERB-AMBIGUOUS
-    CATEGORY::MODAL
-    CATEGORY::NOT))
-
-(defvar *vg-head-categories*
-  '(CATEGORY::VERB
-    CATEGORY::VERB+S
-    CATEGORY::VERB+ED
-    CATEGORY::VERB+ING
-    CATEGORY::VERB+PRESENT
-    CATEGORY::VERB+PASSIVE
-    CATEGORY::NOUN/VERB-AMBIGUOUS))
-
 
 (defgeneric vg-compatible? (label)
- (:documentation "Is a category which can occur inside a VG"))
-
-(defmethod vg-compatible? ((w word))
-  t)
-
-
-(defmethod vg-compatible? ((c referential-category))
-  (vg-compatible? (cat-symbol c)))
-(defmethod vg-compatible? ((name symbol))
-  (memq name *vg-word-categories*))
+  (:documentation "Is a category which can occur inside a VG")
+  (:method ((w word)) t)
+  (:method ((c referential-category))
+    (vg-compatible? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *vg-word-categories*)))
 
 (defgeneric vg-head? (label)
-  (:documentation "Is a category which can occur as the head of a VG"))
-(defmethod vg-head? ((w word))
-  t)
-
-(defmethod vg-head? ((c referential-category))
-  (vg-head? (cat-symbol c)))
-(defmethod vg-head? ((name symbol))
-  (memq name *vg-head-categories*))
+  (:documentation "Is a category which can occur as the head of a VG")
+  (:method ((w word)) t)
+  (:method ((c referential-category))
+    (vg-head? (cat-symbol c)))
+  (:method ((name symbol))
+  (memq name *vg-head-categories*)))
 
 
 (defgeneric adjg-compatible? (label)
@@ -342,6 +357,7 @@
 (defmethod verb-category? ((name symbol))
   (memq name '(category::verb
                category::verb+present
+               category::verb-past
                category::verb+s               
                category::verb+ed
                category::verb+ing)))
