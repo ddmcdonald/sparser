@@ -207,11 +207,12 @@
 (def-form-category  vp)
 (def-form-category  vp+ing)
 (def-form-category  vp+ed)
+(def-form-category  vp+passive) ;; vp with an be and V+ED
+
 (def-form-category  vg)
 (def-form-category  vg+ing) ;; vg with an untensed (no aux or modal) V+ING
 (def-form-category  vg+ed) ;; vg with an untensed (no aux or modal) V+ED
-(def-form-category  vg+passive) ;; vg with an be and V+ED
-(def-form-category  vp+passive) ;; vp with an be and V+ED
+(def-form-category  vg+passive) ;; vg with a be and V+ED
 
 (def-form-category  pp)
 (def-form-category  pp-wh-pronoun)
@@ -264,7 +265,8 @@
 (def-form-category  verb+s)
 (def-form-category  verb+ed)   ;; "main verb, ends in +ed"
 (def-form-category  verb+ing)
-(def-form-category  verb+present)
+(def-form-category  verb+present) ;; principally for auxiliaries
+(def-form-category  verb+past)    ;; ditto
 (def-form-category  infinitive)
 (def-form-category  infinitive-marker) ;; for "to" from Quirk, et al.
 (def-form-category  verb+passive)
