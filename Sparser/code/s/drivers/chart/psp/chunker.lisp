@@ -485,9 +485,9 @@
                    thereis (eq (cat-name (edge-category ee)) 'to)))))
          (not (followed-by-verb e)))))
       (t
-       (vg-compatible? e)))))
+       (compatible-with-vg? e)))))
 
-(defmethod vg-compatible? ((e edge))
+(defmethod compatible-with-vg? ((e edge))
   (declare (special category::not category::then))
   (or
    (vg-compatible? (edge-form e))
@@ -718,7 +718,7 @@
 	   remaining-forms?
 	   (not (likely-verb+ed-clause edge ev-list))))))
     (vg (and
-         (vg-compatible? edge)
+         (compatible-with-vg? edge)
          (not (loop for ev in ev-list
                  thereis
                    (loop for e in (ev-edges ev)
