@@ -469,6 +469,48 @@
       (subcat-patterns sc))))
 
 
+;;;------------------------------------------------
+;;; Designated interesting variables in a category
+;;;------------------------------------------------
+
+(defun register-variable (category variable grammatical-relation)
+  (setf (get-tag grammatical-relation category) variable))
+
+(defmethod subject-variable (label)
+  (declare (ignore label)))
+(defmethod subject-variable ((e edge))
+  (subject-variable (edge-referent e)))
+(defmethod subject-variable ((c category))
+  (or (get-tag :subject-variable c)
+      (find-subcat-variable :subject (get-ref-subcategorization c))))
+(defmethod subject-variable ((i individual))
+  (or (get-tag :subject-variable (car (indiv-type i)))
+      (find-subcat-variable :subject i)))
+
+(defmethod object-variable (label)
+  (declare (ignore label)))
+(defmethod object-variable ((e edge))
+  (object-variable (edge-referent e)))
+(defmethod object-variable ((c category))
+  (or (get-tag :object-variable c)
+      (find-subcat-variable :object (get-ref-subcategorization c))))
+(defmethod object-variable ((i individual))
+  (or (get-tag :object-variable (car (indiv-type i)))
+      (find-subcat-variable :object (get-ref-subcategorization i))))
+
+(defmethod thatcomp-variable (label)
+  (declare (ignore label)))
+(defmethod thatcomp-variable ((e edge))
+  (thatcomp-variable (edge-referent e)))
+(defmethod thatcomp-variable ((c category))
+  (find-subcat-variable :thatcomp (get-ref-subcategorization c)))
+(defmethod thatcomp-variable ((i individual))
+  (find-subcat-variable :thatcomp (get-ref-subcategorization i)))
+
+(defmethod complement-variable ((c category))
+  (get-tag :complement-variable c))
+
+
 ;;;-------------------------------------
 ;;; Collecting instances and statistics
 ;;;-------------------------------------
