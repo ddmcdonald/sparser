@@ -319,50 +319,6 @@
 (defmethod complement-variable ((c category))
   (get-tag :complement-variable c))
 
-
-;;;---------------------------------------------------------------
-;;; looking for and removing unwanted definitions via their rules
-;;;---------------------------------------------------------------
-
-(defun find-form-cfr (word form)
-  (when (rule-set-p (rule-set-for word))
-    (loop for cfr in (rs-single-term-rewrites (rule-set-for word))
-      when (eq form (cfr-form cfr))
-      do (return cfr))))
-
-(defun delete-noun-cfr (word)
-  (when word
-    (let ((noun-cfr (find-form-cfr word category::common-noun)))
-      (when noun-cfr
-        (delete/cfr noun-cfr)))))
-
-(defun delete-verb-cfr (word)
-  (when word
-    (let ((verb-cfr (or
-                     (find-form-cfr word category::verb)
-                     (find-form-cfr word category::verb+ed)
-                     (find-form-cfr word category::verb+ing))))
-      (when verb-cfr
-        (delete/cfr verb-cfr)))))
-
-(defun delete-adj-cfr (word)
-  (when word
-    (let ((adj-cfr (find-form-cfr word category::adjective)))
-      (when adj-cfr
-        (delete/cfr adj-cfr)))))
-
-
-(defun find-single-unary-cfr (word)
-  (let ((rs (rule-set-for word)))
-    (when rs
-      (let ((single-rewrites (rs-single-term-rewrites rs)))
-        (when single-rewrites
-          ;;/// check for there being more than one?
-          (car single-rewrites))))))
-
-
-
-
         
 #| The target is a call to apply-realization-scheme or an open-coded equivalent.
 The key part is the mapping, which is constructed by assemble-scheme-form which

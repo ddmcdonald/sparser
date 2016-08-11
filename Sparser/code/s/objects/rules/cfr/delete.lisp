@@ -267,3 +267,44 @@
         (when (dotted-rule rule)
           (flush-binary-cfr-from-tables rule))))))|#
 
+
+;;;---------------------------------------------------------------
+;;; looking for and removing unwanted definitions via their rules
+;;;---------------------------------------------------------------
+
+(defun find-form-cfr (word form)
+  (when (rule-set-p (rule-set-for word))
+    (loop for cfr in (rs-single-term-rewrites (rule-set-for word))
+      when (eq form (cfr-form cfr))
+      do (return cfr))))
+
+(defun delete-noun-cfr (word)
+  (declare (special category::common-noun))
+  (when word
+    (let ((noun-cfr (find-form-cfr word category::common-noun)))
+      (when noun-cfr
+        (delete/cfr noun-cfr)))))
+
+(defun delete-verb-cfr (word)
+  (declare (special category::verb category::verb+ed category::verb+ing))
+  (when word
+    (let ((verb-cfr (or (find-form-cfr word category::verb)
+                        (find-form-cfr word category::verb+ed)
+                        (find-form-cfr word category::verb+ing))))
+      (when verb-cfr
+        (delete/cfr verb-cfr)))))
+
+(defun delete-adj-cfr (word)
+  (declare (special category::adjective))
+  (when word
+    (let ((adj-cfr (find-form-cfr word category::adjective)))
+      (when adj-cfr
+        (delete/cfr adj-cfr)))))
+
+(defun find-single-unary-cfr (word)
+  (let ((rs (rule-set-for word)))
+    (when rs
+      (let ((single-rewrites (rs-single-term-rewrites rs)))
+        (when single-rewrites
+          ;;/// check for there being more than one?
+          (car single-rewrites))))))
