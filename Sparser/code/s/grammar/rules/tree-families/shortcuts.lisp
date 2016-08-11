@@ -692,6 +692,19 @@ broadly speaking doing for you all the things you might do by hand.
           (eval form))))))
 
 
+(defun formulate-by-category (base)
+  ;; the base is one of the slot-forming expressions 
+  (let* ((base-name (etypecase base
+                      (symbol base)
+                      (cons (car base))
+                      (category (cat-symbol base))))
+         (by-cat-name (name-to-use-for-category
+                       (string-append ':by- base-name))))
+    ;; This is what the define-category macro opens up as
+    ;; for a trivial category like this
+    (cat-symbol
+     (find-or-make-category-object by-cat-name :define-category))))
+
 (defmacro svo/passive/nominal (verb nominalization
                                &key super-category agent patient by-category)
   `(svo/passive/nominal/expr ,verb ,nominalization

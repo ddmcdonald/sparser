@@ -14,52 +14,6 @@
 
 (in-package :sparser)
 
-;;;----------------------------
-;;; Schematic category-creator
-;;;----------------------------
-
-(defun create-category-for-a-term (name superc 
-                                   mixins restrict rule-label
-                                   slot1 slot1-var ;; agent, subject
-                                   &optional
-                                   slot2 slot2-var ;; patient, theme, complement
-                                   slot3 slot3-var) ;; goal
-  (let ((bindings
-         (cond ((and slot1 slot2 slot3)
-                `((,slot1 ,slot1-var)
-                  (,slot2 ,slot2-var)
-                  (,slot3 ,slot3-var)))
-               ((and slot1 slot2)
-                `((,slot1 ,slot1-var)
-                  (,slot2 ,slot2-var)))
-               (slot1
-                `((,slot1 ,slot1-var))))))
-    (let ((form
-           `(define-category ,name
-              :instantiates :self
-              :specializes ,superc
-              :restrict ,restrict
-              :mixins ,mixins
-              :rule-label ,rule-label
-              ;; index ??
-              :binds ,bindings)))
-      (eval form))))
-
-
-(defun formulate-by-category (base)
-  ;; the base is one of the slot-forming expressions 
-  (let* ((base-name (etypecase base
-                      (symbol base)
-                      (cons (car base))
-                      (category (cat-symbol base))))
-         (by-cat-name (name-to-use-for-category
-                       (string-append ':by- base-name))))
-    ;; This is what the define-category macro opens up as
-    ;; for a trivial category like this
-    (cat-symbol
-     (find-or-make-category-object by-cat-name :define-category))))
-
-
 ;;;-------------------------------
 ;;; manage subcategorization data
 ;;;-------------------------------

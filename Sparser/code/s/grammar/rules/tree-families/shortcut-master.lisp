@@ -88,16 +88,6 @@
 
 ;;--- toplevel macros
 
-
-(defmacro def-term (name &rest parameter-plist)
-  ;;/// add the simplest data checks on the minimal args
-  `(def-term/expr ',name ',parameter-plist))
-
-(defun def-term/expr (name parameter-plist)
-  ;;(lsp-break "def-term/expr")
-  (apply #'decode-def-term-call name parameter-plist))
-
-
 (defmacro def-realization (category-name &rest key-value-pairs)
   `(define-realization ',category-name ',key-value-pairs))
 
@@ -145,100 +135,6 @@
 ;;;------------------------------------
 ;;; decoders that actually do the work
 ;;;------------------------------------
-
-
-(defun decode-def-term-call (name 
-                             &key super-category
-			       mixin restrict rule-label 
-			       obo-id 
-			       etf verb noun adj
-			       ;;s o ;;m
-			       c
-			       prep 
-			       slots ;; a plist with labels like :against :as :at 
-			       ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
-			       )
-  ;; Decoder for def-term
-  ;; Make the category, then use the independent realization
-  ;; machinery to finish it. 
-  (declare (ignore c))
-  (labels 
-      ((compute-superc-name (verb noun adj)
-         ;; default used if explicit superc isn't supplied.
-         ;; Notice that it makes one choice in order so will be
-         ;; unexpected result if multiple pos supplied
-         (cond
-          (verb (super-category-for-POS :verb))
-          (noun (super-category-for-POS :noun))
-          (adj (super-category-for-POS :adjective))
-          (t ;; also :adverb
-           (error "Cannot compute super-category: neither ~
-                   :verb, :noun, or :adj supplied."))))
-       (default-value-restriction (param)
-         (case param
-           ((:s :o) 'endurant)
-           (:c 'event)
-           (otherwise "Unexpected paramter: ~a" param)))
-       (decode-slot-value (value param)
-         (typecase value
-           (symbol
-            (values value
-                    (default-value-restriction param)))
-           (cons
-            (unless (= 2 (length value))
-              (error "More that two elements in the ~a paramter"
-                     param))
-            (values (first value)
-                    (second value)))
-           (otherwise
-            (error "Unexpected type of paramter value for ~a~
-                    ~%  ~a~%  ~a"
-                   param (type-of value) value)))))
-         
-    (let ((superc (or super-category
-                      (compute-superc-name verb noun adj)))
-          subj-slot subj-var
-          obj-slot obj-var )
-      #| The category creater needs both the variable and
-      its value restriction. The realization routine needs
-      just the name of the variable, since it will access
-      the rest of what it needs from the information on
-      the category. There must be at least on variable, which
-      we dictate must be :s. 
-      This form does not use the bindings field so we read
-      that information of our the values given for :s, :o, wtc.
-      If the value is a symbol it is taken to be the name
-      of the variable and we provide a default value restriction.
-      If the value lis a list it should contain just two symbols.
-      The first one is the name of the variable, the second one
-      is the category of its value restriction. At the moment
-      there is a provision for up to three variables. |#
-      (multiple-value-setq (subj-slot subj-var)
-        (decode-slot-value (getf slots :s) :s))
-      (when (getf slots :o)
-        (multiple-value-setq (obj-slot obj-var)
-          (decode-slot-value (getf slots :o) :o)))
-
-      (let ((category (create-category-for-a-term
-                            name superc 
-                            mixin restrict rule-label
-                            subj-slot subj-var
-                            obj-slot obj-var
-                            ;;goal-slot goal-var
-                            )))
-        (decode-realization-parameter-list category
-          :etf etf
-          :verb verb
-          :noun noun
-          :adj adj
-          
-          ;;:m m
-          :prep prep  
-          :slots slots)
-
-        (when obo-id
-          (setq category (bind-dli-variable 'uid obo-id category)))
-        category))))
 
 (defun decode-realization-parameter-list (category
                                           &key etf verb noun adj

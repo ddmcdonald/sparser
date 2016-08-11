@@ -88,11 +88,13 @@
             (construct-disambiguating-category-name
              category-name category::bio-process)))
 
-    (let* ((form `(def-term ,category-name
-		     :verb ,verb 
-                     :etf (svo-passive)
-                     :super-category bio-process
-                     :slots (:s subject :o object)))
+    (let* ((form `(define-category ,category-name
+                     :instantiates :self
+                     :specializes bio-process
+                     :binds ((subject endurant)
+                             (object endurant))
+                     :realization (:etf (svo-passive)
+                                   :verb ,verb :s subject :o object)))
            (category (eval form)))
       (note-permanence-of-categorys-individuals category)
       category)))
