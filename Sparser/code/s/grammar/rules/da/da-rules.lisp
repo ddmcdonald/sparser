@@ -338,9 +338,10 @@
           (setf (edge-referent vp-edge) new-conjunct))))
 
      (t ;; simple vp
-      (make-lambda-predicate vp-edge)))
+      (setf (edge-referent vp-edge)
+            (make-lambda-predicate vp-edge))))
 
-    ;; Say that the clause is cause-of the vp.
+    ;; Say that the clause has an event-relation to the vp.
     ;; Which is pretty weak, but it's already in place
     ;; THIS NEXT CALL PRODUCES NIL WHEN CLAUSE-REF IS A COLLECTION (from a conjunction of clauses)
     ;; as in 
@@ -691,16 +692,40 @@
 
 (defun np-vp+ed (np vp+ed)
   (declare (special category::np))
-  (unless (adverb-at? (pos-edge-starts-at vp+ed))
-    ;; this test is a heuristic, to block
-    ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
-    (let* ((modified-vp-ref (make-lambda-predicate vp+ed))
-	   (modified-np-ref (bind-dli-variable 'predication modified-vp-ref (edge-referent np))))
-      (make-edge-spec
-       :category (edge-category np)
-       :form category::np
-       :referent modified-np-ref
-       ))))
+  (let* ((np-ref (edge-referent np))
+         (vp-ref (edge-referent vp+ed))
+         (vp-subj-var-for-np
+          (can-fill-vp-subject? vp-ref np-ref np)))
+    (if
+     vp-subj-var-for-np
+     ;; this test is a heuristic, to block
+     ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
+     (let ((ref (assimilate-subject np-ref vp-ref vp+ed)))
+       (when ref
+         (make-edge-spec
+          :category (edge-category vp+ed)
+          :form category::s
+          :referent ref)))
+     (let* ((target (find-target-satisfying
+                     (right-fringe-of np)
+                     #'(lambda (sub-np) (and (edge-referent sub-np)
+                                             (subcategorized-variable vp-ref :object
+                                                                 (edge-referent sub-np))))))
+            (target-np (when (edge-p target) (edge-referent target))))
+       (when target
+         (let ((obj-var (subcategorized-variable vp-ref :object target-np) ))
+           (when obj-var
+             (make-edge-spec
+              :category (edge-category target)
+              :form category::np
+              :referent (bind-dli-variable 'predication
+                                           (make-lambda-predicate vp+ed obj-var)
+                                           target-np)
+              :target target
+              :dominating (edge-used-in target)
+              :direction :right))))))))
+
+
 
 (define-debris-analysis-rule pronoun-vp+ed
   :pattern (proper-noun vp+ed )
