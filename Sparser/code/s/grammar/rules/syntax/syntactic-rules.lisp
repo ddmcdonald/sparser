@@ -552,6 +552,36 @@
     :form pp-relative-clause
     :referent (:daughter right-edge))
 
+;;;--------
+;;; ADJGL COMPLEMENTS to VGs and VPs (verb-like elements)
+;;;--------
+
+(loop for vv in '((vg vp)
+                  (vp vp)
+                  (vg+ing vp+ing)
+                  (vp+ing vp+ing)
+                  (vg+ed vp+ed)
+                  (vp+ed vp+ed)
+                  (vg+passive vp+passive)
+                  (vp+passive vp+passive))
+   do
+     (eval
+      `(def-syntax-rule (,(car vv) adjg)
+           :head :left-edge
+           :form ,(second vv)
+           :referent (:function assimilate-adj-complement left-edge right-edge)))
+     
+     (eval
+      `(def-syntax-rule (,(car vv) adjective)
+           :head :left-edge
+           :form ,(second vv)
+           :referent (:function assimilate-adj-complement left-edge right-edge)))
+     (eval
+      `(def-syntax-rule (,(car vv) adjp)
+           :head :left-edge
+           :form ,(second vv)
+           :referent (:function assimilate-adj-complement left-edge right-edge))))
+
 
 ;;;--------------------------
 ;;; subordinate clauses and conjunctions
