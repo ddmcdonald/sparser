@@ -51,7 +51,24 @@ support a substantial number of blocks.
      (:common-noun "table"))
 
 
-(noun "staircase" :specializes artifact :rule-label artifact)
+(noun "staircase" :specializes object :rule-label artifact)
+(noun "stair" :specializes object :rule-label artifact)
+(noun "stack" :specializes object :rule-label artifact)
+(noun "row" :specializes object :rule-label artifact)
+
+
+(define-category surface :specializes object
+  :binds ((object object))
+  :realization
+  (:of object))
+
+(define-category top-surface :specializes surface
+                 :realization (:noun "top"))
+(define-category bottom-surface :specializes surface
+                 :realization (:noun "bottom"))
+(define-category side-surface :specializes surface
+  :realization (:noun "side"))
+
 
 ;;--- Interjections -- see ex. in model/sl/checkpoint/
 (sentential-interjection "done")
@@ -85,33 +102,40 @@ support a substantial number of blocks.
 ;; 1.1 (p "Let's build a staircase.") 
 ;;     (p "build a staircase.")
 (define-category build
-  :specializes process
-  ;; we're going through the steps of constucting the
-  ;; staircase. With "lets'" we haven't even started
-  :mixins (with-an-agent)
-  :binds ((artifact artifact)) ;; what they build
-  :realization
-    ((:main-verb ("build" :past-tense "built"))
-     (:mumble ("build" svo :o artifact))
-     (:tree-family vp+adjunct
-      :mapping ((vg . :self)
-                (vp . :self)
-                (adjunct . physical)
-                (slot . artifact)))))
+    :specializes process
+    ;; we're going through the steps of constucting the
+    ;; staircase. With "lets'" we haven't even started
+    :mixins (with-an-agent)
+    :binds ((artifact artifact)) ;; what they build
+    :realization
+    (:verb ("build" :past-tense "built")
+           :etf (svo-passive)
+           :s agent
+           :o artifact
+           :mumble ("build" svo :o artifact)
+           #+ignore
+           (:tree-family vp+adjunct
+                         :mapping ((vg . :self)
+                                   (vp . :self)
+                                   (adjunct . physical)
+                                   (slot . artifact)))))
 
 (define-category push
-  :specializes process
-  :mixins (with-an-agent)
-  :binds ((theme physical))
-  :documentation "The meaning of a puah depends largly
+    :specializes process
+    :mixins (with-an-agent)
+    :binds ((theme physical))
+    :documentation "The meaning of a puah depends largly
     on what is pushed (= the type of the theme): block
     wall, door, etc. If the specific action to take
     is object (sort) specific then co-composition is
     involved in the interpretation of the literal 
     directive."
-  :realization
-    ((:main-verb "push")
-     (:mumble ("push" svo :s agent :o theme))))
+    :realization
+    (:verb "push"
+           :etf (svo-passive)
+           :o theme
+           :s agent
+           :mumble ("push" svo :s agent :o theme)))
 
 
 (define-category push-together
@@ -138,7 +162,7 @@ support a substantial number of blocks.
   ;; we're going through the steps of constucting the
   ;; staircase. With "lets'" we haven't even started
   :mixins (with-an-agent)
-  :binds ((object physical-object)
+  :binds ((object object)
           (adj-comp t)) ;; what they build
   :realization
     (:verb ("make" :past-tense "made")
