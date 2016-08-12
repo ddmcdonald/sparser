@@ -223,7 +223,11 @@
 
 
 ;;/// N.b. the rule is written over the literal "fold"
-(noun "fold" :super abstract)
+(define-category n-fold :specializes measurement
+  :binds ((number number))
+  :realization
+  (:noun "fold"
+         :m number))
 ;; only used in phrases like nnn-fold, this is here to suppress the
 ;;  attempt to ascribe a biological meaning to the verb
 
@@ -365,7 +369,7 @@
 (noun "abnormality" :super disease)
 
 (define-category absence :specializes experimental-condition
-  :binds ((measurement measurement))
+  :binds ((measurement (:or measurement bio-scalar)))
   :realization
   (:noun "absence"
 	 :of measurement))
@@ -416,7 +420,10 @@
 (noun "approach" :super bio-method)
 
 (noun "consequence" :super bio-quality)
-(noun "assay" :super bio-method)
+(define-category assay :specializes measure
+  :realization
+  (:noun "assay"))
+                 
 
 (define-category aspect :specializes bio-mechanism
   :binds ((whole (:or bio-mechanism bio-process)))
@@ -512,7 +519,7 @@
 
 (noun "denaturing gel electrophoresis" :super bio-method)
 (noun "derivative" :super molecule)
-(noun "detail" :super bio-scalar)
+(noun "detail" :super abstract)
 
 (adj "diffuse" :super bio-predication) ;; TO-DO better superc
 (noun "disorder" :super disease)
@@ -523,7 +530,7 @@
              :of substrate))
 
 
-(noun "dynamics" :super bio-abstract)
+(noun "dynamics" :super bio-scalar)
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
 
@@ -585,7 +592,8 @@
 
 (noun "fragment" :super protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
       :binds ((whole bio-entity)
-              (measure measurement))
+              ;; bio-scalar is for "a  fragment of the same mass as ..."
+              (measure (:or measurement bio-scalar)))
       :realization
       (:noun "fragment"
              :of whole
@@ -689,7 +697,7 @@
       (:adj "insensitive"
              :to theme))
    
-(noun "insensitivity" :super bio-scalar
+(noun "insensitivity" :super bio-scalar ;; HUH?
       :binds ((cause biological))
       :realization
       (:noun "insensitivity"
@@ -737,11 +745,8 @@
 (adj "living" :super abstract)
 
 (define-category lysate :specializes bio-entity
-  :restrict ((cell-line over-ridden))
-  :binds ((source cell-line))
   :realization
-  (:noun "lysate"
-         :from source))
+  (:noun "lysate"))
 
 (def-bio "adenine" nucleobase)
 (noun "LPA" :super phospholipid)
@@ -752,7 +757,7 @@
       :realization
       (:noun "manner"
              :of process))
-(noun "mass" :super measurement)
+(noun "mass" :super bio-scalar)
 (noun "mass-spectrometry" :super bio-method)
 (def-synonym mass-spectrometry (:noun "mass spectrometry"))
              
@@ -795,12 +800,14 @@
 (adj "native" :super bio-predication)
 (noun "natural growth conditions" :super experimental-condition)
 (adj "necessary" :super bio-relation
-     :binds ((condition biological)(agent biological)(result biological))
+     :binds ((condition biological)
+             (agent biological)
+             (necessary-to biological))
      :realization 
      (:adj "necessary"
            :for agent
-           :to result
-           :to-comp result))
+           :to necessary-to
+           :to-comp necessary-to))
 
 
 (noun "NMR" :super bio-method)
@@ -854,7 +861,7 @@
 (noun "PCR" :super bio-method)
 (noun "RT-PCR" :super bio-method)
 (noun "qRT/PCR" :super bio-method)
-(noun "peak" :super measurement)
+(noun "peak" :super bio-scalar)
 (adj "pharmacological" :super bio-predication) ;; keyword: (al ADJ) 
 
 (adj "physiological" :super bio-predication)
@@ -873,7 +880,7 @@
   (:adj "potent"))
 
 (define-category presence :specializes experimental-condition
-  :binds ((measurement measurement))
+  :binds ((measurement (:or measurement bio-scalar)))
   :realization
   (:noun "presence"
 	 :of measurement))
@@ -889,7 +896,7 @@
 (noun "proto-oncogene" :super oncogene)
 (adj "putative" :super bio-predication)
 
-(noun "radioactivity" :super bio-abstract
+(noun "radioactivity" :super experimental-condition
       :binds ((material molecule))
       :realization
       (:noun "radioactivity" :adj "radioactive"
@@ -919,21 +926,21 @@
 	   :noun "resistance"
            :to treatment))
 
-(define-category responsive :specializes bio-relation
-     :binds ((treatment (:or bio-process bio-entity)))
-     :realization
-     (:adj "responsive"
-	   :noun "responsiveness"
-           :to treatment))
-  
-
 (adj "responsible" :super bio-predication ;; adj/noun "resposibility"
   :binds ((subject biological)(theme bio-entity))
   :realization 
   (:adj "responsible"
         :s subject 
         :for theme))
-(noun "responsiveness" :super bio-scalar)
+
+(define-category responsive :specializes bio-relation
+  :realization
+  (:noun  "responsiveness"
+          :adj "responsive"
+          :verb "respond"
+          :etf (sv)
+          :to theme))
+
 (noun "restricted substrate" :super bio-predication)
 (adj "rich" :super bio-predication) ;; proline rich region
 (noun "rna" :super molecule)
@@ -949,10 +956,9 @@
      :realization (:for theme))
 
 (adj "sensitive" :super bio-relation
-      :binds ((treatment biological))
       :realization
       (:adj "sensitive"
-             :to treatment))
+             :to theme))
 
 (noun "sensitivity"  :super bio-scalar
       :binds ((cause biological))
@@ -1023,12 +1029,13 @@
 
 
 (delete-adj-cfr (resolve/make "sufficient"))
-(adj "sufficient" :super bio-predication :super bio-abstract
-     :binds ((theme biological)(result biological))
+(adj "sufficient" :super bio-predication
+     :binds ((theme biological)
+             (sufficient-for biological))
      :realization
      (:adj "sufficient"
            :s theme
-           :to-comp result))
+           :to-comp sufficient-for))
 
 
 (adj "supplementary" :super bio-predication) ;; keyword: (ary ADJ)

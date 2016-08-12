@@ -188,6 +188,7 @@
          :under context
          :upon cellular-location
          :with context
+         :m context
          :within cellular-location
 	 :like like
 	 :unlike unlike
@@ -225,10 +226,19 @@
   :realization
   (:of subject))
 
-(define-category bio-scalar :specializes scalar-quality
+(define-category bio-measurement :specializes measurement
   :mixins (bio-quality)
-  :documentation "Provides a generalization over biological and scalar")
+  :documentation "Provides a generalization over biological and measurement")
 
+(define-category bio-scalar :specializes scalar-quality
+  :binds ((measured-item biological))
+  :mixins (bio-quality)
+  :realization
+  (:of measured-item)
+  :documentation "Provides a generalization over biological and scalar-quality")
+
+(define-category value :specializes measurement
+   :realization (:noun "value")) ;; for "a high value"
 
 ;; Rusty -- where are we supposed to put the two numbers
 ;; or two molecules?  Need example. 
@@ -239,7 +249,6 @@
    :realization
    (:noun "ratio"
 	  :m measured
-	  :of quantity
 	  :of ratio
 	  :to divisor))
 
@@ -250,26 +259,21 @@
   :realization
   (:adj "cyclic"))
 
-(define-category bio-state :specializes bio-predication
-                 ;; for things like "activated state"
-  :realization
-  (:noun "state"
-   :of subject)) ;; subject in on bio-predication
 
-(define-category molecule-state :specializes bio-state)
-
-(define-category bio-conformation :specializes molecule-state
-  :realization 
-  (:noun "conformation"))
 
 
 ;;;---------------------------------
 ;;; top of the biological hierarchy
 ;;;---------------------------------
 
+(define-category produced-by-method :specializes biological
+  :binds ((produced-by bio-method))
+  :realization
+  (:from produced-by))
+
 (define-category bio-entity  :specializes physical-object  ;; sweeps a lot under the rug
   :instantiates :self
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID has-name biological produced-by-method)
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
   :realization (:common-noun name))
@@ -382,14 +386,20 @@
   ((agent ;; supercedes subject in bio=-process
     (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
 	 bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
-	 measurement ;; "these data raised the possibility..."
+	 measurement 
+         bio-scalar ;; "these data raised the possibility..."
 	 molecular-location));; membrane targeting domains that facilitate interaction with the plasma membrane
-   (object biological) ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
-   (at (:or bio-concentration quantity measurement))
-   (extent (:or amount bio-scalar)))
+   (object (:or bio-entity cell-entity molecular-location measurement bio-scalar))
+   (affected-process (:or bio-process bio-mechanism bio-method bio-quality
+                          bio-predication bio-relation))
+   ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
+   (at (:or bio-concentration measurement))
+   (extent (:or amount measurement bio-scalar)))
   :realization
   (:s agent
       :o object
+      :o affected-process
+      :of affected-process ;;object
       :of object
       :m agent
       :m object
@@ -469,7 +479,7 @@
       :through method
       :under method
       :in by-means-of
-      :from by-means-of
+      ;;:from by-means-of
       :via method
       :with method
       :at ratio-condition))
@@ -556,12 +566,12 @@
 (delete-noun-cfr (resolve "reaction"))
 (define-category chemical-reaction :specializes caused-bio-process   ;; for our purposes, since we only have biologically relevant reactions
    :binds ((co-reactant bio-chemical-entity)
-           (result bio-chemical-entity))
+           (produces bio-chemical-entity))
    :realization (:noun "reaction"
                        :verb "react"
                        :etf (sv)
                        :with co-reactant
-                       :to result
+                       :to produces
                        ))
 
 
@@ -594,16 +604,20 @@
   :realization
   (:noun "kinase activity"))
 
-(define-category bio-method :specializes process
+(define-category purposive-process :specializes  process
+   :binds ((result-or-purpose bio-process))
+   :realization
+   (:to-comp result-or-purpose
+             :for result-or-purpose))
+
+(define-category bio-method :SPECIALIZES purposive-process
   :mixins (has-UID has-name biological event-relation)
   :binds ((agent (:or pronoun/first/plural biological))
-          (object (:or biological measurement))
-	  (result-or-purpose bio-process))
+          (object (:or biological measurement bio-scalar)))
   :realization (:s agent
                    :o object
                    :by agent
-                   :of object
-		   :to-comp result-or-purpose) ;; for nominal forms
+                   :of object) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
   for 'liquid chromatography', etc. that may be the basis
   of the grammar patterns.")
@@ -615,6 +629,20 @@
   (:with antibody
 	 :via antibody
 	 :for tested-for))
+
+(define-category measure :specializes bio-method
+  :binds ((method bio-method)
+          (measured-item (:or bio-entity bio-process))
+          ;;(location bio-location)
+          )
+  :realization 
+  (:verb "measure" :noun "measurement"
+         :etf (svo-passive)
+         :m measured-item
+         :of measured-item
+         :by method
+         ;;:in location
+         :with method))
 
 
 (define-category bio-event :specializes bio-process
@@ -645,7 +673,7 @@
 
 (define-category pathway-direction :specializes bio-relation
   :mixins (post-adj)
-  :binds ((relative-to biological)
+  :binds ((relative-to (:or bio-process bio-entity pathway))
           (pathway pathway))
   :realization
   (:noun "upstream"
@@ -694,7 +722,7 @@
 (define-category bio-context :specializes biological
   :binds ((process process)
           (entity bio-entity)
-          (quantitative-condition (:or amount bio-scalar)))
+          (quantitative-condition (:or amount measurement bio-scalar)))
   :mixins (has-name)
   :realization
   (:noun "context"
@@ -722,7 +750,7 @@
     (:noun "molecule"
 	   :of molecule-type))
 
-(define-category medical-treatment :specializes process
+(define-category medical-treatment :specializes purposive-process
   :binds ((disease disease)
           (medical-treatment medical-treatment))
   :mixins (biological)
@@ -736,7 +764,7 @@
 
 (noun "chemotherapy" :super medical-treatment)
 (noun "organ transplant" :super medical-treatment)
-;;(noun "therapeutic strategy" :super medical-treatment)
+(noun "therapeutic strategy" :super medical-treatment)
 
 (define-category drug :specializes molecule
   :lemma (:common-noun "drug")
@@ -825,6 +853,21 @@
   (:noun "variant"
          :m basis
          :of basis))
+
+;;; These have been moved here to allow state to be a variant
+
+(define-category bio-state :specializes variant ;; not quite right, but it is almost always a protein
+                 ;; for things like "activated state"
+  :binds ((stateful-item biological))
+  :realization
+  (:noun "state"
+   :of stateful-item)) ;; subject in on bio-predication
+
+(define-category molecule-state :specializes bio-state)
+
+(define-category bio-conformation :specializes molecule-state
+  :realization 
+  (:noun "conformation"))
 
 ;;--- "load" -- "GTP loading"
 ;; "activated upon GTP loading"

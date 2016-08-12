@@ -179,7 +179,8 @@
   :binds ((background biological))
   :realization
   (:verb "isolate" :etf (svo-passive)
-         :from background))
+         ;;:from background
+         ))
 
 (define-category immunoblot :specializes immune-method
   :binds ((object bio-entity)
@@ -229,7 +230,7 @@
              (:noun "support"))
 
 
-(define-category range :specializes bio-scalar ;; REVIEW!!
+(define-category range :specializes bio-relation ;; REVIEW!!
   :binds ((low-value scalar-quantity)
           (high-value scalar-quantity)
           (subject biological))
@@ -300,6 +301,7 @@
 	   :etf (svo-passive)
            :on method
            :through object
+           :through affected-process ;; FIX THIS
            :with method ;; "Single images were acquired with a Leica fluorescence microscope..."
 	   ))
 
@@ -379,7 +381,7 @@
   :binds ((causing (:or be biological)))
   :realization 
   (:verb "affect" :etf (svo-passive) 
-         :to-comp causing))
+         :to-comp affected-process))
 
 
 ;; clausal roles
@@ -391,6 +393,7 @@
 	   :noun "allowance"
 	   :etf (svo-passive)
            :for object
+           :for affected-process
            :to-comp process))
 
 
@@ -476,7 +479,7 @@
 
 ;; DAVID -- not sure about the relation of basis to base
 (define-category base :specializes bio-rhetorical
-    :binds ((cause (:or biological bio-rhetorical measurement)))
+    :binds ((cause (:or biological bio-rhetorical measurement bio-scalar)))
     :realization
     (:verb "base" ;; keyword: ENDS-IN-ED 
 	   :noun "basis"
@@ -519,22 +522,22 @@
          :etf (sv) 
          :of agent
          :on object
-         :upon object))
+         :on affected-process
+         :upon affected-process))
 
 
 ;;/// "catalysis of phosphorylation by MEK"
 (define-category catalytic-activity
   :specializes caused-bio-process
   :bindings (uid "GO:0003824")
-  :binds ((catalyst (:or enzyme bio-complex))
-          (process bio-process))
+  :binds ((catalyst (:or enzyme bio-complex)))
   :realization
   (:verb "catalyze" :noun "catalysis" :adj "catalytic"
          :etf (svo-passive) 
          :s catalyst
-         :o process
+         :o affected-process
          :by catalyst
-         :of process))
+         :of affected-process))
 
 (define-category cause :specializes positive-bio-control
   :realization
@@ -550,16 +553,18 @@
 	   :etf (svo-passive)))
 
 (define-category change :specializes caused-bio-process
-      :binds ((scale bio-scalar)
-              (original biological)
-              (resulting biological)
+      :binds ((scale scalar-quality)
+              (original (:or bio-entity))
+              (resulting (:or bio-entity))
               ) 
       :realization
       (:verb "change"
              :etf (svo-passive)
              :noun "change"
              :in object
+             :in affected-process
              :of object
+             :of affected-process
              :on scale
              :from original
              :to resulting
@@ -578,7 +583,7 @@
 
 
 (define-category coimmunoprecipitate :specializes immune-method
-  :binds ((origin bio-location)
+  :binds ((origin (:or cellular-location cell-line))
 	  (co-precipitant protein))
   :realization 
   (:verb "co-immunoprecipitate" :noun "co-immunoprecipitation"
@@ -628,7 +633,7 @@
          :across bio
          :among bio
          :at at
-         :from bio
+         ;;:from bio
          :in bio
          :to bio
          :with bio))
@@ -704,7 +709,7 @@
 
 (define-category create
   :specializes caused-bio-process
-  :binds ((source biological))
+  :binds ((source (:or bio-entity)))
   :realization
   (:verb "create"
          :noun "creation"
@@ -751,9 +756,8 @@
 
 (define-category decrease
   :specializes negative-bio-control
-  :restrict ((object (:or biological scalar-quality)))
   :binds ((theme biological)
-          (level (:or measurement bio-scalar value-kind)))
+          (level (:or measurement bio-scalar)))
   :realization
   (:verb "decrease" 
    :etf (svo-passive)
@@ -766,7 +770,7 @@
 (define-category make-double :specializes positive-bio-control
   :restrict ((object (:or biological scalar-quality)))
   :binds ((theme biological)
-          (level (:or measurement bio-scalar value-kind)))
+          (level (:or measurement bio-scalar)))
   :realization
   (:verb "double" 
          :etf (svo-passive)
@@ -793,7 +797,8 @@
     (:verb "delay"
            :noun "delay"
 	   :etf (svo-passive )
-           :in object))
+           :in object
+           :in affected-process))
 
 (def-synonym delay (:noun "delay"))
 
@@ -821,7 +826,8 @@
   :realization
   (:verb "deplete" :noun "depletion"
    :etf (svo-passive)
-   :from bio))
+   ;;:from bio
+   ))
 
 
 (define-category describe :specializes bio-rhetorical
@@ -859,13 +865,13 @@
          :etf (svo-passive)))
 
 (define-category displace :specializes caused-bio-process
-  :binds ((location (:or bio-location bio-complex)))
+  :binds ((source-location (:or bio-location bio-complex)))
   :realization
   (:verb "displace" 
          :etf (svo-passive)
          :noun "displacement"
          :etf (svo-passive)
-         :from location))
+         :from source-location))
 
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display :specializes bio-rhetorical
@@ -977,12 +983,13 @@
    :etf (svo-passive)))
 
 (define-category effect :specializes bio-control
-  :restrict ((object (:or bio-process bio-entity))) ;; add this, to disambiguate :on, and not have an ambiguity with :object
+  ;;:restrict ((object (:or bio-process bio-entity))) ;; add this, to disambiguate :on, and not have an ambiguity with :object
   :realization
   (:verb "effect"
 	 :etf (svo-passive)
 	 :of agent
-	 :on object))
+	 :on object
+         :on affected-process))
 
 (def-synonym effect
     (:noun "effect"))
@@ -1016,7 +1023,7 @@
     (:verb "elute" ;; keyword: ENDS-IN-ED 
 	   :noun "elution"
 	   :etf (svo-passive)
-           :from source
+           ;;:from source
            :with agent)) ;; from/onto column (?)
 
 ;;--- "encode"
@@ -1094,7 +1101,7 @@
 	   :etf (svo-passive)))
 
 (define-category exist :specializes bio-predication
-  :binds ((measurement measurement)
+  :binds ((measurement (:or measurement bio-scalar))
           (theme bio-chemical-entity))
   :realization
   (:verb "exist"
@@ -1125,7 +1132,8 @@
     (:verb "express"
 	   :noun "expression"
 	   :etf (svo-passive)
-           :from from))
+           ;;:from from
+           ))
 
 (define-category gene-transcript-over-express :specializes caused-bio-process
     :binds ((location bio-location)
@@ -1135,7 +1143,8 @@
     (:verb "over-express"
 	   :noun "over-expression"
 	   :etf (svo-passive)
-           :from from))
+           ;;:from from
+           ))
 
 
 (define-category gene-code :specializes caused-bio-process
@@ -1146,7 +1155,7 @@
     :realization
     (:verb "code"
 	   :etf (svo-passive)
-           :from from
+           ;;:from from
            :for protein))
 
 
@@ -1507,13 +1516,13 @@
 (delete-noun-cfr (resolve "leads"))
 (define-category lead :specializes positive-bio-control
     :restrict ((agent (:or bio-process bio-method bio-mechanism)))
-    :binds ((result (:or biological bio-rhetorical)))
+    :binds ((leads-to (:or biological bio-rhetorical)))
     :realization
     (:verb ("lead" :past-tense "led")
 	   :etf (svo)
            :o object
-           :to result
-           :to-comp result))
+           :to leads-to
+           :to-comp leads-to))
 
 #+ignore
 (define-category leads-to :specializes cause
@@ -1616,16 +1625,6 @@
          :etf (svo-passive)
          :in state))
 
-(define-category measure :specializes bio-method
-  :binds ((method bio-method)
-          (location bio-location))
-  :realization 
-  (:verb "measure" :noun "measurement"
-         :etf (svo-passive)
-         :by method
-         :in location
-         :with method))
-
 (define-category mediate :specializes caused-bio-process
   :binds ((process bio-process))
   :realization
@@ -1693,14 +1692,14 @@
 |#
 
 (define-category need :specializes bio-relation
-    :binds ((result-or-purpose process))
+    :binds ((needed-for process))
     :realization
     (:verb "need" ;; keyword: ENDS-IN-ED 
 	   :noun "need"
 	   :etf (svo-passive)
            :o theme
-           :for result-or-purpose
-           :to-comp result-or-purpose))
+           :for needed-for
+           :to-comp needed-for))
 
 
 (define-category observe :specializes bio-rhetorical
@@ -1927,7 +1926,7 @@
          :etf (svo-passive)))
 
 (define-category reconstitute :specializes caused-bio-process
-  :binds ((amount measurement)
+  :binds ((amount (:or measurement bio-scalar))
           (in (:or measurement biological)))
   :realization
   (:verb "reconstitute" :noun "reconstitution"
@@ -1989,7 +1988,7 @@
 
 (define-category reach :specializes bio-relation
   :restrict ((subject (:or scalar-quality biological))
-             (theme (:or scalar-quality value-kind))) ;; value-kind for "a high value"
+             (theme (:or scalar-quality measurement)))
   :realization
   (:verb "reach"
          :etf (svo)
@@ -2093,16 +2092,17 @@
     (:verb "resist"
 	   :noun "resistance"
 	   :etf (svo-passive)
-           :to object))
+           :to object
+           :to affected-process))
 
 
 (define-category result :specializes other-bio-process
-    :binds ((result (:or bio-process bio-method bio-predication)))
+    :binds ((results-in (:or bio-process bio-method bio-predication)))
     :realization
     (:verb ("result" :third-singular "results") ;; block plural form of the verb, because of interaction with noun
 	   :etf (sv)
            :from subject 
-	   :in result
+	   :in results-in
            :of subject))
 
 (def-synonym result (:noun "result"))
@@ -2196,7 +2196,7 @@
 
 
 (define-category set-value :specializes caused-bio-process
-  :binds ((value (:or number measurement unit-of-measure)))
+  :binds ((value (:or number measurement unit-of-measure scalar-quality)))
   :realization
   (:verb "set"
          :etf (svo-passive)
@@ -2391,14 +2391,14 @@
 
 (define-category translate :specializes caused-bio-process
   :binds ((initial biological)
-          (result biological))
+          (translates-to biological))
   :realization
   (:verb "translate"
          :etf (svo-passive)
          :noun "translation"
          :from initial
-         :into result
-         :to result))
+         :into translates-to
+         :to translates-to))
 
 ;; how does this relate to translate
 #+ignore
@@ -2474,12 +2474,12 @@
 
 ;;This is almost never used as a verb -- only as "truncating...mutation" and "...truncation of ..."
 (define-category truncate :specializes caused-bio-process
-    :binds ((result biological))
+    :binds ((truncates-to biological))
     :realization
     (:verb "truncate"
 	   :noun "truncation"
 	   :etf (svo-passive)
-	   :to result)) 
+	   :to truncates-to)) 
 
 ;; "Growth factors can turn on Ras"
 #+ignore
@@ -2521,13 +2521,13 @@
 
 
 (define-category use :specializes bio-method
-    :binds ((result biological)
+    :binds ((used-to biological)
             (purpose (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
     :realization
     (:verb ("useXXX" :past-tense "used" :present-participle "using") ;; keyword: ENDS-IN-ED 
            :noun "use"
 	   :etf (svo-passive)
-           :to result
+           :to used-to
            :to-comp purpose))
 
 
