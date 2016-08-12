@@ -5349,17 +5349,27 @@ NIL
 
 (defparameter *er-signals*
   '(SUBORDINATED-EVENT
-    SUBORDINATE-CONJUNCTION
+    SUBORDINATE-CONJUNCTION;; -- we are missing the connection if all we can see is this
     FOLLOWING
     PRECEDING
+    LEADS-TO
+    NECESSARY-TO
+    NEEDED-FOR
+    RESULTS-IN
+    RESULTING
+    USED-TO
     DURING
     RESULT-OR-PURPOSE
     CAUSING
     RESULT
     ALLOW
     PURPOSE
+    BY-MEANS-OF
+    AFFECTED-PROCESS
     ;;to comp under BIO-ACT
-    CAUSE-OF))
+    EVENT-RELATION
+    ;;CAUSE-OF -- replaced by EVENT-RELATION
+    ))
 
 (defun contains-some-of (tree list)
   (when tree
@@ -5398,9 +5408,44 @@ NIL
 (defun all-event-relations ()
   (let ((*interpret-in-context* nil)
         (*trap-error-skip-sentence* t))
-    (declare (special *interpret-in-context* *trap-error-skip-sentence*))
-    (length (setq *ev-r*
-                  (loop for er in
-                       (loop for s in (all-corpus-sentences) append (event-relations (third s)))
-                     when (and (stringp (second er)) (> (length (second er)) 15))
-                     collect er)))))
+    (declare (special *interpret-in-context* *trap-error-skip-sentence*
+                      *ev-r* *sub-conj* *results* *affected*))
+    (let* ((ers (loop for s in (all-corpus-sentences)
+                   append
+                     (loop for er in (event-relations (third s))
+                        when (and (stringp (second er)) (> (length (second er)) 15))
+                        collect er)))
+           (affected
+            (loop for er in ers
+               when (member 'affected-process (first er))
+               collect er))           
+           (results 
+            (loop for er in ers when
+                 (and (member 'result (first er))
+                      (not (member 'results-in (first er)))
+                      (not (member 'leads-to (first er)))
+                      (not (member 'event-relation (first er)))
+                      (not (member 'purpose (first er))))
+               collect er))
+           (ev-r 
+            (loop for er in ers
+               when (and (not (member er results :test #'equal))
+                         (not (member er affected :test #'equal))
+                         (or (not (member 'SUBORDINATE-CONJUNCTION (first er)))
+                             (member 'SUBORDINATED-EVENT (first er))))
+               collect er))
+           (sub-conj 
+            (loop for er in ers
+               when (and (not (member er results :test #'equal))
+                         (not (member er affected :test #'equal))
+                         (member 'SUBORDINATE-CONJUNCTION (first er))
+                         (not (member 'SUBORDINATED-EVENT (first er))))
+               collect er)))
+      (setq *ev-r* ev-r)
+      (setq *sub-conj* sub-conj)
+      (setq *results* results)
+      (setq *affected* affected)
+      `((*ev-r* has ,(length ev-r) elements)
+        (*sub-conj* has ,(length sub-conj) elements)
+        (*results* has ,(length results) elements)
+        (*affected* has ,(length affected) elements)))))
