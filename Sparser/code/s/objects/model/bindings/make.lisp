@@ -142,7 +142,8 @@ returning a new one.
   (if (eq binding ambiguous-binding)
       (if (cddr ambig-variables)
 	  ;; still ambiguous
-	  (progn (format t "~%still ambiguous ~s~%" ambig-variables)
+	  (progn (format t "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
+                         (sentence-string *sentence-in-core*))
 		 (car ambig-variables)) ;;
 	  (loop for v in ambig-variables
 	     when (not (or (eq v var/name)
