@@ -127,10 +127,7 @@
     (let* ((head-form (if irregulars
                         `(,head-keyword ,head-word ,@irregulars)
                         `(,head-keyword . ,head-word)))
-           (rules (head-word-rule-construction-dispatch
-                   head-form
-                   category
-                   category))) ;; 'referent' -- in other cases an individual
+           (rules (make-head-word-rules head-form category category)))
       (let* ((rule-schemas (etf-cases etf))
              rule/s-from-schema )
         (when *big-mechanism*

@@ -102,50 +102,42 @@
 ;;; dispatch
 ;;;----------
 
-(defun head-word-rule-construction-dispatch (head-word category referent)
-  ;; called from make-rules-for-rdata. Keep etf for single-words in synch.
-  (let* ((override-category (override-label category))
-         (lhs-category (or (when override-category
-                             (if (not (eq override-category category))
-                              override-category
-                               category))
-                           category)))
-    (when (and (consp (cdr head-word))
-               (cddr head-word))
-      ;; Two cases, multiple words and a single word with irregularities
-      ;; We assume if they know to specify irregulars at all they
-      ;; will use a keyword. Otherwise we assume it's multiple words
-      (when (some #'keywordp (cdr head-word))
-        ;; (<word> <plist of irregulars>
-        (check-for-correct-irregular-word-markers (cddr head-word))))
+(defun make-word-rules (constructor word category referent)
+  "Call a rule construction function for either a single word, multiple words,
+or a word with morphological special-cases, e.g., :plural, :past-tense, etc.
+Returns a list of rules constructed, assuming the constructor does, too."
+  (etypecase word
+    ((or word polyword)
+     (funcall constructor word category referent))
+    ((cons (or word polyword) (cons keyword *))
+     (apply constructor (car word) category referent (cdr word)))
+    (list
+     (loop for w in word
+           append (make-word-rules constructor w category referent)))))
 
-;    (when (and (consp (cdr head-word)) ;; not (:adjective . #<word "black">
-;               (cddr head-word))
-;      (check-for-correct-irregular-word-markers  (cddr head-word)))
-
-
-    (ecase (car head-word)
-      (:verb (make-verb-rules
-              (cdr head-word) lhs-category referent))
-      (:common-noun (make-cn-rules
-                     (cdr head-word) lhs-category referent))
-      (:proper-noun (make-pn-rules
-                     (cdr head-word) lhs-category referent))
-      (:adjective (make-rules-for-adjectives
-                   (cdr head-word) lhs-category referent))
-      (:quantifier (make-rules-for-word-w/o-morph
-                    (cdr head-word) lhs-category referent))
-      (:adverb (make-rules-for-adverbs
-                (cdr head-word) lhs-category referent))
-      (:interjection (make-interjection-rules
-                      (cdr head-word) lhs-category referent))
-      (:preposition (make-preposition-rules
-                     (cdr head-word) lhs-category referent))
-      (:word (make-rules-for-word-w/o-morph
-              (cdr head-word) lhs-category referent))
-      (:standalone-word (make-rules-for-standalone-word
-                         (cdr head-word) lhs-category referent)))))
-
+(defun make-head-word-rules (head-word category referent &aux
+                             (category (or (override-label category) category)))
+  "Called from make-rules-for-rdata and apply-realization-scheme.
+   Keep etf for single-words in sync."
+  (when (and (consp (cdr head-word))
+             (cddr head-word))
+    ;; Two cases: multiple words, or a single word with irregulars.
+    ;; We assume if they know to specify irregulars at all they
+    ;; will use a keyword, otherwise we assume it's multiple words.
+    (when (some #'keywordp (cdr head-word))
+      (check-for-correct-irregular-word-markers (cddr head-word))))
+  (make-word-rules (ecase (car head-word)
+                     (:verb #'make-verb-rules)
+                     (:common-noun #'make-cn-rules)
+                     (:proper-noun #'make-pn-rules)
+                     (:adjective #'make-rules-for-adjectives)
+                     (:quantifier #'make-rules-for-word-w/o-morph)
+                     (:adverb #'make-rules-for-adverbs)
+                     (:interjection #'make-interjection-rules)
+                     (:preposition #'make-preposition-rules)
+                     (:word #'make-rules-for-word-w/o-morph)
+                     (:standalone-word #'make-rules-for-standalone-word))
+                   (cdr head-word) category referent))
 
 (defparameter *valid-keywords-for-irregular-word-forms*
   '(:third-singular :past-tense :present-participle :third-plural
@@ -212,39 +204,6 @@
 ;;;-------
 ;;; verbs
 ;;;-------
-
-(defun make-verb-rules (word category referent)
-  ;; returns a list of rules to be passed back to Make-rules-for-rdata
-  ;; All we need are rules over the verb since the rest of the verb
-  ;; group will be handled by form rules.  If there were any special
-  ;; meanings for some vg-level combinations they would be done with
-  ;; local cases
-
-  (etypecase word
-    (word (make-verb-rules/aux word category referent))
-    (polyword (make-verb-rules/aux word category referent))
-
-    (list
-     ;; its either multiple (synomymous) words or the specification
-     ;; of special cases in the morphology or both
-     (cond ((some #'consp word)    ;; (listp (first word)) ;; both
-            (let ( rules )
-              (dolist (w word)
-                (setq rules (append (make-verb-rules w category referent)
-                                    rules)))
-              rules))
-           ((not (some #'keywordp word))
-            ;; not a spec, so its multiple
-            (let ( rules )
-              (dolist (w word)
-                (setq rules (append (make-verb-rules/aux w category referent)
-                                    rules)))
-              rules))
-           (t (make-verb-rules/aux (first word)
-                                   category referent
-                                   (rest word)))))))
-
-
 
 (defun verb? (word)
   (let ((rs (rule-set-for word)))
@@ -314,105 +273,45 @@
 
 
 
-(defun define-main-verb  (symbol-for-category
-                          &key 
-                          ((:category supplied-category))
-                          referent 
-                          infinitive ;; "to give"
-                          tensed/singular    ;; "he gives"
-                          tensed/plural      ;; "they give"
-                          past-tense         ;; "they gave"
-                          past-participle    ;; "they have given"
-                          present-participle ;; "they are giving"
-                          nominalization)
+(defun define-main-verb (verb &key
+                         (category (find-or-make-category verb :define-category))
+                         (referent (category-named 'event)) ;; should be eventuality
+                         (infinitive        ;; "to give"
+                          (error "Must supply at least the infinitive form."))
+                         tensed/singular    ;; "he gives"
+                         tensed/plural      ;; "they give"
+                         past-tense         ;; "they gave"
+                         past-participle    ;; "they have given"
+                         present-participle ;; "they are giving"
+                         nominalization)
   "Standalone entry point developed in the early 1990s. Can be very lightweight
- because the referent can be trivial. Provides overrides to make-verb-rules/aux."
-  (unless infinitive
-    (error "Must supply at least the infinitive word form"))
-  (let ((word (define-word/expr infinitive))
-        (category (or supplied-category
-                      (find-or-make-category symbol-for-category :define-category)))
-        (ref (or referent
-                 (category-named 'event))) ;; see /core/kinds/object -- should be eventuality
-        special-cases )
-    (when tensed/singular
-      (push tensed/singular special-cases)
-      (push :third-singular special-cases))
-    (let ((t/p (or tensed/plural infinitive)))
-      (push t/p special-cases)
-      (push :third-plural special-cases))
-    (when past-tense
-      (push past-tense special-cases)
-      (push :past-tense special-cases))
-    (when past-participle 
-      (push past-participle special-cases)
-      (push :past-participle special-cases))
-    (when present-participle ;; ing-form
-      (push present-participle special-cases)
-      (push :present-participle special-cases))
-    (when nominalization
-      (push nominalization special-cases)
-      (push :nominalization special-cases))
-    (let ((rules (make-verb-rules/aux word category ref special-cases)))
-      (add-rules-to-category category rules)
-      rules)))
+because the referent can be trivial. Provides overrides to make-verb-rules."
+  (add-rules (make-verb-rules (define-word/expr infinitive) category referent
+                              :nominalization nominalization
+                              :present-participle present-participle
+                              :past-participle past-participle
+                              :past-tense past-tense
+                              :third-singular tensed/singular
+                              :third-plural (or tensed/plural infinitive))
+             category))
 
-
-(defun make-verb-rules/aux (word category referent
-                            &optional special-cases )
-  ;; Called from make-verb-rules. Returns a list of the rules made
-  (let ((s-form (or (cadr (member :third-singular special-cases))
-                    (s-form-of-verb word)))
-        (ed-form (or (cadr (member :past-tense special-cases))
-                     (ed-form-of-verb word)))
-        (ing-form (or (cadr (member :present-participle special-cases))
-                      (ing-form-of-verb word)))
-        (third-plural (cadr (member :third-plural special-cases)))
-        (past-participle (cadr (member :past-participle special-cases)))
-        (nominalization (cadr (member :nominalization special-cases))))
- 
-    ;; we break it all out this far so that the second routine
-    ;; can be an entry point by itself for when we're not going
-    ;; via an rdata route
-    (make-verb-rules/aux2 word category referent
-                          :s-form  s-form
-                          :ed-form  ed-form
-                          :ing-form  ing-form
-                          :past-tense  ed-form
-                          :past-participle  past-participle
-                          :present-participle  ing-form
-                          :third-singular  s-form
-                          :third-plural  third-plural
-                          :nominalization  nominalization)))
-  
-
-(defun make-verb-rules/aux2 (word category referent
-                             &key s-form
-                                  ed-form
-                                  ing-form
-                                  past-tense past-participle
-                                  present-participle
-                                  third-singular third-plural
-                                  nominalization )
+(defun make-verb-rules (word category referent &key nominalization
+                        past-tense past-participle present-participle
+                        third-singular third-plural
+                        (s-form (or third-singular (s-form-of-verb word)))
+                        (ed-form (or past-tense (ed-form-of-verb word)))
+                        (ing-form (or present-participle (ing-form-of-verb word))))
+  "Called from make-verb-rules. Returns a list of the rules made."
   (let ( inflections )
-    (flet ((convert-if-needed (raw)
-             (typecase raw
-               (word raw)
-               (polyword raw)
-               (string (resolve/make raw))
-               (cons
-                (loop for r in raw
-                  when (stringp r) do (setq r (resolve/make r))
-                  collect r))
-               (otherwise
-                (break "Unexpected type: ~a~%  ~a" (type-of raw) raw))))
-           (update-inflections (result)
-             (typecase result
-               (word (push result inflections))
-               (polyword (push result inflections))
-               (cons (setq inflections (append-new result inflections)))
-               (otherwise (break "Unexpected result type: ~a~%  ~a"
-                                 (type-of result) result)))))
+    (labels ((convert-if-needed (raw)
+               (etypecase raw
+                 ((or word polyword) raw)
+                 (string (resolve/make raw))
+                 (list (mapcar #'convert-if-needed raw))))
+             (update-inflections (result)
+               (etypecase result
+                 ((or word polyword) (push result inflections))
+                 (list (setq inflections (append-new result inflections))))))
       (when s-form
         (update-inflections (setq s-form (convert-if-needed s-form))))
       (when ed-form
@@ -949,37 +848,11 @@
 ;;; common nouns
 ;;;--------------
 
-(defun make-cn-rules (word category referent)
-  (etypecase word
-    (word (make-cn-rules/aux word category referent))
-    (polyword (make-cn-rules/aux word category referent))
-    (list
-     ;; its either multiple (synomymous) words or the specification
-     ;; of special cases in the morphology or both
-     (cond ((listp (first word)) ;; both
-            (let ( rules )
-              (dolist (w word)
-                (setq rules (append (make-cn-rules w category referent)
-                                    rules)))
-              rules))
-           ((not (some #'keywordp word))
-            ;; not a spec, so its multiple
-            (let ( rules )
-              (dolist (w word)
-                (setq rules (append (make-cn-rules/aux w category referent)
-                                    rules)))
-              rules))
-           (t (make-cn-rules/aux (first word)
-                                 category referent
-                                 (rest word)))))))
-
 (defparameter *inihibit-constructing-plural* nil
   "Intended to be bound by word-constructors when they know that 
    the noun does not make sense in the plural.")
 
-(defun make-cn-rules/aux (word given-category referent
-                          &optional special-cases)
-
+(defun make-cn-rules (word given-category referent &rest special-cases)
   (let* ((override-category (override-label given-category))
          (category 
           (if override-category
@@ -1044,8 +917,7 @@
     (loop for i in plural-inflections
       do (record-lemma i word :noun))
 
-    (list singular-rule
-          plural-rules)))
+    (list* singular-rule plural-rules)))
 
 
 (defun make-cn-plural-rule (singular plural category referent schematic-rule)
@@ -1149,30 +1021,14 @@
 ;;;---------------------------------
 
 (defun make-rules-for-word-w/o-morph (word category referent)
-  (if (listp word)
-    (let ( rules )
-      (dolist (w word)
-        (setq rules (append (make-rules-for-word-w/o-morph
-                             w category referent)
-                            rules)))
-      rules )
-    (else
-      (unless (or (word-p word) (polyword-p word))
-        (break "Data type error: expected a 'word',~
-                ~%got ~A, which is a ~A.~
-                ~%This could be caused by a mistake in the definition of the~
-                ~%category. If the value restriction is 'word' or 'polyword',~
-                ~%that should be given as '(<var> :primitive word)'.~%"
-               word (type-of word)))
-      (let ((schematic-rule (get-schematic-word-rule :word)) ;; :standalone-word
-            (cfr (define-cfr category (list word)           ;; see single-words etf
-                   :form category::adjunct  ;; ??
-                   :referent referent )))
-        (setf (cfr-schema cfr) schematic-rule)
-	;; no bracket assignment because we don't know enough to pick the
-	;; right ones or even determine that there should be any 
-	(list cfr)))))
-
+  (let ((schematic-rule (get-schematic-word-rule :word))
+        (cfr (define-cfr category (list word)
+               :form category::adjunct ;; ??
+               :referent referent)))
+    (setf (cfr-schema cfr) schematic-rule)
+    ;; no bracket assignment because we don't know enough to pick the
+    ;; right ones or even determine that there should be any 
+    (list cfr)))
 
 
 ;;;---------
@@ -1180,21 +1036,13 @@
 ;;;---------
 
 (defun make-rules-for-adverbs (word category referent)
-  (if (listp word)
-    (let ( rules )
-        (dolist (w word)
-        (setq rules (append (make-rules-for-adverbs
-                             w category referent)
-                            rules)))
-      rules )
-    (else
-      (let ((schematic-rule (get-schematic-word-rule :adverb))
-            (cfr (define-cfr category (list word)
-                   :form category::adverb
-                   :referent referent)))
-        (setf (cfr-schema cfr) schematic-rule)
-        (assign-brackets-to-adverb word)
-        (list cfr)))))
+  (let ((schematic-rule (get-schematic-word-rule :adverb))
+        (cfr (define-cfr category (list word)
+               :form category::adverb
+               :referent referent)))
+    (setf (cfr-schema cfr) schematic-rule)
+    (assign-brackets-to-adverb word)
+    (list cfr)))
 
 
 ;;;------------
@@ -1202,21 +1050,13 @@
 ;;;------------
 
 (defun make-rules-for-adjectives (word category referent)
-  (if (listp word)
-    (let ( rules )
-        (dolist (w word)
-        (setq rules (append (make-rules-for-adjectives
-                             w category referent)
-                            rules)))
-      rules )
-    (else
-      (let ((schematic-rule (get-schematic-word-rule :adjective))
-            (cfr (define-cfr category (list word)
-                   :form category::adjective
-                   :referent referent)))
-        (setf (cfr-schema cfr) schematic-rule)
-        (assign-brackets-to-adjective word)
-        (list cfr)))))
+  (let ((schematic-rule (get-schematic-word-rule :adjective))
+        (cfr (define-cfr category (list word)
+               :form category::adjective
+               :referent referent)))
+    (setf (cfr-schema cfr) schematic-rule)
+    (assign-brackets-to-adjective word)
+    (list cfr)))
 
 
 ;;;--------------
@@ -1224,21 +1064,13 @@
 ;;;--------------
 
 (defun make-pn-rules (word category referent)
-  (if (listp word)
-    (let ( rules )
-      (dolist (w word)
-        (setq rules (append (make-pn-rules
-                             w category referent)
-                            rules)))
-      rules )
-    (else
-      (let ((pn-schematic-rule (get-schematic-word-rule :proper-noun))
-            (cfr  (define-cfr category (list word)
-                    :form category::proper-noun
-                    :referent referent )))
-        (assign-brackets-to-proper-noun word)
-        (setf (cfr-schema cfr) pn-schematic-rule)
-        (list cfr)))))
+  (let ((pn-schematic-rule (get-schematic-word-rule :proper-noun))
+        (cfr  (define-cfr category (list word)
+                :form category::proper-noun
+                :referent referent )))
+    (assign-brackets-to-proper-noun word)
+    (setf (cfr-schema cfr) pn-schematic-rule)
+    (list cfr)))
 
 
 ;;;--------------
@@ -1246,21 +1078,13 @@
 ;;;--------------
 
 (defun make-interjection-rules (word category referent)
-  (if (listp word)
-    (let ( rules )
-      (dolist (w word)
-        (setq rules (append (make-interjection-rules
-                            w category referent)
-                           rules)))
-      rules )
-    (else
-      (let ((intj-schematic-rule (get-schematic-word-rule :interjection))
-            (cfr (define-cfr category (list word)
-                   :form category::interjection
-                   :referent referent )))
-        (assign-brackets-to-interjection word)
-        (setf (cfr-schema cfr) intj-schematic-rule)
-        (list cfr)))))
+  (let ((intj-schematic-rule (get-schematic-word-rule :interjection))
+        (cfr (define-cfr category (list word)
+               :form category::interjection
+               :referent referent )))
+    (assign-brackets-to-interjection word)
+    (setf (cfr-schema cfr) intj-schematic-rule)
+    (list cfr)))
 
 
 ;;;--------------
@@ -1268,21 +1092,13 @@
 ;;;--------------
 
 (defun make-preposition-rules (word category referent)
-  (if (listp word)
-    (let ( rules )
-      (dolist (w word)
-        (setq rules (append (make-preposition-rules
-                            w category referent)
-                           rules)))
-      rules )
-    (else
-      (let ((prep-schematic-rule (get-schematic-word-rule :preposition))
-            (cfr (define-cfr category (list word)
-                   :form category::preposition
-                   :referent referent )))
-        (assign-brackets-to-preposition word)
-        (setf (cfr-schema cfr) prep-schematic-rule)
-        (list cfr)))))
+  (let ((prep-schematic-rule (get-schematic-word-rule :preposition))
+        (cfr (define-cfr category (list word)
+               :form category::preposition
+               :referent referent )))
+    (assign-brackets-to-preposition word)
+    (setf (cfr-schema cfr) prep-schematic-rule)
+    (list cfr)))
 
 
 ;;;-------------------------------------------------------
@@ -1290,18 +1106,10 @@
 ;;;-------------------------------------------------------
 
 (defun make-rules-for-standalone-word (word category referent)
-  (if (listp word)
-    (let ( rules )
-      (dolist (w word)
-        (setq rules (append (make-rules-for-standalone-word
-                             w category referent)
-                            rules)))
-      rules )
-    (else
-      (let ((schematic-rule (get-schematic-word-rule :word)) ;; :standalone-word
-            (cfr (define-cfr category (list word)           ;; see single-words etf
-                   :form category::adjunct  ;; ??
-                   :referent referent )))
-        (setf (cfr-schema cfr) schematic-rule)
-        (assign-brackets-to-standalone-word word)
-        (list cfr)))))
+  (let ((schematic-rule (get-schematic-word-rule :word)) ;; :standalone-word
+        (cfr (define-cfr category (list word)           ;; see single-words etf
+               :form category::adjunct  ;; ??
+               :referent referent )))
+    (setf (cfr-schema cfr) schematic-rule)
+    (assign-brackets-to-standalone-word word)
+    (list cfr)))

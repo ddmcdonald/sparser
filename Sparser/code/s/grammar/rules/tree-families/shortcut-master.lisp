@@ -248,8 +248,8 @@
         (let* ((word-string (if (consp noun) (car noun) noun))
                (word (resolve/make word-string))
                (special-cases (when (consp noun) (cdr noun)))
-               (cn-rules (make-cn-rules/aux word category category
-                                            special-cases)))
+               (cn-rules (apply #'make-cn-rules word category category
+                                special-cases)))
           (make-corresponding-mumble-resource word :common-noun)
           (add-rules-to-category category cn-rules))))
 

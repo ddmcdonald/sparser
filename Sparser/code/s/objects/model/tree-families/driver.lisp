@@ -274,7 +274,7 @@
     (when (and head-word
                (not (eq head-word :no-head-word)))
       (unless (lambda-variable-p (cdr head-word))
-        (setq rules (head-word-rule-construction-dispatch ;;/// add instantiates check
+        (setq rules (make-head-word-rule ;;/// add instantiates check
                       head-word category referent))))
 
       #+ignore(dolist (keyword head-word) ;; needs more layout work

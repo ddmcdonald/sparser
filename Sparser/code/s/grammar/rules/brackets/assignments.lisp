@@ -195,11 +195,11 @@
                                                    :instantiates :self))))
           (rs (rule-set-for word)))
 
-      (let ((rules (make-cn-rules/aux
-                    word
-                    category ;; lhs
-                    category ;; referent
-                    marked-plural))) ;; special-cases
+      (let ((rules (apply #'make-cn-rules
+                          word
+                          category ;; lhs
+                          category ;; referent
+                          marked-plural))) ;; special-cases
         (mark-as-constructed-category-for-word category super-category)
         (when rs ;; could start out as nil
           (unless (eq (rule-set-for word) rs)
