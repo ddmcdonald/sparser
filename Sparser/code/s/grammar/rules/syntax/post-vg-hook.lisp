@@ -22,7 +22,7 @@
 (defun verb-group-final-actions (vg-edge)
   (when (memq (edge-form vg-edge) ;; see note on the global
               *plausible-vg-categories*)
-    #+ignore(fold-in-preposed-auxiliary vg-edge)
+    (fold-in-preposed-auxiliary vg-edge)
     #+ignore(record-verb-tense vg-edge)
     (generalize-vg-segment-edge vg-edge)))
 
@@ -33,11 +33,24 @@
 
 (defun fold-in-preposed-auxiliary (vg-edge)
   (when (preposed-aux?)
-    (multiple-value-bind (auxiliary aux-pos aux-form)
+    (multiple-value-bind (aux-edge aux-form)
         (preposed-aux?)
-      (push-debug `(,vg-edge ,auxiliary ,aux-pos ,aux-form))
-      (lsp-break "fold the preposed aux ~a into ~a"
-                 auxiliary vg-edge))))
+      
+      ;; Reinstate the original form label for the aux
+      (setf (edge-form aux-edge) aux-form) 
+
+      ;; Look for a rule
+      (let ((rule (multiply-edges aux-edge vg-edge)))
+        (unless rule
+          (push-debug `(,vg-edge ,aux-edge ,aux-form))
+          (error "Trying to fold in a preposed auxiliary ~
+                  but there is no rule that composes ~
+                ~%~a and ~a" aux-edge vg-edge))
+
+        ;; Make a very peculiar edge (which may need
+        ;; more thought)
+        (make-discontinuous-edge aux-edge vg-edge rule)))))
+
 
 
 ;;;--------------

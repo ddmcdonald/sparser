@@ -506,9 +506,9 @@ is a case in handle-any-anaphor
       to be partitive references of the form <quantifier> of <definite-NP>.")
    (preposed-aux
     :initform nil :accessor preposed-aux
-    :documentation "The position of a auxiliary or model that was
+    :documentation "The edge over the auxiliary or model that was
       'moved' to 'sentence-initial' to indicate a question, along
-      with its original form label"))
+      with its original form label, as a dotted pair"))
   
   (:documentation "Each field is a kind of phenomena that
     we can't make a decision about. The simplest thing to
@@ -517,25 +517,24 @@ is a case in handle-any-anaphor
     and the function that reads the record."))
 
 
-(defgeneric record-preposed-aux (position original-form)
+(defgeneric record-preposed-aux (edge original-form)
   (:documentation "Store enough information about a preposed verbal
      element to be able to later reconstruct its properties if it were
      to be 'moved' back to its standard position in a VG.")
-  (:method ((p position) (original-form category))
+  (:method ((e edge) (original-form category))
     (let ((s (identify-current-sentence)))
-      (setf (preposed-aux (contents s)) (cons p original-form)))))
+      (setf (preposed-aux (contents s)) (cons e original-form)))))
 
 (defun preposed-aux? ()
   "If the delayed action record in the contents of the current sentence
-   records a preposed auxiliary return that auxiliary, the position
-   it is on, and its original form."
+   records a preposed auxiliary the return the contents of the
+   field, i.e. the edge over the auxiliary and its original form."
   (let* ((s (identify-current-sentence))
          (preposed-aux-info (preposed-aux (contents s))))
     (when preposed-aux-info
-      (let ((position (car preposed-aux-info))
+      (let ((edge (car preposed-aux-info))
             (original-form (cdr preposed-aux-info)))
-        (values (pos-terminal position)
-                position
+        (values edge
                 original-form)))))
 
 

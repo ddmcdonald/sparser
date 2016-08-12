@@ -388,7 +388,7 @@
 
       (flet ((store-preposed ()
                (setf (edge-form first-item) category::preposed-auxiliary)
-               (record-preposed-aux position-before form-label)))
+               (record-preposed-aux edge form-label)))
     
         (when form-label
           (case (cat-symbol form-label)
