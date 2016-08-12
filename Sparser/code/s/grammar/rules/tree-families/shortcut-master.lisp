@@ -48,6 +48,7 @@
     :designator
     :whethercomp :with :within :without
     :optional-object ;; for words like "translocate" which can appear with or without objects
+    :adjp-complement ;; for cases like "Make the top block red."
     ))
 
 (defparameter *slot-keywords*
@@ -57,7 +58,8 @@
     :about :above :across :after :against :among :as :as-comp :at
     :before :below :between :but\ not :during :following :for :from :ifcomp 
     :by :in :into :like :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
-    :upon :via :whethercomp :with :within :without :designator))
+    :upon :via :whethercomp :with :within :without :designator
+    ))
 
 
 (defun includes-def-realization-keyword (rdata)
@@ -243,7 +245,8 @@
                                             slots ;; a plist with labels like :against :as :at 
                                             ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
                                             mumble
-                                            optional-object)
+                                            optional-object
+                                            adjp-complement)
   ;; Decoder for the realization part of def-term, for the rdata of
   ;; define-category when it fits this new pattern, and for def-synonym,
   ;; though in that case the *deliberate-duplication* flag will be up.
@@ -324,7 +327,7 @@
         ;; immediately after the verb, making it effectively
         ;; a compound verb name
         (apply-preposition verb prep category))) ;; end dolist
-
+    (register-variable category adjp-complement :adjp-complement)
     (when noun ;; a noun can just expect to get all the pp's w/o an etf
       (unless (assq :common-noun word-map)
         ;; if it's on the map then the realization machinery will expand it
