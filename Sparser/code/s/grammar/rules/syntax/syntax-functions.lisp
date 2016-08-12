@@ -178,7 +178,7 @@
   category::number)
 
 (define-lambda-variable 
-  'cause-of ;; name
+  'event-relation ;; name
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
 
@@ -1134,17 +1134,18 @@
          (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%" )))))
 
 
-(defun can-fill-vp-subject? (vp subj)
+(defun can-fill-vp-subject? (vp subj &optional (left-edge (left-edge-for-referent)))
   (and
    ;; vp has a subject
    (missing-subject-vars vp) ;; which is not bound
-   (subcategorized-variable vp :subject subj)
+   
    (or
     ;; can't be a reduced relative, no available object-var
-    (not (object-variable vp)) (bound-object-vars vp)
+    (not (missing-object-vars vp)) ;; (not (object-variable vp)) (bound-object-vars vp)
     ;; or a statement (clausal complement)
     (value-of 'statement vp)
-    (preceding-that-whether-or-conjunction? (left-edge-for-referent)))))
+    (preceding-that-whether-or-conjunction? left-edge))
+   (subcategorized-variable vp :subject subj)))
        
 (defun can-fill-vp-object? (vp subj)
   (and ;; vp has a bound subject -- NP can fill object
@@ -1214,13 +1215,15 @@
 
 (defun assimilate-np-to-v-as-object (vg obj)
   (let ((result
-	 (if (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
+	 (if (and (typep *current-chunk* 'chunk)
+                  (member 'ng (chunk-forms *current-chunk*)))
 	     (verb-noun-compound vg obj)
 	     (assimilate-object vg obj))))
     (cond
       (*subcat-test* result)
       (result
-       (if (and *current-chunk* (member 'ng (chunk-forms *current-chunk*)))
+       (if (and (typep *current-chunk* 'chunk)
+                (member 'ng (chunk-forms *current-chunk*)))
 	   (revise-parent-edge :category (itype-of obj)
 			       :form category::n-bar
 			       :referent result)
@@ -1498,9 +1501,16 @@
 
 (defun missing-object-vars (i)
   (let ((ov (find-object-vars i)))
-    (and ov
-         (not (get-tag :optional-object (itype-of i)))
-         (not (loop for o in ov thereis (value-of o i))))))
+    (or
+     (and ov
+          (not (get-tag :optional-object (itype-of i)))
+          (not (loop for o in ov thereis (value-of o i)))
+          (not
+           ;; this is weak -- need to check inside the disjunctive-lambda-variable-p
+           ;;  for an object-variable
+           (loop for b in (when (individual-p i)(indiv-old-binds i))
+              thereis (disjunctive-lambda-variable-p
+                       (binding-variable b))))))))
 
 (defun missing-subject-vars (i)
   (let ((sv (find-subject-vars i)))
@@ -1578,7 +1588,9 @@
           (itypep item category::this)
           (itypep item category::that)
           (itypep item category::these)
-          (itypep item category::those))
+          (itypep item category::those)
+          (itypep item category::numerated-anaphor)
+          (itypep item category::quantifier)) ;; as in "the other",
          t)
         (;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
          (itypep item category::pronoun) ;; of any sort
@@ -1878,7 +1890,7 @@
   ;;//// needs a lot more work on this relation
   (let* ((variable-to-bind 
           (find-variable-for-category 
-           'cause-of (itype-of s))))
+           'event-relation (itype-of s))))
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
