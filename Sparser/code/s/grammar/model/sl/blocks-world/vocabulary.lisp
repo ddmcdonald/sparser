@@ -131,6 +131,22 @@ support a substantial number of blocks.
   :realization
     ((:main-verb "put")
      (:mumble ("put" svo1o2 :o1 theme :o2 location))))
+
+
+(define-category make
+  :specializes process
+  ;; we're going through the steps of constucting the
+  ;; staircase. With "lets'" we haven't even started
+  :mixins (with-an-agent)
+  :binds ((object physical-object)
+          (adj-comp t)) ;; what they build
+  :realization
+    (:verb ("make" :past-tense "made")
+     :etf (svo-passive)
+     :s agent
+     :o object
+     :adjp-complement adj-comp
+     :mumble ("make" svo :o object)))
           
 ;; maybe move up to mid-level..
 #|
