@@ -210,11 +210,15 @@
          ;; PUNT right now
          (edge-referent edge))
         (t
-         (referent-from-rule
-          (edge-left-daughter edge)
-          (edge-right-daughter edge)
-          edge
-          (edge-rule edge)))))
+         (let ((*current-chunk* 'dummy-chunk))
+           ;; have NP chunk rules that check to see that they are in a chunk
+           ;;  e.g. funtion verb-noun-coumpount
+           ;; fake them out
+           (referent-from-rule
+            (edge-left-daughter edge)
+            (edge-right-daughter edge)
+            edge
+            (edge-rule edge))))))
    
 
 
