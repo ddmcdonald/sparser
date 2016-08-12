@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  July 2016
+;;;  Version:  August 2016
 
 ;;  1.1  (v1.5)  Added files for the edge-creating routines that had
 ;;        been embedded in other code so that it could all be centralized.
@@ -42,6 +42,7 @@
 (gload "kinds of edges;binary")
 (gload "kinds of edges;binary-explicit")  ;;//// keep only one of these
 (gload "kinds of edges;binary-explicit all keys")
+(gload "kinds of edges;discontinuous")
 (gload "kinds of edges;cs")
 (gload "kinds of edges;initial-new")
 (gload "kinds of edges;unknown")
