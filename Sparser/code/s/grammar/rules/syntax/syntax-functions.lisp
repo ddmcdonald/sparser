@@ -293,15 +293,7 @@
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
-     (and ;; had strange case with "some cases this" -- head was "this"
-          ;; so rule out these cases
-          (not (and (individual-p head) (itypep head category::determiner)))
-          (not (itypep head  category::determiner))
-
-          ;; Positive reasons to assume we can compose
-          (or (subcategorized-variable head :m adjective)
-              (subcategorized-variable adjective :subject head)
-              (itypep adjective 'attribute-value))))
+     (takes-adj? head adjective))
 
     ((call-compose adjective head)) ;; This case is to benefit marker-categories
     ((itypep adjective 'attribute-value)
@@ -318,6 +310,17 @@
 		 (individual-for-ref adjective))))
        (setq head (bind-dli-variable 'predication predicate head))
        head))))
+
+(defun takes-adj? (head adjective)
+  (and ;; had strange case with "some cases this" -- head was "this"
+   ;; so rule out these cases
+   (not (and (individual-p head) (itypep head category::determiner)))
+   (not (itypep head  category::determiner))
+
+   ;; Positive reasons to assume we can compose
+   (or (subcategorized-variable head :m adjective)
+       (subcategorized-variable adjective :subject head)
+       (itypep adjective 'attribute-value))))
 
 (defun adj-postmodifies-noun (n adj &optional (adj-edge nil)) ;; adj-edge is set when we are postmodifying
   ;; to be more picky about which adjectives can post-modify a noun
@@ -1141,7 +1144,7 @@
    
    (or
     ;; can't be a reduced relative, no available object-var
-    (not (missing-object-vars vp)) ;; (not (object-variable vp)) (bound-object-vars vp)
+    (not (missing-object-vars vp)) ;; (not (object-variable vp)) (bound-object-var vp)
     ;; or a statement (clausal complement)
     (value-of 'statement vp)
     (preceding-that-whether-or-conjunction? left-edge))
@@ -1517,8 +1520,12 @@
     (and sv
          (not (loop for s in sv thereis (value-of s i))))))
 
-(defun bound-object-vars (i)
-  (loop for o in (find-object-vars i) thereis (value-of o i)))
+(defun bound-object-var (i)
+  (loop for o in (find-object-vars i)
+     when
+       (value-of o i)
+     do
+       (return o)))
 
 (defun bound-subject-vars (i)
   (loop for s in (find-subject-vars i) thereis (value-of s i)))
@@ -1906,3 +1913,14 @@
               '(adjunct subordinate-conjunction))
       (bind-dli-variable 'subordinate-conjunction time (individual-for-ref vp))
       (bind-dli-variable 'time time (individual-for-ref vp))))
+
+
+(defun assimilate-adj-complement (vp adjp)
+  (when
+      (get-tag :adjp-complement (itype-of vp)) ;; this is a (find-variable-for-category event-relation (itype-of s))
+    (let* ((obj-var (bound-object-var vp))
+           (obj (when obj-var (value-of obj-var vp)))
+           (mod-obj (when (takes-adj? obj adjp)
+                      (adj-noun-compound adjp obj (right-edge-for-referent)))))
+      (when mod-obj
+        (bind-dli-variable 'predicate mod-obj vp)))))
