@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990,1991  Content Technologies Inc.
-;;; copyright (c) 1992-1993,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2013-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "cs"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  2.4 September 2013
+;;;  Version:  August 2016
 
 ;; 1.1 (1/16/91 v1.8)  Changed the Context-sensitive routine considerably
 ;;      so that it could see the context edge as part of having its
@@ -19,10 +19,8 @@
 ;;      to accommodate the trick of interpolated rewriting form rules.
 ;;     (9/16/13) added form-rule-head-category
 
-
-;; THIS FILE SEEMS TO BE LOADED IN PLACE OF CS3.lisp!
 ;; 5/25/2015 added call to place-referent-in-lattice around computation of edge-referent field
-;;  initial work to produce a lattice of descriptions
+;;  initial work to produce a lattice of descriptions (taken out 8/12/16)
 ;;  the places where this call is put were determined by the methods where (complete edge) was also called
 ;; 5/30/2015 correct ordering of knit-edge-into-position and place-referent-in-lattice
 
@@ -108,11 +106,7 @@
       (setf (edge-right-daughter edge) :context-sensitive)
 
       (setf (edge-referent edge)
-            (place-referent-in-lattice
-             (referent-from-rule left-edge right-edge edge rule)
-             edge))
-
-
+            (referent-from-rule left-edge right-edge edge rule))
 
       (set-used-by relevant-edge edge)
 
