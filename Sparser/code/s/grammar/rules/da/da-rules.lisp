@@ -705,25 +705,35 @@
          (make-edge-spec
           :category (edge-category vp+ed)
           :form category::s
-          :referent ref)))
-     (let* ((target (find-target-satisfying
-                     (right-fringe-of np)
-                     #'(lambda (sub-np) (and (edge-referent sub-np)
-                                             (subcategorized-variable vp-ref :object
-                                                                 (edge-referent sub-np))))))
-            (target-np (when (edge-p target) (edge-referent target))))
-       (when target
-         (let ((obj-var (subcategorized-variable vp-ref :object target-np) ))
-           (when obj-var
-             (make-edge-spec
-              :category (edge-category target)
-              :form category::np
-              :referent (bind-dli-variable 'predication
-                                           (make-lambda-predicate vp+ed obj-var)
-                                           target-np)
-              :target target
-              :dominating (edge-used-in target)
-              :direction :right))))))))
+          :referent ref))))
+    (let* ((target (find-target-satisfying
+                    (right-fringe-of np)
+                    #'(lambda (sub-np) (and (edge-referent sub-np)
+                                            (np-target? sub-np)
+                                            (subcategorized-variable vp-ref :object
+                                                                     (edge-referent sub-np))))))
+           (target-np (when (edge-p target) (edge-referent target))))
+      (if target ;; the relevant edge is embedded
+          (let ((obj-var (subcategorized-variable vp-ref :object target-np) ))
+            (when obj-var
+              (make-edge-spec
+               :category (edge-category target)
+               :form category::np
+               :referent (bind-dli-variable 'predication
+                                            (make-lambda-predicate vp+ed obj-var)
+                                            target-np)
+               :target target
+               :dominating (edge-used-in target)
+               :direction :right)))
+          (let ((obj-var (subcategorized-variable vp-ref :object np-ref)))
+            (when obj-var
+              ;; the top np is to be post-modified
+              (make-edge-spec
+               :category (edge-category np)
+               :form category::np
+               :referent (bind-dli-variable 'predication
+                                            (make-lambda-predicate vp+ed obj-var)
+                                            np-ref))))))))
 
 
 
