@@ -64,7 +64,7 @@
 |#
 
 (define-category  quantifier
-  :specializes operator
+  :specializes predicate ;; David says to make this change, and that "the world wouldn't die" if it is made
   :instantiates nil
   :index (:permanent :key word)
   :binds ((word  :primitive word)))
