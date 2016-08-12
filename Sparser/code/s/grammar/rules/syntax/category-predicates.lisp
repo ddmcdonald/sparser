@@ -291,9 +291,9 @@
   (declare (special category::have))
   (or
    (adjg-compatible? (edge-form e))
-   (eq category::not (edge-category e))
-   (copula-verb? (edge-category e))
-   (and
+   ;;(eq category::not (edge-category e))
+   ;;(copula-verb? (edge-category e))
+   (and nil ;; block copular verbs
     (category-p (edge-category e))
     ;; these are all for linking/copular verbs like BE, REMAIN, SMELL, BECOME
       (and (eq (edge-category e) category::have)
