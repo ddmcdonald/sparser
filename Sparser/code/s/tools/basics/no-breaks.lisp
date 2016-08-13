@@ -49,14 +49,14 @@ you can continue from a break (c.f. cerror).
   "Change the definition of sparser::break to the regular one
    taken from the Lisp."
   (setq *break-policy* :break)
-  (defun sparser::break (&optional format-string &rest args)
+  (defun sparser::break (&optional (format-string "Break.") &rest args)
     (apply #'cl:break format-string args)))
 
 (defun revert-to-error-break ()
   "Switch back to treating break as an error call."
   (setq *break-policy* :error)
-  (defun sparser::break (&optional format-string &rest args)
-    (apply #'error format-string args)))
+  (defun sparser::break (&optional (format-string "Break.") &rest args)
+    (apply #'cerror "Continue." format-string args)))
 
 (defun lsp-break (&optional format-string &rest args)
   "Alternative with a different name that will always break."
