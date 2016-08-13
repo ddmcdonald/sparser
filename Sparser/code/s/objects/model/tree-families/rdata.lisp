@@ -667,37 +667,22 @@ the rspec for the words of instances of the category."
                       (deref-rdata-word word category)))
                (pn-name
                 (cons :proper-noun
-                      (deref-rdata-word pn-name category)))
-               (no-head 
-                nil)
-               (t ;(break "No head word included with the rdata for ~A~
-                  ;        ~%Continue if that's ok" category)
-                  nil )))
-        
-        (tf (exploded-tree-family-named tf-name))
-        decoded-mapping  decoded-cases )
+                      (deref-rdata-word pn-name category)))))
+        (tf (and tf-name (exploded-tree-family-named tf-name))))
 
     (when head-word
       (make-corresponding-lexical-resource head-word category))
 
-    (when tf-name
-      (unless tf
-        (error "There is no tree family named ~A~
-                ~% category = ~A" tf-name category))
-      (record-use-of-tf-by tf category)
-      (setq decoded-mapping
-            (decode-rdata-mapping mapping category tf)))
-
-    (when cases
-      (setq decoded-cases (decode-cases cases)))
+    (when tf
+      (record-use-of-tf-by tf category))
 
     (values (if (or no-head
                     (null head-word))
               :no-head-word ;; previously nil (9/3/99)
               head-word)
             tf
-            decoded-mapping
-            decoded-cases
+            (and tf (decode-rdata-mapping mapping category tf))
+            (and cases (decode-cases cases))
             *schematic?* )))
 
 

@@ -20,17 +20,17 @@
 ;;;----------------------
 
 (defclass realization-scheme (named-object)
-  ((etf :accessor etf-for-schema
+  ((etf :initarg :etf :accessor etf-for-schema
     :documentation "The exploded tree family that's used.
       We need its schema as the basis of the rules we make.")
-   (head-keyword :accessor schema-head-keyword
+   (head-keyword :initarg :head :accessor schema-head-keyword
     :documentation "The keyword used with the actual word
       in the call to head-word-rule-construction-dispatch ")
-   (subst-args :accessor schema-substitution-args
+   (subst-args :initarg :args :accessor schema-substitution-args
     :documentation "a list of symbols from the cdr's of the
       mapping that we substitute real values for when we
       assemble the mapping.")
-   (schematic-mapping :accessor schema-mapping
+   (schematic-mapping :initarg :mapping :accessor schema-mapping
     :documentation "a regular etf mapping of dotted pairs
       in the form it has when used directly in the realization
       field of a category definition."))
@@ -43,45 +43,25 @@
 ;;; Accessors and def form
 ;;;------------------------
 
-(defparameter *name-symbols-to-realization-schema* (make-hash-table))
+(defparameter *realization-schemas* (make-hash-table))
 
-(defun get-realization-scheme (name)
-  (gethash name *name-symbols-to-realization-schema*))
+(defun get-realization-scheme (name &optional (errorp t))
+  (or (gethash name *realization-schemas*)
+      (and errorp (error "There is no realization scheme named ~a." name))))
 
+(defun fom-realization-scheme (name &rest initargs)
+  (or (get-realization-scheme name nil)
+      (setf (gethash name *realization-schemas*)
+            (apply #'make-instance 'realization-scheme
+                   :name name
+                   initargs))))
 
-(defmacro define-realization-scheme (name etf-name 
-                                     &key args head mapping)
-  `(define-realization-scheme/expr ',name ',etf-name 
-     :args ',args :head ',head :mapping ',mapping))
-
-(defun define-realization-scheme/expr (name etf-name 
-                                       &key args head mapping)
-  (push-debug `(,name ,etf-name ,mapping ,args ,head))
-  (let ((s (get-realization-scheme name)))
-    (unless s
-      (setq s (make-instance 'realization-scheme
-                :name name))
-      (setf  (gethash name *name-symbols-to-realization-schema*) s))
-    (let ((etf (exploded-tree-family-named etf-name)))
-      (unless etf
-        (error "There is no exploded tree family named ~a" etf-name))
-      (setf (etf-for-schema s) etf)
-      (setf (schema-head-keyword s) head)
-      (setf (schema-substitution-args s) args)
-      (setf (schema-mapping s) mapping)
-      s)))
-
-
-;; flush this version when completely changed over
-(defun includes-a-form-of-passive? (tree-family-names)
-  ;; Are any of the tree families to be used with
-  ;; this term versions of the passive with a by-phrase?
-  (dolist (symbol tree-family-names nil)
-    (when (memq symbol '(svo-passive np-by))
-      (return t))))
-
-(defun is-a-form-of-passive? (rschema-name)
-  (memq rschema-name '(svo-passive np-by)))
+(defmacro define-realization-scheme (name etf-name &key args head mapping)
+  `(fom-realization-scheme ',name
+                           :etf ',(exploded-tree-family-named etf-name)
+                           :args ',args
+                           :head ',head
+                           :mapping ',mapping))
       
 ;;;-------
 ;;; cases
@@ -94,6 +74,9 @@ the short cuts.
 Use (categories-using-etf <name>) to get examples
 when contemplating using a new tree family
 |# 
+
+(defun is-a-form-of-passive? (schema-name)
+  (memq schema-name '(svo-passive np-by)))
 
 (define-realization-scheme sv intransitive
   :head :verb

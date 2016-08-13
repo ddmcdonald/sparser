@@ -92,27 +92,20 @@
 ;;;----------
 
 (defparameter *tree-families-defined* nil)
+(defparameter *exploded-tree-families* (make-hash-table))
 
-(defparameter *symbol-to-exploded-tree-family* (make-hash-table))
-
-(defun exploded-tree-family-named (symbol)
-  (gethash symbol *symbol-to-exploded-tree-family*))
+(defun exploded-tree-family-named (symbol &optional (errorp t))
+  (or (gethash symbol *exploded-tree-families*)
+      (and errorp (error "There is no tree family named ~a." symbol))))
 
 (defun delete/exploded-tree-family (etf)
-  (remhash (etf-name etf)
-           *symbol-to-exploded-tree-family*))
+  (remhash (etf-name etf) *exploded-tree-families*))
 
 (defun find-or-make/exploded-tree-family (symbol)
-  (let ((etf (exploded-tree-family-named symbol)))
-    (unless etf
-      (setq etf (make-exploded-tree-family :name symbol))
-      (setf (gethash symbol *symbol-to-exploded-tree-family*)
-            etf))
-    (unless (member etf *tree-families-defined*)
-      (push etf *tree-families-defined*))
-    etf ))
-
-
+  (or (exploded-tree-family-named symbol nil)
+      (car (push (setf (gethash symbol *exploded-tree-families*)
+                       (make-exploded-tree-family :name symbol))
+                 *tree-families-defined*))))
 
 (defun find-or-make-schematic-rule (tree-family relation lhs decoded-rhs)
   (let ((cases (etf-cases tree-family))
@@ -166,21 +159,15 @@
   "Table from an etf to a list of referential categories")
 
 (defmethod categories-using-etf ((name symbol))
-  (let ((etf (exploded-tree-family-named name)))
-    (unless etf
-      (error "There is no tree family named ~a" name))
-    (categories-using-etf etf)))
+  (categories-using-etf (exploded-tree-family-named name)))
 
 (defmethod categories-using-etf ((etf exploded-tree-family))
   (gethash etf *etf-to-categories*))
 
 (defun record-use-of-tf-by (etf category)
-  ;; called from dereference-rdata when there's a tree family 
-  ;; in the rdata. 
+  "Called from dereference-rdata when there's a tree family in the rdata."
   (let* ((entry (categories-using-etf etf))
          (new-entry (if entry
                       (cons category entry)
-                      `(,category))))
+                      (list category))))
     (setf (gethash etf *etf-to-categories*) new-entry)))
-
-

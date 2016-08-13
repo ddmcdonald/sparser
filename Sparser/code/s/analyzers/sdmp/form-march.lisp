@@ -84,8 +84,6 @@ form rule.
   "The ETF should have just one schema, otherwise we'd use a cons of
    an etf and a relation keyword."
   (let ((etf (exploded-tree-family-named etf-name)))
-    (unless etf
-      (error "There is no exploded tree family named ~a" etf-name))
     (let ((cases (etf-cases etf)))
       (when (cdr cases)
         (error "There is more than one schema in~%~a~%Uses a cons of the ~

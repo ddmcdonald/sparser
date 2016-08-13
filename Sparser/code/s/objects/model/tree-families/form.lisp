@@ -67,18 +67,13 @@
 
   ;; All the input objects are symbols or lists.
 
-  (let ((etf-object
-         (find-or-make/exploded-tree-family name))
+  (let ((etf-object (find-or-make/exploded-tree-family name))
         (included-etf (when incorporates
                         (exploded-tree-family-named incorporates))))
 
     (if schema-type
       (setf (etf-type etf-object) schema-type)
       (setf (etf-type etf-object) :user-instantiable))
-
-    (when incorporates
-      (unless included-etf
-        (error "There is no tree-family named ~A" incorporates)))
 
     (if included-etf
       (let ((super-parameters (etf-parameters included-etf))
