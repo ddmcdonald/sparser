@@ -451,48 +451,15 @@
 ;;;--------------------
 ;;; rules on the plist
 ;;;--------------------
-;; This is also done by setup-rdata and related functions in
-;; objects/model/tree-families/rdata1, but in a haphazard way.
-;; These try to at least look before they leap.
 
-(defgeneric get-rules (category)
-  (:documentation "Provides abstraction since schema setup 
-    will change because it's so weird"))
 (defmethod get-rules ((name symbol))
   (get-rules (category-named name :break-if-none)))
 
-(defmethod get-rules ((category model-category))
-  (cadr (member :rules (cat-realization category))))
-
-(defmethod get-rules ((i individual))
-  (get-tag :rules i))
-
-
-(defun add-rules-to-individual (i rules)
-  (add-rules-to-category i rules))
-
-(defun add-rule-to-individual (rule i)
-  (add-rule-to-category rule i))
-
-
-(defun add-rules-to-category (category rules)
-  (let ((total-rules (get-rules category)))
-    (dolist (rule rules)
-      (setq total-rules (tail-cons rule total-rules)))
-    (setf (get-tag :rules category) total-rules)))
-
-(defun add-rule-to-category (rule category)
-  (let ((rule-list (get-rules category)))
-    (if (null rule-list)
-      (setf (get-tag :rules category) `(,rule))
-      (rplacd (last rule-list)
-              (list (car (last rule-list)) rule)))))
-
+(defmethod (setf get-rules) (rules (name symbol))
+  (setf (get-rules (category-named name :break-if-none)) rules))
 
 (defun find-rule-in-category (category relation)
-  (let ((rules (get-rules category)))
-    (dolist (rule rules)
-      (let ((schema (cfr-schema rule)))
-        (when schema
-          (when (eq (schr-relation schema) relation)
-            (return rule)))))))
+  (dolist (rule (get-rules category))
+    (let ((schema (cfr-schema rule)))
+      (when (and schema (eq (schr-relation schema) relation))
+        (return rule)))))

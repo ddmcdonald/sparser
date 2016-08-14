@@ -60,9 +60,9 @@
             (define-cfr category::direction `(,adj)
               :form category::adjective
               :referent i))))
-    (add-rule-to-individual noun-rule i)
-    (when adj-rule (add-rule-to-individual adj-rule i))
-    (when abbrev-rule (add-rule-to-individual abbrev-rule i))
+    (add-rule noun-rule i)
+    (when adj-rule (add-rule adj-rule i))
+    (when abbrev-rule (add-rule abbrev-rule i))
     i))
 
 ;;--- printer

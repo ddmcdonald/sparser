@@ -147,7 +147,7 @@
           (when (setq nw (find-individual 'name-word :name caps-word))
             (make-name-word-silent nw)))))
 
-    (setf (get-tag :rules cat)
+    (setf (get-rules cat)
           (list (define-cfr category::kind-of-company `(,word)
                   :form category::np-head
                   :referent cat)

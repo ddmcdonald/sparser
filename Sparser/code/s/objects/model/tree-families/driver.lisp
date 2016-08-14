@@ -238,27 +238,12 @@
                     ~%to have a value for its ~A variable.~
                    ~%but it does not." individual head-word-variable))))
       
-        (setf (get-tag :rules individual)
+        (setf (get-rules individual)
               (make-rules-for-rdata category
                                     head-pair
                                     etf mapping local-cases
                                     individual ))))))
 
-
-(defun retrieve-single-rule-from-individual (i)
-  ;; Applies when only a head is supplied
-  (let ((rule-field (get-tag :rules i)))
-    (unless rule-field
-      (push-debug `(,i))
-      (error "No rules recorded for ~a" i))
-    (unless (null (cdr rule-field))
-      (push-debug `(,i ,rule-field)))
-    ;; The extra rule is invariably a plural.
-      #+ignore(cerror "take the first one"
-              "More than one rule recorded for ~a~
-            ~%Don't know which to use.~%~a"
-             i rule-field)
-    (car rule-field)))
 
 ;;;-----------------
 ;;; the real driver

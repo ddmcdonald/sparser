@@ -245,30 +245,3 @@ in its type field?"
          (push-debug `(,i ,category/symbol))
          (error "indiv-typep not applied to an individual:~%~a  ~a"
                 (type-of i) i))))))
-
-           
-
-;;---- Misc. 
-
-;;/// is this being used?
-(defun itype-symbol (i)
-  (cat-symbol (i-type-of i)))
-
-
-;;;----------------
-;;; deleting rules
-;;;----------------
-;; Goes here since class individual isn't available when the cfrs
-;; are loaded.  
-
-(defmethod remove-rules-from-category ((i individual))
-  (remove-rules-from-category  (get-tag :rules i)))
-
-(defmethod remove-rules-from-category ((rules list))
-  (dolist (rule rules)
-    (when (consp rule)
-      ;; This is a major inconsisency b/w routines that
-      ;; add rules to things. 
-      (setq rule (car rule)))
-     (delete/cfr rule)))
-

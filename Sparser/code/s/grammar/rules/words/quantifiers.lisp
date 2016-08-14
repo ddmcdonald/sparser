@@ -126,7 +126,7 @@
       ;;///  'the'  Swallow the preceding 'the' and add a 'definite'
       ;; type to the result. 
 			  
-      (setf (get-tag :rules object) cfrs)
+      (setf (get-rules object) cfrs)
       object )))
 
 

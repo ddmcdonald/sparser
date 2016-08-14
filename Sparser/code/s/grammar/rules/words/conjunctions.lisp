@@ -59,7 +59,7 @@
                   (list word)        ;; rhs
                 :form form
                 :referent object)))
-    (setf (get-tag :rules object) (list cfr))
+    (setf (get-rules object) (list cfr))
     object))
     
 

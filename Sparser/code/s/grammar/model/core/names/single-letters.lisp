@@ -44,10 +44,7 @@
                          `( ,word )
                :form category::proper-noun
                :referent individual)))
-
-        (setf (get-tag :rule individual) rule)
-        rule)
-
+        (add-rule rule individual))
       individual)))
 
 

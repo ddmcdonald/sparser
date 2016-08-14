@@ -49,7 +49,8 @@
    with the bio-entity. Returns the protein."
   (let* ((name (value-of 'name bio-entity)) ;; often a polyword
          (protein (define-bio name 'protein)))
-    (remove-rules-from-category bio-entity)
+    ;; delete all the rules associated with the individual
+    (setf (get-rules bio-entity) (map nil #'delete/cfr (get-rules bio-entity)))
     ;; can't easily delete the individual itself
     protein))
 
@@ -538,7 +539,7 @@ the process.
           (setq rules (nconc additional-rules rules))))
 
       (when rules
-        (add-rules-to-individual i rules))
+        (add-rules rules i))
 
       (when documentation
         (store-category-documentation i documentation))

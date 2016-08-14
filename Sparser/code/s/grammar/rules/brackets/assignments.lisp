@@ -192,7 +192,7 @@
                 (category-named category-name))
               (define-category/expr category-name
                                     `(:specializes ,super-category
-                                                   :instantiates :self))))
+                                      :instantiates :self))))
           (rs (rule-set-for word)))
 
       (let ((rules (apply #'make-cn-rules
@@ -202,10 +202,10 @@
                           marked-plural))) ;; special-cases
         (mark-as-constructed-category-for-word category super-category)
         (when rs ;; could start out as nil
-          (unless (eq (rule-set-for word) rs)
-            (push-debug `(,word ,rs))
-            (error "Rule set for ~a changed by making rules" word)))
-        (add-rules-to-category category rules)
+          (assert (eq (rule-set-for word) rs)
+                  ((rule-set-for word) rs)
+                  "Rule set for ~a changed by making rules." word))
+        (add-rules rules category)
         category))))
 
 (defparameter *show-R3-new-verb-definitions* nil)
@@ -287,7 +287,7 @@
              category
              category)))
       (mark-as-constructed-category-for-word category super-category)
-      (add-rules-to-category category rules)
+      (add-rules rules category)
       category)))
 
 
@@ -318,7 +318,7 @@
              category
              category)))
       (mark-as-constructed-category-for-word category super-category)
-      (add-rules-to-category category rules)
+      (add-rules rules category)
       category)))
 
 

@@ -48,7 +48,7 @@
                              (list word) ;; rhs
                 :form (category-named 'det)
                  :referent object)))
-        (add-rule-to-individual cfr object)
+        (add-rule cfr object)
         object))))
 
 

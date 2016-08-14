@@ -35,3 +35,26 @@
 
 (defun remove-rule-set-from (obj)
   (setf (rule-set-for obj) nil))
+
+;;;--------------------
+;;; rules on the plist
+;;;--------------------
+
+(defgeneric get-rules (obj)
+  (:method (obj)
+    (get-tag :rules obj)))
+
+(defgeneric (setf get-rules) (rules obj)
+  (:method (rules obj)
+    (setf (get-tag :rules obj) rules)))
+
+(defun add-rule (rule obj)
+  (check-type rule cfr "a context-free rule")
+  (or (find rule (get-rules obj))
+      (and (nconcf (get-rules obj) (list rule))
+           rule)))
+
+(defun add-rules (rules obj)
+  (check-type rules list)
+  (assert (every #'cfr-p rules) (rules) "Invalid rule list.")
+  (nconcf (get-rules obj) (set-difference rules (get-rules obj))))

@@ -54,7 +54,7 @@
                       category::kind-of-subsidiary
                       category::np-head))
 
-    (setf (get-tag :rules cat)
+    (setf (get-rules cat)
           (list (define-cfr category::kind-of-subsidiary `(,word)
                   :form category::np-head
                   :referent cat)

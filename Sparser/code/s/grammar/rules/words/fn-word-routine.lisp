@@ -168,7 +168,7 @@
                            (list word)
                  :form (category-named form)
                  :referent category)))
-          (add-rule-to-category rule category)
+          (add-rule rule category)
 
           (when tree-families
             ;; Now knit the category into the correct set of form rules
@@ -198,31 +198,15 @@
    label, which we replace with category, then we apply a farily
    deep entry point inside model/tree-tamilies/driver to create
    the rule/s. Rules created here are stored on the category."
-  (let ( tree-family-pairs )
-    (dolist (raw raw-tree-family-data)
-      (cond
-       ((symbolp raw)
-        (let ((etf (exploded-tree-family-named raw)))
-          (unless etf
-            (error "There is no etf named ~a" raw))
-          (push `(,etf ,(etf-form-substitution-label etf))
-                tree-family-pairs)))
-       (t
-        (break "New case of raw tree-family-data: ~a" raw))))
-
-    (dolist (tr-pair tree-family-pairs)
-      (let* ((etf (car tr-pair))
-             (schemas (etf-cases etf))
-             (label (cadr tr-pair))
-             (mapping `((,label . ,category)) )
-              rules )
-        (let ((*convert-eft-form-categories-to-form-rules* t))
-          (declare (special *convert-eft-form-categories-to-form-rules*))
-          (dolist (schema schemas)
-            (let ((rule (instantiate-rule-schema
-                         schema mapping category)))
-              (push rule rules)))
-          (add-rules-to-category category rules))))))
+  (declare (special *convert-eft-form-categories-to-form-rules*))
+  (loop with *convert-eft-form-categories-to-form-rules* = t
+        for etf-name in raw-tree-family-data
+        as etf = (exploded-tree-family-named etf-name)
+        as label = (etf-form-substitution-label etf)
+        as mapping = `((,label . ,category))
+        do (loop for schema in (etf-cases etf)
+                 do (add-rules (instantiate-rule-schema schema mapping category)
+                               category))))
 
 
 (defun etf-form-substitution-label (etf)

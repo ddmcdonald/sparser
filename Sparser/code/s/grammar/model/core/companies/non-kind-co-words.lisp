@@ -186,7 +186,7 @@
                   (define-category/expr symbol
                     `(:specializes ,category::co-activity-nominal/er
                       :instantiates ,`(,category::company ,symbol))))) )
-    (setf (get-tag :rules cat)
+    (setf (get-rules cat)
           (list (define-cfr category::co-activity-nominal/er `(,word)
                   :form category::np-head
                   :referent cat)

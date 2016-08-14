@@ -112,7 +112,7 @@
          ;; make it more specific below.
          (pronoun (define-individual category :word pronoun-word))
 
-         (rule (first (get-tag :rules pronoun))))
+         (rule (first (get-rules pronoun))))
 
     (setf (cfr-form rule) form-category)
     ;;///(setf (cfr-referent rule) xx )

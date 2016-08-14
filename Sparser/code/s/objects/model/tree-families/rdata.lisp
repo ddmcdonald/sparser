@@ -595,7 +595,7 @@ the rspec for the words of instances of the category."
                   (word-arg `(,keyword ,head-word))
                   (rules (make-head-word-rules word-arg category category)))
              (setf (lemma category keyword) head-word)
-             (add-rules-to-category category rules))))
+             (add-rules rules category))))
 
 
 ;;;------------------------------------------------

@@ -344,7 +344,7 @@ for each case and define a k-method to make sense of it all.
          (cfr (def-cfr/expr category (list word)
                 :form category::common-noun ;; odd, but what alternative?
                 :referent i)))
-    (setf (get-tag :rules i) (list cfr))
+    (setf (get-rules i) (list cfr))
     word)) ;; to go on the list
 
 (defparameter *salient-hyphenated-literals*

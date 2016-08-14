@@ -39,7 +39,7 @@
     (if full
       (then
         (define-abbreviation full abbrev) ;; makes the word
-        (setf (get-tag :rules obj)
+        (setf (get-rules obj)
               (list (define-cfr category::person-version `(,(word-named full))
                       :form category::noun
                       :referent obj))))

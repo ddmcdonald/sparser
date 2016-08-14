@@ -46,7 +46,7 @@
          (rule (define-cfr category `(,category ,prep-label)
                  :form category::vg
                  :referent '(:daughter left-referent))))
-    (add-rule-to-category rule category)
+    (add-rule rule category)
     ;;(let ((verb (resolve pname)))
     (assign-subcategorization category :prep prep nil)))
 
@@ -139,7 +139,7 @@
           (if (consp rule/s-from-schema)
             (setq rules (append rule/s-from-schema rules))
             (push rule/s-from-schema rules)))
-        (add-rules-to-category category rules)))))
+        (add-rules rules category)))))
 
                 
 (defun assemble-scheme-form (schema args-to-substitute etf category)

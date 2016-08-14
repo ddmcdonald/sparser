@@ -62,7 +62,7 @@
          (rule (define-cfr category::direction `(,word)
                  :form category::noun
                  :referent i)))
-    (add-rule-to-individual rule i)
+    (add-rule rule i)
     i))
 
 (def-cfr direction ("the" direction)
@@ -95,6 +95,6 @@
          (rule (define-cfr category::direction `(,word)
                  :form category::np
                  :referent i)))
-    (add-rule-to-individual rule i)
+    (add-rule rule i)
     i))
 

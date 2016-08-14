@@ -79,7 +79,7 @@
                          :form noun
                          :referent (:function ,calculation-fn)))
            (rule (eval rule-form)))
-      (add-rule-to-category rule category::calculated-day)
+      (add-rule rule category::calculated-day)
       (values rule i))))
       
       

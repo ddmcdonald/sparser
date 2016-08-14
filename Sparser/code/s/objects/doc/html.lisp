@@ -22,7 +22,7 @@
                       :binds ((start-index . (:primitive number)))
                       :index (:temporary :key start-index))))))
     (declare (special category::html-tag category::section-marker))
-    (setf (get-tag :rules cat)
+    (setf (get-rules cat)
           (list (define-cfr category::html-tag `(,word)
                   :form category::section-marker
                   :referent cat)))

@@ -33,11 +33,5 @@
                     nil ;; plus the schema -- based on premodifier-creates-subtype
                     )))
         (record-as-derived-from-text-relation category) ;; include tr? Harder to clean
-        (add-rules-to-category category `(,rule))
+        (add-rule rule category)
         category))))
-                                      
-
-
-
-    
-

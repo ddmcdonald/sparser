@@ -494,7 +494,7 @@ broadly speaking doing for you all the things you might do by hand.
                :referent (:head left-edge
                           :bind (object right-edge))))
            (rule (eval bootstap-rule)))
-      (add-rule-to-category rule category)
+      (add-rule rule category)
       name)
     (let* ((bootstap-rule
             `(def-cfr event (,name pronoun/inanimate)
@@ -502,7 +502,7 @@ broadly speaking doing for you all the things you might do by hand.
                :referent (:head left-edge
 			  :bind (object right-edge))))
            (rule (eval bootstap-rule)))
-      (add-rule-to-category rule category)
+      (add-rule rule category)
       name)))
 
 
@@ -659,7 +659,7 @@ broadly speaking doing for you all the things you might do by hand.
                    :referent (:head left-edge
                               :bind (object right-edge))))
                (rule (eval bootstap-rule)))
-          (add-rule-to-category rule category)
+          (add-rule rule category)
           category)
         (error "v+p-rule is missing")))))
 

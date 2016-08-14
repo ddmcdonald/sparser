@@ -12,21 +12,16 @@
 (in-package :sparser)
 
 (defun create-punctuation-edge-rule (character)
-  "Type-checking and uniform layout around standard rule-creating
-   code."
-  (let ((word (etypecase character
-                (character (punctuation-named character))
-                (word (assert (punctuation? character))
-                      character))))
-    
-    (let ((rule (define-cfr word `(,word)
-                  :form (category-named 'punctuation)
-                  :referent word)))
-      
-      (setf (get-tag :rules word) `(,rule))
-      
-      (values word
-              rule))))
+  "Type-checking and uniform layout around standard rule-creating code."
+  (let* ((word (etypecase character
+                 (character (punctuation-named character))
+                 (word (assert (punctuation? character))
+                       character)))
+         (rule (define-cfr word `(,word)
+                 :form (category-named 'punctuation)
+                 :referent word)))
+    (add-rule rule word)
+    (values word rule)))
 
 
 (create-punctuation-edge-rule #\:)

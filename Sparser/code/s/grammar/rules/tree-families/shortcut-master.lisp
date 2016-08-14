@@ -251,7 +251,7 @@
                (cn-rules (apply #'make-cn-rules word category category
                                 special-cases)))
           (make-corresponding-mumble-resource word :common-noun)
-          (add-rules-to-category category cn-rules))))
+          (add-rules cn-rules category))))
 
     (when adj
       ;; Adjectives are analyzed as being able to take subjects and/or objects
@@ -260,7 +260,7 @@
         (let* ((word (resolve/make adj))
                (adj-rules (make-rules-for-adjectives word category category)))
           (make-corresponding-mumble-resource word :adjective)
-          (add-rules-to-category category adj-rules))))
+          (add-rules adj-rules category))))
 
     (when (or etf substitution-map word-map)
       ;;  (push-debug `(,category ,etf ,substitution-map ,word-map))

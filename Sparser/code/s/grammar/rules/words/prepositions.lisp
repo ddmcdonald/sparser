@@ -76,7 +76,7 @@
               :schema (get-schematic-word-rule :preposition)
               :referent category))))
       (make-corresponding-mumble-resource word :prep)
-      (setf (get-tag :rule category) word-rule)
+      (add-rule word-rule category)
       (values category
               word-rule
               word ))))

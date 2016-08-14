@@ -52,5 +52,5 @@ rules/FSAs/abbreviations2.lisp.  Probably should remove this file.
                               (list  word )
                     :form category::abbreviation
                     :referent  abbrev )))
-        (setf (get-tag :rule abbrev) rule)
+        (add-rule rule abbrev)
         abbrev ))))

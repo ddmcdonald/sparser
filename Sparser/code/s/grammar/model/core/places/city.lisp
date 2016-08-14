@@ -142,7 +142,7 @@
             (when rules
               (setq rule (cons rule (nreverse rules))))))
 
-        (setf (get-tag :rules obj) rules)
+        (setf (get-rules obj) rules)
 
         obj ))))
 

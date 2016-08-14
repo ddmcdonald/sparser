@@ -83,8 +83,8 @@ ones are gratuitously ambiguous with capitalized initials.
       (unless one-letter-object
         (push-debug `(,one-letter-word))
         (break "could not retrieve capitalized-letter"))
-      (add-rule-to-individual 3-letter-rule i)
-      (add-rule-to-individual caps-3-letter-rule i)
+      (add-rule 3-letter-rule i)
+      (add-rule caps-3-letter-rule i)
       (setf (gethash one-letter-object *single-letters-to-amino-acids*) i
             (gethash one-letter-word *single-letters-to-amino-acids*) i
             (get-tag :one-letter-code i) one
@@ -281,7 +281,7 @@ We therefore have the special cases:
                        :referent i)))
           (push rule rules)))
       (when rules
-        (add-rules-to-individual i rules))
+        (add-rules rules i))
       i)))
     
 ;; Wikipedia's phosphorylation entry says just these

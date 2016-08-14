@@ -228,7 +228,7 @@
            m )))) ;; the illion
            
 
-    (setf (get-tag :rules number) rules
+    (setf (get-rules number) rules
           (get-tag :digit-sequence number) word-object-for-digits)
 
     number ))

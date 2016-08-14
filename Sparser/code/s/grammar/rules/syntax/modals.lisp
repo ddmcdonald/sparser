@@ -107,7 +107,7 @@
                (rules (if neg-rules
                         (nconc pos-rules neg-rules)
                         pos-rules)))
-          (add-rules-to-category category rules)
+          (add-rules rules category)
           category)))))
 
 

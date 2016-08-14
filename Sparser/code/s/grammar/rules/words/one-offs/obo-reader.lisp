@@ -296,7 +296,7 @@ and could be dropped from the active set we do lookup from
   (push-debug `(,obo ,word)) ;;(break "stub: obo setup")  
   (let* ((kind 'protein) ;;/// get from OBO somehow
          (i (define-bio word kind))
-         (cfr (retrieve-single-rule-from-individual i)))
+         (cfr (first (get-rules i))))
     (values (category-named kind :break-if-not-defined)
             cfr
             i)))

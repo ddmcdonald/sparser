@@ -40,10 +40,8 @@
         (assign-bracket/expr word .[np )
         (assign-bracket/expr word ].phrase )
 
-        (let ((cfr (car (get-tag :rules q))))
-          (unless (cfr-p cfr)
-            (break "expected the rule for this quantity to be ~
-                    on the plist:~%~A~%" q))
+        (let ((cfr (car (get-rules q))))
+          (check-type cfr cfr)
           (setf (cfr-form cfr) category::det)
         
           q ))))
