@@ -30,6 +30,7 @@
            #:mapappend
            #:pl
            #:tail-cons
+           #:appendf #:nconcf
            #:quote-every-other-one
            #:assq #:memq #:memq/assq
            #:alist-to-plist

@@ -97,6 +97,11 @@ C
   (tail-cons :x nil)
   (:x))
 
+(deftest nconcf
+  (let ((x (list :a :b :c)))
+    (nconcf x '(:x)))
+  (:a :b :c :x))
+
 (deftest (quote-every-other-one :odd)
   (quote-every-other-one '(:a 1 :b 2 :c 3) :odd)
   (:a '1 :b '2 :c '3))

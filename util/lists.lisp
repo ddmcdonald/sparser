@@ -49,6 +49,9 @@
     (setq list (list item)))
   list)
 
+(define-modify-macro appendf (&rest args) append "Append to list in a place.")
+(define-modify-macro nconcf (&rest args) nconc "Destructively append to list.")
+
 (defun quote-every-other-one (list &optional (which :odd))
   "For hacking macros."
   (loop with quotep = (ecase which
