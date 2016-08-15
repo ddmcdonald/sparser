@@ -20,7 +20,7 @@
   :instantiates self
   :binds ((name  :primitive word))
   :index (:permanent :key name)
-  :realization (:main-verb name))
+  :realization (:verb name))
 
 
 ;;--- autodef

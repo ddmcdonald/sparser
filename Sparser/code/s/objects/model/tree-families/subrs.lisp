@@ -33,13 +33,11 @@
 ;;; driver
 ;;;--------
 
-(defun replace-from-mapping (label mapping category allow-literals?)
-  ;; Called by instantiate-rule-schema 
-  ;; The label is a symbol from the parameter or labels list of
-  ;; an exploded tree family.  This returns the corresponding
-  ;; object from the alist implementing the mapping.
+(defun replace-from-mapping (label mapping category)
+  "Called by instantiate-rule-schema. The label is a symbol from the parameter
+   or labels list of an exploded tree family. Returns the corresponding object
+   from the alist implementing the mapping."
 
-  (declare (ignore allow-literals?))
   ;; 10/17/94 if we allow a category like 'apostrophe-s' on the same
   ;; principle as allowing literal words, then there's nothing
   ;; to distinguish the regular case from the case of Additional-cases

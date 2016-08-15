@@ -25,7 +25,7 @@
   :binds ((name . (:primitive (:or word polyword))))
   :index (:permanent :key name))
 ;; Realization is set up in the def form
-;;  :realization (:main-verb name))
+;;  :realization (:verb name))
 
 ; (define-report-verb "report")
 ; (define-report-verb '("say" :past-tense "said"))
@@ -37,7 +37,7 @@
          (etypecase string/list
            (string (resolve-string-to-word/make string/list))
            (list (deref-rdata-word-with-morph string/list))))
-	;; when it's a spec, what will happen in :main-verb??
+	;; when it's a spec, what will happen in :verb??
         (category
          (category-named 'report-verb)))
     (let* ((word (if (listp string/list)

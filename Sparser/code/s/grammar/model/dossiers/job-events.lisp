@@ -43,7 +43,7 @@
                           (np/subject . person)
                           (agent . person))
 
-                :main-verb "retire"
+                :verb "retire"
 
                 :additional-rules
                   ((:pp-adjunct (s (s as-title)
@@ -71,7 +71,7 @@
                           (np/subject . person)
                           (agent . person))
 
-                :main-verb "resign"
+                :verb "resign"
 
                 :additional-rules
                 (#| duplicates additional-rule just above
@@ -110,7 +110,7 @@
                           (agent . agent)
                           (patient . person))
 
-                :main-verb "confirm"
+                :verb "confirm"
 
                 :additional-rules
                   ((:pp-adjunct (s (s as-title)
@@ -145,7 +145,7 @@
                 (agent . person-arriving )
                 (patient . person-leaving ))
 
-      :main-verb "succeed" ))
+      :verb "succeed" ))
 
 
 
@@ -171,7 +171,7 @@
                           (agent . person )       ;; vagueness of partially
                           (patient . position ))  ;; saturated position objects
 
-                :main-verb "remain" ))
+                :verb "remain" ))
 
 
 
@@ -208,7 +208,7 @@
        (patient . person)
        (goal . title))
 
-      :main-verb "appoint"))
+      :verb "appoint"))
 
 
 ;;--- "name"
@@ -240,7 +240,7 @@
                 (patient . person)
                 (goal . title))
 
-      :main-verb "name" ))
+      :verb "name" ))
 
 
 ;;--- "join"
@@ -273,4 +273,4 @@
                 (patient . company)
                 (goal . title))
 
-      :main-verb "join" )) |#
+      :verb "join" )) |#

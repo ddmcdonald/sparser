@@ -50,7 +50,7 @@
   ;; just above this form is just a VG since we're not trying to
   ;; encode the ETF that go with this verb (the subcategorization
   ;; patterns and their transformations)
-  :realization (:main-verb "respond"))
+  :realization (:verb "respond"))
   
 
 (def-cfr in-sequence ("in" "sequence")) ;; what's its form??

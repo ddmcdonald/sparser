@@ -130,7 +130,7 @@ support a substantial number of blocks.
   :instantiates self
   :binds ((theme object)
           (goal location))
-  :realization ((:main-verb "add")
+  :realization ((:verb "add")
 		(:mumble ("add" svo :o theme)) 
                 (:tree-family vp+adjunct
                  :mapping ((vg . :self)
@@ -202,7 +202,7 @@ support a substantial number of blocks.
   :mixins (with-an-agent)
   :binds ((items collection))
   :realization
-    ((:main-verb "push")
+    ((:verb "push")
      (:mumble (transitive-with-final-adverbial "push" "together"))))
 
 
@@ -242,7 +242,7 @@ support a substantial number of blocks.
   :mixins (with-an-agent)
   :binds ((statement  ))
   :realization
-  ((:main-verb "propose")
+  ((:verb "propose")
    (:mumble ("propose" svscomp :o statement))
    (:tree-family )))
 
@@ -250,7 +250,7 @@ support a substantial number of blocks.
     :specializes achievement
     :binds ((statement ))
     :realization
-    ((:main-verb "show")
+    ((:verb "show")
      (:mumble ("show" svscomp :s ? :o statement))))
 
 (define-category suggest
@@ -258,7 +258,7 @@ support a substantial number of blocks.
   :mixins
   :binds
   :realization
-  ((:main-verb "suggest")
+  ((:verb "suggest")
    (:mumble ("suggest" svscomp :s ? :o statement))))
 |#
 

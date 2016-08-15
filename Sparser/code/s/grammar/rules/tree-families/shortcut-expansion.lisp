@@ -1,43 +1,22 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER -*-
+;;; Copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "shortcut-expansion"
-;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  March 2015
+;;;   Module:  "grammar;rules;tree-families;"
+;;;  Version:  August 2016
 
 ;; Broken out of shortcut-master 9/21/14 to allow both files to be
 ;; seen at once now that the cases have gotten intricate.
 ;; 1/14/2015 Changes to put :subject and :object selectional restrictions
 ;; in the subcat frame. 3/16/15 Small tweeks, lots of renaming to
 ;; handle multiple v/r's leading to multiple rules. 
-
+;; 8/11/16 Revised and simplified.
 
 (in-package :sparser)
 
-;;;-------------------------------
-;;; manage subcategorization data
-;;;-------------------------------
-
-(defun apply-subcat-if-any (subcategorization category pname)
-  (when subcategorization
-    (push-debug `(,subcategorization ,category ,pname))
-    (let ((word (resolve/make pname)))
-      (assign-subcat/expr word 'verb ;;/// pass that info in as parameter
-                          category 
-                          `(:pattern ,subcategorization)))))
-
-
 ;;;-----------------------------
-;;; prepositions owned by verbs
+;;; Prepositions owned by verbs
 ;;;-----------------------------
-
-(defun apply-preposition-if-any (pname preposition category)
-  "The pname is the base form of the word being defined.
-   The preposition is the string for the preposition we're assigning."
-  (when preposition
-    (when (consp preposition)
-      (break "stub: consp prep")) ;; change category
-    (apply-preposition pname preposition category)))
 
 (defun apply-preposition (pname preposition category)
   (declare (ignore pname))
@@ -47,10 +26,8 @@
                  :form category::vg
                  :referent '(:daughter left-referent))))
     (add-rule rule category)
-    ;;(let ((verb (resolve pname)))
     (assign-subcategorization category :prep prep nil)))
 
-;;//// move where it can be found
 (defmethod single-rewrite-label-over ((pname string))
   (let ((word (word-named pname)))
     (unless word (error "There is no word spelled ~s" pname))
@@ -73,20 +50,13 @@
 ;;; Applying ETF schema
 ;;;---------------------
 
-(defun apply-rdata-mappings (category etf-names
-                             &key word-keys 
-                                  ((:args substitution-map)))
-  ;; Called from decode-realization-parameter-list
-  ;; (push-debug `(,category ,etf-names ,word-keys ,substitution-map))
+(defun apply-rdata-mappings (category etf-names &key args word-keys)
   (dolist (name etf-names)
     (let ((scheme (get-realization-scheme name)))
-      (unless scheme
-        (error "There is no realization scheme named ~a" name))
-      (apply-realization-scheme category scheme substitution-map word-keys))))
+      (apply-realization-scheme category scheme args word-keys))))
 
 (defun apply-realization-scheme (category scheme substitution-map word-keys)
   ;; This is an open-coding of make-rules-for-rdata
-  ;; (push-debug `(,category ,scheme ,substitution-map ,word-keys))
   (let* ((etf (etf-for-schema scheme))
          (head-keyword (schema-head-keyword scheme))
          (mapping (assemble-scheme-form scheme substitution-map etf category))
@@ -103,7 +73,6 @@
         (setq head-word (resolve/make (car head-word-pname))
               irregulars (cdr head-word-pname))
         (when irregulars
-          (push-debug `(,irregulars ,head-word))
           (setq irregulars 
                 (loop for item in irregulars
                   when (keywordp item) collect item
@@ -120,7 +89,6 @@
     (record-rdata-head rr head-word)
     (setf (rdata-head-irregulars rr) irregulars)
 
-    ;; (push-debug `(,etf ,head-keyword ,head-word ,mapping)) ;(break "1")
     (unless head-word
       (push-debug `(,scheme ,word-keys))
       (error "The word-keys don't have an entry for ~a" head-keyword))
@@ -133,7 +101,6 @@
         (when *big-mechanism*
           (setq rule-schemas (filter-out-big-mech-bad-schemas rule-schemas)))
         (dolist (schema rule-schemas)
-          ;; (push-debug `(,schema ,mapping ,category))
           (setq rule/s-from-schema
                 (instantiate-rule-schema schema mapping category))
           (if (consp rule/s-from-schema)
@@ -147,8 +114,6 @@
    category-specific substitution arguments. Does much of the same job
    as decode-binding in interpreting symbols and strings."
   (declare (ignore etf))
-  ;;(push-debug `(,schema ,args-to-substitute ,etf ,category)) ;; (break "pop")
-  ;; (setq schema (car *) args-to-substitute (cadr *) etf (caddr *) category (cadddr *))
   (let ((override-category (override-label category))
         (mapping-form (schema-mapping schema))
         new-mapping  car-value  cdr-value)

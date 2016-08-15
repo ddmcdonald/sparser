@@ -79,56 +79,14 @@
 
 (defparameter *dont-check-forms-for-etf*
   '(ITEM+IDIOMATIC-HEAD)
-  "If thw head is idiomaticmatic, like % or percent, 
-   or old as in '5 years old' you can't predict the 
-   form category of the head, so just trust the rule writer")
-    
+  "If the head is idiomaticmatic, like '%' or 'percent'
+   or 'old' as in '5 years old', you can't predict the
+   form category of the head, so just trust the rule writer.")
 
 (defun dont-check-rule-form-for-etf-named (etf-name)
-  ;; The given ETF is to be trusted not to be applied in inappropriate syntactic
-  ;;  contexts, so don't apply compatible-form check in multiply-rules
+  "Trust that the given ETF is not applied in inappropriate syntactic contexts,
+   so don't apply compatible-form check in multiply-edges."
   (pushnew etf-name *dont-check-forms-for-etf*))
-
-    
-    
-
-;;;---------------------------------
-;;; managing the rule instantiation
-;;;---------------------------------
-
-(defun make-rules-for-realization-data (category
-                                        head-word
-                                        exploded-tf
-                                        mapping
-                                        local-cases)
-  ;; called from dereference-and-store?-rdata-schema as part of setup-rdata.
-  ;; Divides according to whether it's an original definition or
-  ;; a redefinition.  <--- stoped this 7/23/98 because of
-  ;; colateral damage from the timing of multiple rdata sets.
-  (make-rules-for-rdata
-     category head-word exploded-tf mapping local-cases)
-  #+ignore  ;; original
-  (if (cat-realization category)
-    (revising-rules-from-rdata
-     category head-word exploded-tf mapping local-cases)
-    (make-rules-for-rdata
-     category head-word exploded-tf mapping local-cases)) )
-
-(defun revising-rules-from-rdata ;; No longer used 7/23/98. See above
-       (category head-word exploded-tf mapping local-cases)
-  ;; Any re-evaluation of a category's definition may involve
-  ;; a revision of the rules that are implied by its rdata.
-  ;; This checks that any rules no longer implied are deleted.
-  (let* ((old-rules (get-rules category))
-         (new-rules (make-rules-for-rdata
-                     category head-word exploded-tf mapping local-cases)))
-    (dolist (cfr old-rules)
-      (unless (member cfr new-rules :test #'eq)
-        (format t "~A ~A~%  no longer supported by rdata for ~A"
-                (symbol-name (cfr-symbol cfr)) cfr category)
-        (delete/cfr cfr)))
-    new-rules ))
-
 
 
 ;;;-------------------------------------
@@ -237,50 +195,33 @@
               (break "Expected the individual ~A~
                     ~%to have a value for its ~A variable.~
                    ~%but it does not." individual head-word-variable))))
-      
-        (setf (get-rules individual)
-              (make-rules-for-rdata category
-                                    head-pair
-                                    etf mapping local-cases
-                                    individual ))))))
+        (make-rules-for-rdata category
+                              head-pair
+                              etf mapping local-cases
+                              individual)))))
 
 
 ;;;-----------------
 ;;; the real driver
 ;;;-----------------
 
-(defun make-rules-for-rdata
-       (category head-word exploded-tf mapping local-cases
-        &optional individual )
-
+(defun make-rules-for-rdata (category head-word etf mapping local-cases
+                             &optional individual)
   (let ((referent (or individual category))
-        rules  rule/s-from-schema )
-
-    (when (and head-word
-               (not (eq head-word :no-head-word)))
-      (unless (lambda-variable-p (cdr head-word))
-        (setq rules (make-head-word-rule ;;/// add instantiates check
-                      head-word category referent))))
-
-      #+ignore(dolist (keyword head-word) ;; needs more layout work
-        (append (head-word-rule-construction-dispatch 
-                 keyword category referent)
-                rules))
-
-    (when exploded-tf
-      (dolist (rule-schema (etf-cases exploded-tf))
-        (setq rule/s-from-schema
-              (instantiate-rule-schema rule-schema mapping category))
-        (if (consp rule/s-from-schema)
-          (setq rules (append rule/s-from-schema rules))
-          (push rule/s-from-schema rules))))
-
-    (when local-cases
-      (dolist (rule-schema local-cases)
-        (push (instantiate-rule-schema rule-schema mapping category
-                                       :local-cases? category)
-              rules)))
-    rules ))
+        rules)
+   (flet ((collect-rules (more-rules) (setq rules (append more-rules rules))))
+     (when (and head-word (not (eq head-word :no-head-word)))
+       (unless (lambda-variable-p (cdr head-word))
+         ;;/// add instantiates check
+         (collect-rules (make-head-word-rules head-word category referent))))
+     (when etf
+       (dolist (rule-schema (etf-cases etf))
+         (collect-rules (instantiate-rule-schema rule-schema mapping category))))
+     (when local-cases
+       (dolist (rule-schema local-cases)
+         (collect-rules (instantiate-rule-schema rule-schema mapping category
+                                                 :local-cases? category)))))
+   (add-rules rules referent)))
 
 
 ;;;---------------------------
@@ -288,29 +229,26 @@
 ;;;---------------------------
 
 (defvar *cfrs* nil
-  "Accumulates cfr objects as they are created by the various iterators
-   below.  Used to keep the iteration code clear.")
+  "Accumulates cfr objects as they are created by the various iterators below.
+   Used to keep the iteration code clear.")
 
 (defvar *schema-being-instantiated* nil
-  "Bound in instantiate-rule-schema to fill the 'schema' field of the
-   cfrs that are created.")
+  "Bound in instantiate-rule-schema to fill the 'schema' field of the cfrs
+   that are created.")
 
 (defvar *Chomsky-adjunction-applies* nil
   "Bound by instantiate-rule-schema when it encounters a schema where
-   the lhs category is included amoung the categories of the rhs. 
+   the lhs category is included amoung the categories of the rhs.
    This case requires special handling when the rhs has a term with
    multiple categories.")
-
 
 (defun instantiate-rule-schema (schema
                                 mapping 
                                 category
                                 &key ((:local-cases? category-of-locals)))
-
   "Decodes the schema and sets up cross-the-board things such as the rule's
    form and referent. Decodes implicit multi-rules. Returns the list of
    cfr that are created. Real work done by i/r/s-make-the-rule."
-
   (let* ((additional-rule (consp schema))
          (relation (if additional-rule
                      (first schema)
@@ -326,41 +264,25 @@
                                (schr-referent schema)))
          (schematic-form (unless additional-rule
                            (schr-form schema)))
-         lhs rhs form referent-schema referent
+         (lhs (replace-from-mapping schematic-lhs mapping category))
+         (rhs (mapcar (lambda (label)
+                        (replace-from-mapping label mapping category))
+                      schematic-rhs))
+         (form (or schematic-form (eft-case-rule-form schematic-lhs mapping)))
+         (referent-schema (massage-referent-schema schematic-referent mapping))
+         (referent (apply #'construct-referent mapping category category-of-locals
+                          referent-schema))
 
          (*schema-being-instantiated* schema)
-         (*Chomsky-adjunction-applies* (memq schematic-lhs schematic-rhs)))
-
-    ;;RUSTY-RHS
-    ;;(print (list schema schematic-rhs))
- 
-    (setq lhs (replace-from-mapping
-               schematic-lhs mapping category category-of-locals)
-          rhs (mapcar #'(lambda (label)
-                          (replace-from-mapping
-                           label mapping category category-of-locals))
-                      schematic-rhs)
-          referent-schema (massage-referent-schema schematic-referent
-                                                   mapping))
-
-    (setq form (or schematic-form
-		   (eft-case-rule-form schematic-lhs mapping)))
-
-    ;; the runtime version of the referent field has to be made
-    ;; here because the straightline through def-cfr presumes it's
-    ;; getting symbols and we've improved on that by having objects
-    (setq referent
-          (apply #'construct-referent
-                 mapping category category-of-locals referent-schema))
-
-    (setq *cfrs* nil)
-    ;; The iterators below push the rules that they make onto this
-    ;; global to save us from the hassle of threading them back
-    ;; through their return paths
+         (*Chomsky-adjunction-applies* (memq schematic-lhs schematic-rhs))
+         (*cfrs* nil))
+    ;; The iterators below push the rules that they make onto the
+    ;; *cfrs* global to save us from the hassle of threading them back
+    ;; through their return paths.
 
     (cond
-     ;; check whether one of the terms is a list, in which case we
-     ;; multiply through the categories in the list across the
+     ;; Check whether one of the terms is a list, in which case
+     ;; we multiply through the categories in the list across the
      ;; rest of the rule's components, making several rules rather
      ;; than just one.
      ((listp lhs)
@@ -373,14 +295,15 @@
         (i/r/s-multiply-through/rhs lhs rhs form referent relation)))
      (t (i/r/s-make-the-rule lhs rhs form referent relation)))
 
-    ;; Pass the realization schema through to each rule
     (unless additional-rule
-      (if (consp *cfrs*)
-        (dolist (cfr *cfrs*)
-          (set-schema-and-rhs-forms cfr schema schematic-rhs))
-        (set-schema-and-rhs-forms *cfrs* schema schematic-rhs)))
-    *cfrs* ))
+      ;; Pass the realization schema through to each rule.
+      (dolist (cfr *cfrs*)
+        (setf (cfr-schema cfr) schema)
+        (unless (memq (etf-name (schr-tree-family schema))
+                      *dont-check-forms-for-etf*)
+          (setf (cfr-rhs-forms cfr) schematic-rhs))))
 
+    *cfrs*))
 
 
 (defun i/r/s/-coordinate-chomsky-adjunction (lhs rhs form referent relation)
@@ -446,32 +369,14 @@
 
     (when cfr
       (setf (get-tag :relation cfr) relation)
-
-      ;; Before 2/28/95 this routine ended by 'push'ing the cfr it
-      ;; constructs onto the global. That global is itself then pushed
-      ;; onto the other rules (e.g. the verb rules) of the object
-      ;; by make-rules-for-rdata as it loops through accumulating
-      ;; the values returned by Instantiate-rule-schema.
-      ;;   That caused a bug in subject-rule as used by Belmoral,
-      ;; which expects the plist :rules field of a category's
-      ;; realization field to contain a flat list of cfrs that it
-      ;; can loop through. 
-      ;;(push cfr  *cfrs*)
-      (if *cfrs*
-	(if (consp *cfrs*)
-	  (push cfr  *cfrs*)
-	  (setq *cfrs* (list cfr *cfrs*)))
-	(setq *cfrs* cfr)))
+      (push cfr *cfrs*))
 
     (when *infer-rewriting-form-rules*
       ;; see if we can make an additional form rule by interpolating
       ;; from the naming conventions in the EFT
       (let ((form-cfr (define-rewriting-form-rule rhs form referent)))
 	(when form-cfr
-	  (when (typep *cfrs* 'cfr)
-	    (setq *cfrs* (list *cfrs*)))
-	  (push form-cfr
-		*cfrs*))))))
+	  (push form-cfr *cfrs*))))))
 
 (defun i/r/s-multiply-through/lhs (lhs rhs form referent relation)
   ;; the lhs is a list of categories rather than one. Multiply it
@@ -504,17 +409,6 @@
       (i/r/s-make-the-rule 
        lhs (list left right) form referent relation)))))
 
-
-      
-
-;;--- recording (called from instantiate-rule-schema)
-
-(defun set-schema-and-rhs-forms (cfr schema rhs-forms)
-  (setf (cfr-schema cfr) schema)
-  (unless
-      (member (etf-name (schr-tree-family schema))
-              *dont-check-forms-for-etf*)
-    (setf (cfr-rhs-forms cfr) rhs-forms)))
 
 ;;;----------------------------
 ;;; determining the form label

@@ -98,9 +98,9 @@ part even if it's invariably left out as obvious except in comparisons. |#
 (define-category end
   :binds ((thing-ended)
           (time-ended))
-  :realization (:main-verb ("end" 
-                            :past-tense "ended" 
-                            :present-participle "ending")))
+  :realization (:verb ("end"
+                       :past-tense "ended"
+                       :present-participle "ending")))
 
 
 ;;;------------------------

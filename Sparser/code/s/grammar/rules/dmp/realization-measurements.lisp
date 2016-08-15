@@ -46,7 +46,7 @@
 ;; so they should appear in the reverse of the order that
 ;; the trivial printer should show them in
 
-(define-catalog-for-rr-type :main-verb *verbs*)
+(define-catalog-for-rr-type :verb *verbs*)
 
 (define-catalog-for-rr-type :only-term-in-segment *words-appearing-alone*)
 

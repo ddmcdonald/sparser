@@ -249,11 +249,9 @@
       (loop for (var-name pname) on slots by #'cddr
 	 as label = (case pname
 		      ((:subject :object 
-				 :premod :thatcomp :whethercomp
-				 :to-comp :ifcomp :as-comp :m)
+			:premod :thatcomp :whethercomp
+			:to-comp :ifcomp :as-comp :m)
 		       pname)
-		      ;;(:alt-s :subject)
-		      ;;(:alt-o :object)
 		      (otherwise
 		       (resolve (string-downcase pname))))
 	 as var = (find-variable-for-category var-name category)

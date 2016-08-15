@@ -185,12 +185,11 @@
     
     (when restrictions
       (handle-variable-restrictions category restrictions))
-    
+
     (when rdata
-      (cond
-       ((includes-def-realization-keyword rdata)
-        (setup-shortcut-rdata category rdata))
-       (t (setup-rdata category rdata))))
+      (if (shortcut-rdata-p rdata)
+        (setup-shortcut-rdata category rdata)
+        (setup-rdata category rdata)))
     
     (when lemma
       (setup-category-lemma category lemma))

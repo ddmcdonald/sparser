@@ -36,7 +36,7 @@
   :binds ((who person) ;; animate? What about the birds -- need "animal" ??
           (of-what pathogen)) ;;e.g. age, disease, warfare, crime, accident, etc.
   ;;:index (:key who) doesn't work for "die of Y" since no who variable used
-  :realization ((:main-verb "die")
+  :realization ((:verb "die")
 		(:tree-family intransitive
 		 :mapping ((agent . who)
 			   (s . :self)
@@ -55,7 +55,7 @@
                            (base-np . :self)
                            (complement . pathogen)
                            (np . :self))
-                 :main-verb "die")))
+                 :verb "die")))
 
 
 (define-category kill
@@ -64,7 +64,7 @@
   :binds ((who person)
           (by-whom person))
   :index (:key who) ;; ought to suffice
-  :realization ((:main-verb "kill")
+  :realization ((:verb "kill")
                 (:tree-family transitive/passive
                  :mapping ((agent . by-whom)
                            (patient . who)
@@ -90,7 +90,7 @@
                            (vg . :self)
                            (np/subject . person)
                            (np/object . person))
-                 :main-verb "assassinate")
+                 :verb "assassinate")
                 (:tree-family empty-head-of-complement
                  :mapping ((result-type . :self)
                            (of-item . who)

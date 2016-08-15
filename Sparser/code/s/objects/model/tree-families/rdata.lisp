@@ -69,69 +69,6 @@
 ;;; standalone def forms
 ;;;----------------------
 
-;; This is marked '1' because there's no utility yet in reconciling
-;; its argument signature with the earlier Define-realization that
-;; is part of the mechanics of writing out contructed definitions.
-;; See interface;workbench:def rule.
-
-;; N.b. As of 1/5/13 There are only two calls to define-realization1,
-;; One in kinds/np-rules and one in numbers/objects1, so we should
-;; be able to remove it
-
-(defmacro define-realization1 (category &body rdata)
-  `(if (category-named ',category)
-     (setup-rdata (category-named ',category) ',rdata)
-     (break "There is no category named ~a" ',category)))
-
-#| Taking over the name for (mostly) biology verbs 12/11/14
-(defmacro define-realization
-          (category-name tree-family-name mapping-expression)
-  `(define-realization/expr
-     ',category-name ',tree-family-name ',mapping-expression))
-
-ddm$ grep "(define-realization "  **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
-interface/workbench/define-rule1.lisp:           ~%(define-realization ~A~
-grammar/model/dossiers/change-in-amount-verbs.lisp:(define-realization to-money
-grammar/model/dossiers/co-rules.lisp:(define-realization at-company
-grammar/model/dossiers/co-rules.lisp:(define-realization comma-company-descriptor
-grammar/model/dossiers/co-rules.lisp:(define-realization company
-grammar/model/dossiers/location-descriptions.lisp:(define-realization location-phrase
-grammar/model/dossiers/new-rules.lisp:(define-realization position-at-co
-grammar/model/dossiers/new-rules.lisp:(define-realization company
-grammar/model/dossiers/new-rules.lisp:(define-realization for-company-activity
-grammar/model/dossiers/new-rules.lisp:(define-realization at-company
-grammar/model/dossiers/new-rules.lisp:(define-realization for-company-activity
-grammar/model/dossiers/new-rules.lisp:(define-realization in-financial-data
-grammar/model/dossiers/new-rules.lisp:(define-realization company
-grammar/model/dossiers/new-rules.lisp:(define-realization title
-grammar/model/dossiers/new-rules.lisp:(define-realization company
-grammar/model/dossiers/new-rules.lisp:(define-realization company
-interface/workbench/def-rule/save.lisp:          "~%(define-realization ~A~
-interface/workbench/def-rule/save1.lisp:          "~%(define-realization ~A~
-grammar/model/core/time/anaphors1.lisp:;(define-realization calculated-day pre-verb-adverb
-grammar/model/sl/ISR/draft-lexicon.lisp:(define-realization 
-grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
-
-
-(defun define-realization/expr (category-name
-                                tree-family-name
-                                mapping-expression )
-
-  (let ((category (category-named category-name))
-        (tree-family (exploded-tree-family-named tree-family-name))
-        (mapping (vivify-mapping-exp mapping-expression)))
-    ;; This version was written in 1995
-
-    ;; ?? make a permanent hookup to the category ??
-    ;; Could be useful if a word substitution is involved
-
-    ;; copy of loop in Make-rules-for-rdata
-    (dolist (cfr-template (etf-cases tree-family))
-      (instantiate-rule-schema cfr-template mapping category))))
-
-
-
-
 (defmacro define-marker-category (category-name &key realization)
   "This amounts to reversible syntactic sugar for the light, 'glue'
    categories that don't add any content (variables) but indicate
@@ -140,33 +77,25 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
      The category that's created is just the minimal form of
    simple syntactic categories. For something substantive use
    full arguments with define-category."
-  `(define-marker-category/expr ',category-name ',realization))
+  `(setup-rdata (find-or-make-category ',category-name :def-category)
+                ',realization))
 
-(defun define-marker-category/expr (category-name realization-expr)
-  (let ((category (or (category-named category-name)
-                      (find-or-make-category  
-                       category-name :def-category))))
-    (setup-rdata category realization-expr)))
-
-
+(defmacro define-realization (category-name &body realization &aux
+                              (category (gensym))
+                              (rdata (gensym)))
+  `(let ((,category (category-named ',category-name t))
+         (,rdata ',realization))
+     (if (shortcut-rdata-p ,rdata)
+       (setup-shortcut-rdata ,category ,rdata)
+       (setup-rdata ,category ,rdata))))
 
 (defmacro define-additional-realization (category &body rdata)
-  `(define-additional-realization/expr ',category ',rdata))
-
-(defmacro def-synonym (category &rest rdata)
-  `(define-additional-realization/expr ',category ',@rdata))
-
-(defmethod define-additional-realization/expr ((category symbol) rdata)
-  (define-additional-realization/expr (category-named category t) rdata))
-
-(defmethod define-additional-realization/expr ((category referential-category) rdata)
-  ;; (push-debug `(,rdata ,category)) (break "check")
-  (let ((*deliberate-duplication* t))
+  `(let ((*deliberate-duplication* t))
     (declare (special *deliberate-duplication*))
-    (if (includes-def-realization-keyword rdata)
-      (apply-decode-realization-parameter-list category rdata)
-      (setup-rdata category rdata nil))))
+    (define-realization ,category ,@rdata)))
 
+(defmacro def-synonym (category (&rest rdata))
+  `(define-additional-realization ,category ,@rdata))
 
 ;;;-----------------------------------------------------------
 ;;; entry point from the definition of a referential category
@@ -175,62 +104,32 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 (defvar *build-mumble-equivalents* t
   "Build Mumble realization information from category definitions.")
 
-(defun setup-rdata (category rdata &optional (delete? t))
+(defun setup-rdata (category rdata &key (delete t)
+                    (mumble *build-mumble-equivalents*))
   "Called from decode-category-parameter-list as part of defining a category.
-   This routine is responsible for decoding the rdata field, and runs for
+   This routine is responsible for decoding the realization data, and runs for
    side-effect on the category object.
 
    The routines in objects;model;tree-families;driver.lisp create the rules
-   when individuals of this category are created. The function that actually
-   makes the rules is make-rules-for-realization-data."
- 
-  (let ((old-rules
-         (when (cat-realization category)
-           (cadr (member :rules (cat-realization category))))))
-
-    (typecase (first rdata)
+   when individuals of the category are created. The function that actually
+   makes the rules is make-rules-for-rdata."
+  (let ((old-rules (get-rules category)))
+    (etypecase (first rdata)
       (cons (setup-for-multiple-rdata category rdata))
-      (keyword (setup-single-rdata category rdata))
-      (otherwise
-       (push-debug `(,category ,rdata))
-       (error "Can not make sense of this realization expression ~
-               for the category ~a~%   ~a" category rdata)))
+      (keyword (setup-single-rdata category rdata)))
 
-    (let ((new-rules
-           (cadr (member :rules (cat-realization category)))))
-
-      (when old-rules
-        (if delete?
-          (then 
-           ;(push-debug `((:new ,new-rules) (:old ,old-rules)))
-           ;(break "forstall stupidness")
-            (dolist (cfr old-rules)
-              (when (consp cfr) ;;/// plural doesn't add to rule correctly
-                (if (null (cdr cfr)) (setq cfr (car cfr))
-                    (error "ill-formed old-rules: ~a" old-rules)))
-              (unless (member cfr new-rules :test #'eq)
-                (format t "~&~A ~A~%  no longer supported by rdata for ~A"
-                        (symbol-name (cfr-symbol cfr)) cfr category)
-                (delete/cfr cfr)))
-            new-rules)
-          ;; Otherwise we add the new ones
-          (let ((merged old-rules))
-            (when *load-verbose*
-              (format t "~&Redefining rules for ~a~
-                       ~%~a old rules, ~a new ones"
-                      category
-                      (length old-rules) 
-                      (length (get-rules category))))
-            (dolist (cfr new-rules)
-              (pushnew cfr merged))
-            (when *load-verbose*
-              (format t "~&~a merged" (length merged)))
-            (let ((cons-cell (member :rules (cat-realization category))))
-              (rplaca (cdr cons-cell)
-                      merged)
-              merged))))))
-
-  (when *build-mumble-equivalents* ;; for verbs or arg-taking forms
+    (let ((new-rules (get-rules category)))
+      (setf (get-rules category)
+            (cond (delete
+                   (mapc #'delete/cfr (set-difference old-rules new-rules))
+                   new-rules)
+                  (t (when *load-verbose*
+                       (warn "Redefining rules for ~a: ~d old rule~:p, ~d new one~:p."
+                             (pname category)
+                             (length old-rules)
+                             (length new-rules)))
+                     (union old-rules new-rules))))))
+  (when mumble
     (apply-mumble-rdata category rdata)))
 
 (defun setup-single-rdata (category rdata)
@@ -255,8 +154,8 @@ grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
 
 (defun dereference-and-store?-rdata-schema (category rdata store?)
   (multiple-value-bind (head-word etf mapping local-cases)
-                       (apply #'dereference-rdata category rdata)
-    (let ((rules (make-rules-for-realization-data ;; <<< does the work
+      (apply #'dereference-rdata category rdata)
+    (let ((rules (make-rules-for-rdata ;; <<< does the work
                   category head-word etf mapping local-cases)))
       (if store?
         (record-realization-data
@@ -446,14 +345,12 @@ grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-rea
 ;;--- Check for legal keywords in realization field of a category
 
 (defparameter *legal-word-rdata-keywords*
-  '(:main-verb :common-noun :proper-noun
+  '(:verb :common-noun :proper-noun
     :quantifier :adjective :interjection
-    :adverb :preposition :word :standalone-word
-    ))
+    :adverb :preposition :word :standalone-word))
 
 (defparameter *legal-rdata-keywords*
-  `(:tree-family :mapping :special-case-head :additional-rules
-    :mumble
+  `(:tree-family :mapping :special-case-head :additional-rules :mumble
     ,@*legal-word-rdata-keywords*))
 
 
@@ -611,9 +508,9 @@ the rspec for the words of instances of the category."
 (defun dereference-rdata (category
                           &key ((:tree-family tf-name))
                                mapping
-                               ((:main-verb    mvb-name))
-                               ((:common-noun  cn-name))
-                               ((:proper-noun  pn-name))
+                               ((:verb verb-name))
+                               ((:common-noun cn-name))
+                               ((:proper-noun pn-name))
                                standalone-word
                                adjective
                                quantifier
@@ -621,15 +518,12 @@ the rspec for the words of instances of the category."
                                adverb
                                preposition
                                word
-                               ((:special-case-head  no-head))
+                               ((:special-case-head no-head))
                                ((:additional-rules cases))
                                mumble)
 
-  "Does the symbols to objects converstion for realization data. 
-   Returns the arguments to feed into make-rules-for-realization-data."
-
-  ;; called from setup-rdata using 'apply'
-
+  "Convert symbols to objects for realization data. Returns the arguments
+   to feed into make-rules-for-rdata. Applied from setup-rdata."
   (declare (ignore mumble))
   ;; The primary mumble information is handled in setup-rdata, 
   ;; but here we need to handle word-level correspondences. 
@@ -638,36 +532,26 @@ the rspec for the words of instances of the category."
          ;; Since we're not going to instantiate the rules for these
          ;; right here, and since the next layer isn't keyword driven,
          ;; we have to encode the part-of-speech information here.
-         (cond (mvb-name
-                (cons :verb
-                      (deref-rdata-word mvb-name category)))
+         (cond (verb-name
+                (cons :verb (deref-rdata-word verb-name category)))
                (cn-name
-                (cons :common-noun
-                      (deref-rdata-word cn-name category)))
+                (cons :common-noun (deref-rdata-word cn-name category)))
                (adjective
-                (cons :adjective
-                      (deref-rdata-word adjective category)))
+                (cons :adjective (deref-rdata-word adjective category)))
                (quantifier
-                (cons :quantifier
-                      (deref-rdata-word quantifier category)))
+                (cons :quantifier (deref-rdata-word quantifier category)))
                (adverb
-                (cons :adverb
-                      (deref-rdata-word adverb category)))
+                (cons :adverb (deref-rdata-word adverb category)))
                (interjection
-                (cons :interjection
-                      (deref-rdata-word interjection category)))
+                (cons :interjection (deref-rdata-word interjection category)))
                (preposition
-                (cons :preposition
-                      (deref-rdata-word preposition category)))
+                (cons :preposition (deref-rdata-word preposition category)))
                (standalone-word
-                (cons :standalone-word
-                      (deref-rdata-word standalone-word category)))
+                (cons :standalone-word (deref-rdata-word standalone-word category)))
                (word
-                (cons :word
-                      (deref-rdata-word word category)))
+                (cons :word (deref-rdata-word word category)))
                (pn-name
-                (cons :proper-noun
-                      (deref-rdata-word pn-name category)))))
+                (cons :proper-noun (deref-rdata-word pn-name category)))))
         (tf (and tf-name (exploded-tree-family-named tf-name))))
 
     (when head-word
@@ -676,8 +560,7 @@ the rspec for the words of instances of the category."
     (when tf
       (record-use-of-tf-by tf category))
 
-    (values (if (or no-head
-                    (null head-word))
+    (values (if (or no-head (null head-word))
               :no-head-word ;; previously nil (9/3/99)
               head-word)
             tf

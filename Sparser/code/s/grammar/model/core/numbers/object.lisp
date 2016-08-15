@@ -66,7 +66,7 @@
 ;;; rules
 ;;;-------
 
-(define-realization1 number   ;; "10 million"
+(define-realization number   ;; "10 million"
   (:tree-family number-of-quantity
    ;; This etf is special purpose to this particular type
    ;; and pattern (/// maybe not a good idea). It calls

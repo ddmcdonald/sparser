@@ -21,7 +21,7 @@
   :binds ((name  :primitive (:or word polyword))
           (direction . direction))
   :index (:permanent :key name)
-  :realization (:main-verb name))
+  :realization (:verb name))
 
 (define-category change-in-amount-noun
   :instantiates self

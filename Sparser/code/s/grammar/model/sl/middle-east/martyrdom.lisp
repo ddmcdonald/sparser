@@ -57,7 +57,7 @@ Has nominal form martyrdom
                            (vp . :self)
                            (vg . :self)
                            (np/object . person))
-                 :main-verb "martyr")))
+                 :verb "martyr")))
 ;;/// We only want the passive (+ed) form of the verb,
 ;; which will entail a new keyword and some refactoring
 

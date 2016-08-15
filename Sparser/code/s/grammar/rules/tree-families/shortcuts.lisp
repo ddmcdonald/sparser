@@ -447,7 +447,7 @@ broadly speaking doing for you all the things you might do by hand.
                         (vp . event)
                         (np/subject . individual)
                         (agent . subject))
-              :main-verb ,string-for-verb))))
+              :verb ,string-for-verb))))
     (eval form)))
 
 #|
@@ -486,7 +486,7 @@ broadly speaking doing for you all the things you might do by hand.
                         (np/object . individual)
                         (agent . subject)
                         (patient . object))
-              :main-verb ,string-for-verb)))
+              :verb ,string-for-verb)))
          (category (eval form)))
     (let* ((bootstap-rule
             `(def-cfr event (,name individual)
@@ -530,7 +530,7 @@ broadly speaking doing for you all the things you might do by hand.
                         (np/subject . individual)
                         (prep . ,preposition)
                         (agent . subject))
-              :main-verb ,verb)))
+              :verb ,verb)))
          (category (eval form)))
     category))
 
@@ -556,7 +556,7 @@ broadly speaking doing for you all the things you might do by hand.
                                  (np/subject . individual)
                                  (agent . subject)
                                  (location . location))  ;; location . where
-                       :main-verb ,string-for-verb))))
+                       :verb ,string-for-verb))))
     (eval form)))
 
 
@@ -588,7 +588,7 @@ broadly speaking doing for you all the things you might do by hand.
                            (vp . :self)
                            ;; Needs *edges-from-referent-categories*
                            (np/subject . ,subj-v/r))
-                 :main-verb ,verb)
+                 :verb ,verb)
                 (:tree-family subj/verb+np
                  ;; C3 left to right parsing
                  :mapping ((object . ,obj-var)
@@ -622,7 +622,7 @@ broadly speaking doing for you all the things you might do by hand.
                              (vp . :self)
                              (vg . :self)
                              (np/object . ,parsing-vr))
-                   :main-verb ,verb))))
+                   :verb ,verb))))
         (eval form)))))
 
 
@@ -648,7 +648,7 @@ broadly speaking doing for you all the things you might do by hand.
                         (pp/np . individual)
                         (agent . subject)
                         (theme . object))
-              :main-verb ,verb)))
+              :verb ,verb)))
          (category (eval form)))
     (let ((v+p-rule (find-rule-in-category category :vp+prep/object)))
       (if v+p-rule 
@@ -688,7 +688,7 @@ broadly speaking doing for you all the things you might do by hand.
                                (vp . :self)
                                (vg . :self)
                                (s/that-comp . ,comp-v/r))
-                     :main-verb ,verb))))
+                     :verb ,verb))))
           (eval form))))))
 
 
@@ -739,7 +739,7 @@ broadly speaking doing for you all the things you might do by hand.
                                (np/patient . ,patient-v/r)
                                (by-pp . ,by-cat)
                                (result-type . :self))
-                     :main-verb ,verb)
+                     :verb ,verb)
                     (:tree-family empty-head-of-complement
                      :mapping ((result-type . :self)
                                (of-item . ,agent-slot)
@@ -783,7 +783,7 @@ broadly speaking doing for you all the things you might do by hand.
                               (vg . :self)
                               (np/subject . ,subj-v/r)
                               (np/object . ,theme-v/r))
-                    :main-verb ,verb)
+                    :verb ,verb)
                   (:tree-family empty-head-of-complement
                    :mapping ((result-type . :self)
                              (of-item . ,theme-slot)
@@ -817,7 +817,7 @@ broadly speaking doing for you all the things you might do by hand.
                               (vg . :self)
                               (np/subject . ,subject-restriction)
                               (np/object . ,theme-restriction))
-                    :main-verb ,verb)
+                    :verb ,verb)
                   (:tree-family empty-head-of-complement
                    :mapping ((result-type . :self)
                              (of-item . theme)

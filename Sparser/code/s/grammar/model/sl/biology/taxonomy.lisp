@@ -1350,11 +1350,11 @@ the aggregate across the predicate it's in. |#
 
 
 
-(def-realization protein
+(define-realization protein
   :noun "protein"
   :in location)
 
-(def-realization human-protein-family
+(define-realization human-protein-family
   :noun "human protein family"
   :in location)
 

@@ -33,7 +33,7 @@
                      (pathogen pathogen)
                      (source))
              ;;:index (:key ) left empty for now
-             :realization ((:main-verb ,string)
+             :realization ((:verb ,string)
                            (:tree-family transitive/passive
                            :mapping ((agent . who)
                                      (patient . pathogen)

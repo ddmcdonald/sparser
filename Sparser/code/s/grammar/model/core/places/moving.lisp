@@ -92,7 +92,7 @@
                                  ;;/// Need distance as source of 'when'
                                  ;;  "{in/after} ten miles" "... (1.5 miles)"
                                  ;; Though this might be understood better as distance
-                                 (:main-verb ,string)))))
+                                 (:verb ,string)))))
         (setq category (eval form))
         category)))
 

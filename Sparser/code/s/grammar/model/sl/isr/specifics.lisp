@@ -33,7 +33,7 @@
                            (vp . :self)
                            ;; Needs *edges-from-referent-categories*
                            (np/subject . can-change-location))
-                 :main-verb ("enter" :past-tense "entered"))
+                 :verb ("enter" :past-tense "entered"))
                 (:tree-family subj/verb+np
                  ;; C3 left to right parsing
                  :mapping ((object . to-location)

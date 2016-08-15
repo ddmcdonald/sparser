@@ -18,7 +18,7 @@
   :instantiates self
   :binds ((name  :primitive word))
   :index (:permanent :key name)
-  :realization (:main-verb name))
+  :realization (:verb name))
 
 #| Strictly speaking, these appear to be pretty narrow in application,
  so they could go with the rdata for the financial-report category.

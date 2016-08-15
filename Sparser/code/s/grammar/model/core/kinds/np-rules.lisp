@@ -12,7 +12,7 @@
 
 (in-package :sparser)
 
-(define-realization1  kind
+(define-realization  kind
   (:tree-family np-common-noun/definite  ;; "the rabbit"
     :mapping ((np . :self)
               (np-head . :self)))

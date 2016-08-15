@@ -47,7 +47,7 @@
 ;;;------------------
 
 #| incomplete experiment
-(define-realization1 attribute-value
+(define-realization attribute-value
   ((:tree-family be-description
     ;; This covers "is red"
     :mapping ((result . :self)

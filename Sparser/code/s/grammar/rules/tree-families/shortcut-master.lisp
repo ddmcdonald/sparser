@@ -1,9 +1,9 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER -*-
+;;; Copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "shortcut-master"
-;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  April 2016
+;;;   Module:  "grammar;rules;tree-families;"
+;;;  Version:  August 2016
 
 ;; Initiated 9/14/14 to make more flexible, complete shortcuts.
 ;; 11/11/14 added keyword for obo-id.
@@ -25,172 +25,92 @@
 ;; 6/5/2015 extend subject-variable and object-variable to make use of subcategorization information
 ;; and add thatcomp-variable
 ;; 6/30/15 Implemented irregular plural for nouns.
-;; 7/29/30 added find-single-unary-cfr and rearranged slightly.
+;; 7/29/15 added find-single-unary-cfr and rearranged slightly.
+;; 8/11/16 Revised and simplified.
 
 (in-package :sparser)
 
-;;;------------------
-;;; valid parameters
-;;;------------------
+;;;--------------------
+;;; Shortcut detection
+;;;--------------------
 
-(defparameter *def-realization-keywords*
-  '(:verb :noun :adj :etf :s :o :c :m ;;:alt-s  :alt-o 
-    :binds :realization
-    :control-relations
-    :prep :by
-    :premod
-    :about :above :across :after :against :among :as :as-comp :at
-    :below :before :between :but\ not :during :following :for :from :ifcomp :in :into 
-    :like :next\ to
-    :of :on :onto :on\ top\ of
-    :over :such\ as :to :to-comp :thatcomp :through :throughout :toward :towards :under 
-    :unlike :upon :via 
-    :mumble
-    :designator
-    :whethercomp :with :within :without
-    :optional-object ;; for words like "translocate" which can appear with or without objects
-    :adjp-complement ;; for cases like "Make the top block red."
-    :loc-pp-complement ;; for cases like "Put the block on the table"
-    ))
-
-(defparameter *slot-keywords*
-  '(:s :o 
-    ;;:alt-s :alt-o
-    :m :premod
+(defparameter *subcat-keywords*
+  '(:s :o :m :premod
     :about :above :across :after :against :among :as :as-comp :at
     :before :below :between :but\ not :during :following :for :from :ifcomp 
-    :by :in :into :like :next\ to :of
-    :on :onto :on\ top\ of
-    :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
-    :upon :via :whethercomp :with :within :without :designator
-    ))
+    :by :in :into :like :next\ to :of :on :onto :on\ top\ of :over :to :such\ as
+    :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
+    :upon :via :whethercomp :with :within :without :designator))
 
-
-(defun includes-def-realization-keyword (rdata)
-  ;; used in decode-category-parameter-list to decide whether
-  ;; this is shortcut-style rdata or ordinary. 
-  (dolist (symbol rdata nil)
-    (when (keywordp symbol)
-      (when (memq symbol *def-realization-keywords*)
-        (return t)))))
-
-(defun check-for-valid-def-realization-keywords (key-value-pairs)
-  (dolist (symbol key-value-pairs)
-    (when (keywordp symbol)
-      (unless (memq symbol *def-realization-keywords*)
-        (error "The keyword :~a is not a known option for ~
-               define-realization" symbol)))))
+(defun shortcut-rdata-p (rdata)
+  "Return true if the given realization plist is shortcut-style, not long-form."
+  (and (consp rdata)
+       (keywordp (car rdata)) ; and thus not a list
+       (not (get-properties rdata '(:tree-family :mapping))) ; long-form only
+       (or (get-properties rdata '(:etf :adj :noun))
+           (get-properties rdata *subcat-keywords*))))
 
 
 ;;;--------------
-;;; entry points
+;;; Entry points
 ;;;--------------
-
-;;--- toplevel macros
-
-(defmacro def-realization (category-name &rest key-value-pairs)
-  `(define-realization ',category-name ',key-value-pairs))
-
-(defun define-realization (category-name key-value-pairs)
-  (let ((category (category-named category-name :break-if-undefined)))
-    (check-for-valid-def-realization-keywords key-value-pairs)
-    (apply-decode-realization-parameter-list category key-value-pairs)
-    category))
-
-(defun apply-decode-realization-parameter-list (category key-value-pairs)
-  ;; we are moving from having all the prepositional subcats as specified
-  ;; keywords to having them on a plist -- this is a solution that does not
-  ;; require rewriting all the word definitions
-  (declare (special category key-value-pairs))
-  (let ((kw nil)
-        (slots nil))
-    ;;(break "apply-decode-realization-parameter-list")
-    (loop for pair on key-value-pairs by #'cddr 
-      do
-      (cond
-       ((memq (car pair) *slot-keywords*)
-        (push (second pair) slots)
-        (push (car pair) slots))
-       (t (push (second pair) kw)
-          (push (car pair) kw))))
-    (apply #'decode-realization-parameter-list category 
-           `(,@kw :slots ,slots))))
-
-
-;;--- entry point from decode-category-parameter-list 
 
 (defun setup-shortcut-rdata (category key-value-pairs)
-  ;; called from decode-category-parameter-list when the rdata
-  ;; satisfies includes-def-realization-keyword, which works
-  ;; because an ordinary rdata only includes :tree-family, :binding
-  ;; and possibly a word specifier.
-  (check-for-valid-def-realization-keywords key-value-pairs)
-  (apply-decode-realization-parameter-list category key-value-pairs)
-  category)
+  "Called from decode-category-parameter-list when shortcut-rdata-p is true.
+   We separate the subcategorization labels (slots) from the other realization
+   keywords, then punt to the decoder. Notice that the lists come out reversed."
+  (loop with slots and args
+        for (key value) on key-value-pairs by #'cddr
+        if (memq key *subcat-keywords*)
+          do (push value slots) (push key slots)
+        else
+          do (push value args) (push key args)
+        finally (apply #'decode-shortcut-rdata category
+                       :slots slots
+                       args)))
 
-;; N.b. def-synonym, aka define-additional-realization goes straight
-;; to decode-realization-parameter-list with the *deliberate-duplication*
-;; flag dynamically bound. 
 
-;;;------------------------------------
-;;; decoders that actually do the work
-;;;------------------------------------
+;;;-------------------------------------
+;;; Decoder that actually does the work
+;;;-------------------------------------
 
-(defun decode-realization-parameter-list (category
-                                          &key etf verb noun adj
-					    control-relations  
-					    ;; s o ;; no longer arguments because they can be duplicated for ambiguity
-					    c
-                                            prep ;; owned preposition
-                                            slots ;; a plist with labels like :against :as :at 
-                                            ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
-                                            mumble
-                                            optional-object
-                                            loc-pp-complement
-                                            adjp-complement)
-  ;; Decoder for the realization part of def-term, for the rdata of
-  ;; define-category when it fits this new pattern, and for def-synonym,
-  ;; though in that case the *deliberate-duplication* flag will be up.
-  (declare (special *valid-keywords-for-irregular-word-forms* word::|by|))
-  (typecase etf
-    (null
-     (when verb
-       (error "You must specifiy a realization schema/s using the keyword ':etf'")))
-    (cons)
-    (symbol (setq etf (list etf)))  
-    (otherwise (error "The :etf parameter must be a symbol or a list")))
-
-  (let* ((sf (fom-subcategorization category
-                                    :category category
-                                    ;;:s s :o o
-                                    :slots slots))
+(defun decode-shortcut-rdata (category &key etf
+                              adjective (adj adjective)
+                              noun verb
+                              control-relations
+                              c ; complement
+                              prep ; owned preposition
+                              slots ; subcat plist
+                              mumble ; for generation
+                              optional-object ; for words like "translocate"
+                              adjp-complement ; for cases like "Make the top block red."
+                              loc-pp-complement) ; for cases like "Put the block on the table."
+  "Decoder for the shortcut form of define-category, def-synonym, etc."
+  (declare (special *valid-keywords-for-irregular-word-forms* word::|by|)
+           (optimize debug))
+  (let* ((sf (fom-subcategorization category :category category :slots slots))
          (subj-pat (find-subcat-pattern :subject sf))
          (obj-pat (find-subcat-pattern :object sf))
          (m-pat (find-subcat-pattern :m sf))
          substitution-map
          word-map)
     (setf (control-relations sf) control-relations)
-    (dolist (schema-name etf)
-      ;; Iterate through the etf, adding to the substituions and word list
+    (dolist (schema-name (setq etf (ensure-list etf)))
+      ;; Iterate through the etf, adding to the substituions and word list.
       (let* ((rschema (get-realization-scheme schema-name))
-             (lexical-class (when rschema (schema-head-keyword rschema))))
-        (unless rschema
-          (error "There is no realization scheme named ~a" schema-name))
-
-        ;; set up the word map
-        (case lexical-class
+             (lexical-class (schema-head-keyword rschema)))
+        ;; Set up the word map.
+        (ecase lexical-class
           (:verb
            (unless verb
-             (error "The etf ~a requies a ':verb' parameter" etf))
-           (push `(:verb . ,verb)  word-map))
+             (error "The etf ~a requies a :verb parameter." schema-name))
+           (push `(:verb . ,verb) word-map))
           (:common-noun
            (unless noun
-             (error "The etf ~a requies a ':noun' parameter" etf))
-           (push `(:common-noun . ,noun) word-map))
-          (otherwise
-           (error "Unexpected lexical class: ~a" lexical-class)))
+             (error "The etf ~a requies a :noun parameter." schema-name))
+           (push `(:common-noun . ,noun) word-map)))
 
-        ;; incrementally set up the substitution map
+        ;; Incrementally set up the substitution map.
         (when subj-pat
           (let ((s-var (subcat-variable subj-pat))
                 (s-v/r (subcat-restriction subj-pat)))
@@ -214,36 +134,36 @@
                                        loc-pp-complement)
                                :loc-pp-complement)))
 
-        (when c  ;; complement, e.g. "reported that ..."
+        (when c ; complement, e.g. "reported that ..."
           (let* ((var (variable/category c category))
                  (v/r (var-value-restriction var)))
             (push `(comp-slot . ,var) substitution-map)
             (push `(comp-v/r . ,v/r) substitution-map)
             (register-variable category var :complement-variable)))
 
-	(when m-pat ;; modifier, normally to a head noun
+	(when m-pat ; modifier, normally to a head noun
           (let ((m-var (subcat-variable m-pat))
                 (m-v/r (subcat-restriction m-pat)))
-            (unless m-var (error "No ~a variable associated with ~a"
-                                 m-pat category))
+            (unless m-var (error "No ~a variable associated with ~a." m-pat category))
             (push `(modifier-slot . ,m-var) substitution-map)
-            (push `(modifier-v/r . ,m-v/r) substitution-map))))
+            (push `(modifier-v/r . ,m-v/r) substitution-map)))))
 
-      (when prep ;; preposition 'owned' by the verb, appears
-        ;; immediately after the verb, making it effectively
-        ;; a compound verb name
-        (apply-preposition verb prep category))) ;; end dolist
-    (register-variable category adjp-complement :adjp-complement)
-    (when noun ;; a noun can just expect to get all the pp's w/o an etf
+    (when (and verb prep)
+      ;; Preposition 'owned' by the verb, which appears
+      ;; immediately after the verb, making it effectively
+      ;; a compound verb name.
+      (apply-preposition verb prep category))
+
+    (when noun
+      ;; A noun can just expect to get all the pp's w/o an etf.
       (unless (assq :common-noun word-map)
-        ;; if it's on the map then the realization machinery will expand it
+        ;; If it's on the map then the realization machinery will expand it.
         (when (consp noun)
-          ;; Check that it's marking an irregular plural
+          ;; Check that it's marking an irregular plural.
           (unless (= 3 (length noun))
-            (error "Illformed irregular noun spec: not three items long"))
-          (unless (and (keywordp (second noun))
-                       (memq (second noun) *valid-keywords-for-irregular-word-forms*))
-            (error "Unknown keyword in irregular noun spec~%~a" noun)))
+            (error "Illformed irregular noun spec: not three items long."))
+          (unless (memq (second noun) *valid-keywords-for-irregular-word-forms*)
+            (error "Unknown keyword in irregular noun spec ~a." noun)))
 
         (let* ((word-string (if (consp noun) (car noun) noun))
                (word (resolve/make word-string))
@@ -255,87 +175,26 @@
 
     (when adj
       ;; Adjectives are analyzed as being able to take subjects and/or objects
-      ;; as well as subcategorizations ('slots')
+      ;; as well as subcategorizations ('slots').
       (unless (assq :adjective word-map)
         (let* ((word (resolve/make adj))
                (adj-rules (make-rules-for-adjectives word category category)))
           (make-corresponding-mumble-resource word :adjective)
           (add-rules adj-rules category))))
 
+    (when adjp-complement
+      (register-variable category adjp-complement :adjp-complement))
+
     (when (or etf substitution-map word-map)
-      ;;  (push-debug `(,category ,etf ,substitution-map ,word-map))
-      ;; if we go in here for just a noun or an adjective,
-      ;; there may be nothing for this call to do
+      ;; If we go in here for just a noun or an adjective,
+      ;; there may be nothing for this call to do.
       (apply-rdata-mappings category etf
                             :args substitution-map
                             :word-keys word-map))
 
     (add-subcats-to-rdata category)
 
-    (when mumble
-      (when *build-mumble-equivalents*
-        (decode-mumble-spec category mumble)))
+    (when (and mumble *build-mumble-equivalents*)
+      (decode-mumble-spec category mumble))
 
     category))
-        
-#| The target is a call to apply-realization-scheme or an open-coded equivalent.
-The key part is the mapping, which is constructed by assemble-scheme-form which
-takes the arg-to-substitute that were assembled as special-case combinations
-in the def-term routines (e.g. def-subj-theme-term). 
-
-The map of the schema, e.g.
-(define-realization-scheme svo transitive
-  :head :verb
-  :mapping ((agent . subj-slot)
-            (patient . theme-slot)
-            (s . :self)
-            (vp . :self)
-            (vg . :self)
-            (np/subject . subj-v/r)
-            (np/object . theme-v/r)))
-
-Is specialized by the values provided by the def-term routine, e.g.
-     :args `((subj-slot . ,subj-slot)
-             (theme-slot . ,theme-slot)
-             (subj-v/r . ,subj-v/r)
-             (theme-v/r . ,theme-v/r)))
-
-The schema of the etf expect at mapping from their parameters and labels
-to variables (for the parameters) and categories (for the labels). 
-Or to the category of the realization (for :self) or a word for any string.
-
-The cdr's of the schema maps coresppond to the car's of the driver's map.
-The process in assemble-schema-form is driven by walking down the schema's
-map, pair by pair. So we have to have all of the terms that the schema
-expects, but we could have more if we wanted.
-
-|#
-
-#| "define-realization" is too good a name to waste.
-   I don't -think- these are being loaded. At some point they should be
-   changed over or treated differentl
-ddm$ grep "(define-realization "  **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
-interface/workbench/define-rule1.lisp:           ~%(define-realization ~A~
-grammar/model/dossiers/change-in-amount-verbs.lisp:(define-realization to-money
-grammar/model/dossiers/co-rules.lisp:(define-realization at-company
-grammar/model/dossiers/co-rules.lisp:(define-realization comma-company-descriptor
-grammar/model/dossiers/co-rules.lisp:(define-realization company
-grammar/model/dossiers/location-descriptions.lisp:(define-realization location-phrase
-grammar/model/dossiers/new-rules.lisp:(define-realization position-at-co
-grammar/model/dossiers/new-rules.lisp:(define-realization company
-grammar/model/dossiers/new-rules.lisp:(define-realization for-company-activity
-grammar/model/dossiers/new-rules.lisp:(define-realization at-company
-grammar/model/dossiers/new-rules.lisp:(define-realization for-company-activity
-grammar/model/dossiers/new-rules.lisp:(define-realization in-financial-data
-grammar/model/dossiers/new-rules.lisp:(define-realization company
-grammar/model/dossiers/new-rules.lisp:(define-realization title
-grammar/model/dossiers/new-rules.lisp:(define-realization company
-grammar/model/dossiers/new-rules.lisp:(define-realization company
-interface/workbench/def-rule/save.lisp:          "~%(define-realization ~A~
-interface/workbench/def-rule/save1.lisp:          "~%(define-realization ~A~
-grammar/model/core/time/anaphors1.lisp:;(define-realization calculated-day pre-verb-adverb
-grammar/model/sl/ISR/draft-lexicon.lisp:(define-realization 
-grammar/model/sl/PCT/person+title.lisp:(define-realization has-title |#
-
-
-    

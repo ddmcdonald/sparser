@@ -31,7 +31,7 @@
                (vg . :self)
                (np/object . country))
 
-     :main-verb "visit" )
+     :verb "visit" )
   :index (:temporary :list))
 
 
@@ -51,7 +51,7 @@
                (vp . event/company)
                (vg . :self)
                (np/object . company))
-     :main-verb "capitalize"))
+     :verb "capitalize"))
 
 
 #|

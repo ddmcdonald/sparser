@@ -29,7 +29,7 @@
                           (np/subject . person)
                           (agent . person))
 
-                :main-verb "retire"
+                :verb "retire"
 
                 :additional-rules
                   ((:pp-adjunct (s (s as-title)
@@ -62,7 +62,7 @@
                           (agent . agent)
                           (patient . person))
 
-                :main-verb "confirm"
+                :verb "confirm"
 
                 :additional-rules
                   ((:pp-adjunct (s (s as-title)
@@ -97,7 +97,7 @@
                 (agent . person-arriving )
                 (patient . person-leaving ))
 
-      :main-verb "succeed" ))
+      :verb "succeed" ))
 
 
 
@@ -123,4 +123,4 @@
                           (agent . person )       ;; vagueness of partially
                           (patient . position ))  ;; saturated position objects
 
-                :main-verb "remain" ))
+                :verb "remain" ))

@@ -149,7 +149,7 @@
     (if segment-form
       (case (cat-symbol segment-form)
         (category::one-content-word-vg
-         (extend-rr domain-term :main-verb))
+         (extend-rr domain-term :verb))
 	(otherwise
 	 (break "New segment-form: ~a" (cat-symbol segment-form))))
       (break "No 'form' was recorded for this verb segment:~
@@ -162,11 +162,7 @@
 
 
 (defun term-has-appeared-as-a-mvb (individual)
-  (unless (individual-p individual)
-    (break "Assumption violation: expected an individual as an ~
-            argument~%but got ~A" individual))
-  (let ((rr (realization-record individual)))
-    (member :main-verb rr :test #'eq)))
+  (memq :verb (realization-record individual)))
 
 
 

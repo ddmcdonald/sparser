@@ -172,6 +172,7 @@
                   (:verb 'mumble::verb)
                   (:common-noun 'mumble::noun)
                   (:adjective 'mumble::adjective)
+                  (:adverb 'mumble::adverb)
                   (:prep 'mumble::preposition)
                   (:interjection 'mumble::interjection)))
          (m-word (get-mumble-word-for-sparser-word word m-pos)))
@@ -181,6 +182,7 @@
       (:verb) ;; done in the category rdata processing
       (:common-noun (mumble::noun m-word))
       (:adjective (mumble::adjective m-word))
+      (:adverb (warn "Need Mumble adverbial definition."))
       (:prep (mumble::prep m-word))
       (:interjection (mumble::interjection m-word)))))
 
