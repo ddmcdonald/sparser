@@ -1033,6 +1033,8 @@
 
 (defun assimilate-subject (subj vp &optional (right-edge (right-edge-for-referent)))
   (declare (special category::subordinate-clause))
+  ;; right-edge is NIL when called from polar questions on adjectives
+  ;;  this may want to be fixed
   (when
       (and subj vp) ;; have had cases of uninterpreted VPs
     (cond
@@ -1044,7 +1046,7 @@
                (extract-string-spanned-by-edge (right-edge-for-referent))))
          (revise-parent-edge :form category::transitive-clause-without-object))
        (assimilate-subcat vp :subject subj))
-      ((eq (edge-form right-edge) category::subordinate-clause)
+      ((and right-edge (eq (edge-form right-edge) category::subordinate-clause))
        (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
 	      (vg-edge (edge-right-daughter right-edge)))
 	 (if (and (edge-p vg-edge)
@@ -1059,7 +1061,7 @@
 	     (when
                  (missing-subject-vars (edge-referent vg-edge))
 	       (assimilate-subcat svp :subject subj)))))
-      ((is-passive? right-edge)
+      ((and right-edge (is-passive? right-edge))
        (assimilate-subcat vp :object subj))
       (t (assimilate-subcat vp :subject subj)))))
 
@@ -1067,7 +1069,8 @@
   ;; this is a case like "that MEK phosphorylates" which has
   ;;  a VG, not a VP, and no object -- want to make this a
   ;;  constituent with a gap
-  (and (not (is-passive? right-edge))
+  (and right-edge
+       (not (is-passive? right-edge))
        (not (adjective-phrase? right-edge))
        (missing-object-vars vp)
        (not (value-of 'statement vp))
