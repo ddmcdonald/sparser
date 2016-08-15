@@ -21,6 +21,9 @@ files once an area looks big enough to warrant it.  |#
   :mixins (has-spatial-location ;; adds location variable
            has-color ;; color
            has-size  ;; size
+           ;; after discussion with Alex, but without discussion with David
+           ;;  (after vacation?!)
+           has-name  ;; blocks are not artifacts, but they do have names
            )
   :documentation
   "Conventional physical objects: chairs, amoeba, mountains, 
