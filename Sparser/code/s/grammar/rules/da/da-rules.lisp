@@ -145,7 +145,9 @@
        :form (edge-form clause)
        :referent new-interp
        :target left-clause
-       :dominating clause
+       :dominating (if (eq clause (edge-used-in left-clause))
+                       clause
+                       (lsp-break "bad used-in"))
        :direction :left))))
   
     
@@ -403,7 +405,6 @@
          :referent (bind-dli-variable 'appositive-description (edge-referent np-edge)
                                       (edge-referent target))
          :target target
-         :dominating (edge-used-in target)
          :direction :right)))))
 
 (define-debris-analysis-rule attach-appositive-comma-np-comma-under-pp
@@ -431,7 +432,6 @@
        :referent (bind-dli-variable 'appositive-description (edge-referent np-edge)
                                     (edge-referent target))
        :target target
-       :dominating (edge-used-in target)
        :direction :right))))
 
 (define-debris-analysis-rule attach-appositive-comma-proper-noun-under-pp
@@ -517,12 +517,10 @@
                (make-edge-spec 
                 :category (edge-category target)
                 :form (edge-form target)
-                :referent
-                (bind-dli-variable :predication
-                                   (make-lambda-predicate srel-edge)
-                                   (edge-referent target))
+                :referent (bind-dli-variable :predication
+                                             (make-lambda-predicate srel-edge)
+                                             (edge-referent target))
                 :target target
-                :dominating (edge-used-in target)
                 :direction :right)))))))
 
 (define-debris-analysis-rule s-commma-where-relative
@@ -551,10 +549,9 @@
            (make-edge-spec 
             :category (edge-category s-edge)
             :form (edge-form s-edge)
-            :referent
-            (bind-dli-variable 'predication
-                               (make-lambda-predicate srel-edge s-var)
-                               s)))
+            :referent (bind-dli-variable 'predication
+                                         (make-lambda-predicate srel-edge s-var)
+                                         s)))
           (t
            (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
                   (t-var (when target
@@ -574,7 +571,6 @@
                                    (make-lambda-predicate srel-edge t-var)
                                    (edge-referent target))
                 :target target
-                :dominating (edge-used-in target)
                 :direction :right)))))))
 
 (define-debris-analysis-rule np-commma-subj-relative
@@ -660,7 +656,6 @@
 	:form (edge-form np-edge)
 	:referent np
         :target np-edge
-        :dominating (edge-used-in np-edge)
         :direction :right
         ))
       (t 
@@ -723,7 +718,6 @@
                                             (make-lambda-predicate vp+ed obj-var)
                                             target-np)
                :target target
-               :dominating (edge-used-in target)
                :direction :right)))
           (let ((obj-var (subcategorized-variable vp-ref :object np-ref)))
             (when obj-var
@@ -805,7 +799,6 @@
                   (edge-referent target))
        :form (edge-form target)
        :target target
-       :dominating (edge-used-in target)
        :direction :right))))
 
 
@@ -826,7 +819,6 @@
                                     (make-lambda-predicate vp+ed)
                                     (edge-referent target))
        :target target
-       :dominating (edge-used-in target)
        :direction :right))))
 
 (define-debris-analysis-rule s-comma-vp+ed
@@ -1061,7 +1053,6 @@
            :form category::np
            :referent (bind-dli-variable var-to-bind pobj-referent last-np)
            :target target
-           :dominating (edge-used-in target)
            :direction :right
            ))))))
 
@@ -1094,9 +1085,9 @@
    (member (cat-name (edge-form edge)) '(proper-noun np))
    ;; test below is because of some strange cases where an item in the
    ;;  fringe in not in the tree
-   (edge-used-in edge)
+   (or (null (edge-used-in edge))
    ;; test below is to block finding of "FAK" below "phosphorylated FAK"
-   (not (np-target? (edge-used-in edge)))))
+       (not (np-target? (edge-used-in edge))))))
 
 (defun right-fringe-of (edge)
   (all-edges-on (pos-ends-here (pos-edge-ends-at edge))))
@@ -1135,7 +1126,6 @@
        :form (edge-form target)
        :referent collection
        :target target
-       :dominating (edge-used-in target)
        :direction :right))
     ))
 
@@ -1232,7 +1222,6 @@
            :form (edge-form target)
            :referent ref
            :target target
-           :dominating (edge-used-in target)
            :direction :right))))))
 #|
 (define-debris-analysis-rule YES-NO-NP-ADjP

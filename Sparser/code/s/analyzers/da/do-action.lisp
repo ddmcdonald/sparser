@@ -129,14 +129,16 @@ SP> (stree 51)
     (push-debug `(,fn ,constituents))
     (tr :da-applying-fn-to-args fn constituents)
     (when (setq *edge-spec* (apply fn constituents)) ;; can be nil if rule fails
-      (let ((target (edge-spec-target *edge-spec*))
-            (dominating (edge-spec-dominating *edge-spec*)))
+      (let* ((target (edge-spec-target *edge-spec*))
+             (dominating (and (edge-p target) (edge-used-in target))))
         ;; see long note above
         (when (and target dominating)
-          (when (eq (edge-starts-at target) (edge-starts-at dominating))
-            (when (eq (edge-ends-at target) (edge-ends-at dominating))
-              (setq target dominating)
-              (setq dominating (edge-used-in dominating)))))
+          (when (and
+                 (eq (edge-starts-at target) (edge-starts-at dominating))
+                 (eq (edge-ends-at target) (edge-ends-at dominating))
+                 (edge-used-in dominating))
+            (setq target dominating)
+            (setq dominating (edge-used-in dominating))))
     
         
         (setq *new-edge*
