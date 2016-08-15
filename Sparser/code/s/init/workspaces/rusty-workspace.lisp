@@ -5398,7 +5398,7 @@ NIL
                   (tree (when ref (spire-tree ref)))
                   (rels (when ref (contains-some-of tree *er-signals*))))
              (when rels
-               (list (list rels (extract-string-spanned-by-edge tt))))))
+               (list (list rels (extract-string-spanned-by-edge tt) (edge-referent tt))))))
     (error (e)
       (ignore-errors ;; got an error with something printing once
         (format t "~&Error in ~s~%~a~%~%" text e)))))
@@ -5409,7 +5409,8 @@ NIL
   (let ((*interpret-in-context* nil)
         (*trap-error-skip-sentence* t))
     (declare (special *interpret-in-context* *trap-error-skip-sentence*
-                      *ev-r* *sub-conj* *results* *affected*))
+                      *ev-r* *sub-conj* *results* *affected* *leads-to*
+                      *purpose*))
     (let* ((ers (loop for s in (all-corpus-sentences)
                    append
                      (loop for er in (event-relations (third s))
@@ -5418,10 +5419,19 @@ NIL
            (affected
             (loop for er in ers
                when (member 'affected-process (first er))
-               collect er))           
+               collect er))
+           (leads-to
+            (loop for er in ers
+               when (member 'leads-to (first er))
+               collect er))
+           (purpose
+            (loop for er in ers
+               when (member 'purpose (first er))
+               collect er))
            (results 
             (loop for er in ers when
                  (and (member 'result (first er))
+                      (not (member er leads-to :test #'equal))
                       (not (member 'results-in (first er)))
                       (not (member 'leads-to (first er)))
                       (not (member 'event-relation (first er)))
@@ -5431,6 +5441,7 @@ NIL
             (loop for er in ers
                when (and (not (member er results :test #'equal))
                          (not (member er affected :test #'equal))
+                         (not (member er leads-to :test #'equal))
                          (or (not (member 'SUBORDINATE-CONJUNCTION (first er)))
                              (member 'SUBORDINATED-EVENT (first er))))
                collect er))
@@ -5445,7 +5456,11 @@ NIL
       (setq *sub-conj* sub-conj)
       (setq *results* results)
       (setq *affected* affected)
+      (setq *leads-to* leads-to)
+      (setq *purpose* purpose)
       `((*ev-r* has ,(length ev-r) elements)
+        (*leads-to* has ,(length *leads-to*) elements)
+        (*purpose* has ,(length *purpose*) elements)
         (*sub-conj* has ,(length sub-conj) elements)
         (*results* has ,(length results) elements)
         (*affected* has ,(length affected) elements)))))
