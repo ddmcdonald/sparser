@@ -43,10 +43,10 @@
     (p "The catalysis rate of BRAF phosphorylating MAP2K1.")
 
     (p "Is the BRAF-NRAS complex sustained in time?")
-    (p "Is the amount of BRAF-NRAS complex sustained at a high level? .")
+    (p "Is the amount of BRAF-NRAS complex sustained at a high level?")
     (p "Is the BRAF-NRAS complex sustained in the first 2 hours?")
     (p "Is the BRAF-NRAS complex sustained after 2 hours?")
-    (p "Is the concentration of the BRAF-NRAS complex sustained at a low level? .")
+    (p "Is the concentration of the BRAF-NRAS complex sustained at a low level?")
     (p "Does the amount of phosphorylated BRAF reach a high level and then drop to a low level?")
     (p "Is the amount of phosphorylated BRAF transient in time?")
     (p "Is the amount of BRAF dimer unchanged in time?")
