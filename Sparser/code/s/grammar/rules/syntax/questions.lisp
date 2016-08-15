@@ -59,19 +59,48 @@
            (edge (span-covered-by-one-edge? 
                   (chart-position-after start-pos) ;; hack
                   end-pos)))
-      (when edge
-        (let ((stmt (edge-referent edge))
-              (q (find-or-make-individual 'polar-question)))
-          (setq q (bind-variable 'statement stmt q))
-          (let ((spanning-edge
-                 (make-edge-over-long-span
-                  start-pos end-pos
-                  (edge-category edge)
-                  :rule 'make-this-a-question-if-appropriate
-                  :form category::question
-                  :referent q)))
-            spanning-edge))))))
+      (if edge
+          (let ((stmt (edge-referent edge))
+                (q (find-or-make-individual 'polar-question)))
+            (setq q (bind-variable 'statement stmt q))
+            (let ((spanning-edge
+                   (make-edge-over-long-span
+                    start-pos end-pos
+                    (edge-category edge)
+                    :rule 'make-this-a-question-if-appropriate
+                    :form category::question
+                    :referent q)))
+              spanning-edge))
+          (let ((edges (all-tts)))
+            (when (and (cddr edges) (null (cdddr edges))
+                       (itypep (edge-referent (car edges)) 'be)) ;; three edges
+              (cond ((member (cat-name (edge-form (third edges)))
+                             '(adjp adjective))
+                     (make-polar-adjective-question start-pos end-pos edges))
+                    ((member (cat-name (edge-form (third edges))) '(pp))
+                     (make-polar-pp-question edges)))))))))
 
+
+(defun make-polar-adjective-question (start-pos end-pos edges)
+  (let* ((be (edge-referent (car edges)))
+         (np (edge-referent (second edges)))
+         (adj (edge-referent (third edges)))
+         (copular-adj (make-copular-adjective be adj))
+         (copular-statement (when copular-adj (assimilate-subject np copular-adj nil))))
+    (when copular-adj
+      (let ((q (bind-variable
+                'statement
+                (find-or-make-individual 'polar-question)
+                copular-statement)))
+        (make-edge-over-long-span
+         start-pos end-pos
+         (itype-of copular-statement)
+         :rule 'make-this-a-question-if-appropriate
+         :form category::question
+         :referent q)))))
+        
+    
+    
 
 ;;;--------------
 ;;; WH questions
