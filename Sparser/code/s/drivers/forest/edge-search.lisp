@@ -377,6 +377,9 @@
 			      category::comma-separated-subject-relative-clause)))))
 	 (and
 	  (prep? l-triple-left)
+          (not (subordinate-conjunction? l-triple))
+          ;; "until" is both a preposition and a subordinate conjunction
+          ;; causes problems with "Does the amount of phosphorylated MAP2K1 remain low until phosphorylated BRAF reaches a high value?"
 	  (not (eq (edge-category (second l-triple)) category::as))
 	  ;; almost always a use of "as" as a subordinate conjunction
 	  (or
@@ -423,5 +426,11 @@
 
 (defun prep? (cat)
   (memq cat '(category::preposition category::spatial-preposition)))
+
+(defun subordinate-conjunction? (l-triple)
+  (declare (special l-triple))
+  (loop for e in (all-edges-at (second l-triple))
+     thereis
+       (eq (edge-form e) category::subordinate-conjunction)))
 
 
