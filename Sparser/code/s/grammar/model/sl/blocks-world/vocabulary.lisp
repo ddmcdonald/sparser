@@ -11,6 +11,19 @@
 
 ;;--- nouns
 
+(define-category component-part :specializes object ;; wanted it to be an object, but that caused CLOS problems
+  :binds ((part-of object))
+  :realization (:of part-of))
+
+(define-category relative-position :specializes component-part)
+(noun "end" :super relative-position)
+(noun "middle" :super relative-position)
+
+#+ignore
+(define-category has-relative-position :specializes physical-object
+  :binds ((position relative-position))
+  :realization (:m position))
+
 ;;---  blocks
 #| This has to meet/merge with Scott's treatment 
 for the individuals. 
@@ -21,10 +34,12 @@ with other blocks, mention in utterances, etc. |#
 (define-category block
   :specializes object
   :mixins (has-name)
+  :binds ((position relative-position))
   :instantiates :self
   :index (:permanent :key name)
   :realization ;; for connection to Mumble
-  (:common-noun "block"))
+  (:noun "block"
+         :m position))
 
 #|
 (define-category drug
@@ -51,23 +66,33 @@ support a substantial number of blocks.
      (:common-noun "table"))
 
 
-(noun "staircase" :specializes object :rule-label artifact)
-(noun "stair" :specializes object :rule-label artifact)
-(noun "stack" :specializes object :rule-label artifact)
-(noun "row" :specializes object :rule-label artifact)
+(define-category composite-object :specializes object
+  :mixins (artifact)
+  :binds ((composed-of object))
+  :realization (:of composed-of))
+
+(noun "staircase" :specializes composite-object :rule-label artifact)
+(def-synonym staircase (:noun "stair"))
+(noun "stack" :specializes composite-object :rule-label artifact)
+(noun "row" :specializes composite-object :rule-label artifact)
 
 
-(define-category surface :specializes object
-  :binds ((object object))
+
+
+(define-category surface :specializes component-part
   :realization
-  (:of object))
+  (:noun "surface"))
 
 (define-category top-surface :specializes surface
                  :realization (:noun "top"))
 (define-category bottom-surface :specializes surface
                  :realization (:noun "bottom"))
 (define-category side-surface :specializes surface
-  :realization (:noun "side"))
+                 :realization (:noun "side"))
+
+(define-category step :specializes component-part
+   :restrict ((part-of staircase))
+   :realization (:noun "step"))
 
 
 ;;--- Interjections -- see ex. in model/sl/checkpoint/
@@ -77,6 +102,7 @@ support a substantial number of blocks.
 (sentential-interjection "yes")
 (sentential-interjection "hello")
 (sentential-interjection "goodbye")
+(sentential-interjection "let's")
 
 ;;--- Verbs
 
