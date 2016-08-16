@@ -464,7 +464,7 @@
 		      bio-predication ;; the success of raf and mek inhibitors
 		      measurement     ;; these data
 		      visual-representation))
-	  (object (:or biological pronoun/inanimate))
+	  (object (:or biological pronoun/inanimate there-exists))
 	  (ratio-condition ratio)
 	  (fig article-figure)
 	  (method bio-method)
@@ -665,9 +665,19 @@
     for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
 
+(define-category bio-event-relation :specializes bio-relation
+                 :restrict ((subject perdurant ;; this captures all of these and more
+                                     ;;(:or bio-process bio-method bio-mechanism)
+                                     )
+             (theme perdurant))
+  :realization
+  (:s subject
+      :o theme))
+
 (define-category aspectual-relation :specializes bio-relation
   :binds ((action bio-process))
   :realization (:to-comp action))
+
                  
 (define-category post-adj :specializes abstract) ;; used as a marker for adjectives which can follow nouns
 
