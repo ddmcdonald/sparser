@@ -349,6 +349,7 @@
 	   pobj-ref
 	   ))))))
 
+(defparameter *determiners-in-DL* t) ;; put the determiner in the description, not in the mention
 
 (defun determiner-noun (determiner head)
   "NO LONGER Drop indefinite determiners on the ground. Mark definites
@@ -370,17 +371,24 @@
 	  (pushnew determiner *dets-seen*)
 	  #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
-	(cond
+	(cond          
 	  ((call-compose determiner head))
+          ((and *determiners-in-DL* (or (individual-p head)(category-p head)))
+           (setq head (bind-dli-variable 'has-determiner determiner head))
+           (if (definite-determiner? determiner)
+               (add-def-ref determiner parent-edge)))
 	  ((definite-determiner? determiner)
-	   (let ((sentence (identify-current-sentence)))
-	     ;; NOTE -- IMPORTANT
-	     ;; this adds the definite determiner on the N-BAR, and does not, by iteself,
-	     ;; mark the complete NP as a definite reference
-	     ;; have to do something in complete-edge/hugin
-	     ;; call to update-definite-determiner, defined in content-methods
-	     (add-pending-def-ref determiner parent-edge sentence))))
+           (add-def-ref determiner parent-edge)))
 	head)))
+
+(defun add-def-ref (determiner parent-edge)
+  (let ((sentence (identify-current-sentence)))
+    ;; NOTE -- IMPORTANT
+    ;; this adds the definite determiner on the N-BAR, and does not, by iteself,
+    ;; mark the complete NP as a definite reference
+    ;; have to do something in complete-edge/hugin
+    ;; call to update-definite-determiner, defined in content-methods
+    (add-pending-def-ref determiner parent-edge sentence)))
 
 
 (defun possessive-np (possessive head)
