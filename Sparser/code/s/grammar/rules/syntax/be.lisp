@@ -103,7 +103,7 @@
 ;;;----------------------------
 
 (def-form-rule (be adjective)
-  :form vg ;; really should be VP like AdjP rule
+  :form vp ;; as a VP (vs VG) it kills aspp2 68
   :referent  (:function make-copular-adjective left-edge right-edge))
 
 (def-form-rule (be adjp)
