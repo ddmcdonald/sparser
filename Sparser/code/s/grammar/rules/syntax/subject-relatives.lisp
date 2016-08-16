@@ -190,17 +190,39 @@
        var)
 
       (var
-       ;; copy down the upstairs subject
-       ;; Should we check if it was already bound to something?
-       (setq  vp-ref (create-predication-by-binding var np-ref vp-ref
-						    (list 'apply-subject-relative-clause
-							  (parent-edge-for-referent))))
+       (cond
+         ((context-needs-clause? np-ref vp-ref)
+          (let ((clause-ref (bind-dli-variable var np-ref vp-ref)))
+            (declare (special clause-ref))
+            ;;(lsp-break "context-needs-clause? true")
+            ;;(revise-parent-edge :form category::s)
+            ;; make this into an NP whose head is the vp+ing
+            clause-ref))
+         (t
+          ;; copy down the upstairs subject
+          ;; Should we check if it was already bound to something?
+          (setq  vp-ref (create-predication-by-binding var np-ref vp-ref
+                                                       (list 'apply-subject-relative-clause
+                                                             (parent-edge-for-referent))))
        
-       ;; link the rc to the np
-       (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
+          ;; link the rc to the np
+          (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
-       ;; referent of the combination is the np
-       np-ref))))
+          ;; referent of the combination is the np
+          np-ref))))))
+
+(defun context-needs-clause? (np-ref vp-ref)
+  (let ((before (edges-before (left-edge-for-referent))))
+    (declare (special before))
+    (loop for e in before
+       thereis
+         (or (itypep (edge-referent e) 'that)
+             (itypep (edge-referent e) 'whether)
+             (eq (edge-category e) category::do) ;; auxiliary --
+             ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
+             (itypep (edge-referent e) 'precede)
+             (itypep (edge-referent e) 'follow);; need to generalize
+             ))))
 
 (defun apply-object-relative-clause (np-ref vp-ref)
   (declare (special category::have))
