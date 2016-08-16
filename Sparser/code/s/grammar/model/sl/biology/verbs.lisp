@@ -983,7 +983,6 @@
    :etf (svo-passive)))
 
 (define-category effect :specializes bio-control
-  ;;:restrict ((object (:or bio-process bio-entity))) ;; add this, to disambiguate :on, and not have an ambiguity with :object
   :realization
   (:verb "effect"
 	 :etf (svo-passive)
@@ -1214,14 +1213,12 @@
          :etf (svo-passive)
 	 :mumble ("find" svo)))
 
-(define-category follow :specializes bio-relation
+(define-category follow :specializes bio-event-relation
                  ;; this is intended to suppress definitions of "followed" and "follows"
   :realization
   (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
                    :third-singular "follows")
-         :etf (svo-passive)
-         :o theme
-         ))
+         :etf (svo-passive)))
 
 (define-category bio-form :specializes caused-bio-process
   :realization
@@ -1781,6 +1778,12 @@
     (:verb "potentiate" ;; keyword: ENDS-IN-ED 
 	   :noun "potentiation"
 	   :etf (svo-passive)))
+
+(define-category precede :specializes bio-event-relation
+                 ;; this is intended to suppress definitions of "followed" and "follows"
+  :realization
+  (:verb "precede"
+         :etf (svo-passive)))
 
 (define-category predict :specializes bio-rhetorical
     :mixins (bio-thatcomp)
