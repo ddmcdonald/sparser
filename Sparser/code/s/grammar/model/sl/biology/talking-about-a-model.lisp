@@ -62,7 +62,7 @@
     (p "Does phosphorylated BRAF become high before phosphorylated MAP2K1 becomes high?")
     (p "Does phosphorylated BRAF rise faster than phosphorylated MAP2K1?")
     (p "Does the amount of BRAF-NRAS complex have a maximum?")
-    (p "Does phosphorylated MAP2K1 behave like phosphorylation MAPK1?")
+    (p "Does phosphorylated MAP2K1 behave like phosphorylated MAPK1?")
     (p "Is the BRAF-RAF1 complex more abundant than the BRAF-NRAS complex at 2 hours?")
     (p "Is the concentration of phosphorylated BRAF at 2 hours higher than the concentration of phosphorylated MAP2K1?")
     (p "Is phosphorylated BRAF very noisy over time?")
