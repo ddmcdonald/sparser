@@ -566,6 +566,11 @@
 
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
 ;;;(adj "fail-proof" :super bio-predication)
+
+(define-category fast :specializes bio-predication
+   :realization
+   (:adjective "fast"))
+
 (noun "fate" :super bio-process)
 
 (noun "fetal calf serum" :super experimental-condition)
