@@ -272,6 +272,10 @@ assess-edge-label, which rewrites the word as the category BE.
 (def-csr apostrophe-s "is"
   :left-context "that" )
 
+(def-csr apostrophe-re "are"
+  :left-context "we" )
+
+
 
 ;;;--------------------------------------------
 ;;; contentless "there", existance assertions
