@@ -65,18 +65,24 @@ phosphorylated by Src."
      (eval (make-copular-def v)))
 
 
-(defun make-copular-adjective (copula adjective)
+(defun make-copular-adjective (copula adjective &optional (copula-edge (left-edge-for-referent)))
   "Definition is conditionalized to the load to try and minimize
    disruption."
   (let ((script common-lisp-user::script)) ;; visible in backtrace
     ;; 7/25/16 possible values: bbn biology blocks-world c3
     ;;  default ern fire grok just-dm&p no-grammar
-    (case script
+    (when
+        (and (edge-p copula-edge)
+             (eq (edge-form copula-edge) category::vg+ing))
+     (revise-parent-edge :form category::vg+ing))
+    
+     (case script
       (biology
        ;;/// who else wants this conventional, 'depends on the subject'
        ;; version of the intepretation?
        (let ((i (individual-for-ref adjective)))
          (bind-dli-variable :copular-verb copula i)
+
          i))
       (otherwise
        ;;/// temp while reloading
