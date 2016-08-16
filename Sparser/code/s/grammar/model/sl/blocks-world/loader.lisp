@@ -24,5 +24,6 @@
   (gload "blocks;interface")
 
   (gload "blocks;staging")
+  (gload "blocks;blocksworld-sents")
 
   )
