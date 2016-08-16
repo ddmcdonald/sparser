@@ -238,8 +238,10 @@
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
-       ((and (itypep head 'knockout-pattern)
-             (itypep qualifier 'protein))
+       ((and
+         (category-named 'knockout-pattern)
+         (itypep head 'knockout-pattern)
+         (itypep qualifier 'protein))
         (setq qualifier (bind-variable 'cell-line ;; ???
                                        head qualifier))
         qualifier)
@@ -247,7 +249,8 @@
        ;; like this is going to get old. Feels like motivation for
        ;; from-rule generated methods, all using a standard schema to
        ;; indicate what variable to use, head & form, etc
-       ((and (itypep qualifier 'knockout-pattern)
+       ((and (category-named 'knockout-pattern)
+             (itypep qualifier 'knockout-pattern)
              (itypep head 'mouse))
         (setq head (bind-variable 'cell-line qualifier head))
         head)
