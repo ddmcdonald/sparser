@@ -359,7 +359,8 @@
            :form s
            :referent (:function apply-copular-pp left-edge right-edge)))
      
-     (loop for src in '(subject-relative-clause vp+ing) ;; vp+ed ;; reduced relative clauses
+     (loop for src in '(subject-relative-clause  vp+ing vg+ing)
+	 ;; vp+ed ;; reduced relative clauses
         do
           (eval 
            `(def-syntax-rule (,nb ,src)
