@@ -1244,3 +1244,16 @@
            :form (edge-form target)
            :referent ref))))))
 |#
+
+
+(define-debris-analysis-rule comparative-adj-than-np
+    :pattern (COMPARATIVE-ADJECTIVE "than" np)
+    :action (:function comparative-adj-than-np first second third))
+
+(defun comparative-adj-than-np (comp-edge than-edge np-edge)
+  (declare (special comp-edge than-edge np-edge))
+  (make-edge-spec
+           :category (edge-category comp-edge)
+           :form (edge-form comp-edge)
+           :referent
+           (bind-dli-variable 'compared-to (edge-referent np-edge) (edge-referent comp-edge))))
