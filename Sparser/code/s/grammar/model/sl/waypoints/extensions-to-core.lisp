@@ -47,8 +47,7 @@
           (declare (special *inihibit-constructing-plural*))
           (dolist (string abbreviations)
             (let ((word (define-word/expr string)))
-              (make-cn-rules/aux 
-               word (category-named 'unit-of-rate-of-change) unit)))
+              (make-head-word-rules :common-noun word (category-named 'unit-of-rate-of-change) unit)))
           (setq unit (bind-dli-variable 'name (word-named (car abbreviations)) unit))))
       unit)))
 

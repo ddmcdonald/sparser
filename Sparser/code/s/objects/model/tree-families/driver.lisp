@@ -174,20 +174,19 @@
              (some #'word-p field)))
     
       (let* ((no-head (eq head-field :no-head-word))
-             (head-word-variable (unless no-head (cdr (first rdata-schema))))
+             (head-word-variable (unless no-head (cadr (first rdata-schema))))
              (head-word-type     (unless no-head (car (first rdata-schema))))
              (head-word (when head-word-variable
                           (value-of head-word-variable individual)))
-             (head-pair (unless no-head
-                          (cons head-word-type
-                                head-word))))
+             (head (unless no-head
+                     (list head-word-type head-word))))
 
         (when (word-p head-word-variable)
           ;; another configuration that the head filled with words
           ;; is looking for. See waypoint  The schema arrangement
           ;; is flimsy right now.
           (setq head-word head-word-variable
-                head-pair (cons head-word-type head-word)))
+                head (list head-word-type head-word)))
 
         (unless no-head
           (unless head-word
@@ -196,7 +195,7 @@
                     ~%to have a value for its ~A variable.~
                    ~%but it does not." individual head-word-variable))))
         (make-rules-for-rdata category
-                              head-pair
+                              head
                               etf mapping local-cases
                               individual)))))
 
@@ -205,15 +204,12 @@
 ;;; the real driver
 ;;;-----------------
 
-(defun make-rules-for-rdata (category head-word etf mapping local-cases
+(defun make-rules-for-rdata (category head etf mapping local-cases
                              &optional individual)
   (let ((referent (or individual category))
         rules)
    (flet ((collect-rules (more-rules) (setq rules (append more-rules rules))))
-     (when (and head-word (not (eq head-word :no-head-word)))
-       (unless (lambda-variable-p (cdr head-word))
-         ;;/// add instantiates check
-         (collect-rules (make-head-word-rules head-word category referent))))
+     (collect-rules (make-head-word-rules t head category referent))
      (when etf
        (dolist (rule-schema (etf-cases etf))
          (collect-rules (instantiate-rule-schema rule-schema mapping category))))

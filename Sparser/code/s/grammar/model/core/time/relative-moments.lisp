@@ -49,7 +49,7 @@
   :rule-label time
   :binds ((name  :primitive word))
   :index (:permanent :key name)
-  :realization (:standalone-word name))
+  :realization (:word name))
 
 
 

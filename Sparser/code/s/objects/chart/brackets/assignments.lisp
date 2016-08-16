@@ -49,23 +49,15 @@
 ;;; Assign all the brackets for a particular word
 ;;;-----------------------------------------------
 
-(defun assign-brackets-to-word (word bracket-symbols)
-  (when bracket-symbols
+(defun assign-brackets-to-word (word brackets)
+  (when brackets
     (delete-existing-bracket-assignments word)
-    (let ( bracket )
-      (dolist (bracket-symbol bracket-symbols)
-        (if (bracket-p bracket-symbol)
-          (setq bracket bracket-symbol)
-          (else
-            (unless (and (symbolp bracket-symbol)
-                         (boundp bracket-symbol))
-              (error "The ostensive bracket symbol ~A isn't defined"
-                     bracket-symbol))
-            (setq bracket (eval bracket-symbol))
-            (unless (bracket-p bracket)
-              (error "The symbol ~A evals to ~A~%instead of to a bracket"
-                     bracket-symbol bracket))))
-        (assign-bracket/expr word bracket)))))
+    (dolist (bracket brackets brackets)
+      (etypecase bracket
+        (bracket)
+        (symbol (setq bracket (symbol-value bracket))
+                (check-type bracket bracket)))
+      (assign-bracket/expr word bracket))))
 
 ;;;-------
 ;;; forms

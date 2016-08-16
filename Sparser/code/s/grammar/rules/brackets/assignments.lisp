@@ -96,6 +96,18 @@
 (defun assign-brackets-to-standalone-word (word)
   (assign-brackets/expr word *standalone-brackets*))
 
+(defun assign-brackets-for-word (word pos)
+  (check-type word (or word polyword))
+  (check-type pos keyword)
+  (assign-brackets-to-word word
+                           (case pos
+                             (:verb *main-verb-brackets*)
+                             (:common-noun *common-noun-brackets*)
+                             (:proper-noun *proper-noun-brackets*)
+                             (:adjective *adjective-brackets*)
+                             (:adverb *adverb-brackets*)
+                             (:interjection *interjection-brackets*)
+                             (:preposition *preposition-brackets*))))
 
 ;;;------------------------
 ;;; Word with multiple POS 
@@ -181,7 +193,7 @@
       (setq category-name
             (construct-disambiguating-category-name
              category-name super-category)))
-    (let ((category 
+    (let* ((category
             (if (category-named category-name)
               (then
                 (when *break-on-pattern-outside-coverage?*
@@ -193,20 +205,19 @@
               (define-category/expr category-name
                                     `(:specializes ,super-category
                                       :instantiates :self))))
-          (rs (rule-set-for word)))
-
-      (let ((rules (apply #'make-cn-rules
-                          word
-                          category ;; lhs
-                          category ;; referent
-                          marked-plural))) ;; special-cases
-        (mark-as-constructed-category-for-word category super-category)
-        (when rs ;; could start out as nil
-          (assert (eq (rule-set-for word) rs)
-                  ((rule-set-for word) rs)
-                  "Rule set for ~a changed by making rules." word))
-        (add-rules rules category)
-        category))))
+           (rs (rule-set-for word))
+           (rules (apply #'make-head-word-rules :common-noun
+                         word
+                         category         ;; lhs
+                         category         ;; referent
+                         marked-plural))) ;; special-cases
+      (mark-as-constructed-category-for-word category super-category)
+      (when rs ;; could start out as nil
+        (assert (eq (rule-set-for word) rs)
+                ((rule-set-for word) rs)
+                "Rule set for ~a changed by making rules." word))
+      (add-rules rules category)
+      category)))
 
 (defparameter *show-R3-new-verb-definitions* nil)
 (defun show-new-verb-definitions ()
@@ -281,11 +292,7 @@
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
-           (rules
-            (make-rules-for-adjectives
-             word
-             category
-             category)))
+           (rules (make-head-word-rules :adjective word category category)))
       (mark-as-constructed-category-for-word category super-category)
       (add-rules rules category)
       category)))
@@ -312,11 +319,7 @@
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
-           (rules
-            (make-rules-for-adverbs
-             word
-             category
-             category)))
+           (rules (make-head-word-rules :adverb word category category)))
       (mark-as-constructed-category-for-word category super-category)
       (add-rules rules category)
       category)))
@@ -405,26 +408,10 @@
   (name-to-use-for-category (word-pname w)))
 
 (defmethod name-to-use-for-category ((exp cons))
-  ;; We get this case when the word includes keywords to mark
-  ;; irregular word forms. We pull out the base word and make
-  ;; the category from that. 
-  ;; Have to check (a) that there is at least one keyword since
-  ;; another case of multiple word strings in a list is as a way
-  ;; to do synonyms (which we should stop using), so that 
-  (unless (cdr exp)
-    (error "No irregular markers in list string definition: ~a" exp))
-  (unless (and (cddr exp) ;; length at least three
-               (keywordp (cadr exp)))
-    (error "Bad form in word irregulars expression: ~a" exp))
-  (unless (stringp (car exp))
-    (error "Expected first element of word specification to be a string,~
-          ~%not a ~a~%~a" (type-of exp) exp))
-  (check-for-correct-irregular-word-markers (cdr exp))
-  (let ((base (car exp)))
-    (name-to-use-for-category base)))
-  
-
-
-
-
-
+  "We get this case when the word includes keywords to mark
+   irregular word forms. We pull out the base word and make
+   the category from that."
+  (check-type exp (cons string (cons irregular-keyword (cons string)))
+              "a valid marked-irregulars expression")
+  (check-irregular-word-markers (cdr exp))
+  (name-to-use-for-category (car exp)))

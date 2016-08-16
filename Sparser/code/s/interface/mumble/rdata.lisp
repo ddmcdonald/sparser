@@ -137,7 +137,7 @@
   (when (or *build-mumble-equivalents*
             *CwC*)
     (let* ((pos-tag (car head-word))
-           (word-or-variable (cdr head-word))
+           (word-or-variable (cadr head-word))
            (word (etypecase word-or-variable
                    ((or word polyword) word-or-variable)
                    (list (car word-or-variable))

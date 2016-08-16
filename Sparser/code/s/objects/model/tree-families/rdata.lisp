@@ -249,26 +249,24 @@
     ((or word polyword)
      (setf (rdata-head rr) word))
     (cons
-     ;; (:adjective . #<variable name>)
+     ;; (:adjective #<variable name>)
      (cond
-       ((and (keywordp (car word)) (lambda-variable-p (cdr word)))
-        (setf (rdata-head rr) (cdr word))
-        (setf (rdata-head-pos rr) (car word)))
-       ((and (keywordp (car word))
-             (or (word-p (cdr word))
-                 (polyword-p (cdr word))))
-        (setf (rdata-head rr) (cdr word))
-        (setf (rdata-head-pos rr) (car word)))
-       ((and (keywordp (car word))
-             (word-p (cadr word))
-             (some #'keywordp (cddr word)))
+       ((and (keywordp (car word)) (lambda-variable-p (cadr word)))
         (setf (rdata-head rr) (cadr word))
+        (setf (rdata-head-pos rr) (car word)))
+       ((and (keywordp (car word))
+             (or (word-p (cadr word))
+                 (polyword-p (cadr word))))
+        (setf (rdata-head rr) (cadr word))
+        (setf (rdata-head-pos rr) (car word)))
+       ((and (keywordp (car word))
+             (word-p (caadr word))
+             (some #'keywordp (cdadr word)))
+        (setf (rdata-head rr) (caadr word))
         (setf (rdata-head-pos rr) (car word))
-        (setf (rdata-head-irregulars rr) (cddr word)))
-       ((and (listp (cdr word))
-             (> (length word) 2)
-             (every #'(lambda (w) (or (word-p w) (polyword-p w)))
-                    word))
+        (setf (rdata-head-irregulars rr) (cdadr word)))
+       ((and (listp word)
+             (every #'(lambda (w) (or (word-p w) (polyword-p w))) word))
         (setf (rdata-head rr) (cadr word)))
        (t (error "Invalid head-word specification ~a." word))))))
 
@@ -347,7 +345,7 @@ grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-rea
 (defparameter *legal-word-rdata-keywords*
   '(:verb :common-noun :proper-noun
     :quantifier :adjective :interjection
-    :adverb :preposition :word :standalone-word))
+    :adverb :preposition :word))
 
 (defparameter *legal-rdata-keywords*
   `(:tree-family :mapping :special-case-head :additional-rules :mumble
@@ -411,56 +409,6 @@ grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-rea
         (when break?
           (error "No realization schema based on a variable. Check definitions")))))
 
-
-;;--- for use in short-cuts like define-named-individual-with-synonyms/expr
-(defmethod retrieve-word-constructor ((category-name symbol))
-  (retrieve-word-constructor (category-named category-name :break-if-none)))
-
-(defmethod retrieve-word-constructor ((category referential-category))
-  (let ((rdata  (cat-realization category)))
-    (when rdata
-      (let ((schema (find-schema-inside-rdata rdata)))
-        (when schema
-          (find-word-type-spec-in-rdata-schema schema))))))
-
-;; Flet if doesn't have other utility
-(defun find-schema-inside-rdata (rdata)
-  ;; there's a deference in structure between a category with several realizations
-  ;; and one with just one. This is targeted at the simple ones that just setup
-  ;; the lexical type of their name. 
-  (let ((schema-info (cadr (memq :schema rdata))))
-    schema-info)) ;; or if they're all lists, then one of the above will apply
-
-;; ditto
-(defun find-word-type-spec-in-rdata-schema (schema-list)
-  (dolist (item schema-list)
-    (when (and (consp item)
-               (keywordp (car item)))
-      (let ((keyword (car item)))
-        (when (defined-type-of-single-word keyword)
-          ;;/// hack hack. A refactoring of head-word-rule-construction-dispatch
-          ;; would make this duplication irrelevant
-          (push-debug `(,keyword ,schema-list))
-          (case keyword
-            (:verb (return 'make-verb-rules)) ;; #' ?? Depends on timing. 
-            (:common-noun (return 'make-cn-rules))
-            (:proper-noun (return 'make-pn-rules))
-            (:adjective (return 'make-rules-for-adjectives))
-            (:quantifier (return 'make-rules-for-word-w/o-morph))
-            (:adverb (return 'make-rules-for-adverbs))
-            (:interjection (return 'make-interjection-rules))
-            (:preposition (return 'make-preposition-rules))
-            (:word (return 'make-rules-for-word-w/o-morph))
-            (standalone-word (return 'make-rules-for-standalone-word))
-            (otherwise
-             (error "Unexpected keyword: ~a" keyword))))))))
-    
-
-;; :modal and :number ore on defined-type-of-single-word 
-;; but not head-word-rule-construction-dispatch, which has
-;; standalone-word just itself
-
-
 ;;--- The word case just by itself
 
 (defgeneric lemma (item pos)
@@ -489,8 +437,7 @@ the rspec for the words of instances of the category."
                    "Unexpected keyword ~a in lemma for ~a." keyword category)
            (check-type string (or string cons))
            (let* ((head-word (deref-rdata-word string category))
-                  (word-arg `(,keyword ,head-word))
-                  (rules (make-head-word-rules word-arg category category)))
+                  (rules (make-head-word-rules keyword head-word category category)))
              (setf (lemma category keyword) head-word)
              (add-rules rules category))))
 
@@ -511,7 +458,6 @@ the rspec for the words of instances of the category."
                                ((:verb verb-name))
                                ((:common-noun cn-name))
                                ((:proper-noun pn-name))
-                               standalone-word
                                adjective
                                quantifier
                                interjection
@@ -533,25 +479,23 @@ the rspec for the words of instances of the category."
          ;; right here, and since the next layer isn't keyword driven,
          ;; we have to encode the part-of-speech information here.
          (cond (verb-name
-                (cons :verb (deref-rdata-word verb-name category)))
+                (list :verb (deref-rdata-word verb-name category)))
                (cn-name
-                (cons :common-noun (deref-rdata-word cn-name category)))
+                (list :common-noun (deref-rdata-word cn-name category)))
                (adjective
-                (cons :adjective (deref-rdata-word adjective category)))
+                (list :adjective (deref-rdata-word adjective category)))
                (quantifier
-                (cons :quantifier (deref-rdata-word quantifier category)))
+                (list :quantifier (deref-rdata-word quantifier category)))
                (adverb
-                (cons :adverb (deref-rdata-word adverb category)))
+                (list :adverb (deref-rdata-word adverb category)))
                (interjection
-                (cons :interjection (deref-rdata-word interjection category)))
+                (list :interjection (deref-rdata-word interjection category)))
                (preposition
-                (cons :preposition (deref-rdata-word preposition category)))
-               (standalone-word
-                (cons :standalone-word (deref-rdata-word standalone-word category)))
+                (list :preposition (deref-rdata-word preposition category)))
                (word
-                (cons :word (deref-rdata-word word category)))
+                (list :word (deref-rdata-word word category)))
                (pn-name
-                (cons :proper-noun (deref-rdata-word pn-name category)))))
+                (list :proper-noun (deref-rdata-word pn-name category)))))
         (tf (and tf-name (exploded-tree-family-named tf-name))))
 
     (when head-word

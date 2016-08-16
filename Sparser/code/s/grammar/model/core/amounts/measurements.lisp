@@ -120,7 +120,7 @@ and the word can stand by itself "that distance"
           (declare (special *inihibit-constructing-plural*))
           (dolist (string abbreviations)
             (let ((word (define-word/expr string)))
-              (make-cn-rules word (category-named 'unit-of-rate-of-change) unit)))
+              (make-head-word-rules :common-noun word (category-named 'unit-of-rate-of-change) unit)))
           (setq unit (bind-dli-variable 'name (word-named (car abbreviations)) unit))))
       unit)))
 

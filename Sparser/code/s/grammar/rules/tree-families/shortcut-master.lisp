@@ -158,17 +158,18 @@
       ;; A noun can just expect to get all the pp's w/o an etf.
       (unless (assq :common-noun word-map)
         ;; If it's on the map then the realization machinery will expand it.
-        (when (consp noun)
-          ;; Check that it's marking an irregular plural.
-          (unless (= 3 (length noun))
-            (error "Illformed irregular noun spec: not three items long."))
-          (unless (memq (second noun) *valid-keywords-for-irregular-word-forms*)
-            (error "Unknown keyword in irregular noun spec ~a." noun)))
-
+        (check-type noun
+                    (or (or string word polyword)
+                        (cons (or string word polyword)
+                              (cons irregular-keyword
+                                    (cons (or string word polyword)
+                                          null))))
+                    "an irregular noun spec")
         (let* ((word-string (if (consp noun) (car noun) noun))
                (word (resolve/make word-string))
                (special-cases (when (consp noun) (cdr noun)))
-               (cn-rules (apply #'make-cn-rules word category category
+               (cn-rules (apply #'make-head-word-rules :common-noun
+                                word category category
                                 special-cases)))
           (make-corresponding-mumble-resource word :common-noun)
           (add-rules cn-rules category))))
@@ -178,7 +179,7 @@
       ;; as well as subcategorizations ('slots').
       (unless (assq :adjective word-map)
         (let* ((word (resolve/make adj))
-               (adj-rules (make-rules-for-adjectives word category category)))
+               (adj-rules (make-head-word-rules :adjective word category category)))
           (make-corresponding-mumble-resource word :adjective)
           (add-rules adj-rules category))))
 

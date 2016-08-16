@@ -67,37 +67,21 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defun define-named-individual-with-synonyms/expr (category-name word-list 
                                                    &optional brackets no-morph)
-  (push-debug `(,brackets ,no-morph))
-  (let ((category (category-named category-name :break-if-undefined))
-        rules )
-    ;; Define the individual, which becomes the
-    (let* ((form `(find-or-make-individual ',category-name :name ,(car word-list)))
-           (i (eval form)))
+  (declare (optimize debug))
+  (let* ((category (category-named category-name :break-if-undefined))
+         (pos (caar (getf (cat-realization category) :schema)))
+         (i (find-or-make-individual category :name (car word-list))))
+    (check-type pos (satisfies defined-type-of-single-word))
+    (dolist (word (cdr word-list))
+      (add-rules (make-head-word-rules pos (resolve/make word) category i) i))
+    ;; How do we record these synonyms with the instance given that this scheme
+    ;; (taken from unit-of-measure) makes an instance for each case but the
+    ;; realization information is kept with the category? We can either change
+    ;; the encoding scheme (but it's ubiquitous) or devise some other channel
+    ;; for organizing the information.
+    i))
 
-      ;; look up schema to apply
-      (let ((fn (retrieve-word-constructor category)))
-        ;; no-morph would fit in here
-        (dolist (string (cdr word-list))
-          (if fn
-            (let ((word (resolve/make string)))
-              (funcall fn word category i)) ;; word, category, referent
-            (let* ((rule-form `(def-cfr/expr ',category-name '(,string)
-                                 ;; can we guess it's a common noun for form?
-                                 :referent ,i))
-                   (rule (eval rule-form)))
-              (push rule rules)))))
-          ;;/// How do we record these synonyms with the instance given that this
-          ;; scheme (taken from unit-of-measure) makes an instance for each case
-          ;; but the realization information is kept with the category?
-          ;; We can either change the encoding scheme (but it's ubiquitous) or
-          ;; devise some other channel for organizing the information.
-          ;   (let ((words (mapcar #'word-named word-list)))
-          ;	(setf (cat-realization category)
-          ;	      `(:synonyms ,words . ,(cat-realization category)))
-          ;	(push-debug `(,category ,i ,rules)) (break "synonyms"))
-      i)))
 ;; old NP patterns for MUMBLE use
-
 (defmacro common-noun (name
                 &key noun 
                      super specializes index
@@ -405,10 +389,10 @@ broadly speaking doing for you all the things you might do by hand.
                  :mixins (adjective-adverb)
                  :bindings (adjective ,adj adverb ,adv)))
              (category (eval form)))
-        ;; Parameters to these two are (word category referent)
+        ;; Parameters to these two are (pos word category referent)
         ;; and they do the bracket assignment. 
-        (make-rules-for-adjectives adj category category)
-        (make-rules-for-adverbs adv category category)
+        (make-head-word-rules :adjective adj category category)
+        (make-head-word-rules :adverb adv category category)
         category))))
 
 

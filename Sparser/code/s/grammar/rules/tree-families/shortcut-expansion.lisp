@@ -92,10 +92,8 @@
     (unless head-word
       (push-debug `(,scheme ,word-keys))
       (error "The word-keys don't have an entry for ~a" head-keyword))
-    (let* ((head-form (if irregulars
-                        `(,head-keyword ,head-word ,@irregulars)
-                        `(,head-keyword . ,head-word)))
-           (rules (make-head-word-rules head-form category category)))
+    (let* ((rules (apply #'make-head-word-rules head-keyword head-word category category
+                         irregulars)))
       (let* ((rule-schemas (etf-cases etf))
              rule/s-from-schema )
         (when *big-mechanism*

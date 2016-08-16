@@ -21,53 +21,35 @@
 ;;; the tree family
 ;;;----------------
 
-(define-exploded-tree-family  single-words
-  :description "This is just a stub to provide a schema to use in the generation direction. Use a proper noun keyword to actually get the name slot setup for a rule."
-  :binding-parameters ( type individual )
-  :labels ( proper-noun preposition interjection )
-  :cases
-    ((:verb (type (verb)
-               :head individual))
-     (:modal (type (modal)
-               :head individual))
-     (:common-noun (type (common-noun)
-                      :head individual))
-     (:proper-noun (type (proper-noun)
-                       :head individual))
-     (:adjective (type (adjective)
-                    :head individual))
-     (:adverb (type (adverb)
-                 :head individual))
-     (:interjection (type (interjection)
-                       :head individual))
-     (:preposition (type (preposition)
-                       :head individual))
-     (:word (type (content-word)
-               :head individual))
-     (:quantifier (type (quantifier)
-                    :head individual))
-     (:number (type (common-noun)
-                :head individual))
-     ;(:standalone-word (type (content-word) ;; redundant with :word and
-     ;                     :head individual));; can't have both in one etf
-     ))
+(define-exploded-tree-family single-words
+  :binding-parameters (type individual)
+  :labels (proper-noun preposition interjection)
+  :cases ((:verb (type (verb) :head individual))
+          (:modal (type (modal) :head individual))
+          (:common-noun (type (common-noun) :head individual))
+          (:proper-noun (type (proper-noun) :head individual))
+          (:adjective (type (adjective) :head individual))
+          (:adverb (type (adverb) :head individual))
+          (:interjection (type (interjection) :head individual))
+          (:preposition (type (preposition) :head individual))
+          (:word (type (content-word) :head individual))
+          (:quantifier (type (quantifier) :head individual))
+          (:number (type (common-noun) :head individual))))
 
-(defvar *single-words* (exploded-tree-family-named 'single-words))
+(defvar *single-words*
+  (exploded-tree-family-named 'single-words))
 
 
 ;;;---------------
 ;;; minimal names
 ;;;---------------
 
-(defun get-schematic-word-rule (word-type-keyword)
-  (let* ((cases (etf-cases *single-words*))
-         (schematic-rule (find word-type-keyword cases
-                               :key #'schr-relation :test #'eq)))
-    (unless schematic-rule
-      (break "Incomplete/bad setup: no schematic-rule named ~a ~
-              in~%   ~a" word-type-keyword *single-words*))
-    schematic-rule ))
+(defun get-schematic-word-rule (pos)
+  (or (find pos (etf-cases *single-words*) :key #'schr-relation)
+      (error "There is no schematic rule named ~a." pos)))
 
+(defun form-category (pos)
+  (schr-form (get-schematic-word-rule pos)))
 
 (defun defined-type-of-single-word (keyword)
   (or (eq keyword :verb)
@@ -81,6 +63,3 @@
       (eq keyword :word)
       (eq keyword :quantifier)
       (eq keyword :number)))
-
-
-

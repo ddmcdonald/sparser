@@ -49,18 +49,19 @@
                      :instantiates military-force
                      :bindings (name ,name-word abbrev ,abbrev-word))))
         (setq category (eval form))
-        (let ((name-rules (make-cn-rules
-                           name-word 
-                           (category-named 'military-force) ;; label
-                           category)) ;; referent
+        (let ((name-rules
+               (make-head-word-rules :common-noun
+                                     name-word 
+                                     (category-named 'military-force) ;; label
+                                     category)) ;; referent
               (abbrev-rules
                (when abbrev
-                 (make-cn-rules
-                  abbrev-word ;; plural make sense?
-                  (category-named 'military-force) ;; label
-                  category))))
+                 (make-head-word-rules :common-noun
+                                       abbrev-word  ;; plural make sense?
+                                       (category-named 'military-force) ;; label
+                                       category))))
           (add-rules (append name-rules abbrev-rules) category)))
-        category)))
+        category )))
           
 
 ;;--- cases (would usually be in a dossier)

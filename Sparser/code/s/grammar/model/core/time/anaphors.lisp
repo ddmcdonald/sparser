@@ -45,8 +45,8 @@
   :rule-label time
   :binds ((name :primitive word))
   :index (:key name)
-  :realization (:standalone-word name))  ;; //this needs a hook for doing 
-                                         ;; the calculation
+  :realization (:word name))  ;; //this needs a hook for doing 
+                              ;; the calculation
 
 
 ;;;----------------------------------

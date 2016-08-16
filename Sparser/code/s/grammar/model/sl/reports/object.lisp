@@ -45,7 +45,7 @@
 		   string/list))
 	   (obj (define-individual 'report-verb
 		    :name word)))
-      (make-word-rules #'make-verb-rules word/spec category obj))))
+      (make-head-word-rules :verb word/spec category obj))))
 
 
 ;;;------------------
