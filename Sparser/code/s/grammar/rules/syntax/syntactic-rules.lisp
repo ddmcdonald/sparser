@@ -554,7 +554,7 @@
     :referent (:daughter right-edge))
 
 ;;;--------
-;;; ADJGL COMPLEMENTS to VGs and VPs (verb-like elements)
+;;; ADJG COMPLEMENTS to VGs and VPs (verb-like elements)
 ;;;--------
 
 (loop for vv in '((vg vp)
@@ -783,6 +783,16 @@ similar to an oncogenic RasG12V mutation (9)."))
 |#
 
 (def-syntax-rule (adjective pp)
+    :head :left-edge
+    :form adjp
+    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+
+(def-syntax-rule (comparative-adjective pp)
+    :head :left-edge
+    :form adjp
+    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+
+(def-syntax-rule (superlative-adjective pp)
     :head :left-edge
     :form adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
