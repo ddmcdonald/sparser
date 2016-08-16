@@ -85,9 +85,9 @@
   (let* ((be (edge-referent (car edges)))
          (np (edge-referent (second edges)))
          (adj (edge-referent (third edges)))
-         (copular-adj (make-copular-adjective be adj))
+         (copular-adj (make-copular-adjective be adj (car edges)))
          (copular-statement (when copular-adj (assimilate-subject np copular-adj nil))))
-    (when copular-adj
+    (when copular-statement
       (let ((q (bind-variable
                 'statement
                 (find-or-make-individual 'polar-question)
