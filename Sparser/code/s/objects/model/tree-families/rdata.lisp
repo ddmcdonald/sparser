@@ -132,16 +132,14 @@
     (apply-mumble-rdata category rdata)))
 
 (defun setup-single-rdata (category rdata)
-  ;; 1st check for spelling errors in the keywords
-  (vet-rdata-keywords category rdata)
-  ;; now dereference the symbols
+  (check-rdata rdata)
   (dereference-and-store?-rdata-schema category rdata t))
 
 (defun setup-for-multiple-rdata (category list-of-rdata)
   (let ( head-word  etf  mapping  rules  local-cases 
          all-schemas  all-rules )
     (dolist (rdata list-of-rdata)
-      (vet-rdata-keywords category rdata)
+      (check-rdata rdata)
       (multiple-value-setq (head-word etf mapping local-cases rules)
         (dereference-and-store?-rdata-schema category rdata nil)) ;; nil overrides store
       (push `(:schema (,head-word ,etf ,mapping ,local-cases))
@@ -244,7 +242,7 @@
 
 (defun record-rdata-head (rr word)
   (etypecase word
-    ((eql :no-head-word))
+    (null)
     ((or word polyword)
      (setf (rdata-head rr) word))
     (cons
@@ -341,32 +339,18 @@ grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-rea
 
 ;;--- Check for legal keywords in realization field of a category
 
-(defparameter *legal-word-rdata-keywords*
-  '(:verb :common-noun :proper-noun
-    :quantifier :adjective :interjection
-    :adverb :preposition :word))
+(deftype rdata-word-keyword ()
+  '(member :verb :common-noun :proper-noun
+           :quantifier :adjective :interjection
+           :adverb :preposition :word))
 
-(defparameter *legal-rdata-keywords*
-  `(:tree-family :mapping :special-case-head :additional-rules :mumble
-    ,@*legal-word-rdata-keywords*))
+(deftype rdata-keyword ()
+  '(or rdata-word-keyword
+       (member :tree-family :mapping :additional-rules :mumble)))
 
-
-(defun vet-rdata-keywords (category rdata)
-  (do ((key (car rdata) (car rest))
-       (rest (cddr rdata) (cddr rest)))
-      ((null key))
-    (unless (keywordp key)
-      (error "Realization data for ~A includes ~A~
-              ~%    which is in a keyword position but isn't a keyword"
-             category key))
-    (unless (member key *legal-rdata-keywords*
-                    :test #'eq)
-      (error "In the realization data for ~A~
-              ~%there is the key ~A~
-              ~%which isn't one of the defined keys.~
-              ~%Check the spelling."
-             category key))))
-
+(defun check-rdata (rdata)
+  (loop for (keyword value) on rdata by #'cddr
+        do (check-type keyword rdata-keyword "a valid realization keyword")))
 
 
 ;;--- methods for other routines (like NLG) that need to examine schema
@@ -427,13 +411,9 @@ the rspec for the words of instances of the category."
   ;;/// look at apply-realization-schema-to-individual for part of
   ;; the old approach to this problem
   (loop for (keyword string) on lemmata by #'cddr
-        do (check-type keyword symbol)
-           (unless (keywordp keyword) ;; friendly DWIM
-             (setq keyword (intern (symbol-name keyword)
-                                   (find-package :keyword))))
-           (assert (memq keyword *legal-word-rdata-keywords*)
-                   (keyword)
-                   "Unexpected keyword ~a in lemma for ~a." keyword category)
+        do (unless (keywordp keyword) ;; friendly DWIM
+             (setq keyword (intern (string keyword) :keyword)))
+           (check-type keyword rdata-word-keyword "a valid realization keyword")
            (check-type string (or string cons))
            (let* ((head-word (deref-rdata-word string category))
                   (rules (make-head-word-rules keyword head-word category category)))
@@ -444,12 +424,6 @@ the rspec for the words of instances of the category."
 ;;;------------------------------------------------
 ;;; the real driver: symbols -> objects by keyword
 ;;;------------------------------------------------
-
-(defvar *schematic?* nil
-  "A device to communicate between deref-rdata-word, where the fact
-   that a head-word has been given as the name of a variable rather
-   than a string defines the rdata as being schematic, and the
-   function below, where I want to pass that fact back to its caller.")
 
 (defun dereference-rdata (category
                           &key ((:tree-family tf-name))
@@ -463,16 +437,13 @@ the rspec for the words of instances of the category."
                                adverb
                                preposition
                                word
-                               ((:special-case-head no-head))
-                               ((:additional-rules cases))
+                               additional-rules
                                mumble)
-
   "Convert symbols to objects for realization data. Returns the arguments
-   to feed into make-rules-for-rdata. Applied from setup-rdata."
+   to feed into make-rules-for-rdata."
   (declare (ignore mumble))
   ;; The primary mumble information is handled in setup-rdata, 
   ;; but here we need to handle word-level correspondences. 
-  (setq *schematic?* nil)  ;; initialize the flag
   (let ((head-word
          ;; Since we're not going to instantiate the rules for these
          ;; right here, and since the next layer isn't keyword driven,
@@ -503,202 +474,71 @@ the rspec for the words of instances of the category."
     (when tf
       (record-use-of-tf-by tf category))
 
-    (values (if (or no-head (null head-word))
-              :no-head-word ;; previously nil (9/3/99)
-              head-word)
+    (values head-word
             tf
             (and tf (decode-rdata-mapping mapping category tf))
-            (and cases (decode-cases cases))
-            *schematic?* )))
+            (decode-additional-rules additional-rules))))
 
+(defun deref-rdata-word (word category)
+  "Recursively replace symbols with variables and strings with words."
+  (etypecase word
+    ((or word polyword keyword) word)
+    (string (resolve-string-to-word/make word))
+    (symbol (or (find-variable-for-category word category)
+                (error "The symbol ~a does not correspond to a variable of ~a."
+                       word category)))
+    (cons (mapcar (lambda (word) (deref-rdata-word word category)) word))))
 
-(defun deref-rdata-word (string-or-symbol category)
-  (declare (special *schematic?*)) ;; flag in the caller
-  (unless string-or-symbol
-    (error "Null string passed to deref-rdata-word"))
-  (etypecase string-or-symbol
-    (list
-     ;; its either multiple (synomymous) words or the specification
-     ;; of special cases in the morphology or both
-     (cond ((listp (first string-or-symbol))
-            ;; its both
-            (mapcar #'(lambda (string)
-                        (deref-rdata-word string category))
-                    string-or-symbol))
-           ((some #'keywordp string-or-symbol)
-            ;; its a specificiation
-            (deref-rdata-word-with-morph string-or-symbol))
-           (t  ;; multiple words
-            (mapcar #'(lambda (string)
-                        (deref-rdata-word string category))
-                    string-or-symbol))))
-
-    (symbol
-     (let ((var (find-variable-for-category string-or-symbol category)))
-       (unless var
-         (error "Rdata word field contains a symbol indicating it ~
-                 denotes a variable~%but the symbol ~A does not ~
-                 correspond to any of the ~%variables of ~A"
-                string-or-symbol category))
-       (setq *schematic?* t)
-       var ))
-
-    (word string-or-symbol)
-
-    (string
-     (resolve-string-to-word/make string-or-symbol))))
-
-
-(defun deref-rdata-word-with-morph (specification)
-  "Given a specification of a word with irregulars marked
-   return the same list with words substitued for the strings."
-  ;; Called from deref-rdata-word that already checked that
-  ;; there is one or more keywords in the specification
-  ;; e.g. ("terminus" :plural "termini"))
-  (let (  dereffed  )
-    (dolist (term specification) ;;word-data)
-      ;; (format t "~&term = ~a" term)
-      (push (etypecase term
-              (keyword term)
-              (string (resolve-string-to-word/make term))
-              (cons ;; should be a list of strings e.g. for
-               ;; multiple irregular plural forms
-               (unless (every #'stringp term)
-                 (error "List of irregular words passed in  ~
-                         but they're not all strings:~%~a" term))
-               (loop for string in term
-                 collect (resolve-string-to-word/make string))))
-            dereffed))
-    (nreverse dereffed)))
-
-
-
-(defun decode-cases (cases)
-  ;; Additional cases don't use mappings. They use the names of
-  ;; categories, words, or variables directly.  Given the way the
-  ;; rest of the modularity has worked out, all we have to do is
-  ;; look for strings and replace them since everything else will
-  ;; have been handled by replace-from-mapping even though it's
-  ;; really superfluous.
-  (let ( relation rule lhs  rhs  referent  decoded-cases )
-    (dolist (case cases)
-      (setq relation (first case)
-            rule (cadr case))
-      (setq lhs (first rule)
-            rhs (second rule)
-            referent (cddr rule))
-
-      (when (some #'stringp rhs)
-        (let ( acc )
-          (dolist (term rhs)
-            (push (if (stringp term)
-                    (resolve-string-to-word/make term)
-                    term)
-                  acc))
-          (setq rhs (nreverse acc))))
-
-      (push `(,relation (,lhs ,rhs
-                              ,@referent ))
-            decoded-cases))
-
-    (nreverse decoded-cases)))
-
-
-
+(defun decode-additional-rules (cases)
+  "Additional rules don't use mappings. They use the names of categories, words,
+   or variables directly. Given the way the rest of the modularity has worked out,
+   all we have to do is look for strings and replace them since everything else
+   will have been handled by replace-from-mapping even though it's really superfluous."
+  (loop for (relation (lhs rhs . referent)) in cases
+        collect `(,relation
+                  (,lhs ,(loop for term in rhs
+                               collect (if (stringp term)
+                                         (resolve-string-to-word/make term)
+                                         term))
+                   ,@referent))))
 
 (defun decode-rdata-mapping (mapping category tf)
-
-  ;; semantic parameters are decoded as variables
-  ;; syntactic labels are decoded as categories
-
-  (let ((parameters (etf-parameters tf))
-        (labels (etf-labels tf))
-        term  value  var  cat  new-list )
-
-    (dolist (pair mapping)
-      (setq term (car pair)
-            value (cdr pair))
-
-      (when (listp value)
-        ;; either there's a notation error and they've left off the dot
-        ;; or there are several categories that are to be mapped to.
-        ;; We check here for the notation error.
-        (when (null (cadr value))
-          (setq value (car value))
-          #+ignore(format t "~%Mapping values should be dotted pairs.~
-                     ~%The ~A pair of ~A isn't a pair.~
-                     ~%Continuing anyway." pair category)))
-      (cond
-       ((member term parameters :test #'eq)
-        (or (and (eq value :self)
-                 (setq var category))
-
-            #|(let ((possible-self 
-                   (etypecase value
-                     (category value)
-                     (symbol (category-named value)))))
-              (when possible-self
-                (when (eq possible-self category)
-                  (setq var category)))) |#
-
-            (setq var (find-variable-for-category value category))
-            (and (ever-appears-in-function-referent term tf)
-                 (setq var value))
-            (else
-             (push-debug `(,term ,value ,mapping ,category ,tf))
-             ;; (setq term (car *) value (cadr *) mapping (caddr *) category (fourth *) tf (fifth *))
-             (error "There is no variable named ~A in ~A,~
-                   ~%as used in its rdata for the parameter ~a."
-                    value category term)))
-        (push (cons term var)
-              new-list))
-
-       ((member term labels :test #'eq)
-        (setq cat
-              (cond
-                ((eq value :self)
-                 (let ((override-category (override-label category)))
-                   (if (and override-category
-                            (not (eq override-category category)))
-                     override-category
-                     category)))
-                ((stringp value)
-                 (resolve-string-to-word/make value))
-                ((listp value)
-                 (let ( acc )
-                   (dolist (v value)
-                     (if (stringp v)
-                       (push (resolve-string-to-word/make v) acc)
-                       (push (find-or-make-category-object
-                              v :def-category)
-                             acc)))
-                   (nreverse acc)))
-                (t (find-or-make-category-object
-                    value :def-category))))
-        (push (cons term cat)
-              new-list))
-
-       (t (error "The term ~A in the rdata mapping for ~A~
-                  ~%isn't defined for the exploded tree family ~A"
-                 term category tf))))
-
-    (nreverse new-list)))
-
+  "Semantic parameters are decoded as variables.
+   Syntactic labels are decoded as categories."
+  (declare (optimize debug))
+  (loop with parameters = (etf-parameters tf)
+        with labels = (etf-labels tf)
+        for (term . value) in mapping
+        when (typep value '(cons * null))
+          do (setq value (car value)) ; quietly fix a missing dot
+        if (memq term parameters)
+          collect (cons term
+                        (or (and (eq value :self) category)
+                            (find-variable-for-category value category)
+                            (and (ever-appears-in-function-referent term tf)
+                                 (coerce value 'function))
+                            (error "No variable ~a in ~a for the parameter ~a."
+                                   value category term)))
+        else if (memq term labels)
+          collect (cons term
+                        (typecase value
+                          ((eql :self) (or (override-label category) category))
+                          (string (resolve-string-to-word/make value))
+                          (list (loop for v in value
+                                      collect (if (stringp v)
+                                                (resolve-string-to-word/make v)
+                                                (find-or-make-category-object v))))
+                          (t (find-or-make-category-object value))))
+        else
+          do (error "Undefined term ~a in rdata mapping for ~a with ~a."
+                    term category tf)))
 
 (defun ever-appears-in-function-referent (term tf)
-  ; The alternative to this rather deep check is to add another
-  ; field to etf to hold this case of a simple symbol (the name
-  ; of a function) that forestalls its interpretation as either
-  ; a category or a binding variable by Decode-rdata-mapping.
-  (let ((cases (etf-cases tf))
-        referent  fn-exp  does-appear? )
-    (dolist (schr cases)
-      (setq referent (schr-referent schr))
-      (when referent
-        (setq fn-exp (or (cadr (memq :function referent))
-                         (cadr (memq :method referent))))
-        (when fn-exp
-          (when (memq term fn-exp)
-            (setq does-appear? t)))))
-    does-appear?))
-
+  "Check if a mapping term is a function or method for the given tree family.
+   The alternative to this rather deep check is to add another field to etfs
+   to hold this case of a simple symbol (the name of a function) that forestalls
+   its interpretation as either a category or a variable."
+  (loop for schr in (etf-cases tf)
+        thereis (memq term (nth-value 1 ; property value
+                            (get-properties (schr-referent schr)
+                                            '(:function :method))))))

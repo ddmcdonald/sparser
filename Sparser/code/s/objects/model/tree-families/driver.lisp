@@ -173,12 +173,11 @@
              ;; a word that names (refers to) the category.
              (some #'word-p field)))
     
-      (let* ((no-head (eq head-field :no-head-word))
-             (head-word-variable (unless no-head (cadr (first rdata-schema))))
-             (head-word-type     (unless no-head (car (first rdata-schema))))
+      (let* ((head-word-variable (cadr head-field))
+             (head-word-type     (car head-field))
              (head-word (when head-word-variable
                           (value-of head-word-variable individual)))
-             (head (unless no-head
+             (head (when head-field
                      (list head-word-type head-word))))
 
         (when (word-p head-word-variable)
@@ -188,7 +187,7 @@
           (setq head-word head-word-variable
                 head (list head-word-type head-word)))
 
-        (unless no-head
+        (when head-field
           (unless head-word
             (unless (head-schema-filled-with-words head-field)
               (break "Expected the individual ~A~

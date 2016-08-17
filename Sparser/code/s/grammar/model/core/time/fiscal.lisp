@@ -111,8 +111,8 @@ part even if it's invariably left out as obvious except in comparisons. |#
   :instantiates self
   :realization ((:adjective "fiscal")
                 (:tree-family  adjective-creates-subtype
-                :mapping ((adjective . :self)
-                          (specializing-function . subtype-the-head)))))
+                :mapping (;(specializing-function . subtype-the-head)
+                          (adjective . :self)))))
 
 
 #| ========= The old stuff ========================

@@ -33,19 +33,16 @@
 ;;--- def-form
 
 (defun define-report-verb (string/list)
-  (let ((word/spec
-         (etypecase string/list
-           (string (resolve-string-to-word/make string/list))
-           (list (deref-rdata-word-with-morph string/list))))
-	;; when it's a spec, what will happen in :verb??
-        (category
-         (category-named 'report-verb)))
-    (let* ((word (if (listp string/list)
-		   (car string/list)
-		   string/list))
-	   (obj (define-individual 'report-verb
-		    :name word)))
-      (make-head-word-rules :verb word/spec category obj))))
+  (let* ((category (category-named 'report-verb))
+         (word/spec
+          (etypecase string/list
+            (string (resolve-string-to-word/make string/list))
+            (list (deref-rdata-word string/list category))))
+         (word (if (listp string/list)
+                 (car string/list)
+                 string/list))
+         (obj (define-individual 'report-verb :name word)))
+    (make-head-word-rules :verb word/spec category obj)))
 
 
 ;;;------------------
