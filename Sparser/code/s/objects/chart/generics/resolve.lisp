@@ -29,14 +29,11 @@
 ;; dispatches to the appropriate specific operation
 
 
-(defun resolve/make (arg &key source)
+(defun resolve/make (arg &key (source :define-category))
   ;; The argument is the external form of some object in the analyzer's
   ;; grammar, i.e. a symbol or a string.  The corresponding internal
   ;; object can be determined from the arg's properties.  If the
   ;; object does already not exist, it is made.
-
-  (unless source (setq source :define-category))
-
   (let ((already-existing-object (resolve arg)))
     (if already-existing-object
       already-existing-object
@@ -114,8 +111,7 @@
     category))
 
 
-(defun resolve-or-make/symbol-to-category (symbol &key source)
-  (unless source (setq source :define-category))
+(defun resolve-or-make/symbol-to-category (symbol &key (source :define-category))
   (let ((c-symbol (find-symbol (symbol-name symbol)
                                *category-package*)))
     (if (and c-symbol (boundp c-symbol))

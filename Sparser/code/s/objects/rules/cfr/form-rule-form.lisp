@@ -54,9 +54,7 @@
              ~%This one has more:  rhs = ~A"
             rhs-expressions)))
      
-  (let ((rhs (mapcar #'(lambda (exp)
-                         (resolve/make exp :source :def-category))
-                     rhs-expressions))
+  (let ((rhs (mapcar #'resolve/make rhs-expressions))
         (new-category
          (when new-category-symbol
            (if (keywordp new-category-symbol)

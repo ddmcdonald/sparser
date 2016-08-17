@@ -34,7 +34,7 @@
 
 
 
-(defun def-category/expr (symbol &key source )
+(defun def-category/expr (symbol &key (source :def-category))
 
   ;; Target for definitions of non-terminal and internally by
   ;; Resolve/make via Resolve-or-make/symbol-to-category
@@ -45,12 +45,6 @@
   ;; objects in the old representation scheme, and given that there are
   ;; so many of those and they'll eventually be rationalized, they are
   ;; given here the default source :define-category.
-
-  (unless (symbolp symbol)
-    (error "Symbols are the only valid argument type.~
-            ~%  ~A is a ~A"
-           symbol (type-of symbol)))
-  (unless source (setq source :define-category))
-
+  (check-type symbol symbol)
   (find-or-make-category-object symbol source))
 

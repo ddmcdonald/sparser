@@ -686,8 +686,7 @@ broadly speaking doing for you all the things you might do by hand.
                        (string-append ':by- base-name))))
     ;; This is what the define-category macro opens up as
     ;; for a trivial category like this
-    (cat-symbol
-     (find-or-make-category-object by-cat-name :define-category))))
+    (cat-symbol (find-or-make-category-object by-cat-name))))
 
 (defmacro svo/passive/nominal (verb nominalization
                                &key super-category agent patient by-category)

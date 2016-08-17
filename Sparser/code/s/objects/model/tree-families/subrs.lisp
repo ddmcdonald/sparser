@@ -53,9 +53,7 @@
                                      (or ,ending
                                          ,following-string))
                         *sparser-source-package*)))
-                  
-                  (find-or-make-category-object composed-name
-                                                :def-category))))
+                  (find-or-make-category-object composed-name))))
   (if (word-p label)
     label
     (let ((target
@@ -155,13 +153,9 @@
                    ((or referential-category category)
                     (symbol-name (cat-symbol label2))))))
 
-    (let ((category
-           (find-or-make-category-object
-            (intern (concatenate 'string string1 "-" string2)
-                    *sparser-source-package*)
-            :def-category)))
-
-      category )))
+    (find-or-make-category-object
+     (intern (concatenate 'string string1 "-" string2)
+             *sparser-source-package*))))
 
 
 ;;;---------

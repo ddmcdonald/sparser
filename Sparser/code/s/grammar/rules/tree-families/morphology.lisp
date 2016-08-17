@@ -264,7 +264,7 @@ or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
 
 
 (defun define-main-verb (verb &key
-                         (category (find-or-make-category verb :define-category))
+                         (category (find-or-make-category verb))
                          (referent (category-named 'event)) ;; should be eventuality
                          (infinitive        ;; "to give"
                           (error "Must supply at least the infinitive form."))

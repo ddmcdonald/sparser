@@ -77,8 +77,7 @@
      The category that's created is just the minimal form of
    simple syntactic categories. For something substantive use
    full arguments with define-category."
-  `(setup-rdata (find-or-make-category ',category-name :def-category)
-                ',realization))
+  `(setup-rdata (find-or-make-category ',category-name) ',realization))
 
 (defmacro define-realization (category-name &body realization &aux
                               (category (gensym))

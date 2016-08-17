@@ -50,9 +50,7 @@
              ~%You used ~A" head-designator)))
 
      
-  (let ((rhs (mapcar #'(lambda (exp)
-                         (resolve/make exp :source :def-category))
-                     rhs-expressions))
+  (let ((rhs (mapcar #'resolve/make rhs-expressions))
         (form-category (when form-expression
                          (resolve-form-label form-expression)))
         (referent (when referent-expression

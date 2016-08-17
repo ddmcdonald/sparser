@@ -37,24 +37,17 @@
 ;;; find
 ;;;------
 
-(defun find-or-make-category (item source)
-  (typecase item
+(defun find-or-make-category (item &optional (source :define-category))
+  (etypecase item
     (symbol (find-or-make-category-object item source))
     (word
-     (let ((symbol (intern (word-pname item)
-                           (find-package :sparser))))
+     (let ((symbol (intern (word-pname item) :sparser)))
        (find-or-make-category-object symbol source)))
     (polyword
-     (let ((symbol (intern (hyphenated-string-for-pw item)
-                           (find-package :sparser))))
-       (find-or-make-category-object symbol source)))
-    (otherwise
-     (break "New object type passed in: ~a~%~a"
-            (type-of item) item))))
+     (let ((symbol (intern (hyphenated-string-for-pw item) :sparser)))
+       (find-or-make-category-object symbol source)))))
 
-
-
-(defun find-or-make-category-object (symbol source)
+(defun find-or-make-category-object (symbol &optional (source :define-category))
   ;; core routine used by all the various sources for categories to
   ;; make the minimal object and have it cataloged.
   (declare (special *all-intra-category-relationships-noticed?*))

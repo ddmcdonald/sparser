@@ -61,14 +61,11 @@
             or a :right-context.~%   ~A -> ~A"
            lhs-label rhs-label))
 
-  (let ((lhs (resolve/make lhs-label :source :def-category))
-        (rhs (resolve/make rhs-label :source :def-category))
-        (lc (when left-context
-              (resolve/make left-context :source :def-category)))
-        (rc (when right-context
-              (resolve/make right-context :source :def-category)))
-        (form (when form-exp
-                (resolve/make form-exp :source :def-category)))
+  (let ((lhs (resolve/make lhs-label))
+        (rhs (resolve/make rhs-label))
+        (lc (when left-context (resolve/make left-context)))
+        (rc (when right-context (resolve/make right-context)))
+        (form (when form-exp (resolve/make form-exp)))
         (referent (resolve-referent-expression referent-exp)))
 
     (define-csr lhs rhs
