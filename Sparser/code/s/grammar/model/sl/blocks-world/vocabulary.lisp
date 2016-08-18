@@ -108,6 +108,7 @@ support a substantial number of blocks.
 
 ;; (p "Add another block")
 
+#+ignore
 (define-category add-to
   :specializes achievement
   :mixins (with-an-agent)
@@ -121,6 +122,19 @@ support a substantial number of blocks.
                            (vp . :self)
                            (adjunct . physical)
                            (slot . theme)))))
+(define-category add-to
+  :specializes achievement
+  :mixins (with-an-agent)
+  :binds ((theme object)
+          (goal location))
+  :realization
+  (:verb "add"
+         :etf (svo-passive)
+         :o theme
+         :s agent
+         :to goal
+         :mumble ("add" svo :o theme)))
+
 
 ;; Ignore "let's" for now (1.1), 
 
@@ -177,10 +191,17 @@ support a substantial number of blocks.
   :specializes process
   :mixins (with-an-agent) ;; adds 'agent' variable
   :binds ((theme physical)
-          (location location)) ;; mixin has-location
+          (location location)
+          (supported-by object)
+          (next-to object)) ;; mixin has-location
   :realization
-    ((:main-verb "put")
-     (:mumble ("put" svo1o2 :o1 theme :o2 location))))
+  (:verb "put"
+         :etf (svo-passive)
+         :s agent
+         :o theme
+         :next\ to next-to
+         :on supported-by
+         :mumble ("put" svo1o2 :o1 theme :o2 location)))
 
 
 (define-category make
@@ -235,7 +256,7 @@ support a substantial number of blocks.
   "The specific set of rules to use because (hack hack) their
    interpretation is controlled without having to fold into the 
    regular set as should be done when the basics are shaken down.")
-    
+
 
 
 

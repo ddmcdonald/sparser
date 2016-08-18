@@ -158,6 +158,11 @@
   category::top)
 
 (define-lambda-variable 
+  'number ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
+(define-lambda-variable 
   'det-quantifier ;; as in "all these"
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::determiner)
@@ -422,6 +427,9 @@
   ;; (push-debug `(,quantifier ,head)) (break "quantifier-noun-compound")
   ;;  (setq quantifier (car *) head (cadr *))
   (setq head (individual-for-ref head))
+  (when
+      (and *determiners-in-DL* (or (individual-p head)(category-p head)))
+    (setq head (bind-dli-variable 'quantifier quantifier head)))
   (cond
     ((itypep quantifier category::no) ;; special handling for negation
      (setq head (bind-dli-variable 'negation quantifier head)))
@@ -461,6 +469,9 @@
     (setf (non-dli-mod-for head) (list 'number number))
     ;;(setq  head (bind-dli-variable 'number number head))
     )
+    (when
+      (and *determiners-in-DL* (or (individual-p head)(category-p head)))
+    (setq head (bind-dli-variable 'number number head)))
   head)
 
 
