@@ -434,7 +434,10 @@
    (member (cat-name (edge-category edge)) '(which what))))
 
 (defun preposition? (edge)
-   (eq (cat-name (edge-form edge)) 'preposition))
+  (eq (cat-name (edge-form edge)) 'preposition))
+
+(defun pp? (edge)
+   (eq (cat-name (edge-form edge)) 'pp))
 
 (defun constrain-following (e)
   (and (category-p (edge-category e))
