@@ -41,7 +41,7 @@
     :premod
     :about :above :across :after :against :among :as :as-comp :at
     :below :before :between :but\ not :during :following :for :from :ifcomp :in :into 
-    :like
+    :like :next\ to
     :of :on :over :onto :such\ as :to :to-comp :thatcomp :through :throughout :toward :towards :under 
     :unlike :upon :via 
     :mumble
@@ -49,6 +49,7 @@
     :whethercomp :with :within :without
     :optional-object ;; for words like "translocate" which can appear with or without objects
     :adjp-complement ;; for cases like "Make the top block red."
+    :loc-pp-complement ;; for cases like "Put the block on the table"
     ))
 
 (defparameter *slot-keywords*
@@ -57,7 +58,7 @@
     :m :premod
     :about :above :across :after :against :among :as :as-comp :at
     :before :below :between :but\ not :during :following :for :from :ifcomp 
-    :by :in :into :like :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
+    :by :in :into :like :next\ to :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
     :upon :via :whethercomp :with :within :without :designator
     ))
 
@@ -246,6 +247,7 @@
                                             ;;:between :for :from :in :into :of :on :onto :to :thatcomp :through :via :with
                                             mumble
                                             optional-object
+                                            loc-pp-complement
                                             adjp-complement)
   ;; Decoder for the realization part of def-term, for the rdata of
   ;; define-category when it fits this new pattern, and for def-synonym,
@@ -306,7 +308,8 @@
             (push `(theme-slot . ,o-var) substitution-map)
             (push `(theme-v/r . ,o-v/r) substitution-map)
             (register-variable category o-var :object-variable)
-            (register-variable category optional-object :optional-object)))
+            (register-variable category optional-object :optional-object)
+            (register-variable category optional-object :loc-pp-complement)))
 
         (when c  ;; complement, e.g. "reported that ..."
           (let* ((var (variable/category c category))
