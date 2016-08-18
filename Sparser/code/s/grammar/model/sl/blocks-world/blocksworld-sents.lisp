@@ -13,9 +13,11 @@
 (defparameter *blocksworld-sents*
   '((p "Let’s build a 3 step staircase.")
     (p "Let’s make the steps green.")
-    (p "We don’t have enough green blocks.")
+    ;;(p "We don’t have enough green blocks.")
+    (p "We do not have enough green blocks.")
     (p "Make the tops of the steps red.")
-    (p "Let’s make the bottom row. Put a green block on the table.")
+    (p "Let’s make the bottom row.")
+    (p "Put a green block on the table.")
     ;;(p "Put another one next to it.")
     (p "Put another block next to it.") ;; replace "one" by "block" for now
     ;;(p "Now add a red block next to that one.")
@@ -43,14 +45,18 @@
 
 (define-sentence-corpus blocks-world *blocksworld-sents*)
 
-(defun test-blocksworld-sents (&optional (no-sem t) (stream *standard-output*))
+(defun test-blocksworld-sents (&optional (no-sem :syn-sem) (stream *standard-output*))
   (let ((*suppress-indiv-uids* t)
 	(*no-small-trees* t))
     (declare (special *suppress-indiv-uids* *no-small-trees*))
     (loop for s in *blocksworld-sents*
        do
 	 (format stream "~%___________________~%~s~%" (second s))
-	 (cond (no-sem
+	 (cond ((eq no-sem :syn-sem)
+                (eval `(p ,(second s)))
+                (loop for edge-tree in (tts-edge-semantics)
+                   do (pprint edge-tree)))
+               (no-sem
                 (eval `(p ,(second s))))
                (t
                 (eval `(pp ,(second s)))
