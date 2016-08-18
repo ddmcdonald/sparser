@@ -122,9 +122,19 @@ support a substantial number of blocks.
                            (vp . :self)
                            (adjunct . physical)
                            (slot . theme)))))
+
+(define-category with-specified-location :specializes object
+  :binds ((location location)
+          (supported-by object)
+          (next-to object))
+  :realization
+  (:next\ to next-to
+             :on supported-by
+             :on\ top\ of supported-by))
+  
 (define-category add-to
   :specializes achievement
-  :mixins (with-an-agent)
+  :mixins (with-an-agent with-specified-location)
   :binds ((theme object)
           (goal location))
   :realization
@@ -133,6 +143,7 @@ support a substantial number of blocks.
          :o theme
          :s agent
          :to goal
+         :loc-pp-complement t ;; requires a PP -- not quite true
          :mumble ("add" svo :o theme)))
 
 
@@ -189,18 +200,14 @@ support a substantial number of blocks.
 ;; 1.2 "Put a block on the table"
 (define-category put-something-somewhere
   :specializes process
-  :mixins (with-an-agent) ;; adds 'agent' variable
-  :binds ((theme physical)
-          (location location)
-          (supported-by object)
-          (next-to object)) ;; mixin has-location
+  :mixins (with-an-agent with-specified-location) ;; adds 'agent' variable and location variables
+  :binds ((theme physical)) ;; mixin has-location
   :realization
   (:verb "put"
          :etf (svo-passive)
          :s agent
          :o theme
-         :next\ to next-to
-         :on supported-by
+         :loc-pp-complement t ;; requires a PP
          :mumble ("put" svo1o2 :o1 theme :o2 location)))
 
 
