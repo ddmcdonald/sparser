@@ -42,7 +42,8 @@
     :about :above :across :after :against :among :as :as-comp :at
     :below :before :between :but\ not :during :following :for :from :ifcomp :in :into 
     :like :next\ to
-    :of :on :over :onto :such\ as :to :to-comp :thatcomp :through :throughout :toward :towards :under 
+    :of :on :onto :on\ top\ of
+    :over :such\ as :to :to-comp :thatcomp :through :throughout :toward :towards :under 
     :unlike :upon :via 
     :mumble
     :designator
@@ -58,7 +59,9 @@
     :m :premod
     :about :above :across :after :against :among :as :as-comp :at
     :before :below :between :but\ not :during :following :for :from :ifcomp 
-    :by :in :into :like :next\ to :of :on :onto :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
+    :by :in :into :like :next\ to :of
+    :on :onto :on\ top\ of
+    :over :to :such\ as :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
     :upon :via :whethercomp :with :within :without :designator
     ))
 
