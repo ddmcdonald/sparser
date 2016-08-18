@@ -413,7 +413,10 @@ without damaging other code.")
     ((gethash i *semtree-seen-individuals*)
      (if *for-spire*
          (indiv-or-type i)
-         `(("!recursion!" ,i))))
+         (if (and (individual-p i)
+                  (null (cdr (indiv-old-binds i))))
+             `(,i) ;; suppress "!recursion!" for very simple items
+             `(("!recursion!" ,i)))))
     ((and
       (itypep i category::number)
       (not (itypep i category::ordinal))
