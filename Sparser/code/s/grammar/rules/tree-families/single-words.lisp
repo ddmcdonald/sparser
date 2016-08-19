@@ -16,7 +16,6 @@
 
 (in-package :sparser)
 
-
 ;;;-----------------
 ;;; the tree family
 ;;;----------------
@@ -50,16 +49,3 @@
 
 (defun form-category (pos)
   (schr-form (get-schematic-word-rule pos)))
-
-(defun defined-type-of-single-word (keyword)
-  (or (eq keyword :verb)
-      (eq keyword :modal)
-      (eq keyword :common-noun)
-      (eq keyword :proper-noun)
-      (eq keyword :adjective)
-      (eq keyword :adverb)
-      (eq keyword :interjection)
-      (eq keyword :preposition)
-      (eq keyword :word)
-      (eq keyword :quantifier)
-      (eq keyword :number)))

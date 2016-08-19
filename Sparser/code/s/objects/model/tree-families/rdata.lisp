@@ -64,6 +64,20 @@
 
 (in-package :sparser)
 
+(deftype head-keyword ()
+  "A keyword indicating part-of-speech for a head word.
+Should mirror the cases on the *single-words* ETF."
+  '(member :verb
+           :modal
+           :common-noun
+           :proper-noun
+           :adjective
+           :adverb
+           :interjection
+           :preposition
+           :word
+           :quantifier
+           :number))
 
 ;;;----------------------
 ;;; standalone def forms
@@ -337,15 +351,8 @@ grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-rea
 ;;; Data checks
 ;;;-------------
 
-;;--- Check for legal keywords in realization field of a category
-
-(deftype rdata-word-keyword ()
-  '(member :verb :common-noun :proper-noun
-           :quantifier :adjective :interjection
-           :adverb :preposition :word))
-
 (deftype rdata-keyword ()
-  '(or rdata-word-keyword
+  '(or head-keyword
        (member :tree-family :mapping :additional-rules :mumble)))
 
 (defun check-rdata (rdata)
@@ -413,11 +420,11 @@ the rspec for the words of instances of the category."
   (loop for (keyword string) on lemmata by #'cddr
         do (unless (keywordp keyword) ;; friendly DWIM
              (setq keyword (intern (string keyword) :keyword)))
-           (check-type keyword rdata-word-keyword "a valid realization keyword")
+           (check-type keyword head-keyword "a valid realization keyword")
            (check-type string (or string cons))
-           (let* ((head-word (deref-rdata-word string category))
-                  (rules (make-head-word-rules keyword head-word category category)))
-             (setf (lemma category keyword) head-word)
+           (let* ((head (deref-rdata-word string category))
+                  (rules (make-head-word-rules keyword head category category)))
+             (setf (lemma category keyword) head)
              (add-rules rules category))))
 
 
@@ -425,58 +432,22 @@ the rspec for the words of instances of the category."
 ;;; the real driver: symbols -> objects by keyword
 ;;;------------------------------------------------
 
-(defun dereference-rdata (category
-                          &key ((:tree-family tf-name))
-                               mapping
-                               ((:verb verb-name))
-                               ((:common-noun cn-name))
-                               ((:proper-noun pn-name))
-                               adjective
-                               quantifier
-                               interjection
-                               adverb
-                               preposition
-                               word
-                               additional-rules
-                               mumble)
+(defun dereference-rdata (category &rest rdata &key tree-family mapping
+                          additional-rules &allow-other-keys)
   "Convert symbols to objects for realization data. Returns the arguments
    to feed into make-rules-for-rdata."
-  (declare (ignore mumble))
-  ;; The primary mumble information is handled in setup-rdata, 
-  ;; but here we need to handle word-level correspondences. 
-  (let ((head-word
-         ;; Since we're not going to instantiate the rules for these
-         ;; right here, and since the next layer isn't keyword driven,
-         ;; we have to encode the part-of-speech information here.
-         (cond (verb-name
-                (list :verb (deref-rdata-word verb-name category)))
-               (cn-name
-                (list :common-noun (deref-rdata-word cn-name category)))
-               (adjective
-                (list :adjective (deref-rdata-word adjective category)))
-               (quantifier
-                (list :quantifier (deref-rdata-word quantifier category)))
-               (adverb
-                (list :adverb (deref-rdata-word adverb category)))
-               (interjection
-                (list :interjection (deref-rdata-word interjection category)))
-               (preposition
-                (list :preposition (deref-rdata-word preposition category)))
-               (word
-                (list :word (deref-rdata-word word category)))
-               (pn-name
-                (list :proper-noun (deref-rdata-word pn-name category)))))
-        (tf (and tf-name (exploded-tree-family-named tf-name))))
-
-    (when head-word
-      (make-corresponding-lexical-resource head-word category))
-
-    (when tf
-      (record-use-of-tf-by tf category))
-
-    (values head-word
-            tf
-            (and tf (decode-rdata-mapping mapping category tf))
+  (let ((head
+         (loop for (keyword value) on rdata by #'cddr
+               when (typep keyword 'head-keyword)
+                 do (return `(,keyword ,(deref-rdata-word value category))))))
+    (when head
+      (make-corresponding-lexical-resource head category))
+    (when tree-family
+      (setq tree-family (exploded-tree-family-named tree-family))
+      (record-use-of-tf-by tree-family category))
+    (values head
+            tree-family
+            (and tree-family (decode-rdata-mapping mapping category tree-family))
             (decode-additional-rules additional-rules))))
 
 (defun deref-rdata-word (word category)

@@ -71,7 +71,7 @@ broadly speaking doing for you all the things you might do by hand.
   (let* ((category (category-named category-name :break-if-undefined))
          (pos (caar (getf (cat-realization category) :schema)))
          (i (find-or-make-individual category :name (car word-list))))
-    (check-type pos (satisfies defined-type-of-single-word))
+    (check-type pos head-keyword)
     (dolist (word (cdr word-list))
       (add-rules (make-head-word-rules pos (resolve/make word) category i) i))
     ;; How do we record these synonyms with the instance given that this scheme

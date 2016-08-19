@@ -268,8 +268,7 @@
              ((polyword-p value-exp)
               value-exp)
              ((consp value-exp)
-              (if (and (keywordp (car value-exp))
-                       (defined-type-of-single-word (car value-exp)))
+              (if (typep (car value-exp) 'head-keyword)
                 ;; only pass on the morphology spec.
                 (let* ((pname (second value-exp))
                        (word (resolve-string-to-word/make pname))
