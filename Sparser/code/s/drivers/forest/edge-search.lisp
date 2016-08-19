@@ -371,7 +371,8 @@
 	  ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
           (or
            (and (eq (cat-name (edge-form r-triple-3)) 'pp)
-                (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple))))
+                (member (edge-left-daughter (edge-left-daughter r-triple-3))
+                        (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple)))))
                 (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
            (not (member (cat-name (edge-form r-triple-3))
                         '(pp

@@ -18,6 +18,9 @@
 (define-category relative-position :specializes component-part)
 (noun "end" :super relative-position)
 (noun "middle" :super relative-position)
+(noun "left" :super relative-position)
+(noun "right" :super relative-position)
+
 
 #+ignore
 (define-category has-relative-position :specializes physical-object
@@ -148,7 +151,8 @@ support a substantial number of blocks.
          :o theme
          :s agent
          :to goal
-         :loc-pp-complement t ;; requires a PP -- not quite true
+         :loc-pp-complement (next\ to on on\ top\ of at)
+         ;; requires a PP -- not quite true
          :mumble ("add" svo :o theme)))
 
 
@@ -212,7 +216,7 @@ support a substantial number of blocks.
          :etf (svo-passive)
          :s agent
          :o theme
-         :loc-pp-complement t ;; requires a PP
+         :loc-pp-complement (next\ to on on\ top\ of at) ;; requires a PP
          :mumble ("put" svo1o2 :o1 theme :o2 location)))
 
 

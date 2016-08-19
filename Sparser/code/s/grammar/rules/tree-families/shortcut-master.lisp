@@ -312,7 +312,11 @@
             (push `(theme-v/r . ,o-v/r) substitution-map)
             (register-variable category o-var :object-variable)
             (register-variable category optional-object :optional-object)
-            (register-variable category loc-pp-complement :loc-pp-complement)))
+            (register-variable category
+                               (mapcar #'(lambda(prep)
+                                           (resolve (string-downcase prep)))
+                                       loc-pp-complement)
+                               :loc-pp-complement)))
 
         (when c  ;; complement, e.g. "reported that ..."
           (let* ((var (variable/category c category))
