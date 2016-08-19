@@ -55,7 +55,7 @@
 	 (cond ((eq no-sem :syn-sem)
                 (eval `(p ,(second s)))
                 (loop for edge-tree in (tts-edge-semantics)
-                   do (pprint edge-tree)))
+                   do (pprint (second edge-tree))))
                (no-sem
                 (eval `(p ,(second s))))
                (t
