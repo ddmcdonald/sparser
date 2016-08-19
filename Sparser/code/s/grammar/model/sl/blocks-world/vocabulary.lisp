@@ -24,6 +24,18 @@
   :binds ((position relative-position))
   :realization (:m position))
 
+(define-mixin-category with-specified-location
+  :binds ((location location)
+          (supported-by object)
+          (next-to object)
+          (at-relative-location relative-position))
+  :realization
+  (:next\ to next-to
+             :on supported-by
+             :on\ top\ of supported-by
+             :at at-relative-location ;; at the end
+             :on at-relative-location)) ;; on the left
+
 ;;---  blocks
 #| This has to meet/merge with Scott's treatment 
 for the individuals. 
@@ -33,7 +45,7 @@ location, membership in structures (staircase), local relations
 with other blocks, mention in utterances, etc. |#
 (define-category block
   :specializes object
-  :mixins (has-name)
+  :mixins (has-name with-specified-location)
   :binds ((position relative-position))
   :instantiates :self
   :index (:permanent :key name)
@@ -123,14 +135,7 @@ support a substantial number of blocks.
                            (adjunct . physical)
                            (slot . theme)))))
 
-(define-category with-specified-location :specializes object
-  :binds ((location location)
-          (supported-by object)
-          (next-to object))
-  :realization
-  (:next\ to next-to
-             :on supported-by
-             :on\ top\ of supported-by))
+
   
 (define-category add-to
   :specializes achievement
