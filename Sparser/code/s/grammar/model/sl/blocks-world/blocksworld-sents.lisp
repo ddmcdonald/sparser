@@ -40,6 +40,18 @@
     (p "Put a red block on it.")
     ;;(p "Good. Now put a red one on top of the middle block.")
     (p "Good. Now put a red block on top of the middle block.")
+
+    (p "Put a row of three blocks on the table.")
+    (p "Put a row of three blue blocks on the table.")
+    (p "Put a row of two blocks on top.")
+    (p "Put a row of two blocks on top of the bottom row.")
+    (p "Put a row of two green blocks on top of the bottom row.")
+    (p "Where? Which end?")
+    (p "The left end of the row.")
+    (p "Put a row of two blocks on top of the left end of the bottom row.")
+    (p "Put a stack of two red blocks on the table.")
+    (p "Add a red block at the right end of the row.")
+
     ))
 
 
