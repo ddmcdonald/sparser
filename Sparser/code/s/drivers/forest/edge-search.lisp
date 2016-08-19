@@ -369,17 +369,15 @@
 	  ;; likely competition against a relative clause or a main clause
 	  ;;  accept r-triple as a winner if if is a rightward extension of and NP
 	  ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
-	  (not (and (edge-form r-triple-3)
-                    (or
-                     (and (eq (cat-name (edge-form r-triple-3)) 'pp)
-                          (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple))))
-                          (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
-                          
-                     (member (cat-name (edge-form (third r-triple)))
-                             '( ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
-
-                               to-comp where-relative-clause when-relative-clause
-                               subject-relative-clause comma-separated-subject-relative-clause))))))
+          (or
+           (and (eq (cat-name (edge-form r-triple-3)) 'pp)
+                (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple))))
+                (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
+           (not (member (cat-name (edge-form r-triple-3))
+                        '(pp
+                          ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
+                          to-comp where-relative-clause when-relative-clause
+                          subject-relative-clause comma-separated-subject-relative-clause)))))
 	 (and
 	  (prep? l-triple-left)
           (not (subordinate-conjunction? l-triple))
