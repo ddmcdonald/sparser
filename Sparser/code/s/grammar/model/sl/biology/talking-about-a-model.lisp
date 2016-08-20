@@ -81,6 +81,32 @@
     (p "Is phosphorylated BRAF transient if we double the amount of BRAF?")
     (p "Does the BRAF-NRAS dimer vanish even if we increase the binding rate of NRAS and BRAF?")
     (p "Is phosphorylated BRAF high at any time if there is no NRAS in the system?")
+
+    ;; sentences added by Mark -- possibly from a writeup by Harvard?
+   ;; Statements about temporal properties:  Worry about the *'d ones
+
+    (p "Yes it is transient in time.")
+    (p "No it is not transient.")
+    (p "No, it is sustained over time.")
+
+    ;; certainty
+    ;; (p "I’m [quite certain|confident|uncertain] it is transient.")
+    (p "I am quite certain it is transient.")
+    (p "I am confident it is transient.")
+    (p "I am uncertain it is transient.")
+    
+    (p "It is likely that it is transient.")
+    (p "It is unlikely that it is transient.")
+    (p  "It is only sometimes transient.")
+    (p  "It is mostly transient but not always.")
+    (p "It is very unlikely that it is transient.")
+
+    (p "There is little chance that it is transient.")
+    (p "I am 95% sure that it is not transient.")
+    (p "I am pretty sure it is transient but I can give a more precise answer later.")
+    (p "It is sometimes transient and sometimes isn’t.")
+    (p "I am confident it is transient.")
+    (p "It is transient with a high probability.")
     ))
 
 
