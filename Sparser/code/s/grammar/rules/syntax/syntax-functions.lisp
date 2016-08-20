@@ -197,6 +197,11 @@
     nil ;; value restriction, which would be 'category' but don't want to go there
   category::top)
 
+(define-lambda-variable 
+  'compared-to ;; name
+    nil ;; value restriction, which would be 'category' but don't want to go there
+  category::top)
+
 
 
 ;;;----------------------------
