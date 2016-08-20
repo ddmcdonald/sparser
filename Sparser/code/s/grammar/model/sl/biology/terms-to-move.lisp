@@ -301,6 +301,13 @@ be biology specific, since they aren't. |#
         ;; :adverb "likely" WANT LIKELY TO AMBIGUOUSLY BE AN ADJECTIVE OR ADVERB
         :to-comp theme
 	:thatcomp theme))
+
+(define-category unlikely :specializes bio-relation
+  :realization
+  (:adj "unlikely"
+        ;; :adverb "likely" WANT LIKELY TO AMBIGUOUSLY BE AN ADJECTIVE OR ADVERB
+        :to-comp theme
+	:thatcomp theme))
 ;; almost never an adverb in our texts
 ;; need a good way to distinguish the cases
 ;; "is likely to ..." vs "is likely due..."
