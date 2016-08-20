@@ -486,6 +486,11 @@
         :form ,(second vv)
         :referent (:function assimilate-thatcomp left-edge right-edge)))
   (eval
+   `(def-syntax-rule (,(car vv) s) ;; "I am certain (that) it is transient."
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function assimilate-thatcomp left-edge right-edge)))
+  (eval
    `(def-syntax-rule (,(car vv) whethercomp)
         :head :left-edge
         :form ,(second vv)
