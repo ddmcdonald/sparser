@@ -991,7 +991,8 @@
 (DEF-RAS2-PROTEIN "WASP_HUMAN" ("WASP_HUMAN" "WAS" "IMD2" "WASp")) 
 (DEF-RAS2-PROTEIN "WDR1_HUMAN" ("WDR1_HUMAN" "AIP1" "WDR1" "Actin-interacting protein 1" "NORI-1")) 
 (DEF-RAS2-PROTEIN "WNT5A_HUMAN" ("WNT5A_HUMAN" "WNT5A")) 
-(DEF-RAS2-PROTEIN "YES_HUMAN" ("YES_HUMAN" "2.7.10.2" "YES1" "YES" "rtks" "Tyrosine-protein kinase Yes" "Proto-oncogene c-Yes" "p61-Yes")) 
+(DEF-RAS2-PROTEIN "YES_HUMAN" ("YES_HUMAN" "2.7.10.2" "YES1" ;;"YES" conflicts with interjection "yes"
+                                           "rtks" "Tyrosine-protein kinase Yes" "Proto-oncogene c-Yes" "p61-Yes")) 
 (DEF-RAS2-PROTEIN "ZAP70_HUMAN" ("ZAP70_HUMAN" "70 kDa zη-chain associated protein" "2.7.10.2" "ZAP70" "SRK" "ZAP-70" "Tyrosine-protein kinase ZAP-70" "70 kDa zeta-chain associated protein" "Syk-related tyrosine kinase")) 
 (DEF-RAS2-PROTEIN "ZBT17_HUMAN" ("ZBT17_HUMAN" "Zinc finger protein 60" "ZNF151" "ZBTB17" "ZNF60" "Myc-interacting zinc finger protein 1" "Zinc finger protein 151" "Miz-1" "MIZ1")) 
 (DEF-RAS2-PROTEIN "beta Arrestin1-2" ("beta Arrestin1-2" "bη Arrestin1-2")) 
