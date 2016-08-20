@@ -37,6 +37,23 @@
 
 (in-package :sparser)
 
+;; for dialogs
+(sentential-interjection "done")
+(sentential-interjection "good")
+(sentential-interjection "ok")
+(sentential-interjection "yes")
+;;(sentential-interjection "no")  ;;blocks use of "no" as a quantifier as in "no proteins"
+(sentential-interjection "hello")
+(sentential-interjection "goodbye")
+(sentential-interjection "let's")
+
+(adj "certain" :super bio-rhetorical)
+(adj "sure" :super bio-rhetorical)
+(adj "uncertain" :super bio-rhetorical)
+(adj "little chance" :super bio-rhetorical)
+(adj "confident" :super bio-rhetorical)
+
+
 (noun "medium" :super experimental-condition)
 (noun "vector" :super bio-method) ;; need a class for experimental materials
 (noun "unstimulated" :super experimental-condition)
@@ -65,6 +82,8 @@
 (adj "persistent" :super scalar-variation)
 (adj "noisy" :super scalar-variation)
 (adj "unchanged" :super scalar-variation)
+
+
 (define-category sustained :specializes scalar-variation
   :binds ((level scalar-quality)
           (above-level scalar-quality))
