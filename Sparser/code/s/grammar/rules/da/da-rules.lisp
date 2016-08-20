@@ -359,6 +359,30 @@
                  :referent clause-ref)))
       edge)))
 
+(define-debris-analysis-rule attach-preceding-participle-with-comma-to-clause
+  :pattern ( vp+ing "," s )
+  :action (:function attach-preceding-participle-with-comma-to-clause first second third))
+
+(define-debris-analysis-rule attach-preceding-participle-with-comma-to-clause
+  :pattern ( vp+ing "," subordinate-clause )
+  :action (:function attach-preceding-participle-with-comma-to-clause first second third))
+
+(defun attach-preceding-participle-with-comma-to-clause (vp+ing-edge comma-edge s-edge)
+  (let* ((s-subj-var (subject-variable s-edge))
+         (vp-subj-var (subject-variable vp+ing-edge))
+         (s-ref (edge-referent s-edge))
+         (vp+ing-ref (edge-referent vp+ing-edge)))
+    (when (and s-ref vp+ing-ref s-subj-var vp-subj-var)
+      (let ((subject (value-of s-subj-var s-ref)))
+        (when subject
+          (setq vp+ing-ref (bind-dli-variable vp-subj-var subject vp+ing-ref))
+          (make-edge-spec
+           :category (edge-category s-edge)
+           :form (edge-form s-edge)
+           :referent (referent-of-two-conjoined-edges
+                      (edge-referent s-edge)
+                      vp+ing-ref)))))))
+
 (define-debris-analysis-rule attach-comma-appositive-np-under-s
   :pattern ( s "," np)
   ;; The action can fail. Returning nil ought to suffice
@@ -1257,3 +1281,16 @@
            :form (edge-form comp-edge)
            :referent
            (bind-dli-variable 'compared-to (edge-referent np-edge) (edge-referent comp-edge))))
+
+(define-debris-analysis-rule interjection-comma-s
+    :pattern (interjection "," S)
+    :action (:function add-initial-interjection first second third))
+
+(defun add-initial-interjection (interjection-edge comma s-edge)
+  (let* ((interjection (edge-referent interjection-edge))
+         (s (edge-referent s-edge)))
+    (make-edge-spec
+     :category (edge-category s-edge)
+     :form (edge-form s-edge)
+     :referent (bind-dli-variable 'modifier interjection s)
+     )))
