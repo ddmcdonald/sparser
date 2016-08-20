@@ -449,6 +449,7 @@
 (define-category bio-rhetorical :specializes event
   :mixins (biological bio-thatcomp bio-whethercomp event-relation)
   :binds ((agent (:or pronoun/first/plural
+                      PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals
 		      pronoun/plural ;; "they"
 		      organism ;; "these animals showed..."
 		      these
