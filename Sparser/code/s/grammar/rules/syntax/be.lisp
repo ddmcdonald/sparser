@@ -340,14 +340,14 @@ assess-edge-label, which rewrites the word as the category BE.
 ;; The Apostrophe-fsa already has these checked for specially and gives
 ;; them reasonable forms and referents, but aux-hopping want's an explicit
 ;; labeling of 'be'.
-
+#|  8/20/16 these are getting in the way of the CS rules
 (def-cfr be  ( apostrophe-m )
   :form verb
   :referent be )
 
 (def-cfr be  ( apostrophe-re )
   :form verb
-  :referent be )
+  :referent be )  |#
 
 
 ;; Given those rewrite rules, we have to include this assignment of brackets
