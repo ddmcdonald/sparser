@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991,1992,1993,1994,1995  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1995,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "flags"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  0.1 September 1995
+;;;  Version:  August 2016
 
 ;; initiated 4/21/91, tweeked 4/26, added to 5/1, 7/11
 ;; 12/15/92 v2.3  Added in some flags from all-edges
@@ -14,8 +14,8 @@
 ;;     (7/11) added *bracket-forming-left-boundary*  (7/26) added that to
 ;;      the init routine  (10/26) added *forest-level* and *
 ;;     (4/20/95) added records of the brackets that closed the previous
-;;      segment   (5/5) added *da-dispatch-position*   (9/15) added bracket flags for
-;;      {} and []
+;;      segment   (5/5) added *da-dispatch-position*   (9/15/95) added bracket
+;;      flags for {} and []
 
 (in-package :sparser)
 
@@ -59,7 +59,9 @@
   "Used to hold the left boundary while it's nil at the forest
    level")
 
-
+(defvar *parsing-between-boundaries* nil
+  "Flags set by routines in analyzers/traversal/forest-scan
+   when the want to suborn a marching routine to their own purposes.")
 
 ;;;---------------------
 ;;; segment-level flags
