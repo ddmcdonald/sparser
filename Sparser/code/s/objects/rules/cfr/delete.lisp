@@ -34,10 +34,7 @@
 ;;;-------------------------
 
 (defun delete/cfr# (n)
-  (let ((rule-symbol (intern (concatenate 'string
-                                          "PSR"
-                                          (format nil "~A" n))
-                             *phrase-structure-rule-package*)))
+  (let ((rule-symbol (make-cfr-symbol n)))
     (unless (boundp rule-symbol)
       (error "There is no cfr with the number ~A~
               ~%Its rule symbol ~A is not bound" n rule-symbol))
