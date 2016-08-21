@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "single quote"
 ;;;   Module:  "grammar;rules:FSAs:"
-;;;  Version:  June 2016
+;;;  Version:  August 2016
 
 ;; initiated 4/23/91 v1.8.4, tweeked 4/24,25, Comment added 1/3/92
 ;; 1.0 (11/24/92 v2.3) Flushed the old use of fake names as referents
@@ -25,6 +25,14 @@
 
 #| the bracket assignments are in [rules;words:contractions] |#
 
+(defparameter *categories-based-on-apostrophe*
+  `(,category::apostrophe-s
+    ,category::apostrophe-m
+    ,category::apostrophe-t
+    ,category::apostrophe-re
+    ,category::apostrophe-ve
+    ,category::apostrophe-ll))
+    
 ;;;-----------------------------
 ;;; linking the word to the fsa
 ;;;-----------------------------
