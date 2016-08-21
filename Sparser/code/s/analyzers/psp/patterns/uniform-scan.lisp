@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  Feb ruary2016
+;;;  version:  August 2016
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -105,8 +105,12 @@
                             colon-positions other-punct edges)
                            (sweep-to-end-of-ns-regions start-pos long-edge)
         ;; Sweep from the very beginning just to be sure we catch any
-        ;; marked punctuation there. 
-        
+        ;; marked punctuation there.
+
+        (when (ns-apostrophe-check position-after edges)
+          (try-all-contiguous-edge-combinations start-pos end-pos) ;; see note with fn
+          (return-from collect-no-space-segment-into-word nil))
+
         ;; If the sweep encountered any more edges we have to fold 
         ;; them in or else we'll get the wrong pattern
         (setq edges (sort-out-edges-in-ns-region edges long-edge))
@@ -269,7 +273,21 @@
       (tr :ns-taking-default)
       (or (resolve-ns-pattern pattern words edges start-pos end-pos)
           (reify-ns-name-and-make-edge words start-pos end-pos))))))
- 
+
+
+(defun ns-apostrophe-check (pos-after edges)
+  "Is the terminal on the position an apostrophe and did an FSA already
+   handle it and the word following it to make a one of the known
+   apostrophe-x edges?"
+  (declare (special *categories-based-on-apostrophe*))
+  (when (eq (pos-terminal pos-after)
+            (punctuation-named #\'))
+    (when (null (cdr edges))
+      (let* ((edge (car edges))
+             (label (edge-category edge)))
+        (and (category-p label)
+             (memq label *categories-based-on-apostrophe*))))))
+
 
 
 ;;;-------------------------------------------
