@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1995,2014-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1995,2014-2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  0.6 August 2015
+;;;  Version:  August 2016
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
@@ -24,23 +24,38 @@
 
 (in-package :sparser)
 
+;;;-------
+;;; cases
+;;;-------
 
 (defun parse-between-nospace-scan-boundaries (left-bound right-bound)
-  ;; Called from collect-no-space-segment-into-word to look for
-  ;; a parse between where the no-space sequence starts and where
-  ;; it ends. Provides for different alg. 
+  "Called from collect-no-space-segment-into-word to look for
+  a parse between where the no-space sequence starts and where
+  it ends. The problem we have is that in the cases where we want a rule
+  to apply, it will typically involve searching multiple interpretations
+  of words and edges over literals and such."
   (push-debug `(,left-bound ,right-bound)) ;(break "parse-between ns-scans")
-  (let ((*allow-pure-syntax-rules* nil)
-        (*allow-form-rules* nil))
-    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
-    (let ((edge (catch :done-parsing-region
-                  (parse-from-to/topmost left-bound right-bound))))
-      (let ((layout (analyze-segment-layout
-                     ;; /// it ought to be possible to keep a running model of this
-                     ;; rather than have to recalculate it here
-                     left-bound right-bound)))
-        (values layout
-                edge)))))
+  (let ((coverage (coverage-over-region left-bound right-bound)))
+    ;;(lsp-break "coverage between ~a and ~a~%is ~a" left-bound right-bound coverage)
+    (case coverage
+      (:single-span
+       (values coverage (edge-between left-bound right-bound)))
+      
+      (:all-contiguous-edges
+       (cond
+         ((= 2 (length (treetops-between left-bound right-bound)))
+          (let* ((edge (try-all-contiguous-edge-combinations left-bound right-bound))
+                 (new-coverage (coverage-over-region left-bound right-bound)))
+            (values new-coverage edge)))
+         
+         (t (let* ((edge (parse-all-options-in-region left-bound right-bound))
+                   (new-coverage (coverage-over-region left-bound right-bound)))
+              (values new-coverage edge)))))
+      
+      (:otherwise
+       coverage))))
+
+
 
 (defun parse-between-parentheses-boundaries (left-bound right-bound)
   ;; Called from do-paired-punctuation-interior to look for
@@ -70,6 +85,75 @@
       (values layout
               edge))))
 
+;;;----------------------------------
+;;; an unassuming triple application
+;;;----------------------------------
+
+(defun parse-all-options-in-region (start-pos end-pos)
+  (let* ((pairs (adjacent-edges-in-region start-pos end-pos))
+         (triples (form-triples-from-pairs pairs)))
+    (when triples
+      (let ((triple-to-use (select-triple-for-region triples)))
+        (execute-triple triple-to-use)
+        (parse-all-options-in-region start-pos end-pos)))))
+  
+(defun adjacent-edges-in-region (start-pos end-pos)
+  (let ((tt-or-ev-in-region (treetops-in-segment start-pos end-pos))
+        (current-position start-pos))
+    (flet ((next-position (ev-or-edge)
+             (etypecase ev-or-edge
+               (edge (pos-edge-ends-at ev-or-edge))
+               (edge-vector (chart-position-after current-position))))
+           (form-every-pair (left-list right-list) ;; cf. form-all-pairs
+             (let ( pairs )
+               (loop for left in left-list
+                  do (loop for right in right-list
+                        do (push `(,left ,right) pairs)))
+               pairs)))
+      ;; prime the pump
+      (let* ((ev-or-edge (pop tt-or-ev-in-region))
+             next-pos left-edges right-edges pairs )
+        (loop
+          (setq left-edges
+                (etypecase ev-or-edge
+                  (edge (list ev-or-edge))
+                  (edge-vector (all-edges-on ev-or-edge))))
+           (setq next-pos (next-position ev-or-edge))
+           ;;(lsp-break "next-pos = ~a" next-pos)
+           (when (eq next-pos end-pos)
+             (return))
+           (setq ev-or-edge (pop tt-or-ev-in-region))
+           (setq right-edges
+                 (etypecase ev-or-edge
+                   (edge (list ev-or-edge))
+                   (edge-vector (all-edges-on ev-or-edge))))
+           (setq pairs
+                 (append (form-every-pair left-edges right-edges)
+                         pairs))
+           (unless tt-or-ev-in-region
+             (return)))
+        pairs))))
+
+(defun select-triple-for-region (triples)
+  ;; select-best-triple is close to this. Depending on
+  ;; the region we may have different criteria
+  (car triples))
+
+(defun form-triples-from-pairs (pairs)
+  (flet ((rule-combines-pair (pair)
+           (let ((left-edge (car pair))
+                 (right-edge (cadr pair)))
+             (multiply-edges left-edge right-edge))))
+    (loop for pair in pairs
+       when (rule-combines-pair pair)
+       collect (cons (rule-combines-pair pair) pair))))
+    
+        
+
+
+;;;---------------------------------------------------
+;;; between-boundaries topmost edges parsing protocol
+;;;---------------------------------------------------
 
 (defun parse-from-to/topmost (left-bound right-pos)
   "Called recursively to march leftwards"
@@ -153,5 +237,34 @@
         (try-combination-to-the-left/bounded left-bound new-edge)
         (parse-from-to/topmost left-bound middle-pos)))))
 
+;;;----------------------------
+;;; All-edges for special case
+;;;----------------------------
+
+(defun try-all-contiguous-edge-combinations (start-pos end-pos)
+  "Tailored for parsing between the boundaries of a span of no-space tokens
+   for the very particular but common case of two adjacent edges. Returns
+   the first edge it can find trying all edges."
+  ;; Note that this solves a single specific problem, which is
+  ;; arranging for the cs rules in be.lisp and the other that handle
+  ;; apostrophe are able to run.
+  (let* ((*allow-pure-syntax-rules* nil)
+         (*allow-form-rules* nil)
+         (tt (treetops-between start-pos end-pos))
+         (left-treetop (car tt))
+         (middle-position (pos-edge-ends-at left-treetop))
+         (edges-ending-there (all-edges-on (pos-ends-here middle-position)))
+         (edges-starting-there (all-edges-on (pos-starts-here middle-position)))
+         rule )
+    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+    (let ((edge
+           (catch :succeeded
+             (dolist (left-edge edges-ending-there)
+               (dolist (right-edge edges-starting-there)
+                 (setq rule (multiply-edges left-edge right-edge))
+                 (when rule
+                   (throw :succeeded
+                     (make-completed-binary-edge left-edge right-edge rule))))))))
+      edge)))
 
 
