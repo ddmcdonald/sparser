@@ -78,7 +78,7 @@
 	       ;; '<symbol> -> word-singular', and
 	       ;; '<symbol> -> word-plural' where it forms the plural in
 	       ;; the obvious way. 
-	       (caadr (member :rules (cat-realization category) :test #'eq))))))
+	       (first (get-rules category))))))
 
       (values category rule))))
 

@@ -95,7 +95,7 @@
 ;;      (1/6/15) Fixed over-zealous application of irregulars check that was
 ;;       blocking simple case of multiple words with the same definition.
 ;;      (6/19/15) Rebuilt plural-version/pw because it was duplicating the 1st word
-;; 8/16/16 Refactored as generic make-head-word-rules.
+;; 8/16/16 Refactored as generic make-rules-for-head.
 
 (in-package :sparser)
 
@@ -103,31 +103,40 @@
 ;;; dispatch
 ;;;----------
 
-(defgeneric make-head-word-rules (pos word category referent &rest special-cases)
+(defgeneric make-rules-for-head (pos word category referent &rest special-cases)
   (:documentation "Construct rules for a single word, multiple words,
 or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
   (:argument-precedence-order word pos category referent)
+  (:method (pos (rdata realization-data) category referent &rest special-cases)
+    "An adapter method from the new realization-data records to the old lists."
+    (declare (optimize debug))
+    (check-type special-cases null)
+    (case pos
+      ((t) (loop for (pos head) on (rdata-head-words rdata) by #'cddr
+                 append (make-rules-for-head pos head category referent)))
+      (t (make-rules-for-head pos (getf (rdata-head-words rdata) pos) category referent))))
   (:method ((pos (eql t)) (word cons) category referent &rest special-cases)
     "Handle a generic head-word specification list, e.g., (:verb ...)"
     (check-type (car word) keyword)
     (check-type (cadr word) (or list word polyword lambda-variable))
     (check-irregular-word-markers (cddr word))
     (check-type special-cases null)
-    (apply #'make-head-word-rules (car word) (cadr word) category referent
+    (apply #'make-rules-for-head (car word) (cadr word) category referent
            (cddr word)))
   (:method (pos (word list) category referent &rest special-cases)
     "Handle either a single word with special cases or a list of them."
     (declare (ignore special-cases))
     (typecase word
       ((cons (or word polyword) (cons keyword *))
-       (apply #'make-head-word-rules pos (car word) category referent
+       (apply #'make-rules-for-head pos (car word) category referent
               (cdr word)))
       (otherwise
        (loop for w in word
-             append (make-head-word-rules pos w category referent)))))
+             append (make-rules-for-head pos w category referent)))))
   (:method (pos (word lambda-variable) category referent &rest special-cases)
-    "Variables are allowed as heads, but no rules are created for them."
-    (declare (ignore pos word category referent special-cases)))
+    "Variables as heads refer to bindings in the referent."
+    (apply #'make-rules-for-head pos (value-of word referent) category referent
+           special-cases))
   (:method (pos word category referent &rest special-cases)
     "Default case: construct a single rule for a head word."
     (declare (ignore special-cases))
@@ -276,26 +285,23 @@ or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
                          nominalization)
   "Standalone entry point developed in the early 1990s. Can be very lightweight
 because the referent can be trivial. Provides overrides to make-verb-rules."
-  (add-rules (make-head-word-rules :verb (define-word/expr infinitive)
-                                   category referent
-                                   :nominalization nominalization
-                                   :present-participle present-participle
-                                   :past-participle past-participle
-                                   :past-tense past-tense
-                                   :third-singular tensed/singular
-                                   :third-plural (or tensed/plural infinitive))
+  (add-rules (make-rules-for-head :verb (define-word/expr infinitive)
+                                  category referent
+                                  :nominalization nominalization
+                                  :present-participle present-participle
+                                  :past-participle past-participle
+                                  :past-tense past-tense
+                                  :third-singular tensed/singular
+                                  :third-plural (or tensed/plural infinitive))
              category))
 
-(defmethod make-head-word-rules ((pos (eql :verb)) word category referent &key
-                                 nominalization
-                                 past-tense past-participle present-participle
-                                 third-singular third-plural
-                                 (s-form (or third-singular
-                                             (s-form-of-verb word)))
-                                 (ed-form (or past-tense
-                                              (ed-form-of-verb word)))
-                                 (ing-form (or present-participle
-                                               (ing-form-of-verb word))))
+(defmethod make-rules-for-head ((pos (eql :verb)) word category referent &key
+                                nominalization
+                                past-tense past-participle present-participle
+                                third-singular third-plural
+                                (s-form (or third-singular (s-form-of-verb word)))
+                                (ed-form (or past-tense (ed-form-of-verb word)))
+                                (ing-form (or present-participle (ing-form-of-verb word))))
   "Define rules for a verb and its various inflections."
   (let ( inflections )
     (labels ((convert-if-needed (raw)
@@ -342,7 +348,8 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
         (labels ((make-rule (word form)
                    (let ((rule (define-cfr category (list word)
                                  :form form
-                                 :referent  referent)))
+                                 :referent referent
+                                 :schema (get-schematic-word-rule pos))))
                      (push rule rules)))
                  (rule-macro (word/s form)
                    (if (consp word/s)
@@ -847,8 +854,7 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   "Intended to be bound by word-constructors when they know that 
    the noun does not make sense in the plural.")
 
-(defmethod make-head-word-rules ((pos (eql :common-noun)) word category referent
-                                 &rest special-cases)
+(defmethod make-rules-for-head ((pos (eql :common-noun)) word category referent &rest special-cases)
   "Define rules for a common noun and possibly its plurals."
   (let ((singular-rules (call-next-method)))
     (if (or *inihibit-constructing-plural* (punctuation? word))

@@ -31,10 +31,12 @@
 
 (defmethod realize ((c sp::referential-category))
   "The only reason to realize a category is to retrieve its name
-to provide a head word."
+to provide a head word. This method ignores part of speech."
   (sp::get-mumble-word-for-sparser-word
-   (handler-case (sp::extract-word-from-category-definition c)
-     (error () (sp::resolve (string-downcase (sp::cat-name c)))))))
+   (let ((head (sp::rdata-head-word c t)))
+     (typecase head
+       ((or sp::word sp::polyword) head)
+       (t (sp::resolve (string-downcase (sp::cat-name c))))))))
 
 (defmethod realize ((w sp::word))
   (find-or-make-word (sp::pname w)))

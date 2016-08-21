@@ -88,135 +88,41 @@
    so don't apply compatible-form check in multiply-edges."
   (pushnew etf-name *dont-check-forms-for-etf*))
 
+(defparameter *big-mech-bad-schemas*
+  '(:passive-with-by :by-phrase))
+
+(defun filter-schemas (rule-schemas)
+  "Hack to avoid the burned-in pp's created by the passive ETFs."
+  (if *big-mechanism*
+    (remove-if (lambda (schema)
+                 (memq (schr-relation schema) *big-mech-bad-schemas*))
+               rule-schemas)
+    rule-schemas))
 
 ;;;-------------------------------------
 ;;; instantiating rdata for individuals
 ;;;-------------------------------------
 
 (defun apply-single-category-rdata (individual category)
-  ;; Called from define-individual
-  (let ((realization-data (cat-realization category))
-        rdata-schema  )
-    (when realization-data 
-      (when (eq (car realization-data) :rules)
-        (setq realization-data (cdr realization-data)))
-      (etypecase (first realization-data)
-        (cons  ;; Multiple schemas
-         (dolist (item realization-data)
-           (when (and (consp item) (eq (first item) :schema))
-             (setq rdata-schema (cadr item))
-             (apply-realization-schema-to-individual
-              individual category rdata-schema))))
-        (keyword
-         (case (first realization-data)
-           (:rules)
-           (:synonyms)
-           (:schema
-            (setq rdata-schema (second realization-data))
-            (apply-realization-schema-to-individual
-             individual category rdata-schema))
-           (otherwise
-            (push-debug `(,category ,individual ,realization-data))
-            (error "New keyword at car of realization data for ~a"
-                   category))))))))
-
-(defun apply-distributed-realization-data (individual)
-  ;; Called from define-individual when the *c3* flag is up.
-  ;; Has to consider that category of the variable that binding a
-  ;; particular value (only worrying about words for now) when
-  ;; looking up the rschema that applies to it.
-  (push-debug `(,individual))
-  (dolist (b (indiv-binds individual))
-    (let ((value (binding-value b)))
-      (when (or (word-p value)
-                (polyword-p value))
-        (let* ((v (binding-variable b))
-               (category (var-category v)))
-          (apply-single-category-rdata individual category)
-          ;; That category will be something like has-name, 
-          ;; not the category of the individual, so some surgury
-          ;; is needed.
-          (let ((rs (rule-set-for value)))
-            (unless rs 
-              (push-debug `(,value)) 
-              (error "Expected a rule-set on ~a" value))
-            (let ((rule (car (rs-single-term-rewrites rs))))
-              (unless rule
-                (push-debug `(,rs ,value ,individual))
-                (error "Expected a rule in the rule set of ~a" value))
-              ;; I -think- this doesn't affect the indexing
-              (setf (cfr-category rule) (itype-of individual))
-              (push-debug `(,rule))
-              (return-from apply-distributed-realization-data value))))))))
-
-
-(defun apply-realization-schema-to-individual (individual
-                                               category
-                                               rdata-schema)
-  
-  ;; The rdata-schema is the value of the :schema key in the realization
-  ;; field of the category.  We're applying a realization schema that was
-  ;; defined for a category that defined its head-word as the value of one
-  ;; of the variables that will be bound as the way to individuate
-  ;; individuals. We take the word that has been bound to that
-  ;; individuating variable, make it the head word, and instantiated the
-  ;; rules that the schema defines.
-  
-  (let ((head-field (first rdata-schema))
-        (etf         (second rdata-schema))
-        (mapping     (third rdata-schema))
-        (local-cases (fourth rdata-schema)))
-
-    (flet ((head-schema-filled-with-words (field)
-             ;; We have cases like "person" where we want to instantiate
-             ;; new people but where the realization is used to provide
-             ;; a word that names (refers to) the category.
-             (some #'word-p field)))
-    
-      (let* ((head-word-variable (cadr head-field))
-             (head-word-type     (car head-field))
-             (head-word (when head-word-variable
-                          (value-of head-word-variable individual)))
-             (head (when head-field
-                     (list head-word-type head-word))))
-
-        (when (word-p head-word-variable)
-          ;; another configuration that the head filled with words
-          ;; is looking for. See waypoint  The schema arrangement
-          ;; is flimsy right now.
-          (setq head-word head-word-variable
-                head (list head-word-type head-word)))
-
-        (when head-field
-          (unless head-word
-            (unless (head-schema-filled-with-words head-field)
-              (break "Expected the individual ~A~
-                    ~%to have a value for its ~A variable.~
-                   ~%but it does not." individual head-word-variable))))
-        (make-rules-for-rdata category
-                              head
-                              etf mapping local-cases
-                              individual)))))
+  "Called from define-individual."
+  (dolist (rdata (cat-realization category))
+    (make-rules-for-rdata category rdata individual)))
 
 
 ;;;-----------------
 ;;; the real driver
 ;;;-----------------
 
-(defun make-rules-for-rdata (category head etf mapping local-cases
-                             &optional individual)
-  (let ((referent (or individual category))
-        rules)
-   (flet ((collect-rules (more-rules) (setq rules (append more-rules rules))))
-     (collect-rules (make-head-word-rules t head category referent))
-     (when etf
-       (dolist (rule-schema (etf-cases etf))
-         (collect-rules (instantiate-rule-schema rule-schema mapping category))))
-     (when local-cases
-       (dolist (rule-schema local-cases)
-         (collect-rules (instantiate-rule-schema rule-schema mapping category
-                                                 :local-cases? category)))))
-   (add-rules rules referent)))
+(defun make-rules-for-rdata (category rdata &optional individual &aux
+                             (referent (or individual category)))
+  (flet ((add-rules (rules) (add-rules rules referent)))
+    (add-rules (make-rules-for-head t rdata category referent))
+    (with-slots (etf mapping locals) rdata
+      (dolist (schema (and etf (filter-schemas (etf-cases etf))))
+        (add-rules (instantiate-rule-schema schema mapping category)))
+      (dolist (schema locals)
+        (add-rules (instantiate-rule-schema schema mapping category
+                                            :local-cases? category))))))
 
 
 ;;;---------------------------
@@ -292,6 +198,7 @@
 
     (unless additional-rule
       ;; Pass the realization schema through to each rule.
+      (check-type schema schematic-rule)
       (dolist (cfr *cfrs*)
         (setf (cfr-schema cfr) schema)
         (unless (memq (etf-name (schr-tree-family schema))

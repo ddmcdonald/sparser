@@ -20,7 +20,7 @@
 ;;;----------------------
 
 (defclass realization-scheme (named-object)
-  ((etf :initarg :etf :accessor etf-for-schema
+  ((etf :initarg :etf :accessor schema-tree-family
     :documentation "The exploded tree family that's used.
       We need its schema as the basis of the rules we make.")
    (head-keyword :initarg :head :accessor schema-head-keyword
@@ -45,12 +45,12 @@
 
 (defparameter *realization-schemas* (make-hash-table))
 
-(defun get-realization-scheme (name &optional (errorp t))
+(defun realization-scheme-named (name &optional (errorp t))
   (or (gethash name *realization-schemas*)
       (and errorp (error "There is no realization scheme named ~a." name))))
 
 (defun fom-realization-scheme (name &rest initargs)
-  (or (get-realization-scheme name nil)
+  (or (realization-scheme-named name nil)
       (setf (gethash name *realization-schemas*)
             (apply #'make-instance 'realization-scheme
                    :name name

@@ -42,7 +42,7 @@
                  (car string/list)
                  string/list))
          (obj (define-individual 'report-verb :name word)))
-    (make-head-word-rules :verb word/spec category obj)))
+    (make-rules-for-head :verb word/spec category obj)))
 
 
 ;;;------------------

@@ -39,7 +39,7 @@
 (defgeneric label (object &optional pos)
   (:documentation "Produce a Mumble word that denotes the given object.")
   (:method ((i sp::individual) &optional (pos 'noun) &aux
-            (raw-label (or (sp::rdata-head-word i)
+            (raw-label (or (sp::rdata-head-word i (sparser-pos pos))
                            (sp::lemma i (sparser-pos pos))
                            (sp::value-of 'sp::name i)
                            (sp::value-of 'sp::word i)

@@ -51,9 +51,9 @@
            (get-properties rdata *subcat-keywords*))))
 
 
-;;;--------------
-;;; Entry points
-;;;--------------
+;;;-------------
+;;; Entry point
+;;;-------------
 
 (defun setup-shortcut-rdata (category key-value-pairs)
   "Called from decode-category-parameter-list when shortcut-rdata-p is true.
@@ -97,18 +97,18 @@
     (setf (control-relations sf) control-relations)
     (dolist (schema-name (setq etf (ensure-list etf)))
       ;; Iterate through the etf, adding to the substituions and word list.
-      (let* ((rschema (get-realization-scheme schema-name))
+      (let* ((rschema (realization-scheme-named schema-name))
              (lexical-class (schema-head-keyword rschema)))
         ;; Set up the word map.
         (ecase lexical-class
           (:verb
            (unless verb
              (error "The etf ~a requies a :verb parameter." schema-name))
-           (push `(:verb . ,verb) word-map))
+           (push `(:verb ,verb) word-map))
           (:common-noun
            (unless noun
              (error "The etf ~a requies a :noun parameter." schema-name))
-           (push `(:common-noun . ,noun) word-map)))
+           (push `(:common-noun ,noun) word-map)))
 
         ;; Incrementally set up the substitution map.
         (when subj-pat
@@ -168,8 +168,8 @@
         (let* ((word-string (if (consp noun) (car noun) noun))
                (word (resolve/make word-string))
                (special-cases (when (consp noun) (cdr noun)))
-               (cn-rules (apply #'make-head-word-rules :common-noun
-                                word category category
+               (cn-rules (apply #'make-rules-for-head
+                                :common-noun word category category
                                 special-cases)))
           (make-corresponding-mumble-resource word :common-noun)
           (add-rules cn-rules category))))
@@ -177,11 +177,10 @@
     (when adj
       ;; Adjectives are analyzed as being able to take subjects and/or objects
       ;; as well as subcategorizations ('slots').
-      (unless (assq :adjective word-map)
-        (let* ((word (resolve/make adj))
-               (adj-rules (make-head-word-rules :adjective word category category)))
-          (make-corresponding-mumble-resource word :adjective)
-          (add-rules adj-rules category))))
+      (let* ((word (resolve/make adj))
+             (adj-rules (make-rules-for-head :adjective word category category)))
+        (make-corresponding-mumble-resource word :adjective)
+        (add-rules adj-rules category)))
 
     (when adjp-complement
       (register-variable category adjp-complement :adjp-complement))
@@ -192,10 +191,5 @@
       (apply-rdata-mappings category etf
                             :args substitution-map
                             :word-keys word-map))
-
-    (add-subcats-to-rdata category)
-
-    (when (and mumble *build-mumble-equivalents*)
-      (decode-mumble-spec category mumble))
 
     category))

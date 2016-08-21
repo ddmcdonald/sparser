@@ -65,15 +65,13 @@ broadly speaking doing for you all the things you might do by hand.
   ;;    get realization information from the category
   `(define-named-individual-with-synonyms/expr ',category-name ',word-list ',brackets ',no-morph))
 
-(defun define-named-individual-with-synonyms/expr (category-name word-list 
-                                                   &optional brackets no-morph)
-  (declare (optimize debug))
+(defun define-named-individual-with-synonyms/expr (category-name word-list &optional brackets no-morph)
+  (declare (ignore brackets no-morph))
   (let* ((category (category-named category-name :break-if-undefined))
-         (pos (caar (getf (cat-realization category) :schema)))
-         (i (find-or-make-individual category :name (car word-list))))
-    (check-type pos head-keyword)
+         (i (find-or-make-individual category :name (car word-list)))
+         (pos (car (rdata-head-words (first (cat-realization category))))))
     (dolist (word (cdr word-list))
-      (add-rules (make-head-word-rules pos (resolve/make word) category i) i))
+      (add-rules (make-rules-for-head pos (resolve/make word) category i) i))
     ;; How do we record these synonyms with the instance given that this scheme
     ;; (taken from unit-of-measure) makes an instance for each case but the
     ;; realization information is kept with the category? We can either change
@@ -391,8 +389,8 @@ broadly speaking doing for you all the things you might do by hand.
              (category (eval form)))
         ;; Parameters to these two are (pos word category referent)
         ;; and they do the bracket assignment. 
-        (make-head-word-rules :adjective adj category category)
-        (make-head-word-rules :adverb adv category category)
+        (make-rules-for-head :adjective adj category category)
+        (make-rules-for-head :adverb adv category category)
         category))))
 
 

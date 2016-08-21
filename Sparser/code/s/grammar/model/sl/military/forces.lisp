@@ -50,16 +50,14 @@
                      :bindings (name ,name-word abbrev ,abbrev-word))))
         (setq category (eval form))
         (let ((name-rules
-               (make-head-word-rules :common-noun
-                                     name-word 
-                                     (category-named 'military-force) ;; label
-                                     category)) ;; referent
+               (make-rules-for-head :common-noun name-word
+                                    (category-named 'military-force) ;; label
+                                    category)) ;; referent
               (abbrev-rules
                (when abbrev
-                 (make-head-word-rules :common-noun
-                                       abbrev-word  ;; plural make sense?
-                                       (category-named 'military-force) ;; label
-                                       category))))
+                 (make-rules-for-head :common-noun abbrev-word  ;; plural make sense?
+                                      (category-named 'military-force) ;; label
+                                      category))))
           (add-rules (append name-rules abbrev-rules) category)))
         category )))
           

@@ -52,131 +52,41 @@
 
 (defun apply-rdata-mappings (category etf-names &key args word-keys)
   (dolist (name etf-names)
-    (let ((scheme (get-realization-scheme name)))
+    (let ((scheme (realization-scheme-named name)))
       (apply-realization-scheme category scheme args word-keys))))
 
 (defun apply-realization-scheme (category scheme substitution-map word-keys)
-  ;; This is an open-coding of make-rules-for-rdata
-  (let* ((etf (etf-for-schema scheme))
-         (head-keyword (schema-head-keyword scheme))
-         (mapping (assemble-scheme-form scheme substitution-map etf category))
-         (head-word-pname (cdr (assq head-keyword word-keys)))
-         (rr (make-realization-data category :etf etf :map mapping))
-         head-word  irregulars )
-    (record-use-of-tf-by etf category)
-    (cond
-     ((consp head-word-pname)
-      ;; two cases, multiple words and a single word with irregularities
-      ;; See, e.g., make-verb-rules for how this is sorted out later.
-      (cond
-       ((some #'keywordp head-word-pname)
-        (setq head-word (resolve/make (car head-word-pname))
-              irregulars (cdr head-word-pname))
-        (when irregulars
-          (setq irregulars 
-                (loop for item in irregulars
-                  when (keywordp item) collect item
-                  when (stringp item) collect (resolve/make item)))))
-       ((every #'stringp head-word-pname)
-        (setq head-word (loop for string in head-word-pname
-                          collect (resolve/make string))))
-       (t 
-        (push-debug `(,head-word-pname ,category))
-        (error "Oddly formed head-word pname: ~a" head-word-pname))))
-     (t
-      (setq head-word (resolve/make head-word-pname)
-            irregulars (cdr (assq :irregulars word-keys)))))
-    (record-rdata-head rr head-word)
-    (setf (rdata-head-irregulars rr) irregulars)
-
-    (unless head-word
-      (push-debug `(,scheme ,word-keys))
-      (error "The word-keys don't have an entry for ~a" head-keyword))
-    (let* ((rules (apply #'make-head-word-rules head-keyword head-word category category
-                         irregulars)))
-      (let* ((rule-schemas (etf-cases etf))
-             rule/s-from-schema )
-        (when *big-mechanism*
-          (setq rule-schemas (filter-out-big-mech-bad-schemas rule-schemas)))
-        (dolist (schema rule-schemas)
-          (setq rule/s-from-schema
-                (instantiate-rule-schema schema mapping category))
-          (if (consp rule/s-from-schema)
-            (setq rules (append rule/s-from-schema rules))
-            (push rule/s-from-schema rules)))
-        (add-rules rules category)))))
-
+  (make-rules-for-rdata category
+   (make-realization-data category
+                          :etf (schema-tree-family scheme)
+                          :mapping (make-scheme-mapping
+                                    scheme substitution-map category)
+                          :heads (decode-rdata-heads
+                                  (assoc (schema-head-keyword scheme) word-keys)
+                                  category))))
                 
-(defun assemble-scheme-form (schema args-to-substitute etf category)
+(defun make-scheme-mapping (schema args-to-substitute category)
   "Rebuild the schematic mapping into a real mapping according to the
-   category-specific substitution arguments. Does much of the same job
-   as decode-binding in interpreting symbols and strings."
-  (declare (ignore etf))
-  (let ((override-category (override-label category))
-        (mapping-form (schema-mapping schema))
-        new-mapping  car-value  cdr-value)
-    (dolist (pair mapping-form)
-      (setq car-value (car pair)
-            cdr-value (cdr pair))
-      (cond
-       ((eq cdr-value :self)
-        (push `(,car-value ,(or override-category
-                                category))
-              new-mapping))
-       ((stringp cdr-value)
-        (let ((word (resolve/make cdr-value)))
-          (push `(,car-value ,word) new-mapping)))
-       (t
-        (let ((subst-value (cdr (assq cdr-value args-to-substitute))))
-          (unless subst-value
-            (error "No value for ~a among the substitution args"
-                   cdr-value))
-          (let ((decoded-value
-                 (typecase subst-value
-                   (lambda-variable subst-value)
-                   (category subst-value)
-                   (symbol
-                    (or (category-named subst-value)
-                        (find-variable-in-category subst-value category)
-                        (error "The symbol ~a can't be interpreted as ~
-                                a category or a variable." subst-value)))
-                   (cons
-                    (unless (eq (car subst-value) :or)
-                      (push-debug `(,subst-value ,category))
-                      (error "List-valued substitution value doesn't ~
-                              start with ':or'"))
-                    ;; expect this to be a list of categories since
-                    ;; it's pulled right off the variable/s v/r
-                    (unless (every #'category-p (cdr subst-value))
-                      (push-debug `(,subst-value))
-                      (error "':or' list is not all categories: ~a"
-                             subst-value))
-                    ;; drop the :or
-                    (cdr subst-value))
-                   (otherwise
-                    (push-debug `(,subst-value ,category))
-                    (error "Unexpected type of subst-value: ~a~%~a"
-                           (type-of subst-value) subst-value)))))
-            (unless decoded-value
-              (error "Could not decode the substitution value ~a"
-                     subst-value))
-
-            (push `(,car-value . ,decoded-value)
-                  new-mapping))))))
-    (nreverse new-mapping)))
-
-
-;;;-------------------------------------------------------------
-;;; hack to avoid the burned-in pp's created by the passive ETF
-;;;-------------------------------------------------------------
-
-(defparameter *big-mech-bad-schemas*
-  '(:passive-with-by :by-phrase))
-
-(defun filter-out-big-mech-bad-schemas (rule-schemas)
-  (loop for schema in rule-schemas
-    unless (memq (schr-relation schema) *big-mech-bad-schemas*)
-    collect schema))
-
-
-             
+   category-specific substitution arguments; cf. decode-rdata-mapping."
+  (loop for (term . value) in (schema-mapping schema)
+        if (eq value :self)
+          collect (cons term (or (override-label category) category))
+        else if (stringp value)
+          collect (cons term (resolve/make value))
+        else
+          collect (cons term
+                        (let ((value (or (cdr (assq value args-to-substitute))
+                                         (error "No value for ~a among the substitution args."
+                                                value))))
+                          (etypecase value
+                            ((or category lambda-variable)
+                             value)
+                            (symbol
+                             (or (category-named value)
+                                 (find-variable-in-category value category)
+                                 (error "No category or variable named ~a." value)))
+                            ((cons (eql :or))
+                             (assert (every #'category-p (cdr value))
+                                     ((cdr value))
+                                     "Bad disjunctive value restriction.")
+                             (cdr value)))))))

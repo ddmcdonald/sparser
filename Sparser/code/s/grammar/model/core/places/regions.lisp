@@ -179,7 +179,7 @@
         (setq category (eval expr))))
     (let ((rule
            (if new?
-             (caadr (memq :rules (cat-realization category)))
+             (first (get-rules category))
              (construct-cfr ;; consider def-cfr/expr
               (category-named 'region-type) ;; lhs
               (list word) ;; rhs

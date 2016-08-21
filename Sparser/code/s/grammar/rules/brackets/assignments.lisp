@@ -206,10 +206,8 @@
                                     `(:specializes ,super-category
                                       :instantiates :self))))
            (rs (rule-set-for word))
-           (rules (apply #'make-head-word-rules :common-noun
-                         word
-                         category         ;; lhs
-                         category         ;; referent
+           (rules (apply #'make-rules-for-head
+                         :common-noun word category category
                          marked-plural))) ;; special-cases
       (mark-as-constructed-category-for-word category super-category)
       (when rs ;; could start out as nil
@@ -292,7 +290,7 @@
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
-           (rules (make-head-word-rules :adjective word category category)))
+           (rules (make-rules-for-head :adjective word category category)))
       (mark-as-constructed-category-for-word category super-category)
       (add-rules rules category)
       category)))
@@ -319,7 +317,7 @@
     (let* ((category (define-category/expr category-name
                        `(:specializes ,super-category
                         :instantiates :self)))
-           (rules (make-head-word-rules :adverb word category category)))
+           (rules (make-rules-for-head :adverb word category category)))
       (mark-as-constructed-category-for-word category super-category)
       (add-rules rules category)
       category)))

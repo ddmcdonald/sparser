@@ -11,20 +11,10 @@
 ;;; Mumble information within rdata
 ;;;---------------------------------
 
-(defun includes-mumble-rdata (rdata)
-  "Expects the rdata to be a list of lists, and checks
-   for one of them to have the operator :mumble."
-  ;; Called by setup-rdata 
-  (when (consp (car rdata))
-    (assq :mumble rdata)))
-
 (defun apply-mumble-rdata (category rdata)
   "Provide phrase and argument information (so far only)
    for verbs. Look up the m-word, which should exist
    at this point, and create the lexicalized phrase."
-  ;; Called from setup-rdata
-  ;; (push-debug `(,category ,rdata))
-  ;; (setq category (car *) rdata (cadr *))
   (let ((mumble-spec (cadr (if (keywordp (car rdata))
                              (member :mumble rdata)
                              (assq :mumble rdata)))))

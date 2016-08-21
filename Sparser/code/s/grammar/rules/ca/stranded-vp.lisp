@@ -61,26 +61,15 @@
 ;;; looking up the appropriate rule
 ;;;---------------------------------
 
-(defun subject-rule (unit  &optional passive? )
-  (let* ((type (etypecase unit
-                 (referential-category unit)
-                 (psi (category-lattice-node-belongs-to 
-                       (psi-lp unit)))
-                 (individual (car (indiv-type unit)))))
-         (rules (cadr (member :rules (cat-realization type)))))
-
-    (dolist (cfr rules)
-      ;; the list is usually about half a dozen items, with the
-      ;; phrasal cases at the beginning, so this serial search
-      ;; isn't so bad
-      (if passive?
-        (when (eq :passive (get-tag :relation cfr))
-          (return-from subject-rule cfr))
-        (when (eq :subject (get-tag :relation cfr))
-          (return-from subject-rule cfr))))
-
-    (tr :couldnt-find-subject-rule unit type)
-    nil ))
+(defun subject-rule (unit &optional passive)
+  (let ((type (etypecase unit
+                (referential-category unit)
+                (psi (category-lattice-node-belongs-to (psi-lp unit)))
+                (individual (car (indiv-type unit))))))
+    (or (find (if passive :passive :subject)
+              (get-rules type)
+              :key (lambda (rule) (get-tag :relation rule)))
+        (prog nil (tr :couldnt-find-subject-rule unit type)))))
 
 
 

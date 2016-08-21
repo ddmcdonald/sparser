@@ -188,9 +188,7 @@
       (handle-variable-restrictions category restrictions))
 
     (when rdata
-      (if (shortcut-rdata-p rdata)
-        (setup-shortcut-rdata category rdata)
-        (setup-rdata category rdata)))
+      (setup-rdata category rdata))
     
     (when lemma
       (setup-category-lemma category lemma))

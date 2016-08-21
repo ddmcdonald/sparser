@@ -20,7 +20,6 @@
       (error "There is no phrase in Mumble with the name ~a" m-name))
     phrase))
 
-
 ;;--- words
 
 (defmethod binds-a-word? ((i individual))
@@ -37,23 +36,6 @@
 		     (error "New type: ~a~%~a" 
 			    (type-of binding/s) binding/s)))))
     (binding-value binding)))
-
-
-(defun extract-word-from-category-definition (c)
-  (let ((realization-field (cat-realization c)))
-    (unless realization-field (error "No realization on ~a" c))
-    (let ((schema-forms (retrieve-schema-forms realization-field)))
-      (unless schema-forms
-        (push-debug `(,realization-field ,c))
-        (error "No schema in realization of ~a" c))
-      (let ((schema (identify-schema-with-word schema-forms)))
-        (unless schema
-          (push-debug `(,schema-forms ,c))
-          (error "Could not find a word for ~a" c))
-        ;;(push-debug `(,schema))
-        (let ((w (cdr (car schema))))
-          w)))))
-
 
 ;;--- determiners
 

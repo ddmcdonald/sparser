@@ -59,10 +59,15 @@
 ;;     (9/22/15) added final value to setup-category-lemma now that it's being
 ;;      called by itself.
 ;;     (11/3/15) Tweaked deref-rdata-word to allow for multiple irregular words
-;;  1/6/16 Folding in specifications for Mumble.
-;;  2/26/15 reworked apply-mumble-rdata to pass all parameters through
+;; 1/6/16 Folding in specifications for Mumble.
+;; 2/26/15 reworked apply-mumble-rdata to pass all parameters through
+;; 8/11/16 Revised and simplified. Use realization-data class exlusively.
 
 (in-package :sparser)
+
+;;;-------------
+;;; Data checks
+;;;-------------
 
 (deftype head-keyword ()
   "A keyword indicating part-of-speech for a head word.
@@ -79,8 +84,19 @@ Should mirror the cases on the *single-words* ETF."
            :quantifier
            :number))
 
+(deftype realization-keyword ()
+  '(or head-keyword
+       (member :tree-family
+               :mapping
+               :additional-rules
+               :mumble)))
+
+(defun check-rdata (rdata)
+  (loop for (keyword value) on rdata by #'cddr
+        do (check-type keyword realization-keyword "a realization keyword")))
+
 ;;;----------------------
-;;; standalone def forms
+;;; Standalone def forms
 ;;;----------------------
 
 (defmacro define-marker-category (category-name &key realization)
@@ -93,25 +109,19 @@ Should mirror the cases on the *single-words* ETF."
    full arguments with define-category."
   `(setup-rdata (find-or-make-category ',category-name) ',realization))
 
-(defmacro define-realization (category-name &body realization &aux
-                              (category (gensym))
-                              (rdata (gensym)))
-  `(let ((,category (category-named ',category-name t))
-         (,rdata ',realization))
-     (if (shortcut-rdata-p ,rdata)
-       (setup-shortcut-rdata ,category ,rdata)
-       (setup-rdata ,category ,rdata))))
+(defmacro define-realization (category-name &body realization)
+  `(setup-rdata (category-named ',category-name t) ',realization :delete nil))
 
-(defmacro define-additional-realization (category &body rdata)
+(defmacro define-additional-realization (category &body realization)
   `(let ((*deliberate-duplication* t))
     (declare (special *deliberate-duplication*))
-    (define-realization ,category ,@rdata)))
+    (define-realization ,category ,@realization)))
 
-(defmacro def-synonym (category (&rest rdata))
-  `(define-additional-realization ,category ,@rdata))
+(defmacro def-synonym (category (&rest realization))
+  `(define-additional-realization ,category ,@realization))
 
 ;;;-----------------------------------------------------------
-;;; entry point from the definition of a referential category
+;;; Entry point from the definition of a referential category
 ;;;-----------------------------------------------------------
 
 (defvar *build-mumble-equivalents* t
@@ -126,280 +136,94 @@ Should mirror the cases on the *single-words* ETF."
    The routines in objects;model;tree-families;driver.lisp create the rules
    when individuals of the category are created. The function that actually
    makes the rules is make-rules-for-rdata."
-  (let ((old-rules (get-rules category)))
-    (etypecase (first rdata)
-      (cons (setup-for-multiple-rdata category rdata))
-      (keyword (setup-single-rdata category rdata)))
+  (when delete
+    (setf (cat-realization category) nil
+          (get-rules category) (map nil #'delete/cfr (get-rules category))))
 
-    (let ((new-rules (get-rules category)))
-      (setf (get-rules category)
-            (cond (delete
-                   (mapc #'delete/cfr (set-difference old-rules new-rules))
-                   new-rules)
-                  (t (when *load-verbose*
-                       (warn "Redefining rules for ~a: ~d old rule~:p, ~d new one~:p."
-                             (pname category)
-                             (length old-rules)
-                             (length new-rules)))
-                     (union old-rules new-rules))))))
+  (if (shortcut-rdata-p rdata)
+    (setup-shortcut-rdata category rdata)
+    (labels ((decode (rdata) (apply #'decode-rdata category rdata))
+             (make-rules (rdata) (make-rules-for-rdata category (decode rdata))))
+      (etypecase (car rdata)
+        (keyword (make-rules rdata)) ; one realization
+        (cons (map nil #'make-rules rdata))))) ; multiple realizations
+
   (when mumble
-    (apply-mumble-rdata category rdata)))
+    (apply-mumble-rdata category rdata))
 
-(defun setup-single-rdata (category rdata)
-  (check-rdata rdata)
-  (dereference-and-store?-rdata-schema category rdata t))
-
-(defun setup-for-multiple-rdata (category list-of-rdata)
-  (let ( head-word  etf  mapping  rules  local-cases 
-         all-schemas  all-rules )
-    (dolist (rdata list-of-rdata)
-      (check-rdata rdata)
-      (multiple-value-setq (head-word etf mapping local-cases rules)
-        (dereference-and-store?-rdata-schema category rdata nil)) ;; nil overrides store
-      (push `(:schema (,head-word ,etf ,mapping ,local-cases))
-            all-schemas)
-      (setq all-rules (append rules all-rules)))
-    (setf (cat-realization category)
-          `(:rules ,all-rules ,@all-schemas))))
-
-
-(defun dereference-and-store?-rdata-schema (category rdata store?)
-  (multiple-value-bind (head-word etf mapping local-cases)
-      (apply #'dereference-rdata category rdata)
-    (let ((rules (make-rules-for-rdata ;; <<< does the work
-                  category head-word etf mapping local-cases)))
-      (if store?
-        (record-realization-data
-           category head-word etf mapping rules local-cases)        
-        (values head-word etf mapping local-cases rules)))))
-
+  (cat-realization category))
 
 ;;;----------------------------
 ;;; Recording realization data
 ;;;----------------------------
 
-(defclass realization-data (named-object)
+(defclass realization-data ()
   ((category :initarg :category :accessor rdata-for
     :documentation "Backpointer to the category object.")
    (etf :initform nil :initarg :etf :accessor rdata-etf
     :documentation "Points to the etf if one was used.")
-   (mapping :initform nil :initarg :map :accessor rdata-mapping
+   (mapping :initform nil :initarg :mapping :accessor rdata-mapping
     :documentation "A completely dereferenced mapping from
       an individual as a instance of a category to the variables 
       used in that case.")
-   (locals :initform nil :initarg :locals :accessor rdata-local-rules
+   (locals :initform nil :initarg :local-rules :accessor rdata-local-rules
     :documentation "The rules that are written out in direct form
       to cover cases not incorporated in the ETF of the realization.")
-   (subcats :initform nil :accessor rdata-subcat-frames
-    :documentation "List of all the known subcategorization patterns")
-   (head-word :initform nil :initarg :head :accessor rdata-head
-    :documentation "The word specified in the realization, if any.")
-   (irregulars :initform nil :accessor rdata-head-irregulars
-    :documentation "Plist of marked irregular forms.")
-   (head-pos :initform nil :accessor rdata-head-pos
-    :documentation "If there is a head word, this is its part of speech."))
-  (:documentation "Compare to realization-scheme class in rules/
- tree-families/families.lisp or realization-node in objects/model/
- lattice-points/structure.lisp. Goal is to replace the haphazard
- distribution of category or individual level realization information
- as lists with a new one that is consistent and can be directly accessed."))
+   (subcats :initform nil :initarg :subact-frames :accessor rdata-subcat-frames
+    :documentation "A list of all the known subcategorization patterns")
+   (heads :initform nil :initarg :heads :accessor rdata-head-words
+    :documentation "A plist of head words keyed on part of speech.")))
 
-(defmethod print-object ((rr realization-data) stream)
-  (print-unreadable-object (rr stream)
-    (format stream "rdata for ~a" (cat-name (rdata-for rr)))))
+(defmethod print-object ((rdata realization-data) stream)
+  (print-unreadable-object (rdata stream :identity t)
+    (format stream "realization for ~a" (cat-name (rdata-for rdata)))))
 
-(defun make-realization-data (category &rest args)
+(defmethod initialize-instance :after ((instance realization-data) &key category etf heads)
+  (when etf (record-use-of-tf-by etf category))
+  (when heads (make-corresponding-lexical-resource heads category)))
+
+(defun make-realization-data (category &rest initargs)
   "Make a realization data record and attach it to a category."
   (check-type category category)
-  (setf (rdata category) (apply #'make-instance 'realization-data
-                                :category category
-                                args)))
-
-(defun fom-realization-data (category &rest args)
-  "Find or make a realization data record for a category."
-  (check-type category category)
-  (or (rdata category)
-      (apply #'make-realization-data category args)))
+  (let ((rdata (apply #'make-instance 'realization-data
+                      :category category
+                      initargs)))
+    (nconcf (cat-realization category) (list rdata))
+    rdata))
 
 (defgeneric rdata (item)
   (:documentation "Retrieve the realization data for a category designator.")
   (:method (item)
     (declare (ignore item)))
   (:method ((name symbol))
-    (rdata (category-named name :error-if-nil)))
+    (rdata (category-named name t)))
   (:method ((i individual))
     (rdata (itype-of i)))
   (:method ((c category))
-    (get-tag :rdata c)))
+    (cat-realization c)))
 
-(defgeneric (setf rdata) (rr item)
-  (:documentation "Save the realization data record for a category designator.")
-  (:method (rr (name symbol))
-    (setf (rdata (category-named name :error-if-nil)) rr))
-  (:method (rr (c category))
-    (setf (get-tag :rdata c) rr)))
-
-(defun record-realization-data (category head-word etf mapping rules local-cases)
-  "Called by dereference-and-store?-rdata-schema to stash the rdata
-   for later use in making rules, e.g. by apply-realization-schema-to-individual
-   and its variants in driver.lisp"
-  (let ((rr (make-realization-data category
-                                   :etf etf
-                                   :map mapping
-                                   :locals local-cases)))
-    (record-rdata-head rr head-word)
-    ;; This is what the rule-creators are working from. 
-    (setf (cat-realization category)
-          `(:schema (,head-word ,etf ,mapping ,local-cases)
-            :rules ,rules))
-    rr))
-
-(defun record-rdata-head (rr word)
-  (etypecase word
-    (null)
-    ((or word polyword)
-     (setf (rdata-head rr) word))
-    (cons
-     ;; (:adjective #<variable name>)
-     (cond
-       ((and (keywordp (car word)) (lambda-variable-p (cadr word)))
-        (setf (rdata-head rr) (cadr word))
-        (setf (rdata-head-pos rr) (car word)))
-       ((and (keywordp (car word))
-             (or (word-p (cadr word))
-                 (polyword-p (cadr word))))
-        (setf (rdata-head rr) (cadr word))
-        (setf (rdata-head-pos rr) (car word)))
-       ((and (keywordp (car word))
-             (word-p (caadr word))
-             (some #'keywordp (cdadr word)))
-        (setf (rdata-head rr) (caadr word))
-        (setf (rdata-head-pos rr) (car word))
-        (setf (rdata-head-irregulars rr) (cdadr word)))
-       ((and (listp word)
-             (every #'(lambda (w) (or (word-p w) (polyword-p w))) word))
-        (setf (rdata-head rr) (cadr word)))
-       (t (error "Invalid head-word specification ~a." word))))))
-
-(defgeneric add-subcats-to-rdata (category)
-  (:documentation "Once its probably the case that all the subcat data 
-    for a given realization has been accumulated, copy it over to the
-    realization-data-record of the category, refactoring as needed.")
-  (:method ((c category))
-    (let ((rr (fom-realization-data c))
-          (sf (get-subcategorization c)))
-      (setf (rdata-subcat-frames rr) sf))))
-
-(defgeneric rdata-head-word (item)
-  (:method (item)
-    (declare (ignore item)))
-  (:method ((c category))
-    (let ((head (rdata-head (rdata c))))
-      (typecase head
-        ((or word polyword) head))))
-  (:method ((i individual))
-    (let* ((rdata (rdata i))
-           (head (and rdata (rdata-head rdata))))
+(defgeneric rdata-head-word (item pos)
+  (:argument-precedence-order pos item)
+  (:method (item pos)
+    (declare (ignore item pos)))
+  (:method (item (pos (eql t)))
+    "Return the first recorded head word and its part of speech."
+    (when (rdata item)
+      (let ((pos (car (rdata-head-words (car (rdata item))))))
+        (values (rdata-head-word item pos) pos))))
+  (:method ((c category) pos)
+    "Retrieve the head associated with the given part of speech."
+    (loop for rdata in (rdata c)
+          thereis (getf (rdata-head-words rdata) pos)))
+  (:method ((i individual) pos)
+    "Return the head word or dereference a head variable."
+    (let ((head (rdata-head-word (itype-of i) pos)))
       (etypecase head
-        (null)
         ((or word polyword) head)
+        (list (car head)) ; should handle irregulars better
         (lambda-variable
          (let ((head-var (find head (indiv-binds i) :key #'binding-variable)))
            (and head-var (binding-value head-var))))))))
-
-#| Notes for organizing the change-over
-
-The etf, mapping, and word info tend to be used as a group,
-and effectively control the entire process of creating the
-semantic rules.  
-
-The rules seem to just be accessed and handled as a group
-They can be moved over to the plist routines that are used now
-in all new code or easily revised code. Change these first.
-
---- Existing calls on the realization field of the category
-    (where we stash instances of the class once we've changed over
-avidsmcbookpro:s ddm$ grep "(cat-realization " **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
-interface/mumble/rnode-centric.lisp:  (let* ((realization-field (cat-realization c))
-interface/mumble/rspec-gophers.lisp:  (let ((realization-field (cat-realization c)))
-grammar/rules/CA/extract-subj.lisp:             (schema (cadr (member :schema (cat-realization type)))))
-grammar/rules/CA/stranded-vp.lisp:         (rules (cadr (member :rules (cat-realization type)))))
-grammar/rules/tree-families/shortcuts.lisp:          ;	(setf (cat-realization category)
-grammar/rules/tree-families/shortcuts.lisp:          ;	      `(:synonyms ,words . ,(cat-realization category)))
-objects/model/categories/define.lisp:  (cadr (member :rules (cat-realization category))))
-objects/model/tree-families/driver.lisp:  (if (cat-realization category)
-objects/model/tree-families/driver.lisp:  (let* ((rdata (cat-realization category))
-objects/model/tree-families/driver.lisp:  (let ((realization-data (cat-realization category))
-objects/model/tree-families/rdata.lisp:         (when (cat-realization category)
-objects/model/tree-families/rdata.lisp:           (cadr (member :rules (cat-realization category))))))
-objects/model/tree-families/rdata.lisp:           (cadr (member :rules (cat-realization category)))))
-objects/model/tree-families/rdata.lisp:            (let ((cons-cell (member :rules (cat-realization category))))
-objects/model/tree-families/rdata.lisp:    (setf (cat-realization category)
-objects/model/tree-families/rdata.lisp:    (setf (cat-realization category)
-objects/model/tree-families/rdata.lisp:  (let ((rdata  (cat-realization category)))
-objects/model/tree-families/rdata.lisp:  (let ((rdata  (cat-realization category)))
-objects/model/tree-families/rdata.lisp:  (when (cat-realization category)
-objects/model/tree-families/rdata.lisp:    (let ((realization-data (cat-realization category))
-grammar/model/core/kinds/object.lisp:	       (caadr (memq :rules (cat-realization category)))))))
-grammar/model/core/places/regions.lisp:             (caadr (memq :rules (cat-realization category)))
-
-
-|#
-
-
-;;;-------------
-;;; Data checks
-;;;-------------
-
-(deftype rdata-keyword ()
-  '(or head-keyword
-       (member :tree-family :mapping :additional-rules :mumble)))
-
-(defun check-rdata (rdata)
-  (loop for (keyword value) on rdata by #'cddr
-        do (check-type keyword rdata-keyword "a valid realization keyword")))
-
-
-;;--- methods for other routines (like NLG) that need to examine schema
-
-(defmethod retrieve-schema-forms ((category referential-category))
-  (let ((rdata  (cat-realization category)))
-    (when rdata
-      (retrieve-schema-forms rdata))))
-
-(defmethod retrieve-schema-forms ((realization-data cons))
-  (loop for form in realization-data
-    when (and (consp form) (eq (car form) :schema))
-    collect (cadr form)))
-
-(defmethod identify-schema-with-variable ((schema-forms cons) &optional break?)
-  ;; (:schema ((:proper-noun . #<variable nname>) nil nil nil))
-  (let ((value
-         (loop for form in schema-forms
-           as head-field = (first (second form))
-           as value = (cdr head-field)
-           when (lambda-variable-p value) return form)))
-    (or value
-        (when break?
-          (error "No realization schema based on a variable. Check definitions")))))
-#| For build in the blocks-world this is the list of schema-forms
-  1.  (no-head-word #<etf VP+ADJUNCT> ((vg . #<ref-category BUILD>) (vp . #<ref-category BUILD>) (adjunct . #<ref-category PHYSICAL>) (slot . #<variable artifact>)) nil)
-  2.  (no-head-word nil nil nil)
-  3.  ((verb #<word "build"> past-tense #<word "built">) nil nil nil)
-|#
-(defmethod identify-schema-with-word ((schema-forms cons) &optional break?)
-  ;; (:schema (((:common-noun . #<word "waypoint">) nil nil nil))
-  (let ((value
-         (loop for form in schema-forms
-           when (and (consp (car form))
-                     (word-p (cadr (car form))))
-           ;; e.g. ((:verb #<word "build"> :past-tense #<word "built">) nil nil nil)
-           return form)))
-    (or value
-        (when break?
-          (error "No realization schema based on a variable. Check definitions")))))
-
-;;--- The word case just by itself
 
 (defgeneric lemma (item pos)
   (:method ((c category) pos)
@@ -423,32 +247,27 @@ the rspec for the words of instances of the category."
            (check-type keyword head-keyword "a valid realization keyword")
            (check-type string (or string cons))
            (let* ((head (deref-rdata-word string category))
-                  (rules (make-head-word-rules keyword head category category)))
+                  (rules (make-rules-for-head keyword head category category)))
              (setf (lemma category keyword) head)
              (add-rules rules category))))
 
 
-;;;------------------------------------------------
-;;; the real driver: symbols -> objects by keyword
-;;;------------------------------------------------
+;;;--------------------------------------
+;;; Decode symbols -> objects by keyword
+;;;--------------------------------------
 
-(defun dereference-rdata (category &rest rdata &key tree-family mapping
-                          additional-rules &allow-other-keys)
-  "Convert symbols to objects for realization data. Returns the arguments
-   to feed into make-rules-for-rdata."
-  (let ((head
-         (loop for (keyword value) on rdata by #'cddr
-               when (typep keyword 'head-keyword)
-                 do (return `(,keyword ,(deref-rdata-word value category))))))
-    (when head
-      (make-corresponding-lexical-resource head category))
-    (when tree-family
-      (setq tree-family (exploded-tree-family-named tree-family))
-      (record-use-of-tf-by tree-family category))
-    (values head
-            tree-family
-            (and tree-family (decode-rdata-mapping mapping category tree-family))
-            (decode-additional-rules additional-rules))))
+(defun decode-rdata (category &rest rdata &key tree-family mapping
+                     additional-rules &allow-other-keys)
+  "Convert symbols to objects for realization data."
+  (check-rdata rdata)
+  (make-realization-data category
+                         :etf (when tree-family
+                                (setq tree-family
+                                      (exploded-tree-family-named tree-family)))
+                         :mapping (when tree-family
+                                    (decode-rdata-mapping tree-family mapping category))
+                         :local-rules (decode-additional-rules additional-rules)
+                         :heads (decode-rdata-heads rdata category)))
 
 (defun deref-rdata-word (word category)
   "Recursively replace symbols with variables and strings with words."
@@ -459,6 +278,12 @@ the rspec for the words of instances of the category."
                 (error "The symbol ~a does not correspond to a variable of ~a."
                        word category)))
     (cons (mapcar (lambda (word) (deref-rdata-word word category)) word))))
+
+(defun decode-rdata-heads (rdata category)
+  "Return a plist of specified head words in the realization data."
+  (loop for (keyword value) on rdata by #'cddr
+        when (typep keyword 'head-keyword)
+        nconc (list keyword (deref-rdata-word value category))))
 
 (defun decode-additional-rules (cases)
   "Additional rules don't use mappings. They use the names of categories, words,
@@ -473,12 +298,11 @@ the rspec for the words of instances of the category."
                                          term))
                    ,@referent))))
 
-(defun decode-rdata-mapping (mapping category tf)
+(defun decode-rdata-mapping (etf mapping category)
   "Semantic parameters are decoded as variables.
    Syntactic labels are decoded as categories."
-  (declare (optimize debug))
-  (loop with parameters = (etf-parameters tf)
-        with labels = (etf-labels tf)
+  (loop with parameters = (etf-parameters etf)
+        with labels = (etf-labels etf)
         for (term . value) in mapping
         when (typep value '(cons * null))
           do (setq value (car value)) ; quietly fix a missing dot
@@ -486,7 +310,7 @@ the rspec for the words of instances of the category."
           collect (cons term
                         (or (and (eq value :self) category)
                             (find-variable-for-category value category)
-                            (and (ever-appears-in-function-referent term tf)
+                            (and (ever-appears-in-function-referent term etf)
                                  (coerce value 'function))
                             (error "No variable ~a in ~a for the parameter ~a."
                                    value category term)))
@@ -502,7 +326,7 @@ the rspec for the words of instances of the category."
                           (t (find-or-make-category-object value))))
         else
           do (error "Undefined term ~a in rdata mapping for ~a with ~a."
-                    term category tf)))
+                    term category etf)))
 
 (defun ever-appears-in-function-referent (term tf)
   "Check if a mapping term is a function or method for the given tree family.

@@ -18,13 +18,13 @@
   (let ((referent (edge-referent s-edge)))
     (if (individual-p referent)
       (let* ((type (car (indiv-type referent)))
-             (schema (cadr (member :schema (cat-realization type)))))
-        (if schema
-          (let* ((etf (second schema))
+             (rdata (first (cat-realization type))))
+        (if rdata
+          (let* ((etf (rdata-etf rdata))
                  (cases (etf-cases etf))
-                 (mapping (third schema))
                  (subj-rule (cadr (assoc :subject cases)))
-                 (var (car (cadr (member :binds subj-rule)))))
+                 (var (car (cadr (member :binds subj-rule))))
+                 (mapping (rdata-mapping rdata)))
             (if var
               (let ((variable (cdr (assoc var mapping))))
                 (if variable
