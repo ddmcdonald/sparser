@@ -38,7 +38,7 @@
   :binds ((three-letter-code :primitive word)
           (one-letter-code single-capitalized-letter))
   :index (:permanent :key name)
-  ;;:lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
+  :lemma (:common-noun "amino acid") ;;/// optionally-hyphenated pw
   :realization (:common-noun name))
 
 

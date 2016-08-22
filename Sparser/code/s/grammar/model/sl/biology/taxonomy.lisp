@@ -1381,8 +1381,3 @@ the aggregate across the predicate it's in. |#
 
 (def-synonym residue-on-protein
              (:noun "position"))
-(def-synonym amino-acid
-             (:noun "amino acid"))
-
-
-
