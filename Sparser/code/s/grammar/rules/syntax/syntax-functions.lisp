@@ -590,17 +590,17 @@
        ;; Check for negation
        (when (value-of 'negation aux)
 	 ;;/// RJB has negation on event too -- sort that out
-	 (setq  i (bind-dli-variable 'negation (value-of 'negation aux) i)))
+	 (setq i (bind-dli-variable 'negation (value-of 'negation aux) i)))
 
        ;; Propagate the auxiliary
        (case (cat-symbol aux-type)
 	 ((category::be-able-to	;; see modals.lisp
 	   category::future
 	   category::conditional)
-	  (setq  i (bind-dli-variable 'modal aux i)))
+	  (setq i (bind-dli-variable 'modal aux i)))
 	 (category::anonymous-agentive-action) ;; do
 	 (category::have
-	  (setq  i (bind-dli-variable 'perfect aux i)))
+	  (setq i (bind-dli-variable 'perfect aux i)))
 	 (otherwise
 	  (push-debug `(,aux ,vg))
 	  (error "Assimilate the auxiliary category ~a~%  ~a"
