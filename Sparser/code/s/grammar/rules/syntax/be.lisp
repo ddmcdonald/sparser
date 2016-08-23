@@ -103,7 +103,7 @@
 ;;;----------------------------
 
 (def-form-rule (be adjective)
-  :form vp ;; as a VP (vs VG) it kills aspp2 68
+  :form vg ;;vp ;; as a VP (vs VG) it kills aspp2 68
   :referent  (:function make-copular-adjective left-edge right-edge))
 
 (def-form-rule (be adjp)
