@@ -29,29 +29,29 @@
 ;;;-------
 
 (defun parse-between-nospace-scan-boundaries (left-bound right-bound)
-  "Called from collect-no-space-segment-into-word to look for
+  "Called from collect-no-space-segment-into-word to lok for
   a parse between where the no-space sequence starts and where
   it ends. The problem we have is that in the cases where we want a rule
   to apply, it will typically involve searching multiple interpretations
   of words and edges over literals and such."
-  (push-debug `(,left-bound ,right-bound)) ;(break "parse-between ns-scans")
-  (let ((coverage (coverage-over-region left-bound right-bound)))
+  (let ((coverage (coverage-over-region left-bound right-bound))
+        (*allow-pure-syntax-rules* nil)
+        (*allow-form-rules* nil))
+    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+    (push-debug `(,left-bound ,right-bound))
     ;;(lsp-break "coverage between ~a and ~a~%is ~a" left-bound right-bound coverage)
     (case coverage
       (:single-span
        (values coverage (edge-between left-bound right-bound)))
-      
       (:all-contiguous-edges
        (cond
          ((= 2 (length (treetops-between left-bound right-bound)))
           (let* ((edge (try-all-contiguous-edge-combinations left-bound right-bound))
                  (new-coverage (coverage-over-region left-bound right-bound)))
             (values new-coverage edge)))
-         
          (t (let* ((edge (parse-all-options-in-region left-bound right-bound))
                    (new-coverage (coverage-over-region left-bound right-bound)))
               (values new-coverage edge)))))
-      
       (:otherwise
        coverage))))
 
@@ -103,7 +103,8 @@
     (flet ((next-position (ev-or-edge)
              (etypecase ev-or-edge
                (edge (pos-edge-ends-at ev-or-edge))
-               (edge-vector (chart-position-after current-position))))
+               (edge-vector (chart-position-after current-position))
+               (word (chart-position-after current-position))))
            (form-every-pair (left-list right-list) ;; cf. form-all-pairs
              (let ( pairs )
                (loop for left in left-list
@@ -117,7 +118,8 @@
           (setq left-edges
                 (etypecase ev-or-edge
                   (edge (list ev-or-edge))
-                  (edge-vector (all-edges-on ev-or-edge))))
+                  (edge-vector (all-edges-on ev-or-edge))
+                  (word nil)))
            (setq next-pos (next-position ev-or-edge))
            ;;(lsp-break "next-pos = ~a" next-pos)
            (when (eq next-pos end-pos)
@@ -126,10 +128,12 @@
            (setq right-edges
                  (etypecase ev-or-edge
                    (edge (list ev-or-edge))
-                   (edge-vector (all-edges-on ev-or-edge))))
-           (setq pairs
-                 (append (form-every-pair left-edges right-edges)
-                         pairs))
+                   (edge-vector (all-edges-on ev-or-edge))
+                   (word nil)))
+           (when (and left-edges right-edges)
+             (setq pairs
+                   (append (form-every-pair left-edges right-edges)
+                           pairs)))
            (unless tt-or-ev-in-region
              (return)))
         pairs))))

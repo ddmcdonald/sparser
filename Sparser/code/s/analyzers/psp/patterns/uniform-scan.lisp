@@ -65,7 +65,8 @@
         ~%Change your code to use collect-no-space-segment-into-word"
          position-before))
 
-;; (trace-scan-patterns)
+;; (trace-ns-sequences)  for ns patterns
+;; (trace-scan-patterns)  for large scale
 
 (defun collect-no-space-segment-into-word (position-after)
   ;; As called from do-no-space-collection . At this point all of the
@@ -108,6 +109,7 @@
         ;; marked punctuation there.
 
         (when (ns-apostrophe-check position-after edges)
+          (tr :returning-because-its-a-conjunction)
           (try-all-contiguous-edge-combinations start-pos end-pos) ;; see note with fn
           (return-from collect-no-space-segment-into-word nil))
 
@@ -146,12 +148,15 @@
         
         (multiple-value-bind (layout edge)
                              (parse-between-nospace-scan-boundaries start-pos end-pos)
-          (tr :ns-segment-layout layout) ;;(break "layout = ~a" layout)
+          (tr :ns-segment-layout layout)
+          ;;(lsp-break "layout = ~a edge = ~a" layout edge)
           (cond
-           ((eq layout :single-span)  ;; Do nothing. It's already known
-            (revise-form-of-nospace-edge-if-necessary edge :find-it)
-            (when *collect-ns-examples*
-              (update-ns-examples start-pos)))
+            ((or (eq layout :single-span)  ;; Do nothing. It's already known
+                 (eq layout :one-edge-over-entire-segment))
+             (tr :ns-spanned-by-edge edge)
+             (revise-form-of-nospace-edge-if-necessary edge :find-it)
+             (when *collect-ns-examples*
+               (update-ns-examples start-pos)))
            (t
             ;; This may be overkill, especially for punctuation,
             ;; but it may also be more informative
@@ -189,6 +194,7 @@
             
         (when *collect-ns-examples*
           (update-ns-examples start-pos))
+        
         end-pos))))
 
 

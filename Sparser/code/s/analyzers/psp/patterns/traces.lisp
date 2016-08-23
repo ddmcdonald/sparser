@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  January 2016
+;;;  version:  August 2016
 
 ;; Broken out from driver 2/5/13. Added more cases 9/11/14. Imported
 ;; cases from traces/scan-patterns 7/21/15. 
@@ -29,6 +29,10 @@
 (deftrace :no-space-initial-long-edge (edge)
   (when (or *trace-ns-sequences*)
     (trace-msg "[ns] with initial long edge ~a" edge)))
+
+(deftrace :returning-because-its-a-conjunction ()
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] returning because detected the pattern for a contraction")))
 
 (deftrace :ns-word-sweep (word)
   ;; called from sweep-to-end-of-ns-regions
@@ -98,7 +102,7 @@
 (deftrace :looking-at-ns-segment (start-pos end-pos)
   (when *trace-ns-sequences*
     (trace-msg "[ns] Looking at the segment ~s"
-               (string-of-words-between start-pos end-pos))))
+               (extract-character-between-positions start-pos end-pos))))
 
 (deftrace :single-word-followed-by-colon (word)
   (when *trace-ns-sequences*
@@ -121,6 +125,10 @@
 (deftrace :ns-segment-layout (layout)
   (when *trace-ns-sequences*
     (trace-msg "[ns] After parsing the layout is ~a" layout)))
+
+(deftrace :ns-spanned-by-edge (edge)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] spanned by the ~a" edge)))
 
 (deftrace :ns-scare-quote ()
   (when *trace-ns-sequences*
