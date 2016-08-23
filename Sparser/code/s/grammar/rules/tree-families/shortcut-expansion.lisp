@@ -46,24 +46,9 @@
         (cfr-category rule)))))
 
 
-;;;---------------------
-;;; Applying ETF schema
-;;;---------------------
-
-(defun apply-rdata-mappings (category etf-names &key args word-keys)
-  (dolist (name etf-names)
-    (let ((scheme (realization-scheme-named name)))
-      (apply-realization-scheme category scheme args word-keys))))
-
-(defun apply-realization-scheme (category scheme substitution-map word-keys)
-  (make-rules-for-rdata category
-   (make-realization-data category
-                          :etf (schema-tree-family scheme)
-                          :mapping (make-scheme-mapping
-                                    scheme substitution-map category)
-                          :heads (decode-rdata-heads
-                                  (assoc (schema-head-keyword scheme) word-keys)
-                                  category))))
+;;;-----------------------
+;;; Assembling ETF schema
+;;;-----------------------
                 
 (defun make-scheme-mapping (schema args-to-substitute category)
   "Rebuild the schematic mapping into a real mapping according to the

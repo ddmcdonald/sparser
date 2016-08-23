@@ -34,40 +34,11 @@
 ;;; Shortcut detection
 ;;;--------------------
 
-(defparameter *subcat-keywords*
-  '(:s :o :m :premod
-    :about :above :across :after :against :among :as :as-comp :at
-    :before :below :between :but\ not :during :following :for :from :ifcomp 
-    :by :in :into :like :next\ to :of :on :onto :on\ top\ of :over :to :such\ as
-    :to-comp :thatcomp :through :throughout :toward :towards :under :unlike
-    :upon :via :whethercomp :with :within :without :designator))
-
 (defun shortcut-rdata-p (rdata)
   "Return true if the given realization plist is shortcut-style, not long-form."
   (and (consp rdata)
        (keywordp (car rdata)) ; and thus not a list
-       (not (get-properties rdata '(:tree-family :mapping))) ; long-form only
-       (or (get-properties rdata '(:etf :adj :noun))
-           (get-properties rdata *subcat-keywords*))))
-
-
-;;;-------------
-;;; Entry point
-;;;-------------
-
-(defun setup-shortcut-rdata (category key-value-pairs)
-  "Called from decode-category-parameter-list when shortcut-rdata-p is true.
-   We separate the subcategorization labels (slots) from the other realization
-   keywords, then punt to the decoder. Notice that the lists come out reversed."
-  (loop with slots and args
-        for (key value) on key-value-pairs by #'cddr
-        if (memq key *subcat-keywords*)
-          do (push value slots) (push key slots)
-        else
-          do (push value args) (push key args)
-        finally (apply #'decode-shortcut-rdata category
-                       :slots slots
-                       args)))
+       (not (get-properties rdata '(:tree-family :mapping)))))
 
 
 ;;;-------------------------------------
@@ -86,7 +57,8 @@
                               adjp-complement ; for cases like "Make the top block red."
                               loc-pp-complement) ; for cases like "Put the block on the table."
   "Decoder for the shortcut form of define-category, def-synonym, etc."
-  (declare (special *valid-keywords-for-irregular-word-forms* word::|by|)
+  (declare (special word::|by|)
+           (ignore mumble)
            (optimize debug))
   (let* ((sf (fom-subcategorization category :category category :slots slots))
          (subj-pat (find-subcat-pattern :subject sf))
@@ -186,10 +158,10 @@
       (register-variable category adjp-complement :adjp-complement))
 
     (when (or etf substitution-map word-map)
-      ;; If we go in here for just a noun or an adjective,
-      ;; there may be nothing for this call to do.
-      (apply-rdata-mappings category etf
-                            :args substitution-map
-                            :word-keys word-map))
-
-    category))
+      (check-type etf (cons symbol null)) ; exactly one ETF allowed
+      (let ((scheme (realization-scheme-named (first etf))))
+        (make-realization-data category
+                               :etf (schema-tree-family scheme)
+                               :mapping (make-scheme-mapping scheme substitution-map category)
+                               :heads (decode-rdata-heads (assoc (schema-head-keyword scheme) word-map)
+                                                          category))))))

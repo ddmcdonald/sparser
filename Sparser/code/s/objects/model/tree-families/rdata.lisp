@@ -74,6 +74,7 @@
 Should mirror the cases on the *single-words* ETF."
   '(member :verb
            :modal
+           :noun
            :common-noun
            :proper-noun
            :adjective
@@ -91,9 +92,34 @@ Should mirror the cases on the *single-words* ETF."
                :additional-rules
                :mumble)))
 
+(deftype subcat-keyword ()
+  '(member :s :o :m
+           :about :above :across :after :against :among :as :as-comp :at
+           :before :below :between :but\ not :by
+           :designator :during
+           :following :for :from
+           :ifcomp :in :into
+           :like
+           :next\ to
+           :of :on :onto :on\ top\ of :over
+           :premod
+           :such\ as
+           :to :to-comp :thatcomp :through :throughout :toward :towards
+           :under :unlike :upon
+           :via :whethercomp :with :within :without))
+
 (defun check-rdata (rdata)
   (loop for (keyword value) on rdata by #'cddr
         do (check-type keyword realization-keyword "a realization keyword")))
+
+(defun decode-slots (rdata)
+  "Separate subcategorization slots from the rest of the realization data."
+  (loop with slots and args
+        for (key value) on rdata by #'cddr
+        do (etypecase key
+             (subcat-keyword (push value slots) (push key slots))
+             (keyword (push value args) (push key args)))
+        finally (return (values args slots))))
 
 ;;;----------------------
 ;;; Standalone def forms
@@ -136,22 +162,22 @@ Should mirror the cases on the *single-words* ETF."
    The routines in objects;model;tree-families;driver.lisp create the rules
    when individuals of the category are created. The function that actually
    makes the rules is make-rules-for-rdata."
+  (check-type category category)
+  (check-type rdata list)
   (when delete
     (setf (cat-realization category) nil
           (get-rules category) (map nil #'delete/cfr (get-rules category))))
-
-  (if (shortcut-rdata-p rdata)
-    (setup-shortcut-rdata category rdata)
-    (labels ((decode (rdata) (apply #'decode-rdata category rdata))
-             (make-rules (rdata) (make-rules-for-rdata category (decode rdata))))
-      (etypecase (car rdata)
-        (keyword (make-rules rdata)) ; one realization
-        (cons (map nil #'make-rules rdata))))) ; multiple realizations
-
-  (when mumble
-    (apply-mumble-rdata category rdata))
-
-  (cat-realization category))
+  (dolist (rdata (etypecase (car rdata)
+                   (keyword (list rdata)) ; one realization
+                   (list rdata)) ; multiple realizations
+           (rdata category))
+    (multiple-value-bind (args slots) (decode-slots rdata)
+      (make-rules-for-rdata category
+                            (if (or slots (get-properties args '(:etf :adj)))
+                              (apply #'decode-shortcut-rdata category :slots slots args)
+                              (apply #'decode-rdata category args))))
+    (when mumble
+      (apply-mumble-rdata category rdata))))
 
 ;;;----------------------------
 ;;; Recording realization data
@@ -282,8 +308,10 @@ the rspec for the words of instances of the category."
 (defun decode-rdata-heads (rdata category)
   "Return a plist of specified head words in the realization data."
   (loop for (keyword value) on rdata by #'cddr
+        when (eql keyword :noun) ; alias
+          do (setq keyword :common-noun)
         when (typep keyword 'head-keyword)
-        nconc (list keyword (deref-rdata-word value category))))
+          nconc (list keyword (deref-rdata-word value category))))
 
 (defun decode-additional-rules (cases)
   "Additional rules don't use mappings. They use the names of categories, words,

@@ -159,9 +159,9 @@
 (defun make-resource-for-sparser-word (word pos-tag)
   (push-debug `(,word))
   (let* ((m-pos (ecase pos-tag
-                  (:verb 'mumble::verb)
-                  (:common-noun 'mumble::noun)
                   (:adjective 'mumble::adjective)
+                  ((or :noun :common-noun :proper-noun) 'mumble::noun)
+                  (:verb 'mumble::verb)
                   (:adverb 'mumble::adverb)
                   (:prep 'mumble::preposition)
                   (:interjection 'mumble::interjection)))
@@ -169,9 +169,9 @@
 
     ;; Make the lexicalized phrases
     (ecase pos-tag
-      (:verb) ;; done in the category rdata processing
-      (:common-noun (mumble::noun m-word))
       (:adjective (mumble::adjective m-word))
+      ((or :noun :common-noun :proper-noun) (mumble::noun m-word))
+      (:verb) ;; done in the category rdata processing
       (:adverb (warn "Need Mumble adverbial definition."))
       (:prep (mumble::prep m-word))
       (:interjection (mumble::interjection m-word)))))
