@@ -31,6 +31,11 @@
 ;;; fold aux back into the vg
 ;;;---------------------------
 
+(defparameter *error-if-no-rule-for-preposed-aux* nil
+  "A temporary flag to suppress the error while collecting
+   the less-obvious cases that need to be handled and
+   working out how to deal with them")
+
 (defun fold-in-preposed-auxiliary (vg-edge)
   (when (preposed-aux?)
     (multiple-value-bind (aux-edge aux-form)
@@ -47,10 +52,11 @@
       (let ((rule (multiply-edges aux-edge vg-edge)))
         (unless rule
           (unless (plausibly-too-early-to-take-preposed-aux aux-edge vg-edge)
-            (push-debug `(,vg-edge ,aux-edge ,aux-form))
-            (error "Trying to fold in a preposed auxiliary ~
-                    but there is no rule that composes ~
-                  ~%~a and ~a" aux-edge vg-edge)))
+            (when *error-if-no-rule-for-preposed-aux*
+              (push-debug `(,vg-edge ,aux-edge ,aux-form))
+              (error "Trying to fold in a preposed auxiliary ~
+                      but there is no rule that composes ~
+                    ~%~a and ~a" aux-edge vg-edge))))
 
         ;; Make a very peculiar edge (which may need
         ;; more thought)
