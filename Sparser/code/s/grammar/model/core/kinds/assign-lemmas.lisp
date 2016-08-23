@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "assign-lemmas"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  September 2015
+;;;  version:  August 2016
 
 ;; initiated 9/22/15 so that the upper model can be loaded
 ;; (in 1st-loader) without needing word machinery
@@ -38,6 +38,8 @@
 (assign-lemma aggregate(common-noun "aggregate"))
 
 (assign-lemma has-name (:proper-noun "name"))
+
+(assign-lemma negative (adjective "negative"))
 
 
 ;;;------------------

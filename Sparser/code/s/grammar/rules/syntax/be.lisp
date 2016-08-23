@@ -46,7 +46,7 @@
   :specializes event
   :binds ((subject)
           (predicate))
-  :mixins (takes-neg)
+  :mixins (carries-tense)
   :index (:temporary :list))
 
 (register-variable category::be 
@@ -313,26 +313,26 @@ assess-edge-label, which rewrites the word as the category BE.
 (def-cfr be ("aren" apostrophe-t)
   :form verb
   :referent (:head be
-             ;;:subtype negative
-                   ))
+             :bind (negation right-edge)))
+
 
 (def-cfr be ("isn" apostrophe-t)
   :form verb
   :referent (:head be
-             ;;:subtype negative
-                   ))
+             :bind (negation right-edge)))
+
 
 (def-cfr be ("wasn" apostrophe-t)
   :form verb
   :referent (:head be
-             ;;:subtype negative
-                   ))
+             :bind (negation right-edge)))
+
 
 (def-cfr be ("weren" apostrophe-t)
   :form verb
   :referent (:head be
-             ;;:subtype negative
-                   ))
+             :bind (negation right-edge)))
+
 
 
 

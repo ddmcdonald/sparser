@@ -28,64 +28,6 @@
 
 (in-package :sparser)
 
-;;--- negation
-
-(define-category  negative
-  :specializes  quantifier 
-  :instantiates nil
-  :lemma (adjective "negative"))
-;; "no" and "not" are quantifiers in words/quantifiers1
-
-(define-mixin-category takes-neg
-  :binds ((negation)))
-
-
-;;--- tense & aspect 
-
-;; Needs a better name
-(define-category  tense/aspect-vector
-  :instantiates nil
-  :specializes  linguistic
-  :binds ((occurs-at-moment) ;; future, past
-          (modal)
-          (present)
-          (past)
-          (progressive)
-          (perfect))
-  :mixins (takes-neg)
-  :documentation "Stored on the aspect variable of
-  any event, see find-or-make-aspect-vector.")
-
-
-(define-category  tense/aspect
-  :instantiates nil
-  :specializes  linguistic)
-
-
-(define-category  future
-  :instantiates nil
-  :specializes  tense/aspect)
-
-
-(define-category  past
-  :instantiates nil
-  :specializes  tense/aspect)
-
-(define-category  present
-  :instantiates nil
-  :specializes  tense/aspect)
-
-
-(define-category  progressive    ;; be + ing
-  :instantiates nil
-  :specializes  tense/aspect )
-
-
-(define-category  perfect   ;; have + en
-  :instantiates nil
-  :specializes  tense/aspect )
-
-
 ;;;------------
 ;;; infinitive
 ;;;------------
@@ -108,7 +50,7 @@
 ;;;------------------------------------
 
 (define-category  anonymous-agentive-action
-  :specializes event
+  :specializes perdurant
   :instantiates self
   :mixins (takes-neg))
 ;; Has sort of an anaphoric feel sometimes, 
@@ -146,17 +88,17 @@
              :bind (negation right-edge)))
 
 (def-cfr do ("doesn" apostrophe-t)
-  :form verb
+  :form verb+present
   :referent (:head anonymous-agentive-action
               :bind (negation right-edge)))
 
 (def-cfr do ("don" apostrophe-t)
-  :form verb
+  :form verb+present
   :referent (:head anonymous-agentive-action
              :bind (negation right-edge)))
 
 (def-cfr do ("didn" apostrophe-t)
-  :form verb
+  :form verb+past
   :referent (:head anonymous-agentive-action
              :bind (negation right-edge)))
 

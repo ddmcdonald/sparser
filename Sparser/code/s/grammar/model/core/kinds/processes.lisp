@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2015
+;;;  version:  August 2016
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -25,6 +25,7 @@
 (define-category  perdurant
   :instantiates self
   :specializes  top
+  :mixins (carries-tense)
   :binds ((theme) ;; one salient participant
                   ;; FrameNet for the thing that moves
           (participant) ;; any number of others
@@ -33,14 +34,13 @@
           (purpose)
           (circumstance)
           (manner)
-          (aspect . tense/aspect-vector) ;; see rules/tense
+
           ;;(cause-of) move this to being a lambda variable defined over TOP
 
           ;; interpret-adverb+verb needs to be improved to diagnose the
           ;; type of adverb but until then, we need to have this variable
           ;; or something equivalent
           (adverb))
-
 
   :documentation
   "Perdurants could otherwise be called events, processes, or phenomena,

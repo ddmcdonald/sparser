@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "1st-loader"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  July 2016
+;;;  version:  August 2016
 
 ;; Initiated 3/28/14 to allow the upper-model file to be decomposed
 ;; into more managable pieces. 4/14/14 moved in files from ISR.
@@ -12,6 +12,8 @@
 (in-package :sparser)
 
 (gload "kinds;upper-model")
+(gload "kinds;tense-aspect")
+(gload "kinds;predicate")
 (gload "kinds;attribution")
 (gload "kinds;processes")
 (gload "kinds;things")
