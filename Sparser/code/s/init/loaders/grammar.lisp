@@ -104,7 +104,10 @@ omitted and then run (perhaps) after the image has been launched."
     ;; the loading of amounts
     (gload "collections;loader"))
 
-  (gate-grammar *kinds* ;; upper model
+  (gate-grammar *kinds* ;; older upper model
+    ;; The upper model proper is loaded by the-master-loader
+    ;; as part of loading objects because the doc and
+    ;; situation modules refer to parts of it
     (gload "kinds;loader"))
 
   (gate-grammar *qualities*
