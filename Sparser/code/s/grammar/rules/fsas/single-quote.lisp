@@ -77,15 +77,16 @@
       (cond ((eq word word::|s|)
              (setq spanning-category category::apostrophe-s))
             ((eq word word::|t|)
-             (setq spanning-category category::apostrophe-t))
+             (setq spanning-category category::apostrophe-t
+                   referent (category-named 'not)))
             ((eq word word::|re|)
              (setq spanning-category category::apostrophe-re
                    form category::verb
-                   referent  (category-named 'be)))
+                   referent (category-named 'be)))
             ((eq word word::|ve|)
              (setq spanning-category category::apostrophe-ve
                    form category::verb
-                   referent  (category-named 'have)))
+                   referent (category-named 'have)))
             ((eq word word::|ll|)
              (setq spanning-category category::apostrophe-ll
                    form category::modal))
