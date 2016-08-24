@@ -505,8 +505,7 @@
 
 
 (defun show-protein-coercion (e1 e2)
-  (when
-      *show-protein-coercions*
+  (when *show-protein-coercions*
     (let ((e1-chars (actual-characters-of-word (pos-edge-starts-at e1)
 					       (pos-edge-ends-at e1) nil)))
       ;; (lsp-break "Likely protein: ~a" e1-chars)
@@ -525,18 +524,14 @@
   (let ((reject?
          (or (word-p before)
 	     (word-p after)
-	     (and (or
-		   (itypep before 'protein)
-		   (itypep before 'residue-on-protein)
-		   (itypep before 'fragment)
-		   ) ;;??                                  other
+	     (and (or (itypep before 'protein)
+                      (itypep before 'residue-on-protein)
+                      (itypep before 'fragment)) ;;??  other
                   (not (eq before after)))
              (and (category-p before)
                   (category-p after)
-                  (if
-                   (and (eq (cat-name (edge-form edge-before)) 'vg)
-                        (eq (cat-name (edge-form edge-after)) 'vg))
-                   
+                  (if (and (eq (cat-name (edge-form edge-before)) 'vg)
+                           (eq (cat-name (edge-form edge-after)) 'vg))
                    (not
                     (or (and (itypep before category::process)
                              (itypep after category::process))
@@ -552,11 +547,13 @@
                                 (itypep after category::modifier)))))))))
     (cond
       (reject?
-       (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels ) 
+       (push (conj-info before after edge-before edge-after
+                        :pass 'conjunction-incompatible-labels ) 
 	     *rejected-form-conjs*)
        t)
       (t
-       (push (conj-info before after edge-before edge-after :pass 'conjunction-incompatible-labels) *form-conjs*)
+       (push (conj-info before after edge-before edge-after
+                        :pass 'conjunction-incompatible-labels) *form-conjs*)
        nil))))
 
 (defun conj-info (before after edge-before edge-after &key pass)
