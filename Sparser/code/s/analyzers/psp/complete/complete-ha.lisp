@@ -270,21 +270,21 @@ See http://norse-mythology.org/gods-and-creatures/others/hugin-and-munin/
 (defun valid-referent? (edge)
   "Trap cases where an edge that should have a referent doesn't.
    And for the posibility of the referent being a cons"
-  (declare (special category::punctuation category::dash
+  (declare (special category::punctuation category::dash category::unknown-verb
                     word::|is| word::|are| word::|am| ))
   (when (null (edge-referent edge))
     ;; It doesn't have a referent. Is that ok?
     (unless (or (polyword-p (edge-category edge))
                 (eq (edge-form edge) category::punctuation)
-                (eq (edge-category edge) category::dash)
                 (memq (edge-category edge) ;; for CS rules in be.lisp
-                     `(,word::|is| ,word::|are| ,word::|am|))
+                      `(,word::|is| ,word::|are| ,word::|am|
+                        ,category::dash ,category::unknown-verb))
                 (member (edge-rule edge)
                         '(:default-edge-over-paired-punctuation
                           :conjunction/identical-adjacent-labels
                           :stub-for-parse-number-sequence
-                          ;; happened once, in ""substrate like" and "regulatory" "
-                          :appostrophe-fsa)))
+                          ;; happened once, in "substrate like" and "regulatory"
+                          :apostrophe-fsa)))
       (push-debug `(,edge))
       (error "edge with null referent: ~a" edge)))
     
