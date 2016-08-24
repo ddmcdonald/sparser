@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "ordinals"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  April 2016
+;;;  Version:  August 2016
 
 ;; initiated [ordinals1] 9/18/93 v2.3 as completely new treatment
 ;; 1.0 (1/7/94) redesigned as specialized categories
@@ -68,20 +68,44 @@
           (item)
           (sequence . sequence)))
 
-;; /// See if we can follow the scheme in the Krisp paper
+(defun compose-ordinal-to-head (ordinal head)
+  "This approximates the treatment in the Krisp paper (pg. 31 & subseq)
+   that would make a subtype of the head that gives it the slots
+   it would have if it was a position in a sequence (the same effect 
+   as using a mixin would achieve provided we bound its item slot
+   to the head."
+  ;; Strictly speaking there should be FoM to get a version of
+  ;; the head category where the position-in-sequence mixin has
+  ;; applied, then for this individual we'd bind (FoM actually)
+  ;; the item variable. Approximating that my using ad-hoc lambda 
+  ;; variable manipulation
+  (let ((num-var (find-variable-for-category 'number 'position-in-a-sequence))
+        (item-var (find-variable-for-category 'item 'position-in-a-sequence))
+        (head-category (etypecase head
+                         (category head)
+                         (individual (itype-of head))))
+        (i (individual-for-ref head)))
+    ;; how do we indicate that the individual is open in the sequence?
+    
+    ;;(setq i (bind-variable item-var head-category i))
+    ;; Alex doesn't want it (muddies the NLG waters).
+    ;; Reconsider later when reproducing Krisp paper example
 
-;; "the fifth attack" ///Referent is the sequence. Ought to be the attack
+    (setq i (bind-variable num-var ordinal i))
+    i))
+
+
+;; "the fifth attack"
 (def-form-rule (ordinal common-noun)
   ;; possible ETF: designated-instance-of-set ("third quarter")
   ;;  or modifier-creates-definite-individual ("last year")
   ;; The point is to create the position-in-a-sequence while
-  ;; leaving the common-noun as the head.  
+  ;; leaving the common-noun as the head. Those would be more
+  ;; generically reversible than the compose oridinal function  
   :form n-bar
   :head :right-edge
-  :referent (:head right-edge
-             :instantiate-individual position-in-a-sequence
-             :with (number left-edge
-                    item right-edge)))
+  :referent (:function compose-ordinal-to-head left-edge right-edge))
+
 
 
 
