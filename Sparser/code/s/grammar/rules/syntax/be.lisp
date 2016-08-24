@@ -38,7 +38,7 @@
 
 
 ;;;--------------------------------------
-;;; the verb "to be" and its conjugation
+;;; category for 'be' and for copula
 ;;;--------------------------------------
 
 (define-category  be
@@ -61,6 +61,31 @@
   "For use by code that's loaded before the grammar is")
 
 
+;;--- categories associated with BE
+
+(define-category copular-pp ;; "the cat is on the mat"
+  :specializes be
+  :binds ((copula)
+          (prep)
+          (pobj))
+  :documentation "Provides a scaffolding that the syntax function
+    make-copular-pp can use to package preposition and complement
+    it got from a [be-ref + pp] rule."
+  :index (:temporary :list))
+
+(define-category copular-predicate
+  :specializes be
+  :binds ((predicate)
+          (predicated-of)
+          (copula))
+  :documentation "Provides a scaffolding that the syntax function
+    apply-copular-pp can use to package the predicate it creates
+    from the np in an [np + copular-pp] rule."
+  :index (:temporary :list))
+
+;;;-------------------------
+;;; forms of the verb to be
+;;;-------------------------
 
 (def-cfr be ("be")
   :form verb
@@ -68,38 +93,35 @@
 
 (def-cfr be ("am")
   :form verb+present
-  :referent be )
+  :referent be)
 
 (def-cfr be ("are")
   :form verb+present ;; n.b. not worrying about number concord
-  :referent be )
+  :referent be)
 
 (def-cfr be ("is")
   :form verb+present
-  :referent be )
+  :referent be)
 
 (def-cfr be ("was")
   :form verb+past
-  :referent (:head be
-             :subtype past))
+  :referent be)
 
 (def-cfr be ("were")
   :form verb+past
-  :referent (:head be
-             :subtype past))
+  :referent be)
 
 (def-cfr be ("been")
   :form verb+ed
-  :referent (:head be
-             :subtype past))
+  :referent be)
 
 (def-cfr be ("being")
   :form verb+ing
-  :referent be )
+  :referent be)
 
 
 ;;;----------------------------
-;;; be + adjective
+;;; be + adjective or adjp
 ;;;----------------------------
 
 (def-form-rule (be adjective)
@@ -116,16 +138,6 @@
 ;;;-------------------------------
 ;; "the cat is on the mat"
 
-(define-category copular-pp ;; "the cat is on the mat"
-  :specializes be
-  :binds ((copula)
-          (prep)
-          (pobj))
-  :documentation "Provides a scaffolding that the syntax function
-    make-copular-pp can use to package preposition and complement
-    it got from a [be-ref + pp] rule."
-  :index (:temporary :list))
-
 (def-form-rule (be pp)
   :form vp
   :new-category copular-pp
@@ -135,15 +147,9 @@
   :referent (:function make-copular-pp left-edge right-edge))
 
 
-(define-category copular-predicate
-  :specializes be
-  :binds ((predicate)
-          (predicated-of)
-          (copula))
-  :documentation "Provides a scaffolding that the syntax function
-    apply-copular-pp can use to package the predicate it creates
-    from the np in an [np + copular-pp] rule."
-  :index (:temporary :list))
+(def-form-rule (be subordinate-clause)
+  :form subordinate-clause
+  :referent (:function add-tense/aspect-to-subordinate-clause left-edge right-edge))
 
 
 
@@ -163,10 +169,6 @@
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
 
-(def-form-rule (be subordinate-clause)
-  :form subordinate-clause
-  :referent (:function add-tense/aspect-to-subordinate-clause left-edge right-edge))
-
 ;;---- tns + not
 
 (def-cfr be (be not)
@@ -180,17 +182,20 @@
 (def-form-rule (be verb+ed)
   :new-category  :passive
   :form vg+passive
-  :referent (:head right-edge))
+  :referent (:head right-edge
+             :function add-tense/aspect left-edge right-edge))
 
 (def-form-rule (be vg+ed)
   :new-category  :passive
   :form vg+passive
-  :referent (:head right-edge))
+  :referent (:head right-edge
+             :function add-tense/aspect left-edge right-edge))
 
-(def-form-rule (be vg+passive) ;; were previously used
+(def-form-rule (be vg+passive) ;; "were previously used"
   :new-category  :passive
   :form vg+passive
-  :referent (:head right-edge))
+  :referent (:head right-edge
+             :function add-tense/aspect left-edge right-edge))
 
 
 ;;;---------
