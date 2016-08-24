@@ -51,25 +51,21 @@
 
 
 
-
 (def-cfr have ("have")
   :form verb
-  :referent have )
+  :referent have)
 
 (def-cfr have ("has")
   :form verb+s
-  :referent have )
+  :referent have)
 
 (def-cfr have ("had")
   :form verb+ed
-  :referent (:head have
-             :subtype past))
+  :referent have)
 
 (def-cfr have ("having")
   :form verb+ing
-  :referent (:head have
-             :subtype progressive))
-
+  :referent have)
 
 
 
@@ -95,7 +91,8 @@
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
 
-(def-form-rule (have verb+passive) ;; "been visulaized" comes out like this ?!
+(def-form-rule (have verb+passive)
+    ;; "been visulaized" comes out like this ?!
   :form vg+passive
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
