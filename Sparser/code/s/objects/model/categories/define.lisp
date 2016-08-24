@@ -57,7 +57,8 @@
 ;;; alternative drivers
 ;;;---------------------
 
-(defun define-category/expr (symbol parameter-list)
+(defun define-category/expr (symbol parameter-list &optional
+                             (source-location *file-being-lloaded*))
 
   ;; called from Define-category when there are any arguments beyond
   ;; the symbol. If just the symbol is given it's an implicit action
@@ -68,7 +69,7 @@
       (when (not (referential-category-p old-obj))
         (delete/category old-obj)))
 
-    (let ((category (find-or-make-category-object symbol :referential)))
+    (let ((category (find-or-make-category-object symbol :referential source-location)))
       (apply #'decode-category-parameter-list category parameter-list)
       (fom-subcategorization-if-needed category)
       category )))

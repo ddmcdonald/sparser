@@ -47,7 +47,7 @@
      (let ((symbol (intern (hyphenated-string-for-pw item) :sparser)))
        (find-or-make-category-object symbol source)))))
 
-(defun find-or-make-category-object (symbol &optional (source :define-category))
+(defun find-or-make-category-object (symbol &optional (source :define-category) source-location)
   ;; core routine used by all the various sources for categories to
   ;; make the minimal object and have it cataloged.
   (declare (special *all-intra-category-relationships-noticed?*))
@@ -88,6 +88,7 @@
         (when new?
           (catalog/category category c-symbol)
           (note-file-location category)
+          (note-file-location c-symbol source-location)
           (note-grammar-module category :source source)
           (mark-definition-source category) ;; for morph or comlex sources
           

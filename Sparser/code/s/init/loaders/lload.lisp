@@ -147,11 +147,15 @@ an automatic way of counting source lines in the Sparser codebase.")
   (unless location
     (return-from note-file-location))
   (let ((previous-location (get-tag :file-location object)))
-    (when (and previous-location (not (equal location previous-location)))
+    (when (and previous-location (not (equalp location previous-location)))
       (warn 'redefinition-warning
             :object object
             :previous-location previous-location
             :new-location location)))
+  #+sbcl
+  (typecase location
+    (sb-c:definition-source-location
+     (setf (sb-int:info :source-location :variable object) location)))
   (setf (get-tag :file-location object) location))
 
 ;;;----------------------------

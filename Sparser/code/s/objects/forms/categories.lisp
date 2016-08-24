@@ -44,12 +44,8 @@
   ;; "objects;model:categories:define" whenever there is more
   ;; than that one argument.
   (if full-args
-    `(define-category/expr ',symbol ',full-args)
-    `(find-or-make-category-object ',symbol :define-category)))
-
+    `(define-category/expr ',symbol ',full-args #+sbcl (sb-c:source-location))
+    `(find-or-make-category-object ',symbol :define-category #+sbcl (sb-c:source-location))))
 
 (defmacro define-mixin-category (symbol &rest full-args)
   `(define-mixin-category/expr ',symbol ',full-args))
-
-
-
