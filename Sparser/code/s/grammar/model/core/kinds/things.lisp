@@ -57,7 +57,6 @@
   :specializes physical)
 
 
-
 (define-category physical-object 
   :specializes physical
   :documentation 
@@ -65,25 +64,10 @@
  and is constitued of something (e.g. the clay in a statue).")
 
 
-(define-mixin-category agent
-  :specializes physical-object
-  ;; Making it a mix-in is my compromise since it feels to me is more
-  ;; of a role sometimes rather than a supertype. 
-  :documentation ;; from foundation.prxo
-  "We call something an agent if we ascribe intentions, beliefs, and desires
- to it, so besides this class covering people it can also cover robots and
- many computer programs. Agents are capable of deliberately dealing with
- objects or states in the world. As opposed to the unintended effects of
- a mudslide or a tree disrupting the sidewalk as its roots grow.
- Agency is not to be equated with causality.
-   Agentive objects are usually constituted of (are made out of) regular
- Object's. People have bodies. Robots are assembled out of engines and
- sensors and such (Legos). ") ;; n.b. "Mossad agent"
-
-;; Replaceement for agent mixin /// find all users of the mixin
 (define-category physical-agent
   :specializes physical-object
   :documentation ;; from Dolce ExtDnS_397 agentive-physical-object
+                 ;; and foundation.prxo
     "Within Physical objects, a special place have those to which
  we ascribe generic intentionality (compatibly to Brentano's 
  distinction, the ability to internally represent a description). 
@@ -97,7 +81,17 @@
  (to be characterized in a dedicated - but not developed as yet - 
  ontology of mind). A representation or conception only requires 
  intentionality in Brentano's terms (i.e., the ability to represent 
- something to oneself). See also 'rational physical object'.")
+ something to oneself). See also 'rational physical object'.
+
+ We call something an agent if we ascribe intentions, beliefs, and desires
+ to it, so besides this class covering people it can also cover robots and
+ many computer programs. Agents are capable of deliberately dealing with
+ objects or states in the world. As opposed to the unintended effects of
+ a mudslide or a tree disrupting the sidewalk as its roots grow.
+ Agency is not to be equated with causality.
+   Agentive objects are usually constituted of (are made out of) regular
+ Object's. People have bodies. Robots are assembled out of engines and
+ sensors and such (Legos). ") ;; n.b. "Mossad agent"
 
 (define-mixin-category with-an-agent
   :specializes attribute

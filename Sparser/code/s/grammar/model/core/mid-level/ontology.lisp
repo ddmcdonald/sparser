@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ontology"
 ;;;   Module:  "model;core:relations:"
-;;;  version:  April 2016
+;;;  version:  August 2016
 
 ;; Initiated 12/3/15.
 
@@ -72,7 +72,7 @@ files once an area looks big enough to warrant it.  |#
 ; incorporate an agent. 
 
 (define-category maker-of-artifacts
-  :specializes agent
+  :specializes physical-agent
   :mixins (make-artifacts named-type has-name))
 ;; has-name makes proper nouns, hack "ford" to be a common noun.
 
