@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  2.3 November 2015
+;;;  version:  August 2016
 
 ;; initiated 11/30/91 v2.1
 ;; 1.1 (7/20/92 v2.3) revised to fit new regime
@@ -76,7 +76,7 @@
 
 #| What happens when we bind a variable depends on the value of
 the *description-lattice* parameter. If it is non-nil we use the
-lattice to record the binding and find-or-make a new variable
+lattice to record the binding and find-or-make a new variable+value
 that reflects that. If the parameter is nil then we just add
 the new binding to the same individual and something else needs
 to keep track of recording that fact.
@@ -97,19 +97,12 @@ returning a new one.
    Note that if *description-lattice* is nil this becomes a call to
    the 'old' variable binding protocol."
   (declare (special *description-lattice*))
-  (if (not (individual-p individual)) (setq individual (individual-for-ref individual)))
-  (let
-      ((ambiguous-binding
-	(loop for binding in (indiv-old-binds individual)
-	   when (and (disjunctive-lambda-variable-p (binding-variable binding))
-		     (loop for v in (dvar-variables (binding-variable binding))
-			thereis (or (eq v var/name) (eq (var-name v) var/name))))
-	   do (return binding))))
-    (when  ambiguous-binding
-      (setq individual (perform-local-variable-disambiguation ambiguous-binding var/name individual)))
-    (if *description-lattice*
-      (find-or-make-lattice-subordinate individual var/name value category)
-      (old-bind-variable var/name value individual category))))
+  (unless (individual-p individual)
+    (setq individual (individual-for-ref individual)))
+  (setq individual (look-for-ambiguous-variables individual var/name))
+  (if *description-lattice*
+    (find-or-make-lattice-subordinate individual var/name value category)
+    (old-bind-variable var/name value individual category)))
 
 (defun bind-variable (var/name value individual &optional category)
   "Standard way of binding a variable on an individual. What actually
@@ -120,36 +113,7 @@ returning a new one.
       (find-or-make-lattice-subordinate individual var/name value category)
       (old-bind-variable var/name value individual category)))
 
-(defun perform-local-variable-disambiguation (ambiguous-binding var/name i)
-  (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
-	 (ambig-var (binding-variable ambiguous-binding))
-	 (ambig-variables (dvar-variables ambig-var)))
-    (loop for binding in (reverse (indiv-binds i))
-       ;; make/binding operates by a push operation
-       ;; on the indiv-binds list, so we must do this in reverse
-       ;; order to get the same list on the copy!!
-       ;; RJB discovered this error on 6/12/2016
-       do
-       ;; don't check binding-hook
-	 (setq new
-	       (bind-dli-variable
-		(disambiguated-variable binding ambiguous-binding ambig-variables var/name)
-		(binding-value binding)
-		new)))
-    new))
 
-(defun disambiguated-variable (binding ambiguous-binding ambig-variables var/name)
-  (if (eq binding ambiguous-binding)
-      (if (cddr ambig-variables)
-	  ;; still ambiguous
-	  (progn (format t "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
-                         (sentence-string *sentence-in-core*))
-		 (car ambig-variables)) ;;
-	  (loop for v in ambig-variables
-	     when (not (or (eq v var/name)
-			   (eq (var-name v) var/name)))
-	     do (return v)))
-      (binding-variable binding)))
 
 (defun old-bind-variable (var/name value individual
                           &optional category)
@@ -244,3 +208,53 @@ returning a new one.
   (unindex/binding b i)
   (deallocate-binding b)
   b )
+
+
+;;;-----------------------------------
+;;; accommodating ambiguous variables
+;;;-----------------------------------
+
+(defun look-for-ambiguous-variables (individual var/name)
+  "Called from bind-dli-variable, where it has to return the individual,
+   original or as modified to do any local disambiguation."
+  (let ((ambiguous-binding
+         (loop for binding in (indiv-old-binds individual)
+            when (and (disjunctive-lambda-variable-p (binding-variable binding))
+                      (loop for v in (dvar-variables (binding-variable binding))
+                         thereis (or (eq v var/name) (eq (var-name v) var/name))))
+            do (return binding))))
+    (if ambiguous-binding
+      (setq individual
+            (perform-local-variable-disambiguation ambiguous-binding var/name individual))
+      individual)))
+
+(defun perform-local-variable-disambiguation (ambiguous-binding var/name i)
+  (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
+	 (ambig-var (binding-variable ambiguous-binding))
+	 (ambig-variables (dvar-variables ambig-var)))
+    (loop for binding in (reverse (indiv-binds i))
+       ;; make/binding operates by a push operation
+       ;; on the indiv-binds list, so we must do this in reverse
+       ;; order to get the same list on the copy!!
+       ;; RJB discovered this error on 6/12/2016
+       do
+       ;; don't check binding-hook
+	 (setq new
+	       (bind-dli-variable
+		(disambiguated-variable binding ambiguous-binding ambig-variables var/name)
+		(binding-value binding)
+		new)))
+    new))
+
+(defun disambiguated-variable (binding ambiguous-binding ambig-variables var/name)
+  (if (eq binding ambiguous-binding)
+      (if (cddr ambig-variables)
+	  ;; still ambiguous
+	  (progn (format t "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
+                         (sentence-string *sentence-in-core*))
+		 (car ambig-variables)) ;;
+	  (loop for v in ambig-variables
+	     when (not (or (eq v var/name)
+			   (eq (var-name v) var/name)))
+	     do (return v)))
+      (binding-variable binding)))
