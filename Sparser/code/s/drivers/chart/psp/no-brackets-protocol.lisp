@@ -68,7 +68,6 @@
   "Read in post-analysis-operations as part of the guard on whether we
    collect the all sentences data.")
 
-
 (defparameter *show-handled-sentence-errors* t
   "Printing the error that's caught by the handler in 
   error-trapped-scan-and-core turns out to be a significant
@@ -85,7 +84,11 @@
   was being analyzed at the time of the error.
     Presently always set (dynamically bound) deliberately.
   Right now (6/12/15) that only happens in read-article-set.")
- 
+
+
+;;;------------------------------------------------
+;;; keeping track of the sentence we're working on
+;;;------------------------------------------------
 
 ;; N.b. *current-sentence* is set by start-sentence
 
@@ -97,15 +100,22 @@
    period hook. As a result, it quickly gets ahead of the
    sentence we are working on whereas this global will not.")
 
-(defvar *current-sentence-string* nil
-  "Set in sweep-successive-sentences-from and retains its value
-   until the next time that's called. Not dynamically bound.")
-(defun current-string ()
-  *current-sentence-string*)
+(defparameter *string-from-analyze-text-from-string* nil
+  "Provides analog to *sentence-in-core* when parsing protocol
+   doesn't go through the document-centric code that sets that.
+   Set globally by analyze-text-from-string (not bound).")
 
 (defvar *sentence-in-core* nil
   "Set in sweep-successive-sentences-from and also in
    sentence-processing-core.")
+
+(defvar *current-sentence-string* nil
+  "Set in sweep-successive-sentences-from and retains its value
+   until the next time that's called. Not dynamically bound.")
+
+(defun current-string ()
+  (or *current-sentence-string*
+       *string-from-analyze-text-from-string*))
 
 (defun identify-current-sentence (&optional no-break)
   "Identify and return the sentence that the parser is operating in
