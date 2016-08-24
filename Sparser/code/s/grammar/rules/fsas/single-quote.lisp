@@ -81,7 +81,7 @@
                    referent (category-named 'not)))
             ((eq word word::|re|)
              (setq spanning-category category::apostrophe-re
-                   form category::verb
+                   form category::verb+present
                    referent (category-named 'be)))
             ((eq word word::|ve|)
              (setq spanning-category category::apostrophe-ve
@@ -89,10 +89,12 @@
                    referent (category-named 'have)))
             ((eq word word::|ll|)
              (setq spanning-category category::apostrophe-ll
-                   form category::modal))
+                   form category::modal
+                   referent (category-named 'will)))
             ((eq word word::|m|)
              (setq spanning-category category::apostrophe-m
-                   form category::verb)))
+                   form category::verb+present
+                   referent (category-named 'be))))
         
       (if spanning-category
         (then
@@ -101,7 +103,7 @@
                  :category spanning-category
                  :form form
                  :referent referent
-                 :rule-name :appostrophe-fsa
+                 :rule-name :apostrophe-fsa
                  :starting-position starting-position
                  :ending-position
                  (setq position-after
@@ -137,7 +139,7 @@
           :category category::apostrophe-s
           :form nil
           :referent nil
-          :rule-name :appostrophe-fsa
+          :rule-name :apostrophe-fsa
           :starting-position pos-before
           :ending-position pos-after )))
     (tr :s-on-prior-word-apostrophe-afterwards edge word)
