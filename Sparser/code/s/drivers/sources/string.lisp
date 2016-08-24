@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990-1991  Content Technologies Inc.
-;;; copyright (c) 1992,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013,2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "string"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:  0.1 October 2013
+;;;  Version:  August 2016
 
 ;; Created February 1991 or earlier
 ;; 5/1/13 Added section and paragraph initialization that will not be
@@ -17,19 +17,19 @@
 
 (export 'analyze-text-from-string)
 
-(defparameter *string-from-analyze-text-from-string* nil)
-(defun analyze-text-from-string (string)
-  (declare (special *trap-error-skip-sentence*))
-  (if *trap-error-skip-sentence*
-      (handler-case
-          (analyze-text-from-string-guts string) 
-        (error (e)
-          (ignore-errors ;; got an error with something printing once
-            (format t "~&Error in ~s~%~a~%~%" (current-string) e))))
-      (analyze-text-from-string-guts string)))
 
-(defun analyze-text-from-string-guts (string)
+(defun analyze-text-from-string (string)
+  (declare (special *trap-error-skip-sentence*
+                    *string-from-analyze-text-from-string*))
   (setq *string-from-analyze-text-from-string* string)
-  (set-initial-state :name 'text-string)
   (establish-character-source/string string)
-  (analysis-core))
+  (cond
+    (*trap-error-skip-sentence*
+      (handler-case
+          (analysis-core)         
+        (error (e)
+          (ignore-errors
+            (format t "~&Error in ~s~%~a~%~%" (current-string) e)))))
+    (t
+     (analysis-core))))
+
