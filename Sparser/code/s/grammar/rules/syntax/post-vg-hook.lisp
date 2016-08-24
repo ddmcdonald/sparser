@@ -159,7 +159,14 @@
   "Elevates the form of the edge if necessary. In other configurations
    generalize-segment-edge-form-if-needed would have done this."
   (let* ((form-category (edge-form vg-edge))
-         (form-symbol (when form-category (cat-symbol form-category))))
+         (form-symbol (when form-category (cat-symbol form-category)))        
+         (dominating-edge (edge-used-in vg-edge)))
+    
+    (when dominating-edge
+      ;; The vg-edge parameter is uniform for all the calls made
+      ;; by the hook, 
+      (setq vg-edge dominating-edge))
+    
     (case form-symbol
       ;; unchanged
       (category::vp)
