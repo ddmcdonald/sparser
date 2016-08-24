@@ -109,97 +109,88 @@
 ;;;----------------------
 
 (define-lambda-variable 
-    ;; Used to explicitly mark the type of an individual
-    ;; created to anchor segments created by DM&P rather
-    ;; than core conceptualizations and incorporated sublanguages
-  'predication ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+    'predication
+    nil 
   category::top)
 
 (define-lambda-variable 
-  'predicate ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'predicate
+    nil 
   category::top)
 
 (define-lambda-variable 
-    ;; Used to explicitly mark the type of an individual
-    ;; created to anchor segments created by DM&P rather
-    ;; than core conceptualizations and incorporated sublanguages
-  'ordinal ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'ordinal
+    nil
   category::top)
 
 (define-lambda-variable 
-    ;; Used to explicitly mark the type of an individual
-    ;; created to anchor segments created by DM&P rather
-    ;; than core conceptualizations and incorporated sublanguages
-  'appositive-description ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'appositive-description
+    nil 
   category::top)
 
 (define-lambda-variable 
-  'comp ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'comp 
+    nil 
   category::top)
 
 (define-lambda-variable 
-  'subordinate-conjunction ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'subordinate-conjunction
+    nil
   category::top)
 
 (define-lambda-variable 
-  'purpose ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'purpose
+    nil 
   category::top)
 
 (define-lambda-variable 
-  'quantifier ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'quantifier
+    nil 
   category::top)
 
 (define-lambda-variable 
-  'number ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'number
+    nil
   category::top)
 
 (define-lambda-variable 
   'det-quantifier ;; as in "all these"
-    nil ;; value restriction, which would be 'category' but don't want to go there
+    nil
   category::determiner)
 
 (define-lambda-variable 
-  'has-determiner ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'has-determiner
+    nil
   category::top)
 
 (define-lambda-variable 
-  'has-possessive ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'has-possessive
+    nil 
   category::top)
 
 (define-lambda-variable 
-  'approximator ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'approximator
+    nil 
   category::number)
 
 (define-lambda-variable 
-  'event-relation ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'event-relation
+    nil
   category::top)
 
 (define-lambda-variable 
-  'amount-of-time ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'amount-of-time
+    nil 
   category::top)
 
 (define-lambda-variable 
-  'copular-verb ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'copular-verb
+    nil 
   category::top)
 
 (define-lambda-variable 
-  'compared-to ;; name
-    nil ;; value restriction, which would be 'category' but don't want to go there
+  'compared-to 
+    nil 
   category::top)
 
 
@@ -216,8 +207,10 @@
 (defparameter *non-dli-mod-ht* (make-hash-table)
   "Holds determiners for NPs until they are put in
    the discourse mention")
+
 (defun non-dli-mod-for (i)
   (gethash i *non-dli-mod-ht*))
+
 (defun (setf non-dli-mod-for) (det i)
   (setf (gethash i *non-dli-mod-ht*) det))
 
@@ -548,13 +541,13 @@
 ;;;------------------
 
 (defun find-or-make-aspect-vector (vg)
-  (declare (special category::perdurant category::relation
-                    category::collection category::tense/aspect-vector))
-  (unless (or (itypep vg category::perdurant)
+  (declare (special category::carries-tense
+                    category::relation category::tense/aspect-vector))
+  (unless (or (itypep vg category::carries-tense)
 	      (itypep vg category::relation) ;; from copular adjectives like "is essential"
               (and (collection-p vg)
                    (let ((vg1 (car (value-of 'items vg))))
-                     (itypep vg1 category::perdurant))))
+                     (itypep vg1 category::carries-tense))))
     (push-debug `(,vg))
     (break "~s is not an event, tense/aspect only applies to individuals that ~
             inherit from event." vg))
@@ -611,21 +604,17 @@
 
 
 
-(defmethod add-tense/aspect ((aux category) (vg category))
-  (add-tense/aspect (individual-for-ref aux)
-                    (individual-for-ref vg)))
-
-(defmethod add-tense/aspect ((aux individual) (vg category))
-  (add-tense/aspect aux (individual-for-ref vg)))
-
-(defmethod add-tense/aspect ((aux category) (vg individual))
-  (push-debug `(,aux ,vg)) ;;(break "is this right?")
-  ;;(push-debug `(,i)) (break "look at i")
-  (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))
-
-(defmethod add-tense/aspect ((aux individual) (vg individual))
-  (push-debug `(,aux ,vg)) ;;(break "is this right?")
-  (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))
+(defgeneric add-tense/aspect (aux vg)
+  (:documentation "Interpret the auxiliary to make the appropriate
+     addition onto the vector associated with the vg head.")
+  (:method ((aux category) (vg category))
+    (add-tense/aspect (individual-for-ref aux) (individual-for-ref vg)))
+  (:method ((aux individual) (vg category))
+    (add-tense/aspect aux (individual-for-ref vg)))
+  (:method ((aux category) (vg individual))
+    (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))
+  (:method ((aux individual) (vg individual))
+    (bind-dli-variable 'aspect (make-vg-aux aux vg) vg)))
 
 (defun make-vg-aux (aux vg)
   (let ((aux-cat (if (individual-p aux)
@@ -644,6 +633,7 @@
        (error "Extend add-tense/aspect to handle ~a" aux)))
     i))
 
+
 (defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc category))
   (or *subcat-test*
       (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
@@ -651,7 +641,6 @@
 (defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc category))
   (or *subcat-test*
       (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
-
 
 (defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc individual))
   (or *subcat-test*
@@ -1440,13 +1429,11 @@
     (t
      ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
      ;;/// prep-comp, etc.
-     (find-subcat-var item label head)
-     )))
+     (find-subcat-var item label head))))
 
 
 (defparameter *label* nil) ;; temporary hack to get the label down to satisfies-subcat-restriction?
 (defparameter *head* nil)
-
 
 (defparameter *subcat-use* nil ;; (make-hash-table :size 2000)
   )
@@ -1526,12 +1513,6 @@
      when (eq label (subcat-label pat))
      collect (subcat-variable pat)))
 
-(defun find-object-vars (cat)
-  (find-subcat-vars :object cat))
-
-(defun find-subject-vars (cat)
-  (find-subcat-vars :subject cat))
-
 (defun missing-object-vars (i)
   (let ((ov (find-object-vars i)))
     (or
@@ -1545,6 +1526,12 @@
               thereis (disjunctive-lambda-variable-p
                        (binding-variable b))))))))
 
+(defun find-object-vars (cat)
+  (find-subcat-vars :object cat))
+
+(defun find-subject-vars (cat)
+  (find-subcat-vars :subject cat))
+
 (defun missing-subject-vars (i)
   (let ((sv (find-subject-vars i)))
     (and sv
@@ -1552,13 +1539,12 @@
 
 (defun bound-object-var (i)
   (loop for o in (find-object-vars i)
-     when
-       (value-of o i)
-     do
-       (return o)))
+     when (value-of o i)
+     do (return o)))
 
 (defun bound-subject-vars (i)
   (loop for s in (find-subject-vars i) thereis (value-of s i)))
+
 
 (defun announce-over-ridden-ambiguities (item head label variable)
   (when *show-over-ridden-ambiguities*
@@ -1724,20 +1710,12 @@
   unindexed individual (in make-pp) then the index
   information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
-
 (mark-as-form-category category::prepositional-phrase)
 
 (define-category relativized-prepositional-phrase
   :specializes prepositional-phrase
   :binds ((prep)
           (pobj))
-  :documentation "Provides a scafolding to hold
-  a generic prepositional phrase as identified by
-  the pp rules in grammar/rules/syntactic-rules.
-  Primary consumer is the subcategorization checking
-  code below. Note that if we make these with an
-  unindexed individual (in make-pp) then the index
-  information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
 (mark-as-form-category category::relativized-prepositional-phrase)
 
@@ -1759,7 +1737,6 @@
   though the head decides what to do with it based on the
   composition. Same design as pps."
   :index (:temporary :sequential-keys conj comp))
-
 (mark-as-form-category category::subordinate-clause)
 
 
@@ -1918,7 +1895,11 @@
   (let ((exists (make-unindexed-individual category::there-exists))) ;;<<<<<<<
     (bind-dli-variable 'object right-edge exists)))
 
+
+;;;----------------------
 ;;; Adjuncts for clauses 
+;;;----------------------
+
 (defun add-adjunctive-clause-to-s (s adjunctive-clause)
   "If the clause (s) denotes a perdurant it will have a variable
   we can use to declare that it is causally related to the adjunct
@@ -1935,7 +1916,6 @@
       s))))
 
 
-
 (defun add-time-adjunct (time vp)
   ;; treat both "now" and "then" as subordinate conjunctions
   ;; rather than time
@@ -1946,8 +1926,8 @@
 
 
 (defun assimilate-adj-complement (vp adjp)
-  (when
-      (get-tag :adjp-complement (itype-of vp)) ;; this is a (find-variable-for-category event-relation (itype-of s))
+  (when (get-tag :adjp-complement (itype-of vp))
+    ;; this is a (find-variable-for-category event-relation (itype-of s))
     (let* ((obj-var (bound-object-var vp))
            (obj (when obj-var (value-of obj-var vp)))
            (mod-obj (when (takes-adj? obj adjp)
