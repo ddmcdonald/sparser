@@ -35,7 +35,7 @@
       (:referent-of-last-edge
        (compute-referent-of-last-edge-return))
       (otherwise
-       (break "Unrecognized value for *return-value* switch:~
+       (error "Unrecognized value for *return-value* switch:~
              ~%     ~a" *return-value*)))
     :analysis-completed))
 
