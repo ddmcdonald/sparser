@@ -1007,10 +1007,17 @@
 
 (defvar *deferred-collection-plurals* nil
   "An alist of word and category for all the plurals created before the
-category 'collection' was defined, mostly lemmas in the upper model.")
+   category 'collection' was defined, mostly lemmas in the upper model.")
 
 (defun make-cn-rules/aux/plural (word special-cases category referent
                                  singular-rule schematic-rule)
+  "Construct the plural form of the word, then call make-cn-plural-rule
+   to have its rules formed. Handles the iteration needed when one
+   form is used to create several plurals (i.e. the word parameter
+   is a list). Note that the plural form of the word can be stipuled
+   in the form that defines the singular by using the keyword :plural
+   in the special cases field. Records the plural words as 'inflections'
+   of the singular word."
   (let ((plural (or (cadr (member :plural special-cases))
                     (etypecase word
                       (polyword (plural-version/pw word))
@@ -1021,13 +1028,13 @@ category 'collection' was defined, mostly lemmas in the upper model.")
       (dolist (p plural)
         (multiple-value-bind (rule plural-word)
                              (make-cn-plural-rule 
-                              p category referent schematic-rule)
+                              word p category referent schematic-rule)
           (push rule plural-rules)
           (push plural-word plural-inflections)))
       (else
         (multiple-value-bind (rule plural-word)
                              (make-cn-plural-rule 
-                              plural category referent schematic-rule)
+                              word plural category referent schematic-rule)
           (setq plural-rules (list rule)
                 plural-inflections (list plural-word)))))
 
@@ -1040,13 +1047,32 @@ category 'collection' was defined, mostly lemmas in the upper model.")
     (list singular-rule
           plural-rules)))
 
-(defun make-cn-plural-rule (plural category referent schematic-rule)
+
+(defun make-cn-plural-rule (singular plural category referent schematic-rule)
+  (declare (special *external-referents*))
   (typecase plural
     (word)
     (string 
      (setq plural (resolve/make plural))))
   (assign-brackets-as-a-common-noun plural)
-  (let ((plural-rule
+  (let* ((referent-for-plural
+          (if *external-referents*
+            referent
+            (formulate-plural-collection singular referent)))
+         (plural-rule
+           (define-cfr category (list plural)
+             :form  category::common-noun/plural
+             :referent referent-for-plural)))
+    (setf (cfr-schema plural-rule) schematic-rule)
+    (values plural-rule
+            plural)))
+
+(defun formulate-plural-collection (singular referent)
+  (declare (ignore singular)) ;; for a couple of hours
+  (when (category-named 'collection)
+    (resolve-referent-expression
+     `(:head ,referent
+             :subtype ,(category-named 'collection)))))
 ;; This one is for categories where we expect sets: companies, people
 ;                (define-cfr category (list plural)
 ;                  :form  category::common-noun/plural
@@ -1055,28 +1081,6 @@ category 'collection' was defined, mostly lemmas in the upper model.")
 ;                               :subtype (:instantiate-individual collection
 ;                                           :with (type ,referent)))))
 ;; This is simple cases where the set would never be enumerated: share-of-stock
-           (define-cfr category (list plural)
-             :form  category::common-noun/plural
-             :referent 
-               (cond
-                (*external-referents*
-                 referent)
-                ((category-named 'collection)
-                 ;; Have we reached a point in the load where collection
-                 ;; has been defined.
-                 (resolve-referent-expression
-                  `(:head ,referent
-                    :subtype ,(category-named 'collection))))
-                (t
-                 (push `(,plural . ,referent)
-                       *deferred-collection-plurals*)
-                 (resolve-referent-expression
-                  `(:head ,referent)))))))
-    (setf (cfr-schema plural-rule) schematic-rule)
-    (values plural-rule
-            plural)))
-
-
 
 
 (defmethod plural-version ((w word))
