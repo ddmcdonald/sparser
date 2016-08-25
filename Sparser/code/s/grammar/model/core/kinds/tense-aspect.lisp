@@ -50,3 +50,14 @@
   :instantiates nil
   :specializes  tense/aspect )
 
+
+(defgeneric indicates-tense? (individual)
+  (:documentation "Does the individual bind any of the variables
+    that carry information about tense.")
+  (:method ((i individual))
+    (or (value-of 'occurs-at-moment i)
+        (value-of 'modal i)
+        (value-of 'present i)
+        (value-of 'past i)
+        (value-of 'progressive i)
+        (value-of 'perfect i))))
