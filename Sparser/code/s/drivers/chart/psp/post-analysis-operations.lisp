@@ -508,14 +508,12 @@ where it regulates gene expression.")
 
 
 (defun known-no-edge-pattern (parent-edge child-interp)
-  (declare (special category::tense/aspect-vector
-                    category::hyphenated-triple))
+  (declare (special category::hyphenated-triple))
   ;; these are case where the interpretation of the parent edge
   ;; contains some "computed" version of the interpretation of the
   ;; child edge -- e.g. the map from "T" to "threonine"
   (or (not (or (individual-p child-interp)
 	       (category-p child-interp)))
-      (itypep child-interp category::tense/aspect-vector)
       (itypep child-interp category::hyphenated-triple)
       (and (itypep child-interp 'amino-acid)
 	   (individual-p (edge-referent parent-edge))
