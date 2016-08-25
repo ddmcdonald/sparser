@@ -43,10 +43,9 @@
 
 (define-category  be
   :instantiates  self
-  :specializes event
+  :specializes perdurant ;; as specific as 'state' ?
   :binds ((subject)
           (predicate))
-  :mixins (carries-tense)
   :index (:temporary :list))
 
 (register-variable category::be 
@@ -285,32 +284,6 @@ assess-edge-label, which rewrites the word as the category BE.
 
 
 
-;;;--------------------------------------------
-;;; contentless "there", existance assertions
-;;;--------------------------------------------
-
-(define-category syntactic-there 
-  :specializes abstract
-  :lemma (:common-noun "there"))
-
-(define-category there-exists ;; There is a cat on the mat"
-  :specializes relation
-  :binds ((object)
-          (context))
-  :index (:temporary :list))
-
-(def-cfr there-exists (syntactic-there BE)
-  :form S
-  :referent (:function make-there-exists right-edge))
-
-#+ignore
-(def-form-rule (there-exists np)
-  :form s
-  :referent (:head left-edge
-             :function make-exist-claim right-edge))
-
-
-
 ;;;--------------------------
 ;;; contractions -- "...n't"
 ;;;--------------------------
@@ -410,3 +383,29 @@ phosphorylated by Src."
   :form vp
   :referent (:function make-copular-adjective left-edge right-edge))
 |#
+
+
+
+;;;--------------------------------------------
+;;; contentless "there", existance assertions
+;;;--------------------------------------------
+
+(define-category syntactic-there 
+  :specializes abstract
+  :lemma (:common-noun "there"))
+
+(define-category there-exists ;; There is a cat on the mat"
+  :specializes relation
+  :binds ((object)
+          (context))
+  :index (:temporary :list))
+
+(def-cfr there-exists (syntactic-there BE)
+  :form S
+  :referent (:function make-there-exists right-edge))
+
+#+ignore
+(def-form-rule (there-exists np)
+  :form s
+  :referent (:head left-edge
+             :function make-exist-claim right-edge))

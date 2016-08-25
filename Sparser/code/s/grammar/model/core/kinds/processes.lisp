@@ -25,7 +25,7 @@
 (define-category  perdurant
   :instantiates self
   :specializes  top
-  :mixins (carries-tense)
+
   :binds ((theme) ;; one salient participant
                   ;; FrameNet for the thing that moves
           (participant) ;; any number of others
@@ -40,7 +40,14 @@
           ;; interpret-adverb+verb needs to be improved to diagnose the
           ;; type of adverb but until then, we need to have this variable
           ;; or something equivalent
-          (adverb))
+          (adverb)
+
+          (occurs-at-moment) ;; future, past
+          (modal)
+          (present)
+          (past)
+          (progressive)
+          (perfect))
 
   :documentation
   "Perdurants could otherwise be called events, processes, or phenomena,

@@ -20,26 +20,6 @@
   :binds ((negation)))
 
 
-;;--- container
-
-;; Needs a better name
-(define-category  tense/aspect-vector
-  :instantiates nil
-  :specializes  linguistic
-  :binds ((occurs-at-moment) ;; future, past
-          (modal)
-          (present)
-          (past)
-          (progressive)
-          (perfect))
-  :mixins (takes-neg)
-  :documentation "Stored on the aspect variable of
-  any event, see find-or-make-aspect-vector.")
-
-(define-mixin-category carries-tense
-  :binds ((aspect  tense/aspect-vector)))
-
-
 ;;--- tense & aspect 
 
 (define-category  tense/aspect
