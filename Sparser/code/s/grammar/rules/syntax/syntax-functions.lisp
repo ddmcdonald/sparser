@@ -540,69 +540,7 @@
 ;;; Verb + Auxiliary
 ;;;------------------
 
-(defun find-or-make-aspect-vector (vg)
-  (declare (special category::carries-tense
-                    category::relation category::tense/aspect-vector))
-  (unless (or (itypep vg category::carries-tense)
-	      (itypep vg category::relation) ;; from copular adjectives like "is essential"
-              (and (collection-p vg)
-                   (let ((vg1 (car (value-of 'items vg))))
-                     (itypep vg1 category::carries-tense))))
-    (push-debug `(,vg))
-    (break "~s is not an event, tense/aspect only applies to individuals that ~
-            inherit from event." vg))
-  (let ((known-aspect (value-of 'aspect vg)))
-    ;; In "has entered" the individual for enter has aspect = #<category have>
-    ;; that value should probably be replaced with this vector or the
-    ;; original rule rewriten to FoM a tense/aspect-vevtor on its head
-    ;; though that means that if that is followed up with absorb-auxiliary
-    ;; that routine has to see if variables are already bound
-    (cond
-      ((and known-aspect (itypep known-aspect category::tense/aspect-vector))
-       known-aspect)
-      (t 
-       (make/individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<
-	category::tense/aspect-vector nil)))))
-
-
-(defun absorb-auxiliary (aux vg)
-  (declare (special category::tense/aspect-vector))
-  (cond
-    (*subcat-test* t)
-    (t
-     (when (category-p vg)
-       (setq vg (individual-for-ref vg)))
-
-     ;; otherwise the variable is unavailable
-     (let ((aux-type (etypecase aux
-		       (individual (itype-of aux))
-		       (category aux)))
-	   (i (find-or-make-aspect-vector vg)))
-       (assert (itypep i category::tense/aspect-vector))
-
-       ;; Check for negation
-       (when (value-of 'negation aux)
-	 ;;/// RJB has negation on event too -- sort that out
-	 (setq i (bind-dli-variable 'negation (value-of 'negation aux) i)))
-
-       ;; Propagate the auxiliary
-       (case (cat-symbol aux-type)
-	 ((category::be-able-to	;; see modals.lisp
-	   category::future
-	   category::conditional)
-	  (setq i (bind-dli-variable 'modal aux i)))
-	 (category::anonymous-agentive-action) ;; do
-	 (category::have
-	  (setq i (bind-dli-variable 'perfect aux i)))
-	 (otherwise
-	  (push-debug `(,aux ,vg))
-	  (error "Assimilate the auxiliary category ~a~%  ~a"
-		 aux-type aux)))
-       ;;(push-debug `(,i)) (break "look at i")
-       (setq vg (bind-dli-variable 'aspect i vg))
-       vg))))
-
-
+;;--- functions called from rules
 
 (defgeneric add-tense/aspect (aux vg)
   (:documentation "Interpret the auxiliary to make the appropriate
@@ -612,45 +550,67 @@
   (:method ((aux individual) (vg category))
     (add-tense/aspect aux (individual-for-ref vg)))
   (:method ((aux category) (vg individual))
-    (bind-dli-variable 'aspect (make-vg-aux aux vg) vg))
+    (make-vg-aux aux vg))
   (:method ((aux individual) (vg individual))
-    (bind-dli-variable 'aspect (make-vg-aux aux vg) vg)))
+    (make-vg-aux aux vg)))
+
+(defgeneric add-tense/aspect-to-subordinate-clause (aux sc)
+  (:method ((aux category) (sc category))
+    (or *subcat-test*
+        (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
+  (:method ((aux individual) (sc category))
+    (or *subcat-test*
+        (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
+  (:method ((aux category) (sc individual))
+    (or *subcat-test*
+         (make-vg-aux aux sc)))
+  (:method ((aux individual) (sc individual))
+    (or *subcat-test*
+         (make-vg-aux aux sc))))
+
+(defun absorb-auxiliary (aux vg)
+  (cond
+    (*subcat-test* t)
+    (t (make-vg-aux aux vg))))
 
 (defun make-vg-aux (aux vg)
-  (let ((aux-cat (if (individual-p aux)
-                     (car (indiv-type aux))
-                     aux))
-        (i (find-or-make-aspect-vector vg)))
-    (case (cat-symbol aux-cat)
+  (when (category-p vg)
+    (setq vg (individual-for-ref vg)))
+  (add-tense/aspect-info-to-head aux vg))
+
+
+;;--- routine that does the work.
+;;/// compare to what's done in record-verb-tense for single verb edges
+
+(defun add-tense/aspect-info-to-head (aux vg)
+  (let ((aux-form (edge-form (left-edge-for-referent)))
+        (aux-category (if (individual-p aux)
+                        (car (indiv-type aux))
+                        aux)))
+    ;; Check for negation
+    (when (value-of 'negation aux)
+      (setq vg (bind-dli-variable 'negation (value-of 'negation aux) vg)))
+
+    ;; Propagate the auxiliary
+    (bind-dli-variable 
+     (case (cat-symbol aux-category)
+       ((category::be-able-to	;; see modals.lisp
+         category::future
+         category::conditional)
+        'modal)
+      (category::future
+       'occurs-at-moment)
+      (category::have
+       'perfect)
       (category::be  ;; be + ing
-       (setq  i (bind-dli-variable 'progressive aux i)))
-      (category::have  ;; have + en
-       (setq  i (bind-dli-variable 'perfect aux i)))
-      (category::past
-       (setq  i (bind-dli-variable 'past t i)))
-      (otherwise
-       (push-debug `(,aux ,vg))
-       (error "Extend add-tense/aspect to handle ~a" aux)))
-    i))
+       'progressive)
+      (t (return-from add-tense/aspect-info-to-head vg)))
+     aux
+     vg)))
 
 
-(defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc category))
-  (or *subcat-test*
-      (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
 
-(defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc category))
-  (or *subcat-test*
-      (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
-
-(defmethod add-tense/aspect-to-subordinate-clause ((aux category) (sc individual))
-  (or *subcat-test*
-      ;;(push-debug `(,aux ,sc)) ;;(break "is this right?")
-      (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc)))
-
-(defmethod add-tense/aspect-to-subordinate-clause ((aux individual) (sc individual))
-  (or *subcat-test*
-      ;;(push-debug `(,aux ,sc)) ;;(break "is this right?")
-      (bind-dli-variable 'aspect  (make-vg-aux aux sc) sc)))
+      
 
 
 

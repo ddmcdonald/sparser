@@ -23,7 +23,7 @@
   (when (memq (edge-form vg-edge) ;; see note on the global
               *plausible-vg-categories*)
     (fold-in-preposed-auxiliary vg-edge)
-    #+ignore(record-verb-tense vg-edge)
+    #+ignore(record-verb-tense vg-edge) ;; waiting for 'correct' 
     (generalize-vg-segment-edge vg-edge)))
 
 
@@ -81,56 +81,51 @@
 ;;;--------------
 
 (defun record-verb-tense (vg-edge)
-  "If the referent of this edge does not have a tense/aspect-vector
-   individual already bound to its 'aspect variable, then look at
-   this edge and its daughters, figure out the tense/aspect they
-   imply, and give it one."
-  (let ((i (edge-referent vg-edge)))
-    (unless (value-of 'aspect i)
+  "If the referent of this edge does not bind any of the tense/aspect
+   variables, then look at this edge and its daughters, figure out the
+   tense/aspect they imply, and give it one."
+  (declare (special category::present category::past
+                    category::progressive category::perfect))
+  (let* ((i (edge-referent vg-edge))
+         (referent-with-tense i)) ;; start here
+    (unless (indicates-tense? i)
       (flet ((assign-tense (edge)
-               (let ((tense (tense-implied-by-verb-edge edge))
-                     (v (make-an-individual 'tense/aspect-vector)))
-                 (ecase tense
-                   (:present
-                    (setq v (bind-variable 'present category::present v)))
-                   (:past
-                    (setq v (bind-variable 'past category::past v)))
-                   (:progressive
-                    (setq v (bind-variable 'progressive category::progressive v)))
-                   (:perfect
-                    (setq v (bind-variable 'perfect category::perfect v))))
-                 (let ((new-i
-                        (bind-variable 'aspect v i)))
-                   (setf (edge-referent vg-edge) new-i)))))
+               "Add the appropriate binding to the referent of
+                the edge to record the tense"
+               (multiple-value-bind (variable value)
+                   (ecase (tense-implied-by-verb-edge edge)
+                     (:present (values 'present category::present))
+                     (:past (values 'past category::past))
+                     (:progressive (values 'progressive category::progressive))
+                     (:perfect (values 'perfect category::perfect)))
+                 (setq referent-with-tense
+                       (bind-variable variable value referent-with-tense)))))
 
-      (let ((left (edge-left-daughter vg-edge))
-            (right (edge-right-daughter vg-edge)))
-        ;; If there's a left daughther then it is probably
-        ;; carrying the tense -- "is phosphorylated" vs.
-        ;; "was phorphylated". Otherwise it's either
-        ;; here on the vp-edge or on the single daughter.
-        ;; If the left daughter is also composite then
-        ;; lets hope the syntax functions took care of it.
-        ;;/// Note that there's an interaction with the
-        ;; the 'category elevation' that happens in the
-        ;; segment processing before we get to this point.
-        ;; Which means it should be reviewed in light of all this.
-
-        (cond
-          ((keywordp right) ;; i.e. :single-term
-           ;; there's no left edge
-           (assign-tense vg-edge))
-
-          ((and (edge-p left) (edge-p right))
-           (if (memq (edge-form left) *plausible-vg-categories*)
-             (assign-tense left) ;; "preferentially interact"
-             (assign-tense right)))
-          
-          (t 
-           (push-debug `(,left ,right))
-           (lsp-break "new configuration of daughters ~
-                       in vg that doesn't record tense: ~a"
-                      vg-edge))))))))
+        (let ((left (edge-left-daughter vg-edge))
+              (right (edge-right-daughter vg-edge)))
+          ;; If there's a left daughther then it is probably
+          ;; carrying the tense -- "is phosphorylated" vs.
+          ;; "was phorphylated". Otherwise it's either
+          ;; here on the vp-edge or on the single daughter.
+          ;; If the left daughter is also composite then
+          ;; lets hope the syntax functions took care of it.
+          (cond
+            ((keywordp right) ;; i.e. :single-term
+             ;; there's no left edge
+             (assign-tense vg-edge))
+            
+            ((and (edge-p left) (edge-p right))
+             (if (memq (edge-form left) *plausible-vg-categories*)
+                 (assign-tense left) ;; "preferentially interact"
+                 (assign-tense right)))
+            
+            (t 
+             (push-debug `(,left ,right))
+             (lsp-break "new configuration of daughters ~
+                         in vg that doesn't record tense: ~a"
+                        vg-edge)))
+        
+          (setf (edge-referent vg-edge) referent-with-tense))))))
 
 
 (defun tense-implied-by-verb-edge (edge)
