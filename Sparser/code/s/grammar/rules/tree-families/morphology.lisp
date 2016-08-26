@@ -1028,13 +1028,13 @@
       (dolist (p plural)
         (multiple-value-bind (rule plural-word)
                              (make-cn-plural-rule 
-                              word p category referent schematic-rule)
+                              p category referent schematic-rule)
           (push rule plural-rules)
           (push plural-word plural-inflections)))
       (else
         (multiple-value-bind (rule plural-word)
                              (make-cn-plural-rule 
-                              word plural category referent schematic-rule)
+                              plural category referent schematic-rule)
           (setq plural-rules (list rule)
                 plural-inflections (list plural-word)))))
 
@@ -1048,7 +1048,7 @@
           plural-rules)))
 
 
-(defun make-cn-plural-rule (singular plural category referent schematic-rule)
+(defun make-cn-plural-rule (plural category referent schematic-rule)
   (declare (special *external-referents*))
   (typecase plural
     (word)
@@ -1058,30 +1058,61 @@
   (let* ((referent-for-plural
           (if *external-referents*
             referent
-            (formulate-plural-collection singular referent)))
+            (formulate-plural-collection plural referent)))
          (plural-rule
            (define-cfr category (list plural)
              :form  category::common-noun/plural
              :referent referent-for-plural)))
+    ;;(lsp-break "plural referent = ~a" referent-for-plural)
     (setf (cfr-schema plural-rule) schematic-rule)
     (values plural-rule
             plural)))
 
-(defun formulate-plural-collection (singular referent)
-  (declare (ignore singular)) ;; for a couple of hours
-  (when (category-named 'collection)
-    (resolve-referent-expression
-     `(:head ,referent
-             :subtype ,(category-named 'collection)))))
-;; This one is for categories where we expect sets: companies, people
-;                (define-cfr category (list plural)
-;                  :form  category::common-noun/plural
-;                  :referent (resolve-referent-expression
-;                             `(:head ,referent
-;                               :subtype (:instantiate-individual collection
-;                                           :with (type ,referent)))))
-;; This is simple cases where the set would never be enumerated: share-of-stock
+(defun formulate-plural-collection (plural referent)
+  (unless (or (category-p referent) ;; "steps"
+              (individual-p referent)) ;; "hours"
+    (return-from formulate-plural-collection nil))
+  (if (and (category-named 'collection)
+           (not (current-script :biology)))
+    (let* ((plural-pname (string-upcase (pname plural)))
+           (name (intern (string-append '#:collection-of-
+                                        plural-pname)
+                         (find-package :sparser)))
+           (form `(define-category ,name
+                    :specializes collection))
+           (derived-category (eval form))
 
+           ;; wouldn't need this nonesense if it was easy to
+           ;; by-pass the rule interpreter, though that might
+           ;; be more trouble than it's worth. For this one
+           ;; decode-instantiate-individual-with does the bulk of the work
+           (derived-category-symbol
+            (intern (symbol-name (cat-symbol derived-category))
+                    (find-package :sparser)))
+           (referent-category-symbol
+            (when (category-p referent)
+              (intern (symbol-name (cat-symbol referent))
+                      (find-package :sparser)))))
+      ;;(push-debug `(,derived-category-symbol ,referent-category-symbol))
+      ;;(lsp-break "anthing wrong?")
+      (etypecase referent
+        (category
+         (resolve-referent-expression
+          `(:instantiate-individual ,derived-category-symbol
+            :with (type ,referent-category-symbol))))
+        (individual
+         (resolve-referent-expression
+          `(:instantiate-individual ,derived-category-symbol
+            :with (type ,referent))))))
+
+    (resolve-referent-expression
+     ;; n.b. needs *use-subtypes* set to T to  have any effect
+     `(:head ,referent
+       :subtype ,(category-named 'collection)))))
+
+#| What about simple cases where the set would never be enumerated
+ such as share-of-stock? -- do we want a flag?
+|#
 
 (defmethod plural-version ((w word))
   (let ((plural-pname (plural-version (word-pname w))))

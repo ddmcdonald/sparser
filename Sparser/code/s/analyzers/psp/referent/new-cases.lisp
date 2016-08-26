@@ -198,113 +198,58 @@
         (setq head (car head))
         (error "head is a cons. New case: ~a" head)))
 
-    (when (null *do-not-use-psi*)
-      ;; note - below this code is commented out
-      (error "Expected the *do-not-use-psi* flag to be up"))
+    (let ((lp (cat-lattice-position head))
+          bindings-plist  annotation-list  )
+      (dolist (pair binding-exp/s)
+        ;; e.g. pair = (#<variable reporter> . right-referent)
+        (setq variable (car pair))
+        (multiple-value-setq (value edge)
+          (case (cdr pair)
+            (left-referent
+             (unless arg-edge (setq arg-edge *left-edge-into-reference*))
+             (unless head-edge (setq head-edge *right-edge-into-reference*))
+             (values left-referent *left-edge-into-reference*))
+            (right-referent
+             (unless arg-edge (setq arg-edge *right-edge-into-reference*))
+             (unless head-edge (setq head-edge *left-edge-into-reference*))
+             (values right-referent *right-edge-into-reference*))
+            (otherwise
+             (push-debug `(,pair))
+             (error "Can't decipher edges and referents. Why?"))))
 
-    (when *do-not-use-psi*
+        ;; Create a binding instruction to pass to find
+        (push `(,variable ,value) bindings-plist)
 
-       (let ((lp (cat-lattice-position head))
-             bindings-plist  annotation-list  )
-         (dolist (pair binding-exp/s)
-           ;; e.g. pair = (#<variable reporter> . right-referent)
-           (setq variable (car pair))
-           (multiple-value-setq (value edge)
-             (case (cdr pair)
-               (left-referent
-                (unless arg-edge (setq arg-edge *left-edge-into-reference*))
-                (unless head-edge (setq head-edge *right-edge-into-reference*))
-                (values left-referent *left-edge-into-reference*))
-               (right-referent
-                (unless arg-edge (setq arg-edge *right-edge-into-reference*))
-                (unless head-edge (setq head-edge *left-edge-into-reference*))
-                (values right-referent *right-edge-into-reference*))
-               (otherwise
-                (push-debug `(,pair))
-                (error "Can't decipher edges and referents. Why?"))))
+        ;; Create a list to use for annotating edges
+        (push `(,value ,variable ,edge)
+              annotation-list))
 
-           ;; Create a binding instruction to pass to find
-           (push `(,variable ,value) bindings-plist)
+      ;;(setq bindings-plist (nreverse bindings-plist))
+      ;;(push-debug `(,head ,bindings-plist)) (break "f or m")
+      ;;(push-debug `(,(edge-referent head-edge) ,bindings-plist))
+      (let* ((head-referent (edge-referent head-edge))
+             (reused? (unless (word-p head-referent) ;; e.g. "%"
+                        (itypep head-referent head)))
+             ;; the head category that we're supposed to 
+             ;; instantiate is the same as the head we've got
+             ;; so we use the head individual rather than 
+             ;; make a new individual.
+             (i (if reused?
+                    (edge-referent head-edge)
+                    (find-or-make/individual head bindings-plist))))
+        (when reused?
+          (multiple-value-bind (bindings individual)
+              (apply-bindings i bindings-plist)
+            (declare (ignore bindings))
+            (setq i individual)))
+        (annotate-realization/base-case lp i)
+        (setq type-of-head head)
+        (dolist (annotation annotation-list)
+          (destructuring-bind (variable value edge) annotation
+            (annotate-site-bound-to value variable type-of-head edge)))
+        (setq return-value i)))
 
-           ;; Create a list to use for annotating edges
-           (push `(,value ,variable ,edge)
-                 annotation-list))
-
-         ;(setq bindings-plist (nreverse bindings-plist))
-         ;;(push-debug `(,head ,bindings-plist)) (break "f or m")
-         ;;(push-debug `(,(edge-referent head-edge) ,bindings-plist))
-         (let* ((head-referent (edge-referent head-edge))
-                (reused? (unless (word-p head-referent) ;; e.g. "%"
-                           (itypep head-referent head)))
-                ;; the head category that we're supposed to 
-                ;; instantiate is the same as the head we've got
-                ;; so we use the head individual rather than 
-                ;; make a new individual.
-                (i (if reused?
-                     (edge-referent head-edge)
-                     (find-or-make/individual head bindings-plist))))
-           (when reused?
-             (multiple-value-bind (bindings individual)
-                                  (apply-bindings i bindings-plist)
-               (declare (ignore bindings))
-               (setq i individual)))
-           (annotate-realization/base-case lp i)
-           (setq type-of-head head)
-           (dolist (annotation annotation-list)
-             (destructuring-bind (variable value edge) annotation
-               (annotate-site-bound-to value variable type-of-head edge)))
-           (setq return-value i))))
-
-      ;; psi case
-    #|(let ((psi
-             (typecase head
-               (psi
-                (setq type-of-head
-                      (base-category-of-psi head))
-                head)
-               (referential-category
-                (setq type-of-head head)
-                ;; We're adding a binding, so we presume that the result
-                ;; will be partially saturated even it's a simple category
-                (find-or-make-psi-for-base-category head))
-               (individual
-                (break "Shouldn't have gotten a full individual at ~
-                  this stage"))
-               (otherwise
-                (break "Unanticipated type as the head: ~a~%~a"
-                       (type-of head) head)))))
-        (tr :instantiating-individual-with-binding psi binding-exp/s)
-        (dolist (pair binding-exp/s)
-          (setq variable (car pair))
-          (multiple-value-setq (value edge)
-            (case (cdr pair)
-              (left-referent
-               (unless arg-edge
-                 (setq arg-edge *left-edge-into-reference*))
-               (unless head-edge
-                 (setq head-edge *right-edge-into-reference*))
-               (values left-referent *left-edge-into-reference*))
-              (right-referent
-               (unless arg-edge
-                 (setq arg-edge *right-edge-into-reference*))
-               (unless head-edge
-                 (setq head-edge *left-edge-into-reference*))
-               (values right-referent *right-edge-into-reference*))
-              (otherwise
-               (let ((unit (cdr pair)))
-                 (values (etypecase unit
-                           (psi unit)
-                           (individual unit)
-                           (referential-category
-                            (find-or-make-psi-for-base-category unit)))
-                         nil)))))
-          (setq psi (find-or-make-psi-with-binding
-                     variable value psi))
-          ;; annotate what c+v the value has been bound to.
-          (annotate-site-bound-to value variable type-of-head edge))
-        (setq return-value psi) ;; after the dust has settled
-        ) |#
-
+   
     (when *annotate-realizations*
       ;; annotate this combination
       (let ((lattice-point (cat-lattice-position head)))

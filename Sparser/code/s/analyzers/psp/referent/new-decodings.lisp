@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2000,2012 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2000,2012,2016 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;      File:  "new decodings"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  1.0 March 2000
+;;;   Version:  August 2016
 
 ;; broken out from cases 9/21/93 v2.3
 ;; 0.1 (10/22) added Decode-var-in-cats-vars, extending the semantics
@@ -196,6 +195,12 @@
                  with different restrictions~%and no category is ~
                  available" var-symbol)
       (setq variable (cadr variable)))
+
+    (when (symbolp value-exp)
+      (unless (canonical-ref-var value-exp)
+        (let ((category (category-named value-exp)))
+          (when category
+            (setq value-exp category)))))
 
     (setq value 
           (if (or (referential-category-p value-exp)
