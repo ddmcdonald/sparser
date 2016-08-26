@@ -32,6 +32,7 @@
 (assign-lemma individual (common-noun "individual"))
 (assign-lemma physical (adjective "physical"))
 (assign-lemma kind (common-noun "kind"))
+(assign-lemma time (common-noun "time"))
 
 (assign-lemma object (common-noun "object"))
 (assign-lemma feature (common-noun "feature"))
@@ -40,6 +41,8 @@
 (assign-lemma has-name (:proper-noun "name"))
 
 (assign-lemma negative (adjective "negative"))
+
+(assign-lemma collection (:common-noun "collection"))
 
 
 ;;;------------------
