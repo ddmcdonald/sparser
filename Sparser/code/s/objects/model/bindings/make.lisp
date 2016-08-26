@@ -54,7 +54,9 @@
   (let ( bindings  var  value (individual input-individual))
     (dolist (instr binding-instructions)
       (setq var (car  instr)
-            value (cadr instr))
+            value (if (consp (cdr instr))
+                    (cadr instr)
+                    (cdr instr)))
       ;;(format t "~&apply bindings loop, binding ~s as ~s of ~s" value var individual)
       (when value
         (push (multiple-value-bind (new-indiv binding) 

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "find"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  1.4 June 2015
+;;;  version:  August 2016
 
 ;; initiated 7/16/92 v2.3
 ;; 0.1 (11/10) fixing the semantics of some cases of the find operation
@@ -150,7 +150,9 @@
          var  value )
     (dolist (instr binding-instructions)
       (setq var (car instr)
-            value (cadr instr))
+            value (if (consp (cdr instr))
+                    (cadr instr)
+                    (cdr instr)))  
       ;;(format t "~&apply bindings loop, binding ~s as ~s of ~s" value var individual)
       (when (and value individual)
        (multiple-value-bind (new-indiv binding) 
