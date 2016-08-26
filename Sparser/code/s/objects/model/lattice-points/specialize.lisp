@@ -41,10 +41,7 @@
     base item by the specializer."))
 
 (defmethod specialize-object ((i individual) (c category))
-  (push-debug `(,i ,c))
-  (break "You are trying to specialize ~a with the category ~a~
-          which is not a mixin. If you want to do that you need ~
-          to write the code for it." i c))
+  (specialize-object i (cat-symbol c)))
 
 (defmethod specialize-object ((i individual) (mixin mixin-category))
   ;; 1. Find the relevant subtyped category
@@ -62,6 +59,8 @@
       (setf (indiv-shadow i) new-shadow) ;; does all the work
       i )))
 
+(defmethod specialize-object ((i individual) (c (eql 'category::collection)))
+  (find-or-make-individual c :items nil :type (itype-of i)))
 
 (defun find-subtype (i mixin)
   (let* ((base (itype-of i))

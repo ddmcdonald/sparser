@@ -36,23 +36,24 @@
     (preposition :prep)
     (interjection :interjection)))
 
-(defgeneric label (object &optional pos)
-  (:documentation "Produce a Mumble word that denotes the given object.")
-  (:method ((i sp::individual) &optional (pos 'noun) &aux
-            (raw-label (or (sp::rdata-head-word i (sparser-pos pos))
-                           (sp::lemma i (sparser-pos pos))
-                           (sp::value-of 'sp::name i)
-                           (sp::value-of 'sp::word i)
-                           (string-downcase ; last-ditch guess
-                            (sp::cat-name (sp::itype-of i))))))
-    (declare (optimize debug))
-    (if (sp::itypep i 'sp::biological)
-      (pretty-bio-name (sp::pname raw-label))
-      (etypecase raw-label
-        (string (word-for-string raw-label))
-        (mumble::word raw-label)
-        ((or sp::word sp::polyword)
-         (sp::get-mumble-word-for-sparser-word raw-label))))))
+(defun word-for (item &optional (pos 'noun))
+  "Produce a Mumble word that denotes the given item."
+  (declare (optimize debug))
+  (check-type item (or sp::individual sp::referential-category))
+  (let ((raw-word (or (sp::rdata-head-word item (sparser-pos pos))
+                      (sp::lemma item (sparser-pos pos))
+                      (sp::value-of 'sp::name item)
+                      (sp::value-of 'sp::word item)
+                      (string-downcase ; last-ditch guess
+                       (sp::cat-name (sp::itype-of item))))))
+    (case (sp::cat-symbol (sp::itype-of item))
+      (category::biological (pretty-bio-name (sp::pname raw-word)))
+      (category::collection (word-for (sp::value-of 'sp::type item)))
+      (otherwise (etypecase raw-word
+                   (string (word-for-string raw-word))
+                   (mumble::word raw-word)
+                   ((or sp::word sp::polyword)
+                    (sp::get-mumble-word-for-sparser-word raw-word)))))))
 
 (defgeneric tense (object)
   (:documentation "Determine and attach tense to the given object.")
@@ -75,18 +76,22 @@
                   (sp::indiv-binds i))))
 
 (defun realize-collection (collection)
-  "Realize a collection as a conjunction."
+  "Realize a collection as a plural or a conjunction of items."
   (assert (sp::itypep collection 'sp::collection))
-  (cl:labels ((make-conjunction (one &optional two &rest more)
-                (let ((conjunction
-                       (make-dtn :referent `(and ,one ,two)
-                                 :resource (phrase-named 'two-item-conjunction))))
-                  (make-complement-node 'one one conjunction)
-                  (make-complement-node 'two two conjunction)
-                  (if more
-                    (apply #'make-conjunction conjunction more)
-                    conjunction))))
-    (apply #'make-conjunction (sp::value-of 'sp::items collection))))
+  (let ((items (sp::value-of 'sp::items collection)))
+    (if (null items)
+      (plural (realize-via-bindings collection 'noun))
+      (cl:labels ((conjoin (one &optional two &rest more)
+                    (let ((conjunction
+                           (make-dtn :referent `(and ,one ,two)
+                                     :resource (phrase-named
+                                                'two-item-conjunction))))
+                      (make-complement-node 'one one conjunction)
+                      (make-complement-node 'two two conjunction)
+                      (if more
+                        (apply #'conjoin conjunction more)
+                        conjunction))))
+        (apply #'conjoin items)))))
 
 (defmethod realize ((i sp::individual))
   "Realize a Sparser individual."
@@ -107,8 +112,8 @@
   (check-type i sp::individual)
   (loop with dtn = (make-dtn :referent i
                              :resource (ecase pos
-                                         (verb (verb (label i pos) 'svo))
-                                         (noun (noun (label i pos)))))
+                                         (verb (verb (word-for i pos) 'svo))
+                                         (noun (noun (word-for i pos)))))
         initially (tense dtn)
         for binding in (reverse (sp::indiv-binds i))
         as variable = (sp::binding-variable binding)

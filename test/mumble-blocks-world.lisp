@@ -23,15 +23,15 @@
 
 (deftest (say make steps green)
   (mumble-says "Make the steps green.")
-  "make the step green") ; missing plural
+  "make the steps green")
 
 (deftest (say not enough green blocks)
   (mumble-says "We do not have enough green blocks.")
-  "we doesn't have enough green block") ; missing plural, tense
+  "we doesn't have enough green block") ; wrong tense, missing plural
 
 (deftest (say make tops of steps red)
   (mumble-says "Make the tops of the steps red.")
-  "make the top of the step red") ; missing plurals
+  "make the tops of the steps red")
 
 (deftest (say make bottom row)
   (mumble-says "Make the bottom row.")
@@ -59,7 +59,7 @@
 
 (deftest (say make row of two green blocks)
   (mumble-says "Make a row of two green blocks.")
-  "make a row of two green block") ; missing plural
+  "make a row of two green blocks")
 
 (deftest (say put red block at end)
   (mumble-says "Put a red block at the end.")
@@ -85,15 +85,15 @@
 
 (deftest (say put row on table)
   (mumble-says "Put a row of three blue blocks on the table.")
-  "put a row of three blue block on the table") ; missing plural
+  "put a row of three blue blocks on the table")
 
 (deftest (say put row on top)
   (mumble-says "Put a row of two blocks on top.")
-  "put a row of two block on top") ; missing plural
+  "put a row of two blocks on top")
 
 (deftest (say put row on bottom row)
   (mumble-says "Put a row of two green blocks on top of the bottom row.")
-  "put a row of two green block on the bottom row") ; missing plural
+  "put a row of two green blocks on the bottom row")
 
 #+(or) ; not a question
 (deftest (say which end)
@@ -106,11 +106,11 @@
 
 (deftest (say put row on left end of row)
   (mumble-says "Put a row of two blocks on top of the left end of the bottom row.")
-  "put a row of two block on left end of the bottom row") ; missing plural, determiner
+  "put a row of two blocks on left end of the bottom row") ; missing determiner
 
 (deftest (say put stack on table)
   (mumble-says "Put a stack of two red blocks on the table.")
-  "put a stack of two red block on the table") ; missing plural
+  "put a stack of two red blocks on the table")
 
 (deftest (say add block at right end of row)
   (mumble-says "Add a red block at the right end of the row.")
