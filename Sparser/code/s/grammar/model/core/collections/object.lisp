@@ -28,7 +28,13 @@
 (define-category  collection
   :instantiates self
   :specializes abstract
-  :lemma (:common-noun "collection")
+  ;;  :lemma (:common-noun "collection")
+  ;; Have to delay this because the plural constructor
+  ;; references the category collection and the lemma is going to be
+  ;; handled before the category is ready to be used (i.e. it needs
+  ;; to make a specialization of collection to make the plural)
+  ;; The lemma is provided with the others for the upper model
+  ;; in kinds/assign-lemmas.lisp
   :index (:permanent :key items)
   :binds ((items :primitive list)
           (type)
