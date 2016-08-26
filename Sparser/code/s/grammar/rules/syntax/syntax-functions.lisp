@@ -328,10 +328,10 @@
        (subcategorized-variable adjective :subject head)
        (itypep adjective 'attribute-value))))
 
-(defun adj-postmodifies-noun (n adj &optional (adj-edge nil)) ;; adj-edge is set when we are postmodifying
+(defun adj-postmodifies-noun (n adj &optional (adj-edge nil))
+  ;; adj-edge is set when we are postmodifying
   ;; to be more picky about which adjectives can post-modify a noun
-  (when
-      (or adj-edge (itypep adj 'post-adj))
+  (when (or adj-edge (itypep adj 'post-adj))
     (adj-noun-compound adj n adj-edge)))
 
 (defparameter *dets-seen* nil)
@@ -378,9 +378,11 @@
 	  ((call-compose determiner head))
           ((and *determiners-in-DL* (or (individual-p head)(category-p head)))
            (setq head (bind-dli-variable 'has-determiner determiner head))
-           (if (definite-determiner? determiner)
-               (add-def-ref determiner parent-edge)))
+           ;; (lsp-break "storing: head = ~a" head)
+           (when (definite-determiner? determiner)
+             (add-def-ref determiner parent-edge)))
 	  ((definite-determiner? determiner)
+           ;; (lsp-break "not storing: head = ~a" head)
            (add-def-ref determiner parent-edge)))
 	head)))
 
