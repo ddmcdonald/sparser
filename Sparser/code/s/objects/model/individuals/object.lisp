@@ -166,12 +166,9 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
      (typecase i
        (individual
         (indiv-typep i c/s))
-       (referential-category
-        (category-inherits-type? i (category-named c/s :break-if-none)))
-       (mixin-category
-        ;; strictly speaking mixins are not organized into taxonomies
-        ;; but in most code one won't be able to tell
-        (category-inherits-type? i (category-named c/s :break-if-none)))
+       (category
+        (category-inherits-type? i (or (category-named c/s)
+                                       (return-from itypep nil))))
        (word
         (report-bad-itype-of i 'itypep)
         nil)
