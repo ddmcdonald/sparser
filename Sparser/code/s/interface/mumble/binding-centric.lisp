@@ -46,14 +46,15 @@
                       (sp::value-of 'sp::word item)
                       (string-downcase ; last-ditch guess
                        (sp::cat-name (sp::itype-of item))))))
-    (case (sp::cat-symbol (sp::itype-of item))
-      (category::biological (pretty-bio-name (sp::pname raw-word)))
-      (category::collection (word-for (sp::value-of 'sp::type item)))
-      (otherwise (etypecase raw-word
-                   (string (word-for-string raw-word))
-                   (mumble::word raw-word)
-                   ((or sp::word sp::polyword)
-                    (sp::get-mumble-word-for-sparser-word raw-word)))))))
+    (cond ((sp::itypep item 'sp::biological)
+           (pretty-bio-name (sp::pname raw-word)))
+          ((sp::itypep item 'sp::collection)
+           (word-for (sp::value-of 'sp::type item)))
+          (t (etypecase raw-word
+               (string (word-for-string raw-word))
+               (mumble::word raw-word)
+               ((or sp::word sp::polyword)
+                (sp::get-mumble-word-for-sparser-word raw-word)))))))
 
 (defgeneric tense (object)
   (:documentation "Determine and attach tense to the given object.")
