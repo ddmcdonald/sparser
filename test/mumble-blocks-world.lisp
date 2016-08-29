@@ -115,3 +115,11 @@
 (deftest (say add block at right end of row)
   (mumble-says "Add a red block at the right end of the row.")
   "add a red block on right end of the row") ; missing determiner
+
+(deftest (say push two blocks together)
+  (mumble-says "Push the two blocks together.")
+  "push the two blocks together")
+
+(deftest (say push together block and another)
+  (mumble-says "Push together the block and another block.")
+  "push the block and another block together")

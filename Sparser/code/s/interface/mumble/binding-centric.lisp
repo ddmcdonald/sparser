@@ -168,6 +168,9 @@
             (prep
              (attach-pp (sp::get-mumble-word-for-sparser-word prep)
                         value dtn pos)))))
+  (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
+    "Attach a final adverb."
+    (attach-adjective (sp::binding-value binding) dtn pos))
   (:method (binding (var-name (eql 'sp::aspect)) dtn pos)
     "Attach tense/aspect/modality/etc."
     (loop with t/a = (sp::binding-value binding)

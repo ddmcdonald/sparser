@@ -184,27 +184,17 @@ support a substantial number of blocks.
     :specializes process
     :mixins (with-an-agent)
     :binds ((theme physical))
-    :documentation "The meaning of a puah depends largly
+    :documentation "The meaning of push depends largly
     on what is pushed (= the type of the theme): block
     wall, door, etc. If the specific action to take
     is object (sort) specific then co-composition is
     involved in the interpretation of the literal 
     directive."
-    :realization
-    (:verb "push"
-           :etf (svo-passive)
-           :o theme
-           :s agent
-           :mumble ("push" svo :s agent :o theme)))
-
-
-(define-category push-together
-  :mixins (with-an-agent)
-  :binds ((items collection))
-  :realization
-    ((:verb "push")
-     (:mumble (transitive-with-final-adverbial "push" "together"))))
-
+    :realization (:verb "push"
+                  :etf (svo-passive)
+                  :s agent
+                  :o theme
+                  :mumble ("push" svo :s agent :o theme)))
 
 ;; 1.2 "Put a block on the table"
 (define-category put-something-somewhere
