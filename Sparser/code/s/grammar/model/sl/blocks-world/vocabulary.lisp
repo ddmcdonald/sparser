@@ -196,6 +196,15 @@ support a substantial number of blocks.
                   :o theme
                   :mumble ("push" svo :s agent :o theme)))
 
+(define-category push-together
+  :specializes push
+  :binds ((items collection))
+  :realization (:verb "push together"
+                :etf (svo-passive)
+                :s agent
+                :o theme
+                :mumble (transitive-with-final-adverbial "push" "together")))
+
 ;; 1.2 "Put a block on the table"
 (define-category put-something-somewhere
   :specializes process

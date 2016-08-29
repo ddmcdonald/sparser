@@ -122,4 +122,4 @@
 
 (deftest (say push together block and another)
   (mumble-says "Push together the block and another block.")
-  "push the block and another block together")
+  "push together the block and another block")
