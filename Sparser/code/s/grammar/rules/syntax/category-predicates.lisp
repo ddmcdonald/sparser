@@ -144,6 +144,7 @@
     ,category::verb+ing ;; "being"
     ,category::verb+object
     ,category::verb+s ;; added
+    ,category::modal
     ,category::vg 
     ,category::vg+ed
     ,category::vg+ing
@@ -338,6 +339,10 @@
 (defmethod adjg-head? ((name symbol))
   (memq name *adjg-head-categories*))
 
+
+
+(defparameter *subordinating-adverbs*
+  '(consequently))
 
 (defgeneric noun-category? (label)
   (:documentation "Nouns and their variants. Should be a single word"))
