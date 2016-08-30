@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "rules"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: May 2016
+;;; version: August 2016
 
 ;; Initiated 1/16/15 by lifting from other files.
 ;;  1/19/2015 put in rule for (not adjective) -- but doesn't seem to be found -- need help from David
@@ -100,6 +100,7 @@
                   (vp+ing vp+ing)
                   (vg+ing vp+ing)
 		  (proper-noun np)
+                  (adjective adjp) ;; erk#7 "... to be dimerization-deficient"
 		  (np np))
   do
   (eval
