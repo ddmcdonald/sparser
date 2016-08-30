@@ -677,6 +677,371 @@
       (np missing s))))
   
 
+;;;-----------------------------------------------------------
+;;; subcategorization tests / checks from syntactic functions
+;;;-----------------------------------------------------------
+
+(defun assimilate-subcat (head subcat-label item)
+  (let ((variable-to-bind
+         ;; test if there is a known interpretation of the combination
+         ;; using that label
+         (subcategorized-variable head subcat-label item)))
+    (cond
+     (*subcat-test* variable-to-bind)
+     (variable-to-bind
+      (collect-subcat-statistics head subcat-label variable-to-bind item)
+      (setq head (individual-for-ref head))
+      (when (is-pronoun? item)
+        (setq item
+              (condition-anaphor-edge
+               item subcat-label (var-value-restriction variable-to-bind))))
+      (setq head (bind-dli-variable variable-to-bind item head))
+      head))))
+
+(defun satisfies-subcat-restriction? (item pat-or-v/r)
+  (declare (special category::pronoun/first/plural category::ordinal
+                    category::this category::that category::these category::those
+                    category::pronoun category::number category::ordinal))
+  (let ((restriction
+         (if (subcat-pattern-p pat-or-v/r)
+             (subcat-restriction pat-or-v/r)
+             pat-or-v/r))
+        (source (when (subcat-pattern-p pat-or-v/r) (subcat-source pat-or-v/r)))
+        (var (when (subcat-pattern-p pat-or-v/r) (subcat-variable pat-or-v/r)))
+        (override-category (override-label (itype-of item))))
+    (when (and *trivial-subcat-test*
+               (note-failed-tests item restriction))
+      (return-from satisfies-subcat-restriction? t))
+    (flet ((subcat-itypep (item category)
+             ;; For protein-families and such that are re-written
+             ;; as a more general catgory (e.g. protein). There's no
+             ;; provision for inheritance, but if we need it because
+             ;; of the reach of the override we should do something
+             ;; different with it.
+             (cond
+               ((itypep item category)) ;; handles conjunctions
+               (t (eq category override-category)))))
+      (cond
+        ((or
+          (itypep item category::this)
+          (itypep item category::that)
+          (itypep item category::these)
+          (itypep item category::those)
+          (itypep item category::numerated-anaphor)
+          (itypep item category::quantifier)) ;; as in "the other",
+         t)
+        (;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
+         (itypep item category::pronoun) ;; of any sort
+         t)
+        ((and (itypep item category::number)
+              (not (itypep item category::ordinal)))
+         t)
+        ((consp restriction)
+         (cond
+           ((eq (car restriction) :or)
+            (loop for type in (cdr restriction)
+               thereis (subcat-itypep item type)))
+           ((eq (car restriction) :primitive)
+            ;; this is usually meant for NAME (a WORD) or
+            ;; other special cases
+            nil)
+           (t (error "subcat-restriction on is a cons but it ~
+                      does not start with :or~%  ~a"
+                     restriction))))
+        ((category-p restriction)
+         (subcat-itypep item restriction))
+        ((symbolp restriction) ;; this is the case for :prep subcat-patterns
+          nil)
+        (t (error "Unexpected type of subcat restriction: ~a"
+                  restriction))))))
+
+
+
+(defparameter *label* nil)
+;; temporary hack to get the label down to satisfies-subcat-restriction?
+(defparameter *head* nil)
+
+
+(defun find-subcat-var (item label head)
+  (declare (special item label head))
+  (let ((category (itype-of head))
+        (subcat-patterns (known-subcategorization? head)))
+    (declare (special category subcat-patterns))
+    (when subcat-patterns
+      (setq *label* label)
+      (setq *head* head)
+      (let ((*trivial-subcat-test* nil)
+            variable  over-ridden)
+        (if (and *ambiguous-variables*
+                 (not *subcat-test*))
+            (let ( pats  sover-ridden )
+              (loop for pat in subcat-patterns
+                 as scr = (subcat-restriction pat)
+                 do (when (eq label (subcat-label pat))
+                      (when (satisfies-subcat-restriction? item scr)
+                        (push pat pats))))
+              (setq over-ridden (check-overridden-vars pats))
+              (setq pats (loop for p in pats unless (member p over-ridden) collect p))
+              (setq variable (variable-from-pats item head label pats subcat-patterns)))
+            (dolist (entry subcat-patterns)
+                (when (eq label (subcat-label entry))
+                  (when (satisfies-subcat-restriction? item entry)
+                    (setq variable (subcat-variable entry))
+                    (return)))))
+        
+        (when (and *ambiguous-variables*
+                   (consp variable))
+          (setq variable
+                (if over-ridden
+                    (cond
+                      ((or (equal '(agent object)
+                                  (mapcar #'var-name variable))
+                           (equal '(object agent)
+                                  (mapcar #'var-name variable)))
+                       (loop for v in variable
+                          when (eq 'object (var-name v))
+                          do (return v)))
+                      (t
+                       (announce-over-ridden-ambiguities item head label variable)
+                       (define-disjunctive-lambda-variable variable category)))
+                    ;; else
+                    (define-disjunctive-lambda-variable variable category))))
+        (when (and variable *subcat-use*)
+          (record-subcat-use label (itype-of head) variable))
+        variable ))))
+
+
+
+(defun subcategorized-variable (head label item)
+  "Returns the variable on the HEAD that is subcategorized for
+   the ITEM when it has the grammatical relation LABEL to
+   the head."
+  (declare (special item *pobj-edge*))
+  ;; included in the subcategorization patterns of the head.
+  ;; If so, check the value restriction and if it's satisfied
+  ;; make the specified binding
+  (loop while (edge-p label) ;; can happen for edges over polywords like "such as"
+     do (setq label (edge-left-daughter label)))
+  (cond
+    ((null head)
+     (break "~&null head in call to subcategorized-variable")
+     nil)
+    ((null item)
+     (cond
+       ((and (boundp '*pobj-edge*) *pobj-edge*)
+	(warn "~&*** null item in subcategorized pobj for ~
+                 edge ~s~&  in sentence: ~s~%" *pobj-edge*
+                 (sentence-string *sentence-in-core*)))
+       ((eq label :subject)
+        (warn "~&*** null item in subcategorized subject for ~
+                 clause ~s~&  in sentence: ~s~%"
+              (retrieve-surface-string head)
+              (sentence-string *sentence-in-core*)))
+       ((eq label :object)
+        (lsp-break "~&*** null item in subcategorized object for ~
+                 clause ~s~&  in sentence: ~s~%"
+              (retrieve-surface-string head)
+              (sentence-string *sentence-in-core*)))
+       (t
+        (warn "~&*** null item in subcategorized-variable~& ~
+                 edge ~s~&  in sentence: ~s~%" *pobj-edge*
+                 (sentence-string *sentence-in-core*))))
+     nil)
+    ((consp item)
+     (warn "what are you doing passing a CONS as an item, ~s~&" item)
+     nil)
+    (t
+     ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
+     ;;/// prep-comp, etc.
+     (find-subcat-var item label head))))
+
+
+
+(defun find-subcat-vars (label cat)
+  (loop for pat in (subcat-patterns cat)
+     when (eq label (subcat-label pat))
+     collect (subcat-variable pat)))
+
+(defun missing-object-vars (i)
+  (let ((ov (find-object-vars i)))
+    (or
+     (and ov
+          (not (get-tag :optional-object (itype-of i)))
+          (not (loop for o in ov thereis (value-of o i)))
+          (not
+           ;; this is weak -- need to check inside the disjunctive-lambda-variable-p
+           ;;  for an object-variable
+           (loop for b in (when (individual-p i)(indiv-old-binds i))
+              thereis (disjunctive-lambda-variable-p
+                       (binding-variable b))))))))
+
+(defun find-object-vars (cat)
+  (find-subcat-vars :object cat))
+
+(defun find-subject-vars (cat)
+  (find-subcat-vars :subject cat))
+
+(defun missing-subject-vars (i)
+  (let ((sv (find-subject-vars i)))
+    (and sv
+         (not (loop for s in sv thereis (value-of s i))))))
+
+(defun bound-object-var (i)
+  (loop for o in (find-object-vars i)
+     when (value-of o i)
+     do (return o)))
+
+(defun bound-subject-vars (i)
+  (loop for s in (find-subject-vars i) thereis (value-of s i)))
+
+
+
+
+(defparameter *show-over-ridden-ambiguities* nil)
+
+
+(defparameter *trivial-subcat-test* nil)
+(defparameter *tight-subcats* nil)
+(defparameter *dups* nil)
+
+(defparameter *ambiguous-variables* (list nil))
+
+
+(defun show-ambiguities ()
+  (setq *ambiguous-variables* (list nil))
+  (compare-to-snapshots)
+  (display-subcat-ambiguities))
+
+
+(defun display-subcat-ambiguities ()
+  (np (setq *dups*
+            (sort *ambiguous-variables* #'string<
+                  :key #'(lambda(x)(if (individual-p (car x))(cat-name (itype-of (car x))) "")))))
   
+  (loop for pat in
+       (sort
+	(loop for pat in 
+	     (remove-duplicates (loop for x in *dups* collect (list (second x)(fifth x))) :test #'equal)
+	   collect pat)
+	#'string<
+	:key
+	#'(lambda (p)
+	    (let ((key (car p)))
+	      (etypecase key
+		(word (word-pname key))
+		(polyword (pw-pname key))
+		(symbol key)))))
+     do (terpri)(print pat)))
+
+
+(defun announce-over-ridden-ambiguities (item head label variable)
+  (when *show-over-ridden-ambiguities*
+    (format t "~%over-ridden ambiguity now preserved~
+               ~%  ambiguous subcats for attaching ~s to ~s ~
+                 with ~s:~%  ~s~%   ~s~%"
+            item head label variable (sentence-string *sentence-in-core*))))
+
+(defun variable-from-pats (item head label pats subcat-patterns)
+  (declare (special category::number))
+  (let ( variable )
+    (cond
+      ((cdr pats)
+       (setq variable (mapcar #'subcat-variable pats))
+       (if (itypep item category::number)
+           (setq variable (car variable))
+           ;; these are mostly bad parses with a dangling number -- we should collect them
+           (push (list head label item
+                       (sentence-string *sentence-in-core*)
+                       (loop for pat in pats collect
+                            (list (subcat-variable pat)(subcat-source pat))))
+                 *ambiguous-variables*)))
+      (pats
+       (setq variable (subcat-variable (car pats)))))
+    (when *trivial-subcat-test* 
+      (unless variable
+        (dolist (entry subcat-patterns)
+            (when (eq label (subcat-label entry))
+              (when (satisfies-subcat-restriction? item entry)
+                (setq variable (subcat-variable entry))
+                (return))))))
+    variable))
+
+
+
+(defun check-overridden-vars (pats)
+  (cond
+    ((and
+      (eq (length pats) 2)
+      (eq (subcat-label (first pats)) :m)
+      (member (var-name (subcat-variable (first pats))) '(agent object))
+      (member (var-name (subcat-variable (second pats))) '(agent object)))
+     (if (eq (var-name (subcat-variable (first pats))) 'object)
+         (list (second pats))
+         (list (first pats))))
+    (t
+     (let (over-ridden)
+       (loop for pat in pats
+          do
+            (loop for p in pats
+               when
+                 (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
+                      (not (consp (subcat-restriction p)))
+                      (if (consp (subcat-restriction pat))
+                          (loop for i in (cdr (subcat-restriction pat))
+                             thereis (itypep i (subcat-restriction p)))
+                          (itypep (subcat-restriction pat) (subcat-restriction p))))
+               do (push p over-ridden)))
+       over-ridden))))
+
+(defun note-failed-tests (item restriction)
+  ;; return non-null when tests failed
+  (let ((*trivial-subcat-test* nil))
+    (labels ((scat-symbol (c)
+               (typecase c
+                 (referential-category (simple-label c))
+                 (cons (loop for s in c collect (scat-symbol s)))
+                 (symbol c))))
+      (when (not (satisfies-subcat-restriction? item restriction))
+        ;; test would have failed -- collect it
+        (pushnew `(,(scat-symbol (itype-of *head*))
+                    ,*label*
+                    ,(scat-symbol restriction)
+                    ,(scat-symbol (itype-of item))
+                    ,(list 
+                      (when *left-edge-into-reference*
+                        (actual-characters-of-word
+                         (pos-edge-starts-at *left-edge-into-reference*)
+                         (pos-edge-ends-at *left-edge-into-reference*) nil))
+                      (when *right-edge-into-reference*
+                        (actual-characters-of-word
+                         (pos-edge-starts-at *right-edge-into-reference*)
+                         (pos-edge-ends-at *right-edge-into-reference*) nil))))
+                 *tight-subcats*
+                 :test #'equal)))))
+    
+  
+(defparameter *subcat-use* nil ;; (make-hash-table :size 2000)
+  )
+
+(defun record-subcat-use (l category variable)
+  (let* ((label (pname l))
+         (c-name (cat-name category))
+         (v-name (var-name variable))
+         (var-alist (or
+                     (assoc v-name (gethash c-name *subcat-use*))
+                     (car (push (list v-name (list label 0))
+                                (gethash c-name *subcat-use*)))))
+         (l-val (assoc label (cdr var-alist))))
+    (if l-val
+        (incf (second l-val))
+        (nconc var-alist (list (list label 1))))))
+
+(defun show-subcat-use ()
+  (let ((hh (hal *subcat-use*)))
+    (loop for h in hh
+       do
+         (setf (cdr h)
+               (sort (cdr h) #'string< :key #'car)))
+    (np (sort hh #'string< :key #'car))))
 
 
