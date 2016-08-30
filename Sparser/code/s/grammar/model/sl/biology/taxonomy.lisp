@@ -60,7 +60,8 @@
    in noun noun compounds.")
 
 (define-mixin-category bio-complement
-  :binds ((statement (:or bio-process molecule-state be bio-predication 
+  :binds ((statement (:or bio-process molecule-state be
+                          bio-predication predication
                           bio-method relation bio-rhetorical
                           there-exists
 			  event-relation)))
@@ -465,7 +466,8 @@
 		      bio-predication ;; the success of raf and mek inhibitors
 		      measurement     ;; these data
 		      visual-representation))
-	  (object (:or biological pronoun/inanimate there-exists))
+	  (object (:or biological pronoun/inanimate there-exists
+                       predication))
 	  (ratio-condition ratio)
 	  (fig article-figure)
 	  (method bio-method)
@@ -660,7 +662,7 @@
 
 (define-category bio-relation :specializes bio-predication
   :mixins (has-UID has-name biological event-relation)
-  :binds ((theme biological)) ;; this probably belongs higher
+  :binds ((theme (:or biological predication))) ;; this probably belongs higher
   :realization (:for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'constitute, contains etc. that may be the basis
