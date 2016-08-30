@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "subject relatives"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  version:  April 2016
+;;;  version:  August 2016
 
 ;; initiated 6/18/93 v2.3
 ;; (8/9/07) Well something else can go in this file, but just now this
@@ -170,7 +170,7 @@
 ;;;-----------------
 ;;; Really doing it
 ;;;-----------------
-;;/// 10/27/14 This ought to be a method
+
 (defun apply-subject-relative-clause (np-ref vp-ref)
   (declare (special category::have))
   ;; block "histone 2B ... had high levels ..."
@@ -180,18 +180,22 @@
   
   (setq np-ref (individual-for-ref np-ref))
   (let ((var
-	 (if (is-passive? (right-edge-for-referent))
-	     (subcategorized-variable vp-ref :object np-ref)
-	     (subcategorized-variable vp-ref :subject np-ref))))
-   
+         (cond
+           ((itypep vp-ref 'copular-predication)
+            (find-variable-for-category 'item 'copular-predication))
+           (t
+            (if (is-passive? (right-edge-for-referent))
+                (subcategorized-variable vp-ref :object np-ref)
+                (subcategorized-variable vp-ref :subject np-ref))))))
     (cond
       (*subcat-test*
-       ;; NO LONGER TRUE (not (null var))) ;; this rule has no semantic restrictions as of now    
        var)
-
       (var
        (cond
          ((context-needs-clause? np-ref vp-ref)
+          (when (itypep vp-ref 'copular-predication)
+            (push-debug `(,np-ref ,vp-ref))
+            (break "Extend subj rel"))
           (let ((clause-ref (bind-dli-variable var np-ref vp-ref)))
             (declare (special clause-ref))
             ;;(lsp-break "context-needs-clause? true")
@@ -201,12 +205,16 @@
          (t
           ;; copy down the upstairs subject
           ;; Should we check if it was already bound to something?
-          (setq  vp-ref (create-predication-by-binding var np-ref vp-ref
-                                                       (list 'apply-subject-relative-clause
-                                                             (parent-edge-for-referent))))
+          ;; (push-debug `(,np-ref ,vp-ref)) (lsp-break "regular")
+          (setq vp-ref (create-predication-by-binding
+                        var    ;; var
+                        np-ref ;; val
+                        vp-ref ;; pred
+                        (list 'apply-subject-relative-clause ;; source
+                              (parent-edge-for-referent))))
        
           ;; link the rc to the np
-          (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
+          (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
           ;; referent of the combination is the np
           np-ref))))))
@@ -221,8 +229,8 @@
              (eq (edge-category e) category::do) ;; auxiliary --
              ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
              (itypep (edge-referent e) 'precede)
-             (itypep (edge-referent e) 'follow);; need to generalize
-             ))))
+             (itypep (edge-referent e) 'follow)))))   ;; need to generalize
+             
 
 (defun apply-object-relative-clause (np-ref vp-ref)
   (declare (special category::have))
