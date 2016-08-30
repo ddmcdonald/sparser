@@ -113,9 +113,8 @@ two values: the compiled expression and a possibly augmented context.")
   (destructuring-bind (article type) expr
     (let* ((type (mexp-type type))
            (type-name (string-downcase type))
-           (object-name (format nil "~(~a~) ~a" article type-name))
-           (object (sp::make-temporary-individual type :name object-name))
-           (dtn (make-dtn :referent object
+           (object-name (intern (format nil "~(~a~) ~a" article type-name) :word))
+           (dtn (make-dtn :referent object-name
                           :resource (get-lexicalized-phrase type-name))))
       (values dtn context))))
 
