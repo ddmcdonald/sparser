@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  April 2015
+;;;  version:  August 2016
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -43,6 +43,7 @@
 (in-package :sparser)
 
 ;;;-------------------------------------
+
 ;;; data structure to represent a chunk
 ;;;-------------------------------------
 
@@ -91,6 +92,7 @@
 ;;;--------
 ;;; driver 
 ;;;--------
+
 (defun ev-edges (ev)
   ;; return a list of all the relevant edges on an edge vector -- hope it doesn't cons too much
   (when ev ;; can be called with nil, when there is no previous ev in a chunk
@@ -211,6 +213,7 @@
         (end (ends-at-pos sentence))
         forms  ev)
     (declare (special pos end forms ev))
+    
     (until (eq pos end)
            (reverse *chunks*) ;; this is the return value
       (setq ev (pos-starts-here pos))
@@ -244,18 +247,19 @@
   ;;  chunk type (maybe more than one)
   ;;  Goal is to create the longest chunk possible from this point
   (let* ((start (ev-position ev))
-         (*chunk* (make-instance 'chunk :forms forms :start start :end nil :edge-list nil :ev-list nil))
+         (*chunk* (make-instance 'chunk :forms forms
+                                 :start start
+                                 :end nil
+                                 :edge-list nil
+                                 :ev-list nil))
          (pos start)
          possible-heads)
     (declare (special *chunk*))
     
-    (loop until
-         (or (chunk-end-pos *chunk*)    ; 
-             (eq pos sentence-end))
+    (loop until (or (chunk-end-pos *chunk*)    ; 
+                    (eq pos sentence-end))
        do
-      
-         (when
-             forms ;; chunk still valid for at least one category
+         (when forms ;; chunk still valid for at least one category
            (setf (chunk-forms *chunk*) forms)
            (push ev (chunk-ev-list *chunk*))
            (setq pos (pos-ev-ends-at ev forms))
@@ -268,17 +272,17 @@
               (eq pos sentence-end)) 
              ;;  chunk must end at or before this pos-before
           
-             (let
-                 ((head (best-head (chunk-forms *chunk*) possible-heads))) 
+             (let ((head (best-head (chunk-forms *chunk*) possible-heads))) 
                (cond
                  (head
                   ;; the chunk has a head for at least one of the consistent forms
                   ;; complete this chunk -- signaling end of until loop
                   (setf (chunk-end-pos *chunk*) (second head))
                   (setf (chunk-forms *chunk*) (list (first head)))
+                  ;; (gross-infinitive-chunker-test *chunk*)
+                  ;; as much fall-back as improvement see note w/ fn.
                   (tr :delimited-chunk *chunk*))
                  (t
-                  ;;(break "HUH2")
                   (setf (chunk-end-pos *chunk*) pos)
                   (setf (chunk-forms *chunk*) nil)
                   (tr :delimited-ill-formed-chunk *chunk*))))
@@ -461,10 +465,10 @@
                 '(category::adjective category::common-noun category::proper-noun)))))
 
 
-
 (defmethod vg-start? ((e edge))
   (declare (special category::to))
   (let ((edges-before (edges-before e)))
+    ;;(push-debug `(,e ,edges-before)) (lsp-break "vg-start, e = ~a" e)
     (cond
       ((plural-noun-and-present-verb? e)
        (and
@@ -487,18 +491,46 @@
                 (loop for ee in edges-before
                    thereis (eq (cat-name (edge-category ee)) 'to)))))
          (not (followed-by-verb e)))))
+      
       (t
        (compatible-with-vg? e)))))
 
 (defmethod compatible-with-vg? ((e edge))
   (declare (special category::not category::then))
+  ;;(lsp-break "compatible with vg? e = ~a" e)
   (or
    (vg-compatible? (edge-form e))
    (eq category::not (edge-category e))
    (eq category::time (edge-category e))))
 
-;;;
-;;;
+(defun gross-infinitive-chunker-test (chunk)
+  "Called from delimit-next-chunk when the chunk is finished.
+   If this is a verb group chunk preceded by 'to' we move
+   the start of the chunk ahead of 'to'.
+   Probably lots of edge cases to be sorted out."
+  (when (memq 'vg (chunk-forms chunk))
+    (let* ((ev (first (chunk-ev-list chunk)))
+           (representative-edge (ev-top-node ev))
+           (edges-before (when (edge-p representative-edge)
+                           ;; vs. :multiple-initial-edges
+                           (edges-before representative-edge))))
+      (when edges-before
+        (when (loop for ee in edges-before
+                 thereis (eq (cat-name (edge-category ee)) 'to))
+          (let* ((current-start (chunk-start-pos chunk))
+                 (new-start (chart-position-before current-start)))
+            (format t "~&Resetting start of ~a to ~a~%"
+                    chunk new-start)
+            (setf (chunk-start-pos chunk) new-start)))))))
+#| This is a mixed bag of results, mostly because there's competition 
+between the verb wanting the 'to' to be bare (exposed as a treetop)
+mark an infinitive complement, the infinitive per-se. E.g. overnight #3,
+as well as marking purpose clauses (overnight 11).
+  The motivating example was ERK #7, where the stored 'best' parse
+grossly miss-analyzed "shown consistently to be deficient", so the
+question might be how can we mark a tocomp from an infinitive rather
+than a bare "to".  |#
+
 
 
 (defparameter *ng-start-tests-in-progress* nil
