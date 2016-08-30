@@ -111,7 +111,8 @@
          :o theme))
 
 ;;; Verbs added temporarily for Localization articles -- to be reviewed and corrected
-(define-category become :specializes bio-rhetorical
+(define-category become :specializes be
+  :mixins (bio-rhetorical)
     :realization
     (:verb ("become" :third-singular "becomes" :past-tense "became"
 		     :present-participle "becoming")
@@ -119,11 +120,11 @@
 
 (eval (make-copular-def "become"))
 
-(define-category stay :specializes bio-rhetorical
+(define-category stay :specializes be
+  :mixins (bio-rhetorical)
     :realization
     (:verb "stay"
 	   :etf (svo)))
-
 (eval (make-copular-def "stay"))
 
 (define-category start :specializes bio-rhetorical
@@ -2040,19 +2041,16 @@
          :noun "relief"
          :etf (svo-passive)))
 
-(define-category remain :specializes bio-relation
+(define-category remain :specializes be
+  :mixins (bio-relation)
     :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
 	   :etf (sv)
            ;; remains to be determined
            :to-comp theme))
 
-(eval (make-copular-def "remain"))
-#+ignore
-(def-form-rule (remain adjective)
-  :form vp
-  :referent (:head right-edge);; :bind (predication right-edge)
-)
+(eval (make-copular-def "remain")) ;; gives it the adjective rules
+
 
 (define-category remove :specializes bio-method
     :binds ((source biological))
@@ -2168,11 +2166,12 @@
 	   :etf (svo-passive)
            :for study))
 
-;;>>>>> copied to syntax/be.lisp
+;;>>>>> 
 ;; N.b. trying to move "seem" et al to the general vocabulary,
-;;  Now copied over to syntax/be.lisp while figuring out
+;;  See rules/syntax/copulars.lisp.  Need to figure out
 ;;  how to get the equivalent of biological for the restriction
-(define-category seem :specializes bio-rhetorical
+(define-category seem :specializes be
+  :mixins (bio-rhetorical)
     :binds ((tocomp (:or be biological)))
     :realization
     (:verb "seem"
@@ -2181,7 +2180,10 @@
 
 (def-synonym seem (:verb "appear" :etf (svo)))
 
-(eval (make-copular-def "seem"))
+;;>>>>>> copulars should do this
+(def-form-rule (seem adjective)
+  :form vp
+  :referent (:function make-copular-adjective left-edge right-edge))
 
 (def-form-rule (seem adjp)
   :form vp
@@ -2210,7 +2212,7 @@
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show :specializes bio-rhetorical
   :mixins (bio-thatcomp)
-  :binds ((tocomp (:or be biological)))
+  :binds ((tocomp (:or be biological predicate)))
   ;; it was shown that
   :realization
   (:verb ("show" :past-tense "showed" :past-participle "shown")
