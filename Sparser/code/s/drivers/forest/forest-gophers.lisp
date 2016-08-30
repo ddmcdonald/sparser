@@ -316,7 +316,7 @@
 
          (t (push-debug `(,left ,right ,left-form ,right-form))
             ;;(print `(can't find verb on edge ,edge)) 
-            (break "find-verb: new case")
+            (error "find-verb: new case")
             nil))))))
 
 
