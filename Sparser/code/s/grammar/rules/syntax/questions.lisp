@@ -82,9 +82,9 @@
 
 
 (defun make-polar-adjective-question (start-pos end-pos edges)
-  (let* ((be (edge-referent (car edges)))
-         (np (edge-referent (second edges)))
-         (adj (edge-referent (third edges)))
+  (let* ((be (edge-referent (first edges)))  ;; is
+         (np (edge-referent (second edges))) ;; the ball
+         (adj (edge-referent (third edges))) ;; red
          (copular-adj (make-copular-adjective be adj (car edges)))
          (copular-statement (when copular-adj (assimilate-subject np copular-adj nil))))
     (when copular-statement
