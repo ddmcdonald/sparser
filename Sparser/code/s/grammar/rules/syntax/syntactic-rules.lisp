@@ -84,9 +84,9 @@
                          left-edge right-edge))
 |#
 
-;;;---------------------------------------------------------------------------------
+;;;----------
 ;;; NP rules
-;;;---------------------------------------------------------------------------------
+;;;----------
 
 ;;; Rules for creating NPs by adding determiners or possessives
 
@@ -135,7 +135,6 @@
 (loop for nb in `(verb+ing ;; treat present-participles as noun-like
 		  ,@*n-bar-categories*)
    do
-     
      (eval 
       `(def-syntax-rule (adjective ,nb) ;; "black suv"
            :head :right-edge
@@ -216,11 +215,9 @@
 
 
 
-;;;-------------
+;;;------------------
 ;;; NP postmodifiers
-;;;-------------
-
-
+;;;------------------
 
 (loop for nb in `(np ,@*n-bar-categories*)
    do
@@ -264,18 +261,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-;;;---------------------------------------------------------------------------------
+;;;------------------------
 ;;; Rules for VG, VP and S
-;;;---------------------------------------------------------------------------------
+;;;------------------------
 
 
 ;;;--------
@@ -380,7 +368,8 @@
            :form np
            :referent (:function apply-object-relative-clause left-edge right-edge))))
 
-(loop for n in `(np pronoun  ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
+
+(loop for n in `(np pronoun ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
   do
   (loop for v in '(vp vg vp+passive vg+passive 
                       ;; vg+ing ;; TO-DO see if this change improves or damages things
@@ -412,9 +401,9 @@
                 :referent (:function assimilate-subject-to-vp-ed left-edge right-edge)))))
 
 
-;;;--------
+;;;---------------
 ;;; DIRECT OBJECT
-;;;--------
+;;;--------------
 
 (loop for nb in `(vp+ing vg+ing ;; allow present-participles (gerunds) as objects
                          np pronoun reflexive/pronoun ,@*n-bar-categories*)
@@ -429,9 +418,9 @@
 
 
 
-;;;--------
+;;;----------------------------------------------------------------
 ;;; PP and CLAUSAL COMPLEMENTS to VGs and VPs (verb-like elements)
-;;;--------
+;;;----------------------------------------------------------------
 
 (loop for vv in '((vg vp)
                   (vp vp)
@@ -473,6 +462,7 @@
 
 
 
+
 ;; add in S because it can happen that the "THATCOMP" and "WHETHERCOMP" my not be produced until after
 ;; the verb element gets promoted to an S
 ;; e.g. "interestingly , we observed that in contrast to wild type aspp 2 , aspp 2 ( s 827 a ) remains at the plasma membrane"
@@ -505,7 +495,7 @@
 
 
 ;;;---------------------------
-;;--- Relative clauses
+;;;--- Relative clauses
 ;;;---------------------------
 
 (loop for rel in '(which who whom  that) ;;  (where, when) this is more often used as a subordinate conjunction
@@ -552,15 +542,15 @@
     :referent (:function make-subordinate-clause left-edge right-edge))
 
 
-
 (def-form-rule (comma pp-relative-clause)
     :head :right-edge
     :form pp-relative-clause
     :referent (:daughter right-edge))
 
-;;;--------
+
+;;;------------------------------------------------------
 ;;; ADJG COMPLEMENTS to VGs and VPs (verb-like elements)
-;;;--------
+;;;------------------------------------------------------
 
 (loop for vv in '((vg vp)
                   (vp vp)
@@ -576,14 +566,14 @@
            :head :left-edge
            :form ,(second vv)
            :referent (:function assimilate-adj-complement left-edge right-edge)))
-     
      (eval
-      `(def-syntax-rule (,(car vv) adjective)
+      `(def-syntax-rule (,(car vv) adjp)
            :head :left-edge
            :form ,(second vv)
            :referent (:function assimilate-adj-complement left-edge right-edge)))
+
      (eval
-      `(def-syntax-rule (,(car vv) adjp)
+      `(def-syntax-rule (,(car vv) adjective)
            :head :left-edge
            :form ,(second vv)
            :referent (:function assimilate-adj-complement left-edge right-edge))))
@@ -664,7 +654,8 @@
     (:function interpret-adverb+verb left-edge right-edge))
 
 
-(loop for v in  '(vg vp vg+ed vp+ed vg+passive vp+passive) ;; the vg+passive and vp+passive are for "to be investigated...", "to be mediated by ASPP2"
+(loop for v in  '(vg vp vg+ed vp+ed vg+passive vp+passive)
+   ;; the vg+passive and vp+passive are for "to be investigated...", "to be mediated by ASPP2"
    ;;vg+ing  )
   do
      (eval `(def-syntax-rule (preposition ,v)
@@ -675,11 +666,11 @@
              :form prep-comp ;;//////////////////////////
              :referent (:function make-prep-comp left-referent right-referent))))
 
-(def-syntax-rule (preposition vp+ing) 
-    :head :left-edge
-    :form pp
-    ;; Code only works for "upon". Intended to use compositional method
-    :referent (:function apply-preposition-to-complement left-edge right-edge))
+;; dynamics change with "to be" taken as a polyword with 'infinitive' as the form
+(def-syntax-rule (infinitive np) ;; overnight #3
+  :head :right-edge
+  :form to-comp
+  :referent (:daughter right-edge))
 
 (def-syntax-rule (preposition vg+ing) ;; J3 hydrolysis maybe elevate?
     :head :left-edge
@@ -687,7 +678,12 @@
     ;; Code only works for "upon"
     :referent (:function apply-preposition-to-complement left-edge right-edge))
 
-
+;;/// written as expedient way to handle "even in" (overnight #6)
+;; but that phrase actually means something and should be a real preposition
+(def-syntax-rule (adverb preposition)
+    :head :right-edge
+    :form preposition
+    :referent (:method modified left-edge right-edge))
 
 
 
@@ -749,23 +745,11 @@
 
 
 
-  
 
 
-
-
-
-
-
-
-
-
-
-
-;;;-------------------------------
-;;; rules for adjective groups (verb phrases with asjectives as heads)
-;;;-------------------------------
-
+;;;----------------------------
+;;; rules for adjective groups 
+;;;----------------------------
 
 (def-syntax-rule (comparative adjective)
     :head :right-edge
@@ -802,9 +786,18 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
+(def-syntax-rule (adjective s) ;; "confident it is transient"
+    :head :left-edge
+    :form adjp
+    :referent (:function make-adj-comp left-edge right-edge))
+
+(def-syntax-rule (adjective thatcomp) ;; Dec #24
+  :head :left-edge
+  :form adjp
+  :referent (:function make-adj-comp left-edge right-edge))
 
 
-;;;
+;;;--------------------------------------------------------
 ;; new rules for numbered items -- needs review
 (def-syntax-rule (np number) ;; should be allowable as a form rule
     :form np
