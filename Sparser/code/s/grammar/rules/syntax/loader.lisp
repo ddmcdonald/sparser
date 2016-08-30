@@ -34,6 +34,7 @@
   ;;  master loader
   (gload "syntax;category-predicates")
   (gload "syntax;subcategorization")
+  (gload "syntax;syntax-predicates")
   (gload "syntax;syntax-functions")
   (gload "syntax;syntactic rules"))
 
