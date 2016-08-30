@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "modals"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2016
+;;;  Version:  August 2016
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3. Populated w/o semantics 1/11/94
 ;; Given a mix-in interpretation 7/11.  8/2 pulled the check for whether 'modal'
@@ -44,7 +44,7 @@
 ;;-- category to hold the word
 (define-category modal-operator
   :instantiates nil
-  :specializes operator
+  :specializes predicate
   :binds ((name :primitive word)))
 
 
