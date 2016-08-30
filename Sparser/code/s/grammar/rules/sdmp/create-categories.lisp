@@ -116,6 +116,7 @@
           category::verb+present
           category::verb+past
           category::verb+passive
+          category::infinitive
           category::modal)
          (unless *delay-generalization-of-verb-edge-form*
            (setf (edge-form edge) category::vg)))
