@@ -21,24 +21,37 @@
    :binds ((dependent)
            (substrate)))
 
-#|  subcategories
-(subcategories-of 'operator)
-(#<ref-category PREPOSITIONAL-OPERATOR> #<ref-category MODAL-OPERATOR>
-                #<ref-category QUANTIFIER> #<ref-category MODIFIER>) |#
-(define-category operator
-  :specializes relation
-  :binds ((name :primitive word)))
+
 
 (define-category predicate
+  :instantiates nil
   :specializes relation
-  :documentation "Candidate to relace operator")
+  :mixins (has-name) 
+  :documentation "A predicate attributes or predicates
+ some property to something. Depending of what sort of
+ predicate it is, this property may be implicit in the
+ identity of the predicate itself (e.g. for many simple
+ NP modifiers like adjectives), or may be explicitly
+ represented in a variable.")
+
+(define-category predication
+  :specializes state
+  :binds ((predicate predicate)
+          (term))
+  :documentation "Represents the application of a predicate
+ to one or more terms.
+")
 
 
-
-; Atributes or predicates some property of something.
-; Goes with the relation modified.
 (define-category modifier
-  :specializes operator)
+  :specializes predicate
+  :documentation "There are 313 direct specializations of
+ this category (8/28/16) and appears to be no rhyme or reason
+ to why some these terms are classified like this. At some
+ point it will need to be sorted out where we give this category
+ a real semantic consequence from which we can get a rationale
+ for why something should be classified as a modifier or
+ a specialization of it. See note with 'modifies'.")
 
 (define-category adverbial
    :specializes modifier)
@@ -47,14 +60,13 @@
   :specializes relation
   :instantiates :self
   :binds ((modifier . modifier)
-          (modified)))
+          (modified))
+  :documentation "See the modified method in syntax/adverbs
+ and the very similar relation set up by the modifer+noun
+ method deployed in syntax/adjectives. Those both bind a
+ modifier variable on the head rather than standup a explicit
+ modifies individual as this category suggests be done.
+ They all need to be unified at some point.")
 
-
-(define-category predication
-  :specializes relation
-  :binds ((predicate predicate)
-          (term))
-  :documentation "Represents the application of the predicate
- to one or more terms.")
 
 
