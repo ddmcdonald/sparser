@@ -27,7 +27,7 @@
 
 (deftest (say not enough green blocks)
   (mumble-says "We do not have enough green blocks.")
-  "we doesn't have enough green block") ; wrong tense, missing plural
+  "we doesn't have enough green blocks") ; wrong tense
 
 (deftest (say make tops of steps red)
   (mumble-says "Make the tops of the steps red.")
@@ -123,3 +123,11 @@
 (deftest (say push together block and another)
   (mumble-says "Push together the block and another block.")
   "push together the block and another block")
+
+(deftest (say push block to other block)
+  (mumble-says "Push the block to the other block.")
+  "push the block to the other block")
+
+(deftest (say push block to end of table)
+  (mumble-says "Push the block to the end of the table.")
+  "push the block to the end of the table")

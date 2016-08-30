@@ -31,13 +31,14 @@
   :binds ((location location)
           (supported-by object)
           (next-to object)
-          (at-relative-location relative-position))
-  :realization
-  (:next\ to next-to
-             :on supported-by
-             :on\ top\ of supported-by
-             :at at-relative-location ;; at the end
-             :on at-relative-location)) ;; on the left
+          (at-relative-location relative-position)
+          (goal object))
+  :realization (:next\ to next-to
+                :on supported-by
+                :on\ top\ of supported-by
+                :at at-relative-location ;; at the end
+                :on at-relative-location ;; on the left
+                :to goal))
 
 ;;---  blocks
 #| This has to meet/merge with Scott's treatment 
@@ -143,14 +144,12 @@ support a substantial number of blocks.
 (define-category add-to
   :specializes achievement
   :mixins (with-an-agent with-specified-location)
-  :binds ((theme object)
-          (goal location))
+  :binds ((theme object))
   :realization
   (:verb "add"
          :etf (svo-passive)
          :o theme
          :s agent
-         :to goal
          :loc-pp-complement (next\ to on on\ top\ of at)
          ;; requires a PP -- not quite true
          :mumble ("add" svo :o theme)))
@@ -182,7 +181,7 @@ support a substantial number of blocks.
 
 (define-category push
     :specializes process
-    :mixins (with-an-agent)
+    :mixins (with-an-agent with-specified-location)
     :binds ((theme physical))
     :documentation "The meaning of push depends largly
     on what is pushed (= the type of the theme): block
@@ -194,6 +193,7 @@ support a substantial number of blocks.
                   :etf (svo-passive)
                   :s agent
                   :o theme
+                  :loc-pp-complement (to next\ to)
                   :mumble ("push" svo :s agent :o theme)))
 
 (define-category push-together

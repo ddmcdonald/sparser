@@ -238,10 +238,7 @@
        dtn)))
   (:method (binding (var-name (eql 'sp::quantifier)) dtn pos)
     "Attach a quantifier as a premodifier."
-    (declare (ignore pos))
-    (make-adjunction-node
-     (make-lexicalized-attachment 'quantifier-premod (sp::binding-value binding))
-     dtn))
+    (attach-adjective (sp::binding-value binding) dtn pos))
   (:method (binding (var-name (eql 'sp::time)) dtn pos)
     "Attach a time as an adverbial."
     (declare (ignore pos))
