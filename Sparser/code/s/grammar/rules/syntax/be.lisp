@@ -46,7 +46,16 @@
   :specializes perdurant ;; as specific as 'state' ?
   :binds ((subject)
           (predicate))
-  :index (:temporary :list))
+  :index (:temporary :list)
+  :documentation "Represents the relation, broadly speaking,
+ between a subject and a predicate that is established by
+ the verb to-be (the 'copula') and similar verbs. This is
+ the general relation. More particular relationships are
+ represented by specializations of this category that add
+ or change the variables and provide restrictions on them.
+ Note that because this category ihherits from perdurant
+ it carries all of the variables that record information
+ about tense and aspect.")
 
 (register-variable category::be 
  (find-variable-in-category 'subject 'be)
@@ -81,6 +90,15 @@
     apply-copular-pp can use to package the predicate it creates
     from the np in an [np + copular-pp] rule."
   :index (:temporary :list))
+#| sampled 8/26/16
+drivers/chart/psp/post-analysis-operations.lisp:  (declare (special category::copular-predicate))
+drivers/chart/psp/post-analysis-operations.lisp:				      ((eq category::copular-predicate (edge-category (car parent-edges)))
+grammar/rules/syntax/be.lisp:(define-category copular-predicate
+grammar/rules/syntax/be.lisp:  ;; that call apply-copular-pp to create copular-predicate objects
+grammar/rules/syntax/syntax-functions.lisp:  (declare (special category::copular-predicate))
+grammar/rules/syntax/syntax-functions.lisp:	(revise-parent-edge :category category::copular-predicate)
+grammar/rules/syntax/syntax-functions.lisp:         category::copular-predicate
+|#
 
 ;;;-------------------------
 ;;; forms of the verb to be
@@ -118,6 +136,10 @@
   :form verb+ing
   :referent be)
 
+(def-cfr be ("to be")
+  :form infinitive
+  :referent be)
+
 
 ;;;----------------------------
 ;;; be + adjective or adjp
@@ -130,7 +152,8 @@
 (def-form-rule (be adjp)
   :form vp
   :referent (:function make-copular-adjective left-edge right-edge))
-  
+
+
 
 ;;;-------------------------------
 ;;; be + prepositional complement
@@ -346,25 +369,7 @@ assess-edge-label, which rewrites the word as the category BE.
 
 ;; See syntax/copulars.lisp for an effort to generalize this
 
-#| Have to figure out an equivalent of biological in the restriction.
-Examples in the localization articles -- exhaustive list
-
-  "Mouse embryo fibroblasts (MEFs) isolated from ERK1 knockout mice 
-seemed to proliferate faster than control cells."
-  "These experiments seem to indicate that the proliferative signal 
-is mediated by ERK2."
-  "Bradykinin stimulation of protein kinase C seems to be 
-such a required pathway."
-  "this mechanism seems unlikely at present."
-  "Therefore, it seems unlikely that the receptor is simply 
-phosphorylated by Src."
-  "but rather seem dependent on phosphatidylinositol 
-3-kinase activity."
-  "The initiating event seems to be an influx of extracellular Ca."
-  "UV seems to provoke receptor activation."
-  "the possible role of ligand involvement would seem unlikely."
-  "While UV does seem to mimic growth factor activation of the receptor."
-  "this interaction seems to be of  low stoichiometry."
+#|
 
 (define-category seem :specializes bio-rhetorical
     :binds ((tocomp (:or be biological)))
