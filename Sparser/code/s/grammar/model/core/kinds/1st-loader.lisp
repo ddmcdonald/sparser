@@ -13,9 +13,9 @@
 
 (gload "kinds;upper-model")
 (gload "kinds;tense-aspect")
+(gload "kinds;processes")
 (gload "kinds;predicate")
 (gload "kinds;attribution")
-(gload "kinds;processes")
 (gload "kinds;things")
 (gload "kinds;space")
 (gload "kinds;time")
