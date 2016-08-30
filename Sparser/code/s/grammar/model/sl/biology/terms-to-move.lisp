@@ -292,9 +292,9 @@ be biology specific, since they aren't. |#
 
 (define-adverb "similarly")
 
-;;is likely to be mediated by
-;;is likely that this possible feedback
-;;will likely be useful
+;; is likely to be mediated by
+;; is likely that this possible feedback
+;; will likely be useful
 (define-category likely :specializes bio-relation
   :realization
   (:adj "likely"
