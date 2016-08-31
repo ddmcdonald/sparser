@@ -69,13 +69,11 @@
 
 (def-cfr do ("done")
   :form verb+ed
-  :referent (:head anonymous-agentive-action
-             :subtype perfect ))
+  :referent (:head anonymous-agentive-action))
 
 (def-cfr do ("doing")
   :form verb+ing
-  :referent (:head anonymous-agentive-action
-             :subtype progressive ))
+  :referent (:head anonymous-agentive-action))
 
 
 
