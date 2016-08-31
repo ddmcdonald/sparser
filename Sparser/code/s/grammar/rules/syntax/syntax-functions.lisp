@@ -117,75 +117,47 @@
 (define-lambda-variable 'ordinal
     nil category::top)
 
-(define-lambda-variable 
-  'appositive-description
-    nil 
-  category::top)
+(define-lambda-variable 'appositive-description
+    nil category::top)
 
-(define-lambda-variable 
-  'comp 
-    nil 
-  category::top)
+(define-lambda-variable 'comp 
+    nil category::top)
 
-(define-lambda-variable 
-  'subordinate-conjunction
-    nil
-  category::top)
+(define-lambda-variable 'subordinate-conjunction
+    nil category::top)
 
-(define-lambda-variable 
-  'purpose
-    nil 
-  category::top)
+(define-lambda-variable 'purpose
+    nil category::top)
 
-(define-lambda-variable 
-  'quantifier
-    nil 
-  category::top)
+(define-lambda-variable 'quantifier
+    nil category::top)
 
-(define-lambda-variable 
-  'number
-    nil
-  category::top)
+(define-lambda-variable 'number
+    nil category::top)
 
-(define-lambda-variable 
-  'det-quantifier ;; as in "all these"
-    nil
-  category::determiner)
+(define-lambda-variable 'det-quantifier ;; as in "all these"
+    nil category::determiner)
 
-(define-lambda-variable 
-  'has-determiner
-    nil
-  category::top)
+(define-lambda-variable 'has-determiner
+    nil category::top)
 
-(define-lambda-variable 
-  'has-possessive
-    nil 
-  category::top)
+(define-lambda-variable 'has-possessive
+    nil category::top)
 
-(define-lambda-variable 
-  'approximator
-    nil 
-  category::number)
+(define-lambda-variable 'approximator
+    nil category::number)
 
-(define-lambda-variable 
-  'event-relation
-    nil
-  category::top)
+(define-lambda-variable 'event-relation
+    nil category::top)
 
-(define-lambda-variable 
-  'amount-of-time
-    nil 
-  category::top)
+(define-lambda-variable 'amount-of-time
+    nil category::top)
 
-(define-lambda-variable 
-  'copular-verb
-    nil 
-  category::top)
+(define-lambda-variable 'copular-verb
+    nil category::top)
 
-(define-lambda-variable 
-  'compared-to 
-    nil 
-  category::top)
+(define-lambda-variable 'compared-to 
+    nil category::top)
 
 
 
@@ -835,6 +807,25 @@
 (defun adjoin-tocomp-to-vg (vg tocomp)
   (assimilate-subcat vg :to-comp tocomp)) ;;(value-of 'comp tocomp)
 		     
+(defun passive-is-covert-tocomp (vg passive-vg)
+  ;; Aspp2 #30: "remains" + "to be investigated"
+  ;; (push-debug `(,vg ,passive-vg)) (lsp-break "covert"))
+  (let ((starts-with-to?
+         (eq word::|to| (pos-terminal (pos-edge-starts-at (right-edge-for-referent))))))
+    (cond
+      (*subcat-test*
+       starts-with-to?)
+      (t ;; the vg+tocomp handler doesn't do more checks, so none here
+       (adjoin-tocomp-to-vg vg passive-vg)))))
+
+(defun adjoin-vg-to-embedded-tocomp (vg vp)
+  ;; erk #7, semantically it's [show + copular-predicate]
+  ;; analogy is to vg+ed + to-comp. Rule calling this is (vg vg+passive)
+  (cond
+    (*subcat-test*
+     (itypep vp 'copular-predication))
+    (t (adjoin-tocomp-to-vg vg vp))))
+
 
 (defun interpret-to-comp-adjunct-to-np (np to-comp)
   (declare (special np to-comp))
@@ -850,7 +841,7 @@
                                  to-comp)
                 *subcat-info*))
       (setq np (individual-for-ref np))
-      (setq  np (bind-dli-variable variable-to-bind to-comp np))
+      (setq np (bind-dli-variable variable-to-bind to-comp np))
       np))))
 
 (defun interpret-to-comp-adjunct-to-s (s tocomp)
