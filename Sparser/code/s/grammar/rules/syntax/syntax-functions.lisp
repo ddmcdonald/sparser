@@ -1355,14 +1355,14 @@
 
 (defun make-copular-pp (be-ref pp)
   (when (and
-         (or (not (edge-p *left-edge-into-reference*))
+         (null (value-of 'predication be-ref))
+         ;; If this is not already a predicate copula ("is a drug")     
+	 (or (not (edge-p *left-edge-into-reference*))
              ;; case where there is no semantic predication established,
              ;; but there is a syntactic object
              ;; e.g. "was the result of defects in the developing embryo"
              (not (member (cat-name (edge-form *left-edge-into-reference*))
-			  '(s vp thatcomp))))
-	 (null (value-of 'predication be-ref)))
-    ;; If this is not already a predicate copula ("is a drug")
+			  '(s vp thatcomp)))))
     (let* ((prep (value-of 'prep pp))
            (pobj (value-of 'pobj pp)))
       (cond
@@ -1372,27 +1372,30 @@
         ;; this is NOT a copular PP
         (and prep pobj))
        (t
-        (make-simple-individual ;;<<<<<<<<<<
-              category::copular-pp
-              `((copula ,be-ref)
-                (prep ,prep) (pobj ,pobj))))))))
+        (make-simple-individual
+         category::copular-pp
+         `((predicate ,be-ref)
+           (prep ,prep)
+           (pobj ,pobj))))))))
+
 
 (defun apply-copular-pp (np copular-pp)
   (declare (special category::copular-predicate))
-  (when
-      (itypep copular-pp 'subordinate-clause)
+  (when (itypep copular-pp 'subordinate-clause)
     ;; this may no longer work -- get an example and test it
     (setq copular-pp (value-of 'comp copular-pp)))
   (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
          (pobj (value-of 'pobj copular-pp))
          ;;(copula (value-of 'copula copular-pp))
          (variable-to-bind (subcategorized-variable np prep pobj)))
+    ;;(lsp-break "apply-copular-pp to ~a and ~a" np copular-pp)
     (cond
      (*subcat-test* variable-to-bind)
      (t
       (when *collect-subcat-info*
         (push (subcat-instance np prep variable-to-bind copular-pp)
               *subcat-info*))
+
       (let ((predicate (bind-dli-variable
 			variable-to-bind
 			pobj
@@ -1403,19 +1406,6 @@
          `((predicate ,predicate)
 	   (predicated-of ,np))))))))
 
-
-
-;;;-----------------
-;;; There + BE
-;;;-----------------
-
-(defun make-there-exists (predication)
-  (make-an-individual 'there-exists
-                      :predication predication))
-
-(defun make-exist-claim (right-edge)
-  (let ((exists (make-unindexed-individual category::there-exists))) ;;<<<<<<<
-    (bind-dli-variable 'object right-edge exists)))
 
 
 ;;;----------------------
