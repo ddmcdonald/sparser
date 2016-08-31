@@ -71,42 +71,39 @@ phosphorylated by Src."
 
 (define-category copular-predication
   :specializes predication
+  :instantiates :self
   :restrict ((predicate be))
   :binds ((item)
           (value))
-  :index (:temporary :sequential-keys predicate value))
+  :index (:temporary :sequential-keys predicate value)
+  :documentation "Represents the 'to be' relationship between
+ an 'item' (prototypically the subject) and a value (the complement).
+ This is the standard interpretation of predicate-adjective constructions
+ ('the cat is on the mat'). Note that through their connection to
+ predication, individuals of this category are 'states' and take tense.")
 
-
-;;/// to be revised/flushed
-(define-category copular-pp ;; "the cat is on the mat"
-  :specializes be
-  :binds ((copula)
-          (prep)
-          (pobj))
-  :documentation "Provides a scaffolding that the syntax function
-    make-copular-pp can use to package preposition and complement
-    it got from a [be-ref + pp] rule."
-  :index (:temporary :list))
-
-;;/// to be flushed in favor of copular-predication
 (define-category copular-predicate
+  :documentation "This is strictly a labeling category that is used
+ to label the edge over copular verb phrases ('has been unclear').
+ The referent of those verb phrases is actually a copular-predication
+ with an unbound 'item' variable. It seemed better to do it this way
+ than make a category just for the predicate and then copy over two
+ of its binding values when we compose with a subject.")
+
+
+(define-category copular-pp ;; "is on the mat"
   :specializes be
-  :binds ((predicate)
-          (predicated-of)
-          (copula))
-  :documentation "Provides a scaffolding that the syntax function
-    apply-copular-pp can use to package the predicate it creates
-    from the np in an [np + copular-pp] rule."
-  :index (:temporary :list))
-#| sampled 8/26/16
-drivers/chart/psp/post-analysis-operations.lisp:  (declare (special category::copular-predicate))
-drivers/chart/psp/post-analysis-operations.lisp:				      ((eq category::copular-predicate (edge-category (car parent-edges)))
-grammar/rules/syntax/be.lisp:(define-category copular-predicate
-grammar/rules/syntax/be.lisp:  ;; that call apply-copular-pp to create copular-predicate objects
-grammar/rules/syntax/syntax-functions.lisp:  (declare (special category::copular-predicate))
-grammar/rules/syntax/syntax-functions.lisp:	(revise-parent-edge :category category::copular-predicate)
-grammar/rules/syntax/syntax-functions.lisp:         category::copular-predicate
-|#
+  :instantiates self
+  :restrict ((predicate b))
+  :binds ((prep)
+          (pobj))
+  :index (:temporary :list)
+  :documentation "Exposes the preposition for each of regulated
+ composition with the subject, otherwise just models the content
+ of the predicate, expecting the composition with the subject
+ to copy out of this into a copular predication.")
+
+
 ;;;-------
 ;;; rules
 ;;;-------
@@ -143,8 +140,8 @@ grammar/rules/syntax/syntax-functions.lisp:         category::copular-predicate
                                &optional (copula-edge (left-edge-for-referent)))
   "Corresponds to the form rule for be+adjective, which creates a VP with consituents
    for the verb group (e.g. 'should be') and the adjective or adjp. 
-   This instantiates a predication, copular-predication with the item
-   it applies to (presumably the subject) left open."
+   This instantiates a predication: copular-predication, with the item
+   that it will be applied to (presumably the subject) left open."
    #+ignore(pushnew (sentence-string *sentence-in-core*)
                    *sentences-going-through-copular-adjective*)
    (cond
@@ -158,8 +155,10 @@ grammar/rules/syntax/syntax-functions.lisp:         category::copular-predicate
        ;;(lsp-break "parent edge is ~a" (parent-edge-for-referent))
        (let ((i (find-or-make-individual
                  'copular-predication :predicate copula :value adjective)))
-          (revise-parent-edge :category category::copular-predicate
-                              :form category::vp)
+         ;; note that edge label deliberately is different from
+         ;; the label on the edge over this VP. 
+         (revise-parent-edge :category category::copular-predicate
+                             :form category::vp)
           i))))
 
 #| This was the original behavior. Note that this went with having the
