@@ -1,11 +1,12 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2013-2016  David D. McDonald  -- all rights reserved
-;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
+;;; copyright (c) 2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "copulars"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  May 2016
+;;;  Version:  August 2016
 
+
+(in-package :sparser)
 
 ;;;--------------------------
 ;;; hedged copular relations
@@ -64,9 +65,30 @@ phosphorylated by Src."
      do
      (eval (make-copular-def v)))
 
-(defvar *sentences-going-through-copular-adjective* nil)
+;;;---------
+;;; classes
+;;;---------
 
-;; original
+(define-category copular-predication
+  :specializes predication
+  :restrict ((predicate be))
+  :binds ((item)
+          (value))
+  :index (:temporary :sequential-keys predicate value))
+
+
+;;/// to be revised/flushed
+(define-category copular-pp ;; "the cat is on the mat"
+  :specializes be
+  :binds ((copula)
+          (prep)
+          (pobj))
+  :documentation "Provides a scaffolding that the syntax function
+    make-copular-pp can use to package preposition and complement
+    it got from a [be-ref + pp] rule."
+  :index (:temporary :list))
+
+;;/// to be flushed in favor of copular-predication
 (define-category copular-predicate
   :specializes be
   :binds ((predicate)
@@ -76,25 +98,53 @@ phosphorylated by Src."
     apply-copular-pp can use to package the predicate it creates
     from the np in an [np + copular-pp] rule."
   :index (:temporary :list))
+#| sampled 8/26/16
+drivers/chart/psp/post-analysis-operations.lisp:  (declare (special category::copular-predicate))
+drivers/chart/psp/post-analysis-operations.lisp:				      ((eq category::copular-predicate (edge-category (car parent-edges)))
+grammar/rules/syntax/be.lisp:(define-category copular-predicate
+grammar/rules/syntax/be.lisp:  ;; that call apply-copular-pp to create copular-predicate objects
+grammar/rules/syntax/syntax-functions.lisp:  (declare (special category::copular-predicate))
+grammar/rules/syntax/syntax-functions.lisp:	(revise-parent-edge :category category::copular-predicate)
+grammar/rules/syntax/syntax-functions.lisp:         category::copular-predicate
+|#
+;;;-------
+;;; rules
+;;;-------
 
-(define-category copular-predication
-  :specializes predication
-  :restrict ((predicate be))
-  :binds ((item)
-          (value))
-  :index (:temporary :sequential-keys predicate value))
+;;--- be + adjective or adjp
 
-;; (setq *use-original-copular-adjective* nil)
-(defparameter *use-original-copular-adjective* nil
-  "Flag to make it easy to see what the analysis would have been.")
+(def-form-rule (be adjective)
+  :form vp
+  :referent  (:function make-copular-adjective left-edge right-edge))
 
-(defun make-copular-adjective (copula adjective &optional (copula-edge (left-edge-for-referent)))
+(def-form-rule (be adjp)
+  :form vp
+  :referent (:function make-copular-adjective left-edge right-edge))
+
+
+;;--- be + pp
+
+(def-form-rule (be pp) ;; "the cat is on the mat"
+  :form vp
+  :new-category copular-pp
+  ;; copular-pp is used in a syntatic-rule where it's folded
+  ;; in with all the NP sources and gerundive vps to form rules
+  ;; that call apply-copular-pp to create copular-predicate objects
+  :referent (:function make-copular-pp left-edge right-edge))
+
+
+
+(defvar *sentences-going-through-copular-adjective* nil
+  "For accumulating the unique set of sentences where the rule
+   applies. For the snapshots as o 8/28 there were 80.")
+
+
+(defun make-copular-adjective (copula adjective
+                               &optional (copula-edge (left-edge-for-referent)))
   "Corresponds to the form rule for be+adjective, which creates a VP with consituents
    for the verb group (e.g. 'should be') and the adjective or adjp. 
-   The earlier version of this attached the verb group information to 
-   the referent of the adjective by using an ad-hoc lambda variable. 
-   This version instantiates a predication with the item it applies to
-   (presumably the subject) left open."
+   This instantiates a predication, copular-predication with the item
+   it applies to (presumably the subject) left open."
    #+ignore(pushnew (sentence-string *sentence-in-core*)
                    *sentences-going-through-copular-adjective*)
    (cond
@@ -104,20 +154,21 @@ phosphorylated by Src."
      ;; adjective/adjp). We can't know that at this point, so we just
      ;; trust that it will all work out.
      t)
-    (t (if *use-original-copular-adjective*
-         (let ((i (individual-for-ref adjective)))
-           (bind-dli-variable :copular-verb copula i)    
-           i)
-      (else
-        (push-debug `(,copula ,adjective))
-        ;;(lsp-break "parent edge is ~a" (parent-edge-for-referent))
-        (let ((i (find-or-make-individual
-                  'copular-predication :predicate copula :value adjective)))
-          ;;(lsp-break "i is good? = ~a" i)
+    (t (push-debug `(,copula ,adjective))
+       ;;(lsp-break "parent edge is ~a" (parent-edge-for-referent))
+       (let ((i (find-or-make-individual
+                 'copular-predication :predicate copula :value adjective)))
           (revise-parent-edge :category category::copular-predicate
                               :form category::vp)
-          i))))))
+          i))))
 
+#| This was the original behavior. Note that this went with having the
+verbal part of a predicate adjective construction and the adjective part
+both be include within a span labeled VG. This verion of make-copular-adjective
+just stashed the verb part on the adjective on an ad-hoc lambda variable
+         (let ((i (individual-for-ref adjective)))
+           (bind-dli-variable :copular-verb copula i)    
+           i)   |#
 #|
   ;; optional edge used in call from make-this-a-question-if-appropriate
   ;; when there wasn't an edge over the whole span and we're trying
