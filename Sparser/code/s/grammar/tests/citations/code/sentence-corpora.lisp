@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "sentence-corpora"
 ;;;   Module:  "grammar/tests/citations/code/"
-;;;  version:  November 2015
+;;;  version:  August 2016
 
 ;; initiated 1/25/15
 ;; 1/28/2015 added methods to for building a regression test for sentence semantics
@@ -103,15 +103,25 @@ previous records of treetop-counts.
 
 ;;--- run their sentences
 
+(defvar *snapshot-corpus* nil
+  "Dynamically bound by run-treetop-snapshot to the name of
+   the corpus being executed. Read by downstream tally code.")
+
+(defvar *snapshot-index* nil
+  "Dynamically bound by run-treetop-snapshot to the number of
+   the sentence being run. Read by downstream tally code.")
+
 (defmethod run-treetop-snapshot ((name symbol) &optional (save-info nil))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
       (error "No sentence corpus has been defined with the name ~a" name))
-    (run-treetop-snapshot corpus save-info)))
+    (let ((*snapshot-corpus* name))
+      (declare (special *snapshot-corpus*))
+      (run-treetop-snapshot corpus save-info))))
 
 (defparameter *p-sent* nil)
 
-(defmethod run-treetop-snapshot ((corpus sentence-corpus)&optional (save-info nil))
+(defmethod run-treetop-snapshot ((corpus sentence-corpus) &optional (save-info nil))
   (let ((variable (corpus-bound-variable corpus)))
     (unless variable
       (error "Corpus not set up with a variable"))
@@ -119,28 +129,40 @@ previous records of treetop-counts.
       (let ((*do-anaphora* nil) ;; no anaphora on single sentences
             (index 0) pairs )
         (declare (special *do-anaphora*))
-        (if save-info
-            (let ((*reading-populated-document* t)
-                  (*recognize-sections-within-articles* nil) ;; turn of doc init
-                  (*accumulate-content-across-documents* t)) ;; doesn't clear history??
-              (declare (special *reading-populated-document*
-                                *recognize-sections-within-articles*
-                                *accumulate-content-across-documents*))
+
+        (flet ((run-sentences (variable)
+                 (dolist (exp (eval variable)) ;; (p "...")
+                   (setq *p-sent* exp)
+                   (incf index)
+                   (let ((*snapshot-index* index))
+                     (declare (special *snapshot-index*))
+                     (eval exp)
+                     (let ((sentence (previous (sentence))))
+                       ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
+                       (if (null sentence) ;; if we are aborting a sentence when we get an error
+                           (progn (warn "Error during parsing of ~s~%" exp)
+                                  (push `(,index . ,0) pairs))
+                           (let ((count (length (treetops-between
+                                                 (starts-at-pos sentence)
+                                                 (ends-at-pos sentence)))))
+                             (push `(,index . ,count) pairs))))))))
+
+          (if save-info
+              (let ((*reading-populated-document* t)
+                    (*recognize-sections-within-articles* nil) ;; turn of doc init
+                    (*accumulate-content-across-documents* t)) ;; doesn't clear history??
+                (declare (special *reading-populated-document*
+                                  *recognize-sections-within-articles*
+                                  *accumulate-content-across-documents*))
+                (run-sentences variable))
              
-              (dolist (exp (eval variable)) ;; (p "...")
-                (setq *p-sent* exp)
-                (incf index)
-                (eval exp)
-                (let ((sentence (previous (sentence))))
-                  ;;(push-debug `(,sentence ,corpus)) (break "check sentence")
-                  (if (null sentence) ;; if we are aborting a sentence when we get an error
-                      (progn (warn "Error during parsing of ~s~%" exp)
-                             (push `(,index . ,0) pairs))
-                      (let ((count (length (treetops-between
-                                            (starts-at-pos sentence)
-                                            (ends-at-pos sentence)))))
-                        (push `(,index . ,count) pairs))))))
-            (dolist (exp (eval variable)) ;; (p "...")
+              (run-sentences variable))
+
+
+          (nreverse pairs))))))
+
+             ;; temp copy of second clause -- first used in flet
+            #+ignore(dolist (exp (eval variable)) ;; (p "...")
               (setq *p-sent* exp)
               (incf index)
               (eval exp)
@@ -152,8 +174,7 @@ previous records of treetop-counts.
                     (let ((count (length (treetops-between
                                           (starts-at-pos sentence)
                                           (ends-at-pos sentence)))))
-                      (push `(,index . ,count) pairs))))))
-        (nreverse pairs)))))
+                      (push `(,index . ,count) pairs)))))
 
 
 
