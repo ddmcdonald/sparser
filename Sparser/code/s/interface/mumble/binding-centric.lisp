@@ -101,6 +101,16 @@
                         conjunction))))
         (apply #'conjoin items)))))
 
+(defun realize-predication (subject predicate copula)
+  (check-type subject sp::individual)
+  (check-type predicate sp::individual)
+  (assert (sp::itypep copula 'sp::be) (copula) "Invalid copula.")
+  (let ((be (make-dtn :referent copula
+                      :resource (phrase-named 's-be-comp))))
+    (make-complement-node 's subject be)
+    (make-complement-node 'c predicate be)
+    (tense be)))
+
 (defmethod realize ((i sp::individual))
   "Realize a Sparser individual."
   (let ((primary-category (car (sp::indiv-type i))))
@@ -112,6 +122,10 @@
        (realize-collection i))
       ((sp::itypep i 'sp::polar-question)
        (question (realize-via-bindings (sp::value-of 'sp::statement i))))
+      ((sp::itypep i 'sp::copular-predication)
+       (realize-predication (sp::value-of 'sp::item i)
+                            (sp::value-of 'sp::value i)
+                            (sp::value-of 'sp::predicate i)))
       (t (realize-via-bindings i)))))
 
 (defun realize-via-bindings (i &optional (pos (if (sp::subject-variable i) 'verb 'noun)))
