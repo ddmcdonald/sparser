@@ -2212,7 +2212,7 @@
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show :specializes bio-rhetorical
   :mixins (bio-thatcomp)
-  :binds ((tocomp (:or be biological predicate)))
+  :binds ((tocomp (:or be biological predication)))
   ;; it was shown that
   :realization
   (:verb ("show" :past-tense "showed" :past-participle "shown")
