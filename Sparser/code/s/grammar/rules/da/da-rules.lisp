@@ -20,6 +20,10 @@
 (defstruct edge-spec category form referent target dominating direction)
 
 
+;;;----------------------
+;;; rules centering on S
+;;;----------------------
+
 (define-debris-analysis-rule attach-to-comp-comma-to-s
     :pattern (to-comp "," s)
     :action (:function attach-to-comp-comma-to-s  first second third))
@@ -52,22 +56,32 @@
               (edge-referent pobj-edge)))
 	 (prep-edge (edge-left-daughter pp))
 	 (prep-word (edge-left-daughter prep-edge)))
+    
+    (when (itypep clause-referent 'copular-predication)
+      ;; This trick works to 'get through' to a single edge over dec #33
+      ;; but having taken the predication apart we're going to have to put it together
+      ;; again. Indeed the distribution of the conjoined value individual over
+      ;; the predication it is in should probably precede the distribution
+      ;; of the pp, which needs to be tailored to know which part takes
+      ;; the preposition. Or maybe reassemble the predication afterwards?
+      (push-debug `(,pobj-referent ,prep-word ,clause-referent ,pp ,clause))
+      (setq clause-referent (value-of 'value clause-referent)))
+
     (cond
       ((null pobj-referent) ;; punt at the moment for conjoined PPs
        nil)
       
-      ((is-basic-collection? clause-referent)
+      ((is-basic-collection? clause-referent) ;; Dec #33 goes through here
        (or
         (distribute-pp-to-conjoined-clauses pp clause prep-word pobj-referent clause-referent
                                             'attach-leading-pp-to-clause)
         (distribute-pp-to-first-conjoined-clause pp clause
                                                  'attach-leading-pp-to-clause)))
       (t
-       (let (edge
-             (var-name
-              (or
-               (subcategorized-variable clause-referent prep-word pobj-referent)
-               (failed-pp-attachment pp clause-referent))))
+       (let ((var-name
+              (or (subcategorized-variable clause-referent prep-word pobj-referent)
+                  (failed-pp-attachment pp clause-referent)))
+             edge )
          (when var-name
            (setq edge (make-edge-spec
                        :category (edge-category clause)
@@ -92,30 +106,26 @@
   nil)
 
 (defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent rule-name)
-  (let* ((clauses  (value-of 'items clause-referent))
+  (let* ((clauses (value-of 'items clause-referent))
 	 (vars (loop for c in clauses
 		  collect
-		    (or
-		     (subcategorized-variable c
-					      prep-word
-					      pobj-referent)
-		     ;; otherwise, not all the clauses will accept the PP
-		     (return-from distribute-pp-to-conjoined-clauses nil))))
+		    (or (subcategorized-variable c prep-word pobj-referent)
+                        ;; otherwise, not all the clauses will accept the PP
+                        (return-from distribute-pp-to-conjoined-clauses nil))))
 	 (new-interp
 	  (make-an-individual
 	   'collection
 	   :items
 	   (loop for c in clauses as var-name in vars
-	      collect
+	      collect ;; create a mention-history for the new interpretation
 		(let* ((new-c (bind-dli-variable var-name pobj-referent c))
 		       (c-mention (relevant-mention (list clause) c)))
-		  ;; create a mention-history for the new interpretation
 		  (when c-mention
 		    (update-mention-referent c-mention new-c t))
 		  new-c))
 	   :number (length clauses)
 	   :type (itype-of (car clauses))))
-	 edge)
+	 edge) ;;(lsp-break "1st")
     (setq edge (make-edge-spec
                 :category (edge-category clause)
 		:form (edge-form clause)
@@ -134,6 +144,7 @@
 	   (subcategorized-variable (edge-referent left-clause) prep-word pobj-referent)
 	   (failed-pp-attachment pp left-clause)))
 	 new-left new-items new-interp new-edge)
+    ;;(lsp-break "2d")
     (when var-name
       (setq new-left (when var-name (bind-dli-variable var-name pobj-referent left-clause)))
       (setq new-items
@@ -301,27 +312,11 @@
   (attach-trailing-participle-to-clause-with-conjunction s nil vp))
 
 
-(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-base
-  :pattern ( subordinate-clause vp+ing )
-  :action (:function attach-trailing-participle-to-subordinate-clause-base first second))
-
-(defun attach-trailing-participle-to-subordinate-clause-base (s vp)
-  (attach-trailing-participle-to-clause-with-conjunction s nil vp))
-
-
 (define-debris-analysis-rule attach-trailing-participle-to-clause-with-conjunction-comma
   :pattern ( s "," vp+ing )
   :action (:function attach-trailing-participle-to-clause-with-conjunction-comma first second third))
 
 (defun attach-trailing-participle-to-clause-with-conjunction-comma (s comma vp)
-  (attach-trailing-participle-to-clause-with-conjunction s comma vp))
-
-
-(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-comma
-  :pattern ( subordinate-clause "," vp+ing )
-  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-comma first second third))
-
-(defun attach-trailing-participle-to-subordinate-clause-with-conjunction-comma (s comma vp)
   (attach-trailing-participle-to-clause-with-conjunction s comma vp))
 
 
@@ -331,6 +326,23 @@
 
 (defun attach-trailing-participle-to-clause-with-conjunction-and (s and vp)
   (attach-trailing-participle-to-clause-with-conjunction s and vp))
+
+
+;;; subordinate clause
+
+(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-base
+  :pattern ( subordinate-clause vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-base first second))
+
+(defun attach-trailing-participle-to-subordinate-clause-base (s vp)
+  (attach-trailing-participle-to-clause-with-conjunction s nil vp))
+
+(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-comma
+  :pattern ( subordinate-clause "," vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-comma first second third))
+
+(defun attach-trailing-participle-to-subordinate-clause-with-conjunction-comma (s comma vp)
+  (attach-trailing-participle-to-clause-with-conjunction s comma vp))
 
 
 (define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-and
@@ -416,7 +428,7 @@
                       (edge-referent s-edge)
                       vp+ing-ref)))))))
 
-
+;;------------------- more s rules -------------------------------
 (define-debris-analysis-rule attach-comma-appositive-np-under-s
   :pattern ( s "," np)
   ;; The action can fail. Returning nil ought to suffice
@@ -467,6 +479,9 @@
          :direction :right)))))
 
 
+
+;;; PP rules
+
 (define-debris-analysis-rule attach-appositive-comma-np-comma-under-pp
   :pattern ( pp "," np ",")
   ;; The action can fail. Returning nil ought to suffice
@@ -504,6 +519,10 @@
 (defun attach-appositive-comma-proper-noun-under-pp (pp comma-1 proper-noun comma-2)
   (attach-appositive-comma-np-endpos-under-pp pp comma-1 proper-noun (pos-edge-ends-at comma-2)))
 
+
+
+
+;;; NP rules
 
 (define-debris-analysis-rule attach-np-comma-np-comma-as-appositive
   :pattern ( np "," np ",")
@@ -555,7 +574,7 @@
           (bind-dli-variable 'appositive-description (edge-referent np-edge) (edge-referent base-np))
           ))
 
-
+;;------------------------- S -----------------------
 (define-debris-analysis-rule s-commma-subj-relative
     :pattern (s "," subject-relative-clause)
     :action (:function s-commma-subj-relative first second third))
@@ -641,7 +660,7 @@
                 :target target
                 :direction :right)))))))
 
-
+;;--------------- NP
 (define-debris-analysis-rule np-commma-subj-relative
     :pattern (np "," subject-relative-clause)
     :action (:function np-commma-subj-relative first second third))
@@ -701,6 +720,7 @@
        nil))))
 
 
+;;------------------ PP -------------------
 (define-debris-analysis-rule pp-comma-pp-comma
   :pattern ( pp "," pp ",")
   ;; The action can fail. Returning nil ought to suffice
@@ -1198,6 +1218,7 @@
         do
           (eval (make-subj-vp-rule-pair subj vp))))
 
+
 (defun make-subj-vp+ing-rule-pair (subj)
   (let ((rule-name (intern (format nil "~s-VP+ING" subj))))
     `(progn
@@ -1262,7 +1283,6 @@
            :referent ref
            :target target
            :direction :right))))))
-
 
 #|
 (define-debris-analysis-rule YES-NO-NP-ADjP

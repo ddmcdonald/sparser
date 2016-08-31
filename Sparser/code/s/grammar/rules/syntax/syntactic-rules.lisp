@@ -151,7 +151,7 @@
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
      (eval
-      `(def-syntax-rule (,nb comparative-adjective) ;; "RAS in vivo"
+      `(def-syntax-rule (,nb comparative-adjective)
            :head :left-edge
            :form n-bar
            :referent (:function adj-postmodifies-noun left-edge right-edge)))
@@ -315,8 +315,8 @@
         :referent (:function interpret-adverb+verb right-edge left-edge))))
 
 
-;; handle "RAS not bound to ERK"
-(def-form-rule (not verb+ed)
+
+(def-form-rule (not verb+ed) ;; "RAS not bound to ERK"
     :form vg+ed
     :referent (:head right-edge
                      :bind (negation left-edge)))
@@ -454,12 +454,25 @@
         :form ,(second vv)
         :referent (:function adjoin-prepcomp-to-vg left-edge right-edge))))
 
-
 (def-syntax-rule (s to-comp)
     :head :left-edge
     :form s
     :referent (:function interpret-to-comp-adjunct-to-s left-edge right-edge))
 
+
+;;-- infinitives / to-comps, compensating rules
+
+(def-syntax-rule (vg+ed vp) ;; where vp is disguising "... to be ..."
+  ;; erk #7, semantically it's [show + copular-predicate]
+  ;; analogy is to vg+ed + to-comp
+  :head :left-edge
+  :form vp+ed
+  :referent (:function adjoin-vg-to-embedded-tocomp left-edge right-edge))
+
+(def-syntax-rule (vg vg+passive)
+  :head :left-edge
+  :form vp
+  :referent (:function passive-is-covert-tocomp left-edge right-edge))
 
 
 
@@ -498,7 +511,8 @@
 ;;;--- Relative clauses
 ;;;---------------------------
 
-(loop for rel in '(which who whom  that) ;;  (where, when) this is more often used as a subordinate conjunction
+(loop for rel in '(which who whom  that)
+   ;;  (where, when) this is more often used as a subordinate conjunction
    do
      (eval
       `(def-form-rule (,rel transitive-clause-without-object)
@@ -619,9 +633,9 @@
 
 
 
-;;;----------------------
+;;;-------------------------------------------------------------------------
 ;;; clause-based complements "to", "for-to", "that" and "whether" and "how"
-;;;----------------------
+;;;-------------------------------------------------------------------------
               
 (def-form-rule (that s)
     :form thatcomp
@@ -672,11 +686,17 @@
   :form to-comp
   :referent (:daughter right-edge))
 
+
 (def-syntax-rule (preposition vg+ing) ;; J3 hydrolysis maybe elevate?
     :head :left-edge
     :form pp
-    ;; Code only works for "upon"
     :referent (:function apply-preposition-to-complement left-edge right-edge))
+
+(def-syntax-rule (preposition vp+ing) ;; aspp2 # 64 "in prompting senescence
+    :head :left-edge
+    :form pp
+    :referent (:function apply-preposition-to-complement left-edge right-edge))
+
 
 ;;/// written as expedient way to handle "even in" (overnight #6)
 ;; but that phrase actually means something and should be a real preposition
@@ -711,6 +731,15 @@
         :form pp
         :referent (:function make-pp left-referent right-referent))))
 
+
+(def-form-rule (of thatcomp)
+    ;; compensate for shift in form done by create-howcomp that stranded
+    ;; dry-run 41 (aka aspp2 69). ///form there should be whcomp or something
+    ;; like that since it's better fit to more prepositions. This instance
+    ;; with "of" is really forced.
+  :head :left-edge
+  :form pp
+  :referent (:function make-pp left-referent right-referent))
 
 ;; "by who" or "in who" etc. is very non standard, so this
 ;; overgenerates
@@ -796,9 +825,16 @@ similar to an oncogenic RasG12V mutation (9)."))
   :form adjp
   :referent (:function make-adj-comp left-edge right-edge))
 
+(def-syntax-rule (adjective vp+passive)
+  ;; aspp2 #31 "... likely to be mediated by ..."
+  :head :left-edge
+  :form adjp
+  :referent (:function passive-is-covert-tocomp left-edge right-edge))
 
 ;;;--------------------------------------------------------
 ;; new rules for numbered items -- needs review
+;;;--------------------------------------------------------
+
 (def-syntax-rule (np number) ;; should be allowable as a form rule
     :form np
     :head :left-edge
