@@ -896,7 +896,15 @@
 (defun bound-subject-vars (i)
   (loop for s in (find-subject-vars i) thereis (value-of s i)))
 
-
+(defun find-subcat-labels (item var head)
+  "Return the syntactic labels associated with a variable bound to an item."
+  (loop with subcat-patterns = (known-subcategorization? head)
+        for pattern in subcat-patterns
+        when (and (if (disjunctive-lambda-variable-p var)
+                    (memq (subcat-variable pattern) (dvar-variables var))
+                    (eq (subcat-variable pattern) var))
+                  (satisfies-subcat-restriction? item (subcat-restriction pattern)))
+        collect (subcat-label pattern)))
 
 
 (defparameter *show-over-ridden-ambiguities* nil)
