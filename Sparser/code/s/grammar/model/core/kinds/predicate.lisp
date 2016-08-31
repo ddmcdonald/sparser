@@ -25,8 +25,8 @@
 
 (define-category predicate
   :instantiates nil
-  :specializes relation
-  :mixins (has-name) 
+  :specializes has-name ;; which is a specialization of relation
+  :mixins () 
   :documentation "A predicate attributes or predicates
  some property to something. Depending of what sort of
  predicate it is, this property may be implicit in the
