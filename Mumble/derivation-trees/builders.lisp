@@ -27,18 +27,15 @@
 		 (word word)))
 	 (pair (make-instance 'parameter-value-pair
                    :phrase-parameter parameter
-                   :value word))
-	 (lp (if parameters
-		 (make-instance 'partially-saturated-lexicalized-phrase
-				:phrase phrase
-				:free parameters
-				:bound `(,pair))
-		 (make-instance 'saturated-lexicalized-phrase
-				:phrase phrase
-				:bound `(,pair)))))
-    (when word
-      (record-lexicalized-phrase word lp))
-    lp))
+                   :value word)))
+    (if parameters
+        (make-instance 'partially-saturated-lexicalized-phrase
+                       :phrase phrase
+                       :free parameters
+                       :bound `(,pair))
+        (make-instance 'saturated-lexicalized-phrase
+                       :phrase phrase
+                       :bound `(,pair)))))
  
 
 (defgeneric verb (word &optional phrase-name)
@@ -59,13 +56,11 @@
          (word (word-for-string string 'verb)))
     (let* ((pair (make-instance 'parameter-value-pair
                    :phrase-parameter parameter
-                   :value word))
-           (lp (make-instance 'partially-saturated-lexicalized-phrase
-                 :phrase phrase
-                 :free parameters
-                 :bound `(,pair))))
-      (record-lexicalized-phrase word lp)
-      lp)))
+                   :value word)))
+      (make-instance 'partially-saturated-lexicalized-phrase
+                     :phrase phrase
+                     :free parameters
+                     :bound `(,pair)))))
 
 
 (defgeneric adjective (word)
@@ -78,12 +73,9 @@
   (adjective (pname w)))
 
 (defmethod adjective ((pname string))
-  "This is a find or make on a lexicalized attachment."
   (let* ((word (word-for-string pname 'adjective))
-         (ap (attachment-point-named 'adjective))
-         (lp (make-lexicalized-attachment ap word)))
-    (record-lexicalized-phrase word lp)
-    lp))
+         (ap (attachment-point-named 'adjective)))
+    (make-lexicalized-attachment ap word)))
 
 
 (defun wrap-pronoun (pronoun-symbol)
@@ -109,13 +101,11 @@
 (defmethod predicate ((pname string))
   (let ((phrase (phrase-named 'advp))
         (word (word-for-string pname 'adverb)))
-    (let ((lp (make-instance 'saturated-lexicalized-phrase
-                :phrase phrase
-                :bound `(,(make-instance 'parameter-value-pair
-                            :phrase-parameter (parameter-named 'adv)
-                            :value word)))))
-      (record-lexicalized-phrase word lp)
-      lp)))
+    (make-instance 'saturated-lexicalized-phrase
+      :phrase phrase
+      :bound `(,(make-instance 'parameter-value-pair
+                  :phrase-parameter (parameter-named 'adv)
+                  :value word)))))
 
 
 (defgeneric prep (word)
@@ -134,14 +124,12 @@
 (defmethod prep ((pname string))
   (let ((phrase (phrase-named 'prepositional-phrase))
         (preposition (word-for-string pname 'preposition)))
-    (let ((lp (make-instance 'partially-saturated-lexicalized-phrase
-                :phrase phrase
-                :bound `(,(make-instance 'parameter-value-pair
-                            :phrase-parameter (parameter-named 'p)
-                            :value preposition))
-                :free `(,(parameter-named 'prep-object)))))
-      (record-lexicalized-phrase preposition lp)
-      lp)))
+    (make-instance 'partially-saturated-lexicalized-phrase
+      :phrase phrase
+      :bound `(,(make-instance 'parameter-value-pair
+                  :phrase-parameter (parameter-named 'p)
+                  :value preposition))
+      :free `(,(parameter-named 'prep-object)))))
 
 (defgeneric interjection (word)
   (:documentation "As used with the Blocks World, these are
@@ -157,13 +145,11 @@
 (defmethod interjection ((pname string))
   (let ((phrase (phrase-named 'QP))
         (word (word-for-string pname 'interjection)))
-    (let ((lp (make-instance 'saturated-lexicalized-phrase
-                :phrase phrase
-                :bound `(,(make-instance 'parameter-value-pair
-                            :phrase-parameter (parameter-named 'q)
-                            :value word)))))
-      (record-lexicalized-phrase word lp)
-      lp)))
+    (make-instance 'saturated-lexicalized-phrase
+      :phrase phrase
+      :bound `(,(make-instance 'parameter-value-pair
+                  :phrase-parameter (parameter-named 'q)
+                  :value word)))))
 
 
 
@@ -181,18 +167,16 @@
         (term (compound-word-for-indexing verb-pname prep-pname)))
     ;; Since we are stipulating the phrase in this method
     ;; we can just know what the open parameters are.
-    (let ((lp (make-instance 'partially-saturated-lexicalized-phrase
-                :phrase (phrase-named 'SVPrepO)
-                :bound (list (make-instance 'parameter-value-pair
-                               ::phrase-parameter (parameter-named 'v)
-                               :value verb)
-                             (make-instance 'parameter-value-pair
-                               ::phrase-parameter (parameter-named 'p)
-                               :value prep))
+    (make-instance 'partially-saturated-lexicalized-phrase
+      :phrase (phrase-named 'SVPrepO)
+      :bound (list (make-instance 'parameter-value-pair
+                     :phrase-parameter (parameter-named 'v)
+                     :value verb)
+                   (make-instance 'parameter-value-pair
+                     :phrase-parameter (parameter-named 'p)
+                     :value prep))
                 :free (list (parameter-named 's)
                             (parameter-named 'o)))))
-      (record-lexicalized-phrase term lp)
-      lp)))
 
 
 (defmethod transitive-with-final-adverbial ((verb-pname string)
@@ -206,14 +190,12 @@
   (let ((verb (word-for-string verb-pname 'verb))
         (adverb (word-for-string adverb-pname 'adverb))
         (term (compound-word-for-indexing verb-pname adverb-pname)))
-    (let ((lp (make-instance 'partially-saturated-lexicalized-phrase
-                :phrase (phrase-named 'SVOP) ;; s v o p
-                :bound (list (pvp 'v verb)
-                             (pvp 'p adverb))
-                :free (list (parameter-named 's)
-                            (parameter-named 'o)))))
-      (record-lexicalized-phrase term lp)
-      lp)))
+    (make-instance 'partially-saturated-lexicalized-phrase
+      :phrase (phrase-named 'SVOP) ;; s v o p
+      :bound (list (pvp 'v verb)
+                   (pvp 'p adverb))
+      :free (list (parameter-named 's)
+                  (parameter-named 'o)))))
 
 
 
