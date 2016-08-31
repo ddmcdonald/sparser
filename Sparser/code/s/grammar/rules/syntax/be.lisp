@@ -69,36 +69,6 @@
   "For use by code that's loaded before the grammar is")
 
 
-;;--- categories associated with BE
-
-(define-category copular-pp ;; "the cat is on the mat"
-  :specializes be
-  :binds ((copula)
-          (prep)
-          (pobj))
-  :documentation "Provides a scaffolding that the syntax function
-    make-copular-pp can use to package preposition and complement
-    it got from a [be-ref + pp] rule."
-  :index (:temporary :list))
-
-(define-category copular-predicate
-  :specializes be
-  :binds ((predicate)
-          (predicated-of)
-          (copula))
-  :documentation "Provides a scaffolding that the syntax function
-    apply-copular-pp can use to package the predicate it creates
-    from the np in an [np + copular-pp] rule."
-  :index (:temporary :list))
-#| sampled 8/26/16
-drivers/chart/psp/post-analysis-operations.lisp:  (declare (special category::copular-predicate))
-drivers/chart/psp/post-analysis-operations.lisp:				      ((eq category::copular-predicate (edge-category (car parent-edges)))
-grammar/rules/syntax/be.lisp:(define-category copular-predicate
-grammar/rules/syntax/be.lisp:  ;; that call apply-copular-pp to create copular-predicate objects
-grammar/rules/syntax/syntax-functions.lisp:  (declare (special category::copular-predicate))
-grammar/rules/syntax/syntax-functions.lisp:	(revise-parent-edge :category category::copular-predicate)
-grammar/rules/syntax/syntax-functions.lisp:         category::copular-predicate
-|#
 
 ;;;-------------------------
 ;;; forms of the verb to be
@@ -141,32 +111,6 @@ grammar/rules/syntax/syntax-functions.lisp:         category::copular-predicate
   :referent be)
 
 
-;;;----------------------------
-;;; be + adjective or adjp
-;;;----------------------------
-
-(def-form-rule (be adjective)
-  :form vg ;;vp ;; as a VP (vs VG) it kills aspp2 68
-  :referent  (:function make-copular-adjective left-edge right-edge))
-
-(def-form-rule (be adjp)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
-
-
-
-;;;-------------------------------
-;;; be + prepositional complement
-;;;-------------------------------
-;; "the cat is on the mat"
-
-(def-form-rule (be pp)
-  :form vp
-  :new-category copular-pp
-  ;; copular-pp is used in a syntatic-rule where it's folded
-  ;; in with all the NP sources and gerundive vps to form rules
-  ;; that call apply-copular-pp to create copular-predicate objects
-  :referent (:function make-copular-pp left-edge right-edge))
 
 
 (def-form-rule (be subordinate-clause)
@@ -362,32 +306,6 @@ assess-edge-label, which rewrites the word as the category BE.
 (assign-brackets/expr (category-named 'be)
                       (list (symbol-value '].verb)
                             (symbol-value '.[verb )))
-
-;;;--------------------------
-;;; hedged copular relations
-;;;--------------------------
-
-;; See syntax/copulars.lisp for an effort to generalize this
-
-#|
-
-(define-category seem :specializes bio-rhetorical
-    :binds ((tocomp (:or be biological)))
-    :realization
-    (:verb "seem"
-	   :etf (svo)
-           :to-comp tocomp))
-
-(def-synonym seem (:verb "appear" :etf (svo)))
-
-(def-form-rule (seem adjective)
-  :form vg
-  :referent (:function make-copular-adjective left-edge right-edge))
-
-(def-form-rule (seem adjp)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
-|#
 
 
 
