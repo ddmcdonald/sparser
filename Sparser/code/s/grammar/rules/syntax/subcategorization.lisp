@@ -761,6 +761,8 @@
 ;; temporary hack to get the label down to satisfies-subcat-restriction?
 (defparameter *head* nil)
 
+(defparameter *ambiguous-variables* (list nil))
+
 
 (defun find-subcat-var (item label head)
   (declare (special item label head))
@@ -903,8 +905,6 @@
 (defparameter *trivial-subcat-test* nil)
 (defparameter *tight-subcats* nil)
 (defparameter *dups* nil)
-
-(defparameter *ambiguous-variables* (list nil))
 
 
 (defun show-ambiguities ()
