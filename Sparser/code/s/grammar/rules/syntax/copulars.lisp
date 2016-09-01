@@ -91,17 +91,15 @@ phosphorylated by Src."
  of its binding values when we compose with a subject.")
 
 
-(define-category copular-pp ;; "is on the mat"
-  :specializes be
+(define-category copular-predication-of-pp ;; (the cat)(is on the mat)
+  :specializes copular-predication
   :instantiates self
-  :restrict ((predicate b))
-  :binds ((prep)
-          (pobj))
+  :binds ((prep))
   :index (:temporary :list)
-  :documentation "Exposes the preposition for each of regulated
- composition with the subject, otherwise just models the content
- of the predicate, expecting the composition with the subject
- to copy out of this into a copular predication.")
+  :documentation "Adds a prep variable to the variables 
+ of copular-predication. The prepositional complement goes
+ in the value variable, though that seems a bit odd, but 
+ what's in a name?  Built in two pieces.")
 
 
 ;;;-------
