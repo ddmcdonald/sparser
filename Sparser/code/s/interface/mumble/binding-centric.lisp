@@ -60,13 +60,20 @@
   (:documentation "Determine and attach tense to the given object.")
   (:method ((dtn derivation-tree-node) &aux (referent (referent dtn)))
     "Attach tense to the given DTN by inspecting its referent."
-    (cond ((and (sp::value-of (sp::object-variable referent) referent)
-                (not (sp::value-of (sp::subject-variable referent) referent)))
-           (command dtn))
-          ((find (name *current-position*)
-                 '(adjective complement-of-be relative-clause))
+    (cond ((sp::value-of 'sp::past referent)
            (past-tense dtn))
-          (t (present-tense dtn)))))
+          ((sp::value-of 'sp::progressive referent)
+           (progressive dtn))
+          ((sp::value-of 'sp::perfect referent)
+           (had dtn))
+          ((find (name *current-position*) '(adjective complement-of-be relative-clause))
+           (past-tense dtn))
+          (t (present-tense dtn))))
+  (:method :after ((dtn derivation-tree-node) &aux (referent (referent dtn)))
+    "Interpret a referent with an object but no subject as an imperative."
+    (when (and (sp::value-of (sp::object-variable referent) referent)
+               (not (sp::value-of (sp::subject-variable referent) referent)))
+      (command dtn))))
 
 (defun heavy-predicate-p (i)
   "Return true if the individual is too heavy to be used as a premodifier."
