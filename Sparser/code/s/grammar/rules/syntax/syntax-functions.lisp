@@ -1373,10 +1373,10 @@
         (and prep pobj))
        (t
         (make-simple-individual
-         category::copular-pp
+         category::copular-predication-of-pp
          `((predicate ,be-ref)
            (prep ,prep)
-           (pobj ,pobj))))))))
+           (value ,pobj))))))))
 
 
 (defun apply-copular-pp (np copular-pp)
@@ -1385,26 +1385,30 @@
     ;; this may no longer work -- get an example and test it
     (setq copular-pp (value-of 'comp copular-pp)))
   (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
-         (pobj (value-of 'pobj copular-pp))
-         ;;(copula (value-of 'copula copular-pp))
-         (variable-to-bind (subcategorized-variable np prep pobj)))
+         (pobj (value-of 'value copular-pp))
+         (var-to-bind (subcategorized-variable np prep pobj)))
     ;;(lsp-break "apply-copular-pp to ~a and ~a" np copular-pp)
     (cond
-     (*subcat-test* variable-to-bind)
+     (*subcat-test* var-to-bind)
      (t
       (when *collect-subcat-info*
-        (push (subcat-instance np prep variable-to-bind copular-pp)
+        (push (subcat-instance np prep var-to-bind copular-pp)
               *subcat-info*))
 
-      (let ((predicate (bind-dli-variable
-			variable-to-bind
-			pobj
-			(individual-for-ref np))))
-	(revise-parent-edge :category category::copular-predicate)
-        (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+      (setq np (individual-for-ref np))
+      (revise-parent-edge :category category::copular-predicate)
+
+      ;; Earlier version -- but the class doesn't look
+      ;; like that now -- see copulars
+      #+ignore(let ((predicate (bind-dli-variable var-to-bind pobj np)))
+        (make-simple-individual
          category::copular-predicate
          `((predicate ,predicate)
-	   (predicated-of ,np))))))))
+	   (predicated-of ,np))))
+
+      (let ((i copular-pp)) ;; renaming to reinforce the framing
+        (setq i (bind-variable 'item np i))
+        i )))))
 
 
 
