@@ -34,6 +34,9 @@
 (defun noun-labels (slot-labels)
   (label-intersection slot-labels *noun-labels*))
 
+(defun adjective-labels (slot-labels)
+  (label-intersection slot-labels '(adjective)))
+
 (defun comp-of-be-labels (slot-labels)
   (label-intersection slot-labels '(complement-of-be)))
   
@@ -67,6 +70,9 @@
                 ((and (part-of-speech 'verb item)
                       (comp-of-be-labels labels))
                  (en-form item))
+                ((and (part-of-speech 'verb item)
+                      (adjective-labels labels))
+                 (past-tense-form item))
                 ((and (part-of-speech 'verb item)
                       (verb-labels labels))
                  (verb-morphology item (name (car labels))))
@@ -257,7 +263,7 @@ The exceptions are optional."
 (defun current-subject ()
   (let* ((positions (position-table *current-phrasal-root*))
 	 (subject-position (cdr (assoc 'subject positions)))
-	 (subject-contents (contents subject-position)))
+	 (subject-contents (and subject-position (contents subject-position))))
     (typecase subject-contents
       (slot (if (eq (name (next subject-contents)) 'clause)
               (next subject-contents)
@@ -280,7 +286,7 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
                     (conjunction (state-value :number (state (context-object subj)))))))
 	       (ttrace
                 (let ((orig (original-specification subj)))
-                  (etypecase orig
+                  (typecase orig
                     ((or specification derivation-tree-node)
                      (let ((acc (get-accessory-value ':number orig)))
                        (and acc (name acc))))
@@ -303,7 +309,7 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is THIRD."
                     (np (state-value :person (state (context-object subj)))))))
 	       (ttrace
                 (let ((orig (original-specification subj)))
-                  (etypecase orig
+                  (typecase orig
                     ((or specification derivation-tree-node)
 		     (let ((acc (get-accessory-value ':person orig)))
 		       (and acc (name acc))))

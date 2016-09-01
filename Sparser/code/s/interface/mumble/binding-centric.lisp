@@ -47,7 +47,7 @@
                       (string-downcase ; last-ditch guess
                        (sp::cat-name (sp::itype-of item))))))
     (cond ((sp::itypep item 'sp::biological)
-           (pretty-bio-name (sp::pname raw-word)))
+           (word-for-string (pretty-bio-name (sp::pname raw-word)) pos))
           ((sp::itypep item 'sp::collection)
            (word-for (sp::value-of 'sp::type item)))
           (t (etypecase raw-word
@@ -55,6 +55,10 @@
                (mumble::word raw-word)
                ((or sp::word sp::polyword)
                 (sp::get-mumble-word-for-sparser-word raw-word pos)))))))
+
+(defun current-position-p (&rest labels)
+  "Return true if the slot being generated has one of the given labels."
+  (memq (name *current-position*) labels))
 
 (defgeneric tense (object)
   (:documentation "Determine and attach tense to the given object.")
@@ -66,7 +70,7 @@
            (progressive dtn))
           ((sp::value-of 'sp::perfect referent)
            (had dtn))
-          ((find (name *current-position*) '(adjective complement-of-be relative-clause))
+          ((current-position-p 'adjective 'complement-of-be 'relative-clause)
            (past-tense dtn))
           (t (present-tense dtn))))
   (:method :after ((dtn derivation-tree-node) &aux (referent (referent dtn)))
@@ -79,9 +83,28 @@
   "Return true if the individual is too heavy to be used as a premodifier."
   (and (sp::individual-p i)
        (remove-if (lambda (b)
-                    (or (eql (sp::binding-value b) sp::**lambda-var**)
-                        (eql (sp::var-name (sp::binding-variable b)) 'sp::name)))
+                    (or (eq (sp::binding-value b) sp::**lambda-var**)
+                        (eq (sp::var-name (sp::binding-variable b)) 'sp::name)))
                   (sp::indiv-binds i))))
+
+(defgeneric guess-pos (i)
+  (:documentation "Guess the part of speech to be used for an individual.")
+  (:method-combination or)
+  (:method or ((i sp::individual))
+    (when (some (lambda (b)
+                  (or (eq (sp::binding-value b) sp::**lambda-var**)
+                      (eq (sp::binding-variable b) (sp::subject-variable i))
+                      (eq (sp::binding-variable b) (sp::object-variable i))))
+                (sp::indiv-binds i))
+      'verb))
+  (:method or ((i sp::referential-category))
+    (when (or (sp::subject-variable i)
+              (sp::object-variable i))
+      'verb))
+  (:method or (i)
+    (if (current-position-p 'adjective 'complement-of-be 'relative-clause)
+      'adjective
+      'noun)))
 
 (defun realize-collection (collection)
   "Realize a collection as a plural or a conjunction of items."
@@ -121,19 +144,20 @@
       ((sp::itypep i 'sp::collection)
        (realize-collection i))
       ((sp::itypep i 'sp::polar-question)
-       (question (realize-via-bindings (sp::value-of 'sp::statement i))))
+       (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
       ((sp::itypep i 'sp::copular-predication)
        (realize-predication (sp::value-of 'sp::item i)
                             (sp::value-of 'sp::value i)
                             (sp::value-of 'sp::predicate i)))
       (t (realize-via-bindings i)))))
 
-(defun realize-via-bindings (i &optional (pos (if (sp::subject-variable i) 'verb 'noun)))
+(defun realize-via-bindings (i &optional (pos (guess-pos i)))
   "Realize a Sparser individual as a DTN with its bindings attached."
   (declare (optimize debug))
   (check-type i sp::individual)
   (loop with dtn = (make-dtn :referent i
                              :resource (ecase pos
+                                         (adjective (word-for i pos))
                                          (verb (verb (word-for i pos) 'svo))
                                          (noun (noun (word-for i pos)))))
         initially (tense dtn)
@@ -146,7 +170,7 @@
 (defun attach-adjective (adjective dtn pos)
   (let ((adjp (make-dtn :resource adjective))
         (ap (ecase pos
-              (noun 'adjective)
+              ((adjective noun) 'adjective)
               (verb (multiple-value-bind (head rpos)
                         (sp::rdata-head-word adjective t)
                       (declare (ignore head))
@@ -158,8 +182,8 @@
 (defun attach-pp (prep object dtn pos)
   (let ((pp (make-dtn :resource (prep prep)))
         (ap (ecase pos
-              (verb 'vp-prep-complement)
-              (noun 'np-prep-adjunct))))
+              ((adjective noun) 'np-prep-adjunct)
+              (verb 'vp-prep-complement))))
     (make-complement-node 'prep-object object pp)
     (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
 
@@ -179,9 +203,9 @@
       (cond ((eql value sp::**lambda-var**))
             ((or (eql variable (sp::subject-variable individual))
                  (find :subject subcats))
-             (case (name *current-position*)
-               (complement-of-be (attach-pp "by" value dtn pos)) ; passive subject
-               (otherwise (make-complement-node 's value dtn))))
+             (if (current-position-p 'complement-of-be)
+               (attach-pp "by" value dtn pos) ; passive subject
+               (make-complement-node 's value dtn)))
             ((or (eql variable (sp::object-variable individual))
                  (find :object subcats))
              (make-complement-node 'o value dtn))
@@ -236,27 +260,30 @@
                                             (sp::itypep (referent c)
                                                         (sp::itype-of value)))
                                   return (referent c))
-          for binding in (set-difference (sp::indiv-binds value)
-                                         (and complement
+          for binding in (set-difference (and (sp::individual-p value)
+                                              (sp::indiv-binds value))
+                                         (and (sp::individual-p complement)
                                               (sp::indiv-binds complement))
                                          :key #'sp::binding-variable)
           do (attach-adjective (sp::binding-value binding) dtn pos)))
   (:method (binding (var-name (eql 'sp::predication)) dtn pos)
     "Attach a predication as either a premodifier or a relative clause."
-    (declare (ignore pos))
     (let* ((individual (sp::binding-body binding))
-           (value (sp::binding-value binding))
-           (adjunct (make-dtn :resource value)))
-      (make-adjunction-node
-       (cond ((heavy-predicate-p value)
-              (make-lexicalized-attachment
-               'restrictive-relative-clause
-               (let ((be (make-dtn :resource (phrase-named 's-be-comp))))
-                 (make-complement-node 'c adjunct be)
-                 (make-complement-node 's individual be)
-                 (present-tense be))))
-             (t (make-lexicalized-attachment 'adjective adjunct)))
-       dtn)))
+           (predicate (sp::binding-value binding)))
+      (if (heavy-predicate-p predicate)
+        (make-adjunction-node
+         (make-lexicalized-attachment
+          'restrictive-relative-clause
+          (let ((be (make-dtn :referent predicate
+                              :resource (phrase-named 's-be-comp))))
+            (make-complement-node 's individual be)
+            (make-complement-node 'c predicate be)
+            (present-tense be)))
+         dtn)
+        (let ((adjp (make-dtn :referent predicate
+                              :resource (phrase-named 'adjective-phrase))))
+          (make-complement-node 'a predicate adjp)
+          (attach-adjective adjp dtn pos)))))
   (:method (binding (var-name (eql 'sp::quantifier)) dtn pos)
     "Attach a quantifier as a premodifier."
     (attach-adjective (sp::binding-value binding) dtn pos))

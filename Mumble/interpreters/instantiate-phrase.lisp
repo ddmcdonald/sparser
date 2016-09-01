@@ -214,27 +214,14 @@
           (parameter
            (let ((value (parameter-value contents)))
              (typecase value
-               (null) 
-               ((or word specification ttrace pronoun)
-                (set-contents slot value))
+               (null)
                (node (knit-phrase-into-tree slot value))
-               (derivation-tree-node
-                (set-contents slot value))
                (saturated-lexicalized-phrase
                 ;;/// should this be just put in the slot too?
                 (let ((root (instantiate-lexicalized-phrase value)))
                   (knit-phrase-into-tree slot root)))
                (otherwise
-                (let ((result (realize value)))
-                  ;; if there's no realization that will be noticed
-                  ;; and complained about inside the call to realize
-                  (if result
-                    (set-contents slot result)
-                    (else ;; so we shouldn't get here
-                      ;; but nothing wrong with extra care
-                      (push-debug `(,value ,contents ,slot))
-                      (error "Unhandled value: ~a  ~a"
-                             (type-of value) value))))))))
+                (set-contents slot value)))))
           (cons (let ((phrase-node (build-phrase contents)))
                   (knit-phrase-into-tree slot phrase-node)))
           (otherwise 
