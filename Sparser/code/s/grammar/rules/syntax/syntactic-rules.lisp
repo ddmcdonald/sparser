@@ -507,9 +507,9 @@
 
 
 
-;;;---------------------------
-;;;--- Relative clauses
-;;;---------------------------
+;;;-----------------------
+;;;   Relative clauses
+;;;-----------------------
 
 (loop for rel in '(which who whom  that)
    ;;  (where, when) this is more often used as a subordinate conjunction
@@ -519,6 +519,7 @@
            :head :right-edge
            :form object-relative-clause
            :referent (:function compose-wh-with-vp left-edge right-edge)))
+     
      (loop for v in '(vp vp+passive vg+passive vg)
         do
           (eval
@@ -526,6 +527,7 @@
                 :head :right-edge
                 :form subject-relative-clause
                 :referent (:function compose-wh-with-vp left-edge right-edge)))))
+
 
 (loop for v in '(vp vp+passive vg+passive vg)
    do
@@ -593,9 +595,9 @@
            :referent (:function assimilate-adj-complement left-edge right-edge))))
 
 
-;;;--------------------------
+;;;--------------------------------------
 ;;; subordinate clauses and conjunctions
-;;;--------------------------
+;;;-------------------------------------
 ; These frequently have rhetorical or temporal force
 ; e.g. the "thus" in 
 ;   (p "SOS promotes the formation of GTP-bound RAS, thus activating this protein.")
@@ -612,7 +614,8 @@
     :referent (:daughter left-edge))
 
 
-(loop for vv in '((subordinate-clause subordinate-clause) ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
+(loop for vv in '((subordinate-clause subordinate-clause)
+                  ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
 		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
 		  (verb+present vg))
@@ -708,10 +711,9 @@
 
 
 
-;;; ---------------------------------------------------------
+;;; ----------------------
 ;;; PREPOSITIONAL PHRASES
-;;; ---------------------------------------------------------
-
+;;; ----------------------
 
 (loop for nb in `(np pronoun reflexive/pronoun ,@*n-bar-categories*)
   do
