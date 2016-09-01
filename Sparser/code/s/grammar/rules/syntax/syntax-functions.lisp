@@ -539,6 +539,7 @@
 ;;/// compare to what's done in record-verb-tense for single verb edges
 
 (defun add-tense/aspect-info-to-head (aux vg)
+  (declare (special category::verb+ing))
   (let ((aux-form (edge-form (left-edge-for-referent)))
         (aux-category (if (individual-p aux)
                         (car (indiv-type aux))
@@ -559,7 +560,9 @@
       (category::have
        'perfect)
       (category::be  ;; be + ing
-       'progressive)
+       (if (eq aux-form category::verb+ing)
+           'progressive
+           (return-from add-tense/aspect-info-to-head vg))) 
       (t (return-from add-tense/aspect-info-to-head vg)))
      aux
      vg)))
