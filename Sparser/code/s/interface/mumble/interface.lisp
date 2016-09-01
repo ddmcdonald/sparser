@@ -30,13 +30,13 @@
     (error () object)))
 
 (defmethod realize ((c sp::referential-category))
-  "The only reason to realize a category is to retrieve its name
-to provide a head word. This method ignores part of speech."
-  (sp::get-mumble-word-for-sparser-word
-   (let ((head (sp::rdata-head-word c t)))
+  "Realize a category as its head word."
+  (multiple-value-bind (head pos) (sp::rdata-head-word c t)
+    (sp::get-mumble-word-for-sparser-word
      (typecase head
        ((or sp::word sp::polyword) head)
-       (t (sp::resolve (string-downcase (sp::cat-name c))))))))
+       (t (sp::resolve (string-downcase (sp::cat-name c)))))
+     pos)))
 
 (defmethod realize ((w sp::word))
   (find-or-make-word (sp::pname w)))

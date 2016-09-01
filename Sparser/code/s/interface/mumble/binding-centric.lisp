@@ -51,10 +51,10 @@
           ((sp::itypep item 'sp::collection)
            (word-for (sp::value-of 'sp::type item)))
           (t (etypecase raw-word
-               (string (word-for-string raw-word))
+               (string (word-for-string raw-word pos))
                (mumble::word raw-word)
                ((or sp::word sp::polyword)
-                (sp::get-mumble-word-for-sparser-word raw-word)))))))
+                (sp::get-mumble-word-for-sparser-word raw-word pos)))))))
 
 (defgeneric tense (object)
   (:documentation "Determine and attach tense to the given object.")
@@ -167,7 +167,7 @@
             ((sp::itypep value 'sp::attribute-value) ; essentially a modifier
              (attach-adjective value dtn pos))
             (prep
-             (attach-pp (sp::get-mumble-word-for-sparser-word prep)
+             (attach-pp (sp::get-mumble-word-for-sparser-word prep 'preposition)
                         value dtn pos)))))
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach a final adverb."

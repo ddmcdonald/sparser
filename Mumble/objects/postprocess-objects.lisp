@@ -467,8 +467,12 @@ the virtual machine cleaner."
                     'name name
                     'pname pname
                     'word-labels word-labels
-                    'irregularities irregularities)))
-       (associate-pname-with-word pname object (car word-labels))))
+                    'irregularities irregularities))
+         (pos (car word-labels)))
+    (associate-pname-with-word pname object pos)
+    (loop for irregular in irregularities
+          do (associate-pname-with-word irregular object pos))
+    object))
 
 (defparameter *pnames-to-words* (make-hash-table :test 'equal))
 
@@ -483,7 +487,7 @@ the virtual machine cleaner."
 
 (defun word-for-string (string &optional (pos 'noun))
   "This is find-or-make word"
-  (or (gethash (list pos string) *pnames-to-words*)
+  (or (find-word string pos)
       (make-a-new-word string pos)))
 
 (defmethod find-or-make-word ((s string))
