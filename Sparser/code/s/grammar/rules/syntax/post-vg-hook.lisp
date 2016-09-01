@@ -23,7 +23,7 @@
   (when (memq (edge-form vg-edge) ;; see note on the global
               *plausible-vg-categories*)
     (fold-in-preposed-auxiliary vg-edge)
-    #+ignore(record-verb-tense vg-edge) ;; waiting for 'correct' 
+    (record-verb-tense vg-edge)
     (generalize-vg-segment-edge vg-edge)))
 
 
@@ -143,7 +143,13 @@
        ;; doesn't make sense really, but giving it a value anyway
        :past)
       (category::vg+ed :past)
-      (category::vg+ing :progressive))))
+      (category::vg+ing :progressive)
+
+      ;; dec #42 "alone was" is a sdm-span-segment so it
+      ;; doesn't go through the usual places and the
+      ;; relevant information is hiddedn.
+      ;; Past is a reasonable default in biology
+      (category::vg :past))))
 
 
 ;;;-----------------------
