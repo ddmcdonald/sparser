@@ -105,7 +105,7 @@
   (declare (special *parent-edge-getting-reference* category::copular-pp-rel-clause))
   (if *subcat-test*
       t
-      (if (itypep predicate-referent 'copular-pp)
+      (if (itypep predicate-referent 'copular-predication-of-pp)
 	  (let ((i (fom-lattice-description category::copular-pp-rel-clause)))
 	    (setq i (bind-dli-variable 'copular-pp predicate-referent i))
 	    (revise-parent-edge :category category::copular-pp-rel-clause)
