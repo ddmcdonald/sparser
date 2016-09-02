@@ -43,7 +43,26 @@ be biology specific, since they aren't. |#
 ;; While executing: #<STANDARD-METHOD UNAMBIGUOUS-COMLEX-PRIMED-DECODER (WORD T)>, in process Listener(4).
 
 
+;;---- time
+
 (noun "the next day" :specializes abstract)
+
+(define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
+  :realization 
+  (:noun "time course"))
+;; adapt to go into core/time/amounts.lisp 
+(define-category period :specializes amount-of-time
+  :binds ((context bio-context)
+          (state bio-state))
+  :realization (:noun "period"
+                      :m context
+                      :in context
+                      :in state))
+
+(noun ("period of time" :plural "periods of time") :super period)
+
+
+
 
 (define-category orientation-top
   :realization
@@ -152,16 +171,6 @@ be biology specific, since they aren't. |#
 
 (noun "length" :super bio-scalar)
 (noun "level" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
-(define-category period :specializes amount-of-time
-  :binds ((context bio-context)
-          (state bio-state))
-  :realization (:noun "period"
-                      :m context
-                      :in context
-                      :in state))
-
-(noun ("period of time" :plural "periods of time") :super period)
-
 
 ;;--- bio-rhetorical
 
