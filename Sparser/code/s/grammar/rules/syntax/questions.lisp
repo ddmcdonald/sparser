@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  September 2016
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -39,12 +39,17 @@
 
 (define-category polar-question
   :specializes question-core
+  :instantiates :self 
+  :index (:temorary :key statement))
   :documentation "This is a labeling category in that it does
  not add any refinements or extensions to question-core. It just
  labels the statement as a question: 'is it the case that <statement>'."
-  :instantiates :self
-) ;;// what would we index a question on?
 
+(defun make-polar-question (statement)
+  "Abstracted constructor so it will done the same way every time."
+  (find-or-make-individual
+   'polar-question :statement statement))
+                           
 
 (defun make-this-a-question-if-appropriate (sentence)
   "Called from post-analysis-operations after all parsing and
@@ -58,11 +63,11 @@
            (end-pos (ends-at-pos sentence))
            (edge (span-covered-by-one-edge? 
                   (chart-position-after start-pos) ;; hack
-                  end-pos)))
-      (if edge
-          (let ((stmt (edge-referent edge))
-                (q (find-or-make-individual 'polar-question)))
-            (setq q (bind-variable 'statement stmt q))
+                  end-pos))
+           (edges (all-tts)))
+      (cond
+        (edge ;; single span after the aux
+         (let ((q (make-polar-question (edge-referent edge))))
             (let ((spanning-edge
                    (make-edge-over-long-span
                     start-pos end-pos
@@ -70,15 +75,22 @@
                     :rule 'make-this-a-question-if-appropriate
                     :form category::question
                     :referent q)))
-              spanning-edge))
-          (let ((edges (all-tts)))
-            (when (and (cddr edges) (null (cdddr edges))
-                       (itypep (edge-referent (car edges)) 'be)) ;; three edges
-              (cond ((member (cat-name (edge-form (third edges)))
-                             '(adjp adjective))
-                     (make-polar-adjective-question start-pos end-pos edges))
-                    ((member (cat-name (edge-form (third edges))) '(pp))
-                     (make-polar-pp-question edges)))))))))
+              spanning-edge)))
+        
+        ((and (= 3 (length edges))
+              (itypep (edge-referent (car edges)) 'be))                  
+         (cond ((member (cat-name (edge-form (third edges)))
+                        '(adjp adjective))
+                (make-polar-adjective-question start-pos end-pos edges))
+               ((member (cat-name (edge-form (third edges)))
+                        '(pp))
+                (make-polar-pp-question edges))))
+
+        ;; the next option is to assume that the subject is the consistuent
+        ;; just after the aux, to 'move' it there somehow, and try to
+        ;; reparse the sentence as though it were declarative
+        (t
+         #+ignore (format t "~&Could not resolve to a question~%"))))))
 
 
 (defun make-polar-adjective-question (start-pos end-pos edges)
@@ -86,16 +98,14 @@
          (np (edge-referent (second edges))) ;; the ball
          (adj (edge-referent (third edges))) ;; red
          (copular-adj (make-copular-adjective be adj (car edges)))
-         (copular-statement (when copular-adj (assimilate-subject np copular-adj nil))))
+         (copular-statement (when copular-adj
+                              (assimilate-subject np copular-adj nil))))
     (when copular-statement
-      (let ((q (bind-variable
-                'statement
-                (find-or-make-individual 'polar-question)
-                copular-statement)))
+      (let ((q (make-polar-question copular-statement)))
         (make-edge-over-long-span
          start-pos end-pos
          (itype-of copular-statement)
-         :rule 'make-this-a-question-if-appropriate
+         :rule 'make-polar-adjective-question
          :form category::question
          :referent q)))))
         
