@@ -92,31 +92,6 @@
   :realization (:ifcomp statement)
   :documentation "Similar to bio-whethercomp.")
 
-(define-category temporally-localized
-  :binds ((following process)
-          (preceding process)
-	  (during process)
-          (after-timeperiod
-           (:or time-unit time-kind ;; for "any time"
-                amount-of-time))
-          (before-timeperiod
-           (:or time-unit time-kind ;; for "any time"
-                           amount-of-time))
-	  (timeperiod (:or time-unit time-kind ;; for "any time"
-                           amount-of-time)))
-  :realization (:for timeperiod
-		 :over timeperiod
-		 :upon following
-		 :after following
-		 :upon following
-		 :following following
-		 :before preceding
-		 :during during
-                 :at timeperiod
-                 :over timeperiod
-                 :in timeperiod
-                 :after after-timeperiod
-                 :before before-timeperiod))
   
 
 (define-category event-relation :specializes perdurant ;; put in here since we don't want to modify EVENT yet
@@ -1338,9 +1313,6 @@ the aggregate across the predicate it's in. |#
 		 :realization (:noun "catalysis rate"))
 |#
 
-(define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
-  :realization 
-  (:noun "time course"))
 
 (define-category bio-concentration :specializes bio-scalar
   :realization

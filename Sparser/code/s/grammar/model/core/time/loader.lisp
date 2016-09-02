@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:time:"
-;;;  version:  1.6 June 2014
+;;;  version:  September2016
 
 ;; mature recognition grammar 9/91 v1.9
 ;; 1.0 (12/7/92 v2.3) bumped everything to move it to the new semantics
@@ -49,6 +49,8 @@
 (gload "time;anchor")
 (gload "time;age")
 (gload "time;fiscal")
+
+(gload "time;adjuncts")
 
 (gload "time;sequences")
 (gload "time;index")
