@@ -33,6 +33,8 @@
 (assign-lemma physical (adjective "physical"))
 (assign-lemma kind (common-noun "kind"))
 
+(assign-lemma time (common-noun "time"))
+
 (assign-lemma object (common-noun "object"))
 (assign-lemma feature (common-noun "feature"))
 (assign-lemma aggregate(common-noun "aggregate"))
