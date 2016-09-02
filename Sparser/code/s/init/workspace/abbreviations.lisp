@@ -239,6 +239,12 @@
 
 (defun p/e (string)  (pp string) (e))
 (defun p/te (string) (pp string) (the-edges))
+(defun p/s (string)
+  (pp string)
+  (format t "~&") (tts)
+  (let ((edges (all-tts)))
+    (when (null (cdr edges)) ;; single span
+      (semtree (car edges)))))
 
 (defun pt (string)
   (time (pp string))
