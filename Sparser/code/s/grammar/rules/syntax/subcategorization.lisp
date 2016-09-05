@@ -765,7 +765,7 @@
 
 
 (defun find-subcat-var (item label head)
-  (declare (special item label head))
+  (declare (special item label head *subcat-test*))
   (let ((category (itype-of head))
         (subcat-patterns (known-subcategorization? head)))
     (declare (special category subcat-patterns))

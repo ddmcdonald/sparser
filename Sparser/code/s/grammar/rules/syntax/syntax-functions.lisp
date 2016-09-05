@@ -968,7 +968,7 @@
   "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
 
 (defun assimilate-subject (subj vp &optional (right-edge (right-edge-for-referent)))
-  (declare (special category::subordinate-clause))
+  (declare (special category::subordinate-clause category::copular-predication))
   ;; right-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
   (when (and subj vp) ;; have had cases of uninterpreted VPs
@@ -1008,6 +1008,7 @@
        (assimilate-subcat vp :object subj))
       
       (t (assimilate-subcat vp :subject subj)))))
+
 
 (defun transitive-vp-missing-object? (vp &optional (right-edge (right-edge-for-referent)))
   ;; this is a case like "that MEK phosphorylates" which has
@@ -1357,9 +1358,10 @@
 ;;;---------
 
 (defun make-copular-pp (be-ref pp)
+  (declare (special category::copular-predication-of-pp))
   (when (and
          (null (value-of 'predication be-ref))
-         ;; If this is not already a predicate copula ("is a drug")     
+         ;; If this is not already a copular predicate ("is a drug")     
 	 (or (not (edge-p *left-edge-into-reference*))
              ;; case where there is no semantic predication established,
              ;; but there is a syntactic object
@@ -1371,8 +1373,8 @@
       (cond
        (*subcat-test*
         ;; when we have clausal "to-pp" like
-        ;;  to enhance craf activation
-        ;; this is NOT a copular PP
+        ;; "to enhance craf activation" it's a purpose clause,
+        ;; not a copular PP
         (and prep pobj))
        (t
         (make-simple-individual
