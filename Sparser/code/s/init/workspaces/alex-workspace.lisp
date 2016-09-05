@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "alex-workspace"
 ;;;  Module: "init;workspaces;"
-;;; Version: January 2016
+;;; Version: September 2016
 
 (in-package :cl-user)
 
@@ -47,27 +47,52 @@
 
 ;;; Sparser loaders
 
-(defun sparser (&key dump test)
-  "Load Sparser."
-  (declare (special script))
+(defun sparser (&key (package :sparser) (system :sparser) test dump)
+  "Load Sparser and maybe run a test or dump an image."
   (progn
-    (format t "~&Loading Sparser/~a...~%" script)
+    (format t "~&Loading ~a.~%" system)
     (force-output))
-  (handler-bind ((style-warning #'muffle-warning) ; shut up, SBCL
-                 (undefined-function #'continue)  ; from Mumble
-                 (unbound-variable #'continue))   ; these, too
-    (when (asdf:load-system (format nil "sparser/~(~a~)" script))
-      (prog1 (in-package :sparser)
-        (when test (uiop:symbol-call :sparser test))
+  (handler-bind ((warning #'muffle-warning))
+    (when (asdf:load-system system)
+      (prog1 (setq *package* (find-package package))
+        (case test
+          ((nil))
+          ((t) (asdf:test-system system))
+          (t (uiop:symbol-call package test)))
         (when dump (uiop:dump-image
-                    (asdf:system-relative-pathname :sparser dump)))))))
+                    (asdf:system-relative-pathname system dump)))))))
 
-(defun bio (&rest args &key (test "COMPARE-TO-SNAPSHOTS") &allow-other-keys)
-  (declare (special script))
-  (setq script :biology)
-  (apply #'sparser :test test args))
+(defmacro define-sparser-variant (name (&optional (super 'sparser)) &rest keys)
+  `(defun ,name (&rest args &key ,@keys &allow-other-keys)
+     (apply #',super
+            ,@(loop for (key value) in keys
+                    nconc (list (intern (symbol-name key) :keyword) key))
+            args)))
 
-(defun bw (&rest args)
-  (declare (special script))
-  (setq script :blocks-world)
-  (apply #'sparser args))
+(define-sparser-variant fire ()
+  (system :sparser/fire))
+
+(define-sparser-variant bio ()
+  (system :sparser/biology))
+
+(define-sparser-variant mbio (bio)
+  (package :mumble)
+  (system :mumble/biology)
+  (test t))
+
+(define-sparser-variant r3 ()
+  (system :r3)
+  (test :compare-to-snapshots))
+
+(define-sparser-variant bw ()
+  (system :sparser/blocks-world))
+
+(define-sparser-variant mbw (bw)
+  (package :mumble)
+  (system :mumble/blocks-world)
+  (test t))
+
+(define-sparser-variant clic ()
+  (package :clic)
+  (system :clic/bw)
+  (test t))
