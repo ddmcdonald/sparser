@@ -27,7 +27,7 @@
     ;;(p "Good. Now add a red one on top of that.")
     (p "Good. Now add a red block on top of that.")
     (p "Put a red block on the bottom middle green block.")
-    ;;(p "we’re done.") ;; can't get the contraction working without David's help
+    (p "we’re done.")
 
     (p "Make a row of two green blocks.")
     ;;(p "Put a red one at the end.")
