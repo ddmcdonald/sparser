@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "modals"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  September 2016
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3. Populated w/o semantics 1/11/94
 ;; Given a mix-in interpretation 7/11.  8/2 pulled the check for whether 'modal'
@@ -27,18 +27,43 @@
 
 (in-package :sparser)
 
-;;;------------
-;;; categories
-;;;------------
+;;;--------------------
+;;; top modal category
+;;;--------------------
+
+(define-category modal-state-of-affairs ;;/// need better name
+  :instantiates nil
+  :specializes state
+  :documentation "We need this category to solve a set
+ of technical issues. The category 'modal' is a grammatical
+ description, and it seems like too much of a stretch to
+ make it do what it has to here. The illocationary force of
+ modals is to make an assertion about the deontic properties
+ of the eventuality it is part of. That, of course, may just
+ be a back-argument to justify having the top category over all
+ the different sort of modal that inherits from state, and
+ consequently can provide tense and aspect variables which
+ we need to handle at least negation.")
+
+
+;;;---------------------------------------------------------
+;;; categories to summarize the meaning of groups of modals
+;;;---------------------------------------------------------
+
+#| N.b. these are artibrary choices of names that have not
+been attested to be useful in any particular applicatons.
+If a different set of terms would be more intuitive or
+even not having any summarization above the modals themselves,
+the these should change.  |#
 
 (define-category  be-able-to
   :instantiates nil
-  :specializes modal )
+  :specializes modal-state-of-affairs )
   
 (define-category  conditional
   :instantiates nil
-  :specializes modal
-  :binds ((condition)))
+  :specializes modal-state-of-affairs
+  :binds ((condition))) 
 
 
 ;;-- category to hold the word
@@ -172,6 +197,14 @@
                 :head :right-edge
   :form vg
   :referent (:function absorb-auxiliary left-edge right-edge))
+
+
+
+(def-cfr modal (modal not)
+  :form vg
+  :referent (:head left-edge
+             :bind (negation right-edge)))
+
 
 
 ;;; ugly TEMPORARY (triaged) solution for "can then" as in "MAPK phosphorylates ASPP2 which can then relocate to..."
