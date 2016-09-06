@@ -814,13 +814,20 @@
           (record-subcat-use label (itype-of head) variable))
         variable ))))
 
-
+(defun find-subcat-labels (item var head)
+  "Return the syntactic labels associated with a variable bound to an item."
+  (loop with subcat-patterns = (known-subcategorization? head)
+        for pattern in subcat-patterns
+        when (and (if (disjunctive-lambda-variable-p var)
+                    (memq (subcat-variable pattern) (dvar-variables var))
+                    (eq (subcat-variable pattern) var))
+                  (satisfies-subcat-restriction? item (subcat-restriction pattern)))
+        collect (subcat-label pattern)))
 
 (defun subcategorized-variable (head label item)
   "Returns the variable on the HEAD that is subcategorized for
-   the ITEM when it has the grammatical relation LABEL to
-   the head."
-  (declare (special item *pobj-edge*))
+   the ITEM when it has the grammatical relation LABEL to the head."
+  (declare (special *pobj-edge*))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
@@ -859,25 +866,10 @@
      ;;/// prep-comp, etc.
      (find-subcat-var item label head))))
 
-
-
 (defun find-subcat-vars (label cat)
   (loop for pat in (subcat-patterns cat)
-     when (eq label (subcat-label pat))
-     collect (subcat-variable pat)))
-
-(defun missing-object-vars (i)
-  (let ((ov (find-object-vars i)))
-    (or
-     (and ov
-          (not (get-tag :optional-object (itype-of i)))
-          (not (loop for o in ov thereis (value-of o i)))
-          (not
-           ;; this is weak -- need to check inside the disjunctive-lambda-variable-p
-           ;;  for an object-variable
-           (loop for b in (when (individual-p i)(indiv-old-binds i))
-              thereis (disjunctive-lambda-variable-p
-                       (binding-variable b))))))))
+        when (eq label (subcat-label pat))
+        collect (subcat-variable pat)))
 
 (defun find-object-vars (cat)
   (find-subcat-vars :object cat))
@@ -885,37 +877,43 @@
 (defun find-subject-vars (cat)
   (find-subcat-vars :subject cat))
 
-(defun missing-subject-vars (i)
-  (let ((sv (find-subject-vars i)))
-    (and sv
-         (not (loop for s in sv thereis (value-of s i))))))
+(defun binds-var-p (i var)
+  (loop for b in (and (individual-p i) (indiv-binds i))
+        as v = (binding-variable b)
+        when (if (disjunctive-lambda-variable-p v)
+               (memq var (dvar-variables v))
+               (eq var v))
+        return b))
+
+(defun binds-some-var-p (i vars)
+  (loop for v in vars as b = (binds-var-p i v)
+        when b return (binding-variable b)))
 
 (defun bound-object-var (i)
-  (loop for o in (find-object-vars i)
-     when (value-of o i)
-     do (return o)))
+  (binds-some-var-p i (find-object-vars i)))
 
-(defun bound-subject-vars (i)
-  (loop for s in (find-subject-vars i) thereis (value-of s i)))
+(defun bound-subject-var (i)
+  (binds-some-var-p i (find-subject-vars i)))
 
-(defun find-subcat-labels (item var head)
-  "Return the syntactic labels associated with a variable bound to an item."
-  (loop with subcat-patterns = (known-subcategorization? head)
-        for pattern in subcat-patterns
-        when (and (if (disjunctive-lambda-variable-p var)
-                    (memq (subcat-variable pattern) (dvar-variables var))
-                    (eq (subcat-variable pattern) var))
-                  (satisfies-subcat-restriction? item (subcat-restriction pattern)))
-        collect (subcat-label pattern)))
+(defun binds-no-vars-p (i vars)
+  (and vars (not (binds-some-var-p i vars))))
 
+(defun missing-object-vars (i)
+  (and (not (get-tag :optional-object (itype-of i)))
+       (binds-no-vars-p i (find-object-vars i))))
+
+(defun missing-subject-vars (i)
+  (binds-no-vars-p i (find-subject-vars i)))
+
+
+;;;----------------------------------------
+;;; subcategorization checks and reporting
+;;;----------------------------------------
 
 (defparameter *show-over-ridden-ambiguities* nil)
-
-
 (defparameter *trivial-subcat-test* nil)
 (defparameter *tight-subcats* nil)
 (defparameter *dups* nil)
-
 
 (defun show-ambiguities ()
   (setq *ambiguous-variables* (list nil))

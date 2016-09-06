@@ -69,7 +69,7 @@
        
 (defun can-fill-vp-object? (vp subj)
   (and ;; vp has a bound subject -- NP can fill object
-   (bound-subject-vars vp)
+   (bound-subject-var vp)
    (subcategorized-variable vp :object subj)))
 
 
