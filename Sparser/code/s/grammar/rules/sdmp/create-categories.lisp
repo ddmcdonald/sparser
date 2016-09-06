@@ -4,7 +4,7 @@
 ;;;
 ;;;      File: "create-categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: August 2016
+;;;   Version: September 2016
 
 ;; Initiated 2/9/07. Elaborated through 8/6. Refactored the head form
 ;; elevator 2/4/08. Added cases through 4/24, then through 6/16.
@@ -72,6 +72,7 @@
         (category::adjp)
         (category::subordinate-conjunction)
         (category::conjunction)
+        (category::interjection)
 	(category::adjunct)
         (category::comparative)
         (category::possessive)
