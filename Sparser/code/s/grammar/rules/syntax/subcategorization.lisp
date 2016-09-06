@@ -682,6 +682,7 @@
 ;;;-----------------------------------------------------------
 
 (defun assimilate-subcat (head subcat-label item)
+  (declare (special *subcat-test*))
   (let ((variable-to-bind
          ;; test if there is a known interpretation of the combination
          ;; using that label
@@ -699,7 +700,8 @@
       head))))
 
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
-  (declare (special category::pronoun/first/plural category::ordinal
+  (declare (special *trivial-subcat-test*
+                    category::pronoun/first/plural category::ordinal
                     category::this category::that category::these category::those
                     category::pronoun category::number category::ordinal))
   (let ((restriction
@@ -765,7 +767,7 @@
 
 
 (defun find-subcat-var (item label head)
-  (declare (special item label head *subcat-test*))
+  (declare (special item label head *subcat-test* *subcat-use*))
   (let ((category (itype-of head))
         (subcat-patterns (known-subcategorization? head)))
     (declare (special category subcat-patterns))
