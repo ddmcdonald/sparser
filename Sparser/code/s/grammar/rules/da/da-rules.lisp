@@ -1320,18 +1320,25 @@
            (bind-dli-variable 'compared-to (edge-referent np-edge) (edge-referent comp-edge))))
 
 
+(define-debris-analysis-rule interjection-s
+    :pattern (interjection S)
+    :action (:function add-initial-interjection/no-comma first second))
+
 (define-debris-analysis-rule interjection-comma-s
     :pattern (interjection "," S)
     :action (:function add-initial-interjection first second third))
 
-(defun add-initial-interjection (interjection-edge comma s-edge)
-  (declare (ignore comma))
+(defun add-initial-interjection/no-comma (interjection-edge s-edge)
   (let* ((interjection (edge-referent interjection-edge))
          (s (edge-referent s-edge)))
     (make-edge-spec
      :category (edge-category s-edge)
      :form (edge-form s-edge)
      :referent (bind-dli-variable 'modifier interjection s))))
+
+(defun add-initial-interjection (interjection-edge comma s-edge)
+  (declare (ignore comma))
+  (add-initial-interjection/no-comma interjection-edge s-edge))
 
 
 
