@@ -645,7 +645,8 @@ filligre may be used to distinguish them, etc.
 (define-protein "AF-6" ("Afadin")) 
 (define-protein "AFAD_HUMAN" ("MLLT4" "AF6")) 
 (define-protein "AFAP1_HUMAN" ("MCF-10A" "Actin filament-associated protein 1" "110 kDa actin filament-associated protein" "AFAP-110")) 
-(define-protein "AGAP2_HUMAN" ("ye" "Arf-GAP with GTPase, ANK repeat and PH domain-containing protein 2" "AGAP-2" "Centaurin-gamma-1" "Cnt-g1" "GTP-binding and GTPase-activating protein 2" "GGAP2" "Phosphatidylinositol 3-kinase enhancer" "PIKE")) 
+(define-protein "AGAP2_HUMAN" (#|"ye" plural conflicts with the acknowledgement "yes" |#
+                               "Arf-GAP with GTPase, ANK repeat and PH domain-containing protein 2" "AGAP-2" "Centaurin-gamma-1" "Cnt-g1" "GTP-binding and GTPase-activating protein 2" "GGAP2" "Phosphatidylinositol 3-kinase enhancer" "PIKE")) 
 (define-protein "AGK_HUMAN" ("hAGK" "AGK" "HsMuLK" "MuLK" "MULK")) 
 (define-protein "AGO1_HUMAN" ("sirnas" "Protein argonaute-1" "Argonaute1" "hAgo1" "Argonaute RISC catalytic component 1" "Eukaryotic translation initiation factor 2C 1" "eIF-2C 1" "eIF2C 1" "Putative RNA-binding protein Q99")) 
 (define-protein "AGO2_HUMAN" ("sirna" "Protein argonaute-2" "Argonaute2" "hAgo2" "Argonaute RISC catalytic component 2" "Eukaryotic translation initiation factor 2C 2" "eIF-2C 2" "eIF2C 2" "PAZ Piwi domain protein" "PPD" "Protein slicer")) 
