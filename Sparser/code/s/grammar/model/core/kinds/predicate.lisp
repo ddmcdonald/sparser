@@ -36,11 +36,14 @@
 
 (define-category predication
   :specializes state
-  :binds ((predicate predicate)
-          (term))
+  :binds ((predicate predicate))
   :documentation "Represents the application of a predicate
- to one or more terms.
-")
+ to one or more terms, what terms and under what relationships
+ (variable) is determined by the specific predicate. As the
+ basis of an eventuality (clause, sentence) a predication 
+ describes a state of affairs. These are a specialization
+ of the category state, and the documentation on that category
+ applies here as well.")
 
 
 (define-category modifier
