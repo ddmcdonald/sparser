@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  July 2016
+;;;  version:  September 2016
 
 ;; Initiated 12/3/15
 
@@ -13,6 +13,7 @@
 (gload "mid-level;ontology")
 
 #+mumble(gload "mid-level;interlocutor")
+(gload "mid-level;discourse")
 
 (gload "mid-level;relations")
 

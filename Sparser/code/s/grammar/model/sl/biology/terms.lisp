@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2016 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: June 2015
+;;; version: September 2016
 
 ;; Initiated 7/23/14 by lifting proteins from NFkappaB experiment.
 ;; Moved proteins out to their own file 9/8/14
@@ -37,15 +37,6 @@
 
 (in-package :sparser)
 
-;; for dialogs
-(sentential-interjection "done")
-(sentential-interjection "good")
-(sentential-interjection "ok")
-(sentential-interjection "yes")
-;;(sentential-interjection "no")  ;;blocks use of "no" as a quantifier as in "no proteins"
-(sentential-interjection "hello")
-(sentential-interjection "goodbye")
-(sentential-interjection "let's")
 
 (adj "certain" :super bio-rhetorical)
 (adj "sure" :super bio-rhetorical)

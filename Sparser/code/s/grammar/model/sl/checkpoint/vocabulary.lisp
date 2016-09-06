@@ -42,43 +42,9 @@
 (np-head "identification")
 
 
-;;-- Acknowledgements
-(define-category  acknowledgement
-  :instantiates  self
-  :specializes   linguistic
-  :binds ((name :primitive word))
-  :realization (:interjection name))
-
-(define-individual 'acknowledgement :name "yes")
-(define-individual 'acknowledgement :name "no")
-(define-individual 'acknowledgement :name "ok")
-
-;;-- Greetings
-(define-category  greeting
-  :instantiates  self
-  :specializes   linguistic
-  :binds ((name :primitive word))
-  :realization (:interjection name))
-
-(define-individual 'greeting :name "hello")
-(define-individual 'greeting :name "hi")
-(define-individual 'greeting :name "goodbye")
-(define-individual 'greeting :name "bye")
-
-;;-- enables interjections to be slapped on to the beginning of sentences
-(sentential-interjection "yes")
-(sentential-interjection "no")
-(sentential-interjection "ok")
-(sentential-interjection "hello")
-(sentential-interjection "hi")
-(sentential-interjection "goodbye")
-(sentential-interjection "bye")
-
-
 ;; Load-timing problem. This references categories that aren't defined
 ;; when the ETF are loaded. So either they're variablized, which is odd
 ;; at best, or they're loaded late.
-
 
 (sv-location '("come" :past-tense "came"))
 (sv-location '("get" :past-tense "got"))
