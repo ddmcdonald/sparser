@@ -104,73 +104,74 @@
               (sp::object-variable i))
       'verb))
   (:method or (i)
-    (if (current-position-p 'adjective 'complement-of-be 'relative-clause)
+    (if (current-position-p 'adjective 'relative-clause)
       'adjective
       'noun)))
 
-(defun realize-collection (collection)
-  "Realize a collection as a plural or a conjunction of items."
-  (assert (sp::itypep collection 'sp::collection))
-  (let ((items (sp::value-of 'sp::items collection)))
-    (if (null items)
-      (plural (realize-via-bindings collection 'noun))
-      (cl:labels ((conjoin (one &optional two &rest more)
-                    (let ((conjunction
-                           (make-dtn :referent `(and ,one ,two)
-                                     :resource (phrase-named
-                                                'two-item-conjunction))))
-                      (make-complement-node 'one one conjunction)
-                      (make-complement-node 'two two conjunction)
-                      (if more
-                        (apply #'conjoin conjunction more)
-                        conjunction))))
-        (apply #'conjoin items)))))
-
-(defun realize-predication (subject predicate copula)
-  (check-type subject sp::individual)
-  (check-type predicate sp::individual)
-  (assert (sp::itypep copula 'sp::be) (copula) "Invalid copula.")
-  (let ((be (make-dtn :referent copula
-                      :resource (phrase-named 's-be-comp))))
-    (make-complement-node 's subject be)
-    (make-complement-node 'c predicate be)
-    (tense be)))
-
 (defmethod realize ((i sp::individual))
-  "Realize a Sparser individual."
+  "Realize a Sparser individual. Since categories are not (yet) classes,
+   and therefore cannot have specialized methods, special cases go here."
   (let ((primary-category (car (sp::indiv-type i))))
     (cond ;; Check for focus, known object, same type as recent, etc.
       #+(or)
       ((sp::get-tag :mumble primary-category)
        (realize-via-category-linked-phrase primary-category i))
       ((sp::itypep i 'sp::collection)
-       (realize-collection i))
+       (let ((items (sp::value-of 'sp::items i)))
+         (if (null items)
+           (plural (realize-via-bindings i 'noun))
+           (cl:labels ((conjoin (one &optional two &rest more)
+                         (let ((conjunction
+                                (make-dtn :referent `(and ,one ,two)
+                                          :resource (phrase-named
+                                                     'two-item-conjunction))))
+                           (make-complement-node 'one one conjunction)
+                           (make-complement-node 'two two conjunction)
+                           (if more
+                             (apply #'conjoin conjunction more)
+                             conjunction))))
+             (apply #'conjoin items)))))
+      ((sp::itypep i 'sp::number)
+       (format nil "~r" (sp::value-of 'sp::value i)))
       ((sp::itypep i 'sp::polar-question)
        (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
       ((sp::itypep i 'sp::copular-predication)
-       (realize-predication (sp::value-of 'sp::item i)
-                            (sp::value-of 'sp::value i)
-                            (sp::value-of 'sp::predicate i)))
+       (let* ((copula (sp::value-of 'sp::predicate i))
+              (subject (sp::value-of 'sp::item i))
+              (predicate (sp::value-of 'sp::value i))
+              (be (make-dtn :referent copula
+                            :resource (phrase-named 's-be-comp))))
+         (make-complement-node 's subject be)
+         (make-complement-node 'c predicate be)
+         (when (sp::value-of 'sp::negation copula)
+           (negate be))
+         (tense be)))
+      ((sp::itypep i 'sp::there-exists)
+       (let ((be (make-dtn :referent i
+                           :resource (phrase-named 's-be-comp))))
+         (make-complement-node 's (find-word "there" 'pronoun) be)
+         (make-complement-node 'c (sp::value-of 'sp::value i) be)
+         (tense be)))
       (t (realize-via-bindings i)))))
 
-(defun realize-via-bindings (i &optional (pos (guess-pos i)))
-  "Realize a Sparser individual as a DTN with its bindings attached."
-  (declare (optimize debug))
-  (check-type i sp::individual)
-  (loop with dtn = (make-dtn :referent i
-                             :resource (ecase pos
-                                         (adjective (word-for i pos))
-                                         (verb (verb (word-for i pos) 'svo))
-                                         (noun (noun (word-for i pos)))))
-        initially (tense dtn)
-        for binding in (reverse (sp::indiv-binds i))
-        as variable = (sp::binding-variable binding)
-        as var-name = (sp::var-name variable)
-        do (attach-via-binding binding var-name dtn pos)
-        finally (return dtn)))
+(defgeneric realize-via-bindings (i &optional pos)
+  (:method ((i sp::individual) &optional (pos (guess-pos i)))
+    "Realize a Sparser individual as a DTN with its bindings attached."
+    (loop with dtn = (make-dtn :referent i
+                               :resource (ecase pos
+                                           (adjective (word-for i pos))
+                                           (noun (noun (word-for i pos)))
+                                           (verb (verb (word-for i pos) 'svo))))
+          initially (case pos (verb (tense dtn)))
+          for binding in (reverse (sp::indiv-binds i))
+          as variable = (sp::binding-variable binding)
+          as var-name = (sp::var-name variable)
+          do (attach-via-binding binding var-name dtn pos)
+          finally (return dtn))))
 
 (defun attach-adjective (adjective dtn pos)
-  (let ((adjp (make-dtn :resource adjective))
+  (let ((adjp (make-dtn :referent adjective
+                        :resource (phrase-named 'adjective-phrase)))
         (ap (ecase pos
               ((adjective noun) 'adjective)
               (verb (multiple-value-bind (head rpos)
@@ -179,6 +180,7 @@
                       (case rpos
                         (:interjection 'adverbial-preceding)
                         (otherwise 'vp-final-adjunct)))))))
+    (make-complement-node 'a adjective adjp)
     (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
 
 (defun attach-pp (prep object dtn pos)
@@ -197,10 +199,16 @@
     (let* ((individual (sp::binding-body binding))
            (variable (sp::binding-variable binding))
            (value (sp::binding-value binding))
-           (subcats (typecase value
-                      ((or sp::referential-category sp::individual)
-                       (sp::find-subcat-labels value variable individual))))
-           (prep (or (find-if #'sp::word-p subcats) ; prefer single word
+           (subcats (sort (typecase value
+                            ((or sp::referential-category sp::individual)
+                             (sp::find-subcat-labels value variable individual)))
+                          #'< :key (lambda (label) ; prefer shorter words
+                                     (etypecase label
+                                       ((or string symbol)
+                                        (length (string label)))
+                                       ((or sp::word sp::polyword)
+                                        (length (sp::pname label)))))))
+           (prep (or (find-if #'sp::word-p subcats) ; prefer single words
                      (find-if #'sp::polyword-p subcats))))
       (cond ((eql value sp::**lambda-var**))
             ((or (eql variable (sp::subject-variable individual))
@@ -282,10 +290,7 @@
             (make-complement-node 'c predicate be)
             (present-tense be)))
          dtn)
-        (let ((adjp (make-dtn :referent predicate
-                              :resource (phrase-named 'adjective-phrase))))
-          (make-complement-node 'a predicate adjp)
-          (attach-adjective adjp dtn pos)))))
+        (attach-adjective predicate dtn pos))))
   (:method (binding (var-name (eql 'sp::quantifier)) dtn pos)
     "Attach a quantifier as a premodifier."
     (attach-adjective (sp::binding-value binding) dtn pos))
