@@ -2,7 +2,7 @@
 ;;;
 ;;;    File: "talking-about-a-model"
 ;;;  Module: "grammar/model/sl/biology/
-;;;  version:  May 2016
+;;;  version: September 2016
 
 ;; Broken out from patterns 7/20/15. 11/2/15 fanout from converting
 ;; edge patterns early. 
@@ -13,7 +13,7 @@
 (defparameter *blocksworld-sents*
   '((p "Let’s build a 3 step staircase.")
     (p "Let’s make the steps green.")
-    ;;(p "We don’t have enough green blocks.")
+    (p "We don’t have enough green blocks.")
     (p "We do not have enough green blocks.")
     (p "Make the tops of the steps red.")
     (p "Let’s make the bottom row.")
@@ -34,7 +34,7 @@
     (p "Put a red block at the end.")
     (p "Put another green block on the green block at the end of the row.")
     (p "Put another green block on the green block at the end of the row on the left.")
-    ;;(p "Now put a one on top of it.") ;; ?? "a one"?
+    ;;(p "Now put another one on top of it.") ;; "a one" => "another one"
     (p "Now put a block on top of it.")
     (p "The top block should be red.")
     (p "Put a red block on it.")
