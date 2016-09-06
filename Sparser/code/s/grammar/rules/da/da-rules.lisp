@@ -661,12 +661,12 @@
                 :direction :right)))))))
 
 ;;--------------- NP
-(define-debris-analysis-rule np-commma-subj-relative
+(define-debris-analysis-rule np-comma-subj-relative
     :pattern (np "," subject-relative-clause)
-    :action (:function np-commma-subj-relative first second third))
+    :action (:function np-comma-subj-relative first second third))
 
-(defun np-commma-subj-relative (np-edge comma-edge srel-edge)
-  (declare (comma-edge))
+(defun np-comma-subj-relative (np-edge comma-edge srel-edge)
+  (declare (ignore comma-edge))
   (let* ((np (edge-referent np-edge))
 	 (s-var (subcategorized-variable (edge-referent srel-edge) :subject np)))
       (when s-var
