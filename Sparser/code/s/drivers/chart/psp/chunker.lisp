@@ -279,7 +279,7 @@
                   ;; complete this chunk -- signaling end of until loop
                   (setf (chunk-end-pos *chunk*) (second head))
                   (setf (chunk-forms *chunk*) (list (first head)))
-                  ;; (gross-infinitive-chunker-test *chunk*)
+                  (gross-infinitive-chunker-test *chunk*)
                   ;; as much fall-back as improvement see note w/ fn.
                   (tr :delimited-chunk *chunk*))
                  (t
@@ -519,6 +519,7 @@
                  thereis (eq (cat-name (edge-category ee)) 'to))
           (let* ((current-start (chunk-start-pos chunk))
                  (new-start (chart-position-before current-start)))
+            #+ignore
             (format t "~&Resetting start of ~a to ~a~%"
                     chunk new-start)
             (setf (chunk-start-pos chunk) new-start)))))))
@@ -548,6 +549,8 @@ than a bare "to".  |#
       (let ((*ng-start-tests-in-progress* (cons e *ng-start-tests-in-progress*)))
         (declare (special *ng-start-tests-in-progress*))
         (cond
+          ((eq (cat-name (edge-category e)) 'not)
+           nil)
           ((plural-noun-and-present-verb? e)
            (plural-noun-not-present-verb e))
           ((singular-noun-and-present-verb? e)
@@ -709,12 +712,18 @@ than a bare "to".  |#
        (return e)))
 
 (defun best-head (forms possible-heads)
-  ;; eventually might want to find rightmost head, or use some other measure
-  ;;  including semantic interpretability
-  (let (phead) 
-    (loop for form in forms 
-      when (setq phead (assoc form possible-heads)) 
-      return phead)))
+	;; now find rightmost head, (don't use some other measure
+	;;  including semantic interpretability)
+  (let (furthest)
+    (loop for p in possible-heads
+       when (and
+             (member (car p) forms)
+             (or (null furthest)
+                 (>= (pos-token-index (second p))
+                     (pos-token-index (second furthest)))))
+       do (setq furthest p))
+    furthest)
+  )
 
 (defun compatible-heads (forms ev next-pos)
   (loop for form in forms
