@@ -487,6 +487,11 @@
                (pos-token-index start-pos)
                (pos-token-index end-pos))))
 
+(deftrace :not-reifying-because-there-was-a-reason ()
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] No pattern matched, but the edges in this span ~
+                are never part of a ns sequence.")))
+
 (deftrace :ns-made-approximation (number)
   ;; called from package-approximation-number 
   (when *trace-ns-sequences* 

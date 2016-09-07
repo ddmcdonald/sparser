@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "driver"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  August 2016
+;;;  version:  September 2016
 
 ;; Broken out from driver 2/5/13. This code was developed with some
 ;; difficulty and confusion for the JTC/TRS project. Throwing out most
@@ -131,7 +131,7 @@
         ;;   [1–5] —an observation that has been validated by the success of 
         ;;   RAF and MEK inhibitors in clinical trials 6–8.")
         ;; and perhaps others, the sweep to the end routine returns a string
-        ;; as the value of end-pos, e.g. "6 - 8. "
+        ;; as the value of end-pos, e.g. "6-8. "
         ;; Rather than figure it out just now (12/18/14) I'm just dropping it
         ;; on the floor.
         (when (stringp end-pos) ;; may be bad display in backtrace
@@ -162,9 +162,12 @@
             ;; but it may also be more informative
             (setq edges (treetops-between start-pos end-pos))
             ;;(break "input edges = ~a" edges)
-            ;; TO-DO -- review this code -- issues occurred when there are multiple edges at the end of 
-            ;;  the pattern (ambiguity) and only one of the edges satisfies a pattern
-            ;; this is not done cleanly, and needs some pair-programming
+
+            ;; TO-DO -- review this code -- issues occurred when there
+            ;; are multiple edges at the end of the pattern
+            ;; (ambiguity) and only one of the edges satisfies a
+            ;; pattern this is not done cleanly, and needs some
+            ;; pair-programming
             (catch :punt-on-nospace-without-resolution
               (let* ((end-edge (car (last edges)))
                      (end-cat (when (and
@@ -310,6 +313,17 @@
   (when (eq pos-before next-position)
     (error "Upstream mistake in no-space routine. ~
             the position before is EQ to the position after"))
+
+  (let ((reason (reason-to-not-span-ns pos-before next-position)))
+    (tr :not-reifying-because-there-was-a-reason)
+    (when reason
+      (throw :punt-on-nospace-without-resolution reason)))
+
+  (unless *big-mechanism*
+    (unless (fboundp 'reify-spelled-name)
+      ;; It's in the grammar module for names
+      (throw :punt-on-nospace-without-resolution :no-reify-method)))
+
   (multiple-value-bind (category rule referent)
                        (if *big-mechanism*
                          (reify-ns-name-as-bio-entity 
@@ -396,6 +410,20 @@
 	 (values category::bio-entity
 		 'reify-ns-name-as-bio-entity
 		 i))))))
+
+
+(defun reason-to-not-span-ns (start-pos end-pos)
+  (let* ((edges (treetops-between start-pos end-pos))
+         (form-labels (loop for e in edges
+                         when (edge-p e) collect (edge-form e)))
+         (form-symbols (loop for l in form-labels
+                          when l collect (cat-symbol l))))
+    (loop for symbol in form-symbols
+       thereis (memq symbol '(category::pronoun
+                              category::modal)))))
+         
+   
+    
 
 
 ;;;------------------------------------
