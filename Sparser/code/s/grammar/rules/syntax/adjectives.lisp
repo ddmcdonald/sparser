@@ -108,7 +108,7 @@
   :form n-bar
   :referent (:method modifier+noun left-edge right-edge))
 
-                 
+#+ignore ;; the NOT goes with the copular verb above "is not transient"                 
 (def-form-rule (not adjective) 
   :head :right-edge 
   :form adjective
