@@ -364,7 +364,12 @@
 	 (eq category::syntactic-there l-triple-left) ;; competing against a "there BE"
 	 (and
 	  (member l-triple-rhs `((,category::vg  ,category::np)
-                                 (,category::vg  ,category::n-bar))
+                                 (,category::vg  ,category::n-bar)
+                                 ;; with the new "infinitive" edge for verbs
+                                 ;; of form "to stimulate", we need to allow
+                                 ;; them to compete for objects
+                                 (,category::infinitive  ,category::np)
+                                 (,category::infinitive  ,category::n-bar))
                   :test #'equal)
 	  ;; likely competition against a relative clause or a main clause
 	  ;;  accept r-triple as a winner if if is a rightward extension of and NP
