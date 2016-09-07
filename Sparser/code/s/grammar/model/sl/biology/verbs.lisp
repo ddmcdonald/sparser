@@ -1836,8 +1836,7 @@
 (define-category prove :specializes bio-rhetorical
     :realization
     (:verb "prove" :noun "proof"
-           :etf (svo-passive)
-           :of object))
+           :etf (svo-passive)))
 
 (define-category propagate :specializes bio-transport
 		 ;; propagating the pro-apoptotic signal from RAS to p53

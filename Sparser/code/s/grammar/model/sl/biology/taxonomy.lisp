@@ -367,7 +367,7 @@
 	 molecular-location));; membrane targeting domains that facilitate interaction with the plasma membrane
    (object (:or bio-entity cell-entity molecular-location measurement bio-scalar))
    (affected-process (:or bio-process bio-mechanism bio-method bio-quality
-                          bio-predication bio-relation))
+                          bio-predication bio-relation medical-treatment))
    ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
    (at (:or bio-concentration measurement))
    (extent (:or amount measurement bio-scalar)))
@@ -441,17 +441,15 @@
 		      bio-predication ;; the success of raf and mek inhibitors
 		      measurement     ;; these data
 		      visual-representation))
-	  (object (:or biological pronoun/inanimate there-exists
-                       predication))
 	  (ratio-condition ratio)
 	  (fig article-figure)
 	  (method bio-method)
 	  (by-means-of (:or bio-process mechanism bio-method)))
   :realization
   (:s agent
-      :o object
+      :o statement
       :by agent
-      :of object
+      :of statement
       :in fig
       :by method
       :through method
