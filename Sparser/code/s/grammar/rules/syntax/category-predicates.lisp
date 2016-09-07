@@ -289,9 +289,10 @@
   t)
 
 (defmethod adjg-compatible? ((e edge))
-  (declare (special category::have))
+  (declare (special category::have category::percent))
   (or
    (adjg-compatible? (edge-form e))
+   (eq (edge-category e) category::percent)
    ;;(eq category::not (edge-category e))
    ;;(copula-verb? (edge-category e))
    (and nil ;; block copular verbs
