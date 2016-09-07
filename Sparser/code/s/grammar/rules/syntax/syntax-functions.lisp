@@ -160,6 +160,9 @@
     nil category::top)
 
 
+(define-lambda-variable 'intensity
+    nil category::top) ;; for percentage in "95% sure"
+
 
 ;;;----------------------------
 ;;; place to stash determiners
@@ -1140,7 +1143,8 @@
 			       :form (ecase (cat-name (edge-form (parent-edge-for-referent)))
 				       ((vg vp) category::vp)
 				       ((vp+ing vg+ing) category::vp+ing)
-				       ((vp+ed vg+ed) category::vp+ed))				   
+				       ((vp+ed vg+ed) category::vp+ed)
+                                       ((to-comp) category::to-comp))				   
 			       :referent result))
        result))))
     
@@ -1455,3 +1459,11 @@
                       (adj-noun-compound adjp obj (right-edge-for-referent)))))
       (when mod-obj
         (bind-dli-variable 'predicate mod-obj vp)))))
+
+
+;;; intensifier for an ADJECTIVE -- 95% sure
+
+(defun interpret-intensifier+adjective (intensifier adjective)
+  (if *subcat-test*
+      t
+      (bind-dli-variable :intensity intensifier adjective)))
