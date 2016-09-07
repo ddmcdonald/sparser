@@ -1,7 +1,7 @@
-;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2016 SIFT LLC. All Rights Reserved
 ;;;
-;;;    File: "talking-about-a-model"
-;;;  Module: "grammar/model/sl/biology/
+;;;    File: "blocksworld-sents"
+;;;  Module: "grammar/model/sl/blocks-world/
 ;;;  version: September 2016
 
 ;; Broken out from patterns 7/20/15. 11/2/15 fanout from converting
