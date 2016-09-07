@@ -132,24 +132,17 @@
   "Given a word-level verb edge, what tense/aspect is implied
    by its form label?"
   (let ((form (edge-form edge)))
-    (ecase (cat-symbol form)
-      (category::verb :present) ;; can we rely on this?
-      (category::verb+s :present)
-      (category::verb+ed :perfect)
-      (category::verb+ing :progressive)
-      (category::verb+present :present)
-      (category::verb+past :past)
-      (category::verb+passive
-       ;; doesn't make sense really, but giving it a value anyway
+    (case (and form (cat-symbol form))
+      ((category::verb+ed)
+       :perfect)
+      ((category::verb+ing
+        category::vg+ing)
+       :progressive)
+      ((category::verb+past
+        category::verb+passive
+        category::vg+ed)
        :past)
-      (category::vg+ed :past)
-      (category::vg+ing :progressive)
-
-      ;; dec #42 "alone was" is a sdm-span-segment so it
-      ;; doesn't go through the usual places and the
-      ;; relevant information is hiddedn.
-      ;; Past is a reasonable default in biology
-      (category::vg :past))))
+      (otherwise :present))))
 
 
 ;;;-----------------------

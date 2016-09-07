@@ -543,34 +543,22 @@
 
 (defun add-tense/aspect-info-to-head (aux vg)
   (declare (special category::verb+ing))
-  (let ((aux-form (edge-form (left-edge-for-referent)))
-        (aux-category (if (individual-p aux)
-                        (car (indiv-type aux))
-                        aux)))
+  (let ((aux-form (edge-form (left-edge-for-referent))))
     ;; Check for negation
     (when (value-of 'negation aux)
       (setq vg (bind-dli-variable 'negation (value-of 'negation aux) vg)))
 
     ;; Propagate the auxiliary
-    (bind-dli-variable 
-     (case (cat-symbol aux-category)
-       ((category::be-able-to	;; see modals.lisp
-         category::future
-         category::conditional)
-        'modal)
-      (category::future
-       'occurs-at-moment)
-      (category::have
-       'perfect)
-      (category::be  ;; be + ing
-       (if (eq aux-form category::verb+ing)
-           'progressive
-           (return-from add-tense/aspect-info-to-head vg))) 
-      (t (return-from add-tense/aspect-info-to-head vg)))
-     aux
-     vg)))
-
-
+    (bind-dli-variable (cond ((itypep aux '(:or modality conditional)) 'modal)
+                             ((itypep aux 'future) 'occurs-at-moment)
+                             ((itypep aux 'have) 'perfect)
+                             ((itypep aux 'be)
+                              (if (eq aux-form category::verb+ing)
+                                'progressive
+                                (return-from add-tense/aspect-info-to-head vg)))
+                             (t (return-from add-tense/aspect-info-to-head vg)))
+                       aux
+                       vg)))
 
 
 ;;;-----------------

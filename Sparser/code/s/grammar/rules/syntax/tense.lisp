@@ -87,7 +87,7 @@
 (def-cfr do ("doesn" apostrophe-t)
   :form verb+present
   :referent (:head anonymous-agentive-action
-              :bind (negation right-edge)))
+             :bind (negation right-edge)))
 
 (def-cfr do ("don" apostrophe-t)
   :form verb+present

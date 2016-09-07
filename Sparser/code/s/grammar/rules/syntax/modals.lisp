@@ -31,9 +31,10 @@
 ;;; top modal category
 ;;;--------------------
 
-(define-category modal-state-of-affairs ;;/// need better name
+(define-category modality
   :instantiates nil
   :specializes state
+  :binds ((name :primitive word))
   :documentation "We need this category to solve a set
  of technical issues. The category 'modal' is a grammatical
  description, and it seems like too much of a stretch to
@@ -46,33 +47,6 @@
  we need to handle at least negation.")
 
 
-;;;---------------------------------------------------------
-;;; categories to summarize the meaning of groups of modals
-;;;---------------------------------------------------------
-
-#| N.b. these are artibrary choices of names that have not
-been attested to be useful in any particular applicatons.
-If a different set of terms would be more intuitive or
-even not having any summarization above the modals themselves,
-the these should change.  |#
-
-(define-category  be-able-to
-  :instantiates nil
-  :specializes modal-state-of-affairs )
-  
-(define-category  conditional
-  :instantiates nil
-  :specializes modal-state-of-affairs
-  :binds ((condition))) 
-
-
-;;-- category to hold the word
-(define-category modal-operator
-  :instantiates nil
-  :specializes predicate
-  :binds ((name :primitive word)))
-
-
 ;;;-------------
 ;;; constructor
 ;;;-------------
@@ -80,61 +54,36 @@ the these should change.  |#
 ;; Modals get their bracket assignments through a set of calls
 ;; to define-function-word in words/aux-verbs
 
-(defmacro define-modal (words &key negatives referent)
-  `(define-modal/expr ',words
-     :negatives ',negatives
-     :referent ',(and referent (category-named referent t))))
+(defmacro define-modal (words &key negatives)
+  `(define-modal/expr ',words :negatives ',negatives))
 
-(defun define-modal/expr (words &key negatives ((:referent referent-to-use)))
-  (unless (consp words) (setq words (list words)))
-  (when negatives
-    ;;//// have to hack the multiple terms in the rhs
-    (setq negatives nil))
-  ;; define the category based on the first of the words
-  (let* ((string (car words))
-         (word (resolve-string-to-word/make string))
-         (category-name (name-to-use-for-category string))
-         (modal (category-named 'modal-operator))
-         (category
-          (define-category/expr category-name
-            `(:specializes  ,modal
-              :instantiates :self
-              :rule-label ,modal
-              :bindings (name ,word))))
+(defun define-modal/expr (words &key negatives &aux (words (ensure-list words)))
+  (let* ((word (resolve-string-to-word/make (first words)))
+         (category-name (name-to-use-for-category word))
+         (category (define-category/expr category-name
+                     `(:specializes category::modality
+                       :rule-label category::modal
+                       :instantiates :self
+                       :bindings (name ,word))))
          (individual (make-category-indexed-individual category)))
     (create-shadow individual)
-
-    ;; for each word, create the corresponding rule
-    (let ((form category::modal)
-          (schema (get-schematic-word-rule :modal)))
-
-      (flet ((positive-rule (w)
-               (let ((word (etypecase w
-                             (string (resolve-string-to-word/make w))
-                             (word w)
-                             (polyword w)
-                             (category w)
-                             (symbol (category-named w t)))))
-                 (define-cfr category::modal `(,word)
-                   :form form
-                   :referent (or referent-to-use
-                                 category) ;; or individual ??
-                   :schema schema
-                   :source :def-cfr))))
-
-        (let* ((pos-rules
-                (loop for word in words
-                  collect (positive-rule word)))
-               (neg-rules
-                (when negatives ;; see below
-                  (loop for word in negatives
-                    collect (positive-rule word))))
-               (rules (if neg-rules
-                        (nconc pos-rules neg-rules)
-                        pos-rules)))
-          (add-rules rules category)
-          category)))))
-
+    (flet ((positive-rule (w)
+             (let ((word (etypecase w
+                           ((or word polyword category) w)
+                           (string (resolve-string-to-word/make w))
+                           (symbol (category-named w t)))))
+               (define-cfr category::modal `(,word)
+                 :form category::modal
+                 :referent category
+                 :schema (get-schematic-word-rule :modal))))
+           (negative-rule (w)
+             (def-cfr/expr category (ensure-list w)
+               :form category::modal
+               :referent `(:head ,category
+                           :bind (negation right-edge)))))
+      (add-rules (mapcar #'positive-rule words) category)
+      (add-rules (mapcar #'negative-rule negatives) category)
+      category)))
 
 
 ;;;-------
@@ -142,33 +91,29 @@ the these should change.  |#
 ;;;-------
 
 (define-modal "can"
-              :negatives (("cann" apostrophe-t)
-                          ("can" apostrophe-t)
-                          "cannot")
-              :referent be-able-to)
+  :negatives (("cann" apostrophe-t)
+              ("can" apostrophe-t)
+              "cannot"))
 
-(define-modal "could" 
-              :negatives (("couldn" apostrophe-t))
-              :referent be-able-to)
+(define-modal "could"
+  :negatives (("couldn" apostrophe-t)))
 
-(define-modal "may" :referent be-able-to)
+(define-modal "may")
 
-(define-modal "might" :referent be-able-to)
+(define-modal "might")
 
-(define-modal "must" :referent be-able-to)
+(define-modal "must")
+
+(define-modal "shall")
 
 (define-modal "should"
-              :negatives (("shouldn" apostrophe-t))
-              :referent be-able-to)
+  :negatives (("shouldn" apostrophe-t)))
 
-(define-modal ("will" apostrophe-ll) 
-              :negatives (("won" apostrophe-t))
-              :referent future)
+(define-modal ("will" apostrophe-ll)
+  :negatives (("won" apostrophe-t)))
 
-(define-modal "would" 
-              :negatives (("wouldn" apostrophe-t))
-              :referent conditional)
-
+(define-modal "would"
+  :negatives (("wouldn" apostrophe-t)))
 
 
 ;;;-------------------
