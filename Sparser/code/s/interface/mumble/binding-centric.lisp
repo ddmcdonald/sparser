@@ -227,15 +227,6 @@
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach a final adverb."
     (attach-adjective (sp::binding-value binding) dtn pos))
-  (:method (binding (var-name (eql 'sp::aspect)) dtn pos)
-    "Attach tense/aspect/modality/etc."
-    (loop with t/a = (sp::binding-value binding)
-          initially (assert (sp::itypep t/a 'sp::tense/aspect-vector) (t/a))
-          for binding in (sp::indiv-binds t/a)
-          as variable = (sp::binding-variable binding)
-          as var-name = (sp::var-name variable)
-          do (attach-via-binding binding var-name dtn pos)
-          finally (return dtn)))
   (:method (binding (var-name (eql 'sp::has-determiner)) dtn pos)
     "Attach a determiner."
     (declare (ignore pos))
