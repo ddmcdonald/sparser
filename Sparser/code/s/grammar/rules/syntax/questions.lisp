@@ -116,18 +116,100 @@
 ;;; WH questions
 ;;;--------------
 
-(defun delimit-and-label-initial-wh-term (pos-before)
-  "WH questions virtually always also include inverting subject
-   and object, and the auxiliary will occur right after the
+(define-category wh-question
+  :specializes question-core
+  :instantiates :self
+  :binds ((wh :primitive word) ;; "how"
+          (attribute attribute-value) ;; #<tall>
+          (var :primitive lambda-variable) ;; height, color
+          #| the rest is a statement |# )
+  ;;  :index (:temporary :sequential-keys wh attribute statement)
+  :documentation "Draft that should be able to make enough of
+ the content of the WH question explicit that we have the basis
+ for computing an answer to it.")
+
+#| (p "What color is the block?")
+   (p "Is the block on the table?")
+   (p "Could we put on one more?")
+   (p "did we make a three block stack?")
+   (p "How big is the stack?")
+   (p "How many blocks did you add to the row?")
+   (p "How many blocks are you adding to the row?") ;; "going to add"
+   (p "How many blocks will you add to the row?")
+|#
+
+(defun delimit-and-label-initial-wh-term (pos-before wh-edge)
+  "WH questions always also include inverting subject
+   and auxiliary, and the auxiliary will occur right after the
    possibly lengthy WH phrase has finished. E.g. 'How many
-   people will be going to the party?'. So starting with the WH
-   word, scan forward until you reach an aux. How to best
+   people will be going to the party?'. So starting with the 
+   WH word, scan forward until you reach an aux. How to best
    divide up the region between the two largly depends on the
-   identify of the WH and what its asking for."
-  pos-before)
+   identity of the WH and what its asking for.
+      When detect-early-information calls this we collect
+   the WH information and populate the object while we're
+   walking along the sentence prefix."
+  ;; The trigger is that form of edge over the word at
+  ;; this position is wh-pronoun.
+  (declare (optimize debug))
+  (let* ((wh-word (pos-terminal pos-before)) ;; or the category?
+         ;;(q (find-or-make-individual :wh wh-word))
+         ;;  delay if how questions are different
+         (next-pos (chart-position-after pos-before))
+         (next-word (pos-terminal next-pos))
+         (next-edge (highest-edge (pos-starts-here next-pos)))
+         aux-edge  attr-edge  value-edge  other-edges)
+    (loop
+       (cond
+         ((auxiliary-word? next-word)  ;; we've gone as far as we should
+          (setq aux-edge next-edge)
+          ;;/// if for some reason we get a WH without an aux
+          ;; we'll never get out of this loop. What can we use
+          ;; as a backstop?
+          (return))
+         ((itypep (edge-referent next-edge) 'attribute) ;; e.g. color
+          (setq attr-edge next-edge))
+         ((itypep (edge-referent next-edge) 'attribute-value)
+          (setq value-edge next-edge))
+         (t (push next-edge other-edges)))
+       (setq next-pos (chart-position-after  next-pos)
+             next-word (pos-terminal next-pos)
+             next-edge (highest-edge (pos-starts-here next-pos))))
+    (push-debug `(,aux-edge ,attr-edge ,other-edges))
+    (store-preposed-aux aux-edge)
+    ;;/// not ready for "how" yet
+    (let ((q (make-simple-individual
+              category::wh-question `((wh ,wh-word)))))
+      (flet ((stash-attribute (attr)
+               (setq q (bind-variable 'attribute attr q))
+               (let ((var (value-of 'var attr)))
+                 (setq q (bind-variable 'var var q)))))
+
+        (when attr-edge ;; "what color is ..."
+          (stash-attribute (edge-referent attr-edge)))
+        
+        (when value-edge ;; "how big is the block?"
+          (let* ((value-class (itype-of (edge-referent value-edge))) ;; size-value
+                 (attr (when value-class (value-of 'attribute value-class))))
+            (when attr (stash-attribute attr))))
+               
+
+        ;; now make a phrase over the whole span of WH edges
+        ;; up to but not including the aux
+        (let ((edge (make-edge-over-long-span
+                     pos-before next-pos
+                     (edge-category wh-edge)
+                     :form category::question-marker ;;/// needs more meliflous term
+                     :referent q
+                     :constituents (edges-between pos-before next-pos))))
+               edge)))))
   
 
 
+
+
+
+#|
 ;;--- swallowing the inverted auxiliary into WH/be
 
 (def-cfr WH/be (wh-pronoun be) ;; gets all the WH pronouns
@@ -140,7 +222,7 @@
 
 (def-cfr WH/be (wh-pronoun do) ;; "where did you come from"
   :form question-marker
-  :referent (:daughter left-edge))
+  :referent (:daughter left-edge))  |#
 
 ;(def-cfr WH/be (WH/be pronoun/second)
 ;  :form question-marker ;; unless we want to strand the "you" ??

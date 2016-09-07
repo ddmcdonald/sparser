@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2016
+;;;  version:  September 2016
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -355,25 +355,19 @@
   (setq *positions-with-unhandled-unknown-words* nil))
 
 
+;;;----------------------------------
+;;; detecting polar and WH questions
+;;;----------------------------------
 
-;;;
-#| (p "What color is the block?")
-   (p "Is the block on the table?")
-   (p "Could we put on one more?")
-   (p "did we make a three block stack?")
-   (p "How big is the stack?")
-   (p "How many blocks did you add to the row?")
-   (p "How many blocks are you adding to the row?") ;; "going to add"
-   (p "How many blocks will you add to the row?")
-|#
 (defun detect-early-information (sentence)
   "Look at the first few edges in the chart. If they indicate
    that this sentence will be a question, revise their form labels
-   to keep them from being absorbed into a chank accidentally
-   and represent what we aan observe locally here for use
+   to keep them from being absorbed into a chunk accidentally
+   and represent what we can observe locally here for use
    in a later stage of processing."
-  (declare (special category::preposed-auxiliary))
-  (push-debug `(,sentence))
+  ;; Called by sentence-processing-core with a flag guarding it.
+  ;; The pattern-sweep has finished, so every terminal edge has
+  ;; be entered into the chart.
   (let* ((position-before (starts-at-pos sentence))
          (first-item (next-treetop/rightward position-before)))
     ;; We get an edge-vector is there are multiple edges
@@ -383,26 +377,28 @@
                    (polyword)
                    (edge first-item)
                    (edge-vector (highest-edge first-item))))
+           ;; /// The highest-edge trick is enough to prefer
+           ;; a wh-pronoun over a wh-determiner, but that's
+           ;; only because of the luck of what's loaded later.
            (form-label (when edge (edge-form edge)))
            (word (when edge (find-head-word edge))))
 
-      (flet ((store-preposed ()
-               (setf (edge-form first-item) category::preposed-auxiliary)
-               (record-preposed-aux edge form-label)))
-    
-        (when form-label
-          (case (cat-symbol form-label)
-            ((category::verb category::verb+s category::verb+ed
-              category::verb+ing category::verb+present category::verb+past)
-             (when (auxiliary-word? word)
-               (store-preposed)))
-            (category::modal
-             (store-preposed))
-            (category::wh-pronoun
-             (delimit-and-label-initial-wh-term position-before))))))))
+      (when form-label
+        (case (cat-symbol form-label)
+          ((category::verb category::verb+s category::verb+ed
+            category::verb+ing category::verb+present category::verb+past)
+           (when (auxiliary-word? word)
+             (store-preposed-aux edge)))
+          (category::modal
+           (store-preposed-aux edge))
+          (category::wh-pronoun
+           (delimit-and-label-initial-wh-term position-before edge)))))))
 
-
-
+(defun store-preposed-aux (aux-edge)
+  (declare (special category::preposed-auxiliary))
+  (let ((actual-form (edge-form aux-edge)))
+    (setf (edge-form aux-edge) category::preposed-auxiliary)
+    (record-preposed-aux aux-edge actual-form)))
 
 
 
