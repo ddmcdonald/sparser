@@ -213,8 +213,11 @@
     :form np
     :referent (:function adj-postmodifies-noun left-edge right-edge ))
 
-
-
+(def-form-rule (percent adjective)
+    :head :right-edge
+    :form adjective
+    :referent (:function interpret-intensifier+adjective left-edge right-edge))
+  
 ;;;------------------
 ;;; NP postmodifiers
 ;;;------------------
@@ -283,7 +286,9 @@
                   (vp+ed vp+ed)
                   (vg+passive vg+passive)
                   (vp+passive vp+passive)
-                  (s s))
+                  (s s)
+                  (infinitive infinitive)
+                  (to-comp to-comp))
   ;; "here" is used adverbially
   do
   (eval 
@@ -408,7 +413,7 @@
 (loop for nb in `(vp+ing vg+ing ;; allow present-participles (gerunds) as objects
                          np pronoun reflexive/pronoun ,@*n-bar-categories*)
   do
-  (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed))
+  (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed)(infinitive to-comp) (to-comp to-comp))
     do
     (eval 
      `(def-syntax-rule (,(car vv) ,nb)
@@ -429,7 +434,9 @@
                   (vg+ed vp+ed)
                   (vp+ed vp+ed)
                   (vg+passive vp+passive)
-                  (vp+passive vp+passive))
+                  (vp+passive vp+passive)
+                  (infinitive to-comp)
+                  (to-comp to-comp))
   do
   (eval
    `(def-syntax-rule (,(car vv) pp)
@@ -480,7 +487,8 @@
 ;; the verb element gets promoted to an S
 ;; e.g. "interestingly , we observed that in contrast to wild type aspp 2 , aspp 2 ( s 827 a ) remains at the plasma membrane"
 (loop for vv in '((s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
-                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive))
+                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
+                  (infinitive to-comp))
   ;; verb complements 
   do
   (eval
@@ -684,6 +692,7 @@
              :referent (:function make-prep-comp left-referent right-referent))))
 
 ;; dynamics change with "to be" taken as a polyword with 'infinitive' as the form
+#+ignore
 (def-syntax-rule (infinitive np) ;; overnight #3
   :head :right-edge
   :form to-comp
