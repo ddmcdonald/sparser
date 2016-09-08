@@ -80,13 +80,16 @@
     (let ((start (chunk-start-pos chunk))
           (end (chunk-end-pos chunk)))
       (if (null end)
-       "chunk with null end"
-       (format stream "~a p~a ~s p~a"
-               (chunk-forms chunk)
-               (pos-token-index start)
-               (if (eq start end)
-                   "" (string-of-words-between start end)) ;; has happened
-               (pos-token-index end))))))
+          (format stream "~s ~s"
+                  (chunk-forms chunk)
+                  (loop for e in (chunk-edge-list chunk)
+                     collect (retrieve-surface-string e))) 
+          (format stream "~a p~a ~s p~a"
+                  (chunk-forms chunk)
+                  (pos-token-index start)
+                  (if (eq start end)
+                      "" (string-of-words-between start end)) ;; has happened
+                  (pos-token-index end))))))
 
 
 ;;;--------
@@ -546,7 +549,8 @@ than a bare "to".  |#
 		    category::to))
   (if (member e *ng-start-tests-in-progress*)
       nil
-      (let ((*ng-start-tests-in-progress* (cons e *ng-start-tests-in-progress*)))
+      (let ((*ng-start-tests-in-progress* (cons e *ng-start-tests-in-progress*))
+            (ecn (cat-name (edge-category e))))
         (declare (special *ng-start-tests-in-progress*))
         (cond
           ((eq (cat-name (edge-category e)) 'not)
@@ -559,10 +563,7 @@ than a bare "to".  |#
              (sentence-initial? e) ;; case of imperative verb like "DECREASE"
              (and (edge-just-to-left-of e)
                   (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
-          ((or
-            (eq (edge-category e) category::modal)
-            (eq (cat-name (edge-category e)) 'following-adj)
-            (eq (cat-name (edge-category e)) 'syntactic-there))
+          ((member ecn '(modal following-adj syntactic-there))
            nil)
           ((member (cat-name (edge-form e)) '(vp+ed))
            ;; this should only happen for NS words like GAP–mediate
@@ -585,11 +586,16 @@ than a bare "to".  |#
                (eq category::adjective (edge-form e)))
            ;;when the previous chunk was a copula verb (just check for BE at this time)
            ;; and this is an adjective
-           (not (and (car *chunks*)
-                     (member 'vg (chunk-forms (car *chunks*)))
-                     (loop for edge in (ev-edges (car (chunk-ev-list (car *chunks*))))
-                        thereis
-                          (eq category::be (edge-category edge))))))
+           (or
+            ;; this check is in there for cases like "there is little chance..."
+            (and (edge-just-to-right-of e)
+                 (member (cat-name (edge-form (edge-just-to-right-of e)))
+                         '(common-noun noun proper-noun)))
+            (not (and (car *chunks*)
+                      (member 'vg (chunk-forms (car *chunks*)))
+                      (loop for edge in (ev-edges (car (chunk-ev-list (car *chunks*))))
+                         thereis
+                           (eq category::be (edge-category edge)))))))
           ((eq 'that (cat-name (edge-category e)))
            ;; it is almost never the case that THAT is a determiner, 
            ;; it is usually a relative clause marker or a thatcomp marker
