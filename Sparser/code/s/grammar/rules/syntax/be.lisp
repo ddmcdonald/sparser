@@ -333,13 +333,17 @@ assess-edge-label, which rewrites the word as the category BE.
   :form subj+verb
   :referent (:function make-there-exists right-edge))
 
-(def-form-rule (there-exists np)
-  ;;/// the effect of this rule is to make the category of
-  ;; the edge be the category of the NP, which is odd looking.
-  ;; The function could fix it if we care enough.
-  :form s
-  :referent (:head left-edge
-             :function make-exist-claim left-edge right-edge))
+(loop for n in '(np n-bar proper-noun common-noun)
+   do
+     (eval `(def-form-rule (there-exists ,n)
+                ;;/// the effect of this rule is to make the category of
+                ;; the edge be the category of the NP, which is odd looking.
+                ;; The function could fix it if we care enough.
+                :form s
+                :referent (:head left-edge
+                                 :function make-exist-claim left-edge right-edge))))
+
+
 
 (defun make-there-exists (vg)
   #| In R3, but not in CwC or Fire (though only tested smallish
