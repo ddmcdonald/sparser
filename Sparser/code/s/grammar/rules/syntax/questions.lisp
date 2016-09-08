@@ -108,9 +108,10 @@
          :rule 'make-polar-adjective-question
          :form category::question
          :referent q)))))
-        
-    
-    
+
+(defun make-polar-pp-question (edges)
+  (push-debug edges)
+  (error "Polar PP questions are not implemented yet."))
 
 ;;;--------------
 ;;; WH questions
