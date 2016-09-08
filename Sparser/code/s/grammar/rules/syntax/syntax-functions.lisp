@@ -1021,6 +1021,9 @@
        (not (is-passive? right-edge))
        (not (adjective-phrase? right-edge))
        (missing-object-vars vp)
+       ;; whether-comp (like "test" and "investigate") can have either a non-statement object
+       ;;  like "we tested the pathway", or a whether-comp ("we tested whether ...")
+       ;;  so we need to check for either case
        (not (value-of 'statement vp))
        (not (thatcomp-verb right-edge))
        (not (loop for v in (find-subcat-vars :to-comp vp)
