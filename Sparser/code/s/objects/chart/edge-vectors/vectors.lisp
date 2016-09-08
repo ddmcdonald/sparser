@@ -123,6 +123,22 @@
      ) ;; added paren mhb 2/4/16
      edge ))
 
+(defun reduce-multiple-initial-edges (ev)
+  ;; some routine has gotten an edge vector where it wanted an edge
+  ;; and the reason is :multiple-initial-edges.  We go through the
+  ;; edges and remove any literals.
+  (let ((count (ev-number-of-edges ev))
+        (vector (ev-edge-vector ev))
+        edge  good-edges )
+    (ecase *edge-vector-type*
+      (:kcons-list (break "Write this routine for kcons list version"))
+      (:vector
+       (dotimes  (i count)
+         (setq edge (aref vector i))
+         (unless (eq :literal-in-a-rule (edge-rule edge))
+           (push edge good-edges)))
+       (nreverse good-edges)))))
+
 
 ;;;--------------------------------------
 ;;; Correcting edge order on the vectors
