@@ -313,15 +313,14 @@
     (adjg (adjg-compatible? edge))))
 
 (defmethod ng-compatible? ((e edge) evlist)
-  (declare (special e evlist
-		    category::quantifier category::det
+  (declare (special category::quantifier category::det
                     category::which category::what category::parentheses
                     word::comma category::pronoun category::verb+ing
 		    category::common-noun
-                    category::ordinal category::also))
+                    category::ordinal category::also
+                    category::syntactic-there))
   (let ((edges (ev-edges (car evlist)))
         (eform (when (edge-p e) (edge-form e))))
-    (declare (special edges eform))
     (cond
       ((plural-noun-and-present-verb? e)
        (plural-noun-not-present-verb e))
