@@ -437,7 +437,7 @@
   (memq cat '(category::preposition category::spatial-preposition)))
 
 (defun subordinate-conjunction? (l-triple)
-  (declare (special l-triple))
+  (declare (special category::subordinate-conjunction))
   (loop for e in (all-edges-at (second l-triple))
      thereis
        (eq (edge-form e) category::subordinate-conjunction)))
