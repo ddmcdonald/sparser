@@ -11,7 +11,9 @@
 
 
 (defparameter *dynamic-model-sents*
-  '((p "phosphorylated BRAF.")
+  '(
+    ;;1.1. Molecular species (model variables). 
+    (p "phosphorylated BRAF.")
     (p "unphosphorylated BRAF.")
     (p "BRAF that is phosphorylated.")
     (p "Phospho-BRAF.")
@@ -27,21 +29,25 @@
     (p "BRAF monomer.")
     (p "BRAF homodimer.")
     (p "BRAF-RAF1 heterodimer.")
-
+    
+    ;;1.2. Amounts of molecular species
     (p "the amount of phosphorylated BRAF.")
     (p "the concentration of BRAF-NRAS complex.")
     (p "the number of molecules of BRAF.")
     (p "the number of BRAF-NRAS complexes.")
 
+    ;;1.3. Initial/total amounts (model initial conditions).
     (p "The initial amount of phosphorylated BRAF.")
     (p "The total amount of BRAF.")
     (p "The initial concentration of BRAF.")
     (p "The initial number of molecules of BRAF.")
 
+    ;;1.4. Kinetic rates (model parameters).
     (p "The binding rate of NRAS and BRAF.")
     (p "The dissociation rate of NRAS and BRAF.")
     (p "The catalysis rate of BRAF phosphorylating MAP2K1.")
 
+    ;;2.1. Asking about the temporal behavior of a molecular entity
     (p "Is the BRAF-NRAS complex sustained in time?")
     (p "Is the amount of BRAF-NRAS complex sustained at a high level?")
     (p "Is the BRAF-NRAS complex sustained in the first 2 hours?")
@@ -69,6 +75,7 @@
     (p "Does the BRAF-NRAS complex vanish?")
     (p "Does the BRAF-NRAS complex vanish at some time?")
 
+    ;; 2.2 Manipulating model initial conditions and model parameters
     (p "Double the amount of total BRAF.")
     (p "Assume there is no NRAS in the system.")
     (p "Set the total amount of BRAF to zero.")
@@ -78,13 +85,14 @@
     (p "Increase the binding rate of NRAS and BRAF by an order of magnitude.")
     (p "Decrease the catalysis rate of MAP2K1 phosphorylation by half.")
 
+    ;;2.3. Asking about temporal properties while manipulating initial conditions and model parameters
     (p "Is phosphorylated BRAF transient if we double the amount of BRAF?")
     (p "Does the BRAF-NRAS dimer vanish even if we increase the binding rate of NRAS and BRAF?")
     (p "Is phosphorylated BRAF high at any time if there is no NRAS in the system?")
 
     ;; sentences added by Mark -- possibly from a writeup by Harvard?
    ;; Statements about temporal properties:  Worry about the *'d ones
-
+    ;;2.4. Make statements about temporal properties
     (p "Yes it is transient in time.")
     (p "No it is not transient.")
     (p "No, it is sustained over time.")
@@ -94,6 +102,7 @@
     (p "I am quite certain it is transient.")
     (p "I am confident it is transient.")
     (p "I am uncertain it is transient.")
+    (p "It is transient with a high probability.")
     
     (p "It is likely that it is transient.")
     (p "It is unlikely that it is transient.")
@@ -105,8 +114,22 @@
     (p "I am 95% sure that it is not transient.")
     (p "I am pretty sure it is transient but I can give a more precise answer later.")
     (p "It is sometimes transient and sometimes isn’t.")
-    (p "I am confident it is transient.")
-    (p "It is transient with a high probability.")
+    (p "It is only sometimes transient.")
+    (p "It is mostly transient but not always.")
+
+    ;;3. Question­answer pairs
+    (p "Is there a peak in the phosphorylated amount of MAPK1 before 2 hours?") ;; Human
+    ;;(p "I’m quite sure there isn’t.") ;;Machine -- causes a break
+    ;;(p "What if we double the amount of DUSP6?") ;;Human
+    (p "There is still no peak.") ;;Machine
+    (p "Is the total amount of DUSP6 unchanged in time?") ;;Human
+    (p "Yes it is unchanged.") ;;Machine
+    (p "Is the amount of MAP2K1­MAPK1 complex higher at 1 hour than the amount of MAPK1­DUSP6 complex?") ::Human
+    (p "Yes it is. In fact the amount of MAPK1­DUSP6 complex is always low.") ;; Machine
+    ;;(p "That’s odd. What if we increase the binding rate of MAPK1 and DUSP6 by 10 fold?") ;;Human
+    (p "The amount of MAPK1­DUSP6 complex is not always low anymore.") ;; Machine
+    (p "And does phospho­MAPK1 now have a peak?") ;;Human
+    (p "It does with high probability.") ;;Machine
     ))
 
 
