@@ -45,8 +45,15 @@
 (define-individual 'greeting :name "bye")
 
 
+;;;----------------------
+;;; markers of proposals
+;;;----------------------
 
+;; suppose
+;; what if
 
+;; "Let's enjoy ourselves, shall we?"  QGLS pg 341
 
 (sentential-interjection "let's")
+;; "let him go", "let go of the ball" -- aux?
 
