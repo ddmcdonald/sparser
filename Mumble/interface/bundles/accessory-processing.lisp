@@ -59,7 +59,9 @@
 	   (cond ((or (eq value (accessory-value-named 'past))
 		      (eq value (accessory-value-named 'present)))
 		  (tense-marker-named (name value)))
-		 ((wordp value) value)
+		 ((wordp value)
+                  (change-state ':aux-state 'unmarked (state *current-phrasal-root*))
+                  value)
 		 (t (mbug "unexpected contents of tense-modal ~a" value)))))
     (let ((new-position (attach-by-splicing ap position contents)))
 
@@ -205,7 +207,7 @@
   (let ((ap (splicing-attachment-point-named 'next-aux)))
     (set-link ap 'next)
     (case (state-value ':aux-state (state *current-phrasal-root*))
-      (initial (cons ap position))
+      ((initial unmarked) (cons ap position))
       (prepose-aux 
        (typecase contents
 	 (word (change-state ':aux-state 'initial (state *current-phrasal-root*))
@@ -215,8 +217,7 @@
 	 (otherwise
 	   (mbug "error--attachment-point-for-next-aux; unexpected contents"))))
       (otherwise
-       (mbug "error--attachment-point-for-next-aux; unexpected state")))
-    ))
+       (mbug "error--attachment-point-for-next-aux; unexpected state")))))
 
 
 (defun process-number-accessory (np value-of-number)

@@ -122,8 +122,9 @@
 
 (defun process-modal (modal)
   (ecase (aux-state)
-    (initial (send-to-output-stream (pname modal) modal)
-	     (set-aux-state 'unmarked))))
+    ((initial unmarked)
+     (send-to-output-stream (pname modal) modal)
+     (set-aux-state 'unmarked))))
 
 (defun process-past-participle (verb)
   (ecase (aux-state)

@@ -78,7 +78,6 @@
   (mumble-says "Now put a block on top of it.")
   "now put a block on it")
 
-#+(or) ; two trees: BLOCK, COLOR
 (deftest (say top block should be red)
   (mumble-says "The top block should be red.")
   "the top block should be red")

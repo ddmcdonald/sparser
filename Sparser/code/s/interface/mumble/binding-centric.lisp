@@ -111,57 +111,50 @@
 (defmethod realize ((i sp::individual))
   "Realize a Sparser individual. Since categories are not (yet) classes,
    and therefore cannot have specialized methods, special cases go here."
-  (let ((primary-category (car (sp::indiv-type i))))
-    (cond ;; Check for focus, known object, same type as recent, etc.
-      #+(or)
-      ((sp::get-tag :mumble primary-category)
-       (realize-via-category-linked-phrase primary-category i))
-      ((sp::itypep i 'sp::collection)
-       (let ((items (sp::value-of 'sp::items i)))
-         (if (null items)
-           (plural (realize-via-bindings i 'noun))
-           (cl:labels ((conjoin (one &optional two &rest more)
-                         (let ((conjunction
-                                (make-dtn :referent `(and ,one ,two)
-                                          :resource (phrase-named
-                                                     'two-item-conjunction))))
-                           (make-complement-node 'one one conjunction)
-                           (make-complement-node 'two two conjunction)
-                           (if more
-                             (apply #'conjoin conjunction more)
-                             conjunction))))
-             (apply #'conjoin items)))))
-      ((sp::itypep i 'sp::number)
-       (format nil "~r" (sp::value-of 'sp::value i)))
-      ((sp::itypep i 'sp::polar-question)
-       (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
-      ((sp::itypep i 'sp::copular-predication)
-       (let* ((copula (sp::value-of 'sp::predicate i))
-              (subject (sp::value-of 'sp::item i))
-              (predicate (sp::value-of 'sp::value i))
-              (be (make-dtn :referent copula
-                            :resource (phrase-named 's-be-comp))))
-         (make-complement-node 's subject be)
-         (make-complement-node 'c predicate be)
-         (when (sp::value-of 'sp::negation copula)
-           (negate be))
-         (tense be)))
-      ((sp::itypep i 'sp::there-exists)
-       (let ((be (make-dtn :referent i
-                           :resource (phrase-named 's-be-comp))))
-         (make-complement-node 's (find-word "there" 'pronoun) be)
-         (make-complement-node 'c (sp::value-of 'sp::value i) be)
-         (tense be)))
-      (t (realize-via-bindings i)))))
+  (cond ((sp::itypep i 'sp::collection)
+         (let ((items (sp::value-of 'sp::items i)))
+           (if (null items)
+             (plural (realize-via-bindings i :pos 'noun))
+             (cl:labels ((conjoin (one &optional two &rest more)
+                           (let ((conjunction
+                                  (make-dtn :referent `(and ,one ,two)
+                                            :resource (phrase-named
+                                                       'two-item-conjunction))))
+                             (make-complement-node 'one one conjunction)
+                             (make-complement-node 'two two conjunction)
+                             (if more
+                               (apply #'conjoin conjunction more)
+                               conjunction))))
+               (apply #'conjoin items)))))
+        ((sp::itypep i 'sp::number)
+         (format nil "~r" (sp::value-of 'sp::value i)))
+        ((sp::itypep i 'sp::polar-question)
+         (discourse-unit (question (realize (sp::value-of 'sp::statement i)))))
+        ((sp::itypep i 'sp::copular-predication)
+         (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
+                                         :pos 'verb
+                                         :resource (phrase-named 's-be-comp))))
+           (make-complement-node 's (sp::value-of 'sp::item i) be)
+           (make-complement-node 'c (sp::value-of 'sp::value i) be)
+           be))
+        ((sp::itypep i 'sp::there-exists)
+         (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
+                                         :pos 'verb
+                                         :resource (phrase-named 's-be-comp))))
+           (make-complement-node 's (find-word "there" 'pronoun) be)
+           (make-complement-node 'c (sp::value-of 'sp::value i) be)
+           be))
+        (t (realize-via-bindings i))))
 
-(defgeneric realize-via-bindings (i &optional pos)
-  (:method ((i sp::individual) &optional (pos (guess-pos i)))
+(defgeneric realize-via-bindings (i &key pos resource)
+  (:method ((i sp::individual) &key
+            (pos (guess-pos i))
+            (resource (ecase pos
+                        (adjective (word-for i pos))
+                        (noun (noun (word-for i pos)))
+                        (verb (verb (word-for i pos) 'svo)))))
     "Realize a Sparser individual as a DTN with its bindings attached."
-    (loop with dtn = (make-dtn :referent i
-                               :resource (ecase pos
-                                           (adjective (word-for i pos))
-                                           (noun (noun (word-for i pos)))
-                                           (verb (verb (word-for i pos) 'svo))))
+    (loop with dtn = (make-dtn :referent i :resource resource)
           initially (case pos (verb (tense dtn)))
           for binding in (reverse (sp::indiv-binds i))
           as variable = (sp::binding-variable binding)
@@ -234,6 +227,9 @@
       (sp::a (initially-indefinite dtn))
       (sp::the (always-definite dtn))
       (sp::that (attach-adjective "that" dtn 'noun))))
+  (:method (binding (var-name (eql 'sp::modal)) dtn pos)
+    "Attach a modal."
+    (add-accessory dtn :tense-modal (word-for (sp::binding-value binding) pos) t))
   (:method (binding (var-name (eql 'sp::modifier)) dtn pos)
     "Attach a modifier as an adjective."
     (attach-adjective (sp::binding-value binding) dtn pos))
