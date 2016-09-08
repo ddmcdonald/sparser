@@ -327,7 +327,7 @@ assess-edge-label, which rewrites the word as the category BE.
 
 (define-category syntactic-there 
   :specializes linguistic
-  :lemma (:common-noun "there"))
+  :lemma (:word "there")) ;; n.b. form on the rule is content-word
 
 (def-cfr there-exists (syntactic-there be)
   :form subj+verb
