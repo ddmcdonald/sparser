@@ -115,9 +115,13 @@
              (assign-tense vg-edge))
             
             ((and (edge-p left) (edge-p right))
-             (if (memq (edge-form left) *plausible-vg-categories*)
-                 (assign-tense left) ;; "preferentially interact"
-                 (assign-tense right)))
+             (cond
+               ((memq (edge-form left) *plausible-vg-categories*)
+                (assign-tense left)) ;; "preferentially interact"
+               ((eq (edge-category right) category::apostrophe-t) ;; "isn't"
+                (assign-tense left))
+               (t
+                (assign-tense right))))
             
             (t 
              (push-debug `(,left ,right))

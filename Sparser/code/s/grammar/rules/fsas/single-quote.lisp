@@ -78,6 +78,7 @@
              (setq spanning-category category::apostrophe-s))
             ((eq word word::|t|)
              (setq spanning-category category::apostrophe-t
+                   form category::quantifier ;;/// arguable, but matches "not"
                    referent (category-named 'not)))
             ((eq word word::|re|)
              (setq spanning-category category::apostrophe-re
