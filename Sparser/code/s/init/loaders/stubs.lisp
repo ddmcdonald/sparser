@@ -31,6 +31,8 @@
     (declare (ignore word kind)))
   (defun setup-acronym-for-bio-entity (ref1 ref2)
     (declare (ignore ref1 ref2)))
+  (defun get-bio-synonyms (word)
+    (declare (ignore word)))
   (defun svo/bio/expr (word)
     (declare (ignore word)))
   ;; next two are in sl/biology/rhetoric.lisp, which could move
