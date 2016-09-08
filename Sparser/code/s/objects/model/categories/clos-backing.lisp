@@ -200,18 +200,18 @@ for every category.
              (unless (symbolp tag)
                (push-debug `(,v/r)) (error "V/R shouldn't go this deep"))
              (case tag
-               (:or
+               ((:or or)
                 (let ((r (mapcar #'backing-type-for-variable-restriction values)))
-                  `(:or ,@r)))
+                  `(or ,@r)))
                (otherwise
                 (push-debug `(,v/r))
                 (break "New key in deep cons-based value restriction:~%  ~a" v/r)))))
           (otherwise
            (push-debug `(,v/r))
            (break "New type of cons-based value restriction:~%  ~a" v/r))))
-       (:or
+       ((:or or)
         (let ((r (mapcar #'backing-type-for-variable-restriction (cdr v/r))))
-          `(:or ,@r)))
+          `(or ,@r)))
        (otherwise
         (push-debug `(,v/r))
         (break "New form for cons-based value restriction:~%  ~a" v/r))))
