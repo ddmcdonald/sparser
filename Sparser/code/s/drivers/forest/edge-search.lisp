@@ -333,7 +333,7 @@
   (declare (special r-triple l-triple
                     category::as category::syntactic-there
                     category::vg category::np category::adjective
-))
+                    ))
   ;; goal here is to put off subject attachment until the subject 
   ;; is as large as possible.
   ;; Don't do right-to-left activation for the subj+verb rules
@@ -361,7 +361,7 @@
 		(category-p (second r-triple-rhs))
 		(member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))))
 	(or
-	 (eq category::syntactic-there l-triple-left) ;; competing against a "there BE"
+	 (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
 	 (and
 	  (member l-triple-rhs `((,category::vg  ,category::np)
                                  (,category::vg  ,category::n-bar)
