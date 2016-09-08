@@ -968,9 +968,8 @@
        (if *subcat-test* t
            (else
              (revise-parent-edge :category category::copular-predication)
-             (setq vp (bind-variable 'item subj vp))
+             (setq vp (interpret-copular-predication-on subj vp))
              vp)))
-
       ((transitive-vp-missing-object? vp right-edge)
        (when (not *subcat-test*)
          ;; the edge isn't available and shouldn't be chaged during the test phase
@@ -999,6 +998,7 @@
        (assimilate-subcat vp :object subj))
       
       (t (assimilate-subcat vp :subject subj)))))
+
 
 
 (defun transitive-vp-missing-object? (vp &optional (right-edge (right-edge-for-referent)))
@@ -1458,3 +1458,15 @@
   (if *subcat-test*
       t
       (bind-dli-variable :intensity intensifier adjective)))
+
+
+;;; handling of copular-predication
+
+(defun interpret-copular-predication-on (subj vp)
+  #+ignore
+  (format t "~%~%interpret-copular-predication-on ~%  ~s ~s~%  ~s~%"
+          subj
+          (value-of 'predicate vp)
+          (value-of 'value vp))
+  (setq vp (bind-variable 'item subj vp)))
+
