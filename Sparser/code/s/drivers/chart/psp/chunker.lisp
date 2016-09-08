@@ -346,6 +346,7 @@
        ;;WORKAROUND -- DAVID
        t)
       ((eq (edge-category e) category::modal) nil)
+      ((eq (edge-category e) category::syntactic-there) nil)
       ((eq eform category::adverb )
        (not (eq (edge-category e) category::also)))
       ((eq category::verb+ing eform)
@@ -561,7 +562,8 @@ than a bare "to".  |#
                   (eq (cat-name (edge-category (edge-just-to-left-of e))) 'to)))))
           ((or
             (eq (edge-category e) category::modal)
-            (eq (cat-name (edge-category e)) 'following-adj))
+            (eq (cat-name (edge-category e)) 'following-adj)
+            (eq (cat-name (edge-category e)) 'syntactic-there))
            nil)
           ((member (cat-name (edge-form e)) '(vp+ed))
            ;; this should only happen for NS words like GAP–mediate
