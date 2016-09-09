@@ -83,15 +83,25 @@
   :specializes linguistic
   :documentation "This is the common parent to 'let', 'suppose',
  'what if', and any other turns of phrase which, when they are
- sentence-initial mark the sentence as a directive (Quirk et al.
- pg. 829): an interative that with the illocutionary force of
+ sentence-initial, mark the sentence as a directive (Quirk et al.
+ pg. 829): an imperative with the illocutionary force of
  a suggestion that something be done ('let Markie do it').
    The idea is to use this to anchor a form rule that takes an
  adjacent clause (s) to its right and instantiates a proposal.")
 
+(define-category explicit-suggestion ;; 'explicit' because of the marker
+  :instantiates self
+  :specializes sa-propose
+  :binds ((marker proposal-marker)
+          (suggestion perdurant)))
+
+
+;;--- cases
+
 (define-category let-as-directive
   :instantiates self
   :specializes  proposal-marker
+  :rule-label proposal-marker
   :realization (:interjection "let's")
   :documentation "The better analysis might be as a verb that
  is only used in the imperative, but there's no way to formulate
@@ -108,15 +118,34 @@
 ;; "Let's enjoy ourselves, shall we?"  QGLS pg 341
 ;; "let him go", "let go of the ball" -- aux?
 
-
 (define-category suppose-as-directive
   :instantiates self
   :specializes  proposal-marker
+  :rule-label proposal-marker
   :realization (:interjection "suppose"))
 
 
 (define-category what-if-as-directive
   :instantiates self
   :specializes  proposal-marker
+  :rule-label proposal-marker
   :realization (:interjection "what if"))
 
+;;--- rules
+
+(loop for head in '(s vp)
+  do (eval
+       `(def-form-rule (proposal-marker ,head)
+            :form s
+            :head :right-edge
+            :referent (:function make-marked-proposal left-edge right-edge))))
+
+(defun make-marked-proposal (marker proposal)
+  (declare (special proposal-marker *subcat-test*))
+  (cond
+    (*subcat-test* t)
+    (t
+     (let ((s (find-or-make-individual
+               'explicit-suggestion :marker marker :suggestion proposal)))
+       (revise-parent-edge :category category::explicit-suggestion)
+       s))))
