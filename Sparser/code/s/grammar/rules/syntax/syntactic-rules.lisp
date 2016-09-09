@@ -425,6 +425,7 @@
 
 ;;;----------------------------------------------------------------
 ;;; PP and CLAUSAL COMPLEMENTS to VGs and VPs (verb-like elements)
+;;;  as well as ADJGs
 ;;;----------------------------------------------------------------
 
 (loop for vv in '((vg vp)
@@ -436,7 +437,9 @@
                   (vg+passive vp+passive)
                   (vp+passive vp+passive)
                   (infinitive to-comp)
-                  (to-comp to-comp))
+                  (to-comp to-comp)
+                  (adjective adjp)
+                  (adjp adjp))
   do
   (eval
    `(def-syntax-rule (,(car vv) pp)
