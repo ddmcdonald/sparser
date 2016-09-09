@@ -93,7 +93,7 @@ Should mirror the cases on the *single-words* ETF."
                :mumble)))
 
 (deftype subcat-keyword ()
-  '(member :s :o :m
+  '(member :s :o :m :adv
            :about :above :across :after :against :among :as :as-comp :at
            :before :below :between :but\ not :by
            :designator :during
