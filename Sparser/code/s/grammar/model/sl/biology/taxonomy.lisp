@@ -100,7 +100,9 @@
           (event)
           (subordinated-event)
 	  (adverb)
-          (certainty certainty)))
+          (certainty certainty))
+  :realization
+  (:with certainty))
 
 
 (define-mixin-category reactome-category
