@@ -13,6 +13,7 @@
 
 (gload "kinds;upper-model")
 (gload "kinds;tense-aspect")
+(gload "kinds;adjuncts")
 (gload "kinds;processes")
 (gload "kinds;predicate")
 (gload "kinds;attribution")
