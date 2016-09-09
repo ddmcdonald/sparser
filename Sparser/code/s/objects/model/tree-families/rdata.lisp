@@ -74,7 +74,6 @@
 Should mirror the cases on the *single-words* ETF."
   '(member :verb
            :modal
-           :noun
            :common-noun
            :proper-noun
            :adjective
@@ -85,8 +84,16 @@ Should mirror the cases on the *single-words* ETF."
            :quantifier
            :number))
 
+(eval-when (:compile-toplevel :load-toplevel :execute) ; for deftype
+  (defparameter *head-aliases*
+    '((:noun . :common-noun)
+      (:adj . :adjective)
+      (:adv . :adverb))
+    "An alist of aliases for head keywords."))
+
 (deftype realization-keyword ()
-  '(or head-keyword
+  `(or head-keyword
+       (member ,@(mapcar #'car *head-aliases*))
        (member :tree-family
                :mapping
                :additional-rules
@@ -173,7 +180,7 @@ Should mirror the cases on the *single-words* ETF."
            (rdata category))
     (multiple-value-bind (args slots) (decode-slots rdata)
       (make-rules-for-rdata category
-                            (if (or slots (get-properties args '(:etf :adj)))
+                            (if (or slots (getf args :etf))
                               (apply #'decode-shortcut-rdata category :slots slots args)
                               (apply #'decode-rdata category args))))
     (when mumble
@@ -308,8 +315,8 @@ the rspec for the words of instances of the category."
 (defun decode-rdata-heads (rdata category)
   "Return a plist of specified head words in the realization data."
   (loop for (keyword value) on rdata by #'cddr
-        when (eql keyword :noun) ; alias
-          do (setq keyword :common-noun)
+        as alias = (assoc keyword *head-aliases*)
+        if alias do (setq keyword (cdr alias))
         when (typep keyword 'head-keyword)
           nconc (list keyword (deref-rdata-word value category))))
 
