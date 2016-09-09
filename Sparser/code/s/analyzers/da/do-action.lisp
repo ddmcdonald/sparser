@@ -115,55 +115,66 @@ SP> (stree 51)
   (setq *current-da-rule* rule)
   (let* ((form (da-action-description rule))
          (fn (second form))
+         (args (cddr form))
          (constituents
-          (loop for tta in *tt-alist*
-             as i from 1 to (length (da-pattern-description rule))
-             collect (cdr tta))))
-
-
+          (mapcar #'lookup-matched-tt args)))
+    
     (when (symbolp fn)
       (unless (fboundp fn)
         (error "The function ~a is not defined" fn)))
-    ;; The args are expected to be symbols for ordinals that
-    ;; were vetted when the rule was defined
-    (push-debug `(,fn ,constituents))
-    (tr :da-applying-fn-to-args fn constituents)
-    (when (setq *edge-spec* (apply fn constituents)) ;; can be nil if rule fails
-      (let* ((target (edge-spec-target *edge-spec*))
-             (dominating (and (edge-p target) (edge-used-in target))))
-        ;; see long note above
-        (when (and target dominating)
-          (when (and
-                 (eq (edge-starts-at target) (edge-starts-at dominating))
-                 (eq (edge-ends-at target) (edge-ends-at dominating))
-                 (edge-used-in dominating))
-            (setq target dominating)
-            (setq dominating (edge-used-in dominating))))
     
+    (tr :da-applying-fn-to-args fn constituents)
+
+    (let ((result (apply fn constituents)))
+      (cond
+        ((edge-p result)
+         result)
+        ((null result) ;; the rule failed
+         nil)
+        ((typep result 'edge-spec)
+         ;;(when (setq *edge-spec* (apply fn constituents))) ;; can be nil if rule fails
+         (let* ((*edge-spec* result)
+                (target (edge-spec-target *edge-spec*))
+                (dominating (and (edge-p target) (edge-used-in target))))
+           ;; see long note above
+           (when (and target dominating)
+             (when (and
+                    (eq (edge-starts-at target) (edge-starts-at dominating))
+                    (eq (edge-ends-at target) (edge-ends-at dominating))
+                    (edge-used-in dominating))
+               (setq target dominating)
+               (setq dominating (edge-used-in dominating))))
         
-        (setq *new-edge*
-              (make-edge-over-long-span
-               (pos-edge-starts-at
-                (or target
-                    (first constituents)))
-               (pos-edge-ends-at (car (last constituents)))
-               (edge-spec-category *edge-spec*)
-               :form (edge-spec-form *edge-spec*)
-               :referent (edge-spec-referent *edge-spec*)
-               :rule (da-name rule)
-               :constituents
-               (constituents-between
-                (or target
-                    (first constituents))
-                (car (last constituents)))))
-        (cond (dominating
-               (tuck-new-edge-under-already-knit
-                target
-                *new-edge*
-                dominating
-                (edge-spec-direction *edge-spec*))
-               dominating)
-              (t *new-edge*))))))
+           (setq *new-edge*
+                 (make-edge-over-long-span
+                  (pos-edge-starts-at
+                   (or target
+                       (first constituents)))
+                  (pos-edge-ends-at (car (last constituents)))
+                  (edge-spec-category *edge-spec*)
+                  :form (edge-spec-form *edge-spec*)
+                  :referent (edge-spec-referent *edge-spec*)
+                  :rule (da-name rule)
+                  :constituents
+                  (constituents-between
+                   (or target
+                       (first constituents))
+                   (car (last constituents)))))
+           (cond (dominating
+                  (tuck-new-edge-under-already-knit
+                   target
+                   *new-edge*
+                   dominating
+                   (edge-spec-direction *edge-spec*))
+                  dominating)
+                 (t *new-edge*))))
+        (t
+         (error "Debris Analysis: Unanticipated type of result from applying ~
+               ~%~a to ~a~
+               ~%type of result: ~a~%result = ~a"
+                fn constituents (type-of result) result))))))
+               
+
 
 (defun constituents-between (first-const last-const)
   (cons first-const
