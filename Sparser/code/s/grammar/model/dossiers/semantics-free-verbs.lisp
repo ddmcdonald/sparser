@@ -15,5 +15,6 @@
 
 (in-package :sparser)
 
-(svo "use")
+(unless (eq :biology common-lisp-user::script)
+  (svo "use"))
 
