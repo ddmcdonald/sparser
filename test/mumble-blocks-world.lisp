@@ -101,11 +101,11 @@
 
 (deftest (say left end of row)
   (mumble-says "The left end of the row.")
-  "left end of the row") ; missing determiner
+  "the left end of the row")
 
 (deftest (say put row on left end of row)
   (mumble-says "Put a row of two blocks on top of the left end of the bottom row.")
-  "put a row of two blocks on left end of the bottom row") ; missing determiner
+  "put a row of two blocks on the left end of the bottom row")
 
 (deftest (say put stack on table)
   (mumble-says "Put a stack of two red blocks on the table.")
@@ -113,7 +113,7 @@
 
 (deftest (say add block at right end of row)
   (mumble-says "Add a red block at the right end of the row.")
-  "add a red block on right end of the row") ; missing determiner
+  "add a red block on the right end of the row")
 
 (deftest (say push two blocks together)
   (mumble-says "Push the two blocks together.")
