@@ -454,6 +454,7 @@ without damaging other code.")
        (loop for b in  (indiv-binds i)
           as var  = (binding-variable b)
           as var-name = (var-name var)
+          as restriction = (var-value-restriction var)
           as value = (binding-value b)
           do
             (unless (or (and (not *for-spire*)
@@ -482,8 +483,15 @@ without damaging other code.")
                                      `(push (list var-name value) desc) )))
                     (category
                      (push `(,var-name ,(collect-model-description value)) desc))
-                    (cons  (lsp-break "how did we get a CONS ~s as a value for variable ~s~%"
-                                      value var-name))
+                    (cons
+                     (unless (equal restriction '(:primitive list))
+                       (error "The value of the variable ~a is a cons but its ~
+                               restriction, ~a, doesn't permit it.~%value = ~a"
+                              var-name restriction value))
+                     (push `(,var-name
+                             (,(loop for item in value
+                                  do (collect-model-description item)) ))
+                           desc))
                     (rule-set) ;; the word "anti" presently does this
                     ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
                     (otherwise
