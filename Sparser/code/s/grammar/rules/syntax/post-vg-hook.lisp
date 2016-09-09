@@ -89,6 +89,9 @@
   (let* ((i (edge-referent vg-edge))
          (referent-with-tense i)) ;; start here
     (unless (indicates-tense? i)
+      ;; If there's already tense/aspect information recorded on
+      ;; this individual we're (probably) not going to add anything
+      ;; here. /// but that needs more testing. 
       (flet ((assign-tense (edge)
                "Add the appropriate binding to the referent of
                 the edge to record the tense"

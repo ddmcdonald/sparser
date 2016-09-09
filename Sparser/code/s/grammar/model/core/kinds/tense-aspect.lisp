@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "tense-aspect"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  August 2016
+;;;  version:  September 2016
 
 ;; Broken out of rules/syntax/tense.lisp 8/23/16
 
@@ -53,11 +53,16 @@
 
 (defgeneric indicates-tense? (individual)
   (:documentation "Does the individual bind any of the variables
-    that carry information about tense.")
+    that carry information about tense. If a category is passed
+    in then we're certain that it doesn't already have any tense
+    information since the variables only pertain to individuals.")
   (:method ((i individual))
     (or (value-of 'occurs-at-moment i)
         (value-of 'modal i)
         (value-of 'present i)
         (value-of 'past i)
         (value-of 'progressive i)
-        (value-of 'perfect i))))
+        (value-of 'perfect i)))
+  (:method ((c referential-category))
+    nil))
+    
