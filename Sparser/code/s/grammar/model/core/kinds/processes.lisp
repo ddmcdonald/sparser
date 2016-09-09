@@ -24,7 +24,7 @@
 
 (define-category  perdurant
   :instantiates self
-  :specializes  top
+  :specializes  temporally-localized
 
   :binds ((theme) ;; one salient participant
                   ;; FrameNet for the thing that moves
@@ -40,7 +40,7 @@
           ;; interpret-adverb+verb needs to be improved to diagnose the
           ;; type of adverb but until then, we need to have this variable
           ;; or something equivalent
-          (adverb)
+          ;;(adverb) inherited from relation
 
           (occurs-at-moment) ;; future, past
           (modal)
