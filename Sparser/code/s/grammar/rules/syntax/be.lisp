@@ -255,25 +255,40 @@ assess-edge-label, which rewrites the word as the category BE.
 ;;; contractions -- "...n't"
 ;;;--------------------------
 
-(def-cfr be ("aren" apostrophe-t)
+(def-cfr aren ("aren")
+  :form verb+present
+  :referent be )
+
+(def-cfr be (aren apostrophe-t)
   :form verb
   :referent (:head be
              :bind (negation right-edge)))
 
 
-(def-cfr be ("isn" apostrophe-t)
+(def-cfr isn ("isn")
+  :form verb+present
+  :referent be )
+
+(def-cfr be (isn apostrophe-t)
+  :form verb
+  :referent (:head be
+             :bind (negation right-edge)))
+
+(def-cfr wasn ("wasn")
+  :form verb+past
+  :referent be )
+
+(def-cfr be (wasn apostrophe-t)
   :form verb
   :referent (:head be
              :bind (negation right-edge)))
 
 
-(def-cfr be ("wasn" apostrophe-t)
-  :form verb
-  :referent (:head be
-             :bind (negation right-edge)))
+(def-cfr weren ("weren")
+  :form verb+past
+  :referent be )
 
-
-(def-cfr be ("weren" apostrophe-t)
+(def-cfr be (weren apostrophe-t)
   :form verb
   :referent (:head be
              :bind (negation right-edge)))
