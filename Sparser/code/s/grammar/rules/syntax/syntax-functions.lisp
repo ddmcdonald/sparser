@@ -591,7 +591,9 @@
                      ~% probably defined by morphology, can't attach adverb~%"
                     vg-phrase)
             vg-phrase)
-      (let ((vg (individual-for-ref vg-phrase)))
+      (let* ((vg (individual-for-ref vg-phrase))
+             (variable-to-bind
+              (subcategorized-variable vg :adv adverb)))
         #| Really should diagnose among
         (time) (location) (purpose) (circumstance) (manner) |#
         (cond
@@ -601,10 +603,14 @@
            nil)
           (*subcat-test*
            (cond
-             ((vg-has-adverb-variable? vg vg-phrase adverb) t)
+             (variable-to-bind t)
+             ((has-adverb-variable? vg vg-phrase adverb) t)
              ((and (collection-p vg)
-                   (vg-has-adverb-variable?
-                    (car (value-of 'items vg)) vg-phrase adverb))
+                   (or
+                    (subcategorized-variable 
+                     (car (value-of 'items vg)) :adv adverb)
+                    (has-adverb-variable?
+                     (car (value-of 'items vg)) vg-phrase adverb)))
               t)
              (t
               (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
@@ -612,13 +618,68 @@
                      (edge-string (right-edge-for-referent))
                      (sentence-string *sentence-in-core*))
               nil)))
+          (variable-to-bind
+           (bind-dli-variable variable-to-bind adverb vg))
           ((member (cat-name adverb) *subordinating-adverbs*)
            (bind-dli-variable 'subordinate-conjunction adverb vg))
           ((collection-p vg)
-           (bind-dli-variable 'adverb adverb vg))
-          ((vg-has-adverb-variable? vg vg-phrase adverb)
+           (bind-dli-variable
+            (or
+             (subcategorized-variable 
+              (car (value-of 'items vg)) :adv adverb)
+             'adverb) adverb vg))
+          ((has-adverb-variable? vg vg-phrase adverb)
            (setq vg (bind-dli-variable 'adverb adverb vg)))
           (t vg)))))
+
+(defun interpret-adverb+verb (adverb adj-phrase) 
+  (declare (special category::deictic-location category::pp))
+  ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
+  (if (word-p adj-phrase)
+      (then (format t "adj-phrase ~s is not a category or an individual,~
+                     ~% probably defined by morphology, can't attach adverb~%"
+                    adj-phrase)
+            adj-phrase)
+      (let* ((adj (individual-for-ref adj-phrase))
+             (variable-to-bind
+              (subcategorized-variable adj :adv adverb)))
+        #| Really should diagnose among
+        (time) (location) (purpose) (circumstance) (manner) |#
+        (cond
+          ((or (and (itypep adj category::be);; block "THERE IS"
+                    (itypep adverb category::deictic-location))
+               (eq (edge-form (left-edge-for-referent)) category::pp))
+           nil)
+          (*subcat-test*
+           (cond
+             (variable-to-bind t)
+             ((has-adverb-variable? adj adj-phrase adverb) t)
+             ((and (collection-p adj)
+                   (or
+                    (subcategorized-variable 
+                     (car (value-of 'items adj)) :adv adverb)
+                    (has-adverb-variable?
+                     (car (value-of 'items adj)) adj-phrase adverb)))
+              t)
+             (t
+              (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
+                     (edge-string (left-edge-for-referent))
+                     (edge-string (right-edge-for-referent))
+                     (sentence-string *sentence-in-core*))
+              nil)))
+          (variable-to-bind
+           (bind-dli-variable variable-to-bind adverb adj))
+          ((member (cat-name adverb) *subordinating-adverbs*)
+           (bind-dli-variable 'subordinate-conjunction adverb adj))
+          ((collection-p adj)
+           (bind-dli-variable
+            (or
+             (subcategorized-variable 
+              (car (value-of 'items adj)) :adv adverb)
+             'adverb) adverb adj))
+          ((has-adverb-variable? adj adj-phrase adverb)
+           (setq adj (bind-dli-variable 'adverb adverb adj)))
+          (t adj)))))
 
 (defun interpret-as-comp (as vp+ed)
   (declare (ignore as))
