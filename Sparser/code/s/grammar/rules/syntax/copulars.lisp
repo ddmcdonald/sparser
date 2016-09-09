@@ -170,6 +170,9 @@ phosphorylated by Src."
 
        (def-form-rule (,verb adjp)
            :form vp
+           :referent (:function make-copular-adjective left-edge right-edge))
+       (def-form-rule (,verb adjg)
+           :form vp
            :referent (:function make-copular-adjective left-edge right-edge)))))
 
 #+ignore ;; do this in the biology/verbs.lisp file for now
