@@ -94,17 +94,6 @@
 
   
 
-(define-category event-relation :specializes perdurant ;; put in here since we don't want to modify EVENT yet
-  :mixins (temporally-localized)
-  :binds ((relation)
-          (event)
-          (subordinated-event)
-	  (adverb)
-          (certainty certainty))
-  :realization
-  (:with certainty))
-
-
 (define-mixin-category reactome-category
    :mixins (has-name)
    :binds ((displayname)
@@ -183,7 +172,7 @@
 
 
 (define-category bio-predication :specializes state 
-  :mixins (biological event-relation)
+  :mixins (biological)
   ;;/// This category is unlikely to be doing interesting
   ;; work for us. Need to review where it's used. 
   ;; Made it inherit from event because that provided
@@ -196,7 +185,6 @@
                    :as-comp as-comp))
 
 (define-category scalar-variation :specializes bio-predication
-  :mixins (temporally-localized)
                  ;;for adjectives like transient, unchanged, sustained
                  )
 
@@ -211,8 +199,8 @@
   :documentation "Provides a generalization over biological and measurement")
 
 (define-category bio-scalar :specializes scalar-quality
-  :binds ((measured-item biological))
   :mixins (bio-quality)
+  :binds ((measured-item biological))
   :realization
   (:of measured-item)
   :documentation "Provides a generalization over biological and scalar-quality")
@@ -296,7 +284,7 @@
 
 (define-category bio-process
     :specializes process
-    :mixins (has-UID has-name biological event-relation)
+    :mixins (has-UID has-name biological)
     :binds ((subject biological)
             (by-means-of (:or bio-process mechanism bio-method pathway))
 	    (using protein)
@@ -427,7 +415,7 @@
   :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
-  :mixins (biological bio-thatcomp bio-whethercomp event-relation)
+  :mixins (biological bio-thatcomp bio-whethercomp)
   :binds ((agent (:or pronoun/first/plural
                       PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals
 		      pronoun/plural ;; "they"
@@ -438,6 +426,7 @@
 		      bio-location ;; "the Y561 site displayed no difference..."
 		      evidence
 		      article-figure
+		      bio-quality
 		      bio-rhetorical
 		      bio-process ;; the B-RAFV600E mutation predicts
 		      bio-method	;; high-throughput functional screens may inform
@@ -597,7 +586,7 @@
              :for result-or-purpose))
 
 (define-category bio-method :SPECIALIZES purposive-process
-  :mixins (has-UID has-name biological event-relation)
+  :mixins (has-UID has-name biological)
   :binds ((agent (:or pronoun/first/plural biological))
           (object (:or biological measurement bio-scalar)))
   :realization (:s agent
@@ -644,7 +633,7 @@
           :for process))
 
 (define-category bio-relation :specializes bio-predication
-  :mixins (has-UID has-name biological event-relation)
+  :mixins (has-UID has-name biological)
   :binds ((theme (:or biological predication))) ;; this probably belongs higher
   :realization (:for timeperiod) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
