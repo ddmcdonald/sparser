@@ -50,7 +50,7 @@
 (gload "time;age")
 (gload "time;fiscal")
 
-(gload "time;adjuncts")
+;;(gload "time;adjuncts") no longer here -- look in kinds/temporally-localized.lisp
 
 (gload "time;sequences")
 (gload "time;index")
