@@ -2377,7 +2377,7 @@
 
 
 
-(define-category transition :specializes other-bio-process
+(define-category bio-transition :specializes other-bio-process
  :binds ((bio biological)
          (source biological)
          (destination biological))
@@ -2526,7 +2526,7 @@
 (def-synonym upregulate (:verb "positively regulate" :noun "positive regulation" :etf (svo-passive)))
 
 
-(define-category use :specializes bio-method
+(define-category bio-use :specializes bio-method
     :binds ((used-to biological)
             (purpose (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
     :realization
