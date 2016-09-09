@@ -124,7 +124,7 @@
     (p "There is still no peak.") ;;Machine
     (p "Is the total amount of DUSP6 unchanged in time?") ;;Human
     (p "Yes it is unchanged.") ;;Machine
-    (p "Is the amount of MAP2K1­MAPK1 complex higher at 1 hour than the amount of MAPK1­DUSP6 complex?") ::Human
+    (p "Is the amount of MAP2K1­MAPK1 complex higher at 1 hour than the amount of MAPK1­DUSP6 complex?") ;;Human
     (p "Yes it is. In fact the amount of MAPK1­DUSP6 complex is always low.") ;; Machine
     ;;(p "That’s odd. What if we increase the binding rate of MAPK1 and DUSP6 by 10 fold?") ;;Human
     (p "The amount of MAPK1­DUSP6 complex is not always low anymore.") ;; Machine
