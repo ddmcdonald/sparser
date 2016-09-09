@@ -99,7 +99,8 @@
   :binds ((relation)
           (event)
           (subordinated-event)
-	  (adverb)))
+	  (adverb)
+          (certainty certainty)))
 
 
 (define-mixin-category reactome-category
@@ -187,7 +188,8 @@
   ;; almost all the slots.
   ;; Aspect was annotated with "will likely be useful"
   :binds ((subject (:or biological visual-representation))
-          (as-comp as-comp))
+          (as-comp as-comp)
+          (certainty certainty))
   :realization (:s subject
                    :as-comp as-comp))
 
@@ -460,8 +462,14 @@
       :with method
       :at ratio-condition))
 
+(define-category certainty :specializes bio-rhetorical
+  :realization
+  (:noun "certainty" :adj "certain"))
+
+;; can't seem to get this to work -- DAVID??
+;;(define-adverb "certainly" :super-category category::certainty)
+
 (define-category evidence :specializes bio-rhetorical
-  :mixins (bio-thatcomp)
   :binds ((fact biological))
   :realization
   (:verb ("evidenceXX" :past-tense "evidenced")
