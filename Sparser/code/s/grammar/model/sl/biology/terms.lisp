@@ -37,15 +37,14 @@
 
 (in-package :sparser)
 
-(define-category certainty :specializes bio-rhetorical
-  :realization
-  (:noun "certainty" :adj "certain"))               
+             
 
 (adj "sure" :super certainty)
 (adj "uncertain" :super certainty)
 (noun "chance" :super certainty)
 (adj "confident" :super certainty)
 (noun "likelihood" :super certainty)
+(noun "probability" :super certainty)
 
 (noun "medium" :super experimental-condition)
 (noun "vector" :super bio-method) ;; need a class for experimental materials
