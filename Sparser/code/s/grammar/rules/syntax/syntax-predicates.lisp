@@ -39,20 +39,20 @@
          (eq category::adjective (edge-form re)))))
 
 
-(defun vg-has-adverb-variable? (vg vg-phrase adverb)
+(defun has-adverb-variable? (vg-or-adjg vg-or-adjg-phrase adverb)
   (cond
-   ((individual-p vg)
-     (loop for category in (indiv-type vg)
+   ((individual-p vg-or-adjg)
+     (loop for category in (indiv-type vg-or-adjg)
        thereis
        (find-variable-for-category 'adverb category)))
-    ((referential-category-p vg)
-     (find-variable-for-category 'adverb vg))
+    ((referential-category-p vg-or-adjg)
+     (find-variable-for-category 'adverb vg-or-adjg))
     (t
      #+ignore
      (error "Trying to add adverb to verbal element whose semantics won't take ~s.~% Semantics is ~s, ~%surface string is ~s"
 	    adverb
-	    vg-phrase
-	    (sur-string vg))
+	    vg-or-adjg-phrase
+	    (sur-string vg-or-adjg))
      nil)))
 
 (defun can-fill-vp-subject? (vp subj &optional (left-edge (left-edge-for-referent)))
