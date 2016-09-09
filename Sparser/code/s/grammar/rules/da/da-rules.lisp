@@ -190,8 +190,7 @@
   ;; The action can fail. Returning nil ought to suffice
   :action (:function attach-comma-pp-following-clause third first))
 
-(defun attach-comma-pp-following-clause (clause comma pp)
-  (declare (ignore comma))
+(defun attach-comma-pp-following-clause (clause pp)
   (attach-pp-following-clause clause pp
                               (pos-edge-starts-at clause)
                               (pos-edge-ends-at pp)))
@@ -236,8 +235,7 @@
   :pattern ( s "," s )
   :action (:function interpret-s-comma-s first third))
 
-(defun interpret-s-comma-s (s1 comma s2)
-  (declare (ignore comma))
+(defun interpret-s-comma-s (s1 s2)
   (make-edge-spec
    :category (edge-category s1)
    :form (edge-form s1)
