@@ -404,7 +404,7 @@
   different edge parents (edge-used-in).")
 
 
-
+#+ignore ;; defined in core now
 (define-category event-relation
   :specializes perdurant
   :binds ((relation)
