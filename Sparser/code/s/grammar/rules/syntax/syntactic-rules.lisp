@@ -796,11 +796,17 @@
     :form comparative-adjective
     :referent (:head right-edge
                      :bind (comparative left-edge)))
-
-(def-syntax-rule (adverb adjective)
-    :head :right-edge
-    :form adjective
-    :referent (:method modified left-edge right-edge))
+(cond
+  (*clos*
+   (def-syntax-rule (adverb adjective)
+       :head :right-edge
+       :form adjective
+       :referent (:method modified left-edge right-edge)))
+  (t 
+   (def-syntax-rule (adverb adjective)
+       :head :right-edge
+       :form adjective
+       :referent (:function interpret-adverb+verb left-edge right-edge))))
 
 ;;--- predicate adjective
 
