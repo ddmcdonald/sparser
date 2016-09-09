@@ -94,7 +94,13 @@
 ;; syntactic rule covering all of these inserted into 
 ;; syntactic-rules.lisp 
 
-(unless (current-script :biology)
+(unless t
+  ;; This was causing problems for some generation in Mumble from Krisp
+  ;; in (P "the block on the right end of the row.")
+  ;;  the NP "the right end" used one of these rules rather than the more
+  ;;  general syntactic rules, and Alex could not find the determiner
+  ;; DAVID -- let's talk about why these rules are needed
+  ;; (current-script :biology)
   (progn
 ;;--- a/an
 
