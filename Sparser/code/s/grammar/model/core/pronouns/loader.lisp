@@ -13,11 +13,5 @@
 
 (gload "pronouns;object")
 (gload "pronouns;cases")
-
-
-(unless (boundp '*debug-subsequent-reference*)
-  (defparameter *debug-subsequent-reference* t))
-
 (gate-grammar *resolve-pronouns*
   (gload "pronouns;ref"))
-
