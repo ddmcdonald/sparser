@@ -27,7 +27,7 @@
 
 (deftest (say not enough green blocks)
   (mumble-says "We do not have enough green blocks.")
-  "we doesn't have enough green blocks") ; wrong tense
+  "we don't have enough green blocks")
 
 (deftest (say make tops of steps red)
   (mumble-says "Make the tops of the steps red.")

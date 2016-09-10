@@ -21,8 +21,9 @@
       (or (let ((human (search "_HUMAN" name)))
             (and human ; prefer the synonym without the _HUMAN suffix
                  (find (subseq name 0 human) syns :test #'string-equal)))
-          (first (sort (cons name (copy-list syns)) ; use the shortest synonym
-                       #'< :key #'length)))
+          (first (stable-sort ; prefer shortest synonym
+                  (cons name (copy-list syns))
+                  #'< :key #'length)))
       (subseq name (case (search "BIO-" name :test #'char-equal)
                      (0 4) ; elide bio-prefix
                      (t 0))))))
@@ -41,6 +42,8 @@
   (declare (optimize debug))
   (check-type item (or sp::individual sp::referential-category))
   (let ((raw-word (or (sp::rdata-head-word item (sparser-pos pos))
+                      (case pos ; e.g., a predication
+                        (verb (sp::rdata-head-word item :adjective)))
                       (sp::lemma item (sparser-pos pos))
                       (sp::value-of 'sp::name item)
                       (sp::value-of 'sp::word item)
@@ -94,15 +97,18 @@
   (:documentation "Guess the part of speech to be used for an individual.")
   (:method-combination or)
   (:method or ((i sp::individual))
-    (when (or (sp::bound-object-var i)
-              (sp::bound-subject-var i)
-              (find sp::**lambda-var** (sp::indiv-binds i)
-                    :key #'sp::binding-value))
-      'verb))
+    (cond ((let ((subject (sp::bound-subject-var i)))
+             (and subject (eq (sp::value-of subject i) sp::**lambda-var**)))
+           'adjective)
+          ((or (sp::bound-subject-var i)
+               (sp::bound-object-var i)
+               (find sp::**lambda-var** (sp::indiv-binds i)
+                     :key #'sp::binding-value))
+           'verb)))
   (:method or ((i sp::referential-category))
-    (when (or (sp::subject-variable i)
-              (sp::object-variable i))
-      'verb))
+    (cond ((or (sp::subject-variable i)
+               (sp::object-variable i))
+           'verb)))
   (:method or (i)
     (if (current-position-p 'adjective 'relative-clause)
       'adjective
@@ -134,15 +140,15 @@
          (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
                                          :pos 'verb
                                          :resource (phrase-named 's-be-comp))))
-           (make-complement-node 's (sp::value-of 'sp::item i) be)
-           (make-complement-node 'c (sp::value-of 'sp::value i) be)
+           (attach-subject (sp::value-of 'sp::item i) be)
+           (attach-complement (sp::value-of 'sp::value i) be)
            be))
         ((sp::itypep i 'sp::there-exists)
          (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
                                          :pos 'verb
                                          :resource (phrase-named 's-be-comp))))
-           (make-complement-node 's (find-word "there" 'pronoun) be)
-           (make-complement-node 'c (sp::value-of 'sp::value i) be)
+           (attach-subject (find-word "there" 'pronoun) be)
+           (attach-complement (sp::value-of 'sp::value i) be)
            be))
         (t (realize-via-bindings i))))
 
@@ -167,12 +173,15 @@
                         :resource (phrase-named 'adjective-phrase)))
         (ap (ecase pos
               ((adjective noun) 'adjective)
-              (verb (multiple-value-bind (head rpos)
-                        (sp::rdata-head-word adjective t)
-                      (declare (ignore head))
-                      (case rpos
-                        (:interjection 'adverbial-preceding)
-                        (otherwise 'vp-final-adjunct)))))))
+              ((adverb verb)
+               (if (sp::itypep adjective 'sp::intensifier)
+                 'adverbial-preceding
+                 (multiple-value-bind (head rpos)
+                     (sp::rdata-head-word adjective t)
+                   (declare (ignore head))
+                   (case rpos
+                     (:interjection 'adverbial-preceding)
+                     (otherwise 'vp-final-adjunct))))))))
     (make-complement-node 'a adjective adjp)
     (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
 
@@ -184,6 +193,26 @@
     (make-complement-node 'prep-object object pp)
     (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
 
+(defun possibly-pronoun (item)
+  (cond ((sp::itypep item 'sp::pronoun/first/singular)
+         (pronoun-named 'first-person-singular))
+        ((sp::itypep item 'sp::pronoun/first/plural)
+         (pronoun-named 'first-person-plural))
+        ((sp::itypep item 'sp::pronoun/second)
+         (pronoun-named 'second-person-singular))
+        ((sp::itypep item 'sp::pronoun/plural)
+         (pronoun-named 'third-person-plural))
+        (t item)))
+
+(defun attach-subject (subject dtn)
+  (make-complement-node 's (possibly-pronoun subject) dtn))
+
+(defun attach-object (object dtn)
+  (make-complement-node 'o (possibly-pronoun object) dtn))
+
+(defun attach-complement (complement dtn)
+  (make-complement-node 'c (possibly-pronoun complement) dtn))
+
 (defgeneric attach-via-binding (binding var-name dtn pos)
   (:method (binding var-name dtn pos)
     "Attach a binding as a subject, object, or prepositional phrase."
@@ -192,15 +221,16 @@
     (let* ((individual (sp::binding-body binding))
            (variable (sp::binding-variable binding))
            (value (sp::binding-value binding))
-           (subcats (sort (typecase value
-                            ((or sp::referential-category sp::individual)
-                             (sp::find-subcat-labels value variable individual)))
-                          #'< :key (lambda (label) ; prefer shorter words
-                                     (etypecase label
-                                       ((or string symbol)
-                                        (length (string label)))
-                                       ((or sp::word sp::polyword)
-                                        (length (sp::pname label)))))))
+           (subcats (stable-sort ; prefer shorter words
+                     (typecase value
+                       ((or sp::referential-category sp::individual)
+                        (sp::find-subcat-labels value variable individual)))
+                     #'< :key (lambda (label)
+                                (etypecase label
+                                  ((or string symbol)
+                                   (length (string label)))
+                                  ((or sp::word sp::polyword)
+                                   (length (sp::pname label)))))))
            (prep (or (find-if #'sp::word-p subcats) ; prefer single words
                      (find-if #'sp::polyword-p subcats))))
       (cond ((eql value sp::**lambda-var**))
@@ -208,17 +238,21 @@
                  (find :subject subcats))
              (if (current-position-p 'complement-of-be)
                (attach-pp "by" value dtn pos) ; passive subject
-               (make-complement-node 's value dtn)))
+               (attach-subject value dtn)))
             ((or (eql variable (sp::object-variable individual))
                  (find :object subcats))
-             (make-complement-node 'o value dtn))
+             (attach-object value dtn))
             ((sp::itypep value 'sp::attribute-value) ; essentially a modifier
              (attach-adjective value dtn pos))
             (prep
              (attach-pp (sp::get-mumble-word-for-sparser-word prep 'preposition)
-                        value dtn pos)))))
+                        value dtn pos))
+            ((find :thatcomp subcats)
+             (make-adjunction-node
+              (make-lexicalized-attachment 'restrictive-relative-clause value)
+              dtn)))))
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
-    "Attach a final adverb."
+    "Attach an adverb."
     (attach-adjective (sp::binding-value binding) dtn pos))
   (:method (binding (var-name (eql 'sp::has-determiner)) dtn pos)
     "Attach a determiner."
@@ -273,8 +307,8 @@
           'restrictive-relative-clause
           (let ((be (make-dtn :referent predicate
                               :resource (phrase-named 's-be-comp))))
-            (make-complement-node 's individual be)
-            (make-complement-node 'c predicate be)
+            (attach-subject individual be)
+            (attach-complement predicate be)
             (present-tense be)))
          dtn)
         (attach-adjective predicate dtn pos))))

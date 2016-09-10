@@ -28,9 +28,9 @@
                                  :following following
                                  :before preceding
                                  :during during
+                                 :in timeperiod
                                  :at timeperiod
                                  :over timeperiod
-                                 :in timeperiod
                                  :after after
                                  :before before))
 

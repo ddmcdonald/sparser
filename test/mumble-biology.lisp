@@ -81,3 +81,15 @@
 (deftest (say it is not transient in time)
   (mumble-says "it is not transient in time.")
   "it isn't transient in time")
+
+(deftest (say certain it is transient)
+  (mumble-says "I'm quite certain it is transient.")
+  "I am quite certain it is transient")
+
+(deftest (say confident it is transient)
+  (mumble-says "I am confident it is transient.")
+  "I am confident it is transient")
+
+(deftest (say transient with high probability)
+  (mumble-says "It is transient with a high probability.")
+  "it is transient with a high probability")
