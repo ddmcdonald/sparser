@@ -303,8 +303,8 @@
 (def-form-category  reflexive/pronoun)  ;; "yourself"
 
 (def-form-category  adjective)
-(def-form-category  comparative-adjective)
-(def-form-category  superlative-adjective)
+(def-form-category  comparative-adjp)
+(def-form-category  superlative-adjp)
 (def-form-category  proper-adjective)
 (def-form-category  comparative)
 (def-form-category  superlative)
@@ -322,6 +322,8 @@
 (def-form-category  unknown-word)
 (def-form-category  unknown-verb)
 
+
+(def-form-category than-np) ;; to mark "than MAPK" in "less sensitive than MAPK"
 
 
 ;;--- These are principally for labeling brackets
