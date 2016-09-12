@@ -124,6 +124,8 @@
           (case form ;; match with values in rules/brackets/assignments (!!)
             (adverb *adverb-brackets*)
             (comparative *comparative-brackets*)
+            ;; not sure if this is right, but we aren't using brackets anyway... (RJB)
+            (superlative *comparative-brackets*)
             ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
             ((det approximator sequencer) *default-determiner-brackets*)
             (standalone *standalone-brackets*)
