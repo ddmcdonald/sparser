@@ -95,7 +95,7 @@
 ;;  have a common interpretation.
 
 (define-comparative "more")
-(define-comparative "most")
+(define-superlative "most")
 
 ;; These don't combine with adverbs
 ;;
