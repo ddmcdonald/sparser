@@ -632,7 +632,7 @@
            (setq vg (bind-dli-variable 'adverb adverb vg)))
           (t vg)))))
 
-(defun interpret-adverb+verb (adverb adj-phrase) 
+(defun interpret-adverb+adjective (adverb adj-phrase) 
   (declare (special category::deictic-location category::pp))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   (if (word-p adj-phrase)
@@ -680,6 +680,8 @@
           ((has-adverb-variable? adj adj-phrase adverb)
            (setq adj (bind-dli-variable 'adverb adverb adj)))
           (t adj)))))
+
+
 
 (defun interpret-as-comp (as vp+ed)
   (declare (ignore as))
@@ -1403,6 +1405,11 @@
 (defun make-adj-comp (adj complement)
   ;;(push-debug `(,adj ,complement))  (lsp-break "make-adj-comp")
   (assimilate-subcat adj :thatcomp complement))
+
+(defun make-comparative-adjp-with-np (comparative than-np)
+  (bind-dli-variable 'compared-to
+                     than-np
+                     comparative))
 
                
 
