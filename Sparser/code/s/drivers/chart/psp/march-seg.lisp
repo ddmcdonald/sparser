@@ -204,7 +204,7 @@
   (and (cfr-p rule)
        (category-p (car (cfr-rhs rule)))
        (member (cat-name (car (cfr-rhs rule)))
-	       '(adverb comparative))))
+	       '(adverb comparative superlative))))
 
 
 ;; VGs may want a different order of pairs than NGs
