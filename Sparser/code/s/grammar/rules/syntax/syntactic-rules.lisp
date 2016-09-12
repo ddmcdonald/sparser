@@ -140,18 +140,28 @@
            :head :right-edge
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
+     (eval 
+      `(def-syntax-rule (comparative ,nb) ;; "black suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function adj-noun-compound left-edge right-edge)))
+     (eval 
+      `(def-syntax-rule (superlative ,nb) ;; "black suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function adj-noun-compound left-edge right-edge)))
      (eval
       `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
            :head :left-edge
            :form n-bar
            :referent (:function adj-postmodifies-noun left-edge right-edge)))
      (eval 
-      `(def-syntax-rule (comparative-adjective ,nb) ;; "black suv"
+      `(def-syntax-rule (comparative ,nb) ;; "black suv"
            :head :right-edge
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
      (eval
-      `(def-syntax-rule (,nb comparative-adjective)
+      `(def-syntax-rule (,nb comparative)
            :head :left-edge
            :form n-bar
            :referent (:function adj-postmodifies-noun left-edge right-edge)))
@@ -308,11 +318,7 @@
         :head :right-edge
         :form ,(second vv)
         :referent (:function interpret-adverb+verb left-edge right-edge)))
-  (eval
-   `(def-syntax-rule  (comparative ,(car vv))
-        :head :right-edge
-        :form ,(second vv)
-        :referent (:function interpret-adverb+verb left-edge right-edge)))
+  
   (eval
    `(def-syntax-rule  (,(car vv) adverb)
         :head :left-edge
@@ -320,6 +326,24 @@
         :referent (:function interpret-adverb+verb right-edge left-edge))))
 
 
+(loop for vv in '((verb+ed vg+ed)
+                  (verb+ing vg+ing)
+                  (vg+ing vg+ing)
+                  (vp+ing vp+ing)
+                  (vg+ed vg+ed)
+                  (vp+ed vp+ed))
+     do
+     (eval
+      `(def-syntax-rule  (comparative ,(car vv))
+           :head :right-edge
+           :form comparative
+           :referent (:head right-edge)))
+     
+     (eval
+      `(def-syntax-rule  (superlative ,(car vv))
+           :head :right-edge
+           :form superlative
+           :referent (:head right-edge))))
 
 (def-form-rule (not verb+ed) ;; "RAS not bound to ERK"
     :form vg+ed
@@ -801,7 +825,7 @@
 
 (def-syntax-rule (comparative adjective)
     :head :right-edge
-    :form comparative-adjective
+    :form comparative
     :referent (:head right-edge
                      :bind (comparative left-edge)))
 (cond
@@ -814,7 +838,7 @@
    (def-syntax-rule (adverb adjective)
        :head :right-edge
        :form adjective
-       :referent (:function interpret-adverb+verb left-edge right-edge))))
+       :referent (:function interpret-adverb+adjective left-edge right-edge))))
 
 ;;--- predicate adjective
 
@@ -830,14 +854,14 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
-(def-syntax-rule (comparative-adjective pp)
+(def-syntax-rule (comparative pp)
     :head :left-edge
-    :form adjp
+    :form comparative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
-(def-syntax-rule (superlative-adjective pp)
+(def-syntax-rule (superlative pp)
     :head :left-edge
-    :form adjp
+    :form superlative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
 (def-syntax-rule (adjective s) ;; "confident it is transient"
@@ -860,6 +884,18 @@ similar to an oncogenic RasG12V mutation (9)."))
   :head :left-edge
   :form adjp
   :referent (:function passive-is-covert-tocomp left-edge right-edge))
+
+(def-syntax-rule (comparative than-np)
+    :head :left-edge
+    :referent (:function make-comparative-adjp-with-np left-edge right-edge))
+
+(def-syntax-rule (comparative-adjp than-np)
+    :head :left-edge
+    :referent (:function make-comparative-adjp-with-np left-edge right-edge))
+
+(def-form-rule (than np)
+    :referent (:head right-edge :bind (np left-edge))
+    :form than-np)
 
 ;;;--------------------------------------------------------
 ;; new rules for numbered items -- needs review
