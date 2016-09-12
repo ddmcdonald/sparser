@@ -58,6 +58,22 @@
   :form vp
   :referent (:function make-copular-adjective left-edge right-edge))
 
+(def-form-rule (be comparative)
+  :form vp
+  :referent (:function make-copular-adjective left-edge right-edge))
+
+(def-form-rule (be comparative-adjp)
+  :form vp
+  :referent (:function make-copular-adjective left-edge right-edge))
+
+(def-form-rule (be superlative)
+  :form vp
+  :referent (:function make-copular-adjective left-edge right-edge))
+
+(def-form-rule (be superlative-adjp)
+  :form vp
+  :referent (:function make-copular-adjective left-edge right-edge))
+
 
 ;;--- be + pp
 
