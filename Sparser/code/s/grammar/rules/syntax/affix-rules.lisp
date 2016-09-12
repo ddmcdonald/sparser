@@ -72,19 +72,29 @@
           (let ((lemma (stem-form word)))
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
-              (setup-verb lemma)
-              (assign-brackets-as-a-main-verb lemma))))
+                (setup-verb lemma)
+                (assign-brackets-as-a-main-verb lemma))))
          (:ends-in-ing
           (let ((lemma (stem-form word)))
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
-              (setup-verb lemma)
-              (assign-brackets-as-a-main-verb lemma))))
+                (setup-verb lemma)
+                (assign-brackets-as-a-main-verb lemma))))
          (:ends-in-ly
           (tr :defining-as-given-morph 'adverb)
           (if *edge-for-unknown-words*
-            (setup-adverb word)
-            (assign-brackets-to-adverb word)))
+              (setup-adverb word)
+              (assign-brackets-to-adverb word)))
+         (:ends-in-er
+          (tr :defining-as-given-morph 'comparative)
+          (when *edge-for-unknown-words*
+            (setup-unknown-word-by-default word)
+            ))
+         (:ends-in-est
+          (tr :defining-as-given-morph 'superlative)
+          (if *edge-for-unknown-words*
+              (setup-unknown-word-by-default word)
+              ))
          (otherwise
           (push-debug `(,word ,morph-keyword))
           (error "Unexpected affix keyword: ~A"
@@ -96,18 +106,28 @@
            (n
             (tr :defining-as-given-morph 'noun)
             (if *edge-for-unknown-words*
-              (setup-common-noun word)
-              (assign-brackets-as-a-common-noun word)))
+                (setup-common-noun word)
+                (assign-brackets-as-a-common-noun word)))
            (adj
             (tr :defining-as-given-morph 'adjective)
             (if *edge-for-unknown-words*
-              (setup-adjective word)
-              (assign-brackets-to-adjective word)))
+                (setup-adjective word)
+                (assign-brackets-to-adjective word)))
+           (comparative
+            (tr :defining-as-given-morph 'adjective)
+            (if *edge-for-unknown-words*
+                (setup-comparative word)
+                nil))
+           (superlative
+            (tr :defining-as-given-morph 'adjective)
+            (if *edge-for-unknown-words*
+                (setup-superlative word)
+                nil))
            (v
             (tr :defining-as-given-morph 'verb)
             (if *edge-for-unknown-words*
-              (setup-verb word)
-              (assign-brackets-as-a-main-verb word)))        
+                (setup-verb word)
+                (assign-brackets-as-a-main-verb word)))        
            (otherwise
             (push-debug `(,word ,morph-keyword))
             (error "Unexpected cons affix keyword: ~A"
