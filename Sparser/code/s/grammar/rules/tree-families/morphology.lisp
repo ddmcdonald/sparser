@@ -863,6 +863,16 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
               (apply #'make-cn-plural-rules word category referent
                      special-cases)))))
 
+
+(defmethod make-rules-for-head ((pos (eql :adjective)) word category referent &rest special-cases)
+  "Define rules for a common noun and possibly its plurals."
+  (let ((adj-rules (call-next-method)))
+    (if (or *inihibit-constructing-plural* (punctuation? word))
+      adj-rules
+      (append adj-rules
+              (apply #'make-adj-comparative-rules word category referent
+                     special-cases)))))
+
 (defvar *deferred-collection-plurals* nil
   "An alist of word and category for all the plurals created before the
    category 'collection' was defined, mostly lemmas in the upper model.")
@@ -881,7 +891,9 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
           (record-inflections inflections word :noun)
           (loop for i in inflections ;; may not be right - needs review
                 do (record-lemma i word :noun))
-          (return rules)))
+       (return rules)))
+
+
 
 (defun make-cn-plural-rule (plural category referent)
   (assign-brackets-as-a-common-noun plural)
@@ -929,6 +941,34 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
        (string-append (subseq pname 0 (- (length pname) 1)) "ies"))
       (t (string-append pname "s")))))
 
+(defun make-adj-comparative-rules (word category referent)
+  (list
+   (define-cfr category (list (make-comparative-word word))
+     :form  category::comparative
+     :referent category)))
+
+;; These need to be made more robust -- they will produce "biger" and not "bigger", etc.
+(defun make-comparative-word (word)
+  (let* ((pname (pname word))
+         (lastchar (subseq pname (- (length pname) 1))))
+    (define-word/expr
+        (if (member lastchar '("y"))
+            (string-append (subseq pname 0 (- (length pname) 1)) "ier")
+            (string-append pname "er")))))
+
+(defun make-adj-superlative-rules (word category referent)
+  (list
+   (define-cfr category (list (make-superlative-word word))
+     :form  category::superlative
+     :referent category)))
+
+(defun make-superlative-word (word)
+  (let* ((pname (pname word))
+         (lastchar (subseq pname (- (length pname) 1))))
+    (define-word/expr
+        (if (member lastchar '("y"))
+            (string-append (subseq pname 0 (- (length pname) 1)) "iest")
+            (string-append pname "er")))))
 
 
 (defun plural-version/pw (pw)
