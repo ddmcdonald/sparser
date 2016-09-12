@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  February 2016
+;;;  Version:  September 2016
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -504,6 +504,11 @@
         :head :left-edge
         :form ,(second vv)
         :referent (:function assimilate-thatcomp left-edge right-edge)))
+     (eval
+   `(def-syntax-rule (,(car vv) subj+verb) ;; "I am certain (that) there is."
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function assimilate-thatcomp left-edge right-edge)))
   (eval
    `(def-syntax-rule (,(car vv) whethercomp)
         :head :left-edge
@@ -841,6 +846,11 @@ similar to an oncogenic RasG12V mutation (9)."))
     :referent (:function make-adj-comp left-edge right-edge))
 
 (def-syntax-rule (adjective thatcomp) ;; Dec #24
+  :head :left-edge
+  :form adjp
+  :referent (:function make-adj-comp left-edge right-edge))
+
+(def-syntax-rule (adjective subj+verb) ;; "I’m quite sure there isn’t."
   :head :left-edge
   :form adjp
   :referent (:function make-adj-comp left-edge right-edge))
