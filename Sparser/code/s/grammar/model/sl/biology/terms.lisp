@@ -549,6 +549,7 @@
      :realization 
      (:adj "effective"
            :against theme
+           :in theme
 	   :on theme))
 
 (define-category effector :specializes protein ;; NOT SURE WHAT THE RIGHT SUPER is
