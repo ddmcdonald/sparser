@@ -237,11 +237,9 @@ be biology specific, since they aren't. |#
 (adj "further" :super bio-predication)
 (define-adverb "further")
 
-
+(adj "great" :super bio-predication)
 (adj "high" :super bio-predication)
-(define-category HIGHER :specializes bio-relation
-  :realization 
-  (:adj "higher"))
+
 (adj "initial" :super bio-predication)
 (adj "least" :super bio-predication)
 
