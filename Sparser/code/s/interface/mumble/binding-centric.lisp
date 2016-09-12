@@ -143,6 +143,12 @@
            (attach-subject (sp::value-of 'sp::item i) be)
            (attach-complement (sp::value-of 'sp::value i) be)
            be))
+        ((sp::itypep i 'sp::explicit-suggestion)
+         (let ((dtn (realize-via-bindings (sp::value-of 'sp::suggestion i)))
+               (m (sp::value-of 'sp::marker i))
+               (ap 'initial-adverbial))
+           (make-adjunction-node (make-lexicalized-attachment ap m) dtn)
+           dtn))
         ((sp::itypep i 'sp::there-exists)
          (let ((be (realize-via-bindings (sp::value-of 'sp::predicate i)
                                          :pos 'verb

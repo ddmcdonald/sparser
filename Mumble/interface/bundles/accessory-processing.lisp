@@ -37,9 +37,8 @@
     (attach-by-splicing ap position value)))
 
 (defun process-command-accessory ()
-  (let* ((root *current-phrasal-root*)
-         (clause (node root)))
-    (remove-subject clause)
+  (let ((root *current-phrasal-root*))
+    (remove-subject root)
     (change-state
      ':aux-state 'unmarked (state root))))
 

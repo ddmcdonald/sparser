@@ -36,10 +36,13 @@
           (error "The subject isn't free. Something's wrong"))
         (make-complement-node subject trace dtn)))))
 
-(defmethod remove-subject ((clause phrasal-root))
-  (let ((subject-slot (first-constituent clause)))
-    (let ((predicate-slot (next subject-slot)))
-      (setf (first-constituent clause) predicate-slot))))
+(defmethod remove-subject ((clause phrasal-context))
+  (let* ((positions (position-table clause))
+         (subject-slot (cdr (assoc 'subject positions))))
+    (unless subject-slot
+      (error "There is no subject in the position table of ~a" clause))
+    (splice-out-slot subject-slot)))
+
 
 (defmethod add-dummy-subject ((dtn derivation-tree-node))
   "Called from the command accessory. That accessory will call
