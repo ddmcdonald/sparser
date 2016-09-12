@@ -110,6 +110,7 @@
           "because"
           "besides"
           "but"
+          "but rather"
 	  "by contrast"
           ;;"consequently" -- to handle "and consequently activated RAS" preventing "activated" from being an ng-start?
           "even"
@@ -134,6 +135,7 @@
           "once"
           "otherwise"
           "prior to"
+          "rather than"
           "since"
           "so"
           ;;"such as"
