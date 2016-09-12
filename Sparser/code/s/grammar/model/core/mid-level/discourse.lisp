@@ -107,16 +107,15 @@
  is only used in the imperative, but there's no way to formulate
  that. This is not the 'let' of permision ('I let him do it').
    This is NOT an interjection, but that's the only way to get it
- into Mumble. I wanted to use :word but that's no available now
+ into Mumble. I wanted to use :word but that's not available now
  on the Mumble side of the fence. In other respects the idea is
- to make this just a 'word' is to force the chunker
- to leave it alone.
-  It also should use the apostrophe fsa to expand this into
+ to make this just a 'word' is to force the chunker to leave it alone.
+   It also should use the apostrophe fsa to expand this into
  'let us', however doing that would require writing grammar to
  handle, e.g. 'us build a staircase', which it more trouble
  that it's worth for just this one instance.")
 ;; "Let's enjoy ourselves, shall we?"  QGLS pg 341
-;; "let him go", "let go of the ball" -- aux?
+;; "let him go", "let go of the ball"
 
 (define-category suppose-as-directive
   :instantiates self
