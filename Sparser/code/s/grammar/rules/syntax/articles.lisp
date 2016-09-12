@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2016
+;;;  Version:  September 2016
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -91,16 +91,12 @@
 ;;;------------
 ;;; form rules
 ;;;------------
-;; syntactic rule covering all of these inserted into 
-;; syntactic-rules.lisp 
 
-(unless t
-  ;; This was causing problems for some generation in Mumble from Krisp
-  ;; in (P "the block on the right end of the row.")
-  ;;  the NP "the right end" used one of these rules rather than the more
-  ;;  general syntactic rules, and Alex could not find the determiner
-  ;; DAVID -- let's talk about why these rules are needed
-  ;; (current-script :biology)
+(when (current-script :fire)
+  ;; And also several others, such as default and maybe grok.
+  ;; These configurations do not use syntactic rules except under
+  ;; very controlled circumstances so these explicit rules
+  ;; are required.
   (progn
 ;;--- a/an
 
