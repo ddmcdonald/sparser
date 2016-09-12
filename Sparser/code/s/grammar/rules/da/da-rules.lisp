@@ -1305,11 +1305,11 @@
 |#
 
 
-(define-debris-analysis-rule comparative-adj-than-np
-    :pattern (COMPARATIVE-ADJECTIVE "than" np)
-    :action (:function comparative-adj-than-np first second third))
+(define-debris-analysis-rule comparative-than-np
+    :pattern (COMPARATIVE "than" np)
+    :action (:function comparative-than-np first second third))
 
-(defun comparative-adj-than-np (comp-edge than-edge np-edge)
+(defun comparative-than-np (comp-edge than-edge np-edge)
   (declare (special comp-edge than-edge np-edge))
   (make-edge-spec
            :category (edge-category comp-edge)
