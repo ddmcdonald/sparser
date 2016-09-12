@@ -106,9 +106,9 @@
           category::det) ;; "that"
 	 (setf (edge-form edge) category::np))
 
-        (category::comparative-adjective
+        (category::comparative
          category::comparative-adjp)
-        (category::superlative-adjective
+        (category::superlative
          category::superlative-adjp)
         
 	((category::verb 
