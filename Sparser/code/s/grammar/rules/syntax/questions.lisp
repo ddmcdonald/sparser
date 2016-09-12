@@ -80,7 +80,7 @@
         ((and (= 3 (length edges))
               (itypep (edge-referent (car edges)) 'be))                  
          (cond ((member (cat-name (edge-form (third edges)))
-                        '(adjp adjective))
+                        '(adjp adjective comparative superlative comparative-adjp superlative-adjp))
                 (make-polar-adjective-question start-pos end-pos edges))
                ((member (cat-name (edge-form (third edges)))
                         '(pp))
