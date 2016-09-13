@@ -1,7 +1,3 @@
-
-
-
-
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 2016  David D. McDonald  -- all rights reserved
 ;;;
@@ -28,7 +24,9 @@
    ;; Positive reasons to assume we can compose
    (or (subcategorized-variable head :m adjective)
        (subcategorized-variable adjective :subject head)
-       (itypep adjective 'attribute-value))))
+       ;; These next two tests are too weak.
+       (itypep adjective 'attribute-value)
+       (itypep adjective 'attribute))))
 
 
 (defun adjective-phrase? (e)
