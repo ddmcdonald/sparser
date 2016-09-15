@@ -503,7 +503,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "AZIN1_HUMAN" ("Az"))
 
 
-
+(define-protein "Q14298_HUMAN" ("FceRI"))
 
 
 (define-protein "Q2NL66_HUMAN" ("USP15" "Q2NL66_HUMAN"))
