@@ -255,20 +255,21 @@
   (let* ((*allow-pure-syntax-rules* nil)
          (*allow-form-rules* nil)
          (tt (treetops-between start-pos end-pos))
-         (left-treetop (car tt))
-         (middle-position (pos-edge-ends-at left-treetop))
-         (edges-ending-there (all-edges-on (pos-ends-here middle-position)))
-         (edges-starting-there (all-edges-on (pos-starts-here middle-position)))
-         rule )
-    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
-    (let ((edge
-           (catch :succeeded
-             (dolist (left-edge edges-ending-there)
-               (dolist (right-edge edges-starting-there)
-                 (setq rule (multiply-edges left-edge right-edge))
-                 (when rule
-                   (throw :succeeded
-                     (make-completed-binary-edge left-edge right-edge rule))))))))
-      edge)))
+         (left-treetop (car tt)))
+    (when (edge-p left-treetop)
+      (let* ((middle-position (pos-edge-ends-at left-treetop))
+             (edges-ending-there (all-edges-on (pos-ends-here middle-position)))
+             (edges-starting-there (all-edges-on (pos-starts-here middle-position)))
+             rule )
+        (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+        (let ((edge
+               (catch :succeeded
+                 (dolist (left-edge edges-ending-there)
+                   (dolist (right-edge edges-starting-there)
+                     (setq rule (multiply-edges left-edge right-edge))
+                     (when rule
+                       (throw :succeeded
+                         (make-completed-binary-edge left-edge right-edge rule))))))))
+          edge)))))
 
 

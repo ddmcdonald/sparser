@@ -927,7 +927,9 @@
   ;; analogy is to vg+ed + to-comp. Rule calling this is (vg vg+passive)
   (cond
     (*subcat-test*
-     (itypep vp 'copular-predication))
+     (and vg
+          (subcategorized-variable vg :to-comp vp)
+          (itypep vp 'copular-predication)))
     (t (adjoin-tocomp-to-vg vg vp))))
 
 

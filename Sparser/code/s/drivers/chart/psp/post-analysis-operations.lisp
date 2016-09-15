@@ -23,6 +23,9 @@
   (when *interpret-in-context*
     (loop for tt in treetops when (edge-p tt)
        when (and (category-p (edge-category tt))
+                 (edge-referent tt)
+                 ;; in "More detailed understanding of these various pathways will require careful analysis of BMMCs designed to be deficient in multiple adapters and signaling molecules."
+                 ;; there is a NIL interpretation of "designed to be deficient"
 		 (not
 		  (member (cat-name (edge-category tt))
 			  ;; we don't interpret such quoted strings

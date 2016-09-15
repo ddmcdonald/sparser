@@ -168,6 +168,10 @@
           ;; we'll never get out of this loop. What can we use
           ;; as a backstop?
           (return))
+         ((null next-edge)
+          ;; this happened in
+          ;; "Whether ILK, TORC2 or another enzyme is the primary AKT hydrophobic-motif Ser473 kinase specifically downstream of β1 integrins has not been investigated, and this is therefore an important open question."
+          (push next-edge other-edges))
          ((itypep (edge-referent next-edge) 'attribute) ;; e.g. color
           (setq attr-edge next-edge))
          ((itypep (edge-referent next-edge) 'attribute-value)
