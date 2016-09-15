@@ -172,6 +172,7 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
                 ;; from used as a proper name: "4-monophosphate (Sigma)"
                 (return word))
                (otherwise
+                #+ignore
                 (warn "For ~s: new case for :lowercase ~a"
                        (word-pname lc-word) actual-state))))
             
