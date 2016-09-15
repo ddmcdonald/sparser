@@ -111,6 +111,18 @@
 (define-lambda-variable 'predication
     nil category::top)
 
+(define-lambda-variable 'comparative-predication
+    nil category::top)
+
+(define-lambda-variable 'compared-to
+    nil category::top)
+
+(define-lambda-variable 'superlative-predication
+    nil category::top)
+
+(define-lambda-variable 'superlative-from-set
+    nil category::top)
+
 (define-lambda-variable 'predicate
     nil category::top)
 
@@ -286,6 +298,41 @@
        (setq head (bind-dli-variable 'predication predicate head))
        head))))
 
+(defun comparative-adj-noun-compound (adjective head &optional adj-edge)
+  (declare (special category::determiner))
+  (when (category-p head) (setq head (individual-for-ref head)))
+  (cond
+    (*subcat-test*
+     (takes-adj? head adjective))
+    (t ;; Dec#2 has "low nM" which requires coercing 'low'
+     ;; into a number. Right now just falls through
+     (let ((predicate 
+	     (if (and (not (is-basic-collection? adjective))
+                      (find-variable-for-category :subject (itype-of adjective)))
+		 (create-predication-by-binding
+                  :subject **lambda-var** adjective
+                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
+		 (individual-for-ref adjective))))
+       (setq head (bind-dli-variable 'comparative-predication predicate head))
+       head))))
+
+(defun superlative-adj-noun-compound (adjective head &optional adj-edge)
+  (declare (special category::determiner))
+  (when (category-p head) (setq head (individual-for-ref head)))
+  (cond
+    (*subcat-test*
+     (takes-adj? head adjective))
+    (t ;; Dec#2 has "low nM" which requires coercing 'low'
+     ;; into a number. Right now just falls through
+     (let ((predicate 
+	     (if (and (not (is-basic-collection? adjective))
+                      (find-variable-for-category :subject (itype-of adjective)))
+		 (create-predication-by-binding
+                  :subject **lambda-var** adjective
+                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
+		 (individual-for-ref adjective))))
+       (setq head (bind-dli-variable 'superlative-predication predicate head))
+       head))))
 
 (defun adj-postmodifies-noun (n adj &optional (adj-edge nil))
   ;; adj-edge is set when we are postmodifying
@@ -1411,10 +1458,30 @@
                      than-np
                      comparative))
 
-               
 
+(defun maybe-extend-comparative-with-than-np (np than-np)
+  (cond
+    (*subcat-test* (value-of 'comparative-predication np))
+    (t
+     (rebind-dli-variable 'comparative-predication
+                          (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
+                          np))))
 
+(defun rebind-dli-variable (var/name value individual)
+  ;; to be written corectly -- want to create a variant of the head
+  ;;  where the previous value of the variable var is replaced by value
+  ;;  For the moment, just add a new binding
+  (bind-dli-variable var/name value individual))
 
+#+ignore
+(defun maybe-extend-superlative-with-of-pp (np pp)
+  (cond
+    (*subcat-test* (value-of 'superlative-predication np))
+    (t
+     (rebind-dli-variable 'superlative-predication
+                          (bind-dli-variable 'superlative-from-set (value-of 'pobj pp)
+                                             (value-of 'superlative-predication np))
+                          np))))
 
 ;;;---------
 ;;; be + PP
