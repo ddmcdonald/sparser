@@ -104,29 +104,30 @@
 ;;;-------------------------------------
 
 (defun apply-single-category-rdata (individual category)
-  "Called from define-individual."
-  (dolist (rdata (cat-realization category))
-    (make-rules-for-rdata category rdata individual)))
+  "Make rules for variable heads."
+  (dolist (rdata (cat-realization category) individual)
+    (loop for (pos head) on (rdata-head-words rdata) by #'cddr
+          when (lambda-variable-p head)
+            do (add-rules (make-rules-for-head pos head category individual)
+                          individual))))
 
 
 ;;;-----------------
-;;; the real driver
+;;; the main driver
 ;;;-----------------
 
-(defun make-rules-for-rdata (category rdata &optional individual &aux
-                             (referent (or individual category)))
+(defun make-rules-for-rdata (category rdata)
   (check-type category category)
   (when rdata
     (check-type rdata realization-data)
-    (flet ((add-rules (rules) (add-rules rules referent)))
-      (add-rules (make-rules-for-head t rdata category referent))
-      (unless individual
-        (with-slots (etf mapping locals) rdata
-          (dolist (schema (and etf (filter-schemas (etf-cases etf))))
-            (add-rules (instantiate-rule-schema schema mapping category)))
-          (dolist (schema locals)
-            (add-rules (instantiate-rule-schema schema mapping category
-                                                :local-cases? category))))))))
+    (flet ((add-rules (rules) (add-rules rules category)))
+      (add-rules (make-rules-for-head t rdata category category))
+      (with-slots (etf mapping locals) rdata
+        (dolist (schema (and etf (filter-schemas (etf-cases etf))))
+          (add-rules (instantiate-rule-schema schema mapping category)))
+        (dolist (schema locals)
+          (add-rules (instantiate-rule-schema schema mapping category
+                                              :local-cases? category)))))))
 
 
 ;;;---------------------------
