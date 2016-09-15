@@ -256,7 +256,9 @@
             ((find :thatcomp subcats)
              (make-adjunction-node
               (make-lexicalized-attachment 'restrictive-relative-clause value)
-              dtn)))))
+              dtn))
+            ((find :m subcats)
+             (attach-adjective value dtn pos)))))
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach an adverb."
     (attach-adjective (sp::binding-value binding) dtn pos))

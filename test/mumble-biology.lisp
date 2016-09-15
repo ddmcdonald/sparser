@@ -70,7 +70,7 @@
 
 (deftest (say decrease binding rate of nras and braf)
   (mumble-says "Decrease the binding rate of NRAS and BRAF.")
-  "decrease the kinetics of NRAS and BRAF")
+  "decrease the binding rate of NRAS and BRAF")
 
 ;; Section 2.4.
 
