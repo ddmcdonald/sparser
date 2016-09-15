@@ -529,18 +529,6 @@
          :upon affected-process))
 
 
-;;/// "catalysis of phosphorylation by MEK"
-(define-category catalytic-activity
-  :specializes caused-bio-process
-  :bindings (uid "GO:0003824")
-  :binds ((catalyst (:or enzyme bio-complex)))
-  :realization
-  (:verb "catalyze" :noun "catalysis" :adj "catalytic"
-         :etf (svo-passive) 
-         :s catalyst
-         :o affected-process
-         :by catalyst
-         :of affected-process))
 
 (define-category cause :specializes positive-bio-control
   :realization
@@ -576,7 +564,7 @@
 (def-synonym change
             (:noun "variation"))
 
-(define-category conversion :specializes change   ;; for our purposes, since we only have biologically relevant reactions
+(define-category conversion-change :specializes change   ;; for our purposes, since we only have biologically relevant reactions
    :realization (:noun "conversion"
                        :verb "convert"
                        :etf (svo-passive)

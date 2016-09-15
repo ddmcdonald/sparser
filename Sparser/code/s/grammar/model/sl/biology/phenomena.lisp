@@ -505,7 +505,7 @@ it is created from N-terminus to C-terminus.|#
   :binds ((pathway pathway)
           (nextStep PathwayStep)
 	  
-          (stepProcess (:or control pathway catalysis 
+          (stepProcess (:or control pathway catalytic-activity 
                             biochemical-reaction bio-transport)))
   :instantiates :self
   :lemma (:common-noun "step")

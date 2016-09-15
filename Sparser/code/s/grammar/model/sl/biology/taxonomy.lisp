@@ -561,7 +561,8 @@
                  ((dataSource)
                   (xref)))
 
-(define-category catalysis :specializes positive-bio-control
+#+ignore
+(define-category catalysis-reaction :specializes  ;; rename to avoid conflict with biopax model
   :restrict ((object biochemical-reaction))
   :binds ((controlType)
           ;;(controlled BiochemicalReaction) from BioPax3
@@ -569,9 +570,22 @@
           )
   :realization
   (:verb "catalyze" :noun "catalysis" 
-         :etf(svo-passive) ));;/// "catalyysis of phosphorylation by MEK"
+         :etf(svo-passive)
 
-(define-category enzyme-activity :specializes catalysis
+         ));;/// "catalyysis of phosphorylation by MEK"
+
+;;/// "catalysis of phosphorylation by MEK"
+(define-category catalytic-activity :specializes positive-bio-control
+  :restrict ((object biochemical-reaction))
+  :bindings (uid "GO:0003824")
+  :binds ((controlType)
+          (catalyst (:or enzyme bio-complex)))
+  :realization
+  (:verb "catalyze" :noun "catalysis" :adj "catalytic"
+         :etf (svo-passive)))
+
+
+(define-category enzyme-activity :specializes catalytic-activity
   :realization
   (:noun "enzyme activity"))
 
