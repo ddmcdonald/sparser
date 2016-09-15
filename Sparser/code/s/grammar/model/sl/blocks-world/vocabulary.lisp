@@ -53,9 +53,8 @@ with other blocks, mention in utterances, etc. |#
   :binds ((position relative-position))
   :instantiates :self
   :index (:permanent :key name)
-  :realization ;; for connection to Mumble
-  (:noun "block"
-         :m position))
+  :realization (:noun "block"
+                :m position))
 
 #|
 (define-category drug
@@ -78,8 +77,7 @@ support a substantial number of blocks.
   :specializes object
   :mixins (has-name)
   :index (:permanent :list)
-  :realization
-     (:common-noun "table"))
+  :realization (:common-noun "table"))
 
 
 (define-category composite-object :specializes object
@@ -137,15 +135,12 @@ support a substantial number of blocks.
   :specializes achievement
   :mixins (with-an-agent with-specified-location)
   :binds ((theme object))
-  :realization
-  (:verb "add"
-         :etf (svo-passive)
-         :o theme
-         :s agent
-         :loc-pp-complement (next\ to on on\ top\ of at)
-         ;; requires a PP -- not quite true
-         :mumble ("add" svo :o theme)))
-
+  :realization (:verb "add"
+                :etf (svo-passive)
+                :o theme
+                :s agent
+                :loc-pp-complement (next\ to on on\ top\ of at)
+                :mumble ("add" svo :o theme)))
 
 ;; Ignore "let's" for now (1.1), 
 
