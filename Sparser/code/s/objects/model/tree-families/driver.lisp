@@ -120,12 +120,13 @@
     (check-type rdata realization-data)
     (flet ((add-rules (rules) (add-rules rules referent)))
       (add-rules (make-rules-for-head t rdata category referent))
-      (with-slots (etf mapping locals) rdata
-        (dolist (schema (and etf (filter-schemas (etf-cases etf))))
-          (add-rules (instantiate-rule-schema schema mapping category)))
-        (dolist (schema locals)
-          (add-rules (instantiate-rule-schema schema mapping category
-                                              :local-cases? category)))))))
+      (unless individual
+        (with-slots (etf mapping locals) rdata
+          (dolist (schema (and etf (filter-schemas (etf-cases etf))))
+            (add-rules (instantiate-rule-schema schema mapping category)))
+          (dolist (schema locals)
+            (add-rules (instantiate-rule-schema schema mapping category
+                                                :local-cases? category))))))))
 
 
 ;;;---------------------------
