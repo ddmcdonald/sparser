@@ -1305,18 +1305,6 @@
 |#
 
 
-(define-debris-analysis-rule comparative-than-np
-    :pattern (COMPARATIVE "than" np)
-    :action (:function comparative-than-np first second third))
-
-(defun comparative-than-np (comp-edge than-edge np-edge)
-  (declare (special comp-edge than-edge np-edge))
-  (make-edge-spec
-           :category (edge-category comp-edge)
-           :form (edge-form comp-edge)
-           :referent
-           (bind-dli-variable 'compared-to (edge-referent np-edge) (edge-referent comp-edge))))
-
 
 (define-debris-analysis-rule interjection-s
     :pattern (interjection S)
