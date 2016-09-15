@@ -144,24 +144,14 @@
       `(def-syntax-rule (comparative ,nb) ;; "black suv"
            :head :right-edge
            :form n-bar
-           :referent (:function adj-noun-compound left-edge right-edge)))
+           :referent (:function comparative-adj-noun-compound left-edge right-edge)))
      (eval 
       `(def-syntax-rule (superlative ,nb) ;; "black suv"
            :head :right-edge
            :form n-bar
-           :referent (:function adj-noun-compound left-edge right-edge)))
+           :referent (:function superlative-adj-noun-compound left-edge right-edge)))
      (eval
       `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
-           :head :left-edge
-           :form n-bar
-           :referent (:function adj-postmodifies-noun left-edge right-edge)))
-     (eval 
-      `(def-syntax-rule (comparative ,nb) ;; "black suv"
-           :head :right-edge
-           :form n-bar
-           :referent (:function adj-noun-compound left-edge right-edge)))
-     (eval
-      `(def-syntax-rule (,nb comparative)
            :head :left-edge
            :form n-bar
            :referent (:function adj-postmodifies-noun left-edge right-edge)))
@@ -893,9 +883,23 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :left-edge
     :referent (:function make-comparative-adjp-with-np left-edge right-edge))
 
-(def-form-rule (than np)
-    :referent (:head right-edge :bind (np left-edge))
-    :form than-np)
+(def-syntax-rule (np than-np)
+    :head :left-edge
+    :form np
+    :referent (:function maybe-extend-comparative-with-than-np left-edge right-edge))
+
+#+ignore ;; preposed superlatives don't extrapose?
+(def-form-rule (np of)
+    :head :left-edge
+    :form np
+    :referent (:function maybe-extend-superlative-with-of-pp left-edge right-edge))
+
+(loop for nb in `(np ,@*n-bar-categories*)
+   do
+     (eval
+      `(def-form-rule (than ,nb)
+           :referent (:head right-edge :bind (np left-edge))
+           :form than-np)))
 
 ;;;--------------------------------------------------------
 ;; new rules for numbered items -- needs review
