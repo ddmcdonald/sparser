@@ -93,8 +93,8 @@ part even if it's invariably left out as obvious except in comparisons. |#
 ;; give it's realization some content -- for now ignoring the fact that
 ;; there's a psi involved.  ///This should be subsumed by the end-date that
 ;; uses it for fiscal quarters, but right now (2/05) just want to get further
-;; along.
-;;
+;; along. (9/16) conflicts with blocks-world definition - disabled.
+#+ignore
 (define-category end
   :binds ((thing-ended)
           (time-ended))

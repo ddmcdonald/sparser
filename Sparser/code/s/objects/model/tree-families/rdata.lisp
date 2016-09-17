@@ -99,34 +99,42 @@ Should mirror the cases on the *single-words* ETF."
                :additional-rules
                :mumble)))
 
+(defun check-rdata (rdata)
+  (loop for (key value) on rdata by #'cddr
+        do (check-type key realization-keyword "a realization keyword")))
+
 (deftype subcat-keyword ()
-  '(member :s :o :m :adv
-           :about :above :across :after :against :among :as :as-comp :at
+  '(member :about :above :across :after :against :among :as :as-comp :at
            :before :below :between :but\ not :by
            :designator :during
            :following :for :from
            :ifcomp :in :into
            :like
+           :m
            :next\ to
-           :of :on :onto :on\ top\ of :over
+           :object :of :on :onto :on\ top\ of :over
            :premod
-           :such\ as
+           :subject :such\ as
            :to :to-comp :thatcomp :through :throughout :toward :towards
            :under :unlike :upon
            :via :whethercomp :with :within :without))
 
-(defun check-rdata (rdata)
-  (loop for (keyword value) on rdata by #'cddr
-        do (check-type keyword realization-keyword "a realization keyword")))
+(defparameter *subcat-aliases*
+    '((:s . :subject)
+      (:o . :object))
+  "An alist of aliases for subcategorization slot names.")
 
-(defun decode-slots (rdata)
+(defun decode-subcat-slots (rdata)
   "Separate subcategorization slots from the rest of the realization data."
   (loop with slots and args
         for (key value) on rdata by #'cddr
+        as alias = (assoc key *subcat-aliases*)
+        if alias do (setq key (cdr alias))
         do (etypecase key
-             (subcat-keyword (push value slots) (push key slots))
-             (keyword (push value args) (push key args)))
-        finally (return (values args slots))))
+             (subcat-keyword (push key slots) (push value slots))
+             (keyword (push key args) (push value args)))
+        finally (return (values (nreverse args)
+                                (nreverse slots)))))
 
 ;;;----------------------
 ;;; Standalone def forms
@@ -169,6 +177,7 @@ Should mirror the cases on the *single-words* ETF."
    The routines in objects;model;tree-families;driver.lisp create the rules
    when individuals of the category are created. The function that actually
    makes the rules is make-rules-for-rdata."
+  (declare (optimize debug))
   (check-type category category)
   (check-type rdata list)
   (when delete
@@ -178,10 +187,12 @@ Should mirror the cases on the *single-words* ETF."
                    (keyword (list rdata)) ; one realization
                    (list rdata)) ; multiple realizations
            (rdata category))
-    (multiple-value-bind (args slots) (decode-slots rdata)
+    (multiple-value-bind (args slots) (decode-subcat-slots rdata)
+      (when (fboundp 'fom-subcategorization) ; FIX LOAD ORDER
+        (apply #'fom-subcategorization category slots))
       (make-rules-for-rdata category
-                            (if (or slots (getf args :etf))
-                              (apply #'decode-shortcut-rdata category :slots slots args)
+                            (if (getf args :etf)
+                              (apply #'decode-shortcut-rdata category args)
                               (apply #'decode-rdata category args))))
     (when mumble
       (apply-mumble-rdata category rdata))))
@@ -202,7 +213,7 @@ Should mirror the cases on the *single-words* ETF."
    (locals :initform nil :initarg :local-rules :accessor rdata-local-rules
     :documentation "The rules that are written out in direct form
       to cover cases not incorporated in the ETF of the realization.")
-   (subcats :initform nil :initarg :subact-frames :accessor rdata-subcat-frames
+   (subcat :initform nil :initarg :subcat-frame :accessor rdata-subcat-frame
     :documentation "A list of all the known subcategorization patterns")
    (heads :initform nil :initarg :heads :accessor rdata-head-words
     :documentation "A plist of head words keyed on part of speech.")))
@@ -274,14 +285,14 @@ e.g. 'comparative', and the realization field is used to provide
 the rspec for the words of instances of the category."
   ;;/// look at apply-realization-schema-to-individual for part of
   ;; the old approach to this problem
-  (loop for (keyword string) on lemmata by #'cddr
-        do (unless (keywordp keyword) ;; friendly DWIM
-             (setq keyword (intern (string keyword) :keyword)))
-           (check-type keyword head-keyword "a valid realization keyword")
-           (check-type string (or string cons))
-           (let* ((head (deref-rdata-word string category))
-                  (rules (make-rules-for-head keyword head category category)))
-             (setf (lemma category keyword) head)
+  (loop for (key lemma) on lemmata by #'cddr
+        do (unless (keywordp key) ;; friendly DWIM
+             (setq key (intern (string key) :keyword)))
+           (check-type key head-keyword "a valid realization keyword")
+           (check-type lemma (or string cons))
+           (let* ((head (deref-rdata-word lemma category))
+                  (rules (make-rules-for-head key head category category)))
+             (setf (lemma category key) head)
              (add-rules rules category))))
 
 
@@ -314,11 +325,11 @@ the rspec for the words of instances of the category."
 
 (defun decode-rdata-heads (rdata category)
   "Return a plist of specified head words in the realization data."
-  (loop for (keyword value) on rdata by #'cddr
-        as alias = (assoc keyword *head-aliases*)
-        if alias do (setq keyword (cdr alias))
-        when (typep keyword 'head-keyword)
-          nconc (list keyword (deref-rdata-word value category))))
+  (loop for (key value) on rdata by #'cddr
+        as alias = (assoc key *head-aliases*)
+        if alias do (setq key (cdr alias))
+        when (typep key 'head-keyword)
+          nconc (list key (deref-rdata-word value category))))
 
 (defun decode-additional-rules (cases)
   "Additional rules don't use mappings. They use the names of categories, words,

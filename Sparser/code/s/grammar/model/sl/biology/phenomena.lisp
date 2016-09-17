@@ -563,12 +563,9 @@ it is created from N-terminus to C-terminus.|#
   :binds ((pathway pathway)
           (process bio-process))
   :lemma (:common-noun "step")
-  :realization (:common-noun name))
-
-(fom-subcategorization category::step
-                       :category category::step
-                       :slots `(:in pathway
-                                    :in process))
+  :realization (:common-noun name
+                :in pathway
+                :in process))
 
 
 

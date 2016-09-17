@@ -98,19 +98,17 @@ be biology specific, since they aren't. |#
 
 (define-category ability :specializes bio-relation
       :binds ((ability bio-process))
-      :realization
-      (:noun "ability" :adj "able"
-             :to-comp ability
-             :of subject
-             :to ability
-	     :control-relations (subject ability)))
+      :realization (:noun "ability"
+                    :adj "able"
+                    :to-comp ability
+                    :of subject
+                    :to ability))
 
 (define-category capability :specializes ability
   :restrict ((subject bio-entity))
-  :realization
-  (:noun "capability" :adj "capable"
-	 :of ability
-	 :control-relations (subject ability)))
+  :realization (:noun "capability"
+                :adj "capable"
+                :of ability))
 
 (adj "common" :super bio-relation
   :realization 
@@ -261,6 +259,7 @@ be biology specific, since they aren't. |#
 
 
 (adj "low" :super bio-predication)
+#+ignore ; conflicts with definition in verbs.lisp
 (define-comparative "lower")
 ;;--- "lower"  ("raise")
 ;;/// N.b. the adjective variant is commented out in the modifiers dossier

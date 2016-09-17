@@ -37,10 +37,8 @@
 (defun decode-shortcut-rdata (category &rest rdata &key etf
                               adjective (adj adjective)
                               noun verb
-                              control-relations
                               c ; complement
                               prep ; owned preposition
-                              slots ; subcat plist
                               mumble ; for generation
                               optional-object ; for words like "translocate"
                               adjp-complement ; for cases like "Make the top block red."
@@ -49,12 +47,10 @@
   (declare (special word::|by|)
            (ignore mumble)
            (optimize debug))
-  (let* ((sf (fom-subcategorization category :category category :slots slots))
+  (let* ((sf (get-subcategorization category))
          (subj-pat (find-subcat-pattern :subject sf))
          (obj-pat (find-subcat-pattern :object sf))
          (m-pat (find-subcat-pattern :m sf)))
-    (setf (control-relations sf) control-relations)
-
     ;; Exactly one ETF is allowed, but for compatibility we assume a list.
     (setq etf (ensure-list etf))
     (check-type etf (or null (cons symbol null)))

@@ -71,15 +71,7 @@
 
     (let ((category (find-or-make-category-object symbol :referential source-location)))
       (apply #'decode-category-parameter-list category parameter-list)
-      (fom-subcategorization-if-needed category)
       category )))
-
-(defun fom-subcategorization-if-needed (category)
-  (when (and	  
-	 (fboundp 'fom-subcategorization)
-	 (loop for cat in (immediate-supers category)
-	    thereis (get-subcategorization cat)))
-    (fom-subcategorization category :category category)))
 
 (defun define-mixin-category/expr (symbol parameter-list)
   ;; called from define-mixin-category.
@@ -187,8 +179,10 @@
     (when restrictions
       (handle-variable-restrictions category restrictions))
 
-    (when rdata
-      (setup-rdata category rdata))
+    (if rdata
+      (setup-rdata category rdata)
+      (when (fboundp 'fom-subcategorization) ; FIX LOAD ORDER
+        (fom-subcategorization category)))
     
     (when lemma
       (setup-category-lemma category lemma))

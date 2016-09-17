@@ -40,20 +40,17 @@
 ;;; find the variable anywhere up the superc chain
 ;;;------------------------------------------------
 
+(defmethod find-variable-for-category ((variable lambda-variable) category)
+  (find-variable-for-category (var-name variable) category))
+
 (defmethod find-variable-for-category ((variable-name symbol) (cat-name symbol))
-  (find-variable-for-category variable-name
-                              (category-named cat-name :error-if-missing)))
+  (find-variable-for-category variable-name (category-named cat-name t)))
 
 (defmethod find-variable-for-category ((variable-name symbol) (category category))
   "The prefered way to access variables from their name."
   (when (eq (symbol-package variable-name) (find-package :keyword))
     ;; Happens when coming in from find-individual
-    (setq variable-name (intern (symbol-name variable-name)
-				(find-package :sparser))))
-  (unless (category-p category)
-    (error "Category parameter is a ~a instead of a category.~
-          ~%Upstream function call passed down the wrong thing."
-           (type-of category)))
+    (setq variable-name (sparser-symbol variable-name)))
   ;; First we look on the category itself. Then we look through
   ;; of its superc's as determined by super-categories-of,
   ;; Finally we consult the category's mixins.

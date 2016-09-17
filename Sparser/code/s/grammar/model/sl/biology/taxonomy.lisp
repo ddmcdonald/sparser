@@ -1059,16 +1059,11 @@
   :mixins (  reactome-category  in-ras2-model )
   :index (:permanent :key name)
   :lemma (:common-noun "protein")
-  :realization (:common-noun name))
-
-(fom-subcategorization category::protein
-                       :category category::protein
-                       :slots `(:in complex
-				    :in equilibrium-state
-                                    ;;:of functionally-related-to
-				    :m site
-				    :in state
-                                    ))
+  :realization (:common-noun name
+                :in complex
+                :in equilibrium-state
+                :in state
+                :m site))
 
 (define-category protein-state :specializes molecule
   :binds ((protein protein)
@@ -1199,17 +1194,13 @@
 
 (define-category cell-line :specializes cell-entity
   :instantiates self
+  :index (:permanent :key name)
   :binds ((with-protein protein))	 
-  :realization (:common-noun name)
-  :index (:permanent :key name))
-
-(fom-subcategorization category::cell-line
-                       :category category::cell-line
-                       :slots `(:with with-protein))
-
+  :realization (:common-noun name
+                :with with-protein))
 
 (define-category cell-type :specializes cell-entity
-  :realization (:noun "cell type" ))
+  :realization (:noun "cell type"))
 
 ;; used in biopax
 (define-category organism :specializes biological
