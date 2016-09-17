@@ -71,7 +71,7 @@
   (setq *segments/dh*
         (discourse-entry (category-named 'segment)))
   (setq *terms/dh*
-        (discourse-entry (category-named 'term)))
+        (discourse-entry (category-named 'text-term)))
   (setq *pairs/dh*
         (discourse-entry (category-named 'pair-term)))
   (setq *genitive/dh*
@@ -231,11 +231,11 @@
     (cond ((eq h1 h2)
            (sort-terms-alphabetically (value-of 'other p1)
                                       (value-of 'other p2)))
-          ((and (itype h1 'pair-term) (itype h2 'term))
+          ((and (itype h1 'pair-term) (itype h2 'text-term))
            t )
-          ((and (itype h1 'term) (itype h2 'pair-term))
+          ((and (itype h1 'text-term) (itype h2 'pair-term))
            nil )
-          ((and (itype h1 'term) (itype h2 'term))
+          ((and (itype h1 'text-term) (itype h2 'text-term))
            (sort-terms-alphabetically h1 h2))
           ((and (itype h1 'pair-term) (itype h2 'pair-term))
            (sort-pairs-by-head h1 h2))
@@ -845,7 +845,7 @@
   (let ((count 0)
         verbs  verb )
     (dolist (i (order-the-pair-terms-and-nominal-terms))
-      (unless (and (itypep i 'term)
+      (unless (and (itypep i 'text-term)
                    (verb-term? i))
         (format t "~&~% ~A. ~A" (incf count) i)
         (setq verbs (what-is-done-to i))

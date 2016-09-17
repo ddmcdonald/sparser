@@ -108,7 +108,7 @@
     (category::measurement ) ;; it's already a domain object
     (category::comparative ) ;; ditto
 
-    (category::term
+    (category::text-term
      ;; Spurious case caused by counting terminals rather than preterminals
      ;; when making a default label in Span-mined-segment. Probably the
      ;; prefix wasn't thought through, e.g. "too high"
@@ -129,7 +129,7 @@
   (case (cat-symbol (itype-of domain-term))
     (category::pair-term
      (update-realization-record/pair-term/np domain-term))
-    (category::term  ;; "double-clicking" in S11
+    (category::text-term  ;; "double-clicking" in S11
      )
     (category::unanalyzed-compound  ;; s12 "group related files"
      )
@@ -179,7 +179,7 @@
     
     ;; dispatch on the object type to make observations about the parts
     (case (cat-symbol (itype-of domain-term))
-      (category::term
+      (category::text-term
        (when prefix
          (extend-rr domain-term :only-term-in-NP)))
 

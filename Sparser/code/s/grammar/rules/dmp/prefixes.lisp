@@ -167,7 +167,7 @@
         ((individual-p referent)
          (cond ((itypep (edge-referent edge) 'pair-term)
                 (values category::np  category::classifier))
-               ((itypep (edge-referent edge) 'term)
+               ((itypep (edge-referent edge) 'text-term)
                 (values category::np  category::classifier))
                (t (break "prefix is a noun phrase referring to an ~
                           individual.~%: \"~A\" ~A~

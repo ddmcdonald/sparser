@@ -120,7 +120,7 @@
            (sort-adverb-verb i1 i2))
           (category::you-do
            (sort-you-do-alphabetically i1 i2))
-          (category::term
+          (category::text-term
            (sort-terms-alphabetically i1 i2))
           
           (category::segment

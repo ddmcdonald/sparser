@@ -29,7 +29,7 @@
 ;;;--------
 
 (define-category  pair-term
-  :specializes term
+  :specializes text-term
   :instantiates self
   :binds ((head)  ;; . (:or term pair-term))
           (other))  ;; . (:or term pair-term)))
@@ -132,10 +132,10 @@
 (defun length-of-pair-term (pt)
   (let ((head (value-of 'head pt))
         (other (value-of 'other pt)))
-    (+ (if (itype head 'term)
+    (+ (if (itype head 'text-term)
          1
          (length-of-pair-term/or-other head))
-       (if (itype other 'term)
+       (if (itype other 'text-term)
          1
          (length-of-pair-term/or-other other)))))
 
@@ -230,13 +230,13 @@
   (cond ((and (itype i1 'pair-term)
               (itype  i2 'pair-term))
          (sort-pair-terms-alphabetically i1 i2))
-        ((and (itype i1 'term)
-              (itype i2 'term))
+        ((and (itype i1 'text-term)
+              (itype i2 'text-term))
          (sort-terms-alphabetically i1 i2))
         ((and (itype i1 'pair-term)
-              (itype i2 'term))
+              (itype i2 'text-term))
          t )
-        ((and (itype i1 'term)
+        ((and (itype i1 'text-term)
               (itype i2 'pair-term))
          nil )
         (t (break "Unanticipated case"))))

@@ -316,8 +316,8 @@
             ~%an individual but it is more than one word long.~
             ~%  ~A" edge))
   (let ((word (edge-left-daughter edge)))  ;; e.g. "first"
-    (or (find-individual 'term :word word)
-        ;(define-individual 'term :word word) ;; no rule
+    (or (find-individual 'text-term :word word)
+        ;(define-individual 'text-term :word word) ;; no rule
         (define-individual-for-term word)  ;; a rule
         )))
       

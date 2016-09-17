@@ -143,7 +143,7 @@ that was instantiated in the last run."
 
 
 (defparameter *interesting-categories*
-  '( term  segment
+  '( text-term  segment
      paired-in-long-segment  pair-term
      genitive  subject-verb
      ))

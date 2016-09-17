@@ -34,7 +34,7 @@
 ;;; the category all the individuals will be instances of
 ;;;-------------------------------------------------------
 
-(define-category  term
+(define-category text-term
   :specializes text-relationship
   :instantiates self
   :binds ((word  :primitive word)
@@ -59,7 +59,7 @@
 
 (defun verb-term? (term)
   (if (individual-p term)
-    (if (itypep term 'term)
+    (if (itypep term 'text-term)
       (verb? (terms-word term))
       (error "argument is not a term"))
     (error "argument is not an individual")))
@@ -75,7 +75,7 @@
                 (string (resolve-string-to-word string/word))
                 (word string/word))))
     (if word
-      (gethash word (cat-instances category::term))
+      (gethash word (cat-instances category::text-term))
       nil )))
 
 
@@ -154,7 +154,7 @@
                   (find-or-make-category-object name :dm&p))))
                     ;; a mundain category -- not referential
                   
-        (let* ((term (define-individual 'term
+        (let* ((term (define-individual 'text-term
                        :word (or stem word)))
                (cfr (define-cfr category `(,word)     ;;,(or stem word))
                       :form form
@@ -197,7 +197,7 @@
         ;; separate entry point in case there turn out to be other
         ;; things we need to do. 
 
-        (let* ((term (define-individual 'term
+        (let* ((term (define-individual 'text-term
                        :word word ))
                (pw-category
                 (or specified-category
@@ -256,7 +256,7 @@
       (error "Wrong type: the 'morphology' argument must be a category.~
               ~%The object passed in was: ~A" morphology)))
 
-  (let* ((stem-term (define-individual 'term
+  (let* ((stem-term (define-individual 'text-term
                       :word stem))
          (name (intern (word-pname stem)
                        *category-package*))
@@ -332,7 +332,7 @@
 ;;;-------------------------------------------
 
 (defun the-terms/dh ()
-  (setq *terms/dh* (discourse-entry category::term)))
+  (setq *terms/dh* (discourse-entry category::text-term)))
 
 (defun the-terms ()
   (let ( bare-terms )

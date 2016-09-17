@@ -35,7 +35,7 @@
                         ~%  ~A" symbol))
               (mark-category-as-a-dm&p-type category)))
         '(segment
-          term
+          text-term
           pair-term
           subject-verb
           verb-object
@@ -73,7 +73,7 @@
 
 
 
-(define-special-printing-routine-for-category   term
+(define-special-printing-routine-for-category text-term
   :short ((if (deallocated-individual? obj)
             (format stream "#<deallocated individual>")
             (format stream "#<\"~A\" ~A>"
@@ -255,7 +255,7 @@
        (category::segment
         "segment" )
 
-       (category::term
+       (category::text-term
         (let ((w/pw (value-of 'word obj)))
           (etypecase w/pw
             (word (word-pname w/pw))
@@ -420,7 +420,7 @@
           (individual
            (if (deallocated-individual? item)
              "deallocated"
-             (if (or (indiv-typep item 'term)
+             (if (or (indiv-typep item 'text-term)
                      (indiv-typep item 'pair-term)
                      (indiv-typep item 'paragraph)
                      (indiv-typep item 'section-object)
