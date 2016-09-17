@@ -58,7 +58,7 @@ you can continue from a break (c.f. cerror).
   (defun sparser::break (&optional (format-string "Break.") &rest args)
     (apply #'cerror "Continue." format-string args)))
 
-(defun lsp-break (&optional format-string &rest args)
+(defun lsp-break (&optional (format-string "Break.") &rest args)
   "Alternative with a different name that will always break."
   (apply #'cl:break format-string args))
 
