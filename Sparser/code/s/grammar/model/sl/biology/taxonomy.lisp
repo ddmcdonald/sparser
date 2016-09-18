@@ -637,14 +637,12 @@
 (define-category bio-event :specializes bio-process
   :mixins (has-UID has-name biological)
   :binds ((process bio-process))
-  :realization (:common-noun name) ;; for nominal forms
+  :lemma (:common-noun "event")
+  :realization (:common-noun name
+                :for process)
   :documentation "No content by itself, provides a common parent
     for 'acquire, act, addition, counfound etc. that may be the basis
     of the grammar patterns.")
-
-(def-synonym bio-event 
-   (:noun "event"
-          :for process))
 
 (define-category bio-relation :specializes bio-predication
   :mixins (has-UID has-name biological)
@@ -742,12 +740,9 @@
   :binds ((molecule-type molecule))
   :bindings (uid "CHEBI:36357")
   :index (:permanent :key name)
-  ;;:lemma (:common-noun "molecule")
-  :realization (:common-noun name))
-
-(def-synonym molecule
-    (:noun "molecule"
-	   :of molecule-type))
+  :lemma (:common-noun "molecule")
+  :realization (:common-noun name
+                :of molecule-type))
 
 (define-category medical-treatment :specializes purposive-process
   :binds ((disease disease)
@@ -1063,6 +1058,7 @@
                 :in complex
                 :in equilibrium-state
                 :in state
+                :in location
                 :m site))
 
 (define-category protein-state :specializes molecule
@@ -1076,12 +1072,9 @@
           (enzyme-activity enzyme-activity))
   :instantiates :self
   :lemma (:common-noun "enzyme")
-  :realization (:common-noun name))
-
-(def-synonym enzyme
-    (:with enzyme-activity
-           :m enzyme
-           ))
+  :realization (:common-noun name
+                :with enzyme-activity
+                :m enzyme))
 
 (define-category post-translational-enzyme :specializes enzyme
   :binds ((residue residue-on-protein)
@@ -1094,13 +1087,11 @@
   :instantiates :self
   :bindings (uid "GO:0016301") ;; "kinase activity" 
   :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(def-synonym kinase
-             (:noun "kinase"
-                   :for reaction
-                   :m residue
-                   :m amino-acid))
+  :lemma (:common-noun "kinase")
+  :realization (:common-noun name
+                :for reaction
+                :m residue
+                :m amino-acid))
 
 (noun "phosphatase" :super post-translational-enzyme)
 
@@ -1166,12 +1157,10 @@
                  ;;  should be as a "telic" qualia for those molecules which are kinases 
   :instantiates :self
   :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(def-synonym phosphatase
-             (:noun "phosphatase"
-                    :for reaction
-                    :m residue))
+  :lemma (:common-noun "phosphatase")
+  :realization (:common-noun name
+                :for reaction
+                :m residue))
 
 (define-category GTPase :specializes enzyme
   :instantiates :self
@@ -1245,7 +1234,9 @@
 (define-category human-protein-family :specializes protein-family
   :rule-label protein
   :bindings (species (find-individual 'species :name "human"))
-  :realization (:common-noun name))
+  :lemma (:common-noun "human protein family")
+  :realization (:common-noun name
+                :in location))
 
 ;;----- aggregations
 
@@ -1324,19 +1315,6 @@ the aggregate across the predicate it's in. |#
 (define-category bio-strength :specializes bio-scalar
   :realization
   (:noun "strength"))
-
-
-
-(define-realization protein
-  :noun "protein"
-  :in location)
-
-(define-realization human-protein-family
-  :noun "human protein family"
-  :in location)
-
-
-
 
 ;;; moved from amino-acid
 (define-category residue-on-protein

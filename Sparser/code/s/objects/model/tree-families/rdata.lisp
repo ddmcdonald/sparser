@@ -103,7 +103,7 @@ Should mirror the cases on the *single-words* ETF."
   (loop for (key value) on rdata by #'cddr
         do (check-type key realization-keyword "a realization keyword")))
 
-(deftype subcat-keyword ()
+(deftype subcat-slot-keyword ()
   '(member :about :above :across :after :against :among :as :as-comp :at
            :before :below :between :but\ not :by
            :designator :during
@@ -124,17 +124,28 @@ Should mirror the cases on the *single-words* ETF."
       (:o . :object))
   "An alist of aliases for subcategorization slot names.")
 
+(deftype subcat-relation-keyword ()
+  '(member :adjp-complement
+           :complement-variable
+           :loc-pp-complement
+           :optional-object))
+
 (defun decode-subcat-slots (rdata)
-  "Separate subcategorization slots from the rest of the realization data."
-  (loop with slots and args
+  "Separate subcategorization slots and relations from the realization args."
+  (loop with args and slots and relations
         for (key value) on rdata by #'cddr
         as alias = (assoc key *subcat-aliases*)
         if alias do (setq key (cdr alias))
-        do (etypecase key
-             (subcat-keyword (push key slots) (push value slots))
-             (keyword (push key args) (push value args)))
+        do (macrolet ((push-into (place)
+                        `(progn (push key ,place)
+                                (push value ,place))))
+             (etypecase key
+               (subcat-slot-keyword (push-into slots))
+               (subcat-relation-keyword (push-into relations))
+               (keyword (push-into args))))
         finally (return (values (nreverse args)
-                                (nreverse slots)))))
+                                (nreverse slots)
+                                (nreverse relations)))))
 
 ;;;----------------------
 ;;; Standalone def forms
@@ -187,13 +198,19 @@ Should mirror the cases on the *single-words* ETF."
                    (keyword (list rdata)) ; one realization
                    (list rdata)) ; multiple realizations
            (rdata category))
-    (multiple-value-bind (args slots) (decode-subcat-slots rdata)
+    (multiple-value-bind (args slots relations) (decode-subcat-slots rdata)
       (when (fboundp 'fom-subcategorization) ; FIX LOAD ORDER
         (apply #'fom-subcategorization category slots))
-      (make-rules-for-rdata category
-                            (if (getf args :etf)
-                              (apply #'decode-shortcut-rdata category args)
-                              (apply #'decode-rdata category args))))
+      (loop for (relation variable) on relations by #'cddr
+            do (register-variable category relation variable))
+      (multiple-value-bind (etf mapping local-rules)
+          (apply (if (getf args :etf) #'decode-shortcut-rdata #'decode-rdata)
+                 category args)
+        (make-realization-data category
+                               :heads (decode-rdata-heads args category)
+                               :etf etf
+                               :mapping mapping
+                               :local-rules local-rules)))
     (when mumble
       (apply-mumble-rdata category rdata))))
 
@@ -232,6 +249,7 @@ Should mirror the cases on the *single-words* ETF."
   (let ((rdata (apply #'make-instance 'realization-data
                       :category category
                       initargs)))
+    (make-rules-for-rdata category rdata)
     (nconcf (cat-realization category) (list rdata))
     rdata))
 
@@ -304,14 +322,11 @@ the rspec for the words of instances of the category."
                      additional-rules &allow-other-keys)
   "Convert symbols to objects for realization data."
   (check-rdata rdata)
-  (make-realization-data category
-                         :etf (when tree-family
-                                (setq tree-family
-                                      (exploded-tree-family-named tree-family)))
-                         :mapping (when tree-family
-                                    (decode-rdata-mapping tree-family mapping category))
-                         :local-rules (decode-additional-rules additional-rules)
-                         :heads (decode-rdata-heads rdata category)))
+  (values (when tree-family
+            (setq tree-family (exploded-tree-family-named tree-family)))
+          (when tree-family
+            (decode-rdata-mapping tree-family mapping category))
+          (decode-additional-rules additional-rules)))
 
 (defun deref-rdata-word (word category)
   "Recursively replace symbols with variables and strings with words."

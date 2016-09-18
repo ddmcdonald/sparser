@@ -152,11 +152,13 @@ or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
            pos word (or (override-label category) category) referent
            special-cases))
   (:method :after (pos word category referent &rest special-cases)
-    "Assign brackets to a head word."
+    "Assign brackets and maybe make a Mumble word."
     (declare (ignore category referent special-cases))
     (typecase word
       ((or word polyword)
-       (assign-brackets-for-word word pos)))))
+       (assign-brackets-for-word word pos)
+       (when *build-mumble-equivalents*
+         (make-corresponding-mumble-resource word pos))))))
 
 (deftype irregular-keyword ()
   '(member :plural

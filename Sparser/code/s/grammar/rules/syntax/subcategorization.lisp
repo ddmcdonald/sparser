@@ -410,30 +410,36 @@
 ;;; Designated interesting variables in a category
 ;;;------------------------------------------------
 
-(defun register-variable (category variable grammatical-relation)
-  (setf (get-tag grammatical-relation category) variable))
+(defgeneric register-variable (category grammatical-relation variable)
+  (:argument-precedence-order grammatical-relation category variable)
+  (:method ((category category) (grammatical-relation symbol) variable)
+    (check-type grammatical-relation keyword "a valid grammatical relation")
+    (when variable
+      (setf (get-tag grammatical-relation category) variable)))
+  (:method (category (grammatical-relation (eql :loc-pp-complement)) variable)
+    (call-next-method category
+                      grammatical-relation
+                      (mapcar (lambda (prep)
+                                (resolve (string-downcase prep)))
+                              variable))))
 
 (defmethod subject-variable (label)
   (declare (ignore label)))
 (defmethod subject-variable ((e edge))
   (subject-variable (edge-referent e)))
 (defmethod subject-variable ((c category))
-  (or (get-tag :subject-variable c)
-      (find-subcat-variable :subject (get-ref-subcategorization c))))
+  (find-subcat-variable :subject (get-ref-subcategorization c)))
 (defmethod subject-variable ((i individual))
-  (or (get-tag :subject-variable (car (indiv-type i)))
-      (find-subcat-variable :subject i)))
+  (find-subcat-variable :subject i))
 
 (defmethod object-variable (label)
   (declare (ignore label)))
 (defmethod object-variable ((e edge))
   (object-variable (edge-referent e)))
 (defmethod object-variable ((c category))
-  (or (get-tag :object-variable c)
-      (find-subcat-variable :object (get-ref-subcategorization c))))
+  (find-subcat-variable :object (get-ref-subcategorization c)))
 (defmethod object-variable ((i individual))
-  (or (get-tag :object-variable (car (indiv-type i)))
-      (find-subcat-variable :object (get-ref-subcategorization i))))
+  (find-subcat-variable :object (get-ref-subcategorization i)))
 
 (defmethod thatcomp-variable (label)
   (declare (ignore label)))

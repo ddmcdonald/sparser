@@ -158,15 +158,15 @@
     :done)) ;; keep this on the stack
 
 (defun make-resource-for-sparser-word (word pos-tag)
-  (let* ((m-pos (ecase pos-tag
+  (let* ((m-pos (case pos-tag
                   (:adjective 'mumble::adjective)
                   ((or :noun :common-noun :proper-noun) 'mumble::noun)
                   (:verb 'mumble::verb)
                   (:adverb 'mumble::adverb)
                   (:prep 'mumble::preposition)
                   (:interjection 'mumble::interjection)))
-         (m-word (get-mumble-word-for-sparser-word word m-pos))
-         (lp (ecase pos-tag
+         (m-word (and m-pos (get-mumble-word-for-sparser-word word m-pos)))
+         (lp (case pos-tag
                (:adjective (mumble::adjective m-word))
                ((or :noun :common-noun :proper-noun) (mumble::noun m-word))
                (:verb) ;; done in the category rdata processing

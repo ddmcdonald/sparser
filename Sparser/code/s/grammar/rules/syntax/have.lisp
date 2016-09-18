@@ -41,16 +41,6 @@
       :s possessor
       :o thing-possessed))
 
-(register-variable category::have
- (find-variable-in-category 'possessor 'have)
- :subject-variable)
-
-(register-variable category::have
- (find-variable-in-category 'thing-possessed 'have)
- :object-variable)
-
-
-
 (def-cfr have ("have")
   :form verb
   :referent have)

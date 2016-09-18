@@ -57,14 +57,10 @@
      :to object))
 
 (def-synonym signal ;; Jan.#26
-   (:noun "signaling" 
-          :m agent    
-          :to object))
+   (:noun "signaling"))
 
 (def-synonym signal ;; Jan.#26
-   (:noun "signal" 
-          :m agent    
-          :to object))
+   (:noun "signal"))
 
 (noun "import signal" :super signal)
 (noun "export signal" :super signal)

@@ -47,6 +47,8 @@
   :binds ((subject)
           (predicate))
   :index (:temporary :list)
+  :realization (:s subject
+                :o predicate)
   :documentation "Represents the relation, broadly speaking,
  between a subject and a predicate that is established by
  the verb to-be (the 'copula') and similar verbs. This is
@@ -57,17 +59,8 @@
  it carries all of the variables that record information
  about tense and aspect.")
 
-(register-variable category::be 
- (find-variable-in-category 'subject 'be)
- :subject-variable)
-
-(register-variable category::be 
- (find-variable-in-category 'predicate 'be)
- :object-variable)
-
 (defparameter *the-category-to-be* (category-named 'be)
-  "For use by code that's loaded before the grammar is")
-
+  "For use by code that's loaded before the grammar is.")
 
 
 ;;;-------------------------
