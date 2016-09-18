@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "traces"
 ;;;   Module:  "analysers;psp:patterns:"
-;;;  version:  August 2016
+;;;  version:  September 2016
 
 ;; Broken out from driver 2/5/13. Added more cases 9/11/14. Imported
 ;; cases from traces/scan-patterns 7/21/15. 
@@ -98,11 +98,19 @@
     (trace-msg "[ns] bailing: start (~a) less than end (~a)."
                start-pos end-pos)))
 
-
 (deftrace :looking-at-ns-segment (start-pos end-pos)
   (when *trace-ns-sequences*
-    (trace-msg "[ns] Looking at the segment ~s"
+    (trace-msg "[ns] Looking at the segment from p~a to p~a: ~s"
+               (pos-token-index start-pos)
+               (pos-token-index end-pos)
                (extract-character-between-positions start-pos end-pos))))
+
+(deftrace :ns-parse-between-bounds (start-pos end-pos coverage)
+  (when *trace-ns-sequences*
+    (trace-msg "[ns] The coverage between p~a and p~a is :~a"
+               (pos-token-index start-pos)
+               (pos-token-index end-pos)
+               coverage)))
 
 (deftrace :single-word-followed-by-colon (word)
   (when *trace-ns-sequences*

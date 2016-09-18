@@ -160,29 +160,29 @@
   (when (eq right-edge :find-it)
     (setq right-edge (edge-right-daughter edge)))
 
-  ;; They should all be some part of an np
-  (let ((current-form (edge-form edge))
-        (form-of-last-edge (when right-edge (edge-form right-edge))))
-    ;; if we fall through a ns-pattern with no result (becouse its
-    ;; code isn't finished).
-    (cond
-     ((and form-of-last-edge
-           (verb-category? form-of-last-edge))
-      ;; as in January sentnece 1 "GAP–mediated hydrolysis"
-      (setf (edge-form edge) form-of-last-edge))
-     ((eq current-form category::np)
-      (setf (edge-form edge) category::n-bar))
-     ((or (noun-category? current-form)
-          (eq current-form category::n-bar)))
-     (t ;; usually it's a verbal category
-      (setf (edge-form edge) category::n-bar)))
+  (when (and right-edge (edge-p right-edge))
+    ;; Happens when called from collect-ns-seqment-into-word
+    ;; because the parse at that level returned a unary edge/
+    (let ((current-form (edge-form edge))
+          (form-of-last-edge (when right-edge (edge-form right-edge))))
+      (cond
+        ((and form-of-last-edge
+              (verb-category? form-of-last-edge))
+         ;; as in January sentnece 1 "GAP–mediated hydrolysis"
+         (setf (edge-form edge) form-of-last-edge))
+        ((eq current-form category::np)
+         (setf (edge-form edge) category::n-bar))
+        ((or (noun-category? current-form)
+             (eq current-form category::n-bar)))
+        (t ;; usually it's a verbal category
+         (setf (edge-form edge) category::n-bar)))
 
-    ;; But we might want to overrule that if the left edge
-    ;; of the pair carries more information
-    (when (and form-of-last-edge
-               (eq form-of-last-edge category::adjective))
-      ;; and what others?  any modifier-category?
-      (setf (edge-form edge) category::adjective))))
+      ;; But we might want to overrule that if the left edge
+      ;; of the pair carries more information
+      (when (and form-of-last-edge
+                 (eq form-of-last-edge category::adjective))
+        ;; and what others?  any modifier-category?
+        (setf (edge-form edge) category::adjective)))))
 
 
 
