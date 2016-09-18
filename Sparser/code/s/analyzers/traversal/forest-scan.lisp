@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "forest scan"
 ;;;   Module:  "analyzers;traversal:"
-;;;  Version:  August 2016
+;;;  Version:  September 2016
 
 ;; initiated 5/7/94 v2.3
 ;; 0.1 (10/24) it was attempting to do checks with words rather than literals
@@ -38,10 +38,10 @@
         (*allow-pure-syntax-rules* nil)
         (*allow-form-rules* nil))
     (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
-    (push-debug `(,left-bound ,right-bound))
-    ;;(lsp-break "coverage between ~a and ~a~%is ~a" left-bound right-bound coverage)
+    ;; (push-debug `(,left-bound ,right-bound))
+    (tr :ns-parse-between-bounds left-bound right-bound coverage)
     (case coverage
-      (:single-span
+      (:one-edge-over-entire-segment
        (values coverage (edge-between left-bound right-bound)))
       (:all-contiguous-edges
        (cond
