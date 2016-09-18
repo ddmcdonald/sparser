@@ -137,6 +137,11 @@
    (p "How many blocks did you add to the row?")
    (p "How many blocks are you adding to the row?") ;; "going to add"
    (p "How many blocks will you add to the row?")
+
+From :id "PMC1702556" :corpus :jun15eval
+This wh-np has no aux per se and blew out the looop
+(p "Whether all EGFR ectodomain mutants share a common mechanism of 
+oncogenic receptor conversion warrants further study.")
 |#
 
 (defun delimit-and-label-initial-wh-term (pos-before wh-edge)
@@ -152,7 +157,7 @@
    walking along the sentence prefix."
   ;; The trigger is that form of edge over the word at
   ;; this position is wh-pronoun.
-  (declare (optimize debug))
+
   (let* ((wh-word (pos-terminal pos-before)) ;; or the category?
          ;;(q (find-or-make-individual :wh wh-word))
          ;;  delay if how questions are different
@@ -179,35 +184,36 @@
          (t (push next-edge other-edges)))
        (setq next-pos (chart-position-after  next-pos)
              next-word (pos-terminal next-pos)
-             next-edge (highest-edge (pos-starts-here next-pos))))
+             next-edge (highest-edge (pos-starts-here next-pos)))
+       (when (null next-edge) (return)))
+
     (push-debug `(,aux-edge ,attr-edge ,other-edges))
-    (store-preposed-aux aux-edge)
-    ;;/// not ready for "how" yet
-    (let ((q (make-simple-individual
-              category::wh-question `((wh ,wh-word)))))
-      (flet ((stash-attribute (attr)
-               (setq q (bind-variable 'attribute attr q))
-               (let ((var (value-of 'var attr)))
-                 (setq q (bind-variable 'var var q)))))
+    (when aux-edge
+      (store-preposed-aux aux-edge)
+      (let ((q (make-simple-individual
+                category::wh-question `((wh ,wh-word)))))
+        (flet ((stash-attribute (attr)
+                 (setq q (bind-variable 'attribute attr q))
+                 (let ((var (value-of 'var attr)))
+                   (setq q (bind-variable 'var var q)))))
 
-        (when attr-edge ;; "what color is ..."
-          (stash-attribute (edge-referent attr-edge)))
+          (when attr-edge ;; "what color is ..."
+            (stash-attribute (edge-referent attr-edge)))
         
-        (when value-edge ;; "how big is the block?"
-          (let* ((value-class (itype-of (edge-referent value-edge))) ;; size-value
-                 (attr (when value-class (value-of 'attribute value-class))))
-            (when attr (stash-attribute attr))))
+          (when value-edge ;; "how big is the block?"
+            (let* ((value-class (itype-of (edge-referent value-edge))) ;; size-value
+                   (attr (when value-class (value-of 'attribute value-class))))
+              (when attr (stash-attribute attr))))
                
-
-        ;; now make a phrase over the whole span of WH edges
-        ;; up to but not including the aux
-        (let ((edge (make-edge-over-long-span
-                     pos-before next-pos
-                     (edge-category wh-edge)
-                     :form category::question-marker ;;/// needs more meliflous term
-                     :referent q
-                     :constituents (edges-between pos-before next-pos))))
-               edge)))))
+          ;; now make a phrase over the whole span of WH edges
+          ;; up to but not including the aux
+          (let ((edge (make-edge-over-long-span
+                       pos-before next-pos
+                       (edge-category wh-edge)
+                       :form category::question-marker ;;/// needs more meliflous term
+                       :referent q
+                       :constituents (edges-between pos-before next-pos))))
+            edge))))))
   
 
 
