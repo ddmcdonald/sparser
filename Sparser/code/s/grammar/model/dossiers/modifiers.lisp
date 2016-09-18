@@ -279,11 +279,9 @@
 
 (adj/adv "possible" "possibly" :super-category 'modifier)
 
-(unless (eq :biology common-lisp-user::script)
- (define-adjective "likely")) ;could be either adj or adv -- this conflicts with adverb use in biology
-
-(define-adjective "unlikely") 
-
+(unless (current-script :biology)
+  (define-adjective "likely") ; could be either adj or adv -- this conflicts with adverb use in biology
+  (define-adjective "unlikely")) 
 
 (define-adverb "probably")
 (define-adverb "definitely") 
@@ -330,7 +328,7 @@
 (define-sequencer/determiner "last")
 (define-sequencer/determiner "previous")
 (define-sequencer/determiner "next") ;; adv? "next to"
-(unless (eq :biology common-lisp-user::script)
+(unless (current-script :biology)
   (define-sequencer/determiner "subsequent")
   (define-sequencer/determiner "following"))
 
@@ -399,7 +397,7 @@
 (define-adverb "accordingly")
 (define-adverb "accurately")
 (unless (current-script :biology)
-  (define-adverb "actively")) ;; conflicts with bio domain
+  (define-adverb "actively"))
 (define-adverb "actually")
 (define-adverb "additionally")
 (define-adverb "adequately")
@@ -780,13 +778,14 @@
 ;;;-----
 
 (define-adjective "aberrant")
-(unless (eq :biology common-lisp-user::script)
- (define-adjective "able")) ; want to give "to" tree family? [yes - in biology] "able to do x" .. or no.
+(unless (current-script :biology)
+  (define-adjective "able")) ; want to give "to" tree family? [yes - in biology] "able to do x" .. or no.
 (define-adjective "abnormal")
-(define-adjective "abundant")
+(unless (current-script :biology)
+  (define-adjective "abundant"))
 (define-adjective "accurate")
-(unless (eq :biology common-lisp-user::script)
- (define-adjective "active"));; conflicts with bio-domain
+(unless (current-script :biology)
+  (define-adjective "active"))
 (define-adjective "adaptive")
 (define-adjective "adhesive")
 (define-adjective "adjacent" :form 'spatial-adjective)
@@ -826,18 +825,18 @@
 ;;(define-adjective "common")
 (define-adjective "complementary")
 (define-adjective "complete")
-(unless (eq :biology common-lisp-user::script)
- (define-adjective "complex")) ;also noun // need noun for biology
+(unless (current-script :biology)
+  (define-adjective "complex")) ;also noun // need noun for biology
 (define-adjective "conceptual")
 (define-adjective "confluent")
-(define-adjective "consistent") ;with
-(unless (eq :biology common-lisp-user::script)
- (define-adjective "constitutive"))
+(unless (current-script :biology)
+  (define-adjective "consistent") ; with
+  (define-adjective "constitutive"))
 (define-adjective "continual")
 (define-adjective "continuous") ; process-y
 (define-adjective "counterintuitive")
-(unless (eq :biology common-lisp-user::script)
- (define-adjective "critical"));; conflicts with needed definition in biology 
+(unless (current-script :biology)
+  (define-adjective "critical"))
 (define-adjective "crucial")
 (define-adjective "cytotoxic")
 (define-adjective "decisive")
@@ -999,8 +998,8 @@
 (define-adjective "prototypical")
 (define-adjective "quiescent")
 (define-adjective "random")
-(unless (eq :biology common-lisp-user::script)
- (define-adjective "rapid"))
+(unless (current-script :biology)
+  (define-adjective "rapid"))
 (define-adjective "rare")
 (define-adjective "raw")
 (define-adjective "reactive")
@@ -1020,15 +1019,16 @@
 (define-adjective "short")
 (define-adjective "significant")
 (define-adjective "silent") ;in terms of mutation: no resultant change in phenotype
-(unless (eq :biology common-lisp-user::script)
-  (define-adjective "similar"));relation
+(unless (current-script :biology)
+  (define-adjective "similar"))
 (define-adjective "simple")
 (define-adjective "small")
 (define-adjective "solid")
 
 (define-adjective "specific")
 (define-adjective "spontaneous")
-(define-adjective "stable")
+(unless (current-script :biology)
+  (define-adjective "stable"))
 
 (define-adjective "structural")
 (define-adjective "subcritical")
@@ -1056,8 +1056,8 @@
 (define-adjective "unstable")
 (define-adjective "upper" :form 'spatial-adjective)
 (define-adjective "useable")
-(unless (eq :biology common-lisp-user::script)
- (define-adjective "useful"))
+(unless (current-script :biology)
+  (define-adjective "useful"))
 (define-adjective "variable")
 (define-adjective "vast")
 (define-adjective "versatile")
