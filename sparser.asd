@@ -6,7 +6,14 @@
   :components ((:file "Sparser/code/s/init/everything"))
   :perform (load-op :after (o c)
              (pushnew :sparser *features*) ; Sparser is now loaded
-             (asdf:load-system :mumble/sparser)))
+             (asdf:load-system :mumble/sparser))
+  :in-order-to ((test-op (test-op :sparser-tests))))
+
+(defsystem :sparser-tests
+  :depends-on (:sparser)
+  :components ((:file "test/rt")
+               (:file "test/subcategorization"))
+  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
 
 (macrolet ((define-sparser-system (script)
              "Only one of these should be loaded into a Lisp image.
