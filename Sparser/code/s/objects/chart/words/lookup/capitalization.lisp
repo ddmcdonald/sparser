@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "capitalization"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  July 2016
+;;;  Version:  September 2016
 
 ;; initiated 10/90
 ;; 0.1 (11/23/92 v2.3) Revised slightly to appreciate the case where the
@@ -95,24 +95,37 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
 
 
 (defun capitalized-version (lc-word caps-type)
-  ;; does this lowercase word have a variant defined for it, 
-  ;; either an exact match or a subsuming equivalent ?
+  "We're trying to establish the grammatical propeties 
+ of lc-word -- does it introduce initial edges, does it extend
+ a polyword. The caller could not find what it wanted on the
+ rule-set of the lowercase word it has in its hand (lc-word)
+ so it wants to know if a capitalization-variant of this
+ word exists. If there are one or more variants and they
+ are consistent with the actual observed case (caps-type, stored
+ on the same position object as the word is), then it returns it."
   (let ((variants (word-capitalization-variants lc-word)))
     (when (not (eq caps-type :lower-case))
       (when variants
         (unless (typep variants 'top-lattice-point)
           ;; happened for "seven" as part of checking "on bracket 
           ;; because of word" in "a seven-day deadline"
-          (or (find caps-type variants      ;; exact match
+          (or (find caps-type variants  ;; exact match
                     :key #'word-capitalization)
               (subsuming-variant caps-type variants lc-word)))))))
 
 
 (defun subsuming-variant (actual-state defined-variants lc-word)
-  ;; returns one of the variants if its capitalization is defined to
-  ;; be a reasonable subsumer for what we actually have in this case.
-  ;; We know that the actual state isn't lowercase and we've already
-  ;; checked for an exact match between the state and a variant.
+  "Teturns one of the defined variants if the capitalization on the
+ variant is defined by this function to be a reasonable subsumer for 
+ the observed capitalizaton (actual-state).
+   When this is called we know that the actual state isn't lowercase 
+ and we've already checked whether there was an exact match between 
+ the actual state and one of the variants. The situation is more 
+ complicated when the 'variant' is lowercase, see note there.
+   We loop over the variants and return the first one that the
+ nexted case statements say is valid. We dispatch first on the
+ capitalization state of the variant (variants-state) and then
+ over the actual observed capitalization in this instance."
   (let ( variants-state )
     (when actual-state
       ;; will be nil if the word hasn't been scanned yet,
@@ -122,16 +135,16 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
       (unless (or (eq actual-state :punctuation)
                   (eq actual-state :digits))
 
-        (dolist (word defined-variants nil)
-          (setq variants-state (word-capitalization word))
+        (dolist (variant defined-variants nil)
+          (setq variants-state (word-capitalization variant))
 
           (case variants-state
             
             (:initial-letter-capitalized
              (case actual-state
-               (:all-caps (return word))
+               (:all-caps (return variant))
                (:single-capitalized-letter nil)
-               (:mixed-case (return word)) ;; (Knowledge) Factory -> "FACTory"
+               (:mixed-case (return variant)) ;; (Knowledge) Factory -> "FACTory"
                (otherwise
                 (warn "For ~s: new case for :initial-letter-capitalized: ~a"
                        (word-pname lc-word) actual-state))))
@@ -139,9 +152,9 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
             (:mixed-case
              (case actual-state
                ;; (Knowledge) FACTory -> "Factory"
-               (:initial-letter-capitalized (return word))
+               (:initial-letter-capitalized (return variant))
                (:single-capitalized-letter nil)
-               (:all-caps (return word)) ;; "SKMEL" -> "SkMei"
+               (:all-caps (return variant)) ;; "SKMEL" -> "SkMei"
                (otherwise
                 (warn "For ~s: new case for :mixed-case: ~a"
                        (word-pname lc-word) actual-state))))
@@ -149,32 +162,37 @@ objects/chart/words/lookup/capitalization.lisp:(defun capitalized-correspondent 
             (:all-caps
              (case actual-state
                (:initial-letter-capitalized nil)
-               (:mixed-case (return word))
-               (:single-capitalized-letter (return word))
+               (:mixed-case (return variant))
+               (:single-capitalized-letter (return variant))
                (otherwise
                 (warn "For ~s: new case for :all-caps ~a"
                        (word-pname lc-word) actual-state))))
 
             (:single-capitalized-letter
              (case actual-state
-               (:initial-letter-capitalized (return word))
-               (:mixed-case (return word))
-               (:all-caps (return word))
+               (:initial-letter-capitalized (return variant))
+               (:mixed-case (return variant))
+               (:all-caps (return variant))
                (otherwise
                 (warn "For ~s: new case for single capitalized letter"
                        (word-pname lc-word)))))
 
             (:lower-case ;; CRAF from craf in Dec#2
-             (case actual-state
-               (:all-caps (return word))
-               (:initial-letter-capitalized
-                ;; Would be better to distinguish sentence-inital
-                ;; from used as a proper name: "4-monophosphate (Sigma)"
-                (return word))
-               (otherwise
-                #+ignore
-                (warn "For ~s: new case for :lowercase ~a"
-                       (word-pname lc-word) actual-state))))
+             ;; We automatically make lowercase versions when words
+             ;; are defined with an upper or mixed case pname. As a
+             ;; result the variants in this case are in lowercase,
+             ;; and the word that was passed in (lc-word) may be
+             ;; the one we want.
+             (flet ((good-rs (word)
+                      (let ((rs (rule-set-for word)))
+                        (or (rs-single-term-rewrites rs)
+                            (rs-fsa rs)))))
+               (cond
+                 ((eq (word-capitalization lc-word) actual-state)
+                  (when (good-rs lc-word)
+                    (return lc-word)))
+                 (t (when (good-rs variant)
+                      (return variant))))))             
             
             (otherwise
              (warn "For ~s: New variant-state of capitalization: ~a"
