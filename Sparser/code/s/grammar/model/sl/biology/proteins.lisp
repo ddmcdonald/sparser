@@ -2098,7 +2098,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "PTGES_HUMAN" ("pges" "Prostaglandin E synthase" "Microsomal glutathione S-transferase 1-like 1" "MGST1-L1" "Microsomal prostaglandin E synthase 1" "MPGES-1" "p53-induced gene 12 protein")) 
 (define-protein "PTN5_HUMAN" ("striatum" "Tyrosine-protein phosphatase non-receptor type 5" "Neural-specific protein-tyrosine phosphatase" "Striatum-enriched protein-tyrosine phosphatase" "STEP")) 
 (define-protein "PTN9_HUMAN" ("PTPN9")) 
-(define-protein "PTPRG_HUMAN" ("phosphatases" "Receptor-type tyrosine-protein phosphatase gamma" "Protein-tyrosine phosphatase gamma" "R-PTP-gamma")) 
+(define-protein "PTPRG_HUMAN" ( "Receptor-type tyrosine-protein phosphatase gamma" "Protein-tyrosine phosphatase gamma" "R-PTP-gamma")) ;; "phosphatases" -- don't understand why this was ever in the def
 (define-protein "PTPRO_HUMAN" ("ptpμ" "Receptor-type tyrosine-protein phosphatase O" "R-PTP-O" "Glomerular epithelial protein 1" "Protein tyrosine phosphatase U2" "PTP-U2" "PTPase U2")) 
 (define-protein "PTPS_HUMAN" ("pkg" "6-pyruvoyl tetrahydrobiopterin synthase" "PTP synthase" "PTPS")) 
 (define-protein "PTRF_HUMAN" ("ptrf" "Polymerase I and transcript release factor" "Cavin-1")) 
