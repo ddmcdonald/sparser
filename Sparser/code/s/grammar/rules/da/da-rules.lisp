@@ -202,9 +202,9 @@
 (define-debris-analysis-rule attach-comma-pp-comma-following-clause
   :pattern ( s "," pp ",")
   ;; The action can fail. Returning nil ought to suffice
-  :action (:function attach-comma-pp-comma-following-clause third first))
+  :action (:function attach-comma-pp-comma-following-clause third first fourth))
 
-(defun attach-comma-pp-comma-following-clause (clause comma-1 pp comma-2)
+(defun attach-comma-pp-comma-following-clause (clause pp comma-2)
   (declare (ignore comma-1))
   (attach-pp-following-clause clause pp
                               (pos-edge-starts-at clause)
