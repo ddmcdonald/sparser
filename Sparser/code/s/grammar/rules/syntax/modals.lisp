@@ -77,10 +77,17 @@
                  :referent category
                  :schema (get-schematic-word-rule :modal))))
            (negative-rule (w)
-             (def-cfr/expr category (ensure-list w)
-               :form category::modal
-               :referent `(:head ,category
-                           :bind (negation right-edge)))))
+             (typecase w
+               (string ;; "cannot"
+                (def-cfr/expr category (ensure-list w)
+                  :form category::modal
+                  :referent `(:head ,category
+                              :bind (negation ,(category-named 'not)))))
+               (cons ;; ("can" apostrophe-t)
+                (def-cfr/expr category (ensure-list w)
+                  :form category::modal
+                  :referent `(:head ,category
+                              :bind (negation right-edge)))))))
       (add-rules (mapcar #'positive-rule words) category)
       (add-rules (mapcar #'negative-rule negatives) category)
       category)))

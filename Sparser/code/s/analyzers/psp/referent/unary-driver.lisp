@@ -56,6 +56,7 @@
          (when (cfr-p rule)
            (cfr-referent rule)))
         *referent*  direct-pointer?)
+    (declare (special *referent*))
     (tr :ref-unary-rule edge rule)
 
     (when rule-field  ;; return nil for empty fields
@@ -103,6 +104,7 @@
 
 
 (defun dispatch-on-unary-ref-actions (rule-field)
+  (declare (special *referent*))
   (case (car rule-field)
     (:instantiate-individual
      (ref/instantiate-individual
@@ -113,7 +115,17 @@
     (:subtype
      (ref/subtype (second rule-field)
                   *single-daughter-edge* nil))
-
+    (:binding
+     ;; Ignore the referent designator.
+     (let* ((pair (cadr rule-field))
+            (var (car pair))
+            ;; Referent designator is meaningless. Value is
+            ;; presumed to be literal.
+            (value (cadr pair)))
+       (setq *referent* (bind-variable
+                         (dereference-variable var *referent*)
+                         value
+                         *referent*))))
     (:daughter
      (edge-referent *single-daughter-edge*))
     (:funcall
