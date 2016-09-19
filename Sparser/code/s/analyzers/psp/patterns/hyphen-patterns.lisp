@@ -157,7 +157,9 @@
           (equal pattern '(:full :hyphen :capitalized)))
       (if (= 3 (length edges))
         (resolve-hyphen-between-two-terms pattern words edges start-pos end-pos)
-        (break "Hyphen: more than three edges: ~a" edges))) ;;/// two, not three on "HPB-ALL"
+        (when *work-on-ns-patterns*
+          ;; happens in Cure articles As-HCC where HCC is not a defined word
+          (break "Hyphen: more than three edges: ~a" edges)))) ;;/// two, not three on "HPB-ALL"
      
      ((equal pattern '(:full :hyphen :lower)) ;; "GTP-bound" "EGFR-positive"
       (resolve-hyphen-between-two-words pattern words start-pos end-pos))
