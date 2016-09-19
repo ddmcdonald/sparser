@@ -121,7 +121,7 @@
             (var (car pair))
             ;; Referent designator is meaningless. Value is
             ;; presumed to be literal.
-            (value (cadr pair)))
+            (value (cdr pair)))
        (setq *referent* (bind-variable
                          (dereference-variable var *referent*)
                          value
