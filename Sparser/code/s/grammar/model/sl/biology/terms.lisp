@@ -37,7 +37,9 @@
 
 (in-package :sparser)
 
-             
+(noun "ipegal" :super bio-method) ;; actually a detergent used to lyse cells, but we don't really care
+;; this should avoid an error in parsing the folloiwng in the first CURE article
+;;"Cells were lysed in a buffer containing 50 mM Tris-HCl (pH 7.4), 150 mM NaCl, 2.5 mM EDTA, 1% Triton X-100, and 0.25% IPEGAL."
 
 (adj "sure" :super certainty)
 (adj "uncertain" :super certainty)
@@ -956,7 +958,8 @@
           :adj "responsive"
           :verb "respond"
           :etf (sv)
-          :to theme))
+          :to theme
+          :m theme))
 
 (noun "restricted substrate" :super bio-predication)
 (adj "rich" :super bio-predication) ;; proline rich region
