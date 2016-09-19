@@ -54,7 +54,7 @@
    on the way back from the tokenizer. "
   (tr :defining-unknown-word-from-morph word morph-keyword)
 
-  (let ((*source-of-unknown-words-definition* :morpology))
+  (let ((*source-of-unknown-words-definition* :morphology))
     (declare (special *source-of-unknown-words-definition*))
   
     ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
@@ -171,11 +171,19 @@
                    word position-scanned next-position
                    category::adverb))
     (otherwise
-     (push-debug `(,word ,position-scanned ,next-position))
-     (break/debug "Unexpected affix keyword: ~A"
-                  (word-morphology word))
-     :foo ;; keep this frame on the stack
-     )))
+     (cond
+       ((equal (word-morphology word) '("al" ADJ))
+        (warn "Handling unexpected affix keyword: ~A in make-edge-based-on-morphology~%"
+                     (word-morphology word))
+        (make-morph-edge-over-unknown-word
+         word position-scanned next-position
+         category::adjective))
+       (t
+        (push-debug `(,word ,position-scanned ,next-position))
+        (break/debug "Unexpected affix keyword: ~A"
+                     (word-morphology word))
+        :foo ;; keep this frame on the stack
+        )))))
 
 
 (defun make-morph-edge-over-unknown-word (word
