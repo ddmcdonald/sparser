@@ -205,13 +205,13 @@
   ;; goes with (common-noun common-noun) syntactic rule
   (cond
     (*subcat-test*
-     (not (and (individual-p head)
-               (itypep head category::determiner))))
+     (not (or (word-p head) ;; this happened with word = HYPHEN, "from FCS-treated cells"
+              ;; also happened with "nontargeting"
+              (and (individual-p head)
+                   (itypep head category::determiner)))))
     ((itypep head category::determiner)
      ;; had strange case with "some cases this" -- head was "this"
-     nil)
-    ((word-p head)
-     nil) ;; this happened with word = HYPHEN, "from FCS-treated cells"
+     nil) 
     ((and qualifier head
 	  (not (or (category-p head)
 		   (individual-p head))))
@@ -225,9 +225,9 @@
        ((and
          (category-named 'knockout-pattern)
          (itypep head 'knockout-pattern)
-         (itypep qualifier 'protein))
-        (setq qualifier (bind-variable 'cell-line ;; ???
-                                       head qualifier))
+         (itypep qualifier 'protein)
+         (setq qualifier (bind-variable 'cell-line ;; ???
+                                        head qualifier)))
         qualifier)
        ;;/// There are a lot of knockout patterns. Enumerating them
        ;; like this is going to get old. Feels like motivation for
@@ -235,8 +235,8 @@
        ;; indicate what variable to use, head & form, etc
        ((and (category-named 'knockout-pattern)
              (itypep qualifier 'knockout-pattern)
-             (itypep head 'mouse))
-        (setq head (bind-variable 'cell-line qualifier head))
+             (itypep head 'mouse)
+             (setq head (bind-variable 'cell-line qualifier head)))
         head)
        ((and (itypep qualifier (itype-of head))
              (not (indiv-binds head))
@@ -551,6 +551,10 @@
 (defgeneric add-tense/aspect (aux vg)
   (:documentation "Interpret the auxiliary to make the appropriate
      addition onto the vector associated with the vg head.")
+  (:method (aux (w word))
+    (warn "can't apply add-tense/aspect to ~s and word ~s ~% in ~s%" aux w
+          (sentence-string *sentence-in-core*))
+    nil)
   (:method ((aux category) (vg category))
     (add-tense/aspect (individual-for-ref aux) (individual-for-ref vg)))
   (:method ((aux individual) (vg category))
