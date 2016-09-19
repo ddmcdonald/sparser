@@ -387,7 +387,9 @@ where it regulates gene expression.")
 			   (individual-p child-interp)
 			   (not allow-null-edge)
 			   child-interp
-			   (not (itypep child-interp 'number)))
+			   (not (itypep child-interp 'number))
+                           (not (loop for b in (indiv-old-binds child-interp)
+                                     thereis (eq **lambda-var** (binding-value b)))))
                       (warn "~&relevant-edges 1) no internal edge for ~s in ~s~~%   in sentence: ~S~%"
                             child-interp parent-edge
                             (sentence-string *sentence-in-core*))
@@ -397,7 +399,9 @@ where it regulates gene expression.")
 	      (unless (or allow-null-edge
 			  (not (individual-p child-interp))
 			  (and child-interp ;; happens in a small number of cases -- just ignore them
-			       (itypep child-interp 'number)))
+			       (itypep child-interp 'number))
+                          (loop for b in (indiv-old-binds child-interp)
+                                     thereis (eq **lambda-var** (binding-value b))))
 		;; happens for premodifying v+ing
 		;; where the edge has a category edge-representation,
 		;; not an individual
