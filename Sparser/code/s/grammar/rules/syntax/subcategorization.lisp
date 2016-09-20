@@ -76,6 +76,12 @@
     :initform nil :accessor bound-prepositions
     :documentation "Does this word take any prepositions, and if so,
       does the combination denote a different category?")
+   (local-slots
+    :initarg :slots :initform nil :accessor subcat-slots
+    :documentation "Local patterns that augment or override inherited ones.")
+   (subcategories
+    :initarg :subcats :initform nil :accessor subcat-subcats
+    :documentation "Categories that inherit this subcategorization frame.")
    (subcategorizations
     :initarg :patterns :initform nil :accessor subcat-patterns
     :documentation "A list of subcategorization patterns
@@ -161,27 +167,30 @@
           (get-subcategorization conj-type)))
       (get-subcategorization (first (indiv-type ref-object))))))
 
-(defun make-subcategorization (category patterns)
+(defun make-subcategorization (category slots)
   "Make and install a subcategorization frame for a category."
   (setf (get-subcategorization category)
         (make-instance 'subcategorization-frame
                        :category category
-                       :patterns patterns)))
+                       :slots slots
+                       :patterns (make-subcat-patterns category slots))))
 
 (defun fom-subcategorization (category &rest slots)
-  "Find, make, or augment a subcategorization frame for the given category."
+  "Find, make, or override a subcategorization frame for the given category."
   (let ((frame (get-subcategorization category)))
-    (cond ((not frame)
-           (make-subcategorization category
-                                   (override-subcat-patterns category
-                                    (inherit-subcat-patterns category)
-                                    slots)))
-          (slots
+    (cond (frame
            (setf (subcat-patterns frame)
-                 (override-subcat-patterns category
-                  (subcat-patterns frame)
-                  slots)))
-          (t frame))))
+                 (make-subcat-patterns category
+                                       (if slots
+                                         (setf (subcat-slots frame) slots)
+                                         (subcat-slots frame))))
+           frame)
+          (t (make-subcategorization category slots)))))
+
+(defun make-subcat-patterns (category slots)
+  (override-subcat-patterns category
+   (inherit-subcat-patterns category)
+   slots))
 
 (defun inherit-subcat-patterns (category)
   "Inherit subcategorization patterns from supercategories."
@@ -190,7 +199,8 @@
         for super in (immediate-supers category)
         as frame = (get-subcategorization super)
         when frame
-          do (loop for pattern in (reverse (subcat-patterns frame))
+          do (pushnew category (subcat-subcats frame)) ; record inheritance
+             (loop for pattern in (reverse (subcat-patterns frame))
                    as label = (subcat-label pattern)
                    as var = (subcat-variable pattern)
                    as local-var = (find-variable-for-category var category)
@@ -204,30 +214,37 @@
                                patterns :test #'subcat-pattern-equal))
         finally (return patterns)))
 
-(defun override-subcat-patterns (category patterns slots &aux
-                                 (patterns ; override subject & object
-                                  (remove-if
-                                   (lambda (label)
-                                     (and (memq label '(:subject :object))
-                                          (getf slots label)))
-                                   patterns :key #'subcat-label)))
+(defun override-subcat-patterns (category patterns slots)
   "Override inherited subcategorization patterns from local slots."
   (declare (optimize debug))
   (check-type category category)
-  (assert (every (lambda (pattern) (subcat-pattern-p pattern)) patterns))
-  (check-type slots list)
-  (loop for (pname var-name) on slots by #'cddr
-        as label = (case pname
-                     ((:subject :object :premod :m
-                       :thatcomp :whethercomp :to-comp :ifcomp :as-comp)
+  (assert (every #'subcat-pattern-p patterns))
+  (loop initially (setq patterns (remove-if ; override subject & object
+                                  (lambda (label)
+                                    (and (memq label '(:subject :object))
+                                         (getf slots label)))
+                                  patterns :key #'subcat-label))
+        for (pname var-name) on slots by #'cddr
+        as label = (etypecase pname
+                     ((member :subject :object :premod :m
+                              :thatcomp :whethercomp :to-comp :ifcomp :as-comp)
                       pname)
-                     (otherwise
+                     ((or word polyword)
+                      pname)
+                     ((or string symbol)
                       (resolve (string-downcase pname))))
         as var = (find-variable-for-category var-name category)
         as v/r = (var-value-restriction var)
         do (pushnew (make-subcat-pattern label v/r var category)
                     patterns :test #'subcat-pattern-equal)
         finally (return patterns)))
+
+(defmethod (setf subcat-patterns) :after (new-patterns (frame subcategorization-frame))
+  "Propagate updated patterns downwards through the category hierarchy."
+  (declare (ignore new-patterns))
+  (loop for subcategory in (subcat-subcats frame)
+        as subframe = (get-subcategorization subcategory)
+        do (apply #'fom-subcategorization subcategory (subcat-slots subframe))))
 
 (defun assign-subcat/expr (word form category parameter-plist)
   "Form to find or make the appropriate subcategorization frame
@@ -361,12 +378,12 @@
   (check-type label (or category keyword word polyword))
   (check-type restriction (not null))
   (check-type variable (or null lambda-variable symbol))
-  (let ((variable (find-variable-for-category variable category)))
-    ;; If the variable has been restricted locally,
-    ;; then use the local version of the variable.
+  (let ((variable (find-variable-for-category variable category))
+        (frame (get-subcategorization category)))
+    (setf (getf (subcat-slots frame) label) (var-name variable))
     (funcall (if replace #'replace-subcat-pattern #'add-subcat-pattern)
              (make-subcat-pattern label restriction variable category)
-             (get-subcategorization category))))
+             frame)))
 
 (defun assign-subject (category v/r variable)
   (assign-subcategorization category :subject v/r variable :replace t))

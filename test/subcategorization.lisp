@@ -43,7 +43,8 @@
                                 (label (etypecase label
                                          (keyword label)
                                          (string (resolve label)))))
-  (var-name (find-subcat-variable label frame)))
+  (let ((var (find-subcat-variable label frame)))
+    (and (lambda-variable-p var) (var-name var))))
 
 (rt:deftest (subcat subject object)
   (let ((frame-1 (get-subcategorization category::subcat-test-1))
@@ -76,4 +77,23 @@
   b
   c
   d
+  e)
+
+(rt:deftest (subcat re-inheritance)
+  (let ((frame-6 (get-subcategorization category::subcat-test-6)))
+    (values (subcat-pattern-var-name "with" frame-6)
+            (subcat-pattern-var-name "without" frame-6)
+            (progn
+              (fom-subcategorization category::subcat-test-4 "without" 'e)
+              (subcat-pattern-var-name "without" frame-6))
+            (subcat-pattern-var-name "with" frame-6)
+            (progn
+              (fom-subcategorization category::subcat-test-4 "with" 'e)
+              (subcat-pattern-var-name "without" frame-6))
+            (subcat-pattern-var-name "with" frame-6)))
+  e
+  nil
+  e
+  d
+  nil
   e)
