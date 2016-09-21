@@ -872,10 +872,12 @@
         collect (subcat-variable pat)))
 
 (defun find-object-vars (cat)
-  (find-subcat-vars :object cat))
+  (when (not (word-p cat)) ;; bad morphology for "widening" and others
+    (find-subcat-vars :object cat)))
 
 (defun find-subject-vars (cat)
-  (find-subcat-vars :subject cat))
+  (when (not (word-p cat)) ;; bad morphology for "widening" and others
+    (find-subcat-vars :subject cat)))
 
 (defun binds-var-p (i var)
   (loop for b in (and (individual-p i) (indiv-binds i))
