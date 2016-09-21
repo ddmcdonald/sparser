@@ -226,15 +226,18 @@
 (defun find-head-word (tt)
   "Walk down the head line (not so obvious) and return
    the word at the bottom, e.g. the verb."
-  (let ((head-edge (walk-down-right-headline tt)))
-    (when head-edge
-      (let ((left-daughter (edge-left-daughter head-edge)))
-        ;; There was a complaint here if the walk didn't
-        ;; return an edge whose left-daughter was not a word.
-        ;; Removed it 12/12/14 in favor or returning nil
-        ;; in that case.
-        (when (word-p left-daughter)
-          left-daughter)))))
+  (let ((head (walk-down-right-headline tt)))
+    ;; walk-down-right-headline can return a word
+    (when head
+      (if (word-p head)
+          head
+          (let ((left-daughter (edge-left-daughter head)))
+            ;; There was a complaint here if the walk didn't
+            ;; return an edge whose left-daughter was not a word.
+            ;; Removed it 12/12/14 in favor or returning nil
+            ;; in that case.
+            (when (word-p left-daughter)
+              left-daughter))))))
 
 
 (defun walk-down-right-headline (edge)
@@ -246,6 +249,8 @@
       (cond
 	((edge-p daughter)
 	 (walk-down-right-headline daughter))
+        ((word-p daughter)
+         daughter)
 	((symbolp daughter)
 	 (case daughter
 	   ((:digit-based-number :single-term :single-digit-sequence
@@ -296,28 +301,33 @@
              form (edge-position-in-resource-array edge)))
     (if (and (vp-category? (edge-form edge))
              (word-p (edge-left-daughter edge)))
-      edge
-      (let* ((left (edge-left-daughter edge))
-             (left-form (edge-form left))
-             (right (edge-right-daughter edge))
-             (right-form (when (edge-p right) ;; vs. a symbol
-                           (edge-form right))))
-        (cond
-         ((vp-category? left-form)
-          (find-verb left))
-         ((and right-form (vp-category? right-form))
-          (find-verb right))
-         ((eq left-form (category-named 's))
-          (find-verb left))
-         ((eq left-form (category-named 'adjective)) ;; "responsible"
-          left)
-         ((verb-category? right) ;; "is activated"
-          right)
+        edge
+        (let* ((left (edge-left-daughter edge))
+               (left-form (edge-form left))
+               (right (edge-right-daughter edge))
+               (right-form (when (edge-p right) ;; vs. a symbol
+                             (edge-form right))))
+          (cond
+            ((eq (edge-form left) category::pp)
+             (let ((vp-edge (loop for e in (edge-constituents edge)
+                               when (vp-category? (edge-form e))
+                               do (return e))))
+               (find-verb vp-edge)))
+            ((vp-category? left-form)
+             (find-verb left))
+            ((and right-form (vp-category? right-form))
+             (find-verb right))
+            ((eq left-form (category-named 's))
+             (find-verb left))
+            ((eq left-form (category-named 'adjective)) ;; "responsible"
+             left)
+            ((verb-category? right) ;; "is activated"
+             right)
 
-         (t (push-debug `(,left ,right ,left-form ,right-form))
-            ;;(print `(can't find verb on edge ,edge)) 
-            (error "find-verb: new case")
-            nil))))))
+            (t (push-debug `(,left ,right ,left-form ,right-form))
+               ;;(print `(can't find verb on edge ,edge)) 
+               (error "find-verb: new case")
+               nil))))))
 
 
 
