@@ -734,10 +734,11 @@
 
 ;;/// written as expedient way to handle "even in" (overnight #6)
 ;; but that phrase actually means something and should be a real preposition
-(def-syntax-rule (adverb preposition)
+;; the PI3KC2β RBD-Ras complex is stable even in the presence 
+(def-syntax-rule (adverb pp)
     :head :right-edge
-    :form preposition
-    :referent (:method modified left-edge right-edge))
+    :form pp
+    :referent (:function maybe-attach-adverb-to-pp left-edge right-edge))
 
 
 
