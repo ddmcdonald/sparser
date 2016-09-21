@@ -1549,7 +1549,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "ILF3_HUMAN" ("NF-AT-90" "TCP80" "DRBF" "ILF3" "NF90" "MPHOSPH4" "MPP4" "DRBP76" "NFAR")) 
 (define-protein "ILKAP_HUMAN" ("ILKAP")) 
 (define-protein "IMA1_HUMAN" ("KPNA2" "RCH1" "SRP1")) 
-(define-protein "IMB1_HUMAN" ("NTF97" "KPNB1" "Importin-90" "PTAC97")) 
+(define-protein "IMB1_HUMAN" ("NTF97" "KPNB1" "importin-90" "PTAC97")) 
 (define-protein "IMPA1_HUMAN" ("inositol" "Inositol monophosphatase 1" "IMP 1" "IMPase 1" "D-galactose 1-phosphate phosphatase" "Inositol-1(or 4)-monophosphatase 1" "Lithium-sensitive myo-inositol monophosphatase A1")) 
 (define-protein "INAR2_HUMAN" ("ifnα" "Interferon alpha/beta receptor 2" "IFN-R-2" "IFN-alpha binding protein" "IFN-alpha/beta receptor 2" "Interferon alpha binding protein" "Type I interferon receptor 2")) 
 (define-protein "INCE_HUMAN" ("incenp" "Inner centromere protein")) 
