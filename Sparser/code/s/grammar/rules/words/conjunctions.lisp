@@ -74,6 +74,8 @@
 ;;(define-conjunction "but not"  :form 'conjunction) works more simply as a "preposition"
 
 (define-conjunction "instead of"  :form 'conjunction)
+(define-conjunction "as well as"  :form 'conjunction)
+
 
 
 
@@ -104,7 +106,7 @@
           "as far as"
           "as if"
           "as soon as"
-          "as well as"
+          ;;"as well as"
           "as a consequence"
           "as though"
           "because"
