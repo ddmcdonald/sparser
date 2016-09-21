@@ -139,19 +139,18 @@
 
 
 (defun decode-exp-as-ref-category (exp category)
+  ;; changed to use itypep, which is more general than what was here
   (etypecase exp
     (individual
-     (if (eq (first (indiv-type exp)) category)
+     (if (itypep exp category)
        exp
-       (if (individual-inherits-type? exp category)
-         exp
-         (v/r-violation "The type of the individual given as the value,~
+       (v/r-violation "The type of the individual given as the value,~
                          ~%   ~A~%does not match the value restriction ~A"
-                        exp category))))
+                      exp category)))
 
     ((or referential-category  ;; e.g. 1st
          mixin-category)
-     (if (category-inherits-type? exp category)
+     (if (itypep exp category) ;; (category-inherits-type? exp category)
        exp
        (v/r-violation "The type of the category given as the value,~
                          ~%   ~A~%does not match the value restriction ~A"
