@@ -657,6 +657,9 @@
              (variable-to-bind t)
              ((has-adverb-variable? vg vg-phrase adverb) t)
              ((and (collection-p vg)
+                   ;; saw an error in  "phase–contrast only"
+                   ;; where "phase-contrast" was treated as a verb
+                   (not (itypep vg 'hyphenated-pair))
                    (or
                     (subcategorized-variable 
                      (car (value-of 'items vg)) :adv adverb)
@@ -765,11 +768,14 @@
   "Used to generate useful error messages when the edge 
    referent is NIL.")
 
+
+
 (defun identify-preposition (edge)
   "The edge is over a pp or prep-complement, etc. that is headed
    by a preposition. Sometimes the actual preposition word is
    buried under other edges. Find and return the preposition."
-  (let* ((prep-edge (edge-left-daughter edge))
+  (let* ((edge (base-pp edge))
+         (prep-edge (edge-left-daughter edge))
          ;; in case where  (LOOK-FOR-PREP-BINDERS)
          ;;  ends up leading to this, the edge is a preposition itself
          (left-daughter (when (edge-p prep-edge)
@@ -828,6 +834,17 @@
                (type-of left-daughter) left-daughter)
          nil)))))
 
+(defun identify-pobj (edge)
+  (setq edge (base-pp edge))
+  (edge-referent
+   (edge-right-daughter edge)))
+
+
+(defun base-pp (edge)
+  (if (and (edge-p (edge-left-daughter edge))
+           (eq (cat-name (edge-form (edge-left-daughter edge))) 'adverb))
+      (edge-right-daughter edge)
+      edge))
 
 (defun adjoin-pp-to-vg (vg pp)
   ;; The VG is the head. We ask whether it subcategorizes for
@@ -835,31 +852,44 @@
   ;; of the preposition satisfies the specified value restriction.
   ;; Otherwise we check for some anticipated cases and then
   ;; default to binding modifier.
-  (let* ((pp-edge (right-edge-for-referent))
-         (prep-word (identify-preposition pp-edge)) 
-         (*pobj-edge* (edge-right-daughter pp-edge))
-         (pobj-referent (when (edge-p *pobj-edge*)
-                          (edge-referent *pobj-edge*)))
-         (variable-to-bind
-          (when prep-word
-            ;; test if there is a known interpretation of the VG/PP combination
-            (or (subcategorized-variable vg prep-word pobj-referent)
-                (and (itypep pp 'upon-condition)
-                     (find-variable-for-category 'context (itype-of vg))) ;; circumstance)
-                ;; or if we are making a last ditch effore
-                (and *force-modifiers*
-                     'modifier)))))
-    (declare (special *pobj-edge*))
-    (cond
-     (*subcat-test* variable-to-bind)
-     (variable-to-bind
-      (when *collect-subcat-info*
-        (push (subcat-instance vg prep-word variable-to-bind pp)
-              *subcat-info*))
-      (setq vg (individual-for-ref vg))
-      (setq pobj-referent (individual-for-ref pobj-referent))
-      (setq  vg (bind-dli-variable variable-to-bind pobj-referent vg))
-      vg))))
+  (if (itypep pp 'collection) ;; a conjunction
+      (if *subcat-test*
+          (loop for pp-edge in (edge-constituents (right-edge-for-referent))
+             always
+               (let ((*right-edge-into-reference* pp-edge))
+                 (declare (special *right-edge-into-reference*))
+                 (adjoin-pp-to-vg vg (edge-referent pp-edge))))
+          (loop for pp-edge in (edge-constituents (right-edge-for-referent))
+             do
+               (let ((*right-edge-into-reference* pp-edge))
+                 (declare (special *right-edge-into-reference*))
+                 (setq vg (adjoin-pp-to-vg vg (edge-referent pp-edge))))
+             finally (return vg)))
+          
+      (let* ((pp-edge (base-pp (right-edge-for-referent)))
+             (prep-word (identify-preposition pp-edge))
+             (*pobj-edge* (edge-right-daughter pp-edge))
+             (pobj-referent (identify-pobj pp-edge))
+             (variable-to-bind
+              (when prep-word
+                ;; test if there is a known interpretation of the VG/PP combination
+                (or (subcategorized-variable vg prep-word pobj-referent)
+                    (and (itypep pp 'upon-condition)
+                         (find-variable-for-category 'context (itype-of vg))) ;; circumstance)
+                    ;; or if we are making a last ditch effore
+                    (and *force-modifiers*
+                         'modifier)))))
+        (declare (special *pobj-edge*))
+        (cond
+          (*subcat-test* variable-to-bind)
+          (variable-to-bind
+           (when *collect-subcat-info*
+             (push (subcat-instance vg prep-word variable-to-bind pp)
+                   *subcat-info*))
+           (setq vg (individual-for-ref vg))
+           (setq pobj-referent (individual-for-ref pobj-referent))
+           (setq  vg (bind-dli-variable variable-to-bind pobj-referent vg))
+           vg)))))
 
 
 (defun adjoin-prepcomp-to-vg (vg prep-comp) ;; "by binding..."
@@ -1007,8 +1037,8 @@
 
          (let* ((pp-edge (right-edge-for-referent))
                 (prep-word (identify-preposition pp-edge))
-                (*pobj-edge* (edge-right-daughter pp-edge))
-                (pobj-referent (edge-referent *pobj-edge*))
+                ;;(*pobj-edge* (edge-right-daughter pp-edge))
+                (pobj-referent (identify-pobj pp-edge))
                 (of (word-named "of"))
                 (variable-to-bind
                  ;; test if there is a known interpretation of the NP/PP combination
@@ -1040,8 +1070,8 @@
   (push-debug `(,np ,pp))
   (let* ((pp-edge (right-edge-for-referent))
          (prep-word (identify-preposition pp-edge))
-         (pobj-edge (edge-right-daughter pp-edge))
-         (pobj-referent (edge-referent pobj-edge))
+         ;;(pobj-edge (edge-right-daughter pp-edge))
+         (pobj-referent (identify-pobj pp-edge)) ;;(edge-referent pobj-edge))
          (variable-to-bind
           ;; test if there is a known interpretation of the NP/PP combination
           (or
@@ -1611,3 +1641,8 @@
           (value-of 'value vp))
   (setq vp (bind-variable 'item subj vp)))
 
+(defun maybe-attach-adverb-to-pp (adverb pp)
+  ;; Don't accept (adverb comma) edges as premodifiers for PPs
+  ;; e.g. block ""Notably, of the nine candidate ORFs..."
+  (cond (*subcat-test* (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)))
+        (t (bind-dli-variable 'modifier adverb (individual-for-ref pp)))))
