@@ -219,17 +219,24 @@
           ;; referent of the combination is the np
           np-ref))))))
 
+(defparameter *break-on-null-ref-in-context-needs-clause* t)
 (defun context-needs-clause? (np-ref vp-ref)
   (let ((before (edges-before (left-edge-for-referent))))
     (declare (special before))
     (loop for e in before
        thereis
-         (or (itypep (edge-referent e) 'that)
-             (itypep (edge-referent e) 'whether)
-             (eq (edge-category e) category::do) ;; auxiliary --
-             ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
-             (itypep (edge-referent e) 'precede)
-             (itypep (edge-referent e) 'follow)))))   ;; need to generalize
+         (let ((ref (edge-referent e)))
+         (when (and (null ref)
+  			       *break-on-null-ref-in-context-needs-clause*)
+           (cerror "null ref in context-needs-clause -- quite this by setting *break-on-null-ref-in-context-needs-clause* to nil"
+                   (sentence-string *sentence-in-core*)))
+           (and ref
+                (or (itypep ref 'that)
+                    (itypep ref 'whether)
+                    (eq (edge-category e) category::do) ;; auxiliary --
+                    ;; see "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching... level?"
+                    (itypep ref 'precede)
+                    (itypep ref 'follow))))))) ;; need to generalize
              
 
 (defun apply-object-relative-clause (np-ref vp-ref)
