@@ -147,6 +147,8 @@
 (define-quantifier "a number" :brackets '( ].quantifier  .[np ) :rules '(of))
 (define-quantifier "some"    :brackets '( ].quantifier  .[np ) :rules '(of))
 (define-quantifier "such"    :brackets '( ].quantifier  .[np ))
+;; not sure if this is a quantifier, but it is similar 
+(define-quantifier "such a"    :brackets '( ].quantifier  .[np ))
 
 
 (define-quantifier "neither"     :brackets '( ].quantifier  .[np ) :rules '(of))
