@@ -236,8 +236,11 @@
    the same situation."
   (declare (special category::hyphenated-number category::number))
   (let ((i (find-or-make-individual 'hyphenated-number
-                                    :left (maybe-make-individual (edge-referent left-edge))
-                                    :right (maybe-make-individual (edge-referent right-edge)))))
+                                    :left (maybe-make-individual
+                                           (ensure-number (edge-referent left-edge)))
+                                    :right (maybe-make-individual
+                                            (ensure-number
+                                             (edge-referent right-edge))))))
     (let ((edge (make-ns-edge
                  (pos-edge-starts-at left-edge)
                  (pos-edge-ends-at right-edge)
@@ -248,6 +251,18 @@
                  :constituents `(,left-edge ,right-edge)
                  :words words)))
       edge)))
+
+(defun ensure-number (n)
+  (declare (special n))
+  (cond
+    ((itypep n 'number) n)
+    ((itypep n 'year)
+     ;; there must be a better way to do this,
+     ;;  but it's late and I need to get to sleep
+     (bind-dli-variable 'value
+                        (value-of 'value n)
+                        (individual-for-ref category::number)))))
+      
 
 
 (defun make-hyphenated-triple (left-edge middle-edge right-edge)
