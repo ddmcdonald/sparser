@@ -73,6 +73,10 @@
 
 ;; needed for the Harvard dynamic process model
 (adj "transient" :super scalar-variation)
+;; below is needed because of a use of "transients" in the CURE corpus
+(define-category transient-measurement :specializes bio-measurement
+  :realization  (:noun ("transientXXX" :plural "transients"))) ;; don't pick up "transient" from COMLEX, and don't allow "transient" as a singular noun
+
 (adj "persistent" :super scalar-variation)
 (adj "noisy" :super scalar-variation)
 (adj "unchanged" :super scalar-variation)
