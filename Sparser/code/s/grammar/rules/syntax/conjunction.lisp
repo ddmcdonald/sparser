@@ -601,8 +601,7 @@
 (defun conjoin-two-edges (left-edge right-edge heuristic &key do-not-knit pass)
   (declare (special left-edge right-edge))
   (let ((referent
-         (referent-of-two-conjoined-edges
-          (edge-referent left-edge) (edge-referent right-edge)))
+         (referent-of-two-conjoined-edges left-edge right-edge))
         (form (edge-form left-edge))
         (category (edge-category left-edge)))
 
@@ -614,18 +613,7 @@
                                         (pos-edge-ends-at right-edge))
                  :form form
                  :referent referent
-                 :rule heuristic)
-            #+ignore
-            (make-chart-edge
-             :left-edge left-edge
-             :left-daughter left-edge
-             :right-edge right-edge
-             :right-daughter right-edge
-             :category category
-             :form form
-             :referent referent
-             :rule-name heuristic
-             :do-not-knit do-not-knit )))
+                 :rule heuristic)))
       (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (edge-interaction-with-quiescence-check edge)
       (when *save-conjunctions* 
@@ -715,7 +703,17 @@
 ;;; semantics
 ;;;-----------
 
-(defun referent-of-two-conjoined-edges (left-ref right-ref)
+;; This is split into two functions to allow the updating of the edge-mention when the
+;;  edge is reinterpreted in a conjunction
+
+(defun referent-of-two-conjoined-edges (left-edge right-edge)
+  (referent-of-two-conjoined-referents
+   (edge-referent left-edge)
+   (edge-referent right-edge)
+   left-edge
+   right-edge))
+
+(defun referent-of-two-conjoined-referents (left-ref right-ref &optional left-edge right-edge)
   (when (and left-ref right-ref
              (not (word-p left-ref))
              (not (word-p right-ref)))
@@ -726,7 +724,9 @@
         (break "bad referent in referent-of-two-conjoined-edges, ~s"
                left-ref right-ref)
         
-        (let* ((left-type (etypecase left-ref
+        (let* ((new-left-ref left-ref)
+               (new-right-ref right-ref)
+               (left-type (etypecase left-ref
                             (individual (i-type-of left-ref))
                             (category left-ref)))
                (right-type (etypecase right-ref
@@ -735,15 +735,20 @@
                (type left-type))
           
           (unless (eq left-type right-type)
-            (multiple-value-setq (left-ref right-ref type)
+            (multiple-value-setq (new-left-ref new-right-ref type)
               (adjudicate-specializations left-ref left-type
                                           right-ref right-type)))
+          (setq new-left-ref (maybe-make-individual new-left-ref))
+          (setq new-right-ref (maybe-make-individual new-right-ref))
+          (when left-edge
+            (unless (eq new-left-ref left-ref) (update-edge-mention-referent left-edge new-left-ref)))
+          (when right-edge
+            (unless (eq new-right-ref right-ref) (update-edge-mention-referent right-edge new-right-ref)))
           (let ((collection
                  (define-or-find-individual 'collection
                      ;; This is needed for roundtripping to Spire structures
                      ;; CHECK WITH DAVID FOR WHY THESE WERE FORCED TO BE CATEGORIES
-                     :items (list (maybe-make-individual left-ref)
-                                  (maybe-make-individual right-ref))
+                     :items (list new-left-ref new-right-ref)
                    :number 2
                    :type type)))
             (if *description-lattice*

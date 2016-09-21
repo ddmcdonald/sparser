@@ -149,7 +149,8 @@
 	 new-left new-items new-interp new-edge)
     ;;(lsp-break "2d")
     (when var-name
-      (setq new-left (when var-name (bind-dli-variable var-name pobj-referent left-clause)))
+      (setq new-left (when var-name (bind-dli-variable var-name pobj-referent (edge-referent left-clause))))
+      (update-edge-mention-referent left-clause new-left)
       (setq new-items
 	    (cons new-left (cdr (value-of 'items (edge-referent clause)))))
       (setq new-interp
@@ -172,9 +173,9 @@
 (define-debris-analysis-rule oblique-s-subject-to-vp
   :pattern (s vp)
   ;; fails if the subject isn't oblique
-  :action (:function attach-olique-s-as-subject-to-vp first second))
+  :action (:function attach-oblique-s-as-subject-to-vp first second))
 
-(defun attach-olique-s-as-subject-to-vp (s vp) ;; dynamic model #43,44
+(defun attach-oblique-s-as-subject-to-vp (s vp) ;; dynamic model #43,44
   (let ((verb-edge (find-verb s)))
     ;; sort of a gerund detector ///abstract to syntax/category-predicates
     (when verb-edge
@@ -242,9 +243,7 @@
   (make-edge-spec
    :category (edge-category s1)
    :form (edge-form s1)
-   :referent (referent-of-two-conjoined-edges
-              (edge-referent s1)
-              (edge-referent s2))))
+   :referent (referent-of-two-conjoined-edges s1 s2)))
 
 
 (define-debris-analysis-rule conjoin-clause-and-vp
@@ -278,7 +277,8 @@
                s-subj-var vp-subj-var)
       (let ((subject (value-of s-subj-var s-ref)))
         (when subject
-          (setq vp-ref (bind-dli-variable vp-subj-var subject vp-ref)))))
+          (setq vp-ref (bind-dli-variable vp-subj-var subject vp-ref))
+          (update-edge-mention-referent vp-edge vp-ref))))
     ;; regardless of whether we could set the subject of the
     ;; vp we should create the edge
     ;; This returns a edge and uses referent-of-two-conjoined-edges 
@@ -292,9 +292,7 @@
     (make-edge-spec
      :category (edge-category s-edge)
      :form (edge-form s-edge)
-     :referent (referent-of-two-conjoined-edges
-                (edge-referent s-edge)
-                (edge-referent vp-edge)))))
+     :referent (referent-of-two-conjoined-edges s-edge vp-edge))))
 
 
 (define-debris-analysis-rule conjoin-clause-and-vp+passive
@@ -380,7 +378,7 @@
                 collect (make-lambda-predicate edge))))
         ;; now remake the collection
         (let ((new-conjunct 
-               (apply #'referent-of-two-conjoined-edges new-items)))
+               (apply #'referent-of-two-conjoined-referents new-items)))
           (setf (edge-referent vp-edge) new-conjunct))))
 
      (t ;; simple vp
@@ -422,10 +420,12 @@
       (let ((subject (value-of s-subj-var s-ref)))
         (when subject
           (setq vp+ing-ref (bind-dli-variable vp-subj-var subject vp+ing-ref))
+          ;; have just created a new interpretation of an existing edge -- make a mention
+          (update-edge-mention-referent vp+ing-edge vp+ing-ref)
           (make-edge-spec
            :category (edge-category s-edge)
            :form (edge-form s-edge)
-           :referent (referent-of-two-conjoined-edges
+           :referent (referent-of-two-conjoined-referents 
                       (edge-referent s-edge)
                       vp+ing-ref)))))))
 
@@ -711,11 +711,10 @@
 				   pobj-referent)))
     (cond
       (var-name
-       (setq np (bind-dli-variable var-name pobj-referent np))
        (make-edge-spec 
 	:category (edge-category np-edge)
 	:form (edge-form np-edge)
-	:referent np))
+	:referent (bind-dli-variable var-name pobj-referent np)))
       (t 
        ;;(lsp-break "attach-pp-to-np-with-commas fails")
        nil))))
@@ -742,11 +741,10 @@
 				   pobj-2-referent)))
     (cond
       (var-name
-       (setq np (bind-dli-variable var-name pobj-2-referent np))
        (make-edge-spec 
 	:category (edge-category np-edge)
 	:form (edge-form np-edge)
-	:referent np
+	:referent (bind-dli-variable var-name pobj-2-referent np)
         :target np-edge
         :direction :right
         ))
@@ -763,12 +761,11 @@
 
 (defun proper-noun-comma-vg+ed-comma (np intial-comma vp+ed final-comma)
   (declare (special category::np))
-  (let* ((modified-vp-ref (make-lambda-predicate vp+ed))
-         (modified-np-ref (bind-dli-variable 'modifier modified-vp-ref (edge-referent np))))
+  (let* ((modified-vp-ref (make-lambda-predicate vp+ed)))
     (make-edge-spec
      :category (edge-category np)
      :form category::np
-     :referent modified-np-ref)))
+     :referent (bind-dli-variable 'modifier modified-vp-ref (edge-referent np)))))
 
 
 (define-debris-analysis-rule np-vp+ed
