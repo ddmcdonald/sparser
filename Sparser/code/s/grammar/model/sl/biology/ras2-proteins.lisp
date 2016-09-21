@@ -436,7 +436,7 @@
 (define-protein "TITIN_HUMAN" ("2.7.11.1" "TTN" "Connectin")) 
 (define-protein "TLL2_HUMAN" ("KIAA0932" "3.4.24.-" "TLL2")) 
 (define-protein "TLN1_HUMAN" ("TLN1" "KIAA1027" "TLN")) 
-(define-protein "TNPO1_HUMAN" ("MIP" "MIP1" "Karyopherin beta-2" "TRN" "Importin beta-2" "KPNB2" "M9 region interaction protein" "TNPO1")) 
+(define-protein "TNPO1_HUMAN" ("MIP" "MIP1" "Karyopherin beta-2" "TRN" "importin beta-2" "KPNB2" "M9 region interaction protein" "TNPO1")) 
 (define-protein "TNPO1_HUMAN" ("MIP" "MIP1" "TRN" "KPNB2" "TNPO1")) 
 (define-protein "TOPB1_HUMAN" ("DNA topoisomerase II-binding protein 1" "TopBP1" "KIAA0259" "TOPBP1" "DNA topoisomerase II-beta-binding protein 1")) 
 (define-protein "TOPB1_HUMAN" ("TopBP1" "KIAA0259" "TOPBP1")) 
