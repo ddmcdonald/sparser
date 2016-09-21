@@ -246,12 +246,19 @@ returning a new one.
 		new)))
     new))
 
+(defparameter *break-on-ambiguous-variable* nil)
+(defparameter *quiet-ambiguous-variable* t)
+
 (defun disambiguated-variable (binding ambiguous-binding ambig-variables var/name)
   (if (eq binding ambiguous-binding)
       (if (cddr ambig-variables)
 	  ;; still ambiguous
-	  (progn (format t "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
-                         (sentence-string *sentence-in-core*))
+	  (progn (if *break-on-ambiguous-variable*
+                     (lsp-break  "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
+                                 (sentence-string *sentence-in-core*))
+                     (unless *quiet-ambiguous-variable*
+                       (warn  "~%still ambiguous ~s~% in sentence: ~s~%" ambig-variables
+                              (sentence-string *sentence-in-core*))))
 		 (car ambig-variables)) ;;
 	  (loop for v in ambig-variables
 	     when (not (or (eq v var/name)
