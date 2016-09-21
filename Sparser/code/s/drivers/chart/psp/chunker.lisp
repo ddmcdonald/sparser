@@ -652,6 +652,8 @@ than a bare "to".  |#
                (loop for ee in edges-before
                   thereis
                     (eq (cat-name (edge-form ee)) 'det))
+               (not (boundp '*chunk*)) ;; happens in looking at np-head? of first chunk
+
                (not (chunk-ev-list *chunk*)))))
             ((eq (cat-name (edge-form e)) 'verb+ed)
              nil)
