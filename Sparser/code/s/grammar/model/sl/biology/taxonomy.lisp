@@ -991,6 +991,7 @@
 (define-cellular-location "nucleoplasm" "GO_0005654")
 (define-cellular-location "nucleus" "GO_0005634" :adj "nuclear")
 (define-cellular-location "plasma membrane" "GO_0005886")
+(def-synonym plasma-membrane (:noun "PM"))
 (define-cellular-location "platelet dense granule lumen" "GO_0031089")
 (define-cellular-location "trailing edge" "GO_0031254")
 (define-cellular-location "juxtamembrane" "GO_????")
