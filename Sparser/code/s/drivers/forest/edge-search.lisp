@@ -387,6 +387,8 @@
 	 (and
 	  (prep? l-triple-left)
           (not (subordinate-conjunction? l-triple))
+          (or (not (possible-spatio-temporal-prep? l-triple))
+              (itypep (edge-referent (third l-triple)) 'process))
           ;; "until" is both a preposition and a subordinate conjunction
           ;; causes problems with "Does the amount of phosphorylated MAP2K1 remain low until phosphorylated BRAF reaches a high value?"
 	  (not (eq (edge-category (second l-triple)) category::as))
@@ -434,7 +436,14 @@
 		       category::adverb))))))))))
 
 (defun prep? (cat)
-  (memq cat '(category::preposition category::spatial-preposition)))
+  (memq cat '(category::preposition category::spatial-preposition
+              category::spatio-temporal-preposition)))
+
+(defun possible-spatio-temporal-prep? (l-triple)
+  (loop for e in (all-edges-at (second l-triple))
+     thereis
+       (eq (edge-form e) category::spatio-temporal-preposition)))
+
 
 (defun subordinate-conjunction? (l-triple)
   (declare (special category::subordinate-conjunction))
