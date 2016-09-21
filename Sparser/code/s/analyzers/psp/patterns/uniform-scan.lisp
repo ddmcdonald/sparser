@@ -293,7 +293,8 @@
             (punctuation-named #\'))
     (when (null (cdr edges))
       (let* ((edge (car edges))
-             (label (edge-category edge)))
+             ;; (car edges) is null in "We used 2' deoxythymidines..."
+             (label (and (edge-p edge)(edge-category edge))))
         (and (category-p label)
              (memq label *categories-based-on-apostrophe*))))))
 
