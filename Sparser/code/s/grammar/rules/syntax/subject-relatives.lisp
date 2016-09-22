@@ -226,10 +226,11 @@
     (loop for e in before
        thereis
          (let ((ref (edge-referent e)))
-         (when (and (null ref)
-  			       *break-on-null-ref-in-context-needs-clause*)
-           (cerror "null ref in context-needs-clause -- quite this by setting *break-on-null-ref-in-context-needs-clause* to nil"
-                   (sentence-string *sentence-in-core*)))
+           (when (and (null ref)
+                      (not (eq (edge-category e) category::APOSTROPHE-S))
+                      *break-on-null-ref-in-context-needs-clause*)
+             (error "null ref in context-needs-clause -- quiet this by setting *break-on-null-ref-in-context-needs-clause* to nil"
+                    (sentence-string *sentence-in-core*)))
            (and ref
                 (or (itypep ref 'that)
                     (itypep ref 'whether)

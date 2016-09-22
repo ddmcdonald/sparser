@@ -99,50 +99,52 @@ the contextual interpretation of the item in the context."))
 where it regulates gene expression.")
 |#
 
+(defparameter *error-on-list-nil* nil)
+
 (defmethod interpret-in-context ((dt cons) var containing-mentions)
   (declare (special dt var containing-mentions))
   "For the moment, lists are of the form (<mention>
  ... bindings). First recursively interpret the bound elements in the
  bindings of the dt, then rebuild the interpretation of the dt from
  those reinterpreted bindings."
-  (if (equal dt '(nil))
-      (progn
-        (error "~&passed (NIL) to interpret-in-context~%   in sentence: ~s~%"
-              (sentence-string *sentence-in-core*))
-        nil)
-      (let* ((mention (dt-mention dt))
-             (base (base-description mention))
-             (bindings (dt-bindings dt)))
-        (declare (special mention base bindings))
-        (typecase mention
-          (discourse-mention       
-           (cond
-             ((slot-boundp mention 'ci)
-              ;; dt was already contextually interpreted --
-              ;;  this happens with conjunction distribution/expansion
-              (contextual-interpretation mention))
-             ((or (itypep base 'hyphenated-pair)
-                  (itypep base 'hyphenated-triple)
-                  (itypep base 'two-part-label))
-              ;; not sure what to do for such things -- example ER-β is a hyphenated pair
-              (setf (contextual-description mention) base)
-              base)
-             ((is-basic-collection? base)
-              ;; distribute conjunctions
-              (setf (contextual-description mention)
-                    (reinterpret-collection-with-modifiers dt var containing-mentions)))
-             ((is-pronoun? base)
-              (let ((interpretation
-                     (interpret-pronoun-in-context dt var containing-mentions))) 
-                (setf (contextual-description mention)
-                      (if interpretation
-                         (car interpretation)
-                         (base-description mention)))))
-             (t
-              (setf (contextual-description mention) 
-                    (reinterp-item-using-bindings dt var containing-mentions))
-              (expand-interpretation-in-context-if-needed dt var containing-mentions))))
-          (t (break "~&***what sort of dt is ~s~&" dt))))))
+  (when (equal dt '(nil))
+    (when *error-on-list-nil*
+      (error "~&passed (NIL) to interpret-in-context~%   in sentence: ~s~%"
+                   (sentence-string *sentence-in-core*)))
+    (return-from interpret-in-context nil))
+  (let* ((mention (dt-mention dt))
+         (base (base-description mention))
+         (bindings (dt-bindings dt)))
+    (declare (special mention base bindings))
+    (typecase mention
+      (discourse-mention       
+       (cond
+         ((slot-boundp mention 'ci)
+          ;; dt was already contextually interpreted --
+          ;;  this happens with conjunction distribution/expansion
+          (contextual-interpretation mention))
+         ((or (itypep base 'hyphenated-pair)
+              (itypep base 'hyphenated-triple)
+              (itypep base 'two-part-label))
+          ;; not sure what to do for such things -- example ER-β is a hyphenated pair
+          (setf (contextual-description mention) base)
+          base)
+         ((is-basic-collection? base)
+          ;; distribute conjunctions
+          (setf (contextual-description mention)
+                (reinterpret-collection-with-modifiers dt var containing-mentions)))
+         ((is-pronoun? base)
+          (let ((interpretation
+                 (interpret-pronoun-in-context dt var containing-mentions))) 
+            (setf (contextual-description mention)
+                  (if interpretation
+                      (car interpretation)
+                      (base-description mention)))))
+         (t
+          (setf (contextual-description mention) 
+                (reinterp-item-using-bindings dt var containing-mentions))
+          (expand-interpretation-in-context-if-needed dt var containing-mentions))))
+      (t (break "~&***what sort of dt is ~s~&" dt)))))
 
 
 (defparameter *work-on-di-pronouns* nil)
@@ -226,8 +228,8 @@ where it regulates gene expression.")
       (loop for m in (second (assoc 'items bindings))
 	 nconc
 	   (let* ((*m* m)
-		 (*var* var)
-		 (interp (interpret-item-in-context *m* *var* containing-mentions)))
+                  (*var* var)
+                  (interp (interpret-item-in-context *m* *var* containing-mentions)))
 	     (declare (special interp *m* *var*))
 	     (cond ((and *break-on-null-interp* (null interp)) (lsp-break "null interp"))
 		   ((is-basic-collection? interp)
@@ -236,7 +238,16 @@ where it regulates gene expression.")
       var
       (loop for (var val) in bindings
 	 unless (member var '(items type number))
-	 collect (list var (interpret-val-in-context var val containing-mentions)))
+	 collect
+           (progn
+             (when (and (equal val '(nil))
+                        *error-on-list-nil*)
+               (error "value of a collection item is (NIL) -- check what causes this,~% in ~s~%"
+                      (sentence-string *sentence-in-core*)))
+             (list var
+                   (if (or (null val)(equal val '(nil)))
+                       val ;; this is usually a bad parse error, but suppress it, e.g. "a type I"
+                       (interpret-val-in-context var val containing-mentions)))))
       (cons mention containing-mentions)))))
 
 
@@ -256,7 +267,7 @@ where it regulates gene expression.")
 	 (null
 	  (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
 	 (referential-category (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
-         (individual (warn "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
+         (individual (lsp-break "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
                              dt
                              (sentence-string *sentence-in-core*))
                      nil)
@@ -325,9 +336,15 @@ where it regulates gene expression.")
   (case var
     (middle val-dt)
     (t
-     (if (symbolp val-dt)
-	 (interpret-atom-in-context val-dt var containing-mentions)
-	 (interpret-in-context val-dt var containing-mentions)))))
+     (cond ((symbolp val-dt)
+            (interpret-atom-in-context val-dt var containing-mentions))
+           ((equal val-dt '(nil))
+            (when *error-on-list-nil*
+              (error "value of a collection item is (NIL) -- check what causes this,~% in ~s~%"
+                     (sentence-string *sentence-in-core*)))
+            nil)
+           (t
+            (interpret-in-context val-dt var containing-mentions))))))
 
 (defun is-basic-collection? (i)
   (and (individual-p i)
@@ -370,6 +387,8 @@ where it regulates gene expression.")
 
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
+(defparameter *show-relevant-edge-warnings* t)
+
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
   (let* ((parent-edge (car parent-edges))
 	 (poss-edges (poss-edges child-interp parent-edge)))
@@ -388,11 +407,13 @@ where it regulates gene expression.")
 			   (not allow-null-edge)
 			   child-interp
 			   (not (itypep child-interp 'number))
+                           (not (itypep child-interp 'point-mutation))
                            (not (loop for b in (indiv-old-binds child-interp)
                                      thereis (eq **lambda-var** (binding-value b)))))
-                      (warn "~&relevant-edges 1) no internal edge for ~s in ~s~~%   in sentence: ~S~%"
+                      (when *show-relevant-edge-warnings*
+                        (warn "~&relevant-edges 1) no internal edge for ~s in ~s~~%   in sentence: ~S~%"
                             child-interp parent-edge
-                            (sentence-string *sentence-in-core*))
+                            (sentence-string *sentence-in-core*)))
 		      nil)
 		    nil)))
 	     (t		
@@ -405,7 +426,7 @@ where it regulates gene expression.")
 		;; happens for premodifying v+ing
 		;; where the edge has a category edge-representation,
 		;; not an individual
-		(when *break-on-null-edge*
+		(when *break-on-null-edge*                  
 		  (warn "~&relevant-edges 1) no internal edge for ~s in ~s~~%   in sentence: ~S~%"
                         child-interp parent-edge
                         (sentence-string *sentence-in-core*))))
@@ -540,7 +561,7 @@ where it regulates gene expression.")
 	(pos-token-index (end-pos child?)))))
 
 (defun new-dt (parent-edges &optional interp)
-  (declare (special category::copular-predicate))
+  (declare (special category::copular-predicate parent-edges))
   ;; for convenience, to let new-dt be called with treetop
   (if (edge-p parent-edges) (setq parent-edges (list parent-edges)))  
   (let ((parent-edge (car parent-edges)))
@@ -558,8 +579,12 @@ where it regulates gene expression.")
 			   (items 
 			    (loop for conjunct in (binding-value b)
 			       collect
-				 (let ((c-edge
+				 (let ((cc conjunct)
+                                       (c-edge
 					(car (relevant-edges parent-edges conjunct))))
+                                   (declare (special cc c-edge))
+                                   (unless c-edge
+                                     (lsp-break "no c-edge"))
 				   ;;(print (list conjunct c-edge))
 				   (if c-edge
 				       (new-dt (cons c-edge parent-edges))
