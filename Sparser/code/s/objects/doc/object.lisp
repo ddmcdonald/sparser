@@ -663,9 +663,30 @@ printer. |#
     (let ((as-list (hashtable-to-alist *article-sentences*)))
       (loop for as-item in as-list
          collect
-	   (let ((sl-name (intern (format nil "*~s-SENTENCES*" (car as-item)))))
+	   (let ((sl-name (intern (format nil "*~a-SENTENCES*"
+                                          (pname (car as-item)))
+                                  (find-package :sp))))
 	     (eval
 	      `(defparameter ,sl-name '(,.(reverse (cdr as-item)))))
+	     sl-name)))))
+
+
+(defun create-article-corpora ()
+  (when *article-sentences*
+    (let ((as-list (hashtable-to-alist *article-sentences*)))
+      (loop for as-item in as-list
+         collect
+	   (let ((sl-name (intern (format nil "*~a-SENTENCES*"
+                                          (pname (car as-item)))
+                                  (find-package :sp))))
+	     (eval
+	      `(defparameter ,sl-name
+                 '(,.(loop for s in (reverse (cdr as-item))
+                          collect `(p ,s)))))
+             (define-sentence-corpus/expr
+                 (intern (format nil "~a-CORPUS" (pname (car as-item)))
+                         (find-package :sp))
+                 sl-name)
 	     sl-name)))))
 
 (defmethod save-article-sentence ((article article) (sentence sentence))
@@ -673,7 +694,9 @@ printer. |#
     (setq *article-sentences* (make-hash-table)))
   (when (name article)
     (push (sentence-string sentence)
-          (gethash (name article) *article-sentences*))))
+          (gethash (intern (pname (name article))
+                           (find-package :sp))
+                   *article-sentences*))))
 
 
 
