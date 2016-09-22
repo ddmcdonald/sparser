@@ -38,25 +38,13 @@
 
 (in-package :sparser)
 
-
-(defun define-cfr (lhs
-                   rhs
-                   &key form
-                        referent
-                        schema
-                        source )
-
-  ;; Takes only objects as its arguments.  Any decoding should be done
-  ;; through forms that feed through Def-cfr/expr.
-
-  (unless source
-    (setq source :define-cfr))
-
+(defun define-cfr (lhs rhs &key form referent schema (source :define-cfr))
+  "Takes only objects as its arguments. Any decoding should be done
+   through forms that feed through Def-cfr/expr."
   (let ((cfr (lookup/cfr lhs rhs)))
     (if cfr
-      (if (redefinition-of-rule lhs cfr)
+      (if (redefinition-of-rule cfr lhs rhs form)
         (changes-to-known-rule cfr lhs rhs form referent source)
-        (duplication-check cfr lhs rhs form referent source))
-      (else
-        (construct-cfr lhs rhs form referent source schema)))))
-
+        (or (duplication-check cfr lhs rhs form referent source)
+            (construct-cfr lhs rhs form referent source schema)))
+      (construct-cfr lhs rhs form referent source schema))))

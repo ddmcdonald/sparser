@@ -43,7 +43,7 @@
      the prefix in preference to the binary rule.
      Standard case: 'chief executive' and 'chief executive officer'" )
 
-(defvar *break-on-illegal-duplicate-rules* t
+(defvar *break-on-illegal-duplicate-rules* nil
     "Faciliate debugging and clean up by stopping the load / rule-execution 
      when an illegal duplicate has been found.")
 
@@ -52,29 +52,19 @@
 ;;; duplication check
 ;;;-------------------
 
-(defun redefinition-of-rule (lhs existing-cfr/s)
-  ;; Caled from define-cfr
-  ;; Called as part of defining a cfr. The 'existing cfr/s' was
-  ;; found on the basis of the labels in its righthand side.
-  ;; If this lhs (the lhs of the rule being defined) isn't
-  ;; the same as that of some existing rule (i.e. we're 
-  ;; redefining some rule that we've already got) then we have
-  ;; a duplication, which is ok only in certain limited 
-  ;; curcumstances.
-  ;;   Returns T if if the lhs is the same as one of those
-  ;; in the existing-cfr/s
+(defun redefinition-of-rule (existing-cfr/s lhs rhs form)
+  "Called as part of defining a cfr. The existing-cfr/s were
+   found on the basis of the labels in its righthand side.
+   If the lhs and form of the rule being defined are
+   the same as that of some existing rule (i.e. we're
+   redefining some rule that we've already got) then we
+   have a duplication, which is ok only in certain limited
+   curcumstances."
   (if (listp existing-cfr/s)
-    (then
-      ;; several rules already have the same rhs, check whether this
-      ;; is a duplicate of one of them
-      (dolist (r existing-cfr/s)
-        (when (eq lhs (cfr-category r))
-          (return-from redefinition-of-rule t)))
-      nil)
-
-    (if (eq lhs (cfr-category existing-cfr/s))
-      t
-      nil)))
+    (some (lambda (cfr) (redefinition-of-rule cfr lhs rhs form)) existing-cfr/s)
+    (and (eq lhs (cfr-category existing-cfr/s))
+         (equal rhs (cfr-rhs existing-cfr/s))
+         (eq form (cfr-form existing-cfr/s)))))
 
 
 ;;;------------------
@@ -83,38 +73,33 @@
 
 (defun duplication-check (existing-cfr
                           lhs rhs form referent source)
+  "It's been determined that the rule is a duplicate, i.e. it is
+   putting a new lhs or form on a rhs that has already been defined.
+   What we do depends on how the policy flags are set. If the flags
+   permit it, we let the rule go through, otherwise we announce the
+   illegal duplication. Since this routine is the end of a tail-recursive
+   chain, that will keep the rule from going through."
+  (declare (optimize debug)
+           (special *deliberate-duplication*))
+  (check-type existing-cfr cfr)
+  (cond (*permit-rules-with-duplicate-rhs*
+         (construct-cfr lhs rhs form referent source))
 
-  ;; it's been determined that the rule is a duplicate, i.e. it is
-  ;; putting a new lhs on a rhs that has already been defined.
-  ;; What we do depends on how the policy flags are set.
-  ;; If the flags permit it, we let the rule go through, otherwise
-  ;; we announce the illegal duplication.  Since this routine is
-  ;; the end of a tail-recursive change that will keep the rule
-  ;; from going through
+        ((dotted-rule existing-cfr)
+         (if *dotted-rules-can-duplicate-regular-rules*
+           (construct-cfr lhs rhs form referent source)
+           (or (duplicate-rule existing-cfr lhs)
+               (construct-cfr lhs rhs form referent source))))
 
-  (declare (special *deliberate-duplication*))
+        (*deliberate-duplication*
+         (if (and (eq lhs (cfr-category existing-cfr))
+                  (eq form (cfr-form existing-cfr)))
+           existing-cfr
+           (or (duplicate-rule existing-cfr lhs)
+               (construct-cfr lhs rhs form referent source))))
 
-  (flet ((complain (lhs existing-cfr)
-           (duplication-msg existing-cfr lhs)
-           (when *break-on-illegal-duplicate-rules*
-             (push-debug `(,lhs ,existing-cfr))
-             (cerror "Accept the existing rule"
-                     "[estab. multiplier] Look at why there's a duplicate rule~
-                     ~%and sort it out."))))
-
-    (cond (*permit-rules-with-duplicate-rhs*
-           (construct-cfr lhs rhs form referent source))
-
-          ((dotted-rule existing-cfr)
-           (if *dotted-rules-can-duplicate-regular-rules*
-             (construct-cfr lhs rhs form referent source)
-             (duplication-msg existing-cfr lhs)))
-
-          (*deliberate-duplication*
-           (unless (eq lhs (cfr-category existing-cfr))
-             (complain lhs existing-cfr)))
-
-          (t  (complain lhs existing-cfr)))))
+        (t (or (duplicate-rule existing-cfr lhs)
+               (construct-cfr lhs rhs form referent source)))))
 
 #| The path to the call to other duplication check 
 from establish-multiplier 
@@ -130,21 +115,35 @@ from define-cfr it depends on whether redefinition-of-rule says yes,
 
 |#
 
+(define-condition duplicate-rule (error)
+  ((existing-cfr :initarg :existing-cfr :reader existing-cfr)
+   (new-lhs :initarg :new-lhs :reader new-lhs))
+  (:report (lambda (condition stream &aux
+                    (existing-cfr (existing-cfr condition)))
+             (format stream
+                     "Illegal rule duplication ~@[in the file ~a~].~%~
+                      Can't use the righthand side ~a with the new lhs ~a~%~
+                      because ~a already uses that rhs with the lhs ~a."
+                     *file-being-lloaded*
+                     (cfr-rhs existing-cfr)
+                     (new-lhs condition)
+                     (cfr-symbol existing-cfr)
+                     (cfr-category existing-cfr)))))
 
-(defun duplication-msg (existing-cfr proposed-new-lhs)
-  ;; Called from Duplication-check and by Establish-multiplier
-  ;; Taking it that there's just one existing rule.
-  (when (consp existing-cfr) ;; multiple-rules
-   (setq existing-cfr (car existing-cfr)))
-  (format t "~&~% Illegal rule duplication in the file~
-             ~%       ~a~
-             ~%   You can't use the righthand side:~
-             ~%      ~A~
-             ~%   with the new lefthand side label ~a~
-             ~%   Because ~a already uses that rhs~
-             ~%   but with the lhs ~a"
-     *file-being-lloaded*          
-     (cfr-rhs existing-cfr) proposed-new-lhs 
-     (cfr-symbol existing-cfr)
-     (cfr-category existing-cfr)))
-
+(defun duplicate-rule (existing-cfr new-lhs &aux
+                       (existing-cfr (if (consp existing-cfr)
+                                       (car existing-cfr)
+                                       existing-cfr)))
+  (declare (optimize debug))
+  (check-type existing-cfr cfr)
+  (check-type new-lhs category)
+  (when *break-on-illegal-duplicate-rules*
+    (restart-case (error 'duplicate-rule
+                         :existing-cfr existing-cfr
+                         :new-lhs new-lhs)
+      (make-new ()
+        :report "Construct the new rule anyway."
+        nil)
+      (use-old ()
+        :report "Use the existing rule."
+        existing-cfr))))

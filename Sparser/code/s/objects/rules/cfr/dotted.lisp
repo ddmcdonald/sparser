@@ -297,7 +297,8 @@ a cfr that involves more than two immediate constituents."
           (else
             ;; The existing rule is not dotted.
 
-            (if *dotted-rules-can-duplicate-regular-rules*
+            (if (or *dotted-rules-can-duplicate-regular-rules*
+                    (duplicate-rule existing-rule/s category))
               ;; We're permitted to complement it with a dotted rule 
               ;;for the same pattern, and a check in Dotted-rule-hack
               ;; will sort things out.
@@ -306,9 +307,7 @@ a cfr that involves more than two immediate constituents."
                                  remaining-constituents
                                  terms-to-the-left
                                  terms-to-the-right
-                                 parent-rule )
-
-              (duplication-msg existing-rule/s category)))))
+                                 parent-rule )))))
 
       ;; an of course if there's no existing rule we have to make one
       (make-dotted-rule1 category

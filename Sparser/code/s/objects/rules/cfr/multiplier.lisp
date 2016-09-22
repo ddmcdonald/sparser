@@ -33,44 +33,36 @@
 
   (declare (special *deliberate-duplication*))
 
-  (flet ((complain (cfr existing-rule/s)
-           (duplication-msg existing-rule/s (cfr-category cfr))
-           (when *break-on-illegal-duplicate-rules*
-             (push-debug `(,cfr ,existing-rule/s))
-             (cerror "Accept the existing rule"
-                     "[estab. multiplier] Look at why there's a duplicate rule~
-                     ~%and sort it out."))))
-
   (let ((existing-rule/s (multiply-ids left-id right-id)))
     (when existing-rule/s
       (cond
-       ((or *permit-rules-with-duplicate-rhs*
-            (and *dotted-rules-can-duplicate-regular-rules*
-                 (or (dotted-rule cfr)
-                     (and (cfr-p existing-rule/s)
-                          (dotted-rule existing-rule/s)))))
-        (setq cfr
-              (if (listp existing-rule/s)
-                (cons cfr existing-rule/s)
-                (list cfr existing-rule/s))))
-       (*deliberate-duplication*
-        (when (consp existing-rule/s)
-          (error "stub: extend for multiple existing rules"))
-        ;; Are the two left-hand sides the same object?
-        ;; If so we just accept the rule and do nothing, since its
-        ;; pattern has already been knit in.
-        (unless (eq (cfr-category existing-rule/s) ;; old one
-                    (cfr-category cfr)) ;; new one
-          (complain cfr existing-rule/s)))
-       (t
-        ;;(lsp-break "Other look at duplication")
-        (complain cfr existing-rule/s))))
+        ((or *permit-rules-with-duplicate-rhs*
+             (and *dotted-rules-can-duplicate-regular-rules*
+                  (or (dotted-rule cfr)
+                      (and (cfr-p existing-rule/s)
+                           (dotted-rule existing-rule/s)))))
+         (setq cfr
+               (if (listp existing-rule/s)
+                 (cons cfr existing-rule/s)
+                 (list cfr existing-rule/s))))
+        (*deliberate-duplication*
+         (when (consp existing-rule/s)
+           (error "stub: extend for multiple existing rules"))
+         ;; Are the two left-hand sides the same object?
+         ;; If so we just accept the rule and do nothing, since its
+         ;; pattern has already been knit in.
+         (unless (eq (cfr-category existing-rule/s) ;; old one
+                     (cfr-category cfr)) ;; new one
+           (unless (duplicate-rule existing-rule/s (cfr-category cfr))
+             (return-from establish-multiplier))))
+        (t (unless (duplicate-rule existing-rule/s (cfr-category cfr))
+             (return-from establish-multiplier)))))
 
     (let ((target-site (+ left-id right-id)))
       (setf (gethash target-site
                      *edge-multiplication-table*)
             cfr)
-      target-site))))
+      target-site)))
 
 
 

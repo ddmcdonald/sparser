@@ -66,7 +66,7 @@
                        referent :def-cfr schema)
         #+ignore(define-additional-unary-rule lhs rhs form-object
                                       referent :def-cfr schema))
-       ((redefinition-of-rule lhs existing-cfr)
+       ((redefinition-of-rule existing-cfr lhs rhs form-object)
         ;; pick out the rule with the matching lhs (when multiple
         ;; lhs are allowed) and replace its form and referent
         (changes-to-known-rule existing-cfr
