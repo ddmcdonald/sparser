@@ -170,7 +170,7 @@
                (:adjective (mumble::adjective m-word))
                ((or :noun :common-noun :proper-noun) (mumble::noun m-word))
                (:verb) ;; done in the category rdata processing
-               (:adverb (warn "Need Mumble adverbial definition."))
+               (:adverb) ;; need Mumble adverbial definition
                (:prep (mumble::prep m-word))
                (:interjection (mumble::interjection m-word)))))
     (when lp
