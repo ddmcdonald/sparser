@@ -5464,3 +5464,32 @@ NIL
         (*sub-conj* has ,(length sub-conj) elements)
         (*results* has ,(length results) elements)
         (*affected* has ,(length affected) elements)))))
+
+(defparameter *new-words* nil)
+(defparameter *non-comlex-new-words* nil)
+(defparameter *comlex-new-words* nil)
+(defparameter *non-comlex-new-words-counts* nil)
+(defparameter *comlex-new-words-counts* nil)
+(defun find-new-words (&optional (do-counts nil))
+  (create-article-corpora)
+  (setq *new-words*
+        (sort (mapcar #'pname (remove-duplicates *newly-found-unknown-words*)) #'string<))
+  (setq *non-comlex-new-words*
+        (loop for w in *new-words* unless (gethash w *primed-words*) collect w))
+  (when do-counts
+    (setq *non-comlex-new-words-counts*
+          (sort (loop for w in *non-comlex-new-words*
+                   collect (list w (length (find-corpus-sents w))))
+                #'> :key #'second)))
+  (setq *comlex-new-words*
+        (loop for w in *new-words* when (gethash w *primed-words*) collect w))
+  (when do-counts
+    (setq *comlex-new-words-counts*
+          (sort (loop for w in *comlex-new-words*
+                   collect (list w (length (find-corpus-sents w))))
+                #'> :key #'second)))
+
+  `(*new-words* ,(length *new-words*)
+                *non-comlex-new-words* ,(length *non-comlex-new-words*)
+                *comlex-new-words* ,(length *comlex-new-words*)))
+
