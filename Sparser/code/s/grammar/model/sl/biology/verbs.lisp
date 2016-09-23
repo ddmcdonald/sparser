@@ -190,7 +190,7 @@
 	  (tested-for bio-chemical-entity))
   :realization
   (:verb "immunoblot" :etf (svo-passive)
-	 :noun "immunoblotting"
+	 ;; :noun "immunoblotting"
          :for tested-for
 	 ))
 
@@ -1021,7 +1021,6 @@
 (define-category encode :specializes caused-bio-process
   :realization
   (:verb "encode"
-   :noun "encoding"
    :etf (svo-passive)
    :for object))
 
