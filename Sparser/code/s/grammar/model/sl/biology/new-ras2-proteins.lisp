@@ -308,7 +308,7 @@
 (DEF-RAS2-PROTEIN "EPHAA_HUMAN" ("EPHAA_HUMAN" "2.7.10.1" "EPHA10")) 
 (DEF-RAS2-PROTEIN "EPHB1-2" ("EPHB1-2")) 
 (DEF-RAS2-PROTEIN "EPHB1_HUMAN" ("EPHB1_HUMAN" "2.7.10.1" "EPHB1" "EPHT2" "HEK6" "interactors" "Ephrin type-B receptor 1" "ELK" "EPH tyrosine kinase 2" "EPH-like kinase 6" "EK6" "hEK6" "Neuronally-expressed EPH-related tyrosine kinase" "NET" "Tyrosine-protein kinase receptor EPH-2")) 
-(DEF-RAS2-PROTEIN "EPHB2_HUMAN" ("EPHB2_HUMAN" "hEK5" "DRT" "Tyrosine-protein kinase TYRO5" "EPH tyrosine kinase 3" "Developmentally-regulated Eph-related tyrosine kinase" "EPHB2" "2.7.10.1" "EPTH3" "EPH-like kinase 5" "EPHT3" "Renal carcinoma antigen NY-REN-47" "ERK" "Tyrosine-protein kinase receptor EPH-3" "ELK-related tyrosine kinase" "TYRO5" "EK5" "HEK5")) 
+(DEF-RAS2-PROTEIN "EPHB2_HUMAN" ("EPHB2_HUMAN" "hEK5" "DRT" "Tyrosine-protein kinase TYRO5" "EPH tyrosine kinase 3" "Developmentally-regulated Eph-related tyrosine kinase" "EPHB2" "2.7.10.1" "EPTH3" "EPH-like kinase 5" "EPHT3" "Renal carcinoma antigen NY-REN-47" "Tyrosine-protein kinase receptor EPH-3" "ELK-related tyrosine kinase" "TYRO5" "EK5" "HEK5")) 
 (DEF-RAS2-PROTEIN "EPHB3_HUMAN" ("EPHB3_HUMAN" "hEK2" "ETK2" "EPH-like tyrosine kinase 2" "Tyrosine-protein kinase TYRO6" "EPH-like kinase 2" "2.7.10.1" "EPHB3" "Embryonic kinase 2" "TYRO6" "EK2" "HEK2")) 
 (DEF-RAS2-PROTEIN "EPHB4_HUMAN" ("EPHB4_HUMAN" "2.7.10.1" "TYRO11" "EPHB4" "MYK1" "HTK" "Tyrosine-protein kinase TYRO11" "Hepatoma transmembrane kinase")) 
 (DEF-RAS2-PROTEIN "EPHB6_HUMAN" ("EPHB6_HUMAN" "Tyrosine-protein kinase-defective receptor EPH-6" "EPHB6" "HEP")) 
