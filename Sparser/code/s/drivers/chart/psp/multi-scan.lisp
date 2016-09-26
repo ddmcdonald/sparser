@@ -88,8 +88,7 @@
 
 (defun scan-terminals-loop (position-before word)
   "Carries out the first layer of analysis by checking for and
-   applying word-level rules. Operates one word at a time
-   in a tail-recursive loop. A word is first checked to see
+   applying word-level rules. A word is first checked to see
    whether it initiates a polyword. If so we resume the loop
    at the position just after the polyword has applied.
    If no polyword applies or if it is not found, we look for
@@ -102,91 +101,95 @@
      We get out of the loop when the period-hook (fired by
    the completion actions) indicates that we're reached the
    end of a sentence and throws to an :end-of-sentence catch."
-  (tr :terminal-position position-before word)
+
+  (loop 
+     (tr :terminal-position position-before word)
             
-  (simple-eos-check position-before word)
+     (simple-eos-check position-before word)
 
-  ;; Polyword check
-  (let* ((where-pw-ended (polyword-check position-before word))
-         (position-after (or where-pw-ended
-                             (chart-position-after position-before))))
-    (when where-pw-ended
-      (tr :scanned-pw-ended-at word where-pw-ended)
-      (setq position-before where-pw-ended)
-      (unless (includes-state where-pw-ended :scanned)
-        ;; PW can complete without thinking about the
-        ;; word that follows it.
-        (scan-next-position))
-      (setq word (pos-terminal where-pw-ended)))
+     ;; Polyword check
+     (let* ((where-pw-ended (polyword-check position-before word))
+            (position-after (or where-pw-ended
+                                (chart-position-after position-before))))
+       (when where-pw-ended
+         (tr :scanned-pw-ended-at word where-pw-ended)
+         (setq position-before where-pw-ended)
+         (unless (includes-state where-pw-ended :scanned)
+           ;; PW can complete without thinking about the
+           ;; word that follows it.
+           (scan-next-position))
+         (setq word (pos-terminal where-pw-ended)))
 
-    #| Version that fixed problem of calling no-space processing
+       #| Version that fixed problem of calling no-space processing
        when the beginning and end positions are identical
-    (when where-pw-ended
-      (tr :scanned-pw-ended-at word where-pw-ended)
-      ;;(setq position-before where-pw-ended)
-      (setq position-before where-pw-ended
-            position-after (chart-position-after where-pw-ended))
-      (unless (includes-state where-pw-ended :scanned)
-        ;; PW can complete without thinking about the
-        ;; word that follows it.
-        (scan-next-position))
-      (setq word (pos-terminal position-before))) |#
+       (when where-pw-ended
+         (tr :scanned-pw-ended-at word where-pw-ended)
+         ;;(setq position-before where-pw-ended)
+         (setq position-before where-pw-ended
+               position-after (chart-position-after where-pw-ended))
+         (unless (includes-state where-pw-ended :scanned)
+           ;; PW can complete without thinking about the
+           ;; word that follows it.
+           (scan-next-position))
+         (setq word (pos-terminal position-before))) |#
 
-    (unless (includes-state position-after :scanned)
-      (scan-next-position))
+       (unless (includes-state position-after :scanned)
+         (scan-next-position))
 
-    ;; FSA's calls lifted from check-word-level-fsa-trigger 
-    ;; and cwlft-cont
-    (let ((where-fsa-ended (do-word-level-fsas word position-before)))
-      ;;////////// nb. could accidentally re-do the polyword
-      ;; given that entry point. 
-      (tr :check-word-level-fsa-trigger position-before)
-      (when where-fsa-ended
-        (tr :word-fsa-ended-at word where-fsa-ended)
-        (setq position-after where-fsa-ended
-              ;;/// compare to new values used with PW
-              position-before (chart-position-before where-fsa-ended))
-        (unless (includes-state where-fsa-ended :scanned)
-          (scan-next-position))
-        (setq word (pos-terminal where-fsa-ended))))
+       ;; FSA's calls lifted from check-word-level-fsa-trigger 
+       ;; and cwlft-cont
+       (let ((where-fsa-ended (do-word-level-fsas word position-before)))
+         ;;////////// nb. could accidentally re-do the polyword
+         ;; given that entry point. 
+         (tr :check-word-level-fsa-trigger position-before)
+         (when where-fsa-ended
+           (tr :word-fsa-ended-at word where-fsa-ended)
+           (setq position-after where-fsa-ended
+                 ;;/// compare to new values used with PW
+                 position-before (chart-position-before where-fsa-ended))
+           (unless (includes-state where-fsa-ended :scanned)
+             (scan-next-position))
+           (setq word (pos-terminal where-fsa-ended))))
 
-    #+ignore(when (eq position-before position-after)
-      (error "Scan-terminals-loop: before and after positions are
-              the same: ~a" position-after))
+       #+ignore(when (eq position-before position-after)
+                 (error "Scan-terminals-loop: before and after positions are
+                  the same: ~a" position-after))
     
-    (tr :scan-completing word position-before position-after)
-    (complete-word/hugin word position-before position-after)
-    ;; (setq *trace-completion-hook* t)
-    ;; The function check-for-completion-actions/word looks on the
-    ;; rule-set of the word for a completion action or actions and
-    ;; runs carry-out-actions to execute (funcall) them. 
-    ;;   The significant case is the period-hook (in rules/DM&P/period-hook)
-    ;; because it is responsible for managing the succession of sentences.
-    ;; That requires some tweaking because normally the period hook signals
-    ;; the progression to the forest level and here we need to notice
-    ;; the period (in order to stop this pass and start the next), but
-    ;; be more selective in what happens. 
-    ;;    Another important case is conjunction. Both "and" and "or"
-    ;; set the *pending-conjunction* flag. 
+       (tr :scan-completing word position-before position-after)
+       (complete-word/hugin word position-before position-after)
+       ;; (setq *trace-completion-hook* t)
+       ;; The function check-for-completion-actions/word looks on the
+       ;; rule-set of the word for a completion action or actions and
+       ;; runs carry-out-actions to execute (funcall) them. 
+       ;;   The significant case is the period-hook (in rules/DM&P/period-hook)
+       ;; because it is responsible for managing the succession of sentences.
+       ;; That requires some tweaking because normally the period hook signals
+       ;; the progression to the forest level and here we need to notice
+       ;; the period (in order to stop this pass and start the next), but
+       ;; be more selective in what happens. 
+       ;;    Another important case is conjunction. Both "and" and "or"
+       ;; set the *pending-conjunction* flag. 
 
-    (let ((edges
-           (do-just-terminal-edges word position-before position-after)))
-      (tr :scanned-terminal-edges edges position-before position-after)
-      ;; taken from check-preterminal-edges
-      (when edges ;; e.g. digit-sequence
-        (let ((where-fsa-ended
-               (do-any-category-fsas edges position-before)))
-          (when where-fsa-ended
-            (tr :edge-fsa-ended-at word where-fsa-ended)
-            (setq position-after where-fsa-ended
-                  position-before (chart-position-before where-fsa-ended))
-            (unless (includes-state where-fsa-ended :scanned)
-              (scan-next-position))
-            (setq word (pos-terminal where-fsa-ended))))))
+       (let ((edges
+              (do-just-terminal-edges word position-before position-after)))
+         (tr :scanned-terminal-edges edges position-before position-after)
+         ;; taken from check-preterminal-edges
+         (when edges ;; e.g. digit-sequence
+           (let ((where-fsa-ended
+                  (do-any-category-fsas edges position-before)))
+             (when where-fsa-ended
+               (tr :edge-fsa-ended-at word where-fsa-ended)
+               (setq position-after where-fsa-ended
+                     position-before (chart-position-before where-fsa-ended))
+               (unless (includes-state where-fsa-ended :scanned)
+                 (scan-next-position))
+               (setq word (pos-terminal where-fsa-ended))))))
 
-    (let ((next-word (pos-terminal position-after)))
-      (tr :next-terminal-to-scan position-after next-word)
-      (scan-terminals-loop position-after next-word))))
+       (let ((next-word (pos-terminal position-after)))
+         (tr :next-terminal-to-scan position-after next-word)
+         ;;(scan-terminals-loop position-after next-word)
+         (setq position-before position-after
+               word next-word)))))
 
 
 
