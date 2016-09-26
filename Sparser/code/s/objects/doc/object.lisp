@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  June 2016
+;;;  Version:  September 2016
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -50,6 +50,26 @@
     (when (and (slot-boundp e 'ends-at-pos)
                (ends-at-pos e))
       (format stream "--p~a" (pos-token-index (ends-at-pos e))))))
+
+
+;;--- impedence-matching
+
+(defparameter *use-reader-convention* t
+  "Need to switch over the text driven conventions about how
+ the elements of a document connect, but want to notice fanout.
+ So this conditions the changes. When it's all settled we flush it.")
+
+(defun append-doc-element-to-children-of-parent (e)
+  "Compare to r3::add-as-new-child which is what we're emulating"
+  (let ((parent (parent e)))
+    (assert parent)
+    (let ((children (children parent)))
+      (etypecase children
+        (document-element
+         (setf (children parent) (list children e)))
+        (cons
+         (tail-cons e children))))))
+
 
 ;;;-----------------------------------
 ;;; Titled entities
@@ -146,7 +166,6 @@
         (setup-title-as-sentence-container title)))
     
     (values title rest multiple?)))
-
 
 
 (defun setup-title-as-sentence-container (title)
@@ -331,15 +350,20 @@
   "The section before the present one")
 
 (defun initialize-sections ()
-  ;; Called from begin-new-article
+  ;; Called from begin-new-article in per-article-initializations
+  (setq *current-section* nil)
   (let ((s1 (new-section-in-article nil (position# 1)))
         (article *current-article*))
     (setq *previous-section* nil
           *current-section* s1)
-    (setf (children article) s1)
+    (setf (children article)
+          (if *use-reader-convention* `(,s1) s1))
     (setf (parent s1) article)
     (setf (children s1)
-          (initialize-paragraphs)))) ;; returns 1st para
+          (if *use-reader-convention*
+              `(,(initialize-paragraphs))
+              (initialize-paragraphs)))))
+          
 
 (defmethod clear ((s section))
   (setf (parent s) nil) ;; these need their own clear's
@@ -349,7 +373,6 @@
 (defun allocate-section ()
   (allocate-next-instance (get-resource :section)))
 
-;;////// previous and next are eq
 (defun new-section-in-article (sec-name start-pos)
   (let ((s (allocate-section))
         (name (or sec-name (next-indexical-name :section)))
@@ -365,8 +388,10 @@
       (setf (previous s) ongoing)
       (setf (ends-at-pos ongoing) start-pos)
       (setf (ends-at-char ongoing) (pos-character-index start-pos))
-      (setq *previous-section* ongoing))
-    (setq *current-section* s)))
+      (setq *previous-section* ongoing)
+      (append-doc-element-to-children-of-parent s))  
+    (setq *current-section* s)
+    s))
 
 ;;;----------------------------------------
 ;;; A section that contains other sections
@@ -374,7 +399,7 @@
 
 (defclass section-of-sections (document-element named-object titled-entity)
   ()
-  (:documentation "Motivated by the NXLM for PubMed articles where there
+  (:documentation "Motivated by the NXML for PubMed articles where there
       is can be multiple titled 'section' elements within a section.
       Doesn't appear to be recursive."))
 
@@ -432,14 +457,16 @@ printer. |#
 
 (defun initialize-paragraphs ()
   ;; Called from initialize-sections
+  (setq *current-paragraph* nil)
   (let ((p (begin-new-paragraph (position# 1)))
         (section *current-section*))
     (unless section
       (error "Threading bug: no value for *current-section*"))
     (setf (parent p) section)
-    (initialize-sentences)
+    (setf (children section)
+          (if *use-reader-convention* `(,p) p))
+    (initialize-sentences) ;; moved here from 'every time' case
     p))
-
 
 (defun begin-new-paragraph (start-pos)
   (declare (special *tts-after-each-section*))
@@ -448,31 +475,34 @@ printer. |#
     (setf (name p) (next-indexical-name :paragraph))
     (setf (starts-at-pos p) start-pos)
     (setf (starts-at-char p) (pos-character-index start-pos))
-    (when ongoing ;; should always be true
+    (when ongoing
       (setf (previous p) ongoing)
       (setf (next ongoing) p)
       (setf (ends-at-pos ongoing) start-pos)
       (setf (ends-at-char ongoing) (pos-character-index start-pos))
+      (setf (parent p) (parent ongoing))
       (setq *previous-paragraph* ongoing)
+      (append-doc-element-to-children-of-parent p)
       (when (and *tts-after-each-section*
                  ongoing)
         (format t "~^&~%")
         (tts t (starts-at-pos ongoing) start-pos)
         (format t "~^&~%")))
     (setf *current-paragraph* p)
+    ;;(initialize-sentences) not in every condition but
+    ;; always the first time through
     p))
 
-
-;;--- action at paragraph boundaries
-
-(defun check-begin-new-paragraph (start-pos)
+(defun careful-begin-new-paragraph (start-pos)
   ;; Called from sort-out-result-of-newline-analysis
-  ;; We need this because the newline handler isn't soaking up all
+  (declare (special *current-paragraph*))
+  ;; We need this check because the newline handler isn't soaking up all
   ;; the newlines internally, and as a result makes one call to
   ;; this per newline character encountered.
-  (declare (special *current-paragraph*))
   (unless (and *current-paragraph*
                (eql start-pos (starts-at-pos *current-paragraph*)))
+    (lsp-break "newline setting up paragraph at ~a" start-pos)
+    ;; Rejigger the parent of the current sentence
     (begin-new-paragraph start-pos)))
 
 
@@ -491,7 +521,6 @@ printer. |#
    "Represents the content or other interesting features
     of a sentence within the text. If there is an active section or
     paragraph that is parent."))
-
 
 (defmethod print-object ((s sentence) stream)
   (print-unreadable-object (s stream :type t)

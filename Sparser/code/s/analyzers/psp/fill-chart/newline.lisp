@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "newline"
 ;;;   Module:  "analyzers;psp:fill chart:"
-;;;  Version:  March 2016
+;;;  Version:  September 2016
 
 ;; initiated 8/91 v1.2
 ;; (11/1 v2.0.1) Reordered the clauses by their frequency of occurance
@@ -30,10 +30,24 @@
 
 (in-package :sparser)
 
-
+;;;----------------------------
+;;; Master newline adjudicator
+;;;----------------------------
 
 (defun sort-out-result-of-newline-analysis (position word)
-
+  "Called from add-terminal-to-chart whenever the word being added
+   is the word for newlines (*newline*). The value of the 'word'
+   argument is determined by the value returned by newline-fsa
+   which is a switched function. (Look at *newline-fsa-in-use* and
+   see the simple case at the end of this file.) Some versions of
+   this fsa are the source of the paragraph-start and sentence boundary 
+   words checked here.   
+      If *newline-is-a-word* is set then nothing happens and we call
+   bump-&-store-word, if that flag is nil then we use
+   fill-whitespace-and-loop to swallow the newline characters. Then,
+   if *newline-delimits-paragraphs* is set we call the code to
+   construct a new paragraph."
+  
   (declare (special *newline-is-a-word* *newline-delimits-paragraphs*
                     word::paragraph-start *sentence-boundary*))
 
@@ -45,10 +59,16 @@
             (reset-display-line-chars-remaining-counter)
             (fill-whitespace-and-loop position word :display-word t)
             (when *newline-delimits-paragraphs*
-              (check-begin-new-paragraph position)))))
+              (careful-begin-new-paragraph position)))))
 
         ((eq word word::paragraph-start)
-         (bump-&-store-word position word :display-word t))
+         ;;(bump-&-store-word position word :display-word t)
+         ;; Bump introduces the word into the chart, which takes you
+         ;; to the completion action start-new-paragraph, which in turn
+         ;; goes to establish-section-within-document which was the
+         ;; older way these things were done that OBE unless we need
+         ;; it for simple document setups in some setting. 
+         (careful-begin-new-paragraph position))
 
         ((eq word *sentence-boundary*)
          (bump-&-store-word position word :display-word t))
@@ -70,12 +90,10 @@
    whether the newline word should be put into the chart as a
    terminal or treated as whitespace")
 
-
 (defparameter *newline-delimits-paragraphs* nil
   "A flag read in Sort-out-result-of-newline-analysis to determine
    whether the newline word delimits a paragraph (and does not get
    added to the chart)")
-
 
 (defparameter *newline-fsa-in-use* nil
   "bound as a record after the switching routine has set the
@@ -96,7 +114,7 @@
 (defun newline-fsa (position)
   (declare (ignore position))
   ;; called from Add-terminal-to-chart
-  (break "The initialization of the analyzer is incomplete:~
+  (error "The initialization of the analyzer is incomplete:~
           ~%   The FSA for #\newline doesn't have a value"))
 
 
