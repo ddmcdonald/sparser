@@ -6,8 +6,6 @@
 Sparser is a architecture for analyzing English text. 
 It handles text of any length and employs a fast, efficient, 
 constant-time algorithm designed for use with semantic grammars.
-See McD-Sparser-ANLP-92.pdf in the paper's directory of 
-the documentation.  
 
 Sparser can use context-free and context-sensitive semantic
 grammar phrase-structure rules, along with syntactic rules
@@ -27,9 +25,17 @@ close to the implemenation.
 
 Sparser is written in Lisp, and until we restore some form
 of the interactive workbench it had on earlier versions of
-the Mac, using Sparser requires that you have a working knowledge
-of Lisp and are comforable reading code. 
+the Mac, extending Sparser's abilities and understanding
+its operation requires you to have a working knowledge
+of Lisp and are comforable reading code.
 
+As this is written, Sparser's grammar and semantic models
+are being constantly extended and revised by its committers
+as part of several R&D projects. As a consequence it is
+inevitable that bugs will creep in and analyses change.
+We try to keep this under control by factoring what parts
+of Sparser's engine, semantic/grammar modules are loaded,
+and what analysis protocols are used.
 
 
 *************************
@@ -44,16 +50,17 @@ will help you get everything up & running in no time.
 Installation & Setup
 ====================
 
-After cloning Sparser, the toplevel of the sparser directory tree will
-have four immediate subdirectories: "Mumble", "Sparser", "util", and
-"test", as well as this README file, the LICENSE file, and the
-"sparser.asd" file which contains the Sparser ASDF system definitions.
+After cloning Sparser, the toplevel of the sparser directory
+tree will have four immediate subdirectories: "Mumble",
+"Sparser", "util", and "test", as well as this README file,
+the LICENSE file, and the "sparser.asd" file which contains
+the Sparser ASDF system definitions.
 
 Loading Sparser
 ====================
 
 You need to have a modern implementation of Common Lisp
-already installed. Sparser is know to run in SBCL (sbcl.org),
+already installed. Sparser runs in SBCL (sbcl.org),
 Clozure (www.clozure.com) and Allegro (www.franz.com).
 We develop primarily on Intel-based Macs under OS X and XXXXXX Alex XXXX
 Sparser has been used with Windows in the past. Now that we
