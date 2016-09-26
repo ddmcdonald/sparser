@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:variables:"
-;;;  version:  June 20156
+;;;  version:  September 2016
 
 ;; initiated 11/18/91 v2.1, typo 11/24
 ;; 1.1 (7/92 v2.3) shifted from gl entries to straight categories
@@ -40,23 +40,30 @@
 ;;; find the variable anywhere up the superc chain
 ;;;------------------------------------------------
 
-(defmethod find-variable-for-category ((variable lambda-variable) category)
-  (find-variable-for-category (var-name variable) category))
+(defgeneric find-variable-for-category (variable category)
+  (:documentation "Look for and return the lambda variable of the
+ indicated name on this category. If it is not local, look for
+ it on the supercategories of the category, and on its mixin 
+ categories, the mixins of the supercategories, and their own
+ supercategories.  This is the prefered way to access variables
+ from their name.")
+  (:method ((variable lambda-variable) category)
+    (find-variable-for-category (var-name variable) category))
+  
+  (:method ((variable-name symbol) (cat-name symbol))
+    (find-variable-for-category variable-name (category-named cat-name t)))
 
-(defmethod find-variable-for-category ((variable-name symbol) (cat-name symbol))
-  (find-variable-for-category variable-name (category-named cat-name t)))
+  (:method ((variable-name symbol) (category category))
+    (when (eq (symbol-package variable-name) (find-package :keyword))
+      ;; Happens when coming in from find-individual
+      (setq variable-name (sparser-symbol variable-name)))
+    ;; First we look on the category itself. Then we look through
+    ;; of its superc's as determined by super-categories-of,
+    ;; Finally we consult the category's mixins.
+    (or (find-variable-in-category variable-name category) 
+        (super-category-has-variable-named variable-name category) 
+        (find-variable-in-mixins variable-name category))))
 
-(defmethod find-variable-for-category ((variable-name symbol) (category category))
-  "The prefered way to access variables from their name."
-  (when (eq (symbol-package variable-name) (find-package :keyword))
-    ;; Happens when coming in from find-individual
-    (setq variable-name (sparser-symbol variable-name)))
-  ;; First we look on the category itself. Then we look through
-  ;; of its superc's as determined by super-categories-of,
-  ;; Finally we consult the category's mixins.
-  (or (find-variable-in-category variable-name category) 
-      (super-category-has-variable-named variable-name category) 
-      (find-variable-in-mixins variable-name category)))
 
 
 (defun find-variable-from-individual (variable-name i)
@@ -105,26 +112,26 @@
   (:documentation "Given a symbol that names a variable, return
     the actual variable on the indicated category. Alternative
     methods provide other ways to getting to the category.
-    This method does -not- search beyond the category itself"))
+    This method does -not- search beyond the category itself")
 
-(defmethod find-variable-in-category (symbol (i individual))
-  (loop for category in (indiv-type i)
-    thereis (find-variable-in-category symbol category)))
+  (:method (symbol (i individual))
+    (loop for category in (indiv-type i)
+       thereis (find-variable-in-category symbol category)))
 
-(defmethod find-variable-in-category (symbol (lp lattice-point))
-  (let ((category (base-category-of-lp lp)))
-    (find-variable-in-category symbol category)))
+  (:method (symbol (lp lattice-point))
+    (let ((category (base-category-of-lp lp)))
+      (find-variable-in-category symbol category)))
 
-(defmethod find-variable-in-category (symbol (category model-category))
-  (let ((variables (cat-slots category)))
-    (when variables
-      (find symbol variables :key #'var-name))))
-
-(defmethod find-variable-in-category (symbol (category-name symbol))
-  (let ((category (category-named category-name :break-if-missing)))
+  (:method (symbol (category model-category))
     (let ((variables (cat-slots category)))
       (when variables
-        (find symbol variables :key #'var-name)))))
+        (find symbol variables :key #'var-name))))
+
+  (:method (symbol (category-name symbol))
+    (let ((category (category-named category-name :break-if-missing)))
+      (let ((variables (cat-slots category)))
+        (when variables
+          (find symbol variables :key #'var-name))))))
   
 
 
@@ -274,32 +281,34 @@
 	(setf (gethash symbol *strings-to-anonymous-variable*) avar)
 	avar)))
 
+(defgeneric dereference-variable (variable referent-unit)
+  (:documentation "There are times when we have to refer to
+ a variable by name -- using lambda-variable-named -- and 
+ do not have access to the category that the variable is
+ defined by. In these cases we construct an 'anonymous-variable'
+ with the idea that when we actually need to use it we will
+ have the category in hand. This method does the lookup.")
 
-(defmethod dereference-variable ((variable lambda-variable) 
-				 psi-or-individual)
-  (declare (ignore psi-or-individual))
-  variable)
+  (:method ((variable lambda-variable) 
+	    psi-or-individual)
+    (declare (ignore psi-or-individual))
+    variable)
 
-(defmethod dereference-variable ((v anonymous-variable)
-				 (i psi))
-  (let ((category (category-of-psi i)))
-    (dereference-variable v category)))
+  (:method ((v anonymous-variable)
+            (i individual))
+    (let ((category (itype-of i)))
+      (dereference-variable v category)))
 
-(defmethod dereference-variable ((v anonymous-variable)
-				 (i individual))
-  (let ((category (itype-of i)))
-    (dereference-variable v category)))
-
-(defmethod dereference-variable ((v anonymous-variable)
-				 (c referential-category))
-  (let ((name (avar-name v))
-	(variables (cat-slots c)))
-    (declare (ignore variables))
-    (let ((variable (find-variable-for-category name c)))
-      (unless variable
-	(error "There is no variable named ~a~%in the category ~a"
-	       name c))
-      variable)))
+  (:method ((v anonymous-variable)
+            (c referential-category))
+    (let ((name (avar-name v))
+          (variables (cat-slots c)))
+      (declare (ignore variables))
+      (let ((variable (find-variable-for-category name c)))
+        (unless variable
+          (error "There is no variable named ~a~%in the category ~a"
+                 name c))
+        variable))))
 
 
 ;;;-------------------------------------------
