@@ -99,13 +99,14 @@
     d))
 
 (defun accumulate-terms-and-add-counts (sink source)
-  (assert (typep sink 'aggregated-bio-terms))
-  (assert (typep source 'aggregated-bio-terms))
-  (add-new-terms-or-add-counts 'proteins sink source)
-  (add-new-terms-or-add-counts 'residues sink source)
-  (add-new-terms-or-add-counts 'bio-processes sink source)
-  (add-new-terms-or-add-counts 'other sink source)
-  sink)
+  (when source ;; source is nil when section has been ignored
+    (assert (typep sink 'aggregated-bio-terms))
+    (assert (typep source 'aggregated-bio-terms))
+    (add-new-terms-or-add-counts 'proteins sink source)
+    (add-new-terms-or-add-counts 'residues sink source)
+    (add-new-terms-or-add-counts 'bio-processes sink source)
+    (add-new-terms-or-add-counts 'other sink source)
+    sink))
 
 (defun add-new-terms-or-add-counts (field sink source)
   (let ((source-terms (slot-value source field))
