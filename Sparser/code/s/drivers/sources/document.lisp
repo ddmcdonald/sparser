@@ -517,7 +517,7 @@
           (setf (children ss) its-children)
           (loop for child in its-children
              do (setf (parent child) ss))
-          #+ignore(let ((title? (when (typep (car its-children) 'title-text)
+          (let ((title? (when (typep (car its-children) 'title-text)
                           ;;/// searching for it would be more robust
                           (car its-children))))
             (if title?
