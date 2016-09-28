@@ -72,77 +72,88 @@
    rules (unary edge or edges). It may only have been
    defined as part of a polyword rather than in its
    own right as an independent word."
-  ;; compare to known-word? which just requires there to be
+  ;; Compare this to known-word? which just requires there to be
   ;; a rule set.
-  (declare (special *capitalization-of-current-token*))
-  
+  (declare (special *edge-for-unknown-words*))
+
   (let ((rs (rule-set-for word)))
     (cond
-      ((memq :function-word (plist-for word)) ;; "than"
-       ;; (tr :tw-is-a-function-word word) - too noisy
-       word)
-      
-      ((punctuation? word) ;; see with Latin A with ring above
-       word)
-
-      ((null rs)
-       ;; but is it capitalized in this instance and
-       ;; does it have a matching capitalized variant with a rule set?
-       ;; Motivated specifically by lowercase single letters
-       ;; that in context are intended to be understood as
-       ;; capitalized letters. See initials.
+      (rs ;; it has a rule set
        (cond
-         ((eq *capitalization-of-current-token* :lower-case)
-          (tr :fw-no-rule-set/lc word)
-          (establish-unknown-word char-type word))
-         (t
-          (let ((variants (word-capitalization-variants word)))
-            (cond
-              (variants
-               (let ((word-with-rs (loop for w in variants
-                                  ;;/// somewhere is a better test
-                                  ;; that looks for the match
-                                  when (rule-set-for w) return w)))
-                 (cond
-                   (word-with-rs
-                    ;; Does the capitalization match?
-                    (if (eq (word-capitalization word-with-rs)
-                            *capitalization-of-current-token*)
-                      (then
-                        (tr :fw-variant-has-rule-set word word-with-rs)
-                        word-with-rs)
-                      (else
-                        (tr :fw-no-rule-set/variant-wrong-cap
-                            word word-with-rs *capitalization-of-current-token*)
-                        (establish-unknown-word char-type word))))
-                   (t
-                    (tr :fw-no-rule-set/no-variant-with-rs
-                        word variants)
-                    (establish-unknown-word char-type word)))))
-              (t
-               (tr :fw-no-rule-set/no-variants word)
-               (establish-unknown-word char-type word)))))))
+         ((memq :function-word (plist-for word)) ;; "than"
+          word)
+      
+         ((punctuation? word) ;; see with Latin A with ring above
+          word)
 
-      ((rs-single-term-rewrites rs)
-       word)
+         ((rs-single-term-rewrites rs)
+          word)
 
-      (t
-       (cond ;; Biology handler has more stringent requirements?
          ((and char-type (current-script :biology))
           ;; The test is really "do we require that this word is
           ;; associated with a category and will be covered by
           ;; an edge when it is scanned.
           (word-has-associated-category word rs char-type))
-               
-         ((word-mentioned-in-rules? word)
-          ;; covers single-term-rewrites, left and right looking
-          ;; ids, having an fsa, and having a completion action
-          word)
 
-         (t ;; it has a rule-set and none of the 'is unknown' tests 
-          ;; fired so it must be a known word.
-          word))))))
+         (*edge-for-unknown-words*
+          ;; The word has a rule set, but there is no evidence
+          ;; that it has a corresponding category (softer version
+          ;; of the case just above) so we have to push it
+          ;; through the category-creating machinery.
+          (establish-unknown-word char-type word))
 
+         (t word)))
+
+      ((null rs)
+       (if (capitalization-variant-is-known? word char-type)
+         word
+         (establish-unknown-word char-type word))))))
+
+
+(defun capitalization-variant-is-known? (word char-type)
+  "But is it capitalized in this instance and
+   does it have a matching capitalized variant with a rule set?
+   Motivated specifically by lowercase single letters
+   that in context are intended to be understood as
+   capitalized letters. See initials. The variant will be
+   used when we lookup the rule to use when the word is
+   scanned."
+  (declare (special *capitalization-of-current-token*))
+  (cond
+    ((eq *capitalization-of-current-token* :lower-case)
+     (tr :fw-no-rule-set/lc word)
+     nil)
+    (t
+     (let ((variants (word-capitalization-variants word)))
+       (cond
+         (variants
+          (let ((word-with-rs (loop for w in variants
+                                 ;;/// somewhere is a better test
+                                 ;; that looks for the match
+                                 when (rule-set-for w) return w)))
+            (cond
+              (word-with-rs
+               ;; Does the capitalization match?
+               (if (eq (word-capitalization word-with-rs)
+                       *capitalization-of-current-token*)
+                 (then
+                   (tr :fw-variant-has-rule-set word word-with-rs)
+                   (if (word-with-single-edge-rules? word-with-rs)
+                     t ;;word-with-rs
+                     (else
+                       (tr :fw-variant-no-associated-category)
+                       nil)))
+                      (else
+                        (tr :fw-no-rule-set/variant-wrong-cap
+                            word word-with-rs *capitalization-of-current-token*)
+                        nil)))
+                   (t
+                    (tr :fw-no-rule-set/no-variant-with-rs
+                        word variants)
+                    nil))))
+         (t
+          (tr :fw-no-rule-set/no-variants word)
+          nil))))))
 
 (defun word-has-associated-category (word rs char-type)
   (declare (special *capitalization-of-current-token*))
