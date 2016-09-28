@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  June 2016
+;;;  Version:  September 2016
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -24,17 +24,15 @@
 ;;;-------------------------------------------
 ;;; default assumptions about an unknown word
 ;;;-------------------------------------------
-; This is used when we need to have a category & rule setup for
-; a word but have no information about it that might help us,
-; e.g. no known suffix and no entry in Comlex. If we had information
-; from some educated source for a particular sublanguage then
-; we would be able to make a better decision. And we might be
-; able to do this from the lexical context that its part of,
-; but this is a fallback. Called by make-word/all-properties/or-primed
-; when the *introduce-brackets-for-unknown-words-from-their-suffixes*
-; flag is up. 
 
 (defun setup-unknown-word-by-default (word)
+  "Called from make-word/all-properties/or-primed when we need
+  to have a category & rule setup for a word but have no information
+  about it that might help us, e.g. no known suffix and no entry in
+  Comlex. If we had information from some educated source for a
+  particular sublanguage then we would be able to make a better decision. 
+  And we might be able to do this from the lexical context that its part of,
+  but this is a fallback."
   (tr :unknown-word-defaulted-to-noun word)
   (let ((*source-of-unknown-words-definition* :default))
     (declare (special *source-of-unknown-words-definition*))  
@@ -62,7 +60,7 @@
 
     (setq morph-keyword (no-morph-on-short-words word))
 
-    (typecase morph-keyword
+    (etypecase morph-keyword
       (null (setup-unknown-word-by-default word))
       (keyword 
        (case morph-keyword
@@ -72,29 +70,38 @@
           (let ((lemma (stem-form word)))
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
+              (then
                 (setup-verb lemma)
-                (assign-brackets-as-a-main-verb lemma))))
+                (sanity-check-word-formation word lemma :ed))
+              (assign-brackets-as-a-main-verb lemma))))
+
          (:ends-in-ing
           (let ((lemma (stem-form word)))
             (tr :defining-lemma-as-given-morph lemma 'verb)
             (if *edge-for-unknown-words*
+              (then
                 (setup-verb lemma)
-                (assign-brackets-as-a-main-verb lemma))))
+                (sanity-check-word-formation word lemma :ing))
+              (assign-brackets-as-a-main-verb lemma))))
+         
          (:ends-in-ly
           (tr :defining-as-given-morph 'adverb)
           (if *edge-for-unknown-words*
-              (setup-adverb word)
-              (assign-brackets-to-adverb word)))
+            (setup-adverb word)
+            (assign-brackets-to-adverb word)))
+         
          (:ends-in-er
           (tr :defining-as-given-morph 'comparative)
-          (when *edge-for-unknown-words*
-            (setup-unknown-word-by-default word)
-            ))
+          (if *edge-for-unknown-words*
+            (setup-adjective word) ;; standin for undefined setup-comparative
+            (assign-brackets-to-adjective word)))
+         
          (:ends-in-est
           (tr :defining-as-given-morph 'superlative)
           (if *edge-for-unknown-words*
-              (setup-unknown-word-by-default word)
-              ))
+            (setup-adjective word) ;; standin for undefined setup-superlative
+            (assign-brackets-to-adjective word)))
+         
          (otherwise
           (push-debug `(,word ,morph-keyword))
           (error "Unexpected affix keyword: ~A"
@@ -102,103 +109,164 @@
       (cons
        ;; e.g. ("ible" ADJ)
        (let ((morph-key (cadr morph-keyword)))
-         (case morph-key
+         (ecase morph-key
            (n
             (tr :defining-as-given-morph 'noun)
             (if *edge-for-unknown-words*
-                (setup-common-noun word)
-                (assign-brackets-as-a-common-noun word)))
+              (setup-common-noun word)
+              (assign-brackets-as-a-common-noun word)))
            (adj
             (tr :defining-as-given-morph 'adjective)
             (if *edge-for-unknown-words*
-                (setup-adjective word)
-                (assign-brackets-to-adjective word)))
+              (setup-adjective word)
+              (assign-brackets-to-adjective word)))
            (comparative
             (tr :defining-as-given-morph 'adjective)
             (if *edge-for-unknown-words*
-                (setup-comparative word)
-                nil))
+              (setup-comparative word)
+              nil))
            (superlative
             (tr :defining-as-given-morph 'adjective)
             (if *edge-for-unknown-words*
-                (setup-superlative word)
-                nil))
+              (setup-superlative word)
+              nil))
            (v
             (tr :defining-as-given-morph 'verb)
             (if *edge-for-unknown-words*
                 (setup-verb word)
-                (assign-brackets-as-a-main-verb word)))        
-           (otherwise
-            (push-debug `(,word ,morph-keyword))
-            (error "Unexpected cons affix keyword: ~A"
-                   (word-morphology word))))))
-      (otherwise
-       (push-debug `(,word ,morph-keyword))
-       (error "Unexpected type of morph keyword: ~a~%~a"
-              (type-of morph-keyword) morph-keyword)))))
+                (assign-brackets-as-a-main-verb word)))))))))
 
+    
+(defun sanity-check-word-formation (word lemma type)
+  "The rules for forming +ing and +ed verb forms from a lemma
+   will make mistakes in applying their criteria for when the
+   final consonant is doubled. If that happened, then the rule
+   set will be on a word that doesn't occur, e.g. 'anchorring'.
+   We make a new rule set and unary rule for the correct 
+   word ('anchoring') copying as much as possible."
+  (unless (rule-set-for word)
+    ;; It will have a rule set if the affix was added correctly
+    (let* ((bad-word (ecase type
+                       (:ed (ed-form-of-verb lemma))
+                       (:ing (ing-form-of-verb lemma))))
+           (bad-rs (rule-set-for bad-word))
+           (bad-rule (car (rs-single-term-rewrites bad-rs)))
+           (new-rs (establish-rule-set-for word)))
+      (format t "~&Bad ~a form: ~a~%" type bad-word)
+      (let ((new-rule (construct-cfr ;; as basic as possible
+                       (cfr-category bad-rule)
+                       (list word)
+                       (cfr-form bad-rule)
+                       (cfr-referent bad-rule)
+                       :def-cfr ;; well sort of
+                       (cfr-schema bad-rule))))
+        (format t "~&New rule: ~a~%" new-rule)
+
+        (setf (rs-single-term-rewrites new-rs) (list new-rule))
+        (setf (rs-phrase-boundary new-rs) (rs-phrase-boundary bad-rs))))))
 
 
 ;;;------------------------
 ;;; morphology-based edges
 ;;;------------------------
 
-;; These two make-edge functions are moot with the change to 
-;; give unknown words real content (7/14). Keeping them around
-;; in case we want to adapt something like this for another
-;; purpose. 
+#| These are very old routines that considerably predate the
+ assign-morph-brackets-to-unknown-word function that is supposed
+ to be the way we deal with them. However, it turns out that
+ they're still being used and it's as yet (9/26/16) unclear why
+ since they're largely redundant with the assign function except
+ for making the edge. The path to here is
+   scan-terminals-loop
+     preterminals-for-unknown
+       consider-morphology-based-edges
+         make-edge-based-on-morphology
+
+ One prime suspect is a failure in the setup routines invoked
+ by assign-morph-brackets-to-unknown-word, which can happen when
+ there's an already defined word with a different part of speech
+ and the duplication is prohibited, e.g. in setup-verb where there
+ is a check for a pre-existing noun reading. 
+|#
 
 (defun make-edge-based-on-morphology (word
                                       position-scanned
                                       next-position)
+  "This is invoked as part of install-terminal-edges whenever
+   the word either does not have a rule set or its rule set
+   doesn't call for making an edge (rule-set-with-rules).
+   The next level is preterminals-for-unknown which sorts out
+   capitalization variation and then invokes the proximal caller,
+   consider-morphology-based-edges, provided that the word has
+   a non-nil morphology field and the flag
+   *make-edges-for-unknown-words-from-their-suffixes* is up.
+      Note that the edge-maker this calls will use a 'setup'
+   routine to make a category for this word whenever the flag
+   *edge-for-unknown-words* is up."
+  
+  ;;(lsp-break "making morph edge for ~a with ~a" word (word-morphology word))
+  
+  (etypecase (word-morphology word)
+    (keyword
+     (ecase (word-morphology word)
+       (:ends-in-s   (make-morph-edge-over-unknown-word
+                      word position-scanned next-position
+                      category::ends-in-s))
+       (:ends-in-ed
+        (let ((lemma (stem-form word)))
+          (make-morph-edge-over-unknown-word
+           word position-scanned next-position
+           category::verb :lemma lemma)))
+       (:ends-in-ing
+        (let ((lemma (stem-form word)))
+          (make-morph-edge-over-unknown-word
+           word position-scanned next-position
+           category::verb :lemma lemma)))
+       (:ends-in-ly  (make-morph-edge-over-unknown-word
+                      word position-scanned next-position
+                      category::adverb))))
+    (cons
+     (let ((morph-key (cadr (word-morphology word))))
+       (ecase morph-key
+         (adj 
+          (make-morph-edge-over-unknown-word
+           word position-scanned next-position
+           category::adjective))
+         (adv
+          (make-morph-edge-over-unknown-word
+           word position-scanned next-position
+           category::adverb))
+         (n
+          (make-morph-edge-over-unknown-word
+           word position-scanned next-position
+           category::noun))
+         (v
+          (make-morph-edge-over-unknown-word
+           word position-scanned next-position
+           category::verb)))))))
 
-  ;; the caller -- Consider-morphology-based-edges -- only makes this
-  ;; call if the word has a non-nill morphology field.  Given the
-  ;; assumptions of the caller this *must* return only one edge, not
-  ;; that I can think of a situation in which more than one would
-  ;; ever make sense.
-  (case (word-morphology word)
-    (:ends-in-s   (make-morph-edge-over-unknown-word
-                   word position-scanned next-position
-                   category::ends-in-s))
-    (:ends-in-ed  (make-morph-edge-over-unknown-word
-                   word position-scanned next-position
-                   category::verb+ed))
-    (:ends-in-ing (make-morph-edge-over-unknown-word
-                   word position-scanned next-position
-                   category::verb+ing))
-    (:ends-in-ly  (make-morph-edge-over-unknown-word
-                   word position-scanned next-position
-                   category::adverb))
-    (otherwise
-     (cond
-       ((equal (word-morphology word) '("al" ADJ))
-        (warn "Handling unexpected affix keyword: ~A in make-edge-based-on-morphology~%"
-                     (word-morphology word))
-        (make-morph-edge-over-unknown-word
-         word position-scanned next-position
-         category::adjective))
-       (t
-        (push-debug `(,word ,position-scanned ,next-position))
-        (break/debug "Unexpected affix keyword: ~A"
-                     (word-morphology word))
-        :foo ;; keep this frame on the stack
-        )))))
 
+(defun make-morph-edge-over-unknown-word (word pos-before pos-after
+                                          form-category &key lemma)
+  "Called from Make-edge-based-on-morphology during the process
+   of introducing edges over single words. If the *edge-for-unknown-words*
+   flag is up, it calls the appropriate 'setup' routine to have a category
+   constructed to go with the word."
+  (declare (special *edge-for-unknown-words*))
+  
+  (let* ((edge (make-edge-over-unknown-word
+                word pos-before pos-after
+                form-category :spelling-based-edge))
+         (category (when *edge-for-unknown-words*
+                     (form-dispatch-setup (or lemma word) form-category)))
+         (referent (or category word)))
 
-(defun make-morph-edge-over-unknown-word (word
-                                          pos-before pos-after
-                                          form-category)
+    (when category
+      (setf (edge-category edge) category))
 
-  ;; called from Make-edge-based-on-morphology during the process
-  ;; of introducing edges over single words.
-
-  (let ((edge (make-edge-over-unknown-word
-               word pos-before pos-after
-               form-category :spelling-based-edge)))
+    (tr :morph-edge-with-generated-category? word category)
     
-    (setf (edge-form     edge) form-category)
-    (setf (edge-referent edge) word)
+    (setf (edge-form edge) form-category)
+    (setf (edge-referent edge) referent)
     (setf (edge-right-daughter edge) :morphology-based-edge)
     (setf (edge-rule edge) :word-affix-morphology)
 

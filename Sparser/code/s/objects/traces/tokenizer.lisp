@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "tokenizer"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  June 2016
+;;;  Version:  September 2016
 
 ;; Initiated 11/90 (v1.5)
 ;; 11/12/14 Adding traces for giving unknown words light content because of
@@ -70,6 +70,10 @@
   (when *trace-find-word*
     (trace-msg "[find] no rule set for ~s~
               ~%       but ~a has one" (word-pname word) variant)))
+
+(deftrace :fw-variant-no-associated-category ()
+  (when *trace-find-word*
+    (trace-msg "[find] Though it doesn't have a category.")))
 
 (deftrace :tw-is-a-function-word (word)
   ;; in find-word
@@ -159,4 +163,13 @@
   (when *trace-morphology*
     (trace-msg "Assigning unknown word ~s to the OBO term ~a"
                (word-pname word) obo)))
+
+(deftrace :morph-edge-with-generated-category? (word category)
+  ;; called from make-morph-edge-over-unknown-word
+  (when *trace-morphology*
+    (if category
+      (trace-msg "Making morph edge over ~s as a ~a"
+                 (pname word) category)
+      (trace-msg "Making moph edge over ~s without a generated ~
+                  category" (pname word)))))
 

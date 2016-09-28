@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1990-2005,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-2005,2013-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "edges"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.2 March 2014
+;;;  Version:  September 2016
 
 ;; initiated 8/90
 ;; 10/30/91 added *trace-paired-punctuation*. 6/18/92 added *trace-terminal-edges*
@@ -625,7 +625,7 @@
     (trace-msg "introducing edge over digits:~%  ~A" edge)))
 
 (deftrace :making-edge-over-unknown-word/morph (edge)
-  (when *trace-check-edges*
+  (when (or *trace-morphology* *trace-check-edges*)
     (trace-msg "introducing edge because of word's morphology:~
                 ~%  ~A" edge)))
 
