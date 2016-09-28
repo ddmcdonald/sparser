@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2015 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2016 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  October 2015
+;;;  Version:  September 2016
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -225,49 +225,45 @@
 
 (defun setup-verb (word &optional comlex-clause ambiguous?)
   (declare (special *big-mechanism*))
-  (when *big-mechanism*
-    (when *show-R3-new-verb-definitions*
-      (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, ~
-                 assuming it is a bio-verb~&" word))
-    (when (and (find-form-cfr word category::common-noun)
-               ;; words defined ambiguously by COMLEX, and not previously
-               ;; defined as a noun
-               (not ambiguous?))
-      ;; 2/16/16 fires on "immunoblot" in doc #10 of the localization set.
-      (return-from setup-verb nil))
-    (svo/bio/expr word)
-    (return-from setup-verb word))
-
-  (when (stringp word)
-    (setq word (resolve/make word)))
-  (let ((special-cases
-         (when comlex-clause
-           (lift-special-case-form-from-comlex-clause comlex-clause)))
-        (category-name (name-to-use-for-category word))
-        (super-category (super-category-for-POS :verb)))
-    (when ambiguous?
-      (setq category-name
-            (construct-disambiguating-category-name
-             category-name super-category)))
-    (let ((category 
-           (if (category-named category-name)
-            (then 
-              (when *break-on-pattern-outside-coverage?*
-                (cerror "Maybe you can blow that one away?"
-                        "Setup: The category named ~a already exists."
-                        category-name))
-              (category-named category-name))
-            (define-category/expr category-name
-                                  `(:specializes ,super-category
+  (if *big-mechanism*
+    (then
+      (when *show-R3-new-verb-definitions*
+        (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, ~
+                   assuming it is a bio-verb~&" word))
+      ;; n.b. svo/bio/expr will check for already used categories
+      ;; and specialize the category name accordingly
+      (svo/bio/expr word))
+    (else
+      (when (stringp word)
+        (setq word (resolve/make word)))
+      (let ((special-cases
+             (when comlex-clause
+               (lift-special-case-form-from-comlex-clause comlex-clause)))
+            (category-name (name-to-use-for-category word))
+            (super-category (super-category-for-POS :verb)))
+        (when ambiguous?
+          (setq category-name
+                (construct-disambiguating-category-name
+                 category-name super-category)))
+        (let ((category 
+               (if (category-named category-name)
+                 (then
+                   (when *break-on-pattern-outside-coverage?*
+                     (cerror "Maybe you can blow that one away?"
+                             "Setup: The category named ~a already exists."
+                             category-name))
+                   (category-named category-name))
+                 (define-category/expr category-name
+                     `(:specializes ,super-category
                                     :instantiates :self)))))
-      ;; Adds the rule to the category itself
-      (apply #'define-main-verb (cat-symbol category)
-             :infinitive (word-pname word)
-             :category category
-             :referent category
-             special-cases)
-      (mark-as-constructed-category-for-word category super-category)
-      category)))
+          ;; Adds the rule to the category itself
+          (apply #'define-main-verb (cat-symbol category)
+                 :infinitive (word-pname word)
+                 :category category
+                 :referent category
+                 special-cases)
+          (mark-as-constructed-category-for-word category super-category)
+          category)))))
     
 
 
@@ -321,6 +317,18 @@
       (mark-as-constructed-category-for-word category super-category)
       (add-rules rules category)
       category)))
+
+
+(defun form-dispatch-setup (word form-category)
+  "Alternative path into the category-creating setup routines.
+   Motivated by make-edge-based-on-morphology."
+  (check-type form-category category)
+  (check-type word word)
+  (ecase (cat-name form-category)
+    (adverb (setup-adverb word))
+    (adjective (setup-adjective word))
+    (verb (setup-verb word))
+    (noun (setup-common-noun word))))
 
 
 ;;--- gofers
