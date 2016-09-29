@@ -27,11 +27,24 @@
      are no continuations then this should be an accept state.
      If this is an accept state and there are also continuations
      then this reflects a prefix of a potentially larger pw.")
-   (word-chain :type list :initarg :word :accessor pw-word-chain
+   (word-chain :type list :initarg :prefix :accessor pw-word-chain
     :documentation "The sequence of words (and no-space cases)
      that we had to go through to get to this state. Minimum
      is the initial word that triggers the search. Also used to
      intern states for find-or-make.")))
+
+(defclass polyword-middle-state (polyword-state)
+  ((word :initarg :word :accessor pw-word
+    :documentation "backpointer to the word")
+   (polywords :initform nil :accessor pw-participates-in
+    :documentation "A list of one or more polywords that have this
+      word as of their interior words."))
+  (:documentation "Provides as marker that this word is
+    needed for this (these) polywords."))
+
+(defclass polyword-accept-state (polyword-middle-state)
+  ()
+  (:documentation ""))
 
 (defmethod print-object ((ps polyword-state) stream)
   (print-unreadable-object (ps stream)
@@ -56,14 +69,16 @@
          (remaining-words (cddr words))
          next-state  final-state  )
     (loop
-      (setq next-state (find-or-make-next-pw-state state next-word))
-      (push next-state states)
-      (when (null remaining-words)
-        (setq final-state next-state)
-        (return))
-      (setq next-word (car remaining-words)
-            remaining-words (cdr remaining-words)
-            state next-state))
+       (setq next-state (find-or-make-next-pw-state state next-word))
+       (push pw (pw-participates-in next-state))
+       (push next-state states)
+       (when (null remaining-words)
+         (setq final-state next-state)
+         (lsp-break "next-word?")
+         (return))
+       (setq next-word (car remaining-words)
+             remaining-words (cdr remaining-words)
+             state next-state))
     (setf (pw-accept-state? final-state) pw)
     initial-state))
 
@@ -111,8 +126,9 @@
   (let* ((words-so-far (pw-word-chain prior-state))
          (words (tail-cons next-word (copy-list words-so-far)))
          (prior-table (pw-continuations prior-state))
-         (next-state (make-instance 'polyword-state
-                       :word words)))
+         (next-state (make-instance 'polyword-middle-state
+                       :word next-word
+                       :prefix words)))
     (setf (gethash next-word prior-table) next-state)
     next-state))
 
