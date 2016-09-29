@@ -224,12 +224,13 @@
   (setq *show-R3-new-verb-definitions* t))
 
 (defun setup-verb (word &optional comlex-clause ambiguous?)
-  (declare (special *big-mechanism*))
+  (declare (special *big-mechanism* *unknown-word*))
   (if *big-mechanism*
     (then
       (when *show-R3-new-verb-definitions*
         (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, ~
                  assuming ~s is a bio-verb~&" word (or *unknown-word* word)))
+      ;;(lsp-break "verb-def")
       ;; n.b. svo/bio/expr will check for already used categories
       ;; and specialize the category name accordingly
       (svo/bio/expr word))
