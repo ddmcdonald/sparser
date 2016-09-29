@@ -915,7 +915,7 @@
 ;;;----------------
 
 (define-category to-comp
-  :specializes abstract
+  :specializes linguistic
   :binds ((prep)
           (comp))
   :documentation "Provides a scafolding to hold
@@ -928,7 +928,7 @@
   :index (:temporary :sequential-keys prep comp))
 
 (define-category as-comp
-  :specializes abstract
+  :specializes linguistic
   :binds ((prep)
           (comp))
   :documentation "Provides a scafolding to hold
@@ -1376,7 +1376,7 @@
 ;;;----------------------
 
 (define-category prepositional-phrase
-  :specializes abstract
+  :specializes linguistic
   :binds ((prep)
           (pobj))
   :documentation "Provides a scafolding to hold
@@ -1397,7 +1397,7 @@
 (mark-as-form-category category::relativized-prepositional-phrase)
 
 (define-category prep-comp
-  :specializes abstract
+  :specializes linguistic
   :binds ((prep)
           (comp))
   :documentation "If to-comp picks up infinitive complements
@@ -1407,7 +1407,7 @@
   :index (:temporary :sequential-keys prep comp)) 
 
 (define-category subordinate-clause
-  :specializes abstract
+  :specializes linguistic
   :binds ((conj)
           (comp))
   :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
@@ -1420,7 +1420,7 @@
 
 
 (define-category pp-relative-clause
-  :specializes abstract
+  :specializes linguistic
   :binds ((pp)
           (clause))
   :documentation "Provides a scafolding to hold

@@ -348,7 +348,7 @@ quantifiers and prepositions (etc.) where we create individuals
 for each case and define a k-method to make sense of it all.
 |#
 (define-category no-space-prefix
-  :specializes abstract
+  :specializes linguistic
   :instantiates nil
   :binds ((word :primitive word)))
 
