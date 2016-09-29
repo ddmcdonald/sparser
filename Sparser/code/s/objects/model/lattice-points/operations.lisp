@@ -421,12 +421,13 @@
   ;; and treat them as level 0 seeds.
   (display-categories-below :stream stream))
 
-(defun display-categories-below (&key (top (category-named 'top)) (depth -1) (stream *standard-output*))
+(defun display-categories-below (&key (top (category-named 'top)) (depth -1) (max-width 10)
+                                   (stream *standard-output*))
   (clrhash *category-was-displayed*)
   (initialize-indentation)
   (when (and top (symbolp top))
     (setq top (category-named 'top)))
-  (display-with-subcs top stream depth)
+  (display-with-subcs top stream depth  max-width)
   (when (= depth -1)
     (let* ((remaining (loop for c in *categories-defined*
                         unless (gethash c *category-was-displayed*)
@@ -440,17 +441,21 @@
       (dolist (c remaining-without-supercs)
         (unless (gethash c *category-was-displayed*)
           (initialize-indentation)
-          (display-with-subcs c stream depth))))))
+          (display-with-subcs c stream depth max-width))))))
 
 
-(defun display-with-subcs (category stream &optional (depth -1))
+(defun display-with-subcs (category stream &optional (depth -1)(max-width 10))
   (unless (= depth 0)
     (emit-line stream "~a" (cat-symbol category))
     (setf (gethash category *category-was-displayed*) t)
     (push-indentation)
     (unless (form-category? category)
       (loop for subc in (subcategories-of category)
-        do (display-with-subcs subc stream (- depth 1))))
+           as i from 0 to max-width
+         do
+           (if (eq i max-width)
+               (emit-line stream "...")
+               (display-with-subcs subc stream (- depth 1) max-width))))
     (pop-indentation)))
 
 (defun tree-below (category &optional (depth -1))
