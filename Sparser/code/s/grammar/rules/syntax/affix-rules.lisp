@@ -47,13 +47,16 @@
 ;;; Assigning brackets and making categories
 ;;;------------------------------------------
 
+(defparameter *unknown-word* nil)
+
 (defun assign-morph-brackets-to-unknown-word (word morph-keyword)
   "Called from make-word/all-properties, which is itself called
    on the way back from the tokenizer. "
   (tr :defining-unknown-word-from-morph word morph-keyword)
 
-  (let ((*source-of-unknown-words-definition* :morphology))
-    (declare (special *source-of-unknown-words-definition*))
+  (let ((*source-of-unknown-words-definition* :morphology)
+        (*unknown-word* word))
+    (declare (special *source-of-unknown-words-definition* *unknown-word*))
   
     ;;(push-debug `(,word ,morph-keyword)) (break "fix stemming")
     (add-new-word-to-catalog word morph-keyword)

@@ -229,7 +229,7 @@
     (then
       (when *show-R3-new-verb-definitions*
         (format t "~&--------DEFINING NEW VERB ~s-- using svo/bio, ~
-                   assuming it is a bio-verb~&" word))
+                 assuming ~s is a bio-verb~&" word (or *unknown-word* word)))
       ;; n.b. svo/bio/expr will check for already used categories
       ;; and specialize the category name accordingly
       (svo/bio/expr word))
