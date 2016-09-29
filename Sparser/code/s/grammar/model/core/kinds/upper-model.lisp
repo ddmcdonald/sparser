@@ -149,6 +149,18 @@
   like CLOS classes.")
 
 
+(define-category phrase-interpretation
+  :instantiates nil
+  :specializes linguistic
+  :documentation
+  "A converting class for categories that we create and instantiate
+  whose meaning is the interpretation of a high-level phrase like a prepositional-phrase
+  Note that as a rule many
+  of the relations and organizing structures that were done with
+  categories earlier are now being done with conventional structures
+  like CLOS classes.")
+
+
 ;;;---------------------------------------
 ;;; names -- simple and root of real ones
 ;;;---------------------------------------

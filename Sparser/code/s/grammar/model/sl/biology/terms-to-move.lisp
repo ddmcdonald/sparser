@@ -45,7 +45,7 @@ be biology specific, since they aren't. |#
 
 ;;---- time
 
-(noun "the next day" :specializes abstract)
+(noun "the next day" :specializes time)
 
 (define-category time-course :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
   :realization 
@@ -78,19 +78,21 @@ be biology specific, since they aren't. |#
   (:noun "right"))
 
 ;; want something for magnitude, size, etc. TO-DO
-(adj "single" :super abstract)
-(adj "double" :super abstract)
+;; move away from deirectly under category::abstract
+(adj "single" :super bio-predication) 
+(adj "double" :super bio-predication)
 
 
 ;; "high";;ambiguous between (ADJECTIVE ADVERB)
 
 
 ;; led to incorrect Comlex stemming
-(noun "asides" :super abstract)
-(noun "backs" :super abstract)
-(noun "cans" :super abstract)
-(noun "downs" :super abstract)
-(noun "ups" :super abstract)
+(define-category block-bad-stemming :specializes linguistic)
+(noun "asides" :super block-bad-stemming)
+(noun "backs" :super block-bad-stemming)
+(noun "cans" :super block-bad-stemming)
+(noun "downs" :super block-bad-stemming)
+(noun "ups" :super block-bad-stemming)
 
 
 
@@ -322,7 +324,7 @@ be biology specific, since they aren't. |#
 ;; These still fail in "It is likely that this possible feedback loop..."
 ;; and "This effecto is likely to be mediated..."
 #|
-(define-category likely-adv :specializes abstract)
+(define-category likely-adv :specializes linguistic)
 
 (define-cfr category::likely-adv
     (list (resolve "likely"))

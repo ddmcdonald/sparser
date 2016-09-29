@@ -163,7 +163,7 @@ phosphorylated by Src."
   "this interaction seems to be of  low stoichiometry."
 |#
 
-(define-category copula :specializes linguistic) ;; not sure what to do beyond this
+(define-category copula :specializes phrase-interpretation) ;; not sure what to do beyond this
 
 (defun make-copular-def (word-string)
   (let ((verb (intern (string-upcase word-string))))

@@ -33,13 +33,13 @@
 ;; "active" is in modifiers
 ;; "inactive" is in terms
 
-
+#|
 ;; Individual Ras molecules are in a state
 (define-category protein-in-a-state
   :specializes abstract
   :binds ((protein protein)
           (state switch-state)))
-#|
+
 (specialize-category 
   :category protein-in-a-state
   :new-name Ras-in-a-state

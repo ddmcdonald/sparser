@@ -48,6 +48,7 @@
 (noun "likelihood" :super certainty)
 (noun "probability" :super certainty)
 
+
 (noun "medium" :super experimental-condition)
 (noun "vector" :super bio-method) ;; need a class for experimental materials
 (noun "unstimulated" :super experimental-condition)
@@ -58,11 +59,17 @@
 (adj "in excess" :super bio-predication)
 (adj "abundant" :super bio-predication)
 
+
+(adj "nonreducing" :super bio-predication)
+(adj "nontargeting" :super bio-predication)
+(adj "nondenaturing" :super bio-predication)
+(adj "noncoding" :super bio-predication)
+(adj "nonmigrating" :super bio-predication)
+
 ;;from pathway comments
 
 (adj "open" :super bio-relation)
-(define-category member :specializes abstract ;; NOT SURE WHAT TO DO HERE
- :mixins (biological)
+(define-category member :specializes biological ;; NOT SURE WHAT TO DO HERE
  :binds ((set biological))
  :realization
  (:noun "member"
@@ -234,7 +241,7 @@
   :realization
   (:noun "guanyl-nucleotide exchange"))
 
-(noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
+;;(noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
 (noun "bond" :super bio-entity) ;; chemical bond -- not 
 (adj "dual-specificity" :super bio-predication)
 
@@ -354,6 +361,7 @@
 (noun  "spectroscopy" :super bio-method)
 (noun  "microscopy" :super bio-method)
 (noun  "microscope" :super bio-method)
+(noun  "microimaging" :super bio-method)
 
 (adj  "dimensional" :super bio-predication)
 
@@ -363,6 +371,7 @@
 
 (noun "bar" :super abstract) 
 ;;Error: Comlex -- new POS combination for "#<word "bar">:: (NOUN PREP VERB)
+;; DROPPING THIS CAUSES A MASSIVE ERROR ON CURE 38
 (noun ("mouse" :plural "mice") :super species)
 (noun "Xenopus" :super species)
 (noun "zebrafish" :super species)
@@ -725,7 +734,7 @@
       :realization
       (:noun "insensitivity"
              :to cause))
-(noun "insight" :super abstract
+(noun "insight" :super bio-rhetorical
       :binds ((concept biological))
       :realization
       (:noun "insight"
@@ -765,7 +774,7 @@
 
 (noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "liquid chromatography" :super bio-method)
-(adj "living" :super abstract)
+(adj "living" :super bio-predication)
 
 (define-category lysate :specializes bio-entity
   :realization
@@ -1080,6 +1089,7 @@
 (noun "tumor formation" :super named-bio-process)
 (noun "tumorigenesis" :super named-bio-process)
 (noun "two-dimensional isoelectric focussing" :super bio-method)
+(noun "type" :super variant)
 (adj "unable" :super bio-relation
      :binds ((capability bio-process))
      :realization
@@ -1221,12 +1231,12 @@
 ;;; Hacked up to 'get through' the 9/4/14 target abstract
 ;;;-------------------------------------------------------
 
-
+(define-category document-part :specializes abstract)
 (define-category bib-reference
-   :specializes abstract) ;; to allow "et al." to be easily ignored
+   :specializes document-part) ;; to allow "et al." to be easily ignored
 
 (define-category article-table
-   :specializes abstract) ;; to allow "et al." to be easily ignored
+   :specializes document-part) ;; to allow "et al." to be easily ignored
 
 (noun "et al." :super bib-reference)
 (noun "et al.," :super bib-reference)

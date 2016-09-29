@@ -20,7 +20,7 @@
 
 
 (define-category determiner
-  :specializes linguistic
+  :specializes phrase-interpretation
   :binds ((word  :primitive word)))
 ;; This is for functions/methods as a supercategory,
 ;; as distinct from the form category 'det'

@@ -13,7 +13,7 @@
 (in-package :sparser)
 
 (define-category question-core
-  :specializes linguistic ;;/// tentative - whole area needs thought
+  :specializes phrase-interpretation ;;/// tentative - whole area needs thought
   :instantiates nil 
   :documentation "Common base for questions of all sorts.
  The 'statement' variable holds the proposition or event that

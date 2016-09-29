@@ -497,15 +497,18 @@ it is created from N-terminus to C-terminus.|#
    They are named according to the sequence of proteins
    (protein families) in the causal chain.")
 
-(define-category PathwayStep :specializes cellular-process
-  :binds ((pathway pathway)
+(define-category PathwayStep :specializes bio-process
+  :binds ((pathway pathway)                       
+          (process bio-process)
           (nextStep PathwayStep)
 	  
           (stepProcess (:or control pathway catalytic-activity 
                             biochemical-reaction bio-transport)))
   :instantiates :self
   :lemma (:common-noun "step")
-  :realization (:common-noun name))
+  :realization (:common-noun name
+                :in pathway
+                :in process))
 
 (define-category signaling-pathway
    :specializes pathway
@@ -554,14 +557,7 @@ it is created from N-terminus to C-terminus.|#
 
 
 
-(define-category step :specializes cellular-process
-  :instantiates :self
-  :binds ((pathway pathway)
-          (process bio-process))
-  :lemma (:common-noun "step")
-  :realization (:common-noun name
-                :in pathway
-                :in process))
+
 
 
 
@@ -895,6 +891,12 @@ with something else
 	   :noun "division"
 	   :etf (sv)))
 
+(define-category growth :specializes cellular-process
+    :realization
+    (:verb ("grow" :past-tense "grew")
+	   :noun "growth"
+	   :etf (sv)))
+
 (define-category proliferation :specializes cellular-process
     :realization
     (:verb "proliferate"
@@ -911,6 +913,29 @@ with something else
           :from initial
           :to final
           :into final))
+
+(define-category anchorage :specializes cellular-process
+  :binds ((anchor biological)
+          (anchored biological))
+    :realization
+    (:verb ("anchor" :present-participle "anchoring" :past-tense "anchored")
+	   :etf (svo-passive)
+	   :noun "anchorage"
+           :s anchor
+           :o anchored
+           :to anchor))
+
+(define-category necrosis :specializes cellular-process
+    :binds ((necrotized biological))                         
+    :realization
+    (:verb "necrotize"
+           :etf (svo-passive)
+           :o necrotized
+           :adj "necrotic"
+	   :noun "necrosis"
+	   :etf (sv)))
+
+
 
 (noun "autophagy" :super cellular-process)
 (define-category cell-growth :specializes cellular-process

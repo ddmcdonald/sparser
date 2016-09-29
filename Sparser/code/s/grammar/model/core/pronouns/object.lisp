@@ -22,7 +22,7 @@
   ;; never instantiated itself, just provides a common supercategory
   ;; for the discourse history
   :instantiates nil
-  :specializes linguistic)
+  :specializes phrase-interpretation)
 
 
 (defmethod is-pronoun? ((ref individual))

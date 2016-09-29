@@ -189,8 +189,9 @@
   :binds ((object bio-entity)
 	  (tested-for bio-chemical-entity))
   :realization
-  (:verb "immunoblot" :etf (svo-passive)
-	 ;; :noun "immunoblotting"
+  (:verb ("immunoblot" :present-participle "immunoblotting"
+                       :past-tense "immunoblotted")
+         :etf (svo-passive)
          :for tested-for
 	 ))
 
@@ -274,6 +275,16 @@
   (:verb "advance" :etf (svo-passive)))
 
 (noun "advance" :super bio-relation)
+
+(define-category favor :specializes positive-bio-control
+  :realization
+  (:verb "favor" :etf (svo-passive)))
+
+(define-category disfavor :specializes negative-bio-control
+  :realization
+  (:verb ("favor" :present-participle "disfavoring"
+                  :past-tense "disfavored")
+         :etf (svo-passive)))
 
 ;;;--------------------------------------------------------
 ;;; specific verbs (alphabetical except for obvious pairs)
@@ -370,6 +381,13 @@
     (:verb "activate" 
      :noun "activation"
      :etf (svo-passive)))
+
+(define-category auto-activate
+  :specializes bio-activate
+  :realization
+    (:verb "autoactivate" 
+     :noun "autoactivation"
+     :etf (svo)))
 
 (define-category addition :specializes caused-bio-process
   :mixins (bio-thatcomp)
@@ -562,7 +580,13 @@
              :into resulting))
 
 (def-synonym change
-            (:noun "variation"))
+    (:noun "variation"))
+
+(define-category clustering :specializes bio-method
+  :realization (:verb ("cluster" :present-participle "clustering" :past-tense "clustered")
+                      :etf (svo-passive)))
+
+(noun "hierarchical clustering analysis" :super clustering)
 
 (define-category conversion-change :specializes change   ;; for our purposes, since we only have biologically relevant reactions
    :realization (:noun "conversion"
@@ -633,7 +657,8 @@
     :mixins (bio-whethercomp)
     :binds ((tocomp (:or be biological))) ;; could be "the effects..."
     :realization
-    (:verb ("consider"  :past-tense "considered") ;; keyword: ENDS-IN-ED 
+    (:verb ("consider" :present-participle "considering"
+                       :past-tense "considered") ;; keyword: ENDS-IN-ED 
 	   :noun "consideration"
 	   :etf (svo-passive)
            :to-comp tocomp))
@@ -757,6 +782,9 @@
    :to level))
 
 (def-synonym decrease (:verb "drop" :etf (svo-passive)))
+(def-synonym decrease (:verb ("taper off" :present-participle "tapering off"
+                                          :past-tense "taper off")
+                                          :etf (sv)))
 
 (define-category make-double :specializes positive-bio-control
   :restrict ((object (:or biological scalar-quality)))

@@ -90,7 +90,7 @@
                   np-referent))) ;; referent
             edge))))))
 
-(define-category copular-pp-rel-clause :specializes linguistic
+(define-category copular-pp-rel-clause :specializes phrase-interpretation
   :binds ((copular-pp copular-pp)))
 
 (defun compose-wh-with-vp (wh-referent predicate-referent)

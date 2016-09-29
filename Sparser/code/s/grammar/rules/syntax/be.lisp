@@ -334,7 +334,7 @@ assess-edge-label, which rewrites the word as the category BE.
  the existence of.")
 
 (define-category syntactic-there 
-  :specializes linguistic
+  :specializes phrase-interpretation
   :lemma (:word "there")) ;; n.b. form on the rule is content-word
 
 (def-cfr there-exists (syntactic-there be)

@@ -107,10 +107,7 @@
 ;;; generalizations
 ;;;-----------------
 
-(define-category reference-item :specializes abstract
-  :documentation "For things like ProteinReference and SmallMoleculeReference.
-  Generic characterizations of proteins and small molecules, etc. which have
-  OBO identifiers, but are not localized to cellular locations.")
+
 
 (define-category biological :specializes top
   :documentation "Provides a generalization over bio entities
@@ -161,6 +158,11 @@
 	 :like like
 	 :unlike unlike
          ))
+
+(define-category reference-item :specializes biological
+  :documentation "For things like ProteinReference and SmallMoleculeReference.
+  Generic characterizations of proteins and small molecules, etc. which have
+  OBO identifiers, but are not localized to cellular locations.")
 
 ;;/// This is OBE given revision to biological. 
 (define-category bio-abstract :specializes biological)
@@ -333,10 +335,16 @@
 (define-category cellular-process :specializes response
   :mixins (has-UID has-name biological)
   :realization 
-  (:noun "cellular response")
-  :documentation "No content by itself, provides a common parent
-  for 'processing', 'ubiquitization', etc. that may be the basis
-  of the grammar patterns.")
+  (:noun "cellular response"))
+
+(define-category disease-process :specializes process
+  :mixins (biological))
+
+(define-category metastasis :specializes disease-process
+  :binds ((cancer cancer))
+  :realization
+  (:noun "metastasis" :verb "metastasize"))
+
 
 (define-category named-bio-process
     :specializes other-bio-process
@@ -345,7 +353,7 @@
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns.")
 
-(define-category blocked-category :specializes top)
+(define-category blocked-category :specializes abstract)
 
 (define-category caused-bio-process
   :specializes bio-process
@@ -549,6 +557,10 @@
                        :to produces
                        ))
 
+(define-category biopax-entry :specializes abstract
+                 :binds
+                 ((dataSource)
+                  (xref)))
 
 (define-category bio-interaction :specializes bio-process)
 (define-category bio-conversion :specializes bio-interaction)
@@ -556,10 +568,7 @@
 (define-category biochemical-reaction :specializes bio-conversion ;; from biopax
                  )
 
-(define-category biopax-entry :specializes top
-                 :binds
-                 ((dataSource)
-                  (xref)))
+
 
 #+ignore
 (define-category catalysis-reaction :specializes  ;; rename to avoid conflict with biopax model
@@ -666,7 +675,7 @@
   :realization (:to-comp action))
 
                  
-(define-category post-adj :specializes abstract) ;; used as a marker for adjectives which can follow nouns
+(define-category post-adj :specializes linguistic) ;; used as a marker for adjectives which can follow nouns
 
 (define-category pathway-direction :specializes bio-relation
   :mixins (post-adj)
