@@ -426,9 +426,9 @@
   (clrhash *category-was-displayed*)
   (initialize-indentation)
   (when (and top (symbolp top))
-    (setq top (category-named 'top)))
+    (setq top (category-named top)))
   (display-with-subcs top stream depth  max-width)
-  (when (= depth -1)
+  (when (and (eq top (category-named 'top))(= depth -1))
     (let* ((remaining (loop for c in *categories-defined*
                         unless (gethash c *category-was-displayed*)
                         collect c))
