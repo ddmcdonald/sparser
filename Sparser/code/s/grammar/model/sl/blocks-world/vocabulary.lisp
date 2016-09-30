@@ -53,7 +53,8 @@ with other blocks, mention in utterances, etc. |#
   :binds ((position relative-position))
   :instantiates :self
   :index (:permanent :key name)
-  :realization (:noun "block"
+  :lemma (:common-noun "block")
+  :realization (:noun name
                 :m position))
 
 #|

@@ -37,27 +37,49 @@
     (preposition :prep)
     (interjection :interjection)))
 
-(defun word-for (item &optional (pos 'noun))
-  "Produce a Mumble word that denotes the given item."
-  (declare (optimize debug))
-  (check-type item (or sp::individual sp::referential-category))
-  (let ((raw-word (or (sp::rdata-head-word item (sparser-pos pos))
-                      (case pos ; e.g., a predication
-                        (verb (sp::rdata-head-word item :adjective)))
-                      (sp::lemma item (sparser-pos pos))
-                      (sp::value-of 'sp::name item)
-                      (sp::value-of 'sp::word item)
-                      (string-downcase ; last-ditch guess
-                       (sp::cat-name (sp::itype-of item))))))
+(defgeneric word-for (item pos)
+  (:method ((item null) pos)
+    (declare (ignore pos)))
+  (:method ((item word) pos)
+    (declare (ignore pos))
+    item)
+  (:method ((item string) pos)
+    (word-for-string item pos))
+  (:method ((item sp::word) pos)
+    (sp::get-mumble-word-for-sparser-word item (sparser-pos pos)))
+  (:method ((item sp::polyword) pos)
+    (sp::get-mumble-word-for-sparser-word item (sparser-pos pos)))
+  (:method ((item sp::referential-category) pos)
+    "Try to get a head word for a category."
+    (let ((head (sp::rdata-head-word item (sparser-pos pos))))
+      (word-for (typecase head
+                  (sp::lambda-variable (sp::lemma item (sparser-pos pos)))
+                  (null (string-downcase (sp::cat-name item)))
+                  (t head))
+                pos)))
+  (:method ((item sp::individual) pos)
+    "Try to get a head word for an individual."
+    (let ((head (or (sp::rdata-head-word item (sparser-pos pos))
+                    (sp::lemma item (sparser-pos pos))
+                    (sp::value-of 'sp::name item)
+                    (sp::value-of 'sp::word item))))
+      (and head (word-for head pos))))
+  (:method :around ((item sp::individual) pos)
+    "Treat biological entities and collections specially."
     (cond ((sp::itypep item 'sp::biological)
-           (word-for-string (pretty-bio-name (sp::pname raw-word)) pos))
+           (word-for-string (pretty-bio-name (sp::pname (call-next-method))) pos))
           ((sp::itypep item 'sp::collection)
-           (word-for (sp::value-of 'sp::type item)))
-          (t (etypecase raw-word
-               (string (word-for-string raw-word pos))
-               (mumble::word raw-word)
-               ((or sp::word sp::polyword)
-                (sp::get-mumble-word-for-sparser-word raw-word pos)))))))
+           (word-for (sp::value-of 'sp::type item) pos))
+          (t (or (call-next-method) ; last-ditch effort
+                 (word-for (string-downcase (sp::cat-name (sp::itype-of item))) pos)))))
+  (:method :around (item (pos (eql 'verb)))
+    "Allow verbs as predications."
+    (or (call-next-method)
+        (and item (word-for item 'adjective))))
+  (:method :around (item (pos (eql 'noun)))
+    "Allow nouns as predications."
+    (or (call-next-method)
+        (and item (word-for item 'adjective)))))
 
 (defun current-position-p (&rest labels)
   "Return true if the slot being generated has one of the given labels."
