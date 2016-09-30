@@ -118,7 +118,10 @@
 (defun has-supercategories? (c)
   (let ((lp (cat-lattice-position c)))
     (when lp
-      (lp-super-category lp))))
+      (when (typep lp 'top-lattice-point)
+        ;; block trying to go through a form-category where
+        ;; the notion of super category is undefined.
+        (lp-super-category lp)))))
 
 ;;--- entry points
 
@@ -421,7 +424,8 @@
   ;; and treat them as level 0 seeds.
   (display-categories-below :stream stream))
 
-(defun display-categories-below (&key (top (category-named 'top)) (depth -1) (max-width 10)
+(defun display-categories-below (&key (top (category-named 'top))
+                                   (depth -1) (max-width 10)
                                    (stream *standard-output*))
   (clrhash *category-was-displayed*)
   (initialize-indentation)
