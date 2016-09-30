@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "object"
 ;;;    Module:   "objects;rules:rule links:"
-;;;   Version:   January 2016
+;;;   Version:   September 2016
 
 ;; 2.0 (9/4/92 v2.3) Changed the names and contents descriptions of the
 ;;      left/right combinations.
@@ -12,6 +12,9 @@
 
 (in-package :sparser)
 
+;;;--------
+;;; object
+;;;--------
 
 (defstruct (rule-set
             (:conc-name #:rs-)
@@ -19,8 +22,8 @@
 
   backpointer              ;; the object it's part of
   single-term-rewrites     ;; a list of rules
-  right-looking-ids                ;; ( label-id . form-id )
-  left-looking-ids                 ;; ( label-id . form-id )
+  right-looking-ids        ;; ( label-id . form-id )
+  left-looking-ids         ;; ( label-id . form-id )
   fsa
   phrase-boundary
   completion-actions       ;; a plist of keywords and function names
@@ -34,6 +37,10 @@
   (format stream "~A" (rs-backpointer obj))
   (write-string ">" stream))
 
+
+;;;---------------------------
+;;; predicates over rule sets
+;;;---------------------------
 
 (defun trivial-rule-set (rs)
   (and (null (rs-single-term-rewrites rs))
