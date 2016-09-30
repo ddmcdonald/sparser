@@ -15,6 +15,10 @@
                (:file "test/subcategorization"))
   :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
 
+(defsystem :sparser/graph
+  :depends-on (:sparser :cl-dot)
+  :components ((:file "Sparser/code/s/objects/model/categories/graph")))
+
 (macrolet ((define-sparser-system (script)
              "Only one of these should be loaded into a Lisp image.
 The load process has no way to unload or to intelligently overwrite
