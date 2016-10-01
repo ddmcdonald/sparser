@@ -49,7 +49,7 @@
    ((eq prep (category-named 'upon))
     (find-or-make-individual 'upon-condition :condition comp))
    (t ;; equivalent of daughter
-    comp)))
+    (make-pp prep comp))))
 
 ;; Consumed as 'circumstance' at event level by adjoin-pp-to-vg
 (define-category upon-condition

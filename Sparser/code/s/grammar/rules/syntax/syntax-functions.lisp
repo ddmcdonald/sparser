@@ -430,35 +430,41 @@
   ;; MS thesis and think about generalized quantifiers.
   ;; (push-debug `(,quantifier ,head)) (break "quantifier-noun-compound")
   ;;  (setq quantifier (car *) head (cadr *))
-  (setq head (individual-for-ref head))
-  (when
-      (and *determiners-in-DL* (or (individual-p head)(category-p head)))
-    (setq head (bind-dli-variable 'quantifier quantifier head)))
+
   (cond
-    ((itypep quantifier category::no) ;; special handling for negation
-     (setq head (bind-dli-variable 'negation quantifier head)))
-    ((or
-      (itypep head category::endurant)
-      (itypep head category::perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
-      (itypep head category::abstract) ;; we quantify abstract items like "group"
-      (itypep head 'bio-abstract) ;; we quantify abstract items like "group"
-      (itypep head category::quality)	 ;; we quantify qualities "some level"
-      (itypep head 'biological)  ;; we quantify things like "such models"
-      (itypep head 'time-kind)) ;; we quanitfy things like "some time"
-     (setf  (non-dli-mod-for head) (list 'quantifier quantifier))
-     ;; don't use KRISP variables for quanitifiers -- put them in the mention
-     ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
-     )
-    ((itypep head category::determiner) ;; "all these"
-     (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
+    (*subcat-test*
+     (itypep head '(:or endurant perdurant abstract bio-abstract quality
+                    biological time-kind determiner)))
     (t
-     (warn "~&@@@@@ adding quantifier ~s to ~s~&"
-	     (retrieve-surface-string quantifier)
-	     (if (individual-p head)
-                 (retrieve-surface-string head)
-                 "**MISSING**"))
-     (setq  head (bind-dli-variable 'quantifier quantifier head))))
-  head)
+     (setq head (individual-for-ref head))
+     (when
+         (and *determiners-in-DL* (or (individual-p head)(category-p head)))
+       (setq head (bind-dli-variable 'quantifier quantifier head)))
+     (cond
+       ((itypep quantifier category::no) ;; special handling for negation
+        (setq head (bind-dli-variable 'negation quantifier head)))
+       ((or
+         (itypep head category::endurant)
+         (itypep head category::perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
+         (itypep head category::abstract) ;; we quantify abstract items like "group"
+         (itypep head 'bio-abstract) ;; we quantify abstract items like "group"
+         (itypep head category::quality) ;; we quantify qualities "some level"
+         (itypep head 'biological) ;; we quantify things like "such models"
+         (itypep head 'time-kind)) ;; we quanitfy things like "some time"
+        (setf  (non-dli-mod-for head) (list 'quantifier quantifier))
+        ;; don't use KRISP variables for quanitifiers -- put them in the mention
+        ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
+        )
+       ((itypep head category::determiner) ;; "all these"
+        (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
+       (t
+        (lsp-break "~&@@@@@ adding quantifier ~s to ~s~&"
+                   (retrieve-surface-string quantifier)
+                   (if (individual-p head)
+                       (retrieve-surface-string head)
+                       "**MISSING**"))
+        (setq  head (bind-dli-variable 'quantifier quantifier head))))
+     head)))
 
 
 (defun number-noun-compound (number head)
@@ -695,7 +701,7 @@
                     adj-phrase)
             adj-phrase)
       (let* ((adj (individual-for-ref adj-phrase))
-             (variable-to-bind
+             (variable-to-bind ;; can be nil as in "very low-to-undetectable "
               (subcategorized-variable adj :adv adverb)))
         #| Really should diagnose among
         (time) (location) (purpose) (circumstance) (manner) |#
@@ -709,6 +715,7 @@
              (variable-to-bind t)
              ((has-adverb-variable? adj adj-phrase adverb) t)
              ((and (collection-p adj)
+                   (value-of 'items adj) ;; is null for hyphenated-triple
                    (or
                     (subcategorized-variable 
                      (car (value-of 'items adj)) :adv adverb)
@@ -1026,6 +1033,8 @@
      (break "null interpretation for NP in interpret-pp-adjunct-to-np edge ~s~&"
             *left-edge-into-reference*)
      nil)
+    ((itypep pp 'collection)
+     (lsp-break "pp collection"))
     (t
      (or (when (and np pp) (call-compose np pp))
          ;; guard against passing a null NP to call-compose

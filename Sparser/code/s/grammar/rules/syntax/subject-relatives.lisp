@@ -228,6 +228,7 @@
          (let ((ref (edge-referent e)))
            (when (and (null ref)
                       (not (eq (edge-category e) category::APOSTROPHE-S))
+                      (not (eq (edge-category e) category::parentheses))
                       *break-on-null-ref-in-context-needs-clause*)
              (error "null ref in context-needs-clause -- quiet this by setting *break-on-null-ref-in-context-needs-clause* to nil"
                     (sentence-string *sentence-in-core*)))
