@@ -259,6 +259,7 @@
 (adj "acidic" :super bio-predication)
 (adj "adaptor" :super bio-predication) ;; "adaptor protein"
 (adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"
+(noun "adenocarcinoma" :super disease)
 (noun "anaphylaxis" :super disease)
 (adj "banded" :super bio-predication)
 (noun "metaplasia" :super disease)
