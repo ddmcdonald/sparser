@@ -60,4 +60,6 @@
 (lload "doc;context")
 (lload "doc;content")
 (lload "doc;initialization")
+(lload "doc;save-doc-semantics")
+
 
