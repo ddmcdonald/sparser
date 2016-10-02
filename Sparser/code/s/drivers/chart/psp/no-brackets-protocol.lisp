@@ -342,6 +342,12 @@
 
   (save-missing-subcats)
 
+  ;; moved this before we collect the model -- it changes the semantics!
+  (make-this-a-question-if-appropriate sentence)
+  
+  (when *do-discourse-relations*
+    (establish-discourse-relations sentence))
+
   (when *collect-model*
     ;; We always retrieve the entities and relations to store
     ;; with the sentence and accumulate at higher levels
@@ -351,12 +357,7 @@
       (set-entities sentence entities)
       (set-relations sentence relations)
       (set-tt-count sentence tt-count)
-      (interpret-treetops-in-context treetops)))
-
-  (make-this-a-question-if-appropriate sentence)
-
-  (when *do-discourse-relations*
-    (establish-discourse-relations sentence)))
+      (interpret-treetops-in-context treetops))))
 
 
 ;;;------------------------------------------------------------
@@ -371,5 +372,8 @@
   (when *end-of-sentence-display-operation*
     (funcall *end-of-sentence-display-operation* sentence))
   (when *current-article*
-    (save-article-sentence *current-article* sentence)))
+    (save-article-sentence *current-article* sentence))
+  (when (or (eq *sentence-results-stream* t)
+            (streamp *sentence-results-stream*))
+    (write-semantics sentence *sentence-results-stream*)))
 
