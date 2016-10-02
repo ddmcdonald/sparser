@@ -42,16 +42,18 @@
   (:documentation "Provides as marker that this word is
     needed for this (these) polywords."))
 
-(defclass polyword-accept-state (polyword-middle-state)
-  ()
-  (:documentation ""))
 
 (defmethod print-object ((ps polyword-state) stream)
   (print-unreadable-object (ps stream)
     (format stream "pw-state:")
     (loop for w in (pw-word-chain ps)
-      do (format stream " ~s" (word-pname w)))))
+       do (format stream " ~s" (word-pname w)))))
 
+(defmethod print-object ((ps polyword-middle-state) stream)
+  (print-unreadable-object (ps stream)
+    (format stream "pw-middle-state")
+    (let ((word (pw-word ps)))
+      (format stream " ..~s.." (pname word)))))
 
 ;;;-------------------------------------------
 ;;; Defining the state machine for a polyword
@@ -74,7 +76,6 @@
        (push next-state states)
        (when (null remaining-words)
          (setq final-state next-state)
-         (lsp-break "next-word?")
          (return))
        (setq next-word (car remaining-words)
              remaining-words (cdr remaining-words)
@@ -89,46 +90,33 @@
    (*use-occasional-polywords*
     (or (starts-occasional-polyword word) ;; find
         (setf (get-tag :occasional-polyword word)
-              (make-instance 'polyword-state :word `(,word)))))
+              (make-instance 'polyword-state :prefix `(,word)))))
    (t
     (or (starts-polyword word) ;; find 
-        (let ((initial-state (make-instance 'polyword-state
-                               :word `(,word))))
-          (let* ((rule-set (word-rules word))
-                 (fsa-value (when rule-set (rs-fsa rule-set))))
-            (cond
-             ((null rule-set) ;; guarenteed new
-              (setq rule-set (make-rule-set :backpointer word))
-              (setf (word-rule-set word) rule-set)
-              (setf (rs-fsa rule-set) `(,initial-state)))
-             (fsa-value ;; existing case, e.g. for hyphen
-              (setf (rs-fsa rule-set)
-                    (typecase fsa-value
-                      (cons 
-                       (cons initial-state fsa-value))
-                      (symbol
-                       (list initial-state fsa-value))
-                      (otherwise
-                       (push-debug `(,word ,rule-set ,fsa-value))
-                       (error "Unexpected type of value for fsa field")))))
-             (rule-set
-              ;; has a rule set but no fsa values
-              (setf (rs-fsa rule-set) `(,initial-state)))))
+        (let* ((initial-state (make-instance 'polyword-state
+                               :prefix `(,word)))
+               (rule-set (word-rules word))
+               (fsa-value (when rule-set (rs-fsa rule-set))))
+          (cond
+            ((null rule-set) ;; guarenteed new
+             (setq rule-set (make-rule-set :backpointer word))
+             (setf (word-rule-set word) rule-set)
+             (setf (rs-fsa rule-set) `(,initial-state)))
+            (fsa-value ;; existing case, e.g. for hyphen
+             (push-polyword-state-onto-word word initial-state))
+            (rule-set
+             ;; has a rule set but no fsa values
+             (setf (rs-fsa rule-set) `(,initial-state))))
           initial-state)))))
 
-
-
-(defun find-or-make-next-pw-state (state next-word)
-  (or (gethash next-word (pw-continuations state))
-      (make-next-state state next-word)))
-
-(defun make-next-state (prior-state next-word)
-  (let* ((words-so-far (pw-word-chain prior-state))
-         (words (tail-cons next-word (copy-list words-so-far)))
-         (prior-table (pw-continuations prior-state))
-         (next-state (make-instance 'polyword-middle-state
-                       :word next-word
-                       :prefix words)))
-    (setf (gethash next-word prior-table) next-state)
-    next-state))
-
+(defun find-or-make-next-pw-state (prior-state next-word)
+  (or (gethash next-word (pw-continuations prior-state))
+      (let* ((words-so-far (pw-word-chain prior-state))
+             (words (tail-cons next-word (copy-list words-so-far)))
+             (prior-table (pw-continuations prior-state))
+             (next-state (make-instance 'polyword-middle-state
+                           :word next-word
+                           :prefix words)))
+        (setf (gethash next-word prior-table) next-state)
+        (push-polyword-state-onto-word next-word next-state)
+        next-state)))

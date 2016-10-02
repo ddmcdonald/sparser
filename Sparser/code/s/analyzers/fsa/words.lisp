@@ -224,24 +224,32 @@
              subsumer (word-rules subsumer) position)))))))
 
 
-;;--- Picking out the polyword cfr if there is one
+;;--- Pulling out the polyword start state if there is one
+
+(defun includes-pw-start-state (fsa-field)
+  (typecase fsa-field
+    (polyword-state
+     (unless (typep fsa-field 'polyword-middle-state)
+       fsa-field))
+    (cons
+     (loop for item in fsa-field
+        when (and (typep item 'polyword-state)
+                  (not (typep item 'polyword-middle-state)))
+        return item))))
+
+(defun starts-polyword (word)
+  (let ((rule-set (word-rules word)))
+    (when rule-set
+      (let ((fsa-field (rs-fsa rule-set)))
+        (when fsa-field
+          (includes-pw-start-state fsa-field))))))
 
 (defun initiates-polyword (word position-before)
-  ;; Returns the rule that marks the polyword
   (flet ((polyword-fsa (rules-field)
            (when rules-field
              (let ((fsa-field (rs-fsa rules-field)))
                (when fsa-field
-                 (typecase fsa-field
-                   (polyword-state fsa-field)
-                   (cons
-                    (loop for item in fsa-field
-                      when (typep item 'polyword-state)
-                      return item))
-                   (otherwise
-                    (push-debug `(,fsa-field ,word ,position-before))
-                    (error "fsa field of unexpected type: ~a~%~a"
-                           (type-of fsa-field) fsa-field) )))))))
+                 (includes-pw-start-state fsa-field))))))
     (let ((rules-field (word-rules word)))
       (or (polyword-fsa rules-field)
           (let ((caps-word (capitalized-correspondent word position-before)))
@@ -249,32 +257,6 @@
               (let ((caps-rules-field (word-rules caps-word)))
                 (polyword-fsa caps-rules-field))))))))
 
-
-#+ignore(defun initiates-polyword1 (word position-before)
-  ;; Returns the initial state of the polyword or nil
-  (or (let ((caps-word (capitalized-correspondent1 
-                        position-before word)))
-        (when caps-word
-          (starts-polyword caps-word)))
-      (starts-polyword word)))
-
-(defun starts-polyword (word)
-  (let ((rule-set (word-rules word)))
-    (when rule-set
-      (let ((fsa-field (rs-fsa rule-set)))
-        (when fsa-field
-          (typecase fsa-field
-            (polyword-state fsa-field)
-            (cons
-             (loop for item in fsa-field
-               when (typep item 'polyword-state)
-               return item))))))))
-#+ignore(defun initiates-occasional-polyword (word position-before)
-   (or (let ((caps-word (capitalized-correspondent1 
-                        position-before word)))
-        (when caps-word
-          (starts-occasional-polyword caps-word)))
-      (starts-occasional-polyword word)))
 
 (defun starts-occasional-polyword (word)
   (get-tag :occasional-polyword word))
@@ -323,16 +305,27 @@
 ;;;-------------------------------------------------------------------
 ;;; standard form for adding an FSA to the front of a word's rule-set
 ;;;-------------------------------------------------------------------
-;;  What would be a better place for this?
+
+(defun find-or-make-fsa-field (word)
+  (check-type word word)
+  (let* ((rs (establish-rule-set-for word)) ;; find or make
+         (fsa-field (rs-fsa rs)))
+    (or fsa-field
+        rs)))
+
+(defun push-item-onto-fsa-field (word item)
+  "The result is read by, e.g. initiates-polyword or do-fsa-field"
+  (let ((field-or-rs (find-or-make-fsa-field word)))
+    (etypecase field-or-rs
+      (rule-set (setf (rs-fsa field-or-rs) `(,item)))
+      (cons
+       (tail-cons item field-or-rs))
+      (symbol
+       (error "Bad initial state of fsa field of rule-set-for ~a" word)))))
 
 (defun push-fsa-onto-word (word fn-name)
-  (check-type word word)
-  (let ((rs (word-rules word)))
-    (unless rs
-      (setq rs (make-rule-set :backpointer word))
-      (setf (word-rule-set word) rs))
-    (setf (rs-fsa rs)
-	  (cons fn-name (rs-fsa rs)))
-    rs))
+  (push-item-onto-fsa-field word fn-name))
 
+(defun push-polyword-state-onto-word (word state)
+  (push-item-onto-fsa-field word state))
 
