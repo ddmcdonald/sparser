@@ -17,9 +17,10 @@
 
 (defparameter *sentence-results-stream* nil)
 
+
 (defparameter *default-article-semantics-path*
-  (probe-file (format nil "~a/corpus/Articles_for_CURE/"
-                      cl-user::*r3-trunk*)))
+  (when (find-package :r3)
+    (probe-file (asdf:system-relative-pathname :r3 "../corpus/Articles_for_CURE/"))))
 
 
 
