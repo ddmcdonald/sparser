@@ -799,7 +799,8 @@ chapter 7 of the Sparser manual. |#
   (:method ((c referential-category))
     (gethash c *segment-finished-functions*))
   (:method ((name symbol))
-    (get-segment-finished-actions (category-named name :break))))
+    (get-segment-finished-actions (category-named name :break)))
+  (:method ((x T)) nil))
 
 (defmacro define-segment-finished-action (labels tag function)
   "More of a FEXPR than a macro."
