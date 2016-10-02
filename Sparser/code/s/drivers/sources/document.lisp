@@ -1,4 +1,4 @@
- ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "document"
@@ -129,6 +129,7 @@
         (*current-document-element* a))
     (declare (special *current-article*
                       *current-document-element*))
+    (initialize-article-semantic-file-if-needed a)
     (set-document-index a :ignore)
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
@@ -157,6 +158,7 @@
       (after-actions a))
     (when (and *show-section-printouts* (actually-reading))
       (show-parse-performance a))
+    (close-article-semantic-file-if-needed a)
     a))
 
 (defmethod read-from-document ((ss section-of-sections))
