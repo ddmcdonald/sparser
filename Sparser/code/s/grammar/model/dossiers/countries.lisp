@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 199-1995,2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 199-1995,2011-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "countries"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  0.2 May 2014
+;;;  version:  October 2016
 
 ;; 0.1 (10/12/92 v2.1) introducing new semantics
 ;;     (9/7 v2.3) revived the existing set of cases
@@ -159,7 +159,7 @@
 (define-country "Nicaragua")
 (define-country "Niger")
 (define-country "Nigeria")
-(define-country "North Korea")
+(define-country "North Korea" :adjective "North Korean")
 (define-country "Norway")
 (define-country "Oman")
 (define-country "Pakistan" :adjective "Pakistani"
@@ -194,7 +194,7 @@
 (define-country "Solomon Islands")
 (define-country "Somalia")
 (define-country "South Africa")
-(define-country "South Korea")
+(define-country "South Korea" :adjective "South Korean")
 (define-country "Spain")
 (define-country "Sri Lanka")
 (define-country "Sudan")
