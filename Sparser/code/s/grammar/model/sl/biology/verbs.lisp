@@ -110,6 +110,15 @@
          :etf (svo-passive)
          :o theme))
 
+;;; Verbs added for CURE articles -- to be reviewed
+(delete-verb-cfr (resolve "transform"))
+(define-category cancer-transform :specializes caused-bio-process
+  :restrict ((object cell-entity))
+  :realization
+  (:verb "transform"
+         :of object))
+;; leads to rule bio-entity + load, 
+;; which works, but isn't satisfying
 ;;; Verbs added temporarily for Localization articles -- to be reviewed and corrected
 (define-category become :specializes be
   :mixins (bio-rhetorical)
