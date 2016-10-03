@@ -666,6 +666,7 @@
                    ;; saw an error in  "phase–contrast only"
                    ;; where "phase-contrast" was treated as a verb
                    (not (itypep vg 'hyphenated-pair))
+                   (not (itypep vg 'hyphenated-triple))
                    (or
                     (subcategorized-variable 
                      (car (value-of 'items vg)) :adv adverb)
@@ -1034,7 +1035,8 @@
             *left-edge-into-reference*)
      nil)
     ((itypep pp 'collection)
-     (lsp-break "pp collection"))
+     ;;(lsp-break "pp collection")
+     nil)
     (t
      (or (when (and np pp) (call-compose np pp))
          ;; guard against passing a null NP to call-compose
