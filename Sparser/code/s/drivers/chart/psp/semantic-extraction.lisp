@@ -22,6 +22,14 @@
 (defvar *entities* nil
   "Holds the entities for the last sentence when *readout-relations* is up")
 
+(defparameter *print-sem-tree* nil
+  "Set to T to change the structures extracted for collections, to allow psemtree to produce better output,
+without damaging other code.")
+
+(defparameter *show-words-and-polywords* nil)
+(defparameter *for-spire* nil
+  "If true, then we put category and id information into the tree explicitly, rather than putting the individual into the tree.")
+
 
 (defun identify-relations (sentence)
   ;; sweep over every treetop in the sentence and look at
@@ -148,10 +156,7 @@
   ;; This provides a minimal value for the others.
   (let ((name (and (individual-p i) (value-of 'name i))))
     (if name
-      (etypecase name
-        (string name)
-        (word (word-pname name))
-        (polyword (pw-pname name)))
+      (pname name)
       (format nil "~s" i))))
 
 
@@ -368,8 +373,8 @@
 ;;----- collect-model-description mentods
 
 (defmethod collect-model-description ((cat category))
-  (declare (special *for-spire*))
-  (if *for-spire*
+  (declare (special *for-spire* *sentence-results-stream*))
+  (if (or *for-spire* *sentence-results-stream*)
       `(category ,(cat-name cat))
       cat))
 
@@ -378,40 +383,38 @@
 
 
 (defmethod collect-model-description ((w word))
-  (declare (special *for-spire*))
-  (if *for-spire*
-      `(wd ,(word-pname w))
-      (word-pname w)))
+  (declare (special *for-spire* *sentence-results-stream*))
+  (cond (*sentence-results-stream* (pname w))
+        (*for-spire* `(wd ,(pname w)))
+        (t (pname w))))
 
 (defmethod collect-model-description ((w polyword)) ;
-  (declare (special *for-spire*))
-  (if *for-spire*
-      `(pw ,(pw-pname w))
-      (pw-pname w)))
+  (declare (special *for-spire*  *sentence-results-stream*))
+  (cond (*sentence-results-stream* (pname w))
+        (*for-spire* `(wd ,(pname w)))
+        (t (pname w))))
 
 (defmethod collect-model-description ((cal cons))
   `(collection :members 
                    (,@(loop for l in cal 
                          collect (collect-model-description l)))))
 
-(defparameter *print-sem-tree* nil
-  "Set to T to change the structures extracted for collections, to allow psemtree to produce better output,
-without damaging other code.")
 
-(defparameter *show-words-and-polywords* nil)
-(defparameter *for-spire* nil
-  "If true, then we put category and id information into the tree explicitly, rather than putting the individual into the tree.")
 (defun indiv-or-type (i)
-  (if *for-spire*
+  (declare (special *for-spire* *sentence-results-stream*))
+  (cond
+    (*sentence-results-stream*
+     `(,(cat-name (itype-of i))))
+    (*for-spire* 
       `((,(cat-name (itype-of i))
-          ,(indiv-uid i)))
-      `(,i)))
+          ,(indiv-uid i))))
+    (t `(,i))))
 
 (defmethod collect-model-description ((i individual))
-  (declare (special script category::number category::ordinal))
+  (declare (special script category::number category::ordinal *for-spire* *sentence-results-stream*))
   (cond
     ((gethash i *semtree-seen-individuals*)
-     (if *for-spire*
+     (if (or *for-spire* *sentence-results-stream*)
          (indiv-or-type i)
          (if (and (individual-p i)
                   (null (cdr (indiv-old-binds i))))
@@ -421,7 +424,7 @@ without damaging other code.")
       (itypep i category::number)
       (not (itypep i category::ordinal))
       (not *print-sem-tree*)
-      (not *for-spire*))
+      (not (or *for-spire* *sentence-results-stream*)))
      (if
       (collection-p  i)
       (value-of 'items i)
@@ -436,9 +439,9 @@ without damaging other code.")
        (append
         desc
         (loop for b in bindings 
-           unless (and (not *for-spire*)
+           unless (and (not (or *for-spire* *sentence-results-stream*))
                        (member (var-name (binding-variable b))
-                          '(members count ras2-model)))
+                               '(members count ras2-model)))
            collect
              (list (var-name (binding-variable b))
                    (collect-model-description (binding-value b)))))))
@@ -457,15 +460,19 @@ without damaging other code.")
           as restriction = (var-value-restriction var)
           as value = (binding-value b)
           do
-            (unless (or (and (not *for-spire*)
-                             (memq var-name
-                              '(trailing-parenthetical category ras2-model)))
+            (unless (or (cond (*sentence-results-stream*
+                               (or (memq var-name '(trailing-parenthetical category ras2-model))
+                                   (and
+                                    (itypep i 'determiner)
+                                    (memq var-name '(word)))))
+                              ((not *for-spire*)
+                               (memq var-name '(trailing-parenthetical category ras2-model))))
                         (typep value 'mixin-category)) ;; has-determiner
               (if (or (numberp value)(symbolp value) (stringp value))
                   (push (list var-name value) desc)
                   (typecase value
                     (individual 
-                     (if (and (not *for-spire*)
+                     (if (and (not (or *for-spire* *sentence-results-stream*))
                               (itypep value 'prepositional-phrase))
                          (push (list var-name ; 
                                      (collect-model-description
@@ -474,13 +481,18 @@ without damaging other code.")
                          (push (list var-name
                                      (collect-model-description value))
                                desc)))
-                    (word (cond (*for-spire*
-                                 (push `(,var-name (wd ,(word-pname value))) desc))
-                                (*show-words-and-polywords* (push (list var-name value) desc) )))
-                    (polyword (cond (*for-spire*
+                    ((or word polyword category)
+                     (push `(,var-name ,(collect-model-description value)) desc)
+                     #+ignore
+                     (cond ((and *for-spire* (not *sentence-results-stream*))
+                            (push `(,var-name (wd ,(word-pname value))) desc))
+                           ((or *show-words-and-polywords* *sentence-results-stream*) (push (list var-name value) desc) )))
+                    #+ignore
+                    (polyword (cond ((and *for-spire* (not *sentence-results-stream*))
                                      (push `(,var-name (pw ,(pw-pname value))) desc))
-                                    (*show-words-and-polywords*
+                                    ((or *show-words-and-polywords* *sentence-results-stream*)
                                      `(push (list var-name value) desc) )))
+                    #+ignore
                     (category
                      (push `(,var-name ,(collect-model-description value)) desc))
                     (cons
@@ -509,19 +521,21 @@ without damaging other code.")
        as var-name = (var-name var)
        as value = (binding-value b)
        as vv-pair = `(,var-name
-                      ,(if (and *for-spire* (category-p value))
+                      ,(if (and (or *for-spire* *sentence-results-stream*)
+                                (category-p value))
                            `(category ,(cat-name value))
                           value))
        do
          (unless (or (memq var-name '(trailing-parenthetical category ras2-model))
                      (typep value 'mixin-category)) ;; has-determiner
            (case var-name
-             (type (if *for-spire* (push vv-pair desc)))
-             (number (if *for-spire* (push vv-pair desc)))
+             ((type number) (if (or *for-spire* *sentence-results-stream*) (push vv-pair desc)))
+             #+ignore
+             (number (if (or *for-spire* *sentence-results-stream*) (push vv-pair desc)))
              (items
               (let ((member-descs (mapcar #'collect-model-description value)))
                 (push
-                 (if *for-spire*
+                 (if (or *for-spire* *sentence-results-stream*)
                      `(:members ,.member-descs)
                      `(,var-name (collection (:members (,@ member-descs)))))
                  desc)))
@@ -532,13 +546,13 @@ without damaging other code.")
                     (individual 
                      (push (list var-name
                                  (collect-model-description
-                                  (if (and (not *for-spire*)
+                                  (if (and (not (or *for-spire* *sentence-results-stream*))
                                            (itypep value 'prepositional-phrase))
                                       (value-of 'pobj value)
                                       value)))
                            desc))
-                    (word (when *show-words-and-polywords* (push vv-pair desc)))
-                    (polyword (when *show-words-and-polywords* (push vv-pair desc)))
+                    ((or word polyword)
+                     (when *show-words-and-polywords* (push vv-pair desc)))
                     (category
                      (push `(,var-name ,(collect-model-description value)) desc))
                     (cons (lsp-break "how did we get a CONS ~s as a value for variable ~s~%"
