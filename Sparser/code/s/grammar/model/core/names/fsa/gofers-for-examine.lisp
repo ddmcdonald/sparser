@@ -1,8 +1,8 @@
-;;; Copyright (c) 2013-2015 David D. McDonald all rights reserved
+;;; Copyright (c) 2013-2016 David D. McDonald all rights reserved
 ;;;
 ;;;      File: "gofers-for-examine"
 ;;;    Module: model/core/names/fsa/
-;;;   Version: October 2015
+;;;   Version: October 2016
 
 ;; Initiated 3/28/13 by pulling out the odd tests and checks 
 ;; from examine. 
@@ -242,18 +242,22 @@
   (let ((just-countries t)
         label )
     (dolist (tt items)
-      (setq label (edge-category tt))
-      (cond
-       ((eq label category::country))
-       ((eq label word::hyphen))
-       ;((or (eq label category::digest-kind) ;;//// language of newspapers
-       ; (setq just-countries nil))
-       (t
-        (push-debug `(,label ,tt ,items))
- ;       (break "Continue unless these are just country stuff:~%~a~%~a"
- ;              (words-between start-pos end-pos) items)
-        (setq just-countries nil))))
-    just-countries))
+      (when (edge-p tt)
+        ;; FIXME -- comes from bad list passed in by examine-capitalized-sequence
+        ;; on "South Korea and Japan" when something is screwed up with the PW
+        ;; handling in the larger sentence it is part of.
+        (setq label (edge-category tt))
+        (cond
+          ((eq label category::country))
+          ((eq label word::hyphen))
+          ;;((or (eq label category::digest-kind) ;;//// language of newspapers
+          ;; (setq just-countries nil))
+          (t
+           (push-debug `(,label ,tt ,items))
+;;       (break "Continue unless these are just country stuff:~%~a~%~a"
+;;              (words-between start-pos end-pos) items)
+           (setq just-countries nil))))
+      just-countries)))
 
 
 
