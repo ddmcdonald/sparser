@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1997,2010-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1997,2010-2013,2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "scan"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  3.2 April 2013
+;;;  Version:  October 2016
 
 ;; initiated 4/23/93 v2.3
 ;; putting in fsas 5/7
@@ -193,8 +193,12 @@
             (adjudicate-result-of-word-fsa
              word position-before position-reached)
             (check-for/initiate-scan-patterns word position-before)))
-        (check-for/initiate-scan-patterns word position-before)))
-    (check-for/initiate-scan-patterns word position-before)))
+        (else
+          (tr :pw-word-does-not-initiate-polywords word)
+          (check-for/initiate-scan-patterns word position-before))))
+    (else
+      (tr :pw-no-rule-set-on word)
+      (check-for/initiate-scan-patterns word position-before))))
 
 
 (defun check-for/initiate-scan-patterns (word position-before)

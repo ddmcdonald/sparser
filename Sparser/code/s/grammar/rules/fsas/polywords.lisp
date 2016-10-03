@@ -33,6 +33,7 @@ drivers/chart/psp/scan3.lisp:               (do-polyword-fsa word pw-cfr positio
 grammar/rules/FSAs/polywords4.lisp:  (defun do-polyword-fsa (word cfr position-scanned)
 |#
 
+;; (trace-fsas)
 
 (defun do-polyword-fsa (first-word initial-state position-before)
   ;; Some polyword starts at this position. 

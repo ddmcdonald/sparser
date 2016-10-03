@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992,1993.1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "FSA"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  1.1 July 1994
+;;;  Version:  October 2016
 
 ;; initiated November 1990
 ;; 0.1  (2/15/91 v1.8.1)  Changed *trace-pw-buffer* to *trace-next-terminal*
@@ -33,7 +33,18 @@
 ;;; polywords
 ;;;-----------
 
+(deftrace :pw-word-does-not-initiate-polywords (word)
+  ;; called from check-for-polywords
+  (when *trace-fsas*
+    (trace-msg "[pw] ~s does not start any polywords" (pname word))))
+
+(deftrace :pw-no-rule-set-on (word)
+  ;; called from check-for-polywords
+  (when *trace-fsas*
+    (trace-msg "[pw] no rule set on ~s" (pname word))))
+
 (deftrace :polyword-start (word position-scanned)
+  ;; in do-polyword-fsa
   (when *trace-fsas*
     (trace-msg "[pw] Looking for polywords starting with ~A at p~A"
                word (pos-token-index position-scanned))))
