@@ -252,7 +252,7 @@
                  (includes-pw-start-state fsa-field))))))
     (let ((rules-field (word-rules word)))
       (or (polyword-fsa rules-field)
-          (let ((caps-word (capitalized-correspondent word position-before)))
+          (let ((caps-word (capitalized-correspondent1 position-before word)))
             (when caps-word
               (let ((caps-rules-field (word-rules caps-word)))
                 (polyword-fsa caps-rules-field))))))))
