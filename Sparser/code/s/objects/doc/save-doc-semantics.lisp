@@ -140,11 +140,11 @@
 
 (defmethod write-sem ((s sentence) stream)
   (setq ddm-util::*indentation* 0) ;; make sure indentation is restarted
-  (emit-list-start "interpretation" stream)
+  (start-cat "interpretation" stream)
   (loop for tt in (all-tts (starts-at-pos s)(ends-at-pos s))
      do
        (push-indentation)
-       (emit-list-start "element" stream)
+       (start-var "element" stream)
        (if (and (edge-p tt)
                 (not (small-binding-list (edge-referent tt))))
            (push-indentation))
@@ -152,29 +152,29 @@
                       (edge-referent tt)
                       tt)
                   stream)
-       (emit-line-continue stream ")")
+       (finish-var stream)
        (if (and (edge-p tt)
                 (not (small-binding-list (edge-referent tt))))
            (pop-indentation))
        (pop-indentation))
-  (emit-line-continue stream ")"))
+  (finish-cat stream))
 
 
 (defmethod write-sem ((i individual) stream)
   (cond ((simple-number? i)
          (space-prin1 (value-of 'value i) stream))
-        ((small-binding-list (indiv-old-binds i))
-         (emit-list-start-continue (cat-string (car (indiv-type i))) stream)
+        ((small-binding-list i)
+         (start-cat i stream nil)
          (let ((bl (filter-bl (indiv-old-binds i))))
            (when bl
-             (emit-list-start-continue (string-downcase (var-name (binding-variable (car bl)))) stream)
+             (start-var (binding-variable (car bl)) stream nil)
              (write-sem (binding-value (car bl)) stream)
-             (emit-line-continue stream ")")))
-         (emit-line-continue stream ")"))
+             (finish-var stream)))
+         (finish-cat stream))
         (t
-         (emit-list-start (cat-string (car (indiv-type i))) stream)
+         (start-cat i stream)
          (print-binding-list (indiv-old-binds i) stream)
-         (emit-line-continue stream ")"))))
+         (finish-cat stream))))
 
 (defmethod write-sem ((w string) stream)
   (space-prin1 (pname w) stream))
@@ -187,15 +187,75 @@
 (defmethod write-sem ((w number) stream)
   (lcase-space-prin1 w stream))
 (defmethod write-sem ((val cons) stream)
-  (emit-list-start "" stream)
+  (start-cat "set" stream)
   (loop for element in val
      do
        (write-sem element stream))
-  (format stream ")"))
-
+  (finish-cat stream))
 
 (defmethod write-sem ((c referential-category) stream)
   (lcase-space-prin1 (cat-symbol c) stream))
+
+
+(defun print-binding-list (bindings stream)
+  (push-indentation)
+  (loop for binding in (filter-bl bindings)
+     as var = (binding-variable binding)
+     do
+       (start-var var stream)
+       (if (small-binding-list (binding-value binding))
+           (write-sem (binding-value binding) stream)
+           (else
+             (push-indentation)
+             (write-sem (binding-value binding) stream)
+             (pop-indentation)))
+       (finish-var stream))
+  (pop-indentation))
+
+(defparameter *use-xml* nil)
+
+(defmethod start-cat ((item symbol) stream &optional (newline t))
+  (start-cat (pname item) stream newline))
+
+(defmethod start-cat ((item referential-category) stream &optional (newline t))
+  (start-cat (cat-symbol item) stream newline))
+
+(defmethod start-cat ((item individual) stream &optional (newline t))
+  (start-cat (itype-of item) stream newline))
+
+(defmethod start-cat ((item string) stream &optional (newline t))
+  (let* ((item (string-downcase item))
+         (start (if *use-xml*
+                    (concatenate 'string "<cat-ref name=\"" item "\">")
+                    (concatenate 'string "(" item))))
+    (if newline
+        (emit-line stream start)
+        (emit-line-continue stream (concatenate 'string " " start)))))
+
+(defmethod start-var ((item lambda-variable) stream &optional (newline t))
+  (start-var (pname item) stream newline))
+
+(defmethod start-var ((item symbol) stream &optional (newline t))
+  (start-var (pname item) stream newline))
+
+(defmethod start-var ((item string) stream &optional (newline t))
+  (let* ((item (string-downcase item))
+         (start (if *use-xml*
+                    (concatenate 'string "<var name=\"" item "\">")
+                    (concatenate 'string "(" item))))
+    (if newline
+        (emit-line stream start)
+        (emit-line-continue stream (concatenate 'string " " start)))))
+
+(defun finish-cat (stream &optional (newline t))
+  (if *use-xml*
+      (emit-line-continue stream "</ref-cat>")
+      (emit-line-continue stream ")")))
+
+(defun finish-var (stream &optional (newline t))
+  (if *use-xml*
+      (emit-line-continue stream "</var>")
+      (emit-line-continue stream ")")))
 
 (defmethod small-binding-list ((bl symbol)) (null bl))
 (defmethod small-binding-list ((x word)) t)
@@ -212,12 +272,12 @@
            (t nil)))))
 
 (defmethod small-binding-list ((i individual))
-  (let ((bl (indiv-binds i)))
+  (let ((bl (filter-bl (indiv-binds i))))
     (and (null (cdr bl))
-         (binding-p (car bl))
-         (typecase (binding-value (car bl))
-           ((or category string number symbol word polyword) t)
-           (t nil)))))
+         (or (not (binding-p (car bl)))
+             (typecase (binding-value (car bl))
+               ((or category string number symbol word polyword) t)
+               (t nil))))))
 
 (defun filter-bl (bl)
   (loop for b in bl
@@ -229,20 +289,8 @@
   (and (binding-p b)
        (not (member (var-name (binding-variable b)) '(ras2-model has-determiner)))))
 
-(defun print-binding-list (bindings stream)
-  (push-indentation)
-  (loop for binding in (filter-bl bindings)
-     as var = (binding-variable binding)
-     do
-       (emit-list-start (string-downcase (var-name var)) stream)
-       (if (small-binding-list (binding-value binding))
-           (write-sem (binding-value binding) stream)
-           (else
-             (push-indentation)
-             (write-sem (binding-value binding) stream)
-             (pop-indentation)))
-       (format stream ")"))
-  (pop-indentation))
+
+;;;;;;;;;;;;;;
       
 
 (defmethod print-sem-tree ((i individual) &optional stream)
@@ -287,12 +335,7 @@
 (defun lcase-space-prin1 (s stream)
   (format stream  " ~a" (string-downcase (format nil "~s" s))))
 
-(defun emit-list-start (item stream)
-  (emit-line stream (concatenate 'string "(" item)))
 
-
-(defun emit-list-start-continue (item stream)
-  (emit-line-continue stream (concatenate 'string " (" item)))
 
 (defun space-prin1 (item stream)
   (format stream " ~s" item))
@@ -324,15 +367,21 @@
            (lcase-space-prin1 item stream)))
   (pop-indentation))
 
-(defun cat-string (cat? &optional with-name)
-  (cond ((individual-p cat?)
-         (let* ((cat-str (string-downcase (cat-symbol (itype-of cat?))))
-                (name (when with-name (value-of 'name cat?))))
-           (if name
-               (format nil "<~a ~a>" cat-str (pname name))
-               cat-str)))
-	((category-p cat?)
-	 (string-downcase (cat-symbol cat?)))
-	((symbolp cat?) (string-downcase cat?))
-        ((consp cat?) (cat-string (car cat?)))
-	(t cat?)))
+(defmethod cat-string ((cat individual) &optional with-name)
+  (let* ((cat-str (string-downcase (cat-symbol (itype-of cat))))
+         (name (when with-name (value-of 'name cat))))
+    (if name
+        (format nil "<~a ~a>" cat-str (pname name))
+        cat-str)))
+
+(defmethod cat-string ((cat referential-category) &optional with-name)
+  (string-downcase (cat-symbol cat)))
+
+(defmethod cat-string ((cat symbol) &optional with-name)
+  (string-downcase cat))
+
+(defmethod cat-string ((cat cons) &optional with-name)
+  (cat-string (car cat)))
+
+(defmethod cat-string (cat  &optional with-name)
+  cat)
