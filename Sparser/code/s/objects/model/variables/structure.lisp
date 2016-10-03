@@ -52,3 +52,6 @@
             (:print-function print-anonymous-variable-structure))
   name
   )
+
+(defmethod pname ((lv lambda-variable))
+  (var-name lv))
