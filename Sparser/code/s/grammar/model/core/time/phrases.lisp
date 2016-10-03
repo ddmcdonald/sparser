@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "phrases"
 ;;;   Module:  "model;core:time:"
-;;;  version:  3.0 May 2013
+;;;  version:  October 2016
 
 ;; initiated 4/9 v1.8.2
 ;; 1.0 (12/15/92 v2.3) bumped version to prepare for new semantics
@@ -36,7 +35,8 @@
                            (preposition . ("at" "by" "for" "in" "on"
                                            "over")) 
                            (complement . (time-unit numeric-time amount-of-time ;month weekday
-                                          year time date))))))
+                                          year time date
+                                          day-of-the-month month-of-the-year))))))
                            
 
 
