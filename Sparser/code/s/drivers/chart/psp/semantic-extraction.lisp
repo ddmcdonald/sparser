@@ -482,18 +482,6 @@ without damaging other code.")
                                      (collect-model-description value))
                                desc)))
                     ((or word polyword category)
-                     (push `(,var-name ,(collect-model-description value)) desc)
-                     #+ignore
-                     (cond ((and *for-spire* (not *sentence-results-stream*))
-                            (push `(,var-name (wd ,(word-pname value))) desc))
-                           ((or *show-words-and-polywords* *sentence-results-stream*) (push (list var-name value) desc) )))
-                    #+ignore
-                    (polyword (cond ((and *for-spire* (not *sentence-results-stream*))
-                                     (push `(,var-name (pw ,(pw-pname value))) desc))
-                                    ((or *show-words-and-polywords* *sentence-results-stream*)
-                                     `(push (list var-name value) desc) )))
-                    #+ignore
-                    (category
                      (push `(,var-name ,(collect-model-description value)) desc))
                     (cons
                      (unless (equal restriction '(:primitive list))
