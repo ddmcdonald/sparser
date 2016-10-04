@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "switches"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  July 2016
+;;;  Version:  October 2016
 
 ;; 1.1 (2/6/92 v2.2) changed the allowed values for unknown-words
 ;;     (2/7) Added *switch-setting* and *track-salient-objects*
@@ -82,6 +82,7 @@
 ;;   efort to make it work
 
 (in-package :sparser)
+
 (defvar *PNF-ROUTINE*)
 (defvar *TREAT-SINGLE-CAPITALIZED-WORDS-AS-NAMES*)
 (defvar *CHARACTER-TRANSLATION-PROTOCOL*)
@@ -406,6 +407,7 @@
   ;;   /// arc-matches-tt? needs to adjust the next tt
   (setq *peek-rightward* t) ;; see drivers/chart/psp/tuck-right.lisp
   (period-hook-on)
+  (setq *ignore-capitalization* t) ;; PNF is interferring with polywords
   (designate-sentence-container :simple)
   (setq *switch-setting* :strider))
 
