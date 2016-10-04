@@ -98,10 +98,14 @@
       ;; new edge ends.
       (introduce-inter-segment-boundary end-at-end edge-end))
 
-    (when end-at-end
+    ;; 10.4/16 the dash in this text is marked as introducing brackets
+    ;; and we hit several of these (now commented out) stubs.
+    ;; Running in fire.
+#|North Korea claimed on Thursday to have conducted a successful test-firing of a intermediate-range missile -- an apparent reference to a missile that the South Korean military said was fired into the sea one day earlier. |#
+    #+ignore(when end-at-end
       (break "Stub: end-at-end"))
       
-    (when start-at-start
+    #+ignore(when start-at-start
       (when start-at-end
         (break "Stub: start-at-start, but also start-at-end"))
       (when start-at-end
@@ -111,7 +115,7 @@
       ;; this edge and start where it starts.
       (introduce-inter-segment-boundary start-at-start edge-start))
 
-    (when end-at-start
+    #+ignore(when end-at-start
       (unless start-at-start
         (break "Stub: end-at-start, but no start-at-start"))
       
