@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2016
+;;;  Version:  October 2016
 
 ;; initiated 10/25/92 w/ mixin.  Given some content 5/17/95.  Added np cases
 ;; 4/1/05. Added common-noun 4/12/09. 10/14/12 Removed the 'that' rules 
@@ -92,7 +92,8 @@
 ;;; form rules
 ;;;------------
 
-(when (current-script :fire)
+(when (or (current-script :fire)
+          (current-script :grok))
   ;; And also several others, such as default and maybe grok.
   ;; These configurations do not use syntactic rules except under
   ;; very controlled circumstances so these explicit rules
