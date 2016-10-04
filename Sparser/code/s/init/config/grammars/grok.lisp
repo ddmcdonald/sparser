@@ -173,6 +173,7 @@
 
 (include-grammar-module  *pronoun-objects*)
 (include-grammar-module  *resolve-pronouns*)
+(include-grammar-module  *incrementally-resolve-pronouns*)
 (include-grammar-module  *topic*)
 
 (include-grammar-module  *ha*)

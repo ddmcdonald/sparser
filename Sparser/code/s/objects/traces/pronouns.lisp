@@ -177,3 +177,9 @@
     (trace-msg "  Replacing the label of e~a with ~a~
              ~%    and its referent with ~a"
                 (edge-position-in-resource-array e) caategory referent)))
+
+(deftrace :respan-no-people-in-dn (pn-edge)
+  (when *tracing-pronouns*
+    (trace-msg "%No 'people' in the discourse history.~
+              ~%Looking for names and taking the most recent ~
+                for ~a" pn-edge)))

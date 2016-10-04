@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar modules"
 ;;;    Module:  "init;loaders;"
-;;;   version:  July 2016
+;;;   version:  October 2016
 
 ;; 12/4/92 pulled word options made irrelevant in master-loader
 ;; 5/11/93 added refinements in words and syntax
@@ -539,6 +539,10 @@
 
 (define-grammar-module  *resolve-pronouns*
                         :name "resolve pronouns"
+                        :parent *other* )
+
+(define-grammar-module  *incrementally-resolve-pronouns*
+                        :name "incrementally resolve pronouns"
                         :parent *other* )
 
 

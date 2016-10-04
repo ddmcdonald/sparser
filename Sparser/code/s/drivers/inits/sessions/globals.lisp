@@ -119,7 +119,8 @@
 (defparameter *ignore-capitalization* nil
   "A parameter to be used in document styles that controls what
    value *capitalization-is-uninformative* should have in runs of
-   documents with that style.")
+   documents with that style. In an incremental scan it gates
+   whether or not we call PNF to identify proper names.")
 
 (defparameter *do-forest-level* t
   "Set as part of the switch settings, read by Move-to-forest-level
