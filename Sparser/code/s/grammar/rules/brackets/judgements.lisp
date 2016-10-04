@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "judgements"
 ;;;   Module:  "grammar;rules:brackets:"
-;;;  Version:  April 2016
+;;;  Version:  October 2016
 
 ;; initiated 6/14/93 v2.3
 ;; but giving them a lot more power to make decisions
@@ -62,7 +62,7 @@
 ;;; debugging flag
 ;;;----------------
 
-(defparameter *break-on-new-bracket-situations* t
+(defparameter *break-on-new-bracket-situations* nil
   "If this flag is up, we break on new cases, otherwise we return
    what seems like the least-harmful option.")
 
@@ -468,7 +468,9 @@
                ((eq (pos-capitalization position) :digits) ;; it's a number
                 nil)
                ((= 0 word-count) nil) ;; something should follow this adjective
-               (t (break  "new case of adjective after np-start"))))
+               (t (when *break-on-new-bracket-situations*
+                    (break  "new case of adjective after np-start"))
+                  nil)))
              ((segment-started-as-vg?)
               t)
              ((eq bracket-opening-segment punctuation.[)
