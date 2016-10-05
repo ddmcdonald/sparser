@@ -473,16 +473,19 @@
   ;; endurant we can bind. Going forward we should automatically
   ;; make a composite individual using a collection.
   ;; See notes on forming plurals in morphology1
-  (setq head (individual-for-ref head))
-  (when (itypep head category::endurant) ;; J34: "Histone 2B"
-    ;;    ~600 kinase
-    (setf (non-dli-mod-for head) (list 'number number))
-    ;;(setq  head (bind-dli-variable 'number number head))
-    )
-    (when
-      (and *determiners-in-DL* (or (individual-p head)(category-p head)))
-    (setq head (bind-dli-variable 'number number head)))
-  head)
+  (cond
+    (*subcat-test* (and number head))
+    (t
+     (setq head (individual-for-ref head))
+     (when (itypep head category::endurant) ;; J34: "Histone 2B"
+       ;;    ~600 kinase
+       (setf (non-dli-mod-for head) (list 'number number))
+       ;;(setq  head (bind-dli-variable 'number number head))
+       )
+     (when (and *determiners-in-DL*
+                (or (individual-p head )(category-p head)))
+       (setq head (bind-dli-variable 'number number head)))
+     head)))
 
 
 (defun verb+ing-noun-compound (qualifier head)
