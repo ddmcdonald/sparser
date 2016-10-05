@@ -1,17 +1,23 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013 SIFT LLC  -- all rights reserved
+;;; copyright (c) 2013,2016 SIFT LLC  -- all rights reserved
 ;;;
 ;;;     File:  "Strider"
 ;;;   Module:  "init;workspaces:"
-;;;  version:  October 2012
+;;;  version:  October 2016
 
 ;; Initiated 5/7/13. Adding or rearranging bits through 9/16/13
-
-;;  (load "/Users/ddm/sparser/load-nlp.lisp")
 
 (in-package :sparser)
 
 ;; (strider-setting) ;; adds (setq *do-debris-analysis* t)
+
+(defun read-ose-file (number)
+  (let ((filename (string-append "/Users/ddm/sift/nlp/corpus/Strider/"
+                                 "OSE/ose-" number ".txt")))
+    (f filename)))
+
+
+;------------------------- original items (May-September 2013) -------------
 
 ;; For testing the containers. 
 ;(p "Martyr Mostafa Ahmadi-Rowshan was a graduate of Sharif University and the deputy director of Natanz nuclear site in charge of commercial affairs. He was martyred in Golnabi Street in front of the Faculty of Communications of Allameh Tabataba'i University at 8.19 on 21 Dey of the year 90 [ 10 January 2010]. ")
