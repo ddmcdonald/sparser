@@ -17,19 +17,21 @@
 
 (defparameter *sentence-results-stream* nil)
 
+(defparameter *use-xml* nil
+  "produces XML output for the article")
 
 (defparameter *default-article-semantics-path*
   (when (find-package :r3)
     (probe-file (asdf:system-relative-pathname :r3 "../corpus/Articles_for_CURE/"))))
 
-
-
-(defun save-article-semantics (&optional
+(defun save-article-semantics (&optional                                 
+                                 (write-xml-file? *use-xml*)
                                  (dir
                                   (or *default-article-semantics-path*
                                       (when (find-package :r3)
                                         (probe-file (asdf:system-relative-pathname
                                                      :r3 "../corpus/Articles_for_CURE/"))))))
+  (setq *use-xml* write-xml-file?)
   (setq *article-semantics-directory* dir))
 
 (defun dont-save-article-semantics ()
@@ -47,7 +49,11 @@
               (open file-path
                     :direction :output
                     :if-exists :overwrite
-                    :if-does-not-exist :create)))))
+                    :if-does-not-exist :create))
+        (if *use-xml*
+            (format *sentence-results-stream*
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+            ))))
 
 
 (defun close-article-semantic-file-if-needed (article)
@@ -58,7 +64,9 @@
 
 (defun make-semantics-filename (article)
   (merge-pathnames  *article-semantics-directory*
-                    (format nil "~a-semantics.lisp" (name article))))
+                    (if *use-xml*
+                        (format nil "~a-semantics.xml" (name article))
+                        (format nil "~a-semantics.lisp" (name article)))))
 
 
 (defparameter *one-expression-per-sentence* t)
@@ -91,7 +99,8 @@
                      ;; need to look at conjunction distribution
                      edge)))
 	 (declare (special ref *no-edge-info* *suppress-indiv-uids*))
-         (format stream "~% --- ~s~%"
+
+         (format stream "~%--- ~s~%"
                  (if (edge-p edge)
                      (extract-string-spanned-by-edge edge)
                      edge))         
@@ -113,8 +122,13 @@
 (defmethod write-combined-sentence-results ((s sentence) stream)
   (declare (special *show-syn-tree*))
   ;; we assume that this is called immediately after the sentence is parsed
-  (format stream "~%___________________~% ~s~%~%"
-          (sentence-string s))
+  (cond (*use-xml*
+         (format stream "~%<sentence-text>")
+         (xmls::write-escaped (sentence-string s) stream)
+         (format stream "</sentence-text>~%"))
+        (t         
+         (format stream "~%;;;___________________~%(sentence-text ~s)%~%"
+                 (sentence-string s))))
   (if *direct-from-sem*
       (write-sem s stream)
       (write-sem-tree
@@ -130,11 +144,12 @@
                              (edge-mention edge)))
                    (ref (if mention
                             (base-description (edge-mention edge))
-                            edge)))            (declare (special ref *no-edge-info* *suppress-indiv-uids*))
-                            `(element
-                              ,(if (word-p ref)
-                                   `(wd ,(pname ref))
-                                   (spire-tree ref))))))
+                            edge)))
+                (declare (special ref *no-edge-info* *suppress-indiv-uids*))
+                `(element
+                  ,(if (word-p ref)
+                       `(wd ,(pname ref))
+                       (spire-tree ref))))))
        stream))
   (terpri stream))
 
@@ -212,7 +227,7 @@
        (finish-var stream))
   (pop-indentation))
 
-(defparameter *use-xml* nil)
+
 
 (defmethod start-cat ((item symbol) stream &optional (newline t))
   (start-cat (pname item) stream newline))
