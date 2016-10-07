@@ -138,7 +138,7 @@
             (if *edge-for-unknown-words*
                 (setup-verb word)
                 (assign-brackets-as-a-main-verb word)))))))))
-
+(defparameter *announce-bad-affixes* nil)
     
 (defun sanity-check-word-formation (word lemma type)
   "The rules for forming +ing and +ed verb forms from a lemma
@@ -155,7 +155,8 @@
            (bad-rs (rule-set-for bad-word))
            (bad-rule (car (rs-single-term-rewrites bad-rs)))
            (new-rs (establish-rule-set-for word)))
-      (format t "~&Bad ~a form: ~a~%" type bad-word)
+      (when *announce-bad-affixes*
+        (format t "~&Bad ~a form: ~a~%" type bad-word))
       (let ((new-rule (construct-cfr ;; as basic as possible
                        (cfr-category bad-rule)
                        (list word)
@@ -163,7 +164,8 @@
                        (cfr-referent bad-rule)
                        :def-cfr ;; well sort of
                        (cfr-schema bad-rule))))
-        (format t "~&New rule: ~a~%" new-rule)
+        (when *announce-bad-affixes*
+          (format t "~&New rule: ~a~%" new-rule))
 
         (setf (rs-single-term-rewrites new-rs) (list new-rule))
         (setf (rs-phrase-boundary new-rs) (rs-phrase-boundary bad-rs))))))
