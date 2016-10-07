@@ -426,12 +426,13 @@
 
 (defun display-categories-below (&key (top (category-named 'top))
                                    (depth -1) (max-width 10)
+                                   (with-parens t)
                                    (stream *standard-output*))
   (clrhash *category-was-displayed*)
   (initialize-indentation)
   (when (and top (symbolp top))
     (setq top (category-named top)))
-  (display-with-subcs top stream depth  max-width)
+  (display-with-subcs top stream depth  max-width with-parens)
   (when (and (eq top (category-named 'top))(= depth -1))
     (let* ((remaining (loop for c in *categories-defined*
                         unless (gethash c *category-was-displayed*)
@@ -443,24 +444,34 @@
       (format t "~&~%~a remaining, ~a without a supercategory~%~%~%"
               (length remaining) (length remaining-without-supercs))
       (dolist (c remaining-without-supercs)
-        (unless (gethash c *category-was-displayed*)
+        (unless (or
+                 (gethash c *category-was-displayed*)
+                 (or
+                  (form-category? c)
+                  (member (get-tag :source c) '(:comlex :morphology))))
           (initialize-indentation)
-          (display-with-subcs c stream depth max-width))))))
+          (display-with-subcs c stream depth max-width with-parens))))))
 
 
-(defun display-with-subcs (category stream &optional (depth -1)(max-width 10))
+(defun display-with-subcs (category stream &optional (depth -1)(max-width 10)(with-parens t))
   (unless (= depth 0)
-    (emit-line stream "~a" (cat-symbol category))
+    (emit-line stream (format nil "~a~a"
+                              (if with-parens "(" "")
+                              (cat-symbol category)))
     (setf (gethash category *category-was-displayed*) t)
     (push-indentation)
-    (unless (form-category? category)
+    (unless (or
+             (form-category? category)
+             (member (get-tag :source category) '(:comlex :morphology)))
       (loop for subc in (subcategories-of category)
-           as i from 0 to max-width
+         as i from 0 to max-width
          do
            (if (eq i max-width)
-               (emit-line stream "...")
+               (then (emit-line stream ";;...") (terpri stream))
                (display-with-subcs subc stream (- depth 1) max-width))))
-    (pop-indentation)))
+    (pop-indentation)
+    (if with-parens (format stream ")"))
+    ))
 
 (defun tree-below (category &optional (depth -1))
   (clrhash *category-was-displayed*)
