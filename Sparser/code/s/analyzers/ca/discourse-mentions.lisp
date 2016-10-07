@@ -263,10 +263,11 @@
 (defun update-mention-referent (mention referent &optional dont-check-inconsistent)
   (let ((*dont-check-inconsistent-mentions* dont-check-inconsistent))
     (declare (special *dont-check-inconsistent-mentions*))
-    (setf (base-description mention) referent)
-    (push mention (mention-history referent)) ;;calls check-consistent-mention
-    ;; just returning this to help understand traces
-    (list mention referent)))
+    (when mention
+      (setf (base-description mention) referent)
+      (push mention (mention-history referent)) ;;calls check-consistent-mention
+      ;; just returning this to help understand traces
+      (list mention referent))))
 
 (defun create-discourse-mention (i source)
   "Individuals reside in a description lattice. Every new
