@@ -40,6 +40,9 @@
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
 
+;; from CURE and TRIPS
+
+
 ;; from comments
 (define-protein "FZD8_HUMAN" ("Fzd8" "FZD8"))
 (define-protein "KAD1_HUMAN" ("adenylate kinase 1" "AK1"))
@@ -2026,7 +2029,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "PLEK2_HUMAN" ("PLEK2")) 
 (define-protein "PLIN2_HUMAN" ("adrp" "Perilipin-2" "Adipophilin" "Adipose differentiation-related protein" "ADRP")) 
 (define-protein "PLIN3_HUMAN" ("TIP47" "M6PRBP1" "PP17" "PLIN3")) 
-(define-protein "PLK1_HUMAN" ("plks" "Serine/threonine-protein kinase PLK1" "Polo-like kinase 1" "PLK-1" "Serine/threonine-protein kinase 13" "STPK13")) 
+(define-protein "PLK1_HUMAN" ("plk1" "plks" "Serine/threonine-protein kinase PLK1" "Polo-like kinase 1" "PLK-1" "Serine/threonine-protein kinase 13" "STPK13")) 
 (define-protein "PLK2_HUMAN" ("miR-126" "Serine/threonine-protein kinase PLK2" "Polo-like kinase 2" "PLK-2" "hPlk2" "Serine/threonine-protein kinase SNK" "hSNK" "Serum-inducible kinase")) 
 (define-protein "PLK4_HUMAN" ("HCT116" "Serine/threonine-protein kinase PLK4" "Polo-like kinase 4" "PLK-4" "Serine/threonine-protein kinase 18" "Serine/threonine-protein kinase Sak")) 
 (define-protein "PLLP_HUMAN" ("PMLP" "PLLP" "TM4SF11")) 
