@@ -113,9 +113,10 @@ where it regulates gene expression.")
                    (sentence-string *sentence-in-core*)))
     (return-from interpret-in-context nil))
   (let* ((mention (dt-mention dt))
-         (base (base-description mention))
+         (base (when mention (base-description mention)))
          (bindings (dt-bindings dt)))
     (declare (special mention base bindings))
+    (when mention
     (typecase mention
       (discourse-mention       
        (cond
@@ -144,7 +145,7 @@ where it regulates gene expression.")
           (setf (contextual-description mention) 
                 (reinterp-item-using-bindings dt var containing-mentions))
           (expand-interpretation-in-context-if-needed dt var containing-mentions))))
-      (t (break "~&***what sort of dt is ~s~&" dt)))))
+      (t (break "~&***what sort of dt is ~s~&" dt))))))
 
 
 (defparameter *work-on-di-pronouns* nil)
