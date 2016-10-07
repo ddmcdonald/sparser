@@ -124,7 +124,10 @@
   ;; we assume that this is called immediately after the sentence is parsed
   (cond (*use-xml*
          (format stream "~%<sentence-text>")
-         (xmls::write-escaped (sentence-string s) stream)
+         (if
+          (find-package :xmls)
+          (funcall (intern "WRITE-ESCAPED" (find-package :xmls)) (sentence-string s) stream)
+          (write (sentence-string s) stream))
          (format stream "</sentence-text>~%"))
         (t         
          (format stream "~%;;;___________________~%(sentence-text ~s)%~%"
