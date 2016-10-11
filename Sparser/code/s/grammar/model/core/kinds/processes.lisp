@@ -41,7 +41,7 @@
           ;; interpret-adverb+verb needs to be improved to diagnose the
           ;; type of adverb but until then, we need to have this variable
           ;; or something equivalent
-          ;;(adverb) inherited from relation
+          (adverb)
 
           (occurs-at-moment) ;; future, past
           (modal)
