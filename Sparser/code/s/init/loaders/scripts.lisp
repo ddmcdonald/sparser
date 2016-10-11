@@ -105,6 +105,8 @@ in conjunction with an early version of Hark. Notable for using the
 (defscript blocks-world ()
   "Blocks-world configuration for CwC project."
   (:script-variable *CwC* "Communicating with Computers.")
+  (:parameters
+   (*description-lattice* t))
   (:grammar-configuration "blocks-world")
   (:switches blocks-world-setting))
 
@@ -131,7 +133,7 @@ It is essentially GROK going forward."
 (defscript grok ()
   (:grammar-configuration "grok")
   (:interfering-rules ((comma-number ("," number))))
-  (:switches grok-setting))
+  (:switches strider-setting))
 
 (defscript just-dm&p ()
   "Domain Modeling & Population."
