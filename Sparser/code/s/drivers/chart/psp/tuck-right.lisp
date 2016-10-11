@@ -39,7 +39,7 @@ post-segment processing happens.
   ;; rulled out :null-span and :one-edge-over-entire-segment before
   ;; calling this. 
   ;; Presently handles just one case that's surprizingly frequent
-  (declare (special *left-segment-boundary *right-segment-boundary*))
+  (declare (special *left-segment-boundary* *right-segment-boundary*))
   (case coverage
     (:discontinuous-edges) ;; unlikely we can do anything
     (:some-adjacent-edges) 
@@ -54,7 +54,7 @@ post-segment processing happens.
        ;; information about multiple initial edges
        (when right-edge
          (when (eq right-edge :multiple-initial-edges)
-           (push-debug `(,*left-segment-boundary ,*right-segment-boundary*))
+           (push-debug `(,*left-segment-boundary* ,*right-segment-boundary*))
            (break "Have to rewrite peek-rightward to accommodate ~
                    multiple initial edges on the right end."))
          (let ((adjacent-edge (edge-just-to-left-of right-edge)))
