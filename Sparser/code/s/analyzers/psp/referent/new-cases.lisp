@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "new cases"
 ;;;    Module:  "analyzers;psp:referent:"
-;;;   Version:  3.2 April 2015
+;;;   Version:  October 2016
 
 ;; broken out from cases 8/24/93 v2.3.  (3/10/94) fixed typo. Added error
 ;; msg to Ref/head 6/14.  (7/15) patched in mixin-category  (7/19) rearranged
@@ -76,38 +76,33 @@
     ;  (setq head (cr-head head)))
 
     (tr :annotating-ref/head head)
-    (typecase head
-      ((or psi individual)
+    (etypecase head
+      (individual
        (if called-from-unary-rule?
          (let ((*referent* head))
            (annotate-individual head :unary-rule))
          (annotate-individual head :globals-bound)))
 
-      ;(composite-referent
-      ; (annotate-composite head))
+      ;;(composite-referent
+      ;; (annotate-composite head))
 
       (referential-category
-       ;;////  do we -always- convert to individuals?
        (setq head
-             (if *do-not-use-psi*
-               (then
-                ;; We have no information about this individual,
-                ;; and individuating it for find will usually require
-                ;; information that would be provided by a binding
-                ;; (and done as :instantiate-individual-with-binding).
-                ;; So we just make an unindexed individual and punt
-                ;; the identity question.
-                (let ((i (individual-for-ref head))
-                      ;; make-category-indexed-individual is another option
-                      ;; or define something new.
-                      (lp (cat-lattice-position head)))
-                  (annotate-realization/base-case lp i)
-                  i))
-               (else ;; psi case
-                ;; annotation is folded into the find-or-make
-                (find-or-make-psi-for-base-category head))))
+             ;; We have no information about this individual,
+             ;; and individuating it for find will usually require
+             ;; information that would be provided by a binding
+             ;; (and done as :instantiate-individual-with-binding).
+             ;; So we just make an unindexed individual and punt
+             ;; the identity question.
+             (let ((i (individual-for-ref head))
+                   ;; make-category-indexed-individual is another option
+                   ;; or define something new.
+                   (lp (cat-lattice-position head)))
+               (annotate-realization/base-case lp i)
+               i))
        (tr :ref/head-base-from-category head))
 
+      (word) ;; from morphology-induced edges
       (mixin-category
 ;       (unless *single-daughter-edge*
 ;        (break "Only expected to instantiate mix-ins on single edges"))
@@ -115,14 +110,8 @@
        ;; We need to leave something active here that will form the
        ;; derived category by folding in this mix-in with the real head
        ;; of the segment once it's been scanned.
-       ;;(break "mixin case: ~a" head)
-       (setq head
-             (find-or-make-psi-for-base-category head))
-       (tr :ref/head-base-from-mixin head))
-      (word) ;; from morphology-induced edges
-      (otherwise
-       (break "Unanticipated type as the head: ~a~%~a"
-              (type-of head) head)))
+       ;;(break "mixin case: ~a" head)       
+       (tr :ref/head-base-from-mixin head)))
 
     head ))
 
@@ -199,111 +188,58 @@
         (error "head is a cons. New case: ~a" head)))
 
     (when (null *do-not-use-psi*)
-      ;; note - below this code is commented out
       (error "Expected the *do-not-use-psi* flag to be up"))
 
-    (when *do-not-use-psi*
+    (let ((lp (cat-lattice-position head))
+          bindings-plist  annotation-list  )
+      (dolist (pair binding-exp/s)
+        ;; e.g. pair = (#<variable reporter> . right-referent)
+        (setq variable (car pair))
+        (multiple-value-setq (value edge)
+          (case (cdr pair)
+            (left-referent
+             (unless arg-edge (setq arg-edge *left-edge-into-reference*))
+             (unless head-edge (setq head-edge *right-edge-into-reference*))
+             (values left-referent *left-edge-into-reference*))
+            (right-referent
+             (unless arg-edge (setq arg-edge *right-edge-into-reference*))
+             (unless head-edge (setq head-edge *left-edge-into-reference*))
+             (values right-referent *right-edge-into-reference*))
+            (otherwise
+             (push-debug `(,pair))
+             (error "Can't decipher edges and referents. Why?"))))
 
-       (let ((lp (cat-lattice-position head))
-             bindings-plist  annotation-list  )
-         (dolist (pair binding-exp/s)
-           ;; e.g. pair = (#<variable reporter> . right-referent)
-           (setq variable (car pair))
-           (multiple-value-setq (value edge)
-             (case (cdr pair)
-               (left-referent
-                (unless arg-edge (setq arg-edge *left-edge-into-reference*))
-                (unless head-edge (setq head-edge *right-edge-into-reference*))
-                (values left-referent *left-edge-into-reference*))
-               (right-referent
-                (unless arg-edge (setq arg-edge *right-edge-into-reference*))
-                (unless head-edge (setq head-edge *left-edge-into-reference*))
-                (values right-referent *right-edge-into-reference*))
-               (otherwise
-                (push-debug `(,pair))
-                (error "Can't decipher edges and referents. Why?"))))
+        ;; Create a binding instruction to pass to find
+        (push `(,variable ,value) bindings-plist)
 
-           ;; Create a binding instruction to pass to find
-           (push `(,variable ,value) bindings-plist)
+        ;; Create a list to use for annotating edges
+        (push `(,value ,variable ,edge)
+              annotation-list))
 
-           ;; Create a list to use for annotating edges
-           (push `(,value ,variable ,edge)
-                 annotation-list))
-
-         ;(setq bindings-plist (nreverse bindings-plist))
-         ;;(push-debug `(,head ,bindings-plist)) (break "f or m")
-         ;;(push-debug `(,(edge-referent head-edge) ,bindings-plist))
-         (let* ((head-referent (edge-referent head-edge))
-                (reused? (unless (word-p head-referent) ;; e.g. "%"
-                           (itypep head-referent head)))
-                ;; the head category that we're supposed to 
-                ;; instantiate is the same as the head we've got
-                ;; so we use the head individual rather than 
-                ;; make a new individual.
-                (i (if reused?
-                     (edge-referent head-edge)
-                     (find-or-make/individual head bindings-plist))))
-           (when reused?
-             (multiple-value-bind (bindings individual)
-                                  (apply-bindings i bindings-plist)
-               (declare (ignore bindings))
-               (setq i individual)))
-           (annotate-realization/base-case lp i)
-           (setq type-of-head head)
-           (dolist (annotation annotation-list)
-             (destructuring-bind (variable value edge) annotation
-               (annotate-site-bound-to value variable type-of-head edge)))
-           (setq return-value i))))
-
-      ;; psi case
-    #|(let ((psi
-             (typecase head
-               (psi
-                (setq type-of-head
-                      (base-category-of-psi head))
-                head)
-               (referential-category
-                (setq type-of-head head)
-                ;; We're adding a binding, so we presume that the result
-                ;; will be partially saturated even it's a simple category
-                (find-or-make-psi-for-base-category head))
-               (individual
-                (break "Shouldn't have gotten a full individual at ~
-                  this stage"))
-               (otherwise
-                (break "Unanticipated type as the head: ~a~%~a"
-                       (type-of head) head)))))
-        (tr :instantiating-individual-with-binding psi binding-exp/s)
-        (dolist (pair binding-exp/s)
-          (setq variable (car pair))
-          (multiple-value-setq (value edge)
-            (case (cdr pair)
-              (left-referent
-               (unless arg-edge
-                 (setq arg-edge *left-edge-into-reference*))
-               (unless head-edge
-                 (setq head-edge *right-edge-into-reference*))
-               (values left-referent *left-edge-into-reference*))
-              (right-referent
-               (unless arg-edge
-                 (setq arg-edge *right-edge-into-reference*))
-               (unless head-edge
-                 (setq head-edge *left-edge-into-reference*))
-               (values right-referent *right-edge-into-reference*))
-              (otherwise
-               (let ((unit (cdr pair)))
-                 (values (etypecase unit
-                           (psi unit)
-                           (individual unit)
-                           (referential-category
-                            (find-or-make-psi-for-base-category unit)))
-                         nil)))))
-          (setq psi (find-or-make-psi-with-binding
-                     variable value psi))
-          ;; annotate what c+v the value has been bound to.
-          (annotate-site-bound-to value variable type-of-head edge))
-        (setq return-value psi) ;; after the dust has settled
-        ) |#
+      ;;(setq bindings-plist (nreverse bindings-plist))
+      ;;(push-debug `(,head ,bindings-plist)) (break "f or m")
+      ;;(push-debug `(,(edge-referent head-edge) ,bindings-plist))
+      (let* ((head-referent (edge-referent head-edge))
+             (reused? (unless (word-p head-referent) ;; e.g. "%"
+                        (itypep head-referent head)))
+             ;; the head category that we're supposed to 
+             ;; instantiate is the same as the head we've got
+             ;; so we use the head individual rather than 
+             ;; make a new individual.
+             (i (if reused?
+                  (edge-referent head-edge)
+                  (find-or-make/individual head bindings-plist))))
+        (when reused?
+          (multiple-value-bind (bindings individual)
+              (apply-bindings i bindings-plist)
+            (declare (ignore bindings))
+            (setq i individual)))
+        (annotate-realization/base-case lp i)
+        (setq type-of-head head)
+        (dolist (annotation annotation-list)
+          (destructuring-bind (variable value edge) annotation
+            (annotate-site-bound-to value variable type-of-head edge)))
+        (setq return-value i)))
 
     (when *annotate-realizations*
       ;; annotate this combination
@@ -328,15 +264,16 @@
 ;;;-----------------------------------------------------------
 
 (defun ref/subtype (ref-exp left-referent right-referent)
+  (declare (special *referent* *use-subtypes*))
   (when (symbolp ref-exp)
     (setq ref-exp (case ref-exp
                     (left-referent left-referent)
                     (right-referent right-referent)
                     (otherwise
-                     (break "Unexpected value for symbol ref-exp: ~a"
+                     (error "Unexpected value for symbol ref-exp: ~a"
                             ref-exp)))))
   (unless *referent*
-    (break "Subtype called without a head specified -- check rule:~
+    (error "Subtype called without a head specified -- check rule:~
             ~%  ~A" *rule-being-interpreted*))
   (if *use-subtypes*
     (specialize-object *referent* ref-exp)
@@ -365,7 +302,7 @@
         value  head-edge  arg-edge  edge-being-bound )
 
     (unless value-symbol
-      (break "Threading bug -- no value for the value symbol ~A~
+      (error "Threading bug -- no value for the value symbol ~A~
               ~%in the binding expression: ~A" value-symbol binding-exp))
 
     (setq value (if value-datum
@@ -380,7 +317,7 @@
                            arg-edge *left-edge-into-reference*)
                      left-referent)
                     (otherwise
-                     (break "Unanticipated value symbol: ~a~%~a"
+                     (error "Unanticipated value symbol: ~a~%~a"
                             (type-of value-symbol) value-symbol)))))
     (tr :ref/binding variable value body)
 
@@ -397,7 +334,7 @@
       (unless (or *do-domain-modeling-and-population*
                   *do-strong-domain-modeling* ;; actually 'weaker'
                   *ignore-capitalization*)
-        (break "Bug:The referent passed in via ~A~%to be bound to ~A is Nil,~
+        (error "Bug:The referent passed in via ~A~%to be bound to ~A is Nil,~
                 ~%but you aren't allowed to bind a variable to nil."
                value-symbol variable)))
 
