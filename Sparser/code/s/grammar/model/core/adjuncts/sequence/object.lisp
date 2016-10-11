@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "grammar;model:core:adjuncts:sequence:"
-;;;  version:  April 20146
+;;;  version:  Octoberswi 20146
 
 ;; initiated 4/9/91 v1.8.2
 ;; 0.1 (12/15/92 v2.3) setting up for new semantics
@@ -52,25 +52,9 @@
 
 ;; Define-function-term would normally make the needed
 ;; function rules, but when we make we use a generalizing rule-label
-;; like this is would make the same rhs for all of these, which
+;; like this it would make the same rhs for all of these, which
 ;; would raise a flag and muddy the waters.
-
-(def-form-rule (sequencer common-noun)
-  :form np
-  :referent (:method determiner-noun left-edge right-edge))
-(def-form-rule (sequencer n-bar)
-  :form np
-  :referent (:method determiner-noun left-edge right-edge))
-(def-form-rule (sequencer np-head)
-  :form np
-  :referent (:method determiner-noun left-edge right-edge))
-
-#+ignore ;;THIS ALLOWS FOR "during the process"
-
-(def-form-rule (sequencer np)
-  :form np
-  :referent (:method determiner-noun left-edge right-edge))
-
+;; 10/11/16 moved rules to syntax/syntactic-rules.lisp 
 
 ;;--- prepositions
 
