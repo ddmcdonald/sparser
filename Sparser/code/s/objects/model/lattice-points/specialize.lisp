@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2005,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2005,2011-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "specialize"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  1.0 October 2015
+;;;  version:  October 2016
 
 ;; initiated 11/29/97. Given some content 1/2/01 though punting on the issue of
 ;; cross-indexing all the different paths down to a subtype that is a specialization
@@ -22,8 +22,9 @@
 ;;   to CLOS and shadows. 
 ;;   (1/7/15) Wrote one-off-specialization to expedite an issue in
 ;;   conjunctions. 
-;; 6/30/2015 Fix one-off-specialization so that it does-not keep adding copies of the same super-category when
-;;  the same DL conjunction individuals, 10/17/15 was convinced it does'm make sense
+;; 6/30/2015 Fix one-off-specialization so that it does-not keep adding copies
+;;  of the same super-category when the same DL conjunction individuals.
+;; 10/17/15 was convinced it does't make sense
 
 
 
@@ -60,6 +61,7 @@
       i )))
 
 (defmethod specialize-object ((i individual) (c (eql 'category::collection)))
+  ;; See make-cn-plural-rule
   (find-or-make-individual c :items nil :type (itype-of i)))
 
 (defun find-subtype (i mixin)
