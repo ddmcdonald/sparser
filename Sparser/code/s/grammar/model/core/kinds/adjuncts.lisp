@@ -11,12 +11,14 @@
 (in-package :sparser)
 
 (define-category event-relation
-    ;; :specializes relation
+    :specializes top
     ;; 10/11/16 The bottom of these three categories
     ;; is mixed into the definition of perdurant.
     ;; Consequently it is very easy to get circular class
-    ;; relationships that blow up. Better to deliberately
-    ;; leave this category disconnected for the nonce. 
+    ;; relationships that blow up. This should NOT be
+    ;; a specialization of Top, but we have to think
+    ;; through what to do. Inheriting from 'relation' as
+    ;; this did originally leads to a circular lattice
     :binds ((relation)
             (event)
             (subordinated-event)))
