@@ -400,17 +400,30 @@
 
 
 (defun strider-setting ()
-  (tuned-grok)
+  (blocks-world-setting)
+  ;; except
+  (include-comlex)
+  (setq *ignore-capitalization* nil)
+  (setq *description-lattice* nil) ;;
+  (setq *use-subtypes* nil) ;; plurals as collections needs more thought
+  
+  ;; from (tuned-grok)
+  (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
+  (setq *uniformly-scan-all-no-space-token-sequences* nil) ;; bad PNF interation
+  (setq *load-ad-hoc-rules* t)
+
   ;; plus
   (setq *arabic-names* t)
   (setq *allow-da-to-look-under-edges* nil)
   ;;   /// arc-matches-tt? needs to adjust the next tt
-  (setq *peek-rightward* t) ;; see drivers/chart/psp/tuck-right.lisp
-  (period-hook-on)
-  (setq *ignore-capitalization* t) ;; PNF is interferring with polywords
-  (designate-sentence-container :simple)
-  (setq *switch-setting* :strider))
+  
+  (setq *peek-rightward* nil) ;; see drivers/chart/psp/tuck-right.lisp
+  ;; Should be t, but that exposes a stub in march-peeking-rightward
+  ;; that has to be deal with first.
 
+  (setq *ignore-capitalization* t) ;; PNF is interferring with polywords
+
+  (setq *switch-setting* :strider))
 
 
 (defun fire-setting ()
@@ -465,7 +478,7 @@
   (parsing-protocol-for-documents)
 
   (setq *allow-form-conjunction-heuristic* t)
-  
+  ;; (setq *use-subtypes* t) plurals created a snapshot regression
   (use-post-analysis-mentions-for-pronouns)
 
   (period-hook-on) ;; make sure we notice periods
@@ -479,7 +492,6 @@
     (assert gmod () "The biology grammar module is not available")
     (unmarked-category-makes-permanent-individuals gmod))
   (setq *switch-setting* :biology))
-
 
 
 (defun blocks-world-setting ()
