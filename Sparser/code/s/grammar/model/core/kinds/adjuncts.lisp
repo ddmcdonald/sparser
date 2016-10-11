@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "temporally-localized"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  September 2016
+;;;  version:  October 2016
 
 ;; pulled out of terms-to-move 9/2/16
 
@@ -11,7 +11,12 @@
 (in-package :sparser)
 
 (define-category event-relation
-    :specializes relation
+    ;; :specializes relation
+    ;; 10/11/16 The bottom of these three categories
+    ;; is mixed into the definition of perdurant.
+    ;; Consequently it is very easy to get circular class
+    ;; relationships that blow up. Better to deliberately
+    ;; leave this category disconnected for the nonce. 
     :binds ((relation)
             (event)
             (subordinated-event)))

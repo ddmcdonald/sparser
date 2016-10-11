@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  August 2016
+;;;  version:  October 2016
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -24,7 +24,8 @@
 
 (define-category  perdurant
   :instantiates self
-  :specializes  temporally-localized
+  :specializes top
+  :mixins (temporally-localized)
 
   :binds ((theme) ;; one salient participant
                   ;; FrameNet for the thing that moves
