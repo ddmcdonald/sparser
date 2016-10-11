@@ -72,8 +72,6 @@
 
 (defun corresponding-lattice-point (unit)
   (typecase unit
-    (psi
-     (psi-lp unit))
     (individual
      (cat-lattice-position (first (indiv-type unit))))
     ;; Do individuals and categories point to the same lattice point for
@@ -500,7 +498,9 @@
 
 
 (defun workout-the-relationships-among-the-categories ()
-  ;; called from Postprocess-grammar-indexes
+  "This is called from Postprocess-grammar-indexes which runs
+   at the end of load-the-grammar
+"
   (setq *categories-without-supercs*
         (compute-daughter-relationships *referential-categories*))
   (sort-referential-categories-hierarchically)
