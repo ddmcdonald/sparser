@@ -211,11 +211,10 @@
 ;;;------------------
 
 (defun pp (string)
-  (cond
-    (*checkpoint-operations*
-     ;; outputs parse as s-expression in speech act-inspired format
-     (checkpoint-call-and-postprocessing string))
-    (t (analyze-text-from-string string))))
+  "Keeping this abbreviation even after removing its sublanguage-
+   based conditional because other code depends on it."
+  (analyze-text-from-string string))
+
 
 (defparameter *bad-sentences* nil)
 
@@ -232,19 +231,33 @@
 
 
 (defun p (string)
+  "Parse the string then print out the treetops"
   (pp string)
   (unless *workshop-window*
     (format t "~&~%")
     (tts)))
 
-(defun p/e (string)  (pp string) (e))
-(defun p/te (string) (pp string) (the-edges))
+(defun p/e (string)
+  "Parse string then print out all the edges by starting position"
+  (pp string) (e))
+
+(defun p/te (string)
+  "Parse string then print out all the edges in order by edge number"
+  (pp string) (the-edges))
+
 (defun p/s (string)
+  "Parse string then print out the treetops followed by the semtree
+   if the string is completely parsed"
   (pp string)
   (format t "~&") (tts)
   (let ((edges (all-tts)))
     (when (null (cdr edges)) ;; single span
       (semtree (car edges)))))
+
+(defun p/r (string)
+  (let ((*return-value* :referent-of-last-edge))
+    (declare (special *return-value*))
+    (analyze-text-from-string string)))
 
 (defun pt (string)
   (time (pp string))
@@ -255,7 +268,7 @@
   (declare (ignore initial-region))
   (when *open-stream-of-source-characters*
     (close-character-source-file))
-  (format t "~%analyzing ~A~%" pathname)
+  (format t "~%analyzing ~A~%~%" pathname)
   (if time
     (time (analyze-text-from-file pathname))
     (analyze-text-from-file pathname)))
