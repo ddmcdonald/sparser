@@ -125,6 +125,18 @@
                          left-edge right-edge))
 
 
+#+ignore(loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp
+   do
+     (eval `(def-form-rule (sequencer ,nb)
+                :form np
+                :referent (:function determiner-noun left-edge right-edge))))
+#+ignore ;;THIS ALLOWS FOR "during the process"
+;; RUSTY -- What was wrong with this rule? (Other than it being a method call)
+(def-form-rule (sequencer np)
+  :form np
+  :referent (:method determiner-noun left-edge right-edge))
+
+
 ;;;-------------
 ;;; N-BAR rules
 ;;;-------------

@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "unary driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   March 2016
+;;;   Version:   October 2016
 
 ;; broken out as its own file 11/91
 ;; 1.0 (10/23/92 v2.3) Got the options set up to date with actions in
@@ -105,13 +105,13 @@
 
 (defun dispatch-on-unary-ref-actions (rule-field)
   (declare (special *referent*))
-  (case (car rule-field)
+  (ecase (car rule-field)
     (:instantiate-individual
      (ref/instantiate-individual
       rule-field (second rule-field) nil))
     (:head
      (ref/head (second rule-field) ;; will be "daughter"
-               nil nil :calling-from-unary-rule))
+                nil nil :calling-from-unary-rule))
     (:subtype
      (ref/subtype (second rule-field)
                   *single-daughter-edge* nil))
@@ -154,7 +154,4 @@
            (t (push-debug `(,rule-field))
               (error "Unexpected funcall case: ~a" rule-field))))
     (:instantiate-individual-with-binding
-     (one-edge-instantiate-individual-with-binding (cdr rule-field)))
-    (otherwise
-     (break "Unexpected keyword in referent of unary rule: ~a"
-	    (car rule-field)))))
+     (one-edge-instantiate-individual-with-binding (cdr rule-field)))))
