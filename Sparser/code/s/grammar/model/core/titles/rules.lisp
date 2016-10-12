@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "rules"
 ;;;   Module:  "model;core:titles:"
-;;;  version:  August 2016
+;;;  version:  October 2016
 
 ;; initited 6/15/93, starting over from scratch. 3/17/05 These are
 ;; interacting with rules made automatically from the etf schemas,
@@ -62,7 +62,6 @@
 (def-form-rule (possessive title)
   :form np
   :head :right-edge
-
   ;;/// N.b. doesn't work in *iraqi-girl* because of timing
   ;; where the title has been swallowed before the country
   ;; could see it.  A heuristic might be entitled to lift
@@ -103,12 +102,13 @@
           (revise-right-edge-into-rule :referent title-mod)))
       (setq title (bind-dli-variable 'locale possessive title)))
 
-     (t (push-debug `(,possessive ,title))
-        (error "New type for possessive: ~a~%  ~a"
-               (if (individual-p possessive)
-                 (i-type-of possessive) 
-                 (type-of possessive))
-               possessive)))
+     (t (when *break-on-unexpected-cases*
+          (push-debug `(,possessive ,title))
+          (error "New type for possessive: ~a~%  ~a"
+                 (if (individual-p possessive)
+                   (i-type-of possessive) 
+                   (type-of possessive))
+                 possessive))))
     title))
 
 (define-category plays-role-for
