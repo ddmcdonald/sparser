@@ -222,33 +222,35 @@
 ;;;-------------------------------
 
 (defun sentence-processing-core (sentence)
-  ;; Handles all of the processing on a sentence that is done
-  ;; after scan-terminals-loop runs.
+  "Handles all of the processing on a sentence that is done
+   after scan-terminals-loop runs. Called by sentence-sweep-loop
+   or scan-terminals-and-do-core depending one whether we're
+   working with a document or just a text stream."
   (declare (special *sweep-for-patterns*))
   (setq *sentence-in-core* sentence)
   (possibly-print-sentence)
   
   (when *sweep-for-patterns*
-    (pattern-sweep sentence)
-    (when *sweep-for-early-information*
-      (detect-early-information sentence))
-    (when *sweep-for-conjunctions*
-      (short-conjunctions-sweep sentence))
-    (when *sweep-for-parentheses*
-      (sweep-to-span-parentheses sentence))
+    (pattern-sweep sentence))
+  (when *sweep-for-early-information*
+    (detect-early-information sentence))
+  (when *sweep-for-conjunctions*
+    (short-conjunctions-sweep sentence))
+  (when *sweep-for-parentheses*
+    (sweep-to-span-parentheses sentence))
+  (when *trace-island-driving* (tts))
+
+  (when *chunk-sentence-into-phrases*
+    (tr :identifying-chunks-in sentence)
+    (identify-chunks sentence) ;; calls PTS too
     (when *trace-island-driving* (tts))
 
-    (when *chunk-sentence-into-phrases*
-      (tr :identifying-chunks-in sentence)
-      (identify-chunks sentence) ;; calls PTS too
-      (when *trace-island-driving* (tts))
-
-      (when *parse-chunked-treetop-forest*
-        (let ((*return-after-doing-forest-level* t))
-          (declare (special *return-after-doing-forest-level*))
-          (new-forest-driver sentence))))
+    (when *parse-chunked-treetop-forest*
+      (let ((*return-after-doing-forest-level* t))
+        (declare (special *return-after-doing-forest-level*))
+        (new-forest-driver sentence))))
         
-    (post-analysis-operations sentence))
+  (post-analysis-operations sentence)
   
   ;; EOS throws to a higher catch. If the next sentence
   ;; is empty we will hit the end of source as we
