@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "WH-word-semantics"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2016
+;;;  Version:  October 2016
 
 ;; initiated 8/8/07. Added relatives 1/1/08
 ;; 0.1 Changed the names of the categories to just be the name of the pronoun.
@@ -64,11 +64,11 @@ for the word and a rule that rewrite to it.
 ;; N.b. this replaces rules/words/WH words
 
 (define-wh-pronoun "who")
+(define-wh-pronoun "whoever")
 (define-wh-pronoun "which")
 (define-wh-pronoun "what")
 (define-wh-pronoun "where")
-(if
- (not (eq :biology common-lisp-user::script))
+(unless (current-script :biology)
  (define-wh-pronoun "when"))
 (define-wh-pronoun "whom")
 (define-wh-pronoun "whose")
@@ -79,10 +79,6 @@ for the word and a rule that rewrite to it.
 (define-determiner "which")
 (define-determiner "what")
 (define-determiner "whose")
-
-
-#+ignore ;; this makes it able to start a relative clause -- which is not correct
-(define-wh-pronoun "whether")
 
 ;;/// There's a whole flock of these -- need a proper treatment
 ;;(define-wh-pronoun "how many")
