@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "anaphora"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  March 2016
+;;;  Version:  October 2016
 
 ;; new design initiated 7/14/92 v2.3
 ;; 1.1 (6/17/93) bringing it into sync with Krisp
@@ -135,7 +135,7 @@
 	      (update-discourse-history obj obj edge)))
         (mixin-category )
         (category )
-;        (section-marker )
+        (section-marker )
         (keyword )
         (word )
         (polyword )
