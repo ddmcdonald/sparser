@@ -863,6 +863,8 @@
   ;; of the preposition satisfies the specified value restriction.
   ;; Otherwise we check for some anticipated cases and then
   ;; default to binding modifier.
+  (unless (and vg pp)
+    (return-from adjoin-pp-to-vg nil))
   (if (itypep pp 'collection) ;; a conjunction
       (if *subcat-test*
           (loop for pp-edge in (edge-constituents (right-edge-for-referent))
@@ -1277,6 +1279,9 @@
   (assimilate-subcat vg :object obj))
 
 (defun assimilate-np-to-v-as-object (vg obj)
+  (when *subcat-test*
+    (unless (and vg obj)
+      (return-from assimilate-np-to-v-as-object nil)))
   (let ((result
 	 (if (and (typep *current-chunk* 'chunk)
                   (member 'ng (chunk-forms *current-chunk*)))
@@ -1343,8 +1348,13 @@
 	 (ignore?
 	  item)
 	 (*constrain-pronouns-using-mentions*
-          (tr :recording-pn-mention-v/r v/r)
-	  (setf (mention-restriction (edge-mention pn-edge)) v/r)
+          (when v/r
+            ;; Comes from the value restriction of the variable to be
+            ;; bound as determined by assimilate-subcat. It's frequently
+            ;; the case that this variable doesn't have a value restriction,
+            ;; particularly for default choices like 'subject'.
+            (tr :recording-pn-mention-v/r v/r)
+            (setf (mention-restriction (edge-mention pn-edge)) v/r))
 	  item)
 	 (t
 	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
