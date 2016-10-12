@@ -3,7 +3,7 @@
 ;;;
 ;;;      File: "gofers"
 ;;;    Module: "analyzers;SDM&P:
-;;;   Version: May 2016
+;;;   Version: October 2016
 
 ;; Broken out of scan1 2/28/13. 3/13/13 added word-to-left-of-head,
 ;; edge-to-left-of-head. Coping with polyword at end of segment 3/14.
@@ -240,12 +240,18 @@
     top-node))
 
 (defun segment-minimal-prefix ()
-  ;; The segment is covered by an edge or at least a large part
-  ;; of its left end is.
+  "The segment is covered by an edge or at least a large part
+   of its left end is. Return the shortest edge that
+   starts where the segment starts."
+  (declare (special *left-segment-boundary*))
   (let* ((ev (pos-starts-here *left-segment-boundary*))
          (array (ev-edge-vector ev)))
-    ;; should check *edge-vector-type*
-    (aref array 0)))
+    ;; 10/12/16 in Grok on Scott's ose-2.txt the edge over "meeting"
+    ;; in "a high-level meeting in October" is recorded as the
+    ;; top-node but is not in the edge array.
+    (or (aref array 0)
+        (ev-top-node ev)
+        (error "no left edge recorded in edge vector ~a" ev))))
 
 (defun where-prefix-edge-ends ()
   (let* ((left-pos-start (pos-starts-here *left-segment-boundary*))
