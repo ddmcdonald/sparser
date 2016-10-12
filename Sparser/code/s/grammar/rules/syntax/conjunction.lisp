@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "conjunction"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2016
+;;;  Version:  October 2016
 
 ;; initated 6/10/93 v2.3, added multiplicity cases 6/15
 ;; 6.1 (12/13) fixed datatype glitch in resuming from unspaned conj.
@@ -427,6 +427,7 @@
              (when (current-script :biology)
                (bio-coercion-compatible? label-before label-after edge-before edge-after)))
          :conjunction/identical-adjacent-labels)
+        
         (*allow-form-conjunction-heuristic*   
          ;;(break "form heuristics allowed. Check backtrace")
          (let ((form-before (edge-form edge-before))
@@ -493,15 +494,6 @@
 	t)
        ))))
 
-(defun safe-itypep (low high)
-  (when (or (individual-p low)
-            (referential-category-p low))
-    (itypep low high)))
-
-(defun safe-itype-of (low)
-  (when (or (individual-p low)
-            (referential-category-p low))
-    (itype-of low)))
 
 
 (defun show-protein-coercion (e1 e2)
@@ -520,7 +512,6 @@
   (get-surface-string-for-individual (edge-referent e)))
 
 (defun conjunction-incompatible-labels (before after edge-before edge-after)
-  (declare (special category::bio-predication))
   (let ((reject?
          (or (word-p before)
 	     (word-p after)
@@ -533,18 +524,18 @@
                   (if (and (eq (cat-name (edge-form edge-before)) 'vg)
                            (eq (cat-name (edge-form edge-after)) 'vg))
                    (not
-                    (or (and (itypep before category::process)
-                             (itypep after category::process))
+                    (or (and (itypep before 'process)
+                             (itypep after 'process))
                         (and
-                         (itypep before category::bio-predication)
-                         (itypep after category::bio-predication))))
+                         (itypep before 'bio-predication)
+                         (itypep after 'bio-predication))))
                    (not
-                    (equal  (or (itypep before category::process)
-                                (itypep before category::bio-predication)
-                                (itypep before category::modifier))
-                            (or (itypep after category::process)
-                                (itypep after category::bio-predication)
-                                (itypep after category::modifier)))))))))
+                    (equal  (or (itypep before 'process)
+                                (itypep before 'bio-predication)
+                                (itypep before 'modifier))
+                            (or (itypep after 'process)
+                                (itypep after 'bio-predication)
+                                (itypep after 'modifier)))))))))
     (cond
       (reject?
        (push (conj-info before after edge-before edge-after
@@ -553,7 +544,8 @@
        t)
       (t
        (push (conj-info before after edge-before edge-after
-                        :pass 'conjunction-incompatible-labels) *form-conjs*)
+                        :pass 'conjunction-incompatible-labels)
+             *form-conjs*)
        nil))))
 
 (defun conj-info (before after edge-before edge-after &key pass)
