@@ -404,8 +404,12 @@
   ;; except
   (include-comlex)
   (setq *ignore-capitalization* nil)
-  (setq *description-lattice* nil) ;;
+  ;; Note in earlier version says PNF is interferring with polywords
+  ;; and set this to T. But that turns off proper name recognition.
+
+  (setq *description-lattice* nil) ;; use base means of indexing
   (setq *use-subtypes* nil) ;; plurals as collections needs more thought
+  (setq *sweep-for-patterns* nil) ;; most patterns are for biology
   
   ;; from (tuned-grok)
   (setq *do-unanalyzed-hyphenated-sequences* nil) ;; would block "14-year-old" => age
@@ -420,8 +424,6 @@
   (setq *peek-rightward* nil) ;; see drivers/chart/psp/tuck-right.lisp
   ;; Should be t, but that exposes a stub in march-peeking-rightward
   ;; that has to be deal with first.
-
-  (setq *ignore-capitalization* t) ;; PNF is interferring with polywords
 
   (setq *switch-setting* :strider))
 
