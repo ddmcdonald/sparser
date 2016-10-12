@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "chunker"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2016
+;;;  version:  October 2016
 
 ;; Initiated 10/8/14
 ;; ddm: 10/16/14 Rewrote identify-chunks. Commented out lines anticipating 
@@ -569,8 +569,9 @@ than a bare "to".  |#
            ;; this should only happen for NS words like GAP–mediate
            (not (preceding-adverb-or-subordinate-conjunction e)))
           ((eq category::verb+ed (edge-form e))
-           ;; verb_ed is allowable as the start of an NG if the previous (and immediately adjacent) chunk
-           ;; was not an NG -- such an adjacent NG happens when the verb+ed is taken to stop the NG
+           ;; verb_ed is allowable as the start of an NG if the previous
+           ;; (and immediately adjacent) chunk was not an NG -- such an
+           ;; adjacent NG happens when the verb+ed is taken to stop the NG
            ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
            ;; as opposed to "direct binding to activated forms of RAS"
            (let ((prev-edge (edge-just-to-left-of e)))
@@ -616,8 +617,10 @@ than a bare "to".  |#
            t)
           
           ((eq category::verb+ing (edge-form e))
-           ;; verb_ing is most likely as the start of an NG if the previous (and immediately adjacent) chunk
-           ;; was not a preposition, this blocks the prenominal reading of "turn on RAS by activating guanine nucleiotide exchange factors"
+           ;; verb_ing is most likely as the start of an NG if the previous
+           ;; (and immediately adjacent) chunk was not a preposition,
+           ;; this blocks the prenominal reading of "turn on RAS by activating
+           ;; guanine nucleiotide exchange factors"
            (unless (could-be-the-start-of-a-sentence (pos-edge-starts-at e))
              (let ((prev-edge (edge-just-to-left-of e)))
                (not (and (edge-p prev-edge)
@@ -859,16 +862,17 @@ than a bare "to".  |#
 ;;; methods for testing whether a form category is one of a particular group
 ;;;--------------------------------------------------------------------------
 
-
-
-
 (defun thatcomp-verb (edge)
-  (loop for pat in (subcat-patterns (edge-category edge))
-     thereis (eq :thatcomp (subcat-label pat))))
+  (when edge
+    ;; in ng-start?, in the "that" clause, (car (chunk-edge-list (car *chunks*)))
+    ;; can return nil
+    (loop for pat in (subcat-patterns (edge-category edge))
+       thereis (eq :thatcomp (subcat-label pat)))))
 
 (defun thatcomp-noun (edge)
-  (loop for pat in (subcat-patterns (edge-category edge))
-     thereis (eq :thatcomp (subcat-label pat))))
+  (when edge
+    (loop for pat in (subcat-patterns (edge-category edge))
+       thereis (eq :thatcomp (subcat-label pat)))))
 
 (defun preceding-det-prep-poss-or-adj (e &optional (edges (edges-before e)))
   (loop for ee in edges
