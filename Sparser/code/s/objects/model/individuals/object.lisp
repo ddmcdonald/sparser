@@ -150,7 +150,6 @@ grammar/model/sl/ern/stream-through-driver.lisp:  (when (itype obj (category-nam
 grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorized-name)
 |#
 
-;; generalize itype-p to take disjunctive types
 (defun itypep (i c/s) 
   (cond
     ((symbolp i) (itypep (category-named i :break-if-none) c/s))
@@ -242,3 +241,14 @@ in its type field?"
          (push-debug `(,i ,category/symbol))
          (error "indiv-typep not applied to an individual:~%~a  ~a"
                 (type-of i) i))))))
+
+
+(defun safe-itypep (low high)
+  (when (or (individual-p low)
+            (referential-category-p low))
+    (itypep low high)))
+
+(defun safe-itype-of (low)
+  (when (or (individual-p low)
+            (referential-category-p low))
+    (itype-of low)))
