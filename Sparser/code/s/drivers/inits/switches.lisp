@@ -502,7 +502,6 @@
   (uncontroversial-settings)
   (top-edges-setting)
   (ignore-comlex)
-  (setq *description-lattice* t)
   (setq *use-subtypes* t)
   (use-post-analysis-mentions-for-pronouns)
 
