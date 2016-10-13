@@ -606,3 +606,34 @@
                 (edge-category 
                  (edge-right-daughter edge))))))))
  
+(defun test-reach-sentences (&key (n 1000)(start 0) save-output)
+  (when (find-package :r3)
+    (when save-output
+      (save-article-semantics
+       nil
+       (pathname
+        (ensure-directories-exist
+             (concatenate 'string
+                          (eval (intern "*R3-TRUNK*" (find-package :r3)))
+                          "corpus/Reach-sentences/results/")))))
+    (unless (boundp '*reach-article-sents*)
+      (load (pathname
+             (concatenate 'string
+                          (eval (intern "*R3-TRUNK*" (find-package :r3)))
+                          "corpus/Reach-sentences/rasmachine_sentences.lisp"))))
+
+    
+
+    (loop for sl in (eval '*reach-article-sents*)
+         as i from (+ 1 start) to (+ start n)
+       do
+         (when save-output
+           (let ((sls (pname sl)))
+           (initialize-article-semantic-file-if-needed
+            (subseq sls 1 (- (length sls) 1)))))
+         (process-reach-article-sents sl))))
+
+(defun process-reach-article-sents (sl)
+  (format t "Processing reach article sentences: ~s~%" sl)
+  (loop for s in (eval sl) do (eval `(qepp ,s))))
+

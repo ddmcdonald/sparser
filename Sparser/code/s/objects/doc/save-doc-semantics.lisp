@@ -40,20 +40,19 @@
 (defun initialize-article-semantic-file-if-needed (article)
   (declare (special article))
   
-  (if (symbolp *article-semantics-directory*)
-      (setq *sentence-results-stream* *article-semantics-directory*) ;; either T or NIL
-      (let* ((title (title article))
-             (file-path (make-semantics-filename article)))
-        (declare (special file-path))
-        (setq *sentence-results-stream*
-              (open file-path
-                    :direction :output
-                    :if-exists :overwrite
-                    :if-does-not-exist :create))
-        (if *use-xml*
-            (format *sentence-results-stream*
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-            ))))
+  (cond ((symbolp *article-semantics-directory*)
+         (setq *sentence-results-stream* *article-semantics-directory*)) ;; either T or NIL
+        (t
+         (let* ((file-path (make-semantics-filename article)))
+           (setq *sentence-results-stream*
+                 (open file-path
+                       :direction :output
+                       :if-exists :overwrite
+                       :if-does-not-exist :create))
+           (if *use-xml*
+               (format *sentence-results-stream*
+                       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+               )))))
 
 
 (defun close-article-semantic-file-if-needed (article)
@@ -63,10 +62,11 @@
   (setq *sentence-results-stream* nil))
 
 (defun make-semantics-filename (article)
-  (merge-pathnames  *article-semantics-directory*
-                    (if *use-xml*
-                        (format nil "~a-semantics.xml" (name article))
-                        (format nil "~a-semantics.lisp" (name article)))))
+  (let ((aname (if (stringp article) article (name article))))
+    (merge-pathnames  *article-semantics-directory*
+                      (if *use-xml*
+                          (format nil "~a-semantics.xml" aname)
+                          (format nil "~a-semantics.lisp" aname)))))
 
 
 (defparameter *one-expression-per-sentence* t)
@@ -127,7 +127,7 @@
          (if
           (find-package :xmls)
           (funcall (intern "WRITE-ESCAPED" (find-package :xmls)) (sentence-string s) stream)
-          (write (sentence-string s) stream))
+          (write (sentence-string s) :stream stream))
          (format stream "</sentence-text>~%"))
         (t         
          (format stream "~%;;;___________________~%(sentence-text ~s)%~%"
