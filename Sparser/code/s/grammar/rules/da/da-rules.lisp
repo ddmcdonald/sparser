@@ -496,18 +496,25 @@
 (defun attach-appositive-comma-np-endpos-under-pp (pp-edge comma-edge np-edge end-pos)
   (push-debug `(,pp-edge ,comma-edge ,np-edge))
   ;; (setq pp-edge (car *) comma-edge (cadr *) np-edge (caddr *))
-  ;; Look up the right fridge of the s for a proper-noun 
-  (let ((target (find-target-satisfying (right-fringe-of pp-edge) #'np-target?)))
-    ;; don't know why this is prinitng out -- remove it
-    ;;(format t "dominating-edge for ~s is ~s" target (edge-used-in target))
-    (when target
-      (make-edge-spec 
-       :category (edge-category target)
-       :form (edge-form target)
-       :referent (bind-dli-variable 'appositive-description (edge-referent np-edge)
-                                    (edge-referent target))
-       :target target
-       :direction :right))))
+  ;; Look up the right fridge of the s for a proper-noun
+  (unless
+      ;; test if this is more likely to be a conjunction
+      ;;  there is an error condition when conjunctions are treated like
+      ;;  appositives that causes an circular edge structure -- need to get to the bottom of
+      ;;  it, but for now we are avoiding the problem
+      (loop for e in (ev-edges (pos-starts-here end-pos))
+         thereis (and (edge-p e) (eq (cat-name (edge-category e)) 'and)))
+    (let ((target (find-target-satisfying (right-fringe-of pp-edge) #'np-target?)))
+      ;; don't know why this is prinitng out -- remove it
+      ;;(format t "dominating-edge for ~s is ~s" target (edge-used-in target))
+      (when target
+        (make-edge-spec 
+         :category (edge-category target)
+         :form (edge-form target)
+         :referent (bind-dli-variable 'appositive-description (edge-referent np-edge)
+                                      (edge-referent target))
+         :target target
+         :direction :right)))))
 
 
 (define-debris-analysis-rule attach-appositive-comma-proper-noun-under-pp
