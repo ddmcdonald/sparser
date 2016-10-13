@@ -268,11 +268,11 @@ where it regulates gene expression.")
 	 (null
 	  (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
 	 (referential-category (loop for ddt in dt collect (interpret-item-in-context ddt var containing-mentions)))
-         (individual (lsp-break "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
+         (individual (warn "~%got an individual ~s during interpret-in-context on sentence ~%~s~%"
                              dt
                              (sentence-string *sentence-in-core*))
                      nil)
-	 (t (lsp-break "~%Strange value in interpret-item-in-context: ~s~%"
+	 (t (warn "~%Strange value in interpret-item-in-context: ~s~%"
 		    dt)
 	    dt)))
       (t (interpret-in-context dt var containing-mentions)))))
@@ -310,7 +310,7 @@ where it regulates gene expression.")
 				 collect
 				   (let ((bound-val (bind-dli-variable var c i)))
 				     (when (null bound-val)
-                                       (lsp-break "bad conjunction distribution"))
+                                       (error "bad conjunction distribution"))
 				     bound-val)))
 			  (list (bind-dli-variable var ival i)))))))
     (cond ((cdr interps) ;; a collection
@@ -585,7 +585,7 @@ where it regulates gene expression.")
 					(car (relevant-edges parent-edges conjunct))))
                                    (declare (special cc c-edge))
                                    (unless c-edge
-                                     (lsp-break "no c-edge"))
+                                     (warn "can't find relevant edge for conjunct"))
 				   ;;(print (list conjunct c-edge))
 				   (if c-edge
 				       (new-dt (cons c-edge parent-edges))
