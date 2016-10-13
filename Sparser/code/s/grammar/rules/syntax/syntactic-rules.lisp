@@ -125,7 +125,7 @@
                          left-edge right-edge))
 
 
-#+ignore(loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp
+(loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp
    do
      (eval `(def-form-rule (sequencer ,nb)
                 :form np
