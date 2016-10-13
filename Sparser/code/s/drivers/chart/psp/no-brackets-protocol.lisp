@@ -187,8 +187,7 @@
   "Called from initiate-successive-sweeps when reading from 
    a stream of characters rather than a pre-structured document.
    Organizes all the parsing layers from lowest to highest.
-   Expects a first sentence to exist but not to be populated
-"
+   Expects a first sentence to exist but not to be populated"
   (tr :entering-sentence-sweep-loop)
   (let* ((sentence (sentence)) ;; to pass to subroutines
          (*sentence* sentence)) ;; for global reference
@@ -226,31 +225,35 @@
    after scan-terminals-loop runs. Called by sentence-sweep-loop
    or scan-terminals-and-do-core depending one whether we're
    working with a document or just a text stream."
-  (declare (special *sweep-for-patterns*))
+  (declare (special *sweep-for-patterns*
+                     *grammar-and-model-based-parsing*))
   (setq *sentence-in-core* sentence)
   (possibly-print-sentence)
-  
-  (when *sweep-for-patterns*
-    (pattern-sweep sentence))
-  (when *sweep-for-early-information*
-    (detect-early-information sentence))
-  (when *sweep-for-conjunctions*
-    (short-conjunctions-sweep sentence))
-  (when *sweep-for-parentheses*
-    (sweep-to-span-parentheses sentence))
-  (when *trace-island-driving* (tts))
 
-  (when *chunk-sentence-into-phrases*
-    (tr :identifying-chunks-in sentence)
-    (identify-chunks sentence) ;; calls PTS too
+  (when *grammar-and-model-based-parsing*
+    (when *sweep-for-patterns*
+      (pattern-sweep sentence))
+    (when *sweep-for-early-information*
+      (detect-early-information sentence))
+    (when *sweep-for-conjunctions*
+      (short-conjunctions-sweep sentence))
+    (when *sweep-for-parentheses*
+      (sweep-to-span-parentheses sentence))
     (when *trace-island-driving* (tts))
 
-    (when *parse-chunked-treetop-forest*
-      (let ((*return-after-doing-forest-level* t))
-        (declare (special *return-after-doing-forest-level*))
-        (new-forest-driver sentence))))
+    (when *chunk-sentence-into-phrases*
+      (tr :identifying-chunks-in sentence)
+      (identify-chunks sentence) ;; calls PTS too
+      (when *trace-island-driving* (tts))
+
+      (when *parse-chunked-treetop-forest*
+        (let ((*return-after-doing-forest-level* t))
+          (declare (special *return-after-doing-forest-level*))
+          (new-forest-driver sentence))))
         
-  (post-analysis-operations sentence)
+    (post-analysis-operations sentence))
+
+  (record-sentence-model-data sentence)
   
   ;; EOS throws to a higher catch. If the next sentence
   ;; is empty we will hit the end of source as we
@@ -283,10 +286,12 @@
         (setq sentence (next sentence))))))
 
 (defun sweep-successive-sentences-from (sentence)
-  ;; Used with prepopulated documents after the sentences
-  ;; have been delimited by scan-sentences-to-eof. 
-  ;; Does all of the linguistic analysis, sentence by sentence
-  ;; until we get to the end of the sentence chain.
+  "Called from the toplevel driver initiate-successive-sweeps
+   after we have done the sentence-making sweep, so this
+   is only used with prepopulated documents whose sentences
+   have been delimited by scan-sentences-to-eof. 
+   Does all of the linguistic analysis, sentence by sentence
+   until we get to the end of the sentence chain."
   (declare (special *trap-error-skip-sentence*))
   (loop
     (tr :sweep-reading-sentence sentence)
@@ -325,14 +330,13 @@
 ;;;----------------------------------------------------
 
 (defun post-analysis-operations (sentence)
+  "Called from sentence-processig-core once all of the parsing
+   operations on the sentence have finished. Handles anaphora,
+   discourse structure, data-collection for cards, and such."
   (declare (special *index-cards*))
-  
   (when *scan-for-unsaturated-individuals*
     (sweep-for-unsaturated-individuals sentence))
-
-  
   (identify-salient-text-structure sentence)
-  
   (when *do-anaphora*
     (handle-any-anaphora sentence))
   (when (and *readout-relations* *index-cards*)
@@ -341,15 +345,18 @@
             ,*current-article*
             ,(assess-relevance sentence))
           *all-sentences*))
-
   (save-missing-subcats)
-
-  ;; moved this before we collect the model -- it changes the semantics!
   (make-this-a-question-if-appropriate sentence)
-  
   (when *do-discourse-relations*
-    (establish-discourse-relations sentence))
+    (establish-discourse-relations sentence)))
+  
 
+(defun record-sentence-model-data (sentence)
+  "Calls identify-relations to collect the entities and relations 
+   from each treetop in the sentence and store them on the 
+   sentence object. This is separated from post-analysis-operations
+   to allow it to be used when only applying low-level operations, 
+   but not parsing."
   (when *collect-model*
     ;; We always retrieve the entities and relations to store
     ;; with the sentence and accumulate at higher levels
@@ -369,7 +376,7 @@
 (defparameter *end-of-sentence-display-operation* nil)
 
 (defun end-of-sentence-processing-cleanup (sentence)
-  (declare (special sentence))
+  (declare (special *current-article* *sentence-results-stream*))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
   (when *end-of-sentence-display-operation*
     (funcall *end-of-sentence-display-operation* sentence))

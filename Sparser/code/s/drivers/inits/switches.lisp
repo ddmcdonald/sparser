@@ -330,6 +330,7 @@
   (what-to-do-at-the-forest-level :new-forest-protocol)
   (setq *kind-of-chart-processing-to-do* :successive-sweeps)
   (setq *sweep-sentence-treetops* t
+        *grammar-and-model-based-parsing* t
         *sweep-for-patterns* t
         *sweep-for-early-information* t
         *sweep-for-conjunctions* t

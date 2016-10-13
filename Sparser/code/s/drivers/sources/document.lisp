@@ -101,10 +101,10 @@
 (defmethod read-epistemic-features ((a article))
   (let ((*scanning-epistemic-features* t)
         (*use-occasional-polywords* t) ;; not the usual sort
-        (*sweep-for-patterns* nil)) ;; don't parse
+        (*grammar-and-model-based-parsing* nil)) ;; don't parse
     (declare (special *scanning-epistemic-features*
                       *use-occasional-polywords*
-                      *sweep-for-patterns*))
+                      *grammar-and-model-based-parsing*))
     (when (or *show-article-progress* *show-section-printouts*)
       (format t "~&=============================================~%~
                  ~%~%Reading Epistemic features in ~a~%" (name a)))

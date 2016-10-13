@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  August 2016
+;;;  Version:  )ctober 2016
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -148,6 +148,12 @@
 (defparameter *sentence-making-sweep* nil
   "Flag that is up when we are making that sweep through a
    document to drive or inhibit the right set of activities.")
+
+(defparameter *grammar-and-model-based-parsing* nil
+  "Wrapped around all of the parsing calls in sentence-processing-core
+   to allow them to be turned off when all you want is to apply
+   the lowest level of operations (polywords, numbers, fsas, 
+   complete, terminal edges) as done by scan-terminals-loop.")
 
 (defparameter *sweep-for-patterns* nil
   "Checked in sentence-sweep-loop to determine whether we continue
