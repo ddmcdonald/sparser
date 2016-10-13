@@ -425,12 +425,13 @@
 (defun display-categories-below (&key (top (category-named 'top))
                                    (depth -1) (max-width 10)
                                    (with-parens t)
+                                   (with-vars t)
                                    (stream *standard-output*))
   (clrhash *category-was-displayed*)
   (initialize-indentation)
   (when (and top (symbolp top))
     (setq top (category-named top)))
-  (display-with-subcs top stream depth  max-width with-parens)
+  (display-with-subcs top stream depth  max-width with-parens with-vars)
   (when (and (eq top (category-named 'top))(= depth -1))
     (let* ((remaining (loop for c in *categories-defined*
                         unless (gethash c *category-was-displayed*)
@@ -448,14 +449,20 @@
                   (form-category? c)
                   (member (get-tag :source c) '(:comlex :morphology))))
           (initialize-indentation)
-          (display-with-subcs c stream depth max-width with-parens))))))
+          (display-with-subcs c stream depth max-width with-parens  with-vars))))))
 
 
-(defun display-with-subcs (category stream &optional (depth -1)(max-width 10)(with-parens t))
+(defun display-with-subcs (category stream &optional (depth -1)(max-width 10)(with-parens t)(with-vars t))
   (unless (= depth 0)
-    (emit-line stream (format nil "~a~a"
+    (emit-line stream (format nil "~a~a~a"
                               (if with-parens "(" "")
-                              (cat-symbol category)))
+                              (cat-symbol category)
+                              (if (and with-vars (cat-slots category))
+                                  (string-downcase
+                                   (format nil " variables: ~a"
+                                           (mapcar #'pname (cat-slots category))))
+                                  "")
+                              ))
     (setf (gethash category *category-was-displayed*) t)
     (push-indentation)
     (unless (or
