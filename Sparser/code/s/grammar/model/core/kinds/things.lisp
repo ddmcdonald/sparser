@@ -94,7 +94,7 @@
  sensors and such (Legos). ") ;; n.b. "Mossad agent"
 
 (define-mixin-category with-an-agent
-  :specializes attribute
+  :specializes relation
   :binds ((agent physical-agent)))
 ;; Dolce has 'agency' as the union of physical and social agent
 
