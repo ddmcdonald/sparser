@@ -102,6 +102,7 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
 
 
 (defun reinterpret-dominating-edges (edge)
+  (declare (special *sentence-in-core*))
   (let ((new-ref (referent-for-edge edge)))
     (cond ((null new-ref)
            (lsp-break "reinterpretation of edge ~s failed in reinterpret-dominating-edges" edge))
@@ -110,7 +111,10 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
            )
           (t
            (setf (edge-referent edge) new-ref)
-           (setf (base-description (edge-mention edge)) new-ref)
+           (if (edge-mention edge)
+               (setf (base-description (edge-mention edge)) new-ref)
+               (warn "null edge-mention on edge ~s in ~%~s"
+                     edge (sentence-string *sentence-in-core*)))
            (let ((parent (edge-used-in edge)))
              (cond ((edge-p parent) (reinterpret-dominating-edges parent))
                    ((null parent) ;; reached the topmost edge
