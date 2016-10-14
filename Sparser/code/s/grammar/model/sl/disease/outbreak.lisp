@@ -20,7 +20,7 @@
 ;;;------------
 
 (define-category outbreak ;; the head word by itself
-  :specializes event
+  :specializes perdurant
   :instantiates self
   :realization ((:common-noun "outbreak")))
 

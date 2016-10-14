@@ -18,7 +18,7 @@
 
 (define-category cases ;; the head word by itself
   :instantiates self
-  :specializes time-interval
+  :specializes state ;; by analogy to 'getting/having the flu'
   :realization ((:common-noun "case")))
 
 ;;captures simple case of "cases of X"
