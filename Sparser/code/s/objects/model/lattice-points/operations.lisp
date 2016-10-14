@@ -454,12 +454,12 @@
 
 (defun display-with-subcs (category stream &optional (depth -1)(max-width 10)(with-parens t)(with-vars t))
   (unless (= depth 0)
-    (emit-line stream (format nil "~a~a~a"
+    (emit-line stream (format nil "~a~s~a"
                               (if with-parens "(" "")
-                              (cat-symbol category)
+                              (cat-name category)
                               (if (and with-vars (cat-slots category))
                                   (string-downcase
-                                   (format nil " variables: ~a"
+                                   (format nil " :variables ~a"
                                            (mapcar #'pname (cat-slots category))))
                                   "")
                               ))
