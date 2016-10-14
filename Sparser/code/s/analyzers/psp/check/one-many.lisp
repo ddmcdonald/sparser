@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "one-many"
 ;;;   Module:  "analyzers;psp:check:"
-;;;  Version:  1.1 January 2015
+;;;  Version:  October 2016
 
 ;; 0.0 (9/4/92 v2.3) broken out from drivers;chart:psp
 ;; 1.0 (5/15/93) took out the constraint about not changing the category
@@ -15,6 +15,7 @@
 ;;      Happened will stress testing against the whole treebank, so this
 ;;      isn't unreasonable
 ;;     (1/13/15) Blocked consideration of literals in check-one-many
+;;     (10/14/16) unblocked it: "12 years old" is based on literal "old"
 
 (in-package :sparser)
 
@@ -29,27 +30,27 @@
       ;; N.b. This is counting up from earliest to most recent.
       ;; /// Shouldn't it go the other way?
       (setq right-edge (aref vector index))
-      (unless (literal-edge? right-edge)
-        (setq rule (multiply-edges left-edge right-edge))
-        (when rule
-          (if already-have-a-rule
-            (then
-             (tr :multiple-completions already-have-a-rule rule)
-             ;; There is no provision in the design for more than one
-             ;; pair of edges composing unless for some reason we
-             ;; were running in all-edges mode. Blocking the break
-             ;; against a flag that's normally off. Taking the
-             ;; already given rule ad-hoc rather than thinking
-             ;; about it. 
-             (unless (eq rule already-have-a-rule)
-               (when *break-on-multiple-single-term-completions*
-                 (break "multiple completions"))))
-            (let ((edge (make-completed-binary-edge
-                         left-edge right-edge rule)))
-              (setq already-have-a-rule rule)
-              (setq single-edge edge))))))
+      (setq rule (multiply-edges left-edge right-edge))
+      (when rule
+        (if already-have-a-rule
+          (then
+            (tr :multiple-completions already-have-a-rule rule)
+            ;; There is no provision in the design for more than one
+            ;; pair of edges composing unless for some reason we
+            ;; were running in all-edges mode. Blocking the break
+            ;; against a flag that's normally off. Taking the
+            ;; already given rule ad-hoc rather than thinking
+            ;; about it. 
+            (unless (eq rule already-have-a-rule)
+              (when *break-on-multiple-single-term-completions*
+                (break "multiple completions"))))
 
-      single-edge ))
+          (let ((edge (make-completed-binary-edge
+                       left-edge right-edge rule)))
+            (setq already-have-a-rule rule)
+            (setq single-edge edge)))))
+
+    single-edge ))
 
 
 (defun one-many/just-check-labels (left-label right-vector)
