@@ -51,10 +51,8 @@
 	    (when *infer-rewriting-form-rules*
 	      (break "Modify this code as needed"))
             (form-rule-completion/explicit-lhs
-             (car completion-field) ;; keyword for edge-to-promulgate
-	     ;(if (typep (second completion-field) 'lambda-variable)
-	       ;(cadr completion-field) ;; lhs-category
-	       (cdr completion-field) ;)
+             (car completion-field) ;; keyword for which edge-to-promulgate
+             (cdr completion-field) ;; lhs-category
              left-edge right-edge rule)))
 
          (context-sensitive-rule-completion
