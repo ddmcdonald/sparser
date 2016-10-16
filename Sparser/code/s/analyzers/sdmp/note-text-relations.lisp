@@ -8,27 +8,17 @@
 ;; Initiated 3/9/13. Elaborated through 3/28/13. 7/15/13 Added gate
 ;; on new cases. Occasional fixes to edge cases through 9/16/13.
 ;; 10/2/13 Provided read content to note-country and its friends.
-;;RJB 12/13/2014 fix edge-denotes-interesting-object -- for the moment parenthetical segments are uninteresting
-;; parentheticals should be handled better <<DAVID>>
-(in-package :sparser)
+;; RJB 12/13/2014  for the moment parenthetical segments are uninteresting
+;;   parentheticals should be handled better 
 
-(defvar *DEBUG-SEGMENT-HANDLING*)
-(defvar CATEGORY::PARENTHESES)
-(defvar CATEGORY::NAME-WORD)
-(defvar CATEGORY::NAME)
-(defvar CATEGORY::DATE)
-(defvar CATEGORY::WEEKDAY)
-(defvar CATEGORY::TIME)
-(defvar CATEGORY::COUNTRY)
-(defvar CATEGORY::COMPANY)
-(defvar CATEGORY::PERSON)
-(defvar CATEGORY::TITLE)
+(in-package :sparser)
 
 ;;;--------
 ;;; driver
 ;;;--------
 
 (defun note-text-relations-in-segment (coverage)
+  (declare (special *debug-segment-handling *dbg-print*))
   (unless (segment-denotes-interesting-object coverage)
     ;;(format-words-in-segment)
     (let* ((length (segment-length)))
@@ -75,6 +65,7 @@
 
 (defun note-what-the-head-is ()
   ;; the gofers know the positions of the segment boundaries
+  (declare (special *debug-segment-handling*))
   (let ((head-edge (edge-over-segment-head)))
     (unless (and head-edge
                  (edge-denotes-interesting-object head-edge))
@@ -174,6 +165,10 @@
       (edge-denotes-interesting-object edge))))
 
 (defun edge-denotes-interesting-object (edge)
+  (declare (special category::parentheses category::name-word
+                    category::name category::date category::weekday
+                    category::time category::country category::company
+                    category::person category::title))
   (let ((label (edge-category edge))
         (form (edge-form edge))
         (referent (edge-referent edge)))
@@ -181,7 +176,7 @@
      ;; these are uninteresting
      ((derived-from-text-relation? label) nil)
      ((or 
-       (eq label category::parentheses) ;; for the moment parenthetical segments are uninteresting
+       (eq label category::parentheses) ;; for the moment
        (pronoun-category? form)
        (verb-category? form)
        (ignorable-category? form)
