@@ -49,8 +49,6 @@
 ;;    not simply a name. 7/3/13 name -> named-object for label on uncharacterized names.
 
 (in-package :sparser)
-(defvar *OF-APPEARS-WITHIN-PNF-SCAN*)
-(defvar CATEGORY::LOCATION)
 
 ;;;----------------------
 ;;; debugging parameters
@@ -73,7 +71,7 @@
 
 
 (defun c&r-multi-word-span (starting-position ending-position)
-  
+  (declare (special *of-appears-within-pnf-scan*))
   (when *of-appears-within-pnf-scan*
     (setq *of-appears-within-pnf-scan* nil))
     
@@ -315,6 +313,7 @@
 (defun category-for-edge-given-referent (i)
   ;;/// will apply to other kinds of named entities, but haven't
   ;; looked to see what this set would be
+  (declare (special category::location))
   (let ((base-category (itype-of i)))
     (case (cat-symbol base-category)
       (category::named-location category::location)
@@ -323,6 +322,8 @@
              (t base-category))))))
 
 (defun category-for-edge-given-name-type (category-of-name name)
+  (declare (special category::person category::company category::location
+                    category::name))
   (case (cat-symbol category-of-name)
     (category::person-name   category::person)
     (category::company-name  category::company)
@@ -338,7 +339,7 @@
      category::person)
     (otherwise
      (push-debug `(,name))
-     (break "Unexpected value for category of edge: ~a"
+     (error "Unexpected value for category of edge: ~a"
 	    (cat-symbol category-of-name)))))
 
 
@@ -359,7 +360,8 @@
   ;; these are the positions that delimit the capitalized sequence.
   ;; The 'of' is in the middle somewhere. We form names from the
   ;; two parts and then combine them here.
-  
+  (declare (special *of-appears-within-pnf-scan*))
+
   (let ((split-point *of-appears-within-pnf-scan*))
     (setq *of-appears-within-pnf-scan* nil)
 
@@ -425,7 +427,7 @@
                 (assemble-name-for-individual ref)))))
          (assemble-name-for-individual ref))))
     (otherwise
-     (break "Unexpected type for 'ref': ~a~%~a"
+     (error "Unexpected type for 'ref': ~a~%~a"
 	    (type-of ref) ref))))
 
 
