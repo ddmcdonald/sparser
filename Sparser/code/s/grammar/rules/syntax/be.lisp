@@ -156,54 +156,7 @@
   :referent (:head right-edge
              :function add-tense/aspect left-edge right-edge))
 
-
-;;;---------
-;;; passive
-;;;---------
-
-(defparameter *passive-label* (make-hash-table))
-
-(defun lookup-passive-counterpart (verb-category)
-  ;; The passive rule dictates the new-category ':passive'.
-  ;; This is a pseudo category that is checked for specifically
-  ;; in the form-rule edge-builder Form-rule-completion/explicit-lhs.
-  ;; It is done in conjunction with a capability in the rdata to
-  ;; define a category that will be an automatically constructed
-  ;; variant on what is substituted in e.g. "vg/+ed".  The "+ed"
-  ;; is concatentated onto the name of the substituted category
-  ;; and a new category constructed with that name.
-  
-  (let* ((stem (cond ((category-p verb-category)
-                      (symbol-name (cat-symbol verb-category)))
-                     (t
-                      (warn "lookup-passive-counterpart for non-category ~s~%"
-                            verb-category)
-                      (return-from lookup-passive-counterpart nil))))
-         (name-of-passive-label
-          (or
-           (gethash stem *passive-label*)
-           (setf (gethash stem *passive-label*)
-                 (intern ;;(concatenate 'string stem "+ED")))
-                  (string-append stem '#:+ed)
-                  (find-package :category)))))
-         (passive-category
-	  (and
-	   (boundp name-of-passive-label)
-	   (category-named/c-symbol name-of-passive-label))))
-
-   #| letting the called change the form category instead of complaining
-    (unless passive-category
-      (break "Expected there to be a category named ~A~
-              ~%Check the realization data for ~A~
-              ~%If you continue, a category with that named will be~
-              ~%constructed and used." name-of-passive-label stem)
-      (setq passive-category
-            (find-or-make-category-object
-             name-of-passive-label :def-category))) |#
-
-    passive-category ))
  
-
 
 
 ;;;--------------------------------------------

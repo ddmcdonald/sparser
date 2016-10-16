@@ -117,26 +117,22 @@
     (etypecase lhs-category
       (category)
       (symbol
-       (unless (eq lhs-category :passive)
+       #+ignore(unless (eq lhs-category :passive)
          (break "Unanticipated keyword used as the explicit ~
          category in ~%a form rule: ~A" lhs-category))
-       (let ((passive-category
-              (lookup-passive-counterpart promulgated-label)))
-         (if passive-category
-             (setq lhs-category passive-category)
-             (else
-               (setq lhs-category promulgated-label)
-               (setq coerced-form (category-named 'verb+passive)))))))
+;       (let ((passive-category
+;              (lookup-passive-counterpart promulgated-label)))
+;         (if passive-category
+;           (setq lhs-category passive-category)
+;           (else
+             (setq lhs-category promulgated-label)
+             (setq coerced-form (category-named 'verb+passive)))); )))
     
     
     (setf (edge-category edge) lhs-category)
-    
     (setf (edge-form edge) (or coerced-form
                                (cfr-form rule)
                                (edge-form head-edge)))
-    
-    
-    
     (setf (edge-rule edge) rule)
     
     (set-used-by left-edge edge)
@@ -160,6 +156,95 @@
     (assess-edge-label promulgated-label edge)
     edge ))
 
-                              
+#|
+An ETF like passive/with-by-phrase (../tree-families/transitive.lisp --  
+in short-cut form it's svo-passive, see tree-families/families.lisp)
+has a case that looks like this:
+             (:subject (s  (np/patient vp/+ed)
+                  :instantiate-individual result-type
+                  :binds (patient left-edge)
+                  :head right-edge))
+The slash in "vp/+ed" is noticed by decode-slashed-label and
+handled by the compose-name macro-let function in replace-from-mapping,
+all of which is in objects/model/tree-families/subrs.lisp. That
+is where the +ed category is created, using find-or-make-category-object
+which is the weak way of making a category whose purpose is just
+to be a label in a rule. 
 
-    
+This ungainly passive machinery comes into play because of
+the three form rules in syntax/be.lisp that say that their
+'new-category' is the symbol :passive, e.g.
+
+(def-form-rule (be verb+ed)
+  :new-category  :passive
+  :form vg+passive
+  :referent (:head right-edge
+             :function add-tense/aspect left-edge right-edge))
+
+That gets encoded by def-form-rule/resolved where the information
+is stored on the completion field of the passive-marking rule.
+
+sp> (ir 938)
+#<PSR-938 {verb+ed} → be verb+ed>
+  plist       = (:grammar-module #<grammar-module *DEFAULT-SEMANTICS-FOR-VG*>..
+  symbol      = rule::psr-938
+  category    = :syntactic-form
+  rhs         = (#<ref-category BE> #<ref-category VERB+ED>)
+  rhs-forms   = nil
+  completion  = (:right-edge . :passive)
+  form        = #<ref-category VG+PASSIVE>
+  relation    = nil
+  referent    = ((:head right-referent)..
+  schema      = nil
+
+The runtime decoding is organized by do-explicit-rule-completion in
+analyzers/psp/edges/cs.lisp ('cs' for 'context sensitive') and
+ends up in form-rule-completion/explicit-lhs above. 
+
+|#
+
+;;;---------
+;;; passive
+;;;---------
+
+(defparameter *passive-label* (make-hash-table))
+
+(defun lookup-passive-counterpart (verb-category)
+  ;; The passive rule dictates the new-category ':passive'.
+  ;; This is a pseudo category that is checked for specifically
+  ;; in the form-rule edge-builder Form-rule-completion/explicit-lhs.
+  ;; It is done in conjunction with a capability in the rdata to
+  ;; define a category that will be an automatically constructed
+  ;; variant on what is substituted in e.g. "vg/+ed".  The "+ed"
+  ;; is concatentated onto the name of the substituted category
+  ;; and a new category constructed with that name.
+  
+  (let* ((stem (cond ((category-p verb-category)
+                      (symbol-name (cat-symbol verb-category)))
+                     (t
+                      (warn "lookup-passive-counterpart for non-category ~s~%"
+                            verb-category)
+                      (return-from lookup-passive-counterpart nil))))
+         (name-of-passive-label
+          (or
+           (gethash stem *passive-label*)
+           (setf (gethash stem *passive-label*)
+                 (intern ;;(concatenate 'string stem "+ED")))
+                  (string-append stem '#:+ed)
+                  (find-package :category)))))
+         (passive-category
+	  (and
+	   (boundp name-of-passive-label)
+	   (category-named/c-symbol name-of-passive-label))))
+
+   #| letting the called change the form category instead of complaining
+    (unless passive-category
+      (break "Expected there to be a category named ~A~
+              ~%Check the realization data for ~A~
+              ~%If you continue, a category with that named will be~
+              ~%constructed and used." name-of-passive-label stem)
+      (setq passive-category
+            (find-or-make-category-object
+             name-of-passive-label :def-category))) |#
+
+    passive-category ))
