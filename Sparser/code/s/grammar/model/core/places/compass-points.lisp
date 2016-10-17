@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "compass points"
 ;;;   Module:  "model;core:places:"
-;;;  version:  January 2016
+;;;  version:  October 2016
 
 ;; initiated in 1/9/95, 2/24 added string printer. 
 ;; 0.1 (11/27/99) reworked them using realizations and implicit indexing. 
@@ -34,8 +34,8 @@
 
 (defun define-compass-point (string abbrev &optional ward)
   (let* ((brackets (if ward
-		             '( .[np np]. )
-		             '( .[np )))
+                     '( .[np np]. )
+                     '( .[np )))
          (word (or (word-named string) ;; take whatever the original brackets are
                    (define-function-word string 
                        :form 'noun
@@ -54,7 +54,10 @@
                          :referent i)))
          ;; /////////// is this combination worth a tree family?
          ;; // or at least a schema to associate with it?
-         (adj (define-adjective (concatenate 'string string "ern")))
+         (adj (unless ward
+                (let ((word (resolve/make (string-append string "ern"))))
+                  (assign-brackets-to-adjective word)
+                  word)))
          (adj-rule
           (unless ward
             (define-cfr category::direction `(,adj)
