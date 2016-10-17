@@ -117,20 +117,22 @@
     (etypecase lhs-category
       (category)
       (symbol
-       #+ignore(unless (eq lhs-category :passive)
-         (break "Unanticipated keyword used as the explicit ~
+       (unless (eq lhs-category :passive)
+         (error "Unanticipated keyword used as the explicit ~
          category in ~%a form rule: ~A" lhs-category))
-;       (let ((passive-category
-;              (lookup-passive-counterpart promulgated-label)))
-;         (if passive-category
-;           (setq lhs-category passive-category)
-;           (else
-             (setq lhs-category promulgated-label)
-             (setq coerced-form (category-named 'verb+passive)))); )))
+      #| (let ((passive-category
+              (lookup-passive-counterpart promulgated-label)))
+         (push-debug `(,passive-category ,promulgated-label))
+         (lsp-break "passive of ~a" right-edge)
+         (if passive-category
+           (setq lhs-category passive-category)
+           (else |#
+       (setq lhs-category promulgated-label)
+       (setq coerced-form (category-named 'vg+passive)))) ;;)))
     
     
     (setf (edge-category edge) lhs-category)
-    (setf (edge-form edge) (or coerced-form
+    (setf (edge-form edge) (orcoerced-form
                                (cfr-form rule)
                                (edge-form head-edge)))
     (setf (edge-rule edge) rule)
@@ -200,6 +202,25 @@ sp> (ir 938)
 The runtime decoding is organized by do-explicit-rule-completion in
 analyzers/psp/edges/cs.lisp ('cs' for 'context sensitive') and
 ends up in form-rule-completion/explicit-lhs above. 
+
+
+
+Fallback erk 
+Better: nil
+Worse: (11 3)
+aspp2 
+Better: nil
+Worse: (73 70 69 61 59 56 54 48 47 44 43 40 36 34 31 25 20 18 3)
+dry-run 
+Better: (7)
+Worse: (42 41 27)
+dec-test 
+Better: (36 12)
+Worse: (50 38 23 22)
+overnight 
+Better: nil
+Worse: (20 15 13)
+
 
 |#
 
