@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  August 2016
+;;;  version:  October 2016
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -21,7 +21,8 @@
 (define-category endurant 
   :specializes top
   :binds ((number)
-          (quantifier))
+          (quantifier)
+          (name))
   :documentation
   "Endurants (aka objects, things) have an identity that doesn't depend
  on the identity of their parts, see axe handles and greek ships. The
