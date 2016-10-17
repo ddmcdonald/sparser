@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  0.1 December 2012
+;;;  version:  November 2016
 
 ;; initiated on 12/13/99. Debugged 12/26. 2/11/07 Added rule definition.
 ;; 8/2 revised to instantiated the symbol, which means you get rules like
@@ -55,7 +55,7 @@
       ;; "asparagus" and "water" would be good examples of the wrong
       ;; thing happening for other reasons.
       (let ((expr `(define-category ,symbol
-                     :specializes kind
+                     :specializes endurant
                      :instantiates ,symbol
                      :bindings (name ,word) ;; n.b. it's a plist
                      :realization (:common-noun ,string))))
@@ -98,7 +98,7 @@
     (let* ((name (intern (symbol-name (word-symbol w))
                          (find-package :sparser))) ;; not! *category-package*
            (expr `(define-category ,name
-                    :specializes event
+                    :specializes perdurant
                     :instantiates ,name)))
       (setq category (eval expr))
       category)))

@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  September 2016
+;;;  Version:  October 2016
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -340,9 +340,9 @@
   (case pos
     (:noun
      ;; c.f. model/core/kinds/object.lisp
-     (category-named 'kind))
+     (category-named 'endurant))
     (:verb
-     (category-named 'event)) ;; see upper-model
+     (category-named 'process)) ;; see upper-model
     (:adjective
      ;; c.f. mode/core/kinds/upper-model.lisp
      (category-named 'modifier))

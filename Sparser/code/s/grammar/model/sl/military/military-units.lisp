@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2012  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2012,2016  David D. McDonald  -- all rights reserved
 
 ;;;     File:  "military-units"
 ;;;   Module:  model/sl/military
-;;;  version:  November 2012
+;;;  version:  October 2016
 
 ;; Initiated 2/22/07. Moved in to generic military and tweaked 11/24/12
 
@@ -15,7 +15,7 @@
 ;;;------
 
 (define-category type-of-military-unit
-  :specializes kind
+  :specializes named-type
   :instantiates :self
   :binds ((name :primitive word)
 	  (abbreviations  :primitive list))
@@ -47,7 +47,7 @@
 ;;;------------------
 
 (define-category military-unit
-  :specializes kind  ;;/// fix
+  :specializes social-agent
   :instantiates self
   :binds ((type . military-unit-type)
           (force . military-force)))

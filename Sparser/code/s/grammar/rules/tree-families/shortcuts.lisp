@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2016 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "shortcuts"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.0 January 2015
+;;;  version:  October 2016
 
 
 ;; Started 4/3/09. Modeled on [model;core:kinds:object] Modified
@@ -393,8 +393,8 @@ broadly speaking doing for you all the things you might do by hand.
 
 
 ;;--- Interjection
-
-(defun sentential-interjection (string-for-interjection)
+;; Donesn't appear to have callers. All converted to speech acts
+#+ignore(defun sentential-interjection (string-for-interjection)
   ;; "ok" "goodbye"  All instances right now are in checkpoint/vocabulary.lisp
   (let* ((name (name-to-use-for-category string-for-interjection))
          (form
@@ -418,57 +418,40 @@ broadly speaking doing for you all the things you might do by hand.
          (form
           `(define-category ,name
 	     :instantiates :self ;; place for generalization
-             :specializes event
+             :specializes perdurant
              :binds ((subject . individual))
              :realization
              (:tree-family intransitive
-	          :mapping ((s . event)
-                        (vp . event)
-                        (np/subject . individual)
+	          :mapping ((s . perdurant)
+                        (vp . perdurant)
+                        (np/subject . endurant)
                         (agent . subject))
               :verb ,string-for-verb))))
     (eval form)))
 
-#|
-(define-category-abbreviation-class sv intransitive
-  :parameter-defaults ((subject . individual)))
-|#
-;; envisioned -- needs the customized rspec to be designed
-#+ignore(defun sv (verb &optional super-category &key instantiates subject)
-  (let* ((category-name (name-to-use-for-category verb))
-         (subject-restriction (or subject 'individual))
-         (specializes (or super-category 'event))
-         (category-instantiated (or instantiates :self))
-         (form
-          `(define-category ,category-name
-             :instantiates ,category-instantiated
-             :specializes ,specializes
-             :binds ((subject . ,subject-restriction))
-             :index (:key subject))))
-    (let ((category (eval form)))
-      category)))
+
              
 (defun svo (string-for-verb)
   (let* ((name (name-to-use-for-category string-for-verb))
          (form
           `(define-category ,name
 	      :instantiates :self ;; place for generalization
-             :specializes event
-             :binds ((subject . individual)
-                     (object . individual))
+             :specializes perdurant
+             :binds ((subject . endurant)
+                     (object . endurant))
              :realization
              (:tree-family transitive
-	      :mapping ((s . event)
-                        (vp . event)
+	      :mapping ((s . process)
+                        (vp . process)
                         (vg . :self)
-                        (np/subject . individual)
-                        (np/object . individual)
+                        (np/subject . endurant)
+                        (np/object . endurant)
                         (agent . subject)
                         (patient . object))
               :verb ,string-for-verb)))
          (category (eval form)))
     (let* ((bootstap-rule
-            `(def-cfr event (,name individual)
+            `(def-cfr event (,name endurant)
                :form vp
                :referent (:head left-edge
                           :bind (object right-edge))))
@@ -499,14 +482,14 @@ broadly speaking doing for you all the things you might do by hand.
          (form
           `(define-category ,name
              :instantiates :self ;; place for generalization
-             :specializes event
+             :specializes perdurant
              :binds ((subject . individual))
              :realization
              (:tree-family intransitive-with-preposition
-	      :mapping ((s . event)
-                        (vp . event)
+	      :mapping ((s . process)
+                        (vp . process)
                         (vg . :self)
-                        (np/subject . individual)
+                        (np/subject . endurant)
                         (prep . ,preposition)
                         (agent . subject))
               :verb ,verb)))
@@ -520,21 +503,21 @@ broadly speaking doing for you all the things you might do by hand.
   (let* ((name (name-to-use-for-category string-for-verb))
 	 (form
 	  `(define-category ,name
-         :instantiates :self ;; place for generalization
-	     :specializes event
-	     :binds ((subject . individual)
-                 (location . location)) ;; where . location
+               :instantiates :self ;; place for generalization
+               :specializes perdurant
+               :binds ((subject . endurant)
+                       (location . location)) ;; where . location
 	     :realization (:tree-family transitive-location
-	                   :mapping ((s . event)
-                                 (vp . event)
-                                 (vg . :self)
-                                 (loc1 . deictic-location)
-                                 (loc2 . location)
-                                 (loc3 . location) ;; duh, but
-                                 ;; spatial-orientation has gone away
-                                 (np/subject . individual)
-                                 (agent . subject)
-                                 (location . location))  ;; location . where
+	                   :mapping ((s . process)
+                                     (vp . process)
+                                     (vg . :self)
+                                     (loc1 . deictic-location)
+                                     (loc2 . location)
+                                     (loc3 . location) ;; duh, but
+                                     ;; spatial-orientation has gone away
+                                     (np/subject . endurant)
+                                     (agent . subject)
+                                     (location . location))  ;; location . where
                        :verb ,string-for-verb))))
     (eval form)))
 
@@ -545,7 +528,7 @@ broadly speaking doing for you all the things you might do by hand.
 (defun c3-sv-optional-o (verb super-category 
                          &key restrict mixin subject object)
   (unless super-category
-    (setq super-category 'event))
+    (setq super-category 'process))
   (unless subject object
     (error "Need subject and object specified"))
   (let ((subj-v/r (car subject))
@@ -576,6 +559,7 @@ broadly speaking doing for you all the things you might do by hand.
     (eval form))))
 
 
+#+ignore  ;; only used in unloaded biology/nfkappb
 (defun vo (verb super-category &key object)
   ;;// rule-for, restrict, mixin
   ;; Based on verb+direct-object, the variable for the object
@@ -606,6 +590,7 @@ broadly speaking doing for you all the things you might do by hand.
 
 
 ;; Used in checkpoint vocabulary for 'open up'
+#+ignore  ;; commented out 'open up'
 (defun sv-prep-marked-o (verb preposition)
   (unless (and (stringp verb) (stringp preposition))
     (error "Arguments must be string giving the base for of words"))
@@ -734,8 +719,7 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defun passive-premodifier (verb noun slot)
   (push-debug `(,verb ,noun ,slot)) 
-  (if
-   nil
+  (if nil
    (break "got to passive premod")
    noun))
 
@@ -776,8 +760,8 @@ broadly speaking doing for you all the things you might do by hand.
 (defun svo/nominal/adjective (verb nominalization adjective
                               &key subject theme)
   (declare (ignore adjective))
-  (let ((subject-restriction (or subject 'individual))
-        (theme-restriction (or theme 'individual)))
+  (let ((subject-restriction (or subject 'endurant))
+        (theme-restriction (or theme 'endurant)))
     (let* ((name (name-to-use-for-category nominalization))
            (form
             `(define-category ,name
@@ -816,10 +800,13 @@ broadly speaking doing for you all the things you might do by hand.
 
 
 
-
-;;;
+;;;----------------------------------------------------------------------
+;;; Auto-defining definition forms for subcategories of a given category
+;;;---------------------------------------------------------------------
 
 (defmacro define-type-category-constructor (name-of-type-category)
+  "Macro for defining a category-defining function that's tailored
+   to a particular super category."
   `(define-type-category-constructor/expr
     ',(category-named name-of-type-category t)))
 

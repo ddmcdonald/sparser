@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2011-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 
 ;;;    File: "vocabulary"
 ;;;  Module: "grammar/model/sl/checkpoint/
-;;; version: August 2011
+;;; version: October 2011
 
 ;; Initiated 4/8/09. Elaborated through 9/26/09. 8/4/11 pulled out the ETF
 ;; since it can't be found there. 8/5 commented out "drive" and others  that
@@ -79,7 +79,7 @@
 ;;--- but the preposition goes with the verb
 ;;(sv-prep-marked-o "get" "out of") ;;/// 6/8/09 the location is winning
    ;; Need general treatment of "get" -- marking the irregulars
-(sv-prep-marked-o "open" "up") 
+;;(sv-prep-marked-o "open" "up") -- killed the shortcut
 
 ;;--- These don't take arguments, but they could have modifiers
 ;; Right (5/30) now they're coming out as just the category

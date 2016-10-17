@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2013,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "forces"
 ;;;   Module:  "model:sl:military:"
-;;;  version:  December 2013
+;;;  version:  October 2016
 
 ;; For any sort of group that can engage in military operations.
 
@@ -17,7 +17,7 @@
 ;;;--------
 
 (define-category military-force
-  :specializes kind
+  :specializes social-agent
   :instantiates self
   :binds ((name  :primitive word)
           (abbrev :primitive word)
