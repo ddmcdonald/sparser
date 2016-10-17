@@ -117,16 +117,16 @@
     (etypecase lhs-category
       (category)
       (symbol
-       #+ignore(unless (eq lhs-category :passive)
+       (unless (eq lhs-category :passive)
          (break "Unanticipated keyword used as the explicit ~
          category in ~%a form rule: ~A" lhs-category))
-;       (let ((passive-category
-;              (lookup-passive-counterpart promulgated-label)))
-;         (if passive-category
-;           (setq lhs-category passive-category)
-;           (else
+       (let ((passive-category
+              (lookup-passive-counterpart promulgated-label)))
+         (if passive-category
+           (setq lhs-category passive-category)
+           (else
              (setq lhs-category promulgated-label)
-             (setq coerced-form (category-named 'verb+passive)))); )))
+             (setq coerced-form (category-named 'verb+passive)))))))
     
     
     (setf (edge-category edge) lhs-category)
