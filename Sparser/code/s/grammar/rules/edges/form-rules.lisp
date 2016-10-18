@@ -132,7 +132,7 @@
     
     
     (setf (edge-category edge) lhs-category)
-    (setf (edge-form edge) (orcoerced-form
+    (setf (edge-form edge) (or coerced-form
                                (cfr-form rule)
                                (edge-form head-edge)))
     (setf (edge-rule edge) rule)
