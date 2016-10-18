@@ -15,6 +15,8 @@
 
 (in-package :sparser)
 
-(unless (eq :biology common-lisp-user::script)
-  (svo "use"))
+;; 10/18/16 cleaning up. Turning this off until we have a better use-case
+
+;; (unless (eq :biology common-lisp-user::script)
+;;  (svo "use"))
 
