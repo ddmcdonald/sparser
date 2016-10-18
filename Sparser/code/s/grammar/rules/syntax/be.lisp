@@ -139,22 +139,19 @@
 ;;---- "be" + "en" (passive)
 
 (def-form-rule (be verb+ed)
-  :new-category  :passive
   :form vg+passive
   :referent (:head right-edge
-             :function add-tense/aspect left-edge right-edge))
+             :function check-passive-and-add-tense/aspect left-edge right-edge))
 
 (def-form-rule (be vg+ed)
-  :new-category  :passive
   :form vg+passive
   :referent (:head right-edge
-             :function add-tense/aspect left-edge right-edge))
+             :function check-passive-and-add-tense/aspect left-edge right-edge))
 
 (def-form-rule (be vg+passive) ;; "were previously used"
-  :new-category  :passive
   :form vg+passive
   :referent (:head right-edge
-             :function add-tense/aspect left-edge right-edge))
+             :function check-passive-and-add-tense/aspect left-edge right-edge))
 
  
 
