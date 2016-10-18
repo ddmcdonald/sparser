@@ -38,6 +38,7 @@
   ;; next two are in sl/biology/rhetoric.lisp, which could move
   (defun establish-discourse-relations (sentence)
     (declare (ignore sentence)))
+  (defun note-biological (referent) (declare (ignore referent)))
   (defun assess-relevance (sentence)
     (declare (ignore sentence))))
 
