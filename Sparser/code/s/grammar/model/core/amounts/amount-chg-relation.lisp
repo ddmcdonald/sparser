@@ -17,7 +17,7 @@
 ;;;------------
 
 (define-category change-by-amount  ;; "rose 15%", "dropped to $101 million" 
-  :specializes event
+  :specializes transition
   :instantiates self
   :binds ((amount)  ;; too many kinds to list
           (direction))  ;; should be " . direction", except that without
@@ -81,7 +81,7 @@
 ;;;-----------------------------
 
 (define-category changed-in-direction
-  :specializes event
+  :specializes transition
   :instantiates self
   :binds ((direction . direction))
   :index (:temporary :key direction))

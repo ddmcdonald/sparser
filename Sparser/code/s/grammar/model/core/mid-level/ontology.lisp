@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ontology"
 ;;;   Module:  "model;core:relations:"
-;;;  version:  August 2016
+;;;  version:  October 2016
 
 ;; Initiated 12/3/15.
 
@@ -42,7 +42,7 @@ files once an area looks big enough to warrant it.  |#
  so should cluster with others like this |#
 
 ;;/// probably OBE -- move to C3 specific file ?
-(define-mixin-category physical-surface
+#+ignore(define-mixin-category physical-surface
   :specializes quality  ;; maybe border?
   :binds ((color . color))
   ;; Realization was for C3. Doesn't really make sense for

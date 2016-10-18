@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "cars"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  April 2015
+;;;  version:  October 2016
 
 ;; Moved here from ISR 4/10/16. 
 
@@ -43,15 +43,8 @@ These are the place of the artifact creation
 
 (define-category motor-vehicle
   :specializes artifact
-  :mixins (physical-surface ;;// has to be generalized 
-           object
+  :mixins (object
            named-type ;; "Honda"
-;;//// Timing issue. This used to load almost last.
-;; Particularly the location module was already loaded.
-;; Could take middle level categories like these and
-;; have a two-stage loader like we do with other moduless
-;; Note that the ISR (C3) methods require these mixins
-           has-spatial-location ;;// commits us to actual object
            spatial-region
            container
            can-change-location )
@@ -62,7 +55,8 @@ These are the place of the artifact creation
   ;; SUV, sedan, hybrid, truck - not all exclusive
   ;; It's a label/classification that applies to the whole entity
   ;; so it's probably not an attribute
-  :bindings (type-of 'motor-vehicle) ;;// that quote is an
+  :bindings (type-of 'motor-vehicle)
+  ;;// that quote is a
   ;; quirk of the  likely out-mooded assumptions of the code in
   ;; attach-bindings-to-category
   :index (:permanent :key name)

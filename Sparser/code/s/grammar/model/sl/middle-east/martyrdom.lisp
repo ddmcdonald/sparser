@@ -35,12 +35,12 @@ Has nominal form martyrdom
 
 (define-category martyrdom
   :instantiates self  ;; not really
-  :specializes  event ;; very abstract - the concept
+  :specializes  state ;; very abstract - the concept
   :realization (:common-noun "martyrdom"))
 
 (define-category martyred
   :instantiates self
-  :specializes  event
+  :specializes  achievement
   :binds ((who person)
           (what . martyrdom)) ;; syntactic placeholder
   :index (:key who)

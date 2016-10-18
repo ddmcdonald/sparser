@@ -211,7 +211,6 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *Banking*
     (gload "banking;loader"))
 
-  (isr-required-categories)
   (gate-grammar *ISR*
     (gload "isr;loader"))
   (gload "sit-rules;loader") ;; depends on ISR categories

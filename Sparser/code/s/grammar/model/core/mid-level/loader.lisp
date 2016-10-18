@@ -17,5 +17,4 @@
 
 (gload "mid-level;relations")
 
-(defun isr-required-categories ()
-  (gload "mid-level;cars"))
+(gload "mid-level;cars")

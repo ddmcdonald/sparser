@@ -18,7 +18,11 @@
 
 (define-category job-event
   :instantiates nil
-  :specializes  event )
+  :specializes  transition
+  :binds ((person . person)
+          (position . position)
+          (title . title)
+          (company . company)))
 
 
 ;;;----------------
@@ -27,24 +31,13 @@
 
 (define-category get-position
   :instantiates nil
-  :specializes  job-event
-  :binds ((person . person)
-          (position . position)
-          (title . title)
-          (company . company)))
+  :specializes  job-event)
+  
 
 (define-category leave-position
   :instantiates nil
-  :specializes  job-event
-  :binds ((person . person)
-          (position . position)
-          (title . title)
-          (company . company)))
+  :specializes  job-event)
 
 (define-category retain-position
   :instantiates nil
-  :specializes  job-event
-  :binds ((person . person)
-          (position . position)
-          (title . title)
-          (company . company)))
+  :specializes  job-event)

@@ -19,14 +19,14 @@
 ;;; the object
 ;;;------------
 
-(define-category outbreak ;; the head word by itself
+(define-category outbreak-of-disease ;; the head word by itself
   :specializes perdurant
   :instantiates self
   :realization ((:common-noun "outbreak")))
 
 ;;captures simple case of "outbreak of X"
 (define-category outbreak-pathogen
-  :specializes outbreak
+  :specializes outbreak-of-disease
   :instantiates self
   :binds ((pathogen pathogen)
           (outbreak outbreak))

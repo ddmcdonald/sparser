@@ -20,7 +20,7 @@
 ;;;----------------------------
 
 (define-category report-verb
-  :specializes event
+  :specializes process
   :instantiates self
   :binds ((name . (:primitive (:or word polyword))))
   :index (:permanent :key name))

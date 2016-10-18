@@ -32,7 +32,7 @@
 
 (define-category  die
   :instantiates self
-  :specializes  event
+  :specializes accomplishment ;; it can take a while
   :binds ((who person) ;; animate? What about the birds -- need "animal" ??
           (of-what pathogen)) ;;e.g. age, disease, warfare, crime, accident, etc.
   ;;:index (:key who) doesn't work for "die of Y" since no who variable used
@@ -60,7 +60,7 @@
 
 (define-category kill
   :instantiates self
-  :specializes  event
+  :specializes achievement
   :binds ((who person)
           (by-whom person))
   :index (:key who) ;; ought to suffice
@@ -78,7 +78,7 @@
 ;; the substitutions
 (define-category assassinate
   :instantiates self
-  :specializes  event
+  :specializes  kill
   :binds ((who person)
           (by-whom person))
   :index (:key who) ;; ought to suffice

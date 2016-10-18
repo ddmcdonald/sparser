@@ -20,8 +20,12 @@
 ;;;------------
 
 (define-category in-predicate
-  :specializes event
-  :instantiates self)
+  :specializes state
+  :instantiates self
+  :binds ((head :primitive word)
+          (who)
+          (of-what)
+          (np-item)))
 
 ;;an attempt at a more general way of defining in-predicate
 ;;based on the code from shortcuts and define-function-word
@@ -33,10 +37,6 @@
              :specializes in-predicate
              :instantiates self
              ;;:rule-label in-predicate
-             :binds ((head :primitive word)
-                     (who)
-                     (of-what)
-                     (np-item))
              :index (:key of-what)
              :realization ((:adjective ,string)
                            (:tree-family transitive/passive

@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "movement"
 ;;;   Module:  "grammar/model/core/kinds/"
-;;;  version:  August 2015
+;;;  version:  October 2015
 
 ;; Initiated 3/20/14. Elaborated 3/31/14. 4/14/14 Moved to core/kinds/
 ;; and expunged of ISR vocabulary. 5/12/14 Working on getting 
@@ -34,7 +34,7 @@ Cases:
 |#
 
 (define-mixin-category can-change-location
-  ;; :specialies  ??  predicate ???
+  :specializes relation
   :binds ((former-location) ;; where it was before some event
           (present-location)) ;; where it is afterwards
   :documentation 

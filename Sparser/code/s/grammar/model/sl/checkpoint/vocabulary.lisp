@@ -16,35 +16,39 @@
 ;;-- simple things
 
 ;; vehicles
-(np-head "car")
-(np-head "vehicle")
-(np-head "jeep")
-(np-head "bus")
-(np-head "automobile")
-(np-head "bicycle")
-(np-head "boat")
-(np-head "motorcycle")
-(np-head "van")
-(np-head "wagon")
-(np-head "truck")
+(np-head "car" :super 'motor-vehicle)
+;;(np-head "vehicle") move to core/mid-level/motor-vehicle
+(np-head "jeep" :super 'motor-vehicle)
+(np-head "bus" :super 'motor-vehicle)
+(np-head "automobile" :super 'motor-vehicle)
+(np-head "bicycle" :super 'motor-vehicle)
+(np-head "boat" :super 'motor-vehicle)
+(np-head "motorcycle" :super 'motor-vehicle)
+(np-head "van" :super 'motor-vehicle)
+(np-head "wagon" :super 'motor-vehicle)
+(np-head "truck" :super 'motor-vehicle)
 
+#| hide these while waiting for better handling
+   of parts of things -- these should take 'vehicle'
+   as an argument
 ;; vehicle parts
 (np-head "trunk")
 (np-head "hood")
 (np-head "door")
 (np-head "wheel")
 
+;; And these don't have anything in common other than
+;; being things the sentry can ask you for. 
 (np-head "ground")
 (np-head "name")
 (np-head "business")
 (np-head "paper")
 (np-head "id")
 (np-head "identification")
+|#
 
 
-;; Load-timing problem. This references categories that aren't defined
-;; when the ETF are loaded. So either they're variablized, which is odd
-;; at best, or they're loaded late.
+#| Very useful, but need more organization / consequence
 
 (sv-location '("come" :past-tense "came"))
 (sv-location '("get" :past-tense "got"))
@@ -90,8 +94,9 @@
 (sv "halt")
 (sv "proceed")
 (sv "stop")
-(sv "live")
 ;; (sv "drive") conflicts with definition in /core/places/move.lisp
+
+|#
 
 
 ; (checkpoint-regression-test)
