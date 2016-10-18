@@ -153,8 +153,6 @@
 (define-lambda-variable 'has-determiner
     nil category::top)
 
-(define-lambda-variable 'has-possessive
-    nil category::top)
 
 (define-lambda-variable 'approximator
     nil category::number)
@@ -165,9 +163,11 @@
 (define-lambda-variable 'amount-of-time
     nil category::top)
 
+#|
+No longer used -- remove soon
 (define-lambda-variable 'copular-verb
     nil category::top)
-
+|#
 (define-lambda-variable 'compared-to 
     nil category::top)
 
@@ -572,6 +572,16 @@
     (make-vg-aux aux vg))
   (:method ((aux individual) (vg individual))
     (make-vg-aux aux vg)))
+
+(defun check-passive-and-add-tense/aspect (aux vg)
+  (let ((vg-cat
+         (cond ((category-p vg) vg)
+               ((individual-p vg) (itype-of vg))
+               (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb")))))
+    (if (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
+                      '(PASSIVE/WITH-BY-PHRASE)))
+        (revise-parent-edge :form category::vg))
+    (add-tense/aspect aux vg)))
 
 (defgeneric add-tense/aspect-to-subordinate-clause (aux sc)
   (:method ((aux category) (sc category))

@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  October 2016
 
 ;; Simple function lifted from syntax-functions 8/30/16
 
@@ -100,11 +100,12 @@
 ;;;-----------------------
 
 (defun is-passive? (edge)
-  (declare (special category::subordinate-clause))
+  (declare (special category::subordinate-clause category::vp+passive
+                    category::vg+passive category::verb+passive))
   (cond
     ((eq (edge-form edge) category::subordinate-clause)
      (is-passive? (edge-right-daughter edge)))
-    (t
-     (let ((cat-string (symbol-name (cat-name (edge-category edge)))))
-       (and (> (length cat-string) 3)
-	    (equalp "+ED" (subseq cat-string (- (length cat-string) 3))))))))
+    ((eq (edge-form edge) category::vp+passive) t)
+    ((eq (edge-form edge) category::vg+passive) t)
+    ((eq (edge-form edge) category::verb+passive) t)
+    (t nil)))
