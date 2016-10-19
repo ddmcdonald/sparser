@@ -504,7 +504,11 @@
   (or
    (vg-compatible? (edge-form e))
    (eq category::not (edge-category e))
-   (eq category::time (edge-category e))))
+   (and
+    (eq category::time (edge-category e))
+    (not
+     (loop for ee in (all-edges-at e)
+        thereis (eq category::subordinate-conjunction (edge-form ee)))))))
 
 (defun gross-infinitive-chunker-test (chunk)
   "Called from delimit-next-chunk when the chunk is finished.
