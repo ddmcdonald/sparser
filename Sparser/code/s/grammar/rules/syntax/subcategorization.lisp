@@ -275,12 +275,13 @@
     (unless prep (error "Undefined preposition: ~a" prep-pname))
     (assign-preposition word prep)))
 
+#|
 (defmethod assign-preposition ((verb word) (prep word))
   (assign-subcat/expr verb nil `(:prep ,prep)))
 
 (defmethod assign-preposition ((verb word) (prep polyword))
   (assign-subcat/expr verb nil `(:prep ,prep)))
-
+|#
 
 ;;--- query the record
 
@@ -772,8 +773,8 @@
                        (define-disjunctive-lambda-variable variable category)))
                     ;; else
                     (define-disjunctive-lambda-variable variable category))))
-        (when (and variable *subcat-use*)
-          (record-subcat-use label (itype-of head) variable))
+        (when (and variable *subcat-use* (not *subcat-test*))
+          (record-subcat-use label (itype-of head) variable item))
         variable ))))
 
 (defun find-subcat-labels (item var head)
@@ -992,28 +993,55 @@
                  :test #'equal)))))
     
   
-(defparameter *subcat-use* nil ;; (make-hash-table :size 2000)
+(defparameter *subcat-use*   nil ;;(make-hash-table :size 2000)
   )
 
-(defun record-subcat-use (l category variable)
-  (let* ((label (pname l))
+(defparameter *record-subcat-types* t)
+
+(defun record-subcats (&optional record-subcat-types)
+  (if *subcat-use* (clrhash *subcat-use*)
+      (setq *subcat-use* (make-hash-table :size 2000)))
+  (setq *record-subcat-types* record-subcat-types))
+
+(defun arg-type (arg)
+  (etypecase arg
+    (referential-category (itype-of arg))
+    (individual (itype-of arg))
+    (string 'string)
+    (number 'number)
+    (word 'word)
+    (polyword 'word)
+    (cons 'cons)
+    (null 'null)))
+    
+
+(defun record-subcat-use (l category variable item)
+  (let* ((label
+          (if *record-subcat-types*
+              (arg-type item)
+              (pname l)))
          (c-name (cat-name category))
          (v-name (var-name variable))
          (var-alist (or
-                     (assoc v-name (gethash c-name *subcat-use*))
+                     (assoc v-name (gethash category *subcat-use*) :test #'equalp)
                      (car (push (list v-name (list label 0))
-                                (gethash c-name *subcat-use*)))))
-         (l-val (assoc label (cdr var-alist))))
+                                (gethash category *subcat-use*)))))
+         (l-val (assoc label (cdr var-alist) :test #'equal)))
+    (declare (special label l-val))
     (if l-val
-        (incf (second l-val))
+        (incf (second l-val))       
         (nconc var-alist (list (list label 1))))))
 
-(defun show-subcat-use ()
+(defun show-subcat-use (&optional filter-cat)
   (let ((hh (hal *subcat-use*)))
     (loop for h in hh
        do
          (setf (cdr h)
                (sort (cdr h) #'string< :key #'car)))
-    (np (sort hh #'string< :key #'car))))
+    (np (sort (loop for h in hh
+                 when (or (not filter-cat)
+                          (itypep (car h) filter-cat))
+                 collect h)
+              #'string< :key #'(lambda (s)(cat-name (car s)))))))
 
 
