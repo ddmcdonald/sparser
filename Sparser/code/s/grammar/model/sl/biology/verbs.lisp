@@ -116,6 +116,7 @@
   :restrict ((object cell-entity))
   :realization
   (:verb "transform"
+         :etf (svo-passive)
          :of object))
 ;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
