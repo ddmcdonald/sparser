@@ -5493,3 +5493,57 @@ NIL
                 *non-comlex-new-words* ,(length *non-comlex-new-words*)
                 *comlex-new-words* ,(length *comlex-new-words*)))
 
+(defparameter *vars* (make-hash-table :size 2000 :test #'equal))
+
+(defun collect-var-info ()
+  (declare (special *vars*))
+  (clrhash *vars*)
+  (loop for c in *categories-defined* do
+       (loop for v in (cat-slots c)
+          do
+            (let* ((vv v)
+                   (vr (var-value-restriction vv))
+                   vrlist)
+              (declare (special vv vr vrlist))
+              (setq vrlist
+                    (or (assoc vr (gethash (pname vv) *vars*) :test #'equalp)
+                        (car (push (list vr) (gethash (pname vv) *vars*)))))
+              (nconc vrlist (list c))))))
+
+
+(defun find-multi-vars ()
+  (declare (special *vars*))
+  (collect-var-info)
+  (let ((res
+         (loop for h in (sort (hal *vars*) #'string< :key #'car)
+            when (or (cddr h)
+                     (cddr (second h)))
+            collect
+              `(,(car h)
+                 ,.(loop for al in (cdr h)
+                      collect
+                        `(,(cond
+                            ((category-p (car al))
+                             (cat-name (car al)))
+                            ((and (consp (car al))
+                                  (eq (caar al) :or))
+                             `(:or ,.(mapcar #'cat-name (cdar al))))
+                            (t
+                             (car al)))
+                           ,.(sort
+                              (mapcar #'cat-name (cdr al))
+                              #'string<)))))))
+    (loop for r in res
+       do
+         (format t "~%(~s" (car r))
+         (loop for vrr in (cdr r)
+            do
+              (format t "~%     (~a ~a)"
+                      (car vrr)
+                      (string-downcase (format nil "~a" (cdr vrr))))
+              )
+         (format  t ")"))))
+       
+
+
+
