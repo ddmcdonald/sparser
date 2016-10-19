@@ -1053,6 +1053,10 @@
   :pattern ( s subordinate-relative-clause )
   :action (:function clause-subordinate-relative-clause  first second))
 
+(define-debris-analysis-rule clause-comma-subordinate-relative-clause
+  :pattern ( s "," subordinate-relative-clause )
+  :action (:function clause-subordinate-relative-clause  first third))
+
 (defun clause-subordinate-relative-clause (s sub-clause-edge)
   (let* ((target (find-target-satisfying
                   (right-fringe-of s)
