@@ -51,13 +51,17 @@
                        :if-does-not-exist :create))
            (if *use-xml*
                (format *sentence-results-stream*
-                       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+                       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>~%<article>~%")
                )))))
 
 
 (defun close-article-semantic-file-if-needed (article)
   (when (and *article-semantics-directory*
              (streamp *sentence-results-stream*))
+    (if *use-xml*
+        (format *sentence-results-stream*
+                       "~%</article>~%")
+               )
     (close *sentence-results-stream*))
   (setq *sentence-results-stream* nil))
 
@@ -124,10 +128,7 @@
   ;; we assume that this is called immediately after the sentence is parsed
   (cond (*use-xml*
          (format stream "~%<sentence-text>")
-         (if
-          (find-package :xmls)
-          (funcall (intern "WRITE-ESCAPED" (find-package :xmls)) (sentence-string s) stream)
-          (write (sentence-string s) :stream stream))
+         (prin-escaped (sentence-string s) stream)
          (format stream "</sentence-text>~%"))
         (t         
          (format stream "~%;;;___________________~%(sentence-text ~s)%~%"
@@ -155,6 +156,12 @@
                        (spire-tree ref))))))
        stream))
   (terpri stream))
+
+(defun prin-escaped (str stream)
+  (if
+   (find-package :xmls)
+   (funcall (intern "WRITE-ESCAPED" (find-package :xmls)) str stream)
+   (write-string str stream)))
 
 (defmethod write-sem ((s sentence) stream)
   (setq ddm-util::*indentation* 0) ;; make sure indentation is restarted
@@ -195,15 +202,16 @@
          (finish-cat stream))))
 
 (defmethod write-sem ((w string) stream)
-  (space-prin1 (pname w) stream))
+  (if (not *use-xml*) (princ " " stream))
+  (prin-escaped w stream))
 (defmethod write-sem ((w word) stream)
-  (space-prin1 (pname w) stream))
+  (write-sem (pname w) stream))
 (defmethod write-sem ((w polyword) stream)
-  (space-prin1 (pname w) stream))
+  (write-sem (pname w) stream))
 (defmethod write-sem ((w symbol) stream)
-  (lcase-space-prin1 (pname w) stream))
+  (write-sem (string-downcase (pname w)) stream))
 (defmethod write-sem ((w number) stream)
-  (lcase-space-prin1 w stream))
+  (format  stream " ~a" w))
 (defmethod write-sem ((val cons) stream)
   (start-cat "set" stream)
   (loop for element in val
@@ -212,7 +220,12 @@
   (finish-cat stream))
 
 (defmethod write-sem ((c referential-category) stream)
-  (lcase-space-prin1 (cat-symbol c) stream))
+  (if *use-xml*
+      (prin-escaped (concatenate 'string "<cat-ref name=\"" (pname c)) stream)
+      (start-cat c stream nil))
+  (if *use-xml*
+      (write-string "/>" stream)
+      (finish-cat stream)))
 
 
 (defun print-binding-list (bindings stream)
@@ -267,7 +280,7 @@
 
 (defun finish-cat (stream &optional (newline t))
   (if *use-xml*
-      (emit-line-continue stream "</ref-cat>")
+      (emit-line-continue stream "</cat-ref>")
       (emit-line-continue stream ")")))
 
 (defun finish-var (stream &optional (newline t))
