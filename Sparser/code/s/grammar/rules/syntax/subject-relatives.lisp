@@ -220,7 +220,9 @@
           np-ref))))))
 
 (defparameter *break-on-null-ref-in-context-needs-clause* t)
+
 (defun context-needs-clause? (np-ref vp-ref)
+  (declare (special category::APOSTROPHE-S category::parentheses))
   (let ((before (edges-before (left-edge-for-referent))))
     (declare (special before))
     (loop for e in before
