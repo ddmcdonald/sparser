@@ -8,6 +8,43 @@
 ;; Initiated 10/9/14 for personalized settings and recording what I'm doing -- ddm.
 
 (in-package :sparser)
+
+;; modeled on call in r3::run-localization
+(defun run-aspp2 (&rest args 
+                  &key (quiet t) (sweep t) (epi t) 
+                       (read t) (skip-errors t))
+  (apply #'run-an-article :id "3847091" :corpus :jan15 args))
+
+
+(defun ddm-standard ()  ;;    (ddm-standard)
+  (trace-lexicon-unpacking) (trace-morphology)
+  (setq *check-forms* t) ;; allow rule filtering by schema patern
+  (setq *report-form-check-blocks* nil)
+  (setq *debug-pronouns* nil)
+  (revert-to-regular-break)
+;  (setq *work-on-ns-patterns* t)
+  (setq *apply-document-after-actions* t)
+;  (trace-parse-edges) (trace-rule-source) 
+;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
+;  (trace-island-driving)
+  ;; (ddm-workset)
+;  (ddm-ws-ed "NoSpace hassles.lisp")
+;  (ddm-no-spaces)
+;  (ddm-doc-methods)
+;; (ddm-read-from-documents)
+;; (load-ddm-ws)
+;; (ddm-polyword-conundrum)
+;  (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
+  (ddm-ed "init/workspaces/ddm-workspace.lisp")
+  (setq *diagnose-consp-referents* t)
+  ;;     (setq *show-section-printouts* t)
+  ;; (test-dec)  (dtst nil t) (reset-dectest)
+  ;;(test-overnight) (test-erk) (test-aspp2)
+  ;;(test-jan) = dry-run   (retest)
+  ;; (hashtable-to-alist 
+  ;;(test-load-test)
+)
+
 #| 
  (asdf:load-system :r3)
  (asdf:load-system :clic/bw)   (asdf:load-system :sparser/blocks-world)
@@ -130,88 +167,14 @@
 
 
 |#
-(defun ddm-standard ()  ;;    (ddm-standard)
-  (trace-lexicon-unpacking) (trace-morphology)
-  (setq *check-forms* t) ;; allow rule filtering by schema patern
-  (setq *report-form-check-blocks* nil)
-  (setq *debug-pronouns* nil)
-  (revert-to-regular-break)
-;  (setq *work-on-ns-patterns* t)
-  (setq *apply-document-after-actions* t)
-;  (trace-parse-edges) (trace-rule-source) 
-;  (trace-scan-patterns) (trace-network) (trace-terminals-sweep)
-;  (trace-island-driving)
-  ;; (ddm-workset)
-;  (ddm-ws-ed "NoSpace hassles.lisp")
-;  (ddm-no-spaces)
-;  (ddm-doc-methods)
-;; (ddm-read-from-documents)
-;; (load-ddm-ws)
-;; (ddm-polyword-conundrum)
-;  (ddm-ed "init/versions/v4.0/workspace/abbreviations.lisp")
-  (ddm-ed "init/workspaces/ddm-workspace.lisp")
-  (setq *diagnose-consp-referents* t)
-  ;;     (setq *show-section-printouts* t)
-  ;; (test-dec)  (dtst nil t) (reset-dectest)
-  ;;(test-overnight) (test-erk) (test-aspp2)
-  ;;(test-jan) = dry-run   (retest)
-  ;; (hashtable-to-alist 
-  ;;(test-load-test)
-)
+
 
 ;; (compare-to-snapshots)
 ;; *default-snapshot-corpora* = (overnight dec-test dry-run aspp2 erk)
 ;;   (compare-to-snapshot 'overnight)
 ;; (ddm-load-article-2)  (find-corpus-sents "")
 
-(defun ddm-load-blocks-world ()
-  (ddm-load "grammar/model/sl/blocks-world/vocabulary.lisp")
-  (ddm-load "grammar/model/sl/blocks-world/experiments.lisp")
-)
 
-(defun ddm-relevant-mumble ()
-  (ddm-ed "grammar/model/sl/blocks-world/experiments.lisp")
-  (m-ed "loader.lisp")
-  (m-ed "grammar/transformations.lisp")
-  (m-ed "derivation-trees/make.lisp")
-  (m-ed "grammar/phrases.lisp")
-  (m-ed "grammar/attachment-points.lisp")
-  (m-ed "grammar/labels.lisp")
-  (m-ed "grammar/characteristics.lisp")
-  (m-ed "interface/bundles/bundle-drivers.lisp")
-  (m-ed "interface/bundles/operators-over-specifications.lisp")
-  (m-ed "interface/bundles/accessory-processing.lisp")
-  (m-ed "interface/derivations/discourse-reference.lisp")
-  (ddm-ed "interface/mumble/rspec-gophers.lisp"))
-
-(defun ddm-configurations ()
-  (ddm-ed "init/versions/v4.0/config/grammars/c3-configuration.lisp")
-  (ddm-ed "init/versions/v4.0/config/grammars/full-grammar.lisp")
-  (ddm-ed "init/versions/v4.0/config/grammars/bio-grammar.lisp")
-)
-
-(defun ddm-no-spaces ()
-  (ddm-ed "analyzers/psp/patterns/loader.lisp")
-  (ddm-ed "analyzers/psp/patterns/traces.lisp")
-  (ddm-ed "analyzers/psp/patterns/patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/edge-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/slash-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/hyphen-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/colon-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/protein-patterns.lisp")
-  (ddm-ed "analyzers/psp/patterns/hyphen-subrs.lisp")
-  (ddm-ed "analyzers/psp/patterns/edge-gophers.lisp")
-  (ddm-ed "analyzers/psp/patterns/pattern-resolvers.lisp")
-  (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp")
-  (ddm-ed "analyzers/psp/patterns/charaterize-words.lisp")
-  (ddm-ed "analyzers/psp/patterns/uniform-scan.lisp") ;; driver
-  (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
-  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
-  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
-  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
-  ;;
-  (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
 
 
 #| ---------  Pending or recent tasks
@@ -316,16 +279,6 @@ but markedly preferred AKT2.")
       period-marks-sentence-end?
 |#
 
-
-
-(defun ddm-workset ()
-  (ddm-ed "tools/basics/clos-classes.lisp")
-  (ddm-ed "objects/doc/content-methods.lisp")
-  (ddm-ed "objects/doc/content.lisp")
-  (ddm-ed "drivers/sources/document.lisp")
-  (ddm-ed "analyzers/psp/edges/lattice-operations.lisp")
-  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
-
 ;; !!! Semtree isn't walking down to report all the
 ;; content in e.g. (p "Ras bound to GTP binds to BRAF.")
 ;  post-analysis-operations  collect-model
@@ -388,46 +341,114 @@ similar effects occurred with DPI, NAC and SB203580."
 In article 2  "c-termini"
 |#
 
-(defun load-xml-to-doc-if-necessary ()
-  "If you load Sparser first and R3 second, then you can't
-   assume that the XML-reader is loaded (and you can't
-   use :r3 as a package name). This uses the definition
-   of the package as a proxy for the whole relevant body
-   of code having been loaded."
-  (unless (find-package :r3)
-    (if (boundp 'cl-user::*r3-trunk*)
-      (let ((code-dir (string-append cl-user::*r3-trunk* "code/")))
-        (cwd code-dir)
-        (load "load.lisp"))
-      (format nil "You have to set *r3-trunk*"))))
-
 
 
 ;; (setq *show-section-printouts* t)
 ;; (show-parse-performance X)
-;; (ddm-load-article-2 t)
 
-(defun ddm-load-article-2 (&optional do-not-read)
-  (load-xml-to-doc-if-necessary)
-  (let ((fn (intern (symbol-name '#:make-sparser-doc-structure)
-                    (find-package :r3)))
-        (quiet-fn (intern (symbol-name 'debug-off)
-                          (find-package :r3))))
-    (funcall quiet-fn)
-    (let* ((doc-elements
-            (funcall fn "3847091" :dir "/Users/ddm/ws/R3/r3/trunk/darpa/January5-TestMaterials"))
-           (article (car doc-elements)))
-      (sweep-document article)
-      (read-epistemic-features article)
-      (unless do-not-read
-        (read-from-document article))
-      article)))
 #| (setq article *article*)
 (setq a *)  
 (setq results (third (children a)))
 (setq s (third (children results)))
 (setq p1 (second (children *)) p2 (third (children *)))
 (setq string (content-string p2)) |#
+
+
+
+(defun ddm-corpus-location (in-list out-file)
+  (declare (ignore in-list out-file))
+  ;; Note the pathname is given in ancient Mac syntax. 
+  (setq cl-user::location-of-text-corpora
+        "Users:ddm:sift:nlp:corpus:"))
+
+(defun m-ed (string)
+  #-:sbcl (ed (concatenate 'string
+                "~/sparser/Mumble/" string))
+  #+:sbcl  (print `(**** can't call ed from SBCL yet)))
+
+(defun ddm-ed (string)
+  #-:sbcl
+  (ed (concatenate 'string 
+                   "~/sparser/Sparser/code/s/" string))
+  #+:sbcl
+  (print `(**** can't call ed from SBCL yet)))
+
+(defun ddm-load (string)
+  (load (concatenate 'string 
+                     "~/sparser/Sparser/code/s/" string)))
+
+(defun sparser-doc-ed (string)
+  (ed (concatenate 'string "~/sparser/Sparser/documentation/" string)))
+
+(defun draft-doc-ed (string)
+  (ed (concatenate 'string
+        "~/nlp/Sparser/documentation/notes-in-preparation/"
+        string)))
+
+(defun ddm-r3-notes (string)
+  (ed (concatenate 'string
+        "~/ws/R3/r3/trunk/notes/" string)))
+
+(defun ddm-ws-ed (string)
+  (ed (concatenate 'string
+                   "~/ws/Sparser local/ws/" string)))
+
+
+
+(defun ddm-load-blocks-world ()
+  (ddm-load "grammar/model/sl/blocks-world/vocabulary.lisp")
+  (ddm-load "grammar/model/sl/blocks-world/experiments.lisp"))
+
+(defun ddm-relevant-mumble ()
+  (ddm-ed "grammar/model/sl/blocks-world/experiments.lisp")
+  (m-ed "loader.lisp")
+  (m-ed "grammar/transformations.lisp")
+  (m-ed "derivation-trees/make.lisp")
+  (m-ed "grammar/phrases.lisp")
+  (m-ed "grammar/attachment-points.lisp")
+  (m-ed "grammar/labels.lisp")
+  (m-ed "grammar/characteristics.lisp")
+  (m-ed "interface/bundles/bundle-drivers.lisp")
+  (m-ed "interface/bundles/operators-over-specifications.lisp")
+  (m-ed "interface/bundles/accessory-processing.lisp")
+  (m-ed "interface/derivations/discourse-reference.lisp")
+  (ddm-ed "interface/mumble/rspec-gophers.lisp"))
+
+(defun ddm-configurations ()
+  (ddm-ed "init/versions/v4.0/config/grammars/c3-configuration.lisp")
+  (ddm-ed "init/versions/v4.0/config/grammars/full-grammar.lisp")
+  (ddm-ed "init/versions/v4.0/config/grammars/bio-grammar.lisp"))
+
+(defun ddm-no-spaces ()
+  (ddm-ed "analyzers/psp/patterns/loader.lisp")
+  (ddm-ed "analyzers/psp/patterns/traces.lisp")
+  (ddm-ed "analyzers/psp/patterns/patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/edge-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/slash-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/hyphen-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/colon-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/protein-patterns.lisp")
+  (ddm-ed "analyzers/psp/patterns/hyphen-subrs.lisp")
+  (ddm-ed "analyzers/psp/patterns/edge-gophers.lisp")
+  (ddm-ed "analyzers/psp/patterns/pattern-resolvers.lisp")
+  (ddm-ed "analyzers/psp/patterns/scan-gophers.lisp")
+  (ddm-ed "analyzers/psp/patterns/charaterize-words.lisp")
+  (ddm-ed "analyzers/psp/patterns/uniform-scan.lisp") ;; driver
+  (ddm-ed "analyzers/psp/patterns/character-specialists.lisp")
+  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
+  (ddm-ed "drivers/chart/psp/multi-scan.lisp")
+  (ddm-ed "analyzers/psp/patterns/pattern-gophers.lisp")
+  ;;
+  (ddm-ed "grammar/rules/DA/nospace-categories.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
+(defun ddm-workset ()
+  (ddm-ed "tools/basics/clos-classes.lisp")
+  (ddm-ed "objects/doc/content-methods.lisp")
+  (ddm-ed "objects/doc/content.lisp")
+  (ddm-ed "drivers/sources/document.lisp")
+  (ddm-ed "analyzers/psp/edges/lattice-operations.lisp")
+  (ddm-ed "drivers/chart/psp/no-brackets-protocol.lisp"))
+
 
 (defun ddm-debug-ns () ; (ddm-debug-ns)
   (trace-ns-sequences)
@@ -990,43 +1011,6 @@ Worse: (28 13 6 2 1)
 ; (ed "/Users/ddm/ws/Vulcan/HaloEval/haloevaldata/scripts/logparser/km/strings.lisp")
 ; (bel::read-model )
 
-(defun ddm-corpus-location (in-list out-file)
-  (declare (ignore in-list out-file))
-  ;; Note the pathname is given in ancient Mac syntax. 
-  (setq cl-user::location-of-text-corpora
-        "Users:ddm:sift:nlp:corpus:"))
-
-(defun m-ed (string)
-  #-:sbcl (ed (concatenate 'string
-                "~/sparser/Mumble/" string))
-  #+:sbcl  (print `(**** can't call ed from SBCL yet)))
-
-(defun ddm-ed (string)
-  #-:sbcl
-  (ed (concatenate 'string 
-                   "~/sparser/Sparser/code/s/" string))
-  #+:sbcl
-  (print `(**** can't call ed from SBCL yet)))
-
-(defun ddm-load (string)
-  (load (concatenate 'string 
-                     "~/sparser/Sparser/code/s/" string)))
-
-(defun sparser-doc-ed (string)
-  (ed (concatenate 'string "~/sparser/Sparser/documentation/" string)))
-
-(defun draft-doc-ed (string)
-  (ed (concatenate 'string
-        "~/nlp/Sparser/documentation/notes-in-preparation/"
-        string)))
-
-(defun ddm-r3-notes (string)
-  (ed (concatenate 'string
-        "~/ws/R3/r3/trunk/notes/" string)))
-
-(defun ddm-ws-ed (string)
-  (ed (concatenate 'string
-         "~/ws/Sparser local/ws/" string)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
