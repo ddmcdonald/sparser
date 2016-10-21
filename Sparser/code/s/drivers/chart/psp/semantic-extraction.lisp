@@ -95,7 +95,7 @@ without damaging other code.")
 
 (defun all-individuals-in-tts (sentence)
   ;; This used to both walk the treetops to identify
-  ;; all of the individuals that they references 
+  ;; all of the individuals that they reference
   ;; and also recurd their surface strings.
   ;; Now it just does the walk and the strings
   ;; are recorded by the call to note-surface-string in complete/hugin.
@@ -122,7 +122,7 @@ without damaging other code.")
              (start-index (pos-character-index start-pos))
              (end-index (pos-character-index end-pos)))
         #| Too noisy. Digit sequences typically have
-        a null end-index for reasons as yet unexplored
+           a null end-index for reasons as yet unexplored
         (unless start-index
           (format t "~&>>> Null start-index: ~a~%~%" edge))
         (unless end-index
@@ -137,9 +137,10 @@ without damaging other code.")
 
           (setf (gethash referent *surface-strings*) ""))))))
 
-
-
-(defparameter *surface-strings* (make-hash-table :size 10000))
+(defparameter *surface-strings* (make-hash-table :size 10000)
+  "Used by note-surface-string as the place to cache the text
+   string that corresponds to an edge. Key is the referent
+   of the edge.")
 
 ;; OBE ??? Or part of a last-resort strategy. 
 ;; No longer called from all-individuals-in-tts
@@ -208,33 +209,26 @@ without damaging other code.")
     collect (semtree (edge-referent edge))))
 
 (defun tts-edge-semantics ()
-  (loop for edge in (all-tts) #+ignore (cdr (all-tts)) 
+  (loop for edge in (all-tts)
     when (and (edge-p edge) 
               (not (word-p (edge-referent edge))))
     collect (list edge
                   (semtree (edge-referent edge)))))
 
 (defun all-entities (&optional (trees (tts-semantics)))
-    (loop for st in trees
-    append
-    (entities-in st)))
+  (loop for st in trees
+     append (entities-in st)))
 
 (defun entities-in (tree)
-  (let
-      (entities)
-    (when
-        (consp tree)
-      (if
-       (and
-        (not (consp (car tree)))
-        (entity-p (car tree)))
-       (push (car tree) entities))
+  (let ( entities )
+    (when (consp tree)
+      (if (and (not (consp (car tree)))
+               (entity-p (car tree)))
+        (push (car tree) entities))
       (loop for binding in (cdr tree)
-        do
-        (setq entities 
-              (append 
-               (entities-in (second binding))
-               entities))))
+         do (setq entities 
+              (append (entities-in (second binding))
+                      entities))))
     entities))
 
 (defun all-relations (&optional (trees (tts-semantics)))
@@ -246,32 +240,26 @@ without damaging other code.")
 (defun all-rels (&optional (trees (tts-semantics)))
   (loop for st in trees
     append
-    (loop for rel in 
-      (relations-in st)
+    (loop for rel in (relations-in st)
       when (cdr rel)
       collect rel)))
 
 (defun extend-relations (relations)
-  (let
-      ((alist1
+  (let ((alist1
         (loop for r in relations 
           when (is-bio-entity? r)
-          collect
-          `(cons (second (second r)) (second (third r)))))
+          collect (cons (second (second r)) (second (third r)))))
        (alist2
         (loop for r in relations 
           when (is-bio-entity? r)
-          collect
-          (cons (second (third r)) (second (second r))))))
+          collect (cons (second (third r)) (second (second r))))))
     
     (remove-duplicates
      (append relations
-             (sublis 
-              alist1
-              (loop for r in relations unless (is-bio-entity? r) collect r ))
-             (sublis 
-              alist2
-              (loop for r in relations unless (is-bio-entity? r) collect r )))
+             (sublis alist1
+                     (loop for r in relations unless (is-bio-entity? r) collect r ))
+             (sublis alist2
+                     (loop for r in relations unless (is-bio-entity? r) collect r )))
      :test #'equalp)))
 
 (defun is-bio-entity? (r)
@@ -283,17 +271,15 @@ without damaging other code.")
   (let (relations)
     (when (and (consp tree)
                (not (eq 'collection (car tree))))
-      (if
-       (and
-        (not (consp (car tree)))
+      (if (not (consp (car tree)))
         (not (entity-p (car tree))))
-       (push (extract-relation tree) relations))
-      (loop for binding in (cdr tree)
-        do
-        (setq relations
-              (append 
-               (relations-in (second binding))
-               relations))))
+      (push (extract-relation tree) relations))
+    (loop for binding in (cdr tree)
+       do
+         (setq relations
+               (append 
+                (relations-in (second binding))
+                relations)))
     relations))
 
 (defun extract-relation (rel)
@@ -324,7 +310,6 @@ without damaging other code.")
 
 (defun processes-under (x)
   (itypes-under x 'bio-process))
-
 
 (defun individuals-under (x)
   (declare (special *semtree-seen-individuals*))
@@ -415,18 +400,17 @@ without damaging other code.")
   (cond
     ((gethash i *semtree-seen-individuals*)
      (if (or *for-spire* *sentence-results-stream*)
-         (indiv-or-type i)
-         (if (and (individual-p i)
-                  (null (cdr (indiv-old-binds i))))
-             `(,i) ;; suppress "!recursion!" for very simple items
-             `(("!recursion!" ,i)))))
-    ((and
-      (itypep i category::number)
-      (not (itypep i category::ordinal))
-      (not *print-sem-tree*)
-      (not (or *for-spire* *sentence-results-stream*)))
-     (if
-      (collection-p  i)
+       (indiv-or-type i)
+       (if (and (individual-p i)
+                (null (cdr (indiv-old-binds i))))
+         `(,i) ;; suppress "!recursion!" for very simple items
+         `(("!recursion!" ,i)))))
+    
+    ((and (itypep i category::number)
+          (not (itypep i category::ordinal))
+          (not *print-sem-tree*)
+          (not (or *for-spire* *sentence-results-stream*)))
+     (if (collection-p  i)
       (value-of 'items i)
       (value-of 'value i)))
    	
@@ -445,9 +429,11 @@ without damaging other code.")
            collect
              (list (var-name (binding-variable b))
                    (collect-model-description (binding-value b)))))))
+    
     ((collection-p i)
      (setf (gethash i *semtree-seen-individuals*) t)
      (collect-model-description-for-collection i))
+    
     (t  
      (let ((desc (indiv-or-type i)))
        (setf (gethash i *semtree-seen-individuals*) t)
@@ -461,26 +447,30 @@ without damaging other code.")
           as value = (binding-value b)
           do
             (unless (or (cond (*sentence-results-stream*
-                               (or (memq var-name '(trailing-parenthetical category ras2-model))
+                               (or (memq var-name '(trailing-parenthetical category
+                                                    ras2-model))
                                    (and
                                     (itypep i 'determiner)
                                     (memq var-name '(word)))))
                               ((not *for-spire*)
-                               (memq var-name '(trailing-parenthetical category ras2-model))))
+                               (memq var-name '(trailing-parenthetical category
+                                                ras2-model))))
                         (typep value 'mixin-category)) ;; has-determiner
-              (if (or (numberp value)(symbolp value) (stringp value))
-                  (push (list var-name value) desc)
+              (if (or (numberp value)
+                      (symbolp value)
+                      (stringp value))
+                (push (list var-name value) desc)
                   (typecase value
                     (individual 
                      (if (and (not (or *for-spire* *sentence-results-stream*))
                               (itypep value 'prepositional-phrase))
-                         (push (list var-name ; 
-                                     (collect-model-description
-                                      (value-of 'pobj value)))
-                               desc)
-                         (push (list var-name
-                                     (collect-model-description value))
-                               desc)))
+                       (push (list var-name
+                                   (collect-model-description
+                                    (value-of 'pobj value)))
+                             desc)
+                       (push (list var-name
+                                   (collect-model-description value))
+                             desc)))
                     ((or word polyword category)
                      (push `(,var-name ,(collect-model-description value)) desc))
                     (cons
@@ -498,7 +488,7 @@ without damaging other code.")
                      (push-debug `(,value ,b ,i))
                      ;;(break "Unexpected type of value of a binding: ~a" value)
                      (format t "~&~%Collect model: ~
-                            Unexpected type of value of a binding: ~a~%~%" value))))))
+                            Unexpected type of value of a binding: ~a~%" value))))))
        (reverse desc)))))
 
 
@@ -517,16 +507,15 @@ without damaging other code.")
          (unless (or (memq var-name '(trailing-parenthetical category ras2-model))
                      (typep value 'mixin-category)) ;; has-determiner
            (case var-name
-             ((type number) (if (or *for-spire* *sentence-results-stream*) (push vv-pair desc)))
-             #+ignore
-             (number (if (or *for-spire* *sentence-results-stream*) (push vv-pair desc)))
+             ((type number)
+              (when (or *for-spire* *sentence-results-stream*)
+                (push vv-pair desc)))
              (items
               (let ((member-descs (mapcar #'collect-model-description value)))
-                (push
-                 (if (or *for-spire* *sentence-results-stream*)
-                     `(:members ,.member-descs)
-                     `(,var-name (collection (:members (,@ member-descs)))))
-                 desc)))
+                (push (if (or *for-spire* *sentence-results-stream*)
+                        `(:members ,.member-descs)
+                        `(,var-name (collection (:members (,@ member-descs)))))
+                      desc)))
              (t
               (if (or (numberp value) (symbolp value) (stringp value))
                   (push vv-pair desc)
@@ -536,8 +525,8 @@ without damaging other code.")
                                  (collect-model-description
                                   (if (and (not (or *for-spire* *sentence-results-stream*))
                                            (itypep value 'prepositional-phrase))
-                                      (value-of 'pobj value)
-                                      value)))
+                                    (value-of 'pobj value)
+                                    value)))
                            desc))
                     ((or word polyword)
                      (when *show-words-and-polywords* (push vv-pair desc)))
