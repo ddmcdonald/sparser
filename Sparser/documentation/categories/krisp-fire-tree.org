@@ -1,0 +1,593 @@
+
+ + 0 top vars: {modifier, negation, predication, comparative-predication, compared-to, superlative-predication, superlative-from-set, predicate, ordinal, appositive-description, comp, subordinate-conjunction, purpose, quantifier, number, has-determiner, has-possessive, event-relation, amount-of-time, copular-verb, intensity, category} 
+  + 1 speech-act  
+    + 2 sa-propose  
+      + 3 explicit-suggestion vars: {marker, suggestion} 
+    + 2 greeting vars: {name} 
+    + 2 acknowledgement vars: {name} 
+  + 1 endurant vars: {number, quantifier, name} 
+    + 2 identification  
+    + 2 id  
+    + 2 paper  
+    + 2 business  
+    + 2 name  
+      + 3 name-of-hurricane vars: {sequence} 
+    + 2 ground  
+    + 2 wheel  
+    + 2 door  
+    + 2 hood  
+    + 2 trunk  
+    + 2 truck  
+    + 2 wagon  
+    + 2 van  
+    + 2 motorcycle  
+    + 2 boat  
+    + 2 bicycle  
+    + 2 automobile  
+    + 2 bus  
+    + 2 jeep  
+    + 2 vehicle  
+    + 2 car  
+    + 2 checkpoint vars: {position-of-checkpoint-in-sequence, checkpoint-designator} 
+    + 2 named-object vars: {name} 
+      + 3 company vars: {name, aliases, description, location} 
+        + 4 authority vars: {name} 
+          + 5 service vars: {name} 
+          + 5 agency vars: {name} 
+          + 5 command vars: {name} 
+        + 4 subsidiary-company vars: {type, company} 
+        + 4 subsidiary-type vars: {type, parent-company, location} 
+        + 4 kind-of-subsidiary vars: {name} 
+          + 5 |subsidiary|  
+          + 5 |Department|  
+          + 5 |unit|  
+          + 5 |division|  
+        + 4 co-activity-nominal/er vars: {patient, word} 
+          + 5 |broker|  
+          + 5 |specialist|  
+          + 5 |provider|  
+          + 5 |operator|  
+          + 5 |marketer|  
+          + 5 |maker|  
+          + 5 |manufacturer|  
+          + 5 |insurer|  
+          + 5 |developer|  
+          + 5 |contractor|  
+      + 3 person vars: {name, age, position, nationality, has-rank} 
+        + 4 role-based-person vars: {role} 
+    + 2 non-physical  
+      + 3 social-object  
+        + 4 social-nonagentivive  
+        + 4 social-agent  
+          + 5 military-unit vars: {type, force} 
+          + 5 military-force vars: {name, abbrev, country} 
+            + 6 insurgent  
+            + 6 |COALITION FORCES|  
+            + 6 |ARMED FORCES|  
+      + 3 mental-object  
+    + 2 physical vars: {location} 
+      + 3 artifact vars: {made-by} 
+        + 4 motor-vehicle vars: {made-by} 
+      + 3 aggregate  
+      + 3 feature  
+      + 3 physical-object  
+        + 4 object  
+          + 5 composite-object vars: {composed-of} 
+            + 6 row  
+            + 6 stack  
+            + 6 staircase  
+          + 5 table  
+          + 5 block vars: {position} 
+          + 5 component-part vars: {part-of} 
+            + 6 step vars: {part-of} 
+            + 6 surface  
+              + 7 side-surface  
+              + 7 bottom-surface  
+              + 7 top-surface  
+            + 6 relative-position  
+              + 7 right  
+              + 7 left  
+              + 7 middle  
+              + 7 end  
+        + 4 physical-agent  
+          + 5 interlocutor  
+          + 5 maker-of-artifacts  
+            + 6 car-manufacturer vars: {product} 
+      + 3 individual  
+      + 3 kind vars: {name, reduced-relative} 
+        + 4 person-type  
+          + 5 uncle  
+          + 5 aunt  
+          + 5 sibling  
+          + 5 brother  
+          + 5 sister  
+          + 5 daughter  
+          + 5 son  
+          + 5 parent  
+          + 5 mother  
+          + 5 father  
+          + 5 child  
+          + 5 people  
+          + 5 woman  
+          + 5 man  
+          + 5 boy  
+          + 5 girl  
+  + 1 perdurant vars: {theme, participant, time, location, purpose, circumstance, manner, adverb, occurs-at-moment, modal, present, past, progressive, perfect} 
+    + 2 use vars: {subject, object} 
+    + 2 storm  
+      + 3 hurricane vars: {name, year, snapshots} 
+    + 2 outbreak  
+      + 3 outbreak-pathogen vars: {pathogen, outbreak} 
+    + 2 live vars: {subject} 
+    + 2 stop vars: {subject} 
+    + 2 proceed vars: {subject} 
+    + 2 halt vars: {subject} 
+    + 2 show vars: {subject, object} 
+    + 2 tell vars: {subject, object} 
+    + 2 close vars: {subject, object} 
+    + 2 open vars: {subject, object} 
+    + 2 move/forward vars: {subject} 
+    + 2 move/on vars: {subject} 
+    + 2 move/along vars: {subject} 
+    + 2 lie/down vars: {subject} 
+    + 2 stand/up vars: {subject} 
+    + 2 stand/over vars: {subject} 
+    + 2 sit vars: {subject, location} 
+    + 2 stand vars: {subject, location} 
+    + 2 stay vars: {subject, location} 
+    + 2 go vars: {subject, location} 
+    + 2 get vars: {subject, location} 
+    + 2 come vars: {subject, location} 
+    + 2 be vars: {subject, predicate} 
+    + 2 anonymous-agentive-action  
+    + 2 process  
+      + 3 make vars: {object, adj-comp} 
+      + 3 put-something-somewhere vars: {theme} 
+      + 3 push vars: {theme} 
+        + 4 push-together vars: {items} 
+      + 3 build vars: {artifact} 
+      + 3 make-artifacts vars: {procedure, product, type-of-product} 
+      + 3 transition  
+        + 4 change-in-amount-noun vars: {name, direction} 
+        + 4 change-in-amount-verb vars: {name, direction} 
+          + 5 change-in-amount-verb/down  
+          + 5 change-in-amount-verb/up  
+        + 4 achievement  
+          + 5 add-to vars: {theme} 
+        + 4 accomplishment  
+          + 5 move vars: {from-location, to-location, theme} 
+            + 6 dismount  
+            + 6 enter vars: {to-location} 
+            + 6 turn vars: {via-path, for-distance, in-direction, when-done, landmark} 
+            + 6 travel vars: {via-path, for-distance, in-direction, when-done, landmark} 
+            + 6 follow vars: {via-path, for-distance, in-direction, when-done, landmark} 
+            + 6 drive vars: {via-path, for-distance, in-direction, when-done, landmark} 
+            + 6 cross vars: {via-path, for-distance, in-direction, when-done, landmark} 
+    + 2 state  
+      + 3 cases  
+        + 4 cases-pathogen vars: {pathogen, cases} 
+      + 3 modality vars: {name} 
+        + 4 would  
+        + 4 will  
+        + 4 should  
+        + 4 shall  
+        + 4 must  
+        + 4 might  
+        + 4 may  
+        + 4 could  
+        + 4 can  
+      + 3 have vars: {possessor, thing-possessed} 
+      + 3 predication vars: {predicate} 
+        + 4 quantified vars: {quantifier, body} 
+        + 4 upon-condition vars: {condition} 
+        + 4 copular-predication vars: {item, value, predicate} 
+          + 5 copular-predication-of-pp vars: {prep} 
+        + 4 there-exists vars: {predicate, value} 
+        + 4 has-attribute vars: {item, attribute, value} 
+    + 2 event  
+      + 3 you-do vars: {action} 
+      + 3 martyred vars: {who, what} 
+      + 3 martyrdom  
+      + 3 contract-disease vars: {who, pathogen, source} 
+      + 3 catch-disease vars: {who, pathogen, source} 
+      + 3 contract  
+      + 3 assassinate vars: {who, by-whom} 
+      + 3 kill vars: {who, by-whom} 
+      + 3 die vars: {who, of-what} 
+      + 3 job-event  
+        + 4 succeed-to-job vars: {person-leaving, person-arriving} 
+        + 4 retain-position vars: {person, position, title, company} 
+          + 5 remain-in-job vars: {person, position} 
+        + 4 leave-position vars: {person, position, title, company} 
+          + 5 resign-position vars: {person, position} 
+          + 5 retire-from-position vars: {person, position} 
+        + 4 get-position vars: {person, position, title, company} 
+          + 5 name-to-position vars: {person, position, title, company} 
+          + 5 appoint-to-position vars: {person, position, title, company} 
+          + 5 confirm-as-job vars: {agent, person, position} 
+      + 3 report-verb vars: {name} 
+      + 3 in-predicate  
+        + 4 in-lieu vars: {head, who, of-what, np-item} 
+        + 4 in-place vars: {head, who, of-what, np-item} 
+        + 4 |IN-THE FIELD OF| vars: {head, who, of-what, np-item} 
+        + 4 in-control vars: {head, who, of-what, np-item} 
+        + 4 in-command vars: {head, who, of-what, np-item} 
+        + 4 in-charge vars: {head, who, of-what, np-item} 
+      + 3 changed-in-direction vars: {direction} 
+      + 3 change-by-amount vars: {amount, direction} 
+  + 1 abstract  
+    + 2 amount vars: {measurement, stuff, alternative-amount, time-period} 
+      + 3 financial-datum vars: {name} 
+        + 4 target  
+          + 5 stock-price-target vars: {value, target} 
+          + 5 target-at-time vars: {target, time} 
+      + 3 financial-datum vars: {name} 
+        + 4 target  
+          + 5 stock-price-target vars: {value, target} 
+          + 5 target-at-time vars: {target, time} 
+      + 3 money vars: {number, currency} 
+        + 4 money/per-share vars: {money, amount-per-share} 
+      + 3 fraction-of-amount-of-time vars: {selector, portion} 
+      + 3 amount-of-time vars: {units, quantity} 
+      + 3 amount-at-time vars: {amount, time} 
+      + 3 vague-amount vars: {name} 
+    + 2 measurement vars: {units, quantity} 
+      + 3 ordinal-fraction vars: {selector, unit} 
+      + 3 rate-of-process vars: {process, value} 
+      + 3 rate vars: {units, quantity} 
+        + 4 qualitative-rate  
+      + 3 proportional-measurement vars: {units, quantity} 
+        + 4 amount-per-share vars: {quantity, shares-in-a-company} 
+      + 3 named-measure vars: {name} 
+    + 2 quantity vars: {name} 
+    + 2 unit-of-measure vars: {name} 
+      + 3 share-of-stock vars: {company} 
+        + 4 corporate-stock  
+      + 3 currency vars: {denomination, country} 
+      + 3 time-unit vars: {name} 
+      + 3 fractional-term  
+        + 4 half vars: {name} 
+        + 4 quarter vars: {name} 
+      + 3 unit-of-rate-of-change vars: {distance-measure, time-measure, name} 
+    + 2 number vars: {value} 
+    + 2 takes-numerical-value vars: {value} 
+    + 2 collection vars: {items, type, number} 
+      + 3 sequence vars: {items, item, type, number} 
+        + 4 two-part-label vars: {part-one, part-two} 
+        + 4 slashed-sequence  
+        + 4 slashed-pair vars: {left, right} 
+        + 4 word-colon-word vars: {left, right} 
+        + 4 number-colon-number vars: {left, right} 
+        + 4 hyphenated-triple vars: {left, middle, right} 
+        + 4 qualifying-pair vars: {head, qualifier} 
+        + 4 hyphenated-pair vars: {left, right} 
+        + 4 sequence-of-numbers vars: {numbers} 
+    + 2 linguistic  
+      + 3 text-relationship  
+        + 4 subsequent-reference  
+        + 4 unanalyzed-compound vars: {terms} 
+        + 4 infinitive-relation vars: {verb} 
+        + 4 paired-in-long-segment vars: {pmt/first, pmt/second} 
+        + 4 adverb-verb vars: {verb, adverb} 
+        + 4 verb-object vars: {verb, object} 
+        + 4 subject-verb vars: {subject, verb} 
+        + 4 of-phrase  
+        + 4 genitive vars: {owner, owned} 
+        + 4 segment vars: {form, ends-at, starts-at, terms, single-term, contains, head, classifier, pre-classifier, prefix, discourse-status} 
+          + 5 no-analysis  
+          + 5 section-segment  
+          + 5 verb+object-segment  
+          + 5 subj+vp-segment  
+          + 5 subj+verb-segment  
+          + 5 capitalized-segment  
+          + 5 adverb-segment  
+          + 5 infinitive-segment  
+          + 5 past-tense-verb-segment  
+          + 5 participle-segment  
+          + 5 verb-segment  
+          + 5 n/v-segment  
+          + 5 np-segment  
+          + 5 multi-word-segment  
+          + 5 two-word-segment  
+          + 5 one-word-segment  
+        + 4 text-term vars: {word, rewrite-rule, category, classifies, adjacent/precedes, adjacent/follows, instance} 
+          + 5 pair-term vars: {head, other} 
+      + 3 no-space-prefix vars: {word} 
+      + 3 known-in-discourse  
+      + 3 contact-from vars: {where} 
+      + 3 respond  
+      + 3 respond-in-sequence  
+      + 3 answer-to-a-question vars: {question} 
+        + 4 answer-is-negative  
+        + 4 answer-is-affirmative  
+      + 3 call-to/from vars: {to, from} 
+      + 3 this-is vars: {call-sign} 
+      + 3 call-word vars: {word} 
+      + 3 call-sign vars: {base, number} 
+      + 3 proposal-marker  
+        + 4 what-if-as-directive  
+        + 4 suppose-as-directive  
+        + 4 let-as-directive  
+      + 3 original-document-structure  
+        + 4 html-markup-element  
+          + 5 html-tag  
+            + 6 empty-html-tag vars: {attributes, start-index, end-index, interior-start, action} 
+            + 6 paired-html-tag vars: {attributes, contents, start-index, end-index, interior-start, interior-end, start-action, end-action} 
+              + 7 |html/html| vars: {start-index} 
+          + 5 html-attribute vars: {attribute-value, tag} 
+        + 4 sgml-label  
+        + 4 sgml-tag/end  
+        + 4 sgml-tag/start  
+        + 4 section-marker  
+        + 4 text-under-analysis vars: {uid, file} 
+          + 5 djns-article vars: {an} 
+        + 4 section-object vars: {type, parent, daughters, prior-sibling, following-sibling, title, count, token-index} 
+      + 3 tense/aspect  
+        + 4 perfect  
+        + 4 progressive  
+        + 4 present  
+        + 4 past  
+        + 4 future  
+      + 3 negative  
+      + 3 phrase-interpretation  
+        + 4 pronoun  
+        + 4 copular-pp-rel-clause vars: {copular-pp} 
+        + 4 question-core vars: {statement} 
+          + 5 wh-question vars: {wh, attribute, var} 
+          + 5 polar-question  
+        + 4 copula  
+        + 4 syntactic-there  
+        + 4 pp-relative-clause vars: {pp, clause} 
+        + 4 subordinate-clause vars: {conj, comp} 
+        + 4 prep-comp vars: {prep, comp} 
+        + 4 prepositional-phrase vars: {prep, pobj} 
+        + 4 as-comp vars: {prep, comp} 
+        + 4 to-comp vars: {prep, comp} 
+        + 4 determiner vars: {word, det-quantifier} 
+          + 5 whose  
+          + 5 what  
+          + 5 which  
+          + 5 that  
+          + 5 which  
+          + 5 those  
+          + 5 these  
+          + 5 this  
+          + 5 a  
+          + 5 a  
+          + 5 an  
+          + 5 the  
+    + 2 relation vars: {adverb} 
+      + 3 employed-as vars: {person, position} 
+      + 3 plays-role-for vars: {role, for} 
+      + 3 subsidiary/parent vars: {parent, subsidiary} 
+      + 3 typed-region vars: {type, region} 
+      + 3 has-size vars: {size} 
+      + 3 has-color vars: {color} 
+      + 3 subordinate-conjunction vars: {word} 
+      + 3 conjunction vars: {word} 
+      + 3 has-location vars: {location} 
+        + 4 has-spatial-location vars: {location} 
+      + 3 with-an-agent vars: {agent} 
+      + 3 modifies vars: {modifier, modified} 
+        + 4 associated-with-country vars: {country, item} 
+          + 5 nationality vars: {country, person} 
+          + 5 located-in vars: {country, region} 
+      + 3 dependent-substrate vars: {dependent, substrate} 
+        + 4 exit-on-throughway vars: {exit, throughway} 
+      + 3 has-name vars: {name} 
+        + 4 predicate  
+          + 5 prepositional-operator  
+            + 6 about  
+            + 6 worth  
+            + 6 without  
+            + 6 within  
+            + 6 |WITH THE EXCEPTION OF|  
+            + 6 |WITH RESPECT TO|  
+            + 6 |WITH REGARD TO|  
+            + 6 |WITH REFERENCE TO|  
+            + 6 with  
+            + 6 |VOID OF|  
+            + 6 via  
+            + 6 versus  
+            + 6 |UPWARDS OF|  
+            + 6 upon  
+            + 6 |UP TO|  
+            + 6 |UP AGAINST|  
+            + 6 up  
+            + 6 unto  
+            + 6 until  
+            + 6 unlike  
+            + 6 under  
+            + 6 towards  
+            + 6 toward  
+            + 6 |TOGETHER WITH|  
+            + 6 to  
+            + 6 till  
+            + 6 throughout  
+            + 6 through  
+            + 6 |THANKS TO|  
+            + 6 |SUCH AS|  
+            + 6 |SUBSEQUENT TO|  
+            + 6 since  
+            + 6 |SHORT OF|  
+            + 6 regarding  
+            + 6 |PURSUANT TO|  
+            + 6 |PRIOR TO|  
+            + 6 |PREVIOUS TO|  
+            + 6 |PREPARATORY TO|  
+            + 6 |PRELIMINARY TO|  
+            + 6 plus  
+          + 5 quantifier vars: {word} 
+          + 5 quality-value-predicate vars: {attribute, value} 
+          + 5 quality-predicate vars: {attribute, item} 
+          + 5 modifier  
+            + 6 wrong  
+            + 6 widespread  
+            + 6 vigorous  
+            + 6 viable  
+            + 6 versatile  
+            + 6 vast  
+            + 6 variable  
+            + 6 useful  
+            + 6 useable  
+            + 6 upper  
+            + 6 unstable  
+            + 6 unresolved  
+            + 6 unexpected  
+            + 6 undirected  
+            + 6 uncontrolled  
+            + 6 unbalanced  
+            + 6 unanticipated  
+            + 6 two-dimensional  
+            + 6 transitory  
+            + 6 transitive  
+            + 6 transformative  
+            + 6 systematic  
+            + 6 susceptible  
+            + 6 surgical  
+            + 6 supportive  
+            + 6 sufficient  
+            + 6 successive  
+            + 6 successful  
+            + 6 substantial  
+            + 6 suboptimal  
+            + 6 subcritical  
+            + 6 structural  
+            + 6 stable  
+            + 6 spontaneous  
+            + 6 specific  
+            + 6 solid  
+            + 6 small  
+            + 6 simple  
+            + 6 similar  
+            + 6 silent  
+        + 4 named-type vars: {type-of} 
+          + 5 car-type  
+          + 5 type-of-military-unit vars: {name, abbreviations} 
+          + 5 kind-of-company/phrase vars: {base, modifier} 
+          + 5 kind-of-company  
+            + 6 |journal|  
+            + 6 |service|  
+            + 6 |Corps|  
+            + 6 |administration|  
+            + 6 |Bureau|  
+            + 6 |group|  
+            + 6 |laboratories|  
+            + 6 |Chamber|  
+            + 6 |Council|  
+            + 6 |ministry|  
+            + 6 |army|  
+            + 6 |consortium|  
+            + 6 |university|  
+            + 6 |store|  
+            + 6 |shop|  
+            + 6 |school|  
+            + 6 |retailer|  
+            + 6 |office|  
+            + 6 |newspaper|  
+            + 6 |magazine|  
+            + 6 |league|  
+            + 6 |institute|  
+            + 6 |foundation|  
+            + 6 |exchange|  
+            + 6 |conglomerate|  
+            + 6 |commission|  
+            + 6 |college|  
+            + 6 |chain|  
+            + 6 |center|  
+            + 6 |bank|  
+            + 6 |authority|  
+            + 6 |agency|  
+          + 5 attribute vars: {var} 
+            + 6 size  
+            + 6 color  
+    + 2 abstract-region  
+      + 3 time  
+        + 4 fiscal-quarter vars: {year, position-in-year, end-date, company} 
+        + 4 calculated-time vars: {name} 
+          + 5 calculated-day vars: {name, calculator} 
+        + 4 prep-time vars: {prep, time} 
+        + 4 relative-time vars: {relativizer, reference-time} 
+        + 4 relative-time-noun vars: {name} 
+        + 4 relative-time-adverb vars: {name} 
+        + 4 season-year vars: {season, year} 
+        + 4 season vars: {name, abbreviation, position-in-year} 
+        + 4 date vars: {day, month, year, weekday} 
+        + 4 month-of-the-year vars: {month, year} 
+        + 4 day-of-the-month vars: {month, number, day-of-the-week} 
+        + 4 year vars: {year-of-century} 
+        + 4 month vars: {name, abbreviation, position-in-year, number-of-days} 
+        + 4 weekday vars: {name, abbreviation, position-in-week} 
+        + 4 time-interval  
+          + 5 anchor-amount vars: {sequencer, amount-of-time} 
+          + 5 anchor-date vars: {sequencer, date} 
+          + 5 time-of-day vars: {name} 
+            + 6 numeric-time vars: {name} 
+            + 6 meal-time vars: {name} 
+          + 5 phase-of-day vars: {name} 
+          + 5 closed-interval/end vars: {ends-at, modifier} 
+      + 3 location vars: {name, type-name} 
+        + 4 deictic-location vars: {name} 
+        + 4 waypoint vars: {type} 
+          + 5 target-waypoint  
+          + 5 entry-waypoint  
+        + 4 location-description vars: {name} 
+          + 5 location-phrase vars: {place} 
+        + 4 border vars: {type, region} 
+        + 4 border-type vars: {name} 
+          + 5 edge vars: {name} 
+          + 5 coast vars: {name} 
+          + 5 boundary vars: {name} 
+        + 4 region-type vars: {name} 
+          + 5 ward  
+          + 5 town  
+          + 5 pond  
+          + 5 parish  
+          + 5 province  
+          + 5 ledge  
+          + 5 lake  
+          + 5 gulley  
+          + 5 forest  
+          + 5 exit  
+        + 4 geographical-region vars: {name, aliases, type, containing-region} 
+        + 4 path-configuration vars: {paths} 
+          + 5 fork  
+          + 5 junction  
+        + 4 throughway-exit vars: {throughway} 
+        + 4 highway vars: {authority, number} 
+        + 4 path  
+          + 5 path-type vars: {name} 
+            + 6 turnpike vars: {name} 
+            + 6 trail vars: {name} 
+            + 6 street vars: {name} 
+            + 6 stream vars: {name} 
+            + 6 river vars: {name} 
+            + 6 road vars: {name} 
+        + 4 us-state vars: {name, adjective-form, abbreviations, aliases} 
+        + 4 city vars: {name, aliases, country, state} 
+        + 4 country vars: {name, adjective-form, aliases} 
+        + 4 named-location vars: {type, name} 
+        + 4 relative-location vars: {place, prep} 
+        + 4 direction vars: {name} 
+          + 5 compass-point vars: {name} 
+        + 4 region vars: {boundary, interior} 
+          + 5 timezone vars: {name} 
+          + 5 container vars: {contents} 
+          + 5 spatial-region  
+            + 6 village  
+      + 3 attribute-value vars: {attribute} 
+        + 4 size-value  
+        + 4 color-value  
+  + 1 quality  
+    + 2 company-financial  
+      + 3 ern vars: {company, financial, reporting-period, value, esp} 
+    + 2 age-ago vars: {age-ago} 
+    + 2 age vars: {age} 
+    + 2 physical-surface vars: {color} 
+    + 2 scalar-quality  
+    + 2 designator  
+      + 3 index  
+        + 4 assession-number vars: {date, index-number} 
+        + 4 position-in-a-sequence vars: {number, item, sequence} 
+      + 3 name  
+        + 4 name-of-hurricane vars: {sequence} 
