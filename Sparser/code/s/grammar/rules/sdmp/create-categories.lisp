@@ -47,8 +47,9 @@
 	(category::vg) ;; staying here w/o better evidence
 	(category::verb+ed
 	 (setf (edge-form edge) (category-named 'vg)))
-	(category::ends-in-s) (category::ends-in-ing) (category::ends-in-ed)
-          ;; categories giving morphological properties
+	(category::ends-in-s)
+        (category::ends-in-ing)
+        (category::ends-in-ed)
 	(otherwise
 	 (unless *cfg-flag*
 	   (break "New case of form category of edge over segment head: ~a"
@@ -95,6 +96,8 @@
         (category::pp)
         (category::vg+passive)
 	(category::subordinate-clause)
+        (category::to-comp) ;; happens in handling of "to be <adj>"
+        ;; categories giving morphological properties
 	
         ;; cases where we want to generalize
 	((category::n-bar
