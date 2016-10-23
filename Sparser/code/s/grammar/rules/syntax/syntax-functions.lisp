@@ -1568,8 +1568,6 @@ No longer used -- remove soon
 ;;;---------
 
 
-
-
 (defun apply-copular-pp (np copular-pp)
   (declare (special category::copular-predicate))
   (when (itypep copular-pp 'subordinate-clause)
