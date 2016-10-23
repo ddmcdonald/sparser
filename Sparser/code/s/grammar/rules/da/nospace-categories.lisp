@@ -323,21 +323,25 @@
    in the manner of a daughter rule."
   (declare (special category::verb+ed category::adjective))
   (let* ((edge-to-elevate (second edges))
-         (form (edge-form edge-to-elevate)))    
+         (form (and (edge-p edge-to-elevate)
+                    ;; preventing error in "CXCL3 silencing inhibited tumor growth in the CD133 + population, although there was no significant difference in the tumor mass between CD133 + -shCXCL3 and CD133 - cells groups (), suggesting that CXCL3 promoted CD133 + HCC CSC maintenance in vivo"
+                    (edge-form edge-to-elevate))))
+    
     (tr :resolve-hyphen-before edge-to-elevate)
     (when (eq form category::verb+ed)
       ;; As the final element in a hyhenated phrase this is almost
       ;; certainly going to function as a premodifier. 
       (setq form category::adjective))
-    (let ((new-edge (make-edge-over-long-span
-                     start-pos end-pos
-                     (edge-category edge-to-elevate)
-                     :form form
-                     :referent (maybe-make-individual
-                                (edge-referent edge-to-elevate))
-                     :constituents edges)))
-      (tr :no-space-made-edge new-edge)
-      new-edge)))
+    (when (edge-p edge-to-elevate)
+      (let ((new-edge (make-edge-over-long-span
+                       start-pos end-pos
+                       (edge-category edge-to-elevate)
+                       :form form
+                       :referent (maybe-make-individual
+                                  (edge-referent edge-to-elevate))
+                       :constituents edges)))
+        (tr :no-space-made-edge new-edge)
+        new-edge))))
 
 #| Define the notion of a prefix (or no-space-prefix) that
 can compose with its suffix and apply a general-purpose
