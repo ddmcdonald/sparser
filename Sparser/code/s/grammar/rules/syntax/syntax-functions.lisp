@@ -207,6 +207,7 @@ No longer used -- remove soon
     (*subcat-test*
      (not (or (word-p head) ;; this happened with word = HYPHEN, "from FCS-treated cells"
               ;; also happened with "nontargeting"
+              (null head) ;; happens when head is a bio-entity
               (and (individual-p head)
                    (itypep head category::determiner)))))
     ((itypep head category::determiner)
@@ -578,8 +579,9 @@ No longer used -- remove soon
          (cond ((category-p vg) vg)
                ((individual-p vg) (itype-of vg))
                (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb")))))
-    (if (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
-                      '(PASSIVE/WITH-BY-PHRASE)))
+    (if (and (first (cat-realization vg-cat))
+             (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
+                           '(PASSIVE/WITH-BY-PHRASE))))
         (revise-parent-edge :form category::vg))
     (add-tense/aspect aux vg)))
 
@@ -652,6 +654,7 @@ No longer used -- remove soon
 ;;;-------------
 
 (defparameter *adverb+vg* nil)
+(defparameter *show-missing-adverb-slots* nil)
 
 (defun interpret-adverb+verb (adverb vg-phrase) 
   (declare (special category::deictic-location category::pp))
@@ -687,10 +690,11 @@ No longer used -- remove soon
                      (car (value-of 'items vg)) vg-phrase adverb)))
               t)
              (t
-              (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
+             (when *show-missing-adverb-slots*
+               (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
                      (edge-string (left-edge-for-referent))
                      (edge-string (right-edge-for-referent))
-                     (sentence-string *sentence-in-core*))
+                     (sentence-string *sentence-in-core*)))
               nil)))
           (variable-to-bind
            (bind-dli-variable variable-to-bind adverb vg))
@@ -737,10 +741,11 @@ No longer used -- remove soon
                      (car (value-of 'items adj)) adj-phrase adverb)))
               t)
              (t
-              (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
-                     (edge-string (left-edge-for-referent))
-                     (edge-string (right-edge-for-referent))
-                     (sentence-string *sentence-in-core*))
+              (when *show-missing-adverb-slots*
+                (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
+                      (edge-string (left-edge-for-referent))
+                      (edge-string (right-edge-for-referent))
+                      (sentence-string *sentence-in-core*)))
               nil)))
           (variable-to-bind
            (bind-dli-variable variable-to-bind adverb adj))
@@ -856,9 +861,13 @@ No longer used -- remove soon
          nil)))))
 
 (defun identify-pobj (edge)
-  (setq edge (base-pp edge))
-  (edge-referent
-   (edge-right-daughter edge)))
+  (let* ((bpp-edge (base-pp edge))
+         (erd (edge-right-daughter bpp-edge)))
+    (if (edge-p erd)
+        (edge-referent erd)
+        (else
+          (warn "can't find pobj edge for edge ~s" edge)
+          nil))))
 
 
 (defun base-pp (edge)
@@ -1155,16 +1164,17 @@ No longer used -- remove soon
             (eq (edge-form right-edge) category::subordinate-clause))
        (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
 	      (vg-edge (edge-right-daughter right-edge)))
-	 (if (and (edge-p vg-edge)
-                  ;; vg-edge is :long-span for cases where the
-                  ;;  subordinate clause is a conjunction
-                  ;; HANDLE THESE CORRECTLY
-                  (is-passive? vg-edge))
-	     (when (and (object-variable vg-edge)
-                        (null (value-of (object-variable vg-edge) svp)))
-	       (assimilate-subcat svp :object subj))
-	     (when (missing-subject-vars (edge-referent vg-edge))
-	       (assimilate-subcat svp :subject subj)))))
+	 (when (edge-p vg-edge)
+           ;; vg-edge is :long-span for cases where the
+           ;;  subordinate clause is a conjunction
+           ;; HANDLE THESE CORRECTLY
+           (if
+            (is-passive? vg-edge)
+            (when (and (object-variable vg-edge)
+                       (null (value-of (object-variable vg-edge) svp)))
+              (assimilate-subcat svp :object subj))
+            (when (missing-subject-vars (edge-referent vg-edge))
+              (assimilate-subcat svp :subject subj))))))
       
       ((and right-edge (is-passive? right-edge))
        (assimilate-subcat vp :object subj))
@@ -1557,31 +1567,7 @@ No longer used -- remove soon
 ;;; be + PP
 ;;;---------
 
-(defun make-copular-pp (be-ref pp)
-  (declare (special category::copular-predication-of-pp))
-  (when (and
-         (null (value-of 'predication be-ref))
-         ;; If this is not already a copular predicate ("is a drug")     
-	 (or (not (edge-p *left-edge-into-reference*))
-             ;; case where there is no semantic predication established,
-             ;; but there is a syntactic object
-             ;; e.g. "was the result of defects in the developing embryo"
-             (not (member (cat-name (edge-form *left-edge-into-reference*))
-			  '(s vp thatcomp)))))
-    (let* ((prep (value-of 'prep pp))
-           (pobj (value-of 'pobj pp)))
-      (cond
-       (*subcat-test*
-        ;; when we have clausal "to-pp" like
-        ;; "to enhance craf activation" it's a purpose clause,
-        ;; not a copular PP
-        (and prep pobj))
-       (t
-        (make-simple-individual
-         category::copular-predication-of-pp
-         `((predicate ,be-ref)
-           (prep ,prep)
-           (value ,pobj))))))))
+
 
 
 (defun apply-copular-pp (np copular-pp)

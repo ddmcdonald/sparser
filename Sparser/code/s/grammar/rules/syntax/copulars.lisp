@@ -202,3 +202,45 @@ phosphorylated by Src."
                  "become" "stay")
      do
      (eval (make-copular-def v)))
+
+
+;;;---------
+;;; be + PP
+;;;---------
+
+
+
+
+(defun make-copular-pp (be-ref pp)
+  (declare (special category::copular-predication-of-pp))
+  (when (and
+         (null (value-of 'predicate be-ref))
+         ;; we changed the variable to be PREDICATE
+         ;;  block "to be a required step in the process of EGFR transactivation"
+         ;; If this is not already a copular predicate ("is a drug")     
+	 (or (not (edge-p *left-edge-into-reference*))
+             ;; case where there is no semantic predication established,
+             ;; but there is a syntactic object
+             ;; e.g. "was the result of defects in the developing embryo"
+             (not (member (cat-name (edge-form *left-edge-into-reference*))
+			  '(s vp thatcomp)))))
+    (let* ((prep (value-of 'prep pp))
+           (pobj (value-of 'pobj pp)))
+      (cond
+       (*subcat-test*
+        ;; when we have clausal "to-pp" like
+        ;; "to enhance craf activation" it's a purpose clause,
+        ;; not a copular PP
+        (and prep pobj))
+       (t
+         (if
+          (eq (edge-form (left-edge-for-referent)) category::infinitive)
+          ;; "to be dominant" is not a VP, but is a to-comp
+          
+          (revise-parent-edge :category category::copular-predicate
+                             :form category::to-comp))
+        (make-simple-individual
+         category::copular-predication-of-pp
+         `((predicate ,be-ref)
+           (prep ,prep)
+           (value ,pobj))))))))
