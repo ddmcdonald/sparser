@@ -243,17 +243,42 @@ be added to attribute so it knows how to handle the individuals.
   ;; of the individual.
   (let* ((type-category (itype-of attribute-value))
          (attribute ;; then we look up the attribute
-          (value-of 'attribute type-category))
-         (variable ;; then retrieve the lambda variable
-          (value-of 'var attribute))
-         (type-restriction-on-head (var-category variable))
-         (v/r-on-value (var-value-restriction variable)))
-    ;; If we are going to worry about those two restrictions
-    ;; as a condition on the applicablity of the rule, then
-    ;; we need to package up the checks as functions we can
-    ;; use independently of this composition machinery
-    (declare (ignore type-restriction-on-head v/r-on-value))
+          (value-of 'attribute type-category)))
 
-    (setq head (bind-variable variable attribute-value head))
+    ;; If the attribute-value is a collection then we've no
+    ;; way (yet) to reach into the collection and determine
+    ;; the attribute: "the red and green block". Of course
+    ;; if the junction is over different sort of attribute-value's
+    ;; we'd have a bigger issue: "the tall and red block"
+    (if attribute
+      (let* ((variable ;; retrieve the lambda variable
+              (value-of 'var attribute))
+             (type-restriction-on-head (var-category variable))
+             (v/r-on-value (var-value-restriction variable)))
+        ;;/// If we are going to worry about those two restrictions
+        ;; as a condition on the applicablity of the rule, then
+        ;; we need to package up the checks as functions we can
+        ;; use independently of this composition machinery
+        (declare (ignore type-restriction-on-head v/r-on-value))
+        (setq head (bind-variable variable attribute-value head))
+        head)
+
+      ;; have to return something to be the referent of the
+      ;; edge given how this is setup in adj-noun-compound.
+      (attribute-value-of-object attribute-value head))))
+
+(defun attribute-value-of-object (attribute-value object)
+  "A very weak predication since we don't know the identity 
+   of the attribute we're predicating so we use the superclass."
+  (let* ((attribute (category-named 'attribute))
+         (i (find-or-make-individual 'has-attribute
+                                     :item object
+                                     :value attribute-value
+                                     :attribute attribute))
+         ;; calling this head makes this function overly specific
+         ;; and I'm using 'modifier only because it's bound
+         ;; at Top and I couldn't find a predication variable
+         ;; that I believed in.
+         (head (bind-variable 'modifier i object)))
+    ;;(break "head = ~a" head)
     head))
-
