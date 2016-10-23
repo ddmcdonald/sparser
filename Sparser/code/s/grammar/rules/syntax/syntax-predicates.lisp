@@ -104,7 +104,15 @@
                     category::vg+passive category::verb+passive))
   (cond
     ((eq (edge-form edge) category::subordinate-clause)
-     (is-passive? (edge-right-daughter edge)))
+     (cond
+       ((edge-p (edge-right-daughter edge))
+        ;; if the subordinate clause was extended by a DA rule, then
+        ;; the right edge is :long-span
+        ;; e.g. in
+        ;; "has the ability to inhibit the phosphorylation of both Smad2 and Smad3 but it only slightly inhibits the activation of Akt, ERK, JNK and p38 MAPK, suggesting that it down-regulates Snail expression via a Smad dependent pathway"
+        (is-passive? (edge-right-daughter edge)))
+       ((edge-p (edge-left-daughter edge))
+        (is-passive?(edge-left-daughter edge)))))
     ((eq (edge-form edge) category::vp+passive) t)
     ((eq (edge-form edge) category::vg+passive) t)
     ((eq (edge-form edge) category::verb+passive) t)
