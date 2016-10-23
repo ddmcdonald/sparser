@@ -378,9 +378,10 @@
 
 
 (defun compute-daughter-relationships (list-of-categories)
-  ;; When called from Sort-referential-categories-hierarchically it is
+  "When called from Sort-referential-categories-hierarchically it is
   ;; taking the entire set of categories and making a pairwise record
   ;; of each category's daughters.
+"
   (let ( superc  toplevel-categories )
     (dolist (c list-of-categories)
       (setq superc (cat-lattice-position c))
@@ -431,8 +432,12 @@
   (initialize-indentation)
   (when (and top (symbolp top))
     (setq top (category-named top)))
-  (display-with-subcs top stream depth  max-width with-parens with-vars)
-  (when (and (eq top (category-named 'top))(= depth -1))
+  (display-with-subcs top stream depth max-width with-parens with-vars)
+
+  ;; optionally look through the categories that weren't included
+  ;; in that sweep and report them.
+  (when (and (eq top (category-named 'top))
+             (= depth -1))
     (let* ((remaining (loop for c in *categories-defined*
                         unless (gethash c *category-was-displayed*)
                         collect c))
@@ -443,26 +448,34 @@
       (format t "~&~%~a remaining, ~a without a supercategory~%~%~%"
               (length remaining) (length remaining-without-supercs))
       (dolist (c remaining-without-supercs)
-        (unless (or
-                 (gethash c *category-was-displayed*)
-                 (or
-                  (form-category? c)
-                  (member (get-tag :source c) '(:comlex :morphology))))
+        (unless (or (gethash c *category-was-displayed*)
+                 (or (form-category? c)
+                     (member (get-tag :source c) '(:comlex :morphology))))
           (initialize-indentation)
           (display-with-subcs c stream depth max-width with-parens  with-vars))))))
 
 
-(defun display-with-subcs (category stream &optional (depth -1)(max-width 10)(with-parens t)(with-vars t))
+
+(defun display-with-subcs (category stream
+                           &optional (depth -1) (max-width 10) (with-parens t) (with-vars t))
+  "Write a formatted view of the subcategories of the category to the stream. 
+   Calls itself recursively for 'depth' levels, e.g. with depth=2 it writes out
+   the category and its immediates subcategories. The default setting of depth (-1)
+   will print the entire subtree. 
+   'max-width' specifies how many subcategories at the same depth will be printed. 
+   'with-paren' will enclose every level inside parentheses, making the entire 
+      output a single s-exp.
+   'with-vars' is a flag to include a listing of the variables that are bound by the
+      category."
   (unless (= depth 0)
     (emit-line stream (format nil "~a~s~a"
                               (if with-parens "(" "")
                               (cat-name category)
                               (if (and with-vars (cat-slots category))
-                                  (string-downcase
-                                   (format nil " :variables ~a"
-                                           (mapcar #'pname (cat-slots category))))
-                                  "")
-                              ))
+                                (string-downcase
+                                 (format nil " :variables ~a"
+                                         (mapcar #'pname (cat-slots category))))
+                                "")))
     (setf (gethash category *category-was-displayed*) t)
     (push-indentation)
     (unless (or
@@ -475,8 +488,7 @@
                (then (emit-line stream ";;...") (terpri stream))
                (display-with-subcs subc stream (- depth 1) max-width))))
     (pop-indentation)
-    (if with-parens (format stream ")"))
-    ))
+    (when with-parens (format stream ")"))))
 
 (defun tree-below (category &optional (depth -1))
   (clrhash *category-was-displayed*)

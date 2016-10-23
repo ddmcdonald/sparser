@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "loader"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  0.3 January 2015
+;;;   version:  October 2016
 
 ;; initiated 2/10/92 v2.2
 ;; 0.1 (2/24/93 v2.3) commented out items that didn't load in 2.0
@@ -24,7 +24,8 @@
 
 (when *include-model-facilities*
   (lload "grammar-interface;sort individuals")
-  (lload "grammar-interface;sweep"))
+  (lload "grammar-interface;sweep")
+  (lload "grammar-interface;display-ontology"))
 
 (unless *nothing-Mac-specific*
   (lload "grammar-interface;object dialogs")
