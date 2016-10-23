@@ -24,7 +24,10 @@
    ;; Positive reasons to assume we can compose
    (or (subcategorized-variable head :m adjective)
        (subcategorized-variable adjective :subject head)
-       ;; These next two tests are too weak.
+       ;; These next two tests are necessary but not sufficient
+       ;; unless they also checked compatibility with the head.
+       ;; But for they're adequate for determining rule validity
+       ;; in adj-noun-compound
        (itypep adjective 'attribute-value)
        (itypep adjective 'attribute))))
 
