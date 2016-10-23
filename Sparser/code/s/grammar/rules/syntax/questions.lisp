@@ -97,9 +97,13 @@
   (let* ((be (edge-referent (first edges)))  ;; is
          (np (edge-referent (second edges))) ;; the ball
          (adj (edge-referent (third edges))) ;; red
+         (*left-edge-into-reference* (first edges))
          (copular-adj (make-copular-adjective be adj (car edges)))
          (copular-statement (when copular-adj
                               (assimilate-subject np copular-adj nil))))
+    (declare (special *left-edge-into-reference*))
+    ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
+    ;; to check if it is an infinitive
     (when copular-statement
       (let ((q (make-polar-question copular-statement)))
         (make-edge-over-long-span
@@ -176,6 +180,9 @@ oncogenic receptor conversion warrants further study.")
          ((null next-edge)
           ;; this happened in
           ;; "Whether ILK, TORC2 or another enzyme is the primary AKT hydrophobic-motif Ser473 kinase specifically downstream of β1 integrins has not been investigated, and this is therefore an important open question."
+          (push next-edge other-edges))
+         ((null (edge-referent next-edge))
+          ;; happens in cases like an edge over apostrophe-s
           (push next-edge other-edges))
          ((itypep (edge-referent next-edge) 'attribute) ;; e.g. color
           (setq attr-edge next-edge))
