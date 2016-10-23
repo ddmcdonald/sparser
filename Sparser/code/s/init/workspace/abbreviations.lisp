@@ -229,6 +229,10 @@
                (push string *bad-sentences*)
                (format t "~&Error ~a~%" e)))))
 
+(defun qpp (string) ;; quiet, error-protected call to pp
+  (with-total-quiet
+    (analyze-text-from-string string)))
+
 
 (defun p (string)
   "Parse the string then print out the treetops"
