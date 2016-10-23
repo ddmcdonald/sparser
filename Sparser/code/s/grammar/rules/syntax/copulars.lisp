@@ -102,7 +102,7 @@
    (e.g. 'should be') and the adjective or adjp. 
    This instantiates a three-place predication: copular-predication,
    with the item that it will be applied to (presumably the subject) left open."
-  (declare (special category::copular-predicate))
+  (declare (special category::copular-predicate category::to-comp))
    #+ignore(pushnew (sentence-string *sentence-in-core*)
                    *sentences-going-through-copular-adjective*)
    (cond
@@ -117,8 +117,14 @@
          ;; Note that edge label deliberately is different.
          ;; The idea is have edge category labels that distinguish
          ;; between the vp and the eventual full clause.
-         (revise-parent-edge :category category::copular-predicate
-                             :form category::vp)
+         (if
+          (eq (edge-form (left-edge-for-referent)) category::infinitive)
+          ;; "to be dominant" is not a VP, but is a to-comp
+          
+          (revise-parent-edge :category category::copular-predicate
+                             :form category::to-comp)
+          (revise-parent-edge :category category::copular-predicate
+                             :form category::vp))
           i))))
 #|
   ;; optional edge used in call from make-this-a-question-if-appropriate
