@@ -271,9 +271,12 @@ without damaging other code.")
   (let (relations)
     (when (and (consp tree)
                (not (eq 'collection (car tree))))
-      (if (not (consp (car tree)))
-        (not (entity-p (car tree))))
-      (push (extract-relation tree) relations))
+      (when (not (consp (car tree)))
+        (if
+         (not (entity-p (car tree)))
+         (lsp-break "(car tree) is not an tntity in ~s"
+                    (sentence-string *sentence-in-core*))
+         (push (extract-relation tree) relations))))
     (loop for binding in (cdr tree)
        do
          (setq relations
