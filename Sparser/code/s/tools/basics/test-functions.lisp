@@ -606,34 +606,51 @@
                 (edge-category 
                  (edge-right-daughter edge))))))))
  
-(defun test-reach-sentences (&key (n 1000)(start 0) save-output)
+(defun init-reach-directory ()
   (when (find-package :r3)
-    (when save-output
-      (save-article-semantics
-       nil
-       (pathname
-        (ensure-directories-exist
-             (concatenate 'string
-                          (eval (intern "*R3-TRUNK*" (find-package :r3)))
-                          "corpus/Reach-sentences/results/")))))
-    (unless (boundp '*reach-article-sents*)
+    (save-article-semantics
+     nil
+     (pathname
+      (ensure-directories-exist
+       (concatenate 'string
+                    (eval (intern "*R3-TRUNK*" (find-package :r3)))
+                    "corpus/Reach-sentences/results/"))))))
+
+(defun load-reach-sentences-if-needed ()
+      (unless (boundp '*reach-article-sents*)
       (load (pathname
              (concatenate 'string
                           (eval (intern "*R3-TRUNK*" (find-package :r3)))
-                          "corpus/Reach-sentences/rasmachine_sentences.lisp"))))
+                          "corpus/Reach-sentences/rasmachine_sentences.lisp")))))
 
-    
-
-    (loop for sl in (eval '*reach-article-sents*)
-         as i from (+ 1 start) to (+ start n)
-       do
-         (when save-output
-           (let ((sls (pname sl)))
+(defun test-reach-article-sents (sl-list &key (n 1000)(start 0) (save-output t))
+  (loop for sl in sl-list
+     as i from (+ 1 start) to (+ start n)
+     do
+     ;; this may cause problems, but it should cause the sentences to be collected as part of the article
+       (when save-output
+         (let ((sls (pname sl)))
            (initialize-article-semantic-file-if-needed
             (subseq sls 1 (- (length sls) 1)))))
-         (process-reach-article-sents sl))))
+       (process-reach-article-sents sl)
+       (close-article-semantic-file-if-needed)))
+
+(defun test-reach-sentences (&key (n 1000)(start 0) (save-output t))
+  (when save-output
+    (init-reach-directory))
+  (load-reach-sentences-if-needed)
+  (test-reach-article-sents
+   (eval '*reach-article-sents*) :start start :n n :save-output save-output))
+
+(defparameter *break-on-reach-errors* nil)
+(defparameter *article-name* nil
+  "Used to carry the name of an article from process-reach-article-sents to save-article-sentence.")
 
 (defun process-reach-article-sents (sl)
   (format t "Processing reach article sentences: ~s~%" sl)
-  (loop for s in (eval sl) do (eval `(qepp ,s))))
+  (let ((*article-name* sl))
+    (declare (special *article-name*))
+    (if *break-on-reach-errors*
+        (loop for s in (eval sl) do (eval `(qpp ,s)))   
+        (loop for s in (eval sl) do (eval `(qepp ,s))))))
 
