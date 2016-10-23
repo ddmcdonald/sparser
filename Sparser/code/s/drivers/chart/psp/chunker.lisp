@@ -573,7 +573,7 @@ than a bare "to".  |#
            ;; this should only happen for NS words like GAP–mediate
            (not (preceding-adverb-or-subordinate-conjunction e)))
           ((eq category::verb+ed (edge-form e))
-           ;; verb_ed is allowable as the start of an NG if the previous
+           ;; verb+ed is allowable as the start of an NG if the previous
            ;; (and immediately adjacent) chunk was not an NG -- such an
            ;; adjacent NG happens when the verb+ed is taken to stop the NG
            ;; as in "these drugs blocked ERK activity" where "blocked" is a main verb
@@ -838,11 +838,24 @@ than a bare "to".  |#
                        *suppressed-verb+ed*))
                nil)
               (t t)))
-          (loop for e in (ev-edges (car ev-list))
-             thereis
-               (and
-                (edge-form e)
-                (memq (cat-symbol (edge-form e)) *n-bar-categories*))))
+          (or
+           (loop for e in (ev-edges (car ev-list))
+              thereis
+                (and
+                 (edge-form e)
+                 (memq (cat-symbol (edge-form e)) *n-bar-categories*)))
+           (and ;; e.g. "EGF strongly activated EGFR"
+            (cadr ev-list)
+            (loop for e in (ev-edges (cadr ev-list))
+               thereis
+                 (and
+                  (edge-form e)
+                  (memq (cat-symbol (edge-form e)) *n-bar-categories*)))
+            (loop for e in (ev-edges (car ev-list))
+               thereis
+                 (and
+                  (edge-form e)
+                  (eq (cat-symbol (edge-form e)) 'category::adverb))))))
      (when (and *verb+ed-sents*
                 (not
                  (let* ((ev (pos-starts-here (pos-edge-ends-at edge)))
