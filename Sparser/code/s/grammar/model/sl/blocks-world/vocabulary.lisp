@@ -209,11 +209,9 @@ support a substantial number of blocks.
 
 (define-category make
   :specializes process
-  ;; we're going through the steps of constucting the
-  ;; staircase. With "lets'" we haven't even started
   :mixins (with-an-agent)
-  :binds ((object object)
-          (adj-comp t)) ;; what they build
+  :binds ((object object) ;; what they build
+          (adj-comp t)) ;; "make the stack green"
   :realization
     (:verb ("make" :past-tense "made")
      :etf (svo-passive)
