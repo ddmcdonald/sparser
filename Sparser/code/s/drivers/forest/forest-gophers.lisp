@@ -308,6 +308,8 @@
                (right-form (when (edge-p right) ;; vs. a symbol
                              (edge-form right))))
           (cond
+            ((eq (cat-name (edge-category edge)) 'event-relation)
+             nil)
             ((eq (edge-form left) category::pp)
              (let ((vp-edge (loop for e in (edge-constituents edge)
                                when (vp-category? (edge-form e))
