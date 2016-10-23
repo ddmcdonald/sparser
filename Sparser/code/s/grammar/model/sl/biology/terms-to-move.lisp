@@ -184,6 +184,10 @@ be biology specific, since they aren't. |#
       (:noun "importance"
              :adj "important"))
 
+(define-category of-interest :specializes bio-rhetorical
+      :realization
+      (:adj "of interest"))
+
 (define-category significance :specializes bio-rhetorical
       :realization
       (:noun "significance"

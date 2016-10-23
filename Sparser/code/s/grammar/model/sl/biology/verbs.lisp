@@ -209,6 +209,11 @@
   :realization
   (:verb "lyse" :etf (svo-passive)))
 
+(define-category label :specializes bio-method
+  ;; e.g. "SILAC labeling"
+  :realization
+  (:verb "label" :etf (svo-passive)))
+
 (define-category lacking :specializes bio-relation
   :realization
   (:verb ("lack" ;; don't block noun
@@ -2083,6 +2088,13 @@
 	   :noun "removal"
 	   :etf (svo-passive) 
            :from source))
+
+;; not really relevant, but the existence of "replating" caused an error -- no  edge between positions
+(define-category replate
+  :specializes bio-method
+  :realization
+  (:verb   "replate"
+   :etf (svo-passive)))
 
 (delete-verb-cfr (resolve "report"))
 (delete-verb-cfr (resolve "reported"))

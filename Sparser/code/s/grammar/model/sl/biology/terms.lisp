@@ -37,6 +37,7 @@
 
 (in-package :sparser)
 
+(noun "SILAC labeling" :super bio-method)
 (noun "ipegal" :super bio-method) ;; actually a detergent used to lyse cells, but we don't really care
 ;; this should avoid an error in parsing the folloiwng in the first CURE article
 ;;"Cells were lysed in a buffer containing 50 mM Tris-HCl (pH 7.4), 150 mM NaCl, 2.5 mM EDTA, 1% Triton X-100, and 0.25% IPEGAL."
@@ -327,6 +328,13 @@
 (define-category lung :specializes bio-organ
   :realization
   (:noun "lung"))
+
+(noun "trophectoderm" :super bio-organ)
+(def-synonym trophectoderm (:noun "TE"))
+
+(define-category inner_cell_mass :specializes bio-organ
+              :realization (:noun "inner cell mass" ))
+(def-synonym inner_cell_mass (:noun "ICM"))
 
 (noun "lactate" :super molecule)
 

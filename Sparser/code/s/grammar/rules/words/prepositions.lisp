@@ -193,7 +193,7 @@
 (define-preposition "in terms of")
 (define-preposition "in the face of")
 (define-preposition "in the light of")
-(define-preposition "in the process of")
+;;(define-preposition "in the process of") ;; this is a meaningful NP in biology
 (define-preposition "in view of")
 (define-preposition "inside" :form 'spatial-preposition)
 (define-preposition "inside of" :form 'spatial-preposition)

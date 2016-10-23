@@ -84,6 +84,7 @@
 (define-drug "bevacizumab")
 (define-drug "bevasizumab")
 (define-drug "bib")
+(define-drug "BKM120")
 (define-drug "blinatumomab")
 (define-drug "bortezomib")
 (define-drug "bosutinib")
