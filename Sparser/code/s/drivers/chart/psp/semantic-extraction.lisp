@@ -463,34 +463,34 @@ without damaging other code.")
                       (symbolp value)
                       (stringp value))
                 (push (list var-name value) desc)
-                  (typecase value
-                    (individual 
-                     (if (and (not (or *for-spire* *sentence-results-stream*))
-                              (itypep value 'prepositional-phrase))
-                       (push (list var-name
-                                   (collect-model-description
-                                    (value-of 'pobj value)))
-                             desc)
-                       (push (list var-name
-                                   (collect-model-description value))
-                             desc)))
-                    ((or word polyword category)
-                     (push `(,var-name ,(collect-model-description value)) desc))
-                    (cons
-                     (unless (equal restriction '(:primitive list))
-                       (error "The value of the variable ~a is a cons but its ~
-                               restriction, ~a, doesn't permit it.~%value = ~a"
-                              var-name restriction value))
-                     (push `(,var-name
-                             (,(loop for item in value
-                                  do (collect-model-description item)) ))
-                           desc))
-                    (rule-set) ;; the word "anti" presently does this
-                    ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
-                    (otherwise
-                     (push-debug `(,value ,b ,i))
-                     ;;(break "Unexpected type of value of a binding: ~a" value)
-                     (format t "~&~%Collect model: ~
+                (typecase value
+                  (individual 
+                   (if (and (not (or *for-spire* *sentence-results-stream*))
+                            (itypep value 'prepositional-phrase))
+                     (push (list var-name
+                                 (collect-model-description
+                                  (value-of 'pobj value)))
+                           desc)
+                     (push (list var-name
+                                 (collect-model-description value))
+                           desc)))
+                  ((or word polyword category)
+                   (push `(,var-name ,(collect-model-description value)) desc))
+                  (cons
+                   (unless (equal restriction '(:primitive list))
+                     (error "The value of the variable ~a is a cons but its ~
+                             restriction, ~a, doesn't permit it.~%value = ~a"
+                            var-name restriction value))
+                   (push `(,var-name
+                           (,(loop for item in value
+                                do (collect-model-description item)) ))
+                         desc))
+                  (rule-set) ;; the word "anti" presently does this
+                  ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
+                  (otherwise
+                   (push-debug `(,value ,b ,i))
+                   ;;(break "Unexpected type of value of a binding: ~a" value)
+                   (format t "~&~%Collect model: ~
                             Unexpected type of value of a binding: ~a~%" value))))))
        (reverse desc)))))
 
@@ -504,15 +504,15 @@ without damaging other code.")
        as vv-pair = `(,var-name
                       ,(if (and (or *for-spire* *sentence-results-stream*)
                                 (category-p value))
-                           `(category ,(cat-name value))
-                          value))
+                         `(category ,(cat-name value))
+                         value))
        do
          (unless (or (memq var-name '(trailing-parenthetical category ras2-model))
                      (typep value 'mixin-category)) ;; has-determiner
            (case var-name
              ((type number)
-              (when (or *for-spire* *sentence-results-stream*)
-                (push vv-pair desc)))
+              ;;(when (or *for-spire* *sentence-results-stream*)
+                (push vv-pair desc)) ;;)
              (items
               (let ((member-descs (mapcar #'collect-model-description value)))
                 (push (if (or *for-spire* *sentence-results-stream*)
