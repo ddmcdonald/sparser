@@ -60,6 +60,7 @@ grammar/model/core/titles/rules.lisp:                 (i-type-of possessive)
 grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
 |#
 (defun i-type-of (i)
+  (declare (special *subcat-test*))
   (typecase i
     (individual
      (let ((type-field (indiv-type i)))
@@ -73,8 +74,20 @@ grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
      (report-bad-itype-of i)     
      nil)
     (null
-     (report-bad-itype-of i)     
+     (report-bad-itype-of i)
      nil)
+    (cons
+     (if (and (consp (car i))
+              (eq (caar i) :head)
+              (consp (second i))
+              (eq (car (second  i)) :subtype))
+         ;; we don't handle plurals in the noew SUBTYPE form for types
+         ;; e.g. the 1970s
+         (then
+           (unless *subcat-test*
+             (warn "plural itypep in sentence ~s~%" (SENTENCE-STRING *SENTENCE-IN-CORE*)))
+           i)
+         (report-bad-itype-of i)))
     (otherwise
      (push-debug `(,i))
      (error "itype-of applied to a ~a rather than ~
@@ -154,7 +167,14 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
   (cond
     ((symbolp i) (itypep (category-named i :break-if-none) c/s))
     ((consp i)
-     (error "what are you doing passing a CONS to itypep: ~s~&" i))
+     (if (and (consp (car i))
+              (eq (caar i) :head)
+              (consp (second i))
+              (eq (car (second  i)) :subtype))
+         ;; we don't handle plurals in the noew SUBTYPE form for types
+         ;; e.g. the 1970s
+         nil
+         (error "what are you doing passing a CONS to itypep: ~s~&" i)))
     ((consp c/s)
      (if (eq (car c/s) :or)
          (loop for c in (cdr c/s)

@@ -423,6 +423,13 @@
     (when sc
       (subcat-patterns sc))))
 
+(defmethod known-subcategorization? ((c cons))
+  (declare (special *subcat-test*))
+  (unless *subcat-test*
+    (warn "passing a list to known-subcategorization? -- ~s~% in sentence: ~s~%"
+          c (sentence-string *sentence-in-core*)))
+  nil)
+
 
 ;;;------------------------------------------------
 ;;; Designated interesting variables in a category
@@ -790,7 +797,7 @@
 (defun subcategorized-variable (head label item)
   "Returns the variable on the HEAD that is subcategorized for
    the ITEM when it has the grammatical relation LABEL to the head."
-  (declare (special *pobj-edge*))
+  (declare (special *pobj-edge* *subcat-test*))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
@@ -822,7 +829,8 @@
                  (sentence-string *sentence-in-core*))))
      nil)
     ((consp item)
-     (warn "what are you doing passing a CONS as an item, ~s~&" item)
+     (unless *subcat-test*
+       (warn "what are you doing passing a CONS as an item, ~s~&" item))
      nil)
     (t
      ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
