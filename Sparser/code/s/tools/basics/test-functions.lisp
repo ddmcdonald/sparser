@@ -650,7 +650,9 @@
   (format t "Processing reach article sentences: ~s~%" sl)
   (let ((*article-name* sl))
     (declare (special *article-name*))
-    (if *break-on-reach-errors*
+    (if (or *break-on-reach-errors*
+            (and (find-package :r3)
+                 (eval (intern "*BREAK-DURING-READ*" (find-package :r3)))))
         (loop for s in (eval sl) do (eval `(qpp ,s)))   
         (loop for s in (eval sl) do (eval `(qepp ,s))))))
 
