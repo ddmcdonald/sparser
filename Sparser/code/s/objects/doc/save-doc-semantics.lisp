@@ -52,10 +52,11 @@
            (if *use-xml*
                (format *sentence-results-stream*
                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>~%<article>~%")
-               )))))
+               )
+            *sentence-results-stream*))))
 
 
-(defun close-article-semantic-file-if-needed (article)
+(defun close-article-semantic-file-if-needed ()
   (when (and *article-semantics-directory*
              (streamp *sentence-results-stream*))
     (if *use-xml*
@@ -67,10 +68,10 @@
 
 (defun make-semantics-filename (article)
   (let ((aname (if (stringp article) article (name article))))
-    (merge-pathnames  *article-semantics-directory*
-                      (if *use-xml*
-                          (format nil "~a-semantics.xml" aname)
-                          (format nil "~a-semantics.lisp" aname)))))
+    (make-pathname :name (if *use-xml*
+                             (format nil "~a-semantics.xml" aname)
+                             (format nil "~a-semantics.lisp" aname))
+                   :defaults *article-semantics-directory*)))
 
 
 (defparameter *one-expression-per-sentence* t)
@@ -202,8 +203,10 @@
          (finish-cat stream))))
 
 (defmethod write-sem ((w string) stream)
-  (if (not *use-xml*) (princ " " stream))
-  (prin-escaped w stream))
+  (if *use-xml*
+      (prin-escaped w stream)
+      (format stream " ~a" w)))
+
 (defmethod write-sem ((w word) stream)
   (write-sem (pname w) stream))
 (defmethod write-sem ((w polyword) stream)
@@ -366,7 +369,12 @@
 (defun lcase-space-prin1 (s stream)
   (format stream  " ~a" (string-downcase (format nil "~s" s))))
 
+(defun emit-list-start (item stream)
+  (emit-line stream (concatenate 'string "(" item)))
 
+
+(defun emit-list-start-continue (item stream)
+  (emit-line-continue stream (concatenate 'string " (" item)))
 
 (defun space-prin1 (item stream)
   (format stream " ~s" item))
