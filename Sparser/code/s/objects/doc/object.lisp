@@ -721,10 +721,11 @@ printer. |#
 (defmethod save-article-sentence ((article article) (sentence sentence))
   (unless *article-sentences*
     (setq *article-sentences* (make-hash-table)))
-  (when (name article)
+  (when (or (name article) *article-name*)
     (push (sentence-string sentence)
-          (gethash (intern (pname (name article))
-                           (find-package :sp))
+          (gethash (or *article-name*
+                       (intern (pname (name article))
+                           (find-package :sp)))
                    *article-sentences*))))
 
 
