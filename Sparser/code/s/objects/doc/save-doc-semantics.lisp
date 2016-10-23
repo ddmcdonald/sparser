@@ -127,17 +127,15 @@
 (defmethod write-combined-sentence-results ((s sentence) stream)
   (declare (special *show-syn-tree*))
   ;; we assume that this is called immediately after the sentence is parsed
-  (cond (*use-xml*
+  (when *use-xml*
          (format stream "~%<sentence-text>")
          (prin-escaped (sentence-string s) stream)
          (format stream "</sentence-text>~%"))
-        (t         
-         (format stream "~%;;;___________________~%(sentence-text ~s)%~%"
-                 (sentence-string s))))
   (if *direct-from-sem*
       (write-sem s stream)
       (write-sem-tree
        `(interpretation
+         (sentence-text ,(sentence-string s))
          ,.
          (loop for edge in (all-tts (starts-at-pos s)(ends-at-pos s))
             collect 
@@ -167,6 +165,13 @@
 (defmethod write-sem ((s sentence) stream)
   (setq ddm-util::*indentation* 0) ;; make sure indentation is restarted
   (start-cat "interpretation" stream)
+  (push-indentation)
+  (start-cat "sentence-text" stream)
+  (if *use-xml*
+      (write-sem (sentence-string s) stream)
+      (format stream " ~s" (sentence-string s)))
+  (finish-cat stream)
+  (pop-indentation)
   (loop for tt in (all-tts (starts-at-pos s)(ends-at-pos s))
      do
        (push-indentation)
