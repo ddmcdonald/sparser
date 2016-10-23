@@ -158,7 +158,7 @@
       (after-actions a))
     (when (and *show-section-printouts* (actually-reading))
       (show-parse-performance a))
-    (close-article-semantic-file-if-needed a)
+    (close-article-semantic-file-if-needed)
     a))
 
 (defmethod read-from-document ((ss section-of-sections))
