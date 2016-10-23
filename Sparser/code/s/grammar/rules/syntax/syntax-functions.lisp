@@ -275,14 +275,12 @@ No longer used -- remove soon
       (setq head (bind-variable variable-to-bind premod head))
       head))))
 
-
 (defun adj-noun-compound (adjective head &optional adj-edge)
   (declare (special category::determiner))
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
      (takes-adj? head adjective))
-
     ((call-compose adjective head)) ;; This case is to benefit marker-categories
     ((itypep adjective 'attribute-value)
      (handle-attribute-of-head adjective head))
@@ -1631,14 +1629,42 @@ No longer used -- remove soon
 
 
 (defun assimilate-adj-complement (vp adjp)
-  (when (get-tag :adjp-complement (itype-of vp))
-    ;; this is a (find-variable-for-category event-relation (itype-of s))
-    (let* ((obj-var (bound-object-var vp))
-           (obj (when obj-var (value-of obj-var vp)))
-           (mod-obj (when (takes-adj? obj adjp)
-                      (adj-noun-compound adjp obj (right-edge-for-referent)))))
-      (when mod-obj
-        (bind-dli-variable 'predicate mod-obj vp)))))
+  "Post-verb Adverbial and adjectival complements can be predicating
+   something of any of the elements of the clause: verb, subject, or
+   object. This code is only looks for the object case"
+  
+  (cond
+    (*subcat-test*
+     (takes-adj? vp adjp))
+    (t
+     (if (get-tag :adjp-complement (itype-of vp))
+       ;; is this verb marked as taking adjp-complements?
+       (let* ((obj-var (bound-object-var vp))
+              (obj (when obj-var (value-of obj-var vp))))
+         (if obj ;; there is an object to attach the adjp to
+           (cond
+             ;; Ignoring this because the has-attribute that it
+             ;; makes is not properly integrated
+             #+ignore((itypep adjp 'attribute-value)
+              ;; adj-noun-compound will look up the variable for
+              ;; the attribute and bind it. We're simply predicating it.
+              (attribute-value-of-object adjp obj)
+              vp)
+             ((takes-adj? obj adjp)
+              (let ((mod-obj (adj-noun-compound adjp obj (right-edge-for-referent))))
+                (if mod-obj
+                  (bind-dli-variable 'predicate mod-obj vp)
+                  vp)))
+             (t ;; weaker claim
+              (bind-variable 'modifier adjp vp)))
+        (else ;; no object
+          vp)))
+       ;; No object, swe don't know where to put the adj complement, so we
+       ;; should drop it on the floor. /// need examples for the
+       ;; verb modifying and subject modifying cases
+       vp))))
+
+
 
 
 ;;; intensifier for an ADJECTIVE -- 95% sure
