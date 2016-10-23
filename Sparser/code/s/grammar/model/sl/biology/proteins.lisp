@@ -41,6 +41,10 @@
 ;;; for (some of) the abstract in the proposal
 ;;;--------------------------------------------
 
+
+;; from REACH
+(define-protein "PDCD1_HUMAN" ("programmed cell death 1" "PD-1"))
+(define-protein "PD1L1_HUMAN" ("programmed cell death 1 ligand 1" "PD1L1"))
 ;; from CURE and TRIPS
 ;;"HIF-1alpha is degraded through the prolyl hydroxylase (PHD)/von Hippel-Lindau (VHL) ubiquitination pathway in an oxygen dependent manner"
 (define-protein "VHL_HUMAN" ("von Hippel-Lindau protein" "von Hippel-Lindau tumor suppressot" "pVHL" "protein G7"

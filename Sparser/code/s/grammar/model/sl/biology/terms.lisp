@@ -170,6 +170,8 @@
 (noun "HA.11" :super epitope)
 
 (noun "bradykinin" :super peptide)
+(noun "Abeta" :super peptide)
+(def-synonym abeta (:noun "amyloid beta"))
 ;; to be reviewed -- from Localization
 
 
@@ -277,7 +279,10 @@
 (noun "glioblastoma" :super cancer)
 (noun "keratoacanthoma" :super cancer)
 (noun "neurooblastoma" :super cancer)
+(noun "NSCLC" :super cancer)
+(def-synonym NSCLC (:noun "non-small cell lung cancer"))
 (noun "non-small cell lung cancer" :super cancer)
+(def-synonym NSCLC (:noun "non small cell lung cancer"))
 (adj "nonsignaling" :super bio-predication)
 ;;(def-synoynm nonsignaling (:adj "nonsignalling"))
 (noun "isomerase" :super enzyme)
