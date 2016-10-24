@@ -129,7 +129,8 @@
         (*current-document-element* a))
     (declare (special *current-article*
                       *current-document-element*))
-    (initialize-article-semantic-file-if-needed a)
+    (when (actually-reading)
+      (initialize-article-semantic-file-if-needed a))
     (set-document-index a :ignore)
     (when *sentence-making-sweep*
       ;; makes the section-of-section objects as needed
@@ -158,7 +159,8 @@
       (after-actions a))
     (when (and *show-section-printouts* (actually-reading))
       (show-parse-performance a))
-    (close-article-semantic-file-if-needed)
+    (when (actually-reading)
+      (close-article-semantic-file-if-needed))
     a))
 
 (defmethod read-from-document ((ss section-of-sections))
