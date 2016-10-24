@@ -352,21 +352,34 @@
       ((eq eform category::adverb )
        (not (eq (edge-category e) category::also)))
       ((eq category::verb+ing eform)
-       (not
-        (or
-         (eq (edge-category e) category::have)
-         (loop for edge in edges thereis (eq (edge-category edge) category::parentheses))
-         (and
-          ;; check to block splitting up "the p53 binding ability"
-          (not
-           (loop for ee in (all-edges-on (pos-starts-here (pos-edge-ends-at e)))
-              thereis (eq (edge-form ee) category::common-noun)))
-          (loop for edge in edges thereis
-               (and (ng-head? edge)
-                    ;; rule out demonstrative pronouns
-                    ;; "such co-occurring events"
-                    (not (eq (edge-form edge) category::det))
-                    (not (eq (edge-form edge) category::quantifier))))))))
+       (cond ((or
+               (eq (edge-category e) category::have)
+               (eq (edge-category e) category::be)
+               (loop for edge in edges thereis (eq (edge-category edge) category::parentheses)))
+              nil)
+             (#+ignore
+              (loop for ee in (all-edges-on (pos-starts-here (pos-edge-ends-at e)))
+                 thereis (and (category-p (edge-form ee))
+                              (member (cat-symbol (edge-form ee)) *n-bar-categories*)))
+              (loop for edge in edges thereis
+                   (and (ng-head? edge)
+                        (not (eq (edge-form edge) category::det))
+                        (not (eq (edge-form edge) category::quantifier))))
+              nil)
+             ((loop for edge in edges thereis
+                   (eq (edge-form edge) category::adverb))
+              ;; too tight, but probably OK
+              ;; blocks "interaction eventually influencing ecm - driven cell motility"
+              nil)
+             #+ignore
+             ;; check to block splitting up "the p53 binding ability"
+             ((loop for edge in edges thereis
+                   (and (ng-head? edge)
+                        ;; rule out demonstrative pronouns
+                        ;; "such co-occurring events"
+                        (not (eq (edge-form edge) category::det))
+                        (not (eq (edge-form edge) category::quantifier)))))
+             (t t)))
       ((and
         (eq eform category::verb+ed)
         ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
@@ -676,12 +689,13 @@ than a bare "to".  |#
               (followed-by-verb e (edges-after e))))
             ((singular-noun-and-present-verb? e)
              (not (preceding-pronoun-or-which? e edges-before)))
-            ((eq (cat-name (edge-form e)) 'VERB+ING) ; 
+            ((eq (cat-name (edge-form e)) 'VERB+ING) ;
              (let
                  ((end-pos (pos-edge-ends-at e))
                   (prev-edge (left-treetop-at/edge (pos-edge-starts-at e))))
                (declare (special end-pos prev-edge)) 
                (and
+                (not (itypep (edge-category e) 'state)) ;; block resulting
                 (not (and (edge-p prev-edge)(eq (cat-name (edge-form prev-edge)) 'adverb)))
                 (let
                     ((next-edge (right-treetop-at/edge end-pos)))

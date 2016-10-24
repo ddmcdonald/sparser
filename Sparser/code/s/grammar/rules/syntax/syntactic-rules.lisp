@@ -423,7 +423,7 @@
 
 (loop for n in `(np pronoun  vp+ing vg+ing ,@*n-bar-categories*)
    do
-     (loop for v in '(vg+ed vp+ed)
+     (loop for v in '(vg+ed vp+ed verb+ed)
         do
           (eval
            `(def-syntax-rule (,n ,v)

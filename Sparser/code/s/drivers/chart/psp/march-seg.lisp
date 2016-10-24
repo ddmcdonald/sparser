@@ -47,11 +47,11 @@
     ;;  and doesn't distribute aspect, etc.
     ;;  gets same results on compare-to-snapshots with this change 5 Feb 2016
     ;;(interp-big-mech-chunk *current-chunk* nil)
-    (interp-big-mech-chunk *current-chunk* t))
+    (interp-big-mech-chunk *current-chunk* t nil))
    ((use-specialized-ng-parser?)
-    (interp-big-mech-chunk *current-chunk* t))
+    (interp-big-mech-chunk *current-chunk* t t))
    ((use-specialized-vg-parser?)
-    (interp-big-mech-chunk *current-chunk* nil))
+    (interp-big-mech-chunk *current-chunk* nil nil))
    (t (march-back-from-the-right/segment))))
 
 
@@ -102,7 +102,7 @@
                          (eq (edge-form (car edges)) category::quantifier))))))))))
 
 
-(defun interp-big-mech-chunk (chunk from-right &aux tt)
+(defun interp-big-mech-chunk (chunk from-right ng? &aux tt)
   (declare (special *rules-for-pairs*))
   ;;(push-debug `(,chunk)) (break "interp chunk: ~a" chunk)
   (when *save-chunk-edges*
@@ -137,7 +137,7 @@
 	 (setq triples (loop for tr in triples 
 			  unless (member tr blocked-triples)
 			  collect tr)))
-       (setq triple (select-best-triple triples chunk))
+       (setq triple (select-best-chunk-triple triples chunk))
        (when (null triple)
 	 (return))
        (setq edge (execute-triple triple))
@@ -154,6 +154,73 @@
         ;; else, then mop up anything else that that couldn't
         (march-back-from-the-right/segment))))
 
+(defun select-best-chunk-triple (triples chunk)
+  ;; decision-making goes here, e.g. the types of edges involved,
+  ;; their position within the segment, their probablility of
+  ;; being correct given priors, the kind of rule being used.
+  (when triples
+    (push-debug `(,triples)) ;;(lsp-break "triple")
+    (tr :n-triples-apply triples)
+    
+    (let ((non-syntactic-triples
+           (loop for triple in triples
+	      as rule = (car triple)
+	      unless (syntactic-rule? rule)
+	      collect triple))
+          (priority-triples
+           (loop for triple in triples
+              as rule = (car triple)
+              when (priority-triple? triple chunk)
+              collect triple)))
+      
+      (when nil
+        (break "non-syntactic-triples = ~a~
+              ~%prority-triples = ~a"
+               non-syntactic-triples
+               priority-triples))
+
+      (cond
+	(priority-triples ;; "was rapidly phosphorylated"
+         (tr :n-priority-triples priority-triples)
+	 (let ((selected (car (last priority-triples))))
+	   (tr :selected-best-triple selected)
+	   selected))
+        ((memq 'adjg (chunk-forms chunk))
+         ;; The verb or aux is on the left, take the first rule
+         ;; "has been unclear"
+         (tr :selecting-first-for-adjg)
+         (let ((leftmost (car triples)))
+           (tr :selected-best-triple leftmost)
+           leftmost))
+	(t
+	 ;; this default amounts to selecting the rightmost pair
+	 ;; that has a rule
+         (tr :n-default-triples triples)
+	 (let ((rightmost (car (last triples))))
+	   (tr :selected-best-triple rightmost)
+	   rightmost))))))
+
+(defparameter *show-priorty-NG-rules* nil)
+(defun priority-triple? (triple chunk)
+  (or (priority-rule? (car triple))
+      (and (memq 'ng (chunk-forms chunk))
+           (edge-p (second triple))
+           (edge-p (third triple))
+           (category-p (edge-form (second triple)))
+           (category-p (edge-form (third triple)))
+           (member
+            (cat-symbol (edge-form (second triple)))
+            *n-bar-categories*)
+           (member
+            (cat-name (edge-form (third triple)))
+            `(verb+ing verb+ed vg+ing vg+ed))
+           (or 
+            (null *show-priorty-NG-rules*)
+            (format t "~%~s in ~s~%" triple chunk) ;; this gives an indication of where internal NG priority rules fire
+            )
+           )))
+
+#+ignore
 (defun select-best-triple (triples chunk)
   ;; decision-making goes here, e.g. the types of edges involved,
   ;; their position within the segment, their probablility of

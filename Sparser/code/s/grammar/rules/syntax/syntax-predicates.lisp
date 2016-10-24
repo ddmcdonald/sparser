@@ -65,7 +65,9 @@
     (not (missing-object-vars vp)) ;; (not (object-variable vp)) (bound-object-var vp)
     ;; or a statement (clausal complement)
     (value-of 'statement vp)
-    (preceding-that-whether-or-conjunction? left-edge))
+    (preceding-that-whether-or-conjunction? left-edge)
+    (and *current-chunk*
+         (memq 'ng (chunk-forms *current-chunk*))))
    (subcategorized-variable vp :subject subj)))
        
 (defun can-fill-vp-object? (vp subj)
