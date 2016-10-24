@@ -110,6 +110,13 @@
          :etf (svo-passive)
          :o theme))
 
+(define-category include :specializes bio-relation
+  :realization
+  (:verb ("include" :present-participle "includingxxx")
+         :etf (svo)
+         :o theme
+         ))
+
 ;;; Verbs added for CURE articles -- to be reviewed
 (delete-verb-cfr (resolve "transform"))
 (define-category cancer-transform :specializes caused-bio-process
@@ -501,6 +508,7 @@
   :realization 
   (:verb "attenuate"
          :etf (svo-passive)
+         :noun "attenuation"
          :with object))
 
 ;; The category 'attribute' is in core/kinds/attribution.lisp.
@@ -1545,7 +1553,7 @@
 (delete-noun-cfr (resolve "lead"))
 (delete-noun-cfr (resolve "leads"))
 (define-category lead :specializes positive-bio-control
-    :restrict ((agent (:or bio-process bio-method bio-mechanism)))
+    :restrict ((agent (:or bio-process bio-method bio-mechanism bio-relation)))
     :binds ((leads-to (:or biological bio-rhetorical)))
     :realization
     (:verb ("lead" :past-tense "led")
@@ -2135,8 +2143,9 @@
            :to affected-process))
 
 
-(define-category result :specializes other-bio-process
+(define-category result :specializes bio-relation
     :binds ((results-in (:or bio-process bio-method bio-predication)))
+    :restrict ((subject perdurant))
     :realization
     (:verb ("result" :third-singular "results") ;; block plural form of the verb, because of interaction with noun
 	   :etf (sv)

@@ -43,6 +43,7 @@
 
 
 ;; from REACH
+(define-protein "PPP1R12C" ("protein phosphatase 1 regulatory subunit 12C"))
 (define-protein "PDCD1_HUMAN" ("programmed cell death 1" "PD-1"))
 (define-protein "PD1L1_HUMAN" ("programmed cell death 1 ligand 1" "PD1L1"))
 ;; from CURE and TRIPS
@@ -613,7 +614,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "A5PLL0_HUMAN" ("Cpt1b" "CPT1B protein")) 
 (define-protein "A8KA19_HUMAN" ("trnas" "cDNA FLJ75831, highly similar to Homo sapiens exportin, tRNA (nuclear export receptor for tRNAs) (XPOT), mRNA")) 
 (define-protein "A9YLD1_MEDTR" ("AA8")) 
-(define-protein "AAKB1_HUMAN" ("AMPKb" "AMPK" "PRKAB1")) 
+(define-protein "AAKB1_HUMAN" ("AMPKb" "PRKAB1")) 
 (define-protein "AAKG1_HUMAN" ("AMPKg" "PRKAG1")) 
 (define-protein "AAPK1_HUMAN" ("AMPK1" "PRKAA1")) 
 (define-protein "AAPK2_HUMAN" ("hmgcr" "5'-AMP-activated protein kinase catalytic subunit alpha-2" "AMPK subunit alpha-2" "Acetyl-CoA carboxylase kinase" "ACACA kinase" "Hydroxymethylglutaryl-CoA reductase kinase" "HMGCR kinase")) 
@@ -2155,14 +2156,14 @@ filligre may be used to distinguish them, etc.
 (define-protein "Q8IZD7_HUMAN" ("anti-Histone" "Anti-thyroglobulin heavy chain variable region")) 
 (define-protein "Q8NFL3_HUMAN" ("amphiphysin-1" "Amphiphysin I variant NT2")) 
 (define-protein "Q96D37_HUMAN" ("Proto-oncogene vav" "VAV1 protein")) 
-(define-protein "Q96T14_HUMAN" ("caenorhabditis" "cDNA FLJ14509 fis, clone NT2RM1000499, weakly similar to Caenorhabditis elegans centaurin gamma 1A")) 
+(define-protein "Q96T14_HUMAN" ("cDNA FLJ14509 fis, clone NT2RM1000499, weakly similar to Caenorhabditis elegans centaurin gamma 1A")) 
 (define-protein "Q99C47_9HIV1" ("AGC2" "Envelope glycoprotein")) 
 (define-protein "Q9BY25_HUMAN" ("IL1β" "HCG2007431" "IL-1beta-regulated neutrophil survival protein")) 
 (define-protein "Q9ENS0_HHV1" ("Thymidine kinase")) 
 (define-protein "Q9UM81_HUMAN" ("ptpσ" "Protein-tyrosine-phosphatase")) 
 (define-protein "Q9UNC0_HUMAN" ("K65" "P58 killer cell inhibitory receptor KIR-K65")) 
 (define-protein "Q9WJJ2_9HIV1" ("JM-B" "Pol protein")) 
-(define-protein "R1AB_CVH22" ("proteinases" "Replicase polyprotein 1ab" "pp1ab" "ORF1ab polyprotein")) 
+(define-protein "R1AB_CVH22" ("Replicase polyprotein 1ab" "pp1ab" "ORF1ab polyprotein")) 
 (define-protein "R51A1_HUMAN" ("RAD51AP1" "PIR51")) 
 (define-protein "RA51B_HUMAN" ("paralogs" "DNA repair protein RAD51 homolog 2" "R51H2" "RAD51 homolog B" "Rad51B" "RAD51-like protein 1")) 
 (define-protein "RAB10_HUMAN" ("RAB10")) 

@@ -15,6 +15,8 @@
 ;; Protein families
 (def-family "importin")
 (def-family "exportin")
+(def-family "AMPK":synonyms ("AMP activated protein kinase"))
+
 (def-family "SMAD" ;; there are a bunch of these, but we will ignore them for the moment
     )
 

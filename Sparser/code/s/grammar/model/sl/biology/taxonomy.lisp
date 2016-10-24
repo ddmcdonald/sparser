@@ -115,7 +115,9 @@
    it spans such a wide range of things it will not fit into
    an upper-model category. It's real job is to contribute slots."
   :mixins (with-quantifier)
-  :binds ((context (:or bio-context experiment-data))
+  :binds ((context (:or bio-context
+                        bio-mechanism ;; for pathways -- they are context, not manner
+                        experiment-data))
           (cell-line cell-line)
           (cell-type cell-type)
           (organ bio-organ)
@@ -290,7 +292,7 @@
     :binds ((subject biological)
             (by-means-of (:or bio-process mechanism bio-method pathway))
 	    (using protein)
-	    (manner (:or  bio-mechanism bio-method)) ;; conflict with "increase" bio-process CHECK THIS
+	    (manner bio-method) ;; conflict with "increase" bio-process CHECK THIS
 	    (as-comp as-comp)
 	    (target (:or protein gene))
         )
@@ -305,7 +307,6 @@
            :through using
            :through by-means-of
 	   :in manner
-
 	   :as-comp as-comp
 	   :at target)
     :documentation "No content by itself, provides a common parent

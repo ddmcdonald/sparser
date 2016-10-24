@@ -485,8 +485,7 @@ it is created from N-terminus to C-terminus.|#
 ; the Raf/MEK/ERK pathway
 ; MAPK pathway inhibitors / inhibition
 
-(define-category  pathway
-  :specializes bio-mechanism
+(define-category  pathway :specializes bio-mechanism
   ;;:mixins (type-marker biological)
   :binds ((protein-sequence sequence)
           (pathwayComponent)
@@ -682,6 +681,11 @@ it is created from N-terminus to C-terminus.|#
    :noun "heterodimerization"
    :etf (sv)))
 
+(def-synonym heterodimerize
+     (:verb "hetero-dimerize" 
+   :noun "hetero-dimerization"
+   :etf (sv)))
+
 (define-category homodimerize :specializes dimerize
   :realization
   (:verb "homodimerize" 
@@ -701,6 +705,11 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym homo/heterodimerize
              (:noun "homo- and heterodimerization"))
 
+
+(def-synonym homo/heterodimerize
+    (:verb "homo- and hetero- dimerize"
+           :etf (sv)
+           :noun "homo- and hetero- dimerization"))
 
 (define-category bio-complex   :specializes bio-chemical-entity
   ;; changed -- complexes are not molecules, but associated groups of
@@ -902,6 +911,14 @@ with something else
     (:verb "proliferate"
 	   :noun "proliferation"
 	   :etf (sv)))
+
+(define-category cell-cycle-progression :specializes cellular-process
+   :realization
+   (:noun "cell cycle progression"))
+
+(define-category protein-synthesis :specializes cellular-process
+   :realization
+   (:noun "protein synthesis"))
 
 (define-category transformation :specializes cellular-process
    :binds ((initial biological)

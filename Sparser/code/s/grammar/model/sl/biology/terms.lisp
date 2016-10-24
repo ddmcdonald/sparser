@@ -171,6 +171,7 @@
 
 (noun "bradykinin" :super peptide)
 (noun "Abeta" :super peptide)
+(noun "AICAR" :super peptide)
 (def-synonym abeta (:noun "amyloid beta"))
 ;; to be reviewed -- from Localization
 
@@ -466,7 +467,7 @@
                  
 
 (define-category aspect :specializes bio-mechanism
-  :binds ((whole (:or bio-mechanism bio-process)))
+  :binds ((whole bio-mechanism))
   :realization
   (:noun "aspect"
          :of whole))
@@ -718,24 +719,19 @@
            :against against)) ;; keyword: (ive ADJ) 
 
 (define-category inhibitor :specializes drug
-  :binds ((process (:or bio-process pathway bio-mechanism))
+  :binds ((process (:or bio-process bio-mechanism))
           (protein protein))
   :realization (:noun "inhibitor" :m process :m protein :of process :of protein))
 
 
 ;; THIS NEEDS WORK
 (define-category repressor :specializes inhibitor
-  :binds ((process (:or bio-process pathway bio-mechanism))
-          (protein protein))
-  :realization (:noun "repressor" :m process :m protein :of process :of protein))
+  :realization (:noun "repressor"))
 
 (define-category suppressor :specializes inhibitor
-  :binds ((process (:or bio-process pathway bio-mechanism))
-          (protein protein))
-  :realization (:noun "suppressor" :m process :m protein :of process :of protein))
+  :realization (:noun "suppressor"))
 
-(define-category negative-regulator 
-                 :specializes inhibitor
+(define-category negative-regulator :specializes inhibitor
   :realization (:noun "negative regulator"))
 
 (adj "insensitive" :super bio-relation
@@ -1172,13 +1168,15 @@
   (def-bio/expr line 'cell-line :takes-plurals nil))
 
 
-(def-cell-line "keratin") ;; NOT SURE THIS IS HOW IT IS BEING USED
+(noun "keratin" :super cell-type) ;; NOT SURE THIS IS HOW IT IS BEING USED
+(noun "keratinocyte" :super cell-type)
 (def-cell-line "cancer cell")
-(def-cell-line "keratinocyte")
+
 
 (def-cell-line "A375")
 (def-cell-line "A431D")
 (def-cell-line "A431")
+(def-cell-line "C140")
 (def-cell-line "D04")
 (def-cell-line "D25")
 (def-cell-line "DU-145")
