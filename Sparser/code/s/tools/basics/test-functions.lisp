@@ -617,23 +617,26 @@
                     "corpus/Reach-sentences/results/"))))))
 
 (defun load-reach-sentences-if-needed ()
-      (unless (boundp '*reach-article-sents*)
-      (load (pathname
-             (concatenate 'string
-                          (eval (intern "*R3-TRUNK*" (find-package :r3)))
-                          "corpus/Reach-sentences/rasmachine_sentences.lisp")))))
+  (unless (boundp '*reach-article-sents*)
+    (load (pathname
+           (concatenate 'string
+                        (eval (intern "*R3-TRUNK*" (find-package :r3)))
+                        "corpus/Reach-sentences/rasmachine_sentences.lisp")))))
 
-(defun test-reach-article-sents (sl-list &key (n 1000)(start 0) (save-output t))
-  (loop for sl in sl-list
-     as i from (+ 1 start) to (+ start n)
-     do
-     ;; this may cause problems, but it should cause the sentences to be collected as part of the article
-       (when save-output
-         (let ((sls (pname sl)))
-           (initialize-article-semantic-file-if-needed
-            (subseq sls 1 (- (length sls) 1)))))
-       (process-reach-article-sents sl)
-       (close-article-semantic-file-if-needed)))
+(defun test-reach-article-sents (sl-list &key (n 1000) (start 0) (save-output t)
+                                           (break nil))
+  (let ((*break-on-reach-errors* break))
+    (declare (special *break-on-reach-errors*))
+    (loop for sl in sl-list
+       as i from (+ 1 start) to (+ start n)
+       do
+       ;; this may cause problems, but it should cause the sentences to be collected as part of the article
+         (when save-output
+           (let ((sls (pname sl)))
+             (initialize-article-semantic-file-if-needed
+              (subseq sls 1 (- (length sls) 1)))))
+         (process-reach-article-sents sl)
+         (close-article-semantic-file-if-needed))))
 
 (defun test-reach-sentences (&key (n 1000)(start 0) (save-output t))
   (when save-output
