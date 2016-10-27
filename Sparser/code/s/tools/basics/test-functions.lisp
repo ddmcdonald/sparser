@@ -287,9 +287,12 @@
   "Make a symbolic link to a blessed snapshot directory."
   (assert (directory-p directory) (directory) "Not a directory.")
   (ignore-errors (delete-file link))
-  #+sbcl (sb-posix:symlink (enough-namestring directory *directory-for-tree-snapshots*)
-                           (namestring link))
-  #-sbcl (error "Don't know how to make a symbolic link.")
+  #+(and sbcl unix)
+  (sb-posix:symlink
+   (enough-namestring directory *directory-for-tree-snapshots*)
+   (namestring link))
+  #-(and sbcl unix)
+  (error "Don't know how to make a symbolic link.")
   (truename link))
 
 (defun compare-sent-snapshots (directory &optional (gold "gold/"))
