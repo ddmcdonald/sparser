@@ -192,8 +192,9 @@ but we don't want to count on that.
 ;;;-----------------------------------------
 
 (defmacro def-accessory-operator (name &rest body)
-  `(defmethod ,name ((base derivation-tree-node))
-     ,@body))
+  `(defgeneric ,name (base)
+     (:method ((base derivation-tree-node))
+       ,@body)))
 
 
 
