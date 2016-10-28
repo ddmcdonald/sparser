@@ -39,7 +39,8 @@
 
 (defun initialize-article-semantic-file-if-needed (article)
   (declare (special article))
-  (cond ((symbolp *article-semantics-directory*)
+  (cond ((and *article-semantics-directory*
+              (symbolp *article-semantics-directory*))
          (setq *sentence-results-stream* *article-semantics-directory*)) ;; either T or NIL
         (t
          (let* ((file-path (make-semantics-filename article)))
@@ -52,15 +53,17 @@
              (format *sentence-results-stream*
                      "<?xml version=\"1.0\" encoding=\"~a\"?>~%<article>~%"
                      (stream-external-format *sentence-results-stream*)))
-            *sentence-results-stream*))))
+           *sentence-results-stream*))))
 
+(defparameter *show-semantics-output-name* nil)
 (defun close-article-semantic-file-if-needed ()
   (when (and *article-semantics-directory*
              (streamp *sentence-results-stream*)
              (open-stream-p *sentence-results-stream*))
     (when *use-xml*
       (format *sentence-results-stream* "</article>~%"))
-    (format t "Semantics written to ~s.~%" (pathname *sentence-results-stream*))
+    (when *show-semantics-output-name*
+      (format t "Semantics written to ~s.~%" (pathname *sentence-results-stream*)))
     (close *sentence-results-stream*))
   (setq *sentence-results-stream* nil))
 
@@ -72,7 +75,9 @@
                                       (t (string (name article))))
                                     "-semantics")
                  :type (if *use-xml* "xml" "lisp")
-                 :defaults *article-semantics-directory*))
+                 :defaults
+                 (or *article-semantics-directory*
+                     "~/projects/r3/corpus/Reach-sentences/results/")))
 
 
 (defparameter *one-expression-per-sentence* t)
