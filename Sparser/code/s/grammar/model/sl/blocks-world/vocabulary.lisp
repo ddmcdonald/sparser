@@ -167,6 +167,19 @@ support a substantial number of blocks.
                                    (adjunct . physical)
                                    (slot . artifact)))))
 
+(define-category move-something-somewhere
+  :specializes process
+  :mixins (with-an-agent with-specified-location) ;; adds 'agent' variable and location variables
+  :binds ((theme physical))
+  :documentation "Could have been named PTRANS. Intended as the
+    common parent of push, put, place, nudge, etc."
+   :realization (:verb "move"
+                 :etf (svo-passive)
+                 :s agent
+                 :o theme
+                 :loc-pp-complement (to next\ to)
+                 :mumble ("move" svo :s agent :o theme)))
+
 (define-category push
     :specializes process
     :mixins (with-an-agent with-specified-location)
