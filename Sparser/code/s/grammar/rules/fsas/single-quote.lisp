@@ -60,7 +60,7 @@
   ;; We check here whether there's an "s", "t", "re", or "ll" just after it,
   ;; without any interveening space.
   (declare (ignore single-quote)
-           (special category::verb category::modal
+           (special category::verb category::modal category::verb+present
                     word::|s| word::|t| word::|re|
                     word::|ve| word::|ll| word::|m| ))
   (when *trace-fsas*

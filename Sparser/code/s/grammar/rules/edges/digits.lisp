@@ -38,7 +38,7 @@
   ;; The edge will often cover more than one digit sequence,
   ;; e.g. "1,234.5".  It's referent and rule fields are put on
   ;; by the caller.
-  ;;
+  (declare (special category::number))
   (let ((edge (next-edge-from-resource))
         (starting-vector (pos-starts-here starting-position))
         (ending-vector   (pos-ends-here   ending-position))
@@ -85,6 +85,7 @@
                                             number)
   ;; presently (5/6) does no work beyond recategorizing the span as
   ;; a number
+  (declare (special category::number))
   (let ((edge (next-edge-from-resource))
         (starting-vector (pos-starts-here starting-position))
         (ending-vector   (pos-ends-here   ending-position))

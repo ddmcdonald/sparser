@@ -699,7 +699,7 @@
           (itypep item category::that)
           (itypep item category::these)
           (itypep item category::those)
-          (itypep item category::numerated-anaphor)
+          ;;(itypep item category::numerated-anaphor) for "the seven" in DM&P
           (itypep item category::quantifier)) ;; as in "the other",
          t)
         (;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
