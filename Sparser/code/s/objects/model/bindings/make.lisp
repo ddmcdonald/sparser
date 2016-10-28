@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  August 2016
+;;;  version:  October 2016
 
 ;; initiated 11/30/91 v2.1
 ;; 1.1 (7/20/92 v2.3) revised to fit new regime
@@ -150,7 +150,6 @@ returning a new one.
                 (if (individual-p individual)
                     (itype-of individual)
                     individual))))
-    ;;/// do we still need anonymous variables? What's their purpose
     (values individual nil))
    (t
     (let ((variable 
@@ -250,6 +249,7 @@ returning a new one.
 (defparameter *quiet-ambiguous-variable* t)
 
 (defun disambiguated-variable (binding ambiguous-binding ambig-variables var/name)
+  (declare (special *sentence-in-core*))
   (if (eq binding ambiguous-binding)
       (if (cddr ambig-variables)
 	  ;; still ambiguous
