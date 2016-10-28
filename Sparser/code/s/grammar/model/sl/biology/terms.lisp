@@ -843,11 +843,11 @@
 (noun "natural growth conditions" :super experimental-condition)
 (adj "necessary" :super bio-relation
      :binds ((condition biological)
-             (agent biological)
+             ;;(agent biological)
              (necessary-to biological))
      :realization 
      (:adj "necessary"
-           :for agent
+           :for necessary-to
            :to necessary-to
            :to-comp necessary-to))
 
