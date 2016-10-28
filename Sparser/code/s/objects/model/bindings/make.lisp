@@ -110,8 +110,8 @@ returning a new one.
    we return the individual that has the new binding."
   (declare (special *description-lattice*))
   (if *description-lattice*
-      (find-or-make-lattice-subordinate individual var/name value category)
-      (old-bind-variable var/name value individual category)))
+    (bind-dli-variable var/name value individual category)
+    (old-bind-variable var/name value individual category)))
 
 
 
