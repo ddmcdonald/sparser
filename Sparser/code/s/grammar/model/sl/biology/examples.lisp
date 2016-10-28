@@ -1,9 +1,9 @@
 ;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2016 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "examples"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: October 2015
+;;; version: October 2016
 
 ;; Broken out from Biology-workspace 10/8/15
 
@@ -12,6 +12,36 @@
 ;;;---------------
 ;;; Example texts
 ;;;---------------
+
+(defun brent-CaM-Ras ()
+  (p "Fine tuning of Ras activity is widely known as a mechanism to induce
+different cellular responses. Recently, we have shown that calmodulin
+(CaM) binds to K-Ras and that K-Ras phosphorylation inhibits its
+interaction with CaM. In this study we report that CaM inhibits K-Ras
+phosphorylation at Ser181 by protein kinase C (PKC) in vivo, and this is
+a mechanism to modulate K-Ras activity and signaling. Although CaM
+inhibition increased the activation of endogenous K-Ras, PKC inhibition
+decreased its activation status. We demonstrate that K-Ras
+phosphorylation decreased susceptibility to p120GAP activity.
+Accordingly, we also observed that non-phosphorylable K-Ras mutant
+exhibits a less sustained activation profile and do not efficiently
+activate AKT at low growth factor doses compared with wild-type K-Ras.
+It is interesting that the physiological responses induced by K-Ras are
+affected by this phosphorylation; when K-Ras cannot be phosphorylated it
+exhibits a remarkably decreased ability to stimulate proliferation in
+non-saturated serum conditions. Finally, we demonstrate that
+phosphorylation also regulates oncogenic K-Ras functions, as focus
+formation capacity, mobility and apoptosis resistance upon adriamycin
+treatment of cells expressing oncogenic K-Ras that cannot be
+phosphorylated are highly compromised. Moreover, at low serum
+concentration proliferation and survival is practically inhibited when
+cells cannot phosphorylate oncogenic K-Ras. In this condition, K-Ras
+phosphorylation is essential to ensure a proper activation of
+mitogen-activated protein kinase and PI3K/AKT pathways. In summary, our
+findings suggest that the interplay between CaM interaction and PKC
+phosphorylation is essential to regulate non-oncogenic and oncogenic
+K-Ras activity and functionality."))
+
 
 (defun mapk-sites ()
   ;; From results section of January ASPP2 article, first paragraph
