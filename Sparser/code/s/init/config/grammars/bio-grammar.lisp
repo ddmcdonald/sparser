@@ -199,7 +199,7 @@
 ;;; domain mining and populating
 ;;;------------------------------
 
-(include-grammar-module  *DM&P*)
+;;(include-grammar-module  *DM&P*)
 (include-grammar-module  *SDM&P*)
 
 
