@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-1997  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1997,2016  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "loader"
 ;;;    Module:  "grammar;rules:DM&P:"
-;;;   version:  0.4 May  2010
+;;;   version:  October 2016
 
 ;; initiated 3/28/94 v2.3.  (7/11) added [standard operations]
 ;; 7/25 commented them out as redundant with routines in [display]
@@ -27,8 +27,6 @@
 (gload "DM&P;pair terms")
 (gload "DM&P;segments")
 
-
-(lload "DM&P;period-hook")
 
 (gload "DM&P;prefixes")
 (gload "DM&P;access routines")
