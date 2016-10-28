@@ -109,6 +109,10 @@
           (check-before-punting)
           (reify-ns-name-and-make-edge words start-pos end-pos)))
      
+     ((equal pattern '(:capitalized :single-digit)) ;; Mst1, Mst2
+      ;;/// we should track the number, perhaps in a tailored kind of bio-entity
+      (reify-ns-name-and-make-edge words start-pos end-pos))
+     
      ((equal pattern '(:mixed :single-digit)) ;; PLCγ1
       (check-before-punting)
       (reify-ns-name-and-make-edge words start-pos end-pos))

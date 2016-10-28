@@ -229,18 +229,22 @@
       ;;//// needs a specialization to appreciate what's going on
       (or (when *work-on-ns-patterns* (break "Make special pattern for 'to'"))
           (resolve-hyphen-between-three-words pattern words start-pos end-pos)))
+     ((eq 5 (length words)) ;; three words minus two hyphens      
+      (resolve-hyphen-between-three-words pattern words start-pos end-pos))
      (*work-on-ns-patterns*
       (push-debug `(,pattern ,words ,edges ,hyphen-positions ,start-pos ,end-pos))
       (break "more two-hyphen 1st pattern case: ~a" pattern))
-     (t
-      (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
+     (t (reify-ns-name-and-make-edge words start-pos end-pos))))
+
+   ((eq 5 (length words)) ;; three words minus two hyphens      
+    (resolve-hyphen-between-three-words pattern words start-pos end-pos))
 
    (*work-on-ns-patterns*
       (push-debug `(,pattern ,words ,edges ,hyphen-positions ,start-pos ,end-pos))
       (break "another two-hyphen case: ~a" pattern))
 
    (t  
-    (resolve-hyphen-between-three-words pattern words start-pos end-pos))))
+    (reify-ns-name-and-make-edge words start-pos end-pos))))
 
 
 ;;;------------------------------------------------
@@ -392,7 +396,11 @@
       (when *work-on-ns-patterns*
         (break "non-edge in make-hyphenated-triple, ~s ~s ~s" 
                left-edge middle-edge right-edge))
-      (tr :resolve-hyphen-b/w-two-words/missing-an-edge left-edge right-edge)
-      (throw :punt-on-nospace-without-resolution nil))
+      ;;(tr :resolve-hyphen-b/w-two-words/missing-an-edge left-edge right-edge)
+      ;;(throw :punt-on-nospace-without-resolution nil)
+      ;; 10/27/16 if we punt the last item of the sequence will compose
+      ;; with the text that follows it. Making the polyword bio-entity
+      ;; seems the better choice.
+      (reify-ns-name-and-make-edge words pos-before pos-after))
      (t
       (make-hyphenated-triple left-edge middle-edge right-edge)))))
