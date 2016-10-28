@@ -67,7 +67,7 @@
 
 ;;"It is interesting that various stimuli provoke EGF receptor tyrosine phosphorylation by two distinct means.")
 (define-category post-translational-modification :specializes caused-biochemical-process
-  :binds ((substrate (:or protein variant bio-complex)) ;; allow variant to pick up "phosphorylated fraction"
+  :binds ((substrate (:or protein variant bio-complex bio-entity)) ;; allow variant to pick up "phosphorylated fraction"
 	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
   :restrict ((agent (:or protein  bio-mechanism)) ;;bio-process
