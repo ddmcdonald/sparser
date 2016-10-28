@@ -589,10 +589,11 @@
   :restrict ((object biochemical-reaction))
   :bindings (uid "GO:0003824")
   :binds ((controlType)
-          (catalyst (:or enzyme bio-complex)))
+          (catalyst (:or protein bio-complex)))
   :realization
   (:verb "catalyze" :noun "catalysis" :adj "catalytic"
-         :etf (svo-passive)))
+         :etf (svo-passive)
+         :of catalyst))
 
 
 (define-category enzyme-activity :specializes catalytic-activity
