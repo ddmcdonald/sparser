@@ -216,7 +216,11 @@
 (defmethod write-sem ((w polyword) stream &optional (newline t))
   (write-sem (pname w) stream newline))
 (defmethod write-sem ((w symbol) stream &optional (newline t))
-  (write-sem (string-downcase (pname w)) stream newline))
+  (cond (*use-xml*
+         (prin-escaped (string-downcase (pname w)) stream))
+        ((search " " (pname w))
+         (format stream " ~s" w))
+        (t (format stream " ~s" (string-downcase (pname w))))))
 (defmethod write-sem ((w number) stream &optional (newline t))
   (declare (ignore newline))
   (format stream " ~a" w))
@@ -249,17 +253,23 @@
         finally (pop-indentation)))
 
 (defun start-named-element (element name stream &optional (newline t)
-                            &aux (name (string-downcase name)))
+                            &aux (name (if (symbolp name)
+                                           name
+                                           (string-downcase name))))
   (if *use-xml*
-    (let ((start (format nil "<~a name=\"" element)))
+      (let ((start (format nil "<~a name=\"" element)))
+        (if newline
+            (emit-line stream start)
+            (emit-line-continue stream start))
+        (prin-escaped name stream)
+        (write-string "\">" stream))
       (if newline
-        (emit-line stream start)
-        (emit-line-continue stream start))
-      (prin-escaped name stream)
-      (write-string "\">" stream))
-    (if newline
-      (emit-line stream (concatenate 'string "(" name))
-      (emit-line-continue stream (concatenate 'string " (" name)))))
+          (if (symbolp name)
+              (emit-line stream (format nil "(~s" name))
+              (emit-line stream (concatenate 'string " (" name)))
+          (if (symbolp name)
+              (emit-line-continue stream (format nil "(~s" name))
+              (emit-line-continue stream (concatenate 'string " (" name))))))
 
 (defun finish-named-element (element stream &optional (newline t))
   (if *use-xml*
@@ -270,7 +280,10 @@
     (emit-line-continue stream ")")))
 
 (defmethod start-cat ((item symbol) stream &optional (newline t))
-  (start-cat (pname item) stream newline))
+  (if (search " " (pname item))
+      (start-named-element "cat-ref"
+                           (intern (symbol-name  item) :sparser) stream newline)
+      (start-cat (pname item) stream newline)))
 
 (defmethod start-cat ((item referential-category) stream &optional (newline t))
   (start-cat (cat-symbol item) stream newline))
@@ -341,6 +354,7 @@
 (defun simple-number? (i)
   (and (individual-p i)
        (itypep i 'number)
+       (not (itype i 'multiplier))
        (not (collection-p i))))
 
 (defmethod print-sem-tree ((sem-tree cons) &optional (stream *standard-output*))
