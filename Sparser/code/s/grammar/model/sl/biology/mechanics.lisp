@@ -107,9 +107,12 @@ the process.
   "Called from deal-with-unhandled-unknown-words-at, which started
    out in interpretation of unknown words. See note there."
   (declare (special category::bio-entity))
-  (let ((word (pos-terminal pos-before))
-        (pos-after (chart-position-after pos-before)))
-    ;;  (format t "~&Making ~s a bio-entity~%" (word-pname word))
+  (let* ((pos-after (chart-position-after pos-before))
+         (actual-characters
+          (trim-whitespace
+           (extract-characters-between-positions pos-before pos-after)))
+         (word (resolve/make actual-characters)))
+    ;;(format t "~&~%Making ~s a bio-entity~%~%" (word-pname word))
 
     ;; This will record it in the list of *newly-found-unknown-words*
     ;; if the *collect-new-words* flag is up.
