@@ -158,7 +158,7 @@
 
       (if *buffers-in-transition*
         (cond
-         (t 
+         #+ignore(t 
           ;; fall through to the version that will lose the
           ;; capitalization
           (try-reconsituting-split-tokens words start-index adjusted-end))
@@ -180,13 +180,13 @@
          (end (pos-character-index end-pos)))
     (extract-string-from-char-buffers start end)))
 
-(defun extract-character-between-positions (start-pos end-pos)
+(defun extract-characters-between-positions (start-pos end-pos)
   (let ((start (pos-character-index start-pos))
         (end (pos-character-index end-pos)))
     (extract-string-from-char-buffers start end)))
 
 (defun write-characters-between-positions (start-pos end-pos stream)
-  (format stream "~a" (extract-character-between-positions start-pos end-pos)))
+  (format stream "~a" (extract-characters-between-positions start-pos end-pos)))
 
 
 (defun extract-string-from-char-buffers (start end)

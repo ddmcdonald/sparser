@@ -210,7 +210,7 @@
           ;;(format t "~&longer: edge = ~a" edge)
           (let* ((long-string
                   (trim-whitespace
-                   (extract-character-between-positions
+                   (extract-characters-between-positions
                     pos (pos-edge-ends-at edge))))
                  (long-word (resolve long-string)))
             ;; It's not a good idea to make these polywords

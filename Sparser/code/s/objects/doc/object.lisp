@@ -612,7 +612,7 @@ printer. |#
         (setq *previous-sentence* last)
         (when (string-equal "" (sentence-string last))
           (setf (sentence-string last)
-                (extract-character-between-positions 
+                (extract-characters-between-positions 
                  (starts-at-pos last) (ends-at-pos last))))))
     ;; 1st sentence in a section (= paragraph) has the
     ;; section as its parent

@@ -103,7 +103,7 @@
     (trace-msg "[ns] Looking at the segment from p~a to p~a: ~s"
                (pos-token-index start-pos)
                (pos-token-index end-pos)
-               (extract-character-between-positions start-pos end-pos))))
+               (extract-characters-between-positions start-pos end-pos))))
 
 (deftrace :ns-parse-between-bounds (start-pos end-pos coverage)
   (when *trace-ns-sequences*

@@ -71,7 +71,7 @@
  one-hyphen-ns-patterns  resolve-tailing-stranded-hyphen  nospace-hyphen-specialist
 
  period-hook  start-sentence
- extract-character-between-positions
+ extract-characters-between-positions
 
  (p "of the two radioactive peaks.")
  determiner-noun  parsing-status  post-analysis-operations

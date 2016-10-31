@@ -298,7 +298,7 @@ there were ever to be any.  ///hook into final actions ??  |#
   ;; used by inine LL printer
   (format stream "~&")
   (write-string "[ \"" stream)
-  (write-string (extract-character-between-positions starts-at ends-at) stream)
+  (write-string (extract-characters-between-positions starts-at ends-at) stream)
   (write-string "\" ]" stream)
   (terpri stream))
 
