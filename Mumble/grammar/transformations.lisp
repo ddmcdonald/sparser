@@ -36,26 +36,28 @@
           (error "The subject isn't free. Something's wrong"))
         (make-complement-node subject trace dtn)))))
 
-(defmethod remove-subject ((clause phrasal-context))
-  (let* ((positions (position-table clause))
-         (subject-slot (cdr (assoc 'subject positions))))
-    (unless subject-slot
-      (error "There is no subject in the position table of ~a" clause))
-    (splice-out-slot subject-slot)))
+(defgeneric remove-subject (clause)
+  (:method ((clause phrasal-context))
+    (let* ((positions (position-table clause))
+           (subject-slot (cdr (assoc 'subject positions))))
+      (unless subject-slot
+        (error "There is no subject in the position table of ~a" clause))
+      (splice-out-slot subject-slot))))
 
 
-(defmethod add-dummy-subject ((dtn derivation-tree-node))
-  "Called from the command accessory. That accessory will call
-   remove-subject, but given the present timing in realize-dtn
+(defgeneric add-dummy-subject (dtn)
+  (:documentation  "Called from the command accessory. That accessory 
+   will call remove-subject, but given the present timing in realize-dtn
    the phrase is expanded before the accessories apply, and the
    expander (build-phrase) will expect a subject. 
    This checks whether there already is a value for the subject
-   parameter (s) and adds a dummy if there isn't."
-  (let ((complements (complements dtn))
-        (s-var (parameter-named 's)))
-    (unless (find s-var complements :key #'phrase-parameter)
-      (let ((trace (build-trace 'dummy)))
-        (make-complement-node 's trace dtn)))))
+   parameter (s) and adds a dummy if there isn't.")
+  (:method ((dtn derivation-tree-node))
+    (let ((complements (complements dtn))
+          (s-var (parameter-named 's)))
+      (unless (find s-var complements :key #'phrase-parameter)
+        (let ((trace (build-trace 'dummy)))
+          (make-complement-node 's trace dtn))))))
 
 (defun carry-out-passive-transformation ()
   "Called from process-passive-accessory to add a slot label
