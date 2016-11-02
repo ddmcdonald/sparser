@@ -320,6 +320,11 @@
      :etf (svo-passive)))
 
 (def-synonym monoubiquitination 
+             (:verb "mono-ubiquitinate" 
+                    :etf (svo-passive)
+                    :noun "mono-ubiquitination"))
+
+(def-synonym monoubiquitination 
              (:verb "mono-ubiquitylate" 
                     :etf (svo-passive)
                     :noun "mono-ubiquitylation"))
