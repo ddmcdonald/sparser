@@ -95,10 +95,12 @@ ones are gratuitously ambiguous with capitalized initials.
 (def-amino-acid "alanine" "ala" "A")
 (def-amino-acid "arginine" "arg" "R")
 (def-amino-acid "asparagine" "asn" "N")
+(def-amino-acid "asparagine/aspartic acid" "asx" "B")
 (def-amino-acid "aspartic acid"  "asp" "D")
 (def-amino-acid "cysteine" "cys" "C")
 (def-amino-acid "glutamine" "gln" "Q")
 (def-amino-acid "glutamic acid" "glu" "E")
+(def-amino-acid "glutamine/glutamic acid" "glx" "Z")
 (def-amino-acid "glycine" "gly" "G")
 (def-amino-acid "histidine" "his" "H")
 (def-amino-acid "isoleucine" "ile" "I")
@@ -107,6 +109,7 @@ ones are gratuitously ambiguous with capitalized initials.
 (def-amino-acid "methionine" "met" "M")
 (def-amino-acid "phenylalanine" "phe" "F")
 (def-amino-acid "proline" "pro" "P")
+;;(def-amino-acid "selenocysteine" "U")
 (def-amino-acid "serine" "ser" "S")
 (def-amino-acid "threonine" "thr" "T")
 (def-amino-acid "tryptophan" "trp" "W")
@@ -377,11 +380,18 @@ We therefore have the special cases:
       (let ((aa1 (single-letter-is-amino-acid word1))
             (aa2 (single-letter-is-amino-acid word3)))
         (when (and aa1 aa2)
-          (let ((number (if (and (individual-p ref2)
+          (let* ((number (if (and (individual-p ref2)
                                  (itypep ref2 'number))
-                          ref2
-                          (find-or-make-number ref2))))
-            (make-point-mutation aa2 aa1 number)))))))  ;;edge1 edge2 edge3
+                            ref2
+                            (find-or-make-number ref2)))
+                 (interp (make-point-mutation aa2 aa1 number))
+                 (wd (resolve/make (actual-characters-of-word pos-before pos-after words))))
+            (def-cfr/expr category::point-mutation
+                (list wd)
+              :form category::common-noun
+              :referent interp)
+            interp
+            )))))) ;;edge1 edge2 edge3
 ;;/// this refactoring doesn't return the
 ;; edges that the edge-maker has wanted so its constituents
 ;; are cleanly indicated.
@@ -400,7 +410,7 @@ We therefore have the special cases:
               :form category::np
               :referent i
              ;; :constituents `(,edge1 ,edge2 ,edge3)
-              )))
+              )))        
         ;;/// trace
         edge))))
               
