@@ -377,7 +377,8 @@
 (noun  "microscopy" :super bio-method)
 (noun  "microscope" :super bio-method)
 (noun  "microimaging" :super bio-method)
-
+(noun  "microarray" :super bio-method)
+(noun  "array" :super bio-method)
 (adj  "dimensional" :super bio-predication)
 
 
