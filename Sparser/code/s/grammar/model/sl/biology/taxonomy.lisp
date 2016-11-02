@@ -344,7 +344,9 @@
 (define-category metastasis :specializes disease-process
   :binds ((cancer cancer))
   :realization
-  (:noun "metastasis" :verb "metastasize"))
+  (:noun ("metastasis" :plural "metastases") :verb "metastasize"
+         :etf (sv)
+         :s cancer))
 
 
 (define-category named-bio-process
@@ -1189,7 +1191,7 @@
   :realization (:noun "epitope"))
 
 (define-category cell-entity :specializes physical-object
-		 :mixins (biological has-name))
+		 :mixins (biological has-uid has-name))
 
 
 (define-category cell-line :specializes cell-entity
@@ -1219,6 +1221,17 @@
   :lemma (:common-noun "species")
   :realization (:common-noun name))
 
+(define-category virus :specializes organism
+                 :instantiates self 
+                 :index (:permanent :key name)
+                 :lemma (:common-noun "virus")
+                 :realization (:common-noun name))
+
+(define-category bacterium :specializes organism
+                                  :instantiates self 
+                 :index (:permanent :key name)
+                 :lemma (:common-noun ("bacterium" :plural "bacteria"))
+                 :realization (:common-noun name))
 
 ;;---- family
 
