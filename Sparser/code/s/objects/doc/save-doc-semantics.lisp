@@ -167,6 +167,15 @@
     (uiop:symbol-call :xmls :write-escaped str stream)
     (write-string str stream)))
 
+(defun sent-sem (sent)
+  ;;produces an s-expression which is the item that write-sem would produce
+  ;; on the stream
+  (eval `(p ,sent))
+  (read-from-string
+   (with-output-to-string (s)
+     (write-sem (previous (sentence)) s))))
+
+
 (defmethod write-sem ((s sentence) stream &optional (newline t))
   (declare (ignore newline))
   (setq ddm-util::*indentation* 0) ;; make sure indentation is restarted
