@@ -133,10 +133,6 @@
 (defmethod write-combined-sentence-results ((s sentence) stream)
   (declare (special *show-syn-tree*))
   ;; we assume that this is called immediately after the sentence is parsed
-  (when *use-xml*
-    (format stream "~%<sentence-text>")
-    (prin-escaped (sentence-string s) stream)
-    (format stream "</sentence-text>~%"))
   (if *direct-from-sem*
       (write-sem s stream)
       (write-sem-tree
@@ -162,41 +158,42 @@
        stream))
   (terpri stream))
 
-(defun prin-escaped (str stream)
+(defun prin-escaped (string stream &aux (string (string string)))
   (if (find-package :xmls)
-    (uiop:symbol-call :xmls :write-escaped str stream)
-    (write-string str stream)))
+    (uiop:symbol-call :xmls :write-escaped string stream)
+    (write-string string stream)))
 
 (defun sent-sem (sent)
-  ;;produces an s-expression which is the item that write-sem would produce
+  ;; produces an s-expression which is the item that write-sem would produce
   ;; on the stream
-  (eval `(p ,sent))
-  (read-from-string
-   (with-output-to-string (s)
-     (write-sem (previous (sentence)) s))))
+  (p sent)
+  (values
+   (read-from-string
+    (with-output-to-string (s)
+      (write-sem (previous (sentence)) s)))))
 
 
 (defmethod write-sem ((s sentence) stream &optional (newline t))
   (declare (ignore newline))
   (setq ddm-util::*indentation* 0) ;; make sure indentation is restarted
-  (start-cat "interpretation" stream)
+  (start-element "interpretation" stream)
   (push-indentation)
-  (start-cat "sentence-text" stream)
+  (start-element "sentence-text" stream)
   (if *use-xml*
       (write-sem (sentence-string s) stream)
       (format stream " ~s" (sentence-string s)))
-  (finish-cat stream nil)
+  (finish-element "sentence-text" stream nil)
   (pop-indentation)
   (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
         as small = (and (edge-p tt) (small-binding-list (edge-referent tt)))
         do (push-indentation)
-           (start-var "element" stream)
+           (start-element "sem" stream)
            (unless small (push-indentation))
            (write-sem (if (edge-p tt) (edge-referent tt) tt) stream)
            (unless small (pop-indentation))
-           (finish-var stream (not small))
+           (finish-element "sem" stream (not small))
            (pop-indentation))
-  (finish-cat stream))
+  (finish-element "interpretation" stream))
 
 (defmethod write-sem ((i individual) stream &optional (newline t))
   (cond ((simple-number? i)
@@ -261,6 +258,18 @@
            (finish-var stream (not small))
         finally (pop-indentation)))
 
+(defun start-element (element stream &optional (newline t))
+  (let ((start (format nil "~:[(~a~;<~a>~]" *use-xml* element)))
+    (if newline
+      (emit-line stream start)
+      (emit-line-continue stream start))))
+
+(defun finish-element (element stream &optional (newline t))
+  (let ((finish (format nil "~:[~*)~;</~a>~]" *use-xml* element)))
+    (if (and newline *use-xml*)
+      (emit-line stream finish)
+      (emit-line-continue stream finish))))
+
 (defun start-named-element (element name stream &optional (newline t)
                             &aux (name (if (symbolp name)
                                            name
@@ -270,23 +279,15 @@
         (if newline
             (emit-line stream start)
             (emit-line-continue stream start))
-        (prin-escaped name stream)
+        (prin-escaped (string-downcase name) stream)
         (write-string "\">" stream))
       (if newline
           (if (symbolp name)
-              (emit-line stream (format nil "(~s" name))
+              (emit-line stream (format nil " (~s" name))
               (emit-line stream (concatenate 'string " (" name)))
           (if (symbolp name)
-              (emit-line-continue stream (format nil "(~s" name))
+              (emit-line-continue stream (format nil " (~s" name))
               (emit-line-continue stream (concatenate 'string " (" name))))))
-
-(defun finish-named-element (element stream &optional (newline t))
-  (if *use-xml*
-    (let ((finish (format nil "</~a>" element)))
-      (if newline
-        (emit-line stream finish)
-        (emit-line-continue stream finish)))
-    (emit-line-continue stream ")")))
 
 (defmethod start-cat ((item symbol) stream &optional (newline t))
   (if (search " " (pname item))
@@ -313,10 +314,10 @@
   (start-named-element "var" item stream newline))
 
 (defun finish-cat (stream &optional (newline t))
-  (finish-named-element "cat-ref" stream newline))
+  (finish-element "cat-ref" stream newline))
 
 (defun finish-var (stream &optional (newline t))
-  (finish-named-element "var" stream newline))
+  (finish-element "var" stream newline))
 
 (defmethod small-binding-list ((bl symbol)) (null bl))
 (defmethod small-binding-list ((x word)) t)
