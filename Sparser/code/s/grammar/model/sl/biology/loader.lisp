@@ -48,6 +48,7 @@
 
 (gload "bio;methods.lisp") ;; this one goes last
 (gload "bio;trips-terms.lisp") ;; this one goes last
+(gload "bio;reach-terms.lisp") ;; this one goes last
 
 (gload "bio;citations")
 (gload "bio;examples.lisp") ;; no definitions in here
