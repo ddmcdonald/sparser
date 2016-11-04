@@ -832,6 +832,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:alphabetical . (:uppercase . ,(code-char 915))))
     (916 ;; #\Greek_Capital_Letter_Delta
      (:alphabetical . (:uppercase . ,(code-char 916))))
+    (918 ;; #\Greek_Capital_Letter_Zeta
+     (:alphabetical . (:uppercase . ,(code-char 916))))
     (919 ;; "Η" #\Greek_Capital_Letter_Eta
      (:alphabetical . (:uppercase . ,(code-char 919))))
     (921 ;;
@@ -952,12 +954,17 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     (8499 ;;"ℳ" #\U+2133
      (:punctuation . ,(punctuation-named (code-char 8499))))
     (8545 (:punctuation . ,(punctuation-named (code-char 8545)))) ;;"Ⅱ", (code = 8545)
+    (8592 (:punctuation . ,(punctuation-named (code-char 8592)))) ;;"←"
     (8593 (:punctuation . ,(punctuation-named (code-char 8593)))) ;;"↑", (code = 8593)
     (8594 ;; rightwards arrow
      #-allegro (:punctuation . ,(punctuation-named #\U+2192))
      #+allegro (:punctuation . ,(punctuation-named (code-char #x2192))))
+          
     (8595 (:punctuation . ,(punctuation-named (code-char 8595)))) ;;"↓", (code = 8595)
-    (8596 (:punctuation . ,(punctuation-named (code-char 8596)))) ;;"↔", (code = 8596)
+    ;;  problems show up in binding of the word created by the intended form
+    ;;(8704 (:punctuation . ,(punctuation-named (code-char 8704)))) ;;"∀"
+    ;;(8707 (:punctuation . ,(punctuation-named (code-char 8707)))) ;;"∃"
+      
     (8706 (:punctuation . ,(punctuation-named (code-char 8706)))) ;;"∂", (code = 8706)
     (8710 ;;"∆" #\U+2206
      (:punctuation . ,(punctuation-named (code-char 8710))))
@@ -983,6 +990,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     ;; This is tilde in the Mathematical operator section.
     ;; we'll use a regular ascii tilde instead
     (8764 (:punctuation . ,(punctuation-named #\~ ))) ;; #\∼
+    ;;  problems show up in binding of the word created by the intended form
+    (8765 (:punctuation . ,(punctuation-named #\~ ) )) ;; #\REVERSED_TILDE -- can't use (punctuation-named (code-char 8765) )
 
 
     (8776 (:punctuation . ,(punctuation-named (code-char 8776)))) ;;"≈", (code = 8776)
@@ -1006,6 +1015,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
      (:punctuation . ,(punctuation-named (code-char 8942))))
     (8943 ;; "⋯"
      (:punctuation . ,(punctuation-named (code-char 8943))))
+    ;; problems show up in creating words for this character -- The variable WORD::|Ⓡ| is unbound.
+    ;;(9415 (:punctuation . ,(punctuation-named (code-char 9415)))) ;; "Ⓡ"
     (9633 (:punctuation . ,(punctuation-named (code-char 9633)))) ;; "□"
     (9642 (:punctuation . ,(punctuation-named (code-char 9642)))) ;; "□"
     (9651 ;; "△" #\U+25B3
