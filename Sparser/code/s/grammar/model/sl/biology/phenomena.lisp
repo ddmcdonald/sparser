@@ -604,10 +604,10 @@ it is created from N-terminus to C-terminus.|#
   ;;:obo-id 
   :bindings (uid "GO:0005488")
   ;; "<binder> binds to <bindee>" the subject moves
-  :binds ((binder (:or molecule protein-domain bio-chemical-entity molecular-location))
-          (bindee (:or molecule protein-domain bio-chemical-entity molecular-location))
-          (binding-set (:or bio-chemical-entity protein-domain molecular-location)) ;; this is conjunctive, as in "binding between X and Y"
-          (direct-bindee (:or molecule protein-domain bio-chemical-entity molecular-location))
+  :binds ((binder (:or bio-chemical-entity molecular-location))
+          (bindee (:or bio-chemical-entity molecular-location))
+          (binding-set (:or bio-chemical-entity molecular-location)) ;; this is conjunctive, as in "binding between X and Y"
+          (direct-bindee (:or bio-chemical-entity molecular-location))
           (site molecular-location)
           (domain protein-domain)
           (cell-location cellular-location)
@@ -872,7 +872,7 @@ with something else
 ; apoptotic signals
 ; the apoptosis pathway
 
-
+(noun "EMT" :super cellular-process)
 
 (define-category adhesion :specializes cellular-process
     :realization

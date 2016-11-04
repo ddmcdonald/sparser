@@ -3257,7 +3257,7 @@
 
 (define-protein "STRAA_HUMAN"
  ("PR:Q7RTN6" "STE20-related kinase adapter protein alpha"
-  "STRAD alpha" "STE20-related adapter protein"
+  "STRAD alpha" "STRADα" "STE20-related adapter protein"
   "Serologically defined breast cancer antigen NY-BR-96" "STRADs"))
 
 (define-protein "STS_HUMAN"

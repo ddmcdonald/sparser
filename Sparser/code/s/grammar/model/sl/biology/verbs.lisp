@@ -937,7 +937,7 @@
 (define-category dissociate :specializes caused-bio-process
   :binds ((into biological)
 	  (site molecular-location)
-	  (substrate (:or bio-complex protein molecule)))
+	  (substrate (:or bio-complex protein gene molecule)))
   :realization
   (:verb "dissociate" :noun "dissociation"
          :etf (svo-passive)
@@ -1190,7 +1190,7 @@
 (define-category gene-code :specializes caused-bio-process
     :binds ((location bio-location)
             (from biological)
-            (protein (:or protein variant)))
+            (protein (:or protein gene variant)))
     :restrict ((agent (:or bio-entity cell-line)))
     :realization
     (:verb "code"
@@ -1202,7 +1202,7 @@
 (define-category gene-transcript-co-express :specializes gene-transcript-express
     :binds ((location bio-location)
             (from biological)
-            (other-protein protein))
+            (other-protein (:or protein gene)))
     :realization
     (:verb "co-express"
 	   :noun "co-expression"
@@ -1483,7 +1483,7 @@
          :etf (svo-passive)))
 
 (define-category bio-insert :specializes caused-bio-process
-  :binds ((substrate (:or protein protein-domain molecular-location))
+  :binds ((substrate (:or protein gene protein-domain molecular-location))
           (between residue-on-protein)
           (after residue-on-protein))
   :realization 
@@ -1540,6 +1540,18 @@
 	   :etf (svo-passive)
            :o theme))
 
+
+(define-category knockdown :specializes bio-process
+  :binds ((gene-or-protein (:or protein gene)))
+  :realization
+  (:noun "knockdown" :of gene-or-protein
+         :m gene-or-protein
+         :verb ("knock down" :past-tense "knocked down"  
+                             :present-participle "knocking down" )
+         :etf (svo-passive)
+         :o gene-or-protein))
+
+
 (define-category know :specializes bio-rhetorical
   :binds ((topic biological)
           (tocomp (:or be biological)))
@@ -1591,7 +1603,7 @@
          :etf (svo)))
 
 (define-category ligate :specializes caused-bio-process 
-  :binds ((substrate (:or protein residue-on-protein))) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :binds ((substrate (:or protein gene residue-on-protein))) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "ligate" :noun "ligation" 
          :etf (svo-passive)
@@ -1878,8 +1890,8 @@
 
 (define-category propagate :specializes bio-transport
 		 ;; propagating the pro-apoptotic signal from RAS to p53
-   :restrict ((origin (:or cellular-location protein))
-		 (destination (:or cellular-location protein)))
+   :restrict ((origin (:or cellular-location protein gene))
+		 (destination (:or cellular-location protein gene)))
   :realization 
   (:verb "propagate" 
    :noun "propagation" 
@@ -1897,7 +1909,7 @@
 
 
 (define-category protect :specializes caused-bio-process
-    :restrict ((agent (:or protein bio-process))
+    :restrict ((agent (:or protein gene bio-process))
                (object bio-entity))
   :binds ((protects-against bio-process))
     :realization
@@ -2368,7 +2380,7 @@
    :to destination))
 
 (define-category target-protein :specializes protein
-		 :binds ((agent (:or protein drug)))
+		 :binds ((agent (:or protein gene drug)))
 		 :realization
 		 (:noun "target"
 			:of agent))

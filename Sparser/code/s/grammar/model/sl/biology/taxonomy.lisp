@@ -53,6 +53,13 @@
 (define-mixin-category has-UID :specializes relation
   :binds ((uid)))
 
+(define-category  unit-of-measure ;; add uid to unit-of-measure -- needed for uom from TRIPS
+  :mixins (has-uid)
+  :specializes abstract ;; basically a typed number that applies to scalars
+  :instantiates self
+  :binds ((name :primitive word))
+  :realization (:common-noun name))
+
 (define-mixin-category type-marker
   :documentation "This is mixed into selected classes
    like 'protein' or 'pathway or 'cell line' so that their
@@ -591,7 +598,7 @@
   :restrict ((object biochemical-reaction))
   :bindings (uid "GO:0003824")
   :binds ((controlType)
-          (catalyst (:or protein bio-complex)))
+          (catalyst (:or protein bio-complex gene)))
   :realization
   (:verb "catalyze" :noun "catalysis" :adj "catalytic"
          :etf (svo-passive)
@@ -839,7 +846,7 @@
   :realization (:common-noun name))
 
 ;; grounds "encode"
-(define-category gene :specializes bio-entity ;;// case in point
+(define-category gene :specializes bio-chemical-entity ;;// case in point
   :instantiates :self
   :binds ((:expresses . protein))
   :index (:permanent :key name)
@@ -921,6 +928,7 @@
   (:noun "system"))
 
 (define-category disease  :specializes bio-context
+  :mixins (has-uid)
   :binds ((organ bio-organ))
   :realization (:noun "disease"
                       :m organ
@@ -941,7 +949,7 @@
 
 
 (define-category cellular-location  :specializes bio-location
-  :binds ((id))
+  :mixins (has-uid)
   :instantiates self
   :index (:permanent :key name))
 
@@ -957,7 +965,7 @@
     (let ((cat-name (intern (string-upcase (hyphen-subs name)))))
       `(progn
          (define-category ,cat-name :specializes cellular-location
-           :bindings (id ,id name ,name)
+           :bindings (uid ,id name ,name)
            :realization
            (:noun ,name ,@(when adj `(:adj ,adj))))
          (handle-mitre-link ,(find-symbol (symbol-name cat-name) (find-package :category)) ,id)
@@ -1157,7 +1165,7 @@
     (:noun "turnover"))
 
 (define-category nucleotide-exchange :specializes bio-exchange
-  :binds ((substrate (:or protein bio-complex)))
+  :binds ((substrate (:or protein bio-complex gene)))
   :realization
   (:noun "nucleotide exchange"
          :on substrate
@@ -1206,7 +1214,7 @@
 
 ;; used in biopax
 (define-category organism :specializes biological
-   :mixins (has-name)
+   :mixins (has-name has-uid)
    :instantiates self  
    :index (:permanent :key name)
    :lemma (:common-noun "organism")
@@ -1280,7 +1288,7 @@ the aggregate across the predicate it's in. |#
 (define-category pair-with-protein
   :specializes bio-aggregate
   :binds ((left) ;; e.g. a protein region: "RBD-Ras"
-          (right (:or protein bio-family nucleotide)))
+          (right (:or protein bio-family nucleotide gene)))
   :index (:sequential-keys left right))
 
 (define-category no-space-pair :specializes bio-pair
@@ -1298,7 +1306,7 @@ the aggregate across the predicate it's in. |#
 
 (define-category protein-pair :specializes bio-pair
   :mixins (protein)
-  :binds ((left (:or protein bio-family nucleotide))
+  :binds ((left (:or protein bio-family nucleotide gene))
           (right (:or protein bio-family nucleotide)))
   :index (:sequential-keys left right))
 

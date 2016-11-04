@@ -37,6 +37,8 @@
 
 (in-package :sparser)
 
+
+(adj "-like" :super bio-predication) ;; as in "UBA (ubiquitin-associated)-like domains" where we don't combine the "-like"
 (noun "SILAC labeling" :super bio-method)
 (noun "ipegal" :super bio-method) ;; actually a detergent used to lyse cells, but we don't really care
 ;; this should avoid an error in parsing the folloiwng in the first CURE article
@@ -176,8 +178,11 @@
 ;; to be reviewed -- from Localization
 
 
-(define-category bio-observation :specializes bio-entity) ;; not really, but what is it
-(noun "band" :super bio-observation) ;; as in chromatography bands?
+(define-category bio-observation :specializes bio-method
+  :binds ((observed biological))
+  :realization (:of observed))
+;; not really, but what is it
+(noun "band" :super bio-observation)
 
 (define-category bio-reagent :specializes bio-entity) ;; not really
 (noun "gel" :super bio-reagent)
@@ -212,8 +217,8 @@
 (noun ("DAG" "diacylglycerol") :super lipid)
 (noun "Sphingosine" :super lipid)
 (noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
-(noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
-(noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate") :super phospholipid)
+(noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
+(noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate") :super phospholipid)
 
 ;;(adj "bound" :super bio-predication) it is the past tense of bind
 (adj "unbound" :super bio-predication)
@@ -761,11 +766,6 @@
 
 (adj "kinetic" :super bio-predication)
 
-(define-category knockdown :specializes bio-process
-  :binds ((gene-or-protein (:or protein gene)))
-  :realization
-  (:noun "knockdown" :of gene-or-protein
-         :m gene-or-protein))
 
 (define-category knock-out  :specializes bio-process
   :binds ((gene-or-protein (:or protein gene)))
@@ -1224,19 +1224,24 @@
 ;;;------------------
 ;;-- see model/dossiers/units-of-measure.lisp for more forms.
 
-(define-unit-of-measure "dalton")
-(define-unit-of-measure "cm")
-(define-unit-of-measure "mL")
-(define-unit-of-measure "ml")
-(define-unit-of-measure "nM")
-(define-unit-of-measure "nm")
-(define-unit-of-measure "mm")
-(define-unit-of-measure "kD")
-#+ccl (define-unit-of-measure "μm")
-#+sbcl (define-unit-of-measure "μm")
-;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
 
+(define-unit-of-measure "cm")
+(define-unit-of-measure "dalton")
+(define-unit-of-measure "kD")
 (define-unit-of-measure "kb")
+(define-unit-of-measure "mL")
+(define-unit-of-measure "mg")
+(define-unit-of-measure "ml")
+(define-unit-of-measure "mg")
+(define-unit-of-measure "mm")
+(define-unit-of-measure "nM")
+(define-unit-of-measure "ng")
+(define-unit-of-measure "nm")
+(define-unit-of-measure "pmol")
+(define-unit-of-measure "pmol/min/mg")
+(define-unit-of-measure "μm")
+;;#+sbcl (define-unit-of-measure "μm")
+;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
 
 
 

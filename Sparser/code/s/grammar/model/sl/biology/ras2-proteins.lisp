@@ -217,7 +217,7 @@
 (define-protein "INHBE_HUMAN" ("INHBE")) 
 (define-protein "IQEC1_HUMAN" ("ARFGEP100" "KIAA0763" "BRAG2" "IQSEC1")) 
 (define-protein "IRS2_HUMAN" ("IRS2" "IRS-2")) 
-(define-protein "ITK_HUMAN" ("ITK" "LYK" "2.7.10.2" "EMT")) 
+(define-protein "ITK_HUMAN" ("ITK" "LYK" "2.7.10.2")) ;; drop "EMT" -- it is a bio-process in all cases we have seen
 (define-protein "ITSN1_HUMAN" ("ITSN" "SH3D1A" "SH3P17" "ITSN1")) 
 (define-protein "ITSN2_HUMAN" ("SH3D1B" "SH3P18" "KIAA1256" "SH3P18-like WASP-associated protein" "SWAP" "SH3 domain-containing protein 1B" "ITSN2")) 
 (define-protein "ITSN2_HUMAN" ("SH3D1B" "SH3P18" "KIAA1256" "SWAP" "ITSN2")) 
