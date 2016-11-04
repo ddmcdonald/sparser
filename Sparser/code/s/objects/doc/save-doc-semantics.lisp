@@ -79,6 +79,18 @@
                  (or *article-semantics-directory*
                      "~/projects/r3/corpus/Reach-sentences/results/")))
 
+(defparameter *saved-bio-processes* nil)
+(defparameter *blank-sents* nil)
+
+
+;; this is executed when *save-bio-processes* is T
+(defun save-bio-processes (*sent*)
+  (declare (special *sent*))
+  (let ((sems (find-sem-type-instances (sent-sem))))
+    (if sems
+        (push (list (sentence-string *sent*) sems) *saved-bio-processes*)
+        (push (sentence-string *sent*) *blank-sents*))))
+
 
 (defparameter *one-expression-per-sentence* t)
 
@@ -88,10 +100,6 @@
     (if *one-expression-per-sentence*
         (write-combined-sentence-results sent s)
         (write-sentence-results sent s))))
-
-
-
-
 
 (defmethod write-sentence-results ((s sentence) stream)
   (declare (special *show-syn-tree*))
@@ -163,14 +171,26 @@
     (uiop:symbol-call :xmls :write-escaped string stream)
     (write-string string stream)))
 
-(defun sent-sem (sent)
+(defun sent-sem (&optional sent)
   ;; produces an s-expression which is the item that write-sem would produce
   ;; on the stream
-  (p sent)
+  (when sent (p sent))
   (values
    (read-from-string
     (with-output-to-string (s)
       (write-sem (previous (sentence)) s)))))
+
+(defun find-sem-type-instances (s &optional (types
+                                             '(:or bio-control post-translational-modification binding
+                                               interact ;; not sure this constitues a cardable entity, but I think REACH thinks so
+                                               )))
+  (when (consp s)
+    (if (and (category-named (car s) nil)
+             (itypep (car s) types))
+        (list s)
+        (loop for ss in s when (consp ss)
+           append
+             (find-sem-type-instances ss)))))
 
 
 (defmethod write-sem ((s sentence) stream &optional (newline t))

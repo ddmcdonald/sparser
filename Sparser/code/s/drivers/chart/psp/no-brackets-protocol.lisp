@@ -374,6 +374,7 @@
 ;;;------------------------------------------------------------
 
 (defparameter *end-of-sentence-display-operation* nil)
+(defparameter *save-bio-processes* nil)
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*))
@@ -384,5 +385,7 @@
     (save-article-sentence *current-article* sentence))
   (when (or (eq *sentence-results-stream* t)
             (streamp *sentence-results-stream*))
+    (when *save-bio-processes*
+      (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*)))
 

@@ -388,7 +388,7 @@ where it regulates gene expression.")
 
 ;;__________________ Create the dependency-tree from which re-interpretation is done
 
-(defparameter *show-relevant-edge-warnings* t)
+(defparameter *show-relevant-edge-warnings* nil)
 
 (defun relevant-edges (parent-edges child-interp &optional allow-null-edge)
   (let* ((parent-edge (car parent-edges))
