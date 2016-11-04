@@ -105,7 +105,7 @@
 
 (defun set-used-by (daughter edge)
   (when (eq (edge-used-in edge) daughter)
-    (lsp-break "circularity detected in set-used-by")
+    (warn "circularity detected in set-used-by")
     (return-from set-used-by nil))
             
   (cond
