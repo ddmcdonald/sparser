@@ -48,7 +48,7 @@
     (molecule 'molecule)
     (molecular-site 'residue-on-protein)
     (mutation 'point-mutation)
-    ((organism nonhuman-animal) 'organism)
+    ((organism nonhuman-animal fish invertebrate) 'organism)
     (pharmacologic-substance 'drug)
     (physical-condition 'disease)
     (procedure 'bio-method)
@@ -2047,7 +2047,6 @@
 ("cDNA" "ONT:PROCESS" :ID "EFO:0004187" :NAME "cDNA library construction") 
 ("AMPKα1" "ONT:PROTEIN" :ID "NCIT:C116033" :NAME
  "5-AMP-activated protein kinase catalytic subunit alpha-1") 
-;;("Ab" "ONT:PROTEIN" :ID "NCIT:C16295" :NAME "antibody") 
 ("CD3-ε" "ONT:PROTEIN" :ID "NCIT:C25792" :NAME
  "T-cell surface glycoprotein-CD3 epsilon chain") 
 ("CYP41" "ONT:PROTEIN" :ID "UP:Q9P3X9" :NAME
@@ -2088,10 +2087,1763 @@
 ("retrovirus" "ONT:VIRUS" :ID "NCIT:C14268" :NAME "retroviridae") 
 
 
+;; from 10b to 13 (all reach sentences)
+("Chlamydia" "ONT:BACTERIUM" :ID "NCIT:C76271" :NAME "chlamydia")
+ ("Francisella" "ONT:BACTERIUM" :ID "NCIT:C86396" :NAME "francisella")
+ ("HDR" "ONT:BIOLOGICAL-PROCESS" :ID "GO:0000724" :NAME
+  "double-strand break repair via homologous recombination")
+ ("ECT" "ONT:CANCER" :ID "NCIT:C121785" :NAME
+  "ectomesenchymal chondromyxoid tumor")
+ ("EFVPTC" "ONT:CANCER" :ID "NCIT:C66850" :NAME
+  "encapsulated thyroid gland papillary carcinoma")
+ ("EGC" "ONT:CANCER" :ID "NCIT:C27131" :NAME "early gastric cancer")
+ ("Ess" "ONT:CANCER" :ID "EFO:1000919" :NAME "endometrial stromal sarcoma")
+ ("HCL" "ONT:CANCER" :ID "NCIT:C7402" :NAME "hairy cell leukemia")
+ ("BMDCs" "ONT:CELL" :ID "BTO:0003857" :NAME
+  "bone marrow-derived dendritic cell")
+ ("BMSC" "ONT:CELL" :ID "CO:0000134" :NAME "mesenchymal stem cell")
+ ("CLP" "ONT:CELL" :ID "CO:0000051" :NAME "common lymphoid progenitor")
+ ("EPCs" "ONT:CELL" :ID "CO:0002619" :NAME "adult endothelial progenitor cell")
+ ("ESC" "ONT:CELL" :ID "CO:0002322" :NAME "embryonic stem cell")
+ ("ACHN" "ONT:CELL-LINE" :ID "CVCL:1067" :NAME "ACHN")
+ ("AKI" "ONT:CELL-LINE" :ID "CVCL:8170" :NAME "AKI")
+ ("AP" "ONT:CELL-LINE" :ID "CVCL:E457" :NAME "AP")
+ ("ARPE-19" "ONT:CELL-LINE" :ID "EFO:0006271" :NAME "ARPE-19")
+ ("ATDC5" "ONT:CELL-LINE" :ID "CVCL:3894" :NAME "ATDC-5")
+ ("B16F10" "ONT:CELL-LINE" :ID "CVCL:0159" :NAME "B16-F10")
+ ("BD" "ONT:CELL-LINE" :ID "CVCL:F568" :NAME "BD")
+ ("BEL-7402" "ONT:CELL-LINE" :ID "CVCL:5492" :NAME "BEL-7402")
+ ("BRN2" "ONT:CELL-LINE" :ID "CVCL:0U16" :NAME "BRN-2")
+ ("BVR" "ONT:CELL-LINE" :ID "CVCL:1M70" :NAME "BVR")
+ ("BeWo" "ONT:CELL-LINE" :ID "EFO:0002050" :NAME "BeWo")
+ ("Beas-2B cells" "ONT:CELL-LINE" :ID "BTO:0002923" :NAME "BEAS-2B cell")
+ ("Bu" "ONT:CELL-LINE" :ID "CVCL:2527" :NAME "IMR-31")
+ ("BxPC3" "ONT:CELL-LINE" :ID "EFO:0002709" :NAME "BxPC-3")
+ ("COS" "ONT:CELL-LINE" :ID "CVCL:0222" :NAME "COS")
+ ("CT26" "ONT:CELL-LINE" :ID "CVCL:7254" :NAME "CT26")
+ ("Carb" "ONT:CELL-LINE" :ID "CVCL:5715" :NAME "CarB")
+ ("DD" "ONT:CELL-LINE" :ID "CVCL:J651" :NAME "DD")
+ ("DG2" "ONT:CELL-LINE" :ID "CVCL:L853" :NAME "DG2")
+ ("DM4" "ONT:CELL-LINE" :ID "CVCL:5644" :NAME "DM-4")
+ ("Difi" "ONT:CELL-LINE" :ID "CVCL:6895" :NAME "DiFi")
+ ("EAA" "ONT:CELL-LINE" :ID "CVCL:Z253" :NAME "BTI-EAA")
+ ("EPC" "ONT:CELL-LINE" :ID "CVCL:4361" :NAME "EPC")
+ ("ER1" "ONT:CELL-LINE" :ID "CVCL:L896" :NAME "ER-1")
+ ("F4/80" "ONT:CELL-LINE" :ID "CVCL:7263" :NAME "F4/80")
+ ("FL" "ONT:CELL-LINE" :ID "CVCL:1905" :NAME "FL")
+ ("FQ" "ONT:CELL-LINE" :ID "CVCL:L984" :NAME "FQ")
+ ("GAK" "ONT:CELL-LINE" :ID "CVCL:1225" :NAME "GAK")
+ ("GE11" "ONT:CELL-LINE" :ID "CVCL:8873" :NAME "GE11")
+ ("GLE" "ONT:CELL-LINE" :ID "CVCL:0C11" :NAME "GL-E")
+ ("GM1" "ONT:CELL-LINE" :ID "CVCL:Z794" :NAME "GM1")
+ ("GM130" "ONT:CELL-LINE" :ID "CVCL:7274" :NAME "GM00130")
+ ("HCC1806" "ONT:CELL-LINE" :ID "EFO:0005373" :NAME "HCC1806")
+ ("Acetyl-L-Carnitine" "ONT:CHEMICAL" :ID "CHEBI:57589" :NAME
+  "O-acetyl-L-carnitine")
+ ("Avermectin" "ONT:CHEMICAL" :ID "CHEBI:50344" :NAME "avermectin")
+ ("CDCA" "ONT:CHEMICAL" :ID "CHEBI:16755" :NAME "chenodeoxycholic acid")
+ ("CHIR99021" "ONT:CHEMICAL" :ID "CHEBI:91091" :NAME "CHIR 99021")
+ ("CMH" "ONT:CHEMICAL" :ID "CHEBI:62107" :NAME
+  "beta-D-glucosyl-N-(docosanoyl)sphingosine")
+ ("CPP" "ONT:CHEMICAL" :ID "CHEBI:34603" :NAME "CPP")
+ ("Cantharidin" "ONT:CHEMICAL" :ID "CHEBI:64213" :NAME "cantharidin")
+ ("Cyt" "ONT:CHEMICAL" :ID "CHEBI:16040" :NAME "cytosine")
+ ("DEHP" "ONT:CHEMICAL" :ID "CHEBI:17747" :NAME "bis(2-ethylhexyl) phthalate")
+ ("DFO" "ONT:CHEMICAL" :ID "CHEBI:4356" :NAME "desferrioxamine B")
+ ("DL" "ONT:CHEMICAL" :ID "CHEBI:68596" :NAME "alpha-Asp-Leu")
+ ("DMN" "ONT:CHEMICAL" :ID "NCIT:C44417" :NAME "N-nitrosodimethylamine")
+ ("DPN" "ONT:CHEMICAL" :ID "CHEBI:16998" :NAME "D-phenylalanine")
+ ("DV" "ONT:CHEMICAL" :ID "CHEBI:73832" :NAME "Asp-Val")
+ ("DpR" "ONT:CHEMICAL" :ID "CHEBI:16313" :NAME "D-proline")
+ ("EDC" "ONT:CHEMICAL" :ID "NCIT:C44383" :NAME "ethylene dichloride")
+ ("EDCs" "ONT:CHEMICAL" :ID "NCIT:C44383" :NAME "ethylene dichloride")
+ ("GABA" "ONT:CHEMICAL" :ID "CHEBI:16865" :NAME "gamma-aminobutyric acid")
+ ("GGA" "ONT:CHEMICAL" :ID "CHEBI:73899" :NAME "Gly-Gly-Ala")
+ ("GalNAc" "ONT:CHEMICAL" :ID "CHEBI:28800" :NAME "N-acetylgalactosamine")
+ ("HDACi" "ONT:CHEMICAL" :ID "CHEBI:61115" :NAME
+  "EC 3.5.1.98 (histone deacetylase) inhibitor")
+ ("HETE" "ONT:CHEMICAL" :ID "CHEBI:36275" :NAME "HETE")
+ ("ACE2" "ONT:GENE" :ID "HGNC:13557" :NAME "angiotensin I converting enzyme 2")
+ ("AEs" "ONT:GENE" :ID "HGNC:307" :NAME "amino-terminal enhancer of split")
+ ("AKAP121" "ONT:GENE" :ID "HGNC:367" :NAME "A-kinase anchoring protein 1")
+ ("ALB" "ONT:GENE" :ID "HGNC:399" :NAME "albumin")
+ ("ALG-2" "ONT:GENE" :ID "HGNC:23159" :NAME
+  "ALG2, alpha-1,3/1,6-mannosyltransferase")
+ ("AMD" "ONT:GENE" :ID "NCIT:C102774" :NAME "AMD1")
+ ("ANGPTL1" "ONT:GENE" :ID "HGNC:489" :NAME "angiopoietin like 1")
+ ("AOM" "ONT:GENE" :ID "NCIT:C75317" :NAME "COL2A1")
+ ("ART3" "ONT:GENE" :ID "HGNC:725" :NAME "ADP-ribosyltransferase 3")
+ ("ASNS" "ONT:GENE" :ID "HGNC:753" :NAME
+  "asparagine synthetase (glutamine-hydrolyzing)")
+ ("Ach" "ONT:GENE" :ID "NCIT:C51544" :NAME "FGFR3")
+ ("Acot2" "ONT:GENE" :ID "HGNC:18431" :NAME "acyl-CoA thioesterase 2")
+ ("Acp5" "ONT:GENE" :ID "HGNC:124" :NAME
+  "acid phosphatase 5, tartrate resistant")
+ ("Acsl4" "ONT:GENE" :ID "HGNC:3571" :NAME
+  "acyl-CoA synthetase long-chain family member 4")
+ ("Ada2" "ONT:GENE" :ID "NCIT:C101470" :NAME "TADA2A")
+ ("BACE1" "ONT:GENE" :ID "HGNC:933" :NAME "beta-secretase 1")
+ ("BCAT1" "ONT:GENE" :ID "HGNC:976" :NAME
+  "branched chain amino acid transaminase 1")
+ ("BCL2A1" "ONT:GENE" :ID "HGNC:991" :NAME "BCL2 related protein A1")
+ ("BCMA" "ONT:GENE" :ID "NCIT:C97847" :NAME "TNFRSF17")
+ ("BNP" "ONT:GENE" :ID "NCIT:C88521" :NAME "NPPB")
+ ("BRD7" "ONT:GENE" :ID "HGNC:14310" :NAME "bromodomain containing 7")
+ ("Bcl2A1" "ONT:GENE" :ID "HGNC:991" :NAME "BCL2 related protein A1")
+ ("Beta-4" "ONT:GENE" :ID "NCIT:C104243" :NAME "TUBB3")
+ ("C/EBPepsilon" "ONT:GENE" :ID "NCIT:C52527" :NAME "CEBPE")
+ ("CBX" "ONT:GENE" :ID "HGNC:1551" :NAME "chromobox 1")
+ ("CCDC34" "ONT:GENE" :ID "HGNC:25079" :NAME
+  "coiled-coil domain containing 34")
+ ("CCN2" "ONT:GENE" :ID "NCIT:C62458" :NAME "CTGF")
+ ("CCR2B" "ONT:GENE" :ID "NCIT:C101578" :NAME "CCR2")
+ ("CD166" "ONT:GENE" :ID "NCIT:C51109" :NAME "ALCAM")
+ ("CD32b" "ONT:GENE" :ID "NCIT:C51391" :NAME "FCGR2B")
+ ("CEL" "ONT:GENE" :ID "HGNC:1848" :NAME "carboxyl ester lipase")
+ ("CGN" "ONT:GENE" :ID "HGNC:17429" :NAME "cingulin")
+ ("CIDEC" "ONT:GENE" :ID "HGNC:24229" :NAME
+  "cell death inducing DFFA like effector c")
+ ("CIP2A" "ONT:GENE" :ID "NCIT:C126606" :NAME "KIAA1524")
+ ("CIRP" "ONT:GENE" :ID "HGNC:1982" :NAME "cold inducible RNA binding protein")
+ ("CLPTM1L" "ONT:GENE" :ID "HGNC:24308" :NAME "CLPTM1 like")
+ ("CNR2" "ONT:GENE" :ID "HGNC:2160" :NAME "cannabinoid receptor 2")
+ ("COL3A1" "ONT:GENE" :ID "HGNC:2201" :NAME "collagen type III alpha 1 chain")
+ ("CREM" "ONT:GENE" :ID "HGNC:2352" :NAME "cAMP responsive element modulator")
+ ("CRIPTO1" "ONT:GENE" :ID "HGNC:11701" :NAME
+  "teratocarcinoma-derived growth factor 1")
+ ("CTRP6" "ONT:GENE" :ID "HGNC:14343" :NAME
+  "C1q and tumor necrosis factor related protein 6")
+ ("CXCL16" "ONT:GENE" :ID "HGNC:16642" :NAME "C-X-C motif chemokine ligand 16")
+ ("Cav3" "ONT:GENE" :ID "HGNC:1529" :NAME "caveolin 3")
+ ("CypA" "ONT:GENE" :ID "HGNC:9253" :NAME "peptidylprolyl isomerase A")
+ ("DAZL" "ONT:GENE" :ID "HGNC:2685" :NAME "deleted in azoospermia like")
+ ("DGCR6L" "ONT:GENE" :ID "HGNC:18551" :NAME
+  "DiGeorge syndrome critical region gene 6-like")
+ ("DLG1" "ONT:GENE" :ID "HGNC:2900" :NAME
+  "discs large MAGUK scaffold protein 1")
+ ("DPP4" "ONT:GENE" :ID "HGNC:3009" :NAME "dipeptidyl peptidase 4")
+ ("DUOX-2" "ONT:GENE" :ID "HGNC:13273" :NAME "dual oxidase 2")
+ ("DUSP2" "ONT:GENE" :ID "HGNC:3068" :NAME "dual specificity phosphatase 2")
+ ("DYRK" "ONT:GENE" :ID "NCIT:C98171" :NAME "DYRK1A")
+ ("DYRK1A" "ONT:GENE" :ID "HGNC:3091" :NAME
+  "dual specificity tyrosine phosphorylation regulated kinase 1A")
+ ("DYRK1B" "ONT:GENE" :ID "HGNC:3092" :NAME
+  "dual specificity tyrosine phosphorylation regulated kinase 1B")
+ ("DYRK2" "ONT:GENE" :ID "HGNC:3093" :NAME
+  "dual specificity tyrosine phosphorylation regulated kinase 2")
+ ("DYRK4" "ONT:GENE" :ID "HGNC:3095" :NAME
+  "dual specificity tyrosine phosphorylation regulated kinase 4")
+ ("Dazl" "ONT:GENE" :ID "HGNC:2685" :NAME "deleted in azoospermia like")
+ ("DiRas3" "ONT:GENE" :ID "HGNC:687" :NAME "DIRAS family GTPase 3")
+ ("Dlg1" "ONT:GENE" :ID "HGNC:2900" :NAME
+  "discs large MAGUK scaffold protein 1")
+ ("Dot1l" "ONT:GENE" :ID "HGNC:24948" :NAME
+  "DOT1 like histone lysine methyltransferase")
+ ("ECAD" "ONT:GENE" :ID "NCIT:C51151" :NAME "CDH1")
+ ("EP2" "ONT:GENE" :ID "NCIT:C122071" :NAME "SPAG11B")
+ ("EPM" "ONT:GENE" :ID "NCIT:C116089" :NAME "STX2")
+ ("ESRP1" "ONT:GENE" :ID "HGNC:25966" :NAME
+  "epithelial splicing regulatory protein 1")
+ ("En1" "ONT:GENE" :ID "HGNC:3342" :NAME "engrailed homeobox 1")
+ ("FAAH" "ONT:GENE" :ID "HGNC:3553" :NAME "fatty acid amide hydrolase")
+ ("FAF1" "ONT:GENE" :ID "HGNC:3578" :NAME "Fas associated factor 1")
+ ("FAT1" "ONT:GENE" :ID "HGNC:3595" :NAME "FAT atypical cadherin 1")
+ ("FBXL5" "ONT:GENE" :ID "HGNC:13602" :NAME
+  "F-box and leucine rich repeat protein 5")
+ ("FDC" "ONT:GENE" :ID "NCIT:C104621" :NAME "LAG3")
+ ("FMNL2" "ONT:GENE" :ID "HGNC:18267" :NAME "formin like 2")
+ ("FMNL3" "ONT:GENE" :ID "HGNC:23698" :NAME "formin like 3")
+ ("FNDC5" "ONT:GENE" :ID "HGNC:20240" :NAME
+  "fibronectin type III domain containing 5")
+ ("FOXM1" "ONT:GENE" :ID "HGNC:3818" :NAME "forkhead box M1")
+ ("FRT" "ONT:GENE" :ID "NCIT:C52169" :NAME "FLT1")
+ ("FU" "ONT:GENE" :ID "HGNC:17209" :NAME "serine/threonine kinase 36")
+ ("FZR1" "ONT:GENE" :ID "HGNC:24824" :NAME
+  "fizzy/cell division cycle 20 related 1")
+ ("FoxM1B" "ONT:GENE" :ID "NCIT:C101581" :NAME "FOXM1")
+ ("GIPC1" "ONT:GENE" :ID "HGNC:1226" :NAME
+  "GIPC PDZ domain containing family member 1")
+ ("GLRX3" "ONT:GENE" :ID "HGNC:15987" :NAME "glutaredoxin 3")
+ ("GM" "ONT:GENE" :ID "HGNC:9291" :NAME
+  "protein phosphatase 1 regulatory subunit 3A")
+ ("GOLM1" "ONT:GENE" :ID "HGNC:15451" :NAME "golgi membrane protein 1")
+ ("GPBAR1" "ONT:GENE" :ID "HGNC:19680" :NAME
+  "G protein-coupled bile acid receptor 1")
+ ("GPNMB" "ONT:GENE" :ID "HGNC:4462" :NAME "glycoprotein nmb")
+ ("GPR101" "ONT:GENE" :ID "HGNC:14963" :NAME "G protein-coupled receptor 101")
+ ("GPR109A" "ONT:GENE" :ID "HGNC:24827" :NAME
+  "hydroxycarboxylic acid receptor 2")
+ ("GPR160" "ONT:GENE" :ID "HGNC:23693" :NAME "G protein-coupled receptor 160")
+ ("GPR30" "ONT:GENE" :ID "NCIT:C106199" :NAME "GPER")
+ ("GPR55" "ONT:GENE" :ID "HGNC:4511" :NAME "G protein-coupled receptor 55")
+ ("GPRC6A" "ONT:GENE" :ID "HGNC:18510" :NAME
+  "G protein-coupled receptor class C group 6 member A")
+ ("Gadd45beta" "ONT:GENE" :ID "NCIT:C105845" :NAME "GADD45B")
+ ("HAI" "ONT:GENE" :ID "NCIT:C50376" :NAME "ST14")
+ ("HARE" "ONT:GENE" :ID "HGNC:18629" :NAME "stabilin 2")
+ ("AAP" "ONT:GENE-PROTEIN" :ID "UP:P22702" :NAME "Arginine attenuator peptide")
+ ("ABCG2" "ONT:GENE-PROTEIN" :ID "HGNC:74" :NAME
+  "ATP binding cassette subfamily G member 2 (Junior blood group)")
+ ("ACR" "ONT:GENE-PROTEIN" :ID "HGNC:126" :NAME "acrosin")
+ ("ADAMTS6" "ONT:GENE-PROTEIN" :ID "HGNC:222" :NAME
+  "ADAM metallopeptidase with thrombospondin type 1 motif 6")
+ ("AGP" "ONT:GENE-PROTEIN" :ID "XFAM:PF06376.10" :NAME "AGP")
+ ("AIM2" "ONT:GENE-PROTEIN" :ID "HGNC:357" :NAME "absent in melanoma 2")
+ ("AK" "ONT:GENE-PROTEIN" :ID "UP:P55263" :NAME "Adenosine kinase")
+ ("ALIX" "ONT:GENE-PROTEIN" :ID "UP:Q8T7K0" :NAME
+  "ALG-2 interacting protein X")
+ ("ALO" "ONT:GENE-PROTEIN" :ID "UP:Q752Y3" :NAME
+  "D-arabinono-1,4-lactone oxidase")
+ ("AMPKbeta" "ONT:GENE-PROTEIN" :ID "NCIT:C107149" :NAME
+  "AMP-activated protein kinase beta")
+ ("ANG" "ONT:GENE-PROTEIN" :ID "HGNC:483" :NAME "angiogenin")
+ ("APN" "ONT:GENE-PROTEIN" :ID "UP:P15144" :NAME "Aminopeptidase N")
+ ("APRIL" "ONT:GENE-PROTEIN" :ID "NCIT:C54325" :NAME "ANP32B")
+ ("AQP3" "ONT:GENE-PROTEIN" :ID "HGNC:636" :NAME
+  "aquaporin 3 (Gill blood group)")
+ ("AQP9" "ONT:GENE-PROTEIN" :ID "HGNC:643" :NAME "aquaporin 9")
+ ("ARHI" "ONT:GENE-PROTEIN" :ID "NCIT:C52535" :NAME "ARHI")
+ ("ARID1A" "ONT:GENE-PROTEIN" :ID "HGNC:11110" :NAME
+  "AT-rich interaction domain 1A")
+ ("ASCL1" "ONT:GENE-PROTEIN" :ID "HGNC:738" :NAME
+  "achaete-scute family bHLH transcription factor 1")
+ ("ATF-2" "ONT:GENE-PROTEIN" :ID "HGNC:784" :NAME
+  "activating transcription factor 2")
+ ("ATF1" "ONT:GENE-PROTEIN" :ID "HGNC:783" :NAME
+  "activating transcription factor 1")
+ ("ATF3" "ONT:GENE-PROTEIN" :ID "HGNC:785" :NAME
+  "activating transcription factor 3")
+ ("ActA" "ONT:GENE-PROTEIN" :ID "XFAM:PF05058.10" :NAME "ActA")
+ ("Angiogenin" "ONT:GENE-PROTEIN" :ID "HGNC:483" :NAME "angiogenin")
+ ("Apc" "ONT:GENE-PROTEIN" :ID "HGNC:583" :NAME
+  "APC, WNT signaling pathway regulator")
+ ("BAF53a" "ONT:GENE-PROTEIN" :ID "HGNC:24124" :NAME "actin like 6A")
+ ("BAT" "ONT:GENE-PROTEIN" :ID "UP:Q91X34" :NAME
+  "Bile acid-CoA:amino acid N-acyltransferase")
+ ("BCAA" "ONT:GENE-PROTEIN" :ID "NCIT:C51104" :NAME "BCAA")
+ ("BDKRB1" "ONT:GENE-PROTEIN" :ID "HGNC:1029" :NAME "bradykinin receptor B1")
+ ("BMP" "ONT:GENE-PROTEIN" :ID "NCIT:C17274" :NAME
+  "bone morphogenetic protein")
+ ("Blimp-1" "ONT:GENE-PROTEIN" :ID "NCIT:C34092" :NAME
+  "PR-domain zinc finger protein-1")
+ ("Blimp1" "ONT:GENE-PROTEIN" :ID "NCIT:C34092" :NAME
+  "PR-domain zinc finger protein-1")
+ ("Braf" "ONT:GENE-PROTEIN" :ID "HGNC:1097" :NAME
+  "B-Raf proto-oncogene, serine/threonine kinase")
+ ("C4ST-1" "ONT:GENE-PROTEIN" :ID "UP:Q7T3S3" :NAME
+  "Carbohydrate sulfotransferase 11")
+ ("C4ST-2" "ONT:GENE-PROTEIN" :ID "UP:Q9NRB3" :NAME
+  "Carbohydrate sulfotransferase 12")
+ ("C5a" "ONT:GENE-PROTEIN" :ID "NCIT:C20487" :NAME "C5a")
+ ("C5aR" "ONT:GENE-PROTEIN" :ID "UP:P21730" :NAME
+  "C5a anaphylatoxin chemotactic receptor 1")
+ ("CAC" "ONT:GENE-PROTEIN" :ID "HGNC:1421" :NAME
+  "solute carrier family 25 member 20")
+ ("CAP1" "ONT:GENE-PROTEIN" :ID "HGNC:20040" :NAME
+  "adenylate cyclase associated protein 1")
+ ("CB2" "ONT:GENE-PROTEIN" :ID "UP:P34972" :NAME "Cannabinoid receptor 2")
+ ("CCL-2" "ONT:GENE-PROTEIN" :ID "HGNC:10618" :NAME
+  "C-C motif chemokine ligand 2")
+ ("CCL19" "ONT:GENE-PROTEIN" :ID "HGNC:10617" :NAME
+  "C-C motif chemokine ligand 19")
+ ("CCNB1" "ONT:GENE-PROTEIN" :ID "HGNC:1579" :NAME "cyclin B1")
+ ("CCR4" "ONT:GENE-PROTEIN" :ID "UP:Q8MJW8" :NAME
+  "C-C chemokine receptor type 4")
+ ("CD-45" "ONT:GENE-PROTEIN" :ID "XFAM:PF12567.6" :NAME "CD45")
+ ("CD137" "ONT:GENE-PROTEIN" :ID "NCIT:C105113" :NAME
+  "tumor necrosis factor receptor superfamily member 9")
+ ("CD16" "ONT:GENE-PROTEIN" :ID "NCIT:C51393" :NAME "FCGR3A")
+ ("CD38" "ONT:GENE-PROTEIN" :ID "HGNC:1667" :NAME "CD38 molecule")
+ ("CD47" "ONT:GENE-PROTEIN" :ID "HGNC:1682" :NAME "CD47 molecule")
+ ("CD59" "ONT:GENE-PROTEIN" :ID "HGNC:1689" :NAME "CD59 molecule")
+ ("CD64" "ONT:GENE-PROTEIN" :ID "NCIT:C104238" :NAME
+  "high affinity immunoglobulin gamma Fc receptor I")
+ ("CD73" "ONT:GENE-PROTEIN" :ID "NCIT:C114925" :NAME "NT5E")
+ ("CD80" "ONT:GENE-PROTEIN" :ID "HGNC:1700" :NAME "CD80 molecule")
+ ("CDKN1A" "ONT:GENE-PROTEIN" :ID "HGNC:1784" :NAME
+  "cyclin dependent kinase inhibitor 1A")
+ ("CDKN2B" "ONT:GENE-PROTEIN" :ID "HGNC:1788" :NAME
+  "cyclin dependent kinase inhibitor 2B")
+ ("CEA" "ONT:GENE-PROTEIN" :ID "FA:01836" :NAME "CEA family")
+ ("CEBP" "ONT:GENE-PROTEIN" :ID "NCIT:C45488" :NAME
+  "CCAAT-enhancer binding protein alpha")
+ ("CIP1" "ONT:GENE-PROTEIN" :ID "NCIT:C49460" :NAME "CDKN1A")
+ ("CIZ1" "ONT:GENE-PROTEIN" :ID "HGNC:16744" :NAME
+  "CDKN1A interacting zinc finger protein 1")
+ ("CK19" "ONT:GENE-PROTEIN" :ID "NCIT:C16488" :NAME "cytokeratin-19")
+ ("CNTF" "ONT:GENE-PROTEIN" :ID "HGNC:2169" :NAME
+  "ciliary neurotrophic factor")
+ ("COL1A1" "ONT:GENE-PROTEIN" :ID "HGNC:2197" :NAME
+  "collagen type I alpha 1 chain")
+ ("COL1A2" "ONT:GENE-PROTEIN" :ID "HGNC:2198" :NAME
+  "collagen type I alpha 2 chain")
+ ("COP1" "ONT:GENE-PROTEIN" :ID "FA:00728" :NAME "COP1 family")
+ ("CPE" "ONT:GENE-PROTEIN" :ID "HGNC:2303" :NAME "carboxypeptidase E")
+ ("CSF1R" "ONT:GENE-PROTEIN" :ID "NCIT:C51347" :NAME "CSF1R")
+ ("CSN6" "ONT:GENE-PROTEIN" :ID "FA:02752" :NAME "CSN6 subfamily")
+ ("CTNNBIP1" "ONT:GENE-PROTEIN" :ID "HGNC:16913" :NAME
+  "catenin beta interacting protein 1")
+ ("CXCL1" "ONT:GENE-PROTEIN" :ID "HGNC:4602" :NAME
+  "C-X-C motif chemokine ligand 1")
+ ("CXCR5" "ONT:GENE-PROTEIN" :ID "HGNC:1060" :NAME
+  "C-X-C motif chemokine receptor 5")
+ ("CXCR6" "ONT:GENE-PROTEIN" :ID "HGNC:16647" :NAME
+  "C-X-C motif chemokine receptor 6")
+ ("CYLD" "ONT:GENE-PROTEIN" :ID "HGNC:2584" :NAME
+  "CYLD lysine 63 deubiquitinase")
+ ("CYP11B1" "ONT:GENE-PROTEIN" :ID "HGNC:2591" :NAME
+  "cytochrome P450 family 11 subfamily B member 1")
+ ("CYP11B2" "ONT:GENE-PROTEIN" :ID "HGNC:2592" :NAME
+  "cytochrome P450 family 11 subfamily B member 2")
+ ("CagA" "ONT:GENE-PROTEIN" :ID "XFAM:PF03507.11" :NAME "CagA")
+ ("Ccl20" "ONT:GENE-PROTEIN" :ID "HGNC:10619" :NAME
+  "C-C motif chemokine ligand 20")
+ ("Cdx1" "ONT:GENE-PROTEIN" :ID "NCIT:C107668" :NAME "CDX1")
+ ("ChPF" "ONT:GENE-PROTEIN" :ID "HGNC:24291" :NAME
+  "chondroitin polymerizing factor")
+ ("ChoK" "ONT:GENE-PROTEIN" :ID "NCIT:C51051" :NAME "CHK")
+ ("CiA" "ONT:GENE-PROTEIN" :ID "NCIT:C33996" :NAME
+  "nuclear receptor coactivator-5")
+ ("Cx30" "ONT:GENE-PROTEIN" :ID "HGNC:4288" :NAME
+  "gap junction protein beta 6")
+ ("Cyclin D1" "ONT:GENE-PROTEIN" :ID "HGNC:1582" :NAME "cyclin D1")
+ ("CypD" "ONT:GENE-PROTEIN" :ID "NCIT:C118235" :NAME "PPIF")
+ ("DAT" "ONT:GENE-PROTEIN" :ID "UP:Q01959" :NAME
+  "Sodium-dependent dopamine transporter")
+ ("DDC" "ONT:GENE-PROTEIN" :ID "HGNC:2719" :NAME "dopa decarboxylase")
+ ("DICER1" "ONT:GENE-PROTEIN" :ID "HGNC:17098" :NAME
+  "dicer 1, ribonuclease III")
+ ("DNMT" "ONT:GENE-PROTEIN" :ID "NCIT:C16508" :NAME
+  "DNA modification methylase")
+ ("DPD" "ONT:GENE-PROTEIN" :ID "UP:Q12882" :NAME
+  "Dihydropyrimidine dehydrogenase [NADP(+)]")
+ ("DPYD" "ONT:GENE-PROTEIN" :ID "HGNC:3012" :NAME
+  "dihydropyrimidine dehydrogenase")
+ ("Dcstamp" "ONT:GENE-PROTEIN" :ID "UP:Q9H295" :NAME
+  "Dendritic cell-specific transmembrane protein")
+ ("Dct" "ONT:GENE-PROTEIN" :ID "HGNC:2709" :NAME "dopachrome tautomerase")
+ ("Dectin-1" "ONT:GENE-PROTEIN" :ID "NCIT:C122763" :NAME
+  "C-type lectin domain family 7 member A")
+ ("Dexras1" "ONT:GENE-PROTEIN" :ID "NCIT:C29766" :NAME
+  "activator of G-protein signaling 1 protein")
+ ("Dkk1" "ONT:GENE-PROTEIN" :ID "UP:O94907" :NAME "Dickkopf-related protein 1")
+ ("Dlx5" "ONT:GENE-PROTEIN" :ID "HGNC:2918" :NAME "distal-less homeobox 5")
+ ("E2F2" "ONT:GENE-PROTEIN" :ID "HGNC:3114" :NAME "E2F transcription factor 2")
+ ("E2F3" "ONT:GENE-PROTEIN" :ID "NCIT:C96005" :NAME "E2F3")
+ ("E2F4" "ONT:GENE-PROTEIN" :ID "HGNC:3118" :NAME "E2F transcription factor 4")
+ ("E2F5" "ONT:GENE-PROTEIN" :ID "HGNC:3119" :NAME "E2F transcription factor 5")
+ ("E2F6" "ONT:GENE-PROTEIN" :ID "HGNC:3120" :NAME "E2F transcription factor 6")
+ ("ECD" "ONT:GENE-PROTEIN" :ID "HGNC:17029" :NAME
+  "ecdysoneless cell cycle regulator")
+ ("EDL" "ONT:GENE-PROTEIN" :ID "NCIT:C113272" :NAME "endothelial lipase")
+ ("EPS15" "ONT:GENE-PROTEIN" :ID "HGNC:3419" :NAME
+  "epidermal growth factor receptor pathway substrate 15")
+ ("ERCC1" "ONT:GENE-PROTEIN" :ID "HGNC:3433" :NAME
+  "ERCC excision repair 1, endonuclease non-catalytic subunit")
+ ("ERbeta" "ONT:GENE-PROTEIN" :ID "UP:Q92731" :NAME "Estrogen receptor beta")
+ ("ET1" "ONT:GENE-PROTEIN" :ID "UP:P22387" :NAME "Endothelin-1")
+ ("ETB" "ONT:GENE-PROTEIN" :ID "UP:P24530" :NAME "Endothelin B receptor")
+ ("ETV4" "ONT:GENE-PROTEIN" :ID "HGNC:3493" :NAME "ETS variant 4")
+ ("Elk-3" "ONT:GENE-PROTEIN" :ID "HGNC:3325" :NAME
+  "ELK3, ETS transcription factor")
+ ("Elk3" "ONT:GENE-PROTEIN" :ID "HGNC:3325" :NAME
+  "ELK3, ETS transcription factor")
+ ("FOXC2" "ONT:GENE-PROTEIN" :ID "HGNC:3801" :NAME "forkhead box C2")
+ ("FOXP1" "ONT:GENE-PROTEIN" :ID "HGNC:3823" :NAME "forkhead box P1")
+ ("FRS2alpha" "ONT:GENE-PROTEIN" :ID "NCIT:C52381" :NAME "FRS2")
+ ("FZD7" "ONT:GENE-PROTEIN" :ID "HGNC:4045" :NAME "frizzled class receptor 7")
+ ("Fra1" "ONT:GENE-PROTEIN" :ID "UP:P15407" :NAME "Fos-related antigen 1")
+ ("GATA2" "ONT:GENE-PROTEIN" :ID "HGNC:4171" :NAME "GATA binding protein 2")
+ ("GBP2" "ONT:GENE-PROTEIN" :ID "HGNC:4183" :NAME
+  "guanylate binding protein 2")
+ ("GDI" "ONT:GENE-PROTEIN" :ID "GO:0005092" :NAME
+  "GDP-dissociation inhibitor activity")
+ ("GHRs" "ONT:GENE-PROTEIN" :ID "HGNC:4263" :NAME "growth hormone receptor")
+ ("GIP" "ONT:GENE-PROTEIN" :ID "HGNC:4270" :NAME
+  "gastric inhibitory polypeptide")
+ ("GLI" "ONT:GENE-PROTEIN" :ID "UP:P55878" :NAME "Zinc finger protein GLI1")
+ ("GLI-2" "ONT:GENE-PROTEIN" :ID "HGNC:4318" :NAME "GLI family zinc finger 2")
+ ("GLI2" "ONT:GENE-PROTEIN" :ID "HGNC:4318" :NAME "GLI family zinc finger 2")
+ ("GLUT4" "ONT:GENE-PROTEIN" :ID "NCIT:C89050" :NAME "SLC2A4")
+ ("GP88" "ONT:GENE-PROTEIN" :ID "NCIT:C101402" :NAME "GRN")
+ ("GPER" "ONT:GENE-PROTEIN" :ID "NCIT:C106199" :NAME "GPER")
+ ("Gcn5" "ONT:GENE-PROTEIN" :ID "FA:00068" :NAME "GCN5 subfamily")
+ ("Gli" "ONT:GENE-PROTEIN" :ID "UP:P55878" :NAME "Zinc finger protein GLI1")
+ ("GluA2" "ONT:GENE-PROTEIN" :ID "HGNC:4572" :NAME
+  "glutamate ionotropic receptor AMPA type subunit 2")
+ ("GnRH" "ONT:GENE-PROTEIN" :ID "FA:01630" :NAME "GnRH family")
+ ("GnRHR" "ONT:GENE-PROTEIN" :ID "UP:P30968" :NAME
+  "Gonadotropin-releasing hormone receptor")
+ ("HAT" "ONT:GENE-PROTEIN" :ID "XFAM:PF02184.14" :NAME "HAT")
+ ("HDL" "ONT:GENE-PROTEIN" :ID "NCIT:C113166" :NAME "HSD11B1")
+ ("HES6" "ONT:GENE-PROTEIN" :ID "NCIT:C104534" :NAME "HES6")
+ ("DISC" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0031264" :NAME
+  "death-inducing signaling complex")
+ ("Dia" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "NCIT:C9476" :NAME
+  "desmoplastic infantile astrocytoma")
+ ("EAE" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "EFO:0001066" :NAME
+  "experimental autoimmune encephalomyelitis")
+ ("HCMV" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "EFO:0001062" :NAME
+  "cytomegalovirus infection")
+ ("CTD" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF12815.5" :NAME "CTD")
+ ("CtD" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF12815.5" :NAME "CTD")
+ ("DEP" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF00610.19" :NAME "DEP")
+ ("EKR" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF10371.7" :NAME "EKR")
+ ("C16" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Cysteine")
+ ("D12" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Aspartic acid")
+ ("H19" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Histidine")
+ ("ALN" "ONT:MOLECULE" :ID "CHEBI:33629" :NAME "aluminium(0)")
+ ("AgNP" "ONT:MOLECULE" :ID "CHEBI:50826" :NAME "silver nanoparticle")
+ ("CdCl2" "ONT:MOLECULE" :ID "CHEBI:35456" :NAME "cadmium dichloride")
+ ("Dpp" "ONT:MOLECULE" :ID "CHEBI:60069" :NAME "dipropyl phthalate")
+ ("FO" "ONT:MOLECULE" :ID "CHEBI:30244" :NAME "hypofluorite")
+ ("GdCl3" "ONT:MOLECULE" :ID "CHEBI:37288" :NAME "gadolinium trichloride")
+ ("A375P" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("A3R" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("B2A" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("D1R" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("E1A" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("H2R" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("H2S" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("H3R" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("DBA" "ONT:NONHUMAN-ANIMAL" :ID "NCIT:C37402" :NAME "DBA mouse")
+ ("ABT-737" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C501332" :NAME "ABT-737")
+ ("ACTH" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C212" :NAME
+  "therapeutic corticotropin")
+ ("AG490" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C095512" :NAME
+  "alpha-cyano-(3,4-dihydroxy)-N-benzylcinnamide")
+ ("AHP" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C012393" :NAME "oxaceprol")
+ ("AM251" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:90724" :NAME "AM-251")
+ ("AS-604850" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C505145" :NAME
+  "5-(2,2-difluorobenzo(1,3)dioxol-5-ylmethylene)thiazolidine-2,4-dione")
+ ("AS-703026" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C84864" :NAME
+  "MEK inhibitor AS703026")
+ ("AT-101" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C78348" :NAME
+  "R-gossypol acetic acid")
+ ("AZD-6244" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C66939" :NAME "AZD6244")
+ ("AZD5438" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C521840" :NAME "AZD5438")
+ ("Amitriptyline" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C28819" :NAME
+  "amitriptyline")
+ ("BAY11-7082" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C434003" :NAME
+  "3-(4-methylphenylsulfonyl)-2-propenenitrile")
+ ("BCG" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C298" :NAME "BCG vaccine")
+ ("BIBR1532" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C458523" :NAME
+  "BIBR 1532")
+ ("BIIB021" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:90687" :NAME "BIIB021")
+ ("BIRB796" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C452139" :NAME "BIRB 796")
+ ("BMS345541" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C471109" :NAME
+  "4(2'-aminoethyl)amino-1,8-dimethylimidazo(1,2-a)quinoxaline")
+ ("BODIPY" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C095489" :NAME
+  "4,4-difluoro-4-bora-3a,4a-diaza-s-indacene")
+ ("BPDE" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C196" :NAME
+  "benzo a pyrene-7 8-diol 9 10-epoxide")
+ ("Binimetinib" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C84865" :NAME
+  "MEK inhibitor ARRY-438162")
+ ("Bufalin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C022777" :NAME "bufalin")
+ ("Buparlisib" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C90565" :NAME
+  "PI3K inhibitor BKM120")
+ ("CBD" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C118452" :NAME "cannabidiol")
+ ("CCl" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:3478" :NAME "cefaclor")
+ ("CDPPB" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C494553" :NAME
+  "3-cyano-N-(1,3-diphenyl-1H-pyrazol-5-yl)benzamide")
+ ("CFX" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:209807" :NAME "cefoxitin")
+ ("Cromolyn" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C61691" :NAME "cromolyn")
+ ("Cyclopamine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C000541" :NAME
+  "cyclopamine")
+ ("DDAs" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C429" :NAME
+  "dideoxyadenosine")
+ ("DETS" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C068718" :NAME
+  "17-(N,N-diisopropylcarbamoyl)estra-1,3,5(10)-triene-3-sulfonic acid")
+ ("DHEA" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C2265" :NAME
+  "therapeutic dehydroepiandrosterone")
+ ("DHPG" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C517" :NAME "ganciclovir")
+ ("DNR" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C62091" :NAME "daunorubicin")
+ ("Diosmetin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C039602" :NAME
+  "diosmetin")
+ ("EIPA" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C039614" :NAME
+  "ethylisopropylamiloride")
+ ("Elesclomol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C75291" :NAME
+  "elesclomol")
+ ("Emodin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C466" :NAME "emodin")
+ ("FH535" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C575430" :NAME "FH535")
+ ("FK866" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C67043" :NAME "APO866")
+ ("FTY-720" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C72782" :NAME
+  "fingolimod hydrochloride")
+ ("Farrerol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C015881" :NAME "farrerol")
+ ("Fisetin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C017875" :NAME "fisetin")
+ ("GHRP-2" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C091874" :NAME
+  "growth hormone-releasing peptide-2")
+ ("GSK2334470" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C555257" :NAME
+  "GSK 2334470")
+ ("GW9662" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C457499" :NAME
+  "2-chloro-5-nitrobenzanilide")
+ ("Go6983" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C465664" :NAME
+  "2-(1-(3-dimethylaminopropyl)-5-methoxyindol-3-yl)-3-(1H-indol-3-yl)maleimide")
+ ("HDPC" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C039128" :NAME "miltefosine")
+ ("BC" "ONT:PROCEDURE" :ID "NCIT:C92225" :NAME
+  "best case imputation technique")
+ ("CID" "ONT:PROCEDURE" :ID "NCIT:C48061" :NAME
+  "collision-induced dissociation")
+ ("AAL" "ONT:PROTEIN" :ID "UP:Q6WY08" :NAME "Anti-tumor lectin")
+ ("ADRs" "ONT:PROTEIN" :ID "UP:Q09851" :NAME
+  "NADPH-dependent 1-acyldihydroxyacetone phosphate reductase")
+ ("ATI" "ONT:PROTEIN" :ID "UP:P21114" :NAME
+  "Putative A-type inclusion protein")
+ ("BCAT" "ONT:PROTEIN" :ID "UP:O14370" :NAME
+  "Branched-chain-amino-acid aminotransferase, mitochondrial")
+ ("BLA" "ONT:PROTEIN" :ID "UP:P06278" :NAME "Alpha-amylase")
+ ("Bsk" "ONT:PROTEIN" :ID "UP:Q922K9" :NAME "Tyrosine-protein kinase FRK")
+ ("CK2alpha" "ONT:PROTEIN" :ID "UP:P28523" :NAME
+  "Casein kinase II subunit alpha")
+ ("CPSP" "ONT:PROTEIN" :ID "UP:P77885" :NAME
+  "Carbamoyl-phosphate synthase pyrimidine-specific small chain")
+ ("CTL" "ONT:PROTEIN" :ID "UP:Q6T7B7" :NAME "C-type lectin 1")
+ ("Coi1" "ONT:PROTEIN" :ID "UP:O04197" :NAME
+  "Coronatine-insensitive protein 1")
+ ("DHHC20" "ONT:PROTEIN" :ID "UP:Q0VC89" :NAME
+  "Probable palmitoyltransferase ZDHHC20")
+ ("DSP4" "ONT:PROTEIN" :ID "UP:Q9BV47" :NAME
+  "Dual specificity protein phosphatase 26")
+ ("EBNA2" "ONT:PROTEIN" :ID "UP:Q69022" :NAME "Epstein-Barr nuclear antigen 2")
+ ("EBNA3A" "ONT:PROTEIN" :ID "UP:Q69138" :NAME
+  "Epstein-Barr nuclear antigen 3")
+ ("FcgammaRIIB" "ONT:PROTEIN" :ID "NCIT:C38555" :NAME "IgG-Fc-receptor-IIB")
+ ("Frizzled5" "ONT:PROTEIN" :ID "UP:Q13467" :NAME "Frizzled-5")
+ ("Ftase" "ONT:PROTEIN" :ID "GO:0004660" :NAME
+  "protein farnesyltransferase activity")
+ ("HBx" "ONT:PROTEIN" :ID "UP:P69714" :NAME "Protein X")
+ ("Galpha" "ONT:PROTEIN-FAMILY" :ID "FA:01401" :NAME "G-alpha family")
+
+
+ ("EIAV" "ONT:VIRUS" :ID "NCIT:C14205" :NAME "equine infectious anemia virus")
+ ("OIS" "ONT:BIOLOGICAL-PROCESS" :ID "GO:0090402" :NAME
+  "oncogene-induced cell senescence")
+ ("PPS" "ONT:BODY-PART" :ID "EFO:0003397" :NAME "hypopharyngeal sense organ")
+ ("HSC" "ONT:CELL" :ID "BTO:0000725" :NAME "hematopoietic stem cell")
+ ("LC" "ONT:CELL" :ID "CO:0000453" :NAME "Langerhans cell")
+ ("LEC" "ONT:CELL" :ID "CO:0002138" :NAME
+  "endothelial cell of lymphatic vessel")
+ ("LECs" "ONT:CELL" :ID "CO:0002138" :NAME
+  "endothelial cell of lymphatic vessel")
+ ("PBMC" "ONT:CELL" :ID "BTO:0001025" :NAME
+  "peripheral blood mononuclear cell")
+ ("PMN" "ONT:CELL" :ID "BTO:0003473" :NAME "polymorphonuclear neutrophil")
+ ("HH" "ONT:CELL-LINE" :ID "EFO:0002194" :NAME "HH")
+ ("HP" "ONT:CELL-LINE" :ID "CVCL:3715" :NAME "HP")
+ ("HaCaT" "ONT:CELL-LINE" :ID "EFO:0002056" :NAME "HaCaT")
+ ("HepG2" "ONT:CELL-LINE" :ID "CVCL:0027" :NAME "Hep-G2")
+ ("ICG" "ONT:CELL-LINE" :ID "CVCL:1G91" :NAME "ICG")
+ ("JA" "ONT:CELL-LINE" :ID "CVCL:W874" :NAME "JA")
+ ("JAR" "ONT:CELL-LINE" :ID "EFO:0002211" :NAME "JAR")
+ ("JC" "ONT:CELL-LINE" :ID "CVCL:3530" :NAME "JC")
+ ("JL" "ONT:CELL-LINE" :ID "CVCL:F563" :NAME "JL")
+ ("KC" "ONT:CELL-LINE" :ID "CVCL:Z833" :NAME "Kc")
+ ("KF" "ONT:CELL-LINE" :ID "CVCL:5M20" :NAME "KF")
+ ("KU812" "ONT:CELL-LINE" :ID "CVCL:0379" :NAME "Ku812")
+ ("Kasumi-1" "ONT:CELL-LINE" :ID "CVCL:0589" :NAME "Kasumi-1")
+ ("Kyse30" "ONT:CELL-LINE" :ID "CVCL:1351" :NAME "KYSE-30")
+ ("LN" "ONT:CELL-LINE" :ID "CVCL:F127" :NAME "GM02063")
+ ("LU1205" "ONT:CELL-LINE" :ID "CVCL:5239" :NAME "1205Lu")
+ ("MCF10A" "ONT:CELL-LINE" :ID "CVCL:0598" :NAME "MCF-10A")
+ ("MD-2" "ONT:CELL-LINE" :ID "CVCL:9220" :NAME "MD2")
+ ("MES23.5" "ONT:CELL-LINE" :ID "CVCL:J351" :NAME "MES23.5")
+ ("MF" "ONT:CELL-LINE" :ID "CVCL:Y126" :NAME "MF")
+ ("MJ" "ONT:CELL-LINE" :ID "CVCL:1414" :NAME "MJ")
+ ("MKN-45" "ONT:CELL-LINE" :ID "CVCL:0434" :NAME "MKN45")
+ ("MLP1" "ONT:CELL-LINE" :ID "CVCL:W533" :NAME "MLP-1")
+ ("MPM-2" "ONT:CELL-LINE" :ID "CVCL:D528" :NAME "MPM2")
+ ("MST3" "ONT:CELL-LINE" :ID "CVCL:0J36" :NAME "MST-3")
+ ("Mit" "ONT:CELL-LINE" :ID "CVCL:D526" :NAME "MIT")
+ ("Mv1Lu" "ONT:CELL-LINE" :ID "CVCL:0593" :NAME "Mv1Lu")
+ ("N2a" "ONT:CELL-LINE" :ID "CVCL:0470" :NAME "Neuro-2a")
+ ("NB69" "ONT:CELL-LINE" :ID "CVCL:1448" :NAME "NB69")
+ ("NE" "ONT:CELL-LINE" :ID "CVCL:3554" :NAME "NE")
+ ("NIH/3T3" "ONT:CELL-LINE" :ID "EFO:0001222" :NAME "NIH3T3")
+ ("NK-92" "ONT:CELL-LINE" :ID "CVCL:2142" :NAME "NK-92")
+ ("ONS-76" "ONT:CELL-LINE" :ID "CVCL:1624" :NAME "ONS-76")
+ ("ORs" "ONT:CELL-LINE" :ID "CVCL:U565" :NAME "ORS")
+ ("PC9/R" "ONT:CELL-LINE" :ID "CVCL:S750" :NAME "PC-9/R")
+ ("PDH" "ONT:CELL-LINE" :ID "CVCL:1G98" :NAME "PDH")
+ ("PGF" "ONT:CELL-LINE" :ID "CVCL:E806" :NAME "PGF")
+ ("RBE" "ONT:CELL-LINE" :ID "CVCL:4896" :NAME "RBE")
+ ("RBL-2H3" "ONT:CELL-LINE" :ID "CVCL:0591" :NAME "RBL-2H3")
+ ("RGS" "ONT:CELL-LINE" :ID "CVCL:1G60" :NAME "RGS")
+ ("RT112" "ONT:CELL-LINE" :ID "CVCL:1670" :NAME "RT-112")
+ ("IC" "ONT:CELL-PART" :ID "UP:SL-0098" :NAME
+  "Endoplasmic reticulum-Golgi intermediate compartment")
+ ("MVBs" "ONT:CELL-PART" :ID "GO:0005771" :NAME "multivesicular body")
+ ("MVE" "ONT:CELL-PART" :ID "GO:0005771" :NAME "multivesicular body")
+ ("P-bodies" "ONT:CELL-PART" :ID "UP:SL-0230" :NAME "P-body")
+ ("Hemin" "ONT:CHEMICAL" :ID "CHEBI:50385" :NAME "hemin")
+ ("IA" "ONT:CHEMICAL" :ID "CHEBI:74062" :NAME "Ile-Ala")
+ ("ICA" "ONT:CHEMICAL" :ID "CHEBI:29202" :NAME "isocyanic acid")
+ ("ICa" "ONT:CHEMICAL" :ID "CHEBI:29202" :NAME "isocyanic acid")
+ ("IG" "ONT:CHEMICAL" :ID "CHEBI:74066" :NAME "Ile-Gly")
+ ("K252a" "ONT:CHEMICAL" :ID "CHEBI:43616" :NAME "K-252a")
+ ("L-glutamate" "ONT:CHEMICAL" :ID "CHEBI:29988" :NAME "L-glutamate(2-)")
+ ("LGG" "ONT:CHEMICAL" :ID "CHEBI:74538" :NAME "Leu-Gly-Gly")
+ ("LLL" "ONT:CHEMICAL" :ID "CHEBI:74541" :NAME "Leu-Leu-Leu")
+ ("LXA4" "ONT:CHEMICAL" :ID "CHEBI:6498" :NAME "lipoxin A4")
+ ("MTT" "ONT:CHEMICAL" :ID "CHEBI:53233" :NAME
+  "3-(4,5-dimethylthiazol-2-yl)-2,5-diphenyltetrazolium bromide")
+ ("Oleamide" "ONT:CHEMICAL" :ID "CHEBI:116314" :NAME "oleamide")
+ ("PDB" "ONT:CHEMICAL" :ID "NCIT:C44297" :NAME "1 4-dichlorobenzene")
+ ("PFOA" "ONT:CHEMICAL" :ID "CHEBI:35549" :NAME "perfluorooctanoic acid")
+ ("PGF2alpha" "ONT:CHEMICAL" :ID "CHEBI:15553" :NAME "prostaglandin F2alpha")
+ ("PMP" "ONT:CHEMICAL" :ID "CHEBI:90766" :NAME
+  "alpha-D-Manp6P-(1->3)-alpha-D-Manp-(1->3)-alpha-D-Manp-(1->3)-alpha-D-Manp-(1->2)-D-Manp")
+ ("Pb" "ONT:CHEMICAL" :ID "NCIT:C44396" :NAME "lead metal")
+ ("HLJ1" "ONT:GENE" :ID "NCIT:C62455" :NAME "DNAJB4")
+ ("HNE" "ONT:GENE" :ID "NCIT:C104196" :NAME "ELANE")
+ ("HSP90beta" "ONT:GENE" :ID "NCIT:C97590" :NAME "HSP90AB1")
+ ("HSPCs" "ONT:GENE" :ID "HGNC:9536" :NAME "proteasome subunit alpha 7")
+ ("ID1" "ONT:GENE" :ID "HGNC:5360" :NAME
+  "inhibitor of DNA binding 1, HLH protein")
+ ("IDE" "ONT:GENE" :ID "HGNC:5381" :NAME "insulin degrading enzyme")
+ ("IK" "ONT:GENE" :ID "HGNC:5958" :NAME
+  "IK cytokine, down-regulator of HLA II")
+ ("IL-32alpha" "ONT:GENE" :ID "NCIT:C127925" :NAME "IL32")
+ ("ISCs" "ONT:GENE" :ID "HGNC:15910" :NAME "NFS1, cysteine desulfurase")
+ ("Iba-1" "ONT:GENE" :ID "HGNC:352" :NAME "allograft inflammatory factor 1")
+ ("Ibsp" "ONT:GENE" :ID "HGNC:5341" :NAME "integrin binding sialoprotein")
+ ("Id4" "ONT:GENE" :ID "HGNC:5363" :NAME
+  "inhibitor of DNA binding 4, HLH protein")
+ ("JAZ" "ONT:GENE" :ID "HGNC:16403" :NAME "zinc finger protein 346")
+ ("JK" "ONT:GENE" :ID "HGNC:10918" :NAME
+  "solute carrier family 14 member 1 (Kidd blood group)")
+ ("JMJD3" "ONT:GENE" :ID "NCIT:C80018" :NAME "JMJD3")
+ ("JWA" "ONT:GENE" :ID "HGNC:16937" :NAME
+  "ADP ribosylation factor like GTPase 6 interacting protein 5")
+ ("KDM2A" "ONT:GENE" :ID "HGNC:13606" :NAME "lysine demethylase 2A")
+ ("KIAA1522" "ONT:GENE" :ID "HGNC:29301" :NAME "KIAA1522")
+ ("KIF14" "ONT:GENE" :ID "HGNC:19181" :NAME "kinesin family member 14")
+ ("KIF26B" "ONT:GENE" :ID "HGNC:25484" :NAME "kinesin family member 26B")
+ ("KLF8" "ONT:GENE" :ID "HGNC:6351" :NAME "Kruppel like factor 8")
+ ("KLK6" "ONT:GENE" :ID "HGNC:6367" :NAME "kallikrein related peptidase 6")
+ ("Kif13b" "ONT:GENE" :ID "HGNC:14405" :NAME "kinesin family member 13B")
+ ("Kv1.3" "ONT:GENE" :ID "HGNC:6221" :NAME
+  "potassium voltage-gated channel subfamily A member 3")
+ ("Kv4.2" "ONT:GENE" :ID "HGNC:6238" :NAME
+  "potassium voltage-gated channel subfamily D member 2")
+ ("LMP2" "ONT:GENE" :ID "NCIT:C73447" :NAME "PSMB9")
+ ("LMP7" "ONT:GENE" :ID "NCIT:C112076" :NAME "PSMB8")
+ ("LPC" "ONT:GENE" :ID "NCIT:C97657" :NAME "PCSK7")
+ ("LPXN" "ONT:GENE" :ID "HGNC:14061" :NAME "leupaxin")
+ ("Lhcgr" "ONT:GENE" :ID "HGNC:6585" :NAME
+  "luteinizing hormone/choriogonadotropin receptor")
+ ("Lim1" "ONT:GENE" :ID "NCIT:C53010" :NAME "LHX1")
+ ("Lypd6" "ONT:GENE" :ID "HGNC:28751" :NAME "LY6/PLAUR domain containing 6")
+ ("MARVELD1" "ONT:GENE" :ID "HGNC:28674" :NAME "MARVEL domain containing 1")
+ ("MAZ" "ONT:GENE" :ID "HGNC:6914" :NAME "MYC associated zinc finger protein")
+ ("MDMs" "ONT:GENE" :ID "HGNC:18746" :NAME
+  "secreted LY6/PLAUR domain containing 1")
+ ("MIR21" "ONT:GENE" :ID NIL :NAME NIL)
+ ("MN" "ONT:GENE" :ID "NCIT:C52348" :NAME "GYPA")
+ ("MVD" "ONT:GENE" :ID "HGNC:7529" :NAME
+  "mevalonate diphosphate decarboxylase")
+ ("Malat1" "ONT:GENE" :ID "NCIT:C92697" :NAME "MALAT1")
+ ("MiR-200c" "ONT:GENE" :ID "NCIT:C82157" :NAME "MIR200C")
+ ("Mincle" "ONT:GENE" :ID "HGNC:14555" :NAME
+  "C-type lectin domain family 4 member E")
+ ("Mpz" "ONT:GENE" :ID "HGNC:7225" :NAME "myelin protein zero")
+ ("N-cad" "ONT:GENE" :ID "NCIT:C77158" :NAME "CDH2")
+ ("NDP52" "ONT:GENE" :ID "HGNC:29912" :NAME
+  "calcium binding and coiled-coil domain 2")
+ ("NES1" "ONT:GENE" :ID "NCIT:C97207" :NAME "KLK10")
+ ("NKG2A" "ONT:GENE" :ID "NCIT:C104363" :NAME "KLRC1")
+ ("NLRC4" "ONT:GENE" :ID "HGNC:16412" :NAME
+  "NLR family CARD domain containing 4")
+ ("NNMT" "ONT:GENE" :ID "HGNC:7861" :NAME "nicotinamide N-methyltransferase")
+ ("NOK" "ONT:GENE" :ID "HGNC:18889" :NAME "serine/threonine/tyrosine kinase 1")
+ ("NRF" "ONT:GENE" :ID "HGNC:19374" :NAME "NFKB repressing factor")
+ ("NRP2" "ONT:GENE" :ID "HGNC:8005" :NAME "neuropilin 2")
+ ("NTS" "ONT:GENE" :ID "HGNC:8038" :NAME "neurotensin")
+ ("Ndrg4" "ONT:GENE" :ID "HGNC:14466" :NAME "NDRG family member 4")
+ ("Nit1" "ONT:GENE" :ID "HGNC:7828" :NAME "nitrilase 1")
+ ("Nox-4" "ONT:GENE" :ID "HGNC:7891" :NAME "NADPH oxidase 4")
+ ("OAS1" "ONT:GENE" :ID "HGNC:8086" :NAME "2'-5'-oligoadenylate synthetase 1")
+ ("OR1A2" "ONT:GENE" :ID "HGNC:8180" :NAME
+  "olfactory receptor family 1 subfamily A member 2")
+ ("OR2AT4" "ONT:GENE" :ID "HGNC:19620" :NAME
+  "olfactory receptor family 2 subfamily AT member 4")
+ ("OSX" "ONT:GENE" :ID "NCIT:C75731" :NAME "MID1")
+ ("OT" "ONT:GENE" :ID "NCIT:C52423" :NAME "OXT")
+ ("Osx" "ONT:GENE" :ID "NCIT:C75731" :NAME "MID1")
+ ("Otx2" "ONT:GENE" :ID "HGNC:8522" :NAME "orthodenticle homeobox 2")
+ ("P450scc" "ONT:GENE" :ID "NCIT:C52318" :NAME "CYP11A1")
+ ("PAQR3" "ONT:GENE" :ID "HGNC:30130" :NAME
+  "progestin and adipoQ receptor family member 3")
+ ("PARK2" "ONT:GENE" :ID "HGNC:8607" :NAME
+  "parkin RBR E3 ubiquitin protein ligase")
+ ("PAX6" "ONT:GENE" :ID "HGNC:8620" :NAME "paired box 6")
+ ("PBS" "ONT:GENE" :ID "NCIT:C122728" :NAME "TSPO")
+ ("PCL" "ONT:GENE" :ID "NCIT:C51547" :NAME "FLT4")
+ ("PDE5A" "ONT:GENE" :ID "HGNC:8784" :NAME "phosphodiesterase 5A")
+ ("PDG" "ONT:GENE" :ID "NCIT:C99475" :NAME "PHGDH")
+ ("PDK3" "ONT:GENE" :ID "HGNC:8811" :NAME "pyruvate dehydrogenase kinase 3")
+ ("PFD" "ONT:GENE" :ID "NCIT:C118198" :NAME "CFP")
+ ("PINK1" "ONT:GENE" :ID "HGNC:14581" :NAME "PTEN induced putative kinase 1")
+ ("PLIN" "ONT:GENE" :ID "HGNC:9076" :NAME "perilipin 1")
+ ("PRAT" "ONT:GENE" :ID "HGNC:9238" :NAME
+  "phosphoribosyl pyrophosphate amidotransferase")
+ ("PRPF19" "ONT:GENE" :ID "HGNC:17896" :NAME "pre-mRNA processing factor 19")
+ ("PSAT1" "ONT:GENE" :ID "HGNC:19129" :NAME "phosphoserine aminotransferase 1")
+ ("PSGR" "ONT:GENE" :ID "HGNC:15195" :NAME
+  "olfactory receptor family 51 subfamily E member 2")
+ ("PTHLH" "ONT:GENE" :ID "HGNC:9607" :NAME "parathyroid hormone like hormone")
+ ("PTPsigma" "ONT:GENE" :ID "NCIT:C124924" :NAME "PTPRS")
+ ("Pde" "ONT:GENE" :ID "HGNC:877" :NAME
+  "aldehyde dehydrogenase 7 family member A1")
+ ("Per2" "ONT:GENE" :ID "HGNC:8846" :NAME "period circadian clock 2")
+ ("Perp" "ONT:GENE" :ID "HGNC:17637" :NAME "PERP, TP53 apoptosis effector")
+ ("Prdm14" "ONT:GENE" :ID "HGNC:14001" :NAME "PR/SET domain 14")
+ ("RASSF1A" "ONT:GENE" :ID "NCIT:C60666" :NAME "RASSF1")
+ ("RBM10" "ONT:GENE" :ID "HGNC:9896" :NAME "RNA binding motif protein 10")
+ ("RBQ3" "ONT:GENE" :ID "HGNC:9888" :NAME
+  "RB binding protein 5, histone lysine methyltransferase complex subunit")
+ ("RGMb" "ONT:GENE" :ID "HGNC:26896" :NAME
+  "repulsive guidance molecule family member b")
+ ("RHAMM" "ONT:GENE" :ID "NCIT:C51553" :NAME "HMMR")
+ ("RHBDL4" "ONT:GENE" :ID "HGNC:16502" :NAME "rhomboid like 3")
+ ("RIPK4" "ONT:GENE" :ID "HGNC:496" :NAME
+  "receptor interacting serine/threonine kinase 4")
+ ("RNF126" "ONT:GENE" :ID "HGNC:21151" :NAME "ring finger protein 126")
+ ("RNF26" "ONT:GENE" :ID "HGNC:14646" :NAME "ring finger protein 26")
+ ("RNF41" "ONT:GENE" :ID "HGNC:18401" :NAME "ring finger protein 41")
+ ("RP" "ONT:GENE" :ID "HGNC:7414" :NAME
+  "mitochondrially encoded ATP synthase 6")
+ ("RPEL1" "ONT:GENE" :ID "HGNC:45241" :NAME
+  "ribulose-5-phosphate-3-epimerase like 1")
+ ("RPL11" "ONT:GENE" :ID "HGNC:10301" :NAME "ribosomal protein L11")
+ ("RPL23" "ONT:GENE" :ID "HGNC:10316" :NAME "ribosomal protein L23")
+ ("RPL4" "ONT:GENE" :ID "HGNC:10353" :NAME "ribosomal protein L4")
+ ("RUNX3" "ONT:GENE" :ID "HGNC:10473" :NAME
+  "runt related transcription factor 3")
+ ("RUSC2" "ONT:GENE" :ID "HGNC:23625" :NAME "RUN and SH3 domain containing 2")
+ ("RXFP1" "ONT:GENE" :ID "HGNC:19718" :NAME
+  "relaxin/insulin like family peptide receptor 1")
+ ("RXFP3" "ONT:GENE" :ID "HGNC:24883" :NAME
+  "relaxin/insulin like family peptide receptor 3")
+ ("HIF-1a" "ONT:GENE-PROTEIN" :ID "NCIT:C52040" :NAME "HIF1A")
+ ("HK-2" "ONT:GENE-PROTEIN" :ID "HGNC:4923" :NAME "hexokinase 2")
+ ("HK2" "ONT:GENE-PROTEIN" :ID "HGNC:4923" :NAME "hexokinase 2")
+ ("HLA" "ONT:GENE-PROTEIN" :ID "NCIT:C20705" :NAME "MHC class-II protein")
+ ("HOXD3" "ONT:GENE-PROTEIN" :ID "HGNC:5137" :NAME "homeobox D3")
+ ("HPR" "ONT:GENE-PROTEIN" :ID "HGNC:5156" :NAME "haptoglobin-related protein")
+ ("HPSE" "ONT:GENE-PROTEIN" :ID "HGNC:5164" :NAME "heparanase")
+ ("HSF" "ONT:GENE-PROTEIN" :ID "UP:P22813" :NAME "Heat shock factor protein")
+ ("HSL" "ONT:GENE-PROTEIN" :ID "UP:Q05469" :NAME "Hormone-sensitive lipase")
+ ("Homer1" "ONT:GENE-PROTEIN" :ID "UP:Q2KJ56" :NAME "Homer protein homolog 1")
+ ("Hur" "ONT:GENE-PROTEIN" :ID "NCIT:C107476" :NAME "ELAVL1")
+ ("IDH1" "ONT:GENE-PROTEIN" :ID "HGNC:5382" :NAME
+  "isocitrate dehydrogenase (NADP(+)) 1, cytosolic")
+ ("IDH2" "ONT:GENE-PROTEIN" :ID "HGNC:5383" :NAME
+  "isocitrate dehydrogenase (NADP(+)) 2, mitochondrial")
+ ("IDO" "ONT:GENE-PROTEIN" :ID "UP:P47125" :NAME "Indoleamine 2,3-dioxygenase")
+ ("IKBKE" "ONT:GENE-PROTEIN" :ID "HGNC:14552" :NAME
+  "inhibitor of kappa light polypeptide gene enhancer in B-cells, kinase epsilon")
+ ("IL-27R" "ONT:GENE-PROTEIN" :ID "GO:0045509" :NAME
+  "interleukin-27 receptor activity")
+ ("IL1R1" "ONT:GENE-PROTEIN" :ID "HGNC:5993" :NAME
+  "interleukin 1 receptor type 1")
+ ("IL1beta" "ONT:GENE-PROTEIN" :ID "NCIT:C20522" :NAME "interleukin-1-beta")
+ ("IL7R" "ONT:GENE-PROTEIN" :ID "HGNC:6024" :NAME "interleukin 7 receptor")
+ ("IMP3" "ONT:GENE-PROTEIN" :ID "HGNC:14497" :NAME
+  "IMP3, U3 small nucleolar ribonucleoprotein")
+ ("IRAK4" "ONT:GENE-PROTEIN" :ID "HGNC:17967" :NAME
+  "interleukin 1 receptor associated kinase 4")
+ ("IRF-3" "ONT:GENE-PROTEIN" :ID "UP:Q4JF28" :NAME
+  "Interferon regulatory factor 3")
+ ("IRF1" "ONT:GENE-PROTEIN" :ID "NCIT:C52129" :NAME "IRF1")
+ ("IRF2" "ONT:GENE-PROTEIN" :ID "NCIT:C52130" :NAME "IRF2")
+ ("IRF3" "ONT:GENE-PROTEIN" :ID "HGNC:6118" :NAME
+  "interferon regulatory factor 3")
+ ("IRF4" "ONT:GENE-PROTEIN" :ID "HGNC:6119" :NAME
+  "interferon regulatory factor 4")
+ ("IRF6" "ONT:GENE-PROTEIN" :ID "HGNC:6121" :NAME
+  "interferon regulatory factor 6")
+ ("IRF7" "ONT:GENE-PROTEIN" :ID "HGNC:6122" :NAME
+  "interferon regulatory factor 7")
+ ("IVD" "ONT:GENE-PROTEIN" :ID "HGNC:6186" :NAME
+  "isovaleryl-CoA dehydrogenase")
+ ("Klotho" "ONT:GENE-PROTEIN" :ID "HGNC:6344" :NAME "klotho")
+ ("LC-3" "ONT:GENE-PROTEIN" :ID "NCIT:C104677" :NAME
+  "microtubule-associated proteins 1A-1B light chain 3")
+ ("LDH" "ONT:GENE-PROTEIN" :ID "FA:02022" :NAME "LDH family")
+ ("LEF1" "ONT:GENE-PROTEIN" :ID "HGNC:6551" :NAME
+  "lymphoid enhancer binding factor 1")
+ ("LMP" "ONT:GENE-PROTEIN" :ID "XFAM:PF04778.10" :NAME "LMP")
+ ("LPCAT1" "ONT:GENE-PROTEIN" :ID "HGNC:25718" :NAME
+  "lysophosphatidylcholine acyltransferase 1")
+ ("LRP1" "ONT:GENE-PROTEIN" :ID "HGNC:6692" :NAME
+  "LDL receptor related protein 1")
+ ("LRP5" "ONT:GENE-PROTEIN" :ID "HGNC:6697" :NAME
+  "LDL receptor related protein 5")
+ ("LRP6" "ONT:GENE-PROTEIN" :ID "HGNC:6698" :NAME
+  "LDL receptor related protein 6")
+ ("MAFG" "ONT:GENE-PROTEIN" :ID "HGNC:6781" :NAME
+  "MAF bZIP transcription factor G")
+ ("MC1R" "ONT:GENE-PROTEIN" :ID "HGNC:6929" :NAME "melanocortin 1 receptor")
+ ("MCC" "ONT:GENE-PROTEIN" :ID "HGNC:6935" :NAME
+  "mutated in colorectal cancers")
+ ("MCP1" "ONT:GENE-PROTEIN" :ID "NCIT:C49745" :NAME "CCL2")
+ ("MCT1" "ONT:GENE-PROTEIN" :ID "UP:Q9ULC4" :NAME
+  "Malignant T-cell-amplified sequence 1")
+ ("MED27" "ONT:GENE-PROTEIN" :ID "HGNC:2377" :NAME
+  "mediator complex subunit 27")
+ ("MEIS1" "ONT:GENE-PROTEIN" :ID "HGNC:7000" :NAME "Meis homeobox 1")
+ ("MELK" "ONT:GENE-PROTEIN" :ID "HGNC:16870" :NAME
+  "maternal embryonic leucine zipper kinase")
+ ("MEN1" "ONT:GENE-PROTEIN" :ID "HGNC:7010" :NAME "menin 1")
+ ("MGL" "ONT:GENE-PROTEIN" :ID "UP:O35678" :NAME
+  "Monoglyceride lipase {ECO:0000312MGI:MGI:1346042}")
+ ("MGMT" "ONT:GENE-PROTEIN" :ID "HGNC:7059" :NAME
+  "O-6-methylguanine-DNA methyltransferase")
+ ("MK" "ONT:GENE-PROTEIN" :ID "UP:Q03426" :NAME "Mevalonate kinase")
+ ("MKP-2" "ONT:GENE-PROTEIN" :ID "NCIT:C112129" :NAME
+  "dual specificity protein phosphatase 4")
+ ("MKP1" "ONT:GENE-PROTEIN" :ID "NCIT:C29568" :NAME
+  "dual specificity phosphatase-1")
+ ("MLC-2" "ONT:GENE-PROTEIN" :ID "UP:O14950" :NAME
+  "Myosin regulatory light chain 12B")
+ ("MLC2" "ONT:GENE-PROTEIN" :ID "HGNC:15754" :NAME "myosin light chain 9")
+ ("MLL" "ONT:GENE-PROTEIN" :ID "NCIT:C53066" :NAME "MLL")
+ ("MPC" "ONT:GENE-PROTEIN" :ID "UP:Q53034" :NAME "Metapyrocatechase")
+ ("MRFs" "ONT:GENE-PROTEIN" :ID "FA:02356" :NAME "MRF family")
+ ("MRP3" "ONT:GENE-PROTEIN" :ID "NCIT:C106022" :NAME "ABCC3")
+ ("MRS" "ONT:GENE-PROTEIN" :ID "UP:Q1RNF8" :NAME
+  "Sterile alpha motif domain-containing protein 11")
+ ("MSC" "ONT:GENE-PROTEIN" :ID "HGNC:7321" :NAME "musculin")
+ ("MSH6" "ONT:GENE-PROTEIN" :ID "HGNC:7329" :NAME "mutS homolog 6")
+ ("MTDH" "ONT:GENE-PROTEIN" :ID "HGNC:29608" :NAME "metadherin")
+ ("Mas" "ONT:GENE-PROTEIN" :ID "FA:01426" :NAME "mas subfamily")
+ ("Mbp" "ONT:GENE-PROTEIN" :ID "HGNC:6925" :NAME "myelin basic protein")
+ ("Meis1" "ONT:GENE-PROTEIN" :ID "HGNC:7000" :NAME "Meis homeobox 1")
+ ("Mki67" "ONT:GENE-PROTEIN" :ID "HGNC:7107" :NAME
+  "marker of proliferation Ki-67")
+ ("Mnk2" "ONT:GENE-PROTEIN" :ID "NCIT:C91866" :NAME
+  "MAP kinase-interacting serine-threonine-protein kinase 2")
+ ("Mtb" "ONT:GENE-PROTEIN" :ID "UP:P27087" :NAME "Metallothionein B")
+ ("NFH" "ONT:GENE-PROTEIN" :ID "UP:P12036" :NAME
+  "Neurofilament heavy polypeptide")
+ ("NHE" "ONT:GENE-PROTEIN" :ID "UP:P81242" :NAME
+  "Non-hemolytic enterotoxin 105 kDa component")
+ ("NK3R" "ONT:GENE-PROTEIN" :ID "NCIT:C30057" :NAME "tachykinin receptor-3")
+ ("NKB" "ONT:GENE-PROTEIN" :ID "UP:P67935" :NAME "Neurokinin-B")
+ ("NOS" "ONT:GENE-PROTEIN" :ID "UP:O61608" :NAME "Nitric oxide synthase")
+ ("Nup153" "ONT:GENE-PROTEIN" :ID "HGNC:8062" :NAME "nucleoporin 153")
+ ("OCT4" "ONT:GENE-PROTEIN" :ID "NCIT:C61141" :NAME "POU5F1")
+ ("OGT" "ONT:GENE-PROTEIN" :ID "HGNC:8127" :NAME
+  "O-linked N-acetylglucosamine (GlcNAc) transferase")
+ ("ObR" "ONT:GENE-PROTEIN" :ID "NCIT:C51373" :NAME "LEPR")
+ ("Ocstamp" "ONT:GENE-PROTEIN" :ID "HGNC:16116" :NAME
+  "osteoclast stimulatory transmembrane protein")
+ ("Oct6" "ONT:GENE-PROTEIN" :ID "UP:Q03052" :NAME
+  "POU domain, class 3, transcription factor 1")
+ ("Orai1" "ONT:GENE-PROTEIN" :ID "HGNC:25896" :NAME
+  "ORAI calcium release-activated calcium modulator 1")
+ ("Oxt" "ONT:GENE-PROTEIN" :ID "HGNC:8528" :NAME
+  "oxytocin/neurophysin I prepropeptide")
+ ("P450c17" "ONT:GENE-PROTEIN" :ID "NCIT:C52321" :NAME "CYP17A1")
+ ("PAM" "ONT:GENE-PROTEIN" :ID "HGNC:8596" :NAME
+  "peptidylglycine alpha-amidating monooxygenase")
+ ("PAP-2" "ONT:GENE-PROTEIN" :ID "XFAM:PF01569.19" :NAME "PAP2")
+ ("PARG" "ONT:GENE-PROTEIN" :ID "HGNC:8605" :NAME
+  "poly(ADP-ribose) glycohydrolase")
+ ("PDCD5" "ONT:GENE-PROTEIN" :ID "HGNC:8764" :NAME "programmed cell death 5")
+ ("PEDF" "ONT:GENE-PROTEIN" :ID "UP:Q95121" :NAME
+  "Pigment epithelium-derived factor")
+ ("PGC" "ONT:GENE-PROTEIN" :ID "HGNC:8890" :NAME "progastricsin")
+ ("PGC-1alpha" "ONT:GENE-PROTEIN" :ID "UP:Q865B7" :NAME
+  "Peroxisome proliferator-activated receptor gamma coactivator 1-alpha")
+ ("PGC1alpha" "ONT:GENE-PROTEIN" :ID "UP:Q865B7" :NAME
+  "Peroxisome proliferator-activated receptor gamma coactivator 1-alpha")
+ ("PKCbeta" "ONT:GENE-PROTEIN" :ID "UP:P05771" :NAME
+  "Protein kinase C beta type")
+ ("PLA2" "ONT:GENE-PROTEIN" :ID "UP:Q9TWL9" :NAME "Conodipine-M alpha chain")
+ ("PML" "ONT:GENE-PROTEIN" :ID "HGNC:9113" :NAME "promyelocytic leukemia")
+ ("PN" "ONT:GENE-PROTEIN" :ID "UP:Q15063" :NAME "Periostin")
+ ("PODXL" "ONT:GENE-PROTEIN" :ID "HGNC:9171" :NAME "podocalyxin like")
+ ("PP13" "ONT:GENE-PROTEIN" :ID "NCIT:C101557" :NAME
+  "galactoside-binding soluble lectin 13")
+ ("PP2Calpha" "ONT:GENE-PROTEIN" :ID "HGNC:9275" :NAME
+  "protein phosphatase, Mg2+/Mn2+ dependent 1A")
+ ("PR1" "ONT:GENE-PROTEIN" :ID "UP:P33154" :NAME
+  "Pathogenesis-related protein 1")
+ ("PRF" "ONT:GENE-PROTEIN" :ID "XFAM:PF06875.9" :NAME "PRF")
+ ("PRLR" "ONT:GENE-PROTEIN" :ID "HGNC:9446" :NAME "prolactin receptor")
+ ("PRLRs" "ONT:GENE-PROTEIN" :ID "HGNC:9446" :NAME "prolactin receptor")
+ ("PRR" "ONT:GENE-PROTEIN" :ID "UP:P07052" :NAME
+  "Pathogenesis-related protein R minor form")
+ ("PSK" "ONT:GENE-PROTEIN" :ID "XFAM:PF06404.10" :NAME "PSK")
+ ("PTH" "ONT:GENE-PROTEIN" :ID "HGNC:9606" :NAME "parathyroid hormone")
+ ("PTHrP" "ONT:GENE-PROTEIN" :ID "UP:P12272" :NAME
+  "Parathyroid hormone-related protein")
+ ("PTPRR" "ONT:GENE-PROTEIN" :ID "HGNC:9680" :NAME
+  "protein tyrosine phosphatase, receptor type R")
+ ("PTPRT" "ONT:GENE-PROTEIN" :ID "HGNC:9682" :NAME
+  "protein tyrosine phosphatase, receptor type T")
+ ("Pax2" "ONT:GENE-PROTEIN" :ID "HGNC:8616" :NAME "paired box 2")
+ ("Pax5" "ONT:GENE-PROTEIN" :ID "HGNC:8619" :NAME "paired box 5")
+ ("Pdx1" "ONT:GENE-PROTEIN" :ID "HGNC:6107" :NAME
+  "pancreatic and duodenal homeobox 1")
+ ("Per1" "ONT:GENE-PROTEIN" :ID "HGNC:8845" :NAME "period circadian clock 1")
+ ("Pgp" "ONT:GENE-PROTEIN" :ID "HGNC:8909" :NAME
+  "phosphoglycolate phosphatase")
+ ("PhIP" "ONT:GENE-PROTEIN" :ID "HGNC:15673" :NAME
+  "pleckstrin homology domain interacting protein")
+ ("Psip1" "ONT:GENE-PROTEIN" :ID "HGNC:9527" :NAME
+  "PC4 and SFRS1 interacting protein 1")
+ ("Ptc" "ONT:GENE-PROTEIN" :ID "UP:Q13635" :NAME "Protein patched homolog 1")
+ ("R-spondin" "ONT:GENE-PROTEIN" :ID "FA:03208" :NAME "R-spondin family")
+ ("RAD51" "ONT:GENE-PROTEIN" :ID "HGNC:9817" :NAME "RAD51 recombinase")
+ ("RANBP2" "ONT:GENE-PROTEIN" :ID "HGNC:9848" :NAME "RAN binding protein 2")
+ ("RB3" "ONT:GENE-PROTEIN" :ID "HGNC:16078" :NAME "stathmin 4")
+ ("RIP1" "ONT:GENE-PROTEIN" :ID "NCIT:C17923" :NAME
+  "receptor-interacting serine-threonine kinase-1")
+ ("RIP3" "ONT:GENE-PROTEIN" :ID "NCIT:C29873" :NAME
+  "receptor-interacting serine-threonine protein kinase-3")
+ ("RIPK1" "ONT:GENE-PROTEIN" :ID "HGNC:10019" :NAME
+  "receptor interacting serine/threonine kinase 1")
+ ("RIPK3" "ONT:GENE-PROTEIN" :ID "HGNC:10021" :NAME
+  "receptor interacting serine/threonine kinase 3")
+ ("RPE" "ONT:GENE-PROTEIN" :ID "HGNC:10293" :NAME
+  "ribulose-5-phosphate-3-epimerase")
+ ("IgG1" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0071735" :NAME
+  "IgG immunoglobulin complex")
+ ("PTPC" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0005757" :NAME
+  "mitochondrial permeability transition pore complex")
+ ("HVR" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "ORPHANET:71291" :NAME
+  "Hereditary vascular retinopathy")
+ ("MadA" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "NCIT:C123417" :NAME
+  "mandibuloacral dysplasia with type A lipodystrophy")
+ ("Mnk" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "ORPHANET:565" :NAME
+  "Menkes disease")
+ ("NEM" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "ORPHANET:607" :NAME
+  "Nemaline myopathy")
+ ("PAT" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "NCIT:C34900" :NAME
+  "paroxysmal atrial tachycardia")
+ ("PCC" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "EFO:0000239" :NAME
+  "adrenal gland pheochromocytoma")
+ ("Pres" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "NCIT:C78598" :NAME
+  "reversible posterior leukoencephalopathy syndrome")
+ ("PGI" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF00342.17" :NAME "PGI")
+ ("N19" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Asparagine")
+ ("HHE" "ONT:MOLECULE" :ID "CHEBI:33690" :NAME "hydridohelium(2+)")
+ ("KH" "ONT:MOLECULE" :ID "CHEBI:32589" :NAME "potassium hydride")
+ ("LNT" "ONT:MOLECULE" :ID "CHEBI:30248" :NAME
+  "beta-D-Gal-(1->3)-beta-D-GlcNAc-(1->3)-beta-D-Gal-(1->4)-D-Glc")
+ ("MPLA" "ONT:MOLECULE" :ID "CHEBI:77066" :NAME "MPLA")
+ ("OCL" "ONT:MOLECULE" :ID "CHEBI:29879" :NAME "chlorooxy group")
+ ("PFO" "ONT:MOLECULE" :ID "CHEBI:53347" :NAME
+  "poly(9,9'-dioctylfluorene) macromolecule")
+ ("PLLA" "ONT:MOLECULE" :ID "CHEBI:53408" :NAME "poly[(S)-lactic acid]")
+ ("QD" "ONT:MOLECULE" :ID "CHEBI:50853" :NAME "quantum dot")
+ ("I3C" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("P2X" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("P2Y" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("NIH" "ONT:NONHUMAN-ANIMAL" :ID "NCIT:C14476" :NAME "NIH mouse")
+ ("HKI-272" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C49094" :NAME "KI-272")
+ ("ICI182780" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C070081" :NAME
+  "fulvestrant")
+ ("III-10" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C574798" :NAME "III-10")
+ ("INK-128" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C572449" :NAME "INK128")
+ ("INT-777" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C545501" :NAME
+  "6alpha-ethyl-23(S)-methylcholic acid")
+ ("IPI-926" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C541444" :NAME "IPI-926")
+ ("Icaritin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C499403" :NAME "icaritin")
+ ("Iressa" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1855" :NAME "gefitinib")
+ ("JNJ-61186372" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C124993" :NAME
+  "anti-EGFR c-met bispecific antibody JNJ-61186372")
+ ("JWH-015" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C402944" :NAME "JHW 015")
+ ("JZL184" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C534333" :NAME "JZL 184")
+ ("KT5720" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C057416" :NAME "KT 5720")
+ ("LAQ824" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C477361" :NAME "LAQ824")
+ ("LBH589" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C66948" :NAME "LBH589")
+ ("LDN193189" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C554430" :NAME
+  "LDN 193189")
+ ("LFG-500" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C000598105" :NAME
+  "LFG-500")
+ ("LG268" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C423914" :NAME "LG 268")
+ ("LY2109761" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C530108" :NAME
+  "LY2109761")
+ ("LY2157299" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C557799" :NAME
+  "LY-2157299")
+ ("Levofloxacin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1586" :NAME
+  "levofloxacin")
+ ("Linagliptin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C83887" :NAME
+  "linagliptin")
+ ("MBC" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1154" :NAME "carbendazim")
+ ("MCE" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C91039" :NAME "metergoline")
+ ("MG-132" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:75142" :NAME
+  "N-benzyloxycarbonyl-L-leucyl-L-leucyl-L-leucinal")
+ ("MK0626" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C570834" :NAME "MK0626")
+ ("MLN-8054" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C518940" :NAME "MLN8054")
+ ("MLN4924" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C77906" :NAME
+  "NAE inhibitor MLN4924")
+ ("MM-121" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C78859" :NAME
+  "anti-erbB3 receptor monoclonal antibody MM-121")
+ ("MSM" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C84616" :NAME
+  "dimethyl sulfone")
+ ("MTX" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C642" :NAME "methotrexate")
+ ("Methylsulfonylmethane" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C025910"
+  :NAME "dimethyl sulfone")
+ ("Moxifloxacin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C104727" :NAME
+  "moxifloxacin")
+ ("NPS2143" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C436740" :NAME
+  "N-(2-hydroxy-3-(2-cyano-3-chlorophenoxy)propyl)-1,1-dimethyl-2-(2-nephthyl)ethylamine")
+ ("NPS2390" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C569355" :NAME
+  "2-quinoxaline-carboxamide-N-adamantan-1-yl")
+ ("NaAsO2" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:29678" :NAME
+  "sodium arsenite")
+ ("ONC201" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C113792" :NAME
+  "akt ERK inhibitor ONC201")
+ ("PD-184352" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C2670" :NAME "CI-1040")
+ ("PD-98059" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1625" :NAME "PD-98059")
+ ("PD123319" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:61014" :NAME "PD123319")
+ ("PHA" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C88791" :NAME
+  "phytohemagglutinin")
+ ("PJ-34" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C434926" :NAME
+  "N-(oxo-5,6-dihydrophenanthridin-2-yl)-N,N-dimethylacetamide hydrochloride")
+ ("PJ34" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C434926" :NAME
+  "N-(oxo-5,6-dihydrophenanthridin-2-yl)-N,N-dimethylacetamide hydrochloride")
+ ("PPi" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C29723" :NAME
+  "proton pump inhibitor")
+ ("Paeonol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C013638" :NAME "paeonol")
+ ("Propranolol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C62073" :NAME
+  "propranolol")
+ ("Q-VD-OPh" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C468548" :NAME
+  "quinoline-val-asp(OMe)-CH2-OPH")
+ ("RAF265" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C559019" :NAME "RAF265")
+ ("RG7787" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C000597116" :NAME "RG7787")
+ ("RO31-8220" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1310" :NAME
+  "Ro 31-8220")
+ ("LSC" "ONT:PROCEDURE" :ID "NCIT:C122170" :NAME
+  "liquid scintillation counting")
+ ("HIF-2alpha" "ONT:PROTEIN" :ID "NCIT:C104306" :NAME
+  "endothelial PAS domain-containing protein 1")
+ ("HS15" "ONT:PROTEIN" :ID "UP:P19953" :NAME "30S ribosomal protein S24e")
+ ("HwHog1" "ONT:PROTEIN" :ID "UP:Q8NJT7" :NAME
+  "Mitogen-activated protein kinase HOG1")
+ ("IKKepsilon" "ONT:PROTEIN" :ID "UP:Q14164" :NAME
+  "Inhibitor of nuclear factor kappa-B kinase subunit epsilon")
+ ("IL-12p40" "ONT:PROTEIN" :ID "NCIT:C28509" :NAME "interleukin-12B")
+ ("IL-15Ralpha" "ONT:PROTEIN" :ID "UP:Q13261" :NAME
+  "Interleukin-15 receptor subunit alpha")
+ ("IL-6Ralpha" "ONT:PROTEIN" :ID "UP:P08887" :NAME
+  "Interleukin-6 receptor subunit alpha")
+ ("IPI" "ONT:PROTEIN" :ID "UP:P03718" :NAME "Internal protein I")
+ ("IgG4" "ONT:PROTEIN" :ID "NCIT:C78227" :NAME "IgG4")
+ ("LPCAT" "ONT:PROTEIN" :ID "UP:Q6P1A2" :NAME
+  "Lysophospholipid acyltransferase 5")
+ ("MCA" "ONT:PROTEIN" :ID "UP:P60254" :NAME "Maurocalcin")
+ ("MNF" "ONT:PROTEIN" :ID "UP:P85037" :NAME "Forkhead box protein K1")
+ ("MPK2" "ONT:PROTEIN" :ID "UP:P47812" :NAME
+  "Mitogen-activated protein kinase 14")
+ ("MSI" "ONT:PROTEIN" :ID "UP:Q3BK13" :NAME "Disintegrin lebein-2-alpha")
+ ("NF-kb" "ONT:PROTEIN" :ID "NCIT:C17380" :NAME "NF-kB")
+ ("NFkB" "ONT:PROTEIN" :ID "NCIT:C17380" :NAME "NF-kB")
+ ("OBL" "ONT:PROTEIN" :ID "UP:Q8T6Z0" :NAME "Obelin")
+ ("OMT" "ONT:PROTEIN" :ID "UP:P82455" :NAME "Orcomyotropin")
+ ("Oxytocin" "ONT:PROTEIN" :ID "UP:P69056" :NAME "Oxytocin")
+ ("PDGFRalpha" "ONT:PROTEIN" :ID "UP:P16234" :NAME
+  "Platelet-derived growth factor receptor alpha")
+ ("PG" "ONT:PROTEIN" :ID "UP:Q9LW07" :NAME
+  "Probable polygalacturonase At3g15720")
+ ("PGA" "ONT:PROTEIN" :ID "UP:P20041" :NAME "Polygalacturonase")
+ ("PV" "ONT:PROTEIN" :ID "UP:P56530" :NAME "Phosvitin")
+ ("RARalpha" "ONT:PROTEIN" :ID "UP:P10276" :NAME
+  "Retinoic acid receptor alpha")
+ ("RBPjkappa" "ONT:PROTEIN" :ID "UP:O02019" :NAME
+  "Suppressor of hairless homolog")
+ ("HIF" "ONT:PROTEIN-FAMILY" :ID "NCIT:C113839" :NAME
+  "hypoxia inducible factor family")
+ ("JAs" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF16135.3" :NAME "jas")
+ ("KRAB" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF01352.25" :NAME "KRAB")
+ ("Mu" "ONT:PROTEIN-FAMILY" :ID "FA:01672" :NAME "Mu family")
+ ("Nup" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF06516.9" :NAME "NUP")
+
+
+ ("MCPyV" "ONT:VIRUS" :ID "NCIT:C73535" :NAME "merkel cell polyomavirus")
+ ("RSV" "ONT:VIRUS" :ID "NCIT:C14267" :NAME "respiratory syncytial virus")
+ ("anergy" "ONT:BIOLOGICAL-PROCESS" :ID "NCIT:C17706" :NAME "anergy")
+ ("hypoplasia" "ONT:BIOLOGICAL-PROCESS" :ID "NCIT:C120893" :NAME "hypoplasia")
+ ("TAM" "ONT:CANCER" :ID "NCIT:C82339" :NAME "transient abnormal myelopoiesis")
+ ("Tcell" "ONT:CELL" :ID "BTO:0000782" :NAME "T-lymphocyte")
+ ("eosinophil" "ONT:CELL" :ID "BTO:0000399" :NAME "eosinophil")
+ ("interneurons" "ONT:CELL" :ID "CO:0000099" :NAME "interneuron")
+ ("SCC" "ONT:CELL-LINE" :ID "CVCL:1R13" :NAME "SCC-TC")
+ ("SHSY5Y" "ONT:CELL-LINE" :ID "CVCL:0019" :NAME "SH-SY5Y")
+ ("SKBR3" "ONT:CELL-LINE" :ID "EFO:0001236" :NAME "SKBR3")
+ ("SKOV-3" "ONT:CELL-LINE" :ID "CVCL:0532" :NAME "SK-OV-3")
+ ("SKOV3" "ONT:CELL-LINE" :ID "EFO:0002340" :NAME "SKOV3")
+ ("SLN" "ONT:CELL-LINE" :ID "CVCL:S948" :NAME "SLN")
+ ("SM" "ONT:CELL-LINE" :ID "CVCL:7004" :NAME "ACC-LC-171")
+ ("SPS" "ONT:CELL-LINE" :ID "CVCL:R927" :NAME "SPS")
+ ("SR" "ONT:CELL-LINE" :ID "CVCL:1711" :NAME "SR")
+ ("SU" "ONT:CELL-LINE" :ID "CVCL:W201" :NAME "SU")
+ ("TAC" "ONT:CELL-LINE" :ID "CVCL:D939" :NAME "MRC-iPS-26")
+ ("TE-13" "ONT:CELL-LINE" :ID "CVCL:4463" :NAME "TE-13")
+ ("TEM" "ONT:CELL-LINE" :ID "CVCL:E844" :NAME "TEM")
+ ("TS/A" "ONT:CELL-LINE" :ID "CVCL:F736" :NAME "TS/A")
+ ("TW-01" "ONT:CELL-LINE" :ID "CVCL:6008" :NAME "NPC-TW01")
+ ("Vp1" "ONT:CELL-LINE" :ID "CVCL:5623" :NAME "INER-51/VP-1")
+ ("WD" "ONT:CELL-LINE" :ID "CVCL:8435" :NAME "WD PaCa")
+ ("ZA" "ONT:CELL-LINE" :ID "CVCL:D596" :NAME "ZA")
+ ("ZEB2" "ONT:CELL-LINE" :ID "CVCL:6E09" :NAME "ZEB2")
+ ("ctb" "ONT:CELL-LINE" :ID "CVCL:9W61" :NAME "CTb")
+ ("SJ" "ONT:CELL-PART" :ID "UP:SL-0246" :NAME "Septate junction")
+ ("endomembrane" "ONT:CELL-PART" :ID "UP:SL-0147" :NAME "Endomembrane system")
+ ("inflammasome" "ONT:CELL-PART" :ID "UP:SL-0488" :NAME "Inflammasome")
+ ("kinetochore" "ONT:CELL-PART" :ID "UP:SL-0149" :NAME "Kinetochore")
+ ("kinetochores" "ONT:CELL-PART" :ID "UP:SL-0149" :NAME "Kinetochore")
+ ("SAH" "ONT:CHEMICAL" :ID "CHEBI:16680" :NAME "S-adenosyl-L-homocysteine")
+ ("SB-239063" "ONT:CHEMICAL" :ID "CHEBI:90681" :NAME "SB-239063")
+ ("SCFA" "ONT:CHEMICAL" :ID "CHEBI:26666" :NAME "short-chain fatty acid")
+ ("SCFAs" "ONT:CHEMICAL" :ID "CHEBI:26666" :NAME "short-chain fatty acid")
+ ("SFA" "ONT:CHEMICAL" :ID "CHEBI:26607" :NAME "saturated fatty acid")
+ ("SQ22536" "ONT:CHEMICAL" :ID "CHEBI:90232" :NAME
+  "9-(tetrahydrofuryl)adenine")
+ ("TAA" "ONT:CHEMICAL" :ID "NCIT:C44454" :NAME "thioacetamide")
+ ("TV" "ONT:CHEMICAL" :ID "CHEBI:75193" :NAME "tetrazolium violet")
+ ("Trolox" "ONT:CHEMICAL" :ID "CHEBI:82625" :NAME "Trolox")
+ ("VC" "ONT:CHEMICAL" :ID "CHEBI:28509" :NAME "chloroethene")
+ ("VLDL" "ONT:CHEMICAL" :ID "CHEBI:39027" :NAME "very-low-density lipoprotein")
+ ("VM" "ONT:CHEMICAL" :ID "CHEBI:75015" :NAME "Val-Met")
+ ("WL" "ONT:CHEMICAL" :ID "CHEBI:74871" :NAME "Trp-Leu")
+ ("alloxan" "ONT:CHEMICAL" :ID "CHEBI:76451" :NAME "alloxan")
+ ("antifolate" "ONT:CHEMICAL" :ID "CHEBI:73913" :NAME "antifolate")
+ ("azithromycin" "ONT:CHEMICAL" :ID "CHEBI:2955" :NAME "azithromycin")
+ ("betaine" "ONT:CHEMICAL" :ID "CHEBI:17750" :NAME "glycine betaine")
+ ("biliverdin" "ONT:CHEMICAL" :ID "CHEBI:17033" :NAME "biliverdin")
+ ("borneol" "ONT:CHEMICAL" :ID "CHEBI:28093" :NAME "borneol")
+ ("calcifediol" "ONT:CHEMICAL" :ID "CHEBI:17933" :NAME "calcidiol")
+ ("calcitriol" "ONT:CHEMICAL" :ID "CHEBI:17823" :NAME "calcitriol")
+ ("calycosin" "ONT:CHEMICAL" :ID "CHEBI:17793" :NAME "calycosin")
+ ("cannabinoid" "ONT:CHEMICAL" :ID "CHEBI:67194" :NAME "cannabinoid")
+ ("cantharidin" "ONT:CHEMICAL" :ID "CHEBI:64213" :NAME "cantharidin")
+ ("catecholamine" "ONT:CHEMICAL" :ID "CHEBI:33567" :NAME "catecholamine")
+ ("catecholamines" "ONT:CHEMICAL" :ID "CHEBI:33567" :NAME "catecholamine")
+ ("cephalin" "ONT:CHEMICAL" :ID "CHEBI:16038" :NAME "phosphatidylethanolamine")
+ ("corticosterone" "ONT:CHEMICAL" :ID "CHEBI:16827" :NAME "corticosterone")
+ ("diethyldithiocarbamate" "ONT:CHEMICAL" :ID "NCIT:C432" :NAME
+  "diethyldithiocarbamate")
+ ("ecdysterone" "ONT:CHEMICAL" :ID "CHEBI:16587" :NAME "20-hydroxyecdysone")
+ ("guanosine" "ONT:CHEMICAL" :ID "CHEBI:16750" :NAME "guanosine")
+ ("hesperidin" "ONT:CHEMICAL" :ID "CHEBI:28775" :NAME "hesperidin")
+ ("hydrosulfide" "ONT:CHEMICAL" :ID "CHEBI:29919" :NAME "hydrosulfide")
+ ("isoalantolactone" "ONT:CHEMICAL" :ID "CHEBI:5981" :NAME "isoalantolactone")
+ ("RegIV" "ONT:GENE" :ID "HGNC:22977" :NAME "regenerating family member 4")
+ ("RhoE" "ONT:GENE" :ID "HGNC:671" :NAME "Rho family GTPase 3")
+ ("Runx3" "ONT:GENE" :ID "HGNC:10473" :NAME
+  "runt related transcription factor 3")
+ ("S100A16" "ONT:GENE" :ID "HGNC:20441" :NAME
+  "S100 calcium binding protein A16")
+ ("S100beta" "ONT:GENE" :ID "NCIT:C98128" :NAME "S100B")
+ ("S1pr2" "ONT:GENE" :ID "HGNC:3169" :NAME
+  "sphingosine-1-phosphate receptor 2")
+ ("SCG10" "ONT:GENE" :ID "HGNC:10577" :NAME "stathmin 2")
+ ("SGLT1" "ONT:GENE" :ID "NCIT:C77166" :NAME "SLC5A1")
+ ("SGLT2" "ONT:GENE" :ID "NCIT:C119005" :NAME "SLC5A2")
+ ("SH3P2" "ONT:GENE" :ID "HGNC:8510" :NAME "osteoclast stimulating factor 1")
+ ("SIRT2" "ONT:GENE" :ID "HGNC:10886" :NAME "sirtuin 2")
+ ("SNL" "ONT:GENE" :ID "NCIT:C101606" :NAME "FSCN1")
+ ("SOX21" "ONT:GENE" :ID "HGNC:11197" :NAME "SRY-box 21")
+ ("ST7L" "ONT:GENE" :ID "HGNC:18441" :NAME
+  "suppression of tumorigenicity 7 like")
+ ("SWI" "ONT:GENE" :ID "HGNC:11097" :NAME
+  "SWI/SNF related, matrix associated, actin dependent regulator of chromatin, subfamily a, member 1")
+ ("SYP" "ONT:GENE" :ID "HGNC:11506" :NAME "synaptophysin")
+ ("Snf2" "ONT:GENE" :ID "HGNC:11098" :NAME
+  "SWI/SNF related, matrix associated, actin dependent regulator of chromatin, subfamily a, member 2")
+ ("Stab2" "ONT:GENE" :ID "HGNC:18629" :NAME "stabilin 2")
+ ("TAX1BP1" "ONT:GENE" :ID "HGNC:11575" :NAME "Tax1 binding protein 1")
+ ("TBL1" "ONT:GENE" :ID "HGNC:18502" :NAME "transducin beta like 1, Y-linked")
+ ("TBLR1" "ONT:GENE" :ID "NCIT:C80117" :NAME "TBL1XR1")
+ ("TBX3" "ONT:GENE" :ID "HGNC:11602" :NAME "T-box 3")
+ ("TET1" "ONT:GENE" :ID "HGNC:29484" :NAME "tet methylcytosine dioxygenase 1")
+ ("TGR5" "ONT:GENE" :ID "HGNC:19680" :NAME
+  "G protein-coupled bile acid receptor 1")
+ ("TNAP" "ONT:GENE" :ID "NCIT:C104231" :NAME "ALPL")
+ ("TRAF3" "ONT:GENE" :ID "HGNC:12033" :NAME "TNF receptor associated factor 3")
+ ("TRAF5" "ONT:GENE" :ID "HGNC:12035" :NAME "TNF receptor associated factor 5")
+ ("TRIM11" "ONT:GENE" :ID "HGNC:16281" :NAME "tripartite motif containing 11")
+ ("TTM" "ONT:GENE" :ID "NCIT:C90129" :NAME "SLITRK1")
+ ("TUBB4B" "ONT:GENE" :ID "HGNC:20771" :NAME "tubulin beta 4B class IVb")
+ ("Tmp21" "ONT:GENE" :ID "HGNC:16998" :NAME
+  "transmembrane p24 trafficking protein 10")
+ ("Trib1" "ONT:GENE" :ID "HGNC:16891" :NAME "tribbles pseudokinase 1")
+ ("USP39" "ONT:GENE" :ID "HGNC:20071" :NAME "ubiquitin specific peptidase 39")
+ ("USP45" "ONT:GENE" :ID "HGNC:20080" :NAME "ubiquitin specific peptidase 45")
+ ("USP46" "ONT:GENE" :ID "HGNC:20075" :NAME "ubiquitin specific peptidase 46")
+ ("WDR20" "ONT:GENE" :ID "HGNC:19667" :NAME "WD repeat domain 20")
+ ("WNK3" "ONT:GENE" :ID "HGNC:14543" :NAME
+  "WNK lysine deficient protein kinase 3")
+ ("ZRF1" "ONT:GENE" :ID "HGNC:13192" :NAME
+  "DnaJ heat shock protein family (Hsp40) member C2")
+ ("Zeb-1" "ONT:GENE" :ID "HGNC:11642" :NAME
+  "zinc finger E-box binding homeobox 1")
+ ("beta4" "ONT:GENE" :ID "NCIT:C104243" :NAME "TUBB3")
+ ("cJun" "ONT:GENE" :ID "HGNC:6204" :NAME
+  "Jun proto-oncogene, AP-1 transcription factor subunit")
+ ("cfos" "ONT:GENE" :ID "HGNC:3796" :NAME
+  "Fos proto-oncogene, AP-1 transcription factor subunit")
+ ("dys" "ONT:GENE" :ID "HGNC:5959" :NAME
+  "inhibitor of kappa light polypeptide gene enhancer in B-cells, kinase complex-associated protein")
+ ("Rad9" "ONT:GENE-PROTEIN" :ID "FA:03221" :NAME "RAD9 family")
+ ("RalA" "ONT:GENE-PROTEIN" :ID "HGNC:9839" :NAME "RAS like proto-oncogene A")
+ ("RhoGDI2" "ONT:GENE-PROTEIN" :ID "HGNC:679" :NAME
+  "Rho GDP dissociation inhibitor beta")
+ ("Rom" "ONT:GENE-PROTEIN" :ID "HGNC:10254" :NAME
+  "retinal outer segment membrane protein 1")
+ ("S100A11" "ONT:GENE-PROTEIN" :ID "HGNC:10488" :NAME
+  "S100 calcium binding protein A11")
+ ("S100A12" "ONT:GENE-PROTEIN" :ID "HGNC:10489" :NAME
+  "S100 calcium binding protein A12")
+ ("S100A8" "ONT:GENE-PROTEIN" :ID "HGNC:10498" :NAME
+  "S100 calcium binding protein A8")
+ ("S1P2" "ONT:GENE-PROTEIN" :ID "UP:Q9I8K8" :NAME
+  "Sphingosine 1-phosphate receptor 2")
+ ("SAP" "ONT:GENE-PROTEIN" :ID "UP:P02743" :NAME "Serum amyloid P-component")
+ ("SBF" "ONT:GENE-PROTEIN" :ID "XFAM:PF01758.14" :NAME "SBF")
+ ("SCIMP" "ONT:GENE-PROTEIN" :ID "HGNC:33504" :NAME
+  "SLP adaptor and CSK interacting membrane protein")
+ ("SKI" "ONT:GENE-PROTEIN" :ID "HGNC:10896" :NAME "SKI proto-oncogene")
+ ("SMARCE1" "ONT:GENE-PROTEIN" :ID "HGNC:11109" :NAME
+  "SWI/SNF related, matrix associated, actin dependent regulator of chromatin, subfamily e, member 1")
+ ("SMG" "ONT:GENE-PROTEIN" :ID "HGNC:23023" :NAME
+  "sterile alpha motif domain containing 4A")
+ ("SOD3" "ONT:GENE-PROTEIN" :ID "HGNC:11181" :NAME
+  "superoxide dismutase 3, extracellular")
+ ("SPATA2" "ONT:GENE-PROTEIN" :ID "HGNC:14681" :NAME
+  "spermatogenesis associated 2")
+ ("SPB" "ONT:GENE-PROTEIN" :ID "UP:P07988" :NAME
+  "Pulmonary surfactant-associated protein B")
+ ("SRSF2" "ONT:GENE-PROTEIN" :ID "HGNC:10783" :NAME
+  "serine and arginine rich splicing factor 2")
+ ("SUMO" "ONT:GENE-PROTEIN" :ID "UP:P55853" :NAME
+  "Small ubiquitin-related modifier")
+ ("SerpinB2" "ONT:GENE-PROTEIN" :ID "HGNC:8584" :NAME
+  "serpin family B member 2")
+ ("Sfrp1" "ONT:GENE-PROTEIN" :ID "HGNC:10776" :NAME
+  "secreted frizzled related protein 1")
+ ("Shh" "ONT:GENE-PROTEIN" :ID "HGNC:10848" :NAME "sonic hedgehog")
+ ("Siah1" "ONT:GENE-PROTEIN" :ID "HGNC:10857" :NAME
+  "siah E3 ubiquitin protein ligase 1")
+ ("Smo" "ONT:GENE-PROTEIN" :ID "HGNC:11119" :NAME
+  "smoothened, frizzled class receptor")
+ ("Sox-2" "ONT:GENE-PROTEIN" :ID "HGNC:11195" :NAME "SRY-box 2")
+ ("Spt20" "ONT:GENE-PROTEIN" :ID "FA:05167" :NAME "SPT20 family")
+ ("TBN" "ONT:GENE-PROTEIN" :ID "NCIT:C30070" :NAME
+  "taube nuss homologue protein")
+ ("TBP" "ONT:GENE-PROTEIN" :ID "HGNC:11588" :NAME "TATA-box binding protein")
+ ("TFF1" "ONT:GENE-PROTEIN" :ID "HGNC:11755" :NAME "trefoil factor 1")
+ ("TGF-beta2" "ONT:GENE-PROTEIN" :ID "UP:P61812" :NAME
+  "Transforming growth factor beta-2")
+ ("TGF-beta3" "ONT:GENE-PROTEIN" :ID "UP:P16047" :NAME
+  "Transforming growth factor beta-3")
+ ("TGFbeta2" "ONT:GENE-PROTEIN" :ID "UP:P61812" :NAME
+  "Transforming growth factor beta-2")
+ ("THP" "ONT:GENE-PROTEIN" :ID "NCIT:C52924" :NAME "GLI2")
+ ("TNFR2" "ONT:GENE-PROTEIN" :ID "NCIT:C51381" :NAME "TNFRSF1B")
+ ("TOLLIP" "ONT:GENE-PROTEIN" :ID "HGNC:16476" :NAME
+  "toll interacting protein")
+ ("TRIB2" "ONT:GENE-PROTEIN" :ID "HGNC:30809" :NAME "tribbles pseudokinase 2")
+ ("TRIM16" "ONT:GENE-PROTEIN" :ID "HGNC:17241" :NAME
+  "tripartite motif containing 16")
+ ("TRPM2" "ONT:GENE-PROTEIN" :ID "HGNC:12339" :NAME
+  "transient receptor potential cation channel subfamily M member 2")
+ ("TRPM7" "ONT:GENE-PROTEIN" :ID "HGNC:17994" :NAME
+  "transient receptor potential cation channel subfamily M member 7")
+ ("TRPV4" "ONT:GENE-PROTEIN" :ID "HGNC:18083" :NAME
+  "transient receptor potential cation channel subfamily V member 4")
+ ("TSG" "ONT:GENE-PROTEIN" :ID "XFAM:PF04668.10" :NAME "tsg")
+ ("TSP1" "ONT:GENE-PROTEIN" :ID "NCIT:C17547" :NAME "thrombospondin-1")
+ ("TSP2" "ONT:GENE-PROTEIN" :ID "NCIT:C18038" :NAME "thrombospondin-2")
+ ("TYMS" "ONT:GENE-PROTEIN" :ID "HGNC:12441" :NAME "thymidylate synthetase")
+ ("TdT" "ONT:GENE-PROTEIN" :ID "NCIT:C16509" :NAME
+  "terminal deoxyribonucleotidyl transferase")
+ ("Thioredoxin" "ONT:GENE-PROTEIN" :ID "HGNC:12435" :NAME "thioredoxin")
+ ("Trib2" "ONT:GENE-PROTEIN" :ID "HGNC:30809" :NAME "tribbles pseudokinase 2")
+ ("TrkC" "ONT:GENE-PROTEIN" :ID "NCIT:C33984" :NAME
+  "neurotrophic tyrosine kinase receptor type-3")
+ ("Twist1" "ONT:GENE-PROTEIN" :ID "HGNC:12428" :NAME
+  "twist family bHLH transcription factor 1")
+ ("U2AF65" "ONT:GENE-PROTEIN" :ID "HGNC:23156" :NAME
+  "U2 small nuclear RNA auxiliary factor 2")
+ ("UII" "ONT:GENE-PROTEIN" :ID "HGNC:12636" :NAME "urotensin 2")
+ ("VDR" "ONT:GENE-PROTEIN" :ID "HGNC:12679" :NAME
+  "vitamin D (1,25- dihydroxyvitamin D3) receptor")
+ ("VMP1" "ONT:GENE-PROTEIN" :ID "HGNC:29559" :NAME
+  "vacuole membrane protein 1")
+ ("Vegfa" "ONT:GENE-PROTEIN" :ID "HGNC:12680" :NAME
+  "vascular endothelial growth factor A")
+ ("WASP" "ONT:GENE-PROTEIN" :ID "UP:P42768" :NAME
+  "Wiskott-Aldrich syndrome protein")
+ ("Wnt5b" "ONT:GENE-PROTEIN" :ID "HGNC:16265" :NAME "Wnt family member 5B")
+ ("XAF1" "ONT:GENE-PROTEIN" :ID "HGNC:30932" :NAME "XIAP associated factor 1")
+ ("adiponectin" "ONT:GENE-PROTEIN" :ID "UP:Q3Y5Z3" :NAME "Adiponectin")
+ ("apo" "ONT:GENE-PROTEIN" :ID "UP:Q8N6M6" :NAME "Aminopeptidase O")
+ ("betacellulin" "ONT:GENE-PROTEIN" :ID "NCIT:C20432" :NAME "betacellulin")
+ ("biglycan" "ONT:GENE-PROTEIN" :ID "HGNC:1044" :NAME "biglycan")
+ ("cFLIP" "ONT:GENE-PROTEIN" :ID "NCIT:C96018" :NAME
+  "CASP8 and FADD-like apoptosis regulator")
+ ("cIAP1" "ONT:GENE-PROTEIN" :ID "NCIT:C20931" :NAME
+  "baculoviral IAP repeat-containing protein-2")
+ ("cis" "ONT:GENE-PROTEIN" :ID "UP:Q2HJ53" :NAME
+  "Cytokine-inducible SH2-containing protein")
+ ("cyclin D3" "ONT:GENE-PROTEIN" :ID "HGNC:1585" :NAME "cyclin D3")
+ ("cyp11a1" "ONT:GENE-PROTEIN" :ID "HGNC:2590" :NAME
+  "cytochrome P450 family 11 subfamily A member 1")
+ ("eIF2B" "ONT:GENE-PROTEIN" :ID "NCIT:C18162" :NAME "eIF2B")
+ ("eIF4G" "ONT:GENE-PROTEIN" :ID "UP:Q76E23" :NAME
+  "Eukaryotic translation initiation factor 4G")
+ ("elastin" "ONT:GENE-PROTEIN" :ID "HGNC:3327" :NAME "elastin")
+ ("epimorphin" "ONT:GENE-PROTEIN" :ID "NCIT:C116090" :NAME "syntaxin-2")
+ ("follistatin" "ONT:GENE-PROTEIN" :ID "HGNC:3971" :NAME "follistatin")
+ ("fractalkine" "ONT:GENE-PROTEIN" :ID "UP:P78423" :NAME "Fractalkine")
+ ("galanin" "ONT:GENE-PROTEIN" :ID "UP:P47215" :NAME "Galanin")
+ ("hBD3" "ONT:GENE-PROTEIN" :ID "NCIT:C91757" :NAME "beta-defensin 103")
+ ("hnRNPA1" "ONT:GENE-PROTEIN" :ID "HGNC:5031" :NAME
+  "heterogeneous nuclear ribonucleoprotein A1")
+ ("interleukin-3" "ONT:GENE-PROTEIN" :ID "UP:P08700" :NAME "Interleukin-3")
+ ("Ripoptosome" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0097342" :NAME
+  "ripoptosome")
+ ("apoptosome" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0043293" :NAME
+  "apoptosome")
+ ("SMA" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "ORPHANET:70" :NAME
+  "Proximal spinal muscular atrophy")
+ ("hyperthermia" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "HP:0001945" :NAME
+  "fever")
+ ("SAB" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF04382.11" :NAME "SAB")
+ ("TIMP" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF00965.15" :NAME "TIMP")
+ ("bromodomain" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF00439.23" :NAME
+  "bromodomain")
+ ("S70" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Serine")
+ ("U1026" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Selenocysteine")
+ ("U73122" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Selenocysteine")
+ ("U937" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Selenocysteine")
+ ("V12" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Valine")
+ ("Y15" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Tyrosine")
+ ("Ruthenium" "ONT:MOLECULE" :ID "CHEBI:30682" :NAME "ruthenium atom")
+ ("SEL" "ONT:MOLECULE" :ID "CHEBI:24866" :NAME "salt")
+ ("Terpinen-4-ol" "ONT:MOLECULE" :ID "CHEBI:132655" :NAME "Terpinen-4-ol")
+ ("Vn" "ONT:MOLECULE" :ID "CHEBI:35170" :NAME "vanadium(0)")
+ ("anion" "ONT:MOLECULE" :ID "CHEBI:22563" :NAME "anion")
+ ("apocynin" "ONT:MOLECULE" :ID "CHEBI:2781" :NAME "apocynin")
+ ("azide" "ONT:MOLECULE" :ID "CHEBI:22680" :NAME "azide")
+ ("catechin" "ONT:MOLECULE" :ID "CHEBI:23053" :NAME "catechin")
+ ("ceramide" "ONT:MOLECULE" :ID "CHEBI:17761" :NAME "ceramide")
+ ("choline" "ONT:MOLECULE" :ID "CHEBI:15354" :NAME "choline")
+ ("cnidilide" "ONT:MOLECULE" :ID "CHEBI:80808" :NAME "Cnidilide")
+ ("cyclodextrin" "ONT:MOLECULE" :ID "CHEBI:23456" :NAME "cyclodextrin")
+ ("desferrioxamine" "ONT:MOLECULE" :ID "CHEBI:50453" :NAME "desferrioxamine")
+ ("diamide" "ONT:MOLECULE" :ID "CHEBI:48958" :NAME
+  "1,1'-azobis(N,N-dimethylformamide)")
+ ("diphosphate" "ONT:MOLECULE" :ID "CHEBI:18361" :NAME "diphosphate(4-)")
+ ("disulphide" "ONT:MOLECULE" :ID "CHEBI:48343" :NAME "disulfide")
+ ("eicosanoids" "ONT:MOLECULE" :ID "CHEBI:23899" :NAME "icosanoid")
+ ("hydrochloride" "ONT:MOLECULE" :ID "CHEBI:36807" :NAME "hydrochloride")
+ ("hydroxyl" "ONT:MOLECULE" :ID "CHEBI:29191" :NAME "hydroxyl")
+ ("iodonium" "ONT:MOLECULE" :ID "CHEBI:50317" :NAME "iodonium")
+ ("ketone" "ONT:MOLECULE" :ID "CHEBI:17087" :NAME "ketone")
+ ("S13A" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("S7A" "ONT:MUTATION" :ID NIL :NAME NIL)
+ ("Yorkie" "ONT:ORGANISM" :ID "NCIT:C53946" :NAME "yorkshire terrier")
+ ("RasV12" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C48409" :NAME
+  "monoclonal antibody RAV12")
+ ("Ro31-8220" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1310" :NAME
+  "Ro 31-8220")
+ ("Romidepsin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C087123" :NAME
+  "romidepsin")
+ ("SAR260301" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C116882" :NAME
+  "PI3K-beta inhibitor SAR260301")
+ ("SB216763" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C417521" :NAME
+  "SB 216763")
+ ("SB415286" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C417520" :NAME
+  "3-(3-chloro-4-hydroxyphenylamino)-4-(4-nitrophenyl)-1H-pyrrole-2,5-dione")
+ ("SBI" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C116883" :NAME
+  "serum-derived bovine immunoglobulin protein isolate")
+ ("SCH772984" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C587178" :NAME
+  "SCH772984")
+ ("SF1126" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C85469" :NAME
+  "pan-PI3K mTOR inhibitor SF1126")
+ ("SKF-96365" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C063159" :NAME
+  "1-(2-(3-(4-methoxyphenyl)propoxy)-4-methoxyphenylethyl)-1H-imidazole")
+ ("SL327" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:92211" :NAME "SL-327")
+ ("SR144528" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C110630" :NAME
+  "SR 144528")
+ ("SerpinB5" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C085344" :NAME
+  "SERPIN-B5")
+ ("Shikonin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C016101" :NAME "shikonin")
+ ("TIC10" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C113792" :NAME
+  "akt ERK inhibitor ONC201")
+ ("TMPyP4" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C021096" :NAME
+  "tetra(4-N-methylpyridyl)porphine")
+ ("TUDCA" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C031655" :NAME
+  "tauroursodeoxycholic acid")
+ ("Tranilast" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C012293" :NAME
+  "tranilast")
+ ("U3-1287" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C78853" :NAME
+  "anti-HER3 monoclonal antibody U3-1287")
+ ("URB597" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C500528" :NAME
+  "cyclohexyl carbamic acid 3'-carbamoylbiphenyl-3-yl ester")
+ ("URMC-099" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C583037" :NAME "URMC-099")
+ ("VAS2870" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C511179" :NAME
+  "3-benzyl-7-(2-benzoxazolyl)thio-1,2,3-triazolo(4,5-d)pyrimidine")
+ ("Vitexin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C032731" :NAME "vitexin")
+ ("ZSTK474" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C510150" :NAME "ZSTK474")
+ ("acetaminophen" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C198" :NAME
+  "acetaminophen")
+ ("acetylcholine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C77840" :NAME
+  "acetylcholine")
+ ("adjuvant" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:60809" :NAME "adjuvant")
+ ("adrenocorticotropin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C212" :NAME
+  "therapeutic corticotropin")
+ ("afzelin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C477954" :NAME "afzelin")
+ ("albendazole" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C47384" :NAME
+  "albendazole")
+ ("alizarin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C010078" :NAME "alizarin")
+ ("allicin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C006452" :NAME "allicin")
+ ("amitriptyline" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C28819" :NAME
+  "amitriptyline")
+ ("anemonin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C028304" :NAME "anemonin")
+ ("apatinib" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C74012" :NAME "apatinib")
+ ("apigenin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:18388" :NAME "apigenin")
+ ("artemisinin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C78093" :NAME
+  "artemisinin")
+ ("baicalin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C038044" :NAME "baicalin")
+ ("biflorin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C522781" :NAME "biflorin")
+ ("binimetinib" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C84865" :NAME
+  "MEK inhibitor ARRY-438162")
+ ("bufalin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C022777" :NAME "bufalin")
+ ("buparlisib" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C90565" :NAME
+  "PI3K inhibitor BKM120")
+ ("cafestol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C053400" :NAME "cafestol")
+ ("capsazepine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C071423" :NAME
+  "capsazepine")
+ ("carbachol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C47430" :NAME
+  "carbachol")
+ ("carboplatin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1282" :NAME
+  "carboplatin")
+ ("chelerythrine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C016299" :NAME
+  "chelerythrine")
+ ("ciprofloxacin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C375" :NAME
+  "ciprofloxacin")
+ ("clofazimine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C47456" :NAME
+  "clofazimine")
+ ("cordycepin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1057" :NAME
+  "cordycepin")
+ ("cyclopamine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C000541" :NAME
+  "cyclopamine")
+ ("cyclosporine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C406" :NAME
+  "cyclosporine")
+ ("cypermethrin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C017160" :NAME
+  "cypermethrin")
+ ("dactinomycin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C412" :NAME
+  "dactinomycin")
+ ("daidzein" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1060" :NAME "daidzein")
+ ("dapagliflozin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C78126" :NAME
+  "dapagliflozin")
+ ("daphnetin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C039952" :NAME
+  "daphnetin")
+ ("digitoxin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C2634" :NAME "digitoxin")
+ ("diosmetin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C039602" :NAME
+  "diosmetin")
+ ("doxazosin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C61737" :NAME
+  "doxazosin")
+ ("emodin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C466" :NAME "emodin")
+ ("enalapril" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C468" :NAME "enalapril")
+ ("entrectinib" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C114984" :NAME
+  "trkA B C ROS1 ALK tyrosine kinase inhibitor RXDX-101")
+ ("esmolol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C72617" :NAME "esmolol")
+ ("etomoxir" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C81111" :NAME "etomoxir")
+ ("fasudil" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C65624" :NAME "fasudil")
+ ("fisetin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C017875" :NAME "fisetin")
+ ("fluoxetine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C506" :NAME
+  "fluoxetine")
+ ("gartanin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:5279" :NAME "gartanin")
+ ("gossypol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C529" :NAME "gossypol")
+ ("gp120" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C29554" :NAME
+  "gp-120 antigen")
+ ("harmine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C97713" :NAME "harmine")
+ ("hinokitiol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C009479" :NAME
+  "beta-thujaplicin")
+ ("indomethacin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C576" :NAME
+  "indomethacin")
+ ("isoquercitrin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C99879" :NAME
+  "isoquercitrin")
+ ("ketamine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C61797" :NAME "ketamine")
+ ("Rg1" "ONT:PROTEIN" :ID "UP:Q16821" :NAME
+  "Protein phosphatase 1 regulatory subunit 3A")
+ ("Rho1" "ONT:PROTEIN" :ID "UP:P24406" :NAME "Transforming protein RhoA")
+ ("SAGA" "ONT:PROTEIN" :ID "NCIT:C19804" :NAME "SAGA")
+ ("SHI" "ONT:PROTEIN" :ID "UP:P19651" :NAME
+  "Delta-stichotoxin-She1a {ECO:0000303PubMed:22683676}")
+ ("SL" "ONT:PROTEIN" :ID "UP:P05045" :NAME "Seed lectin subunit I")
+ ("SMases" "ONT:PROTEIN" :ID "UP:P09599" :NAME "Sphingomyelinase C")
+ ("ST6Gal-I" "ONT:PROTEIN" :ID "UP:Q92182" :NAME
+  "Beta-galactoside alpha-2,6-sialyltransferase 1")
+ ("TSL" "ONT:PROTEIN" :ID "UP:Q3T7C9" :NAME
+  "Diphthamide biosynthesis protein 1")
+ ("TrxR" "ONT:PROTEIN" :ID "UP:P80892" :NAME "Thioredoxin reductase")
+ ("VAP" "ONT:PROTEIN" :ID "UP:P03552" :NAME "Virion-associated protein")
+ ("WiHog1A" "ONT:PROTEIN" :ID "UP:A3EZ55" :NAME
+  "Mitogen-activated protein kinase HOG1A")
+ ("WiHog1B" "ONT:PROTEIN" :ID "UP:M1T7M3" :NAME
+  "Mitogen-activated protein kinase HOG1B")
+ ("alpha-MSH-" "ONT:PROTEIN" :ID "NCIT:C114797" :NAME "melanotropin alpha")
+ ("alpha-actinin-4" "ONT:PROTEIN" :ID "NCIT:C126634" :NAME "alpha-actinin-4")
+ ("caerulein" "ONT:PROTEIN" :ID "UP:P56264" :NAME "Caerulein")
+ ("caspases-9" "ONT:PROTEIN" :ID "UP:P55211" :NAME "Caspase-9")
+ ("caveolin-3" "ONT:PROTEIN" :ID "UP:Q2KI43" :NAME "Caveolin-3")
+ ("chemerin" "ONT:PROTEIN" :ID "UP:Q29RS5" :NAME
+  "Retinoic acid receptor responder protein 2")
+ ("cytolysin" "ONT:PROTEIN" :ID "UP:P19247" :NAME "Cytolysin")
+ ("dSRF" "ONT:PROTEIN" :ID "UP:Q24535" :NAME "Serum response factor homolog")
+ ("defensin" "ONT:PROTEIN" :ID "UP:Q86QI5" :NAME "Defensin")
+ ("demethylases" "ONT:PROTEIN" :ID "GO:0032451" :NAME "demethylase activity")
+ ("dstat" "ONT:PROTEIN" :ID "UP:Q24151" :NAME
+  "Signal transducer and transcription activator")
+ ("esterases" "ONT:PROTEIN" :ID "UP:P22266" :NAME "Esterase")
+ ("glycodelin" "ONT:PROTEIN" :ID "UP:P09466" :NAME "Glycodelin")
+ ("SNF" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF00209.16" :NAME "SNF")
+ ("SREBP" "ONT:PROTEIN-FAMILY" :ID "FA:03825" :NAME "SREBP family")
+ ("UT" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF03253.12" :NAME "UT")
+ ("janus" "ONT:PROTEIN-FAMILY" :ID "FA:01933" :NAME "janus family")
+
+ ("mycobacteria" "ONT:BACTERIUM" :ID "NCIT:C76369" :NAME "mycobacterium")
+ ("lytic" "ONT:BIOLOGICAL-PROCESS" :ID "NCIT:C37889" :NAME "lysis")
+ ("synovium" "ONT:BODY-PART" :ID "EFO:0001393" :NAME "synovial membrane")
+ ("motoneuron" "ONT:CELL" :ID "CO:0000100" :NAME "motor neuron")
+ ("spermatogonia" "ONT:CELL" :ID "BTO:0000958" :NAME "spermatogonium")
+ ("splenocytes" "ONT:CELL" :ID "CO:2000074" :NAME "splenocyte")
+ ("thymocytes" "ONT:CELL" :ID "BTO:0001372" :NAME "thymocyte")
+ ("sEH" "ONT:CELL-LINE" :ID "CVCL:R855" :NAME "SEH")
+ ("mOsM" "ONT:CELL-PART" :ID "GO:0036407" :NAME "mycolate outer membrane")
+ ("micronucleus" "ONT:CELL-PART" :ID "GO:0031040" :NAME "micronucleus")
+ ("lentinan" "ONT:CHEMICAL" :ID "CHEBI:31770" :NAME "Lentinan (TN)")
+ ("luzindole" "ONT:CHEMICAL" :ID "CHEBI:131788" :NAME "luzindole")
+ ("myristate" "ONT:CHEMICAL" :ID "CHEBI:30807" :NAME "tetradecanoate")
+ ("nitrite" "ONT:CHEMICAL" :ID "CHEBI:16301" :NAME "nitrite")
+ ("oestradiol" "ONT:CHEMICAL" :ID "CHEBI:23965" :NAME "estradiol")
+ ("paraquat" "ONT:CHEMICAL" :ID "CHEBI:34905" :NAME "paraquat")
+ ("propidium" "ONT:CHEMICAL" :ID "CHEBI:51246" :NAME "propidium")
+ ("rutin" "ONT:CHEMICAL" :ID "CHEBI:28527" :NAME "rutin")
+ ("serotonin" "ONT:CHEMICAL" :ID "CHEBI:28790" :NAME "serotonin")
+ ("squalene" "ONT:CHEMICAL" :ID "CHEBI:15440" :NAME "squalene")
+ ("testosterone" "ONT:CHEMICAL" :ID "CHEBI:17347" :NAME "testosterone")
+ ("tocotrienol" "ONT:CHEMICAL" :ID "CHEBI:33235" :NAME "tocotrienol")
+ ("tunicamycin" "ONT:CHEMICAL" :ID "CHEBI:29699" :NAME "tunicamycin")
+ ("mut" "ONT:GENE" :ID "HGNC:7526" :NAME "methylmalonyl-CoA mutase")
+ ("p2" "ONT:GENE" :ID "HGNC:9138" :NAME "exosome component 10")
+ ("p38delta" "ONT:GENE" :ID "NCIT:C51218" :NAME "MAPK13")
+ ("pgc1a" "ONT:GENE" :ID "NCIT:C116294" :NAME "PPARGC1A")
+ ("vasa" "ONT:GENE" :ID "HGNC:18700" :NAME "DEAD-box helicase 4")
+ ("zif268" "ONT:GENE" :ID "NCIT:C99600" :NAME "EGR1")
+ ("klotho" "ONT:GENE-PROTEIN" :ID "HGNC:6344" :NAME "klotho")
+ ("melittin" "ONT:GENE-PROTEIN" :ID "UP:P68407" :NAME "Melittin")
+ ("mir" "ONT:GENE-PROTEIN" :ID "UP:Q93105" :NAME "Insulin-like receptor")
+ ("mono-oxygenase" "ONT:GENE-PROTEIN" :ID "GO:0004497" :NAME
+  "monooxygenase activity")
+ ("myh11" "ONT:GENE-PROTEIN" :ID "HGNC:7569" :NAME "myosin heavy chain 11")
+ ("myocardin" "ONT:GENE-PROTEIN" :ID "HGNC:16067" :NAME "myocardin")
+ ("myostatin" "ONT:GENE-PROTEIN" :ID "HGNC:4223" :NAME "myostatin")
+ ("nSMase2" "ONT:GENE-PROTEIN" :ID "NCIT:C105032" :NAME
+  "sphingomyelin phosphodiesterase 3")
+ ("p190" "ONT:GENE-PROTEIN" :ID "NCIT:C25999" :NAME
+  "contactin associated protein-1")
+ ("p67" "ONT:GENE-PROTEIN" :ID "NCIT:C97245" :NAME "CD33")
+ ("p85beta" "ONT:GENE-PROTEIN" :ID "NCIT:C101285" :NAME
+  "phosphatidylinositol 3-kinase regulatory subunit beta")
+ ("periostin" "ONT:GENE-PROTEIN" :ID "HGNC:16953" :NAME "periostin")
+ ("perlecan" "ONT:GENE-PROTEIN" :ID "NCIT:C95448" :NAME
+  "basement membrane-specific heparan sulfate proteoglycan core protein")
+ ("ref" "ONT:GENE-PROTEIN" :ID "XFAM:PF05755.10" :NAME "REF")
+ ("synuclein" "ONT:GENE-PROTEIN" :ID "UP:P37379" :NAME "Synuclein")
+ ("tNOX" "ONT:GENE-PROTEIN" :ID "HGNC:2259" :NAME
+  "ecto-NOX disulfide-thiol exchanger 2")
+ ("ttk" "ONT:GENE-PROTEIN" :ID "HGNC:12401" :NAME "TTK protein kinase")
+ ("visfatin" "ONT:GENE-PROTEIN" :ID "NCIT:C30138" :NAME
+  "pre-B-cell colony-enhancing factor")
+ ("nematode" "ONT:INVERTEBRATE" :ID "NCIT:C14248" :NAME "nematodes")
+ ("pIC" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0019035" :NAME
+  "viral integration complex")
+ ("mV" "ONT:MEASURE-UNIT" :ID "UO:0000247" :NAME "millivolt")
+ ("pM" "ONT:MEASURE-UNIT" :ID "UO:0000066" :NAME "picomolar")
+ ("microphthalmia" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "EFO:0005569"
+  :NAME "microphthalmia")
+ ("preeclampsia" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "NCIT:C85021" :NAME
+  "preeclampsia")
+ ("retinopathy" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "EFO:0003839" :NAME
+  "retinopathy")
+ ("uveitis" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "EFO:1001231" :NAME
+  "uveitis")
+ ("methyladenine" "ONT:MOLECULE" :ID "CHEBI:25272" :NAME "methyladenine")
+ ("mevalonate" "ONT:MOLECULE" :ID "CHEBI:25350" :NAME "mevalonate")
+ ("miR-10b" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-125b" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-150-5p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-15b" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-199a-5p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-200c" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-204-3p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-221-3p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-222-3p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-23a" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-27a-3p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-27a-5p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-302b" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-31-5p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-34a" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-362-5p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-365b-3p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-425-3p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-450b-5p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR-550a-3p" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("miR155" "ONT:MOLECULE" :ID NIL :NAME NIL)
+ ("mononucleotide" "ONT:MOLECULE" :ID "CHEBI:29075" :NAME "mononucleotide")
+ ("nanorod" "ONT:MOLECULE" :ID "CHEBI:50805" :NAME "nanorod")
+ ("peptidoglycan" "ONT:MOLECULE" :ID "CHEBI:8005" :NAME "peptidoglycan")
+ ("tartrate" "ONT:MOLECULE" :ID "CHEBI:132950" :NAME "tartrate")
+ ("terpinen-4-ol" "ONT:MOLECULE" :ID "CHEBI:132655" :NAME "Terpinen-4-ol")
+ ("tosylate" "ONT:MOLECULE" :ID "CHEBI:27023" :NAME "toluene-4-sulfonate")
+ ("urea" "ONT:MOLECULE" :ID "CHEBI:16199" :NAME "urea")
+ ("landiolol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C79125" :NAME
+  "landiolol")
+ ("leflunomide" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1128" :NAME
+  "leflunomide")
+ ("levofloxacin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1586" :NAME
+  "levofloxacin")
+ ("limonene" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C008281" :NAME "limonene")
+ ("locostatin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C529490" :NAME
+  "locostatin")
+ ("lymphotoxin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C622" :NAME
+  "therapeutic tumor necrosis factor-beta")
+ ("mangiferin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C013592" :NAME
+  "mangiferin")
+ ("methotrexate" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C642" :NAME
+  "methotrexate")
+ ("mibefradil" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C87686" :NAME
+  "mibefradil")
+ ("mithramycin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:31856" :NAME
+  "mithramycin")
+ ("montelukast" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C66189" :NAME
+  "montelukast")
+ ("nabilone" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1171" :NAME "nabilone")
+ ("naftopidil" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C72927" :NAME
+  "naftopidil")
+ ("nelfinavir" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C29285" :NAME
+  "nelfinavir")
+ ("nortriptyline" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C704" :NAME
+  "nortriptyline")
+ ("octopamine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C75043" :NAME
+  "octopamine")
+ ("octreotide" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C711" :NAME
+  "octreotide")
+ ("oridonin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C011959" :NAME "oridonin")
+ ("pelargonidin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C066957" :NAME
+  "pelargonidin")
+ ("pembrolizumab" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C106432" :NAME
+  "lambrolizumab")
+ ("phorbol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C033085" :NAME "phorbol")
+ ("phorbol-12-myristate-13-acetate" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID
+  "CHEBI:37537" :NAME "phorbol 13-acetate 12-myristate")
+ ("photosensitizer" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1420" :NAME
+  "photosensitizing agent")
+ ("picropodophyllin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C87736" :NAME
+  "picropodophyllin")
+ ("pinocembrin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C016063" :NAME
+  "pinocembrin")
+ ("piperine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C72629" :NAME "piperine")
+ ("polydatin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C058229" :NAME
+  "polydatin")
+ ("pranlukast" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C96712" :NAME
+  "pranlukast")
+ ("pravastatin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:63618" :NAME
+  "pravastatin")
+ ("prazosin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C767" :NAME "prazosin")
+ ("propranolol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C62073" :NAME
+  "propranolol")
+ ("puromycin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C787" :NAME "puromycin")
+ ("pyridine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C023666" :NAME "pyridine")
+ ("quinacrine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C87656" :NAME
+  "quinacrine")
+ ("ranitidine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C29412" :NAME
+  "ranitidine")
+ ("rociletinib" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C99905" :NAME
+  "EGFR inhibitor CO-1686")
+ ("rosiglitazone" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C089730" :NAME
+  "rosiglitazone")
+ ("rtPA" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C39607" :NAME
+  "recombinant tissue plasminogen activator")
+ ("saponin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C823" :NAME "saponin")
+ ("sesamin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C054125" :NAME "sesamin")
+ ("sirtinol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C439060" :NAME "sirtinol")
+ ("sphingosine-1-phosphate" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:37550"
+  :NAME "sphingosine 1-phosphate")
+ ("sulfonates" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C222" :NAME
+  "alkylsulfonate compound")
+ ("tanespimycin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C112765" :NAME
+  "tanespimycin")
+ ("taxane" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C080625" :NAME "taxane")
+ ("telmisartan" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C47746" :NAME
+  "telmisartan")
+ ("terazosin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C61964" :NAME
+  "terazosin")
+ ("tetrathiomolybdate" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C020809" :NAME
+  "tetrathiomolybdate")
+ ("thiamine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:26948" :NAME "thiamine")
+ ("thiomolybdate" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C020809" :NAME
+  "tetrathiomolybdate")
+ ("thymoquinone" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C003466" :NAME
+  "thymoquinone")
+ ("tiliroside" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C052083" :NAME
+  "tiliroside")
+ ("tiotidine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C023990" :NAME
+  "tiotidine")
+ ("trifluoperazine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:45951" :NAME
+  "trifluoperazine")
+ ("triiodothyronine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C907" :NAME
+  "therapeutic triiodothyronine")
+ ("tryptamine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C030820" :NAME
+  "tryptamine")
+ ("vinblastine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C930" :NAME
+  "vinblastine")
+ ("vincristine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C933" :NAME
+  "vincristine")
+ ("vinorelbine" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1275" :NAME
+  "vinorelbine")
+ ("vitexin" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C032731" :NAME "vitexin")
+ ("z-VAD-fmk" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C096713" :NAME
+  "benzyloxycarbonylvalyl-alanyl-aspartyl fluoromethyl ketone")
+ ("zingerone" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C013738" :NAME
+  "zingerone")
+ ("matrix metalloproteinase-2" "ONT:PROTEIN" :ID "NCIT:C17592" :NAME
+  "matrix metalloproteinase-2")
+ ("matrix metalloproteinase-9" "ONT:PROTEIN" :ID "UP:P14780" :NAME
+  "Matrix metalloproteinase-9")
+ ("p46" "ONT:PROTEIN" :ID "UP:Q9BY77" :NAME
+  "Polymerase delta-interacting protein 3")
+ ("phosphofructokinase-2" "ONT:PROTEIN" :ID "UP:Q27483" :NAME
+  "ATP-dependent 6-phosphofructokinase 2")
+ ("praja2" "ONT:PROTEIN" :ID "UP:O43164" :NAME
+  "E3 ubiquitin-protein ligase Praja-2")
+ ("relaxin" "ONT:PROTEIN" :ID "UP:P11184" :NAME "Relaxin")
+ ("relaxin-3" "ONT:PROTEIN" :ID "UP:Q8WXF3" :NAME "Relaxin-3")
+ ("spi" "ONT:PROTEIN" :ID "NCIT:C17284" :NAME "chromogranin-A")
+ ("triphosphatases" "ONT:PROTEIN" :ID "GO:0050355" :NAME
+  "triphosphatase activity")
+ ("tristetraprolin" "ONT:PROTEIN" :ID "UP:P53781" :NAME "Tristetraprolin")
+ ("neur" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF00064.16" :NAME "neur")
+ ("prion" "ONT:PROTEIN-FAMILY" :ID "FA:03015" :NAME "prion family")
+ ("tribbles" "ONT:PROTEIN-FAMILY" :ID "FA:03081" :NAME "tribbles subfamily")
+
+
     ))
 
 
-(defparameter *ref-sems*
+(defparameter *suppressed-trips-terms*
   ;; Looks like TRIPS really did not have these -- REFERENTIAL-SEM is a punting operation
   '(
     ("3G8" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL) 
@@ -2335,7 +4087,420 @@
     ("WXXL" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
     ("WXXL" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL) 
     ("ZMP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL) 
-    ("mono-ubiquitination" "ONT:REFERENTIAL-SEM" :ID "NCIT:C21588" :NAME "monoubiquitination") 
+    ("mono-ubiquitination" "ONT:REFERENTIAL-SEM" :ID "NCIT:C21588" :NAME "monoubiquitination")
+     ("A1AR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AAI" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AAV" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ACEA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ADAM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ADSC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ADSC-CM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AEC2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AFT4" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AG4178" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AG83" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AIII" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AKT-S473" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AKT-T308" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AKTT473" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ALCAR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ALE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AMPAR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AMPI-109" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AOF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AOPP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("APP8" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("APS-2-79" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("APY606" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ARPS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ARS853" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ASMC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AT1R" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ATCC334" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AUCB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AVM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AVO" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("AZ191" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BADGE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BAI" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BANCR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BAY" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BAY11-7802" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BBB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BBG" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BBR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BC087858" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BCAO" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BCN1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BCT" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BEZ2325" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BF65" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BFD-22" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BGH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BIBR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BL0269" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BLBC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BLSP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BME" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BMM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BMNC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BNDF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BRAF-MEK-ERK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BRAF-S729" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BRAFV600" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BRET" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BRLF1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BSCB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BSTA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BTSC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BUN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BYL" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("BZLF1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CAERS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CAR10" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CAY10603" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CB1R" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CC0417" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CCHE1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CCRT" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CGC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CHAG" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CHMP4" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CIAP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CIMP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CMCE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CMSE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CMSP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CMVE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CND" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CONT7" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("COV08-0064" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CPCG" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CRM197" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CRPE55IB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CUPM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CUR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CWI" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CXCR3A" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("CXCR3B" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DASMC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DCA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DETD-35" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DEX" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DFS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DHPH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DHTO" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DITC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DMPB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DSB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DSF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DTX" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DUOX" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("DYT-40" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EC50" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EC80" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ECAR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ED" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EGFR1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EGFR2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ELISA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EM23" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EOC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EPEC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EPS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ERL" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ERS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ESB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ESCRT" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ETEC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ETME" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EV71" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EVH1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EWS-FLI-1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("EY" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("FDPI" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("FGLE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("FLGE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("FP08S2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("FRB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("FSK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("FTI-277" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("G0G1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GBC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GILZ1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GINST" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GJIC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GMSYS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GS493" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GSK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GSK2807" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GU" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GVBD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("H3K27" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("H3K79" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("H3K9" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("H3S10" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("H3S28" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("H4K5" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HADC6" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HASMC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HBEC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HCQ" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HDA6" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HFB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HFD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HGHI" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("GAS" "ONT:SUBSTANCE" :ID "NCIT:C45299" :NAME "gas")
+    ("HIAA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HIF2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HLJ" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HMH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HNK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HNSCC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HOGMAPK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HPASMC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HPC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HPCM2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HPMEC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HR38" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HRASV12" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HRMEC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HSYA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("HVT" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("IC50" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ICH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ICI" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ICN1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("IEC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("IG7" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("IHG" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("IKC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ILD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ILV" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("IPR1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("IRES" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ISC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ISL" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ISO" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ISR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ITAF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ITD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("IVH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("JNK-AP-1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("JNK-SAPK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("JQ1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("K55-5" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("KASP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("KG5" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("KR-36676" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("KRAS4B" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("KRASG12" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("KU004" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LADC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LC3I" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LC3II" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LCSC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LEF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LET-23" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LFCS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LID" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LIMT" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LIPUS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LKPK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LMMS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LMP-2A" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LMP2A" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LMR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LMWCS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LNE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LPACT1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LTR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LVEDP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LVESP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("LZ" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MAP3K" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MAPKAP2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MASO" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MAZ-385A" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MC388" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MC78" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MCAO" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MCLR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MDSC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MEDICA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MEKK1-KM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MFX" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MGRX" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MIFMIF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MLN-4760" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MLN4760" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MM41" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MN8" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MNA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MPH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MPK1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MPK3" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MPK4" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MPK6" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MPK7" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MRTF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MRTF-26A" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MRTF26A" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MVIH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("MYC2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NBNR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NDH01" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NEDD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NF023" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NFT" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NICD1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NLS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NOK1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NOX" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NRW172" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NRW173" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NSC624205" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NUCC-390" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NYG" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("NYPT1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("OAM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ODN107" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ODN2395" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("OEC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("OHDA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("OHU" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ORP1L" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ORR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("OSKM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("OVCAR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("OVX" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("OXHPOS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("P2X4R" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PAC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PAEC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PAK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PAMAM-PLA-OH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PAMAM-PLA-PEG-OCH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PASMC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PCOL1A1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PCV2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PD023309" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PD09825" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PD980759" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PD98095" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PDD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PDE4D5" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PDK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PDLSC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PF-384" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PF-562271" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PF023041066" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PF562271" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PFS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PGN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PIKK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PKGII" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PMK2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PPE25" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PPE26" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PSEP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PSPLE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PSVII" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PTH1-34" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PTU" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PU" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PVMM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("PWT" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("QF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("QGC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("QHF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("QVD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("R-2HG" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RASMC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RBD35" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RESET" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RFS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RGD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RGZ" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RIE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RIPC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RMEL3" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("ROCK" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RSG19" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RSPO" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("RVI" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+    ("RXM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+    ("S-phase" "ONT:TIME-SPAN" :ID "GO:0051320" :NAME "S phase")
+    ("M-phase" "ONT:TIME-SPAN" :ID "GO:0000279" :NAME "M phase")
+     ("S2095-4964" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SB203880" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SBL" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SCPP11" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SCVT2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SE11" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SEAP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SFZYD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SGC0946" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SHO1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SHP099" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SIRT" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SKT11" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SLC25A25-AS1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SLCB050" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SLGT2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SMOC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SNP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SO7661" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SPRC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SR11302" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("STAT3C" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("SUMA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("T2DN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TB4" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TBA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TBI" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TCCD" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TCF" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TCM" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TJE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TLR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TME" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TMPRSS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TNBC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TNG" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TRPC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("TSCC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("U251TMZ1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("U251TMZ2" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("U251U0126" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UCMS" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UFH" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UKN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UL135" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UL138" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UUO" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UV" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("UVB" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("VD3" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("VEGR" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("VGCC" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("VK1" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("VMN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("VYE" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("WAY-600" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("WFA" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("WSP" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("WXXL" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("XN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("XRP44X" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+    ("ZQFTN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+    ("Ab" "ONT:PROTEIN" :ID "NCIT:C16295" :NAME "antibody") 
+ ("AB" "ONT:FISH" :ID "NCIT:C79967" :NAME "zebrafish line AB")
+ ("Ab" "ONT:PROTEIN" :ID "NCIT:C16295" :NAME "antibody")
 
     ))
 
