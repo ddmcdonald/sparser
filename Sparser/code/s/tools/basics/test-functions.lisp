@@ -612,7 +612,7 @@
 (defun init-reach-directory ()
   (when (find-package :r3)
     (save-article-semantics
-     nil
+     *use-xml*
      (pathname
       (ensure-directories-exist
        (concatenate 'string
