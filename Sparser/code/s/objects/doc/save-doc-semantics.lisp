@@ -221,10 +221,7 @@
         ((small-binding-list i)
          (start-cat i stream nil)
          (let ((bl (filter-bl (indiv-old-binds i))))
-           (when bl
-             (start-var (binding-variable (car bl)) stream nil)
-             (write-sem (binding-value (car bl)) stream nil)
-             (finish-var stream nil)))
+           (write-sem (car bl) stream))
          (finish-cat stream nil))
         (t
          (start-cat i stream newline)
@@ -263,20 +260,39 @@
   (start-cat c stream nil)
   (finish-cat stream nil))
 
+(defun write-lambda-binding (binding stream &optional newline)
+  (if *use-xml*
+      (let ((name (string-downcase (pname (binding-variable binding)))))
+        (start-lambda-var "var" name stream newline)
+        (format stream " lambda-variable=")
+        (prin-escaped "true" stream)
+        (finish-lambda-var "var" name stream newline))
+      (else
+        (start-var (binding-variable binding) stream newline)
+        (format stream " *lambda-var*")
+        (finish-var stream newline))))
+
 (defun print-binding-list (bindings stream)
-  (loop initially (push-indentation)
-        for binding in (filter-bl bindings)
-        as var = (binding-variable binding)
-        as small = (small-binding-list (binding-value binding))
-        do (start-var var stream)
+  (push-indentation)
+  (loop for binding in (filter-bl bindings)
+     do (write-sem binding stream))
+  (pop-indentation))
+
+(defmethod write-sem ((binding binding) stream &optional (newline t))
+  (let ((var (binding-variable binding))
+        (small (small-binding-list (binding-value binding))))
+    (if
+     (eq (binding-value binding) '*lambda-var*)
+     (write-lambda-binding binding stream)
+     (else (start-var var stream)
            (if small
-             (write-sem (binding-value binding) stream nil)
-             (else
-               (push-indentation)
-               (write-sem (binding-value binding) stream t)
-               (pop-indentation)))
-           (finish-var stream (not small))
-        finally (pop-indentation)))
+               (write-sem (binding-value binding) stream nil)
+               (else
+                 (push-indentation)
+                 (write-sem (binding-value binding) stream t)
+                 (pop-indentation)))
+           (finish-var stream (not small))))))
+
 
 (defun start-element (element stream &optional (newline t))
   (let ((start (format nil "~:[(~a~;<~a>~]" *use-xml* element)))
@@ -309,9 +325,34 @@
               (emit-line-continue stream (format nil " (~s" name))
               (emit-line-continue stream (concatenate 'string " (" name))))))
 
+(defun start-lambda-var (element name stream &optional (newline t)
+                         &aux (name (if (symbolp name)
+                                        name
+                                        (string-downcase name))))
+  (cond (*use-xml*
+         (emit-line-continue stream (format nil "<~a name=\"" element))
+         (prin-escaped name stream))
+        (newline
+         (if (symbolp name)
+             (emit-line stream (format nil " (~s" name))
+             (emit-line stream (concatenate 'string " (" name))))
+        (t
+         (if (symbolp name)
+             (emit-line-continue stream (format nil " (~s" name))
+             (emit-line-continue stream (concatenate 'string " (" name))))))
+
+(defun finish-lambda-var (element name stream &optional (newline t)
+                          &aux (name (if (symbolp name)
+                                         name
+                                         (string-downcase name))))
+  (cond (*use-xml*
+         (emit-line-continue stream (format nil "\">" element)))
+        (t
+         (emit-line-continue stream (format nil ")" element)))))
+
 (defmethod start-cat ((item symbol) stream &optional (newline t))
   (if (search " " (pname item))
-      (start-named-element "cat-ref"
+      (start-named-element "ref"
                            (intern (symbol-name  item) :sparser) stream newline)
       (start-cat (pname item) stream newline)))
 
@@ -322,7 +363,7 @@
   (start-cat (itype-of item) stream newline))
 
 (defmethod start-cat ((item string) stream &optional (newline t))
-  (start-named-element "cat-ref" item stream newline))
+  (start-named-element "ref" item stream newline))
 
 (defmethod start-var ((item lambda-variable) stream &optional (newline t))
   (start-var (pname item) stream newline))
@@ -334,7 +375,7 @@
   (start-named-element "var" item stream newline))
 
 (defun finish-cat (stream &optional (newline t))
-  (finish-element "cat-ref" stream newline))
+  (finish-element "ref" stream newline))
 
 (defun finish-var (stream &optional (newline t))
   (finish-element "var" stream newline))
