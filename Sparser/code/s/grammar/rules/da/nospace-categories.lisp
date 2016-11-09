@@ -618,5 +618,19 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
         edge)))
 
 
-
+(defun resolve-protein-prefix (prefix-edge protein-edge words start-pos end-pos)
+  (declare (special prefix protein words start-pos end-pos category::protein))
+  (let* ((predicate 
+          (create-predication-by-binding
+           'substrate **lambda-var** (edge-referent prefix-edge)
+           (list 'resolve-protein-prefix prefix-edge
+		 (individual-for-ref (edge-referent prefix-edge)))))
+         (i (bind-dli-variable 'predication predicate (edge-referent protein-edge)))
+         (edge (make-ns-edge
+                start-pos end-pos category::protein
+                :rule 'resolve-protein-prefix
+                :form category::n-bar
+                :referent i
+                )))
+    edge))
 

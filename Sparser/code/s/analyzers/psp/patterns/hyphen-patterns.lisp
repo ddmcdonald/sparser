@@ -98,8 +98,11 @@
       (do-relation-between-first-and-second
        (when (edge-p (first edges))
          (edge-referent (first edges)))
-       (edge-referent rel-edge) (first edges) rel-edge))
-
+        (edge-referent rel-edge) (first edges) rel-edge))
+     
+     ((equal pattern '(:lower :hyphen :protein))
+      (resolve-protein-prefix (first edges) (third edges) words start-pos end-pos))
+     
      ((equal pattern '(:protein :hyphen :protein))
       (make-protein-pair (first edges) (third edges) words start-pos end-pos))
      
