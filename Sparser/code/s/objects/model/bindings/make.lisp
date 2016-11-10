@@ -90,19 +90,30 @@ returning a new one.
 |#
 
 (defun bind-dli-variable (var/name value individual &optional category)
-  "New name for method in transition -- makes it easier to tell when other calls
-   have been edited to use the new 'contract' -- 
-   bind-dli-variable returns the resulting individual as its first (primary) value
-   it returns the binding object as its second (secondary) value.
-   Note that if *description-lattice* is nil this becomes a call to
-   the 'old' variable binding protocol."
-  (declare (special *description-lattice*))
-  (unless (individual-p individual)
-    (setq individual (individual-for-ref individual)))
-  (setq individual (look-for-ambiguous-variables individual var/name))
-  (if *description-lattice*
-    (find-or-make-lattice-subordinate individual var/name value category)
-    (old-bind-variable var/name value individual category)))
+ "New name for method in transition -- makes it easier to tell when other calls
+  have been edited to use the new 'contract' --
+  bind-dli-variable returns the resulting individual as its first (primary) value
+  it returns the binding object as its second (secondary) value.
+  Note that if *description-lattice* is nil this becomes a call to
+  the 'old' variable binding protocol."
+ (declare (special *description-lattice*))
+ (unless (individual-p individual)
+   (setq individual (individual-for-ref individual)))
+ (when (and (category-p value) 
+            (not (var-takes-category var/name individual category)))
+   ;; motivated by "GEF functionality"
+   ;; GEF is defined by (noun "GEF" ...) and thus becomes a category, not an individual
+   ;; but we want to get it as an individual
+   (setq value (individual-for-ref value)))
+ (setq individual (look-for-ambiguous-variables individual var/name))
+ (if *description-lattice*
+   (find-or-make-lattice-subordinate individual var/name value category)
+   (old-bind-variable var/name value individual category)))
+
+(defun var-takes-category (var/name individual category)
+  (let* ((variable (variable-given-name-and-individual var/name individual category))
+         (restriction (var-value-restriction variable)))
+    (equal restriction '(:PRIMITIVE CATEGORY))))
 
 (defun bind-variable (var/name value individual &optional category)
   "Standard way of binding a variable on an individual. What actually
@@ -152,27 +163,35 @@ returning a new one.
                     individual))))
     (values individual nil))
    (t
-    (let ((variable 
-           (or (when (typep var/name 'lambda-variable)
-                 var/name)
-               (when (typep var/name 'anonymous-variable)
-                 (dereference-variable var/name individual))
-               (find-variable-for-category var/name category))))
-      (unless variable
+    (let ((variable (variable-given-name-and-individual var/name individual category)))
+      (when variable
+        (let ((binding (bind-variable/expr variable value individual)))
+          (values individual binding)))))))
+
+(defun variable-given-name-and-individual (var/name individual category)
+  (unless category
+    (cond 
+     ((referential-category-p individual) ;; 6/22/09
+      (setq category individual))
+     (t (setq category (indiv-type individual)))))
+  (when (consp category) ;; new 6/19/09
+    (setq category (car category)))
+  (let ((variable (or (when (typep var/name 'lambda-variable)
+                        var/name)
+                      (when (typep var/name 'anonymous-variable)
+                        (dereference-variable var/name individual))
+                      (find-variable-for-category var/name category))))
+    (unless variable
         ;; motivated by "lipofectamine 2000" where 2000 is read as a year
         (when *break-on-pattern-outside-coverage?*
-          (push-debug `(,var/name ,value ,individual ,category))
+          (push-debug `(,var/name ,individual ,category))
           (if category
               (break "There is no variable named ~A~
                     ~%associated with the category ~A" var/name category)
               (break "There is no variable named ~A~
                      ~%associated with the category of the individual ~A"
                      var/name individual))))
-      (when variable
-        (let ((binding (bind-variable/expr variable value individual)))
-          (values individual binding)))))))
-
-
+    variable))
 
 (defun bind-variable/expr (variable value individual)
   (declare (special *track-incidence-count-on-bindings*))
