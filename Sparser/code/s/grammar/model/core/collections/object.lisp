@@ -31,7 +31,7 @@
   :lemma (:common-noun "collection")
   :index (:permanent :key items)
   :binds ((items :primitive list)
-          (type)
+          (type :primitive category)
           (number :primitive integer))
   :realization ((:tree-family quantity-of-kind  ;; "three companies"
                  :mapping ((np-head . :self)
@@ -55,7 +55,7 @@
   :index (:permanent :key items)
   :binds ((items :primitive list)   ;;/// ought to do inheritance
           (item)   ;; i.e. each individual item
-          (type)
+          (type :primitive category)
           (number :primitive integer)))
 
 
