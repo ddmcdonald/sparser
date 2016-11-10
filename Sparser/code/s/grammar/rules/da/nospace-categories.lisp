@@ -121,7 +121,7 @@
 
     (when (eq (edge-category left-edge)
               (edge-category right-edge))
-      ;;/// when does this ever happen? 
+      ;;/// when does this ever happen? this happens when both edges are same type, e.g., "S1A-S1D"
       (setq i (bind-variable
                'type (edge-category left-edge) i category::sequence)))
     
