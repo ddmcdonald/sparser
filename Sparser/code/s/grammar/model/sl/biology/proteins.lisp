@@ -1758,7 +1758,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "MI1HG_HUMAN" ("miR-1" "Uncharacterized protein MIR1-1HG" "MIR1-1 host gene protein")) 
 (define-protein "MIF_HUMAN" ("MMIF" "GIF" "MIF" "GLIF")) 
 (define-protein "MIR2_HHV8P" ("MIR2" "E3 ubiquitin-protein ligase MIR2" "IE1A protein" "Modulator of immune recognition 2" "ORF K5")) 
-(define-protein "MIRH1_HUMAN" ("microrna" "Putative microRNA 17 host gene protein" "Putative microRNA host gene 1 protein")) 
+(define-protein "MIRH1_HUMAN" ("Putative microRNA 17 host gene protein" "Putative microRNA host gene 1 protein")) 
 (define-protein "MIRO1_HUMAN" ("ARHT1" "MIRO-1" "hMiro-1" "RHOT1")) 
 (define-protein "MIRO2_HUMAN" ("ARHT2" "MIRO-2" "C16orf39" "RHOT2" "hMiro-2")) 
 (define-protein "MK07_HUMAN" ("ERK5" "PRKM7" "ERK-5" "MAPK7" "BMK1" "BMK-1")) 
