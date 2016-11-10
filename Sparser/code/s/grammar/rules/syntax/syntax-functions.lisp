@@ -108,6 +108,9 @@
 ;;; unattached variables
 ;;;----------------------
 
+(define-lambda-variable 'comparative
+    nil category::top) ;needed for interpretation of "more effective"
+
 (define-lambda-variable 'predication
     nil category::top)
 
