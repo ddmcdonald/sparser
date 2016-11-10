@@ -94,7 +94,7 @@
 
 (defparameter *one-expression-per-sentence* t)
 
-(defmethod write-semantics ((sent sentence) s)
+(defmethod write-semantics ((sent sentence) &optional (s t)) ;; s is the stream
   (declare (special sent))
   (when (actually-reading)
     (if *one-expression-per-sentence*
@@ -264,13 +264,32 @@
   (if *use-xml*
       (let ((name (string-downcase (pname (binding-variable binding)))))
         (start-lambda-var "var" name stream newline)
-        (format stream " lambda-variable=")
+        (format stream " lambda-variable=\"")
         (prin-escaped "true" stream)
+        (format stream "\"")
         (finish-lambda-var "var" name stream newline))
       (else
         (start-var (binding-variable binding) stream newline)
         (format stream " *lambda-var*")
         (finish-var stream newline))))
+
+(defun start-lambda-var (element name stream &optional (newline t)
+                         &aux (name (if (symbolp name)
+                                        name
+                                        (string-downcase name))))
+  (cond (*use-xml*
+         (emit-line-continue stream
+                             (format nil "<~a name=\"" element))
+         (prin-escaped name stream)
+         (emit-line-continue stream "\""))
+        (newline
+         (if (symbolp name)
+             (emit-line stream (format nil " (~s" name))
+             (emit-line stream (concatenate 'string " (" name))))
+        (t
+         (if (symbolp name)
+             (emit-line-continue stream (format nil " (~s" name))
+             (emit-line-continue stream (concatenate 'string " (" name))))))
 
 (defun print-binding-list (bindings stream)
   (push-indentation)
@@ -325,28 +344,14 @@
               (emit-line-continue stream (format nil " (~s" name))
               (emit-line-continue stream (concatenate 'string " (" name))))))
 
-(defun start-lambda-var (element name stream &optional (newline t)
-                         &aux (name (if (symbolp name)
-                                        name
-                                        (string-downcase name))))
-  (cond (*use-xml*
-         (emit-line-continue stream (format nil "<~a name=\"" element))
-         (prin-escaped name stream))
-        (newline
-         (if (symbolp name)
-             (emit-line stream (format nil " (~s" name))
-             (emit-line stream (concatenate 'string " (" name))))
-        (t
-         (if (symbolp name)
-             (emit-line-continue stream (format nil " (~s" name))
-             (emit-line-continue stream (concatenate 'string " (" name))))))
+
 
 (defun finish-lambda-var (element name stream &optional (newline t)
                           &aux (name (if (symbolp name)
                                          name
                                          (string-downcase name))))
   (cond (*use-xml*
-         (emit-line-continue stream (format nil "\">" element)))
+         (emit-line-continue stream (format nil "/>" element)))
         (t
          (emit-line-continue stream (format nil ")" element)))))
 
@@ -399,7 +404,8 @@
     (and (null (cdr bl))
          (or (not (binding-p (car bl)))
              (typecase (binding-value (car bl))
-               ((or category string number symbol word polyword) t)
+               ((or category string number symbol word polyword)
+                (not (eq (binding-value (car bl)) '*lambda-var*)))
                (t nil))))))
 
 (defun filter-bl (bl)
