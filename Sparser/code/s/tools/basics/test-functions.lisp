@@ -651,14 +651,40 @@
 (defparameter *break-on-reach-errors* nil)
 (defparameter *article-name* nil
   "Used to carry the name of an article from process-reach-article-sents to save-article-sentence.")
+(defparameter *compare-to-reach-results* nil)
+
+(defun compare-test-reach (&key (n 1000)(start 0) (save-output t))
+  (setq *compare-to-reach-results* t)
+  (test-reach-sentences :n n :start start :save-output save-output))
 
 (defun process-reach-article-sents (sl)
   (format t "Processing reach article sentences: ~s~%" sl)
   (let ((*article-name* sl))
     (declare (special *article-name*))
+;    (lsp-break)
     (if (or *break-on-reach-errors*
             (and (find-package :r3)
                  (eval (intern "*BREAK-DURING-READ*" (find-package :r3)))))
         (loop for s in (eval sl) do (eval `(qpp ,s)))   
-        (loop for s in (eval sl) do (eval `(qepp ,s))))))
+        (loop for s in (eval sl) 
+           as i from 0
+           do (eval `(qepp ,s))
+             (if *compare-to-reach-results*
+                 (compare-to-reach (get-PMC-ID *article-name*) (write-to-string i) s))))))
 
+(defun get-PMC-ID (sl)
+    (string-trim "*REACH-PMC-SENTENCES*" sl))
+
+
+(defun compare-to-reach (PMCID sent-num curr-sent)
+  (declare (special curr-sent))
+  (let* ((reach-json (concatenate 'string (eval (intern "*R3-TRUNK*" (find-package :r3)))
+                        "corpus/Reach-sentences/reach_reread/" PMCID "-" sent-num ".json"))
+         (reach-path (pathname reach-json))
+         (decoded-reach (decode-reach-file reach-path))
+         (entities (getf decoded-reach :entities)))
+    (declare (special reach-path decoded-reach))
+    (unless (equal (getf decoded-reach :SENTENCE) curr-sent)
+      (lsp-break "mismatched sentences"))
+    (lsp-break)))
+    
