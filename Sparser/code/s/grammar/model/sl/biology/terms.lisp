@@ -37,6 +37,16 @@
 
 (in-package :sparser)
 
+;; as in "centrosome sections"
+(define-category bio-section :specializes bio-method
+                 :realization (:noun "section"))
+
+(define-category dose-dependent :specializes :bio-predication
+  :realization
+  (:adj "dose-dependent"))
+(def-synonym dose-dependent (:adj "dose dependent"))
+
+
 
 (adj "-like" :super bio-predication) ;; as in "UBA (ubiquitin-associated)-like domains" where we don't combine the "-like"
 (noun "SILAC labeling" :super bio-method)
