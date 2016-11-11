@@ -62,18 +62,18 @@ be biology specific, since they aren't. |#
 (noun ("period of time" :plural "periods of time") :super period)
 
 
-
-
-(define-category orientation-top
+;; not sure this is what David would want -- what type of category is orientation
+(define-category orientation :specializes relation)
+(define-category orientation-top :specializes orientation
   :realization
   (:noun "top"))
-(define-category orientation-bottom
+(define-category orientation-bottom :specializes orientation
   :realization
   (:noun "bottom"))
-(define-category orientation-left
+(define-category orientation-left :specializes orientation
   :realization
   (:noun "left"))
-(define-category orientation-right
+(define-category orientation-right :specializes orientation
   :realization
   (:noun "right"))
 
