@@ -246,7 +246,7 @@ No longer used -- remove soon
              (not (indiv-binds head))
              ;; head already is modified -- don't replace with proper noun
              ;; e.g. "braf mutant a 375 melanoma cell"
-             (if (collection-p qualifier)
+             (if (is-basic-collection? qualifier)
                  (and ;; conjunction of named items
                   (individual-p (car (value-of 'items qualifier)))
                   (value-of 'name (car (value-of 'items qualifier))))
@@ -631,7 +631,8 @@ No longer used -- remove soon
                                 (return-from add-tense/aspect-info-to-head vg)))
                              (t (return-from add-tense/aspect-info-to-head vg)))
                        aux
-                       vg)))
+                       vg
+                       (itype-of vg))))
 
 
 ;;;-----------------
@@ -679,7 +680,7 @@ No longer used -- remove soon
            (cond
              (variable-to-bind t)
              ((has-adverb-variable? vg vg-phrase adverb) t)
-             ((and (collection-p vg)
+             ((and (is-basic-collection? vg)
                    ;; saw an error in  "phase–contrast only"
                    ;; where "phase-contrast" was treated as a verb
                    (not (itypep vg 'hyphenated-pair))
@@ -701,7 +702,7 @@ No longer used -- remove soon
            (bind-dli-variable variable-to-bind adverb vg))
           ((member (cat-name adverb) *subordinating-adverbs*)
            (bind-dli-variable 'subordinate-conjunction adverb vg))
-          ((collection-p vg)
+          ((is-basic-collection? vg)
            (bind-dli-variable
             (or
              (subcategorized-variable 
@@ -733,7 +734,7 @@ No longer used -- remove soon
            (cond
              (variable-to-bind t)
              ((has-adverb-variable? adj adj-phrase adverb) t)
-             ((and (collection-p adj)
+             ((and (is-basic-collection? adj)
                    (value-of 'items adj) ;; is null for hyphenated-triple
                    (or
                     (subcategorized-variable 
@@ -752,11 +753,12 @@ No longer used -- remove soon
            (bind-dli-variable variable-to-bind adverb adj))
           ((member (cat-name adverb) *subordinating-adverbs*)
            (bind-dli-variable 'subordinate-conjunction adverb adj))
-          ((collection-p adj)
+          ((is-basic-collection? adj)
            (bind-dli-variable
             (or
              (subcategorized-variable 
-              (car (value-of 'items adj)) :adv adverb)
+              (car (value-of 'items adj))
+              :adv adverb)
              'adverb) adverb adj))
           ((has-adverb-variable? adj adj-phrase adverb)
            (setq adj (bind-dli-variable 'adverb adverb adj)))
@@ -949,7 +951,7 @@ No longer used -- remove soon
 
 (define-category to-comp
   :specializes phrase-interpretation
-  :binds ((prep)
+  :binds ((prep :primitive category)
           (comp))
   :documentation "Provides a scafolding to hold
    a generic to-comp as identified by
@@ -962,7 +964,7 @@ No longer used -- remove soon
 
 (define-category as-comp
   :specializes phrase-interpretation
-  :binds ((prep)
+  :binds ((prep :primitive category)
           (comp))
   :documentation "Provides a scafolding to hold
    a generic to-comp as identified by
@@ -1422,7 +1424,7 @@ No longer used -- remove soon
 
 (define-category prepositional-phrase
   :specializes phrase-interpretation
-  :binds ((prep)
+  :binds ((prep :primitive category)
           (pobj))
   :documentation "Provides a scafolding to hold
   a generic prepositional phrase as identified by
