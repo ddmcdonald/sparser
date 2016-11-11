@@ -22,10 +22,23 @@
 
 (in-package :sparser)
 
+;; Split this out, because category::collection can also take these
+;;  variables -- because collections can be collections of perdurants
+(define-mixin-category takes-tense-aspect-modal
+    :binds ((modal :primitive category)
+            (present :primitive  category)
+            (past :primitive  category)
+            (progressive  category)
+            (perfect  category)))
+
+(define-mixin-category takes-adverb
+    :binds ((adverb)))
+
 (define-category  perdurant
   :instantiates self
   :specializes top
-  :mixins (temporally-localized)
+  :mixins (temporally-localized takes-tense-aspect-modal
+                                takes-adverb)
 
   :binds ((theme) ;; one salient participant
                   ;; FrameNet for the thing that moves
@@ -41,14 +54,10 @@
           ;; interpret-adverb+verb needs to be improved to diagnose the
           ;; type of adverb but until then, we need to have this variable
           ;; or something equivalent
-          (adverb)
+
 
           (occurs-at-moment) ;; future, past
-          (modal)
-          (present)
-          (past)
-          (progressive)
-          (perfect))
+         )
 
   :documentation
   "Perdurants could otherwise be called events, processes, or phenomena,

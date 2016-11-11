@@ -26,6 +26,7 @@
    as yet. |#
 
 (define-category  collection
+  :mixins (takes-tense-aspect-modal takes-adverb)
   :instantiates self
   :specializes abstract
   :lemma (:common-noun "collection")
