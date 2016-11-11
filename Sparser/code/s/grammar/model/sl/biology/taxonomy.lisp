@@ -174,7 +174,8 @@
   OBO identifiers, but are not localized to cellular locations.")
 
 ;;/// This is OBE given revision to biological. 
-(define-category bio-abstract :specializes biological)
+(define-category bio-abstract :specializes abstract
+   :mixins (biological))
 
 (define-category visual-representation :specializes bio-abstract
 		 ;; figures, arrows, stars, etc.
@@ -245,17 +246,14 @@
 ;;; top of the biological hierarchy
 ;;;---------------------------------
 
-(define-category produced-by-method :specializes biological
-  :binds ((produced-by bio-method))
-  :realization
-  (:from produced-by))
-
 (define-category bio-entity  :specializes physical-object  ;; sweeps a lot under the rug
+  :binds ((produced-by bio-method))
   :instantiates :self
   :mixins (has-UID has-name biological produced-by-method)
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
-  :realization (:common-noun name))
+  :realization (:common-noun name
+                             :from produced-by))
 
 (define-category plasmid :specializes bio-entity
   :realization
@@ -748,8 +746,8 @@
          :of entity
          :of quantitative-condition))
 
-(define-category bio-location  :specializes biological
-  :mixins (has-UID has-name)
+(define-category bio-location  :specializes endurant
+  :mixins (has-UID has-name biological)
   :instantiates self
   :index (:permanent :key name))
 
@@ -1213,8 +1211,8 @@
   :realization (:noun "cell type"))
 
 ;; used in biopax
-(define-category organism :specializes biological
-   :mixins (has-name has-uid)
+(define-category organism :specializes endurant
+   :mixins (has-name has-uid biological)
    :instantiates self  
    :index (:permanent :key name)
    :lemma (:common-noun "organism")
