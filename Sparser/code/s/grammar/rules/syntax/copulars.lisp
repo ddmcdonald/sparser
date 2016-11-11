@@ -36,7 +36,7 @@
 (define-category copular-predication-of-pp ;; (the cat)(is on the mat)
   :specializes copular-predication
   :instantiates self
-  :binds ((prep))
+  :binds ((prep :primitive category))
   :index (:temporary :list)
   :documentation "Adds a prep variable to the variables 
  of copular-predication. The prepositional complement goes
