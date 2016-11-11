@@ -112,8 +112,12 @@ returning a new one.
 
 (defun var-takes-category (var/name individual category)
   (let* ((variable (variable-given-name-and-individual var/name individual category))
-         (restriction (var-value-restriction variable)))
-    (equal restriction '(:PRIMITIVE CATEGORY))))
+         (restriction (when variable (var-value-restriction variable))))
+    (if (null variable)
+        (then (warn "no variable named ~s on ~s of category ~s~% in sentence ~s~%" var/name individual category
+                    (sentence-string *sentence-in-core*))
+              nil)
+        (equal restriction '(:PRIMITIVE CATEGORY)))))
 
 (defun bind-variable (var/name value individual &optional category)
   "Standard way of binding a variable on an individual. What actually
