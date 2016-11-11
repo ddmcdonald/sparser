@@ -1270,10 +1270,11 @@
          :noun "formation"
          :etf (svo-passive) ))
 
-(define-category fraction :specializes variant
+(define-category bio-fraction :specializes variant ;; avoid conflict with core category FRACTION
   :binds ((agent pronoun/first/plural) (basis bio-entity)) ;; this should be for genes and proteins
   :realization
-  (:verb "fraction" ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
+  (:verb ("fractionXX" :past-participle "fractioned")
+         ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
          :etf (svo-passive)
          :s agent
          :o basis))
@@ -1844,6 +1845,13 @@
     :realization
     (:verb "predict"
 	   :noun "prediction"
+	   :etf (svo-passive)))
+
+(define-category preparation :specializes bio-method
+  ;; agent can be a process, like "mutation"
+    :realization
+    (:verb "prepare"
+	   :noun "preparation"
 	   :etf (svo-passive)))
 
 (define-category presentation :specializes bio-relation ;; the category "present" is the adjective "present"
