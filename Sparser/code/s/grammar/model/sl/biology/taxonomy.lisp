@@ -249,7 +249,7 @@
 (define-category bio-entity  :specializes physical-object  ;; sweeps a lot under the rug
   :binds ((produced-by bio-method))
   :instantiates :self
-  :mixins (has-UID has-name biological produced-by-method)
+  :mixins (has-UID has-name biological)
   :binds ((long-form :primitive polyword))
   :index (:permanent :key name)
   :realization (:common-noun name
