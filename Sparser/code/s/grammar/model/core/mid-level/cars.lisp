@@ -45,8 +45,7 @@ These are the place of the artifact creation
   :specializes artifact
   :mixins (object
            named-type ;; "Honda"
-           spatial-region
-           container
+           container ;; inherits from spatial-region
            can-change-location )
   :restrict ((made-by car-manufacturer)))
 
