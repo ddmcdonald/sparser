@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "ontology"
 ;;;   Module:  "model;core:relations:"
-;;;  version:  October 2016
+;;;  version:  November 2016
 
 ;; Initiated 12/3/15.
 
@@ -12,26 +12,60 @@ files once an area looks big enough to warrant it.  |#
 
 (in-package :sparser)
 
+;;;-------------
+;;; orientation
+;;;-------------
+;; This will have a lot of associated machinery, at which point
+;; it should be broken out into its own file
+
+(define-category orientation
+  :specializes attribute
+  :documentation "Names the space of orientations
+ things can have: upright, lying down, facing the camera,
+ etc. Tied to an entity by mixing has-an-orientation
+ into its category.")
+
+(define-category has-an-orientation
+  :specializes relation
+  :binds ((orientation orientation))
+  :documentation "Use as a mixin to indicate that
+ something has an orientation. Says nothing about
+ whether the orientation is fixed (mountains, houses)
+ or can be changed (blocks).")
+
+
 ;;;-------------------------------------------
 ;;; ordinary things -- basis for blocks world
 ;;;-------------------------------------------
 
 (define-category object 
   :specializes physical-object
-  :mixins (has-spatial-location ;; adds location variable
+  :mixins (has-location ;; adds location variable
            has-color ;; color
-           has-size  ;; size
-           ;; after discussion with Alex, but without discussion with David
-           ;;  (after vacation?!)
-           has-name  ;; blocks are not artifacts, but they do have names
+           has-size  ;; size           
            )
   :documentation
-  "Conventional physical objects: chairs, amoeba, mountains, 
- breaths of air, blocks on a table.")
+    "This 'object' category is just an extension of
+   the category'physical-object' except that it's loaded
+   later after the various things that give it properties
+   have been defined.")
+
+(define-category rectangular-solid
+  :specializes object
+  :documentation "This is where we represent haw blocks
+ have a set of 6 'faces'/'sides' that (a) can be assumed
+ to be flat, and (b) provide a basis for identifying how
+ a block is oriented (e.g. one of its sides is 'facing' us."
+)
 
 
 
+#| Intrinsically a block has six 'faces'. For a cube, each
+face is the same size and is connected along each of its
+edges to another face. This geometry is intrinsic and constant.
+The perspective labeling of faces, e.g. as top or bottom, 
 
+  |#
 
 ;;;-----------
 ;;; artifacts 
