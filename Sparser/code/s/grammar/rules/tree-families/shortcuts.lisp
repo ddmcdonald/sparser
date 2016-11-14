@@ -830,7 +830,7 @@ broadly speaking doing for you all the things you might do by hand.
                                :rule-label ,super-category 
                                :binds ((name . name))
                                :index (:permanent :key name)
-                               :bindings (type-name ,word)
+                               ;;:bindings (type-name ,word) /// rethink -- was variable on location
                                :realization (:common-noun ,string))))
                   (setq category (eval expr))))
 ;; Double check, but this is likely completely redundant with the
