@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2011-2016  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:places:"
-;;;  version:  1.3 August 2011
+;;;  version:  November 2016
 
 ;; initiated in December 1990, added flags 12/28/91 v2.1
   ;; 1.0 (10/12/92 v2.3) Shadowing to gradually introduce the new semantics
@@ -27,6 +26,7 @@
 
 
 (gload "places;object")
+(gload "places;operators")
 
 (gate-grammar *locations-core*
   (gload "places;directions")
@@ -45,9 +45,9 @@
   (gload "places;US states"))
 
 (gate-grammar *other-locations*
-  (gload "places;paths")
-  (gload "places;configurations")
-  (gload "places;regions")
+  (gload "places;paths") ;; highways
+  (gload "places;configurations") ;; intersections, junctions
+  (gload "places;regions") ;; geographical regions
   (gload "places;location descriptions")
   (gload "places;moving"))
 

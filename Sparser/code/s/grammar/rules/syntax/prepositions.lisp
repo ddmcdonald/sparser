@@ -16,6 +16,20 @@
   ;; in methods over them (analyze-pp).
   :specializes predicate)
 
+(def-k-method compose ((operator spatial-operator) (place endurant))
+  ;; called by make-pp so it's forming a referent in a largely
+  ;; syntactic environment and we can make the edge label
+  ;; whatever we like.
+  (if *subcat-test*
+    ;; If we've gotten here with this signature then we'll complete
+    t
+    (let ((i (find-or-make-individual 'relative-location
+                                      :prep operator
+                                      :ground place)))
+      ;;(format t "~&Created ~a~%" i)
+      (revise-parent-edge :category (category-named 'location))
+      i)))
+
 
 (defgeneric analyze-pp (preposition complement)
   (:documentation "Computes the referent of a pp created using the
