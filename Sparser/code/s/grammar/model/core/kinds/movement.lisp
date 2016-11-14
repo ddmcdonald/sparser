@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "movement"
 ;;;   Module:  "grammar/model/core/kinds/"
-;;;  version:  October 2015
+;;;  version:  November 2016
 
 ;; Initiated 3/20/14. Elaborated 3/31/14. 4/14/14 Moved to core/kinds/
 ;; and expunged of ISR vocabulary. 5/12/14 Working on getting 
@@ -23,41 +23,37 @@ bundled together as a packet.
 
 Roles (predicates)
   the thing that moves
-  manner
+  manner (on perdurant)
   path
   from
   to
 
-Cases:
-  I throw a rock. I am the agent of its movement. I bring it about.
-
+Using longer variable names until we can get nice generalization
+from 'from ... to ..' and such
 |#
+
 
 (define-mixin-category can-change-location
   :specializes relation
-  :binds ((former-location) ;; where it was before some event
-          (present-location)) ;; where it is afterwards
+  :binds ((former-location location) ;; where it was before some event
+          (present-location location)) ;; where it is afterwards
   :documentation 
-  "///Can only be ascribed to objects of type 'physical'.
- How could we say that? The two locations are presumably
- c3-location's but letting that percolate until the axioms
- get written. ")
+  "Can only be ascribed to objects of type 'physical'.
+   How could we say that?")
 
 
-
-;; N.b. After this loads it tramples all over the 'move' defined
-;; in model/core/places/moving. They have to merge.
-;;
 (define-category move
   :specializes accomplishment
   ;; realization -- "move" and "movement"
   :restrict ((theme can-change-location))
   :binds ((from-location location) ;; source - the theme's former location
           (to-location location) ;; goal - its new location
-          ;; See set of variables in define-movement-verb that
-          ;; could all be inherited.///modulo when their restriction
-          ;; were loaded: via-path, for-distance, in-direction
-          ;; when-done, and landmark
-          ;; means -- by self or via something else
-          ))
+
+          ;; moved here from define-movement-verb
+          ;; Note that some of these restrictions don't exist yet
+          (via-path . path)
+          (for-distance . measurement) ;; distance?
+          (in-direction . direction)
+          (when-done . time)
+          (landmark . location)))
 
