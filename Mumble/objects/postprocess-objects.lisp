@@ -490,10 +490,11 @@ the virtual machine cleaner."
   (or (find-word string pos)
       (make-a-new-word string pos)))
 
-(defmethod find-or-make-word ((s string))
-  "You probably don't want to use this."
-  (or (word-for-string s)
-      (define-word/expr s '(noun))))
+(defgeneric find-or-make-word (string)
+  (:documentation "You probably don't want to use this.")
+  (:method ((s string))
+    (or (word-for-string s)
+        (define-word/expr s '(noun)))))
 
 (define-postprocessing-function word  (W)
   (set-word-labels W (mapcar #'word-label-named (word-labels W))))

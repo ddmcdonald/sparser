@@ -158,34 +158,37 @@ but we don't want to count on that.
       la)))
 
 
-(defmethod make-adjunction-node ((la lexicalized-attachment)
-                                 (dtn derivation-tree-node))
-  ;; Args are the attachment point, the individual that's its 'value' 
-  ;; (the one we'll look to for the resource that we attach at that spot
-  ;; -- the value we extracted in read-out-rnode) and the
-  ;; derivation-tree-node that we add this ap node to. 
-  (let ((ap (point la))
-        (value (value la)))
-    (let ((apn (make-instance 'adjunction-node 
-                 :ap ap
-                 :value value)))                 
-      (push apn (adjuncts dtn))
-      apn)))
+(defgeneric make-adjunction-node (attachment dtn)
+  (:documentation "The arguments are a lexicalized attachment
+ point, i.e. an attachment point and the the individual that
+ is its value, and the derivation-tree-node that it is to be
+ added to.")
+  (:method ((la lexicalized-attachment)
+           (dtn derivation-tree-node))
+    (let ((ap (point la))
+          (value (value la)))
+      (let ((apn (make-instance 'adjunction-node 
+                   :ap ap
+                   :value value)))                 
+        (push apn (adjuncts dtn))
+        apn))))
 
-(defmethod make-complement-node ((parameter-name symbol)
-                                 i (dtn derivation-tree-node))
-  (make-complement-node (parameter-named parameter-name)
-                        i dtn))
+(defgeneric make-complement-node (parameter value dtn)
+  (:documentation "Combine the parameter and its value into a
+ new instance of a complement-node, then add that to the
+ dtn.")
+  (:method ((parameter-name symbol) i (dtn derivation-tree-node))
+    (make-complement-node (parameter-named parameter-name)
+                          i dtn))
 
-(defmethod make-complement-node ((parameter parameter)
-                                 i (dtn derivation-tree-node))
-  (let ((cn (make-instance 'complement-node
-              :phrase-parameter parameter
-              :bkptrs dtn)))
-    (setf (value cn) i) ;; could have folded these into the make-instance call
-    (setf (referent cn) i) ;; ditto
-    (push cn (complements dtn))
-    cn))
+  (:method ((parameter parameter) i (dtn derivation-tree-node))
+    (let ((cn (make-instance 'complement-node
+                :phrase-parameter parameter
+                :bkptrs dtn)))
+      (setf (value cn) i) ;; could have folded these into the make-instance call
+      (setf (referent cn) i) ;; ditto
+      (push cn (complements dtn))
+      cn)))
 
 ;;;-----------------------------------------
 ;;; accessor-adding as function composition
