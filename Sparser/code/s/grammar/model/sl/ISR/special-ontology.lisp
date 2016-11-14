@@ -13,6 +13,9 @@
 
 (in-package :sparser)
 
+(define-category has-spatial-location
+  :specializes has-location)
+
 (define-mixin-category physical-surface
   :specializes quality  ;; maybe border?
   :mixins (has-color) ;; supplies color variable
