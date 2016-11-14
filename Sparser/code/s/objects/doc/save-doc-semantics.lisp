@@ -380,7 +380,7 @@
                            stream
                            newline
                            close)
-      (start-cat (pname item) str newline close)))
+      (start-cat (pname item) stream newline close)))
 
 (defmethod start-cat ((item referential-category) stream &optional (newline t) (close t))
   (start-cat (cat-symbol item) stream newline close))
