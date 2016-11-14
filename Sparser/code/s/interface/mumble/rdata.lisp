@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "rdata"
 ;;;   Module: "interface;mumble;"
-;;;  Version: April 2016
+;;;  Version: November 2016
 
 (in-package :sparser)
 
@@ -74,7 +74,9 @@
          (map (loop for (param-name var-name) on p&v-pairs by #'cddr
                 as param = (mumble::parameter-named (mumble-symbol param-name))
                 as var = (find-variable-for-category var-name category)
-                do (assert var (var-name) "No variable named ~a in category ~a.")
+                do (progn
+                     (assert var () "No variable named ~a in category ~a." var-name category)
+                     (assert param () "No parameter named ~a in the phrase ~a." param-name phrase))
                 collect (make-instance 'mumble::parameter-variable-pair
                           :var var
                           :param param)))
