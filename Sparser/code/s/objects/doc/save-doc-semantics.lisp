@@ -77,7 +77,8 @@
                  :type (if *use-xml* "xml" "lisp")
                  :defaults
                  (or *article-semantics-directory*
-                     "~/projects/r3/corpus/Reach-sentences/results/")))
+                     (asdf:system-relative-pathname
+                      :r3 "../corpus/Reach-sentences/results/"))))
 
 (defparameter *saved-bio-processes* nil)
 (defparameter *blank-sents* nil)
