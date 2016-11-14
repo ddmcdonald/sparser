@@ -120,6 +120,9 @@ omitted and then run (perhaps) after the image has been launched."
     (gload "names;loader")
     (setq *try-character-type-fsas* t))
 
+  (gate-grammar *location* ;; for spatial prepositions in general-words
+    (gload "places;loader"))
+
   (gate-grammar *standard-adjuncts*
     (gload "adjuncts;loader"))
 
@@ -133,8 +136,8 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
 
-  (gate-grammar *location*
-    (gload "places;loader"))
+;  (gate-grammar *location*
+;    (gload "places;loader"))
 
   (gate-grammar *digits-fsa*
     (gload "numbers;fsa digits"))

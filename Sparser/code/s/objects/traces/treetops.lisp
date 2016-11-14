@@ -606,13 +606,33 @@
   (when (or *trace-island-driving* *parse-edges*)
     (trace-msg "[whack]   no")))
 
+(deftrace :filter-choose-between-two-triples (left)
+   (when (or *trace-island-driving* *parse-edges*)
+     (trace-msg "[whack] two triples share ~a"
+                (left-edge-of-triple left))))
+
+(deftrace :filter-takes-left (triple)
+  (when (or *trace-island-driving* *parse-edges*)
+    (trace-msg "[whack]   using left triple: ~a"
+               (triple-rule triple))))
+
+(deftrace :filter-takes-right (triple)
+  (when (or *trace-island-driving* *parse-edges*)
+    (trace-msg "[whack]   using right triple: ~a"
+               (triple-rule triple))))
+
+(deftrace :filter-taking-right-most-triple (triple)
+  (when (or *trace-island-driving* *parse-edges*)
+    (trace-msg "[whack] Selecting the rightmost triple: ~a"
+               (triple-rule triple))))
+
 (deftrace :filter-selected-triple (triple)
   (when (or *trace-island-driving* *parse-edges*)
     (if triple
       (let ((rule (car triple))
             (left-edge (cadr triple))
             (right-edge (caddr triple)))
-        (trace-msg "[whack] best choice is rule ~a on  e~a and e~a"
+        (trace-msg "[whack] best choice is rule ~a on e~a and e~a"
                    (rule-number-string rule)
                    (edge-position-in-resource-array left-edge)
                    (edge-position-in-resource-array right-edge)))

@@ -356,11 +356,12 @@ be biology specific, since they aren't. |#
 
 (noun "position" :super residue-on-protein)
 
-(noun "region" :super molecular-location
-      :binds ((bounds biological))
-      :realization
-      (:noun "region"
-             :between bounds))
+(define-category region-of-molecule
+  :specializes molecular-location
+  :binds ((bounds biological))
+  :realization
+    (:noun "region"
+     :between bounds))
 
 
 (noun "activity" :super other-bio-process

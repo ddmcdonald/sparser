@@ -198,8 +198,8 @@
 (defun rule-number-string (rule)
   ;; Depends upon rule symbols always having the same
   ;; structure. Lifted from tts code
-  ;; Removes "PSR"
-  (subseq (symbol-name (cfr-symbol rule)) 3))
+  ;; Removes "PSR-"
+  (subseq (symbol-name (cfr-symbol rule)) 4))
 
 
 ;;;--------------------------

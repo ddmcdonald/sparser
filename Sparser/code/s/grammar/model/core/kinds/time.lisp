@@ -17,4 +17,4 @@
 
 (define-category  time
   :instantiates nil
-  :specializes abstract-region)
+  :specializes region)

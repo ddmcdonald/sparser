@@ -77,7 +77,8 @@
                  :type (if *use-xml* "xml" "lisp")
                  :defaults
                  (or *article-semantics-directory*
-                     "~/projects/r3/corpus/Reach-sentences/results/")))
+                     (asdf:system-relative-pathname
+                      :r3 "../corpus/Reach-sentences/results/"))))
 
 (defparameter *saved-bio-processes* nil)
 (defparameter *blank-sents* nil)
@@ -94,14 +95,14 @@
 
 (defparameter *one-expression-per-sentence* t)
 
-(defmethod write-semantics ((sent sentence) &optional (strm t)) ;; strm is the stream
+(defmethod write-semantics ((sent sentence) &optional (stream t))
   (declare (special sent))
   (when (actually-reading)
     (if *one-expression-per-sentence*
-        (write-combined-sentence-results sent strm)
-        (write-sentence-results sent strm))))
+        (write-combined-sentence-results sent stream)
+        (write-sentence-results sent stream))))
 
-(defmethod write-sentence-results ((s sentence) strm)
+(defmethod write-sentence-results ((s sentence) stream)
   (declare (special *show-syn-tree*))
   ;; we assume that this is called immediately after the sentence is parsed
   (loop for edge in (all-tts (starts-at-pos s)(ends-at-pos s))
@@ -119,30 +120,30 @@
                      edge)))
 	 (declare (special ref *no-edge-info* *suppress-indiv-uids*))
 
-         (format strm "~%--- ~s~%"
+         (format stream "~%--- ~s~%"
                  (if (edge-p edge)
                      (extract-string-spanned-by-edge edge)
                      edge))         
 	 (if (word-p ref)
-	     (format strm "  ~s" ref)
-	     (write-sem-tree ref strm))
-         (terpri strm)
-         (terpri strm))))
+	     (format stream "  ~s" ref)
+	     (write-sem-tree ref stream))
+         (terpri stream)
+         (terpri stream))))
 
 
 (defparameter *direct-from-sem* t)
 
-(defun write-sem-tree (ref strm)
+(defun write-sem-tree (ref stream)
   (setq ddm-util::*indentation* 0) ;; make sure indentation is restarted
   (if *direct-from-sem*
-      (write-sem ref strm)
-      (print-sem-tree (spire-tree ref) strm)))
+      (write-sem ref stream)
+      (print-sem-tree (spire-tree ref) stream)))
 
-(defmethod write-combined-sentence-results ((s sentence) strm)
+(defmethod write-combined-sentence-results ((s sentence) stream)
   (declare (special *show-syn-tree*))
   ;; we assume that this is called immediately after the sentence is parsed
   (if *direct-from-sem*
-      (write-sem s strm)
+      (write-sem s stream)
       (write-sem-tree
        `(interpretation
          (sentence-text ,(sentence-string s))
@@ -163,13 +164,13 @@
                   ,(if (word-p ref)
                        `(wd ,(pname ref))
                        (spire-tree ref))))))
-       strm))
-  (terpri strm))
+       stream))
+  (terpri stream))
 
-(defun prin-escaped (string strm &aux (string (string string)))
+(defun prin-escaped (string stream &aux (string (string string)))
   (if (find-package :xmls)
-    (uiop:symbol-call :xmls :write-escaped string strm)
-    (write-string string strm)))
+    (uiop:symbol-call :xmls :write-escaped string stream)
+    (write-string string stream)))
 
 (defun sent-sem (&optional sent)
   ;; produces an s-expression which is the item that write-sem would produce
@@ -193,218 +194,218 @@
              (find-sem-type-instances ss)))))
 
 
-(defmethod write-sem ((s sentence) strm &optional (newline t))
+(defmethod write-sem ((s sentence) stream &optional (newline t))
   (declare (ignore newline))
   (setq ddm-util::*indentation* 0) ;; make sure indentation is restarted
-  (start-element "interpretation" strm)
+  (start-element "interpretation" stream)
   (push-indentation)
-  (start-element "sentence-text" strm)
+  (start-element "sentence-text" stream)
   (if *use-xml*
-      (write-sem (sentence-string s) strm)
-      (format strm " ~s" (sentence-string s)))
-  (finish-element "sentence-text" strm nil)
+      (write-sem (sentence-string s) stream)
+      (format stream " ~s" (sentence-string s)))
+  (finish-element "sentence-text" stream nil)
   (pop-indentation)
   (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
         as small = (and (edge-p tt) (small-binding-list (edge-referent tt)))
         do (push-indentation)
-           (start-element "sem" strm)
+           (start-element "sem" stream)
            (unless small (push-indentation))
-           (write-sem (if (edge-p tt) (edge-referent tt) tt) strm)
+           (write-sem (if (edge-p tt) (edge-referent tt) tt) stream)
            (unless small (pop-indentation))
-           (finish-element "sem" strm (not small))
+           (finish-element "sem" stream (not small))
            (pop-indentation))
-  (finish-element "interpretation" strm))
+  (finish-element "interpretation" stream))
 
-(defmethod write-sem ((i individual) strm &optional (newline t))
+(defmethod write-sem ((i individual) stream &optional (newline t))
   (cond ((simple-number? i)
-         (space-prin1 (value-of 'value i) strm))
+         (space-prin1 (value-of 'value i) stream))
         ((and *use-xml*
               (itypep i 'protein)
               (= (length (filter-bl i)) 2)
               (value-of 'name i)
               (value-of 'uid i))
-         (write-protein-xml i strm))
+         (write-protein-xml i stream))
         ((or (small-binding-list i) (null newline))
-         (start-cat i strm nil)
-         (print-binding-list i strm nil)
-         (finish-cat strm nil))
+         (start-cat i stream nil)
+         (print-binding-list i stream nil)
+         (finish-cat stream nil))
         (t
-         (start-cat i strm newline)
-         (print-binding-list i strm newline)
-         (finish-cat strm newline))))
+         (start-cat i stream newline)
+         (print-binding-list i stream newline)
+         (finish-cat stream newline))))
 
-(defun write-protein-xml (protein strm)
-  (start-cat protein strm nil nil)
-  (write-attribute 'name (value-of 'name protein) strm)
-  (write-attribute 'uid (value-of 'uid protein) strm)
-  (emit-line-continue strm (format nil "/>")))
+(defun write-protein-xml (protein stream)
+  (start-cat protein stream nil nil)
+  (write-attribute 'name (value-of 'name protein) stream)
+  (write-attribute 'uid (value-of 'uid protein) stream)
+  (emit-line-continue stream "/>"))
 
-(defun write-attribute (att-name item strm)
-  (format strm " ~a=\"" (string-downcase att-name))
-  (prin-escaped (pname item) strm)
-  (format strm "\" "))
+(defun write-attribute (att-name item stream)
+  (format stream " ~a=\"" (string-downcase att-name))
+  (prin-escaped (pname item) stream)
+  (format stream "\""))
 
-(defmethod write-sem ((w string) strm &optional (newline t))
+(defmethod write-sem ((w string) stream &optional (newline t))
   (declare (ignore newline))
   (if *use-xml*
-      (format strm "~a"
-              (with-output-to-string (s-strm) (prin-escaped w s-strm)))
-    (format strm " ~s" w)))
+      (format stream "~a"
+              (with-output-to-string (s-stream) (prin-escaped w s-stream)))
+    (format stream " ~s" w)))
 
-(defmethod write-sem ((w word) strm &optional (newline t))
-  (write-sem (pname w) strm newline))
-(defmethod write-sem ((w polyword) strm &optional (newline t))
-  (write-sem (pname w) strm newline))
-(defmethod write-sem ((w symbol) strm &optional (newline t))
+(defmethod write-sem ((w word) stream &optional (newline t))
+  (write-sem (pname w) stream newline))
+(defmethod write-sem ((w polyword) stream &optional (newline t))
+  (write-sem (pname w) stream newline))
+(defmethod write-sem ((w symbol) stream &optional (newline t))
   (cond (*use-xml*
-         (prin-escaped (string-downcase (pname w)) strm))
+         (prin-escaped (string-downcase (pname w)) stream))
         ((search " " (pname w))
-         (format strm " ~s" w))
-        (t (format strm " ~s" (string-downcase (pname w))))))
-(defmethod write-sem ((w number) strm &optional (newline t))
+         (format stream " ~s" w))
+        (t (format stream " ~s" (string-downcase (pname w))))))
+(defmethod write-sem ((w number) stream &optional (newline t))
   (declare (ignore newline))
-  (format strm " ~a" w))
-(defmethod write-sem ((val cons) strm &optional (newline t))
+  (format stream " ~a" w))
+(defmethod write-sem ((val cons) stream &optional (newline t))
   (declare (ignore newline))
-  (start-cat "set" strm)
+  (start-cat "set" stream)
   (loop initially (push-indentation)
         for element in val
-        do (write-sem element strm)
+        do (write-sem element stream)
         finally (pop-indentation))
-  (finish-cat strm))
-(defmethod write-sem ((c referential-category) strm &optional (newline t))
+  (finish-cat stream))
+(defmethod write-sem ((c referential-category) stream &optional (newline t))
   (declare (ignore newline))
-  (start-cat c strm nil)
-  (finish-cat strm nil))
+  (start-cat c stream nil)
+  (finish-cat stream nil))
 
-(defun write-lambda-binding (binding strm &optional newline)
+(defun write-lambda-binding (binding stream &optional newline)
   (if *use-xml*
       (let ((name (string-downcase (pname (binding-variable binding)))))
-        (start-lambda-var "var" name strm newline)
-        (write-attribute 'lambda-variable "true" strm)
-        (finish-lambda-var "var" name strm newline))
+        (start-lambda-var "var" name stream newline)
+        (write-attribute 'lambda-variable "true" stream)
+        (finish-lambda-var "var" name stream newline))
       (else
-        (start-var (binding-variable binding) strm newline)
-        (format strm " *lambda-var*")
-        (finish-var strm newline))))
+        (start-var (binding-variable binding) stream newline)
+        (format stream " *lambda-var*")
+        (finish-var stream newline))))
 
-(defun start-lambda-var (element name strm &optional (newline t)
+(defun start-lambda-var (element name stream &optional (newline t)
                          &aux (name (if (symbolp name)
                                         name
                                         (string-downcase name))))
   (cond (*use-xml*
-         (emit-line-continue strm
+         (emit-line-continue stream
                              (format nil "<~a name=\"" element))
-         (prin-escaped name strm)
-         (emit-line-continue strm "\""))
+         (prin-escaped name stream)
+         (emit-line-continue stream "\""))
         (newline
          (if (symbolp name)
-             (emit-line strm (format nil " (~s" name))
-             (emit-line strm (concatenate 'string " (" name))))
+             (emit-line stream (format nil " (~s" name))
+             (emit-line stream (concatenate 'string " (" name))))
         (t
          (if (symbolp name)
-             (emit-line-continue strm (format nil " (~s" name))
-             (emit-line-continue strm (concatenate 'string " (" name))))))
+             (emit-line-continue stream (format nil " (~s" name))
+             (emit-line-continue stream (concatenate 'string " (" name))))))
 
-(defun print-binding-list (i strm &optional (newline t))
+(defun print-binding-list (i stream &optional (newline t))
   (when newline (push-indentation))
   (loop for binding in (filter-bl i)
-     do (write-sem binding strm newline))
+     do (write-sem binding stream newline))
   (when newline (pop-indentation)))
 
-(defmethod write-sem ((binding binding) strm &optional (newline t))
+(defmethod write-sem ((binding binding) stream &optional (newline t))
   (let ((var (binding-variable binding))
         (small (small-binding-list (binding-value binding))))
     (declare (special small))
     (if
      (eq (binding-value binding) '*lambda-var*)
-     (write-lambda-binding binding strm)
-     (else (start-var var strm newline)
+     (write-lambda-binding binding stream)
+     (else (start-var var stream newline)
            (if small
                (then
-                 (write-sem (binding-value binding) strm nil))
+                 (write-sem (binding-value binding) stream nil))
                (else
                  (push-indentation)
-                 (write-sem (binding-value binding) strm newline)
+                 (write-sem (binding-value binding) stream newline)
                  (pop-indentation)))
-           (finish-var strm (not small))))))
+           (finish-var stream (not small))))))
 
 
-(defun start-element (element strm &optional (newline t))
+(defun start-element (element stream &optional (newline t))
   (let ((start (format nil "~:[(~a~;<~a>~]" *use-xml* element)))
     (if newline
-      (emit-line strm start)
-      (emit-line-continue strm start))))
+      (emit-line stream start)
+      (emit-line-continue stream start))))
 
-(defun finish-element (element strm &optional (newline t))
+(defun finish-element (element stream &optional (newline t))
   (let ((finish (format nil "~:[~*)~;</~a>~]" *use-xml* element)))
     (if (and newline *use-xml*)
-      (emit-line strm finish)
-      (emit-line-continue strm finish))))
+      (emit-line stream finish)
+      (emit-line-continue stream finish))))
 
-(defun start-named-element (element att-name name strm &optional (newline t)(close t)
+(defun start-named-element (element att-name name stream &optional (newline t) (close t)
                             &aux (name (if (symbolp name)
                                            name
                                            (string-downcase name))))
   (if *use-xml*
-      (let ((start (format nil "<~a ~a\"" element att-name)))
+      (let ((start (format nil "<~a ~a=\"" element att-name)))
         (if newline
-            (emit-line strm start)
-            (emit-line-continue strm start))
-        (prin-escaped (string-downcase name) strm)
-        (write-string (if close "\">" " ") strm))
+            (emit-line stream start)
+            (emit-line-continue stream start))
+        (prin-escaped (string-downcase name) stream)
+        (write-string (if close "\">" "\"") stream))
       (if newline
           (if (symbolp name)
-              (emit-line strm (format nil " (~s" name))
-              (emit-line strm (concatenate 'string " (" name)))
+              (emit-line stream (format nil " (~s" name))
+              (emit-line stream (concatenate 'string " (" name)))
           (if (symbolp name)
-              (emit-line-continue strm (format nil " (~s" name))
-              (emit-line-continue strm (concatenate 'string " (" name))))))
+              (emit-line-continue stream (format nil " (~s" name))
+              (emit-line-continue stream (concatenate 'string " (" name))))))
 
 
 
-(defun finish-lambda-var (element name strm &optional (newline t)
+(defun finish-lambda-var (element name stream &optional (newline t)
                           &aux (name (if (symbolp name)
                                          name
                                          (string-downcase name))))
   (cond (*use-xml*
-         (emit-line-continue strm (format nil "/>" element)))
+         (emit-line-continue stream (format nil "/>" element)))
         (t
-         (emit-line-continue strm (format nil ")" element)))))
+         (emit-line-continue stream (format nil ")" element)))))
 
-(defmethod start-cat ((item symbol) str &optional (newline t)(close t))
+(defmethod start-cat ((item symbol) stream &optional (newline t) (close t))
   (if (search " " (pname item))
       (start-named-element "ref"
                            "category"
                            (intern (symbol-name  item) :sparser)
-                           str
+                           stream
                            newline
                            close)
-      (start-cat (pname item) str newline close)))
+      (start-cat (pname item) stream newline close)))
 
-(defmethod start-cat ((item referential-category) str &optional (newline t)(close t))
-  (start-cat (cat-symbol item) str newline))
+(defmethod start-cat ((item referential-category) stream &optional (newline t) (close t))
+  (start-cat (cat-symbol item) stream newline close))
 
-(defmethod start-cat ((item individual) str &optional (newline t)(close t))
-  (start-cat (itype-of item) str newline))
+(defmethod start-cat ((item individual) stream &optional (newline t) (close t))
+  (start-cat (itype-of item) stream newline close))
 
-(defmethod start-cat ((item string) str &optional (newline t)(close t))
-  (start-named-element "ref" "category" item str newline close))
+(defmethod start-cat ((item string) stream &optional (newline t) (close t))
+  (start-named-element "ref" "category" item stream newline close))
 
-(defmethod start-var ((item lambda-variable) str &optional (newline t))
-  (start-var (pname item) str newline))
+(defmethod start-var ((item lambda-variable) stream &optional (newline t))
+  (start-var (pname item) stream newline))
 
-(defmethod start-var ((item symbol) str &optional (newline t))
-  (start-var (pname item) str newline))
+(defmethod start-var ((item symbol) stream &optional (newline t))
+  (start-var (pname item) stream newline))
 
-(defmethod start-var ((item string) str &optional (newline t))
-  (start-named-element "var" "name" item str newline))
+(defmethod start-var ((item string) stream &optional (newline t))
+  (start-named-element "var" "name" item stream newline))
 
-(defun finish-cat (strm &optional (newline t))
-  (finish-element "ref" strm newline))
+(defun finish-cat (stream &optional (newline t))
+  (finish-element "ref" stream newline))
 
-(defun finish-var (strm &optional (newline t))
-  (finish-element "var" strm newline))
+(defun finish-var (stream &optional (newline t))
+  (finish-element "var" stream newline))
 
 (defmethod small-binding-list ((bl symbol)) (null bl))
 (defmethod small-binding-list ((x word)) t)
@@ -440,11 +441,11 @@
 ;;;;;;;;;;;;;;
       
 
-(defmethod print-sem-tree ((i individual) &optional strm)
-  (print-sem-tree (semtree i) strm))
+(defmethod print-sem-tree ((i individual) &optional stream)
+  (print-sem-tree (semtree i) stream))
 
-(defmethod print-sem-tree ((s string) &optional strm)
-  (space-prin1 s strm))
+(defmethod print-sem-tree ((s string) &optional stream)
+  (space-prin1 s stream))
 
 (defun simple-number? (i)
   (and (individual-p i)
@@ -452,53 +453,52 @@
        (not (itype i 'multiplier))
        (not (collection-p i))))
 
-(defmethod print-sem-tree ((sem-tree cons) &optional (strm *standard-output*))
-  (declare (special *for-spire* *sentence-results-strm*))
+(defmethod print-sem-tree ((sem-tree cons) &optional (stream *standard-output*))
+  (declare (special *for-spire* *sentence-results-stream*))
   (let ((*suppress-indiv-uids* t))
     (declare (special *suppress-indiv-uids*))
     (cond 
       ((simple-number? (car sem-tree))       
-       (space-prin1 (value-of 'value (car sem-tree)) strm))
+       (space-prin1 (value-of 'value (car sem-tree)) stream))
       ((short-vvs (cdr sem-tree))
-       (lcase-emit sem-tree strm))
+       (lcase-emit sem-tree stream))
       (t
-       (emit-list-start (cat-string (car sem-tree)) strm)
+       (emit-list-start (cat-string (car sem-tree)) stream)
        (print-var-vals
         (if (eq (car sem-tree) 'items) ;; simplify printout of the ITEMS in a collection
             ;; temproary to simplify comparisons
             (second (second (second sem-tree)))
             (cdr sem-tree))
-        strm)
-       (emit-line-continue strm ")")))))
+        stream)
+       (emit-line-continue stream ")")))))
 
-(defmethod print-sem-tree (sem-tree &optional (strm *standard-output*))
-  (space-prin1 sem-tree strm))
+(defmethod print-sem-tree (sem-tree &optional (stream *standard-output*))
+  (space-prin1 sem-tree stream))
 
-(defun lcase-emit (s strm)
-  (emit-line strm  (string-downcase (format nil "~s" s))))
+(defun lcase-emit (s stream)
+  (emit-line stream (string-downcase (format nil "~s" s))))
 
-(defun lcase-prin1 (s strm)
-  (format strm  "~a" (string-downcase (format nil "~s" s))))
+(defun lcase-prin1 (s stream)
+  (format stream "~a" (string-downcase (format nil "~s" s))))
 
-(defun lcase-space-prin1 (s strm)
-  (format strm  " ~a" (string-downcase (format nil "~s" s))))
+(defun lcase-space-prin1 (s stream)
+  (format stream " ~a" (string-downcase (format nil "~s" s))))
 
-(defun emit-list-start (item strm)
-  (emit-line strm (concatenate 'string "(" item)))
+(defun emit-list-start (item stream)
+  (emit-line stream (concatenate 'string "(" item)))
 
+(defun emit-list-start-continue (item stream)
+  (emit-line-continue stream (concatenate 'string " (" item)))
 
-(defun emit-list-start-continue (item strm)
-  (emit-line-continue strm (concatenate 'string " (" item)))
-
-(defun space-prin1 (item strm)
-  (format strm " ~s" item))
+(defun space-prin1 (item stream)
+  (format stream " ~s" item))
 
 (defun short-vvs (vvs)
   (and (null (cdr vvs))
        (or (not (consp (car vvs)))
            (not (consp (second (car vvs)))))))
 
-(defun print-var-vals (vvs strm)
+(defun print-var-vals (vvs stream)
   (declare (special *for-spire*))
   (push-indentation)
   (loop for item in vvs
@@ -507,17 +507,17 @@
      do
        (if (consp item)
            (then
-             (emit-list-start (string-downcase (format nil "~a" (car item))) strm)
+             (emit-list-start (string-downcase (format nil "~a" (car item))) stream)
              (push-indentation)
              (if
               (eq (car item) :members)
               (loop for element in (cdr item)
                  do
-                   (print-sem-tree element strm))
-              (print-sem-tree (second  item) strm))
-             (format strm ")")
+                   (print-sem-tree element stream))
+              (print-sem-tree (second  item) stream))
+             (format stream ")")
              (pop-indentation))
-           (lcase-space-prin1 item strm)))
+           (lcase-space-prin1 item stream)))
   (pop-indentation))
 
 (defmethod cat-string ((cat individual) &optional with-name)

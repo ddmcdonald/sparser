@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "relational"
 ;;;   Module:  "model;core:places:"
-;;;  version:  June 2016
+;;;  version:  November 2016
 
 ;; Extracted from object file 7/21/11. Evicerated it 9/28 in lieu of
 ;; doing something more nuanced. Removed the category/individuals
@@ -27,17 +27,18 @@
 (define-category relative-location  ;; "above the house"
   :instantiates self
   :specializes location
-  :binds ((place)
-          (prep :primitive word))
-   :realization ((:tree-family content-pp
+  :binds ((ground) ;; has-location -- more like 'is suitable as a location
+          (prep spatial-operator)) ;;// do Mumble side
+  :index (:temporary :sequential-keys prep ground)
+  :realization ((:mumble (prepositional-phrase :p prep
+                                                :prep-object ground))
+                 #+ignore(:tree-family content-pp
                   :mapping ((type . :self)
                             (articulator . prep)
                             (item . place)
                             (pp . :self)
                             (preposition . ("in" "on")) ;; what else is imortant?
-                            (complement . np)))
-                 (:mumble (prepositional-phrase :p prep
-                                                :prep-object place))))
+                            (complement . np)))))
 
 (defmethod def-relative-location ((prep-name string) (n number))
   (let ((prep (word-named prep-name))
@@ -48,21 +49,14 @@
 (defmethod def-relative-location ((prep word) (i individual))
   (find-or-make-individual 'relative-location
                            :prep prep
-                           :place i))
+                           :ground i))
 
-#|
-(def-cfr relative-location ("in" region)
-  :form pp
-;;  :head :right-edge
-  :referent (:instantiate-individual relative-location
-             :with (place right-edge
-                    prep left-edge)))
-|#
+;;/// specialized preposition forms are deprecated
 (def-form-rule (spatio-temporal-preposition location)
   :form pp
   :head :right-edge
   :referent (:instantiate-individual relative-location
-             :with (place right-edge
+             :with (ground right-edge
                     prep left-edge)))
 
 

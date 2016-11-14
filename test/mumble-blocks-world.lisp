@@ -51,7 +51,7 @@
 
 (deftest (say put green block on first block)
   (mumble-says "Now put a green block on top of the first block.")
-  "now put a green block on the first block")
+  "now put a green block on top of the first block")
 
 (deftest (say put block on bottom middle block)
   (mumble-says "Put a red block on the bottom middle green block.")
@@ -67,7 +67,7 @@
 
 (deftest (say put another at end)
   (mumble-says "Put another green block on the green block at the end of the row.")
-  "put another green block on the green block on the end of the row") ; dup prep
+  "put another green block on the green block at the end of the row")
 
 #+(or) ; "on the left" should be a relative location, not a modifier
 (deftest (say put another at end on left)

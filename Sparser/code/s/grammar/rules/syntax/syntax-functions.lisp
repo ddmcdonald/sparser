@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  August 2016
+;;;  Version:  November 2016
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -82,14 +82,20 @@
 (defvar CATEGORY::COPULAR-PP)
 (defvar CATEGORY::COPULAR-PREDICATE)
 
-;; moved here, out of KRAQL -- should be put in a more apprpriate place (DAVID?)
-(defun collection-p (item)
-  (declare (special category::collection))
-  (itypep item category::collection))
 
-; (left-edge-for-referent)
-; (right-edge-for-referent)
-; (parent-edge-for-referent)
+;; (left-edge-for-referent)
+;; (right-edge-for-referent)
+;; (parent-edge-for-referent)
+
+;; move to utilities associated with edge-search
+(defun pair-context ()
+  (let ((left (left-edge-for-referent))
+        (right (right-edge-for-referent)))
+    (when (and left right)
+      (format nil "e~a + e~a"
+              (edge-position-in-resource-array left)
+              (edge-position-in-resource-array right)))))
+
 
 ;;;------------
 ;;; parameters
@@ -887,51 +893,55 @@ No longer used -- remove soon
   ;; default to binding modifier.
   (unless (and vg pp)
     (return-from adjoin-pp-to-vg nil))
+  ;;(push-debug `(,vg ,pp)) (break "adjoin-pp-to-vg")
   (if (itypep pp 'collection) ;; a conjunction
-      (if *subcat-test*
-          (loop for pp-edge in (edge-constituents (right-edge-for-referent))
-             always
-               (let ((*right-edge-into-reference* pp-edge))
-                 (declare (special *right-edge-into-reference*))
-                 (adjoin-pp-to-vg vg (edge-referent pp-edge))))
-          (loop for pp-edge in (edge-constituents (right-edge-for-referent))
-             do
-               (let ((*right-edge-into-reference* pp-edge))
-                 (declare (special *right-edge-into-reference*))
-                 (setq vg (adjoin-pp-to-vg vg (edge-referent pp-edge))))
-             finally (return vg)))
+    (if *subcat-test*
+      (loop for pp-edge in (edge-constituents (right-edge-for-referent))
+         always
+           (let ((*right-edge-into-reference* pp-edge))
+             (declare (special *right-edge-into-reference*))
+             (adjoin-pp-to-vg vg (edge-referent pp-edge))))
+      
+      (loop for pp-edge in (edge-constituents (right-edge-for-referent))
+         do
+           (let ((*right-edge-into-reference* pp-edge))
+             (declare (special *right-edge-into-reference*))
+             (setq vg (adjoin-pp-to-vg vg (edge-referent pp-edge))))
+         finally (return vg)))
           
-      (let* ((pp-edge (base-pp (right-edge-for-referent)))
-             (prep-word (identify-preposition pp-edge))
-             (*pobj-edge* (edge-right-daughter pp-edge))
-             (pobj-referent (identify-pobj pp-edge))
-             (variable-to-bind
-              (when prep-word
-                ;; test if there is a known interpretation of the VG/PP combination
-                (or (subcategorized-variable vg prep-word pobj-referent)
-                    (and (itypep pp 'upon-condition)
-                         (find-variable-for-category 'context (itype-of vg))) ;; circumstance)
-                    ;; or if we are making a last ditch effore
-                    (and *force-modifiers*
-                         'modifier)))))
-        (declare (special *pobj-edge*))
-        (cond
-          (*subcat-test* variable-to-bind)
-          (variable-to-bind
-           (when *collect-subcat-info*
-             (push (subcat-instance vg prep-word variable-to-bind pp)
-                   *subcat-info*))
-           (setq vg (individual-for-ref vg))
-           (setq pobj-referent (individual-for-ref pobj-referent))
-           (setq  vg (bind-dli-variable variable-to-bind pobj-referent vg))
-           vg)))))
+    ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
+    (or (call-compose vg pp)
+        (let* ((pp-edge (base-pp (right-edge-for-referent)))
+               (prep-word (identify-preposition pp-edge))
+               (*pobj-edge* (edge-right-daughter pp-edge))
+               (pobj-referent (identify-pobj pp-edge))
+               (variable-to-bind
+                (when prep-word
+                  ;; test if there is a known interpretation of the VG/PP combination
+                  (or (subcategorized-variable vg prep-word pobj-referent)
+                      (and (itypep pp 'upon-condition)
+                           (find-variable-for-category 'context (itype-of vg))) ;; circumstance)
+                      ;; or if we are making a last ditch effore
+                      (and *force-modifiers*
+                           'modifier)))))
+          (declare (special *pobj-edge*))
+          (cond
+            (*subcat-test* variable-to-bind)
+            (variable-to-bind
+             (when *collect-subcat-info*
+               (push (subcat-instance vg prep-word variable-to-bind pp)
+                     *subcat-info*))
+             (setq vg (individual-for-ref vg))
+             (setq pobj-referent (individual-for-ref pobj-referent))
+             (setq vg (bind-dli-variable variable-to-bind pobj-referent vg))
+           vg))))))
 
 
 (defun adjoin-prepcomp-to-vg (vg prep-comp) ;; "by binding..."
   (let* ((comp-edge (right-edge-for-referent))
          (prep-word (identify-preposition comp-edge))
          (comp-ref (edge-referent (edge-right-daughter comp-edge))))
-    (push-debug `(,prep-word ,comp-ref)) ;;(break "here")
+    ;;(push-debug `(,prep-word ,comp-ref)) ;;(break "here")
     (let ((variable
            (subcategorized-variable vg prep-word comp-ref)))
       (cond
@@ -1064,15 +1074,8 @@ No longer used -- remove soon
     ((itypep pp 'collection)
      ;;(lsp-break "pp collection")
      nil)
-    (t
-     (or (when (and np pp) (call-compose np pp))
-         ;; guard against passing a null NP to call-compose
-         ;; Rusty - this is the hook that allows for a custom interpretation
-         ;; of the meaning of this pair. If you look up at verb-noun-compound
-         ;; you see a note that says it's for 'type' cases, e.g. "the Ras protein".
-         ;; In general it's a hook for any knowledge we have about particular
-         ;; cases / co-composition
-
+    ((and np pp)
+     (or (call-compose np pp)
          (let* ((pp-edge (right-edge-for-referent))
                 (prep-word (identify-preposition pp-edge))
                 ;;(*pobj-edge* (edge-right-daughter pp-edge))
@@ -1481,6 +1484,7 @@ No longer used -- remove soon
 
 (defun make-pp (prep pobj)
   (or *subcat-test*
+      (when *clos* (call-compose prep pobj))
       (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
        category::prepositional-phrase
        `((prep ,prep) (pobj ,pobj)))))

@@ -83,37 +83,35 @@
 ;;; Entry points
 ;;;--------------
 
-(defmethod instantiate-lexicalized-phrase ((lp saturated-lexicalized-phrase))
-  "All the parameters are bound on the lexicalized phrase"
-  (let ((phrase (phrase lp))
-        (*phrase-parameter-argument-list* 
+(defgeneric instantiate-lexicalized-phrase (lp)
+  (:documentation "All the parameters are bound on the lexicalized phrase")
+  (:method ((lp saturated-lexicalized-phrase))
+    (let ((phrase (phrase lp))
+          (*phrase-parameter-argument-list* 
          (pvp-to-list-of-parameter-value-conses (bound lp))))
-    (declare (special *phrase-parameter-argument-list*))
-    ;(break "1 dtn = ~a" dtn)
-    (build-rooted-phrase (definition phrase))))
+      (declare (special *phrase-parameter-argument-list*))
+      (build-rooted-phrase (definition phrase)))))
 
-(defmethod instantiate-phrase-in-dtn ((lp partially-saturated-lexicalized-phrase)
-                                      (dtn derivation-tree-node))
-  "Some of the paramters are bound on the lp, the rest are given as
-   complements on the dtn"
-  (let ((phrase (phrase lp))
-        (*phrase-parameter-argument-list*
-         (pvp-to-list-of-parameter-value-conses (bound lp))))
-    (declare (special *phrase-parameter-argument-list*))
-    (setq *phrase-parameter-argument-list*
-          (append (parameter-arg-list-from-dtn dtn)
-                  *phrase-parameter-argument-list*))
-    ;(break "3 dtn = ~a" dtn)
-    (build-rooted-phrase (definition phrase))))
+(defgeneric instantiate-phrase-in-dtn (lp dtn)
+  (:method ((lp partially-saturated-lexicalized-phrase)
+            (dtn derivation-tree-node))
+    "Some of the paramters are bound on the lp, the rest are given as
+     complements on the dtn"
+    (let ((phrase (phrase lp))
+          (*phrase-parameter-argument-list*
+           (pvp-to-list-of-parameter-value-conses (bound lp))))
+      (declare (special *phrase-parameter-argument-list*))
+      (setq *phrase-parameter-argument-list*
+            (append (parameter-arg-list-from-dtn dtn)
+                    *phrase-parameter-argument-list*))
+      (build-rooted-phrase (definition phrase))))
 
-
-(defmethod instantiate-phrase-in-dtn ((phrase phrase) 
-                                      (dtn derivation-tree-node))
-  "All of the parameters are supplied by the dtn in its complement nodes"
-  (let ((*phrase-parameter-argument-list* (parameter-arg-list-from-dtn dtn)))
-    (declare (special *phrase-parameter-argument-list*))
-    ;(break "2 dtn = ~a" dtn)
-    (build-rooted-phrase (definition phrase))))
+  (:method ((phrase phrase) 
+            (dtn derivation-tree-node))
+    "All of the parameters are supplied by the dtn in its complement nodes"
+    (let ((*phrase-parameter-argument-list* (parameter-arg-list-from-dtn dtn)))
+      (declare (special *phrase-parameter-argument-list*))
+      (build-rooted-phrase (definition phrase)))))
 
    
 ;; Perhaps ignore this. The call to create-phrase-parameter-argument-list
@@ -315,36 +313,35 @@
   (setq *objects-reached-in-path* nil)
   (trace-out-tree root))
 
-(defmethod trace-out-tree ((root phrasal-root)
-                           &optional (stream *standard-output*))
-  (been-here-before? root)
-  (format stream "~a -> " (name root))
-  (trace-out-tree (first-constituent root)))
+(defgeneric trace-out-tree (tree-element  &optional stream)
+  (:documentation "This doesn't quite work, but the idea is that
+    it knows how to traverse a phrase structure tree and display
+    its contents in a way that would help in dubugging")
 
-(defmethod trace-out-tree ((slot slot)
-                           &optional (stream *standard-output*))
-  (been-here-before? slot)
-  (format stream "~a -> " (name slot))
-  (trace-out-tree (contents slot))
-  (let ((next (next slot)))
-    (trace-out-tree next)))
+  (:method ((root phrasal-root) &optional (stream *standard-output*))
+    (been-here-before? root)
+    (format stream "~a -> " (name root))
+    (trace-out-tree (first-constituent root)))
 
-(defmethod trace-out-tree ((node node)
-                           &optional (stream *standard-output*))
-  (been-here-before? node)
-  (format stream "~a -> " (name node))
-  (trace-out-tree (first-constituent node))
-  (trace-out-tree (next (first-constituent node))))
+  (:method ((slot slot) &optional (stream *standard-output*))
+    (been-here-before? slot)
+    (format stream "~a -> " (name slot))
+    (trace-out-tree (contents slot))
+    (let ((next (next slot)))
+      (trace-out-tree next)))
 
-(defmethod trace-out-tree ((word word)
-                           &optional (stream *standard-output*))
-  (format stream "~a -> " word))
+  (:method ((node node) &optional (stream *standard-output*))
+    (been-here-before? node)
+    (format stream "~a -> " (name node))
+    (trace-out-tree (first-constituent node))
+    (trace-out-tree (next (first-constituent node))))
 
-(defmethod trace-out-tree ((pn pronoun)
-                           &optional (stream *standard-output*))
-  (format stream "~a -> " pn))
+  (:method ((word word) &optional (stream *standard-output*))
+    (format stream "~a -> " word))
 
-(defmethod trace-out-tree ((unknown t)
-                           &optional (stream *standard-output*))
-  (declare (ignore stream))
-  (break "Need a mentod for ~a" (type-of unknown)))
+  (:method ((pn pronoun) &optional (stream *standard-output*))
+    (format stream "~a -> " pn))
+
+  (:method ((unknown t) &optional (stream *standard-output*))
+    (declare (ignore stream))
+    (break "Need a mentod for ~a" (type-of unknown))))

@@ -179,12 +179,14 @@
     (format stream " ~a" (mapcar #'name (free lp)))
     (print-lp-bound-values lp stream)))
 
-(defmethod print-lp-bound-values ((lp saturated-lexicalized-phrase) stream)
-  (loop for pvp in (bound lp)
-    do (format stream " ~a = ~a"
-               (name (phrase-parameter pvp))
-               (value pvp))))
-
+(defgeneric print-lp-bound-values (lp stream)
+  (:documentation "Shared subroutine of several object printers")
+  (:method ((lp saturated-lexicalized-phrase) stream)
+    (loop for pvp in (bound lp)
+       do (format stream " ~a = ~a"
+                  (name (phrase-parameter pvp))
+                  (value pvp)))))
+  
 
 (defmethod print-object ((pvp parameter-value-pair) stream)
   (print-unreadable-object (pvp stream)

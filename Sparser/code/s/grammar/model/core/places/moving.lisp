@@ -18,12 +18,6 @@
 
 (in-package :sparser)
 
-;; drive to <location>
-;; travel <measurement (distance)> <direction> on<path> to<location
-;; turn <direction> onto<path>
-;; cross <landmark ??>
-;; follow <path> to<configuration> past<landmark> (<distance>)
-
 
 ;; A category generator based on these verbs, with the assumption
 ;; that we get the arguments by building up left-to-right (which
@@ -31,19 +25,18 @@
 ;; but if they don't individually combine we'll get there one adjunct
 ;; at a time in order.
 
+;; drive to <location>
+;; travel <measurement (distance)> <direction> on<path> to<location
+;; turn <direction> onto<path>
+;; cross <landmark ??>
+;; follow <path> to<configuration> past<landmark> (<distance>)
+
 (defun define-movement-verb (string  &optional name)
   (let* ((symbol (or name (name-to-use-for-category string)))
          (category (category-named symbol)))
     (let ((form `(define-category ,symbol
                    :specializes move
-                   :instantiates move
-                   :binds (;; inherits from-location, to-location from move
-                           (via-path . path)
-                           (for-distance . measurement) ;; distance?
-                           (in-direction . direction)
-                           (when-done . time)
-                           (landmark . location)
-                           )
+                   :instantiates move                           
                    :realization ((:tree-family vp+adjunct
                                   :mapping ((vg . :self)
                                             (vp . move)

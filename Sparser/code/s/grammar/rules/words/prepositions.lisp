@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   2.4 June 2014
+;;;   Version:   November 2016
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -53,7 +53,11 @@
   (unless form
     (setq form 'preposition))
   (unless super-category
-    (setq super-category 'prepositional-operator))
+    (setq super-category
+          (ecase form
+            (spatial-preposition 'spatial-operator)
+            (spatio-temporal-preposition 'spatial-operator) ;; ignore time for now
+            (preposition 'prepositional-operator))))
   (let* ((word (define-function-word string
                  :brackets brackets
                  :form form))
@@ -90,7 +94,7 @@
 (define-preposition "above" :form 'spatial-preposition)
 (define-preposition "abreast of") ;; reference?
 (define-preposition "according to") ;; reference?
-(define-preposition "across") ;; spatial?
+(define-preposition "across" :form 'spatial-preposition) ;; spatial?
 (define-preposition "across from" :form 'spatial-preposition)
 (define-preposition "afore" :form 'spatio-temporal-preposition)
 (define-preposition "after" :form 'spatio-temporal-preposition)
@@ -141,7 +145,7 @@
 (define-preposition "contrary to")
 ;; (define-preposition "despite") in modifiers as a reflection-on
 (define-preposition "devoid of")
-(define-preposition "down"  ) ;; as in, 'down the street' ?
+(define-preposition "down"  :form 'spatial-preposition) ;; as in, 'down the street' ?
 (define-preposition "due to")
 (define-preposition "during"  ) ;; THIS DOESN'T WORK defined as sequencer/prep in modifiers
 (define-preposition "except")
@@ -155,14 +159,14 @@
 (define-preposition "for want of")
 (define-preposition "from" )
 (define-preposition "from want of")
-(define-preposition "in" )
+(define-preposition "in"  :form 'spatial-preposition)
 (define-preposition "including")
 (define-preposition "in accordance with")
 (define-preposition "in addition")
 (define-preposition "in addition to")
 (define-preposition "in aid of")
-(define-preposition "in back of")
-(define-preposition "in between") ;;also adverb "..and everything in between"
+(define-preposition "in back of" :form 'spatial-preposition)
+(define-preposition "in between" :form 'spatial-preposition) ;;also adverb "..and everything in between"
 (define-preposition "in case of")
 (define-preposition "in common with")
 (define-preposition "in comparison with")
@@ -204,14 +208,14 @@
 (define-preposition "minus")
 (define-preposition "near" :form 'spatial-preposition)
 (define-preposition "near to" :form 'spatial-preposition)
-(define-preposition "nearer") ;;comparative
-(define-preposition "nearer to") ;;comparative
-(define-preposition "next to")
+(define-preposition "nearer" :form 'spatial-preposition) ;;comparative
+(define-preposition "nearer to" :form 'spatial-preposition) ;;comparative
+(define-preposition "next to" :form 'spatial-preposition)
 (define-preposition "notwithstanding")
 (define-preposition "of" )
 (define-preposition "off" )
 (define-preposition "off of")
-(define-preposition "on" )
+(define-preposition "on" :form 'spatial-preposition)
 (define-preposition "on account of")
 (define-preposition "on behalf of")
 (define-preposition "on ground of")
@@ -220,13 +224,13 @@
 (define-preposition "on the matter of")
 (define-preposition "on the part of")
 (define-preposition "on the strength of")
-(define-preposition "on top of")
+(define-preposition "on top of" :form 'spatial-preposition) ;;//// top
 (define-preposition "onto" :form 'spatial-preposition)
 (define-preposition "out" )
 (define-preposition "out of" )
-(define-preposition "outside" )
-(define-preposition "outside of")
-(define-preposition "over" )
+(define-preposition "outside" :form 'spatial-preposition)
+(define-preposition "outside of" :form 'spatial-preposition)
+(define-preposition "over" :form 'spatial-preposition )
 (define-preposition "owing to")
 (define-preposition "past" :form 'spatial-preposition)
 (define-preposition "pending")

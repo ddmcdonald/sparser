@@ -24,6 +24,9 @@
     (setf (gethash s-word *mappings-for-category-linked-phrase*) clp)
     (setf (gethash pname *mappings-for-category-linked-phrase*) clp)))
 
+(defmethod krisp-mapping ((i sp::individual))
+  (krisp-mapping (sp::itype-of i)))
+
 (defmethod krisp-mapping ((c sp::category))
   (gethash c *mappings-for-category-linked-phrase*))
 
@@ -46,6 +49,30 @@
     (corresponding-variable pair)))
 
 
+(defgeneric apply-category-linked-phrase (individual)
+  ;;(:documentation "")
+  (:method ((i sp::individual))
+    (let* (;;(clp (krisp-mapping i))
+           ;;/// modify apply-mumble-phrase-data to call record-krisp-mapping
+           ;; once it clear what to do when the 'word' isn't a verb
+           (category (sp::itype-of i))
+           (clp (sp::get-tag :mumble category)))
+      (when clp
+        (apply-CLP-to-individual i clp)))))
+
+(defun apply-CLP-to-individual (i clp)
+  (let* ((phrase (linked-phrase clp))
+         (map (parameter-variable-map clp))
+         (dtn (make-dtn :referent i
+                        :resource phrase)))
+    (loop for pair in map
+       as parameter = (corresponding-parameter pair)
+       as variable = (corresponding-variable pair)
+       as value = (sp::value-of variable i)
+       do (make-complement-node parameter value dtn))
+    dtn))
+
+    
 ;;;------------------------------------
 ;;; helpers for the incremental parser
 ;;;------------------------------------

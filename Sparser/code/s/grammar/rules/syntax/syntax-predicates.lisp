@@ -100,6 +100,14 @@
 	 ;;(format t "preceding-that-or-whether? prev-form=~s and prev-cat=~s~&" prev-form prev-cat)
 	 nil)))))
 
+
+(defun collection-p (item)
+  (declare (special category::collection))
+  (itypep item category::collection))
+
+
+
+
 ;;;-----------------------
 ;;; type-queries on edges
 ;;;-----------------------

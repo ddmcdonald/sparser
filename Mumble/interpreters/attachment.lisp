@@ -46,12 +46,13 @@ the realization-function of the rspec accordingly."
         ;; late choices
         (attach-at-attachment-point ap rspec position)))))
 
-(defmethod syntax-driven-sources ((w word)) nil)
-(defmethod syntax-driven-sources ((sdn satellite-dt-node))
-  (typep (value sdn) ;; or the whole rspec??
-	 'includes-syntax-driven-choices))
-(defmethod syntax-driven-sources ((bdtn base-dt-node))
-  (typep (resource bdtn) 'includes-syntax-driven-choices))
+(defgeneric syntax-driven-sources (item)
+  (:method ((w word)) nil)
+  (:method ((sdn satellite-dt-node))
+    (typep (value sdn) ;; or the whole rspec??
+           'includes-syntax-driven-choices))
+  (:method ((bdtn base-dt-node))
+    (typep (resource bdtn) 'includes-syntax-driven-choices)))
 
 (defun check-validity-of-attachment-point (attachment-point rspec)
   (if (available-in-present-context attachment-point)

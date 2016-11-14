@@ -50,11 +50,11 @@
 ;;;--------
 
 (define-category village
-  :specializes spatial-region
+  :specializes container
   ;; real super class provides for having people, places where
   ;; they live, streets, squares, commerce (shops, markets, ...)
   ;; industry, etc.
-  :mixins (has-name has-spatial-location container)
+  :mixins (has-name has-spatial-location )
   :index (:permanent :key name)
   :realization (:common-noun name))
 

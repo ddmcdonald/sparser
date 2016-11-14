@@ -35,7 +35,7 @@
 
 (define-category physical
   :specializes endurant
-  :binds ((location)) ;; c3-location?
+  :binds ((location))
   :documentation
   "Common parent to the physical subclasses.This is the level at
  which to state that every physical object has a real location.")
@@ -60,9 +60,14 @@
 
 (define-category physical-object 
   :specializes physical
-  :documentation 
-  "A physical object ('physobj' ??) has a spatial extent,
- and is constitued of something (e.g. the clay in a statue).")
+  :documentation
+ "Conventional physical objects: chairs, amoeba, mountains, 
+  breaths of air, blocks on a table.
+     A physical object ('physobj' ??) has a spatial extent,
+ and is constitued of something (e.g. the clay in a statue).
+ N.b. see the category 'object' in mid-level/ontology. Need 
+ to figure out a what to merge them if that's technical possible
+ given when properties are defined.")
 
 
 (define-category physical-agent
