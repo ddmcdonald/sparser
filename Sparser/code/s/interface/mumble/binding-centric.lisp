@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "binding-centric"
 ;;;   Module:  "interface;mumble;"
-;;;  Version:  August 2016
+;;;  Version:  November 2016
 
 ;; Broken out from interface 4/7/13.
 ;; Completely rewritten 8/16 by AFP.
@@ -178,6 +178,8 @@
            (attach-subject (find-word "there" 'pronoun) be)
            (attach-complement (sp::value-of 'sp::value i) be)
            be))
+        ((sp::itypep i 'sp::relative-location)
+         (apply-category-linked-phrase i))
         (t (realize-via-bindings i))))
 
 (defgeneric realize-via-bindings (i &key pos resource)
@@ -281,9 +283,11 @@
               dtn))
             ((find :m subcats)
              (attach-adjective value dtn pos)))))
+  
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach an adverb."
     (attach-adjective (sp::binding-value binding) dtn pos))
+  
   (:method (binding (var-name (eql 'sp::has-determiner)) dtn pos)
     "Attach a determiner."
     (declare (ignore pos))
@@ -291,15 +295,19 @@
       (sp::a (initially-indefinite dtn))
       (sp::the (always-definite dtn))
       (sp::that (attach-adjective "that" dtn 'noun))))
+  
   (:method (binding (var-name (eql 'sp::modal)) dtn pos)
     "Attach a modal."
     (add-accessory dtn :tense-modal (word-for (sp::binding-value binding) pos) t))
+  
   (:method (binding (var-name (eql 'sp::modifier)) dtn pos)
     "Attach a modifier as an adjective."
     (attach-adjective (sp::binding-value binding) dtn pos))
+  
   (:method (binding (var-name (eql 'sp::negation)) dtn pos)
     "Attach a negation."
     (negate dtn))
+  
   (:method (binding (var-name (eql 'cl:number)) dtn pos)
     "Attach a numeric quantifier as an adjective so it retains its determiner."
     (attach-adjective
@@ -308,9 +316,11 @@
          (format nil "~:r" (sp::value-of 'sp::value (sp::value-of 'sp::number number)))
          (format nil "~r" (sp::value-of 'sp::value number))))
      dtn pos))
+  
   (:method (binding (var-name (eql 'sp::position)) dtn pos)
     "Attach a position as a premodifier."
     (attach-adjective (sp::binding-value binding) dtn pos))
+  
   (:method (binding (var-name (eql 'sp::predicate)) dtn pos)
     "Attach a predicate as a diff from the subject or object description."
     (loop with value = (sp::binding-value binding)
@@ -326,7 +336,8 @@
                                          (and (sp::individual-p complement)
                                               (sp::indiv-binds complement))
                                          :key #'sp::binding-variable)
-          do (attach-adjective (sp::binding-value binding) dtn pos)))
+       do (attach-adjective (sp::binding-value binding) dtn pos)))
+  
   (:method (binding (var-name (eql 'sp::predication)) dtn pos)
     "Attach a predication as either a premodifier or a relative clause."
     (let* ((individual (sp::binding-body binding))
@@ -342,12 +353,21 @@
             (present-tense be)))
          dtn)
         (attach-adjective predicate dtn pos))))
+  
   (:method (binding (var-name (eql 'sp::quantifier)) dtn pos)
     "Attach a quantifier as a premodifier."
     (attach-adjective (sp::binding-value binding) dtn pos))
+  
   (:method (binding (var-name (eql 'sp::time)) dtn pos)
     "Attach a time as an adverbial."
     (declare (ignore pos))
     (make-adjunction-node
      (make-lexicalized-attachment 'adverbial-preceding (sp::binding-value binding))
+     dtn))
+  
+  (:method (binding (var-name (eql 'sp::location)) dtn pos)
+    (declare (ignore pos))
+    (make-adjunction-node
+     (make-lexicalized-attachment 'np-prep-complement (sp::binding-value binding))
      dtn)))
+    
