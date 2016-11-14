@@ -85,7 +85,7 @@ be added to attribute so it knows how to handle the individuals.
  We record the attribute as part of this class to make
  it easier for the parser to do the right thing if all you have
  is the word, as in 'red block'."
-  :specializes abstract-region ;; more like point in the region
+  :specializes region ;; more like point in the region
   :instantiates :self
   :mixins (has-name)
   :binds ((attribute :primitive category))
