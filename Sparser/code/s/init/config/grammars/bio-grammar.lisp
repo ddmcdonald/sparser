@@ -155,9 +155,9 @@
   (include-grammar-module *full-titles*)
   (include-grammar-module *title-heads*)
   (include-grammar-module *title-modifiers*)
-  (include-grammar-module *title-qualifiers*) |#
+(include-grammar-module *title-qualifiers*) |#
 
-;; (include-grammar-module  *location*)
+(include-grammar-module  *location*)
 #|
  (include-grammar-module  *countries*)
  (include-grammar-module  *US-States*)
