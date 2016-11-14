@@ -22,7 +22,7 @@
 (noun "right" :super relative-position)
 
 
-#+ignore
+
 (define-category has-relative-position :specializes physical-object
   :binds ((position relative-position))
   :realization (:m position))
@@ -209,14 +209,15 @@ support a substantial number of blocks.
 ;; 1.2 "Put a block on the table"
 (define-category put-something-somewhere
   :specializes process
-  :mixins (with-an-agent with-specified-location) ;; adds 'agent' variable and location variables
-  :binds ((theme physical)) ;; mixin has-location
+  :mixins (with-an-agent with-specified-location)
+  :binds ((theme physical))
+  ;; T: agent, affected, result
   :realization
   (:verb "put"
          :etf (svo-passive)
          :s agent
          :o theme
-         :loc-pp-complement (next\ to on on\ top\ of at) ;; requires a PP
+         :loc-pp-complement (next\ to on on\ top\ of at)
          :mumble ("put" svo1o2 :o1 theme :o2 location)))
 
 
