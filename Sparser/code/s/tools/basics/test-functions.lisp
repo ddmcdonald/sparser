@@ -621,10 +621,8 @@
 
 (defun load-reach-sentences-if-needed ()
   (unless (boundp '*reach-article-sents*)
-    (load (pathname
-           (concatenate 'string
-                        (eval (intern "*R3-TRUNK*" (find-package :r3)))
-                        "corpus/Reach-sentences/rasmachine_sentences.lisp")))))
+    (load (asdf:system-relative-pathname :r3 
+                        "../corpus/Reach-sentences/rasmachine_sentences.lisp"))))
 
 (defun test-reach-article-sents (sl-list &key (n 1000) (start 0) (save-output t)
                                            (break nil))
@@ -659,32 +657,52 @@
 
 (defun process-reach-article-sents (sl)
   (format t "Processing reach article sentences: ~s~%" sl)
-  (let ((*article-name* sl))
-    (declare (special *article-name*))
-;    (lsp-break)
+  (let ((sents (symbol-value sl)))
     (if (or *break-on-reach-errors*
             (and (find-package :r3)
                  (eval (intern "*BREAK-DURING-READ*" (find-package :r3)))))
-        (loop for s in (eval sl) do (eval `(qpp ,s)))   
-        (loop for s in (eval sl) 
+        (loop for s in sents do (qpp s))   
+        (loop for s in sents
            as i from 0
-           do (eval `(qepp ,s))
+           do (qepp s)
              (if *compare-to-reach-results*
-                 (compare-to-reach (get-PMC-ID *article-name*) (write-to-string i) s))))))
+                 (compare-to-reach (get-PMC-ID (string sl)) 
+                                   i 
+                                   (previous (sentence))))))))
 
 (defun get-PMC-ID (sl)
-    (string-trim "*REACH-PMC-SENTENCES*" sl))
+    (remove-if-not #'digit-char-p sl))
 
 
 (defun compare-to-reach (PMCID sent-num curr-sent)
   (declare (special curr-sent))
-  (let* ((reach-json (concatenate 'string (eval (intern "*R3-TRUNK*" (find-package :r3)))
-                        "corpus/Reach-sentences/reach_reread/" PMCID "-" sent-num ".json"))
-         (reach-path (pathname reach-json))
+  (let* ((reach-path (make-pathname :name (format nil "~d-~d" PMCID sent-num)
+                                    :type "json"
+                                    :defaults (asdf:system-relative-pathname :r3 "../corpus/Reach-sentences/reach_reread/")))
          (decoded-reach (decode-reach-file reach-path))
          (entities (getf decoded-reach :entities)))
-    (declare (special reach-path decoded-reach))
-    (unless (equal (getf decoded-reach :SENTENCE) curr-sent)
-      (lsp-break "mismatched sentences"))
-    (lsp-break)))
+    (declare (special reach-path decoded-reach entities))
+    (unless (equal (string-left-trim " " (string-right-trim ".!?" (getf decoded-reach :SENTENCE))) 
+                   (sentence-string curr-sent))
+      (warn "mismatched sentences ~% reach sentence   ~s ~% sparser sentence ~s"
+            (string-left-trim " " (getf decoded-reach :SENTENCE)) (sentence-string curr-sent)))
+    (multiple-value-bind (sub-bag-p missing)
+        (sub-bag-p (get-reach-entities-strings entities) (get-individuals-strings curr-sent) :test #'equal)
+      (unless sub-bag-p 
+        (warn "mismatched entities ~& ~s ~% in sentence ~s" missing (sentence-string curr-sent))))))
+    
+(defun sub-bag-p (sub-bag super-bag &key (test #'eql))
+  (loop with result = t
+        for elt in sub-bag
+        if (find elt super-bag :test test)
+        do (setq super-bag (remove elt super-bag :count 1 :test test))
+        else collect elt into missing and do (setq result nil)
+        finally (return (values result missing))))
+
+(defun get-individuals-strings (curr-sent)
+  (mapcar #'(lambda (x) (string-trim " " (retrieve-surface-string x))) 
+          (sentence-individuals (contents curr-sent))))
+
+(defun get-reach-entities-strings (entities)
+  (mapcar #'(lambda (x) (cdr (assoc :text x))) entities))
     
