@@ -37,9 +37,7 @@
 (define-category  perdurant
   :instantiates self
   :specializes top
-  :mixins (temporally-localized takes-tense-aspect-modal
-                                takes-adverb)
-
+  :mixins (temporally-localized takes-adverb takes-tense-aspect-modal)
   :binds ((theme) ;; one salient participant
                   ;; FrameNet for the thing that moves
           (participant) ;; any number of others

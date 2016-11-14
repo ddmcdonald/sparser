@@ -26,7 +26,7 @@
 (define-category predicate
   :instantiates nil
   :specializes has-name ;; which is a specialization of relation
-  :mixins (takes-adverb takes-tense-aspect-modal) 
+  :mixins (takes-adverb takes-tense-aspect-modal)
   :documentation "A predicate attributes or predicates
  some property to something. Depending of what sort of
  predicate it is, this property may be implicit in the
@@ -35,8 +35,8 @@
  represented in a variable.")
 
 (define-category predication
-    :specializes state
-      :mixins (takes-adverb takes-tense-aspect-modal) 
+  :specializes state
+  :mixins (takes-adverb takes-tense-aspect-modal) 
   :binds ((predicate predicate))
   :documentation "Represents the application of a predicate
  to one or more terms, what terms and under what relationships
@@ -58,7 +58,7 @@
  a specialization of it. See note with 'modifies'.")
 
 (define-category adverbial
-   :specializes modifier)
+  :specializes modifier)
 
 (define-category modifies
   :specializes relation
