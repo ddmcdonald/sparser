@@ -242,11 +242,11 @@
 ;;;--------------------------
 
 (defun revise-parent-edge (&key category form referent)
-  (if
-   *parent-edge-getting-reference*
-   (let ((edge (parent-edge-for-referent)))
-     (revise-edge edge category form referent))
-   (warn "revise-parent-edge called when *parent-edge-getting-reference* isn't bound -- possibly in da-rule")))
+  (if *parent-edge-getting-reference*
+    (let ((edge (parent-edge-for-referent)))
+      (revise-edge edge category form referent))
+    (warn "revise-parent-edge called when *parent-edge-getting-reference* ~
+           isn't bound -- possibly in da-rule")))
 
 (defun revise-left-edge-into-rule (&key category form referent)
   (let ((edge (left-edge-for-referent)))
