@@ -21,6 +21,17 @@
    :binds ((dependent)
            (substrate)))
 
+(define-category partonimic
+  :specializes relation
+  :binds ((has-part)
+          (part-of))
+  :documentation "A composite and their parts may be
+ organized into a partonomy. If we were modeling
+ lexical facts rather than phyical ones we'd call it
+ a meronymy. Standard parts typically have names that 
+ implicitly indicate what kind of thing they are part of:
+ People and their faces and hands (etc). Staircases and
+ their steps.")
 
 
 (define-category predicate
