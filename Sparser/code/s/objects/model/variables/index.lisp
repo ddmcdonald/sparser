@@ -65,16 +65,15 @@
         (find-variable-in-mixins variable-name category))))
 
 
-
 (defun find-variable-from-individual (variable-name i)
   (if (collection-p i)
-      (if (member variable-name '(items type number))
-          (find-variable-for-category variable-name (itype-of i))
-          (find-variable-for-category variable-name
-                                      ;; wrt variables, the type of
-                                      ;; a collection is given by its TYPE variable
-                                      (or (value-of 'type i) (itype-of i))))
-      (find-variable-for-category variable-name (itype-of i))))
+    (if (member variable-name '(items type number))
+      (find-variable-for-category variable-name (itype-of i))
+      (find-variable-for-category variable-name
+                                  ;; wrt variables, the type of
+                                  ;; a collection is given by its TYPE variable
+                                  (or (value-of 'type i) (itype-of i))))
+    (find-variable-for-category variable-name (itype-of i))))
 
 
 (defun find-variable-in-mixins (variable-name category)
@@ -102,6 +101,55 @@
               (find variable-name variables :key #'var-name))
         (when target-variable
           (return-from super-category-has-variable-named target-variable))))))
+
+
+
+;;;---------------------------------------------------------
+;;; Computations over variables used in bind{-dli}-variable
+;;;---------------------------------------------------------
+
+(defun var-takes-category? (var/name individual category)
+  "Does the restriction on this variable indicate that it can be bound
+   to categories? Called from bind-dli-variable so may need to
+   decode the symbol that names the variable."
+  (let* ((variable (variable-given-name-and-individual var/name individual category)))
+    (unless variable
+      (warn "no variable named ~s on ~s of category ~s~% in sentence ~s~%"
+            var/name individual category
+            (sentence-string *sentence-in-core*))
+      nil)
+    (equal (var-value-restriction variable)
+           '(:PRIMITIVE CATEGORY))))
+
+
+(defun variable-given-name-and-individual (var/name individual category)
+  "What specific variable does the var/name symbol correspond to.
+   While variables with the same name can be bound by different categories,
+   we have to consult the category (or the individual as a proxy for the
+   category) in order to return the correct variable."
+  (unless category ;; optional in some callers
+    (cond ((referential-category-p individual) ;; 6/22/09
+           (setq category individual))
+          (t (setq category (indiv-type individual)))))
+  (when (consp category) ;; new 6/19/09
+    (setq category (car category)))
+  (let ((variable (or (when (typep var/name 'lambda-variable)
+                        var/name)
+                      (when (typep var/name 'anonymous-variable)
+                        (dereference-variable var/name individual))
+                      (find-variable-for-category var/name category))))
+    (unless variable
+      ;; motivated by "lipofectamine 2000" where 2000 is read as a year
+      (when *break-on-pattern-outside-coverage?*
+        (push-debug `(,var/name ,individual ,category))
+        (if category
+          (break "There is no variable named ~A~
+                ~%associated with the category ~A" var/name category)
+          (break "There is no variable named ~A~
+                ~%associated with the category of the individual ~A"
+                 var/name individual))))
+    variable))
+
 
 
 ;;;--------------------------------------------
