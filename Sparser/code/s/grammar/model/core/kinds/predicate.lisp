@@ -47,7 +47,6 @@
 
 (define-category predication
   :specializes state
-  :mixins (takes-adverb takes-tense-aspect-modal) 
   :binds ((predicate predicate))
   :documentation "Represents the application of a predicate
  to one or more terms, what terms and under what relationships
