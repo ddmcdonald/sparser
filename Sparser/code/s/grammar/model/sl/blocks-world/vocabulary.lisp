@@ -9,19 +9,19 @@
 
 (in-package :sparser)
 
-;;--- nouns
+;;--- categories
 
-(define-category component-part :specializes object ;; wanted it to be an object, but that caused CLOS problems
+(define-category composite-object :specializes object
+  :mixins (artifact)
+  :binds ((composed-of object))
+  :realization (:of composed-of))
+
+(define-category component-part
+  :specializes object
   :binds ((part-of object))
   :realization (:of part-of))
 
 (define-category relative-position :specializes component-part)
-(noun "end" :super relative-position)
-(noun "middle" :super relative-position)
-(noun "left" :super relative-position)
-(noun "right" :super relative-position)
-
-
 
 (define-category has-relative-position :specializes physical-object
   :binds ((position relative-position))
@@ -40,6 +40,25 @@
                 :on at-relative-location ;; on the left
                 :to goal))
 
+
+
+(noun "end" :super relative-position)
+(noun "middle" :super relative-position)
+(noun "left" :super relative-position)
+(noun "right" :super relative-position)
+
+
+(define-category surface :specializes component-part
+  :realization (:noun "surface"))
+
+(define-category top-surface :specializes surface
+                 :realization (:noun "top"))
+(define-category bottom-surface :specializes surface
+                 :realization (:noun "bottom"))
+(define-category side-surface :specializes surface
+                 :realization (:noun "side"))
+
+
 ;;---  blocks
 #| This has to meet/merge with Scott's treatment 
 for the individuals. 
@@ -57,14 +76,7 @@ with other blocks, mention in utterances, etc. |#
   :realization (:noun name
                 :m position))
 
-#|
-(define-category drug
-    :specializes
-  :mixins (has-name) ;; e.g. Dabrafenib
-  :index (:permanent :key name)
-  :realization
-  (:common-noun "drug"))
-|#
+
 
 #| An interesting deference between a block and a table is
 that you can't use the table as part of any of the standard
@@ -80,30 +92,11 @@ support a substantial number of blocks.
   :index (:permanent :list)
   :realization (:common-noun "table"))
 
-
-(define-category composite-object :specializes object
-  :mixins (artifact)
-  :binds ((composed-of object))
-  :realization (:of composed-of))
-
 (noun "staircase" :specializes composite-object :rule-label artifact)
 (def-synonym staircase (:noun "stair"))
 (noun "stack" :specializes composite-object :rule-label artifact)
 (noun "row" :specializes composite-object :rule-label artifact)
 
-
-
-
-(define-category surface :specializes component-part
-  :realization
-  (:noun "surface"))
-
-(define-category top-surface :specializes surface
-                 :realization (:noun "top"))
-(define-category bottom-surface :specializes surface
-                 :realization (:noun "bottom"))
-(define-category side-surface :specializes surface
-                 :realization (:noun "side"))
 
 (define-category step :specializes component-part
    :restrict ((part-of staircase))
@@ -115,23 +108,6 @@ support a substantial number of blocks.
 
 ;; (p "Add another block")
 
-#+ignore
-(define-category add-to
-  :specializes achievement
-  :mixins (with-an-agent)
-  :instantiates self
-  :binds ((theme object)
-          (goal location))
-  :realization ((:verb "add")
-		(:mumble ("add" svo :o theme)) 
-                (:tree-family vp+adjunct
-                 :mapping ((vg . :self)
-                           (vp . :self)
-                           (adjunct . physical)
-                           (slot . theme)))))
-
-
-  
 (define-category add-to
   :specializes achievement
   :mixins (with-an-agent with-specified-location)
@@ -143,8 +119,6 @@ support a substantial number of blocks.
                 :loc-pp-complement (next\ to on on\ top\ of at)
                 :mumble ("add" svo :o theme)))
 
-;; Ignore "let's" for now (1.1), 
-
 
 ;; 1.1 (p "Let's build a staircase.") 
 ;;     (p "build a staircase.")
@@ -154,18 +128,11 @@ support a substantial number of blocks.
     ;; staircase. With "lets'" we haven't even started
     :mixins (with-an-agent)
     :binds ((artifact artifact)) ;; what they build
-    :realization
-    (:verb ("build" :past-tense "built")
-           :etf (svo-passive)
-           :s agent
-           :o artifact
-           :mumble ("build" svo :o artifact)
-           #+ignore
-           (:tree-family vp+adjunct
-                         :mapping ((vg . :self)
-                                   (vp . :self)
-                                   (adjunct . physical)
-                                   (slot . artifact)))))
+    :realization (:verb ("build" :past-tense "built")
+                  :etf (svo-passive)
+                  :s agent
+                  :o artifact
+                  :mumble ("build" svo :o artifact)))
 
 (define-category move-something-somewhere
   :specializes process
