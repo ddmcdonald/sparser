@@ -78,8 +78,8 @@
 the *description-lattice* parameter. If it is non-nil we use the
 lattice to record the binding and find-or-make a new variable+value
 that reflects that. If the parameter is nil then we just add
-the new binding to the same individual and something else needs
-to keep track of recording that fact.
+the new binding to the same individual and something else keeps
+track of recording that fact.
 
    There are two entry points, which virtually the same thing.
 Once some odd cases for the description lattice are worked out
@@ -89,29 +89,28 @@ effect of adding bindings to one individual rather than always
 returning a new one. 
 |#
 
+(defparameter *convert-category-values-to-individuals-when-binding* t
+  "Gates the new policy in bind-dli-variable to facilitate debugging its fanout")
+
 (defun bind-dli-variable (var/name value individual &optional category)
- "New name for method in transition -- makes it easier to tell when other calls
-  have been edited to use the new 'contract' --
-  bind-dli-variable returns the resulting individual as its first (primary) value
+ "Returns the resulting individual as its first (primary) value
   it returns the binding object as its second (secondary) value.
   Note that if *description-lattice* is nil this becomes a call to
   the 'old' variable binding protocol."
  (declare (special *description-lattice*))
 
-
- (unless (individual-p individual)
-   (setq individual (individual-for-ref individual)))
- 
- (when (and (category-p value) 
-            (not (var-takes-category? var/name individual category)))
-   ;; motivated by "GEF functionality"
-   ;; GEF is defined by (noun "GEF" ...) and thus becomes a category, not an individual
-   ;; but we want to get it as an individual
-   (setq value (individual-for-ref value)))
- 
+ (when *convert-category-values-to-individuals-when-binding*
+   (when (and (category-p value) 
+              (not (var-takes-category? var/name individual category)))
+     ;; motivated by "GEF functionality"
+     ;; GEF is defined by (noun "GEF" ...) and thus becomes a category, not an individual
+     ;; but we want to get it as an individual
+     (setq value (individual-for-ref value))))
  
  (if *description-lattice*
    (then
+     (unless (individual-p individual)
+       (setq individual (individual-for-ref individual)))
      (setq individual (look-for-ambiguous-variables individual var/name))
      (find-or-make-lattice-subordinate individual var/name value category))
    (old-bind-variable var/name value individual category)))
@@ -171,7 +170,6 @@ returning a new one.
           (values individual binding)))))))
 
 
-
 (defun bind-variable/expr (variable value individual)
   (declare (special *track-incidence-count-on-bindings*))
   (let ((binding
@@ -188,7 +186,7 @@ returning a new one.
   (let ((b (if *index-under-permanent-instances*
              (make-binding)
              (allocate-binding))))
-
+    
     (setf (binding-body b)      individual)
     (setf (binding-variable b)  variable)
     (setf (binding-value b)     value)
