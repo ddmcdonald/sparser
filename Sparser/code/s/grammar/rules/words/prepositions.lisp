@@ -55,8 +55,11 @@
   (unless super-category
     (setq super-category
           (ecase form
-            (spatial-preposition 'spatial-operator)
-            (spatio-temporal-preposition 'spatial-operator) ;; ignore time for now
+            (spatial-preposition (if *location* ;; depends on this grammar module
+                                   'spatial-operator
+                                   'prepositional-operator))
+            (spatio-temporal-preposition ;; ignore time for now
+             (if *location* 'spatial-operator 'prepositional-operator))
             (preposition 'prepositional-operator))))
   (let* ((word (define-function-word string
                  :brackets brackets

@@ -41,3 +41,19 @@ determined by the operator and the types of the two objects,
     (let ((i (bind-variable 'location pp np)))
       ;;(format t "~&i = ~a~%" i)
       i)))
+
+
+(def-k-method compose ((operator spatial-operator) (place endurant))
+  ;; called by make-pp so it's forming a referent in a largely
+  ;; syntactic environment and we can make the edge label
+  ;; whatever we like.
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    ;; If we've gotten here with this signature then we'll complete
+    t
+    (let ((i (find-or-make-individual 'relative-location
+                                      :prep operator
+                                      :ground place)))
+      ;;(format t "~&Created ~a~%" i)
+      (revise-parent-edge :category (category-named 'location))
+      i)))
