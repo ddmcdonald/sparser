@@ -187,6 +187,12 @@
 (defmethod find-or-make-number ((lisp-number number))
   (define-or-find-individual 'number 'value lisp-number))
 
+(defmethod find-or-make-number ((i individual))
+  ;; e.g. the S1986Y or the S1986F mutation
+  (when
+      (define-or-find-individual 'number 'value
+        (value-of 'value i))))
+
 
 
 
