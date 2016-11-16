@@ -51,12 +51,11 @@ does not contain subsumed-edge ~s~%" dominating-edge subsumed-edge))
                   (subst new-edge subsumed-edge (edge-constituents dominating-edge))))
            ((eq direction :right)
             (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
-              (format t "~%in tuck-new-edge-under-already-knit for rule ~s:~%
+              (error t "~%in tuck-new-edge-under-already-knit for rule ~s:~%
 edge-right-daughter in dominating edge ~s ~%
 is not subsumed-edge ~s in sentence:~%~s~%"
                       *current-da-rule* dominating-edge subsumed-edge
-                      (sentence-string *sentence-in-core*))
-              (lsp-break "~s" *current-da-rule*))
+                      (sentence-string *sentence-in-core*)))
             (setf (edge-right-daughter dominating-edge) new-edge)) 
            ((eq direction :left)
             (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
@@ -101,8 +100,8 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
        ))))
 
 
-(defun reinterpret-dominating-edges (edge)
-  (declare (special *sentence-in-core*))
+(defun reinterpret-dominating-edges (edge &optional *visited*)
+  (declare (special *sentence-in-core* *visited*))
   (let ((new-ref (referent-for-edge edge)))
     (cond ((null new-ref)
            (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing null interpretation" edge))
@@ -116,7 +115,12 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
                (warn "null edge-mention on edge ~s in ~%~s"
                      edge (sentence-string *sentence-in-core*)))
            (let ((parent (edge-used-in edge)))
-             (cond ((edge-p parent) (reinterpret-dominating-edges parent))
+             (cond ((edge-p parent)
+                    (when (member parent *visited*)
+		      ;; happens in
+		      ;; <give example here>
+                      (error "circular-loop in reinterpret-dominating-edges"))
+                    (reinterpret-dominating-edges parent (cons parent *visited*)))
                    ((null parent) ;; reached the topmost edge
                     nil)
                    ((consp parent)
