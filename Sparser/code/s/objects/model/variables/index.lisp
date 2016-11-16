@@ -112,6 +112,7 @@
   "Does the restriction on this variable indicate that it can be bound
    to categories? Called from bind-dli-variable so may need to
    decode the symbol that names the variable."
+  (declare (special *sentence-in-core*))
   (let* ((variable (variable-given-name-and-individual var/name individual category)))
     (unless variable
       (warn "no variable named ~s on ~s of category ~s~% in sentence ~s~%"
@@ -127,6 +128,7 @@
    While variables with the same name can be bound by different categories,
    we have to consult the category (or the individual as a proxy for the
    category) in order to return the correct variable."
+  (declare (special *break-on-pattern-outside-coverage?*))
   (unless category ;; optional in some callers
     (cond ((referential-category-p individual) ;; 6/22/09
            (setq category individual))
