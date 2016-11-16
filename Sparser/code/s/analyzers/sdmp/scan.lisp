@@ -229,13 +229,15 @@ to make any semantic or form edges that the grammar dictates.
          (let ((super (supercategory-of-constructed-category referent)))
            (setf (edge-referent edge)
                  (make-individual-for-dm&p (or super
-                                               referent)))))
+                                               referent)))
+           (note-surface-string edge)))
         (*description-lattice*
 	 (setq referent (fom-lattice-description referent))
          (setf (edge-referent edge) referent)
 	 ;; the discourse-mention had a category as its interpretation
 	 ;; and the new referent does not have that mention on its mention-history
 	 ;; correct that
+         (note-surface-string edge)
 	 (update-edge-mention-referent Edge referent)))
        referent)
       ;; These cases are original from 2009 and 
@@ -285,6 +287,7 @@ to make any semantic or form edges that the grammar dictates.
         ;;/// This also gets the "the" in a company name,  
         ;; but that's probably not relevant.
         (setf (edge-referent edge) i)
+        (note-surface-string edge)
         i))))
     
 
