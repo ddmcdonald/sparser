@@ -260,6 +260,8 @@
 (def-form-category  preposition)
 (def-form-category  spatial-preposition)
 (def-form-category  spatio-temporal-preposition)
+(defparameter *prep-forms*
+  (list CATEGORY::SPATIAL-PREPOSITION CATEGORY::PREPOSITION category::spatio-temporal-preposition))
 
 (def-form-category  verb)
 (def-form-category  verb+s)
