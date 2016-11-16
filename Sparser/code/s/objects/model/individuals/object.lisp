@@ -85,7 +85,7 @@ grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
          ;; e.g. the 1970s
          (then
            (unless *subcat-test*
-             (warn "plural itypep in sentence ~s~%" (SENTENCE-STRING *SENTENCE-IN-CORE*)))
+             (warn "plural itypep for ~s in sentence ~s~%" i (SENTENCE-STRING *SENTENCE-IN-CORE*)))
            i)
          (report-bad-itype-of i)))
     (otherwise
