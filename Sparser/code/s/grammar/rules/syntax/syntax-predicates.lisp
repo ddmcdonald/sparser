@@ -10,6 +10,11 @@
 (in-package :sparser)
 
 (defun get-word-for-prep (prep-val)
+  (when (individual-p prep-val)
+    ;; happens in "1 hour after EGF stimulation"
+    ;; when the preposition absorbs the temporal interval
+    (setq prep-val (itype-of prep-val)))
+  
   (resolve/make ;; needs to be a word for the subcat frame!
    (string-downcase
     (symbol-name
@@ -67,6 +72,7 @@
     (value-of 'statement vp)
     (preceding-that-whether-or-conjunction? left-edge)
     (and *current-chunk*
+         (typep *current-chunk* 'chunk)
          (memq 'ng (chunk-forms *current-chunk*))))
    (subcategorized-variable vp :subject subj)))
        
