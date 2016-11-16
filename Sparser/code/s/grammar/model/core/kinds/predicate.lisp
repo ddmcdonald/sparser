@@ -21,7 +21,7 @@
    :binds ((dependent)
            (substrate)))
 
-(define-category partonimic
+(define-category partonomic
   :specializes relation
   :binds ((has-part)
           (part-of))
