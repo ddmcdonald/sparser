@@ -74,8 +74,12 @@
 (defmacro svo/bio (verb)
   `(svo/bio/expr ,verb))
 
+(defparameter *show-bio-verbs* nil)
+
 (defun svo/bio/expr (verb)
   (declare (special category::bio-process))
+  (when *show-bio-verbs*
+    (format t "~%creating a default bio-process for new verb ~s~%" verb))
   (when (word-p verb) 
     ;; came in from setup-verb
     (setq verb (word-pname verb)))
@@ -322,6 +326,15 @@
   (:verb "abrogate" :noun "abrogation" 
          :etf (svo-passive)))
 
+(define-category accelerate :specializes positive-bio-control
+  :restrict ((object bio-process))
+  :realization
+  (:verb ("accelerate" :past-tense "accelerated" :past-participle "accelerated")
+         :noun "acceleration" 
+         :etf (svo-passive)))
+
+
+
 (define-category accumulation :specializes caused-bio-process
   :binds ((amount scalar-quality))
   :realization
@@ -429,11 +442,42 @@
 
 ;; clausal roles
 ;; really want to have the form "CRAF allows CRAF to hyperactivate the pathway"  -- want the clausal modiffer
-(define-category allow :specializes bio-control
+(define-category allow :specializes positive-bio-control
     :binds ((process (:or biological have process)))
     :realization
-    (:verb "allow" ;; keyword: ENDS-IN-ING 
+    (:verb ("allow" :past-tense "allowed" :past-participle "allowed") ;; keyword: ENDS-IN-ING 
 	   :noun "allowance"
+	   :etf (svo-passive)
+           :for object
+           :for affected-process
+           :to-comp process))
+
+(define-category enable :specializes positive-bio-control
+    :binds ((process (:or biological have process)))
+    :realization
+    (:verb ("enable" :past-tense "enabled" :past-participle "enabled" :present-participle "enabling") ;; keyword: ENDS-IN-ING 
+	   :etf (svo-passive)
+           :for object
+           :for affected-process
+           :to-comp process))
+
+(define-category impede :specializes negative-bio-control
+    :binds ((process (:or biological have process)))
+    :realization
+    (:verb ("impede" :past-tense "impeded" :past-participle "impeded" :present-participle "impeding")
+           ;; keyword: ENDS-IN-ING 
+	   :etf (svo-passive)
+           :for object
+           :for affected-process
+           :to-comp process))
+
+(define-category abolish :specializes negative-bio-control
+    :binds ((process (:or biological have process)))
+    :realization
+    (:verb ("abolish" :past-tense "abolished" :past-participle "abolished"
+                      :present-participle "abolishing")
+           :noun "abolition"
+           ;; keyword: ENDS-IN-ING 
 	   :etf (svo-passive)
            :for object
            :for affected-process
@@ -1042,6 +1086,12 @@
 	   :noun "elevation"
 	   :etf (svo-passive)))
 
+(define-category elicit
+  :specializes positive-bio-control
+  :realization
+    (:verb ("elicit" :past-participle "elicited" :past-tense "elicited") ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)))
+
 (define-category eliminate
   :specializes bio-method
   :realization
@@ -1080,12 +1130,17 @@
     (:verb "engender"
 	   :etf (svo-passive)))
 
+(define-category bio-produce
+  :specializes positive-bio-control
+  :realization 
+  (:verb "produce" :noun "production"
+   :etf (svo-passive)))
 
 
 (define-category bio-promote
   :specializes positive-bio-control
   :realization 
-  (:verb "promote"
+  (:verb "promote" :noun "promotion"
    :etf (svo-passive)))
 
 
@@ -1172,7 +1227,6 @@
     (:verb "express"
 	   :noun "expression"
 	   :etf (svo-passive)
-           ;;:from from
            ))
 
 (define-category gene-transcript-over-express :specializes caused-bio-process
@@ -1182,10 +1236,10 @@
     :realization
     (:verb "over-express"
 	   :noun "over-expression"
-	   :etf (svo-passive)
-           ;;:from from
-           ))
+	   :etf (svo-passive)))
 
+(def-synonym gene-transcript-over-express
+    (:verb "overexpress" :noun "overexpression" :etf (svo-passive)))
 
 (define-category gene-code :specializes caused-bio-process
     :binds ((location bio-location)
@@ -1273,7 +1327,7 @@
 (define-category bio-fraction :specializes variant ;; avoid conflict with core category FRACTION
   :binds ((agent pronoun/first/plural) (basis bio-entity)) ;; this should be for genes and proteins
   :realization
-  (:verb ("fractionXX" :past-participle "fractioned")
+  (:verb ("fractionXX" :past-participle "fractioned" :past-tense "fractioned")
          ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
          :etf (svo-passive)
          :s agent
@@ -1420,6 +1474,17 @@
 ;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
 (def-synonym increase
     (:noun "increase"))
+
+(define-category diminish :specializes negative-bio-control
+  :restrict ((object (:or biological scalar-quality)))
+  :realization
+  (:verb ("diminish"  :third-singular "diminishes"  :past-tense "diminished"
+          :present-participle "diminishing")
+         :etf (svo-passive)
+         :for object
+         :in object
+         :of object
+         :optional-object t))
 
 ;;--- "induce"
 ;; "which induce transcription of the p53 gene"
@@ -1661,8 +1726,9 @@
 (define-category lower :specializes negative-bio-control
   :restrict ((object bio-process))
   :realization
-  (:verb "lower" :noun "lowering"
+  (:verb ("lower" :past-tense "lowered" :past-participle "lowered" :present-participle "lowering")
          :etf (svo-passive)))
+
 (define-category lower-adj :specializes bio-predication
   :realization
   (:adj "lower"))
@@ -1717,7 +1783,7 @@
   :specializes bio-control
   :binds ((theme biological)) ;; increase in rate vs increase in RAS activity
   :realization
-  (:verb "modulate" 
+  (:verb "modulate" :noun "modulation"
          :etf (svo-passive)
          :for theme))
 
@@ -1783,11 +1849,7 @@
 	   :noun "occurrence"
 	   :etf (sv)))
 
-(define-category overexpress :specializes caused-bio-process
-    :realization
-    (:verb "overexpress"
-	   :noun "overexpression"
-	   :etf (svo-passive)))
+
 
 ;; new definitions from MITRE test set
 (define-category overlap :specializes bio-relation
@@ -2057,7 +2119,15 @@
          :etf (svo)
          :o theme))
 
-                 
+(define-category bio-reactivate
+  :specializes positive-bio-control
+  :realization
+    (:verb "reactivate" 
+     :noun "reactivation"
+     :etf (svo-passive)))
+
+(def-synonym bio-reactivate
+    (:verb "re-activate" :noun "re-activation"))
 
 (define-category relapse :specializes bio-predication
     :realization
@@ -2289,6 +2359,11 @@
 		 (:verb "reveal"
 			:etf (svo-passive)))
 
+(define-category slow :specializes negative-bio-control
+    :realization
+    (:verb "slow" ;; keyword: ENDS-IN-ED 
+	   :etf (svo-passive)))
+
 (define-category stabilize :specializes bio-control
   :binds ((process bio-process))
  :realization
@@ -2359,7 +2434,9 @@
     :realization
     (:verb "suppress" ;; keyword: ENDS-IN-ED 
 	   :noun "suppression"
-	   :etf (svo-passive))) 
+	   :etf (svo-passive)))
+
+
 
 #+ignore
 ;; now defined as an adjective since it always occurs as "sustained"
@@ -2540,9 +2617,11 @@
          :with treatment))
 
 (define-category bio-trigger :specializes positive-bio-control
-  :realization
-  (:verb "trigger" :etf (svo-passive)))
-
+                 :realization
+                 (:verb ("trigger" :third-singular "triggers"
+                                   :past-tense "triggered"
+                                   :present-participle "triggering")
+                        :etf (svo-passive)))
 
 ;;This is almost never used as a verb -- only as "truncating...mutation" and "...truncation of ..."
 (define-category truncate :specializes caused-bio-process
