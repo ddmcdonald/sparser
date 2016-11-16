@@ -54,3 +54,13 @@
   (or (rs-single-term-rewrites rs)
       (rs-right-looking-ids rs)
       (rs-left-looking-ids rs)))
+
+
+(defun rs-distinct-categories (rs)
+  (remove-duplicates
+   (loop for r in (rs-single-term-rewrites rs)
+         when
+           (and (cfr-p r)
+                (not (consp (cfr-referent r))))
+         collect
+           (itype-of (cfr-referent r)))))
