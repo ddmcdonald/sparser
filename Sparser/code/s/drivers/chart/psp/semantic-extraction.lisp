@@ -106,8 +106,6 @@ without damaging other code.")
       do (loop for i in (individuals-under tt)
            when (itypep i 'biological)
            do (pushnew i individuals)))
-;;    (loop for i in individuals
-;;      do (store-surface-string i))
     (reverse individuals)))
 
 (defun note-surface-string (edge)
@@ -116,7 +114,7 @@ without damaging other code.")
   ;; by the edge. 
   (declare (special *surface-strings*))
   (let ((referent (edge-referent edge)))
-    (when (and referent (individual-p referent))
+    (when t ;; (and referent (individual-p referent))
       (let* ((start-pos (pos-edge-starts-at edge))
              (end-pos (pos-edge-ends-at edge))
              (start-index (pos-character-index start-pos))
@@ -142,11 +140,6 @@ without damaging other code.")
    string that corresponds to an edge. Key is the referent
    of the edge.")
 
-;; OBE ??? Or part of a last-resort strategy. 
-;; No longer called from all-individuals-in-tts
-(defun store-surface-string (i)
-  (setf (gethash i *surface-strings*)
-    (get-surface-string-for-individual i)))
 
 (defun retrieve-surface-string (i)
   (gethash i *surface-strings*))
