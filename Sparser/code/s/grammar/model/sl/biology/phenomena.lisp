@@ -110,8 +110,16 @@
   :specializes post-translational-modification
   :realization
   (:verb "acetylate" :noun "acetylation"
+         :etf (svo-passive)))
+
+(define-category de-acetylation
+  :specializes post-translational-modification
+  :realization
+  (:verb "de-acetylate" :noun "de-acetylation"
    :etf (svo-passive)))
 
+(def-synonym de-acetylation
+    (:verb "deacetylate" :noun "deacetylation"))
 (define-category farnesylation 
   :specializes post-translational-modification 
   :realization 
@@ -126,11 +134,23 @@
      :noun "glycosylation"
      :etf (svo-passive)))
 
-(define-category hydoxylation 
+(define-category de-glycosylation 
  :specializes post-translational-modification 
   :realization 
-    (:verb "hydoxylate"
-     :noun "hydoxylation"
+    (:verb "deglycosylate"
+     :noun "deglycosylation"
+     :etf (svo-passive)))
+
+(def-synonym de-glycosylation
+    (:verb "de-glycosylate"
+           :noun "de-glycosylation"
+           :etf (svo-passive)))
+
+(define-category hydroxylation 
+ :specializes post-translational-modification 
+  :realization 
+    (:verb "hydroxylate"
+     :noun "hydroxylation"
      :etf (svo-passive)))
 
 (define-category methylation 
