@@ -1322,11 +1322,13 @@ No longer used -- remove soon
 			       :form category::n-bar
 			       :referent result)
 	   (revise-parent-edge :category (itype-of vg)
-			       :form (ecase (cat-name (edge-form (parent-edge-for-referent)))
+			       :form (case (cat-name (edge-form (parent-edge-for-referent)))
 				       ((vg vp) category::vp)
 				       ((vp+ing vg+ing) category::vp+ing)
 				       ((vp+ed vg+ed) category::vp+ed)
-                                       ((to-comp) category::to-comp))				   
+                                       ((to-comp) category::to-comp)
+                                       (t (error "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP?!")
+                                       category::n-bar))
 			       :referent result))
        result))))
     
