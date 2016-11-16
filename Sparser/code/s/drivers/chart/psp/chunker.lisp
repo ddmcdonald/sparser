@@ -218,31 +218,51 @@
     (declare (special pos end forms ev))
     
     (until (eq pos end)
-           (reverse *chunks*) ;; this is the return value
+        (reverse *chunks*) ;; this is the return value
       (setq ev (pos-starts-here pos))
       (setq forms (starting-forms ev *chunk-forms*))
       (cond
-       (forms
-        (setq *next-chunk* (delimit-next-chunk ev forms end))
-        (push *next-chunk* *chunks*)
-        (when (null (chunk-end-pos *next-chunk*))
-          ;;(break "pos = ~a  end = ~a" pos end)
-          (setf (chunk-end-pos *next-chunk*) end))
-        (setq pos (chunk-end-pos *next-chunk*)))
-       (t
-        ;; no chunk here -- move to next pos
-        (let ((right-treetop (right-treetop-at/edge pos)))
-          (cond
-           ((word-p right-treetop)
-            (push-debug `(,pos))
-            #+ignore
-            (error "Chunker encountered a treetop word: ~s"
-                   (word-pname right-treetop))
-            (if (eq word::period right-treetop)
-             (setq pos end)
-             (setq pos (chart-position-after pos)))) ;;(setq pos (p# (+ 1 (pos-array-index pos))))
-           (t
-            (setq pos (pos-edge-ends-at right-treetop))))))))))
+        (forms
+         (setq *next-chunk* (delimit-next-chunk ev forms end))
+         (push *next-chunk* *chunks*)
+         (disambiguate-head-of-chunk *next-chunk*)    
+         (when (null (chunk-end-pos *next-chunk*))
+           ;;(break "pos = ~a  end = ~a" pos end)
+           (setf (chunk-end-pos *next-chunk*) end))
+         (setq pos (chunk-end-pos *next-chunk*)))
+        (t
+         ;; no chunk here -- move to next pos
+         (let ((right-treetop (right-treetop-at/edge pos)))
+           (cond
+             ((word-p right-treetop)
+              (push-debug `(,pos))
+              #+ignore
+              (error "Chunker encountered a treetop word: ~s"
+                     (word-pname right-treetop))
+              (if (eq word::period right-treetop)
+                  (setq pos end)
+                  (setq pos (chart-position-after pos)))) ;;(setq pos (p# (+ 1 (pos-array-index pos))))
+             (t
+              (setq pos (pos-edge-ends-at right-treetop))))))))))
+
+(defun disambiguate-head-of-chunk (chunk)
+  (let* ((head-ev (car (chunk-ev-list chunk)))
+         (top-node (ev-top-node head-ev))
+         (multi-edges
+          (when (eq :multiple-initial-edges top-node)
+            (ev-edges head-ev)))
+         (forms (chunk-forms chunk))
+         (head-compatible-edges
+          (when multi-edges
+            (compatible-head-edges? forms head-ev))))
+    (declare (special head-ev multi-edges top-node head-compatible-edges))
+    (when (and (not (equal forms '(adjg)))
+               ;; ADJG has confusions for NEXT and FOLLOWING which are non-chunked items
+               multi-edges ;; the head started as ambiguous
+               (car head-compatible-edges)
+               ;; but is disambiguated by the chunking
+               (null (cdr head-compatible-edges)))
+      (specify-top-edge (car head-compatible-edges)))))
 
 (defun delimit-next-chunk (ev forms sentence-end)
   (declare (special ev sentence-end))
@@ -316,12 +336,14 @@
     (adjg (adjg-compatible? edge))))
 
 (defmethod ng-compatible? ((e edge) evlist)
-  (declare (special category::quantifier category::det
-                    category::which category::what category::parentheses
-                    word::comma category::pronoun category::verb+ing
-		    category::common-noun
-                    category::ordinal category::also
-                    category::syntactic-there))
+  (declare (special category::adverb category::also category::be category::have
+                    category::modal
+                    category::common-noun category::det category::ordinal
+                    category::parentheses category::pronoun
+                    category::syntactic-there category::verb+ing
+                    category::what category::which
+                    category::quantifier
+                    word::comma))
   (let ((edges (ev-edges (car evlist)))
         (eform (when (edge-p e) (edge-form e))))
     (cond
@@ -512,7 +534,7 @@
        (compatible-with-vg? e)))))
 
 (defmethod compatible-with-vg? ((e edge))
-  (declare (special category::not category::then))
+  (declare (special category::not category::subordinate-conjunction category::then))
   ;;(lsp-break "compatible with vg? e = ~a" e)
   (or
    (vg-compatible? (edge-form e))
@@ -724,7 +746,7 @@ than a bare "to".  |#
   (when (chunk-forms chunk)  ;; else inconsistent chunk with no head
     chunk
     (setf (chunk-edge-list chunk)
-          (loop for ev in (chunk-ev-list chunk)
+           (loop for ev in (chunk-ev-list chunk)
             collect
             (compatible-edge? ev (chunk-forms chunk)(cdr (member ev (chunk-ev-list chunk)))))))
   chunk)
@@ -769,6 +791,19 @@ than a bare "to".  |#
        (ng (ng-head? edge))
        (vg (vg-head? (edge-form edge)))
        (adjg (adjg-head? edge))))))
+
+(defun compatible-head-edges? (forms ev)
+  (loop for edge in (ev-edges ev)
+        when
+          (and
+           (not (literal-edge? edge))
+           (loop for form in forms
+                 thereis
+                   (case form
+                     (ng (ng-head? edge))
+                     (vg (vg-head? (edge-form edge)))
+                     (adjg (adjg-head? edge)))))
+        collect edge))
 
 (defun remaining-forms (ev chunk);; &optional (forms *chunk-forms*))
   (loop for form in (chunk-forms chunk)

@@ -275,7 +275,25 @@
                  (t
                   (aref array (1- i)))))))))))
            
+(defun specify-top-edge (edge)
+  ;; This is because the chunker has chosen a specific ending
+  ;;  edge for a chunk (with the correct POS), and we want
+  ;;  that to be used by any SDM-SPAN-SEGMENT operation
+  ;; example: "is import" gets chunked as a VG, though it is
+  ;; syntactically incorrect. Then SDM-SPAN-SEGMENT picks
+  ;;  the top edge, which is the IMPORT-ENDURANT edge
+  (let* ((start-ev (edge-starts-at edge))
+         (end-ev (edge-ends-at edge)))
+    #+ignore
+    (format t "specify-top-edge, start-ev=~s, end-ev=~s~%"
+            start-ev end-ev)
+    (when (not (eq (ev-top-node start-ev) edge))
+      ;;(warn "resetting start-ev from ~s to ~s" (ev-top-node start-ev) edge)
+      (setf (ev-top-node start-ev) edge))
 
+    (when (not (eq (ev-top-node end-ev) edge))
+      ;;(warn "resetting end-ev from ~s to ~s" (ev-top-node end-ev) edge)
+           (setf (ev-top-node end-ev) edge))))
 
 (defun index-of-edge-in-vector (edge ev
                                 &optional (count (ev-number-of-edges ev))
