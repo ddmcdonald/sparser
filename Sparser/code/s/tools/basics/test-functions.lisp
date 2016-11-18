@@ -673,11 +673,16 @@
 (defun get-PMC-ID (sl)
     (remove-if-not #'digit-char-p sl))
 
-(defparameter *reach-verbs* nil)
+(defparameter *reach-verbs* nil
+  "This will be a list of distinct keys in reach-sent-event-ht")
 (defparameter *warn-reach-missing* t)
 (defparameter *reach-sents* nil)
-(defparameter *reach-sent-event-ht* (make-hash-table :size 1000 :test #'equalp))
-(defparameter *missed-entities* nil)
+(defparameter *reach-sent-event-ht* 
+  (make-hash-table :size 1000 :test #'equalp)
+  "Keys are lists with verb strings which form the triggers of reach events, plus the type and sub-type;
+the values are the list of reach-IDs (PMC-ID and sentence number) which contain an event of that type") 
+(defparameter *missed-entities* nil
+  "List of entities Reach has that Sparser doesn't")
 
 
 (defun reach-pathname (reach-id)
@@ -692,8 +697,7 @@
 (defun compare-to-reach (PMCID sent-num curr-sent)
   (declare (special curr-sent))
   (let* ((reach-id (format nil "~d-~d" PMCID sent-num))
-         (reach-path (reach-pathname reach-id))
-         (decoded-reach (decode-reach-file reach-path))
+         (decoded-reach (reach-sexpr reach-id))
          (entities (getf decoded-reach :entities))
          (sparser-sent-string
           (if curr-sent
@@ -706,14 +710,14 @@
                   (list (cdr (assoc :trigger event))
                         (assoc :type event)
                         (assoc :subtype event)))))
-    (declare (special reach-path decoded-reach entities))
+    (declare (special decoded-reach entities))
     ;;(lsp-break "compare-to-reach")
     (push reach-sent *reach-sents*)
     
-    (loop for trip in reach-event-triggers
+    (loop for trio in reach-event-triggers
           do
-            (pushnew trip *reach-verbs* :test #'equalp)
-            (push reach-id (gethash trip *reach-sent-event-ht*)))
+            (pushnew trio *reach-verbs* :test #'equalp)
+            (push reach-id (gethash trio *reach-sent-event-ht*)))
 
 
     (unless (equal reach-sent sparser-sent-string)
@@ -737,17 +741,52 @@
                 ;;reach-event-triggers
                 ))))))
 
-(defun reach-event-examples (trip)
-  (loop for reach-id in (gethash trip *reach-sent-event-ht*)
+(defun reach-event-examples (trio)
+  "For a given use of a verb with a particular meaning, it gets the events that are examples of that verb"
+  (loop for reach-id in (gethash trio *reach-sent-event-ht*)
         collect
           (reach-id-events reach-id)))
 
+(defparameter *reach-id-sexpr-ht*
+  (make-hash-table :size 3000 :test #'equal)
+  "Keys are reach-ids and values are s-expression corresponding to json in file")
+
 (defun reach-sexpr (reach-id)
-  (decode-reach-file (reach-pathname reach-id)))
+  "Gets decode reach for a particular reach-ID (i.e., sentence) and stores it in a hash table"
+  (or (gethash reach-id *reach-id-sexpr-ht*)
+      (setf (gethash reach-id *reach-id-sexpr-ht*)
+            (decode-reach-file (reach-pathname reach-id)))))
 
 (defun reach-id-events (reach-id)
   (getf (reach-sexpr reach-id) :events))
-    
+
+(defun reach-id-entities (reach-id)  
+  (getf (reach-sexpr reach-id) :entities))
+
+(defun make-reach-entities-hash (entities)
+  "Make and return a hash table based on the entities in a reach sentence, with keys of the text for the entity name and the value being all the entity information"
+  (let ((entities-hash (make-hash-table :test #'equal)))
+        (loop for ent in entities
+                do (setf (gethash (assoc :text ent) entities-hash)
+                      ent))
+        entities-hash))
+
+(defun expanded-reach-events (reach-id)
+  "Given a reach ID, return a list of events with the arguments to the events expanded from details in the entities list"
+  (let ((events (reach-id-events reach-id))
+        (entities-hash (make-reach-entities-hash (reach-id-entities reach-id))))
+    (loop for evt in events
+          collect (list (assoc :trigger evt) 
+                        (assoc :type evt)
+                        (assoc :subtype evt)
+                        (reach-arg-details (cdr (assoc :arguments evt)) entities-hash)))))
+
+(defun reach-arg-details (args entities-hash)
+  "Given the arguments for one reach event and a hash table of entities for that sentence, return list of arguments with details from entities hash"
+  (loop for arg in args
+                       append (list (assoc :type arg)
+                                    (gethash (assoc :text arg) entities-hash))))
+
 (defun sub-bag-p (sub-bag super-bag &key (test #'eql))
   (loop with result = t
         for elt in sub-bag
@@ -767,38 +806,60 @@
 
 
   
-(defun reach-word-cats (str)
-  (let* ((word (resolve str))
-         (rs (when word (word-rules word))))
+(defun reach-trigger->krisp-cats (str)
+  "Given a string that Reach considers to be an event trigger, it collects all the KRISP categories that that can mean"
+  (let* ((word (resolve str)) ;gets word if it exists
+         (rs (when word (word-rules word)))) ; rule-set for word
     (when rs
       (loop for c in
-              (rs-distinct-categories rs)
+              (rs-distinct-categories rs) 
             when (itypep c 'biological)
               collect c))))
 
 (defun distinct-reach-verb-cats ()
   (loop for grp in
           (group-by
-           (loop for v in *reach-verbs*
+           (loop for v in *reach-verbs* 
                  collect
-                   (list v
-                         (reach-word-cats (car v))))
-           #'(lambda (x) (cdar x))
-           #'(lambda (x) (list (caar x) (car (second x)))))
+                   (trio-cats v))
+           #'trio-cat-reach-type
+           #'trio-verb-krisp-cat)
         collect
           (list
            (car grp)
            (loop for sg in (group-by (second grp) #'second #'car)
                    collect sg)))) ;;`(,(second sg) ,(car sg))))))
 
-(defun group-by (l fn &optional (extract-fn #'identity))
+(defun trio-cats (trio)
+  (list trio (reach-trigger->krisp-cats (car trio))))
+
+(defun trio-cat-reach-type (trio-cat)
+  "Gets type and subtype of reach triple"
+  (cdar trio-cat))
+
+(defun trio-verb-krisp-cat (trio-cat)
+  (list (caar trio-cat) (car (second trio-cat))))
+  
+
+(defun group-by (l key-fn &optional (extract-fn #'identity))
+  "Takes a list and a key function to group by, and optional function to pare down items (generally get the value that goes with the key) and make it into hash table whose keys are distinct vals of key-fn applied to l, and values are values associated with that key
+example" 
   (let ((ht (make-hash-table :size (length l) :test #'equal)))
     (loop for item in l do
             (push (funcall extract-fn item)
-                  (gethash (funcall fn item) ht)))
+                  (gethash (funcall key-fn item) ht)))
     (loop for key being the hash-keys of ht
             collect (list key (gethash key ht)))))
 
+(defun krisp-cat-reach-types (analyzed-reach-verbs)
+  (group-by
+   (loop for reach-cat in analyzed-reach-verbs
+         append (let ((cats (car (cdr reach-cat)))
+                      (reach-type (car reach-cat)))
+                  (loop for cat in cats
+                        collect (list cat reach-type))))
+   #'car
+   #'cadr))
 
 (defvar *rvcs* nil)
 (defvar *rvcs1* nil)
@@ -823,7 +884,7 @@
                 `(,(car x)
                    ,(loop for group in (second x)
                           collect
-                            (list (car group)(reach-word-cats (car group)))))))
+                            (list (car group)(reach-trigger->krisp-cats (car group)))))))
   (setq *rvcs3*
         (loop for xx in
                 *rvcs2*
@@ -834,7 +895,7 @@
         (loop for x in *rvcs2*
               collect
                 (cond ((search "negative" (cdr (assoc :subtype (car x))))
-                       (list (print (car x))
+                       (list (car x)
                              (mapcar #'pname
                                      (loop for cat in
                                              (loop for xx in (second x)
@@ -848,7 +909,7 @@
                                (member (cat-name cat) *svo/bio-verbs*)
                              do
                                (format t "~%suppressing bogus verb ~s" (cat-name cat)))
-                       (list (print (car x))
+                       (list (car x)
                              (mapcar #'pname
                                      (loop for cat in
                                              (loop for xx in (second x)
