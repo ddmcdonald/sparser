@@ -1401,13 +1401,13 @@
 (define-category identify :specializes bio-method
     :mixins (immune-method)
     :binds ((to-be biological)
-            (method bio-method))
+            (manner manner))
     :realization
     (:verb "identify" ;; keyword: ENDS-IN-ED 
 	   :noun "identification"
 	   :etf (svo-passive)
            :as to-be
-           :in method))
+           :in  manner))
 
 (define-category illustrate :specializes bio-rhetorical
   :mixins (bio-thatcomp)

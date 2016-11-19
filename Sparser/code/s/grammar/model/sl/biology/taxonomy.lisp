@@ -114,7 +114,13 @@
 ;;; generalizations
 ;;;-----------------
 
-
+(define-mixin-category with-measurement
+   :binds ((at-measurement (:or bio-concentration measurement)) 
+           (extent (:or amount measurement bio-scalar)))
+   :realization
+   (:at at-measurement
+        :to extent))
+   
 
 (define-category biological :specializes top
   :documentation "Provides a generalization over bio entities
@@ -293,11 +299,11 @@
 
 (define-category bio-process
     :specializes process
-    :mixins (has-UID has-name biological)
+    :mixins (has-UID has-name biological with-measurement)
     :binds ((subject biological)
             (by-means-of (:or bio-process mechanism bio-method pathway))
 	    (using protein)
-	    (manner bio-method) ;; conflict with "increase" bio-process CHECK THIS
+	    (manner manner) ;; conflict with "increase" bio-process CHECK THIS WAS  bio-method
 	    (as-comp as-comp)
 	    (target (:or protein gene))
         )
@@ -376,9 +382,8 @@
    (object (:or bio-entity cell-entity molecular-location measurement bio-scalar))
    (affected-process (:or bio-process bio-mechanism bio-method bio-quality
                           bio-predication bio-relation medical-treatment))
-   ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..." 
-   (at (:or bio-concentration measurement))
-   (extent (:or amount measurement bio-scalar)))
+   ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..."
+   )
   :realization
   (:s agent
       :o object
@@ -388,8 +393,6 @@
       :m agent
       :m object
       :by agent     
-      :at at
-      :to extent
       ))
 
 (define-category caused-biochemical-process :specializes caused-bio-process
@@ -431,7 +434,7 @@
   :realization (:verb "positively controls"  :etf (svo-passive)))
 
 (define-category bio-rhetorical :specializes event
-  :mixins (biological bio-thatcomp bio-whethercomp)
+  :mixins (biological bio-thatcomp bio-whethercomp with-measurement)
   :binds ((agent (:or pronoun/first/plural
                       PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals
 		      pronoun/plural ;; "they"

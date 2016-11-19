@@ -539,7 +539,7 @@
 (def-synonym component 
              (:noun "part"))
 
-(noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
+;; OBE (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super experimental-condition)
 
 (adj "constitutive" :super bio-predication)
@@ -805,11 +805,9 @@
 (noun "LPA" :super phospholipid)
 (def-synonym lpa (:noun "lysophosphatidic acid"))
 
-(noun "manner" :super bio-method
-      :binds ((process bio-process))
+(noun "manner" :super bio-process
       :realization
-      (:noun "manner"
-             :of process))
+      (:noun "manner"))
 (noun "mass" :super bio-scalar)
 (noun "mass-spectrometry" :super bio-method)
 (def-synonym mass-spectrometry (:noun "mass spectrometry"))
