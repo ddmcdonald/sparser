@@ -693,19 +693,31 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
                   :r3
                   "../corpus/Reach-sentences/reach_reread/")))
                                 
+(defun sparser-complete-sent-string (curr-sent)
+  (when curr-sent
+    nil
+    (let ((prev (sparser-complete-sent-string (previous curr-sent))))
+      (if prev 
+          (concatenate 'string
+                       prev
+                       "." ;; assume it is a period
+                       (sentence-string curr-sent))
+          (sentence-string curr-sent)))))
+    
 
 (defun compare-to-reach (PMCID sent-num curr-sent)
   (declare (special curr-sent))
   (let* ((reach-id (format nil "~d-~d" PMCID sent-num))
          (decoded-reach (reach-sexpr reach-id))
          (entities (getf decoded-reach :entities))
-         (sparser-sent-string
-          (if curr-sent
-              (sentence-string curr-sent)
-              "MISSING TEXT IN SPARSER"))
-         (reach-sent (string-left-trim " " (string-right-trim ".!?" (getf decoded-reach :SENTENCE))))
+         (sparser-sent-string (sparser-complete-sent-string curr-sent))
+         (reach-sent
+          (string-left-trim
+           " "
+           (string-right-trim ".!?" (getf decoded-reach :SENTENCE))))
          (reach-event-triggers
-          (loop for event in (getf decoded-reach :events) when (assoc :trigger event)
+          (loop for event in (getf decoded-reach :events)
+                when (assoc :trigger event)
                 collect
                   (list (cdr (assoc :trigger event))
                         (assoc :type event)
@@ -725,21 +737,35 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
             reach-sent
             sparser-sent-string))
     (when *warn-reach-missing*
-      (multiple-value-bind (sub-bag-p missing)
-          (sub-bag-p (get-reach-entities-strings entities) (get-individuals-strings curr-sent) :test #'equalp)
-        (unless sub-bag-p
-          
-          (warn "missed REACH entities ~& ~s ~% in sentence ~s~%" ;; REACH verbs ~s~%"
-                (loop for m in missing
-                      collect
-                        (loop for e in entities
-                              when (equalp (cdr (assoc :text e)) m)
-                              do
-                                (pushnew (simplify-reach-entity e) *missed-entities* :test #'equal)
-                                (return (simplify-reach-entity e))))
-                sparser-sent-string
-                ;;reach-event-triggers
-                ))))))
+      (let ((reach-entity-strings (get-reach-entities-strings entities))
+            (sparser-entity-strings (get-sentence-individual-strings curr-sent)))
+        (declare (special reach-entity-strings sparser-entity-strings))
+            
+        (multiple-value-bind (sub-bag-p missing remaining)
+            (sub-bag-p reach-entity-strings sparser-entity-strings :test #'equalp)
+          (unless (or sub-bag-p
+                      (multiple-value-setq (sub-bag-p missing remaining)
+                        (sub-bag-p missing remaining :test #'string-initial?)))
+            (let ((missing-events
+                   (loop for evt in (cdr (expanded-reach-events reach-id))
+                         when
+                           (loop for m in missing
+                                 thereis
+                                   (find-in m evt #'equal))
+                         collect evt)))
+              (when missing-events
+              (warn "missed REACH entities ~& ~s ~% in sentence ~s~% with missing events ~s~%" ;; REACH verbs ~s~%"
+                    (loop for m in missing
+                          collect
+                            (loop for e in entities
+                                  when (equalp (cdr (assoc :text e)) m)
+                                  do
+                                    (pushnew (simplify-reach-entity e) *missed-entities* :test #'equal)
+                                    (return (simplify-reach-entity e))))
+                    sparser-sent-string
+                    missing-events
+                    ;;reach-event-triggers
+                    )))))))))
 
 (defun reach-event-examples (trio)
   "For a given use of a verb with a particular meaning, it gets the events that are examples of that verb"
@@ -766,26 +792,32 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
 (defun make-reach-entities-hash (entities)
   "Make and return a hash table based on the entities in a reach sentence, with keys of the text for the entity name and the value being all the entity information"
   (let ((entities-hash (make-hash-table :test #'equal)))
-        (loop for ent in entities
-                do (setf (gethash (assoc :text ent) entities-hash)
-                      ent))
-        entities-hash))
+    (loop for ent in entities
+          do (setf (gethash (assoc :text ent) entities-hash)
+                   ent))
+    entities-hash))
 
 (defun expanded-reach-events (reach-id)
   "Given a reach ID, return a list of events with the arguments to the events expanded from details in the entities list"
-  (let ((events (reach-id-events reach-id))
-        (entities-hash (make-reach-entities-hash (reach-id-entities reach-id))))
-    (loop for evt in events
-          collect (list (assoc :trigger evt) 
-                        (assoc :type evt)
-                        (assoc :subtype evt)
-                        (reach-arg-details (cdr (assoc :arguments evt)) entities-hash)))))
+  (let* ((sexpr (reach-sexpr reach-id))
+         (text (getf sexpr :sentence))
+         (events (reach-id-events reach-id))
+         (entities-hash (make-reach-entities-hash (reach-id-entities reach-id))))
+    (declare (special sexpr))
+    (cons `(:sentence ,text)
+          (loop for evt in events
+                collect `(,(cdr (assoc :trigger evt)) ;; (assoc :trigger evt) 
+                           ;;(assoc :type evt)
+                           ,(cdr (assoc :subtype evt)) ;; (assoc :subtype evt)
+                           ,@(reach-arg-details (cdr (assoc :arguments evt)) entities-hash))))))
 
 (defun reach-arg-details (args entities-hash)
   "Given the arguments for one reach event and a hash table of entities for that sentence, return list of arguments with details from entities hash"
   (loop for arg in args
-                       append (list (assoc :type arg)
-                                    (gethash (assoc :text arg) entities-hash))))
+        collect
+          (list (cdr (assoc :type arg)) ;; (assoc :type arg)
+                (or (simplify-reach-entity (gethash (assoc :text arg) entities-hash))
+                    (assoc :text arg)))))
 
 (defun sub-bag-p (sub-bag super-bag &key (test #'eql))
   (loop with result = t
@@ -793,13 +825,26 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
         if (find elt super-bag :test test)
         do (setq super-bag (remove elt super-bag :count 1 :test test))
         else collect elt into missing and do (setq result nil)
-        finally (return (values result missing))))
+        finally (return (values result missing super-bag))))
 
-(defun get-individuals-strings (curr-sent)
+(defun get-sentence-individual-strings (&optional (curr-sent (previous (sentence))))
+  (declare (special *found-bces*))
   (when curr-sent
-    (mapcar #'(lambda (x) (string-trim " " (retrieve-surface-string x)))
-            (when (slot-boundp (contents curr-sent) 'individuals)
-              (sentence-individuals (contents curr-sent))))))
+    (append
+     (get-sentence-individual-strings (previous curr-sent))
+     (when (slot-boundp (contents curr-sent) 'individuals)
+       (setq *found-bces* nil)
+        
+       (loop for i in (sentence-individuals (contents curr-sent))
+             when (not (itypep i '(:or predicate spatial-operator modifier
+                                   subordinate-conjunction conjunction)))
+             do
+               (push i *found-bces*)
+               (visit-indiv-generalizations i (itype-of i) #'record-bce))
+       (remove nil
+               (mapcar #'(lambda (x) (let ((ss (retrieve-surface-string x)))
+                                       (when ss (string-trim " " ss))))
+                       *found-bces*))))))
 
 (defun get-reach-entities-strings (entities)
   (mapcar #'(lambda (x) (cdr (assoc :text x))) entities))
@@ -964,3 +1009,19 @@ example"
          collect m)
    #'string<
    :key #'car))
+
+(defun string-initial? (start full)
+  (eql (search start full) 0))
+
+
+(defun find-in (item tree &optional (test #'eql))
+  (or
+   (funcall test item tree)
+   (when (consp tree)
+     (if (consp (cdr tree))
+         (loop for elt in tree
+               thereis
+                 (find-in item elt test))
+         (or
+          (funcall test item (car tree))
+          (funcall test item (cdr tree)))))))
