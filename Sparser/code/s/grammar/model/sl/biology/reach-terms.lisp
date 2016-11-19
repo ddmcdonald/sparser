@@ -749,7 +749,6 @@
     ("EMD1214063" "uaz" :TYPE "protein" :ID "UAZ01007") 
     ("Mel-Ab cells.Baicalin" "uaz" :TYPE "protein" :ID "UAZ06203") 
     ("TNFalpha+ CHX" "uaz" :TYPE "protein" :ID "UAZ06480") 
-    ("Supplementary Fig." "uaz" :TYPE "protein" :ID "UAZ06479") 
     ("UVB" "uaz" :TYPE "protein" :ID "UAZ00480") 
     ("RBL-2H3 cells.IDHR" "uaz" :TYPE "protein" :ID "UAZ04230") 
     ("100muM SIN" "uaz" :TYPE "protein" :ID "UAZ04229") 
