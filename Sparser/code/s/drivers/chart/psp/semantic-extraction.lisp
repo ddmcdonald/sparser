@@ -554,3 +554,85 @@ without damaging other code.")
 
 
 
+;;;; semantic tree traversal
+
+
+(defmethod traverse-sem ((s sentence) fn)
+  (funcall fn s)
+  (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
+        when
+          (edge-p tt)
+        do
+          (traverse-sem (edge-referent tt) fn)))
+
+(defmethod traverse-sem ((i individual) fn)
+  (declare (special i))
+  (funcall fn i)
+  (cond ((simple-number? i) nil)
+        ((is-basic-collection? i)
+         (loop for item in (value-of 'items i)
+                 do (traverse-sem item fn)))
+        (t
+         (loop for b in (indiv-old-binds i)
+               do (traverse-sem b fn)))))
+
+(defgeneric traverse-sem (sem fn))
+(defmethod traverse-sem ((w string) fn)
+  (declare (ignore newline)))
+
+(defmethod traverse-sem ((w word) fn)
+  (funcall fn w))
+(defmethod traverse-sem ((w polyword) fn)
+  (funcall fn w))
+(defmethod traverse-sem ((w symbol) fn)
+  (funcall fn w))
+
+(defmethod traverse-sem ((w number) fn)
+  (funcall fn w))
+
+(defmethod traverse-sem ((val cons) fn)
+  (funcall fn val))
+
+(defmethod traverse-sem ((c referential-category) fn)
+  (funcall fn c))
+
+(defmethod traverse-sem ((binding binding) fn)
+  (traverse-sem (binding-value binding) fn))
+
+;; a useful example
+
+(defparameter *found-bces* nil)
+(defmethod find-bce ((s sentence))
+  (setq *found-bces* nil))
+
+(defmethod find-bce ((c referential-category))
+  (if (itypep c 'bio-chemical-entity)
+      (record-bce c)))
+
+(defmethod find-bce ((i individual))
+  (when (itypep i 'bio-chemical-entity)
+    (record-bce i)
+    (visit-indiv-generalizations i (itype-of i) #'record-bce)))
+
+(defun record-bce (i)
+  (push i *found-bces*))
+
+(defun all-bces ()
+  *found-bces*)
+
+(defun visit-indiv-generalizations (i cat fn)
+  (loop for parent being the hash-values of (indiv-uplinks i)
+        when
+          (eq (itype-of parent) cat)
+        do
+          (funcall fn parent)
+          (visit-indiv-generalizations parent cat fn)))
+    
+                
+(defmethod find-bce (x)
+  "do nothing")
+
+
+
+
+
