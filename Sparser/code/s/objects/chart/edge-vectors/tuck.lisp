@@ -44,7 +44,7 @@
 
      (cond ((eq (edge-right-daughter dominating-edge) :long-span)
             (when (not (member subsumed-edge (edge-constituents dominating-edge)))
-              (lsp-break "~%in tuck-new-edge-under-already-knit:~%
+              (error "~%in tuck-new-edge-under-already-knit:~%
 edge-constituents in dominating edge ~s ~%
 does not contain subsumed-edge ~s~%" dominating-edge subsumed-edge))
             (setf (edge-constituents dominating-edge)
@@ -59,7 +59,7 @@ is not subsumed-edge ~s in sentence:~%~s~%"
             (setf (edge-right-daughter dominating-edge) new-edge)) 
            ((eq direction :left)
             (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
-              (lsp-break "~%in tuck-new-edge-under-already-knit:~%
+              (error "~%in tuck-new-edge-under-already-knit:~%
 edge-left-daughter in dominating edge ~s ~%
 is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
             (setf (edge-left-daughter dominating-edge) new-edge)))
