@@ -733,7 +733,8 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
 
 
     (unless (equal reach-sent sparser-sent-string)
-      (warn "mismatched sentences ~% reach sentence   ~s ~% sparser sentence ~s"
+      (warn "mismatched sentences in REACH ~a ~% reach sentence   ~s ~% sparser sentence ~s"
+            reach-id
             reach-sent
             sparser-sent-string))
     (when *warn-reach-missing*
@@ -745,7 +746,9 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
             (sub-bag-p reach-entity-strings sparser-entity-strings :test #'equalp)
           (unless (or sub-bag-p
                       (multiple-value-setq (sub-bag-p missing remaining)
-                        (sub-bag-p missing remaining :test #'string-initial?)))
+                        (sub-bag-p missing remaining :test #'string-initial?))
+                      (multiple-value-setq (sub-bag-p missing remaining)
+                        (sub-bag-p missing remaining :test #'string-final?)))
             (let ((missing-events
                    (loop for evt in (cdr (expanded-reach-events reach-id))
                          when
@@ -754,18 +757,19 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
                                    (find-in m evt #'equal))
                          collect evt)))
               (when missing-events
-              (warn "missed REACH entities ~& ~s ~% in sentence ~s~% with missing events ~s~%" ;; REACH verbs ~s~%"
-                    (loop for m in missing
-                          collect
-                            (loop for e in entities
-                                  when (equalp (cdr (assoc :text e)) m)
-                                  do
-                                    (pushnew (simplify-reach-entity e) *missed-entities* :test #'equal)
-                                    (return (simplify-reach-entity e))))
-                    sparser-sent-string
-                    missing-events
-                    ;;reach-event-triggers
-                    )))))))))
+                (warn "missed REACH entities in sentence:  ~a~% ~s~%  ~s~% with missing events~% ~s~%" ;; REACH verbs ~s~%"
+                      reach-id
+                      sparser-sent-string
+                      (loop for m in missing
+                            collect
+                              (loop for e in entities
+                                    when (equalp (cdr (assoc :text e)) m)
+                                    do
+                                      (pushnew (simplify-reach-entity e) *missed-entities* :test #'equal)
+                                      (return (simplify-reach-entity e))))
+                      missing-events
+                      ;;reach-event-triggers
+                      )))))))))
 
 (defun reach-event-examples (trio)
   "For a given use of a verb with a particular meaning, it gets the events that are examples of that verb"
@@ -1012,6 +1016,10 @@ example"
 
 (defun string-initial? (start full)
   (eql (search start full) 0))
+
+(defun string-final? (end full)
+  (when (> (length full)(length end))
+    (search end full :start2 (- (length full) (length end)))))
 
 
 (defun find-in (item tree &optional (test #'eql))
