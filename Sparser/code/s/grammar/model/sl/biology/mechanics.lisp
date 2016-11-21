@@ -22,6 +22,61 @@
 (in-package :sparser)
 
 ;;;---------------------------
+;;; TRIPS & REACH --> def-bio
+;;;---------------------------
+
+
+(defun trips/reach-term->def-bio (term trips/reach->krisp-class)
+  (let ((category (funcall trips/reach->krisp-class term)))
+    (case category
+      ((residue-on-protein molecular-site nil)
+       ;;(format t "Rejecting REACH definition ~s~%" term)
+       nil)
+      (cellular-location
+       (def-cell-loc (car term)
+           (simplify-colons
+                        (getf (cddr term) :id))))
+      ((bacterium ;;bio-process ;; may conflict with handling of post-translational processes
+        cancer
+        cell-line
+        cell-type
+        cellular-process
+        disease
+        drug
+        gene
+        molecule
+        organism
+        protein
+        ;; rna has problems
+        unit-of-measure
+        virus)
+       `(def-bio ,(car term)
+            ,category
+          :long ,(getf (cddr term) :name)
+          :identifier ,(simplify-colons
+                        (getf (cddr term) :id))))
+      (t
+       (unless (member category '(bio-method bio-process bio-organ bio-complex protein-domain protein-family rna ))
+         (format t "~%definiing an instance of ~s~%" category))
+       (when (member category '(point-mutation)) 
+         ;;(member category '(bio-process bio-organ bio-complex))
+         ;; we really want bio-processes and bio-organs to be individuals, but there is a problem with def-bio -- ASK ALEX
+         (lsp-break "trips/reach-term->def-bio"))
+       `(define-category ,(intern (car term) (find-package :sp))
+            :specializes ,category
+            :bindings (uid ,(simplify-colons (getf (cddr term) :id)))
+            :realization
+            (:noun ,(car term)))))))
+
+(defun simplify-colons (x)
+  (if (search "::" x)
+      (concatenate 'string
+                   (subseq x 0 (search "::" x) )
+                   ":"
+                   (subseq x (+ 2 (search "::" x) )))
+      x))
+
+;;;---------------------------
 ;;; bio-synonyms
 ;;;---------------------------
 
