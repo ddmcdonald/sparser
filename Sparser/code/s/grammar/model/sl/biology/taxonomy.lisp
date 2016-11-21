@@ -346,19 +346,11 @@
 
 (define-category cellular-process :specializes response
   :mixins (has-UID has-name biological)
-  :realization 
-  (:noun "cellular response"))
-
-(define-category disease-process :specializes process
-  :mixins (biological))
-
-(define-category metastasis :specializes disease-process
-  :binds ((cancer cancer))
+  :instantiates self
+  :index (:permanent :key name)
   :realization
-  (:noun ("metastasis" :plural "metastases") :verb "metastasize"
-         :etf (sv)
-         :s cancer))
-
+  (:common-noun name
+                :noun "cellular response"))
 
 (define-category named-bio-process
     :specializes other-bio-process
@@ -374,11 +366,15 @@
   :restrict ((subject blocked-category))
   :binds
   ((agent ;; supercedes subject in bio=-process
-    (:or bio-entity bio-process bio-mechanism bio-method drug process-rate
-	 bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
-	 measurement 
-         bio-scalar ;; "these data raised the possibility..."
-	 molecular-location));; membrane targeting domains that facilitate interaction with the plasma membrane
+    (:or  ;;bio-entity
+     molecule
+     bio-complex
+     bio-process bio-mechanism bio-method drug process-rate
+     bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
+     measurement 
+     bio-scalar ;; "these data raised the possibility..."
+     protein-domain ;; not molecular-location -- that allows residues
+     )) ;; membrane targeting domains that facilitate interaction with the plasma membrane
    (object (:or bio-entity cell-entity molecular-location measurement bio-scalar))
    (affected-process (:or bio-process bio-mechanism bio-method bio-quality
                           bio-predication bio-relation medical-treatment))
@@ -782,16 +778,24 @@
 (noun "therapeutic strategy" :super medical-treatment)
 
 (define-category drug :specializes molecule
+  :instantiates self
+  :index (:permanent :key name)
   :lemma (:common-noun "drug")
   :realization (:common-noun name))
 
 (define-category rna :specializes molecule
+  :instantiates self
+  :index (:permanent :key name)
+  :lemma (:common-noun "RNA")
   :realization
-  (:noun "RNA"))
+  (:common-noun name))
 
 (define-category micro-rna  :specializes rna
+  :instantiates self
+  :index (:permanent :key name)
+  :lemma (:common-noun "micro-rna")
   :realization
-  (:noun "micro-rna"))
+  (:common-noun name))
 
 (define-category lipid :specializes molecule
   :instantiates :self
@@ -928,13 +932,27 @@
   :realization
   (:noun "system"))
 
+(define-category disease-process :specializes process
+  :mixins (biological))
+
+(define-category metastasis :specializes disease-process
+  :binds ((cancer cancer))
+  :realization
+  (:noun ("metastasis" :plural "metastases") :verb "metastasize"
+         :etf (sv)
+         :s cancer))
+
 (define-category disease  :specializes bio-context
   :mixins (has-uid)
   :binds ((organ bio-organ))
-  :realization (:noun "disease"
-                      :m organ
-                      :of organ
-                      :in organ))
+  :instantiates self
+  :index (:permanent :key name)
+  :lemma (:common-noun "cancer")
+  :realization (:common-noun name
+                             :noun "disease"
+                             :m organ
+                             :of organ
+                             :in organ))
 
 (define-category cancer  :specializes disease
   :instantiates self
@@ -974,44 +992,44 @@
 
        
 
-(define-cellular-location "Golgi apparatus" "GO_0005794")
-(define-cellular-location "basolateral plasma membrane" "GO_0016323")
-(define-cellular-location "caveola" "GO_0005901")
-(define-cellular-location "cell leading edge" "GO_0031252")
-(define-cellular-location "cell-cell junction" "GO_0005911")
-(define-cellular-location "cytoplasm" "GO_0005737" :adj "cytoplasmic")
-(define-cellular-location "cytoplasmic vesicle" "GO_0031410")
-(define-cellular-location "cytoskeleton" "GO_0005856")
-(define-cellular-location "cytosol" "GO_0005829" :adj "cytosolic")
-(define-cellular-location "dendritic spine" "GO_0043197")
-(define-cellular-location "early endosome" "GO_0005769")
-(define-cellular-location "endoplasmic reticulum membrane" "GO_0005789")
-(define-cellular-location "endoplasmic reticulum" "GO_0005783")
-(define-cellular-location "endosome" "GO_0005768" :adj "endosomal")
-(define-cellular-location "extracellular matrix" "GO_0031012")
-(define-cellular-location "extracellular region" "GO_0005576")
-(define-cellular-location "focal adhesion" "GO_0005925")
-(define-cellular-location "growth cone" "GO_0030426")
-(define-cellular-location "hemidesmosome" "GO_0030056")
-(define-cellular-location "integral to membrane" "GO_0016021")
-(define-cellular-location "intracellular" "GO_0005622")
-(define-cellular-location "lamellipodium" "GO_0030027")
-(define-cellular-location "lamellipodia" "GO_0030027")
-(define-cellular-location "filopodium" "GO_0030175")
-(define-cellular-location "filopodia" "GO_0030175")
-(define-cellular-location "membrane raft" "GO_0045121")
-(define-cellular-location "membrane" "GO_0016020")
-(define-cellular-location "mitochondrial inner membrane" "GO_0005743")
-(define-cellular-location "mitochondrial intermembrane space" "GO_0005758")
-(define-cellular-location "mitochondrial matrix" "GO_0005759")
-(define-cellular-location "neuromuscular junction" "GO_0031594")
-(define-cellular-location "nucleoplasm" "GO_0005654")
-(define-cellular-location "nucleus" "GO_0005634" :adj "nuclear")
-(define-cellular-location "plasma membrane" "GO_0005886")
+(define-cellular-location "Golgi apparatus" "GO:0005794")
+(define-cellular-location "basolateral plasma membrane" "GO:0016323")
+(define-cellular-location "caveola" "GO:0005901")
+(define-cellular-location "cell leading edge" "GO:0031252")
+(define-cellular-location "cell-cell junction" "GO:0005911")
+(define-cellular-location "cytoplasm" "GO:0005737" :adj "cytoplasmic")
+(define-cellular-location "cytoplasmic vesicle" "GO:0031410")
+(define-cellular-location "cytoskeleton" "GO:0005856")
+(define-cellular-location "cytosol" "GO:0005829" :adj "cytosolic")
+(define-cellular-location "dendritic spine" "GO:0043197")
+(define-cellular-location "early endosome" "GO:0005769")
+(define-cellular-location "endoplasmic reticulum membrane" "GO:0005789")
+(define-cellular-location "endoplasmic reticulum" "GO:0005783")
+(define-cellular-location "endosome" "GO:0005768" :adj "endosomal")
+(define-cellular-location "extracellular matrix" "GO:0031012")
+(define-cellular-location "extracellular region" "GO:0005576")
+(define-cellular-location "focal adhesion" "GO:0005925")
+(define-cellular-location "growth cone" "GO:0030426")
+(define-cellular-location "hemidesmosome" "GO:0030056")
+(define-cellular-location "integral to membrane" "GO:0016021")
+(define-cellular-location "intracellular" "GO:0005622")
+(define-cellular-location "lamellipodium" "GO:0030027")
+(define-cellular-location "lamellipodia" "GO:0030027")
+(define-cellular-location "filopodium" "GO:0030175")
+(define-cellular-location "filopodia" "GO:0030175")
+(define-cellular-location "membrane raft" "GO:0045121")
+(define-cellular-location "membrane" "GO:0016020")
+(define-cellular-location "mitochondrial inner membrane" "GO:0005743")
+(define-cellular-location "mitochondrial intermembrane space" "GO:0005758")
+(define-cellular-location "mitochondrial matrix" "GO:0005759")
+(define-cellular-location "neuromuscular junction" "GO:0031594")
+(define-cellular-location "nucleoplasm" "GO:0005654")
+(define-cellular-location "nucleus" "GO:0005634" :adj "nuclear")
+(define-cellular-location "plasma membrane" "GO:0005886")
 (def-synonym plasma-membrane (:noun "PM"))
-(define-cellular-location "platelet dense granule lumen" "GO_0031089")
-(define-cellular-location "trailing edge" "GO_0031254")
-(define-cellular-location "juxtamembrane" "GO_????")
+(define-cellular-location "platelet dense granule lumen" "GO:0031089")
+(define-cellular-location "trailing edge" "GO:0031254")
+(define-cellular-location "juxtamembrane" "GO:????")
 
 (define-category stress-granule :specializes cellular-location
   :realization (:noun "SG"))
@@ -1027,6 +1045,8 @@
 (define-category bio-organ :specializes non-cellular-location
   :mixins (has-UID has-name)
   :binds ((organism organism))
+  :instantiates self
+  :index (:permanent :key name)
   :realization
   (:noun "organ"
          :in organism
@@ -1200,18 +1220,21 @@
   :realization (:noun "epitope"))
 
 (define-category cell-entity :specializes physical-object
-		 :mixins (biological has-uid has-name))
-
+   :mixins (biological has-uid has-name)
+   :binds ((with-protein protein))
+  :realization (:with with-protein))
 
 (define-category cell-line :specializes cell-entity
   :instantiates self
   :index (:permanent :key name)
-  :binds ((with-protein protein))	 
-  :realization (:common-noun name
-                :with with-protein))
+  :realization (:common-noun name))
 
 (define-category cell-type :specializes cell-entity
-  :realization (:noun "cell type"))
+  :instantiates self
+  :index (:permanent :key name)
+  :realization
+  (:common-noun name
+     :noun "cell type"))
 
 ;; used in biopax
 (define-category organism :specializes endurant
