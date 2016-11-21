@@ -1,35 +1,12 @@
 (in-package :sparser)
 
 (defun define-trips-term (term)
-  (eval (trips-term->def-bio term)))
+    (eval (trips/reach-term->def-bio term #'trips-class->krisp)))
 
-(defun trips-term->def-bio (term)
-  (let ((category (trips-class->krisp (second term))))
-    (case category
-      ((residue-on-protein molecular-site) nil)
-      ((protein gene cell-line molecule cancer organism)
-       `(def-bio ,(car term)
-            ,category
-          :long ,(getf (cddr term) :name)
-          :identifier ,(simplify-colons
-                        (getf (cddr term) :id))))
-      (t
-       `(define-category ,(intern (car term) (find-package :sp))
-            :specializes ,category
-            :bindings (uid ,(simplify-colons (getf (cddr term) :id)))
-            :realization
-            (:noun ,(car term)))))))
 
-(defun simplify-colons (x)
-  (if (search "::" x)
-      (concatenate 'string
-                   (subseq x 0 (search "::" x) )
-                   ":"
-                   (subseq x (+ 2 (search "::" x) )))
-      x))
     
-(defun trips-class->krisp (class-string)
-  (ecase (intern (subseq class-string 4)) ;; drop the ONT:
+(defun trips-class->krisp (term)
+  (ecase (intern (subseq (second term) 4)) ;; drop the ONT:
     ((protein gene-protein) 'protein) ;; we treat genes as if they name the protein
     (gene 'gene)
     (bacterium 'bacterium)
@@ -39,7 +16,7 @@
     (cell 'cell-type)
     (cell-line 'cell-line)
     (cell-part 'cellular-location)
-    (chemical 'bio-chemical-entity)
+    (chemical 'molecule)
     (macromolecular-complex 'bio-complex)
     (measure-unit 'unit-of-measure)
     (medical-disorders-and-conditions 'disease)
@@ -47,7 +24,6 @@
     (molecular-domain 'protein-domain)
     (molecule 'molecule)
     (molecular-site 'residue-on-protein)
-    (mutation 'point-mutation)
     ((organism nonhuman-animal fish invertebrate) 'organism)
     (pharmacologic-substance 'drug)
     (physical-condition 'disease)
@@ -59,6 +35,22 @@
     (virus 'virus)))
 
 
+;;("D770_N771insNPG" "ONT:MUTATION" :ID NIL :NAME NIL) 
+;;("K224A" "ONT:MUTATION" :ID NIL :NAME NIL) 
+;;("L747_E749del" "ONT:MUTATION" :ID NIL :NAME NIL) 
+;; ("A375P" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("A3R" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("B2A" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("D1R" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("E1A" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("H2R" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("H2S" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("H3R" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("I3C" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("P2X" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("P2Y" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("S13A" "ONT:MUTATION" :ID NIL :NAME NIL)
+;; ("S7A" "ONT:MUTATION" :ID NIL :NAME NIL)
 
 
 
@@ -251,7 +243,7 @@
     ("DHA" "ONT:CHEMICAL" :ID "CHEBI:36005" :NAME "docosahexaenoic acid") 
     ("DR" "ONT:CHEMICAL" :ID "CHEBI:73445" :NAME "Asp-Arg") 
     ("EGTA" "ONT:CHEMICAL" :ID "NCIT:C72097" :NAME "egtazic acid") 
-    ("Estrogen" "ONT:CHEMICAL" :ID "CHEBI:50114" :NAME "estrogen") 
+    ("estrogen" "ONT:CHEMICAL" :ID "CHEBI:50114" :NAME "estrogen") 
     ("FAD" "ONT:CHEMICAL" :ID "CHEBI:16238" :NAME "FAD") 
     ("GD3" "ONT:CHEMICAL" :ID "CHEBI:28424" :NAME
      "alpha-N-acetylneuraminosyl-(2->8)-alpha-N-acetylneuraminosyl-(2->3)-beta-D-galactosyl-(1->4)-beta-D-glucosyl-(1<->1')-ceramide") 
@@ -259,7 +251,6 @@
     ("Haem" "ONT:CHEMICAL" :ID "CHEBI:30413" :NAME "heme") 
     ("IH" "ONT:CHEMICAL" :ID "CHEBI:73520" :NAME "Ile-His") 
     ("Icariin" "ONT:CHEMICAL" :ID "CHEBI:78420" :NAME "icariin") 
-    ("Ionomycin" "ONT:CHEMICAL" :ID "CHEBI:63954" :NAME "ionomycin") 
     ("KCl" "ONT:CHEMICAL" :ID "CHEBI:32588" :NAME "potassium chloride") 
     ("KN93" "ONT:CHEMICAL" :ID "CHEBI:91460" :NAME "KN-93") 
     ("LV" "ONT:CHEMICAL" :ID "CHEBI:73579" :NAME "Leu-Val") 
@@ -1177,14 +1168,6 @@
     ("succinate" "ONT:MOLECULE" :ID "CHEBI:26806" :NAME "succinate") 
     ("sulfide" "ONT:MOLECULE" :ID "CHEBI:26822" :NAME "sulfide") 
     ("tamoxifen" "ONT:MOLECULE" :ID "CHEBI:41774" :NAME "tamoxifen") 
-    ("A2A" "ONT:MUTATION" :ID NIL :NAME NIL) 
-    ("B1R" "ONT:MUTATION" :ID NIL :NAME NIL) 
-    ("D2L" "ONT:MUTATION" :ID NIL :NAME NIL) 
-    ("D2R" "ONT:MUTATION" :ID NIL :NAME NIL) 
-    ("E2F" "ONT:MUTATION" :ID NIL :NAME NIL) 
-    ("H4R" "ONT:MUTATION" :ID NIL :NAME NIL) 
-    ("K45R" "ONT:MUTATION" :ID NIL :NAME NIL) 
-    ("S6P" "ONT:MUTATION" :ID NIL :NAME NIL) 
     ("WKY" "ONT:NONHUMAN-ANIMAL" :ID "NCIT:C76192" :NAME "WKY rat strain") 
     ("Leishmania" "ONT:ORGANISM" :ID "NCIT:C123421" :NAME "leishmania") 
     ("3alphaHP" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C052610" :NAME
@@ -1700,7 +1683,6 @@
     ("miR-200a" "ONT:MOLECULE" :ID NIL :NAME NIL) 
     ("miR-7-5p" "ONT:MOLECULE" :ID NIL :NAME NIL) 
     ("nicotinamide" "ONT:MOLECULE" :ID "CHEBI:17154" :NAME "nicotinamide") 
-    ("G12V" "ONT:MUTATION" :ID NIL :NAME NIL) 
     ("murine" "ONT:NONHUMAN-ANIMAL" :ID "NCIT:C14238" :NAME "mouse") 
     ("ABT-199" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C103147" :NAME
      "bcl-2 inhibitor GDC-0199") 
@@ -1975,13 +1957,6 @@
 ("myr" "ONT:MOLECULE" :ID "CHEBI:25456" :NAME "tetradecanoyl group") 
 ("palmitoyl" "ONT:MOLECULE" :ID "CHEBI:45021" :NAME "palmitoyl group") 
 ("tyrosyl" "ONT:MOLECULE" :ID "CHEBI:32789" :NAME "tyrosine residue") 
-("20A" "ONT:MUTATION" :ID NIL :NAME NIL) 
-("64D" "ONT:MUTATION" :ID NIL :NAME NIL) 
-("64F" "ONT:MUTATION" :ID NIL :NAME NIL) 
-("D770_N771insNPG" "ONT:MUTATION" :ID NIL :NAME NIL) 
-("K224A" "ONT:MUTATION" :ID NIL :NAME NIL) 
-("L747_E749del" "ONT:MUTATION" :ID NIL :NAME NIL) 
-("S1P" "ONT:MUTATION" :ID NIL :NAME NIL) 
 ;;("MEN" "ONT:PERSON" :ID "NCIT:C14366" :NAME "man") 
 ("AMD3100" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C1777" :NAME "AMD3100") 
 ("BKM-120" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:71954" :NAME "BKM120") 
@@ -2498,14 +2473,6 @@
  ("Dpp" "ONT:MOLECULE" :ID "CHEBI:60069" :NAME "dipropyl phthalate")
  ("FO" "ONT:MOLECULE" :ID "CHEBI:30244" :NAME "hypofluorite")
  ("GdCl3" "ONT:MOLECULE" :ID "CHEBI:37288" :NAME "gadolinium trichloride")
- ("A375P" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("A3R" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("B2A" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("D1R" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("E1A" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("H2R" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("H2S" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("H3R" "ONT:MUTATION" :ID NIL :NAME NIL)
  ("DBA" "ONT:NONHUMAN-ANIMAL" :ID "NCIT:C37402" :NAME "DBA mouse")
  ("ABT-737" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C501332" :NAME "ABT-737")
  ("ACTH" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C212" :NAME
@@ -3039,9 +3006,6 @@
   "poly(9,9'-dioctylfluorene) macromolecule")
  ("PLLA" "ONT:MOLECULE" :ID "CHEBI:53408" :NAME "poly[(S)-lactic acid]")
  ("QD" "ONT:MOLECULE" :ID "CHEBI:50853" :NAME "quantum dot")
- ("I3C" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("P2X" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("P2Y" "ONT:MUTATION" :ID NIL :NAME NIL)
  ("NIH" "ONT:NONHUMAN-ANIMAL" :ID "NCIT:C14476" :NAME "NIH mouse")
  ("HKI-272" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C49094" :NAME "KI-272")
  ("ICI182780" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C070081" :NAME
@@ -3447,8 +3411,6 @@
  ("hydroxyl" "ONT:MOLECULE" :ID "CHEBI:29191" :NAME "hydroxyl")
  ("iodonium" "ONT:MOLECULE" :ID "CHEBI:50317" :NAME "iodonium")
  ("ketone" "ONT:MOLECULE" :ID "CHEBI:17087" :NAME "ketone")
- ("S13A" "ONT:MUTATION" :ID NIL :NAME NIL)
- ("S7A" "ONT:MUTATION" :ID NIL :NAME NIL)
  ("Yorkie" "ONT:ORGANISM" :ID "NCIT:C53946" :NAME "yorkshire terrier")
  ("RasV12" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C48409" :NAME
   "monoclonal antibody RAV12")
