@@ -915,7 +915,7 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
     (let* ((mention (car (mention-history indiv)))
            (edge (when mention (mention-source mention))))
       (declare (special edge))
-      (if (eq (itype-of indiv) category::collection)
+      (if (eq (itype-of indiv) (category-named 'collection))
           (loop for e in (edge-constituents edge)
                 do
                 (record-reach-events (edge-referent e)))
