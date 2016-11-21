@@ -730,7 +730,9 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
           do
             (pushnew trio *reach-verbs* :test #'equalp)
             (push reach-id (gethash trio *reach-sent-event-ht*)))
-
+;    (get-sparser-reach-events (previous (sentence)) reach-event-triggers)
+    (format t "Reach trigger sparser matches: ~a" 
+            (get-sparser-reach-events (previous (sentence)) reach-event-triggers))
 
     (unless (equal reach-sent sparser-sent-string)
       (warn "mismatched sentences in REACH ~a ~% reach sentence   ~s ~% sparser sentence ~s"
@@ -840,6 +842,7 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
         finally (return (values result missing super-bag))))
 
 (defun get-sentence-individual-strings (&optional (curr-sent (previous (sentence))))
+  "Gets individual strings for sentence and all previous sentences, because one Reach sentence may end up as multiple Sparser sentences"
   (declare (special *found-bces*))
   (when curr-sent
     (append
@@ -860,6 +863,7 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
 
 
 (defun get-sentence-process-strings (&optional (curr-sent (previous (sentence))))
+  "Gets process strings for sentence and all previous sentences, because one Reach sentence may end up as multiple Sparser sentences"
   (declare (special *found-bces*))
   (when curr-sent
     (append
@@ -877,6 +881,29 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
                (mapcar #'(lambda (x) (let ((ss (retrieve-surface-string x)))
                                        (when ss (string-trim " " ss))))
                        *found-bces*))))))
+
+(defun get-sparser-reach-events (curr-sent reach-event-triggers)
+  (let ((*reach-evt-triggers* reach-event-triggers)
+        (*reach-evt-edges* nil))
+    (declare (special *reach-evt-triggers* *reach-evt-edges*))
+    (get-sparser-reach-events-base curr-sent)
+    *reach-evt-edges*))
+
+(defun get-sparser-reach-events-base (curr-sent)
+  (when curr-sent
+    (append 
+     (get-sparser-reach-events-base (previous curr-sent))
+     (traverse-sem curr-sent #'record-reach-events))))
+
+(defun record-reach-events (indiv)
+  (declare (special *reach-evt-triggers* *reach-evt-edges*))
+  (when indiv
+    (let* ((mention (car (mention-history indiv)))
+           (edge (when mention (mention-source mention))))
+      (when (edge-p edge)
+        (when (member (head-string edge) *reach-evt-triggers* :test #'equal)
+          (push edge *reach-evt-edges*))))))
+  
 
 (defun get-reach-entities-strings (entities)
   (mapcar #'(lambda (x) (cdr (assoc :text x))) entities))
@@ -1067,3 +1094,28 @@ example"
          (or
           (funcall test item (car tree))
           (funcall test item (cdr tree)))))))
+
+(defun find-head-edge (edge)
+  (let ((category (itype-of (edge-referent edge)))
+        (start-pos (pos-edge-starts-at edge))
+        (end-pos (pos-edge-ends-at edge)))
+    (find-lexical-edge-with-cat category start-pos end-pos)))
+
+(defun find-lexical-edge-with-cat (category start-pos end-pos)
+  (if (>= (pos-token-index start-pos) (pos-token-index end-pos))
+      nil
+      (let ((lex-edge (lexical-edge-at-pos start-pos)))
+        (when lex-edge
+          (if (eq (itype-of (edge-referent lex-edge)) category)
+              lex-edge
+              (find-lexical-edge-with-cat category (pos-edge-ends-at lex-edge) end-pos))))))      
+
+(defun lexical-edge-at-pos (pos)
+  (elt (ev-edge-vector (pos-starts-here pos)) 0))
+
+(defun head-string (edge)
+  (when edge 
+    (let ((found-head (find-head-edge edge)))
+    (when found-head
+      (string-right-trim " " (extract-string-spanned-by-edge found-head))))))
+
