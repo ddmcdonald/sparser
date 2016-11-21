@@ -197,3 +197,20 @@
                                 " ")))
     (subseq string 0 (1- (length string)))))
 
+
+(defun lexical-items-between (start end)
+  (if (< (pos-token-index start)
+         (pos-token-index end))
+      (let ((lex-start (lexical-edge-at start)))
+      (when lex-start
+        (cons lex-start
+              (lexical-items-between
+               (pos-edge-ends-at lex-start)
+               end))))))
+
+(defun lexical-edge-at (pos)
+  (let ((ev (pos-starts-here pos)))
+    (when (> (ev-number-of-edges ev) 0)
+      (elt (ev-edge-vector ev) 0))))
+
+
