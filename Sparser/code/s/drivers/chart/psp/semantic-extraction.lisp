@@ -569,7 +569,8 @@ without damaging other code.")
 (defmethod traverse-sem ((i individual) fn)
   (declare (special i))
   (funcall fn i)
-  (cond ((simple-number? i) nil)
+  (cond ((simple-number? i)
+         (funcall fn (value-of 'value i)))
         ((is-basic-collection? i)
          (loop for item in (value-of 'items i)
                  do (traverse-sem item fn)))
@@ -579,7 +580,7 @@ without damaging other code.")
 
 (defgeneric traverse-sem (sem fn))
 (defmethod traverse-sem ((w string) fn)
-  (declare (ignore newline)))
+  (funcall fn w))
 
 (defmethod traverse-sem ((w word) fn)
   (funcall fn w))
@@ -600,7 +601,10 @@ without damaging other code.")
 (defmethod traverse-sem ((binding binding) fn)
   (traverse-sem (binding-value binding) fn))
 
-;; a useful example
+;; a useful example -- traversal functions to be used with traverse-sem
+(defmethod find-biochemical-entities ((s sentence))
+  (traverse-sem s #'find-bce)
+  (all-bces))
 
 (defparameter *found-bces* nil)
 (defmethod find-bce ((s sentence))
@@ -630,6 +634,11 @@ without damaging other code.")
           (visit-indiv-generalizations parent cat fn)))
     
 ;; another useful example
+
+(defmethod find-reach-processes ((s sentence))
+  (traverse-sem s #'find-bps)
+  (all-bps))
+
 (defmethod find-bps (x)
   "do nothing")
 
@@ -662,9 +671,6 @@ without damaging other code.")
 (defmethod find-bp (x)
   "do nothing")
 
-(defmethod find-reach-processes ((s sentence))
-  (traverse-sem s #'find-bps)
-  (all-bps))
 
 
 
