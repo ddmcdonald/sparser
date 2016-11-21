@@ -719,67 +719,73 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
           (loop for event in (getf decoded-reach :events)
                 when (assoc :trigger event)
                 collect
-                  (list (cdr (assoc :trigger event))
-                        (assoc :type event)
-                        (assoc :subtype event)))))
+                (list (cdr (assoc :trigger event))
+                      (assoc :type event)
+                      (assoc :subtype event))))
+         (reach-event-strings (mapcar #'car reach-event-triggers)))
     (declare (special decoded-reach entities))
-    ;;(lsp-break "compare-to-reach")
-    (push reach-sent *reach-sents*)
+    (multiple-value-bind (sparser-reach-events sparser-missed-triggers) 
+        (get-sparser-reach-events (previous (sentence)) reach-event-strings)
+      (if sparser-missed-triggers
+          (warn "missed events ~s~% in reach sent ~s~%"
+                sparser-missed-triggers
+                reach-sent))
+      ;;(lsp-break "compare-to-reach")
+      (push reach-sent *reach-sents*)
     
-    (loop for trio in reach-event-triggers
-          do
+      (loop for trio in reach-event-triggers
+            do
             (pushnew trio *reach-verbs* :test #'equalp)
             (push reach-id (gethash trio *reach-sent-event-ht*)))
-;    (get-sparser-reach-events (previous (sentence)) reach-event-triggers)
-    (format t "Reach trigger sparser matches: ~a" 
-            (get-sparser-reach-events (previous (sentence)) reach-event-triggers))
 
-    (unless (equal reach-sent sparser-sent-string)
-      (warn "mismatched sentences in REACH ~a ~% reach sentence   ~s ~% sparser sentence ~s"
-            reach-id
-            reach-sent
-            sparser-sent-string))
-    (when *warn-reach-missing*
-      (let ((reach-entity-strings (get-reach-entities-strings entities))
-            (sparser-entity-strings (get-sentence-individual-strings curr-sent)))
-        (declare (special reach-entity-strings sparser-entity-strings))
+    
+
+      (unless (equal reach-sent sparser-sent-string)
+        (warn "mismatched sentences in REACH ~a ~% reach sentence   ~s ~% sparser sentence ~s"
+              reach-id
+              reach-sent
+              sparser-sent-string))
+      (when *warn-reach-missing*
+        (let ((reach-entity-strings (get-reach-entities-strings entities))
+              (sparser-entity-strings (get-sentence-individual-strings curr-sent)))
+          (declare (special reach-entity-strings sparser-entity-strings))
             
-        (multiple-value-bind (sub-bag-p missing remaining)
-            (sub-bag-p reach-entity-strings sparser-entity-strings :test #'equalp)
-          (unless (or sub-bag-p
-                      (multiple-value-setq (sub-bag-p missing remaining)
-                        (sub-bag-p missing remaining :test #'string-initial?))
-                      (multiple-value-setq (sub-bag-p missing remaining)
-                        (sub-bag-p missing remaining :test #'string-final?))
-                      (multiple-value-setq (sub-bag-p missing remaining)
-                        (sub-bag-p missing remaining :test #'string-acronym?)))
-            ;; suppress the often bizarre "UAZ" defined proteins
-            (setq missing
-                  (loop for m in missing
-                        append
+          (multiple-value-bind (sub-bag-p missing remaining)
+              (sub-bag-p reach-entity-strings sparser-entity-strings :test #'equalp)
+            (unless (or sub-bag-p
+                        (multiple-value-setq (sub-bag-p missing remaining)
+                          (sub-bag-p missing remaining :test #'string-initial?))
+                        (multiple-value-setq (sub-bag-p missing remaining)
+                          (sub-bag-p missing remaining :test #'string-final?))
+                        (multiple-value-setq (sub-bag-p missing remaining)
+                          (sub-bag-p missing remaining :test #'string-acronym?)))
+              ;; suppress the often bizarre "UAZ" defined proteins
+              (setq missing
+                    (loop for m in missing
+                          append
                           (loop for e in entities
                                 when (equalp (cdr (assoc :text e)) m)
                                 do
-                                  (let ((ee (simplify-reach-entity e)))
-                                    (cond ((equal (second ee) "uaz")
-                                           (return nil))
-                                          (t (pushnew ee *missed-entities* :test #'equal)
-                                             (return (list ee))))))))
-            (let ((missing-events
-                   (loop for evt in (cdr (expanded-reach-events reach-id))
-                         when
+                                (let ((ee (simplify-reach-entity e)))
+                                  (cond ((equal (second ee) "uaz")
+                                         (return nil))
+                                        (t (pushnew ee *missed-entities* :test #'equal)
+                                           (return (list ee))))))))
+              (let ((missing-events
+                     (loop for evt in (cdr (expanded-reach-events reach-id))
+                           when
                            (loop for m in missing
                                  thereis
-                                   (find-in (car m) evt #'equal))
-                         collect evt)))
-              (when missing-events
-                (warn "missed REACH entities in sentence:  ~a~% ~s~%  ~s~% with missing events~% ~s~%" ;; REACH verbs ~s~%"
-                      reach-id
-                      sparser-sent-string
-                      missing
-                      missing-events
-                      ;;reach-event-triggers
-                      )))))))))
+                                 (find-in (car m) evt #'equal))
+                           collect evt)))
+                (when missing-events
+                  (warn "missed REACH entities in sentence:  ~a~% ~s~%  ~s~% with missing events~% ~s~%" ;; REACH verbs ~s~%"
+                        reach-id
+                        sparser-sent-string
+                        missing
+                        missing-events
+                        ;;reach-event-triggers
+                        ))))))))))
 
 (defun reach-event-examples (trio)
   "For a given use of a verb with a particular meaning, it gets the events that are examples of that verb"
@@ -884,10 +890,13 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
 
 (defun get-sparser-reach-events (curr-sent reach-event-triggers)
   (let ((*reach-evt-triggers* reach-event-triggers)
-        (*reach-evt-edges* nil))
-    (declare (special *reach-evt-triggers* *reach-evt-edges*))
+        (*reach-evt-edges* nil)
+        (*found-reach-triggers* nil))
+    (declare (special *reach-evt-triggers* *reach-evt-edges* *found-reach-triggers*))
     (get-sparser-reach-events-base curr-sent)
-    *reach-evt-edges*))
+    (values *reach-evt-edges* 
+            (set-difference *reach-evt-triggers* *found-reach-triggers* :test #'equal))))
+
 
 (defun get-sparser-reach-events-base (curr-sent)
   (when curr-sent
@@ -896,13 +905,20 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
      (traverse-sem curr-sent #'record-reach-events))))
 
 (defun record-reach-events (indiv)
-  (declare (special *reach-evt-triggers* *reach-evt-edges*))
-  (when indiv
+  (declare (special *reach-evt-triggers* *reach-evt-edges* *found-reach-triggers*))
+  (when (individual-p indiv)
     (let* ((mention (car (mention-history indiv)))
            (edge (when mention (mention-source mention))))
-      (when (edge-p edge)
-        (when (member (head-string edge) *reach-evt-triggers* :test #'equal)
-          (push edge *reach-evt-edges*))))))
+      (declare (special edge))
+      (if (eq (itype-of indiv) category::collection)
+          (loop for e in (edge-constituents edge)
+                do
+                (record-reach-events (edge-referent e)))
+          (when (edge-p edge)
+            (let ((head-str (head-string edge)))
+              (when (member head-str *reach-evt-triggers* :test #'equal)
+                (push edge *reach-evt-edges*)
+                (push head-str *found-reach-triggers*))))))))
   
 
 (defun get-reach-entities-strings (entities)
@@ -1116,6 +1132,6 @@ example"
 (defun head-string (edge)
   (when edge 
     (let ((found-head (find-head-edge edge)))
-    (when found-head
-      (string-right-trim " " (extract-string-spanned-by-edge found-head))))))
+      (when found-head
+        (string-right-trim " " (extract-string-spanned-by-edge found-head))))))
 
