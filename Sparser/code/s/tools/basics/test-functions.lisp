@@ -728,7 +728,12 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
         (get-sparser-reach-events (previous (sentence)) reach-event-strings)
       (if sparser-missed-triggers
           (warn "missed events ~s~% in reach sent ~s~%"
-                sparser-missed-triggers
+                (loop for evt in (cdr (expanded-reach-events reach-id))
+                           when
+                           (loop for str in sparser-missed-triggers
+                                 thereis
+                                 (equal str (car evt)))
+                           collect evt)
                 reach-sent))
       ;;(lsp-break "compare-to-reach")
       (push reach-sent *reach-sents*)
