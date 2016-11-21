@@ -748,25 +748,33 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
                       (multiple-value-setq (sub-bag-p missing remaining)
                         (sub-bag-p missing remaining :test #'string-initial?))
                       (multiple-value-setq (sub-bag-p missing remaining)
-                        (sub-bag-p missing remaining :test #'string-final?)))
+                        (sub-bag-p missing remaining :test #'string-final?))
+                      (multiple-value-setq (sub-bag-p missing remaining)
+                        (sub-bag-p missing remaining :test #'string-acronym?)))
+            ;; suppress the often bizarre "UAZ" defined proteins
+            (setq missing
+                  (loop for m in missing
+                        append
+                          (loop for e in entities
+                                when (equalp (cdr (assoc :text e)) m)
+                                do
+                                  (let ((ee (simplify-reach-entity e)))
+                                    (cond ((equal (second ee) "uaz")
+                                           (return nil))
+                                          (t (pushnew ee *missed-entities* :test #'equal)
+                                             (return (list ee))))))))
             (let ((missing-events
                    (loop for evt in (cdr (expanded-reach-events reach-id))
                          when
                            (loop for m in missing
                                  thereis
-                                   (find-in m evt #'equal))
+                                   (find-in (car m) evt #'equal))
                          collect evt)))
               (when missing-events
                 (warn "missed REACH entities in sentence:  ~a~% ~s~%  ~s~% with missing events~% ~s~%" ;; REACH verbs ~s~%"
                       reach-id
                       sparser-sent-string
-                      (loop for m in missing
-                            collect
-                              (loop for e in entities
-                                    when (equalp (cdr (assoc :text e)) m)
-                                    do
-                                      (pushnew (simplify-reach-entity e) *missed-entities* :test #'equal)
-                                      (return (simplify-reach-entity e))))
+                      missing
                       missing-events
                       ;;reach-event-triggers
                       )))))))))
@@ -836,6 +844,26 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
   (when curr-sent
     (append
      (get-sentence-individual-strings (previous curr-sent))
+     (when (slot-boundp (contents curr-sent) 'individuals)
+       (setq *found-bces* nil)
+        
+       (loop for i in (sentence-individuals (contents curr-sent))
+             when (not (itypep i '(:or predicate spatial-operator modifier
+                                   subordinate-conjunction conjunction)))
+             do
+               (push i *found-bces*)
+               (visit-indiv-generalizations i (itype-of i) #'record-bce))
+       (remove nil
+               (mapcar #'(lambda (x) (let ((ss (retrieve-surface-string x)))
+                                       (when ss (string-trim " " ss))))
+                       *found-bces*))))))
+
+
+(defun get-sentence-process-strings (&optional (curr-sent (previous (sentence))))
+  (declare (special *found-bces*))
+  (when curr-sent
+    (append
+     (get-sentence-process-strings (previous curr-sent))
      (when (slot-boundp (contents curr-sent) 'individuals)
        (setq *found-bces* nil)
         
@@ -1020,6 +1048,12 @@ example"
 (defun string-final? (end full)
   (when (> (length full)(length end))
     (search end full :start2 (- (length full) (length end)))))
+
+(defun string-acronym? (acro full)
+  (when (> (length full)(+ (length acro) 2))
+    (search (format nil "(~a)" acro)
+            full :start2 (- (length full) (+ (length acro) 3)))))
+
 
 
 (defun find-in (item tree &optional (test #'eql))
