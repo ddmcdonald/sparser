@@ -558,6 +558,7 @@ without damaging other code.")
 
 
 (defmethod traverse-sem ((s sentence) fn)
+  (traverse-sem (previous s) fn)
   (funcall fn s)
   (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
         when
@@ -628,10 +629,42 @@ without damaging other code.")
           (funcall fn parent)
           (visit-indiv-generalizations parent cat fn)))
     
-                
-(defmethod find-bce (x)
+;; another useful example
+(defmethod find-bps (x)
   "do nothing")
 
+(defparameter *found-bps* nil)
+
+(defun reach-process-p (cat-or-indiv)
+  (itypep cat-or-indiv
+          '(:or bio-control post-translational-modification binding
+            interact ;; not sure this constitues a cardable entity, but I think REACH thinks so
+            )))
+
+(defmethod find-bps ((s sentence))
+  (setq *found-bps* nil))
+
+(defmethod find-bps ((c referential-category))
+  (if (reach-process-p c)
+      (record-bp c)))
+
+(defmethod find-bps ((i individual))
+  (when (reach-process-p i)
+    (record-bp i)))
+
+(defun record-bp (i)
+  (push i *found-bps*))
+
+(defun all-bps ()
+  *found-bps*)
+    
+                
+(defmethod find-bp (x)
+  "do nothing")
+
+(defmethod find-reach-processes ((s sentence))
+  (traverse-sem s #'find-bps)
+  (all-bps))
 
 
 
