@@ -448,7 +448,7 @@
 
 (def-bio "adenine" nucleobase)
 (adj "additive" :super bio-predication)
-(noun "agonist":super bio-entity) ;; keyword: (ist N) 
+(noun "agonist":super molecule) ;; keyword: (ist N) ;; 
 (define-category affinity :specializes bio-relation
      :binds ((object bio-entity))
      :realization
