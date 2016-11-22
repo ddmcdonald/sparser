@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  2.3 October 2014
+;;;  version:  November 2016
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -76,20 +76,14 @@
   ;; is dereferenced from its name here inside the routine
   (when (and specified-category (symbolp specified-category))
     (error "The category argument to value-of should be a real category object"))
-  (typecase individual
-    ((or individual psi)
+  (etypecase individual
+    (individual
      (let* ((category (or specified-category
 			  (etypecase individual
-			    (psi
-			     (category-of-psi individual))
-			    (individual
-			     (first (indiv-type individual))))))
+			    (individual (itype-of individual)))))
 	    (variable
-	     (or (when (lambda-variable-p var-name)
-		   var-name)
+	     (or (when (lambda-variable-p var-name) var-name)
 		 (find-variable-in-category var-name category))))
-       ;; find-variable-for-category
-
        (if variable
          (then
            (when (and (listp variable)
@@ -120,41 +114,29 @@
      (let ((category individual))
        (let ((bindings (cat-binds category)))
          (when bindings
-           (value-of/binding var-name bindings category)))))
-
-    (otherwise
-     (push-debug `(,var-name ,individual))
-     (break "Object passed in as 'individual' parameter is of~
-           ~%unexpected type: ~a~%~a" (type-of individual) individual))))
+           (value-of/binding var-name bindings category)))))))
 
 (defun value/var (variable individual)
   ;; version to use when the object for the variable is available
   (etypecase individual
-    (psi
-     (value/var/v+v variable individual))
     (individual
      (let ((bindings (indiv-binds individual)))
        (find-bindings-value-for-var bindings variable)))))
 
-
 (defun find-bindings-value-for-var (bindings variable)
-  ;; factored out for others to use
+  "Identify the binding within the list of bindings that is based
+   on the variable. Note that the test is based on strings because
+   a variable that has been restricted is not eq to the variable
+   on its super-category that it is derived from."
   (when bindings
     (let ((binding
-           (find variable bindings
-                 :test #'eq :key #'binding-variable)))
+           (find (symbol-name (var-name variable))
+                 bindings
+                 :test #'string-equal
+                 :key #'(lambda (b)
+                          (symbol-name (var-name (binding-variable b)))))))
       (when binding
         (binding-value binding)))))
-
-(defun find-bindings-body-for-var (bindings variable)
-  ;; factored out for others to use
-  (when bindings
-    (let ((binding
-           (find variable bindings
-                 :test #'eq :key #'binding-variable)))
-      (when binding
-        (binding-body binding)))))
-
 
 (defun value-of/binding (var-name list-of-bindings &optional category)
   (let ((variable
@@ -165,11 +147,7 @@
               (break "Supply a category so that the variable name ~A~
                       ~%can be disambiguated" var-name)))
            (lambda-variable var-name))))
-    (let ((binding
-           (find variable list-of-bindings
-                 :test #'eq :key #'binding-variable)))
-      (when binding
-        (binding-value binding)))))
+    (find-bindings-value-for-var list-of-bindings variable)))
 
 
 (defun who-binds (variable value)
