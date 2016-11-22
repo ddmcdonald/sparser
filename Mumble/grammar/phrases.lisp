@@ -1545,6 +1545,11 @@
    possessive p
    np-head n))
 
+(define-phrase of-genitive (n p) ;; QGL&S 5.115, 9.54
+  (np
+   np-head n
+   of-complement p))
+
 (define-phrase NP-head-first-compound-noun (n other) ;; "$10"
   (np
    np-head (nbar
@@ -1586,6 +1591,7 @@
   (np
    quantifier quant
    of-complement n))
+      
 
 ;;-- motivated by dates
 
