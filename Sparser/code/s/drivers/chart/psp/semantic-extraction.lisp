@@ -318,10 +318,13 @@ without damaging other code.")
     indivs))
 
 
-(defun spire-tree (item)
-  (let ((*for-spire* t))
-    (declare (special *for-spire*))
-    (semtree item)))
+(defun spire-tree (item &optional (with-ids nil))
+  (let ((*sentence-results-stream*
+         (unless with-ids *sentence-results-stream*)))
+    (declare (special *sentence-results-stream*))
+    (let ((*for-spire* t))
+      (declare (special *for-spire*))
+      (semtree item))))
 
 ;;----- semtree methods
 
@@ -675,3 +678,45 @@ without damaging other code.")
 
 
 
+;;;; get the head edge for an edge, based on the fact that the head edge has the same category as the edge-referent, and is a lexical edge
+(defun find-head-edge (edge)
+  (let ((category (itype-of (edge-referent edge)))
+        (start-pos (pos-edge-starts-at edge))
+        (end-pos (pos-edge-ends-at edge)))
+    (find-lexical-edge-with-cat category start-pos end-pos)))
+
+(defun find-lexical-edge-with-cat (category start-pos end-pos)
+  (if (or (eq (cat-name category) 'collection)
+          (>= (pos-token-index start-pos) (pos-token-index end-pos)))
+      nil
+      (let ((lex-edge (lexical-edge-at-pos start-pos)))
+        (when lex-edge
+          (if (eq (itype-of (edge-referent lex-edge)) category)
+              lex-edge
+              (find-lexical-edge-with-cat category (pos-edge-ends-at lex-edge) end-pos))))))      
+
+(defun lexical-edge-at-pos (pos)
+  (when (> (ev-number-of-edges (pos-starts-here pos)) 0)
+    (let ((lex-edge (elt (ev-edge-vector (pos-starts-here pos)) 0)))
+      (cond ((edge-referent lex-edge)
+             lex-edge)
+            ((and
+              (> (ev-number-of-edges (pos-starts-here pos)) 1)
+              (edge-referent (elt (ev-edge-vector (pos-starts-here pos)) 1)))
+             (elt (ev-edge-vector (pos-starts-here pos)) 1))
+            (t lex-edge)))))
+           
+        
+
+(defmethod head-string ((edge edge))
+  (when edge 
+    (let ((found-head (find-head-edge edge)))
+      (when found-head
+        (string-right-trim " " (extract-string-spanned-by-edge found-head))))))
+
+
+(defmethod head-string ((i individual))
+  (head-string (mention-source (best-recent-mention i))))
+
+(defmethod head-string (x)
+  nil)
