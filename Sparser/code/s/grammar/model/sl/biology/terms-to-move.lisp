@@ -178,7 +178,7 @@ be biology specific, since they aren't. |#
 
 (noun "hint" :super bio-rhetorical)
 
-(delete-adj-cfr (resolve/make "important"))
+(delete-adj-cfr (resolve "important"))
 (define-category importance :specializes bio-rhetorical
       :realization
       (:noun "importance"
@@ -342,8 +342,8 @@ be biology specific, since they aren't. |#
 
 (noun "content" :super measurement)
 
-(delete-noun-cfr (resolve/make "number"))
-(delete-noun-cfr (resolve/make "numbers"))
+(delete-noun-cfr (resolve "number"))
+(delete-noun-cfr (resolve "numbers"))
 (define-category count-of :specializes measurement
   :binds ((item-counted biological)) ;; no restrictions now -- needs to be COUNT-NOUN
   :realization
