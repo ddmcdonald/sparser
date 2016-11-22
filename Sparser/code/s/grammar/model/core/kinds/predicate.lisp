@@ -23,15 +23,25 @@
 
 (define-category partonomic
   :specializes relation
-  :binds ((has-part)
+  :binds ((parts)
+          (part-type :primitive category)
+          (has-part)
           (part-of))
-  :documentation "A composite and their parts may be
+  :documentation "A composite and its parts may be
  organized into a partonomy. If we were modeling
  lexical facts rather than phyical ones we'd call it
  a meronymy. Standard parts typically have names that 
  implicitly indicate what kind of thing they are part of:
  People and their faces and hands (etc). Staircases and
- their steps.")
+ their steps.
+   'parts' will hold a list of particular parts
+   'part-type' is the category of the parts, which
+      is complicated when the things are complicated,
+      e.g. people, cells, cars
+   'has-part' is the relation from the whole to a
+      single particular part
+   'part-of' is the inverse from a particular to its 
+      whole.")
 
 
 (define-category predicate
