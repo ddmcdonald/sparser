@@ -94,7 +94,7 @@ for every category.
          (mixin-variables
           (when mixins (loop for m in mixins
                          append (cat-slots m))))
-         (slot-expressions
+         #+ignore(slot-expressions
           (when (or variables mixin-variables)
             (backing-class-slots-for-category
              (append variables mixin-variables)))))
@@ -114,7 +114,7 @@ for every category.
       ;  (break "superc-list: ~a" superc-list))
       (let ((form
              `(defclass ,class-name ,superc-list
-                ,slot-expressions)))
+                ())  )) ;;,slot-expressions)))
         ;(when mixins (push-debug `(,form)) (break "check form"))
         (let ((class (eval form)))
           (store-class-for-category c class)
