@@ -33,6 +33,28 @@ files once an area looks big enough to warrant it.  |#
  whether the orientation is fixed (mountains, houses)
  or can be changed (blocks).")
 
+;;;-----------
+;;; dimension
+;;;-----------
+
+(define-category dimension
+  :specializes attribute
+  :documentation "Trivial treatment to name 2D vs 3D.
+ The other major reading of 'dimension' is as a measurement
+ of something's extent. When we deal with these we should
+ work out the nomenclature, though even then measuring a 2D
+ thing is done in different units/conventions than a 3D thing,
+ and some terms will have different denotations, e.g. 'size'
+ in 'square inches' vs 'cubic centimenters'."
+  :instantiates nil) ;;/// = mixin?
+
+(define-category three-dimensional
+  :specializes dimension)
+
+(define-category two-dimensional
+  :specializes dimension)
+
+
 
 ;;;-------------------------------------------
 ;;; ordinary things -- basis for blocks world
@@ -40,32 +62,44 @@ files once an area looks big enough to warrant it.  |#
 
 (define-category object 
   :specializes physical-object
-  :mixins (has-location ;; adds location variable
+  :mixins (has-location ;; adds variable for its location
+           has-an-orientation
            has-color ;; color
            has-size  ;; size           
            )
+  ;; Inherits from physical: location,
+  ;;  endurant: number, quantifier, name
+  ;;  top: modifer, name, negation
   :documentation
     "This 'object' category is just an extension of
    the category'physical-object' except that it's loaded
    later after the various things that give it properties
    have been defined.")
 
+
+(define-category object-face
+  :specializes object
+  :mixins (two-dimensional)
+  :documentation  "Intrinsically a block has six 'faces'. 
+ For a cube, each face is the same size and is connected
+ along each of its edges to another face. This geometry is
+ intrinsic and constant. The perspective labeling of faces, 
+ e.g. as top or bottom, depends on the orientation, and for
+ a proper treatment would have us identify each intrinsic
+ fact and then provide them with orientiation-specific 
+ dependent location names like 'top' or  'bottom', where
+ we have modeled the opposition relations via the faces.")
+
 (define-category rectangular-solid
   :specializes object
+  :mixins (three-dimensional partonomic)
+  :restrict ((part-type object-face))
   :documentation "This is where we represent haw blocks
  have a set of 6 'faces'/'sides' that (a) can be assumed
  to be flat, and (b) provide a basis for identifying how
- a block is oriented (e.g. one of its sides is 'facing' us."
-)
+ a block is oriented (e.g. one of its sides is 'facing' us.")
 
 
-
-#| Intrinsically a block has six 'faces'. For a cube, each
-face is the same size and is connected along each of its
-edges to another face. This geometry is intrinsic and constant.
-The perspective labeling of faces, e.g. as top or bottom, 
-
-  |#
 
 ;;;-----------
 ;;; artifacts 
@@ -96,7 +130,7 @@ The perspective labeling of faces, e.g. as top or bottom,
       
 (define-category artifact
   :specializes physical  
-  :mixins (has-name)
+  :mixins (has-name partonomic)
   :binds ((made-by . maker-of-artifacts))
   ;; also time-created or is it a specialization from the lifetime of Endurant?
   :lemma (:common-noun "artifact"))
