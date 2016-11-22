@@ -247,7 +247,7 @@
 
 
 (define-debris-analysis-rule conjoin-clause-and-vp
-  :pattern ( s and vp )
+  :pattern ( s conjunction vp )
   :action (:function conjoin-clause-and-vp first second third))
 
 ;; this should see if there is a buried VP on the right fringe and do a conjunction there
@@ -296,7 +296,7 @@
 
 
 (define-debris-analysis-rule conjoin-clause-and-vp+passive
-  :pattern ( s and vp+passive )
+  :pattern ( s conjunction vp+passive )
   :action (:function conjoin-clause-and-vp+passive first second third))
 
 (defun conjoin-clause-and-vp+passive (s-edge  and vp-edge)
@@ -320,7 +320,7 @@
 
 
 (define-debris-analysis-rule attach-trailing-participle-to-clause-with-conjunction-and
-  :pattern ( s and vp+ing )
+  :pattern ( s conjunction vp+ing )
   :action (:function attach-trailing-participle-to-clause-with-conjunction-and first second third))
 
 (defun attach-trailing-participle-to-clause-with-conjunction-and (s and vp)
@@ -986,10 +986,10 @@
 
 
 (define-debris-analysis-rule clause-and-subordinate
-  :pattern ( s and subordinate-clause  )
+  :pattern ( s conjunction subordinate-clause  )
   :action (:function clause-and-subordinate  first second third))
 
-(defun clause-and-subordinate (s and sc)
+(defun clause-and-subordinate (s conjunction sc)
   (create-event-relation s sc))
 
 
@@ -1011,7 +1011,7 @@
 
 
 (define-debris-analysis-rule clause-and-clause
-  :pattern ( s and s  )
+  :pattern ( s conjunction s  )
   :action (:function clause-and-subordinate  first second third))
 
 
@@ -1205,6 +1205,47 @@
        :referent collection
        :target target
        :direction :right))))
+
+(define-debris-analysis-rule s-and-np
+  :pattern ( s conjunction np)  
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function s-conjunction-np
+                     first second third))
+
+(define-debris-analysis-rule subordinate-clause-and-np
+  :pattern ( subordinate-clause and np)  
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function s-conjunction-np
+                     first second third))
+
+(define-debris-analysis-rule subordinate-clause-or-np
+  :pattern ( subordinate-clause or np)  
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function s-conjunction-np
+           first second third))
+
+(defun s-conjunction-np ( s conjunction np)
+  (declare (special  s conjunction np))
+  (let* ((target (find-target-satisfying (right-fringe-of s) #'np-target?))
+         (collection
+          (when target
+            (make-an-individual 'collection
+                                :items `(,(edge-referent target)
+                                          ,(edge-referent np))
+                                :number 2
+                                :type (itype-of (edge-referent target))))))
+    (when collection
+      (setq collection
+            (if *description-lattice*
+                (find-or-make-lattice-description-for-collection collection)
+                collection ))
+      (when target
+        (make-edge-spec 
+         :category (edge-category target)
+         :form (edge-form target)
+         :referent collection
+         :target target
+         :direction :right)))))
 
 
 ;; low priority rules for treating present-participles as subjects -- try to get the subject of the participials first

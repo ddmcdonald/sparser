@@ -93,7 +93,7 @@
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
   
-  (when (there-are-conjunctions?) 
+  (when nil (there-are-conjunctions?) 
     ;; Inserted this call for conjunctions to merge conjoined NPs before creating PPs
     ;; as in "as a tumor suppressor and an activator"
     (tr :try-spanning-conjunctions)
@@ -185,6 +185,11 @@
         (old-pass2 sentence start-pos end-pos treetops number-of-treetops))))
 
 (defun new-pass2 (sentence start-pos end-pos treetops)
+  (when (there-are-conjunctions?) ;; J3 doesn't parse
+        (tr :try-spanning-conjunctions)
+        (let ((*allow-form-conjunction-heuristic* t))
+          (declare (special *allow-form-conjunction-heuristic*))
+          (try-spanning-conjunctions)))
   (let (da-result)
     (loop
       (setq da-result (da-rule-cycle start-pos end-pos treetops t))
