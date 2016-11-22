@@ -227,8 +227,10 @@
   ;; created. Returns the entry.
   (declare (special *description-lattice*))
   (if *description-lattice*
-    (create-discourse-mention i edge)
-    (create-rigid-discourse-entry i edge)))
+      (let ((mention (create-discourse-mention i edge)))
+        (pushnew (car mention) (mention-history i))
+        mention)
+      (create-rigid-discourse-entry i edge)))
 
 
 (defun create-rigid-discourse-entry (i edge)
