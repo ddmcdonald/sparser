@@ -439,7 +439,9 @@
         (*allow-form-conjunction-heuristic*   
          ;;(break "form heuristics allowed. Check backtrace")
          
-         (when (and 
+         (when (and
+                (or (not (eq *allow-form-conjunction-heuristic* :vg))
+                    (member (cat-symbol form-before) *vg-categories*))
                 (or
                  (eq form-before form-after)
                  (and

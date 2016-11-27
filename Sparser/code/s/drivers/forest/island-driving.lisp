@@ -93,13 +93,15 @@
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
   
-  (when nil (there-are-conjunctions?) 
-    ;; Inserted this call for conjunctions to merge conjoined NPs before creating PPs
+  (when  (there-are-conjunctions?) 
+    ;; Originally inserted this call for conjunctions to merge conjoined NPs before creating PPs
     ;; as in "as a tumor suppressor and an activator"
+    ;; Now only used for VG conjunctions
+    
     (tr :try-spanning-conjunctions)
-    (let ((*allow-form-conjunction-heuristic* t))
+    (let ((*allow-form-conjunction-heuristic* :vg))
       (declare (special *allow-form-conjunction-heuristic*))
-      (try-spanning-conjunctions)))
+      (try-spanning-conjunctions :vg)))
 
   (if *whack-a-rule*
     (whack-a-rule-cycle sentence)

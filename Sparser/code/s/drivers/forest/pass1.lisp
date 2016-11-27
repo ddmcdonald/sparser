@@ -337,7 +337,7 @@
                 edge)
               (tr :no-heuristics-for left-edge right-edge))))))))
 
-(defun try-spanning-conjunctions ()
+(defun try-spanning-conjunctions (&optional (allow-form-conjunction-heuristic t))
   ;; This is the version used in later situations and applying to
   ;; much larger phrases that may only be composable on the basis
   ;; of having a common form (both NPs, both clauses, etc.)
@@ -352,7 +352,7 @@
                       (literal-edge? edge-to-the-right))
             (tr :trying-to-conjoin  edge-to-the-left edge-to-the-right)
             (push-debug `(,edge-to-the-left ,edge-to-the-right))
-            (let ((*allow-form-conjunction-heuristic* t))
+            (let ((*allow-form-conjunction-heuristic* allow-form-conjunction-heuristic))
               (declare (special *allow-form-conjunction-heuristic*))
               (let ((heuristic (conjunction-heuristics edge-to-the-left 
                                                        edge-to-the-right

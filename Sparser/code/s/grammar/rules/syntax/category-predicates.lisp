@@ -200,6 +200,22 @@
    noun/verb abiguous words triggering the actions of
    its verb reading even when it's in its noun reading")
 
+(defparameter *vg-categories*
+  '(
+   CATEGORY::MODAL
+   CATEGORY::NOUN/VERB-AMBIGUOUS
+   CATEGORY::VERB
+   CATEGORY::VERB+ED
+   CATEGORY::VERB+ING
+   CATEGORY::VERB+PASSIVE
+   CATEGORY::VERB+PAST
+   CATEGORY::VERB+PRESENT
+   CATEGORY::VERB+S
+   CATEGORY::VG
+   CATEGORY::VG+ED
+   CATEGORY::VG+ING
+   CATEGORY::VG+PASSIVE
+   ))
 
 
 ;;; predicates
