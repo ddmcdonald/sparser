@@ -468,25 +468,30 @@
    'with-vars' is a flag to include a listing of the variables that are bound by the
       category."
   (unless (= depth 0)
-    (emit-line stream (format nil "~a~s~a"
+    (emit-line stream (format nil "~a~a~a"
                               (if with-parens "(" "")
-                              (cat-name category)
+                              (string-downcase (format nil "~a" (cat-name category)))
                               (if (and with-vars (cat-slots category))
-                                (string-downcase
-                                 (format nil " :variables ~a"
-                                         (mapcar #'pname (cat-slots category))))
-                                "")))
+                                  (let ((vars (mapcar #'pname
+                                                      (loop for slot in (cat-slots category)
+                                                            unless (search "-OR-" (format nil "~a" (pname slot)))
+                                                            collect slot))))
+                                    (if vars
+                                        (string-downcase
+                                         (format nil " :variables ~a" vars))
+                                        ""))
+                                  "")))
     (setf (gethash category *category-was-displayed*) t)
     (push-indentation)
     (unless (or
              (form-category? category)
              (member (get-tag :source category) '(:comlex :morphology)))
-      (loop for subc in (subcategories-of category)
+      (loop for subc in (sort (subcategories-of category) #'string< :key #'(lambda (c)(string-downcase (format nil "~a" (cat-name c)))))
          as i from 0 to max-width
          do
            (if (eq i max-width)
                (then (emit-line stream ";;...") (terpri stream))
-               (display-with-subcs subc stream (- depth 1) max-width))))
+               (display-with-subcs subc stream (- depth 1) max-width with-parens with-vars))))
     (pop-indentation)
     (when with-parens (format stream ")"))))
 
