@@ -124,11 +124,12 @@
 
 (gate-grammar *location*
   (gate-grammar *locations-core*
-    (gload "dossiers;location descriptions")
+    (gload "dossiers;location descriptions") ;; empty
     (gload "dossiers;location kinds")
+    (gload "dossiers;dependent-locations")
     (gload "dossiers;directions")
     (gload "dossiers;compass points")
-    (gload "dossiers;spatial prepositions")
+    (gload "dossiers;spatial prepositions") ;; moved to words/prepositions
     (gload "dossiers;path types"))
     
   (gate-grammar *countries*
