@@ -60,7 +60,7 @@
                      :brackets '( .[np ))))
          (i (define-individual 'direction :name word))
          (rule (define-cfr category::direction `(,word)
-                 :form category::noun
+                 :form category::common-noun
                  :referent i)))
     (add-rule rule i)
     i))
