@@ -178,6 +178,8 @@
            (attach-subject (find-word "there" 'pronoun) be)
            (attach-complement (sp::value-of 'sp::value i) be)
            be))
+        ((sp::itypep i 'sp::object-dependent-location) ;; 'end of the row'
+         (apply-category-linked-phrase i))
         ((sp::itypep i 'sp::relative-location)
          (apply-category-linked-phrase i))
         (t (realize-via-bindings i))))
@@ -366,8 +368,11 @@
      dtn))
   
   (:method (binding (var-name (eql 'sp::location)) dtn pos)
-    (declare (ignore pos))
-    (make-adjunction-node
-     (make-lexicalized-attachment 'np-prep-complement (sp::binding-value binding))
-     dtn)))
+    (let ((ap (case pos
+                (noun ;; presume a noun-noun compound
+                 'nominal-premodifier)
+                (otherwise 'np-prep-complement))))
+      (make-adjunction-node
+       (make-lexicalized-attachment ap (sp::binding-value binding))
+       dtn))))
     
