@@ -31,6 +31,7 @@
 (gate-grammar *locations-core*
   (gload "places;directions")
   (gload "places;relational")
+  (gload "places;methods")
   (gload "places;compass points")
   (gload "places;places")
   (gload "places;directional rules"))

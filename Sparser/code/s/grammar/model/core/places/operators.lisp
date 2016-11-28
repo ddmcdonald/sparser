@@ -8,8 +8,11 @@
 ;; instantiates 11/2/16 to provide a semantic grounding to spatial
 ;; prepositions and such as functions. 
 
-
 (in-package :sparser)
+
+;;;------------------------------------------------
+;;; prepositions that designate relative locations
+;;;------------------------------------------------
 
 #| This treats spatial propositions ("on", "under") as well as
 orientation-base geometical terms like "top" as functions from
@@ -23,37 +26,34 @@ determined by the operator and the types of the two objects,
   :documentation "Provides a super type for spatial prespositions.
     See define-preposition. Allows more specific type-based
     treatment of prepositional phrases as locations, see analyse-pp.
-    The result of applying a spatial operator to something that
+    The result of aqpplying a spatial operator to something that
     has-location is usually a relative-location.")
 
 ;; Now to partition prepositions et al. to reflect more specific
 ;; figure - ground relationships
 
- 
-;;; grammar rules
-
-(def-k-method compose ((np has-location) (pp location))
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    ;; given this specific a pattern, if we get here
-    ;; then the interpretation/rule will go through
-    t
-    (let ((i (bind-variable 'location pp np)))
-      ;;(format t "~&i = ~a~%" i)
-      i)))
 
 
-(def-k-method compose ((operator spatial-operator) (place endurant))
-  ;; called by make-pp so it's forming a referent in a largely
-  ;; syntactic environment and we can make the edge label
-  ;; whatever we like.
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    ;; If we've gotten here with this signature then we'll complete
-    t
-    (let ((i (find-or-make-individual 'relative-location
-                                      :prep operator
-                                      :ground place)))
-      ;;(format t "~&Created ~a~%" i)
-      (revise-parent-edge :category (category-named 'location))
-      i)))
+;;;------------------------------------------------------------------
+;;; nouns and such that define object-dependent-locations ("bottom")
+;;;------------------------------------------------------------------
+;; dossier: dependent-locations
+
+(define-category dependent-location
+  :specializes spatial-operator
+  :documentation "Goes with the category object-dependent-location to
+    in the same way that spatial-operator goes with relative-location.
+    Typical instances would be 'bottom' and 'side'"
+  :instantiates self
+  :index (:permanent :key name)
+  :realization (:common-noun name))
+
+(define-category multiple-dependent-location
+  :specializes dependent-location
+  :mixins (partonomic)
+  :documentation "Used for 'sides' and any similar functional
+    locations that occur more than once on the object they
+    depend on."
+  :instantiates self
+  :index (:permanent :key name)
+  :realization (:common-noun name))
