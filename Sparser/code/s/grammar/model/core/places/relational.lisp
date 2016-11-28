@@ -27,29 +27,23 @@
 (define-category relative-location  ;; "above the house"
   :instantiates self
   :specializes location
-  :binds ((ground) ;; has-location -- more like 'is suitable as a location
-          (prep spatial-operator)) ;;// do Mumble side
+  :binds ((ground) ;; has-location -- more like 'is suitable as a location'
+          (prep spatial-operator)) 
   :index (:temporary :sequential-keys prep ground)
   :realization ((:mumble (prepositional-phrase :p prep
-                                                :prep-object ground))
-                 #+ignore(:tree-family content-pp
-                  :mapping ((type . :self)
-                            (articulator . prep)
-                            (item . place)
-                            (pp . :self)
-                            (preposition . ("in" "on")) ;; what else is imortant?
-                            (complement . np)))))
+                                                :prep-object ground))))
 
-(defmethod def-relative-location ((prep-name string) (n number))
-  (let ((prep (word-named prep-name))
-        (i (individual-object# n)))
-    (assert (word-is-a-preposition? prep))
-    (def-relative-location prep i)))
-
-(defmethod def-relative-location ((prep word) (i individual))
-  (find-or-make-individual 'relative-location
-                           :prep prep
-                           :ground i))
+(defgeneric def-relative-location (preposition individual)
+  (:documentation "For building them in the repl")
+  (:method ((prep-name string) (n number))
+    (let ((prep (word-named prep-name))
+          (i (individual-object# n)))
+      (assert (word-is-a-preposition? prep))
+      (def-relative-location prep i)))
+  (:method ((prep word) (i individual))
+    (find-or-make-individual 'relative-location
+                             :prep prep
+                             :ground i)))
 
 ;;/// specialized preposition forms are deprecated
 (def-form-rule (spatio-temporal-preposition location)
@@ -60,3 +54,35 @@
                     prep left-edge)))
 
 
+
+;;;---------------------------------------------------
+;;; object-dependent locations: bottom, side, surface
+;;;---------------------------------------------------
+
+(define-category object-dependent-location ;; same name as in TRIPS
+  :specializes relative-location
+  :restrict ((ground partonomic)
+             (prep dependent-location))
+  :instantiates self ;; inherits index
+  :documentation "Defines a location in terms of a name-like label
+ and an object that has an element that can be characterized by
+ that label. The result is a location (the 'end' of the row) that
+ may be empty or may be occupied (the 'bottom row of the stairs')."
+  :realization ((:mumble (of-genitive :n prep :p ground))))
+
+
+;;;-----------------------------------------------------------
+;;; locations that depend on the perspective: 'left', 'front'
+;;;-----------------------------------------------------------
+
+(define-category orientation-dependent-location
+  :specializes relative-location
+  :instantiates self
+  :restrict ((ground partonomic)
+             (prep direction))
+  :instantiates self ;; inherits index
+  :documentation "Defines a location that depends on the orientation
+ of the ground object and the point of view (perspective) of the 
+ observer to be properly understood. Used with words (spatial 
+ functions) like 'left' or 'front'."
+  :realization ((:mumble (of-genitive :n prep :p ground))))
