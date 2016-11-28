@@ -177,8 +177,6 @@ No longer used -- remove soon
 (define-lambda-variable 'copular-verb
     nil category::top)
 |#
-(define-lambda-variable 'compared-to 
-    nil category::top)
 
 
 (define-lambda-variable 'intensity
@@ -232,6 +230,9 @@ No longer used -- remove soon
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
+       ((call-compose qualifier head))
+       ((itypep qualifier 'dependent-location) ;; "bottom"
+        (add-dependent-location qualifier head))
        ((and
          (category-named 'knockout-pattern)
          (itypep head 'knockout-pattern)
@@ -261,7 +262,6 @@ No longer used -- remove soon
         ;; intended as test for proper noun or other specific NP
         (revise-parent-edge :form category::proper-noun)
 	qualifier)
-       ((call-compose qualifier head))
        ((interpret-premod-to-np qualifier head))
        ;; subcat test is here. If there's a :premod subcategorization
        ;; that's compapatible this gets it.
@@ -1090,14 +1090,24 @@ No longer used -- remove soon
                   ;; or if we are making a last ditch effort
                   ;; if not, then return NIL, failing the rule
                   (and *force-modifiers* 'modifier))))
+           (push-debug `(,prep-word ,pobj-referent))
            (cond
              (*subcat-test*
-              variable-to-bind)
-             ((and (eq prep-word of) (itypep np 'attribute))
+              (or variable-to-bind
+                  (and (eq prep-word of)
+                       (or (itypep np 'attribute)
+                           (itypep np 'dependent-location)))))
+             ((and (eq prep-word of)
+                   (itypep np 'attribute)) ;; "color of the block"
               ;; The 'owner' of the "of" in this case is the pobj,
               ;; rather than the np.
               (find-or-make-individual 'quality-predicate
-                                       :attribute (itype-of np) :item pobj-referent))
+                 :attribute (itype-of np) :item pobj-referent))
+             ((and (eq prep-word of)
+                   (itypep np 'dependent-location)
+                   (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
+              (find-or-make-individual 'object-dependent-location
+                 :prep np :ground pobj-referent))
              (variable-to-bind
               (when *collect-subcat-info*
                 (push (subcat-instance np prep-word variable-to-bind pp)
