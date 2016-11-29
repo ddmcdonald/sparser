@@ -13,7 +13,8 @@
 ;;; Methods used by syntax functions that appreciate the spatial operators &such
 ;;;------------------------------------------------------------------------------
 
-(def-k-method compose ((operator spatial-operator) (place endurant))
+(def-k-method compose ((operator category::spatial-operator)
+                       (place category::endurant))
   ;; Designed for phrases like "on the table",  or "the top block"
   (declare (special *subcat-test* category::pp))
   (if *subcat-test*
@@ -52,7 +53,8 @@
     head)) |#
 
 
-(def-k-method compose ((operator spatial-operator) (place location))
+(def-k-method compose ((operator category::spatial-operator)
+                       (place category::location))
   ;; for "at the right end of the row"
   (declare (special *subcat-test*))
   (if *subcat-test*
@@ -66,7 +68,8 @@
         i))))
 
 ;; "at the end"
-(def-k-method compose ((operator spatial-operator) (place dependent-location))
+(def-k-method compose ((operator category::spatial-operator)
+                       (place category::dependent-location))
   (declare (special *subcat-test*))
   (if *subcat-test*
     t
@@ -79,7 +82,8 @@
         i))))
 
 ;; "the block on the table"
-(def-k-method compose ((np has-location) (pp location))  
+(def-k-method compose ((np category::has-location)
+                       (pp category::location))
   ;; Called by interpret-pp-adjunct-to-np
   (declare (special *subcat-test*))
   (if *subcat-test*
@@ -89,8 +93,8 @@
       (let ((i (bind-variable 'location pp np)))
         i))))
 
-
-(def-k-method compose ((qualifier direction) (head dependent-location))
+(def-k-method compose ((qualifier category::direction)
+                       (head category::dependent-location))
   ;; as in "the left side of ...". We get that in noun-noun-compound
   (declare (special *subcat-test*))
   (if *subcat-test*
@@ -103,7 +107,9 @@
                                         :ground head)))
         (revise-parent-edge :category (category-named 'location))
         i))))
-(def-k-method compose ((qualifier direction) (head multiple-dependent-location))
+
+(def-k-method compose ((qualifier category::direction)
+                       (head category::multiple-dependent-location))
   ;; "left side" is just a variant on 'side' that picks out one of them
   ;; though on the language side it's a slippy slope if we know much more
   ;; than that in the description we create.

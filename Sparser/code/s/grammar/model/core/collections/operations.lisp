@@ -247,25 +247,17 @@
       (define-sequence temp))))
 
 
-(defgeneric nth-item (n sequence)
-  (:documentation "Given a sequence, return the its
-    nth element, given zero-based indexing."))
-
-(def-k-method nth-item ((n integer) (category sequential))
-  ;; Motivating use is pulling the month sequences out of 
-  ;; the month category
-  (let ((value (value-of 'sequence category)))
-    (unless value
-      (push-debug `(,n ,category))
-      (error "No sequence binding on ~a" category))
-    (call-nth-item n value)))
-  
-(def-k-method nth-item ((n integer) (seq sequence))
-  (let ((items (value-of 'items seq)))
-    (nth-item n items)))
-
-(defmethod nth-item ((n integer) (items list))
-  (nth n items))
+(def-k-function nth-item (n sequence)
+  (:documentation "Return the nth element of sequence,
+    given zero-based indexing.")
+  (:method ((n integer) (category category::sequential))
+    ;; Motivating use is pulling the month sequences out of
+    ;; the month category
+    (nth-item n (value-of 'sequence category)))
+  (:method ((n integer) (seq category::sequence))
+    (nth-item n (value-of 'items seq)))
+  (:method ((n integer) (items list))
+    (nth n items)))
 
 
 (defgeneric next-item (reference sequence)

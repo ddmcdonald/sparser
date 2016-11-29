@@ -230,7 +230,7 @@ No longer used -- remove soon
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
-       ((call-compose qualifier head))
+       ((compose qualifier head))
        ((itypep qualifier 'dependent-location) ;; "bottom" in "bottom block"
         (add-dependent-location qualifier head))
        ((and
@@ -290,7 +290,7 @@ No longer used -- remove soon
   (cond
     (*subcat-test*
      (takes-adj? head adjective))
-    ((call-compose adjective head)) ;; This case is to benefit marker-categories
+    ((compose adjective head)) ;; This case is to benefit marker-categories
     ((itypep adjective 'attribute-value)
      (handle-attribute-of-head adjective head))
     ((interpret-premod-to-np adjective head)) ;; normal subcategorization
@@ -389,7 +389,7 @@ No longer used -- remove soon
 	  #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
 	(cond          
-	  ((call-compose determiner head))
+	  ((compose determiner head))
           ((and *determiners-in-DL* (or (individual-p head)(category-p head)))
            (setq head (bind-dli-variable 'has-determiner determiner head))
            (if (definite-determiner? determiner)
@@ -413,7 +413,7 @@ No longer used -- remove soon
   (declare (special word::|of|))
   (or
    *subcat-test*
-   (call-compose possessive head)
+   (compose possessive head)
    (let ((var (subcategorized-variable head word::|of| possessive)))
      (if var
        (setq head (bind-variable var possessive head))
@@ -497,9 +497,8 @@ No longer used -- remove soon
 
 
 (defun verb+ing-noun-compound (qualifier head)
-  (or
-   (call-compose qualifier head)
-   (link-in-verb+ing qualifier head)))
+  (or (compose qualifier head)
+      (link-in-verb+ing qualifier head)))
 
 (defun link-in-verb+ing (qualifier head)
   (let ((premod-n-variable
@@ -541,7 +540,7 @@ No longer used -- remove soon
     ((null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
      nil)
     (*subcat-test* (subcategorized-variable qualifier :object head))
-    (t (or (call-compose qualifier head)
+    (t (or (compose qualifier head)
 	   ;; This case is to benefit marker-categories
 	   (link-in-verb qualifier head)
 	   (progn
@@ -910,7 +909,7 @@ No longer used -- remove soon
          finally (return vg)))
           
     ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
-    (or (call-compose vg pp)
+    (or (compose vg pp)
         (let* ((pp-edge (base-pp (right-edge-for-referent)))
                (prep-word (identify-preposition pp-edge))
                (*pobj-edge* (edge-right-daughter pp-edge))
@@ -1075,7 +1074,7 @@ No longer used -- remove soon
      ;;(lsp-break "pp collection")
      nil)
     ((and np pp)
-     (or (call-compose np pp)
+     (or (compose np pp)
          (let* ((pp-edge (right-edge-for-referent))
                 (prep-word (identify-preposition pp-edge))
                 ;;(*pobj-edge* (edge-right-daughter pp-edge))
@@ -1288,7 +1287,7 @@ No longer used -- remove soon
   the conjunction as a modifier just to keep it around. My reading
   of Quirk et al. is that the ones that we're most interested in
   have an adverbial function in structuring the discourse (19.55)."
-  (or (call-compose conj eventuality)
+  (or (compose conj eventuality)
       eventuality)) ;; for the moment dropping it on the floor
 
 
@@ -1499,7 +1498,7 @@ No longer used -- remove soon
 
 (defun make-pp (prep pobj)
   (or *subcat-test*
-      (when *clos* (call-compose prep pobj))
+      (when *clos* (compose prep pobj))
       (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
        category::prepositional-phrase
        `((prep ,prep) (pobj ,pobj)))))

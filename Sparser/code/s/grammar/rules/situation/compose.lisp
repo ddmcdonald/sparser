@@ -152,7 +152,7 @@
   ;; *edges-from-referent-categories*
   ;; 
   (tr :c3-composing left-ref right-ref)
-  (let ((result (call-compose left-ref right-ref)))
+  (let ((result (compose left-ref right-ref)))
     (unless result
       ;; Happens when we only match on the t,t case of compose
       (push-debug `(,left-ref ,right-ref))

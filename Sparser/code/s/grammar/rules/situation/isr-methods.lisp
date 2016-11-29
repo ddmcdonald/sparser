@@ -48,7 +48,8 @@
 ;; it's simplest to include them here. 
 
 ;; "ford suv"
-(def-k-method compose ((mgfr maker-of-artifacts) (head car-type))
+(def-k-method compose ((mgfr category::maker-of-artifacts)
+                       (head category::car-type))
   "If the head (the kind argument) is abstract, then we need to
    make it concrete since a car manufacturers are makers of artifacts
    and those are always physical."
@@ -68,7 +69,7 @@
 
 
 ;; red + physical
-(def-k-method compose ((color color) (obj motor-vehicle)) ;;physical-surface))
+(def-k-method compose ((color category::color) (obj category::motor-vehicle)) ;;physical-surface))
   ;;/////////// pifflewart. Mixins need to be integrated into shadows
   ;;     by some means or another.
   ;;// probably should be physical, but not clear how quite
@@ -80,14 +81,14 @@
   obj)
 
 ;; "black ford"
-(def-k-method compose ((color color) (obj car-manufacturer))
+(def-k-method compose ((color category::color) (obj category::car-manufacturer))
   ;; a car-manufacturer is not something that has a color
   ;; so we do nothing here, and assume that the color will be
   ;; taken up by something else
   (tr :c3-composing color obj)
   obj)
 
-(def-k-method compose ((aux have) (e perdurant))
+(def-k-method compose ((aux category::have) (e category::perdurant))
   ;; corresponds to a form rule. Not clear there's anything to do
   ;; at the situation level that wasn't done with the subtype already
   (tr :c3-composing aux e)
@@ -98,7 +99,7 @@
 
 
 ;; can-change-location + move
-(def-k-method compose ((theme can-change-location) (e move))
+(def-k-method compose ((theme category::can-change-location) (e category::move))
   (tr :c3-composing theme e)
   ;; This is run by referent-from-rule as alternative to the
   ;; realization specified by the rule. Returns the edge referent
@@ -118,7 +119,7 @@
   ;; since location(suv) is a functor, so putting it off
   
 
-(def-k-method compose ((e move) (loc container))
+(def-k-method compose ((e category::move) (loc category::container))
   (tr :c3-composing e loc)
 #| move: when-bound(to-location)
      assert: (moved-to theme to-location)

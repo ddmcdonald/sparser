@@ -18,7 +18,7 @@
 (defparameter *trap-needed-extensions-to-type-marker* nil)
 
 (when *clos*
-  (def-k-method compose ((i bio-entity) (marker type-marker))
+  (def-k-method compose ((i category::bio-entity) (marker category::type-marker))
     ;; So far triggered from noun-noun-compound with a phrase
     ;; like "the Ras protein"
     (push-debug`(,i ,marker)) ;;(break "type-marker compose")
@@ -37,7 +37,7 @@
   
   ;;; Composition rules
   
-  (def-k-method compose ((p protein-pair) (c bio-complex))
+  (def-k-method compose ((p category::protein-pair) (c category::bio-complex))
     ;; for "Shc-EGFR complex" called from noun-noun-compound
     ;; (push-debug `(,p ,c)) (lsp-break "got here with ~a and ~a" p c)
     (let ((head (bind-dli-variable 'component p c)))

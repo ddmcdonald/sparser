@@ -12,6 +12,7 @@
 (defsystem :sparser-tests
   :depends-on (:sparser)
   :components ((:file "test/rt")
+               (:file "test/k-methods")
                (:file "test/subcategorization"))
   :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
 

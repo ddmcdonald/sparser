@@ -41,7 +41,8 @@
         i)))
   
   
-  (def-k-method modifier+noun ((next next-sequence) (unit time-unit))
+  (def-k-method modifier+noun ((next category::next-sequence)
+                               (unit category::time-unit))
     (tr :next+month unit)
     (push-debug `(,next ,unit))
     

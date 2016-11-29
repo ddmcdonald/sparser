@@ -165,22 +165,12 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
 
 (defun itypep (i c/s) 
   (cond
-    ((symbolp i) (itypep (category-named i :break-if-none) c/s))
-    ((consp i)
-     (if (and (consp (car i))
-              (eq (caar i) :head)
-              (consp (second i))
-              (eq (car (second  i)) :subtype))
-         ;; we don't handle plurals in the noew SUBTYPE form for types
-         ;; e.g. the 1970s
-         nil
-         (error "what are you doing passing a CONS to itypep: ~s~&" i)))
+    ((symbolp i)
+     (and i (itypep (category-named i :break-if-none) c/s)))
     ((consp c/s)
      (if (eq (car c/s) :or)
-         (loop for c in (cdr c/s)
-            thereis (itypep i c))
-         (error "~%bad super-type ~s in itype-p for ~s~%"
-                c/s i)))
+         (loop for c in (cdr c/s) thereis (itypep i c))
+         (error "Bad super-type ~s in itype-p for ~s" c/s i)))
     (t
      (typecase i
        (individual

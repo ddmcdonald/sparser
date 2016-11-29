@@ -106,7 +106,7 @@
   :form np
   :referent (:method identify-this-time-unit left-edge right-edge))
 
-(def-k-method identify-this-time-unit ((ignore t) (unit time-unit))
+(def-k-method identify-this-time-unit ((ignore t) (unit category::time-unit))
   (declare (ignore ignore unit))
   (error "stub: define value-of-current-time-unit(unit)"))
 

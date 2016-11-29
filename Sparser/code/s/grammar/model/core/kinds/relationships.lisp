@@ -34,32 +34,3 @@
   ;; the binding is done
   ;; SBCL (bind-variable 'category category i category::expressible-type)
   (declare (ignore i category)))
-
-
-;;;---------
-;;; compose
-;;;---------
-
-(defgeneric compose (left right)
-  (:documentation "This provides a hook for co-composition or simply
-   for type specialization or adding additional relations to a 'daughter'
-   style rule. Expecially well suited for form rules. Can be used as
-   a dispatch point for more specific binary compostions. Intended to be
-   the most generic way to compose the referents of two edges."))
-
-(defmethod compose ((ignore1 t) (ignore2 t))
-  "Null method at the top of the type hierarch so that call-next-method
-   always has a place to stop."
-  nil )
-
-;;/// def-k-method/expr should write "call-" function like this
-;; as another side-effect
-;;
-(defun call-compose (left-ref right-ref)
-  (when *clos*
-    ;; otherwise the methods won't run as such, and their return value in
-    ;; a sequence of case tests in a syntax function is dubious
-    (setup-args-and-call-k-method 
-        left-ref right-ref
-      (push-debug `(,left-ref ,right-ref)) ;; keep compiler from complaining
-      (funcall #'compose left-shadow right-shadow))))
