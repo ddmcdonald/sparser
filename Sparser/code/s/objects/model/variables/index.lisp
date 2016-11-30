@@ -53,6 +53,9 @@
   (:method ((variable-name symbol) (cat-name symbol))
     (find-variable-for-category variable-name (category-named cat-name t)))
 
+  (:method ((variable-name symbol) (i individual))
+    (find-variable-from-individual variable-name i))
+
   (:method ((variable-name symbol) (category category))
     (when (eq (symbol-package variable-name) (find-package :keyword))
       ;; Happens when coming in from find-individual
@@ -64,7 +67,7 @@
         (super-category-has-variable-named variable-name category) 
         (find-variable-in-mixins variable-name category))))
 
-
+;;/// depricated
 (defun find-variable-from-individual (variable-name i)
   (if (collection-p i)
     (if (member variable-name '(items type number))
