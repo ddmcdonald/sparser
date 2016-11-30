@@ -8,41 +8,32 @@
 ;; broken out from operators 11/18/16
 
 (in-package :sparser)
- 
-;;--- grammar rules
 
-(defmacro with-subcat-test (&body body)
-  `(progn
-     (if *subcat-test* ;;//// bound in rules/syntax/syntax-functions.lisp
-       t               ;; which won't be loaded yet. Move it higher.
-       ,@body)))
-
-
-(def-k-method compose ((np has-location) (pp location))  
-  ;; Called by interpret-pp-adjunct-to-np for
-  ;; e.g. "the block on the table:
-  (with-subcat-test
-    (let ((i (bind-variable 'location pp np)))
-      i)))
+;;;------------------------------------------------------------------------------
+;;; Methods used by syntax functions that appreciate the spatial operators &such
+;;;------------------------------------------------------------------------------
 
 (def-k-method compose ((operator spatial-operator) (place endurant))
-  ;; Designed for phrases like "on the table"
-  (with-subcat-test
-    (let ((i (find-or-make-individual 'relative-location
-                                      :prep operator
-                                      :ground place)))
-      (revise-parent-edge :category (category-named 'location))
-      i)))
-
-(def-k-method compose ((qualifier direction) (head dependent-location))
-  ;; as in "the left side of ...". We get that in noun-noun-compound
-  (with-subcat-test
-    (let ((i (find-or-make-individual 'orientation-dependent-location
-                                      :prep qualifier
-                                      :ground head)))
-      (revise-parent-edge :category (category-named 'location))
-      i)))
-  
+  ;; Designed for phrases like "on the table",  or "the top block"
+  (declare (special *subcat-test* category::pp))
+  (if *subcat-test*
+    t
+    (else
+      (tr :spatial-operator+endurant)
+      (let ((form (edge-form (parent-edge-for-referent))))
+        (cond
+          ((np-category? form) ;; called from noun-noun-compound
+           (let ((head (bind-variable 'location operator place)))
+             head))
+          ((eq form category::pp)
+           (let ((i (find-or-make-individual 'relative-location
+                                             :prep operator
+                                             :ground place)))
+             (revise-parent-edge :category (category-named 'location))
+             i))
+          (t
+           (push-debug `(,operator ,place))
+           (error "Unanticipated form on parent edge: ~a" form)))))))
 
 (defun add-dependent-location (operator head)
   "Called in noun-noun-compound when the qualifier ('operator')
@@ -59,3 +50,101 @@
                                     :prep operator)))
     (setq head (bind-variable 'location i head))
     head)) |#
+
+
+(def-k-method compose ((operator spatial-operator) (place location))
+  ;; for "at the right end of the row"
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :spatial-operator+location)
+      (let ((i (find-or-make-individual 'relative-location
+                                        :prep operator
+                                        :ground place)))
+        (revise-parent-edge :category (category-named 'location))
+        i))))
+
+;; "at the end"
+(def-k-method compose ((operator spatial-operator) (place dependent-location))
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :spatial-operator+dependent-location)
+      (let ((i (find-or-make-individual 'relative-location
+                                        :prep operator
+                                        :ground place)))
+        (revise-parent-edge :category (category-named 'location))
+        i))))
+
+;; "the block on the table"
+(def-k-method compose ((np has-location) (pp location))  
+  ;; Called by interpret-pp-adjunct-to-np
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :has-location+location)
+      (let ((i (bind-variable 'location pp np)))
+        i))))
+
+
+(def-k-method compose ((qualifier direction) (head dependent-location))
+  ;; as in "the left side of ...". We get that in noun-noun-compound
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :direction+dependent-location)
+      (lsp-break "direction + dependent-location")
+      (let ((i (find-or-make-individual 'orientation-dependent-location
+                                        :prep qualifier
+                                        :ground head)))
+        (revise-parent-edge :category (category-named 'location))
+        i))))
+(def-k-method compose ((qualifier direction) (head multiple-dependent-location))
+  ;; "left side" is just a variant on 'side' that picks out one of them
+  ;; though on the language side it's a slippy slope if we know much more
+  ;; than that in the description we create.
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :direction+multiple-dependent-location)
+      (let ((modified (bind-variable 'modifier qualifier head)))
+        modified))))
+ 
+
+
+;;; traces to determine when/whether a method is being used
+
+(defparameter *debug-compose* nil)
+(defun compose-debugging-on ()
+  (setq *debug-compose* t))
+(defun compose-debugging-off ()
+  (setq *debug-compose* nil))
+
+(deftrace :spatial-operator+endurant ()
+  (when *debug-compose*
+    (trace-msg "Composing spatial-operator & endurant")))
+
+(deftrace :spatial-operator+location ()
+  (when *debug-compose*
+    (trace-msg "Composing spatial-operator & location")))
+
+(deftrace :spatial-operator+dependent-location ()
+  (when *debug-compose*
+    (trace-msg "Composing spatial-operator & dependent-location")))
+
+(deftrace :has-location+location ()
+  (when *debug-compose*
+    (trace-msg "Composing has-location & location")))
+
+(deftrace :direction+dependent-location ()
+  (when *debug-compose*
+    (trace-msg "Composing direction & dependent-location")))
+
+(deftrace :direction+multiple-dependent-location ()
+  (when *debug-compose*
+    (trace-msg "Composing direction & multiple-dependent-location")))

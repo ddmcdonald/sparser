@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  August 2016
+;;;   version:  November 2016
 
 ;; Initiated 12/3/15.
 
@@ -11,28 +11,28 @@
 
 ;;--- categories
 
-(define-category composite-object :specializes object
+;; These two are replaced with partonymic
+#+ignore(define-category composite-object :specializes object
   :mixins (artifact)
   :binds ((composed-of object))
   :realization (:of composed-of))
-
-(define-category component-part
+#+ginore(define-category component-part
   :specializes object
   :binds ((part-of object))
   :realization (:of part-of))
-
+#|
 (define-category relative-position :specializes component-part)
 
 (define-category has-relative-position :specializes physical-object
   :binds ((position relative-position))
-  :realization (:m position))
+  :realization (:m position)) |#
 
 (define-mixin-category with-specified-location
   :binds ((location location)
           (supported-by object)
           (next-to object)
-          (at-relative-location relative-position)
-          (goal object))
+          (at-relative-location (:or location object)) ;;relative-position)
+          (goal (:or location object)))
   :realization (:next\ to next-to
                 :on supported-by
                 :on\ top\ of supported-by
@@ -42,41 +42,18 @@
 
 
 
-(noun "end" :super relative-position)
-(noun "middle" :super relative-position)
-(noun "left" :super relative-position)
-(noun "right" :super relative-position)
-
-
-(define-category surface :specializes component-part
-  :realization (:noun "surface"))
-
-(define-category top-surface :specializes surface
-                 :realization (:noun "top"))
-(define-category bottom-surface :specializes surface
-                 :realization (:noun "bottom"))
-(define-category side-surface :specializes surface
-                 :realization (:noun "side"))
-
 
 ;;---  blocks
-#| This has to meet/merge with Scott's treatment 
-for the individuals. 
-///  Artifact is too immediate since we want to incorporate
-inherited slots for things like color, label, orientation,
-location, membership in structures (staircase), local relations
-with other blocks, mention in utterances, etc. |#
+
 (define-category block
-  :specializes object
+  :specializes rectangular-solid
   :mixins (has-name with-specified-location)
-  :binds ((position relative-position))
+  ;; inherits 'location' variable -- :binds ((position relative-position))
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "block")
-  :realization (:noun name
-                :m position))
-
-
+  :realization (:noun name))
+                     ;; :m position
 
 #| An interesting deference between a block and a table is
 that you can't use the table as part of any of the standard
@@ -87,20 +64,39 @@ a block can typically only support a single other block
 support a substantial number of blocks.
 |#
 (define-category table
-  :specializes object
-  :mixins (has-name)
+  :specializes rectangular-solid
   :index (:permanent :list)
   :realization (:common-noun "table"))
 
-(noun "staircase" :specializes composite-object :rule-label artifact)
-(def-synonym staircase (:noun "stair"))
-(noun "stack" :specializes composite-object :rule-label artifact)
-(noun "row" :specializes composite-object :rule-label artifact)
 
 
-(define-category step :specializes component-part
-   :restrict ((part-of staircase))
-   :realization (:noun "step"))
+(define-category built-out-of-blocks
+  :specializes artifact
+  :restrict ((part-type block))
+  :index (:permanent :list)  
+  :documentation "Wants a notion of where this type
+ of construction can be extended, probably wants a shape,
+ maybe a count and items?")
+
+(define-category step
+  :specializes block
+  :restrict ((part-of staircase))
+  :realization (:noun "step"))
+
+(define-category staircase
+  :specializes built-out-of-blocks
+  :restrict ((part-type step))
+  :realization (:common-noun "staircase"))
+
+;; (def-synonym staircase (:noun "stair")) ;; only when plural
+
+(define-category stack
+  :specializes built-out-of-blocks 
+  :realization (:common-noun "stack"))
+
+(define-category row
+  :specializes built-out-of-blocks 
+  :realization (:common-noun "row"))
 
 
 

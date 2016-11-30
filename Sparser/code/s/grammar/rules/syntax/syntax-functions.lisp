@@ -231,7 +231,7 @@ No longer used -- remove soon
      (setq head (individual-for-ref head))
      (cond
        ((call-compose qualifier head))
-       ((itypep qualifier 'dependent-location) ;; "bottom"
+       ((itypep qualifier 'dependent-location) ;; "bottom" in "bottom block"
         (add-dependent-location qualifier head))
        ((and
          (category-named 'knockout-pattern)
@@ -1096,24 +1096,27 @@ No longer used -- remove soon
               (or variable-to-bind
                   (and (eq prep-word of)
                        (or (itypep np 'attribute)
-                           (itypep np 'dependent-location)))))
+                           (itypep np 'dependent-location)
+                           (itypep np 'partonomic)))))
              ((and (eq prep-word of)
                    (itypep np 'attribute)) ;; "color of the block"
-              ;; The 'owner' of the "of" in this case is the pobj,
-              ;; rather than the np.
               (find-or-make-individual 'quality-predicate
                  :attribute (itype-of np) :item pobj-referent))
              ((and (eq prep-word of)
                    (itypep np 'dependent-location)
                    (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
               (find-or-make-individual 'object-dependent-location
-                 :prep np :ground pobj-referent))
+                                       :prep np :ground pobj-referent))
+             ((and (eq prep-word of)
+                   (itypep np 'partonomic) ;; "a row of two blocks"
+                   (compatible-with-specified-part-type pobj-referent np))
+              (setq np (bind-variable 'parts pobj-referent np)))
              (variable-to-bind
               (when *collect-subcat-info*
                 (push (subcat-instance np prep-word variable-to-bind pp)
                       *subcat-info*))
               (setq np (individual-for-ref np))
-              (setq  np (bind-dli-variable variable-to-bind pobj-referent np))
+              (setq np (bind-dli-variable variable-to-bind pobj-referent np))
               np)))))))
 
 
