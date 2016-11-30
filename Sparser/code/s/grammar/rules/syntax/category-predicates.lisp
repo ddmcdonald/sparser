@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  November 2016
 
 ;; Predicates on synteactic form categories, mostly for the use of the chunker.
 
@@ -369,6 +369,16 @@
   (noun-category? (cat-symbol c)))
 (defmethod noun-category? ((name symbol))
   (memq name *noun-categories*))
+
+(defgeneric np-category? (label)
+  (:documentation "Toplevel NPs and N-Bar categories")
+  (:method ((e edge))
+    (np-category? (edge-form e)))
+  (:method ((c referential-category))
+    (np-category? (cat-symbol c)))
+  (:method ((name symbol))
+    (or (memq name *n-bar-categories*)
+        (memq name *ng-head-categories*))))
 
 (defgeneric verb-category? (label)
   (:documentation "Verbs and their variants. Should be a single word"))
