@@ -21,7 +21,7 @@
                          'dependent-location)
         :name string)))
 
-(define-dependent-location "top")
+(define-dependent-location "top" :multiple t) ;; "the tops of the steps"
 (define-dependent-location "bottom")
 
 (define-dependent-location "end" :multiple t) ;; rows have two ends
