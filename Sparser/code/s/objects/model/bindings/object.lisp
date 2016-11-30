@@ -130,11 +130,10 @@
    on its super-category that it is derived from."
   (when bindings
     (let ((binding
-           (find (symbol-name (var-name variable))
+           (find (var-name variable)
                  bindings
-                 :test #'string-equal
                  :key #'(lambda (b)
-                          (symbol-name (var-name (binding-variable b)))))))
+                          (var-name (binding-variable b))))))
       (when binding
         (binding-value binding)))))
 
@@ -161,13 +160,9 @@
     (error "Expected the second argument to be an individual~
           ~%But it's a ~a~%~a" (type-of value) value))
   (let ((bindings (indiv-bound-in value))
-        (var-name (typecase variable
+        (var-name (etypecase variable
                     (lambda-variable (var-name variable))
-                    (symbol variable)
-                    (otherwise
-                     (push-debug `(,variable ,value))
-                     (error "Unexpected value for variable argument:~
-                           ~% ~a  ~a" (type-of variable) variable)))))
+                    (symbol variable))))
     ;; The variable knows what's bound to it, but the caller
     ;; would have to be sure it had the right one
     (when bindings
@@ -180,12 +175,9 @@
 
 (defun all-bindings-such-that (bindings
                                &key ((:body-type-is body-type))
-                                    ((:variable-is variable))
-                                    )
-
+                                    ((:variable-is variable)))
   ;; return every binding some the argument set that fits the
   ;; description laid out in the keyword arguments
-
   (let ( good-ones )
     (dolist (b bindings)
       (cond (body-type
