@@ -55,8 +55,7 @@
     (let* (;;(clp (krisp-mapping i))
            ;;/// modify apply-mumble-phrase-data to call record-krisp-mapping
            ;; once it clear what to do when the 'word' isn't a verb
-           (category (sp::itype-of i))
-           (clp (sp::get-tag :mumble category)))
+           (clp (realizing-resource i)))
       (when clp
         (apply-CLP-to-individual i clp)))))
 
@@ -71,6 +70,36 @@
        as value = (sp::value-of variable i)
        do (make-complement-node parameter value dtn))
     dtn))
+
+
+(defgeneric realizing-resource (item)
+  (:documentation "Look up the resource(s) that will be used
+   to realize the item.")
+  (:method (null) nil)
+  (:method ((i sp::individual))
+    (or (realizing-resource (sp::itype-of i)) ;; get it from the category
+        (word-for i 'noun))) ;; 'noun' presumes too much
+  (:method ((c sp::referential-category))
+    (sp::get-tag :mumble c)))
+
+(defgeneric realizing-label (resource)
+  (:documentation "Return the label of the resource,
+    which will be a node-label if the resource is based on
+    a phrase, or else a word-label.")
+  (:method (null) nil)
+  (:method ((clp category-linked-phrase))
+    (realizing-label (linked-phrase clp)))
+  (:method ((lp lexicalized-phrase))
+    (realizing-label (phrase lp)))
+  (:method ((p phrase))
+    (car (car (definition p))))
+  (:method ((w word))
+    (car (word-labels w))))
+
+;; have considered that a symbol might be easier in some cases
+  #+ignore(:method ((n node-label))
+    (name n))
+
 
     
 ;;;------------------------------------
