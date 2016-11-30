@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "relationships"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  April 2014
+;;;  version:  November 2016
 
 ;; This file holds independent lambda variables and such that
 ;; don't otherwise have a natural place to put them, or that refer
@@ -12,11 +12,6 @@
 ;; Started populating 4/10/13.
 ;; 7/1/13 Added generic method for compose. 3/31/14 added a t,t method.
 ;; 4/9/14 Added the wrapper call-compose. 
-
-;; 3/21/2015 IMPORTANT -- need to fix how individuals created in DM&P are indexed -- major speedup
-;;  suggested by SBCL led to change in bind-category-of-instance 
-;; removing (bind-variable 'category category i category::expressible-type)
-
 
 
 (in-package :sparser)
@@ -61,7 +56,10 @@
 ;; as another side-effect
 ;;
 (defun call-compose (left-ref right-ref)
-  (setup-args-and-call-k-method 
-   left-ref right-ref
-   (push-debug `(,left-ref ,right-ref)) ;; keep compiler from complaining
-   (funcall #'compose left-shadow right-shadow)))
+  (when *clos*
+    ;; otherwise the methods won't run as such, and their return value in
+    ;; a sequence of case tests in a syntax function is dubious
+    (setup-args-and-call-k-method 
+        left-ref right-ref
+      (push-debug `(,left-ref ,right-ref)) ;; keep compiler from complaining
+      (funcall #'compose left-shadow right-shadow))))
