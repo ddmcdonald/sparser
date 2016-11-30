@@ -199,23 +199,20 @@
   :binds ((country . country) ;;/// probably too narrow
           (region . location))) ;; maybe too narrow
 
-(when *clos*
-  (defmethod relationship-to-country ((c sh::country) (r sh::region-type))
-        (declare (special *parent-edge-getting-reference*))
-        (relation-to-country-region/location-core c r))
-      
-  (defmethod relationship-to-country ((c sh::country) (r sh::location))
-        (declare (special *parent-edge-getting-reference*))
-        (relation-to-country-region/location-core c r)))
+(def-k-method relationship-to-country ((c category::country)
+                                       (r category::region-type))
+  (declare (special *parent-edge-getting-reference*))
+  (relation-to-country-region/location-core c r))
+
+(defmethod relationship-to-country ((c category::country)
+                                    (r category::location))
+  (declare (special *parent-edge-getting-reference*))
+  (relation-to-country-region/location-core c r))
 
 (defun relation-to-country-region/location-core (c r)
-  (let ((country (dereference-shadow-individual c))
-        (location (dereference-shadow-individual r)))
-    (revise-parent-edge :category category::region-type
-                        :form category::np)          
-    (define-or-find-individual category::located-in
-        :country country :region location)
-    location)) ;; return the referent of the right edge
+  (revise-parent-edge :category category::region-type :form category::np)
+  (define-or-find-individual category::located-in :country c :region r)
+  r) ;; return the referent of the right edge
 
 )) ;; close eval-when
 

@@ -133,7 +133,7 @@
                  (setq *referent* rule-field)
                  (annotate-individual *referent* :immediate-referent)))
 
-           (call-redistribute-if-appropriate left-referent right-referent)
+           (redistribute left-referent right-referent)
 
            (when *c3*
              (let ((result (incorporate-composition-into-situation 
@@ -271,23 +271,10 @@
 ;;; redistributing bindings
 ;;;-------------------------
 
-(defun call-redistribute-if-appropriate (left-referent right-referent)
-  (when (and left-referent right-referent)
-    (when (and (individual-p left-referent)
-               (individual-p right-referent))
-      (setup-args-and-call-k-method 
-       left-referent right-referent
-       (push-debug `(,left-referent ,right-referent))
-       (funcall #'redistribute left-shadow right-shadow)))))
-
-(defgeneric redistribute (left-referent right-referent)
+(def-k-function redistribute (left-referent right-referent)
   ;; or should it be head and arg ??
   (:documentation "Provides a mechanism for part of the referent of
     one edge (i.e. one or more bindings) to be transfered to the
-    referent of the other edge."))
-
-(defmethod redistribute ((left t) (right t))
-  (declare (ignore left right))
-  nil)
-
-
+    referent of the other edge.")
+  (:method (left right)
+    (declare (ignore left right))))

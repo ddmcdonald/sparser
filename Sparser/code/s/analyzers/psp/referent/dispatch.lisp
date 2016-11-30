@@ -29,7 +29,7 @@
   (declare (special  *head-edge* *arg-edge* *rule-being-interpreted*))
 
   (let ((key (first rule-field)))
-    (case key
+    (ecase key
       (:daughter (ref/daughter (second rule-field)
                                left-referent right-referent))
       (:head (ref/head (second rule-field)
@@ -74,12 +74,7 @@
        (ref/function (cdr rule-field)))
 
       (:method
-       (ref/method (cdr rule-field) left-referent right-referent))
-
-      (otherwise
-       (break "Threading bug in referent expression decoding.~
-               ~%Unexpected key: ~A~%in ~a"
-              (car rule-field) rule-field)))))
+       (funcall (cadr rule-field) left-referent right-referent)))))
 
 
 

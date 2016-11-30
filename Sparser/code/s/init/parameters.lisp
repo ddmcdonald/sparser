@@ -88,11 +88,6 @@ routines are left out of the load.")
 speech rather than a written text. It affects how the text-based
 heuristics are handled and turns on other, speech-specific heuristics.")
 
-(defvar *CLOS* t
-  "If not nil, every category and individual is backed by the
-equivalent CLOS class and instance. Permits free use of type-specific
-compositional methods in referents.")
-
 (defvar *load-ad-hoc-rules* nil
   "The ultimate goal of development on Sparser is integration into
 a fully bi-directional system (see Magi loader), which requires

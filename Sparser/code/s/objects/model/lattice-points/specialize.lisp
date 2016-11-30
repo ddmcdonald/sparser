@@ -46,19 +46,12 @@
 
 (defmethod specialize-object ((i individual) (mixin mixin-category))
   ;; 1. Find the relevant subtyped category
-  ;; 2. If we have to make one, then we push the composite through
-  ;;    the CLOS operation and store its shadow in the subtype object.
-  ;; 3. Add the mixing to i's type field. Swap the shadow that is
-  ;;    there for the one from the subtype.
+  ;; 2. Add the mixin to i's type field.
   (let ((subtyped-category (find-subtype i mixin)))
     (unless subtyped-category
       (setq subtyped-category (make-subtype i mixin))
       (index-subcategory (itype-of i) mixin subtyped-category))
-    (let* ((sclass (cat-specialized-class subtyped-category))
-           ;; cribed from create-shadow
-           (new-shadow (make-instance sclass)))
-      (setf (indiv-shadow i) new-shadow) ;; does all the work
-      i )))
+    i))
 
 (defmethod specialize-object ((i individual) (c (eql 'category::collection)))
   ;; See make-cn-plural-rule
@@ -82,25 +75,13 @@
       (push `(,mixin . ,sub-lp) (lp-subtypes lp)))))
 
 (defun make-subtype (i mixin)
-  ;; Returns a new subtyped-category that's indexed
-  ;; from its subtype-lattice-point.
-  ;;(push-debug `(,i ,mixin))
+  "Return a new subtyped-category indexed from its subtype-lattice-point."
   (let* ((base (itype-of i))
          (base-lp (cat-lattice-position base))
-         (name (string-append
-                (cat-symbol base) "/" (cat-symbol mixin)))
+         (name (string-append (cat-symbol base) "/" (cat-symbol mixin)))
          (sub-lp (get-lp 'subtype-lattice-point
                          :supertype base-lp
                          :supertype-print-string name
                          :specializing-category mixin)))
-    ;;(push-debug `(,sub-lp ,name)) (break "look at values")
-    (let ((sub-cat (define-subtype-derived-category
-                       sub-lp base mixin)))
-      (setf (lp-subtype sub-lp) sub-cat)
-      (setup-backing-clos-class sub-cat nil :referential)
-      (let ((sclass (get-sclass sub-cat)))
-        (setf (cat-specialized-class sub-cat) sclass)
-        ;;(push-debug `(,sub-cat ,sclass)) (break "look again")
-        sub-cat))))
-  
-
+    (setf (lp-subtype sub-lp)
+          (define-subtype-derived-category sub-lp base mixin))))

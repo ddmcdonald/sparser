@@ -35,5 +35,4 @@
 
 (when *include-model-facilities*
   (lload "referent;new decodings")
-  (lload "referent;ref-method")
   (lload "referent;new cases"))

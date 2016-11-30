@@ -17,16 +17,9 @@
   :binds ((quantifier . quantifier)
           (body)))
 
-
-(when *clos*
-  (defgeneric quantify (quantifier body)
-    (:documentation "Provides for specializing the relationship between
-                    a particular category of quantifier and category of body."))
-  
-  (defmethod quantify ((q sh::quantifier) (body t))
-    (let ((real-q (dereference-shadow-individual q))
-          (real-body (dereference-shadow-individual body)))
-      (define-individual 'quantified
-                         :quantifier real-q
-        :body real-body)
-      real-body)))
+(def-k-function quantify (quantifier body)
+  (:documentation "Provides for specializing the relationship between
+a particular category of quantifier and category of body.")
+  (:method ((q category::quantifier) body)
+    (define-individual 'quantified :quantifier q :body body)
+    body))

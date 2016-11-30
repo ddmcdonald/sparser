@@ -310,7 +310,6 @@
       (setq individual new-indiv)
       (unless *description-lattice*
         (index/individual individual category bindings))
-      (create-shadow individual)
       individual )))
 
 
@@ -334,7 +333,6 @@
            (allocate-individual))))
     (setf (indiv-type individual) (list category))
     (setf (indiv-id   individual) (next-id category))
-    (create-shadow individual)
     individual ))
 
 

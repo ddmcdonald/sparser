@@ -26,5 +26,4 @@
 (lload "categories;index instances")
 (lload "categories;define")
 (lload "categories;extensions")
-(lload "categories;clos-backing")
 (lload "categories;k-methods")

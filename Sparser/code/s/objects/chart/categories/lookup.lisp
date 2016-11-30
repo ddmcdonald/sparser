@@ -92,17 +92,6 @@
           (note-grammar-module category :source source)
           (mark-definition-source category) ;; for morph or comlex sources
           
-          (when *CLOS*  ;; CLOS backing
-            (case source
-              (:referential) ;; done in decode-category-parameter-list
-              (:mixin) ;; also in decode-category-parameter-list
-              (:form
-               (setup-backing-clos-class category nil :form))
-              (:derived
-               (setup-backing-clos-class category nil :derived))
-              ((or :def-category :define-category :dm&p)
-               (setup-backing-clos-class category nil :minimal))))
-
           (ecase source
             (:referential
              (push category *referential-categories*))

@@ -27,21 +27,16 @@ type of the item (person, vs city, vs government official) then we
 should use a category and use methods for the composition
 |#
 
-(defgeneric relationship-to-country (country object)
+(def-k-function relationship-to-country (country object)
   (:documentation "By default it just instantiates an instance
     of associated-with-country, but particular cases of object
-    can use more specific relations."))
-
-(when *clos*
-  (defmethod relationship-to-country ((c sh::country) (thing t))
-    (let ((country (dereference-shadow-individual c))
-          (item (dereference-shadow-individual thing)))
-      ;; Person and location versions of this method hack with
-      ;; the form and category of the edge being created.
-      ;; /// Should we do that here? What would it look like?
-      (define-or-find-individual 'associated-with-country
-                                 :country country :item item)
-      item)))
+    can use more specific relations.")
+  (:method ((c category::country) thing)
+    ;; Person and location versions of this method hack with
+    ;; the form and category of the edge being created.
+    ;; /// Should we do that here? What would it look like?
+    (define-or-find-individual 'associated-with-country :country c :item thing)
+    item))
 
 (define-category associated-with-country
   :instantiates self

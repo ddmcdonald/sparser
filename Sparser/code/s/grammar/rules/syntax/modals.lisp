@@ -66,7 +66,6 @@
                        :instantiates :self
                        :bindings (name ,word))))
          (individual (make-category-indexed-individual category)))
-    (create-shadow individual)
     (flet ((positive-rule (w)
              (let ((word (etypecase w
                            ((or word polyword category) w)

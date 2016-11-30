@@ -187,9 +187,6 @@
     (when lemma
       (setup-category-lemma category lemma))
     
-    (when *CLOS*
-      (setup-backing-clos-class category mixins :referential))
-    
     category ))
 
 

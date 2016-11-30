@@ -95,7 +95,6 @@ in conjunction with an early version of Hark. Notable for using the
   "DARPA \"Big Mechanism\" project."
   (:script-variable *big-mechanism*)
   (:parameters
-   (*clos* nil)
    (*description-lattice* t)
    (*index-under-permanent-instances* t))
   (:grammar-configuration "bio-grammar")

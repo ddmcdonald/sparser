@@ -17,17 +17,16 @@
   :specializes predicate)
 
 
-(defgeneric analyze-pp (preposition complement)
+(def-k-function analyze-pp (preposition complement)
   (:documentation "Computes the referent of a pp created using the
                   computed-pp ETF. Particular combinations can produced anything
                   they want. The default is the referent of the complement, which
-                  is equivalent to :daughter right-edge."))
+                  is equivalent to :daughter right-edge.")
   
-(when *clos* ;;/// n.b. very unfinished
-  (defmethod analyze-pp ((prep sh::prepositional-operator) (complement t))
+  (:method ((prep category::prepositional-operator) complement)
     (declare (ignore prep))
     (tr :analyze-pp_t+t)
-    (dereference-shadow-individual complement)))
+    complement))
 
 (defparameter *prep-complements* nil
   "For collecting examples of how this is uesd.")

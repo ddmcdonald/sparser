@@ -305,8 +305,7 @@ omitted and then run (perhaps) after the image has been launched."
 
   (gate-grammar *time*
     (late-time-files)
-    (when *clos*
-      (make-temporal-sequences)))
+    (make-temporal-sequences))
 
   (when *incorporate-generic-lexicon*
     (prime-comlex))

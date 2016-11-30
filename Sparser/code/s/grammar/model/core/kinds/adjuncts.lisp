@@ -18,17 +18,11 @@
     ;; through what to do. Inheriting from 'relation' as
 ;; this did originally leads to a circular lattice
 
-(if *clos*
-  (define-category event-relation
-    ;; :specializes top
-    :binds ((relation)
-            (event)
-            (subordinated-event)))
-  (define-category event-relation
+(define-category event-relation
     :specializes top
     :binds ((relation)
             (event)
-            (subordinated-event))))
+            (subordinated-event)))
 
 (define-category with-certainty
     :specializes event-relation

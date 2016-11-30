@@ -108,16 +108,13 @@
 (defun switch-settings (&optional full? (stream *standard-output*))
   (declare (special *treat-single-Capitalized-words-as-names*
                     *pnf-routine* *break-policy* *description-lattice*
-                    *allow-pure-syntax-rules* *CLOS*
-                    ))
+                    *allow-pure-syntax-rules*))
   (format stream "~&~%Sparser switch settings:")
   (format stream " ~A" *switch-setting*)
   (format stream "~%              Chart-level protocol: ~A"
           *kind-of-chart-processing-to-do*)
   (format stream "~&               use syntactic rules: ~a"
           *allow-pure-syntax-rules*)
-  (format stream "~&              CLOS methods enabled: ~a"
-          *CLOS*)
   (format stream "~&       use the Description Lattice: ~a"
           *description-lattice*)
   (format stream "~%                     unknown words: ~A"
