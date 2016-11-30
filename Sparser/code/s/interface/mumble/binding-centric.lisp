@@ -359,6 +359,10 @@
   (:method (binding (var-name (eql 'sp::quantifier)) dtn pos)
     "Attach a quantifier as a premodifier."
     (attach-adjective (sp::binding-value binding) dtn pos))
+
+  (:method (binding (var-name (eql 'sp::parts)) dtn pos)
+    "This variable is defined by partonomic and will hold a set -of- parts"
+    (attach-pp (find-word "of") (sp::binding-value binding) dtn pos))
   
   (:method (binding (var-name (eql 'sp::time)) dtn pos)
     "Attach a time as an adverbial."
@@ -368,11 +372,18 @@
      dtn))
   
   (:method (binding (var-name (eql 'sp::location)) dtn pos)
-    (let ((ap (case pos
-                (noun ;; presume a noun-noun compound
-                 'nominal-premodifier)
-                (otherwise 'np-prep-complement))))
-      (make-adjunction-node
-       (make-lexicalized-attachment ap (sp::binding-value binding))
-       dtn))))
+    "Look at how the location will be realized and selected an attachment
+     point that fits."
+    (let* ((i (sp::binding-value binding))
+           (label-realizing-i (realizing-label (realizing-resource i))))
+      ;;(push-debug `(,i ,label-realizing-i ,binding)) (break "realize location slot")
+      (let ((ap (case pos
+                  (noun
+                   (etypecase label-realizing-i
+                     (word-label 'nominal-premodifier)
+                     (node-label 'np-prep-complement)))
+                  (otherwise 'np-prep-complement))))
+        (make-adjunction-node
+         (make-lexicalized-attachment ap i)
+         dtn)))))
     
