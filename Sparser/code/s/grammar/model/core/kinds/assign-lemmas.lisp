@@ -65,29 +65,3 @@
                              (vp . ,predicate-names)))))) ;
 |#
 
-;;;------------------------------------------------
-;;; Deictics  -- needs a story about dereferencing
-;;;------------------------------------------------
-;; These are here (rather than inside model/core/places/)
-;; so that they are accessible to a biology (R3) load
-;; of the system without requiring it to incorporate all
-;; the other parts of the location module. 
-
-(define-category  deictic-location 
-  :instantiates  location ;;self
-  :specializes   location
-  :binds ((name :primitive word))
-  :index (:permanent :key name)
-  :realization (:common-noun name))
-
-(define-individual 'deictic-location :name "over there")
-
-(define-individual 'deictic-location :name "over here")
-
-(define-individual 'deictic-location :name "here")
-
-(unless (current-script :biology)
-  ;; unlikely in bio -- causes problems with construction "THERE IS"
- (define-individual 'deictic-location :name "there"))
-
-
