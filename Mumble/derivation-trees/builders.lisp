@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2013-2016 David D. McDonald  All Rights Reserved
 ;;;
 ;;;  /Mumble/derivation-trees/builders.lisp
-;;;  January 2016
+;;;  November 2016
 
 ;; Initated 11/20/13 to package up reusable parameterized
 ;; derivation tree patterns at roughly the level of maximal projections.
@@ -158,44 +158,44 @@
     'Mustard in used in lots of salads', where the preposition
     is specializing the sense of the verb rather than heading
     a prepositional phrase. The result is open in the 
-    parameters 's' and 'o'."))
+    parameters 's' and 'o'.")
 
-(defmethod transitive-with-bound-prep ((verb-pname string)
-                                       (prep-pname string))
-  (let ((verb (word-for-string verb-pname 'verb))
-        (prep (word-for-string prep-pname 'preposition))
-        (term (compound-word-for-indexing verb-pname prep-pname)))
-    ;; Since we are stipulating the phrase in this method
-    ;; we can just know what the open parameters are.
-    (make-instance 'partially-saturated-lexicalized-phrase
-      :phrase (phrase-named 'SVPrepO)
-      :bound (list (make-instance 'parameter-value-pair
-                     :phrase-parameter (parameter-named 'v)
-                     :value verb)
-                   (make-instance 'parameter-value-pair
-                     :phrase-parameter (parameter-named 'p)
-                     :value prep))
-                :free (list (parameter-named 's)
-                            (parameter-named 'o)))))
+  (:method ((verb-pname string) (prep-pname string))
+    (let ((verb (word-for-string verb-pname 'verb))
+          (prep (word-for-string prep-pname 'preposition))
+          (term (compound-word-for-indexing verb-pname prep-pname)))
+      ;; Since we are stipulating the phrase in this method
+      ;; we can just know what the open parameters are.
+      (make-instance 'partially-saturated-lexicalized-phrase
+                     :phrase (phrase-named 'SVPrepO)
+                     :bound (list (make-instance 'parameter-value-pair
+                                                 :phrase-parameter (parameter-named 'v)
+                                                 :value verb)
+                                  (make-instance 'parameter-value-pair
+                                                 :phrase-parameter (parameter-named 'p)
+                                                 :value prep))
+                     :free (list (parameter-named 's)
+                                 (parameter-named 'o))))))
 
 
-(defmethod transitive-with-final-adverbial ((verb-pname string)
-                                            (adverb-pname string))
-  "This is for 'push X together'. As noted above for predicate,
+(defgeneric transitive-with-final-adverbial (verb-pname adverb-pname)
+  (:documentation "This is for 'push X together'. As noted above for predicate,
    notions like 'together' are not well characterized by simple
    conventional terms. The choice of phrase is also wrong or
    at least inadequate since it's from the transformational family
    for particles like 'up' as in 'pick up'. Best move (///) is to
-   define a new phrase that explicitly takes adverbial final arguments."
-  (let ((verb (word-for-string verb-pname 'verb))
-        (adverb (word-for-string adverb-pname 'adverb))
-        (term (compound-word-for-indexing verb-pname adverb-pname)))
-    (make-instance 'partially-saturated-lexicalized-phrase
-      :phrase (phrase-named 'SVOP) ;; s v o p
-      :bound (list (pvp 'v verb)
-                   (pvp 'p adverb))
-      :free (list (parameter-named 's)
-                  (parameter-named 'o)))))
+   define a new phrase that explicitly takes adverbial final arguments.")
+
+  (:method ((verb-pname string) (adverb-pname string))  
+    (let ((verb (word-for-string verb-pname 'verb))
+          (adverb (word-for-string adverb-pname 'adverb))
+          (term (compound-word-for-indexing verb-pname adverb-pname)))
+      (make-instance 'partially-saturated-lexicalized-phrase
+                     :phrase (phrase-named 'SVOP) ;; s v o p
+                     :bound (list (pvp 'v verb)
+                                  (pvp 'p adverb))
+                     :free (list (parameter-named 's)
+                                 (parameter-named 'o))))))
 
 
 
