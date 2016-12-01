@@ -256,7 +256,7 @@
     (or
      (get-dli indiv-collection)
      (gethash members *lattice-ht-for-collections*)
-     (let ((new-dli (copy-individual indiv-collection)))
+     (let ((new-dli (deep-copy-individual indiv-collection)))
        (add-uplink new-dli (dli-ref-cat indiv-collection))
        (loop for member in members
           do
@@ -322,7 +322,7 @@
         (return-from find-or-make-lattice-subordinate (values parent nil))
         (let* ((result
 		(or (gethash dl-vv downlinks) ;; already there in the hierarchy
-		    (let ((new-child (copy-individual parent)))
+		    (let ((new-child (deep-copy-individual parent)))
 		      (setq new-child (old-bind-variable var value new-child))
 		      (setf (gethash dl-vv downlinks) new-child)
 		      (setf (gethash dl-vv (indiv-uplinks new-child)) parent)

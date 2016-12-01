@@ -262,3 +262,26 @@ in its type field?"
   (when (or (individual-p low)
             (referential-category-p low))
     (itype-of low)))
+
+
+(defun deep-copy-individual (i)
+  "Create a new unindexed individual with the same type and bindings
+   as the originial. N.b. this is not a copy within the description lattice.
+   See find-or-make-lattice-subordinate which uses this function to
+   make the base individual."
+  (let* ((established-type (indiv-type i))
+         (new (make-unindexed-individual (car established-type))))
+    (when (cdr established-type) ;; carry over any mix-ins
+      (setf (indiv-type new) established-type))
+    (loop for binding in (reverse (indiv-binds i))
+       ;; temporarily revert to simplify comparisons (indiv-binds i)
+       ;; make/binding operates by a push operation
+       ;; on the indiv-binds list, so we must do this in reverse
+       ;; order to get the same list on the copy!!
+       ;; RJB discovered this error on 6/12/2016
+      do
+      ;; don't check binding-hook
+      (make/binding (binding-variable binding)
+                    (binding-value binding)
+                    new))
+    new))
