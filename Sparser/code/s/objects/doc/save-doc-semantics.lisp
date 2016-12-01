@@ -20,17 +20,25 @@
 (defparameter *use-xml* nil
   "produces XML output for the article")
 
-(defparameter *default-article-semantics-path*
+(defun CURE-semantics-directory-pathname ()
   (when (find-package :r3)
-    (probe-file (asdf:system-relative-pathname :r3 "../corpus/Articles_for_CURE/"))))
+    (let ((pathname
+           (asdf:system-relative-pathname
+            :r3
+            "../corpus/Articles_for_CURE/SemanticsForCUREArticles/")))
+      (or
+       (probe-file pathname)
+       (ensure-directories-exist pathname)))))
+
+(defparameter *default-article-semantics-path*
+  (CURE-semantics-directory-pathname))
+  
 
 (defun save-article-semantics (&optional                                 
                                  (write-xml-file? *use-xml*)
                                  (dir
                                   (or *default-article-semantics-path*
-                                      (when (find-package :r3)
-                                        (probe-file (asdf:system-relative-pathname
-                                                     :r3 "../corpus/Articles_for_CURE/"))))))
+                                      (CURE-semantics-directory-pathname))))
   (setq *use-xml* write-xml-file?)
   (setq *article-semantics-directory* dir))
 
