@@ -844,9 +844,13 @@ than a bare "to".  |#
 (defun sentential-adverb? (edge)
   (declare (special edge))
   ;; VERY STUPID DEFINITION
+  #+ignore
   (and (referential-category-p (edge-referent edge))
        (eq (cat-name (edge-referent edge))
-	   'only)))
+	   'only))
+  ;; the goal is to be able to block adverbs that shouldn't be inside NGs
+  ;;  -- need to figure out whichthey are and how to find them
+  nil)
 
 (defparameter *suppressed-verb+ed* nil)
 (defun likely-verb+ed-clause (edge ev-list)
