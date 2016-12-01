@@ -92,7 +92,7 @@
 (define-category explicit-suggestion ;; 'explicit' because of the marker
   :instantiates self
   :specializes sa-propose
-  :binds ((marker proposal-marker)
+  :binds ((marker :primitive category) ;; i.e. a proposal-marker)
           (suggestion perdurant)))
 
 
