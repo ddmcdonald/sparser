@@ -103,15 +103,7 @@
 (defun place-referent-in-lattice (referent edge) ;; THIS IS NOW A NO-OP IN THE DESCRIPTION LATTICE CASE
   (declare (special *prep-forms* referent edge))
   ;; N.b. if anyone revives this. Appreciate that some referents are words
-  #+ignore
-  (if (and referent *description-lattice* (not (word-p referent)))
-      (fom-lattice-description referent)
-      referent)
-  (if (and (category-p referent)
-           (not (member (edge-form edge) *prep-forms*)))
-      (fom-lattice-description referent)
-      ;; in new mechanism, referent is already in the lattice when created
-      referent)
+  referent
   )
 
 (defun fom-lattice-description (base)
