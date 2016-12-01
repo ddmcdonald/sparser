@@ -124,8 +124,8 @@ to make any semantic or form edges that the grammar dictates.
        (break "no edges in the segment between ~a and ~a"
               *left-segment-boundary* *right-segment-boundary*))
       (*dbg-print*
-       (format t "~&Ignoring segment with no edges:")
-       (format-words-in-segment)
+       (break "~&Ignoring segment ~s with no edges~%"
+              (format-words-in-segment nil))       
        (terpri))))
 
     (otherwise
