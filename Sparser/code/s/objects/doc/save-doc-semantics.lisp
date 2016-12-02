@@ -52,7 +52,7 @@
     (cond ((symbolp *article-semantics-directory*)
            ;; either T or NIL
            (setq *sentence-results-stream* *article-semantics-directory*))
-          (t
+         (t
            (let* ((file-path (make-semantics-filename article)))
              (setq *sentence-results-stream*
                    (open file-path
@@ -79,6 +79,9 @@
       (format t "Semantics written to ~s.~%" (pathname *sentence-results-stream*)))
     (close *sentence-results-stream*))
   (setq *sentence-results-stream* nil))
+
+;; An article records the file it's based on in slot you access
+;; with the function article-source (see objects/doc/object.lisp)
 
 (defun make-semantics-filename (article)
   (make-pathname :name (concatenate 'string
