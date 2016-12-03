@@ -612,7 +612,7 @@
 (DEF-RAS2-PROTEIN "MCF2L_HUMAN" ("MCF2L_HUMAN" "MCF2L" "MCF2-transforming sequence-like protein" "KIAA0362" "DBL's big sister")) 
 (DEF-RAS2-PROTEIN "MCF2_HUMAN" ("MCF2_HUMAN" "Proto-oncogene MCF-2" "DBL-transforming protein" "DBL" "MCF2" "MCF2-transforming protein")) 
 (DEF-RAS2-PROTEIN "MEF2D_HUMAN" ("MEF2D_HUMAN" "MEF2D")) 
-(DEF-RAS2-PROTEIN "MEK" ("MEK" "MEK-1/2" "MEK1-2"))
+;;(DEF-RAS2-PROTEIN "MEK" ("MEK" "MEK-1/2" "MEK1-2"))
 (DEF-RAS2-PROTEIN "MEK1-2" ("MEK1-2")) 
 (DEF-RAS2-PROTEIN "MEK1-2-active" ("MEK1-2-active")) 
 (DEF-RAS2-PROTEIN "MEKK1-5" ("MEKK1-5")) 
