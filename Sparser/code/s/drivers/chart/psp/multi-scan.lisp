@@ -635,7 +635,7 @@
                     (if (edge-vector-p left-edge) 
                         (lowest-edge left-edge)
                         left-edge))))
-               (setq left-edge (next-treetop/leftward left-edge)))
+          (setq left-edge (next-treetop/leftward left-edge)))
 
         (unless (or (word-p left-edge)
                     (word-p right-edge))
@@ -785,6 +785,8 @@
       (lsp-break "stub: finish revision of hide parentheses?")
       (hide-parenthesis-edge paren-edge edge-to-left)))))
 
+(defparameter *show-acronym-conflicts* nil)
+
 (defun recover-acronym-if-necessary (segment-start segment-end)
   ;; called from parse-chunk-interior after pts has finished
   ;; that may not be the best location for it. 
@@ -825,9 +827,10 @@
 			    (not (itypep (cfr-category rule) 'biological))) ;; case where there is a definition from outside of biology (e.g. "TRIM")
 		      (when
 			  (not (eq (cat-name (cfr-category rule)) 'bio-entity))
-			(warn "~&***Acronym -- attempting to change category of rule ~s to ~s~%  in ~s~%" rule
+			(when *show-acronym-conflicts*
+                          (warn "~&***Acronym -- attempting to change category of rule ~s to ~s~%  in ~s~%" rule
 				(edge-category regular-edge)
-				(sentence-string *sentence-in-core*))
+				(sentence-string *sentence-in-core*)))
                         (return-from recover-acronym-if-necessary nil))
 		      (setf (cfr-category rule) (edge-category regular-edge))
 		      (setf (cfr-rhs rule) (list uppercase-word))
