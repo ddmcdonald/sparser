@@ -108,6 +108,17 @@ without damaging other code.")
            do (pushnew i individuals)))
     (reverse individuals)))
 
+
+;; Set this variable to collect information about realizations of biochemical-entities in text...
+(defparameter *bce-ht* nil
+  	;;(make-hash-table :size 10000)
+  	)
+
+(defparameter *save-surface-text-as-variable* t)
+
+(define-lambda-variable 'raw-text
+    nil category::top)
+
 (defun note-surface-string (edge)
   ;; Called on every edge from complete-edge/hugin
   ;; Record the surface string from the span dictated 
@@ -120,20 +131,34 @@ without damaging other code.")
              (start-index (pos-character-index start-pos))
              (end-index (pos-character-index end-pos)))
         #| Too noisy. Digit sequences typically have
-           a null end-index for reasons as yet unexplored
+        a null end-index for reasons as yet unexplored
         (unless start-index
-          (format t "~&>>> Null start-index: ~a~%~%" edge))
+        (format t "~&>>> Null start-index: ~a~%~%" edge))
         (unless end-index
-          (format t "~&>>> Null end-index: ~a~%~%" edge)) |#
+        (format t "~&>>> Null end-index: ~a~%~%" edge)) |#
 
         (if (and start-index end-index)
-          ;; need both indices to extract the string
-          (let ((string (extract-string-from-char-buffers 
-                         start-index end-index)))
-	    (setf (gethash edge *surface-strings*) string)
-            (setf (gethash referent *surface-strings*) string))
+            ;; need both indices to extract the string
+            (let ((string
+                   (extract-string-from-char-buffers start-index end-index)))
+              (setf (gethash edge *surface-strings*) string)
+              (setq string (string-trim " 
+" string))
+              (setf (gethash referent *surface-strings*) string)
+              (when (and  (eq (edge-right-daughter edge) :SINGLE-TERM)
+                          (individual-p referent))
 
-          (setf (gethash referent *surface-strings*) ""))))))
+                (when (and *bce-ht* (itypep referent 'bio-chemical-entity))
+                  (pushnew string (gethash referent *bce-ht*) :test #'equal))
+                (when *save-surface-text-as-variable*
+                  ;; do this after the code above, so that the *bce-ht*
+                  ;;  is keyed on the individual without the text
+                  (setq referent (bind-dli-variable 'raw-text string referent))
+                  (setf (edge-referent edge) referent))))
+
+            (setf (gethash referent *surface-strings*) ""))))))
+
+
 
 (defparameter *surface-strings* (make-hash-table :size 10000)
   "Used by note-surface-string as the place to cache the text
@@ -720,3 +745,18 @@ without damaging other code.")
 
 (defmethod head-string (x)
   nil)
+
+(defun all-current-sentences (s)
+  (when s
+    (cons s
+     (all-current-sentences (previous s)))))
+
+(defmethod top-edges-for-proteins ()
+  (let ((slist
+         (reverse (all-current-sentences (previous (sentence))))))
+    (loop for s in slist
+          append
+            (top-edges-for-interps-in-s
+             (find-biochemical-entities s)
+             s))))
+
