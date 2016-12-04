@@ -602,15 +602,18 @@
         (form (edge-form left-edge))
         (category (edge-category left-edge)))
 
-    (let ((edge (make-edge-over-long-span
-                 (pos-edge-starts-at left-edge)
-                 (pos-edge-ends-at right-edge)
-                 category
-                 :constituents (all-tts (pos-edge-starts-at left-edge)
-                                        (pos-edge-ends-at right-edge))
-                 :form form
-                 :referent referent
-                 :rule heuristic)))
+    (let* ((constituents
+            (all-tts (pos-edge-starts-at left-edge)
+                     (pos-edge-ends-at right-edge)))
+           (edge (make-edge-over-long-span
+                  (pos-edge-starts-at left-edge)
+                  (pos-edge-ends-at right-edge)
+                  category
+                  :constituents constituents
+                  :form form
+                  :referent referent
+                  :rule heuristic)))
+      (when (null (cdr constituents)) (warn "bad conjunction of 1 constituent in ~s~%" (sentence-string *sentence-in-core*)))
       (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (edge-interaction-with-quiescence-check edge)
       (when *save-conjunctions* 
