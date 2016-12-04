@@ -219,8 +219,12 @@ the process.
 ;;(defparameter *ras2-proteins* (make-hash-table :size 1500 :test #'equal))
 ;;(gethash (string-for/name i) *ras-2-proteins*)
 
+(defparameter *maintain-ras2-info* nil)
+
 (defmacro def-ras2-protein (name args)
-  (eval `(define-protein ,name ,args :ras2-model t)))
+  (if *maintain-ras2-info*
+      (eval `(define-protein ,name ,args :ras2-model t))
+      (eval `(define-protein ,name ,args))))
 
 ;;;---------------------------
 ;;; pattern-driven protein definition
