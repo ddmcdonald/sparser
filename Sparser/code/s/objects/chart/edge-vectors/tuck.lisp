@@ -104,10 +104,12 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
   (declare (special *sentence-in-core* *visited*))
   (let ((new-ref (referent-for-edge edge)))
     (cond ((null new-ref)
-           (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing null interpretation" edge))
+           (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing null interpretation~% in ~s~%" edge
+                 (sentence-string *sentence-in-core*)))
           ((eq new-ref :abort-edge)
-           (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing :abort-edge interpretation" edge)
-           )
+           (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing :abort-edge interpretation~% in ~s~%" edge 
+                 (sentence-string *sentence-in-core*)))
+
           (t
            (setf (edge-referent edge) new-ref)
            (if (edge-mention edge)
