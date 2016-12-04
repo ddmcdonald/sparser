@@ -312,6 +312,11 @@
       (setq sentence next-sentence))))
 
 (defun scan-terminals-and-do-core (sentence)
+  ;; We sometimes get errors in scan-terminals-of-sentence
+  ;;  so it is important for the error message routines
+  ;;  to have the variable *sentence-in-core* set at this point
+  ;;  not (just) in sentence-processing-core
+  (setq *sentence-in-core* sentence)
   (scan-terminals-of-sentence sentence) ;; (tr :scanning-done)
   (sentence-processing-core sentence)) ;; (tr :sweep-core-done)
 
