@@ -585,7 +585,8 @@ where it regulates gene expression.")
 					(car (relevant-edges parent-edges conjunct))))
                                    (declare (special cc c-edge))
                                    (unless c-edge
-                                     (warn "can't find relevant edge for conjunct"))
+                                     (warn "can't find relevant edge for conjunct ~s in ~s. Sentence: ~s~%"
+                                           conjunct parent-edges (sentence-string *sentence-in-core*)))
 				   ;;(print (list conjunct c-edge))
 				   (if c-edge
 				       (new-dt (cons c-edge parent-edges))
@@ -629,7 +630,9 @@ where it regulates gene expression.")
     (cond
       ((cdr spec-mentions)
        (when *show-contextual-replacements*
-	 (format t "~%--- Suppressing contextual interpretation due to ambiguous interpretations of ~s in:~%~s~%"
+	 (format t 
+
+"~%--- Suppressing contextual interpretation due to ambiguous interpretations of ~s in:~%~s~%"
 		 (or (note-surface-string edge)
 		     (sur-string interp))
 		 (sentence-string *sentence-in-core*)))
