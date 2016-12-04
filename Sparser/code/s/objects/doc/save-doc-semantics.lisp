@@ -47,21 +47,24 @@
 
 (defun initialize-article-semantic-file-if-needed (article)
   (declare (special article))
-  (cond ((and *article-semantics-directory*
-              (symbolp *article-semantics-directory*))
-         (setq *sentence-results-stream* *article-semantics-directory*)) ;; either T or NIL
-        (t
-         (let* ((file-path (make-semantics-filename article)))
-           (setq *sentence-results-stream*
-                 (open file-path
-                       :direction :output
-                       :if-exists :supersede
-                       :if-does-not-exist :create))
-           (when *use-xml*
-             (format *sentence-results-stream*
-                     "<?xml version=\"1.0\" encoding=\"~a\"?>~%<article>~%"
-                     (stream-external-format *sentence-results-stream*)))
-           *sentence-results-stream*))))
+  ;; don't create article semantics file if *article-semantics-directory* is nil
+  (when *article-semantics-directory*
+    (cond ((symbolp *article-semantics-directory*)
+           ;; either T or NIL
+           (setq *sentence-results-stream* *article-semantics-directory*))
+          (t
+           (let* ((file-path (make-semantics-filename article)))
+             (setq *sentence-results-stream*
+                   (open file-path
+                         :direction :output
+                         :if-exists :supersede
+                         :if-does-not-exist :create))
+             (when *use-xml*
+               (format *sentence-results-stream*
+                       "<?xml version=\"1.0\" encoding=\"~a\"?>~%<article pmcid=~s>~%"
+                       (stream-external-format *sentence-results-stream*)
+                       (pname (name article))))
+             *sentence-results-stream*)))))
 
 (defparameter *show-semantics-output-name* nil)
 (defun close-article-semantic-file-if-needed ()
@@ -224,10 +227,13 @@
            (pop-indentation))
   (finish-element "interpretation" stream))
 
+(defparameter *short-protein-xml* nil)
+
 (defmethod write-sem ((i individual) stream &optional (newline t))
   (cond ((simple-number? i)
          (space-prin1 (value-of 'value i) stream))
         ((and *use-xml*
+              *short-protein-xml*
               (itypep i 'protein)
               (= (length (filter-bl i)) 2)
               (value-of 'name i)
