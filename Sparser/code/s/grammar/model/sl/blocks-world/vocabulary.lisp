@@ -130,6 +130,19 @@ support a substantial number of blocks.
                   :o artifact
                   :mumble ("build" svo :o artifact)))
 
+(define-category make
+  :specializes process
+  :mixins (with-an-agent)
+  :binds ((object physical) ;; what they build
+          (adj-comp t)) ;; "make the stack green"
+  :realization
+    (:verb ("make" :past-tense "made")
+     :etf (svo-passive)
+     :s agent
+     :o object
+     :adjp-complement adj-comp
+     :mumble ("make" svo :o object)))
+          
 (define-category move-something-somewhere
   :specializes process
   :mixins (with-an-agent with-specified-location) ;; adds 'agent' variable and location variables
@@ -184,19 +197,6 @@ support a substantial number of blocks.
          :mumble ("put" svo1o2 :o1 theme :o2 location)))
 
 
-(define-category make
-  :specializes process
-  :mixins (with-an-agent)
-  :binds ((object object) ;; what they build
-          (adj-comp t)) ;; "make the stack green"
-  :realization
-    (:verb ("make" :past-tense "made")
-     :etf (svo-passive)
-     :s agent
-     :o object
-     :adjp-complement adj-comp
-     :mumble ("make" svo :o object)))
-          
 ;; maybe move up to mid-level..
 #|
 (define-category propose

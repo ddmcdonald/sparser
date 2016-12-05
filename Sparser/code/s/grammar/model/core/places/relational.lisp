@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "relational"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2016
+;;;  version:  December 2016
 
 ;; Extracted from object file 7/21/11. Evicerated it 9/28 in lieu of
 ;; doing something more nuanced. Removed the category/individuals
@@ -61,13 +61,16 @@
 
 (define-category object-dependent-location ;; same name as in TRIPS
   :specializes relative-location
+  :mixins (physical)
   :restrict ((ground partonomic)
              (prep dependent-location))
   :instantiates self ;; inherits index
   :documentation "Defines a location in terms of a name-like label
  and an object that has an element that can be characterized by
  that label. The result is a location (the 'end' of the row) that
- may be empty or may be occupied (the 'bottom row of the stairs')."
+ may be empty or may be occupied (the 'bottom row of the stairs').
+ This duality implies that we are sometimes describing things
+ as well as locations, hence the physical mixin."
   :realization ((:mumble (of-genitive :n prep :p ground))))
 
 

@@ -41,6 +41,7 @@ determined by the operator and the types of the two objects,
 
 (define-category dependent-location
   :specializes spatial-operator
+  :mixins (physical)
   :documentation "Goes with the category object-dependent-location to
     in the same way that spatial-operator goes with relative-location.
     Typical instances would be 'bottom' and 'side'"
@@ -52,8 +53,8 @@ determined by the operator and the types of the two objects,
   :specializes dependent-location
   :mixins (partonomic)
   :documentation "Used for 'sides' and any similar functional
-    locations that occur more than once on the object they
-    depend on."
+    dependent locations that occur more than once on the object 
+    they depend on."
   :instantiates self
   :index (:permanent :key name)
   :realization (:common-noun name))
