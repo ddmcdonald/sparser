@@ -326,6 +326,28 @@
 ;;; convenience accessors to parts of an article
 ;;;----------------------------------------------
 
+(defgeneric paragraphs-in-doc-element (document-element)
+  (:documentation "Locate and return a list of all the paragraph
+ objects at or below the indicated document-element")
+  (:method ((p paragraph))
+    (list p))
+  (:method ((tt title-text)) nil)
+  (:method ((a article))
+    (loop for child in (children a)
+       append (paragraphs-in-doc-element child)))
+  (:method ((s section))
+    (loop for child in (children s)
+       append (paragraphs-in-doc-element child)))
+  (:method ((ss section-of-sections))
+    (loop for child in (children ss)
+       append (paragraphs-in-doc-element child))))
+
+(defun find-paragraphs-containing-string (string document-element)
+  (loop for p in (paragraphs-in-doc-element document-element)
+     when (search string (content-string p))
+     collect p))
+
+
 (defmethod sections-in-article ((a article))
   (children a))
 
