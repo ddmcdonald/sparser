@@ -21,8 +21,7 @@
 (define-category endurant 
   :specializes top
   :binds ((number)
-          (quantifier)
-          (name))
+          (quantifier))
   :documentation
   "Endurants (aka objects, things) have an identity that doesn't depend
  on the identity of their parts, see axe handles and greek ships. The

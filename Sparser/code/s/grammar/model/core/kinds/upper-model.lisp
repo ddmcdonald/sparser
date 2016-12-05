@@ -48,7 +48,7 @@
   :instantiates nil
   :specializes nil
   :binds ((modifier)
-          (name)
+          (name :primitive word)
           (negation)) ;; applies to both endurants and perdurants
             ;; an c.f. negative on tense/modal -- need coordination
   :documentation
