@@ -63,7 +63,9 @@
                (format *sentence-results-stream*
                        "<?xml version=\"1.0\" encoding=\"~a\"?>~%<article pmcid=~s>~%"
                        (stream-external-format *sentence-results-stream*)
-                       (pname (name article))))
+                       (if (stringp article)
+                           (subseq article 6 (- (search "SENTENCES" article) 1))
+                           (pname (name article)))))
              *sentence-results-stream*)))))
 
 (defparameter *show-semantics-output-name* nil)
