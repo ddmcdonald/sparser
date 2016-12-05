@@ -1,5 +1,5 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
@@ -135,3 +135,157 @@
           (is-passive?(edge-left-daughter edge)))))
       ((vp+passive vg+passive verb+passive) t)
       (t nil))))
+
+
+;;;---------------------------------------------
+;;; finding the parts of a prepositional phrase
+;;;---------------------------------------------
+
+(defun identify-preposition (edge)
+  "The edge is over a pp or prep-complement, etc. that is headed
+   by a preposition. Sometimes the actual preposition word is
+   buried under other edges. Find and return the preposition."
+  (let* ((edge (base-pp edge))
+         (prep-edge (edge-left-daughter edge))
+         ;; in case where  (LOOK-FOR-PREP-BINDERS)
+         ;;  ends up leading to this, the edge is a preposition itself
+         (left-daughter (when (edge-p prep-edge)
+                          (edge-left-daughter prep-edge)))
+         (right-daughter (when (edge-p prep-edge)
+                           (edge-right-daughter prep-edge))))
+    (declare (special prep-edge left-daughter right-daughter))
+    
+    (flet ((prep-edge? (edge)
+             (memq (cat-name (edge-form edge))
+                   '(preposition
+                     spatio-temporal-preposition spatial-preposition))))
+      (cond
+        ((word-p left-daughter)
+         left-daughter)
+        ((edge-p left-daughter) ;; formerly left-daughter = prep-word
+         (cond
+           ((polyword-p (edge-rule left-daughter))
+            (edge-rule left-daughter)) ;; return the pw
+       
+           ((and (prep-edge? left-daughter) ;; sanity check
+                 (word-p left-daughter))
+            ;; The word was elevated to a category, e.g. 'with'
+            left-daughter)
+
+           ((and (prep-edge? left-daughter)
+                 (edge-p left-daughter))
+            (cond
+              ((word-p (edge-left-daughter left-daughter))
+               (edge-left-daughter left-daughter))
+              (t (push-debug `(,edge ,prep-edge ,left-daughter))
+                 (error "Unexpected edge-over-preposition pattern:~
+                       ~%he left daughter ~a is a prepositiion-edge ~
+                         but it doesn't dominate a preposition.~
+                       ~%topmost edge is ~a" left-daughter edge))))
+
+           ((and ;; "30 minutes after stimulation ..."
+             (edge-p left-daughter)
+             (itypep (edge-referent left-daughter) 'amount-of-time)
+             (edge-p right-daughter)
+             (prep-edge? right-daughter))
+            (edge-left-daughter right-daughter))
+
+           ((and (edge-p right-daughter) ;; "even in"
+                 (prep-edge? right-daughter)
+                 (word-p (edge-left-daughter right-daughter)))
+            (edge-left-daughter right-daughter))
+
+           (t
+            (push-debug `(,edge ,prep-edge ,left-daughter ,right-daughter))
+            (error "Unexpected pattern of an edge over a preposition:~%~a"
+                   prep-edge))))
+        (t
+         (push-debug `(,edge ,prep-edge ,left-daughter ,right-daughter))
+         (warn "Unexpected type of 'preposition': ~a~%~a"
+               (type-of left-daughter) left-daughter)
+         nil)))))
+
+(defun identify-pobj (edge)
+  (let* ((bpp-edge (base-pp edge))
+         (erd (edge-right-daughter bpp-edge)))
+    (if (edge-p erd)
+        (edge-referent erd)
+        (else
+          (warn "can't find pobj edge for edge ~s" edge)
+          nil))))
+
+
+(defun base-pp (edge)
+  (if (and (edge-p (edge-left-daughter edge))
+           (eq (cat-name (edge-form (edge-left-daughter edge))) 'adverb))
+      (edge-right-daughter edge)
+      edge))
+
+
+
+;;;--------------------
+;;; recording pronouns
+;;;--------------------
+
+(defun condition-anaphor-edge (item subcat-label v/r)
+  ;; We now know the restriction that any candidate referent for this
+  ;; pronoun has to satisfy, and we know the v/r of the variable it has to bind. This
+  ;; edge was recorded in the layout as a pronoun and will be retrieved in
+  ;; the pass that does the search after all the parsing has finished, so
+  ;; this is the edge that we work with. We need to record this
+  ;; information, and we need to arrange a 'dummy' individual to be created
+  ;; and bound to this variable during the parsing phase so that we can
+  ;; track through its bound-in relation an replace it in that binding with
+  ;; the correct referent once we've identified it. Kind of Rube Goldberg
+  ;; -esque, but it's the price we pay for delaying rather than trying to
+  ;; identify the referent at moment the pronoun is encountered.
+  (cond
+    ((and *do-anaphora* (is-pronoun? item))
+     (let* ((pn-edge (edge-for-referent item))
+            (ignore? (ignore-this-type-of-pronoun (edge-category pn-edge))))
+       (tr :conditioning-anaphor-edge pn-edge)
+       (cond
+	 (ignore?
+	  item)
+	 (*constrain-pronouns-using-mentions*
+          (when v/r
+            ;; Comes from the value restriction of the variable to be
+            ;; bound as determined by assimilate-subcat. It's frequently
+            ;; the case that this variable doesn't have a value restriction,
+            ;; particularly for default choices like 'subject'.
+            (tr :recording-pn-mention-v/r v/r)
+            (setf (mention-restriction (edge-mention pn-edge)) v/r))
+	  item)
+	 (t
+	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
+                                    category::np))
+                (restriction (or v/r category::unknown-grammatical-function)))
+            (declare (special category::np category::unknown-grammatical-function))
+	    (when (consp restriction)
+	      ;; the first one after the :or
+	      (setq restriction 
+		    (or (loop for c in (cdr restriction) 
+                              when (itypep (edge-referent pn-edge) c)
+                              do (return c))
+			(cadr restriction))))
+            (tr :recording-pn-mention-v/r restriction)
+	    (let ((new-ref (individual-for-ref restriction)))
+	      (unless ignore?
+                ;; If we're going to ignore the pronoun we don't want or
+                ;; need to rework its edge
+                (tr :anaphor-conditioned-to new-ref restriction relation-label)
+		;; Encode the type-restriction in the category label
+		;; and the grammatical relationship in the form
+		(setf (edge-category pn-edge) restriction)
+		(setf (edge-form pn-edge) relation-label)
+		(setf (edge-referent pn-edge) new-ref)
+		(setf (edge-rule pn-edge) 'condition-anaphor-edge))
+	      new-ref))))))
+    (t item)))
+
+(defun form-label-corresponding-to-subcat (subcat-label)
+  ;; Used with pronouns to encode relationship when it's known
+  (case subcat-label
+    (:subject category::grammatical-subject)
+    (:object category::direct-object)
+    (otherwise nil)))

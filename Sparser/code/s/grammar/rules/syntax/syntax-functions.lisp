@@ -162,7 +162,6 @@
 (define-lambda-variable 'has-determiner
     nil category::top)
 
-
 (define-lambda-variable 'approximator
     nil category::number)
 
@@ -171,13 +170,6 @@
 
 (define-lambda-variable 'amount-of-time
     nil category::top)
-
-#|
-No longer used -- remove soon
-(define-lambda-variable 'copular-verb
-    nil category::top)
-|#
-
 
 (define-lambda-variable 'intensity
     nil category::top) ;; for percentage in "95% sure"
@@ -191,6 +183,10 @@ No longer used -- remove soon
 ;;;     incorporated in description-lattice individuals
 ;;; These include determiners and parentheticals
 ;;; see operations in create-discourse-mention and extend-discourse-mention
+
+
+(defparameter *determiners-in-DL* t
+  "put the determiner in the description, not in the mention")
 
 (defparameter *non-dli-mod-ht* (make-hash-table)
   "Holds determiners for NPs until they are put in
@@ -350,8 +346,6 @@ No longer used -- remove soon
   (when (or adj-edge (itypep adj 'post-adj))
     (adj-noun-compound adj n adj-edge)))
 
-(defparameter *dets-seen* nil)
-
 (defun create-partitive-np (quantifier of-pp)
   (declare (special quantifier of-pp))
   (let ((pp-edge (right-edge-for-referent)))
@@ -368,7 +362,7 @@ No longer used -- remove soon
 	   pobj-ref
 	   ))))))
 
-(defparameter *determiners-in-DL* t) ;; put the determiner in the description, not in the mention
+(defparameter *dets-seen* nil)
 
 (defun determiner-noun (determiner head)
   "NO LONGER Drop indefinite determiners on the ground. Mark definites
@@ -810,88 +804,6 @@ No longer used -- remove soon
   "Used to generate useful error messages when the edge 
    referent is NIL.")
 
-
-
-(defun identify-preposition (edge)
-  "The edge is over a pp or prep-complement, etc. that is headed
-   by a preposition. Sometimes the actual preposition word is
-   buried under other edges. Find and return the preposition."
-  (let* ((edge (base-pp edge))
-         (prep-edge (edge-left-daughter edge))
-         ;; in case where  (LOOK-FOR-PREP-BINDERS)
-         ;;  ends up leading to this, the edge is a preposition itself
-         (left-daughter (when (edge-p prep-edge)
-                          (edge-left-daughter prep-edge)))
-         (right-daughter (when (edge-p prep-edge)
-                           (edge-right-daughter prep-edge))))
-    (declare (special prep-edge left-daughter right-daughter))
-    
-    (flet ((prep-edge? (edge)
-             (memq (cat-name (edge-form edge))
-                   '(preposition
-                     spatio-temporal-preposition spatial-preposition))))
-      (cond
-        ((word-p left-daughter)
-         left-daughter)
-        ((edge-p left-daughter) ;; formerly left-daughter = prep-word
-         (cond
-           ((polyword-p (edge-rule left-daughter))
-            (edge-rule left-daughter)) ;; return the pw
-       
-           ((and (prep-edge? left-daughter) ;; sanity check
-                 (word-p left-daughter))
-            ;; The word was elevated to a category, e.g. 'with'
-            left-daughter)
-
-           ((and (prep-edge? left-daughter)
-                 (edge-p left-daughter))
-            (cond
-              ((word-p (edge-left-daughter left-daughter))
-               (edge-left-daughter left-daughter))
-              (t (push-debug `(,edge ,prep-edge ,left-daughter))
-                 (error "Unexpected edge-over-preposition pattern:~
-                       ~%he left daughter ~a is a prepositiion-edge ~
-                         but it doesn't dominate a preposition.~
-                       ~%topmost edge is ~a" left-daughter edge))))
-
-           ((and ;; "30 minutes after stimulation ..."
-             (edge-p left-daughter)
-             (itypep (edge-referent left-daughter) 'amount-of-time)
-             (edge-p right-daughter)
-             (prep-edge? right-daughter))
-            (edge-left-daughter right-daughter))
-
-           ((and (edge-p right-daughter) ;; "even in"
-                 (prep-edge? right-daughter)
-                 (word-p (edge-left-daughter right-daughter)))
-            (edge-left-daughter right-daughter))
-
-           (t
-            (push-debug `(,edge ,prep-edge ,left-daughter ,right-daughter))
-            (error "Unexpected pattern of an edge over a preposition:~%~a"
-                   prep-edge))))
-        (t
-         (push-debug `(,edge ,prep-edge ,left-daughter ,right-daughter))
-         (warn "Unexpected type of 'preposition': ~a~%~a"
-               (type-of left-daughter) left-daughter)
-         nil)))))
-
-(defun identify-pobj (edge)
-  (let* ((bpp-edge (base-pp edge))
-         (erd (edge-right-daughter bpp-edge)))
-    (if (edge-p erd)
-        (edge-referent erd)
-        (else
-          (warn "can't find pobj edge for edge ~s" edge)
-          nil))))
-
-
-(defun base-pp (edge)
-  (if (and (edge-p (edge-left-daughter edge))
-           (eq (cat-name (edge-form (edge-left-daughter edge))) 'adverb))
-      (edge-right-daughter edge)
-      edge))
-
 (defun adjoin-pp-to-vg (vg pp)
   ;; The VG is the head. We ask whether it subcategorizes for
   ;; the preposition in this PP and if so whether the complement
@@ -966,34 +878,6 @@ No longer used -- remove soon
 ;;;----------------
 ;;; to complements
 ;;;----------------
-
-(define-category to-comp
-  :specializes phrase-interpretation
-  :binds ((prep :primitive category)
-          (comp))
-  :documentation "Provides a scafolding to hold
-   a generic to-comp as identified by
-   the pp rules in grammar/rules/syntactic-rules.
-   Primary consumer is the subcategorization checking
-   code below. Note that if we make these with an
-   unindexed individual (in make-pp) then the index
-   information doesn't come into play"
-  :index (:temporary :sequential-keys prep comp))
-
-(define-category as-comp
-  :specializes phrase-interpretation
-  :binds ((prep :primitive category)
-          (comp))
-  :documentation "Provides a scafolding to hold
-   a generic to-comp as identified by
-   the pp rules in grammar/rules/syntactic-rules.
-   Primary consumer is the subcategorization checking
-   code below. Note that if we make these with an
-   unindexed individual (in make-pp) then the index
-   information doesn't come into play"
-  :index (:temporary :sequential-keys prep comp))
-
-
 
 (defun adjoin-tocomp-to-vg (vg tocomp)
   (assimilate-subcat vg :to-comp tocomp)) ;;(value-of 'comp tocomp)
@@ -1177,7 +1061,7 @@ No longer used -- remove soon
        (if *subcat-test* t
            (else
              (revise-parent-edge :category category::copular-predication)
-             (setq vp (interpret-copular-predication-on subj vp))
+             (setq vp (bind-variable 'item subj vp))
              vp)))
       ((transitive-vp-missing-object? vp right-edge)
        (when (not *subcat-test*)
@@ -1368,144 +1252,16 @@ No longer used -- remove soon
   (assimilate-subcat head (subcategorized-variable head prep pobj) pobj))
 
 
-;;;--------------------
-;;; recording pronouns
-;;;--------------------
-
 (defun apply-control-or-raise (head label item)
   (declare (special head label item))
   (lsp-break "apply-control-or-raise")
   nil)
 
 
-(defun condition-anaphor-edge (item subcat-label v/r)
-  ;; We now know the restriction that any candidate referent for this
-  ;; pronoun has to satisfy, and we know the v/r of the variable it has to bind. This
-  ;; edge was recorded in the layout as a pronoun and will be retrieved in
-  ;; the pass that does the search after all the parsing has finished, so
-  ;; this is the edge that we work with. We need to record this
-  ;; information, and we need to arrange a 'dummy' individual to be created
-  ;; and bound to this variable during the parsing phase so that we can
-  ;; track through its bound-in relation an replace it in that binding with
-  ;; the correct referent once we've identified it. Kind of Rube Goldberg
-  ;; -esque, but it's the price we pay for delaying rather than trying to
-  ;; identify the referent at moment the pronoun is encountered.
-  (cond
-    ((and *do-anaphora* (is-pronoun? item))
-     (let* ((pn-edge (edge-for-referent item))
-            (ignore? (ignore-this-type-of-pronoun (edge-category pn-edge))))
-       (tr :conditioning-anaphor-edge pn-edge)
-       (cond
-	 (ignore?
-	  item)
-	 (*constrain-pronouns-using-mentions*
-          (when v/r
-            ;; Comes from the value restriction of the variable to be
-            ;; bound as determined by assimilate-subcat. It's frequently
-            ;; the case that this variable doesn't have a value restriction,
-            ;; particularly for default choices like 'subject'.
-            (tr :recording-pn-mention-v/r v/r)
-            (setf (mention-restriction (edge-mention pn-edge)) v/r))
-	  item)
-	 (t
-	  (let ((relation-label (or (form-label-corresponding-to-subcat subcat-label)
-                                    category::np))
-                (restriction (or v/r category::unknown-grammatical-function)))
-            (declare (special category::np category::unknown-grammatical-function))
-	    (when (consp restriction)
-	      ;; the first one after the :or
-	      (setq restriction 
-		    (or (loop for c in (cdr restriction) 
-                              when (itypep (edge-referent pn-edge) c)
-                              do (return c))
-			(cadr restriction))))
-            (tr :recording-pn-mention-v/r restriction)
-	    (let ((new-ref (individual-for-ref restriction)))
-	      (unless ignore?
-                ;; If we're going to ignore the pronoun we don't want or
-                ;; need to rework its edge
-                (tr :anaphor-conditioned-to new-ref restriction relation-label)
-		;; Encode the type-restriction in the category label
-		;; and the grammatical relationship in the form
-		(setf (edge-category pn-edge) restriction)
-		(setf (edge-form pn-edge) relation-label)
-		(setf (edge-referent pn-edge) new-ref)
-		(setf (edge-rule pn-edge) 'condition-anaphor-edge))
-	      new-ref))))))
-    (t item)))
-
-(defun form-label-corresponding-to-subcat (subcat-label)
-  ;; Used with pronouns to encode relationship when it's known
-  (case subcat-label
-    (:subject category::grammatical-subject)
-    (:object category::direct-object)
-    (otherwise nil)))
-
-
-
-(defparameter *biological-tests* nil)
-
 
 ;;;----------------------
 ;;; Prepositional phrase
 ;;;----------------------
-
-(define-category prepositional-phrase
-  :specializes phrase-interpretation
-  :binds ((prep :primitive category)
-          (pobj))
-  :documentation "Provides a scafolding to hold
-  a generic prepositional phrase as identified by
-  the pp rules in grammar/rules/syntactic-rules.
-  Primary consumer is the subcategorization checking
-  code below. Note that if we make these with an
-  unindexed individual (in make-pp) then the index
-  information doesn't come into play"
-  :index (:temporary :sequential-keys prep pobj))
-(mark-as-form-category category::prepositional-phrase)
-
-(define-category relativized-prepositional-phrase
-  :specializes prepositional-phrase
-  :binds ((prep)
-          (pobj))
-  :index (:temporary :sequential-keys prep pobj))
-(mark-as-form-category category::relativized-prepositional-phrase)
-
-(define-category prep-comp
-  :specializes phrase-interpretation
-  :binds ((prep)
-          (comp))
-  :documentation "If to-comp picks up infinitive complements
-  this picks up all the rest, e.g. 'by being phosphorylated'
-  though the head decides what to do with it based on the
-  composition. Same design as pps."
-  :index (:temporary :sequential-keys prep comp)) 
-
-(define-category subordinate-clause
-  :specializes phrase-interpretation
-  :binds ((conj)
-          (comp))
-  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
-  though the head decides what to do with it based on the
-  composition. Same design as pps."
-  :index (:temporary :sequential-keys conj comp))
-(mark-as-form-category category::subordinate-clause)
-
-
-
-
-(define-category pp-relative-clause
-  :specializes phrase-interpretation
-  :binds ((pp)
-          (clause))
-  :documentation "Provides a scafolding to hold
-  a generic pp-relative clause such as 'in which ERK is phosphorylated
-  in grammar/rules/syntactic-rules.
-  Primary consumer is the subcategorization checking
-  code below. Note that if we make these with an
-  unindexed individual (in make-pp) then the index
-  information doesn't come into play"
-  :index (:temporary :sequential-keys prep pobj))
 
 (defun make-pp (prep pobj)
   (or *subcat-test*
@@ -1709,16 +1465,6 @@ No longer used -- remove soon
       t
       (bind-dli-variable :intensity intensifier adjective)))
 
-
-;;; handling of copular-predication
-
-(defun interpret-copular-predication-on (subj vp)
-  #+ignore
-  (format t "~%~%interpret-copular-predication-on ~%  ~s ~s~%  ~s~%"
-          subj
-          (value-of 'predicate vp)
-          (value-of 'value vp))
-  (setq vp (bind-variable 'item subj vp)))
 
 (defun maybe-attach-adverb-to-pp (adverb pp)
   ;; Don't accept (adverb comma) edges as premodifiers for PPs

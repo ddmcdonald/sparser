@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  December 2016
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -34,6 +34,7 @@
   ;;  master loader
   (gload "syntax;category-predicates")
   (gload "syntax;subcategorization")
+  (gload "syntax;syntactic-classes")
   (gload "syntax;syntax-predicates")
   (gload "syntax;syntax-functions")
   (gload "syntax;syntactic rules"))
