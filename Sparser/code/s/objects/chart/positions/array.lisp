@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2012-2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2012-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "array"
 ;;;   Module:  "objects;chart:positions:"
-;;;  Version:  2.5 February 2013
+;;;  Version:  December 2016
 
 ;; initialized 1/91
 ;; 2.0 (8/13/91 v1.9) added Still-in-the-chart
@@ -166,8 +166,6 @@ the chart will require markedly less space.")
         t))))
 
 
-
-
 (defun chart-position-after (p)
   (declare (special *the-chart*))
   (let ((array-index (pos-array-index p)))
@@ -187,6 +185,11 @@ the chart will require markedly less space.")
     (if (= position-index 0)  ;; it just wrapped
       (aref *the-chart* (1- *number-of-positions-in-the-chart*))
       (aref *the-chart* (1- position-index)))))
+
+(defun chart-position-n-positions-before (n pos &aux (prior-pos pos))
+  (loop for i from (1- n) downto 0
+     do (setq prior-pos (chart-position-before prior-pos)))
+  prior-pos)
 
 
 (defun adjacent-positions (p1 p2)
