@@ -120,7 +120,7 @@
 
 (def-syntax-rule (quantifier det) ;; e.g. "all these"
     :head :right-edge
-    :form np
+    :form det
     :referent (:function quantifier-noun-compound
                          left-edge right-edge))
 
