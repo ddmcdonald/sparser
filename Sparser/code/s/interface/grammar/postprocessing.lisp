@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2014-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "postprocessing"
 ;;;    Module:  "interface;grammar:"
-;;;   version:  0.3 June 2014
+;;;   version:  December 2016
 
 #| Goes through the grammar modules after all the grammar has been loaded
    into an image and organizes them for display.  |#
@@ -38,7 +38,8 @@
         ;;//// need sort routines for *form-rules-defined* 
         ;; and *syntax-rules-defined*
         *context-free-rules-defined*
-           (sort-cf&cs-rules-together *context-free-rules-defined*))
+        (sort-cf&cs-rules-together *context-free-rules-defined*)
+        *polywords-ending-in-period* (polywords-with-final-period *polywords-defined*))
   (when *tree-families*
     (setq *tree-families-defined* (postprocess-tree-families
                                    *tree-families-defined*)))

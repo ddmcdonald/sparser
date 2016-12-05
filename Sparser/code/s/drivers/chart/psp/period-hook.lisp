@@ -152,11 +152,12 @@
 
 (defun period-marks-sentence-end?/look-deeper (pos-after)
   "Subroutine of period-marks-sentence-end?.
-  We have ruled out this position holding the eos or holding a word
-  that's capitalized. Look for possibly domain-specific conditions
-  that would permit us to conclude the period we just scanned
-  indicates the end of a sentence."
-  (declare (special *big-mechanism*))
+   We have ruled out this position holding the eos or holding a word
+   that's capitalized. Look for possibly domain-specific conditions
+   that would permit us to conclude the period we just scanned
+   indicates the end of a sentence. Return nil to continue
+   the sentence. Non-nil to say that the period ends the sentence."
+  (declare (special *big-mechanism* *sentence-making-sweep*))
   (let* ((word-just-after-period (pos-terminal pos-after))
          (position-back-one
           (chart-position-before (chart-position-before pos-after)))
@@ -165,9 +166,9 @@
          (pre-caps (pos-capitalization position-back-one))
          (post-caps (pos-capitalization pos-after))
          (next-pos (chart-position-after pos-after)))
-    (tr :eos-lookahead-start word-just-before-period word-just-after-period post-caps)
+    (tr :eos-lookahead-start pos-after)
 
-    ;; 1. Look at the word just before the period
+    ;; Look at the word just before the period
     (when (implicit-abbreviation? word-just-before-period)
       (return-from period-marks-sentence-end?/look-deeper nil))
 
@@ -178,10 +179,18 @@
         (return-from period-marks-sentence-end?/look-deeper nil)
         (return-from period-marks-sentence-end?/look-deeper t)))
 
-    ;; 2. Look at the word just after the period
+    (when *sentence-making-sweep*
+      ;; Is this period inside a polyword (which would have covered
+      ;; it in a later pass).
+      (when (period-final-polyword-could-end-here?
+             pos-after word-just-before-period)
+        (tr :eos-period-would-be-under-pw)
+        (return-from period-marks-sentence-end?/look-deeper nil)))
+
+    ;; Look at the word just after the period
     ;; We know that the word after the period is neither
     ;; capitalized nor all caps. It could be :mixed-case
-    ;; or lowercase.
+    ;; or lowercase. // or :punctuation
     
     ;; If it's more than one character long ("cAMP") and
     ;; it's not lowercase (poor-man's preceding abbrev check)
@@ -194,8 +203,15 @@
         (t
          (tr :eos-mult-char-next-word)
          (return-from period-marks-sentence-end?/look-deeper t))))
-    
-    ;; If it's one character long, then it must be touching
+
+    ;; If it is adjacent punctuation as with "el al.," then it
+    ;; doesn't end the sentence.
+    (when (and (eq post-caps :punctuation) ;;/// only comma?
+               (no-space-before-word? next-pos))
+      (tr :eos-adjacent-punctuation)
+      (return-from period-marks-sentence-end?/look-deeper nil))
+
+    ;; If the next word is one character long, then it must be touching
     ;; the following word, and we check for periods (and what else?)
     ;; First get the second word after the period
     (unless (has-been-status? :scanned pos-after)
@@ -257,3 +273,39 @@
     (memq word *words-observed-to-confuse-eos*)))
 
 
+;;--- emulating polyword application
+
+(defun period-final-polyword-could-end-here? (pos-with-period
+                                              word-just-before-period)
+  "Of the polywords whose last word is a period. Could one of them 
+  have ended with its final period at this position. The identity
+  of the pw is irrelevant, just that it would have run and completed.
+  Return nil is no pw fits what's in the chart."
+  (declare (special *polywords-ending-in-period*))
+  ;; The period matches. Does the word just before it match?
+  (flet ((pw-word-just-before-end (pw)
+           (let ((length (length (pw-words pw))))
+             (nth (- length 2) (pw-words pw)))))
+    (let ((passed-trivial-filter
+           (loop for pw in *polywords-ending-in-period*
+              when (eq (pw-word-just-before-end pw)
+                       word-just-before-period)
+              collect pw)))
+      (when passed-trivial-filter
+        ;; if all the candidates are just two words long ("vs.")
+        ;; then we're done, otherwise we have to work our way
+        ;; back through the pw(s) and the chart.
+        (let ((longer-pws (loop for pw in passed-trivial-filter
+                             when (> (length (pw-words pw)) 2)
+                             collect pw)))
+          (if (null longer-pws)
+            t ;; but some passed the two-word filter
+            (loop for pw in longer-pws
+               when (pw-words-fit-chart-ending-here pw pos-with-period)
+               do (return-from period-final-polyword-could-end-here? pw))))))))
+
+(defun pw-words-fit-chart-ending-here (pw end-pos)
+  (let* ((words (pw-words pw))
+         (start-pos (chart-position-n-positions-before (length words) end-pos)))
+    (equal (words-between start-pos end-pos)
+           words)))

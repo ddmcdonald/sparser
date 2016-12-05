@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "polywords"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  June 2016
+;;;  Version:  December 2016
 
 ;; 1.1 (1/18/91 v1.8)  Added a proper Display-polyword that didn't use
 ;;      bracketing double quotes -- Princ-polyword does that.
@@ -105,6 +105,12 @@
   polyword )
 
 
+(defvar *polywords-ending-in-period* nil
+  "Used to check subtle cases in end-of-sentence calculation.
+   Set in postprocess-grammar-indexes after all the pw have presumably
+   been loaded.")
+
+
 ;;;----------
 ;;; deletion
 ;;;----------
@@ -184,7 +190,6 @@
           ~%    use not-all-same-character-type instead"))
 
 
-
 (defun not-all-same-character-type (string)
   "Called from, e.g., resolve-string-to-word as part of defining
    a word to determine whether the string should be treated like
@@ -206,6 +211,24 @@
           (return-from not-all-same-character-type t)))
       
       nil )))
+
+
+;;;-------------------------------------
+;;; looking at what a polyword contains
+;;;-------------------------------------
+
+(defun polywords-including-period (list-of-pw)
+  (declare (special *the-punctuation-period*))
+  (loop for pw in list-of-pw
+     when (memq *the-punctuation-period* (pw-words pw))
+     collect pw))
+
+(defun polywords-with-final-period (list-of-pw)
+  (declare (special *the-punctuation-period*))
+  (loop for pw in list-of-pw
+     when (eq *the-punctuation-period* (car (last (pw-words pw))))
+     collect pw))
+
 
 
 ;;;----------------------------------------------------------
@@ -242,9 +265,9 @@
         (setf (rs-fsa rule-set)
               (list polyword))))))
 
-;;;---------------------------------------------------------------
-;;; code for printing words and polywords -- moved to after polywords are defined, to reduce warnings in SBCL
-;;;---------------------------------------------------------------
+;;;---------------------------------------
+;;; code for printing words and polywords 
+;;;---------------------------------------
 
 (defun princ-word (word &optional (stream *standard-output*))
   "Called by routines that want the word presented as a string
@@ -260,3 +283,4 @@ the convenience of model routines."
 (defun word-string (word)
   "Like princ-word, but returns the string instead of printing it."
   (pname word))
+
