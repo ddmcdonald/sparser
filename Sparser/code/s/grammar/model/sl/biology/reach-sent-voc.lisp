@@ -18,6 +18,17 @@
                     (cons (car item)
                           (sort (cdr item) #'string<)))))))
 
+    ;; bad ((PROTEIN (RAW-TEXT "leukemia") (UID "UP:LIF_HUMAN") (NAME (WD "LIF_HUMAN")))"CLL")
+    ;; bad ((PROTEIN (UID "HGNC:9113") (NAME (WD "PML"))) "PML" "promyelocytic leukemia")
+    ;; bad ((PROTEIN (UID "PR:G5EGD2") (NAME (WD "PR:G5EGD2"))) "Hypoxia" "hypoxia")
+    ;; bad ((PROTEIN (UID "UP:ABCC8_HUMAN") (NAME (WD "ABCC8_HUMAN"))) "Hyperglycemia" "hyperglycemia")
+    ;; bad ((PROTEIN (UID "UP:ATM_HUMAN") (NAME (WD "ATM_HUMAN"))) "ATM" "Ataxia telangiectasia mutated" "ataxia")
+    ;; bad ((PROTEIN (UID "UP:CLCN5_HUMAN") (NAME (WD "CLCN5_HUMAN"))) "proteinuria")
+    ;; bad ((PROTEIN (UID "UP:CLU_HUMAN") (NAME (WD "CLU_HUMAN"))) "Mitochondria" "mitochondria")
+    ;; bad ((PROTEIN (UID "UP:GLMN_HUMAN") (NAME (WD "GLMN_HUMAN"))) "Media" "media")
+    ;; bad ((PROTEIN (UID "UP:HIF3A_HUMAN") (NAME (WD "HIF3A_HUMAN"))) "normoxia")
+    ;; bad ((PROTEIN (UID "UP:LIF_HUMAN") (NAME (WD "LIF_HUMAN"))) "LIF" "Leukemia" "leukemia" "leukemias")
+    ;; bad ((PROTEIN (UID "UP:YRDC_HUMAN") (NAME (WD "YRDC_HUMAN"))) "Ischemia" "ischemia")
 
 (DEFPARAMETER *REACH-VOC*
   '(((ABETA) "Abeta") ((ACTIN) "actin")
@@ -2074,9 +2085,6 @@
     ((PROTEIN (RAW-TEXT "isoproterenol") (UID "UP:ARBK1_HUMAN")
       (NAME (WD "ARBK1_HUMAN")))
      "ISO")
-    ((PROTEIN (RAW-TEXT "leukemia") (UID "UP:LIF_HUMAN")
-      (NAME (WD "LIF_HUMAN")))
-     "CLL")
     ((PROTEIN (RAW-TEXT "osteoprotegerin") (UID "NCIT:C30111")
       (NAME (WD "osteoprotegerin")))
      "OPG")
@@ -2586,8 +2594,6 @@
     ((PROTEIN (UID "HGNC:8909") (NAME (WD "P-gp"))) "P-gp")
     ((PROTEIN (UID "HGNC:8909") (NAME (WD "Pgp"))) "Pgp")
     ((PROTEIN (UID "HGNC:9046") (NAME (WD "PLAGL1"))) "PLAGL1")
-    ((PROTEIN (UID "HGNC:9113") (NAME (WD "PML"))) "PML"
-     "promyelocytic leukemia")
     ((PROTEIN (UID "HGNC:9171") (NAME (WD "PODXL"))) "PODXL")
     ((PROTEIN (UID "HGNC:9236") (NAME (WD "Pparg"))) "PPARg" "Pparg"
      "peroxisome proliferator activated receptor gamma")
@@ -3401,7 +3407,6 @@
      "glycosyltransferases")
     ((PROTEIN (UID "PR:F4JG68") (NAME (WD "PR:F4JG68"))) "methyltransferase"
      "methyltransferases")
-    ((PROTEIN (UID "PR:G5EGD2") (NAME (WD "PR:G5EGD2"))) "Hypoxia" "hypoxia")
     ((PROTEIN (UID "PR:O14746") (NAME (WD "PR:O14746"))) "hTERT")
     ((PROTEIN (UID "PR:P00533") (NAME (WD "PR:P00533"))) "hEGFR")
     ((PROTEIN (UID "PR:P01132") (NAME (WD "PR:P01132"))) "mEGF")
@@ -4032,8 +4037,6 @@
      "Chloroquine" "chloroquine")
     ((PROTEIN (UID "UP:ABCB5_HUMAN") (NAME (WD "ABCB5_HUMAN"))) "Rhodamine"
      "rhodamine")
-    ((PROTEIN (UID "UP:ABCC8_HUMAN") (NAME (WD "ABCC8_HUMAN"))) "Hyperglycemia"
-     "hyperglycemia")
     ((PROTEIN (UID "UP:ABI1_HUMAN") (NAME (WD "ABI1_HUMAN"))) "ABI1" "Abi1")
     ((PROTEIN (UID "UP:ACACA_HUMAN") (NAME (WD "ACACA_HUMAN"))) "ACC" "ACC1")
     ((PROTEIN (UID "UP:ACE_HUMAN") (NAME (WD "ACE_HUMAN"))) "ACE")
@@ -4135,8 +4138,6 @@
     ((PROTEIN (UID "UP:ATG12_HUMAN") (NAME (WD "ATG12_HUMAN"))) "Atg12")
     ((PROTEIN (UID "UP:ATG5_HUMAN") (NAME (WD "ATG5_HUMAN"))) "ATG5")
     ((PROTEIN (UID "UP:ATG7_HUMAN") (NAME (WD "ATG7_HUMAN"))) "ATG7")
-    ((PROTEIN (UID "UP:ATM_HUMAN") (NAME (WD "ATM_HUMAN"))) "ATM"
-     "Ataxia telangiectasia mutated" "ataxia")
     ((PROTEIN (UID "UP:ATP5L_HUMAN") (NAME (WD "ATP5L_HUMAN"))) "ATPase")
     ((PROTEIN (UID "UP:ATR_HUMAN") (NAME (WD "ATR_HUMAN"))) "ATR" "Wortmannin"
      "wortmannin")
@@ -4306,11 +4307,8 @@
     ((PROTEIN (UID "UP:CLC4K_HUMAN") (NAME (WD "CLC4K_HUMAN"))) "fungi")
     ((PROTEIN (UID "UP:CLCA2_HUMAN") (NAME (WD "CLCA2_HUMAN"))) "Monolayers"
      "monolayers")
-    ((PROTEIN (UID "UP:CLCN5_HUMAN") (NAME (WD "CLCN5_HUMAN"))) "proteinuria")
     ((PROTEIN (UID "UP:CLD1_HUMAN") (NAME (WD "CLD1_HUMAN"))) "claudin-1")
     ((PROTEIN (UID "UP:CLH1_HUMAN") (NAME (WD "CLH1_HUMAN"))) "clathrin")
-    ((PROTEIN (UID "UP:CLU_HUMAN") (NAME (WD "CLU_HUMAN"))) "Mitochondria"
-     "mitochondria")
     ((PROTEIN (UID "UP:CMGA_HUMAN") (NAME (WD "CMGA_HUMAN"))) "CGA")
     ((PROTEIN (UID "UP:CN37_HUMAN") (NAME (WD "CN37_HUMAN"))) "CNP")
     ((PROTEIN (UID "UP:CND1_HUMAN") (NAME (WD "CND1_HUMAN"))) "bipartite")
@@ -4362,8 +4360,7 @@
      "p120 catenin")
     ((PROTEIN (UID "UP:CTRB2_HUMAN") (NAME (WD "CTRB2_HUMAN"))) "chymotrypsin")
     ((PROTEIN (UID "UP:CUL4B_HUMAN") (NAME (WD "CUL4B_HUMAN"))) "CUL4B")
-    ((PROTEIN (UID "UP:CX3C1_HUMAN") (NAME (WD "CX3C1_HUMAN"))) "CX3CR1"
-     "microglia")
+    ((PROTEIN (UID "UP:CX3C1_HUMAN") (NAME (WD "CX3C1_HUMAN"))) "CX3CR1" "microglia")
     ((PROTEIN (UID "UP:CXA1_HUMAN") (NAME (WD "CXA1_HUMAN"))) "Cx43")
     ((PROTEIN (UID "UP:CXA3_HUMAN") (NAME (WD "CXA3_HUMAN"))) "Connexins"
      "connexins")
@@ -4590,7 +4587,6 @@
     ((PROTEIN (UID "UP:GIT2_HUMAN") (NAME (WD "GIT2_HUMAN"))) "GIT2")
     ((PROTEIN (UID "UP:GKAP1_HUMAN") (NAME (WD "GKAP1_HUMAN"))) "GKAP")
     ((PROTEIN (UID "UP:GLCM_HUMAN") (NAME (WD "GLCM_HUMAN"))) "GC" "GCs")
-    ((PROTEIN (UID "UP:GLMN_HUMAN") (NAME (WD "GLMN_HUMAN"))) "Media" "media")
     ((PROTEIN (UID "UP:GLPA_HUMAN") (NAME (WD "GLPA_HUMAN"))) "CD235a")
     ((PROTEIN (UID "UP:GLPC_HUMAN") (NAME (WD "GLPC_HUMAN"))) "GPD")
     ((PROTEIN (UID "UP:GLUC_HUMAN") (NAME (WD "GLUC_HUMAN"))) "Glucagon"
@@ -4650,7 +4646,6 @@
     ((PROTEIN (UID "UP:HEM6_HUMAN") (NAME (WD "HEM6_HUMAN"))) "COX")
     ((PROTEIN (UID "UP:HGF_HUMAN") (NAME (WD "HGF_HUMAN"))) "HGF" "HGFs" "SF"
      "Scatter factor")
-    ((PROTEIN (UID "UP:HIF3A_HUMAN") (NAME (WD "HIF3A_HUMAN"))) "normoxia")
     ((PROTEIN (UID "UP:HIS3_HUMAN") (NAME (WD "HIS3_HUMAN"))) "PB")
     ((PROTEIN (UID "UP:HLAE_HUMAN") (NAME (WD "HLAE_HUMAN"))) "HLA-E")
     ((PROTEIN (UID "UP:HMOX1_HUMAN") (NAME (WD "HMOX1_HUMAN"))) "HO -1" "HO-1")
@@ -4833,8 +4828,6 @@
     ((PROTEIN (UID "UP:LEG1_HUMAN") (NAME (WD "LEG1_HUMAN"))) "Gal-1")
     ((PROTEIN (UID "UP:LFNG_HUMAN") (NAME (WD "LFNG_HUMAN"))) "LFNG")
     ((PROTEIN (UID "UP:LGR5_HUMAN") (NAME (WD "LGR5_HUMAN"))) "LGR5" "Lgr5")
-    ((PROTEIN (UID "UP:LIF_HUMAN") (NAME (WD "LIF_HUMAN"))) "LIF" "Leukemia"
-     "leukemia" "leukemias")
     ((PROTEIN (UID "UP:LIPL_HUMAN") (NAME (WD "LIPL_HUMAN"))) "lipoprotein")
     ((PROTEIN (UID "UP:LIS1_HUMAN") (NAME (WD "LIS1_HUMAN"))) "Lis1" "MDS")
     ((PROTEIN (UID "UP:LKHA4_HUMAN") (NAME (WD "LKHA4_HUMAN"))) "LTA")
@@ -5908,8 +5901,6 @@
     ((PROTEIN (UID "UP:YH006_HUMAN") (NAME (WD "YH006_HUMAN"))) "FP")
     ((PROTEIN (UID "UP:YLAT2_HUMAN") (NAME (WD "YLAT2_HUMAN"))) "HUVECS")
     ((PROTEIN (UID "UP:YMEL1_HUMAN") (NAME (WD "YMEL1_HUMAN"))) "PAMP" "PAMPs")
-    ((PROTEIN (UID "UP:YRDC_HUMAN") (NAME (WD "YRDC_HUMAN"))) "Ischemia"
-     "ischemia")
     ((PROTEIN (UID "UP:ZAP70_HUMAN") (NAME (WD "ZAP70_HUMAN"))) "ZAP70")
     ((PROTEIN (UID "UP:ZBT7A_HUMAN") (NAME (WD "ZBT7A_HUMAN"))) "erythroid")
     ((PROTEIN (UID "UP:ZDH17_HUMAN") (NAME (WD "ZDH17_HUMAN"))) "ZDHHC17")
@@ -5992,3 +5983,4 @@
     ((|transcriptional regulator|) "transcriptional regulator"
      "transcriptional regulators")
     ((|trans|) "trans")))
+
