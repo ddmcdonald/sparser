@@ -2111,6 +2111,10 @@
          :etf (svo-passive)
          :noun "internalization"))
 
+(define-category persist :specializes bio-predication
+  :realization
+  (:verb "persist" :etf (sv)))
+
 (define-category reach :specializes bio-relation
   :restrict ((subject (:or scalar-quality biological))
              (theme (:or scalar-quality measurement)))
