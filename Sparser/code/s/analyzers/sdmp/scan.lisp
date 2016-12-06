@@ -164,9 +164,10 @@ to make any semantic or form edges that the grammar dictates.
                     ((and *current-chunk*
                           (not (member 'ng (chunk-forms *current-chunk*))))
                      (cond
-                       ((or (member 'adjg (chunk-forms *current-chunk*))
-                            (member 'vg (chunk-forms *current-chunk*)))
+                       ((member 'vg (chunk-forms *current-chunk*))
                         category::vg)
+                       ((member 'adjg (chunk-forms *current-chunk*))
+                        category::adjective)
                        (t (error "strange call to sdm-span-segment"))))
 		    ((eq start-pos *left-segment-boundary*)
 		     category::np)

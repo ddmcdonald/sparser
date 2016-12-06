@@ -844,7 +844,14 @@
     :head :right-edge
     :form comparative
     :referent (:head right-edge
-               :bind (comparative left-edge)))
+                     :bind (comparative left-edge)))
+
+(def-syntax-rule (superlative adjective)
+    :head :right-edge
+    :form superlative
+    :referent (:head right-edge
+                     :bind (comparative left-edge)))
+
 
 (def-syntax-rule (adverb adjective)
     :head :right-edge
