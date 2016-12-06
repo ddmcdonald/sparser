@@ -48,6 +48,7 @@
 ;;;------------------------------------------
 
 (defparameter *unknown-word* nil)
+(defparameter *show-morphs* nil)
 
 (defun assign-morph-brackets-to-unknown-word (word morph-keyword)
   "Called from make-word/all-properties, which is itself called
@@ -62,7 +63,8 @@
     (add-new-word-to-catalog word morph-keyword)
 
     (setq morph-keyword (no-morph-on-short-words word))
-
+    (when (and *show-morphs* morph-keyword)
+      (push (list morph-keyword word) *show-morphs*))
     (etypecase morph-keyword
       (null (setup-unknown-word-by-default word))
       (keyword 
