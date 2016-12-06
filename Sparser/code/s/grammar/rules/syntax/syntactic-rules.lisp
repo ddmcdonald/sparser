@@ -118,11 +118,25 @@
   :form np
   :referent (:function create-partitive-np left-edge right-edge))
 
+#+ignore
 (def-syntax-rule (quantifier det) ;; e.g. "all these"
     :head :right-edge
     :form det
-    :referent (:function quantifier-noun-compound
+    :referent (:function quantifier-det-compound
                          left-edge right-edge))
+
+(def-form-rule (all det) ;; e.g. "all these"
+    :head :right-edge
+    :form det
+    :referent (:head right-edge
+                     :bind (quantifier left-edge)))
+
+(def-form-rule (both det) ;; e.g. "both these"
+    :head :right-edge
+    :form det
+    :referent (:head right-edge
+                     :bind (quantifier left-edge)))
+
 
 
 (loop for nb in `(,@*n-bar-categories*) ;; see core/adjuncts/sequence/object.lisp

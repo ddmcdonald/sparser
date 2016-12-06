@@ -427,7 +427,9 @@ No longer used -- remove soon
      head)))
 
 
-
+(defun quantifier-det-compound (quantifier det)
+  (warn "quantifier-det-compound got ~s ~s~%" quantifier det)
+  nil)
 
 (defun quantifier-noun-compound (quantifier head)
   (declare (special category::no category::endurant category::perdurant
