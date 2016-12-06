@@ -114,7 +114,7 @@ without damaging other code.")
   	;;(make-hash-table :size 10000)
   	)
 
-(defparameter *save-surface-text-as-variable* t)
+(defparameter *save-surface-text-as-variable* nil)
 
 (define-lambda-variable 'raw-text
     nil category::top)
