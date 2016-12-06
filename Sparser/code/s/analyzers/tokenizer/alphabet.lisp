@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1996,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "alphabet"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  0.3 June 2015
+;;;  Version:  December 2016
 
 ;; file created 9/15/92 v2.3, populated 9/21
 ;; 8/20/93 fixed mistake in entry for #127
@@ -781,278 +781,286 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     `(
       (262 #+allegro (:alphabetical (:uppercase . #\C))
       #-allegro (:alphabetical (:uppercase . #\Ć)))    
-    (263 ;; #\Latin_Small_Letter_C_With_Acute
-     (:alphabetical . (:lowercase . #\c))) ;;"ć", (code = 263)
-    (339 ;; "œ" #\Latin_Small_Ligature_Oe
-     (:alphabetical . (:lowercase . #\o)))
-    (341  ;; #\Latin_Small_Letter_R_With_Acute
-     (:alphabetical . (:lowercase . #\Latin_Small_Letter_R_With_Acute)))
-    (347  ;; #\Latin_Small_Letter_S_With_Acute
-     (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute)))
-    (347  ;; #\Latin_Small_Letter_S_With_Acute
-     (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute))) 
-    (353  ;; #\Latin_Small_Letter_S_With_Caron
-     (:alphabetical . (:lowercase . #\s)))
-    (400  ;; #\Latin_Capital_Letter_Open_E
-     (:alphabetical . (:lowercase . #\s)))
+      (263 ;; #\Latin_Small_Letter_C_With_Acute
+       (:alphabetical . (:lowercase . #\c))) ;;"ć", (code = 263)
+      (339 ;; "œ" #\Latin_Small_Ligature_Oe
+       (:alphabetical . (:lowercase . #\o)))
+      (341  ;; #\Latin_Small_Letter_R_With_Acute
+       (:alphabetical . (:lowercase . #\Latin_Small_Letter_R_With_Acute)))
+      (347  ;; #\Latin_Small_Letter_S_With_Acute
+       (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute)))
+      (347  ;; #\Latin_Small_Letter_S_With_Acute
+       (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute)))
+      (353  ;; #\Latin_Small_Letter_S_With_Caron
+       (:alphabetical . (:lowercase . #\s)))
+      (400  ;; #\Latin_Capital_Letter_Open_E
+       (:alphabetical . (:lowercase . #\s)))
     
-    (603 ;; #\Latin_Small_Letter_Open_E
-     (:alphabetical . (:lowercase . #\e))) ;;"ɛ", (code = 603)
-    (697 ;; "ʹ" #\Modifier_Letter_Prime
-     (:punctuation . ,(punctuation-named (code-char 697))))
+      (603 ;; #\Latin_Small_Letter_Open_E
+       (:alphabetical . (:lowercase . #\e))) ;;"ɛ", (code = 603)
+      (697 ;; "ʹ" #\Modifier_Letter_Prime
+       (:punctuation . ,(punctuation-named (code-char 697))))
      
-    (710 ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
-     (:punctuation . ,(punctuation-named (code-char 710))))
+      (710 ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
+       (:punctuation . ,(punctuation-named (code-char 710))))
     
-    (729 ;; #\Dot_Above
-     (:punctuation . ,(punctuation-named (code-char 729)))) ;; #\*)) ;;"˙", (code = 729)
-    (730 ;; #\Ring_Above
-     (:punctuation . (punctuation-named (code-char 730))))
-    (732 ;; #\Small_Tilde
-     (:punctuation . (:lowercase . #\~))) ;;"˜"
+      (729 ;; #\Dot_Above
+       (:punctuation . ,(punctuation-named (code-char 729)))) ;; #\*)) ;;"˙", (code = 729)
+      (730 ;; #\Ring_Above
+       (:punctuation . (punctuation-named (code-char 730))))
+      (732 ;; #\Small_Tilde
+       (:punctuation . (:lowercase . #\~))) ;;"˜"
     
-    (769  ;; #\Combining_Acute_Accent
-     (:punctuation . ,(punctuation-named #\')))
-    (770  ;; #\Latin_Small_Letter_S_With_Acute
-     (:alphabetical . (:lowercase . ,(code-char 770))))
+      (769  ;; #\Combining_Acute_Accent
+       (:punctuation . ,(punctuation-named #\')))
+      (770  ;; #\Latin_Small_Letter_S_With_Acute
+       (:alphabetical . (:lowercase . ,(code-char 770))))
     
-    (772 ;; #\Combining_Macron
-     (:punctuation . ,(punctuation-named (code-char 772))))
+      (772 ;; #\Combining_Macron
+       (:punctuation . ,(punctuation-named (code-char 772))))
     
-    (776  ;; #\Combining_Diaeresis
-     (:punctuation . ,(punctuation-named (code-char 776))))
+      (776  ;; #\Combining_Diaeresis
+       (:punctuation . ,(punctuation-named (code-char 776))))
     
-    (894 (:punctuation . ,(punctuation-named (code-char 894)))) ;;";", (code = 894)
+      (894 (:punctuation . ,(punctuation-named (code-char 894)))) ;;";", (code = 894)
     
-    (913 ;; #\Greek_Capital_Letter_Alpha
-     (:alphabetical . (:uppercase . ,(code-char 913))))
-    (914 ;; #\Greek_Capital_Letter_Beta
-     (:alphabetical . (:uppercase . ,(code-char 914))))
-    (915 ;; #\Greek_Capital_Letter_Gamma
-     (:alphabetical . (:uppercase . ,(code-char 915))))
-    (916 ;; #\Greek_Capital_Letter_Delta
-     (:alphabetical . (:uppercase . ,(code-char 916))))
-    (918 ;; #\Greek_Capital_Letter_Zeta
-     (:alphabetical . (:uppercase . ,(code-char 916))))
-    (919 ;; "Η" #\Greek_Capital_Letter_Eta
-     (:alphabetical . (:uppercase . ,(code-char 919))))
-    (921 ;;
-     (:alphabetical . (:uppercase . ,(code-char 921))))
-    (922 ;; "Κ" #\Greek_Capital_Letter_Kappa
-     (:alphabetical . (:uppercase . ,(code-char 922))))
-    (923  ;; #\Latin_Small_Letter_S_With_Acute
-     (:alphabetical . (:lowercase . ,(code-char 923))))  
-    (924 (:alphabetical . (:lowercase . ,(code-char 924)))) ;;"Μ", (code = 924)
-    (925 (:alphabetical . (:lowercase . ,(code-char 925)))) ;;"Ν", (code = 925)
-    (931 ;; "Σ"#\Greek_Capital_Letter_Sigma
-     (:alphabetical . (:lowercase . ,(code-char 931))))  
-    (932 (:alphabetical . (:lowercase . ,(code-char 932)))) ;;"Τ", (code = 932)
-    (934 (:alphabetical . (:lowercase . ,(code-char 934)))) ;;"Φ", (code = 934)
-    (935 (:alphabetical . (:lowercase . ,(code-char 935)))) ;;"Χ", (code = 935)
-    (936 (:alphabetical . (:lowercase . ,(code-char 936)))) ;;"Ψ", (code = 936)
-    (937 (:alphabetical . (:lowercase . ,(code-char 937)))) ;;"Ω", (code = 937)
-    (940 (:alphabetical . (:lowercase . ,(code-char 940)))) ;;"ά", (code = 940)
-    (945 ;; #\Greek_Small_Letter_Alpha
-     (:alphabetical . (:lowercase . ,(code-char 945))))
-    (946 ;; #\Greek_Small_Letter_Beta
-     (:alphabetical . (:lowercase . ,(code-char 946))))
-    (947 ;; #\Greek_Small_Letter_Gamma
-     (:alphabetical . (:lowercase . ,(code-char 947))))
-    (948 ;; #\Greek_Small_Letter_Delta
-     (:alphabetical . (:lowercase . ,(code-char 948))))
-    (949 ;; #\Greek_Small_Letter_Epsilon
-     (:alphabetical . (:lowercase . ,(code-char 949))))
-    (950 ;; #\Greek_Small_Letter_Ze49
-     (:alphabetical . (:lowercase . ,(code-char 950))))
-    (951 ;; #\Greek_Small_Letter_Eta
-     (:alphabetical . (:lowercase . ,(code-char 951))))
-    (952 ;; #\Greek_Small_Letter_Theta
-     (:alphabetical . (:lowercase . ,(code-char 952))))
-    (953 ;; #\Greek_Small_Letter_Iota
-     (:alphabetical . (:lowercase . ,(code-char 953))))
-    (954 ;; #\Greek_Small_Letter_Kappa  U#03BA
-     (:alphabetical . (:lowercase . ,(code-char 954))))
-    (955 ;; #\Greek_Small_Letter_Lambda
-     (:alphabetical . (:lowercase . ,(code-char 955))))
-    (956 ;; #\Greek_Small_Letter_Mu
-     (:alphabetical . (:lowercase . ,(code-char 956))))
-    (958 ;; "ξ" #\Greek_Small_Letter_Xi
-     (:alphabetical . (:lowercase . ,(code-char 958))))
-    (959 (:alphabetical . (:lowercase . , (code-char 959)))) ;;"ο", (code = 959)
-    (960 (:alphabetical . (:lowercase . , (code-char 960)))) ;;"π", (code = 960)
-    (961 (:alphabetical . (:lowercase . , (code-char 961)))) ;;"ρ", (code = 961)
-    (963;; #\Greek_Small_Letter_Sigma
-     (:alphabetical . (:lowercase . ,(code-char 963))))
-    (964 (:alphabetical . (:lowercase . , (code-char 964)))) ;;"τ", (code = 964)
-    (965 ;; "υ" #\Greek_Small_Letter_Upsilon
-     (:alphabetical . (:lowercase . ,(code-char 965))))
-    (966 ;; "φ" #\Greek_Small_Letter_Phi
-     (:alphabetical . (:lowercase . ,(code-char 966))))
-    (967 (:alphabetical . (:lowercase . , (code-char 967)))) ;;"χ", (code = 967)
-    (968 (:alphabetical . (:lowercase . , (code-char 968)))) ;;"ψ", (code = 968)
-    (969 (:alphabetical . (:lowercase . , (code-char 969)))) ;;"ω", (code = 969)
-    (981 (:alphabetical . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
-    (1013 (:punctuation . ,(punctuation-named (code-char 1013)))) ;; "ϵ"
-    (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082)    
+      (913 ;; #\Greek_Capital_Letter_Alpha
+       (:alphabetical . (:uppercase . ,(code-char 913))))
+      (914 ;; #\Greek_Capital_Letter_Beta
+       (:alphabetical . (:uppercase . ,(code-char 914))))
+      (915 ;; #\Greek_Capital_Letter_Gamma
+       (:alphabetical . (:uppercase . ,(code-char 915))))
+      (916 ;; #\Greek_Capital_Letter_Delta
+       (:alphabetical . (:uppercase . ,(code-char 916))))
+      (918 ;; #\Greek_Capital_Letter_Zeta
+       (:alphabetical . (:uppercase . ,(code-char 916))))
+      (919 ;; "Η" #\Greek_Capital_Letter_Eta
+       (:alphabetical . (:uppercase . ,(code-char 919))))
+      (921 ;;
+       (:alphabetical . (:uppercase . ,(code-char 921))))
+      (922 ;; "Κ" #\Greek_Capital_Letter_Kappa
+       (:alphabetical . (:uppercase . ,(code-char 922))))
+      (923  ;; #\Latin_Small_Letter_S_With_Acute
+       (:alphabetical . (:lowercase . ,(code-char 923))))  
+      (924 (:alphabetical . (:lowercase . ,(code-char 924)))) ;;"Μ", (code = 924)
+      (925 (:alphabetical . (:lowercase . ,(code-char 925)))) ;;"Ν", (code = 925)
+      (931 ;; "Σ"#\Greek_Capital_Letter_Sigma
+       (:alphabetical . (:lowercase . ,(code-char 931))))  
+      (932 (:alphabetical . (:lowercase . ,(code-char 932)))) ;;"Τ", (code = 932)
+      (934 (:alphabetical . (:lowercase . ,(code-char 934)))) ;;"Φ", (code = 934)
+      (935 (:alphabetical . (:lowercase . ,(code-char 935)))) ;;"Χ", (code = 935)
+      (936 (:alphabetical . (:lowercase . ,(code-char 936)))) ;;"Ψ", (code = 936)
+      (937 (:alphabetical . (:lowercase . ,(code-char 937)))) ;;"Ω", (code = 937)
+      (940 (:alphabetical . (:lowercase . ,(code-char 940)))) ;;"ά", (code = 940)
+      (945 ;; #\Greek_Small_Letter_Alpha
+       (:alphabetical . (:lowercase . ,(code-char 945))))
+      (946 ;; #\Greek_Small_Letter_Beta
+       (:alphabetical . (:lowercase . ,(code-char 946))))
+      (947 ;; #\Greek_Small_Letter_Gamma
+       (:alphabetical . (:lowercase . ,(code-char 947))))
+      (948 ;; #\Greek_Small_Letter_Delta
+       (:alphabetical . (:lowercase . ,(code-char 948))))
+      (949 ;; #\Greek_Small_Letter_Epsilon
+       (:alphabetical . (:lowercase . ,(code-char 949))))
+      (950 ;; #\Greek_Small_Letter_Ze49
+       (:alphabetical . (:lowercase . ,(code-char 950))))
+      (951 ;; #\Greek_Small_Letter_Eta
+       (:alphabetical . (:lowercase . ,(code-char 951))))
+      (952 ;; #\Greek_Small_Letter_Theta
+       (:alphabetical . (:lowercase . ,(code-char 952))))
+      (953 ;; #\Greek_Small_Letter_Iota
+       (:alphabetical . (:lowercase . ,(code-char 953))))
+      (954 ;; #\Greek_Small_Letter_Kappa  U#03BA
+       (:alphabetical . (:lowercase . ,(code-char 954))))
+      (955 ;; #\Greek_Small_Letter_Lambda
+       (:alphabetical . (:lowercase . ,(code-char 955))))
+      (956 ;; #\Greek_Small_Letter_Mu
+       (:alphabetical . (:lowercase . ,(code-char 956))))
+      (958 ;; "ξ" #\Greek_Small_Letter_Xi
+       (:alphabetical . (:lowercase . ,(code-char 958))))
+      (959 (:alphabetical . (:lowercase . , (code-char 959)))) ;;"ο", (code = 959)
+      (960 (:alphabetical . (:lowercase . , (code-char 960)))) ;;"π", (code = 960)
+      (961 (:alphabetical . (:lowercase . , (code-char 961)))) ;;"ρ", (code = 961)
+      (963;; #\Greek_Small_Letter_Sigma
+       (:alphabetical . (:lowercase . ,(code-char 963))))
+      (964 (:alphabetical . (:lowercase . , (code-char 964)))) ;;"τ", (code = 964)
+      (965 ;; "υ" #\Greek_Small_Letter_Upsilon
+       (:alphabetical . (:lowercase . ,(code-char 965))))
+      (966 ;; "φ" #\Greek_Small_Letter_Phi
+       (:alphabetical . (:lowercase . ,(code-char 966))))
+      (967 (:alphabetical . (:lowercase . , (code-char 967)))) ;;"χ", (code = 967)
+      (968 (:alphabetical . (:lowercase . , (code-char 968)))) ;;"ψ", (code = 968)
+      (969 (:alphabetical . (:lowercase . , (code-char 969)))) ;;"ω", (code = 969)
+      (981 (:alphabetical . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
+      (1013 (:punctuation . ,(punctuation-named (code-char 1013)))) ;; "ϵ"
+      (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082)    
+      
+      (8194 ;; #\EN_SPACE
+       (:punctuation . ,(punctuation-named (code-char 8194)))) ;;" ", (code = 8194)
+      
+      (8197 ;; #\FOUR-PER-EM_SPACE
+       (:punctuation . ;; ,(punctuation-named (code-char 8197)))) ;;" ", (code = 8197)
+                     :space))
+      (8201 ;; #\THIN_SPACE
+       (:punctuation . ;; ,(punctuation-named (code-char 8201)))) ;;" ", (code = 8201)
+                  :space)) 
+      (8202  ;; #\hair_space
+       (:punctuation  ;; ,(punctuation-named (code-char 8202)))) ;;" ", (code = 8202)
+        .  :space))
+      (8203  ;; #\ZERO_WIDTH_SPACE
+       (:punctuation . :space))
+      (8208 ;; #\HYPHEN
+       (:punctuation . (punctuation-named (code-char 8208)))) ;;"‐"
 
-    (8194 (:punctuation . ,(punctuation-named (code-char 8194)))) ;;" ", (code = 8194)
-
-    (8197 (:punctuation . ,(punctuation-named (code-char 8197)))) ;;" ", (code = 8197)
-    (8201 (:punctuation . ;; ,(punctuation-named (code-char 8201)))) ;;" ", (code = 8201)
-                   :space)) 
-    (8202 (:punctuation . ;; ,(punctuation-named (code-char 8202)))) ;;" ", (code = 8202)
-                   :space))   
-    (8208 (:punctuation . ;;,(punctuation-named (code-char 8208)))) ;;"‐", (code = 8208)
-                   :space))
                                               
     
-    (8211  ;; en dash
-     (:punctuation . ,(punctuation-named #\- )))
-    (8212  ;; em dash, html: &mdash;
-     ;; Doesn't appear to have a symbolic form in ccl
-     (:punctuation . ,(punctuation-named #\- )))
-    (8213 (:punctuation . ,(punctuation-named (code-char 8213)))) ;;"―", (code = 8213)
-    
-    (8216 ;; left single quote
-     (:punctuation . ,(punctuation-named #\' )))
-    (8217 ;; right single quote
-     (:punctuation . ,(punctuation-named #\' )))
-    (8218 (:punctuation . ,(punctuation-named (code-char 8218)))) ;;"‚", (code = 8218)
-    
-    (8220 ;; left double quote
-     (:punctuation . ,(punctuation-named #\" )))
-    (8221 ;; right double quote
-     (:punctuation . ,(punctuation-named #\" )))
-    (8226 (:punctuation . ,(punctuation-named (code-char 8226)))) ;;"•", (code = 8226)
-    (8230 (:punctuation . ,(punctuation-named (code-char 8230)))) ;;"…", (code = 8230)
-    (8232 (:punctuation . ,(punctuation-named (code-char 8232)))) ;;"", (code = 8232)
-    (8240 (:punctuation . ,(punctuation-named (code-char 8240)))) ;;"‰", (code = 8240)
-    
-    (8242 ;; "prime"
-     (:punctuation . ,(or
-                       #-allegro
-                       (punctuation-named #\U+2032 )
-                       #+allegro
-                       (punctuation-named (code-char #x2032))
-                       (punctuation-named #\'))))
-
-    (8243 (:punctuation . ,(punctuation-named (code-char 8243)))) ;;"″", (code = 8243)
-    (8260 (:punctuation . ,(punctuation-named (code-char 8260)))) ;; "⁄" #\U+2044
-    #-allegro
-    (8446 ;;"ℒ", (code = 8446)
-     (:punctuation . ,(punctuation-named (code-char 8446))))
-    (8451 (:punctuation . ,(punctuation-named (code-char 8451)))) ;;"℃", (code = 8451)
-    (8466 (:punctuation . ,(punctuation-named (code-char 8466)))) ;;"ℒ", (code = 8466)
-    (8482 (:punctuation . ,(punctuation-named (code-char 8482)))) ;;"™", (code = 8482)
-    (8486 ;;"Ω" #\U+2126 
-     (:punctuation . ,(punctuation-named (code-char 8486))))
-    #-allegro
-    (8488
-     (:alphabetical . (:uppercase . , #\ℨ)))
-    (8491 ;; angstrom symbol
-     (:punctuation . ,(punctuation-named (code-char 8491))))
-    (8499 ;;"ℳ" #\U+2133
-     (:punctuation . ,(punctuation-named (code-char 8499))))
-    (8545 (:punctuation . ,(punctuation-named (code-char 8545)))) ;;"Ⅱ", (code = 8545)
-    (8592 (:punctuation . ,(punctuation-named (code-char 8592)))) ;;"←"
-    (8593 (:punctuation . ,(punctuation-named (code-char 8593)))) ;;"↑", (code = 8593)
-    (8594 ;; rightwards arrow
-     #-allegro (:punctuation . ,(punctuation-named #\U+2192))
-     #+allegro (:punctuation . ,(punctuation-named (code-char #x2192))))
-          
-    (8595 (:punctuation . ,(punctuation-named (code-char 8595)))) ;;"↓", (code = 8595)
-    ;;  problems show up in binding of the word created by the intended form
-    ;;(8704 (:punctuation . ,(punctuation-named (code-char 8704)))) ;;"∀"
-    ;;(8707 (:punctuation . ,(punctuation-named (code-char 8707)))) ;;"∃"
+      (8211  ;; en dash
+       (:punctuation . ,(punctuation-named #\- )))
+      (8212  ;; em dash, html: &mdash;
+       ;; Doesn't appear to have a symbolic form in ccl
+       (:punctuation . ,(punctuation-named #\- )))
+      (8213 (:punctuation . ,(punctuation-named (code-char 8213)))) ;;"―", (code = 8213)
       
-    (8706 (:punctuation . ,(punctuation-named (code-char 8706)))) ;;"∂", (code = 8706)
-    (8710 ;;"∆" #\U+2206
-     (:punctuation . ,(punctuation-named (code-char 8710))))
-    (8712 ;; "∈" #\U+2208
-     (:punctuation . ,(punctuation-named (code-char 8712))))
-    (8714 (:punctuation . ,(punctuation-named (code-char 8714)))) ;;"∊", (code = 8714)
-    (8721 (:punctuation . ,(punctuation-named (code-char 8721)))) ;;"∑", (code = 8721)
+      (8216 ;; left single quote
+       (:punctuation . ,(punctuation-named #\' )))
+      (8217 ;; right single quote
+       (:punctuation . ,(punctuation-named #\' )))
+      (8218 (:punctuation . ,(punctuation-named (code-char 8218)))) ;;"‚", (code = 8218)
+      
+      (8220 ;; left double quote
+       (:punctuation . ,(punctuation-named #\" )))
+      (8221 ;; right double quote
+       (:punctuation . ,(punctuation-named #\" )))
+      (8226 (:punctuation . ,(punctuation-named (code-char 8226)))) ;;"•", (code = 8226)
+      (8230 (:punctuation . ,(punctuation-named (code-char 8230)))) ;;"…", (code = 8230)
+      (8232 (:punctuation . ,(punctuation-named (code-char 8232)))) ;;"", (code = 8232)
+      (8240 (:punctuation . ,(punctuation-named (code-char 8240)))) ;;"‰", (code = 8240)
+      
+      (8242 ;; "prime"
+       (:punctuation . ,(or
+                         #-allegro
+                         (punctuation-named #\U+2032 )
+                         #+allegro
+                         (punctuation-named (code-char #x2032))
+                         (punctuation-named #\'))))
+      
+      (8243 (:punctuation . ,(punctuation-named (code-char 8243)))) ;;"″", (code = 8243)
+      (8260 (:punctuation . ,(punctuation-named (code-char 8260)))) ;; "⁄" #\U+2044
+      #-allegro
+      (8446 ;;"ℒ", (code = 8446)
+       (:punctuation . ,(punctuation-named (code-char 8446))))
+      (8451 (:punctuation . ,(punctuation-named (code-char 8451)))) ;;"℃", (code = 8451)
+      (8466 (:punctuation . ,(punctuation-named (code-char 8466)))) ;;"ℒ", (code = 8466)
+      (8482 (:punctuation . ,(punctuation-named (code-char 8482)))) ;;"™", (code = 8482)
+      (8486 ;;"Ω" #\U+2126 
+       (:punctuation . ,(punctuation-named (code-char 8486))))
+      #-allegro
+      (8488
+       (:alphabetical . (:uppercase . , #\ℨ)))
+      (8491 ;; angstrom symbol
+       (:punctuation . ,(punctuation-named (code-char 8491))))
+      (8499 ;;"ℳ" #\U+2133
+       (:punctuation . ,(punctuation-named (code-char 8499))))
+      (8545 (:punctuation . ,(punctuation-named (code-char 8545)))) ;;"Ⅱ", (code = 8545)
+      (8592 (:punctuation . ,(punctuation-named (code-char 8592)))) ;;"←"
+      (8593 (:punctuation . ,(punctuation-named (code-char 8593)))) ;;"↑", (code = 8593)
+      (8594 ;; rightwards arrow
+       #-allegro (:punctuation . ,(punctuation-named #\U+2192))
+       #+allegro (:punctuation . ,(punctuation-named (code-char #x2192))))
+      
+      (8595 (:punctuation . ,(punctuation-named (code-char 8595)))) ;;"↓", (code = 8595)
+      ;;  problems show up in binding of the word created by the intended form
+      ;;(8704 (:punctuation . ,(punctuation-named (code-char 8704)))) ;;"∀"
+      ;;(8707 (:punctuation . ,(punctuation-named (code-char 8707)))) ;;"∃"
+      
+      (8706 (:punctuation . ,(punctuation-named (code-char 8706)))) ;;"∂", (code = 8706)
+      (8710 ;;"∆" #\U+2206
+       (:punctuation . ,(punctuation-named (code-char 8710))))
+      (8712 ;; "∈" #\U+2208
+       (:punctuation . ,(punctuation-named (code-char 8712))))
+      (8714 (:punctuation . ,(punctuation-named (code-char 8714)))) ;;"∊", (code = 8714)
+      (8721 (:punctuation . ,(punctuation-named (code-char 8721)))) ;;"∑", (code = 8721)
+      
+      (8722 ;; ""−" #\U+2212 Minus sign
+       (:punctuation . ,(punctuation-named #\-)))
+      (8727 ;; "∗" #\U+2217
+       (:punctuation . ,(punctuation-named (code-char 8727))))
+      (8734 (:punctuation . ,(punctuation-named (code-char 8734)))) ;;"∞", (code = 8734)
+      (8743 ;; "∧" #\U+2227
+       (:punctuation . ,(punctuation-named (code-char 8743))))
+      (8745 ;; "∩" #\U+2229
+       (:punctuation . ,(punctuation-named (code-char 8745))))
+      (8747 (:punctuation . ,(punctuation-named (code-char 8747)))) ;; "∫", (code = 8747)
+      
+      (8758 ;; ratio  #\U+2236
+       (:punctuation . ,(punctuation-named #\:)))
+      
+      ;; This is tilde in the Mathematical operator section.
+      ;; we'll use a regular ascii tilde instead
+      (8764 (:punctuation . ,(punctuation-named #\~ ))) ;; #\∼
+      ;;  problems show up in binding of the word created by the intended form
+      (8765 (:punctuation . ,(punctuation-named #\~ ) )) ;; #\REVERSED_TILDE -- can't use (punctuation-named (code-char 8765) )
 
-    (8722 ;; ""−" #\U+2212 Minus sign
-     (:punctuation . ,(punctuation-named #\-)))
-    (8727 ;; "∗" #\U+2217
-     (:punctuation . ,(punctuation-named (code-char 8727))))
-    (8734 (:punctuation . ,(punctuation-named (code-char 8734)))) ;;"∞", (code = 8734)
-    (8743 ;; "∧" #\U+2227
-     (:punctuation . ,(punctuation-named (code-char 8743))))
-    (8745 ;; "∩" #\U+2229
-     (:punctuation . ,(punctuation-named (code-char 8745))))
-    (8747 (:punctuation . ,(punctuation-named (code-char 8747)))) ;; "∫", (code = 8747)
 
-    (8758 ;; ratio  #\U+2236
-     (:punctuation . ,(punctuation-named #\:)))
-
-    ;; This is tilde in the Mathematical operator section.
-    ;; we'll use a regular ascii tilde instead
-    (8764 (:punctuation . ,(punctuation-named #\~ ))) ;; #\∼
-    ;;  problems show up in binding of the word created by the intended form
-    (8765 (:punctuation . ,(punctuation-named #\~ ) )) ;; #\REVERSED_TILDE -- can't use (punctuation-named (code-char 8765) )
-
-
-    (8776 (:punctuation . ,(punctuation-named (code-char 8776)))) ;;"≈", (code = 8776)
-    (8781 (:punctuation . ,(punctuation-named (code-char 8781)))) ;;"≍", (code = 8781)
-    
-    (8800 (:punctuation . ,(punctuation-named (code-char 8800)))) ;;"≠", (code = 8805)    
-    (8804 ;;  "≤"
-     (:punctuation . ,(punctuation-named (code-char 8804))))
-    (8805 (:punctuation . ,(punctuation-named (code-char 8805)))) ;;"≥", (code = 8805)
-    (8806 (:punctuation . ,(punctuation-named (code-char 8806)))) ;;"≦", (code = 8806)
-    (8811 ;; "≫" #\U+226B
-     (:punctuation . ,(punctuation-named (code-char 8811))))
-    (8839 ;; "⊇" #\U+2287
-     (:punctuation . ,(punctuation-named (code-char 8839))))
-    (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;; "⋄"
-    (8943 (:punctuation . ,(punctuation-named (code-char 8943)))) ;;"⋯", (code = 8943)
-    (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;;"⋅", (code = 8901)
-    (8901 (:punctuation . ,(punctuation-named (code-char 8901)))) ;;"⋅", (code = 8901)
-    (8902 (:punctuation . ,(punctuation-named (code-char 8902))))
-    (8942 ;; "▪"
-     (:punctuation . ,(punctuation-named (code-char 8942))))
-    (8943 ;; "⋯"
-     (:punctuation . ,(punctuation-named (code-char 8943))))
-    ;; problems show up in creating words for this character -- The variable WORD::|Ⓡ| is unbound.
-    ;;(9415 (:punctuation . ,(punctuation-named (code-char 9415)))) ;; "Ⓡ"
-    (9633 (:punctuation . ,(punctuation-named (code-char 9633)))) ;; "□"
-    (9642 (:punctuation . ,(punctuation-named (code-char 9642)))) ;; "□"
-    (9651 ;; "△" #\U+25B3
-     (:punctuation . ,(punctuation-named (code-char 9651))))
-    (9652 (:punctuation . ,(punctuation-named (code-char 9652)))) ;; "▴"
-    (9653 (:punctuation . ,(punctuation-named (code-char 9653)))) ;;"▵", (code = 8901)afffff
-    (9658 (:punctuation . ,(punctuation-named (code-char 9658)))) ;;""►", (code = 9658)
-    (9633 ;; "□"
-     (:punctuation . ,(punctuation-named (code-char 9633))))
-    (9663 ;; "▿" #\U+25BF
-     (:punctuation . ,(punctuation-named (code-char 9663))))
-    (9674 ;; "◊" #\U+25CA
-     (:punctuation . ,(punctuation-named (code-char 9674))))
-    (9675 ;; "○" #\U+25CB
-     (:punctuation . ,(punctuation-named (code-char 9675))))
-    (9733 (:punctuation . ,(punctuation-named (code-char 9733)))) ;;"★"
-    (9792 ;; "♀" #\U+2640
-     (:punctuation . ,(punctuation-named (code-char 9792))))
-    (9794 ;; "♂" #\U+2642
-     (:punctuation . ,(punctuation-named (code-char 9794))))
-    (9830 ;; "♦"
-     (:punctuation . ,(punctuation-named (code-char 9830))))
-    (10794 ;; "⨪" #\U+2A2A
-     (:punctuation . ,(punctuation-named (code-char 10794))))
-
-
-    (10877 (:punctuation . ,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10878)
-    (10878 (:punctuation . ,(punctuation-named (code-char 10878)))) ;;"⩾", (code = 10878)
-    (64257 (:alphabetical . (:lowercase . , (code-char 64257)))) ;;"ﬁ", (code = 64257)
-    (64258 (:alphabetical . (:lowercase . , (code-char 64258)))) ;;"ﬂ", (code = 64258)
-    (65288 (:punctuation . ,(punctuation-named (code-char 65288)))) ;;"（", (code = 65288)
-    (65293 (:punctuation . ,(punctuation-named (code-char 65293)))) ;;"－", (code = 65293)
-    #-allegro
-    (119967 (:punctuation . ,(punctuation-named (code-char 119967)))) ;;"풟", (code = 119967)
-    
-    )
+      (8776 (:punctuation . ,(punctuation-named (code-char 8776)))) ;;"≈", (code = 8776)
+      (8781 (:punctuation . ,(punctuation-named (code-char 8781)))) ;;"≍", (code = 8781)
+      
+      (8800 (:punctuation . ,(punctuation-named (code-char 8800)))) ;;"≠", (code = 8805)    
+      (8804 ;;  "≤"
+       (:punctuation . ,(punctuation-named (code-char 8804))))
+      (8805 (:punctuation . ,(punctuation-named (code-char 8805)))) ;;"≥", (code = 8805)
+      (8806 (:punctuation . ,(punctuation-named (code-char 8806)))) ;;"≦", (code = 8806)
+      (8811 ;; "≫" #\U+226B
+       (:punctuation . ,(punctuation-named (code-char 8811))))
+      (8839 ;; "⊇" #\U+2287
+       (:punctuation . ,(punctuation-named (code-char 8839))))
+      (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;; "⋄"
+      (8943 (:punctuation . ,(punctuation-named (code-char 8943)))) ;;"⋯", (code = 8943)
+      (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;;"⋅", (code = 8901)
+      (8901 (:punctuation . ,(punctuation-named (code-char 8901)))) ;;"⋅", (code = 8901)
+      (8902 (:punctuation . ,(punctuation-named (code-char 8902))))
+      (8942 ;; "▪"
+       (:punctuation . ,(punctuation-named (code-char 8942))))
+      (8943 ;; "⋯"
+       (:punctuation . ,(punctuation-named (code-char 8943))))
+      ;; problems show up in creating words for this character -- The variable WORD::|Ⓡ| is unbound.
+      ;;(9415 (:punctuation . ,(punctuation-named (code-char 9415)))) ;; "Ⓡ"
+      (9633 (:punctuation . ,(punctuation-named (code-char 9633)))) ;; "□"
+      (9642 (:punctuation . ,(punctuation-named (code-char 9642)))) ;; "□"
+      (9651 ;; "△" #\U+25B3
+       (:punctuation . ,(punctuation-named (code-char 9651))))
+      (9652 (:punctuation . ,(punctuation-named (code-char 9652)))) ;; "▴"
+      (9653 (:punctuation . ,(punctuation-named (code-char 9653)))) ;;"▵", (code = 8901)afffff
+      (9658 (:punctuation . ,(punctuation-named (code-char 9658)))) ;;""►", (code = 9658)
+      (9633 ;; "□"
+       (:punctuation . ,(punctuation-named (code-char 9633))))
+      (9663 ;; "▿" #\U+25BF
+       (:punctuation . ,(punctuation-named (code-char 9663))))
+      (9674 ;; "◊" #\U+25CA
+       (:punctuation . ,(punctuation-named (code-char 9674))))
+      (9675 ;; "○" #\U+25CB
+       (:punctuation . ,(punctuation-named (code-char 9675))))
+      (9733 (:punctuation . ,(punctuation-named (code-char 9733)))) ;;"★"
+      (9792 ;; "♀" #\U+2640
+       (:punctuation . ,(punctuation-named (code-char 9792))))
+      (9794 ;; "♂" #\U+2642
+       (:punctuation . ,(punctuation-named (code-char 9794))))
+      (9830 ;; "♦"
+       (:punctuation . ,(punctuation-named (code-char 9830))))
+      (10794 ;; "⨪" #\U+2A2A
+       (:punctuation . ,(punctuation-named (code-char 10794))))
+      
+      
+      (10877 (:punctuation . ,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10878)
+      (10878 (:punctuation . ,(punctuation-named (code-char 10878)))) ;;"⩾", (code = 10878)
+      (64257 (:alphabetical . (:lowercase . , (code-char 64257)))) ;;"ﬁ", (code = 64257)
+      (64258 (:alphabetical . (:lowercase . , (code-char 64258)))) ;;"ﬂ", (code = 64258)
+      (65288 (:punctuation . ,(punctuation-named (code-char 65288)))) ;;"（", (code = 65288)
+      (65293 (:punctuation . ,(punctuation-named (code-char 65293)))) ;;"－", (code = 65293)
+      #-allegro
+      (119967 (:punctuation . ,(punctuation-named (code-char 119967)))) ;;"풟", (code = 119967)
+      
+      )
   "If it's not a defparameter, CCL won't let us extend it
    in a running lisp.")
 
