@@ -92,7 +92,7 @@
 
 (deftest (say put row on bottom row)
   (mumble-says "Put a row of two green blocks on top of the bottom row.")
-  "put a row of two green blocks on the bottom row")
+  "put a row of two green blocks on top of the bottom row")
 
 #+(or) ; not a question
 (deftest (say which end)
@@ -105,7 +105,7 @@
 
 (deftest (say put row on left end of row)
   (mumble-says "Put a row of two blocks on top of the left end of the bottom row.")
-  "put a row of two blocks on the left end of the bottom row")
+  "put a row of two blocks on top of the left end of the bottom row")
 
 (deftest (say put stack on table)
   (mumble-says "Put a stack of two red blocks on the table.")
