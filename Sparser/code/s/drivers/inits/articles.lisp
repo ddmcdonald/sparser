@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "articles"
 ;;;   Module:  "drivers;inits:"
-;;;  Version:  May 2016
+;;;  Version:  December 2016
 
 ;; 1.1  (3/28/91 v1.8.1)  Added Clear-individuals, and improved the
 ;;      conditionalization according to the load-time switches
@@ -95,6 +95,22 @@
       (initialize-section-state)))  |#
 
   (run-real-per-article-initializations))
+
+
+;;;----------------------------------------------------
+;;; per-sentence initializations for successive-sweeps
+;;;----------------------------------------------------
+#| When the kind of chart parsing is successive-sweeps,
+ we making a series of passes over the portion of the
+ input / chart that is delimited by a, frequently predefined,
+ sentence. Certain state variables don't make sense unless
+ they are appreciated within the sentence that they are
+set in. This initialization manages them.|#
+
+(defun sentence-level-initializations ()
+  "Called in scan-terminals-loop before it starts to
+   scan terminals."
+  (clear-traversal-state))
 
 
 ;;;--------------------------------------

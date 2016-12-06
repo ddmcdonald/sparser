@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "multi-scan"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  September 2016
+;;;  version:  December 2016
 
 ;; Broken out of no-brackets-protocol 11/17/14 as part of turning the
 ;; original single-pass sweep into a succession of passes. Drafts of
@@ -67,7 +67,7 @@
 (defun scan-terminals-of-sentence (sentence)
   "Called from scan-terminals-and-do-core in the path that starts
    with a prepopulated documents. Provides sentence-based way to
-   initiate scan-terminal-loop as it walks the populated chart"
+   initiate scan-terminal-loop as it walks from sentence to sentence"
   (let* ((start-pos (starts-at-pos sentence))
          (first-word (pos-terminal start-pos)))
     (unless first-word ;; 7/14/16: ends with polyword followed by "?"
@@ -101,6 +101,8 @@
      We get out of the loop when the period-hook (fired by
    the completion actions) indicates that we're reached the
    end of a sentence and throws to an :end-of-sentence catch."
+
+  (sentence-level-initializations)
 
   (loop 
      (tr :terminal-position position-before word)
