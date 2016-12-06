@@ -1222,7 +1222,20 @@
   :pattern ( subordinate-clause or np)  
   ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
-           first second third))
+                     first second third))
+
+(define-debris-analysis-rule vp-and-np
+  :pattern ( vp and np)  
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function s-conjunction-np
+                     first second third))
+
+(define-debris-analysis-rule vp-or-np
+  :pattern ( vp or np)  
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function s-conjunction-np
+                     first second third))
+
 
 (defun s-conjunction-np ( s conjunction np)
   (declare (special  s conjunction np))
