@@ -455,40 +455,37 @@ the virtual machine cleaner."
 ;   words
 ;############################################################
 
+(defparameter *pnames-to-words* (make-hash-table :test 'equal)
+  "Map pairs of the form (PNAME . POS) to WORD objects.")
 
-(defmacro  define-word  ( pname word-labels &rest irregularities )
+(defmacro define-word (pname word-labels &rest irregularities)
   `(define-word/expr ,pname ',word-labels
      ,@(quote-every-other-one irregularities :even)))
 
-(defun define-word/expr ( pname word-labels &rest irregularities )
-  (let* ((name (intern pname :mumble))
-         (object (create-and-catalog
-                    name 'word
-                    'name name
-                    'pname pname
-                    'word-labels word-labels
-                    'irregularities irregularities))
-         (pos (car word-labels)))
-    (associate-pname-with-word pname object pos)
-    (loop for irregular in irregularities
-          do (associate-pname-with-word irregular object pos))
-    object))
-
-(defparameter *pnames-to-words* (make-hash-table :test 'equal))
+(defun define-word/expr (pname word-labels &rest irregularities)
+  ;; Because we may have multiple parts of speech for the "same" word,
+  ;; we can't use create-and-catalog to create them.
+  (let ((word (create-object (mtype 'word)
+                             `(name ,(intern pname :mumble)
+                               pname ,pname
+                               word-labels ,(mapcar #'word-label-named word-labels)
+                               irregularities ,irregularities)))
+        (pos (car word-labels)))
+    (setf (gethash (cons pname pos) *pnames-to-words*) word)
+    (dolist (irregular irregularities)
+      (setf (gethash (cons irregular pos) *pnames-to-words*) word))
+    word))
 
 (defgeneric find-word (name &optional pos)
   (:method ((name symbol) &optional (pos 'noun))
     (find-word (string-downcase (symbol-name name)) pos))
   (:method ((pname string) &optional (pos 'noun))
-    (gethash (list pos pname) *pnames-to-words*)))
-
-(defun associate-pname-with-word (pname new-word &optional (pos 'noun))
-  (setf (gethash (list pos pname) *pnames-to-words*) new-word))
+    (gethash (cons pname pos) *pnames-to-words*)))
 
 (defun word-for-string (string &optional (pos 'noun))
   "This is find-or-make word"
   (or (find-word string pos)
-      (make-a-new-word string pos)))
+      (define-word/expr string (list pos))))
 
 (defgeneric find-or-make-word (string)
   (:documentation "You probably don't want to use this.")
@@ -496,27 +493,11 @@ the virtual machine cleaner."
     (or (word-for-string s)
         (define-word/expr s '(noun)))))
 
-(define-postprocessing-function word  (W)
-  (set-word-labels W (mapcar #'word-label-named (word-labels W))))
-
-(defun make-a-new-word (word &optional (pos 'noun))
-  ;;very limited version of the original pop-up menu version in Spokesman
-  (let* ((name (if (stringp word)
-                 (intern word :mumble)
-                 word))
-	 (pname (string word))
-	 (new-word (create-and-catalog
-		    name 'word
-		    'name name
-		    'pname pname
-		    'word-labels (list pos)
-		    'irregularities  nil)))
-    (associate-pname-with-word pname new-word pos)
-    new-word))
-
+;############################################################
+;   pronouns
+;############################################################
 
 (defstruct (pronoun-cases (:conc-name ""))
-  
   "Most languages inflect words based the properties `number,' `gender,' 
 `person,' and `case.'  [We don't know what the correct umbrella term is for such
 properties.]  The first two properties are based on the semantics of the 
