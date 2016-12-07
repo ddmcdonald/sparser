@@ -29,10 +29,10 @@
 
 (define-mixin-category with-specified-location
   :binds ((location location)
-          (supported-by object)
-          (next-to object)
-          (at-relative-location (:or location object)) ;;relative-position)
-          (goal (:or location object)))
+          (supported-by physical)
+          (next-to physical)
+          (at-relative-location (:or location physical)) ;;relative-position)
+          (goal (:or location physical)))
   :realization (:next\ to next-to
                 :on supported-by
                 :on\ top\ of supported-by
