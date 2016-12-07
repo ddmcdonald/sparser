@@ -226,7 +226,7 @@
    or scan-terminals-and-do-core depending one whether we're
    working with a document or just a text stream."
   (declare (special *sweep-for-patterns*
-                     *grammar-and-model-based-parsing*))
+                    *grammar-and-model-based-parsing*))
   (setq *sentence-in-core* sentence)
   (possibly-print-sentence)
 
@@ -251,15 +251,15 @@
           (declare (special *return-after-doing-forest-level*))
           (new-forest-driver sentence))))
         
-    (post-analysis-operations sentence))
+    (post-analysis-operations sentence)
 
-  (record-sentence-model-data sentence)
+    (record-sentence-model-data sentence)
   
-  ;; EOS throws to a higher catch. If the next sentence
-  ;; is empty we will hit the end of source as we
-  ;; start scanning terminals and it will throw
-  ;; beyond this point. 
-  (end-of-sentence-processing-cleanup sentence))
+    ;; EOS throws to a higher catch. If the next sentence
+    ;; is empty we will hit the end of source as we
+    ;; start scanning terminals and it will throw
+    ;; beyond this point. 
+    (end-of-sentence-processing-cleanup sentence)))
 
 
 ;;;----------------------------
