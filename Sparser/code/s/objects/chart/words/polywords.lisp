@@ -105,10 +105,11 @@
   polyword )
 
 
-(defvar *polywords-ending-in-period* nil
+(defvar *polywords-with-periods* nil
   "Used to check subtle cases in end-of-sentence calculation.
    Set in postprocess-grammar-indexes after all the pw have presumably
    been loaded.")
+
 
 
 ;;;----------
@@ -230,6 +231,35 @@
      collect pw))
 
 
+(defstruct (polyword-period-prefix (:conc-name #:ps-))
+  polyword ;; back pointer
+  word-before ;; word to immediate left of period
+  prefix ;; list of all words from the period back to the start
+  length ;; the length of the prefix
+  )
+
+(defun make-pw-period-prefix (pw)
+  (flet ((extract-prefix (index)
+           (let* ((words (subseq (pw-words pw) 0 (1+ index)))
+                  (length (length words))
+                  (prefix (subseq words 0 index))
+                  (word (car (last prefix))))
+             (let ((ps (make-polyword-period-prefix 
+                        :polyword pw
+                        :word-before word
+                        :prefix prefix
+                        :length length)))
+               (push ps *polywords-with-periods*)
+               ps))))
+    (let ((offset 0)
+          (maximum (length (pw-words pw))))
+      (loop for index = (position *the-punctuation-period* (pw-words pw)
+                                  :start offset
+                                  :end maximum)
+         while index do
+           (extract-prefix index)
+           (setq offset (1+ index))))))
+   
 
 ;;;----------------------------------------------------------
 ;;; code for when the polywords are handled in the tokenizer

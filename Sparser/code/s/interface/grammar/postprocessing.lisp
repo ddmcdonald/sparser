@@ -38,8 +38,9 @@
         ;;//// need sort routines for *form-rules-defined* 
         ;; and *syntax-rules-defined*
         *context-free-rules-defined*
-        (sort-cf&cs-rules-together *context-free-rules-defined*)
-        *polywords-ending-in-period* (polywords-with-final-period *polywords-defined*))
+        (sort-cf&cs-rules-together *context-free-rules-defined*))
+  (let ((pw-with-period (polywords-including-period *polywords-defined*)))
+    (loop for pw in pw-with-period do (make-pw-period-prefix pw)))
   (when *tree-families*
     (setq *tree-families-defined* (postprocess-tree-families
                                    *tree-families-defined*)))

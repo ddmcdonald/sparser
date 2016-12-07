@@ -179,14 +179,6 @@
         (return-from period-marks-sentence-end?/look-deeper nil)
         (return-from period-marks-sentence-end?/look-deeper t)))
 
-    (when *sentence-making-sweep*
-      ;; Is this period inside a polyword (which would have covered
-      ;; it in a later pass).
-      (when (period-final-polyword-could-end-here?
-             pos-after word-just-before-period)
-        (tr :eos-period-would-be-under-pw)
-        (return-from period-marks-sentence-end?/look-deeper nil)))
-
     ;; Look at the word just after the period
     ;; We know that the word after the period is neither
     ;; capitalized nor all caps. It could be :mixed-case
@@ -229,6 +221,14 @@
       (when (eq next-word *the-punctuation-period*)
         (tr :eos-followed-by-a-period)
         (return-from period-marks-sentence-end?/look-deeper nil))
+
+      (when *sentence-making-sweep*
+      ;; Is this period inside a polyword (which would have covered
+      ;; it in a later pass).
+      (when (period-matches-pw-in-chart
+             pos-after word-just-before-period)
+        (tr :eos-period-would-be-under-pw)
+        (return-from period-marks-sentence-end?/look-deeper nil)))
 
       ;; We know that the second word after the period
       ;; is touching the word just after the period
@@ -275,6 +275,21 @@
 
 ;;--- emulating polyword application
 
+(defun period-matches-pw-in-chart (period-pos word-before)
+  (declare (special *polywords-with-periods*))
+  (let ((w1-matches (loop for ps in *polywords-with-periods*
+                       when (eq (ps-word-before ps) word-before)
+                       collect ps)))
+    (when w1-matches ;; if any are of length two we're done
+      (when (some #'(lambda (ps) (= 2 (ps-length ps))) w1-matches)
+        (return-from period-matches-pw-in-chart t))
+      (loop for ps in w1-matches
+         as start = (chart-position-n-positions-before
+                     (ps-length ps) period-pos)
+         when (equal (words-between start period-pos)
+                     (ps-prefix ps))
+         do (return-from period-matches-pw-in-chart t)))))
+
 (defun period-final-polyword-could-end-here? (pos-with-period
                                               word-just-before-period)
   "Of the polywords whose last word is a period. Could one of them 
@@ -303,6 +318,7 @@
             (loop for pw in longer-pws
                when (pw-words-fit-chart-ending-here pw pos-with-period)
                do (return-from period-final-polyword-could-end-here? pw))))))))
+
 
 (defun pw-words-fit-chart-ending-here (pw end-pos)
   (let* ((words (pw-words pw))
