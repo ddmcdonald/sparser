@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2014-2016 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "presentation"
 ;;;   Module:  "drivers;timing:"
-;;;  Version:  January 2014
+;;;  Version:  December 2016
 
 ;; file created 2/91. Given content 1/6/95
 ;; Added Time decoded 1/23. 10/2/07 Extended and added Allegro variation.
@@ -154,13 +154,6 @@
                   (subseq trimmed-from-number-onwards (+ 1 pos-next-space)))))
       (values (read-from-string number-string)
               units))))
-
-;; From Peter Clark's string code for KM
-;; Expose in util
-(defparameter *whitespace-chars* '(#\Space #\Tab #\Newline 
-                                   #\Return #\Linefeed #\Page))
-(defun remove-leading-whitespace (string) 
-  (string-left-trim *whitespace-chars* string))
 
 
 ;; move to util

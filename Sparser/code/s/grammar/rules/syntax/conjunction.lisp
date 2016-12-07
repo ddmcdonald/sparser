@@ -596,7 +596,7 @@
 ;;;---------------------
 
 (defun conjoin-two-edges (left-edge right-edge heuristic &key do-not-knit pass)
-  (declare (special left-edge right-edge))
+  (declare (special left-edge right-edge *sentence-in-core*))
   (let ((referent
          (referent-of-two-conjoined-edges left-edge right-edge))
         (form (edge-form left-edge))
@@ -613,7 +613,10 @@
                   :form form
                   :referent referent
                   :rule heuristic)))
-      (when (null (cdr constituents)) (warn "bad conjunction of 1 constituent in ~s~%" (sentence-string *sentence-in-core*)))
+      (when (null (cdr constituents))
+        (warn "bad conjunction of 1 constituent at ~a in ~s~%"
+              (toc-index *sentence-in-core*)
+              (sentence-string *sentence-in-core*)))
       (tr :conjoining-two-edges edge left-edge right-edge heuristic)
       (edge-interaction-with-quiescence-check edge)
       (when *save-conjunctions* 

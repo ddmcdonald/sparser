@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   June 2016
+;;;   Version:   December 2016
 
 ;; 1.0 (9/21/92 v2.3) added everything else, in ascii order
 ;; 1.1 (4/9/93) moved newline to required
@@ -118,14 +118,14 @@
 
     (code-char 1013)
 
-    (code-char 8194) ;; whitespace?
-    (code-char 8197) ;; whitespace?
+    (code-char 8194) ;; en_space
+    (code-char 8197) ;; four-per-em_space
 
     (code-char 8201) ;; thin_space U2009
     (code-char 8202) ;; hair_space 
     (code-char 8203) ;; zero width space
     
-    (code-char 8208)
+    (code-char 8208) ;; #\hyphen
     (code-char 8212) ;; em dash, html: &mdash;
     (code-char 8213) ;;"―"
     (code-char 8216) ;; left single quote

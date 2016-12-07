@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "strings"
 ;;;    module:  "util:"
-;;;   Version:  May 2016
+;;;   Version:  December 2016
 
 ;; (3/9/11) Reworked to fit in ddm-util. 7/5 fixed old case in
 ;; string-append. 2/1/16 added strings-to-hyphenated-string.
@@ -21,7 +21,9 @@
 ;;;--------------------------------------
 
 (defparameter *whitespace-chars*
-  '(#\Space #\Tab #\Newline #\Return #\Linefeed #\Page))
+  '(#\Space #\Tab #\Newline #\Return #\Linefeed #\Page
+    #\HAIR_SPACE #\ZERO_WIDTH_SPACE #\THIN_SPACE
+    #\FOUR-PER-EM_SPACE #\EN_SPACE ))
 
 ;; " a " -> "a "
 ;; "  " -> ""
