@@ -14,26 +14,12 @@
 ;;; mumble words for sparser words and vice-versa
 ;;;-----------------------------------------------
 
-(defvar *sparser-words-for-mumble-words* (make-hash-table))
-
-(defun stored-mumble-word-for-sparser-word (s-word)
-  (get-tag :mumble-word s-word))
-
-(defun (setf stored-mumble-word-for-sparser-word) (m-word s-word)
-  (setf (get-tag :mumble-word s-word) m-word))
-
-(defun get-mumble-word-for-sparser-word (s-word &optional (pos 'mumble::noun))
-  (or (stored-mumble-word-for-sparser-word s-word)
-      (let* ((pname (pname s-word))
-             (m-word (or (mumble::find-word pname pos)
-                         (mumble::define-word/expr pname (list pos)))))
-        (setf (gethash m-word *sparser-words-for-mumble-words*) s-word
-              (stored-mumble-word-for-sparser-word s-word) m-word))))
+(defun get-mumble-word-for-sparser-word (s-word pos)
+  (or (mumble::find-word (pname s-word) pos)
+      (mumble::define-word/expr (pname s-word) (list pos))))
 
 (defun get-sparser-word-for-mumble-word (m-word)
-  (or (gethash m-word *sparser-words-for-mumble-words*)
-      (setf (gethash m-word *sparser-words-for-mumble-words*)
-            (word-named (mumble::pname m-word)))))
+  (word-named (mumble::pname m-word)))
 
 (defgeneric mumble-symbol (symbol)
   (:method ((s symbol)) (mumble-symbol (symbol-name s)))
@@ -42,4 +28,3 @@
 (defgeneric sparser-symbol (symbol)
   (:method ((s symbol)) (sparser-symbol (symbol-name s)))
   (:method ((name string)) (intern name :sparser)))
-

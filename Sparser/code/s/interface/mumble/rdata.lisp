@@ -102,7 +102,7 @@
       (let ((sparser-word (resolve pname)))
         (assert sparser-word (pname)
                 "There is no word in Sparser for ~a" pname)
-        (setq m-word (get-mumble-word-for-sparser-word sparser-word))))
+        (setq m-word (get-mumble-word-for-sparser-word sparser-word 'mumble::verb))))
 
     ;; Works for side-effects.
     (let* ((lp (mumble::verb m-word m-phrase-name))

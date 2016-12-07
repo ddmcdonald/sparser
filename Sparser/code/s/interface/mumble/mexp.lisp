@@ -96,7 +96,7 @@ two values: the compiled expression and a possibly augmented context.")
             (make-dtn :referent expr
                       :resource (let ((name (sp::value-of 'sp::name expr)))
                                   (if name
-                                    (noun (sp::get-mumble-word-for-sparser-word name))
+                                    (noun (sp::get-mumble-word-for-sparser-word name 'noun))
                                     (get-lexicalized-phrase (sp::pname expr)))))))
           context))
 

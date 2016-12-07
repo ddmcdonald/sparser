@@ -46,9 +46,9 @@
   (:method ((item string) pos)
     (word-for-string item pos))
   (:method ((item sp::word) pos)
-    (sp::get-mumble-word-for-sparser-word item (sparser-pos pos)))
+    (sp::get-mumble-word-for-sparser-word item pos))
   (:method ((item sp::polyword) pos)
-    (sp::get-mumble-word-for-sparser-word item (sparser-pos pos)))
+    (sp::get-mumble-word-for-sparser-word item pos))
   (:method ((item sp::referential-category) pos)
     "Try to get a head word for a category."
     (let ((head (sp::rdata-head-word item (sparser-pos pos))))
