@@ -37,6 +37,9 @@
     (preposition :prep)
     (interjection :interjection)))
 
+(defvar *original-pos* nil
+  "Guard against infinite mutual recursion in WORD-FOR.")
+
 (defgeneric word-for (item pos)
   (:method ((item null) pos)
     (declare (ignore pos)))
@@ -67,19 +70,29 @@
   (:method :around ((item sp::individual) pos)
     "Treat biological entities and collections specially."
     (cond ((sp::itypep item 'sp::biological)
-           (word-for-string (pretty-bio-name (sp::pname (call-next-method))) pos))
+           (let ((word (call-next-method)))
+             (and word
+                  (word-for-string (pretty-bio-name (sp::pname word)) pos))))
           ((sp::itypep item 'sp::collection)
            (word-for (sp::value-of 'sp::type item) pos))
           (t (or (call-next-method) ; last-ditch effort
                  (word-for (string-downcase (sp::cat-name (sp::itype-of item))) pos)))))
-  (:method :around (item (pos (eql 'verb)))
-    "Allow verbs as predications."
+  (:method :around (item (pos (eql 'adjective)))
+    "Allow nouns as premodifiers."
     (or (call-next-method)
-        (and item (word-for item 'adjective))))
+        (unless *original-pos*
+          (let ((*original-pos* pos))
+            (word-for item 'noun)))))
   (:method :around (item (pos (eql 'noun)))
     "Allow nouns as predications."
     (or (call-next-method)
-        (and item (word-for item 'adjective)))))
+        (unless *original-pos*
+          (let ((*original-pos* pos))
+            (word-for item 'adjective)))))
+  (:method :around (item (pos (eql 'verb)))
+    "Allow verbs as predications."
+    (or (call-next-method)
+        (word-for item 'adjective))))
 
 (defun current-position-p (&rest labels)
   "Return true if the slot being generated has one of the given labels."
