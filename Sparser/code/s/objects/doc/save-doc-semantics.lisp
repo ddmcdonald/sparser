@@ -521,8 +521,10 @@
   (declare (special *for-spire*))
   (push-indentation)
   (loop for item in vvs
-     unless (and (not *for-spire*) (consp item)
+        #| ;; don't suppress name and uid now
+        unless (and (not *for-spire*) (consp item)
                  (member (car item) '(name uid)))
+          |#
      do
        (if (consp item)
            (then
@@ -530,7 +532,7 @@
              (push-indentation)
              (if
               (eq (car item) :members)
-              (loop for element in (cdr item)
+              (loop for element in (second item)
                  do
                    (print-sem-tree element stream))
               (print-sem-tree (second  item) stream))
