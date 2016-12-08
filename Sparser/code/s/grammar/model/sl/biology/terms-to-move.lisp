@@ -310,14 +310,13 @@ be biology specific, since they aren't. |#
 (define-category likely :specializes bio-relation
   :realization
   (:adj "likely"
-        ;; :adverb "likely" WANT LIKELY TO AMBIGUOUSLY BE AN ADJECTIVE OR ADVERB
+        :adverb "likely" ;;WANT LIKELY TO AMBIGUOUSLY BE AN ADJECTIVE OR ADVERB
         :to-comp theme
 	:thatcomp theme))
 
 (define-category unlikely :specializes bio-relation
   :realization
   (:adj "unlikely"
-        ;; :adverb "likely" WANT LIKELY TO AMBIGUOUSLY BE AN ADJECTIVE OR ADVERB
         :to-comp theme
 	:thatcomp theme))
 ;; almost never an adverb in our texts
