@@ -625,19 +625,19 @@
                         "../corpus/Reach-sentences/rasmachine_sentences.lisp"))))
 
 (defun test-reach-article-sents (sl-list &key (n 1000) (start 0) (save-output t)
-                                           (break nil))
+                                 (break nil))
   (let ((*break-on-reach-errors* break))
     (declare (special *break-on-reach-errors*))
     (loop for sl in sl-list
-       as i from (+ 1 start) to (+ start n)
-       do
-       ;; this may cause problems, but it should cause the sentences to be collected as part of the article
-         (when save-output
-           (let ((sls (pname sl)))
-             (initialize-article-semantic-file-if-needed
-              (subseq sls 1 (- (length sls) 1)))))
-         (process-reach-article-sents sl)
-         (close-article-semantic-file-if-needed))))
+          as i from (+ 1 start) to (+ start n)
+          do
+          ;; this may cause problems, but it should cause the sentences to be collected as part of the article
+          (when save-output
+            (let ((sls (pname sl)))
+              (initialize-article-semantic-file-if-needed
+               (subseq sls 1 (- (length sls) 1)))))
+          (process-reach-article-sents sl)
+          (close-article-semantic-file-if-needed))))
 
 (defun test-reach-sentences (&key (n 1000)(start 0) (save-output t))
   (when save-output
@@ -650,9 +650,11 @@
 (defparameter *article-name* nil
   "Used to carry the name of an article from process-reach-article-sents to save-article-sentence.")
 (defparameter *compare-to-reach-results* nil)
+(defparameter *compare-sparser-to-reach-events* nil)
 
-(defun compare-test-reach (&key (n 1000)(start 0) (save-output t))
-  (setq *compare-to-reach-results* t)
+(defun compare-test-reach (&key (n 1000)(start 0) (save-output t) (events nil))
+  (setq *compare-sparser-to-reach-events* events)
+  (setq *compare-to-reach-results* (not events))
   (test-reach-sentences :n n :start start :save-output save-output))
 
 (defun process-reach-article-sents (sl)
@@ -663,11 +665,14 @@
                  (eval (intern "*BREAK-DURING-READ*" (find-package :r3)))))
         (loop for s in sents do (qpp s))   
         (loop for s in sents
-           as i from 0
-           do (qepp s)
-             (if *compare-to-reach-results*
-                 (compare-to-reach (format nil "~d-~d" (get-PMC-ID (string sl)) i)
-                                   (previous (sentence))))))))
+              as i from 0
+              do (qepp s)
+              (if *compare-to-reach-results*
+                  (compare-to-reach (format nil "~d-~d" (get-PMC-ID (string sl)) i)
+                                    (previous (sentence))))
+              (if *compare-sparser-to-reach-events*
+                  (compare-sparser-to-reach-events (format nil "~d-~d" (get-PMC-ID (string sl)) i)
+                                    (previous (sentence))))))))
 
 (defun get-PMC-ID (sl)
     (remove-if-not #'digit-char-p sl))
@@ -845,7 +850,7 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
         collect
           (list (cdr (assoc :type arg)) ;; (assoc :type arg)
                 (or (simplify-reach-entity (gethash (assoc :text arg) entities-hash))
-                    (assoc :text arg)))))
+                    (list (cdr (assoc :text arg))))))) ;added list and cdr to fix issues when there is no equivalent in entities so it doesn't break the comparison to sparser entities -- this comes up in cases where the event argument is e.g., "ERK phosphorylation" but the entities only list ERK
 
 (defun sub-bag-p (sub-bag super-bag &key (test #'eql))
   (loop with result = t
