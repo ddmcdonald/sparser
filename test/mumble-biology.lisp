@@ -53,7 +53,7 @@
 
 (deftest (say egfr binds egf)
   (mumble-says "The receptor tyrosine kinase EGFR binds the growth factor ligand EGF.")
-  "the receptor tyrosine kinase EGFR binds the growth factor ligand EGF")
+  "the Trk EGFR binds the growth factor ligand EGF")
 
 ;; Section 2.2.
 (deftest (say double amount of braf)
