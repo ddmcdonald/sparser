@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "blocks-world"
 ;;;    Module:  "init;versions:v4:config:grammars:"
-;;;   version:  December 2015
+;;;   version:  December 2016
 
 ;; 10/6/15 Starting with the C3 configuration, which incorporates
 ;; location. Added mid-level-ontology 12/3/15
@@ -140,11 +140,11 @@
 ;  (include-grammar-module *title-qualifiers*)
 
 (include-grammar-module  *location*)
+ (include-grammar-module  *locations-core*)
 ; (include-grammar-module  *countries*)
 ; (include-grammar-module  *US-States*)
 ; (include-grammar-module  *cities*)
- (include-grammar-module  *other-locations*)
- (include-grammar-module  *locations-core*)
+; (include-grammar-module  *other-locations*)
 
 
 ;;;-----------------------

@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;dossiers:"
-;;;  version:  May 2016
+;;;  version:  December 2016
 
 ;; initiated in January 1991 v1.8
 ;; 0.1 (10/17/93 v2.3) started revampin to hold all the individuals
@@ -124,13 +124,10 @@
 
 (gate-grammar *location*
   (gate-grammar *locations-core*
-    (gload "dossiers;location descriptions") ;; empty
-    (gload "dossiers;location kinds")
     (gload "dossiers;dependent-locations")
     (gload "dossiers;directions")
     (gload "dossiers;compass points")
-    (gload "dossiers;spatial prepositions") ;; moved to words/prepositions
-    (gload "dossiers;path types"))
+    (gload "dossiers;spatial prepositions")) ;; moved to words/prepositions
     
   (gate-grammar *countries*
     (gload "dossiers;countries"))
@@ -143,7 +140,11 @@
   (gate-grammar *US-States*
     (gload "dossiers;US states")
     (gload "dossiers;US state rules"))
+  
   (gate-grammar *other-locations*
+    (gload "dossiers;path types") ;; "stream" "turnpike"
+    (gload "dossiers;location kinds") ;; "city" "coast"
+    (gload "dossiers;location descriptions") ;; empty
     (gload "dossiers;regions")))
 
 

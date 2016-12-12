@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2016
+;;;  version:  December 2016
 
 ;; initiated in December 1990, added flags 12/28/91 v2.1
   ;; 1.0 (10/12/92 v2.3) Shadowing to gradually introduce the new semantics
@@ -24,7 +24,6 @@
 
 ;; This whole loader is gated on *location* by the master loader
 
-
 (gload "places;object")
 (gload "places;operators")
 
@@ -33,8 +32,7 @@
   (gload "places;relational")
   (gload "places;methods")
   (gload "places;compass points")
-  (gload "places;places")
-  (gload "places;directional rules"))
+)
 
 (gate-grammar *countries*
   (gload "countries;loader"))
@@ -46,6 +44,8 @@
   (gload "places;US states"))
 
 (gate-grammar *other-locations*
+  (gload "places;places") ;; name-of-location
+  (gload "places;directional rules") ;; "to" + direction
   (gload "places;paths") ;; highways
   (gload "places;configurations") ;; intersections, junctions
   (gload "places;regions") ;; geographical regions

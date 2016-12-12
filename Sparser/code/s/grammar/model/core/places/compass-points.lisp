@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "compass points"
 ;;;   Module:  "model;core:places:"
-;;;  version:  October 2016
+;;;  version:  December 2016
 
 ;; initiated in 1/9/95, 2/24 added string printer. 
 ;; 0.1 (11/27/99) reworked them using realizations and implicit indexing. 
@@ -15,7 +15,6 @@
 ;;     rules 1/4/16. 
 
 (in-package :sparser)
-
 
 ;;--- object
 
@@ -75,19 +74,4 @@
     (if name
       (word-pname name)
       "[compass point w/o name]" )))
-
-
-
-;;--- of-complement ("south of the Lee exit")
-
-(define-additional-realization relative-location
-  ;; category defined in places/relational)
-  (:tree-family simple-of-complement
-   :mapping ((np-item . prep)
-             (of-item . ground)
-             (np . location)
-             (complement . location)
-             (base-np . direction) ;; compass-point
-                ;; some directions as well, but not all
-             (result-type . relative-location))))
 

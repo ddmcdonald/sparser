@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "directions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  January 2016
+;;;  version:  December 2016
 
 ;; initiated in 1/9/95. Added string printer 1/9/96.
 ;; 0.1 (11/25/99) Changed the realizations to use the new schema protocol
@@ -52,7 +52,6 @@
 ;; "left" as an adjective, so we have to be careful about the choice of
 ;; brackets. I'm going with the brackets that start NPs but not the finishers.
 
-
 (defun define-standalone-direction (string)
   (let* ((word (or (word-named string)
                    (define-function-word string 
@@ -64,18 +63,6 @@
                  :referent i)))
     (add-rule rule i)
     i))
-
-(def-cfr direction ("the" direction)
-  ;; This overgenerates (*"the westwards"), but since that phrase
-  ;; won't be produced it's moot. 
-  :form np
-  :referent (:daughter right-edge))
-
-(def-cfr from-direction ("from" direction)
-  ;;///// replace with schema
-  :form np
-  :referent (:daughter right-edge))
-
 
 
 ;;---- "leftward(s)"
