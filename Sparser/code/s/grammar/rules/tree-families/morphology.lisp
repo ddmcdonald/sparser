@@ -943,6 +943,20 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
        (string-append (subseq pname 0 (- (length pname) 1)) "ies"))
       (t (string-append pname "s")))))
 
+(defun plural-version/pw (pw)
+  ;; /// won't do the right thing for irregulars -- "chairmen"
+  (let* ((words (pw-words pw))
+         (last-word (car (last words)))
+         (last-word-plural (plural-version last-word)))
+
+    (let* ((word-list (copy-list words))
+           (final-cell (last word-list)))
+      (rplaca final-cell last-word-plural)
+
+      (let* ((word-strings (loop for w in word-list collect (word-pname w)))
+             (pw-string (spaced-string word-strings)))
+        (define-polyword/expr pw-string)))))
+
 (defun make-comparative/superlative (word &key (suffix "er") (y-suffix "ier"))
   (declare (type word word)
            (type string suffix y-suffix))
@@ -972,26 +986,6 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
      :form category::superlative
      :referent category)))
 
-(defun plural-version/pw (pw)
-  ;; /// won't do the right thing for irregulars -- "chairmen"
-  (let* ((words (pw-words pw))
-         (last-word (car (last words)))
-         (last-word-plural (plural-version last-word)))
-
-    (let* ((word-list (copy-list words))
-           (final-cell (last word-list)))
-      (rplaca final-cell last-word-plural)
-
-      (let* ((word-strings (loop for w in word-list collect (word-pname w)))
-             (pw-string (spaced-string word-strings)))
-        (define-polyword/expr pw-string)))))
-
-;; Adapted from Peter Clark's string package
-(defun spaced-string (list) (apply #'string-append (spaced-list list)))
-(defun spaced-list (list)
-  (cond ((endp list) nil)
-	((null (cdr list)) list)
-	(t (cons (first list) (cons " " (spaced-list (rest list)))))))
 
 
 
