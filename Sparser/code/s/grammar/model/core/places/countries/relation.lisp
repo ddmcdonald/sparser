@@ -36,7 +36,7 @@ should use a category and use methods for the composition
     ;; the form and category of the edge being created.
     ;; /// Should we do that here? What would it look like?
     (define-or-find-individual 'associated-with-country :country c :item thing)
-    item))
+    thing))
 
 (define-category associated-with-country
   :instantiates self
@@ -48,6 +48,7 @@ should use a category and use methods for the composition
                 :mapping ((np-head . (person region-type))
                           (modifier . country)
                           (combo-method . relationship-to-country))))
+
 
 #|  Treatment in 2007 -- a model for a general compose treatment
 (def-form-rule (country common-noun)

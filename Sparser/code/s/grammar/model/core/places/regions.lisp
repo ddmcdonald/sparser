@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "regions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  March 2016
+;;;  version:  December 2016
 
 ;; initiated 4/4/94 v2.3.  Added string/region 10/5.  Added missing typecase
 ;; to String-for 6/22.  (9/12) tweeked the autodef
@@ -193,26 +193,19 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (when *countries*
 
-(define-category located-in
-  :instantiates self
-  :specializes associated-with-country
-  :binds ((country . country) ;;/// probably too narrow
-          (region . location))) ;; maybe too narrow
+    (define-category located-in
+      :instantiates self
+      :specializes associated-with-country
+      :binds ((country . country) ;;/// probably too narrow
+              (region . location))) ;; maybe too narrow
 
-(def-k-method relationship-to-country ((c category::country)
-                                       (r category::region-type))
-  (declare (special *parent-edge-getting-reference*))
-  (relation-to-country-region/location-core c r))
-
-(defmethod relationship-to-country ((c category::country)
-                                    (r category::location))
-  (declare (special *parent-edge-getting-reference*))
-  (relation-to-country-region/location-core c r))
-
-(defun relation-to-country-region/location-core (c r)
-  (revise-parent-edge :category category::region-type :form category::np)
-  (define-or-find-individual category::located-in :country c :region r)
-  r) ;; return the referent of the right edge
+    (def-k-method relationship-to-country ((c category::country)
+                                           (r category::region-type))
+      (revise-parent-edge :category category::region-type
+                          :form category::np)
+      (define-or-find-individual category::located-in
+          :country c :region r)
+      r) ;; return the referent of the right edge
 
 )) ;; close eval-when
 

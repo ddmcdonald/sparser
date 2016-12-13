@@ -158,12 +158,11 @@
   :index (:sequential-keys country person))
 
 (def-k-method relationship-to-country ((c category::country) (p category::person))
-  (declare (special *parent-edge-getting-reference*))
-  (setf (edge-category *parent-edge-getting-reference*) category::person)
-  (setf (edge-form *parent-edge-getting-reference*) category::np)
-  (define-or-find-individual category::nationality :country c :person p)
-  person)
-
+  (revise-parent-edge :category category::person
+                      :form category::np)
+  (define-or-find-individual category::nationality
+      :country c :person p)
+  p)
 
 
 ;;;-----------------
