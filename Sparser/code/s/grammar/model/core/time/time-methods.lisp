@@ -43,12 +43,12 @@
   (push-debug `(,next ,unit))
   
   ;; Which type of time unit is this?
-  (let ((c (category-of-time-unit unit)))
+  (let ((c (etypecase unit
+             (category unit)
+             (individual (itype-of unit)))))
     ;; Does it involve a sequence?
     (if (and c (category-inherits-type? c category::sequential))
-      
-      ;; Lookup the value
-      (relative-time-value c :next)
+      (relative-time-value c :next) ;; Lookup the value
       
       ;; otherwise we make a relative time
       (break "make relative-time"))))
