@@ -40,3 +40,15 @@
 ;;; " a " -> t
 (defun contains-whitespace (string)
   (some #'(lambda (char) (find char string)) *whitespace-chars*))
+
+
+
+(defun spaced-string (list)
+  "given a list, probably of words, return a string where
+   there is a space between each word. Based on string-append"
+  (apply #'string-append (spaced-list list)))
+
+(defun spaced-list (list)
+  (cond ((endp list) nil)
+	((null (cdr list)) list)
+	(t (cons (first list) (cons " " (spaced-list (rest list)))))))

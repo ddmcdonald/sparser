@@ -45,6 +45,7 @@
            #:remove-trailing-whitespace
            #:trim-whitespace
            #:contains-whitespace
+           #:spaced-string
 
            ;; hash-tables
            #:all-hash-keys
