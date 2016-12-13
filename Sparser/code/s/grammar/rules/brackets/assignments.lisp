@@ -402,23 +402,28 @@
 ;;; Making a category name from a word string
 ;;;-------------------------------------------
 
-(defmethod name-to-use-for-category ((string string))
-  "Encapsulates the lisp-specific checks for what case to use."
-  (let* ((s #+mlisp string
-            #-mlisp (string-upcase string))
-         (symbol (intern s (find-package :sparser))))
-    ;; n.b. not the category package. The pname will be interned there
-    ;; as part of creating the category
-    symbol))
+(defgeneric name-to-use-for-category (string)
+  (:documentation"Encapsulates the lisp-specific checks 
+    for what case to use.")
+  
+  (:method ((string string))
+    (assert (not (string-equal string "top")) ()
+            "You mustn't define another 'top' category")
+    (let* ((s #+mlisp string
+              #-mlisp (string-upcase string))
+           (symbol (intern s (find-package :sparser))))
+      ;; n.b. not the category package. The pname will be interned there
+      ;; as part of creating the category
+      symbol))
 
-(defmethod name-to-use-for-category ((w word))
-  (name-to-use-for-category (word-pname w)))
+  (:method ((w word))
+    (name-to-use-for-category (word-pname w)))
 
-(defmethod name-to-use-for-category ((exp cons))
-  "We get this case when the word includes keywords to mark
-   irregular word forms. We pull out the base word and make
-   the category from that."
-  (check-type exp (cons string (cons irregular-keyword (cons string)))
-              "a valid marked-irregulars expression")
-  (check-irregular-word-markers (cdr exp))
-  (name-to-use-for-category (car exp)))
+  (:method ((exp cons))
+    "We get this case when the word includes keywords to mark
+     irregular word forms. We pull out the base word and make
+     the category from that."
+    (check-type exp (cons string (cons irregular-keyword (cons string)))
+                "a valid marked-irregulars expression")
+    (check-irregular-word-markers (cdr exp))
+    (name-to-use-for-category (car exp))))
