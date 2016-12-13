@@ -119,6 +119,7 @@
 
 
 (defmethod collect-model ((i individual))
+  (declare (special category::number))
   (unless (gethash i *individuals-seen*)
     (let ((bindings (indiv-binds i))
           objects )

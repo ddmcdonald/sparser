@@ -17,11 +17,6 @@
 
 (in-package :sparser)
       
-(defvar CATEGORY::VP)
-(defvar CATEGORY::SUBJ+VERB)
-(defvar CATEGORY::S)
-(defvar PAREN-REFERENT)
-(defvar *THE-PUNCTUATION-PERIOD*)
 ;;;----------------------
 ;;; subject + verb group
 ;;;----------------------
@@ -118,6 +113,7 @@
           (look-for-short-leftward-extension edge))))))
 
 (defun look-for-bounded-np-after-verb (vg-edge)
+  (declare (special category::np))
   (tr :trying-to-extend-vg vg-edge)
   (let* ((right-neighbor (right-treetop-at/edge 
                           (pos-edge-ends-at vg-edge)))
@@ -282,6 +278,8 @@
       (look-for-bounded-constituent-after-prep prep-edge))))
 
 (defun look-for-bounded-constituent-after-prep (prep-edge)
+  (declare (special category::vg category::vp category::subj+verb category::s
+                    category::np))
   (let* ((pos-after-prep (pos-edge-ends-at prep-edge))
          (right-neighbor (right-treetop-at/edge pos-after-prep))
          (form (when (edge-p right-neighbor)
@@ -528,6 +526,7 @@
     new-edges))
 
 (defun check-for-subcatorized-pps (head-tt prep-entries)
+  (declare (special *the-punctuation-period*))
   (push-debug `(,head-tt ,prep-entries))
   (let* ((next-position (pos-edge-ends-at head-tt))
          (next-tt (right-treetop-at/edge next-position)))

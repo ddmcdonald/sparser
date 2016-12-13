@@ -378,6 +378,7 @@
 
 
 (defun older-run-island-checks-pass-two (layout start-pos end-pos)
+  (declare (special category::adverb))
   (flet ((clean-treetops (treetops)
            (loop for edge in treetops
              unless (or (not (edge-p edge))

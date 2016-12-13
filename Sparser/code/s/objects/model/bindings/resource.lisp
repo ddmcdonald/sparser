@@ -19,9 +19,11 @@
 ;;; globals
 ;;;---------
 
+(defvar *number-of-bindings-in-initial-allocation*)
 (unless (boundp '*number-of-bindings-in-initial-allocation*)
   (defparameter *number-of-bindings-in-initial-allocation*  200))
 
+(defvar *number-of-bindings-per-increment*)
 (unless (boundp '*number-of-bindings-per-increment*)
   (defparameter *number-of-bindings-per-increment* 50))
 

@@ -119,6 +119,7 @@
 (define-category hyphenated-sequence)
 
 (defun make-edge-over-hyphenated-sequence (start-pos end-pos words-in-sequence)
+  (declare (special category::np))
   (let ((edge (make-edge-over-long-span
                start-pos  ;; starting-position
                end-pos    ;; ending-position

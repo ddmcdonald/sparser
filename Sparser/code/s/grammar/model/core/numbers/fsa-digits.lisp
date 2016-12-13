@@ -167,7 +167,7 @@ the fsa would be identified at the word level rather than the category level.
 
 (defun digit-FSA (treetop  ;; the digit-seq. word that triggered the fsas
                   starting-position)  ;; the position just before it
-  (declare (special *interpretation-of-digit-sequence*))
+  (declare (special *interpretation-of-digit-sequence* category::number category::hyphenated-number))
   ;; initialization of flags
   (setq *period-within-digit-sequence* nil
         *multiple-periods-within-digit-sequence* nil

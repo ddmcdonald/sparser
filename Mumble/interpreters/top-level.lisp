@@ -74,7 +74,7 @@ is appropriate to that object class.")
   "True when we're Mumbling, so as to prevent recursive calls.")
 
 (defun mumble  (content)
-  (declare (special *mumbling?*))
+  (declare (special *mumbling?* *surface-structure-display-window*))
   (if *mumbling?*
     (error "Can't run Mumble recursively.")
     (let-with-dynamic-extent ((*mumbling?*  t))

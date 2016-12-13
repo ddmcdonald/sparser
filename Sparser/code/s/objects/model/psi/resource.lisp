@@ -22,9 +22,12 @@
 (defparameter *active-psi* nil)
   ;; these are the one's that have been allocated but not yet deallocated
 
+
+(defvar *number-of-psi-in-initial-allocation*)
 (unless (boundp '*number-of-psi-in-initial-allocation*)
   (defparameter *number-of-psi-in-initial-allocation* 100))
 
+(defvar *number-of-psi-per-increment*)
 (unless (boundp '*number-of-psi-per-increment*)
   (defparameter *number-of-psi-per-increment* 50))
 

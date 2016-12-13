@@ -11,19 +11,6 @@
 
 (in-package :sparser)
 
-
-(defvar CATEGORY::BE)
-(defvar CATEGORY::ADJECTIVE)
-(defvar *RULES-FOR-PAIRS*)
-(defvar CATEGORY::SYNTACTIC-THERE)
-(defvar CATEGORY::PREPOSITION)
-(defvar CATEGORY::VG)
-(defvar CATEGORY::NP)
-(defvar CATEGORY::SPATIAL-PREPOSITION)
-(defvar *NG-HEAD-CATEGORIES*)
-(defvar *ADJG-HEAD-CATEGORIES*)
-(defvar *VG-HEAD-CATEGORIES*)
-
    
 (defun adjacent-tts (&optional (all-edges (all-tts)))
   "Loop over these treetop edges in order (which should be
@@ -270,6 +257,7 @@
    a rule that composes the two edges in the pair and, where it
    makes sense, we can determine that the the rule will be
    semantically valid."
+  (declare (special *rules-for-pairs*))
   (tr :can-we-whack-pair pair)
   (multiple-value-bind (cached-rule pair-seen)
       (gethash pair *rules-for-pairs*)
@@ -327,13 +315,30 @@
     ;; which one to permit to win.
     unless (and (cadr tail)
                 (losing-competition?  (cadr tail) (car tail)))
-    do (return (car tail))))
+        do (return (car tail))))
+
+(defparameter *l-triple-tests* nil)
+(defun l-triple-tests ()
+  (declare (special category::as category::infinitive category::syntactic-there
+                    category::vg category::vg+ing category::np category::adjective))
+  (or *l-triple-tests*
+      (setq *l-triple-tests*
+            `((,category::vg  ,category::np)
+              (,category::vg  ,category::n-bar)
+              ;; have to allow for participles such as
+              ;; "RAF1 proteins containing mutations persist"
+              (,category::vg+ing  ,category::np)
+              (,category::vg+ing  ,category::n-bar)
+              ;; with the new "infinitive" edge for verbs
+              ;; of form "to stimulate", we need to allow
+              ;; them to compete for objects
+              (,category::infinitive  ,category::np)
+              (,category::infinitive  ,category::n-bar)))))
 
 (defun losing-competition? (l-triple r-triple)
   (declare (special r-triple l-triple
-                    category::as category::syntactic-there
-                    category::vg category::np category::adjective
-                    ))
+                    category::as category::adjective                    
+                    *NG-HEAD-CATEGORIES* *ADJG-HEAD-CATEGORIES* *VG-HEAD-CATEGORIES*))
   ;; goal here is to put off subject attachment until the subject 
   ;; is as large as possible.
   ;; Don't do right-to-left activation for the subj+verb rules
@@ -363,18 +368,7 @@
 	(or
 	 (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
 	 (and
-	  (member l-triple-rhs
-                  `((,category::vg  ,category::np)
-                    (,category::vg  ,category::n-bar)
-                    ;; have to allow for participles such as
-                    ;; "RAF1 proteins containing mutations persist"
-                    (,category::vg+ing  ,category::np)
-                    (,category::vg+ing  ,category::n-bar)
-                    ;; with the new "infinitive" edge for verbs
-                    ;; of form "to stimulate", we need to allow
-                    ;; them to compete for objects
-                    (,category::infinitive  ,category::np)
-                    (,category::infinitive  ,category::n-bar))
+	  (member l-triple-rhs (l-triple-tests)
                   :test #'equal)
 	  ;; likely competition against a relative clause or a main clause
 	  ;;  accept r-triple as a winner if if is a rightward extension of and NP
@@ -445,6 +439,7 @@
               category::spatio-temporal-preposition)))
 
 (defun possible-spatio-temporal-prep? (l-triple)
+  (declare (special category::spatio-temporal-preposition))
   (loop for e in (all-edges-at (second l-triple))
      thereis
        (eq (edge-form e) category::spatio-temporal-preposition)))

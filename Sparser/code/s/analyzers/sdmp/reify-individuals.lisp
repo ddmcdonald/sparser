@@ -103,6 +103,7 @@ to the value of the viable after-action flag for segments.
 ;;--- heuristics go here
 
 (defun evidence-that-np-denotes-an-individual? (prefix form edge)
+  (declare (special category::number))
   (push-debug `(,prefix ,form ,edge))
   (or (eq form category::det)
       (eq form category::number)

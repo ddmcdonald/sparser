@@ -28,6 +28,7 @@
    each time it is used, hence it's initialization to minus one.")
 
 
+(defvar *length-of-character-input-buffer*)
 (unless (boundp '*length-of-character-input-buffer*)
   (defparameter *length-of-character-input-buffer*  50000 ;; 1000
     "A performance variable.  Should be adjusted to tradeoff between

@@ -76,12 +76,6 @@
 
 
 (in-package :sparser)
-(defvar CATEGORY::PREPOSITIONAL-PHRASE)
-(defvar CATEGORY::PRONOUN/INANIMATE)
-(defvar CATEGORY::THERE-EXISTS)
-(defvar CATEGORY::COPULAR-PP)
-(defvar CATEGORY::COPULAR-PREDICATE)
-
 
 ;; (left-edge-for-referent)
 ;; (right-edge-for-referent)
@@ -115,64 +109,64 @@
 ;;;----------------------
 
 (define-lambda-variable 'comparative
-    nil category::top) ;needed for interpretation of "more effective"
+    nil 'top) ;needed for interpretation of "more effective"
 
 (define-lambda-variable 'predication
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'comparative-predication
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'compared-to
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'superlative-predication
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'superlative-from-set
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'predicate
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'ordinal
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'appositive-description
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'comp 
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'subordinate-conjunction
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'purpose
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'quantifier
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'number
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'det-quantifier ;; as in "all these"
-    nil category::determiner)
+    nil 'determiner)
 
 (define-lambda-variable 'has-determiner
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'approximator
-    nil category::number)
+    nil 'number)
 
 (define-lambda-variable 'event-relation
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'amount-of-time
-    nil category::top)
+    nil 'top)
 
 (define-lambda-variable 'intensity
-    nil category::top) ;; for percentage in "95% sure"
+    nil 'top) ;; for percentage in "95% sure"
 
 
 ;;;----------------------------
@@ -204,7 +198,6 @@
 ;;;-------------------
 
 (defun noun-noun-compound (qualifier head)
-  (declare (special category::determiner))
   ;; goes with (common-noun common-noun) syntactic rule
   (cond
     (*subcat-test*
@@ -212,8 +205,8 @@
               ;; also happened with "nontargeting"
               (null head) ;; happens when head is a bio-entity
               (and (individual-p head)
-                   (itypep head category::determiner)))))
-    ((itypep head category::determiner)
+                   (itypep head 'determiner)))))
+    ((itypep head 'determiner)
      ;; had strange case with "some cases this" -- head was "this"
      nil) 
     ((and qualifier head
@@ -282,7 +275,6 @@
       head))))
 
 (defun adj-noun-compound (adjective head &optional adj-edge)
-  (declare (special category::determiner))
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
@@ -305,7 +297,6 @@
        head))))
 
 (defun comparative-adj-noun-compound (adjective head &optional adj-edge)
-  (declare (special category::determiner))
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
@@ -323,7 +314,6 @@
        head))))
 
 (defun superlative-adj-noun-compound (adjective head &optional adj-edge)
-  (declare (special category::determiner))
   (when (category-p head) (setq head (individual-for-ref head)))
   (cond
     (*subcat-test*
@@ -347,7 +337,7 @@
     (adj-noun-compound adj n adj-edge)))
 
 (defun create-partitive-np (quantifier of-pp)
-  (declare (special quantifier of-pp))
+  (declare (special quantifier of-pp category::preposition))
   (let ((pp-edge (right-edge-for-referent)))
     (when (and (not (eq (edge-form pp-edge) category::preposition))
                (has-definite-determiner? (edge-right-daughter pp-edge)))
@@ -426,8 +416,6 @@
   nil)
 
 (defun quantifier-noun-compound (quantifier head)
-  (declare (special category::no category::endurant category::perdurant
-                    category::abstract category::quality category::determiner))
   ;; Not all quantifiers are equivalent. We want to idenify
   ;; cases of negation ("no increase") and eventually probably
   ;; float them up to the main verb, //// which will require
@@ -449,21 +437,21 @@
          (and *determiners-in-DL* (or (individual-p head)(category-p head)))
        (setq head (bind-dli-variable 'quantifier quantifier head)))
      (cond
-       ((itypep quantifier category::no) ;; special handling for negation
+       ((itypep quantifier 'no) ;; special handling for negation
         (setq head (bind-dli-variable 'negation quantifier head)))
        ((or
-         (itypep head category::endurant)
-         (itypep head category::perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
-         (itypep head category::abstract) ;; we quantify abstract items like "group"
+         (itypep head 'endurant)
+         (itypep head 'perdurant) ;; we quantify perdurants like phosphorylations and pathway steps
+         (itypep head 'abstract) ;; we quantify abstract items like "group"
          (itypep head 'bio-abstract) ;; we quantify abstract items like "group"
-         (itypep head category::quality) ;; we quantify qualities "some level"
+         (itypep head 'quality) ;; we quantify qualities "some level"
          (itypep head 'biological) ;; we quantify things like "such models"
          (itypep head 'time-kind)) ;; we quanitfy things like "some time"
         (setf  (non-dli-mod-for head) (list 'quantifier quantifier))
         ;; don't use KRISP variables for quanitifiers -- put them in the mention
         ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
         )
-       ((itypep head category::determiner) ;; "all these"
+       ((itypep head 'determiner) ;; "all these"
         (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
        (t
         (lsp-break "~&@@@@@ adding quantifier ~s to ~s~&"
@@ -476,7 +464,6 @@
 
 
 (defun number-noun-compound (number head)
-  (declare (special category::endurant))
   ;;/// for the moment there is a number variable on
   ;; endurant we can bind. Going forward we should automatically
   ;; make a composite individual using a collection.
@@ -485,7 +472,7 @@
     (*subcat-test* (and number head))
     (t
      (setq head (individual-for-ref head))
-     (when (itypep head category::endurant) ;; J34: "Histone 2B"
+     (when (itypep head 'endurant) ;; J34: "Histone 2B"
        ;;    ~600 kinase
        (setf (non-dli-mod-for head) (list 'number number))
        ;;(setq  head (bind-dli-variable 'number number head))
@@ -583,6 +570,7 @@
     (make-vg-aux aux vg)))
 
 (defun check-passive-and-add-tense/aspect (aux vg)
+  (declare (special category::vg))
   (let ((vg-cat
          (cond ((category-p vg) vg)
                ((individual-p vg) (itype-of vg))
@@ -665,8 +653,8 @@
 (defparameter *adverb+vg* nil)
 (defparameter *show-missing-adverb-slots* nil)
 
-(defun interpret-adverb+verb (adverb vg-phrase) 
-  (declare (special category::deictic-location category::pp))
+(defun interpret-adverb+verb (adverb vg-phrase)
+  (declare (special category::pp))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   (if (word-p vg-phrase)
       (then (format t "vg-phrase ~s is not a category or an individual,~
@@ -679,8 +667,8 @@
         #| Really should diagnose among
         (time) (location) (purpose) (circumstance) (manner) |#
         (cond
-          ((or (and (itypep vg category::be);; block "THERE IS"
-                    (itypep adverb category::deictic-location))
+          ((or (and (itypep vg 'be);; block "THERE IS"
+                    (itypep adverb 'deictic-location))
                (eq (edge-form (left-edge-for-referent)) category::pp))
            nil)
           (*subcat-test*
@@ -720,7 +708,7 @@
           (t vg)))))
 
 (defun interpret-adverb+adjective (adverb adj-phrase) 
-  (declare (special category::deictic-location category::pp))
+  (declare (special  category::pp))
   ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
   (if (word-p adj-phrase)
       (then (format t "adj-phrase ~s is not a category or an individual,~
@@ -733,8 +721,8 @@
         #| Really should diagnose among
         (time) (location) (purpose) (circumstance) (manner) |#
         (cond
-          ((or (and (itypep adj category::be);; block "THERE IS"
-                    (itypep adverb category::deictic-location))
+          ((or (and (itypep adj 'be);; block "THERE IS"
+                    (itypep adverb 'deictic-location))
                (eq (edge-form (left-edge-for-referent)) category::pp))
            nil)
           (*subcat-test*
@@ -922,7 +910,6 @@
       np))))
 
 (defun interpret-to-comp-adjunct-to-s (s tocomp)
-  (declare (special category::perdurant category::endurant))
   ;; Tbese are very likely to be purpose clauses. A sufficient test
   ;; for that is the the s and the complement are both eventualities
   ;; (aka perdurants). 
@@ -936,7 +923,7 @@
       (or *subcat-test*
        (setq s (bind-dli-variable to-comp-var complement s))))
      (t
-      (let ((ok? (and s (itypep s category::perdurant) (itypep complement category::perdurant))))
+      (let ((ok? (and s (itypep s 'perdurant) (itypep complement 'perdurant))))
         (cond
          (*subcat-test* ok?)
          (ok?
@@ -1052,7 +1039,8 @@
   "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
 
 (defun assimilate-subject (subj vp &optional (right-edge (right-edge-for-referent)))
-  (declare (special category::subordinate-clause category::copular-predication))
+  (declare (special category::subordinate-clause category::copular-predication
+                    category::transitive-clause-without-object))
   ;; right-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
   (when (and subj vp) ;; have had cases of uninterpreted VPs
@@ -1129,6 +1117,7 @@
 
 (defparameter *vp-ed-sentences* nil)
 (defun assimilate-subject-to-vp-ed (subj vp)
+  (declare (special category::transitive-clause-without-object category::np))
   (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
   (let* ((vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge)))
@@ -1212,6 +1201,8 @@
   (assimilate-subcat vg :object obj))
 
 (defun assimilate-np-to-v-as-object (vg obj)
+  (declare (special category::n-bar category::vp category::vp+ing
+                    category::vp+ed category::to-comp category::n-bar))
   (when *subcat-test*
     (unless (and vg obj)
       (return-from assimilate-np-to-v-as-object nil)))
@@ -1264,6 +1255,7 @@
 ;;;----------------------
 
 (defun make-pp (prep pobj)
+  (declare (special category::prepositional-phrase))
   (or *subcat-test*
       (unless (current-script :biology)
         (compose prep pobj))
@@ -1272,6 +1264,7 @@
        `((prep ,prep) (pobj ,pobj)))))
 
 (defun make-relativized-pp (prep pobj)
+  (declare (special category::relativized-prepositional-phrase))
   (or *subcat-test*
       (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
        category::relativized-prepositional-phrase
@@ -1282,12 +1275,13 @@
   item)
 
 (defun make-subordinate-clause (conj clause)
+  (declare (special category::pp))
   (when (not (eq category::pp (edge-form (left-edge-for-referent))))
     (bind-dli-variable 'subordinate-conjunction conj clause)))
 
 (defun make-pp-relative-clause (pp clause)
+  (declare (special category::pp-relative-clause))
   (or *subcat-test*
-      	      
       ;; place for trace or further adornment, storing
       ;; (p "activity of ras.")
       ;; (break "Look at who is calling make-pp")
@@ -1299,7 +1293,7 @@
 (defun make-prep-comp (prep complement)
   ;; Called for the pattern 
   ;; preposition + (vg vg+ing vg+ed vg+passive vp+passive & vp)
-  (declare (special category::to category::prep-comp))
+  (declare (special category::to category::to-comp category::prepositional-phrase))
   ;;(push-debug `(,prep ,complement)) (break "where prep?") 
   (cond
     (*subcat-test*
@@ -1375,14 +1369,6 @@
 
       (setq np (individual-for-ref np))
       (revise-parent-edge :category category::copular-predicate)
-
-      ;; Earlier version -- but the class doesn't look
-      ;; like that now -- see copulars
-      #+ignore(let ((predicate (bind-dli-variable var-to-bind pobj np)))
-        (make-simple-individual
-         category::copular-predicate
-         `((predicate ,predicate)
-	   (predicated-of ,np))))
 
       (let ((i copular-pp)) ;; renaming to reinforce the framing
         (setq i (bind-variable 'item np i))

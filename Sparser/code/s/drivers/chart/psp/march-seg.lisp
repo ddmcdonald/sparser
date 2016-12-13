@@ -200,8 +200,9 @@
 	   (tr :selected-best-triple rightmost)
 	   rightmost))))))
 
-(defparameter *show-priorty-NG-rules* nil)
+(defparameter *show-priority-NG-rules* nil)
 (defun priority-triple? (triple chunk)
+  (declare (special *n-bar-categories*))
   (or (priority-rule? (car triple))
       (and (memq 'ng (chunk-forms chunk))
            (edge-p (second triple))
@@ -215,7 +216,7 @@
             (cat-name (edge-form (third triple)))
             `(verb+ing verb+ed vg+ing vg+ed))
            (or 
-            (null *show-priorty-NG-rules*)
+            (null *show-priority-NG-rules*)
             (format t "~%~s in ~s~%" triple chunk) ;; this gives an indication of where internal NG priority rules fire
             )
            )))

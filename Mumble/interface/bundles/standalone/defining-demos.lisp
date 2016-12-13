@@ -108,7 +108,7 @@ the bundle."
             (mumble-a-demo ',rspec-list))))
 
 (defun mumble-a-demo (message)
-  (declare (special *pending-discourse-units*))
+  (declare (special *pending-discourse-units* *message-display-window*))
     (setq *pending-discourse-units* (create-message  message))
     (initialize-mumble)
     (when window-code?

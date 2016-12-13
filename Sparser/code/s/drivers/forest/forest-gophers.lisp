@@ -87,6 +87,7 @@
   (push tt (loose-nps (layout))))
 
 (defun there-are-loose-nps? ()
+  (declare (special category::np))
   (let ((original-list (loose-nps (layout))))
     (loop for edge in original-list
       unless (and
@@ -294,6 +295,7 @@
 
 
 (defun find-verb (edge)
+  (declare (special category::pp))
   (let ((form (edge-form edge)))
     (unless (vp-category? form)
       (push-debug `(,edge))

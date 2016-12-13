@@ -610,6 +610,7 @@
                  (edge-right-daughter edge))))))))
  
 (defun init-reach-directory ()
+  (declare (special *use-xml*))
   (when (find-package :r3)
     (save-article-semantics
      *use-xml*

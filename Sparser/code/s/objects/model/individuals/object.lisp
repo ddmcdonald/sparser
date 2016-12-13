@@ -60,7 +60,7 @@ grammar/model/core/titles/rules.lisp:                 (i-type-of possessive)
 grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
 |#
 (defun i-type-of (i)
-  (declare (special *subcat-test*))
+  (declare (special *subcat-test* *sentence-in-core*))
   (typecase i
     (individual
      (let ((type-field (indiv-type i)))

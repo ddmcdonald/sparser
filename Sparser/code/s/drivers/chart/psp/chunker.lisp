@@ -343,6 +343,7 @@
                     category::syntactic-there category::verb+ing
                     category::what category::which
                     category::quantifier
+                    category::verb+ed
                     word::comma))
   (let ((edges (ev-edges (car evlist)))
         (eform (when (edge-p e) (edge-form e))))
@@ -421,7 +422,7 @@
 
 ;;; FROM categories.lisp but should be here to maintain compatibility when structure of chunk changes
 (defun plural-noun-and-present-verb? (e)
-  (declare (special category::common-noun/plural))
+  (declare (special category::common-noun/plural category::verb+present))
   (cond ((eq (edge-form e) category::common-noun/plural)
          (loop for ee in (all-edges-at e)
             thereis (eq (edge-form ee) category::verb+present)))
@@ -431,7 +432,8 @@
             do (return ee)))))
 
 (defun singular-noun-and-present-verb? (e)
-  (declare (special category::common-noun))
+  (declare (special category::common-noun
+                    category::verb category::verb+present))
   (cond ((eq (edge-form e) category::common-noun)
          (loop for ee in (all-edges-at e)
             thereis
@@ -855,7 +857,7 @@ than a bare "to".  |#
 (defparameter *suppressed-verb+ed* nil)
 (defun likely-verb+ed-clause (edge ev-list)
   (declare (special category::verb+ed *n-bar-categories*
-                    category::preposition category::det
+                    category::preposition category::det category::have
                     category::pronoun *verb+ed-sents* *sentence-in-core*
                     *chunk*))
   (cond

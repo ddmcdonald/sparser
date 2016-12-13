@@ -8,10 +8,9 @@
 ;; initiated 7/8/93 v2.3. Smidge of capitalization and cleanup 8/16/11
 
 (in-package :sparser)
-(defvar CATEGORY::NP-SEGMENT)
 
 (defun da/prefix-dispatch/determiner (label prefix-edge right-end-pos)
-
+  (declare (special category::np category::np-segment))
   ;; Called from determiner-completion-heuristic as an alternative to
   ;; its processing if the debris analysis flag is up.
   ;;    We return an edge if we can make something of this segment,

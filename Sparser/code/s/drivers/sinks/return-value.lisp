@@ -24,6 +24,8 @@
     ;; Provides a common, useless, value unless over-ridden.
     '(setq *analysis-return-value* :analysis-completed))
 
+
+(defvar *return-value*)
 (unless (boundp '*return-value*) ;; switch setting option
   (defparameter *return-value* nil)) ;; default
 

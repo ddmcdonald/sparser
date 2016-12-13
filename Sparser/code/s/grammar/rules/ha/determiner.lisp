@@ -28,7 +28,7 @@
   ;; the end.
   ;;   If we can do something, we return the edge we construct.
   ;; Otherwise we return Nil.
-
+  (declare (special category::np-segment))
   (let ((label (edge-category prefix-edge)))
     (when (word-p label)
       (when (determiner? label)

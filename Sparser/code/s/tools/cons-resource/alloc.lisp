@@ -21,6 +21,7 @@
   (defparameter *number-of-cons-cells-in-initial-allocation* 500))
 
 
+(defvar *number-of-cons-cells-per-increment*)
 (unless (boundp '*number-of-cons-cells-per-increment*)
   (defparameter *number-of-cons-cells-per-increment* 100))
 

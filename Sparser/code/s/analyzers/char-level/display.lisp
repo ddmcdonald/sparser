@@ -30,6 +30,7 @@
 ;;; globals
 ;;;---------
 
+(defvar *adjust-text-to-fixed-line-length*)
 (unless (boundp '*adjust-text-to-fixed-line-length*)
   (defparameter *adjust-text-to-fixed-line-length* nil))
 

@@ -596,6 +596,7 @@
 
 (defun just-bracketing-setting ()
   "Goes with the 'no-grammar' option"
+  (declare (special category::number))
   (word-frequency-setting) ;; to turn off fire setting et al.
   (ignore-comlex)
   ;; from top-edges
@@ -634,6 +635,7 @@
 
 (defun dm&p-setting ()
   "Used for the 'just-dm&p' configuration/script"
+  (declare (special *dm&p-forest-protocol*))
   (debris-analysis-setting)
   (use-unknown-words)
   (what-to-do-at-the-forest-level :dm&p-forest-level)

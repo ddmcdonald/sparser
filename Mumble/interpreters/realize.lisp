@@ -145,6 +145,7 @@ that knows how to how to handle the specific accessories."
 
 
 (defun select-and-evaluate-choice-from-tree-fam (rspec tree-fam)
+  (declare (special *tree-fam-parameter-argument-list*))
   (when window-code?
     (initialize-tree-fam-window-and-display-tree-fam tree-fam *tree-fam-parameter-argument-list*))
   (let ((chosen (choose-from-choice-set (choices tree-fam))))

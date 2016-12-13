@@ -236,7 +236,7 @@
   (setq *try-character-type-fsas* nil)
   
   ;; by default make newline characters look like whitespace
-  (setq *newline-is-a-word* nil)
+  (defparameter *newline-is-a-word* nil)
   (use-return-newline-tokens-fsa))
   
 (gate-grammar *miscellaneous*  ;; a daughter of testing
