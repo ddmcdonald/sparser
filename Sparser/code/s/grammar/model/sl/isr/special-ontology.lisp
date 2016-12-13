@@ -3,7 +3,7 @@
 ;;; This file is part of the SIFT-Brandeis C3 project
 ;;;
 ;;;     File:  "special-ontology"
-;;;   Module:  "grammar/sl/ISR/
+;;;   Module:  "grammar/sl/isr/
 ;;;  version:  October 2016
 
 ;; Moved out of middle/ontology.lisp 10/28/16 because this notion
