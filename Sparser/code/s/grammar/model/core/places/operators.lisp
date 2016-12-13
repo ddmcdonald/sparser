@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "operators"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2016
+;;;  version:  December 2016
 
 ;; instantiates 11/2/16 to provide a semantic grounding to spatial
 ;; prepositions and such as functions. 
@@ -38,6 +38,8 @@ determined by the operator and the types of the two objects,
 ;;; nouns and such that define object-dependent-locations ("bottom")
 ;;;------------------------------------------------------------------
 ;; dossier: dependent-locations
+#|/// Where/how do we do we state facts about opositions (e.g. 
+ the two ends of a row) or geometry (e.g. of the sides of a block? |#
 
 (define-category dependent-location
   :specializes spatial-operator
@@ -59,6 +61,44 @@ determined by the operator and the types of the two objects,
   :index (:permanent :key name)
   :realization (:common-noun name))
 
+
+;;--- define them
+
+(defun define-dependent-location (string &key multiple category-name)
+  "Modeled on define-preposition with supercategory determined
+   by keyword arg. Lots of room for growth."
+  (let ((word (resolve/make string))
+        (form 'common-noun)
+        (category-name (or category-name ;; don't redefine 'top'
+                           (name-to-use-for-category string)))
+        (super-category (if multiple
+                         'multiple-dependent-location
+                         'dependent-location)))
+    (let* ((expr `(define-category ,category-name
+                    :specializes ,super-category
+                    :instantiates :self
+                    :realization (:common-noun ,word)))
+           (category (eval expr))
+           (word-rule
+	    (def-cfr/expr category `(,word)
+              :form (resolve-form-category form)
+              :schema (get-schematic-word-rule :common-noun)
+              :referent category)))
+      (add-rule word-rule category)
+      (when multiple
+        (add-rules  (make-cn-plural-rules
+                   word category category)
+                  category))
+      (values category
+              word-rule))))
+
+  ;; Original treatment makes them individuals
+  #+ignore(let ((*inihibit-constructing-plural* (not multiple)))
+    (declare (special *inihibit-constructing-plural*))
+    (define-individual (if multiple
+                         'multiple-dependent-location
+                         'dependent-location)
+        :name string))
 
 ;;;---------
 ;;; compose
