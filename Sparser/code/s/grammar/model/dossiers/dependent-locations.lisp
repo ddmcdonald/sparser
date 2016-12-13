@@ -11,7 +11,7 @@
 
 (define-dependent-location
     "top" :multiple t ;; "the tops of the steps
-    :category-name 'top-qua-location)
+    :category-name 'top-qua-location) ;; don't redefine category::top
 
 (define-dependent-location "bottom")
 
@@ -19,6 +19,8 @@
 (define-dependent-location "middle")
 
 (define-dependent-location "side" :multiple t) ;; place for count argument?
-
 (define-dependent-location "surface")
+
+(define-dependent-location "corner" :multiple t)
+(define-dependent-location "edge" :multiple t)
 
