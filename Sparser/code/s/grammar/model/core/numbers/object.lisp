@@ -188,10 +188,14 @@
   (define-or-find-individual 'number 'value lisp-number))
 
 (defmethod find-or-make-number ((i individual))
-  ;; e.g. the S1986Y or the S1986F mutation
-  (when
-      (define-or-find-individual 'number 'value
-        (value-of 'value i))))
+  "Used by reify-point-mutation in the odd cases where
+   the residue number happens to be the same as one
+   of the years we've defined, e.g. the S1986Y or 
+   the S1986F mutation"
+  (let ((value? (value-of 'value i)))
+    (when value?
+      (define-or-find-individual 'number
+          :value value?))))
 
 
 
