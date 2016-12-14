@@ -51,9 +51,13 @@
    is looked for within Next-token, and the display is done
    #<word> by #<word>.")
 
-(defparameter *dbg-print* t
+(defparameter *dbg-print* nil
   "Guards ad-hoc debugging statements, i.e. temporary info that
    won't be converted to traces.")
+
+(defparameter *debug-segment-handling* nil
+  "Guards errors and breaks within the segment handling code that traps
+   new cases or violations of standing assumptions.")
 
 (defparameter *display-article-name* t
   "Looked for during runs over document streams.  If the flag is

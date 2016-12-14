@@ -238,10 +238,6 @@
 ;;; choice of segment-finished after-action protocols
 ;;;---------------------------------------------------
 
-(defparameter *debug-segment-handling* nil
-  "Guards errors and breaks within the segment handling code that traps
-   new cases or violations of standing assumptions.")
-
 #| These alternatives for what to do after parsing of the segment
 is finished sometimes take over all the operations. More often they
 do some special process and then join the main line again.
