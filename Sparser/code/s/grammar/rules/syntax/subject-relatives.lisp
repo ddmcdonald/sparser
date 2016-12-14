@@ -90,9 +90,6 @@
                   np-referent))) ;; referent
             edge))))))
 
-(define-category copular-pp-rel-clause :specializes phrase-interpretation
-  :binds ((copular-pp copular-pp)))
-
 (defun compose-wh-with-vp (wh-referent predicate-referent)
   ;; We've just completed the composition of a wh term and
   ;; the vp (probably labeled as an s) to its right. That
@@ -222,7 +219,8 @@
 (defparameter *break-on-null-ref-in-context-needs-clause* t)
 
 (defun context-needs-clause? (np-ref vp-ref)
-  (declare (special category::APOSTROPHE-S category::parentheses))
+  (declare (special category::APOSTROPHE-S category::parentheses
+                    category::do))
   (let ((before (edges-before (left-edge-for-referent))))
     (declare (special before))
     (loop for e in before
@@ -232,7 +230,8 @@
                       (not (eq (edge-category e) category::APOSTROPHE-S))
                       (not (eq (edge-category e) category::parentheses))
                       *break-on-null-ref-in-context-needs-clause*)
-             (error "null ref in context-needs-clause -- quiet this by setting *break-on-null-ref-in-context-needs-clause* to nil"
+             (error "null ref in context-needs-clause -- quiet this by ~
+                     setting *break-on-null-ref-in-context-needs-clause* to nil"
                     (sentence-string *sentence-in-core*)))
            (and ref
                 (or (itypep ref 'that)
@@ -251,6 +250,7 @@
     (return-from apply-object-relative-clause nil))
   
   (setq np-ref (individual-for-ref np-ref))
+  
   (let ((var (subcategorized-variable vp-ref :object np-ref)))
    
     (cond
@@ -260,12 +260,13 @@
       (var
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
-       (setq  vp-ref (create-predication-by-binding var np-ref vp-ref
-						    (list 'apply-object-relative-clause
-							  (parent-edge-for-referent))))
+       (setq vp-ref (create-predication-by-binding
+                     var np-ref vp-ref
+                     (list 'apply-object-relative-clause
+                           (parent-edge-for-referent))))
        
        ;; link the rc to the np
-       (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
+       (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
        ;; referent of the combination is the np
        np-ref))))
@@ -276,7 +277,6 @@
    (let ((var (if (eq (edge-form (right-edge-for-referent)) 'category::where-relative-clause)
 		  :where
 		  :when)))
-   
     (cond
       (*subcat-test*
        ;; NO LONGER TRUE (not (null var))) ;; this rule has no semantic restrictions as of now    
@@ -284,12 +284,13 @@
       (var
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
-       (setq  vp-ref (create-predication-by-binding var np-ref vp-ref
-						    (list 'apply-where-when-relative-clause
-							  (parent-edge-for-referent))))
+       (setq vp-ref (create-predication-by-binding
+                     var np-ref vp-ref
+                     (list 'apply-where-when-relative-clause
+                           (parent-edge-for-referent))))
        
        ;; link the rc to the np
-       (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
+       (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
        ;; referent of the combination is the np
        np-ref))))
@@ -304,17 +305,18 @@
       (if object-var
           ;; copy down the upstairs subject
           ;; Should we check if it was already bound to something?
-          (setq  vp-ref (create-predication-by-binding object-var np-ref vp-ref
-						       (list 'apply-reduced-relative-clause (parent-edge-for-referent))))
+        (setq vp-ref (create-predication-by-binding
+                      object-var np-ref vp-ref
+                      (list 'apply-reduced-relative-clause (parent-edge-for-referent))))
           (else
             ;; (push-debug `(,np-ref ,vp-ref))
             ;; (break "Can not find subject var in ~a" vp-ref)
             (when nil
               (format t "~&~%No object variable recorded on ~a~%~%"
-                      vp-ref)))      )
+                      vp-ref))))
       
       ;; link the rc to the np
-      (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
+      (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
       
       ;; referent of the combination is the np
       np-ref))))
@@ -372,18 +374,19 @@
       (if subject-var
         ;; copy down the upstairs subject
         ;; Should we check if it was already bound to something?
-	  (setq  vp-ref (create-predication-by-binding subject-var np-ref vp-ref
-						       (list 'apply-upstairs-np-to-subject-relative
-							     (parent-edge-for-referent))))
+        (setq vp-ref (create-predication-by-binding
+                      subject-var np-ref vp-ref
+                      (list 'apply-upstairs-np-to-subject-relative
+                            (parent-edge-for-referent))))
         (else
          ;; (push-debug `(,np-ref ,vp-ref))
          ;; (break "Can not find subject var in ~a" vp-ref)
          (when nil
            (format t "~&~%No subject variable recorded on ~a~%~%"
-                   vp-ref)))      )
+                   vp-ref))))
       
       ;; link the rc to the np
-      (setq  np-ref (bind-dli-variable 'predication vp-ref np-ref))
+      (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
 
       ;; referent of the combination is the np
       np-ref)))

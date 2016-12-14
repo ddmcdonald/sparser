@@ -108,25 +108,25 @@
 ;;; unattached variables
 ;;;----------------------
 
-(define-lambda-variable 'comparative
-    nil 'top) ;needed for interpretation of "more effective"
+(define-lambda-variable 'predicate
+    nil 'top)
 
 (define-lambda-variable 'predication
+    nil 'top) ;needed for interpretation of "more effective"
+
+(define-lambda-variable 'superlative-predication
     nil 'top)
 
 (define-lambda-variable 'comparative-predication
     nil 'top)
 
+(define-lambda-variable 'comparative
+    nil 'top)
+
 (define-lambda-variable 'compared-to
     nil 'top)
 
-(define-lambda-variable 'superlative-predication
-    nil 'top)
-
 (define-lambda-variable 'superlative-from-set
-    nil 'top)
-
-(define-lambda-variable 'predicate
     nil 'top)
 
 (define-lambda-variable 'ordinal
@@ -167,6 +167,23 @@
 
 (define-lambda-variable 'intensity
     nil 'top) ;; for percentage in "95% sure"
+
+
+;;;-------------
+;;; predication
+;;;-------------
+
+(defun create-predication-by-binding (var val pred source)
+  "Given a variable (var), and two referents (val, pred), assert that
+   the variable is abstracted out from the pred(icate). 
+   Ignore any provided 'val' argument."
+  (let ((new-predication (bind-dli-variable  var **lambda-var** pred)))
+    ;; Rusty - how could the binding fail?  AKA, why the cond here.
+    (cond (new-predication
+	   (create-discourse-mention new-predication source)
+	   ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
+	   new-predication)
+	  (t pred))))
 
 
 ;;;----------------------------
@@ -513,13 +530,6 @@
              (setq head (bind-dli-variable 'predication qualifier head))
              head))))))
 
-(defun create-predication-by-binding (var val pred source)
-  (let ((new-predication (bind-dli-variable var **lambda-var** pred)))
-    (cond (new-predication
-	   (create-discourse-mention new-predication source)
-	   ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
-	   new-predication)
-	  (t pred))))
 
 (defun verb-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")

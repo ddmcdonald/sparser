@@ -88,3 +88,8 @@
   unindexed individual (in make-pp) then the index
   information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
+
+
+(define-category copular-pp-rel-clause
+  :specializes phrase-interpretation
+  :binds ((copular-pp copular-pp)))
