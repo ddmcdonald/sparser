@@ -32,16 +32,11 @@
     (apply #'member item (collection-items collection) args)))
 
 (rt:deftest k-member
-  (progn
-    (qepp "this and that.")
-    (let ((collection (first (semtree (first (all-tts))))))
-      (assert (itypep collection 'collection))
-      (assert (every #'individual-p (collection-items collection)))
-      (let ((items (collection-items collection)))
-        (destructuring-bind (this that) items
-          (values (null (k-member this nil))
-                  (null (k-member this items))
-                  (null (k-member that collection)))))))
-  t
+  (let* ((items '(a b))
+         (collection (find-or-make-individual 'collection :items items)))
+    (values (not (null (k-member 'a nil)))
+            (not (null (k-member 'a items)))
+            (not (null (k-member 'b collection)))))
   nil
-  nil)
+  t
+  t)
