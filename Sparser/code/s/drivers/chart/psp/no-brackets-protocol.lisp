@@ -231,6 +231,10 @@
   (possibly-print-sentence)
 
   (when *grammar-and-model-based-parsing*
+    ;; This flag is T by default. It is rebound to nil
+    ;; during the epistemic phase of document processing
+    ;; by read-epistemic-features whose analysis is just
+    ;; based on polywords.
     (when *sweep-for-patterns*
       (pattern-sweep sentence))
     (when *sweep-for-early-information*
@@ -251,15 +255,15 @@
           (declare (special *return-after-doing-forest-level*))
           (new-forest-driver sentence))))
         
-    (post-analysis-operations sentence))
+    (post-analysis-operations sentence)
 
-  (record-sentence-model-data sentence)
+    (record-sentence-model-data sentence)
   
-  ;; EOS throws to a higher catch. If the next sentence
-  ;; is empty we will hit the end of source as we
-  ;; start scanning terminals and it will throw
-  ;; beyond this point. 
-  (end-of-sentence-processing-cleanup sentence))
+    ;; EOS throws to a higher catch. If the next sentence
+    ;; is empty we will hit the end of source as we
+    ;; start scanning terminals and it will throw
+    ;; beyond this point. 
+    (end-of-sentence-processing-cleanup sentence)))
 
 
 ;;;----------------------------
@@ -393,4 +397,3 @@
     (when *save-bio-processes*
       (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*)))
-
