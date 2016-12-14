@@ -177,6 +177,7 @@
   "Given a variable (var), and two referents (val, pred), assert that
    the variable is abstracted out from the pred(icate). 
    Ignore any provided 'val' argument."
+    (declare (ignore val)) ;; we now ignore the val, and just use **lambda-var**
   (let ((new-predication (bind-dli-variable  var **lambda-var** pred)))
     ;; Rusty - how could the binding fail?  AKA, why the cond here.
     (cond (new-predication
@@ -307,7 +308,7 @@
 	     (if (and (not (is-basic-collection? adjective))
                       (find-variable-for-category :subject (itype-of adjective)))
 		 (create-predication-by-binding
-                  :subject **lambda-var** adjective
+                  :subject head adjective
                   (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
 		 (individual-for-ref adjective))))
        (setq head (bind-dli-variable 'predication predicate head))
@@ -324,7 +325,7 @@
 	     (if (and (not (is-basic-collection? adjective))
                       (find-variable-for-category :subject (itype-of adjective)))
 		 (create-predication-by-binding
-                  :subject **lambda-var** adjective
+                  :subject head adjective
                   (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
 		 (individual-for-ref adjective))))
        (setq head (bind-dli-variable 'comparative-predication predicate head))
@@ -341,7 +342,7 @@
 	     (if (and (not (is-basic-collection? adjective))
                       (find-variable-for-category :subject (itype-of adjective)))
 		 (create-predication-by-binding
-                  :subject **lambda-var** adjective
+                  :subject head adjective
                   (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
 		 (individual-for-ref adjective))))
        (setq head (bind-dli-variable 'superlative-predication predicate head))
