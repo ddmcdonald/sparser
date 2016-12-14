@@ -114,21 +114,6 @@
 (define-lambda-variable 'predication
     nil 'top) ;needed for interpretation of "more effective"
 
-(define-lambda-variable 'superlative-predication
-    nil 'top)
-
-(define-lambda-variable 'comparative-predication
-    nil 'top)
-
-(define-lambda-variable 'comparative
-    nil 'top)
-
-(define-lambda-variable 'compared-to
-    nil 'top)
-
-(define-lambda-variable 'superlative-from-set
-    nil 'top)
-
 (define-lambda-variable 'ordinal
     nil 'top)
 
@@ -314,39 +299,6 @@
        (setq head (bind-dli-variable 'predication predicate head))
        head))))
 
-(defun comparative-adj-noun-compound (adjective head &optional adj-edge)
-  (when (category-p head) (setq head (individual-for-ref head)))
-  (cond
-    (*subcat-test*
-     (takes-adj? head adjective))
-    (t ;; Dec#2 has "low nM" which requires coercing 'low'
-     ;; into a number. Right now just falls through
-     (let ((predicate 
-	     (if (and (not (is-basic-collection? adjective))
-                      (find-variable-for-category :subject (itype-of adjective)))
-		 (create-predication-by-binding
-                  :subject head adjective
-                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
-		 (individual-for-ref adjective))))
-       (setq head (bind-dli-variable 'comparative-predication predicate head))
-       head))))
-
-(defun superlative-adj-noun-compound (adjective head &optional adj-edge)
-  (when (category-p head) (setq head (individual-for-ref head)))
-  (cond
-    (*subcat-test*
-     (takes-adj? head adjective))
-    (t ;; Dec#2 has "low nM" which requires coercing 'low'
-     ;; into a number. Right now just falls through
-     (let ((predicate 
-	     (if (and (not (is-basic-collection? adjective))
-                      (find-variable-for-category :subject (itype-of adjective)))
-		 (create-predication-by-binding
-                  :subject head adjective
-                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
-		 (individual-for-ref adjective))))
-       (setq head (bind-dli-variable 'superlative-predication predicate head))
-       head))))
 
 (defun adj-postmodifies-noun (n adj &optional (adj-edge nil))
   ;; adj-edge is set when we are postmodifying
@@ -1327,19 +1279,8 @@
   ;;(push-debug `(,adj ,complement))  (lsp-break "make-adj-comp")
   (assimilate-subcat adj :thatcomp complement))
 
-(defun make-comparative-adjp-with-np (comparative than-np)
-  (bind-dli-variable 'compared-to
-                     than-np
-                     comparative))
 
 
-(defun maybe-extend-comparative-with-than-np (np than-np)
-  (cond
-    (*subcat-test* (value-of 'comparative-predication np))
-    (t
-     (rebind-dli-variable 'comparative-predication
-                          (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
-                          np))))
 
 (defun rebind-dli-variable (var/name value individual)
   ;; to be written corectly -- want to create a variant of the head
@@ -1347,15 +1288,6 @@
   ;;  For the moment, just add a new binding
   (bind-dli-variable var/name value individual))
 
-#+ignore
-(defun maybe-extend-superlative-with-of-pp (np pp)
-  (cond
-    (*subcat-test* (value-of 'superlative-predication np))
-    (t
-     (rebind-dli-variable 'superlative-predication
-                          (bind-dli-variable 'superlative-from-set (value-of 'pobj pp)
-                                             (value-of 'superlative-predication np))
-                          np))))
 
 ;;;---------
 ;;; be + PP
@@ -1468,3 +1400,81 @@
   ;; e.g. block ""Notably, of the nine candidate ORFs..."
   (cond (*subcat-test* (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)))
         (t (bind-dli-variable 'modifier adverb (individual-for-ref pp)))))
+
+
+;;;---------------
+;;; comparatives
+;;;---------------
+
+(define-lambda-variable 'superlative-predication
+    nil 'top)
+
+(define-lambda-variable 'comparative-predication
+    nil 'top)
+
+(define-lambda-variable 'comparative
+    nil 'top)
+
+(define-lambda-variable 'compared-to
+    nil 'top)
+
+(define-lambda-variable 'superlative-from-set
+    nil 'top)
+
+(defun make-comparative-adjp-with-np (comparative than-np)
+  (bind-dli-variable 'compared-to
+                     than-np
+                     comparative))
+
+(defun maybe-extend-comparative-with-than-np (np than-np)
+  (cond
+    (*subcat-test* (value-of 'comparative-predication np))
+    (t
+     (rebind-dli-variable 'comparative-predication
+                          (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
+                          np))))
+
+#+ignore
+(defun maybe-extend-superlative-with-of-pp (np pp)
+  (cond
+    (*subcat-test* (value-of 'superlative-predication np))
+    (t
+     (rebind-dli-variable 'superlative-predication
+                          (bind-dli-variable 'superlative-from-set (value-of 'pobj pp)
+                                             (value-of 'superlative-predication np))
+                          np))))
+
+
+(defun comparative-adj-noun-compound (adjective head &optional adj-edge)
+  (when (category-p head) (setq head (individual-for-ref head)))
+  (cond
+    (*subcat-test*
+     (takes-adj? head adjective))
+    (t ;; Dec#2 has "low nM" which requires coercing 'low'
+     ;; into a number. Right now just falls through
+     (let ((predicate 
+	     (if (and (not (is-basic-collection? adjective))
+                      (find-variable-for-category :subject (itype-of adjective)))
+		 (create-predication-by-binding
+                  :subject head adjective
+                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
+		 (individual-for-ref adjective))))
+       (setq head (bind-dli-variable 'comparative-predication predicate head))
+       head))))
+
+(defun superlative-adj-noun-compound (adjective head &optional adj-edge)
+  (when (category-p head) (setq head (individual-for-ref head)))
+  (cond
+    (*subcat-test*
+     (takes-adj? head adjective))
+    (t ;; Dec#2 has "low nM" which requires coercing 'low'
+     ;; into a number. Right now just falls through
+     (let ((predicate 
+	     (if (and (not (is-basic-collection? adjective))
+                      (find-variable-for-category :subject (itype-of adjective)))
+		 (create-predication-by-binding
+                  :subject head adjective
+                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
+		 (individual-for-ref adjective))))
+       (setq head (bind-dli-variable 'superlative-predication predicate head))
+       head))))
