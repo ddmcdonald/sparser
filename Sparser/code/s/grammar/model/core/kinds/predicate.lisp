@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  August 2016
+;;;  version:  Decembe 2016
 
 ;; Broken out of upper-model 8/23/16
 
@@ -47,7 +47,6 @@
 (define-category predicate
   :instantiates nil
   :specializes has-name ;; which is a specialization of relation
-  :mixins (takes-adverb takes-tense-aspect-modal)
   :documentation "A predicate attributes or predicates
  some property to something. Depending of what sort of
  predicate it is, this property may be implicit in the
