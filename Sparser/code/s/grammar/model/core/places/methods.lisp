@@ -13,6 +13,17 @@
 ;;; Methods used by syntax functions that appreciate the spatial operators &such
 ;;;------------------------------------------------------------------------------
 
+;; 
+(def-k-method compose ((np category::has-location) (pp category::location))
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    ;; given this specific a pattern, if we get here
+    ;; then the interpretation/rule will go through
+    t
+    (let ((i (bind-variable 'location pp np)))
+      ;;(format t "~&i = ~a~%" i)
+      i)))
+
 (def-k-method compose ((operator category::spatial-operator)
                        (place category::endurant))
   ;; Designed for phrases like "on the table",  or "the top block"
@@ -24,6 +35,7 @@
       (let ((form (edge-form (parent-edge-for-referent))))
         (cond
           ((np-category? form) ;; called from noun-noun-compound
+           ;; "the bottom block"
            (let ((head (bind-variable 'location operator place)))
              head))
           ((eq form category::pp)

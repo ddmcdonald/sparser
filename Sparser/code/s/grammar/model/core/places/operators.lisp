@@ -113,28 +113,5 @@ determined by the operator and the types of the two objects,
   (:method (left right)
     (declare (ignore left right))))
 
-(def-k-method compose ((np category::has-location) (pp category::location))
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    ;; given this specific a pattern, if we get here
-    ;; then the interpretation/rule will go through
-    t
-    (let ((i (bind-variable 'location pp np)))
-      ;;(format t "~&i = ~a~%" i)
-      i)))
 
 
-(def-k-method compose ((operator category::spatial-operator) (place category::endurant))
-  ;; called by make-pp so it's forming a referent in a largely
-  ;; syntactic environment and we can make the edge label
-  ;; whatever we like.
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    ;; If we've gotten here with this signature then we'll complete
-    t
-    (let ((i (find-or-make-individual 'relative-location
-                                      :prep operator
-                                      :ground place)))
-      ;;(format t "~&Created ~a~%" i)
-      (revise-parent-edge :category (category-named 'location))
-      i)))
