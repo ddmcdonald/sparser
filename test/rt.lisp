@@ -34,7 +34,7 @@
 (defvar *entries* '(nil) "Test database")
 (defvar *in-test* nil "Used by TEST")
 (defvar *debug* nil "For debugging")
-(defvar *catch-errors* t
+(defvar *catch-errors* nil
   "When true, causes errors in a test to be caught.")
 (defvar *print-circle-on-failure* nil
   "Failure reports are printed with *PRINT-CIRCLE* bound to this value.")
