@@ -37,13 +37,14 @@
 ;; (setq *trace-scan-words-loop* t)
 
 (defun scan-words-loop (position-before word)
-  "Starting at the beginning of a sentence, add words into the
+  "This routine is called by scan-sentences-to-eof which itself
+   is called by initiate-successive-sweeps when we are reading
+   a document and need to populate (create) all the sentences.
+   Starting at the beginning of a sentence, add words into the
    chart until a sentence-ending period (or question-mark) is encountered.
    It's a recursive loop. We get out of it when the period-hook
    runs and throws to :end-of-sentence."
   ;; position-before - word - position-after
-  ;; Called from scan-sentences-to-eof which is called from
-  ;; initiate-successive-sweeps when it's reading a prepopulated document
   (simple-eos-check position-before word)  
   (let ((position-after (chart-position-after position-before)))
     (unless (includes-state position-after :scanned)
@@ -52,15 +53,24 @@
 
     (when *trace-scan-words-loop*
       (format t " ~s" (word-pname word)))
+    
+    (let* ((where-pw-ended (polyword-check position-before word))
+           (position-after (or where-pw-ended
+                               (chart-position-after position-before))))
+      (when where-pw-ended
+         (tr :scanned-pw-ended-at word where-pw-ended)
+         (setq position-before where-pw-ended)
+         (unless (includes-state where-pw-ended :scanned)
+           ;; PW can complete without thinking about the
+           ;; word that follows it.
+           (scan-next-position))
+         (setq word (pos-terminal where-pw-ended)))
+      
+      ;; Trigger the period-hook
+      (complete-word/hugin word position-before position-after)
 
-    ;; Trigger the period-hook
-    ;; Without polywords ("Mr."), the boundaries are not 
-    ;; going to be as accurate since they'll just depend
-    ;; on the capitalization of the next word. 
-    (complete-word/hugin word position-before position-after)
-
-    (let ((next-word (pos-terminal position-after)))
-      (scan-words-loop position-after next-word))))
+      (let ((next-word (pos-terminal position-after)))
+        (scan-words-loop position-after next-word)))))
 
 
 
