@@ -131,11 +131,11 @@
         (vector (ev-edge-vector ev))
         edge  good-edges )
     (ecase *edge-vector-type*
-      (:kcons-list (break "Write this routine for kcons list version"))
+      (:kcons-list (error "Write this routine for kcons list version"))
       (:vector
        (dotimes  (i count)
          (setq edge (aref vector i))
-         (unless (eq :literal-in-a-rule (edge-rule edge))
+         (unless (edge-for-literal? edge)
            (push edge good-edges)))
        (nreverse good-edges)))))
 

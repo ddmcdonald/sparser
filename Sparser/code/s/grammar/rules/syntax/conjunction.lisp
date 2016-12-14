@@ -272,6 +272,13 @@
          (position-after (chart-position-after end-of-before-segment))
          (edge-before (span-ending-at end-of-before-segment))
          (edge-after (span-starting-at position-after)))
+    
+    (when (edge-vector-p edge-before)
+      (let ((good-edges (reduce-multiple-initial-edges edge-before))) ;; no literals
+        (setq edge-before (car (last good-edges)))))
+    (when (edge-vector-p edge-after)
+      (let ((good-edges (reduce-multiple-initial-edges edge-after)))
+        (setq edge-after (car (last good-edges)))))
 
     ;; check for a comma just before the conjunction. This first case
     ;; depends on the grammar putting literal edges over it, so this
@@ -285,13 +292,6 @@
     ;             ~%             position after = p~A~%~%"
     ;        (pos-token-index end-of-before-segment)
     ;        (pos-token-index position-after))
-
-    (when (edge-vector-p edge-before)
-      (let ((good-edges (reduce-multiple-initial-edges edge-before))) ;; no literals
-        (setq edge-before (car (last good-edges)))))
-    (when (edge-vector-p edge-after)
-      (let ((good-edges (reduce-multiple-initial-edges edge-after)))
-        (setq edge-after (car (last good-edges)))))
 
     (setq *pending-conjunction* nil)
 
