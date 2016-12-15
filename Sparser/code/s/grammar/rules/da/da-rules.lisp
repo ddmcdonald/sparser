@@ -19,7 +19,7 @@
 
 (defvar *show-failed-fronted-pp-attachment* nil)
 
-(defstruct edge-spec category form referent target dominating direction)
+(defstruct edge-spec category form referent target dominating direction preposed)
 
 
 ;;;----------------------
@@ -58,11 +58,24 @@
               (edge-referent pobj-edge)))
 	 (prep-edge (edge-left-daughter pp))
 	 (prep-word (edge-left-daughter prep-edge)))
+    (declare (special clause-referent pobj-edge))
+    ;;(lsp-break "attach-leading-pp-to-clause")
     
     (when (and
+           ;; handle DEC 33
+           ;; "In A375 cells, endogenous C-RAF:B-RAF heterodimers were measurable and inducible
+           ;;  following treatment with PLX4720 (Supplementary Fig. 9)."
            (itypep clause-referent 'copular-predication)
            ;; this trick does NOT work for PP copular-predications
-           (not (value-of 'prep clause-referent)))
+           (not (value-of 'prep clause-referent))
+           ;; don't do this for conjunctive copular-predications like
+           ;;"Although several groups have reported results regarding the possible
+           ;; function of ER-β, and its potential as a prognostic or predictive
+           ;; factor in breast cancer, the data remain inconclusive and
+           ;; are often contradictory [ xref , xref ]."
+           (not (is-basic-collection? clause-referent))
+           (value-of 'value clause-referent))
+           
       ;; This trick works to 'get through' to a single edge over dec #33
       ;; but having taken the predication apart we're going to have to put it together
       ;; again. Indeed the distribution of the conjoined value individual over
@@ -72,28 +85,35 @@
       (push-debug `(,pobj-referent ,prep-word ,clause-referent ,pp ,clause))
       (setq clause-referent (value-of 'value clause-referent)))
 
-    (cond
-      ((null pobj-referent) ;; punt at the moment for conjoined PPs
-       nil)
+    (let (*edge-spec*)
+      (declare (special *edge-spec*))
+      (cond
+        ((null pobj-referent) ;; punt at the moment for conjoined PPs
+         nil)
       
-      ((is-basic-collection? clause-referent) ;; Dec #33 goes through here
-       (or
-        (distribute-pp-to-conjoined-clauses pp clause prep-word pobj-referent clause-referent
-                                            'attach-leading-pp-to-clause)
-        (distribute-pp-to-first-conjoined-clause pp clause
-                                                 'attach-leading-pp-to-clause)))
-      (t
-       (let ((var-name
-              (or (subcategorized-variable clause-referent prep-word pobj-referent)
-                  (failed-pp-attachment pp clause-referent)))
-             edge )
-         (when var-name
-           (setq edge (make-edge-spec
-                       :category (edge-category clause)
-                       :form (edge-form clause)
-                       :referent (bind-dli-variable var-name pobj-referent clause-referent)))
-           (tr :comma-3tt-pattern edge)
-           edge))))))
+        ((is-basic-collection? clause-referent) ;; Dec #33 goes through here
+         (setq *edge-spec*
+               (or
+                (distribute-pp-to-conjoined-clauses pp clause prep-word pobj-referent clause-referent
+                                                    'attach-leading-pp-to-clause)
+                (distribute-pp-to-first-conjoined-clause pp clause
+                                                         'attach-leading-pp-to-clause))))
+        (t
+         (let ((var-name
+                (or (subcategorized-variable clause-referent prep-word pobj-referent)
+                    (failed-pp-attachment pp clause-referent))) )
+           (when var-name
+             (setq *edge-spec*
+                   (make-edge-spec
+                         :category (edge-category clause)
+                         :form (edge-form clause)
+                         :referent (bind-dli-variable var-name pobj-referent clause-referent)
+                         :target clause
+                         :direction :left
+                         :preposed pp))
+             (tr :comma-3tt-pattern *edge-spec*)))))
+      ;;(lsp-break "attach-leading-pp-to-clause 2")
+      *edge-spec*)))
 
 
 (define-debris-analysis-rule attach-leading-pp-no-comma-to-clause
@@ -151,25 +171,20 @@
 	 new-left new-items new-interp new-edge)
     ;;(lsp-break "2d")
     (when var-name
-      (setq new-left (when var-name (bind-dli-variable var-name pobj-referent (edge-referent left-clause))))
+      (setq new-left
+            (bind-dli-variable var-name pobj-referent (edge-referent left-clause)))
       (update-edge-mention-referent left-clause new-left)
-      (setq new-items
-	    (cons new-left (cdr (value-of 'items (edge-referent clause)))))
-      (setq new-interp
-	    (make-an-individual
-	     'collection
-	     :items new-items
-	     :number (length new-items)
-	     :type (itype-of (car new-items))))
+      
       (make-edge-spec
-       :category (edge-category clause)
-       :form (edge-form clause)
-       :referent new-interp
+       :category (edge-category left-clause)
+       :form (edge-form left-clause)
+       :referent new-left
        :target left-clause
        :dominating (if (eq clause (edge-used-in left-clause))
                        clause
                        (lsp-break "bad used-in"))
-       :direction :left))))
+       :direction :left
+       :preposed pp))))
 
 
 (define-debris-analysis-rule oblique-s-subject-to-vp
@@ -1188,25 +1203,26 @@
 
 (defun s-comma-np-comma-and-np ( s comma-1 np-1 comma-2 and-wd np-2)
   (declare (ignore comma-1 comma-2))
-  (let* ((target (find-target-satisfying (right-fringe-of s) #'np-target?))
-         (collection
-          (make-an-individual 'collection
-                              :items `(,(edge-referent target)
-                                        ,(edge-referent np-1)
-                                        ,(edge-referent np-2))
-			       :number 3
-			       :type (itype-of (edge-referent target)))))
-    (setq collection
-          (if *description-lattice*
-                (find-or-make-lattice-description-for-collection collection)
-                collection ))
+  (let* ((target (find-target-satisfying (right-fringe-of s) #'np-target?)))
     (when target
-      (make-edge-spec 
-       :category (edge-category target)
-       :form (edge-form target)
-       :referent collection
-       :target target
-       :direction :right))))
+      (let ((collection
+             (make-an-individual 'collection
+                                 :items `(,(edge-referent target)
+                                           ,(edge-referent np-1)
+                                           ,(edge-referent np-2))
+                                 :number 3
+                                 :type (itype-of (edge-referent target)))))
+        (setq collection
+              (if *description-lattice*
+                  (find-or-make-lattice-description-for-collection collection)
+                  collection ))
+        (when target
+          (make-edge-spec 
+           :category (edge-category target)
+           :form (edge-form target)
+           :referent collection
+           :target target
+           :direction :right))))))
 
 (define-debris-analysis-rule s-and-np
   :pattern ( s conjunction np)  

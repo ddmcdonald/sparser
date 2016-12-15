@@ -135,7 +135,24 @@ SP> (stree 51)
          ;;(when (setq *edge-spec* (apply fn constituents))) ;; can be nil if rule fails
          (let* ((*edge-spec* result)
                 (target (edge-spec-target *edge-spec*))
-                (dominating (and (edge-p target) (edge-used-in target))))
+                (dominating (and (edge-p target) (edge-used-in target)))
+                (preposed (edge-spec-preposed *edge-spec*))
+                (new-constituents
+                 ;; new code to get the proper dominated edges in the case of
+                 ;;  preposed prepositional phrases before a conjunction
+                  (if preposed 
+                      (if (member target constituents)
+                          (loop for c in constituents
+                                until (member target result)
+                                collect c into result
+                                finally (return result))
+                          (substitute target
+                                      (edge-used-in target)
+                                      constituents))
+                      (constituents-between
+                       (or target (first constituents))
+                       (car (last constituents))))))
+           (declare (special *edge-spec* preposed target dominating new-constituents))
            ;; see long note above
            (when (and target dominating)
              (when (and
@@ -148,18 +165,18 @@ SP> (stree 51)
            (setq *new-edge*
                  (make-edge-over-long-span
                   (pos-edge-starts-at
-                   (or target
+                   (or preposed
+                       target
                        (first constituents)))
-                  (pos-edge-ends-at (car (last constituents)))
+                  (pos-edge-ends-at
+                   (if preposed
+                       target
+                       (car (last constituents))))
                   (edge-spec-category *edge-spec*)
                   :form (edge-spec-form *edge-spec*)
                   :referent (edge-spec-referent *edge-spec*)
                   :rule (da-name rule)
-                  :constituents
-                  (constituents-between
-                   (or target
-                       (first constituents))
-                   (car (last constituents)))))
+                  :constituents new-constituents))
            (cond (dominating
                   (tuck-new-edge-under-already-knit
                    target
