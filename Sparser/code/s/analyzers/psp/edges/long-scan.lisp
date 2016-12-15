@@ -51,9 +51,11 @@
     (setf (edge-form edge) form)    
     
     
-    (let ((daughters (successive-treetops :from starting-position
-                                          :to ending-position
-                                          :below edge)))
+    (let ((daughters
+           (or constituents
+               (successive-treetops :from starting-position
+                                    :to ending-position
+                                    :below edge))))
       (mapcar #'(lambda (tt)
                   (when (edge-p tt)
                     (set-used-by tt edge)))
