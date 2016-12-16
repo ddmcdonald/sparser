@@ -22,8 +22,11 @@
 
 (defparameter *whitespace-chars*
   '(#\Space #\Tab #\Newline #\Return #\Linefeed #\Page
-    #\HAIR_SPACE #\ZERO_WIDTH_SPACE #\THIN_SPACE
-    #\FOUR-PER-EM_SPACE #\EN_SPACE ))
+    #-ccl #\HAIR_SPACE 
+    #\ZERO_WIDTH_SPACE 
+    #-ccl #\THIN_SPACE
+    #-ccl #\FOUR-PER-EM_SPACE 
+    #-ccl #\EN_SPACE ))
 
 ;; " a " -> "a "
 ;; "  " -> ""
