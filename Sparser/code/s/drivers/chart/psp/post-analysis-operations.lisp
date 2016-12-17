@@ -222,8 +222,7 @@ where it regulates gene expression.")
 	(bindings (dt-bindings dt)))
     (or
      (special-collection-interp dt var containing-mentions)
-     (when (itypep-or (base-description mention)
-		      '(slashed-sequence hyphenated-pair two-part-label hyphenated-triple))
+     (when (not (is-basic-collection? (base-description mention)))
        (base-description mention))
      (reinterp-list-using-bindings
       (loop for m in (second (assoc 'items bindings))
@@ -350,9 +349,13 @@ where it regulates gene expression.")
 (defun is-basic-collection? (i)
   (and (individual-p i)
        (collection-p i)
-       (not (or (itypep i 'hyphenated-pair)
-                (itypep i 'hyphenated-triple)
-                (itypep i 'two-part-label)))))
+       (not
+        (itypep i `(:or ;;word-colon-word ;; CHECK THIS OUT -- CAUSES PROBLEMS, BUT SHOULDN'T
+                        hyphenated-pair
+                        hyphenated-triple
+                        slashed-sequence
+                        two-part-label
+                        )))))
 
 
 (defparameter *special-collection-interp* t
