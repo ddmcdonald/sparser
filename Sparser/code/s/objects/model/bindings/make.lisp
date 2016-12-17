@@ -93,27 +93,30 @@ returning a new one.
   "Gates the new policy in bind-dli-variable to facilitate debugging its fanout")
 
 (defun bind-dli-variable (var/name value individual &optional category)
- "Returns the resulting individual as its first (primary) value
+  "Returns the resulting individual as its first (primary) value
   it returns the binding object as its second (secondary) value.
   Note that if *description-lattice* is nil this becomes a call to
   the 'old' variable binding protocol."
- (declare (special *description-lattice*))
-
- (when *convert-category-values-to-individuals-when-binding*
-   (when (and (category-p value) 
-              (not (var-takes-category? var/name individual category)))
-     ;; motivated by "GEF functionality"
-     ;; GEF is defined by (noun "GEF" ...) and thus becomes a category, not an individual
-     ;; but we want to get it as an individual
-     (setq value (individual-for-ref value))))
+  (declare (special *description-lattice*))
+  (cond ((null var/name)
+         (error "call to bind-dli-variable with var/name = nil~%"))
+        (t
+         ;; if var/name is null, we shouldn't be calling this, and we should return nil
+         (when *convert-category-values-to-individuals-when-binding*
+           (when (and (category-p value) 
+                      (not (var-takes-category? var/name individual category)))
+             ;; motivated by "GEF functionality"
+             ;; GEF is defined by (noun "GEF" ...) and thus becomes a category, not an individual
+             ;; but we want to get it as an individual
+             (setq value (individual-for-ref value))))
  
- (if *description-lattice*
-   (then
-     (unless (individual-p individual)
-       (setq individual (individual-for-ref individual)))
-     (setq individual (look-for-ambiguous-variables individual var/name))
-     (find-or-make-lattice-subordinate individual var/name value category))
-   (old-bind-variable var/name value individual category)))
+         (if *description-lattice*
+             (then
+               (unless (individual-p individual)
+                 (setq individual (individual-for-ref individual)))
+               (setq individual (look-for-ambiguous-variables individual var/name))
+               (find-or-make-lattice-subordinate individual var/name value category))
+             (old-bind-variable var/name value individual category)))))
 
 
 (defun bind-variable (var/name value individual &optional category)
