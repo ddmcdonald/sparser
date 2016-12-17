@@ -171,6 +171,21 @@
 	   new-predication)
 	  (t pred))))
 
+(defun make-predication-edge (pre-pred-edge var val source)
+  (let* ((start-pos (edge-starting-position pre-pred-edge))
+         (end-pos (edge-ending-position pre-pred-edge))
+         (pred (edge-referent pre-pred-edge))
+         (edge
+          (make-edge-over-long-span
+           start-pos end-pos
+           (edge-category pre-pred-edge)
+           :rule 'make-predication-edge
+           :form (edge-form pre-pred-edge) ;; maybe should be something special?
+           :referent (create-predication-by-binding var val pred source)
+           :constituents (list pre-pred-edge)
+           :words words)))
+    edge))
+
 
 ;;;----------------------------
 ;;; place to stash determiners
