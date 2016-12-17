@@ -244,43 +244,44 @@
   (declare (special *use-occasional-polywords*))
   (tr :check-for-polywords word position-before)
   (set-status :polywords-check position-before)
-  
-  ;; 'word' is the canonical lowercase version of the lemma
-  (let* ((ls-initial-state
-          (if *use-occasional-polywords*
-            (starts-occasional-polyword word)
-            (starts-polyword word)))
-         (caps-word (capitalized-correspondent1 
-                     position-before word))
-         (caps-initial-state
-          (when caps-word
+  (when word
+    ;; can get a null word -- e.g. in paragraph "PMC2171479.3.C.p1"
+    ;; 'word' is the canonical lowercase version of the lemma
+    (let* ((ls-initial-state
             (if *use-occasional-polywords*
-              (starts-occasional-polyword caps-word)
-              (starts-polyword caps-word)))))
+                (starts-occasional-polyword word)
+                (starts-polyword word)))
+           (caps-word (capitalized-correspondent1 
+                       position-before word))
+           (caps-initial-state
+            (when caps-word
+              (if *use-occasional-polywords*
+                  (starts-occasional-polyword caps-word)
+                  (starts-polyword caps-word)))))
 
-    (when (or ls-initial-state caps-initial-state)
-      ;; Prefer the capitalized version, but if it fails
-      ;; try the lowercase version
-      (let ( position-reached )
+      (when (or ls-initial-state caps-initial-state)
+        ;; Prefer the capitalized version, but if it fails
+        ;; try the lowercase version
+        (let ( position-reached )
 
-        (when caps-initial-state
-          (tr :word-initiates-polyword caps-word position-before)
-          (setq position-reached
-                (do-polyword-fsa caps-word caps-initial-state position-before)))
-
-        (unless position-reached ;; caps succeeded
-          (when ls-initial-state
-            (tr :word-initiates-polyword word position-before)
+          (when caps-initial-state
+            (tr :word-initiates-polyword caps-word position-before)
             (setq position-reached
-                  (do-polyword-fsa word ls-initial-state position-before))))
+                  (do-polyword-fsa caps-word caps-initial-state position-before)))
 
-        (if position-reached ;; one of them succeeded
-          (let ((pw-edge (edge-spanning position-before position-reached)))
-            (unless pw-edge (error "wrong span on polyword search"))
-            (tr :pw-was-found position-before position-reached pw-edge))
-          (tr :pw-not-found word position-before))
+          (unless position-reached ;; caps succeeded
+            (when ls-initial-state
+              (tr :word-initiates-polyword word position-before)
+              (setq position-reached
+                    (do-polyword-fsa word ls-initial-state position-before))))
 
-        position-reached))))
+          (if position-reached ;; one of them succeeded
+              (let ((pw-edge (edge-spanning position-before position-reached)))
+                (unless pw-edge (error "wrong span on polyword search"))
+                (tr :pw-was-found position-before position-reached pw-edge))
+              (tr :pw-not-found word position-before))
+
+          position-reached)))))
 
 
 ;; (trace-network)
