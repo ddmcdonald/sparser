@@ -1425,8 +1425,10 @@
 (defun make-lambda-predicate (vp-edge &optional subject-var)
   (let ((svar (or subject-var
                   (subject-variable (edge-referent vp-edge)))))
-    (create-predication-by-binding
-     svar **lambda-var** (edge-referent vp-edge) vp-edge)))
+    (if (null svar)
+        (error "make-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge)
+        (create-predication-by-binding
+         svar **lambda-var** (edge-referent vp-edge) vp-edge))))
 
 (defun unpack-subject-control (subject vp vp-edge)
   (setf (edge-referent vp-edge)
