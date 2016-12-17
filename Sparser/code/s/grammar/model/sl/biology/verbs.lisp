@@ -2002,7 +2002,8 @@
            :o theme))
 
 (define-category purify :specializes bio-method
-  :binds ((bio biological)) 
+  :binds ((bio biological))
+  :restrict((agent (:or pronoun/first/plural bio-method)))
   :realization 
   (:verb "purify" :noun "purification" 
          :etf (svo-passive)
