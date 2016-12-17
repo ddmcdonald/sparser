@@ -47,29 +47,29 @@
   (tr :considering-word-level-fsas word position)
 
   (if (eq word *the-unknown-word*)
-    (then (tr :wfsa/unknown-word word position)
-          nil)
-
-    (let ((rs (word-rules word)))
-      (if rs
-        (search-word-for-fsas word rs position)
+      (then (tr :wfsa/unknown-word word position)
+            nil)
+      (when word ;; null word happens in "PMC2171479.3.C.p1"
+        (let ((rs (word-rules word)))
+          (if rs
+              (search-word-for-fsas word rs position)
         
-        (let ((capitalization (pos-capitalization position)))
-        ;; So far we've been working with the canonical (lowercase)
-        ;; version of the word. If this instance isn't lowercase then
-        ;; there might be a rule set with one of the variations
-        ;; and we should check for a match
-          (if (not (eq :lower-case capitalization))
-            (then
-              (tr :wfsa/marked-capitalization)
-              (if (word-capitalization-variants word)
-                (check-variants-for-word-fsas word position)
-                (dispatch-off-capitalization-data capitalization
-                                                  word
-                                                  position)))
-            (else
-              (tr :wfsa/no-routine word position)
-              nil )))))))
+              (let ((capitalization (pos-capitalization position)))
+                ;; So far we've been working with the canonical (lowercase)
+                ;; version of the word. If this instance isn't lowercase then
+                ;; there might be a rule set with one of the variations
+                ;; and we should check for a match
+                (if (not (eq :lower-case capitalization))
+                    (then
+                      (tr :wfsa/marked-capitalization)
+                      (if (word-capitalization-variants word)
+                          (check-variants-for-word-fsas word position)
+                          (dispatch-off-capitalization-data capitalization
+                                                            word
+                                                            position)))
+                    (else
+                      (tr :wfsa/no-routine word position)
+                      nil ))))))))
 
 
 
