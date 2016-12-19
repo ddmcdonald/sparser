@@ -1,13 +1,13 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2013,2016  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "init chart"
 ;;;   Module:  "analyzers;psp:init:"
-;;;  Version:  1.3 June 1994
+;;;  Version:  December 2016
 
 ;; 1.0 (10/5/92 v2.3) tweeked some things to accomodate new tokenizer
-;; 1.1 (11/26) still more tweeking to be in sync with Bump-&-store-word
-;; 1.2 (12/15) re-enabled the all-edges flags and counters
+;; 1.1 (11/26/92) still more tweeking to be in sync with Bump-&-store-word
+;; 1.2 (12/15/92) re-enabled the all-edges flags and counters
 ;; 1.3 (1/21/94) added *number-of-characters-to-subtract*.  6/15 added
 ;;      *preterminals-on-current-word*. 2/6/13 declared it special to make
 ;;      Clozure happy, refined error message.
@@ -33,6 +33,9 @@
 
   (when (null *the-chart*)
     (error "There is no chart. The session has not yet been initialized."))
+
+  ;; 12/16/16 in pursuit of problem with PMC2171479
+  (initialize-used-portion-of-chart) ;; needs *next-chart-position-to-scan*
 
   (setq *chart-empty* t
         *bracketing-progress* nil
@@ -61,7 +64,7 @@
     ;;(setq *last-position-marched-back-to* first-position)
     ;; 11/26 wasn't declared, so probably out of date
 
-    ;;  (re-initialize-position-array)  11/26 replacing this with incremental cleanup
+    ;;  (re-initialize-position-array)  11/26/92 replacing this with incremental cleanup
     (initialize-position first-position  ;; 0
                          *number-of-next-position*)
     (initialize-position (chart-position-after first-position)  ;; 1
