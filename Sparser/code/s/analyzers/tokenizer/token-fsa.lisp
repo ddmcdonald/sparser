@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1996,2013-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1996,2013-2016  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "token FSA"
 ;;;   Module:  "analyzers:tokenizer:"
-;;;  Version:  3.4 March 2014
+;;;  Version:  December 2016
 
 ;;  initated ~6/90
 ;;  1.1  (12/90) Added a call to zero-lookup-buffer when the end-of-stream is
@@ -29,11 +29,12 @@
 
 (defun run-token-fsa ()
   ;; we're starting a new token.
-  (let (entry  char-type 
-        (char
+  (let ((char
          (unless *pending-entry*
            (elt *character-buffer-in-use*
-                (incf *index-of-next-character*)))))
+                (incf *index-of-next-character*))))
+        entry  char-type )
+    
     (if *pending-entry*
       (then (setq entry *pending-entry*
                   *pending-entry* nil))
@@ -46,9 +47,9 @@
             
         (do-punctuation (cdr entry))
             
-        ;; it's now likely to be more than one character long, so set up
-        ;; pointers to keep track of it
         (else
+          ;; it's now likely to be more than one character long, so set up
+          ;; pointers to keep track of it
           (setq *category-of-accumulating-token*  (car entry))
           (when (consp (cdr (cdr entry)))
             (break "bad character entry: ~a" entry))
@@ -62,8 +63,7 @@
 
 (defun continue-token (accumulated-entries length char-type)
   (declare (special accumulated-entries))
-  (when
-      (consp (cdr (car accumulated-entries)))
+  (when (consp (cdr (car accumulated-entries)))
     (break "bad accumulated entries"))
 
   (let ((next-entry
@@ -134,4 +134,5 @@
       (setq *capitalization-of-current-token*
             (cleanup-call-to-caps-fsa capitalization-state length))
       (setq *length-of-the-token* length)
+      
       (find-word char-type))))

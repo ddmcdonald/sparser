@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1993,2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2014-2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "punctuation"
 ;;;   Module:  "tokenizer;"
-;;;  Version:  0.3 May 2015
+;;;  Version:  December 2016
 
 ;; initated 9/28/92 v2.3
 ;; 0.1 (11/2) changed the value of the capitalization global in the case
@@ -39,34 +39,38 @@
   (setq *capitalization-of-current-token* :punctuation)
   (setq *length-of-the-token* 1)
 
-  (if (symbolp entry)
-    (case entry
-      (:space
-       (setq *capitalization-of-current-token* :spaces)
-       (accumulate-spaces 1))
-      (:end-of-buffer
-       (refill-character-buffer *character-buffer-in-use*)
-       ;; if we had to worry about continuing a token, we'd
-       ;; be inside the other call.
-       (run-token-fsa))
-      (:source-start
-       *source-start* )
-      (:end-of-source
-       (setq *source-exhausted* *index-of-next-character*)
-       *end-of-source* )
-      (:meaningless
-       (if *break-on-meaningless-characters*
-         (break "Undefined control character number ~A seen in input ~
-                 string" (char-code
-                          (elt *character-buffer-in-use*
-                               (1- *index-of-next-character*))))
-         (format *standard-output*
-                 "~&~%Undefined control character number ~A seen in ~
-                  input string"
-                 (char-code (elt *character-buffer-in-use*
-                                 (1- *index-of-next-character*))))))
-      (t (error "the value of entry, ~s is not acceotable in do-punctuation" entry) ))
-    entry ))
+  (etypecase entry
+    (symbol
+     (case entry
+       (:space
+        (setq *capitalization-of-current-token* :spaces)
+        (accumulate-spaces 1))
+       (:end-of-buffer
+        (refill-character-buffer *character-buffer-in-use*)
+        ;; if we had to worry about continuing a token, we'd
+        ;; be inside the other call.
+        (run-token-fsa))
+       (:source-start
+        *source-start* )
+       (:end-of-source
+        (setq *source-exhausted* *index-of-next-character*)
+        *end-of-source* )
+       (:meaningless
+        (if *break-on-meaningless-characters*
+          (break "Undefined control character number ~A seen in input ~
+                  string" (char-code
+                           (elt *character-buffer-in-use*
+                                (1- *index-of-next-character*))))
+          (format *standard-output*
+                  "~&~%Undefined control character number ~A seen in ~
+                   input string"
+                  (char-code (elt *character-buffer-in-use*
+                                  (1- *index-of-next-character*))))))
+       (t (error "the symbol value of entry, ~s is not acceptable ~
+                  in do-punctuation" entry) )))
+
+    (word
+     entry )))
 
 
 
@@ -85,6 +89,9 @@
       (refill-character-buffer *character-buffer-in-use*)
       (continue-token accumulated-entries length char-type))
     (else
+      ;; Otherwise this punctuation terminates the ongoing
+      ;; token and we stash it on *pending-entry* to be
+      ;; handled the next time around.
       (setq *pending-entry* whole-entry)
       (when (consp (cdr (car accumulated-entries)))
         (break "bad element in accumulated-entries"))
