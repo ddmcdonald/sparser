@@ -80,10 +80,6 @@
 (define-reflection-on "in spite of")
 (define-reflection-on "regardless of")
 
-
-(define-comparative "more")
-(define-comparative "bigger")
-
 ;;;--------------
 ;;; Comparatives
 ;;;--------------
