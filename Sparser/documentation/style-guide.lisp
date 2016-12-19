@@ -6,8 +6,8 @@
 
 Developers of Sparser need to follow good practices in the Lisp code
 they write. Easily read, reasonably documented code will make life
-much easier for our users and ourselves (imagine reading your own code
-a year after you wrote it). To quote from one of the better style
+much easier for our users and ourselves. (Imagine reading your own code
+a year after you wrote it.) To quote from one of the better style
 guides (IMHO), https://www.cs.umd.edu/~nau/cmsc421/norvig-lisp-style.pdf, 
 "Good style leads to programs that are understandable, reusable,
 extensible, and easy to develop and debug." Good style is not optional.
@@ -53,3 +53,11 @@ etc. should be on the same line as the operator.
            baz)
   (do-stuff))
 
+* placement of let variables
+
+The variables that are bound by a let must start on the same
+line as the let. One variable per line, aligned.
+
+(let ((v1 (function1))
+      (v2 (function2)))
+  ...)
