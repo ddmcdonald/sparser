@@ -84,6 +84,12 @@
       ;; compensate for what that bug kept it from doing
       (scan-next-position)
       (setq first-word (pos-terminal start-pos)))
+    (unless first-word
+      (push-debug `(,sentence ,start-pos))
+      (error "Something is very wrong with the document structure. ~
+            ~%Scan-next-terminal called at p~a ~
+            ~%returned nil for sentence ~a."
+             (pos-array-index start-pos) sentence))
     (tr :scanning-terminals-of sentence)
     (catch :end-of-sentence
       (scan-terminals-loop start-pos first-word))))
