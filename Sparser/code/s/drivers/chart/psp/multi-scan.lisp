@@ -88,8 +88,10 @@
       (push-debug `(,sentence ,start-pos))
       (error "Something is very wrong with the document structure. ~
             ~%Scan-next-terminal called at p~a ~
-            ~%returned nil for sentence ~a."
-             (pos-array-index start-pos) sentence))
+            ~%returned nil for sentence ~a ~
+            ~%in ~a"             
+             (pos-array-index start-pos) sentence
+             (parent sentence)))
     (tr :scanning-terminals-of sentence)
     (catch :end-of-sentence
       (scan-terminals-loop start-pos first-word))))
