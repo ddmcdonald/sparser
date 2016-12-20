@@ -336,6 +336,7 @@ where it regulates gene expression.")
   ;; recursively interpret the bound value in the current context
   (case var
     (middle val-dt)
+    (items (loop for v in val-dt collect (interpret-item-in-context v var containing-mentions)))
     (t
      (cond ((symbolp val-dt)
             (interpret-atom-in-context val-dt var containing-mentions))
