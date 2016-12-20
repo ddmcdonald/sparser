@@ -168,9 +168,13 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
     ((symbolp i)
      (and i (itypep (category-named i :break-if-none) c/s)))
     ((consp c/s)
-     (if (eq (car c/s) :or)
-         (loop for c in (cdr c/s) thereis (itypep i c))
-         (error "Bad super-type ~s in itype-p for ~s" c/s i)))
+     (case (car c/s)
+       (:or (loop for c in (cdr c/s) thereis (itypep i c)))
+       (:primitive ;; happens in
+        ;; (COMPATIBLE-WITH-SPECIFIED-PART-TYPE #<gene-transcript-over-express 152934> #<artifact 152933>)
+        (typep i (second c/s)))
+       (t
+         (error "Bad super-type ~s in itype-p for ~s" c/s i))))
     (t
      (typecase i
        (individual
