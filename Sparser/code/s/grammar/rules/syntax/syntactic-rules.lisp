@@ -108,6 +108,7 @@
 ;;; Partitive NPs -- these make use of the fact the PPs with OF as prep, are of semantic category OF
 (def-form-rule (quantifier of)
     :form np
+    :head :left-edge
     :referent (:function create-partitive-np left-edge right-edge))
 
 (def-cfr np (number of)
@@ -143,6 +144,7 @@
    do
      (eval `(def-form-rule (sequencer ,nb)
                 :form np
+                :head :right-edge
                 :referent (:function determiner-noun left-edge right-edge))))
 #+ignore ;;THIS ALLOWS FOR "during the process"
 ;; RUSTY -- What was wrong with this rule? (Other than it being a method call)
@@ -363,17 +365,20 @@
 
 (def-form-rule (not verb+ed) ;; "RAS not bound to ERK"
     :form vg+ed
+    :head :right-edge
     :referent (:head right-edge
                      :bind (negation left-edge)))
 
 
 (def-form-rule (time vg) ;; for "may now bind ..."
     :form vg
+    :head :right-edge
     :referent (:function add-time-adjunct left-edge right-edge))
 
 
 (def-form-rule (time verb) ;; for "may now bind ..."
     :form vg
+    :head :right-edge
     :referent (:function add-time-adjunct left-edge right-edge))
 
 
@@ -390,6 +395,7 @@
      (eval 
       `(def-form-rule (,nb copular-pp)
            :form s
+           :head :right-edge
            :referent (:function apply-copular-pp left-edge right-edge)))
      
      (loop for src in '(subject-relative-clause  vp+ing vg+ing)
@@ -698,19 +704,23 @@
               
 (def-form-rule (that s)
     :form thatcomp
+    :head :right-edge
     :referent (:function create-thatcomp left-edge right-edge)) ;; (:head right-edge))
 
 (def-form-rule (whether s)
     :form whethercomp
+    :head :right-edge
     :referent (:function create-whethercomp left-edge right-edge))
 
 (def-form-rule (how s)
     :form np
+    :head :right-edge
     :referent (:function create-howcomp left-edge right-edge))
 
 
 (def-form-rule (for to-comp)
     :form to-comp
+    :head :right-edge
     :referent (:function interpret-for-to-comp left-edge right-edge))
 
 
@@ -926,6 +936,7 @@ similar to an oncogenic RasG12V mutation (9)."))
    do
      (eval
       `(def-form-rule (than ,nb)
+           :head :right-edge
            :referent (:head right-edge :bind (np left-edge))
            :form than-np)))
 
