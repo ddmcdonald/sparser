@@ -1,11 +1,11 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2016 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "online hook"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  March 1994     
+;;;  Version:  December 2016
 
-;; initiated 1/13/94 v2.3. Added stopping datum 3/17
+;; initiated 1/13/94 v2.3. Added stopping datum 3/17/94
 
 (in-package :sparser)
 
@@ -15,10 +15,10 @@
 ;;;------------------------
 
 (defparameter *position-to-start-tracing-at* nil
-  "Flag read by Scan-next-position and set by Set-traces-hook")
+  "Flag read by rest-of-Scan-next-position and set by Set-traces-hook")
 
 (defparameter *position-to-stop-tracing-at* nil
-  "Flag read by Scan-next-position and set by Set-traces-hook")
+  "Flag read by rest-of-Scan-next-position and set by Set-traces-hook")
 
 
 
@@ -77,3 +77,25 @@
     (set symbol nil))
   (prog1 (length *traces-on*)
          (setq *traces-on* nil)))
+
+
+;;;------------------------------------------------------
+;;; analogous operation over paragraph document elements
+;;;------------------------------------------------------
+
+(defparameter *paragraph-to-trace* nil
+  "Set-paragraph-trace-hook sets this to the toc-string of
+   the paragraph we're to trace.")
+
+;; e.g. (set-paragraph-trace-hook "indented-pmc2171479.3.a.p3" '(*trace-fsas*))
+(defun set-paragraph-trace-hook (toc-id trace-flags)
+  (setq *paragraph-to-trace* toc-id)
+  (setq *trace-to-to-turn-on* trace-flags)
+  (length trace-flags))
+
+(defun paragraph-trace-hook (p)
+  (when *paragraph-to-trace*
+    (if (string-equal *paragraph-to-trace*
+                      (toc-index p))
+      (turn-on-traces)
+      (turn-off-traces))))

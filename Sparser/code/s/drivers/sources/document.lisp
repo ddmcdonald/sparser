@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "document"
 ;;;   Module:  "drivers;sources:"
-;;;  Version:   June 2016
+;;;  Version:   December 2016
 
 ;; initiated 4/25/15 to driving reading from a fully populated
 ;; article object. Continually modifying/adding routines through
@@ -98,18 +98,28 @@
     to determine whether a given sentence contains information that
     is new in this document."))
 
+(defparameter *permit-reading-epistemic-features* nil
+  "In December 2016 we encountered a set of articles where particular
+ paragraphs somehow cleared pairs of positions and blocked further
+ processing. This only occurred during this phase, perhaps because
+ the suite of polywords being used does not include 'e.g.' and other
+ such period-covering polywords and consequently run-time sentences
+ differed from pre-build sentences. Since we don't need these features
+ right now, this sweeps the problem under the rug.")
+
 (defmethod read-epistemic-features ((a article))
-  (let ((*scanning-epistemic-features* t)
-        (*use-occasional-polywords* t) ;; not the usual sort
-        (*grammar-and-model-based-parsing* nil)) ;; don't parse
-    (declare (special *scanning-epistemic-features*
-                      *use-occasional-polywords*
-                      *grammar-and-model-based-parsing*))
-    (when (or *show-article-progress* *show-section-printouts*)
-      (format t "~&=============================================~%~
-                 ~%~%Reading Epistemic features in ~a~%" (name a)))
-    (read-from-document a)
-    a))
+  (when *permit-reading-epistemic-features*
+    (let ((*scanning-epistemic-features* t)
+          (*use-occasional-polywords* t) ;; not the usual sort
+          (*grammar-and-model-based-parsing* nil)) ;; don't parse
+      (declare (special *scanning-epistemic-features*
+                        *use-occasional-polywords*
+                        *grammar-and-model-based-parsing*))
+      (when (or *show-article-progress* *show-section-printouts*)
+        (format t "~&=============================================~%~
+                   ~%~%Reading Epistemic features in ~a~%" (name a)))
+      (read-from-document a)
+      a)))
 
 ;;;--------------------------------
 ;;; The read-from-document methods 
@@ -291,6 +301,7 @@
     (install-contents p)
     (let ((text (content-string p)))
       (initialize-sentences) ;; set up or reuse the 1st sentence
+      (paragraph-trace-hook p)
       
       ;; lifted from analyze-text-from-string 
       (establish-character-source/string text)
