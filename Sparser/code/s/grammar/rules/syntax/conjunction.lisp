@@ -441,7 +441,8 @@
          
          (when (and
                 (or (not (eq *allow-form-conjunction-heuristic* :vg))
-                    (member (cat-symbol form-before) *vg-categories*))
+                    (and (category-p form-before)
+                         (member (cat-symbol form-before) *vg-categories*)))
                 (or
                  (eq form-before form-after)
                  (and
