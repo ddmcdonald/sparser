@@ -452,6 +452,7 @@
 	  (ratio-condition ratio)
 	  (fig article-figure)
 	  (method bio-method)
+          (result biological)
 	  (by-means-of (:or bio-process mechanism bio-method)))
   :realization
   (:s agent
@@ -466,7 +467,8 @@
       ;;:from by-means-of
       :via method
       :with method
-      :at ratio-condition))
+      :at ratio-condition
+      :for result))
 
 (define-category certainty :specializes bio-rhetorical
   :realization
