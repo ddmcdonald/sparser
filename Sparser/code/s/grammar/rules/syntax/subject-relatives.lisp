@@ -169,7 +169,7 @@
 ;;;-----------------
 
 (defun apply-subject-relative-clause (np-ref vp-ref)
-  (declare (special category::have))
+  (declare (special category::have category::subject-relative-clause))
   ;; block "histone 2B ... had high levels ..."
   (when (and (eq (edge-category (right-edge-for-referent)) category::have)
 	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
@@ -189,7 +189,14 @@
        var)
       (var
        (cond
-         ((context-needs-clause? np-ref vp-ref)
+         ((and ;; this check is supposed to disambiguate cases where
+           ;;  the context wants a clause, and the vp-ref is
+           ;;  a vg+ing or vp+ing, not an explicit subject-relative-clause
+           ;;  with a "that" or "which"
+           (not (and (edge-p (right-edge-for-referent))
+                     (eq category::subject-relative-clause
+                         (edge-form (right-edge-for-referent)))))
+           (context-needs-clause? np-ref vp-ref))
           (when (itypep vp-ref 'copular-predication)
             (push-debug `(,np-ref ,vp-ref))
             (break "Extend subj rel"))
@@ -227,8 +234,8 @@
        thereis
          (let ((ref (edge-referent e)))
            (when (and (null ref)
-                      (not (eq (edge-category e) category::APOSTROPHE-S))
-                      (not (eq (edge-category e) category::parentheses))
+                      (not (member (cat-name (edge-category e))
+                                   '(apostrophe-s parentheses semicolon)))
                       *break-on-null-ref-in-context-needs-clause*)
              (error "null ref in context-needs-clause -- quiet this by ~
                      setting *break-on-null-ref-in-context-needs-clause* to nil"
