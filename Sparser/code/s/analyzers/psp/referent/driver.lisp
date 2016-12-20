@@ -207,6 +207,13 @@
                    edge (edge-rule edge) (edge-constituents edge)))
          ;; PUNT right now
          (edge-referent edge))
+        ((lambda-abstraction-edge? edge)
+         (apply-lambda-abstraction
+          (edge-referent edge) ;; the *lambda-abstraction* edge
+          ;; the underlying edge whose interpretation may 
+          (edge-referent (edge-left-daughter edge))
+          edge
+          ))
         (t
          (let ((*current-chunk* 'dummy-chunk))
            ;; have NP chunk rules that check to see that they are in a chunk
@@ -218,7 +225,26 @@
             edge
             (edge-rule edge))))))
    
+(defun lambda-abstraction-edge? (edge)
+  (declare (special category::lambda-form))
+  (and (eq (edge-right-daughter edge) :single-term)
+       (eq (edge-form edge) category::lambda-form)))
 
+(defun apply-lambda-abstraction (old-lambda-pred new-pred-form edge)
+  (declare (special new-pred-form old-lambda-pred))
+  (let* ((lambda-variable
+          (loop for b in (indiv-binds old-lambda-pred)
+                when (eq **lambda-var** (binding-value b))
+                do (return (binding-variable b))))
+         (new-lambda-form
+          (create-predication-by-binding
+           lambda-variable
+           **lambda-var**
+           new-pred-form
+           (list 'referent-for-edge edge)
+           :insert-edge nil)))
+    (declare (special lambda-variable new-lambda-form))
+    new-lambda-form))
 
 ;;;---------------------------------
 ;;; syntactic sugar for the globals

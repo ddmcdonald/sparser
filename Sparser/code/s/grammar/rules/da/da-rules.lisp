@@ -1364,11 +1364,15 @@
                  (and (np-target? e)
                       (subcategorized-variable adjp :subject (edge-referent e)))))))
       (when target
-        (let ((ref (adj-postmodifies-noun (edge-referent target) adjp adjp-edge)))
+        (let* ((pred (create-predication-by-binding
+                      :subject (edge-referent target)
+                      adjp
+                      (list 'adj-noun-compound (or adjp-edge (left-edge-for-referent)))
+                      :insert-edge nil)))
           (make-edge-spec
            :category (edge-category target)
            :form (edge-form target)
-           :referent ref
+           :referent (or pred adjp)
            :target target
            :direction :right))))))
 
@@ -1428,7 +1432,7 @@
     (if (null svar)
         (error "make-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge)
         (create-predication-by-binding
-         svar **lambda-var** (edge-referent vp-edge) vp-edge))))
+         svar **lambda-var** (edge-referent vp-edge) vp-edge :insert-edge nil))))
 
 (defun unpack-subject-control (subject vp vp-edge)
   (setf (edge-referent vp-edge)

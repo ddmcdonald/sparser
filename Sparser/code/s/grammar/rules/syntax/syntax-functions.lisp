@@ -158,32 +158,55 @@
 ;;; predication
 ;;;-------------
 
-(defun create-predication-by-binding (var val pred source)
+(defun create-predication-by-binding (var val pred source &key (insert-edge t))
   "Given a variable (var), and two referents (val, pred), assert that
    the variable is abstracted out from the pred(icate). 
    Ignore any provided 'val' argument."
-    (declare (ignore val)) ;; we now ignore the val, and just use **lambda-var**
+  (declare (ignore val)) ;; we now ignore the val, and just use **lambda-var**
   (let ((new-predication (bind-dli-variable  var **lambda-var** pred)))
+    (declare (special new-predication))
     ;; Rusty - how could the binding fail?  AKA, why the cond here.
     (cond (new-predication
-	   (create-discourse-mention new-predication source)
-	   ;; THIS IS WHERE WE SHOULD CREATE A MENTION FOR THE NEW PREDICATION
-	   new-predication)
+           (when (and insert-edge (edge-p (parent-edge-for-referent)))
+             (let* ((parent (parent-edge-for-referent))
+                    (pred-edge
+                     (cond ((or
+                             (eq pred (get-dli (edge-referent (edge-left-daughter parent))))
+                             (eq pred (edge-referent (edge-left-daughter parent))))
+                            (edge-left-daughter parent))
+                           ((or (eq pred (get-dli (edge-referent (edge-right-daughter parent))))
+                                (eq pred (edge-referent (edge-right-daughter parent))))
+                            (edge-right-daughter parent))
+                           (t (lsp-break "create-predication-by-binding, predicate not from left or right edge~%"))))
+                    (new-edge (make-predication-edge pred-edge new-predication)))
+               (declare (special new-edge pred-edge parent))
+               (cond ((eq (edge-left-daughter parent) pred-edge)
+                      (setf (edge-left-daughter parent) new-edge))
+                     ((eq (edge-right-daughter parent) pred-edge)
+                      (setf (edge-right-daughter parent) new-edge))
+                     (t (lsp-break "create-predication-by-binding, predicate not from left or right edge~%")))
+               (setf (edge-used-in new-edge) parent)
+               (setf (ev-top-node (edge-starts-at parent)) parent)
+               ;; (lsp-break "create-predication-by-binding")
+               ))
+           new-predication)
 	  (t pred))))
 
-(defun make-predication-edge (pre-pred-edge var val source)
-  (let* ((start-pos (edge-starting-position pre-pred-edge))
-         (end-pos (edge-ending-position pre-pred-edge))
+(def-form-category lambda-form)
+(define-category lambda-expression :specializes predicate)
+
+(defun make-predication-edge (pre-pred-edge predication)
+  (let* ((start-vec (edge-starts-at pre-pred-edge))
+         (end-vec (edge-ends-at pre-pred-edge))
          (pred (edge-referent pre-pred-edge))
          (edge
-          (make-edge-over-long-span
-           start-pos end-pos
-           (edge-category pre-pred-edge)
-           :rule 'make-predication-edge
-           :form (edge-form pre-pred-edge) ;; maybe should be something special?
-           :referent (create-predication-by-binding var val pred source)
-           :constituents (list pre-pred-edge)
-           :words words)))
+          (make-completed-unary-edge
+           start-vec end-vec
+           'make-predication-edge
+           pre-pred-edge
+           category::lambda-expression
+           category::lambda-form
+           predication)))
     edge))
 
 
