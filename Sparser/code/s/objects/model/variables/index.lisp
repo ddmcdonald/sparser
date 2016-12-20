@@ -117,13 +117,14 @@
    decode the symbol that names the variable."
   (declare (special *sentence-in-core*))
   (let* ((variable (variable-given-name-and-individual var/name individual category)))
-    (unless variable
-      (warn "no variable named ~s on ~s of category ~s~% in sentence ~s~%"
-            var/name individual category
-            (sentence-string *sentence-in-core*))
-      nil)
-    (equal (var-value-restriction variable)
-           '(:PRIMITIVE CATEGORY))))
+    (cond (variable         
+           (equal (var-value-restriction variable)
+                  '(:PRIMITIVE CATEGORY)))
+          (t
+           (warn "no variable named ~s on ~s of category ~s~% in sentence ~s~%"
+                 var/name individual category
+                 (sentence-string *sentence-in-core*))
+           nil))))
 
 
 (defun variable-given-name-and-individual (var/name individual category)
