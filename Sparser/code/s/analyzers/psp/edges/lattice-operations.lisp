@@ -90,7 +90,11 @@
 (defparameter *source-ht* (make-hash-table :size 30000 :test #'eq)
   "Inverse link to *lattice-ht*")
 
-(defun get-dli (ref) (gethash ref *lattice-ht*))
+(defun get-dli (ref)
+  (or (gethash ref *lattice-ht*)
+      ;; make get-dli idempotent
+      (if (gethash ref *source-ht*)
+          ref)))
 
 (defun set-dli (ref dli)
   (push ref (gethash dli *source-ht*))
