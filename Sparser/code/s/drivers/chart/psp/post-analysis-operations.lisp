@@ -226,28 +226,28 @@ where it regulates gene expression.")
        (base-description mention))
      (reinterp-list-using-bindings
       (loop for m in (second (assoc 'items bindings))
-	 nconc
-	   (let* ((*m* m)
-                  (*var* var)
-                  (interp (interpret-item-in-context *m* *var* containing-mentions)))
-	     (declare (special interp *m* *var*))
-	     (cond ((and *break-on-null-interp* (null interp)) (lsp-break "null interp"))
-		   ((is-basic-collection? interp)
-		    (copy-list (value-of 'items interp)))
-		   (t (list interp)))))
+            nconc
+              (let* ((*m* m)
+                     (*var* var)
+                     (interp (interpret-item-in-context *m* *var* containing-mentions)))
+                (declare (special interp *m* *var*))
+                (cond ((and *break-on-null-interp* (null interp)) (lsp-break "null interp"))
+                      ((is-basic-collection? interp)
+                       (copy-list (value-of 'items interp)))
+                      (t (list interp)))))
       var
       (loop for (var val) in bindings
-	 unless (member var '(items type number))
-	 collect
-           (progn
-             (when (and (equal val '(nil))
-                        *error-on-list-nil*)
-               (error "value of a collection item is (NIL) -- check what causes this,~% in ~s~%"
-                      (sentence-string *sentence-in-core*)))
-             (list var
-                   (if (or (null val)(equal val '(nil)))
-                       val ;; this is usually a bad parse error, but suppress it, e.g. "a type I"
-                       (interpret-val-in-context var val containing-mentions)))))
+            unless (member var '(items type number))
+            collect
+              (progn
+                (when (and (equal val '(nil))
+                           *error-on-list-nil*)
+                  (error "value of a collection item is (NIL) -- check what causes this,~% in ~s~%"
+                         (sentence-string *sentence-in-core*)))
+                (list var
+                      (if (or (null val)(equal val '(nil)))
+                          val ;; this is usually a bad parse error, but suppress it, e.g. "a type I"
+                          (interpret-val-in-context var val containing-mentions)))))
       (cons mention containing-mentions)))))
 
 
@@ -277,11 +277,12 @@ where it regulates gene expression.")
       (t (interpret-in-context dt var containing-mentions)))))
 
 (defun reinterp-item-using-bindings (dt var containing-mentions)
+  ;;xx
   (let* ((mention (dt-mention dt))
 	 (interp (dli-ref-cat (base-description mention))))
     (if (and (individual-p interp)
-	     (itypep interp 'hyphenated-number))
-	;; hyphenated numbers are special, and broken...
+	     (itypep interp 'collection)
+             (not (is-basic-collection? interp)));; (itypep interp 'hyphenated-number) hyphenated numbers and others are special, and broken...
 	interp
 	;; this allows for creation of new collections by distribution of internal collections
 	(reinterp-list-using-bindings (list interp) var (dt-bindings dt) (cons mention containing-mentions)))))
