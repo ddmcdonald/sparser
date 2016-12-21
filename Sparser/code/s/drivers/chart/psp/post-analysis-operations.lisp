@@ -20,7 +20,7 @@
 
 
 (defun interpret-treetops-in-context (treetops)
-  (when *interpret-in-context*
+  (when nil ;; *interpret-in-context*
     (loop for tt in treetops when (edge-p tt)
        when (and (category-p (edge-category tt))
                  (edge-referent tt)
