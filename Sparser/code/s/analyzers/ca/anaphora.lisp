@@ -227,9 +227,7 @@
   ;; created. Returns the entry.
   (declare (special *description-lattice*))
   (if *description-lattice*
-      (let ((mention (create-discourse-mention i edge)))
-        (pushnew (car mention) (mention-history i))
-        mention)
+      (list (make-mention i edge))
       (create-rigid-discourse-entry i edge)))
 
 
@@ -257,7 +255,7 @@
   ;; will usually involve a subsuming (larger) edge. 
   (declare (special *description-lattice*))
   (if *description-lattice*
-    (lattice-individuals-extend-dh-entry category new-individual edge)
+    (make-mention new-individual edge category)
     (conventional-individuals-extend-dh-entry category new-individual edge)))
 
 
