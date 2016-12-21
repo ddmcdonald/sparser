@@ -113,7 +113,8 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
           (t
            (setf (edge-referent edge) new-ref)
            (if (edge-mention edge)
-               (setf (base-description (edge-mention edge)) new-ref)
+               (if (typep (edge-mention edge) 'discourse-mention)
+                   (setf (base-description (edge-mention edge)) new-ref))
                (warn "null edge-mention on edge ~s in ~%~s"
                      edge (sentence-string *sentence-in-core*)))
            (let ((parent (edge-used-in edge)))
