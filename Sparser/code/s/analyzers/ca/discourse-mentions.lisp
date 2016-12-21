@@ -53,21 +53,22 @@
 
 (defclass discourse-mention ()
   ((uid :initarg :uid :accessor mention-uid)
-   (di :initarg :i :accessor base-description
+   (di :accessor base-description
     :documentation "Backpointer to the individual which is the base description")
-   (ci :initarg :ci :accessor contextual-description
+   (ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
    (restriction :accessor mention-restriction)
    (non-dli-modifiers :accessor mention-non-dli-modifiers :initform nil) ;; the determiner of a NP -- not included in the interpretation of the NP when discourse-mentions are used!!
-   (source :initarg :ms :accessor mention-source)
-   (maximal :initarg :max :accessor maximal? :initform :unknown)
-   (location-in-paragraph :initarg :loc :accessor mentioned-where
+   (source :accessor mention-source)
+   (maximal :accessor maximal? :initform :unknown)
+   (dependencies :initform nil :accessor dependencies)
+   (location-in-paragraph :accessor mentioned-where
     :documentation "An encoding of the location at which
      this mention occurred. Given the present implementation,
      we can use chart positions within a paragraph (the ends
      of the edge over the individual), but need to convert if 
      the paragraph is long enough to wrap the chart.")
-   (location-in-article :initarg :article :accessor mentioned-in-article-where
+   (location-in-article :accessor mentioned-in-article-where
     :documentation "When reading a text represented as an
      article, this encodes the location of the sentence that
      the mention is part of in the style of table-of-contents label.
@@ -269,6 +270,7 @@
       ;; just returning this to help understand traces
       (list mention referent))))
 
+#+ignore
 (defun create-discourse-mention (i source)
   "Individuals reside in a description lattice. Every new
   property or relation extends the lattice and in so doing
@@ -286,81 +288,183 @@
     (tr :made-mention m)
     (list m)))
 
-(defun make-mention (i source &optional category)
-  (declare (special *current-paragraph* category::prepositional-phrase))
-  (if (null source) (lsp-break "null source in make-mention"))
-  ;; either don't create a mention for NPs with category references (like "the cell")
-  ;;  or make them have individuals as references
-  (if (null category) (setq category (itype-of i)))
-  (let* ((location (encode-mention-location
-		    (if (consp source) (second source) source)))
-	 (toc (location-in-article-of-current-sentence))
-	 (m (make-instance 'discourse-mention
-			   :uid (incf *mention-uid*)
-			   :i i
-			   :loc location
-			   :ms source
-			   :article (cons toc *current-paragraph*) )))
-    #+ignore ;; useful for tracking down odd cases
-    (when (= (indiv-uid i) 4188)
-      (lsp-break "Made mention ~a" m))
-    (tr :making-new-mention m)
-    (push m (mention-history i)) ;; calls (check-consistent-mention m)
-    (when (edge-p source)
-      (setf (edge-mention source) m)     
-      (push m *lattice-individuals-mentioned-in-paragraph*)
-      (let ((subsumed-mention (subsumed-mention? i source)))
-	(cond (subsumed-mention
-	       (subsume-mention category m source subsumed-mention)
-	       (let ((limip
-		      (member subsumed-mention
-			      (gethash category *maximal-lattice-mentions-in-paragraph*))))
-		 (cond (limip (setf (car limip) m))
-		       (t
-			(push m (gethash category *maximal-lattice-mentions-in-paragraph*)))
-		       ;;(lsp-break "huh -- subsumed-mention not found in paragraph")
-		       #| this happens in some stange, as yet unalyzed cases caused by ambiguities in the morphology such as
-		       SP> (stree 166)
-		       e166 STRESS-KIND/N-BAR       p45 - p47   rule 292
-		       e75 FOLLOWE/VERB+ING        p45 - p46   rule 60812
-		       "following"
-		       e78 STRESS-KIND/COMMON-NOUN   p46 - p47   rule 61433
-		       "stress"
-		       #<edge166 45 stress-kind 47>
-		       SP> (stree 167)
-		       e167 STRESS-KIND/N-BAR       p45 - p47   rule 292
-		       e76 FOLLOW/VERB+ING         p45 - p46   rule 57362
-		       "following"
-		       e78 STRESS-KIND/COMMON-NOUN   p46 - p47   rule 61433
-		       "stress"
-		       #<edge167 45 stress-kind 47>
-			
-		       where the same edge (78) is under two alternative edges
-		       |#
-			)))
-	      (t
-	       (when category (push m (discourse-entry category)))
-               (when (non-dli-mod-for i)
-                 (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
-                 (setf (non-dli-mod-for i) nil))
-	       (unless (eq (edge-form source) category::prepositional-phrase)
-		 (push m (gethash category *maximal-lattice-mentions-in-paragraph*)))))))
-    m))
-
 (defun subsumed-mention? (i edge)
   (when (null i)
     (error "null individual in subsumed-mention?"))
   (if (edge-left-daughter edge)
       (cond
 	((and (edge-p (edge-left-daughter edge))
-	      (is-dl-child? i (edge-referent (edge-left-daughter edge))))
+	      (is-dl-child? i (edge-referent (edge-left-daughter edge)))
+              (not (eq t (edge-mention (edge-left-daughter edge)))))
 	 (edge-mention (edge-left-daughter edge)))
 	((and (edge-p (edge-right-daughter edge))
-	      (is-dl-child? i (edge-referent (edge-right-daughter edge))))
+	      (is-dl-child? i (edge-referent (edge-right-daughter edge)))
+              (not (eq t (edge-mention (edge-right-daughter edge)))))
 	 (edge-mention (edge-right-daughter edge))))
       (loop for e in (edge-constituents edge)
 	 when (is-dl-child? i (edge-referent e))
-	 do (return (edge-mention e)))))
+            do (return (edge-mention e)))))
+
+(defun edges-under (edge)
+  (if (not (edge-p (edge-right-daughter edge)))
+      (or (edge-constituents edge)
+          (list (edge-left-daughter edge)))
+      (list (edge-left-daughter edge)
+            (edge-right-daughter edge))))
+
+(defun update-subsumed-mention (subsumed-mention i edge)
+  (let* ((source-edge (mention-source subsumed-mention))
+         (non-source-edges
+          (when (edge-p source-edge)
+            (loop for e in (edges-under edge)
+                  unless (eq e source-edge)
+                  collect e))))
+    (when (edge-p source-edge)
+      (setf (dependencies subsumed-mention)
+            (add-new-dependencies edge
+                                  (dependencies subsumed-mention)
+                                  non-source-edges
+                                  i
+                                  (edge-referent source-edge)))
+      (setf (edge-mention source-edge) t) ;; remove mention from old edge
+      (setf (mention-history (edge-referent source-edge))
+            (remove subsumed-mention (mention-history (edge-referent source-edge))))))
+  subsumed-mention)
+
+(defun add-new-dependencies (edge old-dependencies edges i ii)
+  (declare (special old-dependences edges i ii edge))
+  (if
+   (itypep i 'collection)
+   (if (is-basic-collection? i)
+       (add-new-dependencies-for-collection old-dependencies edges i ii)
+       nil)       
+   (let* ((old-bindings (when (individual-p ii)
+                          (indiv-binds ii)))
+          (new-bindings
+           (unless (and (edge-p (car edges))
+                        (eq i (edge-referent (car edges))))
+             ;; happens for "Saos2 cells" or "ERK proteins"
+             (loop for b in 
+                     (when (individual-p i)
+                       ;; can be a category in case of infinitives like
+                       ;; "to dissociate"
+                       (indiv-binds i))
+                   unless
+                     (or (member
+                          (pname (binding-variable b))
+                          '(negation modal occurs-at-moment perfect progressive has-determiner))
+                         (member b old-bindings :test #'similar-binding ))
+                   collect b)))
+          (new-dependencies
+           (loop for b in new-bindings
+                 as e = (find-binding-edge b edges)
+                 collect (list (binding-variable b)
+                               (cond ((null e) ;; better be a lambda-variable
+                                      (unless (or
+                                               (eq (binding-value b) **lambda-var**)
+                                               (member (pname (binding-variable b))
+                                                       '(name uid))
+                                               (and (eq (pname (binding-variable b)) 'modifier)
+                                                    (itypep (binding-value b) 'xref)))
+                                        (lsp-break "no source for binding ~s, and not a lambda-variable, in ~s~%"
+                                                   b (sentence-string *sentence-in-core*)))
+                                      (binding-value b))
+                                     ((typep (edge-mention e) 'discourse-mention)
+                                      (edge-mention e))
+                                     (t
+                                      (lsp-break "~s has no disccourse-mention~%" e)))))))
+     (declare (special old-bindings new-bindings new-dependencies binding-edges))
+     (when (not (equal (length new-bindings)
+                       (length new-dependencies)))
+       (lsp-break "binding-edges"))
+     (nconc new-dependencies old-dependencies))))
+
+(defun find-binding-edge (b edges)
+  (loop for edge in edges
+        when (let ((ref (if (is-pp? edge)
+                            (identify-pobj edge)
+                            (edge-referent edge))))
+               (or (eq ref (binding-value b))
+                   (eq (get-dli ref) (binding-value b))))
+        do (return edge)))
+
+(defun similar-binding (b1 b2)
+  (and (eq (binding-variable b1) (binding-variable b2))
+       (eq (binding-value b1) (binding-value b2))))
+
+(defun add-new-dependencies-for-collection (old-dependencies edges i ii)
+  nil ;; dummy for now
+  )
+
+(defun fill-in-mention (m i source)
+  (let* ((location
+          (encode-mention-location
+           (if (consp source) (second source) source)))
+         (toc (location-in-article-of-current-sentence)))
+    (when (edge-p source)
+      (setf (mention-source m) source)
+      (setf (edge-mention source) m))
+    (setf (base-description m) i)
+    (setf (mentioned-where m)
+          (encode-mention-location
+           (if (consp source) (second source) source)))
+    (setf (mentioned-in-article-where m)
+          (cons toc *current-paragraph*))))
+
+(defun make-mention (i source &optional category)
+  "Individuals reside in a description lattice. Every new
+  property or relation extends the lattice and in so doing
+  creates a new individual that is more specific than
+  its predecessor. As a result we need to keep the (new)
+  individual as part of the entry, and we need to record
+  this mention in a table from the (new) individual so that
+  we can search back for correspondences from partial individual
+  further up the lattice."
+  ;; Cannonical caller is create-discourse-entry which checks which
+  ;; style of individual is being used and dispatches.
+  ;; The discourse entry for a category is a push list, most
+  ;; recent (and thereafter most specific) first
+  (declare (special *current-paragraph* category::prepositional-phrase category))
+  (if (null source) (lsp-break "null source in make-mention"))
+  ;; either don't create a mention for NPs with category references (like "the cell")
+  ;;  or make them have individuals as references
+  (if (null category) (setq category (itype-of i)))
+  (let* ((subsumed-mention (subsumed-mention? i source))
+	 (m (if subsumed-mention
+                (update-subsumed-mention subsumed-mention i source)
+                (make-instance 'discourse-mention
+                               :uid (incf *mention-uid*)))))
+    (declare (special m))
+    (fill-in-mention m i source)
+    (unless subsumed-mention
+      (tr :making-new-mention m)
+      (push m (mention-history i))) ;; calls (check-consistent-mention m)
+    (when (edge-p source)
+      (push m *lattice-individuals-mentioned-in-paragraph*)
+	(cond (subsumed-mention
+	       ;;(subsume-mention category m source subsumed-mention)
+               ;;(setf (dependencies m) (dependencies subsumed-mention))
+	       (when category
+                 (let ((limip
+                        (member subsumed-mention
+                                (gethash category *maximal-lattice-mentions-in-paragraph*))))
+                   (if limip
+                       (setf (car limip) m)
+                       (else
+                         (push m (gethash category *maximal-lattice-mentions-in-paragraph*))
+                         ;;(lsp-break "huh -- subsumed-mention not found in paragraph")
+                         ;; this happens in some stange, as yet unalyzed cases
+                         )))))
+	      (t
+	       (when category (push m (discourse-entry category)))
+               (when (non-dli-mod-for i)
+                 (pushnew (non-dli-mod-for i) (mention-non-dli-modifiers m))
+                 (setf (non-dli-mod-for i) nil))
+	       (unless (eq (edge-form source) category::prepositional-phrase)
+		 (push m (gethash category *maximal-lattice-mentions-in-paragraph*))))))
+    m))
+
+
 
 
 (defun subsume-mention (category m source subsumed-mention)
