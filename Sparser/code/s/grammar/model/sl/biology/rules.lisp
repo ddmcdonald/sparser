@@ -144,14 +144,18 @@
 ;; "Lys residues"
 (def-cfr residue-on-protein (amino-acid residue-on-protein)
   :form np
-  :referent (:head right-edge
-             :bind (amino-acid left-edge)))
+  :referent (:function bind-amino-acid left-edge right-edge))
+
+(defun bind-amino-acid (amino-acid residue-on-protein)
+  (bind-dli-variable 'amino-acid amino-acid residue-on-protein))
 
 ;; residues 104 and 147
 (def-cfr residue-on-protein (residue-on-protein number)
   :form n-bar
-  :referent (:head left-edge
-             :bind (position right-edge)))
+  :referent (:function bind-position-on-residue right-edge left-edge))
+
+(defun bind-position-on-residue (position residue-on-protein)
+  (bind-dli-variable 'position position residue-on-protein))
 
 (def-cfr residue-on-protein (residue-on-protein hyphenated-number)
   :form proper-noun
@@ -161,8 +165,11 @@
 
 (def-cfr residue-on-protein (protein residue-on-protein)
   :form np
-  :referent (:head right-edge           
-             :bind (substrate left-edge)))
+  :referent (:function bind-substrate-for-residue left-edge right-edge))
+
+(defun bind-substrate-for-residue (protein residue)
+  (bind-dli-variable 'substrate protein residue))
+
 
 #|
 ;; p38 kinase
@@ -182,13 +189,14 @@
 
 (def-cfr protein (protein point-mutation)
   :form NP
-  :referent (:head left-edge
-             :bind (mutation right-edge)))
+  :referent (:function bind-protein-mutation right-edge left-edge))
+
+(defun bind-protein-mutation (mutation protein)
+  (bind-dli-variable 'mutation mutation protein))
 
 (def-cfr protein (point-mutation protein)
   :form NP
-  :referent (:head right-edge
-             :bind (mutation left-edge)))
+  :referent (:function bind-protein-mutation left-edge right-edge))
 
 #+ignore
 (def-cfr protein (protein number)
@@ -297,6 +305,7 @@
   (:head left-edge
          :bind (context right-edge)))
 
+#+ignore
 (def-form-rule (time verb+ed) ;; to support "have recently shown"
   :form verb+ed
   :head :right-edge
