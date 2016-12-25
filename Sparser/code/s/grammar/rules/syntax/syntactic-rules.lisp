@@ -937,7 +937,7 @@ similar to an oncogenic RasG12V mutation (9)."))
      (eval
       `(def-form-rule (than ,nb)
            :head :right-edge
-           :referent (:head right-edge :bind (np left-edge))
+           :referent (:head right-edge) ;;  :bind (np left-edge)
            :form than-np)))
 
 #| almost never needed -- usually wrong
