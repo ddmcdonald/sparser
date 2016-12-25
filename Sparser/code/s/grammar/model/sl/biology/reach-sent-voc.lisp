@@ -18,6 +18,7 @@
                     (cons (car item)
                           (sort (cdr item) #'string<)))))))
 
+    ;; bad ((HUMAN-PROTEIN-FAMILY (NAME (WD "GST"))) "GST")
     ;; bad ((PROTEIN (RAW-TEXT "leukemia") (UID "UP:LIF_HUMAN") (NAME (WD "LIF_HUMAN")))"CLL")
     ;; bad ((PROTEIN (UID "HGNC:9113") (NAME (WD "PML"))) "PML" "promyelocytic leukemia")
     ;; bad ((PROTEIN (UID "PR:G5EGD2") (NAME (WD "PR:G5EGD2"))) "Hypoxia" "hypoxia")
@@ -29,6 +30,7 @@
     ;; bad ((PROTEIN (UID "UP:HIF3A_HUMAN") (NAME (WD "HIF3A_HUMAN"))) "normoxia")
     ;; bad ((PROTEIN (UID "UP:LIF_HUMAN") (NAME (WD "LIF_HUMAN"))) "LIF" "Leukemia" "leukemia" "leukemias")
     ;; bad ((PROTEIN (UID "UP:YRDC_HUMAN") (NAME (WD "YRDC_HUMAN"))) "Ischemia" "ischemia")
+    ;; bad ((PROTEIN (NAME (WD "driven"))) "Driven" "driven")
 
 (DEFPARAMETER *REACH-VOC*
   '(((ABETA) "Abeta") ((ACTIN) "actin")
@@ -1238,7 +1240,6 @@
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "DUSP"))) "DUSP" "DUSPs" "Dusp")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "GAP"))) "GAP" "GAPs" "Gap")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "GPCR"))) "GPCR" "GPCRs")
-    ((HUMAN-PROTEIN-FAMILY (NAME (WD "GST"))) "GST")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "HSP90"))) "HSP90" "Hsp90")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "IQGAP"))) "IQGAP" "IQGAPs")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "Jnk"))) "Jnk")
@@ -1997,7 +1998,6 @@
     ((PROTEIN (NAME (WD "chaperone"))) "chaperones")
     ((PROTEIN (NAME (WD "clathrin coated pit"))) "clathrin coated pits")
     ((PROTEIN (NAME (WD "cot"))) "COT" "Cot" "MAP3K8")
-    ((PROTEIN (NAME (WD "driven"))) "Driven" "driven")
     ((PROTEIN (NAME (WD "dual specificity phosphatase")))
      "dual specificity phosphatases")
     ((PROTEIN (NAME (WD "eg"))) "eg")
@@ -3439,7 +3439,7 @@
     ((PROTEIN (UID "PR:Q8YGD0") (NAME (WD "PR:Q8YGD0"))) "exonuclease")
     ((PROTEIN (UID "PR:Q90743") (NAME (WD "PR:Q90743"))) "amyloid")
     ((PROTEIN (UID "PR:Q90ZY9") (NAME (WD "PR:Q90ZY9"))) "syndecan")
-    ((PROTEIN (UID "PR:Q9DGN5") (NAME (WD "PR:Q9DGN5"))) "transporting")
+    ;;bad ((PROTEIN (UID "PR:Q9DGN5") (NAME (WD "PR:Q9DGN5"))) "transporting")
     ((PROTEIN (UID "PR:Q9LVI9") (NAME (WD "PR:Q9LVI9"))) "dehydrogenase"
      "dehydrogenases")
     ((PROTEIN (UID "PR:Q9SIW2") (NAME (WD "PR:Q9SIW2"))) "Chromatin"
