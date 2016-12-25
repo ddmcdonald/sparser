@@ -37,6 +37,9 @@
 
 (in-package :sparser)
 
+
+(noun "http://" :super abstract) ;; avoid an NS error
+
 ;; as in "centrosome sections"
 (define-category bio-section :specializes bio-method
                  :realization (:noun "section"))
@@ -102,13 +105,7 @@
 (adj "unchanged" :super scalar-variation)
 
 
-(define-category sustained :specializes scalar-variation
-  :binds ((level scalar-quality)
-          (above-level scalar-quality))
-   :realization
-   (:adj "sustained"
-         :at level
-         :above above-level))
+
 ;; Moved in from dossiers/modifiers.lisp
 (define-adverb "biochemically")
 (define-adverb "biologically")
