@@ -84,7 +84,10 @@
                 (make-polar-adjective-question start-pos end-pos edges))
                ((member (cat-name (edge-form (third edges)))
                         '(pp))
-                (make-polar-pp-question edges))))
+                (make-polar-pp-question edges))
+               ((member (cat-name (edge-form (third edges)))
+                        '(vp+ed vp+ing vg+ed vg+ing))
+                (make-polar-participle-question start-pos end-pos edges))))
 
         ;; the next option is to assume that the subject is the consistuent
         ;; just after the aux, to 'move' it there somehow, and try to
@@ -110,6 +113,27 @@
          start-pos end-pos
          (itype-of copular-statement)
          :rule 'make-polar-adjective-question
+         :form category::question
+         :referent q)))))
+
+(defun make-polar-participle-question (start-pos end-pos edges)
+  (let* ((be (edge-referent (first edges)))  ;; is
+         (np (edge-referent (second edges))) ;; the BRAF-NRAS complex
+         (participle (edge-referent (third edges))) ;; sustained in time
+         (*left-edge-into-reference* (first edges))
+         (participle-vp (check-passive-and-add-tense/aspect be participle))
+         (participle-statement
+          (when participle-vp
+            (assimilate-subject np participle-vp nil))))
+    (declare (special *left-edge-into-reference*))
+    ;; this is bound since make-copular-adjective needs to know the edge for the "BE"
+    ;; to check if it is an infinitive
+    (when participle-statement
+      (let ((q (make-polar-question participle-statement)))
+        (make-edge-over-long-span
+         start-pos end-pos
+         (itype-of participle-statement)
+         :rule 'make-polar-participle-question
          :form category::question
          :referent q)))))
 
