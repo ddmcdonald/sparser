@@ -132,6 +132,10 @@
 
 (defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent rule-name)
   (let* ((clauses (value-of 'items clause-referent))
+         (clause-edges
+          (if (is-basic-collection? (edge-referent clause))
+              (edges-under clause)
+              (edges-under (edge-right-daughter clause))))
 	 (vars (loop for c in clauses
 		  collect
 		    (or (subcategorized-variable c prep-word pobj-referent)
@@ -141,16 +145,27 @@
 	  (make-an-individual
 	   'collection
 	   :items
-	   (loop for c in clauses as var-name in vars
+	   (loop for c in clauses
+                 as var-name in vars
+                 as c-clause in clause-edges                   
 	      collect ;; create a mention-history for the new interpretation
 		(let* ((new-c (bind-dli-variable var-name pobj-referent c))
-		       (c-mention (relevant-mention (list clause) c)))
-		  (when c-mention
-		    (update-mention-referent c-mention new-c t))
+		       (c-mention
+                        (when (and
+                               (eq (edge-referent c-clause)  c)
+                               (typep (edge-mention c-clause) 'discourse-mention))
+                          (edge-mention c-clause))))
+		  (if c-mention
+                    (format t "found corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
+                            c-clause c)
+                    (warn "can't find corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
+                            c-clause c))
+                  (update-mention-referent c-mention new-c t)
 		  new-c))
 	   :number (length clauses)
 	   :type (itype-of (car clauses))))
 	 edge) ;;(lsp-break "1st")
+    (declare (special clause-edges))
     (setq edge (make-edge-spec
                 :category (edge-category clause)
 		:form (edge-form clause)
@@ -922,7 +937,7 @@
 
 (defun s-vp+ed (s-edge vp+ed)
   (let ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?)))
-    (when target       
+    (when target
       (make-edge-spec
        :category (edge-category target)
        :form category::np
@@ -1428,7 +1443,9 @@
 
 (defun update-edge-as-lambda-predicate (vp-edge &optional subject-var)
   (let ((svar (or subject-var
-                  (subject-variable (edge-referent vp-edge)))))
+                  (if (is-basic-collection? (edge-referent vp-edge))
+                      (subject-variable (car (value-of 'items (edge-referent vp-edge))))
+                      (subject-variable (edge-referent vp-edge))))))
     (cond ((null svar)
            (error "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge))
           (t
@@ -1452,8 +1469,11 @@
    ;; test below is because of some strange cases where an item in the
    ;;  fringe in not in the tree
    (or (null (edge-used-in edge))
-   ;; test below is to block finding of "FAK" below "phosphorylated FAK"
-       (not (np-target? (edge-used-in edge))))))
+       (and
+        ;; test below is to block finding of "FAK" below "phosphorylated FAK"
+        (not (np-target? (edge-used-in edge)))
+        (not (member (cat-name (edge-form (edge-used-in edge)))
+                     '(n-bar np)))))))
 
 (defun right-fringe-of (edge)
   (all-edges-on (pos-ends-here (pos-edge-ends-at edge))))
