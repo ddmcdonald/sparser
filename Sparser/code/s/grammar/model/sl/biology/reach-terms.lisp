@@ -934,7 +934,9 @@
     ("BTG family" "pfam" :TYPE "family" :ID "PF07742") ))
 
 (DEFPARAMETER *REACH-TERMS-2*
-  '(("innate immune response" "go" :TYPE "bioprocess" :ID "GO:0045087")
+  '(
+    ;; bad ("RNA binding" "pfam" :TYPE "family" :ID "PF01877")
+    ("innate immune response" "go" :TYPE "bioprocess" :ID "GO:0045087")
     ("bioenergetic" "go" :TYPE "bioprocess" :ID "GO:0006091")
     ("programmed cell death" "go" :TYPE "bioprocess" :ID "GO:0006915")
     ("energy metabolism" "go" :TYPE "bioprocess" :ID "GO:0006091")
@@ -1156,7 +1158,6 @@
      "IPR015476")
     ("ion channel" "pfam" :TYPE "family" :ID "PF07885")
     ("phospholipase D" "interpro" :TYPE "family" :ID "IPR015679")
-    ("RNA binding" "pfam" :TYPE "family" :ID "PF01877")
     ("PP2C phosphatase" "uaz" :TYPE "family" :ID "UAZ02056")
     ("vascular cell adhesion molecule-1" "interpro" :TYPE "family" :ID
      "IPR003989")
