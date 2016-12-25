@@ -55,3 +55,6 @@
 
 (defmethod pname ((lv lambda-variable))
   (var-name lv))
+
+(defmethod pname ((lv anonymous-variable))
+  (avar-name lv))
