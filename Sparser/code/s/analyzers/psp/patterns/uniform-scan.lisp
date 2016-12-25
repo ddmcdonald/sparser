@@ -304,37 +304,39 @@
   ;; form is 'proper-name'.  Something makes me think this could
   ;; be problem down the line, but we can deal with it when it emerges.
   (declare (special *big-mechanism*))
-  (when (eq pos-before next-position)
-    (error "Upstream mistake in no-space routine. ~
-            the position before is EQ to the position after"))
+  (cond ((eq pos-before next-position)
+         (error "Upstream mistake in no-space routine. ~
+            the position before is EQ to the position after")
+         nil)
+        (t
 
-  (let ((reason (reason-to-not-span-ns pos-before next-position)))
-    (tr :not-reifying-because-there-was-a-reason)
-    (when reason
-      (throw :punt-on-nospace-without-resolution reason)))
+         (let ((reason (reason-to-not-span-ns pos-before next-position)))
+           (tr :not-reifying-because-there-was-a-reason)
+           (when reason
+             (throw :punt-on-nospace-without-resolution reason)))
 
-  (unless *big-mechanism*
-    (unless (fboundp 'reify-spelled-name)
-      ;; It's in the grammar module for names
-      (throw :punt-on-nospace-without-resolution :no-reify-method)))
+         (unless *big-mechanism*
+           (unless (fboundp 'reify-spelled-name)
+             ;; It's in the grammar module for names
+             (throw :punt-on-nospace-without-resolution :no-reify-method)))
 
-  (multiple-value-bind (category rule referent)
-                       (if *big-mechanism*
-                         (reify-ns-name-as-bio-entity 
-                          words pos-before next-position)
-                         (reify-spelled-name words))
-    (tr :reified-ns-name referent pos-before next-position)
-    (let ((edge
-           (make-edge-over-long-span
-            pos-before
-            next-position
-            category
-            :rule rule
-            :form (category-named 'proper-name)
-            :referent referent
-            :words words)))
-      (tr :made-edge edge)
-      edge)))
+         (multiple-value-bind (category rule referent)
+             (if *big-mechanism*
+                 (reify-ns-name-as-bio-entity 
+                  words pos-before next-position)
+                 (reify-spelled-name words))
+           (tr :reified-ns-name referent pos-before next-position)
+           (let ((edge
+                  (make-edge-over-long-span
+                   pos-before
+                   next-position
+                   category
+                   :rule rule
+                   :form (category-named 'proper-name)
+                   :referent referent
+                   :words words)))
+             (tr :made-edge edge)
+             edge)))))
 
 
 (defun reify-ns-name-as-bio-entity (words pos-before pos-after)
@@ -376,6 +378,7 @@
        (let* ((w (resolve words-string))
 	      (bio-entity (find-individual 'bio-entity :name w)))
 	 (if bio-entity
+
            (values category::bio-entity
                    'reify-ns-name-as-bio-entity
                    bio-entity)
