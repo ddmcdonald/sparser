@@ -66,5 +66,3 @@
           (right number))
   :index (:sequential-keys left right))
 
-(define-category slashed-sequence-of-numbers)
-

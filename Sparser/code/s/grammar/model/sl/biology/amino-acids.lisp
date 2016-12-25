@@ -380,10 +380,7 @@ We therefore have the special cases:
       (let ((aa1 (single-letter-is-amino-acid word1))
             (aa2 (single-letter-is-amino-acid word3)))
         (when (and aa1 aa2)
-          (let* ((number (if (and (individual-p ref2)
-                                 (itypep ref2 'number))
-                            ref2
-                            (find-or-make-number ref2)))
+          (let* ((number (find-or-make-number ref2))
                  (interp (make-point-mutation aa2 aa1 number))
                  (wd (resolve/make (actual-characters-of-word pos-before pos-after words))))
             (def-cfr/expr category::point-mutation

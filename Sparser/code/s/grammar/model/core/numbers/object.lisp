@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "model;core:numbers:"
-;;;  Version:  July 2016
+;;;  Version:  December 2016
 
 ;; 1.2 (7/19/92 v2.3) made over as "real" category. 8/4/94 finished princ routine
 ;;     (10/3) improved the printer.  11/15/95 added a sort routine.
@@ -18,16 +18,26 @@
 ;;; objects
 ;;;---------
 
-(define-mixin-category takes-numerical-value
-  :specializes abstract
-  :binds ((value :primitive number)))
-
 (define-category  number
   :instantiates  self
   :specializes   abstract
   :binds ((value :primitive number))
-  :index (:key value))
+  :index (:key value)
+  :documentation "An representation of any sort of
+ number. The 'numberical value' of a number individual
+ is represented as a bare lisp number bound to the
+ value variable of the number. Lets us use a common
+ currency for numbers just like the other sorts of
+ things that populate models.")
 (mark-as-form-category 'number)
+
+(define-mixin-category takes-numerical-value
+  :specializes abstract
+  :binds ((value :primitive number))
+  :documentation "Provides a value variable for things
+ that are not themselves numbers but can be viewed a
+ them for some purposes or for digit strings that are
+ ambbiguous -- notably years.")
 
 
 (define-category multiplier
@@ -170,32 +180,45 @@
 ;;; find-or-make
 ;;;--------------
 ;; Intended for instances where a function has something
-;; in its hand and wants the corresponding number
+;; in its hand and wants the corresponding number individual
 
 (defun find-number (lisp-number)
   (find-individual 'number :value lisp-number))
 
 ;; (get-tag :numerical-value digit-word))
 
-(defmethod find-or-make-number ((word word))
-  (find-or-make-number (word-pname word)))
+(defgeneric find-or-make-number (value)
+  (:documentation "Return the number individual that
+    has this numerical value.")
 
-(defmethod find-or-make-number ((pname string))
-  (let ((lisp-number (read-from-string pname)))
-    (find-or-make-number lisp-number)))
+  (:method ((word word))
+    (find-or-make-number (word-pname word)))
+  (:method ((pname string))
+    (let ((lisp-number (read-from-string pname)))
+      (assert (numberp lisp-number) ()
+              "The string ~s is not a number" pname)
+      (find-or-make-number lisp-number)))
 
-(defmethod find-or-make-number ((lisp-number number))
-  (define-or-find-individual 'number 'value lisp-number))
+  (:method ((lisp-number number))
+    (define-or-find-individual 'number 'value lisp-number))
 
-(defmethod find-or-make-number ((i individual))
-  "Used by reify-point-mutation in the odd cases where
-   the residue number happens to be the same as one
-   of the years we've defined, e.g. the S1986Y or 
-   the S1986F mutation"
-  (let ((value? (value-of 'value i)))
-    (when value?
-      (define-or-find-individual 'number
-          :value value?))))
+  (:method ((i individual))
+    "Used by reify-point-mutation in the odd cases where
+     the residue number happens to be the same as one
+     of the years we've defined, e.g. the S1986Y or 
+     the S1986F mutation"
+    (cond
+      ((itypep i 'number) i)
+      ((itypep i 'takes-numerical-value)
+       (define-or-find-individual 'number
+           :value (value-of 'value i)))
+      ((value-of 'value i)
+       ;;/// tally these so can give them the mix-in
+       (define-or-find-individual 'number
+           :value (value-of 'value i)))
+      (t
+       (error "Can not make a number individual from ~a~
+             ~%which is a ~a" i (type-of i))))))
 
 
 
