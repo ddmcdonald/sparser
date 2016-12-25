@@ -65,7 +65,9 @@
     ;; Finally we consult the category's mixins.
     (or (find-variable-in-category variable-name category) 
         (super-category-has-variable-named variable-name category) 
-        (find-variable-in-mixins variable-name category))))
+        (find-variable-in-mixins variable-name category)))
+  (:method ((var anonymous-variable) (category category))
+    (find-variable-for-category (pname var) category)))
 
 ;;/// depricated
 (defun find-variable-from-individual (variable-name i)
@@ -360,7 +362,7 @@
       (declare (ignore variables))
       (let ((variable (find-variable-for-category name c)))
         (unless variable
-          (error "There is no variable named ~a~%in the category ~a"
+          (warn "There is no variable named ~a~%in the category ~a"
                  name c))
         variable))))
 
