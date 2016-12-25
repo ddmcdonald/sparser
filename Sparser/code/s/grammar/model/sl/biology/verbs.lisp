@@ -308,7 +308,7 @@
 
 (define-category disfavor :specializes negative-bio-control
   :realization
-  (:verb ("favor" :present-participle "disfavoring"
+  (:verb ("disfavor" :present-participle "disfavoring"
                   :past-tense "disfavored")
          :etf (svo-passive)))
 
@@ -1304,7 +1304,7 @@
   :mixins (bio-thatcomp)
   :realization
   (:verb ("find" :past-tense "found")
-         :noun "finding"
+         :noun "finding" ;; to allow for "findings"
          :etf (svo-passive)
 	 :mumble ("find" svo)))
 
@@ -1361,7 +1361,7 @@
 
 (define-category bio-grow  :specializes bio-method
   :realization 
-  (:verb ("grow" :past-tense "grown") :noun "growing"
+  (:verb ("grow" :past-tense "grown") ;; :noun "growing"
          :etf (svo-passive)))
 
 
@@ -2449,6 +2449,18 @@
     :realization
     (:verb "sustain" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)))
+
+(define-category sustained :specializes scalar-variation
+   :binds ((theme (:or process scalar-quality))
+           (level scalar-quality)
+           (above-level scalar-quality))
+   :realization
+   (:verb "sustain" ;; keyword: ENDS-IN-ED 
+          :etf (svo-passive)
+          :adj "sustained"
+          :o theme
+          :at level
+          :above above-level))
 
 (define-category tag :specializes bio-method
     :binds ((location bio-location))
