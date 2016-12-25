@@ -168,21 +168,24 @@ We therefore have the special cases:
                       &optional amino-acid number)
   ;; Called drectly from one-hyphen-ns-edges with just the edges
   ;; or from single letter pattern just above
-  (unless amino-acid
-    (setq amino-acid (edge-referent amino-acid-edge)))
-  (unless number
-    (setq number (edge-referent number-edge)))
-  (let* ((residue (make-residue-on-protein amino-acid number))           
-         (edge (make-chart-edge
-                :left-edge amino-acid-edge
-                :right-edge number-edge
-                :starting-position start-pos
-                :ending-position end-pos
-                :category category::residue-on-protein
-                :form category::n-bar ;; must be n-bar, otherwise it will not act as a premodifier in an NP
-                :rule-name :reify-residue
-                :referent residue)))
-              edge))
+  (when (and amino-acid-edge number-edge)
+    ;; avoid error in "was mapped to chromosome 4q25–q27."
+    ;;  where q27 is treated like a residue...
+    (unless amino-acid
+      (setq amino-acid (edge-referent amino-acid-edge)))
+    (unless number
+      (setq number (edge-referent number-edge)))
+    (let* ((residue (make-residue-on-protein amino-acid number))           
+           (edge (make-chart-edge
+                  :left-edge amino-acid-edge
+                  :right-edge number-edge
+                  :starting-position start-pos
+                  :ending-position end-pos
+                  :category category::residue-on-protein
+                  :form category::n-bar ;; must be n-bar, otherwise it will not act as a premodifier in an NP
+                  :rule-name :reify-residue
+                  :referent residue)))
+      edge)))
 
 
 (defun make-residue-on-protein (amino-acid number-exp)
