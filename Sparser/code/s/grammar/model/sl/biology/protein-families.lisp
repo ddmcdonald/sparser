@@ -11,6 +11,7 @@
 
 
 
+;;bad (def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 
 ;; Protein families
 (def-family "importin")
@@ -61,7 +62,6 @@
             :members ("PDE1A_HUMAN" "PDE1B_HUMAN""PDE1C_HUMAN"))
 
 (def-family "cadherin" :members ("CADH1_HUMAN"))
-(def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 
 (def-family "MEK" 
   :members ("MEK1" "MEK2")
