@@ -123,23 +123,27 @@
 ;; Gly33
 (def-cfr residue-on-protein (amino-acid number)
   :form np
-  :referent (:instantiate-individual residue-on-protein
-             :with (amino-acid left-edge
-                    position right-edge)))
+  :referent (:function create-residue-from-amino-acid-position left-edge right-edge))
+
+(defun create-residue-from-amino-acid-position (amino-acid position)
+  (create-residue-on-protein nil amino-acid position nil))
+
+(defun create-residue-on-protein (explicit-residue amino-acid position substrate)
+  (let ((residue (or explicit-residue
+                     (find-or-make-lattice-description-for-ref-category
+                      (category-named 'residue-on-protein)))))
+    (when amino-acid
+      (setq residue (bind-dli-variable 'amino-acid amino-acid residue)))
+    (when position
+      (setq residue (bind-dli-variable 'position position residue)))
+    (when substrate
+      (setq residue (bind-dli-variable 'substrate substrate residue)))
+    residue))
 
 (def-cfr residue-on-protein (amino-acid hyphenated-number)
   :form np
-  :referent (:function multi-amino-acids left-edge right-edge))
-
-(defun multi-amino-acids (amino-acid hyphenated-positions)
-  (declare (special category::residue-on-protein))
-  (let ((res (fom-lattice-description category::residue-on-protein)))
-    (bind-dli-variable 'position
-		       hyphenated-positions
-		       #+ignore
-		       (list (value-of 'left hyphenated-positions)
-			       (value-of 'right hyphenated-positions))
-			 (bind-dli-variable 'amino-acid amino-acid res))))
+  :referent (:function create-residue-from-amino-acid-position
+                       left-edge right-edge))
 
 ;; "Lys residues"
 (def-cfr residue-on-protein (amino-acid residue-on-protein)
@@ -147,7 +151,7 @@
   :referent (:function bind-amino-acid left-edge right-edge))
 
 (defun bind-amino-acid (amino-acid residue-on-protein)
-  (bind-dli-variable 'amino-acid amino-acid residue-on-protein))
+  (create-residue-on-protein residue-on-protein amino-acid nil nil))
 
 ;; residues 104 and 147
 (def-cfr residue-on-protein (residue-on-protein number)
@@ -155,20 +159,18 @@
   :referent (:function bind-position-on-residue right-edge left-edge))
 
 (defun bind-position-on-residue (position residue-on-protein)
-  (bind-dli-variable 'position position residue-on-protein))
+  (create-residue-on-protein residue-on-protein nil position nil))
 
 (def-cfr residue-on-protein (residue-on-protein hyphenated-number)
   :form proper-noun
-  :referent (:instantiate-individual residue-on-protein
-             :with (amino-acid left-edge
-                    position right-edge)))
+  :referent (:function bind-position-on-residue right-edge left-edge))
 
 (def-cfr residue-on-protein (protein residue-on-protein)
   :form np
   :referent (:function bind-substrate-for-residue left-edge right-edge))
 
 (defun bind-substrate-for-residue (protein residue)
-  (bind-dli-variable 'substrate protein residue))
+  (create-residue-on-protein residue nil nil protein))
 
 
 #|
