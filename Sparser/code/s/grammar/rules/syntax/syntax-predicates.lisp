@@ -216,9 +216,12 @@
 
 
 (defun base-pp (edge)
+  (when (eq (edge-rule edge) 'knit-parens-into-neighbor)
+    ;; e.g. in "about Myosin IIC ( xref ; xref )"
+    (setq edge (edge-left-daughter edge)))
   (if (and (edge-p (edge-left-daughter edge))
            (eq (cat-name (edge-form (edge-left-daughter edge))) 'adverb))
-      (edge-right-daughter edge)
+      (base-pp (edge-right-daughter edge))
       edge))
 
 
