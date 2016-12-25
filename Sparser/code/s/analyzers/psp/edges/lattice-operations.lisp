@@ -315,7 +315,9 @@
     (declare (special *index-under-permanent-instances*
                       parent var dl-vv downlinks))
     (if (null var)
-        (return-from find-or-make-lattice-subordinate (values parent nil))
+        (then (lsp-break "find-or-make-lattice-subordinate fails to find var ~s in ~s~%"
+                    var/name (or category parent))
+              (return-from find-or-make-lattice-subordinate (values parent nil)))
         (let* ((result
 		(or (gethash dl-vv downlinks) ;; already there in the hierarchy
 		    (let ((new-child (deep-copy-individual parent)))
