@@ -287,6 +287,10 @@
 		 :realization
 		 (:noun "response element"))
 
+(define-category anti-oxidant-response-element :specializes dna-response-element
+  :realization
+  (:noun ("anti-oxidant response element" "ARE")))               
+
 (define-category ion :specializes bio-chemical-entity
   :binds ((molecule molecule)))
 
@@ -905,7 +909,8 @@
   :binds (;;(object molecule) ;; the nucleotyde that moves
           (substrate biological))
   :realization
-  (:noun "loading"
+  (:verb "load"
+         :etf (svo-passive)
          :of object
          :onto substrate))
 ;; leads to rule bio-entity + load, 
@@ -1379,7 +1384,8 @@ the aggregate across the predicate it's in. |#
   :specializes molecular-location
   ;; NOT same as protein, it is the location, not the amino acid
   :instantiates :self
-  :binds ((amino-acid . amino-acid)
+  :binds ((amino-acid amino-acid)
+          (substrate protein)
           (position number)) ;; counting from the N terminus
   :index (:permanent :sequential-keys amino-acid position)
   :realization
