@@ -69,6 +69,9 @@
   :brackets '( ].conjunction conjunction.[ ))
 
 (define-conjunction "or"  :form 'conjunction
+                    :brackets '( ].conjunction conjunction.[ ))
+
+(define-conjunction "and/or"  :form 'conjunction
   :brackets '( ].conjunction conjunction.[ ))
 
 ;;(define-conjunction "but not"  :form 'conjunction) works more simply as a "preposition"
