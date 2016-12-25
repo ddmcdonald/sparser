@@ -576,10 +576,11 @@
          (cond ((category-p vg) vg)
                ((individual-p vg) (itype-of vg))
                (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb")))))
-    (if (and (first (cat-realization vg-cat))
-             (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
-                           '(PASSIVE/WITH-BY-PHRASE))))
-        (revise-parent-edge :form category::vg))
+    (when (and (first (cat-realization vg-cat))
+               (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
+                             '(PASSIVE/WITH-BY-PHRASE))))
+      (when *parent-edge-getting-reference* ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
+        (revise-parent-edge :form category::vg)))
     (add-tense/aspect aux vg)))
 
 (defgeneric add-tense/aspect-to-subordinate-clause (aux sc)
@@ -1045,42 +1046,47 @@
   ;; right-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
   (when (and subj vp) ;; have had cases of uninterpreted VPs
-    (cond
-      ((itypep vp 'copular-predication)
-       (if *subcat-test* t
-           (else
-             (revise-parent-edge :category category::copular-predication)
-             (setq vp (bind-variable 'item subj vp))
-             vp)))
-      ((transitive-vp-missing-object? vp right-edge)
-       (when (not *subcat-test*)
-         ;; the edge isn't available and shouldn't be chaged during the test phase
-         (when *warn-about-optional-objects*
-           (warn "~%transitive verb without object: ~s~%"
-               (extract-string-spanned-by-edge (right-edge-for-referent))))
-         (revise-parent-edge :form category::transitive-clause-without-object))
-       (assimilate-subcat vp :subject subj))
+    (let ((result
+           (cond
+             ((itypep vp 'copular-predication)
+              (if *subcat-test* t
+                  (else
+                    (revise-parent-edge :category category::copular-predication)
+                    (setq vp (bind-variable 'item subj vp))
+                    vp)))
+             ((transitive-vp-missing-object? vp right-edge)
+              (when (not *subcat-test*)
+                ;; the edge isn't available and shouldn't be chaged during the test phase
+                (when *warn-about-optional-objects*
+                  (warn "~%transitive verb without object: ~s~%"
+                        (extract-string-spanned-by-edge (right-edge-for-referent))))
+                (revise-parent-edge :form category::transitive-clause-without-object))
+              (assimilate-subcat vp :subject subj))
       
-      ((and right-edge
-            (eq (edge-form right-edge) category::subordinate-clause))
-       (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
-	      (vg-edge (edge-right-daughter right-edge)))
-	 (when (edge-p vg-edge)
-           ;; vg-edge is :long-span for cases where the
-           ;;  subordinate clause is a conjunction
-           ;; HANDLE THESE CORRECTLY
-           (if
-            (is-passive? vg-edge)
-            (when (and (object-variable vg-edge)
-                       (null (value-of (object-variable vg-edge) svp)))
-              (assimilate-subcat svp :object subj))
-            (when (missing-subject-vars (edge-referent vg-edge))
-              (assimilate-subcat svp :subject subj))))))
+             ((and right-edge
+                   (eq (edge-form right-edge) category::subordinate-clause))
+              (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
+                     (vg-edge (edge-right-daughter right-edge)))
+                (when (edge-p vg-edge)
+                  ;; vg-edge is :long-span for cases where the
+                  ;;  subordinate clause is a conjunction
+                  ;; HANDLE THESE CORRECTLY
+                  (if
+                   (is-passive? vg-edge)
+                   (when (and (object-variable vg-edge)
+                              (null (value-of (object-variable vg-edge) svp)))
+                     (assimilate-subcat svp :object subj))
+                   (when (missing-subject-vars (edge-referent vg-edge))
+                     (assimilate-subcat svp :subject subj))))))
       
-      ((and right-edge (is-passive? right-edge))
-       (assimilate-subcat vp :object subj))
+             ((and right-edge (is-passive? right-edge))
+              (assimilate-subcat vp :object subj))
       
-      (t (assimilate-subcat vp :subject subj)))))
+             (t (assimilate-subcat vp :subject subj)))))
+      (when (is-basic-collection? vp)
+        (revise-parent-edge
+         :category (value-of 'type vp)))
+      result)))
 
 
 
@@ -1433,11 +1439,18 @@
       (bind-dli-variable :intensity intensifier adjective)))
 
 
+(defparameter *show-adverb-attachment-to-PPs* nil)
+
 (defun maybe-attach-adverb-to-pp (adverb pp)
   ;; Don't accept (adverb comma) edges as premodifiers for PPs
   ;; e.g. block ""Notably, of the nine candidate ORFs..."
-  (cond (*subcat-test* (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)))
-        (t (bind-dli-variable 'modifier adverb (individual-for-ref pp)))))
+  (cond (*subcat-test*  (not (eq (edge-rule (left-edge-for-referent)) 'adverb-comma)) )
+        (t (when *show-adverb-attachment-to-PPs*
+             (warn "after ~s attaching adverb ~s to PP ~s~%"
+                   (retrieve-surface-string (edge-just-to-left-of (left-edge-for-referent)))
+                   (retrieve-surface-string adverb)
+                   (retrieve-surface-string pp)))
+           (bind-dli-variable 'modifier adverb (individual-for-ref pp)))))
 
 
 ;;;---------------
