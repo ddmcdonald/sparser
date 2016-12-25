@@ -572,7 +572,6 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
       ;;/// trace
       edge)))
 
-
 ;;;-----------------
 ;;; two part labels
 ;;;-----------------
@@ -610,18 +609,26 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
 
 
 (defun resolve-protein-prefix (prefix-edge protein-edge words start-pos end-pos)
-  (declare (special category::protein))
-  (let* ((predicate 
-          (create-predication-by-binding
-           'substrate **lambda-var** (edge-referent prefix-edge)
-           (list 'resolve-protein-prefix prefix-edge
-		 (individual-for-ref (edge-referent prefix-edge)))
-           :insert-edge nil ))
-         (i (bind-dli-variable 'predication predicate (edge-referent protein-edge)))
-         (edge (make-ns-edge
-                start-pos end-pos category::protein
-                :rule 'resolve-protein-prefix
-                :form category::n-bar
-                :referent i)))
-    edge))
+  (declare (special prefix protein words start-pos end-pos category::protein))
+  #+ignore
+  (format t "~%resolve-protein-prefix gets prefix ~s on ~s~%"
+          (head-string prefix-edge)
+          (head-string protein-edge))
+  (if (or (null (head-string prefix-edge))
+          (null (head-string protein-edge)))
+      nil ;;(lsp-break "null string"))
+      (let* ((predicate 
+              (create-predication-by-binding
+               'substrate **lambda-var** (edge-referent prefix-edge)
+               (list 'resolve-protein-prefix prefix-edge
+                     (individual-for-ref (edge-referent prefix-edge)))
+               :insert-edge nil ))
+             (i (bind-dli-variable 'predication predicate (edge-referent protein-edge)))
+             (edge (make-ns-edge
+                    start-pos end-pos category::protein
+                    :rule 'resolve-protein-prefix
+                    :form category::n-bar
+                    :referent i
+                    )))
+        edge)))
 
