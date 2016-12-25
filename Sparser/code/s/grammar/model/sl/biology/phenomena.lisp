@@ -423,7 +423,7 @@ it is created from N-terminus to C-terminus.|#
 (define-category binding-domain :specializes protein-domain
   :binds ((bound-item bio-chemical-entity))
   :realization
-  (:noun "binding domain"
+  (:noun ("binding domain" "binding region")
          :m bound-item))
 
 (define-category RBD :specializes binding-domain
@@ -635,8 +635,11 @@ it is created from N-terminus to C-terminus.|#
           (complex bio-complex))
   :realization 
   (:verb ("bind" :past-tense "bound" :present-participle "binding") ;; xxx is to prevent "binding" being a verb form
+         :etf (svo-passive)
+
          :noun "binding"
-         :etf (svo-passive) 
+         ;; to handle "bindings" and not break up "the p53 binding ability of ASPP2" during chinking
+
          :s binder
          :o  direct-bindee
          :m direct-bindee
