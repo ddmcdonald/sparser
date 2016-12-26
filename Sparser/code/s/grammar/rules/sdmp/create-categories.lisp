@@ -157,6 +157,9 @@
 
 
 (defun revise-form-of-nospace-edge-if-necessary (edge right-edge)
+  "Does what it's name suggests. Called from several edge-forming
+   no-space cases that don't have enough information to be sure
+   about the edge they're creating."
   (unless edge
     ;; Got a null edge on "ASPP2"
     (return-from revise-form-of-nospace-edge-if-necessary nil))

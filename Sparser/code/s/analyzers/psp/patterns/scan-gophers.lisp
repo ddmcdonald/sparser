@@ -103,20 +103,24 @@
 
 (defun word-never-in-ns-sequence (word)
   (declare (special *the-punctuation-period*
+                    *the-punctuation-question-mark*
                     *the-punctuation-comma*
                     *the-punctuation-semicolon*))
   (when (punctuation? word)
     (or (eq word *the-punctuation-period*)
+        (eq word  *the-punctuation-question-mark*)
         (eq word *the-punctuation-comma*)
         (eq word *the-punctuation-semicolon*))))
 
 
 (defun second-word-not-in-ns-sequence (word next-position)
   (declare (special *the-punctuation-period* *the-punctuation-comma*
-                    *the-punctuation-semicolon* *end-of-source*))
+                    *the-punctuation-semicolon* *end-of-source*
+                    *the-punctuation-question-mark*))
   (when (punctuation? word)
     (cond
       ((or (eq word *the-punctuation-period*)
+           (eq word *the-punctuation-question-mark*)
 	   (eq word *the-punctuation-comma*)
 	   (eq word *the-punctuation-semicolon*))
        ;; more general than "." probably, but this is the canonical
@@ -134,9 +138,10 @@
   (declare (special *the-punctuation-period* *the-punctuation-comma*
                     *the-punctuation-colon* *the-punctuation-semicolon*
                     *the-punctuation-rightwards-arrow*
-                    *the-punctuation-plus-minus*))
+                    *the-punctuation-plus-minus* *the-punctuation-question-mark*))
   (cond
     ((or (eq word *the-punctuation-period*)
+         (eq word *the-punctuation-question-mark*)
 	 (eq word *the-punctuation-comma*)
 	 (eq word *the-punctuation-semicolon*))
      ;; if there's a space after this character, we assume that

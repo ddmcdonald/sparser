@@ -16,6 +16,9 @@
 (defun resolve-slash-pattern (pattern words edges
                               slash-positions hyphen-positions 
                               pos-before pos-after)
+  "Called from ns-pattern-dispatch when the salient punctuation is one or
+   more slashes. Returns nil if it doesn't know what the pattern means
+   and we go back to the dispatch."
   (if (null (cdr slash-positions)) ;; only one
     (one-slash-ns-patterns
      pattern words edges slash-positions hyphen-positions pos-before pos-after)
@@ -60,10 +63,12 @@
 (defun divide-and-recombine-ns-pattern-with-slash (pattern words edges
                                                    slash-positions hyphen-positions 
                                                    pos-before pos-after)
-  ;; Assumes that slash has precedence over any other punctuation,
-  ;; so it does a resolve-pattern of each of the segements between
-  ;; slashes and then recombines them into a slash-structure along the
-  ;; lines of make-hyphenated-structure and such.
+  "Called from ns-pattern-dispatch when there are both (one or more) slashes
+   and hyphens in the pattern.
+  Assumes that slash has precedence over any other punctuation,
+  so it does a resolve-pattern of each of the segements between
+  slashes and then recombines them into a slash-structure along the
+  lines of make-hyphenated-structure and such."
   ;;//// slashes often indicate two proteins that differ in just
   ;; their suffix. What's that pattern?
   ;; At this point the terminals are covered by edges. They probably
@@ -123,8 +128,10 @@
 
 
 (defun pop-up-to-slash (pattern)
-  ;; Subroutine of divide-and-recombine-ns-pattern-with-slash but might
-  ;; make a useful utility with a bit of abstraction
+  "Subroutine of divide-and-recombine-ns-pattern-with-slash but might
+   make a useful utility with a bit of abstraction. Looks for a slash
+   in the pattern and returns the portion of the pattern before the
+   slash and the remainder of the pattern after the slash."
   (let ((slash-index (position :forward-slash pattern)))
     ;;(push-debug `(,pattern ,slash-index)) (break "index = ~a" slash-index)
     ;; (setq pattern (car *) slash-index (cadr *))
@@ -135,10 +142,12 @@
 
 
 (defun resolve-slash-segment (segment-pattern hyphen-positions start-pos end-pos)
+  "Look at the region between start and end positions and return an edge
+   that accounts for its content. Feeds package-slashed-sequence"
   (tr :resolve-slash-segment segment-pattern start-pos end-pos)
   (let ((single-edge (span-covered-by-one-edge? start-pos end-pos)))
-    ;; is there one edge between the start of this portion and
-    ;; the position of the slash? Then we're done
+    ;; if there's one edge between the start of this portion and
+    ;; the position of the slash, we're done
     (cond
      (single-edge
       (tr :slash-segment-covered single-edge)
@@ -158,7 +167,6 @@
              when (position-is-between pos pos-before pos-after)
              collect pos)))
         (edges (remove-non-edges (treetops-between pos-before pos-after))))
-  
     (or (when relevant-hyphen-positions
           (resolve-hyphen-pattern 
            pattern words edges relevant-hyphen-positions pos-before pos-after))

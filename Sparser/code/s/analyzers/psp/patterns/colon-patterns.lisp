@@ -151,48 +151,7 @@
     ;;//// punting on that for the moment. Need the right list
     (resolve-ns-pattern pattern words edges start-pos end-pos)))
 
-;;/// move to characterize-words
-(defun sweep-ns-region (start-pos end-pos)
-  "Returns a pattern based on the words and edges over those words.
-   Knows a great deal about what kinds of edges are just mechanical
-   and replaces those with a characterization of the word they're
-   over to more easily fit into the pattern tests."
-  ;;//// When we do a major revision of the style of NS revision
-  ;; this should be merged somehow with characterize-words-in-region 
-  ;; so patterns can be put in the right form earlier -- like at top
-  ;; of ns-pattern-dispatch, though that wants the positions.
-  (let ((treetops (treetops-between start-pos end-pos))
-        pattern-elements )
-    ;;/// That sweep was designed for simplistic parsing and ignores
-    ;; things like multiple edges. May need a tailored one
-    (unless (every #'edge-p treetops)
-      (push-debug `(,start-pos ,end-pos ,treetops))
-      (break "Not every treetop is an edge: ~a" treetops))
 
-    (flet ((label-for-pattern (edge)
-             (let* ((label (cat-symbol (edge-category edge)))
-                    (position (pos-edge-starts-at edge))
-                    (word (word-under-edge edge))
-                    (pname (word-pname word)))
-               (cond
-                ((eq label 'category::number)
-                 (if (= 1 (length pname)) :single-digit :digits))
-                ((eq label 'category::bio-entity)
-                 (characterize-word-type position word))
-                ((search (symbol-name '#:-kind) (symbol-name label))
-                 (characterize-word-type position word))
-                ((memq label '(protein wild-type))
-                 ;;(eq label 'protein) 
-                 label)
-                ;;//// need to look for massive set of cases
-                ;; since we don't want to return something the
-                ;; patterns won't recognize. Protein is an obvious
-                ;; case, but what else?
-                (t (characterize-word-type position word))))))
-      (loop for tt in treetops
-        collect (if (one-word-long? tt)
-                  (label-for-pattern tt)
-                  (push (edge-category tt) pattern-elements))))))
 
 ;;;------------------
 ;;; colon and hyphen
@@ -202,6 +161,8 @@
 (defun divide-and-recombine-ns-pattern-with-colon (pattern words edges
                                                    colon-positions hyphen-positions 
                                                    pos-before pos-after)
+  "Called from ns-pattern-dispatch when there are both colons and hyphens
+   in the pattern"
   (declare (ignore hyphen-positions colon-positions))
   ;;(push-debug `(,hyphen-positions ,colon-positions ,pos-before ,pos-after ,words ,pattern))
 

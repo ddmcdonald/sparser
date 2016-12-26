@@ -69,12 +69,12 @@
 ;; (trace-scan-patterns)  for large scale
 
 (defun collect-no-space-segment-into-word (position-after)
-  ;; As called from do-no-space-collection . At this point all of the
-  ;; words in the sentence have be spanned with unary edges, and there
-  ;; are multi-word edges over polywords or created by an FSA (e.g. numbers).
-  ;; This 'position-after' is the position that has no-space recorded
-  ;; on it, indicating that it and the previous word (or multi-word edge)
-  ;; are not separated.  
+  "As called from do-no-space-collection At this point all of the
+   words in the sentence have been spanned with unary edges, and there
+   are multi-word edges over polywords or created by an FSA (e.g. numbers).
+   This 'position-after' is the position that has no-space recorded
+   on it, indicating that it and the previous word (or multi-word edge)
+   are not separated."
   (when nil (tts))
   
   (let* ((leftmost-edge (left-treetop-at/only-edges position-after))
@@ -82,22 +82,16 @@
          (long-edge (when leftmost-edge
                       (unless (one-word-long? leftmost-edge)
                         leftmost-edge))))
-    
-    ;    ;; but that 'edge' could be a word, e.g. "... (Figure ..."
-    ;    (when (word-p leftmost-edge)
-    ;      (when (first-word-is-bracket-punct leftmost-edge)
-    ;        (return-from collect-no-space-segment-into-word nil)))
-    
+        
     (let ((start-pos (if leftmost-edge
-                         (pos-edge-starts-at leftmost-edge)
-                         (chart-position-before position-after))))
+                       (pos-edge-starts-at leftmost-edge)
+                       (chart-position-before position-after))))
       
       (tr :no-space-sequence-started-at start-pos)
       (when long-edge
         (tr :no-space-initial-long-edge long-edge))
       
-      ;;//// tune to the possibility we don't care about the first
-      ;; word because it's covered by an edge. 
+      ;; Redundant for the modern caller, but relevant for earlier ones
       (when (or (word-is-bracket-punct (pos-terminal position-after))
                 (word-never-in-ns-sequence (pos-terminal position-after)))
         (return-from collect-no-space-segment-into-word nil))
@@ -116,11 +110,7 @@
         ;; If the sweep encountered any more edges we have to fold 
         ;; them in or else we'll get the wrong pattern
         (setq edges (sort-out-edges-in-ns-region edges long-edge))
-        
-        ;;// The sweep will only notice edges if the leftmost-edge
-        ;; is 'long'  But we want to see all the edges now (11/15),
-        ;; so as a backup we collect them below after the parse
-        
+       
         (when *collect-ns-examples* 
           (save-ns-example start-pos end-pos))
         
@@ -151,7 +141,7 @@
           (tr :ns-segment-layout layout)
           ;;(lsp-break "layout = ~a edge = ~a" layout edge)
           (cond
-            ((or (eq layout :single-span)  ;; Do nothing. It's already known
+            ((or (eq layout :single-span) ;; Do nothing. It's already known
                  (eq layout :one-edge-over-entire-segment))
              (tr :ns-spanned-by-edge edge)
              (revise-form-of-nospace-edge-if-necessary edge :find-it)
@@ -170,20 +160,20 @@
             ;; pair-programming
             (catch :punt-on-nospace-without-resolution
               (let* ((end-edge (car (last edges)))
-                     (end-cat (when (and
-                                     (edge-p end-edge)
-                                     (category-p (edge-category end-edge)))
+                     (end-cat (when (and (edge-p end-edge)
+                                         (category-p (edge-category end-edge)))
                                 (cat-symbol (edge-category end-edge)))))
                 (or
-                 (when (punctuation-final-in-ns-span? end-pos) ;; only fires on colons
+                 (when (punctuation-final-in-ns-span? end-pos)
+                   ;; n.b. only fires on colons
                    (setq end-pos (chart-position-before end-pos))
                    (ns-pattern-dispatch start-pos end-pos edges
                                         hyphen-positions slash-positions
                                         colon-positions other-punct
                                         :final-colon))
                  (when (memq end-cat '(category::protein category::protein-family
-                                                         category::small-molecule category::ion 
-                                                         category::nucleotide))
+                                       category::small-molecule category::ion 
+                                       category::nucleotide))
                    (ns-protein-pattern-resolve  start-pos end-pos edges
                                                 hyphen-positions slash-positions
                                                 colon-positions other-punct))
@@ -217,6 +207,7 @@
          (words (if edges
                   (effective-words-given-edges unsorted-edges start-pos end-pos)
                   (words-between start-pos end-pos))))
+    
     (when final-colon?
       ;; If the span the left of the colon is a single word then
       ;; we have nothing to do. If this is not enough of a check
@@ -225,9 +216,11 @@
       (when (null (cdr words))
         (tr :single-word-followed-by-colon (car words))
         (return-from ns-pattern-dispatch t)))
+    
     (when edges
       (tr :ns-pattern-includes-edges edges)
       (setq pattern (convert-mixed-pattern-edges-to-labels pattern)))
+    
     (tr :segment-ns-pattern pattern)
 
     (unless hyphen-positions
@@ -383,17 +376,20 @@
        (let* ((w (resolve words-string))
 	      (bio-entity (find-individual 'bio-entity :name w)))
 	 (if bio-entity
-	     (values category::bio-entity
-		     'reify-ns-name-as-bio-entity
-		     bio-entity)
-	     (let* ((rs (rule-set-for w))
-		    (rule (and rs (car (rs-single-term-rewrites rs)))))
-	       (cond
-		 (rule
-		  (values (cfr-category rule)
-			  rule
-			  (cfr-referent rule)))
-		 (t (push-debug `(,w))
+           (values category::bio-entity
+                   'reify-ns-name-as-bio-entity
+                   bio-entity)
+           (let* ((rs (rule-set-for w))
+                  (rule (and rs (car (rs-single-term-rewrites rs)))))
+             (cond
+               (rule
+                (values (cfr-category rule)
+                        rule
+                        (cfr-referent rule)))
+               ((punctuation? w) ;; e.g. asterix
+                (throw :punt-on-nospace-without-resolution
+                  :single-character-punctuation))
+               (t (push-debug `(,w))
 		    (format t "~&^^^^^^ Known word ~s, but no associated rule. ~
                               Probably a part of a polyword, now defining it ~
                               as a bio-entity~%  in ~s~%"

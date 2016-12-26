@@ -11,13 +11,13 @@
 
 ;;--- Obvious cases hard to state as a pattern
 ;;    given that we may have to fold up interior parts
-;;    just as with slashes and colong.
+;;    just as with slashes and colon.
 
 (defun nospace-hyphen-specialist (words edges pattern hyphen-position/s 
                                   pos-before pos-after)
-  ;; Cleanup case in one-hyphen-ns-patterns when no defined pattern
-  ;; has matched. Usually a pattern should match, so we should
-  ;; trap these before we get here. 
+  "Cleanup case in one-hyphen-ns-patterns when no defined pattern
+   has matched. Usually a pattern should match, so we should focus
+   on identifying new patterns and reduce what falls through to here."
   ;(push-debug `(,edges ,pattern))                                        ;
   ;(lsp-break "call to nospace-hyphen-specialist")
   (cond
@@ -36,10 +36,11 @@
                (words-between pos-before pos-after) 
                pos-before pos-after))))
    (t
-    ;; Must me multiple, unparsed items to either side of hyphen
+    ;; Must be multiple, unparsed items to either side of hyphen
     ;; E.g. "Figures S1A–S1D"
     ;; split down the middle, run the two parts through the 
-    ;; pattern reifier, then combine them.
+    ;; pattern reifier, then combine them, same as we do
+    ;; with slashes in this situation.
     (let ((hyphen-pos (car hyphen-position/s)))
       (cond
        ((eq hyphen-pos pos-before) ;; it's initial
@@ -70,7 +71,7 @@
                (words-between pos-before pos-after) 
                pos-before pos-after))))))))))
 
-;;/// This is surely the same a resolve-slash-segment so they should mergw
+;;/// This is surely the same a resolve-slash-segment so they should merge
 (defun resolve-hyphen-segment (edges start-pos end-pos)
   (if (eq start-pos end-pos) ;; as in "...with β-, γ-, and α-catenins..."
     (then 

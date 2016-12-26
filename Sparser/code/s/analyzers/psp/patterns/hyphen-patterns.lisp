@@ -20,8 +20,8 @@
 ;;--- Entry point
 
 (defun resolve-hyphen-pattern (pattern words edges hyphen-positions start-pos end-pos)
-  ;; Called from ns-pattern-dispatch when no edge in the span covers
-  ;; more than one edge and hyphen(s) is the only punctuation
+  "Called from ns-pattern-dispatch when no edge in the span covers
+   more than one edge and hyphen(s) is the only punctuation."
   ;; (push-debug `(,pattern ,words ,edges ,hyphen-positions ,start-pos ,end-pos))
   ;; (break "starting hyphen pattern: ~a" pattern)
   (let ((hyphen-count 0))
@@ -64,7 +64,7 @@
                do (return i)))))
     ;; The code above is intended to catch cases like "isoform-specific"
     ;; where the lexeme "specific" has two definitions one of which is an
-    ;; obsolete one from the core, and another of which has a sbcat frame
+    ;; obsolete one from the core, and another of which has a subcat frame
     ;; and satisfies second-imposes-relation-on-first
 
     ;;/// Constantly getting mismatch between edges and words.
@@ -96,9 +96,11 @@
 
      ((and rel-edge (= 3 (length edges)))  ;; "Dimerization-independent" ERK #1
       (do-relation-between-first-and-second
-       (when (edge-p (first edges))
-         (edge-referent (first edges)))
-        (edge-referent rel-edge) (first edges) rel-edge))
+        (when (edge-p (first edges))
+          (edge-referent (first edges)))
+        (edge-referent rel-edge)
+        (first edges)
+        rel-edge))
      
      ((equal pattern '(:lower :hyphen :protein))
       (resolve-protein-prefix (first edges) (third edges) words start-pos end-pos))
@@ -338,17 +340,17 @@
       (reify-ns-name-and-make-edge words pos-before pos-after)))))
 
 
-;; RAS-ASSP
+;; RAS-ASSP or RAS/ASSP
 (defun resolve-hyphen-between-two-terms (pattern words edges
                                          pos-before pos-after)
-  ;; Called from one-hyphen-ns-patterns
-  ;; It's likely that the two connected words are names,
-  ;; so we won't assume that they might be connected by rules
-  ;; but more like some generalized meaning between the two. 
-  ;; (N.b. also used with the separator is a slash)
+  "Called from one-hyphen-ns-patterns and also from one-slash-ns-patterns
+   when the pattern is (:full :forward-slash :full)
+   It's likely that the two connected words are names,
+   so we won't assume that they might be connected by rules
+   but more like some generalized meaning between the two. "
   (declare (ignore pattern))
-
   (tr :resolve-hyphen-between-two-terms words)
+  
   (let* ((left-edge (first edges))
          (right-edge (third edges))
          (left-ref (edge-referent left-edge))) 

@@ -26,32 +26,30 @@
 ;;;-----------------------
  
 (defun scare-quote-specialist (leading-quote-pos words pos-before next-position)
+  "Called by ns-pattern-dispatch if the first term the pattern is a 
+   double quote. "
   ;; It's reasonably clear what to do with scare quotes. At a minimum we move
-  ;; the boundaries of the edge over word being quoted so it swallows the
+  ;; the boundaries of the edge over the word being quoted so it swallows the
   ;; single quote marks. Better than that would be recording the rhetorical
   ;; effect of do in this (which I don't know how to do). If the layout
   ;; is something different than that we just leave it for a debris collector
-;  (push-debug `(,leading-quote-pos ,words ,pos-before ,next-position))
+  ;;  (push-debug `(,leading-quote-pos ,words ,pos-before ,next-position))
   ;;  (setq leading-quote-pos (car *) words (cadr *) pos-before (caddr *) next-position (cadddr *))
   (when (and (eq leading-quote-pos pos-before)
              (eq (first words) (car (last words))))
-
-;    (if (= (length words) 3) ;; only one word
-;      (then
-;;/////          "hot-spot" -- send the interior back through the process
-        (tr :scare-quotes-creating-edge-around (second words))
-        (let* ((word-edge (left-treetop-at/only-edges 
-                           (chart-position-before next-position)))
-               (edge (make-edge-over-long-span
-                      pos-before
-                      next-position
-                      (edge-category word-edge)
-                      :rule 'scare-quote-specialist
-                      :form (edge-form word-edge)
-                      :referent (edge-referent word-edge)
-                      :words words)))
-          (tr :made-edge edge)
-          edge)))
+    (tr :scare-quotes-creating-edge-around (second words))
+    (let* ((word-edge (left-treetop-at/only-edges 
+                       (chart-position-before next-position)))
+           (edge (make-edge-over-long-span
+                  pos-before
+                  next-position
+                  (edge-category word-edge)
+                  :rule 'scare-quote-specialist
+                  :form (edge-form word-edge)
+                  :referent (edge-referent word-edge)
+                  :words words)))
+      (tr :made-edge edge)
+      edge)))
 
 
 

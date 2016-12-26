@@ -61,7 +61,6 @@
 (defun characterize-words-in-region  (start-pos end-pos edges)
   "Returns a pattern. Presumes that the whole region has been scanned.
    and that the edges are correctl ordered left to right."
-  (push-debug `(,start-pos ,end-pos ,edges))
   (let ((position start-pos)
         (word (pos-terminal start-pos))
         pattern-elements  element  edge
@@ -69,7 +68,6 @@
          (when edges (loop for e in edges
                        collect (pos-edge-starts-at e))))
         previous-pos  )
-
     (loop
       (cond 
        ((memq position edge-start-positions)
@@ -80,20 +78,62 @@
         (setq word (pos-terminal position))
         (setq element (characterize-word-type position word))
         (push element pattern-elements)))
-
       (setq position
             (cond (edge (pos-edge-ends-at edge))
                   (t (chart-position-after position))))
       (when edge (setq edge nil)) ;; reset
-
       (when (eq position previous-pos)
         (error "characterize-words-in-region is looping"))
       (setq previous-pos position)
-
       (when (eq position end-pos)
         (return)))
-
     (nreverse pattern-elements)))
+
+
+(defun sweep-ns-region (start-pos end-pos)
+  "Returns a pattern based on the words and edges over those words.
+   Knows a great deal about what kinds of edges are just mechanical
+   and replaces those with a characterization of the word they're
+   over to more easily fit into the pattern tests."
+  ;;//// When we do a major revision of the style of NS revision
+  ;; this should be merged somehow with characterize-words-in-region 
+  ;; so patterns can be put in the right form earlier -- like at top
+  ;; of ns-pattern-dispatch, though that wants the positions.
+  (let ((treetops (treetops-between start-pos end-pos))
+        pattern-elements )
+    ;;/// That sweep was designed for simplistic parsing and ignores
+    ;; things like multiple edges. May need a tailored one
+    (unless (every #'edge-p treetops)
+      (push-debug `(,start-pos ,end-pos ,treetops))
+      (error "Not every treetop is an edge: ~a" treetops))
+
+    (flet ((label-for-pattern (edge)
+             (let* ((label (cat-symbol (edge-category edge)))
+                    (position (pos-edge-starts-at edge))
+                    (word (word-under-edge edge))
+                    (pname (word-pname word)))
+               (cond
+                ((eq label 'category::number)
+                 (if (= 1 (length pname)) :single-digit :digits))
+                ((eq label 'category::bio-entity)
+                 (characterize-word-type position word))
+                ((search (symbol-name '#:-kind) (symbol-name label))
+                 (characterize-word-type position word))
+                ((memq label '(protein wild-type))
+                 ;;(eq label 'protein) 
+                 label)
+                ;;//// need to look for massive set of cases
+                ;; since we don't want to return something the
+                ;; patterns won't recognize. Protein is an obvious
+                ;; case, but what else?
+                (t (characterize-word-type position word))))))
+      
+      (loop for tt in treetops
+        collect (if (one-word-long? tt)
+                  (label-for-pattern tt)
+                  (push (edge-category tt) pattern-elements))))))
+
+
 
 (defun remove-non-edges (list)
   "Used by ns-pattern-dispatch to remove the words that appear
@@ -160,7 +200,9 @@
              ((category-p (edge-category item))
               (edge-category-to-keyword item))
              (t ;; not sure what to do here -- this happend for p14 in
-              ;; as in "Using conditional gene disruption of p14 in mice, we now demonstrate that the p14–MP1-MEK1 signaling complex regulates late endosomal traffic and cellular proliferation."
+              ;; as in "Using conditional gene disruption of p14 in mice,
+              ;; we now demonstrate that the p14–MP1-MEK1 signaling complex
+              ;; regulates late endosomal traffic and cellular proliferation."
               (convert-edge-to-one-word-characterization item)))))
 
 ;;--- go'fers

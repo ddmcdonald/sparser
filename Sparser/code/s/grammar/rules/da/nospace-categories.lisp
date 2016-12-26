@@ -49,7 +49,7 @@
 
 
 ;;;; The category is in sl/biology/taxonomy.lisp 
-;;;; because of it's inheitance pattern
+;;;; because of it's inheritance pattern
 ;;;;/// Has to be some refactoring sooner than later. 
 #|
 (define-category no-space-pair
@@ -235,37 +235,27 @@
   "What this does needs to correspond to what digit-FSA does in 
    the same situation."
   (declare (special category::hyphenated-number category::number))
-  (let ((i (find-or-make-individual 'hyphenated-number
-                                    :left (maybe-make-individual
-                                           (ensure-number (edge-referent left-edge)))
-                                    :right (maybe-make-individual
-                                            (ensure-number
-                                             (edge-referent right-edge))))))
-    (let ((edge (make-ns-edge
-                 (pos-edge-starts-at left-edge)
-                 (pos-edge-ends-at right-edge)
-                 category::hyphenated-number
-                 :rule 'make-hyphenated-number
-                 :form category::number
-                 :referent i
-                 :constituents `(,left-edge ,right-edge)
-                 :words words)))
-      edge)))
+  (let* ((i (find-or-make-individual
+             'hyphenated-number
+             :left (find-or-make-number (edge-referent left-edge))
+             :right (find-or-make-number (edge-referent right-edge))))
+         (edge (make-ns-edge
+                (pos-edge-starts-at left-edge)
+                (pos-edge-ends-at right-edge)
+                category::hyphenated-number
+                :rule 'make-hyphenated-number
+                :form category::number
+                :referent i
+                :constituents `(,left-edge ,right-edge)
+                :words words)))
+      edge))
 
-(defun ensure-number (n)
-  (declare (special n))
-  (cond
-    ((itypep n 'number) n)
-    ((itypep n 'year)
-     ;; there must be a better way to do this,
-     ;;  but it's late and I need to get to sleep
-     (bind-dli-variable 'value
-                        (value-of 'value n)
-                        (individual-for-ref category::number)))))
       
 
 
 (defun make-hyphenated-triple (left-edge middle-edge right-edge)
+  "This makes the same type of individual as digit-FSA does, but
+   of course from a different source"
   (let ((i (find-or-make-individual 'hyphenated-triple
              :left (maybe-make-individual (edge-referent left-edge))
              :middle (maybe-make-individual (edge-referent middle-edge))
@@ -294,11 +284,10 @@
   ;; called from one-hyphen-ns-patterns for (:lower :hyphen),
   ;; e.g. "mono-"
   (declare (special *salient-hyphenated-literals*))
-  (let* ((word (car words))
-         (known? (memq word *salient-hyphenated-literals*)))
+  (let ((word (car words)))
     (tr :resolve-hyphen-trailing word)
     (cond
-     (known?
+     ((memq word *salient-hyphenated-literals*)
       (compose-salient-hyphenated-literals pattern words start-pos end-pos))
      (t   ;; "p53- independent manner" (even though it's a typo)
       ;; Same as in initial hyphens We cover the edge
@@ -307,7 +296,8 @@
                         start-pos end-pos
                         (edge-category edge-to-elevate)
                         :form (edge-form edge-to-elevate)
-                        :referent (maybe-make-individual (edge-referent edge-to-elevate))
+                        :referent (maybe-make-individual
+                                   (edge-referent edge-to-elevate))
                         :constituents edges)))
         (tr :no-space-made-edge new-edge)
         new-edge)))))
@@ -368,7 +358,7 @@ for each case and define a k-method to make sense of it all.
 
 (defparameter *salient-hyphenated-literals*
   `(
-    ,(define-no-space-prefix "auto")
+     ,(define-no-space-prefix "auto")
      ,(define-no-space-prefix "co") ;; co-occurring
      ,(define-no-space-prefix "de") ;; de-repressing 
      ,(define-no-space-prefix "di")
@@ -437,7 +427,7 @@ for each case and define a k-method to make sense of it all.
           ;; interpret-premod-to-np (depending on the type of
           ;; the edge but the constraint in subcategorized-variable
           ;; is too presumptive of "in as location" to work
-          ;; So dripping it on the floor
+          ;; So dropping it on the floor
 
            (edge
             (let ((new-edge
@@ -582,6 +572,7 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
       ;;/// trace
       edge)))
 
+
 ;;;-----------------
 ;;; two part labels
 ;;;-----------------
@@ -619,7 +610,7 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
 
 
 (defun resolve-protein-prefix (prefix-edge protein-edge words start-pos end-pos)
-  (declare (special prefix protein words start-pos end-pos category::protein))
+  (declare (special category::protein))
   (let* ((predicate 
           (create-predication-by-binding
            'substrate **lambda-var** (edge-referent prefix-edge)
@@ -631,7 +622,6 @@ anti-phospho-Stat3 Y705 (Cell Signaling Technologies; #9131), anti-phospho-Akt S
                 start-pos end-pos category::protein
                 :rule 'resolve-protein-prefix
                 :form category::n-bar
-                :referent i
-                )))
+                :referent i)))
     edge))
 

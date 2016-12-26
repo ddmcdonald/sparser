@@ -13,9 +13,9 @@
   (or
    (cond
      (colon-positions (make-bio-complex start-pos end-pos))
-    (slash-positions (make-protein-collection start-pos end-pos))
-    (hyphen-positions ;;(make-bio-complex-with-hyphen start-pos end-pos)
-     (make-protein-collection start-pos end-pos)))
+     (slash-positions (make-protein-collection start-pos end-pos))
+     (hyphen-positions ;;(make-bio-complex-with-hyphen start-pos end-pos)
+      (make-protein-collection start-pos end-pos)))
    (ns-pattern-dispatch start-pos end-pos unsorted-edges
                         hyphen-positions slash-positions
                         colon-positions other-punct)))
@@ -25,8 +25,8 @@
                                  colon-positions other-punct)
   (or
    (cond
-    (slash-positions (make-amino-collection start-pos end-pos))
-    (hyphen-positions (make-amino-collection start-pos end-pos)))
+     (slash-positions (make-amino-collection start-pos end-pos))
+     (hyphen-positions (make-amino-collection start-pos end-pos)))
    (ns-pattern-dispatch start-pos end-pos unsorted-edges
                         hyphen-positions slash-positions
                         colon-positions other-punct)))
