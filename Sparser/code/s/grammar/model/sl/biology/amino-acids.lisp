@@ -154,10 +154,16 @@ We therefore have the special cases:
          (digit-word (cadr words))
          (number (get-tag :numerical-value digit-word)))
     (when (and capitalized-letter number)
-      (let ((amino-acid (single-letter-is-amino-acid capitalized-letter)))
+      (let ((amino-acid (single-letter-is-amino-acid capitalized-letter))
+            (aa-edge (top-edge-at/starting start-pos))) ;; left
         (when amino-acid
+          (when (null aa-edge)
+            ;; fall through to caller's next option
+            ;; Get this with "q27" where we presumed the 'q' was an AA,
+            ;; but it's the lowercase letter which does not denote glutamine
+            (return-from reify-residue-and-make-edge nil))
           (reify-residue
-            (top-edge-at/starting start-pos) ;; left
+            aa-edge
             (or (top-edge-at/ending end-pos) ;; right
                 (make-edge-over-single-digit-word
                  (chart-position-before end-pos)))
