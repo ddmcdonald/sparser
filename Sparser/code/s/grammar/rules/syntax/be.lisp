@@ -298,8 +298,7 @@ assess-edge-label, which rewrites the word as the category BE.
                 ;; the edge be the category of the NP, which is odd looking.
                 ;; The function could fix it if we care enough.
                 :form s
-                :referent (:head left-edge
-                                 :function make-exist-claim left-edge right-edge))))
+                :referent (:function make-exist-claim left-edge right-edge))))
 
 
 
@@ -323,8 +322,7 @@ assess-edge-label, which rewrites the word as the category BE.
        ;; is assimilate-np-to-v-as-object and it makes the vg
        ;; the basis of the individual
        (let* ((value (value-of 'predicate vg))
-              (i (find-or-make-individual
-                  'there-exists :value value)))
+              (i (find-or-make-individual 'there-exists :value value)))
          (revise-parent-edge :form category::s) ;; vs subj+verb
          i))
        (t
