@@ -1027,6 +1027,11 @@
           (push (subcat-instance np prep-word variable-to-bind
                                  pp)
                 *subcat-info*))
+      #+ignore ;; used this to check when the rule is applied
+      ;;; found it is mostly being called for the right things, but we need to make it play better
+      ;; with finding discourse-mentions
+      (format t "~%interpret-pp-as-head-of-np run on ~s ~s in ~s~%"
+              (retrieve-surface-string np)(retrieve-surface-string pp) (sentence-string *sentence-in-core*))
       (setq pobj-referent (individual-for-ref pobj-referent))
       (setq  pobj-referent (bind-dli-variable variable-to-bind np pobj-referent))
       (revise-parent-edge :category (itype-of pobj-referent))
