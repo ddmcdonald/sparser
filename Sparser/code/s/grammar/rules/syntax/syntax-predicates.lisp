@@ -206,10 +206,14 @@
          nil)))))
 
 (defun identify-pobj (edge)
+  (let ((pobj-edge (find-pobj-edge edge)))
+    (when pobj-edge (edge-referent pobj-edge))))
+
+(defun find-pobj-edge (edge)
   (let* ((bpp-edge (base-pp edge))
          (erd (edge-right-daughter bpp-edge)))
     (if (edge-p erd)
-        (edge-referent erd)
+        erd
         (else
           (warn "can't find pobj edge for edge ~s" edge)
           nil))))
