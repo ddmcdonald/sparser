@@ -816,48 +816,49 @@
   (declare (special category::np))
   (let* ((np-ref (edge-referent np))
          (vp-ref (edge-referent vp+ed))
-         (vp-subj-var-for-np
-          (can-fill-vp-subject? vp-ref np-ref np)))
+         (vp-subj-var-for-np (can-fill-vp-subject? vp-ref np-ref np))
+         (vp-object? (missing-object-vars (edge-referent vp+ed))))
     (when vp-ref ;; "designed to be deficient " had no interpretation in
       ;; the June article sentence
       ;; More detailed understanding of these various pathways will require careful analysis of BMMCs designed to be deficient in multiple adapters and signaling molecules."
-      (if
-       vp-subj-var-for-np
-       ;; this test is a heuristic, to block
-       ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
-       (let ((ref (assimilate-subject np-ref vp-ref vp+ed)))
-         (when ref
-           (make-edge-spec
-            :category (edge-category vp+ed)
-            :form category::s
-            :referent ref))))
-      (let* ((target (find-target-satisfying
-                      (right-fringe-of np)
-                      #'(lambda (sub-np) (and (edge-referent sub-np)
-                                              (np-target? sub-np)
-                                              (subcategorized-variable vp-ref :object
-                                                                       (edge-referent sub-np))))))
-             (target-np (when (edge-p target) (edge-referent target))))
-        (if target ;; the relevant edge is embedded
-            (let ((obj-var (subcategorized-variable vp-ref :object target-np) ))
-              (when obj-var
-                (make-edge-spec
-                 :category (edge-category target)
-                 :form category::np
-                 :referent (bind-dli-variable 'predication
-                                              (update-edge-as-lambda-predicate vp+ed obj-var)
-                                              target-np)
-                 :target target
-                 :direction :right)))
-            (let ((obj-var (subcategorized-variable vp-ref :object np-ref)))
-              (when obj-var
-                ;; the top np is to be post-modified
-                (make-edge-spec
-                 :category (edge-category np)
-                 :form category::np
-                 :referent (bind-dli-variable 'predication
-                                              (update-edge-as-lambda-predicate vp+ed obj-var)
-                                              np-ref)))))))))
+      (cond (vp-subj-var-for-np
+             ;; this test is a heuristic, to block
+             ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
+             (let ((ref (assimilate-subject np-ref vp-ref vp+ed)))
+               (when ref
+                 (make-edge-spec
+                  :category (edge-category vp+ed)
+                  :form category::s
+                  :referent ref))))
+            (vp-object?
+             (let* ((target (find-target-satisfying
+                             (right-fringe-of np)
+                             #'(lambda (sub-np)
+                                 (and (edge-referent sub-np)
+                                      (np-target? sub-np)
+                                      (subcategorized-variable vp-ref :object
+                                                               (edge-referent sub-np))))))
+                    (target-np (when (edge-p target) (edge-referent target))))
+               (if target ;; the relevant edge is embedded
+                   (let ((obj-var (subcategorized-variable vp-ref :object target-np) ))
+                     (when obj-var
+                       (make-edge-spec
+                        :category (edge-category target)
+                        :form category::np
+                        :referent (bind-dli-variable 'predication
+                                                     (update-edge-as-lambda-predicate vp+ed obj-var)
+                                                     target-np)
+                        :target target
+                        :direction :right)))
+                   (let ((obj-var (subcategorized-variable vp-ref :object np-ref)))
+                     (when obj-var
+                       ;; the top np is to be post-modified
+                       (make-edge-spec
+                        :category (edge-category np)
+                        :form category::np
+                        :referent (bind-dli-variable 'predication
+                                                     (update-edge-as-lambda-predicate vp+ed obj-var)
+                                                     np-ref)))))))))))
 
 
 
