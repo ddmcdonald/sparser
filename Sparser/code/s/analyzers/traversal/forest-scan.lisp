@@ -55,21 +55,22 @@
       (:otherwise
        coverage))))
 
-
+(defparameter *parse-between-parentheses-action* nil)
 
 (defun parse-between-parentheses-boundaries (left-bound right-bound)
   ;; Called from do-paired-punctuation-interior to look for
   ;; a parse between just after the open and just before the ends.
-  ;; Provides for different alg. 
-  (push-debug `(,left-bound ,right-bound)) ;(break "parse-between parens")
-  (let ((edge (catch :done-parsing-region
-                (parse-from-to/topmost left-bound right-bound))))
-    (let ((layout (analyze-segment-layout
-                   ;; /// it ought to be possible to keep a running model of this
-                   ;; rather than have to recalculate it here
-                   left-bound right-bound)))
-      (values layout
-              edge))))
+  ;; Provides for different alg.
+  (when *parse-between-parentheses-action*
+    (push-debug `(,left-bound ,right-bound)) ;(break "parse-between parens")
+    (let ((edge (catch :done-parsing-region
+                  (parse-from-to/topmost left-bound right-bound))))
+      (let ((layout (analyze-segment-layout
+                     ;; /// it ought to be possible to keep a running model of this
+                     ;; rather than have to recalculate it here
+                     left-bound right-bound)))
+        (values layout
+                edge)))))
 
 (defun parse-between-boundaries (left-bound right-bound)
   ;; the caller has determined that there the two positions aren't
