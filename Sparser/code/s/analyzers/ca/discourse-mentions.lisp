@@ -288,31 +288,66 @@
     (tr :made-mention m)
     (list m)))
 
+(defun syntactically-embedding-edge? (edge)
+  (or ;;(member (cat-name (edge-form edge)) '(subject-relative-clause thatcomp))
+      (member (cat-name (edge-category edge)) '(there-exists))))
+
+(defun un-embed-edge (edge)
+  (if (syntactically-embedding-edge? edge)
+      (un-embed-edge (edge-right-daughter edge))
+      edge))
+
+(defun safe-edge-mention (edge)
+  "return the edge-mention of the edge, if it is a discourse-mention"
+  (let ((mention (edge-mention edge)))
+    (when (typep mention 'discourse-mention) mention)))
+
 (defun subsumed-mention? (i edge)
   (when (null i)
     (error "null individual in subsumed-mention?"))
-  (let ((left (and (edge-p (edge-left-daughter edge))
-                   (is-dl-child? i (edge-referent (edge-left-daughter edge)))
-                   (not (eq t (edge-mention (edge-left-daughter edge))))))
-        (right (and (edge-p (edge-right-daughter edge))
-                    (is-dl-child? i (edge-referent (edge-right-daughter edge)))
-                    (not (eq t (edge-mention (edge-right-daughter edge)))))))
-    (cond
-      (left
-       (if right
-           nil ;; no real subsumption -- can't find head
-           (edge-mention (edge-left-daughter edge))))
-      (right
-       (edge-mention (edge-right-daughter edge)))
-      (t
-       (let ((subsumed-edges
-              (loop for e in (edge-constituents edge)
-                    when (and (edge-p e) ;; in two-part-label, the constituents include a WORD!
-                              (is-dl-child? i (edge-referent e)))
-                    collect e)))
-         (if (and subsumed-edges (null (cdr subsumed-edges)))
-             (edge-mention (car subsumed-edges))
-             nil))))))
+  (setq edge (un-embed-edge edge))
+  (cond ((member (edge-rule edge)
+                 '(:conjunction/identical-form-labels
+                   :conjunction/identical-adjacent-labels))
+         nil)
+        ((member (cat-name (edge-form edge))
+                 '(subject-relative-clause thatcomp whethercomp than-np))
+         (safe-edge-mention (edge-right-daughter edge)))
+        ((and (cfr-p (edge-rule edge))
+              (equal '(:FUNCALL CREATE-PARTITIVE-NP LEFT-REFERENT RIGHT-REFERENT)
+                     (cfr-referent (edge-rule edge))))
+         (safe-edge-mention (edge-right-daughter (edge-right-daughter edge))))
+        ((member (edge-rule edge)'(knit-parens-into-neighbor))
+         (safe-edge-mention (edge-left-daughter edge)))        
+        (t
+         (let ((left (subsumed-mention-edge? i (edge-left-daughter edge)))
+               (right (subsumed-mention-edge? i (edge-right-daughter edge))))
+           (cond
+             (left
+              (if right
+                  nil ;; no real subsumption -- can't find head
+                  (edge-mention left)))
+             (right (edge-mention right))
+             (t
+              (let ((subsumed-edges
+                     (loop for e in (edge-constituents edge)
+                           when (and (edge-p e) ;; in two-part-label, the constituents include a WORD!
+                                     (is-dl-child? i (edge-referent e))
+                                     (typep (edge-mention e) 'discourse-mention))
+                           collect e)))
+                (if (and subsumed-edges (null (cdr subsumed-edges)))
+                    (edge-mention (car subsumed-edges))
+                    nil))))))))
+
+(defun subsumed-mention-edge? (i edge)
+  (and (edge-p edge)
+       (is-dl-child? i (edge-referent edge))
+       (not (eq t (edge-mention edge)))
+       edge))
+
+(defun semantic-edges-under (edge)
+  (setq edge (un-embed-edge edge))
+  (edges-under edge))
 
 (defun edges-under (edge)
   (if (not (edge-p (edge-right-daughter edge)))
@@ -325,7 +360,7 @@
   (let* ((source-edge (mention-source subsumed-mention))
          (non-source-edges
           (when (edge-p source-edge)
-            (loop for e in (edges-under edge)
+            (loop for e in (semantic-edges-under edge)
                   unless (eq e source-edge)
                   collect e))))
     (when (edge-p source-edge)
@@ -340,96 +375,185 @@
             (remove subsumed-mention (mention-history (edge-referent source-edge))))))
   subsumed-mention)
 
-(defparameter  *no-source-for-binding-action* :break)
+;;(defparameter  *no-source-for-binding-action* :warn)
+(defparameter  *no-source-for-binding-action* :none)
+;;(defparameter  *no-source-for-binding-action* :break)
 
 (defun add-new-dependencies (edge old-dependencies edges i ii)
   (declare (special old-dependences edges i ii edge))
   (if
    (itypep i 'collection)
    (if (is-basic-collection? i)
-       (add-new-dependencies-for-collection old-dependencies edges i ii)
-       nil)       
-   (let* ((old-bindings (when (individual-p ii) (indiv-binds ii)))
-          (new-bindings
-           (unless (and (edge-p (car edges)) (eq i (edge-referent (car edges))))
-             ;; happens for "Saos2 cells" or "ERK proteins"
-             (loop for b in (when (individual-p i) (indiv-binds i))
-                   ;; can be a category in case of infinitives like ;; "to dissociate"
-                   unless (member b old-bindings :test #'similar-binding )
-                   collect b)))
-          (new-dependencies
-           (loop for b in new-bindings
-                 as e = (find-binding-edge b edges edge)
-                 collect (create-dependency-pair b e))))
-     (declare (special old-bindings new-bindings new-dependencies binding-edges))
-     (when (not (equal (length new-bindings)
-                       (length new-dependencies)))
-       (lsp-break "binding-edges"))
-     (nconc new-dependencies old-dependencies))))
+       (add-new-dependencies-for-collection old-dependencies edge edges i ii)
+       nil)
+   (basic-add-new-dependencies edge old-dependencies edges i ii)
+   ))
+
+(defun basic-add-new-dependencies (edge old-dependencies edges i ii)
+  (let* ((old-bindings (when (individual-p ii) (indiv-binds ii)))
+         (new-bindings
+          (unless (and (edge-p (car edges)) (eq i (edge-referent (car edges))))
+            ;; happens for "Saos2 cells" or "ERK proteins"
+            (loop for b in (when (individual-p i) (indiv-binds i))
+                  ;; can be a category in case of infinitives like ;; "to dissociate"
+                  unless (member b old-bindings :test #'similar-binding )
+                  collect b)))
+         (new-dependencies (create-new-dendendencies new-bindings edges edge)))
+    (declare (special old-bindings new-bindings new-dependencies binding-edges))
+    (when (not (equal (length new-bindings)
+                      (length new-dependencies)))
+      (lsp-break "binding-edges"))
+    (nconc new-dependencies old-dependencies)))
+
+(defun create-new-dendendencies (new-bindings edges top-edge)
+  (let* ((items-binding
+          (loop for b in new-bindings
+                when (eq (pname (binding-variable b)) 'items)
+                do (return b)))
+         (items-dependency
+          (when items-binding
+            (loop for item in (binding-value items-binding)
+                  collect
+                    (let ((edge (find-binding-edge item edges top-edge nil)))
+                      (if edge
+                          (edge-mention edge)
+                          item)))))
+         (other-dependencies
+          (loop for b in (remove items-binding new-bindings)
+                as e = (find-binding-edge (binding-value b) edges top-edge b)
+                collect (create-dependency-pair b e))))
+
+    (if items-dependency
+        (cons (create-dependency-pair items-binding items-dependency)
+              other-dependencies)
+        other-dependencies)))
 
 (defun create-dependency-pair (b e)
+  (declare (special *sentence-in-core*))
   `(,(binding-variable b)
-     ,(cond ((or (eq (pname (binding-variable b)) 'has-determiner)
+     ,(cond ((consp e) e)
+            ((or (member (pname (binding-variable b))
+                         '(has-determiner
+                           ;; the ones below are for two-part-label
+                           part-two part-one
+                           ;; the ones below are for hyphenated-pairs
+                           left right))
                  (null e))
-             (binding-value b))                                
+             (binding-value b))
+            ((and (null (edge-mention e))
+                  (individual-p (edge-referent e))
+                  ;; happens when e is a :digit-sequence
+                  ;; under a hyphenated-number
+                  ;; as in "A synthetic peptide encoding amino acids 824-832"
+                  (itypep (edge-referent e) '(:or number adverb)))
+             (edge-referent e))
             ((typep (edge-mention e) 'discourse-mention)
              (edge-mention e))
             (t
-             (lsp-break "~s has no disccourse-mention~%" e)))))
+             (case *no-source-for-binding-action*
+               (:none nil)
+               (:break (lsp-break "~s has no discourse-mention in ~s ~%" e (sentence-string *sentence-in-core*)))
+               (:warn (warn "~s has no discourse-mention in ~s ~%" e (sentence-string *sentence-in-core*)))
+               )
+             (binding-value b)))))
 
-
-
-(defun find-binding-edge (b edges top-edge)
+(defun find-binding-edge (item edges top-edge &optional b)
   (declare (special top-edge))
   (or
    (loop for edge in edges
-         when (and (edge-p edge)
-                   (let ((ref (if (is-pp? edge)
-                                  (identify-pobj edge)
-                                  (edge-referent edge))))
-                     (or (eq ref (binding-value b))
-                         (eq (get-dli ref) (binding-value b)))))
-         do (return edge))
-   
-   (check-plausible-missing-edge-for-dependency b top-edge)))
+         as ref-edge = (and (edge-p edge)
+                            (if (is-pp? edge)
+                                (find-pobj-edge edge)
+                                edge))
+         as ref = (when ref-edge (edge-referent ref-edge))
+         when (and ref (or (eq ref item) (eq (get-dli ref) item)))
+         do (return ref-edge))
+   ;; last-ditch effort caused by change in interpretation of
+   ;;  a previously ambiguous variable, which causes the
+   ;;  subsumed-mention to be missed
+   (loop for edge in edges
+         as ee = (and (edge-p edge)
+                      (typep (edge-mention edge) 'discourse-mention)
+                      (loop for d in (dependencies (edge-mention edge))
+                            when (and (typep (second d) 'discourse-mention)
+                                      (or (eq item (base-description (second d)))
+                                          (eq item (get-dli (base-description (second d))))))
+                            do (return (mention-source (second d)))))
+         do (when ee (return ee)))
+   (when b
+     (check-plausible-missing-edge-for-dependency b top-edge))))
 
 
 (defun check-plausible-missing-edge-for-dependency (b edge)
   (declare (special *sentence-in-core*))
-  (unless
-      (or
-       (eq (binding-value b) **lambda-var**)
-       (member (edge-rule edge)
-               '(sdm-span-segment make-ns-pair
-                 resolve-protein-prefix
-                 make-edge-over-mutated-protein))                                                         
-       (member
-        (pname (binding-variable b))
-        '(name uid ;; done in basic word-level rules
-          ;; these next are done in tense-aspect attachment
-          negation modal occurs-at-moment perfect progressive
-          ;; happens in comparatives -- wait for DAVID to fix
-          comparative-predication
-          ))
-       (and (eq (pname (binding-variable b)) 'modifier)
-            (itypep (binding-value b) 'xref)))
-    (case *no-source-for-binding-action*
-      (:none nil)
-      (:break (lsp-break "no source for binding ~s in ~s~%"
-                         b (sentence-string *sentence-in-core*)))
-      (:warn (warn "no dependency ~s; rule: ~s ~% in ~s~%"
-                   b
-                   (edge-rule edge)
-                   (sentence-string *sentence-in-core*)))))
-  nil)
+  (let ((val (binding-value b)))
+    (unless
+        (or
+         (eq val **lambda-var**)
+         (word-p val)
+         (polyword-p val)
+         (numberp val)
+         (referential-category-p val)
+         ;; this test is to handle complex structure in lexical edges...
+         ;; like "phosphoserine"
+         (eq edge (lexical-edge-at-pos (pos-edge-starts-at edge)))
+         (member (edge-rule edge)
+                 '(sdm-span-segment make-ns-pair
+                   resolve-protein-prefix
+                   make-edge-over-mutated-protein
+                   :reify-residue
+                   :reify-point-mutation-and-make-edge
+                   MAKE-POLAR-PARTICIPLE-QUESTION
+                   MAKE-POLAR-ADJECTIVE-QUESTION))
+         (and (cfr-p (edge-rule edge))
+              (equal '(:FUNCALL INTERPRET-PP-AS-HEAD-OF-NP LEFT-REFERENT RIGHT-REFERENT)
+                     (cfr-referent (edge-rule edge))))
+         (member (cat-name (edge-category edge))
+                 '(there-exists))
+         (member
+          (pname (binding-variable b))
+          '(name uid ;; done in basic word-level rules
+            ;; these next are done in tense-aspect attachment
+            negation modal occurs-at-moment perfect progressive
+            ;; happens in comparatives -- wait for DAVID to fix
+            comparative-predication
+            number ;; occurs in collections
+            ;;value ;; occurs in numbers  -- also in THERE-EXISTS
+            quantifier
+            predicate ;; happens in copulars
+            has-determiner
+            adverb
+            ))
+         (and (individual-p val)
+              (or (itypep val 'subordinate-conjunction)
+                  (itypep val 'number) ;; happens when residues are converted
+                  ;; to numbers, as in "a phosphoserine at residue 827"
+                  (itypep val 'adverb)
+                  (and (eq (pname (binding-variable b)) 'modifier)
+                       (itypep val 'xref)))))
+      (case *no-source-for-binding-action*
+        (:none nil)
+        (:break (lsp-break "no source for binding ~s in ~s~%"
+                           b (sentence-string *sentence-in-core*)))
+        (:warn (warn "no dependency ~s; rule: ~s ~% in ~s~%"
+                     b
+                     (edge-rule edge)
+                     (sentence-string *sentence-in-core*)))))
+    nil))
 
 (defun similar-binding (b1 b2)
-  (and (eq (binding-variable b1) (binding-variable b2))
-       (eq (binding-value b1) (binding-value b2))))
+  (and (eq (binding-value b1) (binding-value b2))
+       (eq (binding-variable b1) (binding-variable b2))
+       #+ignore
+        (and (disjunctive-lambda-variable-p (binding-variable b2))
+             (member (binding-variable b1)
+                     (print 
+                     (dvar-variables (binding-variable b2)))))))
 
-(defun add-new-dependencies-for-collection (old-dependencies edges i ii)
-  nil ;; dummy for now
-  )
+(defun add-new-dependencies-for-collection (old-dependencies top-edge edges i ii)
+  (if (null old-dependencies)
+      (create-new-dendendencies (indiv-old-binds i) edges top-edge)
+      (basic-add-new-dependencies top-edge old-dependencies edges i ii)))
 
 (defun fill-in-mention (m i source)
   (let* ((location
@@ -470,8 +594,15 @@
                (subsumed-mention? i source)))
 	 (m (if subsumed-mention
                 (update-subsumed-mention subsumed-mention i source)
-                (make-instance 'discourse-mention
-                               :uid (incf *mention-uid*)))))
+                (let ((new-mention
+                       (make-instance 'discourse-mention
+                                      :uid (incf *mention-uid*))))
+                  (setf (dependencies new-mention)
+                        (create-new-dendendencies
+                         (when (individual-p i) (indiv-old-binds i))
+                         (when (edge-p source) (semantic-edges-under source))
+                         (when (edge-p source) source)))
+                  new-mention))))
     (declare (special m))
     (fill-in-mention m i source)
     (unless subsumed-mention
