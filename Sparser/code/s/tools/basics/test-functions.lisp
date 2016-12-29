@@ -1013,8 +1013,10 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
   
 
 (defun group-by (l key-fn &optional (extract-fn #'identity))
-  "Takes a list and a key function to group by, and optional function to pare down items (generally get the value that goes with the key) and make it into hash table whose keys are distinct vals of key-fn applied to l, and values are values associated with that key
-example" 
+  "Takes a list and a key function to group by, and optional function
+to pare down items (generally get the value that goes with the key)
+and make it into hash table whose keys are distinct vals of key-fn
+applied to l, and values are values associated with that key example"
   (let ((ht (make-hash-table :size (length l) :test #'equal)))
     (loop for item in l do
             (push (funcall extract-fn item)

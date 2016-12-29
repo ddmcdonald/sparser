@@ -23,7 +23,7 @@ whenever there is no space between one terminal and the next. It
 begins by looking ahead to find the position where the sequence
 ends. As it scans, it collects the chart locations of any punctuation
 and summarizes the content of the sequence as a pattern. If the text
-is "Activated FGFR4:pY-SHC1", then its will have recorded the colon
+is "Activated FGFR4:pY-SHC1", then it will have recorded the colon
 and the hyphen's locations, and formed this pattern (as a list of
 keyword symbols) to describe "FGFR4:pY-SHC1".
       (protein :colon :mixed :hyphen protein).
@@ -31,7 +31,7 @@ keyword symbols) to describe "FGFR4:pY-SHC1".
 our lexicon, and they appear in the pattern as their semantic label.)
 We then dispatch to different sets of simple pattern recognizers based
 on whether there were any edges and what punctuation was observed. In
-this case, The colon is recognized as the basis for splitting the
+this case, the colon is recognized as the basis for splitting the
 analysis into two parts (it is a standard delimiter for the proteins
 in a complex). Within the second part of this pattern the focus is on
 the terminal glossed as mixed, "pY", because these should often be
@@ -48,7 +48,7 @@ the articles). We are now looking for ways to systematically search
 this space for more patterns and fill in the gaps that we find. We
 will also start to do a substring analysis within tokens. This will
 let us appreciate terms like "RasGEF" or to identify their component
-elements, and to recognize likely members of a otherwise unknown
+elements, and to recognize likely members of an otherwise unknown
 family (MAP2K, MAP2K1, MAP2K2K2).
 
 
@@ -82,7 +82,7 @@ look for more cases. Set it to T to work on the facility.
 
 -------- Organization of the process
 
-When running in 'no-brackets' mode the patterns are looked for
+When running in 'no-brackets' mode, the patterns are looked for
 during the call to pattern-sweep on the current sentence. 
 
 Within pattern-sweep we walk from treetop to treetop. Every word
@@ -99,7 +99,7 @@ do-no-space-collection to apply no-space patterns. In both cases, a
 successful match is indicated by returning the last position reached
 in the pattern search and failure is indicated by the returning nil.
 
-Do-no-space-collection (which in the same file as the rest of the
+Do-no-space-collection (which is in the same file as the rest of the
 base control loops: drivers/chart/psp/multi-scan.lisp) first checks 
 whether the word after the no-space is one of the ones that is
 never part of a no-space sequence (using word-is-bracket-punct and
@@ -108,7 +108,7 @@ collect-no-space-segment-into-word -- and passes it the position
 that the treetop ends at. 
 
 Collect-no-space-segment-into-word is in analyzers/psp/patterns/uniform-
-scan.lisp. The first thing is does is to recover any multi-position
+scan.lisp. The first thing it does is to recover any multi-position
 edge at its left-end and adjust its left-bound accordingly. A few
 other odd-case checks are made before we get to the next significant
 operation: finding out where the span of not-separated-by-spaces words
@@ -129,7 +129,7 @@ ensure that all the multi-position edges within the bounds of the
 segment (if any) are correctly ordered from left to right. At that
 point it calls parse-between-scan-boundaries (a tailored parsing
 protocol. It and other tailored parsers are in analyzers/traversal/
-forest-scan.lisp). This will handled the cases where the edges within
+forest-scan.lisp). This will handle the cases where the edges within
 the span are accounted for by a parsing rule. If the result of the parse is
 a single edge then we're done. Measure phrases ("0.45μm") are an example
 of where the composition of the no-space segment is resolved by parsing. 
@@ -168,18 +168,18 @@ its loop over the individual words in the sequence doesn't go inside
 them. We also adjust the list of words given the edges so that they
 are in sync.
 
-The keywords for the pattern are determnied by characterize-word-type in
+The keywords for the pattern are determined by characterize-word-type in
 that same file. Edges are passed through as part of the pattern rather than
 trying to summarize them. We distinguish single letters and digits from 
 sequences of them, and lower from full from mixed case. There is a great
 deal more that could be done at this level.
 
-The code of ns-pattern-dispach is organized as a cond that tries to
+The code of ns-pattern-dispatch is organized as a cond that tries to
 address the most complex cases before the simple ones.
 
 The default, if no pattern applies or if *work-on-ns-patterns* is nil
 and some potential paths are blocked, we call the most generic analysis,
-reify-ns-name-and-make-edge which makes a edge with a newly created
+reify-ns-name-and-make-edge which makes an edge with a newly created
 bio-entity as its referent. That work is done by reify-ns-name-as-bio-entity
 in a big-mechanism load and by reify-spelled-name otherwise. This makes
 a polyword for the word sequence, which means that once the entity has
@@ -187,7 +187,7 @@ been made it never goes through the no-space analysis again.
 
 The pattern checking per se is pretty haphazard. The best case to
 look at first is the two routines in analyzers/psp/patterns/
-pattern.lisp. They are both comparatively short, and they illustrate
+patterns.lisp. They are both comparatively short, and they illustrate
 the basic code-pattern that is used:
   -- All the tests are organized into a single cond
   -- Each test is a comparison of the pattern of terms in the sequence 
@@ -210,26 +210,26 @@ essentially the same.
   punctuation. In this pathway example, slash-positions will contain
   two positions.
   -- pattern: is a list of keywords. Note that these keywords can
-  include the label on an edge, if it is of category that is on the
+  include the label on an edge, if it is of a category that is on the
   list of *ns-informative-categories* (see patterns/characterize-
   words.lisp for all the details)
   -- words: is a list of words, one for each term in the pattern
   -- edges: is list of the corresponding edges, 
 
 There is a certain amount of discipline on pattern-checking code in
-that the most of the cases for a particular punctuation character is
-grouped into a file with a sugestive name (colon-patterns.lisp). That
+that most of the cases for a particular punctuation character are
+grouped into a file with a suggestive name (colon-patterns.lisp). That
 discipline is violated as often as it is respected, unfortunately,
 since there is a good deal of overlap in what operations need to be
-done, and we have to have a files that refer extensively to categories
+done, and we have to have files that refer extensively to categories
 in the model load from a different directory that loads late.
 
 Moreover, I'm not at all sure that all the bases are being covered in
 the body of code that is there. Certainly we can continue with this
 set of interlinked conditionals for a goodly while by making
-intermental additions of cases. (Turning on *work-on-ns-patterns* will
+incremental additions of cases. (Turning on *work-on-ns-patterns* will
 almost immediately pick up new opportunities for extension.) But
 anything more substantive than local improvements is going to call for
 a redesign that can better establish that it's covering all the space
 of options, including decomposing words to identify the known terms
-within them (analogous to RasGAF).
+within them (analogous to RasGEF).

@@ -29,7 +29,7 @@
 ;;;-------
 
 (defun parse-between-nospace-scan-boundaries (left-bound right-bound)
-  "Called from collect-no-space-segment-into-word to lok for
+  "Called from collect-no-space-segment-into-word to look for
   a parse between where the no-space sequence starts and where
   it ends. The problem we have is that in the cases where we want a rule
   to apply, it will typically involve searching multiple interpretations

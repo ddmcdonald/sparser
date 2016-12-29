@@ -37,7 +37,7 @@
   ;;   Any pattern consists of at least two elements not separated
   ;; by whitespace. The potential second element has just been
   ;; scanned into the chart at this position and we've just checked
-  ;; that it is adjacent to the previous terminal with no interveening
+  ;; that it is adjacent to the previous terminal with no intervening
   ;; whitespace.
   ;;   We get the prior word and check whether it is a transition out
   ;; of the initial state. If it is, we follow out the state (or states)
