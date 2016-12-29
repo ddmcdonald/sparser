@@ -50,9 +50,17 @@
 ;;;-------------------
 
 (defparameter *collect-ns-examples* nil
-  "if non-null, collect all ns examples that contain #\- or #\/.
+  "if non-null, collect all ns examples.
    Called from collect-no-space-segment-into-word just before
    it sets up the dispatch.")
+
+(defun collect-ns-examples (&rest reset)
+  "Turn on collecting no-space examples if it's off, or reset
+*collect-ns-examples* if you want to flush it"
+  (when (or reset 
+            (null *collect-ns-examples*))
+    (setf *collect-ns-examples* (list nil))))
+
 
 
 ;;;------------
@@ -67,6 +75,7 @@
 
 ;; (trace-ns-sequences)  for ns patterns
 ;; (trace-scan-patterns)  for large scale
+
 
 (defun collect-no-space-segment-into-word (position-after)
   "As called from do-no-space-collection At this point all of the
@@ -112,7 +121,7 @@
         (setq edges (sort-out-edges-in-ns-region edges long-edge))
        
         (when *collect-ns-examples* 
-          (save-ns-example start-pos end-pos))
+          (save-ns-example start-pos end-pos edges))
         
         ;;(push-debug `(,start-pos ,end-pos))
         ;; on this sentence: (p "Pre-clinical studies have demonstrated that 
@@ -135,7 +144,7 @@
           (return-from collect-no-space-segment-into-word nil))
         
         (tr :looking-at-ns-segment start-pos end-pos)
-        
+
         (multiple-value-bind (layout edge)
                              (parse-between-nospace-scan-boundaries start-pos end-pos)
           (tr :ns-segment-layout layout)
@@ -145,7 +154,7 @@
                  (eq layout :one-edge-over-entire-segment))
              (tr :ns-spanned-by-edge edge)
              (revise-form-of-nospace-edge-if-necessary edge :find-it)
-             (when *collect-ns-examples*
+             #+ignore(when *collect-ns-examples*
                (update-ns-examples start-pos)))
            (t
             ;; This may be overkill, especially for punctuation,
@@ -209,9 +218,9 @@
                   (words-between start-pos end-pos))))
     
     (when final-colon?
-      ;; If the span the left of the colon is a single word then
+      ;; If the span to the left of the colon is a single word then
       ;; we have nothing to do. If this is not enough of a check
-      ;; then the next thing to so is to look for whether the 
+      ;; then the next thing to do is to look for whether the 
       ;; non-colon punctuation parameters have values.
       (when (null (cdr words))
         (tr :single-word-followed-by-colon (car words))
@@ -430,12 +439,21 @@
 ;;; saving examples to look at offline
 ;;;------------------------------------
 
-(defun save-ns-example (start-pos end-pos)
-  (let ((nsitem (actual-characters-of-word start-pos end-pos nil)))
+
+
+(defun save-ns-example (start-pos end-pos edges)
+  (let ((nsitem (actual-characters-of-word start-pos end-pos nil))
+        (ns-edge-pattern (characterize-words-in-region start-pos end-pos edges)))
     ;;(when (or (search "-" nsitem) (search "/" nsitem))
     ;;(lsp-break "collect-no-space-sequence-into-word")
+    (setq ns-edge-pattern 
+          (loop for i in ns-edge-pattern
+            collect (if (edge-p i)
+                        (list  (simple-label (edge-form i))
+                               (simple-label (edge-category i)))
+                        i)))
     (push (list 
-           (let
+          #+ignore (let
                ((end-edge (left-treetop-at end-pos)))
              (cond
               ((edge-p end-edge)
@@ -450,17 +468,36 @@
                (list end-edge))
               (t
                (lsp-break "strange situation in NS"))))
-           nsitem)
+          ns-edge-pattern 
+          nsitem)
           *collect-ns-examples*)))
 
 (defun update-ns-examples (start-pos)
+
   (setf (car *collect-ns-examples*)
-        `(, 
-          (let ((edge (right-treetop-at start-pos)))
-            (when (edge-p edge)
+        `(,(car *collect-ns-examples*) 
+          "==>"
+          ,(let ((edge (right-treetop-at start-pos)))
+            (if (edge-p edge)
               (list 
                (edge-rule edge)
                (simple-label (edge-category edge))
-               (simple-label (edge-form edge)))))
-          "<=="
-          ,.(car *collect-ns-examples*))))
+               (simple-label (edge-form edge)))
+              (list :no-edge)))
+          )))
+
+(defun clean-up-ns-collection ()
+  "Just some clean up to group things by pattern and rule once we've
+collected a set of ns-examples"
+  (loop for i in (group-by (remove nil *collect-ns-examples*) #'caar)
+        collect 
+        (let ((grouped (group-by (second i) #'third #'cdar)))
+          (cons (car i)
+                (loop for g in grouped
+                      collect 
+                      (cons (car g)
+                            (mapcar #'car (remove-duplicates (second g) :test #'equal))))))))
+
+
+
+
