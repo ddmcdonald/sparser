@@ -59,8 +59,9 @@
 
 
 (defun characterize-words-in-region  (start-pos end-pos edges)
-  "Returns a pattern. Presumes that the whole region has been scanned.
-   and that the edges are correctl ordered left to right."
+  "Returns a pattern. Presumes that the whole region has been scanned,
+   and that the edges are correctly ordered left to right."
+;; maybe change to use treetops-between
   (let ((position start-pos)
         (word (pos-terminal start-pos))
         pattern-elements  element  edge
