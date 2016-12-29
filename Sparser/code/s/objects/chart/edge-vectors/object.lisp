@@ -33,7 +33,7 @@
             (:print-function print-edge-vector-structure))
 
   edge-vector      ;; a vector of edges
-  top-node         ;; an edge
+  top-node         ;; an edge or :multiple-initial-edges or nil
   number-of-edges  ;; an integer
   boundary         ;; a phrase boundary
   position         ;; a #<position>
