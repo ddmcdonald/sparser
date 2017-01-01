@@ -20,6 +20,12 @@
 (defparameter *total-all-supers* 0)
 (defparameter *m-all-subs* nil)
 
+(defun show-warnings (&optional (show-warnings t))
+  (setq *reinterpret-dominating-edges-warning* show-warnings)
+  (setq *warn-on-cant-find-corresponding-clauses* show-warnings)
+  (if show-warnings
+      (setq *no-source-for-binding-action* :warn)
+      (setq *no-source-for-binding-action* :none)))
 
 (defun show-dli-stats ()
   (declare (special *dli-counts* *dli-examples*))
