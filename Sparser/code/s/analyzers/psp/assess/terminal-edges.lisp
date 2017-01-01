@@ -56,6 +56,8 @@
         nil )
       (else
         (setq edges
+              (remove-if
+               'unneeded-polyword-literal
               (if (and rule-set
                        (rule-set-with-rules rule-set))
                 (then
@@ -65,7 +67,7 @@
                 (else
                   (tr :install/no-rule-set word)
                   (preterminals-for-unknown
-                   word position-scanned next-position))))
+                   word position-scanned next-position)))))
 
         (tr :edges-installed edges word)
 
@@ -75,6 +77,16 @@
 
         (set-status :preterminals-installed position-scanned)
         edges ))))
+
+(defun unneeded-polyword-literal (edge)
+  (declare (special word::comma))
+  (and
+   (eq (edge-right-daughter edge) :literal-in-a-rule)
+   (not (eq (edge-category edge) word::comma))
+   ;; only reason for treating "to" this way is rules that explicitly mention "to"
+   ;;  that shouldn't be done (DAVID?!)
+   (not (eq (edge-category edge) word::|to|)))
+  )
 
 
 (defun word-is-spanned? (position-after)
@@ -98,12 +110,12 @@
          (word-capitalization-variants word)))
 
     (if variants
-      (then
-        (tr :install/has-variants-with-other-capitalization word)
-        (known-preterminals/check-caps
-         rule-set word variants position-scanned next-position))
-      (preterminals/word
-       rule-set word position-scanned next-position))))
+        (then
+          (tr :install/has-variants-with-other-capitalization word)
+          (known-preterminals/check-caps
+           rule-set word variants position-scanned next-position))
+        (preterminals/word
+         rule-set word position-scanned next-position))))
 
 
 (defun preterminals-for-unknown (word position-scanned next-position)
