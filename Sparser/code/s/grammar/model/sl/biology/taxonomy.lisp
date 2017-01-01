@@ -371,9 +371,8 @@
   :binds
   ((agent ;; supercedes subject in bio=-process
     (:or  ;;bio-entity
-     molecule
-     bio-complex
-     bio-process bio-mechanism bio-method drug process-rate
+     bio-chemical-entity ;;molecule bio-complex drug
+     bio-process bio-mechanism bio-method  process-rate
      bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
      measurement 
      bio-scalar ;; "these data raised the possibility..."
