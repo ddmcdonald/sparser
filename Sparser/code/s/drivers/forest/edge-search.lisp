@@ -401,6 +401,7 @@
 	   (memq r-triple-right
 		 '(category::vg category::vp category::vg+ed category::vp+ed
 		   category::vg+passive category::vp+passive
+                   category::copular-pp
 		   ;;category::comma-separated-subject-relative-clause
 		   ))
 	   ;; this is needed because the schema based rules generate rules in terms of 
