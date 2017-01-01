@@ -99,16 +99,18 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
        ;; so we should see if there's a rule and recompute the referent
        ))))
 
-
+(defparameter *reinterpret-dominating-edges-warning* nil)
 (defun reinterpret-dominating-edges (edge &optional *visited*)
   (declare (special *sentence-in-core* *visited*))
   (let ((new-ref (referent-for-edge edge)))
     (cond ((null new-ref)
-           (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing null interpretation~% in ~s~%" edge
-                 (sentence-string *sentence-in-core*)))
+           (when  *reinterpret-dominating-edges-warning*
+             (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing null interpretation~% in ~s~%" edge
+                   (sentence-string *sentence-in-core*))))
           ((eq new-ref :abort-edge)
-           (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing :abort-edge interpretation~% in ~s~%" edge 
-                 (sentence-string *sentence-in-core*)))
+           (when *reinterpret-dominating-edges-warning*
+             (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing :abort-edge interpretation~% in ~s~%" edge 
+                   (sentence-string *sentence-in-core*))))
 
           (t
            (setf (edge-referent edge) new-ref)

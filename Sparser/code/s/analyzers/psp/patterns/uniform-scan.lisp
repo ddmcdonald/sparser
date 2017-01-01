@@ -402,13 +402,15 @@
                 (throw :punt-on-nospace-without-resolution
                   :single-character-punctuation))
                (t (push-debug `(,w))
-		    (format t "~&^^^^^^ Known word ~s, but no associated rule. ~
+                  (when nil
+                    ;; probably no longer need this warning
+                    (format t "~&^^^^^^ Known word ~s, but no associated rule. ~
                               Probably a part of a polyword, now defining it ~
                               as a bio-entity~%  in ~s~%"
-                            w (sentence-string *sentence-in-core*))
-                    (values category::bio-entity
-                            'reify-ns-name-as-bio-entity
-                            (find-or-make-individual 'bio-entity :name w))))))))
+                            w (sentence-string *sentence-in-core*)))
+                  (values category::bio-entity
+                          'reify-ns-name-as-bio-entity
+                          (find-or-make-individual 'bio-entity :name w))))))))
 
 
       (t ;; by default make a bio-entity

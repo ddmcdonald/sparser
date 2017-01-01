@@ -129,7 +129,7 @@
 	    (retrieve-surface-string pp)
 	    (retrieve-surface-string clause-referent)))
   nil)
-
+(defparameter *warn-on-cant-find-corresponding-clauses* nil)
 (defun distribute-pp-to-conjoined-clauses (pp clause prep-word pobj-referent clause-referent rule-name)
   (let* ((clauses (value-of 'items clause-referent))
          (clause-edges
@@ -158,8 +158,9 @@
 		  (if c-mention
                     (format t "found corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
                             c-clause c)
-                    (warn "can't find corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
-                            c-clause c))
+                    (when *warn-on-cant-find-corresponding-clauses*
+                      (warn "can't find corresponding clause ~s for ~s distribute-pp-to-conjoined-clauses~%"
+                            c-clause c)))
                   (update-mention-referent c-mention new-c t)
 		  new-c))
 	   :number (length clauses)
