@@ -24,7 +24,8 @@
               *plausible-vg-categories*)
     (fold-in-preposed-auxiliary vg-edge)
     (record-verb-tense vg-edge)
-    (generalize-vg-segment-edge vg-edge)))
+    (generalize-vg-segment-edge vg-edge)
+    (update-edge-mention-referent vg-edge (edge-referent vg-edge))))
 
 
 ;;;---------------------------
