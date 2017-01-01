@@ -590,15 +590,6 @@
                 :form subject-relative-clause
                 :referent (:function compose-wh-with-vp left-edge right-edge)))))
 
-
-(loop for v in '(vp vp+passive vg+passive vg)
-   do
-     (eval
-      `(def-syntax-rule (pp-wh-pronoun ,v) 
-	   :head :right-edge
-	   :form pp-relative-clause
-	   :referent (:function make-pp-relative-clause left-edge right-edge))))
-
 (loop for rel in '(which who whom)
    do
      (eval
@@ -607,6 +598,14 @@
 	   :form subordinate-relative-clause
 	   :referent (:function compose-wh-with-vp left-edge right-edge))))
 
+
+(loop for v in '(vp vp+passive vg+passive vg)
+   do
+     (eval
+      `(def-syntax-rule (pp-wh-pronoun ,v) 
+	   :head :right-edge
+	   :form pp-relative-clause
+	   :referent (:function make-pp-relative-clause left-edge right-edge))))
 
 ;; this is not a subject relative -- the subject already exists
 (def-form-rule (where s) 
