@@ -1310,7 +1310,7 @@
   (cond
     (*subcat-test*
      (and prep complement))
-    ((eq prep category::to)
+    ((or (eq prep category::to) (eq prep (get-dli category::to)))
      (revise-parent-edge :form category::to-comp)
      complement)
     (t
