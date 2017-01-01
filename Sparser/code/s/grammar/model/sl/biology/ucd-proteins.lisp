@@ -318,7 +318,7 @@
   "NEDD-2" "Protease ICH-1" "PR:F1NL59"))
 
 (define-protein "CASP3_HUMAN"
- ("PR:P42574" "Caspase-3" "CASP-3" "Cysteine protease CPP32" "CPP-32"
+ ("PR:P42574" "Yama" "caspase-3" "CASP-3" "Cysteine protease CPP32" "CPP-32"
   "Protein Yama" "SREBP cleavage activity 1" "SCA-1" "apopain"
   "PR:000002312"))
 

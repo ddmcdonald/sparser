@@ -891,7 +891,6 @@ filligre may be used to distinguish them, etc.
 (define-protein "CARF_HUMAN" ("MG132" "CDKN2A-interacting protein" "Collaborator of ARF")) 
 (define-protein "CASB_HUMAN" ("β-casein" "Beta-casein")) 
 (define-protein "CASL_HUMAN" ("Fyn/Src" "Enhancer of filamentation 1" "hEF1" "CRK-associated substrate-related protein" "CAS-L" "CasL" "Cas scaffolding protein family member 2" "Neural precursor cell expressed developmentally down-regulated protein 9" "NEDD-9" "Renal carcinoma antigen NY-REN-12" "p105")) 
-(define-protein "CASP3_HUMAN" ("caspase-3" "Caspase-3" "CASP-3" "Apopain" "Cysteine protease CPP32" "CPP-32" "Protein Yama" "SREBP cleavage activity 1" "SCA-1")) 
 (define-protein "CASP7_HUMAN" ("Mch3" "Caspase-7" "CASP-7" "Apoptotic protease Mch-3" "CMH-1" "ICE-like apoptotic protease 3" "ICE-LAP3")) 
 (define-protein "CASP9_HUMAN" ("procaspase3" "Caspase-9" "CASP-9" "Apoptotic protease Mch-6" "Apoptotic protease-activating factor 3" "APAF-3" "ICE-like apoptotic protease 6" "ICE-LAP6")) 
 (define-protein "CASP_HUMAN" ("CUX1" "CUTL1")) 
