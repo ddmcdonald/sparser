@@ -32,16 +32,21 @@
 ;;; infinitive
 ;;;------------
 
-(def-form-rule ("to" verb)
+(def-form-rule (to verb)
   :form infinitive
-  :referent (:daughter right-edge))
+  :referent (:function make-infinitive left-edge right-edge))
 
 ;; We need this version of the rule because the
 ;; usual chunking is, e.g. to [ phosphorylate]
 ;; with the "to" stranded. 
-(def-form-rule ("to" vg)
+(def-form-rule (to vg)
   :form infinitive
-  :referent (:daughter right-edge))
+  :referent (:function make-infinitive left-edge right-edge))
+
+(defun make-infinitive (prep-or-pp verb-element)
+  (declare (special prep-or-pp verb-element))
+  (when (not (itypep prep-or-pp 'prepositional-phrase))
+    verb-element))
 
 
 ;;;------------------------------------
