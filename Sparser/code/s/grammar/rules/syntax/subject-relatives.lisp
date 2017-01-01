@@ -102,7 +102,8 @@
   (declare (special *parent-edge-getting-reference* category::copular-pp-rel-clause))
   (if *subcat-test*
       t
-      (if (itypep predicate-referent 'copular-predication-of-pp)
+      (if nil ;; (itypep predicate-referent 'copular-predication-of-pp)
+          ;; this is no longer the right way to handle copular-pp relative clauses
 	  (let ((i (fom-lattice-description category::copular-pp-rel-clause)))
 	    (setq i (bind-dli-variable 'copular-pp predicate-referent i))
 	    (revise-parent-edge :category category::copular-pp-rel-clause)
