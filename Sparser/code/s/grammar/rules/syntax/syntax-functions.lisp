@@ -1268,19 +1268,23 @@
 
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
-  (or *subcat-test*
-      (unless (current-script :biology)
-        (compose prep pobj))
-      (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
-       category::prepositional-phrase
-       `((prep ,prep) (pobj ,pobj)))))
+  (if *subcat-test*
+      (not (itypep prep 'prepositional-phrase))
+      (else
+        (unless (current-script :biology)
+          (compose prep pobj))
+        (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
+         category::prepositional-phrase
+         `((prep ,prep) (pobj ,pobj))))))
 
 (defun make-relativized-pp (prep pobj)
   (declare (special category::relativized-prepositional-phrase))
-  (or *subcat-test*
-      (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
-       category::relativized-prepositional-phrase
-       `((prep ,prep) (pobj ,pobj)))))
+  (if *subcat-test*
+      (not (itypep prep 'prepositional-phrase))
+      (else
+        (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
+         category::relativized-prepositional-phrase
+         `((prep ,prep) (pobj ,pobj))))))
 
 (defun make-ordinal-item (ordinal item)
   (setf (non-dli-mod-for item) (list 'ordinal ordinal))
