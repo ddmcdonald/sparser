@@ -48,6 +48,7 @@
   :pattern ( pp "," s )
   :action (:function attach-leading-pp-to-clause first second third))
 
+(defparameter *warn-attach-leading-pp-to-clause* nil)
 (defun attach-leading-pp-to-clause (pp comma clause)
   (declare (ignore comma))
   (let* ((clause-referent (edge-referent clause))
@@ -75,15 +76,12 @@
            ;; are often contradictory [ xref , xref ]."
            (not (is-basic-collection? clause-referent))
            (value-of 'value clause-referent))
-           
-      ;; This trick works to 'get through' to a single edge over dec #33
-      ;; but having taken the predication apart we're going to have to put it together
-      ;; again. Indeed the distribution of the conjoined value individual over
-      ;; the predication it is in should probably precede the distribution
-      ;; of the pp, which needs to be tailored to know which part takes
-      ;; the preposition. Or maybe reassemble the predication afterwards?
-      (push-debug `(,pobj-referent ,prep-word ,clause-referent ,pp ,clause))
-      (setq clause-referent (value-of 'value clause-referent)))
+      (when *warn-attach-leading-pp-to-clause*
+        (warn "attach-leading-pp-to-clause doesn't work for copular-predication ~% can't attach ~s to ~s in ~s~%"
+              (retrieve-surface-string pp)
+              (retrieve-surface-string clause-referent)
+              (sentence-string *sentence-in-core*)))
+      (return-from attach-leading-pp-to-clause nil))
 
     (let (*edge-spec*)
       (declare (special *edge-spec*))
@@ -412,7 +410,8 @@
          ;; now remake the collection
          (let ((new-conjunct 
                 (apply #'referent-of-two-conjoined-referents new-items)))
-           (setf (edge-referent vp-edge) new-conjunct))))
+           (setf (edge-referent vp-edge) new-conjunct)
+           (update-edge-mention-referent vp-edge new-conjunct))))
 
       (t ;; simple vp
        (update-edge-as-lambda-predicate vp-edge)
@@ -622,8 +621,20 @@
 (defun s-commma-subj-relative (s-edge comma-edge srel-edge)
   (declare (ignore comma-edge))
   (let* ((s (edge-referent s-edge))
-         (s-var (subcategorized-variable (edge-referent srel-edge) :subject s)))
-    (cond (s-var
+         (s-var (subcategorized-variable (edge-referent srel-edge) :subject s))
+         (target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
+         (t-var (when target
+                  (subcategorized-variable (edge-referent srel-edge) :subject (edge-referent target)))))
+    (cond (t-var
+           (make-edge-spec 
+            :category (edge-category target)
+            :form (edge-form target)
+            :referent (bind-dli-variable :predication
+                                         (update-edge-as-lambda-predicate srel-edge)
+                                         (edge-referent target))
+            :target target
+            :direction :right))
+          (s-var
            (make-edge-spec 
             :category (edge-category s-edge)
             :form (edge-form s-edge)
@@ -632,20 +643,7 @@
              'predication
              (update-edge-as-lambda-predicate srel-edge s-var)
              s)
-            ))
-          (t
-           (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
-                  (t-var (when target
-                           (subcategorized-variable (edge-referent srel-edge) :subject (edge-referent target)))))
-             (when t-var
-               (make-edge-spec 
-                :category (edge-category target)
-                :form (edge-form target)
-                :referent (bind-dli-variable :predication
-                                             (update-edge-as-lambda-predicate srel-edge)
-                                             (edge-referent target))
-                :target target
-                :direction :right)))))))
+            )))))
 
 
 (define-debris-analysis-rule s-commma-where-relative
@@ -1382,14 +1380,13 @@
       (when target
         (multiple-value-bind (pred new-edge)
             (create-predication-by-binding
-             :subject (edge-referent target)
-             adjp
+             :subject **lambda-var** adjp 
              (list 'adj-noun-compound (or adjp-edge (left-edge-for-referent)))
-                      :insert-edge nil)
+             :insert-edge nil)
           (make-edge-spec
            :category (edge-category target)
            :form (edge-form target)
-           :referent (or pred adjp)
+           :referent (bind-dli-variable 'predication pred (edge-referent target))
            :target target
            :direction :right))))))
 
@@ -1454,11 +1451,13 @@
            (let ((pred (create-predication-by-binding
                         svar **lambda-var** (edge-referent vp-edge) vp-edge :insert-edge nil)))
              (setf (edge-referent vp-edge) pred)
+             (update-edge-mention-referent vp-edge pred)
              pred)))))
 
 (defun unpack-subject-control (subject vp vp-edge)
   (setf (edge-referent vp-edge)
-        (bind-dli-variable (subject-variable vp) **lambda-var** vp)))
+        (bind-dli-variable (subject-variable vp) **lambda-var** vp))
+  (update-edge-mention-referent vp-edge (edge-referent vp-edge)))
 
 (defun find-target-satisfying (fringe pred)
   (loop for edge in fringe
