@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "required"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   June 2016
+;;;   Version:   December 2016
 
 ;; 0.1 (2/15/91 v1.8.1) Added comma and period.
 ;;     (11/17 v2.1) elevated to words; from words;basics:
@@ -44,7 +44,7 @@
 ;;;--------- newlines
 
 (define-punctuation newline  #\newline)     ;; 13
-  ;; "newline" is a pseudo character that lisp supports as a hack to
+  ;; "newline" is a pseudo character that Lisp supports as a hack to
   ;; transparently reflect whatever the operating system takes as
   ;; indicating newlines, i.e. on the Mac it's #\return (13), but in 
   ;; Unix it's #\linefeed (12).  It's not clear what Lisp does if the
@@ -65,20 +65,27 @@
 
 ;; We need these here in order to setup the options as a sentence
 ;; delimiter. Would apply any other sentence-terminating punctuation
-;; should we encounter it.
+;; should we encounter it. See *sentence-terminating-punctuation*
+;; in words/punctuation-constants.lisp
 
 (define-punctuation period  #\. )   ;; 46
 (define-punctuation question-mark #\? )   ;; 63
+
+(defparameter *the-period-hook-is-on* nil
+  "Records period-hook-{on/off} for benefit of period-check 
+   and similar operations.")
 
 (defun period-hook-on ()
   ;; The question mark is defined later, but this function
   ;; is called still later
   (declare (special word::period word::question-mark))
   (define-completion-action word::period :hook 'period-hook)
-  (define-completion-action word::question-mark :hook 'period-hook))
+  (define-completion-action word::question-mark :hook 'period-hook)
+  (setq *the-period-hook-is-on* t))
 
 (defun period-hook-off ()
   (declare (special word::period word::question-mark))
   (delete-completion-action word::period :hook)
-  (delete-completion-action word::question-mark :hook))
+  (delete-completion-action word::question-mark :hook)
+  (setq *the-period-hook-is-on* nil))
 
