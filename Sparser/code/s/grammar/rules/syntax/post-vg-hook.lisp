@@ -133,7 +133,8 @@
                          in vg that doesn't record tense: ~a"
                         vg-edge)))
         
-          (setf (edge-referent vg-edge) referent-with-tense))))))
+          (setf (edge-referent vg-edge) referent-with-tense)
+          (update-edge-mention-referent vg-edge referent-with-tense))))))
 
 
 (defun tense-implied-by-verb-edge (edge)

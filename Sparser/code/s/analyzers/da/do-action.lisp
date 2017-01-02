@@ -67,6 +67,7 @@
             :rule *matched-da-rule*)))
       (setf (edge-referent edge)
             (execute-da-referent-expressions ref-exp))
+      (update-edge-mention-referent edge (edge-referent edge))
       edge )))
 
 
