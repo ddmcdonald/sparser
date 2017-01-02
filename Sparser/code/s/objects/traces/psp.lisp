@@ -1335,11 +1335,58 @@
 (defun untrace-terminals-loop ()
   (setq *trace-terminals-loop* nil))
 
-(deftrace :terminal-position (position-before word)
+
+
+(deftrace :scan-words-loop ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered scan-words-loop")))
+
+(deftrace :scan-terminals-of-sentence ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered scan-terminals-of-sentence")))
+
+(deftrace :scan-terminals-loop ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered scan-terminals-loop")))
+
+(deftrace :polyword-sweep-loop ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered polyword-sweep-loop")))
+
+(deftrace :word-level-fsa-sweep (from to)
+  (when *trace-network-flow*
+    (trace-msg "[scan] doing a word-level-fsa-sweep ~
+                from p~a to p~a"
+               (pos-token-index from)
+               (pos-token-index to))))
+
+(deftrace :word-level-completion-sweep ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered word-level-completion-sweep")))
+
+(deftrace :terminal-edges-sweep ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered terminal-edges-sweep")))
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered ")))
+
+(deftrace : ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered ")))
+|#
+;;--
+
+(deftrace :pw-sweep-returned (p)
   ;; called from scan-terminals-loop
   (when *trace-terminals-loop*
-    (trace-msg "[s] At p~a ~s" 
-               (pos-token-index position-before) (word-pname word))))
+    (trace-msg "[s] The sentence ends at ~a" p)))
+
+(deftrace :scan-terminals-loop-finished ()
+  ;; called from scan-terminals-loop
+  (when *trace-terminals-loop*
+    (trace-msg "[s] Leaving scan-terminals-loop")
+    (tts *trace-stream*)))
 
 (deftrace :next-terminal-to-scan (position-after next-word)
   ;; called from scan-terminals-loop
@@ -1350,7 +1397,7 @@
 (deftrace :scanned-pw-ended-at (word p)
   ;; called from scan-terminals-loop
   (when *trace-terminals-loop*
-    (trace-msg "[s] Polyword initiated by ~s ended a p~a"
+    (trace-msg "[s] Polyword initiated by ~s ended at p~a"
                (word-pname word) (pos-token-index p))))
 
 (deftrace :word-fsa-ended-at (word p)

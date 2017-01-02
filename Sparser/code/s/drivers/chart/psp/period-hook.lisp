@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  drivers/chart/psp  ;;"grammar;rules:DM&P:"
-;;;   version:  June 2016
+;;;   version:  December 2016
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -49,13 +49,21 @@
 ;; (trace-paragraphs)
 
 (defun period-hook (the-word-period position-before position-after)
+  "Hook is envoked by word-level completion when a period or question-
+   mark has been scanned. If it concludes that this is an end-of-
+   sentence period (period-marks-sentence-end?), then it closes off
+   the current sentence and starts (or reuses) a new one. Returns
+   by doing a throw or tail-recursion depending on the mode."
   (declare (ignore the-word-period)
-           (special *reading-populated-document* *sentence-making-sweep*))
-  ;; position-before is the one with the period on it. After picks out
-  ;; the word following the period.  The stack at this point starts
-  ;; with word-level-actions-except-terminals > complete-word/hugen >
+           (special *reading-populated-document*
+                    *sentence-making-sweep*
+                    *scanning-terminals*))
+  ;; position-before is the one with the period on it. position-after 
+  ;; picks out the word following the period. The stack at this point 
+  ;; starts with word-level-actions-except-terminals > complete-word/hugen >
   ;; carry-out-actions
-  ;;(setq position-before (cadr *) position-after (caddr *))
+
+  ;; 1st call
   (unless *position-before-last-period*
     (setq *position-before-last-period* (position# 0)))
 
@@ -91,27 +99,31 @@
                       ~%    ~a is ~a~%"
                      (pos-token-index position-before)
                      s (parsing-status s)))
-        (case (parsing-status s)
-          ;; this is the sentence that we're finishing
-          (:initial
-           ;; This is the first moment when we know the length
-           ;; of the sentence. 'position-before' is the one that
-           ;; has the period as the value of its terminal slot.
-           (when *sentence-making-sweep*
-             (set-sentence-endpoints position-before s)) ;; and saves the string
-           (set-sentence-status s :scanned)
-           (throw :end-of-sentence :finished-scanning))
-          (:scanned
-           (when *reading-populated-document*
-             (throw :end-of-sentence :finished-scanning)))
-          (:chunked
-           ;; shouldn't have to do this. Compensates for something
-           (when *reading-populated-document*
-             (throw :end-of-sentence :finished-scanning)))
-          (otherwise
-           (push-debug `(,s))
-           (break "Period-hook did not expect the status ~a ~
-                   on ~a" (parsing-status s) s))))
+        (if *scanning-terminals*
+          (ecase *scanning-terminals*
+            (:polywords (throw :pw-sweep position-before)))
+          (case (parsing-status s)
+            ;; this is the sentence that we're finishing
+            (:initial
+             ;; This is the first moment when we know the length
+             ;; of the sentence. 'position-before' is the one that
+             ;; has the period as the value of its terminal slot.
+             (when *sentence-making-sweep*
+               (set-sentence-endpoints position-before s)) ;; and saves the string
+             (set-sentence-status s :scanned)
+             (throw :end-of-sentence :finished-scanning))
+            (:scanned
+             (when *reading-populated-document*
+               (throw :end-of-sentence :finished-scanning)))
+            (:chunked
+             ;; shouldn't have to do this. Compensates for something
+             (when *reading-populated-document*
+               (throw :end-of-sentence :finished-scanning)))
+            (otherwise
+             (push-debug `(,s))
+             (break "Period-hook did not expect the status ~a ~
+                   on ~a" (parsing-status s) s)))))
+       
        ((new-forest-protocol?)
         ;; goes with the incremental protocol when waiting
         ;; for an entire sentence to be chunked before

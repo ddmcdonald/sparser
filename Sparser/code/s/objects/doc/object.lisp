@@ -597,18 +597,17 @@
         (setf (next last) s)
         (setf (previous s) last)
         (setf (parent s) section)
+        (set-document-index s index)
+        (setq *previous-sentence* last)
+
         (setf (ends-at-pos last) ;; stop at the period
               (chart-position-before pos))
         (setf (ends-at-char last) (pos-character-index pos))
-        (set-document-index s index)
-        ;; tie off the prev contents
-        (setq *previous-sentence* last)
         (when (string-equal "" (sentence-string last))
+          ;; tie off the prev contents
           (setf (sentence-string last)
                 (extract-characters-between-positions 
                  (starts-at-pos last) (ends-at-pos last))))))
-    ;; 1st sentence in a section (= paragraph) has the
-    ;; section as its parent
     (tr :starting-sentence pos)
     (setq *current-sentence* s)))
 
@@ -652,9 +651,17 @@
   "Controls whether we fill the string field of
   the sentence object.")
 
+(defun tie-off-ongoing-sentence-at-eos (pos-with-eos)
+  "Called from simple-eos-check when we're in *scanning-terminals*
+   mode and the word on the position is the eos marker (control-B)."
+  (let ((s (sentence))) ;; *current-sentence*
+    (unless (ends-at-pos s)
+      (set-sentence-endpoints pos-with-eos s))
+    s))
 
 (defun set-sentence-endpoints (period-pos sentence)
-  ;; Called from period-hook
+  "Called from period-hook during the sentence-making document
+   sweep. The period-pos is the one that holds the period."
   (setf (ends-at-pos sentence) period-pos)
   (setf (ends-at-char sentence) (1+ (pos-character-index period-pos)))
   (let ((start (starts-at-char sentence))
@@ -662,10 +669,7 @@
     (unless (> start 0) (error "Sentence start is negative"))
     (unless (> end start) 
       (push-debug `(,sentence ,start ,end ,period-pos))
-      (break "Sentence end less than start"))
-    ;; This should be on a flag -- creates far too much noise
-    ;;(format t "~&------- sentence ~a~%" sentence)
-    ;;(push-debug `(,sentence ,period-pos)) (break "before substring")
+      (error "Sentence end (~a) less than start (~a)" end start))
     (let ((substring (extract-string-from-char-buffers
                       (starts-at-char sentence)
                       (ends-at-char sentence))))

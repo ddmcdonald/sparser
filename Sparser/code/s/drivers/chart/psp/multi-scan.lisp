@@ -22,10 +22,6 @@
 
 (in-package :sparser)
 
-
-;; (trace-terminals-sweep)
-;; (trace-network)
-
 ;;;---------------------------------------------------------
 ;;; 0th pass - just the new words and sentence delimitation
 ;;;---------------------------------------------------------
@@ -45,6 +41,9 @@
    It's a recursive loop. We get out of it when the period-hook
    runs and throws to :end-of-sentence."
   ;; position-before - word - position-after
+  ;;/// rewrite this as a loop. Maybe incorporate the
+  ;; by-hand invocation of period-hook
+  ;; (tr :scan-words-loop) <-- needs to be loop before not loud
   (simple-eos-check position-before word)  
   (let ((position-after (chart-position-after position-before)))
     (unless (includes-state position-after :scanned)
@@ -66,18 +65,19 @@
            (scan-next-position))
          (setq word (pos-terminal where-pw-ended)))
       
-      ;; Trigger the period-hook
+      ;; Trigger the period-hook (n.b. also gets conjunctions,
+      ;; parentheses, etc.)
       (complete-word/hugin word position-before position-after)
 
       (let ((next-word (pos-terminal position-after)))
         (scan-words-loop position-after next-word)))))
 
 
-
 (defun scan-terminals-of-sentence (sentence)
   "Called from scan-terminals-and-do-core in the path that starts
    with a prepopulated documents. Provides sentence-based way to
    initiate scan-terminal-loop as it walks from sentence to sentence"
+  (tr :scan-terminals-of-sentence)
   (let* ((start-pos (starts-at-pos sentence))
          (first-word (pos-terminal start-pos)))
     (unless first-word ;; 7/14/16: ends with polyword followed by "?"
@@ -104,30 +104,81 @@
 ;; (trace-terminals-sweep)
 ;; (trace-terminals-loop)
 
+;; (trace-network)
+;; (setq *trace-sweep* t)
+
+(defparameter *scanning-terminals* nil
+  "Used as a flag by scan-terminals-loop to control the
+   behavior of the eos check and period hook.")
+
+
 (defun scan-terminals-loop (position-before word)
   "Carries out the first layer of analysis by checking for and
-   applying word-level rules. A word is first checked to see
-   whether it initiates a polyword. If so we resume the loop
-   at the position just after the polyword has applied.
-   If no polyword applies or if it is not found, we look for
-   and apply word-level FSAs, notably the digits-fsa. 
-   The next in the succession of checks on a word is
-   whether it has an associated completion rule. The
-   final check is to add any unary edges into the chart
-   and with that check for the application of category-based
-   FSAs.
-     We get out of the loop when the period-hook (fired by
-   the completion actions) indicates that we're reached the
-   end of a sentence and throws to an :end-of-sentence catch."
+   applying word-level rules. Core routine regardless of
+   whether source is a document or just a string.
+   Structured as a succession of passes ('sweeps') over
+   a sentence-worth of text.
+   1st. do the polywords. This swweep also has the job of 
+   delimiting the sentence using a throw from period-hook.
+   2d. sweep over the treetops in the sentence to
+   handle any word-level fsas. 
+   3d. Apply word-level completion hook to each word that
+   isn't covered by an edge.
+   4th. Introduce the terminal edges for every unspanned
+   word. 
+   We return by throwing to :end-of-sentence, which is
+   what period-hook does if its called conventionally."
+  (tr :scan-terminals-loop)
+  (simple-eos-check position-before word)
+  (sentence-level-initializations) ;; clear traversal state
 
-  (sentence-level-initializations)
+  (let ((initial-position-before position-before)
+        (initial-word word)
+        end-pos )
 
-  (loop 
-     (tr :terminal-position position-before word)
-            
+    ;; N.b. This assumes all the flags are up. If that is not the case
+    ;; then the logic has to change to accommodate it, particularly
+    ;; for delimiting the sentence
+
+    (when *sweep-for-polywords*
+      (let ((*scanning-terminals* :polywords))
+        (declare (special *scanning-terminals*))
+        (setq end-pos
+              (catch :pw-sweep
+                (polyword-sweep-loop initial-position-before initial-word)))))
+    (tr :pw-sweep-returned end-pos)
+
+    (when *sweep-for-word-level-fsas*
+      (word-level-fsa-sweep initial-position-before end-pos))
+
+    (word-level-completion-sweep initial-position-before end-pos)
+
+    (when *sweep-for-terminal-edges*
+      (terminal-edges-sweep initial-position-before end-pos))
+
+    (tr :scan-terminals-loop-finished)
+    ;; emulates what period-hook would have done in the earlier
+    ;; all-at-once version.
+    (throw :end-of-sentence t)))
+
+
+(defun polyword-sweep-loop (position-before word)
+  "First pass over the text. Checks each successive word for
+   initiating a polyword (polyword-check). The longest completion
+   is spanned with an edge. This loop stops with a throw from
+   the period hook (period-check) or encountering the end of
+   the stream being analyzed (simple-eos-check). These delimit
+   one sentence-worth of text."
+  (declare (special *trace-sweep*))
+  (tr :polyword-sweep-loop)
+  (loop
      (simple-eos-check position-before word)
+     (period-check position-before word)
 
-     ;; Polyword check
+     (when *trace-sweep*
+       (format t "~&[polyword-sweep] ~s at p~a"
+               (pname word) (pos-token-index position-before)))
+
      (let* ((where-pw-ended (polyword-check position-before word))
             (position-after (or where-pw-ended
                                 (chart-position-after position-before))))
@@ -148,62 +199,15 @@
          (setq position-before where-pw-ended
                position-after (chart-position-after where-pw-ended))
          (unless (includes-state where-pw-ended :scanned)
-           ;; PW can complete without thinking about the
-           ;; word that follows it.
            (scan-next-position))
          (setq word (pos-terminal position-before))) |#
-
-       (unless (includes-state position-after :scanned)
-         (scan-next-position))
-
-       ;; FSA's calls lifted from check-word-level-fsa-trigger 
-       ;; and cwlft-cont
-       (let ((where-fsa-ended (do-word-level-fsas word position-before)))
-         ;;////////// nb. could accidentally re-do the polyword
-         ;; given that entry point. 
-         (tr :check-word-level-fsa-trigger position-before)
-         (when where-fsa-ended
-           (tr :word-fsa-ended-at word where-fsa-ended)
-           (setq position-after where-fsa-ended
-                 ;;/// compare to new values used with PW
-                 position-before (chart-position-before where-fsa-ended))
-           (unless (includes-state where-fsa-ended :scanned)
-             (scan-next-position))
-           (setq word (pos-terminal where-fsa-ended))))
 
        #+ignore(when (eq position-before position-after)
                  (error "Scan-terminals-loop: before and after positions are
                   the same: ~a" position-after))
-    
-       (tr :scan-completing word position-before position-after)
-       (complete-word/hugin word position-before position-after)
-       ;; (setq *trace-completion-hook* t)
-       ;; The function check-for-completion-actions/word looks on the
-       ;; rule-set of the word for a completion action or actions and
-       ;; runs carry-out-actions to execute (funcall) them. 
-       ;;   The significant case is the period-hook (in rules/DM&P/period-hook)
-       ;; because it is responsible for managing the succession of sentences.
-       ;; That requires some tweaking because normally the period hook signals
-       ;; the progression to the forest level and here we need to notice
-       ;; the period (in order to stop this pass and start the next), but
-       ;; be more selective in what happens. 
-       ;;    Another important case is conjunction. Both "and" and "or"
-       ;; set the *pending-conjunction* flag. 
-
-       (let ((edges
-              (do-just-terminal-edges word position-before position-after)))
-         (tr :scanned-terminal-edges edges position-before position-after)
-         ;; taken from check-preterminal-edges
-         (when edges ;; e.g. digit-sequence
-           (let ((where-fsa-ended
-                  (do-any-category-fsas edges position-before)))
-             (when where-fsa-ended
-               (tr :edge-fsa-ended-at word where-fsa-ended)
-               (setq position-after where-fsa-ended
-                     position-before (chart-position-before where-fsa-ended))
-               (unless (includes-state where-fsa-ended :scanned)
-                 (scan-next-position))
-               (setq word (pos-terminal where-fsa-ended))))))
+       
+       (unless (includes-state position-after :scanned)
+         (scan-next-position))
 
        (let ((next-word (pos-terminal position-after)))
          (tr :next-terminal-to-scan position-after next-word)
@@ -212,36 +216,192 @@
                word next-word)))))
 
 
+(defun word-level-fsa-sweep (start-pos end-pos)
+  "At this point some spans may be covered with edges introduced
+   by polywords. For any uncovered words, check for the possibility
+   that it introduces an fsa. The chart is already populated
+   with the words introduced by the pw sweep, so we don't need
+   to do our own scans."
+  (tr :word-level-fsa-sweep start-pos end-pos)      
+  (let* ((position-before start-pos)
+         (ev (pos-starts-here start-pos))
+         (edge (ev-top-node ev))
+         (word (unless edge (pos-terminal start-pos)))
+         (position-after (if edge
+                           (pos-edge-ends-at edge)
+                           (chart-position-after position-before))))
+    (loop
+       (when *trace-sweep*
+         (format t "~&[fsa sweep] at p~a is ~a"
+                 (pos-token-index position-before)
+                 (or word edge)))
+       ;; if word, check it. Else advance
+       (when word
+         ;; FSA's calls lifted from check-word-level-fsa-trigger 
+         ;; and cwlft-cont
+         (tr :check-word-level-fsa-trigger position-before)
+         (let* ((where-fsa-ended (do-word-level-fsas word position-before))
+                (position-after (or where-fsa-ended
+                                    (chart-position-after position-before))))
+           (when where-fsa-ended
+             (tr :word-fsa-ended-at word where-fsa-ended)
+             (setq position-after where-fsa-ended
+                   position-before (chart-position-before where-fsa-ended))
+             (unless (includes-state where-fsa-ended :scanned)
+               (scan-next-position))
+             (setq word (pos-terminal where-fsa-ended)))))
+
+       (when (eq position-after end-pos)
+         (return))
+
+       ;; (tr :next-terminal-to-scan position-after next-word)
+       (setq position-before position-after
+             ev (pos-starts-here position-after)
+             edge (ev-top-node ev)
+             word (unless edge (pos-terminal position-after))
+             position-after (if edge
+                              (pos-edge-ends-at edge)
+                              (chart-position-after position-after))))))
+
+;; (setq *trace-completion-hook* t)
+
+(defun word-level-completion-sweep (start-pos end-pos)
+  "Call complete-word/hugin on every word not covered by an edge.
+   The most important cases are for words with hooks, such as
+   parentheses or the appostrope of the possessive, as well as
+   conjunctions."
+  (tr :word-level-completion-sweep)
+  (let* ((position-before start-pos)
+         (ev (pos-starts-here start-pos))
+         (edge (ev-top-node ev))
+         (word (unless edge (pos-terminal start-pos)))
+         (position-after (if edge
+                           (pos-edge-ends-at edge)
+                           (chart-position-after position-before)))
+         (*scanning-terminals* :completion-sweep))
+    (declare (special *scanning-terminals*))
+    
+    (loop
+       (when *trace-sweep*
+         (format t "~&[completion sweep] at p~a is ~a"
+                 (pos-token-index position-before)
+                 (or word edge)))
+       (when word
+         ;; The function check-for-completion-actions/word looks on the
+         ;; rule-set of the word for a completion action or actions and
+         ;; runs carry-out-actions to execute (funcall) them. 
+         ;;   The significant case is the period-hook (in rules/DM&P/period-hook)
+         ;; because it is responsible for managing the succession of sentences.
+         ;; That requires some tweaking because normally the period hook signals
+         ;; the progression to the forest level and here we need to notice
+         ;; the period (in order to stop this pass and start the next), but
+         ;; be more selective in what happens. 
+         (tr :scan-completing word position-before position-after)
+         (complete-word/hugin word position-before position-after))
+
+       (when (eq position-after end-pos)
+         (return))
+
+       (setq position-before position-after
+             ev (pos-starts-here position-after)
+             edge (ev-top-node ev)
+             word (unless edge (pos-terminal position-after))
+             position-after (if edge
+                              (pos-edge-ends-at edge)
+                              (chart-position-after position-after))))))
+
+;; candidate to redo earlier loops -- used in terminal-edges-sweep
+(defmacro carefully-walk-initial-chart (&body body)
+  `(let* ((position-before start-pos)
+          (ev (pos-starts-here position-before))
+          (edge (ev-top-node ev))
+          (word (unless edge (pos-terminal position-before)))
+          (position-after (if edge
+                            (pos-edge-ends-at edge)
+                            (chart-position-after position-before))))
+     (loop
+        ,@body
+        (when (eq position-after end-pos)
+          (return))
+        (setq position-before position-after
+              ev (pos-starts-here position-after)
+              edge (ev-top-node ev)
+              word (unless edge (pos-terminal position-after))
+              position-after (if edge
+                               (pos-edge-ends-at edge)
+                               (chart-position-after position-after))))))
+
+
+(defun terminal-edges-sweep (start-pos end-pos)
+  (tr :terminal-edges-sweep)
+  (carefully-walk-initial-chart
+    (progn
+      (when *trace-sweep*
+         (format t "~&[terminal edges sweep] at p~a is ~a"
+                 (pos-token-index position-before)
+                 (or word edge)))
+      (when word
+        (let ((edges
+               (do-just-terminal-edges word position-before position-after)))
+          (tr :scanned-terminal-edges edges position-before position-after)
+          (when edges ;; e.g. digit-sequence
+            (let ((where-fsa-ended
+                   (do-any-category-fsas edges position-before)))
+              (when where-fsa-ended
+                (tr :edge-fsa-ended-at word where-fsa-ended)
+                (setq position-after where-fsa-ended
+                      position-before (chart-position-before where-fsa-ended))
+                (unless (includes-state where-fsa-ended :scanned)
+                  (scan-next-position))
+                (setq word (pos-terminal where-fsa-ended))))))))))
+
 
 ;;--- 1st pass subroutines
+
+(defun period-check (position-before word)
+  "How to engage the period-hook without calling completion.
+   If the word is a period we will usually return via a throw"
+  (declare (special *sentence-terminating-punctuation*
+                    *the-period-hook-is-on*))
+  (when *the-period-hook-is-on*
+    (when (memq word *sentence-terminating-punctuation*)
+      ;;(lsp-break "period at p~a" position-before)
+      (period-hook word
+                   position-before
+                   (chart-position-after position-before)))))
+
 
 (defun simple-eos-check (position-before word)
   ;; Taken from end-of-source-check without worrying about the
   ;; forest or other things to do. In the usual scan, this check
   ;; is part of check-for-[-from-word-after before anything happens.
   ;;    Has to be ammended in a similar way to the original because
-  ;; there will invariably be something that needs to be tied
-  ;; off
+  ;; there will invariably be something that needs to be tied off.
   (declare (special *reading-populated-document*
-                    *pre-read-all-sentences*))
+                    *pre-read-all-sentences*
+                    *scanning-terminals*))
   (tr :end-of-source-check word position-before)
   (when (eq word *end-of-source*)
     (cond
+      (*scanning-terminals*
+       (tie-off-ongoing-sentence-at-eos position-before)
+       ;;(lsp-break "hit eos = ~a" *scanning-terminals*)
+       (ecase *scanning-terminals*
+         (:polywords (throw :pw-sweep position-before))))
      (*pre-read-all-sentences*
       ;; The catch is in initiate-successive-sweeps when
       ;; it's reading a pre-populated document
-      ;;(break "pre-read")
+      ;;(lsp-break "pre-read")
       (throw 'sentences-finished nil))
      (*reading-populated-document*
       ;; In this case EOS just means that we've finished the
       ;; text of the current paragraph, so we throw to
       ;; its catch.
-      ;;(break "next para")
+      ;;(lsp-break "next para")
       (throw 'do-next-paragraph nil))
      (t
       ;; This just does the throw up to chart-based-analysis
-      ;; for terminatnig-chart-processing
-      ;;(break "stop parsing")
+      ;; for terminating-chart-processing
       (terminate-chart-level-process)))))
 
 ;; (trace-fsas)
@@ -304,6 +464,10 @@
 
 
 
+
+;;;---------------------------------
+;;; unknown words -- delayed action
+;;;---------------------------------
 
 ;; (trace-morphology)
 (defvar *positions-with-unhandled-unknown-words* nil
@@ -439,79 +603,11 @@
 
 (defun pattern-sweep (sentence)
   "Scans the sentence treetop by treetop in a loop.
-   Looks for patterns initiated by no space between words."
-  (declare (special *sentence-terminating-punctuation*
-                    *trace-sweep*))
-  (let ((position-before (starts-at-pos sentence))
-        (end-pos (ends-at-pos sentence))
-        treetop  position-after  multiple?  )
+   Looks for patterns initiated by there being no space 
+   between successive words."
+  (sweep-for-scan-patterns sentence)
+  (sweep-for-no-space-patterns sentence))
 
-    (loop
-      ;; modeled on sweep-sentence-treetops
-      (multiple-value-setq (treetop position-after multiple?)
-        (next-treetop/rightward position-before))
-
-      (when multiple?
-        ;; This is built-into a variant next-treetop function,
-        ;; but perhaps we want to look at variations on this
-        ;; e.g. for true ambiguities. 
-        (setq treetop (elt (ev-edge-vector treetop)
-                           (1- (ev-number-of-edges treetop)))))
-
-      (when *trace-sweep*
-        (format t "~&[pattern sweep] p~a ~a p~a~%"
-                (pos-token-index position-before)
-                treetop
-                (pos-token-index position-after)))
-
-      (when (and (word-p treetop)
-                 (memq treetop *sentence-terminating-punctuation*))
-        (tr :terminated-sweep-at position-after)
-        (return))
-
-      (when (eq position-after end-pos)
-        (tr :terminated-sweep-at position-after)
-        (return))
-
-      (unless (pos-assessed? position-after)
-        ;; catches bugs in the termination conditions
-        (error "Pattern sweep walked beyond the bounds of the sentence"))
-
-      (if (no-space-before-word? position-after)
-        (then
-          (cond
-            ((eq position-after position-before)
-             (when *break-on-nospace-pathology*
-               (push-debug `(treetop position-after))
-               (lsp-break "Pattern-sweep: would loop on position ~a"
-                          position-before))
-             ;; we could (return) and drop out of this loop, but then
-             ;; the same thing will hang up the parenthesis sweep,
-             ;; so best to fail the whole sentence.
-             (error "Pathology in edge-vectors would cause loops"))
-            (t
-          (tr :no-space-at position-after)
-          ;; "no whitespace at P, Initating scan-pattern check"
-          (let ((where-pattern-scan-ended
-                 ;; Run the pre-check for defined patterns
-                 (check-for-pattern position-after)))
-            (if where-pattern-scan-ended
-              (then
-                (tr :successful-ns-pattern-reached where-pattern-scan-ended)
-                (setq position-after where-pattern-scan-ended))
-              (else
-                (tr :no-specific-pattern-trying-uniform position-before)
-                (let ((where-uniform-ns-ended
-                       (do-no-space-collection 
-                        treetop position-before position-after)))
-                  (if where-uniform-ns-ended
-                    (then
-                      (tr :successful-uniform-ns-reached where-uniform-ns-ended)
-                      (setq position-after where-uniform-ns-ended))
-                    (else
-                      (tr :uniform-ns-pattern-failed))))))))))
-        (else
-          (tr :space-before position-after)
           ;; (look-for-DA-pattern treetop)
           ;;/// this isn't properly handled. The return value if
           ;; there is a pattern and it succeeds is not properly
@@ -519,18 +615,119 @@
           ;; side-effects and we don't appreciate them. The
           ;; more customary eecute-da-trie call shows how the
           ;; 'result' can be more interesting
-          ))
+ 
+
+(defun sweep-for-scan-patterns (sentence)
+  (declare (special *sentence-terminating-punctuation*
+                    *trace-sweep*))
+  (let ((position-before (starts-at-pos sentence))
+        (end-pos (ends-at-pos sentence))
+        treetop  position-after  multiple?  )
+    (loop
+      ;; modeled on sweep-sentence-treetops
+      (multiple-value-setq (treetop position-after multiple?)
+        (next-treetop/rightward position-before))
+      (when multiple?
+        ;; This is built-into a variant next-treetop function,
+        ;; but perhaps we want to look at variations on this
+        ;; e.g. for true ambiguities. 
+        (setq treetop (elt (ev-edge-vector treetop)
+                           (1- (ev-number-of-edges treetop)))))
+      (when *trace-sweep*
+        (format t "~&[pattern sweep] p~a ~a p~a~%"
+                (pos-token-index position-before)
+                treetop
+                (pos-token-index position-after)))
+       
+      (when (and (word-p treetop)
+                 (memq treetop *sentence-terminating-punctuation*))
+        (tr :terminated-sweep-at position-after)
+        (return))
+      (when (eq position-after end-pos)
+        (tr :terminated-sweep-at position-after)
+        (return))
+      (unless (pos-assessed? position-after)
+        ;; catches bugs in the termination conditions
+        (error "Pattern sweep walked beyond the bounds of the sentence"))
+
+      (when (no-space-before-word? position-after)
+        (cond
+          ((eq position-after position-before)
+           (when *break-on-nospace-pathology*
+             (push-debug `(treetop position-after))
+             (lsp-break "Pattern-sweep: would loop on position ~a"
+                        position-before))
+           ;; we could (return) and drop out of this loop, but then
+           ;; the same thing will hang up the parenthesis sweep,
+           ;; so best to fail the whole sentence.
+           (error "Pathology in edge-vectors would cause loops"))
+          (t
+           (tr :no-space-at position-after)
+           ;; "no whitespace at P, Initating scan-pattern check"
+           (let ((where-pattern-scan-ended
+                  ;; Run the pre-check for defined patterns
+                  (check-for-pattern position-after)))
+             (when where-pattern-scan-ended
+               (tr :successful-ns-pattern-reached where-pattern-scan-ended)
+               (setq position-after where-pattern-scan-ended))))))
+                 
+      ;; The pattern could have taken us just past the period
+      (when (position-precedes end-pos position-after)
+        (return))
+      (setq position-before position-after))))
+
+
+;; Straight copy of above
+(defun sweep-for-no-space-patterns (sentence)
+  (declare (special *sentence-terminating-punctuation*
+                    *trace-sweep*))
+  (let ((position-before (starts-at-pos sentence))
+        (end-pos (ends-at-pos sentence))
+        treetop  position-after  multiple?  )
+    (loop
+      (multiple-value-setq (treetop position-after multiple?)
+        (next-treetop/rightward position-before))
+      (when multiple?
+        (setq treetop (elt (ev-edge-vector treetop)
+                           (1- (ev-number-of-edges treetop)))))
+      (when *trace-sweep*
+        (format t "~&[pattern sweep] p~a ~a p~a~%"
+                (pos-token-index position-before)
+                treetop
+                (pos-token-index position-after)))
+       
+      (when (and (word-p treetop)
+                 (memq treetop *sentence-terminating-punctuation*))
+        (tr :terminated-sweep-at position-after)
+        (return))
+      (when (eq position-after end-pos)
+        (tr :terminated-sweep-at position-after)
+        (return))
+      (unless (pos-assessed? position-after)
+        ;; catches bugs in the termination conditions
+        (error "Pattern sweep walked beyond the bounds of the sentence"))
+
+      (when (no-space-before-word? position-after)
+        (tr :no-specific-pattern-trying-uniform position-before)
+        (let ((where-uniform-ns-ended
+               (do-no-space-collection 
+                   treetop position-before position-after)))
+          (if where-uniform-ns-ended
+            (then
+              (tr :successful-uniform-ns-reached where-uniform-ns-ended)
+              (setq position-after where-uniform-ns-ended))
+            (else
+              (tr :uniform-ns-pattern-failed)))))
 
       (deal-with-unhandled-unknown-words-at position-before)
 
       ;; The pattern could have taken us just past the period
       (when (position-precedes end-pos position-after)
         (return))
-        
       (setq position-before position-after))
 
-    ;;/// is this position reached when there's a return from the loop?
     (clear-unhandled-unknown-words)))
+
 
 
 ;;--- subroutines
