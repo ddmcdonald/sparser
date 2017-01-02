@@ -283,10 +283,11 @@
         (t edge)))
 
 (defun syntactically-embedding-edge? (edge)
-  (or
-   (member (cat-name (edge-form edge)) '(subject-relative-clause thatcomp))
-   (member (cat-name (edge-category edge))
-           '(there-exists))))
+  (and (not (is-basic-collection? (edge-referent edge)))
+       (or
+        (member (cat-name (edge-form edge)) '(subject-relative-clause thatcomp))
+        (member (cat-name (edge-category edge))
+                '(there-exists)))))
 
 (defun edges-under (edge)
   (if (not (edge-p (edge-right-daughter edge)))
@@ -553,11 +554,19 @@ so we return the edge for the POBJ"
     (unless
         (or
          *dont-check-dependencies*
+         ;; these are types of binding-values that don't have to be reinterpreted
          (eq val **lambda-var**)
          (word-p val)
          (polyword-p val)
          (numberp val)
          (referential-category-p val)
+         (and (individual-p val)
+              (or (itypep val 'subordinate-conjunction)
+                  (itypep val 'number) ;; happens when residues are converted
+                  ;; to numbers, as in "a phosphoserine at residue 827"
+                  (itypep val 'adverb)
+                  (and (eq (pname (binding-variable b)) 'modifier)
+                       (itypep val 'xref))))
          ;; this test is to handle complex structure in lexical edges...
          ;; like "phosphoserine"
          (eq edge (lexical-edge-at-pos (start-pos edge)))
@@ -584,22 +593,12 @@ so we return the edge for the POBJ"
             has-determiner
             ;; these happen in badly handled hyphenated phrases -- ignore them
             left right
-            ;; happens in comparatives -- wait for DAVID to fix
-            ;; comparative-predication
+            ;; comparative-predication             ;; happens in comparatives -- wait for DAVID to fix
             number ;; occurs in collections
-            ;;value ;; occurs in numbers  -- also in THERE-EXISTS
-            ;;quantifier
-            ;;predicate ;; happens in copulars
-            ;;adverb
-            ;;left
+            amino-acid ;; happens in residues
+            new-amino-acid ;; happens in point-mutations
             ))
-         (and (individual-p val)
-              (or (itypep val 'subordinate-conjunction)
-                  (itypep val 'number) ;; happens when residues are converted
-                  ;; to numbers, as in "a phosphoserine at residue 827"
-                  (itypep val 'adverb)
-                  (and (eq (pname (binding-variable b)) 'modifier)
-                       (itypep val 'xref)))))
+         )
       (case *no-source-for-binding-action*
         (:none nil)
         (:break (lsp-break "no source for binding ~s in ~s~%"
