@@ -388,24 +388,27 @@
   ;; middle word. ///Postponing that effort so we can make some
   ;; progress. E.g GAP–to–Ras
   (declare (special words pos-before pos-after)(ignore pattern))
+
   (tr :resolve-hyphens-between-three-words words)
-  (let ((left-edge (right-treetop-at/edge pos-before))
-        (right-edge (left-treetop-at/edge pos-after))
-        (middle-edge (right-treetop-at/edge 
-                      (chart-position-after 
-                       (chart-position-after pos-before)))))
+  (let* ((left-edge (right-treetop-at/edge pos-before))
+         (right-edge (left-treetop-at/edge pos-after))
+         (middle-edge (right-treetop-at/edge 
+                       (chart-position-after
+                        (if (edge-p left-edge)
+                            (pos-edge-ends-at left-edge)
+                            (chart-position-after pos-before))))))
     (cond
-     ((or (not (edge-p left-edge))
-          (not (edge-p middle-edge))
-          (not (edge-p right-edge)))
-      (when *work-on-ns-patterns*
-        (break "non-edge in make-hyphenated-triple, ~s ~s ~s" 
-               left-edge middle-edge right-edge))
-      ;;(tr :resolve-hyphen-b/w-two-words/missing-an-edge left-edge right-edge)
-      ;;(throw :punt-on-nospace-without-resolution nil)
-      ;; 10/27/16 if we punt the last item of the sequence will compose
-      ;; with the text that follows it. Making the polyword bio-entity
-      ;; seems the better choice.
-      (reify-ns-name-and-make-edge words pos-before pos-after))
-     (t
-      (make-hyphenated-triple left-edge middle-edge right-edge)))))
+      ((or (not (edge-p left-edge))
+           (not (edge-p middle-edge))
+           (not (edge-p right-edge)))
+       (when *work-on-ns-patterns*
+         (break "non-edge in make-hyphenated-triple, ~s ~s ~s" 
+                left-edge middle-edge right-edge))
+       ;;(tr :resolve-hyphen-b/w-two-words/missing-an-edge left-edge right-edge)
+       ;;(throw :punt-on-nospace-without-resolution nil)
+       ;; 10/27/16 if we punt the last item of the sequence will compose
+       ;; with the text that follows it. Making the polyword bio-entity
+       ;; seems the better choice.
+       (reify-ns-name-and-make-edge words pos-before pos-after))
+      (t
+       (make-hyphenated-triple left-edge middle-edge right-edge)))))
