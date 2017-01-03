@@ -62,6 +62,7 @@
     (declare (special clause-referent pobj-edge))
     ;;(lsp-break "attach-leading-pp-to-clause")
     
+    #+ignore
     (when (and
            ;; handle DEC 33
            ;; "In A375 cells, endogenous C-RAF:B-RAF heterodimers were measurable and inducible
@@ -86,6 +87,22 @@
     (let (*edge-spec*)
       (declare (special *edge-spec*))
       (cond
+        ((and
+          ;; handle DEC 33
+          ;; "In A375 cells, endogenous C-RAF:B-RAF heterodimers were measurable and inducible
+          ;;  following treatment with PLX4720 (Supplementary Fig. 9)."
+          (itypep clause-referent 'copular-predication)
+          ;; this trick does NOT work for PP copular-predications
+          )
+         (setq *edge-spec*
+               (make-edge-spec
+                :category (edge-category clause)
+                :form (edge-form clause)
+                :referent (bind-dli-variable 'circumstance pobj-referent clause-referent)
+                :target clause
+                :direction :left
+                :preposed pp)))
+         
         ((null pobj-referent) ;; punt at the moment for conjoined PPs
          nil)
       
@@ -103,12 +120,12 @@
            (when var-name
              (setq *edge-spec*
                    (make-edge-spec
-                         :category (edge-category clause)
-                         :form (edge-form clause)
-                         :referent (bind-dli-variable var-name pobj-referent clause-referent)
-                         :target clause
-                         :direction :left
-                         :preposed pp))
+                    :category (edge-category clause)
+                    :form (edge-form clause)
+                    :referent (bind-dli-variable var-name pobj-referent clause-referent)
+                    :target clause
+                    :direction :left
+                    :preposed pp))
              (tr :comma-3tt-pattern *edge-spec*)))))
       ;;(lsp-break "attach-leading-pp-to-clause 2")
       *edge-spec*)))
@@ -1238,7 +1255,7 @@
            :target target
            :direction :right))))))
 
-(define-debris-analysis-rule s-and-np
+(define-debris-analysis-rule s-conjunction-np
   :pattern ( s conjunction np)  
   ;; The action can fail. Returning nil ought to suffice
   :action (:function s-conjunction-np
@@ -1435,6 +1452,16 @@
   (add-initial-interjection/no-comma interjection-edge s-edge))
 
 
+(define-debris-analysis-rule quantifier-to-np
+    :pattern (quantifier)
+    :action (:function raise-quantifier-to-np first))
+
+(defun raise-quantifier-to-np (quantifier)
+  (unless (itypep (edge-referent quantifier) 'either) ;; more often a part of a conjunction or partitive
+    (make-edge-spec
+     :category (edge-category quantifier)
+     :form category::np
+     :referent (edge-referent quantifier))))
 
 ;;;--------------------
 ;;; Common subroutines
