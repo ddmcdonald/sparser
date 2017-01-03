@@ -939,7 +939,7 @@ similar to an oncogenic RasG12V mutation (9)."))
            :referent (:head right-edge) ;;  :bind (np left-edge)
            :form than-np)))
 
-#| almost never needed -- usually wrong
+
 ;;;--------------------------------------------------------
 ;; new rules for numbered items -- needs review
 ;;;--------------------------------------------------------
