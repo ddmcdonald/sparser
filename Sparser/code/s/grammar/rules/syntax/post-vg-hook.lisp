@@ -25,7 +25,8 @@
     (fold-in-preposed-auxiliary vg-edge)
     (record-verb-tense vg-edge)
     (generalize-vg-segment-edge vg-edge)
-    (update-edge-mention-referent vg-edge (edge-referent vg-edge))))
+    ;;(update-edge-mention-referent vg-edge (edge-referent vg-edge))
+    ))
 
 
 ;;;---------------------------
@@ -133,8 +134,9 @@
                          in vg that doesn't record tense: ~a"
                         vg-edge)))
         
-          (setf (edge-referent vg-edge) referent-with-tense)
-          (update-edge-mention-referent vg-edge referent-with-tense))))))
+          (set-edge-referent vg-edge referent-with-tense)
+          ;;(update-edge-mention-referent vg-edge referent-with-tense)
+          )))))
 
 
 (defun tense-implied-by-verb-edge (edge)
