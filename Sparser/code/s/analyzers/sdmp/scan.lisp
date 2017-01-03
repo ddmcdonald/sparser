@@ -234,12 +234,12 @@ to make any semantic or form edges that the grammar dictates.
            (note-surface-string edge)))
         (*description-lattice*
 	 (setq referent (fom-lattice-description referent))
-         (setf (edge-referent edge) referent)
+         (set-edge-referent edge referent)
+	 ;;(update-edge-mention-referent Edge referent)
 	 ;; the discourse-mention had a category as its interpretation
 	 ;; and the new referent does not have that mention on its mention-history
 	 ;; correct that
-         (note-surface-string edge)
-	 (update-edge-mention-referent Edge referent)))
+         (note-surface-string edge)))
        referent)
       ;; These cases are original from 2009 and 
       ;; not reconsidered yet.

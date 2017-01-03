@@ -66,7 +66,14 @@
 
   )
 
-
+;; this will be a place to modify ALL calls to (setf edge-referent)
+;;  to handle edge-mention updates uniformly
+(defun set-edge-referent (edge result)
+  (cond ((edge-referent edge)
+         (setf (edge-referent edge) result)
+         (update-edge-mention-referent edge result))
+        (t
+         (setf (edge-referent edge) result))))
 
 ;;;-----------------------------------
 ;;; predicates for unusual edge-types

@@ -288,7 +288,7 @@
   (when form
     (setf (edge-form edge) form))
   (when referent
-    (setf (edge-referent edge) referent))
+    (set-edge-referent edge referent))
   edge)
 
 

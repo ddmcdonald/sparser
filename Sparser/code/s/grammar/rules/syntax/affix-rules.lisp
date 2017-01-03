@@ -273,7 +273,7 @@
     (tr :morph-edge-with-generated-category? word category)
     
     (setf (edge-form edge) form-category)
-    (setf (edge-referent edge) referent)
+    (set-edge-referent edge referent)
     (setf (edge-right-daughter edge) :morphology-based-edge)
     (setf (edge-rule edge) :word-affix-morphology)
 

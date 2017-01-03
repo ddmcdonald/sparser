@@ -132,7 +132,7 @@
           ;; form the combined edge
           (let ((person (interpret-name-as-person ne))
                 (edge-over-title (edge-used-in title-edge)))
-            (setf (edge-referent appos-edge) person)
+            (set-edge-referent appos-edge person)
             (let* ((title+person (find-cfr 'person '(title person)))
                    (full-edge
                     (make-completed-binary-edge

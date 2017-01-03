@@ -458,7 +458,7 @@ unknown---in any event, we're taking the first edge that is installed.
       ;; compound digit strings, for which it passed through a constructed
       ;; string to be the compound: (format nil "~A" net-value)
 
-      (setf (edge-referent edge) number-object)
+      (set-edge-referent edge number-object)
       (setf (edge-rule edge) :number-fsa)
 
       (complete edge)
@@ -488,7 +488,7 @@ unknown---in any event, we're taking the first edge that is installed.
     (setf (aref *digit-position-array* 0) digits-word)
     (let ((edge (make-edge-over-digit-sequence pos-before end-pos))
           (i (find-or-make-number digits-word)))
-      (setf (edge-referent edge) i)
+      (set-edge-referent edge i)
       (setf (edge-left-daughter edge) digits-word)
       ;; (break "digits edge = ~a" edge)
       (complete edge)

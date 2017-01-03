@@ -207,7 +207,7 @@
 	  (unless (typep referent 'individual) ;; gets psi as well
 	    (typecase referent
 	      (referential-category
-	       (setf (edge-referent edge)
+	       (set-edge-referent edge
 		     (instantiate-reified-segment-category referent)))
 	      (mixin-category) ;; "can"
 	      (word) ;; "."
@@ -223,7 +223,7 @@
 	(find-or-define-kind (word-pname word))
       (let ((edge (install-preterminal-edge rule word pos-before pos-after)))
 	(setf (edge-form edge) (category-named 'np-head))
-	(setf (edge-referent edge)
+	(set-edge-referent edge
 	      (instantiate-reified-segment-category category))
 	edge))))
 

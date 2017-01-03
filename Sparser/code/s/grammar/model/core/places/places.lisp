@@ -71,7 +71,7 @@ by their type (pond, river, street, town, etc.)
                          :sequence sequence))
            (place (define-individual 'named-location
                     :name place-name)))
-      (setf (edge-referent name-edge) place)
+      (set-edge-referent name-edge place)
       (setf (edge-category name-edge) category::location)
       ;; Passed back to execute-da-trie, which has to know
       ;; where to continue from

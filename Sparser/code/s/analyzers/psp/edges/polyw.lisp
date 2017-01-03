@@ -43,7 +43,7 @@
     (setf (edge-rule edge) polyword)
     (setf (edge-form edge) nil)
     
-    (setf (edge-referent edge) nil)
+    (set-edge-referent edge nil)
 
     (setf (edge-left-daughter edge) polyword)
     (setf (edge-right-daughter edge) :single-term)

@@ -113,7 +113,7 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
                    (sentence-string *sentence-in-core*))))
 
           (t
-           (setf (edge-referent edge) new-ref)
+           (set-edge-referent edge new-ref)
            (if (edge-mention edge)
                (if (typep (edge-mention edge) 'discourse-mention)
                    (setf (base-description (edge-mention edge)) new-ref))

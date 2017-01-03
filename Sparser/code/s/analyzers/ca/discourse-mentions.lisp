@@ -667,7 +667,7 @@ so we return the edge for the POBJ"
                               '(preposition spatial-preposition
                                 spatio-temporal-preposition))))
         (setf i (find-or-make-lattice-description-for-ref-category i))
-        (setf (edge-referent source) i))
+        (set-edge-referent source i))
       (setf (mention-source m) source)
       (setf (edge-mention source) m))
     (setf (base-description m) i)

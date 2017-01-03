@@ -103,7 +103,7 @@
       (setf (edge-left-daughter edge)  relevant-edge)
       (setf (edge-right-daughter edge) :context-sensitive)
 
-      (setf (edge-referent edge)
+      (set-edge-referent edge
             (referent-from-rule left-edge right-edge edge rule))
 
       (set-used-by relevant-edge edge)

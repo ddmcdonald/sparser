@@ -60,7 +60,7 @@
         (setf (edge-form edge) form-category))
       (setf (edge-form edge) nil))
 
-    (setf (edge-referent edge) word)
+    (set-edge-referent edge word)
 
     (knit-edge-into-positions edge
                               starting-vector

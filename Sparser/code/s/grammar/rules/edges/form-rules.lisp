@@ -75,7 +75,7 @@
           nil )
 
         (else          
-          (setf (edge-referent edge) referent)
+          (set-edge-referent edge referent)
           (complete edge)
           
           (when *trace-edge-creation*
@@ -141,7 +141,7 @@
     (set-used-by right-edge edge)
     (setf (edge-left-daughter edge) left-edge)
     (setf (edge-right-daughter edge) right-edge)
-    (setf (edge-referent edge)
+    (set-edge-referent edge
           (place-referent-in-lattice
            (referent-from-rule left-edge right-edge
                                edge rule)

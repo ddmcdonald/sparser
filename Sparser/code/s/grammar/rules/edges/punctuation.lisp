@@ -32,7 +32,7 @@
 
     (setf (edge-category edge) word)
     (setf (edge-form edge)     (cfr-form rule))
-    (setf (edge-referent edge) (cfr-referent rule))
+    (set-edge-referent edge (cfr-referent rule))
 
     (setf (edge-rule edge) rule)
     (setf (edge-left-daughter edge) word)

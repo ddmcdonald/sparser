@@ -45,7 +45,7 @@
 
     (setf (edge-form edge) (if rule (cfr-form rule) form))
 
-    (setf (edge-referent edge)
+    (set-edge-referent edge
           (place-referent-in-lattice
            (cond (rule
                   (referent-from-rule left-edge right-edge edge rule))

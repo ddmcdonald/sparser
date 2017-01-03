@@ -127,7 +127,7 @@
                                       subj-rule
                                       :left-ref  subject)))
 
-        (setf (edge-referent vp) unit)))))
+        (set-edge-referent vp unit)))))
        
 
 

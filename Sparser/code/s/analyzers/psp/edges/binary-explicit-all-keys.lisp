@@ -156,7 +156,7 @@
 
 
  
-    (setf (edge-referent edge)
+    (set-edge-referent edge
           (if (and (cfr-p rule)
                    left-edge right-edge)
             (referent-from-rule

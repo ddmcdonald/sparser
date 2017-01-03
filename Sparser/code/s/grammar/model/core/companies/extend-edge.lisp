@@ -41,7 +41,7 @@
       (dolist (e extensions) (de-activate-edge e))
       
       (setf (edge-form new-edge) (edge-form edge))
-      (setf (edge-referent new-edge)
+      (set-edge-referent new-edge
               (establish-referent-of-a-company
                total-treetop-sequence new-edge))
 

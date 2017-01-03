@@ -38,7 +38,7 @@
     (set-used-by pn-edge edge)
 
     (setf (edge-form edge)     form)
-    (setf (edge-referent edge) referent)
+    (set-edge-referent edge referent)
 
     (when *trace-edge-creation*
       (format t "~&~%creating ~A from ~A~

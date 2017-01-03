@@ -47,7 +47,7 @@
                ;; The reference calculation is entitled to abort an
                ;; edge.  If it does, the edge won't be knit in, completed
                ;; or assessed.
-               (setf (edge-referent edge)
+               (set-edge-referent edge
                      (place-referent-in-lattice
                       (funcall referent-function left-edge right-edge)
                       edge))
@@ -73,7 +73,7 @@
                     rule-name)))))
 
      (referent
-      (setf (edge-referent edge) (place-referent-in-lattice referent edge))
+      (set-edge-referent edge (place-referent-in-lattice referent edge))
       (knit-edge-into-positions edge
                                 (edge-starts-at left-edge)
                                 (edge-ends-at right-edge))
@@ -83,7 +83,7 @@
       (knit-edge-into-positions edge
                                 (edge-starts-at left-edge)
                                 (edge-ends-at right-edge))
-      (setf (edge-referent edge)
+      (set-edge-referent edge
             (place-referent-in-lattice (edge-referent edge) edge))
 
       (complete edge)

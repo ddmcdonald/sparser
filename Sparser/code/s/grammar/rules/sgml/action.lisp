@@ -104,5 +104,5 @@
         (unless (itypep result 'paragraph)
           (break "result and edge's referent aren't in sync"))))
 
-    (setf (edge-referent edge) result)))
+    (set-edge-referent edge result)))
 

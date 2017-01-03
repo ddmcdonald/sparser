@@ -1103,7 +1103,7 @@
         ;; now we suborn the existing edge
         (setf (edge-category edge)
               (value-of 'category term))
-        (setf (edge-referent edge) term)
+        (set-edge-referent edge term)
         (add-subsuming-object-to-discourse-history edge)
         term )
       

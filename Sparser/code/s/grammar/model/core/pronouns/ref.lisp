@@ -179,7 +179,7 @@
     (tr :subverting-pn-edge to category referent)
     (setf (edge-category to) category)
     (setf (edge-form to) form)
-    (setf (edge-referent to) referent)))
+    (set-edge-referent to referent)))
 
 (defun rethread-anaphor-bindings (dummy real)
   ;; The dummy individual on the pronoun edge has already been

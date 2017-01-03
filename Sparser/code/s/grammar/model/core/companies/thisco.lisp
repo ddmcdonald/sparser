@@ -277,14 +277,14 @@
        (if (eq category::company-head/er
                (edge-category (head-of-phrase this-co-edge)))
          (when *topic-company*
-           (setf (edge-referent this-co-edge) (the-topic-company)))
+           (set-edge-referent this-co-edge (the-topic-company)))
          nil))
 
       (word::|that| )
 
       (otherwise
        (if *topic-company*
-         (setf (edge-referent this-co-edge) (the-topic-company))
+         (set-edge-referent this-co-edge (the-topic-company))
          :unresolved-company-anaphor)))))
 
 

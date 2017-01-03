@@ -514,7 +514,7 @@
           
                 (setf (edge-rule edge) :pnf-residue-backoff)
                 (setf (edge-form edge) category::proper-noun)
-                (setf (edge-referent edge) name-word-individual)
+                (set-edge-referent edge name-word-individual)
                 (setf (edge-category edge) category::name-word)
                 edge )))))))
 

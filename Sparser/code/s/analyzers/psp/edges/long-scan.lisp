@@ -78,7 +78,7 @@
         (format t "~&Ccreating ~A for ~A" edge rule))
     
       (assess-edge-label category edge) 
-      (setf (edge-referent edge)  (place-referent-in-lattice referent edge))
+      (set-edge-referent edge  (place-referent-in-lattice referent edge))
       
       (complete edge)
       edge )))

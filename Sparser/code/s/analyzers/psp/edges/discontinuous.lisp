@@ -42,7 +42,7 @@
     (set-used-by left-edge edge)
     (set-used-by right-edge edge)
     
-    (setf (edge-referent edge)
+    (set-edge-referent edge
           (referent-from-rule left-edge right-edge edge rule))
 
     (complete edge)
@@ -81,7 +81,7 @@
     (setf (edge-form new-edge)
           (or form (edge-form edge)))
 
-    (setf (edge-referent new-edge)
+    (set-edge-referent new-edge
           (or referent (edge-referent edge)))
     (setf (edge-rule new-edge)
           (or rule (edge-rule edge)))

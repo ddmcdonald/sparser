@@ -56,7 +56,7 @@
     (setf (edge-right-daughter edge) :proper-name)
     (setf (edge-constituents edge) daughters)
 
-    (setf (edge-referent edge) referent)
+    (set-edge-referent edge referent)
     (when *trace-edge-creation*
       (format t "~&creating ~A for a proper name"
               edge))

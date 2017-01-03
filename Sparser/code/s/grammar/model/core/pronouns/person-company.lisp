@@ -80,7 +80,7 @@
         ;; and referent
         (setf (edge-category pn-edge) (category-named 'person))
         ;; keep the form, it could be 'possessive', which is useful
-        (setf (edge-referent pn-edge) person))
+        (set-edge-referent pn-edge person))
 
       pn-edge)))
 

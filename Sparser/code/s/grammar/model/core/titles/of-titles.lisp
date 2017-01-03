@@ -98,7 +98,7 @@
          (np-edge (lookup-matched-tt 'third))
          (np-ref (edge-referent np-edge)))
     (unless (itypep (edge-referent title-edge) 'modified-title)
-      (setf (edge-referent title-edge)
+      (set-edge-referent title-edge
             (setq title (convert-to-modified-title 
                          title 'area-of-responsibility))))
 

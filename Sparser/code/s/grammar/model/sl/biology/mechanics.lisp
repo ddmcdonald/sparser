@@ -120,8 +120,8 @@
         (declare (ignore rule)) ;; for now
         ;; subvert both this edge and the rule
         (setf (edge-category e) (category-named 'protein))
-        (setf (edge-referent e) new-ref)
-        (update-edge-mention-referent e new-ref)
+        (set-edge-referent e new-ref)
+        ;;(update-edge-mention-referent e new-ref)
         new-ref))))
 
 (defmethod convert-bio-entity-to-protein ((items list))

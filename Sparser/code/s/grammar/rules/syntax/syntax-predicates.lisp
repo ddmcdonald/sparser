@@ -285,7 +285,7 @@
 		;; and the grammatical relationship in the form
 		(setf (edge-category pn-edge) restriction)
 		(setf (edge-form pn-edge) relation-label)
-		(setf (edge-referent pn-edge) new-ref)
+		(set-edge-referent pn-edge new-ref)
 		(setf (edge-rule pn-edge) 'condition-anaphor-edge))
 	      new-ref))))))
     (t item)))

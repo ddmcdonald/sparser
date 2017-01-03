@@ -103,7 +103,7 @@
             (find-or-make-category-object 'number :referential)
             category::number))
     (setf (edge-form     edge) (category-named 'number))
-    (setf (edge-referent edge) number)
+    (set-edge-referent edge number)
 
     (if (eq ending-position (chart-position-after starting-position))
       ;; then there's just the one daughter that we've already found
@@ -144,7 +144,7 @@
 
       (setf (edge-category edge) *the-category-of-digit-sequences*)
       (setf (edge-form edge) (category-named 'number))
-      (setf (edge-referent edge) number)
+      (set-edge-referent edge number)
 
       ;; we don't activate these edges because they are processed by
       ;; the digits FSA, and it will span them with a Number edge that

@@ -65,7 +65,7 @@
             :form (when (form-category? label)
                     label)
             :rule *matched-da-rule*)))
-      (setf (edge-referent edge)
+      (set-edge-referent edge
             (execute-da-referent-expressions ref-exp))
       (update-edge-mention-referent edge (edge-referent edge))
       edge )))

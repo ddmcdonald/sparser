@@ -90,7 +90,7 @@
           nil )
 
         (else
-          (setf (edge-referent edge)
+          (set-edge-referent edge
                 (place-referent-in-lattice referent edge))
           
           (set-used-by left-edge  edge)

@@ -95,7 +95,7 @@
                                       category)
                                     (unless (symbolp rule)
                                       (cfr-form rule))))
-    (setf (edge-referent edge)  
+    (set-edge-referent edge  
           (place-referent-in-lattice
            (or referent
                (referent-from-unary-rule

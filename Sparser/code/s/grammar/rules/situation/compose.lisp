@@ -107,13 +107,13 @@
       (push-debug `(,i ,edge))
       ;; Change the referent of the edge so we can pass this
       ;; information up to the poor-man's segment level
-      (setf (edge-referent edge) i)
+      (set-edge-referent edge i)
       i)))
 
 (defmethod incorporate-phrasal-head ((i individual) (peg peg) (edge edge))
   ;; motivating case is "wakil", but also gets "suv"
   (transfer-peg-bindings-to-individual peg i)
-  (setf (edge-referent edge) i)
+  (set-edge-referent edge i)
   i)
 
 
