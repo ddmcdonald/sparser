@@ -76,7 +76,7 @@
 ;; (trace-ns-sequences)  for ns patterns
 ;; (trace-scan-patterns)  for large scale
 
-
+(defparameter *in-collect-no-space-segment-into-word* nil)
 (defun collect-no-space-segment-into-word (position-after)
   "As called from do-no-space-collection At this point all of the
    words in the sentence have been spanned with unary edges, and there
@@ -86,11 +86,13 @@
    are not separated."
   (when nil (tts))
   
-  (let* ((leftmost-edge (left-treetop-at/only-edges position-after))
+  (let* ((*in-collect-no-space-segment-into-word* t) ;; used to block one anaphora, when numbers appear in an NS pattern
+         (leftmost-edge (left-treetop-at/only-edges position-after))
          ;; There's always an edge. The question is how long it is.
          (long-edge (when leftmost-edge
                       (unless (one-word-long? leftmost-edge)
                         leftmost-edge))))
+    (declare (special *in-collect-no-space-segment-into-word*))
         
     (let ((start-pos (if leftmost-edge
                        (pos-edge-starts-at leftmost-edge)
