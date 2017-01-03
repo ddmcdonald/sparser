@@ -284,10 +284,9 @@
 
 (defun syntactically-embedding-edge? (edge)
   (and (not (is-basic-collection? (edge-referent edge)))
-       (or
-        (member (cat-name (edge-form edge)) '(subject-relative-clause thatcomp))
-        (member (cat-name (edge-category edge))
-                '(there-exists)))))
+       (or (member (cat-name (edge-form edge)) '(subject-relative-clause thatcomp))
+           (member (cat-name (edge-category edge))
+                   '(there-exists)))))
 
 (defun edges-under (edge)
   (if (not (edge-p (edge-right-daughter edge)))
@@ -296,6 +295,8 @@
       (list (edge-left-daughter edge)
             (edge-right-daughter edge))))
 
+(defparameter *mention-individual* nil)
+(defparameter *mention-source* nil)
 (defun make-mention (i source &optional category)
   "Individuals reside in a description lattice. Every new
   property or relation extends the lattice and in so doing
@@ -314,7 +315,9 @@
   ;; either don't create a mention for NPs with category references (like "the cell")
   ;;  or make them have individuals as references
   (if (null category) (setq category (itype-of i)))
-  (let* ((subsumed-mention
+  (let* ((*mention-individual* i)
+         (*mention-source* source)
+         (subsumed-mention
           (and (or (not (edge-p source))
                    (not (eq (edge-rule source) 'make-ns-pair)))
                (subsumed-mention? i source)))
@@ -330,7 +333,7 @@
                            (when (edge-p source) (semantic-edges-under source))
                            (when (edge-p source) source))))
                   new-mention))))
-    (declare (special m))
+    (declare (special m *mention-individual* *mention-source*))
     (fill-in-mention m i source)
     (unless subsumed-mention
       (tr :making-new-mention m)
@@ -479,24 +482,23 @@
   (declare (special top-edge))
   (if (and b (eq (pname (binding-variable b)) 'items))
       (loop for item in value collect (find-binding-dependency item edges top-edge))
-      (or
-       (loop for edge in edges
-             as ref-edge = (find-dependent-edge edge)
-             as ref = (when ref-edge (edge-referent ref-edge))
-             when (and ref (dli-eq? ref value))
-             do (return ref-edge))
-       ;; last-ditch effort caused by change in interpretation of
-       ;;  a previously ambiguous variable, which causes the
-       ;;  subsumed-mention to be missed
-       (loop for edge in edges
-             as ee = (and (typep (edge-mention edge) 'discourse-mention)
-                          (loop for d in (dependencies (edge-mention edge))
-                                when (and (typep (second d) 'discourse-mention)
-                                          (dli-eq? value (base-description (second d))))
-                                do (return (mention-source (second d)))))
-             do (when ee (return ee)))
-       (when b
-         (check-plausible-missing-edge-for-dependency b top-edge)))))
+      (or (loop for edge in edges
+                as ref-edge = (find-dependent-edge edge)
+                as ref = (when ref-edge (edge-referent ref-edge))
+                when (and ref (dli-eq? ref value))
+                do (return ref-edge))
+          ;; last-ditch effort caused by change in interpretation of
+          ;;  a previously ambiguous variable, which causes the
+          ;;  subsumed-mention to be missed
+          (loop for edge in edges
+                as ee = (and (typep (edge-mention edge) 'discourse-mention)
+                             (loop for d in (dependencies (edge-mention edge))
+                                   when (and (typep (second d) 'discourse-mention)
+                                             (dli-eq? value (base-description (second d))))
+                                   do (return (mention-source (second d)))))
+                do (when ee (return ee)))
+          (when b
+            (check-plausible-missing-edge-for-dependency b top-edge)))))
 
 (defun find-dependent-edge (edge)
   "PPs are never referent edges (except possibly for some adjuncts, when David finishes)
@@ -548,65 +550,93 @@ so we return the edge for the POBJ"
              (binding-value b)))))
 
 
+(defparameter *missing-mention-action* nil)
+;;(defparameter *missing-mention-action* :warn)
+;;(defparameter *missing-mention-action* :break)
+
 (defun check-plausible-missing-edge-for-dependency (b edge)
   (declare (special *sentence-in-core*))
   (let ((val (binding-value b)))
-    (unless
-        (or
-         *dont-check-dependencies*
-         ;; these are types of binding-values that don't have to be reinterpreted
-         (eq val **lambda-var**)
-         (word-p val)
-         (polyword-p val)
-         (numberp val)
-         (referential-category-p val)
-         (and (individual-p val)
-              (or (itypep val 'subordinate-conjunction)
-                  (itypep val 'number) ;; happens when residues are converted
-                  ;; to numbers, as in "a phosphoserine at residue 827"
-                  (itypep val 'adverb)
-                  (and (eq (pname (binding-variable b)) 'modifier)
-                       (itypep val 'xref))))
-         ;; this test is to handle complex structure in lexical edges...
-         ;; like "phosphoserine"
-         (eq edge (lexical-edge-at-pos (start-pos edge)))
-         (member (edge-rule edge)
-                 '(sdm-span-segment make-ns-pair
-                   resolve-protein-prefix
-                   make-edge-over-mutated-protein
-                   :reify-residue
-                   :reify-point-mutation-and-make-edge
-                   MAKE-POLAR-PARTICIPLE-QUESTION
-                   MAKE-POLAR-ADJECTIVE-QUESTION))
-         (and (individual-p (edge-referent edge))
-              (itypep (edge-referent edge) 'phosphorylated-amino-acid))
-         (and (cfr-p (edge-rule edge))
-              (equal '(:FUNCALL INTERPRET-PP-AS-HEAD-OF-NP LEFT-REFERENT RIGHT-REFERENT)
-                     (cfr-referent (edge-rule edge))))
-         (member (cat-name (edge-category edge))
-                 '(there-exists))
-         (member
-          (pname (binding-variable b))
-          '(name uid ;; done in basic word-level rules
-            ;; these next are done in tense-aspect attachment
-            negation modal occurs-at-moment perfect progressive
-            has-determiner
-            ;; these happen in badly handled hyphenated phrases -- ignore them
-            left right
-            ;; comparative-predication             ;; happens in comparatives -- wait for DAVID to fix
-            number ;; occurs in collections
-            amino-acid ;; happens in residues
-            new-amino-acid ;; happens in point-mutations
-            ))
-         )
-      (case *no-source-for-binding-action*
-        (:none nil)
-        (:break (lsp-break "no source for binding ~s in ~s~%"
-                           b (sentence-string *sentence-in-core*)))
-        (:warn (warn "no dependency ~s; rule: ~s ~% in ~s~%"
-                     b
-                     (edge-rule edge)
-                     (sentence-string *sentence-in-core*)))))
+    (cond ((or *dont-check-dependencies*
+               ;; these are types of binding-values that don't have to be reinterpreted
+               (eq val **lambda-var**)
+               (word-p val)
+               (polyword-p val)
+               (numberp val)
+         
+               ;; this test is to handle complex structure in lexical edges...
+               ;; like "phosphoserine"
+               (eq edge (lexical-edge-at-pos (start-pos edge)))
+               (member (edge-rule edge)
+                       '(sdm-span-segment make-ns-pair
+                         resolve-protein-prefix
+                         make-edge-over-mutated-protein
+                         :reify-residue
+                         :reify-point-mutation-and-make-edge
+                         MAKE-POLAR-PARTICIPLE-QUESTION
+                         MAKE-POLAR-ADJECTIVE-QUESTION))
+               (and (individual-p (edge-referent edge))
+                    (itypep (edge-referent edge) 'phosphorylated-amino-acid))
+               (and (cfr-p (edge-rule edge))
+                    (equal '(:FUNCALL INTERPRET-PP-AS-HEAD-OF-NP LEFT-REFERENT RIGHT-REFERENT)
+                           (cfr-referent (edge-rule edge))))
+               (member (cat-name (edge-category edge))
+                       '(there-exists))
+               (member
+                (pname (binding-variable b))
+                '(name uid ;; done in basic word-level rules
+                  ;; these next are done in tense-aspect attachment
+                  negation modal occurs-at-moment perfect progressive
+                  past present
+                  ;; these are known to be referential-categories
+                  ;;  used for syntactic marking
+                  has-determiner prep
+                  ;; these happen in badly handled hyphenated phrases -- ignore them
+                  left right
+                  ;; comparative-predication             ;; happens in comparatives -- wait for DAVID to fix
+                  number         ;; occurs in collections
+                  amino-acid     ;; happens in residues
+                  new-amino-acid position ;; happens in point-mutations
+                  quantifier
+                  ))
+               (and (eq (pname (binding-variable b)) 'type)
+                    (itypep *mention-individual* 'collection))
+               ;; as in "the size of the modification"
+               (and (eq (pname (binding-variable b)) 'attribute)
+                    (itypep *mention-individual* 'quality-predicate))
+               ;; "One hundred and seventy (79.4%)"
+               (and (eq (pname (binding-variable b)) 'value)
+                    (itypep *mention-individual* 'multiplier))
+               )
+           ;; these are expected cases and are no issue at all
+           nil)
+          ((or (referential-category-p val)
+               (and (individual-p val)
+                    (or (itypep val 'subordinate-conjunction)
+                        (itypep val 'number) ;; happens when residues are converted
+                        ;; to numbers, as in "a phosphoserine at residue 827"
+                        (itypep val 'adverb)
+                        (and (eq (pname (binding-variable b)) 'modifier)
+                             (itypep val 'xref)))))
+           ;; these are cases which should be checked out to see what the full circumstance is
+           (case *missing-mention-action*
+             (:warn
+              (warn "~%can't find source edge for ~s in ~s within sentence: ~s~%"
+                    val *mention-individual*  (sentence-string *sentence-in-core*)))
+             (:break
+              (lsp-break "~%can't find source edge for ~s in ~s within sentence: ~s~%"
+                         val *mention-individual* (sentence-string *sentence-in-core*)))
+             (t nil))
+           nil)
+          (t
+           (case *no-source-for-binding-action*
+             (:none nil)
+             (:break (lsp-break "no source for binding ~s in ~s~%"
+                                b (sentence-string *sentence-in-core*)))
+             (:warn (warn "no dependency ~s; rule: ~s ~% in ~s~%"
+                          b
+                          (edge-rule edge)
+                          (sentence-string *sentence-in-core*))))))
     nil))
 
 (defun similar-binding&dependency (b1 dep)
