@@ -24,6 +24,7 @@
   (setq *reinterpret-dominating-edges-warning* show-warnings)
   (setq *warn-on-cant-find-corresponding-clauses* show-warnings)
   (setq *warn-attach-leading-pp-to-clause* show-warnings)
+  ;;(setq *show-one-anaphora* show-warnings) not really a warning, but something to look at
   (if show-warnings
       (setq *no-source-for-binding-action* :warn)
       (setq *no-source-for-binding-action* :none)))
