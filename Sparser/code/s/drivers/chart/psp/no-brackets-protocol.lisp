@@ -306,8 +306,15 @@
       (error-trapped-scan-and-core sentence)
       (scan-terminals-and-do-core sentence))
 
-    (unless (slot-boundp sentence 'next)
-      (throw 'do-next-paragraph nil))
+     (cond ;; is there a 'next' sentence?
+       ((not (slot-boundp sentence 'next))
+        (throw 'do-next-paragraph nil))
+       ((null (next sentence))
+        ;;/// shouldn't happen. But happened in 8.a.p1 of
+        ;; (run-an-article :id "PMC1702556" :corpus :jun15eval)
+        ;; and the single sentence is a long list of
+        ;; accession numbers in GenBank
+        (throw 'do-next-paragraph nil)))
     (let ((next-sentence (next sentence)))
       (tr :sweep-next-sentence next-sentence)
       (when (string-equal "" (sentence-string next-sentence))
