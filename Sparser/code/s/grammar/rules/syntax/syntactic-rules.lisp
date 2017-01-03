@@ -964,9 +964,19 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :left-edge
     :referent (:function make-ordinal-item right-edge left-edge))
 
+(def-syntax-rule (common-noun number) ;; should be allowable as a form rule
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+(def-form-rule (common-noun/plural hyphenated-number)  
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
 (def-syntax-rule (approximator number)
     :form number
     :head :right-edge
     :referent (:daughter right-edge
 			 :bind (approximator left-edge)))
-|#
+
