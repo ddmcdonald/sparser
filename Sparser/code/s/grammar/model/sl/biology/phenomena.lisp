@@ -419,12 +419,24 @@ it is created from N-terminus to C-terminus.|#
         :premod context ;; NEEDS TO BE CHANGED -- only here because need :etf (pre-mod), to get synonyms
         ))
 
+(define-category t-loop :specializes protein-domain
+  :realization (:noun "t-loop"))
+
+(define-category s-motif :specializes protein-domain
+  :realization (:noun "s-motif"))
 
 (define-category binding-domain :specializes protein-domain
   :binds ((bound-item bio-chemical-entity))
   :realization
   (:noun ("binding domain" "binding region")
          :m bound-item))
+
+(def-synonym binding-domain ;; as in "metal-binding center"    
+    (:noun ("center" "centre")))
+
+(define-category metal-binding-domain :specializes binding-domain
+      :realization 
+      (:noun ("metal-binding center" "metal center" "metal-binding centre" "metal centre")))
 
 (define-category RBD :specializes binding-domain
       :realization 
