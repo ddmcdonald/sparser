@@ -669,6 +669,8 @@
       (setq head (bind-dli-variable variable-to-bind item head))
       head))))
 
+(defparameter *show-one-anaphora* nil)
+
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
   (declare (special *trivial-subcat-test*
                     category::pronoun/first/plural category::ordinal
@@ -706,8 +708,23 @@
          (itypep item category::pronoun) ;; of any sort
          t)
         ((and (itypep item category::number)
-              (not (itypep item category::ordinal)))
-         t)
+              (not (itypep item '(:or post-ordinal ordinal hyphenated-number)))
+              (not (and (numberp (value-of 'value item))
+                        (or (floatp (value-of 'value item))
+                            (> (value-of 'value item) 10))))
+              (not (itypep item 'ordinal ))
+              (not *in-collect-no-space-segment-into-word*)
+              (not (member pat-or-v/r
+                           '(blocked-category
+                             (:or time-unit time amount-of-time))
+                           :test #'equal)))
+         (when (and *show-one-anaphora* (not *subcat-test*))
+           (format t "~%one anaphora ~s in ~s~%" (list item pat-or-v/r)(sentence-string *sentence-in-core*))
+           ;;(lsp-break)
+           )
+
+         t ;; this was done to handle one anaphora, but should be revisited
+         )
         ((consp restriction)
          (cond
            ((eq (car restriction) :or)
