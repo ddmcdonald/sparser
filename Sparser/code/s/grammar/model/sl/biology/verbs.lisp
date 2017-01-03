@@ -1333,7 +1333,6 @@
          :s agent
          :o basis))
 
-(def-synonym fraction (:noun "fraction"))
 ;; exchange
 
 (define-category frees :specializes caused-bio-process
