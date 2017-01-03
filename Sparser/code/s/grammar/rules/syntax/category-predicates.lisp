@@ -255,7 +255,8 @@
       thereis
       (or
        ;;(eq (edge-category edge) category::quantifier-of)
-       (eq (edge-category edge) category::all)))
+       (eq (edge-category edge) category::all)
+       (eq (edge-category edge) category::both)))
     (eq name 'category::det))))
 
 (defun edge-over-there? (e)
