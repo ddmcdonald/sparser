@@ -257,6 +257,8 @@
         
     (post-analysis-operations sentence)
 
+    (interpret-treetops-in-context
+     (all-tts (starts-at-pos sentence)(ends-at-pos sentence)))
     (record-sentence-model-data sentence)
   
     ;; EOS throws to a higher catch. If the next sentence
@@ -381,8 +383,7 @@
       ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
       (set-entities sentence entities)
       (set-relations sentence relations)
-      (set-tt-count sentence tt-count)
-      (interpret-treetops-in-context treetops))))
+      (set-tt-count sentence tt-count))))
 
 
 ;;;------------------------------------------------------------
