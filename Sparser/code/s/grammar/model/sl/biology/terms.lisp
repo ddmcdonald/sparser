@@ -525,16 +525,7 @@
          :for complement))
 
 
-;;; using 'bio-abstract' here as a standin for a better taxonomic treatment
-(define-category component :specializes molecule
-		 :binds ((whole (:or bio-complex bio-process)))
-  :realization
-  (:noun "component"
-         :of whole
-	 :in whole))
 
-(def-synonym component 
-             (:noun "part"))
 
 ;; OBE (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 (noun "condition" :super experimental-condition)
