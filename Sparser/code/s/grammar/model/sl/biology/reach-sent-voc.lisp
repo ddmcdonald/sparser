@@ -1238,7 +1238,6 @@
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "CREB"))) "CREB" "CREBs")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "CaMK"))) "CAMK" "CaMK")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "DUSP"))) "DUSP" "DUSPs" "Dusp")
-    ((HUMAN-PROTEIN-FAMILY (NAME (WD "GAP"))) "GAP" "GAPs" "Gap")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "GPCR"))) "GPCR" "GPCRs")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "HSP90"))) "HSP90" "Hsp90")
     ((HUMAN-PROTEIN-FAMILY (NAME (WD "IQGAP"))) "IQGAP" "IQGAPs")
@@ -1898,7 +1897,6 @@
     ((PROTEIN (NAME (WD "Fe-Au nanorod"))) "Fe-Au nanorods")
     ((PROTEIN (NAME (WD "Fo"))) "Fos")
     ((PROTEIN (NAME (WD "G protein"))) "G proteins")
-    ((PROTEIN (NAME (WD "G12V"))) "G12V") ((PROTEIN (NAME (WD "GAP"))) "GAPs")
     ((PROTEIN (NAME (WD "GDI"))) "GDIs")
     ((PROTEIN (NAME (WD "GFP"))) "GFP" "gfp")
     ((PROTEIN (NAME (WD "GMD"))) "GMDs")
@@ -5535,8 +5533,6 @@
     ((PROTEIN (UID "UP:RAP1B_HUMAN") (NAME (WD "RAP1B_HUMAN"))) "Rap1b")
     ((PROTEIN (UID "UP:RARA_HUMAN") (NAME (WD "RARA_HUMAN"))) "retinoic")
     ((PROTEIN (UID "UP:RARB_HUMAN") (NAME (WD "RARB_HUMAN"))) "RAR")
-    ((PROTEIN (UID "UP:RASA1_HUMAN") (NAME (WD "RASA1_HUMAN"))) "GAP" "GAPs"
-     "RASA1" "p120GAP" "p120RasGAP")
     ((PROTEIN (UID "UP:RASA2_HUMAN") (NAME (WD "RASA2_HUMAN"))) "RASA2")
     ((PROTEIN (UID "UP:RASD1_HUMAN") (NAME (WD "RASD1_HUMAN"))) "Dexamethasone"
      "dexamethasone")
