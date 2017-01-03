@@ -959,12 +959,8 @@
 (deftrace :resume-after-error ()
   (when *trace-network-flow*
     (trace-msg "[scan] resume-after-error")))
+
 #|
-
-(deftrace : ()
-  (when *trace-network-flow*
-    (trace-msg "[scan] ")))
-
 (deftrace : ()
   (when *trace-network-flow*
     (trace-msg "[scan] ")))
@@ -1367,6 +1363,24 @@
 (deftrace :terminal-edges-sweep ()
   (when *trace-network-flow*
     (trace-msg "[scan] entered terminal-edges-sweep")))
+
+
+(deftrace :sweep-for-scan-patterns ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered sweep-for-scan-patterns")))
+
+(deftrace :sweep-for-no-space-patterns ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered sweep-for-no-space-patterns")))
+
+(deftrace :short-conjunctions-sweep ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered short-conjunctions-sweep")))
+
+(deftrace :sweep-to-span-parentheses ()
+  (when *trace-network-flow*
+    (trace-msg "[scan] entered sweep-to-span-parentheses")))
+#|
 (deftrace : ()
   (when *trace-network-flow*
     (trace-msg "[scan] entered ")))
@@ -1375,6 +1389,8 @@
   (when *trace-network-flow*
     (trace-msg "[scan] entered ")))
 |#
+
+
 ;;--
 
 (deftrace :pw-sweep-returned (p)
