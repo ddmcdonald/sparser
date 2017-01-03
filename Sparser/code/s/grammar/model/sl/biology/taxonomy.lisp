@@ -505,6 +505,8 @@
 		 :realization
 		 (:noun "observation"))
 
+
+
 (define-category over-ridden)
 ;; this is used only for over-riding inherited variables
 
@@ -655,6 +657,10 @@
          ;;:in location
          :with method))
 
+(define-category clinical-trial :specializes bio-method
+		 :realization
+		 (:noun "clinical trial"))
+
 
 (define-category bio-event :specializes bio-process
   :mixins (has-UID has-name biological)
@@ -764,7 +770,22 @@
   :index (:permanent :key name)
   :lemma (:common-noun "molecule")
   :realization (:common-noun name
-                :of molecule-type))
+                             :of molecule-type))
+
+;;; using molecule here as a standin for a better taxonomic treatment
+;;  The biologists often talk of a "fraction" as a separated-out portion of
+;;  a solution. We need some more general way of talking about this
+(define-category component :specializes molecule
+		 :binds ((whole (:or bio-complex bio-process)))
+  :realization
+  (:noun "component"
+         :of whole
+	 :in whole))
+
+(def-synonym component 
+    (:noun "part"))
+
+(def-synonym component (:noun "fraction")) 
 
 (define-category medical-treatment :specializes purposive-process
   :binds ((disease disease)
