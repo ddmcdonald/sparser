@@ -481,7 +481,7 @@
 (defun find-binding-dependency (value edges top-edge &optional b)
   (declare (special top-edge))
   (if (and b (eq (pname (binding-variable b)) 'items))
-      (loop for item in value collect (find-binding-dependency item edges top-edge))
+      (find-binding-dependencies-for-items value)
       (or (loop for edge in edges
                 as ref-edge = (find-dependent-edge edge)
                 as ref = (when ref-edge (edge-referent ref-edge))
@@ -499,6 +499,13 @@
                 do (when ee (return ee)))
           (when b
             (check-plausible-missing-edge-for-dependency b top-edge)))))
+
+(defun find-binding-dependencies-for-items (items)
+  (loop for item in items collect
+          (let ((bd (find-binding-dependency item edges top-edge)))
+            (if (edge-p bd)
+                (edge-mention bd)
+                bd))))
 
 (defun find-dependent-edge (edge)
   "PPs are never referent edges (except possibly for some adjuncts, when David finishes)
