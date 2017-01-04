@@ -672,7 +672,7 @@
 (defparameter *show-one-anaphora* nil)
 
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
-  (declare (special *trivial-subcat-test*
+  (declare (special *trivial-subcat-test* *subcat-test*
                     category::pronoun/first/plural category::ordinal
                     category::this category::that category::these category::those
                     category::pronoun category::number category::ordinal))
