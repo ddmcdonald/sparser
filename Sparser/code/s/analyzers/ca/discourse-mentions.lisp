@@ -328,7 +328,7 @@
                                       :uid (incf *mention-uid*))))
                   (setf (dependencies new-mention)
                         (when (individual-p i) ;; no dependencies for categories
-                          (create-new-dendendencies
+                          (create-new-dependencies
                            (indiv-old-binds i)
                            (when (edge-p source) (semantic-edges-under source))
                            (when (edge-p source) source))))
@@ -442,7 +442,7 @@
     (when (typep mention 'discourse-mention) mention)))
 
 
-(defun create-new-dendendencies (new-bindings edges top-edge)
+(defun create-new-dependencies (new-bindings edges top-edge)
   (declare (special new-bindings edges top-edge))
   (loop for b in new-bindings
         collect
@@ -470,7 +470,7 @@
                   ;; can be a category in case of infinitives like ;; "to dissociate"
                   unless (member b old-dependencies :test #'similar-binding&dependency )
                   collect b)))
-         (new-dependencies (create-new-dendendencies new-bindings edges edge)))
+         (new-dependencies (create-new-dependencies new-bindings edges edge)))
     (declare (special old-bindings new-bindings new-dependencies binding-edges))
     (when (not (equal (length new-bindings)
                       (length new-dependencies)))
@@ -481,7 +481,7 @@
 (defun find-binding-dependency (value edges top-edge &optional b)
   (declare (special top-edge))
   (if (and b (eq (pname (binding-variable b)) 'items))
-      (find-binding-dependencies-for-items value)
+      (find-binding-dependencies-for-items value edges top-edge)
       (or (loop for edge in edges
                 as ref-edge = (find-dependent-edge edge)
                 as ref = (when ref-edge (edge-referent ref-edge))
@@ -500,7 +500,7 @@
           (when b
             (check-plausible-missing-edge-for-dependency b top-edge)))))
 
-(defun find-binding-dependencies-for-items (items)
+(defun find-binding-dependencies-for-items (items edges top-edge)
   (loop for item in items collect
           (let ((bd (find-binding-dependency item edges top-edge)))
             (if (edge-p bd)
@@ -660,7 +660,7 @@ so we return the edge for the POBJ"
 
 (defun add-new-dependencies-for-collection (old-dependencies top-edge edges i ii)
   (if (null old-dependencies)
-      (create-new-dendendencies (indiv-old-binds i) edges top-edge)
+      (create-new-dependencies (indiv-old-binds i) edges top-edge)
       (basic-add-new-dependencies top-edge old-dependencies edges i ii)))
 
 (defun fill-in-mention (m i source)
