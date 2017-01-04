@@ -562,7 +562,7 @@ so we return the edge for the POBJ"
 ;;(defparameter *missing-mention-action* :break)
 
 (defun check-plausible-missing-edge-for-dependency (b edge)
-  (declare (special *sentence-in-core*))
+  (declare (special *sentence-in-core **lambda-var***))
   (let ((val (binding-value b)))
     (cond ((or *dont-check-dependencies*
                ;; these are types of binding-values that don't have to be reinterpreted
