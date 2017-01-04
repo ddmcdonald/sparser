@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2003,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2003,2011-2017 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "fsa digits"
 ;;;   Module:  "grammar;model:core:numbers:"
-;;;  Version:  February 2016
+;;;  Version:  January 2017
 
 ;; 5.0 (10/5 v2.3) rephrased the scan step to get subtler steps
 ;; 5.1 (9/14/93) updated the scanning calls, finished 9/16
@@ -658,15 +658,26 @@ unknown---in any event, we're taking the first edge that is installed.
                      (pos-terminal next-position)
                      next-position
                      (chart-position-after next-position)))))
-
-          (when (> index-of-cell-to-fill (1- (length array)))
-            (break "Too many digits accumulated - ~A - to fit in ~
-                    the digits array" index-of-cell-to-fill))
-
-          (setf (aref array index-of-cell-to-fill) digits-edge)
-          (look-for-hyphen-as-next-treetop (1+ index-of-cell-to-fill)
-                                           array
-                                           next-position))
+          (if digits-edge
+            (then
+              (when (> index-of-cell-to-fill (1- (length array)))
+                (error "Too many digits accumulated - ~A - to fit in ~
+                        the digits array" index-of-cell-to-fill))
+              (setf (aref array index-of-cell-to-fill) digits-edge)
+              (look-for-hyphen-as-next-treetop (1+ index-of-cell-to-fill)
+                                               array
+                                               next-position))
+            (else
+              ;; install-terminal-edges returns nil if the word
+              ;; has already been spanned, e.g. by a polyword.
+              ;; Whether is should have been is debatable case by
+              ;; case, but it does mean we've no hyphenated number
+              ;; here.
+              (tr :digit-fsa-returning :no-digits-after-hyphen
+                  'digit-after-hyphen-already-spanned)
+              (unless (> index-of-cell-to-fill 2)
+                (setq *interpretation-of-digit-sequence* :number))
+              (values position-before-hyphen index-of-cell-to-fill))))
 
         ;; there is no digit following the hyphen we just saw, so we
         ;; should drop the final hyphen and return the position after
