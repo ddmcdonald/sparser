@@ -38,14 +38,14 @@
   ;;  1) If binds=nil, then the keys are categories, and the values are dli's for the pairwise joins
   ;;  2) if binds is not null, then the keys are vv items, and the values are the dli for the one less binding
   (all-subs nil) ;; (make-hash-table :test #'eq))
-  (all-supers (make-hash-table :size 30 :test #'eq))
+  (all-supers (make-hash-table :test #'eq)) ;; (make-hash-table :size 30 :test #'eq)
   restrictions ;; the set of all modifiers as dl-vv pairs, 
             ;; that define this dli -- starts with the
             ;; the referential category or conjunctive set of categories that defines a join
             ;; that is at the top of this branch, 
             ;; then adds all bindings (as dli-vv's) that
             ;; distingusih this individual from its bare category parent
-  (not-super (make-hash-table :size 100 :test #'eq))
+  (not-super (make-hash-table :test #'eq)) ;; (make-hash-table :size 100 :test #'eq)
 
   shadow
   )
