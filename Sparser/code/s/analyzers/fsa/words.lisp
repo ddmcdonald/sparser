@@ -238,6 +238,8 @@
         return item))))
 
 (defun starts-polyword (word)
+  (gethash word *polyword-initial-state*)
+  #+ignore
   (let ((rule-set (word-rules word)))
     (when rule-set
       (let ((fsa-field (rs-fsa rule-set)))
@@ -250,6 +252,11 @@
              (let ((fsa-field (rs-fsa rules-field)))
                (when fsa-field
                  (includes-pw-start-state fsa-field))))))
+    (or (gethash word *polyword-initial-state*)
+        (let ((caps-word (capitalized-correspondent1 position-before word)))
+          (when caps-word
+            (gethash caps-word *polyword-initial-state*))))
+    #+ignore
     (let ((rules-field (word-rules word)))
       (or (polyword-fsa rules-field)
           (let ((caps-word (capitalized-correspondent1 position-before word)))

@@ -30,6 +30,8 @@
   plist
   )
 
+(defparameter *polyword-initial-state* (make-hash-table :size 20000))
+
 
 (defun print-rule-set-structure (obj stream depth)
   (declare (ignore depth))
