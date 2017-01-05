@@ -252,27 +252,29 @@
 
 (defun push-binding-onto-instances-field (variable binding value)
   ;; add the binding to the index under this value of the variable
-  (unless (typep variable 'anonymous-variable)
-    ;; These are missing the needed fields. As a rule they should be
-    ;; avoided
-    (let ((ht (var-instances variable))
-          (*print-short* t))
-      (declare (special *print-short*))        
+  (declare (special *track-incidence-count-on-bindings*))
+  (when *track-incidence-count-on-bindings*
+    (unless (typep variable 'anonymous-variable)
+      ;; These are missing the needed fields. As a rule they should be
+      ;; avoided
+      (let ((ht (var-instances variable))
+            (*print-short* t))
+        (declare (special *print-short*))        
 ;;; hack to try to get through loading with allegro - should never be needed elsewhere.
 ;;; for some reason the hash table on variables was getting lost during load.
-      #+allegro
-      (unless (typep ht 'hash-table)
-        (setf (var-instances variable) (make-hash-table :test #'equal))
-        (setf ht (var-instances variable)))
+        #+allegro
+        (unless (typep ht 'hash-table)
+          (setf (var-instances variable) (make-hash-table :test #'equal))
+          (setf ht (var-instances variable)))
 
-      (push binding (gethash value ht))
-      (when *trace-binding-indexing*
-        (if (cdr (gethash value ht))
-            (format t "~&Indexing ~A under ~A [prior]~%"
-                    binding variable))
-        (format t "~&Indexing ~A under ~A [1st]~%"
-                binding variable))
-      variable )))
+        (push binding (gethash value ht))
+        (when *trace-binding-indexing*
+          (if (cdr (gethash value ht))
+              (format t "~&Indexing ~A under ~A [prior]~%"
+                      binding variable))
+          (format t "~&Indexing ~A under ~A [1st]~%"
+                  binding variable))
+        variable ))))
 
 
 (defun find/binding (variable value individual)
