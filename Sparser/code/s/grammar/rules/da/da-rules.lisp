@@ -204,8 +204,6 @@
     (when var-name
       (setq new-left
             (bind-dli-variable var-name pobj-referent (edge-referent left-clause)))
-      ;;(update-edge-mention-referent left-clause new-left)
-      
       (make-edge-spec
        :category (edge-category left-clause)
        :form (edge-form left-clause)
@@ -322,7 +320,8 @@
          (s-ref (edge-referent s-edge))
          (vp-ref (edge-referent vp-edge)))
     (when (and s-ref vp-ref 
-               s-subj-var vp-subj-var)
+               s-subj-var vp-subj-var
+               (not (value-of vp-subj-var vp-ref)))
       (let ((subject (value-of s-subj-var s-ref)))
         (when subject
           (setq vp-ref (bind-dli-variable vp-subj-var subject vp-ref))
@@ -408,27 +407,28 @@
   ;; as the entire clause being the cause of (each of) the elements of
   ;; the participle. But this should be reconsidered if other cases
   ;; have a different relationship.
-  (let ((clause-ref (edge-referent s-edge)))
+  (let ((clause-ref (edge-referent s-edge))
+        (pred (update-edge-as-lambda-predicate vp-edge)))
+    (when pred
+      ;; Look up the subject variable(s) of the vp / participle and 
+      ;; bind it to the whole matrix (clause) referent.
+    
 
-    ;; Look up the subject variable(s) of the vp / participle and 
-    ;; bind it to the whole matrix (clause) referent.
-    (update-edge-as-lambda-predicate vp-edge)
-
-    ;; Say that the clause has an event-relation to the vp.
-    ;; Which is pretty weak, but it's already in place
-    ;; THIS NEXT CALL PRODUCES NIL WHEN CLAUSE-REF IS A COLLECTION (from a conjunction of clauses)
-    ;; as in 
-    ;;"The human genome encodes at least 10 proteins that bind RAS and activate its intrinsic GTPase activity, 
-    ;;  resulting in the formation of inactive RAS:GDP and attenuating RAS signaling (reviewed in King et al, 2013)."
-    (setq clause-ref (add-adjunctive-clause-to-s clause-ref (edge-referent vp-edge)))
-    ;; we really need to create a new "category::causally-related" and fill in
-    ;; two variables, cause and effect, and then use that as the :referent below
-    ;; 
-    (let ((edge (make-edge-spec
-                 :category (edge-category s-edge)
-                 :form (edge-form s-edge)
-                 :referent clause-ref)))
-      edge)))
+      ;; Say that the clause has an event-relation to the vp.
+      ;; Which is pretty weak, but it's already in place
+      ;; THIS NEXT CALL PRODUCES NIL WHEN CLAUSE-REF IS A COLLECTION (from a conjunction of clauses)
+      ;; as in 
+      ;;"The human genome encodes at least 10 proteins that bind RAS and activate its intrinsic GTPase activity, 
+      ;;  resulting in the formation of inactive RAS:GDP and attenuating RAS signaling (reviewed in King et al, 2013)."
+      (setq clause-ref (add-adjunctive-clause-to-s clause-ref pred))
+      ;; we really need to create a new "category::causally-related" and fill in
+      ;; two variables, cause and effect, and then use that as the :referent below
+      ;; 
+      (let ((edge (make-edge-spec
+                   :category (edge-category s-edge)
+                   :form (edge-form s-edge)
+                   :referent clause-ref)))
+        edge))))
 
 (define-debris-analysis-rule attach-preceding-participle-with-comma-to-clause
   :pattern ( vp+ing "," s )
@@ -621,23 +621,27 @@
          (s-var (subcategorized-variable (edge-referent srel-edge) :subject s))
          (target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
          (t-var (when target
-                  (subcategorized-variable (edge-referent srel-edge) :subject (edge-referent target)))))
+                  (subcategorized-variable
+                   (edge-referent srel-edge) :subject (edge-referent target))))
+         ;; update-edge-as-lambda-predicate now returns NIL if there is
+         ;;  no available binding for the variable (s-var or t-var) on srel-edge
+         (t-pred (when t-var (update-edge-as-lambda-predicate srel-edge t-var)))
+         (s-pred (when (and (null t-pred) s-var)
+                   (update-edge-as-lambda-predicate srel-edge s-var))))
     (declare (special s-var t-var target))
-    (cond (t-var
-           (let ((pred (update-edge-as-lambda-predicate srel-edge t-var)))
-             (make-edge-spec 
-              :category (edge-category target)
-              :form (edge-form target)
-              :referent (bind-dli-variable :predication pred (edge-referent target))
-              :target target
-              :direction :right)))
-          (s-var
-           (let ((pred (update-edge-as-lambda-predicate srel-edge s-var)))
-             (make-edge-spec 
-              :category (edge-category s-edge)
-              :form (edge-form s-edge)
-              :referent (bind-dli-variable 'predication pred s)
-              ))))))
+    (cond (t-pred
+           (make-edge-spec 
+            :category (edge-category target)
+            :form (edge-form target)
+            :referent (bind-dli-variable :predication t-pred (edge-referent target))
+            :target target
+            :direction :right))
+          (s-pred
+           (make-edge-spec 
+            :category (edge-category s-edge)
+            :form (edge-form s-edge)
+            :referent (bind-dli-variable 'predication s-pred s)
+            )))))
 
 
 (define-debris-analysis-rule s-commma-where-relative
@@ -663,14 +667,13 @@
                                                  'where-relative-clause)
                                              :where
                                              :when)
-                                         s)))
-    (cond (s-var
+                                         s))
+         (s-pred (when s-var (update-edge-as-lambda-predicate srel-edge s-var))))
+    (cond (s-pred
            (make-edge-spec 
             :category (edge-category s-edge)
             :form (edge-form s-edge)
-            :referent (bind-dli-variable 'predication
-                                         (update-edge-as-lambda-predicate srel-edge s-var)
-                                         s)))
+            :referent (bind-dli-variable 'predication s-pred s)))
           (t
            (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
                   (t-var (when target
@@ -680,14 +683,15 @@
                                     'where-relative-clause)
                                 :where
                                 :when)
-                                                    (edge-referent target)))))
-             (when t-var
+                            (edge-referent target))))
+                  (t-pred (when t-var (update-edge-as-lambda-predicate srel-edge t-var))))
+             (when t-pred
                (make-edge-spec 
                 :category (edge-category target)
                 :form (edge-form target)
                 :referent
                 (bind-dli-variable :predication
-                                   (update-edge-as-lambda-predicate srel-edge t-var)
+                                   t-pred
                                    (edge-referent target))
                 :target target
                 :direction :right)))))))
@@ -700,15 +704,13 @@
 (defun np-comma-subj-relative (np-edge comma-edge srel-edge)
   (declare (ignore comma-edge))
   (let* ((np (edge-referent np-edge))
-	 (s-var (subcategorized-variable (edge-referent srel-edge) :subject np)))
-      (when s-var
-	(make-edge-spec 
-	 :category (edge-category np-edge)
-	 :form (edge-form np-edge)
-	 :referent
-	 (bind-dli-variable 'predication
-			    (update-edge-as-lambda-predicate srel-edge s-var)
-			    np)))))
+	 (s-var (subcategorized-variable (edge-referent srel-edge) :subject np))
+         (s-pred (when s-var (update-edge-as-lambda-predicate srel-edge s-var))))
+    (when s-pred
+      (make-edge-spec 
+       :category (edge-category np-edge)
+       :form (edge-form np-edge)
+       :referent (bind-dli-variable 'predication s-pred np)))))
 
 
 (define-debris-analysis-rule np-comma-pp-comma
@@ -793,11 +795,11 @@
 (defun proper-noun-comma-vg+ed-comma (np intial-comma vp+ed final-comma)
   (declare (special category::np))
   (let* ((modified-vp-ref (update-edge-as-lambda-predicate vp+ed)))
-    (make-edge-spec
-     :category (edge-category np)
-     :form category::np
-     :referent (bind-dli-variable 'modifier modified-vp-ref (edge-referent np)))))
-
+    (when modified-vp-ref
+      (make-edge-spec
+       :category (edge-category np)
+       :form category::np
+       :referent (bind-dli-variable 'modifier modified-vp-ref (edge-referent np))))))
 
 (define-debris-analysis-rule np-vp+ed
   :pattern (np vp+ed )
@@ -813,7 +815,9 @@
          (vp-object? (missing-object-vars (edge-referent vp+ed))))
     (when vp-ref ;; "designed to be deficient " had no interpretation in
       ;; the June article sentence
-      ;; More detailed understanding of these various pathways will require careful analysis of BMMCs designed to be deficient in multiple adapters and signaling molecules."
+      ;; "More detailed understanding of these various pathways will require
+      ;; careful analysis of BMMCs designed to be deficient in multiple adapters
+      ;; and signaling molecules.""
       (cond (vp-subj-var-for-np
              ;; this test is a heuristic, to block
              ;; "another MAPK inhibitor, PD 98059, also inhibited ASPP2 function"
@@ -831,27 +835,25 @@
                                       (np-target? sub-np)
                                       (subcategorized-variable vp-ref :object
                                                                (edge-referent sub-np))))))
-                    (target-np (when (edge-p target) (edge-referent target))))
-               (if target ;; the relevant edge is embedded
-                   (let ((obj-var (subcategorized-variable vp-ref :object target-np) ))
-                     (when obj-var
-                       (make-edge-spec
-                        :category (edge-category target)
-                        :form category::np
-                        :referent (bind-dli-variable 'predication
-                                                     (update-edge-as-lambda-predicate vp+ed obj-var)
-                                                     target-np)
-                        :target target
-                        :direction :right)))
-                   (let ((obj-var (subcategorized-variable vp-ref :object np-ref)))
-                     (when obj-var
-                       ;; the top np is to be post-modified
-                       (make-edge-spec
-                        :category (edge-category np)
-                        :form category::np
-                        :referent (bind-dli-variable 'predication
-                                                     (update-edge-as-lambda-predicate vp+ed obj-var)
-                                                     np-ref)))))))))))
+                    (target-np (when (edge-p target) (edge-referent target)))
+                    obj-var pred)
+               (cond ((and target-np
+                           (setq obj-var (subcategorized-variable vp-ref :object target-np))
+                           (setq pred (update-edge-as-lambda-predicate vp+ed obj-var)))
+                      ;; the relevant edge is embedded
+                      (make-edge-spec
+                       :category (edge-category target)
+                       :form category::np
+                       :referent (bind-dli-variable 'predication pred target-np)
+                       :target target
+                       :direction :right))
+                     ((and (setq obj-var (subcategorized-variable vp-ref :object np-ref))
+                           (setq pred (update-edge-as-lambda-predicate vp+ed obj-var)))
+                      ;; the top np is to be post-modified
+                      (make-edge-spec
+                       :category (edge-category np)
+                       :form category::np
+                       :referent (bind-dli-variable 'predication pred np-ref))))))))))
 
 
 
@@ -903,6 +905,7 @@
              ;; field keep them connected in the web graph
              pp-vg+ed first second))
 
+;; this is currently blocked by the NIL -- needs to be re-examined
 (defun pp-vg+ed (pp-edge vp+ed)
   (declare (special category::np))
   (let ((target (find-target-satisfying (right-fringe-of pp-edge) #'np-target?)))
@@ -921,8 +924,6 @@
        :target target
        :direction :right))))
 
-
-
 (define-debris-analysis-rule s-vp+ed
   :pattern (s vp+ed )
   :action (:function ;; providing all edges should let the constituents
@@ -930,14 +931,19 @@
            s-vp+ed first second))
 
 (defun s-vp+ed (s-edge vp+ed)
-  (let ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?)))
-    (when target
+  (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
+         (target-ref (when target (edge-referent target)))
+         (vp (edge-referent vp+ed))
+         (pred
+          (when (and target (subcategorized-variable vp :object target-ref))
+            (update-edge-as-lambda-predicate
+             vp+ed
+             (subcategorized-variable vp :object target-ref)))))
+    (when pred
       (make-edge-spec
        :category (edge-category target)
        :form category::np
-       :referent (bind-dli-variable 'predication
-                                    (update-edge-as-lambda-predicate vp+ed)
-                                    (edge-referent target))
+       :referent (bind-dli-variable 'predication pred (edge-referent target))
        :target target
        :direction :right))))
 
@@ -1083,20 +1089,22 @@
   :action (:function clause-subordinate-relative-clause  first third))
 
 (defun clause-subordinate-relative-clause (s sub-clause-edge)
-  (let* ((target (find-target-satisfying
-                  (right-fringe-of s)
-                  #'(lambda (e)
-                      (and (np-target? e)
-                           (subcategorized-variable (edge-referent sub-clause-edge) :subject (edge-referent e))))))
+  (let* ((target
+          (find-target-satisfying
+           (right-fringe-of s)
+           #'(lambda (e)
+               (and (np-target? e)
+                    (subcategorized-variable (edge-referent sub-clause-edge)
+                                             :subject (edge-referent e))))))
 	 (conj (value-of 'SUBORDINATE-CONJUNCTION (edge-referent sub-clause-edge)))
 	 (event (edge-referent s))
-	 (sub-event ))
-    (when target 
-      (setq sub-event
-            (update-edge-as-lambda-predicate sub-clause-edge
-                                        (subcategorized-variable (edge-referent sub-clause-edge)
-                                                                 :subject (edge-referent target))))
-					 
+	 (sub-event
+          (when target
+            (update-edge-as-lambda-predicate
+             sub-clause-edge
+             (subcategorized-variable (edge-referent sub-clause-edge)
+                                      :subject (edge-referent target))))))
+    (when sub-event					 
       (make-edge-spec
        :category category::event-relation
        :form category::s
@@ -1446,19 +1454,20 @@
 ;;;--------------------
 
 (defun update-edge-as-lambda-predicate (vp-edge &optional subject-var)
-  (if (is-basic-collection? (edge-referent vp-edge))
-      (update-conjunctive-edge-as-lambda-predicate vp-edge)
-      (let ((svar (or subject-var
-                      (if (is-basic-collection? (edge-referent vp-edge))
-                          (subject-variable (car (value-of 'items (edge-referent vp-edge))))
-                          (subject-variable (edge-referent vp-edge))))))
-        (cond ((null svar)
-               (error "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge))
-              (t
-               (let ((pred (create-predication-by-binding
-                            svar **lambda-var** (edge-referent vp-edge) vp-edge :insert-edge nil)))
-                 (set-edge-referent vp-edge pred)
-                 pred))))))
+  (let ((svar (or subject-var
+                  (if (is-basic-collection? (edge-referent vp-edge))
+                      (subject-variable (car (value-of 'items (edge-referent vp-edge))))
+                      (subject-variable (edge-referent vp-edge))))))
+    (unless (value-of svar (edge-referent vp-edge))
+      (if (is-basic-collection? (edge-referent vp-edge))
+          (update-conjunctive-edge-as-lambda-predicate vp-edge)
+          (cond ((null svar)
+                 (error "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge))
+                (t
+                 (let ((pred (create-predication-by-binding
+                              svar **lambda-var** (edge-referent vp-edge) vp-edge :insert-edge nil)))
+                   (set-edge-referent vp-edge pred)
+                   pred)))))))
 
 (defun update-conjunctive-edge-as-lambda-predicate (vp-edge)
   (let* ((daughter-edges (if (eq :long-span (edge-right-daughter vp-edge))
