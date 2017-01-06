@@ -73,7 +73,8 @@
          (setf (edge-referent edge) result)
          (update-edge-mention-referent edge result))
         (t
-         (setf (edge-referent edge) result))))
+         (setf (edge-referent edge) result)))
+  result)
 
 ;;;-----------------------------------
 ;;; predicates for unusual edge-types
