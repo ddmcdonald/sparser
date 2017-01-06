@@ -412,45 +412,23 @@
 
     ;; Look up the subject variable(s) of the vp / participle and 
     ;; bind it to the whole matrix (clause) referent.
-    (cond
-      ((itypep (edge-referent vp-edge) 'collection)
-       ;; distribute this over the conjunction. Need a general way / macro
-       ;; for doing this
-       (let* ((daughter-edges (if (eq :long-span (edge-right-daughter vp-edge))
-                                  (loop for e in (edge-constituents vp-edge)
-                                        unless (eq (cat-name (edge-form e)) 'conjunction)
-                                        collect e)
-                                  (list (edge-left-daughter vp-edge)
-                                        (edge-right-daughter vp-edge))))
-              (new-items
-               (loop for edge in daughter-edges
-                     collect (update-edge-as-lambda-predicate edge))))
-         ;; now remake the collection
-         (let ((new-conjunct 
-                (apply #'referent-of-two-conjoined-referents new-items)))
-           (set-edge-referent vp-edge new-conjunct)
-           ;;(update-edge-mention-referent vp-edge new-conjunct)
-           )))
+    (update-edge-as-lambda-predicate vp-edge)
 
-      (t ;; simple vp
-       (update-edge-as-lambda-predicate vp-edge)
-
-       ;; Say that the clause has an event-relation to the vp.
-       ;; Which is pretty weak, but it's already in place
-       ;; THIS NEXT CALL PRODUCES NIL WHEN CLAUSE-REF IS A COLLECTION (from a conjunction of clauses)
-       ;; as in 
-       ;;"The human genome encodes at least 10 proteins that bind RAS and activate its intrinsic GTPase activity, 
-       ;;  resulting in the formation of inactive RAS:GDP and attenuating RAS signaling (reviewed in King et al, 2013)."
-       (setq clause-ref (add-adjunctive-clause-to-s clause-ref (edge-referent vp-edge)))
-       ;; we really need to create a new "category::causally-related" and fill in
-       ;; two variables, cause and effect, and then use that as the :referent below
-       ;; 
-       (let ((edge (make-edge-spec
-                    :category (edge-category s-edge)
-                    :form (edge-form s-edge)
-                    :referent clause-ref)))
-         edge)))))
-
+    ;; Say that the clause has an event-relation to the vp.
+    ;; Which is pretty weak, but it's already in place
+    ;; THIS NEXT CALL PRODUCES NIL WHEN CLAUSE-REF IS A COLLECTION (from a conjunction of clauses)
+    ;; as in 
+    ;;"The human genome encodes at least 10 proteins that bind RAS and activate its intrinsic GTPase activity, 
+    ;;  resulting in the formation of inactive RAS:GDP and attenuating RAS signaling (reviewed in King et al, 2013)."
+    (setq clause-ref (add-adjunctive-clause-to-s clause-ref (edge-referent vp-edge)))
+    ;; we really need to create a new "category::causally-related" and fill in
+    ;; two variables, cause and effect, and then use that as the :referent below
+    ;; 
+    (let ((edge (make-edge-spec
+                 :category (edge-category s-edge)
+                 :form (edge-form s-edge)
+                 :referent clause-ref)))
+      edge)))
 
 (define-debris-analysis-rule attach-preceding-participle-with-comma-to-clause
   :pattern ( vp+ing "," s )
@@ -1468,17 +1446,35 @@
 ;;;--------------------
 
 (defun update-edge-as-lambda-predicate (vp-edge &optional subject-var)
-  (let ((svar (or subject-var
-                  (if (is-basic-collection? (edge-referent vp-edge))
-                      (subject-variable (car (value-of 'items (edge-referent vp-edge))))
-                      (subject-variable (edge-referent vp-edge))))))
-    (cond ((null svar)
-           (error "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge))
-          (t
-           (let ((pred (create-predication-by-binding
-                        svar **lambda-var** (edge-referent vp-edge) vp-edge :insert-edge nil)))
-             (set-edge-referent vp-edge pred)
-             pred)))))
+  (if (is-basic-collection? (edge-referent vp-edge))
+      (update-conjunctive-edge-as-lambda-predicate vp-edge)
+      (let ((svar (or subject-var
+                      (if (is-basic-collection? (edge-referent vp-edge))
+                          (subject-variable (car (value-of 'items (edge-referent vp-edge))))
+                          (subject-variable (edge-referent vp-edge))))))
+        (cond ((null svar)
+               (error "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge))
+              (t
+               (let ((pred (create-predication-by-binding
+                            svar **lambda-var** (edge-referent vp-edge) vp-edge :insert-edge nil)))
+                 (set-edge-referent vp-edge pred)
+                 pred))))))
+
+(defun update-conjunctive-edge-as-lambda-predicate (vp-edge)
+  (let* ((daughter-edges (if (eq :long-span (edge-right-daughter vp-edge))
+                             (loop for e in (edge-constituents vp-edge)
+                                   unless (eq (cat-name (edge-form e)) 'conjunction)
+                                   collect e)
+                             (list (edge-left-daughter vp-edge)
+                                   (edge-right-daughter vp-edge))))
+         (new-items
+          (loop for edge in daughter-edges
+                collect (update-edge-as-lambda-predicate edge))))
+    ;; now remake the collection
+    (let ((new-conjunct (apply #'referent-of-two-conjoined-referents new-items)))
+      (set-edge-referent vp-edge new-conjunct)
+      ;;(update-edge-mention-referent vp-edge new-conjunct)
+      vp-edge)))
 
 (defun unpack-subject-control (subject vp vp-edge)
   (set-edge-referent vp-edge
