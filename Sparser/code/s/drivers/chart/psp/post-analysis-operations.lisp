@@ -325,7 +325,7 @@ where it regulates gene expression.")
 
 (defun dli-parent (item)
   (when (individual-p item)
-    (cdar (hal (indiv-uplinks item)))))
+    (cdar (indiv-uplinks item))))
 
 ;;; DELETED OBSOLETE AND CONFUSING CODE
 

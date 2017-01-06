@@ -34,10 +34,10 @@
   ;; a category takes us to the dli for the meet with that category,
   ;;  a vv takes us to the lattice point that binds one more variable
 
-  (uplinks (make-hash-table :size 4 :test #'eq)) ;; a hash table. 
+  (uplinks ) ;; (make-hash-table :size 4 :test #'eq)) ;; no longer a hash table. 
   ;;  1) If binds=nil, then the keys are categories, and the values are dli's for the pairwise joins
   ;;  2) if binds is not null, then the keys are vv items, and the values are the dli for the one less binding
-  (all-subs nil) ;; (make-hash-table :test #'eq))
+  ;; (all-subs nil) ;; (make-hash-table :test #'eq)) -obsolete
   (all-supers (make-hash-table :test #'eq)) ;; (make-hash-table :size 30 :test #'eq)
   restrictions ;; the set of all modifiers as dl-vv pairs, 
             ;; that define this dli -- starts with the

@@ -260,9 +260,9 @@
     ((or (null child?) (category-p child?))
      ;; should not happen
      nil)
-    ((maphash #'(lambda (dlvv sc)
-		  (when (eq sc parent?) (return-from is-dl-child? t)))
-	      (indiv-uplinks child?))
+    ((loop for pair in (indiv-uplinks child?)
+           when (eq (cdr pair) parent?)
+           do (return-from is-dl-child? t))
      t)
     (t nil)))
 

@@ -227,10 +227,10 @@
 
 (defun add-downlink (dli down)
   (pushnew down (gethash *sub-vv* (indiv-downlinks dli)))
-  (pushnew dli (gethash *super-vv* (indiv-uplinks down))))
+  (push  (cons *super-vv* dli) (indiv-uplinks down)))
 
 (defun add-uplink (dli up)
-  (push up (gethash *super-vv* (indiv-uplinks dli)))
+  (push (cons up *super-vv*) (indiv-uplinks dli))
   (setf (gethash up (indiv-all-supers dli)) t)
   (push dli (gethash *super-vv* (indiv-downlinks up))))
                  
@@ -323,7 +323,7 @@
 		    (let ((new-child (deep-copy-individual parent)))
 		      (setq new-child (old-bind-variable var value new-child))
 		      (setf (gethash dl-vv downlinks) new-child)
-		      (setf (gethash dl-vv (indiv-uplinks new-child)) parent)
+		      (push (cons dl-vv parent) (indiv-uplinks new-child))
 		      (setf (gethash parent (indiv-all-supers new-child)) t)
 		      (link-to-other-parents new-child parent dl-vv)
 		      (link-to-existing-children new-child parent dl-vv)
@@ -336,7 +336,6 @@
 	  (loop for key being each hash-key of (indiv-all-supers parent)
 	       do (setf (gethash key res-supers) t))
 	  
-	  ;;(all-subs-link result var value lattice-cat-parent)
 	  (values
 	   result
 	   (get-binding-of var result value))))))
@@ -345,31 +344,6 @@
   (let ((supers (indiv-all-supers sub)))
     (setf (gethash super supers) t)))
 
-#+ignore
-(defun all-subs-link (sub var value lattice-cat-parent)
-  (declare (special sub var value lattice-cat-parent))
-  (let ((val-supers
-	 (if (individual-p value)
-	     (indiv-all-supers value)
-	     value))
-	(subs (or
-	       (gethash var (indiv-all-subs lattice-cat-parent))
-	       (setf (gethash var (indiv-all-subs lattice-cat-parent))
-		     (make-hash-table :size 100 :test #'equal)))))
-    (if (hash-table-p val-supers)
-	(then
-	  (maphash #'(lambda (k h)
-                       (declare (ignore h))
-		       (when (interesting-super? k)
-			 ;;(pushnew sub (gethash k subs)) record all instances so we can get the most recent
-			 (let ((ksubs (gethash k subs)))
-			   (when (member sub ksubs :test #'eq)
-			     (setf (gethash k subs) (delete sub ksubs :test #'eq :count 1)
-				   ))
-			   (push sub (gethash k subs)))))
-		   val-supers)
-	  (pushnew sub (gethash value subs)))
-	(pushnew sub (gethash val-supers subs)))))
 
 (defun interesting-super? (c)
   (not (gethash c (non-phrasal-classes))))

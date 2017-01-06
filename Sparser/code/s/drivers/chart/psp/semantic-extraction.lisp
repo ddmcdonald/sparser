@@ -654,7 +654,7 @@ without damaging other code.")
   *found-bces*)
 
 (defun visit-indiv-generalizations (i cat fn)
-  (loop for parent being the hash-values of (indiv-uplinks i)
+  (loop for (key parent) in (indiv-uplinks i)
         when
           (eq (itype-of parent) cat)
         do
