@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   June 2016
+;;;   Version:   January 2017
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -46,8 +46,6 @@
 (define-approximator/determiner "barely")
 (define-approximator/determiner "exactly") ;; not just a determiner..
 (define-approximator/determiner "just")
-;(define-approximator/determiner "less than") comparatives..
-;(define-approximator/determiner "more than")
 (define-approximator/determiner "nearly") ;; could also be approx/adverbial. what to do for this type of "generic" modifier that can go before preps, adjs too?
 (define-approximator/determiner "precisely") ;;
 (define-approximator/determiner "roughly")
@@ -98,34 +96,15 @@
 (define-comparative "fewer")
 (define-comparative "less")
 
+;; quality
+(define-comparative "better") ;; good, well
+(define-comparative "worse") ;; bad
 
-
-;; Strictly speaking, the "than" cases have different grammatical properties
-;; since then can act as determiners whereas the 'bare' versions demand 
-;; a preceding determiner. Given the bracket algebra for NPs though, I think
-;; this will come out in the wash (ddm 9/10/09)
-
-(define-comparative "fewer than")
-(define-comparative "greater than")
-(define-comparative "less than")
-(define-comparative "more than")
-
-
-(define-comparative "better")
-(define-comparative "worse")
-(define-comparative "better than")
-(define-comparative "worse than")
 
 ;; 10/24/94
 (define-comparative "bigger") ;; better best
 ;; comparative-adjective
 (define-comparative "smaller") ;; small smallest
-
-
-;; THAN is not really a conjunction
-;; and this definition creates a bogus definition
-;; (define-function-word "than" :form 'conjunction)
-
 
 
 ;;/// Goes somewhere else when we get serious about meaning
@@ -138,7 +117,7 @@
   :form nil
   :referent (:daughter left-edge))
 
-(def-cfr comparison (comparative-prefix number)
+(def-cfr comparison (comparative-prefix number) ;; "more than seven"
   :form adjp
   :referent (:daughter left-edge))  ;; obviously wrong
 |#

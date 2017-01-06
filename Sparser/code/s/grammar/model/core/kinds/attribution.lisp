@@ -231,8 +231,9 @@ be added to attribute so it knows how to handle the individuals.
 
 
 
-
+;;;------------------
 ;;; syntax functions
+;;;------------------
 
 (defun handle-attribute-of-head (attribute-value head)
   "Called from adj-noun-compound, e.g. 'red block'. The value
