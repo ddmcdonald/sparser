@@ -213,7 +213,10 @@
         (catch :end-of-sentence
           (scan-terminals-loop start-pos first-word))
         (sentence-processing-core sentence)
-        (setq sentence (next sentence))))))
+        
+        (setq sentence (next sentence))
+        (when (null sentence) ;; or a sentence with a null string?
+          (terminate-chart-level-process))))))
 
 
 ;;;-------------------------------
@@ -300,16 +303,19 @@
    is only used with prepopulated documents whose sentences
    have been delimited by scan-sentences-to-eof. 
    Does all of the linguistic analysis, sentence by sentence
-   until we get to the end of the sentence chain."
+   until we get to the end of the sentence chain.
+   This function in a document context does the same job
+   as sentence-sweep-loop does for strings: apply the
+   parser to successive sentences."
   (declare (special *trap-error-skip-sentence*))
   (loop
-    (tr :sweep-reading-sentence sentence)
-    (setq *current-sentence-string* (sentence-string sentence))
-    (setq *sentence-in-core* sentence)
+     (tr :sweep-reading-sentence sentence)
+     (setq *current-sentence-string* (sentence-string sentence))
+     (setq *sentence-in-core* sentence)
 
-    (if *trap-error-skip-sentence*
-      (error-trapped-scan-and-core sentence)
-      (scan-terminals-and-do-core sentence))
+     (if *trap-error-skip-sentence*
+       (error-trapped-scan-and-core sentence)
+       (scan-terminals-and-do-core sentence))
 
      (cond ;; is there a 'next' sentence?
        ((not (slot-boundp sentence 'next))
@@ -320,6 +326,7 @@
         ;; and the single sentence is a long list of
         ;; accession numbers in GenBank
         (throw 'do-next-paragraph nil)))
+     
     (let ((next-sentence (next sentence)))
       (tr :sweep-next-sentence next-sentence)
       (when (string-equal "" (sentence-string next-sentence))
