@@ -214,6 +214,13 @@
           (edge-referent (edge-left-daughter edge))
           edge
           ))
+        ((eq :long-span (edge-right-daughter edge))
+         (when *show-referent-for-edge-gaps*
+           (format t "~% referent-for-edge appplied to a da-rule ~
+                      edge ~s~% with rule ~s and constituents ~s~%"
+                   edge (edge-rule edge) (edge-constituents edge)))
+         ;; PUNT right now
+         (edge-referent edge))
         (t
          (let ((*current-chunk* 'dummy-chunk))
            ;; have NP chunk rules that check to see that they are in a chunk
