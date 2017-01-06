@@ -410,6 +410,8 @@
          ;; at the point of the break...
          nil)
         ((or (and (eq label-before label-after)
+                  (or (not (eq form-before category::vp+ed))
+                      (eq form-after category::vp+ed))
                   (cond
                     ((eq (individual-p ref-before)
                          (individual-p ref-after))
