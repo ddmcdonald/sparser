@@ -52,7 +52,9 @@
   (let* ((word-pos (chart-position-after start-pos))
          (ev (pos-starts-here word-pos))
          (edge (highest-edge ev)))
-    (respan-edge-around-one-word edge q1 q2)))
+    (when edge
+      ;; got null edge in 'triage'
+      (respan-edge-around-one-word edge q1 q2))))
 
 
 ;;--- information for no-space patterns
