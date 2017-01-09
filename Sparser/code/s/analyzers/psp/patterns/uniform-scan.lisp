@@ -123,8 +123,7 @@
         ;; them in or else we'll get the wrong pattern
         (setq edges (sort-out-edges-in-ns-region edges long-edge))
        
-        (when *collect-ns-examples* 
-          (save-ns-example start-pos end-pos edges))
+        
         
         ;;(push-debug `(,start-pos ,end-pos))
         ;; on this sentence: (p "Pre-clinical studies have demonstrated that 
@@ -149,7 +148,7 @@
         (tr :looking-at-ns-segment start-pos end-pos)
 
         (multiple-value-bind (layout edge)
-                             (parse-between-nospace-scan-boundaries start-pos end-pos)
+                             (parse-between-nospace-scan-boundaries start-pos end-pos)          
           (tr :ns-segment-layout layout)
           ;;(lsp-break "layout = ~a edge = ~a" layout edge)
           (cond
@@ -158,7 +157,9 @@
              (tr :ns-spanned-by-edge edge)
              (revise-form-of-nospace-edge-if-necessary edge :find-it)
              #+ignore(when *collect-ns-examples*
-               (update-ns-examples start-pos)))
+               (update-ns-examples start-pos))
+             (when *collect-ns-examples* 
+               (save-ns-example start-pos end-pos edges)))
            (t
             ;; This may be overkill, especially for punctuation,
             ;; but it may also be more informative
@@ -170,6 +171,8 @@
             ;; (ambiguity) and only one of the edges satisfies a
             ;; pattern this is not done cleanly, and needs some
             ;; pair-programming
+            (when *collect-ns-examples* 
+              (save-ns-example start-pos end-pos edges))
             (catch :punt-on-nospace-without-resolution
               (let* ((end-edge (car (last edges)))
                      (end-cat (when (and (edge-p end-edge)
@@ -444,76 +447,87 @@
 ;;; saving examples to look at offline
 ;;;------------------------------------
 
-
+(defun collect-ns-examples ()
+    (setf *collect-ns-examples* (list nil)))
 
 (defun save-ns-example (start-pos end-pos edges)
-  (let ((ns-sentence (sentence-string *sentence-in-core*))
-        (nsitem (actual-characters-of-word start-pos end-pos nil))
-        (ns-edge-pattern (characterize-words-in-region start-pos end-pos edges)))
+  (let* ((ns-sentence (sentence-string *sentence-in-core*))
+         (nsitem (actual-characters-of-word start-pos end-pos nil))
+         (real-edges (remove-non-edges edges)) 
+         (ns-edge-pattern (characterize-words-in-region start-pos end-pos real-edges)))
     ;;(when (or (search "-" nsitem) (search "/" nsitem))
     ;;(lsp-break "collect-no-space-sequence-into-word")
     (setq ns-edge-pattern 
-          (loop for i in ns-edge-pattern
-            collect (if (edge-p i)
-                        (list  (simple-label (edge-form i))
-                               (simple-label (edge-category i)))
-                        i)))
+          (edge-pattern-to-cats ns-edge-pattern))
     (push (list 
-          #+ignore (let
-               ((end-edge (left-treetop-at end-pos)))
-             (cond
-              ((edge-p end-edge)
-               (list  (simple-label (edge-form end-edge))
-                      (simple-label (edge-category end-edge))))
-              ((eq end-edge :MULTIPLE-INITIAL-EDGES)
-               (loop for e in (ev-edges  (pos-ends-here end-pos))
-                 collect
-                 (list  (simple-label (edge-form e))
-                        (simple-label (edge-category e)))))
-              ((word-p end-edge)
-               (list end-edge))
-              (t
-               (lsp-break "strange situation in NS"))))
-          ns-edge-pattern 
-          nsitem
-          ns-sentence)
+           ns-edge-pattern 
+           nsitem
+           ns-sentence)
           *collect-ns-examples*)))
 
+(defun edge-pattern-to-cats (ns-edge-pattern)
+  (convert-mixed-pattern-edges-to-labels ns-edge-pattern)
+  #+ignore(loop for i in ns-edge-pattern
+        collect  
+                  (if (edge-p i)
+                    (list  (simple-label (edge-form i))
+                           (simple-label (edge-category i)))
+                    i)))
+
 (defun update-ns-examples (start-pos)
-  "Adds in the rule that was used by no-space -- results are of the form 
-(((:LOWER :HYPHEN #<edge5 5 probability 6>) \"phospho­MAPK1\") \"==>\"
-   (RESOLVE-PROTEIN-PREFIX PROTEIN N-BAR))
-which is ((characterization of the words/edges to be combined and their edge form and category) 'actual text' 
-==> (rule to form edge edge-form and edge-category of created edge))"
+  "Adds in the rule that was used by no-space" 
+  ;; results are of the form: 
+
+  ;; (((:LOWER :HYPHEN #<edge5 5 probability 6>) \"phospho­MAPK1\") \"==>\"
+  ;;   (RESOLVE-PROTEIN-PREFIX PROTEIN N-BAR))
+
+  ;; which is ((characterization of the words/edges to be combined and
+  ;; their edge form and category) 'actual text' ==> (rule to form edge
+  ;; edge-form and edge-category of created edge))
+
   (setf (car *collect-ns-examples*)
         `(,(car *collect-ns-examples*) 
-          "==>"
-          ,(let ((edge (right-treetop-at start-pos)))
-            (if (edge-p edge)
-              (list 
-               (edge-rule edge)
-               (simple-label (edge-category edge))
-               (simple-label (edge-form edge)))
-              (list :no-edge)))
-          )))
+           "==>"
+           ,(let ((edge (right-treetop-at start-pos)))
+                 (if (edge-p edge)
+                     (list 
+                      (if (cfr-p (edge-rule edge))
+                          (then ; (lsp-break "cfr-p")
+                                (cfr-symbol (edge-rule edge)))
+                          (edge-rule edge))
+                      (simple-label (edge-category edge))
+                      (simple-label (edge-form edge)))
+                     (list :no-edge)))
+           )))
+
+(defun ns-examples-file (filename)
+  "Save the collected ns examples to a file"
+  (with-open-file (stream filename :direction :output :if-exists :supersede)
+    (pprint *collect-ns-examples* stream)))
 
 (defun clean-up-ns-collection ()
   "Just some clean up to group things by pattern and rule once we've
-collected a set of ns-examples; results are of the form:
-(((ADJECTIVE IN-VITRO) :HYPHEN :LOWER)
-((DO-RELATION-BETWEEN-FIRST-AND-SECOND PHOSPHORYLATE VP+ED)
- \"in vitro–phosphorylated\")
-((DO-RELATION-BETWEEN-FIRST-AND-SECOND LABELE VP+ED) \"in vitro–labeled\")
-((DO-RELATION-BETWEEN-FIRST-AND-SECOND TRANSLATE VP+ED) \"in vitro–translated\"))
-which is (pattern of words/edges) followed by sets of ((rule to form edge and edge-form and edge-category) \"actual text examples\") for each type of (rule edge set) that exists"
+collected a set of ns-examples"
+  ;; results are of the form:
+
+  ;; (((ADJECTIVE IN-VITRO) :HYPHEN :LOWER)
+  ;; ((DO-RELATION-BETWEEN-FIRST-AND-SECOND PHOSPHORYLATE VP+ED) \"in vitro–phosphorylated\")
+  ;; ((DO-RELATION-BETWEEN-FIRST-AND-SECOND LABELE VP+ED) \"in vitro–labeled\")
+  ;; ((DO-RELATION-BETWEEN-FIRST-AND-SECOND TRANSLATE VP+ED) \"in vitro–translated\"))
+
+  ;; which is (pattern of words/edges) followed by sets of ((rule to
+  ;; form edge and edge-form and edge-category) \"actual text
+  ;; examples\") for each type of (rule edge set) that exists
   (loop for i in (group-by (remove nil *collect-ns-examples*) #'caar)
+        when (equal "==>" (second (first (second i)))) 
+        ;; cases with no rules get dropped at this point e.g., >20% -- will need to catch these later
         collect 
         (let ((grouped (group-by (second i) #'third #'cdar)))
           (cons (car i)
                 (loop for g in grouped
                       collect 
                       (cons (car g)
-                            (mapcar #'car (remove-duplicates (second g) :test #'equal))))))))
+                            (remove-duplicates (mapcar #'car  (second g)) :test #'equal)))))))
 
 (defun ns-pattern-rules (cleaned-ns)
   "Given the output of clean-up-ns-collection, just pull out the patterns and unique rules"
@@ -522,4 +536,18 @@ which is (pattern of words/edges) followed by sets of ((rule to form edge and ed
                       (remove-duplicates (loop for j in (cdr i)
                             collect (caar j))))))
 
-
+(defun ns-multiple-rule-patterns (rule-patterns)
+  "Given the output of ns-pattern-rules, return those patterns that have multiple rules"
+  (loop for rp in rule-patterns
+        when (second (second rp)) ;; checking there is more than one rule
+        collect rp
+          #+ignore (let ((psr-rules 0))
+                  (cons (car rp)
+                         (loop for r in (second rp)
+                              do (if (eq (symbol-package r) (find-package 'rule))
+                                     (incf psr-rules)
+                                     collect r))
+                         (format t "psr rules: ~s" psr-rules)))
+          ))
+                          
+                     
