@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-2005,2012-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-2005,2012-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:collections:"
-;;;  version:  1.1 August 2014
+;;;  version:  January 2017
 
 ;; initiated 6/7/93 v2.3, added Sequence 6/9.
 ;; 6/13/95 added searching routine: collection-of-type/dh
@@ -62,13 +62,13 @@
 
 
 ;;---- mixin
-;; adjective causes problems with biology, and the adjective does nothing
+
 (define-mixin-category sequential
   ;; motivating case is the cyclic aspect of calendar time.
   ;; Doesn't directly model the 'cycle' or 'spiral' aspect
   ;; of the calendar ("what month comes after December?"
   ;; but it's a start.
-  ;;  :lemma (:adjective "sequential")
+  ;;  :lemma (:adjective "sequential") ;; defined in bio;terms.lisp
   :binds ((sequence . sequence)))
 
 (define-mixin-category cyclic
