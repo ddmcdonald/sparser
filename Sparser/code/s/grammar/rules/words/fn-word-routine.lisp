@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   0.9 August 2014
+;;;   Version:   January 2017
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -27,6 +27,9 @@
 
 (in-package :sparser)
 
+;;;-----------------------
+;;; function words per se
+;;;-----------------------
 
 (defun function-word? (word)
   (etypecase word
@@ -36,21 +39,21 @@
 (defun define-function-word (string
                              &key ((:brackets bracket-symbols))
                                   ((:form name-of-form-category)))
-  (let ((word (typecase string
+  (let ((word (etypecase string
                 ((or word polyword) string)
-                (otherwise (resolve-string-to-word/make string))))
+                (string (resolve-string-to-word/make string))))
         (form (if name-of-form-category
                 (resolve-form-category name-of-form-category)
                 t)))
     (setf (get-tag :function-word word) form)
     (establish-rule-set-for word)
-    (assign-brackets-to-word word bracket-symbols)
+    (when bracket-symbols
+      (assign-brackets-to-word word bracket-symbols))
     word))
 
-
 (defun define-isolated-function-word (string &key form)
-  ;; Had been used for the conjunctions
   (unless form
+    ;; Had been used for the conjunctions
     (setq form 'subordinate-conjunction))
   (define-function-word string
     ;; Keep brackets here and in assign-brackets-to-standalone-word
@@ -58,14 +61,6 @@
     :brackets '( ].phrase  phrase.[ )
     :form form))
 
-
-(defun make-minimal-word-form-rule (word form-label)
-  (let ((form-cat (resolve-form-category form-label)))
-    (define-cfr word (list word)
-      :form form-cat
-      :referent word
-      :source :form)))
-  
 
 ;;--- auxiliaries
 
@@ -76,7 +71,7 @@
            ((or referential-category mixin-category category)
             form-label))))
     (unless category
-      (break "The category ~A isn't defined yet" form-label))
+      (error "The category ~A isn't defined yet" form-label))
     (unless (form-category? category)
       (cerror "Just keep going"
               "You are proposing to use the category ~a~
@@ -112,11 +107,9 @@
                                    rule-label discriminator
                                    tree-families subcat-info)
   "Does for deliberately defined modifiers the same thing as is done for
-   Comlex or morphologically identified nouns or verbs in 
-
-:subcat-info  
-   Legal values are noun, verb, adjective, and adverb
-"
+   Comlex or morphologically identified nouns or verbs in grammar/rules/
+   brackets/assignments.lisp.
+      :subcat-info:   Legal values are noun, verb, adjective, and adverb"
   (unless form
     (setq form 'standalone)) ;; seems safest
   (unless brackets
@@ -124,7 +117,6 @@
           (case form ;; match with values in rules/brackets/assignments (!!)
             (adverb *adverb-brackets*)
             (comparative *comparative-brackets*)
-            ;; not sure if this is right, but we aren't using brackets anyway... (RJB)
             (superlative *comparative-brackets*)
             ((adjective spatial-adjective temporal-adjective) *adjective-brackets*)
             ((det approximator sequencer) *default-determiner-brackets*)
@@ -152,7 +144,6 @@
         (when *ignore-redefine-warning*
           (cerror "Ignore and keep going"
                   "We're about to redefine the category ~a" category-name)))
-    
 
       (let ((category ;; for the function word
              (define-category/expr category-name  ;; e.g. 'only'
@@ -209,7 +200,6 @@
         do (loop for schema in (etf-cases etf)
                  do (add-rules (instantiate-rule-schema schema mapping category)
                                category))))
-
 
 (defun etf-form-substitution-label (etf)
   (unless (memq (etf-name etf)
