@@ -92,12 +92,12 @@
          (long-edge (when leftmost-edge
                       (unless (one-word-long? leftmost-edge)
                         leftmost-edge))))
-    (declare (special *in-collect-no-space-segment-into-word*))
+    (declare (special *in-collect-no-space-segment-into-word* long-edge))
         
     (let ((start-pos (if leftmost-edge
                        (pos-edge-starts-at leftmost-edge)
                        (chart-position-before position-after))))
-      
+      (declare (special start-pos))
       (tr :no-space-sequence-started-at start-pos)
       (when long-edge
         (tr :no-space-initial-long-edge long-edge))
@@ -110,9 +110,10 @@
       (multiple-value-bind (end-pos hyphen-positions slash-positions
                             colon-positions other-punct edges)
                            (sweep-to-end-of-ns-regions start-pos long-edge)
+        (declare (special edges end-pos))
         ;; Sweep from the very beginning just to be sure we catch any
         ;; marked punctuation there.
-
+       ; (lsp-break "collect-ns post edges bind")
         (when (ns-apostrophe-check position-after edges)
           (tr :returning-because-its-a-conjunction)
           (try-all-contiguous-edge-combinations start-pos end-pos) ;; see note with fn
@@ -446,7 +447,8 @@
 
 
 (defun save-ns-example (start-pos end-pos edges)
-  (let ((nsitem (actual-characters-of-word start-pos end-pos nil))
+  (let ((ns-sentence (sentence-string *sentence-in-core*))
+        (nsitem (actual-characters-of-word start-pos end-pos nil))
         (ns-edge-pattern (characterize-words-in-region start-pos end-pos edges)))
     ;;(when (or (search "-" nsitem) (search "/" nsitem))
     ;;(lsp-break "collect-no-space-sequence-into-word")
@@ -473,11 +475,16 @@
               (t
                (lsp-break "strange situation in NS"))))
           ns-edge-pattern 
-          nsitem)
+          nsitem
+          ns-sentence)
           *collect-ns-examples*)))
 
 (defun update-ns-examples (start-pos)
-
+  "Adds in the rule that was used by no-space -- results are of the form 
+(((:LOWER :HYPHEN #<edge5 5 probability 6>) \"phospho­MAPK1\") \"==>\"
+   (RESOLVE-PROTEIN-PREFIX PROTEIN N-BAR))
+which is ((characterization of the words/edges to be combined and their edge form and category) 'actual text' 
+==> (rule to form edge edge-form and edge-category of created edge))"
   (setf (car *collect-ns-examples*)
         `(,(car *collect-ns-examples*) 
           "==>"
@@ -492,7 +499,13 @@
 
 (defun clean-up-ns-collection ()
   "Just some clean up to group things by pattern and rule once we've
-collected a set of ns-examples"
+collected a set of ns-examples; results are of the form:
+(((ADJECTIVE IN-VITRO) :HYPHEN :LOWER)
+((DO-RELATION-BETWEEN-FIRST-AND-SECOND PHOSPHORYLATE VP+ED)
+ \"in vitro–phosphorylated\")
+((DO-RELATION-BETWEEN-FIRST-AND-SECOND LABELE VP+ED) \"in vitro–labeled\")
+((DO-RELATION-BETWEEN-FIRST-AND-SECOND TRANSLATE VP+ED) \"in vitro–translated\"))
+which is (pattern of words/edges) followed by sets of ((rule to form edge and edge-form and edge-category) \"actual text examples\") for each type of (rule edge set) that exists"
   (loop for i in (group-by (remove nil *collect-ns-examples*) #'caar)
         collect 
         (let ((grouped (group-by (second i) #'third #'cdar)))
@@ -502,6 +515,11 @@ collected a set of ns-examples"
                       (cons (car g)
                             (mapcar #'car (remove-duplicates (second g) :test #'equal))))))))
 
-
+(defun ns-pattern-rules (cleaned-ns)
+  "Given the output of clean-up-ns-collection, just pull out the patterns and unique rules"
+  (loop for i in cleaned-ns
+        collect (list (car i) 
+                      (remove-duplicates (loop for j in (cdr i)
+                            collect (caar j))))))
 
 
