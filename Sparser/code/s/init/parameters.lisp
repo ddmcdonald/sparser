@@ -1,9 +1,9 @@
 ;;; -*- Mode: LISP; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;      File: "parameters"
 ;;;    Module: "init;"
-;;;   Version: July 2016
+;;;   Version: January 2017
 
 ;;;----------------------------
 ;;; parameterizing the loading
@@ -124,6 +124,10 @@ both permanent and temporary individuals.")
 to handle cases where we are creating an individual of such a
 category but we know definitively that we want to make a temporary
 individual.")
+
+(defvar *index-bindings-to-variables* nil
+  "Controls whether we use the table on a variable to keep 
+track of its bindings.")
 
 ;;;-----------------------------------------------------------------------
 ;;; Mutually exclusive application settings.

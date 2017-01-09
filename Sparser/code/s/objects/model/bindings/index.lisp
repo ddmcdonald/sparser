@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "index"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  0.3 April 2015
+;;;  version:  January 2017
 
 ;; initiated 7/20/92 v2.3
 ;; (6/4/93) tweeked the checks for valid values in Index/binding
@@ -50,7 +50,6 @@
          (error "There is no lambda-variable with the name ~A"
                 name))))
     (lambda-variable variable))
-
   (let ((bindings (indiv-binds individual)))
     (when bindings
       (let ((binding
@@ -73,10 +72,8 @@
 
 
 (defun check-bindings (individual binding-instructions)
-
-  ;; does the individual have a binding that fits these instructions
-  ;; for bindings, i.e. pairs of variables and values.
-
+  "Does the individual have a binding that fits these instructions
+   for bindings, i.e. pairs of variables and values."
   (let ( variable  value )
     (dolist (vv binding-instructions)
       (setq variable (car vv)
@@ -87,10 +84,10 @@
 
 
 
-;;/// merge with bindng-of-bindings
+;;/// merge with binding-of-bindings
 (defun find/binding-of-variable (variable list-of-bindings category)
-  ;; does one of the bindings in this list involve this variable?
-  ;; If there is more than one, pass back a list 
+  "Does one of the bindings in this list involve this variable?
+   If there is more than one, pass back a list."
   (etypecase variable
     (symbol
      (let ((name variable))
@@ -99,7 +96,7 @@
          (error "There is no lambda-variable with the name ~A"
                 name))))
     (lambda-variable variable))
-
+  
   (let ( binding )
     (dolist (b list-of-bindings)
       (when (eq (binding-variable b) variable)
@@ -113,11 +110,10 @@
 
 
 (defun value-of-instr (variable binding-instructions)
-  ;; return the value of the instruction involving this variable
+  "Return the value of the instruction involving this variable"
   (let ((symbol (etypecase variable
                   (symbol variable)
                   (lambda-variable (var-name variable)))))
-
     (dolist (instr binding-instructions)
       (when (eq symbol
                 (var-name (first instr)))
@@ -133,6 +129,8 @@
 
 
 (defun index/binding (binding variable &optional no-index-on-body?)
+  "Put the binding in all the places it will be looked for
+   by find/binding given its three parts as its arguments."
   (let ((body (binding-body binding))
         (value (binding-value binding)))
 
@@ -229,7 +227,7 @@
   (let ((instances (var-instances v))
         viable-bindings)
     (maphash 
-     #'(lambda(unit bindings)
+     #'(lambda (unit bindings)
          (dolist (b bindings)
            (unless (deallocated-binding? b)
              (push b viable-bindings)))
@@ -251,36 +249,28 @@
 
 
 (defun push-binding-onto-instances-field (variable binding value)
-  ;; add the binding to the index under this value of the variable
-  (declare (special *track-incidence-count-on-bindings*))
-  (when *track-incidence-count-on-bindings*
+  "Add the binding to the index under this variable"
+  (declare (special *index-bindings-to-variables*))
+  (when *index-bindings-to-variables*
     (unless (typep variable 'anonymous-variable)
-      ;; These are missing the needed fields. As a rule they should be
-      ;; avoided
-      (let ((ht (var-instances variable))
-            (*print-short* t))
-        (declare (special *print-short*))        
-;;; hack to try to get through loading with allegro - should never be needed elsewhere.
-;;; for some reason the hash table on variables was getting lost during load.
-        #+allegro
-        (unless (typep ht 'hash-table)
-          (setf (var-instances variable) (make-hash-table :test #'equal))
-          (setf ht (var-instances variable)))
-
+      ;; These are missing the needed fields.
+      (let ((ht (var-instances variable)))
         (push binding (gethash value ht))
         (when *trace-binding-indexing*
-          (if (cdr (gethash value ht))
+          (let ((*print-short* t))
+            (declare (special *print-short*))
+            (if (> (hash-table-count ht) 1)
               (format t "~&Indexing ~A under ~A [prior]~%"
                       binding variable))
-          (format t "~&Indexing ~A under ~A [1st]~%"
-                  binding variable))
-        variable ))))
+            (format t "~&Indexing ~A under ~A [1st]~%"
+                      binding variable)))))))
 
 
 (defun find/binding (variable value individual)
   "Does a binding with this value for the variable exist?
-Look in the variable's index under this value and see whether
-one of the bindings there has this individual as its body."
+   Look in the variable's index under this value and see whether
+   one of the bindings there has this individual as its body."
+  (declare (special *track-incidence-count-on-bindings*))
   (when (typep variable 'anonymous-variable)
     (setq variable (dereference-variable variable individual)))
   (let* ((bindings (gethash value (var-instances variable)))
@@ -288,8 +278,9 @@ one of the bindings there has this individual as its body."
                            (indiv-binds individual))))
     ;; /// If the individual gets dicy to identify (being arbitrary)
     ;; then we probably want to shift to v+v objects.
-    (declare (special *track-incidence-count-on-bindings*))
-    (when (and binding *track-incidence-count-on-bindings*)
+    
+    (when (and binding
+               *track-incidence-count-on-bindings*)
       (incf (get-tag :incidence-count binding 0)))
     binding))
 
@@ -312,21 +303,20 @@ one of the bindings there has this individual as its body."
           (declare (special *print-short*))
           
           (let ((bindings-entry (gethash value instances-ht)))
-            ;; using #'equal because some values are lists
             (if bindings-entry
-                (then
-                  (when *trace-binding-indexing*
-                    (format t "~&Unindexing ~A from ~A~%"
-                            b variable))
-                  (setf (gethash value instances-ht)
-                        (delete b bindings-entry))
-                  b )
+              (then
+                (when *trace-binding-indexing*
+                  (format t "~&Unindexing ~A from ~A~%"
+                          b variable))
+                (setf (gethash value instances-ht)
+                      (delete b bindings-entry))
+                b )
                 
-                (when (list-type-variable? variable)
-                  (break "what do I do to unindex from a list-type-variable?")
-                  #+ignore(check/unindex-dynamically-extended-list
+              (when (list-type-variable? variable)
+                (error "what do I do to unindex from a list-type-variable?")
+                #+ignore(check/unindex-dynamically-extended-list
                    instances-alist variable value b)
-                  #+ignore(else
+                #+ignore(else
                     (push-debug `(,value ,variable))
                     ;                 (cerror "ignore it and continue"
                     ;                         "Expected the index for~% value = ~A~
@@ -337,11 +327,13 @@ one of the bindings there has this individual as its body."
 
 
 (defun excise-value-entry (instances-alist value variable)
+  (assert (listp instances-alist) ()
+          "The value of 'instance-alist' is a ~a rather than a list"
+          (type-of instances-alist))
   (let ((*print-short* t))
     (declare (special *print-short*))
     (if (eq value (caar instances-alist))
       (let ((cell instances-alist))
-;;; IS THIS WRONG? var-instances is supposed to be a hash table!!
         (setf (var-instances variable) (cdr instances-alist))
         (when *trace-binding-indexing*
           (format t "~&   [1st in var's entry] under ~A~
@@ -407,13 +399,15 @@ one of the bindings there has this individual as its body."
 ;;;-----------------------------------------
 
 (defun list-type-variable? (v)
+  "Does the restriction on this variable specify a list?
+   An example would be the items variable in collection."
   (let ((v/r (var-value-restriction v)))
     (when (consp v/r)
       (when (eq (first v/r) :primitive)
         (eq (second v/r) 'list)))))
 
-(defun check/unindex-dynamically-extended-list
-       (instances-alist variable value b)
+(defun check/unindex-dynamically-extended-list (instances-alist
+                                                variable value b)
   (if (cdr value)
     ;; does the list have more than one item on it?
     ;; If so, then the index may well have been established on the

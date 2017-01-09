@@ -96,7 +96,8 @@ in conjunction with an early version of Hark. Notable for using the
   (:script-variable *big-mechanism*)
   (:parameters
    (*description-lattice* t)
-   (*index-under-permanent-instances* t))
+   (*index-under-permanent-instances* t)
+   (*index-bindings-to-variables* nil))
   (:grammar-configuration "bio-grammar")
   (:interfering-rules ((sgml-label ("p")))) ; interferes with "p100"
   (:switches bio-setting))
@@ -126,6 +127,8 @@ and setting up to do style work by collecting statistics."
 (defscript fire ()
   "FIRE stands for 'Free-text Information and Relation Extraction'.
 It is essentially GROK going forward."
+  (:parameters
+   (*index-bindings-to-variables* t))
   (:grammar-configuration "full grammar")
   (:switches fire-setting))
 
@@ -138,7 +141,8 @@ It is essentially GROK going forward."
   "Domain Modeling & Population."
   (:parameters
    (*load-ad-hoc-rules* t)
-   (*sit-rep-grammar* t))
+   (*sit-rep-grammar* t)
+   (*index-bindings-to-variables* t))
   (:grammar-configuration "full-grammar")
   (:switches dm&p-setting))
 
