@@ -269,7 +269,7 @@
     (setq new-list (nreverse (cdr (nreverse new-list))))))
 
 (defun sort-out-edges-in-ns-region (edges leftmost-edge)
-  (cond
+  #+ignore(cond
    (edges
     ;; The leftmost-edge, if there is one, will always be included
     ;; in the list of edges
@@ -281,7 +281,8 @@
    (leftmost-edge
     ;; no additional edges collected by sweep-to-end-of-ns-regions
     ;; but we can't forget the one we already have.
-    `(,leftmost-edge))))
+    `(,leftmost-edge)))
+  (sort edges #'< :key #'edge-start-index))
 
 
 (defun edge-ends-here (position)
@@ -291,3 +292,5 @@
 	       (edge-p top-edge)) 
       top-edge)))
 
+(defun edge-start-index (edge)
+  (pos-token-index (pos-edge-starts-at edge)))
