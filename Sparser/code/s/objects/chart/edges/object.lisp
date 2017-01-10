@@ -69,12 +69,24 @@
 ;; this will be a place to modify ALL calls to (setf edge-referent)
 ;;  to handle edge-mention updates uniformly
 (defun set-edge-referent (edge result)
+  ;; the default in the case of the description lattice
+  ;;  is that the referent on an edge should never be
+  ;;  a referential-category, but should be an individual,
+  ;;  except for specially noted cases
+  (when (and (referential-category-p result)
+             (not (allowable-referential-edge-value? edge result)))
+    (setf result (find-or-make-lattice-description-for-ref-category result)))
   (cond ((edge-referent edge)
          (setf (edge-referent edge) result)
          (update-edge-mention-referent edge result))
         (t
          (setf (edge-referent edge) result)))
   result)
+
+(defun allowable-referential-edge-value? (edge result)
+  (not (member (cat-name (edge-form edge))
+               '(preposition spatial-preposition
+                 spatio-temporal-preposition))))
 
 ;;;-----------------------------------
 ;;; predicates for unusual edge-types

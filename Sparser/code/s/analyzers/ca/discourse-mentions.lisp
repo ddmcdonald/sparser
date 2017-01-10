@@ -669,6 +669,7 @@ so we return the edge for the POBJ"
            (if (consp source) (second source) source)))
          (toc (location-in-article-of-current-sentence)))
     (when (edge-p source)
+      #+ignore ;; moving to inside set-edge-referent
       (when (and (referential-category-p i)
                  (not (member (cat-name (edge-form source))
                               '(preposition spatial-preposition
