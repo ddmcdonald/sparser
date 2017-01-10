@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2016 David D. McDonald 
+;;; Copyright (c) 2010-2017 David D. McDonald 
 ;;;
 ;;;            "attribution"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  July 2016
+;;;  version:  January 2017
 
 (in-package :sparser)
 
@@ -62,9 +62,14 @@ a 'subject', e.g. "southern Chinese girls are never tall"
  instance of this category. Provides a 'coat-hook'
  for recording ancilary information that helps in parsing,
  notably the variable."
-  :specializes named-type
-  :mixins (has-name)
+  :specializes quality
   :binds ((var :primitive lambda-variable)))
+
+(define-category scalar-attribute
+  :specializes scalar-quality
+  :mixins (attribute)
+  :documentation "Calling this 'scalar' is to say that
+ its values are arranged along some dimension")
 
 #| Note: It's not unreasonable to contemplate the alternative
 where the specific attributes (size, ethnicity, eye color) are
@@ -160,6 +165,7 @@ be added to attribute so it knows how to handle the individuals.
        ((:def-fn name-of-define-fn))
        ((:value-pos field-part-of-speech))
        ((:val-rule-label rule-label-for-values)))
+       
   "Makes the function and three categories required to define
  an attribute. Constructs names for them based on the symbol that
  is passed in. Keyword arguments are provided to override the
@@ -208,7 +214,7 @@ be added to attribute so it knows how to handle the individuals.
          ;; attribute-pos: :common-noun
          ;; attribute-word: "size"
          (define-category ,attribute-name
-           :specializes attribute
+           :specializes scalar-attribute
            :bindings (var
                        (find-variable-for-category
                         ',var-name ',mixin-name))
@@ -225,9 +231,13 @@ be added to attribute so it knows how to handle the individuals.
            :realization (,field-pos name))
 
          ;; instance-maker: define-size
-         (defun ,instance-maker (string)
-           (define-or-find-individual ',attibute-field-name
-               :name string)) ))))
+         (defun ,instance-maker (string &key dir er est)
+           (let ((*inhibit-constructing-comparatives* t))
+             (declare (special *inhibit-constructing-comparatives*))
+             (let ((i (define-or-find-individual ',attibute-field-name
+                          :name string)))
+               (setup-comparatives i dir er est)
+               i )))  ))))
 
 
 

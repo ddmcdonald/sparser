@@ -100,12 +100,12 @@
 (define-comparative "better") ;; good, well
 (define-comparative "worse") ;; bad
 
-
+#|
 ;; 10/24/94
 (define-comparative "bigger") ;; better best
 ;; comparative-adjective
 (define-comparative "smaller") ;; small smallest
-
+|#
 
 ;;/// Goes somewhere else when we get serious about meaning
 ;(define-comparative "rather than" :brackets '( ].phrase  .[np ))

@@ -72,8 +72,8 @@
 ;;--- actual size values (move to dossier for qualities)
 
 ;; a few cases as need for trival blocks world
-(define-size "big")
-(define-size "little")
+;(define-size "big")
+;(define-size "little")
 
 
 
