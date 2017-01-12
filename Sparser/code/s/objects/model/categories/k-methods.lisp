@@ -49,6 +49,19 @@ Not currently used, but will be when we add CALL-NEXT-K-METHOD support."
                        (get function-name 'k-methods))
         #'k-method-more-specific-p))
 
+(defun ensure-k-function (function-name)
+  "If FUNCTION-NAME is not fbound in the global environment,
+create a new K-function with that name."
+  (if (fboundp function-name)
+    (fdefinition function-name)
+    (setf (fdefinition function-name)
+          (lambda (&rest args)
+            (let ((k-method (most-specific-k-method function-name args)))
+              (if k-method
+                (apply (k-method-function k-method) args)
+                (error "No applicable K-methods for ~a with arguments ~:a."
+                       function-name args)))))))
+
 (defmacro def-k-function (function-name lambda-list &rest options)
   "Define a new K-function, and optionally some methods for it.
 Analogous to DEFGENERIC."
@@ -56,12 +69,7 @@ Analogous to DEFGENERIC."
   (assert (every #'symbolp lambda-list) (lambda-list) "Invalid K-function lambda list.")
   (assert (every #'listp options) (options) "Invalid K-function options.")
   `(progn
-     (defun ,function-name (&rest args)
-       (let ((k-method (most-specific-k-method ',function-name args)))
-         (if k-method
-           (apply (k-method-function k-method) args)
-           (error "No applicable K-methods for ~a with arguments ~:a."
-                  ',function-name args))))
+     (ensure-k-function ',function-name)
      ,@(loop for option in options
              collect (etypecase option
                        ((cons (eql :documentation) (cons string null))
@@ -73,6 +81,7 @@ Analogous to DEFGENERIC."
      ',function-name))
 
 (defun add-k-method (function-name k-method)
+  (ensure-k-function function-name)
   (let ((old-k-method (find (k-method-specializers k-method)
                             (get function-name 'k-methods)
                             :key #'k-method-specializers
