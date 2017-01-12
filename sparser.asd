@@ -14,7 +14,9 @@
   :components ((:file "test/rt")
                (:file "test/k-methods")
                (:file "test/subcategorization"))
-  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
+  :perform (test-op (o c)
+             (let ((*package* (find-package :sparser)))
+               (uiop:symbol-call :rt :do-tests))))
 
 (defsystem :sparser/graph
   :depends-on (:sparser :cl-dot)

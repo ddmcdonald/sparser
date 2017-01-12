@@ -26,4 +26,6 @@
   :depends-on (:ddm-util)
   :components ((:file "../test/rt")
                (:file "../test/util"))
-  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
+  :perform (test-op (o c)
+             (let ((*package* (find-package :ddm-util)))
+               (uiop:symbol-call :rt :do-tests))))

@@ -89,12 +89,16 @@
   :perform (load-op :after (o c) (pushnew :mumble *features*))
   :in-order-to ((test-op (test-op :mumble-tests))))
 
+(defun do-mumble-tests (&aux (*package* (find-package :mumble)))
+  "Run the Mumble regression tests in the MUMBLE package."
+  (uiop:symbol-call :rt :do-tests))
+
 (defsystem :mumble-tests
   :serial t
   :depends-on (:mumble)
   :components ((:file "../test/rt")
                (:file "../test/mumble"))
-  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
+  :perform (test-op (o c) (do-mumble-tests)))
 
 (defsystem :mumble/sparser
   :description "Mumble components that depend on Sparser."
@@ -113,7 +117,7 @@
 (defsystem :mumble/biology-tests
   :depends-on (:mumble/biology :mumble-tests)
   :components ((:file "../test/mumble-biology"))
-  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
+  :perform (test-op (o c) (do-mumble-tests)))
 
 (defsystem :mumble/blocks-world
   :description "Generation for the blocks world."
@@ -123,4 +127,4 @@
 (defsystem :mumble/blocks-world-tests
   :depends-on (:mumble/blocks-world :mumble-tests)
   :components ((:file "../test/mumble-blocks-world"))
-  :perform (test-op (o c) (uiop:symbol-call :rt :do-tests)))
+  :perform (test-op (o c) (do-mumble-tests)))
