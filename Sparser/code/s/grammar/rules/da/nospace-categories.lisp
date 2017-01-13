@@ -295,6 +295,7 @@
              (new-edge (make-edge-over-long-span
                         start-pos end-pos
                         (edge-category edge-to-elevate)
+                        :rule 'resolve-trailing-stranded-hyphen
                         :form (edge-form edge-to-elevate)
                         :referent (maybe-make-individual
                                    (edge-referent edge-to-elevate))
@@ -326,6 +327,7 @@
       (let ((new-edge (make-edge-over-long-span
                        start-pos end-pos
                        (edge-category edge-to-elevate)
+                       :rule 'resolve-initial-stranded-hyphen
                        :form form
                        :referent (maybe-make-individual
                                   (edge-referent edge-to-elevate))

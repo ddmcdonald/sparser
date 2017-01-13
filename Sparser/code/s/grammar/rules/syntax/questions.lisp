@@ -241,6 +241,7 @@ oncogenic receptor conversion warrants further study.")
           (let ((edge (make-edge-over-long-span
                        pos-before next-pos
                        (edge-category wh-edge)
+                       :rule 'delimit-and-label-initial-wh-term
                        :form category::question-marker ;;/// needs more meliflous term
                        :referent q
                        :constituents (edges-between pos-before next-pos))))
