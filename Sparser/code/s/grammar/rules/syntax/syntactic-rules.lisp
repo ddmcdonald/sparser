@@ -245,6 +245,12 @@
     :head :right-edge
     :form adjective
     :referent (:function interpret-intensifier+adjective left-edge right-edge))
+
+(def-form-rule (percent adjp) ;; 95% sure that it is transient
+    :head :right-edge
+    :form adjp
+    :referent (:function interpret-intensifier+adjective left-edge right-edge))
+
   
 ;;;------------------
 ;;; NP postmodifiers

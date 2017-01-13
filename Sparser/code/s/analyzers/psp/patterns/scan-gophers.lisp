@@ -105,12 +105,14 @@
   (declare (special *the-punctuation-period*
                     *the-punctuation-question-mark*
                     *the-punctuation-comma*
-                    *the-punctuation-semicolon*))
+                    *the-punctuation-semicolon*
+                    *the-punctuation-percent*))
   (when (punctuation? word)
     (or (eq word *the-punctuation-period*)
         (eq word  *the-punctuation-question-mark*)
         (eq word *the-punctuation-comma*)
-        (eq word *the-punctuation-semicolon*))))
+        (eq word *the-punctuation-semicolon*)
+        (eq word *the-punctuation-percent*))))
 
 
 (defun second-word-not-in-ns-sequence (word next-position)
@@ -157,7 +159,7 @@
     ((or (eq word (punctuation-named #\-))
 	 (eq word (punctuation-named #\/))
          (eq word (punctuation-named #\@))
-         (eq word (punctuation-named #\%))
+         ;;(eq word (punctuation-named #\%))
          (eq word (punctuation-named #\~))
          (eq word (punctuation-named #\+))
          (eq word *the-punctuation-rightwards-arrow*)

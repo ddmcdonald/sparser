@@ -29,11 +29,11 @@
   :specializes  measurement
   :binds  ((number . number))
   :index (:temporary :list)
-  :realization (:tree-family item+idiomatic-head
+  :realization (:noun ("%" "percent" "per cent")
+                :tree-family item+idiomatic-head
                 :mapping ((np . :self)
-                          (np-head . ("percent" "%"
-                                      "percent-sign"))
-                          (modifier . number)
+                          (np-head . ("percent" "%" "percent-sign"))
+                          (modifier . (number hyphenated-number))
                           (result-type . :self)
                           (item . number))))
 
