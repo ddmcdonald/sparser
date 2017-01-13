@@ -264,3 +264,21 @@ returning a new one.
 			   (eq (var-name v) var/name)))
 	     do (return v)))
       (binding-variable binding)))
+
+(defun revise-variable-value (var value indiv)
+  "Create (or find) an individual that is just like indiv, except that the value of 'var'
+is reset to the specified 'value'"
+  (let ((bindings (indiv-old-bindings indiv))
+        (new (make-dli-for-ref-category (indiv-type indiv)))
+        (rebound nil))
+    (loop for b in (reverse bindings)
+          do
+            (setq new
+                  (if (eq (binding-variable b) var)
+                      (then
+                        (setq rebound t)
+                        (bind-dli-variable (binding-variable b) value new))
+                      (bind-dli-variable (binding-variable b) (binding-value b) new))))
+    (unless rebound
+      (bind-dli-variable var value new))
+    new))
