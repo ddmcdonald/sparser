@@ -54,12 +54,7 @@
    Called from collect-no-space-segment-into-word just before
    it sets up the dispatch.")
 
-(defun collect-ns-examples (&rest reset)
-  "Turn on collecting no-space examples if it's off, or reset
-*collect-ns-examples* if you want to flush it"
-  (when (or reset 
-            (null *collect-ns-examples*))
-    (setf *collect-ns-examples* (list nil))))
+
 
 
 
@@ -84,7 +79,6 @@
    This 'position-after' is the position that has no-space recorded
    on it, indicating that it and the previous word (or multi-word edge)
    are not separated."
-  (when nil (tts))
   
   (let* ((*in-collect-no-space-segment-into-word* t) ;; used to block one anaphora, when numbers appear in an NS pattern
          (leftmost-edge (left-treetop-at/only-edges position-after))
@@ -432,12 +426,24 @@
 (defun reason-to-not-span-ns (start-pos end-pos)
   (let* ((edges (treetops-between start-pos end-pos))
          (form-labels (loop for e in edges
-                         when (edge-p e) collect (edge-form e)))
+                            when (edge-p e)
+                            collect (or (edge-form e)
+                                        ;; the only cases this happens seem to be
+                                        ;;(PRONOUN/FEMALE APOSTROPHE-S SINGLE-QUOTE HYPHEN PERCENT-SIGN FORWARD-SLASH)
+                                        (let* ((ec (edge-category e))
+                                               (symbol
+                                                (if (word-p ec)
+                                                    (word-symbol ec)
+                                                    (intern (string-upcase (pname ec))
+                                                            (find-package :sparser)))))
+                                          ;;(pushnew symbol *no-form-cats*)
+                                          symbol))))
+                                          
          (form-symbols (loop for l in form-labels
-                          when l collect (cat-symbol l))))
+                             when l collect (if (category-p l)(cat-symbol l) l))))
     (loop for symbol in form-symbols
-       thereis (memq symbol '(category::pronoun
-                              category::modal)))))
+          thereis (or (memq symbol '(category::pronoun category::modal
+                                     PRONOUN/FEMALE APOSTROPHE-S WORD::SINGLE-QUOTE))))))
          
    
     
@@ -447,10 +453,18 @@
 ;;; saving examples to look at offline
 ;;;------------------------------------
 
-(defun collect-ns-examples ()
-    (setf *collect-ns-examples* (list nil)))
+(defun collect-ns-examples (&optional reset (n 0))
+  "Turn on collecting no-space examples if it's off, or reset
+*collect-ns-examples* if you want to flush it"
+  (when (or reset 
+            (null *collect-ns-examples*))
+    (setf *collect-ns-examples* (list nil))
+    (if (> n 0)
+        (funcall (intern "DO-JUNE-NO-CARDS" (find-package :r3))
+                 :n n))))
 
 (defun save-ns-example (start-pos end-pos edges)
+  (declare (special *sentence-in-core*))
   (let* ((ns-sentence (sentence-string *sentence-in-core*))
          (nsitem (actual-characters-of-word start-pos end-pos nil))
          (real-edges (remove-non-edges edges)) 
@@ -500,10 +514,19 @@
                      (list :no-edge)))
            )))
 
+
+;;; --------------------------------------------------------
+;;; Code to explore the results of the NS example collection
+;;; --------------------------------------------------------
+
 (defun ns-examples-file (filename)
   "Save the collected ns examples to a file"
   (with-open-file (stream filename :direction :output :if-exists :supersede)
     (pprint *collect-ns-examples* stream)))
+
+;; slightly more explanatory function name
+(defun ns-examples->file (filename)
+  (ns-examples-file filename))
 
 (defun clean-up-ns-collection ()
   "Just some clean up to group things by pattern and rule once we've
@@ -551,3 +574,33 @@ collected a set of ns-examples"
           ))
                           
                      
+;;; -----------------------
+;;; code to explore the call tree inside NS
+;;; -----------------------
+
+(defparameter *sparser-fn-ht* (make-hash-table))
+(do-symbols (v (find-package :sparser) *sparser-fn-ht*)
+  (when (fboundp v) (setf (gethash (symbol-function v)*sparser-fn-ht*) v)))
+(defparameter *seen-fns* (make-hash-table))
+
+(defun sparser-call-tree (fn &optional (start t)(n 4))
+  (when start (clrhash *seen-fns*))
+  (let ((fn (if (functionp fn) fn (eval `(function ,fn)))))
+    (when (and
+           (sb-kernel::simple-fun-p fn)
+           (gethash fn *sparser-fn-ht*))
+      (cond ((gethash fn *seen-fns*)
+             (list (gethash fn *sparser-fn-ht*) '*seen*))
+            (t
+             (when (> n 0)
+               (cons (progn
+                       (setf (gethash fn *seen-fns*) t)
+                       (gethash fn *sparser-fn-ht*))
+                     (loop for f in
+                             (sb-introspect::find-function-callees fn)
+                           nconc
+                             (let ((ct (sparser-call-tree f nil (- n 1))))
+                               (when ct (list ct)))))))))))
+
+
+
