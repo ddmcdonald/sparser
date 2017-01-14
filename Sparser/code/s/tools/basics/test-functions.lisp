@@ -176,7 +176,7 @@
 
 (defun get-sentence (corpus n)
   (declare (special *pathway-comments* *erk-abstract* *gyori* *load-test-sents*
-                       *overnight-sentences* *comments*))
+                       *overnight-sentences* *comments* *dynamic-model-sents*))
   (let ((sentences
 	 (ecase corpus
 	   ((:overnight overnight) *overnight-sentences*)
@@ -187,6 +187,7 @@
 	   ((:load load-test) *load-test-sents*)
            ((:comments comments) *comments*)
            ((:gyori gyori) *gyori*)
+           ((dynamic-model) *dynamic-model-sents*)
            ((:pathways :pathway-comments pathways) *pathway-comments*))))
     (second (nth (- n 1) sentences))))
 
@@ -226,7 +227,7 @@
 (defparameter *sent-snapshots-directory* nil)
 
 (defun save-sent-snapshots (&optional
-                            (corpora '(overnight dec-test dry-run aspp2 erk)))
+                            (corpora '(overnight dec-test dry-run aspp2 erk dynamic-model)))
   "Top-level sentence syntax/semantics snapshot creation routine."
   (let ((*sent-snapshots-directory* (create-snapshot-directory)))
     (loop for c in corpora
