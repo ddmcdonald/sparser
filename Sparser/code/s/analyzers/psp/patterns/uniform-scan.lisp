@@ -574,33 +574,6 @@ collected a set of ns-examples"
           ))
                           
                      
-;;; -----------------------
-;;; code to explore the call tree inside NS
-;;; -----------------------
-
-(defparameter *sparser-fn-ht* (make-hash-table))
-(do-symbols (v (find-package :sparser) *sparser-fn-ht*)
-  (when (fboundp v) (setf (gethash (symbol-function v)*sparser-fn-ht*) v)))
-(defparameter *seen-fns* (make-hash-table))
-
-(defun sparser-call-tree (fn &optional (start t)(n 4))
-  (when start (clrhash *seen-fns*))
-  (let ((fn (if (functionp fn) fn (eval `(function ,fn)))))
-    (when (and
-           (sb-kernel::simple-fun-p fn)
-           (gethash fn *sparser-fn-ht*))
-      (cond ((gethash fn *seen-fns*)
-             (list (gethash fn *sparser-fn-ht*) '*seen*))
-            (t
-             (when (> n 0)
-               (cons (progn
-                       (setf (gethash fn *seen-fns*) t)
-                       (gethash fn *sparser-fn-ht*))
-                     (loop for f in
-                             (sb-introspect::find-function-callees fn)
-                           nconc
-                             (let ((ct (sparser-call-tree f nil (- n 1))))
-                               (when ct (list ct)))))))))))
 
 
 
