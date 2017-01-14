@@ -16,7 +16,7 @@
 
 (defparameter *xml-indentation* 0)
 
-(defmacro with-indentation (increment &body body)
+(defmacro with-xml-indentation (increment &body body)
   `(let ((*xml-indentation* (+ *xml-indentation* ,increment)))
      ,@body))
 
