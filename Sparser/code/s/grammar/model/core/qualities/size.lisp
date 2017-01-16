@@ -67,13 +67,8 @@
            (define-or-find-individual ',attibute-field-name
                :name string))   ))))
 
-(define-attribute size)
 
-;;--- actual size values (move to dossier for qualities)
 
-;; a few cases as need for trival blocks world
-;(define-size "big")
-;(define-size "little")
 
 
 
