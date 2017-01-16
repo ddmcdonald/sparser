@@ -459,9 +459,10 @@
   (when (or reset 
             (null *collect-ns-examples*))
     (setf *collect-ns-examples* (list nil))
-    (if (> n 0)
-        (funcall (intern "DO-JUNE-NO-CARDS" (find-package :r3))
-                 :n n))))
+    (when (> n 0)
+      (compare-to-snapshots)
+      (funcall (intern "DO-JUNE-NO-CARDS" (find-package :r3))
+               :n n))))
 
 (defun save-ns-example (start-pos end-pos edges)
   (declare (special *sentence-in-core*))
@@ -519,13 +520,14 @@
 ;;; Code to explore the results of the NS example collection
 ;;; --------------------------------------------------------
 
-(defun ns-examples-file (filename)
+(defun ns-examples-file (&optional (filename "~/projects/cwc-integ/sparser/Sparser/code/s/tools/ns-examples.lisp"))
   "Save the collected ns examples to a file"
   (with-open-file (stream filename :direction :output :if-exists :supersede)
-    (pprint *collect-ns-examples* stream)))
+    (pprint *collect-ns-examples* stream))
+  filename)
 
 ;; slightly more explanatory function name
-(defun ns-examples->file (filename)
+(defun ns-examples->file (&optional (filename "~/projects/cwc-integ/sparser/Sparser/code/s/tools/ns-examples.lisp"))
   (ns-examples-file filename))
 
 (defun clean-up-ns-collection ()
@@ -570,10 +572,8 @@ collected a set of ns-examples"
                               do (if (eq (symbol-package r) (find-package 'rule))
                                      (incf psr-rules)
                                      collect r))
-                         (format t "psr rules: ~s" psr-rules)))
+                         (format t "psr rules: ~s" rules-psr)))
           ))
-                          
-                     
 
-
-
+#+ignore
+(length (setq *ns-multiple* (ns-multiple-rule-patterns (setq *rule-patterns* (ns-pattern-rules (setq *cleaned-ns* (clean-up-ns-collection)))))))
