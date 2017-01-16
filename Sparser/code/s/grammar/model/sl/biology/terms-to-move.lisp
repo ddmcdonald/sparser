@@ -38,6 +38,7 @@ be biology specific, since they aren't. |#
 
 
 (find-or-make-individual 'qualitative-rate :name "slow")
+
 (adj "lesser" :super bio-predication)
 ;;> Error: Unexpected POS marker: 'QUANT' on #<word "lesser">
 ;; While executing: #<STANDARD-METHOD UNAMBIGUOUS-COMLEX-PRIMED-DECODER (WORD T)>, in process Listener(4).
@@ -61,7 +62,7 @@ be biology specific, since they aren't. |#
 
 (noun ("period of time" :plural "periods of time") :super period)
 
-
+#|
 ;; not sure this is what David would want -- what type of category is orientation
 (define-category orientation :specializes relation)
 (define-category orientation-top :specializes orientation
@@ -77,13 +78,34 @@ be biology specific, since they aren't. |#
   :realization
   (:noun "right"))
 
+
+;; "high";;ambiguous between (ADJECTIVE ADVERB)
+
+|#
+;;///////// coersion required
+(adj "high" :super bio-predication)
+;;////// coersion required -- see attribute
+(adj "low" :super bio-predication)
+#+ignore ; conflicts with definition in verbs.lisp
+(define-comparative "lower")
+;;--- "lower"  ("raise")
+;;/// N.b. the adjective variant is commented out in the modifiers dossier
+;; "(RasGEFs) lower the transition energy for ..."
+;;(adj "wide" :super bio-predication)
+
+;; (adj "long" :super bio-predication)
+
+;;(noun "length" :super bio-scalar)
+(define-category bio-length
+  :specializes length
+  :mixins (bio-scalar))
+(specialize-referent "length" 'bio-length)
+
 ;; want something for magnitude, size, etc. TO-DO
 ;; move away from deirectly under category::abstract
 (adj "single" :super bio-predication) 
 (adj "double" :super bio-predication)
 
-
-;; "high";;ambiguous between (ADJECTIVE ADVERB)
 
 
 ;; led to incorrect Comlex stemming
@@ -169,7 +191,6 @@ be biology specific, since they aren't. |#
   :realization
   (:noun "duration"))
 
-(noun "length" :super bio-scalar)
 (noun "level" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 
 ;;--- bio-rhetorical
@@ -242,7 +263,7 @@ be biology specific, since they aren't. |#
 (define-adverb "further")
 
 (adj "great" :super bio-predication)
-(adj "high" :super bio-predication)
+
 
 (adj "initial" :super bio-predication)
 (adj "least" :super bio-predication)
@@ -258,18 +279,9 @@ be biology specific, since they aren't. |#
 (adj "spatial" :super bio-predication)
 
 
-(adj "wide" :super bio-predication)
-
-(adj "long" :super bio-predication)
 (adj "long-term" :super bio-predication)
 
 
-(adj "low" :super bio-predication)
-#+ignore ; conflicts with definition in verbs.lisp
-(define-comparative "lower")
-;;--- "lower"  ("raise")
-;;/// N.b. the adjective variant is commented out in the modifiers dossier
-;; "(RasGEFs) lower the transition energy for ..."
 (adj "measurable" :super bio-predication) ;; keyword: (able ADJ) 
 (adj "same" :super bio-predication)
 
