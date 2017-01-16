@@ -1483,7 +1483,7 @@
     (let ((new-conjunct (apply #'referent-of-two-conjoined-referents new-items)))
       (set-edge-referent vp-edge new-conjunct)
       ;;(update-edge-mention-referent vp-edge new-conjunct)
-      vp-edge)))
+      new-conjunct)))
 
 (defun unpack-subject-control (subject vp vp-edge)
   (set-edge-referent vp-edge
