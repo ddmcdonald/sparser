@@ -867,15 +867,13 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 
 
 (defparameter *inhibit-constructing-comparatives* nil
-  "Used when the caller knows more about how to construct comparatives
-   than the default routines. See define-attribute")
+  "Used when the caller knows more about how to construct 
+   the comparatives than the default routines. See define-attribute")
 
 (defmethod make-rules-for-head ((pos (eql :adjective)) word category referent &rest special-cases)
   "Define rules for an adjective and possibly its comparative & superlative variants."
   (declare (special *inhibit-constructing-comparatives*))
   (let ((adj-rules (call-next-method)))
-    (push-debug `(,referent ,category))
-    (lsp-break "category = ~a" category)
     (if (or (punctuation? word)
             (not (word-p word))
             *inhibit-constructing-comparatives*)
@@ -986,14 +984,14 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
    (define-cfr category (list (make-comparative/superlative word
                                 :suffix "er" :y-suffix "ier"))
      :form category::comparative
-     :referent category)))
+     :referent referent)))
 
 (defun make-superlative-rules (word category referent)
   (list
    (define-cfr category (list (make-comparative/superlative word
                                 :suffix "est" :y-suffix "iest"))
      :form category::superlative
-     :referent category)))
+     :referent referent)))
 
 
 
