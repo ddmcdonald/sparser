@@ -71,6 +71,7 @@
     
     (when *trace-edge-creation*
       (format t "~&~%Edge for a literal in a rule ~A~%" edge))
+    (note-surface-string edge)
     
     edge))
 
