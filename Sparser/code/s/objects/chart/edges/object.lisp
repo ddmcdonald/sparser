@@ -340,9 +340,10 @@
   ;; the caller wanting to worry about lexical ambiguities.
   (let ((ev (pos-starts-here position)))
     (if (edge-p (ev-top-node ev))
-      (ev-top-node ev)
-      (elt (ev-edge-vector ev)
-           (1- (ev-number-of-edges ev))))))
+        (ev-top-node ev)
+        (when (> (ev-number-of-edges ev) 1)
+          (elt (ev-edge-vector ev)
+               (1- (ev-number-of-edges ev)))))))
 
 
 (defun edge-spanning (start-pos end-pos)
