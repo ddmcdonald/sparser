@@ -675,10 +675,9 @@
     :form subordinate-clause
     :referent (:function absorb-auxiliary left-edge right-edge))
 
-(def-form-rule (subordinate-conjunction comma)
-    :head :left-edge
-    :form subordinate-conjunction
-    :referent (:daughter left-edge))
+(def-cfr subordinate-conjunction (subordinate-conjunction comma)
+  :form subordinate-conjunction
+  :referent (:daughter left-edge))
 
 
 (loop for vv in '((subordinate-clause subordinate-clause)
@@ -955,6 +954,7 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :left-edge
     :referent (:function make-ordinal-item right-edge left-edge))
 
+#+ignore
 (def-syntax-rule (proper-noun number) ;; should be allowable as a form rule
     :form np
     :head :left-edge
@@ -965,16 +965,19 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :left-edge
     :referent (:function make-ordinal-item right-edge left-edge))
 
+#+ignore
 (def-form-rule (proper-noun hyphenated-number)  
     :form np
     :head :left-edge
     :referent (:function make-ordinal-item right-edge left-edge))
 
+#+ignore
 (def-syntax-rule (common-noun number) ;; should be allowable as a form rule
     :form np
     :head :left-edge
     :referent (:function make-ordinal-item right-edge left-edge))
 
+#+ignore
 (def-form-rule (common-noun/plural hyphenated-number)  
     :form np
     :head :left-edge
