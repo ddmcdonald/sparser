@@ -76,6 +76,7 @@
         (category::interjection)
 	(category::adjunct)
         (category::comparative)
+        (category::comparative-adjp)
         (category::possessive)
         (category::quantifier)
         (category::adjective)
