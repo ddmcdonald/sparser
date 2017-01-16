@@ -21,9 +21,12 @@
 context -- age -- it's going to have to undergo a type elevation, which
 is easiest with a cs rule.  |#
 
-(def-cfr comma-number ( "," number )
-  :form appositive-prefix
-  :referent (:daughter right-edge))
+
+;; this rule is not appropriate for biology
+(unless (eq script :biology)
+  (def-cfr comma-number ( "," number )
+    :form appositive-prefix
+    :referent (:daughter right-edge)))
 
 
 ;;;---------------
