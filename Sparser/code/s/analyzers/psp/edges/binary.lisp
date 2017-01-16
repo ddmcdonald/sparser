@@ -24,6 +24,25 @@
 
 (defvar *CURRENT-CHUNK*)
 (defvar category::n-bar)
+(defparameter *NS-rules* nil)
+
+(defun save-ns-rule? (left-edge right-edge rule)
+  (when *NS-rules*
+    (let ((mid-pos (pos-edge-ends-at left-edge)))
+      (when (and (not (pos-preceding-whitespace mid-pos))
+                 (eq right-edge (lexical-edge-at mid-pos))
+                 (eq left-edge (lexical-edge-at (pos-edge-starts-at left-edge)))
+                 (not (is-basic-collection? (edge-referent right-edge))))
+        (when (not (consp *ns-rules*))
+          (setq *ns-rules* nil))
+        (if (assoc rule *NS-rules*)
+            (pushnew (list (retrieve-surface-string left-edge)
+                           (retrieve-surface-string right-edge))
+                     (cdr (assoc rule *NS-rules*))
+                     :test #'equalp)
+            (push (list rule (list (retrieve-surface-string left-edge)
+                                   (retrieve-surface-string right-edge)))
+                  *ns-rules*))))))
 
 (defun make-completed-binary-edge (left-edge
                                    right-edge
@@ -32,9 +51,10 @@
   ;; /leftwards, which only do the specialized record keeping that
   ;; avoids the same edge being made twice, once from each direction
 
+  (save-ns-rule? left-edge right-edge rule)
   (if (cfr-completion rule)
-    (do-explicit-rule-completion left-edge right-edge rule)
-    (make-default-binary-edge    left-edge right-edge rule)))
+      (do-explicit-rule-completion left-edge right-edge rule)
+      (make-default-binary-edge    left-edge right-edge rule)))
 
 
 
