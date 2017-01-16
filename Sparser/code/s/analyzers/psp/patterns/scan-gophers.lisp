@@ -106,13 +106,16 @@
                     *the-punctuation-question-mark*
                     *the-punctuation-comma*
                     *the-punctuation-semicolon*
-                    *the-punctuation-percent*))
+                    *the-punctuation-percent*
+                    *the-punctuation-prime*))
   (when (punctuation? word)
     (or (eq word *the-punctuation-period*)
         (eq word  *the-punctuation-question-mark*)
         (eq word *the-punctuation-comma*)
         (eq word *the-punctuation-semicolon*)
-        (eq word *the-punctuation-percent*))))
+        (eq word *the-punctuation-percent*)
+        (eq word *the-punctuation-prime*)
+        (eq word *the-punctuation-single-quote*))))
 
 
 (defun second-word-not-in-ns-sequence (word next-position)
