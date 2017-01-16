@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1994-2000,2010-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2000,2010-2017  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  July 2016
+;;;   version:  January 2017
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -110,7 +110,7 @@ omitted and then run (perhaps) after the image has been launched."
     ;; situation modules refer to parts of it
     (gload "kinds;loader"))
 
-  (gate-grammar *qualities*
+  #+ignore(gate-grammar *qualities* ;; merged into mid-level
     (gload "qualities;loader"))
   
   (gate-grammar *mid-level-ontology*
@@ -135,9 +135,6 @@ omitted and then run (perhaps) after the image has been launched."
 
   (gate-grammar *paired-punctuation*
     (gload "traversal;loader"))
-
-;  (gate-grammar *location*
-;    (gload "places;loader"))
 
   (gate-grammar *digits-fsa*
     (gload "numbers;fsa digits"))
@@ -300,6 +297,7 @@ omitted and then run (perhaps) after the image has been launched."
   (gload "one-offs;loader")
 
   (gload "dossiers;loader")
+  
   (gate-grammar *whos-news*
     (whos-news-post-dossiers-loader))
 
