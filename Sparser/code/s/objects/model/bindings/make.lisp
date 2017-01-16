@@ -174,9 +174,9 @@ returning a new one.
 
 
 (defun bind-variable/expr (variable value individual)
-  (declare (special *track-incidence-count-on-bindings*))
+  (declare (special *index-bindings-to-variables*))
   (let ((binding
-         (or (when *track-incidence-count-on-bindings*
+         (or (when *index-bindings-to-variables*
                (find/binding variable value individual))
              (make/binding variable value individual))))
     (when-binding-hook variable individual value)
