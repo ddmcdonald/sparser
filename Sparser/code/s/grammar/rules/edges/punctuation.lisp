@@ -45,6 +45,6 @@
     ;; We don't (?) call complete because any actions
     ;; triggered by scanning this punctuation character
     ;; have already fired (?).
-
+    (note-surface-string edge)
     edge ))
 
