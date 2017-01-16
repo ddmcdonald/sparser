@@ -169,12 +169,22 @@
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
      (eval 
-      `(def-syntax-rule (comparative ,nb) ;; "black suv"
+      `(def-syntax-rule (comparative ,nb) ;; "bigger suv"
            :head :right-edge
            :form n-bar
            :referent (:function comparative-adj-noun-compound left-edge right-edge)))
      (eval 
-      `(def-syntax-rule (superlative ,nb) ;; "black suv"
+      `(def-syntax-rule (superlative ,nb) ;; "biggest suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function superlative-adj-noun-compound left-edge right-edge)))
+     (eval 
+      `(def-syntax-rule (comparative-adjp ,nb) ;; "more studied suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function comparative-adj-noun-compound left-edge right-edge)))
+     (eval 
+      `(def-syntax-rule (superlative-adjp ,nb) ;; "most studied suv"
            :head :right-edge
            :form n-bar
            :referent (:function superlative-adj-noun-compound left-edge right-edge)))
@@ -350,24 +360,7 @@
         :referent (:function interpret-adverb+verb right-edge left-edge))))
 
 
-(loop for vv in '((verb+ed vg+ed)
-                  (verb+ing vg+ing)
-                  (vg+ing vg+ing)
-                  (vp+ing vp+ing)
-                  (vg+ed vg+ed)
-                  (vp+ed vp+ed))
-     do
-     (eval
-      `(def-syntax-rule  (comparative ,(car vv))
-           :head :right-edge
-           :form comparative
-           :referent (:head right-edge)))
-     
-     (eval
-      `(def-syntax-rule  (superlative ,(car vv))
-           :head :right-edge
-           :form superlative
-           :referent (:head right-edge))))
+
 
 (def-form-rule (not verb+ed) ;; "RAS not bound to ERK"
     :form vg+ed
@@ -854,19 +847,6 @@
 ;;; rules for adjective groups 
 ;;;----------------------------
 
-(def-syntax-rule (comparative adjective)
-    :head :right-edge
-    :form comparative
-    :referent (:head right-edge
-                     :bind (comparative left-edge)))
-
-(def-syntax-rule (superlative adjective)
-    :head :right-edge
-    :form superlative
-    :referent (:head right-edge
-                     :bind (comparative left-edge)))
-
-
 (def-syntax-rule (adverb adjective)
     :head :right-edge
     :form adjective
@@ -884,16 +864,6 @@ similar to an oncogenic RasG12V mutation (9)."))
 (def-syntax-rule (adjective pp)
     :head :left-edge
     :form adjp
-    :referent (:function adjoin-pp-to-vg left-edge right-edge))
-
-(def-syntax-rule (comparative pp)
-    :head :left-edge
-    :form comparative-adjp
-    :referent (:function adjoin-pp-to-vg left-edge right-edge))
-
-(def-syntax-rule (superlative pp)
-    :head :left-edge
-    :form superlative-adjp
     :referent (:function adjoin-pp-to-vg left-edge right-edge))
 
 (def-syntax-rule (adjective s) ;; "confident it is transient"
@@ -917,7 +887,55 @@ similar to an oncogenic RasG12V mutation (9)."))
   :form adjp
   :referent (:function passive-is-covert-tocomp left-edge right-edge))
 
-(def-syntax-rule (comparative than-np)
+;;;------------------------------
+;;; comparatives -- at any level
+;;;------------------------------
+
+#|
+ "bigger" is a comparative -- unary rules for the comparatives proper
+    but "slightly smaller" would also be spanned by comparative
+ "bigger block" is an np that binds a comparative
+
+ "more effective" is an adjp. We can call it a comparative-adjp
+   if that will direct us to the right function
+  
+|#
+
+(def-syntax-rule (comparative pp)
+    :head :left-edge
+    :form comparative-adjp
+    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+(def-syntax-rule (comparative-adjp pp)
+    :head :left-edge
+    :form comparative-adjp
+    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+
+(def-syntax-rule (superlative pp)
+    :head :left-edge
+    :form superlative-adjp
+    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+(def-syntax-rule (superlative-adjp pp)
+    :head :left-edge
+    :form superlative-adjp
+    :referent (:function adjoin-pp-to-vg left-edge right-edge))
+
+
+(def-syntax-rule (comparative adjective)
+    :head :right-edge
+    :form comparative-adjp  ;;adjective ;;comparative
+    :referent (:head right-edge
+                     :bind (comparative left-edge)))
+
+(def-syntax-rule (superlative adjective)
+    :head :right-edge
+    :form superlative-adjp ;; adjective ;;superlative
+    :referent (:head right-edge
+                     :bind (comparative left-edge)))
+
+
+;;--- comparative + than-np
+
+(def-syntax-rule (comparative than-np) ;; (p/s "bigger than that block")
     :head :left-edge
     :referent (:function make-comparative-adjp-with-np left-edge right-edge))
 
@@ -930,12 +948,27 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form np
     :referent (:function maybe-extend-comparative-with-than-np left-edge right-edge))
 
-#+ignore ;; preposed superlatives don't extrapose?
-(def-form-rule (np of)
-    :head :left-edge
-    :form np
-    :referent (:function maybe-extend-superlative-with-of-pp left-edge right-edge))
 
+(loop for vv in '((verb+ed vg+ed)
+                  (verb+ing vg+ing)
+                  (vg+ing vg+ing)
+                  (vp+ing vp+ing)
+                  (vg+ed vg+ed)
+                  (vp+ed vp+ed))
+     do
+     (eval
+      `(def-syntax-rule  (comparative ,(car vv))
+           :head :right-edge
+           :form comparative
+           :referent (:head right-edge)))
+     (eval
+      `(def-syntax-rule  (superlative ,(car vv))
+           :head :right-edge
+           :form superlative
+           :referent (:head right-edge))))
+
+
+;;--- than-np
 (loop for nb in `(np ,@*n-bar-categories*)
    do
      (eval
