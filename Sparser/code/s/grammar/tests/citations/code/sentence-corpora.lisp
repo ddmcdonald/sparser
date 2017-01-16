@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2015-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "sentence-corpora"
 ;;;   Module:  "grammar/tests/citations/code/"
-;;;  version:  August 2016
+;;;  version:  January 2017
 
 ;; initiated 1/25/15
 ;; 1/28/2015 added methods to for building a regression test for sentence semantics
@@ -111,6 +111,10 @@ previous records of treetop-counts.
   "Dynamically bound by run-treetop-snapshot to the number of
    the sentence being run. Read by downstream tally code.")
 
+(defparameter *p-sent* nil
+  "Set to the text of the sentence being run in the run-sentences
+   inner function of run-treetop-snapshot")
+
 (defmethod run-treetop-snapshot ((name symbol) &optional (save-info nil))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
@@ -118,8 +122,6 @@ previous records of treetop-counts.
     (let ((*snapshot-corpus* name))
       (declare (special *snapshot-corpus*))
       (run-treetop-snapshot corpus save-info))))
-
-(defparameter *p-sent* nil)
 
 (defmethod run-treetop-snapshot ((corpus sentence-corpus) &optional (save-info nil))
   (let ((variable (corpus-bound-variable corpus)))
