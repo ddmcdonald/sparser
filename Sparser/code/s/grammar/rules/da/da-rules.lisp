@@ -1536,3 +1536,28 @@
       (setf (edge-constituents edge) `(,left-term ,word-edge ,right-term))
       ;; (push-debug `(,edge)) (break "look at edge")
       edge)))
+
+
+(define-debris-analysis-rule its-a-number
+  :pattern (number)
+  :action (:function its-a-number first))
+
+(defun its-a-number (word-edge)
+  (unless (eq 'np (cat-name (edge-form word-edge)))
+    (let ((word-category (edge-category word-edge))
+          (word-form (edge-form word-edge))
+          (word-referent (edge-referent word-edge)))
+      (let ((edge (make-completed-unary-edge
+                   (edge-starts-at word-edge) ;; the edge vector
+                   (edge-ends-at word-edge)
+                   :its-a-number ;; rule
+                   word-edge     ;; daughter
+                   word-category 
+                   category::np
+                   word-referent)))
+        (setf (edge-constituents edge) `(,word-edge))
+        ;; (push-debug `(,edge)) (break "look at edge")
+        edge))))
+
+(defun np-comma-pp-comma (np comma-1 pp comma-2)
+  (attach-pp-to-np-with-commas np comma-1 pp comma-2))
