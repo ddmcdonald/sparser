@@ -465,7 +465,8 @@
 (define-category antibody :specializes protein
   :binds ((antigen molecule))
   :realization
-  (:noun "antibody"
+  (:noun ("antibody" "anti-")
+         :m antigen
          :to antigen
          :for antigen))
 
@@ -1236,6 +1237,8 @@
 (define-unit-of-measure "pmol")
 (define-unit-of-measure "pmol/min/mg")
 (define-unit-of-measure "μm")
+(define-unit-of-measure "°C")
+
 ;;#+sbcl (define-unit-of-measure "μm")
 ;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
 
