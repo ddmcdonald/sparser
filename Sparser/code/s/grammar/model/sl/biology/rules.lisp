@@ -25,6 +25,20 @@
 (in-package :sparser)
 
 
+;; handle the general class of "anti-foo" as in "anti-MB antibody"
+(def-cfr antibody (antibody protein)
+  :form category::np
+  :referent (:function make-antibody left-edge right-edge))
+
+(defun make-antibody (antibody protein)
+  (when (and (edge-p (left-edge-for-referent))
+             (member (cat-name (edge-form (right-edge-for-referent)))
+                     '(np proper-noun))
+             (equal (retrieve-surface-string (left-edge-for-referent))
+                 "anti-"))
+    (bind-dli-variable 'antigen protein antibody)))
+               
+  
 ;;; 'free' variables
 
 (define-lambda-variable 'trailing-parenthetical
@@ -235,13 +249,11 @@
 (def-form-rule (that vp)
   :form relative-clause
   :referent (:daughter right-edge))
-|#
 
-
-#+ignore
 (def-cfr adverb (adverb comma)
   :form adverb
   :referent (:head left-edge))
+|#
 
 (def-cfr semicolon (";")
   :form punctuation)
