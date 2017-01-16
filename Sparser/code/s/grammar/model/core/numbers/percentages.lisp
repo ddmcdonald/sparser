@@ -29,8 +29,7 @@
   :specializes  measurement
   :binds  ((number . number))
   :index (:temporary :list)
-  :realization (:noun ("%" "percent" "per cent")
-                :tree-family item+idiomatic-head
+  :realization (:tree-family item+idiomatic-head
                 :mapping ((np . :self)
                           (np-head . ("percent" "%" "percent-sign"))
                           (modifier . (number hyphenated-number))
