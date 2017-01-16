@@ -176,6 +176,9 @@
    the lowest level of operations (polywords, numbers, fsas, 
    complete, terminal edges) as done by scan-terminals-loop.")
 
+(defparameter *do-early-rules-sweep* t
+  "Run semantic rules on NS pairs before running pattarns and conjunctions.")
+
 (defparameter *sweep-for-patterns* nil
   "Checked in sentence-sweep-loop to determine whether we continue
    the analysis after the terminals of a sentence have been entered

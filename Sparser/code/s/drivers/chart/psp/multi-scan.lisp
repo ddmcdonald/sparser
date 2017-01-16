@@ -588,7 +588,6 @@
 ;;; 1.5d pass -- early binary rules operating on NS pairs
 ;;;------------------------------
 
-(defparameter *do-early-rules-sweep* t)
 
 #|currently this handles
 #<PSR-1254 comma-number → COMMA number>
