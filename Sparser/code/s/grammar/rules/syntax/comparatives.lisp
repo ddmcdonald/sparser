@@ -46,9 +46,8 @@ abstract > region > attribute-value > size-value
  particular comparative. 
    Superlative are identical as far as all this is
  concerned."
-  :binds (;;(word  :primitive word)
-          ;; inherits name, attribute
-          (direction :primitive category))
+  ;; inherits name, attribute variables from attribute-value
+  :binds ((direction direction))
   :index (:permanent :key name)
   :lemma (:adjective "comparative")
   :realization (:word name))
@@ -56,15 +55,6 @@ abstract > region > attribute-value > size-value
 (define-category superlative
   :specializes comparative)
 
-
-;; "bigger than a breadbox"
-(define-category comparative-attribution
-  :specializes predicate
-  :documentation "Analogous to quality-value-predicate
-   in the attribution system. This represents the 
-   combination of the comparative (or superlative) term
-   and the reference set it's being compared to."
-  )
 
 (defun setup-comparatives (i direction-flag er est)
   "Called from the define function of an attribute (e.g. define-size)
@@ -76,12 +66,15 @@ abstract > region > attribute-value > size-value
    and because some comparative lemmas are irregular, there is
    a provision to pass the strings for 'er' and 'est' in explicitly."
   (declare (special category::up category::down
-                    category::comparative category::superlative))
+                    category::comparative category::superlative
+                    *comparative-brackets*))
+  (unless direction-flag ;; reasonable default
+    (setq direction-flag :+))
+  
   (let* ((attribute (value-of 'attribute (itype-of i)))
         (direction (ecase direction-flag
-                     (null category::up)
-                     (:+ category::up)
-                     (:- category::down)))
+                     (:+ (find-individual 'direction :name "up"))
+                     (:- (find-individual 'direction :name "down"))))
         (base-word (value-of 'name i))
         (er-word
          (if er
@@ -93,10 +86,18 @@ abstract > region > attribute-value > size-value
            (resolve/make est)
            (make-comparative/superlative base-word
                                          :suffix "est" :y-suffix "iest"))))
+    (assign-brackets-to-word er-word *comparative-brackets*)
+    (assign-brackets-to-word est-word *comparative-brackets*)
+
     ;;/// convert to trace
     (format t "~&~s => ~s ~s~%"
             (pname base-word) (pname er-word) (pname est-word))
 
+  #| This scheme says the denotation of a comparative word ("bigger")
+ is a category. (The table in allowable-referential-edge? ensures this.)
+ The reason is that the identity of a comparative depends on all three
+ of its values at once. 
+|#
     (let ((er-category
            (define-category/expr (name-to-use-for-category er-word)
                `(:specializes comparative
@@ -125,36 +126,23 @@ abstract > region > attribute-value > size-value
            
 
 
-;;/// old version -- flush when all done
-(defun define-comparatives-for-attribute (attribute
-                                          er-string est-string
-                                          direction-flag)
-  "Given an attribute and the strings for its comparative and
-   superlative, create the category objects for these two words
-   and their unary rules. Thread all the necessary bindings that
-   tie the new categories to the attribute."
-  (declare (special category::up category::down))
-  (flet ((decode-direction (flag)
-           "Trips uses 'more' and 'less' but they are
-            compatives themselves, so it'd be odd bootstrapping"
-           (ecase flag
-             (:more category::up)
-             (:less category::down))))
-    (let ((er-category
-           (define-function-term er-string 'comparative
-             :super-category 'comparative))
-          (est-category
-           (define-function-term est-string 'superlative
-               :super-category 'comparative))
-          (direction (decode-direction direction-flag)))
-      (flet ((setup-attributes (c)
-               (bind-variable 'attribute attribute c)
-               (bind-variable 'direction direction c)))
-        (setup-attributes er-category)
-        (setup-attributes est-category)
-        (values er-category
-                est-category)))))
+;; "bigger than a breadbox"
+(define-category comparative-attribution
+  :specializes quality-value-predicate
+  :documentation "This represents the 
+   combination of the comparative (or superlative) term
+   and the reference set it's being compared to."
+  :binds ((reference-set))
+  :index (:permanent :sequential-keys value reference-set)
+  :restrict ((value (:primitive category)))) ;;comparative)))
 
+(define-category comparative-predication
+  :specializes has-attribute
+  :documentation "A predication that is based on applying
+  a comparative-attribution to something, as in 'b1 is
+  bigger than b2', which applies the predicate 'bigger 
+  than b2' to the individual 'b1'. TRIPS would probably
+  use 'figure' where we're using (for the moment) item.")
 
 
 ;;--- old design that just produced an adjective
@@ -180,5 +168,4 @@ abstract > region > attribute-value > size-value
   :module *comparatives*
   :description "a word, often ending in 'er', that fits in the context '___ than'"
   :examples "\"fewer\", \"more\", \"better\"" )
-
 
