@@ -23,6 +23,8 @@
 (defparameter *the-punctuation-semicolon* (punctuation-named #\;))
 (defparameter *the-punctuation-question-mark* (punctuation-named #\?))
 (defparameter *the-punctuation-percent* (punctuation-named #\%))
+(defparameter *the-punctuation-single-quote* (punctuation-named #\'))
+(defparameter *the-punctuation-prime* (resolve "PRIME"))
 
 (defparameter *the-punctuation-hyphen* (punctuation-named #\-))
 
