@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2017 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "amino-acids"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: November 2015
+;;; version: January 2017
 
 ;; initiated 9/8/14
 ;; RJB -- added hacks for problems with NS word finding of"S338" and "pThr202/Tyr204"
@@ -145,7 +145,6 @@ We therefore have the special cases:
   ;; pattern is (:single-cap :digits) and it's possible that
   ;; that first word is the short form af an amino acid.
   ;; Return nil if this doesn't work out
-  (push-debug `(,words ,start-pos ,end-pos))
   ;; (setq words (car *) start-pos (cadr *) end-pos (caddr *))
   (let* ((single-letter (car words))
          (variants (word-capitalization-variants single-letter))
@@ -153,22 +152,27 @@ We therefore have the special cases:
          (capitalized-letter (when variants (car variants)))
          (digit-word (cadr words))
          (number (get-tag :numerical-value digit-word)))
-    (when (and capitalized-letter number)
-      (let ((amino-acid (single-letter-is-amino-acid capitalized-letter))
-            (aa-edge (top-edge-at/starting start-pos))) ;; left
-        (when amino-acid
-          (when (null aa-edge)
-            ;; fall through to caller's next option
-            ;; Get this with "q27" where we presumed the 'q' was an AA,
-            ;; but it's the lowercase letter which does not denote glutamine
-            (return-from reify-residue-and-make-edge nil))
-          (reify-residue
-            aa-edge
-            (or (top-edge-at/ending end-pos) ;; right
-                (make-edge-over-single-digit-word
-                 (chart-position-before end-pos)))
-            start-pos end-pos
-            amino-acid number))))))
+    (flet ((find-aa-edge (start-pos)
+             (right-treetop-at/edge start-pos)))
+      ;; "S" is the abbreviation for "south" when compass-points are loaded.
+      ;; By chance the single-capitalized letter we want it topmost.
+      (when (and capitalized-letter number)
+        (let ((amino-acid (single-letter-is-amino-acid capitalized-letter))
+              (aa-edge (find-aa-edge start-pos))) ;; left
+          (when amino-acid
+            (when (or (null aa-edge)
+                      (not (edge-p aa-edge)))
+              ;; fall through to caller's next option
+              ;; Get this with "q27" where we presumed the 'q' was an AA,
+              ;; but it's the lowercase letter which does not denote glutamine
+              (return-from reify-residue-and-make-edge nil))
+            (reify-residue
+             aa-edge
+             (or (top-edge-at/ending end-pos) ;; right
+                 (make-edge-over-single-digit-word
+                  (chart-position-before end-pos)))
+             start-pos end-pos
+             amino-acid number)))))))
 
 (defun reify-residue (amino-acid-edge number-edge start-pos end-pos
                       &optional amino-acid number)
