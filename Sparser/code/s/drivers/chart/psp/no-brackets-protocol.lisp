@@ -225,7 +225,7 @@
    after scan-terminals-loop runs. Called by sentence-sweep-loop
    or scan-terminals-and-do-core depending one whether we're
    working with a document or just a text stream."
-  (declare (special *sweep-for-patterns*
+  (declare (special *sweep-for-patterns* *do-early-rules-sweep*
                      *grammar-and-model-based-parsing*))
   (setq *sentence-in-core* sentence)
   (possibly-print-sentence)
@@ -235,6 +235,9 @@
     ;; during the epistemic phase of document processing
     ;; by read-epistemic-features whose analysis is just
     ;; based on polywords.
+    (when *do-early-rules-sweep*
+      (do-early-rules-sweep sentence))
+      
     (when *sweep-for-patterns*
       (pattern-sweep sentence))
     (when *sweep-for-early-information*

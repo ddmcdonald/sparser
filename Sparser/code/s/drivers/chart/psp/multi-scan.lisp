@@ -584,6 +584,65 @@
     (record-preposed-aux aux-edge actual-form)))
 
 
+;;;------------------------------
+;;; 1.5d pass -- early binary rules operating on NS pairs
+;;;------------------------------
+
+(defparameter *do-early-rules-sweep* t)
+
+#|currently this handles
+#<PSR-1254 comma-number → COMMA number>
+#<PSR-1394 unit-of-measure → HYPHEN unit-of-measure>
+#<PSR-1423 quarter → HYPHEN quarter>
+#<PSR-1443 time → HYPHEN time>
+#<PSR-1444 time-unit → HYPHEN time-unit>
+#<PSR-1447 amount-of-time → number time-unit>
+#<PSR-46366 article-figure → article-figure number>
+#<PSR-46811 antibody → antibody protein>
+#<PSR-46832 residue-on-protein → amino-acid number>
+#<PSR-46839 protein → protein point-mutation>
+#<PSR-61810 migration → bio-entity migration>
+#<PSR-929 do → "doesn" apostrophe-t>
+#<PSR-977 be → isn apostrophe-t>
+#<PSR-979 be → wasn apostrophe-t>
+|#
+(defparameter *show-early-rules* nil)
+(defun do-early-rules-sweep (sentence)
+  (let ((tts (all-tts (starts-at-pos sentence)
+                      (ends-at-pos sentence)))
+        (*allow-pure-syntax-rules* nil)
+        (*allow-form-rules* nil))
+    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+    (loop for ttl on tts
+          as left-edge = (car ttl)
+          as right-edge = (second ttl)
+          when (and (edge-p left-edge)
+                    (edge-p right-edge)
+                    (not (pos-preceding-whitespace (pos-edge-ends-at left-edge))))
+          do
+            (let* ((middle-position (pos-edge-ends-at left-edge))
+                   (edges-ending-there (all-edges-on (pos-ends-here middle-position)))
+                   (edges-starting-there (all-edges-on (pos-starts-here middle-position)))
+                   rule
+                   (edge
+                    (catch :succeeded
+                      (dolist (left-edge edges-ending-there)
+                        (dolist (right-edge edges-starting-there)
+                          (setq rule (multiply-edges left-edge right-edge))
+                          (when rule
+                            (throw :succeeded
+                              (make-completed-binary-edge
+                               left-edge
+                               right-edge
+                               rule))))))))
+              (when (and rule *show-early-rules*
+                         (not (eq (cat-name (car (cfr-rhs rule)))
+                                       'subordinate-conjunction)))
+                (format t "~%**early rule: ~s on \"~a~a\""
+                        rule
+                        (retrieve-surface-string left-edge)
+                        (retrieve-surface-string right-edge)))
+              edge))))
 
 
 ;;;------------------------------
@@ -780,7 +839,7 @@
           (setq pos-reached
                 (collect-no-space-segment-into-word position-after)))
 
-         ;; (p "a 0.45μm filter")
+         ;; (p "a 0.45Î¼m filter")
 
          ;; Quick hit. Is there whitespace on the position
          ;; where it ends?  If there is, then we're done
