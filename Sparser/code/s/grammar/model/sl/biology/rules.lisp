@@ -141,28 +141,46 @@
   :form np
   :referent (:function create-residue-from-amino-acid-position left-edge right-edge))
 
+(def-cfr residue-on-protein (single-capitalized-letter number)
+  :form np
+  :referent (:function create-residue-from-amino-acid-position left-edge right-edge))
+
 (defun create-residue-from-amino-acid-position (amino-acid position)
   (create-residue-on-protein nil amino-acid position nil))
 
 (defun create-residue-on-protein (explicit-residue amino-acid position substrate)
-  (let ((residue (or explicit-residue
-                     (find-or-make-lattice-description-for-ref-category
-                      (category-named 'residue-on-protein)))))
-    (when amino-acid
-      (setq residue (bind-dli-variable 'amino-acid amino-acid residue)))
-    (when position
-      (setq residue (bind-dli-variable 'position position residue)))
-    (when substrate
-      (setq residue (bind-dli-variable 'substrate substrate residue)))
-    residue))
-
-(def-cfr residue-on-protein (amino-acid hyphenated-number)
-  :form np
-  :referent (:function create-residue-from-amino-acid-position
-                       left-edge right-edge))
+  (when (and
+         (or
+          (not (itypep amino-acid 'single-capitalized-letter))
+          (setq amino-acid (gethash amino-acid *single-letters-to-amino-acids*)))
+         (or (null position)
+             (itypep position 'hyphenated-number)
+             (is-basic-collection? position)
+             (and (itypep position 'number)
+                  (> (value-of 'value position)
+                     10))))
+      (let ((residue (or explicit-residue
+                         (find-or-make-lattice-description-for-ref-category
+                          (category-named 'residue-on-protein)))))
+        (when amino-acid
+          (setq residue (bind-dli-variable 'amino-acid amino-acid residue)))
+        (when position
+          (setq residue (bind-dli-variable 'position position residue)))
+        (when substrate
+          (setq residue (bind-dli-variable 'substrate substrate residue)))
+        residue)))
 
 ;; "Lys residues"
 (def-cfr residue-on-protein (amino-acid residue-on-protein)
+  :form np
+  :referent (:function bind-amino-acid left-edge right-edge))
+
+(def-cfr residue-on-protein (single-capitalized-letter residue-on-protein)
+  :form np
+  :referent (:function bind-amino-acid left-edge right-edge))
+
+;; "Lys residues"
+(def-cfr residue-on-protein (single-capitalized-letter residue-on-protein)
   :form np
   :referent (:function bind-amino-acid left-edge right-edge))
 
@@ -174,12 +192,10 @@
   :form n-bar
   :referent (:function bind-position-on-residue right-edge left-edge))
 
+
+
 (defun bind-position-on-residue (position residue-on-protein)
   (create-residue-on-protein residue-on-protein nil position nil))
-
-(def-cfr residue-on-protein (residue-on-protein hyphenated-number)
-  :form proper-noun
-  :referent (:function bind-position-on-residue right-edge left-edge))
 
 (def-cfr residue-on-protein (protein residue-on-protein)
   :form np
@@ -187,6 +203,28 @@
 
 (defun bind-substrate-for-residue (protein residue)
   (create-residue-on-protein residue nil nil protein))
+
+;;;-----------------
+;;; Point mutationss -- assuming residues have been formed left-to-right
+;;;-----------------
+
+(def-cfr point-mutation (residue-on-protein amino-acid)
+  :form n-bar
+  :referent (:function make-point-mutation-from-residue left-edge right-edge))
+
+(def-cfr point-mutation (residue-on-protein single-capitalized-letter)
+  :form n-bar
+  :referent (:function make-point-mutation-from-residue left-edge right-edge))
+
+(defun make-point-mutation-from-residue (residue replacement-amino-acid)
+  (when (or
+         (not (itypep replacement-amino-acid 'single-capitalized-letter))
+         (setq replacement-amino-acid
+               (gethash replacement-amino-acid *single-letters-to-amino-acids*)))
+    (let ((original (value-of 'amino-acid residue))
+          (residue-number (value-of 'position residue)))
+      (make-point-mutation original replacement-amino-acid residue-number))))
+
 
 
 #|
@@ -216,11 +254,24 @@
   :form NP
   :referent (:function bind-protein-mutation left-edge right-edge))
 
-#+ignore
+;; MUST DEAL WITH CONFLICT WITH "Ras17N"
 (def-cfr protein (protein number)
   :form NP
-  :referent (:head left-edge
-             :bind (variant-number right-edge)))
+  :referent (:function make-protein-variant left-edge right-edge))
+
+(defun make-protein-variant (protein number)
+  (let* ((right-edge (right-edge-for-referent))
+         (after-pos (pos-edge-ends-at right-edge))
+         (next-edge (top-edge-starting-at after-pos)))
+    (declare (special right-edge after-pos next-edge))
+    ;;(lsp-break)
+    (unless (or
+             (pos-preceding-whitespace after-pos)
+             (and next-edge
+                  (not (member (string-trim " " (retrieve-surface-string next-edge))
+                          '("," ")" "(" ".")
+                          :test #'equal))))
+      (bind-dli-variable 'variant-number number protein))))
 
 ;;--- CS rule for protein
 
@@ -228,7 +279,6 @@
   :left-context mutant
   :form proper-noun
   :referent (:function convert-bio-entity-to-protein right-edge))
-
 
 ;;--- expediency
 
