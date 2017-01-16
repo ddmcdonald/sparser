@@ -208,9 +208,15 @@
                (pos-edge-ends-at lex-start)
                end))))))
 
+;; adjust to allow for cases where the "lexical edge" is above the
+;;  lowest edge (ambiguities, with edges from polywords)
 (defun lexical-edge-at (pos)
-  (let ((ev (pos-starts-here pos)))
+  (let* ((ev (pos-starts-here pos))
+         (evector(ev-edge-vector ev)))
     (when (> (ev-number-of-edges ev) 0)
-      (elt (ev-edge-vector ev) 0))))
-
-
+      (let ((lex-edge (elt evector 0)))
+        (cond ((edge-referent lex-edge) lex-edge)
+              ((and (> (ev-number-of-edges ev) 1)
+                    (edge-referent (elt evector 1)))
+               (elt evector 1))
+              (t lex-edge))))))

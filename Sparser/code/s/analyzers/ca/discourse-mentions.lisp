@@ -573,7 +573,7 @@ so we return the edge for the POBJ"
          
                ;; this test is to handle complex structure in lexical edges...
                ;; like "phosphoserine"
-               (eq edge (lexical-edge-at-pos (start-pos edge)))
+               (eq edge (lexical-edge-at (start-pos edge)))
                (member (edge-rule edge)
                        '(sdm-span-segment make-ns-pair
                          resolve-protein-prefix
