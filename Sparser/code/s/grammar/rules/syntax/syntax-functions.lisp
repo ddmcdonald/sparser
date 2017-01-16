@@ -477,7 +477,8 @@
   ;; make a composite individual using a collection.
   ;; See notes on forming plurals in morphology1
   (cond
-    (*subcat-test* (and number head))
+    (*subcat-test* (and number head
+                        (not (itypep head 'single-capitalized-letter))))
     (t
      (setq head (individual-for-ref head))
      (when (itypep head 'endurant) ;; J34: "Histone 2B"
@@ -1287,8 +1288,7 @@
          `((prep ,prep) (pobj ,pobj))))))
 
 (defun make-ordinal-item (ordinal item)
-  (setf (non-dli-mod-for item) (list 'ordinal ordinal))
-  item)
+  (bind-dli-variable 'ordinal ordinal item))
 
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp))
