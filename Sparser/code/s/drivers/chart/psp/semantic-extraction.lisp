@@ -714,22 +714,13 @@ without damaging other code.")
   (if (or (eq (cat-name category) 'collection)
           (>= (pos-token-index start-pos) (pos-token-index end-pos)))
       nil
-      (let ((lex-edge (lexical-edge-at-pos start-pos)))
+      (let ((lex-edge (lexical-edge-at start-pos)))
         (when lex-edge
           (if (eq (itype-of (edge-referent lex-edge)) category)
               lex-edge
               (find-lexical-edge-with-cat category (pos-edge-ends-at lex-edge) end-pos))))))      
 
-(defun lexical-edge-at-pos (pos)
-  (when (> (ev-number-of-edges (pos-starts-here pos)) 0)
-    (let ((lex-edge (elt (ev-edge-vector (pos-starts-here pos)) 0)))
-      (cond ((edge-referent lex-edge)
-             lex-edge)
-            ((and
-              (> (ev-number-of-edges (pos-starts-here pos)) 1)
-              (edge-referent (elt (ev-edge-vector (pos-starts-here pos)) 1)))
-             (elt (ev-edge-vector (pos-starts-here pos)) 1))
-            (t lex-edge)))))
+
            
         
 
