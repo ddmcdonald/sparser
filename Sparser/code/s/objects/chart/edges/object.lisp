@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2012-2014  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2012-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  3.5 Nobember 2014
+;;;  Version:  January 2017
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -66,27 +66,36 @@
 
   )
 
-;; this will be a place to modify ALL calls to (setf edge-referent)
-;;  to handle edge-mention updates uniformly
-(defun set-edge-referent (edge result)
-  ;; the default in the case of the description lattice
-  ;;  is that the referent on an edge should never be
-  ;;  a referential-category, but should be an individual,
-  ;;  except for specially noted cases
-  (when (and (referential-category-p result)
-             (not (allowable-referential-edge-value? edge result)))
-    (setf result (find-or-make-lattice-description-for-ref-category result)))
-  (cond ((edge-referent edge)
-         (setf (edge-referent edge) result)
-         (update-edge-mention-referent edge result))
-        (t
-         (setf (edge-referent edge) result)))
-  result)
 
-(defun allowable-referential-edge-value? (edge result)
-  (not (member (cat-name (edge-form edge))
-               '(preposition spatial-preposition
-                 spatio-temporal-preposition))))
+(defun set-edge-referent (edge value)
+  "The single point in the code that's entitled to setf the
+   referent of and edge. Provides locus for associated actions
+   like updating edge mentions."
+  (declare (special *description-lattice*))
+
+  (when *description-lattice*
+    ;; When using the description lattice, the referent on an edge
+    ;; should never be referential-category, except for specially
+    ;; noted cases
+    (when (referential-category-p value)
+      (unless (allowable-referential-edge? edge)
+        (setf value
+              (find-or-make-lattice-description-for-ref-category value)))))
+  
+  (cond ((edge-referent edge)
+         (setf (edge-referent edge) value)
+         (update-edge-mention-referent edge value))
+        (t
+         (setf (edge-referent edge) value)))
+  value)
+
+(defun allowable-referential-edge? (edge)
+  "Should edges of this form that have categories for referents
+   retain that referent (vs. have it converted to an individual)"
+  (member (cat-name (edge-form edge))
+          '(preposition spatial-preposition
+            comparative superlative
+            spatio-temporal-preposition)))
 
 ;;;-----------------------------------
 ;;; predicates for unusual edge-types
