@@ -607,43 +607,56 @@
 #<PSR-979 be → wasn apostrophe-t>
 |#
 (defparameter *show-early-rules* nil)
-(defun do-early-rules-sweep (sentence)
-  (let ((tts (all-tts (starts-at-pos sentence)
-                      (ends-at-pos sentence)))
-        (*allow-pure-syntax-rules* nil)
-        (*allow-form-rules* nil))
-    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
-    (loop for ttl on tts
-          as left-edge = (car ttl)
-          as right-edge = (second ttl)
-          when (and (edge-p left-edge)
-                    (edge-p right-edge)
-                    (not (pos-preceding-whitespace (pos-edge-ends-at left-edge))))
-          do
-            (let* ((middle-position (pos-edge-ends-at left-edge))
-                   (edges-ending-there (all-edges-on (pos-ends-here middle-position)))
-                   (edges-starting-there (all-edges-on (pos-starts-here middle-position)))
-                   rule
-                   (edge
-                    (catch :succeeded
-                      (dolist (left-edge edges-ending-there)
-                        (dolist (right-edge edges-starting-there)
-                          (setq rule (multiply-edges left-edge right-edge))
-                          (when rule
-                            (throw :succeeded
-                              (make-completed-binary-edge
-                               left-edge
-                               right-edge
-                               rule))))))))
-              (when (and rule *show-early-rules*
-                         (not (eq (cat-name (car (cfr-rhs rule)))
-                                       'subordinate-conjunction)))
-                (format t "~%**early rule: ~s on \"~a~a\""
-                        rule
-                        (retrieve-surface-string left-edge)
-                        (retrieve-surface-string right-edge)))
-              edge))))
+(defun do-early-rules-sweep (sent)
+  (do-early-rules-sweep-between (starts-at-pos sent) (ends-at-pos sent)))
 
+(defun do-early-rules-sweep-between (start end)
+  (when (not (eq start end))
+    (let* ((left-edge (right-treetop-edge-at start))
+           (mid  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
+           (right-edge (when (edge-p left-edge)(right-treetop-edge-at mid)))
+           new-edge rule)
+      (if (or (not (edge-p left-edge))
+              (not (edge-p right-edge))
+              (pos-preceding-whitespace mid))
+          (do-early-rules-sweep-between (where-tt-ends left-edge start) end)
+          (else
+            (multiple-value-setq (new-edge rule) (apply-early-rule-at mid))
+            (do-early-rules-sweep-between
+                (if new-edge
+                    ;; edge at the beginning changed, so start at the
+                    ;;  same start, since the middle position has shifted
+                    (pos-edge-starts-at new-edge) ;; CS rules generate an edge
+                    mid)
+              end))))))
+        
+(defun apply-early-rule-at (middle-pos)
+  (let* ((edges-ending-there (all-edges-on (pos-ends-here middle-pos)))
+         (edges-starting-there (all-edges-on (pos-starts-here middle-pos)))
+         (*allow-pure-syntax-rules* nil)
+         (*allow-form-rules* nil)
+         rule left right
+         (new-edge         
+          (catch :succeeded
+            (dolist (left-edge edges-ending-there)
+              (dolist (right-edge edges-starting-there)
+                (when (setq rule (multiply-edges left-edge right-edge))
+                  (setq left left-edge
+                        right right-edge)
+                  (throw :succeeded
+                    (make-completed-binary-edge left right rule))))))))
+    (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
+    (show-early-rule? rule left right)
+    (values new-edge rule)))
+
+(defun show-early-rule? (rule left-edge right-edge)
+  (when (and rule
+             *show-early-rules*
+             (not (eq (cat-name (car (cfr-rhs rule))) 'subordinate-conjunction)))
+    (format t "~%**early rule: ~s on \"~a~a\""
+            rule
+            (retrieve-surface-string left-edge)
+            (retrieve-surface-string right-edge))))
 
 ;;;------------------------------
 ;;; 2d pass -- no-space patterns
