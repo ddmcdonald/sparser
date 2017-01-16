@@ -130,3 +130,37 @@
    (get-category-realizations cat)
    `(,cat ,(get-category-realizations cat))
    cat))
+
+
+
+(defgeneric specialize-referent (word new-category)
+  (:documentation "Given a word that has a single interpretation
+    given by a unary rule, e.g. the attribute 'length', specialize
+    its interpretation (which will be a category) but setting it
+    existing unary rule to the designated new category, which
+    itself should be a specialization of the original category.")
+
+  (:method ((pname string) (cat-name symbol))
+    (let ((word (resolve pname))
+          (category (category-named cat-name)))
+      (assert word () "The word must already be defined. ~a is not" pname)
+      (assert category () "There is no category spelled '~a'" cat-name)
+      (specialize-referent word category)))
+
+  (:method ((w word) (c category))
+    (let ((rule (find-single-unary-cfr w))) ;;/// want better fn.
+      (assert rule () "~a does not have a unary rule" w)
+      (specialize-referent rule c)))
+
+  (:method ((r cfr) (c category))
+    (let ((current (cfr-referent r)))
+      (assert (category-p current) ()
+              "The referent of ~a is not a category")
+      (unless (itypep c current)
+        (error "~a is not a specialization of ~a" c current))
+      (setf (cfr-referent r) c)
+      r)))
+
+
+
+
