@@ -1118,6 +1118,7 @@
           (complex bio-complex)
           (functionally-related-to protein)
 	  (site molecular-location)
+          (variant-number number)
 	  (equilibrium-state equilibrium)
 	  (state bio-state))
   :mixins (  reactome-category  in-ras2-model )
