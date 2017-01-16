@@ -81,7 +81,7 @@
 ;; (right-edge-for-referent)
 ;; (parent-edge-for-referent)
 
-;; move to utilities associated with edge-search
+;;/// no callers
 (defun pair-context ()
   (let ((left (left-edge-for-referent))
         (right (right-edge-for-referent)))
@@ -347,18 +347,21 @@
 (defun create-partitive-np (quantifier of-pp)
   (declare (special quantifier of-pp category::preposition))
   (let ((pp-edge (right-edge-for-referent)))
-    (when (and (not (eq (edge-form pp-edge) category::preposition))
-               (has-definite-determiner? (edge-right-daughter pp-edge)))
-      (cond
-	(*subcat-test* t)
-	(t
-	 (unless *sentence-in-core*
-	   (error "Threading bug. No value for *sentence-in-core*"))
-	 (let ((pobj-ref (edge-referent (edge-right-daughter pp-edge))))
-	   (revise-parent-edge :category (itype-of pobj-ref))
-	   (add-pending-partitive quantifier  (parent-edge-for-referent) *sentence-in-core*)
-	   pobj-ref
-	   ))))))
+    (unless (eq (edge-form pp-edge) category::preposition)
+      ;; Rules out "all" + "of" where we've not filled in the of-pp
+      (when (has-definite-determiner? (edge-right-daughter pp-edge))
+        ;;/// alternatively, we could just look for the determiner directly
+        ;; rather than depend on this device to stay stable
+        (cond
+          (*subcat-test* t)
+          (t
+           (unless *sentence-in-core*
+             (error "Threading bug. No value for *sentence-in-core*"))
+           (let ((pobj-ref (edge-referent (edge-right-daughter pp-edge))))
+             (revise-parent-edge :category (itype-of pobj-ref))
+             (add-pending-partitive quantifier  (parent-edge-for-referent) *sentence-in-core*)
+             pobj-ref )))))))
+
 
 (defparameter *dets-seen* nil)
 
@@ -553,8 +556,6 @@
 ;;; Verb + Auxiliary
 ;;;------------------
 
-;;--- functions called from rules
-
 (defgeneric add-tense/aspect (aux vg)
   (:documentation "Interpret the auxiliary to make the appropriate
      addition onto the vector associated with the vg head.")
@@ -579,7 +580,7 @@
                (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb")))))
     (when (and (first (cat-realization vg-cat))
                (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
-                             '(PASSIVE/WITH-BY-PHRASE))))
+                             '(passive/with-by-phrase))))
       (when *parent-edge-getting-reference* ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
         (revise-parent-edge :form category::vg)))
     (add-tense/aspect aux vg)))
@@ -777,10 +778,10 @@
     (cond
      (*subcat-test* variable-to-bind)
      (variable-to-bind
-      (if *collect-subcat-info*
-          (push (subcat-instance vp 'as-comp variable-to-bind
-                                 as-comp)
-                *subcat-info*))
+      (when *collect-subcat-info*
+        (push (subcat-instance vp 'as-comp variable-to-bind
+                               as-comp)
+              *subcat-info*))
       (setq vp (individual-for-ref vp))
       (setq vp (bind-dli-variable variable-to-bind as-comp vp))
       vp))))
@@ -1004,7 +1005,6 @@
 
 
 (defun interpret-pp-as-head-of-np (np pp)
-  (push-debug `(,np ,pp))
   (let* ((pp-edge (right-edge-for-referent))
          (prep-word (identify-preposition pp-edge))
          ;;(pobj-edge (edge-right-daughter pp-edge))
@@ -1034,7 +1034,7 @@
       (format t "~%interpret-pp-as-head-of-np run on ~s ~s in ~s~%"
               (retrieve-surface-string np)(retrieve-surface-string pp) (sentence-string *sentence-in-core*))
       (setq pobj-referent (individual-for-ref pobj-referent))
-      (setq  pobj-referent (bind-dli-variable variable-to-bind np pobj-referent))
+      (setq pobj-referent (bind-dli-variable variable-to-bind np pobj-referent))
       (revise-parent-edge :category (itype-of pobj-referent))
       pobj-referent))))
 
@@ -1153,12 +1153,11 @@
            (revise-parent-edge :form category::transitive-clause-without-object))
        (assimilate-subcat vp :subject subj))
       ((can-fill-vp-object? vp subj)
-       (setq  vp
-	      (create-predication-by-binding (subcategorized-variable vp :object subj)
-					     subj vp
-					     (list 'apply-subject-relative-clause
-						   (parent-edge-for-referent))))
-       
+       (setq vp
+             (create-predication-by-binding (subcategorized-variable vp :object subj)
+                                            subj vp
+                                            (list 'apply-subject-relative-clause
+                                                  (parent-edge-for-referent))))       
        ;; link the rc to the np
        (setq  subj (bind-dli-variable 'predication vp subj))
        (revise-parent-edge :form category::np :category (itype-of subj))
@@ -1482,59 +1481,69 @@
     nil 'top)
 
 (defun make-comparative-adjp-with-np (comparative than-np)
-  (bind-dli-variable 'compared-to
-                     than-np
-                     comparative))
+  "Goes with comparative + than-np. This is the simple case where
+   we create a comparative-attribution predicate"
+  (push-debug `(,comparative ,than-np))
+  (cond
+    (*subcat-test* t)
+    ((typep comparative 'referential-category)
+     (define-or-find-individual 'comparative-attribution
+         :value comparative :reference-set than-np))
+    (t (bind-dli-variable 'compared-to than-np comparative))))
 
 (defun maybe-extend-comparative-with-than-np (np than-np)
-  (cond
-    (*subcat-test* (value-of 'comparative-predication np))
-    (t
-     (rebind-dli-variable 'comparative-predication
-                          (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
-                          np))))
+  "For 'a bigger block than that one'"
+  (let ((open-attribution (loop for b in (indiv-binds np)
+                             as value = (binding-value b)
+                             when (itypep value 'comparative-attribution)
+                             return b)))
+    (cond
+      (*subcat-test*
+       (or open-attribution
+           (value-of 'comparative-predication np)))
+      (open-attribution
+       (let ((attribution (binding-value open-attribution))
+             (variable (binding-variable open-attribution))
+             (i (binding-body open-attribution)))
+         (let ((complete-attribution
+                  (bind-variable 'reference-set than-np attribution)))
+             ;;/// replace the value vs. make a new binding
+             (setq i (bind-variable variable complete-attribution i))
+             i)))
+      (t (rebind-dli-variable
+          'comparative-predication
+          (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
+          np)))))
 
-#+ignore
-(defun maybe-extend-superlative-with-of-pp (np pp)
-  (cond
-    (*subcat-test* (value-of 'superlative-predication np))
-    (t
-     (rebind-dli-variable 'superlative-predication
-                          (bind-dli-variable 'superlative-from-set (value-of 'pobj pp)
-                                             (value-of 'superlative-predication np))
-                          np))))
 
+(defun comparative-adj-noun-compound (comparative head)
+  "For syntax rules comparative + <all n-bar categories>, as in
+   'the bigger red block'. We look up the attribute that is associated
+   with the comparative ('size' in the case of 'bigger') to tell us
+   what variable to bind. We make an instance of the comparative is
+   is open in its reference set, which we signal by ????"
+  (let ((var (variable-to-bind comparative)))
+    (cond 
+      (*subcat-test*
+       (or var
+           (takes-adj? head comparative)))
+      (var
+       (when (category-p head) (setq head (individual-for-ref head)))
+       (let ((i (define-or-find-individual 'comparative-attribution
+                    :value comparative))) ;; open in reference-set
+         ;;/// Should we form the predication over the head here?
+         ;; for starters just binding the variable
+         (setq head (bind-variable var i head))
+         head))
+      (t (let ((predicate
+                (if (and (not (is-basic-collection? comparative))
+                      (find-variable-for-category :subject (itype-of comparative)))
+                  (create-predication-by-binding
+                   :subject head comparative
+                   (list 'adj-noun-compound (left-edge-for-referent)))
+                  (individual-for-ref comparative))))
+           (setq head (bind-variable 'predication predicate head))
+           head)))))
 
-(defun comparative-adj-noun-compound (adjective head &optional adj-edge)
-  (when (category-p head) (setq head (individual-for-ref head)))
-  (cond
-    (*subcat-test*
-     (takes-adj? head adjective))
-    (t ;; Dec#2 has "low nM" which requires coercing 'low'
-     ;; into a number. Right now just falls through
-     (let ((predicate 
-	     (if (and (not (is-basic-collection? adjective))
-                      (find-variable-for-category :subject (itype-of adjective)))
-		 (create-predication-by-binding
-                  :subject head adjective
-                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
-		 (individual-for-ref adjective))))
-       (setq head (bind-dli-variable 'comparative-predication predicate head))
-       head))))
-
-(defun superlative-adj-noun-compound (adjective head &optional adj-edge)
-  (when (category-p head) (setq head (individual-for-ref head)))
-  (cond
-    (*subcat-test*
-     (takes-adj? head adjective))
-    (t ;; Dec#2 has "low nM" which requires coercing 'low'
-     ;; into a number. Right now just falls through
-     (let ((predicate 
-	     (if (and (not (is-basic-collection? adjective))
-                      (find-variable-for-category :subject (itype-of adjective)))
-		 (create-predication-by-binding
-                  :subject head adjective
-                  (list 'adj-noun-compound (or adj-edge (left-edge-for-referent))))
-		 (individual-for-ref adjective))))
-       (setq head (bind-dli-variable 'superlative-predication predicate head))
-       head))))
+(defun superlative-adj-noun-compound (superlative head)
+  (comparative-adj-noun-compound superlative head))
