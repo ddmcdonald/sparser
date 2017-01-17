@@ -1,9 +1,9 @@
-
-;;; copyright (c) 1992-1994,2015  David D. McDonald  -- all rights reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
+;;; copyright (c) 1992-1994,2015-2017  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "polywords"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   2.0 May 2015
+;;;   Version:   January 2017
 
 ;; 1.0 (9/7/92 v2.3) Cleared out the special indexes.
 ;; 1.1 (5/6/93) Changed it so that if the pw was binary it didn't get
@@ -119,5 +119,6 @@
                            :word next-word
                            :prefix words)))
         (setf (gethash next-word prior-table) next-state)
-        (push-polyword-state-onto-word next-word next-state)
+        ;; Do not add this state to the word's fsa field. It confuses
+        ;; the lookup and makes the field rediculously long
         next-state)))
