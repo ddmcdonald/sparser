@@ -49,7 +49,6 @@ abstract > region > attribute-value > size-value
   ;; inherits name, attribute variables from attribute-value
   :binds ((direction direction))
   :index (:permanent :key name)
-  :lemma (:adjective "comparative")
   :realization (:word name))
 
 (define-category superlative
