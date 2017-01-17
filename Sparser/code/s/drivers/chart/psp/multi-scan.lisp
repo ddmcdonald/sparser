@@ -620,7 +620,7 @@
               (pos-preceding-whitespace mid))
           (do-early-rules-sweep-between (where-tt-ends left-edge start) end)
           (else
-            (multiple-value-setq (new-edge rule) (apply-early-rule-at mid))
+            (multiple-value-setq (new-edge rule) (apply-early-rule-at start mid))
             (do-early-rules-sweep-between
                 (if new-edge
                     ;; edge at the beginning changed, so start at the
@@ -629,8 +629,8 @@
                     mid)
               end))))))
         
-(defun apply-early-rule-at (middle-pos)
-  (let* ((edges-ending-there (all-edges-on (pos-ends-here middle-pos)))
+(defun apply-early-rule-at (start middle-pos)
+  (let* ((edges-ending-there (tt-edges-starting-at (pos-starts-here start)))
          (edges-starting-there (all-edges-on (pos-starts-here middle-pos)))
          (*allow-pure-syntax-rules* nil)
          (*allow-form-rules* nil)
