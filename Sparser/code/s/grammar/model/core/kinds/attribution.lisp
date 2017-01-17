@@ -209,7 +209,14 @@ be added to attribute so it knows how to handle the individuals.
          (define-category ,mixin-name
            :specializes relation
            :binds ((,var-name ,v/r-category)))
+     #| This is for mixing in the fact that a certain category
+        can take modifiers/properties of this sort.
+        a. It provides the variable that will be bound.
+        The name of the variable is the same as the
+        name of the attribute
+        b. This category is its value restriction. |#
 
+         
          ;; attribute-name: size
          ;; attribute-pos: :common-noun
          ;; attribute-word: "size"
@@ -219,6 +226,13 @@ be added to attribute so it knows how to handle the individuals.
                        (find-variable-for-category
                         ',var-name ',mixin-name))
            :realization (,attribute-pos ,attribute-word))
+     #| Represents the attribute per se. It stores the
+        variable that the mixin category (just above)
+        provides for binding particular instances of the
+        attribute ('attribute-value's). 
+           Note that the word that names the attribute
+        (e.g. "size") will have this category as its referent. |#
+         
 
          ;; attribute-field-name: size-value
          ;; attribute-name: size
@@ -229,6 +243,16 @@ be added to attribute so it knows how to handle the individuals.
            :bindings (attribute ',attribute-name)
            :rule-label ,field-rule-label
            :realization (,field-pos name))
+     #| Particular attribute values are individuals that
+        instantiate this category.
+        Note that by default they are adjectives that introduce
+        unary edges with the category for the attribute as
+        their semantic labels and this individual as their
+        referents. Specifying an alternative field-rule-label
+        will change the choice of semantic label on thse edges.
+        Specifying field-pos (part-of-speech) will override
+        the default that these are adjectives. |#
+
 
          ;; instance-maker: define-size
          (defun ,instance-maker (string &key dir er est)
@@ -237,7 +261,24 @@ be added to attribute so it knows how to handle the individuals.
              (let ((i (define-or-find-individual ',attibute-field-name
                           :name string)))
                (setup-comparatives i dir er est)
-               i )))  ))))
+               i )))
+     #| This defined an attribute-specific function for defining
+        its values. Given that attribute values are essentially
+        always adjectives this def function also does the work of
+        defining their comparative and superlative adjectives forms.
+        - The string parameter is the word that will be
+          the basis of the value individual (e.g. "red").
+        This word is the 'neutral' or 'absolute' form of the
+        attribute. the keyword parameters are for constructing 
+        the comparatives.
+          - dir is the 'direction' of a comparative relative to
+            the neutral value. If there is 'more' of this
+            quality, we use the keyword :+. If there is less,
+            we use :- (a hyphen in the keyword package).
+          - er and est are for overriding the default string
+            that will be computed for the comparative ('er')
+            or superlative ('est'). |#
+         ))))
 
 
 
