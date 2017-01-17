@@ -107,7 +107,6 @@
             (rule-set
              ;; has a rule set but no fsa values
              (setf (rs-fsa rule-set) `(,initial-state))))
-          (setf (gethash word *polyword-initial-state*) initial-state)
           initial-state)))))
 
 (defun find-or-make-next-pw-state (prior-state next-word)

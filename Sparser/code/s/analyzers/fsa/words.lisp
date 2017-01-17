@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2013-2017  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "words"
 ;;;   Module:  "analyzers;FSA:"
-;;;  Version:  July 2016
+;;;  Version:  January 2017
 
 ;; 5/5/93 v2.3, typed in hard copy of 11/24/92 that had been lost in
 ;;  disk crash
@@ -228,18 +228,16 @@
 
 (defun includes-pw-start-state (fsa-field)
   (typecase fsa-field
-    (polyword-state
-     (unless (typep fsa-field 'polyword-middle-state)
-       fsa-field))
+    (polyword-state ;;/// no evidence of these singletons 1/17/17
+     fsa-field)
     (cons
      (loop for item in fsa-field
-        when (and (typep item 'polyword-state)
-                  (not (typep item 'polyword-middle-state)))
+        when (typep item 'polyword-state)
         return item))))
 
 (defun starts-polyword (word)
-  (gethash word *polyword-initial-state*)
-  #+ignore
+  "Called from polyword-check and like-minded functions.
+   Returns the polyword-state if there is one"
   (let ((rule-set (word-rules word)))
     (when rule-set
       (let ((fsa-field (rs-fsa rule-set)))
@@ -247,16 +245,13 @@
           (includes-pw-start-state fsa-field))))))
 
 (defun initiates-polyword (word position-before)
+  "Used by check-for-polywords in the 'scan' protocol.
+   Returns a polyword state if there is one."
   (flet ((polyword-fsa (rules-field)
            (when rules-field
              (let ((fsa-field (rs-fsa rules-field)))
                (when fsa-field
                  (includes-pw-start-state fsa-field))))))
-    (or (gethash word *polyword-initial-state*)
-        (let ((caps-word (capitalized-correspondent1 position-before word)))
-          (when caps-word
-            (gethash caps-word *polyword-initial-state*))))
-    #+ignore
     (let ((rules-field (word-rules word)))
       (or (polyword-fsa rules-field)
           (let ((caps-word (capitalized-correspondent1 position-before word)))

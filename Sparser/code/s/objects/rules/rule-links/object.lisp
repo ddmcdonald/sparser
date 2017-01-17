@@ -20,17 +20,15 @@
             (:conc-name #:rs-)
             (:print-function print-rule-set-structure))
 
-  backpointer              ;; the object it's part of
-  single-term-rewrites     ;; a list of rules
-  right-looking-ids        ;; ( label-id . form-id )
-  left-looking-ids         ;; ( label-id . form-id )
-  fsa
-  phrase-boundary
-  completion-actions       ;; a plist of keywords and function names
+  backpointer           ;; the object it's part of
+  single-term-rewrites  ;; a list of rules
+  right-looking-ids     ;; ( label-id . form-id )
+  left-looking-ids      ;; ( label-id . form-id )
+  fsa     ;; a list of a polyword start state and/or a symbol naming an fsa
+  phrase-boundary       ;; a bracket-assignment 
+  completion-actions    ;; a plist of keywords and function names
   plist
   )
-
-(defparameter *polyword-initial-state* (make-hash-table :size 20000))
 
 
 (defun print-rule-set-structure (obj stream depth)
@@ -59,6 +57,8 @@
 
 
 (defun rs-distinct-categories (rs)
+  "Collect the set of categies of the referents of all
+   the unary rules on this rule-set"
   (remove-duplicates
    (loop for r in (rs-single-term-rewrites rs)
       when (and (cfr-p r)
@@ -101,4 +101,4 @@
                       (incf words-with-pw-start))
                      (symbol
                       (incf words-with-fsa)))))))))))
-    (lsp-break "look around")))
+    (lsp-break "look the local count variables")))

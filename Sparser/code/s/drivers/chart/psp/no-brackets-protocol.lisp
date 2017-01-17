@@ -240,7 +240,6 @@
     ;; based on polywords.
     (when *do-early-rules-sweep*
       (do-early-rules-sweep sentence))
-      
     (when *sweep-for-patterns*
       (pattern-sweep sentence))
     (when *sweep-for-early-information*
@@ -263,8 +262,8 @@
         
     (post-analysis-operations sentence)
 
-    (interpret-treetops-in-context
-     (all-tts (starts-at-pos sentence)(ends-at-pos sentence)))
+    (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
+                                            (ends-at-pos sentence)))
     (record-sentence-model-data sentence)
   
     ;; EOS throws to a higher catch. If the next sentence
