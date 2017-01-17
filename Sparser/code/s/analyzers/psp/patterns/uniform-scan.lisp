@@ -455,7 +455,8 @@
 
 (defun collect-ns-examples (&optional reset (n 0))
   "Turn on collecting no-space examples if it's off, or reset
-*collect-ns-examples* if you want to flush it"
+*collect-ns-examples* if you want to flush it; if a number is
+included, collect ns from n june articles"
   (when (or reset 
             (null *collect-ns-examples*))
     (setf *collect-ns-examples* (list nil))
@@ -464,12 +465,15 @@
       (funcall (intern "DO-JUNE-NO-CARDS" (find-package :r3))
                :n n))))
 
+(defparameter *ns-sub-patterns* (list nil))
+
 (defun save-ns-example (start-pos end-pos edges)
-  (declare (special *sentence-in-core*))
+  (declare (special *sentence-in-core* edges))
   (let* ((ns-sentence (sentence-string *sentence-in-core*))
          (nsitem (actual-characters-of-word start-pos end-pos nil))
          (real-edges (remove-non-edges edges)) 
          (ns-edge-pattern (characterize-words-in-region start-pos end-pos real-edges)))
+    (declare (special ns-item ns-edge-pattern real-edges))
     ;;(when (or (search "-" nsitem) (search "/" nsitem))
     ;;(lsp-break "collect-no-space-sequence-into-word")
     (setq ns-edge-pattern 
@@ -478,7 +482,16 @@
            ns-edge-pattern 
            nsitem
            ns-sentence)
-          *collect-ns-examples*)))
+          *collect-ns-examples*)
+    (let* ((edge-strings (mapcar #'get-string-from-edge-word edges))
+           (ns-patt-edges (interleave-edge-pattern edge-strings ns-edge-pattern))
+           (ns-split (ns-punct-pattern-split ns-patt-edges))
+           (ns-undef-patt (get-undefined-ns-patterns ns-split)))
+      (declare (special edge-strings ns-patt-edges ns-split ns-undef-patt))
+;      (lsp-break "save-ns post 2nd let")
+      (loop for i in ns-undef-patt
+            do (pushnew i *ns-sub-patterns* :test #'equal))))
+  )
 
 (defun edge-pattern-to-cats (ns-edge-pattern)
   (convert-mixed-pattern-edges-to-labels ns-edge-pattern)
@@ -488,6 +501,36 @@
                     (list  (simple-label (edge-form i))
                            (simple-label (edge-category i)))
                     i)))
+
+(defun interleave-edge-pattern (edges pattern)
+  "Given a list of edges and patterns, interleave them with the patterns first"
+  (when (eq (length edges) (length pattern))
+    (loop for p in pattern
+            as n from 0
+            append (list p (nth n edges)) into edge-pats
+            finally (return edge-pats))))
+
+
+
+(defun ns-punct-pattern-split (pattern)
+  "Given an interleaved list of pattern and edges from the prior
+funtion, split it into sublists removing hyphens, colons, and slashes"
+  (loop for (i j) on pattern
+        as n from 0
+        when (memq i '(:HYPHEN :COLON :FORWARD-SLASH))
+          return (if (eq n 0)
+                     (ns-punct-pattern-split (cddr pattern))
+                     (list (subseq pattern 0 n)
+                           (car (ns-punct-pattern-split (nthcdr (+ n 2) pattern)))))
+        finally (return (list pattern))))
+
+(defun get-undefined-ns-patterns (pattern-list)
+  "Given a list of patterns from the above, only keep those patterns
+that either have more than one item or are a bio-entity"
+  (loop for l in pattern-list
+          when (or (third l)
+                   (eq (car l) :BIO-ENTITY))
+          collect l))
 
 (defun update-ns-examples (start-pos)
   "Adds in the rule that was used by no-space" 
@@ -504,6 +547,8 @@
         `(,(car *collect-ns-examples*) 
            "==>"
            ,(let ((edge (right-treetop-at start-pos)))
+                ; (declare (special edge))
+                ; (lsp-break "update-ns-example edge set")
                  (if (edge-p edge)
                      (list 
                       (if (cfr-p (edge-rule edge))
@@ -577,3 +622,6 @@ collected a set of ns-examples"
 
 #+ignore
 (length (setq *ns-multiple* (ns-multiple-rule-patterns (setq *rule-patterns* (ns-pattern-rules (setq *cleaned-ns* (clean-up-ns-collection)))))))
+
+
+
