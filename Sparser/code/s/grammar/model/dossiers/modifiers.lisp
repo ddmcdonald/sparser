@@ -100,27 +100,8 @@
 (define-comparative "better") ;; good, well
 (define-comparative "worse") ;; bad
 
-#|
-;; 10/24/94
-(define-comparative "bigger") ;; better best
-;; comparative-adjective
-(define-comparative "smaller") ;; small smallest
-|#
-
-;;/// Goes somewhere else when we get serious about meaning
-;(define-comparative "rather than" :brackets '( ].phrase  .[np ))
 
 
-#|  ;; From former rules-comparatives  ;; initiated 7/29/94
-
-(def-cfr comparative-prefix (comparative "than")
-  :form nil
-  :referent (:daughter left-edge))
-
-(def-cfr comparison (comparative-prefix number) ;; "more than seven"
-  :form adjp
-  :referent (:daughter left-edge))  ;; obviously wrong
-|#
 
 
 
