@@ -193,8 +193,6 @@
   :form n-bar
   :referent (:function bind-position-on-residue right-edge left-edge))
 
-
-
 (defun bind-position-on-residue (position residue-on-protein)
   (create-residue-on-protein residue-on-protein nil position nil))
 
