@@ -167,13 +167,15 @@ places. ]]
        ;; Creates a category the way define-adverb does. 
        (define-preposition (word-pname lemma)))
 
-      (sconj
-       ;; See /rules/words/conjunctions.lisp for the explicit list
+      ((sconj ;; See /rules/words/conjunctions.lisp for the explicit list
+        quant) ;; see words/quantifiers.lisp
+       
        (define-isolated-function-word (word-pname lemma)))
 
       (otherwise
        (push-debug `(,lemma ,clause))
-       (break "unambiguous-comlex-primed-decoder -- Unexpected POS marker: '~a' on ~a, near ~s ~& in ~s" 
+       (break "unambiguous-comlex-primed-decoder -- Unexpected ~
+               POS marker: '~a' on ~a, near ~s ~& in ~s" 
               pos-marker lemma
               (cur-string) (sentence-string (sentence)))))
 
@@ -302,10 +304,12 @@ places. ]]
      ;; "firm" is four-ways ambiguous
      
      (t (push-debug `(,lemma ,combinations ,clauses))
-        (if
-         (and (boundp '*word-to-be-defined?*) *word-to-be-defined?*)
-         (break "Comlex -- new POS combination in defining word ~s \"~a\:: ~a" *word-to-be-defined?* lemma combinations)
-         (cerror "Comlex -- new POS combination for \"~a\:: ~a" lemma combinations))))))
+        (if (and (boundp '*word-to-be-defined?*)
+                 *word-to-be-defined?*)
+          (break "Comlex -- new POS combination in defining word ~
+                  ~s \"~a\:: ~a" *word-to-be-defined?* lemma combinations)
+          (cerror "Comlex -- new POS combination for \"~a\:: ~a"
+                  lemma combinations))))))
 
 
 ;;--- aux
