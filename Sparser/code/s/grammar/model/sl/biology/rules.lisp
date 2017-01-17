@@ -159,16 +159,17 @@
              (and (itypep position 'number)
                   (> (value-of 'value position)
                      10))))
-      (let ((residue (or explicit-residue
-                         (find-or-make-lattice-description-for-ref-category
-                          (category-named 'residue-on-protein)))))
-        (when amino-acid
-          (setq residue (bind-dli-variable 'amino-acid amino-acid residue)))
-        (when position
-          (setq residue (bind-dli-variable 'position position residue)))
-        (when substrate
-          (setq residue (bind-dli-variable 'substrate substrate residue)))
-        residue)))
+    (or *subcat-test*
+        (let ((residue (or explicit-residue
+                           (find-or-make-lattice-description-for-ref-category
+                            (category-named 'residue-on-protein)))))
+          (when amino-acid
+            (setq residue (bind-dli-variable 'amino-acid amino-acid residue)))
+          (when position
+            (setq residue (bind-dli-variable 'position position residue)))
+          (when substrate
+            (setq residue (bind-dli-variable 'substrate substrate residue)))
+          residue))))
 
 ;; "Lys residues"
 (def-cfr residue-on-protein (amino-acid residue-on-protein)
@@ -216,6 +217,7 @@
   :form n-bar
   :referent (:function make-point-mutation-from-residue left-edge right-edge))
 
+
 (defun make-point-mutation-from-residue (residue replacement-amino-acid)
   (when (or
          (not (itypep replacement-amino-acid 'single-capitalized-letter))
@@ -224,6 +226,17 @@
     (let ((original (value-of 'amino-acid residue))
           (residue-number (value-of 'position residue)))
       (make-point-mutation original replacement-amino-acid residue-number))))
+
+(def-cfr point-mutation (number single-capitalized-letter)
+  :form n-bar
+  :referent (:function make-point-mutation-from-number-amino-acid left-edge right-edge))
+
+(defun make-point-mutation-from-number-amino-acid (number replacement-amino-acid)
+  (when (or
+         (not (itypep replacement-amino-acid 'single-capitalized-letter))
+         (setq replacement-amino-acid
+               (gethash replacement-amino-acid *single-letters-to-amino-acids*)))
+    (make-point-mutation nil replacement-amino-acid number)))
 
 
 
