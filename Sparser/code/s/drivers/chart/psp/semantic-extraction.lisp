@@ -178,7 +178,14 @@ without damaging other code.")
       (pname name)
       (format nil "~s" i))))
 
-
+(defun get-string-from-edge-word (item)
+  "Given either an edge or word, retrieves the surface string -- if neither, just returns the item"
+  (cond ((edge-p item)
+         (string-right-trim " " (retrieve-surface-string item)))
+        ((word-p item)
+         (string-right-trim " " (pname item)))
+        (t
+         item)))
 
 
 ;;--------- dregs of another scheme for getting 
