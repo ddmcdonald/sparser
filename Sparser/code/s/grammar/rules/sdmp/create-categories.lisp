@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File: "create-categories"
 ;;;    Module: "grammar;rules:SDM&P:
-;;;   Version: September 2016
+;;;   Version: January 2017
 
 ;; Initiated 2/9/07. Elaborated through 8/6. Refactored the head form
 ;; elevator 2/4/08. Added cases through 4/24, then through 6/16.
@@ -77,6 +77,7 @@
 	(category::adjunct)
         (category::comparative)
         (category::comparative-adjp)
+        (category::superlative-adjp)
         (category::possessive)
         (category::quantifier)
         (category::adjective)
