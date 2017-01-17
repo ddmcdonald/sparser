@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "term-to-move"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: June 2016
+;;; version: January 2017
 
 #| These are definitions that were in terms.lisp. They need
 to be moved to more general places and be modified to no longer
@@ -40,8 +40,6 @@ be biology specific, since they aren't. |#
 (find-or-make-individual 'qualitative-rate :name "slow")
 
 (adj "lesser" :super bio-predication)
-;;> Error: Unexpected POS marker: 'QUANT' on #<word "lesser">
-;; While executing: #<STANDARD-METHOD UNAMBIGUOUS-COMLEX-PRIMED-DECODER (WORD T)>, in process Listener(4).
 
 
 ;;---- time
@@ -62,8 +60,9 @@ be biology specific, since they aren't. |#
 
 (noun ("period of time" :plural "periods of time") :super period)
 
-#|
-;; not sure this is what David would want -- what type of category is orientation
+#| Definitions supplanted by general vocabulary from
+  location module or attributes
+
 (define-category orientation :specializes relation)
 (define-category orientation-top :specializes orientation
   :realization
@@ -78,35 +77,42 @@ be biology specific, since they aren't. |#
   :realization
   (:noun "right"))
 
+;; (adj "wide" :super bio-predication)
+;; (adj "long" :super bio-predication)
 
-;; "high";;ambiguous between (ADJECTIVE ADVERB)
 
 |#
-;;///////// coersion required
+;; high & low could be replaced by the general definitions
+;;  on the attribute height, but it would be better
+;;  to see if (in the dynamic-model texts) they could be
+;;  coerced to states in place (which is what bio-predication does)
 (adj "high" :super bio-predication)
-;;////// coersion required -- see attribute
 (adj "low" :super bio-predication)
-#+ignore ; conflicts with definition in verbs.lisp
-(define-comparative "lower")
+#+ignore(define-comparative "lower") ;; conflicts with definition in verbs.lisp
 ;;--- "lower"  ("raise")
 ;;/// N.b. the adjective variant is commented out in the modifiers dossier
 ;; "(RasGEFs) lower the transition energy for ..."
-;;(adj "wide" :super bio-predication)
 
-;; (adj "long" :super bio-predication)
-
-;;(noun "length" :super bio-scalar)
-(define-category bio-length
+(define-category bio-length ;;originally (noun "length" :super bio-scalar)
   :specializes length
   :mixins (bio-scalar))
 (specialize-referent "length" 'bio-length)
 
+;;---- near-term candidates for replacing with attribute-based interpretation
+
+(adj "best" :super bio-predication) ;;/// superlative of "better"
+(adj "great" :super bio-predication) ;;/// base of greater, greatest
+
+(adj "rapid" :super bio-predication)
+(adj "same" :super bio-predication)
+
+
+
+
 ;; want something for magnitude, size, etc. TO-DO
-;; move away from deirectly under category::abstract
+;; move away from directly under category::abstract
 (adj "single" :super bio-predication) 
 (adj "double" :super bio-predication)
-
-
 
 ;; led to incorrect Comlex stemming
 (define-category block-bad-stemming :specializes linguistic)
@@ -227,7 +233,6 @@ be biology specific, since they aren't. |#
 
 ;;--- bio-predication
 
-(adj "best" :super bio-predication)
 
 (adj "close" :super bio-predication)
 (adj "closed" :super bio-predication)
@@ -237,17 +242,17 @@ be biology specific, since they aren't. |#
 (adj "current" :super bio-predication)
 
 (adj "dead" :super bio-predication)
-(adj "deadliest" :super bio-predication) ;;//// no -- define shortcut, morphology extensions
-;; to define the whole comparative paradigm
+(adj "deadliest" :super bio-predication)
 
 (delete-adj-cfr (resolve/make "different"))
 (adj "different" :super bio-relation)
-(noun "difference" :super biological ;;THIS IS DONE SIMPLY TO ALLOW THE VERB ALTER TO TAKE DIFFERENCE AS A SUBJECT
-      ;; see sentence 7 of January test "...the differences between the enzymatic and chemical ubiquitination linkers (seven bonds and five bonds, respectively) do not alter GAP–responsiveness..."
-      :binds ((compared biological))
-      :realization
-      (:noun "difference"
-             :between compared))
+(noun "difference" :super biological
+  ;;THIS IS DONE SIMPLY TO ALLOW THE VERB ALTER TO TAKE DIFFERENCE AS A SUBJECT
+ ;; see sentence 7 of January test "...the differences between the enzymatic and chemical ubiquitination linkers (seven bonds and five bonds, respectively) do not alter GAP–responsiveness..."
+ :binds ((compared biological))
+ :realization
+   (:noun "difference"
+    :between compared))
 
 (adj "early" :super bio-predication)
 
@@ -262,8 +267,6 @@ be biology specific, since they aren't. |#
 (adj "further" :super bio-predication)
 (define-adverb "further")
 
-(adj "great" :super bio-predication)
-
 
 (adj "initial" :super bio-predication)
 (adj "least" :super bio-predication)
@@ -271,7 +274,6 @@ be biology specific, since they aren't. |#
 (delete-adj-cfr (resolve "novel"))
 (adj "novel" :super bio-predication)
 
-(adj "rapid" :super bio-predication)
 
 (define-adverb "readily")
 
@@ -283,7 +285,6 @@ be biology specific, since they aren't. |#
 
 
 (adj "measurable" :super bio-predication) ;; keyword: (able ADJ) 
-(adj "same" :super bio-predication)
 
 
 ;;---- bio-relation
