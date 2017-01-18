@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2013-2016 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2013-2017 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: June 2016
+;;; version: January 2017
 
 ;; Initiated 11/5/13. 3/3/14 Added mechanics and NFkappaB while
 ;; commenting out the original molecules and verbs as OBE and requiring
@@ -32,6 +32,8 @@
 (gload "bio;terms-to-move")
 (gload "bio;terms")
 (gload "bio;drugs") ;; needed by verbs
+
+(gload "bio;harvard-terms")
 
 (gload "bio;rhetoric")
 (gload "bio;doc-structure")

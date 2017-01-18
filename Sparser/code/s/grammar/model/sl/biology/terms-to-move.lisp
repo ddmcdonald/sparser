@@ -38,6 +38,9 @@ be biology specific, since they aren't. |#
 
 
 (find-or-make-individual 'qualitative-rate :name "slow")
+(define-category fast :specializes bio-predication
+   :realization
+   (:adjective "fast"))
 
 (adj "lesser" :super bio-predication)
 
@@ -105,6 +108,26 @@ be biology specific, since they aren't. |#
 
 (adj "rapid" :super bio-predication)
 (adj "same" :super bio-predication)
+
+;;---- likely to want a different interpretation
+;;     when the attribute-value "high" is available
+(define-category high-enough :specializes bio-predication
+  :binds ((result-or-purpose bological))
+  :mixins (post-adj)
+  :realization
+  (:adj "high enough"
+        :to-comp result-or-purpose))
+
+(define-category low-enough :specializes bio-predication
+  :binds ((result-or-purpose bological))
+  :mixins (post-adj)
+  :realization
+  (:adj "low enough"
+        :to-comp result-or-purpose))
+
+(adj "low enough" :super bio-predication)
+(adj "high-activity" :super bio-predication)
+(adj "high-throughput" :super bio-predication)
 
 
 

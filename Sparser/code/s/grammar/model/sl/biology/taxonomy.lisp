@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2015 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2017 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2015
+;;; version: January 2017
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 ;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, 
@@ -473,13 +473,6 @@
       :at ratio-condition
       :for result))
 
-(define-category certainty :specializes bio-rhetorical
-  :realization
-  (:noun "certainty" :adj "certain"))
-
-;; can't seem to get this to work -- DAVID??
-;;(define-adverb "certainly" :super-category category::certainty)
-
 (define-category evidence :specializes bio-rhetorical
   :binds ((fact biological))
   :realization
@@ -623,7 +616,7 @@
    (:to-comp result-or-purpose
              :for result-or-purpose))
 
-(define-category bio-method :SPECIALIZES purposive-process
+(define-category bio-method :specializes purposive-process
   :mixins (has-UID has-name biological)
   :binds ((agent (:or pronoun/first/plural biological))
           (object (:or biological measurement bio-scalar)))
@@ -681,13 +674,12 @@
     of the grammar patterns.")
 
 (define-category bio-event-relation :specializes bio-relation
-                 :restrict ((subject perdurant ;; this captures all of these and more
+  :restrict ((subject perdurant) ;; this captures all of these and more
                                      ;;(:or bio-process bio-method bio-mechanism)
-                                     )
              (theme perdurant))
   :realization
   (:s subject
-      :o theme))
+   :o theme))
 
 (define-category aspectual-relation :specializes bio-relation
   :binds ((action bio-process))
@@ -1366,35 +1358,8 @@ the aggregate across the predicate it's in. |#
 
 
 
-;;//// are these even "bio" at all?
-(delete-noun-cfr (resolve "rate"))
-(define-category process-rate :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
-                 :binds ((components biological)
-                         (process bio-process))
-  :realization 
-  (:noun "rate"
-         :for components
-         :m process))
-
-(def-synonym process-rate 
-    (:noun "kinetics"))
-
-#|
-;; binding rate, dissociation rate, catalysis rate (from Ben Gyori)
-(define-category binding-rate :specializes process-rate
-		 :realization (:noun "binding rate"))
-
-(define-category dissociation-rate :specializes process-rate
-		 :realization (:noun "dissociation rate"))
-
-(define-category catalysis-rate :specializes process-rate
-		 :realization (:noun "catalysis rate"))
-|#
 
 
-(define-category bio-concentration :specializes bio-scalar
-  :realization
-  (:noun "concentration"))
 
 (define-category bio-strength :specializes bio-scalar
   :realization

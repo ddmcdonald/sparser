@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2016 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2017 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: September 2016
+;;; version: January 2017
 
 ;; Initiated 7/23/14 by lifting proteins from NFkappaB experiment.
 ;; Moved proteins out to their own file 9/8/14
@@ -57,13 +57,6 @@
 ;; this should avoid an error in parsing the folloiwng in the first CURE article
 ;;"Cells were lysed in a buffer containing 50 mM Tris-HCl (pH 7.4), 150 mM NaCl, 2.5 mM EDTA, 1% Triton X-100, and 0.25% IPEGAL."
 
-(adj "sure" :super certainty)
-(adj "uncertain" :super certainty)
-(noun "chance" :super certainty)
-(adj "confident" :super certainty)
-(noun "likelihood" :super certainty)
-(noun "probability" :super certainty)
-
 
 (noun "medium" :super experimental-condition)
 (noun "vector" :super bio-method) ;; need a class for experimental materials
@@ -94,15 +87,11 @@
 (adj "deoxy" :super bio-predication)
 (noun "chemical product" :super bio-chemical-entity)
 
-;; needed for the Harvard dynamic process model
-(adj "transient" :super scalar-variation)
+
 ;; below is needed because of a use of "transients" in the CURE corpus
 (define-category transient-measurement :specializes bio-measurement
   :realization  (:noun ("transientXXX" :plural "transients"))) ;; don't pick up "transient" from COMLEX, and don't allow "transient" as a singular noun
 
-(adj "persistent" :super scalar-variation)
-(adj "noisy" :super scalar-variation)
-(adj "unchanged" :super scalar-variation)
 
 
 
@@ -614,9 +603,6 @@
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
 ;;;(adj "fail-proof" :super bio-predication)
 
-(define-category fast :specializes bio-predication
-   :realization
-   (:adjective "fast"))
 
 (noun "fate" :super bio-process)
 
@@ -662,23 +648,7 @@
 
 (def-bio "guanine" nucleobase)
 
-(define-category high-enough :specializes bio-predication
-  :binds ((result-or-purpose bological))
-  :mixins (post-adj)
-  :realization
-  (:adj "high enough"
-        :to-comp result-or-purpose))
 
-(define-category low-enough :specializes bio-predication
-  :binds ((result-or-purpose bological))
-  :mixins (post-adj)
-  :realization
-  (:adj "low enough"
-        :to-comp result-or-purpose))
-
-(adj "low enough" :super bio-predication)
-(adj "high-activity" :super bio-predication)
-(adj "high-throughput" :super bio-predication)
 (noun "HPLC" :super bio-method)
 (def-synonym HPLC (:noun "high performance liquid chromatography"))
 (noun "SCX" :super bio-method)
@@ -901,7 +871,7 @@
 (noun "PCR" :super bio-method)
 (noun "RT-PCR" :super bio-method)
 (noun "qRT/PCR" :super bio-method)
-(noun "peak" :super bio-scalar)
+
 (adj "pharmacological" :super bio-predication) ;; keyword: (al ADJ) 
 
 (adj "physiological" :super bio-predication)
@@ -1237,8 +1207,6 @@
 (define-unit-of-measure "pmol")
 (define-unit-of-measure "pmol/min/mg")
 (define-unit-of-measure "μm")
-(define-unit-of-measure "°C")
-
 ;;#+sbcl (define-unit-of-measure "μm")
 ;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
 

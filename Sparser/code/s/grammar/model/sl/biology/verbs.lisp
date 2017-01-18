@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014-2016 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2017 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "verbs1"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: June 2016
+;;; version: January 2017
 
 ;; verbs initiated 7/23/14 by lifting verbs from NFkappaB experiment. Continued
 ;; through 12/3/14.
@@ -65,7 +65,8 @@
                category::biological
                (variable/category 'predicate category::be))
 
-(assign-subcategorization category::be :to-comp category::biological 'predicate)
+(assign-subcategorization category::be
+      :to-comp category::biological 'predicate)
 
 ;;;---------------------------
 ;;; macros for standard cases
@@ -131,15 +132,9 @@
          :of object))
 ;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
-;;; Verbs added temporarily for Localization articles -- to be reviewed and corrected
-(define-category become :specializes be
-  :mixins (bio-rhetorical)
-    :realization
-    (:verb ("become" :third-singular "becomes" :past-tense "became"
-		     :present-participle "becoming")
-	   :etf (svo)))
 
-(eval (make-copular-def "become"))
+
+
 
 (define-category stay :specializes be
   :mixins (bio-rhetorical)
@@ -837,39 +832,6 @@
 
 (def-synonym bio-inactivate (:noun "inactivating interaction"))
 
-(define-category decrease
-  :specializes negative-bio-control
-  :binds ((theme biological)
-          (level (:or measurement bio-scalar)))
-  :realization
-  (:verb "decrease" 
-   :etf (svo-passive)
-   :for theme
-   :in theme
-   :to level))
-
-(def-synonym decrease (:verb "drop" :etf (svo-passive)))
-(def-synonym decrease (:verb ("taper off" :present-participle "tapering off"
-                                          :past-tense "taper off")
-                                          :etf (sv)))
-
-(define-category make-double :specializes positive-bio-control
-  :restrict ((object (:or biological scalar-quality)))
-  :binds ((theme biological)
-          (level (:or measurement bio-scalar)))
-  :realization
-  (:verb "double" 
-         :etf (svo-passive)
-         :for theme
-         :in theme
-         :to level))
-
-;; Potentially problematic since the plural will misparse
-;; "monoubiquitination decreases". Committing horrible hack
-;; of putting in a dummy plural to circumvent that.
-;; When we finally encounter are legitimate use of the
-;; plural noun form we'll have to reconsider all this.
-(def-synonym decrease (:noun ("decrease" :plural "ddddecrease")))
 
 (define-category degrade :specializes negative-bio-control
   :realization 
@@ -1308,12 +1270,6 @@
          :etf (svo-passive)
 	 :mumble ("find" svo)))
 
-(define-category follow :specializes bio-event-relation
-                 ;; this is intended to suppress definitions of "followed" and "follows"
-  :realization
-  (:verb ("follow" :past-tense "followed" :present-participle "followingxx"
-                   :third-singular "follows")
-         :etf (svo-passive)))
 
 (define-category bio-form :specializes caused-bio-process
   :realization
@@ -1460,19 +1416,7 @@
          :o theme
          :into subject))
 
-(define-category increase :specializes positive-bio-control
-  :restrict ((object (:or biological scalar-quality)))
-  :realization
-  (:verb ("increase"  :third-singular "increases"  :past-tense "increased"
-          :present-participle "increasing")
-         :etf (svo-passive)
-         :for object
-         :in object
-         :of object
-         :optional-object t))
-;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
-(def-synonym increase
-    (:noun "increase"))
+
 
 (define-category diminish :specializes negative-bio-control
   :restrict ((object (:or biological scalar-quality)))
@@ -1894,11 +1838,6 @@
 	   :noun "potentiation"
 	   :etf (svo-passive)))
 
-(define-category precede :specializes bio-event-relation
-                 ;; this is intended to suppress definitions of "followed" and "follows"
-  :realization
-  (:verb "precede"
-         :etf (svo-passive)))
 
 (define-category predict :specializes bio-rhetorical
     :mixins (bio-thatcomp)
@@ -2115,13 +2054,7 @@
   :realization
   (:verb "persist" :etf (sv)))
 
-(define-category reach :specializes bio-relation
-  :restrict ((subject (:or scalar-quality biological))
-             (theme (:or scalar-quality measurement)))
-  :realization
-  (:verb "reach"
-         :etf (svo)
-         :o theme))
+
 
 (define-category bio-reactivate
   :specializes positive-bio-control
@@ -2171,16 +2104,6 @@
   (:verb "relieve"
          :noun "relief"
          :etf (svo-passive)))
-
-(define-category remain :specializes be
-  :mixins (bio-relation)
-    :realization
-    (:verb "remain" ;; keyword: ENDS-IN-ED 
-	   :etf (sv)
-           ;; remains to be determined
-           :to-comp theme))
-
-(eval (make-copular-def "remain")) ;; gives it the adjective rules
 
 
 (define-category remove :specializes bio-method
@@ -2442,24 +2365,7 @@
 
 
 
-#+ignore
-;; now defined as an adjective since it always occurs as "sustained"
-(define-category sustain :specializes bio-control
-    :realization
-    (:verb "sustain" ;; keyword: ENDS-IN-ED 
-	   :etf (svo-passive)))
 
-(define-category sustained :specializes scalar-variation
-   :binds ((theme (:or process scalar-quality))
-           (level scalar-quality)
-           (above-level scalar-quality))
-   :realization
-   (:verb "sustain" ;; keyword: ENDS-IN-ED 
-          :etf (svo-passive)
-          :adj "sustained"
-          :o theme
-          :at level
-          :above above-level))
 
 (define-category tag :specializes bio-method
     :binds ((location bio-location))
