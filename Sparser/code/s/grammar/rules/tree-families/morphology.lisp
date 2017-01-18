@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  May 2016
+;;;  version:  January 2017
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -970,11 +970,16 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   (let* ((pname (pname word))
          (lastchar (elt pname (- (length pname) 1)))
          (butlastchar (elt pname (- (length pname) 2))))
+    ;;/// we should abstract out the criteria for doubling the final
+    ;; consonant. That would invite more general treatments of
+    ;; 'special cases' like the final "w" in "yellow" (3d clause)
     (define-word/expr
         (cond ((char= lastchar #\y)
                (string-append (subseq pname 0 (- (length pname) 1)) y-suffix))
               ((and (vowel? lastchar) (vowel? (elt suffix 0)))
                (string-append (subseq pname 0 (- (length pname) 1)) suffix))
+              ((and (consonant? lastchar) (vowel? butlastchar) (eql #\w lastchar))
+               (string-append pname suffix))
               ((and (consonant? lastchar) (vowel? butlastchar))
                (string-append pname (string lastchar) suffix))
               (t (string-append pname suffix))))))

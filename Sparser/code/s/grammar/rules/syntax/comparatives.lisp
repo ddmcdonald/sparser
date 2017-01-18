@@ -89,7 +89,7 @@ abstract > region > attribute-value > size-value
     (assign-brackets-to-word est-word *comparative-brackets*)
 
     ;;/// convert to trace
-    (format t "~&~s => ~s ~s~%"
+    #+ignore(format t "~&~s => ~s ~s~%"
             (pname base-word) (pname er-word) (pname est-word))
 
   #| This scheme says the denotation of a comparative word ("bigger")
