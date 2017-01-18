@@ -50,16 +50,6 @@
 ;;; mixins
 ;;;--------
 
-(define-mixin-category has-UID :specializes relation
-  :binds ((uid)))
-
-(define-category  unit-of-measure ;; add uid to unit-of-measure -- needed for uom from TRIPS
-  :mixins (has-uid)
-  :specializes abstract ;; basically a typed number that applies to scalars
-  :instantiates self
-  :binds ((name :primitive word))
-  :realization (:common-noun name))
-
 (define-mixin-category type-marker
   :documentation "This is mixed into selected classes
    like 'protein' or 'pathway or 'cell line' so that their

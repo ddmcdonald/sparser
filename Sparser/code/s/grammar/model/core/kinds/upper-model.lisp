@@ -188,6 +188,11 @@
   on the number and diversity of variables in the ontology
   as per C3.")
 
+(define-mixin-category has-UID
+  :specializes relation
+  :binds ((uid))
+  :documentation "UID is a field in many TRIPS objects")
+
 (define-category named-type  ;; "Honda"
   :specializes has-name ;; n.b. just simple names
   :binds ((type-of :primitive category))
