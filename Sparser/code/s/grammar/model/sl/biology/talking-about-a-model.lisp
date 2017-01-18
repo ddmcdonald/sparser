@@ -22,7 +22,7 @@
     (p "BRAF that is phosphorylated on serine and tyrosine.")
     (p "BRAF that is phosphorylated on Ser-602.")
     (p "BRAF that is bound to NRAS.")
-    (p "NRAS-bound BRAF.")
+    (p "NRAS-bound BRAF.")  ; 10
     (p "the BRAF-NRAS complex.")
     (p "BRAF-V600E.")
     (p "mutant BRAF.")
@@ -34,7 +34,7 @@
     (p "the amount of phosphorylated BRAF.")
     (p "the concentration of BRAF-NRAS complex.")
     (p "the number of molecules of BRAF.")
-    (p "the number of BRAF-NRAS complexes.")
+    (p "the number of BRAF-NRAS complexes.")  ; 20
 
     ;;1.3. Initial/total amounts (model initial conditions).
     (p "The initial amount of phosphorylated BRAF.")
@@ -50,7 +50,7 @@
     ;;2.1. Asking about the temporal behavior of a molecular entity
     (p "Is the BRAF-NRAS complex sustained in time?")
     (p "Is the amount of BRAF-NRAS complex sustained at a high level?")
-    (p "Is the BRAF-NRAS complex sustained in the first 2 hours?")
+    (p "Is the BRAF-NRAS complex sustained in the first 2 hours?")  ; 30
     (p "Is the BRAF-NRAS complex sustained after 2 hours?")
     (p "Is the concentration of the BRAF-NRAS complex sustained at a low level?")
     (p "Does the amount of phosphorylated BRAF reach a high level and then drop to a low level?")
@@ -60,7 +60,7 @@
     (p "Does the amount of phosphorylated MAP2K1 always remain low?")
     (p "Is the amount of phosphorylated BRAF always high?")
     (p "Does the amount of phosphorylated BRAF ever reach a high value?")
-    (p "Does the amount of phosphorylated BRAF at some time reach a low value?")
+    (p "Does the amount of phosphorylated BRAF at some time reach a low value?")  ; 40
     (p "Does the amount of phosphorylated BRAF at any time reach a low value?")
     (p "Does the amount of phosphorylated MAP2K1 remain low until phosphorylated BRAF reaches a high value?")
     (p "Does phosphorylated BRAF being high precede phosphorylated MAP2K1 reaching a high level?")
@@ -70,7 +70,7 @@
     (p "Does the amount of BRAF-NRAS complex have a maximum?")
     (p "Does phosphorylated MAP2K1 behave like phosphorylated MAPK1?")
     (p "Is the BRAF-RAF1 complex more abundant than the BRAF-NRAS complex at 2 hours?")
-    (p "Is the concentration of phosphorylated BRAF at 2 hours higher than the concentration of phosphorylated MAP2K1?")
+    (p "Is the concentration of phosphorylated BRAF at 2 hours higher than the concentration of phosphorylated MAP2K1?") ; 50
     (p "Is phosphorylated BRAF very noisy over time?")
     (p "Does the BRAF-NRAS complex vanish?")
     (p "Does the BRAF-NRAS complex vanish at some time?")
@@ -82,7 +82,7 @@
     (p "Decrease the binding rate of NRAS and BRAF.")
     (p "Increase the dissociation rate of NRAS and BRAF.")
     (p "Increase the binding rate of NRAS and BRAF by 10 fold.")
-    (p "Increase the binding rate of NRAS and BRAF by an order of magnitude.")
+    (p "Increase the binding rate of NRAS and BRAF by an order of magnitude.")  ; 60
     (p "Decrease the catalysis rate of MAP2K1 phosphorylation by half.")
 
     ;;2.3. Asking about temporal properties while manipulating initial conditions and model parameters
@@ -101,7 +101,7 @@
     ;; (p "I’m [quite certain|confident|uncertain] it is transient.")
     (p "I am quite certain it is transient.")
     (p "I am confident it is transient.")
-    (p "I am uncertain it is transient.")
+    (p "I am uncertain it is transient.") ; 70
     (p "It is transient with a high probability.")
     
     (p "It is likely that it is transient.")
@@ -113,7 +113,7 @@
     (p "There is little chance that it is transient.")
     (p "I am 95% sure that it is not transient.")
     (p "I am pretty sure it is transient but I can give a more precise answer later.")
-    (p "It is sometimes transient and sometimes isn’t.")
+    (p "It is sometimes transient and sometimes isn’t.") ; 80
     (p "It is only sometimes transient.")
     (p "It is mostly transient but not always.")
 
@@ -125,7 +125,7 @@
     (p "Is the total amount of DUSP6 unchanged in time?") ;;Human
     (p "Yes it is unchanged.") ;;Machine
     (p "Is the amount of MAP2K1­MAPK1 complex higher at 1 hour than the amount of MAPK1­DUSP6 complex?") ;;Human
-    (p "Yes it is. In fact the amount of MAPK1­DUSP6 complex is always low.") ;; Machine
+    (p "Yes it is. In fact the amount of MAPK1­DUSP6 complex is always low.") ;; 90 Machine
     (p "That’s odd. What if we increase the binding rate of MAPK1 and DUSP6 by 10 fold?") ;;Human
     (p "The amount of MAPK1­DUSP6 complex is not always low anymore.") ;; Machine
     (p "And does phospho­MAPK1 now have a peak?") ;;Human
