@@ -980,12 +980,16 @@
               (or variable-to-bind
                   (and (eq prep-word of)
                        (or (itypep np 'attribute)
-                           (itypep np 'dependent-location)
-                           (itypep np 'partonomic)))))
+                           (and
+                            (itypep np 'dependent-location)
+                            (itypep pobj-referent 'partonomic))
+                           (and
+                            (itypep np 'partonomic)
+                            (compatible-with-specified-part-type pobj-referent np))))))
              ((and (eq prep-word of)
                    (itypep np 'attribute)) ;; "color of the block"
               (find-or-make-individual 'quality-predicate
-                 :attribute (itype-of np) :item pobj-referent))
+                                       :attribute (itype-of np) :item pobj-referent))
              ((and (eq prep-word of)
                    (itypep np 'dependent-location)
                    (itypep pobj-referent 'partonomic)) ;; "bottom of the stack"
