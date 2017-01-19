@@ -31,18 +31,6 @@
 ;;; and linking up the FSAs
 ;;;----------------------------------------------------
 
-(defun add-fsa (category fsa)
-  (let ((rule-set (cat-rule-set category)))
-    (unless rule-set
-      (setq rule-set (make-rule-set :backpointer category)))
-    (let ((fsa-field (rs-fsa rule-set)))
-      (if fsa-field
-        (unless (memq fsa fsa-field)
-          (push fsa fsa-field))
-        (setf (rs-fsa rule-set) (list fsa)))
-      rule-set)))
-
-
 ;(define-category multiplier) now defined in numbers;object1
 (add-fsa category::multiplier *fsa-for-number-words*)
 

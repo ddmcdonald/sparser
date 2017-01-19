@@ -99,7 +99,9 @@ the fsa would be identified at the word level rather than the category level.
 
 ;;--- wiring up the category to the fsa
 
-(setf (cat-rule-set category::digit-sequence)
+(add-fsa category::digit-sequence ''*fsa-for-digits*)
+
+#+ignore(setf (cat-rule-set category::digit-sequence)
       (make-rule-set :backpointer category::digit-sequence
                      :fsa  `(,*fsa-for-digits*) ))
 

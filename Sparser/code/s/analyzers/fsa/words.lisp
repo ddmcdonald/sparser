@@ -308,6 +308,21 @@
 ;;; standard form for adding an FSA to the front of a word's rule-set
 ;;;-------------------------------------------------------------------
 
+(defun add-fsa (category fsa)
+  "Given a category object and a symbol naming the function
+   that runs the fsa, extend the rule set of the category
+   to include the fsa. Examples in core/numbers/categories.lisp"
+  (let ((rule-set (cat-rule-set category)))
+    (unless rule-set
+      (setq rule-set (make-rule-set :backpointer category))
+      (setf (cat-rule-set category) rule-set))
+    (let ((fsa-field (rs-fsa rule-set)))
+      (if fsa-field
+        (unless (memq fsa fsa-field)
+          (push fsa fsa-field))
+        (setf (rs-fsa rule-set) (list fsa)))
+      rule-set)))
+
 (defun find-or-make-fsa-field (word)
   (check-type word word)
   (let* ((rs (establish-rule-set-for word)) ;; find or make
