@@ -130,9 +130,9 @@
           "however"
           "i.e."
 	  "in contrast"
-	  "in contrast to"
-	  "in contrast with"
-	  "in addition to"
+	  ;; "in contrast to" probably a preposition
+	  ;; "in contrast with"
+	  ;; "in addition to"
           "instead" 
           "inasmuch as"
           "lest"
