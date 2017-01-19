@@ -784,16 +784,20 @@
           (if where-uniform-ns-ended
             (then
               (tr :successful-uniform-ns-reached where-uniform-ns-ended)
-              (setq position-after where-uniform-ns-ended))
+              (setq position-after where-uniform-ns-ended)
+              (when (eq position-after end-pos)
+                ;; check here, since the next pass can take
+                ;; us past the end
+                (return)))
             (else
               (tr :uniform-ns-pattern-failed)))))
 
-      (deal-with-unhandled-unknown-words-at position-before)
+       (deal-with-unhandled-unknown-words-at position-before)
 
-      ;; The pattern could have taken us just past the period
-      (when (position-precedes end-pos position-after)
-        (return))
-      (setq position-before position-after))
+       ;; The pattern could have taken us just past the period
+       (when (position-precedes end-pos position-after)
+         (return))
+       (setq position-before position-after))
 
     (clear-unhandled-unknown-words)))
 
