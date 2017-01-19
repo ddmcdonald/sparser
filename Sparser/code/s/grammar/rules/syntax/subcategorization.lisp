@@ -861,7 +861,16 @@
 
 (defun find-object-vars (cat)
   (when (not (word-p cat)) ;; bad morphology for "widening" and others
-    (find-subcat-vars :object cat)))
+    (and (not (intransitive? cat))
+         (find-subcat-vars :object cat))))
+
+;; check to see if a verb is defined as intransitive
+(defun intransitive? (cat)
+  (if (individual-p cat) (setq cat (itype-of cat)))
+  (loop for realization in (cat-realization cat)
+        thereis
+          (when (rdata-etf realization)
+            (eq (etf-name (rdata-etf realization)) 'intransitive))))
 
 (defun find-subject-vars (cat)
   (when (not (word-p cat)) ;; bad morphology for "widening" and others

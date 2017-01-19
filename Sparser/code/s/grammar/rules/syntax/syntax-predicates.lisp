@@ -78,8 +78,11 @@
        
 (defun can-fill-vp-object? (vp subj)
   (and ;; vp has a bound subject -- NP can fill object
-   (bound-subject-var vp)
+   (not (can-fill-vp-subject? vp subj)) ;;(bound-subject-var vp)
+   (not (intransitive? (itype-of vp)))
    (subcategorized-variable vp :object subj)))
+
+(defun is-intransitive? ())
 
 
 (defun preceding-that-whether-or-conjunction? (left-edge)
