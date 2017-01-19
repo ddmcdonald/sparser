@@ -367,7 +367,9 @@ without damaging other code.")
   nil)
 
 (defmethod semtree ((n number))
-  (semtree (e# n)))
+  (if (> n 1000)
+      (semtree (i# n))
+      (semtree (e# n))))
 
 (defmethod semtree ((e edge))
   (semtree (edge-referent e)))
