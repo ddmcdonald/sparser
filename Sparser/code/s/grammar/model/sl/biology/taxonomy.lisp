@@ -369,20 +369,29 @@
      protein-domain ;; not molecular-location -- that allows residues
      )) ;; membrane targeting domains that facilitate interaction with the plasma membrane
    (object (:or bio-entity cell-entity molecular-location measurement bio-scalar))
-   (affected-process (:or bio-process bio-mechanism bio-method bio-quality
-                          bio-predication bio-relation medical-treatment))
+   
    ;;(:or biological molecule) molecule is to allow for "loading of GTP onto ..."
    )
   :realization
   (:s agent
       :o object
-      :o affected-process
-      :of affected-process ;;object
       :of object
       :m agent
       :m object
-      :by agent     
-      ))
+      :by agent))
+
+(define-category process-control-process :specializes caused-bio-process
+  :restrict ((subject blocked-category))
+  :binds
+  ((affected-process (:or bio-process bio-mechanism bio-method bio-quality
+                          bio-predication bio-relation medical-treatment))
+   )
+  :realization
+  (:o affected-process
+   :o object
+   :of affected-process))
+
+
 
 (define-category caused-biochemical-process :specializes caused-bio-process
                  :binds ((process-for biochemical-process)))
@@ -404,7 +413,7 @@
   :realization
   (:noun "mechanism"))
 
-(define-category bio-control :specializes caused-bio-process
+(define-category bio-control :specializes process-control-process
   ;; increase in rate vs increase in RAS activity
   :binds ((multiplier (:or fold unit-of-measure)))
   :realization
@@ -658,7 +667,9 @@
 (define-category bio-relation :specializes bio-predication
   :mixins (has-UID has-name biological)
   :binds ((theme (:or biological predication))) ;; this probably belongs higher
-  :realization (:for timeperiod) ;; for nominal forms
+  :realization (:for timeperiod
+                 :o theme
+                 ) ;; for nominal forms
   :documentation "No content by itself, provides a common parent
     for 'constitute, contains etc. that may be the basis
     of the grammar patterns.")
@@ -878,6 +889,15 @@
   :instantiates :self
   :realization
   (:noun "variant"
+         :m basis
+         :of basis))
+
+(define-category mutant :specializes bio-chemical-entity
+  ;; not sure this is the correct term, but intended for things like "forms of ras" 
+  :binds ((basis (:or bio-entity molecular-location))) ;; can be a gene or protein, or something else
+  :instantiates :self
+  :realization
+  (:noun "mutant"
          :m basis
          :of basis))
 
