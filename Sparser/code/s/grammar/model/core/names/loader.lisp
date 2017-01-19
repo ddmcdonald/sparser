@@ -33,6 +33,7 @@ See rules/FSAs/abbreviations.lisp
 
 (gload "names-model;object")
 (gload "names-model;single letters")
+(gload "names-model;greek-letters")
 (gload "names-model;name words")
 (gload "names-model;lists")
 

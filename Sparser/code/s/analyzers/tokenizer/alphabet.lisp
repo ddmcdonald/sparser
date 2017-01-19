@@ -42,7 +42,7 @@
   (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
          (code (char-code character)))
     (push-debug `(,character ,code))
-
+    (lsp-break "out-of-range-char")
     (break "~%The input stream contains the character \"~A\", whose character code~
             ~%is ~A.  That character is not part of the ascii character set~
             ~%(0 to 127), and has not yet been entered into either Sparser's ~
@@ -56,7 +56,8 @@
             ~%that will take you to the file analyzers/tokenizer/alphabet.lisp~
             ~%where you can see examples to copy and read more details.~
             ~%"
-           character code (length *character-dispatch-array*))))
+           character code (length *character-dispatch-array*))
+    ))
 
 #| When you get that error it's likely because the text you're running
 has a UTF-8 character that we don't have an entry for yet. The error message
@@ -612,6 +613,17 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (setf (elt *character-dispatch-array* 128) ;; Euro sign
       `(:punctuation . ,(punctuation-named (code-char 128))))
 
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 131) 
+      `(:alphabetical . (:lowercase . ,(code-char 131)))) 
+;;#\No-break-permitted (?)
+
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 142) 
+      `(:alphabetical . (:lowercase . ,(code-char 131)))) 
+;;#\Single-Shift-Two (?)
+
+
 
 ;;; added to cover up bio protein definition problems
 (setf (elt *character-dispatch-array* 145) ;; left single quotation
@@ -631,10 +643,35 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (setf (elt *character-dispatch-array* 148) ;; right double quotation
       `(:punctuation . ,(punctuation-named #\" )))
 
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 150) 
+      `(:alphabetical . (:lowercase . ,(code-char 150)))) 
+;;#\Start-Guarded-Area (?)
 
 
 (setf (elt *character-dispatch-array* 160) ;; #\No-break_Space
   '(:punctuation . :space))
+
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 161) 
+      `(:alphabetical . (:lowercase . ,(code-char 161)))) 
+;;#\INVERTED_EXCLAMATION_MARKN (?)
+
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 162) 
+      `(:alphabetical . (:lowercase . ,(code-char 162)))) 
+;;#\CENT_SIGN (?)
+
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 164) 
+      `(:alphabetical . (:lowercase . ,(code-char 164)))) 
+;;#\CURRENCY_SIGN (?)
+
+
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 166) 
+      `(:alphabetical . (:lowercase . ,(code-char 166)))) 
+;;#\BROKEN_BAR (?)
 
 (setf (elt *character-dispatch-array* 169) ;; #\Copyright_Sign
       `(:punctuation . ,(punctuation-named (code-char 169))))
@@ -671,6 +708,12 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (setf (elt *character-dispatch-array* 181) ;; #\Micro_Sign
       '(:punctuation
         . :space)) ;;////////////////////////////////////////
+
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 182) 
+      `(:alphabetical . (:lowercase . ,(code-char 182)))) 
+;;#\PILCROW_SIGN ??
+
 
 (setf (elt *character-dispatch-array* 183) ;; #\Middle_Dot
       `(:punctuation . ,(punctuation-named (code-char 183)))) 
@@ -824,76 +867,89 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     
       (894 (:punctuation . ,(punctuation-named (code-char 894)))) ;;";", (code = 894)
     
-      (913 ;; #\Greek_Capital_Letter_Alpha
-       (:alphabetical . (:uppercase . ,(code-char 913))))
-      (914 ;; #\Greek_Capital_Letter_Beta
-       (:alphabetical . (:uppercase . ,(code-char 914))))
-      (915 ;; #\Greek_Capital_Letter_Gamma
-       (:alphabetical . (:uppercase . ,(code-char 915))))
+      (913 ;; #\Greek_Capital_Letter_Alpha "Α"
+       (:greek . (:uppercase . ,(code-char 913))))
+      (914 ;; #\Greek_Capital_Letter_Beta "Β"
+       (:greek . (:uppercase . ,(code-char 914))))
+      (915 ;; #\Greek_Capital_Letter_Gamma "Γ"
+       (:greek . (:uppercase . ,(code-char 915))))
       (916 ;; #\Greek_Capital_Letter_Delta
-       (:alphabetical . (:uppercase . ,(code-char 916))))
+       (:greek . (:uppercase . ,(code-char 916))))
+      (917 ;; #\Greek_Capital_Letter_Epsilon
+       (:greek . (:uppercase . ,(code-char 917))))
       (918 ;; #\Greek_Capital_Letter_Zeta
-       (:alphabetical . (:uppercase . ,(code-char 916))))
+       (:greek . (:uppercase . ,(code-char 918))))
       (919 ;; "Η" #\Greek_Capital_Letter_Eta
-       (:alphabetical . (:uppercase . ,(code-char 919))))
-      (921 ;;
-       (:alphabetical . (:uppercase . ,(code-char 921))))
+       (:greek . (:uppercase . ,(code-char 919))))
+      (920 ;; #\Greek_Capital_Letter_Theta
+       (:greek . (:uppercase . ,(code-char 920))))
+      (921 ;; #\Greek_Capital_Letter_Iota
+       (:greek . (:uppercase . ,(code-char 921))))
       (922 ;; "Κ" #\Greek_Capital_Letter_Kappa
-       (:alphabetical . (:uppercase . ,(code-char 922))))
-      (923  ;; #\Latin_Small_Letter_S_With_Acute
-       (:alphabetical . (:lowercase . ,(code-char 923))))  
-      (924 (:alphabetical . (:lowercase . ,(code-char 924)))) ;;"Μ", (code = 924)
-      (925 (:alphabetical . (:lowercase . ,(code-char 925)))) ;;"Ν", (code = 925)
-      (931 ;; "Σ"#\Greek_Capital_Letter_Sigma
-       (:alphabetical . (:lowercase . ,(code-char 931))))  
-      (932 (:alphabetical . (:lowercase . ,(code-char 932)))) ;;"Τ", (code = 932)
-      (934 (:alphabetical . (:lowercase . ,(code-char 934)))) ;;"Φ", (code = 934)
-      (935 (:alphabetical . (:lowercase . ,(code-char 935)))) ;;"Χ", (code = 935)
-      (936 (:alphabetical . (:lowercase . ,(code-char 936)))) ;;"Ψ", (code = 936)
-      (937 (:alphabetical . (:lowercase . ,(code-char 937)))) ;;"Ω", (code = 937)
-      (940 (:alphabetical . (:lowercase . ,(code-char 940)))) ;;"ά", (code = 940)
+       (:greek . (:uppercase . ,(code-char 922))))
+      (923  ;; "Λ" #\Greek_Capital_Letter_Lambda
+       (:greek . (:lowercase . ,(code-char 923))))  
+      (924 (:greek . (:uppercase . ,(code-char 924)))) ;;"Μ", (code = 924)
+      (925 (:greek . (:uppercase . ,(code-char 925)))) ;;"Ν", (code = 925)
+      (926 (:greek . (:uppercase . ,(code-char 926)))) ;;, (code = 926)
+      (927 (:greek . (:uppercase . ,(code-char 927)))) ;;, (code = 927)
+      (928 (:greek . (:uppercase . ,(code-char 928)))) ;;, (code = 928)
+      (929 (:greek . (:uppercase . ,(code-char 929)))) ;;, (code = 929)
+      (930 (:greek . (:uppercase . ,(code-char 930)))) ;;, (code = 930)
+      (931 ;; "Σ" #\Greek_Capital_Letter_Sigma
+       (:greek . (:uppercase . ,(code-char 931))))  
+      (932 (:greek . (:uppercase . ,(code-char 932)))) ;;"Τ", (code = 932)
+      (933 (:greek . (:uppercase . ,(code-char 933)))) ;;"Υ", (code = 933)
+      (934 (:greek . (:uppercase . ,(code-char 934)))) ;;"Φ", (code = 934)
+      (935 (:greek . (:uppercase . ,(code-char 935)))) ;;"Χ", (code = 935)
+      (936 (:greek . (:uppercase . ,(code-char 936)))) ;;"Ψ", (code = 936)
+      (937 (:greek . (:uppercase . ,(code-char 937)))) ;;"Ω", (code = 937)
+      (940 ;; #\GREEK_SMALL_LETTER_ALPHA_WITH_TONOS
+       (:greek . (:lowercase . ,(code-char 940)))) ;;"ά", (code = 940)
       (945 ;; #\Greek_Small_Letter_Alpha
-       (:alphabetical . (:lowercase . ,(code-char 945))))
+       (:greek . (:lowercase . ,(code-char 945))))
       (946 ;; #\Greek_Small_Letter_Beta
-       (:alphabetical . (:lowercase . ,(code-char 946))))
+       (:greek . (:lowercase . ,(code-char 946))))
       (947 ;; #\Greek_Small_Letter_Gamma
-       (:alphabetical . (:lowercase . ,(code-char 947))))
+       (:greek . (:lowercase . ,(code-char 947))))
       (948 ;; #\Greek_Small_Letter_Delta
-       (:alphabetical . (:lowercase . ,(code-char 948))))
+       (:greek . (:lowercase . ,(code-char 948))))
       (949 ;; #\Greek_Small_Letter_Epsilon
-       (:alphabetical . (:lowercase . ,(code-char 949))))
-      (950 ;; #\Greek_Small_Letter_Ze49
-       (:alphabetical . (:lowercase . ,(code-char 950))))
+       (:greek . (:lowercase . ,(code-char 949))))
+      (950 ;; #\Greek_Small_Letter_Zeta
+       (:greek . (:lowercase . ,(code-char 950))))
       (951 ;; #\Greek_Small_Letter_Eta
-       (:alphabetical . (:lowercase . ,(code-char 951))))
+       (:greek . (:lowercase . ,(code-char 951))))
       (952 ;; #\Greek_Small_Letter_Theta
-       (:alphabetical . (:lowercase . ,(code-char 952))))
+       (:greek . (:lowercase . ,(code-char 952))))
       (953 ;; #\Greek_Small_Letter_Iota
-       (:alphabetical . (:lowercase . ,(code-char 953))))
+       (:greek . (:lowercase . ,(code-char 953))))
       (954 ;; #\Greek_Small_Letter_Kappa  U#03BA
-       (:alphabetical . (:lowercase . ,(code-char 954))))
+       (:greek . (:lowercase . ,(code-char 954))))
       (955 ;; #\Greek_Small_Letter_Lambda
-       (:alphabetical . (:lowercase . ,(code-char 955))))
+       (:greek . (:lowercase . ,(code-char 955))))
       (956 ;; #\Greek_Small_Letter_Mu
-       (:alphabetical . (:lowercase . ,(code-char 956))))
+       (:greek . (:lowercase . ,(code-char 956))))
+      (957 ;; "ξ" #\Greek_Small_Letter_Omicron
+       (:greek . (:lowercase . ,(code-char 957))))
       (958 ;; "ξ" #\Greek_Small_Letter_Xi
-       (:alphabetical . (:lowercase . ,(code-char 958))))
-      (959 (:alphabetical . (:lowercase . , (code-char 959)))) ;;"ο", (code = 959)
-      (960 (:alphabetical . (:lowercase . , (code-char 960)))) ;;"π", (code = 960)
-      (961 (:alphabetical . (:lowercase . , (code-char 961)))) ;;"ρ", (code = 961)
+       (:greek . (:lowercase . ,(code-char 958))))
+      (959 (:greek . (:lowercase . , (code-char 959)))) ;;"ο", (code = 959)
+      (960 (:greek . (:lowercase . , (code-char 960)))) ;;"π", (code = 960)
+      (961 (:greek . (:lowercase . , (code-char 961)))) ;;"ρ", (code = 961)
       (963;; #\Greek_Small_Letter_Sigma
-       (:alphabetical . (:lowercase . ,(code-char 963))))
-      (964 (:alphabetical . (:lowercase . , (code-char 964)))) ;;"τ", (code = 964)
+       (:greek . (:lowercase . ,(code-char 963))))
+      (964 (:greek . (:lowercase . , (code-char 964)))) ;;"τ", (code = 964)
       (965 ;; "υ" #\Greek_Small_Letter_Upsilon
-       (:alphabetical . (:lowercase . ,(code-char 965))))
+       (:greek . (:lowercase . ,(code-char 965))))
       (966 ;; "φ" #\Greek_Small_Letter_Phi
-       (:alphabetical . (:lowercase . ,(code-char 966))))
-      (967 (:alphabetical . (:lowercase . , (code-char 967)))) ;;"χ", (code = 967)
-      (968 (:alphabetical . (:lowercase . , (code-char 968)))) ;;"ψ", (code = 968)
-      (969 (:alphabetical . (:lowercase . , (code-char 969)))) ;;"ω", (code = 969)
-      (981 (:alphabetical . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
+       (:greek . (:lowercase . ,(code-char 966))))
+      (967 (:greek . (:lowercase . , (code-char 967)))) ;;"χ", (code = 967)
+      (968 (:greek . (:lowercase . , (code-char 968)))) ;;"ψ", (code = 968)
+      (969 (:greek . (:lowercase . , (code-char 969)))) ;;"ω", (code = 969)
+      (981 (:greek . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
       (1013 (:punctuation . ,(punctuation-named (code-char 1013)))) ;; "ϵ"
-      (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082)    
+      (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082) #\CYRILLIC_SMALL_LETTER_KA    
       
       (8194 ;; #\EN_SPACE
        (:punctuation . ,(punctuation-named (code-char 8194)))) ;;" ", (code = 8194)
