@@ -361,9 +361,6 @@ We therefore have the special cases:
    :to object
    :within location))
 
-(def-synonym mutation
-    (:noun "mutant"))
-
 (define-category point-mutation :specializes mutation ;; amino-acid position on-protein
   ;; if we had 'mutation' that might be better
   ;; but these do involve a particular residue
