@@ -96,14 +96,10 @@ the fsa would be identified at the word level rather than the category level.
 (unless (boundp '*fsa-for-digits*)
   (defparameter *fsa-for-digits*  'digit-FSA))
 
-
 ;;--- wiring up the category to the fsa
 
-(add-fsa category::digit-sequence ''*fsa-for-digits*)
+(add-fsa category::digit-sequence *fsa-for-digits*)
 
-#+ignore(setf (cat-rule-set category::digit-sequence)
-      (make-rule-set :backpointer category::digit-sequence
-                     :fsa  `(,*fsa-for-digits*) ))
 
 
 ;;;-------
