@@ -112,14 +112,12 @@
 (define-category work-verb :specializes bio-relation
   :realization
   (:verb "work"
-         :etf (svo-passive)
-         :o theme))
+         :etf (svo-passive)))
 
 (define-category include :specializes bio-relation
   :realization
   (:verb ("include" :present-participle "includingxxx")
          :etf (svo)
-         :o theme
          ))
 
 ;;; Verbs added for CURE articles -- to be reviewed
@@ -226,8 +224,7 @@
           :third-singular "lacks" ;; don't block noun
           :past-tense "lacked"
           :present-participle "lacking")
-         :etf (svo)
-         :o theme))
+         :etf (svo)))
 
 (define-category screen :specializes  bio-method
   :realization
@@ -271,12 +268,10 @@
 
 (define-category fill :specializes bio-relation ;; REVIEW!!
   :realization 
-  (:verb "fill" :etf (svo-passive)
-         :o theme))
+  (:verb "fill" :etf (svo-passive)))
 
 (define-category surface-line :specializes bio-relation ;; the tissue lining the gut
-  :realization (:verb "line" :etf (svo-passive)
-         :o theme))
+  :realization (:verb "line" :etf (svo-passive)))
 
 (define-category mention :specializes bio-rhetorical
   :realization (:verb "mention" :etf (svo-passive)))
@@ -345,7 +340,7 @@
 	   :etf (svo-passive)
            :on method
            :through object
-           :through affected-process ;; FIX THIS
+           ;;:through affected-process ;; FIX THIS
            :with method ;; "Single images were acquired with a Leica fluorescence microscope..."
 	   ))
 
@@ -428,7 +423,7 @@
          :into added
          :to added))
 
-(define-category affect :specializes caused-bio-process 
+(define-category affect :specializes bio-control
   :binds ((causing (:or be biological)))
   :realization 
   (:verb "affect" :etf (svo-passive) 
@@ -598,7 +593,7 @@
   (:verb "open"
          :etf (svo-passive)))
 
-(define-category operate :specializes caused-bio-process 
+(define-category operate :specializes bio-control ;; to allow it to have affected
   :realization 
   (:verb "operate"
          :noun"operation" 
@@ -623,7 +618,7 @@
     (:verb "challenge"
 	   :etf (svo-passive)))
 
-(define-category change :specializes caused-bio-process
+(define-category change :specializes bio-control
       :binds ((scale scalar-quality)
               (original (:or bio-entity))
               (resulting (:or bio-entity))
@@ -693,7 +688,7 @@
 
 ;; like inhibit "therapeutics are confounded by acquired resistance"
 ;; "...studies of human BTICs have been confounded by their scarcity in tumors..."
-(define-category confound :specializes caused-bio-process
+(define-category confound :specializes process-control-process
   ;; changed agent to biological, since it can include bio-process such as resistnace
     :realization
     (:verb "confound" ;; keyword: ENDS-IN-ED 
@@ -728,8 +723,7 @@
 (define-category constitute :specializes bio-relation
   :realization
   (:verb "constitute" ;; keyword: ENDS-IN-ED 
-         :etf (svo)
-         :o theme))
+         :etf (svo)))
 
 (define-category construct :specializes bio-method
     :realization
@@ -740,8 +734,7 @@
 (define-category contain :specializes bio-relation 
      :realization 
      (:verb "contain"  
-            :etf (svo-passive) 
-            :o theme))
+            :etf (svo-passive) ))
 
 (def-synonym contain 
     (:verb ("harbor" :past-tense "harbored" :present-participle "harboring")
@@ -840,7 +833,7 @@
 
 (delete-noun-cfr (resolve "delay"))
 ;; Remove existing version of "delay" to replace it with this one
-(define-category delay :specializes caused-bio-process
+(define-category delay :specializes bio-control
     :realization
     (:verb "delay"
            :noun "delay"
@@ -928,7 +921,7 @@
          :etf (svo-passive)
          :noun "display"))
 
-(define-category disrupt :specializes caused-bio-process
+(define-category disrupt :specializes negative-bio-control
   :realization
   (:verb "disrupt" :noun "disruption" 
          :etf (svo-passive)))
@@ -1611,7 +1604,8 @@
   (:verb ("leave" :past-tense "left" :third-singular "leaves" :present-participle "leaving")
          :etf (svo)))
 
-(define-category ligate :specializes caused-bio-process 
+(define-category ligate :specializes caused-bio-process
+  :restrict ((agent bio-chemical-entity))
   :binds ((substrate (:or protein gene residue-on-protein))) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "ligate" :noun "ligation" 
@@ -1685,7 +1679,7 @@
          :etf (svo-passive)
          :in state))
 
-(define-category mediate :specializes caused-bio-process
+(define-category mediate :specializes bio-control
   :binds ((process bio-process))
   :realization
   (:verb   "mediate" :noun "mediation"
@@ -1715,7 +1709,7 @@
 
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
 
-(define-category modify :specializes caused-bio-process
+(define-category modify :specializes bio-control
   :binds ((site molecular-location))
   :realization 
   (:verb "modify" :noun "modification"
@@ -1886,7 +1880,7 @@
 (delete-noun-cfr (resolve "probe"))
 
 
-(define-category prolong :specializes caused-bio-process
+(define-category prolong :specializes bio-control
   :realization
   (:verb "prolong"
          :etf (svo-passive)))
@@ -1898,8 +1892,9 @@
 
 (define-category propagate :specializes bio-transport
 		 ;; propagating the pro-apoptotic signal from RAS to p53
-   :restrict ((origin (:or cellular-location protein gene))
-		 (destination (:or cellular-location protein gene)))
+  :restrict ((object (:or bio-entity bio-chemical-entity signal)) ;; signal is a process, but also can be propagated
+             (origin (:or cellular-location protein gene)) 
+             (destination (:or cellular-location protein gene)))
   :realization 
   (:verb "propagate" 
    :noun "propagation" 
@@ -2151,7 +2146,7 @@
 	   :o requirement
            :for purpose))
 
-(define-category resist :specializes caused-bio-process
+(define-category resist :specializes bio-control
     :realization
     (:verb "resist"
 	   :noun "resistance"
@@ -2310,7 +2305,7 @@
 	   :etf (svo-passive)
            :of nutrient))
 
-(define-category strengthen :specializes caused-bio-process
+(define-category strengthen :specializes positive-bio-control
   :realization
   (:verb "strengthening"
          :etf (svo-passive)
@@ -2375,15 +2370,12 @@
            :at location
            :with agent))
 
-(define-category target :specializes caused-bio-process
+(define-category target :specializes bio-control
   :binds ((destination biological))
   :realization
   (:verb ("target" :third-singular "targets" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED
    :mumble ("target" svo)
    :etf (svo-passive)
-   :s agent
-   :o object
-   :of object
    :to destination))
 
 (define-category target-protein :specializes protein
@@ -2460,7 +2452,8 @@
 (def-synonym transition (:noun "transition"))
 
 
-(define-category translate :specializes caused-bio-process
+(define-category translate :specializes process-control-process
+  ;; caused-bio-process "a delay in ... is directly translated into..."
   :binds ((initial biological)
           (translates-to biological))
   :realization
@@ -2621,7 +2614,7 @@
   (:verb "verify" :noun "verification"
          :etf (svo-passive)))
 
-(define-category yield :specializes caused-bio-process
+(define-category yield :specializes positive-bio-control
     :realization
     (:verb "yield" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)))
