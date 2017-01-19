@@ -615,11 +615,20 @@
     :pattern (s "," subject-relative-clause)
     :action (:function s-commma-subj-relative first second third))
 
+(define-debris-analysis-rule pp-commma-subj-relative
+    :pattern (pp "," subject-relative-clause)
+    :action (:function s-commma-subj-relative first second third))
+
 (defun s-commma-subj-relative (s-edge comma-edge srel-edge)
   (declare (ignore comma-edge))
   (let* ((s (edge-referent s-edge))
          (s-var (subcategorized-variable (edge-referent srel-edge) :subject s))
-         (target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
+         (target (find-target-satisfying
+                  (right-fringe-of s-edge)
+                  #'(lambda(x)
+                      (and (np-target? x)
+                           (subcategorized-variable
+                            (edge-referent srel-edge) :subject (edge-referent x))))))
          (t-var (when target
                   (subcategorized-variable
                    (edge-referent srel-edge) :subject (edge-referent target))))
@@ -802,10 +811,11 @@
        :referent (bind-dli-variable 'modifier modified-vp-ref (edge-referent np))))))
 
 (define-debris-analysis-rule np-vp+ed
-  :pattern (np vp+ed )
-  :action (:function ;; providing all edges should let the constituents
-           ;; field keep them connected in the web graph
-           np-vp+ed first second))
+    :pattern (np vp+ed )
+    :action (:function ;; providing all edges should let the constituents
+             ;; field keep them connected in the web graph
+             phrase-and-vg+ed first second))
+
 
 (defun np-vp+ed (np vp+ed)
   (declare (special category::np))
@@ -903,14 +913,35 @@
     :pattern (pp vp+ed )
     :action (:function ;; providing all edges should let the constituents
              ;; field keep them connected in the web graph
-             pp-vg+ed first second))
+             phrase-and-vg+ed first second))
+
+(define-debris-analysis-rule np-comma-vg+ed
+    :pattern (np "," vp+ed )
+    :action (:function ;; providing all edges should let the constituents
+             ;; field keep them connected in the web graph
+             phrase-and-vg+ed first third))
+
+(define-debris-analysis-rule pp-comma-vg+ed
+    :pattern (pp "," vp+ed )
+    :action (:function ;; providing all edges should let the constituents
+             ;; field keep them connected in the web graph
+             phrase-and-vg+ed first third))
 
 ;; this is currently blocked by the NIL -- needs to be re-examined
-(defun pp-vg+ed (pp-edge vp+ed)
+(defun phrase-and-vg+ed (phrase vp+ed)
   (declare (special category::np))
-  (let ((target (find-target-satisfying (right-fringe-of pp-edge) #'np-target?)))
-    (declare (special right-fringe-of-pp target target-ref))
-    (when nil
+  (let* ((vp-ref (edge-referent vp+ed))
+         (fringe (right-fringe-of phrase)) 
+         (target
+          (find-target-satisfying
+           fringe
+           #'(lambda (x)
+               (and
+                (np-target? x)
+                (edge-used-in x) ;; have two edges over Ras, one is not used
+                (subcategorized-variable vp-ref :object (edge-referent x)))))))
+    (declare (special fringe right-fringe-of-pp target target-ref))
+    (when
       target
       (unless (edge-used-in target)
         (lsp-break "null dominating edge ~s" target))
