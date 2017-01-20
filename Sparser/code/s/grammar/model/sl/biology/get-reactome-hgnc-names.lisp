@@ -27,6 +27,12 @@
           while form
           collect form)))
 
+(defun for-forms-in-file (filename fn)
+  (with-open-file (stream filename)
+    (loop for form = (read stream nil)
+          while form
+          do (funcall fn form))))
+
 (defun expand-proteins ()
   (length (setq *prot-expansions*
                 (loop for pn in *prot-names* collect (cons pn (remove-duplicates (remove nil (loop for n in (cdr pn) collect (gethash n *hgnc-big-ht*) ) :test #'equal))))))
