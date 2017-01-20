@@ -335,11 +335,3 @@ be added to attribute so it knows how to handle the individuals.
     ;;(break "head = ~a" head)
     head))
 
-;;---- gophers
-
-;;(def-k-method variable-to-bind ((av category::attribute-value))
-(defun variable-to-bind (av)
-  (when (itypep av 'attribute-value)
-    (let ((attribute (value-of 'attribute (itype-of av))))
-      (value-of 'var attribute))))
-
