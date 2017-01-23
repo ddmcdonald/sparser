@@ -430,29 +430,11 @@ filligre may be used to distinguish them, etc.
   :mitre-link "Uniprot:KNDC1")
 	
 
-;;(def-bio "RGL1" protein :mitre-link "Uniprot:Q9NZL6")
-	
-
-;;(def-bio "RasGRP1" protein :synonyms ("RASGRP1") :mitre-link "Uniprot:O95267")
-;;(def-bio "RasGRP2" protein :synonyms ("RASGRP2") :mitre-link "Uniprot:Q7LDG7")
-;;(def-bio "RasGRP3" protein :synonyms ("RASGRP3") :mitre-link "Uniprot:Q8IV61")
-;;(def-bio "RasGRP4" protein :synonyms ("RASGRP4") :mitre-link "Uniprot:Q8TDF6")
-;;(def-bio "RasGRF2" protein :synonyms ("RASGRF2") :mitre-link "Uniprot:O14827")
-;;(def-bio "SOS1" protein :mitre-link "Uniprot:Q07889")
-	
-
-;;(def-bio "RGL2" protein :mitre-link "Uniprot:O15211")
-
 (def-bio "RGL3" protein
   :mitre-link "Uniprot:Q3MIN7")
 
 (def-bio "RGL4" protein
   :mitre-link "Uniprot:Q8IZJ4")
-	
-	
-	
-
-;;(def-bio "NF1" protein :mitre-link "Uniprot:P21359")
 	
 
 (def-bio "IQGAP1" protein
