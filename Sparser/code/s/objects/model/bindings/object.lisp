@@ -194,11 +194,22 @@
     (nreverse good-ones)))
 
 
+(defgeneric binds (object)
+  (:documentation "Returns the list of bindings, if any,
+    that are a component of this object")
+  (:method ((i individual))
+    (indiv-binds i))
+  (:method ((c category))
+    (cat-binds c))
+  (:method ((o T))
+    (error "Objects of type ~a do not have bindings~%~a"
+           (type-of o) o)))
 
 
-(defun binds (indiv var-name  &key all )
-  ;; search the individual's binds field for a binding 
-  ;; of that variable
+(defun binds-variable (indiv var-name  &key all )
+  "Walk through the bindings on the individual and return 
+   the one that binds this variable. If 'all' is specified, 
+   return ever binding of that variable."
   (let ((variable (decode-variable-name var-name :individual indiv))
         (bindings (indiv-binds indiv))
         matched-bindings )
@@ -206,7 +217,7 @@
       (when (eq (binding-variable b) variable)
         (if all
           (push b matched-bindings)
-          (return-from binds b))))
+          (return-from binds-variable b))))
     (nreverse matched-bindings)))
 
 

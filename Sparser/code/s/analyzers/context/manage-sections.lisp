@@ -405,7 +405,7 @@
   ;; reclaimation, and in any event we have to clean out the daughters
   ;; of the root.
   (let* ((root *root-section-object*)
-         (daughters-binding (binds root 'daughters)))
+         (daughters-binding (binds-variable root 'daughters)))
 
     ;(unless daughters-binding
     ;  (break "There is no daughter binding on the root section object:~

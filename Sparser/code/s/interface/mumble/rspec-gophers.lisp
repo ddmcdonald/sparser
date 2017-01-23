@@ -23,8 +23,8 @@
 ;;--- words
 
 (defmethod binds-a-word? ((i individual))
-  (or (binds i 'name)
-      (binds i 'word)))
+  (or (binds-variable i 'name)
+      (binds-variable i 'word)))
 
 (defmethod bound-word ((i individual))
   (let* ((binding/s (binds-a-word? i))

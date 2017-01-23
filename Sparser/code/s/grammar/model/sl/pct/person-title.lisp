@@ -219,9 +219,9 @@
   ;; Called for side-effects at the bottom of referent from rule
   (push-debug `(,age+title ,person)) ;;(break "right place")
   ;; (setq age+title (car *) person (cadr *))
-  (let ((age-binding (binds age+title 'age))
-        (title-binding (binds age+title 'title))
-        (position-binding (binds person 'position)))
+  (let ((age-binding (binds-variable age+title 'age))
+        (title-binding (binds-variable age+title 'title))
+        (position-binding (binds-variable person 'position)))
     ;; /// We should change the type of the age+title to just title
     ;; but that's overkill, that would include cleaning up its
     ;; bindings to fit.
@@ -235,7 +235,7 @@
       person)))
     
 (def-k-method redistribute ((title category::title) (person category::person))
-  (let ((country-binding (binds title 'locale)))
+  (let ((country-binding (binds-variable title 'locale)))
     (when country-binding
       (bind-variable
        'nationality (binding-value country-binding) person))))

@@ -60,7 +60,7 @@
   ;; We want to remove the binding that links the
   ;; named-object to its name. The objects are permanent,
   ;; but the bindings are not. 
-  (let ((b (binds named-object 'name)))
+  (let ((b (binds-variable named-object 'name)))
     (unless b
       (push-debug `(,named-object ,name))
       (error "The name variable isn't bound on the NE we're disconnecting"))

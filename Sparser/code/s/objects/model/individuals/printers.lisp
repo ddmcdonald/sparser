@@ -111,10 +111,10 @@
 
 ;;--- Specific to Big Mechanism. /// Consider moving
 (defun has-a-bp-id? (i)
-  (binds i 'reactome-id))
+  (binds-variable i 'reactome-id))
 
 (defmethod display-name? ((i individual))
-  (let ((binding (binds i 'reactome-id)))
+  (let ((binding (binds-variable i 'reactome-id)))
     (when binding
       (binding-value binding))))
 
@@ -144,7 +144,7 @@
 ;;--- Vanilla cases
 
 (defun has-a-name? (i)
-  (binds i 'name))
+  (binds-variable i 'name))
 
 (defun name-of-individual (i)
   (let ((b (has-a-name? i)))
