@@ -28,6 +28,8 @@
 ;; move RAS2 proteins first, so that the ras-model field is not blocked
 (gload "bio;new-RAS2-proteins")
 (gload "bio;proteins")
+(gload "bio;rhgnc-proteins")
+
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
 (gload "bio;terms")
