@@ -691,6 +691,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 (setf (elt *character-dispatch-array* 171) 
       `(:punctuation . ,(punctuation-named (code-char 171)))) ;;#\Acute_Accent
 
+#+IGNORE ;; FOR THE MOMENT -- PROBLEMS WITH LOADING
 (setf (elt *character-dispatch-array* 172) 
       `(:punctuation . ,(punctuation-named (code-char 172)))) ;; #\NOT_SIGN
 
