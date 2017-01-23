@@ -614,9 +614,17 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       `(:punctuation . ,(punctuation-named (code-char 128))))
 
 ;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 130) 
+      `(:alphabetical . (:lowercase . ,(code-char 130))))
+
+;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 131) 
       `(:alphabetical . (:lowercase . ,(code-char 131)))) 
 ;;#\No-break-permitted (?)
+
+(setf (elt *character-dispatch-array* 132) 
+      `(:alphabetical . (:lowercase . ,(code-char 132)))) 
+;;#\C84 (?)
 
 ;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 142) 
@@ -648,6 +656,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       `(:alphabetical . (:lowercase . ,(code-char 150)))) 
 ;;#\Start-Guarded-Area (?)
 
+;;; added to cover biopax import issue
+(setf (elt *character-dispatch-array* 157) 
+      `(:alphabetical . (:lowercase . ,(code-char 157)))) 
+;;#\Operating-System-Command (?)
 
 (setf (elt *character-dispatch-array* 160) ;; #\No-break_Space
   '(:punctuation . :space))
@@ -678,6 +690,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 (setf (elt *character-dispatch-array* 171) 
       `(:punctuation . ,(punctuation-named (code-char 171)))) ;;#\Acute_Accent
+
+(setf (elt *character-dispatch-array* 172) 
+      `(:punctuation . ,(punctuation-named (code-char 172)))) ;; #\NOT_SIGN
 
 (setf (elt *character-dispatch-array* 173) ;; #\Soft_Hyphen
       `(:punctuation . ,(punctuation-named #\- )))
