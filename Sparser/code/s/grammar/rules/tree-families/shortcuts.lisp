@@ -59,7 +59,7 @@ broadly speaking doing for you all the things you might do by hand.
   ;; -- record the rules.
   ;; -- mark the synonyms as such.
   ;; -- figure out more clever way to do :no-morph, e.g. for ("kilometer" "km")
-  ;;    And this might just mean 'no plural' -- see *inihibit-constructing-plural*
+  ;;    And this might just mean 'no plural' -- see *inhibit-constructing-plural*
   ;; -- need to allow for irregulars
   ;; -- Decide whether it makes sense to specify brackets if we can
   ;;    get realization information from the category
