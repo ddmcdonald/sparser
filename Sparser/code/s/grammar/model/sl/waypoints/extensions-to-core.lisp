@@ -43,8 +43,8 @@
                                          :time-measure time)))
       (when abbreviations
         ;;//// it needs the plural -- parenthesize the marked case        
-        (let ((*inihibit-constructing-plural* t))
-          (declare (special *inihibit-constructing-plural*))
+        (let ((*inhibit-constructing-plural* t))
+          (declare (special *inhibit-constructing-plural*))
           (dolist (string abbreviations)
             (let ((word (define-word/expr string)))
               (make-rules-for-head :common-noun word (category-named 'unit-of-rate-of-change) unit)))

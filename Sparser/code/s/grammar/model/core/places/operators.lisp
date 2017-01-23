@@ -93,8 +93,8 @@ determined by the operator and the types of the two objects,
               word-rule))))
 
   ;; Original treatment makes them individuals
-  #+ignore(let ((*inihibit-constructing-plural* (not multiple)))
-    (declare (special *inihibit-constructing-plural*))
+  #+ignore(let ((*inhibit-constructing-plural* (not multiple)))
+    (declare (special *inhibit-constructing-plural*))
     (define-individual (if multiple
                          'multiple-dependent-location
                          'dependent-location)

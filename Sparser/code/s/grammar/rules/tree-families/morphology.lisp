@@ -852,14 +852,15 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 ;;; common nouns
 ;;;--------------
 
-(defparameter *inihibit-constructing-plural* nil
+(defparameter *inhibit-constructing-plural* nil
   "Intended to be bound by word-constructors when they know that 
    the noun does not make sense in the plural.")
 
 (defmethod make-rules-for-head ((pos (eql :common-noun)) word category referent &rest special-cases)
   "Define rules for a common noun and possibly its plurals."
+  (declare (special *inhibit-constructing-plural*))
   (let ((singular-rules (call-next-method)))
-    (if (or *inihibit-constructing-plural* (punctuation? word))
+    (if (or *inhibit-constructing-plural* (punctuation? word))
       singular-rules
       (append singular-rules
               (apply #'make-cn-plural-rules word category referent

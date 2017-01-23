@@ -392,7 +392,7 @@
     (let ((plural-entry (cadr (assoc :plural alist))))
       (when plural-entry
         (unless (eq plural-entry '*none*)
-          ;;/// This should be elevated to set *inihibit-constructing-plural*
+          ;;/// This should be elevated to set *inhibit-constructing-plural*
           ;; to completely block creating a plural, as it stands this
           ;; will have us create a regular plural by rule
           `(:plural ,plural-entry))))))

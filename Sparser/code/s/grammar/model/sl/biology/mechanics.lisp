@@ -236,6 +236,11 @@ the process.
       (make-def-protein (cons name IDS) :documentation documentation :ras2-model t)
       (make-def-protein (cons name IDS) :documentation documentation)))
 
+(defmacro define-singular-protein (name IDS)
+  (let ((*inhibit-constructing-plural* t))
+    (declare (special *inhibit-constructing-plural*))
+    (make-def-protein (cons name IDS))))
+
 (defparameter *prot-synonyms* (make-hash-table :test #'equal))
 
 (defun get-protein-synonyms (id)
@@ -244,27 +249,27 @@ the process.
 (defparameter *q-proteins* nil)
 
 (defun make-def-protein (IDS &key documentation (ras2-model nil))
+  (declare (special *inhibit-constructing-plural*))
   (let
       ((bpid (best-protein-id IDS)))
     (loop for id in IDS 
-      when (and (equal id (string-downcase id)) (not (search " " id))
-                (not (find-if #'digit-char-p id)))
-      do (push id *q-proteins*))
-                                  
-    `(def-bio ,bpid
-              protein
-       :synonyms ,(loop for id in IDS unless (or (equal id bpid)
-						;; (search " " id)
-						 ) collect id)
-       :identifier ,(if (search "_" bpid)
-                        (format nil "UP:~A" bpid)
-                        bpid)
-       :MITRE-LINK ,(if (search "_" bpid)
-                        (format nil "UNIPROT:~A" bpid)
-                        bpid)
-       :ras2-model ,ras2-model
-       :takes-plurals t
-       ,@(if documentation `(:documentation ,documentation)))))
+          when (and (equal id (string-downcase id)) (not (search " " id))
+                    (not (find-if #'digit-char-p id)))
+          do (push id *q-proteins*))
+    (def-bio/expr bpid
+        'protein
+      :synonyms (loop for id in IDS unless (or (equal id bpid)
+                                               ;; (search " " id)
+                                               ) collect id)
+      :identifier (if (search "_" bpid)
+                      (format nil "UP:~A" bpid)
+                      bpid)
+      :MITRE-LINK (if (search "_" bpid)
+                      (format nil "UNIPROT:~A" bpid)
+                      bpid)
+      :ras2-model ras2-model
+      :takes-plurals (not *inhibit-constructing-plural*)
+      :documentation documentation)))
 
 (defun in-ras2-model? (entity)
   (not
@@ -441,6 +446,7 @@ the process.
   ;; kind = kinase, greek = "alpha"
   ;; Makes individuals (particulars), that are instances of
   ;; a specific kind. Staying vague about what they might denote.
+  (declare (special *inhibit-constructing-plural*))
   (unless (and (stringp short) (symbolp kind))
     (error "Malformed definition: short form must be a string,~
           ~%and the kind must be a symbol"))
@@ -463,7 +469,7 @@ the process.
                  (every #'stringp synonyms))
       (error "The synonyms must be a list of strings")))
   (unless takes-plurals
-    (setq takes-plurals t))
+    (setq takes-plurals (not *inhibit-constructing-plural*)))
 
   `(def-bio/expr ,short ',kind
      :documentation ,documentation
@@ -492,7 +498,7 @@ the process.
 (defun make-typed-bio-entity (word category
                                    &optional greek identifier mitre-link
                                    ras2-model
-                                     long synonyms takes-plurals documentation)
+                                   long synonyms takes-plurals documentation)
   
   (unless (find-variable-for-category 'name category)
     (error "Cannot use the def-bio form with the category ~a~
@@ -504,9 +510,8 @@ the process.
         ;; but the marker may actually be the capitalization
         ;; of the word, which would have to be caught upstream
         ;; and passed through in a parameter.
-        (*inihibit-constructing-plural* (not takes-plurals))
         rules  i   )
-    (declare (special *inihibit-constructing-plural*))
+
     ;; There is a bug that I can't sort out with the available evidence
     ;; when redefining a def-bio entity involving a list of rules being
     ;; expected to be a structure. Until there's time to creep up on
