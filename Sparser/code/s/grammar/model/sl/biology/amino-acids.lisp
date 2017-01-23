@@ -69,6 +69,10 @@ ones are gratuitously ambiguous with capitalized initials.
     (let* ((three-letter-word (resolve/make three))
            (caps-three-letter-word (resolve/make (string-capitalize three)))
            (one-letter-word (resolve/make one))
+           (lc-one-letter-word
+            (unless (equal one "I")
+              ;;  this clobbers the definition of the pronoun -- DAVID -- HELP!
+              (resolve/make (string-downcase one))))
            (one-letter-object
             (find-individual 'single-capitalized-letter 
                              :letter one-letter-word))
@@ -85,6 +89,13 @@ ones are gratuitously ambiguous with capitalized initials.
         (break "could not retrieve capitalized-letter"))
       (add-rule 3-letter-rule i)
       (add-rule caps-3-letter-rule i)
+      (eval
+       `(def-cfr residue-on-protein (,lc-one-letter-word number)
+          :form np
+          :referent (:function create-residue-from-amino-acid-position left-edge right-edge)))
+      (unless (equal one "I")
+        ;;  this clobbers the definition of the pronoun -- DAVID -- HELP!
+        (setf (gethash lc-one-letter-word *single-letters-to-amino-acids*) i))
       (setf (gethash one-letter-object *single-letters-to-amino-acids*) i
             (gethash one-letter-word *single-letters-to-amino-acids*) i
             (get-tag :one-letter-code i) one
