@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2016 David D. McDonald
+;;; Copyright (c) 2010-2017 David D. McDonald
 ;;;
 ;;;     File: "comlex-unpacking"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  June 2016
+;;;  Version:  January 2017
 
 ;; Extracted from one-offs/comlex 12/3/12. Adding cases through 2/22/13
 ;; and put in the ambiguous flag. 3/14/13 moved edge flag to globals.
@@ -169,8 +169,10 @@ places. ]]
 
       ((sconj ;; See /rules/words/conjunctions.lisp for the explicit list
         quant) ;; see words/quantifiers.lisp
-       
        (define-isolated-function-word (word-pname lemma)))
+
+      ;;(pronoun ;; "hers" in June pmc3577861 during sweep
+      ;;  Could be pulled in by funny protein name
 
       (otherwise
        (push-debug `(,lemma ,clause))
@@ -260,7 +262,14 @@ places. ]]
       (if *edge-for-unknown-words*
           (setup-adverb lemma)
           (assign-brackets-to-adverb lemma)))
-     
+          
+     ((equal combinations '(adverb advpart noun)) ;; "aside"
+      ;; ignoring the participle reading
+      (when *edge-for-unknown-words*
+        (setup-adverb lemma :ambiguous)
+        (setup-common-noun lemma clauses :ambiguous))
+      (assign-brackets-to-adverb lemma))
+
      ((equal combinations '(adverb noun))
       (when *edge-for-unknown-words*
         (setup-adverb lemma :ambiguous)
