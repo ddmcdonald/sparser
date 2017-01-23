@@ -924,13 +924,13 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :right-edge
     :form comparative-adjp  ;;adjective ;;comparative
     :referent (:head right-edge
-                     :bind (comparative left-edge)))
+               :bind (comparative left-edge)))
 
 (def-syntax-rule (superlative adjective)
     :head :right-edge
     :form superlative-adjp ;; adjective ;;superlative
     :referent (:head right-edge
-                     :bind (comparative left-edge)))
+               :bind (comparative left-edge)))
 
 
 ;;--- comparative + than-np
@@ -959,13 +959,15 @@ similar to an oncogenic RasG12V mutation (9)."))
      (eval
       `(def-syntax-rule  (comparative ,(car vv))
            :head :right-edge
-           :form comparative
-           :referent (:head right-edge)))
+           :form comparative-adjp
+           :referent (:head right-edge
+                      :bind (comparative left-edge))))
      (eval
       `(def-syntax-rule  (superlative ,(car vv))
            :head :right-edge
-           :form superlative
-           :referent (:head right-edge))))
+           :form superlative-adjp
+           :referent (:head right-edge
+                      :bind (comparative left-edge)))))
 
 
 ;;--- than-np
