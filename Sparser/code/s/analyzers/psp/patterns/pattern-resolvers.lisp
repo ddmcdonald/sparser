@@ -16,8 +16,7 @@
 ;;;--------------------------
 
 (defun composed-by-usable-rule (left-edge right-edge)
-  (let* ((rule (or (multiply-edges left-edge right-edge)
-                   (multiply-edges right-edge left-edge)))
+  (let* ((rule (multiply-edges left-edge right-edge))
          ;; We only want rules that create real relationships.
          ;; There will always be a syntactic rule, so that rules
          ;; out the possibility of looking for a salient literal
