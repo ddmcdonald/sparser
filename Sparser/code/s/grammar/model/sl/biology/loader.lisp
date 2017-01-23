@@ -45,10 +45,8 @@
 (gload "bio;phenomena") ;; after proteins
 (gload "bio;verbs") ;; after phenomena
 
-;(gload "bio;NFkappaB")
 (gload "bio;molecules")
 
-;(gload "bio;methods.lisp")
 (gload "bio;trips-terms.lisp")
 (gload "bio;reach-terms.lisp")
 
