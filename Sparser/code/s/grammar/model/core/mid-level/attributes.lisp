@@ -12,7 +12,7 @@
 
 (define-attribute color)  ;; "blue"
 (define-attribute size)   ;; "big"
-(define-attribute height) :: "tall"
+(define-attribute height) ;; "tall"
 (define-attribute width)  ;; "narrow"
 (define-attribute length) ;; "long"
 
