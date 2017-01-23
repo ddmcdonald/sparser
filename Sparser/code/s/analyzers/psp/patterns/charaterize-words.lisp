@@ -104,9 +104,9 @@
         pattern-elements )
     ;;/// That sweep was designed for simplistic parsing and ignores
     ;; things like multiple edges. May need a tailored one
-    (unless (every #'edge-p treetops)
-      (push-debug `(,start-pos ,end-pos ,treetops))
-      (error "Not every treetop is an edge: ~a" treetops))
+    #+ignore (unless (every #'edge-p treetops)
+               (push-debug `(,start-pos ,end-pos ,treetops))
+               (error "Not every treetop is an edge: ~a" treetops))
 
     (flet ((label-for-pattern (edge)
              (let* ((label (cat-symbol (edge-category edge)))
@@ -114,25 +114,27 @@
                     (word (word-under-edge edge))
                     (pname (word-pname word)))
                (cond
-                ((eq label 'category::number)
-                 (if (= 1 (length pname)) :single-digit :digits))
-                ((eq label 'category::bio-entity)
-                 (characterize-word-type position word))
-                ((search (symbol-name '#:-kind) (symbol-name label))
-                 (characterize-word-type position word))
-                ((memq label '(protein wild-type))
-                 ;;(eq label 'protein) 
-                 label)
-                ;;//// need to look for massive set of cases
-                ;; since we don't want to return something the
-                ;; patterns won't recognize. Protein is an obvious
-                ;; case, but what else?
-                (t (characterize-word-type position word))))))
+                 ((eq label 'category::number)
+                  (if (= 1 (length pname)) :single-digit :digits))
+                 ((eq label 'category::bio-entity)
+                  (characterize-word-type position word))
+                 ((search (symbol-name '#:-kind) (symbol-name label))
+                  (characterize-word-type position word))
+                 ((memq label '(protein wild-type))
+                  ;;(eq label 'protein) 
+                  label)
+                 ;;//// need to look for massive set of cases
+                 ;; since we don't want to return something the
+                 ;; patterns won't recognize. Protein is an obvious
+                 ;; case, but what else?
+                 (t (characterize-word-type position word))))))
       
       (loop for tt in treetops
-        collect (if (one-word-long? tt)
-                  (label-for-pattern tt)
-                  (push (edge-category tt) pattern-elements))))))
+            collect (if (not (edge-p tt))
+                        tt
+                        (if (one-word-long? tt)
+                            (label-for-pattern tt)
+                            (push (edge-category tt) pattern-elements)))))))
 
 
 
