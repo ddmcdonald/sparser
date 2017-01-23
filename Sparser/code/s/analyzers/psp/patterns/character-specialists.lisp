@@ -26,7 +26,7 @@
 ;;;-----------------------
  
 (defun scare-quote-specialist (leading-quote-pos words pos-before next-position)
-  "Called by ns-pattern-dispatch if the first term the pattern is a 
+  "Called by ns-pattern-dispatch if the first term in the pattern is a 
    double quote. "
   ;; It's reasonably clear what to do with scare quotes. At a minimum we move
   ;; the boundaries of the edge over the word being quoted so it swallows the
