@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1996,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1996,2013-2017  David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "cases"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  June 2016
+;;;  version:  January 2017
 
 ;; 1.0 (7/11/94) completely redone from scratch.
 ;; 1.1 (6/27/96) made "i" into "I" so that it would be correctly recognized.
@@ -59,6 +59,7 @@
 (define-pronoun "mine"   'first/singular 'possessive/pronoun)
 (define-pronoun "ours"   'first/plural   'possessive/pronoun)
 (define-pronoun "yours"  'second         'possessive/pronoun)
+(define-pronoun "hers"   'female          'possessive/pronoun)
 (define-pronoun "theirs" 'plural         'possessive/pronoun)
 
 

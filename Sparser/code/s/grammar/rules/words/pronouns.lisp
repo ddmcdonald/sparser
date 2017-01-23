@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2012-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "pronouns"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   June 2016
+;;;   Version:   January 2017
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 0.1 (6/18/93) added  .[np  np]. brackets
@@ -46,6 +46,7 @@
 (define-function-word "your"  :brackets '( ].pronoun  .[np ))
 (define-function-word "his"   :brackets '( ].pronoun  .[np ))
 (define-function-word "her"   :brackets '( ].pronoun  .[np ))
+(define-function-word "hers"   :brackets '( ].pronoun  .[np ))
 (define-function-word "its"   :brackets '( ].pronoun  .[np ))
 (define-function-word "their" :brackets '( ].pronoun  .[np ))
 
