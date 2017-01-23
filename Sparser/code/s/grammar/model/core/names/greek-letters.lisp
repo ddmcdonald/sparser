@@ -39,7 +39,12 @@
 ;;; cases
 ;;;-------
 
-(loop for i from 913 to 937
+(loop for i from 913 to 915
+        do (define-greek-letter (format nil "~a" (code-char i))))
+; 916 is "Δ" which we are at least temporarily defining as punctuation
+; to make composition for it meaning "change" easier eventually, and
+; to hopefully stop the break on double greek characters like ΔΨ
+(loop for i from 917 to 937
       do (define-greek-letter (format nil "~a" (code-char i))))
 (define-greek-letter (format nil "~a" (code-char 940)))
 (loop for i from 945 to 961

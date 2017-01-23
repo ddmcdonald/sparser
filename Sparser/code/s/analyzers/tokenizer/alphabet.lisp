@@ -667,31 +667,33 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 161) 
       `(:alphabetical . (:lowercase . ,(code-char 161)))) 
-;;#\INVERTED_EXCLAMATION_MARKN (?)
+;;#\INVERTED_EXCLAMATION_MARKN 
 
 ;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 162) 
       `(:alphabetical . (:lowercase . ,(code-char 162)))) 
-;;#\CENT_SIGN (?)
+;;#\CENT_SIGN 
 
 ;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 164) 
       `(:alphabetical . (:lowercase . ,(code-char 164)))) 
-;;#\CURRENCY_SIGN (?)
+;;#\CURRENCY_SIGN 
 
 
 ;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 166) 
       `(:alphabetical . (:lowercase . ,(code-char 166)))) 
-;;#\BROKEN_BAR (?)
+;;#\BROKEN_BAR 
 
 (setf (elt *character-dispatch-array* 169) ;; #\Copyright_Sign
       `(:punctuation . ,(punctuation-named (code-char 169))))
 
 (setf (elt *character-dispatch-array* 171) 
-      `(:punctuation . ,(punctuation-named (code-char 171)))) ;;#\Acute_Accent
+      `(:punctuation . ,(punctuation-named (code-char 171)))) 
+;;#\Acute_Accent ? (this is what it previously said, but if you do code-char of 171 you get the following:
+;; #\LEFT-POINTING_DOUBLE_ANGLE_QUOTATION_MARK
 
-#+IGNORE ;; FOR THE MOMENT -- PROBLEMS WITH LOADING
+;; FOR THE MOMENT -- PROBLEMS WITH LOADING
 (setf (elt *character-dispatch-array* 172) 
       `(:punctuation . ,(punctuation-named (code-char 172)))) ;; #\NOT_SIGN
 
@@ -714,7 +716,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       `(:number . (:digit . ,#\2 )))
 
 ;;; added to cover up bio protein definition problems
-(setf (elt *character-dispatch-array* 179) ;; superscript two or 'cubed' - just use #\3
+(setf (elt *character-dispatch-array* 179) ;; superscript three or 'cubed' - just use #\3
        `(:number . (:digit . ,#\3 )))
 
 
@@ -728,7 +730,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 ;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 182) 
       `(:alphabetical . (:lowercase . ,(code-char 182)))) 
-;;#\PILCROW_SIGN ??
+;;#\PILCROW_SIGN
 
 
 (setf (elt *character-dispatch-array* 183) ;; #\Middle_Dot
@@ -751,6 +753,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 (setf (elt *character-dispatch-array* 187)
       `(:punctuation . ,(punctuation-named (code-char 187)))) ;;#\Right-Pointing_Double_Angle_Quotation_Mark
+
 (setf (elt *character-dispatch-array* 188) `(:punctuation . ,(punctuation-named (code-char 188)))) ;;#\Vulgar_Fraction_One_Quarter
 (setf (elt *character-dispatch-array* 189) `(:punctuation . ,(punctuation-named (code-char 189)))) ;;#\Vulgar_Fraction_One_Half
 (setf (elt *character-dispatch-array* 190) `(:punctuation . ,(punctuation-named (code-char 190)))) ;;#\Vulgar_Fraction_Three_Quarters
@@ -834,6 +837,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 ;; (code-char 954) => #\Greek_Small_Letter_Kappa
 ;; (format nil "~x" 954) => 3BA
+;; (format nil "~a" (code-char 954)) => "κ"
+
 
 ;;; temporarily ignore char reading problem.
 (defparameter *entries-for-out-of-band-characters* 
@@ -889,8 +894,12 @@ the buffer that is fed to find-word and becomes part of the word's pname.
        (:greek . (:uppercase . ,(code-char 914))))
       (915 ;; #\Greek_Capital_Letter_Gamma "Γ"
        (:greek . (:uppercase . ,(code-char 915))))
-      (916 ;; #\Greek_Capital_Letter_Delta
-       (:greek . (:uppercase . ,(code-char 916))))
+      (916 ;; #\Greek_Capital_Letter_Delta "Δ" (:greek . (:uppercase
+       ;; . ,(code-char 916)))) redefining as punctuation to see if
+       ;; that makes it easier to deal with cases where it's being
+       ;; used at the beginning of an item to denote "change" -- as in
+       ;; ΔΨ for membrane potential
+       (:punctuation . ,(punctuation-named (code-char 916))))
       (917 ;; #\Greek_Capital_Letter_Epsilon
        (:greek . (:uppercase . ,(code-char 917))))
       (918 ;; #\Greek_Capital_Letter_Zeta

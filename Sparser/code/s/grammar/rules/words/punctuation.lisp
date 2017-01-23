@@ -67,6 +67,7 @@
 
 (define-punctuation  copyright_sign #\Copyright_Sign) ;; 169
 (define-punctuation  left-pointing-double-angle-quotation_mark #\Left-Pointing_Double_Angle_Quotation_Mark) ;; 171
+(define-punctuation not_sign #\NOT_SIGN) ;; 172
 (define-punctuation  registered_sign #\Registered_Sign) ;; 174
 
 (define-punctuation  plus-minus (code-char 177)) ;; 177 plus-minus #\±
@@ -95,6 +96,7 @@
 (define-punctuation  division-sign       #\÷ )   ;; 247
 (define-punctuation  latin_small_letter_o_with_stroke   #\Latin_Small_Letter_O_With_Stroke) ;; 248
 (define-punctuation  latin_small_letter_u_with_diaeresis   #\Latin_Small_Letter_U_With_Diaeresis) ;; 252
+(define-punctuation  greek_capital_letter_delta   #\Greek_Capital_Letter_Delta) ;; 916
 
 
 
