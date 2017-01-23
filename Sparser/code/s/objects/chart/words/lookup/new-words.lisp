@@ -60,7 +60,7 @@
 
     (catalog/word word symbol)
  
-    (case character-type
+    (ecase character-type
       (:number
        (establish-properties-of-new-digit-sequence word))
       (:alphabetical
