@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "rules-over-referents"
 ;;;   Module:  "model/core/kinds/"
-;;;  version:  November 2016
+;;;  version:  January 2017
 
 ;; initiated 3/18/13. Elaborated through 7/24/13, gradually moving out rules.
 
@@ -16,7 +16,7 @@
 (defun compatible-with-specified-part-type (object partonym)
   "Is the type of the object compatible with the type specified
    on the partonym?"
-  ;; called from interpret-pp-adjunct-to-np(pobj-referent np)
+  ;; called from (interpret-pp-adjunct-to-np pobj-referent np)
   ;; when np is partonymic and we're working with an of-pp
   (let* ((variable (find-variable-for-category 'part-type partonym))
          (type (var-value-restriction variable)))
@@ -38,7 +38,10 @@
           (value-of 'var attribute)))))
   (:method ((av category::attribute-value))
     (let ((attribute (value-of 'attribute (itype-of av))))
-      (value-of 'var attribute))))
+      (value-of 'var attribute)))
+  (:method ((ignore T))
+    nil))
+
 
 
 
