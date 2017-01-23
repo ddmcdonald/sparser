@@ -25,6 +25,17 @@
 (defparameter *all-prots* (make-hash-table :size 200000 :test #'equalp))
 
 (defparameter *voc-ht* (make-hash-table :size 30000 :test #'equal))
+(defparameter *rhgnc-defs* nil)
+
+;; these are defined in reactome/homo-sapiens/active-mentions.lisp
+(defvar *transcription-activation-reactions*)
+(defvar *activation-reactions*)
+(defvar *active-entities*)
+(defvar *active-parts*)
+(defvar *cl-fns*)
+
+
+
 
 ;; HGNC engtries have the following fields
 ;; ("Approved Symbol" "HGNC ID" ("Approved Name") ("Previous Symbols") ("Previous Name") ("Synonyms") ("Name Synonyms") ("Pubmed IDs") ("UniProt ID(supplied by UniProt)"))
@@ -42,19 +53,28 @@
   `(length (setq ,var ,val)))
 
 (defun define-reactome-hgnc-proteins ()
-  (loop for dd in (setq *rhgnc-defs* (merge-hgnc-equivalents))
-        do
-          (unless (or (resolve (string-downcase (car dd)))
-                      (resolve (car dd)))
-            (let ((def
-                   `(,(car dd)
-                      ,.(loop for w in (cdr dd)
-                              ;; don't redefine existing words like "was"
-                              append
-                                (if (or (resolve w) (resolve (string-downcase w)))
-                                    nil
-                                    (list w))))))
-              (eval `(define-singular-protein ,(car def) ,def))))))
+  (with-open-file (rhgnc-file "~/projects/cwc-integ/sparser/sparser/code/s/grammar/model/sl/biology/rhgnc-proteins.lisp"
+                              :direction :output :if-exists :supersede :if-does-not-exist :create)
+    (print '(in-package :sparser) rhgnc-file)
+    
+    (loop for dd in (setq *rhgnc-defs* (merge-hgnc-equivalents))
+          do
+            (unless (or (resolve (string-downcase (car dd)))
+                        (resolve (car dd)))
+              (let* ((def
+                      `(,(car dd)
+                         ,.(sort
+                            (loop for w in (cdr dd)
+                                  ;; don't redefine existing words like "was"
+                                  append
+                                    (if (or (resolve w) (resolve (string-downcase w)))
+                                        nil
+                                        (list w)))
+                            #'string<)))
+                     (def-form `(define-singular-protein ,(car def) ,def)))
+                      
+                (print def-form rhgnc-file)
+                (eval def-form))))))
 
 (defparameter *non-hgnc-reactome-proteins* nil)
 
@@ -79,15 +99,10 @@
           (loop for di in def-items
                 unless (gethash (car di) *hgnc-ids->names*)
                 collect (remove nil di)))    
-    (setq def-items
-          (remove nil
-                  (loop for di in def-items
-                        ;;when (gethash (car di) *hgnc-ids->names*)
-                        collect (remove nil di))))
     (loop for d in def-items
-          do (loop for dw in d do
-                     (setf (gethash dw *all-prots*)
-                           (car d))))
+          do (loop for dw in d
+                   do
+                     (setf (gethash dw *all-prots*) (car d))))
     def-items))
 
 (defun make-reactome-voc-item (voc)
@@ -105,6 +120,7 @@
           do (if (search "PROTEIN" item)
                  (push item reactome-ids)
                  (push item others)))
+    (setq others (remove nil others))
     `(,(car voc-list)
        ,(second voc-list)
        ,@(sort others #'string<)
