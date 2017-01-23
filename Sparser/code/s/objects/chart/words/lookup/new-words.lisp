@@ -60,10 +60,41 @@
 
     (catalog/word word symbol)
  
-    (ecase character-type
+    (case character-type
       (:number
        (establish-properties-of-new-digit-sequence word))
       (:alphabetical
+       (setf (word-capitalization word) *capitalization-of-current-token*)
+       (let ((morph-keyword (calculate-morphology-of-word/in-buffer))
+             (entry (gethash (symbol-name symbol) *primed-words*)))
+         (unless morph-keyword ;; n.b. returns a list of the affix and its POS
+           (setq morph-keyword (affix-checker (word-pname word))))
+         (setf (word-morphology word) morph-keyword)
+
+         (if *introduce-brackets-for-unknown-words-from-their-suffixes*
+           (cond
+            ((and *big-mechanism*
+                  (suitable-for-and-in-OBO word))
+             (setup-word-denoting-an-OBO word))
+            ((and *big-mechanism*
+                  (eq *capitalization-of-current-token*
+                      :all-caps)) ;; potential acronym
+             ;; Don't swallow regular words unnecessarily
+             (store-word-and-handle-it-later word))
+            (morph-keyword
+             (assign-morph-brackets-to-unknown-word
+              word morph-keyword))
+            (entry
+             (unpack-primed-word word symbol entry))
+            (*big-mechanism*
+             (store-word-and-handle-it-later word))
+            (t
+             (setup-unknown-word-by-default word)))
+
+           ;; else
+           (when entry
+             (unpack-primed-word word symbol entry)))))
+      (:greek
        (setf (word-capitalization word) *capitalization-of-current-token*)
        (let ((morph-keyword (calculate-morphology-of-word/in-buffer))
              (entry (gethash (symbol-name symbol) *primed-words*)))
