@@ -274,8 +274,9 @@
   (when (typep variable 'anonymous-variable)
     (setq variable (dereference-variable variable individual)))
   (let* ((bindings (gethash value (var-instances variable)))
-         (binding (find-if (lambda (binding) (memq binding bindings))
-                           (indiv-binds individual))))
+         (binding (when bindings
+                    (find-if (lambda (binding) (memq binding bindings))
+                             (binds individual)))))
     ;; /// If the individual gets dicy to identify (being arbitrary)
     ;; then we probably want to shift to v+v objects.
     
