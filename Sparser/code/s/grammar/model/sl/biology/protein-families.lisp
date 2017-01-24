@@ -15,6 +15,9 @@
 
 ;; Protein families
 (def-family "importin")
+(def-family "karyopherin α" :synonyms ("karyopherin αs" ;; pluralization led to bad parses
+                                       "karyopherin alpha")) ;; don't have a list of proteins
+(def-family "karyopherin β" :synonyms ("karyopherin βs" "karyopherin beta")) ;; don't have a list of proteins
 (def-family "exportin")
 (def-family "Wnt")
 (def-family "AMPK":synonyms ("AMP activated protein kinase"))
@@ -56,7 +59,7 @@
   :synonyms ("apoptosis-stimulating protein of p53"))
 
 (def-family "PKC"
-            :members ("PKC-alpha" "PKC-delta" "PKC-epsilon"))
+            :members ("PKC-alpha" "PKC-delta" "nPKC-epsilon"))
 
 (def-family "Cam-PDE 1"
             :members ("PDE1A_HUMAN" "PDE1B_HUMAN""PDE1C_HUMAN"))
@@ -97,8 +100,9 @@
 
 
 (def-family "PI3-kinase"
-            :members ("PI3K")
-  :synonyms ("phosphatidylinositol-4,5-bisphosphate 3-kinase"
+            :synonyms
+            ("PI3K"
+             "phosphatidylinositol-4,5-bisphosphate 3-kinase"
              "phosphatidylinositide 3-kinase"
 	     "phosphatidylinositol 3-kinase"
              "phosphatidylinositol-3-kinase"
