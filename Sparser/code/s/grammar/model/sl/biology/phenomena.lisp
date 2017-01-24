@@ -921,6 +921,12 @@ with something else
     :realization
     (:noun "apoptosis" :adj "apoptotic"))
 
+(define-category killing ;; nrelated to but not quite the same as apoptosis
+    :specializes cellular-process
+    :realization
+    (:noun "killing"))
+
+
 (define-category axon-guidance :specializes cellular-process
    :binds ((initial biological)
            (final biological))
