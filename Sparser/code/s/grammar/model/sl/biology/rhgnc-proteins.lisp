@@ -51738,7 +51738,7 @@ OS   Homo sapiens"
                           "S100 calcium binding protein A1" "S100-alpha"
                           "S100A" "UniProt:P23297 S100A1")) 
 (DEFINE-SINGULAR-PROTEIN "S100A10"
-                         ("S100A10" "42C" "ANX2LG" "CAL1L" "CLP11" "HGNC:10487"
+                         ("S100A10"  "ANX2LG" "CAL1L" "CLP11" "HGNC:10487" ;; BAD -- should be a residue "42C"
                           "P60903" "PROTEIN-REFERENCE3106" "PROTEIN7206"
                           "Protein S100-A10" "S100 calcium binding protein A10"
                           "S100 calcium binding protein A10 (annexin II ligand"
