@@ -102,12 +102,16 @@
   "Takes the name of the bio-entity and makes it the name of
    a protein by using define-bio. Deleted the rules associated
    with the bio-entity. Returns the protein."
-  (let* ((name (value-of 'name bio-entity)) ;; often a polyword
-         (protein (define-bio name 'protein)))
-    ;; delete all the rules associated with the individual
-    (setf (get-rules bio-entity) (map nil #'delete/cfr (get-rules bio-entity)))
-    ;; can't easily delete the individual itself
-    protein))
+  (let* ((name (value-of 'name bio-entity))) ;; often a polyword
+    (if name
+        (let ((protein (define-bio name 'protein)))
+          ;; delete all the rules associated with the individual
+          (setf (get-rules bio-entity) (map nil #'delete/cfr (get-rules bio-entity)))
+          ;; can't easily delete the individual itself
+          protein)
+        (else
+          (warn "Couldn't convert bio-entity ~s to a protein -- bad plural?" (retrieve-surface-string bio-entity))
+          bio-entity))))
 
 (defmethod convert-bio-entity-to-protein ((e edge))
   ;; called from make-protein-pair/convert-bio-entity and
