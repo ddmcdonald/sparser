@@ -651,7 +651,7 @@ than a bare "to".  |#
           ((eq (edge-form e) category::adverb)
            (not (eq (edge-category e) category::also)))
           ((and (edge-form e)
-                (eq (cat-symbol (edge-form e)) 'category::wh-pronoun)
+                (eq (cat-name (edge-form e)) 'wh-pronoun)
                 (category-p (edge-referent e))
                 (member (cat-symbol (edge-referent e))
                         '(category::which category::whose category::what)))
