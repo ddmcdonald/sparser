@@ -336,7 +336,7 @@ the process.
       :synonyms (loop for id in IDS
                       unless
                         (or (equal id bpid)
-                            (and (eq (length id) 2) (print id))
+                            (eq (length id) 2) ;; (and (eq (length id) 2) (print id))
                             (eq 0 (search "PROTEIN" id))
                             (eq 0 (search "HGNC:" id))
                             (eq 0 (search "UniProt:" id))
