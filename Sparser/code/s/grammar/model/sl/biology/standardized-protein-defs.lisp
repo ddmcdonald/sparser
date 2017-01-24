@@ -1,7 +1,5 @@
 (in-package  :sparser)
 
-(format t "~%~%*** loading standardized-proteins~%")
-
 ;; not sure how this got produced...
 ;;(define-protein "" ("ERBB2IP" "b4dip2_human" "b4dyu4_human" "b4e074_human" "q1zyl5_human" ))
 
@@ -2173,7 +2171,7 @@ OS   Homo sapiens" "UniProt:O95665 NTSR2" "neurotensin receptor 2" ))
 (define-protein "P12814" ("ACTN1" "ACTN1_HUMAN" "Alpha-actinin 1" "Alpha-actinin cytoskeletal isoform" "Alpha-actinin-1" "F-actin cross-linking protein" "HGNC:163" "Non-muscle alpha-actinin-1" "PROTEIN-REFERENCE2676" "PROTEIN5872" "PROTEIN6909" "PROTEIN6981" "UniProt:P12814 ACTN1" "actinin alpha 1" "α-actinin" ))
 (define-protein "P12821" ("ACE" "ACE_HUMAN" "Angiotensin-converting enzyme" "Dipeptidyl carboxypeptidase I" "Kininase II" "PR:000022052" "PR:P12821" ))
 (define-protein "P12829" ("ALC1" "AMLC" "GT1" "HGNC:7585" "MYL4" "MYL4_HUMAN" "Myosin light chain 4" "PRO1957" "PROTEIN213" "alkali; atrial" "atrial/fetal muscle" "light chain" "light chain 4" "myosin light chain 4" ))
-(define-protein "P12830" ("CADH1_HUMAN" "CAM 120/80" "CD324" "CDH1" "CDHE" "Cadherin-1" "E-Cad/CTF1" "E-Cad/CTF2" "E-Cad/CTF3" "E-cad" "E-cadherin" "Epithelial cadherin" "UVO" "Uvomorulin" ))
+(define-protein "P12830" ("CADH1_HUMAN" "CAM 120/80" "CD324" "CDH1" "CDHE" "Cadherin-1" "E-Cad/CTF1" "E-Cad/CTF2" "E-Cad/CTF3" "E-cad" "E-cadherin" "E-cadherins" "Epithelial cadherin" "UVO" "Uvomorulin" ))
 (define-protein "P12838" ("DEF4" "DEF4_HUMAN" "DEFA4" "DEFA4(1-96)" "DEFA4(20-63)" "DEFA4(20-96)" "DEFA4(64-96)" "Defensin alpha 4" "HGNC:2763" "HP-4" "Neutrophil defensin 4" "PROTEIN-REFERENCE8620" "PROTEIN18021" "PROTEIN18059" "PROTEIN18098" "PROTEIN18102" "PROTEIN18106" "PROTEIN18110" "Pre-pro-defensin alpha 4" "Pro-defensin alpha 4" "UniProt:P12838 DEFA4" "corticostatin" "defensin alpha 4" ))
 (define-protein "P12882" ("HGNC:7567" "MGC133384" "MYH1" "MYH1_HUMAN" "MYHSA1" "MYHa" "MyHC-2X/D" "Myosin-1" "PROTEIN-REFERENCE4378" "PROTEIN9754" "UniProt:P12882 MYH1" "myosin heavy chain 1" "myosin heavy chain IIx/d" ))
 (define-protein "P12883" ("CMD1S" "CMH1" "HGNC:7577" "MPD1" "MYH7" "MYH7_HUMAN" "MYHCB" "MyHC-beta" "MyHC-slow" "Myosin heavy chain 7" "Myosin heavy chain slow isoform" "Myosin heavy chain, cardiac muscle beta isoform" "Myosin-7" "PROTEIN-REFERENCE4380" "PROTEIN9756" "UniProt:P12883 MYH7" "distal 1" "heavy polypeptide 7" "myhc" "myosin heavy chain 7" ))
@@ -17463,4 +17461,3 @@ OS   Homo sapiens" "TAAR2" "TAAR2_HUMAN" "UniProt:Q9P1P5 TAAR2" "trace amine ass
 (define-protein "rasf5_mouse" ("Nore1" "Rapl" "Rassf5" ))
 (define-protein "rpgf4_mouse" ("Cgef2" "Epac2" "Rapgef4" ))
 
-(format t "~%~%*** finished loading standardized-proteins~%")
