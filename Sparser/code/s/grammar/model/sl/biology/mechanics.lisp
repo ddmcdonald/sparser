@@ -333,9 +333,17 @@ the process.
           do (push id *q-proteins*))
     (def-bio/expr bpid
         'protein
-      :synonyms (loop for id in IDS unless (or (equal id bpid)
-                                               ;; (search " " id)
-                                               ) collect id)
+      :synonyms (loop for id in IDS
+                      unless
+                        (or (equal id bpid)
+                            (and (eq (length id) 2) (print id))
+                            (eq 0 (search "PROTEIN" id))
+                            (eq 0 (search "HGNC:" id))
+                            (eq 0 (search "UniProt:" id))
+                            (eq 0 (search "UP:" id))
+                            (eq 0 (search "CHEBI:" id))
+                            (eq 0 (search "GO:" id)))
+                      collect id)
       :identifier (if (search "_" bpid)
                       (format nil "UP:~A" bpid)
                       bpid)
@@ -364,6 +372,8 @@ the process.
                  :test #'equal))))))
 
 (defun best-protein-id (ids)
+  (car ids) ;; we now have updated all defining forms so the best id is the first one!!
+  #+ignore
   (or
    (loop for id in ids when (search "_HUMAN" id) do (return id))
    (loop for id in ids when (search "PR:" id) do (return id))
