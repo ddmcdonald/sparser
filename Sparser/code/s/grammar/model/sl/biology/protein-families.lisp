@@ -15,6 +15,7 @@
 
 ;; Protein families
 (def-family "importin")
+(def-family "14-3-3")
 (def-family "karyopherin α" :synonyms ("karyopherin αs" ;; pluralization led to bad parses
                                        "karyopherin alpha")) ;; don't have a list of proteins
 (def-family "karyopherin β" :synonyms ("karyopherin βs" "karyopherin beta")) ;; don't have a list of proteins
