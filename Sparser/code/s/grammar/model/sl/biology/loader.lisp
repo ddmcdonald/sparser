@@ -25,10 +25,15 @@
 
 (gload "bio;mechanics")
 (gload "bio;taxonomy")
+(gload "bio;standardized-protein-defs")
+(gload "bio;proteins-revised")
+#|
+(gload "bio;uniprot-accession-id-mnemonic")
 ;; move RAS2 proteins first, so that the ras-model field is not blocked
 (gload "bio;new-RAS2-proteins")
 (gload "bio;proteins")
 (gload "bio;rhgnc-proteins")
+|#
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
