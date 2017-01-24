@@ -232,9 +232,12 @@ the process.
 ;;;---------------------------
 
 (defmacro define-protein (name IDS &key documentation ras2-model)
-  (if ras2-model
-      (make-def-protein (cons name IDS) :documentation documentation :ras2-model t)
-      (make-def-protein (cons name IDS) :documentation documentation)))
+  ;; no longer pluralize protein definitions -- see what happens
+  (let ((*inhibit-constructing-plural* t))
+    (declare (special *inhibit-constructing-plural*))
+    (if ras2-model
+        (make-def-protein (cons name IDS) :documentation documentation :ras2-model t)
+        (make-def-protein (cons name IDS) :documentation documentation))))
 
 (defmacro define-singular-protein (name IDS)
   (let ((*inhibit-constructing-plural* t))
@@ -243,13 +246,81 @@ the process.
 
 (defparameter *prot-synonyms* (make-hash-table :test #'equal))
 
+(defun make-standard-proteins ()
+  (loop for pr in (sort (hal *standard-protein-ht*) #'string< :key #'car)
+        do 
+          (format t "(define-protein ~s (" (car pr))
+          (loop for ss in (sort (cdr pr) #'string<) do (format t "~s " ss))
+          (format t "))~%")))
+
 (defun get-protein-synonyms (id)
   (gethash id *prot-synonyms*))
 
 (defparameter *q-proteins* nil)
 
+(defparameter *standardize-protein-defs* nil)
+(defun standardize-protein-def (ids)
+  (when *standardize-protein-defs*
+    (let* ((human-mnemonic (loop for id in ids when (human-mnemonic? id) do (return id)))
+           (standard-id
+            (or (and human-mnemonic
+                     (gethash (string-upcase human-mnemonic) *upa-upm*)
+                     (pname (gethash human-mnemonic *upa-upm*)))
+                (loop for id in ids
+                      do
+                        (cond ((and (not (human-mnemonic? id)) (gethash id *upa-upm*))
+                               (return id))
+                              ((up-accession? id) (return (up-accession? id)))))
+                (loop for id in ids
+                      do (if (eq 0 (search "PROTEIN" id))
+                             (return id)))
+                (loop for id in ids
+                      do (if (search "_" id)
+                             (return id)))))))
+    (when (and standard-id (not (human-mnemonic? standard-id)) (gethash standard-id *upa-upm*))
+      (push (gethash standard-id *upa-upm*) ids))
+               
+    (if standard-id
+        (setf (gethash standard-id *standard-protein-ht*)
+              (remove standard-id
+                      (remove-duplicates (append ids (gethash standard-id *standard-protein-ht*)) :test #'equal)
+                      :test #'equal))
+        (setf (gethash (car ids) *non-standard-protein-ht*)
+              (remove (car ids)
+                      (remove-duplicates (append ids (gethash (car ids) *non-standard-protein-ht*)) :test #'equal)
+                      :test #'equal)))))
+
+(defparameter *standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
+
+(defparameter *non-standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
+
+(defun human-mnemonic? (pr)
+  (search "_HUMAN" (pname pr) :test #'equalp))
+
+(defun extract-up (pr upstring)
+  (let* ((found (search upstring pr :test #'equalp))
+         (start (when found (+ found (length upstring))))
+         (res 
+          (when found
+            (subseq pr start
+                    (or (search " " pr :start2 start)
+                        (search ")" pr :start2 start))))))
+    (when (and res (not (equalp "" res)))
+      (if (equal "0" (subseq res 0 1))
+          pr
+          res))))
+
+(defun up-accession? (pr)
+  (let ((pr (pname pr)))
+    (or (extract-up pr "UP:")
+        (extract-up pr "UniProt:")
+        (extract-up pr "PR:"))))
+
 (defun make-def-protein (IDS &key documentation (ras2-model nil))
   (declare (special *inhibit-constructing-plural*))
+    (standardize-protein-def ids)
+    
+                                        
   (let
       ((bpid (best-protein-id IDS)))
     (loop for id in IDS 
