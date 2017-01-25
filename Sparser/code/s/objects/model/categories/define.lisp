@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2010-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "define"
 ;;;   Module:  "objects;model:categories:"
-;;;  version:  1.5 August 2015
+;;;  version:  January 2017
 
 ;; initiated 7/16/92 v2.3
 ;; 8/5 added call to process rdata, 8/31 gated it by the field having
@@ -334,12 +334,12 @@
 
 (defun attach-bindings-to-category (category bindings-plist 
                                     parent mixins)
-  ;; the values in the bindings plist will be expressions that
-  ;; we have to eval.  Once we've done that we have to vet the
-  ;; resulting value that it's valid given the variable involved.
-  ;; This is what decode-category-specific-binding-instr-exps
-  ;; would do for us if we already had values, so we're unbundling
-  ;; it's effects.
+  "The values in the bindings plist will be expressions that
+   we have to eval. Once we've done that we have to vet the
+   resulting value that it's valid given the variable involved.
+   This is what decode-category-specific-binding-instr-exps
+   would do for us if we already had values, so we're unbundling
+   it's effects."
   (let ((*legal-to-add-bindings-to-categories* t)
           variable  value  real-value   )
     (declare (special *legal-to-add-bindings-to-categories*))
@@ -351,13 +351,14 @@
 
       (unless (symbolp var-name)
         (break "Variable designators in the bindings field of categories ~
-                must be ~%categories. You passed in ~A" var-name))
-      (setq variable (find-variable-in-category/named var-name parent))
+                must be ~%symbols. You passed in ~A" var-name))
+      
+      (setq variable (find-variable-for-category var-name parent))
       (unless variable
         (if mixins
           (let ( var )
             (dolist (m mixins)
-              (setq var (find-variable-in-category/named var-name m))
+              (setq var (find-variable-for-category var-name m))
               (when var
                 (setq variable var)
                 (return)))
@@ -371,19 +372,19 @@
 
       (when value
         (setq real-value (decode-value-for-variable value variable))
-        (bind-variable/expr variable real-value category)
-        #+ignore
-        (multiple-value-bind (ii bb)
-                             (if *description-lattice*
-                              (bind-dli-variable variable ;; check for DLI
-                                                 real-value
-                                                 category)
-                              (values
-                               (old-bind-variable variable real-value category)
-                               category))
-          (setq category ii)
-          (push bb bindings))))))
+        (bind-variable/expr variable real-value category)))))
 
+;;/// review to confirm impression that searches for variable
+;; from name above all collapse to find-variable-for-category
+;; then refactor the loop to use this
+(defun attach-binding-to-category (var/name value category)
+  (let ((variable (find-variable-for-category var/name category)))
+    (unless variable
+      (error "There is no variable named ~a associated with the ~
+              category ~a" var/name category))
+    (let ((*legal-to-add-bindings-to-categories* t))
+      (declare (special *legal-to-add-bindings-to-categories*))
+      (bind-variable/expr variable value category))))
 
 
 ;;;----------
