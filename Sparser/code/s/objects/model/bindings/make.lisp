@@ -97,26 +97,38 @@ returning a new one.
   it returns the binding object as its second (secondary) value.
   Note that if *description-lattice* is nil this becomes a call to
   the 'old' variable binding protocol."
-  (declare (special *description-lattice*))
-  (cond ((null var/name)
-         (error "call to bind-dli-variable with var/name = nil~%"))
-        (t
-         ;; if var/name is null, we shouldn't be calling this, and we should return nil
-         (when *convert-category-values-to-individuals-when-binding*
-           (when (and (category-p value) 
-                      (not (var-takes-category? var/name individual category)))
-             ;; motivated by "GEF functionality"
-             ;; GEF is defined by (noun "GEF" ...) and thus becomes a category, not an individual
-             ;; but we want to get it as an individual
-             (setq value (individual-for-ref value))))
+  (declare (special *description-lattice*
+                    *legal-to-add-bindings-to-categories*))
+  (unless var/name
+    (error "call to bind-dli-variable with var/name = nil~%"))
+
+  (when (category-p value)
+    ;; The value to bind the variable to is a category.
+    ;; Should we stay with the category value or convert it
+    ;; to an individual?
+    (cond
+      ((var-takes-category? var/name individual category)) ;; stay
+      ((null *convert-category-values-to-individuals-when-binding*)) ;; stay
+      (t ;; convert
+       ;; Motivated by "GEF functionality", where GEF is defined by
+       ;; (noun "GEF" ...) and thus denotes a category (like most heads)
+       ;; but we want an individual
+       (setq value (individual-for-ref value)))))
+
+  (when (category-p individual)
+    ;; We're adding the binding to a category. That's permitted
+    ;; if the caller says so. If not, we convert the category to
+    ;; an individual
+    (unless *legal-to-add-bindings-to-categories*
+      (setq individual (individual-for-ref individual))))
  
-         (if *description-lattice*
-             (then
-               (unless (individual-p individual)
-                 (setq individual (individual-for-ref individual)))
-               (setq individual (look-for-ambiguous-variables individual var/name))
-               (find-or-make-lattice-subordinate individual var/name value category))
-             (old-bind-variable var/name value individual category)))))
+  (cond
+    ((category-p individual) ;; cf. attach-bindings-to-category
+     (attach-binding-to-category var/name value individual))
+    (*description-lattice*
+     (setq individual (look-for-ambiguous-variables individual var/name))
+     (find-or-make-lattice-subordinate individual var/name value category))
+    (t (old-bind-variable var/name value individual category))))
 
 
 (defun bind-variable (var/name value individual &optional category)
@@ -180,7 +192,7 @@ returning a new one.
                (find/binding variable value individual))
              (make/binding variable value individual))))
     (when-binding-hook variable individual value)
-    binding))
+    (values individual binding)))
 
 
 (defun make/binding (variable value individual &optional no-index-on-body?)
@@ -216,7 +228,7 @@ returning a new one.
   "Called from bind-dli-variable, where it has to return the individual,
    original or as modified to do any local disambiguation."
   (let ((ambiguous-binding
-         (loop for binding in (indiv-old-binds individual)
+         (loop for binding in (binds individual)
             when (and (disjunctive-lambda-variable-p (binding-variable binding))
                       (loop for v in (dvar-variables (binding-variable binding))
                          thereis (or (eq v var/name) (eq (var-name v) var/name))))
