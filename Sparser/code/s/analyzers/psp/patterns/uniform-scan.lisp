@@ -623,5 +623,115 @@ collected a set of ns-examples"
 #+ignore
 (length (setq *ns-multiple* (ns-multiple-rule-patterns (setq *rule-patterns* (ns-pattern-rules (setq *cleaned-ns* (clean-up-ns-collection)))))))
 
+(defparameter *ns-unknown-sublist* nil)
+(defun ns-unknown-sublist (&optional (ns-examples *collect-ns-examples*))
+  (length (setq *ns-unknown-sublist*
+         (loop for n in ns-examples
+                ; do (print (car (third n)))
+                ; do (print (caar n))
+               unless
+               (or (not (stringp (second (car n))))
+                   (and (consp (third n))
+                        (or (memq (car (third n)) 
+                                  (list
+                                   'DO-RELATION-BETWEEN-FIRST-AND-SECOND
+                                    'MAKE-PROTEIN-COLLECTION
+                                    'MAKE-BIO-COMPLEX
+                                    'MAKE-AMINO-COLLECTION
+                                    'COMPOSE-SALIENT-HYPHENATED-LITERALS
+                                    'RESOLVE-TRAILING-STRANDED-HYPHEN
+                                    'RESOLVE-INITIAL-STRANDED-HYPHEN
+                                    'MAKE-EDGE-OVER-MUTATED-PROTEIN
+                                    'RESOLVE-PROTEIN-PREFIX
+                                    :REIFY-RESIDUE
+                                    :REIFY-POINT-MUTATION-AND-MAKE-EDGE
+                                    'PACKAGE-APPROXIMATION-NUMBER
+                                    'MAKE-NS-PAIR ;; these are mostly not of interest, but may have some false-negs
+                                    :NUMBER-FSA
+                                    ))
+                            (when (symbol-package (car (third n)))
+                              (equal "RULE" (package-name (symbol-package (car (third n))))))
+                            ))
+                   (member (caaar n) 
+                           (list :ASTERISK :GREEK_LUNATE_EPSILON_SYMBOL :HYPHEN :TILDA :PLUS-SIGN :EQUAL-SIGN
+                                 :GREATER-THAN_OR_SLANTED_EQUAL_TO :GREATER-THAN_OR_EQUAL_TO :GREATER-THAN 
+                                 :LESS-THAN_OR_SLANTED_EQUAL_TO :LESS-THAN_OR_EQUAL_TO :LESS-THAN
+                                 :SHARP-SIGN :DIGITS :NUMBER :VERTICAL-BAR :UNDER-BAR :AND-SIGN 
+                                 :LEFT-POINTING-DOUBLE-ANGLE-QUOTATION_MARK
+                                 '(COMMON-NOUN |HTTP://|))
+                         :test #'equal) 
+                   ;; removed :SINGLE-DIGIT because there are several things of interest starting with 5α
+                   (and (eq (length (caar n)) 1)
+                        (memq (caaar n) '(:LOWER :SINGLE-CAP :SINGLE-LOWER :LITTLE-P)))
+                   (and (eq (length (caar n)) 2)
+                        (or (and (memq (second (caar n)) '(:HYPHEN :COLON))
+                                 (memq (first (caar n)) '(:LOWER :SINGLE-LOWER :SINGLE-CAP
+                                                         :SINGLE-DIGIT :PROTEIN :FORWARD-SLASH :HYPHEN)))
+                            (and (eq (first (caar n)) :DOUBLE-QUOTE)
+                                 (memq (second (caar n)) '(:LOWER :SINGLE-DIGIT :PROTEIN :CELLULAR-PROCESS 
+                                                          :ACTIVATION-LOOP :CAPITALIZED))))))
+               collect (list (caar n) (second (car n)) (car (third n)))))))
 
+(defun ns-unknown-sublist->file (&optional (filename 
+                                            "~/projects/cwc-integ/sparser/Sparser/code/s/tools/ns-unknown-sublist.lisp"))
+  "Save the collected ns examples to a file"
+  (with-open-file (stream filename :direction :output :if-exists :supersede)
+    (pprint *ns-unknown-sublist* stream))
+  filename)
 
+(defparameter *ns-unknown-items* nil)
+(defun ns-unknown-items (&optional (ns-unknown-sublist *ns-unknown-sublist*))
+  (length (setq *ns-unknown-items*
+                (loop for n in ns-unknown-sublist
+                        append (ppcre:split "[/:]" (second n))))))
+
+(defparameter *rd-ns* nil)
+(defun ns-unknown-rd-items (&optional (ns-unknown-items *ns-unknown-items*))
+  (length (setq *rd-ns*
+                (sort
+                 (remove-duplicates
+                  (loop for x in ns-unknown-items
+                         ; do (print (length x))
+                          unless
+                          (or (search " " x)
+                              (ppcre:scan "^[-~+#0-9_&«]" x)
+                              (search "—" x) 
+                              ;; we need to not make em dashes
+                              ;; equivalent to hyphens before no-space
+                              ;; but that hasn't been done yet
+                              (> 2 (length x))) ;; apparently > is actually ≥
+                          collect x)
+            :test #'equal) #'string<))))
+
+(defun ns-unknown-rd-items->file (&optional (filename 
+                                            "~/projects/cwc-integ/sparser/Sparser/code/s/tools/ns-unknown-rd-items.lisp"))
+  "Save the collected ns examples to a file"
+  (with-open-file (stream filename :direction :output :if-exists :supersede)
+    (pprint *rd-ns* stream))
+  filename)
+          
+(defparameter *prefixes* nil)        
+(defun ns-prefixes (&optional (rd-ns *rd-ns*))
+  (length (setq *prefixes* 
+                (remove-duplicates 
+                 (loop for x in *rd-ns* 
+                       when (and (search "-" x) 
+                                 (not (resolve (subseq x 0 (search "-" x))))) 
+                       collect (subseq x 0 (search "-" x)))
+                 :test #'equal))))
+
+#+ignore
+(lsetq *ns-list*                       
+   append  (ppcre:split "[/:]" (second (car n))))
+#+ignore
+(lsetq *rd-ns*
+     (sort
+        (remove-duplicates
+          (loop for x in *ns-list*
+               unless
+                  (or (search " " x)
+                  (loop for c in '("-" "~" "+" "=" "≥" ">" "<" "≤" "#" "%" "*" "&" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0") thereis (eq 0 (search c x))))
+               collect x)
+            :test #'equal) #'string<))
+#+ignore
+(lsetq *prefixes* (remove-duplicates (loop for x in *rd-ns* when (and (search "-" x) (not (resolve (subseq x 0 (search "-" x))))) collect (subseq x 0 (search "-" x))) :test #'equal))
