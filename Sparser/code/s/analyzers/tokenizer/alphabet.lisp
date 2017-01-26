@@ -997,8 +997,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     
       (8211  ;; en dash
        (:punctuation . ,(punctuation-named #\- )))
-      (8212  ;; em dash, html: &mdash;
-       ;; Doesn't appear to have a symbolic form in ccl
+      (8212  ;; em dash, html: &mdash; "—" 
+       ;; Doesn't appear to have a symbolic form in ccl 
+       ;; (note from Laurel: this should probably be treated
+       ;; differently from en dash and hypehn but isn't yet)
        (:punctuation . ,(punctuation-named #\- )))
       (8213 (:punctuation . ,(punctuation-named (code-char 8213)))) ;;"―", (code = 8213)
       
