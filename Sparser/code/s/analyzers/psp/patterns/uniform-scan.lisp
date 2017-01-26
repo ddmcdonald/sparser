@@ -680,28 +680,10 @@ collected a set of ns-examples"
   filename)
 
 (defparameter *ns-unknown-items* nil)
-(defun ns-unknown-items (&optional (ns-unknown-sublist *ns-unknown-sublist*))
-  (length (setq *ns-unknown-items*
-                (loop for n in ns-unknown-sublist
-                        append (ppcre:split "[/:]" (second n))))))
+
 
 (defparameter *rd-ns* nil)
-(defun ns-unknown-rd-items (&optional (ns-unknown-items *ns-unknown-items*))
-  (length (setq *rd-ns*
-                (sort
-                 (remove-duplicates
-                  (loop for x in ns-unknown-items
-                         ; do (print (length x))
-                          unless
-                          (or (search " " x)
-                              (ppcre:scan "^[-~+#0-9_&«]" x)
-                              (search "—" x) 
-                              ;; we need to not make em dashes
-                              ;; equivalent to hyphens before no-space
-                              ;; but that hasn't been done yet
-                              (> 2 (length x))) ;; apparently > is actually ≥
-                          collect x)
-            :test #'equal) #'string<))))
+
 
 (defun ns-unknown-rd-items->file (&optional (filename 
                                             "~/projects/cwc-integ/sparser/Sparser/code/s/tools/ns-unknown-rd-items.lisp"))
@@ -719,19 +701,3 @@ collected a set of ns-examples"
                                  (not (resolve (subseq x 0 (search "-" x))))) 
                        collect (subseq x 0 (search "-" x)))
                  :test #'equal))))
-
-#+ignore
-(lsetq *ns-list*                       
-   append  (ppcre:split "[/:]" (second (car n))))
-#+ignore
-(lsetq *rd-ns*
-     (sort
-        (remove-duplicates
-          (loop for x in *ns-list*
-               unless
-                  (or (search " " x)
-                  (loop for c in '("-" "~" "+" "=" "≥" ">" "<" "≤" "#" "%" "*" "&" "°" "1" "2" "3" "4" "5" "6" "7" "8" "9" "0") thereis (eq 0 (search c x))))
-               collect x)
-            :test #'equal) #'string<))
-#+ignore
-(lsetq *prefixes* (remove-duplicates (loop for x in *rd-ns* when (and (search "-" x) (not (resolve (subseq x 0 (search "-" x))))) collect (subseq x 0 (search "-" x))) :test #'equal))
