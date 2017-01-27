@@ -315,7 +315,7 @@
     (declare (special *index-under-permanent-instances*
                       parent var dl-vv downlinks))
     (if (null var)
-        (then (lsp-break "find-or-make-lattice-subordinate fails to find var ~s in ~s~%"
+        (then (error "find-or-make-lattice-subordinate fails to find var ~s in ~s~%"
                     var/name (or category parent))
               (return-from find-or-make-lattice-subordinate (values parent nil)))
         (let* ((result
@@ -343,7 +343,7 @@
 (defun link-sub-super (sub super)
   (let ((supers (indiv-all-supers sub)))
     (setf (gethash super supers) t)))
-
+collect-ns-examples
 
 (defun interesting-super? (c)
   (not (gethash c (non-phrasal-classes))))

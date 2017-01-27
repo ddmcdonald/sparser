@@ -130,7 +130,7 @@
             
             (t 
              (push-debug `(,left ,right))
-             (lsp-break "new configuration of daughters ~
+             (error "new configuration of daughters ~
                          in vg that doesn't record tense: ~a"
                         vg-edge)))
         
