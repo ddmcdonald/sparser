@@ -343,7 +343,7 @@
 (defun link-sub-super (sub super)
   (let ((supers (indiv-all-supers sub)))
     (setf (gethash super supers) t)))
-collect-ns-examples
+
 
 (defun interesting-super? (c)
   (not (gethash c (non-phrasal-classes))))
