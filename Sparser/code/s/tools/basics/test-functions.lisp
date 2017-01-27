@@ -1168,3 +1168,56 @@ applied to l, and values are values associated with that key example"
 
 
 
+;;;;;;;;;;;; CODE TO TEST LARGE HMS ARTICLE SET
+;;;;
+
+(defparameter *break-on-hms-errors* nil)
+
+(defun test-hms-sentences (&key (n 1000)(start 0) (save-output t))
+  (when save-output
+    (init-hms-directory))
+  (load-hms-sentences-if-needed)
+  (test-hms-article-sents
+   (eval '*LARGE-HMS-SENT-LISTS*) :start start :n n :save-output save-output))
+
+(defun init-hms-directory ()
+  (declare (special *use-xml*))
+  (when (find-package :r3)
+    (save-article-semantics
+     *use-xml*
+     (pathname
+      (ensure-directories-exist
+       (concatenate 'string
+                    (eval (intern "*R3-TRUNK*" (find-package :r3)))
+                    "corpus/large-hms-corpus/results/"))))))
+
+(defun load-hms-sentences-if-needed ()
+  (unless (boundp '*hms-article-sents*)
+    (load (asdf:system-relative-pathname :r3 "../corpus/large-hms-corpus/large-hms-corpus.lisp"))))
+
+(defparameter *hms-sent-count* 0)
+
+(defun test-hms-article-sents (sl-list &key (n 1000) (start 0) (save-output t)
+                                 (break nil))
+  (let ((*break-on-hms-errors* break))
+    (declare (special *break-on-hms-errors* *hms-sent-count*))
+    (setq *hms-sent-count* 0)
+    (loop for sl in sl-list
+          as i from (+ 1 start) to (+ start n)
+          do
+          ;; this may cause problems, but it should cause the sentences to be collected as part of the article
+          (when save-output
+            (let ((sls (pname sl)))
+              (initialize-article-semantic-file-if-needed
+               (subseq sls 0 (- (length sls) 1)))))
+          (process-hms-article-sents sl)
+          (close-article-semantic-file-if-needed))))
+
+(defun process-hms-article-sents (sl)
+  (format t "Processing hms article sentences: ~s~%" sl)
+  (let ((sents (symbol-value sl)))
+    (if (or *break-on-hms-errors*
+            (and (find-package :r3)
+                 (eval (intern "*BREAK-DURING-READ*" (find-package :r3)))))
+        (loop for s in sents do (incf *hms-sent-count*)(qpp s))   
+        (loop for s in sents as i from 0 do (incf *hms-sent-count*)(qepp s)))))
