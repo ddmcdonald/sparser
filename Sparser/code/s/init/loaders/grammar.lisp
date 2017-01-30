@@ -109,9 +109,6 @@ omitted and then run (perhaps) after the image has been launched."
     ;; as part of loading objects because the doc and
     ;; situation modules refer to parts of it
     (gload "kinds;loader"))
-
-  #+ignore(gate-grammar *qualities* ;; merged into mid-level
-    (gload "qualities;loader"))
   
   (gate-grammar *mid-level-ontology*
     (gload "mid-level;loader"))
@@ -130,7 +127,7 @@ omitted and then run (perhaps) after the image has been launched."
     ;; be & have (etc) reference tree-families
     (gload "syntax;loader"))
 
-  (gate-grammar *general-words*
+  (gate-grammar *general-words* ;; can depend on mid-level
     (gload "words;loader 2"))
 
   (gate-grammar *paired-punctuation*
