@@ -190,7 +190,7 @@
                  ;; (lsp-break "create-predication-by-binding")
                  (values new-predication new-edge))
                (values new-predication nil)))
-	  (t (value pred nil)))))
+	  (t (values pred nil)))))
 
 (def-form-category lambda-form)
 (define-category lambda-expression :specializes predicate)
@@ -444,8 +444,8 @@
                     biological time-kind determiner)))
     (t
      (setq head (individual-for-ref head))
-     (when
-         (and *determiners-in-DL* (or (individual-p head)(category-p head)))
+     (when (and *determiners-in-DL*
+                (or (individual-p head) (category-p head)))
        (setq head (bind-dli-variable 'quantifier quantifier head)))
      (cond
        ((itypep quantifier 'no) ;; special handling for negation
@@ -1484,17 +1484,21 @@
 (define-lambda-variable 'superlative-from-set
     nil 'top)
 
+
+;; "bigger than that block"
 (defun make-comparative-adjp-with-np (comparative than-np)
   "Goes with comparative + than-np. This is the simple case where
    we create a comparative-attribution predicate"
   (push-debug `(,comparative ,than-np))
   (cond
     (*subcat-test* t)
-    ((typep comparative 'referential-category)
+    ((itypep comparative 'comparative)
      (define-or-find-individual 'comparative-attribution
          :value comparative :reference-set than-np))
     (t (bind-dli-variable 'compared-to than-np comparative))))
 
+
+;; "a bigger block than that block"
 (defun maybe-extend-comparative-with-than-np (np than-np)
   "For 'a bigger block than that one'"
   (let ((open-attribution (loop for b in (indiv-binds np)
@@ -1510,23 +1514,31 @@
              (variable (binding-variable open-attribution))
              (i (binding-body open-attribution)))
          (let ((complete-attribution
-                  (bind-variable 'reference-set than-np attribution)))
-             ;;/// replace the value vs. make a new binding
-             (setq i (bind-variable variable complete-attribution i))
-             i)))
+                (bind-variable 'reference-set than-np attribution)))
+           ;; Rebuild the np (i) with the completed attribution replacing
+           ;; it's present value for size.
+           ;;    revise-variable-value (var value indiv)
+           ;; Then insert a new edge over the comparative edge
+           ;; of the np [somehow] with the completed attribution
+           ;; as its value.  Try find-binding-dependency to get the edge
+
+           ;; That operation replaces this one
+           (setq i (bind-variable variable complete-attribution i))
+           i)))
       (t (rebind-dli-variable
           'comparative-predication
           (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
           np)))))
 
 
+;; "a bigger block"
 (defun comparative-adj-noun-compound (comparative head)
   "For syntax rules comparative + <all n-bar categories>, as in
    'the bigger red block'. We look up the attribute that is associated
    with the comparative ('size' in the case of 'bigger') to tell us
    what variable to bind. We make an instance of the comparative is
    is open in its reference set, which we signal by ????"
-  (let ((var (variable-to-bind comparative)))
+  (let ((var (variable-for-attribute comparative)))
     (cond 
       (*subcat-test*
        (or var
