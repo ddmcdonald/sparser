@@ -1,8 +1,0 @@
-*.DS_Store
-/drivers
-/analyzers
-/grammar
-/init
-/interface
-/tools
-/objects
