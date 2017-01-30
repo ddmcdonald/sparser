@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "loader-2"
 ;;;    Module:   "grammar;rules;words;"
-;;;   Version:   May 2013
+;;;   Version:   January 2017
 
 ;; Broken out from words;loader1 on 9/16/11. Handles problem of
 ;; defining function words that want categorial interpretations
@@ -21,3 +21,7 @@
 
 (gate-grammar *prepositions*
   (gload "words;prepositions"))
+
+(gate-grammar *quantifiers*
+  (gload "words;quantifiers"))
+

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "loader"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   1.9 January 2015
+;;;   Version:   January 2017
 
 ;; initiated 2/1/91, added "other adverbs" & "vague" 2/12, added
 ;;    "conjunctions" 2/20, added scheme for function words and
@@ -49,10 +49,6 @@
 
 (gate-grammar *pronouns*
   (gload "words;pronouns"))
-
-(gate-grammar *quantifiers*
-  (gload "words;quantifiers"))
-
 
 (gate-grammar *WH-words*
   (gload "words;WH words"))
