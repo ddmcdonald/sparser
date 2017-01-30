@@ -26,6 +26,7 @@
 (gload "bio;mechanics")
 (gload "bio;taxonomy")
 (gload "bio;standardized-protein-defs")
+(gload "bio;non-upa-upm-proteins")
 (gload "bio;proteins-revised")
 #|
 (gload "bio;uniprot-accession-id-mnemonic")
