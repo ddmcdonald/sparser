@@ -234,6 +234,20 @@
   (setf (gethash i *non-dli-mod-ht*) det))
 
 
+;;;-----------------------------
+;;; enabling k-methods (or not)
+;;;-----------------------------
+
+(defparameter *use-k-methods-in-syntax-functions* nil
+  "Permits overriding default in use-methods")
+
+(defun use-methods ()
+  "Gates k-method calls such as 'compose'. "
+  (declare (special *use-k-methods-in-syntax-functions*))
+  (or *use-k-methods-in-syntax-functions*
+      (not (current-script :biology))))
+
+
 ;;;-------------------
 ;;; noun premodifiers
 ;;;-------------------
@@ -260,7 +274,7 @@
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
-       ((unless (current-script :biology)
+       ((when (use-methods)
           (compose qualifier head)))
        ((itypep qualifier 'dependent-location) ;; "bottom" in "bottom block"
         (add-dependent-location qualifier head))
@@ -320,7 +334,7 @@
   (cond
     (*subcat-test*
      (takes-adj? head adjective))
-    ((unless (current-script :biology)
+    ((when (use-methods)
        (compose adjective head))) ;; This case is to benefit marker-categories
     ((itypep adjective 'attribute-value)
      (handle-attribute-of-head adjective head))
@@ -411,7 +425,7 @@
   (declare (special word::|of|))
   (or
    *subcat-test*
-   (unless (current-script :biology)
+   (when (use-methods)
      (compose possessive head))
    (let ((var (subcategorized-variable head word::|of| possessive)))
      (if var
@@ -496,7 +510,7 @@
 
 
 (defun verb+ing-noun-compound (qualifier head)
-  (or (unless (current-script :biology)
+  (or (when (use-methods)
         (compose qualifier head))
       (link-in-verb+ing qualifier head)))
 
@@ -533,7 +547,7 @@
     ((null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
      nil)
     (*subcat-test* (subcategorized-variable qualifier :object head))
-    (t (or (unless (current-script :biology)
+    (t (or (when (use-methods)
              (compose qualifier head))
 	   ;; This case is to benefit marker-categories
 	   (link-in-verb qualifier head)
@@ -547,9 +561,9 @@
 	  #+ignore (object-variable qualifier head)))
     (setq qualifier (individual-for-ref qualifier))
     (when var ;; really should check for passivizing
-      (setq  qualifier (create-predication-by-binding var head qualifier
+      (setq qualifier (create-predication-by-binding var head qualifier
 						      (list 'link-in-verb (parent-edge-for-referent)))))
-    (setq  head (bind-dli-variable 'predication qualifier head))
+    (setq head (bind-dli-variable 'predication qualifier head))
     head))
 
 ;;;------------------
@@ -581,7 +595,8 @@
     (when (and (first (cat-realization vg-cat))
                (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
                              '(passive/with-by-phrase))))
-      (when *parent-edge-getting-reference* ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
+      (when *parent-edge-getting-reference*
+        ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
         (revise-parent-edge :form category::vg)))
     (add-tense/aspect aux vg)))
 
@@ -821,7 +836,7 @@
          finally (return vg)))
           
     ;; It's not a collection. Compare handlers in interpret-pp-adjunct-to-np
-    (or (unless (current-script :biology)
+    (or (when (use-methods)
           (compose vg pp))
         (let* ((pp-edge (base-pp (right-edge-for-referent)))
                (prep-word (identify-preposition pp-edge))
@@ -919,9 +934,9 @@
   ;; (aka perdurants). 
   #| (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS signalling 
   to enhance p53 mediated apoptosis [2].") |#
-  (let* ((complement tocomp);; no longer bury interpretation (value-of 'comp tocomp))
-       (to-comp-var ;; e.g. for "acts to dampen..."
-        (subcategorized-variable s :to-comp complement)))
+  (let* ((complement tocomp) ;; no longer bury interpretation (value-of 'comp tocomp))
+         (to-comp-var ;; e.g. for "acts to dampen..."
+          (subcategorized-variable s :to-comp complement)))
     (cond
      (to-comp-var 
       (or *subcat-test*
@@ -958,7 +973,7 @@
      ;;(lsp-break "pp collection")
      nil)
     ((and np pp)
-     (or (unless (current-script :biology)
+     (or (when (use-methods)
            (compose np pp))
          (let* ((pp-edge (right-edge-for-referent))
                 (prep-word (identify-preposition pp-edge))
@@ -1135,7 +1150,7 @@
 (defparameter *vp-ed-sentences* nil)
 (defun assimilate-subject-to-vp-ed (subj vp)
   (declare (special category::transitive-clause-without-object category::np))
-  (push-debug `(,subj ,vp)) ;;  (setq subj (car *) vp (cadr *))
+  ;; (push-debug `(,subj ,vp)) (setq subj (car *) vp (cadr *))
   (let* ((vp-edge (right-edge-for-referent))
          (vp-form (edge-form vp-edge)))
     ;; We have to determine whether this is an s (which the rule
@@ -1186,7 +1201,7 @@
   the conjunction as a modifier just to keep it around. My reading
   of Quirk et al. is that the ones that we're most interested in
   have an adverbial function in structuring the discourse (19.55)."
-  (or (unless (current-script :biology)
+  (or (when (use-methods)
         (compose conj eventuality))
       eventuality)) ;; for the moment dropping it on the floor
 
@@ -1273,13 +1288,13 @@
 (defun make-pp (prep pobj)
   (declare (special category::prepositional-phrase))
   (if *subcat-test*
-      (not (itypep prep 'prepositional-phrase))
-      (else
-        (unless (current-script :biology)
-          (compose prep pobj))
-        (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
-         category::prepositional-phrase
-         `((prep ,prep) (pobj ,pobj))))))
+    (not (itypep prep 'prepositional-phrase))
+    (else
+      (or (when (use-methods)
+            (compose prep pobj))
+          (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
+           category::prepositional-phrase
+           `((prep ,prep) (pobj ,pobj)))))))
 
 (defun make-relativized-pp (prep pobj)
   (declare (special category::relativized-prepositional-phrase))
