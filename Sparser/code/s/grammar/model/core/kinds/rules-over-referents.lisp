@@ -26,21 +26,22 @@
       (itypep object type))))
 
 
-
-(def-k-function variable-to-bind (attribute-value)
-  (:documentation "Answers the question of what variable to use
+(defun variable-for-attribute (av)
+  "Answers the question of what variable to use
    for binding a particular attribute-value (e.g. 'red') to the
-   individual it's an attribute of. ")
-  (:method ((c category::collection))
-    (let ((type (value-of 'type c)))
+   individual it's an attribute of. "
+  (declare (special category::collection category::attribute-value))
+  (cond
+    ((itypep av category::collection)
+     (let ((type (value-of 'type av)))
       (when type
         (let ((attribute (value-of 'attribute type)))
           (value-of 'var attribute)))))
-  (:method ((av category::attribute-value))
-    (let ((attribute (value-of 'attribute (itype-of av))))
-      (value-of 'var attribute)))
-  (:method ((ignore T))
-    nil))
+    ((itypep av category::attribute-value)
+     (let ((attribute (value-of 'attribute (itype-of av))))
+       (value-of 'var attribute)))
+    (t
+     nil)))
 
 
 
