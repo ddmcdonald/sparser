@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1999,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "quantifiers"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   June 2016
+;;;   Version:   January 2017
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3.  Added some 1/13/94
 ;; 0.1 (7/25) revised "many" and "several" to be like the others rather than
@@ -64,7 +64,7 @@
 |#
 
 (define-category  quantifier
-  :specializes predicate ;; David says to make this change, and that "the world wouldn't die" if it is made
+  :specializes predicate
   :instantiates nil
   :index (:permanent :key word)
   :binds ((word  :primitive word)))
@@ -74,11 +74,13 @@
   :documentation "Was in bio taxonomy. May not make sense")
 
 
-
-(defun define-quantifier (string &key brackets rules)
-  (let* ((word (define-function-word string
-                  :brackets brackets
-                  :form 'quantifier))
+(defun define-quantifier (string &key brackets )
+  (unless brackets
+    (setq brackets '( ].quantifier  .[np )))
+  (let* ((word (or (resolve string) ;; e.g. "no" is an acknowledgement
+                   (define-function-word string
+                       :brackets brackets
+                       :form 'quantifier)))
          (category-name (name-to-use-for-category string))
          (object (find-individual 'quantifier :word word))
          cfrs )
@@ -101,85 +103,114 @@
                :referent object)))
         (push cfr cfrs))
 
-      (when (memq 'det rules)
-        (let ((cfr1 (def-form-rule/expr `(,category ,category::noun)
-                       :form 'np 
-                       :referent '(:method quantify left-referent right-referent)))
-              (cfr2 (def-form-rule/expr `(,category ,category::np)
-                        :form 'np
-                        :referent '(:method quantify left-referent right-referent))))
-          (push cfr1 cfrs)
-          (push cfr2 cfrs)))
-
-      #+ignore ;; don't handle partitives like this
-      (when (memq 'of rules)
-        ;; if we make this a conventional cfr, the bracket in front
-        ;; of "of" will push us to the segment level before we can
-        ;; see the rule, which is an unnecessary source of complexity
-        (let* ((string (string-append string " of"))
-               (pw (define-polyword/expr string))
-               (cfr (def-cfr/expr 'quantifier-of `(,pw)
-                       :form 'det
-                      :referent object)))
-          (push cfr cfrs)))
-
-      ;;///  'the'  Swallow the preceding 'the' and add a 'definite'
-      ;; type to the result. 
-			  
       (setf (get-rules object) cfrs)
       object )))
 
 
+(define-category comparative-quantification
+  :specializes scalar-attribute
+  :bindings (var (find-variable-for-category 'quantifier 'endurant))
+  :documentation "Draft of the 'attribute' that scalar quantifiers
+    are values of. Mostly serves to specific the variable, and that
+    could use some work in handling the meaning of any quantifier")
+
+(define-category comparative-quantifier
+  :specializes attribute-value
+  :mixins (quantifier comparative)
+  :bindings (attribute (category-named 'comparative-quantification))
+  :binds ((quantifier quantifier))
+  :documentation "For the actual quantifiers themselves"
+  :rule-label comparative
+  :index (:permanent :key name)
+  :realization (:adjective name))
+
+(define-category superlative-quantifier
+  :specializes comparative-quantifier
+  :rule-label superlative
+  :index (:permanent :key name)
+  :realization (:adjective name))
+
+(defun define-scalar-quantifier (&key dir base er est)
+  "All three words share the same basic meaning as a quantifier.
+   The comparative (:er) and superlative  (:est) forms add the
+   notion of a scale or attribute (attr) along with the
+   term they quantify varies relative to some reference set.
+   They pattern like adjectival comparatives."
+  ;;/// there's also direction -- see specialize-direction
+  ;; And we could refine the referent like setup-comparatives
+  ;; does, but it would be best to see some inferential consequence
+  ;; before we go too far down that road
+  ;;/// These all relate back to the base quantifier. Should we record
+  ;; the other direction as well? Say on q's plist
+  (let ((*inhibit-constructing-comparatives* t))
+    (declare (special *inhibit-constructing-comparatives*
+                      category::comparative))
+    (flet ((switch-form (string cat-name)
+             (let* ((word (resolve string))
+                    (category (category-named cat-name :error))
+                    (rule (find-form-cfr word category)))
+               (setf (cfr-form rule) category::comparative))))
+      (let* ((q (when base
+                  (define-quantifier base)))
+             (comparative
+              (when er
+                (define-or-find-individual 'comparative-quantifier
+                    :name er :quantifier q)))
+             (superlative
+              (when est
+                (define-or-find-individual 'superlative-quantifier
+                    :name est :quantifier q))))
+
+        (when base (switch-form base 'quantifier))
+        (when er (switch-form er 'adjective))
+        (when est (switch-form est 'adjective))
+        (values q comparative superlative)))))
 
 
-(define-quantifier "all"     :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "any"     :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "both"    :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "each"    :brackets '( ].quantifier  .[np ))
-(define-quantifier "enough"  :brackets '( ].quantifier  .[np ))
-(define-quantifier "every"   :brackets '( ].quantifier  .[np ))
-(define-quantifier "few"     :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "much"    :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "many"    :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "more"    :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "most"    :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "several" :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "a number" :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "some"    :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "such"    :brackets '( ].quantifier  .[np ))
+
+(define-quantifier "additional")
+(define-quantifier "all")
+(define-quantifier "any")
+(define-quantifier "another")
+(define-quantifier "both")
+(define-quantifier "each")
+(define-quantifier "either")
+(define-quantifier "enough")
+(define-quantifier "every")
+
+;; count
+(define-scalar-quantifier :base "few" :er "fewer" :est "fewest")
+
+;; mass
+(define-scalar-quantifier :base "less" :er "lesser" :est "least") ;;/// "at least N"
+
+(define-quantifier "much") ;; mass 
+(define-quantifier "many") ;; count
+
+(define-scalar-quantifier :er "more" :est "most") ;;/// "most of all, ..."
+
+(define-quantifier "neither")
+(define-quantifier "numerous")
+(define-quantifier "a number")
+(define-quantifier "other")
+(define-quantifier "others")
+(define-quantifier "several")
+(define-quantifier "some")
+(define-quantifier "such")
+
 ;; not sure if this is a quantifier, but it is similar 
-(define-quantifier "such a"    :brackets '( ].quantifier  .[np ))
+(define-quantifier "such a"    )
+
+(define-quantifier "various")
 
 
-(define-quantifier "neither"     :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "either"     :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "numerous"     :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "various"     :brackets '( ].quantifier  .[np ) :rules '(of))
-(define-quantifier "several"     :brackets '( ].quantifier  .[np ) :rules '(of))
-
-
-(define-quantifier "another" :brackets '( ].quantifier  .[np ) :rules '(det of))
   
-(define-quantifier "additional" :brackets '( ].quantifier  .[np ) :rules '(det the))
-(define-quantifier "other"      :brackets '( ].quantifier  .[np ) :rules '(det the))
-(define-quantifier "others"     :brackets '( ].quantifier  .[np ) :rules '(the))
 
+(define-quantifier "no") 
 
-
-(define-quantifier "no" :brackets '( ].quantifier  .[np )) 
-
-;; ignoring the comment just below as very likely OBE.
-;; Note that these brackets don't handle case of 'not' modifing an adjp.
 (define-quantifier "not"  :brackets '( ].verb .[modal ))
 
-;; this interferes with the use of NOT as negation on adjectives "is not sensitive"
-;; I don't know why "NOT" was ever a quantifier
-;;(define-quantifier "not"  :brackets '( ].verb .[modal ))
-  ;; had been '( ].quantifier ))  
-  ;; which gets you out of a problem with "...be careful not to..."
-  ;; where without this there's a break before "to"
-
-(define-quantifier "none" :brackets '( ].quantifier  phrase.[ ) :rules '(of))
+(define-quantifier "none" :brackets '( ].quantifier  phrase.[ ))
 
 
 ;;;----------

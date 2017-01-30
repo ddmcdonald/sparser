@@ -78,32 +78,6 @@
 (define-reflection-on "in spite of")
 (define-reflection-on "regardless of")
 
-;;;--------------
-;;; Comparatives
-;;;--------------
-
-;; initiated 7/29/94. Added some polywords 9/10/09.
-;; 0.1 (2/17/10) added "rather than", which isn't at all the same thing, but
-;;  since it's just going for a parse, rather than an interpretation, that's
-;;  ok for now. ///Could we generalize the "than" part? It will certainly
-;;  have a common interpretation.
-
-(define-comparative "more")
-(define-superlative "most")
-
-;; These don't combine with adverbs
-;;
-(define-comparative "fewer")
-(define-comparative "less")
-
-;; quality
-(define-comparative "better") ;; good, well
-(define-comparative "worse") ;; bad
-
-
-
-
-
 
 ;;;------------
 ;;; enablement
@@ -221,12 +195,6 @@
   :super-category 'intensifier
   :tree-families '(pre-adj-adverb pre-adv-adverb))
 
-;; OLD CODE:
-;; Since these don't start verb groups, they can't be marked 'adverb'
-;; They can modify adverbs and comparatives at least
-
-;;(define-function-word "too"   :brackets '( ].adverb .[adverb ))
-;;(define-function-word "very"  :brackets '( ].adverb .[adverb ))
 
 
 

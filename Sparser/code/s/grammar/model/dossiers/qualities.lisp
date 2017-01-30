@@ -40,8 +40,25 @@
 (define-length "long" :dir :+)
 (define-length "short" :dir :-)
 
-;;--- amount
-;;(define-amount "few" :dir :-)
 
-;; more/less -- see quantifiers too
-;; most/least
+#|
+;; quality
+(define-comparative "better") ;; good, well
+(define-comparative "worse") ;; bad
+
+------- "more"
+ more broadly
+a more definitive analysis of
+ more lung tumors than 
+is more sensitive to 
+is more effective than 
+may be somewhat more resistant to
+ a more physiologically relevant cell type
+(load-test 746
+ "Because a combination of rapamycin and BAY43-9006
+ is more effective at inhibiting melanoma cell proliferation
+ than either drug alone, ...)
+were more common in
+was suppressed more effectively by
+
+|#

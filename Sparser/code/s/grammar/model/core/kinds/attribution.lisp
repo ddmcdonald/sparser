@@ -68,6 +68,8 @@ a 'subject', e.g. "southern Chinese girls are never tall"
 (define-category scalar-attribute
   :specializes scalar-quality
   :mixins (attribute)
+  :binds ((comparative :primitive category)
+          (superlative :primitive category))
   :documentation "Calling this 'scalar' is to say that
  its values are arranged along some dimension")
 

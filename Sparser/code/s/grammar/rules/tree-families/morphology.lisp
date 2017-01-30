@@ -871,6 +871,11 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
   "Used when the caller knows more about how to construct 
    the comparatives than the default routines. See define-attribute")
 
+(defmacro without-comparatives (&body body)
+  `(let ((*inhibit-constructing-comparatives* t))
+     (declare (special *inhibit-constructing-comparatives*))
+     ,@body))
+
 (defmethod make-rules-for-head ((pos (eql :adjective)) word category referent &rest special-cases)
   "Define rules for an adjective and possibly its comparative & superlative variants."
   (declare (special *inhibit-constructing-comparatives*))
