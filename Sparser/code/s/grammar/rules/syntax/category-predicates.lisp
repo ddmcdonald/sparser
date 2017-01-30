@@ -239,7 +239,7 @@
   (ng-compatible? (cat-symbol c) evlist))
 
 (defmethod ng-compatible? ((name symbol) edges)
-  (declare (special category::all ;;category::quantifier-of
+  (declare (special category::all category::both ;;category::quantifier-of
 		    category::pronoun
                     *ng-internal-categories*))
   (or
