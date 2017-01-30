@@ -1173,7 +1173,9 @@ applied to l, and values are values associated with that key example"
 
 (defparameter *break-on-hms-errors* nil)
 
-(defun test-hms-sentences (&key (n 1000)(start 0) (save-output t))
+(defun test-hms-sentences (&key (n 1000)(start 0) (use-xml nil)(save-output t))
+  (declare (special *use-xml*))
+  (when use-xml (setq *use-xml* t))
   (when save-output
     (init-hms-directory))
   (load-hms-sentences-if-needed)
