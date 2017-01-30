@@ -36,10 +36,12 @@
      (let ((type (value-of 'type av)))
       (when type
         (let ((attribute (value-of 'attribute type)))
-          (value-of 'var attribute)))))
+          (when attribute
+            (value-of 'var attribute))))))
     ((itypep av category::attribute-value)
      (let ((attribute (value-of 'attribute (itype-of av))))
-       (value-of 'var attribute)))
+       (when attribute
+         (value-of 'var attribute))))
     (t
      nil)))
 
