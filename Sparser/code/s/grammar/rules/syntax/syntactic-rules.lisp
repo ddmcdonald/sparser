@@ -168,26 +168,6 @@
            :head :right-edge
            :form n-bar
            :referent (:function adj-noun-compound left-edge right-edge)))
-     (eval 
-      `(def-syntax-rule (comparative ,nb) ;; "bigger suv"
-           :head :right-edge
-           :form n-bar
-           :referent (:function comparative-adj-noun-compound left-edge right-edge)))
-     (eval 
-      `(def-syntax-rule (superlative ,nb) ;; "biggest suv"
-           :head :right-edge
-           :form n-bar
-           :referent (:function superlative-adj-noun-compound left-edge right-edge)))
-     (eval 
-      `(def-syntax-rule (comparative-adjp ,nb) ;; "more studied suv"
-           :head :right-edge
-           :form n-bar
-           :referent (:function comparative-adj-noun-compound left-edge right-edge)))
-     (eval 
-      `(def-syntax-rule (superlative-adjp ,nb) ;; "most studied suv"
-           :head :right-edge
-           :form n-bar
-           :referent (:function superlative-adj-noun-compound left-edge right-edge)))
      (eval
       `(def-syntax-rule (,nb adjective) ;; "RAS in vivo"
            :head :left-edge
@@ -219,6 +199,7 @@
            :head :right-edge
            :form n-bar 
            :referent (:function quantifier-noun-compound left-edge right-edge)))
+     
    ;; this rule seemed to generate bad parses of things like 1C, 
    ;; and not to be terribly useful...
    ;; but should be OK now
@@ -900,6 +881,30 @@ similar to an oncogenic RasG12V mutation (9)."))
    if that will direct us to the right function
   
 |#
+(loop for nb in `(verb+ing ;; treat present-participles as noun-like
+		  ,@*n-bar-categories*)
+   do
+     (eval 
+      `(def-syntax-rule (comparative ,nb) ;; "bigger suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function comparative-adj-noun-compound left-edge right-edge)))
+     (eval 
+      `(def-syntax-rule (superlative ,nb) ;; "biggest suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function superlative-adj-noun-compound left-edge right-edge)))
+     (eval 
+      `(def-syntax-rule (comparative-adjp ,nb) ;; "more studied suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function comparative-adj-noun-compound left-edge right-edge)))
+     (eval 
+      `(def-syntax-rule (superlative-adjp ,nb) ;; "most studied suv"
+           :head :right-edge
+           :form n-bar
+           :referent (:function superlative-adj-noun-compound left-edge right-edge))))
+
 
 (def-syntax-rule (comparative pp)
     :head :left-edge
@@ -937,10 +942,12 @@ similar to an oncogenic RasG12V mutation (9)."))
 
 (def-syntax-rule (comparative than-np) ;; (p/s "bigger than that block")
     :head :left-edge
+    :form comparative-adjp
     :referent (:function make-comparative-adjp-with-np left-edge right-edge))
 
 (def-syntax-rule (comparative-adjp than-np)
     :head :left-edge
+    :form comparative-adjp
     :referent (:function make-comparative-adjp-with-np left-edge right-edge))
 
 (def-syntax-rule (np than-np)
@@ -1022,5 +1029,5 @@ similar to an oncogenic RasG12V mutation (9)."))
     :form number
     :head :right-edge
     :referent (:daughter right-edge
-			 :bind (approximator left-edge)))
+	       :bind (approximator left-edge)))
 
