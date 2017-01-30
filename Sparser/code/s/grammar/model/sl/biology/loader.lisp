@@ -47,14 +47,15 @@
 (gload "bio;switches")
 (gload "bio;rules")
 
-(gload "bio;UCD-proteins")
+;;(gload "bio;UCD-proteins")
 (gload "bio;protein-families")
 (gload "bio;phenomena") ;; after proteins
 (gload "bio;verbs") ;; after phenomena
 
 (gload "bio;molecules")
 
-(gload "bio;trips-terms.lisp")
+;;(gload "bio;trips-terms.lisp")
+(gload "bio;trips-terms-new.lisp")
 (gload "bio;reach-terms.lisp")
 
 (gload "bio;citations")
