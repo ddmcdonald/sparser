@@ -21,12 +21,36 @@
 
 (in-package :sparser)
 
+;;; Define a new variable for the actual spelling of the definition
+;;;  for use by HMS
+(define-lambda-variable 'raw-text
+    nil 'top)
+
 ;;;---------------------------
 ;;; TRIPS & REACH --> def-bio
 ;;;---------------------------
 
+(defparameter *show-trips-redefinitions* nil)
+(defparameter *suppress-redefinitions* t)
 
 (defun trips/reach-term->def-bio (term trips/reach->krisp-class)
+  (when (equal (second term) 'sparser::--)
+    ;; new format for file -- revise call
+    (setq term (third term)))
+  (when *suppress-redefinitions*
+  (when (resolve (car term))
+    (when *show-trips-redefinitions*
+      (format t "~%ignoring redefinition ~s of already defined word~%"
+              term))
+    (return-from trips/reach-term->def-bio nil))
+  (when 
+      (or (resolve (string-downcase (car term)))
+          (resolve (string-upcase (car term))))
+    (when *show-trips-redefinitions*
+      (format t "~%ignoring mixed-case redefinition ~s of already defined word~%"
+              term))
+    (return-from trips/reach-term->def-bio nil)))
+
   (let ((category (funcall trips/reach->krisp-class term)))
     (case category
       ((residue-on-protein molecular-site nil)
@@ -35,7 +59,7 @@
       (cellular-location
        (def-cell-loc (car term)
            (simplify-colons
-                        (getf (cddr term) :id))))
+            (getf (cddr term) :id))))
       ((bacterium ;;bio-process ;; may conflict with handling of post-translational processes
         cancer
         cell-line
@@ -581,9 +605,9 @@ the process.
 
 
 (defun make-typed-bio-entity (word category
-                                   &optional greek identifier mitre-link
-                                   ras2-model
-                                   long synonyms takes-plurals documentation)
+                              &optional greek identifier mitre-link
+                                ras2-model
+                                long synonyms takes-plurals documentation)
   
   (unless (find-variable-for-category 'name category)
     (error "Cannot use the def-bio form with the category ~a~
@@ -597,28 +621,18 @@ the process.
         ;; and passed through in a parameter.
         rules  i   )
 
-    ;; There is a bug that I can't sort out with the available evidence
-    ;; when redefining a def-bio entity involving a list of rules being
-    ;; expected to be a structure. Until there's time to creep up on
-    ;; that bug and kill it, I've separated the find from the make and
-    ;; not looking for the possibility that a redefinition actually
-    ;; added or changed something substantive. ddm - 12/30/14
-    (cond
-     (nil
-      (setq i (find-individual category :name word))
-      (when i
-        (return-from make-typed-bio-entity i))
-      (setq i (define-individual category :name word)))
-     (t
-      (setq i (find-or-make-individual category :name word))
-      ;;(lsp-break "make-typed-bio-entity")
-      ))
     ;; The real form to use
     ;;     (setq i (find-or-make-individual category :name word))
     ;; The find-or-make call will set up a rule for the short form
     ;; as a common noun that has this individual as its referent.
     ;; Ignoring brackets since this runs with the new chunker
 
+    (setq i (find-or-make-individual category :name word))
+
+    
+    ;;(lsp-break "make-typed-bio-entity")
+      
+   
     ;; Add synonyms to the table for this head term
     (when synonyms
       (add-bio-synonyms (word-string word) synonyms))
@@ -626,24 +640,31 @@ the process.
     (let* ((retrieved-rules (get-rules i))
            (r (when retrieved-rules (car retrieved-rules))))
 
-      (when identifier
-        (setq i (bind-dli-variable 'uid identifier i)))
+      #|
       (when mitre-link
-        (handle-mitre-link i mitre-link))
+      (handle-mitre-link i mitre-link))
       (when ras2-model
-        (setq i (bind-dli-variable 'ras2-model ras2-model i)))
-      ;; At this point, i has been changed to include the ras2-model
-      ;; binding (and the mitre-link binding) if necessary, so we need to use this
-      ;; version of i for all the rules
+      (setq i (bind-dli-variable 'ras2-model ras2-model i)))
+      ;; At this point, i has been changed to include the ras2-model ; ;
+      ;; binding (and the mitre-link binding) if necessary, so we need to use this ; ;
+      ;; version of i for all the rules ; ;
+      |#
+
 
       (cond
-       ((and r (cfr-p r))
-        ;;(push-debug `(,r)) (break " set rule form?")
-        (setf (cfr-form r) category::proper-noun)
-        (setf (cfr-referent r) i))
-       (t
-        (push-debug `(,i ,word))
-        (error "something badly formed about rules field")))
+        ((and r (cfr-p r))
+         ;;(push-debug `(,r)) (break " set rule form?")
+         (setf (cfr-form r) category::proper-noun)
+         (setf (cfr-referent r)
+               (bind-dli-variable
+                :raw-text
+                word
+                (if identifier
+                    (bind-dli-variable :uid word i) ;;(find-or-make-individual category :uid word)
+                    i))))
+        (t
+         (push-debug `(,i ,word))
+         (error "something badly formed about rules field")))
 
       (let* ((pname (etypecase word
                       (word (word-pname word))
@@ -661,7 +682,9 @@ the process.
           (let ((word (resolve/make syn)))
             (push (define-cfr label `(,word)
                     :form form
-                    :referent i)
+                    :referent (if (value-of 'name i)
+                                  (bind-dli-variable 'raw-text word i)
+                                  (bind-dli-variable 'name word i)))
                   rules)
             ;; 1/12/16 Spews polyword-duplication complaints
             ;; when applied to proteins
@@ -672,7 +695,9 @@ the process.
                        (polyword (plural-version/pw word)))))
                 (push (define-cfr label `(,plural)
                         :form form
-                        :referent i)
+                        :referent (if (value-of 'name i)
+                                  (bind-dli-variable 'raw-text word i)
+                                  (bind-dli-variable 'name word i)))
                       rules))))))
 
       ;; Now we do that by-hand for the long-form. If the long form needs
@@ -703,7 +728,11 @@ the process.
       i)))
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
-  (unless *greek-character-map*
+  (unless 
+
+
+
+*greek-character-map*
     (populate-greek-character-map))
   (push-debug `(,long ,greek-words ,i ,short ,form))
   (etypecase greek-words
