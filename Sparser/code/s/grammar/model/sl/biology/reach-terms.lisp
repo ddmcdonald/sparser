@@ -1236,6 +1236,7 @@
     ("ICI" "pubchem" :ID "5318532") 
     ("oleic acid" "pubchem" :ID "445639") ))
 
-(defparameter *all-reach-terms* (append *reach-cells* *reach-proteins* *reach-terms*))
+(defparameter *all-reach-terms* (append *reach-cells* ;;*reach-proteins*
+                                        *reach-terms*))
 (loop for term in *all-reach-terms* do (define-reach-term term))
 
