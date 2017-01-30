@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; Copyright (c) 2010-2016 David D. McDonald all rights reserved
+;;; Copyright (c) 2010-2017 David D. McDonald all rights reserved
 ;;;
 ;;;     File: "assignments"
 ;;;   Module: "grammar;rules:brackets:"
-;;;  Version:  October 2016
+;;;  Version:  January 2017
 
 ;; Extracted from diverse files 12/4/12. Added referent construction
 ;; 12/11/12. Revised those 'setup' constructors 2/23/13 to specialize
@@ -291,6 +291,14 @@
       (mark-as-constructed-category-for-word category super-category)
       (add-rules rules category)
       category)))
+
+
+(defun setup-comparative (word)
+  (define-comparative word))
+
+(defun setup-superlative (word)
+  (define-superlative word))
+
 
 
 (defun setup-adverb (word &optional ambiguous?)

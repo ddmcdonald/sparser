@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2014-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2014-2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "affix rules"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2016
+;;;  Version:  January 2017
 
 ;; moved over from preterminals code 5/11/93, v2.3
 ;; 0.1 (3/28/94) changed the 'rule' on these edges from :known-affix to
@@ -98,13 +98,13 @@
          (:ends-in-er
           (tr :defining-as-given-morph 'comparative)
           (if *edge-for-unknown-words*
-            (setup-adjective word) ;; standin for undefined setup-comparative
+            (setup-comparative word)
             (assign-brackets-to-adjective word)))
          
          (:ends-in-est
           (tr :defining-as-given-morph 'superlative)
           (if *edge-for-unknown-words*
-            (setup-adjective word) ;; standin for undefined setup-superlative
+            (setup-superlative word)
             (assign-brackets-to-adjective word)))
          
          (otherwise
@@ -129,17 +129,20 @@
             (tr :defining-as-given-morph 'adjective)
             (if *edge-for-unknown-words*
               (setup-comparative word)
-              nil))
+              (assign-brackets-to-adjective word)))
            (superlative
             (tr :defining-as-given-morph 'adjective)
             (if *edge-for-unknown-words*
               (setup-superlative word)
-              nil))
+              (assign-brackets-to-adjective word)))
            (v
             (tr :defining-as-given-morph 'verb)
             (if *edge-for-unknown-words*
-                (setup-verb word)
-                (assign-brackets-as-a-main-verb word)))))))))
+              (setup-verb word)
+              (assign-brackets-as-a-main-verb word)))))))))
+
+
+
 (defparameter *announce-bad-affixes* nil)
     
 (defun sanity-check-word-formation (word lemma type)
