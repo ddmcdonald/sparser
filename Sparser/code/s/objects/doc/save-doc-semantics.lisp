@@ -61,10 +61,19 @@
                          :if-does-not-exist :create))
              (when *use-xml*
                (format *sentence-results-stream*
-                       "<?xml version=\"1.0\" encoding=\"~a\"?>~%<article pmcid=~s>~%"
+                       "<?xml version=\"1.0\" encoding=\"~a\"?>~%<article ~aid=~s>~%"
                        (stream-external-format *sentence-results-stream*)
                        (if (stringp article)
-                           (subseq article 6 (- (search "SENTENCES" article) 1))
+                           (cond ((equal 0 (search "PMC" article)) "pmc")
+                                 ((equal 0 (search "PM" article)) "pm")
+                                 (t "pmc"))
+                           "")
+                       (if (stringp article)
+                           (cond ((equal 0 (search "PMC" article)) (subseq article 3))
+                                 ((equal 0 (search "PM" article)) (subseq article 2))
+                                 ((search "SENTENCES" article)
+                                  (subseq article 6 (- (search "SENTENCES" article) 1)))
+                                 (t article))
                            (pname (name article)))))
              *sentence-results-stream*)))))
 
