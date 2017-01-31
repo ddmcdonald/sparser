@@ -192,9 +192,7 @@
   :realization (:s subject
                    :as-comp as-comp))
 
-(define-category scalar-variation :specializes bio-predication
-                 ;;for adjectives like transient, unchanged, sustained
-                 )
+
 
 (define-category bio-quality :specializes quality
   :mixins (biological temporally-localized)

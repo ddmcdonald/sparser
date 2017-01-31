@@ -25,6 +25,9 @@
 (noun "likelihood" :super certainty)
 (noun "probability" :super certainty)
 
+(define-category scalar-variation
+  :specializes bio-predication)
+
 (adj "noisy" :super scalar-variation)
 (adj "persistent" :super scalar-variation)
 (adj "unchanged" :super scalar-variation)
