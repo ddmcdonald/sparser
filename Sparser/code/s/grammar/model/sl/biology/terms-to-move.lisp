@@ -186,7 +186,9 @@ be biology specific, since they aren't. |#
   :realization
   (:adj "positive"
 	:for theme))
-(define-category negative :specializes bio-relation
+(define-category value-is-negative :specializes bio-relation
+  ;; 'negative' is the category that represents "no" and "not"
+  ;; in the tense model. They're not the same thing.               
   :realization
   (:adj "negative"
 	:for theme))
