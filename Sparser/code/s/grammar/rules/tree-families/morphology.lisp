@@ -776,7 +776,41 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
 ;(ed-form-of-verb (define-word "bat"))
 ;(ed-form-of-verb (define-word "join"))
 
+;;--- comparative/superlative
 
+(defun make-comparative/superlative (word &key (suffix "er") (y-suffix "ier"))
+  (declare (type word word)
+           (type string suffix y-suffix))
+  (let* ((pname (pname word))
+         (lastchar (elt pname (- (length pname) 1)))
+         (butlastchar (elt pname (- (length pname) 2)))
+    ;;/// we should abstract out the criteria for doubling the final
+    ;; consonant.
+         (derived-pname
+          (cond
+            ((char= lastchar #\y)
+             (string-append (subseq pname 0 (- (length pname) 1)) y-suffix))
+
+            ((and (vowel? lastchar)
+                  (vowel? (elt suffix 0)))
+             (string-append (subseq pname 0 (- (length pname) 1)) suffix))
+
+            ((and (consonant? lastchar)
+                  (vowel? butlastchar)
+                  (eql #\w lastchar))
+             (string-append pname suffix))
+            
+            ((and (consonant? lastchar)
+                  (vowel? butlastchar))
+             (string-append pname (string lastchar) suffix))
+            
+            (t (string-append pname suffix)))))
+
+    ;; the word might exist, so look before redefining
+    (resolve/make derived-pname)))
+
+
+;;--- ing
 
 (defmethod ing-form-of-verb ((word word))
   (let* ((ing-pname (ing-form-of-verb (word-pname word)))
@@ -970,39 +1004,32 @@ because the referent can be trivial. Provides overrides to make-verb-rules."
              (pw-string (spaced-string word-strings)))
         (define-polyword/expr pw-string)))))
 
-(defun make-comparative/superlative (word &key (suffix "er") (y-suffix "ier"))
-  (declare (type word word)
-           (type string suffix y-suffix))
-  (let* ((pname (pname word))
-         (lastchar (elt pname (- (length pname) 1)))
-         (butlastchar (elt pname (- (length pname) 2))))
-    ;;/// we should abstract out the criteria for doubling the final
-    ;; consonant. That would invite more general treatments of
-    ;; 'special cases' like the final "w" in "yellow" (3d clause)
-    (define-word/expr
-        (cond ((char= lastchar #\y)
-               (string-append (subseq pname 0 (- (length pname) 1)) y-suffix))
-              ((and (vowel? lastchar) (vowel? (elt suffix 0)))
-               (string-append (subseq pname 0 (- (length pname) 1)) suffix))
-              ((and (consonant? lastchar) (vowel? butlastchar) (eql #\w lastchar))
-               (string-append pname suffix))
-              ((and (consonant? lastchar) (vowel? butlastchar))
-               (string-append pname (string lastchar) suffix))
-              (t (string-append pname suffix))))))
+
+;;--- comparative / superlative called from make-rules-for-head (:adjective)
 
 (defun make-comparative-rules (word category referent)
-  (list
-   (define-cfr category (list (make-comparative/superlative word
-                                :suffix "er" :y-suffix "ier"))
-     :form category::comparative
-     :referent referent)))
+  (declare (special category::comparative))
+  (let ((c-word (make-comparative/superlative
+                 word :suffix "er" :y-suffix "ier")))
+    (list ;; caller append's
+     (if (eq category referent)
+       ;; If they're different then it's probably deliberate.
+       ;; Otherwise we use the default.
+       (define-comparative c-word)
+       (define-cfr category (list c-word)
+         :form category::comparative
+         :referent referent)))))
 
 (defun make-superlative-rules (word category referent)
-  (list
-   (define-cfr category (list (make-comparative/superlative word
-                                :suffix "est" :y-suffix "iest"))
-     :form category::superlative
-     :referent referent)))
+  (declare (special category::superlative))
+  (let ((s-word (make-comparative/superlative
+                 word :suffix "est" :y-suffix "iest")))
+    (list
+     (if (eq category referent)
+       (define-superlative s-word)
+       (define-cfr category (list s-word)
+         :form category::superlative
+         :referent referent)))))
 
 
 

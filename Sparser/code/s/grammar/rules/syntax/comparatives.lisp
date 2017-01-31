@@ -242,14 +242,34 @@ is seen.
 
       (values c-indiv s-indiv))))
 
+
+#| These two function compensate for not having comparative
+or superlative realization options. The categories we instantiate
+here use :word as their realization spec to ensure that nobody
+mucks with the word under the covers. But the form specification
+is also the basis of the form label on the rule that realization
+creates, so these functions shift it over.
+   They're also recruited by the morphology code itself to get
+a reasonable referent for the cases that don't go through this
+route. That threading requires them to return a rule. 
+   Worse still, be have some duplicate definitions going on
+(e.g. "cycle" in core/collections and in biology/taxonomy)
+so to return a rule in those cases we have to look for
+comparative rather than content-word.  |#
 (defun switch-form-to-comparative (word)
   ;; simpler while designing these than extending the head keywords
   (let ((rule (find-form-cfr word category::content-word)))
-    (setf (cfr-form rule) category::comparative)))
+    (when rule
+      (setf (cfr-form rule) category::comparative))
+    (or rule
+        (find-form-cfr word category::comparative))))
 
 (defun switch-form-to-superlative (word)
   (let ((rule (find-form-cfr word category::content-word)))
-    (setf (cfr-form rule) category::superlative)))
+    (when rule
+      (setf (cfr-form rule) category::superlative))
+    (or rule
+        (find-form-cfr word category::superlative))))
        
 
 ;;;----------------------------------------------
