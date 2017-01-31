@@ -93,11 +93,10 @@
     (tr :look-for-prep-binders)
     (look-for-prep-binders))
   
-  (when  (there-are-conjunctions?) 
+  (when (there-are-conjunctions?) 
     ;; Originally inserted this call for conjunctions to merge conjoined NPs before creating PPs
     ;; as in "as a tumor suppressor and an activator"
     ;; Now only used for VG conjunctions
-    
     (tr :try-spanning-conjunctions)
     (let ((*allow-form-conjunction-heuristic* :vg))
       (declare (special *allow-form-conjunction-heuristic*))
@@ -120,7 +119,6 @@
 (defun whack-a-rule-cycle (sentence)
   (let ((*whack-a-rule-sentence* sentence))
     (declare (special *whack-a-rule-sentence*))
-
     (let ( rule-and-edges  edge at-least-one-rule)
       (clrhash *rules-for-pairs*)
       (loop
@@ -183,15 +181,15 @@
          (number-of-treetops (length treetops)))
     (tr :islands-pass-2 number-of-treetops)
     (if *new-pass2*
-        (new-pass2 sentence start-pos end-pos treetops)
-        (old-pass2 sentence start-pos end-pos treetops number-of-treetops))))
+      (new-pass2 sentence start-pos end-pos treetops)
+      (old-pass2 sentence start-pos end-pos treetops number-of-treetops))))
 
 (defun new-pass2 (sentence start-pos end-pos treetops)
   (when (there-are-conjunctions?) ;; J3 doesn't parse
-        (tr :try-spanning-conjunctions)
-        (let ((*allow-form-conjunction-heuristic* t))
-          (declare (special *allow-form-conjunction-heuristic*))
-          (try-spanning-conjunctions)))
+    (tr :try-spanning-conjunctions)
+    (let ((*allow-form-conjunction-heuristic* t))
+      (declare (special *allow-form-conjunction-heuristic*))
+      (try-spanning-conjunctions)))
   (let (da-result)
     (loop
       (setq da-result (da-rule-cycle start-pos end-pos treetops t))
@@ -206,10 +204,8 @@
         (let ((*allow-form-conjunction-heuristic* t))
           (declare (special *allow-form-conjunction-heuristic*))
           (try-spanning-conjunctions)))
-      (unless
-          (or
-           (whack-a-rule-cycle sentence)
-           da-result)
+      (unless (or (whack-a-rule-cycle sentence)
+                  da-result)
         (return-from new-pass2 t))
       ;;(when (there-are-conjunctions?) (lsp-break "conjunctions"))
       (setq treetops (successive-treetops :from start-pos :to end-pos)))))
@@ -231,8 +227,10 @@
     thereis
     (progn
       (tr :trying-da-pattern-on tt)
-      (setq result (look-for-da-pattern  tt))
+      (setq result (look-for-da-pattern tt))
       (and result (not (eq result :trie-exhausted))))))
+
+
 
 (defun old-pass2 (sentence start-pos end-pos treetops number-of-treetops)
   
@@ -256,7 +254,7 @@
       ;; treetops. We may have to look at several successive tt
       ;; before we get one
       (tr :trying-da-pattern-on tt)
-      (setq result (look-for-da-pattern  tt))
+      (setq result (look-for-da-pattern tt))
       
       ;; Did that cover everything? (Could only happen on the
       ;; first iteration.
