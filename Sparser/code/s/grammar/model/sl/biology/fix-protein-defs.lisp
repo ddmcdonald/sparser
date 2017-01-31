@@ -1,5 +1,10 @@
 (in-package :sparser)
 
+(unless (boundp '*upa-key-upm-val*)
+  (load "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology/uniprot-accession-id-mnemonic.lisp"))
+
+(unless (boundp '*hgnc-up-ht*)
+  (load "/Users/rusty/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/hgnc/hgnc-with-ids-2.lisp"))
 
 (defparameter *non-upa-upm* nil
 "Will be filled with any proteins whose current ID isn't a UPA or UPM ID")
@@ -21,8 +26,8 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
             while prot
             when (and (stringp (second prot))
                         (consp (third prot)))
-              do (cond ((equal "UP:" (subseq (second prot) 0 3))
-                       (write-upa-protein prot :output-file output-file))
+              do (cond ((eq 0 (search "UP:" (second prot)))
+                        (write-upa-protein prot :output-file output-file))
                        ((gethash (second prot) upa-ht)
                         (rewrite-protein prot (second prot) 
                                          (gethash (second prot) upa-ht)
@@ -40,6 +45,11 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                         (write-non-upa-protein prot))))))
   output-file)
 
+
+(defun get-upa-from-symbol (sym)
+  (cond ((gethash sym *upa-key-upm-val*) sym)
+        ((gethash sym *upm-key-upa-val*))
+        ((gethash sym *hgnc-up-ht*))))
                         
 (defun rewrite-protein (prot upa upm &key (output-file "standardized-protein-defs-new.lisp"))
   "Given an existing protein definition, its UPA, UPM and an output
@@ -94,5 +104,8 @@ the other ones without modifying it"
                                             (subseq name 0 (search " " name))
                                             name)
                                         (+ 1 (search ":" name))))))
+    (declare (special up-names))
+    (when (cdr up-names)
+      (lsp-break "up-names"))
     (when (eq 1 (length up-names))
       (car up-names))))
