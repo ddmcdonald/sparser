@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "abbreviations"
-;;;   Module:  "init;versions:v2.3:workspace:"
-;;;  version:  January 2015
+;;;   Module:  "init;workspace:"
+;;;  version:  January 2017
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -41,6 +41,8 @@
   remove-property-from (obj tag)
   change-plist-value (obj property new-value)
   push-onto-plist (obj item tag)
+
+  add-rule (rule obj)
 |#
 
 ;;;-----------------------------------------------------
@@ -97,10 +99,6 @@
 	cat-name
 	(list 'quote cat-name)))))
 
-;(defun iv (variable-name)
-;  (let ((v (find-variable variable-name)))
-;    (
-
 (defun ie (number-of-edge) 
   (d (edge# number-of-edge)))
 
@@ -113,7 +111,6 @@
             (edge-category e) (edge-form e) 
             (edge-rule e) (edge-referent e))
     e))
-
 
 (defun ier (number-of-edge) ;; inspect edge referent
   (d (edge-referent (edge# number-of-edge))))
@@ -135,29 +132,33 @@
   (describe-individual i))
           
 
-
 ;; edge vectors
 (defun dev/s (position#) (d (ev/s position#)))
 (defun dev/e (position#) (d (ev/e position#)))
 
 
-(defmethod drs ((pname string)) ;; Desribe rule set
-  (let ((word (resolve pname)))
-    (if word (drs word)
-        (format nil "~s is not a known word" pname))))
-(defmethod drs ((word word))
-  (let ((rs (rule-set-for word)))
-    (if rs (d rs)
-        (format nil "~a does not have a rule set"
-                (word-pname word)))))
-(defmethod drs ((name symbol))
-  (let ((category (category-named name)))
-    (if category (drs category)
-        (format nil "\"~a\" does not name a category" name))))
-(defmethod drs ((c category))
-  (let ((rs (rule-set-for c)))
-    (if rs (d rs)
-        (format nil "~a does not have a rule set" c))))
+;; rule sets
+(defgeneric drs (label)
+  (:documentation "Call describe on the rule-set of the
+   word (given a string or a word), or a category (given
+   a symbol or a category).")
+  (:method ((pname string))
+    (let ((word (resolve pname)))
+      (if word (drs word)
+          (format nil "~s is not a known word" pname))))
+  (:method ((word word))
+    (let ((rs (rule-set-for word)))
+      (if rs (d rs)
+          (format nil "~a does not have a rule set"
+                  (word-pname word)))))
+  (:method ((name symbol))
+    (let ((category (category-named name)))
+      (if category (drs category)
+          (format nil "\"~a\" does not name a category" name))))
+  (:method ((c category))
+    (let ((rs (rule-set-for c)))
+      (if rs (d rs)
+          (format nil "~a does not have a rule set" c)))))
 
 (defun dcr (category-name) ;; "Describe category's rules"
   (display-rules category-name)
@@ -183,10 +184,6 @@
 (defun i# (n)
   (individual-object# n))
 
-(defun psi# (n)
-  (psi-object# n))
-
-;; lp#  -- for lattice points
 
 (defun ietf (name)
   (let ((etf (exploded-tree-family-named name)))
@@ -215,9 +212,7 @@
    based conditional because other code depends on it."
   (analyze-text-from-string string))
 
-
 (defparameter *bad-sentences* nil)
-
 (defun qepp (string)  ;; quiet, error-protected call to pp
   (with-total-quiet
       (handler-case
