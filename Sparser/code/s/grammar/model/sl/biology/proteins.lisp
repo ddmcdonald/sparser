@@ -327,36 +327,12 @@ appreciates they are all of a kind, that numbers and other
 filligre may be used to distinguish them, etc.
 |#
 
-;;--- the Ras family
-#+ignore
-(def-bio "KRas" protein 
-  :synonyms ("K-Ras" "K-RAS")
-  :identifier "PR:0000009442" ;; gene is "PR:P01116" 
-  :mitre-link "Uniprot:P01116")
-
-#+ignore
-(def-bio "HRas" protein      ;; Harvey Ras
-  :synonyms ("H-Ras" "H-RAS" "HRAS")
-  :identifier "PR:000029705" ;; gene is "PR:P01112")
-  :mitre-link "Uniprot:P01112:")
-#+ignore
-(def-bio "NRas" protein
-  :synonyms ("N-Ras" "N-RAS" "NRAS")
-  :identifier "PR:000011416" ;; gene is "PR:P01111"
-  :mitre-link "Uniprot:P01111")
 
 
  ;; RAS small monomeric GTPase activity
 
 
 (def-bio "Raf CAAX" protein)
-
-;;(def-bio "RasA1" protein :synonyms ("RASA1") :mitre-link "Uniprot:P20936")
-;;(def-bio "RasA2" protein  :synonyms ("RASA2")  :mitre-link "Uniprot:Q15283")
-;;(def-bio "RASA4" protein :mitre-link "Uniprot:O43374")	
-;;(def-bio "RASAL1" protein  :mitre-link "Uniprot:O95294")
-;;(def-bio "RASAL2" protein  :mitre-link "Uniprot:Q9UJF2")
-
 
 
 (def-bio "RASA3" protein
