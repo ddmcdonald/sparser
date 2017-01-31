@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1997,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1997,2013-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2016
+;;;  Version:  January 2017
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -66,8 +66,8 @@
 (gate-grammar *default-quantifier-semantics*
   (gload "syntax-quant;quantifiers"))
 
-(gate-grammar *comparatives*
-  (gload "syntax-comp;comparatives"))
+;;(gload "syntax-comp;comparatives"))
+;; Loading moved to load-the-grammar by itself
 
 (gate-grammar *semantics-of-WH-words*
   (gload "syntax-comp;WH-word-semantics")

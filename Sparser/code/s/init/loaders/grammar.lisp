@@ -99,6 +99,11 @@ omitted and then run (perhaps) after the image has been launched."
     ;; it references
     (gload "tree-families;loader"))
 
+  (gate-grammar *comparatives*
+    ;; Moved this early to handle comparative adjective in collections
+    ;; Has to follow tree-families
+    (gload "syntax-comp;comparatives"))
+
   (gate-grammar *collections*
     ;; sequence-of-numbers requires sequence. Collections had been after
     ;; the loading of amounts
