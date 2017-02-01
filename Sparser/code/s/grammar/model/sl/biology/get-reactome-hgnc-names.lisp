@@ -71,7 +71,9 @@
                                         nil
                                         (list w)))
                             #'string<)))
-                     (def-form `(define-singular-protein ,(car def) ,def)))
+                     (def-form `(define-protein ,(car def) ,def))
+                     (*print-case* :downcase)
+                     (*print-pretty* nil))
                       
                 (print def-form rhgnc-file)
                 (eval def-form))))))
@@ -132,7 +134,7 @@
 (defun save-hgnc-ids ()
   "load all human gene protein vocabulary from HGNC"
   (unless (> (hash-table-count *hgnc-big-ht*) 0)
-    (load "~/projects/cwc-integ/sparser/sparser/code/s/grammar/model/sl/biology/not-loaded/hgnc/hgnc-with-ids-2.lisp")
+    (load "~/projects/cwc-integ/sparser/sparser/code/s/grammar/model/sl/biology-not-loaded/hgnc/hgnc-with-ids-2.lisp")
     (loop for hgnc in (cdr *hgnc-ids*) do (save-names hgnc))
     ;; find out which hgnc name strings are ambiguous wrt hgnc identifiers
     (hgnc-mults (hal *hgnc-big-ht*))))
@@ -171,7 +173,7 @@
   (save-hgnc-ids)
   (lsetq *reactome-names*
          (get-forms-from-file
-          "~/projects/cwc-integ/sparser/sparser/code/s/grammar/model/sl/biology/not-loaded/reactome/homo-sapiens/all-names.lisp"))
+          "~/projects/cwc-integ/sparser/sparser/code/s/grammar/model/sl/biology-not-loaded/reactome/homo-sapiens/all-names.lisp"))
 
   (loop for x in *reactome-names*
         when (search "PROTEIN" (pname (second x)))

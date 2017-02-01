@@ -34,6 +34,8 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                                           :direction :output :if-exists :supersede
                                           :if-does-not-exist :create
                                           :external-format :UTF-8)
+            (format non-upa-stream "(in-package :sparser)~%~%")
+            (format stream "(in-package :sparser)~%~%")
             (replace-proteins-stream-stream input stream non-upa-stream))))
     output-file))
 
@@ -43,22 +45,22 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
           while prot
           when (and (stringp (second prot)) (consp (third prot)))
           do (replace-protein-def prot
-                                  :upa-ht *upa-key-upm-val*
-                                  :upm-ht *upm-key-upa-val*
-                                  :output-stream output-stream
-                                  :non-upa-stream non-upa-stream))))
+                                 output-stream
+                                 non-upa-stream
+                                 :upa-ht *upa-key-upm-val*
+                                 :upm-ht *upm-key-upa-val*))))
 
 (defun revise-prot-def (prot)
   (replace-protein-def prot :output-stream t))
 
 (defun replace-protein-def (prot 
+                            output-stream
+                            non-upa-stream
                             &key
-                              output-stream
-                              non-upa-stream
                               (upa-ht *upa-key-upm-val*)
                               (upm-ht *upm-key-upa-val*))
   (cond ((eq 0 (search "UP:" (second prot)))
-         (write-upa-protein prot :output-stream output-stream))
+         (write-upa-protein prot output-stream))
         ((gethash (second prot) upa-ht)
          (rewrite-protein prot (second prot) 
                           (gethash (second prot) upa-ht)
@@ -73,6 +75,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                           (second prot)
                           output-stream))
         (t
+         (setq prot (use-standard-id prot))
          (pushnew prot *non-upa-upm*)
          (write-non-upa-protein prot non-upa-stream))))
 
@@ -81,14 +84,34 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
   (cond ((gethash sym *upa-key-upm-val*) sym)
         ((gethash sym *upm-key-upa-val*))
         ((gethash sym *hgnc-up-ht*))))
-                        
+
+(defun use-standard-id (prot)
+  (let ((standard
+         (or
+          (loop for item in (third prot)
+                when (eq 0 (search "NCIT:" item))
+                do (return item))
+          (loop for item in (third prot)
+                when (and (search ":" item)
+                          (not (search " " item))
+                          (not (search "-" item)))
+                do (return item))
+          (loop for item in (third prot)
+                when (eq 0 (search "PROTEIN" item))
+                do (return item)))))
+    
+    `(,(car prot) ,(or standard (second prot))
+       ,(loop for item in (third prot)
+              collect
+                (if (equal item standard)
+                    (second prot)
+                    item)))))                
+
 (defun rewrite-protein (prot upa upm output-stream)
   "Given an existing protein definition, its UPA, UPM and an output
 file, prints a new protein definition to that file with the ID as
 UP:UPA and adds the UPA and UPM to the alternate names"
-  (let* ((*print-pretty* nil)
-         (*print-case* :DOWNCASE)
-         (orig-alt-names (third prot))
+  (let* ((orig-alt-names (third prot))
          (alt-names-with-upm (if (member upm orig-alt-names :test #'equal)
                                  orig-alt-names
                                  (push upm orig-alt-names)))
@@ -97,24 +120,30 @@ UP:UPA and adds the UPA and UPM to the alternate names"
          (alt-names (if (member upa alt-names-with-upm :test #'equal)
                         alt-names-with-upm
                         (push upa alt-names-with-upm))))
+    (setq alt-names (sort (remove-duplicates alt-names :test #'equal)
+                          #'string<))
     (if (eq output-stream t)
         `(,defprot ,id ,alt-names)
-        (print `(,defprot ,id ,alt-names) output-stream))))
+        (lc-one-line-print `(,defprot ,id ,alt-names) output-stream))))
+
+(defun lc-one-line-print (x stream)
+  (let* ((*print-pretty* nil)
+         (*print-case* :DOWNCASE))
+    (print x stream)))
 
 (defun write-upa-protein (prot output-stream)
   "Just writes the existing protein definition to the file with all
 the other ones without modifying it"
-  (let* ((*print-pretty* nil)
-         (*print-case* :DOWNCASE))
-    (print prot output-stream)))
-
+  (lc-one-line-print (non-redundant-def prot) output-stream))
+    
 (defun write-non-upa-protein (prot non-upa-stream)
   "Just writes the existing protein definition to the file with all
 the other ones without modifying it"
-  (let* ((*print-pretty* nil)
-         (*print-case* :DOWNCASE))
-    (print prot non-upa-stream)))
+  (lc-one-line-print (non-redundant-def prot) non-upa-stream))
 
+(defun non-redundant-def (prot)
+  (setq prot `(,(car prot) ,(second prot)
+                ,(sort (remove-duplicates (third prot) :test #'equal) #'string<))))
 
 (defun check-alts-for-UP (alt-names)
   (let (up-names)
@@ -125,15 +154,17 @@ the other ones without modifying it"
             (let ((up-name? (subseq name (+ 1 (search ":" name)) (search " " name))))
               (when (gethash up-name? *upa-key-upm-val*)
                 (pushnew up-name? up-names :test #'equal)))
+          when (eq 0 (search "UP:" name))
+          do
+            (let* ((up? (gethash (string-upcase (subseq name 3)) *upa-key-upm-val*)))
+              (when up?
+                (pushnew  (string-upcase (subseq name 3)) up-names :test #'equal)))
           when (gethash (string-upcase name) *upa-key-upm-val*)
           do
             (pushnew  (string-upcase name) up-names :test #'equal)
           when (and (eq 0 (search "HGNC" name)) (gethash name *hgnc-up-ht*))
           do
-            (let ((hgnc name))
-              (declare (special hgnc))
-              (lsp-break "hgnc")
-              (pushnew (gethash name *hgnc-up-ht*) up-names :test #'equal)))
-
+            (pushnew (gethash name *hgnc-up-ht*) up-names :test #'equal))
     (when (and up-names (null (cdr up-names)))
       (car up-names))))
+
