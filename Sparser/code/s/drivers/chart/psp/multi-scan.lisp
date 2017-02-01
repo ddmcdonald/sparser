@@ -553,7 +553,7 @@
   ;; be entered into the chart.
   (let* ((position-before (starts-at-pos sentence))
          (first-item (next-treetop/rightward position-before)))
-    ;; We get an edge-vector is there are multiple edges
+    ;; We get an edge-vector if there are multiple edges
     ;; or a word if there are no edges
     (let* ((edge (etypecase first-item
                    (word)
