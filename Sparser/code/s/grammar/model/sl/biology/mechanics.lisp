@@ -295,6 +295,9 @@ the process.
 (defparameter *q-proteins* nil)
 
 (defparameter *standardize-protein-defs* nil)
+(defparameter *standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
+(defparameter *non-standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
+
 (defun standardize-protein-def (ids)
   (when *standardize-protein-defs*
     (let* ((human-mnemonic (loop for id in ids when (human-mnemonic? id) do (return id)))
@@ -326,9 +329,7 @@ the process.
                       (remove-duplicates (append ids (gethash (car ids) *non-standard-protein-ht*)) :test #'equal)
                       :test #'equal)))))
 
-(defparameter *standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
 
-(defparameter *non-standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
 
 (defun human-mnemonic? (pr)
   (search "_HUMAN" (pname pr) :test #'equalp))
@@ -369,16 +370,11 @@ the process.
                       unless
                         (or (equal id bpid)
                             (eq (length id) 2) ;; (and (eq (length id) 2) (print id))
-                            (eq 0 (search "PROTEIN" id))
-                            (eq 0 (search "HGNC:" id))
-                            (eq 0 (search "UniProt:" id))
-                            (eq 0 (search "UP:" id))
-                            (eq 0 (search "CHEBI:" id))
-                            (eq 0 (search "GO:" id)))
+                            (and (search ":" id)
+                                 (not (search " " id))))
                       collect id)
-      :identifier (if (search "_" bpid)
-                      (format nil "UP:~A" bpid)
-                      bpid)
+      :identifier bpid
+
       :MITRE-LINK (if (search "_" bpid)
                       (format nil "UNIPROT:~A" bpid)
                       bpid)
@@ -404,12 +400,14 @@ the process.
                  :test #'equal))))))
 
 (defun best-protein-id (ids)
-  (car ids) ;; we now have updated all defining forms so the best id is the first one!!
-  #+ignore
-  (or
-   (loop for id in ids when (search "_HUMAN" id) do (return id))
-   (loop for id in ids when (search "PR:" id) do (return id))
-   (car ids)))
+  (cond ((search ":" (car ids))
+         (car ids))
+        ((loop for id in ids
+               when (search "_" id)
+               do (return id)))
+        (t (car ids)))
+  ;;(car ids) ;; we now have updated all defining forms so the best id is the first one!!
+  )
 
 (defun simp-protein (dp)
   (if
@@ -643,7 +641,7 @@ the process.
    
     ;; Add synonyms to the table for this head term
     (when synonyms
-      (add-bio-synonyms (word-string word) synonyms))
+      (add-bio-synonyms (or identifier (word-string word)) synonyms))
 
     (let* ((retrieved-rules (get-rules i))
            (r (when retrieved-rules (car retrieved-rules))))
@@ -668,7 +666,7 @@ the process.
                 :raw-text
                 word
                 (if identifier
-                    (bind-dli-variable :uid word i) ;;(find-or-make-individual category :uid word)
+                    (bind-dli-variable :uid identifier i) ;;(find-or-make-individual category :uid word)
                     i))))
         (t
          (push-debug `(,i ,word))
