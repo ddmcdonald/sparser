@@ -48,6 +48,32 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                                  :upa-ht *upa-key-upm-val*
                                  :upm-ht *upm-key-upa-val*))))
 
+
+
+(defun read-and-normalize-protein-defs (&key (protein-file "standardized-protein-defs.lisp") 
+                                        (upa-ht *upa-key-upm-val*)
+                                        (upm-ht *upm-key-upa-val*))
+  "Taking an input list of the existing proteins and hash tables using
+UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
+Mnemonic) as keys, output a file that has all proteins whose IDs are
+in the hash table changed to have \"UP:$UPA\" as their ID and the UPA
+and UPM in their alternate names field -- if the ID isn't a UPA or UPM
+it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out later"
+  (let ((input (open (concatenate 'string "sparser:bio;" protein-file)
+                     :if-does-not-exist nil)))
+    (normalize-proteins-from-stream input t)))
+
+(defun normalize-proteins-from-stream (input)
+  (when input
+    (loop for prot = (read input nil)
+          while prot
+          when (and (stringp (second prot)) (consp (third prot)))
+          collect (replace-protein-def prot
+                                 output-stream
+                                 non-upa-stream
+                                 :upa-ht *upa-key-upm-val*
+                                 :upm-ht *upm-key-upa-val*))))
+
 (defun revise-prot-def (prot)
   (replace-protein-def prot :output-stream t))
 
@@ -105,7 +131,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                     (second prot)
                     item)))))                
 
-(defun rewrite-protein (prot upa upm output-stream)
+(defun rewrite-protein (prot upa upm &optional (output-stream t))
   "Given an existing protein definition, its UPA, UPM and an output
 file, prints a new protein definition to that file with the ID as
 UP:UPA and adds the UPA and UPM to the alternate names"
@@ -129,15 +155,19 @@ UP:UPA and adds the UPA and UPM to the alternate names"
          (*print-case* :DOWNCASE))
     (print x stream)))
 
-(defun write-upa-protein (prot output-stream)
+(defun write-upa-protein (prot &optional (output-stream t))
   "Just writes the existing protein definition to the file with all
 the other ones without modifying it"
-  (lc-one-line-print (non-redundant-def prot) output-stream))
+  (if (eq non-upa-stream t)
+      (non-redundant-def prot)
+      (lc-one-line-print (non-redundant-def prot) output-stream)))
     
-(defun write-non-upa-protein (prot non-upa-stream)
+(defun write-non-upa-protein (prot &optional (non-upa-stream t))
   "Just writes the existing protein definition to the file with all
 the other ones without modifying it"
-  (lc-one-line-print (non-redundant-def prot) non-upa-stream))
+  (if (eq non-upa-stream t)
+      (non-redundant-def prot)
+      (lc-one-line-print (non-redundant-def prot) non-upa-stream)))
 
 (defun non-redundant-def (prot)
   (setq prot `(,(car prot) ,(second prot)
@@ -166,6 +196,7 @@ the other ones without modifying it"
     (when (and up-names (null (cdr up-names)))
       (car up-names))))
 
+
 (defun trips-defs->protein-defs (file &optional (suppress-redef nil))
   (setq *suppress-redefinitions* suppress-redef)
   (with-open-file (stream (concatenate 'string "sparser:bio-not-loaded;" file ".lisp")
@@ -190,3 +221,23 @@ the other ones without modifying it"
                                     (if (eq (car def-form) 'define-protein)
                                         prot-stream
                                         non-prot-stream)))))))))
+                                        
+(defparameter *protein-name-ht* (make-hash-table :size 100000 :test #'equal))
+
+(defun find-ambiguous-protein-names (&optional
+                                       (file (merge-pathnames
+                                              "s/grammar/model/sl/biology/standardized-protein-defs.lisp"
+                                              *sparser-code-directory*)))
+  (clrhash *protein-name-ht*)
+  (for-forms-in-file
+   file
+   #'(lambda (form)
+       (when (eq (car form) 'define-protein)
+         (loop for wd in (cons (second form) (third form))
+                 do
+         (pushnew (second form)
+                  (gethash wd *protein-name-ht*)
+                  :test #'equal)))))
+  (loop for h in (hal *protein-name-ht*)
+        when (cddr h)
+          collect h))
