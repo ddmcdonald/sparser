@@ -86,7 +86,9 @@
   :long "GTPase")
 
 (def-family "MAPK"
-  :members ("ERK1" "ERK2")
+    :members ("UP:Q5A1D3" ;;"ERK1"
+              "UP:Q54QB1" ;;"ERK2"
+              )
   :long "mitogen activated protein kinase"
   :synonyms ("ERK" "extracellular signal-regulated kinase"
              "ERK1/2"

@@ -5,7 +5,7 @@
 (defpackage :hp)
 
 (defun define-trips-term (term )
-  (eval (trips/reach-term->def-bio term )))
+  (eval (trips/reach-term->def-bio term)))
 
 ;;    (    "ONT:MRNA" --    ("m-RNA" "ONT:MRNA" :ID "NCIT:C813" :NAME "messenger RNA"))
 ;;    (    "ONT:MRNA" --    ("pre-mRNA" "ONT:MRNA" :ID "NCIT:C111298" :NAME "precursor mRNA"))
