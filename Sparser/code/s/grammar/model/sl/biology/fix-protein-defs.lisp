@@ -1,24 +1,22 @@
 (in-package :sparser)
 
-(unless (boundp '*upa-key-upm-val*)
-  (load "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology/uniprot-accession-id-mnemonic.lisp"))
-
-(unless (boundp '*hgnc-up-ht*)
-  (load "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/hgnc/hgnc-with-ids-2.lisp"))
-
 (defparameter *non-upa-upm* nil
 "Will be filled with any proteins whose current ID isn't a UPA or UPM ID")
 
 (defun read-and-replace-protein-defs (&key (protein-file "standardized-protein-defs.lisp") 
-                                        (upa-ht *upa-key-upm-val*)
-                                        (upm-ht *upm-key-upa-val*)
-                                        (output-file "standardized-protein-defs-new.lisp"))
+                                      (upa-ht *upa-key-upm-val*)
+                                      (upm-ht *upm-key-upa-val*)
+                                      (output-file "standardized-protein-defs-new.lisp"))
   "Taking an input list of the existing proteins and hash tables using
 UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
 Mnemonic) as keys, output a file that has all proteins whose IDs are
 in the hash table changed to have \"UP:$UPA\" as their ID and the UPA
 and UPM in their alternate names field -- if the ID isn't a UPA or UPM
 it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out later"
+  (unless (boundp '*upa-key-upm-val*)
+    (load "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology/uniprot-accession-id-mnemonic.lisp"))
+  (unless (boundp '*hgnc-up-ht*)
+    (load "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/hgnc/hgnc-with-ids-2.lisp"))
   (let ((input (open (concatenate 'string "sparser:bio;" protein-file)
                      :if-does-not-exist nil)))
     (if (eq output-file t)
@@ -168,3 +166,31 @@ the other ones without modifying it"
     (when (and up-names (null (cdr up-names)))
       (car up-names))))
 
+(defun trips-defs->protein-defs (file &optional (suppress-redef nil))
+  (setq *suppress-redefinitions* suppress-redef)
+  (with-open-file (stream (concatenate 'string 
+                                       "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/" file ".lisp")
+#+ignore(concatenate 'string "sparser:bio-not-loaded;" file)
+                          :direction :input 
+                          :external-format :UTF-8)
+    (with-open-file (prot-stream (concatenate 'string "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/" file "-proteins.lisp")
+#+ignore(concatenate 'string "sparser:bio-not-loaded;" 
+                                              file "-proteins.lisp")
+                                 :direction :output :if-exists :supersede 
+                                 :if-does-not-exist :create
+                                 :external-format :UTF-8)
+      (with-open-file (non-prot-stream (concatenate 'string "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/" file "-non-proteins.lisp")
+#+ignore(concatenate 'string "sparser:bio-not-loaded;" 
+                                                    file "-non-proteins.lisp")
+                                       :direction :output :if-exists :supersede 
+                                       :if-does-not-exist :create
+                                       :external-format :UTF-8)
+        (loop for term = (read stream nil)
+              while term
+             
+              do (when term
+                   (let ((def-form  (trips/reach-term->def-bio term)))
+                     (lc-one-line-print def-form 
+                                    (if (eq (car def-form) 'define-protein)
+                                        prot-stream
+                                        non-prot-stream)))))))))
