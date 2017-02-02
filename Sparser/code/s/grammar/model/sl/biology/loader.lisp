@@ -28,6 +28,7 @@
 (gload "bio;standardized-protein-defs")
 (gload "bio;non-upa-upm-proteins")
 (gload "bio;proteins-revised")
+(gload "bio;fix-protein-defs")
 #|
 (gload "bio;uniprot-accession-id-mnemonic")
 ;; move RAS2 proteins first, so that the ras-model field is not blocked
