@@ -280,6 +280,7 @@
 (def-logical-pathname "ern;"          "sl;ERN;")
 (def-logical-pathname "disease;"      "sl;disease;")
 (def-logical-pathname "bio;"          "sl;biology;")
+(def-logical-pathname "bio-not-loaded;"          "sl;biology-not-loaded;")
 (def-logical-pathname "hurricanes;"   "sl;hurricanes;")
 (def-logical-pathname "blocks;"       "sl;blocks-world;")
 (def-logical-pathname "biocuration;"  "sl;biocuration;")

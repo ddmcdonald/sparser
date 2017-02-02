@@ -168,19 +168,15 @@ the other ones without modifying it"
 
 (defun trips-defs->protein-defs (file &optional (suppress-redef nil))
   (setq *suppress-redefinitions* suppress-redef)
-  (with-open-file (stream (concatenate 'string 
-                                       "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/" file ".lisp")
-#+ignore(concatenate 'string "sparser:bio-not-loaded;" file)
+  (with-open-file (stream (concatenate 'string "sparser:bio-not-loaded;" file ".lisp")
                           :direction :input 
                           :external-format :UTF-8)
-    (with-open-file (prot-stream (concatenate 'string "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/" file "-proteins.lisp")
-#+ignore(concatenate 'string "sparser:bio-not-loaded;" 
+    (with-open-file (prot-stream (concatenate 'string "sparser:bio-not-loaded;" 
                                               file "-proteins.lisp")
                                  :direction :output :if-exists :supersede 
                                  :if-does-not-exist :create
                                  :external-format :UTF-8)
-      (with-open-file (non-prot-stream (concatenate 'string "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/" file "-non-proteins.lisp")
-#+ignore(concatenate 'string "sparser:bio-not-loaded;" 
+      (with-open-file (non-prot-stream (concatenate 'string "sparser:bio-not-loaded;" 
                                                     file "-non-proteins.lisp")
                                        :direction :output :if-exists :supersede 
                                        :if-does-not-exist :create
