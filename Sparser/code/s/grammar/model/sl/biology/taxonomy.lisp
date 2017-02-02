@@ -974,18 +974,16 @@
   :binds ((organ bio-organ))
   :instantiates self
   :index (:permanent :key name)
-  :lemma (:common-noun "cancer")
   :realization (:common-noun name
-                             :noun "disease"
-                             :m organ
-                             :of organ
-                             :in organ))
+                :noun "disease"
+                :m organ
+                :of organ
+                :in organ))
 
 (define-category cancer  :specializes disease
   :instantiates self
   :index (:permanent :key name)
-  :lemma (:common-noun "cancer")
-  :realization (:common-noun name))
+  :realization (:common-noun  "cancer"))
 
 (define-category melananoma  :specializes cancer
   :instantiates self
