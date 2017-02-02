@@ -35,27 +35,28 @@
 
 (defparameter *trips-define-proteins* nil)
 
-(defun trips/reach-term->def-bio (term trips/reach->krisp-class)
+(defun trips/reach-term->def-bio (term &optional (trips/reach->krisp-class #'trips-class->krisp))
+  "Function takes a trips definition and returns a sparser definition form"
   (when (equal (second term) 'sparser::--)
     ;; new format for file -- revise call
     (setq term (third term)))
   (when *suppress-redefinitions*
-  (when (resolve (car term))
-    (when *show-trips-redefinitions*
-      (format t "~%ignoring redefinition ~s of already defined word~%"
-              term))
-    (return-from trips/reach-term->def-bio nil))
-  (when 
-      (or (resolve (string-downcase (car term)))
-          (resolve (string-upcase (car term))))
-    (when *show-trips-redefinitions*
-      (format t "~%ignoring mixed-case redefinition ~s of already defined word~%"
-              term))
-    (return-from trips/reach-term->def-bio nil)))
+    (when (resolve (car term))
+      (when *show-trips-redefinitions*
+        (format t "~%ignoring redefinition ~s of already defined word~%"
+                term))
+      (return-from trips/reach-term->def-bio nil))
+    (when 
+        (or (resolve (string-downcase (car term)))
+            (resolve (string-upcase (car term))))
+      (when *show-trips-redefinitions*
+        (format t "~%ignoring mixed-case redefinition ~s of already defined word~%"
+                term))
+      (return-from trips/reach-term->def-bio nil)))
 
   (let ((category (funcall trips/reach->krisp-class term)))
     (case category
-      ((residue-on-protein molecular-site nil)
+      ((residue-on-protein molecular-site nil time-span)
        ;;(format t "Rejecting REACH definition ~s~%" term)
        nil)
       (cellular-location
@@ -89,7 +90,7 @@
        (car *trips-define-proteins*))
       (t
        (unless (member category '(bio-method bio-process bio-organ bio-complex protein-domain protein-family rna ))
-         (format t "~%definiing an instance of ~s~%" category))
+         (format t "~%defining an instance of ~s~%" category))
        (when (member category '(point-mutation)) 
          ;;(member category '(bio-process bio-organ bio-complex))
          ;; we really want bio-processes and bio-organs to be individuals, but there is a problem with def-bio -- ASK ALEX
@@ -99,6 +100,36 @@
             :bindings (uid ,(simplify-colons (getf (cddr term) :id)))
             :realization
             (:noun ,(car term)))))))
+
+(defun trips-class->krisp (term)
+  (ecase (intern (subseq (second term) 4)) ;; drop the ONT:
+    ((protein gene-protein gene) 'protein) ;; we treat genes as if they name the protein
+    ;;(gene 'gene)
+    (bacterium 'bacterium)
+    (biological-process 'bio-process)
+    ((internal-body-part body-part) 'bio-organ)
+    (cancer 'cancer)
+    (cell 'cell-type)
+    (cell-line 'cell-line)
+    (cell-part 'cellular-location)
+    ((chemical molecule) 'molecule)
+    (macromolecular-complex 'bio-complex)
+    ((measure-unit volume-unit weight-unit) 'unit-of-measure)
+    (medical-disorders-and-conditions 'disease)
+    (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
+    (molecular-domain 'protein-domain)
+    (molecular-site 'residue-on-protein)
+    ((organism nonhuman-animal fish invertebrate) 'organism)
+    (pharmacologic-substance 'drug)
+    (physical-condition 'disease)
+    (procedure 'bio-method)
+    (process 'bio-method) ;; the one case we have here is a bio-method -- transplantation
+    (protein-family 'protein-family)
+    (referential-sem 'referential-sem) ;; huh?
+    ((rna mrna) 'rna)
+    (time-span 'time-span)
+    (virus 'virus)))
+
 
 (defun simplify-colons (x)
   (if (search "::" x)
