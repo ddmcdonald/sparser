@@ -58,6 +58,7 @@
 
 ;;(gload "bio;trips-terms.lisp")
 (gload "bio;trips-terms-new.lisp")
+(gload "bio;trips-proteins")
 (gload "bio;reach-terms.lisp")
 
 (gload "bio;citations")
