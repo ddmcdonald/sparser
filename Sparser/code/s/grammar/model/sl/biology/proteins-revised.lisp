@@ -43,14 +43,11 @@
 ;; from MITRE example
 ;; found in the article set
  ;; actually NRG1_HUMAN is the "pro-form" of neuregulin-1, which is obtained by cleaving
- 
-
-
-
 
 (def-bio "BCR-ABL" protein);;  a constitutively activated version, MEK1S219D,S223D (MEK1DD)
 (def-bio "type IV collagen" protein) ;; a very generic term -- can't find an identifier TO-DO
 (def-bio "NIK" kinase  :long "NF-kappaB-inducing kinase"  :identifier "GO:0004704" :greek "kappa")
+;;(def-family "NIK" :identifier :members ("P51617" "Q9UM73" "Q14164" "Q9Y572" "Q99558" "P60510"))
 (def-bio "IKKalpha" kinase  :long "IkappaB kinase alpha"  :identifier "PR:000001775" :greek ("kappa" "alpha"))
 ;;;------------------------
 ;;; GTP, GDP, GEFs & GAPs
@@ -59,15 +56,12 @@
 (def-bio "GDP" nucleotide  :identifier "CHEBI:17552" :mitre-link "PubChem:8977")
 
 (noun ("GEF" "guanine nucleotide exchange factor" "guanyl-nucleotide-exchange factor") :super nucleotide-exchange-factor)
-(define-protein "Ras-GDP" ()) ;; not really a "protein" but a complex, but for now...
-(define-protein "Ras-GTP" ()) ;; not really a "protein" but a complex, but for now...
 (noun "growth factor" :super protein) ;; actually, either a protein or hormone, but occasionally some other molecule
 
-
-(define-protein "NF-kappab" ())
+(define-protein "Ras-GDP" ()) ;; not really a "protein" but a complex, but for now...
+(define-protein "Ras-GTP" ()) ;; not really a "protein" but a complex, but for now...
 (define-protein "p52" () ) 
-(define-protein "p38 SAPK" ())
-(define-protein "RasGEF"  ("Ras-GEF" "Ras GEF")) 
+(define-protein "RasGEF" ("Ras-GEF" "Ras GEF")) 
 (define-protein "ERK1-4" ())
 (define-protein "GST-ASPP2" ())
 (define-protein "MAP" ())
@@ -78,39 +72,10 @@
 (define-protein "brafv" ())
 (define-protein "cot" ("COT" "MAP3K8"))
 (define-protein "mek1dd" ())
-(define-protein "phospho-ASPP2" ())
+;;(define-protein "phospho-ASPP2" ())
 (define-protein "trypsin" ())
 (define-protein "histone 2B"  ())
 (define-protein "histone" ())
-
-(define-protein "ACTA1" ("HGNC:129" "actin" "alpha 1" "skeletal muscle" "ACTA" "NEM3" "nemaline myopathy type 3" "P68133"))
-(define-protein "ACTG2" ("HGNC:145" "actin" "gamma 2" "smooth muscle" "enteric" "ACTL3" "ACTA3" "ACTSG" "P63267"))
-(define-protein "ATG5" ( "Uniprot:Q9H1Y0"))
-(define-protein "GAPVD1"( "Uniprot:Q14C86"))
-(define-protein "GFP"( "Uniprot:P42212"))
-(define-protein "IQGAP1"( "Uniprot:P46940"))
-(define-protein "IQGAP2"( "Uniprot:Q13576"))
-(define-protein "IQGAP3"( "Uniprot:Q86VI3"))
-(define-protein "Q12967"( "Uniprot:RALGDS"))
-(define-protein "Q76NI1"( "Uniprot:KNDC1"))
-(define-protein "Q9P212"( "Uniprot:PLCE1"))
-(define-protein "RALGPS1"( "Uniprot:Q5JS13"))
-(define-protein "RALGPS2"  ("RALGPS2"  "Uniprot:Q86X27"))
-(define-protein "RAPGEF5"  ("RAPGEF5"  "Uniprot:Q92565"))
-(define-protein "RAPGEFL1" ("Uniprot:Q9UHV5"))
-(define-protein "RASA3"  ("RASA3" "Uniprot:Q14644"))
-(define-protein "RGL3"( "Uniprot:Q3MIN7"))
-(define-protein "RGL4"( "Uniprot:Q8IZJ4"))
-(define-protein "RapGEF2"  ( "RAPGEF2"  "Uniprot:Q17RH5"))
-(define-protein "RapGEF3"  ("RAPGEF3"  "Uniprot:O95398"))
-(define-protein "RapGEF4"  ("RAPGEF4"  "Uniprot:Q8WZA2"))
-(define-protein "RapGEF6"  ( "RAPGEF6"  "Uniprot:Q8TEU7"))
-(define-protein "RasGEF1A"  ("RASGEF1A"  "Uniprot:Q8N9B8"))
-(define-protein "RasGEF1B"  ("RASGEF1B"  "Uniprot:Q0VAM2"))
-(define-protein "RasGEF1C"  ("RASGEF1C"  "Uniprot:Q8N431"))
-(define-protein "RasGRF1"  ( "RASGRF1"  "Uniprot:Q13972"))
-(define-protein "green fluorescent ()"( "Uniprot:P42212"))
-(define-protein "p100" ("PR:000011178"))
 
 (defparameter *bio-ents* nil)
 (defparameter *mitre-bio-ents* nil)
