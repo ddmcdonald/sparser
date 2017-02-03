@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "loader"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2017
+;;; version: February 2017
 
 ;; Initiated 11/5/13. 3/3/14 Added mechanics and NFkappaB while
 ;; commenting out the original molecules and verbs as OBE and requiring
@@ -25,6 +25,8 @@
 
 (gload "bio;mechanics")
 (gload "bio;taxonomy")
+(gload "bio;cellular-locations")
+(gload "bio;aux-taxonomy")
 (gload "bio;standardized-protein-defs")
 (gload "bio;non-upa-upm-proteins")
 (gload "bio;proteins-revised")
