@@ -312,6 +312,7 @@ the process.
     (make-def-protein (cons name IDS))))
 
 (defparameter *prot-synonyms* (make-hash-table :test #'equal))
+(defparameter *standardize-protein-defs* nil)
 (defparameter *standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
 
 (defun make-standard-proteins ()
@@ -326,7 +327,7 @@ the process.
 
 (defparameter *q-proteins* nil)
 
-(defparameter *standardize-protein-defs* nil)
+
 
 (defparameter *non-standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
 
