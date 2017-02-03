@@ -119,13 +119,13 @@
     (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
     (molecular-domain 'protein-domain)
     (molecular-site 'residue-on-protein)
-    ((organism nonhuman-animal fish invertebrate) 'organism)
+    ((organism nonhuman-animal animal fish invertebrate) 'organism)
     (pharmacologic-substance 'drug)
     (physical-condition 'disease)
     (procedure 'bio-method)
     (process 'bio-method) ;; the one case we have here is a bio-method -- transplantation
     (protein-family 'protein-family)
-    (referential-sem 'referential-sem) ;; huh?
+    ((referential-sem substance) 'referential-sem) ;; huh? (ref-sem is now prefiltered, and the instances of substance are "build-up" and "mole-cule" -- not sure what to do with the first, and the second is probably from a line break we need to handle better)
     ((rna mrna) 'rna)
     (time-span 'time-span)
     (virus 'virus)))
