@@ -11,7 +11,7 @@ Sparser can use context-free and context-sensitive semantic
 grammar phrase-structure rules, along with syntactic rules
 that check for valid semantic relations before they complete.
 It provides hooks for regular-expression analysis, multi-words, 
-and arbitrary state-based code.
+and arbitrary state-based analyses.
 
 Sparser comes 'out of the box' with just a minimal grammar 
 of function words and access to grammar modules that have 
@@ -27,15 +27,9 @@ Sparser is written in Lisp, and until we restore some form
 of the interactive workbench it had on earlier versions of
 the Mac, extending Sparser's abilities and understanding
 its operation requires you to have a working knowledge
-of Lisp and are comforable reading code.
-
-As this is written, Sparser's grammar and semantic models
-are being constantly extended and revised by its committers
-as part of several R&D projects. As a consequence it is
-inevitable that bugs will creep in and analyses change.
-We try to keep this under control by factoring what parts
-of Sparser's engine, semantic/grammar modules are loaded,
-and what analysis protocols are used.
+of Lisp and are comforable reading code. The core set of
+Lisp-calls you need to explore what Sparser does are
+described below.
 
 
 *************************
@@ -62,12 +56,14 @@ Loading Sparser
 You need to have a modern implementation of Common Lisp
 already installed. Sparser runs in SBCL (sbcl.org),
 Clozure (www.clozure.com) and Allegro (www.franz.com).
-We develop primarily on Intel-based Macs under OS X and XXXXXX Alex XXXX
+We develop primarily on Intel-based Macs under OS X and Unix
+using SBCL almost exclusively.
+
 Sparser has been used with Windows in the past. Now that we
 are using ASDF for toplevel loading and Lisp pathnames for
 handling file compilation and module loading we don't expect
-that loading and running in Windows would be problem, but
-as of this writing we have not actually tested it.
+that working in Windows would be problem, but as of this writing
+we have not actually tested it.
 
 1. Setup ASDF
 
@@ -80,7 +76,7 @@ directory.
 (asdf:initialize-source-registry
  '(:source-registry
     (:tree (:home "sparser"))
-       :inherit-configuration))
+    :inherit-configuration))
 
 That specification never changes so we include it as part of our
 Lisp init files.
