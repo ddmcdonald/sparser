@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "new words"
 ;;;   Module:  "objects;chart:words:lookup:"
-;;;  Version:  June 2016
+;;;  Version:  February 2017
 
 ;; 4.0 (9/28/92 v2.3) accomodates changes to tokenizer
 ;; 4.1 (7/16/93) updated field name
@@ -93,7 +93,14 @@
 
            ;; else
            (when entry
-             (unpack-primed-word word symbol entry))))))
+             (unpack-primed-word word symbol entry)))))
+      (:greek
+       ;; Get here when there are two (or more) Greek characteris in a row.
+       ;; They're almost certainly a suffix on a protein that will be
+       ;; picked up by the no-space routine later. This call makes a noun
+       ;; and also gives them a category. But it's better than falling
+       ;; through the ecase and we can do something more tailored later.
+       (setup-unknown-word-by-default word)))
     word ))
 ; (what-to-do-with-unknown-words :capitalization-digits-&-morphology/or-primed)
 
