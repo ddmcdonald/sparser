@@ -141,7 +141,8 @@ collected a set of ns-examples"
                          ; do (print (length x))
                           unless
                           (or (search " " x)
-                              (ppcre:scan "^[-~+#0-9_&«*]-$" x)
+                              (ppcre:scan "^[-~+#0-9_&«*\"]" x)
+                              (ppcre:scan "-$" x)
                               (search "—" x) 
                               ;; we need to not make em dashes
                               ;; equivalent to hyphens before no-space
@@ -163,6 +164,8 @@ collected a set of ns-examples"
   (length (setq *undef-ns*
                  (loop for x in rd-ns
                        unless (or (< (length x) 3)
+                                  (and (eq 3 (length x))
+                                       (eq 1 (search "-" x)))
                                   (eq 0 (search "-" x))
                                   (eq 0 (search "p-" x))
                                   (eq 0 (search "phospho-" x))
