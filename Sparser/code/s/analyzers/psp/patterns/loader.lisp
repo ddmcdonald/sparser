@@ -37,6 +37,7 @@
 (lload "scan-patterns;scan-gophers") ;; help the scan
 (lload "scan-patterns;charaterize-words")
 (lload "scan-patterns;uniform-scan") ;; driver / entry-point
+(lload "scan-patterns;ns-analysis") ;; tools to explore ns patterns
 
 (lload "scan-patterns;take transitions")
 (lload "scan-patterns;start")  ;; empty as of 10/5/95
