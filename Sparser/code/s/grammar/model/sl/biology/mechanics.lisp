@@ -312,6 +312,7 @@ the process.
     (make-def-protein (cons name IDS))))
 
 (defparameter *prot-synonyms* (make-hash-table :test #'equal))
+(defparameter *standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
 
 (defun make-standard-proteins ()
   (loop for pr in (sort (hal *standard-protein-ht*) #'string< :key #'car)
@@ -326,10 +327,11 @@ the process.
 (defparameter *q-proteins* nil)
 
 (defparameter *standardize-protein-defs* nil)
-(defparameter *standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
+
 (defparameter *non-standard-protein-ht* (when *standardize-protein-defs* (make-hash-table :size 10000 :test #'equalp)))
 
 (defun standardize-protein-def (ids)
+  (declare (special *upa-upm*))
   (when *standardize-protein-defs*
     (let* ((human-mnemonic (loop for id in ids when (human-mnemonic? id) do (return id)))
            (standard-id
