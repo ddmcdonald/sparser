@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; copyright (c) 2011,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2016-2017 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2016
+;;;  Version:  February 2017
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -80,13 +80,15 @@
         ((and (= 3 (length edges))
               (itypep (edge-referent (car edges)) 'be))                  
          (cond ((member (cat-name (edge-form (third edges)))
-                        '(adjp adjective comparative superlative comparative-adjp superlative-adjp))
+                        '(adjp adjective comparative superlative
+                          comparative-adjp superlative-adjp))
                 (make-polar-adjective-question start-pos end-pos edges))
                ((member (cat-name (edge-form (third edges)))
                         '(pp))
                 (make-polar-pp-question edges))
                ((member (cat-name (edge-form (third edges)))
-                        '(vp+ed vp+ing vg+ed vg+ing))
+                        '(vp+ed vp+ing vg+ed vg+ing
+                          vp+passive))
                 (make-polar-participle-question start-pos end-pos edges))))
 
         ;; the next option is to assume that the subject is the consistuent
