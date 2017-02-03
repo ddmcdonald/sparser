@@ -1205,7 +1205,8 @@ applied to l, and values are values associated with that key example"
     (declare (special *break-on-hms-errors* *hms-sent-count*))
     (setq *hms-sent-count* 0)
     (loop for sl in sl-list
-          as i from (+ 1 start) to (+ start n)
+          as i from 1 to (+ start n)
+          when (> i start)
           do
           ;; this may cause problems, but it should cause the sentences to be collected as part of the article
           (when save-output
