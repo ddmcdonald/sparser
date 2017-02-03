@@ -111,12 +111,6 @@ is seen.
 ;;; derived-category constructors
 ;;;-------------------------------
 
-;;///// I'm sure this is defined somewhere, but apropos
-;;  is not finding any function based on "intern" in sparser
-;;  If it's not found, move this to sparser/../tools/
-(defun s-intern (string)
-  (intern string (find-package :sparser)))
-
 (defun specialize-comparative (attribute)
   "Make a new category that specializes comparative
    by binding the attribute. The result will be stored
@@ -124,8 +118,8 @@ is seen.
    attribute category."
   (let ((*legal-to-add-bindings-to-categories* t))
     (declare (special *legal-to-add-bindings-to-categories*))
-  (let* ((c-name (s-intern (string-append (cat-name attribute) '#:-comparative)))
-         (s-name (s-intern (string-append (cat-name attribute) '#:-superlative)))
+  (let* ((c-name (s-intern (cat-name attribute) '#:-comparative))
+         (s-name (s-intern (cat-name attribute) '#:-superlative))
          (c-category 
           (define-category/expr c-name
                `(:specializes comparative
@@ -154,8 +148,8 @@ is seen.
    categories, in the sense that we can instantiate
    properly indexed individuals from them."
   (let* ((base-name (cat-name comparative))
-         (more-name (s-intern (string-append base-name '#:-more)))
-         (less-name (s-intern (string-append base-name '#:-less))))
+         (more-name (s-intern base-name '#:-more))
+         (less-name (s-intern base-name '#:-less)))
     (let ((m-category
            (define-category/expr more-name
                `(:specializes more-than
