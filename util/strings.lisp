@@ -1,9 +1,9 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1989,1993,2011.2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1989,1993,2011-2017  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "strings"
 ;;;    module:  "util:"
-;;;   Version:  December 2016
+;;;   Version:  February 2017
 
 ;; (3/9/11) Reworked to fit in ddm-util. 7/5 fixed old case in
 ;; string-append. 2/1/16 added strings-to-hyphenated-string.
@@ -11,10 +11,25 @@
 
 (in-package :ddm-util)
 
+;;;---------------------------------
+;;; A more versatile string creator
+;;;---------------------------------
+
 (defun string-append (&rest list-of-strings)
-  "Sugar for (concatenate 'string ...)"
+  "Sugar for (concatenate 'string ...) that takes characters, strings,
+   symbols, or numbers. "
+  ;; e.g. (string-append #\A "bc " 32 '| | 'rabbits) => "Abc 32 RABBITS"  
   (with-standard-io-syntax
     (apply #'concatenate 'string (mapcar #'princ-to-string list-of-strings))))
+
+
+;;;-------------------------------------------------
+;;; convenience symbol-creator built on top of that
+;;;-------------------------------------------------
+
+(defun s-intern (&rest list-of-strings)
+  (intern (apply #'string-append list-of-strings)
+          (find-package :sparser)))
 
 ;;;--------------------------------------
 ;;; Lifted from Peter Clark's km-strings

@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; -*-
-;;; Copyright (c) 2011-2016 David D. McDonald. All Rights Reserved.
+;;; Copyright (c) 2011-2017 David D. McDonald. All Rights Reserved.
 
 ;; initiated 3/8/11. Pulled in file-local exports 10/6/14 in effort
 ;; to accommodate changes in MCL 10.0
@@ -40,6 +40,7 @@
 
            ;; strings
            #:string-append
+           #:s-intern
            #:*whitespace-chars*
            #:remove-leading-whitespace
            #:remove-trailing-whitespace
