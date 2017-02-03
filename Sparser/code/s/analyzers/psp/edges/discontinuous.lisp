@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "discontinuous"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  August 2016
+;;;  Version:  February 2017
 
 (in-package :sparser)
 
@@ -17,6 +17,9 @@
    The new edge has the same start/end positions as the right edge.
    Otherwise we do the normal things, evaluating the referent
    gien the rule and passing the edge to complete and assess."
+  ;; N.b. so far only used to move a preposed-aux, so the
+  ;; head is tacitly the right-edge.
+
   (let* ((edge (next-edge-from-resource))
          (starting-vector (edge-starts-at right-edge))
          (ending-vector (edge-ends-at right-edge))
@@ -29,19 +32,29 @@
          #+ignore(left-copy (make-copy-of-edge
                      left-edge)))
 
+    ;; new edge goes directly over the right-edge
     (knit-edge-into-positions edge starting-vector ending-vector)
     (setf (edge-starts-at edge) starting-vector)
     (setf (edge-ends-at edge) ending-vector)
-
-    (setf (edge-category edge) (edge-category right-edge))
-    (setf (edge-form edge) (edge-form right-edge))
-    (setf (edge-rule edge) rule)
 
     (setf (edge-left-daughter edge) left-edge)
     (setf (edge-right-daughter edge) right-edge)
     (set-used-by left-edge edge)
     (set-used-by right-edge edge)
-    
+
+    (if (cfr-completion rule)
+      ;; handles form rules, but would need further tweaking if this
+      ;; was to be used for more complex rule structures.
+      (set-labels-from-promulgated-edge
+       edge left-edge right-edge rule)
+      (else
+        ;; Treat it like a form rule and take the labels
+        ;; from the right edge, which is tacitly the head
+        (setf (edge-category edge) (edge-category right-edge))
+        (setf (edge-form edge) (edge-form right-edge))))
+
+    (setf (edge-rule edge) rule)
+
     (set-edge-referent edge
           (referent-from-rule left-edge right-edge edge rule))
 
@@ -56,6 +69,7 @@
 
     (assess-edge-label (edge-category edge) edge)
     edge ))
+
 
 (defun make-copy-of-edge (edge
                           &key category form

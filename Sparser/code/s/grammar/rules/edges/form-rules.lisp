@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1994,2014-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "form rules"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  July 2016
+;;;  Version:  February 2017
 
 ;; initiated 10/12/92 v2.3
 ;; 0.1 (6/4/93) allowed a default if the rule doesn't specify the form
@@ -41,6 +41,9 @@
     (setf (edge-starts-at edge) (edge-starts-at left-edge))
     (setf (edge-ends-at edge)   (edge-ends-at right-edge))
 
+    ;;// consider factoring out the portion done below by
+    ;; set-labels-from-promulgated-edge once regression tests
+    ;; are thoroughly in place
     (setf (edge-category edge) promulgated-label)
     (setf (edge-form     edge) (or (cfr-form rule)
                                    (edge-form head-edge)))
@@ -88,6 +91,28 @@
           (assess-edge-label promulgated-label edge)
           edge )))))
 
+
+(defun set-labels-from-promulgated-edge (edge ;; being created
+                                         left-edge right-edge rule
+                                         &aux head-edge)
+  "Used by make-discontinuous-edge to accommodate the largest of
+   the special cases handed by do-explicit-rule-completion"
+  (let ((edge-to-promulgate (cfr-completion rule)))
+    (assert (keywordp edge-to-promulgate) ()
+            "Rule ~a is not a form rule" rule)
+    (let ((promulgated-label
+           (ecase edge-to-promulgate
+             (:left-edge
+              (setq head-edge left-edge)
+              (edge-category left-edge))
+             (:right-edge
+              (setq head-edge right-edge)
+              (edge-category right-edge)))))
+      
+      (setf (edge-category edge) promulgated-label)
+      (setf (edge-form     edge) (or (cfr-form rule)
+                                     (edge-form head-edge)))
+      head-edge)))
 
 
 
