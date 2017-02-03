@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "binary"
 ;;;    Module:   "analyzers;psp:edges:"
-;;;   Version:   1.1 October 2004
+;;;   Version:   February 2017
 
 ;; initiated in August 1990
 ;; 0.1 (3/5/91  v1.8.1)  Changed the return value of Make-default-binary-edge
@@ -22,51 +22,30 @@
 
 (in-package :sparser)
 
-(defvar *CURRENT-CHUNK*)
-(defvar category::n-bar)
-(defparameter *NS-rules* nil)
-
-(defun save-ns-rule? (left-edge right-edge rule)
-  (when *NS-rules*
-    (let ((mid-pos (pos-edge-ends-at left-edge)))
-      (when (and (not (pos-preceding-whitespace mid-pos))
-                 (eq right-edge (lexical-edge-at mid-pos))
-                 (eq left-edge (lexical-edge-at (pos-edge-starts-at left-edge)))
-                 (not (is-basic-collection? (edge-referent right-edge))))
-        (when (not (consp *ns-rules*))
-          (setq *ns-rules* nil))
-        (if (assoc rule *NS-rules*)
-            (pushnew (list (retrieve-surface-string left-edge)
-                           (retrieve-surface-string right-edge))
-                     (cdr (assoc rule *NS-rules*))
-                     :test #'equalp)
-            (push (list rule (list (retrieve-surface-string left-edge)
-                                   (retrieve-surface-string right-edge)))
-                  *ns-rules*))))))
 
 (defun make-completed-binary-edge (left-edge
                                    right-edge
                                    rule)
-  ;; called from Create-edge-for-rule-completion/rightwards &
+  ;; called from create-edge-for-rule-completion/rightwards &
   ;; /leftwards, which only do the specialized record keeping that
   ;; avoids the same edge being made twice, once from each direction
 
   (save-ns-rule? left-edge right-edge rule)
   (if (cfr-completion rule)
-      (do-explicit-rule-completion left-edge right-edge rule)
-      (make-default-binary-edge    left-edge right-edge rule)))
+    (do-explicit-rule-completion left-edge right-edge rule)
+    (make-default-binary-edge    left-edge right-edge rule)))
 
 
 
 (defun make-default-binary-edge (left-edge right-edge rule)
-  (declare (special right-edge))
+  (declare (special *current-chunk* category::n-bar))
   (let ((edge (next-edge-from-resource))
         (category (cfr-category rule)))
 
     (when (deactivated? left-edge) ;; it's the earlier of the two edges
       (error "The edge-resource is completely full~
-              ~%This parse cannot be completed. You must enlarge~
-              ~%the size of the resource to parse this text.~%"))
+            ~%This parse cannot be completed. You must enlarge~
+             ~%the size of the resource to parse this text.~%"))
     
     (setf (edge-category  edge) category)
     (setf (edge-starts-at edge) (edge-starts-at left-edge))
@@ -81,8 +60,7 @@
            ((and *current-chunk*
                  (eq (chunk-end-pos *current-chunk*)
                      (pos-edge-ends-at right-edge))
-                 (eq (car (chunk-forms *current-chunk*))
-                     'NG))
+                 (eq (car (chunk-forms *current-chunk*)) 'ng))
             ;; adjust form based on chunk being created
             ;; if the right edge is at the head end of the *current-chunk*, 
             ;;then use the category of the *current-chunk*
@@ -128,3 +106,25 @@
 
           edge )))))
 
+
+;;--- recording no-space (NS) rules
+
+(defparameter *NS-rules* nil)
+
+(defun save-ns-rule? (left-edge right-edge rule)
+  (when *NS-rules*
+    (let ((mid-pos (pos-edge-ends-at left-edge)))
+      (when (and (not (pos-preceding-whitespace mid-pos))
+                 (eq right-edge (lexical-edge-at mid-pos))
+                 (eq left-edge (lexical-edge-at (pos-edge-starts-at left-edge)))
+                 (not (is-basic-collection? (edge-referent right-edge))))
+        (when (not (consp *ns-rules*))
+          (setq *ns-rules* nil))
+        (if (assoc rule *NS-rules*)
+            (pushnew (list (retrieve-surface-string left-edge)
+                           (retrieve-surface-string right-edge))
+                     (cdr (assoc rule *NS-rules*))
+                     :test #'equalp)
+            (push (list rule (list (retrieve-surface-string left-edge)
+                                   (retrieve-surface-string right-edge)))
+                  *ns-rules*))))))
