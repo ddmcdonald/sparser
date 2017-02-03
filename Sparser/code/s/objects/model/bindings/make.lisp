@@ -277,20 +277,39 @@ returning a new one.
 	     do (return v)))
       (binding-variable binding)))
 
-(defun revise-variable-value (var value indiv)
-  "Create (or find) an individual that is just like indiv, except that the value of 'var'
-is reset to the specified 'value'"
-  (let ((bindings (indiv-old-bindings indiv))
-        (new (make-dli-for-ref-category (indiv-type indiv)))
-        (rebound nil))
-    (loop for b in (reverse bindings)
-          do
-            (setq new
-                  (if (eq (binding-variable b) var)
-                      (then
+
+;;;-----------------------------------------------------
+;;; changing the value on a binding that already exists
+;;;-----------------------------------------------------
+
+(defun rebind-variable (var/name value individual)
+  "Create (or find) a variant of individual where the previous
+   value of the variable in its binding is replaced with this value."
+  (declare (special *description-lattice*))
+  (let ((var (find-variable-for-category var/name individual)))
+    (if *description-lattice*
+      (let ((bindings (indiv-old-bindings individual))
+            (new (make-dli-for-ref-category (indiv-type individual)))
+            (rebound nil))
+        ;; We have to fit the individual into the description lattice
+        ;; at the same place as it had given the set of bindings that
+        ;; have specialized its description, so we move it down
+        ;; one binding at a time, either recreating the original binding
+        ;; or for the target variable using the new value
+        (loop for b in (reverse bindings)
+           do (setq new
+                    (if (eq (binding-variable b) var)
+                      (then ;; change this one
                         (setq rebound t)
                         (bind-dli-variable (binding-variable b) value new))
-                      (bind-dli-variable (binding-variable b) (binding-value b) new))))
-    (unless rebound
-      (bind-dli-variable var value new))
-    new))
+                      (bind-dli-variable ;; keep the others
+                       (binding-variable b) (binding-value b) new))))
+        (unless rebound ;; must not have had an earlier value
+          (bind-dli-variable var value new))
+        new)
+      (else
+        (let ((b (binding-of-individual var individual)))
+          (setf (binding-value b) value)
+          ;; now it needs to be indexed, but that would entail
+          ;; refactoring some code and can wait for a bit (1/31/17)
+          individual)))))

@@ -150,9 +150,6 @@
 (define-lambda-variable 'amount-of-time
     nil 'top)
 
-(define-lambda-variable 'intensity
-    nil 'top) ;; for percentage in "95% sure"
-
 
 ;;;-------------
 ;;; predication
@@ -1352,14 +1349,6 @@
 
 
 
-
-(defun rebind-dli-variable (var/name value individual)
-  ;; to be written corectly -- want to create a variant of the head
-  ;;  where the previous value of the variable var is replaced by value
-  ;;  For the moment, just add a new binding
-  (bind-dli-variable var/name value individual))
-
-
 ;;;---------
 ;;; be + PP
 ;;;---------
@@ -1460,6 +1449,9 @@
 
 ;;; intensifier for an ADJECTIVE -- 95% sure
 
+(define-lambda-variable 'intensity
+    nil 'top) ;; for percentage in "95% sure"
+
 (defun interpret-intensifier+adjective (intensifier adjective)
   (if *subcat-test*
       t
@@ -1528,19 +1520,17 @@
        (let ((attribution (binding-value open-attribution))
              (variable (binding-variable open-attribution))
              (i (binding-body open-attribution)))
+         (unless (eq i np)
+           (error "incorrect assumption about what's the head"))
          (let ((complete-attribution
                 (bind-variable 'reference-set than-np attribution)))
-           ;; Rebuild the np (i) with the completed attribution replacing
-           ;; it's present value for size.
-           ;;    revise-variable-value (var value indiv)
-           ;; Then insert a new edge over the comparative edge
+           ;; Insert a new edge over the comparative edge
            ;; of the np [somehow] with the completed attribution
            ;; as its value.  Try find-binding-dependency to get the edge
 
-           ;; That operation replaces this one
-           (setq i (bind-variable variable complete-attribution i))
+           (setq i (rebind-variable variable complete-attribution i))
            i)))
-      (t (rebind-dli-variable
+      (t (rebind-variable
           'comparative-predication
           (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
           np)))))
