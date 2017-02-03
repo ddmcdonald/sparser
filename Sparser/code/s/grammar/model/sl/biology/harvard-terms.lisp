@@ -50,6 +50,30 @@
 	   :etf (svo)))
 (eval (make-copular-def "become"))
 
+;;;----------------------
+;; failed to find a treatment for pancreatic cancer
+
+(define-category fail :specializes aspectual-relation
+  :binds ((process bio-process))
+  :realization 
+    (:verb "fail"  
+     :etf (sv)))
+
+;; mostly passive -- "... are found ..."
+(define-category find
+  :specializes bio-rhetorical
+  :binds ((object biological)) ;; "found a treatment for ..."
+  :realization
+    (:verb ("find" :past-tense "found")
+     :noun "finding" ;; to allow for "findings"
+     :etf (svo-passive)
+     :o object
+     :mumble ("find" svo)))
+
+;; bio-rhetorical includes bio-thatcomp
+;;;----------------------
+
+
 
 
 (define-category decrease

@@ -1248,6 +1248,7 @@
 
 (def-synonym favor (:verb "favour" :etf (svo-passive)))
 
+#|  Moved to Harvard-terms -- This preserves the originals
 (define-category fail :specializes aspectual-relation
   :binds ((process bio-process))
   :realization 
@@ -1262,7 +1263,7 @@
          :noun "finding" ;; to allow for "findings"
          :etf (svo-passive)
 	 :mumble ("find" svo)))
-
+|#
 
 (define-category bio-form :specializes caused-bio-process
   :realization
