@@ -1424,27 +1424,38 @@
            :target target
            :direction :right))))))
 
-#|
-(define-debris-analysis-rule YES-NO-NP-ADjP
-    :pattern (PREPOSED-AUXILIARY NP ADJP)
+
+(loop for ap in '(adjp adjective comparative superlative
+                  comparative-adjp superlative-adjp)
+   do (let ((pattern `(preposed-auxiliary np ,ap))
+            (name (s-intern '#:aux-np- ap)))
+        (define-debris-analysis-rule/expr
+           name pattern
+          '(:function move-preposed-aux-before-adj first second third))))
+             
+#+ignore(define-debris-analysis-rule yes-no-np-adjp
+    :pattern (preposed-auxiliary np adjp)
     :action (:function yes-no-adj first second third))
 
-(define-debris-analysis-rule YES-NO-NP-ADJECTIVE
-    :pattern (PREPOSED-AUXILIARY NP ADJECTIVE)
+#+ignore(define-debris-analysis-rule yes-no-np-adjective
+    :pattern (preposed-auxiliary np adjective)
     :action (:function yes-no-adj first second third))
 
 
-(defun yes-no-adj (aux-edge np-edge adjp-edge)
-  (when (preposed-aux?) ;; if we have a preoposed-aux, this is a question
-    (let* ((adjp (edge-referent adjp-edge))
-           (target np-edge))
-      (when target
-        (let ((ref (assimilate-subject (edge-referent target) adjp adjp-edge)))
-          (make-edge-spec
-           :category (edge-category target)
-           :form (edge-form target)
-           :referent ref))))))
-|#
+(defun move-preposed-aux-before-adj (aux-edge np-edge adjp-edge)
+  (declare (ignore np-edge))
+  (when (preposed-aux?)
+    (let ((rule (multiply-edges aux-edge adjp-edge)))
+      (when rule
+        (compose-preposed-aux-into-predicate-adjp
+         aux-edge adjp-edge rule)))))
+
+(defun compose-preposed-aux-into-predicate-adjp (aux-edge adjp-edge rule)
+  "Mimic fold-in-preposed-auxiliary and compose the main verb (which
+   came in a preposed auxiliary and no residual, in place, vg) with
+   the adjp, representing this as an edge respanning the adjp."
+  (make-discontinuous-edge aux-edge adjp-edge rule))
+
 
 
 
