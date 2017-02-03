@@ -124,8 +124,10 @@ collected a set of ns-examples"
 #+ignore(defun ns-unknown-items (&optional (ns-unknown-sublist *ns-unknown-sublist*))
           "Split items at slashes and colons"
   (length (setq *ns-unknown-items*
-                (loop for n in ns-unknown-sublist
-                        append (ppcre:split "[/:]" (second n))))))
+                (remove-duplicates
+                 (loop for n in ns-unknown-sublist
+                       append (ppcre:split "[/:]" (second n)))
+                 :test #'equal))))
 
 (defparameter *rd-ns* nil)
 
@@ -160,8 +162,13 @@ collected a set of ns-examples"
   "Remove items that resolve and hence are already defined in Sparser"
   (length (setq *undef-ns*
                  (loop for x in rd-ns
-                         unless (resolve x)
-                         collect x))))
+                       unless (or (< (length x) 3)
+                                  (eq 0 (search "-" x))
+                                  (eq 0 (search "p-" x))
+                                  (eq 0 (search "phospho-" x))
+                                  (resolve x)
+                                  (resolve (string-downcase x)))
+                       collect x))))
 
 (defun ns-undef-items->file (&optional (filename "sparser:tools;ns-stuff;ns-undef-items.lisp"))
   "Save the collected undefined items to a file"
