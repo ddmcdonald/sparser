@@ -181,7 +181,6 @@
     (    "ONT:PROCEDURE" --    ("MALDI-TOF" "ONT:PROCEDURE" :ID "NCIT:C19935" :NAME "MALDI-TOF mass spectrometry"))
     (    "ONT:PROCEDURE" --    ("QRT-PCR" "ONT:PROCEDURE" :ID "NCIT:C28408" :NAME "quantitative reverse transcriptase PCR"))
     (    "ONT:PROCEDURE" --    ("SDS-PAGE" "ONT:PROCEDURE" :ID "NCIT:C18150" :NAME "sodium dodecylsulfate-polyacrylamide gel electrophoresis"))
-    (    "ONT:PROCEDURE" --    ("alpha1" "ONT:PROCEDURE" :ID "NCIT:C67050" :NAME "affy alpha1 significance"))
     (    "ONT:PROCEDURE" --    ("amplification" "ONT:PROCEDURE" :ID "NCIT:C20589" :NAME "gene amplification technique"))
     (    "ONT:PROCEDURE" --    ("chromatography" "ONT:PROCEDURE" :ID "NCIT:C16431" :NAME "chromatography"))
     (    "ONT:PROCEDURE" --    ("co-crystallization" "ONT:PROCEDURE" :ID "NCIT:C19558" :NAME "cocrystallography"))
