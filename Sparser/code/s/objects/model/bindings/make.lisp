@@ -288,7 +288,7 @@ returning a new one.
   (declare (special *description-lattice*))
   (let ((var (find-variable-for-category var/name individual)))
     (if *description-lattice*
-      (let ((bindings (indiv-old-bindings individual))
+      (let ((bindings (indiv-old-binds individual))
             (new (make-dli-for-ref-category (indiv-type individual)))
             (rebound nil))
         ;; We have to fit the individual into the description lattice
