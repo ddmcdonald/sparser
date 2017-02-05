@@ -1504,7 +1504,8 @@
       (if (is-basic-collection? (edge-referent vp-edge))
           (update-conjunctive-edge-as-lambda-predicate vp-edge)
           (cond ((null svar)
-                 (error "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge))
+                 (warn "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge)
+                 (edge-referent vp-edge))
                 (t
                  (let ((pred (create-predication-by-binding
                               svar **lambda-var** (edge-referent vp-edge) vp-edge :insert-edge nil)))
@@ -1514,7 +1515,9 @@
 (defun update-conjunctive-edge-as-lambda-predicate (vp-edge)
   (let* ((daughter-edges (if (eq :long-span (edge-right-daughter vp-edge))
                              (loop for e in (edge-constituents vp-edge)
-                                   unless (eq (cat-name (edge-form e)) 'conjunction)
+                                   unless (or
+                                           (eq (cat-name (edge-form e)) 'conjunction)
+                                           (eq (edge-category e) word::comma))
                                    collect e)
                              (list (edge-left-daughter vp-edge)
                                    (edge-right-daughter vp-edge))))
