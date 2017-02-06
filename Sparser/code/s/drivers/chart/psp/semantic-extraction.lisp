@@ -119,6 +119,11 @@ without damaging other code.")
 (define-lambda-variable 'raw-text
     nil category::top)
 
+(defparameter *bio-entity-heads* nil)  ;;	
+
+(defun collect-bio-entity-heads ()
+  (setq *bio-entity-heads* (make-hash-table :size 200000 :test #'equal)))
+
 (defun note-surface-string (edge)
   ;; Called on every edge from complete-edge/hugin
   ;; Record the surface string from the span dictated 
@@ -154,9 +159,15 @@ without damaging other code.")
                   ;; do this after the code above, so that the *bce-ht*
                   ;;  is keyed on the individual without the text
                   (setq referent (bind-dli-variable 'raw-text string referent))
-                  (setf (edge-referent edge) referent))))
+                  (setf (edge-referent edge) referent)))
+              (when (and *bio-entity-heads*
+              	(eq (itype-of referent) (category-named 'bio-entity)))
+                (setf (gethash (head-string edge) *bio-entity-heads*) t))
+              (setf (gethash referent *surface-strings*) "")))))))
 
-            (setf (gethash referent *surface-strings*) ""))))))
+
+
+
 
 
 
