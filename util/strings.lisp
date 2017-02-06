@@ -38,7 +38,8 @@
 (defparameter *whitespace-chars*
   '(#\Space #\Tab #\Newline #\Return #\Linefeed #\Page
     #-ccl #\HAIR_SPACE 
-    #\ZERO_WIDTH_SPACE 
+    #\ZERO_WIDTH_SPACE
+    #\NO-BREAK_SPACE
     #-ccl #\THIN_SPACE
     #-ccl #\FOUR-PER-EM_SPACE 
     #-ccl #\EN_SPACE ))
