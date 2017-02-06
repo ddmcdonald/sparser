@@ -95,11 +95,12 @@
          ;;(member category '(bio-process bio-organ bio-complex))
          ;; we really want bio-processes and bio-organs to be individuals, but there is a problem with def-bio -- ASK ALEX
          (lsp-break "trips/reach-term->def-bio"))
+       (unless (eq category 'referential-sem)
        `(define-category ,(intern (car term) (find-package :sp))
             :specializes ,category
             :bindings (uid ,(simplify-colons (getf (cddr term) :id)))
             :realization
-            (:noun ,(car term)))))))
+            (:noun ,(car term))))))))
 
 (defun trips-class->krisp (term)
   (ecase (intern (subseq (second term) 4)) ;; drop the ONT:
@@ -119,7 +120,7 @@
     (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
     (molecular-domain 'protein-domain)
     (molecular-site 'residue-on-protein)
-    ((organism nonhuman-animal animal fish invertebrate) 'organism)
+    ((organism nonhuman-animal animal fish invertebrate microorganism) 'organism)
     (pharmacologic-substance 'drug)
     (physical-condition 'disease)
     (procedure 'bio-method)
@@ -127,6 +128,7 @@
     (protein-family 'protein-family)
     ((referential-sem substance) 'referential-sem) ;; huh? (ref-sem is now prefiltered, and the instances of substance are "build-up" and "mole-cule" -- not sure what to do with the first, and the second is probably from a line break we need to handle better)
     ((rna mrna) 'rna)
+    (signaling-pathway 'pathway)
     (time-span 'time-span)
     (virus 'virus)))
 
