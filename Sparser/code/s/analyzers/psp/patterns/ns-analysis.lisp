@@ -179,6 +179,50 @@ collected a set of ns-examples"
     (pprint *undef-ns* stream))
   filename)
 
+(defun split-ns-file-for-trips (&key (n 2500) (file nil) (prefix nil))
+  "Split ns-undef-items into files of a size that is manageable for
+pushing through TRIPS; n specifies the number of items being sent to
+TRIPS (on Laurel's machine, 2500 takes 20min - trying to hunt down why
+that is); when file is nil, it is assumed this is being run directly
+after remove-predef-ns and that the values of interest are in
+*undef-ns*, otherwise specify the name of a file in tools/ns-stuff
+e.g., \"ns-undef-items\" n is for the number of items per file and
+filenum is for the output name"
+  (let* ((undef-ns 
+         (if file
+             (with-open-file (stream 
+                              (concatenate 'string "sparser:tools;ns-stuff;"
+                                           file ".lisp")
+                              :direction :input
+                              :external-format :UTF-8)
+               (read stream nil))
+             *undef-ns*))
+         (quot (floor (length undef-ns) n)))
+    (loop for i from 0 to quot
+          do (ns-undef->trips (subseq undef-ns (* i n)
+                                      (unless (eq i quot)
+                                        (* (+ i 1) n)))
+                              (if prefix
+                                  prefix
+                                  (if file
+                                      file
+                                      "ns-undef-for-trips"))
+                              (+ i 1)))))
+
+(defun ns-undef->trips (undef-ns file i)
+  "Given a sublist of the of undef-ns examples, create a file with that sublist"
+  (with-open-file (stream 
+                   (make-pathname 
+                    :name (concatenate 'string file "-" (write-to-string i))
+                    :type "lisp"
+                    :defaults
+                    (asdf:system-relative-pathname :r3 
+                                                   "../corpus/trips-defs/"))
+                   :direction :output :if-exists :supersede
+                   :external-format :UTF-8)
+        (format stream "(in-package :get-defs)~%~%")
+        (format stream "(defparameter *terms*~%'~s)" undef-ns)))
+
 
 (defparameter *prefixes* nil)        
 (defun ns-prefixes (&optional (rd-ns *rd-ns*))
@@ -191,7 +235,31 @@ collected a set of ns-examples"
                        collect (subseq x 0 (search "-" x)))
                  :test #'equal))))
 
-; preliminary versions of the above
+; A hash-table and associated functions for a one-time operation, but unlikely to need again so commenting out the creation of the hash-table and associated functions
+
+#+ignore(defparameter *no-colons-prot-ht* 
+  (make-hash-table :size 10000 :test #'equalp)) ; actually should be 140000
+#+ignore(defun collect-no-colon-protein-ids (&optional (prot-def-file "sparser:bio;standardized-protein-defs-complete.lisp"))
+  (with-open-file (stream prot-def-file :direction :input :external-format :UTF-8)
+      (loop for prot = (read stream nil)
+            when (eq 'define-protein (first prot))
+            do (get-set-no-colons-hash (second prot))
+              (when (consp (third prot))
+                (loop for i in (third prot)
+                      do (get-set-no-colons-hash i))))))
+
+#+ignore(defun no-colons-p (string)
+  (unless (search ":" string)
+      string))
+
+#+ignore(defun get-set-no-colons-hash (string)
+  (when (no-colons-p string)
+    (unless (gethash string *no-colons-prot-ht*)
+      (setf (gethash string *no-colons-prot-ht*)
+            string))))
+
+
+; Preliminary versions of the above
 
 #+ignore
 (lsetq *ns-list*                       
