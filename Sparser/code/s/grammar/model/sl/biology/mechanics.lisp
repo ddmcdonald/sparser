@@ -95,7 +95,8 @@
          ;;(member category '(bio-process bio-organ bio-complex))
          ;; we really want bio-processes and bio-organs to be individuals, but there is a problem with def-bio -- ASK ALEX
          (lsp-break "trips/reach-term->def-bio"))
-       (unless (eq category 'referential-sem)
+       (unless (or (eq category 'referential-sem)
+                   (eq category 'time-unit))
        `(define-category ,(intern (car term) (find-package :sp))
             :specializes ,category
             :bindings (uid ,(simplify-colons (getf (cddr term) :id)))
@@ -126,7 +127,7 @@
     (procedure 'bio-method)
     (process 'bio-method) ;; the one case we have here is a bio-method -- transplantation
     (protein-family 'protein-family)
-    ((referential-sem substance) 'referential-sem) ;; huh? (ref-sem is now prefiltered, and the instances of substance are "build-up" and "mole-cule" -- not sure what to do with the first, and the second is probably from a line break we need to handle better)
+    ((referential-sem substance time-unit) 'referential-sem) ;; huh? (ref-sem is now prefiltered, and the instances of substance are "build-up" and "mole-cule" -- not sure what to do with the first, and the second is probably from a line break we need to handle better)
     ((rna mrna) 'rna)
     (signaling-pathway 'pathway)
     (time-span 'time-span)
