@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1994,2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1994,2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "punctuation"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   December 2016
+;;;   Version:   February 2017
 
 ;; 1.0 (9/21/92 v2.3) added everything else, in ascii order
 ;; 1.1 (4/9/93) moved newline to required
@@ -156,9 +156,11 @@
     (code-char 8593) ;;"↑", (code = 8593)
     ;;(code-char 8594) ;; rightwards arrow  -- defined at end of file
     (code-char 8595) ;;"↓", (code = 8595)
-    (code-char 8596) ;;"↔", (code = 8596)
+    (code-char 8596) ;;"↔", (code = 8596) #\left_right_arrow
 
-    (code-char 8706) ;;"∂", (code = 8706)
+    (code-char 8704) ;; "∀" #\FOR_ALL
+    (code-char 8707) ;; "∃" #\there_exists
+    (code-char 8706) ;; "∂", (code = 8706)
     (code-char 8710) ;;"∆" #\U+2206
     (code-char 8712) ;; "∈" #\U+2208
     (code-char 8714) ;; "∊"
@@ -171,6 +173,7 @@
     (code-char 8747) ;; "∫"
     (code-char 8758) ;; ratio  #\U+2236
     (code-char 8764) ;;#\∼ 
+    (code-char 8765) ;; #\reversed_tilda
     (code-char 8776) ;;"≈", (code = 8776)
     (code-char 8781) ;;"≍", (code = 8781)
 
@@ -185,6 +188,8 @@
     (code-char 8902) ;;"⋆" (code = 8902)
     (code-char 8942) 
     (code-char 8943) ;; "⋯"
+
+    (code-char 9415) ;; "Ⓡ" #\circled_latin_capital_letter_r
     (code-char 9633) ;; "□"
     (code-char 9642) ;; "▪"
     (code-char 9651) ;; "△" #\U+25B3
@@ -211,21 +216,27 @@
     
     ))
 
-;; ignore unknown characters for allegro's sake.
+(defgeneric add-punctuation-char (identifier)
+  (:documentation "Create a punctuation word for the
+     identified character. Useful for doing them b7
+     had when entering new characters")
+  (:method ((form list)) ;; e.g. '(code-char 65293)
+    (assert (= 2 (length form)))
+    (assert (fboundp (car form)))
+    (let ((character (eval form)))
+      (assert (characterp character))
+      (add-punctuation-char character)))
+  (:method ((char character))
+    (let* ((namestring (char-name char))
+           (symbol (intern namestring *word-package*)))
+      (define-punctuation/expr symbol char))))
+
+
 (defun add-punctuation-chars ()
   (dolist (form *out-of-band-punctuation*)
-    (let* ((character (eval form)) namestring symbol)
-      (if character
-        (setf namestring (char-name character))
-        (warn "Couldn't find code-char ~a" (second form)))
-      (when namestring
-        (setf symbol (intern namestring *word-package*)))
-      (when (and symbol character)
-        (when *load-verbose*
-          (format t "~&~a ~a" (cadr form) character))
-        (define-punctuation/expr symbol character)))))
+    (add-punctuation-char form)))
 
-(add-punctuation-chars)
+(add-punctuation-chars) ;; evaluate all the definitions
 
 
 
