@@ -162,8 +162,8 @@ without damaging other code.")
                   (setf (edge-referent edge) referent)))
               (when (and *bio-entity-heads*
               	(eq (itype-of referent) (category-named 'bio-entity)))
-                (setf (gethash (head-string edge) *bio-entity-heads*) t))
-              (setf (gethash referent *surface-strings*) "")))))))
+                (setf (gethash (head-string edge) *bio-entity-heads*) t)))
+            (setf (gethash referent *surface-strings*) ""))))))
 
 
 
