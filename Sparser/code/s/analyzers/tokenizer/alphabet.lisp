@@ -994,7 +994,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       (8203  ;; #\ZERO_WIDTH_SPACE
        (:punctuation . :space))
       (8208 ;; #\HYPHEN
-       (:punctuation . (punctuation-named (code-char 8208)))) ;;"‐"
+       (:punctuation . ,(punctuation-named (code-char 8208)))) ;;"‐"
 
                                               
     
