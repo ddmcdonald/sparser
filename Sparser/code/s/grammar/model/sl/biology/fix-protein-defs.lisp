@@ -148,13 +148,15 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                                     :external-format :UTF-8)
       (format non-upa-stream "(in-package :sparser)~%~%")
       (format stream "(in-package :sparser)~%~%")
-      (loop for def in (sort new-defs #'string< :key #'second)
+      ;; REMEMBER-- sort is a destructive operation -- you can't safely sort the same variable twice
+      (setq new-defs (sort new-defs #'string< :key #'second))
+      (loop for def in new-defs
             do
               (case (car def)
                 (define-protein (lc-one-line-print def stream))
                 (def-family nil)
                 (t (lc-one-line-print `(define-protein ,.(cdr def)) non-upa-stream))))
-      (loop for def in (sort new-defs #'string< :key #'second)
+      (loop for def in new-defs
             do
               (case (car def)
                 (def-family (lc-one-line-print def stream))
@@ -256,7 +258,6 @@ UP:UPA and adds the UPA and UPM to the alternate names"
 
 (defun check-alts-for-UP (alt-names)
   (let (up-names)
-    (declare (special up-names))
     (loop for name in alt-names
           when (or (eq 0 (search "UniProt:" name)) (eq 0 (search "PR:" name)))
           do
