@@ -120,7 +120,7 @@
     (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
     (molecular-domain 'protein-domain)
     (molecular-site 'residue-on-protein)
-    ((organism nonhuman-animal animal fish invertebrate microorganism) 'organism)
+    ((organism nonhuman-animal animal fish invertebrate microorganism fungus plant bird) 'organism)
     (pharmacologic-substance 'drug)
     (physical-condition 'disease)
     (procedure 'bio-method)

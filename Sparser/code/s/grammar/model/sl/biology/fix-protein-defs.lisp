@@ -298,11 +298,12 @@ UP:UPA and adds the UPA and UPM to the alternate names"
               while term
              
               do (when term
+                   (when (> (length (car term)) 2)
                    (let ((def-form  (trips/reach-term->def-bio term)))
                      (lc-one-line-print def-form 
                                     (if (eq (car def-form) 'define-protein)
                                         prot-stream
-                                        non-prot-stream)))))))))
+                                        non-prot-stream))))))))))
                                         
 
 
