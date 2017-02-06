@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2011-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  November 2016
+;;;  version:  February 2017
 
 ;; initiated 11/30 v2.1
 ;; 7/17/92 v2.3 revised the definition
@@ -146,7 +146,8 @@
               (break "Supply a category so that the variable name ~A~
                       ~%can be disambiguated" var-name)))
            (lambda-variable var-name))))
-    (find-bindings-value-for-var list-of-bindings variable)))
+    (when variable
+      (find-bindings-value-for-var list-of-bindings variable))))
 
 
 (defun who-binds (variable value)
