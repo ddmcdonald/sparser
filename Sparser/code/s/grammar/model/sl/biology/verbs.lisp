@@ -655,12 +655,10 @@
 
 
 (define-category coimmunoprecipitate :specializes immune-method
-  :binds ((origin (:or cellular-location cell-line))
-	  (co-precipitant protein))
+  :binds ((co-precipitant protein))
   :realization 
   (:verb "co-immunoprecipitate" :noun "co-immunoprecipitation"
          :etf (svo-passive) 
-         :from origin
 	 :with co-precipitant))
 
 (def-synonym coimmunoprecipitate

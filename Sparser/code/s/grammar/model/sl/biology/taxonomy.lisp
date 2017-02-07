@@ -574,12 +574,14 @@
 
     
 (define-category immune-method :specializes bio-method
-  :binds ((antibody antibody)
-	  (tested-for bio-chemical-entity))
-  :realization
-    (:with antibody
-     :via antibody
-     :for tested-for))
+   :binds ((antibody (:or protein antibody))
+           (tested-for bio-chemical-entity)
+           (origin (:or cellular-location cell-line)))
+   :realization
+   (:from origin
+          :with antibody
+          :via antibody
+          :for tested-for))
 
 (define-category measure :specializes bio-method
   :binds ((method bio-method)
