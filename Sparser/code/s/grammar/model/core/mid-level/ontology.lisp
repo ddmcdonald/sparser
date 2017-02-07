@@ -64,8 +64,11 @@ files once an area looks big enough to warrant it.  |#
   :specializes physical-object
   :mixins (has-location ;; adds variable for its location
            has-an-orientation
-           has-color ;; color
-           has-size  ;; size           
+           has-color ;; red
+           has-height ;; short, tall (not high, low)
+           has-length ;; long, short (n.b. applies to duration too)
+           has-size  ;; big, little
+           has-width ;; narrow, wide
            )
   ;; Inherits from physical: location,
   ;;  endurant: number, quantifier, name
