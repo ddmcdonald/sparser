@@ -159,6 +159,14 @@ collected a set of ns-examples"
   filename)
           
 (defparameter *undef-ns* nil)
+
+(defparameter *bad-inits*
+  '("p-" "phospho-" "co-" "anti-" "#" "$" "&" "*" "+" "/"  ":" "=" "-"
+    "\\" "^" "_" "`"  "|" "~"
+    "«" "®" "°" "±" "´" "·" "º" "Å" "É" "Ö"  "ß" "ö" "͂"
+    "‐" "–" "―" "…" " " "″" "™" "→" "↔" 
+    "−" "∩" "∼" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾"))
+
 (defun remove-predef-ns (&optional (rd-ns *rd-ns*))
   "Remove items that resolve and hence are already defined in Sparser"
   (length (setq *undef-ns*
@@ -166,12 +174,12 @@ collected a set of ns-examples"
                        unless (or (< (length x) 3)
                                   (and (eq 3 (length x))
                                        (eq 1 (search "-" x)))
-                                  (eq 0 (search "-" x))
-                                  (eq 0 (search "p-" x))
-                                  (eq 0 (search "phospho-" x))
+                                  (loop for bad-initial in *bad-inits* 
+                                        thereis (eq 0 (search bad-initial x)))
                                   (resolve x)
                                   (resolve (string-downcase x)))
                        collect x))))
+
 
 (defun ns-undef-items->file (&optional (filename "sparser:tools;ns-stuff;ns-undef-items.lisp"))
   "Save the collected undefined items to a file"
