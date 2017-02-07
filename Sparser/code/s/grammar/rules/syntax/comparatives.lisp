@@ -230,6 +230,7 @@ is seen.
 
       (switch-form-to-comparative er-word)
       (switch-form-to-superlative est-word)
+      (modify-comparatives-rule-labels base-word er-word est-word)
 
       (assign-brackets-to-word er-word *comparative-brackets*)
       (assign-brackets-to-word est-word *comparative-brackets*)
@@ -264,6 +265,14 @@ comparative rather than content-word.  |#
       (setf (cfr-form rule) category::superlative))
     (or rule
         (find-form-cfr word category::superlative))))
+
+(defun modify-comparatives-rule-labels (base-word er-word est-word)
+  (let* ((base-rule (find-form-cfr base-word category::adjective))
+         (base-label (cfr-category base-rule))
+         (er-rule (find-form-cfr er-word category::comparative))
+         (est-rule (find-form-cfr est-word category::superlative)))
+    (setf (cfr-category er-rule) base-label)
+    (setf (cfr-category est-rule) base-label)))
        
 
 ;;;----------------------------------------------
@@ -280,13 +289,13 @@ comparative rather than content-word.  |#
 (define-category comparative-modifier
   :specializes attribute-value
   :mixins (modifier)
-  :rule-label comparative
+ ;; :rule-label comparative
   :index (:permanent :key name)
   :realization (:word name))
 
 (define-category superlative-modifier
   :specializes attribute-value
-  :rule-label superlative
+;;  :rule-label superlative
   :index (:permanent :key name)
   :realization (:word name))
 
