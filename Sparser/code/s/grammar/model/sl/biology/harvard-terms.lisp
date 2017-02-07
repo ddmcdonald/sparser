@@ -62,6 +62,7 @@
 ;; mostly passive -- "... are found ..."
 (define-category find
   :specializes bio-rhetorical
+  :mixins (bio-process) ;; to allow composition as comp. of "fail"
   :binds ((object biological)) ;; "found a treatment for ..."
   :realization
     (:verb ("find" :past-tense "found")
