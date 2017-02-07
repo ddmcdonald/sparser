@@ -304,14 +304,20 @@ the process.
 (defmacro define-protein (name IDS &key documentation ras2-model)
   ;; no longer pluralize protein definitions -- see what happens
   (let ((*inhibit-constructing-plural* t))
-    (declare (special *inhibit-constructing-plural*))
+    (declare (special *inhibit-constructing-plural* *allowable-protein-head-ht*))
+    (when (and (boundp '*allowable-protein-head-ht*)
+               (> (hash-table-count *allowable-protein-head-ht*) 0))
+      (setq IDS (loop for id in IDS when (gethash id  *allowable-protein-head-ht*) collect id)))
     (if ras2-model
         (make-def-protein (cons name IDS) :documentation documentation :ras2-model t)
         (make-def-protein (cons name IDS) :documentation documentation))))
 
 (defmacro define-singular-protein (name IDS)
   (let ((*inhibit-constructing-plural* t))
-    (declare (special *inhibit-constructing-plural*))
+    (declare (special *inhibit-constructing-plural* *allowable-protein-head-ht*))
+    (when (and (boundp '*allowable-protein-head-ht*)
+               (> (hash-table-count *allowable-protein-head-ht*) 0))
+      (setq IDS (loop for id in IDS when (gethash id  *allowable-protein-head-ht*) collect id)))
     (make-def-protein (cons name IDS))))
 
 (defparameter *prot-synonyms* (make-hash-table :test #'equal))
@@ -352,19 +358,19 @@ the process.
                              (return id)))
                 (loop for id in ids
                       do (if (search "_" id)
-                             (return id)))))))
-    (when (and standard-id (not (human-mnemonic? standard-id)) (gethash standard-id *upa-upm*))
-      (push (gethash standard-id *upa-upm*) ids))
+                             (return id))))))
+      (when (and standard-id (not (human-mnemonic? standard-id)) (gethash standard-id *upa-upm*))
+        (push (gethash standard-id *upa-upm*) ids))
                
-    (if standard-id
-        (setf (gethash standard-id *standard-protein-ht*)
-              (remove standard-id
-                      (remove-duplicates (append ids (gethash standard-id *standard-protein-ht*)) :test #'equal)
-                      :test #'equal))
-        (setf (gethash (car ids) *non-standard-protein-ht*)
-              (remove (car ids)
-                      (remove-duplicates (append ids (gethash (car ids) *non-standard-protein-ht*)) :test #'equal)
-                      :test #'equal)))))
+      (if standard-id
+          (setf (gethash standard-id *standard-protein-ht*)
+                (remove standard-id
+                        (remove-duplicates (append ids (gethash standard-id *standard-protein-ht*)) :test #'equal)
+                        :test #'equal))
+          (setf (gethash (car ids) *non-standard-protein-ht*)
+                (remove (car ids)
+                        (remove-duplicates (append ids (gethash (car ids) *non-standard-protein-ht*)) :test #'equal)
+                        :test #'equal))))))
 
 
 
@@ -704,107 +710,6 @@ the process.
                 word
                 (if identifier
                     (bind-dli-variable :uid identifier i) ;;(find-or-make-individual category :uid word)
-                    i))))
-        (t
-         (push-debug `(,i ,word))
-         (error "something badly formed about rules field")))
-
-      (let* ((pname (etypecase word
-                      (word (word-pname word))
-                      (polyword (pw-pname word))))
-             (downcased-pname (string-downcase pname)))
-        (unless (string= downcased-pname pname) ;; case-sensitive
-          (let ((lowercase-word (resolve/make downcased-pname)))
-            (push (define-cfr label `(,lowercase-word)
-                    :form form
-                    :referent i)
-                  rules))))
-
-      (when synonyms ;; quoted list of strings
-        (dolist (syn synonyms)
-          (let ((word (resolve/make syn)))
-            (push (define-cfr label `(,word)
-                    :form form
-                    :referent (if (value-of 'name i)
-                                  (bind-dli-variable 'raw-text word i)
-                                  (bind-dli-variable 'name word i)))
-                  rules)
-            ;; 1/12/16 Spews polyword-duplication complaints
-            ;; when applied to proteins
-            (when takes-plurals
-              (let ((plural
-                     (etypecase word
-                       (word (plural-version word))
-                       (polyword (plural-version/pw word)))))
-                (push (define-cfr label `(,plural)
-                        :form form
-                        :referent (if (value-of 'name i)
-                                  (bind-dli-variable 'raw-text word i)
-                                  (bind-dli-variable 'name word i)))
-                      rules))))))
-
-      ;; Now we do that by-hand for the long-form. If the long form needs
-      ;; to have a variant with a greek letter in it we'll make two rules.
-      (when long
-        (let* ((pw (resolve/make long)) ;; pw = polyword = multiword
-               (cfr (define-cfr label `(,pw)
-                      :form form
-                      :referent i)))
-          (push cfr rules)))
-
-      (when greek
-        (let ((additional-rules
-               (rules-with-greek-chars-substituted
-                ;; SBCL caught fact that some words are actually polywords here...
-                (etypecase word
-                  (word (word-pname word))
-                  (polyword (pw-pname word)))
-                long greek label form i)))
-          (setq rules (nconc additional-rules rules))))
-
-      (when rules
-        (add-rules rules i))
-
-      (when documentation
-        (store-category-documentation i documentation))
-
-      i)))
-
-(defun add-protein-defs (id-word synonyms &optional (identifier-type :uid) greek)
-  (let ((form (category-named 'proper-noun))
-        ;; proper noun makes sense for named protiens and such
-        ;; but the marker may actually be the capitalization
-        ;; of the word, which would have to be caught upstream
-        ;; and passed through in a parameter.
-        rules  i   )
-
-    ;; The real form to use
-    ;;     (setq i (find-or-make-individual category :name word))
-    ;; The find-or-make call will set up a rule for the short form
-    ;; as a common noun that has this individual as its referent.
-    ;; Ignoring brackets since this runs with the new chunker
-
-    (setq i (find-or-make-individual category))
-     
-   
-    ;; Add synonyms to the table for this head term
-    (when synonyms
-      (add-bio-synonyms (word-string word) synonyms))
-
-    (let* ((retrieved-rules (get-rules i))
-           (r (when retrieved-rules (car retrieved-rules))))
-
-
-      (cond
-        ((and r (cfr-p r))
-         ;;(push-debug `(,r)) (break " set rule form?")
-         (setf (cfr-form r) category::proper-noun)
-         (setf (cfr-referent r)
-               (bind-dli-variable
-                :raw-text
-                word
-                (if identifier
-                    (bind-dli-variable :uid word i) ;;(find-or-make-individual category :uid word)
                     i))))
         (t
          (push-debug `(,i ,word))
