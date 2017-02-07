@@ -36,11 +36,11 @@ be biology specific, since they aren't. |#
 
 (noun "surface" :super bio-entity)
 
-
+#|
 (find-or-make-individual 'qualitative-rate :name "slow")
 (define-category fast :specializes bio-predication
    :realization
-   (:adjective "fast"))
+   (:adjective "fast"))  |#
 
 (adj "lesser" :super bio-predication)
 

@@ -40,6 +40,9 @@
 (define-length "long" :dir :+)
 (define-length "short" :dir :-)
 
+;;--- rate of change
+(define-rate-of-change "fast" :dir :+)
+(define-rate-of-change "slow" :dir :-)
 
 #|
 ;; quality

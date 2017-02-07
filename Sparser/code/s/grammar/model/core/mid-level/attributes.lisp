@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "height"
 ;;;   Module:  "grammar/core/qualities/
-;;;  version:  January 2017
+;;;  version:  February 2017
 
 ;; Initiated 1/11/17 to collect all the attributes together
 
@@ -16,4 +16,6 @@
 (define-attribute width)  ;; "narrow"
 (define-attribute length) ;; "long"
 
+(define-attribute rate-of-change) ;; fast, slow
+;; vs 'rate' as defined in amounts/measurements.lisp
 
