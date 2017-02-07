@@ -14921,7 +14921,7 @@
 (define-protein "UP:Q9V4P1" ("Anillin")) 
 (define-protein "UP:Q9VIW3" ("Ran GTPase-activating protein" "RanGAP")) 
 (define-protein "Uniprot:O95398" ("RAPGEF3" "RapGEF3")) 
-(define-protein "Uniprot:P42212" ("green fluorescent")) 
+(define-protein "Uniprot:P42212" ("green fluorescent protein"))
 (define-protein "Uniprot:P42212" ("GFP")) 
 (define-protein "Uniprot:P46940" ("IQGAP1")) 
 (define-protein "Uniprot:Q0VAM2" ("RASGEF1B" "RasGEF1B")) 
