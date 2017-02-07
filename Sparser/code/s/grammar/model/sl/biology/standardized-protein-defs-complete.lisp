@@ -31171,7 +31171,7 @@
 (define-protein "gp91phox" ("NCIT:C106595" "CYBB"))
 (define-protein "gps" ("UP:Q85429" "Putative envelope glycoprotein"))
 (define-protein "gravin" ("NCIT:C21326" "A kinase anchor protein-12")) 
-(define-protein "green fluorescent"( "Uniprot:P42212"))
+(define-protein "green fluorescent protein" ( "Uniprot:P42212" "green fluorescent"))
 (define-protein "h-RAS" ("NCIT:C52545" "HRAS"))
 (define-protein "h-TERT" ("NCIT:C52497" "TERT"))
 (define-protein "hAPP" ("UP:P14163" "Plasmodium-specific hydrophobic abundant protein"))
