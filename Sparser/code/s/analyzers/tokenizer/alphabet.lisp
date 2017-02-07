@@ -888,7 +888,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
     
       (776  ;; #\Combining_Diaeresis
        (:punctuation . ,(punctuation-named (code-char 776))))
-    
+      
+      (834 (:punctuation . ,(punctuation-named (code-char 834)))) ;;";", (code = 894)    
       (894 (:punctuation . ,(punctuation-named (code-char 894)))) ;;";", (code = 894)
     
       (913 ;; #\Greek_Capital_Letter_Alpha "Α"
@@ -1047,6 +1048,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
        (:punctuation . ,(punctuation-named (code-char 8491))))
       (8499 ;;"ℳ" #\U+2133
        (:punctuation . ,(punctuation-named (code-char 8499))))
+      (8531 (:punctuation . ,(punctuation-named (code-char 8531)))) ;;"⅓", (code = 8531)
       (8545 (:punctuation . ,(punctuation-named (code-char 8545)))) ;;"Ⅱ", (code = 8545)
       (8592 (:punctuation . ,(punctuation-named (code-char 8592)))) ;;"←" #\left_right_arrow
       (8593 (:punctuation . ,(punctuation-named (code-char 8593)))) ;;"↑", (code = 8593)

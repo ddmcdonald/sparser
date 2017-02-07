@@ -150,7 +150,7 @@
     (code-char 8486) ;;"Ω" #\U+2126 
     (code-char 8491) ;; "Å"
     (code-char 8499) ;;"ℳ" #\U+2133
-
+    (code-char 8531) ;;"⅓" (code = 8531)
     (code-char 8545) ;;"Ⅱ" (code = 8545)
     (code-char 8592) ;;"←" #\U+2190
     (code-char 8593) ;;"↑", (code = 8593)
