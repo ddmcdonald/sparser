@@ -119,10 +119,14 @@ without damaging other code.")
 (define-lambda-variable 'raw-text
     nil category::top)
 
-(defparameter *bio-entity-heads* nil)  ;;	
+(defparameter *bio-entity-heads* nil)  ;;
+(defparameter *bio-chemical-heads* nil)  ;;	
 
 (defun collect-bio-entity-heads ()
   (setq *bio-entity-heads* (make-hash-table :size 200000 :test #'equal)))
+
+(defun collect-bio-chemical-heads ()
+  (setq *bio-chemical-heads* (make-hash-table :size 200000 :test #'equal)))
 
 (defun note-surface-string (edge)
   ;; Called on every edge from complete-edge/hugin
@@ -161,8 +165,11 @@ without damaging other code.")
                   (setq referent (bind-dli-variable 'raw-text string referent))
                   (setf (edge-referent edge) referent)))
               (when (and *bio-entity-heads*
-              	(eq (itype-of referent) (category-named 'bio-entity)))
-                (setf (gethash (head-string edge) *bio-entity-heads*) t)))
+                         (eq (itype-of referent) (category-named 'bio-entity)))
+                (setf (gethash (head-string edge) *bio-entity-heads*) t))
+              (when (and *bio-chemical-heads*
+                         (itypep referent 'bio-chemical-entity))
+                (setf (gethash (head-string edge) *bio-chemical-heads*) t)))
             (setf (gethash referent *surface-strings*) ""))))))
 
 
@@ -748,7 +755,8 @@ without damaging other code.")
   (when edge 
     (let ((found-head (find-head-edge edge)))
       (when found-head
-        (string-right-trim " " (extract-string-spanned-by-edge found-head))))))
+        (string-right-trim " 
+" (extract-string-spanned-by-edge found-head))))))
 
 
 (defmethod head-string ((i individual))
