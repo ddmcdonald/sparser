@@ -29,6 +29,7 @@
 (def-family "GPCR")
 (def-family "HLA class I molecule")
 (def-family "HSP90") ;; heat-shock proteins
+(def-family "IgG")
 (def-family "IQGAP" :members ("IQGAP1" "IQGAP2" "IQGAP3"))
 (def-family "Jnk" :members ("JNK1" "JNK3A"))
 (def-family "MAP2K" :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7") :synonyms ("mitogen activated protein kinase" "MAP kinase kinase") )
