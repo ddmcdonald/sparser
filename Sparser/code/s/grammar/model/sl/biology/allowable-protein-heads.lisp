@@ -19334,10 +19334,11 @@ arsenite"
 (defparameter *used-protein-defs* (make-hash-table :size 100000 :test #'equal))
 
 (defun allowable-protein-head (w)
+  (gethash w *allowable-protein-head-ht*)
+  #+ignore
   (when (gethash w *allowable-protein-head-ht*)
     (setf (gethash w *used-protein-defs*) t)
-    t)
-  )
+    t))
 
 (fill-allowable-proteins)
 
