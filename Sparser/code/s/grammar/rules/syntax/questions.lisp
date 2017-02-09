@@ -82,14 +82,19 @@
          (cond ((member (cat-name (edge-form (third edges)))
                         '(adjp adjective comparative superlative
                           comparative-adjp superlative-adjp))
+                ;; <is> <something> <adj>
                 (make-polar-adjective-question start-pos end-pos edges))
                ((member (cat-name (edge-form (third edges)))
                         '(pp))
+                ;; stray time phrase?
                 (make-polar-pp-question edges))
                ((member (cat-name (edge-form (third edges)))
                         '(vp+ed vp+ing vg+ed vg+ing
                           vp+passive))
-                (make-polar-participle-question start-pos end-pos edges))))
+                ;; <is> <something> <x-ing?
+                (make-polar-participle-question start-pos end-pos edges))
+               (t
+                (lsp-break "unhandled 3 edge question: ~a" edges))))
 
         ;; the next option is to assume that the subject is the consistuent
         ;; just after the aux, to 'move' it there somehow, and try to
@@ -97,6 +102,10 @@
         (t
          #+ignore (format t "~&Could not resolve to a question~%"))))))
 
+
+(defun make-polar-pp-question (edges)
+  (push-debug edges)
+  (error "Polar PP questions are not implemented yet."))
 
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (let* ((be (edge-referent (first edges)))  ;; is
@@ -139,10 +148,6 @@
          :form category::question
          :referent q)))))
 
-(defun make-polar-pp-question (edges)
-  (push-debug edges)
-  (error "Polar PP questions are not implemented yet."))
-
 ;;;--------------
 ;;; WH questions
 ;;;--------------
@@ -153,15 +158,17 @@
   :binds ((wh :primitive word) ;; "how"
           (attribute attribute-value) ;; #<tall>
           (var :primitive lambda-variable) ;; height, color
-          #| the rest is a statement |# )
+          ;;(focus ;; Trips variable for 'how <much> ..."
+          #| the rest is the statement |# )
   ;;  :index (:temporary :sequential-keys wh attribute statement)
   :documentation "Draft that should be able to make enough of
  the content of the WH question explicit that we have the basis
  for computing an answer to it.")
 
 #| (p "What color is the block?")
-   (p "Is the block on the table?")
+   (p/s "Is the block on the table?")
    (p "Could we put on one more?")
+   (p/s "Could we put on one more block?")
    (p "did we make a three block stack?")
    (p "How big is the stack?")
    (p "How many blocks did you add to the row?")
@@ -222,12 +229,12 @@ oncogenic receptor conversion warrants further study.")
 
     (push-debug `(,aux-edge ,attr-edge ,other-edges))
     (when aux-edge
-      (store-preposed-aux aux-edge)
+      ;;(store-preposed-aux aux-edge)
       (let ((q (make-simple-individual
                 category::wh-question `((wh ,wh-word)))))
         (flet ((stash-attribute (attr)
                  (setq q (bind-variable 'attribute attr q))
-                 (let ((var (value-of 'var attr)))
+                 (let ((var (variable-for-attribute attr)))
                    (setq q (bind-variable 'var var q)))))
 
           (when attr-edge ;; "what color is ..."
@@ -250,6 +257,14 @@ oncogenic receptor conversion warrants further study.")
             edge))))))
   
 
+(defun apply-question-marker (wh-edge vg-edge np-edge)
+  (let ((vg (edge-referent vg-edge))
+        (wh (edge-referent wh-edge))
+        (np (edge-referent np-edge)))
+    ;; only does copulas. 
+    (when (itypep vg 'be)
+      ;; so we're asking about an attribute of the np
+      (break "apply-question-marker - what next?"))))
 
 
 
