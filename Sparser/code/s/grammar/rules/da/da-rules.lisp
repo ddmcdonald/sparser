@@ -1433,15 +1433,6 @@
            name pattern
           '(:function move-preposed-aux-before-adj first second third))))
              
-#+ignore(define-debris-analysis-rule yes-no-np-adjp
-    :pattern (preposed-auxiliary np adjp)
-    :action (:function yes-no-adj first second third))
-
-#+ignore(define-debris-analysis-rule yes-no-np-adjective
-    :pattern (preposed-auxiliary np adjective)
-    :action (:function yes-no-adj first second third))
-
-
 (defun move-preposed-aux-before-adj (aux-edge np-edge adjp-edge)
   (declare (ignore np-edge))
   (when (preposed-aux?)
@@ -1455,6 +1446,12 @@
    came in a preposed auxiliary and no residual, in place, vg) with
    the adjp, representing this as an edge respanning the adjp."
   (make-discontinuous-edge aux-edge adjp-edge rule))
+
+
+(define-debris-analysis-rule wh-be-thing
+  :pattern (question-marker vg np) ;; "what color is the block"
+  :action (:function apply-question-marker first second third))
+;; function is in syntax/questions.lisp
 
 
 
