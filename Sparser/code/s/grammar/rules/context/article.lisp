@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1993-1995,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2016-2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "article"
 ;;;   Module:  "grammar;rules:context:"
-;;;  Version:  March 2016
+;;;  Version:  February 2017
 
 ;; initiated 12/15/93 v2.3.  Substantial work started 8/17/94. Tweeking ..9/15
 ;; 5/13/95 added permanent-instances wrapper.  9/19/95 filled out Deallocate-current
@@ -11,9 +11,39 @@
 
 (in-package :sparser)
 
+;;;------------------------------------------
+;;; base for this kind of document structure
+;;;------------------------------------------
+;; The modern code is in objects/doc/object.lisp
+
+(define-category original-document-structure
+  :instantiates nil
+  :specializes linguistic
+  :documentation "Provides a root category for a miscellany of
+ document structures or document features that were developed
+ when the only representational devises used were categories 
+ and individuals.  ")
+
+
 ;;;----------------------------------
 ;;; root objects for section objects
 ;;;----------------------------------
+
+(define-category  section-object     ;; "section" is a form-category (?)
+  :instantiates nil
+  :specializes original-document-structure
+  :binds ((type) ;;  :primitive (:or section-marker keyword))
+          ;; These v/rs are too complex for the decoder as presently written
+          (parent) ;;  (:or section (:primitive keyword)))
+          (daughters  :primitive list)
+          (prior-sibling) ;;  (:or section (:primitive keyword)))
+          (following-sibling . section)
+
+          (title)
+          (count :primitive integer)
+          (token-index :primitive integer))
+  :index (:temporary :sequential-keys parent prior-sibling))
+
 
 (define-with-all-instances-permanent
   
@@ -26,6 +56,13 @@
       :parent :root
       :prior-sibling :root)) )
 
+
+;;--- sorting section objects
+
+(defun sort-section-objects (so1 so2)
+  (let ((i1 (value-of 'token-index so1))
+        (i2 (value-of 'token-index so2)))
+    (< i1 i2)))
 
 
 ;;;-----------------------------------------------------------------
