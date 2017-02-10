@@ -88,8 +88,17 @@
         `(define-protein ,(car term) ,(list (getf (cddr term) :id) (getf (cddr term) :name)))
         *trips-define-proteins*)
        (car *trips-define-proteins*))
+      (bio-process
+       (when (getf (cddr term) :name)
+         (let ((name (intern (string-upcase (getf (cddr term) :name)) (find-package :sparser))))
+         (if (category-named name)
+             `(def-synonym ,name (:noun ,(car term)))
+             `(define-category ,name :specializes bio-process
+                  ,.(when (getf (cddr term) :id)
+                      `(:bindings (uid ,(getf (cddr term) :id))))
+                  :realization (:noun ,(car term)))))))
       (t
-       (unless (member category '(bio-method bio-process bio-organ bio-complex protein-domain protein-family rna ))
+       (unless (member category '(bio-method bio-organ bio-complex protein-domain protein-family rna ))
          (format t "~%defining an instance of ~s~%" category))
        (when (member category '(point-mutation)) 
          ;;(member category '(bio-process bio-organ bio-complex))
@@ -97,11 +106,28 @@
          (lsp-break "trips/reach-term->def-bio"))
        (unless (or (eq category 'referential-sem)
                    (eq category 'time-unit))
-       `(define-category ,(intern (car term) (find-package :sp))
-            :specializes ,category
-            :bindings (uid ,(simplify-colons (getf (cddr term) :id)))
-            :realization
-            (:noun ,(car term))))))))
+         (let ((name (getf (cddr term) :name)))
+           `(define-named-bio-individual ',category
+                ',(intern (string-upcase (car term)) (find-package :sp))
+              ',(simplify-colons (getf (cddr term) :id))
+              ,.(when name `(:name ,(pname name))))))))))
+
+(defparameter *uid-to-individual* (make-hash-table :size 10000 :test #'equal))
+
+(defun define-named-bio-individual (category-name word id &key name)
+  (let* ((category (category-named category-name :break-if-undefined))
+         (i (if id
+                (or (gethash id *uid-to-individual*)
+                    (setf (gethash id *uid-to-individual*)
+                          (let ((ind (find-or-make-individual category :uid id)))
+                            (if name
+                                (bind-dli-variable :name name ind)
+                                ind))))
+                (find-or-make-individual category :name (if name (pname name) (pname word))))))
+    (add-rules (make-rules-for-head :common-noun (resolve/make (pname word)) category i) i)
+    (when name (add-rules (make-rules-for-head :common-noun (resolve/make (pname name)) category i) i))
+    i))
+  
 
 (defun trips-class->krisp (term)
   (unless (null (second term))
@@ -396,7 +422,7 @@ the process.
 
 (defun make-def-protein (IDS &key documentation (ras2-model nil))
   (declare (special *inhibit-constructing-plural*))
-    (standardize-protein-def ids)
+  (standardize-protein-def ids)
     
                                         
   (let
@@ -636,14 +662,15 @@ the process.
 
 (defun def-bio/expr (short kind
                      &key documentation greek identifier mitre-link
-                          long synonyms takes-plurals ras2-model)
+                       long synonyms takes-plurals ras2-model
+                       members)
   ;; use find-individual with their names to retrieve these.
   (let* ((word (resolve/make short))
          (category (category-named kind :break-if-undefined)))
     (without-redefinition-warnings
       (make-typed-bio-entity word category
                              greek identifier mitre-link
-                             ras2-model long synonyms takes-plurals documentation))))
+                             ras2-model long synonyms takes-plurals documentation members))))
 
 
 (defun define-bio (word category-name)
@@ -654,7 +681,7 @@ the process.
 (defun make-typed-bio-entity (word category
                               &optional greek identifier mitre-link
                                 ras2-model
-                                long synonyms takes-plurals documentation)
+                                long synonyms takes-plurals documentation members)
   
   (unless (find-variable-for-category 'name category)
     (error "Cannot use the def-bio form with the category ~a~
@@ -697,18 +724,16 @@ the process.
       ;; version of i for all the rules ; ;
       |#
 
+      (when identifier
+        (setq i (bind-dli-variable :uid identifier i)))
+      (when (consp members)
+        (setq i (set-family-members i members)))
 
       (cond
         ((and r (cfr-p r))
          ;;(push-debug `(,r)) (break " set rule form?")
          (setf (cfr-form r) category::proper-noun)
-         (setf (cfr-referent r)
-               (bind-dli-variable
-                :raw-text
-                word
-                (if identifier
-                    (bind-dli-variable :uid identifier i) ;;(find-or-make-individual category :uid word)
-                    i))))
+         (setf (cfr-referent r) i))
         (t
          (push-debug `(,i ,word))
          (error "something badly formed about rules field")))
@@ -729,7 +754,9 @@ the process.
           (let ((word (resolve/make syn)))
             (push (define-cfr label `(,word)
                     :form form
-                    :referent (if (value-of 'name i)
+                    :referent i
+                    #+ignore ;; fill in raw-text at completion
+                    (if (value-of 'name i)
                                   (bind-dli-variable 'raw-text word i)
                                   (bind-dli-variable 'name word i)))
                   rules)
@@ -850,9 +877,8 @@ the process.
            (t (break "what type of family is this supposed to be?"))))
          (i (def-bio/expr name category-name
              :long long :identifier identifier :synonyms synonyms
-             :takes-plurals t)))
-    (when (consp members)
-     (set-family-members i members))
+             :takes-plurals t
+             :members members)))
     i))
 
 (defun set-family-members (i members)
@@ -865,7 +891,7 @@ the process.
         (push protein proteins)))
     (let ((set-of-proteins (create-collection proteins 'protein))
           (count (find-number (length members))))
-      (setq i (bind-dli-variable 'members set-of-proteins i))
+      (setq i (bind-dli-variable 'family-members set-of-proteins i))
       (setq i (bind-dli-variable 'count count i))
       ;; If we didn't use such a speciic category these would matter.
       i)))
