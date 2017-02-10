@@ -115,6 +115,14 @@ previous records of treetop-counts.
   "Set to the text of the sentence being run in the run-sentences
    inner function of run-treetop-snapshot")
 
+(defun ssbr () ;; Snapshot Sentence Being Run
+  (declare (special *snapshot-corpus* *snapshot-corpus* *p-sent*))
+  (let ((corpus *snapshot-corpus*)
+        (index *snapshot-corpus*)
+        (text *p-sent*))
+    (format t "~a #~a~%~a" corpus index text)))
+
+
 (defmethod run-treetop-snapshot ((name symbol) &optional (save-info nil))
   (let ((corpus (get-sentence-corpus name)))
     (unless corpus
@@ -124,7 +132,9 @@ previous records of treetop-counts.
       (run-treetop-snapshot corpus save-info))))
 
 (defmethod run-treetop-snapshot ((corpus sentence-corpus) &optional (save-info nil))
-  (let ((variable (corpus-bound-variable corpus)))
+  (let* ((variable (corpus-bound-variable corpus))
+         (*snapshot-corpus* (name corpus)))
+    (declare (special *snapshot-corpus*))
     (unless variable
       (error "Corpus not set up with a variable"))
     (with-total-quiet
@@ -150,15 +160,15 @@ previous records of treetop-counts.
                              (push `(,index . ,count) pairs))))))))
 
           (if save-info
-              (let ((*reading-populated-document* t)
-                    (*recognize-sections-within-articles* nil) ;; turn of doc init
-                    (*accumulate-content-across-documents* t)) ;; doesn't clear history??
-                (declare (special *reading-populated-document*
-                                  *recognize-sections-within-articles*
-                                  *accumulate-content-across-documents*))
-                (run-sentences variable))
-             
+            (let ((*reading-populated-document* t)
+                  (*recognize-sections-within-articles* nil) ;; turn of doc init
+                  (*accumulate-content-across-documents* t)) ;; doesn't clear history??
+              (declare (special *reading-populated-document*
+                                *recognize-sections-within-articles*
+                                *accumulate-content-across-documents*))
               (run-sentences variable))
+            
+            (run-sentences variable))
 
 
           (nreverse pairs))))))
