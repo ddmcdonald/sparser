@@ -20,16 +20,7 @@
 (in-package :sparser)
 
 
-(define-category original-document-structure
-  :instantiates nil
-  :specializes linguistic
-  :documentation "Provides a root category for a miscellany of
- document structures or document features that were developed
- when the only representational devises used were categories 
- and individuals.  ")
-
-
-#| NOT USING THIS VERSION. Equivalent code is in OBJECTS/DOC/OBJECT1.LISP
+#| NOT USING THIS VERSION. Equivalent code is in
 
 ;;;--------
 ;;; object

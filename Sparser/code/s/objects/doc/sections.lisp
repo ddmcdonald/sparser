@@ -15,32 +15,10 @@
 ;;; root object
 ;;;-------------
 
-(define-category  section-object     ;; "section" is a form-category (?)
-  :instantiates nil
-  :specializes original-document-structure
-
-          ;; These v/rs are too complex for the implemented decoder 
-  :binds ((type) ;;  :primitive (:or section-marker keyword))
-          (parent) ;;  (:or section (:primitive keyword)))
-          (daughters  :primitive list)
-          (prior-sibling) ;;  (:or section (:primitive keyword)))
-          (following-sibling . section)
-
-          (title)
-          (count :primitive integer)
-          (token-index :primitive integer)
-          )
-
-  :index (:temporary :sequential-keys parent prior-sibling))
-
 
 
 ;;;--------------
 ;;; sort routine
 ;;;--------------
 
-(defun sort-section-objects (so1 so2)
-  (let ((i1 (value-of 'token-index so1))
-        (i2 (value-of 'token-index so2)))
-    (< i1 i2)))
 

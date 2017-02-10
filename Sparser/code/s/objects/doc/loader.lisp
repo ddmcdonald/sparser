@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;doc:"
-;;;  Version:  0.6 June 2015
+;;;  Version:  February 2017
 
 ;; initiated 10/91
 ;; 0.1  (10/21 v2.0) Bumped [section] to "1".  Added [SGML tags]
@@ -42,8 +42,6 @@
 (lload "doc;globals")
 (lload "doc;rhetoric")
 (lload "doc;word-freq")
-(lload "doc;article")
-(lload "doc;sections")
 (lload "doc;section markers")
 (lload "doc;sgml tags")
 (lload "doc;html")
