@@ -408,29 +408,6 @@
   different edge parents (edge-used-in).")
 
 
-#+ignore ;; defined in core now
-(define-category event-relation
-  :specializes perdurant
-  :binds ((relation)
-          (event)
-          (subordinated-event)
-	  (adverb)
-          (following process)
-          (preceding process)
-	  (during process)
-	  (timeperiod (:or time-unit amount-of-time)))
-  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
-    though the head decides what to do with it based on the
-    composition. Same design as pps."
-  )
-
-(mark-as-form-category category::event-relation)
-;;;------------------------------------
-;;; bracket introduction by form rules
-;;;------------------------------------
-
-
-
 
 ;;;------------------------------------------------------------
 ;;; Mixins to provide places to stash words in bindings fields
