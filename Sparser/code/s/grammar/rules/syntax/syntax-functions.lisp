@@ -108,6 +108,10 @@
 ;;; unattached variables
 ;;;----------------------
 
+
+(define-lambda-variable 'raw-text ;; for Harvard
+    nil category::top)
+
 (define-lambda-variable 'predicate
     nil 'top)
 
@@ -986,7 +990,6 @@
                   ;; or if we are making a last ditch effort
                   ;; if not, then return NIL, failing the rule
                   (and *force-modifiers* 'modifier))))
-           (push-debug `(,prep-word ,pobj-referent))
            (cond
              (*subcat-test*
               (or variable-to-bind
@@ -1012,9 +1015,7 @@
                    (compatible-with-specified-part-type pobj-referent np))
               (setq np (bind-variable 'parts pobj-referent np)))
              (variable-to-bind
-              (when *collect-subcat-info*
-                (push (subcat-instance np prep-word variable-to-bind pp)
-                      *subcat-info*))
+              (collect-subcat-statistics np prep-word variable-to-bind pp)
               (setq np (individual-for-ref np))
               (setq np (bind-dli-variable variable-to-bind pobj-referent np))
               np)))))))
@@ -1406,6 +1407,20 @@
               '(adjunct subordinate-conjunction))
       (bind-dli-variable 'subordinate-conjunction time (individual-for-ref vp))
       (bind-dli-variable 'time time (individual-for-ref vp))))
+
+
+(defun clause+pp (clause pp)
+  (multiple-value-bind (preposition pobj-referent)
+      (decompose-prepositional-phrase (right-edge-for-referent))
+    (let ((variable
+           (subcategorized-variable clause preposition pobj-referent)))
+      (if *subcat-test*
+        variable
+        (else
+          (collect-subcat-statistics
+           clause preposition variable pobj-referent)
+          (setq clause (bind-variable variable pobj-referent clause))
+          clause)))))
 
 
 (defun assimilate-adj-complement (vp adjp)

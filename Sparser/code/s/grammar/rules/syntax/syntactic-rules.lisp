@@ -293,6 +293,11 @@
 ;;; Rules for VG, VP and S
 ;;;------------------------
 
+(def-syntax-rule (s pp)
+  :head :left-edge
+  :form s
+  ;; See DA rules like attach-pp-following-clause
+  :referent (:function clause+pp left-edge right-edge))
 
 ;;;--------
 ;;; VG -- Rules for constructing VGs (and some hangers on for adverbials and deictic locations on S as a whole)
