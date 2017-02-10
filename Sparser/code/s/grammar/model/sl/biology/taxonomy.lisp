@@ -1238,7 +1238,7 @@
   ;; :specializes molecule
   ;; :rule-label protein
   :binds ((type bio-entity) ;; a family of what?
-          (members collection)
+          (family-members collection)
           (count number))
   :rule-label protein
   :index (:permanent :key name)
