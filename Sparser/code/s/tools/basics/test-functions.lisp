@@ -1210,14 +1210,12 @@ applied to l, and values are values associated with that key example"
           do
           ;; this may cause problems, but it should cause the sentences to be collected as part of the article
           (when save-output
-            (let ((sls (pname sl)))
-              (initialize-article-semantic-file-if-needed
-               (subseq sls 0 (- (length sls) 1)))))
-          (process-hms-article-sents sl)
+            (initialize-article-semantic-file-if-needed (pname sl)))
+          (process-hms-article-sents sl i)
           (close-article-semantic-file-if-needed))))
 
-(defun process-hms-article-sents (sl)
-  (format t "Processing hms article sentences: ~s~%" sl)
+(defun process-hms-article-sents (sl i)
+  (format t "Processing hms sentences from article # ~s:  ~s~%" i sl)
   (let ((sents (symbol-value sl)))
     (if (or *break-on-hms-errors*
             (and (find-package :r3)
