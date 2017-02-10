@@ -117,8 +117,6 @@ without damaging other code.")
 (defparameter *save-surface-text-as-variable* t)
 (defparameter *save-surface-text-classes* '(protein protein-family))
 
-(define-lambda-variable 'raw-text
-    nil category::top)
 
 (defparameter *bio-entity-heads* nil)  ;;
 (defparameter *bio-chemical-heads* nil)  ;;	

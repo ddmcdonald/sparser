@@ -276,13 +276,6 @@
     collect b)
   bindings)
 
-(defun immediate-supers (c)
-  (let* ((lp (cat-lattice-position c)) ; 
-         (mixins (cat-mix-ins c)))
-    (if (and (lattice-point-p lp)
-             (lp-super-category lp))
-      (cons (lp-super-category lp) mixins)
-      mixins)))
 
 (defun find-lattice-subordinate (oparent var/name value)
   ;; called from find-by-apply-bindings
