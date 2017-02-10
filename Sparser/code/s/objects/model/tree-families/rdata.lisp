@@ -199,8 +199,7 @@ Should mirror the cases on the *single-words* ETF."
                    (list rdata)) ; multiple realizations
            (rdata category))
     (multiple-value-bind (args slots relations) (decode-subcat-slots rdata)
-      (when (fboundp 'fom-subcategorization) ; FIX LOAD ORDER
-        (apply #'fom-subcategorization category slots))
+      (apply #'fom-subcategorization category slots)
       (loop for (relation variable) on relations by #'cddr
             do (register-variable category relation variable))
       (multiple-value-bind (etf mapping local-rules)

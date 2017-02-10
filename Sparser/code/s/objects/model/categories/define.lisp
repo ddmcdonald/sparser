@@ -181,8 +181,7 @@
 
     (if rdata
       (setup-rdata category rdata)
-      (when (fboundp 'fom-subcategorization) ; FIX LOAD ORDER
-        (fom-subcategorization category)))
+      (fom-subcategorization category))
     
     (when lemma
       (setup-category-lemma category lemma))
