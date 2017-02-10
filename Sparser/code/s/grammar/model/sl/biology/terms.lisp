@@ -1065,7 +1065,6 @@
 (noun "trial" :super bio-context)
 (noun "tumor" :super non-cellular-location)
 (noun "tumor formation" :super named-bio-process)
-(noun "tumorigenesis" :super named-bio-process)
 (noun "two-dimensional isoelectric focussing" :super bio-method)
 (noun "type" :super variant)
 (adj "unable" :super bio-relation
