@@ -235,7 +235,10 @@
         do (push-indentation)
            (start-element "sem" stream)
            (unless small (push-indentation))
-           (write-sem (if (edge-p tt) (edge-referent tt) tt) stream)
+          (write-sem (if (edge-p tt)
+                         (edge-referent tt) ;; (edge-mention tt)
+                         tt)
+                     stream)
            (unless small (pop-indentation))
            (finish-element "sem" stream (not small))
            (pop-indentation))
@@ -261,6 +264,9 @@
          (start-cat i stream newline)
          (print-binding-list i stream newline)
          (finish-cat stream newline))))
+
+
+
 
 (defun write-protein-xml (protein stream)
   (start-cat protein stream nil nil)
@@ -306,14 +312,14 @@
   (start-cat c stream nil)
   (finish-cat stream nil))
 
-(defun write-lambda-binding (binding stream &optional newline)
+(defun write-lambda-binding (variable stream &optional newline)
   (if *use-xml*
-      (let ((name (string-downcase (pname (binding-variable binding)))))
+      (let ((name (string-downcase (pname variable))))
         (start-lambda-var "var" name stream newline)
         (write-attribute 'lambda-variable "true" stream)
         (finish-lambda-var "var" name stream newline))
       (else
-        (start-var (binding-variable binding) stream newline)
+        (start-var variable stream newline)
         (format stream " *lambda-var*")
         (finish-var stream newline))))
 
@@ -335,26 +341,53 @@
              (emit-line-continue stream (format nil " (~s" name))
              (emit-line-continue stream (concatenate 'string " (" name))))))
 
-(defun print-binding-list (i stream &optional (newline t))
+(defmethod print-binding-list ((i individual) stream &optional (newline t))
   (when newline (push-indentation))
   (loop for binding in (filter-bl i)
      do (write-sem binding stream newline))
   (when newline (pop-indentation)))
 
-(defmethod write-sem ((binding binding) stream &optional (newline t))
-  (let ((var (binding-variable binding))
-        (small (small-binding-list (binding-value binding))))
+
+
+(defun dependency-variable (dep)
+  (car dep))
+
+(defun dependency-value (dep)
+  (second dep))
+
+(defun write-sem-dependency (dep stream &optional (newline t))
+  (let* ((var (dependency-variable dep))
+         (val (dependency-value dep))
+         (small (small-binding-list val)))
     (declare (special small))
     (if
-     (eq (binding-value binding) '*lambda-var*)
-     (write-lambda-binding binding stream)
+     (eq val '*lambda-var*)
+     (write-lambda-binding var stream)
      (else (start-var var stream newline)
            (if small
                (then
-                 (write-sem (binding-value binding) stream nil))
+                 (write-sem val stream nil))
                (else
                  (push-indentation)
-                 (write-sem (binding-value binding) stream newline)
+                 (write-sem val stream newline)
+                 (pop-indentation)))
+           (finish-var stream (not small))))))
+
+(defmethod write-sem ((binding binding) stream &optional (newline t))
+  (let* ((var (binding-variable binding))
+         (val (binding-value binding))
+         (small (small-binding-list val)))
+    (declare (special small))
+    (if
+     (eq (binding-value binding) '*lambda-var*)
+     (write-lambda-binding var stream)
+     (else (start-var var stream newline)
+           (if small
+               (then
+                 (write-sem val stream nil))
+               (else
+                 (push-indentation)
+                 (write-sem val stream newline)
                  (pop-indentation)))
            (finish-var stream (not small))))))
 
@@ -451,19 +484,21 @@
                 (not (eq (binding-value (car bl)) '*lambda-var*)))
                (t nil))))))
 
+
 (defmethod small-binding-list ((c cons))
   nil)
 
-(defun filter-bl (i)
+(defmethod filter-bl ((i individual))
   (when (individual-p i)
     (loop for b in (indiv-old-binds i)
-       when (meaningful-binding? b i)
-       collect b)))
+          when (meaningful-binding? (binding-variable b)
+                                    (binding-value b))
+          collect b)))
 
-       
-(defun meaningful-binding? (b i)
-  (and (binding-p b)
-       (not (member (var-name (binding-variable b)) '(ras2-model has-determiner)))))
+      
+(defun meaningful-binding? (v val)
+  (and  (typep v 'lambda-variable)
+        (not (member (var-name v) '(ras2-model has-determiner)))))
 
 
 ;;;;;;;;;;;;;;

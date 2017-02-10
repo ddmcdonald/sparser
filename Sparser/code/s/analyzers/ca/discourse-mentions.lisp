@@ -783,3 +783,49 @@ so we return the edge for the POBJ"
 	  ((member (edge-form source) *vp-categories*)
 	   (not (member (edge-form (edge-used-in source)) *vp-categories*)))
 	  (t t)))))
+
+
+;;; methods for writing semantics for discourse-mentions
+
+(defmethod write-sem ((m discourse-mention) stream &optional (newline t)
+                                                     &aux (i (base-description m)))
+  (cond ((simple-number? i)
+         (space-prin1 (value-of 'value i) stream))
+        ((and *use-xml*
+              *short-protein-xml*
+              (itypep (base-description m) 'protein)
+              (= (length (filter-bl i)) 2)
+              (value-of 'name i)
+              (value-of 'uid i))
+         (write-protein-xml i stream))
+        ((or (small-binding-list i) (null newline))
+         (start-cat i stream nil)
+         (print-binding-list m stream nil)
+         (finish-cat stream nil))
+        (t
+         (start-cat i stream newline)
+         (print-binding-list m stream newline)
+         (finish-cat stream newline))))
+
+(defmethod print-binding-list ((m discourse-mention) stream &optional (newline t))
+  (when newline (push-indentation))
+  (loop for dependency in (filter-bl m)
+     do (write-sem-dependency dependency stream newline))
+  (when newline (pop-indentation)))
+
+
+(defmethod small-binding-list ((m discourse-mention))
+  (let ((bl (filter-bl m)))
+    (and (null (cdr bl))
+         (not (eq (dependency-value (car bl)) '*lambda-var*))
+         (typecase (dependency-value (car bl))
+           (discourse-mention
+            (typecase (base-description (dependency-value (car bl)))
+              ((or category string number symbol word polyword) t)
+              (t nil)))
+           (t nil)))))
+
+(defmethod filter-bl ((m discourse-mention))
+  (loop for b in (dependencies m)
+       when (meaningful-binding? (dependency-variable b)(dependency-value b))
+        collect b))
