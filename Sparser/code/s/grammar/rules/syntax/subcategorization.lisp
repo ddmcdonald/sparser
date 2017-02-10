@@ -42,6 +42,7 @@
   (comlex-subcategorization (word-pname w) pos))
 
 (defmethod comlex-subcategorization ((pname string) (pos symbol))
+  (declare (special *comlex-words-primed*))
   (when *comlex-words-primed*
     (let ((entry (comlex-entry pname)))
       (when entry
@@ -51,6 +52,7 @@
 (defun add-specific-subcategorization-facts (category word pos)
   ;; Called from define-function-term, where 'pos' is :adjective
   ;; and we're looking for bound prepositions for, e.g. "common"
+  (declare (special *comlex-words-primed*))
   (when *comlex-words-primed* 
     (let ((pos-entry (comlex-subcategorization word pos)))
       (when pos-entry
@@ -105,24 +107,22 @@
               (cat-symbol c)))))
 
 (defmethod display-subcategorization ((sf subcategorization-frame))
-  (let ((category (subcat-for sf))
-        (patterns (subcat-patterns sf)))
-    (format t "Subcategorization options for ~a" (cat-symbol category))
-    (dolist (pattern patterns)
-      (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
-              (pname (subcat-label pattern))
-              (v/r-symbol (subcat-restriction pattern))
-              (var-symbol (subcat-variable pattern))))))
-
-(defun var-symbol (var)
-  (cond ((null var) nil)
-        ((consp var) var)
-        (t (var-name var))))
-
-(defun v/r-symbol (v/r)
-  (cond ((null v/r) nil)
-        ((consp v/r) v/r)
-        (t (cat-symbol v/r))))
+  (flet ((var-symbol (var)
+           (cond ((null var) nil)
+                 ((consp var) var)
+                 (t (var-name var))))
+         (v/r-symbol (v/r)
+           (cond ((null v/r) nil)
+                 ((consp v/r) v/r)
+                 (t (cat-symbol v/r)))))
+    (let ((category (subcat-for sf))
+          (patterns (subcat-patterns sf)))
+      (format t "Subcategorization options for ~a" (cat-symbol category))
+      (dolist (pattern patterns)
+        (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
+                (pname (subcat-label pattern))
+                (v/r-symbol (subcat-restriction pattern))
+                (var-symbol (subcat-variable pattern)))))))
 
 
 ;;;------------------------
@@ -188,7 +188,8 @@
           (t (make-subcategorization category slots)))))
 
 (defun make-subcat-patterns (category slots)
-  (override-subcat-patterns category
+  (override-subcat-patterns
+   category
    (inherit-subcat-patterns category)
    slots))
 
@@ -424,7 +425,7 @@
       (subcat-patterns sc))))
 
 (defmethod known-subcategorization? ((c cons))
-  (declare (special *subcat-test*))
+  (declare (special *subcat-test* *sentence-in-core*))
   (unless *subcat-test*
     (warn "passing a list to known-subcategorization? -- ~s~% in sentence: ~s~%"
           c (sentence-string *sentence-in-core*)))
@@ -509,7 +510,8 @@
 
 (defun subcat-instance (head subcat-label var raw-item)
   ;; makes a record of the subcatgorization relationship
-  (declare (optimize debug))
+  (declare (optimize debug)
+           (special category::pp))
   (let* ((raw-item-edge (edge-for-referent raw-item))
          (head-edge (edge-for-referent head))
          (item
@@ -610,6 +612,10 @@
 ;;; track missing subcategorization information
 ;;;---------------------------------------------
 
+(defparameter *missing-subcats* '(())
+  "When non-null, this causes the saving of all cases where a PP 
+   is not absorbed by a preceding NP or VP")
+
 (defun save-missing-subcats ()
   (declare (special category::pp))
   (when *missing-subcats*
@@ -634,12 +640,13 @@
             (nconc pp-pairs *missing-subcats*)))))
 
 (defun write-missing-subcats (outfile)
-  (let
-      ((missing
-        (loop for l in *missing-subcats* 
-          when (consp l)
-          collect 
-          `(,(simple-label (car l)) ,(simple-label (second l)) ,@(cddr l)))))
+  (let ((missing
+         (loop for l in *missing-subcats* 
+            when (consp l)
+            collect 
+              `(,(simple-label (car l))
+                 ,(simple-label (second l))
+                 ,@(cddr l)))))
     (with-open-file (s outfile
                        :direction :output
                        :if-exists :overwrite
@@ -673,7 +680,9 @@
 
 (defun satisfies-subcat-restriction? (item pat-or-v/r)
   (declare (special *trivial-subcat-test* *subcat-test*
-                    category::pronoun/first/plural category::ordinal
+                    *sentence-in-core*
+                    *in-collect-no-space-segment-into-word*
+                    category::pronoun/first/plural category::quantifier
                     category::this category::that category::these category::those
                     category::pronoun category::number category::ordinal))
   (let ((restriction
@@ -719,9 +728,9 @@
                              (:or time-unit time amount-of-time))
                            :test #'equal)))
          (when (and *show-one-anaphora* (not *subcat-test*))
-           (format t "~%one anaphora ~s in ~s~%" (list item pat-or-v/r)(sentence-string *sentence-in-core*))
-           ;;(lsp-break)
-           )
+           (format t "~%one anaphora ~s in ~s~%"
+                   (list item pat-or-v/r)
+                   (sentence-string *sentence-in-core*)))
 
          t ;; this was done to handle one anaphora, but should be revisited
          )
@@ -814,7 +823,7 @@
 (defun subcategorized-variable (head label item)
   "Returns the variable on the HEAD that is subcategorized for
    the ITEM when it has the grammatical relation LABEL to the head."
-  (declare (special *pobj-edge* *subcat-test*))
+  (declare (special *pobj-edge* *subcat-test* *sentence-in-core*))
   ;; included in the subcategorization patterns of the head.
   ;; If so, check the value restriction and if it's satisfied
   ;; make the specified binding
@@ -942,6 +951,7 @@
 
 
 (defun announce-over-ridden-ambiguities (item head label variable)
+  (declare (special *sentence-in-core*))
   (when *show-over-ridden-ambiguities*
     (format t "~%over-ridden ambiguity now preserved~
                ~%  ambiguous subcats for attaching ~s to ~s ~
@@ -949,7 +959,7 @@
             item head label variable (sentence-string *sentence-in-core*))))
 
 (defun variable-from-pats (item head label pats subcat-patterns)
-  (declare (special category::number))
+  (declare (special category::number *sentence-in-core*))
   (let ( variable )
     (cond
       ((cdr pats)
@@ -1002,6 +1012,7 @@
 
 (defun note-failed-tests (item restriction)
   ;; return non-null when tests failed
+  (declare (special *left-edge-into-reference* *right-edge-into-reference*))
   (let ((*trivial-subcat-test* nil))
     (labels ((scat-symbol (c)
                (typecase c
