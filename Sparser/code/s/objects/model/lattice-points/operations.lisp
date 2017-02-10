@@ -308,6 +308,15 @@
                finally (return nil))))))))
 
 
+;;--- helper Rusty wrote
+
+(defun immediate-supers (c)
+  (let* ((lp (cat-lattice-position c)) ; 
+         (mixins (cat-mix-ins c)))
+    (if (and (lattice-point-p lp)
+             (lp-super-category lp))
+      (cons (lp-super-category lp) mixins)
+      mixins)))
 
 ;;;--------------------------------------------
 ;;; pulling down operations stored on superc's
