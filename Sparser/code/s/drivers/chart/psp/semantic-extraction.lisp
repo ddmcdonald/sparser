@@ -114,7 +114,8 @@ without damaging other code.")
   	;;(make-hash-table :size 10000)
   	)
 
-(defparameter *save-surface-text-as-variable* nil)
+(defparameter *save-surface-text-as-variable* t)
+(defparameter *save-surface-text-classes* '(protein protein-family))
 
 (define-lambda-variable 'raw-text
     nil category::top)
@@ -159,10 +160,16 @@ without damaging other code.")
 
                 (when (and *bce-ht* (itypep referent 'bio-chemical-entity))
                   (pushnew string (gethash referent *bce-ht*) :test #'equal))
-                (when *save-surface-text-as-variable*
+                (when (and *save-surface-text-as-variable*
+                           (member (cat-name (itype-of referent))
+                                   *save-surface-text-classes*)
+                           (null (value-of 'raw-text referent)))
+                                   
                   ;; do this after the code above, so that the *bce-ht*
                   ;;  is keyed on the individual without the text
-                  (setq referent (bind-dli-variable 'raw-text string referent))
+                  (setq referent (bind-dli-variable 'raw-text
+                                                    (head-string edge) ;;string
+                                                    referent))
                   (setf (edge-referent edge) referent)))
               (when (and *bio-entity-heads*
                          (eq (itype-of referent) (category-named 'bio-entity)))
