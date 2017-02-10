@@ -19323,12 +19323,13 @@ arsenite"
             "κb" "μ-calpain" "μm" "– 3" "–3" "–3 µ" "–3 " "–3 " "—3" "− 3" "−3" "−3  "
             "− 3 ")))
 
-(defparameter *allowable-protein-head-ht* (make-hash-table :size 30000 :test #'equal))
+(defparameter *allowable-protein-head-ht* (make-hash-table :size 30000 :test #'equalp))
 
 
 (defun fill-allowable-proteins ()
   (loop for w in *good-protein-defs*
-        ;;*bio-chemical-heads-strings*
+        do (setf (gethash w *allowable-protein-head-ht*) t))
+  (loop for w in *bio-chemical-heads-strings*
         do (setf (gethash w *allowable-protein-head-ht*) t)))
 
 (defparameter *used-protein-defs* (make-hash-table :size 100000 :test #'equal))
