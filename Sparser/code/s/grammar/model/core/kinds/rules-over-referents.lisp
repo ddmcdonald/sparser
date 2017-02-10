@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "rules-over-referents"
 ;;;   Module:  "model/core/kinds/"
-;;;  version:  January 2017
+;;;  version:  February 2017
 
 ;; initiated 3/18/13. Elaborated through 7/24/13, gradually moving out rules.
 
@@ -42,6 +42,10 @@
      (let ((attribute (value-of 'attribute (itype-of av))))
        (when attribute
          (value-of 'var attribute))))
+    ((itypep av category::attribute) ;; e.g. color
+     (let ((type (itype-of av)))
+       (when type
+         (value-of 'var type))))
     (t
      nil)))
 
