@@ -42,13 +42,6 @@
 ;; called from chart-based-analysis where there is a catch to 
 ;; terminate chart parsing. 
 
-
-
-(defparameter *missing-subcats* '(())
-  "When non-null, this causes the saving of all cases where a PP 
-   is not absorbed by a preceding NP or VP")
-
-
 (defun sucessive-sweeps? ()
   "syntactic sugar for a mode detector. Cf. new-forest-protocol?"
   (eq *kind-of-chart-processing-to-do* :successive-sweeps))
