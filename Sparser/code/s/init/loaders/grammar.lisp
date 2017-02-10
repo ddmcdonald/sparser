@@ -89,15 +89,19 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *tree-families*
     (gload "tree-families;shortcut-loader"))
 
-  (gate-grammar *general-words*
-    (gload "words;loader")
-    ;; the function words make reference to bracket types and upper model categories
-    (gload "words;whitespace assignments"))
-
   (gate-grammar *tree-families*
     ;; This should come after any of the modules whose categories
     ;; it references
     (gload "tree-families;loader"))
+
+  (gate-grammar *kinds* ;; older upper model
+    (gload "kinds;1st-loader") ;; defines the upper model
+    (gload "kinds;loader"))
+
+  (gate-grammar *general-words*
+    (gload "words;loader")
+    ;; the function words make reference to bracket types and upper model categories
+    (gload "words;whitespace assignments"))
 
   (gate-grammar *comparatives*
     ;; Moved this early to handle comparative adjective in collections
@@ -108,12 +112,6 @@ omitted and then run (perhaps) after the image has been launched."
     ;; sequence-of-numbers requires sequence. Collections had been after
     ;; the loading of amounts
     (gload "collections;loader"))
-
-  (gate-grammar *kinds* ;; older upper model
-    ;; The upper model proper is loaded by the-master-loader
-    ;; as part of loading objects because the doc and
-    ;; situation modules refer to parts of it
-    (gload "kinds;loader"))
   
   (gate-grammar *mid-level-ontology*
     (gload "mid-level;loader"))
@@ -226,13 +224,6 @@ omitted and then run (perhaps) after the image has been launched."
   (gate-grammar *waypoints*
     (gload "waypoints;loader"))
 
-
-#| irrelevant until GL comes back up
-  (gate-grammar *load-Tipster-grammar-into-image*
-    (gate-grammar *gl*
-      (gload "gl form;loader"))
-    (gload "model;sl;jv;loader")) |#
-
   (gate-grammar *ca*
     (gload "ca;loader"))
 
@@ -280,6 +271,8 @@ omitted and then run (perhaps) after the image has been launched."
     (gate-grammar *pct*
       (titles-2d-stage-loader)))
 
+  ;; This is effectively where it had been loaded
+  (gate-grammar *kinds* (gload "kinds;assign-subcats"))
   (gate-grammar *kinds*
     (gload "kinds;loader 2"))
 

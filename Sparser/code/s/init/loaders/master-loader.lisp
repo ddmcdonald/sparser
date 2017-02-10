@@ -1,10 +1,10 @@
 ;;; -*- Mode:Lisp; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2003,2010-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2003,2010-2017 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "master-loader"
 ;;;   module:  "init;loaders;"
-;;;  Version:   March 2016
+;;;  Version:   February 2017
 
 ;; 4/21  added loading of chart-drivers;new:loader
 ;; 4/25  split fsas into basics and model
@@ -132,10 +132,11 @@
 (lload "objects;chart;generics;loader")
 
 (lload "objects;model;loader") ;; defines Krisp
-(gate-grammar *kinds*
-  (gload "kinds;1st-loader")) ;; defines the upper model
 
-(lload "objects;doc;loader") ;; refers to upper categories
+(gate-grammar *standard-syntactic-categories*
+ ;; moved here to allow categories in kinds
+ ;; to have realization data
+ (gload "syntax;subcategorization"))
 
 (lload "objects;situation;loader")
 
@@ -190,6 +191,8 @@
 (when *brackets*
   (lload "do ha;loader"))
 
+(lload "objects;doc;loader") 
+
 ;;(when *heuristics*
 ;;  These are just enabling fns. they aren't heuristics
 (lload "do ca;loader")
@@ -228,6 +231,8 @@
   (gload "required-brackets;required"))
 
 (defparameter *try-character-type-fsas* nil)
+
+
 
 (unless *load-the-grammar*
   ;; by default leave the character-type -driven fsas off.

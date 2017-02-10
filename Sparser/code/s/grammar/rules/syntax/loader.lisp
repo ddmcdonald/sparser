@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  January 2017
+;;;  Version:  February 2017
 
 ;; 3.0 (10/11/92 v2.3) Bumped to shadow old versions from extensive
 ;;      changes involving form rules and the new semantics
@@ -32,8 +32,9 @@
   ;;  but it needs to be loaded before bracket definitions that
   ;;  reference these categories, so it's been moved into the
   ;;  master loader
+  ;; Same is the case for subcategorization, which needs to
+  ;;  be upstream from any category definitions
   (gload "syntax;category-predicates")
-  (gload "syntax;subcategorization")
   (gload "syntax;syntactic-classes")
   (gload "syntax;syntax-predicates")
   (gload "syntax;syntax-functions")

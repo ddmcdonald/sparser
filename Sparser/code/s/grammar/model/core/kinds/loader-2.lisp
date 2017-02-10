@@ -13,6 +13,6 @@
 
 (gload "kinds;relationships")
 (gload "kinds;rules-over-referents")
+
 (gload "kinds;assign-lemmas")
-(gload "kinds;assign-subcats")
 
