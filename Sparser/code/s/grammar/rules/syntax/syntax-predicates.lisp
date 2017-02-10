@@ -144,6 +144,22 @@
 ;;; finding the parts of a prepositional phrase
 ;;;---------------------------------------------
 
+(defun decompose-prepositional-phrase (pp-edge)
+  "Abstract out the usual operations. Return the preposition
+   and its complement. Used by syntax-functions, so needs 
+   to return referents, not edges."
+  ;; There are a lot of special cases. Return nil if things 
+  ;; don't layout right and warn so can investigate later
+  (let ((pobj-referent (identify-pobj pp-edge))
+        (preposition (identify-preposition pp-edge)))
+    (if (and preposition pobj-referent)
+      (values preposition pobj-referent)
+      (if preposition
+        (warn "Can't find pobj in e~a"
+              (edge-position-in-resource-array pp-edge))
+        (warn "Can't find preposition in e~a"
+              (edge-position-in-resource-array pp-edge))))))
+
 (defun identify-preposition (edge)
   "The edge is over a pp or prep-complement, etc. that is headed
    by a preposition. Sometimes the actual preposition word is
@@ -220,7 +236,6 @@
         (else
           (warn "can't find pobj edge for edge ~s" edge)
           nil))))
-
 
 (defun base-pp (edge)
   (when (eq (edge-rule edge) 'knit-parens-into-neighbor)
