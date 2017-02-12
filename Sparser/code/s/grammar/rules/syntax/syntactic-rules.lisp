@@ -299,6 +299,11 @@
   ;; See DA rules like attach-pp-following-clause
   :referent (:function clause+pp left-edge right-edge))
 
+(def-syntax-rule (s than-np)
+  :head :left-edge
+  :form s
+  :referent (:function make-comparative-adjp-with-np left-edge right-edge))
+
 ;;;--------
 ;;; VG -- Rules for constructing VGs (and some hangers on for adverbials and deictic locations on S as a whole)
 ;;;--------
