@@ -108,16 +108,6 @@
         (when top ;; managed to get an ev with NIL top node
           (list top))))))
 
-(defun reset-ev-edges (ev edge-list)
-  (when ev
-    (if (null (cdr edge-list))
-        (setf (ev-top-node ev) (car edge-list))
-        (setf (ev-top-node ev) :multiple-initial-edges))
-    (loop for i from 0 to (- (length (ev-edge-vector ev)) 1) 
-      do (setf (aref (ev-edge-vector ev) i) nil))
-    (loop for i from 0 to (- (length edge-list) 1) as e in edge-list
-      do (setf (aref (ev-edge-vector ev) i) E))
-    (setf (ev-number-of-edges ev) (length edge-list))))
 
 
 (defparameter *record-all-chunks* nil)
