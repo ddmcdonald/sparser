@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  January 2017
+;;;  Version:  February 2017
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -67,12 +67,16 @@
   )
 
 
+;;;-------------------------------------------------------
+;;; single code locus for setting the referent of an edge
+;;;-------------------------------------------------------
+
 (defun set-edge-referent (edge value)
   "The single point in the code that's entitled to setf the
    referent of and edge. Provides locus for associated actions
-   like updating edge mentions."
+   like updating edge mentions. The 'value' is to be the
+   referent of the' edge'."
   (declare (special *description-lattice*))
-
   (when *description-lattice*
     ;; When using the description lattice, the referent on an edge
     ;; should never be referential-category, except for specially
@@ -81,12 +85,11 @@
       (unless (allowable-referential-edge? edge)
         (setf value
               (find-or-make-lattice-description-for-ref-category value)))))
-  
   (cond ((edge-referent edge)
+         ;; If the edge already has a referent then update the mention
          (setf (edge-referent edge) value)
          (update-edge-mention-referent edge value))
-        (t
-         (setf (edge-referent edge) value)))
+        (t (setf (edge-referent edge) value)))
   value)
 
 (defun allowable-referential-edge? (edge)
@@ -101,25 +104,27 @@
 ;;; predicates for unusual edge-types
 ;;;-----------------------------------
 
-#+ignore
-(defun literal-edge? (e)
-  ;; just having a word as its label isn't enough since
-  ;; they can come from abbreviations as well.
-  (eq :literal-in-a-rule (edge-right-daughter e)))
+#| A "literal" edge has a word as its label, i.e. as the
+value of its category field. These edges are created by
+make-edge-over-literal during the sweep that introduces
+edges over words into the chart (see note in that function).
+The are also used with abbreviations, particularly in the
+routines that recognize proper names (PNF), where the
+abbreviated form of a word (e.g. "Mr.") will be respanned
+by an edge with the full form ("Mister"). The relevant
+code is make-edge-over-abbreviation and its feeders. |#
 
-#| I'm thinking this version is a little slower
-(defun literal-edge? (edge)
-  (word-p (edge-category edge))) |#
-
-;;/// move
 (defun literal-edge? (edge) ;;/// not the best name
-  (and
-   (edge-p edge)
-   (word-p (edge-category edge))))
+  (when (edge-p edge)
+    (word-p (edge-category edge))))
 
-;; forgotten variant defined for use in PNF
 (defun edge-for-literal? (e)
+  ;; This field accessor is probably faster than
+  ;; the type check, and its more definitive about
+  ;; the fact that we're dealing with a literal,
+  ;; i.e. a word directly referenced in a rule.
   (eq :literal-in-a-rule (edge-right-daughter e)))
+
 
 
 (defun dotted-edge? (e)
@@ -131,31 +136,17 @@
 ;;; special Set routines
 ;;;----------------------
 
-
-(defun set-used-by (daughter edge)
-  (when (eq (edge-used-in edge) daughter)
+(defun set-used-by (daughter parent)
+  "Set the used-in field of the daughter edge to 
+   the parent edge."
+  (when (eq (edge-used-in parent) daughter)
     (warn "circularity detected in set-used-by")
     (return-from set-used-by nil))
-            
   (cond
     ((null daughter)
-     (break "null daughter in set-used-by")
-     nil)
+     (error "null daughter in set-used-by"))
     (t
-     (setf (edge-used-in daughter) edge)
-     #+ignore ;; DON't MAKE MULTIPLE PARENTS ANY MORE
-     (let ((field (edge-used-in daughter)))
-       (if field
-           (etypecase field
-             (cons
-              (setf (edge-used-in daughter)
-                    (cons edge field)))
-             (edge
-              (setf (edge-used-in daughter)
-                    (list edge field))))
-	   (setf (edge-used-in daughter) edge))
-
-       (maybe-suppress-daughters-dh-entry daughter edge)))))
+     (setf (edge-used-in daughter) parent))))
 
 
 (defun top-edge-used-in (daughter-edge)
@@ -234,7 +225,6 @@
           (push edge edges))))
 
     edges ))
-
 
 (defun edge-between (p1 p2)
   ;; returns just one edge, the topmost edge spanning the two
