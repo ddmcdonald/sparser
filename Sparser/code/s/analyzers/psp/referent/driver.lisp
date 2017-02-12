@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1999,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1999,2011-2017 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "driver"
 ;;;    Module:   "analyzers;psp:referent:"
-;;;   Version:   August 2016
+;;;   Version:   February 2017
 
 ;; broken out from all-in-one-file 11/28/91
 ;; 1.0 (8/28/92 v2.3) Added global referring to the referent returned.
@@ -118,20 +118,20 @@
                    *parent-edge-getting-reference* *rule-being-interpreted*
                    *head-edge* *arg-edge*))
                         
-         (when (not (null rule-field))
+         (when rule-field
            (if (listp rule-field)
-               (then
-                 (if (listp (first rule-field))
-                     (walk-through-referent-actions 
-                      rule-field left-referent right-referent right-edge)
-                     (else ;; just one action
-                       (setq *referent*
-                             (dispatch-on-rule-field-keys
-                              rule-field left-referent right-referent right-edge)))))
+             (then
+               (if (listp (first rule-field))
+                 (walk-through-referent-actions 
+                  rule-field left-referent right-referent right-edge)
+                 (else ;; just one action
+                   (setq *referent*
+                         (dispatch-on-rule-field-keys
+                          rule-field left-referent right-referent right-edge)))))
 
-               (else ;; direct pointer to referent
-                 (setq *referent* rule-field)
-                 (annotate-individual *referent* :immediate-referent)))
+             (else ;; direct pointer to referent
+               (setq *referent* rule-field)
+               (annotate-individual *referent* :immediate-referent)))
 
            (redistribute left-referent right-referent)
 
@@ -144,13 +144,13 @@
                    (setq *referent* result)))))
 
            (if (null *referent*)
-               :abort-edge
-               *referent* )))))))
+             :abort-edge
+             *referent* )))))))
 
 (defun walk-through-referent-actions  (rule-field 
                                        left-referent right-referent 
                                        right-edge)
-  ;; Called from referent-from-rule and able to adjust what happens
+  ;; Subroutine of referent-from-rule -- able to adjust what happens
   ;; in the succession of rule actions
   (declare (special *referent*))
   (when (and (assq :head rule-field)
@@ -187,7 +187,6 @@
             (dispatch-on-rule-field-keys
              ref-action left-referent right-referent right-edge)))
     (when (typecase evolved-result
-            (psi t)
             (individual t)
             (referential-category t)
             (mixin-category t)
@@ -197,8 +196,16 @@
 
 
 
+;;;------------------------------
+;;; utility for mentions in tuck
+;;;------------------------------
+
 (defparameter *show-referent-for-edge-gaps* nil)
 (defun referent-for-edge (edge)
+  "Called during tuck-new-edge-under-already-knit when the description
+   lattice is active and we call reinterpret-dominating-edges to
+   facilitate getting the mentions right. This code re-applies
+   the referent interpretation in certain circumstances."
   (cond ((and (symbolp (edge-rule edge))
               (eq :long-span (edge-right-daughter edge)))
          (when *show-referent-for-edge-gaps*
@@ -212,8 +219,7 @@
           (edge-referent edge) ;; the *lambda-abstraction* edge
           ;; the underlying edge whose interpretation may 
           (edge-referent (edge-left-daughter edge))
-          edge
-          ))
+          edge))
         ((eq :long-span (edge-right-daughter edge))
          (when *show-referent-for-edge-gaps*
            (format t "~% referent-for-edge appplied to a da-rule ~
@@ -250,8 +256,8 @@
            new-pred-form
            (list 'referent-for-edge edge)
            :insert-edge nil)))
-    (declare (special lambda-variable new-lambda-form))
     new-lambda-form))
+
 
 ;;;---------------------------------
 ;;; syntactic sugar for the globals
@@ -268,6 +274,10 @@
 (defun parent-edge-for-referent ()
   (or *parent-edge-getting-reference*
       (error "*parent-edge-getting-reference* isn't bound now")))
+
+(defun rule-being-interpreted ()
+  (or *rule-being-interpreted*
+      (error "*rule-being-interpreted* isn't bound now")))
 
 
 ;;;--------------------------
