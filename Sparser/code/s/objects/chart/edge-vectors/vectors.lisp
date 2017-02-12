@@ -89,12 +89,12 @@
 ;;;----------------
 
 (defun remove-edge-from-chart (edge)
+  ;; Called by form-rule-completion and by
+  ;; ensure-edge-consistent-with-chunk
   (let ((starting-vector (edge-starts-at edge))
         (ending-vector (edge-ends-at edge)))
-
     (remove-edge-from-position starting-vector edge)
     (remove-edge-from-position ending-vector edge)))
-
 
 (defun remove-edge-from-position (ev edge)
   (ecase *edge-vector-type*
@@ -104,29 +104,51 @@
              ~%edge-vector based on kcons lists."))))
 
 (defun remove-edge-from-vector-ev (ev edge)
+  "Remove 'edge' from the the edge vector ev, adjusting
+   the other edges in its array and its meta data accordingly."
   (let ((array (ev-edge-vector ev))
-        (count (ev-number-of-edges ev)))
+        (count (ev-number-of-edges ev))
+        (top-node (ev-top-node ev)))
     (cond
-     ((eq edge
-          (aref array (1- count)))
-      
-      (setf (aref array
-                  (decf (ev-number-of-edges ev)))
+     ((eq edge (aref array (1- count))) ;; it the top
+      (setf (aref array (decf (ev-number-of-edges ev)))
             nil))
+     ;;/// suppose it's the top edge of multiple initial edges
      (t
-      (reset-ev-edges ev (loop for e in (ev-edges ev) unless (eq e edge) collect e))
-      #+ignore ;; o longer true
-      (break "Only the topmost edge in a vector may be deleted~
-             ~%for ~A, the top edge is ~A~
-             ~%and the edge to be deleted is ~A"
-             ev (aref array (1- count)) edge))
-     ) ;; added paren mhb 2/4/16
-     edge ))
+      (reset-ev-edges ;; it's in the middle somewhere
+       ev (loop for e in (ev-edges ev)
+             unless (eq e edge) collect e))))
+    edge ))
+
+(defun reset-ev-edges (ev edge-list) ;; moved from psp/chunker.lisp
+  ;; Prime use is the chunker, and it knows its dealing with
+  ;; multiple initial edges, so it tacitly knows they're all
+  ;; over the same single word.
+  ;;/// check case when we get here from form-rule-completion
+  (when ev
+    (if (null (cdr edge-list))
+      (setf (ev-top-node ev) (car edge-list))
+      (setf (ev-top-node ev) :multiple-initial-edges))
+    (loop for i from 0 to (- (length (ev-edge-vector ev)) 1)
+       do (setf (aref (ev-edge-vector ev) i)
+                nil))
+    (loop for i from 0 to (- (length edge-list) 1)
+       as e in edge-list
+       do (setf (aref (ev-edge-vector ev) i)
+                e))
+    (setf (ev-number-of-edges ev)
+          (length edge-list))))
+
+
 
 (defun reduce-multiple-initial-edges (ev)
-  ;; some routine has gotten an edge vector where it wanted an edge
-  ;; and the reason is :multiple-initial-edges.  We go through the
-  ;; edges and remove any literals.
+  "Some routine has gotten an edge vector where it wanted an edge
+   and the reason is :multiple-initial-edges. We go through the
+   edges on the vector and return a list of edges that omits
+   any that are literals."
+  ;; Called by check-out-possible-conjunction and
+  ;; look-for-da-patterns though could review what they're
+  ;; up to
   (let ((count (ev-number-of-edges ev))
         (vector (ev-edge-vector ev))
         edge  good-edges )
@@ -145,14 +167,14 @@
 ;;;--------------------------------------
 
 (defun cleanup-vectors-if-needed (top-edge)
-  ;; Called from peek-rightward just afer it has run a rule that
-  ;; created a new edge (whose right end happens to be within the
-  ;; span of this edge. It can happen, e.g. with the word "driver",
-  ;; that we create another edge as a side effect (in that case
-  ;; it's a person given the heuristic about titles in isolation
-  ;; being take as roles). When something like that happens, the
-  ;; new edge will have started at the same place as the known to be
-  ;; top edge and screw up the ordering on the vector. 
+  "Called from peek-rightward just afer it has run a rule that
+   created a new edge (whose right end happens to be within the
+   span of this edge). It can happen, e.g. with the word 'driver',
+   that we create another edge as a side effect (in that case
+   it's a person given the heuristic about titles in isolation
+   being take as roles). When something like that happens, the
+   new edge will have started at the same place as the known-to-be-
+   top-edge and screw up the ordering on the vector. "
   (flet ((swap-top-edge (ev top-edge)
            (let* ((array (ev-edge-vector ev))
                   (index (index-of-edge-in-vector top-edge ev))
