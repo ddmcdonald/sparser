@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2013-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "tuck"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  September 2014
+;;;  Version:  February 2017
 
 ;; Initiated 9/19/13 from code formerly in DA. 9/22/13 modifying it
 ;; to work in either direction. 9/29/14 fixed tuck-in-just-above to
@@ -14,19 +14,20 @@
 
 (defun tuck-new-edge-under-already-knit (subsumed-edge new-edge 
                                          dominating-edge direction)
+  "We looked under an edge, identified an edge along its
+   fringe (subsumed-edge), and composed that edge with one adjacent
+   to the right (or left: direction) to form a new edge (new-edge).
+   Now we have to reconstruct pointers so that the edge that
+   had dominated the subsumed one dominates the new pair."
   (declare (special *current-da-rule* *sentence-in-core*))
-  ;; We looked under an edge, identified an edge along its
-  ;; fringe (subsumed-edge), and composed that edge with one adjacent
-  ;; to the right (left) to form a new edge (new-edge).
-  ;; Now we have to reconstruct pointers so that the edge that
-  ;; had dominated the subsumed one dominates the new pair.
-  (push-debug `(,subsumed-edge ,new-edge ,dominating-edge ,direction))
+  
+  ;; (push-debug `(,subsumed-edge ,new-edge ,dominating-edge ,direction))
   ;; (setq subsumed-edge (car *) new-edge (cadr *) dominating-edge (caddr *))  (break "tucking 1")
 
   ;; Cleanup the used-in of the subsumed-edge
   (cond
     ((null new-edge)
-     (break "~&null new-edge when doing tuck-new-edge-under-already-knit")
+     (error "~&null new-edge when doing tuck-new-edge-under-already-knit")
      nil)
     (t
      (setf (edge-used-in subsumed-edge) new-edge)
@@ -35,34 +36,30 @@
      ;; this method creates lists of edges -- don't do that now
      (set-used-by new-edge dominating-edge)
 
-     #|
-     ;; replace old subsumed daughter (... presumes binary)
-     (ecase direction
-       (:right (setf (edge-right-daughter dominating-edge) new-edge))
-       (:left  (setf (edge-left-daughter dominating-edge) new-edge)))
-     |#
-
-     (cond ((eq (edge-right-daughter dominating-edge) :long-span)
-            (when (not (member subsumed-edge (edge-constituents dominating-edge)))
-              (error "~%in tuck-new-edge-under-already-knit:~%
-edge-constituents in dominating edge ~s ~%
-does not contain subsumed-edge ~s~%" dominating-edge subsumed-edge))
-            (setf (edge-constituents dominating-edge)
-                  (subst new-edge subsumed-edge (edge-constituents dominating-edge))))
-           ((eq direction :right)
-            (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
-              (error t "~%in tuck-new-edge-under-already-knit for rule ~s:~%
-edge-right-daughter in dominating edge ~s ~%
-is not subsumed-edge ~s in sentence:~%~s~%"
-                      *current-da-rule* dominating-edge subsumed-edge
-                      (sentence-string *sentence-in-core*)))
-            (setf (edge-right-daughter dominating-edge) new-edge)) 
-           ((eq direction :left)
-            (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
-              (error "~%in tuck-new-edge-under-already-knit:~%
-edge-left-daughter in dominating edge ~s ~%
-is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
-            (setf (edge-left-daughter dominating-edge) new-edge)))
+     (cond
+       ((eq (edge-right-daughter dominating-edge) :long-span)
+        (when (not (member subsumed-edge (edge-constituents dominating-edge)))
+          (error "~%in tuck-new-edge-under-already-knit:~
+                  ~%edge-constituents in dominating edge ~s ~
+                  ~%does not contain subsumed-edge ~s~%"
+                 dominating-edge subsumed-edge))
+        (setf (edge-constituents dominating-edge)
+              (subst new-edge subsumed-edge (edge-constituents dominating-edge))))
+       ((eq direction :right)
+        (unless (eq (edge-right-daughter dominating-edge) subsumed-edge)
+          (error t "~%in tuck-new-edge-under-already-knit for rule ~s:~
+                    ~%edge-right-daughter in dominating edge ~s ~
+                    ~%is not subsumed-edge ~s in sentence:~%~s~%"
+                 *current-da-rule* dominating-edge subsumed-edge
+                 (sentence-string *sentence-in-core*)))
+        (setf (edge-right-daughter dominating-edge) new-edge))
+       ((eq direction :left)
+        (unless (eq (edge-left-daughter dominating-edge) subsumed-edge)
+          (error "~%in tuck-new-edge-under-already-knit:~
+                  ~%edge-left-daughter in dominating edge ~s ~
+                  ~%is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
+        (setf (edge-left-daughter dominating-edge) new-edge)))
+     
      (let ((dominating-edge-ev
             (ecase direction
               (:right (edge-ends-at dominating-edge))
@@ -71,27 +68,27 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
             (ecase direction
               (:right (edge-ends-at new-edge))
               (:left (edge-starts-at new-edge)))))
-       (push-debug `(,dominating-edge-ev ,new-edge-ev))
+       ;; (push-debug `(,dominating-edge-ev ,new-edge-ev))
        ;; (setq dominating-edge-ev (car *) new-ev (cadr *)) (break "tucking 2")
 
        ;; Remove the dominating edge from its ends/start-at vector
        (if (eq dominating-edge (highest-edge dominating-edge-ev))
-           (then ;; easy case
-             (pop-topmost-edge dominating-edge-ev)
-             ;; insert the dominating edge just above the top edge
-             ;; at the end location
-             (tuck-in-just-above new-edge-ev new-edge dominating-edge direction))
-           (else
-             ;; Several edges are above the edge now just above the
-             ;; subsumed-edge. They all have to be repositioned (in order)
-             ;; at the end-position of the top-edge where sit above it
-             (move-edges-above-to-new-pos 
-              subsumed-edge
-              (ecase direction
-                (:left (edge-starts-at subsumed-edge))
-                (:right (edge-ends-at subsumed-edge)))
-              new-edge-ev
-              direction)))
+         (then ;; easy case
+           (pop-topmost-edge dominating-edge-ev)
+           ;; insert the dominating edge just above the top edge
+           ;; at the end location
+           (tuck-in-just-above new-edge-ev new-edge dominating-edge direction))
+         (else
+           ;; Several edges are above the edge now just above the
+           ;; subsumed-edge. They all have to be repositioned (in order)
+           ;; at the end-position of the top-edge where sit above it
+           (move-edges-above-to-new-pos 
+            subsumed-edge
+            (ecase direction
+              (:left (edge-starts-at subsumed-edge))
+              (:right (edge-ends-at subsumed-edge)))
+            new-edge-ev
+            direction)))
        (when *description-lattice*
          (reinterpret-dominating-edges dominating-edge))
        ;;(break "and what else?")
@@ -100,44 +97,47 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
        ))))
 
 (defparameter *reinterpret-dominating-edges-warning* nil)
-(defun reinterpret-dominating-edges (edge &optional *visited*)
-  (declare (special *sentence-in-core* *visited*))
-  (let ((new-ref (referent-for-edge edge)))
-    (cond ((null new-ref)
-           (when  *reinterpret-dominating-edges-warning*
-             (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing null interpretation~% in ~s~%" edge
-                   (sentence-string *sentence-in-core*))))
-          ((eq new-ref :abort-edge)
-           (when *reinterpret-dominating-edges-warning*
-             (warn "reinterpretation of edge ~s failed in reinterpret-dominating-edges by producing :abort-edge interpretation~% in ~s~%" edge 
-                   (sentence-string *sentence-in-core*))))
 
-          (t
-           (set-edge-referent edge new-ref)
-           (if (edge-mention edge)
-               (if (typep (edge-mention edge) 'discourse-mention)
-                   (setf (base-description (edge-mention edge)) new-ref))
-               (warn "null edge-mention on edge ~s in ~%~s"
-                     edge (sentence-string *sentence-in-core*)))
-           (let ((parent (edge-used-in edge)))
-             (cond ((edge-p parent)
-                    (when (member parent *visited*)
-		      ;; happens in
-		      ;; <give example here>
-                      (error "circular-loop in reinterpret-dominating-edges"))
-                    (reinterpret-dominating-edges parent (cons parent *visited*)))
-                   ((null parent) ;; reached the topmost edge
-                    nil)
-                   ((consp parent)
-                    (error "multiple parent edges in reinterpret-dominating-edges for ~s,~%~s~%" edge parent))
-                   (t (lsp-break "what is going on with the used-in for ~s~%" edge))))))))
+(defun reinterpret-dominating-edges (edge &optional *visited*)
+  (declare (special *sentence-in-core*))
+  (let ((new-ref (referent-for-edge edge)))
+    (cond
+      ((null new-ref)
+       (when *reinterpret-dominating-edges-warning*
+         (warn "reinterpretation of edge ~s failed in reinterpret-~
+                dominating-edges by producing null interpretation~% in ~s~%"
+               edge (sentence-string *sentence-in-core*))))
+      ((eq new-ref :abort-edge)
+       (when *reinterpret-dominating-edges-warning*
+         (warn "reinterpretation of edge ~s failed in reinterpret-~
+                dominating-edges by producing :abort-edge interpretation~% in ~s~%"
+               edge (sentence-string *sentence-in-core*))))
+      (t
+       (set-edge-referent edge new-ref)
+       (if (edge-mention edge)
+         (if (typep (edge-mention edge) 'discourse-mention)
+           (setf (base-description (edge-mention edge)) new-ref))
+         (warn "null edge-mention on edge ~s in ~%~s"
+               edge (sentence-string *sentence-in-core*)))
+       (let ((parent (edge-used-in edge)))
+         (cond
+           ((edge-p parent)
+            (when (member parent *visited*)
+              ;; happens in
+              ;; <give example here>
+              (error "circular-loop in reinterpret-dominating-edges"))
+            (reinterpret-dominating-edges parent (cons parent *visited*)))
+           ((null parent) ;; reached the topmost edge
+            nil)
+           ((consp parent)
+            (error "multiple parent edges in reinterpret-dominating-edges for ~s,~%~s~%" edge parent))
+           (t (lsp-break "what is going on with the used-in for ~s~%" edge))))))))
         
 
 (defun move-edges-above-to-new-pos (above-this-one
                                     old-edge-vector new-edge-vector
                                     direction)
-  (push-debug `(,above-this-one ,old-edge-vector ,new-edge-vector))
-  
+  ;; (push-debug `(,above-this-one ,old-edge-vector ,new-edge-vector))
   (let* ((index (index-of-edge-in-vector above-this-one old-edge-vector)))
     ;;(break "index = ~a" index)
     (let ((edges-to-move (edges-higher-than old-edge-vector index)))
@@ -152,11 +152,11 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
 
 
 (defun tuck-in-just-above (ev edge-below edge-above direction)
-  ;; Assumes that the edge-below (top-edge) is already in the ev.
-  ;; We add the edge-above (dominating-edge) just above it
-  ;; in the vector and adjust things accordingly. 
-  (push-debug `(,ev ,edge-below ,edge-above))
-  ;;  (setq ev (car *) edge-below (cadr *) edge-above (caddr *))
+  "Assumes that the edge-below (top-edge) is already in the ev.
+   We add the edge-above (dominating-edge) just above it
+   in the vector and adjust things accordingly."
+  ;; (push-debug `(,ev ,edge-below ,edge-above))
+  ;; (setq ev (car *) edge-below (cadr *) edge-above (caddr *))
   (ecase direction
     (:left
      (let ((below-starts-at (edge-starts-at edge-below)))
@@ -178,3 +178,96 @@ is not subsumed-edge ~s~%" dominating-edge subsumed-edge))
     (setf (ev-number-of-edges ev) (1- count)) ;; adjust count
     (let ((next-item-down (aref array (1- index))))
       (setf (ev-top-node ev) next-item-down))))
+
+
+;;;--------
+;;; respan
+;;;--------
+
+(defun respan-edge-for-new-referent (edge new-ref)
+  "We have just modified the referent of one of the edges 
+   somewhere inside an already complete edge. This happens
+   with comparative, and other cases where we learn something
+   that changes an established referent. To keep the mention
+   system happy, this new referent needs its own edge,
+   directly over the edge with the original referent ('edge')
+   and fitting in to the parent where it did, replacing it
+   as its parent's left or right daughter as appropriate."
+  (let* ((parent (edge-used-in edge))
+         (side (cond ((eq edge (edge-left-daughter parent)) :left)
+                     ((eq edge (edge-right-daughter parent)) :right)))
+         (starting-vector (edge-starts-at edge))
+         (ending-vector (edge-ends-at edge))
+         (new-edge (next-edge-from-resource)))
+    (when (edge-p (edge-right-daughter edge))
+      ;; ignoring the possibility that the edge we're respanning
+      ;; might have an interesting right-daughter
+      (warn "Respan of ~a may be dropping its right daughter" edge))
+
+    ;; set the easy stuff
+    (setf (edge-rule new-edge) (rule-being-interpreted))
+    (setf (edge-left-daughter new-edge) edge)
+    (setf (edge-right-daughter new-edge) :single-term) ;; ?????
+
+    (setf (edge-category new-edge) (edge-category edge))
+    (setf (edge-form new-edge) (edge-form edge))
+    (set-edge-referent new-edge new-ref)
+    
+    (set-used-by edge new-edge)
+    (set-used-by new-edge parent)
+    (ecase side
+      (:left (setf (edge-left-daughter parent) new-edge))
+      (:right (setf (edge-right-daughter parent) new-edge)))
+
+    (insert-new-edge-between-daughter-and-parent
+     edge new-edge parent starting-vector ending-vector side)
+
+    ;; we should complete it (e.g. for its mention)
+    ;; but it would make no sense to assess it
+    (complete new-edge)
+    new-edge))
+
+
+(defun insert-new-edge-between-daughter-and-parent
+    (edge ;; original - stays where it is on its vectors
+     new-edge ;; gets added to those vectors just above it
+     parent ;; gets moved up, as do any edges above it
+     starting-vector ending-vector ;; edge vectors of original edge
+     side)
+  ;; Very similar to what conjoin-and-rethread-edges does,
+  ;; but want something working before I look for the
+  ;; generalization. (ddm 2/10/17)
+
+  #+ignore(when (and (eq starting-vector (edge-starts-at parent))
+             (eq ending-vector (edge-ends-at parent)))
+    ;; The parent has the same span as the edge. Not expecting
+    ;; this in the target use case, so not going there (2/10/17 ddm)
+    (error "Bad assumption about parent when respanning ~a ~
+            with ~a" edge new-edge))
+
+  ;; Which ev are we working on. The new edge goes directly
+  ;; onto the originals start and end, but we have to 'elevate'
+  ;; the already existing edges on only one side
+  (let* ((ev (ecase side
+               (:left starting-vector)
+               (:right ending-vector)))
+         (edge-index (index-of-edge-in-vector edge ev))
+         (edges-over-parent ;; list includes the parent
+          (edges-on-ev-above parent ev))
+         (count (ev-number-of-edges ev))) ;; total number
+
+    (cond
+      ((eq parent (ev-top-node ev))
+       ;; remove it, add the new edge, put it back
+       (remove-edge-from-chart parent)
+       (knit-edge-into-positions
+        new-edge starting-vector ending-vector)
+       (knit-edge-into-positions
+        parent starting-vector ending-vector))
+      (t
+       (push-debug `(,edge-index ,edges-over-parent ,count))
+       (lsp-break "Next case for insertion")))))
+
+
+    ;; remove the parent and other edges from the vector
+    
