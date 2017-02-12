@@ -656,7 +656,7 @@
    mode and the word on the position is the eos marker (control-B)."
   (let ((s (sentence))) ;; *current-sentence*
     (unless (ends-at-pos s)
-      (set-sentence-endpoints pos-with-eos s))
+      (set-sentence-endpoints (chart-position-before pos-with-eos) s))
     s))
 
 (defun set-sentence-endpoints (period-pos sentence)
