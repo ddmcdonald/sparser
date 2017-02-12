@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "syntax-functions"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  November 2016
+;;;  Version:  February 2017
 
 ;; Initiated 10/27/14 as a place to collect the functions associated
 ;; with syntactic rules when they have no better home.
@@ -1539,12 +1539,14 @@
            (error "incorrect assumption about what's the head"))
          (let ((complete-attribution
                 (bind-variable 'reference-set than-np attribution)))
-           ;; Insert a new edge over the comparative edge
-           ;; of the np [somehow] with the completed attribution
-           ;; as its value.  Try find-binding-dependency to get the edge
-
-           (setq i (rebind-variable variable complete-attribution i))
-           i)))
+           (multiple-value-bind (edge-over-comparative)
+               (search-tree-for-referent (left-edge-for-referent) open-attribution)
+             ;; Insert a new edge over the comparative edge
+             ;; of the np with the completed-attribution as its value.
+             (respan-edge-for-new-referent edge-over-comparative
+                                           complete-attribution)
+             (setq i (rebind-variable variable complete-attribution i))
+             i))))
       (t (rebind-variable
           'comparative-predication
           (bind-dli-variable 'compared-to than-np (value-of 'comparative-predication np))
@@ -1566,14 +1568,12 @@
       (var
        (when (category-p head) (setq head (individual-for-ref head)))
        (let ((i (define-or-find-individual 'comparative-attribution
-                    :value comparative))) ;; open in reference-set
-         ;;/// Should we form the predication over the head here?
-         ;; for starters just binding the variable
+                  :value comparative))) ;; n.b. open in reference-set
          (setq head (bind-variable var i head))
          head))
       (t (let ((predicate
                 (if (and (not (is-basic-collection? comparative))
-                      (find-variable-for-category :subject (itype-of comparative)))
+                         (find-variable-for-category :subject (itype-of comparative)))
                   (create-predication-by-binding
                    :subject head comparative
                    (list 'adj-noun-compound (left-edge-for-referent)))
