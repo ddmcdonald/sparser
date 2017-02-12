@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "forest-gophers"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  July 2015
+;;;  Version:  February 2017
 
 ;; Initiated 8/30/14. To hold predicates and other little computations
 ;; done by the forest-level sweeping and island-driving. Also a good
@@ -223,6 +223,37 @@
 ;;;--------------
 ;;; tree walkers
 ;;;--------------
+
+(defgeneric search-tree-for-referent (edge value)
+  (:documentation "Gradually walk down the binary tree of
+    edges starting at edge until you reach a daughter
+    that satisfies the value. If the value is an individual
+    then 'satisfies' means having that individual as
+    its referent.")
+  (:method ((edge edge) (i individual))
+    (let ((test (lambda (edge)
+                   (eq (edge-referent edge) i))))
+      (search-edge-tree edge test))))
+        
+(defun search-edge-tree (edge test-fn)
+  (etypecase edge
+    (word) ;; terminal ignore
+    (symbol) ;; ditto
+    (edge
+     (if (funcall test-fn edge)
+       edge ;; success
+       (else
+         (or (search-edge-tree
+              (edge-left-daughter edge) test-fn)
+             (search-edge-tree
+              (edge-right-daughter edge) test-fn)))))))
+           
+
+
+;;/// move to edge file
+(defvar *right-daughter-keywords*
+  '(:single-term :context-sensitive :digit-based-number
+    :number-fsa))
 
 (defun find-head-word (tt)
   "Walk down the head line (not so obvious) and return
