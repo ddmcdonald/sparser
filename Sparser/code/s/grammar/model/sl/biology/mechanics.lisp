@@ -114,6 +114,9 @@
 
 (defparameter *uid-to-individual* (make-hash-table :size 10000 :test #'equal))
 
+(defmacro def-named-bio-individual (word category-name id &key name)
+  `(define-named-bio-individual ',category-name ',word ',id ,. (when name `(:name `,name))))
+
 (defun define-named-bio-individual (category-name word id &key name)
   (let* ((category (category-named category-name :break-if-undefined))
          (i (if id
@@ -124,10 +127,11 @@
                                 (bind-dli-variable :name name ind)
                                 ind))))
                 (find-or-make-individual category :name (if name (pname name) (pname word))))))
-    (add-rules (make-rules-for-head :common-noun (resolve/make (pname word)) category i) i)
+    (add-rules (make-rules-for-head :common-noun (resolve/make (string-downcase (pname word))) category i) i)
     (when name (add-rules (make-rules-for-head :common-noun (resolve/make (pname name)) category i) i))
     i))
   
+
 
 (defun trips-class->krisp (term)
   (unless (null (second term))
