@@ -112,16 +112,22 @@ in conjunction with an early version of Hark. Notable for using the
 
 (defscript c3 ()
   (:grammar-configuration "c3-configuration")
+  (:parameters
+   (*index-bindings-to-variables* t))
   (:switches c3-setting))
 
 (defscript default ()
   (:grammar-configuration "full grammar")
+  (:parameters
+   (*index-bindings-to-variables* t))
   (:switches use-default-settings))
 
 (defscript ern ()
   "Loads Sparser in the right configuration for completing the ERN grammar
 and setting up to do style work by collecting statistics."
   (:grammar-configuration "full grammar")
+  (:parameters
+   (*index-bindings-to-variables* t))
   (:switches top-edges-setting/ddm))
 
 (defscript fire ()
@@ -134,6 +140,8 @@ It is essentially GROK going forward."
 
 (defscript grok ()
   (:grammar-configuration "grok")
+  (:parameters
+   (*index-bindings-to-variables* t))
   (:interfering-rules ((comma-number ("," number))))
   (:switches strider-setting))
 
