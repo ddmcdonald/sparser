@@ -169,7 +169,6 @@ returning a new one.
   
   (when (consp category) ;; new 6/19/09
     (setq category (car category)))
-  
   (cond
    ((and (typep var/name 'anonymous-variable)
          (null (find-variable-for-category 
@@ -192,7 +191,7 @@ returning a new one.
                (find/binding variable value individual))
              (make/binding variable value individual))))
     (when-binding-hook variable individual value)
-    (values individual binding)))
+    (values binding individual)))
 
 
 (defun make/binding (variable value individual &optional no-index-on-body?)
