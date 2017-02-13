@@ -644,7 +644,7 @@
 (noun "gel electrophoresis" :super bio-method)
 (adj "general" :super bio-predication)
 (adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
-(noun "group" :super bio-abstract)
+
 
 (def-bio "guanine" nucleobase)
 
