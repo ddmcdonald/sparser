@@ -332,37 +332,41 @@
       (push-debug `(,edge))
       (error "Not a VP category: ~a in e~a"
              form (edge-position-in-resource-array edge)))
-    (if (and (vp-category? (edge-form edge))
-             (word-p (edge-left-daughter edge)))
-        edge
-        (let* ((left (edge-left-daughter edge))
-               (left-form (edge-form left))
-               (right (edge-right-daughter edge))
-               (right-form (when (edge-p right) ;; vs. a symbol
-                             (edge-form right))))
-          (cond
-            ((eq (cat-name (edge-category edge)) 'event-relation)
-             nil)
-            ((eq (edge-form left) category::pp)
-             (let ((vp-edge (loop for e in (edge-constituents edge)
-                               when (vp-category? (edge-form e))
-                               do (return e))))
-               (find-verb vp-edge)))
-            ((vp-category? left-form)
-             (find-verb left))
-            ((and right-form (vp-category? right-form))
-             (find-verb right))
-            ((eq left-form (category-named 's))
-             (find-verb left))
-            ((eq left-form (category-named 'adjective)) ;; "responsible"
-             left)
-            ((verb-category? right) ;; "is activated"
-             right)
+    (cond
+      ((and (vp-category? (edge-form edge))
+            (word-p (edge-left-daughter edge)))
+       edge)
+      ((eq 'attach-to-comp-comma-to-s (edge-rule edge))
+       (find-verb (car (last (edge-constituents edge)))))
+      (t
+       (let* ((left (edge-left-daughter edge))
+              (left-form (edge-form left))
+              (right (edge-right-daughter edge))
+              (right-form (when (edge-p right) ;; vs. a symbol
+                            (edge-form right))))
+         (cond
+           ((eq (cat-name (edge-category edge)) 'event-relation)
+            nil)
+           ((eq (edge-form left) category::pp)
+            (let ((vp-edge (loop for e in (edge-constituents edge)
+                                 when (vp-category? (edge-form e))
+                                 do (return e))))
+              (find-verb vp-edge)))
+           ((vp-category? left-form)
+            (find-verb left))
+           ((and right-form (vp-category? right-form))
+            (find-verb right))
+           ((eq left-form (category-named 's))
+            (find-verb left))
+           ((eq left-form (category-named 'adjective)) ;; "responsible"
+            left)
+           ((verb-category? right) ;; "is activated"
+            right)
 
-            (t (push-debug `(,left ,right ,left-form ,right-form))
-               ;;(print `(can't find verb on edge ,edge)) 
-               (error "find-verb: new case")
-               nil))))))
+           (t (push-debug `(,left ,right ,left-form ,right-form))
+              ;;(print `(can't find verb on edge ,edge)) 
+              (error "find-verb: new case")
+              nil)))))))
 
 
 
