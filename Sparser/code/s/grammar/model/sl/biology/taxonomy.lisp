@@ -248,6 +248,19 @@
   :realization (:common-noun name
                 :from produced-by))
 
+;; collections
+(define-category bio-grouping :specializes bio-entity
+  :binds ((group-members bio-entity))
+  :realization
+  (:noun "group"
+         :of group-members))
+
+(def-synonym bio-grouping (:noun "set"))
+(def-synonym bio-grouping (:noun "collection"))
+(def-synonym bio-grouping (:noun "family"))
+
+
+
 (define-category plasmid :specializes bio-entity
   :realization
     (:noun "plasmid"))
