@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; Package: sparser; -*-
-;;; Copyright (c) 2010-2016 David D. McDonald 
+;;; Copyright (c) 2010-2017 David D. McDonald 
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  April 2016
+;;;  version:  February 2017
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -39,10 +39,11 @@
 ;;;   the top of the lattice 
 ;;;------------------------------
 
-; This is a formal top. Nothing should take 'top' as its value restriction
-; (except for mechanical defaults) and we shouldn't position any variables here. 
-; Its functional role is to provide a place for searches up the AKO tree
-; to stop.
+;; This is a formal top. Nothing should take 'top' as its value restriction
+;; (except for mechanical defaults) and we shouldn't position any variables
+;; here even though it is expedient
+;;  Its functional role is to provide a place for searches up the AKO tree
+;; to stop.
 
 (define-category top
   :instantiates nil
@@ -54,9 +55,8 @@
   :documentation
   "This is a formal top. Nothing should take 'top' as its value restriction
    (except for mechanical defaults). Its functional role is to provide a place 
-   for searches up the AKO tree to stop, and to provide an upper-most class
-   to anchor the CLOS shadow classes. Any variable bound here must be
-   applicable to anything.")
+   for searches up the AKO tree to stop, and to provide an upper-most class. 
+   Any variable bound here must be applicable to anything.")
 
 (defparameter *top-of-category-tree* (category-named 'top))
 
@@ -68,7 +68,7 @@
 ;;   kinds/processes.lisp, 
 ;;   kinds/things.lisp,
 ;;   kinds/space.lisp (though that needs to be integrated better with
-;;     rest of the location
+;;     rest of the location)
 ;;   kinds/time.lisp
 
 
@@ -85,8 +85,8 @@
  will change to brown. Nothing happens to the points in color space
  that the rose's color quality refers to: they are independent
  abstract entities.")
-;;; possible subclasses: SensoryQuality (color, sound), SocialQuality
-;;; (angry), units of measure
+;; possible subclasses: SensoryQuality (color, sound),
+;; SocialQuality (angry)
 
 
 (define-category abstract
@@ -163,12 +163,13 @@
   :instantiates nil
   :specializes linguistic
   :documentation
-  "A converting class for categories that we create and instantiate
-  whose meaning is the interpretation of a high-level phrase like a prepositional-phrase
-  Note that as a rule many
-  of the relations and organizing structures that were done with
-  categories earlier are now being done with conventional structures
-  like CLOS classes.")
+  "A set of categories that only exist to provide scaffolds for
+ grammatical constructions that have to be formed as constituents
+ before they can be interpreted in context. Canonical example
+ is a prepositinal phrase. 'Linguistic' things will often have
+ an existence outside of the context of parsing and semantic
+ interpretation. Things athat are phrase-interpretatio's only
+ live during an interpretation and are meaningless afterwards.")
 
 
 ;;;---------------------------------------
@@ -232,13 +233,29 @@
 ;;;------------------------------------------------
 
 
-(define-category scalar-quality
+(define-category scalar
   :instantiates nil
-  :specializes quality)
+  :specializes quality
+  :documentation "'scalar' per se is a meta-property. 
+ It is a quality of some other category and says about it 
+ that it can take on different values along some dimention")
 
+(define-mixin-category qualified
+  :instantiates nil
+  :specializes quality
+  :binds ((qualifier))
+  :documentation "a meta-property over values, usually scalar
+ values. It says that the value is not exact in some fashion.
+ The variable this mixin provides will be bound to an
+ approximator, an intensifier, or the like, and will
+ usually correspond to an adverb.")
 
-
-
+(define-category scalar-quality
+  :specializes scalar
+  :documentation "There are a substantial number of references to
+ 'scalar-quality' in the model. They are unlikely to have any
+ consequence given how light this is, but putting this back should
+ provide some temporary relief.")
 
 
 ;;;------------------------------------------------------------

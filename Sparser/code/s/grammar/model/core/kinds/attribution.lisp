@@ -66,12 +66,13 @@ a 'subject', e.g. "southern Chinese girls are never tall"
   :binds ((var :primitive lambda-variable)))
 
 (define-category scalar-attribute
-  :specializes scalar-quality
-  :mixins (attribute)
+  :specializes attribute
+  :mixins (scalar)
   :binds ((comparative :primitive category)
           (superlative :primitive category))
   :documentation "Calling this 'scalar' is to say that
- its values are arranged along some dimension")
+ its values are arranged along some dimension, in this
+ case the dimention is determined by the attribute")
 
 #| Note: It's not unreasonable to contemplate the alternative
 where the specific attributes (size, ethnicity, eye color) are
