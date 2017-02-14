@@ -66,6 +66,16 @@
    lemmas can trigger a specific compose method
    in noun noun compounds.")
 
+;;--- labels needed by various sources / exports
+
+(define-mixin-category reactome-category
+  :mixins (has-name)
+  :binds ((displayname)
+           (reactome-id)))
+
+(define-mixin-category in-ras2-model
+  :binds ((ras2-model)))
+
 
 ;;;-------------------------------
 ;;; complements (mostly mixed in)
@@ -96,19 +106,6 @@
  
 (define-mixin-category bio-ifcomp  :specializes bio-complement
   :realization (:ifcomp statement))
-
-
-;;;--------------------------------------------
-;;; labels needed by various sources / exports
-;;;--------------------------------------------
-
-(define-mixin-category reactome-category
-  :mixins (has-name)
-  :binds ((displayname)
-           (reactome-id)))
-
-(define-mixin-category in-ras2-model
-  :binds ((ras2-model)))
 
 
 ;;;--------------
@@ -168,11 +165,13 @@
      :unlike unlike ))
 
 
-
 (define-category bio-abstract :specializes abstract
    :mixins (biological))
 
 
+;;;-----------------
+;;; bio-predication
+;;;-----------------
 
 (define-category bio-predication :specializes state 
   :mixins (biological)
@@ -189,18 +188,22 @@
      :as-comp as-comp))
 
 
+;;--- Quality
 
 (define-category bio-quality :specializes quality
   :mixins (biological
-           temporally-localized)
+           temporally-localized) ;; provides time, certainty modifiers
   :binds ((subject biological))
   :realization
     (:of subject))
 
 (define-category bio-scalar
-  :specializes scalar-quality
-  :documentation "Provides a generalization over biological and scalar-quality"
+;;  :specializes bio-quality
+  :specializes scalar-quality ;; deprecated
+;;  :mixins (scalar)
   :mixins (bio-quality)
+  :documentation "Provides a generalization over 
+    biological and scalar-quality"
   :binds ((measured-item biological))
   :realization
     (:of measured-item))
@@ -402,7 +405,7 @@
 ;;; bio-rhetorical
 ;;;----------------
 
-(define-category bio-rhetorical :specializes event
+(define-category bio-rhetorical :specializes perdurant
   :mixins (biological 
            bio-thatcomp bio-whethercomp
            with-measurement)
