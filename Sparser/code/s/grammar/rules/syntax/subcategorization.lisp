@@ -216,7 +216,10 @@
         finally (return patterns)))
 
 (defun override-subcat-patterns (category patterns slots)
-  "Override inherited subcategorization patterns from local slots."
+  "Override or extend inherited subcategorization patterns from local slots.
+ Note that the words that serve as pattern labels, e.g. 'with', will often
+ be referenced before their rules have been defined. That is why the label
+ constructor here uses resolve/make."
   (declare (optimize debug))
   (check-type category category)
   (assert (every #'subcat-pattern-p patterns))
@@ -233,7 +236,7 @@
                      ((or word polyword)
                       pname)
                      ((or string symbol)
-                      (resolve (string-downcase pname))))
+                      (resolve/make (string-downcase pname))))
         as var = (find-variable-for-category var-name category)
         as v/r = (var-value-restriction var)
         do (pushnew (make-subcat-pattern label v/r var category)
