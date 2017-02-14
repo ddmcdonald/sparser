@@ -271,8 +271,6 @@ omitted and then run (perhaps) after the image has been launched."
     (gate-grammar *pct*
       (titles-2d-stage-loader)))
 
-  ;; This is effectively where it had been loaded
-  (gate-grammar *kinds* (gload "kinds;assign-subcats"))
   (gate-grammar *kinds*
     (gload "kinds;loader 2"))
 
