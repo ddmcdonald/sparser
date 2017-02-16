@@ -80,6 +80,12 @@ Analogous to DEFGENERIC."
                            ,@(cddr option)))))
      ',function-name))
 
+(defun kmakunbound (function-name)
+  "Remove the K-function definition and all of its K-methods.
+Analogous to FMAKUNBOUND."
+  (remprop function-name 'k-methods)
+  (fmakunbound function-name))
+
 (defun add-k-method (function-name k-method)
   (ensure-k-function function-name)
   (let ((old-k-method (find (k-method-specializers k-method)
