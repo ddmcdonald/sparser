@@ -3,27 +3,69 @@
 ;;;
 ;;;    File: "harvard-terms"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2017
+;;; version: February 2017
 
 ;; Isolating terms, etc. that are specific to handling the texts
 ;; from HMS.
 
 (in-package :sparser)
 
-
-(define-category certainty :specializes bio-rhetorical
-  :realization
-  (:noun "certainty" :adj "certain"))
+(define-category certainty
+  :specializes bio-rhetorical
+  :mixins (qualifiable) ;; "quite certain", "entirely certain"
+  :realization (:noun "certainty"
+                :adj "certain"))
 
 ;; can't seem to get this to work -- DAVID??
 ;;(define-adverb "certainly" :super-category category::certainty)
 
 (adj "sure" :super certainty)
 (adj "uncertain" :super certainty)
-(noun "chance" :super certainty)
+;; Need a notion of polarity on 'certainty'.
+;; If it's via a mixin, we can have a method on "not" that
+;; flips the polarity (!!)
+
 (adj "confident" :super certainty)
+(noun "chance" :super certainty)
 (noun "likelihood" :super certainty)
 (noun "probability" :super certainty)
+
+;; modifiers -- likelihood adverbs (where "likely" was)
+;; make sense here too. 
+
+;; is likely to be mediated by
+;; is likely that this possible feedback
+;; will likely be useful
+(define-category likely
+  :specializes certainty ;; bio-relation
+  :realization
+    (:adj "likely"
+     :adverb "likely" ;;want likely to ambiguously be an adjective or adverb
+     :to-comp theme
+     :thatcomp theme))
+;; bio-relation and bio-rhetorical appear to differ mosly
+;; on their value restrictions. ///would be worth reworking
+;; the display of subcat keys by what category introduces
+;; them and tune accordingly
+
+(define-category unlikely
+  :specializes certainty ;;bio-relation
+  :realization
+    (:adj "unlikely"
+     :to-comp theme
+     :thatcomp theme))
+;; almost never an adverb in our texts
+;; need a good way to distinguish the cases
+;; "is likely to ..." vs "is likely due..."
+;; want the POS to be based on category of next word...
+;;
+;; These still fail in "It is likely that this possible feedback loop..."
+;; and "This effect is likely to be mediated..."
+
+;; presently has to follow all the definitions
+(define-canonical-category 'certainty)
+
+;;---------------------
 
 (define-category scalar-variation
   :specializes bio-predication)
@@ -35,19 +77,20 @@
 
 (noun "peak" :super bio-scalar)
 
-(define-category bio-concentration :specializes bio-scalar
+(define-category bio-concentration
+  :specializes bio-scalar
   :realization
-  (:noun "concentration"))
+    (:noun "concentration"))
 
 
 ;; Verbs added temporarily for Localization articles
 ;; -- to be reviewed and corrected
 (define-category become :specializes be
   :mixins (bio-rhetorical)
-    :realization
+  :realization
     (:verb ("become" :third-singular "becomes" :past-tense "became"
 		     :present-participle "becoming")
-	   :etf (svo)))
+      :etf (svo)))
 (eval (make-copular-def "become"))
 
 ;;;----------------------
@@ -57,7 +100,8 @@
   :binds ((process bio-process))
   :realization 
     (:verb "fail"  
-     :etf (sv)))
+     :etf (sv)
+     :to-comp process ))
 
 ;; mostly passive -- "... are found ..."
 (define-category find
@@ -68,8 +112,7 @@
     (:verb ("find" :past-tense "found")
      :noun "finding" ;; to allow for "findings"
      :etf (svo-passive)
-     :o object
-     :mumble ("find" svo)))
+     :o object))
 
 ;; bio-rhetorical includes bio-thatcomp
 ;;;----------------------
@@ -90,40 +133,38 @@
 
 (def-synonym decrease (:verb "drop" :etf (svo-passive)))
 (def-synonym decrease (:verb ("taper off" :present-participle "tapering off"
-                                          :past-tense "taper off")
-                                          :etf (sv)))
+                              :past-tense "taper off")
+                       :etf (sv)))
 
-(define-category increase :specializes positive-bio-control
+(define-category increase
+  :specializes positive-bio-control
   :restrict ((object (:or biological scalar-quality)))
   :realization
-  (:verb ("increase"  :third-singular "increases"  :past-tense "increased"
-          :present-participle "increasing")
-         :etf (svo-passive)
-         :for object
-         :in object
-         :of object
-         :optional-object t))
+    (:verb ("increase" :third-singular "increases"  :past-tense "increased"
+            :present-participle "increasing")
+     :etf (svo-passive)
+     :for object
+     :in object
+     :of object
+     :optional-object t))
 ;; DAVID -- why can't I put this in the previous definition -- the NOUN form gets clobbered
 (def-synonym increase
     (:noun "increase"))
 
 
 
-
-
-
-;;//// are these even "bio" at all?
-(delete-noun-cfr (resolve "rate"))
-(define-category process-rate :specializes bio-scalar ;;(noun "rate" :super bio-scalar 
-                 :binds ((components biological)
-                         (process bio-process))
+;; (p/s "Decrease the binding rate of NRAS and BRAF.")
+(delete-noun-cfr (resolve "rate")) ;;/// override it
+(define-category process-rate
+ :specializes bio-scalar
+ :binds ((components biological)
+         (process bio-process))
   :realization 
-  (:noun "rate"
-         :for components
-         :m process))
+    (:noun "rate"
+     :for components
+     :m process))
 
-(def-synonym process-rate 
-    (:noun "kinetics"))
+(def-synonym process-rate (:noun "kinetics"))
 
 
 #|
