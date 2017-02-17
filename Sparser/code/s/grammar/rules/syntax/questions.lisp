@@ -94,7 +94,9 @@
                 ;; <is> <something> <x-ing?
                 (make-polar-participle-question start-pos end-pos edges))
                (t
-                (lsp-break "unhandled 3 edge question: ~a" edges))))
+                ;; don't break here -- just warn
+                ;;  have gotten some cases in articles
+                (warn "unhandled 3 edge question: ~a" edges))))
 
         ;; the next option is to assume that the subject is the consistuent
         ;; just after the aux, to 'move' it there somehow, and try to
