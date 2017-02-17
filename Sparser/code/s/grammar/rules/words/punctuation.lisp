@@ -168,6 +168,7 @@
     (code-char 8722) ;; ""−" #\U+2212 Minus sign
     (code-char 8727) ;; "∗" #\U+2217
     (code-char 8734) ;;"∞", (code = 8734)
+    (code-char 8739) ;; "∣", (code = 8734)
     (code-char 8743) ;; "∧" #\U+2227
     (code-char 8745) ;; "∩" #\U+2229
     (code-char 8747) ;; "∫"
@@ -181,6 +182,7 @@
     (code-char 8804) ;;  "≤"
     (code-char 8805) ;;"≥", (code = 8805)
     (code-char 8806) ;;"≦", (code = 8806)
+    (code-char 8810) ;; "≪" #\U+226B
     (code-char 8811) ;; "≫" #\U+226B
     (code-char 8839) ;; "⊇" #\U+2287
     (code-char 8900) ;; "⋄"

@@ -1073,6 +1073,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       (8727 ;; "∗" #\U+2217
        (:punctuation . ,(punctuation-named (code-char 8727))))
       (8734 (:punctuation . ,(punctuation-named (code-char 8734)))) ;;"∞", (code = 8734)
+      (8739 (:punctuation . ,(punctuation-named (code-char 8739)))) ;;"∣", (code = 8739)
       (8743 ;; "∧" #\U+2227
        (:punctuation . ,(punctuation-named (code-char 8743))))
       (8745 ;; "∩" #\U+2229
@@ -1096,7 +1097,9 @@ the buffer that is fed to find-word and becomes part of the word's pname.
        (:punctuation . ,(punctuation-named (code-char 8804))))
       (8805 (:punctuation . ,(punctuation-named (code-char 8805)))) ;;"≥", (code = 8805)
       (8806 (:punctuation . ,(punctuation-named (code-char 8806)))) ;;"≦", (code = 8806)
-      (8811 ;; "≫" #\U+226B
+      (8810 ;; "≪" #\U+226B
+       (:punctuation . ,(punctuation-named (code-char 8810))))
+       (8811 ;; "≫" #\U+226B
        (:punctuation . ,(punctuation-named (code-char 8811))))
       (8839 ;; "⊇" #\U+2287
        (:punctuation . ,(punctuation-named (code-char 8839))))
