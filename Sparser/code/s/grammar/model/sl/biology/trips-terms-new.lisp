@@ -4897,7 +4897,6 @@
 (def-bio "selenite" molecule :long "selenite gypsum" :identifier "CHEBI:48839")
 (def-bio "sepharose" molecule :long "agarose" :identifier "CHEBI:2511")
 (def-bio "seribantumab" drug :long "anti-erbB3 receptor monoclonal antibody MM-121" :identifier "NCIT:C78859")
-(def-bio "serin" molecule :long "serine" :identifier "CHEBI:17822")
 (def-bio "shMS" cell-line :long "SHMS" :identifier "CVCL:S149")
 (def-bio "silibinin" drug :long "silibinin" :identifier "CHEBI:9144")
 (def-bio "sml" cell-line :long "SML, clone 4D8" :identifier "CVCL:6446")
