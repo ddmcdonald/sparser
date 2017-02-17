@@ -93,3 +93,12 @@
 (define-category copular-pp-rel-clause
   :specializes phrase-interpretation
   :binds ((copular-pp copular-pp)))
+
+
+(define-category upon-condition
+  ;; Consumed as 'circumstance' at event level by adjoin-pp-to-vg
+  :instantiates :self
+  :specializes predication
+     ;; should be a contingency or 'when' or some such
+  :binds ((condition))
+  :index (:key condition))
