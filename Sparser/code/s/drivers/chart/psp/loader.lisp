@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1990-1995,2012-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1995,2012-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "drivers;chart:psp:"
-;;;  Version:  May 2016
+;;;  Version:  February 2017
 
 ;; initiated summer 1990
 ;;  3.0  (9/2/92) bumped to 3 and moved in the newly rationalized set
@@ -59,3 +59,4 @@
 (lload "psp-drivers;post-analysis-operations")
 (lload "psp-drivers;multi-scan")
 (lload "psp-drivers;chunker")
+(lload "psp-drivers;generalize")
