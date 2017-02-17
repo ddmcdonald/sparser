@@ -240,7 +240,7 @@
  It is a quality of some other category and says about it 
  that it can take on different values along some dimention")
 
-(define-mixin-category qualified
+(define-mixin-category qualifiable
   :instantiates nil
   :specializes quality
   :binds ((qualifier))
@@ -249,6 +249,8 @@
  The variable this mixin provides will be bound to an
  approximator, an intensifier, or the like, and will
  usually correspond to an adverb.")
+;;/// might be worth distinguishing approximation from
+;; intensity
 
 (define-category scalar-quality
   :specializes scalar
