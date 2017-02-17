@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  January 2017
+;;;  version:  February 2017
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -82,6 +82,19 @@
 (defun ir (number-of-rule)
   (let ((rule (psr# number-of-rule)))
     (d rule)))
+
+(defgeneric rule-for (label)
+  (:documentation "Given a word, what is the rule/s in its rule-set")
+  (:method ((pname string))
+    (rule-for (resolve pname)))
+  (:method ((w word)) ;;//polywords ?
+    (let ((rs (rule-set-for w)))
+      (if rs
+        (rule-for rs)
+        (format t "~s does not have a rule-set" (pname w)))))
+  (:method ((rs rule-set))
+    (values (rs-backpointer rs)
+            (rs-single-term-rewrites rs))))
 
 (defun ic (category-name)
   (let ((category (or (referential-category-named category-name)
