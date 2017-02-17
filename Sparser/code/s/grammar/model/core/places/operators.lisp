@@ -100,18 +100,5 @@ determined by the operator and the types of the two objects,
                          'dependent-location)
         :name string))
 
-;;;---------
-;;; compose
-;;;---------
-
-(def-k-function compose (left right)
-  (:documentation "This provides a hook for co-composition or simply
-   for type specialization or adding additional relations to a 'daughter'
-   style rule. Expecially well suited for form rules. Can be used as
-   a dispatch point for more specific binary compostions. Intended to be
-   the most generic way to compose the referents of two edges.")
-  (:method (left right)
-    (declare (ignore left right))))
-
 
 
