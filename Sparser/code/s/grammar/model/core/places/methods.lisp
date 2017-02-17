@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2016
+;;;  version:  February 2017
 
 ;; broken out from operators 11/18/16
 
@@ -13,8 +13,9 @@
 ;;; Methods used by syntax functions that appreciate the spatial operators &such
 ;;;------------------------------------------------------------------------------
 
-;; 
+;; "the block on the table" 
 (def-k-method compose ((np category::has-location) (pp category::location))
+  "Identifies the location of something that can have one"
   (declare (special *subcat-test*))
   (if *subcat-test*
     ;; given this specific a pattern, if we get here
@@ -24,8 +25,9 @@
       ;;(format t "~&i = ~a~%" i)
       i)))
 
+;; 
 (def-k-method compose ((operator category::spatial-operator)
-                       (place category::endurant))
+                       (place category::has-location)) ;; any 'object'
   ;; Designed for phrases like "on the table",  or "the top block"
   (declare (special *subcat-test* category::pp))
   (if *subcat-test*
