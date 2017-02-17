@@ -141,6 +141,10 @@
 (defun decode-exp-as-ref-category (exp category)
   ;; changed to use itypep, which is more general than what was here
   (etypecase exp
+    (word
+       (v/r-violation "The type of the individual given as the value,~
+                         ~%   ~A~%does not match the value restriction ~A"
+                      exp category))
     (individual
      (if (itypep exp category)
        exp
