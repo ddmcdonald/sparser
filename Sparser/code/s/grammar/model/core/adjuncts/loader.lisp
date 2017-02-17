@@ -10,18 +10,12 @@
 
 (in-package :sparser)
 
-
-;;;-------------------------------------------------------------------
-;;; autodef for the whole set (since they don't have a common parent)
-;;;-------------------------------------------------------------------
-
-(define-autodef-data 'modifier
-  :display-string "modifier"
-  :not-instantiable t)
-
 ;;;-------------
 ;;; the modules
 ;;;-------------
+
+(gate-grammar *standard-adjuncts*
+  (gload "adjuncts;others"))
 
 (gate-grammar *approximators*
   (gload "approx;object"))
@@ -33,6 +27,12 @@
 (gate-grammar *sequencers*
   (gload "sequence;object"))
 
-(gate-grammar *standard-adjuncts*
-  (gload "adjuncts;others"))
 
+
+;;;-------------------------------------------------------------------
+;;; autodef for the whole set (since they don't have a common parent)
+;;;-------------------------------------------------------------------
+
+(define-autodef-data 'modifier
+  :display-string "modifier"
+  :not-instantiable t)
