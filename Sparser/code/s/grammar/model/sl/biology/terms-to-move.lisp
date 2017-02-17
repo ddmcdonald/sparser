@@ -91,6 +91,10 @@ be biology specific, since they aren't. |#
 ;;  coerced to states in place (which is what bio-predication does)
 (adj "high" :super bio-predication)
 (adj "low" :super bio-predication)
+
+(noun "level" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
+
+
 #+ignore(define-comparative "lower") ;; conflicts with definition in verbs.lisp
 ;;--- "lower"  ("raise")
 ;;/// N.b. the adjective variant is commented out in the modifiers dossier
@@ -222,8 +226,6 @@ be biology specific, since they aren't. |#
   :realization
   (:noun "duration"))
 
-(noun "level" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
-
 ;;--- bio-rhetorical
 
 (noun "issue" :super bio-rhetorical) ;; not quite, but what 
@@ -342,36 +344,6 @@ be biology specific, since they aren't. |#
 
 (define-adverb "similarly")
 
-;; is likely to be mediated by
-;; is likely that this possible feedback
-;; will likely be useful
-(define-category likely :specializes bio-relation
-  :realization
-  (:adj "likely"
-        :adverb "likely" ;;WANT LIKELY TO AMBIGUOUSLY BE AN ADJECTIVE OR ADVERB
-        :to-comp theme
-	:thatcomp theme))
-
-(define-category unlikely :specializes bio-relation
-  :realization
-  (:adj "unlikely"
-        :to-comp theme
-	:thatcomp theme))
-;; almost never an adverb in our texts
-;; need a good way to distinguish the cases
-;; "is likely to ..." vs "is likely due..."
-;; want the POS to be based on category of next word...
-
-;; These still fail in "It is likely that this possible feedback loop..."
-;; and "This effecto is likely to be mediated..."
-#|
-(define-category likely-adv :specializes linguistic)
-
-(define-cfr category::likely-adv
-    (list (resolve "likely"))
-  :form category::adverb
-  :referent category::likely)
-|#
 
 
 
