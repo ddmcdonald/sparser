@@ -728,56 +728,64 @@
           (t vg)))))
 
 (defun interpret-adverb+adjective (adverb adj-phrase) 
-  (declare (special  category::pp))
-  ;; (push-debug `(,adverb ,vg)) (break "look at adv, vg")
-  (if (word-p adj-phrase)
-      (then (format t "adj-phrase ~s is not a category or an individual,~
-                     ~% probably defined by morphology, can't attach adverb~%"
-                    adj-phrase)
+  (declare (special category::pp))
+  (when (word-p adj-phrase)
+    (format t "adj-phrase ~s is not a category or an individual,~
+             ~% probably defined by morphology, can't attach adverb~%"
             adj-phrase)
-      (let* ((adj (individual-for-ref adj-phrase))
-             (variable-to-bind ;; can be nil as in "very low-to-undetectable "
-              (subcategorized-variable adj :adv adverb)))
-        #| Really should diagnose among
-        (time) (location) (purpose) (circumstance) (manner) |#
-        (cond
-          ((or (and (itypep adj 'be);; block "THERE IS"
-                    (itypep adverb 'deictic-location))
-               (eq (edge-form (left-edge-for-referent)) category::pp))
-           nil)
-          (*subcat-test*
-           (cond
-             (variable-to-bind t)
-             ((has-adverb-variable? adj adj-phrase adverb) t)
-             ((and (is-basic-collection? adj)
-                   (value-of 'items adj) ;; is null for hyphenated-triple
-                   (or
-                    (subcategorized-variable 
-                     (car (value-of 'items adj)) :adv adverb)
-                    (has-adverb-variable?
-                     (car (value-of 'items adj)) adj-phrase adverb)))
-              t)
-             (t
-              (when *show-missing-adverb-slots*
-                (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
-                      (edge-string (left-edge-for-referent))
-                      (edge-string (right-edge-for-referent))
-                      (sentence-string *sentence-in-core*)))
-              nil)))
-          (variable-to-bind
-           (bind-dli-variable variable-to-bind adverb adj))
-          ((member (cat-name adverb) *subordinating-adverbs*)
-           (bind-dli-variable 'subordinate-conjunction adverb adj))
-          ((is-basic-collection? adj)
-           (bind-dli-variable
-            (or
-             (subcategorized-variable 
-              (car (value-of 'items adj))
-              :adv adverb)
-             'adverb) adverb adj))
-          ((has-adverb-variable? adj adj-phrase adverb)
-           (setq adj (bind-dli-variable 'adverb adverb adj)))
-          (t adj)))))
+    (return-from interpret-adverb+adjective adj-phrase))
+  
+  (let* ((adj (individual-for-ref adj-phrase))
+         (variable-to-bind ;; can be nil as in "very low-to-undetectable "
+          (subcategorized-variable adj :adv adverb)))
+    #| Really should diagnose among
+      (time) (location) (purpose) (circumstance) (manner) |#
+    (cond
+      ((or (and (itypep adj 'be) ;; block "THERE IS"
+                (itypep adverb 'deictic-location))
+           (eq (edge-form (left-edge-for-referent)) category::pp))
+       nil)
+      (*subcat-test*
+       (cond
+         (variable-to-bind t)
+         ((and (itypep adverb 'intensifier) ;; compose will apply
+               (itypep adj-phrase 'qualifiable)) t)
+         ((has-adverb-variable? adj adj-phrase adverb) t)
+         ((and (is-basic-collection? adj)
+               (value-of 'items adj) ;; is null for hyphenated-triple
+               (or (subcategorized-variable 
+                    (car (value-of 'items adj)) :adv adverb)
+                   (has-adverb-variable?
+                    (car (value-of 'items adj)) adj-phrase adverb)))
+            t)
+         (t
+          (when *show-missing-adverb-slots*
+            (warn "~&can't find adverb slot for ~s on verb ~s~& in sentence ~s~&"
+                  (edge-string (left-edge-for-referent))
+                  (edge-string (right-edge-for-referent))
+                  (sentence-string *sentence-in-core*)))
+          nil)))
+
+      ;; Execution options if subcat-test is satisfied
+      ((and (itypep adverb 'intensifier) ;; compose will apply
+            (itypep adj-phrase 'qualifiable))
+       (compose adverb adj))
+
+      (variable-to-bind
+       (bind-dli-variable variable-to-bind adverb adj))
+      ((member (cat-name adverb) *subordinating-adverbs*)
+       (bind-dli-variable 'subordinate-conjunction adverb adj))
+      ((is-basic-collection? adj)
+       (bind-dli-variable
+        (or (subcategorized-variable 
+             (car (value-of 'items adj)) :adv adverb)
+            'adverb)
+        adverb
+        adj))
+      ((has-adverb-variable? adj adj-phrase adverb)
+       (setq adj (bind-dli-variable 'adverb adverb adj)))
+      (t ;; ignore the adverb
+       adj))))
 
 
 
