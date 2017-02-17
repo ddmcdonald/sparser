@@ -38,17 +38,18 @@
 (in-package :sparser)
 
 ;; For list of adverbs of diverse sorts see dossiers/modifiers.lisp
-;; For the method used by adverbs see rules/syntax/adverbs1.lisp
+;; For the method used by adverbs see rules/syntax/adverbs.lisp
 
 (defun define-adverb (string &key super-category
                                   rule-label discriminator)
   "The string can be a single word or a polyword. The super-category
-   defaults to adverbia. If you supply a value is should be the symbols
+   defaults to adverb. If you supply a value it should be the symbols
    that names the category, not the actual category, and note that this
-   is a function, not a macro so all areguments are evaluated."
+   is a function, not a macro, so all areguments are evaluated."
   (define-function-term string 'adverb
     :super-category (or super-category
                         (super-category-for-POS :adverb))
     :rule-label rule-label
     :discriminator discriminator
-    :tree-families   '(pre-verb-adverb post-verb-adverb pre-adj-adverb pre-adv-adverb sentence-adverb)))
+    :tree-families '(pre-verb-adverb post-verb-adverb
+                     pre-adj-adverb pre-adv-adverb sentence-adverb)))
