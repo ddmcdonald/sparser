@@ -36,9 +36,10 @@
   ;;  be upstream from any category definitions
   (gload "syntax;category-predicates")
   (gload "syntax;syntactic-classes")
+  (gload "syntax;syntax-methods")
   (gload "syntax;syntax-predicates")
   (gload "syntax;syntax-functions")
-  (gload "syntax;syntactic rules"))
+  (gload "syntax;syntactic-rules"))
 
 (gate-grammar *heuristics-from-morphology*
   (gload "syntax-morph;affix-rules"))

@@ -32,15 +32,9 @@
 ;; the thing being modified is usually the head, we typically just 
 ;; want to do something to that head and then return it
 
-
-(def-k-function modified (modifier head)
-  (:documentation "Motivated by adverbs like 'just' and 'almost',
-                  but could be used with adjectives or anything else. The default
-                  method creates an instance of the modifies casegory to record
-                  the relationship between the two terms, and then returns the
-                  head. Specific cases (by the category of the specific adverb)
-                  could be more ambitious.")
-  (:method ((adv category::modifier) (head individual))
-    (tr :modified_modifier+t)
-    (bind-dli-variable 'modifier adv head)))
+(def-k-method modified ((adv category::modifier) (head individual))
+  (tr :modified_modifier+t)
+  (setq head (individual-for-ref head))
+  (setq head (bind-dli-variable 'modifier adv head))
+  head)
 

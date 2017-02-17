@@ -19,64 +19,16 @@
 ;;; base case
 ;;;-----------
 
-(def-k-function modifier+noun (modifier head)
-  (:documentation "Motivated by adjectives like 'about'. Called when the
-                  generic-np-premodifier or modifier-creates-definite-individual ETF is used.
-                  Determines the referent of the edge that combines these two elements.")
-  (:method (modifier head)
-    ;; drop the modifier on the floor for the moment.
-    ;; Need to make a design decision about single binding vs. full
-    ;; individual.
-    (tr :modifier+noun_modifier+t)
-    (setq head (individual-for-ref head))
-    (setq head (bind-dli-variable 'modifier modifier head))
-    head))
+(def-k-method modifier+noun (modifier head)
+  (tr :modifier+noun_modifier+t)
+  (setq head (individual-for-ref head))
+  (setq head (bind-dli-variable 'modifier modifier head))
+  head)
 
-(def-form-rule (modifier noun)
-  :form n-bar
-  :referent (:method modifier+noun left-edge right-edge))
+(loop for nn in '(noun common-noun common-noun/plural
+                  n-bar np)
+   do (def-form-rule/expr `(modifier ,nn)
+         :form 'n-bar
+         :referent '(:method modifier+noun left-edge right-edge)))
 
-(def-form-rule (modifier common-noun)
-  :form n-bar
-  :referent (:method modifier+noun left-edge right-edge))
-
-(def-form-rule (modifier common-noun/plural)
-  :form n-bar
-  :referent (:method modifier+noun left-edge right-edge))
-
-(def-form-rule (modifier n-bar)
-  :form n-bar
-  :referent (:method modifier+noun left-edge right-edge))
-
-(def-form-rule (modifier np)
-  :form n-bar
-  :referent (:method modifier+noun left-edge right-edge))
-
-#+ignore ;; the NOT goes with the copular verb above "is not transient"                 
-(def-form-rule (not adjective) 
-  :head :right-edge 
-  :form adjective
-  :referent (:head right-edge :bind (negation left-edge)))
-
-
-#| Originals
-(def-form-rule (modifier noun)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule (modifier common-noun)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule (modifier common-noun/plural)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule (modifier n-bar)
-  :form np
-  :referent (:daughter right-edge))
-
-(def-form-rule (modifier np)
-  :form np
-  :referent (:daughter right-edge)) |#
 

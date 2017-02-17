@@ -17,9 +17,6 @@
   :binds ((quantifier . quantifier)
           (body)))
 
-(def-k-function quantify (quantifier body)
-  (:documentation "Provides for specializing the relationship between
-a particular category of quantifier and category of body.")
-  (:method ((q category::quantifier) body)
-    (define-individual 'quantified :quantifier q :body body)
-    body))
+(def-k-method quantify ((q category::quantifier) body)
+  (define-individual 'quantified :quantifier q :body body)
+  body)
