@@ -136,12 +136,6 @@
 
 ;;;---------- intensifier
 
-(define-category intensifier
-  :specializes adverbial)
-
-(defun define-intensifier (string &rest args &key (super-category 'intensifier))
-  (apply #'define-adverb string :super-category super-category args))
-
 (define-intensifier "abnormally")
 (define-intensifier "absolutely")
 (define-intensifier "acutely")

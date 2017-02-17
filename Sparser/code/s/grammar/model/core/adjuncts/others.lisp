@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-1997,2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-1997,2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "others"
 ;;;    Module:  "grammar;model:core:adjuncts:"
-;;;   version:  January 2013
+;;;   version:  February 2017
 
 ;; initiated 1/18/13. Goes with the modifiers file in dossiers in that it
 ;; provides def-forms for all the other sorts of standard modifiers that
@@ -11,13 +11,31 @@
 
 (in-package :sparser)
 
+;;;--------------------------------------------
+;;; intensifying something "very" "absolutely"
+;;;--------------------------------------------
+
+(define-category intensifier
+  :specializes adverbial)
+
+(defun define-intensifier (string &rest args
+                           &key (super-category 'intensifier))
+  (apply #'define-adverb string :super-category super-category args))
+
+
+(def-k-method compose ((adv category::intensifier)
+                       (adj category::qualifiable))
+  ;; Called from interpret-adverb+adjective, where the adjective
+  ;; is the head. Canonical example is "quite certain"
+  (setq adj (bind-variable 'qualifier adv adj))
+  adj)
+
 
 ;;;------------
 ;;; enablement
 ;;;------------
 ;; These are subordinating conjunctions. The state that the term
 ;; to their left makes possible the term to their right. Both terms
-
 
 
 
