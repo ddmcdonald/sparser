@@ -143,6 +143,7 @@
 
 (defun ensure-edge-consistent-with-chunk ()
   "Remove treetop edges that don't go with the chunk"
+  (declare (special *current-chunk*))
   (when (member (chunk-forms *current-chunk*)
                 '((ng) (vg)) :test #'equal)
     (let* ((segment-treetops 

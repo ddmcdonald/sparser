@@ -107,7 +107,8 @@
                     *the-punctuation-comma*
                     *the-punctuation-semicolon*
                     *the-punctuation-percent*
-                    *the-punctuation-prime*))
+                    *the-punctuation-prime*
+                    *the-punctuation-single-quote*))
   (when (punctuation? word)
     (or (eq word *the-punctuation-period*)
         (eq word  *the-punctuation-question-mark*)

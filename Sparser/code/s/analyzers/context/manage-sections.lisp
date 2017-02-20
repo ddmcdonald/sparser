@@ -277,6 +277,7 @@
 
 
 (defun index-section-object-to-discourse-history (so edge)
+  (declare (special category::section-object))
   (update-discourse-history category::section-object
                             so
                             edge))

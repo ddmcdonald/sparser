@@ -37,6 +37,7 @@
 (defun make-bio-complex (start-pos end-pos)
   (declare (special category::protein category::bio-complex 
                     category::nucleotide category::ion
+                    category::n-bar
                     category::small-molecule
                     category::protein-family))
   (let* ((ttops (treetops-between start-pos end-pos))
@@ -74,7 +75,7 @@
   (make-bio-complex start-pos end-pos))
 
 (defun make-protein-collection (start-pos end-pos)
-  (declare (special category::protein category::collection))
+  (declare (special category::protein category::collection category::n-bar))
   (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
          proteins)
@@ -101,7 +102,7 @@
       nil))))
 
 (defun make-amino-collection (start-pos end-pos)
-  (declare (special category::amino-acid category::collection))
+  (declare (special category::amino-acid category::collection category::n-bar))
   (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
          aminos)

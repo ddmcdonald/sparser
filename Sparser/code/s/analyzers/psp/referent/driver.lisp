@@ -244,7 +244,7 @@
        (eq (edge-form edge) category::lambda-form)))
 
 (defun apply-lambda-abstraction (old-lambda-pred new-pred-form edge)
-  (declare (special new-pred-form old-lambda-pred))
+  (declare (special new-pred-form old-lambda-pred **lambda-var**))
   (let* ((lambda-variable
           (loop for b in (indiv-binds old-lambda-pred)
                 when (eq **lambda-var** (binding-value b))
