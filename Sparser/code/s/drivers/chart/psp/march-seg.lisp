@@ -338,6 +338,7 @@
    that the treetops will be ordered left to right. It relies on
    next-treetop/rightward to do its walk, so some of the values it
    returns will be edge-vectors rather than edges."
+  (declare (special *current-chunk*))
   ;; like  treetops-in-current-segment  but takes into account the chunk forms
   (loop for ev in
     (treetops-in-segment *left-segment-boundary*

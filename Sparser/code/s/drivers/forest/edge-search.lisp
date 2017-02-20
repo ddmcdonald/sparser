@@ -320,7 +320,8 @@
 (defparameter *l-triple-tests* nil)
 (defun l-triple-tests ()
   (declare (special category::as category::infinitive category::syntactic-there
-                    category::vg category::vg+ing category::np category::adjective))
+                    category::vg category::vg+ing category::np category::adjective
+                    category::n-bar))
   (or *l-triple-tests*
       (setq *l-triple-tests*
             `((,category::vg  ,category::np)

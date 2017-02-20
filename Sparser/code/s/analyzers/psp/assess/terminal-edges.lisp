@@ -79,7 +79,7 @@
         edges ))))
 
 (defun unneeded-polyword-literal (edge)
-  (declare (special word::comma))
+  (declare (special word::comma word::|to|))
   (and
    (eq (edge-right-daughter edge) :literal-in-a-rule)
    (not (eq (edge-category edge) word::comma))
