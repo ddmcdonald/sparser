@@ -82,6 +82,10 @@
 (defun ir (number-of-rule)
   (let ((rule (psr# number-of-rule)))
     (d rule)))
+(defun irr (number-of-rule) ;; just the rule's referent
+  (let ((rule (psr# number-of-rule)))
+    (format t "referent: ~a" (cfr-referent rule))
+    rule))
 
 (defgeneric rule-for (label)
   (:documentation "Given a word, what is the rule/s in its rule-set")
