@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  October 2016
+;;;  Version:  February 2017
 
 ;; Simple function lifted from syntax-functions 8/30/16
 
@@ -77,6 +77,21 @@
 
 (defun is-intransitive? ())
 
+(defun transitive-vp-missing-object? (vp &optional (right-edge (right-edge-for-referent)))
+  ;; this is a case like "that MEK phosphorylates" which has
+  ;;  a VG, not a VP, and no object -- want to make this a
+  ;;  constituent with a gap
+  (and right-edge
+       (not (is-passive? right-edge))
+       (not (adjective-phrase? right-edge))
+       (missing-object-vars vp)
+       ;; whether-comp (like "test" and "investigate") can have either a non-statement object
+       ;;  like "we tested the pathway", or a whether-comp ("we tested whether ...")
+       ;;  so we need to check for either case
+       (not (value-of 'statement vp))
+       (not (thatcomp-verb right-edge))
+       (not (loop for v in (find-subcat-vars :to-comp vp)
+               thereis (value-of v vp)))))
 
 (defun preceding-that-whether-or-conjunction? (left-edge)
   (declare (special left-edge))
@@ -109,7 +124,6 @@
 
 
 
-
 ;;;-----------------------
 ;;; type-queries on edges
 ;;;-----------------------
@@ -128,7 +142,7 @@
           ;; "has the ability to inhibit the phosphorylation of both Smad2 and Smad3 but it only slightly inhibits the activation of Akt, ERK, JNK and p38 MAPK, suggesting that it down-regulates Snail expression via a Smad dependent pathway"
           (is-passive? (edge-right-daughter edge)))
          ((edge-p (edge-left-daughter edge))
-          (is-passive?(edge-left-daughter edge)))))
+          (is-passive? (edge-left-daughter edge)))))
       ((vp+passive vg+passive verb+passive) t)
       (t nil))))
 
