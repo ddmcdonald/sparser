@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2015-2016 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2015-2017 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  November 2016
+;;;   version:  February 2017
 
 ;; Initiated 12/3/15.
 
@@ -27,6 +27,9 @@
   :binds ((position relative-position))
   :realization (:m position)) |#
 
+;;;------------------
+;;; location resouce
+
 (define-mixin-category with-specified-location
   :binds ((location location)
           (supported-by physical)
@@ -42,18 +45,18 @@
 
 
 
-
-;;---  blocks
+;;;--------
+;;; Things
+;;;--------
 
 (define-category block
   :specializes rectangular-solid
-  :mixins (has-name with-specified-location)
+  :mixins (#|has-name|# with-specified-location)
   ;; inherits 'location' variable -- :binds ((position relative-position))
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "block")
   :realization (:noun name))
-                     ;; :m position
 
 #| An interesting deference between a block and a table is
 that you can't use the table as part of any of the standard
@@ -68,7 +71,7 @@ support a substantial number of blocks.
   :index (:permanent :list)
   :realization (:common-noun "table"))
 
-
+;;--- Composites
 
 (define-category built-out-of-blocks
   :specializes artifact
@@ -99,21 +102,28 @@ support a substantial number of blocks.
   :realization (:common-noun "row"))
 
 
-
-;;--- Verbs
+;;;-------
+;;; Verbs
+;;;-------
 
 ;; (p "Add another block")
 
 (define-category add-to
   :specializes achievement
   :mixins (with-an-agent with-specified-location)
+  :restrict ((goal built-out-of-bricks))
   :binds ((theme object))
-  :realization (:verb "add"
-                :etf (svo-passive)
-                :o theme
-                :s agent
-                :loc-pp-complement (next\ to on on\ top\ of at)
-                :mumble ("add" svo :o theme)))
+  :realization
+    (:verb "add"
+     :etf (svo-passive)
+     :s agent
+     :o theme
+     :loc-pp-complement (next\ to
+                         on
+                         on\ top\ of
+                         at
+                         to) ;; "... to the row" via adjoin-pp-to-vg
+      :mumble ("add" svo :o theme)))
 
 
 ;; 1.1 (p "Let's build a staircase.") 
@@ -134,7 +144,7 @@ support a substantial number of blocks.
   :specializes process
   :mixins (with-an-agent)
   :binds ((object physical) ;; what they build
-          (adj-comp t)) ;; "make the stack green"
+          (adj-comp attribute-value)) ;; "make the stack green"
   :realization
     (:verb ("make" :past-tense "made")
      :etf (svo-passive)
