@@ -1071,75 +1071,56 @@
 (defparameter *warn-about-optional-objects* nil
   "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
 
-(defun assimilate-subject (subj vp &optional (right-edge (right-edge-for-referent)))
+(defun assimilate-subject (subj vp
+                           &optional (right-edge (right-edge-for-referent)))
   (declare (special category::subordinate-clause category::copular-predication
                     category::transitive-clause-without-object))
   ;; right-edge is NIL when called from polar questions on adjectives
   ;;  this may want to be fixed
-  (when (and subj vp) ;; have had cases of uninterpreted VPs
-    (let ((result
-           (cond
-             ((itypep vp 'copular-predication)
-              (if *subcat-test* t
-                  (else
-                    (revise-parent-edge :category category::copular-predication)
-                    (setq vp (bind-variable 'item subj vp))
-                    vp)))
-             ((transitive-vp-missing-object? vp right-edge)
-              (when (not *subcat-test*)
-                ;; the edge isn't available and shouldn't be chaged during the test phase
-                (when *warn-about-optional-objects*
-                  (warn "~%transitive verb without object: ~s~%"
-                        (extract-string-spanned-by-edge (right-edge-for-referent))))
-                (revise-parent-edge :form category::transitive-clause-without-object))
-              (assimilate-subcat vp :subject subj))
+  (unless (and subj vp) ;; have had cases of uninterpreted VPs
+    (return-from assimilate-subject nil))
+  (when (is-basic-collection? vp)
+    (revise-parent-edge :category (value-of 'type vp)))
+
+  (cond
+    ((itypep vp 'copular-predication)
+     (or *subcat-test*
+         (apply-copula subj vp)))
+    
+    ((transitive-vp-missing-object? vp right-edge)
+     (unless *subcat-test*
+       ;; the edge isn't available and shouldn't be chaged during the test phase
+       (when *warn-about-optional-objects*
+         (warn "~%transitive verb without object: ~s~%"
+               (extract-string-spanned-by-edge (right-edge-for-referent))))
+       (revise-parent-edge :form category::transitive-clause-without-object))
+     (assimilate-subcat vp :subject subj))
       
-             ((and right-edge
-                   (eq (edge-form right-edge) category::subordinate-clause))
-              (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
-                     (vg-edge (edge-right-daughter right-edge)))
-                (when (edge-p vg-edge)
-                  ;; vg-edge is :long-span for cases where the
-                  ;;  subordinate clause is a conjunction
-                  ;; HANDLE THESE CORRECTLY
-                  (if
-                   (is-passive? vg-edge)
-                   (when (and (object-variable vg-edge)
-                              (null (value-of (object-variable vg-edge) svp)))
-                     (assimilate-subcat svp :object subj))
-                   (when (missing-subject-vars (edge-referent vg-edge))
-                     (assimilate-subcat svp :subject subj))))))
+    ((and right-edge
+          (eq (edge-form right-edge) category::subordinate-clause))
+     (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
+            (vg-edge (edge-right-daughter right-edge)))
+       (when (edge-p vg-edge)
+         ;; vg-edge is :long-span for cases where the
+         ;;  subordinate clause is a conjunction
+         ;; HANDLE THESE CORRECTLY
+         (if (is-passive? vg-edge)
+           (when (and (object-variable vg-edge)
+                      (null (value-of (object-variable vg-edge) svp)))
+             (assimilate-subcat svp :object subj))
+           (when (missing-subject-vars (edge-referent vg-edge))
+             (assimilate-subcat svp :subject subj))))))
       
-             ((and right-edge (is-passive? right-edge))
-              (assimilate-subcat vp :object subj))
+    ((and right-edge (is-passive? right-edge))
+     (assimilate-subcat vp :object subj))
       
-             (t (assimilate-subcat vp :subject subj)))))
-      (when (is-basic-collection? vp)
-        (revise-parent-edge
-         :category (value-of 'type vp)))
-      result)))
+    (t (assimilate-subcat vp :subject subj))))
+      
 
 
-
-(defun transitive-vp-missing-object? (vp &optional (right-edge (right-edge-for-referent)))
-  ;; this is a case like "that MEK phosphorylates" which has
-  ;;  a VG, not a VP, and no object -- want to make this a
-  ;;  constituent with a gap
-  (and right-edge
-       (not (is-passive? right-edge))
-       (not (adjective-phrase? right-edge))
-       (missing-object-vars vp)
-       ;; whether-comp (like "test" and "investigate") can have either a non-statement object
-       ;;  like "we tested the pathway", or a whether-comp ("we tested whether ...")
-       ;;  so we need to check for either case
-       (not (value-of 'statement vp))
-       (not (thatcomp-verb right-edge))
-       (not (loop for v in (find-subcat-vars :to-comp vp)
-               thereis (value-of v vp)))))
-
-
-;; special case where the vp is a gerund, and we make it an NP (not sure how often this is right)
 (defun assimilate-subject-to-vp-ing (subj vp)
+  ;; special case where the vp is a gerund, and we make it
+  ;; an NP (not sure how often this is right)
   (unless 
       ;; remove the printout until it is needed again
       t ;;   *subcat-test*

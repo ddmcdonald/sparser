@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "copulars"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  September 2016
+;;;  Version:  February 2017
 
 (in-package :sparser)
 
@@ -50,29 +50,13 @@
 
 ;;--- be + adjective or adjp
 
-(def-form-rule (be adjective)
-  :form vp
-  :referent  (:function make-copular-adjective left-edge right-edge))
-
-(def-form-rule (be adjp)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
-
-(def-form-rule (be comparative)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
-
-(def-form-rule (be comparative-adjp)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
-
-(def-form-rule (be superlative)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
-
-(def-form-rule (be superlative-adjp)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
+(loop for aa in '(adjective adjp
+                  comparative comparative-adjp
+                  superlative superlative-adjp)
+   do (def-form-rule/expr `(be ,aa)
+         :form 'vp
+         :referent '(:function make-copular-adjective
+                               left-edge right-edge)))
 
 
 ;;--- be + pp
@@ -86,6 +70,17 @@
   :referent (:function make-copular-pp left-edge right-edge))
 
 
+#| Make-copular-adjective makes a vp that refers to an instance of
+a copular-predication. This is noticed explicitly by assimilate-subject
+which calls apply-copula to engage the coersion / co-composition 
+machinery. |#
+
+(def-k-method apply-copula ((subj individual) (vp category::copular-predication))
+  (declare (special category::copular-predication))
+  (revise-parent-edge :category category::copular-predication)
+  (setq vp (bind-variable 'item subj vp))
+  vp)
+
 ;;;--------------------
 ;;; syntactic function
 ;;;--------------------
@@ -94,18 +89,18 @@
   "For accumulating the unique set of sentences where the rule
    applies. For the snapshots as o 8/28 there were 80.")
 
-
 (defun make-copular-adjective (copula adjective
                                &optional (copula-edge (left-edge-for-referent)))
   "Corresponds to the form rule for be+adjective (or + adjp) which
    composes them to create a VP with consituents for the verb group
    (e.g. 'should be') and the adjective or adjp. 
    This instantiates a three-place predication: copular-predication,
-   with the item that it will be applied to (presumably the subject) left open."
+   with the item that it will be applied to (presumably the subject)
+   left open."
   (declare (special category::copular-predicate category::to-comp))
-   #+ignore(pushnew (sentence-string *sentence-in-core*)
+  #+ignore(pushnew (current-string)
                    *sentences-going-through-copular-adjective*)
-   (cond
+  (cond
     (*subcat-test* ;; strictly speaking, the validity of this assertion
      ;; depends on the semantic properties of the subject and their
      ;; relation to the properties of the predicated description (the
@@ -117,17 +112,17 @@
          ;; Note that edge label deliberately is different.
          ;; The idea is have edge category labels that distinguish
          ;; between the vp and the eventual full clause.
-         (if
-          (eq (edge-form (left-edge-for-referent)) category::infinitive)
-          ;; "to be dominant" is not a VP, but is a to-comp
-          
-          (revise-parent-edge :category category::copular-predicate
-                             :form category::to-comp)
-          (revise-parent-edge :category category::copular-predicate
-                             :form category::vp))
-          i))))
+         ;;/// this reads oddly in an analysis, so consider just
+         ;; going with the edge label of the adjp instead
+         (revise-parent-edge :category category::copular-predicate)
+
+         (if (eq (edge-form (left-edge-for-referent)) category::infinitive)
+           ;; "to be dominant" is not a VP, but is a to-comp
+           (revise-parent-edge :form category::to-comp)
+           (revise-parent-edge :form category::vp))
+         i))))
 #|
-  ;; optional edge used in call from make-this-a-question-if-appropriate
+  ;; optional edge used in calls from make-this-a-question-if-appropriate
   ;; when there wasn't an edge over the whole span and we're trying
   ;; to salvage an edge from the treetops we've got
   (when (and (edge-p copula-edge)

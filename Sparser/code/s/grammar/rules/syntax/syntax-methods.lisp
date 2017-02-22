@@ -10,7 +10,6 @@
 
 (in-package :sparser)
 
-
 ;;--- compose
 
 (def-k-function compose (left right)
@@ -21,6 +20,15 @@
    the most generic way to compose the referents of two edges.")
   (:method (left right)
     (declare (ignore left right))))
+
+
+;;--- copula
+
+(def-k-function apply-copula (subject copular-predicate)
+  (:documentation "A hook for type-driven refinement of the
+    meaning of the subject in light of what's been predicated
+    of it. Default will just complete the copular predication
+    by binding the open variable."))
 
 
 ;;--- adjectives
