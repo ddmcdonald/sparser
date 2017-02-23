@@ -1,19 +1,20 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2011-2016 David D. McDonald  -- all rights reserved
-;;; extensions copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
-;;;     File:  discourse"mentions"
+;;;     File:  discourse-mentions"
 ;;;   Module:  "analyzers;CA:"
-;;;  Version:  June 2016
+;;;  Version:  February 2017
 ;;;
 
-;;;  Code to create and maintain discourse-mentions, which are intended to stand for
-;;;   the discourse interpretation of lattice individuals in a particular discourse context.
-;;;  The same individual e.g. "the phosphorylation" or even "Ras" may be intended to refer to
-;;;   different items in the model, depending on where in an article the underlying description
-;;;   is used.
-;;;  The context is initially the edge in a parse, while we are processing a sentence,
-;;;   but then becomes the paragraph location as the edges are recycled
+;;;  Code to create and maintain discourse-mentions, which are
+;;;  intended to stand for the discourse interpretation of lattice
+;;;  individuals in a particular discourse context.  The same
+;;;  individual e.g. "the phosphorylation" or even "Ras" may be
+;;;  intended to refer to different items in the model, depending on
+;;;  where in an article the underlying description is used.  The
+;;;  context is initially the edge in a parse, while we are processing
+;;;  a sentence, but then becomes the paragraph location as the edges
+;;;  are recycled
 
 (defvar *lattice-individuals-mentioned-in-paragraph* nil
   "List of mentions within the current paragraph. Most recent
@@ -22,8 +23,8 @@
    with or replacing the sentence list of individuals.")
 
 (defvar *maximal-lattice-mentions-in-paragraph* nil
-  "Hash-table organized by category of maximal projections mentions from within the current paragraph. Most recent
-   first.")
+  "Hash-table organized by category of maximal projections mentions 
+   from within the current paragraph. Most recent first.")
 
 ;;; mention-history storage
 (defvar *lattice-individuals-to-mentions* (make-hash-table :size 10000)
@@ -65,7 +66,9 @@
    (ci :accessor contextual-description
        :documentation "Backpointer to the individual which is the contextually revised description")
    (restriction :accessor mention-restriction)
-   (non-dli-modifiers :accessor mention-non-dli-modifiers :initform nil) ;; the determiner of a NP -- not included in the interpretation of the NP when discourse-mentions are used!!
+   (non-dli-modifiers :accessor mention-non-dli-modifiers :initform nil
+       :documentation "the determiner of a NP -- not included in the interpretation 
+               of the NP when discourse-mentions are used")
    (source :accessor mention-source)
    (maximal :accessor maximal? :initform :unknown)
    (dependencies :initform nil :accessor dependencies)
@@ -76,8 +79,8 @@
      of the edge over the individual), but need to convert if 
      the paragraph is long enough to wrap the chart.")
    (location-in-article :accessor mentioned-in-article-where
-                        :documentation "When reading a text represented as an
-     article, this encodes the location of the sentence that
+                        :documentation "When reading a text represented 
+     as an article, this encodes the location of the sentence that
      the mention is part of in the style of table-of-contents label.
      6/8/16 changed value to a cons of the ToC string and the current
      paragraph. See make-mention")
@@ -122,8 +125,7 @@
             (t
              (format stream "?"))))
         (format stream "m:~s"
-                (mention-uid m))
-        )))
+                (mention-uid m)))))
 
 (defmethod mention-paragraph-location ((m discourse-mention))
   (let ((loc (mentioned-in-article-where m)))
@@ -254,11 +256,11 @@
 
 
 (defun is-dl-child? (child? parent?)
+  "Is the child a more specific description of the parent?"
   (cond
     ((category-p parent?)
      (itypep child? parent?))
-    ((or (null child?) (category-p child?))
-     ;; should not happen
+    ((or (null child?) (category-p child?)) ;; should not happen
      nil)
     ((loop for pair in (indiv-uplinks child?)
            when (eq (cdr pair) parent?)
@@ -269,12 +271,14 @@
 
 
 (defun semantic-edges-under (edge)
+  "Return the meaning-carrying edge(s) under this edge"
   (setq edge (un-embed-edge edge))
-  (remove-if
-   #'(lambda(e)(not (edge-p e)))
-   (edges-under edge)))
+  (remove-if #'(lambda(e) (not (edge-p e))) ;; filters out words
+             (edges-under edge)))
 
 (defun un-embed-edge (edge)
+  "If this is not a meaning-carrying edge (relevant to mentions),
+   then recurse to the appropriate daughter edge and return it instead."
   (cond ((syntactically-embedding-edge? edge)
          (un-embed-edge (edge-right-daughter edge)))
         ((eq (cat-name (edge-category edge))
@@ -283,17 +287,23 @@
         (t edge)))
 
 (defun syntactically-embedding-edge? (edge)
+  "Was this edge formed simply to accommodate a syntactic marker
+   (such as the 'that' of a relative clause), if so, we return
+   true, since we expect the semantic content of the edge to be 
+   on one of this edge's daughters."
   (and (not (is-basic-collection? (edge-referent edge)))
        (or (member (cat-name (edge-form edge)) '(subject-relative-clause thatcomp))
-           (member (cat-name (edge-category edge))
-                   '(there-exists)))))
+           (and (eq 'there-exists (cat-name (edge-category edge)))
+                (not (eq 'question (cat-name (edge-form edge))))))))
 
 (defun edges-under (edge)
-  (if (not (edge-p (edge-right-daughter edge)))
-      (or (edge-constituents edge)
-          (list (edge-left-daughter edge)))
-      (list (edge-left-daughter edge)
-            (edge-right-daughter edge))))
+  "Accommodates the variations of where the 'daughter' edge or edges
+   will be in different sorts of edges."
+  (if (not (edge-p (edge-right-daughter edge))) ;; e.g. unary or long-span
+    (or (edge-constituents edge)
+        (list (edge-left-daughter edge)))
+    (list (edge-left-daughter edge)
+          (edge-right-daughter edge))))
 
 (defparameter *mention-individual* nil)
 (defparameter *mention-source* nil)
@@ -311,10 +321,8 @@
   ;; The discourse entry for a category is a push list, most
   ;; recent (and thereafter most specific) first
   (declare (special *current-paragraph* category::prepositional-phrase category))
-  (if (null source) (lsp-break "null source in make-mention"))
-  ;; either don't create a mention for NPs with category references (like "the cell")
-  ;;  or make them have individuals as references
-  (if (null category) (setq category (itype-of i)))
+  (when (null source) (lsp-break "null source in make-mention"))
+  (when (null category) (setq category (itype-of i)))
   (let* ((*mention-individual* i)
          (*mention-source* source)
          (subsumed-mention
@@ -364,32 +372,32 @@
                                   non-source-edges
                                   i
                                   (edge-referent source-edge)))
-      ;;(lsp-break "setting edge-mention of ~s to t~%" source-edge)
       (unless *in-update-mention-dependencies*
-        ;; unless we are simply revising the existing e=dependency in plac
+        ;; unless we are simply revising the existing e=dependency in place
         ;; remove mention from old edge
-        ;;(lsp-break "resetting mention on ~s due to ~s~%" source-edge edge)
         (setf (edge-mention source-edge) t))
       (setf (mention-history (edge-referent source-edge))
             (remove subsumed-mention (mention-history (edge-referent source-edge))))))
   subsumed-mention)
 
 (defun subsumed-mention? (i edge)
+  "Is this edge an additional instance of i that subsumes the immedidately
+   prior mention of i? Cannonical situation is walking up a head line,
+   where each progressively higher edge is a (more specific) reference
+   to i."
   (when (null i)
     (error "null individual in subsumed-mention?"))
-  (when (and
-         (member (edge-rule edge) '(make-predication-edge))
-         (typep (edge-mention (edge-left-daughter edge)) 'discourse-mention))
+  (when (and (member (edge-rule edge) '(make-predication-edge))
+             (typep (edge-mention (edge-left-daughter edge)) 'discourse-mention))
     (return-from subsumed-mention?
       (edge-mention (edge-left-daughter edge))))
 
   (let ((un-embedded-edge (un-embed-edge edge)))
-    (when
-        (and (not (eq edge un-embedded-edge))
-             (typep (edge-mention un-embedded-edge) 'discourse-mention)
-             (or (eq (edge-referent edge)(edge-referent un-embedded-edge))
-                 (is-dl-child? (edge-referent edge)(edge-referent un-embedded-edge))))
-
+    (when (and (not (eq edge un-embedded-edge))
+               (typep (edge-mention un-embedded-edge) 'discourse-mention)
+               (or (eq (edge-referent edge)(edge-referent un-embedded-edge))
+                   (is-dl-child? (edge-referent edge)
+                                 (edge-referent un-embedded-edge))))
       ;; this happens when we are lifting to a that-comp
       ;; as in "that the RBD of PI3KC2β binds nucleotide-free Ras"
       (return-from subsumed-mention?
@@ -404,51 +412,53 @@
                    '(subject-relative-clause thatcomp whethercomp than-np))
            (safe-edge-mention (edge-right-daughter edge)))
           ((and (cfr-p (edge-rule edge))
-                (equal '(:FUNCALL CREATE-PARTITIVE-NP LEFT-REFERENT RIGHT-REFERENT)
+                (equal '(:funcall create-partitive-np left-referent right-referent)
                        (cfr-referent (edge-rule edge))))
-           (safe-edge-mention (edge-right-daughter (edge-right-daughter edge))))
-          ((member (edge-rule edge)'(knit-parens-into-neighbor))
+           (safe-edge-mention (edge-right-daughter
+                               (edge-right-daughter edge))))
+          ((member (edge-rule edge) '(knit-parens-into-neighbor))
            (safe-edge-mention (edge-left-daughter edge)))        
           (t
            (let ((left (subsumed-mention-edge? i (edge-left-daughter edge)))
                  (right (subsumed-mention-edge? i (edge-right-daughter edge))))
+             ;; which edge is the head line? 
              (cond
                (left
-                (if right
-                    nil ;; no real subsumption -- can't find head
-                    (edge-mention left)))
+                (unless right ;; no real subsumption -- can't find head
+                  (edge-mention left)))
                (right (edge-mention right))
                (t
                 (let ((subsumed-edges
                        (loop for e in (edge-constituents edge)
                              when (and (edge-p e)
-                                       ;; in two-part-label, the constituents include a WORD!
+                                       ;; in two-part-label, the constituents
+                                       ;; include a WORD!
                                        (is-dl-child? i (edge-referent e))
                                        (typep (edge-mention e) 'discourse-mention))
                              collect e)))
-                  (if (and subsumed-edges (null (cdr subsumed-edges)))
-                      (edge-mention (car subsumed-edges))
-                      nil)))))))))
+                  (if (and subsumed-edges
+                           (null (cdr subsumed-edges)))
+                    (edge-mention (car subsumed-edges))
+                    nil)))))))))
 
 (defun subsumed-mention-edge? (i edge)
+  "Is the edge a more-specific reference to i?"
   (and (edge-p edge)
        (is-dl-child? i (edge-referent edge))
        (not (eq t (edge-mention edge)))
        edge))
 
 (defun safe-edge-mention (edge)
-  "return the edge-mention of the edge, if it is a discourse-mention"
+  "return the edge-mention of the edge, provided that it is a discourse-mention"
   (let ((mention (edge-mention edge)))
     (when (typep mention 'discourse-mention) mention)))
 
 
 (defun create-new-dependencies (new-bindings edges top-edge)
-  (declare (special new-bindings edges top-edge))
   (loop for b in new-bindings
         collect
           (let ((bb b)
                 (e (find-binding-dependency (binding-value b) edges top-edge b)))
-            (declare (special bb e))
             (create-dependency-pair b e))))
 
 ;;(defparameter  *no-source-for-binding-action* :warn)
