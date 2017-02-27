@@ -308,7 +308,6 @@
 ;;; VG -- Rules for constructing VGs (and some hangers on for adverbials and deictic locations on S as a whole)
 ;;;--------
 
-
 (loop for vv in '((verb+ed vg+ed)
                   (verb+ing vg+ing)
                   (verb+present vg)
@@ -334,7 +333,6 @@
   (eval 
    `(def-form-rule (,(car vv) deictic-location)
         :head :left-edge
-      
         :form ,(second vv)
         :referent (:function interpret-adverb+verb right-edge left-edge)))
   
@@ -376,7 +374,6 @@
 ;;;--------
 ;;; SUBJECT 
 ;;;--------
-
 
 ;;--- subject + verb for relative clauses
 
@@ -447,9 +444,10 @@
 ;;;--------------
 
 (loop for nb in `(vp+ing vg+ing ;; allow present-participles (gerunds) as objects
-                         np pronoun reflexive/pronoun ,@*n-bar-categories*)
+                  np pronoun reflexive/pronoun ,@*n-bar-categories*)
   do
-  (loop for vv in '((vg vp)(vg+ing vp+ing)(vg+ed vp+ed)(infinitive to-comp) (to-comp to-comp))
+     (loop for vv in '((vg vp) (vg+ing vp+ing) (vg+ed vp+ed)
+                       (infinitive to-comp) (to-comp to-comp))
     do
     (eval 
      `(def-syntax-rule (,(car vv) ,nb)
@@ -522,9 +520,13 @@
 
 
 
-;; add in S because it can happen that the "THATCOMP" and "WHETHERCOMP" my not be produced until after
-;; the verb element gets promoted to an S
-;; e.g. "interestingly , we observed that in contrast to wild type aspp 2 , aspp 2 ( s 827 a ) remains at the plasma membrane"
+;; add in S because it can happen that the "THATCOMP" and
+;; "WHETHERCOMP" my not be produced until after the verb element gets
+;; promoted to an S
+
+;; e.g. "interestingly , we observed that in contrast to wild type
+;; aspp 2 , aspp 2 ( s 827 a ) remains at the plasma membrane"
+
 (loop for vv in '((s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
                   (infinitive to-comp))
