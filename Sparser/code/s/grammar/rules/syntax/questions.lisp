@@ -78,7 +78,7 @@
               spanning-edge)))
         
         ((and (= 3 (length edges))
-              (itypep (edge-referent (car edges)) 'be))                  
+              (itypep (edge-referent (car edges)) 'be))              
          (cond ((member (cat-name (edge-form (third edges)))
                         '(adjp adjective comparative superlative
                           comparative-adjp superlative-adjp))
@@ -93,6 +93,10 @@
                           vp+passive))
                 ;; <is> <something> <x-ing?
                 (make-polar-participle-question start-pos end-pos edges))
+               ((eq (cat-name (edge-category (second edges)))
+                    ;; "is there <something: a cat on the rug>?"
+                    'syntactic-there)
+                (make-polar-there-question start-pos end-pos edges))
                (t
                 ;; don't break here -- just warn
                 ;;  have gotten some cases in articles
@@ -107,7 +111,25 @@
 
 (defun make-polar-pp-question (edges)
   (push-debug edges)
-  (error "Polar PP questions are not implemented yet."))
+  (error "Polar PP questions are not implemented yet."))'
+
+;; (p "are there drugs that treat pancreatic cancer?")
+(defun make-polar-there-question (start-pos end-pos edges)
+  "We're asking about whether somthing exists"
+  ;; caller knew the first edge was the aux and second 'there'
+  (let* ((np (edge-referent (third edges)))  ;; drugs that ...
+         (i (find-or-make-individual 'there-exists :value np))
+         (q (make-polar-question i)))
+    (let ((e (make-edge-over-long-span
+              start-pos end-pos
+              (itype-of i)
+              :rule 'make-polar-there-question
+              :form category::question
+              :referent q
+              :constituents edges)))
+      ;; trace
+      e)))
+    
 
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (let* ((be (edge-referent (first edges)))  ;; is
