@@ -220,6 +220,10 @@
   `(multiply-labels ,(resolve label-name1)
                     ,(resolve label-name2)))
 
+(defmacro fsr (label-name1 label-name2) ;; find syntax rule
+  `(lookup-syntactic-rule
+    (list (resolve ',label-name1) (resolve ',label-name2))))
+
 ;;;------------------
 ;;; packaged drivers
 ;;;------------------
