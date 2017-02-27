@@ -19,20 +19,23 @@ be biology specific, since they aren't. |#
 
 (define-adverb "next")
 (define-adverb "finally")
+(define-adverb "in part")
+(define-adverb "namely")
+
+
+
+(define-adverb "readily")
 
 
 (adj "downstream" :super pathway-direction
-  :realization 
-  (:adj "downstream"))
+  :realization (:adj "downstream"))
 (noun "upstream" :super pathway-direction
-      :realization
-      (:noun "upstream"))
+   :realization (:noun "upstream"))
 
 (noun "route" :super bio-mechanism)
 
 (adj "also known as" :super bio-relation)
-(define-adverb "in part")
-(define-adverb "namely")
+
 
 (noun "surface" :super bio-entity)
 
@@ -169,43 +172,46 @@ be biology specific, since they aren't. |#
 
 (adj "common" :super bio-relation
   :realization 
-  (:adj "common"
-        :to theme))
+    (:adj "common"
+     :to theme))
 
 (adj "critical" :super bio-relation
   :realization 
-  (:adj "critical"
-        :to theme
-        :for theme))
-(define-adverb "critically")
+    (:adj "critical"
+     :adv "critically"
+     :to theme
+     :for theme))
 
-(define-category exclusivity :specializes bio-relation ;; this is actually a lot more general
+(define-category exclusivity :specializes bio-relation 
+  ;; this is actually a lot more general
   :binds ((alternative biological))
   :realization
-  (:noun "exclusivity" :adj "exclusive"
-	 :with alternative))
+    (:noun "exclusivity" 
+     :adj "exclusive"
+     :with alternative))
 
 
 (define-category positive :specializes bio-relation
   :realization
-  (:adj "positive"
-	:for theme))
+    (:adj "positive"
+     :for theme))
 (define-category value-is-negative :specializes bio-relation
   ;; 'negative' is the category that represents "no" and "not"
   ;; in the tense model. They're not the same thing.               
   :realization
   (:adj "negative"
-	:for theme))
+   :for theme))
 
 
 (define-category true :specializes bio-relation
   :realization
-  (:adj "true"
-	:for theme))
+    (:adj "true"
+     :for theme))
 (define-category false :specializes bio-relation
   :realization
-  (:adj "false"
-	:for theme))
+    (:adj "false"
+          :for theme))
+
 (adj "prior" :super bio-relation
   :binds ((prior-event  bio-process))
   :realization (:to prior-event))
@@ -213,18 +219,14 @@ be biology specific, since they aren't. |#
 
 ;;--- bio-scalar
 
-(define-category bio-amount :specializes bio-scalar
-  :realization
-  (:noun "amount"))
 
 (define-category threshold :specializes bio-scalar
-  :realization
-  (:noun "threshold"))
+  :realization (:noun "threshold"))
 
 (define-category duration :specializes bio-scalar
   :restrict ((subject (:or process bio-method bio-mechanism)))
   :realization
-  (:noun "duration"))
+    (:noun "duration"))
 
 ;;--- bio-rhetorical
 
@@ -234,28 +236,27 @@ be biology specific, since they aren't. |#
 
 (delete-adj-cfr (resolve "important"))
 (define-category importance :specializes bio-rhetorical
-      :realization
-      (:noun "importance"
-             :adj "important"))
+  :realization
+    (:noun "importance"
+     :adj "important"))
 
 (define-category of-interest :specializes bio-rhetorical
-      :realization
-      (:adj "of interest"))
+  :realization  (:adj "of interest"))
 
 (define-category significance :specializes bio-rhetorical
-      :realization
-      (:noun "significance"
-             :adj "significant"))
+  :realization
+    (:noun "significance"
+     :adj "significant"))
 
 (define-category possibility :specializes bio-rhetorical
-      :mixins (bio-thatcomp)
-      :realization
-      (:noun "possibility"))
+  :mixins (bio-thatcomp)
+  :realization
+     (:noun "possibility"))
 
 (adj "unclear" :super bio-rhetorical)
 
 (adj "unexpected" :super bio-rhetorical)
-(define-adverb "unexpectedly") ;; TO-DO wants to be  :super-category 'bio-rhetorical)
+(define-adverb "unexpectedly" :super-category 'bio-rhetorical)
 
 
 ;;--- bio-predication
@@ -289,11 +290,13 @@ be biology specific, since they aren't. |#
 (adj "direct" :super bio-predication)
 
 (adj "forward" :super bio-predication) ;; added to avoid problem with complex lookup
-;;Error: Comlex -- new POS combination for "#<word "forward">:: (ADJECTIVE ADVERB ADVPART NOUN VERB)
+;;Error: Comlex -- new POS combination for
+;; "#<word "forward">:: (ADJECTIVE ADVERB ADVPART NOUN VERB)
 (adj "full" :super bio-predication)
+
+
 (adj "further" :super bio-predication)
 (define-adverb "further")
-
 
 (adj "initial" :super bio-predication)
 (adj "least" :super bio-predication)
@@ -301,8 +304,6 @@ be biology specific, since they aren't. |#
 (delete-adj-cfr (resolve "novel"))
 (adj "novel" :super bio-predication)
 
-
-(define-adverb "readily")
 
 
 (adj "spatial" :super bio-predication)
@@ -318,31 +319,31 @@ be biology specific, since they aren't. |#
 
 (adj "consistent" :super bio-relation
   :realization 
-  (:adj "consistent"
-        :with theme))
+    (:adj "consistent"
+     :with theme))
 
 (adj "identical" :super bio-relation
-     :realization
+   :realization
      (:adj "identical"
-           :to theme))
+      :to theme))
+
 (adj "independent" :super bio-relation
-  :realization 
-  (:adj "independent"))
+  :realization (:adj "independent"))
 
 (define-category lack :specializes bio-relation
-                 :realization (:noun "lack" :of theme))
+  :realization (:noun "lack" :of theme))
 
 
 (define-category similar :specializes bio-relation
   :mixins (post-adj)
   :realization 
-  (:noun "similarity"
-  	:adj "similar"
-         :to theme))
+    (:noun "similarity"
+     :adj "similar"
+     :adv "similarly"
+     :to theme))
+;;(define-adverb "similarly")
 
 (adj "related" :super similar)
-
-(define-adverb "similarly")
 
 
 
@@ -354,9 +355,9 @@ be biology specific, since they aren't. |#
 (delete-noun-cfr (resolve "number"))
 (delete-noun-cfr (resolve "numbers"))
 (define-category count-of :specializes measurement
-  :binds ((item-counted biological)) ;; no restrictions now -- needs to be COUNT-NOUN
+  :binds ((item-counted biological)); ; needs to be COUNT-NOUN
   :realization
-  (:noun "number"
+    (:noun "number"
          :of item-counted))
 
 
@@ -374,11 +375,22 @@ be biology specific, since they aren't. |#
 
 
 (noun "activity" :super other-bio-process
-      :binds ((theme biological))
-      :realization
-      (:noun "activity"
-             :of subject
-             :towards theme
-             :on theme))
+  :binds ((theme biological))
+  :realization
+     (:noun "activity"
+      :of subject
+      :towards theme
+      :on theme))
 
 (noun "behavior" :super bio-quality)
+
+(define-category compare :specializes bio-method
+  :binds ((comparator biological)
+          (by (:or bio-method biological)))
+  :realization 
+  (:verb "compare"
+   :noun "comparison"
+   :adj "comparable"
+   :etf (svo-passive)
+   :to comparator
+   :with comparator))
