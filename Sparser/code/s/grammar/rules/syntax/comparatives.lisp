@@ -289,13 +289,11 @@ comparative rather than content-word.  |#
 (define-category comparative-modifier
   :specializes attribute-value
   :mixins (modifier)
- ;; :rule-label comparative
   :index (:permanent :key name)
-  :realization (:word name))
+  :realization (:word name)) ;; form category is content-word
 
 (define-category superlative-modifier
   :specializes attribute-value
-;;  :rule-label superlative
   :index (:permanent :key name)
   :realization (:word name))
 
