@@ -33,17 +33,6 @@
  of its binding values when we compose with a subject.")
 
 
-(define-category copular-predication-of-pp ;; (the cat)(is on the mat)
-  :specializes copular-predication
-  :instantiates self
-  :binds ((prep :primitive category))
-  :index (:temporary :list)
-  :documentation "Adds a prep variable to the variables 
- of copular-predication. The prepositional complement goes
- in the value variable, though that sounds a bit odd, but 
- what's in a name?")
-
-
 ;;;-------
 ;;; rules
 ;;;-------
@@ -57,18 +46,6 @@
          :form 'vp
          :referent '(:function make-copular-adjective
                                left-edge right-edge)))
-
-
-;;--- be + pp
-
-(def-form-rule (be pp) ;; "the cat is on the mat"
-  :form vp
-  :new-category copular-pp
-  ;; copular-pp is a label in a syntatic-rule where it's folded
-  ;; in with all the NP sources and gerundive vps to form rules
-  ;; that call apply-copular-pp to create copular-predicate objects
-  :referent (:function make-copular-pp left-edge right-edge))
-
 
 #| Make-copular-adjective makes a vp that refers to an instance of
 a copular-predication. This is noticed explicitly by assimilate-subject
@@ -138,6 +115,62 @@ just stashed the verb part on the adjective on an ad-hoc lambda variable
            i)   |#
 
 
+
+;;;---------
+;;; be + PP
+;;;---------
+
+(define-category copular-predication-of-pp ;; (the cat)(is on the mat)
+  :specializes copular-predication
+  :instantiates self
+  :binds ((prep :primitive category))
+  :index (:temporary :list)
+  :documentation "Adds a prep variable to the variables 
+ of copular-predication. The prepositional complement goes
+ in the value variable, that sounds a bit odd, but what's in a name?")
+
+(def-form-rule (be pp) ;; "the cat is on the mat"
+  :form vp
+  :new-category copular-pp
+  ;; copular-pp is a label in a syntatic-rule where it's folded
+  ;; in with all the NP sources and gerundive vps to form rules
+  ;; that call apply-copular-pp to create copular-predicate objects
+  :referent (:function make-copular-pp left-edge right-edge))
+
+(defun make-copular-pp (be-ref pp)
+  (declare (special category::copular-predication-of-pp))
+  (when (and
+         (null (value-of 'predicate be-ref))
+         ;; we changed the variable to be PREDICATE
+         ;;  block "to be a required step in the process of EGFR transactivation"
+         ;; If this is not already a copular predicate ("is a drug")     
+	 (or (not (edge-p *left-edge-into-reference*))
+             ;; case where there is no semantic predication established,
+             ;; but there is a syntactic object
+             ;; e.g. "was the result of defects in the developing embryo"
+             (not (member (cat-name (edge-form *left-edge-into-reference*))
+			  '(s vp thatcomp)))))
+    (let* ((prep (value-of 'prep pp))
+           (pobj (value-of 'pobj pp)))
+      (cond
+       (*subcat-test*
+        ;; when we have clausal "to-pp" like
+        ;; "to enhance craf activation" it's a purpose clause,
+        ;; not a copular PP
+        (and prep pobj))
+       (t
+        (when (eq (edge-form (left-edge-for-referent)) category::infinitive)
+          ;; "to be dominant" is not a pp, but is a to-comp
+          ;; have to over-ride default category of the vp
+          (revise-parent-edge :category category::copular-predicate
+                              :form category::to-comp))
+        (make-simple-individual
+         category::copular-predication-of-pp
+         `((predicate ,be-ref)
+           (prep ,prep)
+           (value ,pobj))))))))
+
+
 ;;/// needs to be finished
 ;;;--------------------------
 ;;; hedged copular relations
@@ -168,74 +201,18 @@ phosphorylated by Src."
 
 (defun make-copular-def (word-string)
   (let ((verb (intern (string-upcase word-string))))
-    `(progn
-       #+ignore
-       (define-category ,verb :specializes copula
-                        :binds ((tocomp t)
-                                (subject t)
-                                (theme t))
-                        :realization
-                        (:verb ,word-string
-                               :etf (svo)
-                               :s subject
-                               :to-comp tocomp
-                               :o theme))
-
-       (def-form-rule (,verb adjective)
-           :form vp
-           :referent (:function make-copular-adjective left-edge right-edge))
-
-       (def-form-rule (,verb adjp)
-           :form vp
-           :referent (:function make-copular-adjective left-edge right-edge))
-       (def-form-rule (,verb adjg)
-           :form vp
-           :referent (:function make-copular-adjective left-edge right-edge)))))
+    ;; Original design made a category for the word that specialized
+    ;; copula. Now we just make the rules, and the use a function form
+    ;; of the rule definer so we don't need anything evaled.
+       
+    (loop for aa in '(adjective adjp
+                      comparative comparative-adjp
+                      superlative superlative-adjp)
+       collect (def-form-rule/expr `(,verb ,aa)
+                  :form 'vp
+                  :referent '(:function make-copular-adjective
+                              left-edge right-edge))) ))
 
 #+ignore ;; do this in the biology/verbs.lisp file for now
-(loop for v in '("seem" "appear" "remain"
-                 "become" "stay")
-     do
-     (eval (make-copular-def v)))
-
-
-;;;---------
-;;; be + PP
-;;;---------
-
-
-
-
-(defun make-copular-pp (be-ref pp)
-  (declare (special category::copular-predication-of-pp))
-  (when (and
-         (null (value-of 'predicate be-ref))
-         ;; we changed the variable to be PREDICATE
-         ;;  block "to be a required step in the process of EGFR transactivation"
-         ;; If this is not already a copular predicate ("is a drug")     
-	 (or (not (edge-p *left-edge-into-reference*))
-             ;; case where there is no semantic predication established,
-             ;; but there is a syntactic object
-             ;; e.g. "was the result of defects in the developing embryo"
-             (not (member (cat-name (edge-form *left-edge-into-reference*))
-			  '(s vp thatcomp)))))
-    (let* ((prep (value-of 'prep pp))
-           (pobj (value-of 'pobj pp)))
-      (cond
-       (*subcat-test*
-        ;; when we have clausal "to-pp" like
-        ;; "to enhance craf activation" it's a purpose clause,
-        ;; not a copular PP
-        (and prep pobj))
-       (t
-         (if
-          (eq (edge-form (left-edge-for-referent)) category::infinitive)
-          ;; "to be dominant" is not a VP, but is a to-comp
-          
-          (revise-parent-edge :category category::copular-predicate
-                             :form category::to-comp))
-        (make-simple-individual
-         category::copular-predication-of-pp
-         `((predicate ,be-ref)
-           (prep ,prep)
-           (value ,pobj))))))))
+("seem" "appear" "remain" "become" "stay")
+ 
