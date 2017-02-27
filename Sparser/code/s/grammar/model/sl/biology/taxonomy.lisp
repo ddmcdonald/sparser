@@ -355,7 +355,8 @@
        protein-domain ;; not molecular-location -- that allows residues
        )) ;; membrane targeting domains that facilitate interaction with the plasma membrane
      (object
-       (:or bio-entity cell-entity molecular-location measurement bio-scalar)))
+      (:or bio-entity cell-entity molecular-location
+           measurement bio-scalar disease)))
   :realization
     (:s agent
      :o object
