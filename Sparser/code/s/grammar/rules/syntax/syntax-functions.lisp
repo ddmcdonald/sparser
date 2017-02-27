@@ -1532,6 +1532,10 @@
                (search-tree-for-referent (left-edge-for-referent) open-attribution)
              ;; Insert a new edge over the comparative edge
              ;; of the np with the completed-attribution as its value.
+             (unless edge-over-comparative
+               (push-debug `(,open-attribution))
+               (error "Could not locate edge over ~a under ~a"
+                      attribution (left-edge-for-referent)))
              (respan-edge-for-new-referent edge-over-comparative
                                            complete-attribution)
              (setq i (rebind-variable variable complete-attribution i))
