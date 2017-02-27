@@ -56,18 +56,16 @@
 
 (defun can-fill-vp-subject? (vp subj &optional (left-edge (left-edge-for-referent)))
   (and
-   ;; vp has a subject
-   (missing-subject-vars vp) ;; which is not bound
-   (or
-    ;; can't be a reduced relative, no available object-var
-    (not (missing-object-vars vp)) ;; (not (object-variable vp)) (bound-object-var vp)
-    ;; or a statement (clausal complement)
-    (value-of 'statement vp)
-    (preceding-that-whether-or-conjunction? left-edge)
-    (and *current-chunk*
-         (typep *current-chunk* 'chunk)
-         (memq 'ng (chunk-forms *current-chunk*))))
-   (subcategorized-variable vp :subject subj)))
+   (missing-subject-vars vp) ;; vp has a subject which is not bound
+   (subcategorized-variable vp :subject subj)
+   (or ;; can't be a reduced relative, no available object-var
+       (not (missing-object-vars vp)) ;; (not (object-variable vp)) (bound-object-var vp)
+       ;; or a statement (clausal complement)
+       (value-of 'statement vp)
+       (preceding-that-whether-or-conjunction? left-edge)
+       (and *current-chunk*
+            (typep *current-chunk* 'chunk)
+            (memq 'ng (chunk-forms *current-chunk*))))))
        
 (defun can-fill-vp-object? (vp subj)
   (and ;; vp has a bound subject -- NP can fill object
