@@ -10,12 +10,19 @@
 
 (in-package :sparser)
 
+;;;--------------------------------------
+;;; certainty -- target for generalizing
+;;;--------------------------------------
+
 (define-category certainty
   :specializes bio-rhetorical
+  ;; inherits 'statement' from bio-complement > bio-thancomp
+  ;;  > bio-rhetorical. Should we restrict it
   :mixins (qualifiable) ;; "quite certain", "entirely certain"
   :realization (:noun "certainty"
                 :adj "certain"))
 
+;; --- fold in to test return value of comparatives
 ;; can't seem to get this to work -- DAVID??
 ;;(define-adverb "certainly" :super-category category::certainty)
 
@@ -65,7 +72,8 @@
 ;; presently has to follow all the definitions
 (define-canonical-category 'certainty)
 
-;;---------------------
+
+;;;---------------------
 
 (define-category scalar-variation
   :specializes bio-predication)
@@ -91,7 +99,7 @@
     (:verb ("become" :third-singular "becomes" :past-tense "became"
 		     :present-participle "becoming")
       :etf (svo)))
-(eval (make-copular-def "become"))
+(make-copular-def "become")
 
 ;;;----------------------
 ;; failed to find a treatment for pancreatic cancer
@@ -118,6 +126,9 @@
 ;;;----------------------
 
 
+(define-category bio-amount :specializes bio-scalar
+  :realization
+  (:noun "amount"))
 
 
 (define-category decrease
@@ -159,7 +170,7 @@
  :specializes bio-scalar
  :binds ((components biological)
          (process bio-process))
-  :realization 
+ :realization 
     (:noun "rate"
      :for components
      :m process))
@@ -218,7 +229,7 @@
 	   :etf (sv)
            ;; remains to be determined
            :to-comp theme))
-(eval (make-copular-def "remain")) ;; gives it the adjective rules
+(make-copular-def "remain") ;; gives it the adjective rules
 
 
 (define-category follow :specializes bio-event-relation
