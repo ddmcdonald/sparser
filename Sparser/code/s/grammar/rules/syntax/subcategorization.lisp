@@ -114,15 +114,21 @@
          (v/r-symbol (v/r)
            (cond ((null v/r) nil)
                  ((consp v/r) v/r)
-                 (t (cat-symbol v/r)))))
+                 (t (cat-symbol v/r))))
+         (name-for (category)
+           (etypecase category
+             (null nil)
+             (category (cat-symbol category)))))
     (let ((category (subcat-for sf))
           (patterns (subcat-patterns sf)))
       (format t "Subcategorization options for ~a" (cat-symbol category))
       (dolist (pattern patterns)
-        (format t "~&~4T:~a  v/r: ~a  var: ~a~%"
+        (format t "~&~4T:~a  v/r: ~a  var: ~a~
+                   ~%~10Tfrom ~a~%"
                 (pname (subcat-label pattern))
                 (v/r-symbol (subcat-restriction pattern))
-                (var-symbol (subcat-variable pattern)))))))
+                (var-symbol (subcat-variable pattern))
+                (name-for (subcat-source pattern)))))))
 
 
 ;;;------------------------
@@ -1092,4 +1098,33 @@
                  collect h)
               #'string< :key #'(lambda (s)(cat-name (car s)))))))
 
+;;;-----------------
+;;; debugging tools
+;;;-----------------
+
+
+(defun applicable-sc-patterns (head label)
+  "From the subcategization of the head individual return the patterns
+   that are for this label"
+  (let ((category (itype-of head))
+        (subcat-patterns (known-subcategorization? head)))
+    (if (null subcat-patterns)
+      (format nil "~a has no subcategorizations" head)
+      (sc-pat-matching-label label subcat-patterns))))
+      
+(defun sc-pat-matching-label (label subcat-patterns)
+  "Given a label and a list of subcategorization patterns, return the
+  patterns that go with that label. Good for feeding alternative
+  list of patterns directly."
+  (let ((matched (loop for pat in subcat-patterns
+                         when (eq label (subcat-label pat))
+                         collect pat)))
+    matched))
+
+(defun satisfies-sc-pattern (pat label item)
+  "Assuming this pattern (pat) goet with this label, does this item
+   pass its value restriction?"
+  (when (eq label (subcat-label pat))
+    (when (satisfies-subcat-restriction? item pat)
+      (subcat-variable pat))))
 
