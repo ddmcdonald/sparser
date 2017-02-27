@@ -412,7 +412,7 @@
 
 (defgeneric name-to-use-for-category (string)
   (:documentation"Encapsulates the lisp-specific checks 
-    for what case to use.")
+    for what case to use. Also makes polyword category names hyphenated")
   
   (:method ((string string))
     (assert (not (string-equal string "top")) ()
@@ -421,7 +421,7 @@
       ;; fill the spaces, if only for the sake of the category display
       (setq string (substitute #\- #\space string)))
     (let* ((s #+mlisp string
-              #-mlisp (string-upcase string))
+              #-mlisp (string-upcase (substitute #\- #\space string))) 
            (symbol (intern s (find-package :sparser))))
       ;; n.b. not the category package. The pname will be interned there
       ;; as part of creating the category
