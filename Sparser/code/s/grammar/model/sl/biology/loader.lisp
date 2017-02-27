@@ -22,6 +22,7 @@
 ;; 4/10/16 moved new-words to R3.
 
 (in-package :sparser)
+
 (gload "bio;allowable-protein-heads")
 (gload "bio;mechanics")
 (gload "bio;taxonomy")
@@ -54,7 +55,8 @@
 ;;(gload "bio;UCD-proteins")
 (gload "bio;protein-families")
 (gload "bio;phenomena") ;; after proteins
-(gload "bio;verbs") ;; after phenomena
+(gload "bio;general-verbs") ;; akin to terms-to-move
+(gload "bio;verbs") ;; after phenomena, with bio synonyms of general verbs
 
 (gload "bio;molecules")
 
