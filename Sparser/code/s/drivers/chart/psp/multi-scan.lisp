@@ -607,6 +607,8 @@
 |#
 (defparameter *show-early-rules* nil)
 (defun do-early-rules-sweep (sent)
+  (tr :starting-early-rules-sweep)
+  (when *trace-sweep* (tts))
   (do-early-rules-sweep-between (starts-at-pos sent) (ends-at-pos sent)))
 
 (defun do-early-rules-sweep-between (start end)
@@ -615,6 +617,7 @@
            (mid  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
            (right-edge (when (edge-p left-edge)(right-treetop-edge-at mid)))
            new-edge rule)
+      (tr :early-rule-check-at start)
       (if (or (not (edge-p left-edge))
               (not (edge-p right-edge))
               (pos-preceding-whitespace mid))
@@ -639,11 +642,15 @@
           (catch :succeeded
             (dolist (left-edge edges-ending-there)
               (dolist (right-edge edges-starting-there)
-                (when (setq rule (multiply-edges left-edge right-edge))
-                  (setq left left-edge
-                        right right-edge)
-                  (throw :succeeded
-                    (make-completed-binary-edge left right rule))))))))
+                (tr :early-rules-checking left-edge right-edge)
+                (if (setq rule (multiply-edges left-edge right-edge))
+                  (then
+                    (tr :early-succeeded rule)
+                    (setq left left-edge
+                          right right-edge)
+                    (throw :succeeded
+                      (make-completed-binary-edge left right rule)))
+                  (tr :early-failed)))))))
     (declare (special *allow-pure-syntax-rules* *allow-form-rules*))
     (show-early-rule? rule left right)
     (values new-edge rule)))

@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2010-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2010-2017  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "psp"
 ;;;   Module:  "objects;traces:"
-;;;  Version:  January 2016
+;;;  Version:  March 2017
 
 ;; 1.0 (10/5/92 v2.3) added trace routines
 ;; 1.1 (4/23/93) added still more to go with the revised protocol
@@ -1333,6 +1333,8 @@
 
 
 
+
+
 (deftrace :scan-words-loop ()
   (when *trace-network-flow*
     (trace-msg "[scan] entered scan-words-loop")))
@@ -1380,10 +1382,11 @@
 (deftrace :sweep-to-span-parentheses ()
   (when *trace-network-flow*
     (trace-msg "[scan] entered sweep-to-span-parentheses")))
-#|
-(deftrace : ()
+
+(deftrace :starting-early-rules-sweep ()
   (when *trace-network-flow*
-    (trace-msg "[scan] entered ")))
+    (trace-msg "[scan] entered early-rules sweep")))
+#|
 
 (deftrace : ()
   (when *trace-network-flow*
@@ -1464,6 +1467,35 @@
     (trace-msg "[pw] The potential polyword for ~s at p~a did ~
                 not complete" (word-pname word) 
                 (pos-token-index position-before))))
+
+
+(deftrace :early-rule-check-at (start)
+  (when *trace-sweep*
+    (trace-msg "[early] checking at p~a"
+               (pos-token-index start))))
+
+(deftrace :early-rules-checking (left right)
+  (when *trace-sweep*
+    (trace-msg "[early] does e~a compose with e~a?"
+               (edge-position-in-resource-array left)
+               (edge-position-in-resource-array right))))
+
+(deftrace :early-succeeded (rule)
+  (when *trace-sweep*
+    (trace-msg "[early] yes - ~a" rule)))
+
+(deftrace :early-failed ()
+  (when *trace-sweep*
+    (trace-msg "[early] no")))
+#|
+(deftrace : ()
+  (when *trace-sweep*
+    (trace-msg "")))
+
+(deftrace : ()
+  (when *trace-sweep*
+    (trace-msg "")))
+|#
 
                
 
