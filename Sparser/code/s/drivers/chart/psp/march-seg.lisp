@@ -159,7 +159,7 @@
   ;; their position within the segment, their probablility of
   ;; being correct given priors, the kind of rule being used.
   (when triples
-    (push-debug `(,triples)) ;;(lsp-break "triple")
+    ;;(push-debug `(,triples)) (lsp-break "triple")
     (tr :n-triples-apply triples)
     
     (let ((non-syntactic-triples
@@ -283,7 +283,7 @@
   ;; every rule execution
   (let ((pairs (adjacent-tts (treetops-in-current-chunk)))
         rule )
-    ;;(push-debug `(,pairs)) (break "pairs = ~a" pairs)
+    ;;(push-debug `(,pairs)) (lsp-break "pairs = ~a" pairs)
     (loop for pair in pairs
       when (setq rule (segment-rule-check pair chunk))
       collect (cons rule pair))))
