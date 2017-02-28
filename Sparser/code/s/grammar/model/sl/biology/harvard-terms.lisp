@@ -112,15 +112,15 @@
      :to-comp process ))
 
 ;; mostly passive -- "... are found ..."
-(define-category find
-  :specializes bio-rhetorical
-  :mixins (bio-process) ;; to allow composition as comp. of "fail"
-  :binds ((object biological)) ;; "found a treatment for ..."
+(define-category bio-find
+  :specializes find
+  :mixins (bio-process  bio-rhetorical) ;; to allow composition as comp. of "fail"
+  :restrict ((object biological)) ;; "found a treatment for ..."
   :realization
     (:verb ("find" :past-tense "found")
-     :noun "finding" ;; to allow for "findings"
      :etf (svo-passive)
-     :o object))
+     :noun "finding" ;; to allow for "findings"
+      ))
 
 ;; bio-rhetorical includes bio-thatcomp
 ;;;----------------------
