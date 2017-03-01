@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1998,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1998,2011-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  March 2017
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -53,55 +53,60 @@
 ;;;                do
 ;;;------------------------------------
 
-(define-category  anonymous-agentive-action
+(define-category  do
   :specializes perdurant
   :instantiates self
-  :mixins (takes-neg))
-;; Has sort of an anaphoric feel sometimes, 
+  :binds ((agent pronoun)
+          (predicate pronoun))
+  :mixins (takes-neg)
+  :realization (:etf (svo)
+                :s agent
+                :o predicate))
+;; Has sort of an anaphoric feel sometimes, even as
+;; an auxiliary. 
 
 
 (def-cfr do ("do")
   :form verb
-  :referent  anonymous-agentive-action )
+  :referent do)
 
 (def-cfr do ("does")
   :form verb+present
-  :referent  anonymous-agentive-action )
+  :referent do)
 
 (def-cfr do ("did")
   :form verb+past
-  :referent  anonymous-agentive-action )
+  :referent do)
 
 (def-cfr do ("done")
   :form verb+ed
-  :referent (:head anonymous-agentive-action))
+  :referent do)
 
 (def-cfr do ("doing")
   :form verb+ing
-  :referent (:head anonymous-agentive-action))
-
+  :referent do)
 
 
 ;;--- negatives
 
 (def-cfr do (do not)
   :form verb
-  :referent (:head anonymous-agentive-action
+  :referent (:head do
              :bind (negation right-edge)))
 
 (def-cfr do ("doesn" apostrophe-t)
   :form verb+present
-  :referent (:head anonymous-agentive-action
+  :referent (:head do
              :bind (negation right-edge)))
 
 (def-cfr do ("don" apostrophe-t)
   :form verb+present
-  :referent (:head anonymous-agentive-action
+  :referent (:head do
              :bind (negation right-edge)))
 
 (def-cfr do ("didn" apostrophe-t)
   :form verb+past
-  :referent (:head anonymous-agentive-action
+  :referent (:head do
              :bind (negation right-edge)))
 
 ;;--- intensifier
