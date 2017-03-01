@@ -93,7 +93,7 @@ without damaging other code.")
 ;;; Helper code for the cards
 ;;;---------------------------
 
-(defun all-individuals-in-tts (sentence)
+(defun all-individuals-in-tts (&optional (sentence (previous (sentence))))
   ;; This used to both walk the treetops to identify
   ;; all of the individuals that they reference
   ;; and also recurd their surface strings.
@@ -115,11 +115,45 @@ without damaging other code.")
   	)
 
 (defparameter *save-surface-text-as-variable* t)
-(defparameter *save-surface-text-classes* '(protein protein-family))
+(defparameter *save-surface-text-classes*
+  '(bio-chemical-entity pathway bio-complex))
 
 
 (defparameter *bio-entity-heads* nil)  ;;
 (defparameter *bio-chemical-heads* nil)  ;;	
+(defparameter *localization-interesting-heads-in-sentence* nil)
+(defparameter *local-split-sentences* nil)
+(defun sort-loc-heads ()
+  (remove-duplicates
+   (sort (loop for pair in
+                 (cdr (reverse *localization-interesting-heads-in-sentence*))
+               when (second pair)
+                 collect pair)
+         #'(lambda(x y)(<= (edge-start-index (car x))(edge-start-index (car y)))))
+   :test
+   #'(lambda (x y) (and (= (edge-start-index (car x))(edge-start-index (car y)))
+                        (equal (second x)(second y))))))
+
+(defun red-string (str)
+  (if str
+      (format nil "~c[31m~a~c[m" #\ESC str #\ESC)
+      ""))
+
+(defun split-sentence-string-on-loc-heads ()
+  (let ((rem-sent-string (sentence-string *sentence-in-core*))
+        (loc-heads (mapcar #'second (sort-loc-heads)))
+        items)
+    (loop for head in loc-heads
+          do
+            (push (subseq rem-sent-string 0 (search head rem-sent-string)) items)
+            (push head items)
+            (setq rem-sent-string (subseq rem-sent-string (+ (search head rem-sent-string) (length head)))))
+    (push rem-sent-string items)
+    (let ((result ""))
+      (loop for (normal red) on (reverse items) by #'cddr
+            do (setq result (format nil "~a~a~a" result normal (red-string red))))
+      result)))
+    
 
 (defun collect-bio-entity-heads ()
   (setq *bio-entity-heads* (make-hash-table :size 200000 :test #'equal)))
@@ -127,12 +161,19 @@ without damaging other code.")
 (defun collect-bio-chemical-heads ()
   (setq *bio-chemical-heads* (make-hash-table :size 200000 :test #'equal)))
 
+(defun collect-localization-interesting-heads-in-sentence ()
+  (setq *localization-interesting-heads-in-sentence* (list t)))
+
+(defun reset-localization-interesting-heads-in-sentence ()
+  (setq *localization-interesting-heads-in-sentence* (list t)))
+
 (defun note-surface-string (edge)
   ;; Called on every edge from complete-edge/hugin
   ;; Record the surface string from the span dictated 
   ;; by the edge. 
-  (declare (special *surface-strings*))
+  (declare (special *surface-strings* edge))
   (let ((referent (edge-referent edge)))
+    (declare (special referent))
     (when t ;; (and referent (individual-p referent))
       (let* ((start-pos (pos-edge-starts-at edge))
              (end-pos (pos-edge-ends-at edge))
@@ -145,37 +186,54 @@ without damaging other code.")
         (unless end-index
         (format t "~&>>> Null end-index: ~a~%~%" edge)) |#
 
-        (if (and start-index end-index)
+        (if (not (and start-index end-index))
             ;; need both indices to extract the string
+            (setf (gethash referent *surface-strings*) "")
             (let ((string
                    (extract-string-from-char-buffers start-index end-index)))
               (setf (gethash edge *surface-strings*) string)
               (setq string (string-trim " 
 " string))
               (setf (gethash referent *surface-strings*) string)
+              (when (and *localization-interesting-heads-in-sentence*
+                         (loop for st-class in *save-surface-text-classes*
+                               thereis (itypep referent st-class))
+                         (not (eq (cat-name (edge-category edge)) 'lambda-expression))
+                         (or
+                          (and  (eq (edge-right-daughter edge) :SINGLE-TERM)
+                                (individual-p referent))
+                          (is-basic-collection? referent)))
+                         
+                    (push (list edge (head-string edge)) *localization-interesting-heads-in-sentence*))
               (when (and  (eq (edge-right-daughter edge) :SINGLE-TERM)
                           (individual-p referent))
 
                 (when (and *bce-ht* (itypep referent 'bio-chemical-entity))
                   (pushnew string (gethash referent *bce-ht*) :test #'equal))
                 (when (and *save-surface-text-as-variable*
-                           (member (cat-name (itype-of referent))
-                                   *save-surface-text-classes*)
-                           (null (value-of 'raw-text referent)))
+                           ;; (print referent)
+                           (loop for st-class in *save-surface-text-classes*
+                                 thereis (itypep referent st-class)))
+                  (when (null (value-of 'raw-text referent))
                                    
-                  ;; do this after the code above, so that the *bce-ht*
-                  ;;  is keyed on the individual without the text
-                  (setq referent (bind-dli-variable 'raw-text
-                                                    (head-string edge) ;;string
-                                                    referent))
-                  (setf (edge-referent edge) referent)))
+                    ;; do this after the code above, so that the *bce-ht*
+                    ;;  is keyed on the individual without the text
+                    ;; (format t "set raw-text of ~s to ~s~%" edge (head-string edge))
+                    #+ignore
+                    (when (null (head-string edge))
+                      (lsp-break "null head string"))
+                    (setq referent (bind-dli-variable 'raw-text
+                                                      (head-string edge) ;;string
+                                                      referent))
+                    (setf (edge-referent edge) referent))
+                  ))
               (when (and *bio-entity-heads*
                          (eq (itype-of referent) (category-named 'bio-entity)))
                 (setf (gethash (head-string edge) *bio-entity-heads*) t))
               (when (and *bio-chemical-heads*
                          (itypep referent 'bio-chemical-entity))
                 (setf (gethash (head-string edge) *bio-chemical-heads*) t)))
-            (setf (gethash referent *surface-strings*) ""))))))
+            )))))
 
 
 
@@ -748,7 +806,7 @@ without damaging other code.")
       nil
       (let ((lex-edge (lexical-edge-at start-pos)))
         (when lex-edge
-          (if (eq (itype-of (edge-referent lex-edge)) category)
+          (if (itypep (edge-referent lex-edge) category)
               lex-edge
               (find-lexical-edge-with-cat category (pos-edge-ends-at lex-edge) end-pos))))))      
 
