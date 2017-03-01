@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:places:"
-;;;  version:  November 2016
+;;;  version:  March 2017
 
 ;; initiated in 10/12/92 v2.3. Added 'kind of location' 1/17/94.  Added location-
 ;; phrase 11/16/95. Added relative-location 11/99. 11/25 Moved in spatial-
@@ -27,6 +27,11 @@
 ;;   friends to core/kinds/space.lisp
 
 (in-package :sparser)
+
+;;--- general words -- could have been lemmas on the category
+
+(def-synonym location (:common-noun "location"))
+(def-synonym location (:common-noun "place"))
 
 ;;;------------------------------------------------
 ;;; Deictics  -- needs a story about dereferencing
