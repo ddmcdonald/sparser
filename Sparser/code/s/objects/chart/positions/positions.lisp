@@ -212,7 +212,22 @@
 ;;  lowest edge (ambiguities, with edges from polywords)
 (defun lexical-edge-at (pos)
   (let* ((ev (pos-starts-here pos))
-         (evector(ev-edge-vector ev)))
+         (evl (ev-number-of-edges ev))
+         (evector (ev-edge-vector ev)))
+    (when (> (ev-number-of-edges ev) 0)
+      (loop for i from 0 to (1- evl)
+            do
+              (let ((edge (aref (ev-edge-vector ev) i)))
+                (if
+                 (and
+                  (cfr-p (edge-rule edge))
+                  (null (cdr (cfr-rhs (edge-rule edge))))
+                  (typecase (car (cfr-rhs (edge-rule edge)))
+                    (word t)
+                    (polyword t)
+                    (t nil)))
+                 (return edge)))))
+    #+ignore
     (when (> (ev-number-of-edges ev) 0)
       (let ((lex-edge (elt evector 0)))
         (cond ((edge-referent lex-edge) lex-edge)
