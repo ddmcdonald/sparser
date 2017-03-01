@@ -12,15 +12,14 @@
 (define-category action-by-on
   :specializes process
   :instantiates nil
-  :binds ((subject endurant)
+  :binds ((subject endurant) ;; matches bio-process
           (object endurant))
   :documentation "Provides standard bindings for ordinary transitive
    verbs. Could take most of what's on bio-process")
 
 (define-category find ;; see bio;harvard-terms
-  :specializes action-by-on ;; bio-rhetorical
-  :mixins (with-an-agent)
-  :restrict ((object physical-object)) ;; find a block
+  :specializes action-by-on
+  :restrict ((object (:or physical-object location))) ;; find a block
   :realization
     (:verb ("find" :past-tense "found")
      :etf (svo-passive)
