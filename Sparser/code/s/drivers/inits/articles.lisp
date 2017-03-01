@@ -110,6 +110,8 @@ set in. This initialization manages them.|#
 (defun sentence-level-initializations ()
   "Called in scan-terminals-loop before it starts to
    scan terminals."
+  (when *localization-interesting-heads-in-sentence*
+    (reset-localization-interesting-heads-in-sentence))
   (clear-traversal-state))
 
 
