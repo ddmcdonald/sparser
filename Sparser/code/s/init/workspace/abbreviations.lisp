@@ -90,7 +90,8 @@
 (defgeneric rule-for (label)
   (:documentation "Given a word, what is the rule/s in its rule-set")
   (:method ((pname string))
-    (rule-for (resolve pname)))
+    (let ((w (resolve pname)))
+      (if w (rule-for w) (format t "The word ~s is not defined" pname))))
   (:method ((w word)) ;;//polywords ?
     (let ((rs (rule-set-for w)))
       (if rs
