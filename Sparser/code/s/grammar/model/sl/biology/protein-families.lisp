@@ -41,7 +41,7 @@
 (def-family "PTK")
 (def-family "RAS GAP")
 (def-family "Raf" :members ("ARaf" "BRaf" "CRaf") :identifier "RAF" :synonyms ("RAF")) ;;/// maybe use the Mitre choice? 
-(def-family "Ras" :members ("KRas" "HRas" "NRas") :identifier "GO:0003930" :synonyms ("RAS") :long "GTPase") ;;//// need capitalization hacks 
+(def-family "Ras" :members ("KRas" "HRas" "NRas") :identifier "GO:0003930" :synonyms ("RAS")) ;; this is NOT the long name for "RAS" :long "GTPase") ;;//// need capitalization hacks 
 (def-family "SMAD" );; there are a bunch of these, but we will ignore them for the moment
 (def-family "TRIM")
 (def-family "Wnt")
