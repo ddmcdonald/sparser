@@ -129,14 +129,12 @@
 (def-form-rule (all det) ;; e.g. "all these"
     :head :right-edge
     :form det
-    :referent (:head right-edge
-                     :bind (quantifier left-edge)))
+    :referent (:function quantifier-noun-compound left-edge right-edge))
 
 (def-form-rule (both det) ;; e.g. "both these"
     :head :right-edge
     :form det
-    :referent (:head right-edge
-                     :bind (quantifier left-edge)))
+    :referent (:function quantifier-noun-compound left-edge right-edge))
 
 
 

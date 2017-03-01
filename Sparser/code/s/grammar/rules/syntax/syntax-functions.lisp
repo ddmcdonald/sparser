@@ -374,7 +374,9 @@
              (error "Threading bug. No value for *sentence-in-core*"))
            (let ((pobj-ref (edge-referent (edge-right-daughter pp-edge))))
              (revise-parent-edge :category (itype-of pobj-ref))
-             (add-pending-partitive quantifier  (parent-edge-for-referent) *sentence-in-core*)
+             (if *determiners-in-DL*
+               (setq pobj-ref (bind-variable 'quantifier quantifier pobj-ref))
+               (add-pending-partitive quantifier (parent-edge-for-referent) *sentence-in-core*))
              pobj-ref )))))))
 
 
@@ -401,12 +403,13 @@
 	  #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
 	(cond          
-	  ((unless (current-script :biology)
+	  ((when (use-methods)
              (compose determiner head)))
-          ((and *determiners-in-DL* (or (individual-p head)(category-p head)))
+          ((and *determiners-in-DL*
+                (or (individual-p head) (category-p head)))
            (setq head (bind-dli-variable 'has-determiner determiner head))
-           (if (definite-determiner? determiner)
-               (add-def-ref determiner parent-edge)))
+           (when (definite-determiner? determiner)
+             (add-def-ref determiner parent-edge)))
 	  ((definite-determiner? determiner)
            (add-def-ref determiner parent-edge)))
 	head)))
@@ -477,15 +480,15 @@
         ;; don't use KRISP variables for quanitifiers -- put them in the mention
         ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
         )
-       ((itypep head 'determiner) ;; "all these"
-        (setq  head (bind-dli-variable 'det-quantifier quantifier head)))
+       ((itypep head 'determiner) ;; "all these" (via syntactic rule)
+        (setq head (bind-dli-variable 'quantifier quantifier head)))
        (t
         (lsp-break "~&@@@@@ adding quantifier ~s to ~s~&"
                    (retrieve-surface-string quantifier)
                    (if (individual-p head)
                        (retrieve-surface-string head)
                        "**MISSING**"))
-        (setq  head (bind-dli-variable 'quantifier quantifier head))))
+        (setq head (bind-dli-variable 'quantifier quantifier head))))
      head)))
 
 
@@ -493,7 +496,7 @@
   ;;/// for the moment there is a number variable on
   ;; endurant we can bind. Going forward we should automatically
   ;; make a composite individual using a collection.
-  ;; See notes on forming plurals in morphology1
+  ;; See notes on forming plurals in tree-families/morphology.lisp
   (cond
     (*subcat-test* (and number head
                         (not (itypep head 'single-capitalized-letter))))
