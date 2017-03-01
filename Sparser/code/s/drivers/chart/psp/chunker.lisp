@@ -526,8 +526,8 @@
        (compatible-with-vg? e)))))
 
 (defmethod compatible-with-vg? ((e edge))
-  (declare (special category::not category::subordinate-conjunction
-                    category::then category::time category::apostrophe-t))
+  (declare (special category::not category::apostrophe-t
+                    category::subordinate-conjunction category::then category::time))
   ;;(lsp-break "compatible with vg? e = ~a" e)
   (or
    (vg-compatible? (edge-form e))
