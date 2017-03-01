@@ -28,14 +28,16 @@
 
 
 ;; -- BDI  --self action vs other action
-#+ignore(define-category want ;; -something -to-do-something
-  :specializes state
-  :mixins (with-an-agent)
-  :binds ((action ???)))
 #| <something> wants 
      <to do something> ;; they do something
      <something> (to have somthing)
 
  desire
  expect
+
+
+(define-category want ;; -something -to-do-something
+  :specializes state
+  :mixins (with-an-agent)
+  :binds ((action ???)))
 |#
