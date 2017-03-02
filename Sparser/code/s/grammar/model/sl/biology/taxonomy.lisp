@@ -316,6 +316,8 @@
           (by-means-of (:or bio-process mechanism bio-method pathway))
           (using protein)
           (manner manner) ;; conflict with "increase" bio-process CHECK THIS WAS  bio-method
+          (without-using protein)
+          (without-means-of (:or bio-process mechanism bio-method pathway))
           (as-comp as-comp)
           (target (:or protein gene)))
   :realization 
@@ -326,6 +328,10 @@
      :through by-means-of
      :via by-means-of
      :via using
+     :with by-means-of
+     :with using
+     :without without-means-of
+     :without without-using
      :through using
      :through by-means-of
      :in manner
