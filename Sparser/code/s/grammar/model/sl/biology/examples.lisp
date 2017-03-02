@@ -1,9 +1,9 @@
-;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2015-2016 SIFT LLC. All Rights Reserved
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; Copyright (c) 2015-2017 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "examples"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: October 2016
+;;; version: March 2017
 
 ;; Broken out from Biology-workspace 10/8/15
 
@@ -13,10 +13,53 @@
 ;;; Example texts
 ;;;---------------
 
+;;---- Scott's 11/21/17 paragraphs to illustrate interesting DefNP anaphora
+;; Lifted from Reactome curators descriptions
+
+(defun scott-1 ()
+  (p "In mammals there are three AKT isoforms (AKT1-3) encoded by
+three separate genes. The three isoforms share a high degree of
+amino acid identity and have indistinguishable substrate specificity
+in vitro. However, isoform-preferred substrates in vivo cannot
+be ruled out. The relative expression of the three isoforms
+differs in different mammalian tissues: AKT1 is the predominant
+isoform in the majority of tissues, AKT2 is the predominant isoform
+in insulin-responsive tissues, and AKT3 is the predominant isoform
+in brain and testes. All 3 isoforms are expressed in human and
+mouse platelets (Yin et al. 2008; O'Brien et al. 2008)."))
+
+(defun scott-2 ()
+  (p "Nuclear MAPKs may also be inactivated by nuclear forms of class III DUSPs, 
+including DUSP8, 10 and 16, although the preferred substrate of these enzymes 
+are the p38 and JNK MAP kinases (reviewed in Bermudez et al, 2010; Kondoh and 
+Nishida, 2007)."))
+
+(defun scott-3 ()
+  (p "RAF1 is phosphorylated by activated MAPK at 6 serine residues (S29, 
+S43, S289, S296, S301 and S642). MAPK-dependent hyperphosphorylation 
+of RAF1 abrogates the ability of activated RAF1 to interact with RAS 
+and is coincident with inactivation of RAF1. RAF1 proteins containing 
+mutation of these phosphorylation sites persist at the plasma membrane, 
+show sustained S338 phosphorylation and persistent activation 
+relative to WT RAF1 protein."))
+
+(defun scott-4 ()
+  (p "Activated MAPK proteins negatively regulate MAP2K1:MAP2K2 heterodimers 
+by phosphorylating MAP2K1 at T292, a residue that is not present in MAP2K2. 
+Phosphorylation of this site in MAP2K1 promotes the dephosphorylation of 
+the MAP2K phosphorylated activation loop (AL) by an unknown mechanism, 
+establishing a negative feedback loop that limits MAPK signaling (Catalanotti et al, 
+2009; Brunet et al, 1994; Xu et al, 1999). 
+Deletion of MAP2K1 or mutation of this site prolongs MAP2K2 AL phosphorylation 
+and MAPK activation (Catalanotti et al, 2009)."))
+
+
+;;--- Brent
+
 (defun brent-CaM-Ras ()
   (p "Fine tuning of Ras activity is widely known as a mechanism to induce
-different cellular responses. Recently, we have shown that calmodulin
-(CaM) binds to K-Ras and that K-Ras phosphorylation inhibits its
+different cellular responses. Recently, we have shown that calmodulin (CaM)
+binds to K-Ras and that K-Ras phosphorylation inhibits its
 interaction with CaM. In this study we report that CaM inhibits K-Ras
 phosphorylation at Ser181 by protein kinase C (PKC) in vivo, and this is
 a mechanism to modulate K-Ras activity and signaling. Although CaM
