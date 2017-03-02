@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "category-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  November 2016
+;;;  Version:  March 2017
 
 ;; Predicates on synteactic form categories, mostly for the use of the chunker.
 
@@ -195,6 +195,7 @@
     ,category::verb+s
     ,category::verb+present
     ,category::verb+past
+    ,category::verb+ed
     ,category::verb+passive
     ,category::modal)
   "Used in verb-group-final-actions to guard against

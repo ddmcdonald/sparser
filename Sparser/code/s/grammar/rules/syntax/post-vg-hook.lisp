@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "post-vg-hook"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  August 2016
+;;;  Version:  March 2017
 
 ;; Initiated 8/9/16
 
@@ -15,7 +15,7 @@
 ;;;-----------------
 
 (define-segment-finished-action (vg vg+ing vg+ed vg+passive
-                                 verb verb+s verb+present verb+past
+                                 verb verb+s verb+present verb+past verb+ed
                                  verb+passive modal)
     :vg-actions verb-group-final-actions)
 
