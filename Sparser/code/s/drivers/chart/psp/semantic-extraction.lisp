@@ -140,6 +140,7 @@ without damaging other code.")
       ""))
 
 (defun split-sentence-string-on-loc-heads ()
+  (declare (special *sentence-in-core*))
   (let ((rem-sent-string (sentence-string *sentence-in-core*))
         (loc-heads (mapcar #'second (sort-loc-heads)))
         items)
@@ -167,13 +168,27 @@ without damaging other code.")
 (defun reset-localization-interesting-heads-in-sentence ()
   (setq *localization-interesting-heads-in-sentence* (list t)))
 
+(defun save-surface-string (edge)
+  (note-surface-string edge))
+
+(defparameter *surface-strings* (make-hash-table :size 10000)
+  "Used by note-surface-string as the place to cache the text
+   string that corresponds to an edge. Key is the referent
+   of the edge.")
+
+(defparameter *referent-surface-strings* (make-hash-table :size 10000)
+  "Used by note-surface-string as the place to cache all of the unique text
+   strings that corresponds to referent. Key is the referent
+   of the edge.")
+
+(defparameter *record-all-surface-strings* nil)
+
+
 (defun note-surface-string (edge)
   ;; Called on every edge from complete-edge/hugin
-  ;; Record the surface string from the span dictated 
-  ;; by the edge. 
-  (declare (special *surface-strings* edge))
+  ;; Record the information about the surface string from the span dictated 
+  ;; by the edge.
   (let ((referent (edge-referent edge)))
-    (declare (special referent))
     (when t ;; (and referent (individual-p referent))
       (let* ((start-pos (pos-edge-starts-at edge))
              (end-pos (pos-edge-ends-at edge))
@@ -189,63 +204,67 @@ without damaging other code.")
         (if (not (and start-index end-index))
             ;; need both indices to extract the string
             (setf (gethash referent *surface-strings*) "")
-            (let ((string
+            (let ((str
                    (extract-string-from-char-buffers start-index end-index)))
-              (setf (gethash edge *surface-strings*) string)
-              (setq string (string-trim " 
-" string))
-              (setf (gethash referent *surface-strings*) string)
-              (when (and *localization-interesting-heads-in-sentence*
-                         (loop for st-class in *save-surface-text-classes*
-                               thereis (itypep referent st-class))
-                         (not (eq (cat-name (edge-category edge)) 'lambda-expression))
-                         (or
-                          (and  (eq (edge-right-daughter edge) :SINGLE-TERM)
-                                (individual-p referent))
-                          (is-basic-collection? referent)))
-                         
-                    (push (list edge (head-string edge)) *localization-interesting-heads-in-sentence*))
+              (setf (gethash edge *surface-strings*) str)
+              (setq str (string-trim " 
+" str))
+              (setf (gethash referent *surface-strings*) str)
+              (maybe-record-localization-interesting-heads edge referent)
+              
               (when (and  (eq (edge-right-daughter edge) :SINGLE-TERM)
                           (individual-p referent))
+                (maybe-record-bio-chemical-entity-strings str referent)
+                (setq referent (maybe-insert-raw-text-variable referent edge)))
+              (maybe-record-all-referent-surface-strings referent str)
+              (maybe-record-bio-entity-heads referent edge)
+              (maybe-record-bio-chemical-heads referent edge)))))))
 
-                (when (and *bce-ht* (itypep referent 'bio-chemical-entity))
-                  (pushnew string (gethash referent *bce-ht*) :test #'equal))
-                (when (and *save-surface-text-as-variable*
-                           ;; (print referent)
-                           (loop for st-class in *save-surface-text-classes*
-                                 thereis (itypep referent st-class)))
-                  (when (null (value-of 'raw-text referent))
-                                   
-                    ;; do this after the code above, so that the *bce-ht*
-                    ;;  is keyed on the individual without the text
-                    ;; (format t "set raw-text of ~s to ~s~%" edge (head-string edge))
-                    #+ignore
-                    (when (null (head-string edge))
-                      (lsp-break "null head string"))
-                    (setq referent (bind-dli-variable 'raw-text
-                                                      (head-string edge) ;;string
-                                                      referent))
-                    (setf (edge-referent edge) referent))
-                  ))
-              (when (and *bio-entity-heads*
-                         (eq (itype-of referent) (category-named 'bio-entity)))
-                (setf (gethash (head-string edge) *bio-entity-heads*) t))
-              (when (and *bio-chemical-heads*
-                         (itypep referent 'bio-chemical-entity))
-                (setf (gethash (head-string edge) *bio-chemical-heads*) t)))
-            )))))
+(defun maybe-record-bio-chemical-entity-strings (string referent)
+  (when (and *bce-ht* (itypep referent 'bio-chemical-entity))
+    (pushnew string (gethash referent *bce-ht*) :test #'equal)))
 
+(defun maybe-record-localization-interesting-heads (edge referent)
+  (when (and *localization-interesting-heads-in-sentence*
+             (loop for st-class in *save-surface-text-classes*
+                   thereis (itypep referent st-class))
+             (not (eq (cat-name (edge-category edge)) 'lambda-expression))
+             (or (and  (eq (edge-right-daughter edge) :SINGLE-TERM) (individual-p referent))
+                 (is-basic-collection? referent)))                         
+    (push (list edge (head-string edge)) *localization-interesting-heads-in-sentence*)))
 
+(defun maybe-insert-raw-text-variable (referent edge)
+  "HMS wanted to have the raw text for items of interest, so record it as a variable in the referent"
+  (or
+   (when (and *save-surface-text-as-variable*
+              (loop for st-class in *save-surface-text-classes*
+                    thereis (itypep referent st-class)))
+     (when (null (value-of 'raw-text referent))
+       ;; do this after the code above, so that the *bce-ht*
+       ;;  is keyed on the individual without the text
+       ;; (format t "set raw-text of ~s to ~s~%" edge (head-string edge))
 
+       (setq referent (bind-dli-variable 'raw-text (head-string edge) referent))
+       (setf (edge-referent edge) referent)))
+   referent))
 
+(defun maybe-record-all-referent-surface-strings (ref string)
+  (when *record-all-surface-strings*
+    ;;(lsp-break "saving string ~s for referent ~s~%" string ref)
+    (pushnew string (gethash ref *referent-surface-strings*) :test #'equal)))
 
+(defun maybe-record-bio-entity-heads (referent edge)
+  (when (and *bio-entity-heads*
+             (eq (itype-of referent) (category-named 'bio-entity)))
+    (setf (gethash (head-string edge) *bio-entity-heads*) t)))
 
+(defun maybe-record-bio-chemical-heads (referent edge)
+  (when (and *bio-chemical-heads*
+             (itypep referent 'bio-chemical-entity))
+    (setf (gethash (head-string edge) *bio-chemical-heads*) t)))
 
-(defparameter *surface-strings* (make-hash-table :size 10000)
-  "Used by note-surface-string as the place to cache the text
-   string that corresponds to an edge. Key is the referent
-   of the edge.")
-
+(defun all-surface-strings (i)
+  (gethash i *referent-surface-strings*))
 
 (defun retrieve-surface-string (i)
   (gethash i *surface-strings*))
@@ -374,6 +393,7 @@ without damaging other code.")
        (cddr r)))
 
 (defun relations-in (tree)
+  (declare (special *sentence-in-core*))
   (let (relations)
     (when (and (consp tree)
                (not (eq 'collection (car tree))))
@@ -432,6 +452,7 @@ without damaging other code.")
 
 
 (defun spire-tree (item &optional (with-ids nil))
+  (declare (special *sentence-in-core*  *sentence-results-stream*))
   (let ((*sentence-results-stream*
          (unless with-ids *sentence-results-stream*)))
     (declare (special *sentence-results-stream*))
