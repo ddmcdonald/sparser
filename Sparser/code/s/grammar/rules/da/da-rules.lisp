@@ -603,12 +603,15 @@
   (attach-appositive-to-np np1 comma-1 np2 comma-2))
 
 (defun attach-appositive-to-np (base-np comma-edge np-edge trailing-comma)
+  (declare (special np-edge trailing-comma))
+  (unless (and (edge-p (edge-just-to-right-of trailing-comma))
+               (member (cat-name (edge-category (edge-just-to-right-of trailing-comma))) '(and or)))
     (make-edge-spec 
-          :category (edge-category base-np)
-          :form (edge-form base-np)
-          :referent
-          (bind-dli-variable 'appositive-description (edge-referent np-edge) (edge-referent base-np))
-          ))
+     :category (edge-category base-np)
+     :form (edge-form base-np)
+     :referent
+     (bind-dli-variable 'appositive-description (edge-referent np-edge) (edge-referent base-np))
+     )))
 
 ;;------------------------- S -----------------------
 (define-debris-analysis-rule s-commma-subj-relative
