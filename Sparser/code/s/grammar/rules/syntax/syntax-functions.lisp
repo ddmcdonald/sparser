@@ -399,8 +399,8 @@
 	  ;; We can dispatch of the type of the determner:
 	  ;; quantity, approximator, etc. Pull them out of the
 	  ;; modifiers dossier. 
-	  (pushnew determiner *dets-seen*)
-	  #+ignore (error "Didn't expect ~s to be read as a determiner" det-word))
+	  (pushnew determiner *dets-seen*))
+        ;;(push-debug `(,det-word ,determiner)) (lsp-break "det+noun")
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
 	(cond          
 	  ((when (use-methods)
@@ -513,6 +513,7 @@
      head)))
 
 
+
 (defun verb+ing-noun-compound (qualifier head)
   (or (when (use-methods)
         (compose qualifier head))
@@ -544,6 +545,7 @@
              head))))))
 
 
+
 (defun verb-noun-compound (qualifier head)
   ;;(break "verb-noun-compound")
   ;; goes with (verb+ed n-bar-type) syntactic rule
@@ -551,9 +553,9 @@
     ((null *current-chunk*) ;; not in an NG chunk -- don't apply this rule at the top level
      nil)
     (*subcat-test* (subcategorized-variable qualifier :object head))
+    
     (t (or (when (use-methods)
              (compose qualifier head))
-	   ;; This case is to benefit marker-categories
 	   (link-in-verb qualifier head)
 	   (progn
 	     ;; have cases like "pp170" where the head has a PW as referent -- don't know what to  do
@@ -1137,7 +1139,6 @@
       (assimilate-subcat vp :subject subj)))
 
 
-(defparameter *vp-ed-sentences* nil)
 (defun assimilate-subject-to-vp-ed (subj vp)
   (declare (special category::transitive-clause-without-object category::np))
   ;; (push-debug `(,subj ,vp)) (setq subj (car *) vp (cadr *))
@@ -1176,7 +1177,39 @@
          (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%" )))))
 
 
+;;;---------
+;;; VP + NP
+;;;---------
 
+(defun assimilate-np-to-v-as-object (vg obj)
+  (declare (special category::n-bar category::vp category::vp+ing
+                    category::vp+ed category::to-comp category::n-bar))
+  (when *subcat-test*
+    (unless (and vg obj)
+      (return-from assimilate-np-to-v-as-object nil)))
+  (let ((result
+	 (if (and (typep *current-chunk* 'chunk)
+                  (member 'ng (chunk-forms *current-chunk*)))
+	     (verb-noun-compound vg obj)
+	     (assimilate-object vg obj))))
+    (cond
+      (*subcat-test* result)
+      (result
+       (if (and (typep *current-chunk* 'chunk)
+                (member 'ng (chunk-forms *current-chunk*)))
+	   (revise-parent-edge :category (itype-of obj)
+			       :form category::n-bar
+			       :referent result)
+	   (revise-parent-edge :category (itype-of vg)
+			       :form (case (cat-name (edge-form (parent-edge-for-referent)))
+				       ((vg vp) category::vp)
+				       ((vp+ing vg+ing) category::vp+ing)
+				       ((vp+ed vg+ed) category::vp+ed)
+                                       ((to-comp) category::to-comp)
+                                       (t (error "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP?!")
+                                       category::n-bar))
+			       :referent result))
+       result))))
 
 
 ;;;--------------------------
@@ -1221,39 +1254,6 @@
 (defun assimilate-object (vg obj)
   (assimilate-subcat vg :object obj))
 
-(defun assimilate-np-to-v-as-object (vg obj)
-  (declare (special category::n-bar category::vp category::vp+ing
-                    category::vp+ed category::to-comp category::n-bar))
-  (when *subcat-test*
-    (unless (and vg obj)
-      (return-from assimilate-np-to-v-as-object nil)))
-  (let ((result
-	 (if (and (typep *current-chunk* 'chunk)
-                  (member 'ng (chunk-forms *current-chunk*)))
-	     (verb-noun-compound vg obj)
-	     (assimilate-object vg obj))))
-    (cond
-      (*subcat-test* result)
-      (result
-       (if (and (typep *current-chunk* 'chunk)
-                (member 'ng (chunk-forms *current-chunk*)))
-	   (revise-parent-edge :category (itype-of obj)
-			       :form category::n-bar
-			       :referent result)
-	   (revise-parent-edge :category (itype-of vg)
-			       :form (case (cat-name (edge-form (parent-edge-for-referent)))
-				       ((vg vp) category::vp)
-				       ((vp+ing vg+ing) category::vp+ing)
-				       ((vp+ed vg+ed) category::vp+ed)
-                                       ((to-comp) category::to-comp)
-                                       (t (error "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP?!")
-                                       category::n-bar))
-			       :referent result))
-       result))))
-    
-
-
-
 (defun assimilate-thatcomp (vg-or-np thatcomp)
   (assimilate-subcat vg-or-np :thatcomp thatcomp))
 
@@ -1262,6 +1262,13 @@
 
 (defun assimilate-pp-subcat (head prep pobj)
   (assimilate-subcat head (subcategorized-variable head prep pobj) pobj))
+
+
+;;  in where+S, when+S
+(defun make-subordinate-clause (conj clause)
+  (declare (special category::pp))
+  (when (not (eq category::pp (edge-form (left-edge-for-referent))))
+    (bind-dli-variable 'subordinate-conjunction conj clause)))
 
 
 (defun apply-control-or-raise (head label item)
@@ -1298,10 +1305,6 @@
 (defun make-ordinal-item (ordinal item)
   (bind-dli-variable 'ordinal ordinal item))
 
-(defun make-subordinate-clause (conj clause)
-  (declare (special category::pp))
-  (when (not (eq category::pp (edge-form (left-edge-for-referent))))
-    (bind-dli-variable 'subordinate-conjunction conj clause)))
 
 (defun make-pp-relative-clause (pp clause)
   (declare (special category::pp-relative-clause))

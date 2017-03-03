@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,2013-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993,2013-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "subject relatives"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  version:  August 2016
+;;;  version:  March 2017
 
 ;; initiated 6/18/93 v2.3
 ;; (8/9/07) Well something else can go in this file, but just now this
@@ -31,13 +31,10 @@
 
 (in-package :sparser)
 
-
-;;--- Completion rule treatment (appears not to work ??)
-
-;;--- One-off treatment for subject relatives. 
-;; Needs generalization for other wh terms. They are individuals, so commonalities
-;; could be done by method dispatch off their shadows. 
-
+;;;---------------------------
+;;; Completion rule treatment 
+;;;---------------------------
+ 
 ;; (setq *trace-completion-hook* t)
 
 (defvar *debug-reduced-relative-creation* nil)
@@ -46,10 +43,8 @@
                           :look-for-rc-head
   'who-subject-relative-clause-operation)
 
+;; Keep it from running
 (inhibit-completion-when-subsumes category::who)
-
-
-;;--- support fns
 
 (defun who-subject-relative-clause-operation (wh-edge)
   (let* ((start-pos (pos-edge-starts-at wh-edge))
@@ -63,9 +58,8 @@
     ;; that's to its right.
 
     (when (word-p leftward-tt)
-      ;; //// swallow comma
       (if (eq leftward-tt word::comma)
-        (then 
+        (then ;; //// swallow comma
          (setq start-pos (chart-position-before start-pos))
          (setq leftward-tt (left-treetop-at/edge start-pos)))
         (else
@@ -90,9 +84,14 @@
                   np-referent))) ;; referent
             edge))))))
 
+
+;;;----------------------------
+;;; Used by WH syntactic rules
+;;;----------------------------
+
 (defun compose-wh-with-vp (wh-referent predicate-referent)
   ;; We've just completed the composition of a wh term and
-  ;; the vp (probably labeled as an s) to its right. That
+  ;; the vp or s to its right. That
   ;; edge has already been created, and is bound to the
   ;; global in referent from rule.
   ;; We're providing the referent to that edge as our
@@ -101,26 +100,22 @@
   ;; particulars of the predicate. 
   (declare (special *parent-edge-getting-reference* category::copular-pp-rel-clause))
   (if *subcat-test*
-      t
-      (if nil ;; (itypep predicate-referent 'copular-predication-of-pp)
-          ;; this is no longer the right way to handle copular-pp relative clauses
-	  (let ((i (fom-lattice-description category::copular-pp-rel-clause)))
-	    (setq i (bind-dli-variable 'copular-pp predicate-referent i))
-	    (revise-parent-edge :category category::copular-pp-rel-clause)
-	    i)
-	  (let ((parent *parent-edge-getting-reference*)
-		;; renaming to help make things clear
-		(subject wh-referent)
-		(event predicate-referent))
-	    (push-debug `(,subject ,event ,parent))
-	    ;;(lsp-break "compose-wh-with-vp")
-     
-	    (add-subject-relation event subject)
-     
-	    ;; Referent of the whole edge is the referent of the
-	    ;; predicate, now with a binding to reflect the relationship
-	    ;; to the subject (... or should it be called something else?)
-	    event))))
+    t
+    (let ((parent *parent-edge-getting-reference*)
+          ;; renaming to help make things clear
+          (subject wh-referent)
+          (event predicate-referent))
+      ;; (push-debug `(,subject ,event ,parent)) (lsp-break "compose-wh-with-vp")
+
+      ;; Used to check for (itypep predicate-referent 'copular-predication-of-pp)
+      ;; but this is no longer the right way to handle copular-pp relative clauses
+        
+        (add-subject-relation event subject)
+        
+        ;; Referent of the whole edge is the referent of the
+        ;; predicate, now with a binding to reflect the relationship
+        ;; to the subject (... or should it be called something else?)
+        event)))
 
 (defun compose-wh-with-object-relative (wh-referent predicate-referent)
   (let ((parent *parent-edge-getting-reference*)
@@ -190,19 +185,18 @@
        var)
       (var
        (cond
-         ((and ;; this check is supposed to disambiguate cases where
-           ;;  the context wants a clause, and the vp-ref is
-           ;;  a vg+ing or vp+ing, not an explicit subject-relative-clause
-           ;;  with a "that" or "which"
-           (not (and (edge-p (right-edge-for-referent))
-                     (eq category::subject-relative-clause
-                         (edge-form (right-edge-for-referent)))))
-           (context-needs-clause? np-ref vp-ref))
+         ((and (not (and (edge-p (right-edge-for-referent))
+                         (eq category::subject-relative-clause
+                             (edge-form (right-edge-for-referent)))))
+               ;; this check is supposed to disambiguate cases where
+               ;;  the context wants a clause, and the vp-ref is
+               ;;  a vg+ing or vp+ing, not an explicit subject-relative-clause
+               ;;  with a "that" or "which"
+               (context-needs-clause? np-ref vp-ref))
           (when (itypep vp-ref 'copular-predication)
             (push-debug `(,np-ref ,vp-ref))
             (break "Extend subj rel"))
           (let ((clause-ref (bind-dli-variable var np-ref vp-ref)))
-            (declare (special clause-ref))
             ;;(lsp-break "context-needs-clause? true")
             ;;(revise-parent-edge :form category::s)
             ;; make this into an NP whose head is the vp+ing
@@ -217,10 +211,8 @@
                         vp-ref ;; pred
                         (list 'apply-subject-relative-clause ;; source
                               (parent-edge-for-referent))))
-       
           ;; link the rc to the np
           (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
-      
           ;; referent of the combination is the np
           np-ref))))))
 
@@ -256,15 +248,11 @@
   (when (and (eq (edge-category (right-edge-for-referent)) category::have)
 	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
     (return-from apply-object-relative-clause nil))
-  
   (setq np-ref (individual-for-ref np-ref))
-  
   (let ((var (subcategorized-variable vp-ref :object np-ref)))
-   
     (cond
       (*subcat-test*
        var)
-
       (var
        ;; copy down the upstairs subject
        ;; Should we check if it was already bound to something?
@@ -272,13 +260,13 @@
                      var np-ref vp-ref
                      (list 'apply-object-relative-clause
                            (parent-edge-for-referent))))
-       
        ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
-      
        ;; referent of the combination is the np
        np-ref))))
 
+;; 3/1/17 {when, where} + S  now calls make-subordinate-clause
+;;  Nothing explicitly calls this today
 (defun apply-where-when-relative-clause (np-ref vp-ref)
   (declare (special np-ref vp-ref))
    (setq np-ref (individual-for-ref np-ref))
@@ -296,12 +284,11 @@
                      var np-ref vp-ref
                      (list 'apply-where-when-relative-clause
                            (parent-edge-for-referent))))
-       
        ;; link the rc to the np
        (setq np-ref (bind-dli-variable 'predication vp-ref np-ref))
-      
        ;; referent of the combination is the np
        np-ref))))
+
 
 (defun apply-reduced-relative-clause (np-ref vp-ref)
   (cond
@@ -328,6 +315,7 @@
       
       ;; referent of the combination is the np
       np-ref))))
+
 
 (defun convert-clause-to-reduced-relative ()
   ;; called from assimilate-subject-to-vp-ed when it's looked

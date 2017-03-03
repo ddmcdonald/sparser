@@ -105,7 +105,7 @@
            :form np
            :referent (:function possessive-np left-edge right-edge))))
 
-;;; Partitive NPs -- these make use of the fact the PPs with OF as prep, are of semantic category OF
+;;--- Partitive NPs
 (def-form-rule (quantifier of)
     :form np
     :head :left-edge
@@ -119,12 +119,8 @@
   :form np
   :referent (:function create-partitive-np left-edge right-edge))
 
-#+ignore
-(def-syntax-rule (quantifier det) ;; e.g. "all these"
-    :head :right-edge
-    :form det
-    :referent (:function quantifier-det-compound
-                         left-edge right-edge))
+
+;;--- other cases of leading quantifiers making det's or np's
 
 (def-form-rule (all det) ;; e.g. "all these"
     :head :right-edge
@@ -559,9 +555,9 @@
 
 
 
-;;;-----------------------
-;;;   Relative clauses
-;;;-----------------------
+;;;--------------------------
+;;;  WH and Relative clauses
+;;;--------------------------
 
 (loop for rel in '(which who whom  that)
    ;;  (where, when) this is more often used as a subordinate conjunction
