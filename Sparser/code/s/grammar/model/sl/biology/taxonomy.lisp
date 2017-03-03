@@ -348,28 +348,33 @@
 
 
 (define-category caused-bio-process
-  :specializes bio-process
-  :restrict ((subject blocked-category))
-  :binds
+    :specializes bio-process
+    :restrict ((subject blocked-category))
+    :binds
     ((agent
-      (:or  ;;bio-entity
+      (:or                 ;;bio-entity
        bio-chemical-entity ;;molecule bio-complex drug
-       bio-process bio-mechanism bio-method  process-rate
-       bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
-       measurement 
-       bio-scalar ;; "these data raised the possibility..."
-       protein-domain ;; not molecular-location -- that allows residues
+       bio-process bio-mechanism bio-method
        )) ;; membrane targeting domains that facilitate interaction with the plasma membrane
+     (cause ;; sematically like agent, but want to tighten the restriction on premodifiers used as agents
+      ;; we had gotten "an equivalent activation" which treated "equivalent" as an agent
+      (:or process-rate
+           bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
+           measurement 
+           bio-scalar ;; "these data raised the possibility..."
+           protein-domain ;; not molecular-location -- that allows residues
+           ))
      (object
       (:or bio-entity cell-entity molecular-location
            measurement bio-scalar disease)))
-  :realization
+    :realization
     (:s agent
-     :o object
-     :of object
-     :m agent
-     :m object
-     :by agent))
+        :s cause
+        :o object
+        :of object
+        :m agent
+        :m object
+        :by agent))
 
 
 (define-category process-control-process :specializes caused-bio-process
