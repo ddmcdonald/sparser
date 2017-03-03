@@ -136,9 +136,12 @@
 (defgeneric specialize-referent (word new-category)
   (:documentation "Given a word that has a single interpretation
     given by a unary rule, e.g. the attribute 'length', specialize
-    its interpretation (which will be a category) but setting it
+    its interpretation (which will be a category) but setting its
     existing unary rule to the designated new category, which
-    itself should be a specialization of the original category.")
+    itself should be a specialization of the original category.
+    If a category is supplied as the 'word' argument then
+    it signals that there are several words to be converted
+    and we consults the category's rules list.")
 
   (:method ((pname string) (cat-name symbol))
     (let ((word (resolve pname))
@@ -152,6 +155,18 @@
       (assert rule () "~a does not have a unary rule" w)
       (specialize-referent rule c)))
 
+  (:method ((cat-name symbol) (c category))
+    (let ((category (category-named cat-name)))
+      (assert category () "There is no category spelled '~a'" cat-name)
+      (specialize-referent category c)))
+
+  (:method ((old category) (new category))
+    (let ((rules (get-rules old)))
+      (assert rules () "There are no rules associated with ~a" old)
+      (loop for r in rules
+         when (unary-rule? r)
+         do (specialize-referent r new))))
+
   (:method ((r cfr) (c category))
     (let ((current (cfr-referent r)))
       (assert (category-p current) ()
@@ -160,7 +175,3 @@
         (error "~a is not a specialization of ~a" c current))
       (setf (cfr-referent r) c)
       r)))
-
-
-
-
