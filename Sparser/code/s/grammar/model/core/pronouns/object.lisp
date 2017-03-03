@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994,2011-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  June 2016
+;;;  version:  March 2017
 
 ;; 1.0 (7/11/94) completely redone from scratch. (7/22) made 'pronoun' a referential
 ;;      category so it would pass the filter in the discourse history.
@@ -22,8 +22,13 @@
   ;; never instantiated itself, just provides a common supercategory
   ;; for the discourse history
   :instantiates nil
-  :specializes phrase-interpretation)
-
+  :specializes phrase-interpretation
+  :mixins (endurant)
+  :documentation "Strictly speaking, a pronoun is an indicator of
+    an anaphoric reference, and shouldn't per se have any substantive
+    meaning. The object that the pronoun refers to is what provides 
+   that meaning. However, if that information can not be computed
+   immediately, then we need some placeholder.")
 
 (defmethod is-pronoun? ((ref individual))
   (declare (special category::pronoun))
