@@ -11,12 +11,18 @@ Sparser can use context-free and context-sensitive semantic
 grammar phrase-structure rules, along with syntactic rules
 that check for valid semantic relations before they complete.
 It provides hooks for regular-expression analysis, multi-words, 
-and arbitrary state-based analyses.
+and arbitrary state-based analyses. It has a rich representation
+of the structure of documents.
 
 Sparser comes 'out of the box' with just a minimal grammar 
 of function words and access to grammar modules that have 
-already been developed for core notions like amounts and time 
-and for some sublanguages. 
+been developed for core notions like amounts and time, names
+and numbers. Several sublanguages have been extensively
+developed in conjunction with particular research projects
+including person-company-title, biology, and blocks world.
+The modules that make up the sublanguages under active development 
+are grouped into predefined configurations described below
+in the 'configuration' section. 
 
 There is extensive documentation for Sparser included with 
 the code base. We regularly extend this documentation, 
@@ -40,7 +46,6 @@ described below.
 Thank you for downloading Sparser. This short guide
 will help you get everything up & running in no time.
 
-
 Installation & Setup
 ====================
 
@@ -48,7 +53,8 @@ After cloning Sparser, the toplevel of the sparser directory
 tree will have four immediate subdirectories: "Mumble",
 "Sparser", "util", and "test", as well as this README file,
 the LICENSE file, and the "sparser.asd" file which contains
-the Sparser ASDF system definitions.
+the Sparser ASDF system definitions for different configurations
+of the grammar, semantics, and runtime behavior. 
 
 Loading Sparser
 ====================
@@ -57,7 +63,7 @@ You need to have a modern implementation of Common Lisp
 already installed. Sparser runs in SBCL (sbcl.org),
 Clozure (www.clozure.com) and Allegro (www.franz.com).
 We develop primarily on Intel-based Macs under OS X and Unix
-using SBCL almost exclusively.
+using SBCL almost exclusively. 
 
 Sparser has been used with Windows in the past. Now that we
 are using ASDF for toplevel loading and Lisp pathnames for
@@ -70,7 +76,7 @@ we have not actually tested it.
 You need is to have ASDF loaded and Sparser's location included in its
 source registry so that ASDF can locate the .asd file. This example
 assumes that your local copy of Sparser is at toplevel in your home
-directory.
+directory (~/sparser/). 
 
 (require :asdf)
 (asdf:initialize-source-registry
@@ -105,7 +111,7 @@ e3    AMOUNT-OF-TIME  1 "10 hours" 3
 :done-printing
 ====================
 
-If so, congratulations -- Sparser is working. Check out
-the documentation in "~/sparser/Sparser/documentation" to
+If so, congratulations -- Sparser is working. Look at
+the documentation in ~/sparser/Sparser/documentation/ to
 see how you can start writing your own grammars.
 
