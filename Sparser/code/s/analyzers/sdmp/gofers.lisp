@@ -164,7 +164,7 @@
         top-node))))
 
 (defun edge-just-to-right-of (edge)
-  "Return the edge that is adjacent to the left of argument edge.
+  "Return the edge that is adjacent to the right of argument edge.
    Caller should check that it exists, e.g. note-in-segment-adgacences"
   (when (edge-p edge)
     (let* ((start-pos (pos-edge-ends-at edge))
