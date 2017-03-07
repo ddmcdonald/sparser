@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1994-2005,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1994-2005,2011-2017 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "operations"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  June 2016
+;;;  version:  March 2017
 
 ;; initiated 9/28/94 v2.3.  Added Super-categories-of 3/3/95
 ;; Added Compute-daughter-relationships 6/21.  Added Super-category-has-variable-named
@@ -47,20 +47,16 @@
 
 (in-package :sparser)
 
-
 ;;;---------------------------
 ;;; what category is involved
 ;;;---------------------------
 
 (defun category-of (item)
-  (typecase item
-    (individual (first (indiv-type item))) ;; c.f. i-type-of
+  (etypecase item
+    (individual (itype-of item)) 
     (mixin-category item)
     (referential-category item)
-    (category item)
-    (otherwise
-     (break "New type passed to category-of: ~a~%~a"
-            (type-of item) item))))
+    (category item)))
 
 
 (defmethod base-category-of-lp ((lp lattice-point))
@@ -79,7 +75,7 @@
     (referential-category 
      (cat-lattice-position unit))
     (otherwise
-     (error "It doesn't make sense (or does it) to look up the ~
+     (error "It doesn't make sense (or does it?) to look up the ~
              lattice-point of a~%~a" unit))))
 
 
@@ -98,15 +94,15 @@
 
 (defgeneric single-on-variable-on-category (category)
   (:documentation "If the category has any variables
-    and there is just one of them, then return that variable."))
-
-(defmethod single-on-variable-on-category ((c model-category))
-  (let ((variables (cat-slots c)))
-    (when (= (length variables) 1)
-      (car variables))))
-
-(defmethod single-on-variable-on-category ((i individual))
-  (single-on-variable-on-category (itype-of i)))
+    and there is just one of them, then return that variable.")
+  
+  (:method ((i individual))
+    (single-on-variable-on-category (itype-of i)))
+  
+  (:method ((c model-category))
+    (let ((variables (cat-slots c)))
+      (when (= (length variables) 1)
+        (car variables)))))
 
 
 ;;;----------------------------------------------
@@ -126,87 +122,134 @@
 (defgeneric super-categories-of (category)
   (:documentation "If the category is in the lattice then
      walk up the lattice to collect all category's that
-     it inherits from, including mixins and their supercategories.
-     The category itself is included in the list that is returned.
+     it inherits from, including mixins and the supercategories
+     of the mixins.
+       The category itself is included in the list that is returned.
      After the first sweep of the lattice the result is cached
      on the category's property list. If the category isn't
      in the lattice (e.g. it's a form category) then this
-     returns a singleton list."))
+     returns a singleton list.")
 
-(defmethod super-categories-of ((name symbol))
-  (let ((c (category-named name :error-if-none)))
-    (super-categories-of c)))
+  (:method ((name symbol))
+    (let ((c (category-named name :error-if-none)))
+      (super-categories-of c)))
 
-(defmethod super-categories-of ((c referential-category))
-  (if (cat-lattice-position c)
-    (super-categories-of1 c)
-    (list c)))
+  (:method ((c referential-category))
+    (if (cat-lattice-position c)
+      (super-categories-of1 c)
+      (list c)))
 
-(defmethod super-categories-of ((c mixin-category))
-  (if (cat-lattice-position c)
-    (super-categories-of1 c)
-    (list c)))
+  (:method ((c mixin-category))
+    (if (cat-lattice-position c)
+      (super-categories-of1 c)
+      (list c)))
 
-(defmethod super-categories-of ((i individual))
-  (let ((type (indiv-type i)))
-    (if (null (cdr type))
-      (super-categories-of (car type))
-      (else
-       (push-debug `(,i ,type))
-       (error "Stub: write the code to handle collecting ~
-          the super-categories-of an individual with more ~
-          than one type.~%~a~%~a" i type)))))
+  (:method ((i individual))
+    (let ((type (indiv-type i)))
+      (if (null (cdr type))
+        (super-categories-of (car type))
+        (else
+          (push-debug `(,i ,type))
+          (error "Stub: write the code to handle collecting ~
+            the super-categories-of an individual with more ~
+            than one type.~%~a~%~a" i type)))))
 
-(defmethod super-categories-of ((c t))
-  (push-debug `(,c))
-  (error "super-categories-of is not defined on objects of ~
-          type ~a" (type-of c)))
+  (:method ((c t))
+    (push-debug `(,c))
+    (error "super-categories-of is not defined on objects of ~
+            type ~a" (type-of c))))
 
 
 ;;--- doing the work
 
 (defun super-categories-of1 (c)
-  ;;(format t "~&~%supers-of ~a" c)
+  "Has the list of the super-categories of c constructed once and
+   caches the result so we don't have to always walk up these pointer
+   chains. The simple cases are done here, but usually the category
+   is connected into the category lattice and we have to walk up it.
+   Collect-supercategories-off-lp calls back to this function as it
+   walks its way up the lattice. "
+  (declare (special *top-of-category-tree*))
+  (assert (category-p c) () "~a is not a category" c)
   (or (get-tag :super-categories c)
-      (let* ((lp (cat-lattice-position c))
-             (supers
-              (cond
-               ((null lp)
-                (push-debug `(,c))
-                (error "The cat-lattice-position slot of ~a is empty" c))
-               ((category-p lp)
-                ;; true of form categories
-                (list c lp))
-               ((lattice-point-p lp)
-                (collect-supercategories-off-lp c lp))
-               (t
-                (push-debug `(,c ,lp))
-                (error "Unexpected type of object in the lattice-position ~
-                        field of ~a~%  ~a  ~a" c (type-of lp) lp)))))
-        (setf (get-tag :super-categories c) supers)
-        supers)))
-    
+      (unless (eq c *top-of-category-tree*)
+        (let* ((lp (cat-lattice-position c))
+               (supers
+                (cond ((null lp)
+                       (error "The cat-lattice-position slot of ~a is empty" c))
+                      ((category-p lp)
+                       ;; true of form categories
+                       (list c lp))
+                      ((lattice-point-p lp)
+                       (collect-supercategories-off-lp c lp))
+                      (t
+                       (error "Unexpected type of object in the lattice-position ~
+                             field of ~a~%  ~a  ~a" c (type-of lp) lp)))))
+          (let ((ordered-supers
+                 (reorder-categories-to-put-top-last supers)))
+            (setf (get-tag :super-categories c) ordered-supers)
+            ordered-supers)))))
+
+(defun reorder-categories-to-put-top-last (category-list)
+  "We want to be able to use 'top' as the stopping point of the
+   walks up the superc chains, but since we are not being clever
+   about how we interleave going up a main line and up from mixins,
+   the 'raw' collected can't guarentee this so we do it manually."
+  ;;/// if we want to introduce more organization into the list
+  ;; we could do it here, but that doesn't seem to be a pressing need
+  (declare (special *top-of-category-tree*))
+  (when category-list
+    ;; happens with mixins
+    (let ((top *top-of-category-tree*)) ;; shorten name
+      (assert (memq top category-list) ()
+              "Category list does not included top: ~a" category-list)
+      (let ((list-less-top (delete top category-list)))
+        (tail-cons top list-less-top)))))
+  
              
+(defun super-categories-of-list-type (category-list)
+  (loop for category in category-list
+    append (super-categories-of category) into supers 
+    append (list category) into supers
+    finally (return supers)))
+
 (defun collect-supercategories-off-lp (c lp)
+  "We gather the categories defined directly on c, that is c and
+   any mixins it incorporates. From those make recursive calls to
+   get their supercategories, then append their results together
+   as they return.
+"
   (let* ((mixins (cat-mix-ins c))
+         ;; 1. Get the super categories of each mixin used here
          (mixin-supers
           (when mixins ;; if there's one there will likely be several
             (super-categories-of-list-type mixins)))
+
+         ;; Does c have a super-category? This is the category
+         ;; directly above c. This line is single inheritance
          (immediate-super-category
           (lp-super-category lp))
+
+         ;; If the supercategory of c has mixins we collect their
+         ;; supercategoies now, though we only fold them into
+         ;; the full list of supercategories after we've done
+         ;; the collection of the main line of inheritance.
          (mixins-of-immediate-super-category
           (when immediate-super-category
             (when (cat-mix-ins immediate-super-category)
               (super-categories-of-list-type
                (cat-mix-ins immediate-super-category)))))
+         
          (immediate-super-lp
           (when immediate-super-category
             (cat-lattice-position immediate-super-category)))
-         (super-supers
+         
+         (super-supers ;; recurse up the main line of inheritance
           (when (and immediate-super-lp
                      (top-lattice-point-p immediate-super-lp)
                      (lp-super-category immediate-super-lp))
             (super-categories-of1 immediate-super-category))))
+    
     (when nil
       (format t "~%  mixin-supers  ~a~
                  ~%  super-supers  ~a~
@@ -217,9 +260,9 @@
     (let ((supers
            (cond
             ((and mixin-supers super-supers immediate-super-category)
-             (cons c (append mixin-supers super-supers)))
-
-            ((and mixin-supers super-supers immediate-super-category)
+             ;;/// On reviewing this code 3/4/17 I don't understand why
+             ;; this case doesn't include the immediate-super-category
+             ;; in its output -- it was also duplicated
              (cons c (append mixin-supers super-supers)))
             
             ((and mixin-supers super-supers)
@@ -236,16 +279,11 @@
             
             (mixin-supers
              (cons c mixin-supers)))))
+      
       (when mixins-of-immediate-super-category
         (setq supers (append mixins-of-immediate-super-category supers)))
+      
       (remove-duplicates supers))))
-
-
-(defun super-categories-of-list-type (category-list)
-  (loop for category in category-list
-    append (super-categories-of category) into supers 
-    append (list category) into supers
-    finally (return supers)))
 
 ;;--- misc
 
