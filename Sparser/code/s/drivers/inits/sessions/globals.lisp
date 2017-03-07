@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-1997,2011-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-1997,2011-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2006-2007 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  December 2016
+;;;  Version:  March 2017
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -71,6 +71,14 @@
 (defparameter *print-forest-after-doing-forest* nil
   "Gates the printing in new-forest-driver")
 
+
+;;;-----------------------------------------------
+;;; parameters controlling whether trap new cases
+;;;-----------------------------------------------
+
+(defparameter *break-on-pattern-outside-coverage?* nil
+  "The grammar/model of some phenomena is known to have 'edges',
+   this is used to control whether we stop and look at them")
 
 
 ;;;----------------------------------------------------------------------

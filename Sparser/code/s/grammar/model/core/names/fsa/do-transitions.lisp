@@ -54,8 +54,6 @@
 ;;; debugging parameters
 ;;;----------------------
 
-(defparameter *break-on-pattern-outside-coverage?* nil)
-
 (define-pnf-state :pattern-is-outside-coverage)
 
 (define-category name/unknown-pattern)
