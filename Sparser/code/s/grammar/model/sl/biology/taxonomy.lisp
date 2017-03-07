@@ -82,6 +82,7 @@
 ;;;-------------------------------
 
 (define-mixin-category bio-complement
+  :specializes linguistic
   :binds ((statement (:or bio-process molecule-state be
                           bio-predication predication
                           bio-method relation bio-rhetorical
