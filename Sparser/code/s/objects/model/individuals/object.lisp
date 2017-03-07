@@ -35,7 +35,6 @@
 
 (defun itype-of (i) (i-type-of i))
 
-
 #| i-type-of should be replaced with itype-of
 
 Davidsmcbookpro:s ddm$ grep "(i-type-of" **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
@@ -97,28 +96,6 @@ grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
 (defun itype (i c/s)
   (indiv-typep i c/s))
 #| This should also change to be itypep -- by analogy to typep
-
-nalyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
-analyzers/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
-analyzers/psp/referent/new-cases.lisp:    (annotate-site-bound-to value variable (i-type-of body) edge-being-bound)
-grammar/rules/dmp/access-routines.lisp:         (case (cat-symbol (i-type-of verb-segment))
-grammar/rules/dmp/display.lisp:     (case (cat-symbol (i-type-of obj))
-grammar/rules/dmp/display.lisp:          (i-type-of obj))
-grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t1)))))
-grammar/rules/dmp/measure.lisp:                (symbol-name (cat-symbol (i-type-of t2)))))
-grammar/rules/syntax/conjunction.lisp:                            (individual (i-type-of left-ref))
-grammar/rules/syntax/conjunction.lisp:                             (individual (i-type-of right-ref))
-objects/model/categories/clos-backing.lisp:                 (individual (i-type-of o))
-objects/model/individuals/object.lisp:(defun itype-of (i) (i-type-of i))
-objects/model/individuals/object.lisp:             (values t (i-type-of i)))))))
-objects/model/individuals/object.lisp:  (cat-symbol (i-type-of i)))
-objects/model/individuals/reclaim.lisp:      (pushnew (i-type-of i) augmented-list))
-grammar/model/core/people/printers.lisp:                (ecase (cat-symbol (i-type-of version-obj))
-grammar/model/core/places/places.lisp:                     (i-type-of name) name)))))
-grammar/model/core/titles/rules.lisp:                 (i-type-of possessive) 
-grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
-Davidsmcbookpro:s ddm$ 
-Davidsmcbookpro:s ddm$ 
 Davidsmcbookpro:s ddm$ grep "(itype " **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
 analyzers/context/operations.lisp:                (itype so 'section-object)
 analyzers/context/operations.lisp:                (itype so 'paragraph))
@@ -207,8 +184,6 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
         (format t "~&(setq *break-on-bad-itype-of* T) to cause a break here")))))
 
 
-
-
 ;;--- Does the actual search
 
 (defun indiv-typep (i category/symbol)
@@ -256,7 +231,6 @@ in its type field?"
          (error "indiv-typep not applied to an individual:~%~a  ~a"
                 (type-of i) i))))))
 
-
 (defun safe-itypep (low high)
   (when (or (individual-p low)
             (referential-category-p low))
@@ -267,6 +241,36 @@ in its type field?"
             (referential-category-p low))
     (itype-of low)))
 
+#|  Chase down and revise
+Davidsmbookpro2:s ddm$ grep "(indiv-typep "  **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
+grammar/rules/dmp/display.lisp:             (if (or (indiv-typep item 'text-term)
+grammar/rules/dmp/display.lisp:                     (indiv-typep item 'pair-term)
+grammar/rules/dmp/display.lisp:                     (indiv-typep item 'paragraph)
+grammar/rules/dmp/display.lisp:                     (indiv-typep item 'section-object)
+grammar/rules/dmp/display.lisp:                     (indiv-typep item 'number)
+grammar/rules/dmp/display.lisp:                     (indiv-typep item 'have)
+grammar/rules/dmp/display.lisp:                     (indiv-typep item 'frequency-of-event))
+grammar/rules/dmp/display.lisp:                ((indiv-typep item 'have)
+grammar/rules/dmp/display.lisp:                ((indiv-typep item 'pair-term)
+grammar/rules/dmp/display.lisp:                ((indiv-typep item 'paragraph)
+grammar/rules/dmp/display.lisp:                ((indiv-typep item 'section-object)
+grammar/rules/dmp/display.lisp:                ((indiv-typep item 'frequency-of-event)
+grammar/rules/dmp/display.lisp:                ((indiv-typep item 'number)
+objects/model/individuals/object.lisp:  (indiv-typep i c/s))
+objects/model/individuals/object.lisp:        (indiv-typep i c/s))
+grammar/model/core/names/name-words.lisp:             (indiv-typep lc-word 'name-word))
+grammar/model/core/numbers/fsa-words.lisp:                             (indiv-typep number-obj
+grammar/model/core/numbers/fsa-words.lisp:                      (indiv-typep multiplier-obj
+grammar/model/core/people/object.lisp:  (unless (indiv-typep name 'person-name)
+grammar/model/core/places/regions.lisp:      (unless (indiv-typep region category::location)
+grammar/model/core/names/fsa/name-creators.lisp:        (when (indiv-typep (cdr pair) 'inc-term)
+grammar/model/core/names/fsa/name-creators.lisp:               (indiv-typep item 'name-word))
+|#
+
+
+;;;-----------------
+;;; Copy individual
+;;;-----------------
 
 (defun deep-copy-individual (i)
   "Create a new unindexed individual with the same type and bindings
