@@ -216,17 +216,14 @@
          (evector (ev-edge-vector ev)))
     (when (> (ev-number-of-edges ev) 0)
       (loop for i from 0 to (1- evl)
-            do
-              (let ((edge (aref (ev-edge-vector ev) i)))
-                (if
-                 (and
-                  (cfr-p (edge-rule edge))
-                  (null (cdr (cfr-rhs (edge-rule edge))))
-                  (typecase (car (cfr-rhs (edge-rule edge)))
-                    (word t)
-                    (polyword t)
-                    (t nil)))
-                 (return edge)))))
+         do (let ((edge (aref (ev-edge-vector ev) i)))
+              (if (and (cfr-p (edge-rule edge))
+                       (unary-rule? (edge-rule edge))
+                       (typecase (car (cfr-rhs (edge-rule edge)))
+                         (word t)
+                         (polyword t)
+                         (t nil)))
+                (return edge)))))))
     #+ignore
     (when (> (ev-number-of-edges ev) 0)
       (let ((lex-edge (elt evector 0)))
@@ -234,4 +231,4 @@
               ((and (> (ev-number-of-edges ev) 1)
                     (edge-referent (elt evector 1)))
                (elt evector 1))
-              (t lex-edge))))))
+              (t lex-edge))))
