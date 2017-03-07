@@ -87,20 +87,6 @@
     (format t "referent: ~a" (cfr-referent rule))
     rule))
 
-(defgeneric rule-for (label)
-  (:documentation "Given a word, what is the rule/s in its rule-set")
-  (:method ((pname string))
-    (let ((w (resolve pname)))
-      (if w (rule-for w) (format t "The word ~s is not defined" pname))))
-  (:method ((w word)) ;;//polywords ?
-    (let ((rs (rule-set-for w)))
-      (if rs
-        (rule-for rs)
-        (format t "~s does not have a rule-set" (pname w)))))
-  (:method ((rs rule-set))
-    (values (rs-backpointer rs)
-            (rs-single-term-rewrites rs))))
-
 (defun ic (category-name)
   (let ((category (or (referential-category-named category-name)
                       (category-named category-name)))) ;; e.g. mixin
@@ -109,6 +95,27 @@
       (else 
        (format t "\"~a\" does not name a category" category-name)
        nil))))
+
+(defgeneric rule-for (label)
+  (:documentation "Given a word, what is the rule/s in its rule-set")
+  (:method ((pname string))
+    (let ((w (resolve pname)))
+      (if w
+        (rule-for w)
+        (format t "The word ~s is not defined" pname))))
+  (:method ((w word))
+    (let ((rs (rule-set-for w)))
+      (if rs
+        (rule-for rs)
+        (format t "~s does not have a rule-set" (pname w)))))
+  (:method ((w polyword))
+    (let ((rs (rule-set-for w)))
+      (if rs
+        (rule-for rs)
+        (format t "~s does not have a rule-set" (pname w)))))
+  (:method ((rs rule-set))
+    (values (rs-backpointer rs)
+            (rs-single-term-rewrites rs))))
 
 (defmacro sc (cat-name)
   `(super-categories-of
