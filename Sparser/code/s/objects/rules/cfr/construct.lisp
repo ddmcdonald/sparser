@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1998,2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "construct"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   1.6 January 2015
+;;;   Version:   March 2017
 
 ;; broken out from [define] 9/6/92 v2.3
 ;; 1.0 (10/23) promulgated the fact that the rules for polywords are
@@ -95,6 +95,8 @@
                                 *schema-being-instantiated*))
      cfr )))
 
+
+
 ;;; temporary code to save realizations of categories
 (defparameter *category-realizations* (make-hash-table :size 2000))
 
@@ -116,62 +118,19 @@
 	 (polyword (pw-pname item)))))
 
 (defmethod get-cat-tree-realizations ((cat-tree cons) &optional (depth -1))
-     (let
-	 ((realizations (get-category-realizations (car cat-tree))))
-       `(,(if realizations (list (car cat-tree) realizations) (car cat-tree))
-	  ,@(loop for ct in (cdr cat-tree)
-	       collect (get-cat-tree-realizations ct)))))
+  (let ((realizations (get-category-realizations (car cat-tree))))
+    `(,(if realizations
+           (list (car cat-tree) realizations)
+           (car cat-tree))
+       ,@(loop for ct in (cdr cat-tree)
+            collect (get-cat-tree-realizations ct)))))
 
 (defmethod get-cat-tree-realizations ((cat-name symbol) &optional (depth -1))
   (get-cat-tree-realizations (tree-below cat-name depth)))
 
 (defmethod get-cat-tree-realizations ((cat category) &optional (depth -1))
-  (if
-   (get-category-realizations cat)
-   `(,cat ,(get-category-realizations cat))
-   cat))
+  (if (get-category-realizations cat)
+    `(,cat ,(get-category-realizations cat))
+    cat))
 
 
-
-(defgeneric specialize-referent (word new-category)
-  (:documentation "Given a word that has a single interpretation
-    given by a unary rule, e.g. the attribute 'length', specialize
-    its interpretation (which will be a category) but setting its
-    existing unary rule to the designated new category, which
-    itself should be a specialization of the original category.
-    If a category is supplied as the 'word' argument then
-    it signals that there are several words to be converted
-    and we consults the category's rules list.")
-
-  (:method ((pname string) (cat-name symbol))
-    (let ((word (resolve pname))
-          (category (category-named cat-name)))
-      (assert word () "The word must already be defined. ~a is not" pname)
-      (assert category () "There is no category spelled '~a'" cat-name)
-      (specialize-referent word category)))
-
-  (:method ((w word) (c category))
-    (let ((rule (find-single-unary-cfr w))) ;;/// want better fn.
-      (assert rule () "~a does not have a unary rule" w)
-      (specialize-referent rule c)))
-
-  (:method ((cat-name symbol) (c category))
-    (let ((category (category-named cat-name)))
-      (assert category () "There is no category spelled '~a'" cat-name)
-      (specialize-referent category c)))
-
-  (:method ((old category) (new category))
-    (let ((rules (get-rules old)))
-      (assert rules () "There are no rules associated with ~a" old)
-      (loop for r in rules
-         when (unary-rule? r)
-         do (specialize-referent r new))))
-
-  (:method ((r cfr) (c category))
-    (let ((current (cfr-referent r)))
-      (assert (category-p current) ()
-              "The referent of ~a is not a category")
-      (unless (itypep c current)
-        (error "~a is not a specialization of ~a" c current))
-      (setf (cfr-referent r) c)
-      r)))

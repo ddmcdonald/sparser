@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993,1994  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2017  David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "delete"
 ;;;    Module:   "objects;rules:cfr:"
-;;;   Version:   4.6 August 1994
+;;;   Version:   March 2017
 
 ;; 4.0 (9/6/93 v2.3) Cleaned up deadwood
 ;; 4.1 (12/21) getting loose ends in n-aries.
@@ -13,8 +13,8 @@
 ;;      take expressions rather than labels
 ;; 4.4 (10/5) fixed a bug in flush-nary-rules-from-tables
 ;; 4.5 (7/15/94) fixed logic bug in flush-multiplier-table-entry.
-;;     (8/16) and its caller didn't know from context-sensitive vs. form rule
-;; 4.6 (11/17) revised the check re. distinguishing those two
+;;     (8/16/94) and its caller didn't know from context-sensitive vs. form rule
+;; 4.6 (11/17/94) revised the check re. distinguishing those two
 
 (in-package :sparser)
 
@@ -42,7 +42,6 @@
       (unless (typep rule 'cfr)
         (error "The symbol ~A is not bound to a rule" rule-symbol))
       (delete/cfr rule))))
-
 
 
 (defun delete-cfr/symbol (r-symbol)
@@ -144,8 +143,6 @@
   (cond ((and (null (cdr (cfr-rhs cfr)))
               (polyword-p (car (cfr-rhs cfr))))
          (flush-just-polyword-cfr-from-tables cfr))
-        ;((dotted-rule cfr)
-        ; (break "dotted"))
         ((nary-rule cfr)
          (flush-nary-cfr-from-tables cfr))
         (t (ecase (length (cfr-rhs cfr))
@@ -164,7 +161,6 @@
     (setf (rs-single-term-rewrites rs)
           (delete cfr field :test #'eq))
     cfr ))
-
 
 
 (defun flush-binary-cfr-from-tables (cfr)
@@ -190,45 +186,14 @@
     cfr ))
 
 
-#| earlier version -- on a form rule (11/17 [rules;dm&p:you]
-   completion field wasn't a list
-
-    (if (and (cfr-completion cfr)
-             (listp (cfr-completion cfr))
-             (keywordp (car (cfr-completion cfr))))
-      ;; its a form rule or a context-sensitive rule
-      (let ((completion-field (cfr-completion cfr)))
-        (if (or (eq (first completion-field) :left-daughter)
-                (eq (first completion-field) :right-daughter))
-          ;; then it's a context-sensitive rule
-          (flush-multiplier-table-entry
-           (car (rs-right-looking-ids (label-rule-set left-label)))
-           (car (rs-left-looking-ids  (label-rule-set right-label)))
-           cfr)
-          (else
-            ;; its a form rule and different multipliers are used
-            (flush-multiplier-table-entry
-             (cdr (rs-right-looking-ids (label-rule-set left-label)))
-             (cdr (rs-left-looking-ids  (label-rule-set right-label)))
-             cfr))))
-
-      ;; regular rules
-      (flush-multiplier-table-entry
-       (car (rs-right-looking-ids (label-rule-set left-label)))
-       (car (rs-left-looking-ids  (label-rule-set right-label)))
-       cfr))
-
-    cfr )) |#
-
-
-
 (defun flush-nary-cfr-from-tables (cfr)
   ;; you have to flush this rule and all those intermediaries that
   ;; aren't independently rules in their own right
   (dolist (rule (intermediaries-of-nary-rule cfr))
     (flush-binary-cfr-from-tables rule))
   cfr )
-    
+
+
 
 (defun flush-just-polyword-cfr-from-tables (cfr)
   ;; A rule that consists of just a polyword is really a unary
@@ -256,16 +221,7 @@
         ;;(delete-polyword/obj pw)
         ))))
 
-#|  If we add enough cross-indexing to know when a label no longer
-    participates in any rules then we'll want to really flush the
-    polyword, which will entail doing something like this:
-  (let ((pw (cfr-rhs cfr)))
-    (if (null (cddr (pw-words  pw)))
-      ;; a pw-based rule with only two words won't have intermediaries
-      ()
-      (dolist (rule (intermediaries-of-nary-rule cfr))
-        (when (dotted-rule rule)
-          (flush-binary-cfr-from-tables rule))))))|#
+
 
 
 ;;;---------------------------------------------------------------
@@ -308,3 +264,68 @@
         (when single-rewrites
           ;;/// check for there being more than one?
           (car single-rewrites))))))
+
+
+;;;---------------------------------------------
+;;; removing or modifing a lot os rules at once
+;;;---------------------------------------------
+
+(defgeneric delete-rules-of-category (category)
+  (:documentation "We're about to define a very different version of 
+    a particular category that realized by the same verb (typically)
+    as this one. The rule creating machinery that reads the realization 
+    specification on the new category (setup-rdata) will do the same
+    things as this does, but we want to be explicit about the
+    move we're making.")
+  (:method ((cat-name symbol))
+    (let ((category (category-named cat-name)))
+      (assert category () "There is no category spelled '~a'" cat-name)
+      (delete-rules-of-category category)))
+  (:method ((c category))
+    (setf (cat-realization c) nil
+          (get-rules c) (map nil #'delete/cfr (get-rules c)))))
+
+
+
+(defgeneric specialize-referent (word new-category)
+  (:documentation "Given a word that has a single interpretation
+    given by a unary rule, e.g. the attribute 'length', specialize
+    its interpretation (which will be a category) but setting its
+    existing unary rule to the designated new category, which
+    itself should be a specialization of the original category.
+    If a category is supplied as the 'word' argument then
+    it signals that there are several words to be converted
+    and we consults the category's rules list.")
+
+  (:method ((pname string) (cat-name symbol))
+    (let ((word (resolve pname))
+          (category (category-named cat-name)))
+      (assert word () "The word must already be defined. ~a is not" pname)
+      (assert category () "There is no category spelled '~a'" cat-name)
+      (specialize-referent word category)))
+
+  (:method ((w word) (c category))
+    (let ((rule (find-single-unary-cfr w))) ;;/// want better fn.
+      (assert rule () "~a does not have a unary rule" w)
+      (specialize-referent rule c)))
+
+  (:method ((cat-name symbol) (c category))
+    (let ((category (category-named cat-name)))
+      (assert category () "There is no category spelled '~a'" cat-name)
+      (specialize-referent category c)))
+
+  (:method ((old category) (new category))
+    (let ((rules (get-rules old)))
+      (assert rules () "There are no rules associated with ~a" old)
+      (loop for r in rules
+         when (unary-rule? r)
+         do (specialize-referent r new))))
+
+  (:method ((r cfr) (c category))
+    (let ((current (cfr-referent r)))
+      (assert (category-p current) ()
+              "The referent of ~a is not a category")
+      (unless (itypep c current)
+        (error "~a is not a specialization of ~a" c current))
+      (setf (cfr-referent r) c)
+      r)))
