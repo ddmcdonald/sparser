@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1995,2012-2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2012-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "determiners"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   April 2016
+;;;   Version:   March2017
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 0.1 (6/8) added Define-determiner
@@ -21,9 +21,9 @@
 
 (define-category determiner
   :specializes phrase-interpretation
-  :binds ((word  :primitive word)))
-;; This is for functions/methods as a supercategory,
-;; as distinct from the form category 'det'
+  :binds ((word  :primitive word))
+  :documentation "Determiner is for functions/methods that
+ treat it as a supercategory, as distinct from the form category 'det'")
 
 
 (defun define-determiner (string &key brackets)
@@ -52,25 +52,14 @@
         object))))
 
 
+;;;-------
+;;; cases
+;;;-------
 
 (define-determiner "the")
 (define-determiner "an")
 (define-determiner "a")
 (define-determiner "A") ;;/// still needed?
-
-(define-determiner "this"  :brackets '( ].phrase .[np ))
-
-(define-determiner "these"  :brackets '( ].phrase .[np ))
-(define-determiner "those"  :brackets '( ].phrase .[np ))
-
-#|
-;; these are quantifiers like ALL and BOTH...
-(define-determiner "either"  :brackets '( ].phrase .[np ))
-(define-determiner "neither" :brackets '( ].phrase .[np ))
-|#
-
-(define-determiner "which" :brackets '( ].phrase .[np ))
-
 
 ;; gets its own brackets because of its functional ambiguity
 ;; with a subordinate conjunction. Giving it a different opening
@@ -80,6 +69,19 @@
 ;; that can be a verb -is- one in this case, rather than assume
 ;; its noun/verb ambiguous and should be taken in its noun
 ;; reading.
-;;
 (define-determiner "that"  :brackets '( ].phrase  |.[that| ))
+
+(define-determiner "this"  :brackets '( ].phrase .[np ))
+(define-determiner "these"  :brackets '( ].phrase .[np ))
+(define-determiner "those"  :brackets '( ].phrase .[np ))
+
+
+(define-determiner "which")
+;; dec #19 "by which" -- relative clause usually
+
+(define-determiner "whose")
+;; dec #23 "a scaffold whose function is to ..."
+
+
+
 
