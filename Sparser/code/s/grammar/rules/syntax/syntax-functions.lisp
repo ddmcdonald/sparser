@@ -1181,6 +1181,9 @@
 ;;; VP + NP
 ;;;---------
 
+(defun assimilate-object (vg obj)
+  (assimilate-subcat vg :object obj))
+
 (defun assimilate-np-to-v-as-object (vg obj)
   (declare (special category::n-bar category::vp category::vp+ing
                     category::vp+ed category::to-comp category::n-bar))
@@ -1251,9 +1254,6 @@
     (t (revise-parent-edge :form category::thatcomp)
        s)))
 
-(defun assimilate-object (vg obj)
-  (assimilate-subcat vg :object obj))
-
 (defun assimilate-thatcomp (vg-or-np thatcomp)
   (assimilate-subcat vg-or-np :thatcomp thatcomp))
 
@@ -1267,14 +1267,16 @@
 ;;  in where+S, when+S
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp))
-  (when (not (eq category::pp (edge-form (left-edge-for-referent))))
-    (bind-dli-variable 'subordinate-conjunction conj clause)))
+  (if *subcat-test*
+    t
+    (else
+      (when (use-methods) (compose conj clause))
+      (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
+                  category::pp)
+        (bind-dli-variable 'subordinate-conjunction conj clause))
+      ;; as a final resort drop the 'conj'
+      clause)))
 
-
-(defun apply-control-or-raise (head label item)
-  (declare (special head label item))
-  (lsp-break "apply-control-or-raise")
-  nil)
 
 
 
@@ -1295,6 +1297,7 @@
 
 (defun make-relativized-pp (prep pobj)
   (declare (special category::relativized-prepositional-phrase))
+  ;; called for oblique WH forms -- 'after which', 'in which' and such
   (if *subcat-test*
       (not (itypep prep 'prepositional-phrase))
       (else

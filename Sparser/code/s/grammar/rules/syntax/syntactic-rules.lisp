@@ -593,10 +593,10 @@
 	   :form pp-relative-clause
 	   :referent (:function make-pp-relative-clause left-edge right-edge))))
 
-;; this is not a subject relative -- the subject already exists
+
 (def-form-rule (where s) 
     :head :right-edge
-    :form where-relative-clause
+    :form where-relative-clause;; this is not a subject relative -- the subject already exists
     :referent (:function make-subordinate-clause left-edge right-edge))
 
 (def-form-rule (when s) 
@@ -610,6 +610,16 @@
     :form pp-relative-clause
     :referent (:daughter right-edge))
 
+
+(def-form-rule (whether s)
+    :form whethercomp
+    :head :right-edge
+    :referent (:function create-whethercomp left-edge right-edge))
+
+(def-form-rule (how s)
+    :form np
+    :head :right-edge
+    :referent (:function create-howcomp left-edge right-edge))
 
 ;;;------------------------------------------------------
 ;;; ADJG COMPLEMENTS to VGs and VPs (verb-like elements)
@@ -691,22 +701,10 @@
     :head :right-edge
     :referent (:function create-thatcomp left-edge right-edge)) ;; (:head right-edge))
 
-(def-form-rule (whether s)
-    :form whethercomp
-    :head :right-edge
-    :referent (:function create-whethercomp left-edge right-edge))
-
-(def-form-rule (how s)
-    :form np
-    :head :right-edge
-    :referent (:function create-howcomp left-edge right-edge))
-
-
 (def-form-rule (for to-comp)
     :form to-comp
     :head :right-edge
     :referent (:function interpret-for-to-comp left-edge right-edge))
-
 
 (def-form-rule (as vp+ed)
     :head :right-edge
@@ -795,17 +793,19 @@
   :form pp
   :referent (:function make-pp left-referent right-referent))
 
+
+
 ;; "by who" or "in who" etc. is very non standard, so this
 ;; overgenerates
 (loop for nb in `(who which whom)
   do
   (eval 
-   `(def-form-rule (preposition ,nb)
+   `(def-form-rule (preposition ,nb) ;; "to whom"
         :head :left-edge
         :form pp-wh-pronoun
         :referent (:function make-relativized-pp left-referent right-referent)))
   (eval
-   `(def-form-rule (spatial-preposition ,nb) ;;//// get rid of spatial-preposition!
+   `(def-form-rule (spatial-preposition ,nb) ;; "behind which"
         :head :left-edge
         :form pp-wh-pronoun
         :referent (:function make-relativized-pp left-referent right-referent)))
@@ -813,9 +813,9 @@
    `(def-form-rule (spatio-temporal-preposition ,nb) ;;//// get rid of spatial-preposition!
         :head :left-edge
         :form pp-wh-pronoun
-        ;; I suppose we need a generic relationship here for
-        ;; a proper referent
         :referent (:function make-relativized-pp left-referent right-referent))))
+
+
 
 
 ;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
@@ -873,6 +873,7 @@ similar to an oncogenic RasG12V mutation (9)."))
   :head :left-edge
   :form adjp
   :referent (:function passive-is-covert-tocomp left-edge right-edge))
+
 
 ;;;------------------------------
 ;;; comparatives -- at any level

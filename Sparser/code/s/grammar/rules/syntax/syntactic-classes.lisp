@@ -53,7 +53,10 @@
   :specializes prepositional-phrase
   :binds ((prep)
           (pobj))
-  :index (:temporary :sequential-keys prep pobj))
+  :index (:temporary :sequential-keys prep pobj)
+  :documentation "Will be instantiated by make-relativized-pp for
+    phrase like 'by which' (dec #19). The pobj will hold a
+    wh-pronoun, and the prep a preposition, both as individuals.")
 (mark-as-form-category category::relativized-prepositional-phrase)
 
 (define-category prep-comp
