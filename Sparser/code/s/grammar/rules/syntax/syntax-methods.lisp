@@ -19,7 +19,8 @@
    a dispatch point for more specific binary compostions. Intended to be
    the most generic way to compose the referents of two edges.")
   (:method (left right)
-    (declare (ignore left right))))
+    (declare (ignore left right))
+    nil))
 
 
 ;;--- copula
