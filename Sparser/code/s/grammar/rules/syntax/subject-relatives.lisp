@@ -89,6 +89,9 @@
 ;;; Used by WH syntactic rules
 ;;;----------------------------
 
+;; for v in (vp vp+passive vg+passive vg)
+;; as rel in '(which who whom why that)
+;; form rule: (rel v)
 (defun compose-wh-with-vp (wh-referent predicate-referent)
   ;; We've just completed the composition of a wh term and
   ;; the vp or s to its right. That
