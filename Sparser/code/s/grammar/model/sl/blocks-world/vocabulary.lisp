@@ -9,42 +9,6 @@
 
 (in-package :sparser)
 
-;;--- categories
-
-;; These two are replaced with partonymic
-#+ignore(define-category composite-object :specializes object
-  :mixins (artifact)
-  :binds ((composed-of object))
-  :realization (:of composed-of))
-#+ginore(define-category component-part
-  :specializes object
-  :binds ((part-of object))
-  :realization (:of part-of))
-#|
-(define-category relative-position :specializes component-part)
-
-(define-category has-relative-position :specializes physical-object
-  :binds ((position relative-position))
-  :realization (:m position)) |#
-
-;;;------------------
-;;; location resouce
-
-(define-mixin-category with-specified-location
-  :binds ((location location)
-          (supported-by physical)
-          (next-to physical)
-          (at-relative-location (:or location physical)) ;;relative-position)
-          (goal (:or location physical)))
-  :realization (:next\ to next-to
-                :on supported-by
-                :on\ top\ of supported-by
-                :at at-relative-location ;; at the end
-                :on at-relative-location ;; on the left
-                :to goal))
-
-
-
 ;;;--------
 ;;; Things
 ;;;--------
@@ -106,107 +70,6 @@ support a substantial number of blocks.
 ;;; Verbs
 ;;;-------
 
-;; (p "Add another block")
-
-(define-category add-to
-  :specializes achievement
-  :mixins (with-an-agent with-specified-location)
-  :restrict ((goal built-out-of-bricks))
-  :binds ((theme object))
-  :realization
-    (:verb "add"
-     :etf (svo-passive)
-     :s agent
-     :o theme
-     :loc-pp-complement (next\ to
-                         on
-                         on\ top\ of
-                         at
-                         to) ;; "... to the row" via adjoin-pp-to-vg
-      :mumble ("add" svo :o theme)))
-
-
-;; 1.1 (p "Let's build a staircase.") 
-;;     (p "build a staircase.")
-(define-category build
-    :specializes process
-    ;; we're going through the steps of constucting the
-    ;; staircase. With "lets'" we haven't even started
-    :mixins (with-an-agent)
-    :binds ((artifact artifact)) ;; what they build
-    :realization (:verb ("build" :past-tense "built")
-                  :etf (svo-passive)
-                  :s agent
-                  :o artifact
-                  :mumble ("build" svo :o artifact)))
-
-(define-category make
-  :specializes process
-  :mixins (with-an-agent)
-  :binds ((object physical) ;; what they build
-          (adj-comp attribute-value)) ;; "make the stack green"
-  :realization
-    (:verb ("make" :past-tense "made")
-     :etf (svo-passive)
-     :s agent
-     :o object
-     :adjp-complement adj-comp
-     :mumble ("make" svo :o object)))
-          
-(define-category move-something-somewhere
-  :specializes process
-  :mixins (with-an-agent with-specified-location) ;; adds 'agent' variable and location variables
-  :binds ((theme physical))
-  :documentation "Could have been named PTRANS. Intended as the
-    common parent of push, put, place, nudge, etc."
-   :realization (:verb "move"
-                 :etf (svo-passive)
-                 :s agent
-                 :o theme
-                 :loc-pp-complement (to next\ to)
-                 :mumble ("move" svo :s agent :o theme)))
-
-(define-category push
-    :specializes process
-    :mixins (with-an-agent with-specified-location)
-    :binds ((theme physical))
-    :documentation "The meaning of push depends largly
-    on what is pushed (= the type of the theme): block
-    wall, door, etc. If the specific action to take
-    is object (sort) specific then co-composition is
-    involved in the interpretation of the literal 
-    directive."
-    :realization (:verb "push"
-                  :etf (svo-passive)
-                  :s agent
-                  :o theme
-                  :loc-pp-complement (to next\ to)
-                  :mumble ("push" svo :s agent :o theme)))
-
-(define-category push-together
-  :specializes push
-  :binds ((items collection))
-  :realization (:verb "push together"
-                :etf (svo-passive)
-                :s agent
-                :o theme
-                :mumble (transitive-with-final-adverbial "push" "together")))
-
-;; 1.2 "Put a block on the table"
-(define-category put-something-somewhere
-  :specializes process
-  :mixins (with-an-agent with-specified-location)
-  :binds ((theme physical))
-  ;; T: agent, affected, result
-  :realization
-  (:verb "put"
-         :etf (svo-passive)
-         :s agent
-         :o theme
-         :loc-pp-complement (next\ to on on\ top\ of at)
-         :mumble ("put" svo1o2 :o1 theme :o2 location)))
-
-
 ;; maybe move up to mid-level..
 #|
 (define-category propose
@@ -233,18 +96,6 @@ support a substantial number of blocks.
   ((:verb "suggest")
    (:mumble ("suggest" svscomp :s ? :o statement))))
 |#
-
-
-(defparameter *c3-syntactic-rules*
-  (list 
-   (def-syntax-rule (verb np)
-                    :head :left-edge
-     :form vp
-     :referent (:function fill-compatible-slot left-edge right-edge)))
-  "The specific set of rules to use because (hack hack) their
-   interpretation is controlled without having to fold into the 
-   regular set as should be done when the basics are shaken down.")
-
 
 
 
