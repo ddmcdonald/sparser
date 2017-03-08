@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "content-methods"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  June 2016
+;;;  Version:  March 2017
 
 ;; Created 5/12/15 to hold the container mixings and such that need
 ;; to have the document model elements already defined so they can
@@ -531,7 +531,10 @@ is a case in handle-any-anaphor
     :initform nil :accessor preposed-aux
     :documentation "The edge over the auxiliary or model that was
       'moved' to 'sentence-initial' to indicate a question, along
-      with its original form label, as a dotted pair"))
+      with its original form label, as a dotted pair")
+   (initial-wh :initform nil :accessor initial-wh
+    :documentation "Records instances of the edge over a 'wh-marker'
+      that's done during WH questions."))
   
   (:documentation "Each field is a kind of phenomena that
     we can't make a decision about. The simplest thing to
@@ -559,6 +562,19 @@ is a case in handle-any-anaphor
             (original-form (cdr preposed-aux-info)))
         (values edge
                 original-form)))))
+
+(defgeneric record-initial-wh (edge)
+  (:documentation "Just set the field with the edge, which
+     provides a marker to make-this-a-question-if-appropriate")
+  (:method ((e edge))
+    (let ((s (identify-current-sentence)))
+      (setf (initial-wh (contents s)) e))))
+
+(defun initial-wh? ()
+  (let ((s (identify-current-sentence)))
+    (initial-wh (contents s))))
+
+
 
 
 (defmethod add-pending-def-ref (determiner (e edge) (s sentence))
