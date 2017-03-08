@@ -1232,9 +1232,9 @@
       eventuality)) ;; for the moment dropping it on the floor
 
 
-;;;----------------------
-;;; "that" and "whether"
-;;;----------------------
+;;;---------------------------
+;;; "that", "whether", and WH
+;;;---------------------------
 
 (defun create-thatcomp (that s)
   (declare (ignore that))
@@ -1264,18 +1264,18 @@
   (assimilate-subcat head (subcategorized-variable head prep pobj) pobj))
 
 
-;;  in where+S, when+S
+;;  in what+s where+S, when+S
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp))
   (if *subcat-test*
     t
-    (else
-      (when (use-methods) (compose conj clause))
-      (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
-                  category::pp)
-        (bind-dli-variable 'subordinate-conjunction conj clause))
-      ;; as a final resort drop the 'conj'
-      clause)))
+    (or
+     (when (use-methods) (compose conj clause))
+     (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
+                 category::pp)
+       (bind-dli-variable 'subordinate-conjunction conj clause))
+     ;; as a final resort drop the 'conj'
+     clause)))
 
 
 

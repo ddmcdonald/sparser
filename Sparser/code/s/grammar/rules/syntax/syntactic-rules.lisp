@@ -559,7 +559,7 @@
 ;;;  WH and Relative clauses
 ;;;--------------------------
 
-(loop for rel in '(which who whom  that)
+(loop for rel in '(which who whom why that)
    ;;  (where, when) this is more often used as a subordinate conjunction
    do
      (eval
@@ -593,6 +593,18 @@
 	   :form pp-relative-clause
 	   :referent (:function make-pp-relative-clause left-edge right-edge))))
 
+(def-form-rule (comma pp-relative-clause)
+    :head :right-edge
+    :form pp-relative-clause
+    :referent (:daughter right-edge))
+
+
+;;--- Embedded questions
+
+(def-form-rule (what s) 
+    :head :right-edge
+    :form s ;;/// probably should be embedded-question with a :wh subcat marker
+    :referent (:function make-subordinate-clause left-edge right-edge))
 
 (def-form-rule (where s) 
     :head :right-edge
@@ -604,13 +616,6 @@
     :form when-relative-clause
     :referent (:function make-subordinate-clause left-edge right-edge))
 
-
-(def-form-rule (comma pp-relative-clause)
-    :head :right-edge
-    :form pp-relative-clause
-    :referent (:daughter right-edge))
-
-
 (def-form-rule (whether s)
     :form whethercomp
     :head :right-edge
@@ -620,6 +625,7 @@
     :form np
     :head :right-edge
     :referent (:function create-howcomp left-edge right-edge))
+
 
 ;;;------------------------------------------------------
 ;;; ADJG COMPLEMENTS to VGs and VPs (verb-like elements)
