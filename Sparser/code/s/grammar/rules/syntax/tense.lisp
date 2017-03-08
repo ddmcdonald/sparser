@@ -38,8 +38,9 @@
 
 ;; We need this version of the rule because the
 ;; usual chunking is, e.g. to [ phosphorylate]
-;; with the "to" stranded. 
-(def-form-rule (to vg)
+;; with the "to" stranded. ///But it blocks "want to do" because
+;; it produces an infinitive over "to do" rather than the desired to-comp
+#+ignore(def-form-rule (to vg)
   :form infinitive
   :referent (:function make-infinitive left-edge right-edge))
 
@@ -54,7 +55,7 @@
 ;;;------------------------------------
 
 (define-category  do
-  :specializes perdurant
+  :specializes process
   :instantiates self
   :binds ((agent pronoun)
           (predicate pronoun))
