@@ -154,6 +154,7 @@
                           objects))
               (category ;; is this right?
                (push `(,var-name ,value) objects))
+              (lambda-variable)
               (symbol)
               (string)
               (word)

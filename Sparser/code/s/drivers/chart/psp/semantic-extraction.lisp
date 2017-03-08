@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "semantic-extraction"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  July 2016
+;;;  version:  March 2017
 
 
 ;;; This file contains all the functions/methods for extracting the elements of the semantics of a
@@ -619,9 +619,8 @@ without damaging other code.")
                          desc))
                   (rule-set) ;; the word "anti" presently does this
                   ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
+                  (lambda-variable)
                   (otherwise
-                   (push-debug `(,value ,b ,i))
-                   ;;(break "Unexpected type of value of a binding: ~a" value)
                    (format t "~&~%Collect model: ~
                             Unexpected type of value of a binding: ~a~%" value))))))
        (reverse desc)))))
@@ -672,10 +671,8 @@ without damaging other code.")
                     (rule-set) ;; the word "anti" presently does this
                     ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
                     (otherwise
-                     (push-debug `(,value ,b ,i))
-                     ;;(break "Unexpected type of value of a binding: ~a" value)
                      (format t "~&~%Collect model: ~
-                            Unexpected type of value of a binding: ~a~%~%" value))))))))
+                            Unexpected type of value of a binding in a collection: ~a~%~%" value))))))))
     (reverse desc)))
 
 ;;;--------------------
