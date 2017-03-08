@@ -131,6 +131,11 @@
       ;; make and return individual
       (find-or-make/individual category binding-instructions))))
 
+(defun define-an-individual (category &rest var-name+value-pairs)
+  "In lieu of figuring out how to pretty-print this pattern in emacs,
+   this call does it for me because it starts with 'def'."
+  (apply #'make-an-individual category var-name+value-pairs))
+
 
 (defun make-temporary-individual (symbol &rest var-name+value-pairs)
   "Same signature as make-an-individual in that it is intended for
@@ -421,18 +426,16 @@
 (defun add-category-to-individual (individual category)
   ;; /// should look for the subtype already existing in the
   ;; model as a compound category
-  (break "Call to add-category-to-individual~
-        ~%Think through how to hack the CLOS.")
   (let ((type-field (indiv-type individual)))
-    (if (rest type-field)
-      (setf (indiv-type individual)
-            `( ,(first type-field)
-               ,category
-               ,@(rest type-field) ) )
-      (setf (indiv-type individual)
-            `( ,(first type-field)
-               ,category ) ) )
-
+    (unless (memq category type-field)
+      (if (rest type-field)
+        (setf (indiv-type individual)
+              `( ,(first type-field)
+                  ,category
+                  ,@(rest type-field) ) )
+        (setf (indiv-type individual)
+              `( ,(first type-field)
+                  ,category ) ) ))
     individual ))
 
 
