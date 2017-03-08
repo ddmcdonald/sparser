@@ -6,6 +6,7 @@
 (in-package :sparser)
 
 (define-category subcat-test-1
+  :specializes top
   :binds ((a top)
           (b top))
   :realization (:s a :o b)
