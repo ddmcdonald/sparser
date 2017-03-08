@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:edges:"
-;;;  Version:  February 2017
+;;;  Version:  March 2017
 
 ;; 3.0 (9/3/92 v2.3) flushed the fields used by earlier psp algorithms
 ;; 3.1 (5/14/93) Allowed Set-used-by to make a list to help redundancy checking
@@ -82,23 +82,24 @@
     ;; should never be referential-category, except for specially
     ;; noted cases
     (when (referential-category-p value)
-      (unless (allowable-referential-edge? edge)
+      (unless (allowable-referential-edge? edge value)
         (setf value
               (find-or-make-lattice-description-for-ref-category value)))))
   (cond ((edge-referent edge)
-         ;; If the edge already has a referent then update the mention
+         ;; If the edge already has a referent still have to update the mention
          (setf (edge-referent edge) value)
          (update-edge-mention-referent edge value))
         (t (setf (edge-referent edge) value)))
   value)
 
-(defun allowable-referential-edge? (edge)
+(defun allowable-referential-edge? (edge value)
   "Should edges of this form that have categories for referents
    retain that referent (vs. have it converted to an individual)"
-  (member (cat-name (edge-form edge))
-          '(preposition spatial-preposition
-            comparative superlative
-            spatio-temporal-preposition)))
+  (or (member (cat-name (edge-form edge))
+              '(preposition spatial-preposition
+                comparative superlative
+                spatio-temporal-preposition))
+      (itypep value 'wh-pronoun)))
 
 ;;;-----------------------------------
 ;;; predicates for unusual edge-types
