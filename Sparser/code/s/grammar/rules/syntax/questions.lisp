@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "questions"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  February 2017
+;;;  Version:  March 2017
 
 ;; Broken out from /grammar/model/sl/checkpoint/rules 6/17/09
 ;; Elaborated through 7/23/09. 9/28/11 removed spatial-orientation
@@ -33,49 +33,42 @@
 	   :etf (svo-passive)))
 |#
 
-;;;--------------------------
-;;; polar questions (yes/no)
-;;;--------------------------
-
-(define-category polar-question
-  :specializes question-core
-  :instantiates :self 
-  :index (:temorary :key statement))
-  :documentation "This is a labeling category in that it does
- not add any refinements or extensions to question-core. It just
- labels the statement as a question: 'is it the case that <statement>'."
-
-(defun make-polar-question (statement)
-  "Abstracted constructor so it will done the same way every time."
-  (find-or-make-individual
-   'polar-question :statement statement))
-                           
+;;;------------------------------------
+;;; call from post-analysis-operations
+;;;------------------------------------
 
 (defun make-this-a-question-if-appropriate (sentence)
   "Called from post-analysis-operations after all parsing and
    contextual interpretation is finished."
   (declare (special category::question))
-  (when (preposed-aux?)
+  (when (or (preposed-aux?)
+            (initial-wh?))
     ;; span-covered-by-one-edge? -- won't work until we do
     ;; something with the deliberately unparse-able initial
     ;; aux (at least not syntactically).
-    (let* ((start-pos (starts-at-pos sentence))
+    (let* ((preposed? (preposed-aux?)) ;; make them local flags
+           (wh-initial? (initial-wh?))
+           (start-pos (starts-at-pos sentence))
            (end-pos (ends-at-pos sentence))
-           (edge (span-covered-by-one-edge? 
-                  (chart-position-after start-pos) ;; hack
+           (edge (span-covered-by-one-edge?
+                  (if preposed? 
+                    (chart-position-after start-pos) ;; hack, kinda
+                    start-pos)
                   end-pos))
            (edges (all-tts)))
       (cond
-        (edge ;; single span after the aux
-         (let ((q (make-polar-question (edge-referent edge))))
-            (let ((spanning-edge
-                   (make-edge-over-long-span
-                    start-pos end-pos
-                    (edge-category edge)
-                    :rule 'make-this-a-question-if-appropriate
-                    :form category::question
-                    :referent q)))
-              spanning-edge)))
+        (edge
+         (when preposed?
+           ;; The wh-initial? case doesn't need further handling
+           (let ((q (make-polar-question (edge-referent edge))))
+             (let ((spanning-edge
+                    (make-edge-over-long-span
+                     start-pos end-pos
+                     (edge-category edge)
+                     :rule 'make-this-a-question-if-appropriate
+                     :form category::question
+                     :referent q)))
+               spanning-edge))))     
         
         ((and (= 3 (length edges))
               (itypep (edge-referent (car edges)) 'be))              
@@ -106,14 +99,29 @@
         ;; just after the aux, to 'move' it there somehow, and try to
         ;; reparse the sentence as though it were declarative
         (t
-         #+ignore (format t "~&Could not resolve to a question~%"))))))
+         (warn "Could not resolve edges into a question: ~a~
+              ~%preposed-aux = ~a  initial-wh = ~a"
+               edges preposed? wh-initial?))))))
 
+;;;--------------------------
+;;; polar questions (yes/no)
+;;;--------------------------
 
-(defun make-polar-pp-question (edges)
-  (push-debug edges)
-  (error "Polar PP questions are not implemented yet."))'
+(define-category polar-question
+  :specializes question-core
+  :instantiates :self 
+  :index (:temorary :key statement))
+  :documentation "This is a labeling category in that it does
+ not add any refinements or extensions to question-core. It just
+ labels the statement as a question: 'is it the case that <statement>'."
 
-;; (p "are there drugs that treat pancreatic cancer?")
+(defun make-polar-question (statement)
+  "Abstracted constructor so it will done the same way every time."
+  (find-or-make-individual
+   'polar-question :statement statement))
+                           
+;;--- cases called from make-this-a-question-if-appropriate
+
 (defun make-polar-there-question (start-pos end-pos edges)
   "We're asking about whether somthing exists"
   ;; caller knew the first edge was the aux and second 'there'
@@ -129,6 +137,11 @@
               :constituents edges)))
       ;; trace
       e)))
+
+;; (p "are there drugs that treat pancreatic cancer?")
+(defun make-polar-pp-question (edges)
+  (push-debug edges)
+  (warn "Polar PP questions are not implemented yet."))'
     
 
 (defun make-polar-adjective-question (start-pos end-pos edges)
@@ -179,8 +192,8 @@
 (define-category wh-question
   :specializes question-core
   :instantiates :self
-  :binds ((wh :primitive word) ;; "how"
-          (attribute attribute-value) ;; #<tall>
+  :binds ((wh :primitive category) ;; #<ref-category HOW>
+          (attribute attriute-value) ;; #<tall>
           (var :primitive lambda-variable) ;; height, color
           ;;(focus ;; Trips variable for 'how <much> ..."
           #| the rest is the statement |# )
@@ -200,7 +213,7 @@
    (p "How many blocks will you add to the row?")
 
 From :id "PMC1702556" :corpus :jun15eval
-This wh-np has no aux per se and blew out the looop
+   This wh-np has no aux per se and blew out the looop
 (p "Whether all EGFR ectodomain mutants share a common mechanism of 
 oncogenic receptor conversion warrants further study.")
 |#
@@ -219,7 +232,13 @@ oncogenic receptor conversion warrants further study.")
   ;; The trigger is that form of edge over the word at
   ;; this position is wh-pronoun.
 
-  (let* ((wh-word (pos-terminal pos-before)) ;; or the category?
+  ;; "why" doesn't need to scan ahead. Ditto "who", "where" "when"
+
+  ;; "how", "what", "which" do
+
+  ;; "whom" is going to have a leading preposition
+
+  (let* ((wh-type (edge-referent wh-edge)) ;; the category
          ;;(q (find-or-make-individual :wh wh-word))
          ;;  delay if how questions are different
          (next-pos (chart-position-after pos-before))
@@ -252,10 +271,10 @@ oncogenic receptor conversion warrants further study.")
        (when (null next-edge) (return)))
 
     (push-debug `(,aux-edge ,attr-edge ,other-edges))
+
     (when aux-edge
-      ;;(store-preposed-aux aux-edge)
       (let ((q (make-simple-individual
-                category::wh-question `((wh ,wh-word)))))
+                category::wh-question `((wh ,wh-type)))))
         (flet ((stash-attribute (attr)
                  (setq q (bind-variable 'attribute attr q))
                  (let ((var (variable-for-attribute attr)))
@@ -278,18 +297,48 @@ oncogenic receptor conversion warrants further study.")
                        :form category::question-marker ;;/// needs more meliflous term
                        :referent q
                        :constituents (edges-between pos-before next-pos))))
+            (record-initial-wh edge)
             edge))))))
   
 
 (defun apply-question-marker (wh-edge vg-edge np-edge)
+  "Called by DA rule, wh-be-thing, since parsing is going to be stymied by
+   the aux/vg being in the wrong place. We take our cue from
+   the verb and do it by hand, going directly to the interpretation"
+  ;; meta-dot on compose-preposed-aux-into-predicate-adjp to get near
+  ;; the right place in rules/DA/da-rules.lisp
+  (declare (special category::copular-predicate category::s))
   (let ((vg (edge-referent vg-edge))
-        (wh (edge-referent wh-edge))
-        (np (edge-referent np-edge)))
-    ;; only does copulas. 
-    (when (itypep vg 'be)
-      ;; so we're asking about an attribute of the np
-      (break "apply-question-marker - what next?"))))
+        (np (edge-referent np-edge))
+        (wh (edge-referent wh-edge)))
+     (cond ((itypep vg 'be)
+           ;; we're asking about an attribute of the np
+           ;; so we have to instantiate the copular-predication
+           (let ((i (define-or-find-individual 'copular-predication
+                        :predicate vg
+                        :item np)))
+             (let ((edge (make-binary-edge/explicit-rule-components
+                          vg-edge ;; left
+                          np-edge ;; right
+                          :category category::copular-predicate
+                          :form category::s  ;; vp? order is odd for a vp
+                          :referent i)))
+               edge)))
+           (t
+            (warn "Don't know how to formulate a wh question whose vg is ~a" vg)))))
+             
 
+
+(def-k-method compose ((wh category::wh-question) (i individual))
+  ;; this is the second time around after we're assembled
+  ;; the pieces of the question. We can now set it up.
+  ;; The call to compose is in make-subordinate-clause
+  ;;   (p/s "What color is the block?")
+  (declare (special category::question))
+  (let ((w (bind-variable 'statement i wh)))
+    (revise-parent-edge :form category::question
+                        :referent w)
+    w))
 
 
 
