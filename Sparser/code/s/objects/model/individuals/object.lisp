@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2013-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;model:individuals:"
-;;;  version:  0.5 November 2015
+;;;  version:  March 2017
 
 ;; initiated 7/16/92 v2.3
 ;; (6/8/93) added Indiv-typep
@@ -93,9 +93,7 @@ grammar/model/core/names/fsa/gofers-for-examine.lisp:  (let ((c (i-type-of i)))
              an individual" (type-of i)))))
 
 
-(defun itype (i c/s)
-  (indiv-typep i c/s))
-#| This should also change to be itypep -- by analogy to typep
+#| itype should change to be itypep -- by analogy to typep
 Davidsmcbookpro:s ddm$ grep "(itype " **/*.lisp **/**/*.lisp **/**/**/*.lisp **/**/**/**/*.lisp **/**/**/**/**/*.lisp
 analyzers/context/operations.lisp:                (itype so 'section-object)
 analyzers/context/operations.lisp:                (itype so 'paragraph))
@@ -139,6 +137,9 @@ grammar/model/sl/ern/discourse-heuristics.lisp:                (if (itype (value
 grammar/model/sl/ern/stream-through-driver.lisp:  (when (itype obj (category-named 'qualified-financial-data))
 grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorized-name)
 |#
+
+(defun itype (i c/s)
+  (indiv-typep i c/s))
 
 (defun itypep (i c/s) 
   (cond
@@ -188,12 +189,15 @@ grammar/model/core/names/fsa/subseq-ref.lisp:  (unless (itype name 'uncategorize
 
 (defun indiv-typep (i category/symbol)
   "Analogous to typep: does this individual include this category
-in its type field?"
+   in its type field or any of the supercategories of its type field"
   (declare (special *break-on-pattern-outside-coverage?*
                     category::collection category::sequence))
   (let ((category (or (category-named category/symbol)
+                      ;; if the target category doesn't exist
+                      ;; just return nil rather than complaining.
                       (return-from indiv-typep nil)))
         (type-field (and (individual-p i) (indiv-type i))))
+    
     (when (or (memq category::collection type-field)
               (memq category::sequence type-field))
       ;; of course, one can ask a collection whether it is 
@@ -218,11 +222,12 @@ in its type field?"
        (cond
         ((member category type-field :test #'eq) t)
         (t  ;; otherwise lets look at the supercategories
-         ;; We've already checked the base case of individual-inherits-type
-         ;; so we can skip to the next level 
          (let ((inherits-it? ;;(individual-inherits-type? i category)
-                (category-inherits-type? (car type-field) ;; for conj
-                                         category))) ;; 'reference category'
+                (loop for c in type-field
+                     when (category-inherits-type? c category)
+                     return t)))
+                #+ignore(category-inherits-type? (car type-field) ;; for conj
+                                         category) ;; 'reference category'
            (when inherits-it?
              (values t (i-type-of i)))))))
       (otherwise
