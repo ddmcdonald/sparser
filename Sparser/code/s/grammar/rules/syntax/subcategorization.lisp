@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "subcategorization"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  November 2014
+;;;  Version:  March 2017
 
 ;; Initiated 9/11/14 to organize information about subcategorization patterns
 ;; Working on it through 9/15/14. 11/20/14 hacked up a treatment of multiple
@@ -160,18 +160,23 @@
     (get-subcategorization ref-object))
   (:method ((ref-object individual))
     (declare (special category::collection))
-    (if (collection-p ref-object)
-      (let ((conj-type (value-of 'type ref-object)))
-        (when conj-type
-          ;; If there isn't a type, then this was either a badly
-          ;; modeled collection (though all the ones created by
-          ;; conjunction have been vetted), or it's an instance
-          ;; of the actual word, e.g. "a specific phorphorylation 
-          ;; sequence" in the ASPP January article. These need
-          ;; proper models, but we can't block a type-check waiting
-          ;; for them all to be done
-          (get-subcategorization conj-type)))
-      (get-subcategorization (first (indiv-type ref-object))))))
+    (cond 
+      ((itypep ref-object 'question)
+       (let ((stmt (value-of 'statement ref-object)))
+         (get-ref-subcategorization stmt)))
+      ;; question goes before collection -- aspp2 # 74
+      ((collection-p ref-object)
+       (let ((conj-type (value-of 'type ref-object)))
+         (when conj-type
+           ;; If there isn't a type, then this was either a badly
+           ;; modeled collection (though all the ones created by
+           ;; conjunction have been vetted), or it's an instance
+           ;; of the actual word, e.g. "a specific phorphorylation 
+           ;; sequence" in the ASPP January article. These need
+           ;; proper models, but we can't block a type-check waiting
+           ;; for them all to be done
+           (get-subcategorization conj-type))))
+      (t (get-subcategorization (itype-of ref-object))))))
 
 (defun make-subcategorization (category slots)
   "Make and install a subcategorization frame for a category."
@@ -771,6 +776,49 @@
 (defparameter *ambiguous-variables* (list nil))
 
 
+(defun subcategorized-variable (head label item)
+  "Returns the variable on the HEAD that is subcategorized for
+   the ITEM when it has the grammatical relation LABEL to the head."
+  (declare (special *pobj-edge* *subcat-test* *sentence-in-core*))
+  ;; included in the subcategorization patterns of the head.
+  ;; If so, check the value restriction and if it's satisfied
+  ;; make the specified binding
+  (loop while (edge-p label) ;; can happen for edges over polywords like "such as"
+     do (setq label (edge-left-daughter label)))
+  (cond
+    ((null head)
+     (break "~&null head in call to subcategorized-variable")
+     nil)
+    ((null item)
+     (cond
+       ((and (boundp '*pobj-edge*) *pobj-edge*)
+	(warn "~&*** null item in subcategorized pobj for ~
+                 edge ~s~&  in sentence: ~s~%" *pobj-edge*
+                 (sentence-string *sentence-in-core*)))
+       ((eq label :subject)
+        (warn "~&*** null item in subcategorized subject for ~
+                 clause ~s~&  in sentence: ~s~%"
+              (retrieve-surface-string head)
+              (sentence-string *sentence-in-core*)))
+       ((eq label :object)
+        (lsp-break "~&*** null item in subcategorized object for ~
+                 clause ~s~&  in sentence: ~s~%"
+              (retrieve-surface-string head)
+              (sentence-string *sentence-in-core*)))
+       (t
+        (warn "~&*** null item in subcategorized-variable~& ~
+                 edge ~s~&  in sentence: ~s~%" *pobj-edge*
+                 (sentence-string *sentence-in-core*))))
+     nil)
+    ((consp item)
+     (unless *subcat-test*
+       (warn "what are you doing passing a CONS as an item, ~s~&" item))
+     nil)
+    (t
+     ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
+     ;;/// prep-comp, etc.
+     (find-subcat-var item label head))))
+
 (defun find-subcat-var (item label head)
   (declare (special item label head *subcat-test* *subcat-use*))
   (let ((category (itype-of head))
@@ -829,49 +877,6 @@
                   (satisfies-subcat-restriction? item (subcat-restriction pattern)))
         collect (subcat-label pattern)))
 
-(defun subcategorized-variable (head label item)
-  "Returns the variable on the HEAD that is subcategorized for
-   the ITEM when it has the grammatical relation LABEL to the head."
-  (declare (special *pobj-edge* *subcat-test* *sentence-in-core*))
-  ;; included in the subcategorization patterns of the head.
-  ;; If so, check the value restriction and if it's satisfied
-  ;; make the specified binding
-  (loop while (edge-p label) ;; can happen for edges over polywords like "such as"
-     do (setq label (edge-left-daughter label)))
-  (cond
-    ((null head)
-     (break "~&null head in call to subcategorized-variable")
-     nil)
-    ((null item)
-     (cond
-       ((and (boundp '*pobj-edge*) *pobj-edge*)
-	(warn "~&*** null item in subcategorized pobj for ~
-                 edge ~s~&  in sentence: ~s~%" *pobj-edge*
-                 (sentence-string *sentence-in-core*)))
-       ((eq label :subject)
-        (warn "~&*** null item in subcategorized subject for ~
-                 clause ~s~&  in sentence: ~s~%"
-              (retrieve-surface-string head)
-              (sentence-string *sentence-in-core*)))
-       ((eq label :object)
-        (lsp-break "~&*** null item in subcategorized object for ~
-                 clause ~s~&  in sentence: ~s~%"
-              (retrieve-surface-string head)
-              (sentence-string *sentence-in-core*)))
-       (t
-        (warn "~&*** null item in subcategorized-variable~& ~
-                 edge ~s~&  in sentence: ~s~%" *pobj-edge*
-                 (sentence-string *sentence-in-core*))))
-     nil)
-    ((consp item)
-     (unless *subcat-test*
-       (warn "what are you doing passing a CONS as an item, ~s~&" item))
-     nil)
-    (t
-     ;; (when (itypep item 'to-comp) (setq item (value-of 'comp item)))
-     ;;/// prep-comp, etc.
-     (find-subcat-var item label head))))
-
 (defun find-subcat-vars (label cat)
   (loop for pat in (subcat-patterns cat)
         when (eq label (subcat-label pat))
@@ -882,13 +887,6 @@
     (and (not (intransitive? cat))
          (find-subcat-vars :object cat))))
 
-;; check to see if a verb is defined as intransitive
-(defun intransitive? (cat)
-  (if (individual-p cat) (setq cat (itype-of cat)))
-  (loop for realization in (cat-realization cat)
-        thereis
-          (when (rdata-etf realization)
-            (eq (etf-name (rdata-etf realization)) 'intransitive))))
 
 (defun find-subject-vars (cat)
   (when (not (word-p cat)) ;; bad morphology for "widening" and others
