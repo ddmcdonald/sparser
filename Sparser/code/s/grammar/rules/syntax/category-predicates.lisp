@@ -468,7 +468,6 @@
 
 ;;--- aux
 
-;;/// This might be easier to find somewhere else?
 (defvar *verbal-auxiliaries* nil
   "Holds a list of all the auxiliary words, as words")
 
@@ -478,10 +477,17 @@
   (memq word *verbal-auxiliaries*))
 
 (defun populate-verbal-auxiliaries ()
+  ;; this is used by delimit-and-label-initial-wh-term which is
+  ;; called in detect-early-information pretty early in the steps
+  ;; of sentence-processing-core, so do we need to include the
+  ;; negated versions of these?
   (setq *verbal-auxiliaries*
         (mapcar #'word-named 
                 '("am" "are" "is" "were"
                   "do" "does" "did"
                   "have" "has" "had"
-                  "not"))))
+                  "not"
+                  "can" "could" "may"
+                  "might" "must" "shall"
+                  "should" "will" "would" ))))
 
