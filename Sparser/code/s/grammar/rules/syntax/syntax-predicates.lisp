@@ -75,6 +75,14 @@
 
 (defun is-intransitive? ())
 
+;; check to see if a verb is defined as intransitive
+(defun intransitive? (cat)
+  (if (individual-p cat) (setq cat (itype-of cat)))
+  (loop for realization in (cat-realization cat)
+        thereis
+          (when (rdata-etf realization)
+            (eq (etf-name (rdata-etf realization)) 'intransitive))))
+
 (defun transitive-vp-missing-object? (vp &optional (right-edge (right-edge-for-referent)))
   ;; this is a case like "that MEK phosphorylates" which has
   ;;  a VG, not a VP, and no object -- want to make this a
