@@ -47,27 +47,16 @@
          :referent '(:function make-copular-adjective
                                left-edge right-edge)))
 
-#| Make-copular-adjective makes a vp that refers to an instance of
-a copular-predication. This is noticed explicitly by assimilate-subject
-which calls apply-copula to engage the coersion / co-composition 
-machinery. |#
-
-(def-k-method apply-copula ((subj individual) (vp category::copular-predication))
-  (declare (special category::copular-predication))
-  (revise-parent-edge :category category::copular-predication)
-  (setq vp (bind-variable 'item subj vp))
-  vp)
-
-;;;--------------------
-;;; syntactic function
-;;;--------------------
+;;;---------------------
+;;; syntactic functions
+;;;---------------------
 
 (defvar *sentences-going-through-copular-adjective* nil
   "For accumulating the unique set of sentences where the rule
    applies. For the snapshots as o 8/28 there were 80.")
 
-(defun make-copular-adjective (copula adjective
-                               &optional (copula-edge (left-edge-for-referent)))
+(defun make-copular-adjective (copula adjective)
+                              ;; &optional (copula-edge (left-edge-for-referent)))
   "Corresponds to the form rule for be+adjective (or + adjp) which
    composes them to create a VP with consituents for the verb group
    (e.g. 'should be') and the adjective or adjp. 
@@ -106,14 +95,31 @@ machinery. |#
              (eq (edge-form copula-edge) category::vg+ing))
      (revise-parent-edge :form category::vg+ing))  |#
 
-#| This was the original behavior. Note that this went with having the
-verbal part of a predicate adjective construction and the adjective part
-both be include within a span labeled VG. This verion of make-copular-adjective
-just stashed the verb part on the adjective on an ad-hoc lambda variable
-         (let ((i (individual-for-ref adjective)))
-           (bind-dli-variable :copular-verb copula i)    
-           i)   |#
 
+;;--- be + location
+
+(def-k-method compose ((vg category::be) (pp category::location))
+  ;; Make a copular predication like what make-copular-adjective does.
+  ;; caller is adjoin-pp-to-vg when pp isn't a collection.
+  (declare (special *subcat-test* category::copular-predicate))
+  (if *subcat-test*
+    t
+    (let ((i (find-or-make-individual
+               'copular-predication :predicate vg :value pp)))
+      (revise-parent-edge :category category::copular-predicate)
+      i)))
+
+
+#| Make-copular-adjective makes a vp that refers to an instance of
+a copular-predication. This is noticed explicitly by assimilate-subject
+which calls apply-copula to engage the coersion / co-composition 
+machinery. |#
+
+(def-k-method apply-copula ((subj individual) (vp category::copular-predication))
+  (declare (special category::copular-predication))
+  (revise-parent-edge :category category::copular-predication)
+  (setq vp (bind-variable 'item subj vp))
+  vp)
 
 
 ;;;---------
@@ -141,8 +147,8 @@ just stashed the verb part on the adjective on an ad-hoc lambda variable
   (declare (special category::copular-predication-of-pp))
   (when (and
          (null (value-of 'predicate be-ref))
-         ;; we changed the variable to be PREDICATE
-         ;;  block "to be a required step in the process of EGFR transactivation"
+         ;; we changed the variable to be predicate so as to
+         ;; block "to be a required step in the process of EGFR transactivation"
          ;; If this is not already a copular predicate ("is a drug")     
 	 (or (not (edge-p *left-edge-into-reference*))
              ;; case where there is no semantic predication established,
@@ -171,7 +177,7 @@ just stashed the verb part on the adjective on an ad-hoc lambda variable
            (value ,pobj))))))))
 
 
-;;/// needs to be finished
+
 ;;;--------------------------
 ;;; hedged copular relations
 ;;;--------------------------
@@ -197,7 +203,13 @@ phosphorylated by Src."
   "this interaction seems to be of  low stoichiometry."
 |#
 
-(define-category copula :specializes phrase-interpretation) ;; not sure what to do beyond this
+;;;-----------------------------------------------------
+;;; function to apply all the adjective rules to a word
+;;;  that's already been defined
+;;;-----------------------------------------------------
+
+;;(define-category copula :specializes phrase-interpretation)
+;; not sure what to do beyond this
 
 (defun make-copular-def (word-string)
   (let ((verb (intern (string-upcase word-string))))
