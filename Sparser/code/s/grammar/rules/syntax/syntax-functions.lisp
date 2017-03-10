@@ -130,8 +130,8 @@
 (define-lambda-variable 'subordinate-conjunction
     nil 'top)
 
-(define-lambda-variable 'purpose
-    nil 'top)
+#+ignore(define-lambda-variable 'purpose
+    nil 'top) ;; use the one on perdurant instead
 
 (define-lambda-variable 'quantifier
     nil 'top)
@@ -1232,27 +1232,13 @@
       eventuality)) ;; for the moment dropping it on the floor
 
 
-;;;---------------------------
-;;; "that", "whether", and WH
-;;;---------------------------
+;;;---------------------------------------
+;;; "that", "whether", "how", "what", etc.
+;;;---------------------------------------
 
 (defun create-thatcomp (that s)
   (declare (ignore that))
   s)
-
-(defun create-whethercomp (that s)
-  (declare (ignore that))
-  s)
-
-(defun create-howcomp (how s) ;; dry-run #40, aspp2 68
-  ;; disturbed dry-run 41. aspp2 69
-  ;; This is to provide the adjective in a copula to have something
-  ;; to work with now that it is exposed.
-  (declare (ignore how) (special category::thatcomp))
-  (cond
-    (*subcat-test* t)
-    (t (revise-parent-edge :form category::thatcomp)
-       s)))
 
 (defun assimilate-thatcomp (vg-or-np thatcomp)
   (assimilate-subcat vg-or-np :thatcomp thatcomp))
@@ -1260,11 +1246,26 @@
 (defun assimilate-whethercomp (vg-or-np whethercomp)
   (assimilate-subcat vg-or-np :whethercomp whethercomp))
 
+(defun create-whethercomp (wh s)
+  (make-wh-object (category-named 'whether)
+                  :statement s))
+
+(defun create-howcomp (how s) ;; dry-run #40, aspp2 68
+  ;; disturbed dry-run 41. aspp2 69
+  ;; This is to provide the adjective in a copula to have something
+  ;; to work with now that it is exposed.
+  (declare (special category::thatcomp))
+  (cond
+    (*subcat-test* t)
+    (t (revise-parent-edge :form category::thatcomp)
+       (make-wh-object (category-named 'how)
+                       :statement s))))
+
 (defun assimilate-pp-subcat (head prep pobj)
   (assimilate-subcat head (subcategorized-variable head prep pobj) pobj))
 
 
-;;  in what+s where+S, when+S
+;;  in what+s where+S, when+S, etc.
 (defun make-subordinate-clause (conj clause)
   (declare (special category::pp))
   (if *subcat-test*
@@ -1278,7 +1279,57 @@
      clause)))
 
 
+;; for v in (vp vp+passive vg+passive vg)
+;; as rel in '(which who whom why that)
+;; form rule: (rel v)
+(defun compose-wh-with-vp (wh-obj predicate)
+  "Question the subject of the predicate"
 
+  (declare (special *parent-edge-getting-reference*
+                    category::copular-pp-rel-clause))
+  ;;/// rule doesn't include where or when yet.
+  ;;/// what happens with "what block" if it's embedded?
+  (if *subcat-test*
+    t
+    (multiple-value-bind (q ;; question object
+                          wh) ;; the category for the wh word
+        (cond
+          ((itypep wh-obj 'wh-question)
+           (values wh-obj (value-of 'wh wh-obj)))
+          ((itypep wh-obj 'wh-pronoun)
+           (values nil wh-obj))
+          (t (break "New type of wh-obj passed in: ~
+                    ~a~%~a" (itype-of wh-obj) wh-obj)))
+      
+      (let* ((wh-name (cat-symbol wh))
+             (subj-var (subject-variable predicate))
+             (obj-var (object-variable predicate))
+             (open-var (if (value-of subj-var predicate)
+                         obj-var
+                         subj-var))
+             (variable
+              ;; which variable on the predicate are we questioning
+              (case wh-name
+                (category::who open-var)
+                (category::which open-var)
+                (category::what obj-var) ;; correct?
+                (category::why (value-of 'variable wh))
+                ;; whom -- unlikely w/o prep
+                ;; which -- probably will be  "which block .."
+                (otherwise
+                 (break "New case: wh = ~a" wh)))))
+        ;; To set the form of the new edge have to know
+        ;; whether we're a toplevel question or embedded
+
+        (if q
+          (then ;; add more bindings
+            (setq q (bind-variable 'var variable q))
+            (setq q (bind-variable 'statement predicate q)))
+          (setq q (make-wh-object
+                   wh
+                   :variable variable
+                   :statement predicate)))
+        q))))
 
 ;;;----------------------
 ;;; Prepositional phrase

@@ -85,63 +85,25 @@
             edge))))))
 
 
-;;;----------------------------
-;;; Used by WH syntactic rules
-;;;----------------------------
+;;;-------------------------
+;;; "that" subject relative
+;;;-------------------------
 
-;; for v in (vp vp+passive vg+passive vg)
-;; as rel in '(which who whom why that)
-;; form rule: (rel v)
-(defun compose-wh-with-vp (wh-referent predicate-referent)
-  ;; We've just completed the composition of a wh term and
-  ;; the vp or s to its right. That
-  ;; edge has already been created, and is bound to the
-  ;; global in referent from rule.
-  ;; We're providing the referent to that edge as our
-  ;; return value, and we want to record the subj+verb relation
-  ;; and any other relations that make sense given the
-  ;; particulars of the predicate. 
-  (declare (special *parent-edge-getting-reference* category::copular-pp-rel-clause))
+(defun compose-that-with-vp (relative predicate)
   (if *subcat-test*
     t
-    (let ((parent *parent-edge-getting-reference*)
-          ;; renaming to help make things clear
-          (subject wh-referent)
-          (event predicate-referent))
-      ;; (push-debug `(,subject ,event ,parent)) (lsp-break "compose-wh-with-vp")
+    predicate))
+;; earlier version of code for compose-wh-with-vp
+;; just invoked 'add-subject-relation' on its arguments
+;; and returned the predicate argument (which it renamed
+;; 'event'). However that function had never gotten any
+;; content and was a no-op.
+                      
 
-      ;; Used to check for (itypep predicate-referent 'copular-predication-of-pp)
-      ;; but this is no longer the right way to handle copular-pp relative clauses
-        
-        (add-subject-relation event subject)
-        
-        ;; Referent of the whole edge is the referent of the
-        ;; predicate, now with a binding to reflect the relationship
-        ;; to the subject (... or should it be called something else?)
-        event)))
+                               
 
-(defun compose-wh-with-object-relative (wh-referent predicate-referent)
-  (let ((parent *parent-edge-getting-reference*)
-        (object wh-referent)
-        (event predicate-referent))
-     
-    (add-object-relation event object)
-     
-    ;; Referent of the whole edge is the referent of the
-    ;; predicate, now with a binding to reflect the relationship
-    ;; to the subject (... or should it be called something else?)
-    event))
 
-(defun add-subject-relation (event subject)
-  ;;/// where should these go?
-  (push-debug `(,subject ,event))
-  nil)
-
-(defun add-object-relation (event subject)
-  ;;/// where should these go?
-  (push-debug `(,subject ,event))
-  nil)
-
+;;----------- appositives
 
 (defun assimilate-appositive (np appositive)
   (declare (special category::event))
@@ -181,8 +143,8 @@
             (find-variable-for-category 'item 'copular-predication))
            (t
             (if (is-passive? (right-edge-for-referent))
-                (subcategorized-variable vp-ref :object np-ref)
-                (subcategorized-variable vp-ref :subject np-ref))))))
+              (subcategorized-variable vp-ref :object np-ref)
+              (subcategorized-variable vp-ref :subject np-ref))))))
     (cond
       (*subcat-test*
        var)

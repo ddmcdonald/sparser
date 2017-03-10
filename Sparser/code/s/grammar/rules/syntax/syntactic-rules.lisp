@@ -559,7 +559,22 @@
 ;;;  WH and Relative clauses
 ;;;--------------------------
 
-(loop for rel in '(which who whom why that)
+(loop for v in '(vp vp+passive vg+passive vg)
+   do
+     (eval
+      `(def-form-rule (that ,v) 
+           :head :right-edge
+           :form subject-relative-clause
+           :referent (:function compose-that-with-vp left-edge right-edge))))
+
+(def-form-rule (that transitive-clause-without-object)
+    :head :right-edge
+    :form object-relative-clause
+    :referent (:function compose-that-with-vp left-edge right-edge))
+
+
+;;--- wh cases
+(loop for rel in '(which who whom why)
    ;;  (where, when) this is more often used as a subordinate conjunction
    do
      (eval
@@ -593,28 +608,14 @@
 	   :form pp-relative-clause
 	   :referent (:function make-pp-relative-clause left-edge right-edge))))
 
-(def-form-rule (comma pp-relative-clause)
-    :head :right-edge
-    :form pp-relative-clause
-    :referent (:daughter right-edge))
-
 
 ;;--- Embedded questions
-
-(def-form-rule (what s) 
-    :head :right-edge
-    :form s ;;/// probably should be embedded-question with a :wh subcat marker
-    :referent (:function make-subordinate-clause left-edge right-edge))
-
-(def-form-rule (where s) 
-    :head :right-edge
-    :form where-relative-clause;; this is not a subject relative -- the subject already exists
-    :referent (:function make-subordinate-clause left-edge right-edge))
-
-(def-form-rule (when s) 
-    :head :right-edge
-    :form when-relative-clause
-    :referent (:function make-subordinate-clause left-edge right-edge))
+(loop for wh in '(who what where when why) 
+     do  (def-form-rule/expr `(,wh s)
+             :head :right-edge
+             :form 's ;;/// probably should be embedded-question with a :wh subcat marker
+             :referent '(:function make-subordinate-clause left-edge right-edge)))
+;; No longer rewriting as where-relative-clause or when-relative-clause
 
 (def-form-rule (whether s)
     :form whethercomp
@@ -622,9 +623,15 @@
     :referent (:function create-whethercomp left-edge right-edge))
 
 (def-form-rule (how s)
-    :form np
+    :form thatcomp  ;; was np, but create-howcomp will change it to this
     :head :right-edge
     :referent (:function create-howcomp left-edge right-edge))
+
+
+(def-form-rule (comma pp-relative-clause)
+    :head :right-edge
+    :form pp-relative-clause
+    :referent (:daughter right-edge))
 
 
 ;;;------------------------------------------------------

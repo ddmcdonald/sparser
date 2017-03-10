@@ -19,12 +19,6 @@
 ;;;---------------
 ;;; base category
 ;;;---------------
-#|  In the course of a parse, a wh-pronoun can serve several different
-grammatical functions, and we have to look at a larger context to see
-which one applies. 
-  We use the same style of definition as with prepositions. Supply a
-standard set of brackets to the word qua function word. Define a category
-for the word and a rule that rewrite to it. |#
 
 (define-category wh-pronoun
   :specializes pronoun
@@ -35,24 +29,32 @@ for the word and a rule that rewrite to it. |#
 ;;; defining form
 ;;;---------------
 
-(defun define-wh-pronoun (string &key variable)
+(defun define-wh-pronoun (string &key ((:variable var-name)) on)
   (let* ((word (define-function-word string
                  :brackets `( ].phrase .[np  np].  phrase.[ )
                  :form category::wh-pronoun))
          (category-name (name-to-use-for-category string))
-         (expr `(define-category ,category-name
-                  :specializes wh-pronoun
-                  :instantiates :self))
-         (category (eval expr))
-         (word-rule 
-          (define-cfr category `(,word)
-            :form category::wh-pronoun
-            :schema (get-schematic-word-rule :word) ;;/// make schema for wh ??
-            :referent category)))
-    (add-rule word-rule category)
-    (values category
-            word-rule
-            word)))
+         (category-for-var (when on (category-named on)))
+         (variable (when var-name
+                     (find-variable-for-category var-name category-for-var))))
+    (when var-name
+      (assert on () "variable name ~a specified without reference category" var-name)
+      (assert variable () "~a on ~a did not specify a variable" var-name on))
+      
+    (let* ((expr `(define-category ,category-name
+                    :specializes wh-pronoun
+                    :instantiates :self
+                    :bindings (variable ,variable)))
+           (category (eval expr))
+           (word-rule 
+            (define-cfr category `(,word)
+              :form category::wh-pronoun
+              :schema (get-schematic-word-rule :word) ;;/// make schema for wh ??
+              :referent category)))
+      (add-rule word-rule category)
+      (values category
+              word-rule
+              word))))
 
  
 ;;;-------
@@ -61,58 +63,108 @@ for the word and a rule that rewrite to it. |#
 
 ;; N.b. this replaces rules/words/WH words
 
-(define-wh-pronoun "who" :variable 'actor)
-(define-wh-pronoun "whom")
-(define-wh-pronoun "whose") ;; possession
-(define-wh-pronoun "which")
-(define-wh-pronoun "what"  :variable 'patient)
-(define-wh-pronoun "where" :variable 'location)
-(define-wh-pronoun "when"  :variable 'time)
+(define-wh-pronoun "who" :variable 'actor :on 'action-verb)
+(define-wh-pronoun "whom" :variable 'actor :on 'action-verb)
 
-(define-wh-pronoun "why"   :variable 'purpose)
+(define-wh-pronoun "what" :variable 'patient :on 'action-verb)
+(define-wh-pronoun "which" :variable 'patient :on 'action-verb) ;; ??
+
+(define-wh-pronoun "where" :variable 'location :on 'has-location)
+(define-wh-pronoun "when" :variable 'time :on 'perdurant)
+
+(define-wh-pronoun "why" :variable 'purpose :on 'perdurant)
 ;;  more like reason, motive.
 ;; 'purpose' is more like an attribute
 
-(define-wh-pronoun "how"   :variable 'manner)
+(define-wh-pronoun "how" :variable 'manner :on 'perdurant)
 ;; not really manner, more 'method'
+
+(define-wh-pronoun "whose") ;; possession
 
 (define-wh-pronoun "whether") ;; polarity ?
 ;; overnight #15, aspp2 #20
 
-;;/// There's a whole flock of these -- need a proper treatment
-;;(define-wh-pronoun "how many")
-
-;; "who else <vp>"
+;; "who else <vp>" -- discourse-oriented modifiers right on the wh word. 
 
 (define-wh-pronoun "whoever")
 ;; wherever, whenever
 
 ;;;----------
-;;; grammmar
+;;; grammmar for embedded questions
 ;;;----------
-
-
-;;---- What
+  ;; called from make-subordinate-clause for wh + s
 
 ;; (p/s "tell me what you want to do now.")
 
-(def-k-method compose ((wh category::what) (i individual))
-  ;; called from make-subordinate-clause for wh + s
+
+(def-k-method compose ((wh category::who) (stmt individual))
   (declare (special category::wh-question))
-  (let ((j (define-an-individual category::wh-question
-               :wh wh
-               :statement i)))
-    ;; The individual is probably open in their object
-    ;; and the statement is a essentially a description of it
-    (let* ((var (object-variable i))
-           (wh-var
-            (if (and var (null (value-of 'variable i)))
-              var
-              (value-of 'variable wh))))
-      (setq j ;;/// bind-variable should do this for us (!!)
-            (bind-variable 'var wh-var j))
+  (let* ((var (sbuject-variable stmt))
+         ;; The statement is probably open in its subject
+         ;; and this is a essentially a description of it
+        (wh-var
+          (if (and var (null (value-of 'variable stmt)))
+            var
+            (value-of 'variable wh)))
+         (q (define-an-individual category::wh-question
+                :wh wh
+                :var wh-var
+                :statement stmt)))
+      (setq q (add-category-to-individual q (itype-of stmt)))
+      q))
 
-      (setq j (add-category-to-individual j (itype-of i)))
-      (format t "~&j = ~a ~%"  j)
-      j)))
 
+(def-k-method compose ((wh category::what) (stmt individual))
+  (declare (special category::wh-question))
+  (let* ((var (object-variable stmt))
+         ;; The statement is probably open in its object
+        (wh-var
+          (if (and var (null (value-of 'variable stmt)))
+            var
+            (value-of 'variable wh)))
+         (q (define-an-individual category::wh-question
+                :wh wh
+                :var wh-var
+                :statement stmt)))
+      (setq q (add-category-to-individual q (itype-of stmt)))
+      q))
+
+(def-k-method compose ((wh category::where) (stmt individual))
+  (declare (special category::wh-question))
+  (let* ((wh-var (value-of 'variable wh))
+         (q (define-an-individual category::wh-question
+                :wh wh
+                :var wh-var
+                :statement stmt)))
+      (setq q (add-category-to-individual q (itype-of stmt)))
+      q))
+
+(def-k-method compose ((wh category::when) (stmt individual))
+  (declare (special category::wh-question))
+  (let* ((wh-var (value-of 'variable wh))
+         (q (define-an-individual category::wh-question
+                :wh wh
+                :var wh-var
+                :statement stmt)))
+      (setq q (add-category-to-individual q (itype-of stmt)))
+      q))
+
+(def-k-method compose ((wh category::why) (stmt individual))
+  (declare (special category::wh-question))
+  (let* ((wh-var (value-of 'variable wh))
+         (q (define-an-individual category::wh-question
+                :wh wh
+                :var wh-var
+                :statement stmt)))
+      (setq q (add-category-to-individual q (itype-of stmt)))
+      q))
+
+(def-k-method compose ((wh category::how) (stmt individual))
+  (declare (special category::wh-question))
+  (let* ((wh-var (value-of 'variable wh))
+         (q (define-an-individual category::wh-question
+                :wh wh
+                :var wh-var
+                :statement stmt)))
+      (setq q (add-category-to-individual q (itype-of stmt)))
+      q))
