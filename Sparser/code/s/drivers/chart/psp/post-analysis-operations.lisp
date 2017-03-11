@@ -64,6 +64,9 @@ Return the contextual interpretation of the item."))
   "This may get more complex, so that e.g. protein categories may be interpreted metonymically as complexes..."
   c)
 
+(defmethod interpret-in-context ((v lambda-variable))
+  v)
+
 (defmethod interpret-in-context ((i individual))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   i)
@@ -354,9 +357,8 @@ where it regulates gene expression.")
     (cond
       ((cdr spec-mentions)
        (when *show-contextual-replacements*
-	 (format t 
-
-"~%--- Suppressing contextual interpretation due to ambiguous interpretations of ~s in:~%~s~%"
+	 (format t "~%--- Suppressing contextual interpretation due to ~
+                    ambiguous interpretations of ~s in:~%~s~%"
 		 (or (note-surface-string edge)
 		     (sur-string interp))
 		 (sentence-string *sentence-in-core*)))
