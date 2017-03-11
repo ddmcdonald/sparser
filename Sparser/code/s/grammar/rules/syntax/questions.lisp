@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
 ;;; copyright (c) 2011,2016-2017 David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;; 
@@ -12,30 +12,58 @@
 
 (in-package :sparser)
 
-(define-category question-core
-  :specializes phrase-interpretation ;;/// tentative - whole area needs thought
+;;;---------------------
+;;; question categories
+;;;---------------------
+
+(define-category question
+  :specializes linguistic
   :instantiates nil 
+  :binds ((statement top))
   :documentation "Common base for questions of all sorts.
  The 'statement' variable holds the proposition or event that
  is being questioned. Think of it as the question restated in
  declarative form.
    Specializations elaborate this according to the kind of question
  being asked. The basic split is between polar questions and the
- diverse kinds of WH questions."
-  :binds ((statement top)))
+ diverse kinds of WH questions.")
 
-#| In biology/verbs
-(define-category question :specializes bio-rhetorical
-    :mixins (bio-thatcomp)
-    :realization
-    (:verb "question" ;; keyword: ENDS-IN-ED 
-	   :noun "hypothesis"
-	   :etf (svo-passive)))
-|#
+
+(define-category polar-question
+  :specializes question
+  :instantiates :self 
+  :index (:temorary :key statement))
+  :documentation "This is a labeling category in that it does
+ not add any refinements or extensions to question-core. It just
+ labels the statement as a question: 'is it the case that <statement>'."
+
+
+(define-category wh-question
+  :specializes question
+  :instantiates :self
+  :binds ((wh :primitive category) ;; #<ref-category HOW>
+          (var :primitive lambda-variable) ;; height, color
+          ;;(focus ;; Trips variable for 'how <much> ..."
+          #| the rest is the statement |# )
+  ;;  :index (:temporary :sequential-keys wh attribute statement)
+  :documentation "Draft that should be able to make enough of
+ the content of the WH question explicit that we have the basis
+ for computing an answer to it.")
+
+(define-category wh-question/attribute
+  :specializes wh-question
+  :instantiates :self
+  :binds ((attribute attribute-value)) ;; #<tall>, w/ var = height
+  :documentation "")
+
 
 ;;;------------------------------------
 ;;; call from post-analysis-operations
 ;;;------------------------------------
+
+(defparameter *warn-when-can-not-formulate-question* nil
+  "Turn on when debugging these. Otherwise it's presently noisy.")
+;; (setq *warn-when-can-not-formulate-question* t)
 
 (defun make-this-a-question-if-appropriate (sentence)
   "Called from post-analysis-operations after all parsing and
@@ -55,7 +83,7 @@
                     (chart-position-after start-pos) ;; hack, kinda
                     start-pos)
                   end-pos))
-           (edges (all-tts)))
+           (edges (all-tts start-pos end-pos)))
       (cond
         (edge
          (when preposed?
@@ -95,25 +123,39 @@
                 ;;  have gotten some cases in articles
                 (warn "unhandled 3 edge question: ~a" edges))))
 
-        ;; the next option is to assume that the subject is the consistuent
-        ;; just after the aux, to 'move' it there somehow, and try to
-        ;; reparse the sentence as though it were declarative
+        (wh-initial?
+         (cond
+           ((= 2 (length edges)) ;; take the second as the statement
+            (let* ((wh (value-of 'wh (edge-referent wh-initial?)))
+                   ;; wh-initial refers to a wh-question. Consider just using it.
+                   (complement (edge-referent (second edges)))
+                   (q (compose wh complement)))
+              (unless q
+                (lsp-break "WH compose didn't work or doesn't exist"))
+              (make-edge-over-long-span
+               start-pos end-pos
+               (edge-category (second edges)) ;; ??
+               :rule 'make-this-a-question-if-appropriate
+               :form category::question
+               :referent q)))
+           (t
+            (when *warn-when-can-not-formulate-question*
+              (warn "Could not resolve edges into a WH question: ~a" edges)))))
+
+        (preposed?
+         (when *warn-when-can-not-formulate-question*
+           (warn "Could not resolve edges into a polar question: ~a" edges)))
+
         (t
-         (warn "Could not resolve edges into a question: ~a~
-              ~%preposed-aux = ~a  initial-wh = ~a"
-               edges preposed? wh-initial?))))))
+         (when *warn-when-can-not-formulate-question*
+           (warn "Could not resolve edges into a question: ~a~
+                ~%   preposed-aux = ~a  initial-wh = ~a"
+                 edges preposed? wh-initial?)))))))
+
 
 ;;;--------------------------
 ;;; polar questions (yes/no)
 ;;;--------------------------
-
-(define-category polar-question
-  :specializes question-core
-  :instantiates :self 
-  :index (:temorary :key statement))
-  :documentation "This is a labeling category in that it does
- not add any refinements or extensions to question-core. It just
- labels the statement as a question: 'is it the case that <statement>'."
 
 (defun make-polar-question (statement)
   "Abstracted constructor so it will done the same way every time."
@@ -143,7 +185,6 @@
   (push-debug edges)
   (warn "Polar PP questions are not implemented yet."))'
     
-
 (defun make-polar-adjective-question (start-pos end-pos edges)
   (let* ((be (edge-referent (first edges)))  ;; is
          (np (edge-referent (second edges))) ;; the ball
@@ -185,22 +226,27 @@
          :form category::question
          :referent q)))))
 
+
+
 ;;;--------------
 ;;; WH questions
 ;;;--------------
 
-(define-category wh-question
-  :specializes question-core
-  :instantiates :self
-  :binds ((wh :primitive category) ;; #<ref-category HOW>
-          (attribute attriute-value) ;; #<tall>
-          (var :primitive lambda-variable) ;; height, color
-          ;;(focus ;; Trips variable for 'how <much> ..."
-          #| the rest is the statement |# )
-  ;;  :index (:temporary :sequential-keys wh attribute statement)
-  :documentation "Draft that should be able to make enough of
- the content of the WH question explicit that we have the basis
- for computing an answer to it.")
+(defun make-wh-object (wh &key variable statement attribute)
+  (let* ((attribute-var nil) ;; pull from attribute
+         (var-to-use (or variable
+                         attribute-var
+                         (value-of 'variable wh))))
+    (let ((q (define-an-individual
+                 (if attribute 'wh-question/attribute 'wh-question)
+                 :wh wh
+                 :var var-to-use
+                 :statement statement)))
+      (when statement
+        (setq q (add-category-to-individual q (itype-of statement))))
+      (when attribute
+        (setq q (bind-variable 'attribute attribute q)))
+      q)))
 
 #| (p "What color is the block?")
    (p/s "Is the block on the table?")
@@ -212,10 +258,31 @@
    (p "How many blocks are you adding to the row?") ;; "going to add"
    (p "How many blocks will you add to the row?")
 
+;;-- embedded examples
+(p/s "Tell me what you want to do now.")
+(p "I couldn't find a place to put the block.") ;; purpose clause in wrong place
+(p "Who should do it?")
+(p "We don't know how to do that.") ;; bad infinitive
+
+
+
+;;-- Bio examples
+(p "Until now, it has been unclear how RAS could affect ASPP2 to enhance 
+p53 function") ;; dry-run $40
 From :id "PMC1702556" :corpus :jun15eval
    This wh-np has no aux per se and blew out the looop
 (p "Whether all EGFR ectodomain mutants share a common mechanism of 
 oncogenic receptor conversion warrants further study.")
+9th June article
+"How does fibrinogen binding to αIIbβ3 lead to activation of Src?"
+"How is the specificity of Sos-1 directed toward Ras or Rac?"
+"What type of nuclear speckles is containing the IKKε protein?"
+"Where these phosphorylated tyrosine residues are included 
+in later comparative analyses they are clearly distinguished."
+"What can one conclude from the observation that a known activator 
+of PCP signaling, XDshΔDIX, also activates three effectors of Wnt–Ca 2+ signaling?"
+"Active Ras (Ras-GTP) triggers a number of signaling cascades, among which is 
+the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 |#
 
 (defun delimit-and-label-initial-wh-term (pos-before wh-edge)
@@ -231,13 +298,10 @@ oncogenic receptor conversion warrants further study.")
    walking along the sentence prefix."
   ;; The trigger is that form of edge over the word at
   ;; this position is wh-pronoun.
-
   ;; "why" doesn't need to scan ahead. Ditto "who", "where" "when"
-
-  ;; "how", "what", "which" do
-
-  ;; "whom" is going to have a leading preposition
-
+  ;;    "how", "what", "which" do
+  ;; "whom" is going to have a leading preposition. Others could as well
+  ;; which means a different entry point
   (let* ((wh-type (edge-referent wh-edge)) ;; the category
          ;;(q (find-or-make-individual :wh wh-word))
          ;;  delay if how questions are different
@@ -245,60 +309,72 @@ oncogenic receptor conversion warrants further study.")
          (next-word (pos-terminal next-pos))
          (next-edge (highest-edge (pos-starts-here next-pos)))
          aux-edge  attr-edge  value-edge  other-edges)
-    (loop
-       (cond
-         ((auxiliary-word? next-word)  ;; we've gone as far as we should
-          (setq aux-edge next-edge)
-          ;;/// if for some reason we get a WH without an aux
-          ;; we'll never get out of this loop. What can we use
-          ;; as a backstop?
-          (return))
-         ((null next-edge)
-          ;; this happened in
-          ;; "Whether ILK, TORC2 or another enzyme is the primary AKT hydrophobic-motif Ser473 kinase specifically downstream of β1 integrins has not been investigated, and this is therefore an important open question."
-          (push next-edge other-edges))
-         ((null (edge-referent next-edge))
-          ;; happens in cases like an edge over apostrophe-s
-          (push next-edge other-edges))
-         ((itypep (edge-referent next-edge) 'attribute) ;; e.g. color
-          (setq attr-edge next-edge))
-         ((itypep (edge-referent next-edge) 'attribute-value)
-          (setq value-edge next-edge))
-         (t (push next-edge other-edges)))
-       (setq next-pos (chart-position-after  next-pos)
-             next-word (pos-terminal next-pos)
-             next-edge (highest-edge (pos-starts-here next-pos)))
-       (when (null next-edge) (return)))
+    (flet ((cover-wh (q end-pos)
+             ;; Make a phrase over the whole span of WH edges
+             ;; up to but not including the aux
+             (let ((edge
+                    (make-edge-over-long-span
+                     pos-before end-pos
+                     (edge-category wh-edge)
+                     :rule 'delimit-and-label-initial-wh-term
+                     :form category::question-marker ;;/// needs more meliflous term
+                     :referent q
+                     :constituents (edges-between pos-before next-pos))))
+               (record-initial-wh edge)
+               edge))
+           (make-wh (wh-type)
+             (let ((j (define-an-individual category::wh-question
+                          :wh wh-type))))))
+      (cond
+        ((memq (cat-symbol wh-type) '(who why where when))
+         (cover-wh (make-wh wh-type) next-pos))
+        (t
+          (loop
+           (cond
+             ((or (auxiliary-word? next-word)  ;; we've gone as far as we should
+                  (verb-category? next-edge))
+              (setq aux-edge next-edge)
+              (return))
+             ((itypep (edge-referent next-edge) 'attribute) ;; e.g. color
+              (setq attr-edge next-edge))
+             ((itypep (edge-referent next-edge) 'attribute-value) ;; "big"
+              (setq value-edge next-edge))
+             #+ignore((null next-edge)
+              ;; this happened in
+              #|"Whether ILK, TORC2 or another enzyme is the primary AKT
+              hydrophobic-motif Ser473 kinase specifically downstream of Î²1
+              integrins has not been investigated, and this is therefore
+              an important open question." |#
+              (push next-edge other-edges))
+             ((null (edge-referent next-edge))
+              ;; happens in cases like an edge over apostrophe-s
+              (push next-edge other-edges))
+             (t (push next-edge other-edges)))
+           (setq next-pos (chart-position-after next-pos)
+                 next-word (pos-terminal next-pos)
+                 next-edge (highest-edge (pos-starts-here next-pos)))
+           (when (null next-edge) (return)))
 
-    (push-debug `(,aux-edge ,attr-edge ,other-edges))
+          ;;(push-debug `(,aux-edge ,attr-edge ,other-edges))
+          ;; (lsp-break "wh-type = ~a" wh-type)
+          (unless aux-edge
+            (lsp-break "No aux-edge with ~a" wh-type))
 
-    (when aux-edge
-      (let ((q (make-simple-individual
-                category::wh-question `((wh ,wh-type)))))
-        (flet ((stash-attribute (attr)
-                 (setq q (bind-variable 'attribute attr q))
-                 (let ((var (variable-for-attribute attr)))
-                   (setq q (bind-variable 'var var q)))))
+          (let ((q (make-wh wh-type)))
+            (flet ((stash-attribute (attr)
+                     (setq q (bind-variable 'attribute attr q))
+                     (let ((var (variable-for-attribute attr)))
+                       (setq q (bind-variable 'var var q)))))
 
-          (when attr-edge ;; "what color is ..."
-            (stash-attribute (edge-referent attr-edge)))
+              (when attr-edge ;; "what color is ..."
+                (stash-attribute (edge-referent attr-edge)))
         
-          (when value-edge ;; "how big is the block?"
-            (let* ((value-class (itype-of (edge-referent value-edge))) ;; size-value
-                   (attr (when value-class (value-of 'attribute value-class))))
-              (when attr (stash-attribute attr))))
-               
-          ;; now make a phrase over the whole span of WH edges
-          ;; up to but not including the aux
-          (let ((edge (make-edge-over-long-span
-                       pos-before next-pos
-                       (edge-category wh-edge)
-                       :rule 'delimit-and-label-initial-wh-term
-                       :form category::question-marker ;;/// needs more meliflous term
-                       :referent q
-                       :constituents (edges-between pos-before next-pos))))
-            (record-initial-wh edge)
-            edge))))))
+              (when value-edge ;; "how big is the block?"
+                (let* ((value-class (itype-of (edge-referent value-edge))) ;; size-value
+                       (attr (when value-class (value-of 'attribute value-class))))
+                  (when attr (stash-attribute attr))))
+
+              (cover-wh q next-pos))))))))
   
 
 (defun apply-question-marker (wh-edge vg-edge np-edge)
@@ -339,6 +415,9 @@ oncogenic receptor conversion warrants further study.")
     (revise-parent-edge :form category::question
                         :referent w)
     w))
+
+
+
 
 
 
@@ -469,23 +548,3 @@ oncogenic receptor conversion warrants further study.")
 		    content right-edge)))
 |#
 
-#|   These don't belong here
-
-;; odds and ends...
-
-;; (def-cfr event (event spatial-orientation) ;; flushed spatial-orientation
-;;   :form s
-;;   :referent (:head left-edge
-;; 	     :bind (location . right-edge)))
-
-(def-cfr event (event deictic-location)
-  :form s
-  :referent (:head left-edge
-	     :bind (location . right-edge)))
-
-(def-cfr event (wh-pronoun event)
-  :form s
-  :referent (:instantiate-individual question
-             :with (type left-edge
-                         content right-edge)))
-|#

@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "general-verbs"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: February 2017
+;;; version: March 2017
 
 ;; Lifted out of verbs.lisp 2/23/17. These verbs are either
 ;; quite general (applicable to many domains), or are needed
@@ -11,53 +11,6 @@
 
 
 (in-package :sparser)
-
-
-(define-category include :specializes bio-relation
-  :realization
-  (:verb ("include" :present-participle "includingxxx")
-         :etf (svo)
-         ))
-
-(define-category stay
-  :specializes be
-  :mixins (bio-rhetorical)
-  :realization
-    (:verb "stay"
-     :etf (svo)))
-(make-copular-def "stay")
-
-
-(define-category start :specializes bio-rhetorical
-  :realization (:verb "start" :etf (svo)))
-
-(define-category call :specializes bio-rhetorical
-  :realization (:verb "call" :etf (svo)))
-
-
-(define-category improve :specializes bio-method
-  :realization
-  (:verb "improve" :etf (svo-passive)))
-
-
-(define-category convince :specializes bio-rhetorical
-  :realization
-  (:verb "convince"
-         :noun "conviction" :etf (svo-passive)))
-
-
-(define-category lacking :specializes bio-relation
-  :realization
-  (:verb ("lack" ;; don't block noun
-          :third-singular "lacks" ;; don't block noun
-          :past-tense "lacked"
-          :present-participle "lacking")
-         :etf (svo)))
-
-(define-category think :specializes bio-rhetorical
-  :realization
-  (:verb ("think" :past-tense "thought") :etf (svo-passive)))
-
 
 
 ;; According to Sketch Engine on the Mitre corpus,
@@ -179,6 +132,8 @@
      :noun "blockage"))
 
 
+(define-category call :specializes bio-rhetorical
+  :realization (:verb "call" :etf (svo)))
 
 (define-category cause
   :specializes positive-bio-control
@@ -207,14 +162,6 @@
              :to resulting
              :into resulting))
 
-(define-category conversion-change :specializes change   ;; for our purposes, since we only have biologically relevant reactions
-   :realization (:noun "conversion"
-                       :verb "convert"
-                       :etf (svo-passive)
-                       :to resulting
-                       ))
-
-
 (define-category confer :specializes bio-control
     :binds ((to bio-entity)
             (bio biological))
@@ -225,6 +172,7 @@
            :to to
            :upon bio))
 
+
 (define-category consider :specializes bio-rhetorical
     :mixins (bio-whethercomp)
     :binds ((tocomp (:or be biological))) ;; could be "the effects..."
@@ -234,6 +182,7 @@
 	   :noun "consideration"
 	   :etf (svo-passive)
            :to-comp tocomp))
+
 
 (define-category contrast :specializes bio-rhetorical
   :binds ((contrasted-with biological))
@@ -276,6 +225,18 @@
                       :o contribution
                       :to object
                       :to-comp object))
+
+(define-category conversion-change :specializes change   ;; for our purposes, since we only have biologically relevant reactions
+   :realization (:noun "conversion"
+                       :verb "convert"
+                       :etf (svo-passive)
+                       :to resulting
+                       ))
+
+(define-category convince :specializes bio-rhetorical
+  :realization
+  (:verb "convince"
+         :noun "conviction" :etf (svo-passive)))
 
 (define-category cooperate :specializes bio-act
   :realization
@@ -364,6 +325,16 @@
 		      :etf (svo-passive)
 		      :noun "development"))
 
+(define-category diminish :specializes negative-bio-control
+  :restrict ((object (:or biological scalar-quality)))
+  :realization
+  (:verb ("diminish"  :third-singular "diminishes"  :past-tense "diminished"
+          :present-participle "diminishing")
+         :etf (svo-passive)
+         :for object
+         :in object
+         :of object
+         :optional-object t))
 
 ;; e.g. displayed sustained ERK phosphorylation
 (define-category display :specializes bio-rhetorical
@@ -561,25 +532,22 @@
          :etf (svo-passive)))
 
 
+(define-category improve :specializes bio-method
+  :realization
+  (:verb "improve" :etf (svo-passive)))
+
+(define-category include :specializes bio-relation
+  :realization
+  (:verb ("include" :present-participle "includingxxx")
+         :etf (svo)
+         ))
+
 (define-category incorporate :specializes bio-relation 
   :realization 
   (:verb "incorporate" :noun "incorporation"
          :etf (svo-passive)
          :o theme
          :into subject))
-
-
-(define-category diminish :specializes negative-bio-control
-  :restrict ((object (:or biological scalar-quality)))
-  :realization
-  (:verb ("diminish"  :third-singular "diminishes"  :past-tense "diminished"
-          :present-participle "diminishing")
-         :etf (svo-passive)
-         :for object
-         :in object
-         :of object
-         :optional-object t))
-
 
 (define-category indicate :specializes bio-rhetorical
     :mixins (bio-thatcomp)
@@ -684,6 +652,14 @@
 	   :etf (svo-passive)
            :about topic
            :to-comp tocomp))
+
+(define-category lacking :specializes bio-relation
+  :realization
+  (:verb ("lack" ;; don't block noun
+          :third-singular "lacks" ;; don't block noun
+          :past-tense "lacked"
+          :present-participle "lacking")
+         :etf (svo)))
 
 
 (delete-noun-cfr (resolve "lead"))
@@ -953,7 +929,7 @@
          :against against)) ;; "12,484 genes were queried against KEGG biopathways"
 
 
-(define-category question :specializes bio-rhetorical
+(define-category bio-question :specializes bio-rhetorical
     :mixins (bio-thatcomp)
     :realization
     (:verb "question" ;; keyword: ENDS-IN-ED 
@@ -1091,19 +1067,10 @@
     (:verb "seem"
 	   :etf (svo)
            :to-comp tocomp))
+(make-copular-def "seem")
 
 (def-synonym seem (:verb "appear" :etf (svo)))
-
-;;>>>>>> copulars should do this
-(def-form-rule (seem adjective)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
-
-(def-form-rule (seem adjp)
-  :form vp
-  :referent (:function make-copular-adjective left-edge right-edge))
-
-;;<<< end forms queued to move to be.lisp
+(make-copular-def "appear")
 
 
 (define-category set-value :specializes caused-bio-process
@@ -1133,6 +1100,18 @@
     :realization
     (:verb "slow" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)))
+
+(define-category stay
+  :specializes be
+  :mixins (bio-rhetorical)
+  :realization
+    (:verb "stay"
+     :etf (svo)))
+(make-copular-def "stay")
+
+
+(define-category start :specializes bio-rhetorical
+  :realization (:verb "start" :etf (svo)))
 
 (define-category strengthen :specializes positive-bio-control
   :realization
@@ -1177,6 +1156,10 @@
          :etf (svo-passive)
          :for presence-of
          :o object)) ;; seems to be needed to make use of changed definition of object -- TO-DO fisx handling of restrict
+
+(define-category think :specializes bio-rhetorical
+  :realization
+  (:verb ("think" :past-tense "thought") :etf (svo-passive)))
 
 (define-category treatment :specializes bio-method
   :restrict ((object (:or species cell-entity))) ;; the variable "disease" specializes "object" and has special prepositions
