@@ -25,7 +25,7 @@
       ;;(format t "~&i = ~a~%" i)
       i)))
 
-;; 
+
 (def-k-method compose ((operator category::spatial-operator)
                        (place category::has-location)) ;; any 'object'
   ;; Designed for phrases like "on the table",  or "the top block"
@@ -54,6 +54,7 @@
   "Called in noun-noun-compound when the qualifier ('operator')
    is a dependent-location such as 'bottom' or 'end'."
   (bind-variable 'location operator head))
+
 #|     Too confusing for the generator since it only has the one
        realization pattern which presupposes the ground variable
    We make an instance of object-dependent-location that is
