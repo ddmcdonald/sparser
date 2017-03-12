@@ -369,6 +369,7 @@
                    (chart-position-after position-before)))))
 
 
+;; (trace-eos-check)
 (defun simple-eos-check (position-before word)
   "Adapted to successive sweep document processing from the
    incremental end-of-source-check version. Throws to
@@ -384,19 +385,24 @@
        (tie-off-ongoing-sentence-at-eos position-before)
        ;;(lsp-break "hit eos = ~a" *scanning-terminals*)
        (ecase *scanning-terminals*
-         (:polywords (throw :pw-sweep position-before))))
+         (:polywords
+          (tr :eos-scanning-terminals/pw)
+          (throw :pw-sweep position-before))))
      (*pre-read-all-sentences*
       ;; The catch is in initiate-successive-sweeps when
       ;; it's reading a pre-populated document
+      (tr :eos-pre-read-sentences)
       (throw 'sentences-finished nil))
      (*reading-populated-document*
       ;; In this case EOS just means that we've finished the
       ;; text of the current paragraph, so we throw to
       ;; its catch.
+      (tr :eos-reading-document)
       (throw 'do-next-paragraph nil))
      (t
       ;; This just does the throw up to chart-based-analysis
       ;; for terminating-chart-processing
+      (tr :eos-terminate-chart-level)
       (terminate-chart-level-process)))))
 
 ;; (trace-fsas)

@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "objects;doc;"
-;;;  Version:  September 2016
+;;;  Version:  March 2017
 
 ;; Created 2/6/13 to solve the problem of keeping document/section context.
 ;; [sfriedman:20130206.2038CST] I'm writing this using /objects/chart/edges/object3.lisp as an analog.
@@ -653,28 +653,34 @@
 
 (defun tie-off-ongoing-sentence-at-eos (pos-with-eos)
   "Called from simple-eos-check when we're in *scanning-terminals*
-   mode and the word on the position is the eos marker (control-B)."
+   mode and the word on the position is the eos marker (control-B).
+   We used the same protocol as period-hook does -- it returns
+   the position that has the period on it. "
   (let ((s (sentence))) ;; *current-sentence*
     (unless (ends-at-pos s)
-      (set-sentence-endpoints (chart-position-before pos-with-eos) s))
+      (set-sentence-endpoints pos-with-eos s))
     s))
 
 (defun set-sentence-endpoints (period-pos sentence)
   "Called from period-hook during the sentence-making document
    sweep. The period-pos is the one that holds the period."
   (setf (ends-at-pos sentence) period-pos)
-  (setf (ends-at-char sentence) (1+ (pos-character-index period-pos)))
+  (setf (ends-at-char sentence)
+        ;; include a period, exclude the EOS flag (cntrl-B)
+        (if (eq (pos-terminal period-pos) *end-of-source*)
+          (pos-character-index period-pos)
+          (1+ (pos-character-index period-pos))))
+  
   (let ((start (starts-at-char sentence))
         (end (ends-at-char sentence)))
     (unless (> start 0) (error "Sentence start is negative"))
     (unless (> end start) 
       (push-debug `(,sentence ,start ,end ,period-pos))
       (error "Sentence end (~a) less than start (~a)" end start))
+    
     (let ((substring (extract-string-from-char-buffers
                       (starts-at-char sentence)
                       (ends-at-char sentence))))
-      ;; can remove the extra step when we're guarenteed that
-      ;; the cross-buffer code is robust.
       (setf (sentence-string sentence) substring)
       sentence)))
 

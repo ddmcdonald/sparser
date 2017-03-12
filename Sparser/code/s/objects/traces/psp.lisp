@@ -617,11 +617,6 @@
                (pos-token-index p) (word-pname w))))
 
 
-(deftrace :end-of-source-check (w p)
-  (declare (ignore w))
-  (when *trace-network-flow*
-    (trace-msg "[scan] check for end of source ~A" p)))
-
 
 
 (deftrace :adjudicate-after-pnf (position-returned)
@@ -1331,7 +1326,33 @@
 (defun untrace-terminals-loop ()
   (setq *trace-terminals-loop* nil))
 
+(defparameter *trace-eos-check* nil)
+(defun trace-eos-check ()
+  (setq *trace-eos-check* t))
+(defun untrace-eos-check ()
+  (setq *trace-eos-check* nil))
 
+
+(deftrace :eos-scanning-terminals/pw ()
+  (when *trace-eos-check*
+    (trace-msg "[eos} inside polyword scan. Throw :pw-sweep")))
+
+(deftrace :eos-pre-read-sentences ()
+  (when *trace-eos-check*
+    (trace-msg "[eos} preread-all-sentences. Throw sentences-finished")))
+
+(deftrace :eos-reading-document ()
+  (when *trace-eos-check*
+    (trace-msg "[eos} reading document. Throw do-next-paragraph")))
+
+(deftrace :eos-terminate-chart-level ()
+  (when *trace-eos-check*
+    (trace-msg "[eos} terminating chart processing")))
+
+(deftrace :end-of-source-check (w p)
+  (declare (ignore w))
+  (when (or *trace-network-flow* *trace-eos-check*)
+    (trace-msg "[scan] check for end of source ~A" p)))
 
 
 
