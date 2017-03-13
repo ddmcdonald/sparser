@@ -141,6 +141,9 @@
          (cond
            ((itypep vp-ref 'copular-predication)
             (find-variable-for-category 'item 'copular-predication))
+           ((itypep vp-ref 'wh-question) ;; already checked on the var
+            ;; see compose-wh-with-vp for details
+            (value-of 'var vp-ref))
            (t
             (if (is-passive? (right-edge-for-referent))
               (subcategorized-variable vp-ref :object np-ref)
@@ -160,7 +163,7 @@
                (context-needs-clause? np-ref vp-ref))
           (when (itypep vp-ref 'copular-predication)
             (push-debug `(,np-ref ,vp-ref))
-            (break "Extend subj rel"))
+            (break "Extend subj rel for copulas"))
           (let ((clause-ref (bind-dli-variable var np-ref vp-ref)))
             ;;(lsp-break "context-needs-clause? true")
             ;;(revise-parent-edge :form category::s)
