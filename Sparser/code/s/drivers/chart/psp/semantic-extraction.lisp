@@ -23,12 +23,14 @@
   "Holds the entities for the last sentence when *readout-relations* is up")
 
 (defparameter *print-sem-tree* nil
-  "Set to T to change the structures extracted for collections, to allow psemtree to produce better output,
-without damaging other code.")
+  "Set to T to change the structures extracted for collections, to allow
+ psemtree to produce better output, without damaging other code.")
 
 (defparameter *show-words-and-polywords* nil)
+
 (defparameter *for-spire* nil
-  "If true, then we put category and id information into the tree explicitly, rather than putting the individual into the tree.")
+  "If true, then we put category and id information into the tree explicitly,
+ rather than putting the individual into the tree.")
 
 
 (defun identify-relations (sentence)
@@ -47,7 +49,7 @@ without damaging other code.")
          raw-entities  raw-relations  tt-contents
          treetop  referent  pos-after )
 
-    ;; modeled on sweep-sentence-treetops
+    ;; loop modeled on sweep-sentence-treetops
     (loop
        (multiple-value-setq (treetop pos-after) ;; multiple?
 	 (next-treetop/rightward rightmost-pos))
@@ -109,19 +111,33 @@ without damaging other code.")
     (reverse individuals)))
 
 
-;; Set this variable to collect information about realizations of biochemical-entities in text...
-(defparameter *bce-ht* nil
-  	;;(make-hash-table :size 10000)
-  	)
+;; Set this variable to collect information about realizations of
+;; biochemical-entities in text...
+(defparameter *bce-ht* nil)  ;;(make-hash-table :size 10000)
+  	
 
 (defparameter *save-surface-text-as-variable* t)
 (defparameter *save-surface-text-classes*
   '(bio-chemical-entity pathway bio-complex))
 
 
-(defparameter *bio-entity-heads* nil)  ;;
-(defparameter *bio-chemical-heads* nil)  ;;	
+(defparameter *bio-entity-heads* nil)
+(defparameter *bio-chemical-heads* nil)
 (defparameter *localization-interesting-heads-in-sentence* nil)
+
+(defun collect-bio-entity-heads ()
+  (setq *bio-entity-heads* (make-hash-table :size 200000 :test #'equal)))
+
+(defun collect-bio-chemical-heads ()
+  (setq *bio-chemical-heads* (make-hash-table :size 200000 :test #'equal)))
+
+(defun collect-localization-interesting-heads-in-sentence ()
+  (setq *localization-interesting-heads-in-sentence* (list t)))
+
+(defun reset-localization-interesting-heads-in-sentence ()
+  (setq *localization-interesting-heads-in-sentence* (list t)))
+
+
 (defparameter *local-split-sentences* nil)
 (defun sort-loc-heads ()
   (remove-duplicates
@@ -154,19 +170,9 @@ without damaging other code.")
       (loop for (normal red) on (reverse items) by #'cddr
             do (setq result (format nil "~a~a~a" result normal (red-string red))))
       result)))
-    
 
-(defun collect-bio-entity-heads ()
-  (setq *bio-entity-heads* (make-hash-table :size 200000 :test #'equal)))
 
-(defun collect-bio-chemical-heads ()
-  (setq *bio-chemical-heads* (make-hash-table :size 200000 :test #'equal)))
-
-(defun collect-localization-interesting-heads-in-sentence ()
-  (setq *localization-interesting-heads-in-sentence* (list t)))
-
-(defun reset-localization-interesting-heads-in-sentence ()
-  (setq *localization-interesting-heads-in-sentence* (list t)))
+;;--- saving surface strings
 
 (defun save-surface-string (edge)
   (note-surface-string edge))
@@ -182,7 +188,6 @@ without damaging other code.")
    of the edge.")
 
 (defparameter *record-all-surface-strings* nil)
-
 
 (defun note-surface-string (edge)
   ;; Called on every edge from complete-edge/hugin
@@ -220,6 +225,8 @@ without damaging other code.")
               (maybe-record-bio-entity-heads referent edge)
               (maybe-record-bio-chemical-heads referent edge)))))))
 
+
+
 (defun maybe-record-bio-chemical-entity-strings (string referent)
   (when (and *bce-ht* (itypep referent 'bio-chemical-entity))
     (pushnew string (gethash referent *bce-ht*) :test #'equal)))
@@ -234,7 +241,8 @@ without damaging other code.")
     (push (list edge (head-string edge)) *localization-interesting-heads-in-sentence*)))
 
 (defun maybe-insert-raw-text-variable (referent edge)
-  "HMS wanted to have the raw text for items of interest, so record it as a variable in the referent"
+  "HMS wanted to have the raw text for items of interest, so record it 
+   as a variable in the referent"
   (or
    (when (and *save-surface-text-as-variable*
               (loop for st-class in *save-surface-text-classes*
@@ -243,7 +251,6 @@ without damaging other code.")
        ;; do this after the code above, so that the *bce-ht*
        ;;  is keyed on the individual without the text
        ;; (format t "set raw-text of ~s to ~s~%" edge (head-string edge))
-
        (setq referent (bind-dli-variable 'raw-text (head-string edge) referent))
        (setf (edge-referent edge) referent)))
    referent))
@@ -279,7 +286,8 @@ without damaging other code.")
       (format nil "~s" i))))
 
 (defun get-string-from-edge-word (item)
-  "Given either an edge or word, retrieves the surface string -- if neither, just returns the item"
+  "Given either an edge or word, retrieves the surface string.
+   If neither, just returns the item"
   (cond ((edge-p item)
          (string-right-trim " " (retrieve-surface-string item)))
         ((word-p item)
@@ -398,8 +406,7 @@ without damaging other code.")
     (when (and (consp tree)
                (not (eq 'collection (car tree))))
       (when (not (consp (car tree)))
-        (if
-         (not (entity-p (car tree)))
+        (if (not (entity-p (car tree)))
          (lsp-break "(car tree) is not an tntity in ~s"
                     (sentence-string *sentence-in-core*))
          (push (extract-relation tree) relations))))
@@ -531,7 +538,8 @@ without damaging other code.")
     (t `(,i))))
 
 (defmethod collect-model-description ((i individual))
-  (declare (special script category::number category::ordinal *for-spire* *sentence-results-stream*))
+  (declare (special script category::number category::ordinal
+                    *for-spire* *sentence-results-stream*))
   (cond
     ((gethash i *semtree-seen-individuals*)
      (if (or *for-spire* *sentence-results-stream*)
@@ -619,7 +627,9 @@ without damaging other code.")
                          desc))
                   (rule-set) ;; the word "anti" presently does this
                   ;; because the fix to bio-pair isn't in yet (ddm 6/9/15)
-                  (lambda-variable)
+                  (lambda-variable
+                   (push `(,var-name ,(format nil "~a" value))
+                         desc))
                   (otherwise
                    (format t "~&~%Collect model: ~
                             Unexpected type of value of a binding: ~a~%" value))))))
