@@ -398,7 +398,7 @@
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
                     *localization-interesting-heads-in-sentence*
-                    *local-split-sentences*))
+                    *localization-split-sentences*))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
   (when *end-of-sentence-display-operation*
     (funcall *end-of-sentence-display-operation* sentence))
@@ -410,5 +410,5 @@
       (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*))
   (when *localization-interesting-heads-in-sentence*
-    (push (split-sentence-string-on-loc-heads) *local-split-sentences*))
+    (push (split-sentence-string-on-loc-heads) *localization-split-sentences*))
   )

@@ -142,7 +142,7 @@ set in. This initialization manages them.|#
             ~%  Your argument: ~A~
             ~%  is a ~A" s-exp (type-of s-exp)))
 
-  (push s-exp *per-article-initializations*)
+  (pushnew s-exp *per-article-initializations* :test #'equal)
   (length *per-article-initializations*))
 
 
