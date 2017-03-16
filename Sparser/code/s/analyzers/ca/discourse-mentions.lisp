@@ -533,9 +533,13 @@ so we return the edge for the POBJ"
       (eq (get-dli ref) (get-dli value))
       (eq ref value)))
 
+(defun dependency-pair-variable (dp) (car dp))
+(defun dependency-pair-value (dp) (second dp))
+
 (defun create-dependency-pair (b e)
   (declare (special *sentence-in-core*))
-  `(,(binding-variable b)
+  `(,(binding-variable b) ;; dependency-pair-variable
+     ;; dependency-pair-value
      ,(cond ((consp e) e)
             ((or (member (pname (binding-variable b))
                          '(has-determiner
