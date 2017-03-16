@@ -728,7 +728,7 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
                       (assoc :type event)
                       (assoc :subtype event))))
          (reach-event-strings (mapcar #'car reach-event-triggers)))
-    (declare (special decoded-reach entities))
+    (declare (special decoded-reach entities reach-event-triggers reach-event-strings reach-sent))
     (cond ((null curr-sent)
            (qepp (format nil "~a." reach-sent))
            (setq curr-sent (previous (sentence)))
@@ -736,16 +736,18 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
           (t (setq sparser-sent-string (sparser-complete-sent-string curr-sent))))
     (multiple-value-bind (sparser-reach-events sparser-missed-triggers) 
         (get-sparser-reach-events curr-sent reach-event-strings)
-      (if sparser-missed-triggers
-          (warn "missed events in REACH ~s ~s~% ~s~%"
+      (declare (special sparser-missed-triggers))
+      (when sparser-missed-triggers
+        (warn "missed events in REACH ~s ~s~% ~s~%"
                 reach-id reach-sent 
                 (loop for evt in (cdr (expanded-reach-events reach-id))
                       when
                         (loop for str in sparser-missed-triggers
                               thereis
                                 (equal str (car evt)))
-                      collect evt)))
-      ;;(lsp-break "compare-to-reach")
+                      collect evt))
+        ;;(lsp-break "compare-to-reach")
+        )
       (push reach-sent *reach-sents*)
     
       (loop for trio in reach-event-triggers
@@ -906,22 +908,38 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
                                        (when ss (string-trim " " ss))))
                        *found-bces*))))))
 
-(defparameter *use-traverse-sem-for-reach-events* nil)
+(defparameter *use-traverse-sem-for-reach-events* t)
 
 (defun get-sparser-reach-events (curr-sent reach-event-triggers)
   (let ((*reach-evt-triggers* reach-event-triggers)
         (*reach-evt-edges* nil)
         (*found-reach-triggers* nil))
     (declare (special *reach-evt-triggers* *reach-evt-edges* *found-reach-triggers*))
-    (if *use-traverse-sem-for-reach-events*
-        (get-sparser-reach-events-base curr-sent)
-        (get-sparser-reach-events-from-sentence-individuals curr-sent))
-    (values *reach-evt-edges* 
-            (loop for tr in *reach-evt-triggers*
-                  unless
-                    (loop for frt in *found-reach-triggers*
-                          thereis (string-final? frt tr))
-                  collect tr))))
+    (cond (*use-traverse-sem-for-reach-events*
+           (let ((mentions (get-sparser-reach-events-base curr-sent)))
+             ;;(setq *reach-evt-edges* (mapcar #'mention-source mentions))
+             (get-sparser-reach-events-base curr-sent)
+             (values *reach-evt-edges*
+                    (loop for tr in *reach-evt-triggers*
+                         unless
+                           (loop for frt in *found-reach-triggers*
+                                 thereis (string-final? frt tr))
+                          collect tr)
+                    #+ignore ;; this does not seem to work
+                    (loop for edge in *reach-evt-edges*
+                           append
+                             (let ((hs (head-string edge)))
+                               (loop for tr in *reach-evt-triggers*
+                                     when (string-final? (head-string edge) tr)
+                                     collect tr))))))
+          (t
+           (get-sparser-reach-events-from-sentence-individuals curr-sent)
+           (values *reach-evt-edges* 
+                   (loop for tr in *reach-evt-triggers*
+                         unless
+                           (loop for frt in *found-reach-triggers*
+                                 thereis (string-final? frt tr))
+                         collect tr))))))
 
 (defun get-sparser-reach-events-from-sentence-individuals (curr-sent)
   (declare (special *reach-evt-triggers* *reach-evt-edges* *found-reach-triggers*))
@@ -930,7 +948,8 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
 ;    (lsp-break "reach-evts pre loop")
     (loop for i in (safe-sentence-individuals (contents curr-sent))
           do
-            (let* ((edge (mention-source (best-recent-mention i)))
+            (let* ((bre (best-recent-mention i))
+                   (edge (when bre (mention-source bre)))
                    (hs (head-string edge)))
               (declare (special edge hs))
               (when (member hs *reach-evt-triggers* :test #'string-final?)
@@ -956,21 +975,38 @@ the values are the list of reach-IDs (PMC-ID and sentence number) which contain 
          do (return mention))
    (car (mention-history i))))
 
-(defun record-reach-events (indiv)
+(defun record-reach-events (ev?)
   (declare (special *reach-evt-triggers* *reach-evt-edges* *found-reach-triggers*))
-  (when (individual-p indiv)
-    (let* ((mention (best-recent-mention indiv))
-           (edge (when mention (mention-source mention))))
-      (declare (special edge))
-      (if (eq (itype-of indiv) (category-named 'collection))
-          (loop for e in (edge-constituents edge)
-                do
-                (record-reach-events (edge-referent e)))
-          (when (edge-p edge)
-            (let ((head-str (head-string edge)))
-              (when (member head-str *reach-evt-triggers* :test #'equal)
-                (push edge *reach-evt-edges*)
-                (push head-str *found-reach-triggers*))))))))
+  (cond
+    ((and ev? (eq 'discourse-mention (type-of ev?)))
+     (let* ((mention ev?)
+            (edge (when (edge-p (mention-source mention)) (mention-source mention))))
+       (declare (special edge))
+       (if (is-basic-collection? (base-description mention))
+           (loop for evt in (value-of 'items (base-description ev?))
+                 do (record-reach-events evt))
+           (when edge
+             (let ((head-str (head-string edge)))
+               (when (member head-str *reach-evt-triggers* :test #'equal)
+                 (push edge *reach-evt-edges*)
+                 (push head-str *found-reach-triggers*)))))))
+    ((individual-p ev?)
+     (let* ((mention (best-recent-mention ev?))
+            (edge (when mention (mention-source mention))))
+       (declare (special edge))
+       (if (eq (itype-of ev?) (category-named 'collection))
+           (loop for evt in (value-of 'items ev?)
+                 do
+                   (record-reach-events evt))
+           #+ignore ;; breaks when there is no edge...
+           (loop for e in (edge-constituents edge)
+                 do
+                   (record-reach-events (edge-referent e)))
+           (when (edge-p edge)
+             (let ((head-str (head-string edge)))
+               (when (member head-str *reach-evt-triggers* :test #'equal)
+                 (push edge *reach-evt-edges*)
+                 (push head-str *found-reach-triggers*)))))))))
   
 
 (defun get-reach-entities-strings (entities)
