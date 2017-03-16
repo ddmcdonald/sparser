@@ -703,6 +703,7 @@
 ;;;; semantic tree traversal
 
 
+#+ignore
 (defmethod traverse-sem ((s sentence) fn)
   (traverse-sem (previous s) fn)
   (funcall fn s)
@@ -711,6 +712,22 @@
           (edge-p tt)
         do
           (traverse-sem (edge-referent tt) fn)))
+
+(defmethod traverse-sem ((s sentence) fn)
+  (traverse-sem (previous s) fn)
+  (funcall fn s)
+  (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
+        do (when (edge-p tt) (traverse-sem (edge-mention tt) fn))))
+
+(defmethod traverse-sem ((m discourse-mention) fn)
+  (funcall fn m)
+  (if (is-basic-collection? (base-description m))
+      (loop for dep-pair in (dependencies m)
+            when (eq 'items (pname (dependency-pair-variable dep-pair)))
+            do (loop for v in (dependency-pair-value dep-pair)
+                     do (traverse-sem v fn)))
+      (loop for dep-pair in (dependencies m)
+            do (traverse-sem (dependency-pair-value dep-pair) fn))))
 
 (defmethod traverse-sem ((i individual) fn)
   (declare (special i))
@@ -747,6 +764,9 @@
 (defmethod traverse-sem ((binding binding) fn)
   (traverse-sem (binding-value binding) fn))
 
+(defmethod traverse-sem ((v lambda-variable) fn)
+  nil)
+
 ;; a useful example -- traversal functions to be used with traverse-sem
 (defmethod find-biochemical-entities ((s sentence))
   (traverse-sem s #'find-bce)
@@ -772,12 +792,13 @@
   *found-bces*)
 
 (defun visit-indiv-generalizations (i cat fn)
-  (loop for (key parent) in (indiv-uplinks i)
-        when
-          (eq (itype-of parent) cat)
+  (loop for pair in (indiv-uplinks i)
         do
-          (funcall fn parent)
-          (visit-indiv-generalizations parent cat fn)))
+          (let ((key (car pair))
+                (parent (cdr pair)))
+            (when (eq (itype-of parent) cat)
+              (funcall fn parent)
+              (visit-indiv-generalizations parent cat fn)))))
     
 ;; another useful example
 
@@ -803,9 +824,15 @@
   (if (reach-process-p c)
       (record-bp c)))
 
+(defmethod find-bps ((l cons))
+  (loop for item in l do (find-bps item)))
+
 (defmethod find-bps ((i individual))
   (when (reach-process-p i)
     (record-bp i)))
+
+(defmethod find-bps ((m discourse-mention))
+  (when (find-bps (base-description m)) (record-bp m)))
 
 (defun record-bp (i)
   (push i *found-bps*))
