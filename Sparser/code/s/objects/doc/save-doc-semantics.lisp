@@ -312,6 +312,12 @@
   (start-cat c stream nil)
   (finish-cat stream nil))
 
+(defmethod write-sem ((var lambda-variable) stream &optional (newline t))
+  ;; case where the value of a binding is a lambda variable -- DAVID
+  (declare (ignore newline)(special var))
+  (start-cat (format nil "\"lambda-var=~a\"" var) stream nil)
+  (finish-cat stream nil))
+
 (defun write-lambda-binding (variable stream &optional newline)
   (if *use-xml*
       (let ((name (string-downcase (pname variable))))
@@ -474,6 +480,7 @@
 (defmethod small-binding-list ((x number)) t)
 (defmethod small-binding-list ((x string)) t)
 (defmethod small-binding-list ((x referential-category)) t)
+(defmethod small-binding-list ((x lambda-variable)) t)
 
 (defmethod small-binding-list ((i individual))
   (let ((bl (filter-bl i)))
