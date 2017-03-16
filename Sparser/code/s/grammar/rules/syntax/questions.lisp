@@ -358,7 +358,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
           ;;(push-debug `(,aux-edge ,attr-edge ,other-edges))
           ;; (lsp-break "wh-type = ~a" wh-type)
           (unless aux-edge
-            (lsp-break "No aux-edge with ~a" wh-type))
+            (warn "No aux-edge with ~a" wh-type))
 
           (let ((q (make-wh wh-type)))
             (flet ((stash-attribute (attr)
