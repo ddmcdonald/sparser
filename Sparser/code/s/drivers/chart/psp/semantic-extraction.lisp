@@ -138,7 +138,7 @@
   (setq *localization-interesting-heads-in-sentence* (list t)))
 
 
-(defparameter *local-split-sentences* nil)
+(defparameter *localization-split-sentences* nil)
 (defun sort-loc-heads ()
   (remove-duplicates
    (sort (loop for pair in
