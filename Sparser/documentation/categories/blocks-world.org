@@ -1,259 +1,269 @@
 -*-org-*-
-#+DATE: 10/23/16 15:26:3
+#+DATE: 3/14/17 18:36:2
 
- + 0 top vars: {modifier, negation, predication, comparative-predication, compared-to, superlative-predication, superlative-from-set, predicate, ordinal, appositive-description, comp, subordinate-conjunction, purpose, quantifier, number, has-determiner, event-relation, amount-of-time, intensity, category}
-  + 1 speech-act 
-    + 2 sa-propose 
-      + 3 explicit-suggestion vars: {marker, suggestion}
-    + 2 greeting vars: {name}
-    + 2 acknowledgement vars: {name}
-  + 1 endurant vars: {number, quantifier, name}
+ + 0 top vars: {modifier, name, negation, raw-text, predicate, predication, ordinal, appositive-description, comp, subordinate-conjunction, quantifier, number, has-determiner, event-relation, amount-of-time, intensity, superlative-predication, comparative-predication, comparative, compared-to, superlative-from-set, category}
+  + 1 abstract 
+    + 2 amount vars: {measurement, stuff, alternative-amount, time-period}
+      + 3 amount-at-time vars: {amount, time}
+      + 3 amount-of-time vars: {units, quantity}
+      + 3 fraction-of-amount-of-time vars: {selector, portion}
+      + 3 vague-amount vars: {name}
+    + 2 collection vars: {items, type, number}
+      + 3 sequence vars: {items, item, type, number}
+        + 4 hyphenated-pair vars: {left, right}
+        + 4 hyphenated-triple vars: {left, middle, right}
+        + 4 number-colon-number vars: {left, right}
+        + 4 qualifying-pair vars: {head, qualifier}
+        + 4 sequence-of-numbers vars: {numbers}
+        + 4 slashed-pair vars: {left, right}
+        + 4 slashed-sequence 
+        + 4 two-part-label vars: {part-one, part-two}
+        + 4 word-colon-word vars: {left, right}
+    + 2 linguistic 
+      + 3 action-verb vars: {actor, patient, theme}
+        + 4 directed-action vars: {beneficiary}
+      + 3 control-verb vars: {patient, theme}
+      + 3 knowledge-verb vars: {experiencer}
+      + 3 known-in-discourse 
+      + 3 negative 
+      + 3 no-space-prefix vars: {word}
+      + 3 original-document-structure 
+        + 4 html-markup-element 
+          + 5 html-attribute vars: {attribute-value, tag}
+          + 5 html-tag 
+            + 6 empty-html-tag vars: {attributes, start-index, end-index, interior-start, action}
+            + 6 paired-html-tag vars: {attributes, contents, start-index, end-index, interior-start, interior-end, start-action, end-action}
+        + 4 section-marker 
+        + 4 section-object vars: {type, parent, daughters, prior-sibling, following-sibling, title, count, token-index}
+        + 4 sgml-label 
+        + 4 sgml-tag/end 
+        + 4 sgml-tag/start 
+        + 4 text-under-analysis vars: {uid, file}
+          + 5 djns-article vars: {an}
+      + 3 phrase-interpretation 
+        + 4 as-comp vars: {prep, comp}
+        + 4 copular-pp-rel-clause vars: {copular-pp}
+        + 4 determiner vars: {word, det-quantifier}
+          + 5 a 
+          + 5 a 
+          + 5 an 
+          + 5 that 
+          + 5 the 
+          + 5 these 
+          + 5 this 
+          + 5 those 
+          + 5 which 
+          + 5 whose 
+        + 4 pp-relative-clause vars: {pp, clause}
+        + 4 prep-comp vars: {prep, comp}
+        + 4 prepositional-phrase vars: {prep, pobj}
+        + 4 pronoun 
+        + 4 subordinate-clause vars: {conj, comp}
+        + 4 syntactic-there 
+        + 4 to-comp vars: {prep, comp}
+      + 3 prop-attitude vars: {theme}
+      + 3 proposal-marker 
+        + 4 let-as-directive 
+        + 4 suppose-as-directive 
+        + 4 what-if-as-directive 
+    + 2 measurement vars: {units, quantity}
+      + 3 named-measure vars: {name}
+      + 3 ordinal-fraction vars: {selector, unit}
+      + 3 proportional-measurement vars: {units, quantity}
+      + 3 rate vars: {units, quantity}
+        + 4 qualitative-rate 
+      + 3 rate-of-process vars: {process, value}
+    + 2 number vars: {value}
+    + 2 quantity vars: {name}
+    + 2 region 
+      + 3 attribute-value vars: {attribute}
+        + 4 amount-as-level-value 
+        + 4 color-value 
+        + 4 comparative vars: {more, less}
+        + 4 comparative-modifier 
+        + 4 comparative-quantifier vars: {quantifier}
+          + 5 superlative-quantifier 
+        + 4 height-value 
+        + 4 length-value 
+        + 4 rate-of-change-value 
+        + 4 size-value 
+        + 4 superlative-modifier 
+      + 3 location vars: {name}
+        + 4 deictic-location vars: {name}
+        + 4 direction vars: {name}
+          + 5 compass-point vars: {name}
+        + 4 relative-location vars: {ground, prep}
+          + 5 object-dependent-location vars: {ground, prep}
+          + 5 orientation-dependent-location vars: {ground, prep}
+        + 4 spatial-region vars: {interior, boundary}
+          + 5 container vars: {contents}
+      + 3 time 
+        + 4 calculated-time vars: {name}
+          + 5 calculated-day vars: {name, calculator}
+        + 4 date vars: {day, month, year, weekday}
+        + 4 day-of-the-month vars: {month, number, day-of-the-week}
+        + 4 fiscal-quarter vars: {year, position-in-year, end-date, company}
+        + 4 month vars: {name, abbreviation, position-in-year, number-of-days}
+        + 4 month-of-the-year vars: {month, year}
+        + 4 prep-time vars: {prep, time}
+        + 4 relative-time vars: {relativizer, reference-time}
+        + 4 relative-time-adverb vars: {name}
+        + 4 relative-time-noun vars: {name}
+      + 3 timezone vars: {name}
+    + 2 relation vars: {adverb}
+      + 3 can-change-location vars: {former-location, present-location}
+      + 3 conjunction vars: {word}
+      + 3 dependent-substrate vars: {dependent, substrate}
+      + 3 has-amount-as-level vars: {amount-as-level}
+      + 3 has-an-orientation vars: {orientation}
+      + 3 has-color vars: {color}
+      + 3 has-height vars: {height}
+      + 3 has-length vars: {length}
+      + 3 has-location vars: {location}
+      + 3 has-name vars: {name}
+        + 4 named-type vars: {type-of}
+          + 5 car-type 
+        + 4 predicate 
+          + 5 lambda-expression 
+          + 5 modifier 
+            + 6 aberrant 
+            + 6 able 
+            + 6 abnormal 
+            + 6 abundant 
+            + 6 accurate 
+            + 6 active 
+            + 6 adaptive 
+            + 6 adhesive 
+            + 6 adjacent 
+            + 6 advantageous 
+          + 5 prepositional-operator 
+            + 6 about 
+            + 6 abreast_of 
+            + 6 according_to 
+            + 6 along_with 
+            + 6 amid 
+            + 6 among 
+            + 6 apart_from 
+            + 6 as 
+            + 6 as_a_result_of 
+            + 6 as_far_as 
+          + 5 quality-predicate vars: {attribute, item}
+          + 5 quality-value-predicate vars: {attribute, value}
+            + 6 comparative-attribution vars: {reference-set, value}
+          + 5 quantifier vars: {word}
+          + 5 spatial-operator 
+            + 6 abaft 
+            + 6 abeam 
+            + 6 aboard 
+            + 6 above 
+            + 6 across 
+            + 6 across_from 
+            + 6 afore 
+            + 6 after 
+            + 6 against 
+            + 6 ahead_of 
+    + 2 takes-numerical-value vars: {value}
+    + 2 unit-of-measure vars: {name}
+      + 3 fractional-term 
+        + 4 half vars: {name}
+        + 4 quarter vars: {name}
+      + 3 time-unit vars: {name}
+      + 3 unit-of-rate-of-change vars: {distance-measure, time-measure, name}
+  + 1 endurant vars: {number, quantifier}
     + 2 non-physical 
-      + 3 social-object 
-        + 4 social-nonagentivive 
-        + 4 social-agent 
       + 3 mental-object 
+      + 3 social-object 
+        + 4 social-agent 
+        + 4 social-nonagentivive 
     + 2 physical vars: {location}
-      + 3 artifact vars: {made-by}
-        + 4 motor-vehicle vars: {made-by}
       + 3 aggregate 
       + 3 feature 
+      + 3 individual 
+      + 3 kind vars: {name, reduced-relative}
       + 3 physical-object 
         + 4 object 
-          + 5 composite-object vars: {composed-of}
-            + 6 row 
-            + 6 stack 
-            + 6 staircase 
-          + 5 table 
-          + 5 block vars: {position}
-          + 5 component-part vars: {part-of}
-            + 6 step vars: {part-of}
-            + 6 surface 
-              + 7 side-surface 
-              + 7 bottom-surface 
-              + 7 top-surface 
-            + 6 relative-position 
-              + 7 right 
-              + 7 left 
-              + 7 middle 
-              + 7 end 
+          + 5 artifact vars: {made-by}
+            + 6 built-out-of-blocks vars: {part-type}
+              + 7 row 
+              + 7 stack 
+              + 7 staircase vars: {part-type}
+            + 6 motor-vehicle vars: {made-by}
+          + 5 object-face 
+          + 5 rectangular-solid vars: {part-type}
+            + 6 block 
+              + 7 step vars: {part-of}
+            + 6 table 
         + 4 physical-agent 
           + 5 interlocutor 
           + 5 maker-of-artifacts 
             + 6 car-manufacturer vars: {product}
-      + 3 individual 
-      + 3 kind vars: {name, reduced-relative}
-  + 1 perdurant vars: {theme, participant, time, location, purpose, circumstance, manner, adverb, occurs-at-moment, modal, present, past, progressive, perfect}
+  + 1 event-relation vars: {relation, event, subordinated-event}
+  + 1 perdurant vars: {theme, participant, time, location, purpose, circumstance, manner, occurs-at-moment}
     + 2 be vars: {subject, predicate}
-    + 2 anonymous-agentive-action 
+    + 2 event 
     + 2 process 
+      + 3 build vars: {artifact}
+      + 3 do vars: {agent, predicate}
+      + 3 fail 
+      + 3 find vars: {patient}
+      + 3 know 
       + 3 make vars: {object, adj-comp}
-      + 3 put-something-somewhere vars: {theme}
+      + 3 make-artifacts vars: {procedure, product, type-of-product}
+      + 3 move-something-somewhere vars: {theme}
       + 3 push vars: {theme}
         + 4 push-together vars: {items}
-      + 3 build vars: {artifact}
-      + 3 make-artifacts vars: {procedure, product, type-of-product}
-      + 3 transition 
-        + 4 changed-in-direction vars: {direction}
-        + 4 change-by-amount vars: {amount, direction}
-        + 4 change-in-amount-noun vars: {name, direction}
-        + 4 change-in-amount-verb vars: {name, direction}
-          + 5 change-in-amount-verb/down 
-          + 5 change-in-amount-verb/up 
-        + 4 achievement 
-          + 5 add-to vars: {theme}
-        + 4 accomplishment 
-          + 5 move vars: {from-location, to-location, theme}
-            + 6 turn vars: {via-path, for-distance, in-direction, when-done, landmark}
-            + 6 travel vars: {via-path, for-distance, in-direction, when-done, landmark}
-            + 6 follow vars: {via-path, for-distance, in-direction, when-done, landmark}
-            + 6 drive vars: {via-path, for-distance, in-direction, when-done, landmark}
-            + 6 cross vars: {via-path, for-distance, in-direction, when-done, landmark}
+      + 3 put-something-somewhere vars: {theme}
     + 2 state 
-      + 3 modality vars: {name}
-        + 4 would 
-        + 4 will 
-        + 4 should 
-        + 4 shall 
-        + 4 must 
-        + 4 might 
-        + 4 may 
-        + 4 could 
-        + 4 can 
+      + 3 expect 
       + 3 have vars: {possessor, thing-possessed}
+      + 3 intend 
+      + 3 modality vars: {name}
+        + 4 can 
+        + 4 could 
+        + 4 may 
+        + 4 might 
+        + 4 must 
+        + 4 shall 
+        + 4 should 
+        + 4 will 
+        + 4 would 
       + 3 predication vars: {predicate}
-        + 4 quantified vars: {quantifier, body}
-        + 4 upon-condition vars: {condition}
         + 4 copular-predication vars: {item, value, predicate}
           + 5 copular-predication-of-pp vars: {prep}
-        + 4 there-exists vars: {predicate, value}
         + 4 has-attribute vars: {item, attribute, value}
-    + 2 event 
-      + 3 you-do vars: {action}
-  + 1 abstract 
-    + 2 amount vars: {measurement, stuff, alternative-amount, time-period}
-      + 3 fraction-of-amount-of-time vars: {selector, portion}
-      + 3 amount-of-time vars: {units, quantity}
-      + 3 amount-at-time vars: {amount, time}
-      + 3 vague-amount vars: {name}
-    + 2 measurement vars: {units, quantity}
-      + 3 ordinal-fraction vars: {selector, unit}
-      + 3 rate-of-process vars: {process, value}
-      + 3 rate vars: {units, quantity}
-        + 4 qualitative-rate 
-      + 3 proportional-measurement vars: {units, quantity}
-      + 3 named-measure vars: {name}
-    + 2 quantity vars: {name}
-    + 2 unit-of-measure vars: {name}
-      + 3 time-unit vars: {name}
-      + 3 fractional-term 
-        + 4 half vars: {name}
-        + 4 quarter vars: {name}
-      + 3 unit-of-rate-of-change vars: {distance-measure, time-measure, name}
-    + 2 number vars: {value}
-    + 2 takes-numerical-value vars: {value}
-    + 2 collection vars: {items, type, number}
-      + 3 sequence vars: {items, item, type, number}
-        + 4 two-part-label vars: {part-one, part-two}
-        + 4 slashed-sequence 
-        + 4 slashed-pair vars: {left, right}
-        + 4 word-colon-word vars: {left, right}
-        + 4 number-colon-number vars: {left, right}
-        + 4 hyphenated-triple vars: {left, middle, right}
-        + 4 qualifying-pair vars: {head, qualifier}
-        + 4 hyphenated-pair vars: {left, right}
-        + 4 sequence-of-numbers vars: {numbers}
-    + 2 linguistic 
-      + 3 text-relationship 
-        + 4 subsequent-reference 
-        + 4 unanalyzed-compound vars: {terms}
-        + 4 infinitive-relation vars: {verb}
-        + 4 paired-in-long-segment vars: {pmt/first, pmt/second}
-        + 4 adverb-verb vars: {verb, adverb}
-        + 4 verb-object vars: {verb, object}
-        + 4 subject-verb vars: {subject, verb}
-        + 4 of-phrase 
-        + 4 genitive vars: {owner, owned}
-        + 4 segment vars: {form, ends-at, starts-at, terms, single-term, contains, head, classifier, pre-classifier, prefix, discourse-status}
-          + 5 no-analysis 
-          + 5 section-segment 
-          + 5 verb+object-segment 
-          + 5 subj+vp-segment 
-          + 5 subj+verb-segment 
-          + 5 capitalized-segment 
-          + 5 adverb-segment 
-          + 5 infinitive-segment 
-          + 5 past-tense-verb-segment 
-          + 5 participle-segment 
-      + 3 no-space-prefix vars: {word}
-      + 3 known-in-discourse 
-      + 3 proposal-marker 
-        + 4 what-if-as-directive 
-        + 4 suppose-as-directive 
-        + 4 let-as-directive 
-      + 3 original-document-structure 
-        + 4 html-markup-element 
-          + 5 html-tag 
-            + 6 empty-html-tag vars: {attributes, start-index, end-index, interior-start, action}
-            + 6 paired-html-tag vars: {attributes, contents, start-index, end-index, interior-start, interior-end, start-action, end-action}
-          + 5 html-attribute vars: {attribute-value, tag}
-        + 4 sgml-label 
-        + 4 sgml-tag/end 
-        + 4 sgml-tag/start 
-        + 4 section-marker 
-        + 4 text-under-analysis vars: {uid, file}
-          + 5 djns-article vars: {an}
-        + 4 section-object vars: {type, parent, daughters, prior-sibling, following-sibling, title, count, token-index}
-      + 3 tense/aspect 
-        + 4 perfect 
-        + 4 progressive 
-        + 4 present 
-        + 4 past 
-        + 4 future 
-      + 3 negative 
-      + 3 phrase-interpretation 
-        + 4 pronoun 
-        + 4 copular-pp-rel-clause vars: {copular-pp}
-        + 4 question-core vars: {statement}
-          + 5 wh-question vars: {wh, attribute, var}
-          + 5 polar-question 
-        + 4 copula 
-        + 4 syntactic-there 
-        + 4 pp-relative-clause vars: {pp, clause}
-        + 4 subordinate-clause vars: {conj, comp}
-        + 4 prep-comp vars: {prep, comp}
-        + 4 prepositional-phrase vars: {prep, pobj}
-        + 4 as-comp vars: {prep, comp}
-    + 2 relation vars: {adverb}
-      + 3 typed-region vars: {type, region}
-      + 3 has-size vars: {size}
-      + 3 has-color vars: {color}
-      + 3 subordinate-conjunction vars: {word}
-      + 3 conjunction vars: {word}
-      + 3 can-change-location vars: {former-location, present-location}
-      + 3 has-location vars: {location}
-        + 4 has-spatial-location vars: {location}
-      + 3 with-an-agent vars: {agent}
-      + 3 modifies vars: {modifier, modified}
-      + 3 dependent-substrate vars: {dependent, substrate}
-        + 4 exit-on-throughway vars: {exit, throughway}
-    + 2 abstract-region 
-      + 3 time 
-        + 4 fiscal-quarter vars: {year, position-in-year, end-date, company}
-        + 4 calculated-time vars: {name}
-          + 5 calculated-day vars: {name, calculator}
-        + 4 prep-time vars: {prep, time}
-        + 4 relative-time vars: {relativizer, reference-time}
-        + 4 relative-time-noun vars: {name}
-        + 4 relative-time-adverb vars: {name}
-        + 4 season-year vars: {season, year}
-        + 4 season vars: {name, abbreviation, position-in-year}
-        + 4 date vars: {day, month, year, weekday}
-        + 4 month-of-the-year vars: {month, year}
-      + 3 location vars: {name, type-name}
-        + 4 deictic-location vars: {name}
-        + 4 location-description vars: {name}
-          + 5 location-phrase vars: {place}
-        + 4 border vars: {type, region}
-        + 4 border-type vars: {name}
-          + 5 edge vars: {name}
-          + 5 coast vars: {name}
-          + 5 boundary vars: {name}
-        + 4 region-type vars: {name}
-          + 5 ward 
-          + 5 village 
-          + 5 town 
-          + 5 pond 
-          + 5 parish 
-          + 5 province 
-          + 5 ledge 
-          + 5 lake 
-          + 5 gulley 
-          + 5 forest 
-        + 4 geographical-region vars: {name, aliases, type, containing-region}
-        + 4 path-configuration vars: {paths}
-          + 5 fork 
-          + 5 junction 
-        + 4 throughway-exit vars: {throughway}
-        + 4 highway vars: {authority, number}
-        + 4 path 
-          + 5 path-type vars: {name}
-            + 6 turnpike vars: {name}
-            + 6 trail vars: {name}
-            + 6 street vars: {name}
-            + 6 stream vars: {name}
-            + 6 river vars: {name}
-            + 6 road vars: {name}
-      + 3 attribute-value vars: {attribute}
-        + 4 size-value 
-        + 4 color-value 
+          + 5 comparative-predication 
+        + 4 quantified vars: {quantifier, body}
+        + 4 there-exists vars: {predicate, value}
+        + 4 upon-condition vars: {condition}
+      + 3 want 
   + 1 quality 
-    + 2 age-ago vars: {age-ago}
     + 2 age vars: {age}
-    + 2 scalar-quality 
+    + 2 age-ago vars: {age-ago}
+    + 2 attribute vars: {var}
+      + 3 dimension 
+        + 4 three-dimensional 
+        + 4 two-dimensional 
+      + 3 orientation 
+      + 3 scalar-attribute vars: {comparative, superlative}
+        + 4 amount-as-level 
+        + 4 color 
+        + 4 comparative-modification 
+        + 4 comparative-quantification 
+        + 4 height 
+        + 4 length 
+        + 4 rate-of-change 
+        + 4 size 
+        + 4 width 
     + 2 designator 
       + 3 index 
         + 4 assession-number vars: {date, index-number}
         + 4 position-in-a-sequence vars: {number, item, sequence}
       + 3 name 
-        + 4 name-of-location vars: {sequence, type}
+    + 2 qualifiable vars: {qualifier}
+    + 2 scalar 
+      + 3 scalar-quality 
+  + 1 speech-act 
+    + 2 acknowledgement vars: {name}
+    + 2 greeting vars: {name}
+    + 2 sa-propose 
+      + 3 explicit-suggestion vars: {marker, suggestion}
