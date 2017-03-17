@@ -12284,7 +12284,7 @@
 (def-family "PKD2" :members ("UP:Q13563" "UP:Q9BZL6")) 
 (def-family "PLAP-1" :members ("UP:P05187" "UP:Q9BXN1")) 
 (def-family "PPT" :members ("UP:P20366" "UP:P50897" "UP:P53041")) 
-(def-family "PR" :members ("UP:P06401" "UP:P10265" "UP:P63120" "UP:P63121" "UP:P63122" "UP:P63123" "UP:P63124" "UP:P63125" "UP:P63127" "UP:P63129" "UP:P63131" "UP:Q9Y6I0")) 
+;;(def-family "PR" :members ("UP:P06401" "UP:P10265" "UP:P63120" "UP:P63121" "UP:P63122" "UP:P63123" "UP:P63124" "UP:P63125" "UP:P63127" "UP:P63129" "UP:P63131" "UP:Q9Y6I0")) 
 (def-family "PRP" :members ("UP:P04003" "UP:P32119")) 
 (def-family "PSP" :members ("UP:O00186" "UP:P05451")) 
 (def-family "PTC" :members ("UP:P07949" "UP:Q13635")) 

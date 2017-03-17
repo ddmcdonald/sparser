@@ -8384,7 +8384,7 @@
             "PPP4R2" "PPP5" "PPP5C" "PPP6" "PPP6C" "PPP6R1" "PPP6R1,3" "PPP6R2" "PPP6R3"
             "PPP7C" "PPPM1A" "PPRC1" "PPRC1_HUMAN" "PPRibP" "PPS" "PPT" "PPT1"
             "PPT1_HUMAN" "PPT2" "PPT2_HUMAN" "PPWD1" "PPWD1_HUMAN" "PPX" "PPY" "PPYR1"
-            "PPase" "PQ-rich protein" "PQBP1" "PQBP1_HUMAN" "PQR protein" "PR"
+            "PPase" "PQ-rich protein" "PQBP1" "PQBP1_HUMAN" "PQR protein"
             "PR domain zinc finger protein 1" "PR domain zinc finger protein 14"
             "PR domain zinc finger protein 16" "PR domain-containing protein 16" "PR-1"
             "PR-A" "PR-B" "PR-Set7" "PR-domain zinc finger protein 4" "PR1"
