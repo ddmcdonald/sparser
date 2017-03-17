@@ -20,8 +20,9 @@
 
 
 (define-category determiner
-  :specializes phrase-interpretation
+  :specializes linguistic
   :binds ((word  :primitive word))
+  :index (:permanent :key word)
   :documentation "Determiner is for functions/methods that
  treat it as a supercategory, as distinct from the form category 'det'")
 
