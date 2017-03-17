@@ -129,10 +129,9 @@ be biology specific, since they aren't. |#
   :binds ((result-or-purpose bological))
   :mixins (post-adj)
   :realization
-  (:adj "low enough"
-        :to-comp result-or-purpose))
+     (:adj "low enough"
+      :to-comp result-or-purpose))
 
-(adj "low enough" :super bio-predication)
 (adj "high-activity" :super bio-predication)
 (adj "high-throughput" :super bio-predication)
 
