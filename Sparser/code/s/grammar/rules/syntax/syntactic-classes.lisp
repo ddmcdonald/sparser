@@ -49,15 +49,6 @@
   :index (:temporary :sequential-keys prep pobj))
 (mark-as-form-category category::prepositional-phrase)
 
-(define-category relativized-prepositional-phrase
-  :specializes prepositional-phrase
-  :binds ((prep)
-          (pobj))
-  :index (:temporary :sequential-keys prep pobj)
-  :documentation "Will be instantiated by make-relativized-pp for
-    phrase like 'by which' (dec #19). The pobj will hold a
-    wh-pronoun, and the prep a preposition, both as individuals.")
-(mark-as-form-category category::relativized-prepositional-phrase)
 
 (define-category prep-comp
   :specializes phrase-interpretation
@@ -79,6 +70,19 @@
   :index (:temporary :sequential-keys conj comp))
 (mark-as-form-category category::subordinate-clause)
 
+
+;;--- pied-piping
+
+(define-category relativized-prepositional-phrase
+  :specializes prepositional-phrase
+  :binds ((prep)
+          (pobj))
+  :index (:temporary :sequential-keys prep pobj)
+  :documentation "Will be instantiated by make-relativized-pp for
+    phrase like 'by which' (dec #19). The pobj will hold a
+    wh-pronoun, and the prep a preposition, both as individuals.")
+(mark-as-form-category category::relativized-prepositional-phrase)
+
 (define-category pp-relative-clause
   :specializes phrase-interpretation
   :binds ((pp)
@@ -91,6 +95,7 @@
   unindexed individual (in make-pp) then the index
   information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
+
 
 
 (define-category copular-pp-rel-clause

@@ -1331,6 +1331,46 @@
                    :statement predicate)))
         q))))
 
+
+;; for 'after which', 'in which' and such
+(defun make-relativized-pp (prep wh)
+  "The syntactic rules preposition + {who which whom} come here,
+   to create a phrase with form pp-wh-pronoun.
+   We need to assemble a structure that will be unpacked by
+   make-pp-relative-clause which will unfold the pied-piped
+   preposition."  
+  (if *subcat-test*
+    (not (itypep prep 'prepositional-phrase)) ;; example?
+    (let* ((prep-word (identify-preposition (parent-edge-for-referent)))
+           (wh-obj (make-wh-object wh))
+           (i (define-or-find-individual 'relativized-prepositional-phrase
+                  :prep prep-word :pobj wh-obj)))
+      (assert (word-p prep-word) ()
+              "Could not retrieve a preposition word from ~a"
+              (parent-edge-for-referent))
+      i)))
+
+(defun make-pp-relative-clause (wh-pp vp)
+  "Goes with rules pp-wh-pronoun + {vp's or vg's}. The result is
+   essentially a regular wh-relative clause except that the
+   preposition should be subcategorized by the head (the vp)
+   and the variable that governs the relative clause is determined
+   by that."
+  (if *subcat-test*
+    (and wh-pp vp)
+    (let* ((preposition (value-of 'prep wh-pp))
+           (wh-obj (value-of 'pobj wh-pp))
+           (variable (find-subcat-vars preposition vp)))
+
+      ;; while debugging -- what's a reasonable default?
+      (unless variable (break "no variable for ~a on ~a" preposition vp))
+
+      (extend-wh-object wh-obj
+                        :variable variable
+                        :statement vp))))
+
+
+
 ;;;----------------------
 ;;; Prepositional phrase
 ;;;----------------------
@@ -1346,29 +1386,11 @@
            category::prepositional-phrase
            `((prep ,prep) (pobj ,pobj)))))))
 
-(defun make-relativized-pp (prep pobj)
-  (declare (special category::relativized-prepositional-phrase))
-  ;; called for oblique WH forms -- 'after which', 'in which' and such
-  (if *subcat-test*
-      (not (itypep prep 'prepositional-phrase))
-      (else
-        (make-simple-individual ;;make-non-dli-individual <<<<<<<<<<<<
-         category::relativized-prepositional-phrase
-         `((prep ,prep) (pobj ,pobj))))))
 
 (defun make-ordinal-item (ordinal item)
   (bind-dli-variable 'ordinal ordinal item))
 
 
-(defun make-pp-relative-clause (pp clause)
-  (declare (special category::pp-relative-clause))
-  (or *subcat-test*
-      ;; place for trace or further adornment, storing
-      ;; (p "activity of ras.")
-      ;; (break "Look at who is calling make-pp")
-      (make-simple-individual ;;<<<<<<<<<<<<<<<<<<<<<<<<<<<
-       category::pp-relative-clause
-       `((pp ,pp) (clause ,clause)))))
 
 
 (defun make-prep-comp (prep complement)

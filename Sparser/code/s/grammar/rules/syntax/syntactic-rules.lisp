@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  September 2016
+;;;  Version:  March 2017
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -54,11 +54,6 @@
   :referent (:daughter right-edge))
 
 
-#+ignore ;; not yet ready
-(def-syntax-rule (np pp-relative-clause)
-    :head :left-edge
-    :form np
-    :referent (:function apply-pp-relative-clause left-edge right-edge))
 
 
 #+ignore
@@ -600,14 +595,6 @@
 	   :referent (:function compose-wh-with-vp left-edge right-edge))))
 
 
-(loop for v in '(vp vp+passive vg+passive vg)
-   do
-     (eval
-      `(def-syntax-rule (pp-wh-pronoun ,v) 
-	   :head :right-edge
-	   :form pp-relative-clause
-	   :referent (:function make-pp-relative-clause left-edge right-edge))))
-
 
 ;;--- Embedded questions
 (loop for wh in '(who what where when why) 
@@ -627,11 +614,6 @@
     :head :right-edge
     :referent (:function create-howcomp left-edge right-edge))
 
-
-(def-form-rule (comma pp-relative-clause)
-    :head :right-edge
-    :form pp-relative-clause
-    :referent (:daughter right-edge))
 
 
 ;;;------------------------------------------------------
@@ -808,6 +790,32 @@
 
 
 
+;;;----- Pied-piped wh-clauses 
+
+#+ignore ;; not yet ready
+(def-syntax-rule (np pp-relative-clause)
+    :head :left-edge
+    :form np
+    :referent (:function apply-pp-relative-clause left-edge right-edge))
+
+(loop for v in '(vp vp+passive vg+passive vg)
+   do
+     (eval
+      `(def-syntax-rule (pp-wh-pronoun ,v) 
+	   :head :right-edge
+	   :form pp-relative-clause
+	   :referent (:function make-pp-relative-clause left-edge right-edge))))
+
+(def-syntax-rule (pp-wh-pronoun to-comp) ;; (the location) at which to put the block
+    :head :right-edge
+    :form pp-relative-clause
+    :referent (:function make-pp-relative-clause left-edge right-edge))
+
+(def-form-rule (comma pp-relative-clause)
+    :head :right-edge
+    :form pp-relative-clause
+    :referent (:daughter right-edge))
+
 ;; "by who" or "in who" etc. is very non standard, so this
 ;; overgenerates
 (loop for nb in `(who which whom)
@@ -830,6 +838,7 @@
 
 
 
+;;-------------------
 
 ;; DAVID -- need to learn how to bind the amount-of-time to the spatio-temporal-preposition
 ;;   e.g. 30 minutes after (treatment)
