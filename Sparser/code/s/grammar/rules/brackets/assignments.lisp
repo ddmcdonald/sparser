@@ -417,6 +417,9 @@
   (:method ((string string))
     (assert (not (string-equal string "top")) ()
             "You mustn't define another 'top' category")
+    (when (contains-whitespace string)
+      ;; fill the spaces, if only for the sake of the category display
+      (setq string (substitute #\- #\space string)))
     (let* ((s #+mlisp string
               #-mlisp (string-upcase string))
            (symbol (intern s (find-package :sparser))))
