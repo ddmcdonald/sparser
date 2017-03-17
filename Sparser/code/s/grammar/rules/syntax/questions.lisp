@@ -248,6 +248,14 @@
         (setq q (bind-variable 'attribute attribute q)))
       q)))
 
+(defun extend-wh-object (q &key variable statement) ;; attribute ?
+  (when variable
+    (setq q (bind-variable 'var variable q)))
+  (when statement
+    (setq q (bind-variable 'statement statement q))
+    (setq q (add-category-to-individual q (itype-of statement))))
+  q)
+
 #| (p "What color is the block?")
    (p/s "Is the block on the table?")
    (p "Could we put on one more?")
