@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1999,2011-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1999,2011-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2010 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;      File:   "prepositions"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   November 2016
+;;;   Version:   March 2017
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 1/11/94 added "through"  7/14 added "up" & "down"  8/19 added "off"
@@ -47,6 +47,7 @@
       (or (eq pos category::preposition)
           (eq pos category::spatial-preposition)))))
 
+
 (defun define-preposition (string &key brackets form super-category synonyms)
   (unless brackets  ;; v.s. ].treetop  treetop.[ 
     (setq brackets *preposition-brackets*))
@@ -61,32 +62,40 @@
             (spatio-temporal-preposition ;; ignore time for now
              (if *location* 'spatial-operator 'prepositional-operator))
             (preposition 'prepositional-operator))))
-  (let* ((word (define-function-word string
-                 :brackets brackets
-                 :form form))
-         (category-name (name-to-use-for-category string)))
+  (let ((word (define-function-word string
+                  :brackets brackets
+                  :form form))
+        (category-name (name-to-use-for-category string)))
     (let* ((expr `(define-category ,category-name
                     :specializes ,super-category
                     :instantiates :self
-                    :bindings (name ,word)))
-           (category (eval expr))
-           (word-rule
-	    (def-cfr/expr category `(,word)
-              :form (resolve-form-category form)
-              :schema (get-schematic-word-rule :preposition)
-              :referent category)))
-      (when synonyms
-        (dolist (syn-string synonyms)
-          (let ((synonym (resolve-string-to-word/make syn-string)))
-            (define-cfr category `(,synonym)
-              :form (resolve-form-category form)
-              :schema (get-schematic-word-rule :preposition)
-              :referent category))))
-      (make-corresponding-mumble-resource word :prep)
-      (add-rule word-rule category)
-      (values category
-              word-rule
-              word ))))
+                    ;;:bindings (name ,word)
+                    :index (:permanent :key name)))
+           (category (eval expr)))
+
+      ;; patterned on determiner and quantifier
+      (let* ((object (define-individual category
+                        :name word))           
+             (word-rule
+              (def-cfr/expr category `(,word)
+                :form (resolve-form-category form)
+                :schema (get-schematic-word-rule :preposition)
+                :referent object))) ;; had been the category
+        (add-rule word-rule object)
+        (when synonyms
+          (let ((rules
+                 (loop for syn-string in synonyms
+                  as synonym = (resolve-string-to-word/make syn-string)
+                  collect
+                  (define-cfr category `(,synonym)
+                    :form (resolve-form-category form)
+                    :schema (get-schematic-word-rule :preposition)
+                    :referent object)))) ;; had been category
+            (add-rules rules object)))
+        (make-corresponding-mumble-resource word :prep)
+        (values object
+                category
+                word-rule )))))
 
 ;; "to" and "of" may warrant special treatment
 
