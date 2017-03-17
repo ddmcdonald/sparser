@@ -25,12 +25,14 @@
       (let* ((cat (car tree))
              (subs nil)
              (vars nil))
-        (cond ((eq (second tree) :variables) (setf vars (third tree) subs (cdddr tree)))
-              (t (setf vars nil subs (cdr tree))))
-                         
-        ;; rusty to fix the multiword problem
-        ;;      (cond ((and (second tree) (not (consp (second tree)))) ;; a multi-word
-                                        ;             (write-tree-ln stream tree indent map))
+        (cond ((eq (second tree) :variables)
+               (setf vars (third tree)
+                     subs (cdddr tree)))
+              (t (setf vars nil
+                       subs (cdr tree))))
+
+        ;; Fixed multi-word preposition problem by redesigning their names qua categories
+        
         (write-tree-ln cat vars)
         (dolist (subt subs)
           (recursive-write-org-lines stream subt (+ 2 indent) #|lang map|#))))))
