@@ -906,11 +906,12 @@
 (defun passive-is-covert-tocomp (vg passive-vg)
   ;; Aspp2 #30: "remains" + "to be investigated"
   ;; (push-debug `(,vg ,passive-vg)) (lsp-break "covert"))
-  (let ((starts-with-to?
-         (eq word::|to| (pos-terminal (pos-edge-starts-at (right-edge-for-referent))))))
+  (let ((var (subcategorized-variable vg :to-comp passive-vg)))
+
     (cond
       (*subcat-test*
-       starts-with-to?)
+       (and (eq word::|to| (pos-terminal (pos-edge-starts-at (right-edge-for-referent))))
+            var))
       (t ;; the vg+tocomp handler doesn't do more checks, so none here
        (adjoin-tocomp-to-vg vg passive-vg)))))
 
@@ -1401,7 +1402,8 @@
   (cond
     (*subcat-test*
      (and prep complement))
-    ((or (eq prep category::to) (eq prep (get-dli category::to)))
+    ((or (eq prep category::to)
+         (eq prep (get-dli category::to)))
      (revise-parent-edge :form category::to-comp)
      complement)
     (t
