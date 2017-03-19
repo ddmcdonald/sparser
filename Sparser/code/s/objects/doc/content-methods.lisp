@@ -427,6 +427,15 @@
   (treetops-in-sentence (contents s)))
   
 
+(defparameter *mentions-in-sentence* (make-hash-table :size 10000))
+
+(defmethod get-mentions ((s sentence))
+  (gethash s *mentions-in-sentence*))
+
+(defmethod set-mentions ((s sentence))
+  (setf (gethash s *mentions-in-sentence*)
+        (find-all-mentions s)))
+  
 
 ;;;----------------------------------------------
 ;;; functionally salient aspects of the sentence

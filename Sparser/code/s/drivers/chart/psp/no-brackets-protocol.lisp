@@ -385,6 +385,7 @@
       ;; (format t "sentence: ~a~%  ~a treetops" sentence tt-count)
       (set-entities sentence entities)
       (set-relations sentence relations)
+      (set-mentions sentence)
       (set-tt-count sentence tt-count))))
 
 
@@ -394,6 +395,8 @@
 
 (defparameter *end-of-sentence-display-operation* nil)
 (defparameter *save-bio-processes* nil)
+
+(defparameter *check-find-all-mentions* nil)
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
@@ -409,6 +412,18 @@
     (when *save-bio-processes*
       (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*))
+  (when *check-find-all-mentions*
+    (let ((mentions (find-all-mentions sentence))
+          mm)
+      (declare (special mentions mm))
+      (unless
+          (loop for m in mentions
+                always
+                  (progn
+                    (setq mm m)
+                    (or (not (individual-p (base-description mm)))
+                        (member mm (mention-history (base-description mm))))))
+        (lsp-break "bad mention-history"))))
   (when *localization-interesting-heads-in-sentence*
     (push (split-sentence-string-on-loc-heads) *localization-split-sentences*))
   )
