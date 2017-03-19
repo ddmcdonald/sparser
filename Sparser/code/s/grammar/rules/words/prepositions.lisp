@@ -68,20 +68,24 @@
         (category-name (name-to-use-for-category string)))
     (let* ((expr `(define-category ,category-name
                     :specializes ,super-category
+                    :mixins (linguistic)
                     :instantiates :self
-                    ;;:bindings (name ,word)
-                    :index (:permanent :key name)))
+                    :index (:permanent :key word)
+                    :bindings (word ,word)))
+
            (category (eval expr)))
 
-      ;; patterned on determiner and quantifier
-      (let* ((object (define-individual category
-                        :name word))           
+      ;; Patterned on determiner and quantifier except that looking
+      ;; at the details of description-lattice case established
+      ;; that including the word serves no purpose except to gratuitously
+      ;; generate another individual
+      (let* ((i (define-individual category))
              (word-rule
               (def-cfr/expr category `(,word)
                 :form (resolve-form-category form)
                 :schema (get-schematic-word-rule :preposition)
-                :referent object))) ;; had been the category
-        (add-rule word-rule object)
+                :referent i))) ;; had been the category
+        (add-rule word-rule category)
         (when synonyms
           (let ((rules
                  (loop for syn-string in synonyms
@@ -90,10 +94,10 @@
                   (define-cfr category `(,synonym)
                     :form (resolve-form-category form)
                     :schema (get-schematic-word-rule :preposition)
-                    :referent object)))) ;; had been category
-            (add-rules rules object)))
+                    :referent i)))) ;; had been category
+            (add-rules rules category)))
         (make-corresponding-mumble-resource word :prep)
-        (values object
+        (values i
                 category
                 word-rule )))))
 

@@ -150,6 +150,7 @@
 (define-category linguistic
   :instantiates nil
   :specializes abstract
+  :binds ((word  :primitive word))
   :documentation
   "A converting class for categories that we create and instantiate
   whose meaning is a linguistic or text-organizational structure
@@ -166,9 +167,9 @@
   "A set of categories that only exist to provide scaffolds for
  grammatical constructions that have to be formed as constituents
  before they can be interpreted in context. Canonical example
- is a prepositinal phrase. 'Linguistic' things will often have
+ is a prepositional phrase. 'Linguistic' things will often have
  an existence outside of the context of parsing and semantic
- interpretation. Things athat are phrase-interpretatio's only
+ interpretation. Things that are phrase-interpretation's only
  live during an interpretation and are meaningless afterwards.")
 
 
