@@ -248,7 +248,7 @@
         (setq q (bind-variable 'attribute attribute q)))
       q)))
 
-(defun extend-wh-object (q &key variable statement) ;; attribute ?
+(defun extend-wh-object (q &key variable statement attribute)
   (when variable
     (setq q (bind-variable 'var variable q)))
   (when statement
@@ -273,8 +273,18 @@
 (p "We don't know how to do that.") ;; bad infinitive
 
 
-
 ;;-- Bio examples
+
+(p "How Important Are Scc1 and SA2 Phosphorylation In Vivo?.")
+e11   HOW           1 "How Important " 3
+e15   BE            3 "Are Scc1 and SA2 Phosphorylation In Vivo" 12
+
+
+(p "Consistent with the critical role of VEGF and VEGFR2 in BPD, 
+  human infants who die of BPD have little or no VEGF in their 
+  lung epithelium.")
+Error: New type of wh-obj passed in: #<ref-category INFANT>
+
 (p "Until now, it has been unclear how RAS could affect ASPP2 to enhance 
 p53 function") ;; dry-run $40
 From :id "PMC1702556" :corpus :jun15eval
@@ -329,13 +339,10 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                      :referent q
                      :constituents (edges-between pos-before next-pos))))
                (record-initial-wh edge)
-               edge))
-           (make-wh (wh-type)
-             (let ((j (define-an-individual category::wh-question
-                          :wh wh-type))))))
+               edge)))
       (cond
         ((memq (cat-symbol wh-type) '(who why where when))
-         (cover-wh (make-wh wh-type) next-pos))
+         (cover-wh (make-wh-object wh-type) next-pos))
         (t
           (loop
            (cond
@@ -367,23 +374,26 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
           ;; (lsp-break "wh-type = ~a" wh-type)
           (unless aux-edge
             (warn "No aux-edge with ~a" wh-type))
-
-          (let ((q (make-wh wh-type)))
-            (flet ((stash-attribute (attr)
-                     (setq q (bind-variable 'attribute attr q))
-                     (let ((var (variable-for-attribute attr)))
-                       (setq q (bind-variable 'var var q)))))
-
-              (when attr-edge ;; "what color is ..."
-                (stash-attribute (edge-referent attr-edge)))
-        
-              (when value-edge ;; "how big is the block?"
-                (let* ((value-class (itype-of (edge-referent value-edge))) ;; size-value
-                       (attr (when value-class (value-of 'attribute value-class))))
-                  (when attr (stash-attribute attr))))
-
+          
+          (let ((attr
+                 (cond
+                   (attr-edge ;; "what color is ..."
+                    (edge-referent attr-edge))
+                   (value-edge ;; "how big is the block?"
+                    (let ((value-class (itype-of (edge-referent value-edge)))) ;; size-value
+                      (when value-class (value-of 'attribute value-class))))
+                   (other-edges ;; "How important is ..."
+                    (if (null (cdr other-edges))
+                      (edge-referent (car other-edges))
+                      (warn "Multiple 'other edges': ~a" other-edges))))))
+            (let ((q (if attr
+                       (make-wh-object wh-type :attribute attr)
+                       (make-wh-object wh-type))))
               (cover-wh q next-pos))))))))
-  
+
+
+
+      
 
 (defun apply-question-marker (wh-edge vg-edge np-edge)
   "Called by DA rule, wh-be-thing, since parsing is going to be stymied by
