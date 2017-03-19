@@ -252,7 +252,7 @@
        ;;  is keyed on the individual without the text
        ;; (format t "set raw-text of ~s to ~s~%" edge (head-string edge))
        (setq referent (bind-dli-variable 'raw-text (head-string edge) referent))
-       (setf (edge-referent edge) referent)))
+       (set-edge-referent edge referent)))
    referent))
 
 (defun maybe-record-all-referent-surface-strings (ref string)

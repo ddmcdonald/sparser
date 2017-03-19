@@ -228,7 +228,7 @@ to make any semantic or form edges that the grammar dictates.
        (cond
         (*profligate-creation-of-individuals*
          (let ((super (supercategory-of-constructed-category referent)))
-           (setf (edge-referent edge)
+           (set-edge-referent edge
                  (make-individual-for-dm&p (or super
                                                referent)))
            (note-surface-string edge)))
@@ -287,7 +287,7 @@ to make any semantic or form edges that the grammar dictates.
                                      i category::det)))
         ;;/// This also gets the "the" in a company name,  
         ;; but that's probably not relevant.
-        (setf (edge-referent edge) i)
+        (set-edge-referent edge i)
         (note-surface-string edge)
         i))))
     
