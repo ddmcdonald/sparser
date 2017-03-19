@@ -607,7 +607,7 @@
 (noun "fate" :super bio-process)
 
 (noun "fetal calf serum" :super experimental-condition)
-(def-synonym category::fetal\ calf\ serum  (:noun "FCS"))
+(def-synonym category::fetal-calf-serum  (:noun "FCS"))
 
 ;; we dropped out "follow" as a verb in biology, in favor of using "following" as a
 ;;  "preposition" and as an adjective
@@ -831,8 +831,8 @@
 (noun "frame" :super bio-entity)
 (adj "oncogenic" :super bio-predication)
 (noun "open reading frame" :super bio-entity)
-(noun "open reading frames" :super open\ reading\ frame)
-(def-synonym open\ reading\ frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
+(noun "open reading frames" :super open-reading-frame)
+(def-synonym open-reading-frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
 
 (define-category order-of-magnitude :specializes unit-of-measure
   :realization
