@@ -845,7 +845,28 @@
   "do nothing")
 
 
+;; another useful example
 
+(defmethod find-all-mentions ((s sentence))
+  (traverse-sem s #'find-mentions)
+  (all-mentions))
+
+(defmethod find-mentions (x)
+  "do nothing")
+
+(defparameter *found-mentions* nil)
+
+(defmethod find-mentions ((s sentence))
+  (setq *found-mentions* nil))
+
+(defmethod find-mentions ((l cons))
+  (loop for item in l do (find-bps item)))
+
+(defmethod find-mentions ((m discourse-mention))
+  (push m *found-mentions*))
+
+(defun all-mentions ()
+  *found-mentions*)
 
 
 ;;;; get the head edge for an edge, based on the fact that the head edge has the same category as the edge-referent, and is a lexical edge
