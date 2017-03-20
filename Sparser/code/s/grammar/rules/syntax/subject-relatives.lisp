@@ -39,13 +39,14 @@
 
 (defvar *debug-reduced-relative-creation* nil)
 
-(define-completion-action category::who ;; label
-                          :look-for-rc-head
-  'who-subject-relative-clause-operation)
-
-;; Keep it from running
-(inhibit-completion-when-subsumes category::who)
-
+(when (current-script :fire)
+  (define-completion-action category::who ;; label
+                           :look-for-rc-head
+    'who-subject-relative-clause-operation)
+  
+  ;; Keep it from running more than once
+  (inhibit-completion-when-subsumes category::who))
+  
 (defun who-subject-relative-clause-operation (wh-edge)
   (let* ((start-pos (pos-edge-starts-at wh-edge))
          (end-pos (pos-edge-ends-at wh-edge))
