@@ -257,7 +257,6 @@
              (if (cdr sublist) ;; more than just the one edge
                (second sublist)
                (pos-terminal position)))))))
-
       (:vector
        (cond
         ((eq edge top-edge) ;;most common case
@@ -274,26 +273,7 @@
                   (pos-terminal position))
                  (t
                   (aref array (1- i)))))))))))
-           
-(defun specify-top-edge (edge)
-  ;; This is because the chunker has chosen a specific ending
-  ;;  edge for a chunk (with the correct POS), and we want
-  ;;  that to be used by any SDM-SPAN-SEGMENT operation
-  ;; example: "is import" gets chunked as a VG, though it is
-  ;; syntactically incorrect. Then SDM-SPAN-SEGMENT picks
-  ;;  the top edge, which is the IMPORT-ENDURANT edge
-  (let* ((start-ev (edge-starts-at edge))
-         (end-ev (edge-ends-at edge)))
-    #+ignore
-    (format t "specify-top-edge, start-ev=~s, end-ev=~s~%"
-            start-ev end-ev)
-    (when (not (eq (ev-top-node start-ev) edge))
-      ;;(warn "resetting start-ev from ~s to ~s" (ev-top-node start-ev) edge)
-      (setf (ev-top-node start-ev) edge))
 
-    (when (not (eq (ev-top-node end-ev) edge))
-      ;;(warn "resetting end-ev from ~s to ~s" (ev-top-node end-ev) edge)
-           (setf (ev-top-node end-ev) edge))))
 
 (defun index-of-edge-in-vector (edge ev
                                 &optional (count (ev-number-of-edges ev))
@@ -306,7 +286,6 @@
        (when (eq edge (elt vector i))
          (return-from index-of-edge-in-vector i))))))
 
-
 (defun vector-contains-edge-of-category (vector category)
   ;; called by CA search routines, e.g. for conjunctions
   (let ((number-of-edges (ev-number-of-edges vector))
@@ -318,4 +297,24 @@
       (when (eq (edge-category edge)
                 category)
         (return edge)))))
+
+
+;;--- editing the vector
+
+(defun specify-top-edge (edge)
+  "This is called from disambiguate-head-of-chunk because the 
+   chunker has chosen a specific ending edge for a chunk (with the 
+   correct POS), and we want that to be used by any SDM-SPAN-SEGMENT 
+  operation. Example: 'is import' gets chunked as a VG, though it is
+  syntactically incorrect. Then SDM-SPAN-SEGMENT picks
+  the top edge, which is the IMPORT-ENDURANT edge."
+  (let* ((start-ev (edge-starts-at edge))
+         (end-ev (edge-ends-at edge)))
+    (when (not (eq (ev-top-node start-ev) edge))
+      (tr :disambig-replacing-top-edge start-ev edge)
+      (setf (ev-top-node start-ev) edge))
+
+    (when (not (eq (ev-top-node end-ev) edge))
+      (tr :disambig-replacing-top-edge end-ev edge)
+      (setf (ev-top-node end-ev) edge))))
 

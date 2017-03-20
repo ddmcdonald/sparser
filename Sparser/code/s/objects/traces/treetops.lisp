@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992,2013-2015  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992,2013-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "treetops"
 ;;;   Module:  "objects;traces:"
-;;;  Version:   September2015
+;;;  Version:   March 2017
 
 ;; Stubbed with parameters 10/1990. Moved in the traces from
 ;; drivers/chart/psp/march-forest 3/8/13. 
@@ -552,6 +552,12 @@
 (defun untrace-island-driving ()
   (setq *trace-island-driving* nil))
 
+(defparameter *trace-whack-a-rule* nil)
+(defun trace-whacking ()
+  (setq *trace-whack-a-rule* t))
+(defun untrace-whacking ()
+  (setq *trace-whack-a-rule* nil))
+
 
 (deftrace :island-driven-forest-parse (start-pos end-pos)
   ;; called from island-driven-forest-parse
@@ -579,7 +585,7 @@
 
 (deftrace :whacking-triple (rule-and-edges edge)
   ;; called from whack-a-rule-cycle
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (let ((rule (car rule-and-edges))
           (left-edge (cadr rule-and-edges))
           (right-edge (caddr rule-and-edges)))
@@ -588,46 +594,46 @@
                  (edge-position-in-resource-array edge)))))
 
 (deftrace :pairs-to-consider-whacking (pairs)
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (trace-msg "~%[whack] ~a pairs: ~{~& ~a~}" 
                (length pairs) pairs)))
 
 (deftrace :can-we-whack-pair (pair)
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (trace-msg "[whack] Is there a rule to compose e~a and e~a ?"
                (edge-position-in-resource-array (car pair))
                (edge-position-in-resource-array (cadr pair)))))
 
 (deftrace :whack-pair-with-rule (rule)
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (trace-msg "[whack]   yes: ~a" rule)))
 
 (deftrace :no-rule-to-whack-pair ()
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (trace-msg "[whack]   no")))
 
 (deftrace :filter-choose-between-two-triples (left)
-   (when (or *trace-island-driving* *parse-edges*)
+   (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
      (trace-msg "[whack] two triples share ~a"
                 (left-edge-of-triple left))))
 
 (deftrace :filter-takes-left (triple)
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (trace-msg "[whack]   using left triple: ~a"
                (triple-rule triple))))
 
 (deftrace :filter-takes-right (triple)
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (trace-msg "[whack]   using right triple: ~a"
                (triple-rule triple))))
 
 (deftrace :filter-taking-right-most-triple (triple)
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (trace-msg "[whack] Selecting the rightmost triple: ~a"
                (triple-rule triple))))
 
 (deftrace :filter-selected-triple (triple)
-  (when (or *trace-island-driving* *parse-edges*)
+  (when (or *trace-island-driving* *parse-edges* *trace-whack-a-rule*)
     (if triple
       (let ((rule (car triple))
             (left-edge (cadr triple))

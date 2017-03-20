@@ -89,6 +89,7 @@
         (category::spatio-temporal-preposition)
         
         (category::s)
+        (category::subj+verb)
         (category::vp)
         (category::vg)
         (category::vg+ing)

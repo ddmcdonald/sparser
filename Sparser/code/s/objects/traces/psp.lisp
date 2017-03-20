@@ -1546,6 +1546,11 @@
   (when (or *trace-chunker* *trace-segments*)
     (trace-msg "Delimited chunk without a head: ~a" chunk)))
 
+(deftrace :disambig-replacing-top-edge (ev edge)
+  (when (or *trace-chunker* *trace-segments*)
+    (trace-msg "Disambiguating word at p~a to be ~a"
+               (pos-token-index (ev-position ev)) edge)))
+
 
 ;;---- sanity checks working with a pre-populated document
 

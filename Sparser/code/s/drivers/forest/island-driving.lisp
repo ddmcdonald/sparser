@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "island-driving"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  December 2015
+;;;  Version:  March 2017
 
 ;; Initiated 8/30/14. Controls the forest-level parsing under the
 ;; new 'whole sentence at a time, start anywhere' protocol.
@@ -51,11 +51,13 @@
   ;; sweep-sentence-treetops to create the layout
   (declare (special *allow-pure-syntax-rules*
                     *edges-from-referent-categories* ;; OBE or leave?
-                    *trace-island-driving* *parse-edges*) ;; trace flags
+                    *trace-island-driving* *parse-edges* ;; trace flags
+                    *trace-whack-a-rule*)
            (ignore layout))
   (tr :island-driven-forest-parse start-pos end-pos)
   (when (or *trace-island-driving* 
-            *parse-edges*)
+            *parse-edges*
+            *trace-whack-a-rule*)
     (tts))
   (let ((*allow-pure-syntax-rules* t)
         (*edges-from-referent-categories* *island-driven-efrc*))
