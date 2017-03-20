@@ -46,7 +46,7 @@
   :specializes   location
   :binds ((name :primitive word))
   :index (:permanent :key name)
-  :realization (:common-noun name))
+  :realization (:adverb name))
 
 (define-individual 'deictic-location :name "over there")
 
@@ -54,9 +54,7 @@
 
 (define-individual 'deictic-location :name "here")
 
-(unless (current-script :biology)
-  ;; unlikely in bio -- causes problems with construction "THERE IS"
- (define-individual 'deictic-location :name "there"))
+(define-individual 'deictic-location :name "there")
 
 
 ;;;--------------------------
