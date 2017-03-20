@@ -1490,23 +1490,31 @@
                 (pos-token-index position-before))))
 
 
+;;--- the check for semantic rules during the speep
+
+(defparameter *trace-early-rules-sweep* nil)
+(defun trace-early-rules ()
+  (setq *trace-early-rules-sweep* t))
+(defun untrace-early-rules ()
+  (setq *trace-early-rules-sweep* nil))
+
 (deftrace :early-rule-check-at (start)
-  (when *trace-sweep*
+  (when (or *trace-sweep* *trace-early-rules-sweep*)
     (trace-msg "[early] checking at p~a"
                (pos-token-index start))))
 
 (deftrace :early-rules-checking (left right)
-  (when *trace-sweep*
+  (when (or *trace-sweep* *trace-early-rules-sweep*)
     (trace-msg "[early] does e~a compose with e~a?"
                (edge-position-in-resource-array left)
                (edge-position-in-resource-array right))))
 
 (deftrace :early-succeeded (rule)
-  (when *trace-sweep*
+  (when (or *trace-sweep* *trace-early-rules-sweep*)
     (trace-msg "[early] yes - ~a" rule)))
 
 (deftrace :early-failed ()
-  (when *trace-sweep*
+  (when (or *trace-sweep* *trace-early-rules-sweep*)
     (trace-msg "[early] no")))
 #|
 (deftrace : ()

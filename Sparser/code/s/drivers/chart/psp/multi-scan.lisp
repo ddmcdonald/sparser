@@ -612,31 +612,35 @@
 #<PSR-979 be → wasn apostrophe-t>
 |#
 (defparameter *show-early-rules* nil)
+
+;; (trace-early-rules)
+
 (defun do-early-rules-sweep (sent)
   (tr :starting-early-rules-sweep)
-  (when *trace-sweep* (tts))
+  (when *trace-early-rules-sweep* (tts))
   (do-early-rules-sweep-between (starts-at-pos sent) (ends-at-pos sent)))
 
 (defun do-early-rules-sweep-between (start end)
   (when (not (eq start end))
     (let* ((left-edge (right-treetop-edge-at start))
-           (mid  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
-           (right-edge (when (edge-p left-edge)(right-treetop-edge-at mid)))
-           new-edge rule)
+           (mid-pos  (when (edge-p left-edge) (pos-edge-ends-at left-edge)))
+           (right-edge (when (edge-p left-edge) (right-treetop-edge-at mid-pos)))
+           new-edge  rule)
       (tr :early-rule-check-at start)
       (if (or (not (edge-p left-edge))
               (not (edge-p right-edge))
-              (pos-preceding-whitespace mid))
-          (do-early-rules-sweep-between (where-tt-ends left-edge start) end)
-          (else
-            (multiple-value-setq (new-edge rule) (apply-early-rule-at start mid))
-            (do-early-rules-sweep-between
-                (if new-edge
-                    ;; edge at the beginning changed, so start at the
-                    ;;  same start, since the middle position has shifted
-                    (pos-edge-starts-at new-edge) ;; CS rules generate an edge
-                    mid)
-              end))))))
+              (pos-preceding-whitespace mid-pos))
+        (do-early-rules-sweep-between (where-tt-ends left-edge start) end)
+        (else
+          (multiple-value-setq (new-edge rule)
+            (apply-early-rule-at start mid-pos))
+          (do-early-rules-sweep-between
+              (if new-edge
+                ;; edge at the beginning changed, so start at the
+                ;;  same start, since the middle position has shifted
+                (pos-edge-starts-at new-edge) ;; CS rules generate an edge
+                mid-pos)
+            end))))))
         
 (defun apply-early-rule-at (start middle-pos)
   (let* ((edges-ending-there (tt-edges-starting-at (pos-starts-here start)))
