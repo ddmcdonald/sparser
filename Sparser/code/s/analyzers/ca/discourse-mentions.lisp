@@ -178,9 +178,11 @@
   (pos-edge-ends-at e))
 
 (defun update-mention-links (edge)
-  ;; to be defined
-  edge
-  )
+  (let ((mention (edge-mention edge))
+        (interp (edge-referent edge)))
+    (when (and (typep mention 'discourse-mention)
+               (individual-p interp))
+      (pushnew mention (mention-history interp)))))
 
 (defparameter *warn-on-update-edge-mention-referent* nil)
 
