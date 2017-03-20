@@ -202,7 +202,9 @@
     ;; happens with mixins
     (let ((top *top-of-category-tree*)) ;; shorten name
       (assert (memq top category-list) ()
-              "Category list does not included top: ~a" category-list)
+              "Category list does not included top: ~a~
+             ~%One of these categories is not a specialization of ~
+               a category in the ontology." category-list)
       (let ((list-less-top (delete top category-list)))
         (tail-cons top list-less-top)))))
   
