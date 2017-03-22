@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  February 2017
+;;;  Version:  March 2017
 
 ;; Simple function lifted from syntax-functions 8/30/16
 
@@ -53,6 +53,32 @@
     ((referential-category-p vg-or-adjg)
      (find-variable-for-category 'adverb vg-or-adjg))
     (t nil)))
+
+
+(defun open-core-variable (predicate)
+  "We believe we are looking at an individual that is the referent
+  of a clause/vp, and consequently should variables corresponding to
+  subject and object (as determined by the subcategorization of
+  its verb). This function is used by the WH routines to determine
+  which variable in this object is unbound and is likey to be the
+  one that the question is asking about. Returns the open variable
+  or nil if both are bound or not defined on this individual/verb."
+  (let ((subj-var (subject-variable predicate))
+        (obj-var (object-variable predicate)))
+    (cond
+      ((and subj-var obj-var)
+       (if (value-of subj-var predicate)
+         obj-var
+         subj-var))
+      (subj-var
+       (unless (value-of subj-var predicate)
+         subj-var))
+      (obj-var
+       (unless (value-of obj-var predicate)
+         obj-var))
+      (t (warn "No object or subject variable defined on ~a" predicate)
+         nil))))
+
 
 (defun can-fill-vp-subject? (vp subj &optional (left-edge (left-edge-for-referent)))
   (and
