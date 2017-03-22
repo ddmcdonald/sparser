@@ -471,6 +471,10 @@
 (defvar *verbal-auxiliaries* nil
   "Holds a list of all the auxiliary words, as words")
 
+(defun edge-over-aux? (edge)
+  (when (word-p (edge-left-daughter edge))
+    (auxiliary-word? (edge-left-daughter edge))))
+
 (defun auxiliary-word? (word)
   (unless *verbal-auxiliaries*
     (populate-verbal-auxiliaries))

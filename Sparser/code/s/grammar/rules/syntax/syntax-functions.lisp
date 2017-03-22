@@ -462,7 +462,7 @@
                     biological time-kind determiner)))
     (t
      (setq head (individual-for-ref head))
-     (when (and *determiners-in-DL*
+     #+ignore(when (and *determiners-in-DL*
                 (or (individual-p head) (category-p head)))
        (setq head (bind-dli-variable 'quantifier quantifier head)))
      (cond
@@ -476,10 +476,9 @@
          (itypep head 'quality) ;; we quantify qualities "some level"
          (itypep head 'biological) ;; we quantify things like "such models"
          (itypep head 'time-kind)) ;; we quanitfy things like "some time"
-        (setf  (non-dli-mod-for head) (list 'quantifier quantifier))
-        ;; don't use KRISP variables for quanitifiers -- put them in the mention
-        ;;(setq  head (bind-dli-variable 'quantifier quantifier head))
-        )
+        (if *determiners-in-DL*
+          (setq head (bind-dli-variable 'quantifier quantifier head))
+          (setf  (non-dli-mod-for head) (list 'quantifier quantifier))))
        ((itypep head 'determiner) ;; "all these" (via syntactic rule)
         (setq head (bind-dli-variable 'quantifier quantifier head)))
        (t
@@ -1272,7 +1271,8 @@
   (if *subcat-test*
     t
     (or
-     (when (use-methods) (compose conj clause))
+     (when (use-methods)
+       (compose conj clause))
      (unless (eq (edge-form (left-edge-for-referent)) ;; 'conj' argument
                  category::pp)
        (bind-dli-variable 'subordinate-conjunction conj clause))
@@ -1283,54 +1283,31 @@
 ;; for v in (vp vp+passive vg+passive vg)
 ;; as rel in '(which who whom why that)
 ;; form rule: (rel v)
+;;   (p/s "who should move the block?")
 (defun compose-wh-with-vp (wh-obj predicate)
-  "Question the subject of the predicate"
-
-  (declare (special *parent-edge-getting-reference*
-                    category::copular-pp-rel-clause))
-  ;;/// rule doesn't include where or when yet.
-  ;;/// what happens with "what block" if it's embedded?
+  "Question the subject or the object of the predicate (the VP)
+   depending on which one is open."
+  ;;/// To set the form of the new edge have to know
+  ;; whether we're a toplevel question or embedded
   (if *subcat-test*
     t
-    (multiple-value-bind (q ;; question object
-                          wh) ;; the category for the wh word
-        (cond
-          ((itypep wh-obj 'wh-question)
-           (values wh-obj (value-of 'wh wh-obj)))
-          ((itypep wh-obj 'wh-pronoun)
-           (values nil wh-obj))
-          (t (break "New type of wh-obj passed in: ~
-                    ~a~%~a" (itype-of wh-obj) wh-obj)))
-      
-      (let* ((wh-name (cat-symbol wh))
-             (subj-var (subject-variable predicate))
-             (obj-var (object-variable predicate))
-             (open-var (if (value-of subj-var predicate)
-                         obj-var
-                         subj-var))
-             (variable
-              ;; which variable on the predicate are we questioning
-              (case wh-name
-                (category::who open-var)
-                (category::which open-var)
-                (category::what obj-var) ;; correct?
-                (category::why (value-of 'variable wh))
-                ;; whom -- unlikely w/o prep
-                ;; which -- probably will be  "which block .."
-                (otherwise
-                 (break "New case: wh = ~a" wh)))))
-        ;; To set the form of the new edge have to know
-        ;; whether we're a toplevel question or embedded
-
-        (if q
-          (then ;; add more bindings
-            (setq q (bind-variable 'var variable q))
-            (setq q (bind-variable 'statement predicate q)))
-          (setq q (make-wh-object
+    (cond
+      ((itypep wh-obj 'wh-question)
+       (let* ((wh (value-of 'wh wh-obj))
+              (wh-name (cat-symbol wh))
+              (open-var (open-core-variable predicate))
+              (default (value-of 'variable wh)))
+         (let ((q (make-wh-object
                    wh
-                   :variable variable
+                   :variable (or open-var default)
                    :statement predicate)))
-        q))))
+            (tr :wh-compose-wh-with-vp q)
+            q)))
+      ((itypep wh-obj 'wh-pronoun)
+       (compose wh-obj predicate))
+      (t (warn "New type of wh-obj in compose-wh-with-vp: ~a~
+                in~%~s" (itype-of wh-obj) (current-string))))))
+
 
 
 ;; for 'after which', 'in which' and such
@@ -1366,9 +1343,11 @@
       ;; while debugging -- what's a reasonable default?
       (unless variable (break "no variable for ~a on ~a" preposition vp))
 
-      (extend-wh-object wh-obj
-                        :variable variable
-                        :statement vp))))
+      (let ((q (extend-wh-object wh-obj
+                                 :variable variable
+                                 :statement vp)))
+        (tr :wh-make-pp-relative-clause q)
+        q))))
 
 
 

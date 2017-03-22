@@ -56,6 +56,30 @@
   :binds ((attribute attribute-value)) ;; #<tall>, w/ var = height
   :documentation "")
 
+(defun make-wh-object (wh &key variable statement attribute)
+  (let* ((attribute-var nil) ;; pull from attribute
+         (var-to-use (or variable
+                         attribute-var
+                         (value-of 'variable wh))))
+    (let ((q (define-an-individual
+                 (if attribute 'wh-question/attribute 'wh-question)
+                 :wh wh
+                 :var var-to-use
+                 :statement statement)))
+      (when statement
+        (setq q (add-category-to-individual q (itype-of statement))))
+      (when attribute
+        (setq q (bind-variable 'attribute attribute q)))
+      q)))
+
+(defun extend-wh-object (q &key variable statement attribute)
+  (when variable
+    (setq q (bind-variable 'var variable q)))
+  (when statement
+    (setq q (bind-variable 'statement statement q))
+    (setq q (add-category-to-individual q (itype-of statement))))
+  q)
+
 
 ;;;------------------------------------
 ;;; call from post-analysis-operations
@@ -126,10 +150,10 @@
         (wh-initial?
          (cond
            ((= 2 (length edges)) ;; take the second as the statement
-            (let* ((wh (value-of 'wh (edge-referent wh-initial?)))
-                   ;; wh-initial refers to a wh-question. Consider just using it.
+            (let* ((wh (edge-referent wh-initial?))
                    (complement (edge-referent (second edges)))
                    (q (compose wh complement)))
+              (tr :make-this-a-question q)
               (unless q
                 (lsp-break "WH compose didn't work or doesn't exist"))
               (make-edge-over-long-span
@@ -138,6 +162,10 @@
                :rule 'make-this-a-question-if-appropriate
                :form category::question
                :referent q)))
+#|           ((and (= 3 (length edges)) ;; "How many blocks did you add to the row?"
+                 (edge-over-aux? (second edges)))
+            |#
+           
            (t
             (when *warn-when-can-not-formulate-question*
               (warn "Could not resolve edges into a WH question: ~a" edges)))))
@@ -232,29 +260,6 @@
 ;;; WH questions
 ;;;--------------
 
-(defun make-wh-object (wh &key variable statement attribute)
-  (let* ((attribute-var nil) ;; pull from attribute
-         (var-to-use (or variable
-                         attribute-var
-                         (value-of 'variable wh))))
-    (let ((q (define-an-individual
-                 (if attribute 'wh-question/attribute 'wh-question)
-                 :wh wh
-                 :var var-to-use
-                 :statement statement)))
-      (when statement
-        (setq q (add-category-to-individual q (itype-of statement))))
-      (when attribute
-        (setq q (bind-variable 'attribute attribute q)))
-      q)))
-
-(defun extend-wh-object (q &key variable statement attribute)
-  (when variable
-    (setq q (bind-variable 'var variable q)))
-  (when statement
-    (setq q (bind-variable 'statement statement q))
-    (setq q (add-category-to-individual q (itype-of statement))))
-  q)
 
 #| (p "What color is the block?")
    (p/s "Is the block on the table?")
@@ -278,7 +283,6 @@
 (p "How Important Are Scc1 and SA2 Phosphorylation In Vivo?.")
 e11   HOW           1 "How Important " 3
 e15   BE            3 "Are Scc1 and SA2 Phosphorylation In Vivo" 12
-
 
 (p "Consistent with the critical role of VEGF and VEGFR2 in BPD, 
   human infants who die of BPD have little or no VEGF in their 
@@ -339,6 +343,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                      :referent q
                      :constituents (edges-between pos-before next-pos))))
                (record-initial-wh edge)
+               (tr :wh-initial-edge edge q)
                edge)))
       (cond
         ((memq (cat-symbol wh-type) '(who why where when))
@@ -393,7 +398,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 
 
 
-      
+;; (p/s "What color is the block?")
 
 (defun apply-question-marker (wh-edge vg-edge np-edge)
   "Called by DA rule, wh-be-thing, since parsing is going to be stymied by
@@ -417,22 +422,33 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                           :category category::copular-predicate
                           :form category::s  ;; vp? order is odd for a vp
                           :referent i)))
+               (tr :wh-apply-question-marker edge)
                edge)))
            (t
             (warn "Don't know how to formulate a wh question whose vg is ~a" vg)))))
              
 
 
-(def-k-method compose ((wh category::wh-question) (i individual))
+
   ;; this is the second time around after we're assembled
   ;; the pieces of the question. We can now set it up.
   ;; The call to compose is in make-subordinate-clause
   ;;   (p/s "What color is the block?")
+
+(def-k-method compose ((wh category::wh-question) (i individual))
+  (add-statement-to-wh-question wh i))
+
+(def-k-method compose ((wh category::wh-question/attribute) (i individual))
+  (add-statement-to-wh-question wh i))
+
+(defun add-statement-to-wh-question (wh stmt)
   (declare (special category::question))
-  (let ((w (bind-variable 'statement i wh)))
+  (let ((q (bind-variable 'statement stmt wh)))
+    (setq q (add-category-to-individual q (itype-of stmt)))
     (revise-parent-edge :form category::question
-                        :referent w)
-    w))
+                        :referent q)
+    (tr :wh+individual-method q)
+    q))
 
 
 

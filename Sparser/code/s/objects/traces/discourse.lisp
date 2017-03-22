@@ -10,6 +10,69 @@
 
 (in-package :sparser)
 
+;;;-----------
+;;; questions
+;;;-----------
+
+(defparameter *trace-questions* nil)
+
+(defun trace-questions ()
+  (setq *trace-questions* t))
+
+(defun untrace-questions ()
+  (setq *trace-questions* nil))
+
+(deftrace :wh-compose-wh-with-vp (q)
+  (when *trace-questions*
+    (trace-msg "[wh] compose-wh-with-vp created ~a" q)))
+
+(deftrace :wh-make-pp-relative-clause (q)
+ (when *trace-questions*
+   (trace-msg "[wh] make-pp-relative-clause ~a" q)))
+
+(deftrace :make-this-a-question (q)
+  (when *trace-questions*
+    (trace-msg "[wh] make-this-a-question-if-appropriate ~a" q)))
+
+(deftrace :wh-initial-edge (edge q)
+  (when *trace-questions*
+    (trace-msg "[wh] delimited wh initial edge e~a for ~a"
+               (edge-position-in-resource-array edge) q)))
+
+(deftrace :wh-apply-question-marker (edge)
+  (when *trace-questions*
+    (trace-msg "[wh] apply-question-marker made e~a"
+               (edge-position-in-resource-array edge))))
+
+(deftrace :wh+individual-method (q)
+  (when *trace-questions*
+    (trace-msg "[wh] add-statement-to-wh-question ~a" q)))
+
+(deftrace :wh-who (q)
+  (when *trace-questions*
+    (trace-msg "[wh] 'who' compose method: ~a" q)))
+
+(deftrace :wh-what (q)
+  (when *trace-questions*
+    (trace-msg "[wh] 'what' compose method: ~a" q)))
+
+(deftrace :wh-where (q)
+  (when *trace-questions*
+    (trace-msg "[wh] 'where' compose method: ~a" q)))
+
+(deftrace :wh-when (q)
+  (when *trace-questions*
+    (trace-msg "[wh] 'when' compose method: ~a" q)))
+
+(deftrace :wh-why (q)
+  (when *trace-questions*
+    (trace-msg "[wh] 'why' compose method: ~a" q)))
+
+(deftrace :wh-how (q)
+  (when *trace-questions*
+    (trace-msg "[wh] 'how' compose method: ~a" q)))
+
+
 ;;;---------------------
 ;;; discourse-structure
 ;;;---------------------
@@ -28,6 +91,7 @@
     (trace-msg "Setting e~a as the subject of ~a"
                (edge-position-in-resource-array edge)
                sentence)))
+ 
 
 
 ;;;------------------------------

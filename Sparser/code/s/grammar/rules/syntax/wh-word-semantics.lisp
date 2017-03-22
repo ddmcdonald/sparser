@@ -89,82 +89,73 @@
 (define-wh-pronoun "whoever")
 ;; wherever, whenever
 
-;;;----------
+;;;---------------------------------
 ;;; grammmar for embedded questions
-;;;----------
-  ;; called from make-subordinate-clause for wh + s
-
-;; (p/s "tell me what you want to do now.")
-
+;;;---------------------------------
+;; called from make-subordinate-clause for wh + s
 
 (def-k-method compose ((wh category::who) (stmt individual))
-  (declare (special category::wh-question))
-  (let* ((var (sbuject-variable stmt))
-         ;; The statement is probably open in its subject
-         ;; and this is a essentially a description of it
-        (wh-var
-          (if (and var (null (value-of 'variable stmt)))
-            var
-            (value-of 'variable wh)))
-         (q (define-an-individual category::wh-question
-                :wh wh
-                :var wh-var
-                :statement stmt)))
-      (setq q (add-category-to-individual q (itype-of stmt)))
-      q))
+  (let* ((open-var (open-core-variable stmt))
+         (wh-var (or open-var
+                     (value-of 'variable wh))))
+    (let ((q (make-wh-object
+              wh :variable wh-var :statement stmt)))
+      (tr :wh-who q)
+      q)))
+
+(def-k-method compose ((wh category::whom) (stmt individual))
+  (let* ((open-var (open-core-variable stmt))
+         (wh-var (or open-var
+                     (value-of 'variable wh))))
+    (let ((q (make-wh-object
+              wh :variable wh-var :statement stmt)))
+      ;;(tr :wh-who q)
+      q)))
+
+(def-k-method compose ((wh category::which) (stmt individual))
+  (let* ((open-var (open-core-variable stmt))
+         (wh-var (or open-var
+                     (value-of 'variable wh))))
+    (let ((q (make-wh-object
+              wh :variable wh-var :statement stmt)))
+      ;;(tr :wh-who q)
+      q)))
 
 
+;; (p/s "tell me what you want to do now.")
 (def-k-method compose ((wh category::what) (stmt individual))
-  (declare (special category::wh-question))
-  (let* ((var (object-variable stmt))
-         ;; The statement is probably open in its object
-        (wh-var
-          (if (and var (null (value-of 'variable stmt)))
-            var
-            (value-of 'variable wh)))
-         (q (define-an-individual category::wh-question
-                :wh wh
-                :var wh-var
-                :statement stmt)))
-      (setq q (add-category-to-individual q (itype-of stmt)))
-      q))
+  (let* ((open-var (open-core-variable stmt))
+         (wh-var (or open-var
+                     (value-of 'variable wh))))
+    (let ((q (make-wh-object
+              wh :variable wh-var :statement stmt)))
+      (tr :wh-what q)
+      q)))
 
 (def-k-method compose ((wh category::where) (stmt individual))
-  (declare (special category::wh-question))
   (let* ((wh-var (value-of 'variable wh))
-         (q (define-an-individual category::wh-question
-                :wh wh
-                :var wh-var
-                :statement stmt)))
-      (setq q (add-category-to-individual q (itype-of stmt)))
-      q))
+         (q (make-wh-object
+             wh :variable wh-var :statement stmt)))
+    (tr :wh-where q)
+    q))
 
 (def-k-method compose ((wh category::when) (stmt individual))
-  (declare (special category::wh-question))
   (let* ((wh-var (value-of 'variable wh))
-         (q (define-an-individual category::wh-question
-                :wh wh
-                :var wh-var
-                :statement stmt)))
-      (setq q (add-category-to-individual q (itype-of stmt)))
-      q))
+         (q (make-wh-object
+             wh :variable wh-var :statement stmt)))
+    (tr :wh-when q)
+    q))
 
 (def-k-method compose ((wh category::why) (stmt individual))
-  (declare (special category::wh-question))
   (let* ((wh-var (value-of 'variable wh))
-         (q (define-an-individual category::wh-question
-                :wh wh
-                :var wh-var
-                :statement stmt)))
-      (setq q (add-category-to-individual q (itype-of stmt)))
-      q))
+         (q (make-wh-object
+             wh :variable wh-var :statement stmt)))
+    (tr :wh-why q)
+    q))
 
 (def-k-method compose ((wh category::how) (stmt individual))
-  (declare (special category::wh-question))
   (let* ((wh-var (value-of 'variable wh))
-         (q (define-an-individual category::wh-question
-                :wh wh
-                :var wh-var
-                :statement stmt)))
-      (setq q (add-category-to-individual q (itype-of stmt)))
-      q))
+         (q (make-wh-object
+             wh :variable wh-var :statement stmt)))
+    (tr :wh-how q)
+    q))
