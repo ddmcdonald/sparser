@@ -207,16 +207,24 @@
                 :form n-bar 
                 :referent (:function noun-noun-compound left-edge right-edge)))))
 
+
+(def-syntax-rule (quantifier np) ;; "all the blocks" (should be red)
+    :head :right-edge
+    :form np
+    :referent (:function quantifier-noun-compound left-edge right-edge))
+
+
+
 ;; These two are special cases where we do want to attach post-modifiers to full NPs
 ;;; (these occur because the determiner is combined with the n-bar before we see the
 ;;;   post-modifying adjective)
 
-(def-syntax-rule (np adjp) ;; "RAS in vivo"
+(def-syntax-rule (np adjp)
     :head :left-edge
     :form np
     :referent (:function adj-postmodifies-noun left-edge right-edge ))
 
-(def-syntax-rule (np adjective) ;; "RAS in vivo"
+(def-syntax-rule (np adjective)
     :head :left-edge
     :form np
     :referent (:function adj-postmodifies-noun left-edge right-edge ))
