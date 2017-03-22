@@ -108,7 +108,10 @@
 
 (defun current-string ()
   (or *current-sentence-string*
-       *string-from-analyze-text-from-string*))
+      *string-from-analyze-text-from-string*
+      (let ((s (identify-current-sentence :no-break)))
+        (when s (sentence-string s)))
+      ""))
 
 (defun identify-current-sentence (&optional no-break)
   "Identify and return the sentence that the parser is operating in
@@ -127,8 +130,10 @@
      ((and current
            (null (ends-at-pos current)))
       current)
-     (s (error "Odd type returned for sentence: ~a~%~a"
-               (type-of s) s))
+     (s (unless no-break
+          (error "Odd type returned for sentence: ~a~%~a"
+                 (type-of s) s))
+        nil)
      (t (unless no-break
           (error "Need another way to find the current sentence"))
         nil))))
