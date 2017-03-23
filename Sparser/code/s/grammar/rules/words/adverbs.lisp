@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1995,2011-2013 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1995,2011-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2008-2010 BBNT Solutions LLC. All Rights Reserved
 ;;; 
 ;;;     File:  "adverbs"
 ;;;   Module:  "grammar;rules:words:"
-;;;  Version:  2.0 May 2013
+;;;  Version:  March 2017
 
 ;; initiated 5/16/93 v2.3. Populated 1/11/94. Added to 1/12,1/13
 ;; 0.1 (5/26) redid the bracket label as 'adverb'
@@ -40,16 +40,22 @@
 ;; For list of adverbs of diverse sorts see dossiers/modifiers.lisp
 ;; For the method used by adverbs see rules/syntax/adverbs.lisp
 
-(defun define-adverb (string &key super-category
+(defun define-adverb (string &key super-category documentation
                                   rule-label discriminator)
   "The string can be a single word or a polyword. The super-category
-   defaults to adverb. If you supply a value it should be the symbols
-   that names the category, not the actual category, and note that this
-   is a function, not a macro, so all areguments are evaluated."
+   defaults to adverb. If you supply a value for the super-category
+   it should be the symbolthat names the category, not the actual 
+   category. The same applies to rule-label, though discriminator 
+   is an arbitrary distinguishing symbol that gets concatenated in
+   forming the name of the category this creates.
+     Note that this is a function, not a macro, so all areguments 
+   are evaluated -- symbols need to be quoted."
+  
   (define-function-term string 'adverb
     :super-category (or super-category
                         (super-category-for-POS :adverb))
     :rule-label rule-label
     :discriminator discriminator
     :tree-families '(pre-verb-adverb post-verb-adverb
-                     pre-adj-adverb pre-adv-adverb sentence-adverb)))
+                     pre-adj-adverb pre-adv-adverb sentence-adverb)
+    :documentation documentation))

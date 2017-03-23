@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "discourse"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  September 2016
+;;;  version:  March 2017
 
 ;; Initiated 9/6/16, initially as a common resting place for the
 ;; "interjections", with contributions from checkpoint/vocabulary.lisp
@@ -151,3 +151,31 @@
                'explicit-suggestion :marker marker :suggestion proposal)))
        (revise-parent-edge :category category::explicit-suggestion)
        s))))
+
+
+;;;---------------------
+;;; discourse particles
+;;;---------------------
+
+(define-category discourse-adverbial
+  :instantiates nil
+  :specializes speech-act
+  :documentation "These are adverbs that relate to the eventuality
+ or utterance as a whole. They are saying something about it 
+ ('just', 'only') or predicating something of it. They normally
+ have a pragmatic interpretation that relates the eventuality
+ (or its focal element) to alternatives or expectations given
+ the context is which the utterance occurs.")
+
+(defun define-discourse-adverbial (string &key doc)
+  (define-adverb string :super-category 'discourse-adverbial
+                 :documentation doc))
+
+;; See dossiers/modifiers.lisp for cases
+
+
+  
+
+
+
+    

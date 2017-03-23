@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   January 2017
+;;;   Version:   March 2017
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -105,11 +105,29 @@
 (defun define-function-term (string form 
                              &key  brackets super-category
                                    rule-label discriminator
-                                   tree-families subcat-info)
+                                   tree-families subcat-info
+                                   documentation)
   "Does for deliberately defined modifiers the same thing as is done for
    Comlex or morphologically identified nouns or verbs in grammar/rules/
-   brackets/assignments.lisp.
-      :subcat-info:   Legal values are noun, verb, adjective, and adverb"
+   brackets/assignments.lisp. It creates a new category for this word
+   (the string argument), where the name of the category is based on
+   the word plus the optional discriminator' symbol. If that category
+   name is the same as one that's already been defined, it will signal
+   an error unless the *ignore-redefine-warnings* has been dynamically
+   bound to non-nil. 
+     The supercategory of the to-be-created category can be
+   specified by the 'super-category' argument. It defaults to 'adverbial'.
+     The argument names the category that will be the form on the
+   unary rule this creates. It also determines the choice of brackets,
+   mirroring the choices in the setup code used with Comlex.
+     The tree-family argument should be a list of full ETF names; see example
+   in define-adverb. 
+     Rule-label has the same impact as it does in the definition of an
+   ordinary category. It determines the label on the generated rules, which
+   will otherwise be the generated category.
+     For getting subcategorization information fromo Comlex the :subcat-info
+   argument dictates which POS entry to use. Legal values are noun, verb, 
+   adjective, and adverb."
   (unless form
     (setq form 'standalone)) ;; seems safest
   (unless brackets
@@ -123,6 +141,7 @@
             (standalone *standalone-brackets*)
             (otherwise
              (break "Need brackets for another syntactic form: ~a" form)))))
+  (unless documentation (setq documentation ""))
   (unless super-category
     (setq super-category 'adverbial))
   (when rule-label
@@ -151,7 +170,8 @@
                  :instantiates :self ;;?? super-category ??
                  :rule-label ,(or rule-label
                                   super-category)
-                 :bindings (name ,word)))))
+                 :bindings (name ,word)
+                 :documentation ,documentation))))
        
         (let ((rule
                ;; Create the single-term rule that rewrites the word
@@ -173,7 +193,9 @@
               ;; form rules and we'd get a clash if we did them here. 
               (apply-function-term-etf category tree-families)))
 
-          (when subcat-info
+          ;; This isn't ready for prime time yet. The function it's
+          ;; calling was never finished and there need to be
+          #+ignore(when subcat-info
             ;; Look up the Comlex subcategorization information for
             ;; this word. If there is any, and if it is of the specified
             ;; sort, add any rules that would apply.

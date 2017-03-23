@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "modifiers"
 ;;;    Module:   "model;dossiers:"
-;;;   Version:   January 2017
+;;;   Version:   March 2017
 
 ;; Created 1/4/13 to group together comparatives, approximators, etc in
 ;; one place so they're easier to keep track of. (1/9/13) Moved in all
@@ -19,6 +19,23 @@
 
 
 (in-package :sparser)
+
+;;;----------------------
+;;; Discourse adverbials
+;;;----------------------
+
+(define-discourse-adverbial "anyway"
+    :doc "As in 'we'll do it anyway', which makes sense when
+ there was some impediment to doing it, but we're indicating
+ that we want to ignore it. 
+   Used in utterance-initial position, it has the force of 
+ injecting a break into the discourse and a goal of shifting topics, 
+ often to a prior topic that was pushed.")
+;;/// In (p/s "Let's build it anyway.") the 'anyway' is parsed
+;; as an adverb on the verb. It really should be an operator
+;; at the discourse level, but we can cross that bridge later.
+
+
 
 ;;;----------------
 ;;; Approximations
