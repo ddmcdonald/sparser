@@ -117,21 +117,22 @@ be biology specific, since they aren't. |#
 (adj "same" :super bio-predication)
 
 ;;---- likely to want a different interpretation
-;;     when the attribute-value "high" is available
+;;     when the attribute-value "high" is available 
 (define-category high-enough :specializes bio-predication
-  :binds ((result-or-purpose bological))
+  :binds ((result-or-purpose biological)) ;; changed to biological
   :mixins (post-adj)
   :realization
   (:adj "high enough"
         :to-comp result-or-purpose))
 
 (define-category low-enough :specializes bio-predication
-  :binds ((result-or-purpose bological))
+  :binds ((result-or-purpose biological)) ;; changed to biological
   :mixins (post-adj)
   :realization
      (:adj "low enough"
       :to-comp result-or-purpose))
 
+;;(adj "low enough" :super bio-predication) ;; commented out because it's the same as the above and causes error
 (adj "high-activity" :super bio-predication)
 (adj "high-throughput" :super bio-predication)
 
