@@ -33,47 +33,17 @@
 ;;  the underlying problem needs to be fixed (by you)
 ;; 6/8/2015 added a bunch of plasmids
 ;; 6/10/15 Commented out "c" and "h" for clobbering more frequent interpretations
-
+;; 3/22/17 Moved much of vocabulary to specialized files:
+;; bio-complexes, bio-methods-processes, bio-predications, cells,
+;; cellular-locations, cellular-processes, diseases-pathogens, drugs,
+;; measurements, molecular-locations, molecules,
+;; non-cellular-locations, plasmids-rna, and post-trans-mods -- still
+;; more to do
 
 (in-package :sparser)
 
 
 (noun "http://" :super abstract) ;; avoid an NS error
-
-;; as in "centrosome sections"
-(define-category bio-section :specializes bio-method
-                 :realization (:noun "section"))
-
-(define-category dose-dependent :specializes :bio-predication
-  :realization
-  (:adj "dose-dependent"))
-(def-synonym dose-dependent (:adj "dose dependent"))
-
-
-
-(adj "-like" :super bio-predication) ;; as in "UBA (ubiquitin-associated)-like domains" where we don't combine the "-like"
-(noun "SILAC labeling" :super bio-method)
-(noun "ipegal" :super bio-method) ;; actually a detergent used to lyse cells, but we don't really care
-;; this should avoid an error in parsing the folloiwng in the first CURE article
-;;"Cells were lysed in a buffer containing 50 mM Tris-HCl (pH 7.4), 150 mM NaCl, 2.5 mM EDTA, 1% Triton X-100, and 0.25% IPEGAL."
-
-
-(noun "medium" :super experimental-condition)
-(noun "vector" :super bio-method) ;; need a class for experimental materials
-(noun "unstimulated" :super experimental-condition)
-(noun "incubation" :super bio-method)
-(noun "copy number analysis" :super bio-method)
-(noun "mutation profiling" :super bio-method)
-(noun "cell adhesive  structure" :super cellular-location)
-(adj "in excess" :super bio-predication)
-(adj "abundant" :super bio-predication)
-
-
-(adj "nonreducing" :super bio-predication)
-(adj "nontargeting" :super bio-predication)
-(adj "nondenaturing" :super bio-predication)
-(adj "noncoding" :super bio-predication)
-(adj "nonmigrating" :super bio-predication)
 
 ;;from pathway comments
 
@@ -83,17 +53,6 @@
  :realization
  (:noun "member"
         :of set))
-
-(adj "deoxy" :super bio-predication)
-(noun "chemical product" :super bio-chemical-entity)
-
-
-;; below is needed because of a use of "transients" in the CURE corpus
-(define-category transient-measurement :specializes bio-measurement
-  :realization  (:noun ("transientXXX" :plural "transients"))) ;; don't pick up "transient" from COMLEX, and don't allow "transient" as a singular noun
-
-
-
 
 ;; Moved in from dossiers/modifiers.lisp
 (define-adverb "biochemically")
@@ -161,41 +120,6 @@
 (define-adjective "transmembrane")
 (define-adjective "tumorigenic") ;tumorigenesis
 
-
-
-
-
-(noun "HA.11" :super epitope)
-
-(noun "bradykinin" :super peptide)
-(noun "Abeta" :super peptide)
-(noun "AICAR" :super peptide)
-(def-synonym abeta (:noun "amyloid beta"))
-;; to be reviewed -- from Localization
-
-
-(define-category bio-observation :specializes bio-method
-  :binds ((observed biological))
-  :realization (:of observed))
-;; not really, but what is it
-(noun "band" :super bio-observation)
-
-(define-category bio-reagent :specializes bio-entity) ;; not really
-(noun "gel" :super bio-reagent)
-
-
-(define-category bio-preparation :specializes bio-entity)
-(noun "slice" :super bio-preparation) ;; brain slices
-(noun "gain" :super positive-bio-control)
-(adj "unperturbed" :super bio-predication)
-(noun "positioning" :super bio-method)
-(noun "thresholding" :super bio-method)
-(noun "whole cell extract" :super bio-method)
-(noun "networking" :super bio-mechanism) ;; unsure of this -- "receptor networking"
-(noun "dextran" :super polysaccharide)
-
-
-
 (define-category equivalent :specializes bio-relation
   :realization
   (:adj "equivalent"
@@ -207,23 +131,7 @@
 	:noun "prerequisite"
 	:for theme))
 
-
-;;lipids
-;; in EGFR signaling comments
-(noun ("DAG" "diacylglycerol") :super lipid)
-(noun "Sphingosine" :super lipid)
-(noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
-(noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
-(noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate") :super phospholipid)
-
-;;(adj "bound" :super bio-predication) it is the past tense of bind
-(adj "unbound" :super bio-predication)
-
-
 ;; new nouns and verbs used in Ras model comments
-
-(noun ("stimulus" :plural "stimuli") :super other-bio-process)
-;; not sure if this is ontologically correc, but I think it might be close
 
 (define-category coincident 
                  :specializes bio-relation
@@ -231,157 +139,23 @@
   (:adj "coincident"
         :with theme))
 
-(define-category conformational-change
-                 :specializes bio-process ;;TO-DO  not sure this is the best choice, but can't think of one better
-  :binds ((structure (:or bio-entity molecular-location)))
-  :realization
-  (:noun "conformational change"
-         :in structure
-         :of structure))
-
-(def-synonym conformational-change 
-             (:noun "allosteric change"))
-
 (define-category guanyl-nucleotide-exchange :specializes nucleotide-exchange
   :realization
   (:noun "guanyl-nucleotide exchange"))
 
 ;;(noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
-(noun "bond" :super bio-entity) ;; chemical bond -- not 
-(adj "dual-specificity" :super bio-predication)
 
 
-;;/// N.b. the rule is written over the literal "fold"
-(define-category n-fold :specializes measurement
-  :binds ((number number))
-  :realization
-  (:noun "fold"
-         :m number))
-;; only used in phrases like nnn-fold, this is here to suppress the
-;;  attempt to ascribe a biological meaning to the verb
 
-
-(adj "acidic" :super bio-predication)
-(adj "adaptor" :super bio-predication) ;; "adaptor protein"
-(adj "allosteric" :super bio-predication) ;; "allosteric activation", "allosteric activator""allosteric charge"
-(noun "adenocarcinoma" :super disease)
-(noun "anaphylaxis" :super disease)
-(adj "banded" :super bio-predication)
-(noun "metaplasia" :super disease)
-(noun "hyperplasia" :super disease)
-(noun "anchor" :super molecule) ;; "cytoplasmic anchor"
-(adj "apparent" :super bio-predication) ;; perhaps need :rhetorical predication"
-(adj "asymmetric" :super bio-predication)
-(adj "conventional" :super bio-predication) ;;"conventinal MAPK cascade"
-(adj "double-stranded" :super bio-predication)
-(adj "single-stranded" :super bio-predication)
-(adj "standard" :super bio-predication)
-(adj "familial" :super bio-predication)
-(noun "carcinoma" :super cancer)
-(noun "glioblastoma" :super cancer)
-(noun "keratoacanthoma" :super cancer)
-(noun "neurooblastoma" :super cancer)
-(noun "NSCLC" :super cancer)
-(def-synonym NSCLC (:noun "non-small cell lung cancer"))
-(noun "non-small cell lung cancer" :super cancer)
-(def-synonym NSCLC (:noun "non small cell lung cancer"))
-(adj "nonsignaling" :super bio-predication)
-;;(def-synoynm nonsignaling (:adj "nonsignalling"))
-(noun "isomerase" :super enzyme)
-(noun "ligaase" :super enzyme)
-(noun "ubiquitinase" :super enzyme)
-(noun "deubiquitinase" :super enzyme)
-(noun "neurofibromatosis" :super disease)
-(adj "intermolecular" :super bio-predication)
-(adj "intramolecular" :super bio-predication)
-(adj "lethal" :super bio-predication)
-(adj "linear" :super bio-predication)
-(adj "mammalian" :super species)
-(adj "hydrophobic" :super bio-predication)
-(adj "inhibitory" :super bio-predication)
-(adj "obligatory" :super bio-predication)
-(adj "adjesion" :super bio-predication) ;; TO-DO need to think about how to define "adhere" to structure
-
-(adj "scaffolding" :super bio-predication) ;; "scaffolding protein"
-(adj "resting" :super bio-predication)
 (define-adverb "sterically")
 
 
 ;;proteins from comments -- TO-DO move out to proteins file and do correctly
-(define-protein "LAMTOR2" ("LAMTOR2" "MEK partner 1" "MP1"))
-(define-protein "LAMTOR3" ("LAMTOR3"))
-(define-protein "KBTBD7 E3 RING" ("KBTBD7 E3 RING" ))
-(define-protein "KBTB7_HUMAN" ("KBTBD7"))
 
 ;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
 
-#-allegro (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
-(noun "MeHg" :super molecule)
-(def-synonym MeHg (:noun "methyl mercury"))
-(noun "brain" :super bio-organ)
-(noun "colon" :super bio-organ)
-(noun "breast" :super bio-organ)
-(noun "eye" :super bio-organ)
-(noun "prostate" :super bio-organ)
-(noun "kidney" :super bio-organ)
-(define-category pancreas :specializes bio-organ
-  :realization
-  (:noun "pancreas" :adj "pancreatic"))
 
-(define-category liver :specializes bio-organ
-  :realization
-  (:noun "liver" :adj "hepatic"))
-
-(define-category lung :specializes bio-organ
-  :realization
-  (:noun "lung"))
-
-(noun "trophectoderm" :super bio-organ)
-(def-synonym trophectoderm (:noun "TE"))
-
-(define-category inner_cell_mass :specializes bio-organ
-              :realization (:noun "inner cell mass" ))
-(def-synonym inner_cell_mass (:noun "ICM"))
-
-(noun "lactate" :super molecule)
-
-#-allegro (noun "pcDNA3.1-PPARγ" :super plasmid)
-(noun "pcDNA3.1-Med1" :super plasmid)
-(noun "pCMX-Med1" :super plasmid)
-(noun "pcDNA3.1-PIMT" :super plasmid)
-(noun "pcDNA3.1-PIMT-N" :super plasmid)
-(noun "pCMV-PIMT-Flag" :super plasmid)
-(noun "3XPPRE-Luc" :super plasmid)
-(noun "GST-PIMT-N" :super plasmid)
-(noun "GST-Med1-CRAF-BXB" :super plasmid)
-(noun "pCMV-ERK2-HA" :super plasmid)
-
-
-(noun "carcinogen" :super bio-agent)
-(adj "phospho-specific" :super bio-predication) ;; standin for "phospho-specific antibody"
 ;;(def-synonym not (:adj "non"))
-
-(noun "CML" :super disease)
-
-(noun  "blotting" :super bio-method)
-
-(noun  "pipetting" :super bio-method)
-(noun  "processing" :super bio-method
-       :binds ((agent biological)(object bio-entity))
-       :realization
-       (:noun "processing"
-       :by agent
-       :of object))
-(noun  "stripping" :super bio-method)
-(noun  "uncapping" :super bio-method)
-(noun  "spectroscopy" :super bio-method)
-(noun  "microscopy" :super bio-method)
-(noun  "microscope" :super bio-method)
-(noun  "microimaging" :super bio-method)
-(noun  "microarray" :super bio-method)
-(noun  "array" :super bio-method)
-(adj  "dimensional" :super bio-predication)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -389,68 +163,19 @@
 (noun "bar" :super abstract) 
 ;;Error: Comlex -- new POS combination for "#<word "bar">:: (NOUN PREP VERB)
 ;; DROPPING THIS CAUSES A MASSIVE ERROR ON CURE 38
-(noun ("mouse" :plural "mice") :super species)
-(noun "Xenopus" :super species)
-(noun "zebrafish" :super species)
 
-(noun "sequential immunoblotting" :super bio-method)
-(noun "immunofluorescence" :super bio-method)
-
-
-
-
-
-
-
-
-
-(noun "32P" :super molecule) 
-;; actually an isotope -- need to adjust taxonomy 
-
-
-
-(noun "abnormality" :super disease)
-
-(define-category absence :specializes experimental-condition
-  :binds ((measurement (:or measurement bio-scalar)))
-  :realization
-  (:noun "absence"
-	 :of measurement))
-
-
-(adj "active" :super molecule-state
-     :binds ((activated
-              (:or molecule pathway bio-state))) ;; allow "the conformation is active"
-     :realization 
-     (:adj "active"
-           :s activated))
-
-
-(define-category activator :specializes molecule
-  :binds ((activated molecule))
-  :realization
-  (:noun "activator"
-         :of activated))
-
-(def-bio "adenine" nucleobase)
-(adj "additive" :super bio-predication)
-(noun "agonist":super molecule) ;; keyword: (ist N) ;; 
 (define-category affinity :specializes bio-relation
      :binds ((object bio-entity))
      :realization
      (:noun "affinity"
             :for object))
-(noun "allele" :super variant)
-
-
-(noun "analog" :super variant)
-(noun ("analysis" :plural "analyses")
-  :super bio-method)
 
 ;; Usually in a hyphenated construction. Idiomatically as a XXXXXXX
 ;; marker and generally: "anti-inflammatory"
+;;; maybe make method for anti- if it's a biological and otherwise
+;; new class of compositional prefixes, anti- co- non- define cfrs for those cases that call methods that diagnose it (also pre- and post-)
+;; function call that allows you to change category and part of speech of edge 
 (adj "anti" :super bio-predication)
-
 (define-category antibody :specializes protein
   :binds ((antigen molecule))
   :realization
@@ -459,81 +184,9 @@
          :to antigen
          :for antigen))
 
-(adj "anticancer" :super bio-predication)
-
-(noun "approach" :super bio-method)
-
-(noun "consequence" :super bio-quality)
-(define-category assay :specializes measure
-  :realization
-  (:noun "assay"))
-                 
-
-(define-category aspect :specializes bio-mechanism
-  :binds ((whole bio-mechanism))
-  :realization
-  (:noun "aspect"
-         :of whole))
-
-
-
-(define-adverb "at baseline")
-(adj "background" :super bio-predication)
-(noun "bacteria" :super species) ;; not really
-(noun "baseline" :super  bio-method)
-(adj "bandee" :super bio-predication)
-(noun "bifc" :super bio-method)
-(noun "binder" :super bio-entity)
-
-(adj "biophysical" :super bio-predication)
-
-(adj "candidate" :super bio-predication )
-
-(noun "cascade" :super bio-process)
-
-(adj "chemical" :super bio-predication) ;; keyword: (al ADJ) 
-
-
-(noun "class" :super variant  ;;NOT SURE THIS IS RIGHT
-      )
-
-;; This should be made more general
-(adj "class I" :super bio-predication)
-(adj "class II" :super bio-predication)
-(adj "clinical" :super bio-predication)
-(adj "pre-clinical" :super bio-predication)
-
-
-(adj "cognate" :super bio-predication)
-
-(adj "combinatorial" :super bio-predication) ;; keyword: (al ADJ) 
-
-(define-category complementation :specializes bio-process
-  :binds ((complement bio-entity))
-  :realization
-  (:noun "complementation"
-         :for complement))
-
-
-
+;(noun "bacteria" :super species) ;; already has bacterium category
 
 ;; OBE (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
-(noun "condition" :super experimental-condition)
-
-(adj "constitutive" :super bio-predication)
-(define-adverb "constitutively")
-
-(noun "control" :super bio-method)
-
-
-(def-bio "cytosine" nucleobase)
-
-
-(define-category data :specializes measurement
-		 :realization
-		 (:noun ("datum" :plural "data")))
-(adj "de novo" :super bio-process)
-
 
 ;; "the DSB repair defect", "a defect in sensitivity to GAP–mediated regulation"
 (noun "defect" :super bio-relation
@@ -552,22 +205,9 @@
      :m theme
      :in theme))
 
-(noun "denaturing gel electrophoresis" :super bio-method)
-(noun "derivative" :super molecule)
 (noun "detail" :super abstract)
 
-(adj "diffuse" :super bio-predication) ;; TO-DO better superc
-(noun "disorder" :super disease)
-(noun "dna binding" :super bio-process
-      :binds ((substrate bio-entity))
-      :realization 
-      (:noun "dna binding"
-             :of substrate))
-
-
 (noun "dynamics" :super bio-scalar)
-(adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
-(define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
 
 (adj "effective" :super bio-relation
      :realization 
@@ -575,23 +215,6 @@
            :against theme
            :in theme
 	   :on theme))
-
-(define-category effector :specializes protein ;; NOT SURE WHAT THE RIGHT SUPER is
-  :binds ((for-process bio-process))
-  :realization
-  (:noun "effector" 
-         :for for-process
-         :in for-process))
-
-(define-category efficacy :specializes bio-predication
-  :realization
-  (:noun "efficacy"
-         :of subject))
-
-(adj "endogenous" :super bio-predication) ;; keyword: (ous ADJ) 
-
-
-(adj "enzymatic" :super bio-predication)
 
 (noun "extent" :super bio-scalar) 
 
@@ -601,113 +224,17 @@
       (:noun "fact"))
 
 (noun "factor" :super bio-entity) ;; keyword: (or N) 
-;;;(adj "fail-proof" :super bio-predication)
-
-
-(noun "fate" :super bio-process)
-
-(noun "fetal calf serum" :super experimental-condition)
-(def-synonym category::fetal-calf-serum  (:noun "FCS"))
-
-;; we dropped out "follow" as a verb in biology, in favor of using "following" as a
-;;  "preposition" and as an adjective
-;;(adj "following" :super bio-predication)
-(define-category following-adj :specializes bio-predication
-                 :realization (:adj "following"))
-
-
-
-(define-category fluorescence :specializes bio-process
-  :realization
-  (:noun "fluorescence"))
-
-(noun "fluorescence correlation spectroscopy" :super bio-method)
-(noun "fluorescence correlation spectroscopy measurements" :super bio-method)
-(noun "fluorescence microscopy" :super bio-method)
-
-
-(noun "forster resonance energy transfer" :super bio-method)
-
-(noun "fragment" :super protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
-      :binds ((whole bio-entity)
-              ;; bio-scalar is for "a  fragment of the same mass as ..."
-              (measure (:or measurement bio-scalar)))
-      :realization
-      (:noun "fragment"
-             :of whole
-             :of measure))
-
-;; keyword: (ive ADJ) 
-
-(adj "nucleotide-free" :super bio-predication)
-
-(noun "gel electrophoresis" :super bio-method)
-(adj "general" :super bio-predication)
-(adj "genetic" :super bio-predication) ;; keyword: (al ADJ) 
-
-
-(def-bio "guanine" nucleobase)
-
-
-(noun "HPLC" :super bio-method)
-(def-synonym HPLC (:noun "high performance liquid chromatography"))
-(noun "SCX" :super bio-method)
-(def-synonym SCX (:noun "strong cation exchange chromatography"))
-(noun "FRET" :super bio-method)
-(def-synonym fret (:noun "fluorescence resonance energy transfer"))
-
-(adj "housekeeping" :super bio-predication)
 
 ;; "However" is actually a subordinate conjunction.
 ;; It can appear in adverbial positions as an interjection
 ;;/// but the correct fix is in the grammar.
 
-(noun "human" :super species)
-
-
-(define-category in-situ :specializes experimental-condition
-  :realization  ;; could also be considered as a location
-  (:adj "in situ"))
-
-(define-category in-vivo :specializes experimental-condition
-  :mixins (post-adj)
-  :realization
-  (:adj "in vivo"))
-(define-category in-vitro :specializes experimental-condition
-  :mixins (post-adj)
-  :realization
-  (:adj "in vitro"))
-
-
-
-(adj "inactive" :super molecule-state
-     :binds ((molecule molecule))
-     :realization 
-     (:adj "inactive"
-           :s molecule))
-
-(adj "inducible" :super bio-predication) ;; keyword: (ible ADJ) 
 (adj "ineffective" :super bio-relation
      :binds ((against biological))
      :realization 
      (:adj "ineffective"
            :against against)) ;; keyword: (ive ADJ) 
 
-(define-category inhibitor :specializes drug
-  :binds ((process (:or bio-process bio-mechanism))
-          (protein protein))
-  :realization (:noun "inhibitor" :m process :m protein :of process :of protein))
-
-
-;; THIS NEEDS WORK
-(define-category repressor :specializes inhibitor
-  :realization (:noun "repressor"))
-
-(define-category suppressor :specializes inhibitor
-  :realization (:noun "suppressor"))
-
-(define-category negative-regulator :specializes inhibitor
-  :realization (:noun "negative regulator"))
 
 (adj "insensitive" :super bio-relation
       :realization
@@ -725,90 +252,11 @@
       (:noun "insight"
              :into concept))
 
-(adj "integrative" :super bio-predication) ;; keyword: (ive ADJ) 
-(adj "intriguing" :super bio-predication) ;; keyword: ENDS-IN-ING
-(noun "isoelectric focussing" :super bio-method)
-
-(noun "isoform" :super variant)
-(adj "kinase-dead" :super bio-predication)
-
-
-(adj "kinetic" :super bio-predication)
-
-
-(define-category knock-out  :specializes bio-process
-  :binds ((gene-or-protein (:or protein gene)))
-  :realization
-  (:noun "knock-out" :of gene-or-protein
-         :m gene-or-protein))
-
-(def-synonym knock-out
-             (:noun "knockout"
-                    :of gene-or-protein
-                    :m gene-or-protein))
-
-
-(adj "least-selective" :super bio-predication) ;; just to get through
-;;In biochemistry, a protein ligand is an atom, a molecule or an ion that can bind to a specific site (the binding site) on a protein. 
-(noun "ligand" :super bio-chemical-entity)
-
-(noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
-(noun "liquid chromatography" :super bio-method)
-(adj "living" :super bio-predication)
-
-(define-category lysate :specializes bio-entity
-  :realization
-  (:noun "lysate"))
-
-(def-bio "adenine" nucleobase)
-(noun "LPA" :super phospholipid)
-(def-synonym lpa (:noun "lysophosphatidic acid"))
-
-(noun "manner" :super bio-process
-      :realization
-      (:noun "manner"))
-(noun "mass" :super bio-scalar)
-(noun "mass-spectrometry" :super bio-method)
-(def-synonym mass-spectrometry (:noun "mass spectrometry"))
-             
-(noun "means" :super bio-method
-      :restrict ((object over-ridden))
-      :binds ((process bio-process))
-      :realization
-      (:noun "means"
-             :of process))
-
 (define-adverb "mechanistically")
 
-(noun "membrane" :super cellular-location)
-(noun "method" :super bio-method)
-(noun "miR-26A" :super micro-rna)
-(noun "miR-26A2" :super micro-rna)
-(def-synonym miR-26A2
-             (:noun "MIR26A2"))
-(noun "miR-26A1" :super micro-rna)
-(def-synonym miR-26A1
-             (:noun "MIR26A1"))
-(noun "mitogen" :super molecule)
-
-(define-category mobility :specializes bio-process
-  :binds ((motile bio-entity))
-  :realization
-  (:noun "mobility"
-         :of motile))
-
-(noun "mode" :super bio-method)
-(noun "model" :super biological) ;; almost never used as a verb
-(noun "modeling" :super bio-method) ;; but modeling is a nominal that is used
-(adj "molecular" :super bio-predication) ;; It's realated to molecule, but how exactly? Seems wrong to jump to "is made of molecules"
 (noun "mortality" :super bio-abstract) ;;/// relationship to "mortal" ??
-(noun ("mutagenesis" :plural "mutageneses") :super bio-method)
 (noun "mutagenic approaches" :super mutagenesis)
-(adj "mutagenic" :super bio-predication)
-(adj "mutual" :super bio-predication) ;; keyword: (al ADJ) 
 
-(adj "native" :super bio-predication)
-(noun "natural growth conditions" :super experimental-condition)
 (adj "necessary" :super bio-relation
      :binds ((condition biological)
              ;;(agent biological)
@@ -819,42 +267,16 @@
            :to necessary-to
            :to-comp necessary-to))
 
-
-(noun "NMR" :super bio-method)
-(def-synonym NMR (:noun "NMR analyses"))
-
-
-
 (define-adverb "notably")
 
 ;; These three want to be synonyms
 (noun "frame" :super bio-entity)
-(adj "oncogenic" :super bio-predication)
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super open-reading-frame)
-(def-synonym open-reading-frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
-
-(define-category order-of-magnitude :specializes unit-of-measure
-  :realization
-  (:noun ("order of magnitude"
-          :plural "orders of magnitude")))
-
-(noun "outcome" :super bio-process
-      :binds ((process bio-process))
-      :realization
-      (:noun "outcome"
-             :of process))
-
-(noun "panel" :super bio-method
-      :restrict ((object over-ridden))
-      :binds ((component molecule)) ;; this should be for genes and proteins
-      :realization
-      (:noun "panel"
-             :of component))
+(def-synonym open-reading-frame (:noun "ORF")) 
 
 (define-category paradigm :specializes process
    :mixins (biological)
-  ;; not sure this is the correct term, but intended for things like "forms of ras" 
   :binds ((basis bio-process)) ;; can be a gene or protein, or something else
   :instantiates :self
   :realization
@@ -865,20 +287,12 @@
 
 (noun "paradox" :super bio-entity)
 
-(adj "parallel" :super bio-predication)
 (noun "partner" :super bio-abstract)
 (noun "patient" :super bio-entity)
-(noun "PCR" :super bio-method)
-(noun "RT-PCR" :super bio-method)
-(noun "qRT/PCR" :super bio-method)
 
-(adj "pharmacological" :super bio-predication) ;; keyword: (al ADJ) 
 
-(adj "physiological" :super bio-predication)
 
 (noun "phenotype" :super bio-entity)
-(noun "plasma" :super cellular-location)
-(adj "polyclonal" :super bio-predication)
 (noun "population" :super bio-entity
       :binds ((element biological))
       :realization
@@ -889,35 +303,15 @@
   :realization 
   (:adj "potent"))
 
-(define-category presence :specializes experimental-condition
-  :binds ((measurement (:or measurement bio-scalar)))
-  :realization
-  (:noun "presence"
-	 :of measurement))
 
-(adj "present" :super bio-predication  ;; keyword: (ent ADJ)
-     :binds ((in-molecule molecule))
-     :realization
-     (:adj "present"
-           :in in-molecule))
-(adj "prevalent" :super bio-predication)
+
+
 
 (noun "proportion" :super bio-scalar)
 (noun "proto-oncogene" :super oncogene)
-(adj "putative" :super bio-predication)
 
-(noun "radioactivity" :super experimental-condition
-      :binds ((material molecule))
-      :realization
-      (:noun "radioactivity" :adj "radioactive"
-             :of material))
-(adj "rate-limiting" :super bio-predication)
-(adj "real-time" :super bio-predication)
-(def-synonym real-time (:adj "real time"))
-(noun "receptor" :super protein)
-(noun "receptor protein" :super protein)
-(noun "receptor protein-tyrosine kinase" :super kinase)
-(adj "recombinant" :super bio-predication)
+
+
 (adj "refractory" :super bio-relation
      :realization
      (:to theme))
@@ -936,12 +330,7 @@
 	   :noun "resistance"
            :to treatment))
 
-(adj "responsible" :super bio-predication ;; adj/noun "resposibility"
-  :binds ((subject biological)(theme bio-entity))
-  :realization 
-  (:adj "responsible"
-        :s subject 
-        :for theme))
+
 
 (define-category responsive :specializes bio-relation
   :realization
@@ -952,17 +341,12 @@
           :to theme
           :m theme))
 
-(noun "restricted substrate" :super bio-predication)
-(adj "rich" :super bio-predication) ;; proline rich region
-(noun "rna" :super molecule)
-(noun "rnai" :super bio-method)
+
 (noun "role" :super bio-quality
       :binds ((process bio-process))
       :realization
       (:in process))
-(noun "scaffold" :super protein) 
 (noun "scale" :super bio-scalar)     
-(noun "SDS-PAGE"  :super bio-method)
 (adj "selective" :super bio-relation
      :realization (:for theme))
 
@@ -977,96 +361,20 @@
       (:noun "sensitivity"
              :to cause))
 
-(noun "serum" :super experimental-condition) 
-(noun "setting" :super bio-context)
-(adj "short-lived" :super bio-predication)
-
- 
-;; Jan 29 "two MAPK phosphorylation sites in ASPP1 and ASPP2."
-;; Jan 14 "mutation of the primary site of monoubiquitination"
-;; 16 "mUbRas, modified at a single site, "
-(noun "site" :super molecular-location
-  :binds ((process bio-process)
-          (kinase protein)
-	  (substrate protein)
-	  ;;(kinase-or-substrate protein)
-          (residue residue-on-protein))
-  :realization
-     (:noun "site"
-      :m process
-      :m residue
-      :m kinase
-      :m substrate
-      ;;:m kinase-or-substrate
-      :of process
-      :for process
-      :in substrate
-      :on substrate
-      :at residue))
-
-(noun "docking site" :super site)
-
 (adj "specific" :super bio-relation
      :binds ((situation biological)(beneficiary biological))
      :realization
      (:adj "specific"
            :to situation
            :for beneficiary))
-(adj "speckled" :super bio-predication)
-(noun "spectrometry" :super bio-method)
-(define-category stable :specializes bio-predication
-     :realization
-     (:adj "stable"))
-
-(noun "starvation" :super bio-method)
-
-(noun "strategy" :super bio-method
-      :binds ((goal bio-process))
-      :realization
-      (:noun "strategy"
-             :for goal))
-
-(define-category substrate :specializes bio-chemical-entity
-      :binds ((enzyme protein))
-  :realization
-  (:noun "substrate"
-         :of enzyme
-         :for enzyme))
 
 (adj "suitable" :super bio-relation
      :realization
      (:adj "suitable"
            :for theme))
 
-
-(delete-adj-cfr (resolve/make "sufficient"))
-(adj "sufficient" :super bio-predication
-     :binds ((theme biological)
-             (sufficient-for biological))
-     :realization
-     (:adj "sufficient"
-           :s theme
-           :to-comp sufficient-for))
-
-
-(adj "supplementary" :super bio-predication) ;; keyword: (ary ADJ)
-
-(noun "surface area" :super molecular-location)
 (define-adverb "surprisingly")
-(adj "synthetic" :super bio-predication)
 
-(noun "throughput" :super measurement)
-
-(noun "tissue" :super bio-organ)
-
-
-(noun "transition state intermediate" :super molecule-state)
-
-(noun "trial" :super bio-context)
-(noun "tumor" :super non-cellular-location)
-(noun "tumor formation" :super named-bio-process)
-(noun "two-dimensional isoelectric focussing" :super bio-method)
-(noun "type" :super variant)
 (adj "unable" :super bio-relation
      :binds ((capability bio-process))
      :realization
@@ -1074,8 +382,7 @@
            :to-comp capability))
            
 
-(adj "unknown" :super bio-predication)
-(adj "unmodified" :super bio-predication)
+
 (adj "unresponsive" :super bio-relation
      :binds ((treatment (:or bio-process bio-entity)))
      :realization
@@ -1087,129 +394,9 @@
      :realization
      (:adj "useful"
            :for purpose))
-(noun "variety" :super variant)
 
-(noun "way" :super bio-method
-      :restrict ((object over-ridden))
-      :binds ((process bio-process))
-      :realization
-      (:noun "way"
-             :of process))
 
 ;; need to handle "for X to Y" as a to-comp
-
-(adj "wild-type" :super bio-predication)
-(def-synonym wild-type (:adj "wild type"))
-(def-synonym wild-type (:adj "WT"))
-
-(noun "work" :super bio-method)
-
-
-
-
-
-
-
-
-;;;------------
-;;; cell lines
-;;;------------
-; were expressed in HEK293T cells
-; BRAF mutant thyroid cell lines
-; HER2-amplified breast cancer cell lines
-; breast carcinoma cell lines
-; all six BRAF-mutant thyroid cancer cell lines
-; increased basal HER3 in 8505C cells
-; confirmed in a second cell line
-; our panel of cancer cell lines (Figure 6A).
-; the HCC827 NSCLC cell line
-
-
-(def-synonym cell-line (:noun "line"))
-(def-synonym cell-line (:noun "cell line"))
-(def-synonym cell-line (:noun "cell"))
-(def-synonym cell-line (:noun "cultured cell"))
-(def-synonym cell-line (:noun "cultured cell line"))
-
-(defun def-cell-line (line)
-  (def-bio/expr line 'cell-line :takes-plurals nil))
-
-
-(noun "keratin" :super cell-type) ;; NOT SURE THIS IS HOW IT IS BEING USED
-(noun "keratinocyte" :super cell-type)
-(def-cell-line "cancer cell")
-
-
-(def-cell-line "A375")
-(def-cell-line "A431D")
-(def-cell-line "A431")
-(def-cell-line "C140")
-(def-cell-line "D04")
-(def-cell-line "D25")
-(def-cell-line "DU-145")
-(def-cell-line "MM415")
-(def-cell-line "MM485")
-(def-cell-line "OUMS-23")
-(def-cell-line "PC12") ;; want to get effect of  :synonyms ("PC 12") as well
-(def-cell-line "RPMI-7951")
-(def-cell-line "SkMel24")
-(def-cell-line "SkMel28")
-(def-cell-line "WM266.4")
-(def-cell-line "WM852")
-(def-cell-line "HeLa")
-(def-cell-line "hBRIE")
-(def-cell-line "HEK293")
-(def-cell-line "HEK293T")
-(def-cell-line "HKe3 ER:HRASV12")
-(def-cell-line "HKe3 ER:HRAS12")
-(def-cell-line "HKe3")
-(def-cell-line "KNRK")
-(def-cell-line "LAT-3YF")
-(def-cell-line "LAT3YF")
-(def-cell-line "MDCK")
-(def-cell-line "MDA-MB-468")
-(def-cell-line "NIH-3T3")
-(def-cell-line "Saos2")
-(def-cell-line "VMM12")
-(def-cell-line "VMM18")
-(def-cell-line "VMM39")
-(def-cell-line "VMM5A")
-
-;;(def-cell-type "mouse embryo fibroblast") ;; CORRECTED -- was not sure this is right -- it is a type of cell, but...
-;;A fibroblast is a type of cell that synthesizes the extracellular matrix and collagen,[1] 
-;; the structural framework (stroma) for animal tissues, and plays a critical role in wound healing. 
-;; Fibroblasts are the most common cells of connective tissue in animals.
-(noun "fibroblast" :super cell-type)
-(noun "leukocyte" :super cell-type)
-(noun "astroocyte" :super cell-type)
-(noun "neuron" :super cell-type)
-
-
-;;;------------------
-;;; Units of measure
-;;;------------------
-;;-- see model/dossiers/units-of-measure.lisp for more forms.
-
-
-(define-unit-of-measure "cm")
-(define-unit-of-measure "dalton")
-(define-unit-of-measure "kD")
-(define-unit-of-measure "kb")
-(define-unit-of-measure "mL")
-(define-unit-of-measure "mg")
-(define-unit-of-measure "ml")
-(define-unit-of-measure "mg")
-(define-unit-of-measure "mm")
-(define-unit-of-measure "nM")
-(define-unit-of-measure "ng")
-(define-unit-of-measure "nm")
-(define-unit-of-measure "pmol")
-(define-unit-of-measure "pmol/min/mg")
-(define-unit-of-measure "μm")
-;;#+sbcl (define-unit-of-measure "μm")
-;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
-
-
 
 ;;;-------------------------------------------------------
 ;;; Hacked up to 'get through' the 9/4/14 target abstract
