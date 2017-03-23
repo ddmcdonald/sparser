@@ -957,7 +957,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
        (:greek . (:lowercase . ,(code-char 954))))
       (955 ;; #\Greek_Small_Letter_Lambda
        (:greek . (:lowercase . ,(code-char 955))))
-      (956 ;; #\Greek_Small_Letter_Mu
+      (956 ;; #\Greek_Small_Letter_Mu "μ"
        (:greek . (:lowercase . ,(code-char 956))))
       (957 ;; "ξ" #\Greek_Small_Letter_Omicron
        (:greek . (:lowercase . ,(code-char 957))))
@@ -1004,7 +1004,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       (8212  ;; em dash, html: &mdash; "—" 
        ;; Doesn't appear to have a symbolic form in ccl 
        ;; (note from Laurel: this should probably be treated
-       ;; differently from en dash and hypehn but isn't yet)
+       ;; differently from en dash and hyphen but isn't yet)
        (:punctuation . ,(punctuation-named #\- )))
       (8213 (:punctuation . ,(punctuation-named (code-char 8213)))) ;;"―", (code = 8213)
       

@@ -24,7 +24,7 @@
 ;;  :members. Also give protein and human-protein-family a sbcat frame for "in"
 ;; 4/23/15 Lifted out the dimer classes to phenomena to have all the parts
 ;;  in the same place. 
-;; 4/24/2015 added mixins for bio-thtcomp and bio-whethercomp 
+;; 4/24/2015 added mixins for bio-thatcomp and bio-whethercomp 
 ;; 4/27/2015 remoe definition of amino-acid and move to that file, and add defnitions for
 ;;  nominal for "loading"
 ;; 4/30/2015 bunch of changes to partially merge biopax3/reactome
@@ -1007,7 +1007,7 @@
   :lemma (:common-noun  "cancer")
   :realization (:common-noun name))
 
-(define-category melananoma  :specializes cancer
+(define-category melanoma  :specializes cancer
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "melanoma")

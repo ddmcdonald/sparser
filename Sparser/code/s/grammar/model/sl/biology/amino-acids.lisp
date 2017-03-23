@@ -138,7 +138,7 @@ We therefore have the special cases:
 ;;; nucleotides
 ;;;-------------
 
-
+;; See molecules.lisp
 
 ;;;-------------------
 ;;; numbered residues
@@ -241,7 +241,7 @@ We therefore have the special cases:
   :index (:permanent :sequential-keys left right)
   :documentation "There are larger and more varied groups of
    amino acids, but a pair is sufficiently frequent and easily
-   recognized that it deserves its own reprsentation.")
+   recognized that it deserves its own representation.")
 
 (defun find-or-make-amino-acid-pair (first second)
   (find-or-make-individual 'amino-acid-pair
@@ -275,7 +275,7 @@ We therefore have the special cases:
 
 
 ;;;----------------------------
-;;; phosphoeylated amino acids
+;;; phosphorylated amino acids
 ;;;-----------------------------
 
 ;;  "pThr202/Tyr204"  ;; December 46
