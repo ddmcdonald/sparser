@@ -1435,7 +1435,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "HAUS1_HUMAN" ("HAUS1" "HEI-C" "CCDC5" "HEIC")) 
 (define-protein "HAUS3_HUMAN" ("HAUS3" "C4orf15")) 
 (define-protein "HAX1_HUMAN" ("HS1BP1" "HAX1" "HCLS1-associated protein X-1" "HS1-associating protein X-1" "HAX-1" "HS1-binding protein 1" "HSP1BP-1")) 
-(define-protein "HBAZ_HUMAN" ("fetuses" "Hemoglobin subunit zeta" "HBAZ" "Hemoglobin zeta chain" "Zeta-globin")) 
+(define-protein "HBAZ_HUMAN" ("Hemoglobin subunit zeta" "HBAZ" "Hemoglobin zeta chain" "Zeta-globin")) 
 (define-protein "HBG1_HUMAN" ("EF3" "Hemoglobin subunit gamma-1" "Gamma-1-globin" "Hb F Agamma" "Hemoglobin gamma-1 chain" "Hemoglobin gamma-A chain")) 
 (define-protein "HCFC1_HUMAN" ("HFC1" "HCF-1" "HCF" "VCAF" "HCF1" "HCFC1" "CFF")) 
 (define-protein "HCST_HUMAN" ( "Hematopoietic cell signal transducer" "DNAX-activation protein 10" "Membrane protein DAP10" "Transmembrane adapter protein KAP10")) 
