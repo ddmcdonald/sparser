@@ -4747,6 +4747,7 @@
     (    "ONT:PROTEIN-FAMILY" --    ("cyclin-E" "ONT:PROTEIN-FAMILY" :ID "NCIT:C104197" :NAME "cyclin E family"))
     (    "ONT:PROTEIN-FAMILY" --    ("eIF4E-T" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF10477.7" :NAME "EIF4E-T"))
     (    "ONT:PROTEIN-FAMILY" --    ("eukaryotic" "ONT:PROTEIN-FAMILY" :ID "FA:03419" :NAME "eukaryotic subfamily"))
+;; iffy... eukaryotic is an adjective not always about this protein family
     (    "ONT:PROTEIN-FAMILY" --    ("filament" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF00038.19" :NAME "filament"))
     (    "ONT:PROTEIN-FAMILY" --    ("filamin" "ONT:PROTEIN-FAMILY" :ID "FA:01352" :NAME "filamin family"))
     (    "ONT:PROTEIN-FAMILY" --    ("humanin" "ONT:PROTEIN-FAMILY" :ID "FA:04811" :NAME "humanin family"))
@@ -4757,12 +4758,15 @@
     (    "ONT:PROTEIN-FAMILY" --    ("mIF4G" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF02854.17" :NAME "MIF4G"))
     (    "ONT:PROTEIN-FAMILY" --    ("myosin" "ONT:PROTEIN-FAMILY" :ID "FA:05287" :NAME "myosin family"))
     (    "ONT:PROTEIN-FAMILY" --    ("neur" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF00064.16" :NAME "neur"))
-    (    "ONT:PROTEIN-FAMILY" --    ("parathyroid" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF01279.15" :NAME "parathyroid"))
+;;    (    "ONT:PROTEIN-FAMILY" --    ("parathyroid" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF01279.15" :NAME "parathyroid"))
+;; without "hormone" this is more likely the organ than the family
     (    "ONT:PROTEIN-FAMILY" --    ("prion" "ONT:PROTEIN-FAMILY" :ID "FA:03015" :NAME "prion family"))
     (    "ONT:PROTEIN-FAMILY" --    ("single-pass" "ONT:PROTEIN-FAMILY" :ID "UP:SL-9904" :NAME "Single-pass membrane protein"))
-    (    "ONT:PROTEIN-FAMILY" --    ("trans" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF06986.9" :NAME "TraN"))
+;;    (    "ONT:PROTEIN-FAMILY" --    ("trans" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF06986.9" :NAME "TraN"))
+;; without the capitalization of the N (or T), this is highly unlikely to be this protein family as opposed to the prefix "trans" that denotes a particular molecular isomer
     (    "ONT:PROTEIN-FAMILY" --    ("tribbles" "ONT:PROTEIN-FAMILY" :ID "FA:03081" :NAME "tribbles subfamily"))
-    (    "ONT:PROTEIN-FAMILY" --    ("trig-gers" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF05697.11" :NAME "trigger N"))
+ ;;   (    "ONT:PROTEIN-FAMILY" --    ("trig-gers" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF05697.11" :NAME "trigger N"))
+;; without the "N" this is unlikely to be the right trigger...
     ))
 
 (defun load-trips-proteins ()
@@ -4776,4 +4780,4 @@
           (loop for term in terms do
                   (define-trips-term term))))
 
-(load-trips-proteins)
+;(load-trips-proteins)

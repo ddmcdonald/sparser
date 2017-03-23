@@ -79,6 +79,65 @@ broadly speaking doing for you all the things you might do by hand.
     ;; for organizing the information.
     i))
 
+(defparameter *uid-to-individual* (make-hash-table :size 10000 :test #'equal))
+(defparameter *inhibited-plurals* nil)
+(defparameter *show-supp-plurals* nil) ;; sets whether it shows the warnings about plurals not created
+
+(defmacro def-ided-indiv (category-name word id &key name members adj synonyms no-plural)
+  `(define-individual-with-id ',category-name ,word ,id ,.(when name `(:name ,name))))
+
+(defun define-individual-with-id (category-name word id &key name members adj synonyms no-plural maintain-case)
+  (assert (and category-name word id))
+  (let* ((dc-word (string-downcase word))
+         (plural-word (plural-version dc-word))
+         (plural-name (when name (plural-version name)))
+         (category (category-named category-name :break-if-undefined))
+         (i (or (gethash id *uid-to-individual*)
+                (setf (gethash id *uid-to-individual*)
+                      (let ((ind (find-or-make-individual category :uid id)))
+                        (if name
+                            (bind-dli-variable :name name ind)
+                            ind))))))
+    (cond (no-plural
+           (setq *inhibit-constructing-plural* t))
+          ((resolve plural-word)
+           (setq *inhibit-constructing-plural* t)
+           (when *show-supp-plurals*
+             (format t "~%not creating plural ~s of already defined word~%" plural-word))
+           (push word *inhibited-plurals*))
+          (t
+           (setq *inhibit-constructing-plural* nil)))
+    (add-rules (make-rules-for-head :common-noun (resolve/make dc-word) category i) i)
+    (setq *inhibit-constructing-plural* nil)
+    (cond (no-plural
+           (setq *inhibit-constructing-plural* t))
+          ((and plural-name ;; necessary because currently nil resolves
+                (resolve plural-name))
+           (setq *inhibit-constructing-plural* t)
+           (when *show-supp-plurals*
+             (format t "~%not creating plural ~s of already defined word~%" plural-name))
+           (push name *inhibited-plurals*))
+          (t
+           (setq *inhibit-constructing-plural* nil)))  
+    (when name (add-rules (make-rules-for-head :common-noun (resolve/make (pname name)) 
+                                               category i) i))
+    (setq *inhibit-constructing-plural* nil)
+    (when adj (add-rules (make-rules-for-head :adjective (resolve/make (pname adj)) 
+                                              category i) i))
+    (when synonyms (loop for s in synonyms
+                           as plural-s = (plural-version s)
+                      do (when (resolve plural-s)
+                           (setq *inhibit-constructing-plural* t)
+                           (format t "~%not creating plural ~s of already defined word~%" 
+                                   plural-s)
+                           (push s *inhibited-plurals*))
+                           (add-rules (make-rules-for-head 
+                                       :common-noun (resolve/make (pname s)) 
+                                       category i) i)
+                           (setq *inhibit-constructing-plural* nil)))
+    (when (consp members) (setq i (set-family-members i members)))
+    i))
+
 ;; old NP patterns for MUMBLE use
 (defmacro common-noun (name
                 &key noun 
@@ -98,7 +157,7 @@ broadly speaking doing for you all the things you might do by hand.
         (setq name (name-to-use-for-category (car name))))
        (error "name parameter is a list of unexpected form: ~a" name)))
     (otherwise
-     (error "Unexected type for name parameter in noun shortcut: ~a~%~a"
+     (error "Unexpected type for name parameter in noun shortcut: ~a~%~a"
             (type-of name) name)))
 
   (when (stringp name)
