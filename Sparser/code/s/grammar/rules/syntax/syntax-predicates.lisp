@@ -55,6 +55,9 @@
     (t nil)))
 
 
+(defparameter *flag-new-cases-for-open-core-variable* nil
+  "Gates the warning in open-core-variable")
+
 (defun open-core-variable (predicate)
   "We believe we are looking at an individual that is the referent
   of a clause/vp, and consequently should variables corresponding to
@@ -76,8 +79,15 @@
       (obj-var
        (unless (value-of obj-var predicate)
          obj-var))
-      (t (warn "No object or subject variable defined on ~a" predicate)
-         nil))))
+      ((itypep predicate 'copular-predication)
+       (let ((attr (value-of 'value predicate)))
+         (when attr
+           (variable-for-attribute attr))))
+      (t
+       (when *flag-new-cases-for-open-core-variable*
+         (warn "Looking for the open-core-variable on new type: ~a in ~s" 
+               predicate (current-string)))
+       nil))))
 
 
 (defun can-fill-vp-subject? (vp subj &optional (left-edge (left-edge-for-referent)))
