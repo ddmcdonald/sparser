@@ -56,8 +56,11 @@
   :binds ((attribute attribute-value)) ;; #<tall>, w/ var = height
   :documentation "")
 
+;;--- constructors
+
 (defun make-wh-object (wh &key variable statement attribute)
-  (let* ((attribute-var nil) ;; pull from attribute
+  (let* ((attribute-var
+          (when attribute (variable-for-attribute attribute)))
          (var-to-use (or variable
                          attribute-var
                          (value-of 'variable wh))))
@@ -75,6 +78,12 @@
 (defun extend-wh-object (q &key variable statement attribute)
   (when variable
     (setq q (bind-variable 'var variable q)))
+  (when attribute
+    (assert (itypep q 'wh-question/attribute))
+    (setq q (bind-variable 'attribute attribute q))
+    (let ((attr-variable (variable-for-attribute attribute)))
+      (when attr-variable ;; how do we sugar possible revision here?
+        (setq q (bind-variable 'var attr-variable q)))))
   (when statement
     (setq q (bind-variable 'statement statement q))
     (setq q (add-category-to-individual q (itype-of statement))))
@@ -150,21 +159,11 @@
         (wh-initial?
          (cond
            ((= 2 (length edges)) ;; take the second as the statement
-            (let* ((wh (edge-referent wh-initial?))
-                   (complement (edge-referent (second edges)))
-                   (q (compose wh complement)))
-              (tr :make-this-a-question q)
-              (unless q
-                (lsp-break "WH compose didn't work or doesn't exist"))
-              (make-edge-over-long-span
-               start-pos end-pos
-               (edge-category (second edges)) ;; ??
-               :rule 'make-this-a-question-if-appropriate
-               :form category::question
-               :referent q)))
-#|           ((and (= 3 (length edges)) ;; "How many blocks did you add to the row?"
+            (wh-initial-two-edges wh-initial? edges start-pos end-pos))
+           
+           ((and (= 3 (length edges)) ;; "How many blocks did you add to the row?"
                  (edge-over-aux? (second edges)))
-            |#
+            (wh-initial-three-edges wh-initial? edges start-pos end-pos))
            
            (t
             (when *warn-when-can-not-formulate-question*
@@ -317,20 +316,15 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
    identity of the WH and what its asking for.
       When detect-early-information calls this we collect
    the WH information and populate the object while we're
-   walking along the sentence prefix."
-  ;; The trigger is that form of edge over the word at
-  ;; this position is wh-pronoun.
-  ;; "why" doesn't need to scan ahead. Ditto "who", "where" "when"
-  ;;    "how", "what", "which" do
-  ;; "whom" is going to have a leading preposition. Others could as well
-  ;; which means a different entry point
-  (let* ((wh-type (edge-referent wh-edge)) ;; the category
-         ;;(q (find-or-make-individual :wh wh-word))
-         ;;  delay if how questions are different
+   walking along the sentence prefix. The we record the fact
+   that we have the wh-edge in hand on the sentence context."
+  
+  (let* ((wh-type (edge-referent wh-edge)) ;; the category 
          (next-pos (chart-position-after pos-before))
          (next-word (pos-terminal next-pos))
          (next-edge (highest-edge (pos-starts-here next-pos)))
          aux-edge  attr-edge  value-edge  other-edges)
+    
     (flet ((cover-wh (q end-pos)
              ;; Make a phrase over the whole span of WH edges
              ;; up to but not including the aux
@@ -347,9 +341,10 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                edge)))
       (cond
         ((memq (cat-symbol wh-type) '(who why where when))
+         ;; These won't (??) have extended wh phrases like the others
          (cover-wh (make-wh-object wh-type) next-pos))
         (t
-          (loop
+          (loop ;; search ahead for the aux/modal, then assess
            (cond
              ((or (auxiliary-word? next-word)  ;; we've gone as far as we should
                   (verb-category? next-edge))
@@ -359,13 +354,6 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
               (setq attr-edge next-edge))
              ((itypep (edge-referent next-edge) 'attribute-value) ;; "big"
               (setq value-edge next-edge))
-             #+ignore((null next-edge)
-              ;; this happened in
-              #|"Whether ILK, TORC2 or another enzyme is the primary AKT
-              hydrophobic-motif Ser473 kinase specifically downstream of Î²1
-              integrins has not been investigated, and this is therefore
-              an important open question." |#
-              (push next-edge other-edges))
              ((null (edge-referent next-edge))
               ;; happens in cases like an edge over apostrophe-s
               (push next-edge other-edges))
@@ -399,7 +387,6 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 
 
 ;; (p/s "What color is the block?")
-
 (defun apply-question-marker (wh-edge vg-edge np-edge)
   "Called by DA rule, wh-be-thing, since parsing is going to be stymied by
    the aux/vg being in the wrong place. We take our cue from
@@ -430,10 +417,10 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
 
 
 
-  ;; this is the second time around after we're assembled
-  ;; the pieces of the question. We can now set it up.
-  ;; The call to compose is in make-subordinate-clause
-  ;;   (p/s "What color is the block?")
+;; This is the second time around after we're assembled
+;; the pieces of the question. We can now set it up.
+;; The call to compose is in make-subordinate-clause
+;;   (p/s "What color is the block?")
 
 (def-k-method compose ((wh category::wh-question) (i individual))
   (add-statement-to-wh-question wh i))
@@ -451,6 +438,41 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
     q))
 
 
+
+(defun wh-initial-two-edges (wh-initial? edges start-pos end-pos)
+  (let* ((wh (edge-referent wh-initial?))
+         (complement (edge-referent (second edges)))
+         (q (compose wh complement)))
+    (tr :make-this-a-question q)
+    (unless q
+      (lsp-break "WH compose didn't work or doesn't exist"))
+    (make-edge-over-long-span
+     start-pos end-pos
+     (edge-category (second edges)) ;; ??
+     :rule 'make-this-a-question-if-appropriate
+     :form category::question
+     :referent q)))
+
+;; (p "where should I put the block?")
+;;
+(defun wh-initial-three-edges (wh-edge edges start-pos end-pos)
+  "The second argument is an aux or a modal that has to be
+   folded in to the statement (third edge) for its tense or
+   aspect contribution. Not bothering to explicitly hook
+   the aux edge into the tree."
+  (let ((wh (edge-referent wh-edge))
+        (aux (edge-referent (second edges)))
+        (stmt (edge-referent (third edges))))
+    (with-referent-edges (:l (second edges) :r (third edges))
+      (setq stmt (add-tense/aspect-info-to-head aux stmt)))
+    (let ((q (compose wh stmt)))
+      (make-edge-over-long-span
+       start-pos end-pos
+       (edge-category (third edges)) ;; ??
+       :rule 'make-this-a-question-if-appropriate
+       :form category::question
+       :referent q
+       :constituents edges))))
 
 
 
