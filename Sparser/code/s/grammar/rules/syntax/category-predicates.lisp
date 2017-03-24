@@ -1,4 +1,4 @@
-;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
 ;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "category-predicates"
