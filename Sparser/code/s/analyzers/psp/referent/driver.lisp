@@ -279,6 +279,23 @@
   (or *rule-being-interpreted*
       (error "*rule-being-interpreted* isn't bound now")))
 
+#| Example from wh-initial-three-edges, which operates outside
+of the context of applying a specific rules, and therefore not
+in the scope of referent-from-rule.
+    (with-referent-edges (:l (second edges) :r (third edges))
+      (setq stmt (add-tense/aspect-info-to-head aux stmt)))  |#
+(defmacro with-referent-edges (bindings &body body)
+  (let ((left (cadr (memq :l bindings)))
+        (right (cadr (memq :r bindings)))
+        (parent (cadr (memq :p bindings))))
+    `(let ((*left-edge-into-reference* ,left)
+           (*right-edge-into-reference* ,right)
+           (*parent-edge-getting-reference* ,parent))
+       (declare (special *left-edge-into-reference*
+                         *right-edge-into-reference*
+                         *parent-edge-getting-reference*))
+       ,@body)))
+
 
 ;;;--------------------------
 ;;; operating over the edges
