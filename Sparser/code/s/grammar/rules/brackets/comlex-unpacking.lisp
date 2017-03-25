@@ -176,10 +176,11 @@ places. ]]
 
       (otherwise
        (push-debug `(,lemma ,clause))
-       (break "unambiguous-comlex-primed-decoder -- Unexpected ~
+       (warn "unambiguous-comlex-primed-decoder -- Unexpected ~
                POS marker: '~a' on ~a, near ~s ~& in ~s" 
               pos-marker lemma
-              (cur-string) (sentence-string (sentence)))))
+              (cur-string) (sentence-string (sentence)))
+       nil))
 
     (setf (get-tag :comlex lemma) properties)))
 
