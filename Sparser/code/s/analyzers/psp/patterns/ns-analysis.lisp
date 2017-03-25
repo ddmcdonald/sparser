@@ -162,7 +162,7 @@ collected a set of ns-examples"
                               ;; but that hasn't been done yet
                               (> 2 (length x))) ;; apparently > is actually ≥
                         collect
-                          (loop for pre in '("anti" "pre" "non" "phospho" "GTP" "GDP")
+                          (loop for pre in '("anti" "pre" "non" "phospho" "GTP" "GDP" "p" "co")
                                 do
                                   (when
                                       (or
