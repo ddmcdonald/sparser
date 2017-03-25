@@ -128,6 +128,7 @@
     (code-char 8203) ;; zero width space
     
     (code-char 8208) ;; #\hyphen
+    (code-char 8209) ;; #\NON-BREAKING_HYPHEN
     (code-char 8212) ;; em dash, html: &mdash;
     (code-char 8213) ;;"―"
     (code-char 8216) ;; left single quote
