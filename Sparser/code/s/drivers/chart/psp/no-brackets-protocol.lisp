@@ -402,6 +402,7 @@
 (defparameter *save-bio-processes* nil)
 
 (defparameter *check-find-all-mentions* nil)
+(defparameter *colorized-sentence* (make-hash-table :size 1000 :test #'equal))
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
@@ -430,5 +431,7 @@
                         (member mm (mention-history (base-description mm))))))
         (lsp-break "bad mention-history"))))
   (when *localization-interesting-heads-in-sentence*
-    (push (split-sentence-string-on-loc-heads) *localization-split-sentences*))
+    (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
+      (setf (gethash sentence *colorized-sentence*) colorized-sentence)
+      (push colorized-sentence *localization-split-sentences*)))
   )
