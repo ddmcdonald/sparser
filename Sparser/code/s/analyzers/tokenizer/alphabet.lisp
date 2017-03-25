@@ -998,7 +998,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
        (:punctuation . ,(punctuation-named (code-char 8208)))) ;;"‐"
 
                                               
-    
+      (8209  ;; #\NON-BREAKING_HYPHEN
+       (:punctuation . ,(punctuation-named (code-char 8209))))  "‑"
       (8211  ;; en dash
        (:punctuation . ,(punctuation-named #\- )))
       (8212  ;; em dash, html: &mdash; "—" 
