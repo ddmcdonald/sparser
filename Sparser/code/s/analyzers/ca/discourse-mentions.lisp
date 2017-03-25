@@ -281,7 +281,10 @@
 (defun un-embed-edge (edge)
   "If this is not a meaning-carrying edge (relevant to mentions),
    then recurse to the appropriate daughter edge and return it instead."
-  (cond ((syntactically-embedding-edge? edge)
+  (cond ((and (syntactically-embedding-edge? edge)
+              ;;e31   THERE-EXISTS  1 "Importantly there was " 4
+              ;; has a :long-span as a right-edge
+              (edge-p (edge-right-daughter edge)))
          (un-embed-edge (edge-right-daughter edge)))
         ((eq (cat-name (edge-category edge))
              'lambda-expression)

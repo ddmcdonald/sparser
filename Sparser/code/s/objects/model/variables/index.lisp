@@ -247,8 +247,10 @@
       v/r)))
 
 (defun local-v/r-for (var category)
-  (var-value-restriction
-   (find-variable-for-category (var-name var) category)))
+  (let ((local-var (find-variable-for-category (var-name var) category)))
+    (when local-var
+      ;; some times there is no local var for :subject (e.g.(p "PKM2 K433E mutant, which fails to bind to tyrosine-phosphorylated peptides  xref  , had similar glycolytic enzyme activity to its WT counterpart ( xref )  xref  ."))
+      (var-value-restriction local-var))))
 
 (defun intersect-v/rs (vr1 vr2)
   (cond
