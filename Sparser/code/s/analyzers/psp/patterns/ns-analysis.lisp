@@ -176,10 +176,11 @@ collected a set of ns-examples"
 (defun ns-unknown-rd-items->file (&key (prefix "1-500")
                                     (filename 
                                      (format nil
-                                             "sparser:tools;ns-stuff;ns-unknown-rd-items-a.lisp"
+                                             "sparser:tools;ns-stuff;ns-unknown-rd-items-~a.lisp"
                                              prefix)))
   "Save the collected ns examples to a file"
   (with-open-file (stream filename :direction :output :if-exists :supersede)
+    (pprint `(in-package :sp) stream)
     (pprint
      `(defparameter ,(intern (format nil "NS-RD-~a" prefix) (find-package :sp))
         ',*rd-ns*)
