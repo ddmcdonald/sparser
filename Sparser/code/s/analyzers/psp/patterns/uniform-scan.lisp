@@ -347,6 +347,9 @@
              (tr :made-edge edge)
              edge)))))
 
+(defparameter *bio-entity-strings* nil)
+(defun collect-bio-entity-strings ()
+  (setq *bio-entity-strings* (list "111BOGUSSTRING***")))
 
 (defun reify-ns-name-as-bio-entity (words pos-before pos-after)
   ;; called from reify-ns-name-and-make-edge when *big-mechanism*
@@ -417,7 +420,9 @@
        ;; Open-code key part of handle-unknown-word-as-bio-entity,
        ;; which does -not- reify this case in a rule.
        (let* ((word (resolve/make words-string))
-	      (i (find-or-make-individual 'bio-entity :name word)))     
+	      (i (find-or-make-individual 'bio-entity :name word)))
+         (when *bio-entity-strings*
+           (pushnew words-string *bio-entity-strings* :test #'equal))
 	 (values category::bio-entity
 		 'reify-ns-name-as-bio-entity
 		 i))))))
