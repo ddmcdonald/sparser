@@ -119,43 +119,71 @@ collected a set of ns-examples"
   filename)
 
 (defparameter *ns-unknown-items* nil)
+(defun ppcre-split (pat x)
+  (list x))
+
+(defun ppcre-scan (pat x)
+  x)
+
+(when (find-package :ppcre)
+  (setf (symbol-function 'ppcre-split)
+        (symbol-function (intern "SPLIT" (find-package :ppcre))))
+  (setf (symbol-function 'ppcre-scan)
+        (symbol-function (intern "SCAN" (find-package :ppcre)))))
 
 ;; Set to ignore because of not everyone has ppcre loaded, so need to remove the ignore to do this step
-#+ignore(defun ns-unknown-items (&optional (ns-unknown-sublist *ns-unknown-sublist*))
+;;; Now use the covering functions defined above
+(defun ns-unknown-items (&optional (ns-unknown-sublist *ns-unknown-sublist*)(others nil))
           "Split items at slashes and colons"
   (length (setq *ns-unknown-items*
                 (remove-duplicates
-                 (loop for n in ns-unknown-sublist
-                       append (ppcre:split "[/:]" (second n)))
+                 (loop for n in (append others (mapcar #'second ns-unknown-sublist))
+                       append (ppcre-split "[/:]" n))
                  :test #'equal))))
 
 (defparameter *rd-ns* nil)
 
 ;; Set to ignore because of not everyone has ppcre loaded, so need to remove the ignore to do this step
-#+ignore(defun ns-unknown-rd-items (&optional (ns-unknown-items *ns-unknown-items*))
-          "Remove items that start with any of several characters or end with hyphen, or have an em dash since those are really sentence punctuation; also remove any items that are a single character"
+;;; Now use the covering functions defined above
+(defun ns-unknown-rd-items (&optional (ns-unknown-items *ns-unknown-items*))
+  "Remove items that start with any of several characters or end with hyphen, or have an em dash since those are really sentence punctuation; also remove any items that are a single character"
   (length (setq *rd-ns*
                 (sort
                  (remove-duplicates
                   (loop for x in ns-unknown-items
-                         ; do (print (length x))
-                          unless
+                                        ; do (print (length x))
+                        unless
                           (or (search " " x)
-                              (ppcre:scan "^[-~+#0-9_&«*\"]" x)
-                              (ppcre:scan "-$" x)
+                              (ppcre-scan "^[-~+#0-9_&«*\"]" x)
+                              (ppcre-scan "-$" x)
                               (search "—" x) 
                               ;; we need to not make em dashes
                               ;; equivalent to hyphens before no-space
                               ;; but that hasn't been done yet
                               (> 2 (length x))) ;; apparently > is actually ≥
-                          collect x)
+                        collect
+                          (loop for pre in '("anti" "pre" "non")
+                                do
+                                  (when
+                                      (or
+                                       (eq 0 (search (format nil "~a-" pre) x :test #'equalp))
+                                       (eq 0 (search (format nil "~a–" pre) x :test #'equalp)) )
+                                    (return (subseq x (+ 1 (length pre)))))
+                                finally (return x)))
+                              
                   :test #'equal) #'string<))))
 
-(defun ns-unknown-rd-items->file (&optional (filename 
-                                            "sparser:tools;ns-stuff;ns-unknown-rd-items.lisp"))
+(defun ns-unknown-rd-items->file (&key (prefix "1-500")
+                                    (filename 
+                                     (format nil
+                                             "sparser:tools;ns-stuff;ns-unknown-rd-items-a.lisp"
+                                             prefix)))
   "Save the collected ns examples to a file"
   (with-open-file (stream filename :direction :output :if-exists :supersede)
-    (pprint *rd-ns* stream))
+    (pprint
+     `(defparameter ,(intern (format nil "NS-RD-~a" prefix) (find-package :sp))
+        ',*rd-ns*)
+     stream))
   filename)
           
 (defparameter *undef-ns* nil)
@@ -271,7 +299,7 @@ filenum is for the output name"
 
 #+ignore
 (lsetq *ns-list*                       
-   append  (ppcre:split "[/:]" (second (car n))))
+   append  (ppcre-split "[/:]" (second (car n))))
 #+ignore
 (lsetq *rd-ns*
      (sort
@@ -284,3 +312,6 @@ filenum is for the output name"
             :test #'equal) #'string<))
 #+ignore
 (lsetq *prefixes* (remove-duplicates (loop for x in *rd-ns* when (and (search "-" x) (not (resolve (subseq x 0 (search "-" x))))) collect (subseq x 0 (search "-" x))) :test #'equal))
+
+
+
