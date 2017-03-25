@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:   "determiners"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   March2017
+;;;   Version:   March 2017
 
 ;; broken out from "fn words - cases" 12/17/92 v2.3
 ;; 0.1 (6/8) added Define-determiner
@@ -75,14 +75,4 @@
 (define-determiner "this"  :brackets '( ].phrase .[np ))
 (define-determiner "these"  :brackets '( ].phrase .[np ))
 (define-determiner "those"  :brackets '( ].phrase .[np ))
-
-
-(define-determiner "which")
-;; dec #19 "by which" -- relative clause usually
-
-(define-determiner "whose")
-;; dec #23 "a scaffold whose function is to ..."
-
-
-
 
