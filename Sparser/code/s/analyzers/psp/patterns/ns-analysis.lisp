@@ -155,7 +155,7 @@ collected a set of ns-examples"
                         unless
                           (or (search " " x)
                               (ppcre-scan "^[-~+#0-9_&«*\"]" x)
-                              (ppcre-scan "-$" x)
+                              (ppcre-scan "[‑–-]$" x)
                               (search "—" x) 
                               ;; we need to not make em dashes
                               ;; equivalent to hyphens before no-space
@@ -182,7 +182,7 @@ collected a set of ns-examples"
   (with-open-file (stream filename :direction :output :if-exists :supersede)
     (pprint `(in-package :sp) stream)
     (pprint
-     `(defparameter ,(intern (format nil "NS-RD-~a" prefix) (find-package :sp))
+     `(defparameter ,(intern (format nil "*NS-RD-~a*" prefix) (find-package :sp))
         ',*rd-ns*)
      stream))
   filename)
@@ -194,7 +194,7 @@ collected a set of ns-examples"
     "\\" "^" "_" "`"  "|" "~"
     "«" "®" "°" "±" "´" "·" "º" "Å" "É" "Ö"  "ß" "ö" "͂"
     "‐" "–" "―" "…" " " "″" "™" "→" "↔" 
-    "−" "∩" "∼" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾"))
+    "−" "∩" "∼" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽" "⩾" "•" "“" "‑"))
 
 (defun remove-predef-ns (&optional (rd-ns *rd-ns*))
   "Remove items that resolve and hence are already defined in Sparser"
@@ -202,7 +202,11 @@ collected a set of ns-examples"
                  (loop for x in rd-ns
                        unless (or (< (length x) 3)
                                   (and (eq 3 (length x))
-                                       (eq 1 (search "-" x)))
+                                       (or (eq 1 (or (search "-" x)
+                                                     (search "–" x)
+                                                     (search "‑" x)))
+                                           (and (eq 2 (search "s" x)) 
+                                                (upper-case-p (char x 1)))))
                                   (loop for bad-initial in *bad-inits* 
                                         thereis (eq 0 (search bad-initial x)))
                                   (resolve x)
@@ -210,10 +214,18 @@ collected a set of ns-examples"
                        collect x))))
 
 
-(defun ns-undef-items->file (&optional (filename "sparser:tools;ns-stuff;ns-undef-items.lisp"))
+(defun ns-undef-items->file (&key (prefix "1-500")
+                             (filename 
+                              (format nil
+                                      "sparser:tools;ns-stuff;ns-undef-items-~a.lisp"
+                                      prefix)))
   "Save the collected undefined items to a file"
   (with-open-file (stream filename :direction :output :if-exists :supersede)
-    (pprint *undef-ns* stream))
+    (pprint `(in-package :sp) stream)
+    (pprint
+     `(defparameter ,(intern (format nil "*NS-UNDEF-~a*" prefix) (find-package :sp))
+        ',*undef-ns*)
+     stream))
   filename)
 
 (defun split-ns-file-for-trips (&key (n 2500) (file nil) (prefix nil))
