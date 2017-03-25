@@ -1007,7 +1007,7 @@
   :lemma (:common-noun  "cancer")
   :realization (:common-noun name))
 
-(define-category melananoma  :specializes cancer
+(define-category melanoma  :specializes cancer
   :instantiates self
   :index (:permanent :key name)
   :lemma (:common-noun "melanoma")
