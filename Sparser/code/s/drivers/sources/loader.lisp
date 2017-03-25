@@ -22,4 +22,5 @@
 (when *orthographic-structure*
   (lload "source-drivers;doc stream")
   (lload "source-drivers;articles")
-  (lload "source-drivers;document"))
+  (lload "source-drivers;document")
+  (lload "source-drivers;scan-parsed-document"))
