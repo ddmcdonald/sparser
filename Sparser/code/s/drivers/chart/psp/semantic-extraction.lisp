@@ -16,7 +16,7 @@
 
 ;; (setq *readout-relations* nil)
 ;; (identify-relations *sentence*)
-
+(in-package :sparser)
 (defvar *relations* nil
   "Holds the relations for the last sentence when *readout-relations* is up")
 (defvar *entities* nil
@@ -118,7 +118,8 @@
 
 (defparameter *save-surface-text-as-variable* t)
 (defparameter *save-surface-text-classes*
-  '(bio-chemical-entity pathway bio-complex))
+  '(bio-chemical-entity pathway bio-complex
+    bio-control post-translational-modification))
 
 
 (defparameter *bio-entity-heads* nil)
@@ -139,36 +140,106 @@
 
 
 (defparameter *localization-split-sentences* nil)
+(defparameter *loc-types* nil)
+(defparameter *loc-localizations* (make-hash-table :size 1000 :test #'equal))
+(defparameter *loc-localizations-inverse* (make-hash-table :size 1000 :test #'equal))
+
 (defun sort-loc-heads ()
-  (remove-duplicates
-   (sort (loop for pair in
-                 (cdr (reverse *localization-interesting-heads-in-sentence*))
-               when (second pair)
-                 collect pair)
-         #'(lambda(x y)(<= (edge-start-index (car x))(edge-start-index (car y)))))
-   :test
-   #'(lambda (x y) (and (= (edge-start-index (car x))(edge-start-index (car y)))
-                        (equal (second x)(second y))))))
+  (let ((loc-heads
+         (remove-duplicates
+          (sort (loop for pair in
+                        (cdr (reverse *localization-interesting-heads-in-sentence*))
+                      when (second pair)
+                      collect pair)
+                #'(lambda(x y)(<= (edge-start-index (car x))(edge-start-index (car y)))))
+          :test
+          #'(lambda (x y) (and (= (edge-start-index (car x))(edge-start-index (car y)))
+                               (equal (second x)(second y)))))))
+    (loop for lh in loc-heads
+          do
+            (setf (gethash (second lh) *loc-localizations*)
+                  (string->model-summaries (second lh)))
+            (pushnew (second lh)
+                     (gethash (string->model-summaries (second lh))
+                              *loc-localizations-inverse*))
+            (pushnew
+             (edge-referent (car lh)) ;;(cat-name (itype-of (edge-referent (car lh))))
+             *loc-types*))
+
+    loc-heads))
 
 (defun red-string (str)
   (if str
       (format nil "~c[31m~a~c[m" #\ESC str #\ESC)
       ""))
 
+(defun green-string (str)
+  (if str
+      (format nil "~c[32m~a~c[m" #\ESC str #\ESC)
+      ""))
+
+(defun yellow-string (str)
+  (if str
+          (format nil "~c[33m~a~c[m" #\ESC str #\ESC)
+      ""))
+
+(defun blue-string (str)
+  (if str
+      (format nil "~c[34m~a~c[m" #\ESC str #\ESC)
+      ""))
+
+
+(defparameter *use-ansii-for-colors* nil)
+
+(defun colorize (head)
+  (let* ((edge (car head))
+         (string (second head))
+         (head-sem (edge-referent edge)))
+    (if *use-ansii-for-colors*
+        (cond ((itypep head-sem 'protein) (yellow-string string))
+              ((itypep head-sem 'pathway) (green-string string ))
+              ((itypep head-sem 'bio-process) (red-string string))
+              (t (blue-string string)))
+
+        (cond ((itypep head-sem 'protein) (protein-string string))
+              ((itypep head-sem 'pathway) (pathway-string string ))
+              ((itypep head-sem 'bio-process) (bio-process-string string))
+              (t (other-named-string string))))))
+
+(defun protein-string (str)
+  (if str
+      (format nil "<span class=\"protein\">~a</span>" str)
+      ""))
+
+(defun pathway-string (str)
+  (if str
+      (format nil "<span class=\"pathway\">~a</span>" str)
+      ""))
+
+(defun bio-process-string (str)
+  (if str
+      (format nil "<span class=\"bio-process\">~a</span>" str)
+      ""))
+
+(defun other-named-string (str)
+  (if str
+      (format nil "<span class=\"other-named\">~a</span>" str)
+      ""))
+
 (defun split-sentence-string-on-loc-heads ()
   (declare (special *sentence-in-core*))
   (let ((rem-sent-string (sentence-string *sentence-in-core*))
-        (loc-heads (mapcar #'second (sort-loc-heads)))
+        (loc-heads (sort-loc-heads))
         items)
     (loop for head in loc-heads
           do
-            (push (subseq rem-sent-string 0 (search head rem-sent-string)) items)
-            (push head items)
-            (setq rem-sent-string (subseq rem-sent-string (+ (search head rem-sent-string) (length head)))))
+            (push (subseq rem-sent-string 0 (search (second head) rem-sent-string)) items)
+            (push (colorize head) items)
+            (setq rem-sent-string (subseq rem-sent-string (+ (search (second head) rem-sent-string) (length (second head))))))
     (push rem-sent-string items)
     (let ((result ""))
-      (loop for (normal red) on (reverse items) by #'cddr
-            do (setq result (format nil "~a~a~a" result normal (red-string red))))
+      (loop for (normal colored-string) on (reverse items) by #'cddr
+            do (setq result (format nil "~a~a~a" result normal (or colored-string ""))))
       result)))
 
 
