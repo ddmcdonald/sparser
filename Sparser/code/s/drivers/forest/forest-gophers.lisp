@@ -144,6 +144,8 @@
   (cond
    ((one-word-long? edge)
     (edge-left-daughter edge))
+   ((word-p (edge-left-daughter edge))
+    (edge-left-daughter edge))
    ((eq (edge-rule edge) :respan-edge-around-one-word)
     ;; then we know what form it has
     (let ((prep-edge (edge-left-daughter edge)))
