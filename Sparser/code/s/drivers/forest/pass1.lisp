@@ -169,7 +169,7 @@
                 left-neighbor
                 prep-edge)))
            (let ((head-word (find-head-word left-neighbor)))
-             (when head-word
+             (when (and head-word preposition)
                (push-debug `(,prep-edge ,left-neighbor
                                         ,preposition ,head-word))
                ;; (setq prep-edge (car *) left-neighbor (cadr *) preposition (caddr *) head-word (cadddr *))
