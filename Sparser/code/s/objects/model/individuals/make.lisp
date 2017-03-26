@@ -381,7 +381,9 @@
     (category
      (cond
        (*description-lattice*
-	(find-or-make-lattice-description-for-ref-category head)
+        (if (allowable-referential-value? head)
+          head
+          (find-or-make-lattice-description-for-ref-category head)))
 	;; was previously written as the cond below -- but there are too many cases
 	;;  depending on individual-for-ref creating a dli
         #+ignore
@@ -394,12 +396,14 @@
                 (*index-under-permanent-instances* nil))
             (declare (special *override-category-permanent-individuals-assumption*
                               *index-under-permanent-instances*))
-            (make-unindexed-individual head)))))
-       (t ;; may well not be the proper choice
-         (make-unindexed-individual head))))
+            (make-unindexed-individual head))))
+        (t (if (allowable-referential-value? head)
+             head
+             ;; may well not be the proper choice of individual maker
+             (make-unindexed-individual head)))))
     ((cons (eql :or))
      ;; The first category is supposed to be the 'primary' one
-     (make-unindexed-individual (second head)))))
+     (individual-for-ref (second head)))))
 
 (defun maybe-make-individual (r)
   (if (referential-category-p r)

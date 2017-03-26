@@ -99,7 +99,15 @@
               '(preposition spatial-preposition
                 comparative superlative
                 spatio-temporal-preposition))
-      (itypep value 'wh-pronoun)))
+      (allowable-referential-value? value)))
+
+(defun allowable-referential-value? (value)
+  "Checks whether the category value passed in is one of the
+   one for which it is appropriate to not create instances of."
+  (when (category-p value) ;;/// perhaps an assert would be better
+    (itypep value 'wh-pronoun)))
+
+
 
 ;;;-----------------------------------
 ;;; predicates for unusual edge-types

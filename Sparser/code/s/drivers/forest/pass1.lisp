@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2-15 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "pass1"
 ;;;   Module:  "drivers;forest:"
-;;;  Version:  March 2015
+;;;  Version:  March 2017
 
 ;; Broken out of island-driving 10/23/14.
 ;; RJB 12/14/2014 -- simple fix to prevent failure in simple-subject-verb when subject is a pronoun -- need to treat pronouns better <<DAVID>>
@@ -441,7 +441,7 @@
 	  (or
 	   (individual-p (edge-referent left-neighbor))
 	   (category-p (edge-referent left-neighbor))))
-     (let* ((referent ;; DAVID -- THIS IS WHERE WE COPY THE BASE ITEM TO AVOID SMASHING IT
+     (let* ((referent
 	     (individual-for-ref (edge-referent left-neighbor)))
 	    (constituents (edge-constituents paren-edge))
 	    (count (when constituents ;;///review the code to guarentee this
@@ -453,11 +453,11 @@
       
        (when (and (individual-p paren-referent)
 		  (individual-p referent))
-        
-	 (if *bind-parens-into-semantics*
-	     (setq referent (bind-dli-variable (lambda-variable-named 'trailing-parenthetical) ;; obsolete in DLI case
-					       paren-referent
-					       referent))))
+	 (when *bind-parens-into-semantics*
+           (setq referent (bind-dli-variable (lambda-variable-named 'trailing-parenthetical) ;; obsolete in DLI case
+                                             paren-referent
+                                             referent))))
+       
        ;;// now knit it in. A form rule would be best. It could handle the
        ;; binding as well, but j9 shows that the neighbor is not always
        ;; going to be obvious.
