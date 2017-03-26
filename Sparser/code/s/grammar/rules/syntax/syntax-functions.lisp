@@ -1341,7 +1341,10 @@
            (variable (find-subcat-vars preposition vp)))
 
       ;; while debugging -- what's a reasonable default?
-      (unless variable (break "no variable for ~a on ~a" preposition vp))
+      (unless variable
+        (warn "no variable for ~a on ~a in~%~s"
+              preposition vp (current-string))
+        (return-from make-pp-relative-clause nil))
 
       (let ((q (extend-wh-object wh-obj
                                  :variable variable
@@ -1412,9 +1415,14 @@
   (when (itypep copular-pp 'subordinate-clause)
     ;; this may no longer work -- get an example and test it
     (setq copular-pp (value-of 'comp copular-pp)))
-  (let* ((prep (get-word-for-prep (value-of 'prep copular-pp)))
+  (when (itypep copular-pp 'wh-question)
+    ;; e.g. "cancer patients who may not have been at risk themselves"
+    (setq copular-pp (value-of 'statement copular-pp)))
+
+  (let* ((prep-indiv (value-of 'prep copular-pp))
+         (prep (get-word-for-prep (unless (null prep-indiv) prep-indiv)))
          (pobj (value-of 'value copular-pp))
-         (var-to-bind (subcategorized-variable np prep pobj)))
+         (var-to-bind (when prep (subcategorized-variable np prep pobj))))
     ;;(lsp-break "apply-copular-pp to ~a and ~a" np copular-pp)
     (cond
      (*subcat-test* var-to-bind)
