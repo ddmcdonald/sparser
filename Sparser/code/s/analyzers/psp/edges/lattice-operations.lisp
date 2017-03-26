@@ -308,7 +308,7 @@
     (declare (special *index-under-permanent-instances*
                       parent var dl-vv downlinks))
     (if (null var)
-        (then (error "find-or-make-lattice-subordinate fails to find var ~s in ~s~%"
+        (then (break "find-or-make-lattice-subordinate fails to find var ~s in ~s~%"
                     var/name (or category parent))
               (return-from find-or-make-lattice-subordinate (values parent nil)))
         (let* ((result
