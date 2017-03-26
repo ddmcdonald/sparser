@@ -131,15 +131,36 @@ collected a set of ns-examples"
   (setf (symbol-function 'ppcre-scan)
         (symbol-function (intern "SCAN" (find-package :ppcre)))))
 
+
+(defparameter *bad-end-chars*
+  '("#" "$" "&" "*" "+" "/"  ":" "=" "-" "\\" "^" "_"
+    "`"  "|" "~" "«" "®" "°" "±" "´" "·" "º" "Å" "É"
+    "Ö"  "ß" "ö" "͂" "‐" "–" "―" "…" " " "″" "™" "→" "↔" 
+    "−" "∩" "∼" "≈" "≠" "≤" "≥" "≫" "⊇" "⋅" "▵" "⩽"
+    "⩾" "•" "“" "‑"))
+
 ;; Set to ignore because of not everyone has ppcre loaded, so need to remove the ignore to do this step
 ;;; Now use the covering functions defined above
 (defun ns-unknown-items (&optional (ns-unknown-sublist *ns-unknown-sublist*)(others nil))
-          "Split items at slashes and colons"
-  (length (setq *ns-unknown-items*
-                (remove-duplicates
-                 (loop for n in (append others (mapcar #'second ns-unknown-sublist))
-                       append (ppcre-split "[/:]" n))
-                 :test #'equal))))
+  "Split items at slashes and colons"
+  (declare (special ns-unknown-sublist others *ns-unknown-items*))
+  (let ((base-strings (append others (mapcar #'second (remove nil ns-unknown-sublist)))))
+    (declare (special base-strings))
+    (let ((split-lists
+           (loop for n in base-strings
+                 unless
+                   (and (stringp n)
+                        (or
+                         (member (subseq n 0 1) *bad-end-chars* :test #'equal)
+                         (member (subseq n (- (length n) 1)) *bad-end-chars* :test #'equal)))
+                 collect (ppcre-split "[/:]" n))))
+      (declare (special split-lists))
+      (let ((split-strings (loop for l in split-lists when (consp l) append l)))
+        (declare (special split-strings))
+        ;;(pprint `(setq split-strings ',split-strings))
+        (let ((dedup (remove-duplicates split-strings :test #'equal)))
+          ;;(pprint `(setq dedup ',dedup))
+          (length (setq *ns-unknown-items* dedup)))))))
 
 (defparameter *rd-ns* nil)
 
