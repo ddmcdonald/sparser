@@ -98,8 +98,9 @@
   "Used by make-discontinuous-edge to accommodate the largest of
    the special cases handed by do-explicit-rule-completion"
   (let ((edge-to-promulgate (cfr-completion rule)))
-    (assert (keywordp edge-to-promulgate) ()
-            "Rule ~a is not a form rule" rule)
+    (if (not (keywordp edge-to-promulgate))
+        (cerror
+            "Rule ~a is not a form rule" rule))
     (let ((promulgated-label
            (ecase edge-to-promulgate
              (:left-edge
