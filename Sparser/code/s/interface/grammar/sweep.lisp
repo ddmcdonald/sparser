@@ -64,6 +64,7 @@
     (symbol nil)
     (individual `(,item))
     (category nil)
+    (lambda-variable nil) ;; ??
     (cons
      (strip-model-description item))
     (number)
