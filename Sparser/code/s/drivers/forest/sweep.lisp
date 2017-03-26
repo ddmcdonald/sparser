@@ -68,7 +68,9 @@
 
       (when multiple?
         ;; Presume that we want the topmost edge. 
-        ;; This ignores real ambiguities 
+        ;; This ignores real ambiguities
+        (when (eq 0 (ev-number-of-edges tt))
+          (break "0 edges in sweep-sentence-treetops"))
         (setq tt (elt (ev-edge-vector tt)
                       (1- (ev-number-of-edges tt)))))
 
