@@ -154,7 +154,7 @@
     ;; from a polyword. J10 has "such as" from words/conjunctions.lisp
     (edge-category (edge-left-daughter edge)))
    (t (push-debug `(,edge))
-      (error "Don't know how to find the preposition in~a" edge))))
+      (break "Don't know how to find the preposition in~a" edge))))
   
 
 
@@ -367,7 +367,7 @@
 
            (t (push-debug `(,left ,right ,left-form ,right-form))
               ;;(print `(can't find verb on edge ,edge)) 
-              (error "find-verb: new case")
+              (break "find-verb: new case")
               nil)))))))
 
 
