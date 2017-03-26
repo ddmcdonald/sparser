@@ -316,9 +316,9 @@ places. ]]
      (t (push-debug `(,lemma ,combinations ,clauses))
         (if (and (boundp '*word-to-be-defined?*)
                  *word-to-be-defined?*)
-          (break "Comlex -- new POS combination in defining word ~
+          (warn "Comlex -- new POS combination in defining word ~
                   ~s \"~a\:: ~a" *word-to-be-defined?* lemma combinations)
-          (cerror "Comlex -- new POS combination for \"~a\:: ~a"
+          (warn "Comlex -- new POS combination for \"~a\:: ~a"
                   lemma combinations))))))
 
 
