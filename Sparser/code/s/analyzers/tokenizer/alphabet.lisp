@@ -42,8 +42,8 @@
   (let* ((character (elt *character-buffer-in-use* *index-of-next-character*))
          (code (char-code character)))
     (push-debug `(,character ,code))
-    (lsp-break "out-of-range-char")
-    (break "~%The input stream contains the character \"~A\", whose character code~
+    ;;(lsp-break "out-of-range-char")
+    (error "~%The input stream contains the character \"~A\", whose character code~
             ~%is ~A.  That character is not part of the ascii character set~
             ~%(0 to 127), and has not yet been entered into either Sparser's ~
             ~%extended character array (128 to 255) or its table of 'out of bound'~
