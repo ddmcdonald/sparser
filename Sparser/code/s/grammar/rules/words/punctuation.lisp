@@ -105,9 +105,11 @@
     (code-char 339) ;; "œ" #\Latin_Small_Ligature_Oe 
     (code-char 697) ;; "ʹ" #\Modifier_Letter_Prime
     (code-char 710) ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
-    (code-char 729) ;;
-    (code-char 768) ;;
-    (code-char 769) ;;
+    (code-char 729) ;; "˙", (code = 729)  ;; #\Dot_Above
+    (code-char 730) ;; #\Ring_Above
+    (code-char 732) ;; #\small_tilde
+    (code-char 768) ;; #\COMBINING_GRAVE_ACCENT
+    (code-char 769) ;; #\Combining_Acute_Accent
     (code-char 772) ;; #\Combining_Macron
     (code-char 776) ;; #\Combining_Diaeresis
     (code-char 834) ;; "͂" #\Combining_Greek_Perispomeni
@@ -119,6 +121,7 @@
     ;;(code-char 958) ;; "ξ" #\Greek_Small_Letter_Xi
     ;;(code-char 965) ;; "υ" #\Greek_Small_Letter_Upsilon
     ;;(code-char 966) ;; "φ" #\Greek_Small_Letter_Phi
+    (code-char 900) ;; #\GREEK_TONOS
 
     (code-char 1013)
     
@@ -130,8 +133,11 @@
     (code-char 8201) ;; thin_space U2009
     (code-char 8202) ;; hair_space 
     (code-char 8203) ;; zero width space
+    (code-char 8206) ;;‎
+    (code-char 8207) ;;‏
     (code-char 8208) ;; #\hyphen
     (code-char 8209) ;; #\NON-BREAKING_HYPHEN
+    (code-char 8210) ;;‒
     (code-char 8212) ;; em dash, html: &mdash;
     (code-char 8213) ;;"―"
     (code-char 8214) ;; #\DOUBLE_VERTICAL_LINE
@@ -147,15 +153,19 @@
     (code-char 8229) ;;#\TWO_DOT_LEADER
     (code-char 8230) ;;"…", (code = 8230)
     (code-char 8232) ;;"", (code = 8232)
+    (code-char 8239) ;; 
     (code-char 8240) ;;"‰", (code = 8240)
     (code-char 8242) ;; prime
     (code-char 8243) ;;"″", (code = 8243)
     (code-char 8244) ;; #\TRIPLE_PRIME
+    (code-char 8245) ;;‵
+    (code-char 8249) ;;‹
     (code-char 8260) ;; "⁄" #\U+2044
     (code-char 8364) ;; #\EURO_SIGN
     (code-char 8446);;"ℒ", (code = 8446)
     (code-char 8451) ;;"℃", (code = 8451)
     (code-char 8466) ;;"ℒ", (code = 8466)
+    (code-char 8471) ;;℗
     (code-char 8482) ;;"™", (code = 8482)
     (code-char 8486) ;;"Ω" #\U+2126 
     (code-char 8490) ;; #\KELVIN_SIGN
@@ -170,6 +180,7 @@
     (code-char 8593) ;;"↑", (code = 8593)
     (code-char 8595) ;;"↓", (code = 8595)
     (code-char 8596) ;;"↔", (code = 8596) #\left_right_arrow
+    (code-char 8644) ;;⇄
     (code-char 8656) ;; #\LEFTWARDS_DOUBLE_ARROW
     (code-char 8658) ;; #\RIGHTWARDS_DOUBLE_ARROW
     (code-char 8660) ;;  #\left_right_double_arrow
@@ -184,6 +195,7 @@
     (code-char 8721) ;; "∑"
     (code-char 8722) ;; ""−" #\U+2212 Minus sign
     (code-char 8727) ;; "∗" #\U+2217
+    (code-char 8728) ;;∘
     (code-char 8729) ;; 
     (code-char 8729) ;; #\BULLET_OPERATOR
     (code-char 8730) ;; #\SQUARE_ROOT
@@ -196,59 +208,67 @@
     (code-char 8746) ;; #\UNION
     (code-char 8747) ;; "∫"
     (code-char 8758) ;; ratio  #\U+2236
-    (code-char 8780) ;; #\ALL_EQUAL_TO
-    (code-char 8801) ;; #\IDENTICAL_TO
-    (code-char 8807) ;; #\GREATER-THAN_OVER_EQUAL_TO
-    (code-char 8869) ;; #\UP_TACK
-    (code-char 8896) ;; #\N-ARY_LOGICAL_AND
-    (code-char 8921) ;; #\VERY_MUCH_GREATER-THAN
-    (code-char 9312) ;; #\CIRCLED_DIGIT_ONE
-    (code-char 9313) ;; #\CIRCLED_DIGIT_TWO
-    (code-char 9314) ;; #\CIRCLED_DIGIT_THREE
-    (code-char 9632) ;; #\BLACK_SQUARE
-    (code-char 9839) ;; #\MUSIC_SHARP_SIGN
-    ;;(code-char 8594) ;; rightwards arrow  -- defined at end of file
     (code-char 8759) ;; ∷
     (code-char 8764) ;;#\∼ 
     (code-char 8765) ;; #\reversed_tilda
+    (code-char 8771) ;;≃
     (code-char 8773) ;; ≅
     (code-char 8776) ;;"≈", (code = 8776)
+    (code-char 8780) ;; #\ALL_EQUAL_TO
     (code-char 8781) ;;"≍", (code = 8781)
-
     (code-char 8800) ;; "≠"
+    (code-char 8801) ;; #\IDENTICAL_TO
     (code-char 8804) ;;  "≤"
     (code-char 8805) ;;"≥", (code = 8805)
     (code-char 8806) ;;"≦", (code = 8806)
+    (code-char 8807) ;; #\GREATER-THAN_OVER_EQUAL_TO
     (code-char 8810) ;; "≪" #\U+226B
     (code-char 8811) ;; "≫" #\U+226B
     (code-char 8839) ;; "⊇" #\U+2287
+    (code-char 8869) ;; #\UP_TACK
+    (code-char 8895) ;;⊿
+    (code-char 8896) ;; #\N-ARY_LOGICAL_AND
     (code-char 8900) ;; "⋄"
     (code-char 8901) ;;"⋅", (code = 8901)
     (code-char 8902) ;;"⋆" (code = 8902)
+    (code-char 8921) ;; #\VERY_MUCH_GREATER-THAN
     (code-char 8942) 
     (code-char 8943) ;; "⋯"
     (code-char 9001) ;; 〈
     (code-char 9002) ;; 〉
+    (code-char 9082) ;;⍺
+    (code-char 9312) ;; #\CIRCLED_DIGIT_ONE
+    (code-char 9313) ;; #\CIRCLED_DIGIT_TWO
+    (code-char 9314) ;; #\CIRCLED_DIGIT_THREE
     (code-char 9415) ;; "Ⓡ" #\circled_latin_capital_letter_r
+    (code-char 9474) ;;│
+    (code-char 9524) ;;┴
+    (code-char 9553) ;;║
+    (code-char 9632) ;; #\BLACK_SQUARE
     (code-char 9633) ;; "□"
     (code-char 9642) ;; "▪"
     (code-char 9650) ;; ▲
     (code-char 9651) ;; "△" #\U+25B3
     (code-char 9652) ;; "▴" #\U+25B4
     (code-char 9653) ;; "▵"
+    (code-char 9654) ;;▶
     (code-char 9658) ;; "►" #\U+2605
+    (code-char 9660) ;;▼
     (code-char 9663) ;; "▿" #\U+25BF
+    (code-char 9670) ;;◆
     (code-char 9674) ;; "◊" #\U+25CA
     (code-char 9675) ;; "○" #\U+25CB
     (code-char 9679) ;; ●
+    (code-char 9702) ;;◦
     (code-char 9733) ;; "★" #\U+25CB
     (code-char 9792) ;; "♀" #\U+2640
     (code-char 9794) ;; "♂" #\U+2642
     (code-char 9830) ;; "♦"
+    (code-char 9839) ;; #\MUSIC_SHARP_SIGN
     (code-char 10794) ;; "⨪" #\U+2A2A
     (code-char 10877) ;; "⩽"
     (code-char 10878) ;;"⩾", (code = 10878)
-
+    (code-char 12289) ;;、
     (code-char 64257) ;;"ﬁ", (code = 64257) ;; alphabetical
     (code-char 64258) ;;"ﬂ", (code = 64258)
 
@@ -262,7 +282,6 @@
     (code-char 65308) ;; #\FULLWIDTH_LESS-THAN_SIGN 
     (code-char 65310) ;; #\FULLWIDTH_GREATER-THAN_SIGN 
     (code-char 65374) ;; #\FULLWIDTH_TILDE 
-
 
     (code-char 119967) ;; "풟"
     
@@ -302,3 +321,4 @@
 #+allegro (define-punctuation rightwards-arrow (code-char #x2192))
 #-allegro (define-punctuation rightwards-arrow #\U+2192)
 
+    ;;(code-char 8594) ;; rightwards arrow  -- defined at end of file
