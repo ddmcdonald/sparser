@@ -291,14 +291,22 @@
 
        (when (eq position-after end-pos)
          (return))
-       
+
        (setq position-before position-after
              ev (pos-starts-here position-after)
              edge (ev-top-node ev)
              word (unless edge (pos-terminal position-after))
              position-after (if edge
                               (pos-edge-ends-at edge)
-                              (chart-position-after position-after))))))
+                              (chart-position-after position-after)))
+       
+       ;; Something has gone wrong since the chart has been
+       ;; completely populated before this. There is no good
+       ;; way to recover so just punt and see if we can pick up
+       ;; again on the next sentence.
+       ;; See (run-an-article :id "PMID22252115" :corpus :phase3 :quiet nil :show-sect t)
+       (when (null word)
+         (throw :end-of-sentence t)))))
 
 
 ;; candidate to redo earlier loops -- used in terminal-edges-sweep below
