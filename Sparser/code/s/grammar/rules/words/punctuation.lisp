@@ -121,6 +121,7 @@
     (code-char 1013)
 
     (code-char 8194) ;; en_space
+    (code-char 8195) ;; em_space
     (code-char 8197) ;; four-per-em_space
 
     (code-char 8201) ;; thin_space U2009
@@ -136,6 +137,8 @@
     (code-char 8218) ;;"‚", (code = 8218)
     (code-char 8220) ;; left double quote
     (code-char 8221) ;; right double quote
+    (code-char 8224) ;; †
+    (code-char 8225) ;; ‡
     (code-char 8226) ;;"•", (code = 8226)
     (code-char 8230) ;;"…", (code = 8230)
     (code-char 8232) ;;"", (code = 8232)
@@ -158,24 +161,28 @@
     ;;(code-char 8594) ;; rightwards arrow  -- defined at end of file
     (code-char 8595) ;;"↓", (code = 8595)
     (code-char 8596) ;;"↔", (code = 8596) #\left_right_arrow
-
+    (code-char 8660) ;;  #\left_right_double_arrow
     (code-char 8704) ;; "∀" #\FOR_ALL
     (code-char 8707) ;; "∃" #\there_exists
     (code-char 8706) ;; "∂", (code = 8706)
     (code-char 8710) ;;"∆" #\U+2206
+    (code-char 8711) ;;   #\nabla
     (code-char 8712) ;; "∈" #\U+2208
     (code-char 8714) ;; "∊"
     (code-char 8721) ;; "∑"
     (code-char 8722) ;; ""−" #\U+2212 Minus sign
     (code-char 8727) ;; "∗" #\U+2217
+    (code-char 8730) ;; #\SQUARE_ROOT
     (code-char 8734) ;;"∞", (code = 8734)
     (code-char 8739) ;; "∣", (code = 8734)
     (code-char 8743) ;; "∧" #\U+2227
     (code-char 8745) ;; "∩" #\U+2229
     (code-char 8747) ;; "∫"
     (code-char 8758) ;; ratio  #\U+2236
+    (code-char 8759) ;; ∷
     (code-char 8764) ;;#\∼ 
     (code-char 8765) ;; #\reversed_tilda
+    (code-char 8773) ;; ≅
     (code-char 8776) ;;"≈", (code = 8776)
     (code-char 8781) ;;"≍", (code = 8781)
 
@@ -191,10 +198,12 @@
     (code-char 8902) ;;"⋆" (code = 8902)
     (code-char 8942) 
     (code-char 8943) ;; "⋯"
-
+    (code-char 9001) ;; 〈
+    (code-char 9002) ;; 〉
     (code-char 9415) ;; "Ⓡ" #\circled_latin_capital_letter_r
     (code-char 9633) ;; "□"
     (code-char 9642) ;; "▪"
+    (code-char 9650) ;; ▲
     (code-char 9651) ;; "△" #\U+25B3
     (code-char 9652) ;; "▴" #\U+25B4
     (code-char 9653) ;; "▵"
@@ -202,6 +211,7 @@
     (code-char 9663) ;; "▿" #\U+25BF
     (code-char 9674) ;; "◊" #\U+25CA
     (code-char 9675) ;; "○" #\U+25CB
+    (code-char 9679) ;; ●
     (code-char 9733) ;; "★" #\U+25CB
     (code-char 9792) ;; "♀" #\U+2640
     (code-char 9794) ;; "♂" #\U+2642
@@ -212,8 +222,18 @@
 
     (code-char 64257) ;;"ﬁ", (code = 64257) ;; alphabetical
     (code-char 64258) ;;"ﬂ", (code = 64258)
+
+    (code-char 65285) ;; #\FULLWIDTH_PERCENT_SIGN 
     (code-char 65288) ;;"（", (code = 65288)
+    (code-char 65289) ;;  #\FULLWIDTH_RIGHT_PARENTHESIS 
+    (code-char 65292) ;; #\FULLWIDTH_COMMA 
     (code-char 65293) ;;"－", (code = 65293)
+    (code-char 65306) ;; #\FULLWIDTH_COLON 
+    (code-char 65307) ;; #\FULLWIDTH_SEMICOLON 
+    (code-char 65308) ;; #\FULLWIDTH_LESS-THAN_SIGN 
+    (code-char 65310) ;; #\FULLWIDTH_GREATER-THAN_SIGN 
+    (code-char 65374) ;; #\FULLWIDTH_TILDE 
+
 
     (code-char 119967) ;; "풟"
     
