@@ -73,6 +73,7 @@
         ;;gene
         molecule
         organism
+        
         ;;protein
         ;; rna has problems
         unit-of-measure
@@ -98,7 +99,7 @@
                       `(:bindings (uid ,(getf (cddr term) :id))))
                   :realization (:noun ,(car term)))))))
       (t
-       (unless (member category '(bio-method bio-organ bio-complex protein-domain protein-family rna ))
+       (unless (member category '(bio-method bio-organ bio-complex protein-domain protein-family rna referential-sem time-unit))
          (format t "~%defining an instance of ~s~%" category))
        (when (member category '(point-mutation)) 
          ;;(member category '(bio-process bio-organ bio-complex))
@@ -152,17 +153,18 @@
       (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
       (molecular-domain 'protein-domain)
       (molecular-site 'residue-on-protein)
-      ((organism nonhuman-animal animal fish invertebrate microorganism fungus plant bird) 'organism)
+      ((organism nonhuman-animal animal fish invertebrate microorganism fungus plant bird vertebrate) 'organism)
       (pharmacologic-substance 'drug)
       (physical-condition 'disease)
+      (post-translational-modification 'post-translational-modification)
       (procedure 'bio-method)
       (process 'bio-method) ;; the one case we have here is a bio-method -- transplantation
       (protein-family 'protein-family)
       (mutation nil)
-      ((amino-acid referential-sem substance time-unit mutation) 'referential-sem) ;; huh? (ref-sem is now prefiltered, and the instances of substance are "build-up" and "mole-cule" -- not sure what to do with the first, and the second is probably from a line break we need to handle better)
+      ((amino-acid referential-sem substance time-unit mutation) 'referential-sem) ;; huh? (ref-sem is now prefiltered, and the instances of substance are "build-up" and "mole-cule" -- not sure what to do with the first, and the second is probably from a line break we need to handle better) 
       ((rna mrna) 'rna)
       (signaling-pathway 'pathway)
-      (time-span 'time-span)
+      (time-span 'cellular-process) ;; these all seem to be phases of mitosis or meiosis
       (virus 'virus))))
 
 

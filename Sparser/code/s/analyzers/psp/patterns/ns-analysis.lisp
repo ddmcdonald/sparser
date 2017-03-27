@@ -176,7 +176,7 @@ collected a set of ns-examples"
                         unless
                           (or (search " " x)
                               (ppcre-scan "^[-~+#0-9_&«*\"]" x)
-                              (ppcre-scan "[‑–-]$" x)
+                              (ppcre-scan "[‑–−-]$" x)
                               (search "—" x) 
                               ;; we need to not make em dashes
                               ;; equivalent to hyphens before no-space
