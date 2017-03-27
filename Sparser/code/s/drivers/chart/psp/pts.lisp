@@ -150,6 +150,7 @@
             (treetops-in-segment (chunk-start-pos *current-chunk*)
                                  (chunk-end-pos *current-chunk*)))
            treetops-to-remove )
+      (declare (special segment-treetops treetops-to-remove))
       (loop for e in segment-treetops do
         (cond
          ((edge-vector-p e)
@@ -158,9 +159,19 @@
              do (push ee treetops-to-remove)))
          ((not (compatible-with-chunk e *current-chunk*))
           (push e treetops-to-remove))))
-      (when treetops-to-remove
+      (when (and treetops-to-remove
+                 ;; don't remove all the edges --
+                 ;;  this happens when the chunker has things wrong, and
+                 ;;  it is removing all the +ing edges for something
+                 ;;  it is considering a NG
+                 (< (length treetops-to-remove)
+                    (loop for st in segment-treetops
+                          sum (if (edge-vector-p st)
+                                  (length (ev-edges st))
+                                  1))))
       ;; these will be different only in the case where the chunk
-      ;; limits the treetops because of POS
+        ;; limits the treetops because of POS
+        ;;(lsp-break "remove inconsistent edges")
         (loop for e in treetops-to-remove when (edge-p e)
           do (remove-edge-from-chart e))))))
         
