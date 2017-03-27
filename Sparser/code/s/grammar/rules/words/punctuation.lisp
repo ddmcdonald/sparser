@@ -106,6 +106,8 @@
     (code-char 697) ;; "ʹ" #\Modifier_Letter_Prime
     (code-char 710) ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
     (code-char 729) ;;
+    (code-char 768) ;;
+    (code-char 769) ;;
     (code-char 772) ;; #\Combining_Macron
     (code-char 776) ;; #\Combining_Diaeresis
     (code-char 834) ;; "͂" #\Combining_Greek_Perispomeni
@@ -173,6 +175,7 @@
     (code-char 8722) ;; ""−" #\U+2212 Minus sign
     (code-char 8727) ;; "∗" #\U+2217
     (code-char 8730) ;; #\SQUARE_ROOT
+    (code-char 8732) ;; 
     (code-char 8734) ;;"∞", (code = 8734)
     (code-char 8739) ;; "∣", (code = 8734)
     (code-char 8743) ;; "∧" #\U+2227

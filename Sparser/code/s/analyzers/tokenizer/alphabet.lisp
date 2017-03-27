@@ -671,7 +671,11 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 ;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 162) 
-      `(:alphabetical . (:lowercase . ,(code-char 162)))) 
+      `(:alphabetical . (:lowercase . ,(code-char 162))))
+
+(setf (elt *character-dispatch-array* 163) 
+      `(:alphabetical . (:lowercase . ,(code-char 163))))
+
 ;;#\CENT_SIGN 
 
 ;;; added to cover biopax import issue
@@ -682,7 +686,10 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 ;;; added to cover biopax import issue
 (setf (elt *character-dispatch-array* 166) 
-      `(:alphabetical . (:lowercase . ,(code-char 166)))) 
+      `(:alphabetical . (:lowercase . ,(code-char 167))))
+
+(setf (elt *character-dispatch-array* 167) 
+      `(:alphabetical . (:lowercase . ,(code-char 166))))
 ;;#\BROKEN_BAR 
 
 (setf (elt *character-dispatch-array* 169) ;; #\Copyright_Sign
@@ -889,12 +896,15 @@ the buffer that is fed to find-word and becomes part of the word's pname.
        (:punctuation . (punctuation-named (code-char 730))))
       (732 ;; #\Small_Tilde
        (:punctuation . (:lowercase . #\~))) ;;"˜"
-    
+      (768  ;; 
+       (:punctuation . ,(punctuation-named (code-char 768))))
       (769  ;; #\Combining_Acute_Accent
-       (:punctuation . ,(punctuation-named #\')))
+       (:punctuation . ,(punctuation-named (code-char 769))))
       (770  ;; #\Latin_Small_Letter_S_With_Acute
        (:alphabetical . (:lowercase . ,(code-char 770))))
-    
+      (771  ;; #\Latin_Small_Letter_S_With_Acute
+       (:alphabetical . (:lowercase . ,(code-char 771))))
+     
       (772 ;; #\Combining_Macron
        (:punctuation . ,(punctuation-named (code-char 772))))
     
@@ -903,7 +913,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       
       (834 (:punctuation . ,(punctuation-named (code-char 834)))) ;;";", (code = 894)    
       (894 (:punctuation . ,(punctuation-named (code-char 894)))) ;;";", (code = 894)
-    
+      (913 ;; #\GREEK_DIALYTIKA_TONOS
+       (:greek . (:uppercase . ,(code-char 901))))
       (913 ;; #\Greek_Capital_Letter_Alpha "Α"
        (:greek . (:uppercase . ,(code-char 913))))
       (914 ;; #\Greek_Capital_Letter_Beta "Β"
@@ -993,6 +1004,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       (981 (:greek . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
       (1013 (:punctuation . ,(punctuation-named (code-char 1013)))) ;; "ϵ"
       (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082) #\CYRILLIC_SMALL_LETTER_KA
+      (1092 (:alphabetical . (:lowercase . , (code-char 1092)))) ;;"Ñ", (code = 1092) 
 
 
 
@@ -1080,7 +1092,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       (8596 (:punctuation . ,(punctuation-named (code-char 8596))))
       (8660 (:punctuation . ,(punctuation-named (code-char 8660)))) ;; ⇔
       (8711 (:punctuation . ,(punctuation-named (code-char 8711)))) ;; ∇
-      (8730 (:punctuation . ,(punctuation-named (code-char 8730)))) ;; √
+      (8730 (:punctuation . ,(punctuation-named (code-char 8730)))) ;;
+      (8733 (:punctuation . ,(punctuation-named (code-char 8733)))) ;; 
       (8759 (:punctuation . ,(punctuation-named (code-char 8759)))) ;; ∷
       (8773 (:punctuation . ,(punctuation-named (code-char 8773)))) ;; ≅
       (9001 (:punctuation . ,(punctuation-named (code-char 9001)))) ;; 〈
