@@ -1385,6 +1385,14 @@
    :etf (svo-passive)
    :optional-object t))
 
+(define-category import :specializes bio-transport
+  :restrict ((object molecule)) 
+  :realization 
+  (:verb "import" 
+   :noun "importation" 
+   :etf (svo-passive)
+   :optional-object t))
+
 
 
 (define-category transfect :specializes bio-method
