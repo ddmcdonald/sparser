@@ -99,6 +99,8 @@
   :form verb+ing
   :referent be)
 
+#+ignore ;; done by rule? ;; #<PSR-985 {verb} → to verb>
+;; this definition confuses find-verb
 (def-cfr be ("to be")
   :form infinitive
   :referent be)
