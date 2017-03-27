@@ -24,14 +24,15 @@
 (defun read-and-replace-protein-defs (&key (protein-file "standardized-protein-defs-complete.lisp") 
                                         upa-ht 
                                         upm-ht
-                                        (output-file "standardized-protein-defs-new.lisp"))
+                                        (output-file "standardized-protein-defs-new.lisp")
+                                        (non-upa-file "non-upa-upm-proteins-new.lisp"))
 
   "Taking an input list of the existing proteins and hash tables using
 UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
 Mnemonic) as keys, output a file that has all proteins whose IDs are
 in the hash table changed to have \"UP:$UPA\" as their ID and the UPA
 and UPM in their alternate names field -- if the ID isn't a UPA or UPM
-it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out later"
+it outputs it to the non-upa-file"
   (unless (and upa-ht upm-ht)
     (unless (boundp '*upa-key-upm-val*)
       (load
@@ -49,11 +50,12 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                                                     :upm-ht upm-ht)))
     (setq *new-protein-defs* (merge-duplicates-and-separate-families new-defs))
     
-    (unless (eq output-file t)
+    (unless (and (eq output-file t)
+                 (eq non-upa-file t))
       ;; the two files must be opened and superseded at the top of the loop
       ;;  so that we can re-run the code and generate new files
       ;;  without items from old files hanging around
-      (output-protein-defs-to-files *new-protein-defs* output-file)
+      (output-protein-defs-to-files *new-protein-defs* output-file non-upa-file)
       output-file)))
 
 (defparameter *duplicate-protein-ht* (make-hash-table :size 30000 :test #'equal))
@@ -137,12 +139,12 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                                    :test #'equal)
                 #'string<))))
 
-(defun output-protein-defs-to-files (new-defs output-file-name)
+(defun output-protein-defs-to-files (new-defs output-file-name non-upa-file-name)
   (with-open-file (stream (concatenate 'string "sparser:bio;" output-file-name)
                           :direction :output :if-exists :supersede 
                           :if-does-not-exist :create
                           :external-format :UTF-8)
-    (with-open-file (non-upa-stream (concatenate 'string "sparser:bio;" "non-upa-upm-proteins.lisp")
+    (with-open-file (non-upa-stream (concatenate 'string "sparser:bio;" non-upa-file-name)
                                     :direction :output :if-exists :supersede
                                     :if-does-not-exist :create
                                     :external-format :UTF-8)
@@ -168,7 +170,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                                           (upm-ht *upm-key-upa-val*))
   "Taking an input list of the existing proteins and hash tables using
 UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
-Mnemonic) as keys, output a file that has all proteins whose IDs are
+Mnemonic) as keys, output a list that has all proteins whose IDs are
 in the hash table changed to have \"UP:$UPA\" as their ID and the UPA
 and UPM in their alternate names field -- if the ID isn't a UPA or UPM
 it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out later"
