@@ -545,12 +545,19 @@
    the start of the chunk ahead of 'to'.
    Probably lots of edge cases to be sorted out."
   (when (memq 'vg (chunk-forms chunk))
-    (let* ((ev (first (chunk-ev-list chunk)))
+    (let* ((ev (first (chunk-ev-list chunk))) ;; should be the head
            (representative-edge (ev-top-node ev))
            (edges-before (when (edge-p representative-edge)
                            ;; vs. :multiple-initial-edges
                            (edges-before representative-edge))))
-      (when edges-before
+      (declare (special ev representative-edge))
+      (when (and edges-before
+                 (if (edge-p representative-edge)
+                     (eq (cat-name (edge-form representative-edge)) 'verb)
+                     (loop for e in (ev-edge-list ev)
+                           thereis
+                             (eq (cat-name (edge-form e)) 'verb))))
+                             
         (when (loop for ee in edges-before
                  thereis (eq (cat-name (edge-category ee)) 'to))
           (let* ((current-start (chunk-start-pos chunk))

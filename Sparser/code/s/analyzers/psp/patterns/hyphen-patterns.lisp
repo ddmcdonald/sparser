@@ -262,16 +262,18 @@
   (let* ((protein-edge (first edges))
          (protein-ref (edge-referent protein-edge))
          (word-edge (third edges))
-         (word-ref (edge-referent word-edge)))
-    (or (composed-by-usable-rule protein-edge word-edge)
+         (word-ref (when (edge-p word-edge) ;; null in CD8-ve
+                     (edge-referent word-edge))))
+    (or (when (edge-p word-edge)
+          (composed-by-usable-rule protein-edge word-edge))
         ;; remove call to (do-relation-between-first-and second -- handled above
         (when *work-on-ns-patterns*
           (push-debug `(,protein-edge ,word-edge ,start-pos ,end-pos))
           (break "New case in resolving protein + word: ~
                 ~%  protein = ~a  word = ~a" protein-ref word-ref))
-        (else
-         (tr :defaulting-two-word-hyphen)
-         (package-qualifying-pair protein-edge word-edge)))))
+        (when (edge-p word-edge)
+          (tr :defaulting-two-word-hyphen)
+          (package-qualifying-pair protein-edge word-edge)))))
 
 
 (defun resolve-hyphen-between-two-words (pattern words

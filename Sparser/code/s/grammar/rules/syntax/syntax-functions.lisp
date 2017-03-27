@@ -598,6 +598,7 @@
                ((individual-p vg) (itype-of vg))
                (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb")))))
     (when (and (first (cat-realization vg-cat))
+               (rdata-etf (first (cat-realization vg-cat)))
                (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
                              '(passive/with-by-phrase))))
       (when *parent-edge-getting-reference*
