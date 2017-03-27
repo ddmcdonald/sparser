@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; Copyright (c) 2010 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2013-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:  "period-hook"
 ;;;    Module:  drivers/chart/psp  ;;"grammar;rules:DM&P:"
-;;;   version:  December 2016
+;;;   version:  March 2017
 
 ;; initiated 5/26/10. Picked up working on it 7/10. 9/17/13 Actually
 ;; hooked it into creating sentences. 2/10/14 Added period-hook-off.
@@ -279,10 +279,11 @@
    Compare with routines in rules/FSAs/abbreviations.lisp.
    Return t if the word is one of an anticipated set of
    abbreviations."
-  (when *permit-ad-hoc-abbreviations*
-    (when (stringp (car *words-observed-to-confuse-eos*))
-      (vivify-words-observed-to-confuse-eos))
-    (memq word *words-observed-to-confuse-eos*)))
+  (or (abbreviation? word) ;; see define-abbreviation
+      (when *permit-ad-hoc-abbreviations*
+        (when (stringp (car *words-observed-to-confuse-eos*))
+          (vivify-words-observed-to-confuse-eos))
+        (memq word *words-observed-to-confuse-eos*))))
 
 
 ;;--- emulating polyword application
