@@ -140,14 +140,14 @@
     (code-char 8224) ;; †
     (code-char 8225) ;; ‡
     (code-char 8226) ;;"•", (code = 8226)
+    (code-char 8229) ;;#\TWO_DOT_LEADER
     (code-char 8230) ;;"…", (code = 8230)
     (code-char 8232) ;;"", (code = 8232)
     (code-char 8240) ;;"‰", (code = 8240)
-    (code-char 8242) ;; "prime"
+    (code-char 8242) ;; prime
     (code-char 8243) ;;"″", (code = 8243)
     (code-char 8260) ;; "⁄" #\U+2044
-
-    (code-char 8446) ;;"ℒ", (code = 8446)
+    (code-char 8446);;"ℒ", (code = 8446)
     (code-char 8451) ;;"℃", (code = 8451)
     (code-char 8466) ;;"ℒ", (code = 8466)
     (code-char 8482) ;;"™", (code = 8482)

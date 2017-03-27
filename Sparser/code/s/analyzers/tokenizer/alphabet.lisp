@@ -867,6 +867,8 @@ the buffer that is fed to find-word and becomes part of the word's pname.
        (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute)))
       (347  ;; #\Latin_Small_Letter_S_With_Acute
        (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute)))
+      (352  ;; #\latin_capital_letter_s_with_Caron
+       (:alphabetical . (:lowercase . ,(code-char 352))))
       (353  ;; #\Latin_Small_Letter_S_With_Caron
        (:alphabetical . (:lowercase . #\s)))
       (400  ;; #\Latin_Capital_Letter_Open_E
@@ -987,6 +989,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       (967 (:greek . (:lowercase . , (code-char 967)))) ;;"χ", (code = 967)
       (968 (:greek . (:lowercase . , (code-char 968)))) ;;"ψ", (code = 968)
       (969 (:greek . (:lowercase . , (code-char 969)))) ;;"ω", (code = 969)
+      (976 (:greek . (:lowercase . , (code-char 976)))) ;;#\GREEK_BETA_SYMBOL
       (981 (:greek . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
       (1013 (:punctuation . ,(punctuation-named (code-char 1013)))) ;; "ϵ"
       (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082) #\CYRILLIC_SMALL_LETTER_KA
@@ -997,7 +1000,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       
       (8194 ;; #\EN_SPACE
        (:punctuation . ,(punctuation-named (code-char 8194)))) ;;" ", (code = 8194)
-      (8195 (:punctuation ,(punctuation-named (code-char 8195)))) ;;  #\EM_SPACE      
+      (8195 (:punctuation . ,(punctuation-named (code-char 8195)))) ;;  #\EM_SPACE      
       (8197 ;; #\FOUR-PER-EM_SPACE
        (:punctuation . ;; ,(punctuation-named (code-char 8197)))) ;;" ", (code = 8197)
                      :space))
@@ -1036,6 +1039,7 @@ the buffer that is fed to find-word and becomes part of the word's pname.
       (8224 (:punctuation . ,(punctuation-named (code-char 8224)))) ;; †
       (8225 (:punctuation . ,(punctuation-named (code-char 8225)))) ;; ‡
       (8226 (:punctuation . ,(punctuation-named (code-char 8226)))) ;;"•", (code = 8226)
+      (8229 (:punctuation . ,(punctuation-named (code-char 8229)))) ;;#\TWO_DOT_LEADER
       (8230 (:punctuation . ,(punctuation-named (code-char 8230)))) ;;"…", (code = 8230)
       (8232 (:punctuation . ,(punctuation-named (code-char 8232)))) ;;"", (code = 8232)
       (8240 (:punctuation . ,(punctuation-named (code-char 8240)))) ;;"‰", (code = 8240)
