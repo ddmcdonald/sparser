@@ -299,14 +299,34 @@
              position-after (if edge
                               (pos-edge-ends-at edge)
                               (chart-position-after position-after)))
-       
-       ;; Something has gone wrong since the chart has been
-       ;; completely populated before this. There is no good
-       ;; way to recover so just punt and see if we can pick up
-       ;; again on the next sentence.
-       ;; See (run-an-article :id "PMID22252115" :corpus :phase3 :quiet nil :show-sect t)
-       (when (null word)
-         (throw :end-of-sentence t)))))
+       (unless edge
+         (when (null word)
+           ;; Gets us out of a loop if we walk past the end of
+           ;; the chart. See note in macro just below
+           (return))))))
+
+#| 3/27/17 ddm -- In at least two of the "phase 3" articles from HMS
+there are abbreviated months, e.g. "Mar. 2009", and the period is
+not (yet) being correctly recognized as indicating an abbreviation
+rather than an end-of-sentence marker. During the word-level completion 
+sweep, applying the abbreviation creates an edge whose end-point
+is beyond the end-pos (the end position is the end position of the
+overly-short sentence.), which leads to a tight infinite loop.
+To avoid this, we look for having walked beyond the end of the
+populated chart, as indicated by the next pos-terminal being nil.
+(Though that doesn't work when the chart was already filled by longer 
+sentence. In the presenting case today the bad length sentences
+were at the beginning of a paragraph when the chart had just been
+deliberately emptied.)
+   When we detect this in word-level-completion-sweep we just return
+and leave the loop because we want to continue on to the final word-level
+sweep. When we detect it there in terminal-edges-sweep (actually in the
+macro it and only expands) we throw to end-of-sentence, which finishes
+this whole level.
+   Test with this to see the exact point of failure and the short
+sentences.
+ (run-an-article :id "PMID22252115" :corpus :phase3 :quiet nil :show-sect t)
+|#
 
 
 ;; candidate to redo earlier loops -- used in terminal-edges-sweep below
@@ -328,7 +348,13 @@
               word (unless edge (pos-terminal position-after))
               position-after (if edge
                                (pos-edge-ends-at edge)
-                               (chart-position-after position-after))))))
+                               (chart-position-after position-after)))
+        (unless edge
+          (when (null word)
+            (format t "~&Walked off the end of the chart at p~a in ~%~s~%"
+                    (pos-array-index position-after)
+                    (current-string))
+            (throw :end-of-sentence t))))))
 
 
 (defun terminal-edges-sweep (start-pos end-pos)
