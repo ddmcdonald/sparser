@@ -249,9 +249,10 @@
                      ((or string symbol)
                       (resolve/make (string-downcase pname))))
         as var = (find-variable-for-category var-name category)
-        as v/r = (var-value-restriction var)
-        do (pushnew (make-subcat-pattern label v/r var category)
-                    patterns :test #'subcat-pattern-equal)
+        as v/r = (when var (var-value-restriction var))
+        do (when var
+             (pushnew (make-subcat-pattern label v/r var category)
+                      patterns :test #'subcat-pattern-equal))
         finally (return patterns)))
 
 (defmethod (setf subcat-patterns) :after (new-patterns (frame subcategorization-frame))
