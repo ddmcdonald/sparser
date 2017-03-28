@@ -169,30 +169,41 @@ collected a set of ns-examples"
 (defun ns-unknown-rd-items (&optional (ns-unknown-items *ns-unknown-items*))
   "Remove items that start with any of several characters or end with hyphen, or have an em dash since those are really sentence punctuation; also remove any items that are a single character"
   (length (setq *rd-ns*
-                (sort
-                 (remove-duplicates
-                  (loop for x in ns-unknown-items
+                (loop for str
+                      in
+                        (sort
+                         (remove-duplicates
+                          (loop for x in ns-unknown-items
                                         ; do (print (length x))
-                        unless
-                          (or (search " " x)
-                              (ppcre-scan "^[-~+#0-9_&«*\"]" x)
-                              (ppcre-scan "[‑–−-]$" x)
-                              (search "—" x) 
-                              ;; we need to not make em dashes
-                              ;; equivalent to hyphens before no-space
-                              ;; but that hasn't been done yet
-                              (> 2 (length x))) ;; apparently > is actually ≥
-                        collect
-                          (loop for pre in '("anti" "pre" "non" "phospho" "GTP" "GDP" "p" "co")
-                                do
-                                  (when
-                                      (or
-                                       (eq 0 (search (format nil "~a-" pre) x :test #'equalp))
-                                       (eq 0 (search (format nil "~a–" pre) x :test #'equalp)) )
-                                    (return (subseq x (+ 1 (length pre)))))
-                                finally (return x)))
+                                unless
+                                  (or (search " " x)
+                                      (ppcre-scan "^[-~+#0-9_&«*\"]" x)
+                                      (ppcre-scan "[‑–−-]$" x)
+                                      (search "—" x) 
+                                      ;; we need to not make em dashes
+                                      ;; equivalent to hyphens before no-space
+                                      ;; but that hasn't been done yet
+                                      (> 2 (length x))) ;; apparently > is actually ≥
+                                collect
+                                  (loop for pre in '("anti" "pre" "non" "phospho" "GTP" "GDP" "p" "co")
+                                        do
+                                          (when
+                                              (or
+                                               (eq 0 (search (format nil "~a-" pre) x :test #'equalp))
+                                               (eq 0 (search (format nil "~a–" pre) x :test #'equalp)) )
+                                            (return (subseq x (+ 1 (length pre)))))
+                                        finally (return x)))
                               
-                  :test #'equal) #'string<))))
+                          :test #'equal) #'string<)
+                      when (not (non-bio-entity? str))
+                      collect str))))
+
+(defun non-bio-entity? (str)
+  (let* ((wd (resolve str))
+         (rs (when wd (rule-set-for wd)))
+         (cats (when rs (rs-distinct-categories rs))))
+    (when cats
+      (loop for c in cats thereis (not (eq (cat-name c) 'bio-entity))))))
 
 (defun ns-unknown-rd-items->file (&key (prefix "1-500")
                                     (filename 
