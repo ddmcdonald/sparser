@@ -637,9 +637,10 @@
        (append
         desc
         (loop for b in bindings 
-           unless (and (not (or *for-spire* *sentence-results-stream*))
-                       (member (var-name (binding-variable b))
-                               '(members count ras2-model)))
+              unless (or (null (binding-value b)) ;; sometimes we get null values for raw-text field
+                         (and (not (or *for-spire* *sentence-results-stream*))
+                              (member (var-name (binding-variable b))
+                                      '(members count ras2-model))))
            collect
              (list (var-name (binding-variable b))
                    (collect-model-description (binding-value b)))))))
