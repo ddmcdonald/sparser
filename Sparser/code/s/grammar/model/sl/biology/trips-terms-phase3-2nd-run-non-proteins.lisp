@@ -1967,7 +1967,6 @@
 (def-bio "Mona" disease :long "multicentric osteolysis nodulosis and arthropathy" :identifier "NCIT:C123437") 
 (def-bio "assa" disease :long "Pseudoaminopterin syndrome" :identifier "ORPHANET:221120") 
 (def-bio "XSCID" disease :long "gamma chain deficiency" :identifier "EFO:0005555") 
-(def-bio "Thi" disease :long "transient hypogammaglobulinemia of infancy" :identifier "NCIT:C27071") 
 (def-bio "nephroblastomas" disease :long "Nephroblastoma" :identifier "ORPHANET:654") 
 (def-bio "myalgias" disease :long "Myalgia" :identifier "HP:0003326") 
 (def-bio "methemoglobinemia" disease :long "methemoglobinemia" :identifier "NCIT:C34817") 
