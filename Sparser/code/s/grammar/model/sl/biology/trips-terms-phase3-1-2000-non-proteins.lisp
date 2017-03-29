@@ -1199,7 +1199,6 @@ nil
 (def-bio "methyltetrahydrofolate" molecule :long "methyltetrahydrofolate" :identifier "CHEBI:25345") 
 (def-bio "oligo-nucleotide" molecule :long "oligonucleotide" :identifier "CHEBI:7754") 
 (def-bio "pGL3B" molecule :long "cholinephosphorylneogalatriaosylceramide" :identifier "CHEBI:34636") 
-(def-bio "pep-tide" molecule :long "peptide" :identifier "CHEBI:16670") 
 (def-bio "phosphatidylcholine" molecule :long "phosphatidylcholine" :identifier "CHEBI:64482") 
 (def-bio "phosphoglycerides" molecule :long "glycerophospholipid" :identifier "CHEBI:37739") 
 (def-bio "phosphoino-sitide" molecule :long "phosphoinositide" :identifier "CHEBI:18179") 
