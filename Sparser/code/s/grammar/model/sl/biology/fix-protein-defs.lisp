@@ -280,6 +280,70 @@ UP:UPA and adds the UPA and UPM to the alternate names"
     (when (and up-names (null (cdr up-names)))
       (car up-names))))
 
+(defparameter *filt-trips-defs-ht* (make-hash-table :size 20000 :test #'equal))
+(defparameter *filt-trips-defs* nil)
+(defparameter *dropped-trips-defs* nil)
+(defparameter *2-letter-trips-defs* nil)
+
+(defun too-short-term-p (x)
+  (if (or (< (length x) 3)
+            (and (eq 3 (length x))
+                 (or (eq 1 (or (search "-" x)
+                               (search "–" x)
+                               (search "‑" x)))
+                     (and (eq 2 (search "s" x)) 
+                          (upper-case-p (char x 1)))))) 
+      t 
+      nil))
+      
+(defparameter *trips-packages* 
+  (mapcar #'find-package 
+          '(:ont :w :hgnc :up :fa :chebi :lexicon-data :xfam :up :f :ncit :efo :go :cvcl :mesh :bto :co :orphanet :uo :hp :be))) ;list of packages defined in r3/code/package.lisp that are defined in TRIPS, but not Sparser
+
+(defun trips-package-to-string (symbol)
+  "Checks if a symbol is from one of the TRIPS only packages defined above, and if so, changes the symbol from PACKAGE::SYMBOL to a string of PACKAGE:SYMBOL, otherwise it just returns the symbol"
+  (if (member (symbol-package symbol) *trips-packages*)
+    (concatenate 'string (package-name (symbol-package symbol)) ":" (symbol-name symbol))
+    symbol))
+
+(defun filter-trips-def (term)
+  (cond ((gethash (string-downcase (car term)) *filt-trips-defs-ht*)
+         (push term *dropped-trips-defs*))
+        ((too-short-term-p (car term))
+         (push term *2-letter-trips-defs*))
+        ((stringp (fourth term))
+         (setf (gethash (string-downcase (car term)) *filt-trips-defs-ht*)
+               term)
+         (push term *filt-trips-defs*))
+        (t (setf (gethash (string-downcase (car term)) *filt-trips-defs-ht*)
+                 term)
+           (push (append (subseq term 0 3) (list (trips-package-to-string (fourth term)))
+                       (subseq term 4 6)) *filt-trips-defs*))))
+
+(defun consol-remove-dups (file1 file2 out)
+  (with-open-file (stream1 (concatenate 'string "sparser:bio-not-loaded;" file1 ".lisp")
+                          :direction :input 
+                          :external-format :UTF-8)
+    (with-open-file (stream2 (concatenate 'string "sparser:bio-not-loaded;" file2 ".lisp")
+                          :direction :input 
+                          :external-format :UTF-8)
+      (with-open-file (out-stream (concatenate 'string "sparser:bio-not-loaded;" 
+                                              out ".lisp")
+                                 :direction :output :if-exists :supersede 
+                                 :if-does-not-exist :create
+                                 :external-format :UTF-8)
+      (loop for term = (read stream1 nil)
+              while term
+              do (filter-trips-def term))
+      (loop for term = (read stream2 nil)
+              while term
+              do (filter-trips-def term))
+      
+      (loop for term in (sort (copy-list *filt-trips-defs*) #'string< :key #'second)
+             do (lc-one-line-print term out-stream))))))
+      
+                        
+              
 
 (defun trips-defs->protein-defs (file &optional (suppress-redef nil))
   (setq *suppress-redefinitions* suppress-redef)
@@ -302,10 +366,11 @@ UP:UPA and adds the UPA and UPM to the alternate names"
               do (when term
                    (when (> (length (car term)) 2)
                    (let ((def-form  (trips/reach-term->def-bio term)))
-                     (lc-one-line-print def-form 
-                                    (if (eq (car def-form) 'define-protein)
-                                        prot-stream
-                                        non-prot-stream))))))))))
+                     (when def-form
+                       (lc-one-line-print def-form 
+                                          (if (eq (car def-form) 'define-protein)
+                                              prot-stream
+                                              non-prot-stream)))))))))))
                                         
 
 
