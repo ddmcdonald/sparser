@@ -100,8 +100,10 @@
                      (pos-token-index position-before)
                      s (parsing-status s)))
         (if *scanning-terminals*
-          (ecase *scanning-terminals*
-            (:polywords (throw :pw-sweep position-before)))
+          (case *scanning-terminals*
+            (:polywords (throw :pw-sweep position-before))
+            (t (break ":COMPLETION-SWEEP fell through CASE expression")
+               nil))
           (case (parsing-status s)
             ;; this is the sentence that we're finishing
             (:initial

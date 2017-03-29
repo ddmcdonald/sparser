@@ -1419,25 +1419,27 @@
   (when (itypep copular-pp 'wh-question)
     ;; e.g. "cancer patients who may not have been at risk themselves"
     (setq copular-pp (value-of 'statement copular-pp)))
+  (if (null copular-pp)
+      ;; happens in "This analysis identified a group of tumours with good prognosis, almost all of which were of low grade and metastasis-free up to 5 years ( xref )."
+      nil
+      (let* ((prep-indiv (value-of 'prep copular-pp))
+             (prep (get-word-for-prep (unless (null prep-indiv) prep-indiv)))
+             (pobj (value-of 'value copular-pp))
+             (var-to-bind (when prep (subcategorized-variable np prep pobj))))
+        ;;(lsp-break "apply-copular-pp to ~a and ~a" np copular-pp)
+        (cond
+          (*subcat-test* var-to-bind)
+          (t
+           (when *collect-subcat-info*
+             (push (subcat-instance np prep var-to-bind copular-pp)
+                   *subcat-info*))
 
-  (let* ((prep-indiv (value-of 'prep copular-pp))
-         (prep (get-word-for-prep (unless (null prep-indiv) prep-indiv)))
-         (pobj (value-of 'value copular-pp))
-         (var-to-bind (when prep (subcategorized-variable np prep pobj))))
-    ;;(lsp-break "apply-copular-pp to ~a and ~a" np copular-pp)
-    (cond
-     (*subcat-test* var-to-bind)
-     (t
-      (when *collect-subcat-info*
-        (push (subcat-instance np prep var-to-bind copular-pp)
-              *subcat-info*))
+           (setq np (individual-for-ref np))
+           (revise-parent-edge :category category::copular-predicate)
 
-      (setq np (individual-for-ref np))
-      (revise-parent-edge :category category::copular-predicate)
-
-      (let ((i copular-pp)) ;; renaming to reinforce the framing
-        (setq i (bind-variable 'item np i))
-        i )))))
+           (let ((i copular-pp)) ;; renaming to reinforce the framing
+             (setq i (bind-variable 'item np i))
+             i ))))))
 
 
 

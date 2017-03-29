@@ -246,10 +246,11 @@
               ((word-p (edge-left-daughter left-daughter))
                (edge-left-daughter left-daughter))
               (t (push-debug `(,edge ,prep-edge ,left-daughter))
-                 (error "Unexpected edge-over-preposition pattern:~
+                 (break "Unexpected edge-over-preposition pattern:~
                        ~%he left daughter ~a is a prepositiion-edge ~
                          but it doesn't dominate a preposition.~
-                       ~%topmost edge is ~a" left-daughter edge))))
+                       ~%topmost edge is ~a" left-daughter edge)
+                 nil)))
 
            ((and ;; "30 minutes after stimulation ..."
              (edge-p left-daughter)
@@ -265,8 +266,9 @@
 
            (t
             (push-debug `(,edge ,prep-edge ,left-daughter ,right-daughter))
-            (error "Unexpected pattern of an edge over a preposition:~%~a"
-                   prep-edge))))
+            (break "Unexpected pattern of an edge over a preposition:~%~a"
+                   prep-edge)
+            nil)))
         (t
          (push-debug `(,edge ,prep-edge ,left-daughter ,right-daughter))
          (warn "Unexpected type of 'preposition': ~a~%~a"

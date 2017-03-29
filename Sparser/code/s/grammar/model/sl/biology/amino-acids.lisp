@@ -384,8 +384,9 @@ We therefore have the special cases:
 (defun reify-point-mutation (words pos-before pos-after)
   (let ((edges (treetops-between pos-before pos-after)))
     (unless (= 3 (length edges))
-      (error "Should be three edges for a point mutation but there are ~a"
-             (length edges)))
+      (break "Should be three edges for a point mutation but there are ~a"
+             (length edges))
+      (return-from reify-point-mutation nil))
     ;; Capital letters will have Single-capitalized-letter's as referent.
     ;; Lowercase is much less predictable. 
     (let* ((edge1 (car edges))

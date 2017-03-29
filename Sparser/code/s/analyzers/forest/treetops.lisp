@@ -282,6 +282,9 @@
           (next-treetop/rightward next-pos))
         ;; could define a variant of next-treetop/rightward
         ;; but so far this is a one-off.
+        (when (and (not (position-precedes next-pos end))
+                   (not (eq next-pos end)))
+          (return))        
         (when (edge-vector-p tt)
           (setq tt (elt (ev-edge-vector tt)
                         (1- (ev-number-of-edges tt)))))

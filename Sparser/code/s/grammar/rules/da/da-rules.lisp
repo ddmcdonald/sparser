@@ -200,6 +200,9 @@
 	   (subcategorized-variable (edge-referent left-clause) prep-word pobj-referent)
 	   (failed-pp-attachment pp left-clause)))
 	 new-left new-items new-interp new-edge)
+    (when var-name
+      (when (eq clause (edge-used-in left-clause))
+        (break "circular structure produced in distribute-pp-to-first-conjoined-clause")))
     ;;(lsp-break "2d")
     (when var-name
       (setq new-left
@@ -209,9 +212,7 @@
        :form (edge-form left-clause)
        :referent new-left
        :target left-clause
-       :dominating (if (eq clause (edge-used-in left-clause))
-                       clause
-                       (lsp-break "bad used-in"))
+       :dominating clause
        :direction :left
        :preposed pp))))
 
@@ -227,12 +228,14 @@
     (when verb-edge
       (when (memq (cat-name (edge-form verb-edge))
                   '(vg+ing vp+ing))
-        (let* ((var (subject-variable vp))
-               (i (bind-variable var (edge-referent s) (edge-referent vp))))
-          (make-edge-spec
-           :category (edge-category vp)
-           :form (edge-form s)
-           :referent i))))))
+        (let* ((var (subject-variable vp)))
+          (if (null var)
+              nil
+              (let ((i (bind-variable var (edge-referent s) (edge-referent vp))))
+                (make-edge-spec
+                 :category (edge-category vp)
+                 :form (edge-form s)
+                 :referent i))))))))
 
 
 (define-debris-analysis-rule attach-comma-pp-following-clause

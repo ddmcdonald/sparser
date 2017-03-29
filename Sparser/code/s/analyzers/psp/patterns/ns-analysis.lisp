@@ -199,11 +199,12 @@ collected a set of ns-examples"
                       collect str))))
 
 (defun non-bio-entity? (str)
-  (let* ((wd (resolve str))
-         (rs (when wd (rule-set-for wd)))
-         (cats (when rs (rs-distinct-categories rs))))
-    (when cats
-      (loop for c in cats thereis (not (eq (cat-name c) 'bio-entity))))))
+  (or (equal str "TAB") ;; strange edge case
+      (let* ((wd (resolve str))
+             (rs (when wd (rule-set-for wd)))
+             (cats (when rs (rs-distinct-categories rs))))
+        (when cats
+          (loop for c in cats thereis (not (eq (cat-name c) 'bio-entity)))))))
 
 (defun ns-unknown-rd-items->file (&key (prefix "1-500")
                                     (filename 
