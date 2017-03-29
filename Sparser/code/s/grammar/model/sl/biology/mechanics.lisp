@@ -60,8 +60,8 @@
        ;;(format t "Rejecting REACH definition ~s~%" term)
        nil)
       (cellular-location
-       (def-cell-loc (car term)
-           (simplify-colons
+       `(define-cellular-location ,(car term)
+           ,(simplify-colons
             (getf (cddr term) :id))))
       ((bacterium ;;bio-process ;; may conflict with handling of post-translational processes
         cancer

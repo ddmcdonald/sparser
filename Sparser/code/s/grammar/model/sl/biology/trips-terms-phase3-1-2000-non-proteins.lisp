@@ -41,7 +41,7 @@
 (define-category pigmentation :specializes bio-process :bindings (uid "GO:0043473") :realization (:noun "pigmentation")) 
 
 (define-category regeneration :specializes bio-process :bindings (uid "NCIT:C17083") :realization (:noun "regeneration")) 
-(define-category s-phase :specializes bio-process :bindings (uid "NCIT:C17395") :realization (:noun "S-phases")) 
+;(define-category s-phase :specializes bio-process :bindings (uid "NCIT:C17395") :realization (:noun "S-phases")) ;; s-phase is defined below as cellular-process
 (define-category transduction :specializes bio-process :bindings (uid "GO:0009293") :realization (:noun "trans-duction")) 
 (define-category |ANTIGEN PRESENTATION| :specializes bio-process :bindings (uid "NCIT:C17663") :realization (:noun "antigen-presentation")) 
 (define-category |AUTOIMMUNE PROCESS| :specializes bio-process :bindings (uid "NCIT:C16313") :realization (:noun "auto-immune")) 
@@ -684,55 +684,56 @@ nil
 (def-bio "mimic" cell-line :long "SfSWT-1" :identifier "CVCL:Z366") 
 (def-bio "n-40" cell-line :long "mHypoE-N40" :identifier "CVCL:D441") 
 (def-bio "p12" cell-line :long "P12" :identifier "CVCL:CW37") 
-(progn (define-category igc :specializes cellular-location :bindings (uid "UP:SL-0186" name "IgC") :realization (:noun "IgC")) (handle-mitre-link nil "UP:SL-0186")) 
-(progn (define-category nd-10 :specializes cellular-location :bindings (uid "GO:0016605" name "ND-10") :realization (:noun "ND-10")) (handle-mitre-link nil "GO:0016605")) 
-(progn (define-category phagolysosome :specializes cellular-location :bindings (uid "GO:0032010" name "Phagolysosome") :realization (:noun "Phagolysosome")) (handle-mitre-link nil "GO:0032010")) 
-(progn (define-category z-disc :specializes cellular-location :bindings (uid "GO:0030018" name "Z-disc") :realization (:noun "Z-disc")) (handle-mitre-link nil "GO:0030018")) 
-(progn (define-category amino-acyl-trna :specializes cellular-location :bindings (uid "CHEBI:2651" name "amino-acyl-tRNA") :realization (:noun "amino-acyl-tRNA")) (handle-mitre-link nil "CHEBI:2651")) 
-(progn (define-category chloroplasts :specializes cellular-location :bindings (uid "UP:SL-0049" name "chloroplasts") :realization (:noun "chloroplasts")) (handle-mitre-link nil "UP:SL-0049")) 
-(progn (define-category juxta-membrane :specializes cellular-location :bindings (uid "GO:0005886" name "juxta-membrane") :realization (:noun "juxta-membrane")) (handle-mitre-link nil "GO:0005886")) 
-(progn (define-category macropinosome :specializes cellular-location :bindings (uid "GO:0044354" name "macropinosome") :realization (:noun "macropinosome")) (handle-mitre-link nil "GO:0044354")) 
-(progn (define-category macropinosomes :specializes cellular-location :bindings (uid "GO:0044354" name "macropinosomes") :realization (:noun "macropinosomes")) (handle-mitre-link nil "GO:0044354")) 
-(progn (define-category nucleocapsid :specializes cellular-location :bindings (uid "GO:0019013" name "nucleocapsid") :realization (:noun "nucleocapsid")) (handle-mitre-link nil "GO:0019013")) 
-(progn (define-category psg :specializes cellular-location :bindings (uid "GO:0034515" name "pSG") :realization (:noun "pSG")) (handle-mitre-link nil "GO:0034515")) 
-(progn (define-category phagolysosomes :specializes cellular-location :bindings (uid "GO:0032010" name "phagolysosomes") :realization (:noun "phagolysosomes")) (handle-mitre-link nil "GO:0032010")) 
-(progn (define-category pseudopodium :specializes cellular-location :bindings (uid "UP:SL-0298" name "pseudopodium") :realization (:noun "pseudopodium")) (handle-mitre-link nil "UP:SL-0298")) 
-(progn (define-category septum :specializes cellular-location :bindings (uid "GO:0030428" name "septum") :realization (:noun "septum")) (handle-mitre-link nil "GO:0030428")) 
-(progn (define-category aminoacyl-trna :specializes cellular-location :bindings (uid "CHEBI:2651" name "aminoacyl-tRNA") :realization (:noun "aminoacyl-tRNA")) (handle-mitre-link nil "CHEBI:2651")) 
-(progn (define-category axoneme :specializes cellular-location :bindings (uid "GO:0005930" name "axoneme") :realization (:noun "axoneme")) (handle-mitre-link nil "GO:0005930")) 
-(progn (define-category c-smac :specializes cellular-location :bindings (uid "GO:0001772" name "c-SMAC") :realization (:noun "c-SMAC")) (handle-mitre-link nil "GO:0001772")) 
-(progn (define-category chromocenter :specializes cellular-location :bindings (uid "GO:0010369" name "chromocenter") :realization (:noun "chromocenter")) (handle-mitre-link nil "GO:0010369")) 
-(progn (define-category chromocenters :specializes cellular-location :bindings (uid "GO:0010369" name "chromocenters") :realization (:noun "chromocenters")) (handle-mitre-link nil "GO:0010369")) 
-(progn (define-category microbodies :specializes cellular-location :bindings (uid "GO:0042579" name "microbodies") :realization (:noun "microbodies")) (handle-mitre-link nil "GO:0042579")) 
-(progn (define-category microbody :specializes cellular-location :bindings (uid "GO:0042579" name "microbody") :realization (:noun "microbody")) (handle-mitre-link nil "GO:0042579")) 
-(progn (define-category pili :specializes cellular-location :bindings (uid "GO:0009289" name "pili") :realization (:noun "pili")) (handle-mitre-link nil "GO:0009289")) 
-(progn (define-category pilus :specializes cellular-location :bindings (uid "GO:0009289" name "pilus") :realization (:noun "pilus")) (handle-mitre-link nil "GO:0009289")) 
-(progn (define-category tna :specializes cellular-location :bindings (uid "CHEBI:48019" name "tna") :realization (:noun "tna")) (handle-mitre-link nil "CHEBI:48019")) 
-(progn (define-category bleb :specializes cellular-location :bindings (uid "UP:SL-0472" name "bleb") :realization (:noun "bleb")) (handle-mitre-link nil "UP:SL-0472")) 
-(progn (define-category blebs :specializes cellular-location :bindings (uid "UP:SL-0472" name "blebs") :realization (:noun "blebs")) (handle-mitre-link nil "UP:SL-0472")) 
-(progn (define-category budding :specializes cellular-location :bindings (uid "UP:SL-0027" name "budding") :realization (:noun "budding")) (handle-mitre-link nil "UP:SL-0027")) 
-(progn (define-category desmosome :specializes cellular-location :bindings (uid "UP:SL-0092" name "desmosome") :realization (:noun "desmosome")) (handle-mitre-link nil "UP:SL-0092")) 
-(progn (define-category desmosomes :specializes cellular-location :bindings (uid "UP:SL-0092" name "desmosomes") :realization (:noun "desmosomes")) (handle-mitre-link nil "UP:SL-0092")) 
-(progn (define-category microsomes :specializes cellular-location :bindings (uid "UP:SL-0166" name "microsomes") :realization (:noun "microsomes")) (handle-mitre-link nil "UP:SL-0166")) 
-(progn (define-category microvillus :specializes cellular-location :bindings (uid "UP:SL-0293" name "microvillus") :realization (:noun "microvillus")) (handle-mitre-link nil "UP:SL-0293")) 
-(progn (define-category midbody :specializes cellular-location :bindings (uid "UP:SL-0469" name "midbody") :realization (:noun "midbody")) (handle-mitre-link nil "UP:SL-0469")) 
-(progn (define-category polynucleotide :specializes cellular-location :bindings (uid "CHEBI:15986" name "polynucleotide") :realization (:noun "polynucleotide")) (handle-mitre-link nil "CHEBI:15986")) 
-(progn (define-category tight-junction :specializes cellular-location :bindings (uid "UP:SL-0265" name "tight-junction") :realization (:noun "tight-junction")) (handle-mitre-link nil "UP:SL-0265")) 
-(progn (define-category c-fibers :specializes cellular-location :bindings (uid "GO:0044299" name "C-fibers") :realization (:noun "C-fibers")) (handle-mitre-link nil "GO:0044299")) 
-(progn (define-category cvc :specializes cellular-location :bindings (uid "UP:SL-0073" name "CVC") :realization (:noun "CVC")) (handle-mitre-link nil "UP:SL-0073")) 
-(progn (define-category polynucleotide :specializes cellular-location :bindings (uid "CHEBI:15986" name "Polynucleotide") :realization (:noun "Polynucleotide")) (handle-mitre-link nil "CHEBI:15986")) 
-(progn (define-category y-chromosome :specializes cellular-location :bindings (uid "GO:0000806" name "Y-chromosome") :realization (:noun "Y-chromosome")) (handle-mitre-link nil "GO:0000806")) 
-(progn (define-category c-fiber :specializes cellular-location :bindings (uid "GO:0044299" name "c-fiber") :realization (:noun "c-fiber")) (handle-mitre-link nil "GO:0044299")) 
-(progn (define-category c-fibers :specializes cellular-location :bindings (uid "GO:0044299" name "c-fibers") :realization (:noun "c-fibers")) (handle-mitre-link nil "GO:0044299")) 
-(progn (define-category chorion :specializes cellular-location :bindings (uid "GO:0042600" name "chorion") :realization (:noun "chorion")) (handle-mitre-link nil "GO:0042600")) 
-(progn (define-category cis-golgi :specializes cellular-location :bindings (uid "UP:SL-0067" name "cis-Golgi") :realization (:noun "cis-Golgi")) (handle-mitre-link nil "UP:SL-0067")) 
-(progn (define-category cross-bridge :specializes cellular-location :bindings (uid "GO:0097595" name "cross-bridge") :realization (:noun "cross-bridge")) (handle-mitre-link category::cross-bridge "GO:0097595")) 
-(progn (define-category cross-bridges :specializes cellular-location :bindings (uid "GO:0097595" name "cross-bridges") :realization (:noun "cross-bridges")) (handle-mitre-link nil "GO:0097595")) 
-(progn (define-category nuclei :specializes cellular-location :bindings (uid "UP:SL-0191" name "nuclei") :realization (:noun "nuclei")) (handle-mitre-link nil "UP:SL-0191")) 
-(progn (define-category provirus :specializes cellular-location :bindings (uid "GO:0019038" name "provirus") :realization (:noun "provirus")) (handle-mitre-link nil "GO:0019038")) 
-(progn (define-category proviruses :specializes cellular-location :bindings (uid "GO:0019038" name "proviruses") :realization (:noun "proviruses")) (handle-mitre-link nil "GO:0019038")) 
-(progn (define-category satellites :specializes cellular-location :bindings (uid "UP:SL-0485" name "satellites") :realization (:noun "satellites")) (handle-mitre-link nil "UP:SL-0485")) 
-(progn (define-category tectum :specializes cellular-location :bindings (uid "GO:0043676" name "tectum") :realization (:noun "tectum")) (handle-mitre-link nil "GO:0043676")) 
+
+(define-cellular-location "IgC" "UP:SL-0186") 
+(define-cellular-location "ND-10" "GO:0016605") 
+(define-cellular-location "Phagolysosome" "GO:0032010") 
+(define-cellular-location "Z-disc" "GO:0030018") 
+(define-cellular-location "amino-acyl-tRNA" "CHEBI:2651") 
+(define-cellular-location "chloroplasts" "UP:SL-0049") 
+(define-cellular-location "juxta-membrane" "GO:0005886") 
+(define-cellular-location "macropinosome" "GO:0044354") 
+(define-cellular-location "macropinosomes" "GO:0044354") 
+(define-cellular-location "nucleocapsid" "GO:0019013") 
+(define-cellular-location "pSG" "GO:0034515") 
+(define-cellular-location "phagolysosomes" "GO:0032010") 
+(define-cellular-location "pseudopodium" "UP:SL-0298") 
+(define-cellular-location "septum" "GO:0030428") 
+(define-cellular-location "aminoacyl-tRNA" "CHEBI:2651") 
+(define-cellular-location "axoneme" "GO:0005930") 
+(define-cellular-location "c-SMAC" "GO:0001772") 
+(define-cellular-location "chromocenter" "GO:0010369") 
+(define-cellular-location "chromocenters" "GO:0010369") 
+(define-cellular-location "microbodies" "GO:0042579") 
+(define-cellular-location "microbody" "GO:0042579") 
+(define-cellular-location "pili" "GO:0009289") 
+(define-cellular-location "pilus" "GO:0009289") 
+(define-cellular-location "tna" "CHEBI:48019") 
+(define-cellular-location "bleb" "UP:SL-0472") 
+(define-cellular-location "blebs" "UP:SL-0472") 
+(define-cellular-location "budding" "UP:SL-0027") 
+(define-cellular-location "desmosome" "UP:SL-0092") 
+(define-cellular-location "desmosomes" "UP:SL-0092") 
+(define-cellular-location "microsomes" "UP:SL-0166") 
+(define-cellular-location "microvillus" "UP:SL-0293") 
+(define-cellular-location "midbody" "UP:SL-0469") 
+(define-cellular-location "polynucleotide" "CHEBI:15986") 
+(define-cellular-location "tight-junction" "UP:SL-0265") 
+(define-cellular-location "C-fibers" "GO:0044299") 
+(define-cellular-location "CVC" "UP:SL-0073") 
+(define-cellular-location "Polynucleotide" "CHEBI:15986") 
+(define-cellular-location "Y-chromosome" "GO:0000806") 
+(define-cellular-location "c-fiber" "GO:0044299") 
+(define-cellular-location "c-fibers" "GO:0044299") 
+(define-cellular-location "chorion" "GO:0042600") 
+(define-cellular-location "cis-Golgi" "UP:SL-0067") 
+(define-cellular-location "cross-bridge" "GO:0097595") 
+(define-cellular-location "cross-bridges" "GO:0097595") 
+(define-cellular-location "nuclei" "UP:SL-0191") 
+(define-cellular-location "provirus" "GO:0019038") 
+(define-cellular-location "proviruses" "GO:0019038") 
+(define-cellular-location "satellites" "UP:SL-0485") 
+(define-cellular-location "tectum" "GO:0043676") 
 (def-bio "Arg-Lys" molecule :long "Arg-Lys" :identifier "CHEBI:73816") 
 (def-bio "Calcein" molecule :long "calcein" :identifier "CHEBI:51903") 
 (def-bio "D-galactosamine" molecule :long "D-galactosamine" :identifier "CHEBI:28328") 
@@ -904,73 +905,6 @@ nil
 (def-bio "Indonesia" organism :long "zebrafish line indonesia" :identifier "NCIT:C79977") 
 (def-bio "Singapore" organism :long "zebrafish line singapore" :identifier "NCIT:C79980") 
 (def-bio "Pneumocystis" organism :long "pneumocystis" :identifier "NCIT:C124358") 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
-nil 
 (define-named-bio-individual (quote bio-organ) (quote neonate) (quote "BTO:0001762") :name "neonate") 
 (define-named-bio-individual (quote bio-organ) (quote zygote) (quote "BTO:0000854") :name "zygote") 
 (define-named-bio-individual (quote bio-organ) (quote zygotes) (quote "BTO:0000854") :name "zygote") 
@@ -988,7 +922,7 @@ nil
 (define-named-bio-individual (quote bio-complex) (quote igg2) (quote "GO:0071735") :name "IgG immunoglobulin complex") 
 (define-named-bio-individual (quote bio-complex) (quote peptide–mhc) (quote "NCIT:C18930") :name "peptide MHC complex") 
 (define-named-bio-individual (quote bio-complex) (quote replisome) (quote "GO:0030894") :name "replisome") 
-(define-named-bio-individual (quote bio-complex) (quote snrnp) (quote "GO:0030532") :name "small nuclear ribonucleoprotein complex") 
+;(define-named-bio-individual (quote bio-complex) (quote snrnp) (quote "GO:0030532") :name "small nuclear ribonucleoprotein complex") 
 (define-named-bio-individual (quote bio-complex) (quote exocyst) (quote "GO:0000145") :name "exocyst") 
 (define-named-bio-individual (quote bio-complex) (quote nucleopore) (quote "GO:0005643") :name "nuclear pore") 
 (define-named-bio-individual (quote bio-complex) (quote spliceosome) (quote "GO:0005681") :name "spliceosomal complex") 

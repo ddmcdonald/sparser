@@ -342,7 +342,25 @@ UP:UPA and adds the UPA and UPM to the alternate names"
       (loop for term in (sort (copy-list *filt-trips-defs*) #'string< :key #'second)
              do (lc-one-line-print term out-stream))))))
       
-                        
+(defun fix-cell-loc (file out)
+  (setq *suppress-redefinitions* t)
+  (with-open-file (stream (concatenate 'string "sparser:bio-not-loaded;" file ".lisp")
+                          :direction :input 
+                          :external-format :UTF-8)
+      (with-open-file (out-stream (concatenate 'string "sparser:bio-not-loaded;" 
+                                              out ".lisp")
+                                 :direction :output :if-exists :supersede 
+                                 :if-does-not-exist :create
+                                 :external-format :UTF-8)
+      (loop for term = (read stream nil)
+              while term
+            do (when (and term (equal (second term) "ONT:CELL-PART"))
+                 ;(print term)
+                 (let ((def-form  (trips/reach-term->def-bio term)))
+                  ; (print def-form)
+                   (when def-form
+                     (lc-one-line-print def-form out-stream))))))))
+              
               
 
 (defun trips-defs->protein-defs (file &optional (suppress-redef nil))
