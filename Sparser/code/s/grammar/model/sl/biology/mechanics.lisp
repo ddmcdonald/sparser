@@ -147,13 +147,14 @@
       (cell-line 'cell-line)
       (cell-part 'cellular-location)
       ((chemical molecule) 'molecule)
+      (injury 'injury) ;; added category modeled on disease
       (macromolecular-complex 'bio-complex)
-      ((measure-unit volume-unit weight-unit) 'unit-of-measure)
+      ((length-unit measure-unit volume-unit weight-unit) 'unit-of-measure)
       (medical-disorders-and-conditions 'disease)
       (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
       (molecular-domain 'protein-domain)
       (molecular-site 'residue-on-protein)
-      ((organism nonhuman-animal animal fish invertebrate microorganism fungus plant bird vertebrate) 'organism)
+      ((organism nonhuman-animal animal fish insect invertebrate microorganism fungus plant bird vertebrate) 'organism)
       (pharmacologic-substance 'drug)
       (physical-condition 'disease)
       (post-translational-modification 'post-translational-modification)
