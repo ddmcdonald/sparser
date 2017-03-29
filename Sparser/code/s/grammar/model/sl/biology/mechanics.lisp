@@ -52,8 +52,10 @@
 (defparameter *new-cell-proc* nil)
 (defparameter *new-drugs* nil)
 (defparameter *new-molecules* nil)
+(defparameter *new-post-trans-mod* nil)
 (defparameter *new-prot-dom* nil)
 (defparameter *new-rna* nil)
+(defparameter *new-substance* nil)
 (defparameter *new-units* nil)
 (defparameter *new-prot-fam* nil)
 
@@ -124,10 +126,14 @@
            (stash-def-ided-indiv word category id name '*new-drugs* :no-plural t))
           (molecule
            (stash-def-ided-indiv word category id name '*new-molecules*))
+          (post-translational-modification
+            (stash-def-ided-indiv word category id name '*new-post-trans-mod*))
           (protein-domain
            (stash-def-ided-indiv word category id name '*new-prot-dom*))
           (rna ;; check if it still has problems
            (stash-def-ided-indiv word category id name '*new-rna*))
+          (substance
+           (stash-def-ided-indiv word category id name '*new-substance*))
           (unit-of-measure
            (stash-def-ided-indiv word category id name '*new-units*))
           ((gene protein gene-protein)
@@ -244,22 +250,27 @@ uid binding, if there is one"
       (cell-line 'cell-line)
       (cell-part 'cellular-location)
       ((chemical molecule) 'molecule)
+      (injury 'injury) ;; added category modeled on disease
       (macromolecular-complex 'bio-complex)
-      ((measure-unit volume-unit weight-unit) 'unit-of-measure)
+      ((length-unit measure-unit volume-unit weight-unit) 'unit-of-measure)
       (medical-disorders-and-conditions 'disease)
-      (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
+      (medical-instrument 'bio-method) ;; not quite, but we don't
+                                       ;; distinguish the instruments
+                                       ;; from the methods
       (molecular-domain 'protein-domain)
       (molecular-site 'residue-on-protein)
-      ((organism nonhuman-animal animal fish invertebrate
-                 microorganism fungus plant bird) 'organism)
+      ((organism nonhuman-animal animal fish insect invertebrate
+                 microorganism fungus plant bird vertebrate) 'organism)
       (pharmacologic-substance 'drug)
       (physical-condition 'disease)
+      (post-translational-modification 'post-translational-modification)
       (procedure 'bio-method)
       (process 'bio-method) ;; the one case we have here is a bio-method -- transplantation
       (protein-family 'protein-family)
-      ((amino-acid referential-sem substance time-unit mutation) 'referential-sem) ;; huh? (ref-sem is now prefiltered, and the instances of substance are "build-up" and "mole-cule" -- not sure what to do with the first, and the second is probably from a line break we need to handle better)
+      ((amino-acid referential-sem time-unit mutation) 'referential-sem) ;; have now made substance a category. amino-acids and mutations should be handles
       ((rna mrna) 'rna)
       (signaling-pathway 'pathway)
+      (substance 'substance)
       (time-span 'cellular-process);; these all seem to be mitosis phases
       (virus 'virus))))
 
@@ -345,7 +356,7 @@ uid binding, if there is one"
                 do (lc-one-line-print def stream)))))
 
 (defparameter *suppressed-new-defs* '(*suppressed-redefs* *suppressed-mod-redefs* *id-mismatch-redef* *no-id-redef* *no-rule-redef* *name-id-mismatches* *prot-fam-redef* *inhibited-plurals*))
-(defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-prot-dom* *new-rna* *new-units* *new-prot-fam*))
+(defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substance*))
 
 (defun collect-all-new-defs (functions)
   "Call on a list of functions, e.g., (list #'load-trips-terms #'load-reach-terms)"

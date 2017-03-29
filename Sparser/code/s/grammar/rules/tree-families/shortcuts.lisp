@@ -88,8 +88,10 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defun define-individual-with-id (category-name word id &key name members adj synonyms no-plural maintain-case)
   (assert (and category-name word id))
-  (let* ((dc-word (string-downcase word))
-         (plural-word (plural-version dc-word))
+  (let* ((base-word (if maintain-case
+                        word
+                        (string-downcase word)))
+         (plural-word (plural-version base-word))
          (plural-name (when name (plural-version name)))
          (category (category-named category-name :break-if-undefined))
          (i (or (gethash id *uid-to-individual*)
@@ -107,7 +109,7 @@ broadly speaking doing for you all the things you might do by hand.
            (push word *inhibited-plurals*))
           (t
            (setq *inhibit-constructing-plural* nil)))
-    (add-rules (make-rules-for-head :common-noun (resolve/make dc-word) category i) i)
+    (add-rules (make-rules-for-head :common-noun (resolve/make base-word) category i) i)
     (setq *inhibit-constructing-plural* nil)
     (cond (no-plural
            (setq *inhibit-constructing-plural* t))
