@@ -1014,7 +1014,16 @@
   :realization (:common-noun name))
 
 
-
+(define-category injury  :specializes bio-context
+  :mixins (has-uid)
+  :binds ((organ bio-organ))
+  :instantiates self
+  :index (:permanent :key name)
+  :realization
+    (:common-noun name
+     :noun "injury"
+     :m organ
+     :to organ))
 
 
 (define-category molecular-location  :specializes bio-location
