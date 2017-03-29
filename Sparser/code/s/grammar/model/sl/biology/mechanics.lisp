@@ -54,7 +54,9 @@
                 term))
       (return-from trips/reach-term->def-bio nil)))
 
-  (let ((category (funcall trips/reach->krisp-class term)))
+  (let* ((name (getf (cddr term) :name))
+        (name-cat (when name (name-is-cat-p name)))
+        (category (funcall trips/reach->krisp-class term)))
     (case category
       ((residue-on-protein molecular-site nil time-span)
        ;;(format t "Rejecting REACH definition ~s~%" term)
@@ -78,11 +80,13 @@
         ;; rna has problems
         unit-of-measure
         virus)
-       `(def-bio ,(car term)
-            ,category
-          :long ,(getf (cddr term) :name)
-          :identifier ,(simplify-colons
-                        (getf (cddr term) :id))))
+       (if name-cat
+           `(def-synonym ,name-cat (:noun ,(car term)))
+           `(def-bio ,(car term)
+                ,category
+              :long ,(getf (cddr term) :name)
+              :identifier ,(simplify-colons
+                            (getf (cddr term) :id)))))
 
       ((gene protein gene-protein)
        (push 
@@ -92,8 +96,8 @@
       (bio-process
        (when (getf (cddr term) :name)
          (let ((name (intern (string-upcase (getf (cddr term) :name)) (find-package :sparser))))
-         (if (category-named name)
-             `(def-synonym ,name (:noun ,(car term)))
+         (if name-cat
+             `(def-synonym ,name-cat (:noun ,(car term)))
              `(define-category ,name :specializes bio-process
                   ,.(when (getf (cddr term) :id)
                       `(:bindings (uid ,(getf (cddr term) :id))))
@@ -132,7 +136,20 @@
     (when name (add-rules (make-rules-for-head :common-noun (resolve/make (pname name)) category i) i))
     i))
   
-
+(defun name-is-cat-p (name)
+  "Given a string, it checks if either the given string or the string
+  with hyphens in place of spaces is a category, and then returns
+  symbol that matches a category if it exists"
+  (let ((sym-name (intern (string-upcase name) 
+                                     (find-package :sparser)))
+        (hyph-sym-name (intern (string-upcase (substitute #\- #\space name))
+                                          (find-package :sparser))))
+    (cond ((category-named sym-name)
+           sym-name)
+          ((category-named hyph-sym-name)
+           hyph-sym-name)
+          (t
+           nil))))
 
 (defun trips-class->krisp (term)
   (unless (null (second term))
