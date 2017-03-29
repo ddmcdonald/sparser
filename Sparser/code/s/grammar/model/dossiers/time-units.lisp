@@ -7,6 +7,7 @@
 
 ;; initiated 4/27/94 v2.3
 ;; 2.0 (5/30/13) added in new time units: hour, minute, second--added by Seth Dworman
+;; 3/29/17 added more time units for fractions of a second -- LB
 
 (in-package :sparser)
 
@@ -21,4 +22,8 @@
 (define-individual 'time-unit :name "minute")
 (define-individual 'time-unit :name "hour")
 
-
+;; 
+(define-individual 'time-unit :name "millisecond")
+(define-individual 'time-unit :name "microsecond")
+(define-individual 'time-unit :name "nanosecond")
+(define-individual 'time-unit :name "picosecond")
