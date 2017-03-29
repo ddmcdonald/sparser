@@ -852,770 +852,838 @@ the buffer that is fed to find-word and becomes part of the word's pname.
 
 ;;; temporarily ignore char reading problem.
 (defparameter *entries-for-out-of-band-characters* 
-    `((256 (:alphabetical . (:uppercase .,(code-char 256)))) ;; #\LATIN_CAPITAL_LETTER_A_WITH_MACRON
-      (262 #+allegro (:alphabetical (:uppercase . #\C))
-      #-allegro (:alphabetical (:uppercase . #\Ć)))    
-      (263 ;; #\Latin_Small_Letter_C_With_Acute
-       (:alphabetical . (:lowercase . #\c))) ;;"ć", (code = 263)
-      (264 (:alphabetical . (:uppercase .,(code-char 264)))) ;;#\LATIN_CAPITAL_LETTER_C_WITH_CIRCUMFLEX
-      (268 (:alphabetical . (:uppercase .,(code-char 268)))) ;;#\LATIN_CAPITAL_LETTER_C_WITH_CARON
+  `(
+    (256 (:alphabetical . (:uppercase .,(code-char 256)))) ;; #\LATIN_CAPITAL_LETTER_A_WITH_MACRON
+    (259 (:alphabetical . (:uppercase .,(code-char 259)))) ;; ă
+    (262 (:alphabetical . (:uppercase .,(code-char 262)))) ;;#\LATIN_CAPITAL_LETTER_C_WITH_ACUTE
+    (263 (:alphabetical . (:lowercase .,(code-char 259)))) ;; #\Latin_Small_Letter_C_With_Acute) ;;"ć", (code = 263)
+    (264 (:alphabetical . (:uppercase .,(code-char 264)))) ;;#\LATIN_CAPITAL_LETTER_C_WITH_CIRCUMFLEX
+    (268 (:alphabetical . (:uppercase .,(code-char 268)))) ;;#\LATIN_CAPITAL_LETTER_C_WITH_CARON
+    (269 (:alphabetical . (:uppercase .,(code-char 269)))) ;; č
+    (274 (:alphabetical . (:uppercase .,(code-char 274)))) ;;Ē
+    (280 (:alphabetical . (:uppercase .,(code-char 280)))) ;; Ę
+    (281 (:alphabetical . (:uppercase .,(code-char 281)))) ;;ę
+    (287 (:alphabetical . (:uppercase .,(code-char 287)))) ;; ğ
+    (293 (:alphabetical . (:uppercase .,(code-char 293)))) ;; ĥ
+    (298 (:alphabetical . (:uppercase .,(code-char 298)))) ;; Ī
+    (304 (:alphabetical . (:uppercase .,(code-char 304)))) ;;#\LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE
+    (305 (:alphabetical . (:uppercase .,(code-char 305)))) ;; ı
+    (312 (:alphabetical . (:uppercase .,(code-char 312)))) ;;ĸ
+    (321 (:alphabetical . (:uppercase .,(code-char 321)))) ;;#\LATIN_CAPITAL_LETTER_L_WITH_STROKE
+    (322 (:alphabetical . (:lowercase .,(code-char 322)))) ;;#\LATIN_SMALL_LETTER_L_WITH_STROKE
+    (324 (:alphabetical . (:lowercase .,(code-char 324)))) ;;#\LATIN_SMALL_LETTER_N_WITH_ACUTE)
+    (337 (:alphabetical . (:lowercase .,(code-char 337)))) ;; #\LATIN_SMALL_LETTER_O_WITH_DOUBLE_ACUTE
+    (338 (:alphabetical . (:uppercase .,(code-char 338)))) ;; Œ
+    (339 (:alphabetical . (:lowercase . #\o))) ;; "œ" #\Latin_Small_Ligature_Oe
+    (341 (:alphabetical . (:lowercase . #\Latin_Small_Letter_R_With_Acute))) ;; #\Latin_Small_Letter_R_With_Acute
+    (345 (:alphabetical . (:uppercase .,(code-char 345)))) ;; ř
+    (347 (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute))) ;; #\Latin_Small_Letter_S_With_Acute
+    (347 (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute))) ;; #\Latin_Small_Letter_S_With_Acute
+    (351 (:alphabetical . (:uppercase .,(code-char 351)))) ;; ş
+    (352 (:alphabetical . (:lowercase . ,(code-char 352)))) ;; #\latin_capital_letter_s_with_Caron
+    (353 (:alphabetical . (:lowercase . #\s))) ;; #\Latin_Small_Letter_S_With_Caron
+    (358 (:alphabetical . (:uppercase .,(code-char 358)))) ;; Ŧ
+    (363 (:alphabetical . (:uppercase .,(code-char 363)))) ;;ū
+    (367 (:alphabetical . (:uppercase .,(code-char 367)))) ;; ů
+    (378 (:alphabetical . (:lowercase .,(code-char 378)))) ;;#\LATIN_SMALL_LETTER_N_WITH_ACUTE))
+    (379 (:alphabetical . (:uppercase .,(code-char 379)))) ;; Ż
+    (381 (:alphabetical . (:uppercase .,(code-char 381)))) ;; #\LATIN_CAPITAL_LETTER_Z_WITH_CARON
+    (382 (:alphabetical . (:uppercase .,(code-char 382)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CARON
+    (400 (:alphabetical . (:lowercase . #\s))) ;; #\Latin_Capital_Letter_Open_E
+    (404 (:alphabetical . (:lowercase . ,(code-char 404)))) ;;Ɣ
+    (408 (:alphabetical . (:lowercase . ,(code-char 408)))) ;;Ƙ
+    (425 (:alphabetical . (:uppercase .,(code-char 425))))  ;; Ʃ
+    (448 (:alphabetical . (:lowercase . ,(code-char 448)))) ;; #\Latin_Capital_Letter_Open_E
+    (505 (:alphabetical . (:uppercase .,(code-char 505))))  ;; ǹ
+    (506 (:alphabetical . (:uppercase .,(code-char 506)))) ;;#\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE_AND_ACUTE)))
+    (562 (:alphabetical . (:uppercase .,(code-char 562)))) ;; #\LATIN_CAPITAL_LETTER_Y_WITH_MACRON
+    (593 (:alphabetical . (:uppercase .,(code-char 593)))) ;;ɑ
+    (603 (:alphabetical . (:lowercase . #\e))) ;;"ɛ", (code = 603)  ;; #\Latin_Small_Letter_Open_E
+    (611 (:alphabetical . (:uppercase .,(code-char 611)))) ;; #\LATIN_SMALL_LETTER_GAMMA
+    (657 (:alphabetical . (:uppercase .,(code-char 657)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CURL
+    (697 (:punctuation .,(punctuation-named (code-char 697)))) ;; "ʹ" #\Modifier_Letter_Prime
+    (700 (:alphabetical . (:uppercase .,(code-char 700)))) ;;#\MODIFIER_LETTER_APOSTROPHE
+    (706 (:alphabetical . (:uppercase .,(code-char 706)))) ;;˂
+    (707 (:punctuation .,(punctuation-named (code-char 707)))) ;; ˃
+    (710 (:punctuation .,(punctuation-named (code-char 710)))) ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
+    (712 (:alphabetical . (:uppercase .,(code-char 712))))      ;;ˈ
+    (713 (:alphabetical . (:uppercase .,(code-char 713))))      ;;ˉ
+    (729 (:punctuation .,(punctuation-named (code-char 729)))) ;; #\*)) ;;"˙", (code = 729)  ;; #\Dot_Above
+    (730 (:punctuation .,(punctuation-named (code-char 730)))) ;; #\Ring_Above
+    (732 (:punctuation .,(punctuation-named (code-char 732)))) ;;"˜"  ;; #\Small_Tilde
+    (768 (:punctuation .,(punctuation-named (code-char 768)))) ;; #\COMBINING_GRAVE_ACCENT
+    (769 (:punctuation .,(punctuation-named (code-char 769)))) ;; #\Combining_Acute_Accent
+    (770 (:alphabetical . (:lowercase .,(code-char 770)))) ;; #\Latin_Small_Letter_S_With_Acute
+    (771 (:alphabetical . (:uppercase .,(code-char 771)))) ;; #\COMBINING_TILDE
+    (772 (:punctuation .,(punctuation-named (code-char 772)))) ;; #\Combining_Macron
+    (773 (:alphabetical . (:uppercase .,(code-char 773)))) ;;#\COMBINING_OVERLINE
+    (776 (:punctuation .,(punctuation-named (code-char 776)))) ;; #\Combining_Diaeresis
+    (778 (:alphabetical . (:uppercase .,(code-char 778))))      ;;̊
+    (803 (:alphabetical . (:uppercase .,(code-char 803)))) ;; #\COMBINING_DOT_BELOW
+    (807 (:punctuation .,(punctuation-named (code-char 807)))) ;; ̧
+    (817 (:punctuation .,(punctuation-named (code-char 817)))) ;; ̱
+    (834 (:punctuation .,(punctuation-named (code-char 834)))) ;;";", (code = 894)    
+    (894 (:punctuation .,(punctuation-named (code-char 894)))) ;;";", (code = 894)
+    (900 (:punctuation .,(punctuation-named (code-char 900)))) ;;΄
+    (901 (:alphabetical . (:uppercase .,(code-char 901)))) ;; #\GREEK_DIALYTIKA_TONOS
+    (902 (:alphabetical . (:uppercase .,(code-char 902)))) ;;Ά
+    (903 (:punctuation .,(punctuation-named (code-char 903)))) ;; ·
+    (913 (:greek . (:uppercase .,(code-char 913)))) ;; #\Greek_Capital_Letter_Alpha "Α"
+    (914 (:greek . (:uppercase .,(code-char 914)))) ;; #\Greek_Capital_Letter_Beta "Β"
+    (915 (:greek . (:uppercase .,(code-char 915)))) ;; #\Greek_Capital_Letter_Gamma "Γ"
+    (916 (:punctuation .,(punctuation-named (code-char 916)))) ;; #\Greek_Capital_Letter_Delta "Δ" (:greek . (:uppercase ;; .,(code-char 916)))) redefining as punctuation to see if       ;; that makes it easier to deal with cases where it's being       ;; used at the beginning of an item to denote "change" -- as in       ;; ΔΨ for membrane potential
+    (917 (:greek . (:uppercase .,(code-char 917)))) ;; #\Greek_Capital_Letter_Epsilon
+    (918 (:greek . (:uppercase .,(code-char 918)))) ;; #\Greek_Capital_Letter_Zeta
+    (919 (:greek . (:uppercase .,(code-char 919)))) ;; "Η" #\Greek_Capital_Letter_Eta
+    (920 (:greek . (:uppercase .,(code-char 920)))) ;; #\Greek_Capital_Letter_Theta
+    (921 (:greek . (:uppercase .,(code-char 921)))) ;; #\Greek_Capital_Letter_Iota
+    (922 (:greek . (:uppercase .,(code-char 922)))) ;; "Κ" #\Greek_Capital_Letter_Kappa
+    (923 (:greek . (:lowercase .,(code-char 923)))) ;; "Λ" #\Greek_Capital_Letter_Lambda
+    (924 (:greek . (:uppercase .,(code-char 924)))) ;;"Μ", (code = 924)
+    (925 (:greek . (:uppercase .,(code-char 925)))) ;;"Ν", (code = 925)
+    (926 (:greek . (:uppercase .,(code-char 926)))) ;;, (code = 926)
+    (927 (:greek . (:uppercase .,(code-char 927)))) ;;, (code = 927)
+    (928 (:greek . (:uppercase .,(code-char 928)))) ;;, (code = 928)
+    (929 (:greek . (:uppercase .,(code-char 929)))) ;;, (code = 929)
+    (930 (:greek . (:uppercase .,(code-char 930)))) ;;, (code = 930)
+    (931 (:greek . (:uppercase .,(code-char 931)))) ;; "Σ" #\Greek_Capital_Letter_Sigma
+    (932 (:greek . (:uppercase .,(code-char 932)))) ;;"Τ", (code = 932)
+    (933 (:greek . (:uppercase .,(code-char 933)))) ;;"Υ", (code = 933)
+    (934 (:greek . (:uppercase .,(code-char 934)))) ;;"Φ", (code = 934)
+    (935 (:greek . (:uppercase .,(code-char 935)))) ;;"Χ", (code = 935)
+    (936 (:greek . (:uppercase .,(code-char 936)))) ;;"Ψ", (code = 936)
+    (937 (:greek . (:uppercase .,(code-char 937)))) ;;"Ω", (code = 937)
+    (940 (:greek . (:lowercase .,(code-char 940)))) ;;"ά", (code = 940)  ;; #\GREEK_SMALL_LETTER_ALPHA_WITH_TONOS
+    (941 (:alphabetical . (:uppercase .,(code-char 941)))) ;; έ
+    (943 (:alphabetical . (:uppercase .,(code-char 943)))) ;; #\GREEK_SMALL_LETTER_IOTA_WITH_TONOS
+    (945 (:greek . (:lowercase .,(code-char 945)))) ;; #\Greek_Small_Letter_Alpha
+    (946 (:greek . (:lowercase .,(code-char 946)))) ;; #\Greek_Small_Letter_Beta
+    (947 (:greek . (:lowercase .,(code-char 947)))) ;; #\Greek_Small_Letter_Gamma
+    (948 (:greek . (:lowercase .,(code-char 948)))) ;; #\Greek_Small_Letter_Delta
+    (949 (:greek . (:lowercase .,(code-char 949)))) ;; #\Greek_Small_Letter_Epsilon
+    (950 (:greek . (:lowercase .,(code-char 950)))) ;; #\Greek_Small_Letter_Zeta
+    (951 (:greek . (:lowercase .,(code-char 951)))) ;; #\Greek_Small_Letter_Eta
+    (952 (:greek . (:lowercase .,(code-char 952)))) ;; #\Greek_Small_Letter_Theta
+    (953 (:greek . (:lowercase .,(code-char 953)))) ;; #\Greek_Small_Letter_Iota
+    (954 (:greek . (:lowercase .,(code-char 954)))) ;; #\Greek_Small_Letter_Kappa  U#03BA
+    (955 (:greek . (:lowercase .,(code-char 955)))) ;; #\Greek_Small_Letter_Lambda
+    (956 (:greek . (:lowercase .,(code-char 956)))) ;; #\Greek_Small_Letter_Mu
+    (957 (:greek . (:lowercase .,(code-char 957)))) ;; "ξ" #\Greek_Small_Letter_Omicron
+    (958 (:greek . (:lowercase .,(code-char 958)))) ;; "ξ" #\Greek_Small_Letter_Xi
+    (959 (:greek . (:lowercase . , (code-char 959)))) ;;"ο", (code = 959)
+    (960 (:greek . (:lowercase . , (code-char 960)))) ;;"π", (code = 960)
+    (961 (:greek . (:lowercase . , (code-char 961)))) ;;"ρ", (code = 961)
+    (962 (:greek . (:lowercase . , (code-char 961)))) ;;"ς", (code = 962)
+    (963 (:greek . (:lowercase .,(code-char 963)))) ;; #\Greek_Small_Letter_Sigma
+    (964 (:greek . (:lowercase . , (code-char 964)))) ;;"τ", (code = 964)
+    (965 (:greek . (:lowercase .,(code-char 965)))) ;; "υ" #\Greek_Small_Letter_Upsilon
+    (966 (:greek . (:lowercase .,(code-char 966)))) ;; "φ" #\Greek_Small_Letter_Phi
+    (967 (:greek . (:lowercase . , (code-char 967)))) ;;"χ", (code = 967)
+    (968 (:greek . (:lowercase . , (code-char 968)))) ;;"ψ", (code = 968)
+    (969 (:greek . (:lowercase . , (code-char 969)))) ;;"ω", (code = 969)
+    (971 (:alphabetical . (:uppercase .,(code-char 971)))) ;;ϋ
+    (972 (:alphabetical . (:uppercase .,(code-char 972)))) ;; ό
+    (976 (:greek . (:lowercase . , (code-char 976)))) ;;#\GREEK_BETA_SYMBOL
+    (977 (:alphabetical . (:uppercase .,(code-char 977)))) ;; #\GREEK_THETA_SYMBOL
+    (977 (:greek . (:lowercase . , (code-char 977))))      ;;
+    (978 (:alphabetical . (:uppercase .,(code-char 978)))) ;; #\GREEK_UPSILON_WITH_HOOK_SYMBOL
+    (981 (:greek . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
+    (982 (:alphabetical . (:uppercase .,(code-char 982)))) ;; ϖ
+    (997 (:alphabetical . (:uppercase .,(code-char 997)))) ;; ϥ
 
-      (274 (:alphabetical . (:uppercase .,(code-char 274)))) ;;Ē
-      (281 (:alphabetical . (:uppercase .,(code-char 281)))) ;;ę
-      (312 (:alphabetical . (:uppercase .,(code-char 312)))) ;;ĸ
-      (363 (:alphabetical . (:uppercase .,(code-char 363)))) ;;ū
-      (304 (:alphabetical . (:uppercase .,(code-char 304)))) ;;#\LATIN_CAPITAL_LETTER_I_WITH_DOT_ABOVE
-      (321 (:alphabetical . (:uppercase .,(code-char 321)))) ;;#\LATIN_CAPITAL_LETTER_L_WITH_STROKE
-      (322 (:alphabetical . (:lowercase .,(code-char 322)))) ;;#\LATIN_SMALL_LETTER_L_WITH_STROKE
-      (324 (:alphabetical . (:lowercase .,(code-char 324)))) ;;#\LATIN_SMALL_LETTER_N_WITH_ACUTE)
-      (337 :alphabetical . (:lowercase .,(code-char 337))) ;; #\LATIN_SMALL_LETTER_O_WITH_DOUBLE_ACUTE
-      (378 (:alphabetical . (:lowercase .,(code-char 378)))) ;;#\LATIN_SMALL_LETTER_N_WITH_ACUTE))
-      (506 (:alphabetical . (:uppercase .,(code-char 506)))) ;;#\LATIN_CAPITAL_LETTER_A_WITH_RING_ABOVE_AND_ACUTE)))
+    (1013 (:punctuation  .,(punctuation-named (code-char 1013)))) ;; "ϵ"
+    (1030 (:alphabetical . (:uppercase .,(code-char 1030))))      ;; І
+    (1040 (:alphabetical . (:uppercase .,(code-char 1040))))      ;; А
+    (1045 (:alphabetical . (:uppercase .,(code-char 1045))))      ;; Е
+    (1050 (:alphabetical . (:uppercase .,(code-char 1050)))) ;; #\CYRILLIC_CAPITAL_LETTER_KA
+    (1051 (:alphabetical . (:uppercase .,(code-char 1051)))) ;; Л
+    (1052 (:alphabetical . (:uppercase .,(code-char 1052)))) ;; М
+    (1053 (:alphabetical . (:uppercase .,(code-char 1053)))) ;; Н
+    (1054 (:alphabetical . (:uppercase .,(code-char 1054)))) ;; О
+    (1056 (:alphabetical . (:uppercase .,(code-char 1056)))) ;; Р
+    (1057 (:alphabetical . (:uppercase .,(code-char 1057)))) ;; С
+    (1058 (:alphabetical . (:uppercase .,(code-char 1058)))) ;; Т
+    (1061 (:alphabetical . (:uppercase .,(code-char 1061)))) ;; Х
+    (1072 (:alphabetical . (:uppercase .,(code-char 1072)))) ;; а
+    (1077 (:alphabetical . (:uppercase .,(code-char 1077)))) ;; е
+    (1080 (:alphabetical . (:uppercase .,(code-char 1080)))) ;; и
+    (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082) #\CYRILLIC_SMALL_LETTER_KA      
+    (1087 (:alphabetical . (:uppercase .,(code-char 1087))))   ;; п
+    (1088 (:alphabetical . (:uppercase .,(code-char 1088))))   ;; р
+    (1090 (:alphabetical . (:uppercase .,(code-char 1090))))   ;; т
+    (1092 (:alphabetical . (:lowercase . , (code-char 1092)))) ;;"Ñ", (code = 1092) 
+    (1092 (:alphabetical . (:uppercase .,(code-char 1092)))) ;; #\CYRILLIC_SMALL_LETTER_EF
+    (1093 (:alphabetical . (:uppercase .,(code-char 1093)))) ;; х
+    (1094 (:alphabetical . (:uppercase .,(code-char 1094)))) ;; ц
+    (1108 (:alphabetical . (:uppercase .,(code-char 1108)))) ;; #\CYRILLIC_SMALL_LETTER_UKRAINIAN_IE      
+    (1185 (:alphabetical . (:uppercase .,(code-char 1185)))) ;; ҡ
+    (1255 (:alphabetical . (:uppercase .,(code-char 1255)))) ;; ӧ
+    (1279 (:alphabetical . (:uppercase .,(code-char 1279)))) ;; ӿ
+    (1523 (:punctuation  .,(punctuation-named (code-char 1523)))) ;; ׳
+    (7484 (:punctuation  .,(punctuation-named (code-char 7484)))) ;; ᴼ
+    (7527 (:punctuation  .,(punctuation-named (code-char 7527)))) ;; ᵧ
+    (7529 (:punctuation  .,(punctuation-named (code-char 7529)))) ;; ᵩ
+    (7818 (:alphabetical . (:uppercase .,(code-char 7818))))      ;; Ẋ
+    (7868 (:alphabetical . (:uppercase .,(code-char 7868))))      ;; Ẽ
+    (8004 (:punctuation  .,(punctuation-named (code-char 8004)))) ;; #\GREEK_SMALL_LETTER_OMICRON_WITH_PSILI_AND_OXIA
+    (8194 (:punctuation  .,(punctuation-named (code-char 8194)))) ;;" ", (code = 8194)  ;; #\EN_SPACE
+    (8195 (:punctuation  .,(punctuation-named (code-char 8195)))) ;;  #\EM_SPACE      
+    (8196 (:punctuation  .,(punctuation-named (code-char 8196)))) ;;  
+    (8197 (:punctuation . :space)) ;; ,(punctuation-named (code-char 8197)))) ;;" ", (code = 8197)  ;; #\FOUR-PER-EM_SPACE
+    (8200 (:punctuation  .,(punctuation-named (code-char 8200)))) ;; #\PUNCTUATION_SPACE
+    (8201 (:punctuation . :space)) ;; ,(punctuation-named (code-char 8201)))) ;;" ", (code = 8201)  ;; #\THIN_SPACE
+    (8202 (:punctuation .  :space)) ;; ,(punctuation-named (code-char 8202)))) ;;" ", (code = 8202)   ;; #\hair_space
+    (8203 (:punctuation . :space))  ;; #\ZERO_WIDTH_SPACE
+    (8206 (:punctuation  .,(punctuation-named (code-char 8206)))) ;;‎
+    (8207 (:punctuation  .,(punctuation-named (code-char 8207)))) ;;‏
+    (8208 (:punctuation  .,(punctuation-named (code-char 8208)))) ;;"‐"  ;; #\HYPHEN
+    (8209 (:punctuation  .,(punctuation-named (code-char 8209)))) ;;"‑"   ;; #\NON-BREAKING_HYPHEN
+    (8210 (:punctuation  .,(punctuation-named (code-char 8210)))) ;;‒
+    (8211 (:punctuation  .,(punctuation-named #\- ))) ;; en dash
+    (8212 (:punctuation  .,(punctuation-named #\- ))) ;; em dash, html: &mdash; "—"        ;; Doesn't appear to have a symbolic form in ccl        ;; (note from Laurel: this should probably be treated       ;; differently from en dash and hyphen but isn't yet)
+    (8213 (:punctuation  .,(punctuation-named (code-char 8213)))) ;;"―", (code = 8213)
+    (8214 (:punctuation  .,(punctuation-named (code-char 8214)))) ;; #\DOUBLE_VERTICAL_LINE      
+    (8216 (:punctuation  .,(punctuation-named #\' ))) ;; left single quote
+    (8217 (:punctuation  .,(punctuation-named #\' ))) ;; right single quote
+    (8218 (:punctuation  .,(punctuation-named (code-char 8218)))) ;;"‚", (code = 8218)
+    (8220 (:punctuation  .,(punctuation-named #\" ))) ;; left double quote
+    (8221 (:punctuation  .,(punctuation-named #\" ))) ;; right double quote
+    (8222 (:punctuation  .,(punctuation-named (code-char 8222)))) ;; #\DOUBLE_LOW-9_QUOTATION_MARK
+    (8224 (:punctuation  .,(punctuation-named (code-char 8224)))) ;; †
+    (8225 (:punctuation  .,(punctuation-named (code-char 8225)))) ;; ‡
+    (8226 (:punctuation  .,(punctuation-named (code-char 8226)))) ;;"•", (code = 8226)
+    (8229 (:punctuation  .,(punctuation-named (code-char 8229)))) ;;#\TWO_DOT_LEADER
+    (8230 (:punctuation  .,(punctuation-named (code-char 8230)))) ;;"…", (code = 8230)
+    (8231 (:punctuation  .,(punctuation-named (code-char 8231)))) ;; ‧
+    (8232 (:punctuation  .,(punctuation-named (code-char 8232)))) ;;"", (code = 8232)
+    (8239 (:punctuation  .,(punctuation-named (code-char 8239)))) ;; 
+    (8240 (:punctuation  .,(punctuation-named (code-char 8240)))) ;;"‰", (code = 8240)
+    (8242 (:punctuation  .,(punctuation-named (code-char 8242)))) ;; "prime"
+    (8243 (:punctuation  .,(punctuation-named (code-char 8243)))) ;;"″", (code = 8243)
+    (8244 (:punctuation  .,(punctuation-named (code-char 8244)))) ;; #\TRIPLE_PRIME
+    (8245 (:punctuation  .,(punctuation-named (code-char 8245)))) ;;‵
+    (8249 (:punctuation  .,(punctuation-named (code-char 8249)))) ;;‹
+    (8257 (:punctuation  .,(punctuation-named (code-char 8257)))) ;; ⁁
+    (8260 (:punctuation  .,(punctuation-named (code-char 8260)))) ;; "⁄" #\U+2044
+    (8270 (:punctuation  .,(punctuation-named (code-char 8270)))) ;; ⁎
+    (8289 (:punctuation  .,(punctuation-named (code-char 8289)))) ;; ⁡
+    (8322 (:punctuation  .,(punctuation-named (code-char 8322)))) ;; ₂
+    (8323 (:punctuation  .,(punctuation-named (code-char 8323)))) ;; ₃
+    (8364 (:punctuation  .,(punctuation-named (code-char 8364)))) ;; #\EURO_SIGN
+    (8446 (:punctuation  .,(punctuation-named (code-char 8446)))) ;;"ℒ", (code = 8446)
+    (8451 (:punctuation  .,(punctuation-named (code-char 8451)))) ;;"℃", (code = 8451)
+    (8466 (:punctuation  .,(punctuation-named (code-char 8466)))) ;;"ℒ", (code = 8466)
+    (8467 (:punctuation  .,(punctuation-named (code-char 8467)))) ;; ℓ
+    (8471 (:punctuation  .,(punctuation-named (code-char 8471)))) ;;℗
+    (8482 (:punctuation  .,(punctuation-named (code-char 8482)))) ;;"™", (code = 8482)
+    (8486 (:punctuation  .,(punctuation-named (code-char 8486)))) ;;"Ω" #\U+2126 
+    (8488 (:alphabetical . (:uppercase . , #\ℨ))) 
+    (8490 (:punctuation  .,(punctuation-named (code-char 8490)))) ;; #\KELVIN_SIGN
+    (8491 (:punctuation  .,(punctuation-named (code-char 8491)))) ;; angstrom symbol
+    (8499 (:punctuation  .,(punctuation-named (code-char 8499)))) ;;"ℳ" #\U+2133
+    (8531 (:punctuation  .,(punctuation-named (code-char 8531)))) ;;"⅓", (code = 8531)
+    (8544 (:punctuation  .,(punctuation-named (code-char 8544)))) ;; #\ROMAN_NUMERAL_ONE
+    (8545 (:punctuation  .,(punctuation-named (code-char 8545)))) ;;"Ⅱ", (code = 8545)
+    (8546 (:punctuation  .,(punctuation-named (code-char 8546)))) ;; #\ROMAN_NUMERAL_THREE
+    (8547 (:punctuation  .,(punctuation-named (code-char 8547)))) ;; #\ROMAN_NUMERAL_FOUR
+    (8569 (:punctuation  .,(punctuation-named (code-char 8569)))) ;; ⅹ
+    (8592 (:punctuation  .,(punctuation-named (code-char 8592)))) ;;"←" #\left_right_arrow
+    (8593 (:punctuation  .,(punctuation-named (code-char 8593)))) ;;"↑", (code = 8593)
+    (8594 (:punctuation  .,(punctuation-named (code-char 8594)))) ;; rightwards arrow
+    (8595 (:punctuation  .,(punctuation-named (code-char 8595)))) ;;"↓", (code = 8595)
+    (8596 (:punctuation  .,(punctuation-named (code-char 8596))))
+    (8644 (:punctuation  .,(punctuation-named (code-char 8644)))) ;;⇄     
+    (8656 (:punctuation  .,(punctuation-named (code-char 8656)))) ;; #\LEFTWARDS_DOUBLE_ARROW
+    (8658 (:punctuation  .,(punctuation-named (code-char 8658)))) ;; #\RIGHTWARDS_DOUBLE_ARROW
+    (8660 (:punctuation  .,(punctuation-named (code-char 8660)))) ;; ⇔
+    (8704 (:punctuation  .,(punctuation-named (code-char 8704)))) ;; #|for_all
+    (8706 (:punctuation  .,(punctuation-named (code-char 8706)))) ;;"∂", (code = 8706)
+    (8707 (:punctuation  .,(punctuation-named (code-char 8707)))) ;;"∃"
+    (8709 (:punctuation  .,(punctuation-named (code-char 8709)))) ;; #\EMPTY_SET
+    (8710 (:punctuation  .,(punctuation-named (code-char 8710)))) ;;"∆" #\U+2206
+    (8711 (:punctuation  .,(punctuation-named (code-char 8711)))) ;; ∇
+    (8712 (:punctuation  .,(punctuation-named (code-char 8712)))) ;; "∈" #\U+2208
+    (8714 (:punctuation  .,(punctuation-named (code-char 8714)))) ;;"∊", (code = 8714)
+    (8715 (:punctuation  .,(punctuation-named (code-char 8715)))) ;; ∋
+    (8721 (:punctuation  .,(punctuation-named (code-char 8721)))) ;;"∑", (code = 8721)
+    (8722 (:punctuation  .,(punctuation-named #\-))) ;; ""−" #\U+2212 Minus sign
+    (8725 (:punctuation  .,(punctuation-named (code-char 8725)))) ;; ∕
+    (8727 (:punctuation  .,(punctuation-named (code-char 8727)))) ;; "∗" #\U+2217
+    (8728 (:punctuation  .,(punctuation-named (code-char 8728)))) ;;∘
+    (8729 (:punctuation  .,(punctuation-named (code-char 8729)))) ;; #\BULLET_OPERATOR
+    (8729 (:punctuation  .,(punctuation-named (code-char 8729)))) ;; ∇
+    (8730 (:punctuation  .,(punctuation-named (code-char 8730)))) ;;
+    (8733 (:punctuation  .,(punctuation-named (code-char 8733)))) ;;
+    (8733 (:punctuation  .,(punctuation-named (code-char 8733)))) ;; 
+    (8733 (:punctuation  .,(punctuation-named (code-char 8733)))) ;; #\PROPORTIONAL_TO
+    (8734 (:punctuation  .,(punctuation-named (code-char 8734)))) ;;"∞", (code = 8734)
+    (8737 (:punctuation  .,(punctuation-named (code-char 8737)))) ;; ∡
+    (8739 (:punctuation  .,(punctuation-named (code-char 8739)))) ;;"∣", (code = 8739)
+    (8741 (:punctuation  .,(punctuation-named (code-char 8741)))) ;; ∥
+    (8743 (:punctuation  .,(punctuation-named (code-char 8743)))) ;; "∧" #\U+2227
+    (8745 (:punctuation  .,(punctuation-named (code-char 8745)))) ;; "∩" #\U+2229
+    (8746 (:punctuation  .,(punctuation-named (code-char 8746)))) ;; #\UNION
+    (8747 (:punctuation  .,(punctuation-named (code-char 8747)))) ;; "∫", (code = 8747)
+    (8758 (:punctuation  .,(punctuation-named #\:))) ;; ratio  #\U+2236       ;; This is tilde in the Mathematical operator section. ;; we'll use a regular ascii tilde instead
+    (8759 (:punctuation  .,(punctuation-named (code-char 8759)))) ;; ∷
+    (8760 (:punctuation  .,(punctuation-named (code-char 8760)))) ;; ∸
+    (8764 (:punctuation  .,(punctuation-named #\~ ))) ;; #\∼
+    (8765 (:punctuation  .,(punctuation-named #\~ ) )) ;; #\REVERSED_TILDE
+    (8771 (:punctuation  .,(punctuation-named (code-char 8771)))) ;;≃
+    (8773 (:punctuation  .,(punctuation-named (code-char 8773)))) ;; ≅
+    (8776 (:punctuation  .,(punctuation-named (code-char 8776)))) ;;"≈", (code = 8776)
+    (8780 (:punctuation  .,(punctuation-named (code-char 8780)))) ;; #\ALL_EQUAL_TO
+    (8781 (:punctuation  .,(punctuation-named (code-char 8781)))) ;;"≍", (code = 8781)
+    (8793 (:punctuation  .,(punctuation-named (code-char 8793)))) ;; ≙
+    (8800 (:punctuation  .,(punctuation-named (code-char 8800)))) ;;"≠", (code = 8805)    
+    (8801 (:punctuation  .,(punctuation-named (code-char 8801)))) ;; #\IDENTICAL_TO
+    (8804 (:punctuation  .,(punctuation-named (code-char 8804)))) ;;  "≤"
+    (8805 (:punctuation  .,(punctuation-named (code-char 8805)))) ;;"≥", (code = 8805)
+    (8806 (:punctuation  .,(punctuation-named (code-char 8806)))) ;;"≦", (code = 8806)
+    (8807 (:punctuation  .,(punctuation-named (code-char 8807)))) ;; #\GREATER-THAN_OVER_EQUAL_TO
+    (8810 (:punctuation  .,(punctuation-named (code-char 8810)))) ;; "≪" #\U+226B
+    (8811 (:punctuation  .,(punctuation-named (code-char 8811)))) ;; "≫" #\U+226B
+    (8819 (:punctuation  .,(punctuation-named (code-char 8819)))) ;; ≳
+    (8834 (:punctuation  .,(punctuation-named (code-char 8834)))) ;; ⊂
+    (8839 (:punctuation  .,(punctuation-named (code-char 8839)))) ;; "⊇" #\U+2287
+    (8853 (:punctuation  .,(punctuation-named (code-char 8853)))) ;; ⊕
+    (8855 (:punctuation  .,(punctuation-named (code-char 8855)))) ;; ⊗
+    (8867 (:punctuation  .,(punctuation-named (code-char 8867)))) ;; ⊣
+    (8869 (:punctuation  .,(punctuation-named (code-char 8869)))) ;; #\UP_TACK
+    (8895 (:punctuation  .,(punctuation-named (code-char 8895)))) ;;⊿
+    (8896 (:punctuation  .,(punctuation-named (code-char 8896)))) ;; #\N-ARY_LOGICAL_AND
+    (8900 (:punctuation  .,(punctuation-named (code-char 8900)))) ;; "⋄"
+    (8900 (:punctuation  .,(punctuation-named (code-char 8900)))) ;;"⋅", (code = 8901)
+    (8901 (:punctuation  .,(punctuation-named (code-char 8901)))) ;;"⋅", (code = 8901)
+    (8902 (:punctuation  .,(punctuation-named (code-char 8902))))
+    (8921 (:punctuation  .,(punctuation-named (code-char 8921)))) ;; #\VERY_MUCH_GREATER-THAN
+    (8942 (:punctuation  .,(punctuation-named (code-char 8942)))) ;; "▪"
+    (8943 (:punctuation  .,(punctuation-named (code-char 8943)))) ;; "⋯"
+    (8943 (:punctuation  .,(punctuation-named (code-char 8943)))) ;;"⋯", (code = 8943)
+    (9001 (:punctuation  .,(punctuation-named (code-char 9001)))) ;; 〈
+    (9002 (:punctuation  .,(punctuation-named (code-char 9002)))) ;; 〉
+    (9082 (:punctuation  .,(punctuation-named (code-char 9082)))) ;;⍺
+    (9312 (:punctuation  .,(punctuation-named (code-char 9312)))) ;; #\CIRCLED_DIGIT_ONE
+    (9313 (:punctuation  .,(punctuation-named (code-char 9313)))) ;; #\CIRCLED_DIGIT_TWO
+    (9314 (:punctuation  .,(punctuation-named (code-char 9314)))) ;; #\CIRCLED_DIGIT_THREE
+    (9415 (:punctuation  .,(punctuation-named (code-char 9415)))) ;; "Ⓡ"
+    (9474 (:punctuation  .,(punctuation-named (code-char 9474)))) ;;│
+    (9524 (:punctuation  .,(punctuation-named (code-char 9524)))) ;;┴
+    (9552 (:punctuation  .,(punctuation-named (code-char 9552)))) ;; ═
+    (9553 (:punctuation  .,(punctuation-named (code-char 9553)))) ;;║
+    (9632 (:punctuation  .,(punctuation-named (code-char 9632)))) ;; #\BLACK_SQUARE
+    (9633 (:punctuation  .,(punctuation-named (code-char 9633)))) ;; "□"
+    (9633 (:punctuation  .,(punctuation-named (code-char 9633)))) ;; "□"
+    (9642 (:punctuation  .,(punctuation-named (code-char 9642)))) ;; "□"
+    (9650 (:punctuation  .,(punctuation-named (code-char 9650)))) ;; ▲
+    (9651 (:punctuation  .,(punctuation-named (code-char 9651)))) ;; "△" #\U+25B3
+    (9652 (:punctuation  .,(punctuation-named (code-char 9652)))) ;; "▴"
+    (9653 (:punctuation  .,(punctuation-named (code-char 9653)))) ;;"▵", (code = 8901)
+    (9654 (:punctuation  .,(punctuation-named (code-char 9654)))) ;;▶
+    (9656 (:punctuation  .,(punctuation-named (code-char 9656)))) ;; ▸
+    (9658 (:punctuation  .,(punctuation-named (code-char 9658)))) ;;""►", (code = 9658)
+    (9660 (:punctuation  .,(punctuation-named (code-char 9660)))) ;;▼
+    (9663 (:punctuation  .,(punctuation-named (code-char 9663)))) ;; "▿" #\U+25BF
+    (9670 (:punctuation  .,(punctuation-named (code-char 9670)))) ;;◆
+    (9674 (:punctuation  .,(punctuation-named (code-char 9674)))) ;; "◊" #\U+25CA
+    (9675 (:punctuation  .,(punctuation-named (code-char 9675)))) ;; "○" #\U+25CB
+    (9679 (:punctuation  .,(punctuation-named (code-char 9679)))) ;; ●
+    (9702 (:punctuation  .,(punctuation-named (code-char 9702)))) ;;◦
+    (9723 (:punctuation  .,(punctuation-named (code-char 9723)))) ;; ◻
+    (9733 (:punctuation  .,(punctuation-named (code-char 9733)))) ;;"★"
+    (9734 (:punctuation  .,(punctuation-named (code-char 9734)))) ;; ☆
+    (9792 (:punctuation  .,(punctuation-named (code-char 9792)))) ;; "♀" #\U+2640
+    (9794 (:punctuation  .,(punctuation-named (code-char 9794)))) ;; "♂" #\U+2642
+    (9830 (:punctuation  .,(punctuation-named (code-char 9830)))) ;; "♦"
+    (9839 (:punctuation  .,(punctuation-named (code-char 9839)))) ;; #\MUSIC_SHARP_SIGN
+
+    (10794 (:punctuation  .,(punctuation-named (code-char 10794)))) ;; "⨪" #\U+2A2A
+    (10877 (:punctuation  .,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10878)
+    (10878 (:punctuation  .,(punctuation-named (code-char 10878)))) ;;"⩾", (code = 10878)
+    (12289 (:punctuation  .,(punctuation-named (code-char 12289)))) ;;
+    (10216 (:punctuation  .,(punctuation-named (code-char 10216)))) ;; ⟨
+    (10217 (:punctuation  .,(punctuation-named (code-char 10217)))) ;; ⟩
+    (10815 (:punctuation  .,(punctuation-named (code-char 10815)))) ;; ⨿
+    (11373 (:punctuation  .,(punctuation-named (code-char 11373)))) ;; Ɑ
+    (12288 (:punctuation  .,(punctuation-named (code-char 12288)))) ;; 　
+    (12290 (:punctuation  .,(punctuation-named (code-char 12290)))) ;; 。
+    (12296 (:punctuation  .,(punctuation-named (code-char 12296)))) ;; 〈
+    (12297 (:punctuation  .,(punctuation-named (code-char 12297)))) ;; 〉
+    (12304 (:punctuation  .,(punctuation-named (code-char 12304)))) ;; 【
+    (12305 (:punctuation  .,(punctuation-named (code-char 12305)))) ;; 】
+    (12354 (:hiragana . (:lowercase .,(code-char 12354)))) ;; #\HIRAGANA_LETTER_A)
+    (12356 (:hiragana .(:lowercase ., (code-char 12356)))) ; #\HIRAGANA_LETTER_I
+    (12360 (:hiragana .(:lowercase ., (code-char 12360)))) ;  #\HIRAGANA_LETTER_E)
+    (12362 (:hiragana .(:lowercase ., (code-char 12362)))) ; #\HIRAGANA_LETTER_O
+    (12363 (:hiragana .(:lowercase ., (code-char 12363)))) ; #\HIRAGANA_LETTER_KA
+    (12364 (:hiragana .(:lowercase ., (code-char 12364)))) ; #\HIRAGANA_LETTER_GA
+    (12367 (:hiragana .(:lowercase ., (code-char 12367)))) ; #\HIRAGANA_LETTER_KU
+    (12369 (:hiragana .(:lowercase ., (code-char 12369)))) ; #\HIRAGANA_LETTER_KE
+    (12371 (:hiragana .(:lowercase ., (code-char 12371)))) ; #\HIRAGANA_LETTER_KO
+    (12372 (:hiragana .(:lowercase ., (code-char 12372)))) ; #\HIRAGANA_LETTER_GO
+    (12373 (:hiragana .(:lowercase ., (code-char 12373)))) ; #\HIRAGANA_LETTER_SA
+    (12375 (:hiragana .(:lowercase ., (code-char 12375)))) ; #\HIRAGANA_LETTER_SI
+    (12377 (:hiragana .(:lowercase ., (code-char 12377)))) ; #\HIRAGANA_LETTER_SU
+    (12383 (:hiragana .(:lowercase ., (code-char 12383)))) ; #\HIRAGANA_LETTER_TA
+    (12384 (:hiragana .(:lowercase ., (code-char 12384)))) ; #\HIRAGANA_LETTER_DA
+    (12387 (:hiragana .(:lowercase ., (code-char 12387)))) ; #\HIRAGANA_LETTER_SMALL_TU
+    (12388 (:hiragana .(:lowercase ., (code-char 12388)))) ; #\HIRAGANA_LETTER_TU
+    (12389 (:hiragana .(:lowercase ., (code-char 12389)))) ; #\HIRAGANA_LETTER_DU
+    (12390 (:hiragana .(:lowercase ., (code-char 12390)))) ; #\HIRAGANA_LETTER_TE
+    (12391 (:hiragana .(:lowercase ., (code-char 12391)))) ; #\HIRAGANA_LETTER_DE
+    (12392 (:hiragana .(:lowercase ., (code-char 12392)))) ; #\HIRAGANA_LETTER_TO
+    (12394 (:hiragana .(:lowercase ., (code-char 12394)))) ; #\HIRAGANA_LETTER_NA
+    (12395 (:hiragana .(:lowercase ., (code-char 12395)))) ; #\HIRAGANA_LETTER_NI
+    (12398 (:hiragana .(:lowercase ., (code-char 12398)))) ; #\HIRAGANA_LETTER_NO
+    (12399 (:hiragana .(:lowercase ., (code-char 12399)))) ; #\HIRAGANA_LETTER_HA
+    (12400 (:hiragana .(:lowercase ., (code-char 12400)))) ; #\HIRAGANA_LETTER_BA
+    (12403 (:hiragana .(:lowercase ., (code-char 12403)))) ; #\HIRAGANA_LETTER_BI
+    (12414 (:hiragana .(:lowercase ., (code-char 12414)))) ; #\HIRAGANA_LETTER_MA
+    (12417 (:hiragana .(:lowercase ., (code-char 12417)))) ; #\HIRAGANA_LETTER_ME
+    (12418 (:hiragana .(:lowercase ., (code-char 12418)))) ; #\HIRAGANA_LETTER_MO
+    (12424 (:hiragana .(:lowercase ., (code-char 12424)))) ; #\HIRAGANA_LETTER_YO
+    (12425 (:hiragana .(:lowercase ., (code-char 12425)))) ; #\HIRAGANA_LETTER_RA
+    (12427 (:hiragana .(:lowercase ., (code-char 12427)))) ; #\HIRAGANA_LETTER_RU
+    (12428 (:hiragana .(:lowercase ., (code-char 12428)))) ; #\HIRAGANA_LETTER_RE
+    (12431 (:hiragana .(:lowercase ., (code-char 12431)))) ; #\HIRAGANA_LETTER_WA
+    (12434 (:hiragana .(:lowercase ., (code-char 12434)))) ; #\HIRAGANA_LETTER_WO
+    (12435 (:hiragana .(:lowercase ., (code-char 12435)))) ; #\HIRAGANA_LETTER_N
+    (12450 (:katakana .(:lowercase ., (code-char 12450)))) ; #\KATAKANA_LETTER_A
+    (12452 (:katakana .(:lowercase ., (code-char 12452)))) ; #\KATAKANA_LETTER_I
+    (12458 (:katakana .(:lowercase ., (code-char 12458)))) ; #\KATAKANA_LETTER_O
+    (12463 (:katakana .(:lowercase ., (code-char 12463)))) ; #\KATAKANA_LETTER_KU
+    (12472 (:katakana .(:lowercase ., (code-char 12472)))) ; #\KATAKANA_LETTER_ZI
+    (12473 (:katakana .(:lowercase ., (code-char 12473)))) ; #\KATAKANA_LETTER_SU
+    (12474 (:katakana .(:lowercase ., (code-char 12474)))) ; #\KATAKANA_LETTER_ZU
+    (12479 (:katakana .(:lowercase ., (code-char 12479)))) ; #\KATAKANA_LETTER_TA
+    (12483 (:katakana .(:lowercase ., (code-char 12483)))) ; #\KATAKANA_LETTER_SMALL_TU
+    (12487 (:katakana .(:lowercase ., (code-char 12487)))) ; #\KATAKANA_LETTER_DE
+    (12490 (:katakana .(:lowercase ., (code-char 12490)))) ; #\KATAKANA_LETTER_NA
+    (12495 (:katakana .(:lowercase ., (code-char 12495)))) ; #\KATAKANA_LETTER_HA
+    (12503 (:katakana .(:lowercase ., (code-char 12503)))) ; #\KATAKANA_LETTER_PU
+    (12510 (:katakana .(:lowercase ., (code-char 12510)))) ; #\KATAKANA_LETTER_MA
+    (12514 (:katakana .(:lowercase ., (code-char 12514)))) ; #\KATAKANA_LETTER_MO
+    (12522 (:katakana .(:lowercase ., (code-char 12522)))) ; #\KATAKANA_LETTER_RI
+    (12523 (:katakana .(:lowercase ., (code-char 12523)))) ; #\KATAKANA_LETTER_RU
+    (12524 (:katakana .(:lowercase ., (code-char 12524)))) ; #\KATAKANA_LETTER_RE
+    (12525 (:katakana .(:lowercase ., (code-char 12525)))) ; #\KATAKANA_LETTER_RO
+    (12539 (:katakana .(:lowercase ., (code-char 12539)))) ; #\KATAKANA_MIDDLE_DOT
+    (12540 (:katakana .(:lowercase ., (code-char 12540)))) ; #\KATAKANA-HIRAGANA_PROLONGED_SOUND_MARK
+    (19968 (:alphabetical .(:lowercase .,(code-char 19968)))) ;; #\U4E00       ;; following are not yet characterized unicode characters
+    (19978 (:alphabetical .(:lowercase .,(code-char 19978)))) ;; #\U4E0A 
+    (19979 (:alphabetical .(:lowercase .,(code-char 19979)))) ;; #\U4E0B 
+    (19981 (:alphabetical .(:lowercase .,(code-char 19981)))) ;; #\U4E0D 
+    (19982 (:alphabetical .(:lowercase .,(code-char 19982)))) ;; #\U4E0E 
+    (19988 (:alphabetical .(:lowercase .,(code-char 19988)))) ;; #\U4E14 
+    (19990 (:alphabetical .(:lowercase .,(code-char 19990)))) ;; #\U4E16 
+    (20010 (:alphabetical .(:lowercase .,(code-char 20010)))) ;; #\U4E2A 
+    (20013 (:alphabetical .(:lowercase .,(code-char 20013)))) ;; #\U4E2D 
+    (20020 (:alphabetical .(:lowercase .,(code-char 20020)))) ;; #\U4E34 
+    (20026 (:alphabetical .(:lowercase .,(code-char 20026)))) ;; #\U4E3A 
+    (20027 (:alphabetical .(:lowercase .,(code-char 20027)))) ;; #\U4E3B 
+    (20041 (:alphabetical .(:lowercase .,(code-char 20041)))) ;; #\U4E49 
+    (20043 (:alphabetical .(:lowercase .,(code-char 20043)))) ;; #\U4E4B 
+    (20063 (:alphabetical .(:lowercase .,(code-char 20063)))) ;; #\U4E5F 
+    (20083 (:alphabetical .(:lowercase .,(code-char 20083)))) ;; #\U4E73 
+    (20102 (:alphabetical .(:lowercase .,(code-char 20102)))) ;; #\U4E86 
+    (20108 (:alphabetical .(:lowercase .,(code-char 20108)))) ;; #\U4E8C 
+    (20110 (:alphabetical .(:lowercase .,(code-char 20110)))) ;; #\U4E8E 
+    (20114 (:alphabetical .(:lowercase .,(code-char 20114)))) ;; #\U4E92 
+    (20122 (:alphabetical .(:lowercase .,(code-char 20122)))) ;; #\U4E9A 
+    (20123 (:alphabetical .(:lowercase .,(code-char 20123)))) ;; #\U4E9B 
+    (20132 (:alphabetical .(:lowercase .,(code-char 20132)))) ;; #\U4EA4 
+    (20154 (:alphabetical .(:lowercase .,(code-char 20154)))) ;; #\U4EBA 
+    (20182 (:alphabetical .(:lowercase .,(code-char 20182)))) ;; #\U4ED6 
+    (20195 (:alphabetical .(:lowercase .,(code-char 20195)))) ;; #\U4EE3 
+    (20197 (:alphabetical .(:lowercase .,(code-char 20197)))) ;; #\U4EE5 
+    (20219 (:alphabetical .(:lowercase .,(code-char 20219)))) ;; #\U4EFB 
+    (20253 (:alphabetical .(:lowercase .,(code-char 20253)))) ;; #\U4F1D 
+    (20272 (:alphabetical .(:lowercase .,(code-char 20272)))) ;; #\U4F30 
+    (20284 (:alphabetical .(:lowercase .,(code-char 20284)))) ;; #\U4F3C 
+    (20294 (:alphabetical .(:lowercase .,(code-char 20294)))) ;; #\U4F46 
+    (20301 (:alphabetical .(:lowercase .,(code-char 20301)))) ;; #\U4F4D 
+    (20302 (:alphabetical .(:lowercase .,(code-char 20302)))) ;; #\U4F4E 
+    (20303 (:alphabetical .(:lowercase .,(code-char 20303)))) ;; #\U4F4F 
+    (20307 (:alphabetical .(:lowercase .,(code-char 20307)))) ;; #\U4F53 
+    (20309 (:alphabetical .(:lowercase .,(code-char 20309)))) ;; #\U4F55 
+    (20316 (:alphabetical .(:lowercase .,(code-char 20316)))) ;; #\U4F5C 
+    (20351 (:alphabetical .(:lowercase .,(code-char 20351)))) ;; #\U4F7F 
+    (20363 (:alphabetical .(:lowercase .,(code-char 20363)))) ;; #\U4F8B 
+    (20379 (:alphabetical .(:lowercase .,(code-char 20379)))) ;; #\U4F9B 
+    (20385 (:alphabetical .(:lowercase .,(code-char 20385)))) ;; #\U4FA1 
+    (20449 (:alphabetical .(:lowercase .,(code-char 20449)))) ;; #\U4FE1 
+    (20462 (:alphabetical .(:lowercase .,(code-char 20462)))) ;; #\U4FEE 
+    (20491 (:alphabetical .(:lowercase .,(code-char 20491)))) ;; #\U500B 
+    (20516 (:alphabetical .(:lowercase .,(code-char 20516)))) ;; #\U5024 
+    (20540 (:alphabetical .(:lowercase .,(code-char 20540)))) ;; #\U503C 
+    (20687 (:alphabetical .(:lowercase .,(code-char 20687)))) ;; #\U50CF 
+    (20808 (:alphabetical .(:lowercase .,(code-char 20808)))) ;; #\U5148 
+    (20837 (:alphabetical .(:lowercase .,(code-char 20837)))) ;; #\U5165 
+    (20840 (:alphabetical .(:lowercase .,(code-char 20840)))) ;; #\U5168 
+    (20849 (:alphabetical .(:lowercase .,(code-char 20849)))) ;; #\U5171 
+    (20851 (:alphabetical .(:lowercase .,(code-char 20851)))) ;; #\U5173 
+    (20854 (:alphabetical .(:lowercase .,(code-char 20854)))) ;; #\U5176 
+    (20855 (:alphabetical .(:lowercase .,(code-char 20855)))) ;; #\U5177 
+    (20917 (:alphabetical .(:lowercase .,(code-char 20917)))) ;; #\U51B5 
+    (20934 (:alphabetical .(:lowercase .,(code-char 20934)))) ;; #\U51C6 
+    (20943 (:alphabetical .(:lowercase .,(code-char 20943)))) ;; #\U51CF 
+    (20986 (:alphabetical .(:lowercase .,(code-char 20986)))) ;; #\U51FA 
+    (20998 (:alphabetical .(:lowercase .,(code-char 20998)))) ;; #\U5206 
+    (20999 (:alphabetical .(:lowercase .,(code-char 20999)))) ;; #\U5207 
+    (21010 (:alphabetical .(:lowercase .,(code-char 21010)))) ;; #\U5212 
+    (21021 (:alphabetical .(:lowercase .,(code-char 21021)))) ;; #\U521D 
+    (21029 (:alphabetical .(:lowercase .,(code-char 21029)))) ;; #\U5225 
+    (21035 (:alphabetical .(:lowercase .,(code-char 21035)))) ;; #\U522B 
+    (21051 (:alphabetical .(:lowercase .,(code-char 21051)))) ;; #\U523B 
+    (21058 (:alphabetical .(:lowercase .,(code-char 21058)))) ;; #\U5242 
+    (21069 (:alphabetical .(:lowercase .,(code-char 21069)))) ;; #\U524D 
+    (21147 (:alphabetical .(:lowercase .,(code-char 21147)))) ;; #\U529B 
+    (21152 (:alphabetical .(:lowercase .,(code-char 21152)))) ;; #\U52A0 
+    (21160 (:alphabetical .(:lowercase .,(code-char 21160)))) ;; #\U52A8 
+    (21161 (:alphabetical .(:lowercase .,(code-char 21161)))) ;; #\U52A9 
+    (21177 (:alphabetical .(:lowercase .,(code-char 21177)))) ;; #\U52B9 
+    (21205 (:alphabetical .(:lowercase .,(code-char 21205)))) ;; #\U52D5 
+    (21270 (:alphabetical .(:lowercase .,(code-char 21270)))) ;; #\U5316 
+    (21307 (:alphabetical .(:lowercase .,(code-char 21307)))) ;; #\U533B 
+    (21313 (:alphabetical .(:lowercase .,(code-char 21313)))) ;; #\U5341 
+    (21319 (:alphabetical .(:lowercase .,(code-char 21319)))) ;; #\U5347 
+    (21333 (:alphabetical .(:lowercase .,(code-char 21333)))) ;; #\U5355 
+    (21355 (:alphabetical .(:lowercase .,(code-char 21355)))) ;; #\U536B 
+    (21361 (:alphabetical .(:lowercase .,(code-char 21361)))) ;; #\U5371 
+    (21363 (:alphabetical .(:lowercase .,(code-char 21363)))) ;; #\U5373 
+    (21387 (:alphabetical .(:lowercase .,(code-char 21387)))) ;; #\U538B 
+    (21435 (:alphabetical .(:lowercase .,(code-char 21435)))) ;; #\U53BB 
+    (21450 (:alphabetical .(:lowercase .,(code-char 21450)))) ;; #\U53CA 
+    (21452 (:alphabetical .(:lowercase .,(code-char 21452)))) ;; #\U53CC 
+    (21453 (:alphabetical .(:lowercase .,(code-char 21453)))) ;; #\U53CD 
+    (21457 (:alphabetical .(:lowercase .,(code-char 21457)))) ;; #\U53D1 
+    (21463 (:alphabetical .(:lowercase .,(code-char 21463)))) ;; #\U53D7 
+    (21464 (:alphabetical .(:lowercase .,(code-char 21464)))) ;; #\U53D8 
+    (21487 (:alphabetical .(:lowercase .,(code-char 21487)))) ;; #\U53EF 
+    (21490 (:alphabetical .(:lowercase .,(code-char 21490)))) ;; #\U53F2 
+    (21495 (:alphabetical .(:lowercase .,(code-char 21495)))) ;; #\U53F7 
+    (21512 (:alphabetical .(:lowercase .,(code-char 21512)))) ;; #\U5408 
+    (21516 (:alphabetical .(:lowercase .,(code-char 21516)))) ;; #\U540C 
+    (21517 (:alphabetical .(:lowercase .,(code-char 21517)))) ;; #\U540D 
+    (21518 (:alphabetical .(:lowercase .,(code-char 21518)))) ;; #\U540E 
+    (21521 (:alphabetical .(:lowercase .,(code-char 21521)))) ;; #\U5411 
+    (21542 (:alphabetical .(:lowercase .,(code-char 21542)))) ;; #\U5426 
+    (21560 (:alphabetical .(:lowercase .,(code-char 21560)))) ;; #\U5438 
+    (21578 (:alphabetical .(:lowercase .,(code-char 21578)))) ;; #\U544A 
+    (21608 (:alphabetical .(:lowercase .,(code-char 21608)))) ;; #\U5468 
+    (21644 (:alphabetical .(:lowercase .,(code-char 21644)))) ;; #\U548C 
+    (21766 (:alphabetical .(:lowercase .,(code-char 21766)))) ;; #\U5506 
+    (21777 (:alphabetical .(:lowercase .,(code-char 21777)))) ;; #\U5511 
+    (21892 (:alphabetical .(:lowercase .,(code-char 21892)))) ;; #\U5584 
+    (21931 (:alphabetical .(:lowercase .,(code-char 21931)))) ;; #\U55AB 
+    (22139 (:alphabetical .(:lowercase .,(code-char 22139)))) ;; #\U567B 
+    (22238 (:alphabetical .(:lowercase .,(code-char 22238)))) ;; #\U56DE 
+    (22240 (:alphabetical .(:lowercase .,(code-char 22240)))) ;; #\U56E0 
+    (22243 (:alphabetical .(:lowercase .,(code-char 22243)))) ;; #\U56E3 
+    (22260 (:alphabetical .(:lowercase .,(code-char 22260)))) ;; #\U56F4 
+    (22270 (:alphabetical .(:lowercase .,(code-char 22270)))) ;; #\U56FE 
+    (22311 (:alphabetical .(:lowercase .,(code-char 22311)))) ;; #\U5727 
+    (22312 (:alphabetical .(:lowercase .,(code-char 22312)))) ;; #\U5728 
+    (22320 (:alphabetical .(:lowercase .,(code-char 22320)))) ;; #\U5730 
+    (22343 (:alphabetical .(:lowercase .,(code-char 22343)))) ;; #\U5747 
+    (22411 (:alphabetical .(:lowercase .,(code-char 22411)))) ;; #\U578B 
+    (22522 (:alphabetical .(:lowercase .,(code-char 22522)))) ;; #\U57FA 
+    (22577 (:alphabetical .(:lowercase .,(code-char 22577)))) ;; #\U5831 
+    (22633 (:alphabetical .(:lowercase .,(code-char 22633)))) ;; #\U5869 
+    (22659 (:alphabetical .(:lowercase .,(code-char 22659)))) ;; #\U5883 
+    (22686 (:alphabetical .(:lowercase .,(code-char 22686)))) ;; #\U589E 
+    (22768 (:alphabetical .(:lowercase .,(code-char 22768)))) ;; #\U58F0 
+    (22793 (:alphabetical .(:lowercase .,(code-char 22793)))) ;; #\U5909 
+    (22806 (:alphabetical .(:lowercase .,(code-char 22806)))) ;; #\U5916 
+    (22810 (:alphabetical .(:lowercase .,(code-char 22810)))) ;; #\U591A 
+    (22815 (:alphabetical .(:lowercase .,(code-char 22815)))) ;; #\U591F 
+    (22823 (:alphabetical .(:lowercase .,(code-char 22823)))) ;; #\U5927 
+    (22899 (:alphabetical .(:lowercase .,(code-char 22899)))) ;; #\U5973 
+    (22909 (:alphabetical .(:lowercase .,(code-char 22909)))) ;; #\U597D 
+    (22949 (:alphabetical .(:lowercase .,(code-char 22949)))) ;; #\U59A5 
+    (23376 (:alphabetical .(:lowercase .,(code-char 23376)))) ;; #\U5B50 
+    (23384 (:alphabetical .(:lowercase .,(code-char 23384)))) ;; #\U5B58 
+    (23398 (:alphabetical .(:lowercase .,(code-char 23398)))) ;; #\U5B66 
+    (23433 (:alphabetical .(:lowercase .,(code-char 23433)))) ;; #\U5B89 
+    (23450 (:alphabetical .(:lowercase .,(code-char 23450)))) ;; #\U5B9A 
+    (23454 (:alphabetical .(:lowercase .,(code-char 23454)))) ;; #\U5B9E 
+    (23460 (:alphabetical .(:lowercase .,(code-char 23460)))) ;; #\U5BA4 
+    (23494 (:alphabetical .(:lowercase .,(code-char 23494)))) ;; #\U5BC6 
+    (23545 (:alphabetical .(:lowercase .,(code-char 23545)))) ;; #\U5BF9 
+    (23548 (:alphabetical .(:lowercase .,(code-char 23548)))) ;; #\U5BFC 
+    (23550 (:alphabetical .(:lowercase .,(code-char 23550)))) ;; #\U5BFE 
+    (23556 (:alphabetical .(:lowercase .,(code-char 23556)))) ;; #\U5C04 
+    (23569 (:alphabetical .(:lowercase .,(code-char 23569)))) ;; #\U5C11 
+    (23615 (:alphabetical .(:lowercase .,(code-char 23615)))) ;; #\U5C3F 
+    (23637 (:alphabetical .(:lowercase .,(code-char 23637)))) ;; #\U5C55 
+    (24038 (:alphabetical .(:lowercase .,(code-char 24038)))) ;; #\U5DE6 
+    (24085 (:alphabetical .(:lowercase .,(code-char 24085)))) ;; #\U5E15 
+    (24112 (:alphabetical .(:lowercase .,(code-char 24112)))) ;; #\U5E30 
+    (24120 (:alphabetical .(:lowercase .,(code-char 24120)))) ;; #\U5E38 
+    (24179 (:alphabetical .(:lowercase .,(code-char 24179)))) ;; #\U5E73 
+    (24180 (:alphabetical .(:lowercase .,(code-char 24180)))) ;; #\U5E74 
+    (24182 (:alphabetical .(:lowercase .,(code-char 24182)))) ;; #\U5E76 
+    (24202 (:alphabetical .(:lowercase .,(code-char 24202)))) ;; #\U5E8A 
+    (24212 (:alphabetical .(:lowercase .,(code-char 24212)))) ;; #\U5E94 
+    (24230 (:alphabetical .(:lowercase .,(code-char 24230)))) ;; #\U5EA6 
+    (24320 (:alphabetical .(:lowercase .,(code-char 24320)))) ;; #\U5F00 
+    (24341 (:alphabetical .(:lowercase .,(code-char 24341)))) ;; #\U5F15 
+    (24418 (:alphabetical .(:lowercase .,(code-char 24418)))) ;; #\U5F62 
+    (24433 (:alphabetical .(:lowercase .,(code-char 24433)))) ;; #\U5F71 
+    (24449 (:alphabetical .(:lowercase .,(code-char 24449)))) ;; #\U5F81 
+    (24456 (:alphabetical .(:lowercase .,(code-char 24456)))) ;; #\U5F88 
+    (24471 (:alphabetical .(:lowercase .,(code-char 24471)))) ;; #\U5F97 
+    (24489 (:alphabetical .(:lowercase .,(code-char 24489)))) ;; #\U5FA9 
+    (24515 (:alphabetical .(:lowercase .,(code-char 24515)))) ;; #\U5FC3 
+    (24517 (:alphabetical .(:lowercase .,(code-char 24517)))) ;; #\U5FC5 
+    (24577 (:alphabetical .(:lowercase .,(code-char 24577)))) ;; #\U6001 
+    (24615 (:alphabetical .(:lowercase .,(code-char 24615)))) ;; #\U6027 
+    (24635 (:alphabetical .(:lowercase .,(code-char 24635)))) ;; #\U603B 
+    (24739 (:alphabetical .(:lowercase .,(code-char 24739)))) ;; #\U60A3 
+    (24773 (:alphabetical .(:lowercase .,(code-char 24773)))) ;; #\U60C5 
+    (24847 (:alphabetical .(:lowercase .,(code-char 24847)))) ;; #\U610F 
+    (25104 (:alphabetical .(:lowercase .,(code-char 25104)))) ;; #\U6210 
+    (25239 (:alphabetical .(:lowercase .,(code-char 25239)))) ;; #\U6297 
+    (25253 (:alphabetical .(:lowercase .,(code-char 25253)))) ;; #\U62A5 
+    (25345 (:alphabetical .(:lowercase .,(code-char 25345)))) ;; #\U6301 
+    (25351 (:alphabetical .(:lowercase .,(code-char 25351)))) ;; #\U6307 
+    (25454 (:alphabetical .(:lowercase .,(code-char 25454)))) ;; #\U636E 
+    (25506 (:alphabetical .(:lowercase .,(code-char 25506)))) ;; #\U63A2 
+    (25509 (:alphabetical .(:lowercase .,(code-char 25509)))) ;; #\U63A5 
+    (25552 (:alphabetical .(:lowercase .,(code-char 25552)))) ;; #\U63D0 
+    (25688 (:alphabetical .(:lowercase .,(code-char 25688)))) ;; #\U6458 
+    (25903 (:alphabetical .(:lowercase .,(code-char 25903)))) ;; #\U652F 
+    (25913 (:alphabetical .(:lowercase .,(code-char 25913)))) ;; #\U6539 
+    (25968 (:alphabetical .(:lowercase .,(code-char 25968)))) ;; #\U6570 
+    (25972 (:alphabetical .(:lowercase .,(code-char 25972)))) ;; #\U6574 
+    (26001 (:alphabetical .(:lowercase .,(code-char 26001)))) ;; #\U6591 
+    (26029 (:alphabetical .(:lowercase .,(code-char 26029)))) ;; #\U65AD 
+    (26032 (:alphabetical .(:lowercase .,(code-char 26032)))) ;; #\U65B0 
+    (26041 (:alphabetical .(:lowercase .,(code-char 26041)))) ;; #\U65B9 
+    (26080 (:alphabetical .(:lowercase .,(code-char 26080)))) ;; #\U65E0 
+    (26085 (:alphabetical .(:lowercase .,(code-char 26085)))) ;; #\U65E5 
+    (26089 (:alphabetical .(:lowercase .,(code-char 26089)))) ;; #\U65E9 
+    (26102 (:alphabetical .(:lowercase .,(code-char 26102)))) ;; #\U65F6 
+    (26126 (:alphabetical .(:lowercase .,(code-char 26126)))) ;; #\U660E 
+    (26144 (:alphabetical .(:lowercase .,(code-char 26144)))) ;; #\U6620 
+    (26159 (:alphabetical .(:lowercase .,(code-char 26159)))) ;; #\U662F 
+    (26174 (:alphabetical .(:lowercase .,(code-char 26174)))) ;; #\U663E 
+    (26223 (:alphabetical .(:lowercase .,(code-char 26223)))) ;; #\U666F 
+    (26354 (:alphabetical .(:lowercase .,(code-char 26354)))) ;; #\U66F2 
+    (26356 (:alphabetical .(:lowercase .,(code-char 26356)))) ;; #\U66F4 
+    (26366 (:alphabetical .(:lowercase .,(code-char 26366)))) ;; #\U66FE 
+    (26368 (:alphabetical .(:lowercase .,(code-char 26368)))) ;; #\U6700 
+    (26376 (:alphabetical .(:lowercase .,(code-char 26376)))) ;; #\U6708 
+    (26377 (:alphabetical .(:lowercase .,(code-char 26377)))) ;; #\U6709 
+    (26399 (:alphabetical .(:lowercase .,(code-char 26399)))) ;; #\U671F 
+    (26410 (:alphabetical .(:lowercase .,(code-char 26410)))) ;; #\U672A 
+    (26412 (:alphabetical .(:lowercase .,(code-char 26412)))) ;; #\U672C 
+    (26441 (:alphabetical .(:lowercase .,(code-char 26441)))) ;; #\U6749 
+    (26512 (:alphabetical .(:lowercase .,(code-char 26512)))) ;; #\U6790 
+    (26524 (:alphabetical .(:lowercase .,(code-char 26524)))) ;; #\U679C 
+    (26597 (:alphabetical .(:lowercase .,(code-char 26597)))) ;; #\U67E5 
+    (26631 (:alphabetical .(:lowercase .,(code-char 26631)))) ;; #\U6807 
+    (26681 (:alphabetical .(:lowercase .,(code-char 26681)))) ;; #\U6839 
+    (26816 (:alphabetical .(:lowercase .,(code-char 26816)))) ;; #\U68C0 
+    (26908 (:alphabetical .(:lowercase .,(code-char 26908)))) ;; #\U691C 
+    (27096 (:alphabetical .(:lowercase .,(code-char 27096)))) ;; #\U69D8 
+    (27161 (:alphabetical .(:lowercase .,(code-char 27161)))) ;; #\U6A19 
+    (27169 (:alphabetical .(:lowercase .,(code-char 27169)))) ;; #\U6A21 
+    (27178 (:alphabetical .(:lowercase .,(code-char 27178)))) ;; #\U6A2A 
+    (27425 (:alphabetical .(:lowercase .,(code-char 27425)))) ;; #\U6B21 
+    (27491 (:alphabetical .(:lowercase .,(code-char 27491)))) ;; #\U6B63 
+    (27492 (:alphabetical .(:lowercase .,(code-char 27492)))) ;; #\U6B64 
+    (27493 (:alphabetical .(:lowercase .,(code-char 27493)))) ;; #\U6B65 
+    (27507 (:alphabetical .(:lowercase .,(code-char 27507)))) ;; #\U6B73 
+    (27599 (:alphabetical .(:lowercase .,(code-char 27599)))) ;; #\U6BCF 
+    (27602 (:alphabetical .(:lowercase .,(code-char 27602)))) ;; #\U6BD2 
+    (27604 (:alphabetical .(:lowercase .,(code-char 27604)))) ;; #\U6BD4 
+    (27665 (:alphabetical .(:lowercase .,(code-char 27665)))) ;; #\U6C11 
+    (27700 (:alphabetical .(:lowercase .,(code-char 27700)))) ;; #\U6C34 
+    (27809 (:alphabetical .(:lowercase .,(code-char 27809)))) ;; #\U6CA1 
+    (27835 (:alphabetical .(:lowercase .,(code-char 27835)))) ;; #\U6CBB 
+    (27841 (:alphabetical .(:lowercase .,(code-char 27841)))) ;; #\U6CC1 
+    (27861 (:alphabetical .(:lowercase .,(code-char 27861)))) ;; #\U6CD5 
+    (27880 (:alphabetical .(:lowercase .,(code-char 27880)))) ;; #\U6CE8 
+    (27979 (:alphabetical .(:lowercase .,(code-char 27979)))) ;; #\U6D4B 
+    (28082 (:alphabetical .(:lowercase .,(code-char 28082)))) ;; #\U6DB2 
+    (28508 (:alphabetical .(:lowercase .,(code-char 28508)))) ;; #\U6F5C 
+    (28608 (:alphabetical .(:lowercase .,(code-char 28608)))) ;; #\U6FC0 
+    (28814 (:alphabetical .(:lowercase .,(code-char 28814)))) ;; #\U708E 
+    (28857 (:alphabetical .(:lowercase .,(code-char 28857)))) ;; #\U70B9 
+    (28895 (:alphabetical .(:lowercase .,(code-char 28895)))) ;; #\U70DF 
+    (28919 (:alphabetical .(:lowercase .,(code-char 28919)))) ;; #\U70F7 
+    (29017 (:alphabetical .(:lowercase .,(code-char 29017)))) ;; #\U7159 
+    (29031 (:alphabetical .(:lowercase .,(code-char 29031)))) ;; #\U7167 
+    (29289 (:alphabetical .(:lowercase .,(code-char 29289)))) ;; #\U7269 
+    (29305 (:alphabetical .(:lowercase .,(code-char 29305)))) ;; #\U7279 
+    (29366 (:alphabetical .(:lowercase .,(code-char 29366)))) ;; #\U72B6 
+    (29575 (:alphabetical .(:lowercase .,(code-char 29575)))) ;; #\U7387 
+    (29615 (:alphabetical .(:lowercase .,(code-char 29615)))) ;; #\U73AF 
+    (29616 (:alphabetical .(:lowercase .,(code-char 29616)))) ;; #\U73B0 
+    (29664 (:alphabetical .(:lowercase .,(code-char 29664)))) ;; #\U73E0 
+    (29702 (:alphabetical .(:lowercase .,(code-char 29702)))) ;; #\U7406 
+    (29872 (:alphabetical .(:lowercase .,(code-char 29872)))) ;; #\U74B0 
+    (29983 (:alphabetical .(:lowercase .,(code-char 29983)))) ;; #\U751F 
+    (29992 (:alphabetical .(:lowercase .,(code-char 29992)))) ;; #\U7528 
+    (30007 (:alphabetical .(:lowercase .,(code-char 30007)))) ;; #\U7537 
+    (30028 (:alphabetical .(:lowercase .,(code-char 30028)))) ;; #\U754C 
+    (30064 (:alphabetical .(:lowercase .,(code-char 30064)))) ;; #\U7570 
+    (30097 (:alphabetical .(:lowercase .,(code-char 30097)))) ;; #\U7591 
+    (30103 (:alphabetical .(:lowercase .,(code-char 30103)))) ;; #\U7597 
+    (30149 (:alphabetical .(:lowercase .,(code-char 30149)))) ;; #\U75C5 
+    (30151 (:alphabetical .(:lowercase .,(code-char 30151)))) ;; #\U75C7 
+    (30244 (:alphabetical .(:lowercase .,(code-char 30244)))) ;; #\U7624 
+    (30284 (:alphabetical .(:lowercase .,(code-char 30284)))) ;; #\U764C 
+    (30333 (:alphabetical .(:lowercase .,(code-char 30333)))) ;; #\U767D 
+    (30340 (:alphabetical .(:lowercase .,(code-char 30340)))) ;; #\U7684 
+    (30382 (:alphabetical .(:lowercase .,(code-char 30382)))) ;; #\U76AE 
+    (30417 (:alphabetical .(:lowercase .,(code-char 30417)))) ;; #\U76D1 
+    (30456 (:alphabetical .(:lowercase .,(code-char 30456)))) ;; #\U76F8 
+    (30740 (:alphabetical .(:lowercase .,(code-char 30740)))) ;; #\U7814 
+    (30784 (:alphabetical .(:lowercase .,(code-char 30784)))) ;; #\U7840 
+    (30828 (:alphabetical .(:lowercase .,(code-char 30828)))) ;; #\U786C 
+    (30906 (:alphabetical .(:lowercase .,(code-char 30906)))) ;; #\U78BA 
+    (31034 (:alphabetical .(:lowercase .,(code-char 31034)))) ;; #\U793A 
+    (31227 (:alphabetical .(:lowercase .,(code-char 31227)))) ;; #\U79FB 
+    (31243 (:alphabetical .(:lowercase .,(code-char 31243)))) ;; #\U7A0B 
+    (31283 (:alphabetical .(:lowercase .,(code-char 31283)))) ;; #\U7A33 
+    (31309 (:alphabetical .(:lowercase .,(code-char 31309)))) ;; #\U7A4D 
+    (31350 (:alphabetical .(:lowercase .,(code-char 31350)))) ;; #\U7A76 
+    (31469 (:alphabetical .(:lowercase .,(code-char 31469)))) ;; #\U7AED 
+    (31867 (:alphabetical .(:lowercase .,(code-char 31867)))) ;; #\U7C7B 
+    (31958 (:alphabetical .(:lowercase .,(code-char 31958)))) ;; #\U7CD6 
+    (31995 (:alphabetical .(:lowercase .,(code-char 31995)))) ;; #\U7CFB 
+    (32034 (:alphabetical .(:lowercase .,(code-char 32034)))) ;; #\U7D22 
+    (32043 (:alphabetical .(:lowercase .,(code-char 32043)))) ;; #\U7D2B 
+    (32080 (:alphabetical .(:lowercase .,(code-char 32080)))) ;; #\U7D50 
+    (32113 (:alphabetical .(:lowercase .,(code-char 32113)))) ;; #\U7D71 
+    (32218 (:alphabetical .(:lowercase .,(code-char 32218)))) ;; #\U7DDA 
+    (32294 (:alphabetical .(:lowercase .,(code-char 32294)))) ;; #\U7E26 
+    (32423 (:alphabetical .(:lowercase .,(code-char 32423)))) ;; #\U7EA7 
+    (32435 (:alphabetical .(:lowercase .,(code-char 32435)))) ;; #\U7EB3 
+    (32437 (:alphabetical .(:lowercase .,(code-char 32437)))) ;; #\U7EB5 
+    (32447 (:alphabetical .(:lowercase .,(code-char 32447)))) ;; #\U7EBF 
+    (32452 (:alphabetical .(:lowercase .,(code-char 32452)))) ;; #\U7EC4 
+    (32455 (:alphabetical .(:lowercase .,(code-char 32455)))) ;; #\U7EC7 
+    (32456 (:alphabetical .(:lowercase .,(code-char 32456)))) ;; #\U7EC8 
+    (32467 (:alphabetical .(:lowercase .,(code-char 32467)))) ;; #\U7ED3 
+    (32676 (:alphabetical .(:lowercase .,(code-char 32676)))) ;; #\U7FA4 
+    (32771 (:alphabetical .(:lowercase .,(code-char 32771)))) ;; #\U8003 
+    (32773 (:alphabetical .(:lowercase .,(code-char 32773)))) ;; #\U8005 
+    (32780 (:alphabetical .(:lowercase .,(code-char 32780)))) ;; #\U800C 
+    (32784 (:alphabetical .(:lowercase .,(code-char 32784)))) ;; #\U8010 
+    (32852 (:alphabetical .(:lowercase .,(code-char 32852)))) ;; #\U8054 
+    (32908 (:alphabetical .(:lowercase .,(code-char 32908)))) ;; #\U808C 
+    (32957 (:alphabetical .(:lowercase .,(code-char 32957)))) ;; #\U80BD 
+    (32959 (:alphabetical .(:lowercase .,(code-char 32959)))) ;; #\U80BF 
+    (32972 (:alphabetical .(:lowercase .,(code-char 32972)))) ;; #\U80CC 
+    (33016 (:alphabetical .(:lowercase .,(code-char 33016)))) ;; #\U80F8 
+    (33021 (:alphabetical .(:lowercase .,(code-char 33021)))) ;; #\U80FD 
+    (33026 (:alphabetical .(:lowercase .,(code-char 33026)))) ;; #\U8102 
+    (33032 (:alphabetical .(:lowercase .,(code-char 33032)))) ;; #\U8108 
+    (33039 (:alphabetical .(:lowercase .,(code-char 33039)))) ;; #\U810F 
+    (33041 (:alphabetical .(:lowercase .,(code-char 33041)))) ;; #\U8111 
+    (33146 (:alphabetical .(:lowercase .,(code-char 33146)))) ;; #\U817A 
+    (33205 (:alphabetical .(:lowercase .,(code-char 33205)))) ;; #\U81B5 
+    (33235 (:alphabetical .(:lowercase .,(code-char 33235)))) ;; #\U81D3 
+    (33324 (:alphabetical .(:lowercase .,(code-char 33324)))) ;; #\U822C 
+    (33509 (:alphabetical .(:lowercase .,(code-char 33509)))) ;; #\U82E5 
+    (33539 (:alphabetical .(:lowercase .,(code-char 33539)))) ;; #\U8303 
+    (33655 (:alphabetical .(:lowercase .,(code-char 33655)))) ;; #\U8377 
+    (33879 (:alphabetical .(:lowercase .,(code-char 33879)))) ;; #\U8457 
+    (33981 (:alphabetical .(:lowercase .,(code-char 33981)))) ;; #\U84BD 
+    (34013 (:alphabetical .(:lowercase .,(code-char 34013)))) ;; #\U84DD 
+    (34385 (:alphabetical .(:lowercase .,(code-char 34385)))) ;; #\U8651 
+    (34507 (:alphabetical .(:lowercase .,(code-char 34507)))) ;; #\U86CB 
+    (34880 (:alphabetical .(:lowercase .,(code-char 34880)))) ;; #\U8840 
+    (34892 (:alphabetical .(:lowercase .,(code-char 34892)))) ;; #\U884C 
+    (34920 (:alphabetical .(:lowercase .,(code-char 34920)))) ;; #\U8868 
+    (34928 (:alphabetical .(:lowercase .,(code-char 34928)))) ;; #\U8870 
+    (35201 (:alphabetical .(:lowercase .,(code-char 35201)))) ;; #\U8981 
+    (35211 (:alphabetical .(:lowercase .,(code-char 35211)))) ;; #\U898B 
+    (35215 (:alphabetical .(:lowercase .,(code-char 35215)))) ;; #\U898F 
+    (35265 (:alphabetical .(:lowercase .,(code-char 35265)))) ;; #\U89C1 
+    (35299 (:alphabetical .(:lowercase .,(code-char 35299)))) ;; #\U89E3 
+    (35328 (:alphabetical .(:lowercase .,(code-char 35328)))) ;; #\U8A00 
+    (35336 (:alphabetical .(:lowercase .,(code-char 35336)))) ;; #\U8A08 
+    (35342 (:alphabetical .(:lowercase .,(code-char 35342)))) ;; #\U8A0E 
+    (35413 (:alphabetical .(:lowercase .,(code-char 35413)))) ;; #\U8A55 
+    (35469 (:alphabetical .(:lowercase .,(code-char 35469)))) ;; #\U8A8D 
+    (35519 (:alphabetical .(:lowercase .,(code-char 35519)))) ;; #\U8ABF 
+    (35542 (:alphabetical .(:lowercase .,(code-char 35542)))) ;; #\U8AD6 
+    (35745 (:alphabetical .(:lowercase .,(code-char 35745)))) ;; #\U8BA1 
+    (35760 (:alphabetical .(:lowercase .,(code-char 35760)))) ;; #\U8BB0 
+    (35770 (:alphabetical .(:lowercase .,(code-char 35770)))) ;; #\U8BBA 
+    (35775 (:alphabetical .(:lowercase .,(code-char 35775)))) ;; #\U8BBF 
+    (35780 (:alphabetical .(:lowercase .,(code-char 35780)))) ;; #\U8BC4 
+    (35786 (:alphabetical .(:lowercase .,(code-char 35786)))) ;; #\U8BCA 
+    (35937 (:alphabetical .(:lowercase .,(code-char 35937)))) ;; #\U8C61 
+    (36127 (:alphabetical .(:lowercase .,(code-char 36127)))) ;; #\U8D1F 
+    (36229 (:alphabetical .(:lowercase .,(code-char 36229)))) ;; #\U8D85 
+    (36321 (:alphabetical .(:lowercase .,(code-char 36321)))) ;; #\U8DE1 
+    (36341 (:alphabetical .(:lowercase .,(code-char 36341)))) ;; #\U8DF5 
+    (36394 (:alphabetical .(:lowercase .,(code-char 36394)))) ;; #\U8E2A 
+    (36716 (:alphabetical .(:lowercase .,(code-char 36716)))) ;; #\U8F6C 
+    (36739 (:alphabetical .(:lowercase .,(code-char 36739)))) ;; #\U8F83 
+    (36741 (:alphabetical .(:lowercase .,(code-char 36741)))) ;; #\U8F85 
+    (36755 (:alphabetical .(:lowercase .,(code-char 36755)))) ;; #\U8F93 
+    (36798 (:alphabetical .(:lowercase .,(code-char 36798)))) ;; #\U8FBE 
+    (36807 (:alphabetical .(:lowercase .,(code-char 36807)))) ;; #\U8FC7 
+    (36816 (:alphabetical .(:lowercase .,(code-char 36816)))) ;; #\U8FD0 
+    (36825 (:alphabetical .(:lowercase .,(code-char 36825)))) ;; #\U8FD9 
+    (36827 (:alphabetical .(:lowercase .,(code-char 36827)))) ;; #\U8FDB 
+    (36861 (:alphabetical .(:lowercase .,(code-char 36861)))) ;; #\U8FFD 
+    (36899 (:alphabetical .(:lowercase .,(code-char 36899)))) ;; #\U9023 
+    (36984 (:alphabetical .(:lowercase .,(code-char 36984)))) ;; #\U9078 
+    (36986 (:alphabetical .(:lowercase .,(code-char 36986)))) ;; #\U907A 
+    (37255 (:alphabetical .(:lowercase .,(code-char 37255)))) ;; #\U9187 
+    (37325 (:alphabetical .(:lowercase .,(code-char 37325)))) ;; #\U91CD 
+    (37327 (:alphabetical .(:lowercase .,(code-char 37327)))) ;; #\U91CF 
+    (37492 (:alphabetical .(:lowercase .,(code-char 37492)))) ;; #\U9274 
+    (38041 (:alphabetical .(:lowercase .,(code-char 38041)))) ;; #\U9499 
+    (38048 (:alphabetical .(:lowercase .,(code-char 38048)))) ;; #\U94A0 
+    (38291 (:alphabetical .(:lowercase .,(code-char 38291)))) ;; #\U9593 
+    (38306 (:alphabetical .(:lowercase .,(code-char 38306)))) ;; #\U95A2 
+    (38382 (:alphabetical .(:lowercase .,(code-char 38382)))) ;; #\U95EE 
+    (38388 (:alphabetical .(:lowercase .,(code-char 38388)))) ;; #\U95F4 
+    (38451 (:alphabetical .(:lowercase .,(code-char 38451)))) ;; #\U9633 
+    (38459 (:alphabetical .(:lowercase .,(code-char 38459)))) ;; #\U963B 
+    (38477 (:alphabetical .(:lowercase .,(code-char 38477)))) ;; #\U964D 
+    (38500 (:alphabetical .(:lowercase .,(code-char 38500)))) ;; #\U9664 
+    (38522 (:alphabetical .(:lowercase .,(code-char 38522)))) ;; #\U967A 
+    (38543 (:alphabetical .(:lowercase .,(code-char 38543)))) ;; #\U968F 
+    (38598 (:alphabetical .(:lowercase .,(code-char 38598)))) ;; #\U96C6 
+    (38656 (:alphabetical .(:lowercase .,(code-char 38656)))) ;; #\U9700 
+    (38750 (:alphabetical .(:lowercase .,(code-char 38750)))) ;; #\U975E 
+    (38911 (:alphabetical .(:lowercase .,(code-char 38911)))) ;; #\U97FF 
+    (39033 (:alphabetical .(:lowercase .,(code-char 39033)))) ;; #\U9879 
+    (39044 (:alphabetical .(:lowercase .,(code-char 39044)))) ;; #\U9884 
+    (39057 (:alphabetical .(:lowercase .,(code-char 39057)))) ;; #\U9891 
+    (39064 (:alphabetical .(:lowercase .,(code-char 39064)))) ;; #\U9898 
+    (39640 (:alphabetical .(:lowercase .,(code-char 39640)))) ;; #\U9AD8 
+    (40802 (:alphabetical .(:lowercase .,(code-char 40802)))) ;; #\U9F62
+    (64256 (:punctuation .,(punctuation-named (code-char 64256)))) ;; ﬀ
+    (65285 (:punctuation .,(punctuation-named (code-char 65285)))) ;; #\FULLWIDTH_PERCENT_SIGN 
+    (65289 (:punctuation .,(punctuation-named (code-char 65289)))) ;;  #\FULLWIDTH_RIGHT_PARENTHESIS 
+    (65292 (:punctuation .,(punctuation-named (code-char 65292)))) ;; #\FULLWIDTH_COMMA 
+    (64257 (:alphabetical . (:lowercase . , (code-char 64257)))) ;;"ﬁ", (code = 64257)
+    (64258 (:alphabetical . (:lowercase . , (code-char 64258)))) ;;"ﬂ", (code = 64258)
+    (65288 (:punctuation  .,(punctuation-named (code-char 65288)))) ;;"（", (code = 65288)
+    (65293 (:punctuation  .,(punctuation-named (code-char 65293)))) ;;"－", (code = 65293)
+    (65306 (:punctuation .,(punctuation-named (code-char 65306)))) ;; #\FULLWIDTH_COLON 
+    (65307 (:punctuation .,(punctuation-named (code-char 65307)))) ;; #\FULLWIDTH_SEMICOLON 
+    (65308 (:punctuation .,(punctuation-named (code-char 65308)))) ;; #\FULLWIDTH_LESS-THAN_SIGN 
+    (65310 (:punctuation .,(punctuation-named (code-char 65310)))) ;; #\FULLWIDTH_GREATER-THAN_SIGN 
+    (65374 (:punctuation .,(punctuation-named (code-char 65374)))) ;; #\FULLWIDTH_TILDE 
+    (65533 (:punctuation .,(punctuation-named (code-char 65533)))) ;; �
+    (119967 (:punctuation  .,(punctuation-named (code-char 119967)))) ;;"풟", (code = 119967)
+    (119977 (:alphabetical .(:lowercase .,(code-char 119977)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_N 
+    (119978 (:alphabetical .(:lowercase .,(code-char 119978)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_O 
+    (119989 (:alphabetical .(:lowercase .,(code-char 119989)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_Z 
+    (120594 (:alphabetical .(:lowercase .,(code-char 120594)))) ;; #\MATHEMATICAL_ITALIC_SMALL_CHI 
       
-      (339 (:alphabetical . (:lowercase . #\o)))  ;; "œ" #\Latin_Small_Ligature_Oe
-      (341 (:alphabetical . (:lowercase . #\Latin_Small_Letter_R_With_Acute)))   ;; #\Latin_Small_Letter_R_With_Acute
-      (347 (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute)))   ;; #\Latin_Small_Letter_S_With_Acute
-      (347 (:alphabetical . (:lowercase . #\Latin_Small_Letter_S_With_Acute)))   ;; #\Latin_Small_Letter_S_With_Acute
-      (352 (:alphabetical . (:lowercase . ,(code-char 352))))   ;; #\latin_capital_letter_s_with_Caron
-      (353 (:alphabetical . (:lowercase . #\s)))   ;; #\Latin_Small_Letter_S_With_Caron
-      (381 (:alphabetical . (:uppercase .,(code-char 381)))) ;; #\LATIN_CAPITAL_LETTER_Z_WITH_CARON
-      (382 (:alphabetical . (:uppercase .,(code-char 382)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CARON
-      (400 (:alphabetical . (:lowercase . #\s)));; #\Latin_Capital_Letter_Open_E
-
-      (404 (:alphabetical . (:lowercase . ,(code-char 404)))) ;;Ɣ
-      (408 (:alphabetical . (:lowercase . ,(code-char 408)))) ;;Ƙ
-      (448 (:alphabetical . (:lowercase . ,(code-char 448))))   ;; #\Latin_Capital_Letter_Open_E
-      (562 (:alphabetical . (:uppercase .,(code-char 562)))) ;; #\LATIN_CAPITAL_LETTER_Y_WITH_MACRON
-      (593 (:alphabetical . (:uppercase .,(code-char 593)))) ;;ɑ
-      (603 (:alphabetical . (:lowercase . #\e))) ;;"ɛ", (code = 603)  ;; #\Latin_Small_Letter_Open_E
-      (611 (:alphabetical . (:uppercase .,(code-char 611)))) ;; #\LATIN_SMALL_LETTER_GAMMA
-      (657 (:alphabetical . (:uppercase .,(code-char 657)))) ;; #\LATIN_SMALL_LETTER_Z_WITH_CURL
-      (697 (:punctuation . ,(punctuation-named (code-char 697))))  ;; "ʹ" #\Modifier_Letter_Prime
-      (700 (:alphabetical . (:uppercase .,(code-char 700)))) ;;#\MODIFIER_LETTER_APOSTROPHE
-      (706 (:alphabetical . (:uppercase .,(code-char 706)))) ;;˂
-      (710 (:punctuation . ,(punctuation-named (code-char 710))))  ;; "ˆ" #\Modifier_Letter_Circumflex_Accent
-      (712 (:alphabetical . (:uppercase .,(code-char 712)))) ;;ˈ
-      (713 (:alphabetical . (:uppercase .,(code-char 713)))) ;;ˉ
-      (729 (:punctuation . ,(punctuation-named (code-char 729)))) ;; #\*)) ;;"˙", (code = 729)  ;; #\Dot_Above
-      (730 (:punctuation . ,(punctuation-named (code-char 730))))  ;; #\Ring_Above
-      (732 (:punctuation . ,(punctuation-named (code-char 732)))) ;;"˜"  ;; #\Small_Tilde
-      (768 (:punctuation . ,(punctuation-named (code-char 768))))   ;; #\COMBINING_GRAVE_ACCENT
-      (769 (:punctuation . ,(punctuation-named (code-char 769))))   ;; #\Combining_Acute_Accent
-      (770 (:alphabetical . (:lowercase . ,(code-char 770))))   ;; #\Latin_Small_Letter_S_With_Acute
-      (771 (:alphabetical . (:uppercase .,(code-char 771)))) ;; #\COMBINING_TILDE
-      (772 (:punctuation . ,(punctuation-named (code-char 772))))  ;; #\Combining_Macron
-      (773 (:alphabetical . (:uppercase .,(code-char 773)))) ;;#\COMBINING_OVERLINE
-      (776 (:punctuation . ,(punctuation-named (code-char 776))))   ;; #\Combining_Diaeresis
-      (778 (:alphabetical . (:uppercase .,(code-char 778)))) ;;̊
-      (803 (:alphabetical . (:uppercase .,(code-char 803)))) ;; #\COMBINING_DOT_BELOW
-      (834 (:punctuation . ,(punctuation-named (code-char 834)))) ;;";", (code = 894)    
-      (894 (:punctuation . ,(punctuation-named (code-char 894)))) ;;";", (code = 894)
-      (900 (:punctuation . ,(punctuation-named (code-char 900)))) ;;΄
-      (901 (:alphabetical . (:uppercase .,(code-char 901)))) ;; #\GREEK_DIALYTIKA_TONOS
-      (902 (:alphabetical . (:uppercase .,(code-char 902)))) ;;Ά
-      (913 (:greek . (:uppercase . ,(code-char 913))))  ;; #\Greek_Capital_Letter_Alpha "Α"
-      (914 (:greek . (:uppercase . ,(code-char 914))))  ;; #\Greek_Capital_Letter_Beta "Β"
-      (915 (:greek . (:uppercase . ,(code-char 915))))  ;; #\Greek_Capital_Letter_Gamma "Γ"
-      (916 (:punctuation . ,(punctuation-named (code-char 916))));; #\Greek_Capital_Letter_Delta "Δ" (:greek . (:uppercase
-       ;; . ,(code-char 916)))) redefining as punctuation to see if
-       ;; that makes it easier to deal with cases where it's being
-       ;; used at the beginning of an item to denote "change" -- as in
-       ;; ΔΨ for membrane potential
-      (917 (:greek . (:uppercase . ,(code-char 917))))  ;; #\Greek_Capital_Letter_Epsilon
-      (918 (:greek . (:uppercase . ,(code-char 918))))  ;; #\Greek_Capital_Letter_Zeta
-      (919 (:greek . (:uppercase . ,(code-char 919))))  ;; "Η" #\Greek_Capital_Letter_Eta
-      (920 (:greek . (:uppercase . ,(code-char 920))))  ;; #\Greek_Capital_Letter_Theta
-      (921 (:greek . (:uppercase . ,(code-char 921))))  ;; #\Greek_Capital_Letter_Iota
-      (922 (:greek . (:uppercase . ,(code-char 922))))  ;; "Κ" #\Greek_Capital_Letter_Kappa
-      (923 (:greek . (:lowercase . ,(code-char 923))))     ;; "Λ" #\Greek_Capital_Letter_Lambda
-      (924 (:greek . (:uppercase . ,(code-char 924)))) ;;"Μ", (code = 924)
-      (925 (:greek . (:uppercase . ,(code-char 925)))) ;;"Ν", (code = 925)
-      (926 (:greek . (:uppercase . ,(code-char 926)))) ;;, (code = 926)
-      (927 (:greek . (:uppercase . ,(code-char 927)))) ;;, (code = 927)
-      (928 (:greek . (:uppercase . ,(code-char 928)))) ;;, (code = 928)
-      (929 (:greek . (:uppercase . ,(code-char 929)))) ;;, (code = 929)
-      (930 (:greek . (:uppercase . ,(code-char 930)))) ;;, (code = 930)
-      (931 (:greek . (:uppercase . ,(code-char 931))))    ;; "Σ" #\Greek_Capital_Letter_Sigma
-      (932 (:greek . (:uppercase . ,(code-char 932)))) ;;"Τ", (code = 932)
-      (933 (:greek . (:uppercase . ,(code-char 933)))) ;;"Υ", (code = 933)
-      (934 (:greek . (:uppercase . ,(code-char 934)))) ;;"Φ", (code = 934)
-      (935 (:greek . (:uppercase . ,(code-char 935)))) ;;"Χ", (code = 935)
-      (936 (:greek . (:uppercase . ,(code-char 936)))) ;;"Ψ", (code = 936)
-      (937 (:greek . (:uppercase . ,(code-char 937)))) ;;"Ω", (code = 937)
-      (940 (:greek . (:lowercase . ,(code-char 940)))) ;;"ά", (code = 940)  ;; #\GREEK_SMALL_LETTER_ALPHA_WITH_TONOS
-      (943 (:alphabetical . (:uppercase .,(code-char 943)))) ;; #\GREEK_SMALL_LETTER_IOTA_WITH_TONOS
-      (971 (:alphabetical . (:uppercase .,(code-char 971)))) ;;ϋ
-      (977 (:alphabetical . (:uppercase .,(code-char 977)))) ;; #\GREEK_THETA_SYMBOL
-      (978 (:alphabetical . (:uppercase .,(code-char 978)))) ;; #\GREEK_UPSILON_WITH_HOOK_SYMBOL
-      (945 (:greek . (:lowercase . ,(code-char 945))))  ;; #\Greek_Small_Letter_Alpha
-      (946 (:greek . (:lowercase . ,(code-char 946))))  ;; #\Greek_Small_Letter_Beta
-      (947 (:greek . (:lowercase . ,(code-char 947))))  ;; #\Greek_Small_Letter_Gamma
-      (948 (:greek . (:lowercase . ,(code-char 948))))  ;; #\Greek_Small_Letter_Delta
-      (949 (:greek . (:lowercase . ,(code-char 949))))  ;; #\Greek_Small_Letter_Epsilon
-      (950 (:greek . (:lowercase . ,(code-char 950))))  ;; #\Greek_Small_Letter_Zeta
-      (951 (:greek . (:lowercase . ,(code-char 951))))  ;; #\Greek_Small_Letter_Eta
-      (952 (:greek . (:lowercase . ,(code-char 952))))  ;; #\Greek_Small_Letter_Theta
-      (953 (:greek . (:lowercase . ,(code-char 953))))  ;; #\Greek_Small_Letter_Iota
-      (954 (:greek . (:lowercase . ,(code-char 954))))  ;; #\Greek_Small_Letter_Kappa  U#03BA
-      (955 (:greek . (:lowercase . ,(code-char 955))))  ;; #\Greek_Small_Letter_Lambda
-      (956 (:greek . (:lowercase . ,(code-char 956))))  ;; #\Greek_Small_Letter_Mu
-      (957 (:greek . (:lowercase . ,(code-char 957))))  ;; "ξ" #\Greek_Small_Letter_Omicron
-      (958 (:greek . (:lowercase . ,(code-char 958))))  ;; "ξ" #\Greek_Small_Letter_Xi
-      (959 (:greek . (:lowercase . , (code-char 959)))) ;;"ο", (code = 959)
-      (960 (:greek . (:lowercase . , (code-char 960)))) ;;"π", (code = 960)
-      (961 (:greek . (:lowercase . , (code-char 961)))) ;;"ρ", (code = 961)
-      (962 (:greek . (:lowercase . , (code-char 961)))) ;;"ς", (code = 962)
-      (963 (:greek . (:lowercase . ,(code-char 963)))) ;; #\Greek_Small_Letter_Sigma
-      (964 (:greek . (:lowercase . , (code-char 964)))) ;;"τ", (code = 964)
-      (965 (:greek . (:lowercase . ,(code-char 965))))  ;; "υ" #\Greek_Small_Letter_Upsilon
-      (966 (:greek . (:lowercase . ,(code-char 966))))  ;; "φ" #\Greek_Small_Letter_Phi
-      (967 (:greek . (:lowercase . , (code-char 967)))) ;;"χ", (code = 967)
-      (968 (:greek . (:lowercase . , (code-char 968)))) ;;"ψ", (code = 968)
-      (969 (:greek . (:lowercase . , (code-char 969)))) ;;"ω", (code = 969)
-      (976 (:greek . (:lowercase . , (code-char 976)))) ;;#\GREEK_BETA_SYMBOL
-      (977 (:greek . (:lowercase . , (code-char 977)))) ;;
-      (981 (:greek . (:lowercase . , (code-char 981)))) ;;"ϕ", (code = 981)
-
-
-      (1013 (:punctuation . ,(punctuation-named (code-char 1013)))) ;; "ϵ"
-      (1050 (:alphabetical . (:uppercase .,(code-char 1050)))) ;; #\CYRILLIC_CAPITAL_LETTER_KA
-      (1082 (:alphabetical . (:lowercase . , (code-char 1082)))) ;;"к", (code = 1082) #\CYRILLIC_SMALL_LETTER_KA      
-      (1092 (:alphabetical . (:uppercase .,(code-char 1092)))) ;; #\CYRILLIC_SMALL_LETTER_EF
-      (1092 (:alphabetical . (:lowercase . , (code-char 1092)))) ;;"Ñ", (code = 1092) 
-      (1108 (:alphabetical . (:uppercase .,(code-char 1108)))) ;; #\CYRILLIC_SMALL_LETTER_UKRAINIAN_IE      
-
-      (8004 (:punctuation . ,(punctuation-named (code-char 8004)))) ;; #\GREEK_SMALL_LETTER_OMICRON_WITH_PSILI_AND_OXIA
-      (8194 (:punctuation . ,(punctuation-named (code-char 8194)))) ;;" ", (code = 8194)  ;; #\EN_SPACE
-      (8195 (:punctuation . ,(punctuation-named (code-char 8195)))) ;;  #\EM_SPACE      
-      (8197 (:punctuation . :space));; ,(punctuation-named (code-char 8197)))) ;;" ", (code = 8197)  ;; #\FOUR-PER-EM_SPACE
-      (8200 (:punctuation . ,(punctuation-named (code-char 8200)))) ;; #\PUNCTUATION_SPACE
-      (8201 (:punctuation . :space)) ;; ,(punctuation-named (code-char 8201)))) ;;" ", (code = 8201)  ;; #\THIN_SPACE
-      (8202 (:punctuation .  :space));; ,(punctuation-named (code-char 8202)))) ;;" ", (code = 8202)   ;; #\hair_space
-      (8203 (:punctuation . :space))   ;; #\ZERO_WIDTH_SPACE
-      (8206 (:punctuation . ,(punctuation-named (code-char 8206)))) ;;‎
-      (8207 (:punctuation . ,(punctuation-named (code-char 8207)))) ;;‏
-      (8208 (:punctuation . ,(punctuation-named (code-char 8208)))) ;;"‐"  ;; #\HYPHEN
-      (8209 (:punctuation . ,(punctuation-named (code-char 8209)))) ;;"‑"   ;; #\NON-BREAKING_HYPHEN
-      (8210 (:punctuation . ,(punctuation-named (code-char 8210)))) ;;‒
-      (8211 (:punctuation . ,(punctuation-named #\- )))   ;; en dash
-      (8212 (:punctuation . ,(punctuation-named #\- )))   ;; em dash, html: &mdash; "—" 
-       ;; Doesn't appear to have a symbolic form in ccl 
-       ;; (note from Laurel: this should probably be treated
-       ;; differently from en dash and hyphen but isn't yet)
-      (8213 (:punctuation . ,(punctuation-named (code-char 8213)))) ;;"―", (code = 8213)
-      (8214 (:punctuation . ,(punctuation-named (code-char 8214)))) ;; #\DOUBLE_VERTICAL_LINE      
-      (8216 (:punctuation . ,(punctuation-named #\' )))  ;; left single quote
-      (8217 (:punctuation . ,(punctuation-named #\' )))  ;; right single quote
-      (8218 (:punctuation . ,(punctuation-named (code-char 8218)))) ;;"‚", (code = 8218)
-      (8220 (:punctuation . ,(punctuation-named #\" )))  ;; left double quote
-      (8221 (:punctuation . ,(punctuation-named #\" )))  ;; right double quote
-      (8222 (:punctuation . ,(punctuation-named (code-char 8222)))) ;; #\DOUBLE_LOW-9_QUOTATION_MARK
-      (8224 (:punctuation . ,(punctuation-named (code-char 8224)))) ;; †
-      (8225 (:punctuation . ,(punctuation-named (code-char 8225)))) ;; ‡
-      (8226 (:punctuation . ,(punctuation-named (code-char 8226)))) ;;"•", (code = 8226)
-      (8229 (:punctuation . ,(punctuation-named (code-char 8229)))) ;;#\TWO_DOT_LEADER
-      (8230 (:punctuation . ,(punctuation-named (code-char 8230)))) ;;"…", (code = 8230)
-      (8232 (:punctuation . ,(punctuation-named (code-char 8232)))) ;;"", (code = 8232)
-      (8239 (:punctuation . ,(punctuation-named (code-char 8239)))) ;; 
-      (8240 (:punctuation . ,(punctuation-named (code-char 8240)))) ;;"‰", (code = 8240)
-      (8242 (:punctuation . ,(punctuation-named (code-char 8242))))  ;; "prime"
-      (8243 (:punctuation . ,(punctuation-named (code-char 8243)))) ;;"″", (code = 8243)
-      (8244 (:punctuation . ,(punctuation-named (code-char 8244)))) ;; #\TRIPLE_PRIME
-      (8245 (:punctuation . ,(punctuation-named (code-char 8245)))) ;;‵
-      (8249 (:punctuation . ,(punctuation-named (code-char 8249)))) ;;‹
-      (8260 (:punctuation . ,(punctuation-named (code-char 8260)))) ;; "⁄" #\U+2044
-      (8364 (:punctuation . ,(punctuation-named (code-char 8364)))) ;; #\EURO_SIGN
-      #-allegro (8446 (:punctuation . ,(punctuation-named (code-char 8446))))  ;;"ℒ", (code = 8446)
-      (8451 (:punctuation . ,(punctuation-named (code-char 8451)))) ;;"℃", (code = 8451)
-      (8466 (:punctuation . ,(punctuation-named (code-char 8466)))) ;;"ℒ", (code = 8466)
-      (8471 (:punctuation . ,(punctuation-named (code-char 8471)))) ;;℗
-      (8482 (:punctuation . ,(punctuation-named (code-char 8482)))) ;;"™", (code = 8482)
-      (8486 (:punctuation . ,(punctuation-named (code-char 8486))))  ;;"Ω" #\U+2126 
-      #-allegro (8488 (:alphabetical . (:uppercase . , #\ℨ))) 
-      (8490 (:punctuation . ,(punctuation-named (code-char 8490)))) ;; #\KELVIN_SIGN
-      (8491 (:punctuation . ,(punctuation-named (code-char 8491))))  ;; angstrom symbol
-      (8499 (:punctuation . ,(punctuation-named (code-char 8499))))  ;;"ℳ" #\U+2133
-      (8531 (:punctuation . ,(punctuation-named (code-char 8531)))) ;;"⅓", (code = 8531)
-      (8544 (:punctuation . ,(punctuation-named (code-char 8544)))) ;; #\ROMAN_NUMERAL_ONE
-      (8545 (:punctuation . ,(punctuation-named (code-char 8545)))) ;;"Ⅱ", (code = 8545)
-      (8546 (:punctuation . ,(punctuation-named (code-char 8546)))) ;; #\ROMAN_NUMERAL_THREE
-      (8547 (:punctuation . ,(punctuation-named (code-char 8547)))) ;; #\ROMAN_NUMERAL_FOUR
-      (8592 (:punctuation . ,(punctuation-named (code-char 8592)))) ;;"←" #\left_right_arrow
-      (8593 (:punctuation . ,(punctuation-named (code-char 8593)))) ;;"↑", (code = 8593)
-      (8594 (:punctuation . ,(punctuation-named (code-char 8594))));; rightwards arrow
-      (8595 (:punctuation . ,(punctuation-named (code-char 8595)))) ;;"↓", (code = 8595)
-      (8596 (:punctuation . ,(punctuation-named (code-char 8596))))
-      (8644 (:punctuation . ,(punctuation-named (code-char 8644)))) ;;⇄     
-      (8656 (:punctuation . ,(punctuation-named (code-char 8656)))) ;; #\LEFTWARDS_DOUBLE_ARROW
-      (8658 (:punctuation . ,(punctuation-named (code-char 8658)))) ;; #\RIGHTWARDS_DOUBLE_ARROW
-      (8660 (:punctuation . ,(punctuation-named (code-char 8660)))) ;; ⇔
-      (8704 (:punctuation . ,(punctuation-named (code-char 8704)))) ;; #|for_all
-      (8706 (:punctuation . ,(punctuation-named (code-char 8706)))) ;;"∂", (code = 8706)
-      (8707 (:punctuation . ,(punctuation-named (code-char 8707)))) ;;"∃"
-      (8709 (:punctuation . ,(punctuation-named (code-char 8709)))) ;; #\EMPTY_SET
-      (8710 (:punctuation . ,(punctuation-named (code-char 8710))))  ;;"∆" #\U+2206
-      (8711 (:punctuation . ,(punctuation-named (code-char 8711)))) ;; ∇
-      (8712 (:punctuation . ,(punctuation-named (code-char 8712))))  ;; "∈" #\U+2208
-      (8714 (:punctuation . ,(punctuation-named (code-char 8714)))) ;;"∊", (code = 8714)
-      (8721 (:punctuation . ,(punctuation-named (code-char 8721)))) ;;"∑", (code = 8721)
-      (8722 (:punctuation . ,(punctuation-named #\-)))  ;; ""−" #\U+2212 Minus sign
-      (8727 (:punctuation . ,(punctuation-named (code-char 8727))))  ;; "∗" #\U+2217
-      (8728 (:punctuation . ,(punctuation-named (code-char 8728)))) ;;∘
-      (8729 (:punctuation . ,(punctuation-named (code-char 8729)))) ;; #\BULLET_OPERATOR
-      (8729 (:punctuation . ,(punctuation-named (code-char 8729)))) ;; ∇
-      (8730 (:punctuation . ,(punctuation-named (code-char 8730)))) ;;
-      (8733 (:punctuation . ,(punctuation-named (code-char 8733)))) ;;
-      (8733 (:punctuation . ,(punctuation-named (code-char 8733)))) ;; 
-      (8733 (:punctuation . ,(punctuation-named (code-char 8733)))) ;; #\PROPORTIONAL_TO
-      (8734 (:punctuation . ,(punctuation-named (code-char 8734)))) ;;"∞", (code = 8734)
-      (8739 (:punctuation . ,(punctuation-named (code-char 8739)))) ;;"∣", (code = 8739)
-      (8743 (:punctuation . ,(punctuation-named (code-char 8743))))  ;; "∧" #\U+2227
-      (8745 (:punctuation . ,(punctuation-named (code-char 8745))))  ;; "∩" #\U+2229
-      (8746 (:punctuation . ,(punctuation-named (code-char 8746)))) ;; #\UNION
-      (8747 (:punctuation . ,(punctuation-named (code-char 8747)))) ;; "∫", (code = 8747)
-      (8758 (:punctuation . ,(punctuation-named #\:)))  ;; ratio  #\U+2236       ;; This is tilde in the Mathematical operator section. ;; we'll use a regular ascii tilde instead
-      (8759 (:punctuation . ,(punctuation-named (code-char 8759)))) ;; ∷
-      (8764 (:punctuation . ,(punctuation-named #\~ ))) ;; #\∼
-      (8765 (:punctuation . ,(punctuation-named #\~ ) )) ;; #\REVERSED_TILDE
-      (8771 (:punctuation . ,(punctuation-named (code-char 8771)))) ;;≃
-      (8773 (:punctuation . ,(punctuation-named (code-char 8773)))) ;; ≅
-      (8776 (:punctuation . ,(punctuation-named (code-char 8776)))) ;;"≈", (code = 8776)
-      (8780 (:punctuation . ,(punctuation-named (code-char 8780)))) ;; #\ALL_EQUAL_TO
-      (8781 (:punctuation . ,(punctuation-named (code-char 8781)))) ;;"≍", (code = 8781)
-      (8800 (:punctuation . ,(punctuation-named (code-char 8800)))) ;;"≠", (code = 8805)    
-      (8801 (:punctuation . ,(punctuation-named (code-char 8801)))) ;; #\IDENTICAL_TO
-      (8804 (:punctuation . ,(punctuation-named (code-char 8804))))  ;;  "≤"
-      (8805 (:punctuation . ,(punctuation-named (code-char 8805)))) ;;"≥", (code = 8805)
-      (8806 (:punctuation . ,(punctuation-named (code-char 8806)))) ;;"≦", (code = 8806)
-      (8807 (:punctuation . ,(punctuation-named (code-char 8807)))) ;; #\GREATER-THAN_OVER_EQUAL_TO
-      (8810 (:punctuation . ,(punctuation-named (code-char 8810))))  ;; "≪" #\U+226B
-      (8811 (:punctuation . ,(punctuation-named (code-char 8811))))  ;; "≫" #\U+226B
-      (8839 (:punctuation . ,(punctuation-named (code-char 8839))))  ;; "⊇" #\U+2287
-      (8869 (:punctuation . ,(punctuation-named (code-char 8869)))) ;; #\UP_TACK
-      (8895 (:punctuation . ,(punctuation-named (code-char 8895)))) ;;⊿
-      (8896 (:punctuation . ,(punctuation-named (code-char 8896)))) ;; #\N-ARY_LOGICAL_AND
-      (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;; "⋄"
-      (8900 (:punctuation . ,(punctuation-named (code-char 8900)))) ;;"⋅", (code = 8901)
-      (8901 (:punctuation . ,(punctuation-named (code-char 8901)))) ;;"⋅", (code = 8901)
-      (8902 (:punctuation . ,(punctuation-named (code-char 8902))))
-      (8921 (:punctuation . ,(punctuation-named (code-char 8921)))) ;; #\VERY_MUCH_GREATER-THAN
-      (8942 (:punctuation . ,(punctuation-named (code-char 8942))))  ;; "▪"
-      (8943 (:punctuation . ,(punctuation-named (code-char 8943))))  ;; "⋯"
-      (8943 (:punctuation . ,(punctuation-named (code-char 8943)))) ;;"⋯", (code = 8943)
-      (9001 (:punctuation . ,(punctuation-named (code-char 9001)))) ;; 〈
-      (9002 (:punctuation . ,(punctuation-named (code-char 9002)))) ;; 〉
-      (9082 (:punctuation . ,(punctuation-named (code-char 9082)))) ;;⍺
-      (9312 (:punctuation . ,(punctuation-named (code-char 9312)))) ;; #\CIRCLED_DIGIT_ONE
-      (9313 (:punctuation . ,(punctuation-named (code-char 9313)))) ;; #\CIRCLED_DIGIT_TWO
-      (9314 (:punctuation . ,(punctuation-named (code-char 9314)))) ;; #\CIRCLED_DIGIT_THREE
-      (9415 (:punctuation . ,(punctuation-named (code-char 9415)))) ;; "Ⓡ"
-      (9474 (:punctuation . ,(punctuation-named (code-char 9474)))) ;;│
-      (9524 (:punctuation . ,(punctuation-named (code-char 9524)))) ;;┴
-      (9553 (:punctuation . ,(punctuation-named (code-char 9553)))) ;;║
-      (9632 (:punctuation . ,(punctuation-named (code-char 9632)))) ;; #\BLACK_SQUARE
-      (9633 (:punctuation . ,(punctuation-named (code-char 9633))))  ;; "□"
-      (9633 (:punctuation . ,(punctuation-named (code-char 9633)))) ;; "□"
-      (9642 (:punctuation . ,(punctuation-named (code-char 9642)))) ;; "□"
-      (9650 (:punctuation . ,(punctuation-named (code-char 9650)))) ;; ▲
-      (9651 (:punctuation . ,(punctuation-named (code-char 9651))))  ;; "△" #\U+25B3
-      (9652 (:punctuation . ,(punctuation-named (code-char 9652)))) ;; "▴"
-      (9653 (:punctuation . ,(punctuation-named (code-char 9653)))) ;;"▵", (code = 8901)
-      (9654 (:punctuation . ,(punctuation-named (code-char 9654)))) ;;▶
-      (9658 (:punctuation . ,(punctuation-named (code-char 9658)))) ;;""►", (code = 9658)
-      (9660 (:punctuation . ,(punctuation-named (code-char 9660)))) ;;▼
-      (9663 (:punctuation . ,(punctuation-named (code-char 9663))))  ;; "▿" #\U+25BF
-      (9670 (:punctuation . ,(punctuation-named (code-char 9670)))) ;;◆
-      (9674 (:punctuation . ,(punctuation-named (code-char 9674))))  ;; "◊" #\U+25CA
-      (9675 (:punctuation . ,(punctuation-named (code-char 9675))))  ;; "○" #\U+25CB
-      (9679 (:punctuation . ,(punctuation-named (code-char 9679)))) ;; ●
-      (9702 (:punctuation . ,(punctuation-named (code-char 9702)))) ;;◦
-      (9733 (:punctuation . ,(punctuation-named (code-char 9733)))) ;;"★"
-      (9792 (:punctuation . ,(punctuation-named (code-char 9792))))  ;; "♀" #\U+2640
-      (9794 (:punctuation . ,(punctuation-named (code-char 9794))))  ;; "♂" #\U+2642
-      (9830 (:punctuation . ,(punctuation-named (code-char 9830))))  ;; "♦"
-      (9839 (:punctuation . ,(punctuation-named (code-char 9839)))) ;; #\MUSIC_SHARP_SIGN
-      (10794 (:punctuation . ,(punctuation-named (code-char 10794))))  ;; "⨪" #\U+2A2A
-      (10877 (:punctuation . ,(punctuation-named (code-char 10877)))) ;;"⩽", (code = 10878)
-      (10878 (:punctuation . ,(punctuation-named (code-char 10878)))) ;;"⩾", (code = 10878)
-      (12289 (:punctuation . ,(punctuation-named (code-char 12289)))) ;;
-      
-      (12354 (:hiragana . (:lowercase .,(CODE-CHAR 12354)))) ;; #\HIRAGANA_LETTER_A)
-      (12356 (:hiragana .(:lowercase ., (CODE-CHAR 12356)))); #\HIRAGANA_LETTER_I
-      (12360 (:hiragana .(:lowercase ., (CODE-CHAR 12360))));  #\HIRAGANA_LETTER_E)
-      (12362 (:hiragana .(:lowercase ., (CODE-CHAR 12362)))); #\HIRAGANA_LETTER_O
-      (12363 (:hiragana .(:lowercase ., (CODE-CHAR 12363)))); #\HIRAGANA_LETTER_KA
-      (12364 (:hiragana .(:lowercase ., (CODE-CHAR 12364)))); #\HIRAGANA_LETTER_GA
-      (12367 (:hiragana .(:lowercase ., (CODE-CHAR 12367)))); #\HIRAGANA_LETTER_KU
-      (12369 (:hiragana .(:lowercase ., (CODE-CHAR 12369)))); #\HIRAGANA_LETTER_KE
-      (12371 (:hiragana .(:lowercase ., (CODE-CHAR 12371)))); #\HIRAGANA_LETTER_KO
-      (12372 (:hiragana .(:lowercase ., (CODE-CHAR 12372)))); #\HIRAGANA_LETTER_GO
-      (12373 (:hiragana .(:lowercase ., (CODE-CHAR 12373)))); #\HIRAGANA_LETTER_SA
-      (12375 (:hiragana .(:lowercase ., (CODE-CHAR 12375)))); #\HIRAGANA_LETTER_SI
-      (12377 (:hiragana .(:lowercase ., (CODE-CHAR 12377)))); #\HIRAGANA_LETTER_SU
-      (12383 (:hiragana .(:lowercase ., (CODE-CHAR 12383)))); #\HIRAGANA_LETTER_TA
-      (12384 (:hiragana .(:lowercase ., (CODE-CHAR 12384)))); #\HIRAGANA_LETTER_DA
-      (12387 (:hiragana .(:lowercase ., (CODE-CHAR 12387)))); #\HIRAGANA_LETTER_SMALL_TU
-      (12388 (:hiragana .(:lowercase ., (CODE-CHAR 12388)))); #\HIRAGANA_LETTER_TU
-      (12389 (:hiragana .(:lowercase ., (CODE-CHAR 12389)))); #\HIRAGANA_LETTER_DU
-      (12390 (:hiragana .(:lowercase ., (CODE-CHAR 12390)))); #\HIRAGANA_LETTER_TE
-      (12391 (:hiragana .(:lowercase ., (CODE-CHAR 12391)))); #\HIRAGANA_LETTER_DE
-      (12392 (:hiragana .(:lowercase ., (CODE-CHAR 12392)))); #\HIRAGANA_LETTER_TO
-      (12394 (:hiragana .(:lowercase ., (CODE-CHAR 12394)))); #\HIRAGANA_LETTER_NA
-      (12395 (:hiragana .(:lowercase ., (CODE-CHAR 12395)))); #\HIRAGANA_LETTER_NI
-      (12398 (:hiragana .(:lowercase ., (CODE-CHAR 12398)))); #\HIRAGANA_LETTER_NO
-      (12399 (:hiragana .(:lowercase ., (CODE-CHAR 12399)))); #\HIRAGANA_LETTER_HA
-      (12400 (:hiragana .(:lowercase ., (CODE-CHAR 12400)))); #\HIRAGANA_LETTER_BA
-      (12403 (:hiragana .(:lowercase ., (CODE-CHAR 12403)))); #\HIRAGANA_LETTER_BI
-      (12414 (:hiragana .(:lowercase ., (CODE-CHAR 12414)))); #\HIRAGANA_LETTER_MA
-      (12417 (:hiragana .(:lowercase ., (CODE-CHAR 12417)))); #\HIRAGANA_LETTER_ME
-      (12418 (:hiragana .(:lowercase ., (CODE-CHAR 12418)))); #\HIRAGANA_LETTER_MO
-      (12424 (:hiragana .(:lowercase ., (CODE-CHAR 12424)))); #\HIRAGANA_LETTER_YO
-      (12425 (:hiragana .(:lowercase ., (CODE-CHAR 12425)))); #\HIRAGANA_LETTER_RA
-      (12427 (:hiragana .(:lowercase ., (CODE-CHAR 12427)))); #\HIRAGANA_LETTER_RU
-      (12428 (:hiragana .(:lowercase ., (CODE-CHAR 12428)))); #\HIRAGANA_LETTER_RE
-      (12431 (:hiragana .(:lowercase ., (CODE-CHAR 12431)))); #\HIRAGANA_LETTER_WA
-      (12434 (:hiragana .(:lowercase ., (CODE-CHAR 12434)))); #\HIRAGANA_LETTER_WO
-      (12435 (:hiragana .(:lowercase ., (CODE-CHAR 12435)))); #\HIRAGANA_LETTER_N
-      (12450 (:katakana .(:lowercase ., (CODE-CHAR 12450)))); #\KATAKANA_LETTER_A
-      (12452 (:katakana .(:lowercase ., (CODE-CHAR 12452)))); #\KATAKANA_LETTER_I
-      (12458 (:katakana .(:lowercase ., (CODE-CHAR 12458)))); #\KATAKANA_LETTER_O
-      (12463 (:katakana .(:lowercase ., (CODE-CHAR 12463)))); #\KATAKANA_LETTER_KU
-      (12472 (:katakana .(:lowercase ., (CODE-CHAR 12472)))); #\KATAKANA_LETTER_ZI
-      (12473 (:katakana .(:lowercase ., (CODE-CHAR 12473)))); #\KATAKANA_LETTER_SU
-      (12474 (:katakana .(:lowercase ., (CODE-CHAR 12474)))); #\KATAKANA_LETTER_ZU
-      (12479 (:katakana .(:lowercase ., (CODE-CHAR 12479)))); #\KATAKANA_LETTER_TA
-      (12483 (:katakana .(:lowercase ., (CODE-CHAR 12483)))); #\KATAKANA_LETTER_SMALL_TU
-      (12487 (:katakana .(:lowercase ., (CODE-CHAR 12487)))); #\KATAKANA_LETTER_DE
-      (12490 (:katakana .(:lowercase ., (CODE-CHAR 12490)))); #\KATAKANA_LETTER_NA
-      (12495 (:katakana .(:lowercase ., (CODE-CHAR 12495)))); #\KATAKANA_LETTER_HA
-      (12503 (:katakana .(:lowercase ., (CODE-CHAR 12503)))); #\KATAKANA_LETTER_PU
-      (12510 (:katakana .(:lowercase ., (CODE-CHAR 12510)))); #\KATAKANA_LETTER_MA
-      (12514 (:katakana .(:lowercase ., (CODE-CHAR 12514)))); #\KATAKANA_LETTER_MO
-      (12522 (:katakana .(:lowercase ., (CODE-CHAR 12522)))); #\KATAKANA_LETTER_RI
-      (12523 (:katakana .(:lowercase ., (CODE-CHAR 12523)))); #\KATAKANA_LETTER_RU
-      (12524 (:katakana .(:lowercase ., (CODE-CHAR 12524)))); #\KATAKANA_LETTER_RE
-      (12525 (:katakana .(:lowercase ., (CODE-CHAR 12525)))); #\KATAKANA_LETTER_RO
-      (12539 (:katakana .(:lowercase ., (CODE-CHAR 12539)))); #\KATAKANA_MIDDLE_DOT
-      (12540 (:katakana .(:lowercase ., (CODE-CHAR 12540)))); #\KATAKANA-HIRAGANA_PROLONGED_SOUND_MARK
-      
-      ;; following are not yet characterized unicode characters
-      (19968 (:alphabetical .(:lowercase .,(CODE-CHAR 19968)))) ;; #\U4E00 
-      (19978 (:alphabetical .(:lowercase .,(CODE-CHAR 19978)))) ;; #\U4E0A 
-      (19979 (:alphabetical .(:lowercase .,(CODE-CHAR 19979)))) ;; #\U4E0B 
-      (19981 (:alphabetical .(:lowercase .,(CODE-CHAR 19981)))) ;; #\U4E0D 
-      (19982 (:alphabetical .(:lowercase .,(CODE-CHAR 19982)))) ;; #\U4E0E 
-      (19988 (:alphabetical .(:lowercase .,(CODE-CHAR 19988)))) ;; #\U4E14 
-      (19990 (:alphabetical .(:lowercase .,(CODE-CHAR 19990)))) ;; #\U4E16 
-      (20010 (:alphabetical .(:lowercase .,(CODE-CHAR 20010)))) ;; #\U4E2A 
-      (20013 (:alphabetical .(:lowercase .,(CODE-CHAR 20013)))) ;; #\U4E2D 
-      (20020 (:alphabetical .(:lowercase .,(CODE-CHAR 20020)))) ;; #\U4E34 
-      (20026 (:alphabetical .(:lowercase .,(CODE-CHAR 20026)))) ;; #\U4E3A 
-      (20027 (:alphabetical .(:lowercase .,(CODE-CHAR 20027)))) ;; #\U4E3B 
-      (20041 (:alphabetical .(:lowercase .,(CODE-CHAR 20041)))) ;; #\U4E49 
-      (20043 (:alphabetical .(:lowercase .,(CODE-CHAR 20043)))) ;; #\U4E4B 
-      (20063 (:alphabetical .(:lowercase .,(CODE-CHAR 20063)))) ;; #\U4E5F 
-      (20083 (:alphabetical .(:lowercase .,(CODE-CHAR 20083)))) ;; #\U4E73 
-      (20102 (:alphabetical .(:lowercase .,(CODE-CHAR 20102)))) ;; #\U4E86 
-      (20108 (:alphabetical .(:lowercase .,(CODE-CHAR 20108)))) ;; #\U4E8C 
-      (20110 (:alphabetical .(:lowercase .,(CODE-CHAR 20110)))) ;; #\U4E8E 
-      (20114 (:alphabetical .(:lowercase .,(CODE-CHAR 20114)))) ;; #\U4E92 
-      (20122 (:alphabetical .(:lowercase .,(CODE-CHAR 20122)))) ;; #\U4E9A 
-      (20123 (:alphabetical .(:lowercase .,(CODE-CHAR 20123)))) ;; #\U4E9B 
-      (20132 (:alphabetical .(:lowercase .,(CODE-CHAR 20132)))) ;; #\U4EA4 
-      (20154 (:alphabetical .(:lowercase .,(CODE-CHAR 20154)))) ;; #\U4EBA 
-      (20182 (:alphabetical .(:lowercase .,(CODE-CHAR 20182)))) ;; #\U4ED6 
-      (20195 (:alphabetical .(:lowercase .,(CODE-CHAR 20195)))) ;; #\U4EE3 
-      (20197 (:alphabetical .(:lowercase .,(CODE-CHAR 20197)))) ;; #\U4EE5 
-      (20219 (:alphabetical .(:lowercase .,(CODE-CHAR 20219)))) ;; #\U4EFB 
-      (20253 (:alphabetical .(:lowercase .,(CODE-CHAR 20253)))) ;; #\U4F1D 
-      (20272 (:alphabetical .(:lowercase .,(CODE-CHAR 20272)))) ;; #\U4F30 
-      (20284 (:alphabetical .(:lowercase .,(CODE-CHAR 20284)))) ;; #\U4F3C 
-      (20294 (:alphabetical .(:lowercase .,(CODE-CHAR 20294)))) ;; #\U4F46 
-      (20301 (:alphabetical .(:lowercase .,(CODE-CHAR 20301)))) ;; #\U4F4D 
-      (20302 (:alphabetical .(:lowercase .,(CODE-CHAR 20302)))) ;; #\U4F4E 
-      (20303 (:alphabetical .(:lowercase .,(CODE-CHAR 20303)))) ;; #\U4F4F 
-      (20307 (:alphabetical .(:lowercase .,(CODE-CHAR 20307)))) ;; #\U4F53 
-      (20309 (:alphabetical .(:lowercase .,(CODE-CHAR 20309)))) ;; #\U4F55 
-      (20316 (:alphabetical .(:lowercase .,(CODE-CHAR 20316)))) ;; #\U4F5C 
-      (20351 (:alphabetical .(:lowercase .,(CODE-CHAR 20351)))) ;; #\U4F7F 
-      (20363 (:alphabetical .(:lowercase .,(CODE-CHAR 20363)))) ;; #\U4F8B 
-      (20379 (:alphabetical .(:lowercase .,(CODE-CHAR 20379)))) ;; #\U4F9B 
-      (20385 (:alphabetical .(:lowercase .,(CODE-CHAR 20385)))) ;; #\U4FA1 
-      (20449 (:alphabetical .(:lowercase .,(CODE-CHAR 20449)))) ;; #\U4FE1 
-      (20462 (:alphabetical .(:lowercase .,(CODE-CHAR 20462)))) ;; #\U4FEE 
-      (20491 (:alphabetical .(:lowercase .,(CODE-CHAR 20491)))) ;; #\U500B 
-      (20516 (:alphabetical .(:lowercase .,(CODE-CHAR 20516)))) ;; #\U5024 
-      (20540 (:alphabetical .(:lowercase .,(CODE-CHAR 20540)))) ;; #\U503C 
-      (20687 (:alphabetical .(:lowercase .,(CODE-CHAR 20687)))) ;; #\U50CF 
-      (20808 (:alphabetical .(:lowercase .,(CODE-CHAR 20808)))) ;; #\U5148 
-      (20837 (:alphabetical .(:lowercase .,(CODE-CHAR 20837)))) ;; #\U5165 
-      (20840 (:alphabetical .(:lowercase .,(CODE-CHAR 20840)))) ;; #\U5168 
-      (20849 (:alphabetical .(:lowercase .,(CODE-CHAR 20849)))) ;; #\U5171 
-      (20851 (:alphabetical .(:lowercase .,(CODE-CHAR 20851)))) ;; #\U5173 
-      (20854 (:alphabetical .(:lowercase .,(CODE-CHAR 20854)))) ;; #\U5176 
-      (20855 (:alphabetical .(:lowercase .,(CODE-CHAR 20855)))) ;; #\U5177 
-      (20917 (:alphabetical .(:lowercase .,(CODE-CHAR 20917)))) ;; #\U51B5 
-      (20934 (:alphabetical .(:lowercase .,(CODE-CHAR 20934)))) ;; #\U51C6 
-      (20943 (:alphabetical .(:lowercase .,(CODE-CHAR 20943)))) ;; #\U51CF 
-      (20986 (:alphabetical .(:lowercase .,(CODE-CHAR 20986)))) ;; #\U51FA 
-      (20998 (:alphabetical .(:lowercase .,(CODE-CHAR 20998)))) ;; #\U5206 
-      (20999 (:alphabetical .(:lowercase .,(CODE-CHAR 20999)))) ;; #\U5207 
-      (21010 (:alphabetical .(:lowercase .,(CODE-CHAR 21010)))) ;; #\U5212 
-      (21021 (:alphabetical .(:lowercase .,(CODE-CHAR 21021)))) ;; #\U521D 
-      (21029 (:alphabetical .(:lowercase .,(CODE-CHAR 21029)))) ;; #\U5225 
-      (21035 (:alphabetical .(:lowercase .,(CODE-CHAR 21035)))) ;; #\U522B 
-      (21051 (:alphabetical .(:lowercase .,(CODE-CHAR 21051)))) ;; #\U523B 
-      (21058 (:alphabetical .(:lowercase .,(CODE-CHAR 21058)))) ;; #\U5242 
-      (21069 (:alphabetical .(:lowercase .,(CODE-CHAR 21069)))) ;; #\U524D 
-      (21147 (:alphabetical .(:lowercase .,(CODE-CHAR 21147)))) ;; #\U529B 
-      (21152 (:alphabetical .(:lowercase .,(CODE-CHAR 21152)))) ;; #\U52A0 
-      (21160 (:alphabetical .(:lowercase .,(CODE-CHAR 21160)))) ;; #\U52A8 
-      (21161 (:alphabetical .(:lowercase .,(CODE-CHAR 21161)))) ;; #\U52A9 
-      (21177 (:alphabetical .(:lowercase .,(CODE-CHAR 21177)))) ;; #\U52B9 
-      (21205 (:alphabetical .(:lowercase .,(CODE-CHAR 21205)))) ;; #\U52D5 
-      (21270 (:alphabetical .(:lowercase .,(CODE-CHAR 21270)))) ;; #\U5316 
-      (21307 (:alphabetical .(:lowercase .,(CODE-CHAR 21307)))) ;; #\U533B 
-      (21313 (:alphabetical .(:lowercase .,(CODE-CHAR 21313)))) ;; #\U5341 
-      (21319 (:alphabetical .(:lowercase .,(CODE-CHAR 21319)))) ;; #\U5347 
-      (21333 (:alphabetical .(:lowercase .,(CODE-CHAR 21333)))) ;; #\U5355 
-      (21355 (:alphabetical .(:lowercase .,(CODE-CHAR 21355)))) ;; #\U536B 
-      (21361 (:alphabetical .(:lowercase .,(CODE-CHAR 21361)))) ;; #\U5371 
-      (21363 (:alphabetical .(:lowercase .,(CODE-CHAR 21363)))) ;; #\U5373 
-      (21387 (:alphabetical .(:lowercase .,(CODE-CHAR 21387)))) ;; #\U538B 
-      (21435 (:alphabetical .(:lowercase .,(CODE-CHAR 21435)))) ;; #\U53BB 
-      (21450 (:alphabetical .(:lowercase .,(CODE-CHAR 21450)))) ;; #\U53CA 
-      (21452 (:alphabetical .(:lowercase .,(CODE-CHAR 21452)))) ;; #\U53CC 
-      (21453 (:alphabetical .(:lowercase .,(CODE-CHAR 21453)))) ;; #\U53CD 
-      (21457 (:alphabetical .(:lowercase .,(CODE-CHAR 21457)))) ;; #\U53D1 
-      (21463 (:alphabetical .(:lowercase .,(CODE-CHAR 21463)))) ;; #\U53D7 
-      (21464 (:alphabetical .(:lowercase .,(CODE-CHAR 21464)))) ;; #\U53D8 
-      (21487 (:alphabetical .(:lowercase .,(CODE-CHAR 21487)))) ;; #\U53EF 
-      (21490 (:alphabetical .(:lowercase .,(CODE-CHAR 21490)))) ;; #\U53F2 
-      (21495 (:alphabetical .(:lowercase .,(CODE-CHAR 21495)))) ;; #\U53F7 
-      (21512 (:alphabetical .(:lowercase .,(CODE-CHAR 21512)))) ;; #\U5408 
-      (21516 (:alphabetical .(:lowercase .,(CODE-CHAR 21516)))) ;; #\U540C 
-      (21517 (:alphabetical .(:lowercase .,(CODE-CHAR 21517)))) ;; #\U540D 
-      (21518 (:alphabetical .(:lowercase .,(CODE-CHAR 21518)))) ;; #\U540E 
-      (21521 (:alphabetical .(:lowercase .,(CODE-CHAR 21521)))) ;; #\U5411 
-      (21542 (:alphabetical .(:lowercase .,(CODE-CHAR 21542)))) ;; #\U5426 
-      (21560 (:alphabetical .(:lowercase .,(CODE-CHAR 21560)))) ;; #\U5438 
-      (21578 (:alphabetical .(:lowercase .,(CODE-CHAR 21578)))) ;; #\U544A 
-      (21608 (:alphabetical .(:lowercase .,(CODE-CHAR 21608)))) ;; #\U5468 
-      (21644 (:alphabetical .(:lowercase .,(CODE-CHAR 21644)))) ;; #\U548C 
-      (21766 (:alphabetical .(:lowercase .,(CODE-CHAR 21766)))) ;; #\U5506 
-      (21777 (:alphabetical .(:lowercase .,(CODE-CHAR 21777)))) ;; #\U5511 
-      (21892 (:alphabetical .(:lowercase .,(CODE-CHAR 21892)))) ;; #\U5584 
-      (21931 (:alphabetical .(:lowercase .,(CODE-CHAR 21931)))) ;; #\U55AB 
-      (22139 (:alphabetical .(:lowercase .,(CODE-CHAR 22139)))) ;; #\U567B 
-      (22238 (:alphabetical .(:lowercase .,(CODE-CHAR 22238)))) ;; #\U56DE 
-      (22240 (:alphabetical .(:lowercase .,(CODE-CHAR 22240)))) ;; #\U56E0 
-      (22243 (:alphabetical .(:lowercase .,(CODE-CHAR 22243)))) ;; #\U56E3 
-      (22260 (:alphabetical .(:lowercase .,(CODE-CHAR 22260)))) ;; #\U56F4 
-      (22270 (:alphabetical .(:lowercase .,(CODE-CHAR 22270)))) ;; #\U56FE 
-      (22311 (:alphabetical .(:lowercase .,(CODE-CHAR 22311)))) ;; #\U5727 
-      (22312 (:alphabetical .(:lowercase .,(CODE-CHAR 22312)))) ;; #\U5728 
-      (22320 (:alphabetical .(:lowercase .,(CODE-CHAR 22320)))) ;; #\U5730 
-      (22343 (:alphabetical .(:lowercase .,(CODE-CHAR 22343)))) ;; #\U5747 
-      (22411 (:alphabetical .(:lowercase .,(CODE-CHAR 22411)))) ;; #\U578B 
-      (22522 (:alphabetical .(:lowercase .,(CODE-CHAR 22522)))) ;; #\U57FA 
-      (22577 (:alphabetical .(:lowercase .,(CODE-CHAR 22577)))) ;; #\U5831 
-      (22633 (:alphabetical .(:lowercase .,(CODE-CHAR 22633)))) ;; #\U5869 
-      (22659 (:alphabetical .(:lowercase .,(CODE-CHAR 22659)))) ;; #\U5883 
-      (22686 (:alphabetical .(:lowercase .,(CODE-CHAR 22686)))) ;; #\U589E 
-      (22768 (:alphabetical .(:lowercase .,(CODE-CHAR 22768)))) ;; #\U58F0 
-      (22793 (:alphabetical .(:lowercase .,(CODE-CHAR 22793)))) ;; #\U5909 
-      (22806 (:alphabetical .(:lowercase .,(CODE-CHAR 22806)))) ;; #\U5916 
-      (22810 (:alphabetical .(:lowercase .,(CODE-CHAR 22810)))) ;; #\U591A 
-      (22815 (:alphabetical .(:lowercase .,(CODE-CHAR 22815)))) ;; #\U591F 
-      (22823 (:alphabetical .(:lowercase .,(CODE-CHAR 22823)))) ;; #\U5927 
-      (22899 (:alphabetical .(:lowercase .,(CODE-CHAR 22899)))) ;; #\U5973 
-      (22909 (:alphabetical .(:lowercase .,(CODE-CHAR 22909)))) ;; #\U597D 
-      (22949 (:alphabetical .(:lowercase .,(CODE-CHAR 22949)))) ;; #\U59A5 
-      (23376 (:alphabetical .(:lowercase .,(CODE-CHAR 23376)))) ;; #\U5B50 
-      (23384 (:alphabetical .(:lowercase .,(CODE-CHAR 23384)))) ;; #\U5B58 
-      (23398 (:alphabetical .(:lowercase .,(CODE-CHAR 23398)))) ;; #\U5B66 
-      (23433 (:alphabetical .(:lowercase .,(CODE-CHAR 23433)))) ;; #\U5B89 
-      (23450 (:alphabetical .(:lowercase .,(CODE-CHAR 23450)))) ;; #\U5B9A 
-      (23454 (:alphabetical .(:lowercase .,(CODE-CHAR 23454)))) ;; #\U5B9E 
-      (23460 (:alphabetical .(:lowercase .,(CODE-CHAR 23460)))) ;; #\U5BA4 
-      (23494 (:alphabetical .(:lowercase .,(CODE-CHAR 23494)))) ;; #\U5BC6 
-      (23545 (:alphabetical .(:lowercase .,(CODE-CHAR 23545)))) ;; #\U5BF9 
-      (23548 (:alphabetical .(:lowercase .,(CODE-CHAR 23548)))) ;; #\U5BFC 
-      (23550 (:alphabetical .(:lowercase .,(CODE-CHAR 23550)))) ;; #\U5BFE 
-      (23556 (:alphabetical .(:lowercase .,(CODE-CHAR 23556)))) ;; #\U5C04 
-      (23569 (:alphabetical .(:lowercase .,(CODE-CHAR 23569)))) ;; #\U5C11 
-      (23615 (:alphabetical .(:lowercase .,(CODE-CHAR 23615)))) ;; #\U5C3F 
-      (23637 (:alphabetical .(:lowercase .,(CODE-CHAR 23637)))) ;; #\U5C55 
-      (24038 (:alphabetical .(:lowercase .,(CODE-CHAR 24038)))) ;; #\U5DE6 
-      (24085 (:alphabetical .(:lowercase .,(CODE-CHAR 24085)))) ;; #\U5E15 
-      (24112 (:alphabetical .(:lowercase .,(CODE-CHAR 24112)))) ;; #\U5E30 
-      (24120 (:alphabetical .(:lowercase .,(CODE-CHAR 24120)))) ;; #\U5E38 
-      (24179 (:alphabetical .(:lowercase .,(CODE-CHAR 24179)))) ;; #\U5E73 
-      (24180 (:alphabetical .(:lowercase .,(CODE-CHAR 24180)))) ;; #\U5E74 
-      (24182 (:alphabetical .(:lowercase .,(CODE-CHAR 24182)))) ;; #\U5E76 
-      (24202 (:alphabetical .(:lowercase .,(CODE-CHAR 24202)))) ;; #\U5E8A 
-      (24212 (:alphabetical .(:lowercase .,(CODE-CHAR 24212)))) ;; #\U5E94 
-      (24230 (:alphabetical .(:lowercase .,(CODE-CHAR 24230)))) ;; #\U5EA6 
-      (24320 (:alphabetical .(:lowercase .,(CODE-CHAR 24320)))) ;; #\U5F00 
-      (24341 (:alphabetical .(:lowercase .,(CODE-CHAR 24341)))) ;; #\U5F15 
-      (24418 (:alphabetical .(:lowercase .,(CODE-CHAR 24418)))) ;; #\U5F62 
-      (24433 (:alphabetical .(:lowercase .,(CODE-CHAR 24433)))) ;; #\U5F71 
-      (24449 (:alphabetical .(:lowercase .,(CODE-CHAR 24449)))) ;; #\U5F81 
-      (24456 (:alphabetical .(:lowercase .,(CODE-CHAR 24456)))) ;; #\U5F88 
-      (24471 (:alphabetical .(:lowercase .,(CODE-CHAR 24471)))) ;; #\U5F97 
-      (24489 (:alphabetical .(:lowercase .,(CODE-CHAR 24489)))) ;; #\U5FA9 
-      (24515 (:alphabetical .(:lowercase .,(CODE-CHAR 24515)))) ;; #\U5FC3 
-      (24517 (:alphabetical .(:lowercase .,(CODE-CHAR 24517)))) ;; #\U5FC5 
-      (24577 (:alphabetical .(:lowercase .,(CODE-CHAR 24577)))) ;; #\U6001 
-      (24615 (:alphabetical .(:lowercase .,(CODE-CHAR 24615)))) ;; #\U6027 
-      (24635 (:alphabetical .(:lowercase .,(CODE-CHAR 24635)))) ;; #\U603B 
-      (24739 (:alphabetical .(:lowercase .,(CODE-CHAR 24739)))) ;; #\U60A3 
-      (24773 (:alphabetical .(:lowercase .,(CODE-CHAR 24773)))) ;; #\U60C5 
-      (24847 (:alphabetical .(:lowercase .,(CODE-CHAR 24847)))) ;; #\U610F 
-      (25104 (:alphabetical .(:lowercase .,(CODE-CHAR 25104)))) ;; #\U6210 
-      (25239 (:alphabetical .(:lowercase .,(CODE-CHAR 25239)))) ;; #\U6297 
-      (25253 (:alphabetical .(:lowercase .,(CODE-CHAR 25253)))) ;; #\U62A5 
-      (25345 (:alphabetical .(:lowercase .,(CODE-CHAR 25345)))) ;; #\U6301 
-      (25351 (:alphabetical .(:lowercase .,(CODE-CHAR 25351)))) ;; #\U6307 
-      (25454 (:alphabetical .(:lowercase .,(CODE-CHAR 25454)))) ;; #\U636E 
-      (25506 (:alphabetical .(:lowercase .,(CODE-CHAR 25506)))) ;; #\U63A2 
-      (25509 (:alphabetical .(:lowercase .,(CODE-CHAR 25509)))) ;; #\U63A5 
-      (25552 (:alphabetical .(:lowercase .,(CODE-CHAR 25552)))) ;; #\U63D0 
-      (25688 (:alphabetical .(:lowercase .,(CODE-CHAR 25688)))) ;; #\U6458 
-      (25903 (:alphabetical .(:lowercase .,(CODE-CHAR 25903)))) ;; #\U652F 
-      (25913 (:alphabetical .(:lowercase .,(CODE-CHAR 25913)))) ;; #\U6539 
-      (25968 (:alphabetical .(:lowercase .,(CODE-CHAR 25968)))) ;; #\U6570 
-      (25972 (:alphabetical .(:lowercase .,(CODE-CHAR 25972)))) ;; #\U6574 
-      (26001 (:alphabetical .(:lowercase .,(CODE-CHAR 26001)))) ;; #\U6591 
-      (26029 (:alphabetical .(:lowercase .,(CODE-CHAR 26029)))) ;; #\U65AD 
-      (26032 (:alphabetical .(:lowercase .,(CODE-CHAR 26032)))) ;; #\U65B0 
-      (26041 (:alphabetical .(:lowercase .,(CODE-CHAR 26041)))) ;; #\U65B9 
-      (26080 (:alphabetical .(:lowercase .,(CODE-CHAR 26080)))) ;; #\U65E0 
-      (26085 (:alphabetical .(:lowercase .,(CODE-CHAR 26085)))) ;; #\U65E5 
-      (26089 (:alphabetical .(:lowercase .,(CODE-CHAR 26089)))) ;; #\U65E9 
-      (26102 (:alphabetical .(:lowercase .,(CODE-CHAR 26102)))) ;; #\U65F6 
-      (26126 (:alphabetical .(:lowercase .,(CODE-CHAR 26126)))) ;; #\U660E 
-      (26144 (:alphabetical .(:lowercase .,(CODE-CHAR 26144)))) ;; #\U6620 
-      (26159 (:alphabetical .(:lowercase .,(CODE-CHAR 26159)))) ;; #\U662F 
-      (26174 (:alphabetical .(:lowercase .,(CODE-CHAR 26174)))) ;; #\U663E 
-      (26223 (:alphabetical .(:lowercase .,(CODE-CHAR 26223)))) ;; #\U666F 
-      (26354 (:alphabetical .(:lowercase .,(CODE-CHAR 26354)))) ;; #\U66F2 
-      (26356 (:alphabetical .(:lowercase .,(CODE-CHAR 26356)))) ;; #\U66F4 
-      (26366 (:alphabetical .(:lowercase .,(CODE-CHAR 26366)))) ;; #\U66FE 
-      (26368 (:alphabetical .(:lowercase .,(CODE-CHAR 26368)))) ;; #\U6700 
-      (26376 (:alphabetical .(:lowercase .,(CODE-CHAR 26376)))) ;; #\U6708 
-      (26377 (:alphabetical .(:lowercase .,(CODE-CHAR 26377)))) ;; #\U6709 
-      (26399 (:alphabetical .(:lowercase .,(CODE-CHAR 26399)))) ;; #\U671F 
-      (26410 (:alphabetical .(:lowercase .,(CODE-CHAR 26410)))) ;; #\U672A 
-      (26412 (:alphabetical .(:lowercase .,(CODE-CHAR 26412)))) ;; #\U672C 
-      (26441 (:alphabetical .(:lowercase .,(CODE-CHAR 26441)))) ;; #\U6749 
-      (26512 (:alphabetical .(:lowercase .,(CODE-CHAR 26512)))) ;; #\U6790 
-      (26524 (:alphabetical .(:lowercase .,(CODE-CHAR 26524)))) ;; #\U679C 
-      (26597 (:alphabetical .(:lowercase .,(CODE-CHAR 26597)))) ;; #\U67E5 
-      (26631 (:alphabetical .(:lowercase .,(CODE-CHAR 26631)))) ;; #\U6807 
-      (26681 (:alphabetical .(:lowercase .,(CODE-CHAR 26681)))) ;; #\U6839 
-      (26816 (:alphabetical .(:lowercase .,(CODE-CHAR 26816)))) ;; #\U68C0 
-      (26908 (:alphabetical .(:lowercase .,(CODE-CHAR 26908)))) ;; #\U691C 
-      (27096 (:alphabetical .(:lowercase .,(CODE-CHAR 27096)))) ;; #\U69D8 
-      (27161 (:alphabetical .(:lowercase .,(CODE-CHAR 27161)))) ;; #\U6A19 
-      (27169 (:alphabetical .(:lowercase .,(CODE-CHAR 27169)))) ;; #\U6A21 
-      (27178 (:alphabetical .(:lowercase .,(CODE-CHAR 27178)))) ;; #\U6A2A 
-      (27425 (:alphabetical .(:lowercase .,(CODE-CHAR 27425)))) ;; #\U6B21 
-      (27491 (:alphabetical .(:lowercase .,(CODE-CHAR 27491)))) ;; #\U6B63 
-      (27492 (:alphabetical .(:lowercase .,(CODE-CHAR 27492)))) ;; #\U6B64 
-      (27493 (:alphabetical .(:lowercase .,(CODE-CHAR 27493)))) ;; #\U6B65 
-      (27507 (:alphabetical .(:lowercase .,(CODE-CHAR 27507)))) ;; #\U6B73 
-      (27599 (:alphabetical .(:lowercase .,(CODE-CHAR 27599)))) ;; #\U6BCF 
-      (27602 (:alphabetical .(:lowercase .,(CODE-CHAR 27602)))) ;; #\U6BD2 
-      (27604 (:alphabetical .(:lowercase .,(CODE-CHAR 27604)))) ;; #\U6BD4 
-      (27665 (:alphabetical .(:lowercase .,(CODE-CHAR 27665)))) ;; #\U6C11 
-      (27700 (:alphabetical .(:lowercase .,(CODE-CHAR 27700)))) ;; #\U6C34 
-      (27809 (:alphabetical .(:lowercase .,(CODE-CHAR 27809)))) ;; #\U6CA1 
-      (27835 (:alphabetical .(:lowercase .,(CODE-CHAR 27835)))) ;; #\U6CBB 
-      (27841 (:alphabetical .(:lowercase .,(CODE-CHAR 27841)))) ;; #\U6CC1 
-      (27861 (:alphabetical .(:lowercase .,(CODE-CHAR 27861)))) ;; #\U6CD5 
-      (27880 (:alphabetical .(:lowercase .,(CODE-CHAR 27880)))) ;; #\U6CE8 
-      (27979 (:alphabetical .(:lowercase .,(CODE-CHAR 27979)))) ;; #\U6D4B 
-      (28082 (:alphabetical .(:lowercase .,(CODE-CHAR 28082)))) ;; #\U6DB2 
-      (28508 (:alphabetical .(:lowercase .,(CODE-CHAR 28508)))) ;; #\U6F5C 
-      (28608 (:alphabetical .(:lowercase .,(CODE-CHAR 28608)))) ;; #\U6FC0 
-      (28814 (:alphabetical .(:lowercase .,(CODE-CHAR 28814)))) ;; #\U708E 
-      (28857 (:alphabetical .(:lowercase .,(CODE-CHAR 28857)))) ;; #\U70B9 
-      (28895 (:alphabetical .(:lowercase .,(CODE-CHAR 28895)))) ;; #\U70DF 
-      (28919 (:alphabetical .(:lowercase .,(CODE-CHAR 28919)))) ;; #\U70F7 
-      (29017 (:alphabetical .(:lowercase .,(CODE-CHAR 29017)))) ;; #\U7159 
-      (29031 (:alphabetical .(:lowercase .,(CODE-CHAR 29031)))) ;; #\U7167 
-      (29289 (:alphabetical .(:lowercase .,(CODE-CHAR 29289)))) ;; #\U7269 
-      (29305 (:alphabetical .(:lowercase .,(CODE-CHAR 29305)))) ;; #\U7279 
-      (29366 (:alphabetical .(:lowercase .,(CODE-CHAR 29366)))) ;; #\U72B6 
-      (29575 (:alphabetical .(:lowercase .,(CODE-CHAR 29575)))) ;; #\U7387 
-      (29615 (:alphabetical .(:lowercase .,(CODE-CHAR 29615)))) ;; #\U73AF 
-      (29616 (:alphabetical .(:lowercase .,(CODE-CHAR 29616)))) ;; #\U73B0 
-      (29664 (:alphabetical .(:lowercase .,(CODE-CHAR 29664)))) ;; #\U73E0 
-      (29702 (:alphabetical .(:lowercase .,(CODE-CHAR 29702)))) ;; #\U7406 
-      (29872 (:alphabetical .(:lowercase .,(CODE-CHAR 29872)))) ;; #\U74B0 
-      (29983 (:alphabetical .(:lowercase .,(CODE-CHAR 29983)))) ;; #\U751F 
-      (29992 (:alphabetical .(:lowercase .,(CODE-CHAR 29992)))) ;; #\U7528 
-      (30007 (:alphabetical .(:lowercase .,(CODE-CHAR 30007)))) ;; #\U7537 
-      (30028 (:alphabetical .(:lowercase .,(CODE-CHAR 30028)))) ;; #\U754C 
-      (30064 (:alphabetical .(:lowercase .,(CODE-CHAR 30064)))) ;; #\U7570 
-      (30097 (:alphabetical .(:lowercase .,(CODE-CHAR 30097)))) ;; #\U7591 
-      (30103 (:alphabetical .(:lowercase .,(CODE-CHAR 30103)))) ;; #\U7597 
-      (30149 (:alphabetical .(:lowercase .,(CODE-CHAR 30149)))) ;; #\U75C5 
-      (30151 (:alphabetical .(:lowercase .,(CODE-CHAR 30151)))) ;; #\U75C7 
-      (30244 (:alphabetical .(:lowercase .,(CODE-CHAR 30244)))) ;; #\U7624 
-      (30284 (:alphabetical .(:lowercase .,(CODE-CHAR 30284)))) ;; #\U764C 
-      (30333 (:alphabetical .(:lowercase .,(CODE-CHAR 30333)))) ;; #\U767D 
-      (30340 (:alphabetical .(:lowercase .,(CODE-CHAR 30340)))) ;; #\U7684 
-      (30382 (:alphabetical .(:lowercase .,(CODE-CHAR 30382)))) ;; #\U76AE 
-      (30417 (:alphabetical .(:lowercase .,(CODE-CHAR 30417)))) ;; #\U76D1 
-      (30456 (:alphabetical .(:lowercase .,(CODE-CHAR 30456)))) ;; #\U76F8 
-      (30740 (:alphabetical .(:lowercase .,(CODE-CHAR 30740)))) ;; #\U7814 
-      (30784 (:alphabetical .(:lowercase .,(CODE-CHAR 30784)))) ;; #\U7840 
-      (30828 (:alphabetical .(:lowercase .,(CODE-CHAR 30828)))) ;; #\U786C 
-      (30906 (:alphabetical .(:lowercase .,(CODE-CHAR 30906)))) ;; #\U78BA 
-      (31034 (:alphabetical .(:lowercase .,(CODE-CHAR 31034)))) ;; #\U793A 
-      (31227 (:alphabetical .(:lowercase .,(CODE-CHAR 31227)))) ;; #\U79FB 
-      (31243 (:alphabetical .(:lowercase .,(CODE-CHAR 31243)))) ;; #\U7A0B 
-      (31283 (:alphabetical .(:lowercase .,(CODE-CHAR 31283)))) ;; #\U7A33 
-      (31309 (:alphabetical .(:lowercase .,(CODE-CHAR 31309)))) ;; #\U7A4D 
-      (31350 (:alphabetical .(:lowercase .,(CODE-CHAR 31350)))) ;; #\U7A76 
-      (31469 (:alphabetical .(:lowercase .,(CODE-CHAR 31469)))) ;; #\U7AED 
-      (31867 (:alphabetical .(:lowercase .,(CODE-CHAR 31867)))) ;; #\U7C7B 
-      (31958 (:alphabetical .(:lowercase .,(CODE-CHAR 31958)))) ;; #\U7CD6 
-      (31995 (:alphabetical .(:lowercase .,(CODE-CHAR 31995)))) ;; #\U7CFB 
-      (32034 (:alphabetical .(:lowercase .,(CODE-CHAR 32034)))) ;; #\U7D22 
-      (32043 (:alphabetical .(:lowercase .,(CODE-CHAR 32043)))) ;; #\U7D2B 
-      (32080 (:alphabetical .(:lowercase .,(CODE-CHAR 32080)))) ;; #\U7D50 
-      (32113 (:alphabetical .(:lowercase .,(CODE-CHAR 32113)))) ;; #\U7D71 
-      (32218 (:alphabetical .(:lowercase .,(CODE-CHAR 32218)))) ;; #\U7DDA 
-      (32294 (:alphabetical .(:lowercase .,(CODE-CHAR 32294)))) ;; #\U7E26 
-      (32423 (:alphabetical .(:lowercase .,(CODE-CHAR 32423)))) ;; #\U7EA7 
-      (32435 (:alphabetical .(:lowercase .,(CODE-CHAR 32435)))) ;; #\U7EB3 
-      (32437 (:alphabetical .(:lowercase .,(CODE-CHAR 32437)))) ;; #\U7EB5 
-      (32447 (:alphabetical .(:lowercase .,(CODE-CHAR 32447)))) ;; #\U7EBF 
-      (32452 (:alphabetical .(:lowercase .,(CODE-CHAR 32452)))) ;; #\U7EC4 
-      (32455 (:alphabetical .(:lowercase .,(CODE-CHAR 32455)))) ;; #\U7EC7 
-      (32456 (:alphabetical .(:lowercase .,(CODE-CHAR 32456)))) ;; #\U7EC8 
-      (32467 (:alphabetical .(:lowercase .,(CODE-CHAR 32467)))) ;; #\U7ED3 
-      (32676 (:alphabetical .(:lowercase .,(CODE-CHAR 32676)))) ;; #\U7FA4 
-      (32771 (:alphabetical .(:lowercase .,(CODE-CHAR 32771)))) ;; #\U8003 
-      (32773 (:alphabetical .(:lowercase .,(CODE-CHAR 32773)))) ;; #\U8005 
-      (32780 (:alphabetical .(:lowercase .,(CODE-CHAR 32780)))) ;; #\U800C 
-      (32784 (:alphabetical .(:lowercase .,(CODE-CHAR 32784)))) ;; #\U8010 
-      (32852 (:alphabetical .(:lowercase .,(CODE-CHAR 32852)))) ;; #\U8054 
-      (32908 (:alphabetical .(:lowercase .,(CODE-CHAR 32908)))) ;; #\U808C 
-      (32957 (:alphabetical .(:lowercase .,(CODE-CHAR 32957)))) ;; #\U80BD 
-      (32959 (:alphabetical .(:lowercase .,(CODE-CHAR 32959)))) ;; #\U80BF 
-      (32972 (:alphabetical .(:lowercase .,(CODE-CHAR 32972)))) ;; #\U80CC 
-      (33016 (:alphabetical .(:lowercase .,(CODE-CHAR 33016)))) ;; #\U80F8 
-      (33021 (:alphabetical .(:lowercase .,(CODE-CHAR 33021)))) ;; #\U80FD 
-      (33026 (:alphabetical .(:lowercase .,(CODE-CHAR 33026)))) ;; #\U8102 
-      (33032 (:alphabetical .(:lowercase .,(CODE-CHAR 33032)))) ;; #\U8108 
-      (33039 (:alphabetical .(:lowercase .,(CODE-CHAR 33039)))) ;; #\U810F 
-      (33041 (:alphabetical .(:lowercase .,(CODE-CHAR 33041)))) ;; #\U8111 
-      (33146 (:alphabetical .(:lowercase .,(CODE-CHAR 33146)))) ;; #\U817A 
-      (33205 (:alphabetical .(:lowercase .,(CODE-CHAR 33205)))) ;; #\U81B5 
-      (33235 (:alphabetical .(:lowercase .,(CODE-CHAR 33235)))) ;; #\U81D3 
-      (33324 (:alphabetical .(:lowercase .,(CODE-CHAR 33324)))) ;; #\U822C 
-      (33509 (:alphabetical .(:lowercase .,(CODE-CHAR 33509)))) ;; #\U82E5 
-      (33539 (:alphabetical .(:lowercase .,(CODE-CHAR 33539)))) ;; #\U8303 
-      (33655 (:alphabetical .(:lowercase .,(CODE-CHAR 33655)))) ;; #\U8377 
-      (33879 (:alphabetical .(:lowercase .,(CODE-CHAR 33879)))) ;; #\U8457 
-      (33981 (:alphabetical .(:lowercase .,(CODE-CHAR 33981)))) ;; #\U84BD 
-      (34013 (:alphabetical .(:lowercase .,(CODE-CHAR 34013)))) ;; #\U84DD 
-      (34385 (:alphabetical .(:lowercase .,(CODE-CHAR 34385)))) ;; #\U8651 
-      (34507 (:alphabetical .(:lowercase .,(CODE-CHAR 34507)))) ;; #\U86CB 
-      (34880 (:alphabetical .(:lowercase .,(CODE-CHAR 34880)))) ;; #\U8840 
-      (34892 (:alphabetical .(:lowercase .,(CODE-CHAR 34892)))) ;; #\U884C 
-      (34920 (:alphabetical .(:lowercase .,(CODE-CHAR 34920)))) ;; #\U8868 
-      (34928 (:alphabetical .(:lowercase .,(CODE-CHAR 34928)))) ;; #\U8870 
-      (35201 (:alphabetical .(:lowercase .,(CODE-CHAR 35201)))) ;; #\U8981 
-      (35211 (:alphabetical .(:lowercase .,(CODE-CHAR 35211)))) ;; #\U898B 
-      (35215 (:alphabetical .(:lowercase .,(CODE-CHAR 35215)))) ;; #\U898F 
-      (35265 (:alphabetical .(:lowercase .,(CODE-CHAR 35265)))) ;; #\U89C1 
-      (35299 (:alphabetical .(:lowercase .,(CODE-CHAR 35299)))) ;; #\U89E3 
-      (35328 (:alphabetical .(:lowercase .,(CODE-CHAR 35328)))) ;; #\U8A00 
-      (35336 (:alphabetical .(:lowercase .,(CODE-CHAR 35336)))) ;; #\U8A08 
-      (35342 (:alphabetical .(:lowercase .,(CODE-CHAR 35342)))) ;; #\U8A0E 
-      (35413 (:alphabetical .(:lowercase .,(CODE-CHAR 35413)))) ;; #\U8A55 
-      (35469 (:alphabetical .(:lowercase .,(CODE-CHAR 35469)))) ;; #\U8A8D 
-      (35519 (:alphabetical .(:lowercase .,(CODE-CHAR 35519)))) ;; #\U8ABF 
-      (35542 (:alphabetical .(:lowercase .,(CODE-CHAR 35542)))) ;; #\U8AD6 
-      (35745 (:alphabetical .(:lowercase .,(CODE-CHAR 35745)))) ;; #\U8BA1 
-      (35760 (:alphabetical .(:lowercase .,(CODE-CHAR 35760)))) ;; #\U8BB0 
-      (35770 (:alphabetical .(:lowercase .,(CODE-CHAR 35770)))) ;; #\U8BBA 
-      (35775 (:alphabetical .(:lowercase .,(CODE-CHAR 35775)))) ;; #\U8BBF 
-      (35780 (:alphabetical .(:lowercase .,(CODE-CHAR 35780)))) ;; #\U8BC4 
-      (35786 (:alphabetical .(:lowercase .,(CODE-CHAR 35786)))) ;; #\U8BCA 
-      (35937 (:alphabetical .(:lowercase .,(CODE-CHAR 35937)))) ;; #\U8C61 
-      (36127 (:alphabetical .(:lowercase .,(CODE-CHAR 36127)))) ;; #\U8D1F 
-      (36229 (:alphabetical .(:lowercase .,(CODE-CHAR 36229)))) ;; #\U8D85 
-      (36321 (:alphabetical .(:lowercase .,(CODE-CHAR 36321)))) ;; #\U8DE1 
-      (36341 (:alphabetical .(:lowercase .,(CODE-CHAR 36341)))) ;; #\U8DF5 
-      (36394 (:alphabetical .(:lowercase .,(CODE-CHAR 36394)))) ;; #\U8E2A 
-      (36716 (:alphabetical .(:lowercase .,(CODE-CHAR 36716)))) ;; #\U8F6C 
-      (36739 (:alphabetical .(:lowercase .,(CODE-CHAR 36739)))) ;; #\U8F83 
-      (36741 (:alphabetical .(:lowercase .,(CODE-CHAR 36741)))) ;; #\U8F85 
-      (36755 (:alphabetical .(:lowercase .,(CODE-CHAR 36755)))) ;; #\U8F93 
-      (36798 (:alphabetical .(:lowercase .,(CODE-CHAR 36798)))) ;; #\U8FBE 
-      (36807 (:alphabetical .(:lowercase .,(CODE-CHAR 36807)))) ;; #\U8FC7 
-      (36816 (:alphabetical .(:lowercase .,(CODE-CHAR 36816)))) ;; #\U8FD0 
-      (36825 (:alphabetical .(:lowercase .,(CODE-CHAR 36825)))) ;; #\U8FD9 
-      (36827 (:alphabetical .(:lowercase .,(CODE-CHAR 36827)))) ;; #\U8FDB 
-      (36861 (:alphabetical .(:lowercase .,(CODE-CHAR 36861)))) ;; #\U8FFD 
-      (36899 (:alphabetical .(:lowercase .,(CODE-CHAR 36899)))) ;; #\U9023 
-      (36984 (:alphabetical .(:lowercase .,(CODE-CHAR 36984)))) ;; #\U9078 
-      (36986 (:alphabetical .(:lowercase .,(CODE-CHAR 36986)))) ;; #\U907A 
-      (37255 (:alphabetical .(:lowercase .,(CODE-CHAR 37255)))) ;; #\U9187 
-      (37325 (:alphabetical .(:lowercase .,(CODE-CHAR 37325)))) ;; #\U91CD 
-      (37327 (:alphabetical .(:lowercase .,(CODE-CHAR 37327)))) ;; #\U91CF 
-      (37492 (:alphabetical .(:lowercase .,(CODE-CHAR 37492)))) ;; #\U9274 
-      (38041 (:alphabetical .(:lowercase .,(CODE-CHAR 38041)))) ;; #\U9499 
-      (38048 (:alphabetical .(:lowercase .,(CODE-CHAR 38048)))) ;; #\U94A0 
-      (38291 (:alphabetical .(:lowercase .,(CODE-CHAR 38291)))) ;; #\U9593 
-      (38306 (:alphabetical .(:lowercase .,(CODE-CHAR 38306)))) ;; #\U95A2 
-      (38382 (:alphabetical .(:lowercase .,(CODE-CHAR 38382)))) ;; #\U95EE 
-      (38388 (:alphabetical .(:lowercase .,(CODE-CHAR 38388)))) ;; #\U95F4 
-      (38451 (:alphabetical .(:lowercase .,(CODE-CHAR 38451)))) ;; #\U9633 
-      (38459 (:alphabetical .(:lowercase .,(CODE-CHAR 38459)))) ;; #\U963B 
-      (38477 (:alphabetical .(:lowercase .,(CODE-CHAR 38477)))) ;; #\U964D 
-      (38500 (:alphabetical .(:lowercase .,(CODE-CHAR 38500)))) ;; #\U9664 
-      (38522 (:alphabetical .(:lowercase .,(CODE-CHAR 38522)))) ;; #\U967A 
-      (38543 (:alphabetical .(:lowercase .,(CODE-CHAR 38543)))) ;; #\U968F 
-      (38598 (:alphabetical .(:lowercase .,(CODE-CHAR 38598)))) ;; #\U96C6 
-      (38656 (:alphabetical .(:lowercase .,(CODE-CHAR 38656)))) ;; #\U9700 
-      (38750 (:alphabetical .(:lowercase .,(CODE-CHAR 38750)))) ;; #\U975E 
-      (38911 (:alphabetical .(:lowercase .,(CODE-CHAR 38911)))) ;; #\U97FF 
-      (39033 (:alphabetical .(:lowercase .,(CODE-CHAR 39033)))) ;; #\U9879 
-      (39044 (:alphabetical .(:lowercase .,(CODE-CHAR 39044)))) ;; #\U9884 
-      (39057 (:alphabetical .(:lowercase .,(CODE-CHAR 39057)))) ;; #\U9891 
-      (39064 (:alphabetical .(:lowercase .,(CODE-CHAR 39064)))) ;; #\U9898 
-      (39640 (:alphabetical .(:lowercase .,(CODE-CHAR 39640)))) ;; #\U9AD8 
-      (40802 (:alphabetical .(:lowercase .,(CODE-CHAR 40802)))) ;; #\U9F62
-
-      (65285 (:punctuation .,(punctuation-named (code-char 65285)))) ;; #\FULLWIDTH_PERCENT_SIGN 
-      (65289 (:punctuation .,(punctuation-named (code-char 65289)))) ;;  #\FULLWIDTH_RIGHT_PARENTHESIS 
-      (65292 (:punctuation .,(punctuation-named (code-char 65292)))) ;; #\FULLWIDTH_COMMA 
-      (65306 (:punctuation .,(punctuation-named (code-char 65306)))) ;; #\FULLWIDTH_COLON 
-      (65307 (:punctuation .,(punctuation-named (code-char 65307)))) ;; #\FULLWIDTH_SEMICOLON 
-      (65308 (:punctuation .,(punctuation-named (code-char 65308)))) ;; #\FULLWIDTH_LESS-THAN_SIGN 
-      (65310 (:punctuation .,(punctuation-named (code-char 65310)))) ;; #\FULLWIDTH_GREATER-THAN_SIGN 
-      (65374 (:punctuation .,(punctuation-named (code-char 65374)))) ;; #\FULLWIDTH_TILDE 
-
-      (119977 (:alphabetical .(:lowercase .,(CODE-CHAR 119977)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_N 
-      (119978 (:alphabetical .(:lowercase .,(CODE-CHAR 119978)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_O 
-      (119989 (:alphabetical .(:lowercase .,(CODE-CHAR 119989)))) ;; #\MATHEMATICAL_SCRIPT_CAPITAL_Z 
-      (120594 (:alphabetical .(:lowercase .,(CODE-CHAR 120594)))) ;; #\MATHEMATICAL_ITALIC_SMALL_CHI 
-      
-      (64257 (:alphabetical . (:lowercase . , (code-char 64257)))) ;;"ﬁ", (code = 64257)
-      (64258 (:alphabetical . (:lowercase . , (code-char 64258)))) ;;"ﬂ", (code = 64258)
-      (65288 (:punctuation . ,(punctuation-named (code-char 65288)))) ;;"（", (code = 65288)
-      (65293 (:punctuation . ,(punctuation-named (code-char 65293)))) ;;"－", (code = 65293)
-      #-allegro
-      (119967 (:punctuation . ,(punctuation-named (code-char 119967)))) ;;"풟", (code = 119967)
-      
-      )
+    )
   "If it's not a defparameter, CCL won't let us extend it
    in a running lisp.")
 
