@@ -117,6 +117,14 @@
    :with monomer
    :via domain ))
 
+;; manually added from TRIPS
+(define-category polymerize :specializes oligomerize
+  :bindings (uid "NCIT:C34072")
+  :realization
+  (:verb "polymerize" 
+   :noun "polymerization"
+   :etf (sv)))
+
 ; From the ERK abstract:
 ; #1 "Dimerization-independent" (in title)
 ; #6 "dimerization of ERK"

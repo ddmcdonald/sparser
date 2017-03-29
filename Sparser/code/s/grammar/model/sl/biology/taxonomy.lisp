@@ -741,7 +741,10 @@
   :instantiates self
   :index (:permanent :key name))
 
-
+(define-category substance :specializes bio-chemical-entity ;; for things like "liquid" "colloid" and such based on TRIPS
+  :instantiates :self
+  :realization
+    (:noun "substance"))
 
 (define-category molecule :specializes bio-chemical-entity ;; SBCL caught random backquote here!
   ;; makes more sense for ATP than H20, but not worrying about whether
@@ -1014,7 +1017,16 @@
   :realization (:common-noun name))
 
 
-
+(define-category injury  :specializes bio-context
+  :mixins (has-uid)
+  :binds ((organ bio-organ))
+  :instantiates self
+  :index (:permanent :key name)
+  :realization
+    (:common-noun name
+     :noun "injury"
+     :m organ
+     :to organ))
 
 
 (define-category molecular-location  :specializes bio-location

@@ -55,27 +55,225 @@
 
 (define-category acetylation
   :specializes post-translational-modification
+  :bindings (uid  "GO:0006473")
   :realization
   (:verb "acetylate" :noun "acetylation"
          :etf (svo-passive)))
 
 (define-category de-acetylation
   :specializes post-translational-modification
+  :bindings (uid  "GO:0006476")
   :realization
   (:verb "de-acetylate" :noun "de-acetylation"
    :etf (svo-passive)))
 
 (def-synonym de-acetylation
     (:verb "deacetylate" :noun "deacetylation"))
+
+;; manually added from TRIPS
+(define-category de-acylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0035601")
+  :realization
+  (:verb "de-acylate" :noun "de-acylation"
+   :etf (svo-passive)))
+;; manually added from TRIPS
+(def-synonym de-acylation
+    (:verb "deacylate" :noun "deacylation"))
+
+;; manually added from TRIPS
+(define-category lipidation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0006497")
+  :realization
+  (:verb "lipidate" :noun "lipidation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category delipidation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0051697")
+  :realization
+  (:verb "delipidate" :noun "delipidation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category myristoylation
+  :specializes lipidation ;; based on wikipedia for lipidation
+  :bindings (uid  "GO:0018377")
+  :realization
+  (:verb "myristoylate" :noun "myristoylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category palmitoylation
+  :specializes lipidation ;; based on wikipedia for lipidation
+  :bindings (uid  "GO:0018345")
+  :realization
+  (:verb "palmitoylate" :noun "palmitoylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category depalmitoylation
+  :specializes delipidation ;; based on wikipedia for lipidation
+  :bindings (uid  "GO:0002084")
+  :realization
+  (:verb "depalmitoylate" :noun "depalmitoylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category prenylation
+  :specializes lipidation ;; based on wikipedia for lipidation
+  :bindings (uid  "GO:0018342")
+  :realization
+  (:verb "prenylation" :noun "prenylation"
+   :etf (svo-passive)))
+
 (define-category farnesylation 
-  :specializes post-translational-modification 
+  :specializes prenylation ;; based on wikipedia for lipidation
+  :bindings (uid  "GO:0018343")
   :realization 
   (:verb "farnesylate"
          :noun "farnesylation"
          :etf (svo-passive) ))
 
+;; manually added from TRIPS
+(define-category geranyl-geranylation 
+ :specializes prenylation ;; based on wikipedia for lipidation
+ :bindings (uid  "GO:0018344") 
+  :realization 
+    (:verb "geranyl-geranylate" 
+     :noun "geranyl-geranylation"
+     :etf (svo-passive)))
+;; manually added from TRIPS
+(def-synonym geranyl-geranylation 
+             (:verb "geranyl–geranylate" ;; different hyphen type
+                    :etf (svo-passive)
+                    :noun "geranyl–geranylation"))
+
+;; manually added from TRIPS
+(define-category s-nitrosylation
+  :specializes post-translational-modification
+  :bindings (uid  "NCIT:C120476")
+  :realization
+  (:verb "s-nitrosylate" :noun "s-nitrosylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category neddylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0045116")
+  :realization
+  (:verb "neddylate" :noun "neddylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category deneddylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0000338")
+  :realization
+  (:verb "deneddylate" :noun "deneddylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category biotinylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0009305")
+  :realization
+  (:verb "biotinylate" :noun "biotinylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category amidation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0018032")
+  :realization
+  (:verb "amidate" :noun "amidation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category alkylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0008213")
+  :realization
+  (:verb "alkylate" :noun "alkylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category carboxylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0018214")
+  :realization
+  (:verb "carboxylate" :noun "carboxylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category deamination
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0018277")
+  :realization
+  (:verb "deaminate" :noun "deamination"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category glutathionylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0010731")
+  :realization
+  (:verb "glutathionylate" :noun "glutathionylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category formylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0018256")
+  :realization
+  (:verb "formylate" :noun "formylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category esterification
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0018350")
+  :realization
+  (:verb "esterificate" :noun "esterification"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category mannosylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0035268")
+  :realization
+  (:verb "mannosylate" :noun "mannosylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category sulfation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0006477")
+  :realization
+  (:verb "sulfate" :noun "sulfation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category succinylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0018335")
+  :realization
+  (:verb "succinylate" :noun "succinylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category oxidation
+  :specializes post-translational-modification ;; note: not necessarily post-trans-mod, could be general bio-process, but basing on trips for now, and many article examples are the post-trans-mod
+  :bindings (uid  "GO:0018158")
+  :realization
+  (:verb "oxidate" :noun "oxidation"
+   :etf (svo-passive)))
+
 (define-category glycosylation 
  :specializes post-translational-modification 
+  :bindings (uid  "GO:0006486")
   :realization 
     (:verb "glycosylate"
      :noun "glycosylation"
@@ -83,6 +281,7 @@
 
 (define-category de-glycosylation 
  :specializes post-translational-modification 
+  :bindings (uid  "GO:0006517")
   :realization 
     (:verb "deglycosylate"
      :noun "deglycosylation"
@@ -95,6 +294,7 @@
 
 (define-category hydroxylation 
  :specializes post-translational-modification 
+ :bindings (uid  "GO:0018126")
   :realization 
     (:verb "hydroxylate"
      :noun "hydroxylation"
@@ -108,11 +308,35 @@
 	 :noun "methylation"
 	 :etf (svo-passive)))
 
+(define-category de-methylation 
+  :specializes post-translational-modification
+  :bindings (uid "GO:0070988") 
+  :restrict ((substrate (:or protein variant dna gene)))
+  :realization 
+  (:verb "de-methylate"
+	 :noun "de-methylation"
+	 :etf (svo-passive)))
+
+(def-synonym de-methylation
+    (:verb "demethylate"
+           :noun "demethylation"
+           :etf (svo-passive)))
+
+
 (define-category ribosylation 
  :specializes post-translational-modification 
   :realization 
     (:verb "ribosylate"
      :noun "ribosylation"
+     :etf (svo-passive)))
+
+;; manually added from TRIPS
+(define-category poly-adp-ribosylation 
+ :specializes ribosylation 
+  :bindings (uid  "GO:0070212") ;; manually added from TRIPS
+  :realization 
+    (:verb " poly-adp-ribosylate"
+     :noun "poly-adp-ribosylation"
      :etf (svo-passive)))
 
 (define-category sumoylation 
@@ -122,6 +346,18 @@
      :noun "sumoylation"
      :etf (svo-passive)))
 
+;; manually added from TRIPS
+(define-category desumoylation 
+ :specializes post-translational-modification
+ :bindings (uid  "GO:0016926") 
+  :realization 
+    (:verb "desumoylate"
+     :noun "desumoylation"
+     :etf (svo-passive)))
+;; manually added from TRIPS
+(def-synonym desumoylation 
+    (:verb "de-sumoylate" 
+     :noun "de-sumoylation"))
 
 ;;;---------------
 ;;; phosphorylate
@@ -258,16 +494,34 @@
                     :noun "autoubiquitination"))
 
 (define-category poly-ubiquitination :specializes ubiquitination
+                 :bindings (uid  "GO:0000209") ;; manually added from TRIPS
   :realization
   (:verb "poly-ubiquitinate" 
          :etf (svo-passive)
-         :noun "poly-ubiquitylation"))
+         :noun "poly-ubiquitination")) ;; manually added from TRIPS
 
 (def-synonym poly-ubiquitination 
              (:verb "polyubiquitinate"
-                    :etf (sv)
+                    :etf (svo-passive)
                     :noun "polyubiquitination"))
 
+(def-synonym poly-ubiquitination 
+             (:verb "polyubiquitylate"
+                    :etf (svo-passive)
+                    :noun "poly-ubiquitylation"))
+
+;; manually added from TRIPS
+(define-category de-ubiquitination :specializes post-translational-modification
+                 :bindings (uid  "GO:0016579") 
+  :realization
+  (:verb "de-ubiquitinate" 
+         :etf (svo-passive)
+         :noun "de-ubiquitination"))
+;; manually added from TRIPS
+(def-synonym de-ubiquitination 
+             (:verb "deubiquitinate"
+                    :etf (svo-passive)
+                    :noun "deubiquitination"))
 
 ;;;------------------------------
 ;;; mUbRas, monoubiquitinated Ras
