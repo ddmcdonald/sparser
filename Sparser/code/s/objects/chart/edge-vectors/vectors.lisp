@@ -55,7 +55,7 @@
               (setq array (make-edge-vector-array)))))
 
     (when (>= count *maximum-number-of-edges-in-an-edge-vector*)
-      (error "Parser design-limit reached.~
+      (break "Parser design-limit reached.~
               ~%  The parser is about introduce one more edge into~
               ~%  an edge-vector than the pre-constructed data structure~
               ~%  is designed to allow.~
