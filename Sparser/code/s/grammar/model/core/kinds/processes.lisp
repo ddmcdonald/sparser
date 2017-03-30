@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2016
+;;;  version:  March 2017
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -43,7 +43,8 @@
           (participant) ;; any number of others
           (time)
           (location)
-          (purpose)
+          (purpose)  ;; in order to ...
+          (reason)  ;; answers "why", "because E"
           (circumstance)
           (manner)
 
