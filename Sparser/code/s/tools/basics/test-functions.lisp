@@ -1258,3 +1258,16 @@ applied to l, and values are values associated with that key example"
                  (eval (intern "*BREAK-DURING-READ*" (find-package :r3)))))
         (loop for s in sents do (incf *hms-sent-count*)(qpp s))   
         (loop for s in sents as i from 0 do (incf *hms-sent-count*)(qepp s)))))
+
+
+(defun init-phase3-directory (&key (use-xml *use-xml*))
+  (declare (special *use-xml*))
+  (setq *use-xml* use-xml)
+  (when (find-package :r3)
+    (save-article-semantics
+     *use-xml*
+     (pathname
+      (ensure-directories-exist
+       (concatenate 'string
+                    (eval (intern "*R3-TRUNK*" (find-package :r3)))
+                    "corpus/phase3_nxml/results/"))))))
