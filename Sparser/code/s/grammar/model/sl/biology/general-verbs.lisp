@@ -647,8 +647,7 @@
   :binds ((topic biological)
           (tocomp (:or be biological)))
     :realization
-    (:verb ("know" :past-tense "known")
-	   :noun "knowledge" 
+    (:verb ("know" :past-tense "known")	   :noun "knowledge" 
 	   :etf (svo-passive)
            :about topic
            :to-comp tocomp))
@@ -664,8 +663,10 @@
 
 (delete-noun-cfr (resolve "lead"))
 (delete-noun-cfr (resolve "leads"))
-(define-category lead :specializes positive-bio-control
-  :restrict ((agent (:or bio-process bio-method bio-mechanism bio-relation)))
+(define-category lead 
+  :specializes positive-bio-control
+  :restrict ((agent (:or bio-process bio-method bio-mechanism bio-relation
+                         bio-entity))) ;; "KRAS leads to cancer"
   :binds ((leads-to (:or biological bio-rhetorical)))
   :realization
     (:verb ("lead" :past-tense "led")
@@ -1183,10 +1184,12 @@
 
 (define-category bio-use :specializes bio-method
     :binds ((used-to biological)
+            (disease disease)
             (purpose (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
-    :realization
-    (:verb ("useXXX" :past-tense "used" :present-participle "using")
-           :noun "use"
-	   :etf (svo-passive)
-           :to used-to
-           :to-comp purpose))
+    :realization ;; (p/s "use KRAS to treat pancreatic cancer")
+      (:verb ("use" :past-tense "used" :present-participle "using")
+       :noun "use"
+       :etf (svo-passive)
+       :to used-to
+       :for disease ;; (p/s "what drug should I use for pancreatic cancer?")
+       :to-comp purpose))
