@@ -216,7 +216,7 @@
     "Gram-negative" "Greece" "Greek" "Green-colored" "Grp" "Grp78" "Gskβ"
     "Guam" "Guan" "Gullah" "Guthrie" "Gutierrez-Enriquez" "GxE" "GxxxG-like"
     "GxxxG-motifs" "Gy" "Gα" "GαI" "Gαs" "H&E" "H-Met" "H-TAME" "H-labeled"
-    "H-thymidine" "H1" "H16N2–HER-2" "H175p53" "H2" "H2AX-E" "H2AX-S"
+    "H-thymidine" "H1" "H1.3" "H16N2–HER-2" "H175p53" "H2" "H2AX-E" "H2AX-S"
     "H2AX-V5-H6" "H3" "H3-H3" "H3-H4" "H3-K27M" "H3-K4" "H3-K9Ac" "H3.1-H4"
     "H3.3" "H3H113A" "H3K14ac" "H3K27" "H3K3" "H3K36" "H3K56" "H3K56ac" "H3K9"
     "H3K9K14Ac" "H3R8" "H4" "H4K12" "H4K12ac" "H4K20" "H4K20me1-2" "H4R3"

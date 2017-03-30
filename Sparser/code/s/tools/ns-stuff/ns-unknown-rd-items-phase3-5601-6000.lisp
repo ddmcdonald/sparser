@@ -1084,9 +1084,9 @@
     "partitioning-defective" "patch-clamp" "pathobiology" "pathogen-associated"
     "pathology-inducing" "pathophysiology" "pathway-like" "pathways" "patients"
     "paxilin" "pcDNA" "pcDNA-MKK3b" "pcDNA-MKK6b" "pcDNA3-PTEN" "pcDNA3-PTK6"
-    "penetrance" "penetrant" "penta" "pepducin" "peptide-MHC" "peptide-Velcro"
-    "peptides" "peptide–Bcl-xL" "peptidyl-prolyl" "per-allele" "perhaps"
-    "perimysium" "perinuclear-recycling" "peritoneum" "persistently-activated"
+    "penetrance" "penetrant" "penta" "pepducin" "peptide-Velcro" "peptides"
+    "peptidyl-prolyl" "per-allele" "perhaps" "perimysium"
+    "perinuclear-recycling" "peritoneum" "persistently-activated"
     "person-years" "pervandate" "pfRG-B" "pgRNA" "phagocytosis-like"
     "pharmacologically-tractable" "pharmacophore" "phase-1" "phase-2"
     "phase-2a" "phase-II" "phase-contrast" "phenylhydrazine-treatedVhl"
@@ -1399,4 +1399,5 @@
     "γ-irradiated" "γ-irradiation" "γ-irradiations" "γ-phosphate"
     "γ-phosphates" "γ-promoter" "γ-ray" "γ-rays" "γ1" "γ2b" "γ–O" "δ-endotoxin"
     "ε-acetyl" "ε-amino" "ζ-isoform" "κB-luc" "κBα" "λ820" "λ=1.001" "λm5"
-    "μ-chain" "μMT" "μg" "μg " "μl" "μmol" "≅FANCA" "≧pT2" "≪FANCD2" "ﬁndings"))
+    "μ-chain" "μMT" "μg" "μg " "μl" "μmol" "∡2.5" "≅FANCA" "≧pT2" "≪FANCD2"
+    "ﬁndings"))

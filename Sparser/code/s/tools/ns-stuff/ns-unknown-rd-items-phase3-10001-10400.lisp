@@ -1472,5 +1472,6 @@
     "γ-phosphate" "γ-radiation" "γ-subtype" "γ-synuclein" "γ2" "γ3" "γ4" "γH2A"
     "γSI" "γc" "γvariants" "δ-1" "δ→MARCKS" "κ-dependent" "κB-driven" "λ-PPase"
     "λ-anti-terminator" "λ-phosphatase" "λN-peptide" "λPPase" "λs" "μ1" "μ3A"
-    "μA" "μCi" "μHC" "μL" "μg" "μl" "μmol" "μmol " "π-π" "ϕX174" " 1" " 1,000"
-    "„central" "∆-G6PD-G487A" "∆-G6PD-WT" "∆CT" "∆Nef"))
+    "μA" "μCi" "μHC" "μL" "μg" "μl" "μmol" "μmol " "π-π" "ϕX174"
+    "ᵧ-irradiation" " 1" " 1,000" "„central" "∆-G6PD-G487A" "∆-G6PD-WT" "∆CT"
+    "∆Nef" "▸The"))

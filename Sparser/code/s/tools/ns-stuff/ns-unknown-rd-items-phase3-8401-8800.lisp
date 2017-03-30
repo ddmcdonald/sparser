@@ -185,7 +185,7 @@
     "Fierro-Monti" "Fifty-five" "Fifty-one" "Figure7B" "Filamentous-actin"
     "Filho" "Findings" "Fine-tuning" "Finnish" "Fitch-Margoliash" "Five-year"
     "FlAsH-tag" "Flag-D1" "Flag-IQGAP1-C" "Flag-KLF6-4A" "Flag-KLF6-WT"
-    "Flag-Oct4-T235A" "Flag-Oct4-T235D" "Flag-Oct4-WT" "Flag-fusion"
+    "Flag-Oct4-T235A" "Flag-Oct4-T235D" "Flag-Oct4-WT" "Flag-fusion" "Flt3"
     "Fluor-488" "FoldAmyloid" "Follow-up" "Fontana" "Forkhead" "Forty-eight"
     "Forty-nine" "Forty-one" "Forty-three" "Foxm1-null" "Framingham" "Fraumeni"
     "French" "French–American–British" "Frontal" "Full-thickness" "G-Quaduplex"
@@ -1413,5 +1413,6 @@
     "κB-binding" "κB-ras1" "λ-phosphatase" "μ3" "μ3A" "μ3B" "μL" "μM-range"
     "μg" "μl" "μmol" "πg" "πl" "σ3" "σ3-adaptin" "φXXXXφXXφ" "φXφXXXXφ"
     "φXφXXXXφXXφ" " 000" " 004" " 083" " 347" " 389" "”-assay" "”-derived"
-    "”stemness" "↓APVG" "↓GSPE" "↓HILG" "−3" "−7" "−MEF" "≍30" "≤400" "△Ct"
-    "△Ct " "和N-ras在不同亚型肿瘤中的表达情况" "方法" "根据世界卫生组织最新的诊断标准60例胸腺上皮性肿瘤分类" "结果"))
+    "”stemness" "↓APVG" "↓GSPE" "↓HILG" "−3" "−7" "−MEF" "≍30" "≤400"
+    "⊣miR-150" "⊣miR-150⊣FLT3" "△Ct" "△Ct " "和N-ras在不同亚型肿瘤中的表达情况" "方法"
+    "根据世界卫生组织最新的诊断标准60例胸腺上皮性肿瘤分类" "结果"))

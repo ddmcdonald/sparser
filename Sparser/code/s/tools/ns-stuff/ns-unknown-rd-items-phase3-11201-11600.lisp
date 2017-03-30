@@ -1327,5 +1327,5 @@
     "γ–secretase" "ε-amino" "ζ–EYFP155–238" "κB" "κBα" "λ-phosphatase" "μ1"
     "μ2" "μL" "μU" "μg" "μl" "μmol" "π-electrons" "χ2" "ψεRACK" "ω1" " 0.05"
     " S1A" " S1B" " al" " hr" " hrs" " kD" " mm" " months" " ng" " years" " μM"
-    " μg" "‒2HA" "”-dependent" "”-like" "∆153" "∆183" "−2.9" "√6" "≦25%" "≧25%"
-    "，the" "＞70%"))
+    " μg" " contributed" " risk" "‒2HA" "”-dependent" "”-like" "∆153" "∆183"
+    "−2.9" "√6" "≦25%" "≧25%" "，the" "＞70%"))
