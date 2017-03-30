@@ -81,15 +81,6 @@
 ;; (right-edge-for-referent)
 ;; (parent-edge-for-referent)
 
-;;/// no callers
-(defun pair-context ()
-  (let ((left (left-edge-for-referent))
-        (right (right-edge-for-referent)))
-    (when (and left right)
-      (format nil "e~a + e~a"
-              (edge-position-in-resource-array left)
-              (edge-position-in-resource-array right)))))
-
 
 ;;;------------
 ;;; parameters
@@ -614,11 +605,21 @@
     (or *subcat-test*
         (add-tense/aspect-to-subordinate-clause aux (individual-for-ref sc))))
   (:method ((aux category) (sc individual))
-    (or *subcat-test*
-         (make-vg-aux aux sc)))
+    (if *subcat-test*
+      (valid-aux-for-tense?)
+      (make-vg-aux aux sc)))
   (:method ((aux individual) (sc individual))
-    (or *subcat-test*
-         (make-vg-aux aux sc))))
+    (if *subcat-test*
+      (valid-aux-for-tense?)
+      (make-vg-aux aux sc))))
+
+(defun valid-aux-for-tense? ()
+  "The rules that get here are only supposed to apply to
+   auxiliaries. Block the composition if the 'aux' is the
+   head of a much larger phrase."
+  (let* ((valid? (verb-category? (left-edge-for-referent))))
+    ;;(unless valid? (format t "~&Blocking add-tense~%"))
+    valid? ))
 
 (defun absorb-auxiliary (aux vg)
   (cond

@@ -297,6 +297,16 @@ in the scope of referent-from-rule.
        ,@body)))
 
 
+(defun pair-context ()
+  "Convenient routine to use in traces and while debugging"
+  (let ((left (left-edge-for-referent))
+        (right (right-edge-for-referent)))
+    (when (and left right)
+      (format nil "e~a + e~a"
+              (edge-position-in-resource-array left)
+              (edge-position-in-resource-array right)))))
+
+
 ;;;--------------------------
 ;;; operating over the edges
 ;;;--------------------------
