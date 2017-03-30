@@ -50,10 +50,8 @@
      :adverb "likely" ;;want likely to ambiguously be an adjective or adverb
      :to-comp theme
      :thatcomp theme))
-;; bio-relation and bio-rhetorical appear to differ mosly
-;; on their value restrictions. ///would be worth reworking
-;; the display of subcat keys by what category introduces
-;; them and tune accordingly
+;; bio-relation and bio-rhetorical appear to differ mostly
+;; on their value restrictions. 
 
 (define-category unlikely
   :specializes certainty ;;bio-relation
