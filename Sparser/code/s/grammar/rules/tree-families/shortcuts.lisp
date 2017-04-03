@@ -80,19 +80,20 @@ broadly speaking doing for you all the things you might do by hand.
     i))
 
 (defparameter *uid-to-individual* (make-hash-table :size 10000 :test #'equal))
-(defparameter *inhibited-plurals* nil)
-(defparameter *show-supp-plurals* nil) ;; sets whether it shows the warnings about plurals not created
 
-(defmacro def-ided-indiv (category-name word id &key name members adj synonyms no-plural)
-  `(define-individual-with-id ',category-name ,word ,id ,.(when name `(:name ,name))))
+(defmacro def-ided-indiv (category-name word id &key name members adj synonyms no-plural maintain-case)
+  `(define-individual-with-id ',category-name ,word ,id ,.(when name `(:name ,name))
+                              ,.(when members `(:members ,members))
+                              ,.(when adj `(:adj ,adj))
+                              ,.(when synonyms `(:synonyms ,synonyms))
+                              ,.(when no-plural `(:no-plural ,no-plural))
+                              ,.(when maintain-case `(:maintain-case ,maintain-case))))
 
 (defun define-individual-with-id (category-name word id &key name members adj synonyms no-plural maintain-case)
   (assert (and category-name word id))
   (let* ((base-word (if maintain-case
                         word
                         (string-downcase word)))
-         (plural-word (plural-version base-word))
-         (plural-name (when name (plural-version name)))
          (category (category-named category-name :break-if-undefined))
          (i (or (gethash id *uid-to-individual*)
                 (setf (gethash id *uid-to-individual*)
@@ -100,45 +101,41 @@ broadly speaking doing for you all the things you might do by hand.
                         (if name
                             (bind-dli-variable :name name ind)
                             ind))))))
-    (cond (no-plural
-           (setq *inhibit-constructing-plural* t))
-          ((resolve plural-word)
-           (setq *inhibit-constructing-plural* t)
-           (when *show-supp-plurals*
-             (format t "~%not creating plural ~s of already defined word~%" plural-word))
-           (push word *inhibited-plurals*))
-          (t
-           (setq *inhibit-constructing-plural* nil)))
-    (add-rules (make-rules-for-head :common-noun (resolve/make base-word) category i) i)
-    (setq *inhibit-constructing-plural* nil)
-    (cond (no-plural
-           (setq *inhibit-constructing-plural* t))
-          ((and plural-name ;; necessary because currently nil resolves
-                (resolve plural-name))
-           (setq *inhibit-constructing-plural* t)
-           (when *show-supp-plurals*
-             (format t "~%not creating plural ~s of already defined word~%" plural-name))
-           (push name *inhibited-plurals*))
-          (t
-           (setq *inhibit-constructing-plural* nil)))  
-    (when name (add-rules (make-rules-for-head :common-noun (resolve/make (pname name)) 
-                                               category i) i))
-    (setq *inhibit-constructing-plural* nil)
+    (add-rules-cond-plural base-word category i :no-plural no-plural)
+    (when name (add-rules-cond-plural name category i 
+                                      :no-plural (if (or no-plural 
+                                                         (equal name base-word)) 
+                                      ;; added so plurals inhibited
+                                      ;; because the base-word was just
+                                      ;; defined don't get pushed to
+                                      ;; *inhibited-plurals* since
+                                      ;; they're not interesting
+                                                     t
+                                                     nil)))
     (when adj (add-rules (make-rules-for-head :adjective (resolve/make (pname adj)) 
                                               category i) i))
     (when synonyms (loop for s in synonyms
-                           as plural-s = (plural-version s)
-                      do (when (resolve plural-s)
-                           (setq *inhibit-constructing-plural* t)
-                           (format t "~%not creating plural ~s of already defined word~%" 
-                                   plural-s)
-                           (push s *inhibited-plurals*))
-                           (add-rules (make-rules-for-head 
-                                       :common-noun (resolve/make (pname s)) 
-                                       category i) i)
-                           (setq *inhibit-constructing-plural* nil)))
+                         do (add-rules-cond-plural s category i :no-plural no-plural)))
     (when (consp members) (setq i (set-family-members i members)))
     i))
+
+(defparameter *inhibited-plurals* nil)
+
+(defun add-rules-cond-plural (word category ind &key no-plural (pos :common-noun))
+  "Given a word, category, and individual, add-rules to the individual
+for that word, and if no-plural or if the plural-version of the word
+resolves, it blocks the plural (and in the latter case adds the word
+to the list of *inhibited-plurals* so we can troubleshoot later and
+see if there are issues"
+  (let ((*inhibit-constructing-plural* 
+         (if (or no-plural
+                 (if (resolve (plural-version word))
+                     (push word *inhibited-plurals*)
+                     nil))
+             t
+             nil)))
+    (declare (special *inhibit-constructing-plural*))
+    (add-rules (make-rules-for-head pos (resolve/make word) category ind) ind)))
 
 ;; old NP patterns for MUMBLE use
 (defmacro common-noun (name
