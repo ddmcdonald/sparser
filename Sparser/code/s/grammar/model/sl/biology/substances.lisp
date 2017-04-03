@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2017 SIFT LLC. All Rights Reserved
 ;;;
-;;;    File: "loader"
+;;;    File: "substances"
 ;;;  Module: "grammar/model/sl/biology/
 ;;; version: March 2017
 
