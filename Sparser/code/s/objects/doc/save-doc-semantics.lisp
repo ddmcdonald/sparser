@@ -206,6 +206,12 @@
     (with-output-to-string (s)
       (write-sem (previous (sentence)) s)))))
 
+(defun sem-sexp (indiv)
+  (read-from-string
+   (string-upcase
+    (with-output-to-string (s)
+       (write-sem indiv s)))))
+
 (defun find-sem-type-instances (s &optional (types
                                              '(:or bio-control post-translational-modification binding
                                                interact ;; not sure this constitues a cardable entity, but I think REACH thinks so
