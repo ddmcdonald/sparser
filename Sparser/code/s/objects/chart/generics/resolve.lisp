@@ -71,6 +71,8 @@
    could be in the analyzer's grammar, the type of object being determined
    from the argument's properties as a lisp object.  If the object exists
    it is returned, otherwise NIL is returned."
+  #+ignore(when (null arg)
+    (lsp-break "resolve nil"))
   (typecase arg
     (word arg)
     (polyword arg)
