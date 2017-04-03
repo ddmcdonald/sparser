@@ -458,7 +458,7 @@
 (def-ided-indiv molecule "endocannabinoid" "CHEBI:67197" :name "endocannabinoid") 
 (def-ided-indiv molecule "endotoxin" "NCIT:C50918" :name "endotoxin") 
 (def-ided-indiv molecule "ent-kaurane" "CHEBI:36540" :name "ent-kaurane") 
-(def-ided-indiv molecule "estradiol-17beta" "CHEBI:16469" :name "17beta-estradiol" :synonyms ("E2")) ;; manually added E2
+(def-ided-indiv molecule "estradiol-17beta" "CHEBI:16469" :name "17beta-estradiol" :synonyms '("E2")) ;; manually added E2
 (def-ided-indiv molecule "exendin-4" "PC:56927919") 
 (def-ided-indiv molecule "fMLF" "CHEBI:53490" :name "N-formyl-L-methionyl-L-leucyl-L-phenylalanine") 
 (def-ided-indiv molecule "fatty-acid" "CHEBI:35366" :name "fatty acid") 
