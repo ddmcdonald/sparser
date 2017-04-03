@@ -741,7 +741,10 @@
   :instantiates self
   :index (:permanent :key name))
 
-
+(define-category substance :specializes bio-chemical-entity ;; for things like "liquid" "colloid" and such based on TRIPS
+  :instantiates :self
+  :realization
+    (:noun "substance"))
 
 (define-category molecule :specializes bio-chemical-entity ;; SBCL caught random backquote here!
   ;; makes more sense for ATP than H20, but not worrying about whether
