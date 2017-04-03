@@ -1078,18 +1078,19 @@ the process.
     i))
 
 (defmacro def-ided-family (word id &key type species members
-                           name synonyms)
+                           name synonyms maintain-case)
   (unless (stringp word) (error "Word argument should be a string"))
   `(define-family-with-id
      ',word ',id ,.(when type `(:type ',type)) 
      ,.(when species `(:species ',species)) 
      ,.(when members `(:members ',members))
      ,.(when name `(:name ',name)) 
-     ,.(when synonyms `(:synonyms ',synonyms))))
+     ,.(when synonyms `(:synonyms ',synonyms))
+     ,.(when maintain-case `(:maintain-case ',maintain-case))))
 
 
 (defun define-family-with-id (word id &key type species members
-                              name synonyms)
+                              name synonyms maintain-case)
   ;(declare (special word id species))
   #+ignore
   (unless members
@@ -1113,7 +1114,8 @@ the process.
             (t (break "what type of family is this supposed to be?"))))
          (i (define-individual-with-id category-name word id 
                                        :name name :members members 
-                                       :synonyms synonyms))) 
+                                       :synonyms synonyms
+                                       :maintain-case maintain-case))) 
     i))
 
 (defun set-family-members (i members)
