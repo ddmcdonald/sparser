@@ -425,15 +425,7 @@
           mm)
       (declare (special mentions mm))
       (when *indra-post-process*
-        (loop for mention in mentions
-              when
-                (or (itypep (base-description mention) 'bio-activate)
-                    (itypep (base-description mention) 'post-translational-modification))
-              do
-                (push (list (retrieve-surface-string (mention-source mention))
-                            (semtree (base-description mention))
-                            (sentence-string sentence))
-                      *indra-post-process*)))
+        (indra-post-process mentions sentence))
       (when *check-find-all-mentions*
         (unless
             (loop for m in mentions
@@ -448,3 +440,22 @@
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
       (push colorized-sentence *localization-split-sentences*)))
   )
+
+(defun indra-post-process (mentions sentence)
+  (loop for mention in mentions
+        ;;when (or
+        do (cond  ((and (itypep (base-description mention) 'bio-activate)
+                        (value-of 'object (base-description mention)))
+                   (push-sem->indra-post-process mention sentence))
+                 ((and (itypep (base-description mention) 'post-translational-modification)
+                       (or (value-of 'substrate (base-description mention))
+                           (value-of 'agent-or-substrate (base-description mention))))
+                  (push-sem->indra-post-process mention sentence)))))
+
+
+(defun push-sem->indra-post-process (mention sentence)
+  (push (list (retrieve-surface-string (mention-source mention))
+                       (sem-sexp (base-description mention))
+                       (sentence-string sentence))
+                 *indra-post-process*))
+
