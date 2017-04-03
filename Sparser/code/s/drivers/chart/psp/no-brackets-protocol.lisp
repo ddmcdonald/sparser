@@ -403,6 +403,7 @@
 
 (defparameter *check-find-all-mentions* nil)
 (defparameter *colorized-sentence* (make-hash-table :size 1000 :test #'equal))
+(defparameter *indra-post-process* nil)
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
@@ -418,18 +419,30 @@
     (when *save-bio-processes*
       (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*))
-  (when *check-find-all-mentions*
+  (when (or *check-find-all-mentions*
+            *indra-post-process*)
     (let ((mentions (find-all-mentions sentence))
           mm)
       (declare (special mentions mm))
-      (unless
-          (loop for m in mentions
-                always
-                  (progn
-                    (setq mm m)
-                    (or (not (individual-p (base-description mm)))
-                        (member mm (mention-history (base-description mm))))))
-        (lsp-break "bad mention-history"))))
+      (when *indra-post-process*
+        (loop for mention in mentions
+              when
+                (or (itypep (base-description mention) 'bio-activate)
+                    (itypep (base-description mention) 'post-translational-modification))
+              do
+                (push (list (retrieve-surface-string (mention-source mention))
+                            (semtree (base-description mention))
+                            (sentence-string sentence))
+                      *indra-post-process*)))
+      (when *check-find-all-mentions*
+        (unless
+            (loop for m in mentions
+                  always
+                    (progn
+                      (setq mm m)
+                      (or (not (individual-p (base-description mm)))
+                          (member mm (mention-history (base-description mm))))))
+          (lsp-break "bad mention-history")))))
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
