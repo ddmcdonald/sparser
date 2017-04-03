@@ -30,6 +30,7 @@
 
 (gload "bio;taxonomy")
 (gload "bio;cellular-locations")
+(gload "bio;non-cellular-locations") ;; needs to be before protein families so human is defined
 (gload "bio;aux-taxonomy")
 (gload "bio;standardized-protein-defs")
 (gload "bio;non-upa-upm-proteins")
@@ -45,11 +46,11 @@
 (gload "bio;diseases-pathogens")
 (gload "bio;measurements")
 (gload "bio;molecular-locations")
-(gload "bio;non-cellular-locations")
 (gload "bio;pathways")
 (gload "bio;plasmids-rna")
 (gload "bio;post-trans-mods")
 (gload "bio;protein-terminals-domains")
+(gload "bio;substances")
 
 
 
