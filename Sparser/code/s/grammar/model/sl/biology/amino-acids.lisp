@@ -89,10 +89,12 @@ ones are gratuitously ambiguous with capitalized initials.
         (break "could not retrieve capitalized-letter"))
       (add-rule 3-letter-rule i)
       (add-rule caps-3-letter-rule i)
-      (eval
+      (unless (equal one "I")
+        ;;  this clobbers the definition of the pronoun -- DAVID -- HELP!
+        (eval
        `(def-cfr residue-on-protein (,lc-one-letter-word number)
           :form np
-          :referent (:function create-residue-from-amino-acid-position left-edge right-edge)))
+          :referent (:function create-residue-from-amino-acid-position left-edge right-edge))))
       (unless (equal one "I")
         ;;  this clobbers the definition of the pronoun -- DAVID -- HELP!
         (setf (gethash lc-one-letter-word *single-letters-to-amino-acids*) i))
