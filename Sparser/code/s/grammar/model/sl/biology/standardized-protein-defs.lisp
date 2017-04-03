@@ -3267,7 +3267,7 @@
 (define-protein "UP:P20338" ("p20338" "RAB4" "RAB4A" "RAB4A, member RAS oncogene family" "RAB4A_HUMAN" "rab4" "rab4a")) 
 (define-protein "UP:P20339" ("p20339" "RAB5" "RAB5A" "RAB5A, member RAS oncogene family" "RAB5A_HUMAN" "Rab5A" "rab5a")) 
 (define-protein "UP:P20340" ("p20340" "RAB6" "RAB6A" "RAB6A, member RAS oncogene family" "RAB6A_HUMAN" "rab-6" "Rab6A")) 
-(define-protein "UP:P20366" ("p20366" "protachykinin-1" "TKN1_HUMAN" "substance" "substance p")) 
+(define-protein "UP:P20366" ("p20366" "protachykinin-1" "TKN1_HUMAN" "substance p")) 
 (define-protein "UP:P20382" ("MCH_HUMAN" "melanin-concentrating hormone" "p20382" "PMCH" "PMCH(147-165)" "pro-melanin concentrating hormone" "pro-melanin-concentrating hormone" "PROTEIN-REFERENCE5692" "PROTEIN12133")) 
 (define-protein "UP:P20393" ("EAR-1" "EAR1" "NR1D1" "NR1D1_HUMAN" "Nuclear receptor subfamily 1 group D member 1" "p20393" "REV-ERB-alpha" "Rev-ErbAalpha" "Rev-erbA-alpha" "THRA1" "THRAL" "V-erbA-related protein 1" "ear-1" "group D" "nuclear receptor subfamily 1" "nuclear receptor subfamily 1 group D member 1" "preadipocytes" "PROTEIN-REFERENCE1112" "PROTEIN2484")) 
 (define-protein "UP:P20396" ("p20396" "TRH" "thyrotropin releasing hormone")) 
