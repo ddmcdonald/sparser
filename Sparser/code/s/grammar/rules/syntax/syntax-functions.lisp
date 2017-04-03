@@ -1211,7 +1211,7 @@
 				       ((vp+ing vg+ing) category::vp+ing)
 				       ((vp+ed vg+ed) category::vp+ed)
                                        ((to-comp) category::to-comp)
-                                       (t (error "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP?!")
+                                       (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP?!")
                                        category::n-bar))
 			       :referent result))
        result))))
