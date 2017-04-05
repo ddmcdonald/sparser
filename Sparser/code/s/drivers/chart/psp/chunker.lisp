@@ -379,8 +379,7 @@
                         (not (eq (edge-form edge) category::det))
                         (not (eq (edge-form edge) category::quantifier))))
               nil)
-             ((loop for edge in edges thereis
-                   (eq (edge-form edge) category::adverb))
+             ((preceding-adverb-preceded-by-ng edges)
               ;; too tight, but probably OK
               ;; blocks "interaction eventually influencing ecm - driven cell motility"
               nil)
@@ -398,11 +397,27 @@
         ;; don't allow a verb form after a parenthetical -- most likely a relative clause or a main clause
         ;;"RNA interference (RNAi) blocked MEK/ERK activation."
         (or
+         (preceding-adverb-preceded-by-ng edges)
+         ;; too tight, but probably OK
+         ;; blocks "interaction eventually influencing ecm - driven cell motility"
          (eq (edge-category e) category::have)
          (loop for edge in edges thereis (eq (edge-category edge) category::parentheses))))
        nil)
       ((ng-compatible? (edge-form e) edges)))))
 
+(defun preceding-adverb-preceded-by-ng (edges)
+  (and
+   (loop for edge in edges thereis
+           (eq (edge-form edge) category::adverb))
+   (loop for edge in edges thereis
+           (let ((left (edge-just-to-left-of edge)))
+             (and (edge-p left)
+                  (or
+                   (and (eq (edge-form left)  category::adverb)
+                        (and (edge-p (edge-just-to-left-of left))
+                             (ng-head? (edge-just-to-left-of left))))
+                   (ng-head? (edge-just-to-left-of edge))))))))
+  
 (defun some-edge-satisfying? (edge-list predicate)
   (loop for edge in edge-list thereis (funcall predicate edge)))
 
@@ -859,6 +874,10 @@ than a bare "to".  |#
                     category::preposition category::det category::have
                     category::pronoun *verb+ed-sents* *sentence-in-core*
                     *chunk*))
+  (when (and (eq 'adverb (cat-name (edge-form edge)))
+             (edge-p (edge-just-to-right-of edge))
+             (eq 'verb+ed (cat-name (edge-form (edge-just-to-right-of edge)))))
+    (setq edge (edge-just-to-right-of edge)))
   (cond
     ((and (edge-form edge) ;; COMMA has no edge-form
           (not
