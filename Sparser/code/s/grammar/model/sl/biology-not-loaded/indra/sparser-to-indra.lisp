@@ -1,8 +1,10 @@
 (in-package :sparser)
 
-(defun indra-json->sexp (&optional (input "statements-with-r3-sparser-extended") (output "sexp-statements-with-r3-sparser-extended"))
-  (with-open-file (in "~/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology-not-loaded/indra/statements_with_r3_sparser_extended.json"
-                      ;(concatenate 'string "sparser:bio-not-loaded;" input ".json")
+(defun indra-json->sexp (&optional (input "statements-with-r3-sparser-extended")
+                           (output "sexp-statements-with-r3-sparser-extended"))
+  (with-open-file (in
+                   (concatenate 'string "sparser:bio-not-loaded;" 
+                                 "statements-with-r3-sparser-extended.json")
                       :direction :input 
                       :external-format :UTF-8)
     (with-open-file (out (concatenate 'string "sparser:bio-not-loaded;" 
@@ -15,7 +17,7 @@
   output)
 
 ;(defparameter *json-type-ht* (make-hash-table :size 100 :test #'equal))
-
+(defparameter *json-sexp-statements* nil)
 (defun collect-unique-json-elts (&optional (json-list *json-sexp-statements*))
   (simplify-json-list json-list))
 
@@ -77,3 +79,59 @@
                          :external-format :UTF-8)
     (print (collect-unique-json-elts json-sexp) out))
   file)
+
+
+(defun json-dict-entries (j label)
+  (loop for de in j when (eq (car de) label)
+          collect de))
+
+(defun json-texts (j)
+  (remove-duplicates
+   (loop for de in (json-dict-entries j :evidence)
+         append
+           (loop for ev in (cdr de)
+                 append
+                   (mapcar #'cdr (json-dict-entries ev :text))))
+   :test #'equal))
+
+
+(defun json-parsable-texts (j)
+  (remove-duplicates
+   (loop for de in (json-dict-entries j :evidence)
+         append
+           (loop for ev in (cdr de)
+                   append
+                   (when (member (cdr (assoc :SOURCE--API ev))
+                         '("trips" "reach" "sparser") :test #'equal)
+                     (mapcar #'cdr (json-dict-entries ev :text)))))
+   :test #'equal))
+
+
+(defun missed-indra ()
+  (declare (special *missed-indra*))
+  (length
+   (setq *missed-indra*
+         (loop for j in *json-sexp-statements*
+               append 
+                 (unless
+                     (member (cdr (assoc :type j))
+                             '("IncreaseAmount"
+                               "DecreaseAmount"
+                               "Translocation")
+                             :test #'equal)
+                               
+                   (let ((ps (json-parsable-texts j)))
+                     (when
+                         (and ps
+                              (loop for s in ps
+                               never (has-indra-data s)))
+                       (list j))))))))
+
+
+(defun has-indra-data (s)
+  (let ((*indra-post-process* (list t)))
+    (declare (special *indra-post-process*))
+    (with-total-quiet (eval `(pp ,s)))
+    (reverse (cdr (reverse *indra-post-process*) ))))
+
+
