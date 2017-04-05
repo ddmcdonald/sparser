@@ -78,6 +78,11 @@
   (**/* "sparser:source;" :type *fasl-type*)
   (**/* *fasl-root* :type *fasl-type*))
 
+
+(def-logical-pathname
+    (**/* "sparser:source;" :type "json")
+    (**/* *source-root* :type "json"))
+
 ;; an intermediate fasl form
 #+allegro
 (def-logical-pathname
