@@ -444,18 +444,32 @@
 (defun indra-post-process (mentions sentence)
   (loop for mention in mentions
         ;;when (or
-        do (cond  ((and (itypep (base-description mention) 'bio-activate)
-                        (value-of 'object (base-description mention)))
-                   (push-sem->indra-post-process mention sentence))
-                 ((and (itypep (base-description mention) 'post-translational-modification)
-                       (or (value-of 'substrate (base-description mention))
-                           (value-of 'agent-or-substrate (base-description mention))))
-                  (push-sem->indra-post-process mention sentence)))))
+        do
+          (let ((ref (base-description mention)))
+            (declare (special ref))
+            (cond  ((and (or (itypep ref 'bio-activate)
+                             (itypep ref 'bio-inactivate))
+                         (value-of 'object ref))
+                    (push-sem->indra-post-process mention sentence))
+                   ((and (or
+                          (itypep ref 'post-translational-modification)
+                          (and (is-basic-collection? ref)
+                               (or ;;(lsp-break)
+                                   (itypep (value-of 'type ref)
+                                       'post-translational-modification))))
+                         (or (value-of 'substrate ref)
+                             (value-of 'agent-or-substrate ref)
+                             (value-of 'site ref)))
+                    (push-sem->indra-post-process mention sentence))))))
 
 
 (defun push-sem->indra-post-process (mention sentence)
+  (declare (special *indra-text*))
   (push (list (retrieve-surface-string (mention-source mention))
-                       (sem-sexp (base-description mention))
-                       (sentence-string sentence))
-                 *indra-post-process*))
+              (sem-sexp (base-description mention))
+              (if (and (boundp '*indra-text*)
+                       (stringp (eval '*indra-text*)))
+                  (eval '*indra-text*)
+                  (sentence-string sentence)))
+        *indra-post-process*))
 
