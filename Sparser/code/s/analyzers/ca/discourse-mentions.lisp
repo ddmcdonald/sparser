@@ -274,7 +274,8 @@
 
 (defun semantic-edges-under (edge)
   "Return the meaning-carrying edge(s) under this edge"
-  (setq edge (un-embed-edge edge))
+  (unless (eq 'subject-relative-clause (cat-name (edge-form edge)))
+    (setq edge (un-embed-edge edge)))
   (remove-if #'(lambda(e) (not (edge-p e))) ;; filters out words
              (edges-under edge)))
 
