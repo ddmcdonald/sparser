@@ -22,7 +22,8 @@
 (def-timezone "HST")
 (def-timezone "HT")
 
-(def-timezone "AKT")
+(unless (eq script :biology)
+  (def-timezone "AKT"))
 (def-timezone "AKST")
 (def-timezone "AKDT")
 
