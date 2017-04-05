@@ -105,19 +105,20 @@ Should mirror the cases on the *single-words* ETF."
 
 (deftype subcat-slot-keyword ()
   '(member :about :above :across :after :against :among :as :as-comp :at
-           :before :below :between :but\ not :by
-           :designator :during
-           :following :for :from
-           :ifcomp :in :into
-           :like
-           :m
-           :next\ to
-           :object :of :on :onto :on\ top\ of :over
-           :premod
-           :subject :such\ as
-           :to :to-comp :thatcomp :through :throughout :toward :towards
-           :under :unlike :upon
-           :via :whethercomp :with :within :without))
+    :before :below :between :but\ not :by
+    :designator :during
+    :following :for :from
+    :ifcomp :howcomp
+    :in :into
+    :like
+    :m
+    :next\ to
+    :object :of :on :onto :on\ top\ of :over
+    :premod
+    :subject :such\ as
+    :to :to-comp :thatcomp :through :throughout :toward :towards
+    :under :unlike :upon
+    :via :whethercomp :with :within :without))
 
 (defparameter *subcat-aliases*
     '((:s . :subject)
