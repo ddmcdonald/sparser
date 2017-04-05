@@ -806,6 +806,15 @@
   :form pp
   :referent (:function make-pp left-referent right-referent))
 
+(def-form-rule (of howcomp)
+    ;; compensate for shift in form done by create-howcomp that stranded
+    ;; dry-run 41 (aka aspp2 69). ///form there should be whcomp or something
+    ;; like that since it's better fit to more prepositions. This instance
+    ;; with "of" is really forced.
+  :head :left-edge
+  :form pp
+  :referent (:function make-pp left-referent right-referent))
+
 
 
 ;;;----- Pied-piped wh-clauses 
