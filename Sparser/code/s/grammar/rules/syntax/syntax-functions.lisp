@@ -619,7 +619,11 @@
    head of a much larger phrase."
   (let* ((valid? (verb-category? (left-edge-for-referent))))
     ;;(unless valid? (format t "~&Blocking add-tense~%"))
-    valid? ))
+    (or valid?
+        ;; this had to be added to handle the fact that IS became a VG
+        ;; in (test-aspp2 81)
+        ;;"The novel RAS/Raf/MAPK/ASPP2 pathway is thus involved in an important feedback loop..."
+        (eq 'vg (cat-name (edge-form (left-edge-for-referent)))))))
 
 (defun absorb-auxiliary (aux vg)
   (cond
@@ -1256,12 +1260,15 @@
   ;; disturbed dry-run 41. aspp2 69
   ;; This is to provide the adjective in a copula to have something
   ;; to work with now that it is exposed.
-  (declare (special category::thatcomp))
+  (declare (special category::howcomp))
   (cond
     (*subcat-test* t)
-    (t (revise-parent-edge :form category::thatcomp)
+    (t (revise-parent-edge :form category::howcomp)
        (make-wh-object (category-named 'how)
                        :statement s))))
+
+(defun assimilate-howcomp (vg-or-np thatcomp)
+  (assimilate-subcat vg-or-np :howcomp thatcomp))
 
 (defun assimilate-pp-subcat (head prep pobj)
   (assimilate-subcat head (subcategorized-variable head prep pobj) pobj))

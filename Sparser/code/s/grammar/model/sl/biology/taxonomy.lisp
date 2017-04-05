@@ -91,6 +91,8 @@
   :documentation "Common parent to the other types of biological 
     complements to share the same standard set of bindings.")
 
+
+;; closely related to prop-attitude and we should revise to take that into account
 (define-mixin-category bio-thatcomp
   :specializes bio-complement
   :realization (:thatcomp statement)
@@ -100,6 +102,10 @@
      positive or negative in terms of belief state. The prefix -bio-
      may not be warranted, since these are quite general, but at the
      moment we are putting them below the bio-processes.")
+
+(define-mixin-category bio-howcomp
+  :specializes bio-complement
+  :realization (:howcomp statement))
   
 (define-mixin-category bio-whethercomp
   :specializes bio-complement
@@ -421,7 +427,7 @@
 (define-category bio-rhetorical :specializes perdurant
   :mixins (biological 
            bio-thatcomp bio-whethercomp
-           with-measurement)
+           with-measurement bio-howcomp)
   :binds ((agent
            (:or pronoun/first/plural
                 PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals

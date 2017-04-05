@@ -245,31 +245,36 @@
 ;;;------------------
 
 (loop for nb in `(np ,@*n-bar-categories*)
-   do
-   ;;--- NP + PP -- postmodifiers
-     (eval 
-      `(def-syntax-rule (,nb pp)
-           :head :left-edge
-           :form np
-           :referent (:function interpret-pp-adjunct-to-np left-edge right-edge)))
+      do
+      ;;--- NP + PP -- postmodifiers
+        (eval 
+         `(def-syntax-rule (,nb pp)
+              :head :left-edge
+              :form np
+              :referent (:function interpret-pp-adjunct-to-np left-edge right-edge)))
      
-   ;;--- NP + sentential-complements (THATCOMP, WHETHERCOMP)
-     (eval
-      `(def-syntax-rule (,nb thatcomp)
-           :head :left-edge
-           :form np
-           :referent (:function assimilate-thatcomp left-edge right-edge)))
-     (eval
-      `(def-syntax-rule (,nb whethercomp)
-           :head :left-edge
-           :form np
-           :referent (:function assimilate-whethercomp left-edge right-edge)))
+;;--- NP + sentential-complements (THATCOMP, WHETHERCOMP, HOWCOMP)
+        (eval
+         `(def-syntax-rule (,nb thatcomp)
+              :head :left-edge
+              :form np
+              :referent (:function assimilate-thatcomp left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,nb howcomp)
+              :head :left-edge
+              :form np
+              :referent (:function assimilate-howcomp left-edge right-edge)))
+        (eval
+         `(def-syntax-rule (,nb whethercomp)
+              :head :left-edge
+              :form np
+              :referent (:function assimilate-whethercomp left-edge right-edge)))
      
-     (eval 
-      `(def-syntax-rule (,nb to-comp)
-           :head :left-edge
-           :form np
-           :referent (:function interpret-to-comp-adjunct-to-np left-edge right-edge))))
+        (eval 
+         `(def-syntax-rule (,nb to-comp)
+              :head :left-edge
+              :form np
+              :referent (:function interpret-to-comp-adjunct-to-np left-edge right-edge))))
 
 
 
@@ -534,6 +539,11 @@
         :head :left-edge
         :form ,(second vv)
         :referent (:function assimilate-thatcomp left-edge right-edge)))
+  (eval
+   `(def-syntax-rule (,(car vv) howcomp)
+        :head :left-edge
+        :form ,(second vv)
+        :referent (:function assimilate-howcomp left-edge right-edge)))
   (eval
    `(def-syntax-rule (,(car vv) s) ;; "I am certain (that) it is transient."
         :head :left-edge
@@ -889,6 +899,11 @@ similar to an oncogenic RasG12V mutation (9)."))
     :referent (:function make-adj-comp left-edge right-edge))
 
 (def-syntax-rule (adjective thatcomp) ;; Dec #24
+  :head :left-edge
+  :form adjp
+  :referent (:function make-adj-comp left-edge right-edge))
+
+(def-syntax-rule (adjective howcomp) ;; Dec #24
   :head :left-edge
   :form adjp
   :referent (:function make-adj-comp left-edge right-edge))
