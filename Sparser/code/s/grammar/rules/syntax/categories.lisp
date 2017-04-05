@@ -190,6 +190,7 @@
 (def-form-category comma-separated-subject-relative-clause)
 (def-form-category pp-relative-clause)
 (def-form-category thatcomp)
+(def-form-category howcomp)
 (def-form-category whethercomp)
 
 (def-form-category unknown-grammatical-function)
