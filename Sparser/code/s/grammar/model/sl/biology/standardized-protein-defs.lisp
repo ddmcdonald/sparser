@@ -6244,6 +6244,7 @@
 (define-protein "UP:Q13535" ("ATR" "ATR serine/threonine kinase" "ATR_HUMAN" "Ataxia telangiectasia and Rad3-related protein" "atr" "FRAP-related protein 1" "FRP1" "q13535" "Serine/threonine-protein kinase ATR" "wortmannin")) 
 (define-protein "UP:Q13536" ("CROC4" "q13536" "chromosome 1 open reading frame 61")) 
 (define-protein "UP:Q13541" ("4E-BP" "4E-BP1" "4E-binding protein 1" "4EBP" "4EBP1" "4EBP1_HUMAN" "EIF4EBP1" "Eukaryotic translation initiation factor 4E binding protein 1" "PHAS-I" "q13541" "eIF4E-BP-1" "eIF4E-BP1" "eIF4E-binding protein 1" "eIF4E–BP1" "eukaryotic translation initiation factor 4E binding protein 1" "phosphorylated heat- and acid-stable protein regulated by insulin 1" "PROTEIN-REFERENCE2333" "PROTEIN3934")) 
+(define-protein "P70445" ("PHAS-II" "4E-BP2"))
 (define-protein "UP:Q13546" ("q13546" "RIPK1" "ripk1" "receptor interacting serine/threonine kinase 1")) 
 (define-protein "UP:Q13547" ("HD-1" "HDAC-1" "HDAC1" "HDAC1_HUMAN" "HDACs-1" "q13547" "histone deacetylase 1")) 
 (define-protein "UP:Q13554" ("CAMK2" "CAMK2B" "CAMKB" "CaM kinase II subunit beta" "CaM kinase II subunit bη" "CaMK-II subunit beta" "CaMK-II subunit bη" "KCC2B_HUMAN" "q13554")) 
