@@ -408,7 +408,8 @@
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
                     *localization-interesting-heads-in-sentence*
-                    *localization-split-sentences*))
+                    *localization-split-sentences*
+                    *predication-links-ht*))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
   (when *end-of-sentence-display-operation*
     (funcall *end-of-sentence-display-operation* sentence))
@@ -439,6 +440,7 @@
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
       (push colorized-sentence *localization-split-sentences*)))
+  (clrhash *predication-links-ht*)
   )
 
 (defun indra-post-process (mentions sentence)
@@ -450,26 +452,55 @@
             (cond  ((and (or (itypep ref 'bio-activate)
                              (itypep ref 'bio-inactivate))
                          (value-of 'object ref))
-                    (push-sem->indra-post-process mention sentence))
+                    (push-sem->indra-post-process
+                     mention
+                     sentence
+                     (eq (value-of 'object ref) '*lambda-var*)
+                     ))
                    ((and (or
                           (itypep ref 'post-translational-modification)
                           (and (is-basic-collection? ref)
                                (or ;;(lsp-break)
-                                   (itypep (value-of 'type ref)
-                                       'post-translational-modification))))
+                                (itypep (value-of 'type ref)
+                                        'post-translational-modification))))
                          (or (value-of 'substrate ref)
                              (value-of 'agent-or-substrate ref)
                              (value-of 'site ref)))
-                    (push-sem->indra-post-process mention sentence))))))
+                    (push-sem->indra-post-process
+                     mention
+                     sentence
+                     (or (eq (value-of 'substrate ref) '*lambda-var*)
+                         (eq (value-of 'agent-or-substrate ref) '*lambda-var*)
+                         (eq (value-of 'site ref) '*lambda-var*))))))))
 
 
-(defun push-sem->indra-post-process (mention sentence)
+(defun push-sem->indra-post-process (mention sentence lambda-expansion)
   (declare (special *indra-text*))
-  (push (list (retrieve-surface-string (mention-source mention))
-              (sem-sexp (base-description mention))
-              (if (and (boundp '*indra-text*)
-                       (stringp (eval '*indra-text*)))
-                  (eval '*indra-text*)
-                  (sentence-string sentence)))
-        *indra-post-process*))
+  (let* ((desc (base-description mention))
+         (lambda-expansion
+          (and lambda-expansion
+               (gethash desc *predication-links-ht*)))
+         (desc-sexp (sem-sexp desc))
+         (subst-desc-sexp
+          (when lambda-expansion
+            (subst (sem-sexp (gethash desc *predication-links-ht*))
+                   '*lambda-var*
+                   (sem-sexp desc)))))
+        
+    (push (list (retrieve-surface-string (mention-source mention))
+                (cond (subst-desc-sexp
+                       (pprint `(,desc-sexp ===> ,subst-desc-sexp))
+                       (terpri)
+                       subst-desc-sexp)
+                      (t desc-sexp))
+                (if (and (boundp '*indra-text*)
+                         (stringp (eval '*indra-text*)))
+                    (eval '*indra-text*)
+                    (sentence-string sentence)))
+          *indra-post-process*)))
 
+(defun contains-atom (atom list-struct)
+  (if (not (consp list-struct))
+      (eq atom list-struct)
+      (loop for item in list-struct
+              thereis (contains-atom atom item))))

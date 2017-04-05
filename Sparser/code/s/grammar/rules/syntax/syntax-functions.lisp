@@ -150,15 +150,18 @@
 ;;; predication
 ;;;-------------
 
+(defparameter *predication-links-ht* (make-hash-table :size 100 :test #'equal))
+
 (defun create-predication-by-binding (var val pred source &key (insert-edge t))
   "Given a variable (var), and two referents (val, pred), assert that
    the variable is abstracted out from the pred(icate). 
    Ignore any provided 'val' argument."
-  (declare (ignore val)) ;; we now ignore the val, and just use **lambda-var**
+  ;;(declare (ignore val)) ;; we now ignore the val, and just use **lambda-var**
   (let ((new-predication (bind-dli-variable  var **lambda-var** pred)))
     (declare (special new-predication))
     ;; Rusty - how could the binding fail?  AKA, why the cond here.
     (cond (new-predication
+           (setf (gethash new-predication *predication-links-ht*) val)
            (if (and insert-edge (edge-p (parent-edge-for-referent)))
                (let* ((parent (parent-edge-for-referent))
                       (pred-edge
