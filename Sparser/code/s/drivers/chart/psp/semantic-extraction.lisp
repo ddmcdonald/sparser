@@ -793,7 +793,11 @@
 
 (defmethod traverse-sem ((m discourse-mention) fn)
   (funcall fn m)
-  (if (is-basic-collection? (base-description m))
+  (if (and
+       (is-basic-collection? (base-description m))
+       ;; how the Erk and p90RSK pathway phosphorylates and inactivates GSK-3beta.
+       ;; the HOWCOMP acts (erroneously) as a basic-collection
+       (value-of 'items (base-description m)))
       (loop for dep-pair in (dependencies m)
             when (eq 'items (pname (dependency-pair-variable dep-pair)))
             do (loop for v in (dependency-pair-value dep-pair)
