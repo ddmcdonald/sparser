@@ -474,6 +474,8 @@
                          (eq (value-of 'site ref) '*lambda-var*))))))))
 
 
+(defparameter *show-indra-lambda-substitutions* nil)
+
 (defun push-sem->indra-post-process (mention sentence lambda-expansion)
   (declare (special *indra-text*))
   (let* ((desc (base-description mention))
@@ -489,8 +491,9 @@
         
     (push (list (retrieve-surface-string (mention-source mention))
                 (cond (subst-desc-sexp
-                       (pprint `(,desc-sexp ===> ,subst-desc-sexp))
-                       (terpri)
+                       (when *show-indra-lambda-substitutions*
+                         (pprint `(,desc-sexp ===> ,subst-desc-sexp))
+                         (terpri))
                        subst-desc-sexp)
                       (t desc-sexp))
                 (if (and (boundp '*indra-text*)
