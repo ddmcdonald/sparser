@@ -198,7 +198,13 @@
            :form n-bar 
            :referent (:function number-noun-compound
                                 left-edge right-edge)))
-     
+
+     ;; for cases like S167 phosphorylation -- "S167" becomes an NP
+     (eval `(def-syntax-rule (np ,nb) 
+                :head :right-edge
+                :form n-bar 
+                :referent (:function noun-noun-compound left-edge right-edge)))
+        
      (loop for nbmod in *n-bar-categories*
         do   
           (eval
