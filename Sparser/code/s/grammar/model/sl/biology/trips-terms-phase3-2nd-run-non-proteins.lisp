@@ -223,7 +223,8 @@
 (def-bio "MDP" cell-type :long "macrophage dendritic cell progenitor" :identifier "CO:0002009") 
 (def-bio "PBSCs" cell-type :long "peripheral blood stem cell" :identifier "CO:0002246") 
 (def-bio "PMNC" cell-type :long "leukocyte" :identifier "BTO:0000751") 
-(def-bio "Th9" cell-type :long "T-helper 9 cell" :identifier "CO:0002061") 
+(def-bio "Th9" cell-type :long "T-helper 9 cell" :identifier "CO:0002061")
+(def-bio "CD4+"  cell-type :long "CD4-positive T cell" :identifier "CO:UNKNOWN") 
 (def-bio "Th0" cell-type :long "naive thymus-derived CD4-positive, alpha-beta T cell" :identifier "CO:0000895") 
 (def-bio "aTregs" cell-type :long "induced T-regulatory cell" :identifier "CO:0000902") 
 (def-bio "aTreg" cell-type :long "induced T-regulatory cell" :identifier "CO:0000902") 
@@ -1537,7 +1538,7 @@
 (def-bio "chromate" molecule :long "chromate(2-)" :identifier "CHEBI:35404") 
 (def-bio "carbolfuchsin" molecule :long "magenta II" :identifier "CHEBI:87668") 
 (def-bio "valinomycin" molecule :long "valinomycin" :identifier "CHEBI:28545") 
-(def-bio "valin" molecule :long "valine" :identifier "CHEBI:27266") 
+;;(def-bio "valin" molecule :long "valine" :identifier "CHEBI:27266") LAUREL FIX
 (def-bio "trichloroethylene" molecule :long "trichloroethylene" :identifier "NCIT:C44459") 
 (def-bio "tremolite" molecule :long "tremolite asbestos" :identifier "CHEBI:46676") 
 (def-bio "toxaphene" molecule :long "toxaphene" :identifier "CHEBI:77850") 
@@ -1603,7 +1604,7 @@
 (def-bio "MAA" molecule :long "mycosporine-like amino acid" :identifier "CHEBI:35738") 
 (def-bio "M1a" molecule :long "1-methyladenosine" :identifier "CHEBI:16020") 
 (def-bio "NAADP" molecule :long "nicotinic acid-adenine dinucleotide phosphate" :identifier "CHEBI:76072") 
-(def-bio "Methionin" molecule :long "methionine" :identifier "CHEBI:16811") 
+;;(def-bio "Methionin" molecule :long "methionine" :identifier "CHEBI:16811")  LAUREL CHECK
 (def-bio "MetGly" molecule :long "Met-Gly" :identifier "CHEBI:73611") 
 (def-bio "Mertansine" molecule :long "mertansine" :identifier "CHEBI:82755") 
 (def-bio "Maneb" molecule :long "maneb" :identifier "CHEBI:52497") 
@@ -1671,7 +1672,7 @@
 (def-bio "benomyl" molecule :long "benomyl" :identifier "CHEBI:3015") 
 (def-bio "auxin" molecule :long "auxin" :identifier "CHEBI:22676") 
 (def-bio "aurothiomalate" molecule :long "aurothiomalic acid" :identifier "CHEBI:38722") 
-(def-bio "atropin" molecule :long "atropine" :identifier "CHEBI:16684") 
+;;(def-bio "atropin" molecule :long "atropine" :identifier "CHEBI:16684")  LAUREL CHECK
 (def-bio "ath" molecule :long "hydrogen astatide" :identifier "CHEBI:30418") 
 (def-bio "asialoGM1" molecule :long "beta-D-Gal-(1->3)-beta-D-GalNAc-(1->4)-beta-D-Gal-(1->4)-beta-D-Glc-(1<->1')-Cer" :identifier "CHEBI:27938") 
 (def-bio "asbestos" molecule :long "asbestos" :identifier "CHEBI:46661") 
@@ -1726,7 +1727,7 @@
 (def-bio "dThd" molecule :long "thymidine" :identifier "CHEBI:17748") 
 (def-bio "dTDP" molecule :long "dTDP" :identifier "CHEBI:18075") 
 (def-bio "dT4" molecule :long "dT4" :identifier "CHEBI:75602") 
-(def-bio "cytidin" molecule :long "cytidine" :identifier "CHEBI:17562") 
+;;(def-bio "cytidin" molecule :long "cytidine" :identifier "CHEBI:17562")  LAUREL CHECK
 (def-bio "cyclopentane" molecule :long "cyclopentane" :identifier "CHEBI:23492") 
 (def-bio "cyclohexylamine" molecule :long "cyclohexylamine" :identifier "CHEBI:15773") 
 (def-bio "cyclohexane" molecule :long "cyclohexane" :identifier "CHEBI:29005") 
@@ -1760,7 +1761,7 @@
 (def-bio "luciferin" molecule :long "luciferin" :identifier "CHEBI:25078") 
 (def-bio "linolenate" molecule :long "alpha-linolenate" :identifier "CHEBI:32387") 
 (def-bio "linoleate" molecule :long "linoleate" :identifier "CHEBI:30245") 
-(def-bio "leucin" molecule :long "leucine" :identifier "CHEBI:25017") 
+;;(def-bio "leucin" molecule :long "leucine" :identifier "CHEBI:25017") LAUREL CHECK
 (def-bio "lanthionine" molecule :long "lanthionine" :identifier "CHEBI:25013") 
 (def-bio "kynurenine" molecule :long "kynurenine" :identifier "CHEBI:28683") 
 (def-bio "isatin" molecule :long "isatin" :identifier "CHEBI:27539") 
@@ -1853,7 +1854,7 @@
 (def-bio "uridylate" molecule :long "UMP" :identifier "CHEBI:16695") 
 (def-bio "urethane" molecule :long "urethan" :identifier "NCIT:C920") 
 (def-bio "umbelliferone" molecule :long "umbelliferone" :identifier "CHEBI:27510") 
-(def-bio "tyrosin" molecule :long "tyrosine" :identifier "CHEBI:18186") 
+;;(def-bio "tyrosin" molecule :long "tyrosine" :identifier "CHEBI:18186")  LAUREL -- check
 (def-bio "tryptophane" molecule :long "tryptophan" :identifier "CHEBI:27897") 
 (def-bio "trimethylsilyl" molecule :long "trimethylsilyl group" :identifier "CHEBI:51088") 
 (def-bio "trimethylammonium" molecule :long "trimethylammonium" :identifier "CHEBI:58389") 
@@ -1861,7 +1862,7 @@
 (def-bio "tracer" molecule :long "tracer" :identifier "CHEBI:35204") 
 (def-bio "toxins" molecule :long "toxin" :identifier "NCIT:C894") 
 (def-bio "thy" molecule :long "thymine" :identifier "CHEBI:17821") 
-(def-bio "threonin" molecule :long "threonine" :identifier "CHEBI:26986") 
+;; (def-bio "threonin" molecule :long "threonine" :identifier "CHEBI:26986")  LAUREL CHECK
 (def-bio "thioacetamide" molecule :long "thioacetamide" :identifier "NCIT:C44454") 
 (def-bio "βestradiol" molecule :long "17beta-estradiol" :identifier "CHEBI:16469") 
 (def-bio "zeaxanthin" molecule :long "zeaxanthin" :identifier "CHEBI:27547") 
