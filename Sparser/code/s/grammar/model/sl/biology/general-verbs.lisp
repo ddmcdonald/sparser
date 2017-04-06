@@ -1193,3 +1193,10 @@
        :to used-to
        :for disease ;; (p/s "what drug should I use for pancreatic cancer?")
        :to-comp purpose))
+
+(define-category bio-take :specializes bio-method
+    :binds ((agent pronoun/first/plural)
+            (approach approach))
+    :realization ;; (p/s "use KRAS to treat pancreatic cancer")
+      (:verb ("take" :past-tense "took" :past-participle "taken")
+       :etf (svo-passive)))
