@@ -632,7 +632,8 @@ than a bare "to".  |#
            (let ((prev-edge (edge-just-to-left-of e)))
              (and (not (preceding-adverb e))
                   (not (and (edge-p prev-edge)
-                            (eq 'parentheses (cat-name (edge-category prev-edge)))))
+                            (or (eq 'parentheses (cat-name (edge-category prev-edge)))
+                                (eq 'conjunction (cat-name (edge-form prev-edge))))))
                   (not (and
                         (car *chunks*)
                         (member 'ng (chunk-forms (car *chunks*)))
