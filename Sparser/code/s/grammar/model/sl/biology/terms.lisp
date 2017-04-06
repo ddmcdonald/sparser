@@ -37,6 +37,15 @@
 
 (in-package :sparser)
 
+;; these came from TRIPS, but we need to make them caused-bio-processes to get the "of" and "by" postmods right
+
+(define-category chemosensitization :specializes caused-bio-process :bindings (uid "NCIT:C15463") :realization (:noun "chemo-sensitization")) 
+(define-category detoxification :specializes caused-bio-process :bindings (uid "GO:0098754") :realization (:noun "detoxification")) 
+(define-category regeneration :specializes caused-bio-process :bindings (uid "NCIT:C17083") :realization (:noun "regeneration")) 
+(define-category transduction :specializes caused-bio-process :bindings (uid "GO:0009293") :realization (:noun "trans-duction")) 
+(define-category |CHEMICAL CLEAVAGE| :specializes caused-bio-process :bindings (uid "NCIT:C73482") :realization (:noun "cleavage")) 
+
+
 
 (noun "http://" :super abstract) ;; avoid an NS error
 
@@ -518,7 +527,7 @@
 
 
 ;; OBE (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
-(noun "condition" :super experimental-condition)
+;;(noun "condition" :super experimental-condition) OBE -- i taxonomy
 
 (adj "constitutive" :super bio-predication)
 (define-adverb "constitutively")
