@@ -298,14 +298,15 @@
 (define-category acquire :specializes caused-bio-process ;; for conjunctions, as in "de novo or acquired"
     :binds ((method bio-method))
     :realization
-    (:verb "acquire" ;; keyword: ENDS-IN-ED 
-	   :noun "acquisition"
-	   :etf (svo-passive)
-           :on method
-           :through object
-           ;;:through affected-process ;; FIX THIS
-           :with method ;; "Single images were acquired with a Leica fluorescence microscope..."
-	   ))
+    ( ;;:verb "acquire" ;; keyword: ENDS-IN-ED
+     :adj "acquired"
+     :noun "acquisition"
+     :etf (svo-passive)
+     :on method
+     :through object
+     ;;:through affected-process ;; FIX THIS
+     :with method ;; "Single images were acquired with a Leica fluorescence microscope..."
+     ))
 
 
 
