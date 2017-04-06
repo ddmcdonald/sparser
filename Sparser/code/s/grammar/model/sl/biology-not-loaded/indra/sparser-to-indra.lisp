@@ -17,7 +17,7 @@
   output)
 
 ;(defparameter *json-type-ht* (make-hash-table :size 100 :test #'equal))
-(defparameter *json-sexp-statements* nil)
+(defvar *json-sexp-statements* nil)
 (defun collect-unique-json-elts (&optional (json-list *json-sexp-statements*))
   (simplify-json-list json-list))
 
@@ -126,6 +126,28 @@
                               (loop for s in ps
                                never (has-indra-data s)))
                        (list j))))))))
+
+(defparameter *missed-indra-sentences* nil)
+
+(defun missed-indra-sentences ()
+  (declare (special *missed-indra* *missed-indra-sentences*))
+  (length
+   (setq *missed-indra-sentences*
+         (loop for j in *json-sexp-statements*
+               as i from 1 by 1
+               append 
+                 (unless
+                     (member (cdr (assoc :type j))
+                             '("IncreaseAmount"
+                               "DecreaseAmount"
+                               "Translocation")
+                             :test #'equal)
+                   (let ((missed-sents
+                          (let ((ps (json-parsable-texts j)))
+                            (loop for s in ps unless (has-indra-data s)
+                                  collect s))))
+                     (when missed-sents
+                       `((,i ,missed-sents)))))))))
 
 
 (defun has-indra-data (s)
