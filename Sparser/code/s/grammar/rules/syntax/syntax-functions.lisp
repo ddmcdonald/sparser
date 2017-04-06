@@ -1098,8 +1098,9 @@
 
   (cond
     ((itypep vp 'copular-predication)
-     (or *subcat-test*
-         (apply-copula subj vp)))
+     (and (null (value-of 'item vp))
+          (or *subcat-test*
+              (apply-copula subj vp))))
     
     ((transitive-vp-missing-object? vp right-edge)
      (unless *subcat-test*
