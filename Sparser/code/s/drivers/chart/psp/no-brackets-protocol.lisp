@@ -457,6 +457,13 @@
                      sentence
                      (eq (value-of 'object ref) '*lambda-var*)
                      ))
+                   ((and (itypep ref 'inhibit)
+                        (value-of 'affected-process ref))
+                    (push-sem->indra-post-process
+                     mention
+                     sentence
+                     (eq (value-of 'affected-process ref) '*lambda-var*)
+                     ))
                    ((and (or
                           (itypep ref 'post-translational-modification)
                           (and (is-basic-collection? ref)
@@ -477,7 +484,7 @@
 (defparameter *show-indra-lambda-substitutions* nil)
 
 (defun push-sem->indra-post-process (mention sentence lambda-expansion)
-  (declare (special *indra-text*))
+  (declare (special *indra-text* *predication-links-ht*))
   (let* ((desc (base-description mention))
          (lambda-expansion
           (and lambda-expansion
@@ -496,10 +503,10 @@
                          (terpri))
                        subst-desc-sexp)
                       (t desc-sexp))
-                (if (and (boundp '*indra-text*)
-                         (stringp (eval '*indra-text*)))
-                    (eval '*indra-text*)
-                    (sentence-string sentence)))
+                (list 'TEXT (if (and (boundp '*indra-text*)
+                                     (stringp (eval '*indra-text*)))
+                                (eval '*indra-text*)
+                                (sentence-string sentence))))
           *indra-post-process*)))
 
 (defun contains-atom (atom list-struct)

@@ -39,7 +39,7 @@
         (value (cdr de)))
     (cons key 
           (case key
-            ((:RESIDUE :POSITION :IS--MODIFIED :IS--ACTIVE :ID :SUPPORTED--BY :SOURCE--ID :PMID :DB--REFS :TEXT :LOCATION :NAME :FOUND--BY :SPECIES :CELL--TYPE :ORGAN :TISSUE :TO--LOCATION :FROM--LOCATION :CELL--LINE :DIRECT :SECTION--TYPE :SOURCE--API :RESIDUE--FROM :RESIDUE--TO)
+            ((:RESIDUE :POSITION :IS--MODIFIED :IS--ACTIVE :ID :SUPPORTED--BY :SOURCE--ID :PMID :DB--REFS :TEXT :LOCATION :NAME :FOUND--BY :SPECIES :CELL--TYPE :ORGAN :TISSUE :TO--LOCATION :FROM--LOCATION :CELL--LINE :DIRECT :SECTION--TYPE :SOURCE--API :RESIDUE--FROM :RESIDUE--TO :EVIDENCE)
              nil)
             (t
              (if (json-list-p value)
@@ -157,3 +157,150 @@
     (reverse (cdr (reverse *indra-post-process*) ))))
 
 
+(defun indra-field-filter (field type &key (return-fn #'identity) (data *json-sexp-statements*))
+  "Given a field and the type for that field, and an optional return field, find examples of that type"
+  (let ((grouped (group-by data #'(lambda(j) (assoc field j)) 
+                           return-fn))
+        (field-pair (cons field type)))
+    ;(print (car grouped))
+    (remove-duplicates (cdr (assoc field-pair grouped :test #'equal))
+                       :test #'equal)))
+
+(defun get-source-api-assoc (x)
+   (remove-duplicates (loop for item in (cdr (assoc :evidence x))
+          collect (assoc :source--api item))
+                      :test #'equal))
+    
+(defun find-indra-forms (s &optional pmid)
+  "Given a sentence, look at the has-indra-data for the sentence and
+pass the result to the appropriate indra generator"
+  (let ((forms (has-indra-data s)))
+    (loop for f in forms
+            collect (cond ((eq 'bio-activate (car (second f)))
+                           (make-indra-activation s (when pmid pmid))
+
+)))))
+
+(defun make-item-form (type item-content &key activation mods)
+  "Given an indra type (agent, obj, sub, or subj dependent on indra
+form) and the item return an indra form for that item"
+  (let ((uid (second (assoc 'UID item-content)))
+         (name (second (assoc 'NAME item-content))))
+  `(,type (:DB--REFS ,(uid->db--ref uid)) (:NAME ,name) 
+          ,.(when activation (list activation)) ,.(when mods (list mods)))))
+
+(defun uid->db--ref (uid)
+  "Given a UID field, turn it into the indra form for that field"
+  (let* ((colon (search ":" uid))
+         (prefix (subseq uid 0 colon))
+         (id (subseq uid (+ 1 colon))))
+    (cons (intern (concatenate 'string ":+" prefix "+"))
+          id)))
+
+(defun make-item-activation (indra-data)
+  "Given indra-data, make the :ACTIVATION section"
+  `(:ACTIVATION ,(cons :ACTIVITY--TYPE "active") 
+;; note: may want to modify activity--type to catch the rare "kinase"
+;; case, but there's only one example in the evidence so probably not
+;; worth it
+                ,(cons :IS--ACTIVE T)))
+
+(defun make-indra-activation (indra-data &optional pmid)
+  "Given the indra data from has-indra-data for a sentence with an
+  activation, generate and indra form for that sentence" 
+  
+)
+
+(defun make-indra-autophosphorylation (indra-data &optional pmid)
+"Given the indra data from has-indra-data for a sentence with an
+autophosphorylation, generate and indra form for that sentence"
+)
+
+(defun make-indra-phosphorylation (indra-data &optional pmid)
+  (let* ((phos-content (cdr (assoc 'PHOSPHORYLATE (cdr indra-data))))
+         (substrate (cdr (assoc 'SUBSTRATE phos-content)))
+         (substrate-col? (item-collection-p substrate))
+         (substrate-form (get-item-forms :sub substrate substrate-col?))
+         (text (cdr (assoc 'TEXT (cdr indra-data))))
+         (evidence-form (make-evidence-form text (when pmid pmid))))
+    (if substrate-col?
+        (loop for subf in substrate-form
+                append (make-indra-phos-with-sub subf evidence-form phos-content))
+        (make-indra-phos-with-sub substrate-form evidence-form phos-content))))
+
+(defun make-indra-phos-with-sub (substrate-form evidence-form phos-content)
+  (let* ((agent (cdr (assoc 'AGENT phos-content)))
+         (agent-col? (when agent (item-collection-p agent)))
+         (agent-form (when agent (get-item-forms :enz agent agent-col?))))   
+    (if agent-col?
+        (loop for agentf in agent-form
+              append (make-indra-phos-with-agent substrate-form evidence-form phos-content agentf))
+        (make-indra-phos-with-agent substrate-form evidence-form phos-content agent-form))))
+
+(defun make-indra-phos-with-agent (substrate-form evidence-form phos-content &optional agent-form)
+ (let* ((residue (cdr (assoc 'SITE phos-content)))
+         (residue-col? (when residue (item-collection-p residue)))
+         (residue-form (when residue (get-residue-forms residue residue-col?))))
+   (declare (special residue residue-col? residue-form))
+ ;  (lsp-break)
+   (if residue-col?
+       (loop for resf in residue-form
+             collect (make-indra-phos-with-res substrate-form evidence-form resf agent-form))
+       (list (make-indra-phos-with-res substrate-form evidence-form residue-form agent-form)))))
+
+(defun make-indra-phos-with-res (substrate-form evidence-form
+                                 &optional residue-form agent-form)
+  `(,substrate-form 
+    ,evidence-form
+    ,.(when residue-form residue-form) ;; no list needed because they two parts of it should be top-level for phos
+    ,.(when agent-form (list agent-form))))
+
+
+(defun item-collection-p (item)
+  "Given an item form, determines if it's a base collection or a
+family collection and if so returns the set of items (proteins) -- if
+it's a singular protein returns nil -- may want to check if everything
+is a protein..."
+  (case (caar item)
+    (collection 
+     (collection-items item))
+    ((human-protein-family protein-family)
+     (collection-items  (cdr (assoc 'FAMILY-MEMBERS (cdr (car item))))))
+    ((protein RESIDUE-ON-PROTEIN)
+     nil)))
+
+(defun collection-items (form)
+  (cdr (assoc 'SET (cdr (assoc 'ITEMS (cdr (assoc 'COLLECTION form)))))))
+
+(defun make-indra-per-item-phos (substrate-form evidence-form &key agent-form residue-form )
+  `(,(when agent-form agent-form) ,substrate-form ,(when residue-form residue-form) 
+                ,evidence-form))
+
+(defun get-item-forms (type form col &key mods activation)
+  (if col
+      (loop for item in col
+              collect (make-item-form type (cdr item) 
+                                      :mods mods 
+                                      :activation activation))
+      (make-item-form type form :mods mods 
+                      :activation activation)))
+
+(defun make-evidence-form (text &optional pmid)
+  `(:EVIDENCE ((:SOURCE--API "sparser") (:TEXT ,text) (:PMID ,pmid))))
+
+(defun get-protein-content (item)
+  (cdr (assoc 'PROTEIN item)))  
+
+(defun get-residue-forms (resform col)
+  (if col
+      (loop for res in col
+              collect (make-single-residue-form (cdr res)))
+      (make-single-residue-form (cdr resform))))
+
+(defun make-single-residue-form (residue)
+  (let* ((pos (write-to-string (second (assoc 'POSITION residue))))
+        (aa (second (assoc 'NAME (cdr (assoc 'AMINO-ACID (cdr (assoc 'AMINO-ACID residue)))))))
+        (aa-abbrev (get-tag :one-letter-code 
+                            (find-or-make-individual 'amino-acid :name (string-downcase aa)))))
+  `(,(cons :POSITION pos)
+     ,(cons :RESIDUE aa-abbrev))))
