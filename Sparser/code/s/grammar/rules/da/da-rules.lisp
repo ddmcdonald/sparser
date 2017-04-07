@@ -370,8 +370,12 @@
   (attach-trailing-participle-to-clause-with-conjunction s comma vp))
 
 
-(define-debris-analysis-rule attach-trailing-participle-to-clause-with-conjunction-and
+(define-debris-analysis-rule attach-trailing-vp+ing-to-clause-with-conjunction-and
   :pattern ( s conjunction vp+ing )
+  :action (:function attach-trailing-participle-to-clause-with-conjunction-and first second third))
+
+(define-debris-analysis-rule attach-trailing-vp+ed-to-clause-with-conjunction-and
+  :pattern ( s conjunction vp+ed )
   :action (:function attach-trailing-participle-to-clause-with-conjunction-and first second third))
 
 (defun attach-trailing-participle-to-clause-with-conjunction-and (s and vp)
@@ -387,7 +391,7 @@
 (defun attach-trailing-participle-to-subordinate-clause-base (s vp)
   (attach-trailing-participle-to-clause-with-conjunction s nil vp))
 
-(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-comma
+(define-debris-analysis-rule attach-trailing-vp+ing-to-subordinate-clause-with-conjunction-comma
   :pattern ( subordinate-clause "," vp+ing )
   :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-comma first second third))
 
@@ -395,12 +399,17 @@
   (attach-trailing-participle-to-clause-with-conjunction s comma vp))
 
 
-(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-and
+(define-debris-analysis-rule attach-trailing-vp+ed-to-subordinate-clause-with-conjunction-and
   :pattern ( subordinate-clause and vp+ing )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
+
+(define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-and
+  :pattern ( subordinate-clause and vp+ed )
   :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
 
 (defun attach-trailing-participle-to-subordinate-clause-with-conjunction-and (s and vp)
   (attach-trailing-participle-to-clause-with-conjunction s and vp))
+
 
 (defun attach-trailing-participle-to-clause-with-conjunction (s-edge conj vp-edge)
   ;; The participle (vp+ing) is presumably missing it's subject,
