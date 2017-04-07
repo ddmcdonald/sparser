@@ -450,7 +450,8 @@
           (let ((ref (base-description mention)))
             (declare (special ref))
             (cond  ((and (or (itypep ref 'bio-activate)
-                             (itypep ref 'bio-inactivate))
+                             (itypep ref 'bio-inactivate)
+                             (itypep ref 'inhibit))
                          (value-of 'object ref))
                     (push-sem->indra-post-process
                      mention
