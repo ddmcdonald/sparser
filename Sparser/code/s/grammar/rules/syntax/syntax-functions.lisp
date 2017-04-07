@@ -1085,6 +1085,16 @@
 (defparameter *warn-about-optional-objects* nil
   "Set to T to show cases where we have a parse in which a supposed transitive verb has no parsed object.")
 
+
+(defun assimilate-subject-to-subordinate-clause (subj vp)
+  ;;(print `(subordinate-conjunction it ,(value-of 'subordinate-conjunction vp)))
+  (if (or (null  (value-of 'subordinate-conjunction vp))
+          (not (member (pname (value-of 'word (value-of 'subordinate-conjunction vp)))
+                  '("moreover" "neither" "since" "then" "therefore" "thus")
+                  :test #'equal)))
+      nil
+      (assimilate-subject subj vp)))
+
 (defun assimilate-subject (subj vp
                            &optional (right-edge (right-edge-for-referent)))
   (declare (special category::subordinate-clause category::copular-predication

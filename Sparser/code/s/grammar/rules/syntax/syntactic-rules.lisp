@@ -428,11 +428,11 @@
           :referent (:function assimilate-subject left-edge right-edge))))
      ;; I don't really believe that you can have a subject befor the subordinate conjunction -- prove it
      ;; OK -- proven -- "we thus tested whether ..."
-     (eval
-      `(def-syntax-rule (,n subordinate-clause)
+      (eval
+       `(def-syntax-rule (,n subordinate-clause)
 	   :head :right-edge
 	   :form subordinate-clause
-	   :referent (:function assimilate-subject left-edge right-edge))))
+	   :referent (:function assimilate-subject-to-subordinate-clause left-edge right-edge))))
 
 ;; special handlng for vp+ed/vg+ed  -- may be a reduced relative or a main clause
 
