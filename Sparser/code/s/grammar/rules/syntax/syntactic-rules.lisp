@@ -634,7 +634,7 @@
     :referent (:function create-whethercomp left-edge right-edge))
 
 (def-form-rule (how s)
-    :form thatcomp  ;; was np, but create-howcomp will change it to this
+    :form howcomp  ;; was np, but create-howcomp will change it to this
     :head :right-edge
     :referent (:function create-howcomp left-edge right-edge))
 
