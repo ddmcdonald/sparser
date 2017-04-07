@@ -1257,8 +1257,12 @@
   (assimilate-subcat vg-or-np :whethercomp whethercomp))
 
 (defun create-whethercomp (wh s)
-  (make-wh-object (category-named 'whether)
-                  :statement s))
+  (declare (special category::whethercomp))
+  (cond
+    (*subcat-test* t)
+    (t (revise-parent-edge :form category::whethercomp)
+       (make-wh-object (category-named 'whether)
+                       :statement s))))
 
 (defun create-howcomp (how s) ;; dry-run #40, aspp2 68
   ;; disturbed dry-run 41. aspp2 69
