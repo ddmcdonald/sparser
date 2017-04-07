@@ -313,7 +313,7 @@
 (define-protein "FA:03659" ("Arf" "arf family")) 
 (define-protein "FA:03661" ("Rab" "rab family")) 
 (define-protein "FA:03661" ("RAB" "rab family")) 
-(define-protein "FA:03663" ("Ras" "ras family")) 
+;;(define-protein "FA:03663" ("Ras" "ras family")) ;; commented out because it conflicts with the definition in protein-families
 (define-protein "FA:03667" ("Rheb" "rheb family")) 
 (define-protein "FA:03668" ("Rho" "rho family")) 
 (define-protein "FA:03684" ("SMC family" "SMCs")) 
@@ -3412,8 +3412,8 @@
 (define-protein "NCIT:C51192" ("ATM" "ates")) 
 (define-protein "NCIT:C51192" ("ATE" "ATM")) 
 (define-protein "NCIT:C51192" ("ATDC" "ATM")) 
-(define-protein "NCIT:C51194" ("BRAF" "bRaf-1")) 
-(define-protein "NCIT:C51194" ("B-Raf1" "BRAF")) 
+;;(define-protein "NCIT:C51194" ("BRAF" "bRaf-1")) ;; removing these so they don't block the uniprot definition in standardized-protein
+;;(define-protein "NCIT:C51194" ("B-Raf1" "BRAF")) 
 (define-protein "NCIT:C51197" ("CHEK2" "Rad53")) 
 (define-protein "NCIT:C51197" ("CHEK2" "Rad53")) 
 (define-protein "NCIT:C51198" ("CNK" "Fnk")) 
