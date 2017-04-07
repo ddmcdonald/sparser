@@ -98,8 +98,9 @@
      :to agent))
 
 (define-category cellular-process
-  :specializes response
-  :index (:permanent :key name)
-  :realization
+    :specializes bio-process
+    :restrict ((subject cell-entity))
+    :index (:permanent :key name)
+    :realization
     (:common-noun name
-     :noun "cellular response"))
+                  :noun "cellular process"))
