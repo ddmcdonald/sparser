@@ -4132,7 +4132,7 @@
 (define-named-bio-individual (quote protein-family) (quote ovate) (quote "XFAM:PF04844.11") :name "ovate") 
 (define-named-bio-individual (quote protein-family) (quote oligomerisation) (quote "XFAM:PF02410.13") :name "RsfS") 
 (define-named-bio-individual (quote protein-family) (quote parathyroids) (quote "XFAM:PF01279.15") :name "parathyroid") 
-(define-named-bio-individual (quote protein-family) (quote ptpyerk) (quote "BE:ERK") :name "ERK") 
+;;(define-named-bio-individual (quote protein-family) (quote ptpyerk) (quote "BE:ERK") :name "ERK") 
 (define-named-bio-individual (quote protein-family) (quote psad) (quote "XFAM:PF02531.14") :name "PsaD") 
 (define-named-bio-individual (quote protein-family) (quote ppi3k) (quote "BE:PI3K") :name "PI3K") 
 (define-named-bio-individual (quote protein-family) (quote propellers) (quote "XFAM:PF06462.10") :name "hyd WA") 
