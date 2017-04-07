@@ -890,7 +890,7 @@ nil
 (def-bio "pro-oxidant" molecule :long "pro-oxidant" :identifier "NCIT:C93260") 
 (def-bio "prooxidant" molecule :long "pro-oxidant" :identifier "NCIT:C93260") 
 (def-bio "prostacyclin" molecule :long "prostaglandin I2" :identifier "CHEBI:15552") 
-(def-bio "serin" molecule :long "serine" :identifier "CHEBI:17822") 
+;;(def-bio "serin" molecule :long "serine" :identifier "CHEBI:17822")  LAUREL CHECK
 (def-bio "sterols" molecule :long "sterol" :identifier "CHEBI:15889") 
 (def-bio "thymine" molecule :long "thymine" :identifier "CHEBI:17821") 
 (def-bio "α-ketoglutarate" molecule :long "2-oxoglutarate(2-)" :identifier "CHEBI:16810") 

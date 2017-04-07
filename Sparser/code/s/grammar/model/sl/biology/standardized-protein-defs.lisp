@@ -6073,7 +6073,7 @@
 (define-protein "UP:Q13029" ("PR/SET domain 2" "PRDM2" "q13029" "RIZ" "RIZ1")) 
 (define-protein "UP:Q13033" ("q13033" "strn3" "striatin 3")) 
 (define-protein "UP:Q13042" ("ANAPC6" "APC6" "anaphase-promoting complex subunit 6" "Apc6/Cdc16" "CDC16" "CDC16 (cell division cycle 16" "CDC16 cell division cycle 16 homolog (S. cerevisiae)" "CDC16 homolog" "CDC16Hs" "CDC16_HUMAN" "CUT9" "cdc16" "cell division cycle protein 16 homolog" "cyclosome subunit 6" "q13042" "anaphase-promoting complex" "cell division cycle 16" "cell division cycle 16 homolog (S. cerevisiae)" "cyclosome" "subunit 6" "PROTEIN-REFERENCE8302" "PROTEIN16755" "PROTEIN19472")) 
-(define-protein "UP:Q13043" ("MST-1" "Mammalian STE20-like protein kinase 1" "q13043" "STE20-like kinase MST1" "STK4" "STK4_HUMAN" "serine/threonine-protein kinase 4" "Serine/threonine-protein kinase Krs-2" "serine/threonine kinase 4")) 
+(define-protein "UP:Q13043" ("MST-1" "MST1" "Mammalian STE20-like protein kinase 1" "q13043" "STE20-like kinase MST1" "STK4" "STK4_HUMAN" "serine/threonine-protein kinase 4" "Serine/threonine-protein kinase Krs-2" "serine/threonine kinase 4")) 
 (define-protein "UP:Q13045" ("FLII" "FLII, actin remodeling protein" "FLII_HUMAN" "FLIL" "Fli-I" "q13045" "fli")) 
 (define-protein "UP:Q13049" ("BBS11" "E3 ubiquitin-protein ligase TRIM32" "HT2A" "LGMD2H" "q13049" "TATIP" "TRI32_HUMAN" "TRIM32" "limb girdle muscular dystrophy 2H (autosomal recessive)" "tripartite motif containing 32" "tripartite motif-containing 32" "PROTEIN-REFERENCE8237" "PROTEIN16686")) 
 (define-protein "UP:Q13057" ("Bifunctional coenzyme A synthase" "COASY" "COASY_HUMAN" "COAS_HUMAN" "CoA synthase" "CoASY" "CoASy" "Coenzyme A synthase" "DPCK" "PSEC0106" "q13057" "PROTEIN-REFERENCE7679" "PROTEIN15798")) 
