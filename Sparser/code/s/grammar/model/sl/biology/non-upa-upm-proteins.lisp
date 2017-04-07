@@ -18,7 +18,7 @@
 (define-protein "BE:IKB" ("IKB" "iκB")) 
 (define-protein "BE:IKB" ("IKB" "IκBs")) 
 (define-protein "BE:IKB" ("I-κB" "IKB")) 
-(define-protein "BE:IRS" ("IRS" "IRSs")) 
+;;(define-protein "BE:IRS" ("IRS" "IRSs")) 
 (define-protein "BE:KSR" ("KSR")) 
 (define-protein "BE:MAP3K" ("MAP3K" "MAPKKKs")) 
 (define-protein "BE:MYH" ("MYH")) 
