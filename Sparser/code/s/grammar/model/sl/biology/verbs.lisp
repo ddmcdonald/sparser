@@ -646,6 +646,11 @@
    :etf (svo-passive)))
   
 
+(define-category drive :specializes positive-bio-control
+  :restrict ((object bio-process))
+  :realization
+  (:verb ("drive" :past-tense "driven" :past-participle "driven")
+         :etf (svo-passive)))
 
 (define-category dysregulate
   :specializes bio-control
