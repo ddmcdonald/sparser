@@ -150,15 +150,17 @@
 
 (defun create-residue-on-protein (explicit-residue amino-acid position substrate)
   (when (and
-         (or
-          (not (itypep amino-acid 'single-capitalized-letter))
-          (setq amino-acid (gethash amino-acid *single-letters-to-amino-acids*)))
+         (or (not (itypep amino-acid 'single-capitalized-letter))
+             (gethash amino-acid *single-letters-to-amino-acids*))
          (or (null position)
              (itypep position 'hyphenated-number)
              (is-basic-collection? position)
              (and (itypep position 'number)
-                  (> (value-of 'value position)
-                     10))))
+                  (or
+                   (not (itypep amino-acid 'single-capitalized-letter))
+                   (> (value-of 'value position) 10)))))
+    (when (itypep amino-acid 'single-capitalized-letter)
+      (setq amino-acid (gethash amino-acid *single-letters-to-amino-acids*)))
     (or *subcat-test*
         (let ((residue (or explicit-residue
                            (find-or-make-lattice-description-for-ref-category
