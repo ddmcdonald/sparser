@@ -1169,6 +1169,10 @@ with something else
 
 (noun "EMT" :super cellular-process)
 
+(noun "cell-cell contact" :super cellular-process)
+(noun "cell-cell communications" :super cellular-process)
+(adj "cell-cell" :super bio-predication)
+
 (define-category adhesion :specializes cellular-process
     :realization
     (:verb "adhere"
