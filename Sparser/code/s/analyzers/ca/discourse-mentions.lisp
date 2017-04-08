@@ -368,6 +368,8 @@
                                 &optional dont-check-dependencies)
   (let* ((*dont-check-dependencies* dont-check-dependencies)
          (source-edge (mention-source subsumed-mention))
+         ;; Q. why do we ignore the source-edge?
+         ;; A. It avoids circular structures (e.g. in "Fyn, Fyn, is ..."
          (non-source-edges
           (remove source-edge (semantic-edges-under edge))))
     (declare (special *dont-check-dependencies*))
@@ -386,17 +388,28 @@
             (remove subsumed-mention (mention-history (edge-referent source-edge))))))
   subsumed-mention)
 
+(defun embedded-statement? (edge)
+  (let ((statement (value-of 'statement (edge-referent edge))))
+    ;; is this an edge like a whethercomp or a wh-question that
+    ;;  embeds the meaning of a lower edge as the value of the
+    ;;  statement variable
+    ;; THIS IS NOT A SUBSUMING EDGE
+    (and statement
+         (loop for ee in (edges-under edge)
+               thereis (eq (edge-referent ee) statement)))))
+
 (defun subsumed-mention? (i edge)
   "Is this edge an additional instance of i that subsumes the immedidately
    prior mention of i? Cannonical situation is walking up a head line,
    where each progressively higher edge is a (more specific) reference
    to i."
-  (when (null i)
-    (error "null individual in subsumed-mention?"))
-  (when (and (member (edge-rule edge) '(make-predication-edge))
-             (typep (edge-mention (edge-left-daughter edge)) 'discourse-mention))
-    (return-from subsumed-mention?
-      (edge-mention (edge-left-daughter edge))))
+  (cond ((null i)
+         (error "null individual in subsumed-mention?"))
+        ((and (member (edge-rule edge) '(make-predication-edge))
+              (typep (edge-mention (edge-left-daughter edge)) 'discourse-mention))
+         (return-from subsumed-mention? (edge-mention (edge-left-daughter edge))))
+        ((embedded-statement? edge)
+         (return-from subsumed-mention? nil)))
 
   (let ((un-embedded-edge (un-embed-edge edge)))
     (when (and (not (eq edge un-embedded-edge))
@@ -415,7 +428,7 @@
                      :conjunction/identical-adjacent-labels))
            nil)
           ((member (cat-name (edge-form edge))
-                   '(subject-relative-clause thatcomp whethercomp than-np))
+                   '(subject-relative-clause thatcomp than-np))
            (safe-edge-mention (edge-right-daughter edge)))
           ((and (cfr-p (edge-rule edge))
                 (equal '(:funcall create-partitive-np left-referent right-referent)
@@ -461,11 +474,25 @@
 
 
 (defun create-new-dependencies (new-bindings edges top-edge)
-  (loop for b in new-bindings
-        collect
-          (let ((bb b)
-                (e (find-binding-dependency (binding-value b) edges top-edge b)))
-            (create-dependency-pair b e))))
+  (let ((deps
+         (loop for b in new-bindings
+               collect
+                 (let* ((value (binding-value b)))
+                   (if (or
+                        (referential-category-p value)
+                        (eq value **lambda-var**)
+                        (stringp value)
+                        (word-p value)
+                        (polyword-p value)
+                        (numberp value))
+                       `(,(binding-variable b) value)
+                       (create-dependency-pair b (find-binding-dependency value edges top-edge b)))))))
+    (declare (special deps))
+    #+ignore
+    (when (eq 10 (edge-position-in-resource-array top-edge))
+      (lsp-break "deps"))
+    deps))
+    
 
 ;;(defparameter  *no-source-for-binding-action* :warn)
 (defparameter  *no-source-for-binding-action* :none)
@@ -494,27 +521,44 @@
     (nconc new-dependencies old-dependencies)))
 
 
-(defun find-binding-dependency (value edges top-edge &optional b)
+(defun find-binding-dependency (value edges top-edge &optional b &aux (top-ref (edge-referent top-edge)))
   (declare (special top-edge))
-  (if (and b (eq (pname (binding-variable b)) 'items))
-      (find-binding-dependencies-for-items value edges top-edge)
-      (or (loop for edge in edges
-                as ref-edge = (find-dependent-edge edge)
-                as ref = (when ref-edge (edge-referent ref-edge))
-                when (and ref (dli-eq? ref value))
-                do (return ref-edge))
-          ;; last-ditch effort caused by change in interpretation of
-          ;;  a previously ambiguous variable, which causes the
-          ;;  subsumed-mention to be missed
-          (loop for edge in edges
-                as ee = (and (typep (edge-mention edge) 'discourse-mention)
-                             (loop for d in (dependencies (edge-mention edge))
-                                   when (and (typep (second d) 'discourse-mention)
-                                             (dli-eq? value (base-description (second d))))
-                                   do (return (mention-source (second d)))))
-                do (when ee (return ee)))
-          (when b
-            (check-plausible-missing-edge-for-dependency b top-edge)))))
+  (cond ((and b (eq (pname (binding-variable b)) 'items))
+         (find-binding-dependencies-for-items value edges top-edge))
+        ((and (individual-p top-ref)
+              (itypep top-ref 'protein-family)
+              b
+              (member (pname (binding-variable b))
+                      '(family-members uid name count)))
+         nil)
+        ((and (individual-p top-ref)
+              (itypep top-ref 'relativized-prepositional-phrase))
+         nil)
+        ((itypep value 'comparative-attribution)
+         ;; e.g. "longer periods" -- the comparative is constructed whole cloth -- DAVID
+         nil)
+        ((itypep value 'prepositional-phrase)
+         ;; NEED TO WORK WITH DAVID HERE
+         ;; "Only in conditions where RAS is constitutively active "
+         nil)
+        (t
+         (or (loop for edge in edges
+                   as ref-edge = (find-dependent-edge edge)
+                   as ref = (when ref-edge (edge-referent ref-edge))
+                   when (and ref (dli-eq? ref value))
+                   do (return ref-edge))
+             ;; last-ditch effort caused by change in interpretation of
+             ;;  a previously ambiguous variable, which causes the
+             ;;  subsumed-mention to be missed
+             (loop for edge in edges
+                   as ee = (and (typep (edge-mention edge) 'discourse-mention)
+                                (loop for d in (dependencies (edge-mention edge))
+                                      when (and (typep (second d) 'discourse-mention)
+                                                (dli-eq? value (base-description (second d))))
+                                      do (return (mention-source (second d)))))
+                   do (when ee (return ee)))
+             (when b
+               (check-plausible-missing-edge-for-dependency b top-edge))))))
 
 (defun find-binding-dependencies-for-items (items edges top-edge)
   (loop for item in items collect
@@ -547,13 +591,13 @@ so we return the edge for the POBJ"
   `(,(binding-variable b) ;; dependency-pair-variable
      ;; dependency-pair-value
      ,(cond ((consp e) e)
-            ((or (member (pname (binding-variable b))
+            ((or (null e)
+                 (member (pname (binding-variable b))
                          '(has-determiner
                            ;; the ones below are for two-part-label
                            part-two part-one
                            ;; the ones below are for hyphenated-pairs
-                           left right prep))
-                 (null e))
+                           left right prep)))
              (binding-value b))
             ((and (member (edge-mention e) '(t nil))
                   (individual-p (edge-referent e))
@@ -582,69 +626,12 @@ so we return the edge for the POBJ"
 ;;(defparameter *missing-mention-action* :break)
 
 (defun check-plausible-missing-edge-for-dependency (b edge)
-  (declare (special *sentence-in-core* **lambda-var**))
+  (declare (special *sentence-in-core*))
   (let ((val (binding-value b)))
-    (cond ((or *dont-check-dependencies*
-               ;; these are types of binding-values that don't have to be reinterpreted
-               (eq val **lambda-var**)
-               (word-p val)
-               (polyword-p val)
-               (numberp val)
-         
-               ;; this test is to handle complex structure in lexical edges...
-               ;; like "phosphoserine"
-               (eq edge (lexical-edge-at (start-pos edge)))
-               (member (edge-rule edge)
-                       '(sdm-span-segment make-ns-pair
-                         resolve-protein-prefix
-                         make-edge-over-mutated-protein
-                         :reify-residue
-                         :reify-point-mutation-and-make-edge
-                         MAKE-POLAR-PARTICIPLE-QUESTION
-                         MAKE-POLAR-ADJECTIVE-QUESTION))
-               (and (individual-p (edge-referent edge))
-                    (itypep (edge-referent edge) 'phosphorylated-amino-acid))
-               (and (cfr-p (edge-rule edge))
-                    (equal '(:FUNCALL INTERPRET-PP-AS-HEAD-OF-NP LEFT-REFERENT RIGHT-REFERENT)
-                           (cfr-referent (edge-rule edge))))
-               (member (cat-name (edge-category edge))
-                       '(there-exists))
-               (member
-                (pname (binding-variable b))
-                '(name uid ;; done in basic word-level rules
-                  ;; these next are done in tense-aspect attachment
-                  negation modal occurs-at-moment perfect progressive
-                  past present
-                  ;; these are known to be referential-categories
-                  ;;  used for syntactic marking
-                  has-determiner prep
-                  ;; these happen in badly handled hyphenated phrases -- ignore them
-                  left right
-                  ;; comparative-predication             ;; happens in comparatives -- wait for DAVID to fix
-                  number         ;; occurs in collections
-                  amino-acid     ;; happens in residues
-                  new-amino-acid position ;; happens in point-mutations
-                  quantifier
-                  ))
-               (and (eq (pname (binding-variable b)) 'type)
-                    (itypep *mention-individual* 'collection))
-               ;; as in "the size of the modification"
-               (and (eq (pname (binding-variable b)) 'attribute)
-                    (itypep *mention-individual* 'quality-predicate))
-               ;; "One hundred and seventy (79.4%)"
-               (and (eq (pname (binding-variable b)) 'value)
-                    (itypep *mention-individual* 'multiplier))
-               )
+    (cond ((acceptable-missing-mention? b edge val)
            ;; these are expected cases and are no issue at all
            nil)
-          ((or (referential-category-p val)
-               (and (individual-p val)
-                    (or (itypep val 'subordinate-conjunction)
-                        (itypep val 'number) ;; happens when residues are converted
-                        ;; to numbers, as in "a phosphoserine at residue 827"
-                        (itypep val 'adverb)
-                        (and (eq (pname (binding-variable b)) 'modifier)
-                             (itypep val 'xref)))))
+          ((individual-p val)
            ;; these are cases which should be checked out to see what the full circumstance is
            (case *missing-mention-action*
              (:warn
@@ -665,6 +652,56 @@ so we return the edge for the POBJ"
                           (edge-rule edge)
                           (sentence-string *sentence-in-core*))))))
     nil))
+
+(defun acceptable-missing-mention? (b edge val)
+  (or *dont-check-dependencies*
+      ;; these are types of binding-values that don't have to be reinterpreted
+      (member
+       (pname (binding-variable b))
+       '(name uid ;; done in basic word-level rules
+         ;; these next are done in tense-aspect attachment
+         negation modal occurs-at-moment perfect progressive
+         past present
+         ;; these are known to be referential-categories
+         ;;  used for syntactic marking
+         has-determiner prep
+         ;; these happen in badly handled hyphenated phrases -- ignore them
+         left right
+         ;; comparative-predication             ;; happens in comparatives -- wait for DAVID to fix
+         number                           ;; occurs in collections
+         amino-acid                       ;; happens in residues
+         new-amino-acid position ;; happens in point-mutations
+         quantifier
+         ))
+
+      ;; this test is to handle complex structure in lexical edges...
+      ;; like "phosphoserine"
+      (eq edge (lexical-edge-at (start-pos edge)))
+      (member (edge-rule edge)
+              '(sdm-span-segment make-ns-pair
+                resolve-protein-prefix
+                make-edge-over-mutated-protein
+                :reify-residue
+                :reify-point-mutation-and-make-edge
+                MAKE-POLAR-PARTICIPLE-QUESTION
+                MAKE-POLAR-ADJECTIVE-QUESTION))
+      (and (individual-p (edge-referent edge))
+           (itypep (edge-referent edge) 'phosphorylated-amino-acid))
+      (and (cfr-p (edge-rule edge))
+           (equal '(:FUNCALL INTERPRET-PP-AS-HEAD-OF-NP LEFT-REFERENT RIGHT-REFERENT)
+                  (cfr-referent (edge-rule edge))))
+      (member (cat-name (edge-category edge))
+              '(there-exists))
+               
+      (and (eq (pname (binding-variable b)) 'type)
+           (itypep *mention-individual* 'collection))
+      ;; as in "the size of the modification"
+      (and (eq (pname (binding-variable b)) 'attribute)
+           (itypep *mention-individual* 'quality-predicate))
+      ;; "One hundred and seventy (79.4%)"
+      (and (eq (pname (binding-variable b)) 'value)
+           (itypep *mention-individual* 'multiplier))
+      ))
 
 (defun similar-binding&dependency (b1 dep)
   (and (dli-eq? (binding-value b1)
@@ -828,7 +865,6 @@ so we return the edge for the POBJ"
 
 
 (defmethod small-binding-list ((m discourse-mention))
-  (declare (special **lambda-var**))
   (let ((bl (filter-bl m)))
     (and (null (cdr bl))
          (not (eq (dependency-value (car bl)) **lambda-var**))
