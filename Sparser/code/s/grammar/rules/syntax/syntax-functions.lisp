@@ -163,29 +163,45 @@
     (cond (new-predication
            (setf (gethash new-predication *predication-links-ht*) val)
            (if (and insert-edge (edge-p (parent-edge-for-referent)))
-               (let* ((parent (parent-edge-for-referent))
-                      (pred-edge
-                       (cond ((or
-                               (eq pred (get-dli (edge-referent (edge-left-daughter parent))))
-                               (eq pred (edge-referent (edge-left-daughter parent))))
-                              (edge-left-daughter parent))
-                             ((or (eq pred (get-dli (edge-referent (edge-right-daughter parent))))
-                                  (eq pred (edge-referent (edge-right-daughter parent))))
-                              (edge-right-daughter parent))
-                             (t (lsp-break "create-predication-by-binding, predicate not from left or right edge~%"))))
-                      (new-edge (make-predication-edge pred-edge new-predication)))
-                 (declare (special new-edge pred-edge parent))
-                 (cond ((eq (edge-left-daughter parent) pred-edge)
-                        (setf (edge-left-daughter parent) new-edge))
-                       ((eq (edge-right-daughter parent) pred-edge)
-                        (setf (edge-right-daughter parent) new-edge))
-                       (t (lsp-break "create-predication-by-binding, predicate not from left or right edge~%")))
-                 (setf (edge-used-in new-edge) parent)
-                 (setf (ev-top-node (edge-starts-at parent)) parent)
-                 ;; (lsp-break "create-predication-by-binding")
-                 (values new-predication new-edge))
+               (insert-predication-edge pred new-predication)
                (values new-predication nil)))
 	  (t (values pred nil)))))
+
+
+(defun insert-predication-edge (pred new-predication)
+  (declare (special new-predication))
+  (let* ((parent (parent-edge-for-referent))
+         (left-edge (edge-left-daughter parent))
+         (right-edge (edge-right-daughter parent))
+         (pred-edge
+          (cond ((matched-pred? pred left-edge)
+                 left-edge)
+                ((matched-pred? pred right-edge)
+                 right-edge)
+                (t nil)))
+         (new-edge (when pred-edge
+                     (make-predication-edge pred-edge new-predication))))
+    (declare (special new-edge left-edge right-edge pred-edge parent))
+    (when (null pred-edge)
+      (lsp-break
+       "create-predication-by-binding, predicate not from left or right edge~%"))
+    ;; can't have null pred-edge at this point
+    (cond ((eq left-edge pred-edge)
+           (setf (edge-left-daughter parent) new-edge))
+          ((eq right-edge pred-edge)
+           (setf (edge-right-daughter parent) new-edge)))
+    (setf (edge-used-in new-edge) parent)
+    (setf (ev-top-node (edge-starts-at parent)) parent)
+    ;;(lsp-break "create-predication-by-binding")
+    (values new-predication new-edge)))
+
+(defun matched-pred? (pred edge &aux (ref (edge-referent edge)))
+  (or (eq pred (get-dli ref))
+      (eq pred ref)
+      ;; this is the case where the ref is a complement
+      ;; embedding item like a wh-question
+      (and (individual-p ref)
+           (eq pred (value-of 'statement ref)))))
 
 (def-form-category lambda-form)
 (define-category lambda-expression :specializes predicate)
@@ -198,11 +214,33 @@
           (make-completed-unary-edge
            start-vec end-vec
            'make-predication-edge
-           pre-pred-edge
+           (maybe-extract-statement-edge pre-pred-edge)
            category::lambda-expression
            category::lambda-form
            predication)))
     edge))
+
+(defun maybe-extract-statement-edge (pre-pred-edge)
+  (declare (special pre-pred-edge))
+  (let* ((ref (edge-referent pre-pred-edge))
+         (statement
+          (and (individual-p ref)
+;;; check to see that this is not a that-relative-clause
+               (not (that-relative-clause? ref))
+               (not (itypep ref 'bio-complement))
+               (value-of 'statement ref))))
+    (declare (special statement))
+    (if statement
+        (cond ((eq statement (edge-referent (edge-left-daughter pre-pred-edge)))
+               (edge-left-daughter pre-pred-edge))
+              ((eq statement (edge-referent (edge-right-daughter pre-pred-edge)))
+               (edge-right-daughter pre-pred-edge))
+              (t (warn "bad make-predication-edge in ~s~%" (sentence-string *sentence-in-core*))
+                 nil))
+        pre-pred-edge)))
+
+(defun that-relative-clause? (ref)
+  (value-of 'that-rel ref))
 
 
 ;;;----------------------------
