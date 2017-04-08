@@ -1508,15 +1508,17 @@
 ;;;--------------------
 
 (defun update-edge-as-lambda-predicate (vp-edge &optional subject-var)
+  (declare (special vp-edge subject-var))
   (let ((svar (or subject-var
                   (if (is-basic-collection? (edge-referent vp-edge))
                       (subject-variable (car (value-of 'items (edge-referent vp-edge))))
                       (subject-variable (edge-referent vp-edge))))))
+    (declare (special svar))
     (unless (value-of svar (edge-referent vp-edge))
       (if (is-basic-collection? (edge-referent vp-edge))
           (update-conjunctive-edge-as-lambda-predicate vp-edge)
           (cond ((null svar)
-                 (warn "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge)
+                 (lsp-break "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge)
                  (edge-referent vp-edge))
                 (t
                  (let ((pred (create-predication-by-binding
@@ -1525,14 +1527,34 @@
                    pred)))))))
 
 (defun update-conjunctive-edge-as-lambda-predicate (vp-edge)
-  (let* ((daughter-edges (if (eq :long-span (edge-right-daughter vp-edge))
-                             (loop for e in (edge-constituents vp-edge)
-                                   unless (or
-                                           (eq (cat-name (edge-form e)) 'conjunction)
-                                           (eq (edge-category e) word::comma))
-                                   collect e)
-                             (list (edge-left-daughter vp-edge)
-                                   (edge-right-daughter vp-edge))))
+  (let* ((daughter-edges
+          (cond
+            ((eq :long-span (edge-right-daughter vp-edge))
+             (loop for e in (edge-constituents vp-edge)
+                   unless (or
+                           (eq (cat-name (edge-form e)) 'conjunction)
+                           (eq (edge-category e) word::comma))
+                   collect e))
+            ((member (cat-name (edge-form (edge-left-daughter vp-edge)))
+                     '(adverb wh-pronoun))
+             (if (eq :long-span (edge-right-daughter (edge-right-daughter vp-edge)))
+                 (loop for e in (edge-constituents (edge-right-daughter vp-edge))
+                       unless (or
+                               (eq (cat-name (edge-form e)) 'conjunction)
+                               (eq (edge-category e) word::comma))
+                       collect e)
+                 (progn
+                   (warn "update-conjunctive-edge-as-lambda-predicate -- can't make lambda predicate from conjunction in ~s" (sentence-string *sentence-in-core*))
+                   (return-from update-conjunctive-edge-as-lambda-predicate
+                     (edge-referent vp-edge)))))
+            ((member (cat-name (edge-form (edge-right-daughter vp-edge)))
+                     '(pp))
+             (return-from update-conjunctive-edge-as-lambda-predicate
+               (edge-referent vp-edge)))
+            
+            (t                           
+             (list (edge-left-daughter vp-edge)
+                   (edge-right-daughter vp-edge)))))
          (new-items
           (loop for edge in daughter-edges
                 collect (update-edge-as-lambda-predicate edge))))
@@ -1616,5 +1638,4 @@
         ;; (push-debug `(,edge)) (break "look at edge")
         edge))))
 
-(defun np-comma-pp-comma (np comma-1 pp comma-2)
-  (attach-pp-to-np-with-commas np comma-1 pp comma-2))
+
