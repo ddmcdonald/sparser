@@ -833,7 +833,7 @@ nil
 (def-bio "spermine" molecule :long "spermine" :identifier "CHEBI:15746") 
 (def-bio "steroid-hormone" molecule :long "steroid hormone" :identifier "CHEBI:26764") 
 (def-bio "superantigen" molecule :long "superantigen" :identifier "NCIT:C1456") 
-(def-bio "tyro-sine" molecule :long "tyrosine" :identifier "CHEBI:18186") 
+;;(def-bio "tyro-sine" molecule :long "tyrosine" :identifier "CHEBI:18186") 
 (def-bio "vitamin-D" molecule :long "vitamin D" :identifier "CHEBI:27300") 
 (def-bio "α-HA" molecule :long "acetohydroxamic acid" :identifier "NCIT:C47381") 
 (def-bio "α-amanitin" molecule :long "alpha-amanitin" :identifier "CHEBI:37415") 
