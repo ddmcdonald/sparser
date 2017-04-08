@@ -90,10 +90,15 @@
 ;;; "that" subject relative
 ;;;-------------------------
 
+(define-lambda-variable 'that-rel nil
+  ;; Event already has slots for time, location, purpose,
+  ;; modifiers, and aspect (used by tense). This adds another one
+  (category-named 'top))
+
 (defun compose-that-with-vp (relative predicate)
   (if *subcat-test*
     t
-    predicate))
+    (bind-dli-variable 'that-rel t predicate)))
 ;; earlier version of code for compose-wh-with-vp
 ;; just invoked 'add-subject-relation' on its arguments
 ;; and returned the predicate argument (which it renamed
@@ -131,17 +136,22 @@
 ;;;-----------------
 
 (defun apply-subject-relative-clause (np-ref vp-ref)
-  (declare (special category::have category::subject-relative-clause))
+  (declare (special category::have category::subject-relative-clause vp-ref))
   ;; block "histone 2B ... had high levels ..."
   (when (and (eq (edge-category (right-edge-for-referent)) category::have)
 	     (eq (edge-form (right-edge-for-referent)) category::VP+ED))
     (return-from apply-subject-relative-clause nil))
-  
+
   (setq np-ref (individual-for-ref np-ref))
+  (when (and (itypep vp-ref 'wh-question)
+             (value-of 'statement vp-ref))
+    (setq vp-ref (value-of 'statement vp-ref)))
+
   (let ((var
          (cond
            ((itypep vp-ref 'copular-predication)
             (find-variable-for-category 'item 'copular-predication))
+           #+ignore ;; we are ignoring that now
            ((itypep vp-ref 'wh-question) ;; already checked on the var
             ;; see compose-wh-with-vp for details
             (value-of 'var vp-ref))
