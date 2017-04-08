@@ -214,12 +214,14 @@ where it regulates gene expression.")
 (defun reinterp-item-using-bindings (mention)
   ;;xx
   (let ((interp (dli-ref-cat (base-description mention))))
-    (if (and (individual-p interp)
-	     (itypep interp 'collection)
-             (not (is-basic-collection? interp)))
-	interp
-	;; this allows for creation of new collections by distribution of internal collections
-	(reinterp-list-using-bindings (list interp) (dependencies mention)))))
+    (cond 
+          ((and (individual-p interp)
+                (itypep interp 'collection)
+                (not (is-basic-collection? interp)))
+           interp)
+          ;; this allows for creation of new collections by distribution of internal collections
+          (t (reinterp-list-using-bindings (list interp)
+                                           (dependencies mention))))))
 
 (defun reinterp-list-using-bindings (initial-interps bindings)
   (let ((interps initial-interps))
@@ -248,17 +250,6 @@ where it regulates gene expression.")
 				     bound-val)))
 			  (list (bind-dli-variable var ival i)))))))
     (cond ((cdr interps) ;; a collection
-	   #+ignore
-           (when (is-maximal? (car containing-mentions))
-	     ;; create new mentions for each of the expanded interpretations
-	     ;; e.g " MAPK phosphorylation sites in ASPP1 and ASPP2" expands to
-	     ;; "MAPK phosphorylation site in ASPP1" and "MAPK phosphorylation site in ASPP2"
-	     (loop for interp in interps
-                  when interp
-		do
-		  (setf (contextual-description
-                         (make-mention interp (mention-source (car containing-mentions))))
-			interp)))
 	   (make-an-individual 'collection
 			       :items interps
 			       :number (length interps)
