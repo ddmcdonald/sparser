@@ -2944,7 +2944,7 @@
 (define-protein "UP:P15009" ("HS4" "p15009")) 
 (define-protein "UP:P15018" ("d factor" "differentiation-stimulating factor" "LIF" "LIF_HUMAN" "MLPLI" "Melanoma-derived LPL inhibitor" "p15018" "hLIF" "leukemia" "leukemia inhibitory factor")) 
 (define-protein "UP:P15036" ("ETS proto-oncogene 2" "ETS proto-oncogene 2, transcription factor" "ETS-2" "ETS2" "ETS2_HUMAN" "ets-2" "ets2" "p15036" "Protein C-ets-2" "transcription factor" "v-ets avian erythroblastosis virus E26 oncogene homolog 2" "v-ets erythroblastosis virus E26 oncogene homolog 2 (avian)" "PROTEIN-REFERENCE9813" "PROTEIN21263")) 
-(define-protein "UP:P15056" ("B-RAF" "B-Raf" "B-Raf proto-oncogene, serine/threonine kinase" "b-raf" "BRAF" "BRAF1" "BRAF_HUMAN" "BRaf" "braf" "FLAG-BRAF" "p15056" "Proto-oncogene B-Raf" "RAFB1" "p94" "v-Raf murine sarcoma viral oncogene homolog B1" "bRaf-1" "B-Raf1"))) 
+(define-protein "UP:P15056" ("B-RAF" "B-Raf" "B-Raf proto-oncogene, serine/threonine kinase" "b-raf" "BRAF" "BRAF1" "BRAF_HUMAN" "BRaf" "braf" "FLAG-BRAF" "p15056" "Proto-oncogene B-Raf" "RAFB1" "p94" "v-Raf murine sarcoma viral oncogene homolog B1" "bRaf-1" "B-Raf1")) 
 (define-protein "UP:P15057" ("LYS_BPCP1" "p15057" "lysozyme")) 
 (define-protein "UP:P15059" ("B13R" "p15059" "SPI-2" "SPI2_VACCW" "VACWR195" "PROTEIN-REFERENCE6611")) 
 (define-protein "UP:P15086" ("CBPB1_HUMAN" "CPB1" "Carboxypeptidase B" "p15086" "carboxypeptidase B1" "carboxypeptidase B1 (tissue)" "pancreatic carboxypeptidase B" "protaminase" "tissue carboxypeptidase B" "PROTEIN20863")) 
