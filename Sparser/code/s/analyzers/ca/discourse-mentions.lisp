@@ -518,7 +518,10 @@
     (when (not (equal (length new-bindings)
                       (length new-dependencies)))
       (lsp-break "binding-edges"))
-    (nconc new-dependencies old-dependencies)))
+    (loop for dep in new-dependencies
+          do
+            (pushnew dep old-dependencies :test #'equal))
+    old-dependencies))
 
 
 (defun find-binding-dependency (value edges top-edge &optional b &aux (top-ref (edge-referent top-edge)))
@@ -561,11 +564,19 @@
                (check-plausible-missing-edge-for-dependency b top-edge))))))
 
 (defun find-binding-dependencies-for-items (items edges top-edge)
-  (loop for item in items collect
-          (let ((bd (find-binding-dependency item edges top-edge)))
-            (if (edge-p bd)
-                (edge-mention bd)
-                bd))))
+  (loop for item-sem in items collect
+          (or (find-conjunction-item-mention item-sem top-edge)
+              item-sem)))
+
+(defun find-conjunction-item-mention (item-sem edge)
+  (cond ((eq item-sem (edge-referent edge))
+         (edge-mention edge))
+        ((is-basic-collection? (edge-referent edge))
+         (loop for e in (edges-under edge)
+               do
+                 (let ((mention (find-conjunction-item-mention item-sem e)))
+                   (when mention (return mention)))))
+        (t nil)))
 
 (defun find-dependent-edge (edge)
   "PPs are never referent edges (except possibly for some adjuncts, when David finishes)
