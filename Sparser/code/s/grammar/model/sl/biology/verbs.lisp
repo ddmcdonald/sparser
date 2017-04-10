@@ -122,7 +122,7 @@
   :realization
   (:verb "transform"
          :etf (svo-passive)
-         :of object))
+         :of :object))
 ;; leads to rule bio-entity + load, 
 ;; which works, but isn't satisfying
 
@@ -394,7 +394,7 @@
          :via site
 	 :at site
          :with object
-         :of object
+         :of :object
          :between objects))
 
 (define-category assess :specializes bio-method
@@ -759,7 +759,7 @@
 	   :etf (svo-passive)
            :from from
            :in location
-           :of object
+           :of :object
            :on location
            :with other-protein))
 
@@ -868,7 +868,7 @@
          :etf (svo-passive)
          :for bio
          :in bio
-         :of object))
+         :of :object))
 
 (define-category implicate :specializes bio-rhetorical
   :binds ((process bio-process))
@@ -914,15 +914,13 @@
          :etf (svo-passive)))
 
 
-(define-category knockdown :specializes bio-process
-  :binds ((gene-or-protein (:or protein gene)))
+(define-category knockdown :specializes negative-bio-control
   :realization
-  (:noun "knockdown" :of gene-or-protein
+  (:noun "knockdown" :of :object
          :m gene-or-protein
          :verb ("knock down" :past-tense "knocked down"  
                              :present-participle "knocking down" )
-         :etf (svo-passive)
-         :o gene-or-protein))
+         :etf (svo-passive)))
 
 
 
@@ -964,12 +962,12 @@
 
 
 (define-category localization :specializes bio-self-movement
-  :restrict ((object molecule)) 
+  :restrict ((moving-object molecule)) 
   :realization 
   (:verb "localize" 
    :noun "localization" 
    :etf (svo-passive) 
-   :o object))
+   :o moving-object))
 
 
 
@@ -1170,7 +1168,7 @@
   ;;  and a lot of others
   :from from
   :into bio
-  :of object))
+  :of :object))
 
 (def-synonym  molecule-release
     (:noun "release"))
@@ -1246,7 +1244,6 @@
            :noun "starvation"
 	   :etf (svo-passive)
            :of nutrient))
-
 
 (define-category stimulate
   :specializes positive-bio-control
@@ -1426,7 +1423,7 @@
    :etf (svo-passive) 
    :s object ;; ERK translocates -- this is not the agent, but the object!
    :o object
-   :of object))
+   :of :object))
 
 
 

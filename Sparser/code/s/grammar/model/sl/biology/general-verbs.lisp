@@ -155,7 +155,7 @@
              :noun "change"
              :in object
              :in affected-process
-             :of object
+             :of :object
              :of affected-process
              :on scale
              :from original
@@ -320,10 +320,15 @@
          :noun "determination"
          :etf (svo-passive)))
 
-(define-category development :specializes caused-bio-process
-  :realization (:verb ("develop" :present-participle "developing" :past-tense "developed")
-		      :etf (svo-passive)
-		      :noun "development"))
+(define-category development
+    :specializes caused-bio-process
+    :binds ((treatment therapeutic-strategy))
+    :realization
+    (:verb ("develop" :present-participle "developing" :past-tense "developed")
+           :etf (svo-passive)
+           :noun "development"
+           :object treatment
+           :of :object))
 
 (define-category diminish :specializes negative-bio-control
   :restrict ((object (:or biological scalar-quality)))
@@ -333,7 +338,7 @@
          :etf (svo-passive)
          :for object
          :in object
-         :of object
+         :of :object
          :optional-object t))
 
 ;; e.g. displayed sustained ERK phosphorylation
@@ -728,7 +733,7 @@
    :noun "loss" 
    :etf (svo-passive) 
    :o object
-   :of object))
+   :of :object))
 
 
 (define-category mean :specializes bio-rhetorical
@@ -1126,14 +1131,15 @@
  (:verb ("studyxxx" :past-tense "studied" :present-participle "studying")
   :etf (svo-passive)))
 
-(def-synonym study-bio-method (:noun "study" :of object))
+(def-synonym study-bio-method (:noun "study" :of :object))
 
 
-(define-category succeed :specializes bio-relation
+(define-category succeed :specializes bio-predication
   :realization
   (:verb "succeed" :noun "success"
    :etf (sv)
-   :in theme))
+   :in theme
+   :of subject))
 
 (define-category suggest :specializes bio-rhetorical
   :mixins (bio-thatcomp)
@@ -1174,7 +1180,7 @@
    :o object
    :etf (svo-passive)
    :for disease
-   :of disease
+   :of :object
    :with treatment))
 
 (define-category understand :specializes bio-rhetorical

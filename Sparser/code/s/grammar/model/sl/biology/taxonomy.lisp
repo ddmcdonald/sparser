@@ -330,7 +330,7 @@
   :realization 
     (:noun "process"
      :s subject
-     :of subject
+     ;;:of subject
      :by by-means-of ;;find out what uses this
      :through by-means-of
      :via by-means-of
@@ -345,14 +345,36 @@
      :as-comp as-comp
      :at target))
 
-
 (define-category other-bio-process
-  :specializes bio-process)
+    :specializes bio-process)
+
+
+;; actually, bio-activity is the process seen
+;; from the point of view of the subject/agent
+;; so that "activity of X" means X is the active
+;; entity, whereas "<process-name> of X" typically means object
+;; so "phosphorylation of MEK" means MEK is phosphorylated
+;; perhaps this is related to being a quality of the agent
+(define-category bio-activity
+    :specializes other-bio-process
+    :binds ((theme biological))                 
+    :realization
+    (:noun "activity"
+          :of subject
+          :towards theme
+          :on theme))
 
 (define-category named-bio-process
   :specializes other-bio-process
   :realization (:common-noun name)) ;; for nominal forms
 
+(defun apply-of-np-to-nominalization-of-transitive (verb-or-np of)
+  (when (and
+         (eq (cat-name (edge-form (left-edge-for-referent verb-or-np)))
+             'np)
+         (find-object-vars verb-or-np))
+    (lsp-break "apply-of-np-to-nominalization-of-transitive")))
+    
 
 (define-category caused-bio-process
     :specializes bio-process
@@ -378,20 +400,18 @@
     (:s agent
         :s cause
         :o object
-        :of object
+        :of :object
         :m agent
         :m object
         :by agent))
 
 
 (define-category process-control-process :specializes caused-bio-process
-  :restrict ((subject blocked-category))
   :binds ((affected-process (:or bio-process bio-mechanism bio-method bio-quality
                                  bio-predication bio-relation medical-treatment)))
   :realization
-    (:o affected-process
-     :o object
-     :of affected-process))
+  (:o affected-process
+      :o object))
 
 (define-category caused-biochemical-process :specializes caused-bio-process
   :binds ((process-for biochemical-process)))
@@ -457,7 +477,7 @@
      :o statement
      :by agent
      :by method
-     :of statement
+     :of :object
      :in fig
      :through method
      :under method
@@ -506,25 +526,25 @@
   :documentation "like translocation, entry and 'binding to membrane'"
   ;; :mixins (move) this creates an inconsistent taxonomy -- WH -- TO-DO
   :restrict ((cellular-location over-ridden)) ;; really? ddm 2/3/17
-  :binds ((object (:or bio-entity bio-chemical-entity))
+  :binds ((moving-object (:or bio-entity bio-chemical-entity))
           (co-object (:or bio-entity bio-chemical-entity))
           (origin cellular-location)
           (destination cellular-location))
   :realization 
-    (:at origin
+    (::at origin
      :into destination
      :to destination
      :onto destination
      :from origin
      :m destination
-     :m object
+     :m moving-object
      :with co-object))
 
 
 (define-category bio-self-movement :specializes bio-movement
   :realization
-    (:s object
-     :of object))
+    (:s moving-object
+     :of moving-object))
 
 (define-category bio-transport :specializes bio-movement
   :mixins (caused-bio-process)
@@ -605,7 +625,7 @@
     (:s agent
      :o object
      :by agent
-     :of object)) ;; for nominal forms
+     :of :object)) ;; for nominal forms
 
     
 (define-category immune-method :specializes bio-method
@@ -626,7 +646,7 @@
      :etf (svo-passive)
      :noun "measurement"
      :m measured-item
-     :of measured-item
+     :of :object
      :by method
      :with method))
 
@@ -955,7 +975,7 @@
   :realization
     (:verb "load"
      :etf (svo-passive)
-     :of object
+     :of :object
      :onto substrate))
 
 
@@ -963,7 +983,7 @@
 (define-category stoichiometry :specializes bio-abstract
   ;; not sure this is the same stoichiometry as used in biopax
   :mixins (reactome-category)
-  :binds ((physicalEntity (:or bio-complex small-molecule protein)) 
+  :binds ((physicalEntity (:or bio-complex small-molecule protein component))
           (stoichiometricCoefficient)) ;; an integer -- ask David
   :realization
     (:noun "stoichiometry"
@@ -1169,7 +1189,7 @@
     (:noun "exchange"
      :verb "exchange"
      :etf (svo-passive)
-     :o object
+     :o moving-object
      :m subject
      :s subject
      :of state-before

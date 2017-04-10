@@ -373,14 +373,6 @@ be biology specific, since they aren't. |#
      :between bounds))
 
 
-(noun "activity" :super other-bio-process
-  :binds ((theme biological))
-  :realization
-     (:noun "activity"
-      :of subject
-      :towards theme
-      :on theme))
-
 (noun "behavior" :super bio-quality)
 
 (define-category compare :specializes bio-method
