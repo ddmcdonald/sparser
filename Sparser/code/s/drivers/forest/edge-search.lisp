@@ -367,7 +367,13 @@
 		(category-p (second r-triple-rhs))
 		(member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))))
 	(or
-	 (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
+         
+         ;;(eq 'category::infinitive l-triple-left)
+         ;; this kills "To determine the effect of MAPK phosphorylation on endogenous ASPP2 activity
+         ;; but makes ""the ability of PKCtheta to phosphorylate BAD is enhanced by the co-expression of Raf-1 and B-Raf." work
+         
+
+         (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
 	 (and
 	  (member l-triple-rhs (l-triple-tests)
                   :test #'equal)
