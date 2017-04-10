@@ -623,20 +623,25 @@
   (:method ((aux individual) (vg individual))
     (make-vg-aux aux vg)))
 
+(defun vg-cat (vg)
+  (cond ((category-p vg) vg)
+        ((individual-p vg) (itype-of vg))
+        (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb"))))
+
 (defun check-passive-and-add-tense/aspect (aux vg)
   (declare (special category::vg))
-  (let ((vg-cat
-         (cond ((category-p vg) vg)
-               ((individual-p vg) (itype-of vg))
-               (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb")))))
-    (when (and (first (cat-realization vg-cat))
-               (rdata-etf (first (cat-realization vg-cat)))
-               (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
-                             '(passive/with-by-phrase))))
-      (when *parent-edge-getting-reference*
-        ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
-        (revise-parent-edge :form category::vg)))
-    (add-tense/aspect aux vg)))
+  (loop for vg-item
+        in (if (is-basic-collection? vg) (value-of 'items vg) (list vg))
+        do
+          (let ((vg-cat (vg-cat vg-item)))
+            (when (and (first (cat-realization vg-cat))
+                       (rdata-etf (first (cat-realization vg-cat)))
+                       (not (member  (etf-name (rdata-etf (first (cat-realization vg-cat))))
+                                     '(passive/with-by-phrase))))
+              (when *parent-edge-getting-reference*
+                ;; this is now (12/23/2016) used in polar questions, so there is no edge yet
+                (revise-parent-edge :form category::vg)))))
+  (add-tense/aspect aux vg))
 
 (defgeneric add-tense/aspect-to-subordinate-clause (aux sc)
   (:method ((aux category) (sc category))
