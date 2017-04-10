@@ -9440,7 +9440,9 @@
             "RASGRF1" "RASGRF2" "RASGRP" "RASGRP1"
             "RASGRP1 phosphorylated at threonine-184" "RASGRP1,3" "RASGRP2" "RASGRP3"
             "RASGRP4" "RASH_HUMAN" "RASI" "RASK2" "RASL7A" "RASL7B" "RASSF1" "RASSF1A"
-            "RASSF2" "RASSF3" "RASSF5" "RASSF6" "RAX" "RAYL" "RB protein" "RB1"
+            "RASSF2" "RASSF3" "RASSF5" "RASSF6" "RAX" "RAYL" "RB protein" 
+            "RB" ;; added from indra 
+            "RB1"
             "RB1-inducible coiled-coil protein 1" "RB11A_HUMAN" "RB18A" "RB1CC1" "RB2"
             "RB27A_HUMAN" "RB27B_HUMAN" "RB3GP_HUMAN" "RBAF600" "RBAP-1" "RBAP-2" "RBAP46"
             "RBAP48" "RBAT" "RBBP-2" "RBBP-3" "RBBP-5" "RBBP1" "RBBP1L1" "RBBP2" "RBBP2H1"
@@ -12681,7 +12683,9 @@
             "centrobin" "centromeres" "centrosome-associated protein" "centrosomes"
             "ceramide glucosyltransferase" "ceramide transfer protein" "cereblon"
             "ceruloplasmin" "chaperone" "chaperones" "chaperonin"
-            "chaperonin containing TCP1" "chapsyn-110" "checkpoint kinase 2"
+            "chaperonin containing TCP1" "chapsyn-110" 
+            "checkpoint kinase 1" ;; added because it's in indra
+            "checkpoint kinase 2"
             "chemoattractant activity" "chemoattractant protein-1" "chemoattractants"
             "chemokine" "chemokine receptor" "chemokines" "chemotaxis" "chibby" "chk1"
             "chk2" "chloride channel" "chloride intracellular channel 4" "chloroquine"
