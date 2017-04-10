@@ -36,15 +36,19 @@
            :etf (svo-passive)))
 
 ;;/// "catalysis of phosphorylation by MEK"
-(define-category catalytic-activity :specializes positive-bio-control
-  :restrict ((object biochemical-reaction))
+(define-category catalysis :specializes bio-activity
+  :restrict ((theme biochemical-reaction))
   :bindings (uid "GO:0003824")
   :binds ((controlType)
           (catalyst (:or protein bio-complex gene)))
   :realization
   (:verb "catalyze" :noun "catalysis" :adj "catalytic"
          :etf (svo-passive)
-         :of catalyst))
+         :o theme))
+
+(define-category catalytic-activity :specializes bio-activity
+ :realization
+ (:noun "catalytic activity"))
 
 
 (define-category enzyme-activity :specializes catalytic-activity
