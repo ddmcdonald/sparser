@@ -80,8 +80,7 @@
          :m substrate
          :m site
          :m agent ;;somehow this overrides the ones below
-         :of substrate
-	 :of site
+         :of :object
          :at amino-acid
 	 :on amino-acid ;;"BRAF that is phosphorylated on serine and tyrosine."
 	 :at site
@@ -905,8 +904,8 @@ it is created from N-terminus to C-terminus.|#
          :s binder
          :o  direct-bindee
          :m direct-bindee
+         :of direct-bindee
          :to bindee
-         :of bindee
          :via site
          :at site
          :at cell-location
@@ -937,7 +936,7 @@ it is created from N-terminus to C-terminus.|#
 	   :m bindee
 	   :o bindee
            :into result
-           :of bindee))
+           :of :object))
 
 ;; added in notion of direct-bindee for "A binds B" as opposed to "A binds to B"
 
