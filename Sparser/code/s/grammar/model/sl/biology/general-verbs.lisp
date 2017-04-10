@@ -794,17 +794,16 @@
 	   :etf (sv)))
 
 
-;; new definitions from MITRE test set
 (define-category overlap :specializes bio-relation
   :realization
-  (:verb "overlap" 
-         :noun "overlap"
-         :etf (svo-passive)
-         :with theme
-         :o theme
-         :in subject
-         :among subject
-         :between theme))
+    (:verb ("overlap" "over-lap")
+     :noun "overlap"
+     :etf (svo-passive)
+     :with theme
+     :o theme
+     :in subject
+     :among subject
+     :between theme))
 
 
 (define-category perform :specializes bio-method
@@ -1147,6 +1146,13 @@
   (:verb "suggest" :noun "suggestion"
          :etf (sv)))
 
+(define-category bio-take :specializes bio-method
+    :binds ((agent pronoun/first/plural)
+            (approach approach))
+    :realization ;; (p/s "use KRAS to treat pancreatic cancer")
+      (:verb ("take" :past-tense "took" :past-participle "taken")
+       :etf (svo-passive)))
+
 (define-category tend :specializes bio-rhetorical
    ;; :mixins (bio-tocomp) working on this.. other comps not working.
     :realization
@@ -1200,9 +1206,3 @@
        :for disease ;; (p/s "what drug should I use for pancreatic cancer?")
        :to-comp purpose))
 
-(define-category bio-take :specializes bio-method
-    :binds ((agent pronoun/first/plural)
-            (approach approach))
-    :realization ;; (p/s "use KRAS to treat pancreatic cancer")
-      (:verb ("take" :past-tense "took" :past-participle "taken")
-       :etf (svo-passive)))
