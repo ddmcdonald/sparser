@@ -4298,7 +4298,6 @@
     (    "ONT:PROTEIN" --    ("ROKα" "ONT:PROTEIN" :ID "UP:Q62868" :NAME "Rho-associated protein kinase 2"))
     (    "ONT:PROTEIN" --    ("ROR-gammat" "ONT:PROTEIN" :ID "NCIT:C106314" :NAME "nuclear receptor ROR-gamma T"))
     (    "ONT:PROTEIN" --    ("RagC" "ONT:PROTEIN" :ID "UP:Q9HB90" :NAME "Ras-related GTP-binding protein C"))
-    (    "ONT:PROTEIN" --    ("Rb" "ONT:PROTEIN" :ID "NCIT:C17394" :NAME "RB protein"))
     (    "ONT:PROTEIN" --    ("Rfz2" "ONT:PROTEIN" :ID "UP:Q08464" :NAME "Frizzled-2"))
     (    "ONT:PROTEIN" --    ("Rg1" "ONT:PROTEIN" :ID "UP:Q16821" :NAME "Protein phosphatase 1 regulatory subunit 3A"))
     (    "ONT:PROTEIN" --    ("Rho1" "ONT:PROTEIN" :ID "UP:P24406" :NAME "Transforming protein RhoA"))

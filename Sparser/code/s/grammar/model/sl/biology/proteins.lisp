@@ -2195,7 +2195,7 @@ filligre may be used to distinguish them, etc.
 (define-protein "RBP17_HUMAN" ("RANBP17")) 
 (define-protein "RBP1_HUMAN" ("doxorubicin" "RalA-binding protein 1" "RalBP1" "76 kDa Ral-interacting protein" "Dinitrophenyl S-glutathione ATPase" "DNP-SG ATPase" "Ral-interacting protein 1")) 
 (define-protein "RBTN2_HUMAN" ("rhombotin-2" "Rhombotin-2" "Cysteine-rich protein TTG-2" "LIM domain only protein 2" "LMO-2" "T-cell translocation protein 2")) 
-(define-protein "RB_HUMAN" ("Retinoblastoma-associated protein" "pp110" "Rb" "pRb" "p105-Rb" "RB1")) 
+;;(define-protein "RB_HUMAN" ("Retinoblastoma-associated protein" "pp110" "Rb" "pRb" "p105-Rb" "RB1")) 
 (define-protein "RCAS1_HUMAN" ("RCAS1" "EBAG9")) 
 (define-protein "RCC2_HUMAN" ("td" "Protein RCC2" "RCC1-like protein TD-60" "Telophase disk protein of 60 kDa")) 
 (define-protein "RCD1_HUMAN" ("CNOT9" "RCD1" "RQCD1" "Rcd-1")) 

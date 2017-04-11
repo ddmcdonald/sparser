@@ -15,7 +15,7 @@
 
 ;; Protein families
 
-	
+(def-family "CDK" :synonyms ("cyclin dependent kinase" "cyclin-dependent kinase" "Cdks" "CDKs") :identifier "NCIT:C17767")	
 (def-family "14-3-3")
 (def-family "AMPK":synonyms ("AMP activated protein kinase"))
 (def-family "ASPP" :members ("ASPP1" "ASPP2") :synonyms ("apoptosis-stimulating protein of p53"))
