@@ -293,7 +293,7 @@ assess-edge-label, which rewrites the word as the category BE.
   :form subj+verb
   :referent (:function make-there-exists right-edge))
 
-(loop for n in '(np n-bar proper-noun common-noun)
+(loop for n in '(np n-bar proper-noun common-noun common-noun/plural)
    do
      (eval `(def-form-rule (there-exists ,n)
                 ;;/// the effect of this rule is to make the category of
