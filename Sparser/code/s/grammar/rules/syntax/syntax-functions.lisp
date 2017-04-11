@@ -307,9 +307,9 @@
     ((and qualifier head)
      (setq head (individual-for-ref head))
      (cond
-       ((when (use-methods)
+       ((when (use-methods) ;; "left side" (etc. see core/places/methods.lisp)
           (compose qualifier head)))
-       ((itypep qualifier 'dependent-location) ;; "bottom" in "bottom block"
+       ((itypep qualifier 'dependent-location) ;; w/o methods: "bottom" in "bottom block"
         (add-dependent-location qualifier head))
        ((and
          (category-named 'knockout-pattern)
@@ -367,9 +367,9 @@
   (cond
     (*subcat-test*
      (takes-adj? head adjective))
-    ((when (use-methods)
-       (compose adjective head))) ;; This case is to benefit marker-categories
-    ((itypep adjective 'attribute-value)
+    ((when (use-methods) ;; "the Ras protein", where 'protein' is a type-marker
+       (compose adjective head)))
+    ((itypep adjective 'attribute-value) ;; "red block"
      (handle-attribute-of-head adjective head))
     ((interpret-premod-to-np adjective head)) ;; normal subcategorization
     (t ;; Dec#2 has "low nM" which requires coercing 'low'
@@ -415,8 +415,8 @@
 (defparameter *dets-seen* nil)
 
 (defun determiner-noun (determiner head)
-  "NO LONGER Drop indefinite determiners on the ground. Mark definites
-   for later handling."
+  "Depending on the value of *determiners-in-DL* either bind the determiner
+   to a variable or stash it by calling add-def-ref and handle it later"
   (declare (special *sentence-in-core*))
   (push-debug `(,determiner ,head))
   (or *subcat-test*
@@ -435,7 +435,7 @@
         ;;(push-debug `(,det-word ,determiner)) (lsp-break "det+noun")
 	(setf (non-dli-mod-for head) (list 'determiner determiner))
 	(cond          
-	  ((when (use-methods)
+	  ((when (use-methods) ;; ??? perhaps put in by reflex ??
              (compose determiner head)))
           ((and *determiners-in-DL*
                 (or (individual-p head) (category-p head)))
@@ -629,7 +629,7 @@
         (t (lsp-break "check-passive-and-add-tense/aspect -- no category to check passive verb"))))
 
 (defun check-passive-and-add-tense/aspect (aux vg)
-  (declare (special category::vg))
+  (declare (special category::vg *parent-edge-getting-reference*))
   (loop for vg-item
         in (if (is-basic-collection? vg) (value-of 'items vg) (list vg))
         do
@@ -664,7 +664,6 @@
    auxiliaries. Block the composition if the 'aux' is the
    head of a much larger phrase."
   (let* ((valid? (verb-category? (left-edge-for-referent))))
-    ;;(unless valid? (format t "~&Blocking add-tense~%"))
     (or valid?
         ;; this had to be added to handle the fact that IS became a VG
         ;; in (test-aspp2 81)
@@ -775,10 +774,11 @@
            (bind-dli-variable 'subordinate-conjunction adverb vg))
           ((is-basic-collection? vg)
            (bind-dli-variable
-            (or
-             (subcategorized-variable 
-              (car (value-of 'items vg)) :adv adverb)
-             'adverb) adverb vg))
+            (or (subcategorized-variable 
+                 (car (value-of 'items vg)) :adv adverb)
+                'adverb)
+            adverb
+            vg))
           ((has-adverb-variable? vg vg-phrase adverb)
            (setq vg (bind-dli-variable 'adverb adverb vg)))
           (t vg)))))
@@ -825,7 +825,7 @@
       ;; Execution options if subcat-test is satisfied
       ((and (itypep adverb 'intensifier) ;; compose will apply
             (itypep adj-phrase 'qualifiable))
-       (compose adverb adj))
+       (compose adverb adj)) ;; "very unlikely"
 
       (variable-to-bind
        (bind-dli-variable variable-to-bind adverb adj))
@@ -957,8 +957,7 @@
 (defun passive-is-covert-tocomp (vg passive-vg)
   ;; Aspp2 #30: "remains" + "to be investigated"
   ;; (push-debug `(,vg ,passive-vg)) (lsp-break "covert"))
-  (let ((var (subcategorized-variable vg :to-comp passive-vg)))
-
+  (let ((var (subcategorized-variable vg :to-comp passive-vg))
     (cond
       (*subcat-test*
        (and (eq word::|to| (pos-terminal (pos-edge-starts-at (right-edge-for-referent))))
@@ -1000,7 +999,7 @@
   ;; (aka perdurants). 
   #| (p "Mechanistically ASPP1 and ASPP2 bind RAS-GTP and potentiates RAS signalling 
   to enhance p53 mediated apoptosis [2].") |#
-  (let* ((complement tocomp) ;; no longer bury interpretation (value-of 'comp tocomp))
+  (let* ((complement tocomp)
          (to-comp-var ;; e.g. for "acts to dampen..."
           (subcategorized-variable s :to-comp complement)))
     (cond
@@ -1039,7 +1038,7 @@
      ;;(lsp-break "pp collection")
      nil)
     ((and np pp)
-     (or (when (use-methods)
+     (or (when (use-methods) ;; "the left side of the row"
            (compose np pp))
          (let* ((pp-edge (right-edge-for-referent))
                 (prep-word (identify-preposition pp-edge))
