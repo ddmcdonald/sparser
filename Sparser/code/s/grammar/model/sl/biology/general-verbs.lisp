@@ -156,7 +156,6 @@
              :in object
              :in affected-process
              :of :object
-             :of affected-process
              :on scale
              :from original
              :to resulting
