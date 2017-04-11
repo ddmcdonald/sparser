@@ -1,11 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
-;;; copyright (c) 2011  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2017  David D. McDonald  -- all rights reserved
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 
 ;;;     File:  "export"
 ;;;   Module:  drivers;sinks:
-;;;  version:  September 2011
+;;;  version:  April 2017
 
 ;; Initiated 2/26/07
 ;; 3/2 Added switch to make it accumulate and wait until called for.
@@ -21,6 +20,28 @@
 ;;   fact that spatial-orientation  has gone away.
 
 (in-package :sparser)
+
+
+#| Developed by Charlie Greenbacker in 2009 to represent Sparser results
+   in an interactive "checkpoint" virtual environment. Transcripts of
+   short spoken commands ("open the trunk") from the ASR were
+   passed to Sparser, which used the grammar in model/sl/checkpoint/
+   to provide a representation of what was spoken, which was passed on
+   to a behavoral rule model.  This is an example of the sort of output
+   Charlie provided.
+
+(speech-act (type request)
+  (content (event (type get)
+		  (location (type relative-location)
+		  (place (object (type car)))
+		  (functor (type spatial-orientation) ;; 9/27/11 spatial-orientiation is defunct
+			   (realization in))))))
+
+  This was setup as an option in analysis-core-return-value, where the
+  entry point into this code was export-object(<individual>). See the setup
+  in drivers/sinks/return-value.lisp
+|#
+
 
 ;;;---------
 ;;; globals
@@ -61,7 +82,6 @@
 ;;;--------------
 
 (defun export-salient-objects ()
-;(format t "export-salient-objects~%")
   (if *pending-salient-objects*
     (with-output-to-string (s)
       (let ((*export-stream* s))
@@ -83,7 +103,6 @@
 
 (defun export-bindings/recursively (edge)
   (declare (special *batch-salient-object-export*))
-;(format t "export-bindings/recursively edge: ~A~%" edge)
   (tr :exporting-referent edge)
   (let ((referent (edge-referent edge))
 	(wording (string-of-words-between
@@ -103,7 +122,6 @@
 
 (defun export-object-toplevel (obj wording-string)
   (declare (special *export-in-demo-mode*))
-;(format t "export-object-toplevel obj: ~A wording-string: ~A~%" obj wording-string)
   (tr :exporting obj)
   (when *export-in-demo-mode*
     (format *export-stream* 
@@ -144,7 +162,7 @@
 ;(format t "export-object obj: ~A~%" obj)
   (cond
     ((word-p obj)
-     (string/object-as-list obj))
+     (word-pname obj))
     ((polyword-p obj)
      (pw-pname obj))
     ((export-function (category-of obj))
@@ -258,15 +276,6 @@
 	(,@(export-object value))) )))
 |#
 
-#|
-(speech-act (type request)
-	    (content (event (type get)
-			    (location (type relative-location)
-				      (place (object (type car)))
-				      (functor (type spatial-orientation) ;; 9/27/11 spatial-orientiation is defunct
-					       (realization in))))))
-|#
-
 (defun export-v+v-as-return-value (v+v)
   ;;(format t "export-v+v-as-return-value v+v: ~A~%" v+v)
   (unless (typep v+v 'category+value)
@@ -325,11 +334,9 @@
 |#  
   
 (defun export-individual-as-return-value (i bindings)
-;(format t "export-individual-as-return-value i: ~A bindings: ~A~%" i bindings)
-;(cons 'entity
   `(,(list 'type (export-as-value-name-for i))
      ,@(mapcar #'export-binding-as-return-value bindings)))
-;)
+
 
 #|
 (defun export-binding-as-return-value (b)
@@ -347,9 +354,10 @@
         (let ((variable (binding-variable b))
               (value (binding-value b)))
           (declare (ignore variable))
-          (if (word-p value)
+          #+ignore(if (word-p value)
               (car (export-object value))
-              (export-object value)) )))
+              (export-object value))
+          (export-object value))))
 
 ;;--- common final path for bindings and V+V
 
