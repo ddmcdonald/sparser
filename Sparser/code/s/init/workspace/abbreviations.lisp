@@ -287,6 +287,14 @@
     (when (null (cdr edges)) ;; single span
       (semtree (car edges)))))
 
+#+:mumble
+(defun p/m (string)
+  "Parse the string, and if the result is a single edge
+   print the semtree and pass it to mumble:say."
+  (let ((tree (p/s string)))
+    (pprint tree)
+    (mumble::say tree)))
+
 (defun p/r (string)
   (let ((*return-value* :referent-of-last-edge))
     (declare (special *return-value*))
