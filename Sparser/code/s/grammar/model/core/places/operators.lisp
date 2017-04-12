@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "operators"
 ;;;   Module:  "model;core:places:"
-;;;  version:  December 2016
+;;;  version:  April 2017
 
 ;; instantiates 11/2/16 to provide a semantic grounding to spatial
 ;; prepositions and such as functions. 
@@ -22,7 +22,7 @@ determined by the operator and the types of the two objects,
 |#
 
 (define-category spatial-operator
-  :specializes predicate
+  :specializes prepositional
   :documentation "Provides a super type for spatial prespositions.
     See define-preposition. Allows more specific type-based
     treatment of prepositional phrases as locations, see analyse-pp.
@@ -86,9 +86,9 @@ determined by the operator and the types of the two objects,
               :referent category)))
       (add-rule word-rule category)
       (when multiple
-        (add-rules  (make-cn-plural-rules
-                   word category category)
-                  category))
+        (add-rules (make-cn-plural-rules
+                     word category category)
+                   category))
       (values category
               word-rule))))
 

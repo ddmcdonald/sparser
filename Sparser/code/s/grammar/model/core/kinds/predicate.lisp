@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "predicate"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  Decembe 2016
+;;;  version:  April 2017
 
 ;; Broken out of upper-model 8/23/16
 
@@ -91,5 +91,18 @@
  modifies individual as this category suggests be done.
  They all need to be unified at some point.")
 
-
-
+(define-category prepositional
+  :specializes predicate
+  :instantiates nil
+  :documentation "Intended to be the common parent of every
+ sort of operator that can be realized as a preposition. 
+ These have the semantic force of predicates and (arguably)
+ form predications by being used in prepositional phrases.
+ There is an argument as to whether the meaning of the
+ preposition is established just from the meaning of its
+ complement in the pp, or whether we must also consider the
+ meaning of the head to which the pp is attached. 
+    English prepositions are notoriously weird so we've
+ been handling this on a case by case basis. Prepositions qua
+ semantic operators is the most worked out in the model of
+ relative locations.")
