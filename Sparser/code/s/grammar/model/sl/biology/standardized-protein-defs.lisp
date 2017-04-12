@@ -11510,7 +11510,7 @@
 (define-protein "UP:Q9C0K1" ("BIGM103" "PP3105" "Q9C0K1" "S39A8_HUMAN" "SLC39A8" "ZIP8" "Zinc transporter ZIP8" "zip8" "solute carrier family 39 member 8" "PROTEIN-REFERENCE3708" "PROTEIN8400")) 
 (define-protein "UP:Q9C0K7" ("AL2S2_HUMAN" "ALS2CR2" "CALS-21" "ILPIP" "ILPIPA" "PAPK" "PRO1038" "Pseudokinase ALS2CR2" "Q9C0K7" "STE20-related kinase adaptor beta" "STRAB_HUMAN" "STRAD-beta" "STRADB" "amyotrophic lateral sclerosis 2 (juvenile)chromosome region" "candidate 2" "PROTEIN-REFERENCE5129" "PROTEIN10982")) 
 (define-protein "UP:Q9CA92" ("Q9CA92" "Q9CA92_ARATH" "helicases")) 
-(define-protein "UP:Q9DGN5" ("Q9DGN5" "Q9DGN5_CHICK" "transporting")) 
+(define-protein "UP:Q9DGN5" ("Q9DGN5" "Q9DGN5_CHICK" "transporter")) 
 (define-protein "UP:Q9ENS0" ("Q9ENS0" "Q9ENS0_HHV1" "thymidine kinase")) 
 (define-protein "UP:Q9EQN5" ("AEP" "DNA-binding protein SMUBP-2" "Q9EQN5")) 
 (define-protein "UP:Q9FK91" ("PARP-3" "Q9FK91")) 
