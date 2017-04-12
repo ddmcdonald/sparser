@@ -193,7 +193,9 @@ be biology specific, since they aren't. |#
 (define-category positive :specializes bio-relation
   :realization
     (:adj "positive"
-     :for theme))
+          :for theme))
+(def-synonym positive (:noun "+"))
+
 (define-category value-is-negative :specializes bio-relation
   ;; 'negative' is the category that represents "no" and "not"
   ;; in the tense model. They're not the same thing.               
