@@ -1381,20 +1381,32 @@
 ;; IMPORTANT -- "translocate" does not REQUIRE an object
 ;; "Wild-type ASPP2, but not mutant ASPP2 (S827A), translocates to the cytosol"
 (define-category translocation :specializes bio-transport
-  :restrict ((object molecule)) 
+  :restrict ((agent blocked-category)
+             (object blocked-category))
   :realization 
   (:verb "translocate" 
    :noun "translocation" 
    :etf (svo-passive)
-   :optional-object t))
+   :optional-object t
+   :s moving-object ;; don't treat this as an agent
+   :o moving-object))
 
 (define-category import :specializes bio-transport
-  :restrict ((object molecule)) 
+  :restrict ((agent blocked-category)
+             (object blocked-category))
   :realization 
   (:verb "import" 
    :noun "importation" 
    :etf (svo-passive)
-   :optional-object t))
+   :o moving-object))
+
+(define-category export :specializes bio-transport
+  :restrict ((agent blocked-category)
+             (object blocked-category))                 
+  :realization 
+  (:verb "export" 
+         :etf (svo-passive)
+         :o moving-object))
 
 
 
@@ -1416,13 +1428,11 @@
          :etf (svo-passive)))
 
 (define-category entry :specializes translocation
-  :restrict ((object molecule)) 
   :realization 
   (:verb "enter" 
    :noun "entry" 
    :etf (svo-passive) 
-   :s object ;; ERK translocates -- this is not the agent, but the object!
-   :o object
+   :s moving-object ;; ERK translocates -- this is not the agent, but the object!
    :of :object))
 
 
