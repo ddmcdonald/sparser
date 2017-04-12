@@ -465,6 +465,26 @@
                      sentence
                      (eq (value-of 'affected-process ref) '*lambda-var*)
                      ))
+                   ((and (itypep ref 'recruit)
+                         (value-of 'object ref))
+                    (push-sem->indra-post-process
+                     mention
+                     sentence
+                     (eq (value-of 'object ref) '*lambda-var*)
+                     ))
+                   ((and (or (itypep ref 'translocation)
+                             (itypep ref 'import)
+                             (itypep ref 'export))
+                         (or (value-of 'object ref)
+                             (value-of 'moving-object ref)
+                             (value-of 'moving-object-or-agent-or-object ref)))
+                    (push-sem->indra-post-process
+                     mention
+                     sentence
+                     (or (eq (value-of 'object ref) '*lambda-var*)
+                         (eq (value-of 'moving-object ref) '*lambda-var*)
+                         (eq (value-of 'moving-object-or-agent-or-object ref) '*lambda-var*))
+                     ))
                    ((and (or
                           (itypep ref 'post-translational-modification)
                           (and (is-basic-collection? ref)
