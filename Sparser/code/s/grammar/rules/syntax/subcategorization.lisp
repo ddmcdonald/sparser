@@ -824,7 +824,7 @@
 
 (defun find-subcat-var (item label head)
   (declare (special item label head *subcat-test* *subcat-use*
-                    *left-edge-into-reference*))
+                    *left-edge-into-reference* *sentence-in-core*))
   (let* ((category (itype-of head))
          (subcat-patterns (known-subcategorization? head))
          (of-object
