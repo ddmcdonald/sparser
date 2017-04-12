@@ -957,7 +957,7 @@
 (defun passive-is-covert-tocomp (vg passive-vg)
   ;; Aspp2 #30: "remains" + "to be investigated"
   ;; (push-debug `(,vg ,passive-vg)) (lsp-break "covert"))
-  (let ((var (subcategorized-variable vg :to-comp passive-vg))
+  (let ((var (subcategorized-variable vg :to-comp passive-vg)))
     (cond
       (*subcat-test*
        (and (eq word::|to| (pos-terminal (pos-edge-starts-at (right-edge-for-referent))))
