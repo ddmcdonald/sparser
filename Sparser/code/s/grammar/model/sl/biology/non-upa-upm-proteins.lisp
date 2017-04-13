@@ -2683,8 +2683,6 @@
 (define-protein "NCIT:C41046" ("HNCs" "matrix metalloproteinase-8")) 
 (define-protein "NCIT:C41050" ("MT1MMP" "matrix metalloproteinase-14")) 
 (define-protein "NCIT:C41055" ("GGTI" "protein geranylgeranyltransferase type-I beta subunit")) 
-(define-protein "NCIT:C41625" ("Akt" "protein kinase B")) 
-(define-protein "NCIT:C41625" ("AKT" "protein kinase B")) 
 (define-protein "NCIT:C42328" ("IKK1" "conserved helix-loop-helix ubiquitous kinase")) 
 (define-protein "NCIT:C42594" ("p21-activated kinase-1" "αPak")) 
 (define-protein "NCIT:C42594" ("p21-activated kinase-1" "αPAK")) 
