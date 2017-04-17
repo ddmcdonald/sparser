@@ -48,24 +48,12 @@ contextual-description of the mention to the resulting interpretation.
 be the item itself.
 Return the contextual interpretation of the item."))
 
-(defmethod interpret-in-context ((item symbol))
-  item)
-
-(defmethod interpret-in-context ((item word))
-  item)
-
-(defmethod interpret-in-context ((item polyword))
-  item)
-
-(defmethod interpret-in-context ((item number))
+(defmethod interpret-in-context (item)
   item)
 
 (defmethod interpret-in-context ((c category))
   "This may get more complex, so that e.g. protein categories may be interpreted metonymically as complexes..."
   c)
-
-(defmethod interpret-in-context ((v lambda-variable))
-  v)
 
 (defmethod interpret-in-context ((i individual))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
@@ -94,7 +82,7 @@ Return the contextual interpretation of the item."))
       ;; mention was already contextually interpreted --
       ;;  this happens with conjunction distribution/expansion
       ;;  (MAY NO LONGER BE TRUE)
-      (contextual-interpretation mention)
+      (contextual-description mention)
 
       (let* ((base (base-description mention))
              (re-interpretation
@@ -109,14 +97,9 @@ Return the contextual interpretation of the item."))
                  (reinterpret-collection-with-modifiers mention))
                 ((is-pronoun? base)
                  (let ((interpretation (interpret-pronoun-in-context mention)))
-                   (if interpretation
-                       (car interpretation)
-                       (base-description mention))))
+                   (or (car interpretation) base)))
                 (t
-                 (reinterp-item-using-bindings mention)
-                 ;; not sure what this was for
-                 ;;(expand-interpretation-in-context-if-needed mention)
-                 ))))
+                 (reinterp-mention-using-bindings mention)))))
         (declare (special re-interpretation))
         (setf (contextual-description mention) re-interpretation)
         re-interpretation)))
@@ -186,6 +169,9 @@ where it regulates gene expression.")
                    :key #'car)
      return it))
 
+(defun find-dependency (name dependencies)
+  (loop for vv in dependencies when (eq (var-name (car vv)) name) do (return (second vv))))
+
 (defun reinterpret-collection-with-modifiers (mention)
   (let ((bindings (dependencies mention)))
     (or
@@ -193,69 +179,57 @@ where it regulates gene expression.")
      (when (not (is-basic-collection? (base-description mention)))
        (base-description mention))
      (reinterp-list-using-bindings
-      (loop for item in (second (assoc 'items bindings))
-            as re-interp = (interpret-context item)
-            when re-interp
-            nconc
-              (if (is-basic-collection? re-interp)
-                  (copy-list (value-of 'items re-interp))
-                  (list re-interp)))
-      (loop for (var val) in bindings
-            unless (member var '(items type number))
-            collect
-              (progn
-                (when (and (equal val '(nil))
-                           *error-on-list-nil*)
-                  (error "value of a collection item is (NIL) -- check what causes this,~% in ~s~%"
-                         (sentence-string *sentence-in-core*)))
-                (list var
-                      (interpret-in-context val))))))))
+      (loop for item in (find-dependency 'items bindings)
+            collect (if (typep item 'discourse-mention)
+                        (reinterp-mention-using-bindings item)
+                        item))
+      bindings))))
 
-(defun reinterp-item-using-bindings (mention)
-  ;;xx
-  (let ((interp (dli-ref-cat (base-description mention))))
+(defun reinterp-mention-using-bindings (mention)
+  (let ((interp (base-description mention)))
     (cond 
           ((and (individual-p interp)
                 (itypep interp 'collection)
                 (not (is-basic-collection? interp)))
            interp)
           ;; this allows for creation of new collections by distribution of internal collections
-          (t (reinterp-list-using-bindings (list interp)
+          (t (reinterp-list-using-bindings (list (dli-ref-cat interp))
                                            (dependencies mention))))))
 
-(defun reinterp-list-using-bindings (initial-interps bindings)
-  (let ((interps initial-interps))
-    (loop for (var val) in (reverse bindings) ;; the value of indiv-old-binds is created by PUSH operations -- it is in reverse order!
-       do
-	 (let* ((ival (interpret-in-context val)))
-	   (declare (special ival))
-	   (setq interps
-		 (loop for i in interps
-                    when i
-		    nconc
-		      (if (is-basic-collection? ival)
-			  ;; This is the code that does a "distribution" of conjunctions
-			  (if (eq var 'predication) ;; here the conjunction is taken as joint assertion
-			      (loop for c in (value-of 'items ival)
-                                   when i
-				 do
-				   (setq i (bind-dli-variable var c i))
-				 finally (return (list i)))
-			      ;; below, the conjunction is treated as alternatives
-			      (loop for c in (value-of 'items ival)
-				 collect
-				   (let ((bound-val (bind-dli-variable var c i)))
-				     (when (null bound-val)
-                                       (error "bad conjunction distribution"))
-				     bound-val)))
-			  (list (bind-dli-variable var ival i)))))))
-    (cond ((cdr interps) ;; a collection
-	   (make-an-individual 'collection
-			       :items interps
-			       :number (length interps)
-			       :type (itype-of (car interps))))
-	  (t
-	   (car interps)))))
+(defun reinterp-list-using-bindings (interps bindings)
+  (loop for (var val) in (reverse bindings)
+        ;; the value of indiv-old-binds is created by PUSH operations -- it is in reverse order!
+        do
+          (let* ((ival (interpret-in-context val)))
+            (declare (special ival))
+            (setq interps
+                  (loop for i in interps
+                        when i
+                        nconc
+                          (cond ((eq (var-name var) 'family-members)
+                                 (list (bind-dli-variable var ival i)))
+                                ((is-basic-collection? ival)
+                                 ;; This is the code that does a "distribution" of conjunctions
+                                 (if (eq (var-name var) 'predication)
+                                     ;; here the conjunction is taken as joint assertion
+                                     (loop for c in (value-of 'items ival)
+                                           when i
+                                           do (setq i (bind-dli-variable var c i))
+                                           finally (return (list i)))
+                                     ;; below, the conjunction is treated as alternatives
+                                     (loop for c in (value-of 'items ival)
+                                           collect
+                                             (let ((bound-val (bind-dli-variable var c i)))
+                                               (when (null bound-val)
+                                                 (error "bad conjunction distribution"))
+                                               bound-val))))
+                                (t (list (bind-dli-variable var ival i))))))))
+  (if (cdr interps) ;; a collection
+      (make-an-individual 'collection
+                          :items interps
+                          :number (length interps)
+                          :type (itype-of (car interps)))
+      (car interps)))
 
 
 (defun is-basic-collection? (i)
@@ -321,54 +295,6 @@ where it regulates gene expression.")
   (when (individual-p item)
     (cdar (indiv-uplinks item))))
 
-;;; DELETED OBSOLETE AND CONFUSING CODE
-
-;;; ------ Handle interpretations that are elliptical or incomplete (determinable only in context)
-;;; If the base-description of an edge is more general (less completely specified) than some recent description
-;;;  it is often (always?) the case in journal articles that it is being used as an eliptical co-reference to the prior description, and
-;;;  should be replaced by that description
-
-(defun predication? (desc)
-  (loop for b in (indiv-bound-in desc)
-     thereis (eq 'predication (var-name (binding-variable b)))))
-
-(defun expand-interpretation-in-context-if-needed (dt var containing-mentions)
-  (declare (special dt var containing-mentions))
-  (let* ((mention (dt-mention dt))
-	 (edge (mention-source mention))
-	 (interp (contextual-interpretation mention))
-	 (spec-mentions (spec-mentions interp mention containing-mentions)))
-    (declare (special edge mention interp spec-mentions))
-    (when (or
-	   (cat-mention? mention 'preposition)
-	   (not (individual-p interp))
-	   ;;(not (is-maximal? mention))
-	   )
-      (return-from expand-interpretation-in-context-if-needed interp))
-    (cond
-      ((cdr spec-mentions)
-       (when *show-contextual-replacements*
-	 (format t "~%--- Suppressing contextual interpretation due to ~
-                    ambiguous interpretations of ~s in:~%~s~%"
-		 (or (note-surface-string edge)
-		     (sur-string interp))
-		 (sentence-string *sentence-in-core*)))
-       ;;(lsp-break "ambiguous")
-       interp)
-      (spec-mentions
-       (when *break-on-null-surface-strings*
-	 (when (null (note-surface-string edge)) (lsp-break "Null edge string")))
-       (when *show-contextual-replacements*
-	 (format t "~%(   ~s     ===>  ~s)~% in sentence:~%  ~s~%"
-		 (nl->space (or (note-surface-string edge) (sur-string interp)))
-		 (nl->space (or (when (edge-p (mention-source (car spec-mentions)))
-				  (sur-string (mention-source (car spec-mentions))))
-				(sur-string (base-description (car spec-mentions)))))
-		 (nl->space (sentence-string *sentence-in-core*))))
-       (setf (contextual-description (car dt))
-	     (contextual-interpretation (car spec-mentions))))
-      (t interp))))
-
 (defun replace-all (string part replacement &key (test #'char=))
   "Returns a new string in which all the occurences of the part 
 is replaced with replacement."
@@ -382,7 +308,7 @@ is replaced with replacement."
                            :start old-pos
                            :end (or pos (length string)))
           when pos do (write-string replacement out)
-       while pos)))
+          while pos)))
 
 (defparameter *nl-str* "
 ")
@@ -390,41 +316,4 @@ is replaced with replacement."
 (defun nl->space (str)
   (replace-all str *nl-str* " "))
 
-(defun spec-mentions (c c-mention containing-mentions)
-  (declare (special c c-mention containing-mentions))
-  (let ((specializations
-	 (remove-if #'predication?
-		    (all-mentioned-specializations c c-mention containing-mentions)))
-	spec-mentions)
-    (declare (special specializations spec-mentions))
-    (loop for s in specializations
-       unless (np-containing-mention? s c-mention)
-       do (loop for m in (mention-history s)
-	     ;;when (is-maximal? m)  we now only have maximal mentions in the list
-	     do (push m  spec-mentions)))
-    spec-mentions))
 
-(defun np-containing-mention? (s mention)
-  (loop for m in (mention-history s)
-     thereis
-       (np-containing-edge? (mention-source mention)
-			    (mention-source m))))
-
-(defun np-containing-edge? (edge np-edge)
-  (or (eq edge np-edge)
-      (and (edge-p np-edge)
-	   (or
-	    (np-containing-edge? edge (edge-left-daughter np-edge))
-	    (np-containing-edge? edge (edge-right-daughter np-edge))))))
-
-(defun np-head-edge? (edge np-edge)
-  (or (eq edge np-edge)
-      (and (edge-p np-edge)
-	   (np-head-edge? edge (edge-right-daughter np-edge)))))
-
-
-;;; Code to integrate with Spire
-
-(defgeneric expand-krisp (indiv)
-  (:method-combination or)
-  (:method or (indiv) (declare (ignore indiv))))
