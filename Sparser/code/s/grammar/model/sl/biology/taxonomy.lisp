@@ -134,7 +134,7 @@
           (preparation preparation)
           (location non-cellular-location)
           (cellular-location cellular-location)
-          (species species) ;; human? mouse?
+          (organism organism) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
           (excluding biological) ;; nucleotide-free Ras but not GTP-loaded Ras
@@ -154,12 +154,13 @@
      :in non-cellular-location
      :in organ
      :in preparation
-     :in species
+     :in organism
      :m cellular-location
      :m non-cellular-location
      :m cell-type
      :m cell-line
      :m context
+     :m organism
      ;;:of variant
      :on cellular-location
      :such\ as examples
