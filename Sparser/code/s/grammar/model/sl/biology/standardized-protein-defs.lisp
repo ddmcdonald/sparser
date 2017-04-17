@@ -6101,7 +6101,7 @@
 (define-protein "UP:Q13126" ("MTAP" "q13126" "methylthioadenosine phosphorylase")) 
 (define-protein "UP:Q13127" ("neural-restrictive silencer factor" "q13127" "RE1 silencing transcription factor" "RE1-silencing transcription factor" "REST" "REST_HUMAN" "x2 box repressor" "nrsf")) 
 (define-protein "UP:Q13129" ("q13129" "rlf" "rearranged L-myc fusion")) 
-(define-protein "UP:Q13131" ("AAPK1_HUMAN" "AMPK1" "PRKAA1" "q13131")) 
+(define-protein "Q13131" ("AAPK1_HUMAN" "AMPK1" "PRKAA1" "5'-AMP-activated protein kinase catalytic subunit alpha-1" "AMPK subunit alpha-1" "AMPK alpha-1" "AMPK alpha 1" "Acetyl-CoA carboxylase kinase" "ACACA kinase" "HMGCR kinase"))
 (define-protein "UP:Q13133" ("LXR-a" "LXRA" "Liver X receptor alpha" "NR1H3" "NR1H3_HUMAN" "Nuclear receptor subfamily 1 group H member 3" "Oxysterols receptor LXR-alpha" "q13133" "q13133-1" "q13133-2" "RLD-1" "liver X receptor-alpha" "lxr" "nuclear receptor subfamily 1 group H member 3" "PROTEIN-REFERENCE1147" "PROTEIN-REFERENCE1161" "PROTEIN-REFERENCE6939" "PROTEIN14823")) 
 (define-protein "UP:Q13136" ("LAR-interacting protein 1" "LIP-1" "LIP.1" "LIPA1_HUMAN" "liprin-alpha-1" "liprin-alpha1" "PPFIA1" "PTPRF interacting protein alpha 1" "PTPRF-interacting protein alpha-1" "protein tyrosine phosphatase receptor type f polypeptide-interacting protein alpha-1" "q13136" "f polypeptide (PTPRF)" "interacting protein (liprin)" "protein tyrosine phosphatase" "ptprf" "receptor type" "PROTEIN10378")) 
 (define-protein "UP:Q13137" ("NDP52" "ndp52" "q13137" "calcium binding and coiled-coil domain 2")) 
