@@ -637,14 +637,16 @@
 
 (noun "forster resonance energy transfer" :super bio-method)
 
-(noun "fragment" :super protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
+(define-category fragment :specializes protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
       :binds ((whole bio-entity)
               ;; bio-scalar is for "a  fragment of the same mass as ..."
               (measure (:or measurement bio-scalar)))
       :realization
-      (:noun "fragment"
+      (:noun ("fragment" "subunit")
              :of whole
              :of measure))
+
+
 
 ;; keyword: (ive ADJ) 
 
