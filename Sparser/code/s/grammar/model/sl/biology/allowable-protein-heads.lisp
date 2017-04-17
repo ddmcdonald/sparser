@@ -7749,7 +7749,7 @@
             "NEXT1 Pro2514Argfs*4" "NEXT1 Q2395*" "NEXT1 Q2440*" "NEXT2" "NEXT3" "NEXT4"
             "NF-1X" "NF-25" "NF-A1" "NF-AT" "NF-AT4" "NF-ATc" "NF-ATc1" "NF-ATp" "NF-E2"
             "NF-E2-related factor 2" "NF-I/A" "NF-I/B" "NF-I/C" "NF-I/X" "NF-IL-6"
-            "NF-IL6" "NF-L" "NF-M" "NF-Y" "NF-YA" "NF-YB" "NF-YC" "NF-kB"
+            "NF-IL6" "NF-L" "NF-M" "NF-Y" "NF-YA" "NF-YB" "NF-YC" "NF-kB" "NF-kappaB"
             "NF-kB inducing kinase" "NF-kB2" "NF-kappa-B essential modulator"
             "NF-kappa-B inhibitor epsilon" "NF-kappa-B p100" "NF-kappaB"
             "NF-kappaB Inhibitor" "NF-kappaB inhibitor" "NF-kappaB inhibitor alpha"

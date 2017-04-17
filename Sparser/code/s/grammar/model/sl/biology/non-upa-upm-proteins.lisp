@@ -3946,7 +3946,7 @@
 (define-protein "NCIT:C94298" ("NFKB1" "NFkappaB")) 
 (define-protein "NCIT:C94298" ("NFKB1" "ebp1")) 
 (define-protein "NCIT:C94298" ("Ebp1" "NFKB1")) 
-(define-protein "NCIT:C94298" ("NF-kappab" "NFKB1" "NFkappaB")) 
+(define-protein "NCIT:C94298" ("NF-kappab" "NFKB1" "NFkappaB" "NF-kappaB")) 
 (define-protein "NCIT:C94298" ("NF-κB" "NFKB1")) 
 (define-protein "NCIT:C94300" ("EBP1" "nuclear factor NF-kappa-B p105 subunit")) 
 (define-protein "NCIT:C94600" ("BCR-ABL fusion gene" "Bcr–Abl")) 
