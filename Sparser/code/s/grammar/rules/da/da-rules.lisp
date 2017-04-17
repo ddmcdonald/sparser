@@ -480,6 +480,26 @@
 (defun attach-comma-appositive-np-under-s (s comma np)
   (attach-appositive-np-under-s s comma np (pos-edge-ends-at np)))
 
+(define-debris-analysis-rule attach-comma-appositive-np-under-vp+ing
+  :pattern ( vp+ing "," np)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-comma-appositive-np-under-s
+           first second third))
+
+(define-debris-analysis-rule attach-comma-appositive-np-under-vp+ed
+  :pattern ( vp+ed "," np)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-comma-appositive-np-under-s
+           first second third))
+
+(define-debris-analysis-rule attach-comma-appositive-np-under-vp
+  :pattern ( vp "," np)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-comma-appositive-np-under-s
+           first second third))
 
 (define-debris-analysis-rule attach-comma-appositive-proper-noun-under-s
   :pattern ( s "," proper-noun)
