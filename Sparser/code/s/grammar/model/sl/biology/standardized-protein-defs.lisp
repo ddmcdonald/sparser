@@ -2308,7 +2308,7 @@
 (define-protein "UP:P06326" ("HV107_HUMAN" "Ig heavy chain V-I region Mot" "p06326" "PROTEIN-REFERENCE4429" "PROTEIN16486")) 
 (define-protein "UP:P06331" ("HV209_HUMAN" "HV434_HUMAN" "IGHV4-34" "Ig heavy chain V-II region ARH-77" "p06331" "immunoglobulin heavy variable 4-34" "PROTEIN-REFERENCE4430" "PROTEIN16490")) 
 (define-protein "UP:P06340" ("2DOA_HUMAN" "DO alpha" "DOA_HUMAN" "HLA class II histocompatibility antigen, DO alpha chain precursor" "HLA-D0-alpha" "HLA-DNA" "HLA-DOA" "HLA-DZA" "p06340" "PROTEIN-REFERENCE8434" "PROTEIN17636")) 
-(define-protein "UP:P06396" ("AGEL" "actin-depolymerizing factor" "brevin" "GELS_HUMAN" "GSN" "p06396" "gelsolin")) 
+(define-protein "UP:P06396" ("AGEL" "actin-depolymerizing factor" "brevin" "GELS_HUMAN" "GSN" "p06396" "gelsolin"))
 (define-protein "UP:P06400" ("p06400" "RB" "RB1" "RB_HUMAN" "rb" "Rb" "p105-Rb" "pRb" "pp110" "tumor suppressor retinoblastoma protein")) 
 (define-protein "UP:P06401" ("Nuclear receptor subfamily 3 group C member 3" "p06401" "PRGR_HUMAN" "PRs" "PgR" "progesterone" "progesterone receptor")) 
 (define-protein "UP:P06454" ("p06454" "PTMA" "PTMA_HUMAN" "prothymosin alpha" "prothymosin" "prothymosin, alpha" "prothymosin-alpha")) 

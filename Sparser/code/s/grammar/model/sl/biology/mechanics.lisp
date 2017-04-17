@@ -460,7 +460,12 @@ the process.
       :synonyms (loop for id in IDS
                       unless
                         (or (equal id bpid)
-                            (eq (length id) 2) ;; (and (eq (length id) 2) (print id))
+                            (when (eq (length id) 2)
+                              (if (equal id (string-downcase id))
+                                  t
+                                  (progn (print id)
+                                         nil)))
+                           ;; (eq (length id) 2) ;; (and (eq (length id) 2) (print id))
                             (and (search ":" id)
                                  (not (search " " id))))
                       collect id)
