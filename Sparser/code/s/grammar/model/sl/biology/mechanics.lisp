@@ -463,7 +463,7 @@ the process.
                             (when (eq (length id) 2)
                               (if (equal id (string-downcase id))
                                   t
-                                  (progn (print id)
+                                  (progn ;; (print id)
                                          nil)))
                            ;; (eq (length id) 2) ;; (and (eq (length id) 2) (print id))
                             (and (search ":" id)
