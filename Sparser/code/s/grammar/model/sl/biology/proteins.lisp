@@ -479,7 +479,7 @@ filligre may be used to distinguish them, etc.
 (noun "histone 2B" :super protein)
 
 
-(def-bio "SAPK" protein) ;; class of stress activated proteins
+;;(def-bio "SAPK" protein) ;; class of stress activated proteins
 ;;(def-bio "ASPP2" protein),nameprotein 
 (def-bio "GST-ASPP2" protein)
 (def-bio "phospho-ASPP2" protein)

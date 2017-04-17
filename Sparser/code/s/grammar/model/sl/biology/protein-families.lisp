@@ -15,6 +15,8 @@
 
 ;; Protein families
 
+(def-family "SAPK" :synonyms ("SAP kinase activity" "stress activated protein kinase" "stress=activated protein kinase" ) :identifier "GO:0016909" ) 
+
 (def-family "CDK" :synonyms ("cyclin dependent kinase" "cyclin-dependent kinase" "Cdks" "CDKs") :identifier "NCIT:C17767")	
 (def-family "14-3-3")
 (def-family "AMPK":synonyms ("AMP activated protein kinase"))
@@ -199,7 +201,7 @@
 (def-family "IFN-γ" :members ("UP:P01579" "UP:P15260")) 
 (def-family "IL13R" :members ("UP:P78552" "UP:Q14627")) 
 (def-family "INPP4B" :members ("UP:O15327" "UP:Q9BS68")) 
-(def-family "IRS-1" :members ("UP:P35568" "UP:Q28224") :synonyms ("IRS1")) 
+(def-family "IRS-1" :members ("UP:P35568" "UP:Q28224") :synonyms ("IRS1" "insulin receptor substrate-1" "insulin receptor substrate 1")) 
 (def-family "Inhibitor of nuclear factor kappa-B kinase subunit beta" :members ("UP:O14920" "UP:Q95KV0")) 
 (def-family "KCIP-1" :members ("UP:P31946" "UP:P61981" "UP:P63104") :synonyms ("Protein kinase C inhibitor protein 1")) 
 (def-family "KLK3" :members ("UP:P03952" "UP:P07288")) 

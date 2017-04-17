@@ -548,7 +548,7 @@
 (define-protein "GO:0016887" ("ATPase activity" "ATPases")) 
 (define-protein "GO:0016887" ("AT-Pase" "ATPase activity")) 
 (define-protein "GO:0016909" ("SAP kinase activity" "SAPKs")) 
-(define-protein "GO:0016909" ("SAP kinase activity" "SAPK")) 
+;;(define-protein "GO:0016909" ("SAP kinase activity" "SAPK")) 
 (define-protein "GO:0019107" ("myristoyltransferase" "myristoyltransferase activity")) 
 (define-protein "GO:0019213" ("deacetylase activity" "deacetylases")) 
 (define-protein "GO:0019767" ("IgE receptor activity" "IgE-receptor")) 

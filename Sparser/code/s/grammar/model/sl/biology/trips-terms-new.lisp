@@ -3479,7 +3479,6 @@
 (def-bio "Caski" cell-line :long "CaSki" :identifier "EFO:0006549")
 (def-bio "Casodex" drug :long "bicalutamide" :identifier "NCIT:C1599")
 (def-bio "Cdc" cell-type :long "conventional dendritic cell" :identifier "CO:0000990")
-(def-bio "Cdk" cell-line :long "DK1 [Tursiops]" :identifier "CVCL:R774")
 (def-bio "Ceramide" molecule :long "ceramide" :identifier "CHEBI:17761")
 (def-bio "Chaetocin" drug :long "chaetocin" :identifier "MESH:C002511")
 (def-bio "Chi" unit-of-measure :long "mole fraction" :identifier "UO:0000076")

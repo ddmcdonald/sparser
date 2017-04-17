@@ -3203,7 +3203,7 @@
     (    "ONT:GENE-PROTEIN" --    ("S6Ks" "ONT:GENE-PROTEIN" :ID "NCIT:C84315" :NAME "RPS6KB1"))
     (    "ONT:GENE-PROTEIN" --    ("SAFB1" "ONT:GENE-PROTEIN" :ID "UP:Q15424" :NAME "Scaffold attachment factor B1"))
     (    "ONT:GENE-PROTEIN" --    ("SAP" "ONT:GENE-PROTEIN" :ID "UP:P02743" :NAME "Serum amyloid P-component"))
-    (    "ONT:GENE-PROTEIN" --    ("SAPK" "ONT:GENE-PROTEIN" :ID "GO:0016909" :NAME "SAP kinase activity"))
+    ;;(    "ONT:GENE-PROTEIN" --    ("SAPK" "ONT:GENE-PROTEIN" :ID "GO:0016909" :NAME "SAP kinase activity"))
     (    "ONT:GENE-PROTEIN" --    ("SAPK3" "ONT:GENE-PROTEIN" :ID "NCIT:C51217" :NAME "MAPK12"))
     (    "ONT:GENE-PROTEIN" --    ("SAPK4" "ONT:GENE-PROTEIN" :ID "NCIT:C51218" :NAME "MAPK13"))
     (    "ONT:GENE-PROTEIN" --    ("SBF" "ONT:GENE-PROTEIN" :ID "XFAM:PF01758.14" :NAME "SBF"))
