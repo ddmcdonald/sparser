@@ -26,6 +26,7 @@
       (error "The object ~a should should have a 'name' binding ~
              but doesn't.~%Probably an issue with the caller." n))
     (typecase w/pw
+      (string w/pw)
       (word (word-pname w/pw))
       (polyword (pw-pname w/pw))
       (individual
