@@ -1218,8 +1218,13 @@
     ;; so that the rule doesn't go through.
     (cond
       (*subcat-test*
-       (or (can-fill-vp-subject? vp subj) ;; case for S not reduced relative
-           (can-fill-vp-object? vp subj)))
+       (and
+        ;; make sure this is a non-trivial relative clause (not just the verb)
+        (loop for binding in (indiv-old-binds vp)
+              thereis (not (member (var-name (binding-variable binding))
+                                   '(past raw-text))))
+        (or (can-fill-vp-subject? vp subj) ;; case for S not reduced relative
+            (can-fill-vp-object? vp subj))))
       ((can-fill-vp-subject? vp subj)
        (if (transitive-vp-missing-object? vp)
            (revise-parent-edge :form category::transitive-clause-without-object))
