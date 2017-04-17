@@ -683,6 +683,15 @@ it is created from N-terminus to C-terminus.|#
 (def-synonym binding-domain ;; as in "metal-binding center"    
     (:noun ("center" "centre")))
 
+(define-category linker-region :specializes region-of-molecule
+  :realization
+  (:noun ("linker region" "linker segment" "linker")))
+
+(define-category bc-domain ;; as in "ACC2 BC domain"
+    :specializes protein-domain
+    :realization
+    (:noun ("BC domain")))
+
 (define-category metal-binding-domain :specializes binding-domain
       :realization 
       (:noun ("metal-binding center" "metal center" "metal-binding centre" "metal centre")))
