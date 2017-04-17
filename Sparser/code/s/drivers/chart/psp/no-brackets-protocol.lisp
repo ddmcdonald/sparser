@@ -446,60 +446,62 @@
 (defun indra-post-process (mentions sentence)
   (loop for mention in mentions
         ;;when (or
-        do
-          (let ((ref (base-description mention)))
-            (declare (special ref))
-            (cond  ((and (or (itypep ref 'bio-activate)
-                             (itypep ref 'bio-inactivate)
-                             (itypep ref 'inhibit))
-                         (value-of 'object ref))
-                    (push-sem->indra-post-process
-                     mention
-                     sentence
-                     (eq (value-of 'object ref) '*lambda-var*)
-                     ))
-                   ((and (itypep ref 'inhibit)
-                        (value-of 'affected-process ref))
-                    (push-sem->indra-post-process
-                     mention
-                     sentence
-                     (eq (value-of 'affected-process ref) '*lambda-var*)
-                     ))
-                   ((and (itypep ref 'recruit)
-                         (value-of 'object ref))
-                    (push-sem->indra-post-process
-                     mention
-                     sentence
-                     (eq (value-of 'object ref) '*lambda-var*)
-                     ))
-                   ((and (or (itypep ref 'translocation)
-                             (itypep ref 'import)
-                             (itypep ref 'export))
-                         (or (value-of 'object ref)
-                             (value-of 'moving-object ref)
-                             (value-of 'moving-object-or-agent-or-object ref)))
-                    (push-sem->indra-post-process
-                     mention
-                     sentence
-                     (or (eq (value-of 'object ref) '*lambda-var*)
-                         (eq (value-of 'moving-object ref) '*lambda-var*)
-                         (eq (value-of 'moving-object-or-agent-or-object ref) '*lambda-var*))
-                     ))
-                   ((and (or
-                          (itypep ref 'post-translational-modification)
-                          (and (is-basic-collection? ref)
-                               (or ;;(lsp-break)
-                                (itypep (value-of 'type ref)
-                                        'post-translational-modification))))
-                         (or (value-of 'substrate ref)
-                             (value-of 'agent-or-substrate ref)
-                             (value-of 'site ref)))
-                    (push-sem->indra-post-process
-                     mention
-                     sentence
-                     (or (eq (value-of 'substrate ref) '*lambda-var*)
-                         (eq (value-of 'agent-or-substrate ref) '*lambda-var*)
-                         (eq (value-of 'site ref) '*lambda-var*))))))))
+        do (indra-post-process-mention mention sentence)))
+
+(defun indra-post-process-mention (mention sentence)
+  (let ((ref (base-description mention)))
+    (declare (special ref))
+    (cond  ((and (or (itypep ref 'bio-activate)
+                     (itypep ref 'bio-inactivate)
+                     (itypep ref 'inhibit))
+                 (value-of 'object ref))
+            (push-sem->indra-post-process
+             mention
+             sentence
+             (eq (value-of 'object ref) '*lambda-var*)
+             ))
+           ((and (itypep ref 'inhibit)
+                 (value-of 'affected-process ref))
+            (push-sem->indra-post-process
+             mention
+             sentence
+             (eq (value-of 'affected-process ref) '*lambda-var*)
+             ))
+           ((and (itypep ref 'recruit)
+                 (value-of 'object ref))
+            (push-sem->indra-post-process
+             mention
+             sentence
+             (eq (value-of 'object ref) '*lambda-var*)
+             ))
+           ((and (or (itypep ref 'translocation)
+                     (itypep ref 'import)
+                     (itypep ref 'export))
+                 (or (value-of 'object ref)
+                     (value-of 'moving-object ref)
+                     (value-of 'moving-object-or-agent-or-object ref)))
+            (push-sem->indra-post-process
+             mention
+             sentence
+             (or (eq (value-of 'object ref) '*lambda-var*)
+                 (eq (value-of 'moving-object ref) '*lambda-var*)
+                 (eq (value-of 'moving-object-or-agent-or-object ref) '*lambda-var*))
+             ))
+           ((and (or
+                  (itypep ref 'post-translational-modification)
+                  (and (is-basic-collection? ref)
+                       (or ;;(lsp-break)
+                        (itypep (value-of 'type ref)
+                                'post-translational-modification))))
+                 (or (value-of 'substrate ref)
+                     (value-of 'agent-or-substrate ref)
+                     (value-of 'site ref)))
+            (push-sem->indra-post-process
+             mention
+             sentence
+             (or (eq (value-of 'substrate ref) '*lambda-var*)
+                 (eq (value-of 'agent-or-substrate ref) '*lambda-var*)
+                 (eq (value-of 'site ref) '*lambda-var*)))))))
 
 
 (defparameter *show-indra-lambda-substitutions* nil)
