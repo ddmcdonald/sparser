@@ -654,6 +654,11 @@ sentences.
   (when *trace-early-rules-sweep* (tts))
   (do-early-rules-sweep-between (starts-at-pos sent) (ends-at-pos sent)))
 
+;; NEED TO FIND A WAY TO GENERALIZE THE TESTING OF EARLY RULES which is done
+;;  in a one-off way below
+;;  (not (and (itypep (edge-referent left-edge) 'amino-acid)
+;;                             (itypep (edge-referent right-edge) 'number)))
+
 (defun do-early-rules-sweep-between (start end)
   (when (not (eq start end))
     (let* ((left-edge (right-treetop-edge-at start))
@@ -663,7 +668,11 @@ sentences.
       (tr :early-rule-check-at start)
       (if (or (not (edge-p left-edge))
               (not (edge-p right-edge))
-              (pos-preceding-whitespace mid-pos))
+              (and
+               (pos-preceding-whitespace mid-pos)
+               (or (not (eq script :biology))
+                   (not (and (itypep (edge-referent left-edge) 'amino-acid)
+                             (itypep (edge-referent right-edge) 'number))))))
         (do-early-rules-sweep-between (where-tt-ends left-edge start) end)
         (else
           (multiple-value-setq (new-edge rule)
