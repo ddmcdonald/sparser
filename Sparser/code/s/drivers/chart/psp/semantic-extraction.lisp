@@ -801,9 +801,12 @@
        ;; the HOWCOMP acts (erroneously) as a basic-collection
        (value-of 'items (base-description m)))
       (loop for dep-pair in (dependencies m)
-            when (eq 'items (pname (dependency-pair-variable dep-pair)))
-            do (loop for v in (dependency-pair-value dep-pair)
-                     do (traverse-sem v fn)))
+            
+            do
+              (if  (eq 'items (pname (dependency-pair-variable dep-pair)))
+                   (loop for v in (dependency-pair-value dep-pair)
+                         do (traverse-sem v fn))
+                   (traverse-sem (dependency-pair-value dep-pair) fn)))
       (loop for dep-pair in (dependencies m)
             do (traverse-sem (dependency-pair-value dep-pair) fn))))
 
@@ -813,8 +816,12 @@
   (cond ((simple-number? i)
          (funcall fn (value-of 'value i)))
         ((is-basic-collection? i)
-         (loop for item in (value-of 'items i)
-                 do (traverse-sem item fn)))
+         (loop for b in (indiv-old-binds i)
+               do
+                 (if (eq (pname (binding-variable b)) 'items)
+                     (loop for item in (binding-value b)
+                           do (traverse-sem item fn))
+                     (traverse-sem b fn))))
         (t
          (loop for b in (indiv-old-binds i)
                do (traverse-sem b fn)))))
