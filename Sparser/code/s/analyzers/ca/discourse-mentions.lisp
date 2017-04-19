@@ -852,7 +852,7 @@ so we return the edge for the POBJ"
                                                      &aux (i (base-description m)))
   (cond ((simple-number? i)
          (space-prin1 (value-of 'value i) stream))
-        ((and *use-xml*
+        ((and (eq *semantic-output-format* :xml)
               *short-protein-xml*
               (itypep (base-description m) 'protein)
               (= (length (filter-bl i)) 2)
