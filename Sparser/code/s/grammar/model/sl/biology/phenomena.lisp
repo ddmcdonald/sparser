@@ -438,7 +438,7 @@
   (:verb "transphosphorylate" :noun "transphosphorylation"
    :etf (svo-passive)))
 
-(define-category hypersphosphorylate
+(define-category hyperphosphorylate
   :specializes phosphorylation-modification
   :instantiates self
   :realization
