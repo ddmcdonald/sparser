@@ -142,6 +142,7 @@ turn, doing a p"))
 |#
 
 (defmethod html-print-article-element ((s sentence) (phase (eql :before)))
+  (declare (special *colorized-sentence*))
   (format t "~a " (gethash s *colorized-sentence*))
   )
 

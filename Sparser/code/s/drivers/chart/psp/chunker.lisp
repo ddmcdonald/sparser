@@ -408,12 +408,12 @@
 (defun preceding-adverb-preceded-by-ng (edges)
   (and
    (loop for edge in edges thereis
-           (eq (edge-form edge) category::adverb))
+           (eq (cat-name (edge-form edge)) 'adverb))
    (loop for edge in edges thereis
            (let ((left (edge-just-to-left-of edge)))
              (and (edge-p left)
                   (or
-                   (and (eq (edge-form left)  category::adverb)
+                   (and (eq (cat-name (edge-form left))  'adverb)
                         (and (edge-p (edge-just-to-left-of left))
                              (ng-head? (edge-just-to-left-of left))))
                    (ng-head? (edge-just-to-left-of edge))))))))

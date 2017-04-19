@@ -16,6 +16,8 @@
 ;;;  a sentence, but then becomes the paragraph location as the edges
 ;;;  are recycled
 
+(in-package :sparser)
+
 (defvar *lattice-individuals-mentioned-in-paragraph* nil
   "List of mentions within the current paragraph. Most recent
    first. Mostly needed as a resource to 'long-term-ify' 
@@ -474,6 +476,7 @@
 
 
 (defun create-new-dependencies (new-bindings edges top-edge)
+  (declare (special **lambda-var**))
   (let ((deps
          (loop for b in new-bindings
                collect
@@ -876,6 +879,7 @@ so we return the edge for the POBJ"
 
 
 (defmethod small-binding-list ((m discourse-mention))
+  (declare (special **lambda-var**))
   (let ((bl (filter-bl m)))
     (and (null (cdr bl))
          (not (eq (dependency-value (car bl)) **lambda-var**))

@@ -1208,6 +1208,7 @@ applied to l, and values are values associated with that key example"
 (defparameter *break-on-hms-errors* nil)
 
 (defun test-hms-sentences (&key (n 1000)(start 0) (semantic-output-format nil)(save-output t))
+  (declare (special *semantic-output-format*))
   (when semantic-output-format (setq *semantic-output-format* semantic-output-format))
   (when save-output
     (init-hms-directory))
@@ -1254,9 +1255,9 @@ applied to l, and values are values associated with that key example"
         (loop for s in sents do (incf *hms-sent-count*)(qpp s))   
         (loop for s in sents as i from 0 do (incf *hms-sent-count*)(qepp s)))))
 
-
+(defvar *semantic-output-format*)
 (defun init-phase3-directory (&key (semantic-output-format *semantic-output-format*))
-  (setq *semantic-output-format* output-format)
+  (setq *semantic-output-format* semantic-output-format)
   (when (find-package :r3)
     (save-article-semantics
      (pathname

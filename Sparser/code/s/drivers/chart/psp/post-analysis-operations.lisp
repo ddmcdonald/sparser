@@ -64,7 +64,7 @@ Return the contextual interpretation of the item."))
   "This may get more complex, so that e.g. protein individuals may be interpreted metonymically as complexes..."
   s)
 
-(defconstant **lambda-var** '*lambda-var*)
+(defparameter **lambda-var** '*lambda-var*) ;; making it a constant doesn't seem to work
 (defparameter *error-on-list-nil* nil)
 
 (defmethod interpret-in-context ((items cons))

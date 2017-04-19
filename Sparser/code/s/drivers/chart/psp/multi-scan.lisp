@@ -217,6 +217,7 @@
    that it introduces an fsa. The chart is already populated
    with the words introduced by the pw sweep, so we don't need
    to do our own scans."
+  (declare (special *trace-sweep*))
   (tr :word-level-fsa-sweep start-pos end-pos)      
   (let* ((position-before start-pos)
          (ev (pos-starts-here start-pos))
@@ -266,6 +267,7 @@
    The most important cases are for words with hooks, such as
    parentheses or the apostrope of the possessive, as well as
    conjunctions."
+  (declare (special *trace-sweep*))
   (tr :word-level-completion-sweep)
   (let* ((position-before start-pos)
          (ev (pos-starts-here start-pos))
@@ -366,6 +368,7 @@ sentences.
       It then looks for any category fsas that are associated
    with a newly-instantiated edge (notably digit sequences)
    and follows those out to where the end."
+  (declare (special *trace-sweep*))
   (tr :terminal-edges-sweep)
   (carefully-walk-initial-chart
     (progn
@@ -650,6 +653,7 @@ sentences.
 ;; (trace-early-rules)
 
 (defun do-early-rules-sweep (sent)
+  (declare (special *trace-early-rules-sweep*))
   (tr :starting-early-rules-sweep)
   (when *trace-early-rules-sweep* (tts))
   (do-early-rules-sweep-between (starts-at-pos sent) (ends-at-pos sent)))

@@ -89,6 +89,7 @@
 
 ;; e.g. (set-paragraph-trace-hook "indented-pmc2171479.3.a.p3" '(*trace-fsas*))
 (defun set-paragraph-trace-hook (toc-id trace-flags)
+  (declare (special *trace-to-to-turn-on*))
   (setq *paragraph-to-trace* toc-id)
   (setq *trace-to-to-turn-on* trace-flags)
   (length trace-flags))

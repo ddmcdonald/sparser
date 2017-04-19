@@ -38,6 +38,7 @@
                                         (dir
                                          (or *default-article-semantics-path*
                                              (CURE-semantics-directory-pathname))))
+  (declare (special *indra-post-process*))
   (setq *semantic-output-format* output-format)
   (case *semantic-output-format* (:hms-json (setq *indra-post-process* (list t))))
   (save-article-semantics dir))
@@ -386,12 +387,13 @@
   (second dep))
 
 (defun write-sem-dependency (dep stream &optional (newline t))
+  (declare (special **lambda-var**))
   (let* ((var (dependency-variable dep))
          (val (dependency-value dep))
          (small (small-binding-list val)))
     (declare (special small))
     (if
-     (eq val '*lambda-var*)
+     (eq val **lambda-var**)
      (write-lambda-binding var stream)
      (else (start-var var stream newline)
            (if small
@@ -404,12 +406,13 @@
            (finish-var stream (not small))))))
 
 (defmethod write-sem ((binding binding) stream &optional (newline t))
+  (declare (special **lambda-var**))
   (let* ((var (binding-variable binding))
          (val (binding-value binding))
          (small (small-binding-list val)))
     (declare (special small))
     (if
-     (eq (binding-value binding) '*lambda-var*)
+     (eq (binding-value binding) **lambda-var**)
      (write-lambda-binding var stream)
      (else (start-var var stream newline)
            (if small
@@ -510,12 +513,13 @@
 (defmethod small-binding-list ((x lambda-variable)) t)
 
 (defmethod small-binding-list ((i individual))
+  (declare (special **lambda-var**))
   (let ((bl (filter-bl i)))
     (and (null (cdr bl))
          (or (not (binding-p (car bl)))
              (typecase (binding-value (car bl))
                ((or category string number symbol word polyword)
-                (not (eq (binding-value (car bl)) '*lambda-var*)))
+                (not (eq (binding-value (car bl)) **lambda-var**)))
                (t nil))))))
 
 
