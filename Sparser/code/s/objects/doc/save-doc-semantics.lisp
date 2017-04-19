@@ -17,8 +17,8 @@
 
 (defparameter *sentence-results-stream* nil)
 
-(defparameter *use-xml* nil
-  "produces XML output for the article")
+(defparameter *semantic-output-format* nil
+  "can be :xml, :lisp, :hms-json or nil")
 
 (defun CURE-semantics-directory-pathname ()
   (when (find-package :r3)
@@ -33,13 +33,19 @@
 (defparameter *default-article-semantics-path*
   (CURE-semantics-directory-pathname))
   
+(defun save-article-semantics-format (output-format
+                                      &optional
+                                        (dir
+                                         (or *default-article-semantics-path*
+                                             (CURE-semantics-directory-pathname))))
+  (setq *semantic-output-format* output-format)
+  (case *semantic-output-format* (:hms-json (setq *indra-post-process* (list t))))
+  (save-article-semantics dir))
 
 (defun save-article-semantics (&optional                                 
-                                 (write-xml-file? *use-xml*)
                                  (dir
                                   (or *default-article-semantics-path*
                                       (CURE-semantics-directory-pathname))))
-  (setq *use-xml* write-xml-file?)
   (setq *article-semantics-directory* dir))
 
 (defun dont-save-article-semantics ()
@@ -52,29 +58,30 @@
     (cond ((symbolp *article-semantics-directory*)
            ;; either T or NIL
            (setq *sentence-results-stream* *article-semantics-directory*))
-         (t
+          (t
            (let* ((file-path (make-semantics-filename article)))
              (setq *sentence-results-stream*
                    (open file-path
                          :direction :output
                          :if-exists :supersede
                          :if-does-not-exist :create))
-             (when *use-xml*
-               (format *sentence-results-stream*
-                       "<?xml version=\"1.0\" encoding=\"~a\"?>~%<article ~aid=~s>~%"
-                       (stream-external-format *sentence-results-stream*)
-                       (if (stringp article)
-                           (cond ((equal 0 (search "PMC" article)) "pmc")
-                                 ((equal 0 (search "PM" article)) "pm")
-                                 (t "pmc"))
-                           "")
-                       (if (stringp article)
-                           (cond ((equal 0 (search "PMC" article)) (subseq article 3))
-                                 ((equal 0 (search "PM" article)) (subseq article 2))
-                                 ((search "SENTENCES" article)
-                                  (subseq article 6 (- (search "SENTENCES" article) 1)))
-                                 (t article))
-                           (pname (name article)))))
+             (case *semantic-output-format*
+               (:xml
+                (format *sentence-results-stream*
+                        "<?xml version=\"1.0\" encoding=\"~a\"?>~%<article ~aid=~s>~%"
+                        (stream-external-format *sentence-results-stream*)
+                        (if (stringp article)
+                            (cond ((equal 0 (search "PMC" article)) "pmc")
+                                  ((equal 0 (search "PM" article)) "pm")
+                                  (t "pmc"))
+                            "")
+                        (if (stringp article)
+                            (cond ((equal 0 (search "PMC" article)) (subseq article 3))
+                                  ((equal 0 (search "PM" article)) (subseq article 2))
+                                  ((search "SENTENCES" article)
+                                   (subseq article 6 (- (search "SENTENCES" article) 1)))
+                                  (t article))
+                            (pname (name article))))))
              *sentence-results-stream*)))))
 
 (defparameter *show-semantics-output-name* nil)
@@ -82,8 +89,9 @@
   (when (and *article-semantics-directory*
              (streamp *sentence-results-stream*)
              (open-stream-p *sentence-results-stream*))
-    (when *use-xml*
-      (format *sentence-results-stream* "</article>~%"))
+    (case *semantic-output-format*
+      (:xml
+       (format *sentence-results-stream* "</article>~%")))
     (when *show-semantics-output-name*
       (format t "Semantics written to ~s.~%" (pathname *sentence-results-stream*)))
     (close *sentence-results-stream*))
@@ -99,7 +107,11 @@
                                       (pathname (pathname-name article))
                                       (t (string (name article))))
                                     "-semantics")
-                 :type (if *use-xml* "xml" "lisp")
+                 :type (case *semantic-output-format*
+                         (:xml "xml")
+                         (:lisp "lisp")
+                         (:hms-json "json")
+                         (t (lsp-break "bad output format specified")))
                  :defaults
                  (or *article-semantics-directory*
                      (asdf:system-relative-pathname
@@ -231,9 +243,10 @@
   (start-element "interpretation" stream)
   (push-indentation)
   (start-element "sentence-text" stream)
-  (if *use-xml*
+  (case *semantic-output-format*
+    (:xml
       (write-sem (sentence-string s) stream)
-      (format stream " ~s" (sentence-string s)))
+      (format stream " ~s" (sentence-string s))))
   (finish-element "sentence-text" stream nil)
   (pop-indentation)
   (loop for tt in (all-tts (starts-at-pos s) (ends-at-pos s))
@@ -255,7 +268,7 @@
 (defmethod write-sem ((i individual) stream &optional (newline t))
   (cond ((simple-number? i)
          (space-prin1 (value-of 'value i) stream))
-        ((and *use-xml*
+        ((and (eq *semantic-output-format* :xml)
               *short-protein-xml*
               (itypep i 'protein)
               (= (length (filter-bl i)) 2)
@@ -287,21 +300,24 @@
 
 (defmethod write-sem ((w string) stream &optional (newline t))
   (declare (ignore newline))
-  (if *use-xml*
-      (format stream "~a"
-              (with-output-to-string (s-stream) (prin-escaped w s-stream)))
-    (format stream " ~s" w)))
+  (case *semantic-output-format*
+    (:xml
+     (format stream "~a"
+             (with-output-to-string (s-stream) (prin-escaped w s-stream))))
+    (t
+     (format stream " ~s" w))))
 
 (defmethod write-sem ((w word) stream &optional (newline t))
   (write-sem (pname w) stream newline))
 (defmethod write-sem ((w polyword) stream &optional (newline t))
   (write-sem (pname w) stream newline))
 (defmethod write-sem ((w symbol) stream &optional (newline t))
-  (cond (*use-xml*
-         (prin-escaped (string-downcase (pname w)) stream))
-        ((search " " (pname w))
-         (format stream " ~s" w))
-        (t (format stream " ~s" (string-downcase (pname w))))))
+  (case *semantic-output-format*
+    (:xml
+     (prin-escaped (string-downcase (pname w)) stream))
+    (t (if (search " " (pname w))
+           (format stream " ~s" w)
+           (format stream " ~s" (string-downcase (pname w)))))))
 (defmethod write-sem ((w number) stream &optional (newline t))
   (declare (ignore newline))
   (format stream " ~a" w))
@@ -325,33 +341,35 @@
   (finish-cat stream nil))
 
 (defun write-lambda-binding (variable stream &optional newline)
-  (if *use-xml*
-      (let ((name (string-downcase (pname variable))))
-        (start-lambda-var "var" name stream newline)
-        (write-attribute 'lambda-variable "true" stream)
-        (finish-lambda-var "var" name stream newline))
-      (else
-        (start-var variable stream newline)
-        (format stream " *lambda-var*")
-        (finish-var stream newline))))
+  (case *semantic-output-format*
+    (:xml
+     (let ((name (string-downcase (pname variable))))
+       (start-lambda-var "var" name stream newline)
+       (write-attribute 'lambda-variable "true" stream)
+       (finish-lambda-var "var" name stream newline)))
+    (t
+     (start-var variable stream newline)
+     (format stream " *lambda-var*")
+     (finish-var stream newline))))
 
 (defun start-lambda-var (element name stream &optional (newline t)
                          &aux (name (if (symbolp name)
                                         name
                                         (string-downcase name))))
-  (cond (*use-xml*
-         (emit-line-continue stream
-                             (format nil "<~a name=\"" element))
-         (prin-escaped name stream)
-         (emit-line-continue stream "\""))
-        (newline
+  (case *semantic-output-format*
+    (:xml
+     (emit-line-continue stream
+                         (format nil "<~a name=\"" element))
+     (prin-escaped name stream)
+     (emit-line-continue stream "\""))
+    (t
+     (if newline
          (if (symbolp name)
              (emit-line stream (format nil " (~s" name))
-             (emit-line stream (concatenate 'string " (" name))))
-        (t
+             (emit-line stream (concatenate 'string " (" name)))
          (if (symbolp name)
              (emit-line-continue stream (format nil " (~s" name))
-             (emit-line-continue stream (concatenate 'string " (" name))))))
+             (emit-line-continue stream (concatenate 'string " (" name)))))))
 
 (defmethod print-binding-list ((i individual) stream &optional (newline t))
   (when newline (push-indentation))
@@ -405,14 +423,14 @@
 
 
 (defun start-element (element stream &optional (newline t))
-  (let ((start (format nil "~:[(~a~;<~a>~]" *use-xml* element)))
+  (let ((start (format nil "~:[(~a~;<~a>~]" (eq *semantic-output-format* :xml) element)))
     (if newline
       (emit-line stream start)
       (emit-line-continue stream start))))
 
 (defun finish-element (element stream &optional (newline t))
-  (let ((finish (format nil "~:[~*)~;</~a>~]" *use-xml* element)))
-    (if (and newline *use-xml*)
+  (let ((finish (format nil "~:[~*)~;</~a>~]" (eq *semantic-output-format* :xml) element)))
+    (if (and newline (eq *semantic-output-format* :xml))
       (emit-line stream finish)
       (emit-line-continue stream finish))))
 
@@ -420,20 +438,22 @@
                             &aux (name (if (symbolp name)
                                            name
                                            (string-downcase name))))
-  (if *use-xml*
-      (let ((start (format nil "<~a ~a=\"" element att-name)))
-        (if newline
-            (emit-line stream start)
-            (emit-line-continue stream start))
-        (prin-escaped (string-downcase name) stream)
-        (write-string (if close "\">" "\"") stream))
-      (if newline
-          (if (symbolp name)
-              (emit-line stream (format nil " (~s" name))
-              (emit-line stream (concatenate 'string " (" name)))
-          (if (symbolp name)
-              (emit-line-continue stream (format nil " (~s" name))
-              (emit-line-continue stream (concatenate 'string " (" name))))))
+  (case *semantic-output-format*
+    (:xml
+     (let ((start (format nil "<~a ~a=\"" element att-name)))
+       (if newline
+           (emit-line stream start)
+           (emit-line-continue stream start))
+       (prin-escaped (string-downcase name) stream)
+       (write-string (if close "\">" "\"") stream)))
+    (t
+     (if newline
+         (if (symbolp name)
+             (emit-line stream (format nil " (~s" name))
+             (emit-line stream (concatenate 'string " (" name)))
+         (if (symbolp name)
+             (emit-line-continue stream (format nil " (~s" name))
+             (emit-line-continue stream (concatenate 'string " (" name)))))))
 
 
 
@@ -441,10 +461,11 @@
                           &aux (name (if (symbolp name)
                                          name
                                          (string-downcase name))))
-  (cond (*use-xml*
-         (emit-line-continue stream (format nil "/>" element)))
-        (t
-         (emit-line-continue stream (format nil ")" element)))))
+  (case *semantic-output-format*
+    (:xml
+     (emit-line-continue stream (format nil "/>" element)))
+    (t
+     (emit-line-continue stream (format nil ")" element)))))
 
 (defmethod start-cat ((item symbol) stream &optional (newline t) (close t))
   (if (search " " (pname item))
