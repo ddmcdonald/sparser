@@ -401,7 +401,6 @@
 (defparameter *end-of-sentence-display-operation* nil)
 (defparameter *save-bio-processes* nil)
 
-(defparameter *check-find-all-mentions* nil)
 (defparameter *colorized-sentence* (make-hash-table :size 1000 :test #'equal))
 (defparameter *indra-post-process* nil)
 
@@ -415,27 +414,18 @@
     (funcall *end-of-sentence-display-operation* sentence))
   (when *current-article*
     (save-article-sentence *current-article* sentence))
-  (when (or (eq *sentence-results-stream* t)
-            (streamp *sentence-results-stream*))
-    (when *save-bio-processes*
-      (save-bio-processes sentence))
+  ;;output sentence semantics, if desired, in format specified
+  ;; by *semantic-outut-format* -- code is in save-doc-semantics
+  (when (and
+         (or (eq *sentence-results-stream* t)
+             (streamp *sentence-results-stream*))
+         (not (eq *semantic-output-format* :HMS-JSON)))
+    (when *save-bio-processes* (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*))
-  (when (or *check-find-all-mentions*
-            *indra-post-process*)
-    (let ((mentions (find-all-mentions sentence))
-          mm)
-      (declare (special mentions mm))
+  (when *indra-post-process*
+    (let ((mentions (find-all-mentions sentence)))
       (when *indra-post-process*
-        (indra-post-process mentions sentence))
-      (when *check-find-all-mentions*
-        (unless
-            (loop for m in mentions
-                  always
-                    (progn
-                      (setq mm m)
-                      (or (not (individual-p (base-description mm)))
-                          (member mm (mention-history (base-description mm))))))
-          (lsp-break "bad mention-history")))))
+        (indra-post-process mentions sentence *sentence-results-stream*))))
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
@@ -443,94 +433,80 @@
   (clrhash *predication-links-ht*)
   )
 
-(defun indra-post-process (mentions sentence)
+(defun indra-post-process (mentions sentence output-stream)
   (loop for mention in mentions
         ;;when (or
-        do (indra-post-process-mention mention sentence)))
+        do (indra-post-process-mention mention sentence output-stream)))
 
-(defun indra-post-process-mention (mention sentence)
-  (let ((ref (base-description mention)))
+(defun indra-post-process-mention (mention sentence output-stream)
+  (let ((ref (base-description mention))
+        (necessary-vars nil))
     (declare (special ref))
-    (cond  ((and (or (itypep ref 'bio-activate)
-                     (itypep ref 'bio-inactivate)
-                     (itypep ref 'inhibit))
-                 (value-of 'object ref))
-            (push-sem->indra-post-process
-             mention
-             sentence
-             (eq (value-of 'object ref) '*lambda-var*)
-             ))
-           ((and (itypep ref 'inhibit)
-                 (value-of 'affected-process ref))
-            (push-sem->indra-post-process
-             mention
-             sentence
-             (eq (value-of 'affected-process ref) '*lambda-var*)
-             ))
-           ((and (itypep ref 'recruit)
-                 (value-of 'object ref))
-            (push-sem->indra-post-process
-             mention
-             sentence
-             (eq (value-of 'object ref) '*lambda-var*)
-             ))
-           ((and (or (itypep ref 'translocation)
-                     (itypep ref 'import)
-                     (itypep ref 'export))
-                 (or (value-of 'object ref)
-                     (value-of 'moving-object ref)
-                     (value-of 'moving-object-or-agent-or-object ref)))
-            (push-sem->indra-post-process
-             mention
-             sentence
-             (or (eq (value-of 'object ref) '*lambda-var*)
-                 (eq (value-of 'moving-object ref) '*lambda-var*)
-                 (eq (value-of 'moving-object-or-agent-or-object ref) '*lambda-var*))
-             ))
-           ((and (or
-                  (itypep ref 'post-translational-modification)
-                  (and (is-basic-collection? ref)
-                       (or ;;(lsp-break)
-                        (itypep (value-of 'type ref)
-                                'post-translational-modification))))
-                 (or (value-of 'substrate ref)
-                     (value-of 'agent-or-substrate ref)
-                     (value-of 'site ref)))
-            (push-sem->indra-post-process
-             mention
-             sentence
-             (or (eq (value-of 'substrate ref) '*lambda-var*)
-                 (eq (value-of 'agent-or-substrate ref) '*lambda-var*)
-                 (eq (value-of 'site ref) '*lambda-var*)))))))
+    (cond  ((or (itypep ref 'bio-activate)
+                (itypep ref 'bio-inactivate)
+                (itypep ref 'inhibit))
+            (setq necessary-vars '(object)))
+           ((itypep ref 'inhibit)
+            (setq necessary-vars '(affected-process)))
+           ((itypep ref 'recruit)
+            (setq necessary-vars '(object)))
+           ((or (itypep ref 'translocation)
+                (itypep ref 'import)
+                (itypep ref 'export))
+            (setq necessary-vars  '(object moving-object moving-object-or-agent-or-object)))
+           ((or
+             (itypep ref 'post-translational-modification)
+             (and (is-basic-collection? ref)
+                  (or ;;(lsp-break)
+                   (itypep (value-of 'type ref)
+                           'post-translational-modification))))
+            (setq necessary-vars '(substrate agent-or-substrate site))))
+
+    (when (loop for v in necessary-vars thereis (value-of v ref))
+      (push-sem->indra-post-process
+       mention
+       sentence
+       (loop for v in necessary-vars thereis (eq (value-of v ref) '*lambda-var*))
+       output-stream))))
 
 
 (defparameter *show-indra-lambda-substitutions* nil)
 
-(defun push-sem->indra-post-process (mention sentence lambda-expansion)
+(defun get-pmid ()
+  (when *current-article* (symbol-name (name *current-article*))))
+
+(defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream)
   (declare (special *indra-text* *predication-links-ht*))
   (let* ((desc (base-description mention))
          (lambda-expansion
-          (and lambda-expansion
-               (gethash desc *predication-links-ht*)))
+          (when lambda-expansion (gethash desc *predication-links-ht*)))
          (desc-sexp (sem-sexp desc))
          (subst-desc-sexp
           (when lambda-expansion
             (subst (sem-sexp (gethash desc *predication-links-ht*))
                    '*lambda-var*
-                   (sem-sexp desc)))))
-        
-    (push (list (retrieve-surface-string (mention-source mention))
-                (cond (subst-desc-sexp
+                   (sem-sexp desc))))
+         (f `(,(retrieve-surface-string (mention-source mention))
+               ,(cond (subst-desc-sexp
                        (when *show-indra-lambda-substitutions*
                          (pprint `(,desc-sexp ===> ,subst-desc-sexp))
                          (terpri))
                        subst-desc-sexp)
                       (t desc-sexp))
-                (list 'TEXT (if (and (boundp '*indra-text*)
-                                     (stringp (eval '*indra-text*)))
-                                (eval '*indra-text*)
-                                (sentence-string sentence))))
-          *indra-post-process*)))
+               (TEXT ,(if (and (boundp '*indra-text*)
+                               (stringp (eval '*indra-text*)))
+                          (eval '*indra-text*)
+                          (sentence-string sentence))))))
+    (push f *indra-post-process*)
+    (when output-stream
+      (let ((indra-form (indra-form-for-sexpr f (get-pmid) nil)))
+        (declare (special indra-form))
+        (when indra-form
+          ;;(lsp-break "indra-form")
+          (loop for iform in indra-form
+                do
+                  (pp-json iform output-stream)
+                  (format output-stream "~%~%~%")))))))
 
 (defun contains-atom (atom list-struct)
   (if (not (consp list-struct))
