@@ -1292,10 +1292,11 @@
                            ;; avoid bad attachment to a bio-entity in
                            ;; "Transformation is associated with constitutive autophosphorylation of EGFR
                            ;;    , Shc phosphorylation, and STAT pathway activation"
-                           (or (and (itypep (edge-referent np-1) 'bio-process)
-                                    (itypep (edge-referent x) 'bio-process))
-                               (and (itypep (edge-referent np-1) 'bio-entity)
-                                    (itypep (edge-referent x) 'bio-entity))))))))
+                           (cond ((itypep (edge-referent np-1) 'bio-process)
+                                  (itypep (edge-referent x) 'bio-process))
+                                 ((itypep (edge-referent np-1) 'bio-entity)
+                                  (itypep (edge-referent x) 'bio-entity))
+                                 (t t)))))))
     (when target
       (let ((collection
              (make-an-individual 'collection
