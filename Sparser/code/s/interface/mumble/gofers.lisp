@@ -14,9 +14,22 @@
 ;;; mumble words for sparser words and vice-versa
 ;;;-----------------------------------------------
 
-(defun get-mumble-word-for-sparser-word (s-word pos)
-  (or (mumble::find-word (pname s-word) pos)
-      (mumble::define-word/expr (pname s-word) (list pos))))
+(defgeneric get-mumble-word-for-sparser-word (s-word pos)
+  (:method ((s-word individual) pos)
+    (get-mumble-word-for-sparser-word (or (value-of 'word s-word)
+                                          (category-of s-word))
+                                      pos))
+  (:method ((s-word category) pos)
+    (get-mumble-word-for-sparser-word (or (value-of 'word s-word)
+                                          (pname s-word))
+                                      pos))
+  (:method ((s-word word) pos)
+    (get-mumble-word-for-sparser-word (pname s-word) pos))
+  (:method ((s-word polyword) pos)
+    (get-mumble-word-for-sparser-word (pname s-word) pos))
+  (:method ((s-word string) pos)
+    (or (mumble::find-word s-word pos)
+        (mumble::define-word/expr s-word (list pos)))))
 
 (defun get-sparser-word-for-mumble-word (m-word)
   (word-named (mumble::pname m-word)))
