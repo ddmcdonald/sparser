@@ -611,10 +611,8 @@
                  (edge-right-daughter edge))))))))
  
 (defun init-reach-directory ()
-  (declare (special *use-xml*))
   (when (find-package :r3)
     (save-article-semantics
-     *use-xml*
      (pathname
       (ensure-directories-exist
        (concatenate 'string
@@ -1209,9 +1207,8 @@ applied to l, and values are values associated with that key example"
 
 (defparameter *break-on-hms-errors* nil)
 
-(defun test-hms-sentences (&key (n 1000)(start 0) (use-xml nil)(save-output t))
-  (declare (special *use-xml*))
-  (when use-xml (setq *use-xml* t))
+(defun test-hms-sentences (&key (n 1000)(start 0) (semantic-output-format nil)(save-output t))
+  (when semantic-output-format (setq *semantic-output-format* semantic-output-format))
   (when save-output
     (init-hms-directory))
   (load-hms-sentences-if-needed)
@@ -1219,10 +1216,8 @@ applied to l, and values are values associated with that key example"
    (eval '*LARGE-HMS-SENT-LISTS*) :start start :n n :save-output save-output))
 
 (defun init-hms-directory ()
-  (declare (special *use-xml*))
   (when (find-package :r3)
     (save-article-semantics
-     *use-xml*
      (pathname
       (ensure-directories-exist
        (concatenate 'string
@@ -1260,12 +1255,10 @@ applied to l, and values are values associated with that key example"
         (loop for s in sents as i from 0 do (incf *hms-sent-count*)(qepp s)))))
 
 
-(defun init-phase3-directory (&key (use-xml *use-xml*))
-  (declare (special *use-xml*))
-  (setq *use-xml* use-xml)
+(defun init-phase3-directory (&key (semantic-output-format *semantic-output-format*))
+  (setq *semantic-output-format* output-format)
   (when (find-package :r3)
     (save-article-semantics
-     *use-xml*
      (pathname
       (ensure-directories-exist
        (concatenate 'string
