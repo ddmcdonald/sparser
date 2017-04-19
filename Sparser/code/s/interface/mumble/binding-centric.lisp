@@ -68,13 +68,15 @@
                     (sp::value-of 'sp::word item))))
       (and head (word-for head pos))))
   (:method :around ((item sp::individual) pos)
-    "Treat biological entities and collections specially."
+    "Treat biological entities, collections, and prepositions specially."
     (cond ((sp::itypep item 'sp::biological)
            (let ((word (call-next-method)))
              (and word
                   (word-for-string (pretty-bio-name (sp::pname word)) pos))))
           ((sp::itypep item 'sp::collection)
            (word-for (sp::value-of 'sp::type item) pos))
+          ((sp::itypep item 'sp::prepositional)
+           (sp::get-mumble-word-for-sparser-word item 'preposition))
           (t (or (call-next-method) ; last-ditch effort
                  (word-for (string-downcase (sp::cat-name (sp::itype-of item))) pos)))))
   (:method :around (item (pos (eql 'adjective)))
@@ -290,8 +292,7 @@
             ((sp::itypep value 'sp::attribute-value) ; essentially a modifier
              (attach-adjective value dtn pos))
             (prep
-             (attach-pp (sp::get-mumble-word-for-sparser-word prep 'preposition)
-                        value dtn pos))
+             (attach-pp (word-for prep 'preposition) value dtn pos))
             ((find :thatcomp subcats)
              (make-adjunction-node
               (make-lexicalized-attachment 'restrictive-relative-clause value)
