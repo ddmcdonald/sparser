@@ -741,7 +741,7 @@ the process.
       (add-bio-synonyms (or identifier (word-string word)) synonyms))
 
     (let* ((retrieved-rules (get-rules i))
-           (r (when retrieved-rules (car retrieved-rules))))
+           (rules retrieved-rules))
 
       #|
       (when mitre-link
@@ -759,10 +759,11 @@ the process.
         (setq i (set-family-members i members)))
 
       (cond
-        ((and r (cfr-p r))
-         ;;(push-debug `(,r)) (break " set rule form?")
-         (setf (cfr-form r) category::proper-noun)
-         (setf (cfr-referent r) i))
+        (rules
+         (loop for r in rules when (cfr-p r)
+                 do
+                 (setf (cfr-form r) category::proper-noun)
+                 (setf (cfr-referent r) i)))
         (t
          (push-debug `(,i ,word))
          (error "something badly formed about rules field")))
