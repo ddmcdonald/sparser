@@ -16,7 +16,7 @@
 ;; Protein families
 
 (def-family "SAPK" :synonyms ("SAP kinase activity" "stress activated protein kinase" "stress=activated protein kinase" ) :identifier "GO:0016909" ) 
-
+(def-family "histone H2B" :identifier "FA:01763")
 (def-family "CDK" :synonyms ("cyclin dependent kinase" "cyclin-dependent kinase" "Cdks" "CDKs") :identifier "NCIT:C17767")	
 (def-family "14-3-3")
 (def-family "AMPK":synonyms ("AMP activated protein kinase"))
