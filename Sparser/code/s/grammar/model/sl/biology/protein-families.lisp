@@ -42,7 +42,7 @@
 (def-family "PKC" :members ("PKC-alpha" "PKC-delta" "nPKC-epsilon"))
 (def-family "PTK")
 (def-family "RAS GAP")
-(def-family "Raf" :members ("ARaf" "BRaf" "CRaf") :identifier "RAF" :synonyms ("RAF")) ;;/// maybe use the Mitre choice? 
+(def-family "Raf" :members ("ARaf" "BRaf" "CRaf" "Raf1") :identifier  "FA:03114" :synonyms ("RAF")) ;;/// maybe use the Mitre choice? 
 (def-family "Ras" :members ("KRas" "HRas" "NRas") :identifier "GO:0003930" :synonyms ("RAS")) ;; this is NOT the long name for "RAS" :long "GTPase") ;;//// need capitalization hacks
 ;; alternate Ras identifier "FA:03663" -- from TRIPS-proteins -- have now commented this definition out of non-upa-upm-proteins
 (def-family "SMAD" );; there are a bunch of these, but we will ignore them for the moment
