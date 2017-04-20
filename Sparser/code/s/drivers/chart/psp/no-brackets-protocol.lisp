@@ -453,7 +453,7 @@
            ((or (itypep ref 'translocation)
                 (itypep ref 'import)
                 (itypep ref 'export))
-            (setq necessary-vars  '(object moving-object moving-object-or-agent-or-object)))
+            (setq necessary-vars  '(object moving-object moving-object-or-agent-or-object agent)))
            ((or
              (itypep ref 'post-translational-modification)
              (and (is-basic-collection? ref)
