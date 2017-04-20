@@ -290,7 +290,11 @@
 
 
 (define-category dna-motif :specializes bio-chemical-entity
-  :documentation "enhancers, promoters, etc., also response elements")
+                 :documentation "enhancers, promoters, etc., also response elements")
+
+(define-category promoter :specializes dna-motif
+  :realization
+  (:noun "promoter"))               
 		 
 (define-category dna-response-element :specializes dna-motif
   :realization
@@ -1329,7 +1333,7 @@
 (define-category bio-aggregate  :specializes aggregate
   ;; can drop the 'bio-', but it lets us play with the
   ;; notion before we promote that behavior to the upper str.
-  :mixins (sequence biological))
+  :mixins (sequence bio-entity))
 #| This would be a good level at which to site a method that
 meditated whether or not we distributed the components of
 the aggregate across the predicate it's in. |#
