@@ -1381,14 +1381,12 @@
 ;; IMPORTANT -- "translocate" does not REQUIRE an object
 ;; "Wild-type ASPP2, but not mutant ASPP2 (S827A), translocates to the cytosol"
 (define-category translocation :specializes bio-transport
-  :restrict ((agent blocked-category)
-             (object blocked-category))
+  :restrict ((object blocked-category))
   :realization 
   (:verb "translocate" 
    :noun "translocation" 
    :etf (svo-passive)
    :optional-object t
-   :s moving-object ;; don't treat this as an agent
    :o moving-object))
 
 (define-category import :specializes bio-transport
