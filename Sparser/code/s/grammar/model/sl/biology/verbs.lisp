@@ -1084,10 +1084,12 @@
          :with agent))
 
 (define-category recruit :specializes bio-transport
-  :restrict ((destination (:or cellular-location bio-chemical-entity)))
+  :restrict ((destination (:or cellular-location bio-chemical-entity))
+             (object blocked-category))
   :realization 
   (:verb "recruit" :noun "recruitment"
-         :etf (svo-passive)))
+         :etf (svo-passive)
+         :o moving-object))
 
 (define-category reduce :specializes negative-bio-control
     :binds ((bio biological))
