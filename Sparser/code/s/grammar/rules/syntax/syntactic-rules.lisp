@@ -1098,3 +1098,22 @@ similar to an oncogenic RasG12V mutation (9)."))
     :referent (:daughter right-edge
 	       :bind (approximator left-edge)))
 
+
+
+;;;;;; strange types of passives
+
+(def-form-rule (become verb+ed)
+  :form vg+passive
+  :referent (:head right-edge
+             :function check-passive-and-add-tense/aspect left-edge right-edge))
+
+(def-form-rule (become vg+ed)
+  :form vg+passive
+  :referent (:head right-edge
+             :function check-passive-and-add-tense/aspect left-edge right-edge))
+
+(def-form-rule (become vp+ed) ;; "were previously used"
+  :form vg+passive
+  :referent (:head right-edge
+                   :function check-passive-and-add-tense/aspect left-edge right-edge))
+
