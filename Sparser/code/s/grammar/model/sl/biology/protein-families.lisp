@@ -501,9 +501,14 @@
 (def-family "β2" :members ("UP:Q60430" "UP:Q9Y691")) 
 (def-family "β5" :members ("UP:G3MZC5" "UP:Q9Y5E4")) 
 (def-family "Rac" :identifier "FA:03066" :synonyms ("Akt" "AKT" "RAC subfamily" "NCIT:C41625" "protein kinase B") :members ("AKT1" "AKT2" "AKT3"))
-(def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
-(def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family") :members ("TP53" "TP63" "TP73")) 
-(def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family") :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4"))
+(cond ((not *use-small-proteins*)
+       (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
+       (def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family") :members ("TP53" "TP63" "TP73"))
+       (def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family") :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4")))
+      (t
+       (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily"))
+       (def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family"))
+       (def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family"))))
 
 ;;(def-family "Eukaryotic translation initiation factor 4E-binding protein 1" :members ("UP:Q0P5A7" "UP:Q13541")) 
 ;;(def-family "PKC-α" :members ("UP:P04409" "UP:P17252") :synonyms ("Protein kinase C alpha type")) 
