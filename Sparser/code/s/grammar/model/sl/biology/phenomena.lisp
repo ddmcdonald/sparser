@@ -70,7 +70,7 @@
   :binds ((substrate (:or protein variant bio-complex bio-entity)) ;; allow variant to pick up "phosphorylated fraction"
 	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
-  :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate)) ;;bio-process
+  :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate molecule)) ;;bio-process
 	     (object s)) ;; trying to BLOCK object by giving it an impossible class
   :realization 
   (:noun "post-translational modification"
@@ -442,7 +442,8 @@
   :specializes phosphorylation-modification
   :instantiates self
   :realization
-  (:verb "hyperphosphorylate" :noun "hyperphosphorylation"
+  (:verb ("hyperphosphorylate" "hyper-phosphorylate")
+         :noun ("hyperphosphorylation" "hyper-phosphorylation")
    :etf (svo-passive)))
 
 (define-category unphosphorylate
