@@ -464,6 +464,7 @@
 (def-bio "Epstein-Barr virus" organism :long nil :identifier "10376")
 (def-bio "Haemophilus influenzae" organism :long nil :identifier "727")
 (def-bio "Helicobacter pylori" organism :synonyms ("H. pylori") :identifier "210")
+(def-bio "T. cruzi" organism :synonyms ("Trypanosoma cruzi"))
 (def-bio "S. aureus" organism :long nil :identifier "1280")
 (def-bio "SV40" organism :long nil :identifier "10633")
 (def-bio "Sprague-Dawley rat" organism :long nil :identifier "10116")

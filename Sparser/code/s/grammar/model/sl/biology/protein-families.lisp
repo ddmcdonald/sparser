@@ -160,7 +160,6 @@
 (def-family "ET-1" :members ("UP:P05305" "UP:P22387") :synonyms ("endothelin-1")) 
 (def-family "Endogenous retrovirus group K member 18 Env polyprotein" :members ("UP:C6FX96" "UP:O42043")) 
 (def-family "Ephrin-B1" :members ("UP:O73612" "UP:P98172")) 
-(def-family "Eukaryotic translation initiation factor 4E-binding protein 1" :members ("UP:Q0P5A7" "UP:Q13541")) 
 (def-family "Exportin-T" :members ("UP:O43592" "UP:Q753A0")) 
 (def-family "FAP" :members ("UP:Q12884" "UP:Q92990")) 
 (def-family "FBP2" :members ("UP:O00757" "UP:Q92945")) 
@@ -248,7 +247,7 @@
 (def-family "PEMT" :members ("UP:P15941" "UP:Q9UBM1")) 
 (def-family "PI3K-alpha" :members ("UP:P32871" "UP:P42336") :synonyms ("phosphatidylinositol 4,5-bisphosphate 3-kinase catalytic subunit alpha isoform")) 
 (def-family "PIP" :members ("UP:O95861" "UP:P12273")) 
-(def-family "PKC-α" :members ("UP:P04409" "UP:P17252") :synonyms ("Protein kinase C alpha type")) 
+
 (def-family "PKD2" :members ("UP:Q13563" "UP:Q9BZL6")) 
 (def-family "PKL" :members ("UP:P30613" "UP:Q14161")) 
 (def-family "PLAP-1" :members ("UP:P05187" "UP:Q9BXN1")) 
@@ -501,4 +500,10 @@
 (def-family "vascular endothelial growth factor receptor 2" :members ("UP:P35968" "UP:P52583")) 
 (def-family "β2" :members ("UP:Q60430" "UP:Q9Y691")) 
 (def-family "β5" :members ("UP:G3MZC5" "UP:Q9Y5E4")) 
-(def-family "Akt" :identifier "NCIT:C41625" :members ("UP:P31749" "UP:P31751" "UP:Q9Y243") :synonyms ("AKT" "protein kinase B")) 
+(def-family "Rac" :identifier "FA:03066" :synonyms ("Akt" "AKT" "RAC subfamily" "NCIT:C41625" "protein kinase B") :members ("AKT1" "AKT2" "AKT3"))
+(def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
+(def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family") :members ("TP53" "TP63" "TP73")) 
+(def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family") :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4"))
+
+;;(def-family "Eukaryotic translation initiation factor 4E-binding protein 1" :members ("UP:Q0P5A7" "UP:Q13541")) 
+;;(def-family "PKC-α" :members ("UP:P04409" "UP:P17252") :synonyms ("Protein kinase C alpha type")) 
