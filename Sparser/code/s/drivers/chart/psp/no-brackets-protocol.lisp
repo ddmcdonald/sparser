@@ -442,32 +442,51 @@
   (let ((ref (base-description mention))
         (necessary-vars nil))
     (declare (special ref))
-    (cond  ((or (itypep ref 'bio-activate)
-                (itypep ref 'bio-inactivate)
-                (itypep ref 'inhibit))
-            (setq necessary-vars '(object)))
-           ((itypep ref 'inhibit)
-            (setq necessary-vars '(affected-process)))
-           ((itypep ref 'recruit)
-            (setq necessary-vars '(object)))
-           ((or (itypep ref 'translocation)
-                (itypep ref 'import)
-                (itypep ref 'export))
-            (setq necessary-vars  '(object moving-object moving-object-or-agent-or-object agent)))
-           ((or
-             (itypep ref 'post-translational-modification)
-             (and (is-basic-collection? ref)
-                  (or ;;(lsp-break)
-                   (itypep (value-of 'type ref)
-                           'post-translational-modification))))
-            (setq necessary-vars '(substrate agent-or-substrate site))))
+    ;; Revise the code to 1) allow for conjoined verbs (use c-itypep)
+    ;;  and follwing on that 2) allow a single mention/edge to have more
+    ;;  than one type of INDRA statement (MEK phosphorylates and activates ERK"
+    (when (or (c-itypep ref 'bio-activate)
+              (c-itypep ref 'bio-inactivate)
+              (c-itypep ref 'inhibit))
+      (maybe-push-sem mention ref sentence '(object) output-stream))
 
-    (when (loop for v in necessary-vars thereis (value-of v ref))
-      (push-sem->indra-post-process
-       mention
-       sentence
-       (loop for v in necessary-vars thereis (eq (value-of v ref) '*lambda-var*))
-       output-stream))))
+    (when (c-itypep ref 'inhibit)
+      (maybe-push-sem mention ref sentence '(affected-process) output-stream))
+
+    (when (or (c-itypep ref 'translocation)
+              (c-itypep ref 'import)
+              (c-itypep ref 'export)
+              (c-itypep ref 'recruit))
+      (maybe-push-sem mention ref sentence '(object moving-object moving-object-or-agent-or-object agent) output-stream))
+
+    (when
+        (or
+         (c-itypep ref 'post-translational-modification)
+         (and (is-basic-collection? ref)
+              (or ;;(lsp-break)
+               (c-itypep (value-of 'type ref)
+                         'post-translational-modification))))
+      (maybe-push-sem mention ref sentence '(substrate agent-or-substrate site) output-stream))
+    ))
+
+(defun maybe-push-sem (mention ref sentence necessary-vars output-stream)
+      
+  (when (loop for v in necessary-vars thereis (value-of v ref))
+    (push-sem->indra-post-process
+     mention
+     sentence
+     (loop for v in necessary-vars thereis (eq (value-of v ref) '*lambda-var*))
+     output-stream)))
+
+
+(defun c-itypep (c super)
+  (or
+   (itypep c super)
+   (and (is-basic-collection? c)
+        (loop for item in (value-of 'items c) thereis (itypep item super)))))
+              
+
+  
 
 
 (defparameter *show-indra-lambda-substitutions* nil)
