@@ -997,22 +997,26 @@
            s-vp+ed first second))
 
 (defun s-vp+ed (s-edge vp+ed)
-  (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
-         (target-ref (when target (edge-referent target)))
-         (vp (edge-referent vp+ed))
-         (pred
-          (when (and target (subcategorized-variable vp :object target-ref))
-            (update-edge-as-lambda-predicate
-             vp+ed
-             (subcategorized-variable vp :object target-ref)))))
-    (when pred
-      (make-edge-spec
-       :category (edge-category target)
-       :form category::np
-       :referent (bind-dli-variable 'predication pred (edge-referent target))
-       :target target
-       :direction :right))))
-
+  (or
+   (let* ((target (find-target-satisfying (right-fringe-of s-edge) #'np-target?))
+          (target-ref (when target (edge-referent target)))
+          (vp (edge-referent vp+ed))
+          (pred
+           (when (and target (subcategorized-variable vp :object target-ref))
+             (update-edge-as-lambda-predicate
+              vp+ed
+              (subcategorized-variable vp :object target-ref)))))
+     (when pred
+       (make-edge-spec
+        :category (edge-category target)
+        :form category::np
+        :referent (bind-dli-variable 'predication pred (edge-referent target))
+        :target target
+        :direction :right)))))
+#|
+   (let ((target (find-target-satisfying (right-fringe-of s-edge) #'clause-t
+   (conjoin-clause-and-vp s-edge nil vp+ed)))
+|#
 
 (define-debris-analysis-rule s-comma-vp+ed
   :pattern (s "," vp+ed )
@@ -1350,7 +1354,11 @@
 
 (defun s-conjunction-np ( s conjunction np)
   (declare (special  s conjunction np))
-  (let* ((target (find-target-satisfying (right-fringe-of s) #'np-target?))
+  (let* ((target (find-target-satisfying (right-fringe-of s)
+                                         #'(lambda(x)
+                                             (and (np-target? x)
+                                                  (eq (itypep (edge-referent x) 'protein)
+                                                      (itypep (edge-referent np) 'protein))))))
          (collection
           (when target
             (make-an-individual 'collection
@@ -1617,6 +1625,10 @@
         (not (np-target? (edge-used-in edge)))
         (not (member (cat-name (edge-form (edge-used-in edge)))
                      '(n-bar np)))))))
+
+(defun clause-target? (edge)
+   (member (cat-name (edge-form edge)) '(thatcomp s)))
+
 
 (defun right-fringe-of (edge)
   (all-edges-on (pos-ends-here (pos-edge-ends-at edge))))
