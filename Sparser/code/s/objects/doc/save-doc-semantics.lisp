@@ -92,7 +92,15 @@
              (open-stream-p *sentence-results-stream*))
     (case *semantic-output-format*
       (:xml
-       (format *sentence-results-stream* "</article>~%")))
+       (format *sentence-results-stream* "</article>~%"))
+      (:hms-json
+       (let ((iforms
+              (remove nil
+                      (loop for f in (cdr (reverse *indra-post-process*))
+                            append (indra-form-for-sexpr f (get-pmid) nil)))))
+         (initialize-indentation)
+         (pp-json-list iforms *sentence-results-stream* 3)
+         (setq *indra-post-process* (list t)))))
     (when *show-semantics-output-name*
       (format t "Semantics written to ~s.~%" (pathname *sentence-results-stream*)))
     (close *sentence-results-stream*))

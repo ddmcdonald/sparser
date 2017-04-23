@@ -517,6 +517,8 @@
                           (eval '*indra-text*)
                           (sentence-string sentence))))))
     (push f *indra-post-process*)
+    ;; do the output at the article level
+    #+ignore
     (when output-stream
       (let ((indra-form (indra-form-for-sexpr f (get-pmid) nil)))
         (declare (special indra-form))
