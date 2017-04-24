@@ -317,3 +317,47 @@ is replaced with replacement."
   (replace-all str *nl-str* " "))
 
 
+(defun spec-mentions (c c-mention containing-mentions)
+  (declare (special c c-mention containing-mentions))
+  (let ((specializations
+	 (remove-if #'predication?
+		    (all-mentioned-specializations c c-mention containing-mentions)))
+	spec-mentions)
+    (declare (special specializations spec-mentions))
+    (loop for s in specializations
+       unless (np-containing-mention? s c-mention)
+       do (loop for m in (mention-history s)
+	     ;;when (is-maximal? m)  we now only have maximal mentions in the list
+	     do (push m  spec-mentions)))
+    spec-mentions))
+
+(defun np-containing-mention? (s mention)
+  (loop for m in (mention-history s)
+     thereis
+       (np-containing-edge? (mention-source mention)
+			    (mention-source m))))
+
+(defun np-containing-edge? (edge np-edge)
+  (or (eq edge np-edge)
+      (and (edge-p np-edge)
+	   (or
+	    (np-containing-edge? edge (edge-left-daughter np-edge))
+	    (np-containing-edge? edge (edge-right-daughter np-edge))))))
+
+(defun np-head-edge? (edge np-edge)
+  (or (eq edge np-edge)
+      (and (edge-p np-edge)
+	   (np-head-edge? edge (edge-right-daughter np-edge)))))
+
+
+;;; Code to integrate with Spire
+
+(defgeneric expand-krisp (indiv)
+  (:method-combination or)
+  (:method or (indiv) (declare (ignore indiv))))
+
+
+;;-------------
+
+(defun repair-bad-composition (sentence)
+  )

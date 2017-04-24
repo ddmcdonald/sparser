@@ -256,8 +256,10 @@
       (when *parse-chunked-treetop-forest*
         (let ((*return-after-doing-forest-level* t))
           (declare (special *return-after-doing-forest-level*))
-          (new-forest-driver sentence))))
+          (new-forest-driver sentence)))
         
+      (repair-bad-composition sentence))
+
     (post-analysis-operations sentence)
 
     (interpret-treetops-in-context (all-tts (starts-at-pos sentence)
