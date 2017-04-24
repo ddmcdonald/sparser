@@ -1,7 +1,6 @@
-;;; -*- Mode:LISP; Syntax:Common/Users/ddm/sparser/Sparser/code/s/grammar/rules/tree-families/verbs-taking-pps.lisp-Lisp; Package:(SPARSER LISP) -*-
+;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
 ;;; copyright (c) 1995-2005 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; $Id:$
 ;;;
 ;;;     File:  "verbs taking pps"
 ;;;   Module:  "grammar;rules:tree-families:"
