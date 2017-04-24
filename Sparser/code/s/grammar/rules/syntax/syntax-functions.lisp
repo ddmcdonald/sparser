@@ -1038,7 +1038,7 @@
      ;;(lsp-break "pp collection")
      nil)
     ((and np pp)
-     (or (when (use-methods) ;; "the left side of the row"
+     (or (when (use-methods) ;; "the block at the left end of the row"
            (compose np pp))
          (let* ((pp-edge (right-edge-for-referent))
                 (prep-word (identify-preposition pp-edge))
@@ -1078,7 +1078,19 @@
                    (itypep np 'partonomic) ;; "a row of two blocks"
                    (compatible-with-specified-part-type pobj-referent np))
               (setq np (bind-variable 'parts pobj-referent np)))
+             ((and (use-methods)
+                   (eq prep-word of))
+              (let ((result (compose np pobj-referent)))
+                (unless result
+                  (break "No method applied to i~a + i~a"
+                         (indiv-uid np) (indiv-uid pobj-referent)))
+                result))
+
+             ;; This fall through will use 'modifier' in the blocks world
+             ;; because it sets *force-modifiers* to it in its switch setting
              (variable-to-bind
+              #+ignore(lsp-break "np(~a) + prep(~s) pobj(~a) falling through to default"
+                         (indiv-uid np) (pname prep-word) (indiv-uid pobj-referent))
               (collect-subcat-statistics np prep-word variable-to-bind pp)
               (setq np (individual-for-ref np))
               (setq np (bind-dli-variable variable-to-bind pobj-referent np))
