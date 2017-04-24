@@ -1,8 +1,11 @@
-("alpha-mangostin" "ONT:CHEMICAL" :ID "CHEBI:67547" :NAME "alpha-mangostin")
+(in-package :sparser)
+
+(defparameter *trips-Apr24*
+'(("alpha-mangostin" "ONT:CHEMICAL" :ID "CHEBI:67547" :NAME "alpha-mangostin")
  
 ; ("9-1-1" "ONT:PROTEIN-FAMILY" :ID "BE:9_1_1" :NAME "9-1-1") ;; actually a bio-complex consisting of Rad9-Hus1-Rad1 http://genesdev.cshlp.org/content/21/12/1472.abstract ;; EBI-2606881
  ("9-1-1" "ONT:MACROMOLECULAR-COMPLEX" :ID "EBI:2606881" :NAME "9-1-1")
- ("201B7" "ONT:CELL-LINE" :ID "CVCL:A324" :NAME "201B7")
+ ("201B7" "ONT:CELL-LINE" :ID "CVCL:A324" :NAME "201B7")))
 
 #| manually added:
 ("HsCdc6" "ONT:GENE-PROTEIN" :ID "NCIT:C18044" :NAME
@@ -26,5 +29,13 @@
 (define-category 9-1-1 :specializes bio-complex
            :bindings (uid "EBI:2606881"
                           ;component (;; somehow have it refer to proteins "Rad9" "Hus1" and "Rad1")
-                          )
-    :synonyms ("Rad9-Hus1-Rad1 complex" "9-1-1 complex" "Rad9-Hus1-Rad1 (9-1-1) clamp complex" "Rad9-Rad1-Hus1"))
+                          ))
+(def-synonym 9-1-1
+
+               (:noun "Rad9-Hus1-Rad1 complex"))
+(def-synonym 9-1-1
+               (:noun "9-1-1 complex"))
+(def-synonym 9-1-1
+               (:noun "Rad9-Hus1-Rad1 (9-1-1) clamp complex"))
+(def-synonym 9-1-1
+               (:noun "Rad9-Rad1-Hus1"))
