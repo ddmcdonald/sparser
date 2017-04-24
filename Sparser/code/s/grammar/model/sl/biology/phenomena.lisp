@@ -1022,7 +1022,7 @@ it is created from N-terminus to C-terminus.|#
 
 (define-category bio-complex   :specializes bio-chemical-entity
   ;; changed -- complexes are not molecules, but associated groups of
-  ;; molecules, often preteins, but not always
+  ;; molecules, often proteins, but not always
   :mixins (reactome-category)
   :binds ((component
 	   (:or bio-complex small-molecule protein protein-domain ion)) ;; ion is for things like Ca2+-calmodulin

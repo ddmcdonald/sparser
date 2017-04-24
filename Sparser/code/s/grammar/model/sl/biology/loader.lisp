@@ -67,6 +67,7 @@
 (gload "bio;trips-terms-new.lisp")
 (gload "bio;trips-terms-phase3-1-2000-non-proteins")
 (gload "bio;trips-terms-phase3-2nd-run-non-proteins")
+(gload "bio;trips-terms-Apr24-non-proteins")
 ;;(gload "bio;trips-proteins")
 (gload "bio;reach-terms.lisp")
 
