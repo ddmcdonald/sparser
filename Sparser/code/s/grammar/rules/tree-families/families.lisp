@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "families"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  1.1 February 2015
+;;;  version:  April 2017
 
 ;; Initiated 2/6/14. Augment the realization options of shortcuts
 ;; 9/19/14 Supplanted original notion with a new one that seems
@@ -95,6 +95,18 @@ when contemplating using a new tree family
             (vg . :self)
             (np/subject . subj-v/r)
             (np/object . theme-v/r)))
+
+(define-realization-scheme svol transitive-loc-comp
+  :head :verb
+  :mapping ((agent . subj-slot)
+            (patient . theme-slot)
+            (location . loc-slot)
+            (s . :self)
+            (vp . :self)
+            (vg . :self)
+            (np/subject . subj-v/r)
+            (np/object . theme-v/r)
+            (loc . loc-v/r)))
 
 (define-realization-scheme svo-passive passive/with-by-phrase
   :args (agent-slot agent-v/r patient-slot patient-v/r)

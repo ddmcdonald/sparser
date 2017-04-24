@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-1998,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1998,2011-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "transitive"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  0.3 June 2014
+;;;  version:  April 2017
 
 ;; initiated 8/5/92 v2.3, added passives 8/24
 ;; 0.1 (10/13) reorganized (in)transitive to fit the paper
@@ -51,7 +51,6 @@
                    :head right-edge
                    ;; :binds (agent left-edge)
                    :function (assimilate-subject left-edge right-edge)))
-   
 
      (:direct-object (vp  (vg np/object)
                           :head left-edge
@@ -122,14 +121,34 @@
                          :binds (agent right-edge)))))
 
 
-;; Was in checkpoint/vocabulary, but surely doesn't belong there
-;; Note at the time says it can't be resolved then.
+(define-exploded-tree-family  transitive-loc-comp
+  :description "Two post-verb arguments, a direct object and constituent
+      describing a location, e.g., 'I put the block in the box'"
+  :binding-parameters ( agent patient location )
+  :labels ( s vp vg np/subject np/object loc )
+  :cases
+     ((:subject (s (np/subject vp)
+                  :head right-edge
+                  :binds (agent left-edge)))
+      (:direct-object (vp (vg np/object)
+                        :head left-edge
+                        :binds (patient right-edge)))
+      ;; Note that we pick up the first (direct) object
+      ;; on the vg, but the second (location) object
+      ;; is on the vp, which is a crude but workable way
+      ;; to enforce consituent order.
+      (:location (vp (vp loc)
+                   :head left-edge
+                   :binds (location right-edge)))))  
+
 (define-exploded-tree-family  transitive-location
-  :description ""
+  :description "Tailored to specific case in checkpoint domain where
+     different categories of location needed to be distinguished 
+     in the instantiating arguments"
   :binding-parameters ( agent  location )
   :labels ( s vp vg np/subject loc1 loc2 loc3 )
   :cases
-     ((:subject (s  (np/subject vp)
+     ((:subject (s (np/subject vp)
                  :head right-edge
                  :binds (agent left-edge)))
       (:deictic-loc (vp (vg loc1) ;; deictic-location -- only in literals
