@@ -112,8 +112,8 @@ Should mirror the cases on the *single-words* ETF."
     :in :into
     :like
     :m
-    :next\ to
-    :object :of :on :onto :on\ top\ of :over
+    #|:next\ to|#
+    :object :of :on :onto #|:on\ top\ of|# :over
     :premod
     :subject :such\ as
     :to :to-comp :thatcomp :through :throughout :toward :towards
@@ -122,7 +122,8 @@ Should mirror the cases on the *single-words* ETF."
 
 (defparameter *subcat-aliases*
     '((:s . :subject)
-      (:o . :object))
+      (:o . :object)
+      (:l . :location))
   "An alist of aliases for subcategorization slot names.")
 
 (deftype subcat-relation-keyword ()

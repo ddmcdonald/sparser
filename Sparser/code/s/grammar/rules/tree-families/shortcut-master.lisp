@@ -75,6 +75,14 @@
             (push `(modifier-slot . ,m-var) substitution-map)
             (push `(modifier-v/r . ,m-v/r) substitution-map))))
 
+      ;; Subcategorized location object (vs. an adjunct)
+      (let ((l-pat (find-subcat-pattern :location subcat-frame)))
+        (when l-pat
+          (let ((l-var (subcat-variable l-pat))
+                (l-v/r (subcat-restriction l-pat)))
+            (push `(loc-slot . ,l-var) substitution-map)
+            (push `(loc-v/r . ,l-v/r) substitution-map))))
+
       ;; Complement, e.g. "reported that ..."
       (when c
         (let* ((var (variable/category c category))

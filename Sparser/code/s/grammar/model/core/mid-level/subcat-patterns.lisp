@@ -15,9 +15,8 @@
   :binds ((actor (:or pronoun endurant))
           (patient physical)
           (theme perdurant))
-  :documentation "Provides standard bindings for ordinary transitive
-    verbs. Could take most of what's on bio-process. Added 'action'
-    to mimic bio;aspectual-relation"
+  :documentation "For 'fail', 'find' etc. where there can be a
+ to-complement argument as in 'I failed to find a block'"
   :realization
     (:s actor
      :o patient
@@ -35,8 +34,8 @@
 ;; it falls out from the times and the grammar doesn't notice.
 
 
-;; https://en.wikipedia.org/wiki/Control_(linguistics)
 (define-mixin-category control-verb
+  ;; https://en.wikipedia.org/wiki/Control_(linguistics)
   :specializes linguistic
   :mixins (with-an-agent) ;; v/r = physical-agent
   :binds ((patient physical) ;; "I want a block"

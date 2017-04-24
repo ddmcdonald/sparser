@@ -181,8 +181,10 @@
 (define-preposition "in addition")
 (define-preposition "in addition to")
 (define-preposition "in aid of")
+
 (define-preposition "in back of" :form 'spatial-preposition)
 (define-preposition "in between" :form 'spatial-preposition) ;;also adverb "..and everything in between"
+
 (define-preposition "in case of")
 (define-preposition "in common with")
 (define-preposition "in comparison with")
@@ -229,7 +231,7 @@
 (define-preposition "near to" :form 'spatial-preposition)
 (define-preposition "nearer" :form 'spatial-preposition) ;;comparative
 (define-preposition "nearer to" :form 'spatial-preposition) ;;comparative
-(define-preposition "next to" :form 'spatial-preposition)
+;; (define-preposition "next to" :form 'spatial-preposition) -- go compositional
 (define-preposition "notwithstanding")
 (define-preposition "of" )
 (define-preposition "off" )
@@ -243,7 +245,7 @@
 (define-preposition "on the matter of")
 (define-preposition "on the part of")
 (define-preposition "on the strength of")
-(define-preposition "on top of" :form 'spatial-preposition) ;;//// top
+;; (define-preposition "on top of" :form 'spatial-preposition) ;; doing it compositionally
 (define-preposition "onto" :form 'spatial-preposition)
 (define-preposition "out" )
 (define-preposition "out of" )

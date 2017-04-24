@@ -34,9 +34,9 @@
           (next-to physical)
           (at-relative-location (:or location physical)) ;;relative-position)
           (goal (:or location physical)))
-  :realization (:next\ to next-to
+  :realization (;; :next\ to next-to
                 :on supported-by
-                :on\ top\ of supported-by
+                ;; :on\ top\ of supported-by
                 :at at-relative-location ;; at the end
                 :on at-relative-location ;; on the left
                 :to goal))
