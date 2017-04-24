@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  February 2017
+;;;  version:  April 2017
 
 ;; broken out from operators 11/18/16
 
@@ -13,18 +13,25 @@
 ;;; Methods used by syntax functions that appreciate the spatial operators &such
 ;;;------------------------------------------------------------------------------
 
-;; "the block on the table" 
-(def-k-method compose ((np category::has-location) (pp category::location))
-  "Identifies the location of something that can have one"
+;;--- has-location
+
+;; "the block on the table"
+(def-k-method compose ((np category::has-location)
+                       (pp category::location))
+  ;; Called by interpret-pp-adjunct-to-np
   (declare (special *subcat-test*))
   (if *subcat-test*
     ;; given this specific a pattern, if we get here
     ;; then the interpretation/rule will go through
     t
-    (let ((i (bind-variable 'location pp np)))
-      ;;(format t "~&i = ~a~%" i)
-      i)))
+    (else
+      (tr :has-location+location np pp)
+      (let ((i (bind-variable 'location pp np)))
+        i))))
 
+
+
+;;--- spatial-operator
 
 (def-k-method compose ((operator category::spatial-operator)
                        (place category::has-location)) ;; any 'object'
@@ -33,7 +40,7 @@
   (if *subcat-test*
     t
     (else
-      (tr :spatial-operator+endurant)
+      (tr :spatial-operator+endurant operator place)
       (let ((form (edge-form (parent-edge-for-referent))))
         (cond
           ((np-category? form) ;; called from noun-noun-compound
@@ -50,9 +57,41 @@
            (push-debug `(,operator ,place))
            (error "Unanticipated form on parent edge: ~a" form)))))))
 
+(def-k-method compose ((operator category::spatial-operator)
+                       (place category::location))
+  ;; for "at the right end of the row"
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :spatial-operator+location operator place)
+      (let ((i (find-or-make-individual 'relative-location
+                                        :prep operator
+                                        :ground place)))
+        (revise-parent-edge :category (category-named 'location))
+        i))))
+
+
+;; "at the end"
+(def-k-method compose ((operator category::spatial-operator)
+                       (place category::dependent-location))
+  (declare (special *subcat-test*))
+  (if *subcat-test*
+    t
+    (else
+      (tr :spatial-operator+dependent-location operator place)
+      (let ((i (find-or-make-individual 'relative-location
+                                        :prep operator
+                                        :ground place)))
+        (revise-parent-edge :category (category-named 'location))
+        i))))
+
+
+
 (defun add-dependent-location (operator head)
   "Called in noun-noun-compound when the qualifier ('operator')
    is a dependent-location such as 'bottom' or 'end'."
+  (lsp-break "call to add-dependent-location")
   (bind-variable 'location operator head))
 
 #|     Too confusing for the generator since it only has the one
@@ -68,45 +107,8 @@
     head)) |#
 
 
-(def-k-method compose ((operator category::spatial-operator)
-                       (place category::location))
-  ;; for "at the right end of the row"
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    t
-    (else
-      (tr :spatial-operator+location)
-      (let ((i (find-or-make-individual 'relative-location
-                                        :prep operator
-                                        :ground place)))
-        (revise-parent-edge :category (category-named 'location))
-        i))))
 
-;; "at the end"
-(def-k-method compose ((operator category::spatial-operator)
-                       (place category::dependent-location))
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    t
-    (else
-      (tr :spatial-operator+dependent-location)
-      (let ((i (find-or-make-individual 'relative-location
-                                        :prep operator
-                                        :ground place)))
-        (revise-parent-edge :category (category-named 'location))
-        i))))
-
-;; "the block on the table"
-(def-k-method compose ((np category::has-location)
-                       (pp category::location))
-  ;; Called by interpret-pp-adjunct-to-np
-  (declare (special *subcat-test*))
-  (if *subcat-test*
-    t
-    (else
-      (tr :has-location+location)
-      (let ((i (bind-variable 'location pp np)))
-        i))))
+;;--- direction
 
 (def-k-method compose ((qualifier category::direction)
                        (head category::dependent-location))
@@ -115,7 +117,7 @@
   (if *subcat-test*
     t
     (else
-      (tr :direction+dependent-location)
+      (tr :direction+dependent-location qualifier head)
       (lsp-break "direction + dependent-location")
       (let ((i (find-or-make-individual 'orientation-dependent-location
                                         :prep qualifier
@@ -132,40 +134,64 @@
   (if *subcat-test*
     t
     (else
-      (tr :direction+multiple-dependent-location)
+      (tr :direction+multiple-dependent-location qualifier head)
       (let ((modified (bind-variable 'modifier qualifier head)))
         modified))))
- 
+
+(def-k-method compose ((head category::direction) ;; np + pp
+                       (ground category::object))
+  ;; (p/s "the left of the row")
+  (declare (special *subcat-test*))
+  (or (when *subcat-test* t)
+      (else
+        (tr :direction+object head ground)
+        (let ((i (find-or-make-individual 'orientation-dependent-location
+                                          :prep head
+                                          :ground ground)))
+          (revise-parent-edge :category (category-named 'location))
+          i))))
 
 
-;;; traces to determine when/whether a method is being used
+;;;---------------------------------------
+;;; traces of when a method is being used
+;;;---------------------------------------
 
-(defparameter *debug-compose* nil)
-(defun compose-debugging-on ()
-  (setq *debug-compose* t))
-(defun compose-debugging-off ()
-  (setq *debug-compose* nil))
+(defparameter *trace-methods* nil)
+(defun trace-methods ()
+  (setq *trace-methods* t))
+(defun untrace-methods ()
+  (setq *trace-methods* nil))
 
-(deftrace :spatial-operator+endurant ()
-  (when *debug-compose*
-    (trace-msg "Composing spatial-operator & endurant")))
+(deftrace :spatial-operator+endurant (operator place)
+  (when *trace-methods*
+    (trace-msg "Composing spatial-operator(~a) & endurant(~a)"
+               operator place)))
 
-(deftrace :spatial-operator+location ()
-  (when *debug-compose*
-    (trace-msg "Composing spatial-operator & location")))
+(deftrace :spatial-operator+location (operator place)
+  (when *trace-methods*
+    (trace-msg "Composing spatial-operator(~a) & location(~a)"
+               operator place)))
 
-(deftrace :spatial-operator+dependent-location ()
-  (when *debug-compose*
-    (trace-msg "Composing spatial-operator & dependent-location")))
+(deftrace :spatial-operator+dependent-location (operator place)
+  (when *trace-methods*
+    (trace-msg "Composing spatial-operator(~a) & dependent-location(~a)"
+                operator place)))
 
-(deftrace :has-location+location ()
-  (when *debug-compose*
-    (trace-msg "Composing has-location & location")))
+(deftrace :has-location+location (np pp)
+  (when *trace-methods*
+    (trace-msg "Composing has-location(~a) & location(~a)" np pp)))
 
-(deftrace :direction+dependent-location ()
-  (when *debug-compose*
-    (trace-msg "Composing direction & dependent-location")))
+(deftrace :direction+dependent-location (qualifier head)
+  (when *trace-methods*
+    (trace-msg "Composing direction(~a) & dependent-location(~a)"
+               qualifier head)))
 
-(deftrace :direction+multiple-dependent-location ()
-  (when *debug-compose*
-    (trace-msg "Composing direction & multiple-dependent-location")))
+(deftrace :direction+multiple-dependent-location (qualifier head)
+  (when *trace-methods*
+    (trace-msg "Composing direction(~a) & multiple-dependent-location(~a)"
+               qualifier head)))
+
+(deftrace :direction+object (head ground)
+  (when *trace-methods*
+    (trace-msg "Composing direction (i~a) & object (i~a)"
+               (indiv-uid head) (indiv-uid ground))))
