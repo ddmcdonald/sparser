@@ -518,18 +518,7 @@
                                (stringp (eval '*indra-text*)))
                           (eval '*indra-text*)
                           (sentence-string sentence))))))
-    (push f *indra-post-process*)
-    ;; do the output at the article level
-    #+ignore
-    (when output-stream
-      (let ((indra-form (indra-form-for-sexpr f (get-pmid) nil)))
-        (declare (special indra-form))
-        (when indra-form
-          ;;(lsp-break "indra-form")
-          (loop for iform in indra-form
-                do
-                  (pp-json iform output-stream)
-                  (format output-stream "~%~%~%")))))))
+    (push f *indra-post-process*)))
 
 (defun contains-atom (atom list-struct)
   (if (not (consp list-struct))
