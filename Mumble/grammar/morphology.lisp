@@ -2,7 +2,7 @@
 ;;;
 ;;; Mumble-05:  grammar; morphology
 ;;;
-;;; Copyright (C) 2005,2013,2016 David D. McDonald
+;;; Copyright (C) 2005,2013,2016-2017 David D. McDonald
 ;;; Copyright (C) 1985, 1986, 1987, 1988, 1995  David D. McDonald and the
 ;;;    Mumble Development Group.  All rights reserved.
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
@@ -265,6 +265,13 @@ The exceptions are optional."
   (let* ((positions (position-table *current-phrasal-root*))
 	 (subject-position (cdr (assoc 'subject positions)))
 	 (subject-contents (and subject-position (contents subject-position))))
+    (when (and subject-contents
+               (eq subject-contents (find-word "there" 'pronoun)))
+      ;; Take the number, etc. from the complement
+      (let* ((comp-position (cdr (assoc 'complement-of-be positions)))
+             (comp-contents (and comp-position (contents comp-position))))
+        (when comp-contents
+          (setq subject-contents comp-contents))))
     (typecase subject-contents
       (slot (if (eq (name (next subject-contents)) 'clause)
               (next subject-contents)
@@ -292,6 +299,8 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
                      (let ((acc (get-accessory-value ':number orig)))
                        (and acc (name acc))))
                     (pronoun (number orig)))))
+               (sp::individual
+                (if (sp::itypep subj 'collection) 'plural 'singular))
 	       (pronoun (number subj)))
 	     'singular))))
 
