@@ -1,8 +1,9 @@
 ;;; -*- Mode: Lisp; package: MUMBLE; Syntax: Common-lisp; -*-
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2011,2015-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2011,2015-2017 David D. McDonald  -- all rights reserved
 
 ;; /Mumble/derivation-trees/types.lisp
+;; April 2017
 
 ;; Initated 9/16/09. Added derivation tree nodes 10/6. 3/9/11 removed
 ;; co: from the defobject calls not that's it's been brought into utils.
@@ -108,6 +109,23 @@
   ;; points to the open parameter that the resource in the derivation
   ;; tree that this node will fill.
   ((phrase-parameter)))
+
+
+(defgeneric copy-dtn (dtn)
+  (:documentation "Make a new derivation tree object that is 
+   a toplevel replica of the original.")
+  (:method ((original derivation-tree-node))
+    (let ((new (make-instance 'derivation-tree-node
+                              :resource (resource original))))
+      ;; Ignoring root, participants, and bkptrs since these
+      ;; aren't being used right now (4/17)
+      (when (complements original)
+        (setf (complements new) (copy-list (complements original))))
+      (when (adjuncts original)
+        (setf (adjuncts new) (copy-list (adjuncts original))))
+      (when (features original)
+        (setf (features new) (copy-list (features original))))
+      new)))
 
 
 ;;;---------------------
