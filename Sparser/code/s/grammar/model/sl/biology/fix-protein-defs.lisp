@@ -179,7 +179,11 @@ it outputs it to the non-upa-file"
               (case (car def)
                 (define-protein (lc-one-line-print def stream))
                 (def-family nil)
-                (t (lc-one-line-print `(define-protein ,.(cdr def)) non-upa-stream))))
+                (t (unless (or (search "PROTEIN" (second def))
+                               (search ">" (second def))
+                               (search "phosphorylated" (second def) :test #'equalp)
+                               (search "del" (second def)))
+                     (lc-one-line-print `(define-protein ,.(cdr def)) non-upa-stream)))))
       (loop for def in new-defs
             do
               (case (car def)
@@ -253,11 +257,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
         (|Reactome| (loop for item in syns when (not (search "Reactome:" item)) return item))
         (t (car syns)))
       (car syns)))
-        
-      
-      
-
-      
+  
 (defun find-upa-entry (syns)
   (let ((up-item
          (loop for item in syns
