@@ -17,13 +17,12 @@
 (defun record-protein-id-for-synonyms (form &aux (def (car form))(id (second form)))
   (when (eq def 'define-protein)
     (loop for wd in (cons id (third form))
+            unless (search ":" wd :test #'equal)
           do
          (pushnew id (gethash wd *protein-family-ht*) :test #'equal))))
 
 
 (defun read-and-replace-protein-defs (&key (protein-file "standardized-protein-defs-complete.lisp") 
-                                        upa-ht 
-                                        upm-ht
                                         (output-file "standardized-protein-defs-new.lisp")
                                         (non-upa-file "non-upa-upm-proteins-new.lisp"))
 
@@ -33,21 +32,16 @@ Mnemonic) as keys, output a file that has all proteins whose IDs are
 in the hash table changed to have \"UP:$UPA\" as their ID and the UPA
 and UPM in their alternate names field -- if the ID isn't a UPA or UPM
 it outputs it to the non-upa-file"
-  (unless (and upa-ht upm-ht)
-    (unless (boundp '*upa-key-upm-val*)
-      (load
-       (concatenate 'string "sparser:bio;"
-                    "uniprot-accession-id-mnemonic.lisp")))
-    (setq upa-ht (or upa-ht *upa-key-upm-val*))
-    (setq upm-ht (or upa-ht *upm-key-upa-val*)))
+  (unless (boundp '*upa-key-upm-val*)
+    (load
+     (concatenate 'string "sparser:bio;"
+                  "uniprot-accession-id-mnemonic.lisp")))
 
   (unless (boundp '*hgnc-up-ht*)
     (load (concatenate 'string "sparser:bio-not-loaded;"
                        "hgnc;hgnc-with-ids-2.lisp")))
 
-  (let* ((new-defs (read-and-normalize-protein-defs :protein-file protein-file
-                                                    :upa-ht upa-ht
-                                                    :upm-ht upm-ht)))
+  (let* ((new-defs (read-and-normalize-protein-defs :protein-file protein-file)))
     (setq *new-protein-defs* (merge-duplicates-and-separate-families new-defs))
     
     (unless (and (eq output-file t)
@@ -60,8 +54,12 @@ it outputs it to the non-upa-file"
 
 (defparameter *duplicate-protein-ht* (make-hash-table :size 30000 :test #'equal))
 
+(defparameter *minimal-families* nil)
 (defun merge-duplicates-and-separate-families (defs)
+  (declare (special defs))
+
   (let (non-standard-defs merged-defs protein-family-ht)
+    (declare (special non-standard-defs merged-defs protein-family-ht))
     (loop for def in defs
           do
             (case (car def)
@@ -71,22 +69,46 @@ it outputs it to the non-upa-file"
                       def
                       (gethash (second def) *duplicate-protein-ht*))))
               (t (push def non-standard-defs))))
+
     (setq merged-defs (sort (mapcar #'(lambda (x)
                                         (strip-explicit-ids-and-downcase (cdr x)))
                                     (hal *duplicate-protein-ht*)) #'string< :key #'second))
+
     (setq protein-family-ht (get-protein-family-ht merged-defs))
+    (setq *minimal-families* nil)
+    (loop for possible-family in (hal protein-family-ht)
+          when (eq (length possible-family) 3)
+               
+          do
+            (cond ((or (and (not (search "UP:" (second possible-family)))
+                            (search "UP:" (third possible-family)))
+                       (and (not (search "UP:" (third possible-family)))
+                            (search "UP:" (second possible-family))))
+                   (push possible-family *minimal-families*)
+                   (remhash (car possible-family) protein-family-ht))
+                  ((and (search "NCIT:" (second possible-family))
+                        (search "NCIT:" (third possible-family))
+                        (or (eq (1+ (read-from-string (subseq (second possible-family) 6)))
+                                (read-from-string (subseq (third possible-family) 6)))
+                            (eq (1+ (read-from-string (subseq (third possible-family) 6)))
+                                (read-from-string (subseq (second possible-family) 6)))))
+                   (push possible-family *minimal-families*)
+                   (remhash (car possible-family) protein-family-ht))
+                  (t (push possible-family *minimal-families*)
+                     (remhash (car possible-family) protein-family-ht))))
     (setq merged-defs
           (append
            (loop for def in merged-defs
                  collect (remove-family-names def protein-family-ht))
            (loop for def in non-standard-defs
                  collect (remove-family-names def protein-family-ht))))
+    ;;(lsp-break "merge-duplicates-and-separate-families")
     (append merged-defs
             (sort
              (merge-family-defs
               (loop for fam in (hal protein-family-ht)
-                   when (cddr fam)
-                   collect `(def-family ,(car fam) :members ,(sort (cdr fam) #'string<))))
+                    when (cddr fam)
+                    collect `(def-family ,(car fam) :members ,(sort (cdr fam) #'string<))))
              #'string< :key #'car))))
 
 (defun merge-family-defs (fam-defs)
@@ -165,88 +187,139 @@ it outputs it to the non-upa-file"
                 (t nil))))))
 
 
-(defun read-and-normalize-protein-defs (&key (protein-file "standardized-protein-defs-complete.lisp") 
-                                          (upa-ht *upa-key-upm-val*)
-                                          (upm-ht *upm-key-upa-val*))
+(defun read-and-normalize-protein-defs (&key (protein-file "standardized-protein-defs-complete.lisp") )
   "Taking an input list of the existing proteins and hash tables using
 UPA ID (Uniprot Accession number) as keys and UPM ID (Uniprot
 Mnemonic) as keys, output a list that has all proteins whose IDs are
 in the hash table changed to have \"UP:$UPA\" as their ID and the UPA
 and UPM in their alternate names field -- if the ID isn't a UPA or UPM
 it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out later"
+  (declare (special *ncit->up-ht*))
   (let ((input (open (concatenate 'string "sparser:bio;" protein-file)
+                     
                      :if-does-not-exist nil)))
+    (unless (boundp '*ncit->up-ht*)
+      (load (concatenate 'string "sparser:bio;" "up-ncit-hgnc-map.lisp")))
     (when input
       (loop for prot = (read input nil)
             while prot
             when (and (stringp (second prot)) (consp (third prot)))
-            collect (revise-protein-def prot
-                                        :upa-ht *upa-key-upm-val*
-                                        :upm-ht *upm-key-upa-val*)))))
+            collect (revise-protein-def prot )))))
 
 (defun revise-protein-def (def
-                           &key
-                             (upa-ht *upa-key-upm-val*)
-                             (upm-ht *upm-key-upa-val*)
                            &aux
                              (prot (second def))
-                             (syns (third def)))
-  (cond ((eq 0 (search "UP:" prot))
-         (non-redundant-def def))
-        ((gethash prot upa-ht)
-         (rewrite-protein def prot (gethash prot upa-ht)))
-        ((gethash prot upm-ht)
-         (rewrite-protein def (gethash prot upm-ht) prot))
-        ((check-alts-for-UP (cons prot syns))
-         (rewrite-protein def (check-alts-for-UP (cons prot syns)) prot))
-        (t
-         ;; mark this as a definition with a non-standard primary-key
-         `(non-standard-define-protein ,.(cdr (non-redundant-def (use-standard-id def)))))))
+                             (syns (cons prot (third def)))
+                             (standard-id (use-standard-id def)))
+  (declare (special def))
+  (let* ((id (get-best-protein-id def))
+         (name (get-best-protein-name id syns)))
+    (if (search ":" id)
+        `(,(car def) ,id ,(simplify-protein-names syns))
+        `(non-standard-define-protein ,(or id (car syns)) ,(simplify-protein-names syns)))))
 
+(defun get-best-protein-id (def &aux (syns (cons (second def) (third def))))
+  (or (find-upa-entry syns)
+      (loop for item in syns
+            when (and (search "NCIT:" item)
+                      (not (search " " item))
+                      (not (search "-" item)))
+            return item)
+      (loop for item in syns
+            when (and (search ":" item)
+                      (not (search " " item))
+                      (not (search "-" item)))
+            return item)
+      #+ignore
+      (loop for item in syns
+            when (eq 0 (search "PROTEIN-REFERENCE" item))
+            return (format nil "Reactome:~a" item))
+      #+ignore
+      (loop for item in syns
+            when (eq 0 (search "PROTEIN" item))
+            return (format nil "Reactome:~a" item))
+      (loop for item in syns
+            when (eq 0 (search "IPR" item))
+            return item)
+            (loop for item in syns
+            when (search "_" item)
+            return item)))
 
-(defun get-upa-from-symbol (sym)
-  (cond ((gethash sym *upa-key-upm-val*) sym)
-        ((gethash sym *upm-key-upa-val*))
-        ((gethash sym *hgnc-up-ht*))))
+(defun get-best-protein-name (id syns)
+  (if (search ":" id)
+      (case (intern (subseq id (1+ (search ":" id))) :sparser)
+        (UP (gethash (subseq id (1+ (search ":" id))) *upa-key-upm-val*))
+        (ncit (loop for item in syns when (not (search "NCIT:" item)) return item))
+        (|Reactome| (loop for item in syns when (not (search "Reactome:" item)) return item))
+        (t (car syns)))
+      (car syns)))
+        
+      
+      
+
+      
+(defun find-upa-entry (syns)
+  (let ((up-item
+         (loop for item in syns
+               when (and (eq 0 (search "UP:" item :test #'equal))
+                         (gethash (subseq item 3)  *upa-key-upm-val*))
+               return (subseq item 3)
+
+               when (and (eq 0 (search "Uniprot:" item :test #'equalp))
+                         (gethash (subseq item 7)  *upa-key-upm-val*))
+               return (subseq item 7)
+
+               when (and (eq 0 (search "NCIT:" item)) (ncit->upa? item))
+               return (car (gethash  item *ncit->up-ht*))
+
+               when (gethash item *upa-key-upm-val*)
+               return item
+
+               when (gethash item *upm-key-upa-val*)
+               return (gethash item *upm-key-upa-val*)
+
+               when (and (eq 0 (search "HGNC:" item :test #'equal))
+                         (gethash item *hgnc-up-ht*))
+               return (gethash item *hgnc-up-ht*)
+                 )))
+    (when up-item
+      (format nil "UP:~a" up-item))))
+
+(defun ncit->upa? (item)
+  (when (eq 0 (search "NCIT:" item :test #'equalp))
+    nil))
+
+(defun get-standard-id (items)
+  (or
+   (loop for item in items
+         when (eq 0 (search "NCIT:" item))
+         do (return (gethash item *ncit->up-ht*)))
+   (loop for item in items
+         when (and (search ":" item)
+                   (not (search " " item))
+                   (not (search "-" item)))
+         do (return item))
+   (loop for item in items
+         when (eq 0 (search "PROTEIN" item))
+         do (return item))))
 
 (defun use-standard-id (prot)
-  (let ((standard
-         (or
-          (loop for item in (third prot)
-                when (eq 0 (search "NCIT:" item))
-                do (return item))
-          (loop for item in (third prot)
-                when (and (search ":" item)
-                          (not (search " " item))
-                          (not (search "-" item)))
-                do (return item))
-          (loop for item in (third prot)
-                when (eq 0 (search "PROTEIN" item))
-                do (return item)))))
-    
+  (declare (special *ncit->up-ht*))
+  (let ((standard (get-standard-id (third prot))))
     `(,(car prot) ,(or standard (second prot))
        ,(loop for item in (third prot)
               collect
                 (if (equal item standard)
                     (second prot)
-                    item)))))                
+                    item)))))
 
-(defun rewrite-protein (prot upa upm)
-  "Given an existing protein definition, its UPA, UPM and an output
-file, prints a new protein definition to that file with the ID as
-UP:UPA and adds the UPA and UPM to the alternate names"
-  (let* ((orig-alt-names (third prot))
-         (alt-names-with-upm (if (member upm orig-alt-names :test #'equal)
-                                 orig-alt-names
-                                 (push upm orig-alt-names)))
-         (defprot (car prot))
-         (id (concatenate 'string "UP:" upa))
-         (alt-names (if (member upa alt-names-with-upm :test #'equal)
-                        alt-names-with-upm
-                        (push upa alt-names-with-upm))))
-    (setq alt-names (sort (remove-duplicates alt-names :test #'equal)
-                          #'string<))
-    `(,defprot ,id ,alt-names)))
+(defun simplify-protein-names (names)
+  (sort (loop for item in
+                (remove-duplicates names :test #'equal)
+              unless (or (null item)
+                         (eq 0 (search "PROTEIN" item)))
+              collect item)
+        #'string<))
 
 (defun lc-one-line-print (x stream)
   (let* ((*print-pretty* nil)
@@ -261,6 +334,8 @@ UP:UPA and adds the UPA and UPM to the alternate names"
 (defun check-alts-for-UP (alt-names)
   (let (up-names)
     (loop for name in alt-names
+          when (and (eq 0 (search "NCIT:" name)) (gethash name *ncit->up-ht*))
+          do (pushnew (gethash name *ncit->up-ht*) up-names :test #'equal)
           when (or (eq 0 (search "UniProt:" name)) (eq 0 (search "PR:" name)))
           do
             (let ((up-name? (subseq name (+ 1 (search ":" name)) (search " " name))))
@@ -274,7 +349,7 @@ UP:UPA and adds the UPA and UPM to the alternate names"
           when (gethash (string-upcase name) *upa-key-upm-val*)
           do
             (pushnew  (string-upcase name) up-names :test #'equal)
-          when (and (eq 0 (search "HGNC" name)) (gethash name *hgnc-up-ht*))
+          when (and (eq 0 (search "HGNC:" name)) (gethash name *hgnc-up-ht*))
           do
             (pushnew (gethash name *hgnc-up-ht*) up-names :test #'equal))
     (when (and up-names (null (cdr up-names)))
