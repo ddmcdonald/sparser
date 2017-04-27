@@ -82,12 +82,12 @@
               ((and (resolve uc-word) (rule-for uc-word))
                (stash-redefined-word term uc-word id "upcase")
                (return-from trips/reach-term->def-ided-indiv nil))
-              ((resolve (remove #\- word)) 
+              ((and (search "-" word) (resolve (remove #\- word))) 
                ;; even if they're only defined in a pw, it's unclear
                ;; we want to define the hyphen version
                (stash-redefined-word term (remove #\- word) id "hyphens")
                (return-from trips/reach-term->def-ided-indiv nil))
-              ((resolve (remove #\- dc-word))
+              ((and (search "-" word) (resolve (remove #\- dc-word)))
                (stash-redefined-word term (remove #\- dc-word) id "hyphens-dc")
                (return-from trips/reach-term->def-ided-indiv nil))))
       (let* 
@@ -135,8 +135,10 @@
           (substance
            (stash-def-ided-indiv word category id name '*new-substance*))
           (unit-of-measure
-           (stash-def-ided-indiv word category id name '*new-units*))
-          ((gene protein gene-protein)
+           (if (< (length word) 4) ;; for abbreviations, case matters (e.g. "m" meter vs. "M" molar) but for full names it doesn't
+               (stash-def-ided-indiv word category id name '*new-units* :maintain-case t)
+               (stash-def-ided-indiv word category id name '*new-units*)))
+           ((gene protein gene-protein)
            (push 
             `(define-protein ,word ,(list id name))
             *trips-define-proteins*)
@@ -202,20 +204,30 @@ uid binding, if there is one"
                      term))
            (push (list mod rword term) *no-id-redef*)))))
 
-(defun stash-def-ided-indiv (word category id name loc &key no-plural)
+(defun stash-def-ided-indiv (word category id name loc &key no-plural maintain-case)
   (let* ((name-cat (when name (name-is-cat-p name)))
-         (name-uid (when name-cat (value-of 'uid (category-named name-cat)))))
-    ;(lsp-break "stash-def-ided-indiv pre-if")
-    (if (and name name-cat)
-        (then (push `(def-synonym ,name-cat (:noun ,word)) (symbol-value loc))
-              (unless (equal id name-uid)
-                (push (list category name-cat name-uid :newUID id) *name-id-mismatches*)))
-        (else (push `(def-ided-indiv ,category ,word
-                       ,(simplify-colons id)
-                       ,.(when name `(:name ,(pname name)))
-                       ,.(when no-plural `(:no-plural t)))
-                    (symbol-value loc))))
-     ;(lsp-break "stash-def-ided-indiv post-if")
+         (name-uid (when name-cat (value-of 'uid (category-named name-cat))))
+         (word-plural-name (when name (word-is-plural-name-p word name))))
+
+                                        ;(lsp-break "stash-def-ided-indiv pre-if")
+    (cond ((name name-cat) ;; if name is predefined and word is a plural of it, we'll deal with it at the normalization step
+           (push `(def-synonym ,name-cat (:noun ,word)) (symbol-value loc))
+           (unless (equal id name-uid)
+             (push (list category name-cat name-uid :newUID id) *name-id-mismatches*)))
+          (word-plural-name
+           (push `(def-ided-indiv ,category ,name
+                    ,(simplify-colons id)
+                    :plural ,(list (plural-version name) word)
+                    ,.(when maintain-case `(:maintain-case t)))
+                 (symbol-value loc)))
+          (t
+           (push `(def-ided-indiv ,category ,word
+                    ,(simplify-colons id)
+                    ,.(when name `(:name ,(pname name)))
+                    ,.(when no-plural `(:no-plural t))
+                    ,.(when maintain-case `(:maintain-case t)))
+                 (symbol-value loc))))
+                                        ;(lsp-break "stash-def-ided-indiv post-if")
     (car (symbol-value loc))))
 
 (defun name-is-cat-p (name)
@@ -232,6 +244,22 @@ uid binding, if there is one"
            hyph-sym-name)
           (t
            nil))))
+
+(defun word-is-plural-name-p (word pname)
+  (let* ((lastchar (subseq pname (- (length pname) 1)))
+         (last2char (subseq pname (max (- (length pname) 2) 0)))
+         (last3char (subseq pname (max (- (length pname) 3) 0)))
+         (plural-versions (list (plural-version pname)
+                               (cond ((equal last3char "ium")
+                                      (string-append (subseq pname 0 (- (length pname) 2)) "a"))
+                                     ((equal last2char "us")
+                                      (string-append (subseq pname 0 (- (length pname) 2)) "i"))
+                                     ((equal lastchar "a")
+                                      (string-append pname "e"))
+                                     (t
+                                      nil)))))
+    (member word plural-versions :test #'string-equal)))
+        
 
 (defun trips-class->krisp (term)
   (unless (null (second term))
