@@ -309,7 +309,8 @@
      (cond
        ((when (use-methods) ;; "left side" (etc. see core/places/methods.lisp)
           (compose qualifier head)))
-       ((itypep qualifier 'dependent-location) ;; w/o methods: "bottom" in "bottom block"
+       ((and (not (eq script :biology))
+             (itypep qualifier 'dependent-location)) ;; w/o methods: "bottom" in "bottom block"
         (add-dependent-location qualifier head))
        ((and
          (category-named 'knockout-pattern)
