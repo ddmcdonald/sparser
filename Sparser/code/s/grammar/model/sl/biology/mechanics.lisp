@@ -392,6 +392,23 @@ uid binding, if there is one"
           do (save-var->bio-nl-new-defs-file (symbol-value v)
                                              (string-downcase (string-trim "*" (string v))))))
 
+(defmacro def-named-bio-individual (word category-name id &key name)
+  `(define-named-bio-individual ',category-name ',word ',id ,. (when name `(:name `,name))))
+
+(defun define-named-bio-individual (category-name word id &key name)
+  (let* ((category (category-named category-name :break-if-undefined))
+         (i (if id
+                (or (gethash id *uid-to-individual*)
+                    (setf (gethash id *uid-to-individual*)
+                          (let ((ind (find-or-make-individual category :uid id)))
+                            (if name
+                                (bind-dli-variable :name name ind)
+                                ind))))
+                (find-or-make-individual category :name (if name (pname name) (pname word))))))
+    (add-rules (make-rules-for-head :common-noun (resolve/make (string-downcase (pname word))) category i) i)
+    (when name (add-rules (make-rules-for-head :common-noun (resolve/make (pname name)) category i) i))
+    i))
+
 ;;;---------------------------
 ;;; bio-synonyms
 ;;;---------------------------
