@@ -15,6 +15,7 @@
 
 ;; Protein families
 
+
 (def-family "SAPK" :synonyms ("SAP kinase activity" "stress activated protein kinase" "stress=activated protein kinase" ) :identifier "GO:0016909" ) 
 (def-family "histone H2B" :identifier "FA:01763")
 (def-family "CDK" :synonyms ("cyclin dependent kinase" "cyclin-dependent kinase" "Cdks" "CDKs") :identifier "NCIT:C17767")	
@@ -39,11 +40,11 @@
 (def-family "MAPK" :members ("UP:Q5A1D3" #| "ERK1" |# "UP:Q54QB1" #| "ERK2" |# ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase" "mitogen-activated protein kinase" "ERK-1/2"))
 (def-family "MEK" :members ("MEK1" "MEK2") :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase"))
 (def-family "NF-AT" :members ("NFAT5_HUMAN")) 
-(def-family "PI3-kinase" :synonyms ("PI3K" "phosphatidylinositol-4,5-bisphosphate 3-kinase" "phosphatidylinositide 3-kinase"  "phosphatidylinositol 3-kinase" "phosphatidylinositol-3-kinase" "PI 3-kinase" "PI(3)K" "PI-3K"))
+(def-family "PI3-kinase" :synonyms ("PI3K" "phosphatidylinositol-4,5-bisphosphate 3-kinase" "phosphatidylinositide 3-kinase"  "phosphatidylinositol 3-kinase" "phosphatidylinositol-3-kinase" "PI 3-kinase" "PI(3)K" "PI-3K") :identifier "PF00454")
 (def-family "PKC" :members ("PKC-alpha" "PKC-delta" "nPKC-epsilon"))
 (def-family "PTK")
 (def-family "RAS GAP")
-(def-family "Raf" :members ("ARaf" "BRaf" "CRaf" "Raf1") :identifier  "FA:03114" :synonyms ("RAF")) ;;/// maybe use the Mitre choice? 
+(def-family "Raf" :members ("ARaf" "BRaf" "CRaf") :identifier  "FA:03114" :synonyms ("RAF")) ;;/// maybe use the Mitre choice? 
 (def-family "Ras" :members ("KRas" "HRas" "NRas") :identifier "GO:0003930" :synonyms ("RAS")) ;; this is NOT the long name for "RAS" :long "GTPase") ;;//// need capitalization hacks
 ;; alternate Ras identifier "FA:03663" -- from TRIPS-proteins -- have now commented this definition out of non-upa-upm-proteins
 (def-family "SMAD" );; there are a bunch of these, but we will ignore them for the moment
@@ -655,7 +656,7 @@
 (def-family "INCA" :synonyms ("INCa") :identifier "FA:01853")
 (def-family "CEA" :synonyms NIL :identifier "FA:01836")
 (def-family "immunoglobulin superfamily" :synonyms ("immunoglobulins") :identifier "FA:01833")
-(def-family "IL-1" :synonyms ("IL1") :identifier "FA:01820")
+(def-family "IL-1" :synonyms ("IL1" "il-1") :identifier "FA:01820") 
 (def-family "HOP2" :synonyms ("Hop2") :identifier "FA:01789")
 (def-family "SET7" :synonyms ("Set7") :identifier "FA:01771")
 (def-family "SET2" :synonyms ("Set2") :identifier "FA:01770")
