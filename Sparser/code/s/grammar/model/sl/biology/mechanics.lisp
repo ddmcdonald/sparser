@@ -210,7 +210,7 @@ uid binding, if there is one"
          (word-plural-name (when name (word-is-plural-name-p word name))))
 
                                         ;(lsp-break "stash-def-ided-indiv pre-if")
-    (cond ((name name-cat) ;; if name is predefined and word is a plural of it, we'll deal with it at the normalization step
+    (cond ((and name name-cat) ;; if name is predefined and word is a plural of it, we'll deal with it at the normalization step
            (push `(def-synonym ,name-cat (:noun ,word)) (symbol-value loc))
            (unless (equal id name-uid)
              (push (list category name-cat name-uid :newUID id) *name-id-mismatches*)))
