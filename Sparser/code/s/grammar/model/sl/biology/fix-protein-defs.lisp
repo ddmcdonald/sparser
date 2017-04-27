@@ -299,6 +299,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                    (not (search " " item))
                    (not (search "-" item)))
          do (return item))
+   #+ignore
    (loop for item in items
          when (eq 0 (search "PROTEIN" item))
          do (return item))))
