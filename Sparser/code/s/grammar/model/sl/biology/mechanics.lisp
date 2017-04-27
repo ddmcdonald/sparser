@@ -392,6 +392,88 @@ uid binding, if there is one"
           do (save-var->bio-nl-new-defs-file (symbol-value v)
                                              (string-downcase (string-trim "*" (string v))))))
 
+(defun trips/reach-term->def-bio (term &optional (trips/reach->krisp-class #'trips-class->krisp))
+  "Function takes a trips definition and returns a sparser definition form"
+  (when (equal (second term) 'sparser::--)
+    ;; new format for file -- revise call
+    (setq term (third term)))
+  (when *suppress-redefinitions*
+    (when (resolve (car term))
+      (when *show-trips-redefinitions*
+        (format t "~%ignoring redefinition ~s of already defined word~%"
+                term))
+      (return-from trips/reach-term->def-bio nil))
+    (when 
+        (or (resolve (string-downcase (car term)))
+            (resolve (string-upcase (car term))))
+      (when *show-trips-redefinitions*
+        (format t "~%ignoring mixed-case redefinition ~s of already defined word~%"
+                term))
+      (return-from trips/reach-term->def-bio nil)))
+
+  (let* ((name (getf (cddr term) :name))
+        (name-cat (when name (name-is-cat-p name)))
+        (category (funcall trips/reach->krisp-class term)))
+    (case category
+      ((residue-on-protein molecular-site nil time-span)
+       ;;(format t "Rejecting REACH definition ~s~%" term)
+       nil)
+      (cellular-location
+       `(define-cellular-location ,(car term)
+           ,(simplify-colons
+            (getf (cddr term) :id))))
+      ((bacterium ;;bio-process ;; may conflict with handling of post-translational processes
+        cancer
+        cell-line
+        cell-type
+        cellular-process
+        disease
+        drug
+        ;;gene
+        molecule
+        organism
+        
+        ;;protein
+        ;; rna has problems
+        unit-of-measure
+        virus)
+       (if name-cat
+           `(def-synonym ,name-cat (:noun ,(car term)))
+           `(def-bio ,(car term)
+                ,category
+              :long ,(getf (cddr term) :name)
+              :identifier ,(simplify-colons
+                            (getf (cddr term) :id)))))
+
+      ((gene protein gene-protein)
+       (push 
+        `(define-protein ,(car term) ,(list (getf (cddr term) :id) (getf (cddr term) :name)))
+        *trips-define-proteins*)
+       (car *trips-define-proteins*))
+      (bio-process
+       (when (getf (cddr term) :name)
+         (let ((name (intern (string-upcase (getf (cddr term) :name)) (find-package :sparser))))
+         (if name-cat
+             `(def-synonym ,name-cat (:noun ,(car term)))
+             `(define-category ,name :specializes bio-process
+                  ,.(when (getf (cddr term) :id)
+                      `(:bindings (uid ,(getf (cddr term) :id))))
+                  :realization (:noun ,(car term)))))))
+      (t
+       (unless (member category '(bio-method bio-organ bio-complex protein-domain protein-family rna referential-sem time-unit))
+         (format t "~%defining an instance of ~s~%" category))
+       (when (member category '(point-mutation)) 
+         ;;(member category '(bio-process bio-organ bio-complex))
+         ;; we really want bio-processes and bio-organs to be individuals, but there is a problem with def-bio -- ASK ALEX
+         (lsp-break "trips/reach-term->def-bio"))
+       (unless (or (eq category 'referential-sem)
+                   (eq category 'time-unit))
+         (let ((name (getf (cddr term) :name)))
+           `(define-named-bio-individual ',category
+                ',(intern (string-upcase (car term)) (find-package :sp))
+              ',(simplify-colons (getf (cddr term) :id))
+              ,.(when name `(:name ,(pname name))))))))))
+
 (defmacro def-named-bio-individual (word category-name id &key name)
   `(define-named-bio-individual ',category-name ',word ',id ,. (when name `(:name `,name))))
 

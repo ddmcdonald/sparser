@@ -3203,8 +3203,28 @@
                 finally (save-var->bio-nl-new-defs-file *suspect-trips-defs* 
                                                         "suspect-trips-reach-defs"))))
 
+;; temporarily putting this in since apparently some of the definitions aren't
+;; pasted below (e.g., bio-processes) so we still need this step for now
+(defun old-load-trips-terms ()
+  (loop for term-name in
+          `(
+            *trips-terms*
+            *trips-bio-process*
+            *trips-disease*
+            *trips-cells*
+            *trips-cell-lines*
+            *trips-chemicals*
+            ; *trips-genes-and-proteins*
+            *trips-drug*
+            *trips-molecular-domain*
+            ; *trips-protein-family*
+            )
+        as terms = (eval term-name)
+        do 
+          (loop for term in terms do
+                  (define-trips-term term))))
 
-
+(old-load-trips-terms)
 
 (def-bio "12-O-tetradecanoylphorbol-13-acetate" drug :long "tetradecanoylphorbol acetate" :identifier "NCIT:C866")
 (def-bio "15-Deoxy-Delta12,14-prostaglandin J2" molecule :long "15-deoxy-Delta(12,14)-prostaglandin J2" :identifier "CHEBI:34159")
