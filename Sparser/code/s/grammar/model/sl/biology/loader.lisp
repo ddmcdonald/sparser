@@ -42,6 +42,7 @@
 (gload "bio;proteins")
 (gload "bio;rhgnc-proteins")
 |#
+(gload "bio;bio-complexes")
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
