@@ -30,6 +30,7 @@
 ;; remove broken new rule for vo/passive/nominal/expr.
 ;; 1.0 1/5/15 Radical overhaul to make things uniform by taking the
 ;;  full set of parameters. Also to remove dead wood. 
+;; 4/24/17 Added def-ided-indiv and related functions 
 
 (in-package :sparser)
 
@@ -79,6 +80,63 @@ broadly speaking doing for you all the things you might do by hand.
     ;; for organizing the information.
     i))
 
+(defparameter *uid-to-individual* (make-hash-table :size 10000 :test #'equal))
+(defparameter *id-mult-defs* nil) ;; to aid in definition consolidation later
+
+(defmacro def-ided-indiv (category-name word id &key name members adj synonyms plural no-plural maintain-case)
+  `(define-individual-with-id ',category-name ,word ,id ,.(when name `(:name ,name))
+                              ,.(when members `(:members ,members))
+                              ,.(when adj `(:adj ,adj))
+                              ,.(when synonyms `(:synonyms ,synonyms))
+                              ,.(when no-plural `(:no-plural ,no-plural))
+                              ,.(when maintain-case `(:maintain-case ,maintain-case))))
+
+(defun define-individual-with-id (category-name word id &key name members adj synonyms plural no-plural maintain-case)
+  (assert (and category-name word id))
+  (when (gethash id *uid-to-individual*)
+    (push `(,id ,category-name ,word ,.(when name `(:name ,name))) *id-mult-defs*))
+  (let* ((base-word (if maintain-case
+                        word
+                        (string-downcase word)))
+         (category (category-named category-name :break-if-undefined))
+         (i (or (gethash id *uid-to-individual*)
+                (setf (gethash id *uid-to-individual*)
+                      (let ((ind (find-or-make-individual category :uid id)))
+                        (if name
+                            (bind-dli-variable :name name ind)
+                            ind))))))
+    (add-rules-cond-plural base-word category i :plural plural :no-plural no-plural)
+    (when name (add-rules-cond-plural name category i
+                                      :no-plural (or no-plural 
+                                                     (equal name base-word)))) 
+   ;; added so plurals inhibited because the base-word was just defined
+   ;; don't get pushed to *inhibited-plurals* since they're not interesting
+    (when adj (add-rules (make-rules-for-head :adjective (resolve/make (pname adj)) 
+                                              category i) i))
+    (when synonyms (loop for s in synonyms
+                         do (add-rules-cond-plural s category i :no-plural no-plural)))
+    (when (consp members) (setq i (set-family-members i members)))
+    i))
+
+(defparameter *inhibited-plurals* nil)
+
+(defun add-rules-cond-plural (word category ind &key plural no-plural (pos :common-noun))
+  "Given a word, category, and individual, add-rules to the individual
+for that word, and if no-plural or if the plural-version of the word
+resolves, it blocks the plural (and in the latter case adds the word
+to the list of *inhibited-plurals* so we can troubleshoot later and
+see if there are issues"
+  (let ((*inhibit-constructing-plural* 
+         (or no-plural
+             (if (resolve (plural-version word))
+                 (push word *inhibited-plurals*)
+                 nil))))
+    (declare (special *inhibit-constructing-plural*))
+    (if plural
+        (add-rules (make-rules-for-head pos (resolve/make word) category ind :plural plural) ind)
+        (add-rules (make-rules-for-head pos (resolve/make word) category ind) ind))))
+
+
 ;; old NP patterns for MUMBLE use
 (defmacro common-noun (name
                 &key noun 
@@ -98,7 +156,7 @@ broadly speaking doing for you all the things you might do by hand.
         (setq name (name-to-use-for-category (car name))))
        (error "name parameter is a list of unexpected form: ~a" name)))
     (otherwise
-     (error "Unexected type for name parameter in noun shortcut: ~a~%~a"
+     (error "Unexpected type for name parameter in noun shortcut: ~a~%~a"
             (type-of name) name)))
 
   (when (stringp name)
