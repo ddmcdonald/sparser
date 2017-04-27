@@ -27,7 +27,7 @@
     nil 'top)
 
 ;;;---------------------------
-;;; TRIPS & REACH --> def-bio
+;;; TRIPS & REACH --> def-ided-indiv
 ;;;---------------------------
 
 (defparameter *show-trips-redefinitions* nil)
@@ -35,107 +35,200 @@
 
 (defparameter *trips-define-proteins* nil)
 
-(defun trips/reach-term->def-bio (term &optional (trips/reach->krisp-class #'trips-class->krisp))
-  "Function takes a trips definition and returns a sparser definition form"
+(defparameter *suppressed-redefs* nil) ;; holds items with existing definitions and matching IDs
+(defparameter *suppressed-mod-redefs* nil) ;; holds items that are defined if we change capitalization or drop hyphens, but still match on IDs
+(defparameter *id-mismatch-redef* nil) ;; holds items that are defined (possibly changing capitalization or dropping hyphens) that have UIDs but they don't match -- to look at later to see if it's just grounded in a different atlas or using a completely different word
+(defparameter *no-id-redef* nil) ;; holds items that are defined (possibly changing capitalization or dropping hyphens), but the original definition doesn't have an ID -- need to fold these in later
+(defparameter *name-id-mismatches* nil) ;; holds items where the name field matches a sparser category, but the original definition lacks or has a different ID -- to be folded in later
+(defparameter *no-rule-redef* nil) ;; holds items that are defined but we can't get their rule to find if there's an ID or not -- cases like "RNA" which somehow lost its rules although "rna" has rules -- hopefully will be fixed soon
+(defparameter *prot-fam-redef* nil) ;; holds protein families where the name is already defined as a category -- to be folded in later
+;; define all the parameters to hold the new definitions
+(defparameter *new-diseases* nil)
+(defparameter *new-bio-complexes* nil)
+(defparameter *new-bio-meth-proc* nil)
+(defparameter *new-noncell-loc* nil)
+(defparameter *new-cells* nil)
+(defparameter *new-cell-loc* nil)
+(defparameter *new-cell-proc* nil)
+(defparameter *new-drugs* nil)
+(defparameter *new-molecules* nil)
+(defparameter *new-post-trans-mod* nil)
+(defparameter *new-prot-dom* nil)
+(defparameter *new-rna* nil)
+(defparameter *new-substance* nil)
+(defparameter *new-units* nil)
+(defparameter *new-prot-fam* nil)
+
+(defun trips/reach-term->def-ided-indiv (term &optional 
+                                         (trips/reach->krisp-class #'trips-class->krisp))
+  "Function takes a trips or reach definition and returns a sparser definition form"
   (when (equal (second term) 'sparser::--)
     ;; new format for file -- revise call
     (setq term (third term)))
-  (when *suppress-redefinitions*
-    (when (resolve (car term))
-      (when *show-trips-redefinitions*
-        (format t "~%ignoring redefinition ~s of already defined word~%"
-                term))
-      (return-from trips/reach-term->def-bio nil))
-    (when 
-        (or (resolve (string-downcase (car term)))
-            (resolve (string-upcase (car term))))
-      (when *show-trips-redefinitions*
-        (format t "~%ignoring mixed-case redefinition ~s of already defined word~%"
-                term))
-      (return-from trips/reach-term->def-bio nil)))
+  (let* ((word (car term))
+         (dc-word (string-downcase word))
+         (uc-word (string-upcase word))
+         (id (getf (cddr term) :id)))
+    (unless (null id)
+      (when *suppress-redefinitions*
+        (cond ((and (resolve word) (rule-for word)) 
+               ;; if it resolves but has no rule, it's probably only defined as part of a pw
+               (stash-redefined-word term word id "orig")
+               (return-from trips/reach-term->def-ided-indiv nil))
+              ((and (resolve dc-word) (rule-for dc-word))
+               (stash-redefined-word term dc-word id "downcase")
+               (return-from trips/reach-term->def-ided-indiv nil))
+              ((and (resolve uc-word) (rule-for uc-word))
+               (stash-redefined-word term uc-word id "upcase")
+               (return-from trips/reach-term->def-ided-indiv nil))
+              ((and (search "-" word) (resolve (remove #\- word))) 
+               ;; even if they're only defined in a pw, it's unclear
+               ;; we want to define the hyphen version
+               (stash-redefined-word term (remove #\- word) id "hyphens")
+               (return-from trips/reach-term->def-ided-indiv nil))
+              ((and (search "-" word) (resolve (remove #\- dc-word)))
+               (stash-redefined-word term (remove #\- dc-word) id "hyphens-dc")
+               (return-from trips/reach-term->def-ided-indiv nil))))
+      (let* 
+          ((name (getf (cddr term) :name))
+           (name-cat (when name (name-is-cat-p name)))
+           (category (funcall trips/reach->krisp-class term)))
+        (case category
+          ((residue-on-protein molecular-site nil )
+           ;;(format t "Rejecting REACH definition ~s~%" term)
+           nil)
+          ((bacterium
+            cancer
+            disease
+            virus)
+           (stash-def-ided-indiv word category id name '*new-diseases*))
+          (bio-complex
+           (stash-def-ided-indiv word category id name '*new-bio-complexes*))
+          ((bio-method 
+            bio-process) ;; may conflict with handling of post-translational processes
+           (stash-def-ided-indiv word category id name '*new-bio-meth-proc*))
+          ((bio-organ
+            organism
+            secretion
+            tissue
+            tumor)
+           (stash-def-ided-indiv word category id name '*new-noncell-loc*))
+          (cell-line ;; the old def function blocked plurals so this mirrors that
+           (stash-def-ided-indiv word category id name '*new-cells* :no-plural t))
+          (cell-type
+           (stash-def-ided-indiv word category id name '*new-cells*))
+          (cellular-location
+           (stash-def-ided-indiv word category id name '*new-cell-loc*))
+          (cellular-process
+           (stash-def-ided-indiv word category id name '*new-cell-proc*))
+          (drug ;; the old def function blocked plurals so this mirrors that
+           (stash-def-ided-indiv word category id name '*new-drugs* :no-plural t))
+          (molecule
+           (stash-def-ided-indiv word category id name '*new-molecules*))
+          (post-translational-modification
+            (stash-def-ided-indiv word category id name '*new-post-trans-mod*))
+          (protein-domain
+           (stash-def-ided-indiv word category id name '*new-prot-dom*))
+          (rna ;; check if it still has problems
+           (stash-def-ided-indiv word category id name '*new-rna*))
+          (substance
+           (stash-def-ided-indiv word category id name '*new-substance*))
+          (unit-of-measure
+           (if (< (length word) 4) ;; for abbreviations, case matters (e.g. "m" meter vs. "M" molar) but for full names it doesn't
+               (stash-def-ided-indiv word category id name '*new-units* :maintain-case t)
+               (stash-def-ided-indiv word category id name '*new-units*)))
+           ((gene protein gene-protein)
+           (push 
+            `(define-protein ,word ,(list id name))
+            *trips-define-proteins*)
+           (car *trips-define-proteins*))
+          (protein-family
+           (if (and name name-cat)
+               (then (push (list (value-of 'uid (category-named name-cat)) name-cat term)
+                     *prot-fam-redef*)
+                     (car *prot-fam-redef*))
+               (else (push `(def-ided-family ,word ,id ,.(when name `(:name ,(pname name))))
+                           *new-prot-fam*)
+                     (car *new-prot-fam*))))
+          (t 
+           (unless (or (eq category 'referential-sem)
+                       (eq category 'time-unit))
+             (lsp-break "unknown category for trips/reach-term->def-ided-indiv"))))))))
 
-  (let* ((name (getf (cddr term) :name))
-        (name-cat (when name (name-is-cat-p name)))
-        (category (funcall trips/reach->krisp-class term)))
-    (case category
-      ((residue-on-protein molecular-site nil time-span)
-       ;;(format t "Rejecting REACH definition ~s~%" term)
-       nil)
-      (cellular-location
-       `(define-cellular-location ,(car term)
-           ,(simplify-colons
-            (getf (cddr term) :id))))
-      ((bacterium ;;bio-process ;; may conflict with handling of post-translational processes
-        cancer
-        cell-line
-        cell-type
-        cellular-process
-        disease
-        drug
-        ;;gene
-        molecule
-        organism
-        
-        ;;protein
-        ;; rna has problems
-        unit-of-measure
-        virus)
-       (if name-cat
-           `(def-synonym ,name-cat (:noun ,(car term)))
-           `(def-bio ,(car term)
-                ,category
-              :long ,(getf (cddr term) :name)
-              :identifier ,(simplify-colons
-                            (getf (cddr term) :id)))))
+(defun word-has-uid-p (word)
+  "Given a string that is known to resolve, returns the value of the
+uid binding, if there is one"
+  (let* ((cat-indiv-ref (multiple-value-bind (word rule) (rule-for word)
+                       (when rule
+                         (cfr-referent (car rule)))))
+         (cat-indiv (if (consp cat-indiv-ref)
+                        (loop for ref in cat-indiv-ref
+                              when (getf ref :head)
+                              return (getf ref :head))
+                        cat-indiv-ref)))
+    (if cat-indiv
+        (value-of 'uid cat-indiv)
+        "can't get rule"))) 
+        ;; currently some words don't return rules for rule-for e.g.,
+        ;; "RNA" even though "rna" does due to some polyword issue --
+        ;; will hopefully get fixed soon
 
-      ((gene protein gene-protein)
-       (push 
-        `(define-protein ,(car term) ,(list (getf (cddr term) :id) (getf (cddr term) :name)))
-        *trips-define-proteins*)
-       (car *trips-define-proteins*))
-      (bio-process
-       (when (getf (cddr term) :name)
-         (let ((name (intern (string-upcase (getf (cddr term) :name)) (find-package :sparser))))
-         (if name-cat
-             `(def-synonym ,name-cat (:noun ,(car term)))
-             `(define-category ,name :specializes bio-process
-                  ,.(when (getf (cddr term) :id)
-                      `(:bindings (uid ,(getf (cddr term) :id))))
-                  :realization (:noun ,(car term)))))))
-      (t
-       (unless (member category '(bio-method bio-organ bio-complex protein-domain protein-family rna referential-sem time-unit))
-         (format t "~%defining an instance of ~s~%" category))
-       (when (member category '(point-mutation)) 
-         ;;(member category '(bio-process bio-organ bio-complex))
-         ;; we really want bio-processes and bio-organs to be individuals, but there is a problem with def-bio -- ASK ALEX
-         (lsp-break "trips/reach-term->def-bio"))
-       (unless (or (eq category 'referential-sem)
-                   (eq category 'time-unit))
-         (let ((name (getf (cddr term) :name)))
-           `(define-named-bio-individual ',category
-                ',(intern (string-upcase (car term)) (find-package :sp))
-              ',(simplify-colons (getf (cddr term) :id))
-              ,.(when name `(:name ,(pname name))))))))))
+(defun stash-redefined-word (term rword id mod)
+  "Given a term (definition), a resolved word, and whether there was a
+  case change involved to resolve it, determines if the word has a uid
+  that matches the term id, and if not adds it to the relevant list to
+  deal with later"
+  (let ((rword-id (word-has-uid-p rword)))
+    (cond ((and (equal id rword-id)
+                (equal mod "orig"))
+           (when *show-trips-redefinitions*
+             (format t "~%ignoring redefinition ~s of already defined and IDed word~%"
+                     term))
+           (push (list rword term) *suppressed-redefs*))
+          ((equal id rword-id)
+           (when *show-trips-redefinitions*
+             (format t "~%ignoring redefinition ~s of already defined and IDed word with mod ~s~%"
+                     term mod))
+           (push (list mod rword term) *suppressed-mod-redefs*))
+          ((equal rword-id "can't get rule")
+           (push (list mod rword term) *no-rule-redef*))
+          (rword-id
+           (when *show-trips-redefinitions*
+             (format t "~%stashing redefinition ~s of already defined word with other UID~%"
+                     term))
+           (push (list mod rword rword-id term) *id-mismatch-redef*))
+          ((null rword-id)
+           (when *show-trips-redefinitions*
+             (format t "~%stashing redefinition ~s of already defined word with no UID~%"
+                     term))
+           (push (list mod rword term) *no-id-redef*)))))
 
-(defparameter *uid-to-individual* (make-hash-table :size 10000 :test #'equal))
+(defun stash-def-ided-indiv (word category id name loc &key no-plural maintain-case)
+  (let* ((name-cat (when name (name-is-cat-p name)))
+         (name-uid (when name-cat (value-of 'uid (category-named name-cat))))
+         (word-plural-name (when name (word-is-plural-name-p word name))))
 
-(defmacro def-named-bio-individual (word category-name id &key name)
-  `(define-named-bio-individual ',category-name ',word ',id ,. (when name `(:name `,name))))
+                                        ;(lsp-break "stash-def-ided-indiv pre-if")
+    (cond ((and name name-cat) ;; if name is predefined and word is a plural of it, we'll deal with it at the normalization step
+           (push `(def-synonym ,name-cat (:noun ,word)) (symbol-value loc))
+           (unless (equal id name-uid)
+             (push (list category name-cat name-uid :newUID id) *name-id-mismatches*)))
+          (word-plural-name
+           (push `(def-ided-indiv ,category ,name
+                    ,(simplify-colons id)
+                    :plural ,(list (plural-version name) word)
+                    ,.(when maintain-case `(:maintain-case t)))
+                 (symbol-value loc)))
+          (t
+           (push `(def-ided-indiv ,category ,word
+                    ,(simplify-colons id)
+                    ,.(when name `(:name ,(pname name)))
+                    ,.(when no-plural `(:no-plural t))
+                    ,.(when maintain-case `(:maintain-case t)))
+                 (symbol-value loc))))
+                                        ;(lsp-break "stash-def-ided-indiv post-if")
+    (car (symbol-value loc))))
 
-(defun define-named-bio-individual (category-name word id &key name)
-  (let* ((category (category-named category-name :break-if-undefined))
-         (i (if id
-                (or (gethash id *uid-to-individual*)
-                    (setf (gethash id *uid-to-individual*)
-                          (let ((ind (find-or-make-individual category :uid id)))
-                            (if name
-                                (bind-dli-variable :name name ind)
-                                ind))))
-                (find-or-make-individual category :name (if name (pname name) (pname word))))))
-    (add-rules (make-rules-for-head :common-noun (resolve/make (string-downcase (pname word))) category i) i)
-    (when name (add-rules (make-rules-for-head :common-noun (resolve/make (pname name)) category i) i))
-    i))
-  
 (defun name-is-cat-p (name)
   "Given a string, it checks if either the given string or the string
   with hyphens in place of spaces is a category, and then returns
@@ -151,10 +244,30 @@
           (t
            nil))))
 
+(defun word-is-plural-name-p (word pname)
+  (let* ((lastchar (subseq pname (- (length pname) 1)))
+         (last2char (subseq pname (max (- (length pname) 2) 0)))
+         (last3char (subseq pname (max (- (length pname) 3) 0)))
+         (plural-versions (list (plural-version pname)
+                               (cond ((equal last3char "ium")
+                                      (string-append (subseq pname 0 (- (length pname) 2)) "a"))
+                                     ((equal last2char "us")
+                                      (string-append (subseq pname 0 (- (length pname) 2)) "i"))
+                                     ((equal lastchar "a")
+                                      (string-append pname "e"))
+                                     (t
+                                      nil)))))
+    (member word plural-versions :test #'string-equal)))
+        
+
 (defun trips-class->krisp (term)
   (unless (null (second term))
     (ecase (intern (subseq (second term) 4)) ;; drop the ONT:
-      ((protein gene-protein gene) 'protein) ;; we treat genes as if they name the protein
+      ((protein gene-protein gene) ;; we treat genes as if they name the protein
+       (if (or (search "FA:" (getf (cddr term) :id))
+               (search "XFAM:" (getf (cddr term) :id)))
+           'protein-family
+           'protein)) 
       ;;(gene 'gene)
       (bacterium 'bacterium)
       (biological-process 'bio-process)
@@ -171,17 +284,19 @@
       (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
       (molecular-domain 'protein-domain)
       (molecular-site 'residue-on-protein)
-      ((organism nonhuman-animal animal fish insect invertebrate microorganism fungus plant bird vertebrate) 'organism)
+      ((organism nonhuman-animal animal fish insect invertebrate
+                 microorganism fungus plant bird vertebrate) 'organism)
       (pharmacologic-substance 'drug)
       (physical-condition 'disease)
       (post-translational-modification 'post-translational-modification)
       (procedure 'bio-method)
       (process 'bio-method) ;; the one case we have here is a bio-method -- transplantation
       (protein-family 'protein-family)
-      (mutation nil)
-      ((amino-acid referential-sem substance time-unit mutation) 'referential-sem) ;; huh? (ref-sem is now prefiltered, and the instances of substance are "build-up" and "mole-cule" -- not sure what to do with the first, and the second is probably from a line break we need to handle better) 
+      ((amino-acid referential-sem time-unit mutation) 'referential-sem) 
+      ;; have now made substance a category. amino-acids and mutations should be handled better
       ((rna mrna) 'rna)
       (signaling-pathway 'pathway)
+      (substance 'substance)
       (time-span 'cellular-process) ;; these all seem to be phases of mitosis or meiosis
       (virus 'virus))))
 
@@ -193,6 +308,89 @@
                    ":"
                    (subseq x (+ 2 (search "::" x) )))
       x))
+
+(defparameter *reach-phrases* nil)
+    
+(defun reach-class->krisp (term)
+  (let ((word (first term))
+        (atlas (second term))
+        (type (fourth term))
+        (id (sixth term)))
+    (if (or
+         (and (not (equal atlas "uniprot"))
+              (or
+               (search "inhibitor" word)
+               (search "receptor" word)
+               (search " site" word)))
+         (search "/" word)
+         (search "anti-" word)
+         (search "RNA" word)
+         (search "uaz" atlas))
+        (then ;;(format t "~% rejecting REACH UAZ definition of ~s" word)
+          (push (concatenate 'string word ".") *reach-phrases*)
+          nil)
+        (ecase (intern (string-upcase atlas)) 
+          (cellosaurus 'cell-line)
+          (cl 'cell-type)
+          (tissuelist (ecase (intern (string-upcase type))
+                        (tumor 'tumor)
+                        (cancer 'cancer)
+                        (tissuetype 'tissue)
+                        (cell 'cell-type)))
+          (mesh 'cellular-process) ;; they only seem to use it for
+          ;; bio-processes, while TRIPS also
+          ;; uses it for drugs
+          (go (ecase (intern (string-upcase type))
+                (bioprocess 'cellular-process)
+                (cellular-component 'cellular-location)))
+          (uniprot (ecase (intern (string-upcase type))
+                     (cellular-component 'cellular-location)
+                     (gene 'protein)
+                     (gene-or-gene-product 'protein)))
+                   ;; the gene proteins are getting dropped on the floor and added manually
+          (interpro 'protein-family)
+          (pfam (ecase (intern (string-upcase type))
+                  (family 'protein-family)
+                  (domain 'protein-domain)))
+          (pubchem 'molecule)
+          (taxonomy 'organism)
+          (uberon (ecase (intern (string-upcase type))
+                    (organ 'bio-organ)
+                    (secretion 'secretion)
+                    (tissue 'tissue)))
+                   ;; dropping UAZ definitions
+                   ))))
+
+(defun save-var->bio-nl-new-defs-file (var filename &key vl (if-exists :supersede))
+  "Given a list containing global variable and a filename, when given
+  a single variable output it line by line to the file, but if the
+  keyword vl is given, then treat var as a list of global-variable
+  names and print them each in the file with a defparameter; the file
+  will be saved in the new-defs directory under the bio-not-loaded
+  directory -- can specify what happens if the file already exists"
+  (with-open-file (stream (concatenate 'string "sparser:bio-not-loaded;new-defs;" 
+                                       filename ".lisp")
+                          :direction :output :if-exists if-exists
+                          :if-does-not-exist :create :external-format :utf-8)
+    (unless (eq if-exists :append)
+      (format stream "(in-package :sparser)~%~%"))
+    (if vl
+        (loop for v in var
+                do (format stream "(defparameter ~s '~s)~%~%" v (symbol-value v)))
+        (loop for def in var
+                do (lc-one-line-print def stream)))))
+
+(defparameter *suppressed-new-defs* '(*suppressed-redefs* *suppressed-mod-redefs* *id-mismatch-redef* *no-id-redef* *no-rule-redef* *name-id-mismatches* *prot-fam-redef* *inhibited-plurals*))
+(defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substance*))
+
+(defun collect-all-new-defs (functions)
+  "Call on a list of functions, e.g., (list #'load-trips-terms #'load-reach-terms)"
+  (loop for fn in functions
+          do (funcall fn))
+  (save-var->bio-nl-new-defs-file *suppressed-new-defs* "suppressed-new-defs" :vl t)
+  (loop for v in *new-id-defs*
+          do (save-var->bio-nl-new-defs-file (symbol-value v)
+                                             (string-downcase (string-trim "*" (string v))))))
 
 ;;;---------------------------
 ;;; bio-synonyms
@@ -718,7 +916,7 @@ the process.
   
   (let ((label (or (override-label category) category))
         (form (category-named 'proper-noun))
-        ;; proper noun makes sense for named protiens and such
+        ;; proper noun makes sense for named proteins and such
         ;; but the marker may actually be the capitalization
         ;; of the word, which would have to be caught upstream
         ;; and passed through in a parameter.
@@ -731,10 +929,8 @@ the process.
     ;; Ignoring brackets since this runs with the new chunker
 
     (setq i (find-or-make-individual category :name word))
-
     
     ;;(lsp-break "make-typed-bio-entity")
-      
    
     ;; Add synonyms to the table for this head term
     (when synonyms
@@ -834,10 +1030,7 @@ the process.
 
 (defun rules-with-greek-chars-substituted (short long greek-words label form i)
   (unless 
-
-
-
-*greek-character-map*
+      *greek-character-map*
     (populate-greek-character-map))
   (push-debug `(,long ,greek-words ,i ,short ,form))
   (etypecase greek-words
@@ -889,26 +1082,71 @@ the process.
      :long ',long :identifier ',identifier :synonyms ',synonyms))
 
 (defun define-family (name &key type species members
-                           long identifier synonyms)
+                      long identifier synonyms)
   #+ignore
   (unless members
     (error "It doesn't make sense to define a family without members"))
   (unless type
     (setq type (category-named 'protein)))
   (unless species
-    (setq species (find-individual 'species :name "human")))
+    (when (consp members) 
+      (if (loop for m in members
+                thereis (human-mnemonic? m))
+          (setq species (find-individual 'species :name "human"))))) 
+  ;; don't want to default to human unless the members are
   (let* ((category-name
           (cond
-           ((and (eq species (find-individual 'species :name "human"))
-                 (eq type (category-named 'protein)))
-            'human-protein-family)
-           ((eq type (category-named 'protein))
-            'protein-family)
-           (t (break "what type of family is this supposed to be?"))))
+            ((and (eq species (find-individual 'species :name "human"))
+                  (eq type (category-named 'protein)))
+             'human-protein-family)
+            ((eq type (category-named 'protein))
+             'protein-family)
+            (t (break "what type of family is this supposed to be?"))))
          (i (def-bio/expr name category-name
-             :long long :identifier identifier :synonyms synonyms
-             :takes-plurals t
-             :members members)))
+              :long long :identifier identifier :synonyms synonyms
+              :takes-plurals t
+              :members members)))
+    i))
+
+(defmacro def-ided-family (word id &key type species members
+                           name synonyms maintain-case)
+  (unless (stringp word) (error "Word argument should be a string"))
+  `(define-family-with-id
+     ',word ',id ,.(when type `(:type ',type)) 
+     ,.(when species `(:species ',species)) 
+     ,.(when members `(:members ',members))
+     ,.(when name `(:name ',name)) 
+     ,.(when synonyms `(:synonyms ',synonyms))
+     ,.(when maintain-case `(:maintain-case ',maintain-case))))
+
+
+(defun define-family-with-id (word id &key type species members
+                              name synonyms maintain-case)
+  ;(declare (special word id species))
+  #+ignore
+  (unless members
+    (error "It doesn't make sense to define a family without members"))
+  (unless type
+    (setq type (category-named 'protein)))
+  (unless species
+    (when (consp members) 
+      (if (loop for m in members
+                thereis (human-mnemonic? m))
+          (setq species (find-individual 'human))))) 
+  ;(lsp-break "def-family pre-let")
+  ;; don't want to default to human unless the members are
+  (let* ((category-name
+          (cond
+            ((and (eq species (find-individual 'human))
+                  (eq type (category-named 'protein)))
+             'human-protein-family)
+            ((eq type (category-named 'protein))
+             'protein-family)
+            (t (break "what type of family is this supposed to be?"))))
+         (i (define-individual-with-id category-name word id 
+                                       :name name :members members 
+                                       :synonyms synonyms
+                                       :maintain-case maintain-case))) 
     i))
 
 (defun set-family-members (i members)
@@ -923,7 +1161,7 @@ the process.
           (count (find-number (length members))))
       (setq i (bind-dli-variable 'family-members set-of-proteins i))
       (setq i (bind-dli-variable 'count count i))
-      ;; If we didn't use such a speciic category these would matter.
+      ;; If we didn't use such a specific category these would matter.
       i)))
 
 

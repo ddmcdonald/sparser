@@ -3163,6 +3163,9 @@
 
 
 
+(defparameter *suspect-trips-defs* nil)
+(defvar *trips-words-hash* (make-hash-table :size 5000 :test #'equalp))
+
 (defun load-trips-terms ()
   (loop for term-name in
           `(
@@ -3172,18 +3175,33 @@
             *trips-cells*
             *trips-cell-lines*
             *trips-chemicals*
-            ; *trips-genes-and-proteins*
+                                        ; *trips-genes-and-proteins*
             *trips-drug*
             *trips-molecular-domain*
-            ; *trips-protein-family*
+                                        ; *trips-protein-family*
+            *trips-terms-old*           ;; in trips-terms file
             )
-        as terms = (eval term-name)
-        do 
-          (loop for term in terms do
-                  (define-trips-term term))))
-
-(load-trips-terms)
-
+          as terms = (eval term-name)
+          do 
+          (loop for term in terms 
+                as term-def = (if (eq 0 (search "ONT:" (car term)))
+                                  (third term)
+                                  term)
+                do (let* ((word (car term-def))
+                          (word-len (length word))
+                          (id (getf (cddr term-def) :id)))
+                     (unless (or (null id)
+                                 (gethash word *trips-words-hash*))
+                       (setf (gethash word *trips-words-hash*) term-def)
+                       (if (or (eq 2 word-len)
+                               (and (search "-" word)
+                                    (eq 3 word-len))
+                               (and (< word-len 5)
+                                    (search "ORPHANET:" (fourth term-def))))
+                           (push term-def *suspect-trips-defs*)
+                           (define-trips-term term-def))))
+                finally (save-var->bio-nl-new-defs-file *suspect-trips-defs* 
+                                                        "suspect-trips-reach-defs"))))
 
 
 

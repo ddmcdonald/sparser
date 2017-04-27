@@ -1,39 +1,5 @@
 (in-package :sparser)
 
-(defun define-trips-term (term)
-    (eval (trips/reach-term->def-bio term #'trips-class->krisp)))
-
-
-    
-(defun trips-class->krisp (term)
-  (ecase (intern (subseq (second term) 4)) ;; drop the ONT:
-    ((protein gene-protein) 'protein) ;; we treat genes as if they name the protein
-    (gene 'gene)
-    (bacterium 'bacterium)
-    (biological-process 'bio-process)
-    ((internal-body-part body-part) 'bio-organ)
-    (cancer 'cancer)
-    (cell 'cell-type)
-    (cell-line 'cell-line)
-    (cell-part 'cellular-location)
-    (chemical 'molecule)
-    (macromolecular-complex 'bio-complex)
-    (measure-unit 'unit-of-measure)
-    (medical-disorders-and-conditions 'disease)
-    (medical-instrument 'bio-method) ;; not quite, but we don't distinguish the instruments from the methods
-    (molecular-domain 'protein-domain)
-    (molecule 'molecule)
-    (molecular-site 'residue-on-protein)
-    ((organism nonhuman-animal fish invertebrate) 'organism)
-    (pharmacologic-substance 'drug)
-    (physical-condition 'disease)
-    (procedure 'bio-method)
-    (process 'bio-method) ;; the one case we have here is a bio-method -- transplantation
-    (protein-family 'protein-family)
-    (referential-sem 'referential-sem) ;; huh?
-    (rna 'rna)
-    (virus 'virus)))
-
 
 ;;("D770_N771insNPG" "ONT:MUTATION" :ID NIL :NAME NIL) 
 ;;("K224A" "ONT:MUTATION" :ID NIL :NAME NIL) 
@@ -52,12 +18,12 @@
 ;; ("S13A" "ONT:MUTATION" :ID NIL :NAME NIL)
 ;; ("S7A" "ONT:MUTATION" :ID NIL :NAME NIL)
 
+;; from 10b to 13 (all reach sentences)
 
 
-(defparameter *trips-terms*
+(defparameter *trips-terms-old-1*
   '(
-    ("CNS" "ONT:BACTERIUM" :ID "NCIT:C62584" :NAME
-     "coagulase-negative staphylococcus") 
+   ;; ("CNS" "ONT:BACTERIUM" :ID "NCIT:C62584" :NAME "coagulase-negative staphylococcus") 
     ("Erwinia" "ONT:BACTERIUM" :ID "NCIT:C127280" :NAME "dickeya") 
     ("ADCC" "ONT:BIOLOGICAL-PROCESS" :ID "GO:0001788" :NAME
      "antibody-dependent cellular cytotoxicity") 
@@ -305,7 +271,10 @@
     ("superoxide" "ONT:CHEMICAL" :ID "CHEBI:18421" :NAME "superoxide") 
     ("surfactin" "ONT:CHEMICAL" :ID "CHEBI:29681" :NAME "surfactin") 
     ("tBHP" "ONT:CHEMICAL" :ID "CHEBI:64090" :NAME "tert-butyl hydroperoxide") 
-    ("thapsigargin" "ONT:CHEMICAL" :ID "CHEBI:9516" :NAME "thapsigargin") 
+    ("thapsigargin" "ONT:CHEMICAL" :ID "CHEBI:9516" :NAME "thapsigargin") ))
+
+(defparameter *trips-terms-old-2*
+  '(
     ("ABCA1" "ONT:GENE" :ID "HGNC:29" :NAME
      "ATP binding cassette subfamily A member 1") 
     ("ABCA7" "ONT:GENE" :ID "HGNC:37" :NAME
@@ -1023,7 +992,10 @@
     ("sFRP2" "ONT:GENE-PROTEIN" :ID "UP:Q863H1" :NAME
      "Secreted frizzled-related protein 2") 
     ("thrombopoietin" "ONT:GENE-PROTEIN" :ID "HGNC:11795" :NAME "thrombopoietin") 
-    ("tropomyosin" "ONT:GENE-PROTEIN" :ID "UP:O01673" :NAME "Tropomyosin") 
+    ("tropomyosin" "ONT:GENE-PROTEIN" :ID "UP:O01673" :NAME "Tropomyosin") ))
+
+(defparameter *trips-terms-old-3*
+  '(
     ("F-actin" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0031941" :NAME
      "filamentous actin") 
     ("PIK" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0019035" :NAME
@@ -1176,7 +1148,7 @@
     ("5Z-7-oxozeaenol" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "CHEBI:67559" :NAME
      "5Z-7-oxozeaenol") 
     ("ABT-263" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C64776" :NAME "ABT-263") 
-    ("ABT-737-" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C501332" :NAME "ABT-737") 
+    ;;("ABT-737-" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C501332" :NAME "ABT-737") 
     ("AG-30" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C069027" :NAME "AG 30") 
     ("AG1478" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C101044" :NAME
      "tyrphostin AG 1478") 
@@ -1641,8 +1613,11 @@
     ("humanin" "ONT:PROTEIN-FAMILY" :ID "FA:04811" :NAME "humanin family") 
     ("myosin" "ONT:PROTEIN-FAMILY" :ID "FA:05287" :NAME "myosin family") 
     ("parathyroid" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF01279.15" :NAME "parathyroid") 
-    ("trans" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF06986.9" :NAME "TraN")
+    ;;("trans" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF06986.9" :NAME "TraN")
+))
     
+(defparameter *trips-terms-old-4*
+  '(
     ("LncRNA" "ONT:RNA" :ID "NCIT:C88924" :NAME "lincRNA") 
     ("HCV" "ONT:VIRUS" :ID "NCIT:C14312" :NAME "hepatitis C virus") 
     ("PEDV" "ONT:VIRUS" :ID "NCIT:C121657" :NAME
@@ -1692,10 +1667,11 @@
     ("attractant" "ONT:PROTEIN" :ID "GO:0042056" :NAME "chemoattractant activity") 
     ("cotransporter" "ONT:PROTEIN" :ID "GO:0015293" :NAME "symporter activity") 
     ("streptavidin" "ONT:PROTEIN" :ID "UP:P22629" :NAME "Streptavidin") 
-    ("adenovirus" "ONT:VIRUS" :ID "NCIT:C14179" :NAME "adenovirus")
+    ("adenovirus" "ONT:VIRUS" :ID "NCIT:C14179" :NAME "adenovirus")))
 
 
-    
+(defparameter *trips-terms-old-5*
+    '(
 ("lysis" "ONT:BIOLOGICAL-PROCESS" :ID "NCIT:C37889" :NAME "lysis") 
 ("phospho-rylation" "ONT:BIOLOGICAL-PROCESS" :ID "GO:0016310" :NAME
  "phosphorylation") 
@@ -1924,12 +1900,15 @@
 ("p110β" "ONT:GENE-PROTEIN" :ID "NCIT:C51161" :NAME "PIK3CB") 
 ("p120" "ONT:GENE-PROTEIN" :ID "NCIT:C79771" :NAME "CTNND1") 
 ("p21Rac1" "ONT:GENE-PROTEIN" :ID "NCIT:C99664" :NAME "RAC1") 
-("smad3" "ONT:GENE-PROTEIN" :ID "HGNC:6769" :NAME "SMAD family member 3") 
+("smad3" "ONT:GENE-PROTEIN" :ID "HGNC:6769" :NAME "SMAD family member 3") ))
+
+(defparameter *trips-terms-old-6*
+  '(
 ("syncytia" "ONT:INTERNAL-BODY-PART" :ID "BTO:0005784" :NAME "syncytium") 
 ("syncytium" "ONT:INTERNAL-BODY-PART" :ID "BTO:0005784" :NAME "syncytium") 
 ("PIC" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0019035" :NAME
  "viral integration complex") 
-("α" "ONT:MEASURE-UNIT" :ID "UO:0000078" :NAME "radian per second per second") 
+;;("α" "ONT:MEASURE-UNIT" :ID "UO:0000078" :NAME "radian per second per second") 
 ("DN" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "NCIT:C7656" :NAME
  "hepatic dysplastic nodule") 
 ("MLC" "ONT:MEDICAL-DISORDERS-AND-CONDITIONS" :ID "ORPHANET:2478" :NAME
@@ -2055,14 +2034,14 @@
 ("FLIM" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF02154.13" :NAME "FliM") 
 ("Homer" "ONT:PROTEIN-FAMILY" :ID "FA:01786" :NAME "homer family") 
 ("PAE" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF03283.11" :NAME "PAE") 
-("Sprouty" "ONT:PROTEIN-FAMILY" :ID "FA:03814" :NAME "sprouty family") 
+("Sprouty" "ONT:PROTEIN-FAMILY" :ID "FA:03814" :NAME "sprouty family") ))
 
+(defparameter *trips-terms-old-7*
+'(
 ("HIV" "ONT:VIRUS" :ID "NCIT:C14219" :NAME "human immunodeficiency virus") 
 ("parapoxvirus" "ONT:VIRUS" :ID "NCIT:C112367" :NAME "parapoxvirus") 
 ("retrovirus" "ONT:VIRUS" :ID "NCIT:C14268" :NAME "retroviridae") 
 
-
-;; from 10b to 13 (all reach sentences)
 ("Chlamydia" "ONT:BACTERIUM" :ID "NCIT:C76271" :NAME "chlamydia")
  ("Francisella" "ONT:BACTERIUM" :ID "NCIT:C86396" :NAME "francisella")
  ("HDR" "ONT:BIOLOGICAL-PROCESS" :ID "GO:0000724" :NAME
@@ -2137,7 +2116,10 @@
  ("GalNAc" "ONT:CHEMICAL" :ID "CHEBI:28800" :NAME "N-acetylgalactosamine")
  ("HDACi" "ONT:CHEMICAL" :ID "CHEBI:61115" :NAME
   "EC 3.5.1.98 (histone deacetylase) inhibitor")
- ("HETE" "ONT:CHEMICAL" :ID "CHEBI:36275" :NAME "HETE")
+ ("HETE" "ONT:CHEMICAL" :ID "CHEBI:36275" :NAME "HETE")))
+
+(defparameter *trips-terms-old-8*
+  '(
  ("ACE2" "ONT:GENE" :ID "HGNC:13557" :NAME "angiotensin I converting enzyme 2")
  ("AEs" "ONT:GENE" :ID "HGNC:307" :NAME "amino-terminal enhancer of split")
  ("AKAP121" "ONT:GENE" :ID "HGNC:367" :NAME "A-kinase anchoring protein 1")
@@ -2466,7 +2448,10 @@
  ("EKR" "ONT:MOLECULAR-DOMAIN" :ID "XFAM:PF10371.7" :NAME "EKR")
  ("C16" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Cysteine")
  ("D12" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Aspartic acid")
- ("H19" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Histidine")
+ ("H19" "ONT:MOLECULAR-SITE" :ID NIL :NAME "Histidine")))
+
+(defparameter *trips-terms-old-8*
+'(
  ("ALN" "ONT:MOLECULE" :ID "CHEBI:33629" :NAME "aluminium(0)")
  ("AgNP" "ONT:MOLECULE" :ID "CHEBI:50826" :NAME "silver nanoparticle")
  ("CdCl2" "ONT:MOLECULE" :ID "CHEBI:35456" :NAME "cadmium dichloride")
@@ -2579,9 +2564,10 @@
  ("Ftase" "ONT:PROTEIN" :ID "GO:0004660" :NAME
   "protein farnesyltransferase activity")
  ("HBx" "ONT:PROTEIN" :ID "UP:P69714" :NAME "Protein X")
- ("Galpha" "ONT:PROTEIN-FAMILY" :ID "FA:01401" :NAME "G-alpha family")
+ ("Galpha" "ONT:PROTEIN-FAMILY" :ID "FA:01401" :NAME "G-alpha family")))
 
-
+(defparameter *trips-terms-old-9*
+  '(
  ("EIAV" "ONT:VIRUS" :ID "NCIT:C14205" :NAME "equine infectious anemia virus")
  ("OIS" "ONT:BIOLOGICAL-PROCESS" :ID "GO:0090402" :NAME
   "oncogene-induced cell senescence")
@@ -2659,7 +2645,10 @@
  ("PGF2alpha" "ONT:CHEMICAL" :ID "CHEBI:15553" :NAME "prostaglandin F2alpha")
  ("PMP" "ONT:CHEMICAL" :ID "CHEBI:90766" :NAME
   "alpha-D-Manp6P-(1->3)-alpha-D-Manp-(1->3)-alpha-D-Manp-(1->3)-alpha-D-Manp-(1->2)-D-Manp")
- ("Pb" "ONT:CHEMICAL" :ID "NCIT:C44396" :NAME "lead metal")
+ ("Pb" "ONT:CHEMICAL" :ID "NCIT:C44396" :NAME "lead metal")))
+
+(defparameter *trips-terms-old-10*
+  '(
  ("HLJ1" "ONT:GENE" :ID "NCIT:C62455" :NAME "DNAJB4")
  ("HNE" "ONT:GENE" :ID "NCIT:C104196" :NAME "ELANE")
  ("HSP90beta" "ONT:GENE" :ID "NCIT:C97590" :NAME "HSP90AB1")
@@ -2975,7 +2964,10 @@
  ("RIPK3" "ONT:GENE-PROTEIN" :ID "HGNC:10021" :NAME
   "receptor interacting serine/threonine kinase 3")
  ("RPE" "ONT:GENE-PROTEIN" :ID "HGNC:10293" :NAME
-  "ribulose-5-phosphate-3-epimerase")
+  "ribulose-5-phosphate-3-epimerase")))
+
+(defparameter *trips-terms-old-11*
+  '(
  ("IgG1" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0071735" :NAME
   "IgG immunoglobulin complex")
  ("PTPC" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0005757" :NAME
@@ -3006,7 +2998,7 @@
   "poly(9,9'-dioctylfluorene) macromolecule")
  ("PLLA" "ONT:MOLECULE" :ID "CHEBI:53408" :NAME "poly[(S)-lactic acid]")
  ("QD" "ONT:MOLECULE" :ID "CHEBI:50853" :NAME "quantum dot")
- ("NIH" "ONT:NONHUMAN-ANIMAL" :ID "NCIT:C14476" :NAME "NIH mouse")
+ ;;("NIH" "ONT:NONHUMAN-ANIMAL" :ID "NCIT:C14476" :NAME "NIH mouse")
  ("HKI-272" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "NCIT:C49094" :NAME "KI-272")
  ("ICI182780" "ONT:PHARMACOLOGIC-SUBSTANCE" :ID "MESH:C070081" :NAME
   "fulvestrant")
@@ -3125,9 +3117,10 @@
  ("JAs" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF16135.3" :NAME "jas")
  ("KRAB" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF01352.25" :NAME "KRAB")
  ("Mu" "ONT:PROTEIN-FAMILY" :ID "FA:01672" :NAME "Mu family")
- ("Nup" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF06516.9" :NAME "NUP")
+ ("Nup" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF06516.9" :NAME "NUP")))
 
-
+(defparameter *trips-terms-old-12*
+  '(
  ("MCPyV" "ONT:VIRUS" :ID "NCIT:C73535" :NAME "merkel cell polyomavirus")
  ("RSV" "ONT:VIRUS" :ID "NCIT:C14267" :NAME "respiratory syncytial virus")
  ("anergy" "ONT:BIOLOGICAL-PROCESS" :ID "NCIT:C17706" :NAME "anergy")
@@ -3370,7 +3363,10 @@
  ("hBD3" "ONT:GENE-PROTEIN" :ID "NCIT:C91757" :NAME "beta-defensin 103")
  ("hnRNPA1" "ONT:GENE-PROTEIN" :ID "HGNC:5031" :NAME
   "heterogeneous nuclear ribonucleoprotein A1")
- ("interleukin-3" "ONT:GENE-PROTEIN" :ID "UP:P08700" :NAME "Interleukin-3")
+ ("interleukin-3" "ONT:GENE-PROTEIN" :ID "UP:P08700" :NAME "Interleukin-3")))
+
+(defparameter *trips-terms-old-13*
+  '(
  ("Ripoptosome" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0097342" :NAME
   "ripoptosome")
  ("apoptosome" "ONT:MACROMOLECULAR-COMPLEX" :ID "GO:0043293" :NAME
@@ -3554,7 +3550,7 @@
   "Mitogen-activated protein kinase HOG1A")
  ("WiHog1B" "ONT:PROTEIN" :ID "UP:M1T7M3" :NAME
   "Mitogen-activated protein kinase HOG1B")
- ("alpha-MSH-" "ONT:PROTEIN" :ID "NCIT:C114797" :NAME "melanotropin alpha")
+ ("alpha-MSH" "ONT:PROTEIN" :ID "NCIT:C114797" :NAME "melanotropin alpha")
  ("alpha-actinin-4" "ONT:PROTEIN" :ID "NCIT:C126634" :NAME "alpha-actinin-4")
  ("caerulein" "ONT:PROTEIN" :ID "UP:P56264" :NAME "Caerulein")
  ("caspases-9" "ONT:PROTEIN" :ID "UP:P55211" :NAME "Caspase-9")
@@ -3572,8 +3568,10 @@
  ("SNF" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF00209.16" :NAME "SNF")
  ("SREBP" "ONT:PROTEIN-FAMILY" :ID "FA:03825" :NAME "SREBP family")
  ("UT" "ONT:PROTEIN-FAMILY" :ID "XFAM:PF03253.12" :NAME "UT")
- ("janus" "ONT:PROTEIN-FAMILY" :ID "FA:01933" :NAME "janus family")
+ ("janus" "ONT:PROTEIN-FAMILY" :ID "FA:01933" :NAME "janus family")))
 
+(defparameter *trips-terms-old-14*
+  '(
  ("mycobacteria" "ONT:BACTERIUM" :ID "NCIT:C76369" :NAME "mycobacterium")
  ("lytic" "ONT:BIOLOGICAL-PROCESS" :ID "NCIT:C37889" :NAME "lysis")
  ("synovium" "ONT:BODY-PART" :ID "EFO:0001393" :NAME "synovial membrane")
@@ -4466,4 +4464,5 @@
 
     ))
 
-(loop for term in *trips-terms* do (define-trips-term term))
+(defparameter *trips-terms-old* (append *trips-terms-old-1* *trips-terms-old-2* *trips-terms-old-3* *trips-terms-old-4* *trips-terms-old-5* *trips-terms-old-6* *trips-terms-old-7* *trips-terms-old-8* *trips-terms-old-9* *trips-terms-old-10* *trips-terms-old-11* *trips-terms-old-12* *trips-terms-old-13* *trips-terms-old-14*)) ;; it was having trouble actually getting them all when it was in one term def -- it started trying to evaluate one of the term-defs partway into the list, but appending seems to work
+;;(loop for term in *trips-terms* do (define-trips-term term))

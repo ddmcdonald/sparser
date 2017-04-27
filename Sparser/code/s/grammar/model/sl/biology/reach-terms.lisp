@@ -510,53 +510,9 @@
 
 
 (defun define-reach-term (term)
-  (eval (trips/reach-term->def-bio term #'reach-class->krisp)))
+  (eval (trips/reach-term->def-ided-indiv term #'reach-class->krisp)))
 
 
-
-(defun simplify-colons (x)
-  (if (search "::" x)
-      (concatenate 'string
-                   (subseq x 0 (search "::" x) )
-                   ":"
-                   (subseq x (+ 2 (search "::" x) )))
-      x))
-
-(defparameter *reach-phrases* nil)
-    
-(defun reach-class->krisp (term)
-  (if (or
-       (and (not (equal (second term) "uniprot"))
-            (or
-             (search "inhibitor" (car term))
-             (search "receptor" (car term))
-             (search " site" (car term))))
-       (search "/" (car term))
-       (search "anti-" (car term))
-       (search "RNA" (car term)))
-      (then ;;(format t "~% rejecting REACH UAZ definition of ~s" (car term))
-            (push (concatenate 'string (car term) ".") *reach-phrases*)
-            nil)
-      (ecase (intern (string-upcase (second term))) ;; drop the ONT:
-        (cellosaurus 'cell-line)
-        ((cl tissuelist) 'cell-type)
-        ((go mesh) 'cellular-process)
-        ((interpro uniprot) 'protein)
-        (pfam 'protein-family)
-        ;;"pfam"
-        (pubchem 'molecule)
-        (taxonomy 'organism)
-        (uberon 'bio-organ)
-        (uaz (ecase (intern (string-upcase (fourth term)))
-               (cellline 'cell-line)
-               (simple-chemical 'molecule)
-               (family 'protein-family)
-               (site nil) ;; drop this
-               ((gene gene-or-gene-product) 'gene)
-               (protein 'protein)
-               )))))
-
-#|
 (defparameter *reach-cancers-or-tissues*
   '(("B-cell lymphoma" "tissuelist" :TYPE "tissuetype" :ID "TS-0067")
     ("Ewing Sarcoma" "tissuelist" :TYPE "tissuetype" :ID "TS-0302")
@@ -592,6 +548,11 @@
     ("renal cancer" "tissuelist" :TYPE "tissuetype" :ID "TS-1225")
     ("skin cancer" "tissuelist" :TYPE "tissuetype" :ID "TS-1227")
     ("thyroid cancer" "tissuelist" :TYPE "tissuetype" :ID "TS-1226")
+    ("Ewing's sarcoma" "tissuelist" :TYPE "tissuetype" :ID "TS-0302")
+    ;; previously this just said "Ewing '" but it should be at least
+    ;; "Ewing's" as a synonym for "Ewing's sarcoma"
+    ("myeloid leukemia" "tissuelist" :TYPE "tissuetype" :ID "TS-0147")
+    ;; previously in cells
     ))
 
 
@@ -600,8 +561,8 @@
     ("podocyte" "cl" :TYPE "celltype" :ID "CL:0000653")
     ("B cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0068")
     ("CML cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0147")
-    ("Ewing '" "tissuelist" :TYPE "tissuetype" :ID "TS-0302")
-    ("HeLa cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0136")
+    ("HeLa cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0136") 
+    ;; if we want to change Hela to cell-line, this is its cellosaurus ID: CVCL_0030
     ("Hela cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0136")
     ("Stromal cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0984")
     ("T cell" "tissuelist" :TYPE "tissuetype" :ID "TS-1001")
@@ -624,15 +585,15 @@
     ("embryonic stem cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0263")
     ("endothelial cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0278")
     ("endothelium" "tissuelist" :TYPE "tissuetype" :ID "TS-0278")
-    ("epidermi" "tissuelist" :TYPE "tissuetype" :ID "TS-0283")
+    ("epidermis" "tissuelist" :TYPE "tissuetype" :ID "TS-0283")
     ("epithelial cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0288")
-    ("gastric corpu" "tissuelist" :TYPE "tissuetype" :ID "TS-0401")
+    ("gastric corpus" "tissuelist" :TYPE "tissuetype" :ID "TS-0401")
     ("gastric mucosa" "tissuelist" :TYPE "tissuetype" :ID "TS-0404")
     ("glioma cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0416")
     ("hair follicle" "tissuelist" :TYPE "tissuetype" :ID "TS-0432")
     ("head kidney" "tissuelist" :TYPE "tissuetype" :ID "TS-1206")
     ("hippocampus" "tissuelist" :TYPE "tissuetype" :ID "TS-0460")
-    ("hypothalamu" "tissuelist" :TYPE "tissuetype" :ID "TS-0469")
+    ("hypothalamus" "tissuelist" :TYPE "tissuetype" :ID "TS-0469")
     ("intestinal mucosa" "tissuelist" :TYPE "tissuetype" :ID "TS-0488")
     ("leukemia cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0547")
     ("liver tumor" "tissuelist" :TYPE "tissuetype" :ID "TS-0563")
@@ -644,7 +605,6 @@
     ("mesenchymal stem cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0618")
     ("microglial cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0627")
     ("myeloid cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0647")
-    ("myeloid leukemia" "tissuelist" :TYPE "tissuetype" :ID "TS-0147")
     ("neural crest" "tissuelist" :TYPE "tissuetype" :ID "TS-0676")
     ("neuronal cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0683")
     ("organ of Corti" "tissuelist" :TYPE "tissuetype" :ID "TS-0717")
@@ -669,21 +629,28 @@
     ("stromal cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0984")
     ("substantia nigra" "tissuelist" :TYPE "tissuetype" :ID "TS-0990")
     ("synovial cell" "tissuelist" :TYPE "tissuetype" :ID "TS-0995")
-    ("testi" "tissuelist" :TYPE "tissuetype" :ID "TS-1030")
+    ("testis" "tissuelist" :TYPE "tissuetype" :ID "TS-1030")
     ("thyroid tumor" "tissuelist" :TYPE "tissuetype" :ID "TS-1046")
     ("umbilical vein endothelial cell" "tissuelist" :TYPE "tissuetype" :ID "TS-1081")
     ("umbilical vein" "tissuelist" :TYPE "tissuetype" :ID "TS-1082")
-    ("uteru" "tissuelist" :TYPE "tissuetype" :ID "TS-1102")
+    ("uterus" "tissuelist" :TYPE "tissuetype" :ID "TS-1102")
     ("vascular endothelial cell" "tissuelist" :TYPE "tissuetype" :ID "TS-1106")
     ))
 
 
 (defparameter *reach-terms*
   '(
-    ("stage" "uberon" :TYPE "organ" :ID "UBERON:0000105")
+  ;;  ("stage" "uberon" :TYPE "organ" :ID "UBERON:0000105")
+    ;; this is matching to life cycle stage, but I don't think this is
+;; how we should define stage, especially not when everything uberon is
+;; interpreted as an organ
     ("backbone" "uberon" :TYPE "organ" :ID "UBERON:0001130")
     ("stroma" "uberon" :TYPE "organ" :ID "UBERON:0003891")
-    ("Life" "uberon" :TYPE "organ" :ID "UBERON:0000104")
+;;    ("Life" "uberon" :TYPE "organ" :ID "UBERON:0000104")
+    ;; this is matching to life cycle, but I don't think this is
+;; how we should define stage, especially not when everything uberon is
+;; interpreted as an organ
+
     ("mucosa associated lymphoid tissue" "uberon" :TYPE "organ" :ID "UBERON:0001961")
     ("neural tissue" "uberon" :TYPE "organ" :ID "UBERON:0003714")
     ("pancreatic secretion" "uberon" :TYPE "organ" :ID "UBERON:0004795")
@@ -696,10 +663,12 @@
     ("ganglionic eminence" "uberon" :TYPE "organ" :ID "UBERON:0004023")
     ("cortical plate" "uberon" :TYPE "organ" :ID "UBERON:0005343")
     ("white matter" "uberon" :TYPE "organ" :ID "UBERON:0002316")
-    ("radiu" "uberon" :TYPE "organ" :ID "UBERON:0001423")
+   ;; ("radius" "uberon" :TYPE "organ" :ID "UBERON:0001423")
+    ;; removing radius because while it is a bone, that is less likely
+    ;; in our context (and is incorrect in the original Reach context)
     ("renin-angiotensin system" "uberon" :TYPE "organ" :ID "UBERON:0018229")
     ("cardiac mesoderm" "uberon" :TYPE "organ" :ID "UBERON:0007005")
-    ("fece" "uberon" :TYPE "organ" :ID "UBERON:0001988")
+    ("feces" "uberon" :TYPE "organ" :ID "UBERON:0001988")
     ("respiratory tract" "uberon" :TYPE "organ" :ID "UBERON:0000065")
     ("body fluid" "uberon" :TYPE "organ" :ID "UBERON:0006314")
     ("cervical spinal cord" "uberon" :TYPE "organ" :ID "UBERON:0002726")
@@ -709,11 +678,12 @@
     ("granulation tissue" "uberon" :TYPE "organ" :ID "UBERON:0010211")
     ("immune system" "uberon" :TYPE "organ" :ID "UBERON:0002405")
     ("lamina propria" "uberon" :TYPE "organ" :ID "UBERON:0000030")
-    ("dermi" "uberon" :TYPE "organ" :ID "UBERON:0002067")
+    ("dermis" "uberon" :TYPE "organ" :ID "UBERON:0002067")
     ("sex specific" "uberon" :TYPE "organ" :ID "UBERON:0014402")
     ("hematopoietic system" "uberon" :TYPE "organ" :ID "UBERON:0002390")
-    ("Atla" "uberon" :TYPE "organ" :ID "UBERON:0001092")
-    
+    ;; ("Atlas" "uberon" :TYPE "organ" :ID "UBERON:0001092")
+    ;; removing Atlas because while it is a bone, that's less likely in
+    ;; our context (and is incorrect in original Reach context)
     
     ("homeostasis" "go" :TYPE "bioprocess" :ID "GO:0042592")
     ("endocytosis" "go" :TYPE "bioprocess" :ID "GO:0006897")
@@ -727,9 +697,16 @@
     ("MDA-MB-435" "cellosaurus" :TYPE "cellline" :ID "CVCL_0417")
     ("U937" "cellosaurus" :TYPE "cellline" :ID "CVCL_0007")
     ("ZR75-1" "cellosaurus" :TYPE "cellline" :ID "CVCL_0588")
-    ("NJ" "cellosaurus" :TYPE "cellline" :ID "CVCL_8822")
+    ("NJF" "cellosaurus" :TYPE "cellline" :ID "CVCL_8822")
+    ;; this used to be just NJ -- and in context was not a cell line,
+    ;; however celllosaurs says its official name is SJNB-5 with synonyms
+    ;; SJNB5; NB5; NB5-DH; NJF -- since it is a cancer cell line, having NJF
+    ;; defined might be helpful, but defining NJ is wrong
     ("Panc-1" "cellosaurus" :TYPE "cellline" :ID "CVCL_0480")
-    ("OD" "cellosaurus" :TYPE "cellline" :ID "CVCL_0G09")
+    ("ODA" "cellosaurus" :TYPE "cellline" :ID "CVCL_0G09")
+    ;; this used to be OD, but according to cellosaurus it's supposed to
+    ;; be ODA -- although in context the "OD" should be "optical density"
+    ;; which is a measure of cells when doing viability tests
     ("143B" "cellosaurus" :TYPE "cellline" :ID "CVCL_2270")
     ("U266" "cellosaurus" :TYPE "cellline" :ID "CVCL_0566")
     ("T47D" "cellosaurus" :TYPE "cellline" :ID "CVCL_0553")
@@ -824,7 +801,8 @@
     ("amino acid synthesis" "pfam" :TYPE "family" :ID "PF06684")
     ("BH3" "pfam" :TYPE "family" :ID "PF15285")
     ("glutathione peroxidase" "pfam" :TYPE "family" :ID "PF00255")
-    ("S4" "pfam" :TYPE "family" :ID "PF01479")
+    ;;("S4" "pfam" :TYPE "family" :ID "PF01479")
+        ;; more likely to be be supplementary figure which we need to deal with better
     ("EF-hand domain" "pfam" :TYPE "family" :ID "PF08976")
     ("EF-hand" "pfam" :TYPE "family" :ID "PF09068")
     ;; bad ("calcium binding" "pfam" :TYPE "family" :ID "PF11535")
@@ -836,7 +814,7 @@
     ("programmed cell death" "go" :TYPE "bioprocess" :ID "GO:0006915")
     ("energy metabolism" "go" :TYPE "bioprocess" :ID "GO:0006091")
     ("Cell Cycle" "go" :TYPE "bioprocess" :ID "GO:0007049")
-    ("glycolysi" "go" :TYPE "bioprocess" :ID "GO:0006096")
+    ("glycolysis" "go" :TYPE "bioprocess" :ID "GO:0006096")
     ("autophagic cell death" "go" :TYPE "bioprocess" :ID "GO:0048102")
     ("DNA replication" "go" :TYPE "bioprocess" :ID "GO:0006260")
     ("DNA damage checkpoint" "go" :TYPE "bioprocess" :ID "GO:0000077")
@@ -862,14 +840,19 @@
     ("cell viability" "mesh" :TYPE "bioprocess" :ID "D002470")
     ("signal transduction" "go" :TYPE "bioprocess" :ID "GO:0007165")
     ("signalling pathway" "go" :TYPE "bioprocess" :ID "GO:0007165")
-    ("proteolysi" "go" :TYPE "bioprocess" :ID "GO:0006508")
+    ("proteolysis" "go" :TYPE "bioprocess" :ID "GO:0006508")
     ("signalling cascade" "go" :TYPE "bioprocess" :ID "GO:0007165")
     ("protein degradation" "go" :TYPE "bioprocess" :ID "GO:0006508")
     ("cell migration" "go" :TYPE "bioprocess" :ID "GO:0016477")
     ("DNA repair" "go" :TYPE "bioprocess" :ID "GO:0006281")
     ("cell cycle" "go" :TYPE "bioprocess" :ID "GO:0007049")
     ("DNA damage response" "go" :TYPE "bioprocess" :ID "GO:0000077")
-    ("PC." "cellosaurus" :TYPE "cellline" :ID "CVCL_0035")
+    ("PC.3" "cellosaurus" :TYPE "cellline" :ID "CVCL_0035")
+    ;; previously this was "PC." however that's not the cell line
+    ;; cited which is also known as PC3 and PC-3 -- in context "PC"
+    ;; is "pancreatic cancer" and the "." is because there was no space at
+    ;; the beginning of the next sentence, but it is a cancer cell
+    ;; line so might be helpful
     ("ASPC-1" "cellosaurus" :TYPE "cellline" :ID "CVCL_0152")
     ("HCT 116" "cellosaurus" :TYPE "cellline" :ID "CVCL_0291")
     ("H1650" "cellosaurus" :TYPE "cellline" :ID "CVCL_1483")
@@ -878,11 +861,19 @@
     ("Y79" "cellosaurus" :TYPE "cellline" :ID "CVCL_1893")
     ("human keratinocyte" "cellosaurus" :TYPE "cellline" :ID "CVCL_9T09")
     ("BT-20" "cellosaurus" :TYPE "cellline" :ID "CVCL_0178")
-    ("human mammary" "cellosaurus" :TYPE "cellline" :ID "CVCL_Y905")
+    ("human mammary 7" "cellosaurus" :TYPE "cellline" :ID "CVCL_Y905")
+    ;; previously the 7 was left off, but its official name on cellosaurus
+    ;; is Huma 7 with a synonym of human mammary 7 -- in context this
+    ;; was never the cell line in question -- it was always part of a phrase
+    ;; "human mammary epithelial cell line" 
     ("HS-5" "cellosaurus" :TYPE "cellline" :ID "CVCL_0809")
     ("PLC/PRF/5" "cellosaurus" :TYPE "cellline" :ID "CVCL_0485")
     ("N87" "cellosaurus" :TYPE "cellline" :ID "CVCL_1603")
-    ("GEF-" "cellosaurus" :TYPE "cellline" :ID "CVCL_4V04")
+    ("Gef-R" "cellosaurus" :TYPE "cellline" :ID "CVCL_4V04")
+    ;; previously this was "GEF-" which actually had the trailing
+    ;; hyphen because it was "GEF- and GAP mediated" where the
+    ;; cell-line in cellosaurus is "Gef-R" but it is a cancer cell
+    ;; line so it might be helpful to have the right one
     ("CGTH-W3" "cellosaurus" :TYPE "cellline" :ID "CVCL_3898")
     ("H23" "cellosaurus" :TYPE "cellline" :ID "CVCL_1547")
     ("H1703" "cellosaurus" :TYPE "cellline" :ID "CVCL_1490")
@@ -905,9 +896,16 @@
     ("D407" "cellosaurus" :TYPE "cellline" :ID "CVCL_8183")
     ("HuCCT-1" "cellosaurus" :TYPE "cellline" :ID "CVCL_0324")
     ("BXPC-3" "cellosaurus" :TYPE "cellline" :ID "CVCL_0186")
-    ("D1" "cellosaurus" :TYPE "cellline" :ID "CVCL_3502")
+    ("D1-1" "cellosaurus" :TYPE "cellline" :ID "CVCL_3502")
+    ;; previously this said D1, but cellosaurus says 3502 is Jurkat D1.1
+    ;; with synonyms D1.1 and D1-1 -- actually in the original context
+    ;; this wasn't this cell line, but because it is a cancer cell line it
+    ;; might be good to have
     ("K562" "cellosaurus" :TYPE "cellline" :ID "CVCL_0004")
-    ("BAT ," "cellosaurus" :TYPE "cellline" :ID "CVCL_E470")
+    ;;("BAT,J" "cellosaurus" :TYPE "cellline" :ID "CVCL_E470")
+    ;; was originally "BAT ," and should be matching the BAT protein --
+    ;; this cellosaurus goes with "BAT,J" but we don't have any examples of
+    ;; that so I'm commenting this out
     ("MIA PaCa-2" "cellosaurus" :TYPE "cellline" :ID "CVCL_0428")
     ("HPAF-II" "cellosaurus" :TYPE "cellline" :ID "CVCL_0313")
     ("TPC-1" "cellosaurus" :TYPE "cellline" :ID "CVCL_6298")
@@ -1029,7 +1027,7 @@
     ("microsome" "uniprot" :TYPE "cellular-component" :ID "SL-0166")
     ("recycling endosome" "go" :TYPE "cellular-component" :ID "GO:0055037")
     ("lipid droplet" "uniprot" :TYPE "cellular-component" :ID "SL-0154")
-    ("nucleolu" "go" :TYPE "cellular-component" :ID "GO:0005730")
+    ("nucleolus" "go" :TYPE "cellular-component" :ID "GO:0005730")
     ("cell surface" "go" :TYPE "cellular-component" :ID "GO:0009986")
     ("tight junction" "uniprot" :TYPE "cellular-component" :ID "SL-0265")
     ("target cell" "uniprot" :TYPE "cellular-component" :ID "SL-0487")
@@ -1070,6 +1068,8 @@
     ("fibroblast growth factor" "pfam" :TYPE "family" :ID "PF00167")
     ("Retinoic acid receptor" "interpro" :TYPE "family" :ID "IPR003078")
     ;;("S1" "pfam" :TYPE "family" :ID "PF00575")
+        ;; more likely to be be supplementary figure which we need to deal with better
+
     ("eukaryotic translation initiation factor 4E binding" "interpro" :TYPE "family" :ID "IPR008606")
     ("Cyclin E" "interpro" :TYPE "family" :ID "IPR028858")
     ("tumour necrosis factor" "interpro" :TYPE "family" :ID "IPR006053")
@@ -1099,7 +1099,9 @@
     ("TbetaR I" "uniprot" :TYPE "gene" :ID "P36897")
     ("CAII protein" "uniprot" :TYPE "gene" :ID "P00918")
     ("cyclooxygenase 2" "uniprot" :TYPE "gene" :ID "P35354")
-    ("surface protein" "uniprot" :TYPE "gene" :ID "O42043")
+    ;;("surface protein" "uniprot" :TYPE "gene" :ID "O42043")
+    ;; this is not a generic for surface protein and is instead
+    ;; connecting it to a very specific retrovirus group
     ("p16 protein" "uniprot" :TYPE "gene" :ID "Q96518")
     ("purine nucleoside phosphorylase" "uniprot" :TYPE "gene" :ID "P00491")
     ("beta3 integrin" "uaz" :TYPE "gene" :ID "UA-BP-GGP-00176")
@@ -1117,7 +1119,7 @@
     ("CMXRo" "pubchem" :TYPE "simple-chemical" :ID "22613925")
     ("guanosine triphosphate" "pubchem" :TYPE "simple-chemical" :ID "6830")
     ("Suberoylanilide Hydroxamic Acid" "pubchem" :TYPE "simple-chemical" :ID "5311")
-    ("Everolimu" "pubchem" :TYPE "simple-chemical" :ID "6442177")
+    ("Everolimus" "pubchem" :TYPE "simple-chemical" :ID "6442177")
     ("sialic acid" "pubchem" :TYPE "simple-chemical" :ID "445063")
     ("oleanolic acid" "pubchem" :TYPE "simple-chemical" :ID "10494")
     ("5-HMF" "pubchem" :TYPE "simple-chemical" :ID "237332")
@@ -1140,7 +1142,8 @@
     ("acridine orange" "pubchem" :TYPE "simple-chemical" :ID "62344")
     ("hyaluronic acid" "pubchem" :TYPE "simple-chemical" :ID "24759")
     ("ganglioside GD3" "pubchem" :TYPE "simple-chemical" :ID "20057331")
-    ("S2" "pubchem" :TYPE "simple-chemical" :ID "5460602")
+   ;; ("S2" "pubchem" :TYPE "simple-chemical" :ID "5460602")
+    ;; more like to be supplementary figure which we need to deal with better
     ("glucose-6-phosphate" "pubchem" :TYPE "simple-chemical" :ID "5958")
     ("retinoic acid" "pubchem" :TYPE "simple-chemical" :ID "5282379")
     ("butyric acid" "pubchem" :TYPE "simple-chemical" :ID "264")
@@ -1161,7 +1164,8 @@
     ("vitamin C" "pubchem" :TYPE "simple-chemical" :ID "54690394")
     ("E2" "pubchem" :TYPE "simple-chemical" :ID "5757")
     ("necrostatin-1" "pubchem" :TYPE "simple-chemical" :ID "2828334")
-    ("S5" "pubchem" :TYPE "simple-chemical" :ID "139341")
+    ;; ("S5" "pubchem" :TYPE "simple-chemical" :ID "139341")
+    ;; more likely to be be supplementary figure which we need to deal with better
     ("hydroxyl radical" "pubchem" :TYPE "simple-chemical" :ID "961")
     ("6-hydroxydopamine" "pubchem" :TYPE "simple-chemical" :ID "4624")
     ("sulforhodamine B" "pubchem" :TYPE "simple-chemical" :ID "62500")
@@ -1187,12 +1191,16 @@
     ("Galpha" "pfam" :ID "PF00503")
     ("glycogen synthase" "pfam" :ID "PF05693")
 ;;    ("S1" "pfam" :ID "PF00575")
+    ;; more likely to be be supplementary figure which we need to deal with better
+
     ("3D" "pfam" :ID "PF06725")
     ("IL-1" "pfam" :ID "PF00340")
     ("il12" "pfam" :ID "PF03039")
     ("amino acid synthesis" "pfam" :ID "PF06684")
     ("glutathione peroxidase" "pfam" :ID "PF00255")
-    ("S4" "pfam" :ID "PF01479")
+   ;; ("S4" "pfam" :ID "PF01479")
+    ;; more likely to be be supplementary figure which we need to deal with better
+
     ("EF-hand domain" "pfam" :ID "PF08976")
     ("EF-hand" "pfam" :ID "PF09068")
     ("P2" "pfam" :ID "PF07194")
@@ -1267,7 +1275,93 @@
     ("ICI" "pubchem" :ID "5318532")
     ("oleic acid" "pubchem" :ID "445639") ))
 
-(defparameter *all-reach-terms* (append *reach-cells* *reach-terms*))
-(loop for term in *all-reach-terms* do (define-reach-term term))
+(defparameter *reach-cancers*
+  (loop for c in *reach-cancers-or-tissues*
+          collect (list (first c) (second c) :TYPE "cancer" :ID (sixth c))))
+;; changing the type from "tissuetype" to "cancer" for all the cancers 
 
-|#
+(defun end-term-match-list-p (word list)
+  (loop for item in list
+        thereis (eq (search item word)
+                    (- (length word)
+                       (length item)))))
+
+(defun reach-cell-diff (term)
+  "Things on the cell list are actually a mix of tissues, cells, and
+tumors -- this differentiates them by changing overwriting their atlas
+designations"
+  (let ((word (first term))
+        (atlas (second term))
+        (id (sixth term)))
+    (cond ((end-term-match-list-p word '("cell" "neuron" "blast" "cyte" "phage"))
+           (list word atlas :TYPE "cell" :ID id))
+          ((end-term-match-list-p word '("tumor" "tumour"))
+           (list word atlas :TYPE "tumor" :ID id))
+          (t
+           term))))
+             
+
+(defparameter *reach-cell-tissue-tumor*
+  (loop for c in *reach-cells*
+          collect (reach-cell-diff c)))
+
+(defun reach-terms-mod (term)
+  (let ((word (first term))
+        (atlas (second term))
+        (type (fourth term))
+        (id (sixth term)))
+    (case (intern (string-upcase atlas))
+      (uberon 
+       (cond ((end-term-match-list-p word 
+                                  '("fluid" "secretion" "effusion" "feces" "urine"))
+              (list word atlas :TYPE "secretion" :ID id))
+             ((end-term-match-list-p word 
+                                  '("tissue"))
+              (list word atlas :TYPE "tissue" :ID id))
+             (t
+              term)))
+      (mesh
+       (list word atlas :TYPE type :ID (concatenate 'string "MESH:" id))) 
+      (pubchem
+       (list word atlas :TYPE type :ID (concatenate 'string "PC:" id)))
+      (taxonomy
+       (list word atlas :TYPE type :ID (concatenate 'string "TI:" id)))
+      (pfam
+       (let ((type-mod (if (end-term-match-list-p word '("domain"))
+                           "domain"
+                           type))) ;; some pfam items are protein domains rather than families
+         (list word atlas :TYPE type-mod :ID (concatenate 'string "XFAM:" id))))
+      ;; could add domain check for interpro since those are in
+      ;; interpro ontology, but no current examples in reach terms
+      (uniprot
+       (list word atlas :TYPE type :ID (concatenate 'string "UP:" id)))
+      ;; since TRIPS already has UP:SL- for the cell parts, we'll append it to them too
+      (t
+       term))))
+
+(defparameter *reach-terms-mod*
+  (loop for term in *reach-terms*
+          collect (reach-terms-mod term)))
+(defparameter *suspect-reach-defs* nil)
+
+(defparameter *all-reach-terms* (append *reach-cell-tissue-tumor*
+*reach-cancers* *reach-terms-mod*))
+
+(defun load-reach-terms ()
+  (loop for term in *all-reach-terms*
+           do (let* ((word (car term))
+                    (word-len (length word))
+                    (id (getf (cddr term) :id)))
+                (unless (or (null id)
+                            (gethash word *trips-words-hash*))
+                  (setf (gethash word *trips-words-hash*) term)
+                  (if (or (eq 2 word-len)
+                               (and (search "-" word)
+                                    (eq 3 word-len)))
+                      (push term *suspect-reach-defs*)
+                      (define-reach-term term))))
+          finally (save-var->bio-nl-new-defs-file *suspect-reach-defs* 
+                                                        "suspect-trips-reach-defs"
+                                                        :if-exists :append)))
+ 
+
