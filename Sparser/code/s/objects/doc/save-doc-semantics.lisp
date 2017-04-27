@@ -120,6 +120,7 @@
                          (:xml "xml")
                          (:lisp "lisp")
                          (:hms-json "json")
+                         ((nil) "")
                          (t (lsp-break "bad output format specified")))
                  :defaults
                  (or *article-semantics-directory*
