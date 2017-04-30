@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "subcategorization"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2017
+;;;  Version:  April 2017
 
 ;; Initiated 9/11/14 to organize information about subcategorization patterns
 ;; Working on it through 9/15/14. 11/20/14 hacked up a treatment of multiple
@@ -241,7 +241,7 @@
                                   patterns :key #'subcat-label))
         for (pname var-name) on slots by #'cddr
         as label = (etypecase pname
-                     ((member :subject :object :premod :m
+                     ((member :subject :object :premod :m :l
                               :thatcomp :whethercomp :to-comp :ifcomp :as-comp)
                       pname)
                      ((or word polyword)
