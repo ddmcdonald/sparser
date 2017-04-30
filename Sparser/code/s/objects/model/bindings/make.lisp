@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1991-2005,2013-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2013-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "make"
 ;;;   Module:  "objects;model:bindings:"
-;;;  version:  October 2016
+;;;  version:  April 2016
 
 ;; initiated 11/30/91 v2.1
 ;; 1.1 (7/20/92 v2.3) revised to fit new regime
@@ -312,3 +312,24 @@ returning a new one.
           ;; now it needs to be indexed, but that would entail
           ;; refactoring some code and can wait for a bit (1/31/17)
           individual)))))
+
+
+(defun copy-indiv-minus-variable (i var/name)
+  "Make a new individual with all of the bindings of the
+   original except for the specific variable."
+  (let ((var (find-variable-for-category var/name i))
+        (bindings (indiv-binds i))
+        (category (itype-of i)))
+    (if *description-lattice*
+      (let ((bindings (indiv-old-binds i))
+            (j (make-dli-for-ref-category category)))
+        (loop for b in (reverse bindings)
+           unless (eq (binding-variable b) var)
+           do (setq j (bind-variable var (binding-value b) j)))
+        j)
+      (else
+        (let ((j (make-unindexed-individual category)))
+          (loop for b in bindings
+             unless (eq (binding-variable b) var)
+             do (bind-variable var (binding-value b) j))
+          j)))))
