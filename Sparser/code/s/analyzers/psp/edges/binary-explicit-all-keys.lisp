@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-1995,2011 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1995,2011,2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;      File:   "binary/explicit all keys"
 ;;;    Module:   "analyzers:psp:edges:"
-;;;   Version:   2.9 October 2011
+;;;   Version:   April 2017
 
 ;; 2.0 (11/10/92 v2.3) Simplified the name, added :form
 ;; 2.1 (5/5/93) Added an alternative spelling Make-chart-edge that's easier
@@ -115,9 +115,10 @@
         (when (edge-p left-daughter)
           ;; could be a word
           (set-used-by left-daughter edge))
-        (setf (edge-left-daughter  edge) left-daughter))
+        (setf (edge-left-daughter edge) left-daughter))
       (when left-edge
-        (setf (edge-left-daughter  edge) left-edge)
+        (setq left-daughter left-edge)
+        (setf (edge-left-daughter edge) left-edge)
         (set-used-by left-edge  edge)))
 
     (if right-daughter
@@ -127,6 +128,7 @@
           (set-used-by right-daughter edge))
         (setf (edge-right-daughter edge) right-daughter))
       (when right-edge
+        (setq right-daughter right-edge)
         (setf (edge-right-daughter edge) right-edge)
         (set-used-by right-edge edge)))
 
@@ -154,14 +156,16 @@
                                        (pos-edge-starts-at right-daughter)
                                        edge)))
 
-
- 
-    (set-edge-referent edge
-          (if (and (cfr-p rule)
-                   left-edge right-edge)
-            (referent-from-rule
-             left-edge right-edge edge rule)
-            referent))
+    (cond
+      (referent ;; specified by the caller. Just set it.
+       (set-edge-referent edge referent))
+      (rule
+       (set-edge-referent
+        edge
+        (if (and (cfr-p rule) left-edge right-edge)
+          (referent-from-rule
+           left-edge right-edge edge rule)
+          referent))))
     
     (unless do-not-knit
       (knit-edge-into-positions edge start-vector end-vector))
