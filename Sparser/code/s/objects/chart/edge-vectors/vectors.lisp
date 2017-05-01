@@ -83,6 +83,19 @@
     vector))
 
 
+;;--- delicate editing // consider refactoring
+
+(defun change-edge-end-position (edge new-ev)
+  "For chart editing operations only. Reset the
+   end position of 'edge' to be 'new-pos' sorting out the
+   edge vectors as needed."
+  (let ((old-ev (edge-ends-at edge)))
+    (setf (edge-ends-at edge) new-ev)
+    (remove-edge-from-vector-ev old-ev edge)
+    (knit-edge-into-position edge new-ev)
+    edge))
+   
+
 
 ;;;----------------
 ;;; removing edges
@@ -103,6 +116,14 @@
      (break "Stub: write the routine for removing an edge from an~
              ~%edge-vector based on kcons lists."))))
 
+(defun reset-ev-top-node (ev)
+  "Helper -- When the dust has settled after the ev has been edited
+   this uses the count and actual vector to do the right thing."
+  (let ((count (ev-number-of-edges ev)))
+    (if (= count 0) ;; doesn't try ot re-compute :multiple-initial=edges
+      (setf (ev-top-node ev) nil)
+      (setf (ev-top-node ev) (aref (ev-edge-vector ev) (1- count))))))
+
 (defun remove-edge-from-vector-ev (ev edge)
   "Remove 'edge' from the the edge vector ev, adjusting
    the other edges in its array and its meta data accordingly."
@@ -112,7 +133,8 @@
     (cond
      ((eq edge (aref array (1- count))) ;; it the top
       (setf (aref array (decf (ev-number-of-edges ev)))
-            nil))
+            nil)
+      (reset-ev-top-node ev))
      ;;/// suppose it's the top edge of multiple initial edges
      (t
       (reset-ev-edges ;; it's in the middle somewhere
@@ -137,7 +159,8 @@
        do (setf (aref (ev-edge-vector ev) i)
                 e))
     (setf (ev-number-of-edges ev)
-          (length edge-list))))
+          (length edge-list))
+    (reset-ev-top-node ev)))
 
 
 

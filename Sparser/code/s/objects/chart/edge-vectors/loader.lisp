@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
 ;;; copyright (c) 1990  Content Technologies Inc.
-;;; copyright (c) 1992-1993,2013  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-1993,2013-2017  David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "objects;chart:edge vectors:"
-;;;  Version:  3.2 September 2013
+;;;  Version:  April 2017
 
 (in-package :sparser)
 
@@ -24,4 +24,5 @@
 (lload "ev;init")
 (lload "ev;peek")
 (lload "ev;tuck")
+(lload "ev;lift")
 
