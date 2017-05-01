@@ -1,9 +1,9 @@
 ;;; -*- Mode: lisp; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2010-2016 David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2010-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "interface;mumble;"
-;;;  Version:  July 2016
+;;;  Version:  April 2017
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
@@ -29,6 +29,7 @@
   (handler-case (call-next-method)
     (error () object)))
 
+
 (defmethod realize ((c sp::referential-category))
   "Realize a category as its head word."
   (multiple-value-bind (head pos) (sp::rdata-head-word c t)
@@ -44,9 +45,22 @@
 (defmethod realize ((w sp::polyword))
   (find-or-make-word (sp::pname w)))
 
+
 (defmethod record-lexicalized-phrase ((category sp::category)
                                       (lp lexicalized-resource))
   (record-lexicalized-phrase (symbol-name (sp::cat-symbol category)) lp))
 
+
 (defmethod get-lexicalized-phrase ((category sp::category))
   (get-lexicalized-phrase (symbol-name (sp::cat-symbol category))))
+
+
+(defmethod discourse-unit  ((i sp::individual))
+  (mumble::make-discourse-unit-dtn i i))
+
+(defmethod ensure-is-a-sentence  ((i sp::individual))
+  (mumble::make-discourse-unit-dtn i i))
+
+
+(defmethod number-of-subject ((subj sp::individual))
+  (if (sp::itypep subj 'collection) 'plural 'singular))
