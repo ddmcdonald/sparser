@@ -231,7 +231,7 @@
 (define-preposition "near to" :form 'spatial-preposition)
 (define-preposition "nearer" :form 'spatial-preposition) ;;comparative
 (define-preposition "nearer to" :form 'spatial-preposition) ;;comparative
-;; (define-preposition "next to" :form 'spatial-preposition) -- go compositional
+(define-preposition "next to" :form 'spatial-preposition)
 (define-preposition "notwithstanding")
 (define-preposition "of" )
 (define-preposition "off" )
