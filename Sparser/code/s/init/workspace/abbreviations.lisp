@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  February 2017
+;;;  version:  April 2017
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -160,7 +160,8 @@
 ;; edge vectors
 (defun dev/s (position#) (d (ev/s position#)))
 (defun dev/e (position#) (d (ev/e position#)))
-
+(defun ppev/s (position#) (pprint-ev (ev/s position#)))
+(defun ppev/e (position#) (pprint-ev (ev/e position#)))
 
 ;; rule sets
 (defgeneric drs (label)

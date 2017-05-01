@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1990,1991,1992,1993  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1990-1993,2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "printers"
 ;;;   Module:  "objects;edge vectors:"
-;;;  Version:  2.1 November 1993
+;;;  Version:  April 2017
 
 ;; 1.1  propagates effect of adjustments to Edge-vector object
 ;; 1.2  (1/29/91 v1.8)  Added another case to Display-edge-vector for
@@ -27,6 +27,23 @@
   (write-string " " stream)
   (princ (pos-token-index (ev-position obj)) stream)
   (write-string ">" stream))
+
+
+;;;------------------
+;;; tailored printer
+;;;------------------
+
+(defun pprint-ev (ev &optional (stream *standard-output*))
+  (format stream "~&~a~
+                  ~%  top-node = ~a~
+                  ~%  number-of-edges = ~a~
+                  ~%  edge-vector = ~a~%"
+          ev (ev-top-node ev) (ev-number-of-edges ev)
+          (aref (ev-edge-vector ev) 0))
+  (loop for i from 1 to (1- (ev-number-of-edges ev))
+     do (format stream "                ~a~%"
+                (aref (ev-edge-vector ev) i)))
+  ev)
 
 
 ;;;----------------------
