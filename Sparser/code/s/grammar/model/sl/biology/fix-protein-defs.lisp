@@ -557,6 +557,27 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                (if (gethash x *up-ncit-ht*) (list  (gethash x *up-ncit-ht*))
                    (list x))))))
 
+;;check on "UP:protein" if it's still there
+;; check (define-protein "XFAM:PF03169.13" ("OPT" "opt" "opted"
+;; "opts")) -- "opted" does not actually seem to be a synonym...
+
+(defparameter *all-std-prot-comp-names* nil)
+(defun collect-all-std-prot-comp-names (&optional (file "sparser:bio;standardized-protein-defs-complete.lisp"))
+  (for-forms-in-file file #'collect-id-and-synonyms))
+
+(defun collect-id-and-synonyms (form &aux (def (car form))(id (second form)))
+  (when (eq def 'define-protein)
+    (loop for wd in (cons id (third form))
+         do (push wd *all-std-prot-comp-names*))))
+
+(defparameter *lost-std-prot-defs* nil)
+(defun find-undef-std-prot-comp ()
+  (loop for wd in *all-std-prot-comp-names*
+          unless (resolve wd)
+          do (push wd *lost-std-prot-defs*)))
+                    
+    
+
 ;;;;;;;; normalization for standardized-protein-defs-complete.lisp
 #|
 (load-protein-id-hash-tables)
