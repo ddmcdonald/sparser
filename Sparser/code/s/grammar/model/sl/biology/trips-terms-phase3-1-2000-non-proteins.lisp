@@ -16,7 +16,6 @@
 (def-synonym acetylation (:noun "acetyla-tion")) 
 (def-synonym apoptosis (:noun "apopto-sis")) 
 (def-synonym development (:noun "maturation")) 
-(def-synonym endocytosis (:noun "endocyto-sis")) 
 (def-synonym neovascularization (:noun "neo-vascularization")) 
 (def-synonym phosphorylation (:noun "phos-phorylation")) 
 (def-synonym phosphorylation (:noun "phosphor-ylation")) 
