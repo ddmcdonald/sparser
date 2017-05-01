@@ -288,7 +288,6 @@
 (def-bio "cytokinesis" cellular-process :long nil :identifier "GO:0000910")
 (def-bio "dedifferentiation" cellular-process :long nil :identifier "GO:0043696")
 (def-bio "endocytic vesicle" cellular-process :long nil :identifier "GO:0030139")
-(def-bio "endocytosis" cellular-process :long nil :identifier "GO:0006897")
 (def-bio "energy metabolism" cellular-process :long nil :identifier "GO:0006091")
 (def-bio "epithelial to mesenchymal transition" cellular-process :long nil :identifier "GO:0001837")
 (def-bio "extracellular space" cellular-process :long nil :identifier "GO:0005615")
