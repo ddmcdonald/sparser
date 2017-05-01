@@ -32,6 +32,9 @@
 
 (defparameter *default-article-semantics-path*
   (CURE-semantics-directory-pathname))
+
+(defun output-hms-json ()
+  (save-article-semantics-format :hms-json))
   
 (defun save-article-semantics-format (output-format
                                       &optional
