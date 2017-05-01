@@ -1,8 +1,8 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2013-2016 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2013-2017 David D. McDonald  All Rights Reserved
 ;;;
 ;;;  /Mumble/derivation-trees/builders.lisp
-;;;  November 2016
+;;;  April 2017
 
 ;; Initated 11/20/13 to package up reusable parameterized
 ;; derivation tree patterns at roughly the level of maximal projections.
@@ -197,31 +197,76 @@
                      :free (list (parameter-named 's)
                                  (parameter-named 'o))))))
 
-
-
-(defgeneric discourse-unit (contents)
-  (:documentation "Given an instance of a valid slot contents,
-    prototypically a dtn for a clause, wrap it in a discourse unit
-    phrase. "))
+;;;-----------------
+;;; discourse units
+;;;-----------------
 
 #| This could be a entry point to the microplanner given
 a message to be expressed. See discussion in make.lisp |#
 
-(defmethod discourse-unit ((dtn derivation-tree-node))
-  "Replace the resource of the input dtn with a saturated-
-  lexicalized-phrase built here by hand that has the input
-  dtn bound to the s parameter.  N.b. this operator can't
-  be run for side-effects on the input dtn because it wants
-  to create (and return) a new one."
+(defun make-discourse-unit-dtn (unit referent)
+  "Common core. Return a dtn for a 'first-sentence-of-discourse-unit'
+   whose sentence slot value is 'unit', and the referent of the dtn
+   is 'referent'."
   (let* ((phrase (phrase-named 'first-sentence-of-discourse-unit))
          (complement (make-instance 'complement-node
-                       :phrase-parameter (parameter-named 's)
-                       :value dtn))
-         (resource (make-instance 'saturated-lexicalized-phrase
-                     :phrase phrase
-                     :bound `(,complement))))
-    (make-dtn :resource resource
-              :referent (referent dtn))))
+                                      :phrase-parameter (parameter-named 's)
+                                      :value unit))
+           (resource (make-instance 'saturated-lexicalized-phrase
+                                    :phrase phrase
+                                    :bound `(,complement))))
+      (make-dtn :resource resource
+                :referent referent)))
+
+(defgeneric discourse-unit (contents)
+  (:documentation "Given an instance of a valid slot contents,
+    prototypically a dtn for a clause, wrap it in a discourse unit
+    phrase. ")
+  (:method ((dtn derivation-tree-node))
+    "Replace the resource of the input dtn with a saturated-
+    lexicalized-phrase built here by hand that has the input
+    dtn bound to the s parameter.  N.b. this operator can't
+    be run for side-effects on the input dtn because it wants
+    to create (and return) a new one."
+    (make-discourse-unit-dtn dtn (referent dtn))))
+
+(defgeneric ensure-is-a-sentence (object)
+  (:documentation "Return a dtn that wraps 'object' in a the 's' slot
+    of a discourse-unit. Return value replaces the 'object' of the call.")
+  (:method ((original derivation-tree-node))
+    "Look at how 'original' will be realized and if it is not already 
+     a discourse unit, modify it so that it is."
+    
+      (if (will-be-realized-as-a-discourse-unit original)
+        (let* ((new-dtn (copy-dtn original))
+               ;; from discourse-unit, which we could consider refactoring
+               (phrase (phrase-named 'first-sentence-of-discourse-unit))
+               (complement (make-instance 'complement-node
+                                          :phrase-parameter (parameter-named 's)
+                                          :value original))
+               (resource (make-instance 'saturated-lexicalized-phrase
+                                        :phrase phrase
+                                        :bound `(,complement))))
+          (setf (resource new-dtn) resource) ;; wrap
+          (setf (referent new-dtn) (referent original)) ;; needed for print method
+          (when (typep original 'derivation-tree-node)
+            ;; we have to zero out its other fields that were copied
+            (setf (complements new-dtn) nil)
+            (setf (adjuncts new-dtn) nil)
+            (setf (features new-dtn) nil))
+          new-dtn)
+        original))
+  (:method ((object T))
+    (warn "ensure-is-a-sentence called with a ~a~%~a"
+          (type-of object) object)
+    object))
+
+(defun will-be-realized-as-a-discourse-unit (dtn)
+  "Look at the resouce of the dtn. Find its phrase and determine
+   whether it is a known type of discourse unit"
+  ;; no-op for initial testing
+  (declare (ignore dtn))
+  nil)
 
 ;;;----------------------
 ;;; dtn => dtn operators
