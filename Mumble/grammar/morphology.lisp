@@ -283,26 +283,40 @@ The exceptions are optional."
 as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
   (let ((subj (current-subject)))
     (the (member singular plural)
-	 (or (typecase subj
-	       ((or specification derivation-tree-node)
-                (let ((acc (get-accessory-value ':number subj)))
-                  (and acc (name acc))))
-	       (node
-                (let ((phrase-type (name subj)))
-                  (case phrase-type
-                    (np (state-value :number (state (context-object subj))))
-                    (conjunction (state-value :number (state (context-object subj)))))))
-	       (ttrace
-                (let ((orig (original-specification subj)))
-                  (typecase orig
-                    ((or specification derivation-tree-node)
-                     (let ((acc (get-accessory-value ':number orig)))
-                       (and acc (name acc))))
-                    (pronoun (number orig)))))
-               (sp::individual
-                (if (sp::itypep subj 'collection) 'plural 'singular))
-	       (pronoun (number subj)))
-	     'singular))))
+         (let ((number (number-of-subject subj)))
+           (unless number
+             (warn "no number recorded on subject ~a" subj))
+           (or number 'singular)))))
+
+(defgeneric number-of-subject (subject)
+  (:documentation "Workhorse of number-of-current-subject. 
+    Replaces original typecase. Needs to be methods to accomodate
+    reference to sparser package, though that could be done by
+    moving this file to a different point in the overall load.")
+  (:method ((subj specification))
+    (let ((acc (get-accessory-value ':number subj)))
+      (and acc (name acc))))
+  (:method ((subj derivation-tree-node))
+    (let ((acc (get-accessory-value ':number subj)))
+      (and acc (name acc))))
+  (:method ((subj node))
+    (let ((phrase-type (name subj)))
+      (case phrase-type
+        (np (state-value :number (state (context-object subj))))
+        (conjunction (state-value :number (state (context-object subj)))))))
+  (:method ((subj ttrace))
+    (let ((orig (original-specification subj)))
+      (typecase orig
+        ((or specification derivation-tree-node)
+         (let ((acc (get-accessory-value ':number orig)))
+           (and acc (name acc))))
+        (pronoun (number orig)))))
+  (:method ((subj pronoun))
+    (number subj))
+  (:method ((subj T)) ;; default
+    (declare (ignore subj))
+    'singular))
+
 
 (defun person-of-current-subject ()
   "Return the PERSON (first, second or third) of the current subject,
