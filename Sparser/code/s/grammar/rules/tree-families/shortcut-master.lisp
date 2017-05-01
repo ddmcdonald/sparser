@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "shortcut-master"
 ;;;   Module:  "grammar;rules;tree-families;"
-;;;  Version:  September 2016
+;;;  Version:  April 2017
 
 ;; Initiated 9/14/14 to make more flexible, complete shortcuts.
 ;; 11/11/14 added keyword for obo-id.
@@ -75,8 +75,8 @@
             (push `(modifier-slot . ,m-var) substitution-map)
             (push `(modifier-v/r . ,m-v/r) substitution-map))))
 
-      ;; Subcategorized location object (vs. an adjunct)
-      (let ((l-pat (find-subcat-pattern :location subcat-frame)))
+      ;; location subcategorized as an object (vs. an adjunct)
+      (let ((l-pat (find-subcat-pattern :l subcat-frame)))
         (when l-pat
           (let ((l-var (subcat-variable l-pat))
                 (l-v/r (subcat-restriction l-pat)))
