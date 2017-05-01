@@ -395,7 +395,8 @@
                    (etypecase label-realizing-i
                      (word-label 'nominal-premodifier)
                      (node-label 'np-prep-complement)))
-                  (otherwise 'np-prep-complement))))
+                  (otherwise 'vp-final-adjunct) ;; 'np-prep-complement)
+                  )))
         (make-adjunction-node
          (make-lexicalized-attachment ap i)
          dtn)))))
