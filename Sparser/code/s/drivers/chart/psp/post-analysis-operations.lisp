@@ -360,4 +360,66 @@ is replaced with replacement."
 ;;-------------
 
 (defun repair-bad-composition (sentence)
-  )
+  ;; 1st experiment -- generalize when there's been a third.
+  (let* ((edge (span-covered-by-one-edge?
+                (starts-at-pos sentence)
+                (ends-at-pos sentence)))
+         (i (when edge (edge-referent edge))))
+    (when (and i (individual-p i))
+      (when (itypep i 'move-something-verb)
+        (unless (value-of 'location i)
+          ;; (p/s "put the block near the other block")
+          ;; The block has swallowed the location. We need
+          ;; to retrieve it and rethread everything.
+          (lift-location-out-of-theme i edge))))))
+
+(defun lift-location-out-of-theme (i top-edge)
+  ;; Move the location edge to the VP (as its ETF does (see
+  ;; transitive-loc-comp).
+  ;; Make a new version of the theme that leaves off
+  ;; the location.
+  ;; Have the whole region rescanned for its (now revised)
+  ;; mention structure 
+  (assert (itypep i 'move-something-verb))
+  (let* ((theme (value-of 'theme i))
+         (location (when theme (value-of 'location theme))))
+    (when location
+      ;; now find the edge of the location below the edge for the theme
+      (let ((loc-edge (search-tree-for-referent top-edge location)))
+        (when loc-edge
+          (let* ((revised-theme (copy-indiv-minus-variable
+                                 theme 'location))
+                 (j (rebind-variable 'theme revised-theme i))
+                 (k (bind-variable 'location location j))
+                 (parent-of-loc (edge-used-in loc-edge))
+                 (obj-edge (edge-left-daughter parent-of-loc)))
+            (unless (eq parent-of-loc
+                        (edge-right-daughter top-edge))
+              (error "Assumption about parent-of-loc broken")) ;; pull from chart
+
+            ;; Detach obj and loc from their parent, and remove
+            ;; them from their edge-vactors so we can reconstruct
+            ;; the vectors again after the dust settles
+            (detach-edge loc-edge)
+
+            ;; Actually, just partially detach obj-edge
+            ;; since it's ok in its local position vectors
+            (setf (edge-used-in obj-edge) nil)
+
+            ;; remove their parent, which we're going to forget about
+            (detach-edge parent-of-loc)            
+
+            ;; Connect the obj edge as the right daughter
+            ;; of the top edge (the vp), removing the overly
+            ;; long version of the obj that's presently there
+            (setf (edge-right-daughter top-edge) obj-edge)
+            
+            ;; Change the bondary of the vp edge to same as obj
+            (change-edge-end-position top-edge
+                                      (edge-ends-at obj-edge))
+            
+            ;; Change the referent of the vp to be just vg+obj
+            (set-edge-referent top-edge j)
+
+            (chomsky-adjoin top-edge loc-edge k)))))))
+
