@@ -51,7 +51,7 @@
 
 (deftest (say put green block on first block)
   (mumble-says "Now put a green block on top of the first block.")
-  "now put a green block on the first block")
+               "now put a green block on top of the first block")
 
 (deftest (say put block on bottom middle block)
   (mumble-says "Put a red block on the bottom middle green block.")
@@ -63,11 +63,11 @@
 
 (deftest (say put red block at end)
   (mumble-says "Put a red block at the end.")
-  "put a red block on the end")
+               "put a red block at the end")
 
 (deftest (say put another at end)
   (mumble-says "Put another green block on the green block at the end of the row.")
-  "put another green block on the green block on the end of the row")
+               "put another green block on the green block at the end of the row")
 
 #+(or) ; "on the left" should be a relative location, not a modifier
 (deftest (say put another at end on left)
@@ -92,7 +92,7 @@
 
 (deftest (say put row on bottom row)
   (mumble-says "Put a row of two green blocks on top of the bottom row.")
-  "put a row of two green blocks on the bottom row")
+               "put a row of two green blocks on top of the bottom row")
 
 #+(or) ; not a question
 (deftest (say which end)
@@ -105,7 +105,7 @@
 
 (deftest (say put row on left end of row)
   (mumble-says "Put a row of two blocks on top of the left end of the bottom row.")
-  "put a row of two blocks on the left end of the bottom row")
+  "put a row of two blocks on top of the left end of the bottom row")
 
 (deftest (say put stack on table)
   (mumble-says "Put a stack of two red blocks on the table.")
