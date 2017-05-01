@@ -3,7 +3,7 @@
 ;;; MUMBLE-05 interpreters> top-level
 
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (C) 2005, 2010, 2016 David D. McDonald
+;;; Copyright (C) 2005, 2010, 2016-2017 David D. McDonald
 ;;; Copyright (C) 1985-1988 David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
@@ -31,6 +31,14 @@ multiple occurrences of objects")
 
 (defvar *context-stack* nil)
 
+(defvar *pending-discourse-units* nil)
+
+(defvar *pending-rspecs* nil
+  "Unvarnished hack from ancient days. See planning code in YS
+for a better scheme that doesn't have too much overhead even for
+simplest cases. *pending-rspecs* is read in phrase-structure-execution
+and adds another sentence.")
+
 (defun initialize-mumble-state ()
   ;; *current-position* is initialized in phrase-structure-execution,
   ;; where it's set to the initial position that's passed to it.
@@ -39,17 +47,10 @@ multiple occurrences of objects")
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
   (setq *current-focus* nil)
+  (setq *pending-rspecs* nil)
   (setq *mentions* nil)
   (when (boundp '*the-derivation-tree*) ;; backwards compatibility
     (clear-derivation-tree-data)))
-
-(defvar *pending-discourse-units* nil)
-
-(defvar *pending-rspecs* nil
-  "Unvarnished hack from ancient days. See planning code in YS
-for a better scheme that doesn't have too much overhead even for
-simplest cases. *pending-rspecs* is read in phrase-structure-execution
-and adds another sentence.")
 
 (defvar *defaults-to-sentence* nil
   "A flag that means that every utterance is an orthographic sentence.
