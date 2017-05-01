@@ -22,6 +22,20 @@
      :o patient
      :to-comp theme))
 
+(define-mixin-category move-something-verb
+  :specializes linguistic ;; daughter of abstract
+  :instantiates nil
+  :mixins (with-an-agent) ;; v/r = physical-agent
+  :binds ((theme physical) ;; what moves
+          (location location)) ;; where it is moved to
+  :realization
+    (:s agent
+     :o theme
+     :l location)
+  :documentation "For verbs like 'put' where an agent
+ is moving the theme from one location to another.
+ The ETF for this set of arguments is 'sovl'.
+ In TRIPS 'put' is  agent, affected, result.") 
 
 (define-mixin-category directed-action ;; tell, give
   :specializes action-verb

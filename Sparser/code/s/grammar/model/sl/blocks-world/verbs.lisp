@@ -95,6 +95,7 @@
                 :o theme
                 :mumble (transitive-with-final-adverbial "push" "together")))
 
+#|    original w/ :loc-pp-complement
 ;; 1.2 "Put a block on the table"
 (define-category put-something-somewhere
   :specializes process
@@ -107,30 +108,14 @@
      :o theme
      :loc-pp-complement (next\ to on on\ top\ of at)
      :mumble ("put" svo1o2 :o1 theme :o2 location)))
-
-#| Moved there from mid-level/subcat-patterns.lisp
-   to debug the mixin and its use in 'put' together
-
-(define-mixin-category move-something-verb
-  :specializes linguistic ;; daughter of abstract
-  :instantiates nil
-  :mixins (with-an-agent) ;; v/r = physical-agent
-  :binds ((theme physical) ;; what moves
-          (location location)) ;; where it is moved to
-  :realization
-    (:etf svol
-     :s agent
-     :o theme
-     :l location)
-  :documentation "For verbs like 'put' where an agent
- is moving the theme from one location to another.
- In TRIPS 'put' is  agent, affected, result.") 
+|#
 
 (define-category put-something-somewhere
   :specializes process
   :mixins (move-something-verb)
   :realization
     (:verb "put"
-     :mumble ("put" svo1o2 :o1 theme :o2 location))) |#
+     :etf svol
+     :mumble ("put" svo1o2 :o1 theme :o2 location)))
 
 
