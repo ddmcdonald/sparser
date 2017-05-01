@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
-;;; Copyright (c) 2015-2016 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2015-2017 David D. McDonald  All Rights Reserved
 ;;;
 ;;;      File:  "entities"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  February 2016
+;;;   version:  April 2017
 
 ;; Initiated 12/3/15.
 
@@ -19,7 +19,7 @@
         as block-name = (format nil "B~d" block-number)
         as var-name = (format nil "*~a*" block-name)
         as var = (intern var-name :mumble)
-        as block = (sp::make-an-individual 'sp::block :name block-name)
+        as block = (sp::define-individual 'sp::block :name block-name)
         do (proclaim `(special ,var))
            (set var block)
         collect block))
@@ -52,7 +52,7 @@
                       "Twitter"
                       "UPS")
         as name = (format nil "the ~a block" corp)
-        as block = (sp::make-an-individual 'sp::block :name name)
+        as block = (sp::define-individual 'sp::block :name name)
         do (setf (sp::indiv-id block) (intern (string-upcase corp) :keyword))
         collect block))
 
