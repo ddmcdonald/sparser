@@ -51,6 +51,11 @@ for a better scheme that doesn't have too much overhead even for
 simplest cases. *pending-rspecs* is read in phrase-structure-execution
 and adds another sentence.")
 
+(defvar *defaults-to-sentence* nil
+  "A flag that means that every utterance is an orthographic sentence.
+It controls a check that will wrap a discourse-unit around any rspec
+that doesn't already have one.")
+
 
 ;#################################################################
 ;                     a generic toplevel
@@ -64,7 +69,10 @@ is appropriate to that object class.")
     (initialize-output-stream)
     (initialize-mumble-state))
   (:method (object)
-    (mumble object)))
+    (declare (special *defaults-to-sentence*))
+    (mumble (if *defaults-to-sentence*
+              (ensure-is-a-sentence object)
+              object))))
 
 ;#################################################################
 ;                     the call to Mumble
