@@ -991,7 +991,7 @@
 (define-protein "P01596" ("Ig kappa chain V-I region CAR" "KV104_HUMAN" "PROTEIN-REFERENCE4443" "PROTEIN16394" "UP:P01596 Ig kappa chain V-I region CAR"))
 (define-protein "P01597" ("HGNC:5740" "IGKV1-39" "Ig kappa chain V-I region DEE" "KV105_HUMAN" "PROTEIN-REFERENCE4444" "PROTEIN16395" "UP:P01597 Ig kappa chain V-I region DEE" "immunoglobulin kappa variable 1-39" "immunoglobulin kappa variable 1-39 (gene/pseudogene)"))
 (define-protein "P01598" ("Ig kappa chain V-I region EU" "KV106_HUMAN" "PROTEIN-REFERENCE4446" "PROTEIN16397" "UP:P01598 Ig kappa chain V-I region EU"))
-(define-protein "P01599" ("A30" "HGNC:5733" "IGKV1-17" "IGKV117" "Ig kappa chain V-I region Gal" "KV107_HUMAN" "PROTEIN-REFERENCE4447" "PROTEIN16398" "UP:P01599 Ig kappa chain V-I region Gal" "immunoglobulin kappa variable 1-17"))
+(define-protein "P01599" ("HGNC:5733" "IGKV1-17" "IGKV117" "Ig kappa chain V-I region Gal" "KV107_HUMAN" "PROTEIN-REFERENCE4447" "PROTEIN16398" "UP:P01599 Ig kappa chain V-I region Gal" "immunoglobulin kappa variable 1-17"))
 (define-protein "P01600" ("Ig kappa chain V-I region Hau" "KV108_HUMAN" "PROTEIN-REFERENCE4449" "PROTEIN16400" "UP:P01600 Ig kappa chain V-I region Hau"))
 (define-protein "P01601" ("HGNC:5748" "IGKV1D-16" "Ig kappa chain V-I region HK101" "KV109_HUMAN" "PROTEIN-REFERENCE4448" "PROTEIN16399" "UP:P01601 IGKV1D-16" "immunoglobulin kappa variable 1D-16"))
 (define-protein "P01602" ("HGNC:5741" "IGKV1-5" "IGKV1-5(23-?)" "IgK Ig kappa chain V-I region HK102 precursor" "KV110_HUMAN" "KV1J_HUMAN" "PROTEIN-REFERENCE4435" "PROTEIN16438" "PROTEIN9829" "UP:P01602 IGKV1-5" "immunoglobulin kappa variable 1-5"))
