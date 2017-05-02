@@ -1082,10 +1082,13 @@
              ((and (use-methods)
                    (eq prep-word of))
               (let ((result (compose np pobj-referent)))
-                (unless result
-                  (break "No method applied to i~a + i~a"
-                         (indiv-uid np) (indiv-uid pobj-referent)))
-                result))
+                (or result
+                    (else ;; uses the default
+                      (warn "interpret-pp-adjunct-to-np: No compose method applied ~
+                             to i~a + i~a" (indiv-uid np) (indiv-uid pobj-referent))
+                      ;; modifier in cwc
+                      (setq np (bind-dli-variable variable-to-bind pobj-referent np))
+                      np))))
 
              ;; This fall through will use 'modifier' in the blocks world
              ;; because it sets *force-modifiers* to it in its switch setting
