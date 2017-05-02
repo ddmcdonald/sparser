@@ -240,6 +240,7 @@
 (defun search-edge-tree (edge test-fn)
   (etypecase edge
     (word) ;; terminal ignore
+    (polyword) ;; ditto
     (symbol) ;; ditto
     (edge
      (if (funcall test-fn edge)
