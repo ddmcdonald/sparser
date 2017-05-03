@@ -315,6 +315,15 @@
 
 (defparameter *mention-individual* nil)
 (defparameter *mention-source* nil)
+
+(defparameter *mention-heads* (make-hash-table :size 200000))
+(defun mention-head (mention)
+  (gethash mention *mention-heads*))
+
+(defun (setf mention-head) (edge mention)
+  (setf (gethash mention *mention-heads*) edge))
+
+
 (defun make-mention (i source &optional category)
   "Individuals reside in a description lattice. Every new
   property or relation extends the lattice and in so doing
@@ -338,12 +347,14 @@
                    (not (eq (edge-rule source) 'make-ns-pair)))
                (subsumed-mention? i source)))
 	 (m (if subsumed-mention
+                
                 (update-subsumed-mention subsumed-mention i source)
                 (let ((new-mention
                        (make-instance 'discourse-mention
                                       :uid (incf *mention-uid*))))
+                  (setf (mention-head new-mention) source)
                   (setf (dependencies new-mention)
-                        (when (individual-p i) ;; no dependencies for categories
+                         (when (individual-p i) ;; no dependencies for categories
                           (create-new-dependencies
                            (indiv-old-binds i)
                            (when (edge-p source) (semantic-edges-under source))

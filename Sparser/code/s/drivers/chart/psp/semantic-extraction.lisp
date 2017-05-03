@@ -126,6 +126,10 @@
 (defparameter *bio-chemical-heads* nil)
 (defparameter *localization-interesting-heads-in-sentence* nil)
 
+(defun collect-bio-chemical-entity-strings ()
+  (collect-bio-entity-heads)
+  (collect-bio-chemical-heads))
+
 (defun collect-bio-entity-heads ()
   (setq *bio-entity-heads* (make-hash-table :size 200000 :test #'equal)))
 
@@ -334,14 +338,19 @@
     (pushnew string (gethash ref *referent-surface-strings*) :test #'equal)))
 
 (defun maybe-record-bio-entity-heads (referent edge)
+  (declare (special referent edge))
   (when (and *bio-entity-heads*
-             (eq (itype-of referent) (category-named 'bio-entity)))
+             (eq (itype-of referent) (category-named 'bio-entity))
+             (not (eq (edge-rule edge) 'REIFY-NS-NAME-AS-BIO-ENTITY)))
+    (when (equal (head-string edge) "ankyrin")
+      (lsp-break "maybe-record-bio-entity-heads"))
     (setf (gethash (head-string edge) *bio-entity-heads*) t)))
 
 (defun maybe-record-bio-chemical-heads (referent edge)
   (when (and *bio-chemical-heads*
              (itypep referent 'bio-chemical-entity))
-    (setf (gethash (head-string edge) *bio-chemical-heads*) t)))
+    (setf (gethash (head-string edge) *bio-chemical-heads*)
+          (cat-name (itype-of referent)))))
 
 (defun all-surface-strings (i)
   (gethash i *referent-surface-strings*))
@@ -956,10 +965,12 @@
 
 ;;;; get the head edge for an edge, based on the fact that the head edge has the same category as the edge-referent, and is a lexical edge
 (defun find-head-edge (edge)
-  (let ((category (itype-of (edge-referent edge)))
-        (start-pos (pos-edge-starts-at edge))
-        (end-pos (pos-edge-ends-at edge)))
-    (find-lexical-edge-with-cat category start-pos end-pos)))
+  (if (typep (edge-mention edge) 'discourse-mention)
+      (mention-head (edge-mention edge))
+      (let ((category (itype-of (edge-referent edge)))
+            (start-pos (pos-edge-starts-at edge))
+            (end-pos (pos-edge-ends-at edge)))
+        (find-lexical-edge-with-cat category start-pos end-pos))))
 
 (defun find-lexical-edge-with-cat (category start-pos end-pos)
   (if (or (eq (cat-name category) 'collection)
