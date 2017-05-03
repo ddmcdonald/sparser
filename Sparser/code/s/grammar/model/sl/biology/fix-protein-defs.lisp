@@ -23,15 +23,15 @@
 
 (defun load-protein-id-hash-tables ()
   (unless (boundp '*upa-key-upm-val*)
-    (load
-     (concatenate 'string "sparser:bio;"
-                  "uniprot-accession-id-mnemonic.lisp")))
+    (load "sparser:bio;uniprot-accession-id-mnemonic.lisp"))
 
   (unless (boundp '*hgnc-up-ht*)
-    (load (concatenate 'string "sparser:bio-not-loaded;"
-                       "hgnc;hgnc-with-ids-2.lisp")))
+    (load "sparser:bio-not-loaded;hgnc;hgnc-with-ids-2.lisp"))
   (unless (boundp '*ncit->up-ht*)
-    (load (concatenate 'string "sparser:bio;" "up-ncit-hgnc-map.lisp"))))
+    (load "sparser:bio;up-ncit-hgnc-map.lisp"))
+
+  (unless (boundp '*ncit-mapping-ht*)
+    (load "sparser:bio;ncit-mapping.lisp")))
 
 (defun read-and-replace-protein-defs (&key (protein-file "standardized-protein-defs-complete.lisp") 
                                         (output-file "standardized-protein-defs-new.lisp")
@@ -66,20 +66,28 @@ it outputs it to the non-upa-file"
 (defparameter *duplicate-protein-ht* (make-hash-table :size 30000 :test #'equal))
 
 (defparameter *minimal-families* nil)
+(defun merge-duplicate-protein-defs (defs)
+  (clrhash *duplicate-protein-ht*)
+  (loop for def in defs
+        do
+          (case (car def)
+            (define-protein
+             (setf (gethash (second def) *duplicate-protein-ht*)
+                   (merge-protein-defs
+                    def
+                    (gethash (second def) *duplicate-protein-ht*))))))
+  *duplicate-protein-ht*)
+
+
 (defun merge-duplicates-and-separate-families (defs)
   (declare (special defs))
 
   (let (non-standard-defs merged-defs protein-family-ht)
     (declare (special non-standard-defs merged-defs protein-family-ht))
-    (loop for def in defs
-          do
-            (case (car def)
-              (define-protein
-               (setf (gethash (second def) *duplicate-protein-ht*)
-                     (merge-protein-defs
-                      def
-                      (gethash (second def) *duplicate-protein-ht*))))
-              (t (push def non-standard-defs))))
+    (setq *duplicate-protein-ht* (merge-duplicate-protein-defs defs))
+    (setq non-standard-defs
+          (loop for d in defs unless (eq (car d) 'define-protein)
+                  collect d))
 
     (setq merged-defs (sort (mapcar #'(lambda (x)
                                         (strip-explicit-ids-and-downcase (cdr x)))
@@ -246,14 +254,6 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                       (not (search " " item))
                       (not (search "-" item)))
             return item)
-      #+ignore
-      (loop for item in syns
-            when (eq 0 (search "PROTEIN-REFERENCE" item))
-            return (format nil "Reactome:~a" item))
-      #+ignore
-      (loop for item in syns
-            when (eq 0 (search "PROTEIN" item))
-            return (format nil "Reactome:~a" item))
       (loop for item in syns
             when (eq 0 (search "IPR" item))
             return item)
@@ -281,14 +281,17 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
                          (gethash (subseq item 7)  *upa-key-upm-val*))
                return (subseq item 7)
 
-               when (and (eq 0 (search "NCIT:" item)) (ncit->upa? item))
-               return (car (gethash  item *ncit->up-ht*))
-
                when (gethash item *upa-key-upm-val*)
                return item
 
                when (gethash item *upm-key-upa-val*)
                return (gethash item *upm-key-upa-val*)
+                 
+               when (and (eq 0 (search "NCIT:" item)) (ncit->upa? item))
+               return (or (car (gethash  item *ncit->up-ht*))
+                          (let ((ncit-map (second (gethash  item *ncit-mapping-ht*))))
+                            (cond ((eq 0 (search "UP:" ncit-map)) (get-upa-string ncit-map))
+                                  ((eq 0 (search "HGNC:" ncit-map)) (gethash ncit-map *hgnc-up-ht*)))))
 
                when (and (eq 0 (search "HGNC:" item :test #'equal))
                          (gethash item *hgnc-up-ht*))
@@ -372,39 +375,49 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
 (defparameter *multiple-upas* nil)
 
 (defun check-alts-for-UP (alt-names &optional (check-against-upa-upm-ht nil))
+  "check if there is a unique UPA implied by one or more of the alt-names -- use translation
+from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get examples)"
+  (declare (special alt-names))
   (let (up-names)
+    (declare (special up-names))
     (loop for name in alt-names        
-          when (and (eq 0 (search "NCIT:" name)) (car (gethash name *ncit->up-ht*)))
-          do (pushnew (car (gethash name *ncit->up-ht*)) up-names :test #'equal)
+          when (eq 0 (search "NCIT:" name))
+          do (pushnew (or (car (gethash name *ncit->up-ht*))
+                          (let ((ncit-map (gethash name *ncit-mapping-ht*)))
+                            (cond ((eq 0 (search "UP:" ncit-map)) (get-upa-string ncit-map))
+                                  ((eq 0 (search "HGNC:" ncit-map)) (gethash ncit-map *hgnc-up-ht*)))))
+                      up-names :test #'equal)
+            
           when (or (eq 0 (search "UniProt:" name)) (eq 0 (search "PR:" name)))
           do
             (let ((up-name? (subseq name (+ 1 (search ":" name)) (search " " name))))
               (when (gethash up-name? *upa-key-upm-val*)
                 (pushnew up-name? up-names :test #'equal)))
+          
           when (get-upa-string name)
           do
             (let* ((up? (or (null check-against-upa-upm-ht)
                             (gethash (string-upcase (get-upa-string name 3)) *upa-key-upm-val*))))
               (when up?
                 (pushnew  (get-upa-string name) up-names :test #'equal)))
+            
           when (gethash (string-upcase name) *upa-key-upm-val*)
           do
             (pushnew  (string-upcase name) up-names :test #'equal)
+            
           when (and (eq 0 (search "HGNC:" name)) (gethash name *hgnc-up-ht*))
           do
             (pushnew (gethash name *hgnc-up-ht*) up-names :test #'equal))
-    ;;(when (cdr up-names)(print up-names))
     (when (cddr up-names)
       (push alt-names *multiple-upas*))
     (cond ((and up-names (null (cdr up-names)))
            (car up-names))
           ((and (boundp '*fries-prot-ht*)
                 (fboundp 'fries-match))
-           (let ((fm (fries-match `(define-protein ,(car alt-names) ,alt-names))))
-             (when (and fm (null (cdr fm)))
-               (second (car fm))))))))
+           (unique-fries-upa-for? alt-names)))))
              
-
+;; handle cases with items after the UP:
+;; like "UP:Q5NV91" "UP:Q5NV91 IGLV3-27"
 (defun get-upa-string (item)
   (when (eq 0 (search "UP:" item))
     (cond ((search "-" item) ;; can have both a - and a space -- the - comes first?
@@ -576,49 +589,100 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
           unless (resolve wd)
           do (push wd *lost-std-prot-defs*)))
                     
-    
+
+(defparameter *fries-defs* nil)
+(defparameter *fries-prot-ht* nil)
+
+(defun load-fries-protein-ht ()
+  (unless *fries-prot-ht*
+    (setq *fries-defs*
+          (cdr (get-forms-from-file  "sparser:bio;big-reach-defs.lisp") ))
+
+    (setq *fries-prot-ht* (make-hash-table :size 100000 :test #'equal))
+    (loop for fd in (setq *fries-prot-defs* *fries-defs*)
+          do
+            (loop for wd in (third fd) do (push fd (gethash wd *fries-prot-ht*))))))
+
+(defun fries-match (sp-def)
+  (load-fries-protein-ht)
+  (remove-duplicates
+   (loop for wd in (third sp-def) append (gethash  wd *fries-prot-ht*))
+   :test #'equal))
+
+(defun fries-match-wd (sp-def)
+  (load-fries-protein-ht)
+  (loop for wd in (third sp-def) when (gethash  wd *fries-prot-ht*)
+        collect (list wd (gethash  wd *fries-prot-ht*))))
+
+(defun unique-fries-upa-for? (alt-names)
+  (let ((fm (fries-match `(define-protein ,(car alt-names) ,alt-names))))
+    (when (and fm (null (cdr fm)))
+      (second (car fm)))))
+>>>>>>> Stashed changes
 
 ;;;;;;;; normalization for standardized-protein-defs-complete.lisp
 #|
 (load-protein-id-hash-tables)
- (length (setq *sparser-prot-defs* (cdr (GET-FORMS-FROM-FILE "/Users/rusty/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology/standardized-protein-defs-complete.lisp"))))
-(length (setq *fries-defs* (cdr (GET-FORMS-FROM-FILE                                      
-"/Users/rusty/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology/big-reach-defs.lisp") )))
+(length (setq *sparser-prot-defs* (cdr (GET-FORMS-FROM-FILE "sparser:bio;standardized-protein-defs-complete.lisp"))))
 
-(setq *fries-prot-ht* (make-hash-table :size 100000 :test #'equal))
-(loop for fd in (setq *fries-prot-defs* *fries-defs*) do (loop for wd in (third fd) do (push fd (gethash wd *fries-prot-ht*))))
-(defun fries-match (sp-def)  (loop for wd in (third sp-def) append (gethash  wd *fries-prot-ht*)))
-
+;; normalize the individual defs from standardized-protein-defs-complete.lisp
 (length (setq *new-sparser-prot-defs* 
               (remove-duplicates
-               (loop for d in *sparser-prot-defs* collect `(,(car d) ,(second d) ,(simplify-protein-names (cons (second d)(third d)))))
+               (loop for d in *sparser-prot-defs* collect
+                       `(,(car d) 
+                          ,(second d);;(or (check-alts-for-up (cons (second d) (third d))) (second d)) 
+                          ,(simplify-protein-names (cons (second d)(third d)))))
                :test #'equal)))
-(length (loop for d in *new-sparser-prot-defs* when (check-alts-for-up (third d)) collect d))
+
+;; find defs that have a retrievable UniProt accession number
+(setq *duplicate-protein-ht* (merge-duplicate-protein-defs *new-sparser-prot-defs*))
+(length (setq *new-sparser-prot-defs*
+              (append 
+               (sort (mapcar #'cdr (hal *duplicate-protein-ht*)) #'string< :key #'car)
+               (loop for d in *new-sparser-prot-defs* unless (eq (car d) 'define-protein)
+                     collect d))))
+
 (length (setq *with-upa* (loop for d in *new-sparser-prot-defs* when (check-alts-for-up (third d)) collect d)))
+
+
+(length (setq *with-family* (loop for d in *new-sparser-prot-defs* 
+                                  when (or (eq 0 (search "FA:" (second d)))
+                                           (eq 0 (search "XFAM:" (second d))))
+                                  collect d)))
+
 (length (setq *without-upa* (loop for d in *new-sparser-prot-defs* 
                                   unless (or 
+                                          (or (eq 0 (search "FA:" (second d)))
+                                              (eq 0 (search "XFAM:" (second d))))
                                           (check-alts-for-up (third d))
                                           (eq 0 (search "PROTEIN" (second d))))
                                   collect d)))
+
 (length (setq *upa-defs* (loop for d in *with-upa* collect 
                                      (let ((upa (check-alts-for-up (third d))))
                                        `(,(car d) 
                                           ,(format nil "UP:~a" upa)
                                           ,(simplify-protein-names (cons (format nil "UP:~a" upa) (cons (second d) (third d)))))))))
-(length (setq *pdefs* (append *upa-defs* *without-upa*)))
+
+(length (setq *pdefs* (append *with-family* *upa-defs* *without-upa*)))
 (length (setq *rpdefs* (mapcar #'revise-protein-def *pdefs*)))
-(with-open-file (str "/Users/rusty/projects/cwc-integ/sparser/Sparser/code/s/grammar/model/sl/biology/standardized-protein-defs-revised.lisp"
+(with-open-file (str "sparser:bio;standardized-protein-defs-revised.lisp"
                      :direction :output :if-does-not-exist :create :if-exists :supersede)
   (loop for d in *rpdefs* do (lc-one-line-print d str)))
 
 
-(length (setq *ncit-mods* (loop for d in *new-sparser-prot-defs* when (and (eq 0 (search "NCIT:" (second d))) (let ((fm (fries-match d)))(and fm (null (cdr fm))))) collect d)))
+(length (setq *ncit-mods* 
+              (loop for d in *new-sparser-prot-defs*
+                    when (and (eq 0 (search "NCIT:" (second d))) 
+                              (let ((fm (fries-match d)))(and fm (null (cdr fm))))) collect d)))
 
 
 ;; find the cases where REACH/fries disagrees with the identifier for a protein
 (length (setq *ques* 
               (loop for d in *new-sparser-prot-defs* 
-                    when (let ((fm (fries-match d)))(and fm (null (cdr fm)) (eq 0 (search "UP:" (second d))) (not (equal (format nil "UP:~a" (second (car fm))) (second d)))))
+                    when (and (unique-fries-upa-for? d)
+                              (eq 0 (search "UP:" (second d)))
+                              (not (equal (format nil "UP:~a" (second (car fm))) (second d))))
                     collect (cons d (fries-match d)))))
 
 ;; find the cases where REACH/fries agrees with the identifier for a protein
