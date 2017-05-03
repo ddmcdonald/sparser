@@ -1557,7 +1557,7 @@
       (if (is-basic-collection? (edge-referent vp-edge))
           (update-conjunctive-edge-as-lambda-predicate vp-edge)
           (cond ((null svar)
-                 (lsp-break "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge)
+                 (break "update-edge-as-lambda-predicate fails to find a subject-variable for ~s~%" vp-edge)
                  (edge-referent vp-edge))
                 (t
                  (let ((pred (create-predication-by-binding
