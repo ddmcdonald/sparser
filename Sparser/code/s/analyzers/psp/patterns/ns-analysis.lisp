@@ -217,7 +217,19 @@ collected a set of ns-examples"
     (pprint
      `(defparameter ,(intern (format nil "*NS-RD-~a*" prefix) (find-package :sp))
         ',*rd-ns*)
-     stream))
+     stream)
+    (terpri stream)
+    (when *bio-entity-heads*
+      (pprint
+       `(defparameter ,(intern (format nil "*BIO-ENTITY-HEADS-~a*" prefix) (find-package :sp))
+          ',(mapcar #'car (hal *bio-entity-heads*)))
+       stream))
+    (terpri stream)
+    (when *bio-chemical-heads*
+      (pprint
+       `(defparameter ,(intern (format nil "*BIO-CHEMICAL-HEADS-~a*" prefix) (find-package :sp))
+          ',(hal *bio-chemical-heads*))
+       stream)))
   filename)
           
 (defparameter *undef-ns* nil)
