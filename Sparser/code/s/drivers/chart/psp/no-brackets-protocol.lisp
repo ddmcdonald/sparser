@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "no-brackets-protocol"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  August 2016
+;;;  version:  May 2017
 
 ;; Initiated 10/5/14, starting from the code for detecting bio-entities.
 ;; 10/29/14 added flags to turn off various steps so lower ones
@@ -69,7 +69,7 @@
   printed if this flag is t.")
 
 (defparameter *trap-error-skip-sentence* nil
-  "Governs whether we let errors happen. If it's nill they
+  "Governs whether we let errors happen. If it's nil they
   go through and cause a break. When it's T this is noticed
   in sweep-successive-sentences-from and we go through an
   error handler that suppresses the break and instead prints
@@ -400,16 +400,11 @@
 ;;; final operations on sentence before moving to the next one
 ;;;------------------------------------------------------------
 
-(defparameter *end-of-sentence-display-operation* nil)
-(defparameter *save-bio-processes* nil)
-
-(defparameter *colorized-sentence* (make-hash-table :size 1000 :test #'equal))
-(defparameter *indra-post-process* nil)
-
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
                     *localization-interesting-heads-in-sentence*
                     *localization-split-sentences*
+                    *save-bio-processes*  *indra-post-process*
                     *predication-links-ht*))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
   (when *end-of-sentence-display-operation*
@@ -418,10 +413,9 @@
     (save-article-sentence *current-article* sentence))
   ;;output sentence semantics, if desired, in format specified
   ;; by *semantic-outut-format* -- code is in save-doc-semantics
-  (when (and
-         (or (eq *sentence-results-stream* t)
-             (streamp *sentence-results-stream*))
-         (not (eq *semantic-output-format* :HMS-JSON)))
+  (when (and (or (eq *sentence-results-stream* t)
+                 (streamp *sentence-results-stream*))
+             (not (eq *semantic-output-format* :HMS-JSON)))
     (when *save-bio-processes* (save-bio-processes sentence))
     (write-semantics sentence *sentence-results-stream*))
   (when *indra-post-process*
@@ -432,8 +426,18 @@
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
       (push colorized-sentence *localization-split-sentences*)))
-  (clrhash *predication-links-ht*)
-  )
+  (clrhash *predication-links-ht*))
+
+
+;;;----------------------------------
+;;; diverse processing for HMS/Intra
+;;;----------------------------------
+
+(defparameter *end-of-sentence-display-operation* nil)
+(defparameter *save-bio-processes* nil)
+
+(defparameter *colorized-sentence* (make-hash-table :size 1000 :test #'equal))
+(defparameter *indra-post-process* nil)
 
 (defun indra-post-process (mentions sentence output-stream)
   (loop for mention in mentions
