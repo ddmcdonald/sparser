@@ -325,11 +325,13 @@ returning a new one.
             (j (make-dli-for-ref-category category)))
         (loop for b in (reverse bindings)
            unless (eq (binding-variable b) var)
-           do (setq j (bind-variable var (binding-value b) j)))
+           do (setq j (bind-variable (binding-variable b)
+                                     (binding-value b)
+                                     j)))
         j)
       (else
         (let ((j (make-unindexed-individual category)))
           (loop for b in bindings
              unless (eq (binding-variable b) var)
-             do (bind-variable var (binding-value b) j))
+             do (bind-variable (binding-variable b) (binding-value b) j))
           j)))))
