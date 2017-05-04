@@ -388,15 +388,13 @@
     "Look at how the location will be realized and selected an attachment
      point that fits."
     (let* ((i (sp::binding-value binding))
-           (label-realizing-i (realizing-label (realizing-resource i))))
-      ;;(push-debug `(,i ,label-realizing-i ,binding)) (break "realize location slot")
+           (label-realizing-i (realizing-label (realizing-resource i))))      
       (let ((ap (case pos
                   (noun
                    (etypecase label-realizing-i
                      (word-label 'nominal-premodifier)
                      (node-label 'np-prep-complement)))
-                  (otherwise 'vp-final-adjunct) ;; 'np-prep-complement)
-                  )))
+                  (otherwise 'vp-final-adjunct))))
         (make-adjunction-node
          (make-lexicalized-attachment ap i)
          dtn)))))
