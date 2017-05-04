@@ -576,7 +576,12 @@ from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get 
 
 (defparameter *all-std-prot-comp-names* nil)
 (defun collect-all-std-prot-comp-names (&optional (file "sparser:bio;standardized-protein-defs-complete.lisp"))
-  (for-forms-in-file file #'collect-id-and-synonyms))
+  (for-forms-in-file file #'collect-id-and-synonyms)
+  (with-open-file (str "sparser:bio-not-loaded;all-protein-wds.lisp" :direction :output :if-exists :supersede)
+    (pprint `(in-package :sparser) str)
+    (pprint
+     `(defparameter *all-std-prot-comp-names*
+        ',(sort (remove-duplicates *all-std-prot-comp-names* :test #'equal) #'string<)) str)))
 
 (defun collect-id-and-synonyms (form &aux (def (car form))(id (second form)))
   (when (eq def 'define-protein)
@@ -586,7 +591,9 @@ from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get 
 (defparameter *lost-std-prot-defs* nil)
 (defun find-undef-std-prot-comp ()
   (loop for wd in *all-std-prot-comp-names*
-          unless (resolve wd)
+        unless (or (resolve wd)
+                   (resolve (string-downcase wd))
+                   (search ":" wd))
           do (push wd *lost-std-prot-defs*)))
                     
 
@@ -618,7 +625,6 @@ from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get 
   (let ((fm (fries-match `(define-protein ,(car alt-names) ,alt-names))))
     (when (and fm (null (cdr fm)))
       (second (car fm)))))
->>>>>>> Stashed changes
 
 ;;;;;;;; normalization for standardized-protein-defs-complete.lisp
 #|
