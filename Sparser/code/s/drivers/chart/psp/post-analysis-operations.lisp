@@ -395,7 +395,7 @@ is replaced with replacement."
                  (obj-edge (edge-left-daughter parent-of-loc)))
             (unless (eq parent-of-loc
                         (edge-right-daughter top-edge))
-              (error "Assumption about parent-of-loc broken")) ;; pull from chart
+              (error "Assumption about parent-of-loc broken"))
 
             ;; Detach obj and loc from their parent, and remove
             ;; them from their edge-vactors so we can reconstruct
@@ -405,6 +405,10 @@ is replaced with replacement."
             ;; Actually, just partially detach obj-edge
             ;; since it's ok in its local position vectors
             (setf (edge-used-in obj-edge) nil)
+
+            ;; Reset the referent of the object to the revision
+            ;; where the location has been removed
+            (set-edge-referent obj-edge revised-theme)
 
             ;; remove their parent, which we're going to forget about
             (detach-edge parent-of-loc)            
@@ -421,5 +425,7 @@ is replaced with replacement."
             ;; Change the referent of the vp to be just vg+obj
             (set-edge-referent top-edge j)
 
+            ;; Attach the location to a new VP above this one.
+            ;; (Edge-creator needs the referent to get through complete)
             (chomsky-adjoin top-edge loc-edge k)))))))
 
