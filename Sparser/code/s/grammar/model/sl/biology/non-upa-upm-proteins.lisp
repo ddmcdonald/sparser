@@ -2,7 +2,6 @@
 
 
 (define-protein "EPHB5_HUMAN" ("ephrin type-B receptor 5")) 
-(define-protein "GRK2_HUMAN" ("G protein-coupled receptor kinase 2" "G protein-coupled receptor kinase GRK2" "GRK2")) 
 (define-protein "IPR000663" ("natriuretic peptide")) 
 (define-protein "IPR000837" ("AP-1 transcription factor")) 
 (define-protein "IPR003989" ("vascular cell adhesion molecule-1")) 
@@ -10,8 +9,7 @@
 (define-protein "IPR006053" ("tumour necrosis factor")) 
 (define-protein "IPR008606" ("eukaryotic translation initiation factor 4E binding")) 
 (define-protein "IPR008653" ("immediate early response")) 
-(define-protein "IPR012233" ("protein kinase C")) 
-(define-protein "IPR012233" ("Protein Kinase C")) 
+(define-protein "IPR012233" ("Protein Kinase C" "protein kinase C")) 
 (define-protein "IPR013126" ("heat shock protein 70")) 
 (define-protein "IPR015451" ("cyclin D")) 
 (define-protein "IPR015476" ("calcitonin gene related peptide")) 
@@ -24,8 +22,7 @@
 (define-protein "IPR023274" ("aquaporin 1")) 
 (define-protein "IPR024950" ("dual specificity phosphatase")) 
 (define-protein "IPR028309" ("retinoblastoma protein")) 
-(define-protein "IPR028858" ("cyclin E")) 
-(define-protein "IPR028858" ("Cyclin E")) 
+(define-protein "IPR028858" ("Cyclin E" "cyclin E")) 
 (define-protein "IPR029845" ("nuclear factor erythroid 2 related factor 2")) 
 (define-protein "IPR029866" ("steroidogenic acute regulatory protein")) 
 (define-protein "O88587-2" nil) 
