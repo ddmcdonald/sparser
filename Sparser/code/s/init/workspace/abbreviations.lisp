@@ -297,8 +297,12 @@
     (mumble::say tree)))
 
 (defun p/r (string)
-  (let ((*return-value* :referent-of-last-edge))
-    (declare (special *return-value*))
+  "Parse the string and then use the return-value capability
+   in analysis-core; see drivers/sinks/return-value.lisp"
+  (let ((*return-a-value* :referent-of-last-edge)
+        (*trap-error-skip-sentence* nil))
+    (declare (special *return-a-value*
+                      *trap-error-skip-sentence*))
     (analyze-text-from-string string)))
 
 (defun pt (string)

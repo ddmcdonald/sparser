@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER) -*-
 ;;; Copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "return-value"
 ;;;   Module:  drivers;sinks:
-;;;  Version:  August 2016
+;;;  Version:  May 2017
 
 ;; Initiated 4/27/09 for checkpoint demo. Modified 9/26/09
 
@@ -25,54 +25,44 @@
     '(setq *analysis-return-value* :analysis-completed))
 
 
-(defvar *return-value*)
-(unless (boundp '*return-value*) ;; switch setting option
-  (defparameter *return-value* nil)) ;; default
+(defparameter *return-a-value* nil
+  "Should analysis-core return a value? If this flag
+   is not up we return the keyword :analysis-completed")
+
+(defparameter *what-value-to-return* :object
+  "Of the various kinds of things we know how to return,
+   which one should we use? Possible values that work are
+  :object and :spire.")
 
 
 (defun analysis-core-return-value ()
-  ;; called as the last for in analysis-core
-  (if *return-value*
-    (case *return-value*
-      (:referent-of-last-edge
-       (compute-referent-of-last-edge-return))
-      (otherwise
-       (error "Unrecognized value for *return-value* switch:~
-             ~%     ~a" *return-value*)))
+  "Called as the last action of analysis-core. What this
+   returns is what the call to parse something return.
+   Choice of what to return can be modified by defining
+   new possibilities for the special *what-value-to-return*."
+  (declare (special *return-a-value* *what-value-to-return*
+                    *next-chart-position-to-scan*
+                    *analysis-return-value*))
+  (if *return-a-value*
+    (let ((coverage (coverage-over-region
+                     (position# 1)
+                     (position# (1- *next-chart-position-to-scan*))))
+          (referent (referent-of-the-last-edge)))
+      (case *what-value-to-return*
+        (:export
+         (if (eq coverage :one-edge-over-entire-segment)
+           (export-object referent)
+           (format t "~&Multiple edges. No option to export~%")))
+        (:object
+         referent)
+        (:spire
+         (let ((*sentence-results-stream* t))
+           (declare (special *sentence-results-stream*))
+           (spire-tree referent)))
+        (otherwise
+         *analysis-return-value*)))
     :analysis-completed))
 
-
-
-;;;-----------------------------------------------------
-;;; Returning the referent of the (largest?) final edge
-;;;-----------------------------------------------------
-
-(defun compute-referent-of-last-edge-return ()
-  ;; Modeled off of code in /drivers/chart/psp/pts5:pts
-  (let ((coverage (coverage-over-region
-		   (position# 1)
-		   (position# (1- *next-chart-position-to-scan*)))))
-    (if coverage 
-      (case coverage
-	(:one-edge-over-entire-segment
-	 (export-object (referent-of-the-last-edge)))
-	(:null-span
-	 (format t "~&referent-of-the-last-edge: No edge where last segment ended~%"))
-	(:discontinuous-edges
-	 (let ((conjunction-point ;; look for compound sentence
-                (find-compound-point-for-and 1)))
-	   (if conjunction-point
-	       (list 'SA-SEQ
-		     (export-object (edge-referent 
-                                     (highest-edge (pos-ends-here (position# conjunction-point)))))
-		     (export-object (referent-of-the-last-edge)))
-	       (format t "~&Coverage is ~a. Don't know what to pass on for export.~%" coverage))))
-	(otherwise
-	 ;; cases:  :no-edges  :some-adjacent-edges  :all-contiguous-edges
-	 (format t "~&Coverage is ~a. Don't know what to pass on for export.~%"
-		 coverage)))
-      (format t "~&Coverage over what was just parsed returned NIL.~
-                 ~%Don't know what to pass on for export.~%"))))
 
 (defun referent-of-the-last-edge ()
   (declare (special *where-the-last-segment-ended*))
@@ -80,18 +70,3 @@
     (when edge
       (edge-referent edge))))
 
-(defun find-compound-point-for-and (index)
-  ;; look for bare word "and" between two complete edges spanning the remainder of the input,
-  ;; if found, return the position of this "and" for use as a conjunction in a compound
-  ;; sentence in compute-referent-of-last-edge-return
-  ;; otherwise, return nil, indicating such a compound sentence construction does not exist
-  (declare (special *next-chart-position-to-scan*))
-  (cond ((and (eq (word-named "and") (pos-terminal (position# index)))
-	      (eq :one-edge-over-entire-segment
-                  (coverage-over-region (position# 1) (position# index)))
-	      (eq :one-edge-over-entire-segment
-                  (coverage-over-region 
-                   (position# (+ index 1)) (position# (1- *next-chart-position-to-scan*)))))
-	 index)
-	((pos-terminal (position# (+ index 2))) (find-compound-point-for-and (+ index 1)))
-	(t nil)))
