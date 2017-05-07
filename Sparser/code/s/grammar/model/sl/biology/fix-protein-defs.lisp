@@ -52,8 +52,12 @@ it outputs it to the non-upa-file"
     (load (concatenate 'string "sparser:bio-not-loaded;"
                        "hgnc;hgnc-with-ids-2.lisp")))
 
-  (let* ((new-defs (read-and-normalize-protein-defs :protein-file protein-file)))
-    (setq *new-protein-defs* (merge-duplicates-and-separate-families new-defs))
+  (let* ((new-defs (read-and-normalize-protein-defs :protein-file protein-file))
+         (validated-fries-defs (read-and-normalize-protein-defs :protein-file "validated-fries-proteins.lisp")))
+    (setq *new-protein-defs*
+          (merge-duplicates-and-separate-families
+           (append new-defs
+                   validated-fries-defs)))
     
     (unless (and (eq output-file t)
                  (eq non-upa-file t))
