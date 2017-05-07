@@ -22236,7 +22236,7 @@ arsenite"
  "μ-calpain"))
 
 (defparameter *allowable-protein-head-ht* (make-hash-table :size 30000 :test #'equalp))
-(defvar *use-small-proteins* nil)
+(defvar *use-small-proteins* t)
 
 (defun fill-allowable-proteins ()
   (cond
@@ -22263,7 +22263,7 @@ arsenite"
 (defparameter *used-protein-defs* (make-hash-table :size 100000 :test #'equal))
 
 (defun allowable-protein-head (w)
-  t ;; (gethash w *allowable-protein-head-ht*)
+  (gethash w *allowable-protein-head-ht*)
   #+ignore
   (when (gethash w *allowable-protein-head-ht*)
     (setf (gethash w *used-protein-defs*) t)
