@@ -901,6 +901,12 @@ the process.
       protein)))
 
 (defmethod get-protein ((name label))
+  (when (and (search "UP:" (pname name))
+             (stringp (car (gethash (pname name) *uniprot-name-ht*))))
+    (setq name (or (resolve (car (gethash (pname name) *uniprot-name-ht*)))
+                   name)))
+           
+      
   (let ((rule (car (rs-single-term-rewrites (rule-set-for name)))))
     (if (cfr-p rule)
         (cfr-referent rule)
@@ -1019,7 +1025,10 @@ the process.
         ;; but the marker may actually be the capitalization
         ;; of the word, which would have to be caught upstream
         ;; and passed through in a parameter.
-        rules  i   )
+        rules  i
+        (name (when (and (search "UP:" (pname word))
+                         (stringp (car (gethash (pname word) *uniprot-name-ht*))))
+                (resolve/make (car (gethash (pname word) *uniprot-name-ht*))))))
 
     ;; The real form to use
     ;;     (setq i (find-or-make-individual category :name word))
@@ -1027,7 +1036,9 @@ the process.
     ;; as a common noun that has this individual as its referent.
     ;; Ignoring brackets since this runs with the new chunker
 
-    (setq i (find-or-make-individual category :name word))
+
+
+    (setq i (find-or-make-individual category :name (or name word)))
     
     ;;(lsp-break "make-typed-bio-entity")
    
