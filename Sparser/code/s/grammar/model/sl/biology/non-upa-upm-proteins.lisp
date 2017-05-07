@@ -27,6 +27,8 @@
 (define-protein "IPR029866" ("steroidogenic acute regulatory protein")) 
 (define-protein "O88587-2" nil) 
 (define-protein "P10636-8" ("hTau40")) 
+(define-protein "UP:SL-0146" ("IP-MS")) 
+(define-protein "UP:SL-0314" ("Z-bodies")) 
 (define-protein "byr2_schpo" ("SPBC1D7.05" "SPBC2F12.01" "byr2" "ste8")) 
 (define-protein "cell membrane" ("SL-0039")) 
 (define-protein "clathrin coated pit" ("SL-0069")) 
