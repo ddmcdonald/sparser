@@ -31,6 +31,8 @@
 (gload "bio;taxonomy")
 (gload "bio;cellular-locations")
 (gload "bio;aux-taxonomy")
+;; have to get the uniprot-names before you do any define-protein's
+(gload "bio;uniprot-names.lisp")
 (gload "bio;standardized-protein-defs")
 (gload "bio;non-upa-upm-proteins")
 (gload "bio;proteins-revised")
@@ -76,4 +78,5 @@
 (gload "bio;examples.lisp") ;; no definitions in here
 (gload "bio;talking-about-a-model.lisp");; no definitions in here
 (gload "bio;get-reactome-hgnc-names.lisp")
+
 
