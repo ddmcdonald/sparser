@@ -880,49 +880,6 @@ it is created from N-terminus to C-terminus.|#
 
 
 
-
-
-
-
-
-
-
-
-;;;-----------------------------------
-;;; knockout types -- applies to mice
-;;;-----------------------------------
-#| see https://en.wikipedia.org/wiki/Knockout_mouse
-Given a particular mutated gene, a +/+ will be not have
-the mutation (both parents). A - indicates the presence
-of the mutation. That makes them homozygous (both)
-or heterozygous (one of each). When the mutation is
-present on both sides it's a "knockout mouse". 
-One or both of the while type alleles have been replaced
-with something else
-|#
-
-(define-category knockout-pattern :specializes bio-quality
-  :mixins (has-name)
-  :binds ((gene-or-protein (:or gene protein)))
-  :realization
-  (:m gene-or-protein
-      :for gene-or-protein))
-
-(define-category -/- :specializes  knockout-pattern
-  :realization
-  (:noun "-/-"))
-
-(define-category +/- :specializes  knockout-pattern
-  :realization
-  (:noun "+/-"))
-(define-category -/+ :specializes  knockout-pattern
-  :realization
-  (:noun "-/+"))
-(define-category +/+ :specializes  knockout-pattern
-  :realization
-  (:noun "+/+"))
-
-
 ;; Cellular processes
 
 ;;;-----------
