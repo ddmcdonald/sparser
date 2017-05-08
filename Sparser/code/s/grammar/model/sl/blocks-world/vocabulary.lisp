@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  February 2017
+;;;   version:  May 2017
 
 ;; Initiated 12/3/15.
 
@@ -60,43 +60,10 @@ support a substantial number of blocks.
 (define-category stack
   :specializes built-out-of-blocks 
   :realization (:common-noun "stack"))
+(def-synonym stack (:noun "tower"))
 
 (define-category row
   :specializes built-out-of-blocks 
   :realization (:common-noun "row"))
-
-
-;;;-------
-;;; Verbs
-;;;-------
-
-;; maybe move up to mid-level..
-#|
-(define-category propose
-    :specializes achievement
-  :mixins (with-an-agent)
-  :binds ((statement  ))
-  :realization
-  ((:verb "propose")
-   (:mumble ("propose" svscomp :o statement))
-   (:tree-family )))
-
-(define-category show
-    :specializes achievement
-    :binds ((statement ))
-    :realization
-    ((:verb "show")
-     (:mumble ("show" svscomp :s ? :o statement))))
-
-(define-category suggest
-    :specializes achievement
-  :mixins
-  :binds
-  :realization
-  ((:verb "suggest")
-   (:mumble ("suggest" svscomp :s ? :o statement))))
-|#
-
-
 
 

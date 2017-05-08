@@ -83,7 +83,32 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
   (:verb ("know"
           :past-tense "knew"
           :past-participle "known")))
+#|
+(define-category propose
+    :specializes achievement
+  :mixins (with-an-agent)
+  :binds ((statement  ))
+  :realization
+  ((:verb "propose")
+   (:mumble ("propose" svscomp :o statement))
+   (:tree-family ))) |#
+#|
 
+(define-category show
+    :specializes achievement
+    :binds ((statement ))
+    :realization
+    ((:verb "show")
+     (:mumble ("show" svscomp :s ? :o statement))))
+
+(define-category suggest
+    :specializes achievement
+  :mixins
+  :binds
+  :realization
+  ((:verb "suggest")
+   (:mumble ("suggest" svscomp :s ? :o statement))))
+|#
 (define-category tell
   :specializes process
   :mixins (directed-action prop-attitude)
