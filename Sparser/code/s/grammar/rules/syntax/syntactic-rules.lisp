@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "syntactic rules"
 ;;;   Module:  grammar/rules/syntax/
-;;;  Version:  March 2017
+;;;  Version:  May 2017
 
 ;; Initiated 9/7/14 to collect the rules into one place. 10/25 flushed
 ;; the temporary vp+prep rules. 10/26/14 put in one for vg+pp
@@ -105,14 +105,6 @@
     :form np
     :head :left-edge
     :referent (:function create-partitive-np left-edge right-edge))
-
-(def-cfr np (number of)
-  :form np
-  :referent (:function create-partitive-np left-edge right-edge))
-
-(def-cfr np (ones-number of)
-  :form np
-  :referent (:function create-partitive-np left-edge right-edge))
 
 
 ;;--- other cases of leading quantifiers making det's or np's
@@ -1058,18 +1050,31 @@ similar to an oncogenic RasG12V mutation (9)."))
 ;; new rules for numbered items -- needs review
 ;;;--------------------------------------------------------
 
+;;---  partitives
+(def-cfr np (number of)
+  :form np
+  :referent (:function create-partitive-np left-edge right-edge))
+
+(def-cfr np (ones-number of)
+  :form np
+  :referent (:function create-partitive-np left-edge right-edge))
+
+;; And see above syntax rule (number ,nb) --> number-noun-compound
+
+
+;;--- These bind a loose 'ordinal' variable to the number
 (def-syntax-rule (np number) ;; should be allowable as a form rule
+    :form np
+    :head :left-edge
+    :referent (:function make-ordinal-item right-edge left-edge))
+
+(def-form-rule (np hyphenated-number)  
     :form np
     :head :left-edge
     :referent (:function make-ordinal-item right-edge left-edge))
 
 #+ignore
 (def-syntax-rule (proper-noun number) ;; should be allowable as a form rule
-    :form np
-    :head :left-edge
-    :referent (:function make-ordinal-item right-edge left-edge))
-
-(def-form-rule (np hyphenated-number)  
     :form np
     :head :left-edge
     :referent (:function make-ordinal-item right-edge left-edge))
@@ -1097,6 +1102,8 @@ similar to an oncogenic RasG12V mutation (9)."))
     :head :right-edge
     :referent (:daughter right-edge
 	       :bind (approximator left-edge)))
+
+
 
 
 
