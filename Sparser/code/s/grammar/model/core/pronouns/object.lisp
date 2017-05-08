@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "object"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  March 2017
+;;;  version:  May 2017
 
 ;; 1.0 (7/11/94) completely redone from scratch. (7/22) made 'pronoun' a referential
 ;;      category so it would pass the filter in the discourse history.
@@ -23,7 +23,6 @@
   ;; for the discourse history
   :instantiates nil
   :specializes phrase-interpretation
-  :mixins (endurant)
   :documentation "Strictly speaking, a pronoun is an indicator of
     an anaphoric reference, and shouldn't per se have any substantive
     meaning. The object that the pronoun refers to is what provides 
