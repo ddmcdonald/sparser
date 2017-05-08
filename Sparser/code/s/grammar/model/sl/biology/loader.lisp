@@ -47,6 +47,7 @@
 (gload "bio;bio-complexes")
 (gload "bio;bio-methods-processes")
 (gload "bio;bio-predications")
+(gload "bio;cells")
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
