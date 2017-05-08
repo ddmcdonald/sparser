@@ -901,6 +901,7 @@ the process.
       protein)))
 
 (defmethod get-protein ((name label))
+  (declare (special *uniprot-name-ht*))
   (when (and (search "UP:" (pname name))
              (stringp (car (gethash (pname name) *uniprot-name-ht*))))
     (setq name (or (resolve (car (gethash (pname name) *uniprot-name-ht*)))
@@ -1014,7 +1015,7 @@ the process.
                               &optional greek identifier mitre-link
                                 ras2-model
                                 long synonyms takes-plurals documentation members)
-  
+  (decleare (special *uniprot-name-ht*))
   (unless (find-variable-for-category 'name category)
     (error "Cannot use the def-bio form with the category ~a~
             because it does not provide a 'name' variable" category))

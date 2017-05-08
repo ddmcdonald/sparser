@@ -22,6 +22,7 @@
          (pushnew id (gethash wd *protein-family-ht*) :test #'equal))))
 
 (defun load-protein-id-hash-tables ()
+  (declare (special *ncit->up-ht*))
   (unless (boundp '*upa-key-upm-val*)
     (load "sparser:bio;uniprot-accession-id-mnemonic.lisp"))
 
@@ -275,6 +276,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
       (car syns)))
   
 (defun find-upa-entry (syns)
+  (declare (special *ncit->up-ht* *ncit-mapping-ht*))
   (let ((up-item
          (loop for item in syns
                when (and (eq 0 (search "UP:" item :test #'equal))
@@ -305,6 +307,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
       (format nil "UP:~a" up-item))))
 
 (defun find-multiple-upa-entries (syns)
+  (declare (special *ncit->up-ht*))
   (let ((entries nil))
     (loop for item in syns
           when (and (eq 0 (search "UP:" item :test #'equal))
@@ -334,6 +337,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
     nil))
 
 (defun get-standard-id (items)
+  (declare (special *ncit->up-ht*))
   (or
    (loop for item in items
          when (eq 0 (search "NCIT:" item))
@@ -381,7 +385,7 @@ it leaves the entry as is and and adds it to the list *non-upa-upm* to sort out 
 (defun check-alts-for-UP (alt-names &optional (check-against-upa-upm-ht nil))
   "check if there is a unique UPA implied by one or more of the alt-names -- use translation
 from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get examples)"
-  (declare (special alt-names))
+  (declare (special alt-names *ncit->up-ht* *ncit-mapping-ht*))
   (let (up-names)
     (declare (special up-names))
     (loop for name in alt-names        
@@ -601,16 +605,16 @@ from NCIT, HGNC, etc. and also cut off compound UPA ids (with - or space -- get 
           do (push wd *lost-std-prot-defs*)))
                     
 
-(defparameter *fries-defs* nil)
+(defparameter *fries-prot-defs* nil)
 (defparameter *fries-prot-ht* nil)
 
 (defun load-fries-protein-ht ()
   (unless *fries-prot-ht*
-    (setq *fries-defs*
+    (setq *fries-prot-defs*
           (cdr (get-forms-from-file  "sparser:bio;big-reach-defs.lisp") ))
 
     (setq *fries-prot-ht* (make-hash-table :size 100000 :test #'equal))
-    (loop for fd in (setq *fries-prot-defs* *fries-defs*)
+    (loop for fd in *fries-prot-defs*
           do
             (loop for wd in (third fd) do (push fd (gethash wd *fries-prot-ht*))))))
 
