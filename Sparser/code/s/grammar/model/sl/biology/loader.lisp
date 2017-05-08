@@ -30,6 +30,7 @@
 
 (gload "bio;taxonomy")
 (gload "bio;cellular-locations")
+(gload "bio;non-cellular-locations") ;; needs to be before protein families so human is defined
 (gload "bio;aux-taxonomy")
 ;; have to get the uniprot-names before you do any define-protein's
 (gload "bio;uniprot-names.lisp")

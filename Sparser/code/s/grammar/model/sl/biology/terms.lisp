@@ -43,7 +43,6 @@
 
 
 
-(noun "cell adhesive  structure" :super cellular-location)
 
 
 
@@ -226,7 +225,6 @@
 (noun "deubiquitinase" :super enzyme)
 (noun "neurofibromatosis" :super disease)
 
-(adj "mammalian" :super species)
 
 (define-adverb "sterically")
 
@@ -242,30 +240,6 @@
 #-allegro (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
 (noun "MeHg" :super molecule)
 (def-synonym MeHg (:noun "methyl mercury"))
-(noun "brain" :super bio-organ)
-(noun "colon" :super bio-organ)
-(noun "breast" :super bio-organ)
-(noun "eye" :super bio-organ)
-(noun "prostate" :super bio-organ)
-(noun "kidney" :super bio-organ)
-(define-category pancreas :specializes bio-organ
-  :realization
-  (:noun "pancreas" :adj "pancreatic"))
-
-(define-category liver :specializes bio-organ
-  :realization
-  (:noun "liver" :adj "hepatic"))
-
-(define-category lung :specializes bio-organ
-  :realization
-  (:noun "lung"))
-
-(noun "trophectoderm" :super bio-organ)
-(def-synonym trophectoderm (:noun "TE"))
-
-(define-category inner_cell_mass :specializes bio-organ
-              :realization (:noun "inner cell mass" ))
-(def-synonym inner_cell_mass (:noun "ICM"))
 
 (noun "lactate" :super molecule)
 
@@ -294,9 +268,6 @@
 (noun "bar" :super abstract) 
 ;;Error: Comlex -- new POS combination for "#<word "bar">:: (NOUN PREP VERB)
 ;; DROPPING THIS CAUSES A MASSIVE ERROR ON CURE 38
-(noun ("mouse" :plural "mice") :super species)
-(noun "Xenopus" :super species)
-(noun "zebrafish" :super species)
 
 
 (noun "32P" :super molecule) 
@@ -339,7 +310,7 @@
   (:noun "assay"))
                 
 
-(noun "bacteria" :super species) ;; not really
+(noun "bacteria" :super organism) ;; not really
 (noun "binder" :super bio-entity)
 
 
@@ -432,7 +403,6 @@
 ;; It can appear in adverbial positions as an interjection
 ;;/// but the correct fix is in the grammar.
 
-(noun "human" :super species)
 
 (adj "ineffective" :super bio-relation
      :binds ((against biological))
@@ -489,7 +459,6 @@
            
 (define-adverb "mechanistically")
 
-(noun "membrane" :super cellular-location)
 (noun "miR-26A" :super micro-rna)
 (noun "miR-26A2" :super micro-rna)
 (def-synonym miR-26A2
@@ -534,7 +503,6 @@
 
 
 (noun "phenotype" :super bio-entity)
-(noun "plasma" :super cellular-location)
 (noun "population" :super bio-entity
       :binds ((element biological))
       :realization
@@ -653,11 +621,9 @@
 
 (noun "throughput" :super measurement)
 
-(noun "tissue" :super bio-organ)
 
 
 
-(noun "tumor" :super non-cellular-location)
 (adj "unable" :super bio-relation
      :binds ((capability bio-process))
      :realization

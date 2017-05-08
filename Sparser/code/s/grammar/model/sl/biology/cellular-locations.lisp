@@ -1,7 +1,7 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
 ;;; Copyright (c) 2017 SIFT LLC. All Rights Reserved
 ;;;
-;;;    File: "loader"
+;;;    File: "cellular-locations"
 ;;;  Module: "grammar/model/sl/biology/
 ;;; version: February 2017
 
@@ -73,7 +73,11 @@
 (define-cellular-location "plasma membrane" "GO:0005886" :synonyms ("PM" "cell membrane" "cellular membrane"))
 (define-cellular-location "platelet dense granule lumen" "GO:0031089")
 (define-cellular-location "trailing edge" "GO:0031254")
-(define-cellular-location "juxtamembrane" "GO:????")
+(define-cellular-location "juxtamembrane" "GO:????");; corresponds to both the plasma membrane and a side of the plasma membrane, so can be any of 4 GO#s: GO:0005886, GO:0019897, GO:0009898, GO:0009897
+
+(noun "cell adhesive  structure" :super cellular-location)
+(noun "membrane" :super cellular-location)
+(noun "plasma" :super cellular-location)
 
 (define-category stress-granule :specializes cellular-location
   :realization
@@ -81,16 +85,4 @@
 (def-synonym stress-granule
   (:noun "stress granule"))
 
-(define-category non-cellular-location  :specializes bio-location
-  :instantiates self
-  :index (:permanent :key name))
 
-(define-category bio-organ :specializes non-cellular-location
-  :mixins (has-UID has-name)
-  :binds ((organism organism))
-  :instantiates self
-  :index (:permanent :key name)
-  :realization
-    (:noun "organ"
-     :in organism
-     :of organism))
