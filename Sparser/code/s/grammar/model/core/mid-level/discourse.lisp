@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "discourse"
 ;;;   Module:  "model;core:mid-level:"
-;;;  version:  March 2017
+;;;  version:  May 2017
 
 ;; Initiated 9/6/16, initially as a common resting place for the
 ;; "interjections", with contributions from checkpoint/vocabulary.lisp
@@ -50,6 +50,7 @@
 (define-individual 'acknowledgement :name "yes")
 (define-individual 'acknowledgement :name "no")
 (define-individual 'acknowledgement :name "ok")
+(define-individual 'acknowledgement :name "okay")
 (define-individual 'acknowledgement :name "good")
 
 
@@ -116,6 +117,12 @@
  that it's worth for just this one instance.")
 ;; "Let's enjoy ourselves, shall we?"  QGLS pg 341
 ;; "let him go", "let go of the ball"
+
+(define-category how-about-as-directive
+  :instantiates self
+  :specializes  proposal-marker
+  :rule-label proposal-marker
+  :realization (:interjection "how about"))
 
 (define-category suppose-as-directive
   :instantiates self
