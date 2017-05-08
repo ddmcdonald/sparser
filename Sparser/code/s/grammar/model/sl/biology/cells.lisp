@@ -82,7 +82,7 @@
 ;; Fibroblasts are the most common cells of connective tissue in animals.
 (noun "fibroblast" :super cell-type)
 (noun "leukocyte" :super cell-type)
-(noun "astroocyte" :super cell-type)
+(noun "astrocyte" :super cell-type)
 (noun "neuron" :super cell-type)
 
 (noun "keratin" :super cell-type) ;; NOT SURE THIS IS HOW IT IS BEING USED
