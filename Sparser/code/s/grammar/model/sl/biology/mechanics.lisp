@@ -1015,7 +1015,7 @@ the process.
                               &optional greek identifier mitre-link
                                 ras2-model
                                 long synonyms takes-plurals documentation members)
-  (decleare (special *uniprot-name-ht*))
+  (declare (special *uniprot-name-ht*))
   (unless (find-variable-for-category 'name category)
     (error "Cannot use the def-bio form with the category ~a~
             because it does not provide a 'name' variable" category))
