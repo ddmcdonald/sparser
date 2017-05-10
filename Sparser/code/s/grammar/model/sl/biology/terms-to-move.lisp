@@ -119,14 +119,14 @@ be biology specific, since they aren't. |#
 ;;---- likely to want a different interpretation
 ;;     when the attribute-value "high" is available
 (define-category high-enough :specializes bio-predication
-  :binds ((result-or-purpose bological))
+  :binds ((result-or-purpose biological))
   :mixins (post-adj)
   :realization
   (:adj "high enough"
         :to-comp result-or-purpose))
 
 (define-category low-enough :specializes bio-predication
-  :binds ((result-or-purpose bological))
+  :binds ((result-or-purpose biological))
   :mixins (post-adj)
   :realization
      (:adj "low enough"
