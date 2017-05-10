@@ -49,6 +49,7 @@
 (gload "bio;bio-methods-processes")
 (gload "bio;bio-predications")
 (gload "bio;cells")
+(gload "bio;diseases-pathogens")
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")

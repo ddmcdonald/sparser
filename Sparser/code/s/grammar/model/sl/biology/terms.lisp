@@ -204,26 +204,14 @@
 
 
 
-(noun "adenocarcinoma" :super disease)
-(noun "anaphylaxis" :super disease)
-(noun "metaplasia" :super disease)
-(noun "hyperplasia" :super disease)
+
 (noun "anchor" :super molecule) ;; "cytoplasmic anchor"
 
-(noun "carcinoma" :super cancer)
-(noun "glioblastoma" :super cancer)
-(noun "keratoacanthoma" :super cancer)
-(noun "neurooblastoma" :super cancer)
-(noun "NSCLC" :super cancer)
-(def-synonym NSCLC (:noun "non-small cell lung cancer"))
-(noun "non-small cell lung cancer" :super cancer)
-(def-synonym NSCLC (:noun "non small cell lung cancer"))
 
 (noun "isomerase" :super enzyme)
 (noun "ligase" :super enzyme)
 (noun "ubiquitinase" :super enzyme)
 (noun "deubiquitinase" :super enzyme)
-(noun "neurofibromatosis" :super disease)
 
 
 (define-adverb "sterically")
@@ -258,7 +246,6 @@
 (noun "carcinogen" :super bio-agent)
 ;;(def-synonym not (:adj "non"))
 
-(noun "CML" :super disease)
 
 
 
@@ -275,7 +262,6 @@
 
 
 
-(noun "abnormality" :super disease)
 
 (define-category activator :specializes molecule
   :binds ((activated molecule))
@@ -310,7 +296,6 @@
   (:noun "assay"))
                 
 
-(noun "bacteria" :super organism) ;; not really
 (noun "binder" :super bio-entity)
 
 
@@ -346,7 +331,6 @@
 (noun "derivative" :super molecule)
 (noun "detail" :super abstract)
 
-(noun "disorder" :super disease)
 
 
 (noun "dynamics" :super bio-scalar)
@@ -410,21 +394,6 @@
      (:adj "ineffective"
            :against against)) ;; keyword: (ive ADJ) 
 
-(define-category inhibitor :specializes drug
-  :binds ((process (:or bio-process bio-mechanism))
-          (protein protein))
-  :realization (:noun "inhibitor" :m process :m protein :of process :of protein))
-
-
-;; THIS NEEDS WORK
-(define-category repressor :specializes inhibitor
-  :realization (:noun "repressor"))
-
-(define-category suppressor :specializes inhibitor
-  :realization (:noun "suppressor"))
-
-(define-category negative-regulator :specializes inhibitor
-  :realization (:noun "negative regulator"))
 
 (adj "insensitive" :super bio-relation
       :realization

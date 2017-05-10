@@ -1,15 +1,16 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER COMMON-LISP) -*-
-;;; Copyright (c) 2014 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2014-2017 SIFT LLC. All Rights Reserved
 ;;;
 ;;;    File: "drugs"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: December 2014
+;;; version: May 2017
 
 ;; Define drugs based on results gleaned from the cureRAS corpus with SketchEngine
 ;; NOTE: there are a number of mis-spelling here -- neeed to figure out how to deal with them
 ;; RJB 12/13/2014 make "drug" and "inhibitor" drugs -- not sure about this, but they are treated like that for the annotation
 ;; added a couple of new drugs 885-A and sb590885
 ;; RJB 12/16/2014 added drugs starting with CI- and others found during that search
+;; LB 5/10/2017 moved inhibitors here since they specialize drug
 
 (in-package :sparser)
 ;;--- Drugs
@@ -18,6 +19,22 @@
 ; potentiated the effects of PLX4032
 ; following treatment with the MEK inhibitor AZD6244
 ; retaining transcriptional response to vemurafenib and AZD6244
+
+(define-category inhibitor :specializes drug
+  :binds ((process (:or bio-process bio-mechanism))
+          (protein protein))
+  :realization (:noun "inhibitor" :m process :m protein :of process :of protein))
+
+
+;; THIS NEEDS WORK
+(define-category repressor :specializes inhibitor
+  :realization (:noun "repressor"))
+
+(define-category suppressor :specializes inhibitor
+  :realization (:noun "suppressor"))
+
+(define-category negative-regulator :specializes inhibitor
+  :realization (:noun "negative regulator"))
 
 
 (noun "therapeutics" :super drug) ;; keyword: (ics N) 
