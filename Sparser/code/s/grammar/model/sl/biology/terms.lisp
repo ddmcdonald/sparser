@@ -48,7 +48,6 @@
  (:noun "member"
         :of set))
 
-(noun "chemical product" :super bio-chemical-entity)
 
 
 
@@ -126,17 +125,12 @@
 
 
 
-(noun "bradykinin" :super peptide)
-(noun "Abeta" :super peptide)
-(noun "AICAR" :super peptide)
-(def-synonym abeta (:noun "amyloid beta"))
-;; to be reviewed -- from Localization
 
 
 
 
 
-(noun "dextran" :super polysaccharide)
+
 
 
 
@@ -152,13 +146,6 @@
 	:for theme))
 
 
-;;lipids
-;; in EGFR signaling comments
-(noun ("DAG" "diacylglycerol") :super lipid)
-(noun "Sphingosine" :super lipid)
-(noun ("IP3" "inositol 1,4,5-triphosphate") :super phospholipid) 
-(noun ("PIP2" "phosphatidylinositol 4,5-bisphosphate" "phosphatidylinositol-4,5-bisphosphate" "phosphoinositol 4,5-bisphosphate") :super phospholipid)
-(noun ("PIP3" "phosphatidylinositol 3,4,5-triphosphate" "phosphatidylinositol-3,4,5-trisphosphate") :super phospholipid)
 
 
 
@@ -177,14 +164,12 @@
   (:noun "guanyl-nucleotide exchange"))
 
 ;;(noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
-(noun "bond" :super bio-entity) ;; chemical bond -- not 
 
 
 
 
 
 
-(noun "anchor" :super molecule) ;; "cytoplasmic anchor"
 
 
 (noun "isomerase" :super enzyme)
@@ -204,15 +189,9 @@
 
 ;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
 
-#-allegro (noun "O2˙-" :super molecule) ;; :synonyms ("superoxide anion")
-(noun "MeHg" :super molecule)
-(def-synonym MeHg (:noun "methyl mercury"))
-
-(noun "lactate" :super molecule)
 
 
 
-(noun "carcinogen" :super bio-agent)
 ;;(def-synonym not (:adj "non"))
 
 
@@ -226,25 +205,15 @@
 ;; DROPPING THIS CAUSES A MASSIVE ERROR ON CURE 38
 
 
-(noun "32P" :super molecule) 
-;; actually an isotope -- need to adjust taxonomy 
-
-
-
-
-(define-category activator :specializes molecule
-  :binds ((activated molecule))
-  :realization
-  (:noun "activator"
-         :of activated))
-
-(def-bio "adenine" nucleobase)
-(noun "agonist":super molecule) ;; keyword: (ist N) ;; 
 (define-category affinity :specializes bio-relation
      :binds ((object bio-entity))
      :realization
      (:noun "affinity"
             :for object))
+
+
+
+
 
 
 ;; Usually in a hyphenated construction. Idiomatically as a XXXXXXX
@@ -263,14 +232,12 @@
 
                 
 
-(noun "binder" :super bio-entity)
 
 
 ;;(noun "condition" :super experimental-condition) OBE -- i taxonomy
 
 
 
-(def-bio "cytosine" nucleobase)
 
 
 
@@ -291,7 +258,6 @@
      :m theme
      :in theme))
 
-(noun "derivative" :super molecule)
 (noun "detail" :super abstract)
 
 
@@ -305,12 +271,6 @@
            :in theme
 	   :on theme))
 
-(define-category effector :specializes protein ;; NOT SURE WHAT THE RIGHT SUPER is
-  :binds ((for-process bio-process))
-  :realization
-  (:noun "effector" 
-         :for for-process
-         :in for-process))
 
 
 
@@ -326,14 +286,6 @@
 
 
 
-(define-category fragment :specializes protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
-      :binds ((whole bio-entity)
-              ;; bio-scalar is for "a  fragment of the same mass as ..."
-              (measure (:or measurement bio-scalar)))
-      :realization
-      (:noun ("fragment" "subunit")
-             :of whole
-             :of measure))
 
 
 
@@ -341,7 +293,6 @@
 
 
 
-(def-bio "guanine" nucleobase)
 
 
 ;; "However" is actually a subordinate conjunction.
@@ -372,24 +323,16 @@
       (:noun "insight"
              :into concept))
 
-;;In biochemistry, a protein ligand is an atom, a molecule or an ion that can bind to a specific site (the binding site) on a protein. 
-(noun "ligand" :super bio-chemical-entity)
 
-(noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 
-(define-category lysate :specializes bio-entity
-  :realization
-  (:noun "lysate"))
 
-(def-bio "adenine" nucleobase)
-(noun "LPA" :super phospholipid)
-(def-synonym lpa (:noun "lysophosphatidic acid"))
+
+
 
            
 (define-adverb "mechanistically")
 
 
-(noun "mitogen" :super molecule)
 
 
 (noun "mortality" :super bio-abstract) ;;/// relationship to "mortal" ??
@@ -494,12 +437,6 @@
            :to situation
            :for beneficiary))
 
-(define-category substrate :specializes bio-chemical-entity
-      :binds ((enzyme protein))
-  :realization
-  (:noun "substrate"
-         :of enzyme
-         :for enzyme))
 
 (adj "suitable" :super bio-relation
      :realization
