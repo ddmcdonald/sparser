@@ -92,7 +92,6 @@
 (define-adjective "metastatic")
 (define-adjective "mitochondrial")
 (define-adjective "mitogenic")
-(define-adjective "molecular")
 (define-adjective "multicellular")
 (define-adjective "necrotic")
 (define-adjective "neoplastic")
