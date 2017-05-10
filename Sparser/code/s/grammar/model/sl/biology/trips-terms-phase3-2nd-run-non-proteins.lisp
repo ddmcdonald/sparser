@@ -69,7 +69,7 @@
 (define-category infiltration :specializes bio-process :bindings (uid "NCIT:C25754") :realization (:noun "infiltrated")) 
 (define-category infarction :specializes bio-process :bindings (uid "NCIT:C25738") :realization (:noun "infarctions")) 
 (define-category hypomethylation :specializes bio-process :bindings (uid "NCIT:C121521") :realization (:noun "hypomethylation")) 
-(def-synonym hypermethylation (:noun "hypermethylation")) 
+;(def-synonym hypermethylation (:noun "hypermethylation")) 
 (define-category hematopoiesis :specializes bio-process :bindings (uid "NCIT:C16674") :realization (:noun "hematopoiesis")) 
 (define-category melanogenesis :specializes bio-process :bindings (uid "NCIT:C20628") :realization (:noun "melanogenesis")) 
 (define-category meiosis :specializes bio-process :bindings (uid "NCIT:C16834") :realization (:noun "meiosis")) 

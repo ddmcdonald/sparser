@@ -22,7 +22,7 @@
 (def-synonym |CATABOLIC PROCESS| (:noun "breakdown")) 
 (def-synonym |CATABOLIC PROCESS| (:noun "catabolism")) 
 (def-synonym |CROSS REACTION| (:noun "cross-reactive")) 
-(def-synonym |RNA POLYADENYLATION| (:noun "polyadenylation")) 
+;(def-synonym |RNA POLYADENYLATION| (:noun "polyadenylation")) 
 (define-category aging :specializes bio-process :bindings (uid "GO:0007568") :realization (:noun "ageing")) 
 
 (define-category conception :specializes bio-process :bindings (uid "NCIT:C16465") :realization (:noun "conception")) 
