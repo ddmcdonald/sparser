@@ -71,8 +71,9 @@
 
 ;;(gload "bio;UCD-proteins")
 (gload "bio;protein-families")
-(gload "bio;phenomena") ;; after proteins
-(gload "bio;pathways")
+;(gload "bio;phenomena") ;; basically empty
+(gload "bio;pathways") ;; after proteins
+(gload "bio;protein-terminals-domains") ;; has to be after terms-to-move
 (gload "bio;general-verbs") ;; akin to terms-to-move
 (gload "bio;verbs") ;; after phenomena, with bio synonyms of general verbs
 
