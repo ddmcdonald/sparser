@@ -126,7 +126,6 @@
 
 
 
-(noun "HA.11" :super epitope)
 
 (noun "bradykinin" :super peptide)
 (noun "Abeta" :super peptide)
@@ -505,29 +504,6 @@
 
 
  
-;; Jan 29 "two MAPK phosphorylation sites in ASPP1 and ASPP2."
-;; Jan 14 "mutation of the primary site of monoubiquitination"
-;; 16 "mUbRas, modified at a single site, "
-(noun "site" :super molecular-location
-  :binds ((process bio-process)
-          (kinase protein)
-	  (substrate protein)
-	  ;;(kinase-or-substrate protein)
-          (residue residue-on-protein))
-  :realization
-     (:noun "site"
-      :m process
-      :m residue
-      :m kinase
-      :m substrate
-      ;;:m kinase-or-substrate
-      :of process
-      :for process
-      :in substrate
-      :on substrate
-      :at residue))
-
-(noun "docking site" :super site)
 
 (adj "specific" :super bio-relation
      :binds ((situation biological)(beneficiary biological))
@@ -552,7 +528,6 @@
 
 
 
-(noun "surface area" :super molecular-location)
 (define-adverb "surprisingly")
 
 

@@ -51,6 +51,8 @@
 (gload "bio;cells")
 (gload "bio;diseases-pathogens")
 (gload "bio;measurements")
+(gload "bio;molecular-locations")
+
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
