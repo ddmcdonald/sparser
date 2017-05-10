@@ -49,6 +49,7 @@
 (gload "bio;bio-methods-processes")
 (gload "bio;bio-predications")
 (gload "bio;cells")
+(gload "bio;cellular-processes")
 (gload "bio;diseases-pathogens")
 (gload "bio;measurements")
 (gload "bio;molecular-locations")
@@ -69,6 +70,7 @@
 ;;(gload "bio;UCD-proteins")
 (gload "bio;protein-families")
 (gload "bio;phenomena") ;; after proteins
+(gload "bio;pathways")
 (gload "bio;general-verbs") ;; akin to terms-to-move
 (gload "bio;verbs") ;; after phenomena, with bio synonyms of general verbs
 
