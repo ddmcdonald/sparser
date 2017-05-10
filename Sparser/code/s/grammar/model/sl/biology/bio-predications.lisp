@@ -72,6 +72,7 @@
 (adj "combinatorial" :super bio-predication) ;; keyword: (al ADJ) 
 (adj "constitutive" :super bio-predication)
 (define-adverb "constitutively")
+(adj "de novo" :super bio-predication)
 (adj "diffuse" :super bio-predication) ;; TO-DO better superc
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
@@ -122,7 +123,7 @@
 (def-synonym real-time (:adj "real time"))
 (adj "recombinant" :super bio-predication)
 (adj "responsible" :super bio-predication ;; adj/noun "resposibility"
-  :binds ((subject biological)(theme bio-entity))
+  :binds ((subject bioloical)(theme bio-entity))
   :realization 
   (:adj "responsible"
         :s subject 

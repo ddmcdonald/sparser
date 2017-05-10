@@ -46,7 +46,8 @@
 (gload "bio;rhgnc-proteins")
 |#
 (gload "bio;bio-complexes")
-(gload "bio;bio-methods-processes")
+(gload "bio;bio-methods")
+(gload "bio;bio-processes")
 (gload "bio;bio-predications")
 (gload "bio;cells")
 (gload "bio;cellular-processes")
