@@ -211,16 +211,6 @@
 
 (noun "lactate" :super molecule)
 
-#-allegro (noun "pcDNA3.1-PPARγ" :super plasmid)
-(noun "pcDNA3.1-Med1" :super plasmid)
-(noun "pCMX-Med1" :super plasmid)
-(noun "pcDNA3.1-PIMT" :super plasmid)
-(noun "pcDNA3.1-PIMT-N" :super plasmid)
-(noun "pCMV-PIMT-Flag" :super plasmid)
-(noun "3XPPRE-Luc" :super plasmid)
-(noun "GST-PIMT-N" :super plasmid)
-(noun "GST-Med1-CRAF-BXB" :super plasmid)
-(noun "pCMV-ERK2-HA" :super plasmid)
 
 
 (noun "carcinogen" :super bio-agent)
@@ -399,13 +389,7 @@
            
 (define-adverb "mechanistically")
 
-(noun "miR-26A" :super micro-rna)
-(noun "miR-26A2" :super micro-rna)
-(def-synonym miR-26A2
-             (:noun "MIR26A2"))
-(noun "miR-26A1" :super micro-rna)
-(def-synonym miR-26A1
-             (:noun "MIR26A1"))
+
 (noun "mitogen" :super molecule)
 
 
@@ -485,7 +469,6 @@
           :to theme
           :m theme))
 
-(noun "rna" :super molecule)
 
 (noun "scaffold" :super protein) 
 (adj "selective" :super bio-relation
