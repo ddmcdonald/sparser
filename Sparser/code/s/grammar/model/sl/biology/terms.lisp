@@ -39,15 +39,6 @@
 
 (noun "http://" :super abstract) ;; avoid an NS error
 
-
-
-
-
-
-
-
-
-
 ;;from pathway comments
 
 (adj "open" :super bio-relation)
@@ -60,9 +51,7 @@
 (noun "chemical product" :super bio-chemical-entity)
 
 
-;; below is needed because of a use of "transients" in the CURE corpus
-(define-category transient-measurement :specializes bio-measurement
-  :realization  (:noun ("transientXXX" :plural "transients"))) ;; don't pick up "transient" from COMLEX, and don't allow "transient" as a singular noun
+
 
 
 
@@ -193,14 +182,6 @@
 (noun "bond" :super bio-entity) ;; chemical bond -- not 
 
 
-;;/// N.b. the rule is written over the literal "fold"
-(define-category n-fold :specializes measurement
-  :binds ((number number))
-  :realization
-  (:noun "fold"
-         :m number))
-;; only used in phrases like nnn-fold, this is here to suppress the
-;;  attempt to ascribe a biological meaning to the verb
 
 
 
@@ -291,15 +272,12 @@
          :for antigen))
 
 
-(define-category assay :specializes measure
-  :realization
-  (:noun "assay"))
+
                 
 
 (noun "binder" :super bio-entity)
 
 
-;; OBE (noun "concentration" :super bio-scalar) ;;levels of incorporated 32P (January sentence 34)
 ;;(noun "condition" :super experimental-condition) OBE -- i taxonomy
 
 
@@ -307,9 +285,6 @@
 (def-bio "cytosine" nucleobase)
 
 
-(define-category data :specializes measurement
-		 :realization
-		 (:noun ("datum" :plural "data")))
 
 ;; "the DSB repair defect", "a defect in sensitivity to GAP–mediated regulation"
 (noun "defect" :super bio-relation
@@ -333,7 +308,6 @@
 
 
 
-(noun "dynamics" :super bio-scalar)
 
 
 (adj "effective" :super bio-relation
@@ -351,7 +325,6 @@
          :in for-process))
 
 
-(noun "extent" :super bio-scalar) 
 
 (define-category fact :specializes bio-rhetorical
       :mixins (bio-thatcomp)
@@ -424,7 +397,6 @@
 (noun "LPA" :super phospholipid)
 (def-synonym lpa (:noun "lysophosphatidic acid"))
 
-(noun "mass" :super bio-scalar)
            
 (define-adverb "mechanistically")
 
@@ -459,10 +431,7 @@
 (noun "open reading frames" :super open-reading-frame)
 (def-synonym open-reading-frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
 
-(define-category order-of-magnitude :specializes unit-of-measure
-  :realization
-  (:noun ("order of magnitude"
-          :plural "orders of magnitude")))
+
 
 (noun "paradox" :super bio-entity)
 
@@ -484,7 +453,6 @@
 
 
 
-(noun "proportion" :super bio-scalar)
 (noun "proto-oncogene" :super oncogene)
 
 (noun "receptor" :super protein)
@@ -521,7 +489,6 @@
 (noun "rna" :super molecule)
 
 (noun "scaffold" :super protein) 
-(noun "scale" :super bio-scalar)     
 (adj "selective" :super bio-relation
      :realization (:for theme))
 
@@ -588,7 +555,6 @@
 (noun "surface area" :super molecular-location)
 (define-adverb "surprisingly")
 
-(noun "throughput" :super measurement)
 
 
 
@@ -620,29 +586,6 @@
 
 
 
-;;;------------------
-;;; Units of measure
-;;;------------------
-;;-- see model/dossiers/units-of-measure.lisp for more forms.
-
-
-(define-unit-of-measure "cm")
-(define-unit-of-measure "dalton")
-(define-unit-of-measure "kD")
-(define-unit-of-measure "kb")
-(define-unit-of-measure "mL")
-(define-unit-of-measure "mg")
-(define-unit-of-measure "ml")
-(define-unit-of-measure "mg")
-(define-unit-of-measure "mm")
-(define-unit-of-measure "nM")
-(define-unit-of-measure "ng")
-(define-unit-of-measure "nm")
-(define-unit-of-measure "pmol")
-(define-unit-of-measure "pmol/min/mg")
-(define-unit-of-measure "μm")
-;;#+sbcl (define-unit-of-measure "μm")
-;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
 
 
 
