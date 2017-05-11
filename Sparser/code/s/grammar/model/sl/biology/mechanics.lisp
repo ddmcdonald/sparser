@@ -27,7 +27,7 @@
     nil 'top)
 
 ;;;---------------------------
-;;; TRIPS & REACH --> def-ided-indiv
+;;; TRIPS & REACH --> def-indiv-with-id
 ;;;---------------------------
 
 (defparameter *show-trips-redefinitions* nil)
@@ -45,7 +45,8 @@
 ;; define all the parameters to hold the new definitions
 (defparameter *new-diseases* nil)
 (defparameter *new-bio-complexes* nil)
-(defparameter *new-bio-meth-proc* nil)
+(defparameter *new-bio-meth* nil)
+(defparameter *new-bio-proc* nil)
 (defparameter *new-noncell-loc* nil)
 (defparameter *new-cells* nil)
 (defparameter *new-cell-loc* nil)
@@ -59,7 +60,7 @@
 (defparameter *new-units* nil)
 (defparameter *new-prot-fam* nil)
 
-(defun trips/reach-term->def-ided-indiv (term &optional 
+(defun trips/reach-term->def-indiv-with-id (term &optional 
                                          (trips/reach->krisp-class #'trips-class->krisp))
   "Function takes a trips or reach definition and returns a sparser definition form"
   (when (equal (second term) 'sparser::--)
@@ -74,21 +75,21 @@
         (cond ((and (resolve word) (rule-for word)) 
                ;; if it resolves but has no rule, it's probably only defined as part of a pw
                (stash-redefined-word term word id "orig")
-               (return-from trips/reach-term->def-ided-indiv nil))
+               (return-from trips/reach-term->def-indiv-with-id nil))
               ((and (resolve dc-word) (rule-for dc-word))
                (stash-redefined-word term dc-word id "downcase")
-               (return-from trips/reach-term->def-ided-indiv nil))
+               (return-from trips/reach-term->def-indiv-with-id nil))
               ((and (resolve uc-word) (rule-for uc-word))
                (stash-redefined-word term uc-word id "upcase")
-               (return-from trips/reach-term->def-ided-indiv nil))
+               (return-from trips/reach-term->def-indiv-with-id nil))
               ((and (search "-" word) (resolve (remove #\- word))) 
                ;; even if they're only defined in a pw, it's unclear
                ;; we want to define the hyphen version
                (stash-redefined-word term (remove #\- word) id "hyphens")
-               (return-from trips/reach-term->def-ided-indiv nil))
+               (return-from trips/reach-term->def-indiv-with-id nil))
               ((and (search "-" word) (resolve (remove #\- dc-word)))
                (stash-redefined-word term (remove #\- dc-word) id "hyphens-dc")
-               (return-from trips/reach-term->def-ided-indiv nil))))
+               (return-from trips/reach-term->def-indiv-with-id nil))))
       (let* 
           ((name (getf (cddr term) :name))
            (name-cat (when name (name-is-cat-p name)))
@@ -101,42 +102,43 @@
             cancer
             disease
             virus)
-           (stash-def-ided-indiv word category id name '*new-diseases*))
+           (stash-def-indiv-with-id word category id name '*new-diseases*))
           (bio-complex
-           (stash-def-ided-indiv word category id name '*new-bio-complexes*))
-          ((bio-method 
-            bio-process) ;; may conflict with handling of post-translational processes
-           (stash-def-ided-indiv word category id name '*new-bio-meth-proc*))
+           (stash-def-indiv-with-id word category id name '*new-bio-complexes*))
+          (bio-method
+           (stash-def-indiv-with-id word category id name '*new-bio-meth*))
+          (bio-process ;; may conflict with handling of post-translational processes
+           (stash-def-indiv-with-id word category id name '*new-bio-proc*))
           ((bio-organ
             organism
             secretion
             tissue
             tumor)
-           (stash-def-ided-indiv word category id name '*new-noncell-loc*))
+           (stash-def-indiv-with-id word category id name '*new-noncell-loc*))
           (cell-line ;; the old def function blocked plurals so this mirrors that
-           (stash-def-ided-indiv word category id name '*new-cells* :no-plural t))
+           (stash-def-indiv-with-id word category id name '*new-cells* :no-plural t))
           (cell-type
-           (stash-def-ided-indiv word category id name '*new-cells*))
+           (stash-def-indiv-with-id word category id name '*new-cells*))
           (cellular-location
-           (stash-def-ided-indiv word category id name '*new-cell-loc*))
+           (stash-def-indiv-with-id word category id name '*new-cell-loc*))
           (cellular-process
-           (stash-def-ided-indiv word category id name '*new-cell-proc*))
+           (stash-def-indiv-with-id word category id name '*new-cell-proc*))
           (drug ;; the old def function blocked plurals so this mirrors that
-           (stash-def-ided-indiv word category id name '*new-drugs* :no-plural t))
+           (stash-def-indiv-with-id word category id name '*new-drugs* :no-plural t))
           (molecule
-           (stash-def-ided-indiv word category id name '*new-molecules*))
+           (stash-def-indiv-with-id word category id name '*new-molecules*))
           (post-translational-modification
-            (stash-def-ided-indiv word category id name '*new-post-trans-mod*))
+            (stash-def-indiv-with-id word category id name '*new-post-trans-mod*))
           (protein-domain
-           (stash-def-ided-indiv word category id name '*new-prot-dom*))
+           (stash-def-indiv-with-id word category id name '*new-prot-dom*))
           (rna ;; check if it still has problems
-           (stash-def-ided-indiv word category id name '*new-rna*))
+           (stash-def-indiv-with-id word category id name '*new-rna*))
           (substance
-           (stash-def-ided-indiv word category id name '*new-substance*))
+           (stash-def-indiv-with-id word category id name '*new-substance*))
           (unit-of-measure
            (if (< (length word) 4) ;; for abbreviations, case matters (e.g. "m" meter vs. "M" molar) but for full names it doesn't
-               (stash-def-ided-indiv word category id name '*new-units* :maintain-case t)
-               (stash-def-ided-indiv word category id name '*new-units*)))
+               (stash-def-indiv-with-id word category id name '*new-units* :maintain-case t)
+               (stash-def-indiv-with-id word category id name '*new-units*)))
            ((gene protein gene-protein)
            (push 
             `(define-protein ,word ,(list id name))
@@ -147,13 +149,13 @@
                (then (push (list (value-of 'uid (category-named name-cat)) name-cat term)
                      *prot-fam-redef*)
                      (car *prot-fam-redef*))
-               (else (push `(def-ided-family ,word ,id ,.(when name `(:name ,(pname name))))
+               (else (push `(def-family-with-id ,word ,id ,.(when name `(:name ,(pname name))))
                            *new-prot-fam*)
                      (car *new-prot-fam*))))
           (t 
            (unless (or (eq category 'referential-sem)
                        (eq category 'time-unit))
-             (lsp-break "unknown category for trips/reach-term->def-ided-indiv"))))))))
+             (lsp-break "unknown category for trips/reach-term->def-indiv-with-id"))))))))
 
 (defun word-has-uid-p (word)
   "Given a string that is known to resolve, returns the value of the
@@ -203,30 +205,30 @@ uid binding, if there is one"
                      term))
            (push (list mod rword term) *no-id-redef*)))))
 
-(defun stash-def-ided-indiv (word category id name loc &key no-plural maintain-case)
+(defun stash-def-indiv-with-id (word category id name loc &key no-plural maintain-case)
   (let* ((name-cat (when name (name-is-cat-p name)))
          (name-uid (when name-cat (value-of 'uid (category-named name-cat))))
          (word-plural-name (when name (word-is-plural-name-p word name))))
 
-                                        ;(lsp-break "stash-def-ided-indiv pre-if")
+                                        ;(lsp-break "stash-def-indiv-with-id pre-if")
     (cond ((and name name-cat) ;; if name is predefined and word is a plural of it, we'll deal with it at the normalization step
            (push `(def-synonym ,name-cat (:noun ,word)) (symbol-value loc))
            (unless (equal id name-uid)
              (push (list category name-cat name-uid :newUID id) *name-id-mismatches*)))
           (word-plural-name
-           (push `(def-ided-indiv ,category ,name
+           (push `(def-indiv-with-id ,category ,name
                     ,(simplify-colons id)
                     :plural ,(list (plural-version name) word)
                     ,.(when maintain-case `(:maintain-case t)))
                  (symbol-value loc)))
           (t
-           (push `(def-ided-indiv ,category ,word
+           (push `(def-indiv-with-id ,category ,word
                     ,(simplify-colons id)
                     ,.(when name `(:name ,(pname name)))
                     ,.(when no-plural `(:no-plural t))
                     ,.(when maintain-case `(:maintain-case t)))
                  (symbol-value loc))))
-                                        ;(lsp-break "stash-def-ided-indiv post-if")
+                                        ;(lsp-break "stash-def-indiv-with-id post-if")
     (car (symbol-value loc))))
 
 (defun name-is-cat-p (name)
@@ -1219,7 +1221,7 @@ the process.
               :members members)))
     i))
 
-(defmacro def-ided-family (word id &key type species members
+(defmacro def-family-with-id (word id &key type species members
                            name synonyms maintain-case)
   (unless (stringp word) (error "Word argument should be a string"))
   `(define-family-with-id

@@ -83,7 +83,7 @@ broadly speaking doing for you all the things you might do by hand.
 (defparameter *uid-to-individual* (make-hash-table :size 10000 :test #'equal))
 (defparameter *id-mult-defs* nil) ;; to aid in definition consolidation later
 
-(defmacro def-ided-indiv (category-name word id &key name members adj synonyms plural no-plural maintain-case)
+(defmacro def-indiv-with-id (category-name word id &key name members adj synonyms plural no-plural maintain-case)
   `(define-individual-with-id ',category-name ,word ,id ,.(when name `(:name ,name))
                               ,.(when members `(:members ,members))
                               ,.(when adj `(:adj ,adj))

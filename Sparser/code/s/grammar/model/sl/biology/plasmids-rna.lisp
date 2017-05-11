@@ -28,8 +28,8 @@
 ;;;---------------------------
 
 ;; manually looked these up to add:
-(def-ided-indiv rna "mRNA" "NCIT:C813" :name "messenger RNA")
-(def-ided-indiv rna "tRNA" "NCIT:C816" :name "transfer RNA")
+(def-indiv-with-id rna "mRNA" "NCIT:C813" :name "messenger RNA")
+(def-indiv-with-id rna "tRNA" "NCIT:C816" :name "transfer RNA")
 
 ;;;-------------
 ;;; plasmids

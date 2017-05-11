@@ -509,7 +509,7 @@
 
 
 (defun define-reach-term (term)
-  (eval (trips/reach-term->def-ided-indiv term #'reach-class->krisp)))
+  (eval (trips/reach-term->def-indiv-with-id term #'reach-class->krisp)))
 
 
 (defparameter *reach-cancers-or-tissues*
