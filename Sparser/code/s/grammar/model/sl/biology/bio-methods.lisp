@@ -7,8 +7,7 @@
 
 ;; Broken out from terms 4/27/17
 ;;; Sections: bio-methods, bio-methods with IDs, knock-out types,
-;;; experimental-conditions, molecular states and variants,
-;;; miscellaneous
+;;; experimental-conditions, miscellaneous
 
 (in-package :sparser)
 
@@ -224,32 +223,6 @@ with something else
 (noun "trial" :super bio-context)
 
 ;;;------------------------
-;;; molecular states and variants
-;;;------------------------
-
-(adj "active" :super molecule-state
-     :binds ((activated
-              (:or molecule pathway bio-state))) ;; allow "the conformation is active"
-     :realization 
-     (:adj "active"
-           :s activated))
-(adj "inactive" :super molecule-state
-     :binds ((molecule molecule))
-     :realization 
-     (:adj "inactive"
-           :s molecule))
-
-(noun "transition state intermediate" :super molecule-state)
-
-(noun "allele" :super variant)
-(noun "analog" :super variant)
-(noun "class" :super variant  ;;NOT SURE THIS IS RIGHT
-      )
-(noun "isoform" :super variant)
-(noun "type" :super variant)
-(noun "variety" :super variant)
-
-;;;------------------------
 ;;; miscellaneous
 ;;;------------------------
 
@@ -280,4 +253,13 @@ with something else
 
 (noun "gain" :super positive-bio-control)
 
-
+(define-category paradigm :specializes process
+   :mixins (biological)
+  ;; not sure this is the correct term, but intended for things like "forms of ras" 
+  :binds ((basis bio-process)) ;; can be a gene or protein, or something else
+  :instantiates :self
+  :realization
+  (:noun "paradigm"
+         :m basis
+         :of basis
+         :for basis))

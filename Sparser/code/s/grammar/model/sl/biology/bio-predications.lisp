@@ -9,6 +9,31 @@
 
 (in-package :sparser)
 
+;;;------------------------
+;;; molecular attributes
+;;;------------------------
+
+(adj "active" :super molecule-state
+     :binds ((activated
+              (:or molecule pathway bio-state))) ;; allow "the conformation is active"
+     :realization 
+     (:adj "active"
+           :s activated))
+(adj "inactive" :super molecule-state
+     :binds ((molecule molecule))
+     :realization 
+     (:adj "inactive"
+           :s molecule))
+
+(define-category mobility :specializes bio-process
+  :binds ((motile bio-entity))
+  :realization
+  (:noun "mobility"
+         :of motile))
+
+;;;------------------------
+;;; bio-predications
+;;;------------------------
 (define-category dose-dependent :specializes :bio-predication
   :realization
   (:adj "dose-dependent"))

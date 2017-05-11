@@ -102,9 +102,9 @@
 (noun "LPA" :super phospholipid)
 (def-synonym lpa (:noun "lysophosphatidic acid"))
 
-;;;-------------
-;;; types
-;;;-------------
+;;;-------------------
+;;; types and variants
+;;;-------------------
 
 (noun "chemical product" :super bio-chemical-entity)
 (noun "carcinogen" :super bio-agent)
@@ -130,12 +130,6 @@
 (noun "binder" :super bio-entity)
 (noun "bond" :super bio-entity) ;; chemical bond -- not 
 
-(define-category effector :specializes protein ;; NOT SURE WHAT THE RIGHT SUPER is
-  :binds ((for-process bio-process))
-  :realization
-  (:noun "effector" 
-         :for for-process
-         :in for-process))
 
 (define-category fragment :specializes protein ;; not sure, but perhaps is always a protein -- can be phospohorylated
       :binds ((whole bio-entity)
@@ -152,6 +146,16 @@
   (:noun "substrate"
          :of enzyme
          :for enzyme))
+
+(noun "allele" :super variant)
+(noun "analog" :super variant)
+(noun "class" :super variant  ;;NOT SURE THIS IS RIGHT
+      )
+(noun "isoform" :super variant)
+(noun "type" :super variant)
+(noun "variety" :super variant)
+
+(noun "transition state intermediate" :super molecule-state)
 
 ;;;-------------
 ;;; miscellaneous
