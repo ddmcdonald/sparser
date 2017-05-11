@@ -56,6 +56,7 @@
 (gload "bio;molecular-locations")
 (gload "bio;plasmids-rna")
 (gload "bio;post-trans-mods")
+(gload "bio;substances")
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
