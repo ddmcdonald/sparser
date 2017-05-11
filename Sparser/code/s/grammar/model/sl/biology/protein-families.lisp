@@ -6,11 +6,34 @@
 ;;; version: June 2015
 
 ;; initiated 06/16/15 migrating from other files 
+;; 05/2017 -- added protein types and IDed protein families
 
 (in-package :sparser)
 
+;;;--------------
+;;; protein-types
+;;;--------------
 
+(define-category effector :specializes protein ;; NOT SURE WHAT THE RIGHT SUPER is
+  :binds ((for-process bio-process))
+  :realization
+  (:noun "effector" 
+         :for for-process
+         :in for-process))
 
+(noun "receptor" :super protein)
+(noun "receptor protein" :super protein)
+(noun "receptor protein-tyrosine kinase" :super kinase)
+(noun "scaffold" :super protein) 
+
+(noun "isomerase" :super enzyme)
+(noun "ligase" :super enzyme)
+(noun "ubiquitinase" :super enzyme)
+(noun "deubiquitinase" :super enzyme)
+
+;;;-----------------
+;;; protein-families
+;;;-----------------
 ;;bad (def-family "GST" :members ("GSTP1_HUMAN")) ;; actually, very many more
 
 ;; Protein families

@@ -159,9 +159,7 @@
         :with theme))
 
 
-(define-category guanyl-nucleotide-exchange :specializes nucleotide-exchange
-  :realization
-  (:noun "guanyl-nucleotide exchange"))
+
 
 ;;(noun "king" :super abstract) ;; actually an author's name, but treated as a verb because of morphology
 
@@ -172,20 +170,14 @@
 
 
 
-(noun "isomerase" :super enzyme)
-(noun "ligase" :super enzyme)
-(noun "ubiquitinase" :super enzyme)
-(noun "deubiquitinase" :super enzyme)
 
 
 (define-adverb "sterically")
 
 
 ;;proteins from comments -- TO-DO move out to proteins file and do correctly
-(define-protein "LAMTOR2" ("LAMTOR2" "MEK partner 1" "MP1"))
-(define-protein "LAMTOR3" ("LAMTOR3"))
-(define-protein "KBTBD7 E3 RING" ("KBTBD7 E3 RING" ))
-(define-protein "KBTB7_HUMAN" ("KBTBD7"))
+;;(define-protein "KBTBD7 E3 RING" ("KBTBD7 E3 RING" )) ;; this isn't a protein but part of a complex "the CUL3:KBTBD7 E3 RING ligase complex" (CUL3 is an E3 RING ligase)
+
 
 ;; strange words used in 493 articles -- leads to incorrect stemming in COMLEX lookups
 
@@ -354,7 +346,7 @@
 (noun "frame" :super bio-entity)
 (noun "open reading frame" :super bio-entity)
 (noun "open reading frames" :super open-reading-frame)
-(def-synonym open-reading-frame (:noun "ORF")) ;; same as above -- need to figure out how to get the category spelling right
+(def-synonym open-reading-frame (:noun "ORF")) 
 
 
 
@@ -380,9 +372,7 @@
 
 (noun "proto-oncogene" :super oncogene)
 
-(noun "receptor" :super protein)
-(noun "receptor protein" :super protein)
-(noun "receptor protein-tyrosine kinase" :super kinase)
+
 (adj "refractory" :super bio-relation
      :realization
      (:to theme))
@@ -412,7 +402,6 @@
           :m theme))
 
 
-(noun "scaffold" :super protein) 
 (adj "selective" :super bio-relation
      :realization (:for theme))
 
