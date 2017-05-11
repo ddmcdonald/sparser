@@ -795,7 +795,7 @@ nil
 (def-bio "IC87114" molecule :long "IC-87114" :identifier "CHEBI:90686") 
 (def-bio "LVD" molecule :long "Leu-Val-Asp" :identifier "CHEBI:73576") 
 (def-bio "MK886" molecule :long "3-[3-(tert-butylsulfanyl)-1-(4-chlorobenzyl)-5-(propan-2-yl)-1H-indol-2-yl]-2,2-dimethylpropanoic acid" :identifier "CHEBI:75390") 
-(def-bio "Male" molecule :long "maleate(2-)" :identifier "CHEBI:30780") 
+;(def-bio "Male" molecule :long "maleate(2-)" :identifier "CHEBI:30780") 
 (def-bio "N-ethyl-N-nitrosourea" molecule :long "N-ethyl-N-nitrosourea" :identifier "CHEBI:23995") 
 (def-bio "PEA" molecule :long "palmitoyl ethanolamide" :identifier "CHEBI:71464") 
 (def-bio "PTT" molecule :long "bilanafos" :identifier "CHEBI:3088") 

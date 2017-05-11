@@ -42,7 +42,7 @@
 (defparameter *trips-terms*
   ;; body-organ
   '(
-    (    "ONT:BACTERIUM" --    ("CNS" "ONT:BACTERIUM" :ID "NCIT:C62584" :NAME "coagulase-negative staphylococcus") )
+  ;  (    "ONT:BACTERIUM" --    ("CNS" "ONT:BACTERIUM" :ID "NCIT:C62584" :NAME "coagulase-negative staphylococcus") )
     (    "ONT:BACTERIUM" --    ("Chlamydia" "ONT:BACTERIUM" :ID "NCIT:C76271" :NAME "chlamydia"))
     (    "ONT:BACTERIUM" --    ("Erwinia" "ONT:BACTERIUM" :ID "NCIT:C127280" :NAME "dickeya") )
     (    "ONT:BACTERIUM" --    ("Francisella" "ONT:BACTERIUM" :ID "NCIT:C86396" :NAME "francisella"))
