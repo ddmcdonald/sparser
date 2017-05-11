@@ -23,7 +23,6 @@
 (define-category financial-datum
   :specializes amount
   :instantiates self
-  :binds ((name :primitive (:or word polyword)))
   :realization ((:common-noun name)
                 (:tree-family  modifier-creates-subtype  ;; "net ___"
                  :mapping  ((n-bar . :self)
@@ -53,7 +52,6 @@
 (define-category financial-qualifier
   :specializes modifier
   :instantiates self
-  :binds ((name :primitive (:or word polyword)))
   :index (:permanent :key name)
   :realization (:common-noun name))
 

@@ -44,7 +44,6 @@
 (define-category  deictic-location 
   :instantiates  location ;;self
   :specializes   location
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:adverb name))
 

@@ -23,8 +23,7 @@
 (define-category pathogen
   :specializes nil
   :instantiates self
-  :binds ((name :primitive word)
-          (pathogen-type pathogen-type)) ;e.g. h5n1 is a virus, ecoli is a bacteria
+  :binds ((pathogen-type pathogen-type)) ;e.g. h5n1 is a virus, ecoli is a bacteria
           ;;(vector :primitive word) e.g. avian flu is spread by infected birds
   :index (:permanent :key name)
   :realization (:common-noun name)) 

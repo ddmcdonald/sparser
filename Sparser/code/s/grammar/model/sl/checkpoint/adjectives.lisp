@@ -11,44 +11,34 @@
 (in-package :sparser)
 
 (define-category null-adj
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category predicative
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category gradable
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category attributive
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category ainrn
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category apreq
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category ascale
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category ainpa
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category atimetag
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 (define-category negative
-    :instantiates self
-    :binds ((name :primitive word)))
+    :instantiates self)
 
 ;; I'd like to generalize these, but I can't figure out
 ;; how to pass a category namestring as a parameter.

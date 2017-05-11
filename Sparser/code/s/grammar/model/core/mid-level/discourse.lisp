@@ -41,7 +41,6 @@
 (define-category  acknowledgement  ;; Trips SA_ACT, presumably
   :instantiates self
   :specializes speech-act
-  :binds ((name :primitive word))
   :realization (:interjection name)
   :documentation "This set ('yes', 'no', 'ok' ..) can be divided
  more finely to according to aproving or disaproving on what someone
@@ -59,7 +58,6 @@
 (define-category  greeting ;; SA_GREET
   :instantiates self
   :specializes speech-act
-  :binds ((name :primitive word))
   :realization (:interjection name))
 
 (define-individual 'greeting :name "hello")

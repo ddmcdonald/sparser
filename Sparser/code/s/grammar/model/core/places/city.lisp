@@ -26,8 +26,7 @@
 (define-category  city
   :instantiates  self
   :specializes  location
-  :binds ((name :primitive word)
-          (aliases  :primitive list)
+  :binds ((aliases  :primitive list)
           (country . country)
           (state . state))
   :index (:permanent :key name) ;; deleted country

@@ -18,7 +18,6 @@
 (define-category phase-of-day
   :instantiates  self
   :specializes  time-interval
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 
@@ -34,7 +33,6 @@
 (define-category time-of-day
   :instantiates  self
   :specializes  time-interval
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 
@@ -50,7 +48,6 @@
 (define-category meal-time ;; sort of similar "having a late dinner"
   :instantiates  self   ;; but lots more content
   :specializes  time-of-day
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 
@@ -66,7 +63,6 @@
 (define-category numeric-time
   :instantiates  self
   :specializes  time-of-day
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :documentation "Intended for 'a.m.' and such, but needs
     work. See dossiers/time-of-day.lisp"
@@ -85,7 +81,6 @@
   :instantiates  self
   :specializes  region ;; get the geographical aspect
   :mixins (sequential cyclic)
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 

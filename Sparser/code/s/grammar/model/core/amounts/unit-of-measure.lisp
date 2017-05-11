@@ -17,7 +17,6 @@
 (define-category  unit-of-measure
   :specializes abstract ;; basically a typed number that applies to scalars
   :instantiates self
-  :binds ((name :primitive word))
   :mixins (has-uid)
   :realization (:common-noun name))
 

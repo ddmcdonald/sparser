@@ -26,7 +26,6 @@
 (define-category  kind-of-subsidiary
   :instantiates self
   :specializes company
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 

@@ -26,7 +26,6 @@
 (define-category approximator
   :specializes modifier
   :instantiates  :self
-  :binds ((name :primitive word))
   :index (:key name :permanent)
   :realization (:word name))
 

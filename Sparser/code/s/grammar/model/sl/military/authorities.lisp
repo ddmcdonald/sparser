@@ -17,25 +17,21 @@
 (define-category authority ;; as in command authority -- who's in charge
   :instantiates self
   :specializes company ;;// organization would be better, but we don't have it
-  :binds ((name :primitive word))
   :index (:permanent :key name))
 
 (define-category command  ;; USCENTCOM
   :instantiates self
   :specializes authority
-  :binds ((name :primitive word))
   :index (:permanent :key name))
 
 (define-category agency   ;; NSA
   :instantiates self
   :specializes authority
-  :binds ((name :primitive word))
   :index (:permanent :key name))
 
 (define-category service  ;; US Army
   :instantiates self
   :specializes authority
-  :binds ((name :primitive word))
   :index (:permanent :key name))
 
 ;; department (of Defense)

@@ -20,7 +20,6 @@
 (define-category pathogen-type
   ;;:specializes pathogen
   :instantiates self
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 

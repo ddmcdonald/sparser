@@ -30,8 +30,7 @@
   :instantiates time
   :rule-label time
   :mixins (sequential cyclic)
-  :binds ((name :primitive word)
-          (abbreviation :primitive word)
+  :binds ((abbreviation :primitive word)
           (position-in-week . ordinal))
   :index (:permanent :key name)
   :realization (:common-noun name))  

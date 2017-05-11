@@ -17,7 +17,6 @@
 (define-category  location-description    ;; e.g. "international", "local"
   :instantiates  self
   :specializes   location
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:adjective name))
 

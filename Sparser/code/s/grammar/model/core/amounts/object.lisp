@@ -43,7 +43,6 @@
 (define-category vague-amount 
   :specializes amount
   :instantiates self
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 

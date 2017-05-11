@@ -20,8 +20,7 @@
 
 
 (define-category switch-state
-  :specializes state
-  :binds ((name :primitive word)))
+  :specializes state)
 
 (defun define-switch-state (name)
   (find-or-make-individual 'switch-state :name name))

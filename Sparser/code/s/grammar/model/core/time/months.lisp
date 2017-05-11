@@ -37,8 +37,7 @@
   :instantiates self
   ;; :rule-label time
   :mixins (sequential cyclic)
-  :binds ((name :primitive word)
-          (abbreviation :primitive word)
+  :binds ((abbreviation :primitive word)
           (position-in-year . ordinal)
           (number-of-days . number))
   :index (:permanent :key name)

@@ -22,8 +22,7 @@
   :instantiates :self
   :specializes title ;;/// not really right. Related to academic-degree
   :rule-label title
-  :binds ((name :primitive word)
-	  (abbreviations  :primitive list))
+  :binds ((abbreviations  :primitive list))
   :realization (:common-noun name))
 
 ;; #2 Write a form that will let us take strings for particular ranks

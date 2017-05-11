@@ -45,8 +45,7 @@
   :instantiates  location
   :specializes location
   :rule-label location
-  :binds ((name :primitive word) 
-          (aliases  :primitive list)
+  :binds ((aliases  :primitive list)
           (type . region-type)
           (containing-region . location))
   :index (:permanent :key name)
@@ -153,7 +152,6 @@
 (define-category  region-type    ;; e.g. "city", "village", kinds of places
   :instantiates self
   :specializes location
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 
@@ -219,7 +217,6 @@
 (define-category border-type
   :instantiates :self
   :specializes location
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 

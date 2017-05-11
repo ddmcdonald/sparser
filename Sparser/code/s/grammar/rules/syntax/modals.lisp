@@ -34,7 +34,6 @@
 (define-category modality
   :instantiates nil
   :specializes state
-  :binds ((name :primitive word))
   :documentation "We need this category to solve a set
  of technical issues. The category 'modal' is a grammatical
  description, and it seems like too much of a stretch to

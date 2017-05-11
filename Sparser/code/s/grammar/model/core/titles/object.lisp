@@ -29,7 +29,6 @@
 (define-category  title
   :specializes modifier
   :instantiates self
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 
@@ -49,14 +48,12 @@
 (define-category  title-modifier
   :instantiates self
   :specializes modifier
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:adjective name))
 
 (define-category title-status
   :instantiates self
   :specializes modifier ;; inadequate for modeling
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:adjective name))
 #|

@@ -18,8 +18,7 @@
 (define-category  gene/protein
   :instantiates self
   :specializes nil
-  :binds ((long-name :primitive polyword)
-          (name :primitive word))
+  :binds ((long-name :primitive polyword))
   :index (:permanent :key name))
 
 

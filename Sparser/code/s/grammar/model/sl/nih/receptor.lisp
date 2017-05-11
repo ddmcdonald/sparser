@@ -23,7 +23,6 @@
 (define-category  greek-letter
   :instantiates self
   :specializes nil
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:word name))
 

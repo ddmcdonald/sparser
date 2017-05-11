@@ -27,7 +27,6 @@
 (define-category path-type ;; "street", "turnpike"
   :instantiates :self
   :specializes path
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 

@@ -14,8 +14,7 @@
 (define-category  amino-acid
   :instantiates self
   :specializes nil
-  :binds ((name :primitive word)
-          (abbreviation :primitive word))
+  :binds ((abbreviation :primitive word))
   :index (:permanent :key name))
 
 

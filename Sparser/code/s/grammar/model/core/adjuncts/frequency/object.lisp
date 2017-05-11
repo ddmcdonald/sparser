@@ -24,7 +24,6 @@
 (define-category  frequency-of-event
   :instantiates self
   :specializes adverbial
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:adverb name))
 

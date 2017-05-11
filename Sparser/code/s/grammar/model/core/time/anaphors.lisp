@@ -43,7 +43,6 @@
   :specializes time
   :instantiates time
   :rule-label time
-  :binds ((name :primitive word))
   :index (:key name)
   :realization (:word name))  ;; //this needs a hook for doing 
                               ;; the calculation
@@ -58,8 +57,7 @@
   :instantiates time
   :rule-label time
   :mixins (indexical)
-  :binds ((name :primitive word)
-          (calculator :primitive symbol))
+  :binds ((calculator :primitive symbol))
   :index (:key name))
 
 ;;--- should be possible to convert this to a macro 

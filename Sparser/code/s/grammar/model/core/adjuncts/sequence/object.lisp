@@ -27,8 +27,7 @@
 (define-category sequencer
   :instantiates  modifier
   :specializes modifier
-  :binds ((name :primitive word)
-          (relation :primitive word)) ;;added this variable in for interval relationships
+  :binds ((relation :primitive word)) ;;added this variable in for interval relationships
   :index (:key name :permanent)
   :realization (:word name))
 

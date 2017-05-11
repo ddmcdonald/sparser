@@ -42,8 +42,7 @@
 (define-category  name-word
   :instantiates name
   :specializes  name
-  :binds ((name :primitive word)
-          (name-of collection)) ;; the named-objects it names
+  :binds ((name-of collection)) ;; the named-objects it names
   :index (:permanent
           :special-case
           ;; needed because these are extensively cross-linked to the

@@ -20,8 +20,7 @@
 
 (define-category  compass-point
   :instantiates  self
-  :specializes   direction
-  :binds ((name :primitive word)))
+  :specializes   direction)
 
 ;;--- def form
 

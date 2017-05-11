@@ -17,8 +17,7 @@
 (define-category type-of-military-unit
   :specializes named-type
   :instantiates :self
-  :binds ((name :primitive word)
-	  (abbreviations  :primitive list))
+  :binds ((abbreviations  :primitive list))
   :realization (:common-noun name))
 
 

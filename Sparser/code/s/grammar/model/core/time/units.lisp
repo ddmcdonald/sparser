@@ -18,7 +18,6 @@
 (define-category time-unit
   :instantiates  self
   :specializes  unit-of-measure
-  :binds ((name :primitive word))
   :index (:permanent :key name)
   :realization (:common-noun name))
 

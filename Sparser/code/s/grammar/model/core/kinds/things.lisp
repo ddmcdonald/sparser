@@ -48,8 +48,7 @@
    to rewrite that portion of the code. |#
 (define-category  kind
   :instantiates :self
-  :specializes physical
-  :binds ((name :primitive word)))
+  :specializes physical)
 
 (define-category  individual ;; purely a placeholder like "kind"
   ;; This is the default nominal restriction 

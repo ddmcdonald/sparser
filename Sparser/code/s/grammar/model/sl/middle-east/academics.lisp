@@ -15,7 +15,6 @@
 (define-category academic-degree
   :instantiates self
   :specializes title
-  :binds ((name :primitive word))
   :realization (:common-noun name))
 
 (defun make-academic-degree (string)

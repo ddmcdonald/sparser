@@ -28,8 +28,7 @@
 (define-category  country
   :instantiates  self
   :specializes   location
-  :binds ((name :primitive word)
-          (adjective-form  :primitive word)
+  :binds ((adjective-form  :primitive word)
           (aliases  :primitive list))
   :index (:permanent :key name)
   :realization (:proper-noun name))

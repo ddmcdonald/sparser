@@ -19,8 +19,7 @@
 #+ignore
 (define-category small-named-molecule
   :instantiates self
-  :binds ((name :primitive word))
-  :realization (:common-noun name))
+    :realization (:common-noun name))
 
 ;; These should be spelled out and more precisely categorized.
 ;; In some way that looks plausible if we read it.

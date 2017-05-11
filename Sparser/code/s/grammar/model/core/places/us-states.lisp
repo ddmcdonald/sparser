@@ -19,8 +19,7 @@
 (define-category  US-state
   :instantiates  self
   :specializes   location
-  :binds ((name :primitive word)
-          (adjective-form :primitive word)
+  :binds ((adjective-form :primitive word)
           (abbreviations  :primitive list)
           (aliases :primitive list))
   :index (:permanent :key name)

@@ -20,7 +20,6 @@
 (define-category  inc-term
   :instantiates self
   :specializes name
-  :binds ((name :primitive word))
   :index (:permanent  :key name)
   :realization (:word name))
 

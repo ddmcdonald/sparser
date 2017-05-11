@@ -18,7 +18,7 @@
   :specializes unit-of-measure
   :binds ((distance-measure . unit-of-measure) ;; e.g. miles
           (time-measure . time-unit)  ;; e.g. hour
-          (name :primitive word)) ;; need compact form for generating
+          ) ;; need compact form for generating
   :index (:permanent :sequential-keys distance-measure time-measure)
   ;; "knot" is a rate of change all in one word: one nautical mile per hour
   :realization (:tree-family  N-per-unit
@@ -92,7 +92,6 @@ and the word can stand by itself "that distance"
 
 (define-category named-measure ; 
                  ;; Provides a common supercategory. ///Easily replaced
-  :binds ((name :primitive word))
   :specializes measurement)
 
 (define-scalar-quality "distance" :super-category named-measure

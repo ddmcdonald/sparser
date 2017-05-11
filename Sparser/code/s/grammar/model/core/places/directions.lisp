@@ -25,8 +25,7 @@
 
 (define-category  direction
   :instantiates  self
-  :specializes   location
-  :binds ((name :primitive word)))
+  :specializes   location)
 
 (defun string/direction (d)
   (let ((w (value-of 'name d)))

@@ -17,7 +17,6 @@
 (define-category  generic-co-word
   :instantiates self
   :specializes name
-  :binds ((name :primitive word))
   :index (:permanent  :key name)
   :realization (:word name))
 
