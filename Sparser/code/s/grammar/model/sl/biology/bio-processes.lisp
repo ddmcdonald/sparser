@@ -26,33 +26,33 @@
              (:noun "allosteric change"))
 
 (noun "cascade" :super bio-process)
+
 (define-category complementation :specializes bio-process
   :binds ((complement bio-entity))
   :realization
   (:noun "complementation"
          :for complement))
+
 (noun "dna binding" :super bio-process
       :binds ((substrate bio-entity))
       :realization 
       (:noun "dna binding"
              :of substrate))
-(noun "fate" :super bio-process)
 
+(noun "fate" :super bio-process)
 (noun "manner" :super bio-process
       :realization
       (:noun "manner"))
-
-(define-category mobility :specializes bio-process
-  :binds ((motile bio-entity))
-  :realization
-  (:noun "mobility"
-         :of motile))
-
 (noun "outcome" :super bio-process
       :binds ((process bio-process))
       :realization
       (:noun "outcome"
        :of process))
+
+;; bio-process is ultimate super (nucleotide-exchange -> bio-movement -> bio-process)
+(define-category guanyl-nucleotide-exchange :specializes nucleotide-exchange
+  :realization
+  (:noun "guanyl-nucleotide exchange"))
 
 ;;;------------------------
 ;;; caused, named, and other bio-processes
@@ -63,19 +63,10 @@
 (define-category detoxification :specializes caused-bio-process :bindings (uid "GO:0098754") :realization (:noun "detoxification")) 
 (define-category regeneration :specializes caused-bio-process :bindings (uid "NCIT:C17083") :realization (:noun "regeneration")) 
 (define-category transduction :specializes caused-bio-process :bindings (uid "GO:0009293") :realization (:noun "trans-duction")) 
-(define-category |CHEMICAL CLEAVAGE| :specializes caused-bio-process :bindings (uid "NCIT:C73482") :realization (:noun "cleavage")) 
+(define-category chemical-cleavage :specializes caused-bio-process :bindings (uid "NCIT:C73482") :realization (:noun "cleavage")) 
 
 (noun ("stimulus" :plural "stimuli") :super other-bio-process)
 ;; not sure if this is ontologically correc, but I think it might be close
 
-(define-category paradigm :specializes process
-   :mixins (biological)
-  ;; not sure this is the correct term, but intended for things like "forms of ras" 
-  :binds ((basis bio-process)) ;; can be a gene or protein, or something else
-  :instantiates :self
-  :realization
-  (:noun "paradigm"
-         :m basis
-         :of basis
-         :for basis))
+
 (noun "tumor formation" :super named-bio-process)
