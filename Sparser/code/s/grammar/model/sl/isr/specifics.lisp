@@ -54,7 +54,7 @@
   ;; real super class provides for having people, places where
   ;; they live, streets, squares, commerce (shops, markets, ...)
   ;; industry, etc.
-  :mixins (has-name has-spatial-location )
+  :mixins (has-spatial-location )
   :index (:permanent :key name)
   :realization (:common-noun name))
 

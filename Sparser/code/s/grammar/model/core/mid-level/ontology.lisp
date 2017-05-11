@@ -124,7 +124,7 @@ files once an area looks big enough to warrant it.  |#
 
 (define-category maker-of-artifacts
   :specializes physical-agent
-  :mixins (make-artifacts named-type has-name))
+  :mixins (make-artifacts named-type))
 ;; has-name makes proper nouns, hack "Ford" to be a common noun.
 
 ;; Would "manufacturer" add anything useful? Maybe distinguish crofters
@@ -133,7 +133,6 @@ files once an area looks big enough to warrant it.  |#
       
 (define-category artifact
   :specializes object
-  :mixins (has-name partonomic)
   :binds ((made-by . maker-of-artifacts))
   ;; also time-created or is it a specialization from the lifetime of Endurant?
   :lemma (:common-noun "artifact"))

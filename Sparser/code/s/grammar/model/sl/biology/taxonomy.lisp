@@ -69,7 +69,6 @@
 ;;--- labels needed by various sources / exports
 
 (define-mixin-category reactome-category
-  :mixins (has-name)
   :binds ((displayname)
            (reactome-id)))
 
@@ -85,7 +84,10 @@
   :specializes linguistic
   :binds ((statement (:or bio-process molecule-state be
                           bio-predication predication
-                          bio-method relation bio-rhetorical
+                          bio-method relation 
+                          bio-mechanism ;; "we propose the mechanism"
+                          bio-abstract ;; "we do not know the stoichiometry"
+                          bio-rhetorical
                           there-exists
 			  event-relation)))
   :documentation "Common parent to the other types of biological 
@@ -251,7 +253,7 @@
 ;;;------------
 
 (define-category bio-entity  :specializes physical-object  ;; sweeps a lot under the rug
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID biological)
   :binds ((produced-by bio-method))
   :instantiates :self
   :binds ((long-form :primitive polyword))
@@ -278,7 +280,7 @@
 
 
 (define-category bio-chemical-entity :specializes bio-entity
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID biological)
   :documentation  "includes all molecules and complexe"
   :binds ((in-equilibrium-with equilibrium))
   :realization
@@ -320,7 +322,7 @@
 
 (define-category bio-process
   :specializes process
-  :mixins (has-UID has-name biological with-measurement)
+  :mixins (has-UID biological with-measurement)
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns."
@@ -440,7 +442,7 @@
      :for process))
 
 (define-category bio-mechanism :specializes mechanism
-  :mixins (has-name biological)
+  :mixins (biological)
   :realization
     (:noun "mechanism"))
 
@@ -620,7 +622,7 @@
       :for result-or-purpose))
 
 (define-category bio-method :specializes purposive-process
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID biological)
   :documentation "No content by itself, provides a common parent
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns."
@@ -663,7 +665,7 @@
 
 
 (define-category bio-event :specializes bio-process
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID biological)
   :documentation "Parent for 'acquire, act, addition, counfound etc.
     that may be the basis of the grammar patterns."
   :binds ((process bio-process))
@@ -674,7 +676,7 @@
 
 
 (define-category bio-relation :specializes bio-predication
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID biological)
   :documentation "as in  'constitute, contains etc"               
   :binds ((theme (:or biological predication))) ;; this probably belongs higher
   :realization
@@ -754,7 +756,6 @@
   :binds ((process process)
           (entity bio-entity)
           (quantitative-condition (:or amount measurement bio-scalar)))
-  :mixins (has-name)
   :realization
     (:noun "context"
      ;; "yielded sustained C-RAF(S338) and ERK phosphorylation in the context of drug treatment"
@@ -768,7 +769,7 @@
 ;;;--------------
 
 (define-category bio-location  :specializes endurant
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID biological)
   :instantiates self
   :index (:permanent :key name))
 
@@ -1243,7 +1244,7 @@
 
 
 (define-category cell-entity :specializes physical-object
-  :mixins (biological has-uid has-name)
+  :mixins (biological has-uid)
   :binds ((with-protein protein))
   :realization
     (:with with-protein))
@@ -1265,7 +1266,7 @@
 
 (define-category organism ;; used in biopax
  :specializes endurant
- :mixins (has-name has-uid biological)
+ :mixins (has-uid biological)
  :instantiates self  
  :index (:permanent :key name)
  :lemma (:common-noun "organism")

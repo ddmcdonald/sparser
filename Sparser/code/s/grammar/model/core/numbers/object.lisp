@@ -43,7 +43,6 @@
 (define-category multiplier
   :instantiates self
   :specializes number
-  :mixins (has-name)
   :index (:key name)
   :realization (:common-noun name))
 

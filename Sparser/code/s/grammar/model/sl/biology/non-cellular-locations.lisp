@@ -19,7 +19,7 @@
 ;;;-------------
 
 (define-category bio-organ :specializes non-cellular-location
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
   :index (:permanent :key name)
@@ -58,7 +58,7 @@
 ;;;-------------
 
 (define-category tissue :specializes non-cellular-location
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
   :index (:permanent :key name)
@@ -72,7 +72,7 @@
 ;;;-------------
 
 (define-category tumor :specializes non-cellular-location
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
   :index (:permanent :key name)
@@ -88,7 +88,7 @@
 ;; for fluids, secretions, feces, and other organism substances --
 ;; currently only used when pulling in terms defined by reach
 (define-category secretion :specializes non-cellular-location
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :binds ((organism organism))
   :instantiates self
   :index (:permanent :key name)
@@ -102,7 +102,7 @@
 ;;;-------------
 
 (define-category mammal :specializes organism
-  :mixins (has-UID has-name)
+  :mixins (has-UID)
   :instantiates self
   :index (:permanent :key name)
   :realization

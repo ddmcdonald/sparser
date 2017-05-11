@@ -14,7 +14,7 @@
 
 (define-category interlocutor
   :specializes physical-agent ;; thinking of us a robot
-  :mixins (has-name) ;; don't worry about location or movement yet
+  ;; don't worry about location or movement yet
   :index (:permanent :key name)
   :documentation "Provides a category to instantiate as the
     basis of 'me', 'you', and 'us'. They need to be grounded

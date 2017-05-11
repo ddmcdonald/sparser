@@ -95,7 +95,6 @@ be added to attribute so it knows how to handle the individuals.
  is the word, as in 'red block'."
   :specializes region ;; more like point in the region
   :instantiates :self
-  :mixins (has-name)
   :binds ((attribute :primitive category))
   :index (:permanent :key name))
 

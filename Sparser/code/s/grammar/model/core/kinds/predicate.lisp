@@ -46,7 +46,7 @@
 
 (define-category predicate
   :instantiates nil
-  :specializes has-name ;; which is a specialization of relation
+  :specializes relation 
   :documentation "A predicate attributes or predicates
  some property to something. Depending of what sort of
  predicate it is, this property may be implicit in the

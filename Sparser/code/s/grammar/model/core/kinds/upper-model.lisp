@@ -177,7 +177,7 @@
 ;;; names -- simple and root of real ones
 ;;;---------------------------------------
 
-(define-category has-name
+#+ignore(define-category has-name
   :specializes relation 
   :binds ((name :primitive word))
   ;; Can hang lots of realizations here
@@ -196,7 +196,7 @@
   :documentation "UID is a field in many TRIPS objects")
 
 (define-category named-type  ;; "Honda"
-  :specializes has-name ;; n.b. just simple names
+  :specializes relation ;; n.b. just simple names
   :binds ((type-of :primitive category))
   :documentation
     "Describes or names something. Not a thing itself (not physical)

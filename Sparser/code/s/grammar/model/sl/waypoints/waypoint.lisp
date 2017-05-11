@@ -55,7 +55,6 @@
 (define-category waypoint
   :instantiates self
   :specializes location
-  :mixins (has-name)
   :binds ((type) ;; value 
           ;; "It is an entry point
           ;(radius . distance-in-miles)
