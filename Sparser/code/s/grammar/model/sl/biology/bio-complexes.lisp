@@ -233,8 +233,9 @@
 ;; from EDGFR comments
 
 (noun "calcium" :super molecule)
+
 (define-category calcium-ion :specializes ion
-  :bindings (molecule (category-named 'calcium)))
+  :restrict ((molecule calcium)))
 
 (def-synonym calcium-ion
              (:noun "Ca2+"))
@@ -242,7 +243,7 @@
              (:noun "Ca(2+)"))
 
 (define-category calcium-complex :specializes bio-complex
-  :bindings(component (category-named 'calcium-ion)))
+  :bindings (component (category-named 'calcium-ion)))
 
 (define-protein "CALM_HUMAN" ("calmodulin" "CALM1" "CaM"))
 
