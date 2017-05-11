@@ -214,7 +214,8 @@ uid binding, if there is one"
     (cond ((and name name-cat) ;; if name is predefined and word is a plural of it, we'll deal with it at the normalization step
            (push `(def-synonym ,name-cat (:noun ,word)) (symbol-value loc))
            (unless (equal id name-uid)
-             (push (list category name-cat name-uid :newUID id) *name-id-mismatches*)))
+             (push (list category name-cat name-uid :newUID id :word word) *name-id-mismatches*)))
+ 
           (word-plural-name
            (push `(def-indiv-with-id ,category ,name
                     ,(simplify-colons id)
@@ -247,20 +248,22 @@ uid binding, if there is one"
            nil))))
 
 (defun word-is-plural-name-p (word pname)
-  (let* ((lastchar (subseq pname (- (length pname) 1)))
-         (last2char (subseq pname (max (- (length pname) 2) 0)))
-         (last3char (subseq pname (max (- (length pname) 3) 0)))
-         (plural-versions (list (plural-version pname)
-                               (cond ((equal last3char "ium")
+  (let ((plural-versions (list (plural-version pname)
+                               (cond ((ends-in? "ium")
                                       (string-append (subseq pname 0 (- (length pname) 2)) "a"))
-                                     ((equal last2char "us")
+                                     ((ends-in? "us")
                                       (string-append (subseq pname 0 (- (length pname) 2)) "i"))
-                                     ((equal lastchar "a")
+                                     ((ends-in? "es")
+                                      (string-append (subseq pname 0 (- (length pname) 2)) "is"))
+                                     ((ends-in? "a")
                                       (string-append pname "e"))
                                      (t
                                       nil)))))
     (member word plural-versions :test #'string-equal)))
-        
+
+#+ignore(defun word-and-name-diff-pos? (word pname)
+  (if (equal name (form-stem/strip-ed
+  ))))
 
 (defun trips-class->krisp (term)
   (unless (null (second term))
@@ -383,7 +386,7 @@ uid binding, if there is one"
                 do (lc-one-line-print def stream)))))
 
 (defparameter *suppressed-new-defs* '(*suppressed-redefs* *suppressed-mod-redefs* *id-mismatch-redef* *no-id-redef* *no-rule-redef* *name-id-mismatches* *prot-fam-redef* *inhibited-plurals*))
-(defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substance*))
+(defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth* *new-bio-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substance*))
 
 (defun collect-all-new-defs (functions)
   "Call on a list of functions, e.g., (list #'load-trips-terms #'load-reach-terms)"
