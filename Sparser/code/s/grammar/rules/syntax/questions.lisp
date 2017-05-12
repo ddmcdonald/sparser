@@ -106,7 +106,7 @@
             (initial-wh?))
     ;; span-covered-by-one-edge? -- won't work until we do
     ;; something with the deliberately unparse-able initial
-    ;; aux (at least not syntactically).
+    ;; aux (at least not syntactically parse-able).
     (let* ((preposed? (preposed-aux?)) ;; make them local flags
            (wh-initial? (initial-wh?))
            (start-pos (starts-at-pos sentence))
@@ -324,7 +324,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
          (next-word (pos-terminal next-pos))
          (next-edge (highest-edge (pos-starts-here next-pos)))
          aux-edge  attr-edge  value-edge  other-edges)
-    
+
     (flet ((cover-wh (q end-pos)
              ;; Make a phrase over the whole span of WH edges
              ;; up to but not including the aux
@@ -354,10 +354,12 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
               (setq attr-edge next-edge))
              ((itypep (edge-referent next-edge) 'attribute-value) ;; "big"
               (setq value-edge next-edge))
-             ((null (edge-referent next-edge))
-              ;; happens in cases like an edge over apostrophe-s
+             ((null (edge-referent next-edge)) ;; happens in cases like an edge over apostrophe-s
               (push next-edge other-edges))
+             ((wh-is-declarative-heuristics next-edge)
+              (return))
              (t (push next-edge other-edges)))
+             
            (setq next-pos (chart-position-after next-pos)
                  next-word (pos-terminal next-pos)
                  next-edge (highest-edge (pos-starts-here next-pos)))
@@ -383,6 +385,13 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
                        (make-wh-object wh-type :attribute attr)
                        (make-wh-object wh-type))))
               (cover-wh q next-pos))))))))
+
+(defun wh-is-declarative-heuristics (next-edge)
+  "Called by delimit-and-label-initial-wh-term w/in its accumulation loop.
+   Strictly speaking we should probably scan ahead to see if there's an
+   aux before we get to a main verb, or something else that would
+   signal that we're not in a question."
+  (is-pronoun? next-edge)) 
 
 
 
@@ -445,7 +454,7 @@ the one connecting Ras to Rac, a member of the Rho subfamily of small GTPases."
          (q (compose wh complement)))
     (tr :make-this-a-question q)
     (unless q
-      (lsp-break "WH compose didn't work or doesn't exist"))
+      (error "WH compose didn't work or doesn't exist"))
     (make-edge-over-long-span
      start-pos end-pos
      (edge-category (second edges)) ;; ??
