@@ -53,6 +53,7 @@
 (define-individual 'acknowledgement :name "okay")
 (define-individual 'acknowledgement :name "good")
 
+(define-individual 'acknowledgement :name "alright")
 
 
 ;;-- Greetings
