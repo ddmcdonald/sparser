@@ -228,12 +228,6 @@
 ;;; looking for and removing unwanted definitions via their rules
 ;;;---------------------------------------------------------------
 
-(defun find-form-cfr (word form)
-  (when (rule-set-p (rule-set-for word))
-    (loop for cfr in (rs-single-term-rewrites (rule-set-for word))
-      when (eq form (cfr-form cfr))
-      do (return cfr))))
-
 (defun delete-noun-cfr (word)
   (declare (special category::common-noun))
   (when word
@@ -256,14 +250,6 @@
     (let ((adj-cfr (find-form-cfr word category::adjective)))
       (when adj-cfr
         (delete/cfr adj-cfr)))))
-
-(defun find-single-unary-cfr (word)
-  (let ((rs (rule-set-for word)))
-    (when rs
-      (let ((single-rewrites (rs-single-term-rewrites rs)))
-        (when single-rewrites
-          ;;/// check for there being more than one?
-          (car single-rewrites))))))
 
 
 ;;;---------------------------------------------

@@ -56,3 +56,54 @@ This sorts out what to use as the category in the unusual cases."
     ((nil) (cfr-category rule))
     (:right-edge (form-rule-head-category rule :right-edge))
     (:left-edge (form-rule-head-category rule :left-edge))))
+
+
+;;;---------------------------------------------
+;;; accessing rules from the rule-sets of words
+;;;---------------------------------------------
+
+(defun find-form-cfr (word form)
+  "Given a word, search its rule set for the first unary-rule
+   of the specified form"
+  (when (rule-set-p (rule-set-for word))
+    (loop for cfr in (rs-single-term-rewrites (rule-set-for word))
+      when (eq form (cfr-form cfr))
+       do (return cfr))))
+
+(defun find-single-unary-cfr (word)
+  "Return the first unary rule for this word if there is one.
+   Ignores the possibility of there being more than one rule."
+  (let ((rs (rule-set-for word)))
+    (when rs
+      (let ((single-rewrites (rs-single-term-rewrites rs)))
+        (when single-rewrites
+          ;;/// check for there being more than one?
+          (car single-rewrites))))))
+
+(defgeneric find-unary-cfr/referent (word category)
+  (:documentation
+   "Search through the unary rules of 'word' and collect all those
+    whose referent is of the indicated category.")
+  (:method ((pname string) (cat-name symbol))
+    (let ((c (category-named cat-name :error-if-nil))
+          (w (resolve pname)))
+      (assert w (pname) "There is no already defined word for ~a" pname)
+      (find-unary-cfr/referent w c)))
+  (:method ((w word) (cat-name symbol))
+    (let ((c (category-named cat-name :error-if-nil)))
+      (find-unary-cfr/referent w c)))
+  (:method ((w polyword) (cat-name symbol))
+    (let ((c (category-named cat-name :error-if-nil)))
+      (find-unary-cfr/referent w c)))
+  (:method ((w word) (c category))
+    (when (rule-set-p (rule-set-for w))
+      (find-unary-cfr/referent (rule-set-for w) c)))
+  (:method ((w polyword) (c category))
+    (when (rule-set-p (rule-set-for w))
+      (find-unary-cfr/referent (rule-set-for w) c)))
+  (:method ((rs rule-set) (c category))    
+      (loop for cfr in (rs-single-term-rewrites rs)
+       as referent = (cfr-referent cfr)
+       when (itypep referent c) ;; n.b. itypep takes anything
+       collect cfr)))
+    
