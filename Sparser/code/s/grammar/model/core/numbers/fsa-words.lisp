@@ -34,6 +34,59 @@
 ;;;-------------------
 
 
+;;;-------
+;;; trace
+;;;-------
+
+(defparameter *trace-number-word-fsa* nil)
+(defun trace-number-words ()
+  (setq *trace-number-word-fsa* t))
+(defun untrace-number-words ()
+  (setq *trace-number-word-fsa* nil))
+
+(deftrace :nw-starting-with (e)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] triggered by ~a" e)))
+
+(deftrace :nw-fsa-hit-a-comma (pos)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] encountered a comma at p~a"
+               (pos-token-index pos))))
+
+(deftrace :nw-terminating-at (pos)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] terminating at p~a"
+               (pos-token-index pos))))
+
+(deftrace :nw-installing-edge (word cfr)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] installing edge over ~s using ~a"
+               (pname word) cfr)))
+
+(deftrace :nw-not-number-word (word)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] ~s does not have an number word rule"
+               (pname word))))
+
+(deftrace :nw-ended-with (preceding-num-edge)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] Calulating value. ~a preceded the number words"
+               (if (null preceding-num-edge)
+                 "nothing"
+                 (format nil "~a" preceding-num-edge)))))
+
+(deftrace :nw-compute-value (edges)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] compute value over ~a edges" (length edges))))
+
+(deftrace :nw-number-number-word (integer mult-value)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] multiplying ~a * ~a" integer mult-value)))
+
+(deftrace :nw-made-edge (edge value)
+  (when *trace-number-word-fsa*
+    (trace-msg "[number-words] Made edge e~a over ~a"
+               (edge-position-in-resource-array edge) value)))
 
 ;;;--------
 ;;; driver
@@ -43,39 +96,37 @@
   (declare (special category::multiplier category::number))
   ;; the subroutines build the edges and dictate the return position.
   ;; Since we've at least got one number here it won't make sense
-  ;; to return Nil. 
+  ;; to return Nil.
+  (tr :nw-starting-with triggering-edge)
   (let ((end-of-number-word-sequence
          (scan-for-more-number-words
           (chart-position-after starting-position)))
         (prior-number-edge
          (preceded-by-digit-based-number starting-position)))
+    (tr :nw-ended-with prior-number-edge)
 
     (if (eq end-of-number-word-sequence
             (chart-position-after starting-position))
-
       ;; the "sequence" is one word long
       (if prior-number-edge
         ;; a frequent enough case that it's worth looking for right
         ;; here. Also lets us get around the fact that if we waited
         ;; the number-word's original category would have been respanned
           ;; as a number and the pattern would be lost.
-        (when (eq (edge-category triggering-edge) category::multiplier)
+        (when (eq (edge-category triggering-edge)
+                  category::multiplier)
           ;; compare: "11 two-component systems". Suspenders to go with
           ;; this belt for that case would be to notice the no-space hyphen.
           (let ((rule (multiply-labels category::number category::multiplier)))
             (unless rule
-              (break "Unexpected situation: no definition for number -> ~
+              (error "Unexpected situation: no definition for number -> ~
                       number multiplier"))
             (make-completed-binary-edge 
              prior-number-edge triggering-edge rule)
-
+            ;; retrun position sequence ends at
             end-of-number-word-sequence))
  
-            ;; Original treatment before the specific rule was defined
-            ;; (see realization definition in numbers;object)
-            ;(number-times-number-word prior-number-edge
-            ;                          triggering-edge)
-            
+        ;; no prior number, but just one edge
         (else
 	  (if *keep-number-sequence-raw*
 	    (assemble-raw-number-sequence
@@ -94,6 +145,7 @@
 
 	      (chart-position-after starting-position)))))
 
+      ;; multiple edges
       (else
 	(if *keep-number-sequence-raw*
 	  (assemble-raw-number-sequence
@@ -108,7 +160,6 @@
 
 
 
-
 ;;;--------------------------------------
 ;;; scan to collect all the number words
 ;;;--------------------------------------
@@ -118,18 +169,17 @@
   ;; about the status of the starting position, but we'll check to
   ;; make sure
   (unless (pos-assessed? starting-position)
-    ;(break "Assumption violated -- the starting position has been ~
-    ;        scanned~%before we got here:  ~A" starting-position)
     (scan-next-position))
-
-  ;; check for comma
   (if (eq :punctuation (pos-capitalization starting-position))
-    (case (pos-terminal starting-position)
-;;       (word::comma  -- follow on here isn't defined
-;;        (look-for-number-words-beyond-comma starting-position))
-      (otherwise
-       ;; assume the punctuation terminates the number sequence
-       starting-position ))
+    (then
+      (tr :nw-fsa-hit-a-comma starting-position)
+      (case (pos-terminal starting-position)
+        ;;///  (word::comma  -- follow on here needs to be written
+        ;;        (look-for-number-words-beyond-comma starting-position))
+        (otherwise
+         ;; punt and asume we're done
+         (tr :nw-terminating-at starting-position)
+         starting-position )))
 
     ;; look for a single-term number rule on the next word
     (let* ((next-word (pos-terminal starting-position))
@@ -138,26 +188,29 @@
       (if singles
         (let ((cfr (look-for-number-rule-in-list-of-cfrs singles))
               (next-position (chart-position-after starting-position)))
-
           ;; when the next word is a number word put in that edge
           ;; and continue the scan
           (if cfr
             (then
+              (tr :nw-installing-edge next-word cfr)
               (install-preterminal-edge cfr next-word
                                         starting-position next-position)
               (scan-for-more-number-words next-position))
             (else
+              (tr :nw-not-number-word next-word)
+              (tr :nw-terminating-at starting-position)
               starting-position)))
 
         ;; otherwise return this position as where the sequence of
         ;; number words ends
-        starting-position))))
+        (else
+          (tr :nw-terminating-at starting-position)
+          starting-position)))))
 
 
 (defun look-for-number-rule-in-list-of-cfrs (cfrs)
-  ;; presumes that there's only going to be one
   (let ( label )
-    (dolist (cfr cfrs)
+    (dolist (cfr cfrs nil)
       (setq label (cfr-category cfr))
       (when (or (eq label category::multiplier)
                 (eq label category::ones-number)
@@ -212,44 +265,56 @@
   ;; numerical value, and return its end-point
   (let* ((number-obj (edge-referent number-edge))
          (integer (when (and (individual-p number-obj)
-                             (indiv-typep number-obj
-                                          category::number))
+                             (itypep number-obj 'number))
                     (value-of 'value number-obj)))
          (multiplier-obj (edge-referent number-word-edge))
          (multiplier-value
            (when (and (individual-p multiplier-obj)
-                      (indiv-typep multiplier-obj
-                                   category::number))
+                      (itypep multiplier-obj 'number))
              (value-of 'value multiplier-obj))))
+    (tr :nw-number-number-word integer multiplier-value)
 
-    ;; in a better world we'd trap here for patterns that didn't
-    ;; fit these assumptions
-    (when (eq (edge-category number-word-edge) category::multiplier)
-      (let* ((result (* integer multiplier-value))
-             (referent (construct-temporary-number nil nil result)))
-
-        (make-chart-edge :left-edge number-edge
-                         :right-edge number-word-edge
-                         :category category::number
-                         :referent referent
-                         :rule :number-times-number-word)
-
-        (pos-edge-ends-at number-word-edge)))))
+    (if (eq (edge-category number-word-edge) category::multiplier)
+      (* integer multiplier-value)
+      (else
+        (when *trace-number-word-fsa*
+          (warn "Unhandled number pattern: ~a ~a" number-edge number-word-edge))
+        0))))
 
 
 
-(defun parse-number-sequence (starting-position
-                              end-of-number-word-sequence
+(defun parse-number-sequence (start-pos end-pos
                               &optional prior-number-edge )
-  ;; stub
-  (make-chart-edge
-   :starting-position (if prior-number-edge
-                        (pos-edge-starts-at prior-number-edge)
-                        starting-position)
-   :ending-position end-of-number-word-sequence
-   :category category::number
-   :rule-name :stub-for-parse-number-sequence
-   :referent nil))
+  "The scan has laid-down number edges to record every number
+   word it encountered. Here we apply as(elsesimilate them into
+   an edge with a representation of the numberic value they
+   correspond to."
+  ;;/// Lookup Longuit-Higgens' general algorithm. For the
+  ;; moment just consider two-edge case.
+  (let ((edges (treetops-between start-pos end-pos))
+        value )
+    (tr :nw-compute-value edges)
+    (cond
+      ((and prior-number-edge (= 1 (length edges))) ;; e.g. "10 million"
+       (setq value (number-times-number-word prior-number-edge
+                                             (car edges))))
+      (t
+       (when *trace-number-word-fsa*
+         (lsp-break "Unhandled case: ~a" edges))))
+    (let* ((referent (construct-temporary-number nil nil value))
+           (edge       
+            (make-edge-over-long-span
+             :starting-position (if prior-number-edge
+                                  (pos-edge-starts-at prior-number-edge)
+                                  start-pos)
+             :ending-position end-pos
+             category::number
+             :form category::number
+             :rule 'parse-number-sequence
+             :referent referent
+             :constituents edges)))
+      (tr :nw-made-edge edge value)
+      edge)))
 
 
 
@@ -261,7 +326,6 @@
       (break "No number rule combining~%  ~A and ~A"
              (edge-category left-edge) (edge-category right-edge)))
     )) |#
-
 
 
 
@@ -279,7 +343,6 @@
       (when (eq category::number
                 (edge-category prior-tt))
         prior-tt ))))
-
 
 
 ;;;-----------------------------------------------------------------
