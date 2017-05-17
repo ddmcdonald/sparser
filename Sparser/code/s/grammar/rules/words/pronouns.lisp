@@ -69,12 +69,19 @@
 ;; indefinites
 (define-function-word "something" :brackets '( ].quantifier  .[np ))
 (define-function-word "someone"   :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "somebody"   :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "nothing"   :brackets '( ].quantifier  .[np ))
 (define-function-word "no one"    :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "nobody"    :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "anything"  :brackets '( ].quantifier  .[np ))
 (define-function-word "anyone"    :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "anybody"    :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "everything"   :brackets '( ].quantifier  .[np  np]. ))
 (define-function-word "everyone"  :brackets '( ].quantifier  .[np  np]. ))
+(define-function-word "everybody"  :brackets '( ].quantifier  .[np  np]. ))
+
+;; 'one'
+(define-function-word "one"  :brackets '( ].quantifier  .[np  np]. ))
 
 ) ;; eval-when
 

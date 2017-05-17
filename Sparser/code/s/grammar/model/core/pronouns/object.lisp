@@ -134,7 +134,7 @@
   :binds ((word :primitive word))
   :index (:permanent :key word)
   :realization (:word word)
-  :documentation "See Quirk et al. #645, p.376, 
+  :documentation "See Quirk et al. #6.45, p.376, 
  e.g. 'something', 'no one', 'each'. These are odd ducks
  that are both like quantifiers in terms of how they
  compose and like pronouns in that they will get a
@@ -142,21 +142,34 @@
  set of properties that they have and which differentiate
  them. Ignoring that for now pending a use-case.")
 
+#| "one"  Quirk #6.54 p.386 says that "one" has three senses:
+numerical, substitute, and generic. We have the number (two edges).
+Here we're setting up the grammar for the substitute sense of "one"
+with a special case just below. |#
+
 (defun define-indefinite-pronoun (string)
   ;; There's much to be said for doing these in the same
   ;; style as quantifiers (define-quantifier) because they're
   ;; behaviours will all be specific to the pronoun.
   ;; For the moment just making them instances so there's
   ;; something on the board to tally and see patterns on.
-  (let* ((word (resolve string)) ;; see words/pronouns.lisp
-         (i (find-or-make-individual 'indefinite-pronoun
-                                     :word string))
-         (rs (when word (rule-set-for word)))
-         (rule (when rs (car (rs-single-term-rewrites rs)))))
-    (assert rule (string) "find-or-make-individual did not ~
-                           make a rule for ~s" string)
-    (setf (cfr-form rule) category::pronoun)
-    (values i rule)))
+  (let ((word (resolve string))) ;; see words/pronouns.lisp
+    (assert word (string)
+            "There is no already defined word for ~a" string)
+
+    (let ((i (find-or-make-individual 'indefinite-pronoun
+                                      :word word))
+          (rules (find-unary-cfr/referent word 'indefinite-pronoun)))
+      (assert rules)
+      (assert (null (cdr rules)) (word)
+              "There is more than one indefinite-pronoun rule defined for ~s"
+              (pname word))
+      (let ((rule (car rules)))
+        (setf (cfr-form rule)
+              (if (string-equal string "one") ;; special case. No
+                category::common-noun
+                category::pronoun))
+        (values i rule)))))
 
 
 

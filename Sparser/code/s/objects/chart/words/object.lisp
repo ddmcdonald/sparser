@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1993-1994,2012-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1993-1994,2012-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  June 2016
+;;;  Version:  May 2017
 
 ;; 3.0 (6/2/93) changed the object to inherit from label
 ;; 3.1 (7/19) added wrapping data-check on Word-string to catch the
