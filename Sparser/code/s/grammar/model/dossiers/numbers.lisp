@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2000, 2011-2015 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2000, 2011-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "numbers"
 ;;;   Module:  "model:dossiers:"
-;;;  Version:  0.2 February 2015
+;;;  Version:  May 2017
 
 ;; Moved out of [numbers;] 1/7/94 v2.3
 ;; 7/19/94 added zero.  5/13/95 added 'permanent' wrapper
@@ -25,8 +25,6 @@
 
   (unless (eq COMMON-LISP-USER::script :biology)
     (define-individual 'multiplier :name "fraction"))
-
-  (define-individual 'multiplier :name "one")
   
   (define-number "100" :multiplicand "hundred")
   (define-number "1000" :multiplicand "thousand")
