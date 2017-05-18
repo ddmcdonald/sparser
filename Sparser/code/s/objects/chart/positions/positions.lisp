@@ -159,6 +159,19 @@
         (later-index   (pos-token-index later-position)))
     (< earlier-index later-index)))
 
+(defun position/<= (test-pos reference-pos)
+  "The the position of the test position equal to or less
+   than the position of the reference position."
+  (let ((text-index (pos-token-index test-pos))
+        (ref-index (pos-token-index reference-pos)))
+    (<= text-index ref-index)))
+
+(defun position/< (test-pos reference-pos)
+  "The the position of the test position is less
+   than the position of the reference position."
+  (let ((text-index (pos-token-index test-pos))
+        (ref-index (pos-token-index reference-pos)))
+    (< text-index ref-index)))
 
 (defun number-of-terminals-between (p1 p2)
   ;; return an integer corresponding to the number of words
