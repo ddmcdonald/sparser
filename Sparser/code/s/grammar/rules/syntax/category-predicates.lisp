@@ -307,29 +307,6 @@
   (memq name *vg-head-categories*)))
 
 
-(defgeneric adjg-compatible? (label)
-  (:documentation "Is a category which can occur inside an ADJG"))
-(defmethod adjg-compatible? ((w word))
-  t)
-
-(defmethod adjg-compatible? ((e edge))
-  (declare (special category::have category::percent))
-  (or
-   (adjg-compatible? (edge-form e))
-   (eq (edge-category e) category::percent)
-   ;;(eq category::not (edge-category e))
-   ;;(copula-verb? (edge-category e))
-   (and nil ;; block copular verbs
-    (category-p (edge-category e))
-    ;; these are all for linking/copular verbs like BE, REMAIN, SMELL, BECOME
-      (and (eq (edge-category e) category::have)
-	   ;; only allow "have" to create the past tense of a linking verb
-	   (let
-	       ((next-edge (car (preterminal-edges (pos-edge-ends-at e)))))
-	     (and
-	      (edge-p next-edge)
-              (copula-verb? (edge-category next-edge))))))))
-
 (defmethod copula-verb? ((c category))  
   (memq (cat-symbol c)
         `(category::be
@@ -340,30 +317,50 @@
 (defmethod copula-verb? ((x t))
   nil)
 
-(defmethod adjg-compatible? ((c referential-category))
-  (adjg-compatible? (cat-symbol c)))
-(defmethod adjg-compatible? ((name symbol))
-  (memq name *adjg-word-categories*))
+
+(defgeneric adjg-compatible? (label)
+  (:documentation "Is a category which can occur inside an ADJG")
+  (:method ((w word))
+    t)
+  (:method ((e edge))
+    (declare (special category::have category::percent))
+    (or
+     (adjg-compatible? (edge-form e))
+     (eq (edge-category e) category::percent)
+     ;;(eq category::not (edge-category e))
+     ;;(copula-verb? (edge-category e))
+     (and nil ;; block copular verbs
+          (category-p (edge-category e))
+          ;; these are all for linking/copular verbs like BE, REMAIN, SMELL, BECOME
+          (and (eq (edge-category e) category::have)
+               ;; only allow "have" to create the past tense of a linking verb
+               (let
+                   ((next-edge (car (preterminal-edges (pos-edge-ends-at e)))))
+                 (and
+                  (edge-p next-edge)
+                  (copula-verb? (edge-category next-edge))))))))
+  (:method ((c referential-category))
+    (adjg-compatible? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *adjg-word-categories*)))
+
 
 (defgeneric adjg-head? (label)
-  (:documentation "Is a category which can occur as the head of an ADJG"))
-(defmethod adjg-head? ((w word))
-  t)
-(defmethod adjg-head? ((e edge))
-  (when
-      (not (prev-adj e))
-    (adjg-head? (edge-form e))))
+  (:documentation "Is a category which can occur as the head of an ADJG")
+  (:method ((w word))
+    t)
+  (:method ((e edge))
+    (unless (prev-adj e)
+      (adjg-head? (edge-form e))))
+  (:method ((c referential-category))
+    (adjg-head? (cat-symbol c)))
+  (:method ((name symbol))
+    (memq name *adjg-head-categories*)))
 
 (defun prev-adj (e &optional (edges (edges-before e)))
   (declare (special category::adjective))
   (loop for ee in edges
      thereis (eq (edge-form ee) category::adjective)))
-
-(defmethod adjg-head? ((c referential-category))
-  (adjg-head? (cat-symbol c)))
-(defmethod adjg-head? ((name symbol))
-  (memq name *adjg-head-categories*))
-
 
 
 (defparameter *subordinating-adverbs*
