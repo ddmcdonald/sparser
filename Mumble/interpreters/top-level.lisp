@@ -81,8 +81,7 @@ is appropriate to that object class.")
     (error "Can't run Mumble recursively.")
     (let-with-dynamic-extent ((*mumbling?*  t))
       (when (consp content)
-        (error "did not expect the 'content' passed to mumble ~
-                to be a list:~%~a" content))
+        (setq content (car content)))
 
       (let ((new-slot-for-this-turn (slot-for-a-turn content)))
 
