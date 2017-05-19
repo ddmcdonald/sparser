@@ -1,6 +1,6 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; -*-
 ;;; Copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved.
-;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
 
 (defsystem :mumble
   :description "The Mumble-86 natural language generation system."
@@ -62,6 +62,7 @@
                (:file "derivation-trees/make")
                (:file "derivation-trees/builders")
                (:file "derivation-trees/operators")
+               (:file "derivation-trees/printers")
 
                (:file "interface/bundles/accessory-types")
                (:file "interface/bundles/accessory-processing")
