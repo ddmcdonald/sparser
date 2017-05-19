@@ -57,6 +57,26 @@
            (push-debug `(,operator ,place))
            (error "Unanticipated form on parent edge: ~a" form)))))))
 
+
+
+(defun make-relative-location/revise-parent (operator place)
+  "shared subroutine. Ought to be able to fold this in somewhere
+   in the wrangling of compose methods"
+  (let ((i (find-or-make-individual 'relative-location
+                                    :prep operator
+                                    :ground place)))
+    (revise-parent-edge :category (category-named 'location))
+    i))
+
+#+ignore  ;; move to after the pronouns are defined
+(def-k-method compose ((operator category::spatial-operator)
+                       (place category::pronoun/inanimate))
+  (if *subcat-test*
+    t
+    (else
+      (tr :spatial-operator+pronoun operator place)
+      (make-relative-location/revise-parent operator place))))
+
 (def-k-method compose ((operator category::spatial-operator)
                        (place category::location))
   ;; for "at the right end of the row"
@@ -65,11 +85,7 @@
     t
     (else
       (tr :spatial-operator+location operator place)
-      (let ((i (find-or-make-individual 'relative-location
-                                        :prep operator
-                                        :ground place)))
-        (revise-parent-edge :category (category-named 'location))
-        i))))
+      (make-relative-location/revise-parent operator place))))
 
 
 ;; "at the end"
@@ -80,11 +96,7 @@
     t
     (else
       (tr :spatial-operator+dependent-location operator place)
-      (let ((i (find-or-make-individual 'relative-location
-                                        :prep operator
-                                        :ground place)))
-        (revise-parent-edge :category (category-named 'location))
-        i))))
+      (make-relative-location/revise-parent operator place))))
 
 
 
@@ -118,7 +130,6 @@
     t
     (else
       (tr :direction+dependent-location qualifier head)
-      (lsp-break "direction + dependent-location")
       (let ((i (find-or-make-individual 'orientation-dependent-location
                                         :prep qualifier
                                         :ground head)))
@@ -170,6 +181,11 @@
 (deftrace :spatial-operator+location (operator place)
   (when *trace-methods*
     (trace-msg "Composing spatial-operator(~a) & location(~a)"
+               operator place)))
+
+(deftrace :spatial-operator+pronoun (operator place)
+  (when *trace-methods*
+    (trace-msg "Composing spatial-operator(~a) & pronoun(~a)"
                operator place)))
 
 (deftrace :spatial-operator+dependent-location (operator place)
