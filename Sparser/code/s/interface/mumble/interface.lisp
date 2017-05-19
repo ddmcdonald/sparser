@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "interface"
 ;;;   Module:  "interface;mumble;"
-;;;  Version:  April 2017
+;;;  Version:  May 2017
 
 ;; initiated 11/12/10. Elaborated through ..12/9 Picked up again 3/16/11.
 ;; Refactored to use realization-history for the crawling around 3/20.
@@ -64,3 +64,7 @@
 
 (defmethod number-of-subject ((subj sp::individual))
   (if (sp::itypep subj 'collection) 'plural 'singular))
+
+
+(defmethod pp-dtn ((i sp::individual))
+  `(,i))
