@@ -33,12 +33,6 @@ multiple occurrences of objects")
 
 (defvar *pending-discourse-units* nil)
 
-(defvar *pending-rspecs* nil
-  "Unvarnished hack from ancient days. See planning code in YS
-for a better scheme that doesn't have too much overhead even for
-simplest cases. *pending-rspecs* is read in phrase-structure-execution
-and adds another sentence.")
-
 (defun initialize-mumble-state ()
   ;; *current-position* is initialized in phrase-structure-execution,
   ;; where it's set to the initial position that's passed to it.
@@ -47,7 +41,6 @@ and adds another sentence.")
   (setq *context-stack* nil)
   (setq *current-phrasal-root* nil)
   (setq *current-focus* nil)
-  (setq *pending-rspecs* nil)
   (setq *mentions* nil)
   (when (boundp '*the-derivation-tree*) ;; backwards compatibility
     (clear-derivation-tree-data)))
@@ -88,8 +81,8 @@ is appropriate to that object class.")
     (error "Can't run Mumble recursively.")
     (let-with-dynamic-extent ((*mumbling?*  t))
       (when (consp content)
-	(setq *pending-rspecs* (cdr content)
-	      content (car content)))
+        (error "did not expect the 'content' passed to mumble ~
+                to be a list:~%~a" content))
 
       (let ((new-slot-for-this-turn (slot-for-a-turn content)))
 

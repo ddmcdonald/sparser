@@ -1,7 +1,7 @@
 ;;; -*- Mode: Lisp;  Package: Mumble; Syntax: Common-lisp; Base: 10 -*-
 ;;;  MUMBLE-86:  interpreters> phrase-structure-execution
 
-;;; Copyright (C) 1985-2000,2010-2015  David D. McDonald
+;;; Copyright (C) 1985-2000,2010-2017  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
 ;;;   reserved. Permission is granted to use and copy
 ;;;   this file of the Mumble-86 system for
@@ -23,11 +23,7 @@
   (until (pse-finished? *current-position* initial-position)
       ()
     (etypecase *current-position*
-      (node (if (and (eq (name *current-position*) 'discourse-unit)
-                     *pending-rspecs*
-                     (eq (visited-status *current-position*) 'entered))		
-              (add-a-new-sentence *current-position*)
-              (process-node *current-position*)))
+      (node (process-node *current-position*))
       (slot (process-slot *current-position*)))))
 
 
@@ -116,17 +112,5 @@
   (set-context-object position *current-phrasal-root*)
   (setf *current-phrasal-root* (pop *context-stack*)))
 
-
-
-(defun add-a-new-sentence (position)
-  ;;*pending-rspecs* is a list of further specifications
-  ;;and *current-position* is the phrasal root discourse-unit
-  (let* ((spec (pop *pending-rspecs*))
-	 (contents (specification spec))
-	 (ap (attachment-function spec)))
-
-    (attach-at-attachment-point ap contents position)
-    (setq *current-position* (last-constituent *current-position*))
-    ))
 
 
