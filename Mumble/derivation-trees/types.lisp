@@ -148,6 +148,7 @@
   ((point)
    (value)))
 
+
 ;;;---------
 ;;; go'fers
 ;;;---------
@@ -156,8 +157,6 @@
   ((phrase-parameter) ;; Mumble parameter struct
    (value)))   ;; anything 
 
-
-;;;
 
 (defclass category-linked-phrase ()
   ((class :initarg :class :accessor linked-category
