@@ -305,6 +305,19 @@
                       *trap-error-skip-sentence*))
     (analyze-text-from-string string)))
 
+(defun p/r-sem (string)
+  "Parse the string and return the value (like p/r) but
+   express the value in the variant of semtree notation
+   that neutralizes identies such as we use for working
+   with Spire."
+  (let ((*return-a-value* :referent-of-last-edge)
+        (*what-value-to-return* :spire)
+        (*trap-error-skip-sentence* nil))
+    (declare (special *return-a-value*
+                      *what-value-to-return*
+                      *trap-error-skip-sentence*))
+    (analyze-text-from-string string)))
+
 (defun pt (string)
   (time (pp string))
   (tts))
