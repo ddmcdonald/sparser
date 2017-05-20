@@ -66,5 +66,20 @@
   (if (sp::itypep subj 'collection) 'plural 'singular))
 
 
+;;--- other pp-dtn methods in Mumble/derivation-trees/printers.lisp
+
+(defparameter *how-to-dtn-pprint-individuals* :pointer
+  "Controls the form that's produced when we're pretty-printing
+   a dtn and we have an individual. 
+   Possible values are :pointer (the default), and :type which
+   tries to approximate what Spire versions of semtree do.")
+
 (defmethod pp-dtn ((i sp::individual))
-  `(,i))
+  (declare (special *how-to-dtn-pprint-individuals*))
+  (ecase *how-to-dtn-pprint-individuals*
+    (:pointer i)
+    (:type
+     (let ((category (sp::itype-of i)))
+       `( ,(sp::cat-symbol category) )
+       ))))
+

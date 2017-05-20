@@ -18,16 +18,16 @@
    displays its parts.")
   (:method ((dtn derivation-tree-node))
     `(derivation-tree-node
-      ,(when (referent dtn)
+      ,@(when (referent dtn)
              `(:referent ,(pp-dtn (referent dtn))))
       (:resource ,(pp-dtn (resource dtn)))
-      ,(when (features dtn)
+      ,@(when (features dtn)
              `(:features ,(pp-dtn (features dtn))))
-      ,(when (adjuncts dtn)
+      ,@(when (adjuncts dtn)
              `(:adjuncts
                ,@(loop for an in (adjuncts dtn)
                     collect (pp-dtn an))))
-      ,(when (complements dtn)
+      ,@(when (complements dtn)
              `(:complements
                ,@(loop for cn in (complements dtn)
                     collect (pp-dtn cn))))))
@@ -36,15 +36,26 @@
   ;; Sparser/.../interface/mumble/interface.lisp
   
   (:method ((list cons))
-    `(,@(loop for item in list
-           collect (pp-dtn item))))
+    (cond
+      ((accessory-type-p (car list))
+       (let ((ac-type (car list)))
+         (if (cdr list)
+           ;; (#<accessory-type tense-modal> . #<word should>)
+           (let ((value (cdr list)))
+             `(,(mname ac-type) ,(pp-dtn value)))
+           (mname ac-type))))
+      (t
+       `(,@(loop for item in list
+              collect (pp-dtn item))))))
   
   (:method ((w word))
-    (mname w))
+    (pname w))
   (:method ((p pronoun))
     (mname p))
-  (:method ((a accessory-type))
-    (mname a))
+  (:method ((at accessory-type))
+    (mname at))
+  (:method ((av accessory-value))
+    (mname av))
   (:method ((ap attachment-point))
     (mname ap))
   (:method ((p parameter))
@@ -57,7 +68,7 @@
   (:method ((an adjunction-node))
     (let ((ap (ap an))
           (value (value an)))
-      `(,(pp-dtn ap) - ,(pp-dtn value))))
+      `(,(pp-dtn ap) ,(pp-dtn value))))
   
   (:method ((lp saturated-lexicalized-phrase))
     (let ((phrase (phrase lp))
@@ -66,7 +77,7 @@
          ,(loop for cn in bound-args
              as parameter = (phrase-parameter cn)
              as value = (value cn)
-             return `(,(mname parameter) = ,(pp-dtn value))))))
+             return `(,(mname parameter) ,(pp-dtn value))))))
 
   )
       
