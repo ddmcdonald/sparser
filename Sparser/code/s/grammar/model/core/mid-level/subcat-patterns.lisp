@@ -34,7 +34,7 @@
      :l location)
   :documentation "For verbs like 'put' where an agent
  is moving the theme from one location to another.
- The ETF for this set of arguments is 'sovl'.
+ The ETF for this set of arguments is 'svol'.
  In TRIPS 'put' is  agent, affected, result.") 
 
 (define-mixin-category directed-action ;; tell, give
