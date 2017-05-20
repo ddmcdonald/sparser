@@ -1,14 +1,27 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE -*-
-;;; Copyright (c) 2013-2016 David D. McDonald -- all rights reserved
+;;; Copyright (c) 2013-2017 David D. McDonald -- all rights reserved
 ;;;
 ;;;     File:  "binding-centric"
 ;;;   Module:  "interface;mumble;"
-;;;  Version:  November 2016
+;;;  Version:  May 2017
 
 ;; Broken out from interface 4/7/13.
 ;; Completely rewritten 8/16 by AFP.
 
 (in-package :mumble)
+
+
+;;;-----------------------------------------------------------
+;;; interface into Mumble's state at the time we make the dtn
+;;;-----------------------------------------------------------
+
+(defun current-position-p (&rest labels)
+  "Return true if the slot being generated has one of the given labels."
+  (when (and (boundp '*current-position*)
+             *current-position*) ;; nil check
+    (memq (name *current-position*) labels)))
+
+
 
 ;;;--------------------------------------
 ;;; Realizations for Sparser individuals
@@ -37,10 +50,13 @@
     (preposition :prep)
     (interjection :interjection)))
 
+
 (defvar *original-pos* nil
   "Guard against infinite mutual recursion in WORD-FOR.")
 
 (defgeneric word-for (item pos)
+  (:documentation "Try to determine what word to use for this type
+   of item. Around methods provide alternatives and some special handling.")
   (:method ((item null) pos)
     (declare (ignore pos)))
   (:method ((item word) pos)
@@ -67,6 +83,7 @@
                     (sp::value-of 'sp::name item)
                     (sp::value-of 'sp::word item))))
       (and head (word-for head pos))))
+  
   (:method :around ((item sp::individual) pos)
     "Treat biological entities, collections, and prepositions specially."
     (cond ((sp::itypep item 'sp::biological)
@@ -96,9 +113,6 @@
     (or (call-next-method)
         (word-for item 'adjective))))
 
-(defun current-position-p (&rest labels)
-  "Return true if the slot being generated has one of the given labels."
-  (memq (name *current-position*) labels))
 
 (defgeneric tense (object)
   (:documentation "Determine and attach tense to the given object.")
