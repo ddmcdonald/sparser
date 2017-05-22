@@ -51,7 +51,6 @@
 (def-family "Cam-PDE 1" :members ("PDE1A_HUMAN" "PDE1B_HUMAN""PDE1C_HUMAN"))
 (def-family "DUSP") ;; there are a bunch of these, but we will ignore them for the moment
 (def-family "EPHB receptor":members ("EPHB1_HUMAN" "EPHB2_HUMAN" "EPHB3_HUMAN" "EPHB4_HUMAN" "EPHB5_HUMAN" "EPHB6_HUMAN"))
-(def-family "GAP")
 (def-family "GPCR")
 (def-family "HLA class I molecule")
 (def-family "HSP90") ;; heat-shock proteins
@@ -60,7 +59,7 @@
 (def-family "Jnk" :members ("JNK1" "JNK2" "JNK3A"))
 (def-family "JNK1/2" :members ("JNK1" "JNK2") :identifier "BE:JNK")
 (def-family "MAP2K" :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7") :synonyms ("mitogen activated protein kinase" "MAP kinase kinase") )
-(def-family "MAPK" :members ("UP:Q5A1D3" #| "ERK1" |# "UP:Q54QB1" #| "ERK2" |# ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase" "mitogen-activated protein kinase" "ERK-1/2"))
+(def-family "MAPK" :members ("UP:Q5A1D3" "UP:P27638" "UP:Q54QB1" ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase" "mitogen-activated protein kinase" "ERK-1/2"))
 (def-family "MEK" :members ("MEK1" "MEK2") :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase"))
 (def-family "NF-AT" :members ("NFAT5_HUMAN")) 
 (def-family "PI3-kinase" :synonyms ("PI3K" "phosphatidylinositol-4,5-bisphosphate 3-kinase" "phosphatidylinositide 3-kinase"  "phosphatidylinositol 3-kinase" "phosphatidylinositol-3-kinase" "PI 3-kinase" "PI(3)K" "PI-3K") :identifier "PF00454")
@@ -189,7 +188,8 @@
 (def-family "FAP" :members ("UP:Q12884" "UP:Q92990")) 
 (def-family "FBP2" :members ("UP:O00757" "UP:Q92945")) 
 (def-family "FcERI" :members ("UP:P12319" "UP:Q01362")) 
-(def-family "G-CSF" :members ("UP:P09919" "UP:Q99062")) 
+(def-family "G-CSF" :members ("UP:P09919" "UP:Q99062"))
+(def-family "GAP" :identifier "XFAM:PF00616")
 (def-family "GAR1" :members ("UP:Q14028" "UP:Q9NY12")) 
 (def-family "GLR" :members ("UP:P23416" "UP:P47871")) 
 (def-family "GLUT3" :members ("UP:P11169" "UP:Q8TDB8")) 
@@ -623,7 +623,6 @@
 (def-family "paraoxonase" :synonyms NIL :identifier "FA:02656")
 (def-family "PAR6" :synonyms ("Par6") :identifier "FA:02654")
 (def-family "FA-D1" :synonyms ("FAD1") :identifier "FA:02652")
-(def-family "p-53" :synonyms ("p53" "p53−") :identifier "FA:02632")
 (def-family "P4HA" :synonyms ("P4HAs") :identifier "FA:02631")
 (def-family "OST1" :synonyms ("Ost1") :identifier "FA:02613")
 (def-family "OKL38" :synonyms NIL :identifier "FA:02586")
@@ -896,7 +895,7 @@
 
 (cond ((not *use-small-proteins*)
        (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
-       (def-family "p53" :identifier "FA:02632" :synonyms ( "p53 family") :members ("TP53" "TP63" "TP73"))
+       (def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family") :members ("TP53" "TP63" "TP73"))
        (def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family")
                    :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4")))
       (t

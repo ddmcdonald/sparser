@@ -40,9 +40,9 @@
 ;;; nucleotides
 ;;;-------------
 
-(noun "GTP" :super nucleotide)
+(def-bio "GTP" nucleotide :identifier "CHEBI:15996" :mitre-link "PubChem:6830")
 (noun "dGTP" :super nucleotide)
-(noun "GDP" :super nucleotide)
+(def-bio "GDP" nucleotide  :identifier "CHEBI:17552" :mitre-link "PubChem:8977")
 (noun "dGDP" :super nucleotide)
 
 (noun ("AMP" "adenosine 3',5'-monophosphate") :super nucleotide)
@@ -118,7 +118,6 @@
 (noun "agonist":super molecule) ;; keyword: (ist N) ;; 
 (noun "anchor" :super molecule) ;; "cytoplasmic anchor"
 (noun "derivative" :super molecule)
-(noun "linker" :super molecule) ;; not sure if it is a protein or short stretch of DNA in the case used
 (noun "mitogen" :super molecule)
 
 ;;In biochemistry, a protein ligand is an atom, a molecule or an ion that can bind to a specific site (the binding site) on a protein. 

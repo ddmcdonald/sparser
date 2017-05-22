@@ -42,7 +42,6 @@
 #+ignore
 (defun define-drug (drug-name)
   (eval `(np-head ,drug-name :super 'drug :rule-label 'drug)))
-;;(define-drug "drug")
 ;;(define-drug "inhibitor")
 
 (defun define-drug (drug-name)
@@ -63,7 +62,6 @@
 (define-drug "CI-1033")
 (define-drug "CI-1040")
 (define-drug "CI-994")
-(define-drug "ES1")
 (define-drug "LY294002")
 (define-drug "NGH.S4")
 (define-drug "abciximab")
