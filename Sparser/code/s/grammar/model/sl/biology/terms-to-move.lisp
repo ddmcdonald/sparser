@@ -25,6 +25,7 @@ be biology specific, since they aren't. |#
 
 
 (define-adverb "readily")
+(define-adverb "pretty" :super-category 'intensifier)
 
 
 (adj "downstream" :super pathway-direction
