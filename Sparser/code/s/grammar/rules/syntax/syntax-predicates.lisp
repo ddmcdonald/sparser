@@ -20,21 +20,29 @@
     (symbol-name
      (cat-symbol prep-val)))))
 
-(defun takes-adj? (head adjective)
+(defparameter *check-takes-adj?* nil)
+(defun takes-adj? (head adjective &optional verb-complement?)
   (and ;; had strange case with "some cases this" -- head was "this"
    ;; so rule out these cases
    (not (and (individual-p head) (itypep head category::determiner)))
    (not (itypep head  category::determiner))
 
    ;; Positive reasons to assume we can compose
-   (or (subcategorized-variable head :m adjective)
-       (subcategorized-variable adjective :subject head)
-       ;; These next two tests are necessary but not sufficient
-       ;; unless they also checked compatibility with the head.
-       ;; But for they're adequate for determining rule validity
-       ;; in adj-noun-compound
-       (itypep adjective 'attribute-value)
-       (itypep adjective 'attribute))))
+   (when
+       (or (subcategorized-variable head :m adjective)
+           (and
+            (not verb-complement?)
+            (subcategorized-variable adjective :subject head))
+           ;; These next two tests are necessary but not sufficient
+           ;; unless they also checked compatibility with the head.
+           ;; But for they're adequate for determining rule validity
+           ;; in adj-noun-compound
+           (itypep adjective 'attribute-value)
+           (itypep adjective 'attribute))
+     (when (and *check-takes-adj?* ;; may want to 
+                (subcategorized-variable adjective :subject head))
+       (warn "takes-adj? with ~s and ~s~%" head adjective))
+     t)))
 
 
 (defun adjective-phrase? (e)

@@ -1583,7 +1583,7 @@
   
   (cond
     (*subcat-test*
-     (takes-adj? vp adjp))
+     (takes-adj? vp adjp t))
     (t
      (if (get-tag :adjp-complement (itype-of vp))
        ;; is this verb marked as taking adjp-complements?
@@ -1598,7 +1598,7 @@
               ;; the attribute and bind it. We're simply predicating it.
               (attribute-value-of-object adjp obj)
               vp)
-             ((takes-adj? obj adjp)
+             ((takes-adj? obj adjp t)
               (let ((mod-obj (adj-noun-compound adjp obj (right-edge-for-referent))))
                 (if mod-obj
                   (bind-dli-variable 'predicate mod-obj vp)
@@ -1693,7 +1693,7 @@
          (let ((complete-attribution
                 (bind-variable 'reference-set than-np attribution)))
            (multiple-value-bind (edge-over-comparative)
-               (search-tree-for-referent (left-edge-for-referent) open-attribution)
+               (search-tree-for-referent (left-edge-for-referent) attribution)
              ;; Insert a new edge over the comparative edge
              ;; of the np with the completed-attribution as its value.
              (unless edge-over-comparative
