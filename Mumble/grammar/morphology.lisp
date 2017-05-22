@@ -284,8 +284,12 @@ as specified by the *CURRENT-PHRASAL-ROOT*. Default is SINGULAR."
   (let ((subj (current-subject)))
     (the (member singular plural)
          (let ((number (number-of-subject subj)))
-           (unless number
-             (warn "no number recorded on subject ~a" subj))
+           
+           (typecase subj
+             (ttrace nil)
+             (t
+              (unless number
+                (warn "no number recorded on subject ~a" subj))))
            (or number 'singular)))))
 
 (defgeneric number-of-subject (subject)
