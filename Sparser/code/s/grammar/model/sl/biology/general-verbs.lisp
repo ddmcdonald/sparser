@@ -85,7 +85,7 @@
 (define-category analyze :specializes bio-method
   :mixins (bio-whethercomp bio-ifcomp)
   :realization 
-  (:verb "analyze" :noun "analysis" 
+  (:verb "analyze" :noun ("analysis" :plural "analyses")
          :etf (svo-passive)))
 
 (def-synonym analyze (:verb "analyse" :etf (svo-passive) ))
