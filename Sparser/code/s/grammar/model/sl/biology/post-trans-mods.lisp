@@ -21,7 +21,7 @@
 	  (site molecular-location)
           (amino-acid amino-acid)) ;; which is attached here
   :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate molecule)) ;;bio-process
-	     (object s)) ;; trying to BLOCK object by giving it an impossible class
+	     (object blocked-category)) ;; trying to BLOCK object by giving it an impossible class
   :realization 
   (:noun ("post-translational modification" "PTM" 
           "post-transcriptional modification" "post-transcriptional fate")
@@ -435,7 +435,7 @@
 ; the c–terminus of Ubiquitin (Ubiquitin C77)
 ; Ras ligated to Ubiquitin C77
 ; ligated to Ubiquitin G76C. <--- point mutation
-(def-bio "ubiquitin" protein)
+;;(def-bio "ubiquitin" protein) defined elsewhere with ID
 ;; not strictly true, but a reasonable approximation. 
 
 (define-category ubiquitination
