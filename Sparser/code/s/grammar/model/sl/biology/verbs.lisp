@@ -1191,13 +1191,13 @@
    :etf (svo-passive)))
 
 
-(define-category resist :specializes bio-control
+(define-category resist :specializes bio-relation
     :realization
     (:verb "resist"
 	   :noun "resistance"
+           :adj "resistant"
 	   :etf (svo-passive)
-           :to object
-           :to affected-process))
+           :to theme))
 
 
 (define-category retention :specializes caused-bio-process
@@ -1244,8 +1244,7 @@
     :realization
     (:verb "starve" 
            :noun "starvation"
-	   :etf (svo-passive)
-           :of nutrient))
+	   :etf (svo-passive)))
 
 (define-category stimulate
   :specializes positive-bio-control
