@@ -351,7 +351,9 @@
     t)
   (:method ((e edge))
     (unless (prev-adj e)
-      (adjg-head? (edge-form e))))
+      (when (not (eq (cat-name (edge-category e)) 'sequencer))
+        ;; sequencers like "next" cannot be heads of adjg's
+        (adjg-head? (edge-form e)))))
   (:method ((c referential-category))
     (adjg-head? (cat-symbol c)))
   (:method ((name symbol))
