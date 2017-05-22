@@ -108,9 +108,11 @@
              (*head-edge* nil) ;; set in ref/head
              (*arg-edge* nil)  ;; ditto
              (left-referent  (or left-ref
-                                 (edge-referent left-edge)))
+                                 (and (edge-p left-edge)
+                                      (edge-referent left-edge))))
              (right-referent (or right-ref
-                                 (edge-referent right-edge)))
+                                 (and (edge-p right-edge)
+                                      (edge-referent right-edge))))
              (rule-field (cfr-referent rule)))
 
          (declare (special 
