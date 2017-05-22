@@ -836,7 +836,8 @@
                    thereis (and (equalp (pname (subcat-label pat)) "of")
                                 (eq (pname (subcat-variable pat)) 'object)
                                 ;; n.b. look at "panel"
-                                (not (itypep (subcat-restriction pat) 'over-ridden))))))
+                                (not (itypep (subcat-restriction pat) 'over-ridden))
+                                (not (itypep (subcat-restriction pat) 'blocked-category))))))
          (ambiguous-of-object
           (loop for pat in subcat-patterns
              when (and (eq label (subcat-label pat))
