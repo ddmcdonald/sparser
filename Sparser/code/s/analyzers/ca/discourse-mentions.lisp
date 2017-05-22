@@ -587,6 +587,7 @@
          (edge-mention edge))
         ((is-basic-collection? (edge-referent edge))
          (loop for e in (edges-under edge)
+               when (edge-p e) ;; can have a left-daughter which is a word
                do
                  (let ((mention (find-conjunction-item-mention item-sem e)))
                    (when mention (return mention)))))
