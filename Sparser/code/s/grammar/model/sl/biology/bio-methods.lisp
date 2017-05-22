@@ -31,6 +31,7 @@
 
 (define-category bio-observation :specializes bio-method
   :binds ((observed biological))
+  :restrict ((object blocked-category))
   :realization (:of observed))
 ;; not really, but what is it
 (noun "band" :super bio-observation)
@@ -93,8 +94,6 @@
 
 (noun "method" :super bio-method)
 
-(noun ("analysis" :plural "analyses")
-  :super bio-method)
 (noun "mode" :super bio-method)
 (noun "modeling" :super bio-method) ;; but modeling is a nominal that is used
 (noun ("mutagenesis" :plural "mutageneses") :super bio-method)
@@ -116,7 +115,6 @@
 (noun "rnai" :super bio-method)
 (noun "SDS-PAGE"  :super bio-method)
 (noun "spectrometry" :super bio-method)
-(noun "starvation" :super bio-method)
 
 (noun "strategy" :super bio-method
       :binds ((goal bio-process))
@@ -133,14 +131,11 @@
 (noun "work" :super bio-method)
 
 (define-category knock-out  :specializes bio-method
-  :binds ((gene-or-protein (:or protein gene)))
   :realization
-  (:noun "knock-out" :of gene-or-protein
+  (:noun ("knock-out" "knockout")
+         :of gene-or-protein
          :m gene-or-protein))
-(def-synonym knock-out
-             (:noun "knockout"
-                    :of gene-or-protein
-                    :m gene-or-protein))
+
 
 ;;;-----------------------------------
 ;;; knockout types -- applies to mice
