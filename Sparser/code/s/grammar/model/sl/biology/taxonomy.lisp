@@ -508,10 +508,6 @@
   :realization
      (:noun "experiment"))
 
-(define-category analysis-data :specializes evidence
-  :realization
-     (:noun ("analysis" :plural "analyses")))
-
 (define-category study-data :specializes evidence
   :realization
      (:noun ("study" :plural "studies")))
@@ -704,8 +700,7 @@
   :binds ((relative-to (:or bio-process bio-entity pathway))
           (pathway pathway))
   :realization
-    (:noun "upstream"
-     :of relative-to
+    (:of relative-to
      :from relative-to
      :in pathway))
 
@@ -753,6 +748,7 @@
 (define-category bio-context :specializes biological
   :binds ((process process)
           (entity bio-entity)
+          (relation bio-relation) ;; for "resistance" etc.
           (quantitative-condition (:or amount measurement bio-scalar)))
   :mixins (has-name)
   :realization
@@ -760,6 +756,7 @@
      ;; "yielded sustained C-RAF(S338) and ERK phosphorylation in the context of drug treatment"
      :of process
      :of entity
+     :of relation
      :of quantitative-condition))
 
 
@@ -1396,4 +1393,4 @@ the aggregate across the predicate it's in. |#
 ;; for use by interpret-pp-as-head-of-np and a form rule in form-rules
 
 
-(def-synonym residue-on-protein (:noun "position"))
+;;(def-synonym residue-on-protein (:noun "position"))
