@@ -150,18 +150,23 @@
               nil )))))))
                               
 
-
+(defun top-edge-on-ev (ev)
+  (if (edge-p (ev-top-node ev))
+      (ev-top-node ev)
+      (when (> (ev-number-of-edges ev) 1)
+        (elt (ev-edge-vector ev)
+             (1- (ev-number-of-edges ev))))))
 
 
 (defun top-edge-at/ending (position)
   ;; returns the top-edge that ends at the position
   ;; or :multiple-initial-edges if that's the case
-  (ev-top-node (pos-ends-here position)))
+  (top-edge-on-ev (pos-ends-here position)))
 
 (defun top-edge-at/starting (position)
   ;; returns the top-edge that starts at the position
   ;; or :multiple-initial-edges if that's the case
-  (ev-top-node (pos-starts-here position)))
+  (top-edge-on-ev (pos-starts-here position)))
 
 
 

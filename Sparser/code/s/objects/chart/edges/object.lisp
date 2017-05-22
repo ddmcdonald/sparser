@@ -346,12 +346,7 @@ code is make-edge-over-abbreviation and its feeders. |#
   ;; until 1/3/95 this was just sugar for the field value. Now
   ;; it's literally the topmost edge, ignoring the possibility of
   ;; the caller wanting to worry about lexical ambiguities.
-  (let ((ev (pos-starts-here position)))
-    (if (edge-p (ev-top-node ev))
-        (ev-top-node ev)
-        (when (> (ev-number-of-edges ev) 1)
-          (elt (ev-edge-vector ev)
-               (1- (ev-number-of-edges ev)))))))
+  (top-edge-on-ev (pos-starts-here position)))
 
 
 (defun edge-spanning (start-pos end-pos)
