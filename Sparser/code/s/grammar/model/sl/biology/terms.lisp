@@ -97,7 +97,6 @@
 ;;(define-adjective "non-neoplastic")
 (define-adjective "nonclonal")
 (define-adjective "nonmutational")
-(define-adjective "oncogenic")
 (define-adjective "pericellular" :form 'spatial-adjective)
 (define-adjective "peritumoral" :form 'spatial-adjective)
 (define-adjective "physiologic")
@@ -344,8 +343,8 @@
 
 ;; These three want to be synonyms
 (noun "frame" :super bio-entity)
-(noun "open reading frame" :super bio-entity)
-(noun "open reading frames" :super open-reading-frame)
+(noun ("open reading frame" :plural "open reading frames") :super bio-entity)
+
 (def-synonym open-reading-frame (:noun "ORF")) 
 
 
@@ -384,12 +383,7 @@
      :realization
      (:to theme))
 
-(define-category resistant :specializes bio-relation
-     :binds ((treatment (:or bio-process bio-entity)))
-     :realization
-     (:adj "resistant"
-	   :noun "resistance"
-           :to treatment))
+
 
 
 (define-category responsive :specializes bio-relation

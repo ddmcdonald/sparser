@@ -4457,11 +4457,9 @@
  ("WXXL" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
  ("XN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
  ("XRP44X" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
-    ("ZQFTN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
-    ("Ab" "ONT:PROTEIN" :ID "NCIT:C16295" :NAME "antibody") 
+ ("ZQFTN" "ONT:REFERENTIAL-SEM" :ID NIL :NAME NIL)
+ ("Ab" "ONT:PROTEIN" :ID "NCIT:C16295" :NAME nil)  ;; remove duplicate definition of "antibody"
  ("AB" "ONT:FISH" :ID "NCIT:C79967" :NAME "zebrafish line AB")
- ("Ab" "ONT:PROTEIN" :ID "NCIT:C16295" :NAME "antibody")
-
     ))
 
 (defparameter *trips-terms-old* (append *trips-terms-old-1* *trips-terms-old-2* *trips-terms-old-3* *trips-terms-old-4* *trips-terms-old-5* *trips-terms-old-6* *trips-terms-old-7* *trips-terms-old-8* *trips-terms-old-9* *trips-terms-old-10* *trips-terms-old-11* *trips-terms-old-12* *trips-terms-old-13* *trips-terms-old-14*)) ;; it was having trouble actually getting them all when it was in one term def -- it started trying to evaluate one of the term-defs partway into the list, but appending seems to work
