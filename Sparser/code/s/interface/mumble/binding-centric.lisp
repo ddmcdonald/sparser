@@ -15,16 +15,23 @@
 ;;; interface into Mumble's state at the time we make the dtn
 ;;;-----------------------------------------------------------
 
+(defun current-position ()
+  "Wraps the generation state variable *current-position*, which only
+   has a value when Mumble has started instantiating and executing phrases.
+   Returns nil if the variable does not have a meaningful value."
+  (when (boundp '*current-position*)
+    (when *current-position* ;; nil check
+      *current-position*)))
+
 (defun current-position-p (&rest labels)
   "Return true if the slot being generated has one of the given labels."
-  (when (and (boundp '*current-position*)
-             *current-position*) ;; nil check
-    (memq (name *current-position*) labels)))
-
+  (let ((slot (current-position)))
+    (when slot
+      (memq (name slot) labels))))
 
 
 ;;;--------------------------------------
-;;; Realizations for Sparser individuals
+;;; subroutines to realizing individuals
 ;;;--------------------------------------
 
 (defun pretty-bio-name (name)
@@ -92,7 +99,9 @@
                   (word-for-string (pretty-bio-name (sp::pname word)) pos))))
           ((sp::itypep item 'sp::collection)
            (word-for (sp::value-of 'sp::type item) pos))
-          ((sp::itypep item 'sp::prepositional)
+          ((sp::itypep item 'sp::dependent-location) ;; "end" or "top" are nouns
+           (sp::get-mumble-word-for-sparser-word item (sparser-pos 'noun)))
+          ((sp::itypep item 'sp::prepositional) ;; vs. prepositions "of" or "on"
            (sp::get-mumble-word-for-sparser-word item 'preposition))
           (t (or (call-next-method) ; last-ditch effort
                  (word-for (string-downcase (sp::cat-name (sp::itype-of item))) pos)))))
@@ -165,6 +174,65 @@
       'adjective
       'noun)))
 
+
+;;--------- dtn modifiers
+#| These take a dtn that was created by their caller and add to it.
+Many use methods in derivation-trees/builders.lisp or make.lisp
+to do the actual manipulation. These are called by cases in
+attach-via-binding. |#
+
+(defun attach-adjective (adjective dtn pos)
+  (let ((adjp (make-dtn :referent adjective
+                        :resource (phrase-named 'adjective-phrase)))
+        (ap (ecase pos
+              ((adjective noun) 'adjective)
+              ((adverb verb)
+               (if (sp::itypep adjective 'sp::intensifier)
+                 'adverbial-preceding
+                 (multiple-value-bind (head rpos)
+                     (sp::rdata-head-word adjective t)
+                   (declare (ignore head))
+                   (case rpos
+                     (:interjection 'adverbial-preceding)
+                     (otherwise 'vp-final-adjunct))))))))
+    (make-complement-node 'a adjective adjp)
+    (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
+
+(defun attach-pp (prep object dtn pos)
+  (let ((pp (make-dtn :resource (prep prep)))
+        (ap (ecase pos
+              ((adjective noun) 'np-prep-adjunct)
+              (verb 'vp-prep-complement))))
+    (make-complement-node 'prep-object object pp)
+    (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
+
+
+(defun possibly-pronoun (item)
+  (cond ((sp::itypep item 'sp::pronoun/first/singular)
+         (pronoun-named 'first-person-singular))
+        ((sp::itypep item 'sp::pronoun/first/plural)
+         (pronoun-named 'first-person-plural))
+        ((sp::itypep item 'sp::pronoun/second)
+         (pronoun-named 'second-person-singular))
+        ((sp::itypep item 'sp::pronoun/plural)
+         (pronoun-named 'third-person-plural))
+        (t item)))
+
+(defun attach-subject (subject dtn)
+  (make-complement-node 's (possibly-pronoun subject) dtn))
+
+(defun attach-object (object dtn)
+  (make-complement-node 'o (possibly-pronoun object) dtn))
+
+(defun attach-complement (complement dtn)
+  (make-complement-node 'c (possibly-pronoun complement) dtn))
+
+
+
+;;;--------------------------------------
+;;; Realizations for Sparser individuals
+;;;--------------------------------------
+
 (defmethod realize ((i sp::individual))
   "Realize a Sparser individual. Since categories are not (yet) classes,
    and therefore cannot have specialized methods, special cases go here."
@@ -213,68 +281,47 @@
          (apply-category-linked-phrase i))
         (t (realize-via-bindings i))))
 
+
 (defgeneric realize-via-bindings (i &key pos resource)
+  (:documentation "Loop over the bindings of the individual 'i' to populate
+    its dtn. If the caller knows the part of speech (pos) or the resource
+    phrase should be used it supplies it, otherwise we make as good a guess
+    as we can before starting to walk over the bindings.")
   (:method ((i sp::individual) &key
             (pos (guess-pos i))
             (resource (ecase pos
                         (adjective (word-for i pos))
-                        (noun (noun (word-for i pos)))
-                        (verb (verb (word-for i pos) 'svo)))))
+                        (noun (noun (word-for i pos))) ;; see derivation-trees/builders.lisp
+                        (verb (verb (word-for i pos) ;; for def of noun and verb
+                                    (verb-frame-for i))))))
     "Realize a Sparser individual as a DTN with its bindings attached."
     (loop with dtn = (make-dtn :referent i :resource resource)
-          initially (case pos (verb (tense dtn)))
-          for binding in (reverse (sp::indiv-binds i))
-          as variable = (sp::binding-variable binding)
-          as var-name = (sp::var-name variable)
-          do (attach-via-binding binding var-name dtn pos)
-          finally (return dtn))))
+       initially (case pos (verb (tense dtn)))
+       for binding in (reverse (sp::indiv-binds i))
+       as variable = (sp::binding-variable binding)
+       as var-name = (sp::var-name variable)
+       do (attach-via-binding binding var-name dtn pos)
+       finally (return dtn))))
 
-(defun attach-adjective (adjective dtn pos)
-  (let ((adjp (make-dtn :referent adjective
-                        :resource (phrase-named 'adjective-phrase)))
-        (ap (ecase pos
-              ((adjective noun) 'adjective)
-              ((adverb verb)
-               (if (sp::itypep adjective 'sp::intensifier)
-                 'adverbial-preceding
-                 (multiple-value-bind (head rpos)
-                     (sp::rdata-head-word adjective t)
-                   (declare (ignore head))
-                   (case rpos
-                     (:interjection 'adverbial-preceding)
-                     (otherwise 'vp-final-adjunct))))))))
-    (make-complement-node 'a adjective adjp)
-    (make-adjunction-node (make-lexicalized-attachment ap adjp) dtn)))
+    
+(defun verb-frame-for (i)
+  "Examine the realization data on the category of this individual
+   to look for an already specified phrase."
+  ;;// Could include a mapping as well, doing much of the work
+  ;; of reversing the realization data. If that turns out to
+  ;; be easy to do then refactor realize-via-bindings to 'consume'
+  ;; the bindings that are explicitly mapped before using
+  ;; generic realizations.
+  'svo ) ;; standin while working this out -- ddm
 
-(defun attach-pp (prep object dtn pos)
-  (let ((pp (make-dtn :resource (prep prep)))
-        (ap (ecase pos
-              ((adjective noun) 'np-prep-adjunct)
-              (verb 'vp-prep-complement))))
-    (make-complement-node 'prep-object object pp)
-    (make-adjunction-node (make-lexicalized-attachment ap pp) dtn)))
 
-(defun possibly-pronoun (item)
-  (cond ((sp::itypep item 'sp::pronoun/first/singular)
-         (pronoun-named 'first-person-singular))
-        ((sp::itypep item 'sp::pronoun/first/plural)
-         (pronoun-named 'first-person-plural))
-        ((sp::itypep item 'sp::pronoun/second)
-         (pronoun-named 'second-person-singular))
-        ((sp::itypep item 'sp::pronoun/plural)
-         (pronoun-named 'third-person-plural))
-        (t item)))
 
-(defun attach-subject (subject dtn)
-  (make-complement-node 's (possibly-pronoun subject) dtn))
-
-(defun attach-object (object dtn)
-  (make-complement-node 'o (possibly-pronoun object) dtn))
-
-(defun attach-complement (complement dtn)
-  (make-complement-node 'c (possibly-pronoun complement) dtn))
+;;-------- attach-via-binding
 
 (defgeneric attach-via-binding (binding var-name dtn pos)
+  (:documentation "Dispatch off the identity of the variable to
+    determine how to add the value of the binding to the dtn
+    that was passed in. ")
   (:method (binding var-name dtn pos)
     "Attach a binding as a subject, object, or prepositional phrase."
     (declare (ignore var-name))
@@ -402,8 +449,11 @@
   (:method (binding (var-name (eql 'sp::location)) dtn pos)
     "Look at how the location will be realized and selected an attachment
      point that fits."
+    (declare (special *current-position*))
     (let* ((i (sp::binding-value binding))
-           (label-realizing-i (realizing-label (realizing-resource i))))      
+           (label-realizing-i (realizing-label (realizing-resource i))))
+      (when (null label-realizing-i)
+        (break "How to do loc? position = ~a" *current-position*))
       (let ((ap (case pos
                   (noun
                    (etypecase label-realizing-i
