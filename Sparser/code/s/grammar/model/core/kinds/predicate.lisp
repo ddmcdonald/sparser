@@ -94,6 +94,7 @@
 (define-category prepositional
   :specializes predicate
   :instantiates nil
+  :binds ((word :primitive word))
   :documentation "Intended to be the common parent of every
  sort of operator that can be realized as a preposition. 
  These have the semantic force of predicates and (arguably)
