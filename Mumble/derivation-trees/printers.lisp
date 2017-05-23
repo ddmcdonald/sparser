@@ -78,6 +78,6 @@
              as parameter = (phrase-parameter cn)
              as value = (value cn)
              return `(,(mname parameter) ,(pp-dtn value))))))
-
-  )
+  (:method ((p phrase))
+    (mname p)))
       
