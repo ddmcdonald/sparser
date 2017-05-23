@@ -148,6 +148,11 @@ C
   (reverse-plist '(:a 1 :b 2 :c 3))
   (:c 3 :b 2 :a 1))
 
+(deftest sans
+  (apply (lambda (&rest args) (assert (null args)) t)
+         (sans '(:foo foo :bar bar) :foo :bar))
+  t)
+
 (deftest deep-copy
   (let* ((l1 '(:a (:b :c) (:d (:e (:f)))))
          (l2 (deep-copy l1)))

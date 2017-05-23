@@ -116,6 +116,22 @@ and memq when it sees atoms."
         do (setq reverse (list* tag value reverse))
         finally (return reverse)))
 
+(defun sans (plist &rest keys)
+  "Return a plist without the given keys.
+By Erik Naggum."
+  (let ((sans ()))
+    (loop
+      (let ((tail (nth-value 2 (get-properties plist keys))))
+        ;; this is how it ends
+        (unless tail
+          (return (nreconc sans plist)))
+        ;; copy all the unmatched keys
+        (loop until (eq plist tail)
+              do (push (pop plist) sans)
+                 (push (pop plist) sans))
+        ;; skip the matched key
+        (setq plist (cddr plist))))))
+
 (defun choose (sequence &optional (random-state *random-state*))
   "Return a random element of the sequence."
   (elt sequence (random (length sequence) random-state)))
