@@ -77,7 +77,8 @@ determined by the operator and the types of the two objects,
     (let* ((expr `(define-category ,category-name
                     :specializes ,super-category
                     :instantiates :self
-                    :realization (:common-noun ,word)))
+                    :lemma (:common-noun ,word)))
+                    ;;:realization (:common-noun ,word)
            (category (eval expr))
            (word-rule
 	    (def-cfr/expr category `(,word)
