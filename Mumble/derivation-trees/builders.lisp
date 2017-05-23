@@ -14,68 +14,85 @@
 (in-package :mumble)
 
 
-(defgeneric noun (word &optional phrase)
+(defgeneric noun (word &optional phrase-name)
   (:documentation "Given a designator for a word, return
-    a lexicalized phrase for it as a simple np."))
-
-(defmethod noun (word &optional phrase-name)
-  (let* ((phrase (phrase-named (or phrase-name 'common-noun)))
-         (parameter (parameter-named 'n))
-	 (parameters (remove parameter (parameters-to-phrase phrase)))
-         (word (typecase word
-		 (string (word-for-string word 'noun))
-		 (word word)))
-	 (pair (make-instance 'parameter-value-pair
-                   :phrase-parameter parameter
-                   :value word)))
-    (if parameters
+    a lexicalized phrase for it as a simple np.")
+  (:method ((w word) &optional phrase-name)
+    (noun (pname w)  phrase-name))
+  (:method ((pname string)  &optional phrase-name)
+    (let* ((phrase (phrase-named (or phrase-name 'common-noun)))
+           (parameter (parameter-named 'n))
+           (parameters (remove parameter (parameters-to-phrase phrase)))
+           (word (etypecase pname
+                   (string (word-for-string pname 'noun))))
+           (pair (make-instance 'parameter-value-pair
+                    :phrase-parameter parameter
+                    :value word)))
+      (if parameters
         (make-instance 'partially-saturated-lexicalized-phrase
                        :phrase phrase
                        :free parameters
                        :bound `(,pair))
         (make-instance 'saturated-lexicalized-phrase
                        :phrase phrase
-                       :bound `(,pair)))))
+                       :bound `(,pair))))))
  
 
 (defgeneric verb (word &optional phrase-name)
   (:documentation "Given a designator for a verb, return 
     a lexicalized phraes for it. The default phrase is SVO, 
-    but can be overridden by the optional argument."))
-
-(defmethod verb ((w word) &optional phrase-name)
-  (verb (pname w) phrase-name))
-
-(defmethod verb ((w word) &optional phrase-name)
-  (verb (pname w) phrase-name))
-
-(defmethod verb ((string string) &optional (phrase-name 'svo))
-  (let* ((phrase (phrase-named phrase-name))
-         (parameter (parameter-named 'v))
-         (parameters (remove parameter (parameters-to-phrase phrase)))
-         (word (word-for-string string 'verb)))
-    (let* ((pair (make-instance 'parameter-value-pair
-                   :phrase-parameter parameter
-                   :value word)))
-      (make-instance 'partially-saturated-lexicalized-phrase
-                     :phrase phrase
-                     :free parameters
-                     :bound `(,pair)))))
+    but can be overridden by the optional argument.")
+  (:method ((w word) &optional phrase-name)
+    (verb (pname w) phrase-name))
+  (:method ((string string) &optional (phrase-name 'svo))
+    (let* ((phrase (phrase-named phrase-name))
+           (parameter (parameter-named 'v))
+           (parameters (remove parameter (parameters-to-phrase phrase)))
+           (word (word-for-string string 'verb)))
+      (let* ((pair (make-instance 'parameter-value-pair
+                                  :phrase-parameter parameter
+                                  :value word)))
+        (make-instance 'partially-saturated-lexicalized-phrase
+                       :phrase phrase
+                       :free parameters
+                       :bound `(,pair))))))
 
 
 (defgeneric adjective (word)
   (:documentation "Defines a lexicalized tree for an adjective
     taken as a simple premodifier. The relationship of something
     having this property is a not this but should have
-    a choice set of some sort since it has several realizations."))
+    a choice set of some sort since it has several realizations.")
+  (:method ((w word))
+    (adjective (pname w)))
+  (:method ((pname string))
+    (let* ((word (word-for-string pname 'adjective))
+           (ap (attachment-point-named 'adjective)))
+      (make-lexicalized-attachment ap word))))
 
-(defmethod adjective ((w word))
-  (adjective (pname w)))
 
-(defmethod adjective ((pname string))
-  (let* ((word (word-for-string pname 'adjective))
-         (ap (attachment-point-named 'adjective)))
-    (make-lexicalized-attachment ap word)))
+(defgeneric prep (word)
+  (:documentation "Defines a lexicalized tree for a preposition
+   in that is the head of a prepositional phrase whose complement
+   is a noun phrase. Note that a preposition will often also
+   take a whole eventuality as its complement, and it's not
+   clear right now how to capture this variation (maybe an
+   optional argument that becomes a label that goes on the
+   complement's slot?). Returns a partially saturated lexicalized 
+   phrase that is open in the parameter 'prep-object'.")
+  (:method ((w word))
+    (prep (string-downcase (pname w))))
+  (:method ((pname string))
+    (let ((phrase (phrase-named 'prepositional-phrase))
+          (preposition (word-for-string pname 'preposition)))
+      (make-instance
+       'partially-saturated-lexicalized-phrase
+       :phrase phrase
+       :bound `(,(make-instance 'parameter-value-pair
+                    :phrase-parameter (parameter-named 'p)
+                    :value preposition))
+       :free `(,(parameter-named 'prep-object))))))
+
 
 
 (defun wrap-pronoun (pronoun-symbol)
@@ -107,29 +124,6 @@
                   :phrase-parameter (parameter-named 'adv)
                   :value word)))))
 
-
-(defgeneric prep (word)
-  (:documentation "Defines a lexicalized tree for a preposition
-   in that is the head of a prepositional phrase whose complement
-   is a noun phrase. Note that a preposition will often also
-   take a whole eventuality as its complement, and it's not
-   clear right now how to capture this variation (maybe an
-   optional argument that becomes a label that goes on the
-   complement's slot?). Returns a partially saturated lexicalized 
-   phrase that is open in the parameter 'prep-object'."))
-
-(defmethod prep ((w word))
-  (prep (pname w)))
-
-(defmethod prep ((pname string))
-  (let ((phrase (phrase-named 'prepositional-phrase))
-        (preposition (word-for-string pname 'preposition)))
-    (make-instance 'partially-saturated-lexicalized-phrase
-      :phrase phrase
-      :bound `(,(make-instance 'parameter-value-pair
-                  :phrase-parameter (parameter-named 'p)
-                  :value preposition))
-      :free `(,(parameter-named 'prep-object)))))
 
 (defgeneric interjection (word)
   (:documentation "As used with the Blocks World, these are
