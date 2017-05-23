@@ -307,7 +307,7 @@ the rspec for the words of instances of the category."
         do (unless (keywordp key) ;; friendly DWIM
              (setq key (intern (string key) :keyword)))
            (check-type key head-keyword "a valid realization keyword")
-           (check-type lemma (or string cons))
+           (check-type lemma (or string cons word))
            (let* ((head (deref-rdata-word lemma category))
                   (rules (make-rules-for-head key head category category)))
              (setf (lemma category key) head)
