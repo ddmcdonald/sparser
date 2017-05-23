@@ -452,14 +452,17 @@ attach-via-binding. |#
     (declare (special *current-position*))
     (let* ((i (sp::binding-value binding))
            (label-realizing-i (realizing-label (realizing-resource i))))
-      (when (null label-realizing-i)
-        (break "How to do loc? position = ~a" *current-position*))
-      (let ((ap (case pos
-                  (noun
-                   (etypecase label-realizing-i
-                     (word-label 'nominal-premodifier)
-                     (node-label 'np-prep-complement)))
-                  (otherwise 'vp-final-adjunct))))
+      (let ((ap (cond
+                  (label-realizing-i
+                   (case pos
+                     (noun
+                      (etypecase label-realizing-i
+                        (word-label 'nominal-premodifier)
+                        (node-label 'np-prep-complement)))
+                     (otherwise 'vp-final-adjunct)))
+                  ((heavy-predicate-p i)
+                   'np-prep-complement)
+                  (t 'nominal-premodifier))))
         (make-adjunction-node
          (make-lexicalized-attachment ap i)
          dtn)))))
