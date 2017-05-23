@@ -323,6 +323,7 @@
     (mumble-says drink))
   "I drink milk in the house")
 
+#+ignore  ;; what's with passing nil to noun? 'nil' isn't the basis of a word
 (deftest (say mutation that makes kras active)
   (let* ((percent (make-dtn :resource (noun nil 'percent)))
 	 (patients (plural (make-dtn :resource (noun "patient" 'partitive))))
