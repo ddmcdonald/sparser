@@ -833,24 +833,27 @@
                 (member (cat-name (edge-form *left-edge-into-reference*))
                         '(np ng vg+ing))
                 (loop for pat in subcat-patterns
-                   thereis (and (equalp (pname (subcat-label pat)) "of")
-                                (eq (pname (subcat-variable pat)) 'object)
-                                ;; n.b. look at "panel"
-                                (not (itypep (subcat-restriction pat) 'over-ridden))
-                                (not (itypep (subcat-restriction pat) 'blocked-category))))))
+                      thereis (and (equalp (pname (subcat-label pat)) "of")
+                                   (eq (pname (subcat-variable pat)) 'object)
+                                   ;; n.b. look at "panel"
+                                   (not (itypep (subcat-restriction pat) 'over-ridden))
+                                   (not (itypep (subcat-restriction pat) 'blocked-category))
+                                   ))))
          (ambiguous-of-object
-          (loop for pat in subcat-patterns
-             when (and (eq label (subcat-label pat))
-                       (not (eq (pname (subcat-variable pat)) 'object)))
-             do (return pat))))
-    (declare (special category subcat-patterns))
+          (when of-object
+            (loop for pat in subcat-patterns
+                  when (and (eq label (subcat-label pat))
+                            (not (eq (pname (subcat-variable pat)) 'object)))
+                  do (return pat)))))
+    (declare (special category subcat-patterns of-object ambiguous-of-object))
+
     (when of-object
       (if ambiguous-of-object
-        (if (itypep head 'effect)
-          (setq label :object)
-          (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
-                item head (sentence-string *sentence-in-core*)))
-        (setq label :object)))
+          (if (itypep head 'effect)
+              (setq label :object)
+              (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
+                    item head (sentence-string *sentence-in-core*)))
+          (setq label :object)))
     (when subcat-patterns
       (setq *label* label)
       (setq *head* head)
@@ -858,38 +861,38 @@
             variable  over-ridden)
         (if (and *ambiguous-variables*
                  (not *subcat-test*))
-          (let ( pats )
-            (loop for pat in subcat-patterns
-               as scr = (subcat-restriction pat)
-               do (when (eq label (subcat-label pat))
-                    (when (satisfies-subcat-restriction? item scr)
-                      (push pat pats))))
-            (setq over-ridden (check-overridden-vars pats))
-            (setq pats (loop for p in pats unless (member p over-ridden) collect p))
-            (setq variable (variable-from-pats item head label pats subcat-patterns)))
-          (dolist (entry subcat-patterns)
-            (when (eq label (subcat-label entry))
-              (when (satisfies-subcat-restriction? item entry)
-                (setq variable (subcat-variable entry))
-                (return)))))
+            (let ( pats )
+              (loop for pat in subcat-patterns
+                    as scr = (subcat-restriction pat)
+                    do (when (eq label (subcat-label pat))
+                         (when (satisfies-subcat-restriction? item scr)
+                           (push pat pats))))
+              (setq over-ridden (check-overridden-vars pats))
+              (setq pats (loop for p in pats unless (member p over-ridden) collect p))
+              (setq variable (variable-from-pats item head label pats subcat-patterns)))
+            (dolist (entry subcat-patterns)
+              (when (eq label (subcat-label entry))
+                (when (satisfies-subcat-restriction? item entry)
+                  (setq variable (subcat-variable entry))
+                  (return)))))
         
         (when (and *ambiguous-variables*
                    (consp variable))
           (setq variable
                 (if over-ridden
-                  (cond
-                    ((or (equal '(agent object)
-                                (mapcar #'var-name variable))
-                         (equal '(object agent)
-                                (mapcar #'var-name variable)))
-                     (loop for v in variable
-                        when (eq 'object (var-name v))
-                        do (return v)))
-                    (t
-                     (announce-over-ridden-ambiguities item head label variable)
-                     (define-disjunctive-lambda-variable variable category)))
-                  ;; else
-                  (define-disjunctive-lambda-variable variable category))))
+                    (cond
+                      ((or (equal '(agent object)
+                                  (mapcar #'var-name variable))
+                           (equal '(object agent)
+                                  (mapcar #'var-name variable)))
+                       (loop for v in variable
+                             when (eq 'object (var-name v))
+                             do (return v)))
+                      (t
+                       (announce-over-ridden-ambiguities item head label variable)
+                       (define-disjunctive-lambda-variable variable category)))
+                    ;; else
+                    (define-disjunctive-lambda-variable variable category))))
         (when (and variable *subcat-use* (not *subcat-test*))
           (record-subcat-use label (itype-of head) variable item))
         variable ))))
