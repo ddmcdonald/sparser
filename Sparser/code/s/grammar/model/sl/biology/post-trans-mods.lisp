@@ -31,7 +31,8 @@
          :m substrate
          :m site
          :m agent ;;somehow this overrides the ones below
-         :of :object
+         :of substrate
+         :of site
          :at amino-acid
 	 :on amino-acid ;;"BRAF that is phosphorylated on serine and tyrosine."
 	 :at site
