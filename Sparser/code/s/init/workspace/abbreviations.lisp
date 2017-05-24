@@ -117,6 +117,10 @@
     (values (rs-backpointer rs)
             (rs-single-term-rewrites rs))))
 
+(defun single-term-rewrite? (word)
+  (multiple-value-bind (bkpt s-t-r) (rule-for word)
+  s-t-r))
+
 (defmacro sc (cat-name)
   `(super-categories-of
     (category-named 
