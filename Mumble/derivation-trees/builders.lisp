@@ -432,13 +432,6 @@ a message to be expressed. See discussion in make.lisp |#
 (defmethod name-composite ((w word))
   (pname w))
 
-;;/// add to utils
-(defun underscore-interleaved-string (list-of-strings)
-  (let ( interleaved-list )
-    (dolist (string list-of-strings)
-      (push "_" interleaved-list)
-      (push (string-downcase string) interleaved-list))
-    (apply #'string-append (nreverse interleaved-list))))
 
 
 

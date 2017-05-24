@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "strings"
 ;;;    module:  "util:"
-;;;   Version:  February 2017
+;;;   Version:  May 2017
 
 ;; (3/9/11) Reworked to fit in ddm-util. 7/5 fixed old case in
 ;; string-append. 2/1/16 added strings-to-hyphenated-string.
@@ -71,3 +71,13 @@
   (cond ((endp list) nil)
 	((null (cdr list)) list)
 	(t (cons (first list) (cons " " (spaced-list (rest list)))))))
+
+
+(defun underscore-interleaved-string (list-of-strings)
+  "Given a list of strings, return a string that concatenates them
+   with underbars between them."
+  (let ( interleaved-list )
+    (dolist (string list-of-strings)
+      (push "_" interleaved-list)
+      (push (string-downcase string) interleaved-list))
+    (apply #'string-append (nreverse interleaved-list))))

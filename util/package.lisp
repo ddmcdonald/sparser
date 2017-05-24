@@ -47,6 +47,7 @@
            #:trim-whitespace
            #:contains-whitespace
            #:spaced-string
+           #:underscore-interleaved-string
 
            ;; hash-tables
            #:all-hash-keys
