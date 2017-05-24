@@ -838,14 +838,17 @@
   :index (:permanent :key name)
   :lemma (:common-noun "RNA")
   :realization
-     (:common-noun name))
+     (:common-noun name 
+      :noun "ribonucleic acid"))
 
 (define-category micro-rna  :specializes rna
   :instantiates self
+  :bindings (uid "NCIT:C25966")
   :index (:permanent :key name)
   :lemma (:common-noun "micro-rna")
   :realization
-     (:common-noun name))
+     (:common-noun name 
+      :noun ("miR" "microRNA" "miRNA")))
 
 
 (define-category lipid :specializes molecule
