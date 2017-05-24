@@ -119,7 +119,16 @@
   :specializes lipidation ;; based on wikipedia for lipidation
   :bindings (uid  "GO:0018342")
   :realization
-  (:verb "prenylation" :noun "prenylation"
+  (:verb "prenylate" 
+         :noun "prenylation"
+   :etf (svo-passive)))
+
+(define-category isoprenylation
+;; can't find a go:id, but the past tense came up for a protein definition
+  :specializes prenylation 
+  :realization
+  (:verb "isoprenylate" 
+         :noun "isoprenylation"
    :etf (svo-passive)))
 
 (define-category farnesylation 
