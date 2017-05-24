@@ -169,3 +169,12 @@
 (noun "lactate" :super molecule)
 (noun "32P" :super molecule) 
 ;; actually an isotope -- need to adjust taxonomy 
+
+;;;-------------
+;;; miscellaneous with IDs
+;;;-------------
+
+(def-indiv-with-id molecule "enoyl" "CHEBI:23916") ;; acyl group -- mostly comes up in Enoyl-CoA hydratase, and was previously defined erroneously as the name for that protein
+(def-indiv-with-id molecule "stearoyl" "CHEBI:26753") ;; mostly comes up in Stearoyl-CoA enzyme, and was previously defined erroneously as the name for that protein
+(def-indiv-with-id molecule "aspartate" "CHEBI:22660" :name "aspartic acid")
+(def-indiv-with-id molecule "citrate" "CHEBI:30769" :name "citric acid")
