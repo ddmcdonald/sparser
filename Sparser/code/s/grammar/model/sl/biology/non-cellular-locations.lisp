@@ -34,6 +34,7 @@
 (noun "eye" :super bio-organ)
 (noun "prostate" :super bio-organ)
 (noun "kidney" :super bio-organ)
+(noun "thyroid" :super bio-organ)
 (define-category pancreas :specializes bio-organ
   :realization
   (:noun "pancreas" :adj "pancreatic"))
@@ -109,8 +110,16 @@
     (:noun "mammal"
      :adj "mammalian"))
 
-(noun ("mouse" :plural "mice") :super organism) ;; changed from species to organism
-(noun "Xenopus" :super species)
-(noun "zebrafish" :super species)
-(noun "human" :super species) 
+;;;-------------------
+;;; organisms with IDs
+;;;-------------------
 
+(def-indiv-with-id organism "Caenorhabditis elegans" "TI:6239" :synonyms ("C. elegans")) 
+(def-indiv-with-id organism "drosophila" "NCIT:C14202" :synonyms ("fruit fly")) 
+(def-indiv-with-id organism "mouse" "NCIT:C14238" :plural "mice" :synonyms ("mus"))
+(def-indiv-with-id organism "rat" "NCIT:C14266")
+(def-indiv-with-id organism "xenopus" "NCIT:C14285") 
+(def-indiv-with-id organism "zebrafish" "NCIT:C14287") 
+
+(def-indiv-with-id species "Saccharomyces cerevisiae" "NCIT:C14271" :synonyms ("saccharomyces" "yeast" "S. cerevisiae")) 
+(def-indiv-with-id species "human" "NCIT:C14225" :synonyms ("homo sapiens"))
