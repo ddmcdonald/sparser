@@ -73,7 +73,7 @@
 (adj "inhibitory" :super bio-predication)
 (adj "obligatory" :super bio-predication)
 (adj "adhesion" :super bio-predication) ;; TO-DO need to think about how to define "adhere" to structure
-
+(adj "serrated" :super bio-predication) ;; "Serrated polyps display a typical morphology with a serrated folding of the crypt epithelium" and this is caused by the "serrated pathway"
 (adj "scaffolding" :super bio-predication) ;; "scaffolding protein"
 (adj "resting" :super bio-predication)
 (adj "phospho-specific" :super bio-predication) ;; standin for "phospho-specific antibody"
