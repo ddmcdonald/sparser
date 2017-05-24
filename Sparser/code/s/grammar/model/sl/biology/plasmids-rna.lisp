@@ -13,7 +13,7 @@
 ;;; RNA and microRNAs
 ;;;------------------
 
-(noun "rna" :super molecule)
+
 
 (noun "miR-26A" :super micro-rna)
 (noun "miR-26A2" :super micro-rna)
