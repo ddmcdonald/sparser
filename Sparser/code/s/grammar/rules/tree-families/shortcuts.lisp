@@ -85,13 +85,21 @@ broadly speaking doing for you all the things you might do by hand.
 
 (defmacro def-indiv-with-id (category-name word id &key name members adj synonyms plural no-plural maintain-case)
   `(define-individual-with-id ',category-name ,word ,id ,.(when name `(:name ,name))
-                              ,.(when members `(:members ,members))
-                              ,.(when adj `(:adj ,adj))
-                              ,.(when synonyms `(:synonyms ,synonyms))
-                              ,.(when no-plural `(:no-plural ,no-plural))
-                              ,.(when maintain-case `(:maintain-case ,maintain-case))))
+                              ,.(when members `(:members ',members))
+                              ,.(when adj `(:adj ',adj))
+                              ,.(when synonyms `(:synonyms ',synonyms))
+                              ,.(when plural `(:plural ',plural))
+                              ,.(when no-plural `(:no-plural ',no-plural))
+                              ,.(when maintain-case `(:maintain-case ',maintain-case))))
 
-(defun define-individual-with-id (category-name word id &key name members adj synonyms plural no-plural maintain-case)
+(defun define-individual-with-id (category-name word id &key name members adj synonyms plural no-plural 
+                                  maintain-case pos)
+  "This creates individuals with UIDs, given a category, a word, and
+an ID. There are also keyword options for including a name, members,
+an adjectival form, synonyms, unusual plurals (e.g. rhinoviridae for
+rhinovirus), specifying that this should not create plurals, whether
+to maintain case for the word, and what part of speech this should
+be (defaults to common noun)"
   (assert (and category-name word id))
   (when (gethash id *uid-to-individual*)
     (push `(,id ,category-name ,word ,.(when name `(:name ,name))) *id-mult-defs*))
@@ -127,10 +135,9 @@ resolves, it blocks the plural (and in the latter case adds the word
 to the list of *inhibited-plurals* so we can troubleshoot later and
 see if there are issues"
   (let ((*inhibit-constructing-plural* 
-         (or no-plural
-             (if (resolve (plural-version word))
-                 (push word *inhibited-plurals*)
-                 nil))))
+          (or no-plural
+              (when (resolve (plural-version word))
+                (push word *inhibited-plurals*)))))
     (declare (special *inhibit-constructing-plural*))
     (if plural
         (add-rules (make-rules-for-head pos (resolve/make word) category ind :plural plural) ind)
