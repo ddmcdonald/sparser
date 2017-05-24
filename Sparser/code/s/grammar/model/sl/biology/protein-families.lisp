@@ -38,7 +38,27 @@
 
 ;; Protein families
 
+(def-family "bone morphogenetic protein" :identifier "NCIT:C17274" :synonyms ("BMP") :members ("UP:O95390" "UP:O95393""UP:O95972" "UP:P12643" "UP:P12644" "UP:P12645" "UP:P13497" "UP:P18075" "UP:P22003" "UP:P22004" "UP:P34819" "UP:P34820" "UP:P43026" "UP:P55107" "UP:Q6KF10" "UP:Q7Z5Y6" "UP:Q9UK05")) ;; this is the same as "PR:000000034"
+(def-family "basic membrane protein" :identifier "XFAM:PF02608.12" :synonyms ("BMP") :members ("UP:P35855"))
+;(def-family "BMP" :members ( )) ;; not really a family -- some are "bone morphogenetic protein" others are "basic membrane protein" -- better to have it defined on the fly by the article
+(def-family "casein" :identifier "IPR001588")
+(def-family "tetraspanin" :identifier "XFAM:PF00335") ;; same as PR:000001403
+(def-family "Muscarinic acetylcholine receptor" :identifier "IPR000995" :synonyms ("muscarinic receptor") :members ("UP:P08172" "UP:P08173" "UP:P08912" "UP:P11229" "UP:P20309")) ;; "PR:000001488"
+(def-family "opioid receptor" :identifier "IPR001418" :members ("UP:P35372" "UP:P41143" "UP:P41145" "UP:P41146" "UP:Q14982")) ;; "PR:000001497"
+(def-family "tid" :identifier "PR:000006572" :members ("UP:Q96EY1"))
+(def-family "ERH" :identifier "PR:000007177" :members ("UP:P84090" "UP:P84089"))
+(def-family "FOXC1" :identifier "PR:000007607" :members ("UP:Q61572" "UP:Q12948"))
+(def-family "Jumpy" :identifier "PR:000010735"  :members ("UP:Q8NCE2" )) ;; mouse "UP:Q8VEL2" also known as "mJumpy" but that's not defined in def-protein yet since it's unclear we need both that and human :synonyms ("MTMR14" "myotubularin-related protein 14") 
+(def-family "myosin" :members ("UP:A6ZZJ1" "UP:B0I1T2" "UP:B2RTY4" "UP:O00159" "UP:O43795" "UP:O94832" "UP:P08964" "UP:Q13402" "UP:Q13459" "UP:Q23978" "UP:Q23979" "UP:Q758Q9" "UP:Q875X3" "UP:Q8IDR3" "UP:Q99323" "UP:Q9HD67" "UP:Q9NQX4" "UP:Q9ULV0" "UP:Q9Y6X6")) ;; "UP:P11055" from original synonym list, but it also had just "heavy chain"
+(def-family "myosin heavy chain" :members ("UP:A7E2Y1" "UP:P05661" "UP:P08799" "UP:P11055" "UP:P12882" "UP:P12883" "UP:P13533" "UP:P13535" "UP:P35749"  #|previously on just myosin family list|# "UP:P35579" "UP:P35580" "UP:Q05000" "UP:Q9UKX2" "UP:Q9UKX3" "UP:Q9Y2K3" "UP:Q9Y4I1" "UP:Q9Y623"))
+(def-family "myosin light chain" :members ("UP:O14950" "UP:P05976" "UP:P07291" "UP:P09541"  "UP:P10916" "UP:P12829" "UP:P19105" "UP:P24844" #|previously on just myosin family list|# "UP:P53141" "UP:P60660" "UP:P86703" "UP:Q01449" "UP:Q02045" "UP:Q06580" "UP:Q09510" "UP:Q12965" "UP:Q13402" "UP:Q96A32" "UP:Q9BUA6" ))
 
+(def-family "mPGES" :identifier "PR:000013421" :synonyms ("prostaglandin E synthase" "PTGES" "Microsomal prostaglandin E synthase 1") :members ("UP:O14684" "UP:Q9JM51"))
+(def-family "neurotrophin" :identifier "PR:000021998" :members ("UP:P20783" "UP:P34130"  "UP:Q9UBD9"))
+(def-family "nudf" :identifier "FA:02562" :synonyms ("nudF" "nudF subfamily" "ADP-ribose pyrophosphatase" "ASPPase") :members ("UP:Q9BW91")) ;; "PR:000023424" is another family id; UP:Q93K97 is the e coli upid; even though the human one (the one current member) is a Nudt, it says on uniprot it's part of the nudf family
+(def-family "DDR" :identifier "IPR003208" :synonyms ("diol dehydratase-reactivating factor")) ;; also PR:000027169 -- both a family and a complex
+(def-family "TSH" :identifier "NCIT:C2280" :synonyms ("thyroid stimulating hormone") :members ("UP:P01215" "UP:P01222")) ;; alternate id  "PR:000028269" -- more of a complex than a protein family
+(def-family "tubulin" :identifier "PR:000028799") ;; we have many members defined -- fold in later
 (def-family "SAPK" :synonyms ("SAP kinase activity" "stress activated protein kinase" "stress=activated protein kinase" ) :identifier "GO:0016909" ) 
 (def-family "histone H2B" :identifier "FA:01763")
 (def-family "CDK" :synonyms ("cyclin dependent kinase" "cyclin-dependent kinase" "Cdks" "CDKs") :identifier "NCIT:C17767")	
@@ -53,13 +73,13 @@
 (def-family "EPHB receptor":members ("EPHB1_HUMAN" "EPHB2_HUMAN" "EPHB3_HUMAN" "EPHB4_HUMAN" "EPHB5_HUMAN" "EPHB6_HUMAN"))
 (def-family "GPCR")
 (def-family "HLA class I molecule")
-(def-family "HSP90") ;; heat-shock proteins
+(def-family "HSP90" :identifier "XFAM:PF02518" :synonyms ("HSPC") :members ("UP:P07900" "UP:P08238" "UP:P14625" "UP:P55737" "UP:Q14568" "UP:Q58FF7" "UP:Q58FF8" "UP:Q58FG1")) ;; heat-shock proteins -- other id PR:000025350
 (def-family "IgG")
 (def-family "IQGAP" :members ("IQGAP1" "IQGAP2" "IQGAP3"))
 (def-family "Jnk" :members ("JNK1" "JNK2" "JNK3A"))
 (def-family "JNK1/2" :members ("JNK1" "JNK2") :identifier "BE:JNK")
 (def-family "MAP2K" :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7") :synonyms ("mitogen activated protein kinase" "MAP kinase kinase") )
-(def-family "MAPK" :members ("UP:Q5A1D3" "UP:P27638" "UP:Q54QB1" ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase" "mitogen-activated protein kinase" "ERK-1/2"))
+(def-family "MAPK" :members ("UP:Q5A1D3" "UP:P27638" "UP:Q54QB1" ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase"  "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "ERK-1/2") :identifier "PR:000000019")
 (def-family "MEK" :members ("MEK1" "MEK2") :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase"))
 (def-family "NF-AT" :members ("NFAT5_HUMAN")) 
 (def-family "PI3-kinase" :synonyms ("PI3K" "phosphatidylinositol-4,5-bisphosphate 3-kinase" "phosphatidylinositide 3-kinase"  "phosphatidylinositol 3-kinase" "phosphatidylinositol-3-kinase" "PI 3-kinase" "PI(3)K" "PI-3K") :identifier "PF00454")
@@ -514,8 +534,8 @@
 (def-family "vascular endothelial growth factor receptor 2" :members ("UP:P35968" "UP:P52583")) 
 (def-family "β2" :members ("UP:Q60430" "UP:Q9Y691")) 
 (def-family "β5" :members ("UP:G3MZC5" "UP:Q9Y5E4")) 
-(def-family "Rac" :identifier "FA:03066" :synonyms ("Akt" "AKT" "RAC subfamily" "NCIT:C41625" "protein kinase B") :members ("AKT1" "AKT2" "AKT3"))
-
+(def-family "Rac" :identifier "FA:03066" :synonyms ("Akt" "AKT" "RAC subfamily" "NCIT:C41625" "protein kinase B" "pkba" "PR:000029189") :members ("AKT1" "AKT2" "AKT3"))
+(def-family "selenoprotein" :identifier "PR:000037068") ;; not really a family -- "A protein that contains at least one L-selenocysteine residue." 
 
 (def-family "Notum" :synonyms ("notum") :identifier "FA:05336")
 (def-family "LRRC8" :synonyms NIL :identifier "FA:05277")
@@ -720,7 +740,7 @@
 (def-family "CNC" :synonyms NIL :identifier "FA:00407")
 (def-family "PLUNC" :synonyms ("plunc") :identifier "FA:00392")
 (def-family "BAF" :synonyms ("BaF" "Baf") :identifier "FA:00326")
-(def-family "ARS2" :synonyms NIL :identifier "FA:00267")
+(def-family "ARS2" :synonyms NIL :identifier "FA:00267" :members ("UP:Q9BXP5"))
 (def-family "Piwi" :synonyms ("piwi") :identifier "FA:00252")
 (def-family "AlkB" :synonyms ("alkB") :identifier "FA:00158")
 (def-family "AKAP95" :synonyms NIL :identifier "FA:00137")
