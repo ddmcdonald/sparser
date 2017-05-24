@@ -3,11 +3,14 @@
 ;;;
 ;;;     File:  "methods"
 ;;;   Module:  "model;core:places:"
-;;;  version:  April 2017
+;;;  version:  May 2017.
 
-;; broken out from operators 11/18/16
+;; N.b. This file is loaded late after all categories have been defined.
+;; It is for location-oriented compose methods
 
 (in-package :sparser)
+
+;; Track with (trace-methods)
 
 ;;;------------------------------------------------------------------------------
 ;;; Methods used by syntax functions that appreciate the spatial operators &such
@@ -33,9 +36,19 @@
 
 ;;--- spatial-operator
 
+(defun make-relative-location/revise-parent (operator place)
+  "shared subroutine. Construct and return the relative-location
+   individual. Relable the parent edges as a 'location'."
+  (let ((i (find-or-make-individual 'relative-location
+                                    :prep operator
+                                    :ground place)))
+    (revise-parent-edge :category (category-named 'location))
+    i))
+
+
+;; Designed for phrases like "on the table",  or "the top block"
 (def-k-method compose ((operator category::spatial-operator)
-                       (place category::has-location)) ;; any 'object'
-  ;; Designed for phrases like "on the table",  or "the top block"
+                       (place category::has-location)) ;; e.g. 'object'
   (declare (special *subcat-test* category::pp))
   (if *subcat-test*
     t
@@ -48,27 +61,13 @@
            (let ((head (bind-variable 'location operator place)))
              head))
           ((eq form category::pp)
-           (let ((i (find-or-make-individual 'relative-location
-                                             :prep operator
-                                             :ground place)))
-             (revise-parent-edge :category (category-named 'location))
-             i))
+           (make-relative-location/revise-parent operator place))
           (t
            (push-debug `(,operator ,place))
            (error "Unanticipated form on parent edge: ~a" form)))))))
 
 
-
-(defun make-relative-location/revise-parent (operator place)
-  "shared subroutine. Ought to be able to fold this in somewhere
-   in the wrangling of compose methods"
-  (let ((i (find-or-make-individual 'relative-location
-                                    :prep operator
-                                    :ground place)))
-    (revise-parent-edge :category (category-named 'location))
-    i))
-
-#+ignore  ;; move to after the pronouns are defined
+;; "next to it"
 (def-k-method compose ((operator category::spatial-operator)
                        (place category::pronoun/inanimate))
   (if *subcat-test*
@@ -77,9 +76,10 @@
       (tr :spatial-operator+pronoun operator place)
       (make-relative-location/revise-parent operator place))))
 
+
+;; for "at the right end of the row"
 (def-k-method compose ((operator category::spatial-operator)
                        (place category::location))
-  ;; for "at the right end of the row"
   (declare (special *subcat-test*))
   (if *subcat-test*
     t

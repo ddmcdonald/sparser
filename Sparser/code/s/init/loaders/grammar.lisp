@@ -4,7 +4,7 @@
 ;;;
 ;;;      File:  "grammar"
 ;;;    Module:  "init;loaders;"
-;;;   version:  January 2017
+;;;   version:  May 2017
 
 ;; broken out from loaders;master-loader 4/19/94. Added Whos-news-post-dossiers-loader
 ;;  4/29 added [words;whitespace assignments].  5/25 consolidated the
@@ -293,6 +293,9 @@ omitted and then run (perhaps) after the image has been launched."
   
   (gate-grammar *whos-news*
     (whos-news-post-dossiers-loader))
+
+  (gate-grammar *locations-core*
+     (gload "places;methods"))
 
   (gate-grammar *time*
     (late-time-files)
