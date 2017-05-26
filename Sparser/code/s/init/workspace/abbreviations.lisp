@@ -96,30 +96,6 @@
        (format t "\"~a\" does not name a category" category-name)
        nil))))
 
-(defgeneric rule-for (label)
-  (:documentation "Given a word, what is the rule/s in its rule-set")
-  (:method ((pname string))
-    (let ((w (resolve pname)))
-      (if w
-        (rule-for w)
-        (format t "The word ~s is not defined" pname))))
-  (:method ((w word))
-    (let ((rs (rule-set-for w)))
-      (if rs
-        (rule-for rs)
-        (format t "~s does not have a rule-set" (pname w)))))
-  (:method ((w polyword))
-    (let ((rs (rule-set-for w)))
-      (if rs
-        (rule-for rs)
-        (format t "~s does not have a rule-set" (pname w)))))
-  (:method ((rs rule-set))
-    (values (rs-backpointer rs)
-            (rs-single-term-rewrites rs))))
-
-(defun single-term-rewrite? (word)
-  (multiple-value-bind (bkpt s-t-r) (rule-for word)
-  s-t-r))
 
 (defmacro sc (cat-name)
   `(super-categories-of

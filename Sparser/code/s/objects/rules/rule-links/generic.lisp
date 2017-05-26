@@ -36,6 +36,34 @@
 (defun remove-rule-set-from (obj)
   (setf (rule-set-for obj) nil))
 
+(defgeneric rule-for (label &key no-warn)
+  (:documentation "Given a word, what is the rule/s in its rule-set")
+  (:method ((pname string) &key no-warn)
+    (let ((w (resolve pname)))
+      (if w
+        (rule-for w :no-warn no-warn)
+        (unless no-warn
+          (format t "The word ~s is not defined" pname)))))
+  (:method ((w word) &key no-warn)
+    (let ((rs (rule-set-for w)))
+      (if rs
+        (rule-for rs)
+        (unless no-warn
+          (format t "~s does not have a rule-set" (pname w))))))
+  (:method ((w polyword) &key no-warn)
+    (let ((rs (rule-set-for w)))
+      (if rs
+        (rule-for rs)
+        (unless no-warn
+          (format t "~s does not have a rule-set" (pname w))))))
+  (:method ((rs rule-set) &key no-warn)
+    (values (rs-backpointer rs)
+            (rs-single-term-rewrites rs))))
+
+(defun single-term-rewrite? (item &key no-warn)
+  (multiple-value-bind (word rule) (rule-for item :no-warn no-warn)
+    rule))
+
 ;;;--------------------
 ;;; rules on the plist
 ;;;--------------------
