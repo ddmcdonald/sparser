@@ -108,6 +108,10 @@ ones are gratuitously ambiguous with capitalized initials.
 (def-amino-acid "asparagine" "asn" "N")
 (def-amino-acid "asparagine/aspartic acid" "asx" "B")
 (def-amino-acid "aspartic acid"  "asp" "D")
+(add-rules (make-rules-for-head :common-noun (resolve/make "aspartate") 
+                                category::amino-acid
+                                (find-individual 'amino-acid :name "aspartic acid"))
+            (find-individual 'amino-acid :name "aspartic acid"))
 (def-amino-acid "cysteine" "cys" "C")
 (def-amino-acid "glutamine" "gln" "Q")
 (def-amino-acid "glutamic acid" "glu" "E")
