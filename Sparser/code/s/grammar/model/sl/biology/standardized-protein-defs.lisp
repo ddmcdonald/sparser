@@ -6439,7 +6439,7 @@
 (define-protein "UP:P17752" ("p17752" "TPH" "TPH1" "TPH1_HUMAN" "TPRH" "TRPH" "tph" "tph1" "trph" "tryptophan 5-hydroxylase" "tryptophan 5-hydroxylase 1" "tryptophan 5-monooxygenase" "tryptophan hydroxylase (tryptophan 5-monooxygenase)" "tryptophan hydroxylase 1")) 
 (define-protein "UP:P17787" ("ACHB2_HUMAN" "CHRNB2" "neuronal acetylcholine receptor subunit beta-2" "p17787" "beta 2 (neuronal)" "beta polypeptide 2 (neuronal)" "cholinergic receptor nicotinic beta 2 subunit" "nicotinic beta 2")) 
 (define-protein "UP:P17812" ("CTP synthase" "CTP synthase 1" "CTP synthetase" "CTPS" "CTPS1" "p17812" "PYRG1_HUMAN" "UTP--ammonia ligase")) 
-(define-protein "UP:P17813" ("CD105" "ENG" "end" "eng" "endoglin")) 
+(define-protein "UP:P17813" ("CD105" "ENG" "eng" "endoglin")) 
 (define-protein "UP:P17844" ("68kD)" "DDX5" "DDX5_HUMAN" "DEAD (Asp-Glu-Ala-Asp)box helicase 5" "DEAD (Asp-Glu-Ala-Asp)box polypeptide 5" "DEAD-box helicase 5" "DEAD/H (Asp-Glu-Ala-Asp/His)box polypeptide 5 (RNA helicase" "ddx5" "G17P1" "HELR" "HLR1" "p17844" "Probable ATP dependent RNA helicase DDX5" "Probable ATP-dependent RNA helicase DDX5" "RNA helicase p68")) 
 (define-protein "UP:P17858" ("ATP-PFK" "p17858" "PFK-B" "PFK-L" "PFKAL_HUMAN" "PFKL" "phosphohexokinase" "pfkB")) 
 (define-protein "UP:P17861" ("p17861" "TREB-5" "tax-responsive element-binding protein 5" "X-BOX BINDING PROTEIN" "x-box binding protein 1" "x-box binding protein-1" "x-box-binding protein 1" "x-box-binding protein-1" "XBP-1" "XBP1" "XBP1_HUMAN" "XBP1s")) 
