@@ -85,8 +85,6 @@
 (def-synonym abeta (:noun "amyloid beta"))
 ;; to be reviewed -- from Localization
 
-(noun "MLC" :super peptide) ;; couldn't find ontological ID
-(def-synonym mlc (:noun "myosin light chain"))
 
 ;;;-------------
 ;;; lipids
@@ -176,5 +174,5 @@
 
 (def-indiv-with-id molecule "enoyl" "CHEBI:23916") ;; acyl group -- mostly comes up in Enoyl-CoA hydratase, and was previously defined erroneously as the name for that protein
 (def-indiv-with-id molecule "stearoyl" "CHEBI:26753") ;; mostly comes up in Stearoyl-CoA enzyme, and was previously defined erroneously as the name for that protein
-(def-indiv-with-id molecule "aspartate" "CHEBI:22660" :name "aspartic acid")
 (def-indiv-with-id molecule "citrate" "CHEBI:30769" :name "citric acid")
+(def-indiv-with-id molecule "ice" "NCIT:C67342" :name "ice") ;; while there's a protein with a gene name ICE, it's much more likely that the lowercase "ice" is referring to frozen water not the protein

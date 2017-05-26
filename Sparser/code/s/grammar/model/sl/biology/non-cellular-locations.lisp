@@ -122,4 +122,4 @@
 (def-indiv-with-id organism "zebrafish" "NCIT:C14287") 
 
 (def-indiv-with-id species "Saccharomyces cerevisiae" "NCIT:C14271" :synonyms ("saccharomyces" "yeast" "S. cerevisiae")) 
-(def-indiv-with-id species "human" "NCIT:C14225" :synonyms ("homo sapiens"))
+(def-indiv-with-id species "human" "NCIT:C14225" :name "human" :synonyms ("homo sapiens"))

@@ -286,7 +286,8 @@
      :in in-equilibrium-with))
 
 (define-category dna :specializes bio-chemical-entity
-   :realization (:noun "DNA"))
+   :bindings (uid "CHEBI:16991")
+   :realization (:noun ("DNA" "deoxyribonucleic acid")))
 
 
 (define-category dna-motif :specializes bio-chemical-entity
