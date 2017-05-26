@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "families"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  April 2017
+;;;  version:  May 2017
 
 ;; Initiated 2/6/14. Augment the realization options of shortcuts
 ;; 9/19/14 Supplanted original notion with a new one that seems
@@ -23,6 +23,9 @@
   ((etf :initarg :etf :accessor schema-tree-family
     :documentation "The exploded tree family that's used.
       We need its schema as the basis of the rules we make.")
+   (phrase :initarg :phrase :accessor mumble-phrase
+    :documentation "The Mumble phrase that corresponds to 
+      this etf")
    (head-keyword :initarg :head :accessor schema-head-keyword
     :documentation "The keyword used with the actual word
       in the call to head-word-rule-construction-dispatch ")
@@ -56,13 +59,16 @@
                    :name name
                    initargs))))
 
-(defmacro define-realization-scheme (name etf-name &key args head mapping)
-  `(fom-realization-scheme ',name
-                           :etf ',(exploded-tree-family-named etf-name)
-                           :args ',args
-                           :head ',head
-                           :mapping ',mapping))
-      
+(defmacro define-realization-scheme (name etf-name
+                                     &key args head mapping phrase)
+  (let ((decoded-phrase (translate-mumble-phrase-data phrase)))
+    `(fom-realization-scheme ',name
+                             :etf ',(exploded-tree-family-named etf-name)
+                             :args ',args
+                             :head ',head
+                             :phrase ',decoded-phrase
+                             :mapping ',mapping)))
+
 ;;;-------
 ;;; cases
 ;;;-------
@@ -80,6 +86,7 @@ when contemplating using a new tree family
 
 (define-realization-scheme sv intransitive
   :head :verb
+  :phrase (SV (s . subj-slot) (v . :self))
   :mapping ((agent . subj-slot)
             (s . :self)
             (vp . :self)
@@ -88,6 +95,8 @@ when contemplating using a new tree family
 
 (define-realization-scheme svo transitive
   :head :verb
+  :phrase (SVO (s . subj-slot) (v . :self)
+               (o . theme-slot))
   :mapping ((agent . subj-slot)
             (patient . theme-slot)
             (s . :self)
@@ -98,6 +107,8 @@ when contemplating using a new tree family
 
 (define-realization-scheme svol transitive-loc-comp
   :head :verb
+  :phrase (SVO1O2 (s . subj-slot) (v . :self) 
+                  (o1 . theme-slot) (o2 . loc-slot))
   :mapping ((agent . subj-slot)
             (patient . theme-slot)
             (location . loc-slot)
@@ -111,6 +122,8 @@ when contemplating using a new tree family
 (define-realization-scheme svo-passive passive/with-by-phrase
   :args (agent-slot agent-v/r patient-slot patient-v/r)
   :head :verb
+  :phrase (SVO (s . subj-slot) (v . :self)
+               (o . theme-slot)) ;; by-phrase is an adjunct
   :mapping ((agent . subj-slot)
             (patient . theme-slot)
             (s . :self)
@@ -125,6 +138,7 @@ when contemplating using a new tree family
             
 (define-realization-scheme svcomp that-complement
   :head :verb
+  :phrase (SVSCOMP (s v c))
   :mapping ((s . :self)
             (np .  subj-v/r)
             (vg . :self)
