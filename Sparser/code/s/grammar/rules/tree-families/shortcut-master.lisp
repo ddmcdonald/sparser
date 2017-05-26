@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "shortcut-master"
 ;;;   Module:  "grammar;rules;tree-families;"
-;;;  Version:  April 2017
+;;;  Version:  May 2017
 
 ;; Initiated 9/14/14 to make more flexible, complete shortcuts.
 ;; 11/11/14 added keyword for obo-id.
@@ -38,7 +38,9 @@
                               etf adj noun verb c prep mumble &aux
                               (etf (ensure-list etf)))
   "Decoder for the shortcut form of define-category, def-synonym, etc.
-   Exactly one ETF is allowed, but for compatibility we assume a list."
+   Exactly one ETF is allowed, but for compatibility we assume a list.
+   Called by setup-rdata to convert the shortcut version of realization
+   data into the same pattern as used in the long form."
   (declare (special word::|by|)
            (ignore mumble)
            (optimize debug))
@@ -47,7 +49,8 @@
   (let* ((subcat-frame (get-subcategorization category))
          (schema-name (car etf))
          (scheme (and schema-name (realization-scheme-named schema-name)))
-         (substitution-map '()))
+         (substitution-map '())
+         mumble-rdata)
     (assert subcat-frame (category) "No subcategorization frame on ~a." category)
     (when scheme
       (let ((subj-pat (find-subcat-pattern :subject subcat-frame)))
@@ -90,5 +93,16 @@
           (push `(comp-slot . ,var) substitution-map)
           (push `(comp-v/r . ,v/r) substitution-map)))
 
+      (when (mumble-phrase scheme)
+        (let* ((phrase-and-map (mumble-phrase scheme))
+               (phrase (car phrase-and-map))
+               (schematic-map (cdr phrase-and-map)))
+          (let ((populated-map
+                 (make-mumble-mapping schematic-map substitution-map category)))
+            (setq mumble-rdata (cons phrase populated-map)))))
+
+      ;; Has to return the same values as decode-rdata does
       (values (schema-tree-family scheme)
-              (make-scheme-mapping scheme substitution-map category)))))
+              (make-scheme-mapping scheme substitution-map category)
+              nil ;; local rules
+              mumble-rdata))))

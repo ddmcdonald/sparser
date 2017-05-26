@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE; -*-
-;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
 ;;;
 ;;;     File: "krisp-mapping"
 ;;;   Module: "interface;mumble;"
-;;;  Version: April 2016
+;;;  Version: May 2017
 
 ;;; Krisp category / lexical head to annotated phrase
 

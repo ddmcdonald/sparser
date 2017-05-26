@@ -202,15 +202,16 @@ Should mirror the cases on the *single-words* ETF."
     (multiple-value-bind (args slots relations) (decode-subcat-slots rdata)
       (apply #'fom-subcategorization category slots)
       (loop for (relation variable) on relations by #'cddr
-            do (register-variable category relation variable))
-      (multiple-value-bind (etf mapping local-rules)
+         do (register-variable category relation variable))
+      (multiple-value-bind (etf mapping local-rules mdata)
           (apply (if (getf args :etf) #'decode-shortcut-rdata #'decode-rdata)
                  category args)
         (make-realization-data category
                                :heads (decode-rdata-heads args category)
                                :etf etf
                                :mapping mapping
-                               :local-rules local-rules)))
+                               :local-rules local-rules
+                               :mumble mdata)))
     (when mumble
       (apply-mumble-rdata category rdata))))
 
@@ -227,6 +228,9 @@ Should mirror the cases on the *single-words* ETF."
     :documentation "A completely dereferenced mapping from
       an individual as a instance of a category to the variables 
       used in that case.")
+   (mumble :initform nil :initarg :mumble :accessor mumble-rdata
+    :documentation "Records the phrase and mapping to use when
+      realizing an instance of this category.")
    (locals :initform nil :initarg :local-rules :accessor rdata-local-rules
     :documentation "The rules that are written out in direct form
       to cover cases not incorporated in the ETF of the realization.")
@@ -239,9 +243,11 @@ Should mirror the cases on the *single-words* ETF."
   (print-unreadable-object (rdata stream :identity t)
     (format stream "realization for ~a" (cat-name (rdata-for rdata)))))
 
-(defmethod initialize-instance :after ((instance realization-data) &key category etf heads)
-  (when etf (record-use-of-tf-by etf category))
-  (when heads (make-corresponding-lexical-resource heads category)))
+(defmethod initialize-instance :after ((instance realization-data)
+                                       &key category etf heads mumble)
+  (when etf (record-use-of-tf-by etf category))  
+  (when heads (make-corresponding-lexical-resource heads category))
+  (when mumble (setup-mumble-data mumble category instance)))
 
 (defun make-realization-data (category &rest initargs)
   "Make a realization data record and attach it to a category."

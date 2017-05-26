@@ -1,9 +1,9 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER -*-
-;;; Copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; Copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "shortcut-expansion"
 ;;;   Module:  "grammar;rules;tree-families;"
-;;;  Version:  August 2016
+;;;  Version:  May 2017
 
 ;; Broken out of shortcut-master 9/21/14 to allow both files to be
 ;; seen at once now that the cases have gotten intricate.
@@ -75,3 +75,18 @@
                                      ((cdr value))
                                      "Bad disjunctive value restriction.")
                              (cdr value)))))))
+
+(defun make-mumble-mapping (schematic-map substitution-map category)
+  "Use the regular substitution map for this category to the replace the
+   terms in the parameter mapping (e.g. subj-slot)."
+  (loop for (parameter . schematic-value) in schematic-map
+     if (eq schematic-value :self)
+     collect `(,parameter ,category)
+     else
+     collect (cons parameter
+                   (let ((value (or (cdr (assq schematic-value substitution-map))
+                                    (error "No value for ~a among the substitution args."
+                                           schematic-value))))
+                     (etypecase value
+                       (lambda-variable
+                        value))) )))

@@ -1,27 +1,111 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: SPARSER; -*-
-;;; Copyright (c) 2016 David D. McDonald. All Rights Reserved.
+;;; Copyright (c) 2016-2017 David D. McDonald. All Rights Reserved.
 ;;;
 ;;;     File: "rdata"
 ;;;   Module: "interface;mumble;"
-;;;  Version: November 2016
+;;;  Version: May 2017
 
 (in-package :sparser)
 
-;;;---------------------------------
-;;; Mumble information within rdata
-;;;---------------------------------
+;;;--------------------------------------------
+;;; Mumble information within shortcut schemes
+;;;--------------------------------------------
+
+(defun translate-mumble-phrase-data (phrase-exp)
+  "Called from define-realization-scheme to decode and check
+   the Mumble side of the mapping schema. This map is like the 
+   maps in realization schema in that it records variable
+   descriptors (e.g. subj-slot) rather than actual variables.
+   The converstion to actual variables is done by make-mumble-mapping
+   which is called by decode-shortcut-rdata.
+     The value this returns becomes the value of the 'phrase'
+   slot of the realization-scheme we're defining."
+  (let* ((phrase-name (car phrase-exp))
+         (phrase (m::phrase-named (mumble-symbol phrase-name)))
+         (arg-pairs (cdr phrase-exp))
+         (decoded-pairs
+          (loop for (param-name . schematic-var) in arg-pairs
+             as param = (m::parameter-named (mumble-symbol param-name))
+             collect `(,param . ,schematic-var))))
+    (cons phrase decoded-pairs)))
+
+
+(defun setup-mumble-data (raw-data category rdata)
+  "Called from the initialize-instance method of realization-data.
+   Take the phrase and mapping prepared in decode-shortcut-data ('mdata')
+   working from the information on the phrase and create the runtime 
+   object that realize et al. will access. Store that on the 
+   instance ('rdata')."
+  (let* ((phrase (car raw-data))
+         (map (cdr raw-data))
+         (variables (loop for (parameter . variable) in map
+                       collect variable))
+         (param-var-map
+          (loop for (parameter . variable) in map
+             collect (make-instance 'mumble::parameter-variable-pair
+                                    :var variable :param parameter)))
+         (head-data (rdata-head-words rdata)))
+
+    (multiple-value-bind (m-head lp)
+        (decode-rdata-head-data head-data phrase category)
+      (let ((mdata (make-instance 'm::mumble-rdata
+                                  :class category
+                                  :lp lp
+                                  :map param-var-map
+                                  :head m-head
+                                  :vars variables)))      
+        (setf (mumble-rdata rdata) mdata)))))
+      
+(defun decode-rdata-head-data (head-data phrase category)
+  "The head information in realization-data is moderately complicated.
+   This digests it and returns the mumble word that is the head and
+   the corresponding lexicalized phrase."
+  (when head-data
+    (unless (third head-data) ;; e.g. evidence in bio;taxonomy
+      ;;(error "the category ~a has mulitple heads: ~a" category head-data))
+      ;;/// Have to think about what to do with these
+      
+      ;; head = (:verb (#<word "build"> :past-tense #<word "built">))
+      (let* ((pos (car head-data)) 
+             (word-data (cadr head-data)))
+        (multiple-value-bind (s-head-word irregulars)
+            (etypecase word-data
+              (cons (values (car word-data) (cdr word-data)))
+              (word word-data)
+              (polyword word-data))
+          (declare (ignore irregulars)) ;;//// lookup Mumble-side
+          ;; rdata processing has already done the head at the point
+          ;; when we're called, so the m-word should exist, though
+          ;; not the lp if this is a verb
+          (let* ((mpos (mumble-pos pos))
+                 (m-word (get-mumble-word-for-sparser-word
+                          s-head-word pos)))
+            (unless m-word
+              (error "Why isn't there already a mumble word for ~s"
+                     (pname s-head-word)))
+            (let ((lp (or (m::get-lexicalized-phrase m-word)
+                          (make-resource-for-sparser-word
+                           s-head-word pos phrase))))
+              ;;(lsp-break "lp for ~s is ~a" (pname s-head-word) lp)
+              (values m-word lp))))))))
+
+
+
+;;;-----------------------------------------------
+;;; Mumble information within rdata -- verb cases
+;;;-----------------------------------------------
 
 (defun apply-mumble-rdata (category rdata)
   "Provide phrase and argument information (so far only)
    for verbs. Look up the m-word, which should exist
-   at this point, and create the lexicalized phrase."
+   at this point, and create the lexicalized phrase.
+   Called from setup-rdata when the mumble flag is up."
   (let ((mumble-spec (cadr (if (keywordp (car rdata))
                              (member :mumble rdata)
                              (assq :mumble rdata)))))
     (decode-mumble-spec category mumble-spec)))
 
 (defun decode-mumble-spec (category mumble-spec)
-  "Entry point from decode-realization-parameter-list"
   ;; e.g. (:mumble ("build" svo :o artifact))
   ;;      (:mumble ("push" svo :s agent :o theme))
   ;;      (:mumble (transitive-with-final-adverbial "push" "together"))
@@ -120,12 +204,19 @@
       (mumble::record-lexicalized-phrase m-word lp)
       (mumble::record-krisp-mapping m-word clp)
       (setf (get-tag :mumble category) clp))))
+
+
+;;;------------
+;;; head words
+;;;------------
          
 (defun make-corresponding-lexical-resource (head-word category)
-  "Called from dereference-rdata and makes its own
-   judgement abuot whether its appropriate to create
-   Mumble resources in the present configuration and/or
-   dynamic context."
+  "Called from the initialize-instace method of realization-data;
+   see make-realization-data. The 'head-word' was constructed by
+   decode-rdata-heads. The goal is to arrange that every word
+   that is mentioned in realization data of a category should 
+   have a mumble word created for it. We ensure there's a sparser
+   word first, then make its mumble equivalent."
   (declare (special *build-mumble-equivalents*))
   (when (or *build-mumble-equivalents*
             *CwC*)
@@ -134,13 +225,16 @@
            (word (etypecase word-or-variable
                    ((or word polyword) word-or-variable)
                    (list (car word-or-variable))
-                   (lambda-variable
-                    (let ((lemma (or (get-tag :lemma category)
-                                     (list :common-noun
-                                           (let ((name (cat-name category)))
-                                             (make-word :symbol name
-                                                        :pname (string-downcase
-                                                                (symbol-name name))))))))
+                   (lambda-variable 
+                    ;; Should we be doing words for variables?
+                    ;; e.g. head-word = (:word #<variable name>)
+                    (let ((lemma
+                           (or (get-tag :lemma category)
+                               (list :common-noun
+                                     (let ((name (cat-name category)))
+                                       (make-word :symbol name
+                                                  :pname (string-downcase
+                                                          (symbol-name name))))))))
                       (assert (= (length lemma) 2) (lemma) "Improper lemma.")
                       (setq pos-tag (car lemma))
                       (cadr lemma))))))
@@ -159,23 +253,34 @@
     (make-resource-for-sparser-word word pos-tag)
     :done)) ;; keep this on the stack
 
-(defun make-resource-for-sparser-word (word pos-tag)
-  (let* ((m-pos (case pos-tag
-                  (:adjective 'mumble::adjective)
-                  ((or :noun :common-noun :proper-noun) 'mumble::noun)
-                  (:verb 'mumble::verb)
-                  (:adverb 'mumble::adverb)
-                  (:prep 'mumble::preposition)
-                  (:interjection 'mumble::interjection)))
+(defun mumble-pos (pos-tag) ;; c.f. sparser-pos in binding-centric
+  "Translate a Sparser part of speech into the Mumble equivalent"
+  (case pos-tag ;; no entry for :word and probably others
+    ;; look at e.g. comparative-modifier
+    (:adjective 'm::adjective)
+    ((or :noun :common-noun :proper-noun) 'm::noun)
+    (:verb 'm::verb)
+    (:adverb 'm::adverb)
+    (:prep 'm::preposition)
+    (:interjection 'm::interjection)))
+
+(defun make-resource-for-sparser-word (word pos-tag &optional verb-phrase)
+  "Look up the corresponding mumble part of speech ('m-pos').
+   Make the mumble word ('m-word'). Then create and record 
+   lexicalized phrase to embed the word in the appropriate
+   elementary tree (i.e. lexicalize the appropriate phrase).
+   See Mumble/derivation-trees/builders.lisp for the lexicalized
+   phrase creators."
+  (let* ((m-pos (mumble-pos pos-tag))
          (m-word (and m-pos (get-mumble-word-for-sparser-word word m-pos)))
          (lp (case pos-tag
-               (:adjective (mumble::adjective m-word))
-               ((or :noun :common-noun :proper-noun) (mumble::noun m-word))
-               (:verb) ;; done in the category rdata processing
-               (:adverb) ;; need Mumble adverbial definition
-               (:prep (mumble::prep m-word))
-               (:interjection (mumble::interjection m-word)))))
+               (:adjective (m::adjective m-word))
+               ((or :noun :common-noun :proper-noun) (m::noun m-word))
+               (:verb (m::verb m-word verb-phrase))
+               (:adverb (m::adverb m-word))
+               (:prep (m::prep m-word))
+               (:interjection (m::interjection m-word)))))
     (when lp
-      (mumble::record-lexicalized-phrase m-word lp))))
+      (m::record-lexicalized-phrase m-word lp))))
 
 
