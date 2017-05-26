@@ -80,4 +80,64 @@
              return `(,(mname parameter) ,(pp-dtn value))))))
   (:method ((p phrase))
     (mname p)))
-      
+
+
+;;;-----------------------------------------
+;;; print methods for derivation-tree types
+;;;-----------------------------------------
+
+(defmethod print-object ((dtn base-dt-node) stream)
+  (print-unreadable-object (dtn stream)
+    (format stream "dtn for ~a" (or (referent dtn) "null referent"))))
+
+(defmethod print-object ((slp saturated-lexicalized-phrase) stream)
+  (print-unreadable-object (slp stream)
+    (format stream "lp ~a" (if (typep slp 'has-name)
+                             (mname slp)
+                              (name (phrase slp))))
+    (print-lp-bound-values slp stream)))
+
+(defmethod print-object ((lp partially-saturated-lexicalized-phrase) stream)
+  (print-unreadable-object (lp stream)
+    (format stream "lp: ~a" (name (phrase lp)))
+    (format stream " ~a" (mapcar #'name (free lp)))
+    (print-lp-bound-values lp stream)))
+
+(defgeneric print-lp-bound-values (lp stream)
+  (:documentation "Shared subroutine of several object printers")
+  (:method ((lp saturated-lexicalized-phrase) stream)
+    (loop for pvp in (bound lp)
+       do (format stream " ~a = ~a"
+                  (name (phrase-parameter pvp))
+                  (value pvp)))))
+(defmethod print-object ((pvp parameter-value-pair) stream)
+  (print-unreadable-object (pvp stream)
+    (format stream "pvp: ~a = ~a" 
+            (name (phrase-parameter pvp)) (value pvp))))
+
+(defmethod print-object ((cn complement-node) stream)
+  (print-unreadable-object (cn stream)
+    (let ((parameter (phrase-parameter cn))
+          (value (value cn)))
+      (format stream "complement ~a = ~a"
+              (if parameter (name parameter) "null parameter")
+              value))))
+
+(defmethod print-object ((an adjunction-node) stream)
+  (print-unreadable-object (an stream)
+    (let ((ap (ap an)))
+      (format stream "adjunct ~a = ~a"
+              (if ap (name ap) "null AP") (value an)))))
+
+
+(defmethod print-object ((pvp parameter-variable-pair) stream)
+  (print-unreadable-object (pvp stream)
+    (let ((param (corresponding-parameter pvp))
+          (var (corresponding-variable pvp)))
+      (format stream "~a : ~a" param var))))
+
+(defmethod print-object ((clp category-linked-phrase) stream)
+  (print-unreadable-object (clp stream)
+    (let ((category (linked-category clp))
+          (lp (linked-phrase clp)))
+      (format stream "clp: ~a ~a" category lp))))
