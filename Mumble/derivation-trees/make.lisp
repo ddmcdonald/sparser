@@ -1,7 +1,7 @@
 ;;; -*- Mode: Lisp; Syntax: Common-lisp; -*-
 
 ;;; Copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2010-2015 David D. McDonald  All Rights Reserved
+;;; Copyright (c) 2010-2017 David D. McDonald  All Rights Reserved
 
 ;; /Mumble/derivation-trees/make.lisp
 
@@ -21,13 +21,13 @@
 
 (defgeneric get-lexicalized-phrase (word)
   (:documentation "Given a word or a string, return
-   the lexicalized-phrase it grounds."))
-
-(defmethod get-lexicalized-phrase ((pname string))
-  (gethash pname *strings-to-lexicalized-phrases*))
-
-(defmethod get-lexicalized-phrase ((name symbol))
-  (get-lexicalized-phrase (symbol-name name)))
+   the lexicalized-phrase it grounds.")
+  (:method ((name symbol))
+    (get-lexicalized-phrase (symbol-name name)))
+  (:method ((w word))
+    (get-lexicalized-phrase (pname w)))
+  (:method ((pname string))
+    (gethash pname *strings-to-lexicalized-phrases*)))
 
 ;; There methods with Sparser signatures are in
 ;; Sparser/.../interface/mumble/interface.lisp
@@ -35,17 +35,14 @@
 (defgeneric record-lexicalized-phrase (word lp)
   (:documentation "When a lexicalized phrase is defined,
    record the association of the head word and the phrase
-   so that it can be retrieved by get-lexicalized-phrase."))
-
-(defmethod record-lexicalized-phrase ((word word) 
-                                      (lp lexicalized-resource))
-  (record-lexicalized-phrase (pname word) lp))
-
-
-(defmethod record-lexicalized-phrase ((pname string)
-                                      (lp lexicalized-resource))
-  ;;/// No provision for heading more than one phrase
-  (setf (gethash pname *strings-to-lexicalized-phrases*) lp))
+   so that it can be retrieved by get-lexicalized-phrase.
+   Note there is no provision for linking to more than
+   one word -- would need a protocal to determine which
+   to use.")
+  (:method ((word word) (lp lexicalized-resource))
+    (record-lexicalized-phrase (pname word) lp))
+  (:method ((pname string) (lp lexicalized-resource))
+    (setf (gethash pname *strings-to-lexicalized-phrases*) lp)))
 
 
 ;;;-------------------------------------------
@@ -53,6 +50,8 @@
 ;;;-------------------------------------------
 
 (defun pvp (parameter-name value)
+  "Return a parameter-value-pair, typically for use
+   by a builder"
   (let ((parameter (parameter-named parameter-name)))
     (make-instance 'parameter-value-pair
       :phrase-parameter parameter
@@ -62,41 +61,6 @@
 ;;; Operations on derivation trees
 ;;;--------------------------------
 
-(defvar *the-derivation-tree* nil
-  "This is the scratch pad for the microplanner as it works out what to say.")
-
-(defun clear-derivation-tree-data ()
-  (setq *the-derivation-tree* nil))
-
-(defun initialize-derivation-tree-data (&key root) ;; participants too?
-  ;;/// name reflects probability of more info acruing to this
-  (setq *the-derivation-tree* (make-instance 'derivation-tree
-					     :root root))
-  (when root
-    (typecase root
-      (derivation-tree-node
-       (let ((unit (referent root)))
-	 (when unit
-	   (push unit (participants *the-derivation-tree*))))))))
-
-(defun derivation-tree ()
-  "Return the current value of the global derivation tree
-   which have been rebound to a local dynamic scope."
-  *the-derivation-tree*)
-
-(defun set-derivation-tree (dt)
-  "Set the value of the global derivaton tree"
-  (setq *the-derivation-tree* dt))
-
-;;/// doesn't work -- a variable in the dt position
-;; is unused
-(defmacro with-derivation-tree (dt &body body)
-  `(let ((*the-derivation-tree* ',dt))
-     (declare (special *the-derivation-tree*))
-     ,@body
-     ))
-
-
 ;;--- base case
 
 (defun make-dtn (&key referent resource)
@@ -104,6 +68,25 @@
                :referent referent
                :resource resource)))
     dtn))
+
+
+;;--- copy
+
+(defgeneric copy-dtn (dtn)
+  (:documentation "Make a new derivation tree object that is 
+   a toplevel replica of the original.")
+  (:method ((original derivation-tree-node))
+    (let ((new (make-instance 'derivation-tree-node
+                              :resource (resource original))))
+      ;; Ignoring root, participants, and bkptrs since these
+      ;; aren't being used right now (4/17)
+      (when (complements original)
+        (setf (complements new) (copy-list (complements original))))
+      (when (adjuncts original)
+        (setf (adjuncts new) (copy-list (adjuncts original))))
+      (when (features original)
+        (setf (features new) (copy-list (features original))))
+      new)))
 
 
 
