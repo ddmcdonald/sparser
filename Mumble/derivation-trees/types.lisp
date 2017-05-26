@@ -11,29 +11,34 @@
 
 (in-package :mumble) 
 
-
 ;;;---------------------------
 ;;; generic, high-level types
 ;;;---------------------------
 
-;; Cribed from Zo set, which in turn was cribed from MWM's set. 
+;; Cribed from Zo set (in comments just before the class defintions),
+;; which in turn was cribed from MWM's set. 
 
-; named-object
-(defobject has-name ()
-  ((mname))) ;; just a symbol
-#| This is problematic in that 'name' is a field on the
- -struct- for named-object that's built using def-type.
+;; named-object
+
+(defclass has-name ()
+  ((mname :accessor mname
+    :documentation "Should be set to a symbol that is 
+     a suitable short name for the object."))
+  (:documentation
+   "This would be more natural as 'name', but that is
+ a field on the -struct- for named-object that's built using def-type.
  Probably the way to go is a thorough revision of def-type
  to produce classes and instances using the original set
- of accessors/setters. 
-|#
+ of accessors/setters."))
+
 ; linguistic-object: features
 
 ; referential: referent, expressible-type
 
-(defobject referential ()
-  ((referent ;; a pointer to a model-level unit
-    )))
+(defclass referential ()
+  ((referent :initarg :referent :accessor referent
+    :documentation "a pointer to a model-level unit")))
+    
 
 
 ; ?? linguistic-resource: choice-that-selects-this, anchors-adjunctions,
@@ -54,109 +59,138 @@
 ;;; Derivation tree nodes
 ;;;-----------------------
 
-(defobject derivation-tree ()
-  ;; This is what's passed to Mumble. It is not itself the basis of
-  ;; the realization. Instead it points to it via its root slot. 
-  ;; That lets us easily change the top resource. 
-  ;;   We can either make a new one of these every time or have the
-  ;; same one an keep clearing it. 
-  ((root) ;; pointer to the 'real' top node of the tree
-   (participants)))
-      ;; lists of all the units referenced anywhere below in an alist
-      ;; with the derivation tree node for which they are the referent.
+(defclass derivation-tree ()
+  ((participants :initarg :participants :accessor participants
+    :documentation "Lists of all the units referenced anywhere below 
+      in an alist along with the derivation tree node for which they 
+      are the referent."))
+  (:documentation "The original design called for having a single
+    instance of the derivation tree and reusing it. That idea 
+    was abandoned early though the notion of a list of participants
+    remains a good one that should be tried out (ddm 5/25/17)"))
+   
+
+(defclass base-dt-node (referential derivation-tree)
+  ((resource :initarg :esource :accessor resource
+    :documentation "Could be of any size depending on the larger circumstances:
+     a bare word (in Mumble's space of words), a lexicalized phrase,
+     a dtn of arbitrary complexity.")
+   (bkptrs :initarg :bkptrs :accessor bkptrs
+    :documentation "These are for ease of debugging and possibly for tactical 
+      decisions by the microplanner. We probably want to point all the way 
+      up to the top and to our immediate superior."))
+  (:documentation
+    "This is the top of the derivation tree taxonomy. 
+     The inheritend 'referent' slot from referential points back to the 
+     Individual or whatever we're realizing. The 'resource' slot points
+     to the 'linguistic resource' we're going to use as the basis of
+     our realization. It is typically a phrase or a lexicalized phrase"))
 
 
-(defobject base-dt-node (referential derivation-tree)
-  ;; This is the top of the derivation tree taxonomy. 
-  ;; The 'referent' slot from referential points back to the Individual
-  ;; or whatever we're realizing. The 'resource' slot points to the
-  ;; "linguistic resource" we're going to use
-  ((resource)
-     ;; Could be of any size depending on the larger circumstances:
-     ;; a bare word (in Mumble's space of words), a lexicalized phrase,
-     ;; a dt node of arbitrary complexity.
-   (bkptrs)
-     ;; These are for ease of debugging and possibly for tactical decisions
-     ;; by the microplanner. We probably want to point all the way up to the
-     ;; top and to our immediate superior.
-   ))
-
-(defobject derivation-tree-node (base-dt-node)
-  ;; Gets the full name because it's the prototype.
-  ;; In native Mumble terms it's the equivalent of a bundle
-  ;; (The resource is the equivalent of a kernel.)
-  ;; Inherits 'resource' and 'bkptrs'.
-  ((complements)
-    ;; "complement nodes" for the open variables when there is a parameterized
-    ;; resource like a lexicalized phrase. 
-   (adjuncts)
-    ;; "adjunct nodes" for any attachments. This is an ordered list for cases
-    ;; where the same attachment point is used "little brown fox" (the alternative
-    ;; is a systemicist-style approach that would differentiate the AP.
-   (features)  
-    ;; Mumble has a set of features. This can be just an unordered list
-   ))
-
-(defobject satellite-dt-node ()
-  ;; Holds the value that the parameter gets in this instance.
-  ((value)))
-
-(defobject adjunction-node (base-dt-node satellite-dt-node)
-  ;; points to one of Mumble's attachment-points
-  ((ap)))
-
-(defobject complement-node (base-dt-node satellite-dt-node)
-  ;; points to the open parameter that the resource in the derivation
-  ;; tree that this node will fill.
-  ((phrase-parameter)))
+(defclass derivation-tree-node (base-dt-node)
+  ((complements :initarg :complements :accessor complements
+    :documentation "Contains a list of complement nodes that specify the 
+     values of the open variables for  parameterized resource like a 
+     phrase or lexicalized phrase.")
+   (adjuncts :initarg :adjuncts :accessor adjuncts
+    :documentation "Contains a list of adjunct nodes for any attachments.
+      This is an ordered list. The attachments will be done in order from
+      first to last. This is the only way at present to handle arbitrary
+      ordering conventions (as in 'little brown fox'). The alternative
+      would be a systemicist-style approach that would differentiate the AP
+      with each successive modifier.")
+   (features :initarg :features :accessor features
+    :documentation "An unordered list of Mumble features. The ordering
+      constraints are handled inside Mumble."))
+  (:documentation
+   "We give this class the full name because it's the prototype.
+    In native Mumble terms it's the equivalent of a bundle, and
+    the resource is the equivalent of a kernel."))
 
 
-(defgeneric copy-dtn (dtn)
-  (:documentation "Make a new derivation tree object that is 
-   a toplevel replica of the original.")
-  (:method ((original derivation-tree-node))
-    (let ((new (make-instance 'derivation-tree-node
-                              :resource (resource original))))
-      ;; Ignoring root, participants, and bkptrs since these
-      ;; aren't being used right now (4/17)
-      (when (complements original)
-        (setf (complements new) (copy-list (complements original))))
-      (when (adjuncts original)
-        (setf (adjuncts new) (copy-list (adjuncts original))))
-      (when (features original)
-        (setf (features new) (copy-list (features original))))
-      new)))
+(defclass satellite-dt-node ()
+  ((value :initarg value :accessor value
+    :documentation "Points to whatever constitutes a 'value'
+      in the incorporating class."))
+  (:documentation
+   "Provides slot used by both complement and adjunct nodes."))
+
+(defclass  adjunction-node (base-dt-node satellite-dt-node)
+  ((ap :initarg :ap :accessor ap
+    :documentation "Points to the attachment point to use"))
+  (:documentation
+   "Packages an attachment point an the resource it
+    is supposed to attach."))
+
+(defclass complement-node (base-dt-node satellite-dt-node)
+  ((phrase-parameter :initarg :phrase-parameter :accessor phrase-parameter
+    :documentation "A phrase-parameter object"))
+  (:documentation
+   "Points to the open parameter that the resource in the derivation
+    tree of this node will fill."))
 
 
-;;;---------------------
-;;; Lexicalized phrases
-;;;---------------------
 
-(defobject lexicalized-resource (has-name) ())
+;;;-----------------------
+;;; Lexicalized resources
+;;;----------------------
 
-(defobject lexicalized-phrase (lexicalized-resource)
-  ((phrase))) ;; a phrase
+(defclass lexicalized-resource (has-name) ()
+  (:documentation "Provides a common parent for lexicalized phrases
+    and attachments."))
 
-(defobject saturated-lexicalized-phrase (lexicalized-phrase)
-  ((bound))) ;; list of parameter-value-pair
+(defclass lexicalized-phrase (lexicalized-resource)
+  ((phrase :initarg :phrase :accessor phrase
+   :documentation "Points to a phrase. See Mumble/grammar/phrases.lisp
+     and Mumble/documentation/defined-phrases.lisp"))
+  (:documentation "This is a 'lexicalized' phrase because the resources
+    we use (saturated and partially-saturated phrases) will have
+    one or more of their parameters bound. Typically to a head word."))
 
-(defobject partially-saturated-lexicalized-phrase  (saturated-lexicalized-phrase)
-  ((free)))  ;; list of parameters
+(defclass saturated-lexicalized-phrase (lexicalized-phrase)
+  ((bound :initarg :bound :accessor bound
+    :documentation "A list of parameter-value-pair objects"))
+  (:documentation
+   "A lexicalized phrase is 'saturated' if a value has been provided
+    for each of its parameters."))
+
+(defclass partially-saturated-lexicalized-phrase (saturated-lexicalized-phrase)
+  ((free :initarg :free :accessor free
+    :documentation "list of phrase parameters"))
+  (:documentation
+   "A lexicalized phrase is 'partially saturated' if some of its parameters
+    are bound and some are open."))
 
 
-(defobject lexicalized-attachment (lexicalized-resource)
-  ((point)
-   (value)))
+(defclass lexicalized-attachment (lexicalized-resource)
+  ((point :initarg :point :accessor point
+    :documentation "an attachment point. See Mumble/grammar/attachment-points.lisp")
+   (value :initarg :value :accessor value
+    :documentation "the resource to attach"))
+  (:documentation "The equivalent of a saturated phrase for attachment points"))
 
 
-;;;---------
-;;; go'fers
-;;;---------
+(defclass parameter-value-pair ()
+  ((phrase-parameter :initarg :phrase-parameter :accessor phrase-parameter
+    :documentation "a Mumble parameter object")
+   (value :initarg :value :accessor value
+    :documentation "any sort of resource"))
+  (:documentation "Packaging for phrase parameters and their values
+    for use with saturated or partially saturated lexicalized phrases"))
 
-(defobject parameter-value-pair ()
-  ((phrase-parameter) ;; Mumble parameter struct
-   (value)))   ;; anything 
 
+;;;-----------------------------------------------
+;;; Sparser category Mumble phrase correspondence
+;;;----------------------------------------------
+
+(defclass parameter-variable-pair ()
+  ((parameter :initarg :param :accessor corresponding-parameter
+    :documentation "a phrase parameter")
+   (variable :initarg :var :accessor corresponding-variable
+    :documentation "a Krisp variable"))
+  (:documentation "Data structure to hold the correspondence.
+    Doesn't make sense outside the context of a particular
+    category and phrase."))
 
 (defclass category-linked-phrase ()
   ((class :initarg :class :accessor linked-category
@@ -166,74 +200,22 @@
       apply to. Prototypically a verb.")
    (map :initarg :map :accessor parameter-variable-map
     :documentation "List of parameters and variables
-      encoded as parameter-variable pairs")))
+      encoded as parameter-variable pairs"))
+  (:documentation
+   "Packages the essential elements of what goes into
+ a dtn for a particular category by specifying the phrase
+ to use ('lp' linked-phrase), and the mapping between 
+ the variables of the category (bindings on an individual)
+ and the parameters of the phrase."))
 
-
-(defclass parameter-variable-pair ()
-  ((parameter :initarg :param :accessor corresponding-parameter
-    :documentation "a phrase parameter")
-   (variable :initarg :var :accessor corresponding-variable
-    :documentation "a Krisp variable")))
-
-;;;----------
-;;; printers
-;;;----------
-
-(defmethod print-object ((dtn base-dt-node) stream)
-  (print-unreadable-object (dtn stream)
-    (format stream "dtn for ~a" (or (referent dtn) "null referent"))))
-
-(defmethod print-object ((slp saturated-lexicalized-phrase) stream)
-  (print-unreadable-object (slp stream)
-    (format stream "lp ~a" (if (typep slp 'has-name)
-                             (mname slp)
-                              (name (phrase slp))))
-    (print-lp-bound-values slp stream)))
-
-(defmethod print-object ((lp partially-saturated-lexicalized-phrase) stream)
-  (print-unreadable-object (lp stream)
-    (format stream "lp: ~a" (name (phrase lp)))
-    (format stream " ~a" (mapcar #'name (free lp)))
-    (print-lp-bound-values lp stream)))
-
-(defgeneric print-lp-bound-values (lp stream)
-  (:documentation "Shared subroutine of several object printers")
-  (:method ((lp saturated-lexicalized-phrase) stream)
-    (loop for pvp in (bound lp)
-       do (format stream " ~a = ~a"
-                  (name (phrase-parameter pvp))
-                  (value pvp)))))
-  
-
-(defmethod print-object ((pvp parameter-value-pair) stream)
-  (print-unreadable-object (pvp stream)
-    (format stream "pvp: ~a = ~a" 
-            (name (phrase-parameter pvp)) (value pvp))))
-
-(defmethod print-object ((cn complement-node) stream)
-  (print-unreadable-object (cn stream)
-    (let ((parameter (phrase-parameter cn))
-          (value (value cn)))
-      (format stream "complement ~a = ~a"
-              (if parameter (name parameter) "null parameter")
-              value))))
-
-(defmethod print-object ((an adjunction-node) stream)
-  (print-unreadable-object (an stream)
-    (let ((ap (ap an)))
-      (format stream "adjunct ~a = ~a"
-              (if ap (name ap) "null AP") (value an)))))
-
-
-(defmethod print-object ((pvp parameter-variable-pair) stream)
-  (print-unreadable-object (pvp stream)
-    (let ((param (corresponding-parameter pvp))
-          (var (corresponding-variable pvp)))
-      (format stream "~a : ~a" param var))))
-
-(defmethod print-object ((clp category-linked-phrase) stream)
-  (print-unreadable-object (clp stream)
-    (let ((category (linked-category clp))
-          (lp (linked-phrase clp)))
-      (format stream "clp: ~a ~a" category lp))))
-
+(defclass mumble-rdata (category-linked-phrase)
+  ((variables :initarg  :vars :accessor variables-consumed
+    :documentation "An individual will often have more germane
+      bindings than will handled by this CLP. Here we list
+      the variables we're using so they can be taken out of
+      consideration in realize-via-binding.")
+   (head :initarg :head :accessor head-word
+    :documentation "The head word (mumble-side)"))
+  (:documentation "Build by setup-mumble-data to record everything
+ that is necessary or just useful in realizing an individual of
+ a particular category"))
