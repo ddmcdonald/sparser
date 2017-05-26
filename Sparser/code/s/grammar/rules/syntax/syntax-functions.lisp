@@ -397,7 +397,9 @@
   (let ((pp-edge (right-edge-for-referent)))
     (unless (eq (edge-form pp-edge) category::preposition)
       ;; Rules out "all" + "of" where we've not filled in the of-pp
-      (when (has-definite-determiner? (edge-right-daughter pp-edge))
+      (when (or
+             (has-definite-determiner? (edge-right-daughter pp-edge))
+             (eq 'which (cat-name (edge-category (edge-right-daughter pp-edge)))))
         ;;/// alternatively, we could just look for the determiner directly
         ;; rather than depend on this device to stay stable
         (cond
@@ -405,12 +407,14 @@
           (t
            (unless *sentence-in-core*
              (error "Threading bug. No value for *sentence-in-core*"))
-           (let ((pobj-ref (edge-referent (edge-right-daughter pp-edge))))
+           (let ((pobj-ref
+                  (find-or-make-lattice-description-for-ref-category
+                   (edge-referent (edge-right-daughter pp-edge)))))
              (revise-parent-edge :category (itype-of pobj-ref))
              (if *determiners-in-DL*
                (setq pobj-ref (bind-variable 'quantifier quantifier pobj-ref))
                (add-pending-partitive quantifier (parent-edge-for-referent) *sentence-in-core*))
-             pobj-ref )))))))
+             pobj-ref)))))))
 
 
 (defparameter *dets-seen* nil)
@@ -1182,14 +1186,21 @@
     ((and right-edge
           (eq (edge-form right-edge) category::subordinate-clause))
      (let* ((svp vp) ;;(value-of 'comp vp)) subordinate-clause is no longer buried
-            (vg-edge (edge-right-daughter right-edge)))
+            (vg-edge
+             (if (eq 's (cat-name (edge-form (edge-right-daughter right-edge))))
+                 ;; case where subordinate conjunction is attached above the S
+                 ;; "...since p130 CAS , paxillin, and FAK  are already hyperphosphorylated.
+                 
+                 (edge-right-daughter (edge-right-daughter right-edge))
+                 (edge-right-daughter right-edge))))
        (when (edge-p vg-edge)
          ;; vg-edge is :long-span for cases where the
          ;;  subordinate clause is a conjunction
          ;; HANDLE THESE CORRECTLY
          (if (is-passive? vg-edge)
-           (when (and (object-variable vg-edge)
-                      (null (value-of (object-variable vg-edge) svp)))
+           (when (and (object-variables vg-edge)
+                      (loop for v in (object-variables vg-edge)
+                              never (value-of (object-variable vg-edge) svp)))
              (assimilate-subcat svp :object subj))
            (when (missing-subject-vars (edge-referent vg-edge))
              (assimilate-subcat svp :subject subj))))))
@@ -1426,7 +1437,13 @@
    and the variable that governs the relative clause is determined
    by that."
   (if *subcat-test*
-    (and wh-pp vp)
+      (and wh-pp vp
+           (edge-to-its-left (left-edge-for-referent))
+           (not
+            (member (cat-name
+                      (edge-category
+                       (edge-to-its-left (left-edge-for-referent))))
+                    '(number quantifier all some each both))))
     (let* ((preposition (value-of 'prep wh-pp))
            (wh-obj (value-of 'pobj wh-pp))
            (variable (find-subcat-vars preposition vp)))
