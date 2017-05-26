@@ -375,9 +375,21 @@
 (defun find-subcat-pattern (label subcat-frame)
   (find label (subcat-patterns subcat-frame) :key #'subcat-label))
 
+(defun find-subcat-patterns (label subcat-frame)
+  ;; multiple patterns may share the same label
+  ;;  find them all
+  (loop for pat in  (subcat-patterns subcat-frame)
+        when (eq label (subcat-label pat))
+        collect pat))
+
 (defun find-subcat-variable (label subcat-frame)
   (let ((pattern (find-subcat-pattern label subcat-frame)))
     (and pattern (subcat-variable pattern))))
+
+(defun find-subcat-variables (label subcat-frame)
+  ;; a single label may map to multiple variables -- find them all
+  (let ((pattern (find-subcat-patterns label subcat-frame)))
+    (and pattern (mapcar #'subcat-variable pattern))))
 
 (defun add-subcat-pattern (pattern subcat-frame)
   (pushnew pattern (subcat-patterns subcat-frame) :test #'subcat-pattern-equal))
@@ -481,6 +493,16 @@
   (find-subcat-variable :object (get-ref-subcategorization c)))
 (defmethod object-variable ((i individual))
   (find-subcat-variable :object (get-ref-subcategorization i)))
+
+
+(defmethod object-variables (label)
+  (declare (ignore label)))
+(defmethod object-variables ((e edge))
+  (object-variables (edge-referent e)))
+(defmethod object-variables ((c category))
+  (find-subcat-variables :object (get-ref-subcategorization c)))
+(defmethod object-variables ((i individual))
+  (find-subcat-variables :object (get-ref-subcategorization i)))
 
 (defmethod thatcomp-variable (label)
   (declare (ignore label)))
@@ -916,7 +938,6 @@
   (when (not (word-p cat)) ;; bad morphology for "widening" and others
     (and (not (intransitive? cat))
          (find-subcat-vars :object cat))))
-
 
 (defun find-subject-vars (cat)
   (when (not (word-p cat)) ;; bad morphology for "widening" and others
