@@ -4249,7 +4249,7 @@
 (define-protein "UP:P17745" ("RABE1b")) 
 (define-protein "UP:P17752" ("Trph" "TPH1" "TPH")) 
 (define-protein "UP:P17812" ("CTPS1" "CTPS")) 
-(define-protein "UP:P17813" ("CD105" "Endoglin" "Eng" "End")) 
+(define-protein "UP:P17813" ("CD105" "Endoglin" "Eng" )) 
 (define-protein "UP:P17844" ("RNA helicase p68" "DDX5")) 
 (define-protein "UP:P17858" ("pfkB" "PFKL")) 
 (define-protein "UP:P17861" ("X-box binding protein-1" "X-box-binding protein-1" "X-BOX BINDING PROTEIN" "XBP1")) 
