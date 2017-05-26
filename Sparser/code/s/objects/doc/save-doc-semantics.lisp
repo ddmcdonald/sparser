@@ -12,6 +12,16 @@
 
 (in-package :sparser)
 
+
+;;since write-sem is used to create an SEXPR for hms-json, we need to be able to make the "writer" output
+;; produce standard lisp uppercase for symbols in this context.
+;; Otherwise, for producing readable files, we need it to be lowercase.
+(defparameter *write-sem-downcase* t)
+(defun maybe-string-downcase (x)
+  (if *write-sem-downcase*
+      (string-downcase x)
+      x))
+
 (defparameter *article-semantics-directory* nil
   "turns on saving of article semantics")
 
@@ -233,9 +243,8 @@
 
 (defun sem-sexp (indiv)
   (read-from-string
-   (string-upcase
     (with-output-to-string (s)
-       (write-sem indiv s)))))
+       (write-sem indiv s))))
 
 (defun find-sem-type-instances (s &optional (types
                                              '(:or bio-control post-translational-modification binding
@@ -307,7 +316,7 @@
   (emit-line-continue stream "/>"))
 
 (defun write-attribute (att-name item stream)
-  (format stream " ~a=\"" (string-downcase att-name))
+  (format stream " ~a=\"" (maybe-string-downcase att-name))
   (prin-escaped (pname item) stream)
   (format stream "\""))
 
@@ -327,10 +336,10 @@
 (defmethod write-sem ((w symbol) stream &optional (newline t))
   (case *semantic-output-format*
     (:xml
-     (prin-escaped (string-downcase (pname w)) stream))
+     (prin-escaped (maybe-string-downcase (pname w)) stream))
     (t (if (search " " (pname w))
            (format stream " ~s" w)
-           (format stream " ~s" (string-downcase (pname w)))))))
+           (format stream " ~s" (maybe-string-downcase (pname w)))))))
 (defmethod write-sem ((w number) stream &optional (newline t))
   (declare (ignore newline))
   (format stream " ~a" w))
@@ -356,7 +365,7 @@
 (defun write-lambda-binding (variable stream &optional newline)
   (case *semantic-output-format*
     (:xml
-     (let ((name (string-downcase (pname variable))))
+     (let ((name (maybe-string-downcase (pname variable))))
        (start-lambda-var "var" name stream newline)
        (write-attribute 'lambda-variable "true" stream)
        (finish-lambda-var "var" name stream newline)))
@@ -368,7 +377,7 @@
 (defun start-lambda-var (element name stream &optional (newline t)
                          &aux (name (if (symbolp name)
                                         name
-                                        (string-downcase name))))
+                                        (maybe-string-downcase name))))
   (case *semantic-output-format*
     (:xml
      (emit-line-continue stream
@@ -452,14 +461,14 @@
 (defun start-named-element (element att-name name stream &optional (newline t) (close t)
                             &aux (name (if (symbolp name)
                                            name
-                                           (string-downcase name))))
+                                           (maybe-string-downcase name))))
   (case *semantic-output-format*
     (:xml
      (let ((start (format nil "<~a ~a=\"" element att-name)))
        (if newline
            (emit-line stream start)
            (emit-line-continue stream start))
-       (prin-escaped (string-downcase name) stream)
+       (prin-escaped (maybe-string-downcase name) stream)
        (write-string (if close "\">" "\"") stream)))
     (t
      (if newline
@@ -475,7 +484,7 @@
 (defun finish-lambda-var (element name stream &optional (newline t)
                           &aux (name (if (symbolp name)
                                          name
-                                         (string-downcase name))))
+                                         (maybe-string-downcase name))))
   (case *semantic-output-format*
     (:xml
      (emit-line-continue stream (format nil "/>" element)))
@@ -589,13 +598,13 @@
   (space-prin1 sem-tree stream))
 
 (defun lcase-emit (s stream)
-  (emit-line stream (string-downcase (format nil "~s" s))))
+  (emit-line stream (maybe-string-downcase (format nil "~s" s))))
 
 (defun lcase-prin1 (s stream)
-  (format stream "~a" (string-downcase (format nil "~s" s))))
+  (format stream "~a" (maybe-string-downcase (format nil "~s" s))))
 
 (defun lcase-space-prin1 (s stream)
-  (format stream " ~a" (string-downcase (format nil "~s" s))))
+  (format stream " ~a" (maybe-string-downcase (format nil "~s" s))))
 
 (defun emit-list-start (item stream)
   (emit-line stream (concatenate 'string "(" item)))
@@ -622,7 +631,7 @@
      do
        (if (consp item)
            (then
-             (emit-list-start (string-downcase (format nil "~a" (car item))) stream)
+             (emit-list-start (maybe-string-downcase (format nil "~a" (car item))) stream)
              (push-indentation)
              (if
               (eq (car item) :members)
@@ -636,7 +645,7 @@
   (pop-indentation))
 
 (defmethod cat-string ((cat individual) &optional with-name)
-  (let* ((cat-str (string-downcase (cat-symbol (itype-of cat))))
+  (let* ((cat-str (maybe-string-downcase (cat-symbol (itype-of cat))))
          (name (when with-name (value-of 'name cat))))
     (if name
         (format nil "<~a ~a>" cat-str (pname name))
@@ -644,11 +653,11 @@
 
 (defmethod cat-string ((cat referential-category) &optional with-name)
   (declare (ignore with-name))
-  (string-downcase (cat-symbol cat)))
+  (maybe-string-downcase (cat-symbol cat)))
 
 (defmethod cat-string ((cat symbol) &optional with-name)
   (declare (ignore with-name))
-  (string-downcase cat))
+  (maybe-string-downcase cat))
 
 (defmethod cat-string ((cat cons) &optional with-name)
   (declare (ignore with-name))
