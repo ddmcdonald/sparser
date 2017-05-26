@@ -114,11 +114,9 @@ be (defaults to common noun)"
                             (bind-dli-variable :name name ind)
                             ind))))))
     (add-rules-cond-plural base-word category i :plural plural :no-plural no-plural)
-    (when name (add-rules-cond-plural name category i
-                                      :no-plural (or no-plural 
-                                                     (equal name base-word)))) 
-   ;; added so plurals inhibited because the base-word was just defined
-   ;; don't get pushed to *inhibited-plurals* since they're not interesting
+    (when (and name 
+               (not (equal name base-word))) ;; if the name is the same as the base-word, there's nothing to do
+      (add-rules-cond-plural name category i :no-plural no-plural)) 
     (when adj (add-rules (make-rules-for-head :adjective (resolve/make (pname adj)) 
                                               category i) i))
     (when synonyms (loop for s in synonyms
@@ -126,7 +124,7 @@ be (defaults to common noun)"
     (when (consp members) (setq i (set-family-members i members)))
     i))
 
-(defparameter *inhibited-plurals* nil)
+(defparameter *inhibited-plurals* nil) 
 
 (defun add-rules-cond-plural (word category ind &key plural no-plural (pos :common-noun))
   "Given a word, category, and individual, add-rules to the individual
@@ -134,10 +132,18 @@ for that word, and if no-plural or if the plural-version of the word
 resolves, it blocks the plural (and in the latter case adds the word
 to the list of *inhibited-plurals* so we can troubleshoot later and
 see if there are issues"
-  (let ((*inhibit-constructing-plural* 
+  (let* ((plural-word (plural-version word))
+         (defined-plural? (and (resolve plural-word)
+                               (single-term-rewrite? plural-word :no-warn t)))
+         (defined-plural-sc (when defined-plural?
+                              (if (name-is-cat-p plural-word)
+                                  (cat-name (second (super-categories-of (name-is-cat-p plural-word))))
+                                  (cat-name (category-of (cfr-referent (car (single-term-rewrite? plural-word  :no-warn t))))))))
+         (*inhibit-constructing-plural* 
           (or no-plural
-              (when (resolve (plural-version word))
-                (push word *inhibited-plurals*)))))
+              (when defined-plural?
+                (push `(,word :new-cat ,category :old-cat ,defined-plural-sc ,plural-word)  
+                      *inhibited-plurals*)))))
     (declare (special *inhibit-constructing-plural*))
     (if plural
         (add-rules (make-rules-for-head pos (resolve/make word) category ind :plural plural) ind)
