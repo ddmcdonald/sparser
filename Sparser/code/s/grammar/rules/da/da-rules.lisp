@@ -756,6 +756,22 @@
        :form (edge-form np-edge)
        :referent (bind-dli-variable 'predication s-pred np)))))
 
+(define-debris-analysis-rule np-comma-subj-relative-comma
+    :pattern (np "," subject-relative-clause ",")
+    :action (:function np-comma-subj-relative-comma first second third fourth))
+
+(defun np-comma-subj-relative-comma (np-edge comma-edge srel-edge comma-2)
+  (declare (ignore comma-edge comma-2))
+  (let* ((np (edge-referent np-edge))
+	 (s-var (subcategorized-variable (edge-referent srel-edge) :subject np))
+         (s-pred (when s-var (update-edge-as-lambda-predicate srel-edge s-var))))
+    (when s-pred
+      (make-edge-spec 
+       :category (edge-category np-edge)
+       :form (edge-form np-edge)
+       :referent (bind-dli-variable 'predication s-pred np)))))
+
+
 
 (define-debris-analysis-rule np-comma-pp-comma
   :pattern ( np "," pp ",")
