@@ -308,7 +308,7 @@ THIS NEEDS WORK
 
 ;; "..patients have mutation in kras"
 (defun have-mutation-in-kras (subject)
-  (let ((verb-resource (verb "have"))
+  (let ((verb-resource (verb "have" 'svo))
 	(mutation-resource (mutation-in-kras)))
     (let ((dtn (make-dtn :referent 'have-mutation
 			 :resource verb-resource)))
@@ -341,7 +341,7 @@ e8    FOR           3 "for K-Ras" 7
 
 (defun drug-to-treat-pancreatic-cancer ()
   (let* ((cancer (pancreatic-cancer))
-         (verb (verb "treat"))
+         (verb (verb "treat" 'svo))
          (drug (noun "drug")))
     (let ((dtn (make-instance 'derivation-tree-node
                               :referent 'drug-to-treat-pancreatic-cancer
@@ -353,7 +353,7 @@ e8    FOR           3 "for K-Ras" 7
 ;; "a drug to target KRAS" (say (drug-targeting-kras))
 (defun drug-targeting-kras ()
   "Makes an untensed clause. Comes out as an infinitive"
-  (let* ((verb-resource (verb "target"))
+  (let* ((verb-resource (verb "target" 'svo))
          (kras-resource (noun "KRAS" 'proper-name))
          (drug-dtn (noun "drug")))
     (let ((dtn (make-instance 'derivation-tree-node

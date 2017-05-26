@@ -13,6 +13,9 @@
 
 (in-package :mumble)
 
+;;;-----------------------------
+;;; lexicalized phrase builders
+;;;-----------------------------
 
 (defgeneric noun (word &optional phrase-name)
   (:documentation "Given a designator for a word, return
@@ -38,17 +41,26 @@
                        :bound `(,pair))))))
  
 
-(defgeneric verb (word &optional phrase-name)
+(defgeneric verb (word phrase-name)
   (:documentation "Given a designator for a verb, return 
-    a lexicalized phraes for it. The default phrase is SVO, 
-    but can be overridden by the optional argument.")
-  (:method ((w word) &optional phrase-name)
-    (verb (pname w) phrase-name))
-  (:method ((string string) &optional (phrase-name 'svo))
-    (let* ((phrase (phrase-named phrase-name))
-           (parameter (parameter-named 'v))
+    a lexicalized phraes for it. If the phrase-name argument
+    is nil we use SVO.")
+  (:method ((w word) (phrase-name symbol))
+    (verb (pname w)
+          (etypecase phrase-name
+            (null (phrase-named 'svo))
+            (symbol (phrase-named phrase-name)))))
+  (:method ((w word) (phrase phrase))
+    (verb (pname w) phrase))
+  (:method ((pname string) (phrase-name symbol))
+    (verb pname
+          (etypecase phrase-name
+            (null (phrase-named 'svo))
+            (symbol (phrase-named phrase-name)))))
+  (:method ((pname string) (phrase phrase))
+    (let* ((parameter (parameter-named 'v))
            (parameters (remove parameter (parameters-to-phrase phrase)))
-           (word (word-for-string string 'verb)))
+           (word (word-for-string pname 'verb)))
       (let* ((pair (make-instance 'parameter-value-pair
                                   :phrase-parameter parameter
                                   :value word)))
@@ -61,7 +73,7 @@
 (defgeneric adjective (word)
   (:documentation "Defines a lexicalized tree for an adjective
     taken as a simple premodifier. The relationship of something
-    having this property is a not this but should have
+    having this property is not this tree but should have
     a choice set of some sort since it has several realizations.")
   (:method ((w word))
     (adjective (pname w)))
@@ -93,6 +105,18 @@
                     :value preposition))
        :free `(,(parameter-named 'prep-object))))))
 
+(defgeneric adverb (word)
+  (:documentation "Make a lexicalized adverbial phrase")
+  (:method ((w word))
+    (adverb (pname w)))
+  (:method ((pname string))
+    (let ((phrase (phrase-named 'advp))
+          (adverb (word-for-string pname 'adverb)))
+      (make-instance
+       'saturated-lexicalized-phrase
+       :phrase phrase
+       :bound (list (pvp 'adv adverb))))))
+
 
 
 (defun wrap-pronoun (pronoun-symbol)
@@ -113,16 +137,15 @@
    is 'together' which describes a state of affairs. 
    An adverb would modulate the meaning of an eventuality.
    Returns a saturated lexicalized phrase. Using the
-   phrase for adverb, but it should be customized."))
-
-(defmethod predicate ((pname string))
-  (let ((phrase (phrase-named 'advp))
-        (word (word-for-string pname 'adverb)))
-    (make-instance 'saturated-lexicalized-phrase
-      :phrase phrase
-      :bound `(,(make-instance 'parameter-value-pair
-                  :phrase-parameter (parameter-named 'adv)
-                  :value word)))))
+   phrase for adverb, but it should be customized.")
+  (:method ((pname string))
+    (let ((phrase (phrase-named 'advp))
+          (word (word-for-string pname 'adverb)))
+      (make-instance 'saturated-lexicalized-phrase
+         :phrase phrase
+         :bound `(,(make-instance 'parameter-value-pair
+                       :phrase-parameter (parameter-named 'adv)
+                       :value word))))))
 
 
 (defgeneric interjection (word)
@@ -131,19 +154,15 @@
    'ok'. There isn't already a phrase for these and I haven't
    been able to find a TAG account of them. So in lieu of that
    I'm using the quantifier phrase, which seems to have no
-   actions we wouldn't want."))
-
-(defmethod interjection ((w word))
-  (interjection (pname w)))
-
-(defmethod interjection ((pname string))
-  (let ((phrase (phrase-named 'QP))
-        (word (word-for-string pname 'interjection)))
-    (make-instance 'saturated-lexicalized-phrase
-      :phrase phrase
-      :bound `(,(make-instance 'parameter-value-pair
-                  :phrase-parameter (parameter-named 'q)
-                  :value word)))))
+   actions we wouldn't want.")
+  (:method ((w word))
+    (interjection (pname w)))
+  (:method ((pname string))
+    (let ((phrase (phrase-named 'QP))
+          (word (word-for-string pname 'interjection)))
+      (make-instance 'saturated-lexicalized-phrase
+                     :phrase phrase
+                     :bound `(,(pvp 'q word))))))
 
 
 
@@ -153,7 +172,6 @@
     is specializing the sense of the verb rather than heading
     a prepositional phrase. The result is open in the 
     parameters 's' and 'o'.")
-
   (:method ((verb-pname string) (prep-pname string))
     (let ((verb (word-for-string verb-pname 'verb))
           (prep (word-for-string prep-pname 'preposition))
@@ -416,23 +434,16 @@ a message to be expressed. See discussion in make.lisp |#
 (defgeneric name-composite (object)
   (:documentation "Given a newly created object that has
     multiple parts, create a symbol to name it that is
-    based on those parts."))
-
-(defmethod name-composite ((lp saturated-lexicalized-phrase))
-  (let* ((phrase (name (phrase lp)))
-         (bound-parameters (bound lp))
-         (values (loop for bp in bound-parameters
-                   collect (value bp)))
-         (names (loop for v in values
-                  collect (name v)))
-         (name-strings (cons phrase names))
-         (full-string (underscore-interleaved-string name-strings)))
-    (intern full-string (find-package :mumble))))
-
-(defmethod name-composite ((w word))
-  (pname w))
-
-
-
-
-
+    based on those parts.")
+  (:method ((w word))
+    (pname w))
+  (:method ((lp saturated-lexicalized-phrase))
+    (let* ((phrase (name (phrase lp)))
+           (bound-parameters (bound lp))
+           (values (loop for bp in bound-parameters
+                      collect (value bp)))
+           (names (loop for v in values
+                     collect (name v)))
+           (name-strings (cons phrase names))
+           (full-string (underscore-interleaved-string name-strings)))
+      (intern full-string (find-package :mumble)))))
