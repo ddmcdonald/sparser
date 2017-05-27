@@ -29,7 +29,7 @@
               :resource (ecase pos
                           (noun (noun word))
 			  (prep (prep word))
-                          (verb (verb word))))))
+                          (verb (verb word 'svo))))))
 
 (defun about () (make-simple-dtn "about" 'prep))
 (defun active () (predicate "active"))
