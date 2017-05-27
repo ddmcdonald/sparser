@@ -147,7 +147,7 @@ but we don't want to count on that.
  is its value, and the derivation-tree-node that it is to be
  added to.")
   (:method ((la lexicalized-attachment)
-           (dtn derivation-tree-node))
+            (dtn derivation-tree-node))
     (let ((ap (point la))
           (value (value la)))
       (let ((apn (make-instance 'adjunction-node 

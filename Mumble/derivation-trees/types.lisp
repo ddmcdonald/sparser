@@ -21,7 +21,7 @@
 ;; named-object
 
 (defclass has-name ()
-  ((mname :accessor mname
+  ((mname :initform nil :accessor mname
     :documentation "Should be set to a symbol that is 
      a suitable short name for the object."))
   (:documentation
@@ -36,7 +36,7 @@
 ; referential: referent, expressible-type
 
 (defclass referential ()
-  ((referent :initarg :referent :accessor referent
+  ((referent :initarg :referent :initform nil :accessor referent
     :documentation "a pointer to a model-level unit")))
     
 
@@ -60,7 +60,7 @@
 ;;;-----------------------
 
 (defclass derivation-tree ()
-  ((participants :initarg :participants :accessor participants
+  ((participants :initarg :participants :initform nil :accessor participants
     :documentation "Lists of all the units referenced anywhere below 
       in an alist along with the derivation tree node for which they 
       are the referent."))
@@ -71,11 +71,11 @@
    
 
 (defclass base-dt-node (referential derivation-tree)
-  ((resource :initarg :esource :accessor resource
+  ((resource :initarg :resource :initform nil :accessor resource
     :documentation "Could be of any size depending on the larger circumstances:
      a bare word (in Mumble's space of words), a lexicalized phrase,
      a dtn of arbitrary complexity.")
-   (bkptrs :initarg :bkptrs :accessor bkptrs
+   (bkptrs :initarg :bkptrs :initform nil :accessor bkptrs
     :documentation "These are for ease of debugging and possibly for tactical 
       decisions by the microplanner. We probably want to point all the way 
       up to the top and to our immediate superior."))
@@ -88,18 +88,18 @@
 
 
 (defclass derivation-tree-node (base-dt-node)
-  ((complements :initarg :complements :accessor complements
+  ((complements :initarg :complements :initform nil :accessor complements
     :documentation "Contains a list of complement nodes that specify the 
      values of the open variables for  parameterized resource like a 
      phrase or lexicalized phrase.")
-   (adjuncts :initarg :adjuncts :accessor adjuncts
+   (adjuncts :initarg :adjuncts :initform nil :accessor adjuncts
     :documentation "Contains a list of adjunct nodes for any attachments.
       This is an ordered list. The attachments will be done in order from
       first to last. This is the only way at present to handle arbitrary
       ordering conventions (as in 'little brown fox'). The alternative
       would be a systemicist-style approach that would differentiate the AP
       with each successive modifier.")
-   (features :initarg :features :accessor features
+   (features :initarg :features :initform nil :accessor features
     :documentation "An unordered list of Mumble features. The ordering
       constraints are handled inside Mumble."))
   (:documentation
@@ -109,21 +109,21 @@
 
 
 (defclass satellite-dt-node ()
-  ((value :initarg value :accessor value
+  ((value :initarg :value :initform nil :accessor value
     :documentation "Points to whatever constitutes a 'value'
       in the incorporating class."))
   (:documentation
    "Provides slot used by both complement and adjunct nodes."))
 
 (defclass  adjunction-node (base-dt-node satellite-dt-node)
-  ((ap :initarg :ap :accessor ap
+  ((ap :initarg :ap :initform nil :accessor ap
     :documentation "Points to the attachment point to use"))
   (:documentation
    "Packages an attachment point an the resource it
     is supposed to attach."))
 
 (defclass complement-node (base-dt-node satellite-dt-node)
-  ((phrase-parameter :initarg :phrase-parameter :accessor phrase-parameter
+  ((phrase-parameter :initarg :phrase-parameter :initform nil :accessor phrase-parameter
     :documentation "A phrase-parameter object"))
   (:documentation
    "Points to the open parameter that the resource in the derivation
@@ -140,7 +140,7 @@
     and attachments."))
 
 (defclass lexicalized-phrase (lexicalized-resource)
-  ((phrase :initarg :phrase :accessor phrase
+  ((phrase :initarg :phrase :initform nil :accessor phrase
    :documentation "Points to a phrase. See Mumble/grammar/phrases.lisp
      and Mumble/documentation/defined-phrases.lisp"))
   (:documentation "This is a 'lexicalized' phrase because the resources
@@ -148,14 +148,14 @@
     one or more of their parameters bound. Typically to a head word."))
 
 (defclass saturated-lexicalized-phrase (lexicalized-phrase)
-  ((bound :initarg :bound :accessor bound
+  ((bound :initarg :bound :initform nil :accessor bound
     :documentation "A list of parameter-value-pair objects"))
   (:documentation
    "A lexicalized phrase is 'saturated' if a value has been provided
     for each of its parameters."))
 
 (defclass partially-saturated-lexicalized-phrase (saturated-lexicalized-phrase)
-  ((free :initarg :free :accessor free
+  ((free :initarg :free :initform nil :accessor free
     :documentation "list of phrase parameters"))
   (:documentation
    "A lexicalized phrase is 'partially saturated' if some of its parameters
@@ -163,17 +163,17 @@
 
 
 (defclass lexicalized-attachment (lexicalized-resource)
-  ((point :initarg :point :accessor point
+  ((point :initarg :point :initform nil :accessor point
     :documentation "an attachment point. See Mumble/grammar/attachment-points.lisp")
-   (value :initarg :value :accessor value
+   (value :initarg :value :initform nil :accessor value
     :documentation "the resource to attach"))
   (:documentation "The equivalent of a saturated phrase for attachment points"))
 
 
 (defclass parameter-value-pair ()
-  ((phrase-parameter :initarg :phrase-parameter :accessor phrase-parameter
+  ((phrase-parameter :initarg :phrase-parameter :initform nil :accessor phrase-parameter
     :documentation "a Mumble parameter object")
-   (value :initarg :value :accessor value
+   (value :initarg :value :initform nil :accessor value
     :documentation "any sort of resource"))
   (:documentation "Packaging for phrase parameters and their values
     for use with saturated or partially saturated lexicalized phrases"))
@@ -184,21 +184,21 @@
 ;;;----------------------------------------------
 
 (defclass parameter-variable-pair ()
-  ((parameter :initarg :param :accessor corresponding-parameter
+  ((parameter :initarg :param :initform nil :accessor corresponding-parameter
     :documentation "a phrase parameter")
-   (variable :initarg :var :accessor corresponding-variable
+   (variable :initarg :var :initform nil :accessor corresponding-variable
     :documentation "a Krisp variable"))
   (:documentation "Data structure to hold the correspondence.
     Doesn't make sense outside the context of a particular
     category and phrase."))
 
 (defclass category-linked-phrase ()
-  ((class :initarg :class :accessor linked-category
+  ((class :initarg :class :initform nil :accessor linked-category
     :documentation "backpointer to the Sparser category")
-   (lp :initarg :lp :accessor linked-phrase
+   (lp :initarg :lp :initform nil :accessor linked-phrase
     :documentation "The lexicalized phrase that the parameters
       apply to. Prototypically a verb.")
-   (map :initarg :map :accessor parameter-variable-map
+   (map :initarg :map :initform nil :accessor parameter-variable-map
     :documentation "List of parameters and variables
       encoded as parameter-variable pairs"))
   (:documentation
@@ -209,12 +209,12 @@
  and the parameters of the phrase."))
 
 (defclass mumble-rdata (category-linked-phrase)
-  ((variables :initarg  :vars :accessor variables-consumed
+  ((variables :initarg  :vars :initform nil :accessor variables-consumed
     :documentation "An individual will often have more germane
       bindings than will handled by this CLP. Here we list
       the variables we're using so they can be taken out of
       consideration in realize-via-binding.")
-   (head :initarg :head :accessor head-word
+   (head :initarg :head :initform nil :accessor head-word
     :documentation "The head word (mumble-side)"))
   (:documentation "Build by setup-mumble-data to record everything
  that is necessary or just useful in realizing an individual of
