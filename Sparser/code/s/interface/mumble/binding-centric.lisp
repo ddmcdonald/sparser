@@ -38,15 +38,18 @@
   "Heuristically guess a nice name for a protein or other biological entity."
   (let ((syns (sp::get-bio-synonyms name)))
     (if syns
-      (or (let ((human (search "_HUMAN" name)))
-            (and human ; prefer the synonym without the _HUMAN suffix
-                 (find (subseq name 0 human) syns :test #'string-equal)))
+      (or (let ((human (search "_HUMAN" name))) ; prefer the synonym without the _HUMAN suffix
+            (find (subseq name 0 human) syns :test #'string-equal))
           (first (stable-sort ; prefer shortest synonym
                   (cons name (copy-list syns))
                   #'< :key #'length)))
-      (subseq name (case (search "BIO-" name :test #'char-equal)
-                     (0 4) ; elide bio-prefix
-                     (t 0))))))
+      ;; no synonyms, so look for removable parts
+      (let ((index (search "_HUMAN" name)))
+        (if index
+          (subseq name 0 index)
+          (subseq name (case (search "BIO-" name :test #'char-equal)
+                         (0 4) ; elide bio-prefix
+                         (t 0))))))))
 
 (defun sparser-pos (pos)
   "Translate a Mumble part-of-speech tag to the equivalent Sparser tag."
