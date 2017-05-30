@@ -1,265 +1,259 @@
 
 (IN-PACKAGE :SP)
 (DEFPARAMETER SPARSER::*NS-RD-PHASE3-5701-6000*
-  '(".5266dupC" "A-C-A-A-A-G" "A-CDK2" "A-Cdk2" "A-E" "A-Fos" "A-IV-5" "A-IV-8"
-    "A-T-C-A-A-A-G" "A-allele" "A-binding" "A-dependent" "A-induced" "A-type"
-    "A08–A40" "A1" "A13–30" "A2164G" "A24-Nef" "A2663V" "A40" "A5" "A5T" "A6"
-    "AA4.1" "AACAGAGAAGAGAGAAAAGG" "AB-737" "AB-a" "ABB" "ABT-737-resistant"
-    "ABT-869" "ACAP1" "ACT→TCT" "ACYP2" "ACdk2" "AD-IE2" "ADAP-SH3-like" "ADPR"
-    "AECC" "AEW" "AEW+CPMZ" "AEW541" "AF-S" "AFP-L3" "AFos" "AGC" "AHSS"
-    "AIDS-like" "AIHHE" "AKT-activated" "AKT-substrate" "ALOXs" "AMD473"
-    "AMPKa" "AMPKα2" "AMPPNP*1Mg" "ANCD" "ANKIB1" "ANNs" "AP" "AP-1#1"
-    "AP-1#1-C1" "AP-1#2" "AP-1#2-C1" "AP-1#2-C2" "AP-1#2-C3" "AP-1#3"
-    "AP-1#3-C3" "AP2-α" "APACHE" "APC-min" "APHA4a" "APL" "APSES" "AQCS"
-    "AQGPQQQPGSEGPSYAK" "AR-V" "AR-V567es" "AR-Vs" "AR-Vs." "AR-independent"
-    "AR-low" "AR-null" "AR-output" "AREB6" "AREDS" "ARH-77" "ARIC" "ARLEQUIN"
-    "ARMS2" "ARS305" "ARfl" "AS-605240" "AS-6052540" "AS-kinase" "AS605240"
-    "ASCO" "ASRO" "ASROs" "AT22" "AT5BR" "ATCC" "ATM-Chk2-p53-dependent"
-    "ATM-I" "ATM-MRN" "ATM-S1981" "ATM-S1987" "ATM-and" "ATM-centric"
-    "ATM-heterozygosity" "ATM-null" "ATP*1Mg" "ATP*2Mg" "ATP-γS"
-    "ATPase–defective" "ATR--resulting" "ATR-dependent" "ATRIP-CRD" "ATRT"
-    "ATRTs" "ATTG" "ATTGG" "AYPGKF" "Abbott" "Abcam" "Abl-Cables" "Abnet"
-    "Abraxane" "Ac-H3" "Ac-H4K5" "Ac-STAT1" "AcH3" "Acetyl-STAT1" "Ad-14-3-3σ"
-    "Ad-14-3-3σ-treated" "Ad-DN-PKCζ" "Ad-DN-PKCζ–transduced" "Ad-DN-TCF"
-    "Ad-DN-TCF4" "Ad-Empty" "Ad-IE1" "Ad-IE2" "Ad-LacZ" "Ad-SENP2" "Ad-WT-p53"
-    "Ad-β-gal" "Ad-β-gal-treated" "AdD320A" "AdGFP" "AdLacZ" "AdWT" "AdY297A"
-    "Adams" "Adap" "Adaptor" "AfaE" "Affymetrix" "Africa" "African"
+  '(".1" ".1648A" ".5266dupC" "A-C" "A-C-A-A-A-G" "A-CDK2" "A-Cdk2" "A-D" "A-E"
+    "A-Fos" "A-IV-5" "A-IV-8" "A-T" "A-T-C-A-A-A-G" "A-allele" "A-binding"
+    "A-dependent" "A-type" "A08–A40" "A1" "A13–30" "A2164G" "A24-Nef" "A2663V"
+    "A40" "A5" "A5T" "A6" "AA4.1" "AACAGAGAAGAGAGAAAAGG" "AB-737" "AB-a" "ABB"
+    "ABT-737-resistant" "ABT-869" "ABT-869-mediated" "ACHN-cells" "ACHN-shVHL"
+    "ACT→TCT" "ACYP2" "ACdk2" "ADAP-SH3-like" "ADPR" "AEW" "AEW+CPMZ" "AEW541"
+    "AF-S" "AFP-L3" "AFos" "AGS-miR-148a" "AGS-vector" "AHSS" "AIDS-like"
+    "AIHHE" "AKT-activated" "AKT-substrate" "ALOXs" "ALT-value" "ALT-values"
+    "AMD473" "AMPKα2" "AMPPNP*1Mg" "ANCD" "ANKIB1" "ANNs" "AP-1#1" "AP-1#1-C1"
+    "AP-1#2" "AP-1#2-C1" "AP-1#2-C2" "AP-1#2-C3" "AP-1#3" "AP-1#3-C3" "AP2-α"
+    "APACHE" "APHA4a" "APSES" "AQCS" "AQGPQQQPGSEGPSYAK" "AR-V" "AR-V567es"
+    "AR-Vs" "AR-Vs." "AR-independent" "AR-low" "AR-null" "AR-output" "AREDS"
+    "ARH-77" "ARIC" "ARLEQUIN" "ARS305" "ARfl" "AS-605240" "AS-6052540"
+    "AS605240" "ASCO" "ASRO" "ASROs" "AT22" "AT5BR" "ATCC"
+    "ATM-Chk2-p53-dependent" "ATM-I" "ATM-MRN" "ATM-S1981" "ATM-S1987"
+    "ATM-and" "ATM-centric" "ATM-heterozygosity" "ATM-null" "ATP*1Mg" "ATP*2Mg"
+    "ATP-γS" "ATPase–defective" "ATR--resulting" "ATR-dependent" "ATRIP-CRD"
+    "ATRT" "ATRTs" "ATTG" "ATTGG" "AYPGKF" "Abbott" "Abcam" "Abl-Cables"
+    "Abnet" "Abraxane" "Ac-H3" "Ac-H4K5" "Ac-STAT1" "AcH3" "Acetyl-STAT1"
+    "Ad-14-3-3σ" "Ad-14-3-3σ-treated" "Ad-DN-PKCζ" "Ad-DN-PKCζ–transduced"
+    "Ad-DN-TCF" "Ad-DN-TCF4" "Ad-Empty" "Ad-IE1" "Ad-IE2" "Ad-LacZ" "Ad-SENP2"
+    "Ad-WT-p53" "Ad-β-gal" "Ad-β-gal-treated" "AdD320A" "AdGFP" "AdLacZ" "AdWT"
+    "AdY297A" "Adams" "Adap" "Adaptor" "AfaE" "Affymetrix" "Africa" "African"
     "African-American" "Africans" "Afro-Caribbean" "Ag" "Age-and" "AgedShp2"
     "Ahmadiyeh" "Ai" "Aikawa" "Akt-p70S6K-eIF4E" "Akt1" "Akti1" "Al555-HGF"
     "AlF" "Ala502-Tyr503" "Aldara" "Alessi" "Alexa" "Alexa555-HGF" "AlkD"
     "Alkali-induced" "AlthoughRnf168" "Alzheimer" "Alzheimer's" "Alzheimer’s"
     "Amagasaki" "Amborgini" "Amember" "America" "American" "Americans"
     "Amerongen" "Amino-terminal" "Amot-like" "Amsterdam" "Ancestrocladaceae"
-    "Angiogenesis-induced" "Annane" "Ano1-immunoreactive"
-    "Ano1-immunoreactivity" "Ano1immunoreactivity" "Antonovsky" "Antonovsky’s"
-    "Aperio" "Apg8p" "Applied" "Arf-GTP" "Arf6" "Arf6Q67L" "Arg213X"
-    "Arg399Gln" "Arg46Stop" "Arizona" "Array" "Artemis-defective" "Asai"
+    "Angiogenesis-induced" "Annane" "Annexin-A1" "Ano1-immunoreactive"
+    "Ano1-immunoreactivity" "Ano1immunoreactivity" "Antigen-4" "Antonovsky"
+    "Antonovsky’s" "Aperio" "Apg8p" "Applied" "Arf-GTP" "Arf6" "Arf6Q67L"
+    "Arg213X" "Arg399Gln" "Arg46Stop" "Array" "Artemis-defective" "Asai"
     "Ascaris" "Ashkenazi" "Ashkenazim" "Asian" "Asians" "Associazione" "Astra"
     "Astra-Zeneca" "AstraZeneca" "Asturias" "Ataxia-telangiectasia-and-Rad3"
-    "Atg18p" "Atg5-Atg12" "Atzmon" "Augello" "Aurkb" "Australia" "Austria"
-    "Auto-inhibitory" "Avance" "Avruch" "Awb" "AxxA" "AxxAxA" "Aβ" "A–E"
-    "B-IV-7" "B-ZIP" "B-acute" "B-dependent" "B-factors" "B-family"
-    "B-lymphoblastoid" "B1" "B23" "B3" "B4" "B55α" "B6" "B7" "B9" "B=0.054"
-    "B=0.074" "BALB" "BAPTA-AM" "BARD1_1" "BARD1_1-2" "BARD1_1-3" "BARD1_1-4a"
-    "BARD1_1-6" "BARD1_1-7" "BARD1_2" "BARD1β" "BATTLE" "BAX-like" "BBsome"
-    "BC" "BCFG" "BCL-2-family" "BCR-ABL–like" "BD" "BEA" "BGC-803" "BH-4"
-    "BH10" "BH3-domain-binding" "BH3-mimetic" "BH3-only" "BH3-only
+    "Atg18p" "Atzmon" "Augello" "Aurkb" "Australia" "Austria" "Auto-inhibitory"
+    "Avance" "Avruch" "Awb" "AxxA" "AxxAxA" "Aβ" "A–C" "A–D" "A–E" "B-IV-7"
+    "B-ZIP" "B-acute" "B-dependent" "B-factors" "B-family" "B-lymphoblastoid"
+    "B1" "B3" "B4" "B55α" "B6" "B7" "B9" "B=0.054" "B=0.074" "BALB" "BAPTA-AM"
+    "BARD1_1" "BARD1_1-2" "BARD1_1-3" "BARD1_1-4a" "BARD1_1-6" "BARD1_1-7"
+    "BARD1_2" "BARD1β" "BATTLE" "BAX-like" "BBsome" "BC" "BCFG" "BCL-2-family"
+    "BCR-ABL–like" "BD" "BEA" "BGC-803" "BH-4" "BH10" "BH3-domain-binding"
+    "BH3-mimetic" "BH3-only" "BH3-only
 "
-    "BHLB2" "BHLBH2" "BMH1" "BMH2" "BML" "BML-210" "BMMs" "BOOH" "BPH1" "BPgen"
-    "BR1502" "BRAC2" "BRCA2-proficient" "BRCA2mt" "BRN801" "BS167" "BS176"
-    "BSA-gold" "BSp73AS" "BUN" "BX51WI" "BaF3-EPOR-shVHL" "Bad" "Bafilomycin"
-    "Bal" "Balbin" "Baltimore" "BamHI" "Bannayan–Riley–Ruvalcaba" "Barbashina"
-    "Barrett" "Barrett’s" "Bartel" "Bartkova" "Bartter" "Bartter's" "Basal"
-    "Basal-like" "Baserga" "Basu" "Bax" "Bax-like" "BaxΔC" "Bay11-0782"
-    "Bay11-0872" "Baylin" "Bcl-2" "Bcl-2-family" "Bcl-Xl" "Bcl-xl" "Bcl7a"
-    "BeF" "Beadchip" "Beckman" "Beier" "Belfast" "Bellflower" "Benassi"
-    "Berberich" "Bergen" "Bernard" "Bernstein" "Bethesda" "Bewry" "Bglap2"
-    "BiPAR" "Bid-complete" "Billerica" "Bio" "Bio-I6" "Bio-ISE-1" "Bio-NSC-2"
-    "Bio-rad" "BioResponse" "Biol" "Biomax" "Biosystems" "Birc5" "Blaydes"
-    "Blc2" "Blenis" "Blindenbacher" "Blnk" "Bmh" "Bmh1-280" "Boire" "Boltzmann"
-    "Bonferroni" "Bootstrap" "BothShp2" "Boyden" "Boyden's" "Boyle" "BrU"
-    "BrUTP" "Brankovic-Magic" "Braun" "Brazil" "Brca" "Bregeon" "Brian" "Brien"
-    "Brij" "Brij-96" "Bromberg" "Bromodeoxiuridine" "Brouwer" "Bruker" "Bruton"
-    "Bufexmac" "Bufill" "Burkitt" "Burkitt's" "Burkitt’s" "Burlingame"
-    "Buthionine-sulfoximine" "Bötzinger" "B–containing" "C-T-T-T-G-A"
-    "C-allele" "C-alpha" "C-capping" "C-lobe" "C-lobes" "C-mannosylation"
-    "C-rich" "C-ter-RAD51" "C-term" "C-zeta" "C0" "C1" "C18" "C1r" "C1s" "C2"
-    "C2-14" "C24" "C2CD4C" "C2–C14" "C3" "C3A-sh-CTRL" "C3A-sh-p53" "C3H10T1"
-    "C3HC4-type" "C57Bl" "C6ORF" "C6ORF211" "C6ORF96" "C6ORF97" "C6orf"
-    "C6orfs" "C7ORF64" "C9" "C9-E3" "C9-E4" "C9-E6" "C9-I6" "C9a" "C9b"
-    "C9b-shRNA" "CA-IX-weak" "CA19-9" "CA242" "CAAT" "CACGTTG" "CACN1AC"
-    "CACTTG" "CAG-FID2" "CAGAC" "CAGE-Amagasaki" "CAGE-Fukuoka" "CAGE-KING"
-    "CALCUSYN" "CAMTA" "CAMTAs" "CAP" "CAP-GLY" "CAPSS" "CAPUA" "CATζ" "CBC"
-    "CBF-AML" "CCAAT" "CCAAT-enhancer" "CCD-18Co" "CCDC132" "CCDS" "CCID"
-    "CCIDs" "CCR" "CCR5-independent" "CCR5-tropic" "CCTβ" "CD118" "CD178"
-    "CD28-stimulated" "CD4+CD8lo" "CD40+TLR7
+    "BHLB2" "BHLBH2" "BML" "BML-210" "BMMs" "BOOH" "BPgen" "BRAC2"
+    "BRCA2-proficient" "BRCA2mt" "BRN801" "BS167" "BS176" "BSA-gold" "BSp73AS"
+    "BX51WI" "BaF3-EPOR-shVHL" "Bad" "Bafilomycin" "Bal" "Balbin" "Baltimore"
+    "BamHI" "Bannayan–Riley–Ruvalcaba" "Barbashina" "Barrett" "Barrett’s"
+    "Bartel" "Bartkova" "Bartter" "Bartter's" "Basal" "Basal-like" "Baserga"
+    "Basu" "Bax" "Bax-like" "BaxΔC" "Bay11-0782" "Bay11-0872" "Baylin" "Bcl-2"
+    "Bcl-2-family" "Bcl-Xl" "Bcl-xl" "BeF" "Beadchip" "Beckman" "Beier"
+    "Belfast" "Bellflower" "Benassi" "Berberich" "Bergen" "Bernard" "Bernstein"
+    "Bethesda" "Bewry" "Bglap2" "BiPAR" "Bid-complete" "Billerica" "Bio"
+    "Bio-I6" "Bio-ISE-1" "Bio-NSC-2" "Bio-rad" "BioResponse" "Biol" "Biomax"
+    "Biosystems" "Birc5" "Blaydes" "Blc2" "Blenis" "Blindenbacher" "Blnk"
+    "Bmh1-280" "Boire" "Boltzmann" "Bonferroni" "Bootstrap" "BothShp2" "Boyden"
+    "Boyden's" "Boyle" "BrUTP" "Brankovic-Magic" "Braun" "Brazil" "Brca"
+    "Bregeon" "Brian" "Brien" "Brij" "Brij-96" "Bromberg" "Bromodeoxiuridine"
+    "Brouwer" "Bruker" "Bruton" "Bufexmac" "Bufill" "Burkitt" "Burkitt's"
+    "Burkitt’s" "Burlingame" "Buthionine-sulfoximine" "Bötzinger" "B–D"
+    "B–containing" "C-T-T-T-G-A" "C-allele" "C-alpha" "C-capping" "C-lobe"
+    "C-lobes" "C-mannosylation" "C-rich" "C-ter-RAD51" "C-term" "C-zeta" "C0"
+    "C1" "C18" "C1r" "C1s" "C2" "C2-14" "C24" "C2CD4C" "C2–C14" "C3"
+    "C3A-sh-CTRL" "C3A-sh-p53" "C3H10T1" "C3HC4-type" "C57Bl" "C6ORF"
+    "C6ORF211" "C6ORF96" "C6ORF97" "C6orf" "C6orfs" "C7ORF64" "C9" "C9-E3"
+    "C9-E4" "C9-E6" "C9-I6" "C9a" "C9b" "C9b-shRNA" "CA-IX-weak" "CA19-9"
+    "CA242" "CAAT" "CACGTTG" "CACN1AC" "CACTTG" "CAG-FID2" "CAGAC"
+    "CAGE-Amagasaki" "CAGE-Fukuoka" "CAGE-KING" "CALCUSYN" "CAMTA" "CAMTAs"
+    "CAP" "CAP-GLY" "CAPSS" "CAPUA" "CATζ" "CCAAT" "CCAAT-enhancer" "CCD-18Co"
+    "CCDC132" "CCDS" "CCID" "CCIDs" "CCR5-independent" "CCR5-tropic" "CCTβ"
+    "CD118" "CD28-stimulated" "CD4+CD8lo" "CD40+TLR7
 "
     "CD44-activated" "CD44-mediated" "CD44hi" "CD44hiCD62Lhi" "CD44hiCD62Llo"
-    "CD44lo" "CD44v3" "CD44v3-v10" "CD44v6" "CD8+ " "CD90
+    "CD44lo" "CD44v3" "CD44v3-v10" "CD44v6" "CD8+ " "CDC18" "CDC18-RAD3"
+    "CDC18-deficient" "CDK6-specific" "CDN" "CDNK1B" "CDT-2315C07" "CDase"
+    "CDases" "CEAS" "CEBPβ" "CEPH" "CEU" "CF-1" "CFP-RanQ69L" "CH12F3-2" "CH14"
+    "CH30" "CH34" "CH37" "CH37
 "
-    "CDC18" "CDC18-RAD3" "CDC18-deficient" "CDK6-specific" "CDN" "CDNK1B"
-    "CDT-2315C07" "CDase" "CDases" "CEAS" "CEBPβ" "CED-9" "CELF" "CENPJ" "CEPH"
-    "CEU" "CFP-RanQ69L" "CGD" "CH12F3-2" "CH14" "CH30" "CH33" "CH34" "CH36"
-    "CH37" "CH39" "CH6" "CH7" "CH9" "CHEN" "CHIP" "CHR-CDE" "CHR-E2F"
-    "CHX-treatment" "CI=0" "CI=1" "CI=10" "CI=11" "CI=2" "CI=4.2–14.7"
-    "CI=6.6–10.7" "CI=7" "CIMP-high" "CINK" "CJ179" "CJ179hTERT" "CK10"
-    "CK10-positve" "CK1δ" "CK2α-Akt" "CLN1" "CLP" "CLP-model" "CLP-plasma"
-    "CMB" "CMB-β" "CNJ" "CNJs" "CNNM" "CNNM2-NT5C2" "CNS-2" "CNVs" "COOH1"
-    "COPDGene" "COS-1" "COX2-depdent" "CP-VHL" "CPMZ" "CQC" "CREB5"
-    "CRIB-TagRFP" "CRINEPT" "CRMPs" "CRMs" "CS-exposedFoxO3" "CSDC2" "CSMD2"
-    "CSMD3" "CSN6-14-3-3σ" "CT7" "CTAAAA" "CTAg" "CTAgs" "CTC" "CTCT" "CTKs"
+    "CH6" "CHR-CDE" "CHR-E2F" "CHX-treatment" "CI=0" "CI=0.1–1.6" "CI=0.7–3.1"
+    "CI=0.9–3.4" "CI=1" "CI=10" "CI=11" "CI=2" "CI=4.2–14.7" "CI=6.6–10.7"
+    "CI=7" "CIMP-high" "CINK" "CJ179" "CJ179hTERT" "CK10-positve" "CK1δ"
+    "CK2α-Akt" "CLP-model" "CLP-plasma" "CMB" "CMB-β" "CNJ" "CNJs" "CNNM"
+    "CNNM2-NT5C2" "CNS-1" "CNS-2" "CNVs" "COOH1" "COPDGene" "COX2-depdent"
+    "CPMZ" "CQC" "CRIB-TagRFP" "CRINEPT" "CRMPs" "CRMs" "CS-exposedFoxO3"
+    "CSDC2" "CSMD2" "CSMD3" "CSN6-14-3-3σ" "CT7" "CTAAAA" "CTAgs" "CTCT" "CTKs"
     "CTL-escape" "CUGBP1-SG" "CVT-313" "CXCR4-null" "CXCR4-tropic" "CY2B6"
-    "CaCl" "CaP8" "Cajal" "Cajal-Like" "Cajal-body" "Cal-33" "Calu" "Calu-I"
+    "CaCl" "CaP8" "Cai" "Cajal-Like" "Cajal-body" "Cal-33" "Calu" "Calu-I"
     "Canada" "Cancro" "Candolfi" "Capaldi" "Carboxy-H2DCFDA"
     "Carboxyl-terminal" "Carlo" "Carlsbad" "Carlson" "Carnoy" "Carnoy's"
-    "Caucasian" "Caucasians" "Cay10512" "CdU" "Cdc31" "Cdk1" "Cdk1on" "Cdk2"
-    "Celeste" "Celiac" "Cenp" "Cenp-A" "Centromeric-telomeric" "Cers"
-    "Cesarean" "ChIP" "ChIP-on" "ChIP-on-Chip" "ChIP-on-chip" "ChIP-qPCR"
-    "ChIP-re-ChIP" "ChIP–qPCR" "Cha-Go-K-1" "Chang" "Chanoux"
-    "Chariot-mediated" "Charis" "Che" "Cheung" "Chi-square" "ChiR"
-    "ChiR-WT–expressing" "Child-Pugh's" "Chilean" "Chk2-stimulated"
-    "Chlamydomonas" "Chodosh" "Choi" "Chr-7" "Chun" "Churchill" "Chuvash"
-    "CisGenome" "Cizkova" "Cl" "Cl-Amidine" "Cla" "Claudin-Low" "CldU"
-    "Clostridia" "Cmax" "CnaB" "CnaB2" "CoIP" "CoMCont" "CoMTb" "Cochran"
-    "Cochran's" "Col-A" "Col-B" "Col2" "Colombia" "Colombini" "Columbia"
-    "Con-siRNA-treated" "Conclusions" "Contact-inhibited" "Content" "Control"
-    "Copy-number" "Corbit" "Core-Binding" "Coss" "Cossart" "Cowden"
+    "Caucasian" "Caucasians" "Cav1-shRNA" "Cay10512" "CdU" "Cdc31" "Cdk1"
+    "Cdk1on" "Cdk2" "Celeste" "Celiac" "Cenp" "Cenp-A" "Cenp-E"
+    "Centromeric-telomeric" "Cers" "Cesarean" "ChIP" "ChIP-on" "ChIP-on-Chip"
+    "ChIP-on-chip" "ChIP-qPCR" "ChIP-re-ChIP" "ChIP–qPCR" "Cha-Go-K-1" "Chang"
+    "Chanoux" "Chariot-mediated" "Charis" "Che" "Chemo-resistance" "Cheung"
+    "Chi-square" "ChiR" "ChiR-WT–expressing" "Child-Pugh's" "Chilean"
+    "Chk2-stimulated" "Chlamydomonas" "Chodosh" "Choi" "Chr-7" "Chun"
+    "Churchill" "Chuvash" "CisGenome" "Cizkova" "Cl" "Cl-Amidine" "Cla"
+    "Claudin-Low" "CldU" "Clostridia" "Cmax" "CnaB" "CnaB2" "CoIP" "CoMCont"
+    "CoMTb" "Cochran" "Cochran's" "Col-A" "Col-B" "Colombia" "Colombini"
+    "Columbia" "Con-siRNA-treated" "Conclusions" "Contact-inhibited" "Content"
+    "Control" "Copy-number" "Corbit" "Core-Binding" "Coss" "Cossart" "Cowden"
     "CpG-island" "CpG-islands" "Cr" "Cre-FUCRW" "Creighton" "Cressman"
     "Creteil" "Crip" "Crohn" "Crohn's" "Crohn’s" "Cross-activation"
-    "Cross-inhibition" "Cross-population" "Crouzon" "Cruz" "CsCl" "CtoG" "Cu"
+    "Cross-inhibition" "Cross-population" "Crouzon" "Cruz" "CsCl" "CtoG"
     "Cu-SP" "CuA" "CuCl" "Cui" "Cui-fang" "Cul1" "Cul2" "Cullin-Ring" "Curcuma"
-    "Cwt" "Cy1" "Cy2" "Cycin" "CyclinA" "Cystine-38" "Cyto" "Cytoscape" "Cα"
-    "Cα-RMSD" "Cα-RMSDs" "Cα-RMSF" "Cα-RMSFs" "Cβ" "CδH" "D-cyclins" "D-dimer"
+    "Cwt" "Cy1" "Cy2" "Cycin" "Cystine-38" "Cyto" "Cytoscape" "Cα" "Cα-RMSD"
+    "Cα-RMSDs" "Cα-RMSF" "Cα-RMSFs" "Cβ" "CδH" "D-3" "D-cyclins" "D-dimer"
     "D-flow" "D-glucuronic" "D-loop" "D-peptides" "D-type" "D1-D2-G-X3"
     "D10S1248" "D10S1686" "D10S185" "D12S391" "D17S1828" "D17S976" "D19S814"
     "D19S833" "D19S883" "D1S1656" "D2" "D2-HAN" "D22S1045" "D26GfsX51" "D2S441"
-    "D3" "D5" "D502Y" "D6" "DAVID" "DBA44" "DC1" "DC2" "DDC2" "DEA-NO"
-    "DETA-NO" "DFCI" "DFG-out" "DGES2" "DGKVFDEK" "DHEA-S" "DHFR1" "DHPLC"
-    "DIANA" "DLBL" "DLG1#1" "DLG2" "DLG2–4" "DLS" "DMEM" "DMNQ" "DMNT1" "DN2"
-    "DN3" "DN5" "DNA-DNA" "DNA-DSB" "DNA-DSBs" "DNA-Pkcs" "DNA-polymerase-α"
-    "DNIII" "DNIV" "DNMT1b" "DNPH" "DNaseI" "DNaseI-hypersensitive" "DO7"
-    "DONG" "DPBS" "DPTA" "DR-GFP" "DR-eGFP" "DR0102" "DR0301" "DRB1*01"
-    "DRB1*03" "DR–GFP" "DSMZ" "DSU" "DTP" "DUOXA1" "DUOXA2" "DXXLL" "Daf-16"
-    "Dana" "Dana-Farber" "Darby" "Darcy" "Daxx" "Day0" "De-silences" "DeHart"
-    "Dekken" "Deletion-Type" "Deletion-Type-Mutations" "Dellinger" "Demetri"
-    "Dermo" "Dermo1" "Descartes" "Deutsches" "Dharmacon" "DhhCre" "DiGiovanni"
+    "D3" "D5" "D502Y" "D6" "DAVID" "DBA44" "DC1" "DEA-NO" "DETA-NO" "DFCI"
+    "DFCs" "DFG-out" "DGES2" "DGKVFDEK" "DHEA-S" "DHFR1" "DHPLC" "DIANA" "DLBL"
+    "DLG1#1" "DLG2" "DLG2–4" "DLS" "DMEM" "DMNQ" "DMNT1" "DN2" "DN3" "DN5"
+    "DNA-DNA" "DNA-DSB" "DNA-DSBs" "DNA-Pkcs" "DNA-polymerase-α" "DNIII" "DNIV"
+    "DNMT1b" "DNPH" "DNaseI" "DNaseI-hypersensitive" "DO7" "DONG" "DPBS" "DPTA"
+    "DR0102" "DR0301" "DRB1*01" "DRB1*03" "DSMZ" "DSU" "DTP" "DUOXA2" "DXXLL"
+    "Daf-16" "Dana" "Dana-Farber" "Darby" "Darcy" "Daxx" "Day0" "De-silences"
+    "DeHart" "Dekken" "Deletion-Type" "Deletion-Type-Mutations" "Dellinger"
+    "Demetri" "Descartes" "Deutsches" "Dharmacon" "DhhCre" "DiGiovanni"
     "Dichroism" "Diego" "Diff" "Diff-Quik" "Dioncophyllaceae" "Discussion"
     "Disse" "Dixon" "Doi" "Dombrovskiy" "Dominant-negative" "Doyle" "Dp110"
-    "Droseraceae" "DsRed" "DsRed-DNMT1-transfected" "Du" "DuP-649" "DuP-697"
-    "Duclos" "Dudev" "Dulbecco" "Dulbecco's" "Dulbecco’s" "Dunedin" "Dupont"
-    "Durie" "Durie-Salmon" "Dδ1-Dδ2" "Dδ2-Jδ1" "E-AS" "E-III" "E-X-S" "E-box"
-    "E-boxes" "E-caddeficient" "E-caddirected" "E-cadexpressing" "E-selectin"
-    "E120X" "E16–17Pten" "E1b" "E2A-HLF" "E2A-PBX" "E2F3a" "E2F3b" "E2~Ub"
-    "E2–E3" "E3-ESS" "E389-D3E" "E3~Ub" "E4" "E66–E69" "E6E7" "E7" "E84GfsX26"
-    "E9.5" "E9.5-10.5" "EACs" "EAIHHE" "EBP-beta2" "EBP-short" "EBP-α" "EBP-δ"
-    "EBPβ-1" "EBPβ-2" "EBPβ-LIP-transduced" "EBPβ-WT" "EBPβ-WT-transfected"
-    "EBPβ-dependent" "EBPβ-liver-enriched" "EBPβ-long" "EBPβ-short" "EBPδ"
-    "EC-CM" "EC-vCYC" "EC-vGPCR" "EC-vGPCR+EC-vCYC" "EC50" "EC50s" "ECOG-GI"
-    "ECP" "ECV" "ED" "ED50" "EDD1" "EETSV" "EF1" "EGD" "EGF-like" "EGFP-C3"
-    "EGFP-TEV-S-peptide" "EGFR-GNP" "EGFR-TKIs-induced" "EH" "EHE#1" "EHE#4"
-    "EHEs" "EHH" "EKLF" "ELF4-double" "ELF4-null" "ELISAs" "EMBnet"
-    "EMP2-lipid" "EMP2-β3" "EMT-like" "ENL-driven" "ENST00000303635"
-    "ENST00000465804" "EOCs" "EPX" "ER+ve" "ER-like" "ER-marker" "ER-status"
-    "ER-stress" "ER81-MMP-1" "ERE-TK-Luc" "EREs" "ERG-IP" "ERG-V5"
-    "ERG-transcriptional" "ERG-transcriptome" "ERK+ve" "ERK-ETS2" "ERK-PEA3"
-    "ER−ve" "ESCRT" "ESE" "ESGFG" "ESR1-SMARTpool" "ESRF" "ESS" "ESS-1" "ESS-2"
-    "ETGFG" "ETIW" "ETO9a-driven" "EU-AUS" "EWQ" "EXnHXHX10D" "Early-onset"
-    "Easton" "EerbB" "EerbB-2-expressing" "Efp" "Eg5-dependent" "Eighty-one"
-    "Eighty-two" "Eii" "Elk-1" "Elk-1-reactive" "Elk-DM" "Elk-GFP" "Elk-SM"
-    "Elk-YFP" "Elk-ets" "Ellisville" "Elongin" "EndoH" "England" "Ensembl"
-    "Epithelial-mesenchymal" "Epithelial-to-Mesenthymal"
-    "Epithelial–mesenchymal" "EpoA" "EpoB" "ErbB" "ErbB2-expressing"
-    "ErbB2-induced" "ErbB2-potentiated" "Ercc" "Error-Prone" "Esmon" "Esteban"
-    "Eto" "Ets-family" "Ets-like" "Europe" "European" "European-descent"
-    "Europeans" "Evan" "Evans" "Ewens" "Exelixis" "ExxxLL" "Eμ" "Eμ239"
-    "F-box-like" "F-deoxyglucose" "F02" "F12" "F2" "F3" "F4" "F40" "F5" "F79"
-    "F8" "F94–W117" "FA-like" "FACSCaliber" "FAD" "FANCA" "FANCAwt" "FANCCwt"
-    "FANCD1mt" "FANCD2wt" "FANCwt" "FBXL11" "FCs" "FDG-PET" "FDR=0.01" "FDR~1%"
-    "FERM" "FFPE" "FGF" "FGFR-RAS" "FIT3-ITD" "FITC-BSA" "FK16A" "FK18A"
-    "FKBP11" "FKBP5-PHLPP-mediated" "FKPB5" "FLAG" "FLAG-SKAP1"
-    "FLAG-epitope-tagged" "FLOW2000" "FLT3-ITD" "FLT3ITD" "FLT3L" "FLT3TKD"
-    "FLUD" "FMNL" "FMS-like" "FN-439" "FOPflash" "FOX" "FOXN3" "FR-CRET" "FRPs"
-    "FSHβ" "FTIR" "FV300" "FVC" "FXR1" "Fabbri" "Fabiola" "Falardeau" "Fanc"
-    "Farber" "Fas-receptor" "Fascaplysin" "Fautsch" "Fc" "Fcα" "Fcγ" "FcεRI"
-    "Fe" "Fe(III)-SP" "Fe-salen" "FeCl" "Fei" "Fernandez" "Fi" "Fifty-seven"
+    "Droseraceae" "Ds" "Ds-Red" "DsRed" "DsRed-DNMT1-transfected" "Du"
+    "DuP-649" "DuP-697" "Duclos" "Dudev" "Dulbecco" "Dulbecco's" "Dulbecco’s"
+    "Dunedin" "Dupont" "Durie" "Durie-Salmon" "Dδ1-Dδ2" "Dδ2-Jδ1" "E-1" "E-AS"
+    "E-III" "E-X-S" "E-box" "E-boxes" "E-caddeficient" "E-caddirected"
+    "E-cadexpressing" "E-deficient" "E-selectin" "E120X" "E16–17Pten" "E2A-HLF"
+    "E2A-PBX" "E2F3a" "E2F3b" "E2~Ub" "E2–E3" "E3-ESS" "E389-D3E" "E3~Ub" "E4"
+    "E66–E69" "E6E7" "E7" "E84GfsX26" "E9.5" "E9.5-10.5" "EACs" "EAIHHE"
+    "EBP-beta2" "EBP-short" "EBP-α" "EBP-β2" "EBP-β3" "EBP-δ" "EBPβ-1" "EBPβ-2"
+    "EBPβ-LIP-transduced" "EBPβ-WT" "EBPβ-WT-transfected" "EBPβ-dependent"
+    "EBPβ-liver-enriched" "EBPβ-long" "EBPβ-short" "EBPδ" "EC-vCYC"
+    "EC-vGPCR+EC-vCYC" "EC50" "EC50s" "ECOG-GI" "ECV" "ED" "ED50" "EDD1"
+    "EETSV" "EGD" "EGF-R" "EGF-R-induced" "EGF-like" "EGFP-C3"
+    "EGFP-TEV-S-peptide" "EGFR-TKIs-induced" "EHE#1" "EHE#4" "EHEs"
+    "ELF4-double" "ELF4-null" "ELISAs" "EMBnet" "EMP2-lipid" "EMP2-β3"
+    "EMT-like" "ENL-driven" "ENST00000303635" "ENST00000465804" "EOCs" "EPX"
+    "ER+ve" "ER-like" "ER-marker" "ER-status" "ER-stress" "ER81-MMP-1"
+    "ERE-TK-Luc" "EREs" "ERG-V5" "ERG-transcriptional" "ERG-transcriptome"
+    "ERK+ve" "ERK-ETS2" "ERK-PEA3" "ERK1-2" "ER−ve" "ESCRT" "ESE" "ESGFG"
+    "ESR1-SMARTpool" "ESRF" "ESS-1" "ESS-2" "ETGFG" "ETIW" "ETO9a-driven"
+    "EU-AUS" "EWQ" "EXnHXHX10D" "Early-onset" "Easton" "EerbB-2-expressing"
+    "Efp" "Eighty-one" "Eighty-two" "Eii" "Elk-1" "Elk-1-reactive" "Elk-SM"
+    "Ellisville" "Elongin" "EndoH" "England" "Ensembl" "Epithelial-mesenchymal"
+    "Epithelial-to-Mesenthymal" "Epithelial–mesenchymal" "EpoA" "EpoB" "Ercc"
+    "Error-Prone" "Esmon" "Esteban" "Eto" "Ets-family" "Ets-like" "Europe"
+    "European" "European-descent" "Europeans" "Evan" "Evans" "Ewens" "Exelixis"
+    "ExxxLL" "Eμ" "Eμ239" "F-box-like" "F-deoxyglucose" "F02" "F12" "F2" "F3"
+    "F4" "F40" "F5" "F79" "F8" "F94–W117" "FA-like" "FACSCaliber" "FAD"
+    "FANCAwt" "FANCCwt" "FANCD1mt" "FANCD2wt" "FANCwt" "FBXL11" "FCs"
+    "FDR=0.01" "FDR~1%" "FERM" "FFPE" "FGFR-RAS" "FIIN-1" "FIT3-ITD" "FITC-BSA"
+    "FK16A" "FKBP11" "FKBP5-PHLPP-mediated" "FKPB5" "FL-1" "FL-2" "FLAG"
+    "FLAG-SKAP1" "FLAG-epitope-tagged" "FLOW2000" "FLT3-ITD" "FLT3ITD" "FLT3L"
+    "FLT3TKD" "FLUD" "FMNL" "FMS-like" "FN-439" "FOPflash" "FOX" "FOXN3"
+    "FR-CRET" "FRPs" "FSHβ" "FTIR" "FV300" "FVC" "Fabbri" "Fabiola" "Falardeau"
+    "Fanc" "Farber" "Fascaplysin" "Fautsch" "Fc" "Fcα" "Fcγ" "FcεRI" "Fe"
+    "Fe(III)-SP" "Fe-salen" "FeCl" "Fei" "Fernandez" "Fi" "Fifty-seven"
     "Fifty-six" "Fifty-three" "Fii" "Fill-in" "Filtz" "Finkle" "Finland"
     "Finnish" "Flag" "Flag-SIRTs" "Fletcher" "Fligiel" "Flo1A" "Flow-FISH"
-    "Flow-cytometry" "Flp-In" "FnIII-1" "FnIII-2" "Fo" "Fo-Fc" "FoldX"
+    "Flow-cytometry" "Flp-In" "FnIII" "FnIII-1" "FnIII-2" "Fo" "Fo-Fc" "FoldX"
     "Follow-up" "Fontemaggi" "Forssman" "Forty-eight" "Forty-four" "Forty-one"
     "Forty-six" "Forty-three" "Forty-two" "Fos-family" "FoxO-DNA" "FoxO3-3XA"
     "Foxo1" "Fr" "Framingham" "France" "Francisco" "Fraumeni" "French" "Freund"
     "Friedman" "Frizzled" "Frodin" "Fudan" "Fuhrman" "Fukuoka" "Fullwood"
-    "Fura-2AM" "Fyb" "Fzd2-dependent" "Förster" "G-LAP" "G-LAP-Flp"
+    "Fura" "Fura-2AM" "Fyb" "Fzd2-dependent" "Förster" "G-LAP" "G-LAP-Flp"
     "G-Sephadex" "G-T" "G-allele" "G-coupled" "G-rich" "G0" "G0-arrested" "G1"
-    "G1-S" "G1–G2" "G2" "G2-M" "G3I" "GA" "GAB" "GABPα" "GABPβ" "GABs"
-    "GADD45β" "GAIN" "GAL4-bait" "GC-motifs" "GDS2200" "GEJ" "GEM-grade"
-    "GFAP-negative" "GFP-GGA3-coated" "GFP-Rassf1C" "GFP-RhoA" "GFP-TAM67"
-    "GFP-fusion" "GFP-fusions" "GFP-hPRL3" "GFP-only" "GFP-reporter"
-    "GFP-γ-tubulin-expressing" "GFPu" "GG" "GGA3-Crk-Met" "GGA3-Met"
-    "GGA3-N194A" "GGA3ΔCrk" "GGAGAGGGGAGGAAGGGGAG" "GIJCs" "GK-136901" "GMR"
-    "GMRβ" "GRB2–SOS" "GRO-mediated" "GRO-seq" "GS-US-227-0102" "GS7-8"
-    "GSE13355" "GSE14905" "GSE6008" "GSE7553" "GSE9253" "GSEA-like"
-    "GSK-3β-dependent" "GSK-alpha" "GST-14-3-3ζ" "GST-Elk-ets" "GST-FbaB"
-    "GST-etsΔ17-23" "GST-fusions" "GST-pull-down" "GST-pulldowns" "GSTm1,2,4,5"
-    "GT+GG" "GU" "GV" "GVGD" "GWASs" "GWQ" "Gaestel" "Gal4-DBD" "Galen"
-    "Gallay" "Galt" "García" "García-Pardo's" "Garreau" "Garzon"
-    "Gastro-Intestinal" "Gawecka" "Geissmann" "GenBank" "GenKOLS" "Gene-Chip"
-    "GeneChip" "GeneGo" "GeneSet" "GeneSnap" "Genentech"
-    "Genetically-engineered" "Genomatix" "Genome-wide" "Genomforschung"
-    "Genotype-Phenotype" "George" "Germ-line" "Germany" "Gibbs" "Gibco"
-    "Giemsa" "Giglio" "Gilkes" "Girton" "Gitelman" "Gitelman's" "Gleason"
-    "Gli3-190" "Glickman" "Glinsky" "GlyProt" "GmbH" "Goberdhan"
+    "G1–G2" "G2" "G2-M" "G3I" "GABPα" "GABPβ" "GADD45β" "GAIN" "GAL4-bait"
+    "GATA3-knock-out" "GC-motifs" "GDS2200" "GEJ" "GEM-grade" "GFAP-negative"
+    "GFP-GGA3-coated" "GFP-Rassf1C" "GFP-TAM67" "GFP-fusion" "GFP-fusions"
+    "GFP-hPRL3" "GFP-only" "GFP-reporter" "GFP-γ-tubulin-expressing" "GFPu"
+    "GG" "GGA3-Crk-Met" "GGA3-Met" "GGA3-N194A" "GGA3ΔCrk"
+    "GGAGAGGGGAGGAAGGGGAG" "GIJCs" "GK-136901" "GMRβ" "GRO-mediated" "GRO-seq"
+    "GS-US-227-0102" "GS7-8" "GSE13355" "GSE14905" "GSE6008" "GSE7553"
+    "GSEA-like" "GSK-3β-dependent" "GSK-alpha" "GST-14-3-3ζ" "GST-FbaB"
+    "GST-etsΔ17-23" "GST-fusions" "GST-pull-down" "GST-pulldowns" "GT+GG" "GU"
+    "GV" "GVGD" "GWASs" "GWQ" "Gaestel" "Gal4-DBD" "Galen" "Gallay" "Galt"
+    "García" "García-Pardo's" "Garreau" "Garzon" "Gastro-Intestinal" "Gawecka"
+    "Geissmann" "GenBank" "GenKOLS" "Gene-Chip" "GeneChip" "GeneGo" "GeneSet"
+    "GeneSnap" "Genentech" "Genetically-engineered" "Genomatix" "Genome-wide"
+    "Genomforschung" "Genotype-Phenotype" "George" "Germ-line" "Germany"
+    "Gibbs" "Gibco" "Giemsa" "Giglio" "Gilkes" "Girton" "Gitelman" "Gitelman's"
+    "Gleason" "Gli3-190" "Glickman" "Glinsky" "GlyProt" "GmbH" "Goberdhan"
     "Godin-Heymann" "Goerge" "Golebiewska" "Gordan" "Gp91ds-tat"
     "Gram-negative" "Gram-positive" "Granta" "GraphPad" "Greece" "Greene"
     "Grenoble" "Gruber" "Grunewald" "Gsk" "Gsk-α" "GtoC" "Guan" "Guerra"
     "Guillermina" "Guven" "Gy" "Gö6976" "Gαq" "Gαq-effector" "Gαs" "Gβ1"
     "Gβγ-p101" "Gβγ-p101-Ras-dependent" "Gγ2" "H&E" "H&Es" "H+E" "H-2D"
     "H-RasV12" "H-Thymidine" "H-bond" "H-p53-R175H" "H-p53-R273H" "H-sensitive"
-    "H-thymidine" "H1" "H19" "H2" "H2009" "H3" "H3Ac" "H3K9" "H3S10" "H3pY41"
-    "H4" "H4-K12" "H4K12" "H4K12ac" "H4K20" "H5N1" "H6" "H7402-X" "HA-1077"
-    "HA-Elk-ets" "HA-Elk-etsΔ17-23" "HA-SAFB1" "HA-human" "HA-tag" "HADC"
-    "HADDOCK" "HAF" "HAUS" "HBD2" "HBEC-3KT" "HBECK-3KT" "HBS" "HBX" "HC-DNA"
-    "HC-DSBs" "HC-relaxation" "HCL-like" "HCT" "HCx26" "HD-Ad" "HDAC-dependent"
-    "HDAC-mediated" "HDAC1-shRNA" "HDCA4" "HDF1314" "HDFs" "HDMECs"
-    "HDSN845-848P" "HEC-1A" "HECT" "HECT-domain-containing" "HECT-like" "HECTs"
-    "HEK-293E" "HER18" "HER2--positive" "HF-6" "HFF" "HGF-Met" "HGF-ligand"
+    "H-thymidine" "H1" "H19" "H2" "H2009" "H3" "H3Ac" "H3S10" "H3pY41" "H4"
+    "H4-K12" "H4K12" "H4K12ac" "H4K20" "H5N1" "H6" "H7402-X" "HA-1077"
+    "HA-Elk-etsΔ17-23" "HA-human" "HA-tag" "HADC" "HADDOCK" "HAF" "HAUS" "HBD2"
+    "HBEC-3KT" "HBECK-3KT" "HBS" "HBX" "HC-DNA" "HC-DSBs" "HC-relaxation"
+    "HCL-like" "HCx26" "HD-Ad" "HDAC-dependent" "HDAC-mediated" "HDAC1-shRNA"
+    "HDCA4" "HDF1314" "HDFs" "HDMECs" "HDSN845-848P" "HEC-1A" "HECT"
+    "HECT-domain-containing" "HECT-like" "HECTs" "HEK-293E" "HER18"
+    "HER2--positive" "HF-6" "HFF" "HFL-1" "HGF-Met" "HGF-ligand"
     "HGF-treatment" "HGNC" "HGU133Plus2.0" "HGUCs" "HHAAYVNNLNVTEEK" "HHARI~Ub"
     "HHY" "HIF-dependent" "HIF-weak" "HIFα" "HIFβ" "HIL98" "HIV+LPS"
     "HIV-1#1+2mut" "HIV-1#totmut" "HIV-1-AP-1#1+2mut" "HIV-1-AP-1#totmut"
     "HIV-1-AP-1totmut" "HIV-1-AP-3#totmut" "HIV-1-infected" "HIV-infected"
     "HL102090-01" "HLA-B35" "HLA-B35-restricted" "HLA-B57" "HLA-DQ" "HLA-I"
-    "HMCL" "HMCLs" "HMEC1s" "HMG-17-like" "HNF" "HNF24" "HNTMB" "HNε" "HPG"
-    "HPV16E6E7" "HPV16E7" "HPVE6" "HPVE7" "HR-efficiency" "HR=0.24" "HR=0.3"
-    "HR=0.33" "HR=0.56" "HR=0.68" "HR=0.7" "HR=0.8" "HR=0.9" "HR=1.0" "HRD"
-    "HS3A" "HS3B" "HS3b" "HS7" "HSQC" "HSR-GBM1" "HSV-1" "HT1080" "HT15" "HTLV"
-    "HTLV-I" "HTLV-I-infected" "HTRA2#1" "HU-treatment" "HUCA" "HUGO" "HUTS21"
-    "HYALP1" "Hanley" "HapMap" "HapMap-Tag" "HapMap3" "Harakiri"
-    "Hardy-Weinberg" "Hardy–Weinberg" "HeLa-CD95-N118Q" "HeLa-CD95-N136Q"
-    "HeLa-CD95-N223Q" "HeLa-CD95-T214Q" "HeNe" "Hef" "Heinrich" "Helix4"
-    "Hematology" "Hemmings" "Henle" "Heo" "HepG2-P" "HepG2-X"
-    "Hepatocyte-specific" "Hercules" "Herpes-Specific" "Hervouet" "Heymann"
-    "Heyne" "Hgf" "High-Confidence" "High-density" "High-grade" "High-quality"
-    "High-risk" "Higher-strength" "Hilden" "HindIII" "Hirata" "Hirota"
-    "His-Bax" "His-STAT3" "His-rich" "His-tag" "Hispanic" "Hiyoshi" "Hochegger"
-    "Hodgkin" "Hoechst" "Hoechst33258" "Holliday" "Hopkins" "Hormone-naïve"
-    "Hotchkiss" "Hsa-miR-124a" "Hsc70" "Hsp-60" "Hsp90s" "Hsp90α" "Huamn"
-    "Huang" "Huntington" "Huntington’s" "Hutchinson" "Hyal-3" "Hymenoptera"
-    "I-A" "I-II" "I-III" "I-IV" "I-SMADs" "I-VEGF-A" "I-deficient" "I-like"
-    "I-repeat" "I-repeats" "I26A" "I6-ISE" "IA-IIA" "IAP-MS" "IC50" "IC50s"
-    "IC80" "ICLCs" "ICx" "ID14-2" "ID2R" "IDTs" "IEG" "IFI" "IFI16-luc" "IFT-A"
-    "IFT-B" "IGF-1-induced" "IGF-1-stimulated" "IHCAs" "IHC–HER-2-shifted"
-    "II-Smad" "IIA" "IIC" "IIH" "III-1" "III-15" "III-2" "III-3" "III-IV"
-    "IIIA" "IIIC" "IIβ" "II–IV" "IKKs-Myc" "IKKα-or" "IL-1β-treatment"
-    "IL-6-receptor" "IL1R-induced" "IL1R-mediated" "IL2rγ-null" "ILR" "ILS"
-    "IMVI" "INT0148" "IOP" "IP-MS" "IP-Westerns" "IPT" "IQ" "IQ-1" "IR-and"
-    "IR-independence" "IR-mimetic" "IRAC" "ISD" "ISE" "ISE-1" "ISH" "ITC" "IU"
-    "IV-16" "IV-19" "IV-3" "IVS" "IVS10-1G" "IVS32-12A" "IVS5" "IVS8-3T"
-    "Iceland" "Icelanders" "IdU=0.65" "IdU=1.03" "IdU→CldU" "Idirisinghe"
-    "Ifnrg2" "Ig-like" "IgA" "IgG1-GNP" "IgR3-7" "Igf2" "Igs" "Igκ" "Iles"
-    "Illumina" "ImageJ" "ImageQuant" "ImageScope" "Immuno-fluorescence"
-    "Immuno-therapeutic" "Importin-α" "In-Between-RING" "In-vitro" "InCHIANTI"
-    "Infection-Mediated" "Inr" "Institute" "Institute-Developmental" "Insulin"
-    "Interactome" "Intra-Tandem-Duplications" "Invitrogen" "Irish" "Ishikwawa"
-    "Islet1" "Italiana" "Itgal" "J-82" "J11" "J16" "J27" "J558" "J774" "J82"
-    "JA3" "JAK-STAT3" "JBST" "JBTS" "JHH" "JHH-GBM10" "JHU" "JHU-029"
-    "JNK-Bid-mediated" "JPT" "JPT+CHB" "JRFL" "JRFL-SF2nef" "JUND" "Jain"
-    "Japanese" "Jeremy" "Jewish" "Jews" "Jiang" "Jinyoung" "Jouberin" "Ju"
+    "HMCL" "HMCLs" "HMEC1s" "HMG-17-like" "HNF" "HNF24" "HNTMB" "HNε"
+    "HP1-alpha" "HPG" "HPV16E6E7" "HPV16E7" "HPVE6" "HPVE7" "HR-efficiency"
+    "HR=0.24" "HR=0.3" "HR=0.33" "HR=0.56" "HR=0.68" "HR=0.7" "HR=0.8" "HR=0.9"
+    "HR=1.0" "HRD" "HS3A" "HS3B" "HS3b" "HS7" "HSC-intrinsic" "HSQC" "HSR-GBM1"
+    "HSV-1" "HT15" "HTLV" "HTLV-I" "HTLV-I-infected" "HTRA2#1" "HU-treatment"
+    "HUCA" "HUTS21" "HYAL" "HYAL-2" "HYALP1" "HYL-1" "Hanley" "HapMap"
+    "HapMap-Tag" "HapMap3" "Harakiri" "Hardy-Weinberg" "Hardy–Weinberg" "Hct"
+    "HeLa-CD95-N118Q" "HeLa-CD95-N136Q" "HeLa-CD95-N223Q" "HeLa-CD95-T214Q"
+    "HeNe" "Hef" "Heinrich" "Helix4" "Hematology" "Hemmings" "Henle" "Heo"
+    "HepG2-P" "HepG2-X" "Hepatocyte-specific" "Hercules" "Herpes-Specific"
+    "Hervouet" "Heymann" "Heyne" "Hgf" "Hi-C" "High-Confidence" "High-density"
+    "High-grade" "High-quality" "High-risk" "Higher-strength" "Hilden"
+    "HindIII" "Hirata" "Hirota" "His-Bax" "His-STAT3" "His-rich" "His-tag"
+    "Hispanic" "Hiyoshi" "Hochegger" "Hodgkin" "Hoechst" "Hoechst33258"
+    "Holliday" "Hopkins" "Hormone-naïve" "Hotchkiss" "Hsa-miR-124a" "Hsc70"
+    "Hsp-60" "Hsp90s" "Hsp90α" "Huamn" "Huang" "Huntington" "Huntington’s"
+    "Hutchinson" "Hyal-3" "Hymenoptera" "I-A" "I-E" "I-II" "I-III" "I-IV"
+    "I-SMADs" "I-VEGF-A" "I-like" "I-repeat" "I-repeats" "I26A" "I6-ISE"
+    "IA-IIA" "IC80" "ICLCs" "ICx" "ID14-2" "ID2R" "IDTs" "IEG" "IFI"
+    "IFI16-luc" "IFT-A" "IFT-B" "IGF-1-induced" "IGF-1-stimulated" "IHCAs"
+    "IHC–HER-2-shifted" "II-Smad" "IIA" "IIC" "IIH" "III-1" "III-15" "III-2"
+    "III-3" "III-IV" "IIIA" "IIIC" "II–IV" "IKKs-Myc" "IKKα-or" "IL-1R2"
+    "IL-1β-treatment" "IL1R-induced" "IL1R-mediated" "IL2rγ-null" "ILR" "ILS"
+    "IMVI" "IOP" "IP-Westerns" "IP-westerns" "IQ" "IQ-1" "IR-and"
+    "IR-independence" "IR-mimetic" "IRAC" "ISD" "ISE" "ISE-1" "ISH" "ISP-1"
+    "ITC" "IU" "IV-16" "IV-19" "IV-3" "IVS" "IVS10-1G" "IVS32-12A" "IVS5"
+    "IVS8-3T" "Iceland" "Icelanders" "IdU=0.65" "IdU=1.03" "IdU→CldU"
+    "Idirisinghe" "Ifnrg2" "Ig-like" "IgG1-GNP" "IgR3-7" "Igf2" "Igs" "Igκ"
+    "Il" "Iles" "Illumina" "ImageJ" "ImageQuant" "ImageScope"
+    "Immuno-fluorescence" "Immuno-therapeutic" "Importin-α" "In-Between-RING"
+    "In-vitro" "InCHIANTI" "Infection-Mediated" "Inr" "Institute"
+    "Institute-Developmental" "Insulin" "Interactome"
+    "Intra-Tandem-Duplications" "Invitrogen" "Irish" "Ishikwawa" "Islet1"
+    "Italiana" "Itgal" "J-82" "J11" "J16" "J27" "J558" "J774" "J82" "JA3"
+    "JAK-STAT3" "JBST" "JBTS" "JHH" "JHH-GBM10" "JHU" "JHU-029"
+    "JNK-Bid-mediated" "JPT+CHB" "JRFL" "JRFL-SF2nef" "Jain" "Japanese"
+    "Jeghers" "Jeremy" "Jewish" "Jews" "Jiang" "Jinyoung" "Joseph" "Ju"
     "Jun-family" "JunT" "K1702M" "K22xR" "K231" "K267fs" "K321RfsX13" "K45T"
     "K53" "K6" "K658Y" "K9" "K99X" "KDAC" "KDACs" "KDEL" "KDM4"
     "KDR-HSP90-FAKpTyr407" "KDR1175" "KEGG" "KING" "KIpTIRR" "KJ1-26" "KKRSY"
     "KL2" "KM-12" "KMN" "KRAS-shp53" "KS-like" "KSRs" "KU" "Kallmann"
     "Kamiguti" "Kaneider" "Kannan" "Kanner" "Kaplan" "Kaplan-Meier"
-    "Kaplan-Meyer" "Kaplan–Meier" "Kaposi" "Kaposi's" "Kaposi’s" "Kappa-Beta"
-    "Kapplan" "Kapplan–Meier" "Karl" "Kastritis" "Kawai" "Kay" "Kazlauskas"
-    "Keap1-FLAG" "Kerschen" "Ki-67" "Ki-67
+    "Kaplan-Meyer" "Kaplan–Meier" "Kaposi" "Kaposi's" "Kaposi’s" "Kapplan"
+    "Kapplan–Meier" "Karl" "Kastritis" "Kawai" "Kay" "Kazlauskas" "Keap1-FLAG"
+    "Kerschen" "Ki-67" "Ki-67
 "
     "Ki-67-positive" "KilA" "KilA-N" "Kim" "Kit-immunoreactivity"
     "Kit-negative" "Kit-positive" "Knock-down" "Knock-in" "Knowles" "Knudson"
     "Knudson’s" "Koga" "Kompier" "Korea" "Korean" "Krainer" "Kramer" "Kronke"
     "Krox20Cre" "Kruppel" "Kumamoto" "Kumar" "Kussick" "Kα" "L-type" "L1"
-    "L12F" "L1F" "L1FL2" "L1–F–L2" "L2" "L22Q" "L3" "LACZ" "LAI" "LAP-tag"
-    "LC3-1" "LC3-I" "LC50" "LCL" "LCLs" "LEF-binding" "LEF-dependent" "LEOPARD"
-    "LESDV" "LFS-like" "LIMKi" "LINE-1" "LLL12" "LLL3" "LOC128977" "LOC401387"
+    "L12F" "L1F" "L1FL2" "L1–F–L2" "L2" "L22Q" "L3" "LAI" "LAP-tag" "LC3-1"
+    "LC3-I" "LC50" "LCL" "LCLs" "LEF-binding" "LEF-dependent" "LEOPARD" "LESDV"
+    "LFS-like" "LIMKi" "LINE-1" "LLL12" "LLL3" "LOC128977" "LOC401387"
     "LOC645284" "LOC645416" "LOC652726" "LOC731682" "LPP3-C-cyto" "LPP3-RGD"
     "LPS+HIV" "LPS+HIV-MCM" "LPS-MCM-induced" "LPS-activated"
     "LPS-activated-MDM" "LPS-plasma" "LPS±IL4" "LQPYNGVALR" "LQT" "LQTDG" "LR"
@@ -273,253 +267,251 @@
     "Lorente" "Lorenz" "Loss-of-function" "Louis" "Low-level" "Lozano" "Lsb1p"
     "LuCaP" "LuCaP-35" "LumB" "Luminex" "Lunn" "Lynch-associated" "Lys281to"
     "M-C" "M-RON" "M-mM" "M-sized" "M5" "M7" "M9" "MADCAM-1" "MADs" "MAGE-A"
-    "MAGE-A-silenced" "MAGE-C1" "MAGENTA" "MALDI-TOF-TOF" "MAPKAPKs" "MBF"
-    "MCAO" "MCM2-7" "MCM2–7" "MCMs" "MCRM" "MCRMs" "MDA-MB-134IV"
+    "MAGE-A-silenced" "MAGE-A1" "MAGE-A4" "MAGE-C1" "MAGENTA" "MALDI-TOF-TOF"
+    "MAPKAPKs" "MCAO" "MCM2-7" "MCM2–7" "MCMs" "MCRM" "MCRMs" "MDA-MB-134IV"
     "MDA-MB-231-siCtBP1" "MDA-PCa-118b" "MDA-PCa-133" "MDA-PCa-2b–T"
     "MDM2-dependant" "MDM2-null" "MDM2-ubiquitin-proteosome" "MDMX-211"
     "MDMX-A" "MDMX-G" "MDMX-S" "MDSCs" "MEF-null" "MEFS" "MEK-ERK-induced"
-    "MET-hours" "MET1shRNA" "MET4shRNA" "METshRNA" "MFS" "MGC16142" "MGCVQCDKD"
-    "MGH" "MGxxxS" "MHC-I" "MHC-II" "MHCC" "MHCC-97L" "MHCCLM3" "MHV" "MHV68"
-    "MHV68-infected" "MHz" "MIGen" "MIU" "MIU1" "MIU2" "MKG" "ML171" "MLLT4#1"
-    "MM" "MMAP" "MMC-sensitivity" "MMP-1-and" "MMP-1a" "MMP-1b" "MMP-200"
-    "MMP-Inh-1" "MMP-Inhibitor-9" "MMP-inh-1" "MMTV-wtHER2" "MMTV–PyMT" "MMX"
-    "MNL-CM" "MODS" "MOIs" "MOLREP" "MOLT" "MOLT-16" "MOMP-incompatible" "MOR"
-    "MOSFLM" "MPE" "MPKP" "MR20" "MRE" "MS" "MS-PCR" "MSA-C" "MSKCC" "MSP-plus"
-    "MSP1" "MUTS" "MUTSα" "MX-82" "MZL" "Maegley" "Maffucci" "Maffuci"
+    "MEK1-2" "MET-hours" "MET1shRNA" "MET4shRNA" "METshRNA" "MGC16142"
+    "MGCVQCDKD" "MGxxxS" "MHC-I" "MHC-II" "MHCC" "MHCC-97L" "MHCCLM3" "MHV"
+    "MHV68" "MHV68-infected" "MHz" "MIGen" "MIU" "MIU1" "MIU2" "MKG" "ML171"
+    "MLLT4#1" "MMAP" "MMC-sensitivity" "MMP-1-and" "MMP-200" "MMP-Inh-1"
+    "MMP-Inhibitor-9" "MMP-inh-1" "MMTV-wtHER2" "MMTV–PyMT" "MMX" "MODS" "MOIs"
+    "MOLREP" "MOLT" "MOLT-16" "MOMP-incompatible" "MOSFLM" "MPE" "MPKP" "MR20"
+    "MRE" "MS-PCR" "MSA-C" "MSA-P" "MSKCC" "MSP-plus" "MTS-GFP" "MUTS" "MUTSα"
+    "MX-82" "MZL" "Machado" "Machado-Joseph" "Maegley" "Maffucci" "Maffuci"
     "Mafucci" "Maghreb" "Magnoliaceae" "Male+Female" "Manassas" "Mancini"
     "Mar345" "Markey" "Markov" "Maroteaux" "Maroteaux's" "Martin-Darby"
     "Massachusetts" "Matrigel" "Matthias" "Mayo" "MbII" "Mbp" "Mdc1-IRIF"
     "Meckel" "Meckel-Gruber" "Mediator" "Medicine-Hematology" "Mediterranean"
-    "Meier" "Meijnen" "Mel-RM" "Mel-RM-11" "Mem" "Mendlick" "Menges" "Menten"
-    "Merabet" "Metabolically-targeted" "Metacore" "Methodology" "MethyLight"
-    "Mexican" "Meyer" "Mg" "Mg-ATP" "MgF" "MgI" "MgII" "MiR-28" "Michael"
-    "Michaelis" "Michaelis-Menten" "Michigan" "Miettinen" "Miettinen-Lasota"
-    "Millipore" "Milner" "Mississauga" "MitoTracker" "Miyamoto" "Mmp2Mmp9" "Mn"
-    "Mn-TBAP" "Moerman" "Moffitt" "Mohty" "Moloney" "Monocyte-derived" "Monte"
-    "Moore" "Moretti" "Mst" "Mst1-Lats" "MuTHER" "Mukherjee" "Multi-Module"
-    "Multi-color" "Multiple-testing" "Mundlos" "Myc-family" "MycER" "Myers"
-    "Myoc" "Myospheriod" "Myospheroid" "Myr-AKT" "Myr-SKAP1" "Mysopheroid"
-    "Myung" "MβCD" "N-Cor" "N-M" "N-Status" "N-X-S" "N-acetyl-D-glucosamine"
-    "N-acyl" "N-capping" "N-containing" "N-decoupled" "N-deglycosylation"
-    "N-glycosidase" "N-glycostructure" "N-glycosylated" "N-glycosylation"
-    "N-labeled" "N-labelled" "N-linked" "N-lobe" "N-methyl-N" "N-stage" "N0"
-    "N1+N2" "N118Q" "N136Q" "N=5" "NA" "NA1900" "NA20" "NA353" "NA420" "NA "
-    "NB-UVB" "NB-UVB-treated" "NB27" "NCC-CC3-1" "NCH" "NCH-H2077" "NCI"
-    "NCI-1581" "NCI-2170" "NCI-60" "NCI-C" "NCI-DTP" "NCI-H1437" "NCI-H1563"
-    "NCI-H1581" "NCI-H1703" "NCI-H1734" "NCI-H1792" "NCI-H2170" "NCI-H2444"
-    "NCI-H522" "NCRR" "NDP" "NDTM" "NEDD4-like" "NEO4" "NETT" "NEUT" "NF-κ1"
-    "NFBD" "NFBD1a" "NFY" "NFκ-B" "NFκB" "NH" "NHI" "NHLBI" "NI1-1" "NI1-3"
-    "NI2-1" "NI3-1" "NI3-10" "NI3-11" "NI3-13" "NI3-14" "NI3-3" "NI3-4" "NI3-5"
-    "NI3-7" "NI3-8" "NI3-9" "NIH3TC" "NIs" "NL4-3" "NLSs" "NM-E" "NME"
-    "NME-mediated" "NMEs" "NNK" "NOESY" "NOP" "NP-reactive" "NPH" "NPHP"
-    "NPHP-JBTS" "NPHP-JBTS-MKS" "NPHP1-4-8" "NPHP1–11" "NPHP5-6" "NPHPs" "NPIM"
-    "NPS" "NPS-2390" "NPXY" "NSC-1" "NT109320.4" "NTshRNA" "NV" "NZ" "NaH"
-    "Naim" "Naito" "Nakashima" "Nanog" "National" "Nco1" "Necdin-null"
-    "Nedd4-null" "Nef–NI3-13" "Neimeier" "Nelson" "Neo" "Neumann"
-    "Neuropilins-1" "Neutravidin" "Never-the-less" "Neyrinck" "Nf1fl" "Nf1wt"
-    "Nflfl" "Ni" "Ni-NTA" "Nichols" "Nielsen" "Nieuw"
-    "Nodulosis-Arthropathy-Osteolysis" "None-the-less" "Noonan" "Noonan-like"
-    "Nordt" "Norway" "Notario" "Notario's" "Notch-mediated" "Notch-signaling"
-    "Novoalign" "Nox" "Nox2ds" "Nox2ds-tat" "Nrf2-myc" "Nu-Tu-19" "Nussinov"
-    "Nutall" "O-P-O" "O-glycosylation" "O-linked" "O1B" "O2" "O2B" "O2G" "O3B"
-    "OB-fold" "OMIM" "ONOO" "ONYX" "ONYX-015" "OPH" "OR=0.3" "OR=1.36" "OR=1.5"
-    "OR=1.61" "OR=1.7" "OR=1.89" "OR=2.24" "OR=2.44" "OR=4.2" "OR=5.0" "OR=7.2"
-    "OR=7.9" "ORR" "ORs" "OTP" "OV866" "OZ" "Obsil" "Oct-1" "Oct3" "Odake"
-    "Odc" "Ogata" "Okazaki" "Olea" "Oligo" "Olivier" "Olivier's" "Ollier"
-    "Olshen" "Olympus" "Omni-EXO1" "Oncology" "Oncomine" "One-hundred"
-    "Onotology" "Ontario" "Orange-RP11-338N10" "Oregon" "Oregon-SUDS" "Origene"
-    "Osmania" "Otsu" "Outgrowth-proficient" "Owen" "P0" "P1" "P13K" "P1pal-12S"
-    "P2" "P34A" "P402" "P4pal-10" "P53β" "P6" "P9WT" "P=0.0009" "P=0.006"
-    "P=0.008" "P=0.012" "P=0.018" "P=0.03" "P=0.064" "P=0.15" "P=0.164"
-    "P=0.37" "P=0.84" "PAGE" "PAK1-3" "PAK4-6" "PAKT" "PANC-1-dnRac1" "PANTHER"
-    "PAR1-G" "PAR1-null" "PARtition-defective" "PAS-B" "PAS-positive"
-    "PAX5-responsive" "PBLs" "PCC-APC" "PCLI" "PCNA-interaction" "PCNA-like"
-    "PCO" "PCas" "PDGF" "PDGFβ" "PDK1ΔPH" "PDZ10" "PDZ3" "PDZ4" "PECAM-1as"
-    "PEST" "PEST-FIND" "PET-CT" "PF-562,271" "PF-562271" "PF-573,228" "PF271"
-    "PF562271" "PFBP" "PGC1-α" "PGC1-αprotein" "PGL" "PGL-200"
-    "PH-domain-containing" "PHBE" "PHLPP-mediated" "PHx" "PI3-like" "PI3KCA"
-    "PIAS-RING" "PIKKs" "PIL" "PIN-like" "PIP-box" "PJC" "PKA-Cα"
+    "Meier" "Meijnen" "Mel-RM-11" "Mem" "Mendlick" "Menges" "Menten" "Merabet"
+    "Metabolically-targeted" "Metacore" "Methodology" "MethyLight" "Mexican"
+    "Meyer" "Mg" "Mg-ATP" "MgF" "MgI" "MgII" "MiR-193a" "MiR-21" "MiR-28"
+    "MiR-29a" "Michael" "Michaelis" "Michaelis-Menten" "Michigan" "Miettinen"
+    "Miettinen-Lasota" "Millipore" "Milner" "Mississauga" "MitoTracker"
+    "Miyamoto" "Mmp2Mmp9" "Mn" "Mn-TBAP" "Moerman" "Moffitt" "Mohty" "Moloney"
+    "Monocyte-derived" "Monte" "Moore" "Moretti" "Mps1-IN-1" "Mst" "Mst1-Lats"
+    "MuTHER" "Mukherjee" "Multi-Module" "Multi-color" "Multiple-testing"
+    "Mundlos" "Myc-family" "MycER" "Myers" "Myoc" "Myospheriod" "Myospheroid"
+    "Myr-AKT" "Myr-SKAP1" "Mysopheroid" "Myung" "MβCD" "N-M" "N-Status" "N-X-S"
+    "N-acetyl-D-glucosamine" "N-acyl" "N-capping" "N-containing" "N-decoupled"
+    "N-deglycosylation" "N-glycosidase" "N-glycostructure" "N-glycosylated"
+    "N-glycosylation" "N-labeled" "N-labelled" "N-linked" "N-lobe" "N-methyl-N"
+    "N-stage" "N0" "N1+N2" "N118Q" "N136Q" "N=5" "NA" "NA1900" "NA20" "NA353"
+    "NA420" "NA " "NB-UVB" "NB-UVB-treated" "NB27" "NCC-CC3-1" "NCH"
+    "NCH-H2077" "NCI" "NCI-1581" "NCI-2170" "NCI-60" "NCI-C" "NCI-DTP"
+    "NCI-H1437" "NCI-H1563" "NCI-H1581" "NCI-H1703" "NCI-H1734" "NCI-H1792"
+    "NCI-H2170" "NCI-H2444" "NCI-H522" "NCRR" "NDP" "NDTM" "NEDD4-like" "NEO4"
+    "NETT" "NEUT" "NF-κ1" "NFBD" "NFBD1a" "NFY" "NFκ-B" "NFκB" "NH" "NHI"
+    "NHLBI" "NI1-1" "NI1-2" "NI1-3" "NI2-1" "NI3-1" "NI3-10" "NI3-11" "NI3-13"
+    "NI3-14" "NI3-3" "NI3-4" "NI3-5" "NI3-7" "NI3-8" "NI3-9" "NIH3TC" "NIs"
+    "NL4-3" "NLSs" "NM-E" "NME" "NME-mediated" "NMEs" "NNK" "NOESY" "NOP"
+    "NP-reactive" "NPH" "NPHP" "NPHP-JBTS" "NPHP-JBTS-MKS" "NPHP1-4-8"
+    "NPHP1–11" "NPHP5-6" "NPHPs" "NPIM" "NPS" "NPS-2390" "NPXY" "NSC-1"
+    "NTshRNA" "NV" "NZ" "NaH" "Naim" "Naito" "Nakashima" "Nanog" "National"
+    "Nco1" "Necdin-null" "Nedd4-null" "Nef–NI1-2" "Nef–NI3-13" "Neimeier"
+    "Nelson" "Neo" "Neumann" "Neuropilins-1" "Neutravidin" "Never-the-less"
+    "Neyrinck" "Nf1fl" "Nf1wt" "Nflfl" "Ni" "Ni-NTA" "Nichols" "Nielsen"
+    "Nieuw" "Nodulosis-Arthropathy-Osteolysis" "None-the-less" "Noonan"
+    "Noonan-like" "Nordt" "Norway" "Notario" "Notario's" "Notch-mediated"
+    "Notch-signaling" "Novoalign" "Nox" "Nox2ds" "Nox2ds-tat" "Nrf2-myc"
+    "Nu-Tu-19" "Nussinov" "Nutall" "O-P" "O-P-O" "O-glycosylation" "O-linked"
+    "O1B" "O2" "O2B" "O2G" "O3B" "OB-fold" "OMIM" "ONOO" "ONYX" "ONYX-015"
+    "OR=0.3" "OR=1.36" "OR=1.5" "OR=1.61" "OR=1.7" "OR=1.89" "OR=2.24"
+    "OR=2.44" "OR=4.2" "OR=5.0" "OR=7.2" "OR=7.9" "ORR" "ORs" "OTP" "OV866"
+    "OZ" "Obsil" "Oct-1" "Oct3" "Odake" "Odc" "Ogata" "Okazaki" "Olea" "Oligo"
+    "Olivier" "Olivier's" "Ollier" "Olshen" "Olympus" "Omni-EXO1" "Oncology"
+    "Oncomine" "One-hundred" "Onotology" "Ontario" "Orange-RP11-338N10"
+    "Oregon" "Oregon-SUDS" "Origene" "Osmania" "Otsu" "Outgrowth-proficient"
+    "Owen" "P0" "P1" "P1-3" "P13K" "P1pal-12S" "P34A" "P402" "P4pal-10" "P53β"
+    "P6" "P9WT" "P=0.0009" "P=0.006" "P=0.008" "P=0.012" "P=0.018" "P=0.03"
+    "P=0.064" "P=0.15" "P=0.164" "P=0.37" "P=0.84" "PAGE" "PAK1-3" "PAK4-6"
+    "PAKT" "PANC-1-dnRac1" "PANTHER" "PAR1-G" "PAR1-knockout" "PAR1-null"
+    "PAR2-knockout" "PARtition-defective" "PAS-B" "PAS-positive"
+    "PAX5-responsive" "PBLs" "PC-3" "PC3-LACZ" "PCBP-1" "PCC-APC" "PCLI"
+    "PCNA-interaction" "PCNA-like" "PCO" "PCas" "PDGFβ" "PDK1ΔPH" "PDZ10"
+    "PDZ3" "PDZ4" "PECAM-1as" "PEST-FIND" "PET-CT" "PF-562,271" "PF-562271"
+    "PF-573,228" "PF271" "PF562271" "PFBP" "PGC1-α" "PGC1-αprotein" "PGL"
+    "PGL-200" "PH-domain-containing" "PHBE" "PHLPP-mediated" "PHx" "PI3-like"
+    "PI3KCA" "PIAS-RING" "PIKKs" "PIL" "PIN-like" "PIP-box" "PJC"
     "PKA-dependent" "PKA-induced" "PKCβI" "PKCβII" "PKCη" "PKCθ" "PKCι" "PKMζ"
-    "PLA1A" "PMA-treatment" "PNST" "POP-Q" "POT" "PP1cα" "PP1cβ" "PP1cγ"
-    "PP2Ac-αIIb" "PP2Acα" "PP2a-like" "PPACK" "PPXY" "PROCHECK" "PRP19" "PSO4"
-    "PTB-CH1-SH2" "PTCH1B" "PTEN-null" "PTENz14" "PTENz7" "PVU" "PWDGNSDDR"
-    "PX-DsRed" "PXSP" "PXTP" "PYR" "PYR+SFN" "PYR-41" "PYTK" "Paclitael"
-    "Pakistan" "Pakistani" "Palma" "Pan-PI3kinase" "PanNET" "PanNETs" "Paneth"
-    "Par3–Par6" "Paracoccus" "Parkinson" "Parkinson's" "Partanen" "Pascale"
-    "Passoni" "Pat1p" "Pat1p-deficient" "Patterson" "Paugh" "Pawlinski"
-    "Pearson" "Pedersen" "Pennsylvania" "Peprotech" "Peptidylarginine" "Perez"
-    "Perez-Tenorio" "Petri" "Peyer" "Peyer's" "Phenix" "Philadelphia"
-    "Phoenix-gp" "PhosphoScan" "PhosphoSitePlus" "Pim-ci" "Pimi"
+    "PMA-treatment" "PMN" "PNST" "POP-Q" "POT" "PP1cα" "PP1cβ" "PP1cγ"
+    "PP2Ac-αIIb" "PP2Acα" "PP2a-like" "PPACK" "PPXY" "PROCHECK" "PSO4" "PTCH1B"
+    "PTEN-null" "PTENz14" "PTENz7" "PVU" "PWDGNSDDR" "PX-DsRed" "PXSP" "PXTP"
+    "PX–membrane" "PYR" "PYR+SFN" "PYR-41" "PYTK" "Paclitael" "Pakistan"
+    "Pakistani" "Palma" "PanIN" "PanINs" "PanNET" "PanNETs" "Paneth"
+    "Paracoccus" "Parkinson" "Parkinson's" "Partanen" "Pascale" "Passoni"
+    "Pat1p" "Pat1p-deficient" "Patterson" "Paugh" "Pawlinski" "Pax-7" "Pearson"
+    "Pedersen" "Pennsylvania" "Peprotech" "Peptidylarginine" "Perez"
+    "Perez-Tenorio" "Petri" "Peutz" "Peutz–Jeghers" "Peyer" "Peyer's" "Phenix"
+    "Philadelphia" "Phoenix-gp" "PhosphoScan" "PhosphoSitePlus" "Pim-ci" "Pimi"
     "Pimi-treatment" "Pin3p" "Pitari" "Pittenger" "Pkcs" "Platt" "Plk1WT-RPE"
     "Plk1as" "Plp" "Plp-Cre-ERT" "PlpCre" "Plumbaginaceae" "Pneumovirus"
-    "Podar" "Podar's" "Poisson" "Poisson–Boltzmann" "Poland" "PolyPhen"
-    "Polymerase-II" "Polδ" "Polε" "Polζ" "Polη" "Polι" "Polκ" "Poor-Risk"
-    "Portefaix" "Post-diagnosis" "Post-hoc" "Post-operative" "Prader"
-    "Prader-Willi" "Praktide" "Presneau" "Pri-miR-28" "Principal" "Prives"
-    "Pro-Pro-X-Tyr" "Pro-inflammatory" "Pro-survival" "Project-derived"
-    "Propka" "PrtF1" "PrtF2" "Pten-null" "Pto" "Pulling-down" "Pulse-Chase"
-    "Puma-null" "Punjab" "Punjabi" "Purkinje" "Pvf1" "Pvf2" "PxxP" "PxxPx"
-    "PxxPxR" "PyMT" "Pyrazolopyridine" "P = 0.0002" "P = 0.001" "P = 0.005"
-    "P = 0.007" "P = 0.008" "P = 0.009" "P = 0.012" "P = 0.04" "Q-Q" "Q1"
-    "Q108–Q122" "Q2" "Q2–Q3" "Q3" "Q4" "Q506X" "Q625X" "QIAGEN"
-    "QLLTLASILREDGKVFD" "QNLFLGSLTSR" "QT" "QVD" "QVD-OPH" "Qdat" "Qiong"
-    "Qiong-zhu" "Qiu" "Quant" "Quik"
-    "Quinoline-Val-Asp-Difluorophenoxymethylketone" "R-loop" "R-point" "R1"
-    "R1-IBR" "R1-IBR-R2" "R1443X" "R2" "R200W" "R262X" "R273X" "R2TP" "R3" "R5"
-    "R5-tropic" "R609X" "R776G" "R776G-mutant" "RAD3" "RAD6"
-    "RASA1-deficientHY" "RBF-1" "RCAS" "REFMAC" "REL-regulated" "RFC-like"
-    "RFLP" "RHEB-GTP" "RHS3939-98490780" "RIBO" "RIDDLE" "RING" "RKXS"
-    "RMSD=2.0" "RMSDs" "RMSF" "RMSFs" "RNA" "RNAa" "RNAi#2" "RNeasy"
-    "ROCK-BCFG" "ROCK-depleted" "ROCK2-mediated" "ROH" "RON160" "ROO"
-    "RP11-255N4" "RPA-RAD51-DNA" "RPA-ssDNA" "RPLPO" "RPP" "RPQVPLRPMTY"
-    "RPRAATF" "RQ-PCR" "RR-mTOR" "RR024130" "RRRCWWGYYY" "RRRPIL" "RS485"
-    "RSK1-4" "RU-300" "RUNX" "RWH" "RWPE-ETV1" "RXF" "RXF-393" "RXRXXS" "RY11"
-    "RYPLTFGWCF" "RZPD" "Rab-αGDI" "Rab4" "Rab5-positive" "RabGDI"
-    "Rac1-depedent" "Rac1-dependency" "RacN17" "Rad17" "Rad3" "Rag1" "Raichu"
-    "Raimondi" "RaisingRac1" "Raji-EBNA6" "Rallapalli" "Ramachandran" "Ramiro"
-    "Ran-GDP" "Ran-GTP" "Ran-GTPase" "Rannala" "Rap1" "Rap1-GTP" "Rapamycin"
-    "Ras-association" "RasGRP3-V5" "RasGRP3-melanocytes" "Rassf1-specific"
-    "Rassf1A" "Rassf1C-RFP" "Rb-E2F" "Re-addition" "Re-epithelialization"
-    "Re-expression" "Re-transformation" "RefSeq" "Remak" "Rembrandt" "Remick"
-    "Renilla" "René" "Resch" "Ressourcenzentrum" "Restriction-induced"
-    "Results" "Rev-like" "Rho-GTP" "Rho-family" "RhoGTPases" "Rhodamine-123"
-    "Ricerca" "Riewald" "Rigaku" "Rittirsch" "Roadmap" "Rockland" "Rodriguez"
-    "Rokhin" "Romanelli" "Rosa" "Rosai" "Rosetta" "Rotterdam" "Rs12429889"
-    "Rs263936" "Rs2982694" "Rs4292933" "Rs7132154" "Rubbi" "Russia" "Rutgers"
-    "Rvs167p" "Rácz" "S-CM" "S-agarose" "S-metabolic" "S-methionine"
-    "S-protein–agarose" "S-tagged" "S-transferases" "S1" "S115A" "S115D"
-    "S158WfsX45" "S177A" "S181A" "S1981" "S2-S2" "S2A" "S2B" "S3"
-    "S3-Ku86-Flag" "S31-201" "S33Y" "S3DN" "S3I" "S3–S4" "S436YfsX3" "S473"
-    "S4A" "S4B" "S4C" "S4D" "S4E" "S4F" "S5–S6" "S6" "S6-kinase" "S62" "S6K"
-    "S6K1D" "S6K1T389E" "S6K1ΔAID" "S6K1ΔAIDT389E" "S6K1αII" "S7" "S7–S8" "S8"
-    "S8N" "S9" "SA-β-gal-positive" "SACAP" "SAF-Box" "SAFB1-K231" "SAFB1-WT-HA"
-    "SAFB1and" "SAQKNQEQLLTLASILREDGKVFDEK" "SAVI" "SBF" "SC-57101" "SCC38"
-    "SD=2.27" "SD=4.62" "SDF-1α" "SDF1α" "SDT" "SEER" "SEM=1.630" "SEM=3.079"
-    "SENP" "SENP1m" "SF91" "SFLLRN" "SFTPB" "SH2-domain" "SHELXS" "SHEP-2"
-    "SHH-tumors" "SHP-2-PLCβ1complex" "SHP-2-PLCβ1preformed" "SIE" "SIFT" "SIL"
-    "SILAC-MS" "SK-I" "SK-LMS-1" "SK1-I" "SKT11" "SLN" "SM" "SMAD3-responsive"
-    "SMARTPOOLs" "SMARTpool" "SNAG-domain-containing" "SNB" "SNP" "SNP309G"
-    "SNP309T" "SNPs" "SOCS1-cooperative" "SOS" "SOUL–haemin" "SPD8" "SPFSW"
-    "SPHK1in" "SPSS" "SR" "SRB12-p9" "SRSF" "SRSF1-QA" "SRSF1-QD" "SSCP"
-    "SSPR1" "ST-486" "ST88" "STA6" "STAT-pathway" "STAT1α" "STAT1β"
-    "STAT3-mediated" "STAT3-positive" "STAT3C" "STAT3F" "STAT3α" "STAT3β"
-    "STAT5-null" "STAT5b-CA" "STATy" "STHs" "SU-6668" "SUDS" "SULT2B1b"
-    "SUMO-E3" "SUMO-interaction" "SUMOplot" "SVEC" "SVEC-PyMT" "SVECs" "SVW"
-    "SVZ" "SW-620" "SWOG" "SYBR" "SYBR-green" "SYBRGreen" "SYNA" "SYNGENE"
-    "SYPRO" "Sacc" "Sach" "Salophenes" "Sanger" "Sankaran" "Sanofi"
-    "Sanofi-BiPAR" "Santanam" "Sap1a" "Sardinia" "Sarkaria" "Sato" "Scala"
-    "Scansite" "Scatchard" "Sce" "Schelmm" "Schelmm's" "Schiff"
+    "Podar" "Podar's" "Poisson" "Poisson–Boltzmann" "Poland" "PolyC"
+    "PolyC-RNA-binding" "PolyPhen" "Polymerase-II" "Polδ" "Polε" "Polζ" "Polη"
+    "Polι" "Polκ" "Poor-Risk" "Portefaix" "Post-diagnosis" "Post-hoc"
+    "Post-operative" "Prader" "Prader-Willi" "Praktide" "Presneau" "Pri-miR-28"
+    "Principal" "Prives" "Pro-Pro-X-Tyr" "Pro-inflammatory" "Pro-survival"
+    "Project-derived" "Propka" "PrtF1" "PrtF2" "Pten-null" "Pto" "Pulling-down"
+    "Pulse-Chase" "Puma-null" "Punjab" "Punjabi" "Purkinje" "Pvf1" "Pvf2"
+    "PxxP" "PxxPx" "PxxPxR" "PyMT" "Pyrazolopyridine" "P = 0.0002" "P = 0.001"
+    "P = 0.005" "P = 0.007" "P = 0.008" "P = 0.009" "P = 0.012" "P = 0.04"
+    "Q-Q" "Q1" "Q108–Q122" "Q2" "Q2–Q3" "Q3" "Q4" "Q506X" "Q625X" "QIAGEN"
+    "QLLTLASILREDGKVFD" "QNLFLGSLTSR" "QT" "Qdat" "Qiong" "Qiong-zhu" "Qiu"
+    "Quant" "Quik" "Quinoline-Val-Asp-Difluorophenoxymethylketone" "R-loop"
+    "R1" "R1-IBR" "R1-IBR-R2" "R1443X" "R2" "R200W" "R262X" "R273X" "R2TP" "R3"
+    "R5" "R5-tropic" "R609X" "R776G" "R776G-mutant" "RAD3" "RASA1-deficientHY"
+    "RBF-1" "RCAS" "RCT" "REFMAC" "REL-regulated" "RFC-like" "RFLP" "RGS-2"
+    "RHEB-GTP" "RHS3939-98490780" "RIBO" "RIDDLE" "RING" "RKXS" "RMSD=2.0"
+    "RMSDs" "RMSF" "RMSFs" "RNAa" "RNAi#2" "RNeasy" "ROCK-BCFG" "ROCK-depleted"
+    "ROCK2-mediated" "ROH" "RON160" "ROO" "RP11-255N4" "RP11-2G17"
+    "RPA-RAD51-DNA" "RPA-ssDNA" "RPLPO" "RPP" "RPQVPLRPMTY" "RPRAATF" "RQ-PCR"
+    "RRRCWWGYYY" "RRRPIL" "RS-SCID" "RSK1-4" "RT-qPCR" "RU-300" "RUNX" "RWH"
+    "RWPE-ETV1" "RXF" "RXF-393" "RXRXXS" "RY11" "RYPLTFGWCF" "RZPD" "Rab-αGDI"
+    "Rab4" "Rab5-positive" "RabGDI" "Rac1-depedent" "Rac1-dependency" "RacN17"
+    "Rad17" "Rad3" "Rag1" "Raichu" "Raimondi" "RaisingRac1" "Raji-EBNA6"
+    "Rallapalli" "Ramachandran" "Ramiro" "Ran-GDP" "Ran-GTP" "Ran-GTPase"
+    "Rannala" "Rap1" "Rap1-GTP" "Rapamycin" "Ras-association" "RasGRP3-V5"
+    "RasGRP3-melanocytes" "Rassf1-specific" "Rassf1A" "Rassf1C-RFP" "Rb-E2F"
+    "Re-addition" "Re-epithelialization" "Re-expression" "Re-transformation"
+    "RefSeq" "Remak" "Rembrandt" "Remick" "Renilla" "René" "Resch"
+    "Ressourcenzentrum" "Restriction-induced" "Results" "Rev-like" "Rho-GTP"
+    "Rho-family" "RhoGTPases" "Rhodamine-123" "Ricerca" "Riewald" "Rigaku"
+    "Rittirsch" "Roadmap" "Rockland" "Rodriguez" "Rokhin" "Romanelli" "Rosa"
+    "Rosai" "Rosetta" "Rotterdam" "Rs12429889" "Rs263936" "Rs2982694"
+    "Rs4292933" "Rs7132154" "Rubbi" "Russia" "Rutgers" "Rvs167p" "Rácz" "S-CM"
+    "S-CM-treated" "S-agarose" "S-metabolic" "S-methionine" "S-protein–agarose"
+    "S-tagged" "S-transferases" "S1" "S115A" "S115D" "S158WfsX45" "S177A"
+    "S181A" "S1981" "S2-S2" "S2A" "S2B" "S3" "S3-Ku86-Flag" "S31-201" "S33Y"
+    "S3DN" "S3I" "S3–S4" "S436YfsX3" "S473" "S4A" "S4B" "S4C" "S4D" "S4E" "S4F"
+    "S5–S6" "S6" "S6-kinase" "S62" "S6K" "S6K1D" "S6K1T389E" "S6K1ΔAID"
+    "S6K1ΔAIDT389E" "S6K1αII" "S7" "S7–S8" "S8" "S8N" "S9" "SA-β-gal-positive"
+    "SACAP" "SAF-Box" "SAFB1-K231" "SAFB1-WT-HA" "SAFB1and"
+    "SAQKNQEQLLTLASILREDGKVFDEK" "SAVI" "SC-57101" "SCC38" "SCRIB" "SD=2.27"
+    "SD=4.62" "SDF-1α" "SDF1α" "SDT" "SEER" "SEM=1.630" "SEM=3.079" "SENP"
+    "SENP1m" "SF91" "SFLLRN" "SFTPB" "SHELXS" "SHEP-2" "SHH-tumors"
+    "SHP-2-PLCβ1complex" "SHP-2-PLCβ1preformed" "SIE" "SIFT" "SILAC-MS" "SK-I"
+    "SK-LMS-1" "SK-UT-1" "SK1-I" "SKAP" "SKAP-1-RapL-Rap1" "SKAP-55" "SKT11"
+    "SMAD3-responsive" "SMARTPOOLs" "SMARTpool" "SNAG-domain-containing" "SNB"
+    "SNP309G" "SNP309T" "SNPs" "SOCS-box" "SOCS1-cooperative" "SOUL–haemin"
+    "SPD8" "SPFSW" "SPHK1in" "SPSS" "SRB12-p9" "SRSF" "SRSF1-QA" "SRSF1-QD"
+    "SSCP" "SSPR1" "ST-486" "ST88" "STA6" "STAT-5" "STAT-pathway" "STAT1α"
+    "STAT1β" "STAT3-knockout" "STAT3-mediated" "STAT3-positive" "STAT3C"
+    "STAT3F" "STAT3α" "STAT3β" "STAT5-null" "STAT5b-CA" "STATy" "STHs"
+    "SU-6668" "SUDS" "SULT2B1b" "SUMO-E3" "SUMO-interaction" "SUMOplot" "SVEC"
+    "SVEC-PyMT" "SVECs" "SVW" "SVZ" "SW-620" "SWOG" "SYBR" "SYBR-green"
+    "SYBRGreen" "SYNA" "SYNGENE" "SYPRO" "Sacc" "Sach" "Salophenes" "Sanger"
+    "Sankaran" "Sanofi" "Sanofi-BiPAR" "Santanam" "Sap1a" "Sardinia" "Sarkaria"
+    "Sato" "Scala" "Scansite" "Scatchard" "Sce" "Schelmm" "Schelmm's" "Schiff"
     "Schizosaccharomyces" "Schlemm" "Schlemm's" "Scholtens" "Schwann"
     "Scotland" "Sdf-1α" "Seckel" "Sehat" "Seiwert" "Self-renewal"
     "Semi-quantitative" "SensiQ" "Sequenom" "Ser1981" "Ser21" "Ser235" "Ser236"
     "Ser240" "Ser2481" "Ser367" "Ser423" "Ser465" "Ser62" "Ser701del" "Ser807"
-    "Ser9" "Ser9phosphorylation" "Serrano" "Seventy-eight" "SfbI" "Sh-PC3"
-    "ShEC" "ShEC-PC3" "ShNur" "Shalaby" "Shapiro" "Shen" "Shimizu"
-    "Side-by-side" "Sigma-Aldrich" "Sigma–Aldrich" "Significance" "Single-cell"
-    "Single-domain" "Single-round" "Sirt33" "Sirtuin" "Site-1" "Site-2"
-    "Site-C" "Sixty-one" "Sixty-seven" "Slatkin" "Slofstra" "Smad"
-    "Smad-independent" "Smad2" "Smad2-dependent" "Smad3-Smad4-dependent"
-    "Smad3-dependent" "Smad3-mediated" "Smad3-null" "Smad4" "Small-molecule"
-    "Smurf1" "So1P" "Sobreira" "Sorangium" "Sp1" "Spacer" "Spain" "Spanish"
-    "Spearman" "Spidey" "Src" "Src+STAT3" "Src+STAT3+Myc" "Src-family"
-    "Src-strong" "SrcI-1" "Srs2-like" "Sta-3" "Stacey" "Staibano" "Standifer"
-    "Stat-3" "Stat-3-dependent" "Stat3" "Stat3-C" "Stat3C" "Stat3α" "Stat3β"
-    "Stat3β-Y705F" "Stat5b-CA" "Steady-state" "Steck" "Steroid-induced"
-    "Stress-induced" "Stress-mediated" "Structure-Specific" "Stuart" "Stuart’s"
-    "Studies" "Subgroup-analyses" "Suda" "Sugie" "Sugiyama"
-    "Sulfo-NHS-SS-biotin" "Sumani" "Superdex" "Superdex200" "SureSelect"
-    "Survivin" "Sutherland" "Sweden" "Swigut" "Sypro" "Sμ-Sγ1" "T&N" "T-C"
-    "T-EGFR" "T-Met" "T-Q-X-F" "T-Stat3" "T-lymhoid" "T-lymphoid" "T-stage"
-    "T-φ" "T1" "T2" "T253LfsX54" "T2DM" "T3" "T3.70" "T308" "T3SS" "T4" "T58"
-    "T7" "T7-JAK2" "T7-VHL" "T7-pJAK2" "T8.1" "TACTGTG" "TAK1-IKK-IκB" "TASA"
-    "TATA" "TATA-less" "TAZ-null" "TAp73β" "TBAP" "TBAs" "TBM" "TCAT"
-    "TCF-binding" "TCF-mediated" "TCFE2A" "TCFs" "TCM" "TCP45" "TCR-induced"
-    "TCRhiCD" "TCRγδ" "TD" "TDLU" "TDZ" "TDZ-8" "TE-85" "TEA" "TEAD-dependent"
-    "TEAD1-4" "TEADs" "TEL-AML" "TFII-IC" "TFII-IM" "TFII-IN" "TFII-IR4"
-    "TFLLRN" "TFSEARCH" "TG100-115" "TG101209-treatedVhl" "TG101309" "TGATTGG"
-    "TGF-1β" "TGF-β1alone" "TGF-βRI" "TGF-βdependent" "TGF-βdriven"
-    "TGF-βinduced" "TGF-βmediated" "TGF-βoverexpression" "TGf-β1" "THEG"
-    "TIALNGVEDVR" "TIC" "TIG" "TL" "TLR7+CD40" "TLs" "TMP3" "TMPRRS"
-    "TMPRRS2-ERG" "TMRM" "TNBCs" "TNF-R1R2" "TNF-superfamily" "TNFR-death"
+    "Ser9" "Ser9phosphorylation" "Serrano" "Seventy-eight" "SfbI" "ShNur"
+    "Shalaby" "Shapiro" "Shen" "Shimizu" "Side-by-side" "Sigma-Aldrich"
+    "Sigma–Aldrich" "Significance" "Single-cell" "Single-domain" "Single-round"
+    "Sirt33" "Sirtuin" "Site-1" "Site-2" "Site-C" "Sixty-one" "Sixty-seven"
+    "Slatkin" "Slofstra" "Smad" "Smad-independent" "Smad2" "Smad2-dependent"
+    "Smad3-Smad4-dependent" "Smad3-dependent" "Smad3-mediated" "Smad3-null"
+    "Smad4" "Small-molecule" "Smurf1" "So1P" "Sobreira" "Sorangium" "Sos" "Sp1"
+    "Spacer" "Spain" "Spanish" "Spearman" "Spidey" "Src" "Src+STAT3"
+    "Src+STAT3+Myc" "Src-family" "Src-strong" "SrcI-1" "Srs2-like" "Sta-3"
+    "Stacey" "Staibano" "Standifer" "Stat-3" "Stat-3-dependent" "Stat3"
+    "Stat3-C" "Stat3C" "Stat3α" "Stat3β" "Stat3β-Y705F" "Stat5b-CA"
+    "Steady-state" "Steck" "Steroid-induced" "Stress-induced" "Stress-mediated"
+    "Structure-Specific" "Stuart" "Stuart’s" "Studies" "Subgroup-analyses"
+    "Suda" "Sugie" "Sugiyama" "Sulfo-NHS-SS-biotin" "Sumani" "Superdex"
+    "Superdex200" "SureSelect" "Survivin" "Sutherland" "Sweden" "Swigut"
+    "Sypro" "Sμ-Sγ1" "T&N" "T-C" "T-EGFR" "T-Met" "T-Q-X-F" "T-Stat3"
+    "T-lymhoid" "T-lymphoid" "T-plastin" "T-stage" "T-φ" "T1" "T253LfsX54"
+    "T2DM" "T3" "T3.70" "T308" "T3SS" "T4" "T58" "T7" "T7-JAK2" "T7-VHL"
+    "T7-pJAK2" "T8.1" "TACTGTG" "TAK1-IKK-IκB" "TASA" "TATA" "TATA-less"
+    "TAZ-null" "TAp73β" "TBAP" "TBAs" "TCAT" "TCF-binding" "TCF-mediated"
+    "TCFE2A" "TCFs" "TCM" "TCP45" "TCR-induced" "TCRhiCD" "TCRγδ" "TDLU" "TDZ"
+    "TDZ-8" "TE-85" "TEA" "TEAD-dependent" "TEAD1-4" "TEADs" "TF1-ITD"
+    "TFII-IM" "TFII-IN" "TFLLRN" "TFSEARCH" "TG100-115" "TG101209-treatedVhl"
+    "TG101309" "TGATTGG" "TGF-1β" "TGF-β1alone" "TGF-βRI" "TGF-βdependent"
+    "TGF-βdriven" "TGF-βinduced" "TGF-βmediated" "TGF-βoverexpression" "TGFβ-1"
+    "TGf-β1" "THEG" "TIALNGVEDVR" "TLR7+CD40" "TMP3" "TMPRRS" "TMPRRS2-ERG"
+    "TMRM" "TNBCs" "TNF-R1R2" "TNF-superfamily" "TNFR-death"
     "TNFR-intracellular" "TNFRicd" "TNFαand" "TO-PRO3" "TOCSY" "TOCSY-HMQC"
-    "TOPflash" "TOV2444" "TP21" "TP53-null" "TRAIL-R" "TRAIL-receptor"
-    "TRANSFAC" "TRAPEZE-ELISA" "TROSY" "TROSY-HSQC" "TRaSe" "TS-like"
-    "TS-mimic" "TSC2-null" "TSLPRα" "TTAGGG" "TTC" "TTN5AA" "TUNEL"
-    "TVLEHYALEDDPLAAFK" "TWIST" "TXR" "TZDs" "Ta" "TagRFP" "TagRFP-expressing"
+    "TOPflash" "TOV2444" "TP21" "TP53-null" "TPA-induced" "TPA-treated"
+    "TRAIL-R" "TRANSFAC" "TRAPEZE-ELISA" "TRFA-1" "TROSY" "TROSY-HSQC" "TRaSe"
+    "TS-like" "TS-mimic" "TSC2-null" "TSLPRα" "TTAGGG" "TTC" "TTN5AA" "TUNEL"
+    "TVLEHYALEDDPLAAFK" "TXR" "TZDs" "Ta" "TagRFP" "TagRFP-expressing"
     "TagRFP-labelled" "Taiwanese" "Tajima" "Tajima's" "Takahashi" "Taq"
     "Taqman" "Target" "TargetScan" "Tat-interactive" "Tat-mediated" "Tat101"
-    "Tat72" "Tax" "Tay" "Tcf" "Tcfe2a" "Technologies" "Tenorio" "Tenovins"
-    "Tester" "Tet-on" "Tetramethylbenzidine" "Texas" "Tfmmice" "Tfmmutant" "Tg"
+    "Tat72" "Tay" "Tcf" "Tcfe2a" "Technologies" "Tenorio" "Tenovins" "Tester"
+    "Tet-on" "Tetramethylbenzidine" "Texas" "Tfmmice" "Tfmmutant" "Tg"
     "Th1-like" "Th17" "Th17-inflammatory" "Th2" "Th2-like" "Thakker" "The"
     "TheStat5b-CA" "Thebault" "Thirty-five" "Thirty-four" "Thirty-nine"
     "Thirty-seven" "Thirty-six" "Thirty-two" "Thomas" "Thompson" "Thr-O"
-    "Thr-OH" "Thr160" "Thr58" "Thr716PhefsX8" "Thr927" "Three-color" "Tie2-Tva"
-    "Tie2Cre" "Time-course" "Time-lapse" "Tindall" "Tnsf11" "Tobiume" "Tocris"
-    "Toft" "Toi" "Toll-IL-1-resistance" "Toll-like" "Toll-like
+    "Thr-OH" "Thr58" "Thr716PhefsX8" "Three-color" "Tie2-Tva" "Tie2Cre"
+    "Time-course" "Time-lapse" "Tindall" "Tnsf11" "Tobiume" "Tocris" "Toft"
+    "Toi" "Toll-IL-1-resistance" "Toll-like" "Toll-like
 "
-    "Tomlinson" "TopBp1" "Toretsky" "Toretsky's" "Torg" "Tos" "Toubi" "Tps"
-    "Trans-AM" "Trans24" "Treiber" "Tri-radial" "Triazolopyrimidines"
-    "Trichosanthes" "Trichostatin-A" "Trichuris" "Triple-negative" "TripleT"
-    "Trivedi" "Trp557-Lys558" "TtoA" "Tufts" "Tunisia" "Turkish" "Twenty-five"
-    "Twenty-four" "Twenty-seven" "Twenty-three" "Twenty-two" "TwinsUK"
-    "Twist-expressing" "Twist-mediated" "Two-Way" "Two-third" "Two-way" "Ty"
-    "Tyler" "Tyr705-STAT3" "Tzb" "TβR" "TβRs" "T→I" "U-87" "U-test" "U0124"
-    "U1" "U118" "U1242" "U133" "U133-plus" "U133A" "U251" "U373" "U73122"
-    "U87MB" "U87MG-SPHK1-RNAi" "U87MG-vector" "UA" "UACC" "UACC-257" "UAS"
-    "UATC" "UBZ" "UC=4.7" "UCLA" "UCSC" "UCSF" "UGSM" "UHFR1" "UM-22A" "UM-22B"
-    "UM-SCC" "UM-SCC22B" "UM-SCC38" "UM-SCC6" "UMSCC" "UMSCC-2" "UMUC6R"
-    "UPF0364" "UPSIT" "UR" "USA" "USP1-UAF1-mediated" "USP2a" "UTR-1-del"
-    "UTR-2-del" "UTRs" "UUT" "UUT-TCCs" "UV-A" "UV-B" "UV-C" "UV-damage"
-    "UV-irradiation" "UV–visible" "UW95-3" "Ub-adduct" "Ub-like" "Ub-transfer"
-    "UbcH" "UbcH5c~Ub" "UbcH7~Ub" "Ubl" "Unal" "Unc-51" "UniPROBE" "Unicam"
-    "Univ" "Up-and" "V$ELK1_02" "V-C8" "V-C8+BRCA2" "V12Ras" "V12RasC40"
-    "V12RasS35" "V3" "V5" "V5-MCM3" "V5-NRP1" "V5-RapL" "V5-WT" "V5-Y297A"
-    "V5-epitope-tagged" "V5-tagged" "VAD" "VAI" "VAS3947" "VC-8+BRCA2" "VCAM"
-    "VDJ" "VEGF-binding" "VHL-null" "VHL-strong" "VI-3" "VLLDLSAFLK" "VNN2"
-    "VP16-PIASy" "VPLRPMTY" "VSV-G" "VSV-g" "VT" "VVSEDFLQDVSASTK" "VY" "VY8"
-    "Valk" "Vanlaere" "Vegf-A" "Vehicle-treated" "Veiga" "Velcro" "Venn"
-    "Verhaak" "Vh" "Vhluc" "Vikis" "Vis" "Vδ-to-DδJδ" "Vδ4-Dδ1" "Vδ5-Dδ1" "Vκ"
-    "W23S" "W301A" "W4X" "WAP-T121females" "WAP-T121mice" "WB" "WBC"
-    "WD40-repeat" "WECARE" "WHSC11" "WMM266-4" "WNT-CTNNB1-active"
-    "WNT-CTNNB1-inactive" "WRE" "WREs" "WST-1" "WT-Arf6" "WT-DCIS" "WT-HA"
-    "Waal" "Waals" "Wabnitz" "Wadehra" "Waf1" "Wagner" "Wahlund" "Warburg"
-    "Wardelmann" "Wash-U" "Washington" "Watson" "Weber-Nordt" "Weinberg"
-    "Well-defined" "Westheimer" "Whereasp53" "Whetherp130"
-    "Whey-Acidic-Protein" "Whitman" "Whitney" "Whole-genome" "Whole-mount"
-    "Wilcoxon" "Willi" "Williams" "Wilson" "Wilson’s" "Winchester"
-    "Window-of-opportunity" "Wnt-5a" "Wray" "Wu" "X-114" "X-Alt1" "X-Alt2"
-    "X-chromosomal" "X-ray" "X-rays" "X224848" "XAV" "XAV-939" "XPS" "XW" "XX"
-    "XY" "XbaI" "Xiao" "Xiao-fei" "Xiao-wen" "Xiaojun" "Xid" "Xq" "Xq11.2–q12"
-    "Xu" "Xβ-cat" "Xβ-cat-Eng" "Y-576" "Y-box" "Y-boxes" "Y-c-Myc" "Y-family"
-    "Y1003-Y1313-Y1230" "Y1007" "Y1068EGFR" "Y1604" "Y2H" "Y40" "Y653"
-    "Y657-M660" "Y845EGFR" "Y85-K98" "YDDV" "YFP-H-RasV12" "YFPc" "YFPn" "YPD"
-    "YQEALAK" "YRD" "YRI" "YSPFSW" "YU2" "YY239" "Yaguchi" "Yang"
-    "Yes-associated" "Yeung" "Yoon" "Yoon-Chi" "Yu" "Z-DEVD-AFC" "Z-scores"
-    "ZHENG" "ZHT" "ZR75.1" "Zealand" "Zeiss" "Zeneca" "Zhang" "Zhi" "Zhi-ming"
-    "Zhong" "Zn" "Zn-finger" "Zohlnhöfer" "a-c" "a1" "aCGH" "aCdk2" "aPKCs"
-    "aPKC–Par" "aRac1" "aa81-137" "ab12148" "abcdefg" "absorbance"
+    "Tomlinson" "TopBp1" "Toretsky" "Toretsky's" "Torg" "Tos" "Toubi" "Trans24"
+    "Treiber" "Tri-radial" "Triazolopyrimidines" "Trichosanthes"
+    "Trichostatin-A" "Triple-negative" "TripleT" "Trivedi" "Trp557-Lys558"
+    "TtoA" "Tufts" "Tunisia" "Turkish" "Twenty-five" "Twenty-four"
+    "Twenty-seven" "Twenty-three" "Twenty-two" "TwinsUK" "Two-Way" "Two-third"
+    "Two-way" "Ty" "Tyler" "Tyr705-STAT3" "Tzb" "TβR" "TβRs" "T→I" "U-87"
+    "U-test" "U0124" "U1" "U118" "U1242" "U133" "U133-plus" "U133A" "U251" "U3"
+    "U373" "U73122" "U87MB" "U87MG-SPHK1-RNAi" "U87MG-vector" "UA" "UACC"
+    "UACC-257" "UAS" "UATC" "UBZ" "UC=4.7" "UCLA" "UCSC" "UCSF" "UGSM" "UHFR1"
+    "UM-22A" "UM-22B" "UM-SCC" "UM-SCC22B" "UM-SCC38" "UM-SCC6" "UMSCC"
+    "UMSCC-2" "UMUC6R" "UPF0364" "UPSIT" "USA" "USP1-UAF1-mediated" "USP2a"
+    "UTR-1" "UTR-1-del" "UTR-2-del" "UTRs" "UUT" "UUT-TCCs" "UV-A" "UV-B"
+    "UV-C" "UV-damage" "UV-irradiation" "UV–visible" "UW95-3" "Ub-adduct"
+    "Ub-like" "Ub-p53" "Ub-transfer" "Ubc18" "UbcH" "UbcH5c~Ub" "UbcH7~Ub"
+    "Ubl" "Unal" "Unc-51" "UniPROBE" "Unicam" "Univ" "Up-and" "V$ELK1_02"
+    "V-C8" "V-C8+BRCA2" "V-EGF" "V12Ras" "V12RasC40" "V12RasS35" "V3" "V5"
+    "V5-MCM3" "V5-NRP1" "V5-RapL" "V5-WT" "V5-Y297A" "V5-epitope-tagged"
+    "V5-tagged" "VAD" "VC-8+BRCA2" "VCAM" "VDJ" "VEGF-binding" "VHL-null"
+    "VHL-strong" "VLLDLSAFLK" "VNN2" "VP16-PIASy" "VPLRPMTY" "VSV-G" "VSV-g"
+    "VVSEDFLQDVSASTK" "VY" "VY8" "Valk" "Vanlaere" "Vegf-A" "Vegfr"
+    "Vehicle-treated" "Veiga" "Velcro" "Venn" "Verhaak" "Vh" "Vhluc" "Vikis"
+    "Vis" "Vδ-to-DδJδ" "Vδ4-Dδ1" "Vδ5-Dδ1" "Vκ" "W23S" "W301A" "W4X"
+    "WAP-T121females" "WAP-T121mice" "WB" "WBC" "WD40-repeat" "WECARE" "WHSC11"
+    "WMM266-4" "WNT-CTNNB1-active" "WNT-CTNNB1-inactive" "WRE" "WREs" "WST-1"
+    "WT-Arf6" "WT-DCIS" "WT-HA" "Waal" "Waals" "Wabnitz" "Wadehra" "Waf1"
+    "Wagner" "Wahlund" "Warburg" "Wardelmann" "Wash-U" "Washington" "Watson"
+    "Weber-Nordt" "Weinberg" "Well-defined" "Westheimer" "Whereasp53"
+    "Whetherp130" "Whey-Acidic-Protein" "Whitman" "Whitney" "Whole-genome"
+    "Whole-mount" "Wilcoxon" "Willi" "Williams" "Wilson" "Wilson’s"
+    "Winchester" "Window-of-opportunity" "Wnt5a" "Wray" "Wu" "X-114" "X-Alt1"
+    "X-Alt2" "X-chromosomal" "X-ray" "X-rays" "X224848" "XAV" "XAV-939" "XPS"
+    "XW" "XY" "XbaI" "Xiao" "Xiao-fei" "Xiao-wen" "Xiaojun" "Xid" "Xq"
+    "Xq11.2–q12" "Xu" "Xβ-cat" "Xβ-cat-Eng" "Y-576" "Y-box" "Y-boxes" "Y-c-Myc"
+    "Y-family" "Y1003-Y1313-Y1230" "Y1007" "Y1068EGFR" "Y1604" "Y2H" "Y40"
+    "Y653" "Y657-M660" "Y845EGFR" "Y85-K98" "YAP-dependent" "YDDV"
+    "YFP-H-RasV12" "YFPc" "YFPn" "YPD" "YQEALAK" "YRD" "YRI" "YSPFSW" "YU2"
+    "YY239" "Yaguchi" "Yang" "Yes-associated" "Yeung" "Yoon" "Yoon-Chi" "Yu"
+    "Z-DEVD-AFC" "Z-scores" "ZHENG" "ZHT" "ZR75.1" "Zealand" "Zeiss" "Zeneca"
+    "Zhang" "Zhi" "Zhi-ming" "Zhong" "Zn" "Zn-finger" "Zohlnhöfer" "a-c" "a1"
+    "aCGH" "aCdk2" "aPKCs" "aRac1" "aa81-137" "ab12148" "abcdefg" "absorbance"
     "acenocoumarol" "acetyl-lysine" "acetylcholine" "acetylhexosaminidases"
     "acetylome" "acetylphenothiazine" "achaete" "achaete-scute" "acid-Schiff"
-    "acid-base" "acid-induced" "acidic-cluster-dileucine" "acinar-to-ductal"
-    "acneiform" "acrodomain" "actin-cortex" "actin-cytoskeleton"
-    "actin-meshwork" "activatedRnf168" "activatedRnf8" "activatingBRAF"
-    "activation-domain" "activaton" "activators" "active-site" "activites"
-    "acute-phase" "acyl" "ad1p" "ad9" "adamalysin" "adaptin" "add-back"
+    "acid-induced" "acidic-cluster-dileucine" "acinar-to-ductal" "acneiform"
+    "acrodomain" "actin-cortex" "actin-cytoskeleton" "actin-meshwork"
+    "activatedRnf168" "activatedRnf8" "activatingBRAF" "activation-domain"
+    "activaton" "activators" "active-site" "activites" "acute-phase" "acyl"
+    "ad1p" "ad9" "adamalysin" "adaptin" "add-back" "adduct" "adducts"
     "adeno-ARHI" "adenopathy" "adenoviral-infected" "adenoviral-mediated"
     "adhaerentia" "adherens" "adhesion-dependency" "adipocyctes"
     "adipose-derived" "adriamycin-derivatives" "adriamycin-treatment"
     "adultFoxO3" "adultrasa1" "advanced-stage" "aeroallergens" "aeruginosa"
     "affinity-purification" "afterdepolarizations" "agalactiae" "agar"
-    "age-and" "age-associated" "age-dependence" "age-dependent" "agedRnf168"
-    "agedShp2" "agglutinin-reactive" "agonists" "aintenance" "air-exposedFoxO3"
-    "air-pouch" "airways" "algorithm" "algorithms" "align-GV" "align-GVGD"
-    "alisol" "alkanethiols" "alkylG" "all-or-none" "allele-dose" "allograft"
-    "allografts" "alpha-helical" "alpha-nicotinic" "althoughCdk2"
-    "amine-reactive" "amino-acid" "amino-terminal" "amino-terminus"
-    "aminoacids" "aminoactinomycin" "aminoethyl" "ammonium" "amoeboid"
-    "amongrasa1" "amooranin" "amplicon" "amplicons" "amplimers" "amplitudes"
-    "amyloid-P" "amys" "anNf1" "analogue-sensitive" "anaplasia"
-    "ancestry-shift" "anchorage-independence" "and53bp1" "andAB" "andAtm"
+    "age-and" "age-dependence" "agedRnf168" "agedShp2" "agglutinin-reactive"
+    "agonists" "aintenance" "air-exposedFoxO3" "air-pouch" "airways"
+    "algorithm" "algorithms" "align-GV" "align-GVGD" "alisol" "alkanethiols"
+    "alkylG" "all-or-none" "allele-dose" "allograft" "allografts"
+    "alpha-helical" "alpha-nicotinic" "althoughCdk2" "amine-reactive"
+    "amino-acid" "amino-terminal" "amino-terminus" "aminoacids"
+    "aminoactinomycin" "aminoethyl" "ammonium" "amoeboid" "amongrasa1"
+    "amooranin" "amplicon" "amplicons" "amplimers" "amplitudes" "amyloid-P"
+    "amys" "anNf1" "analogue-sensitive" "anaplasia" "ancestry-shift"
+    "anchorage-independence" "and-resistant" "and53bp1" "andAB" "andAtm"
     "andCdk2" "andEbf1" "andFANCA" "andFANCD2" "andFANCG" "andFoxO3" "andO"
     "andPax5" "andPten" "andRac1" "andRnf168" "andRnf8" "andShp2" "andStat"
     "andStat3" "andStat5b-CA" "andintermediate" "andmys" "andp16" "andp19"
@@ -527,23 +519,23 @@
     "androgen-deprivation" "androgen-independence" "andvhl" "andαE-catenin"
     "and–independent" "aneuploid" "aneuploidies" "aneuploidy" "anf"
     "angiolymphoid" "angioplasty-induced" "anoctamin" "anosmia" "anterograde"
-    "anthracyclins" "antibodiesAB" "antibodies±irinotecan" "antigen"
-    "antigen-3C" "antigens" "antinitrotyrosine" "antiparallel"
-    "antiphosphotyrosine" "antivirus" "antrum" "aortae" "ap21" "apicalmost"
-    "aplasia" "apoptosis-markers" "apoptosis-regulatory" "apoptotic-inducing"
-    "apoptotic-specific" "apoptotic-stress" "appose" "approximately1.8"
-    "aptamer–PTEN" "apten" "arachnoid" "arisen" "aroyl-pyrrolyl-hydroxy-amide"
-    "arrayCGH" "arrest-induced" "arrhythmia" "as-yet" "as-yet-unknown"
-    "asRad54" "asa" "aspartate-502" "aspirin-intolerant" "assistances"
-    "at-risk" "atelocollagen" "atf" "atheroprone" "atherosclerosis-associated"
+    "anthracyclins" "antibodiesAB" "antibodies±irinotecan" "antigen-3C"
+    "antinitrotyrosine" "antiparallel" "antiphosphotyrosine" "antivirus"
+    "antrum" "aortae" "ap21" "apicalmost" "aplasia" "apoptosis-markers"
+    "apoptosis-regulatory" "apoptotic-inducing" "apoptotic-specific"
+    "apoptotic-stress" "appose" "approximately1.8" "aptamer–PTEN" "apten"
+    "arachnoid" "arisen" "aroyl-pyrrolyl-hydroxy-amide" "arrayCGH"
+    "arrest-induced" "arrhythmia" "as-yet" "as-yet-unknown" "asRad54" "asa"
+    "aspartate-502" "aspirin-intolerant" "assistances" "at-risk"
+    "atelocollagen" "atf" "atheroprone" "atherosclerosis-associated"
     "atherosclerosis-promoting" "ation" "atomic-level" "atypia"
     "auto-activation" "auto-inhibition" "auto-inhibitory" "autoAb" "autoSHARP"
     "autocleavage" "autophagy-suppressive" "autoradiography"
     "autosomal-recessive" "autostimulate" "avidin-biotin" "axial" "axilla"
     "axon" "axonopathy" "azadC" "azoxymethane" "b-myc" "b1" "b2" "bCIPA"
-    "bHLHZ" "back-up" "background-matchedPb-Cre" "bacteraemia"
-    "bacterial-induced" "bacterially-expressed" "bar-coded"
-    "barrier-disruptive" "basal-level" "basal-like" "base-excision" "base-pair"
+    "bHLHZ" "back-up" "background-matchedPb-Cre" "bacteraemia" "bacteria"
+    "bacterial-induced" "bacterially-expressed" "barrier-disruptive"
+    "basal-level" "basal-like" "base-excision" "base-pair"
     "basic-helix-loop-helix" "bcl" "bcl-xl" "bead-bound" "beadchips" "beamline"
     "begun" "belt-like" "benzo" "benzoquinolines" "benzyl" "benzylaminopurine"
     "beta-sheet" "better-characterized" "between-study" "betweenB55"
@@ -551,25 +543,24 @@
     "bi-orientation" "bilayer" "bilayers" "bilobectomy" "bioanalyzer"
     "biochemical-recurrence" "biomakers" "biomaterials" "biostat"
     "bisdemethoxycurcumin" "bisphosphate" "bisulfate" "bivariate" "blast-like"
-    "blocker" "blockers" "blood-to-lumen" "blood–brain" "bmh1" "bmh1-280"
-    "bmh1bmh2" "bmh1bmh2exo1" "bmh2" "bodies" "body-mediated" "bodyweights"
-    "bone-marrow" "bothAB" "bothShp2" "bothStat" "bothStat5b-CA" "bothp21"
-    "bothαE-catenin" "bottom-left" "bottom-right" "botulinum" "boulardi"
-    "bovis" "box-binding" "box-specific" "brachury" "brachyury" "bradycardia"
-    "brain-immune" "brainstem" "branchpoints" "bre11" "break-apart"
-    "breakage-fusion-bridge" "breakpoint" "breakpoints" "breast-ovarian"
-    "brighter" "broad-spectrum" "broad-types" "broader" "buthionine"
-    "buthionine-sulfoximine" "butp130" "by-itself" "by-pass" "by-product"
-    "by-products" "byAB" "byFord" "byFord-Hutchinson" "byp53" "b–d" "c-3T3"
-    "c-611" "c-676" "c-687" "c-Flip" "c-GMP" "c-Jun-4hFosW" "c-Jun-FosW"
-    "c-Jun-antagonist" "c-JunT" "c-Myc-DNA" "c-src" "c-statistic" "c-γ"
-    "cAMP-response-element-binding" "cIAP" "cIAPs" "cN0" "cPKCs" "cSCC"
-    "calorimetry" "caner" "cap-binding" "cap-dependent" "capecitbine" "capsid"
-    "carbonyl" "carboxyl" "carboxyl-terminal" "carboxyl-termini" "carcinoma1"
-    "cardia" "cardioverter" "cardioverter-defibrillator" "carotid" "carriers"
-    "carryover" "case-control" "case-only" "case-parent" "case–control"
-    "casidex" "caspase-9a" "caspase-9b" "caspase8-containing" "caspase9b"
-    "castration-like" "castration-resistance" "castration-sensitive"
+    "blocker" "blockers" "blood-to-lumen" "blood–brain" "bmh1-280" "bmh1bmh2"
+    "bmh1bmh2exo1" "bodies" "body-mediated" "bodyweights" "bone-marrow"
+    "bothAB" "bothShp2" "bothStat" "bothStat5b-CA" "bothp21" "bothαE-catenin"
+    "bottom-left" "bottom-right" "botulinum" "boulardi" "bovis" "box-binding"
+    "box-specific" "brachury" "brachyury" "bradycardia" "brain-immune"
+    "brainstem" "branchpoints" "bre11" "break-apart" "breakage-fusion-bridge"
+    "breakpoint" "breakpoints" "breast-ovarian" "brighter" "broad-spectrum"
+    "broad-types" "broader" "buthionine" "buthionine-sulfoximine" "butp130"
+    "by-itself" "by-pass" "by-product" "by-products" "byAB" "byFord"
+    "byFord-Hutchinson" "byp53" "b–d" "c-3T3" "c-611" "c-676" "c-687" "c-Flip"
+    "c-GMP" "c-Jun-4hFosW" "c-Jun-FosW" "c-Jun-antagonist" "c-JunT" "c-Myc-DNA"
+    "c-statistic" "cAMP-response-element-binding" "cIAP" "cIAPs" "cN0" "cPKCs"
+    "cSCC" "calorimetry" "caner" "cap-binding" "cap-dependent" "capecitbine"
+    "capsid" "carbonyl" "carboxyl" "carboxyl-terminal" "carboxyl-termini"
+    "carcinoma1" "cardia" "cardioverter" "cardioverter-defibrillator" "carotid"
+    "carriers" "carryover" "case-only" "case-parent" "casidex" "caspase-9a"
+    "caspase-9b" "caspase8-containing" "caspase9b" "castration-like"
+    "castration-resistance" "castration-resistant" "castration-sensitive"
     "catabolite" "catalse" "catalyse" "catheter" "cauda" "cause-and-effect"
     "cause-or-effect" "causeCdk2" "caveolar-localized" "cdk1as" "cecal" "cecum"
     "cell-by-cell" "cell-cycle" "cell-extrinsic" "cell-intrinsic"
@@ -578,90 +569,92 @@
     "cell-to-tumour" "cell-type-specific" "cell-type–specific" "celllike"
     "cells" "cellular-level" "cellulosum" "center-left" "centriole"
     "centromere" "centromeric-centromeric" "ceramidases" "ceramide-poor"
-    "cerebella" "cerebellum" "cereus" "cerevisiae" "cetuximab±irinotecan"
-    "chaperone-client" "charcoal-stripped" "cheaper" "check-ups"
+    "cerebella" "cerebellum" "cereus" "cetuximab±irinotecan" "chaperone-client"
+    "chaperonin" "charcoal-stripped" "cheaper" "check-ups"
     "checkpoint-defective" "checkpoint-dependent" "checkpoint-mediated"
-    "checkpoint-proficient" "chelate" "chelates" "chemically-induced"
-    "chemistry-mediated" "chemo" "chemo-irradiation" "chemo-sensitivity"
-    "chemo-therapy" "chemoattractant" "chemoradiotherapy" "chemoresistance"
-    "chi-square" "chiasm" "childhood-onset" "chloride–proton" "chloroethyl"
-    "chloroethylG" "chloroethylguanine" "cholangio" "cholerae"
-    "cholesterol-binding" "cholesterol-rich" "choline" "chondocytes"
-    "chondroid" "choriocapillaris" "choroid" "chosen" "chr12" "chromatid"
-    "chromatids" "chromatin-immunoprecipitates" "chromatography-tandem"
-    "chromophobe" "chromosome-type" "chromosome–positive" "cinnamyl" "cip1"
-    "circuitries" "circuitry" "cis-element" "cis-elements" "ckSoul" "class-I"
+    "checkpoint-proficient" "chelate" "chelates" "chemical-genetic"
+    "chemically-induced" "chemistry-mediated" "chemo" "chemo-irradiation"
+    "chemo-resistance" "chemo-sensitivity" "chemo-therapy" "chemoattractant"
+    "chemoradiotherapy" "chemoresistance" "chi-square" "chiasm"
+    "childhood-onset" "chloride–proton" "chloroethyl" "chloroethylG"
+    "chloroethylguanine" "cholangio" "cholerae" "cholesterol-binding"
+    "cholesterol-rich" "choline" "chondocytes" "chondroid" "choriocapillaris"
+    "choroid" "chosen" "chromatid" "chromatids" "chromatin-immunoprecipitates"
+    "chromatography-tandem" "chromophobe" "chromosome-type"
+    "chromosome–positive" "cinnamyl" "cip1" "circuitries" "circuitry"
+    "cis-element" "cis-elements" "ckSoul" "class-I" "class-II"
     "clathrin-endocytosis" "clathrin-heavy-chain" "claudn" "claudn-4"
-    "clear-cell" "clear-cut" "clearer" "clinical-pathologic"
-    "clinically-aggressive" "clinically-derived" "clinically-relevant"
+    "clear-cell" "clearer" "clinical-pathologic" "clinically-aggressive"
+    "clinically-derived" "clinically-relevant" "clinically-resistant"
     "clinicians" "clinico" "clinico-pathologic" "clinico-pathological" "clivus"
     "clonotype" "close-up" "closed-angle" "clubfeet" "coauthors" "cocci"
     "coculture" "cocultures" "codo72" "codon" "codon72" "codons"
-    "coefficient=1.1e−4" "coefficient=2.2e−6" "coiled-coil" "cold-shock"
-    "colectomy" "coli" "coli-Streptococcus" "colitis-associated" "coll"
-    "collagen-invasion" "collagen2a1" "collagens" "colonizations" "colonocytes"
-    "colonoscopy" "colony-formation" "colony-forming" "columnar-type"
-    "common-mediator" "commonest" "community-based" "compartment-specific"
-    "complementCdk2" "concentration-dependence" "concentration-response"
-    "concomittant" "conditional-activation" "conditionalPten" "condon"
-    "conductance" "conductances" "confluentαE-catenin" "conformer" "conformers"
-    "confounder" "confounders" "congenita" "consensus-binding" "construct-a"
-    "construct-c" "construct-d" "construct-e" "consumables" "contact-inhibited"
-    "contact-mediated" "continuum" "contractility-mediated" "contractin"
-    "control-regulatory" "controlrasa1" "convulxin" "coomassie"
-    "copper-complex" "copper-depletion" "copper-oxLDL" "copper-salt"
-    "copy-number" "coregulators" "cortex-contraction" "cortex-derived"
-    "cortical-medullary" "corticosteroids" "cost-effective"
+    "coefficient=1.1e−4" "coefficient=2.2e−6" "cold-shock" "colectomy" "coli"
+    "coli-Streptococcus" "colitis-associated" "coll" "collagen-invasion"
+    "collagen2a1" "collagenase-1" "collagense" "collagense-2" "colonizations"
+    "colonocytes" "colonoscopy" "colony-formation" "colony-forming"
+    "columnar-type" "common-mediator" "commonest" "community-based"
+    "compartment-specific" "complementCdk2" "concentration-dependence"
+    "concentration-response" "concomittant" "conditional-activation"
+    "conditionalPten" "condon" "conductance" "conductances"
+    "confluentαE-catenin" "conformer" "conformers" "confounder" "confounders"
+    "congenita" "consensus-binding" "construct-a" "construct-c" "construct-d"
+    "construct-e" "consumables" "contact-inhibited" "contact-mediated"
+    "continuum" "contractility-mediated" "contractin" "control-regulatory"
+    "controlrasa1" "convulxin" "coomassie" "copper-complex" "copper-depletion"
+    "copper-salt" "copy-number" "coregulators" "cortex-contraction"
+    "cortex-derived" "cortical-medullary" "corticosteroids" "cost-effective"
     "counter-inflammatory" "counter-intuitive" "covariate" "covariates"
     "coworkers" "coxsackie" "cranial-facial" "creAND" "creBM" "cresplenocytes"
     "cross-activates" "cross-activation" "cross-complementation"
-    "cross-contamination" "cross-hybridization" "cross-inhibit"
-    "cross-inhibition" "cross-interaction" "cross-reacted" "cross-reactivity"
-    "cross-referenced" "cross-regulate" "cross-regulation" "cross-resistance"
-    "cross-saturation" "cross-sectional" "cross-validation" "crossedp53"
-    "crossingEbf1" "crossingPdx" "crossingPdx1-Cre" "crossingShp2" "crossover"
-    "crowdedness" "cryostat" "crypt-surface" "crypt-villus" "crystal-structure"
-    "crystals" "ct" "cucumerina" "cucurbitaceae" "cucurbitacins" "cucurbitane"
-    "cucurbitans" "culinaris" "cultrues" "cut-off" "cut-offs" "cut-point"
-    "cut-points" "cyan" "cyclin-A2" "cyclin-dependant" "cyclinD3-cdk4"
-    "cyclodextrin" "cyclohexamide" "cystectomies" "cystectomy" "cysteinyl"
-    "cytochromes" "cytokeleton" "cytokertain" "cytokertain-18" "cytolysins"
-    "cytometer" "cytosine-5" "cytosol-to-external" "cytospin" "cytotosol"
-    "cytotoxicty" "d-flow" "d-flow–dependent" "d-flow–elicited"
-    "d-flow–induced" "d-flow–mediated" "d-flow–stimulated" "dC-to-dU" "dI-dC"
-    "dL" "damage-activated" "damage-associated" "damage-dependent"
-    "damage-induced" "damage-inducible" "damage-response" "damage-tolerant"
-    "data-base" "databank" "datapoints" "dataset" "datasets" "dbSNP"
-    "de-differentiated" "de-identified" "de-novo" "de-recruitment"
-    "de-regulated" "de-regulation" "de-represses" "de-repression"
-    "de-sensitization" "de-silence" "de-silencing" "de-stabilized"
-    "death-receptor" "decile" "dedifferentiates" "deeper" "deficiencyleads"
+    "cross-complementing" "cross-contamination" "cross-hybridization"
+    "cross-inhibit" "cross-inhibition" "cross-interaction" "cross-reacted"
+    "cross-reactivity" "cross-referenced" "cross-regulate" "cross-regulation"
+    "cross-resistance" "cross-saturation" "cross-sectional" "cross-validation"
+    "crossedp53" "crossingEbf1" "crossingPdx" "crossingPdx1-Cre" "crossingShp2"
+    "crossover" "crowdedness" "cryostat" "crypt-surface" "crypt-villus"
+    "crystal-structure" "crystals" "ct" "cucumerina" "cucurbitaceae"
+    "cucurbitacins" "cucurbitane" "cucurbitans" "culinaris" "cultrues"
+    "cut-off" "cut-offs" "cut-point" "cut-points" "cyan" "cyclin-A2"
+    "cyclin-dependant" "cyclinD3-cdk4" "cyclodextrin" "cyclohexamide"
+    "cystectomies" "cystectomy" "cysteinyl" "cytochromes" "cytokeleton"
+    "cytokeratin-1" "cytokertain" "cytokertain-18" "cytolysins" "cytometer"
+    "cytosine-5" "cytosol-to-external" "cytospin" "cytotosol" "cytotoxicty"
+    "d-flow" "d-flow–dependent" "d-flow–elicited" "d-flow–induced"
+    "d-flow–mediated" "d-flow–stimulated" "dC-to-dU" "dI-dC" "damage-activated"
+    "damage-associated" "damage-dependent" "damage-induced" "damage-inducible"
+    "damage-response" "damage-tolerant" "databank" "datapoints" "dataset"
+    "datasets" "dbSNP" "de-differentiated" "de-identified" "de-novo"
+    "de-recruitment" "de-regulated" "de-regulation" "de-represses"
+    "de-repression" "de-sensitization" "de-silence" "de-silencing"
+    "de-stabilized" "decile" "dedifferentiates" "deeper" "deficiencyleads"
     "deficient-mice" "deficientHY" "degron" "dehydrocholesterol" "del17p"
     "delCAAG" "delNS1" "delTT" "deletion-type" "deletions" "deltaZip2"
-    "demethoxycurcumin" "demethoxygeldanamycin" "dendrite" "denitrificans"
-    "denovo" "deoxycoformicin" "deoxymannojirimycin" "deoxynucleotide"
+    "deltanoid" "demethoxycurcumin" "demethoxygeldanamycin"
+    "denaturation-resistant" "dendrite" "denitrificans" "denovo"
+    "deoxycoformicin" "deoxymannojirimycin" "deoxynucleotide"
     "deoxynucleotides" "deoxytetracycline" "dependent-DNA" "dependent-manner"
     "depression-like" "deprivation-induced" "der" "derivate" "derivates"
     "des-γ-carboxy" "desferrioxamine" "desoxy" "detergent-insoluble"
-    "di-phosphate" "diabetes-associated" "dichlorophenyl" "dideoxy" "diet-fed"
-    "diet-induced" "diethylenenitrite" "diffusant" "diffusion-limited"
-    "digestion-circularization" "dihydrocollidine" "dihydrocucurbitacin"
-    "dihydrodiol" "dihydroxyvitamin" "diindolylmethane" "dilatations"
-    "dileucine" "dileucines" "dimer-composition" "dimerization-defective"
-    "dimethylbenz" "dimethylsulfoxide" "dinucleotides" "diphosphate" "diploid"
-    "directionalities" "dis" "dis-equilibrium" "disassemby" "discovery-based"
-    "discriminant" "disease-susceptibility" "diseased-eye" "disorderd"
-    "dissectedShp2" "distance-dependent" "disulfide-bond" "dithiocarbamate"
-    "dnAKT" "dnTCF4" "dnp53" "doi" "domains" "domain–peptide"
-    "dominant-negative" "domine" "dormancy" "dose-dependant" "dose-depended"
-    "dose-dependence" "dose-dependently" "dose-intensive" "dose-limiting"
-    "dose-modifying" "dose-response" "double-blind" "double-homozygous"
-    "double-layer" "double-mutant" "double-null" "double-strand"
-    "double-strand-RNA–induced" "double-transfection" "doublings"
-    "down-expression" "down-modulated" "down-modulating" "down-regulatory"
-    "down-stream" "downer" "downstreatm" "drawn" "droplets" "drug-like"
-    "drusen" "dsControl" "dsDNA" "dsP21-322" "dual-labeled" "dual-stained"
-    "dual-step" "duplex-PCR" "duplexes" "dwarfism" "dye-swap" "dynabeads"
+    "determinant-binding" "di-phosphate" "diabetes-associated" "dichlorophenyl"
+    "dideoxy" "diet-fed" "diet-induced" "diethylenenitrite" "diffusant"
+    "diffusion-limited" "digestion-circularization" "dihydrocollidine"
+    "dihydrocucurbitacin" "dihydrodiol" "dihydroxyvitamin" "diindolylmethane"
+    "dilatations" "dileucine" "dileucines" "dimer-composition"
+    "dimerization-defective" "dimethylbenz" "dimethylsulfoxide" "dinucleotides"
+    "diphosphate" "diploid" "directionalities" "dis" "dis-equilibrium"
+    "disassemby" "discovery-based" "discriminant" "disease-susceptibility"
+    "diseased-eye" "disorderd" "dissectedShp2" "distance-dependent"
+    "disulfide-bond" "dithiocarbamate" "dnAKT" "dnTCF4" "dnp53" "doi" "domains"
+    "domain–peptide" "dominant-negative" "domine" "dormancy" "dose-dependant"
+    "dose-depended" "dose-dependence" "dose-dependently" "dose-intensive"
+    "dose-limiting" "dose-modifying" "dose-response" "double-blind"
+    "double-homozygous" "double-layer" "double-mutant" "double-null"
+    "double-strand" "double-strand-RNA–induced" "double-transfection"
+    "doublings" "down-expression" "down-modulated" "down-modulating"
+    "down-regulatory" "down-stream" "downer" "downstreatm" "drawn" "droplets"
+    "drug-like" "drusen" "dsControl" "dsDNA" "dsP21-322" "dual-labeled"
+    "dual-stained" "duplex-PCR" "duplexes" "dwarfism" "dye-swap" "dynabeads"
     "dynes" "dyschondroplasia" "dyslipidemia" "dysmorphism" "dysplasia"
     "dysplasias" "eQTL" "eQTLs" "eRNA" "eRNAs" "eSNP" "eSNPs" "eTables"
     "early-endosomes" "early-onset" "early-passage" "early-stage" "early–onset"
@@ -682,141 +675,137 @@
     "epithelial-to-mesenchymal" "epithelial–mesenchymal" "epithelioid"
     "epithelium" "epitheloid" "epitopes" "equina" "equinovarus" "eramide"
     "erythrocytes" "et" "ethenoG" "ethionine" "etio" "etiopathology"
-    "etoposide-treatment" "ets-DM" "europaea" "eventhough" "events"
-    "ever-smoking" "ex" "ex-smoker" "ex-smokers" "examinedBrca2"
-    "examinedRnf168" "excitotoxins" "exocrine" "exoenzyme" "exome" "exon-15"
-    "exon-16" "exon-3" "exon19" "exon5" "exons" "exon–intron"
-    "explicit-solvent" "expressedCdk2" "expressers" "extra-N-terminal"
-    "extra-axial" "extra-embryonic" "extra-gastrointestinal" "extra-nuclear"
-    "extravasate" "e–g" "fWT" "factor-κβ" "familiy" "far-reaching" "farnesyl"
-    "farther" "fasciitis" "fast-acting" "fast-growing" "fast-moving"
-    "fast-responding" "fast-tracked" "fat-cell" "favorable-outcome" "feed-back"
-    "feedback-loop" "feedforward" "female-specific" "ferrocyanide"
-    "fibril-like" "fibrillar-like" "fibro" "fibrobalasts" "fibroblast-like"
-    "fibroblasts" "fidgetin" "fifteen-sixteen" "fifty-six
+    "etoposide-treatment" "europaea" "eventhough" "events" "ever-smoking" "ex"
+    "ex-smoker" "ex-smokers" "examinedBrca2" "examinedRnf168" "excitotoxins"
+    "exocrine" "exoenzyme" "exome" "exon-15" "exon-16" "exon-3" "exon19"
+    "exon5" "exons" "exon–intron" "explicit-solvent" "expressedCdk2"
+    "expressers" "extra-N-terminal" "extra-axial" "extra-embryonic"
+    "extra-gastrointestinal" "extra-nuclear" "extravasate" "fWT" "factor-κβ"
+    "familiy" "far-reaching" "farnesyl" "farther" "fasciitis" "fast-acting"
+    "fast-growing" "fast-moving" "fast-responding" "fast-tracked" "fat-cell"
+    "favorable-outcome" "feed-back" "feedback-loop" "feedforward"
+    "female-specific" "ferrocyanide" "fibril-like" "fibrillar-like" "fibro"
+    "fibrobalasts" "fibroblast-like" "fibroblasts" "fidgetin" "fifteen-sixteen"
+    "fifty-six
 "
     "filiae" "filter-binding" "fine-tune" "fine-tuned" "fine-tuning"
-    "finger-type" "first-degree" "first-line" "first-pulse" "first-time"
-    "five-year" "fixed-length" "fixed-paraffin-embedded" "flavocytochrome"
-    "flavonoid" "flavonoids" "flexneri" "flfl" "flora" "flow-cytometric"
-    "flow-depensecadent" "flow-induced" "flow-mediated" "flow-modulated"
-    "flow-sensitive" "flow-stimulated" "flowcytometry" "fluences"
-    "fluorescence-intensity" "fluoroanilino" "fluorophore" "fluorophores"
-    "focus-forming" "fold-increase" "foldamer" "foliaceus" "follicle"
-    "follicles" "follicular-stimulating" "follow-up" "followed-up"
-    "followedShp2" "following-up" "followup" "footpads" "forStat"
+    "finger-type" "first-degree" "first-pulse" "first-time" "five-year"
+    "fixed-length" "fixed-paraffin-embedded" "flavocytochrome" "flexneri"
+    "flfl" "flora" "flow-cytometric" "flow-depensecadent" "flow-induced"
+    "flow-mediated" "flow-modulated" "flow-sensitive" "flow-stimulated"
+    "flowcytometry" "fluences" "fluorescence-intensity" "fluoroanilino"
+    "fluorophore" "fluorophores" "focus-forming" "fold-increase" "foldamer"
+    "foliaceus" "follicle" "follicles" "follicular-stimulating" "follow-up"
+    "followed-up" "followedShp2" "following-up" "followup" "footpads" "forStat"
     "forStat5b-CA" "forebrain" "forgotten" "fork-head" "fork-structure"
     "formazan" "formys" "forward-driving" "four-helix" "four-way"
     "frame-deletions" "frame-shift" "frame-shifts" "freeze-fracture" "fromAtm"
     "fromCdk2" "fromCugbp1" "fromPdx" "fromPdx1-Cre" "fromPten" "fromRnf168"
-    "fromShp2" "fromVhl" "fromp53" "fromw" "front-line" "frozen" "ful"
-    "ful-length" "full-gene" "full-size" "fully-glycosylated" "fulminant"
-    "fulvene-5" "functionally-distinct" "fundus" "fusion-containing"
-    "fusion-negative" "fusion-positive" "fynT" "für" "gB55" "gadolinium"
-    "gain-of-function" "galU" "gallate" "gallbladder" "gamma-IFN"
-    "gamma-activated" "gamma-ear" "gamma-ear-containing" "gamma-phosphate"
-    "gaps" "gastro" "gastro-esophageal" "gastro-intestinal" "gastroentero"
-    "gatekeeper" "gatekeepers" "gavage" "gc" "gel-shift" "gel-substrate"
-    "gelatinases" "gelfoam" "gemcitabine-carboplatin" "gene-autonomous"
-    "gene-environment" "gene-wise" "generatedStat" "generatedStat5b-CA"
-    "generatedrasa1" "generaterasa1" "genes" "genesin" "genetically-defined"
-    "genetically-diverse" "genome" "genome-wide" "genome-wide
+    "fromShp2" "fromVhl" "fromp53" "fromw" "frozen" "ful" "ful-length"
+    "full-gene" "full-size" "fully-glycosylated" "fulminant" "fulvene-5"
+    "functionally-distinct" "fundus" "fusion-containing" "fusion-negative"
+    "fusion-positive" "fynT" "für" "gB55" "gadolinium" "gain-of-function"
+    "galU" "gallate" "gallbladder" "gamma-ear" "gamma-ear-containing"
+    "gamma-phosphate" "gaps" "gastro" "gastro-esophageal" "gastro-intestinal"
+    "gastroentero" "gatekeeper" "gatekeepers" "gavage" "gc" "gel-shift"
+    "gel-substrate" "gelatinases" "gelfoam" "gemcitabine-carboplatin"
+    "gene-autonomous" "gene-environment" "gene-wise" "generatedStat"
+    "generatedStat5b-CA" "generatedrasa1" "generaterasa1" "genes" "genesin"
+    "genetically-defined" "genetically-diverse" "genome" "genome-wide"
+    "genome-wide
 "
     "genomes" "genotype" "genotype-does" "genotype-phenotype" "genotypes"
-    "genotypingin" "geohelminth" "geranylgeranyl" "germ-line"
-    "germ-line-competent" "germline" "gland-forming" "glia" "globular-like"
-    "globule-like" "globus" "glucagonomas" "glucose-deprivation" "glucuronosyl"
-    "glutamate-166" "glutamyl" "glutamyl-peptide" "glutamylcysteine"
-    "glutathione-Sepharose" "glutathione-s-transferase" "glycan" "glycans"
-    "glycine-serine-rich" "glycoconjugates" "glycomutant" "glycomutants"
-    "glycostructure" "glycostructures" "glycosyl" "goes" "gonads" "gone"
-    "grand-mother" "granule-like" "granulocyte-monocyte" "greater" "greatest"
+    "genotypingin" "geranylgeranyl" "germ-line-competent" "germline"
+    "gland-forming" "glia" "globular-like" "globule-like" "globus"
+    "glucagonomas" "glucose-deprivation" "glucuronosyl" "glutamate-166"
+    "glutamyl" "glutamyl-peptide" "glutamylcysteine" "glutathione-Sepharose"
+    "glutathione-s-transferase" "glycan" "glycans" "glycine-serine-rich"
+    "glycoconjugates" "glycomutant" "glycomutants" "glycostructure"
+    "glycostructures" "glycosyl" "goes" "gonads" "gone" "grand-mother"
+    "granule-like" "granulocyte-monocyte" "greater" "greatest"
     "green-RP11-1120I14" "green-fluorescence" "grossly-visible"
-    "growth-arrest-specific" "growth-factor-receptor" "growth-receptor"
-    "growth-suppressive" "guage" "guanylyl" "h-treatment" "hDNMT3a" "hDNMT3b"
-    "hLPP" "hLPP1" "hLPP2" "hLPP3" "hMSC" "hMSCs" "hTERC" "hTR" "hTR-telomere"
-    "haemaglutinin" "haematocrit" "half-life" "half-lives" "half-maximal"
-    "half-survival" "half-time" "half-way" "hand-type" "handing-over" "haplo"
-    "haplo-insufficiency" "haplotype" "haplotypes" "haptotaxis" "hard-wired"
-    "has-let-7d" "head-and-neck" "head-on" "heat-shock" "heatmap" "heckpoint"
-    "helices" "heliquinomycin" "helix" "helix-3" "helix-4" "helix-5" "helix-7"
-    "helix-8" "helix-loop-helix" "helper-dependent" "hematopoietic-containing"
-    "hematopoietic-derived" "hematopoietic-lineage" "hemi" "hemichanels"
-    "hemodynamic-induced" "hemotoxylin" "hepatectomy" "hepatitis-induced"
-    "hepatocyte-derived" "hepatocyte-specific" "hepatoid" "heptad" "heptads"
-    "here--a" "hetero-dimeric" "hetero-dimers" "hetero-multimerization"
-    "hetero-oligomers" "heterocomplex" "heterocomplexes" "heteroplasmy"
-    "heterotetramer" "heterotrimer" "heterozygote" "hexa-coordinate" "hexamer"
-    "hexamers" "hexanucleotide" "hg18" "hg19" "hidden" "high-affinity"
-    "high-confidence" "high-density" "high-dose" "high-energy" "high-fidelity"
-    "high-frequency" "high-grade" "high-level" "high-mannose" "high-mobility"
-    "high-quality" "high-resolution" "high-resolution
+    "growth-arrest-specific" "growth-suppressive" "guage" "guanylyl"
+    "h-treatment" "hDNMT3a" "hDNMT3b" "hLPP" "hLPP1" "hLPP2" "hLPP3" "hMSC"
+    "hMSCs" "hTERC" "hTR-telomere" "haemaglutinin" "haematocrit" "half-life"
+    "half-lives" "half-maximal" "half-survival" "half-time" "half-way"
+    "hand-type" "handing-over" "haplo" "haplo-insufficiency" "haplotype"
+    "haplotypes" "haptotaxis" "hard-wired" "has-let-7d" "head-and-neck"
+    "head-on" "heat-shock" "heatmap" "heckpoint" "helices" "heliquinomycin"
+    "helix" "helix-3" "helix-4" "helix-5" "helix-7" "helix-8"
+    "helix-loop-helix" "helix–loop–helix" "helper-dependent"
+    "hematopoietic-containing" "hematopoietic-derived" "hematopoietic-lineage"
+    "hemi" "hemichanels" "hemodynamic-induced" "hemotoxylin" "hepatectomy"
+    "hepatitis-induced" "hepatocyte-derived" "hepatocyte-specific" "hepatoid"
+    "heptad" "heptads" "here--a" "hetero-dimeric" "hetero-dimers"
+    "hetero-multimerization" "hetero-oligomers" "heterocomplex"
+    "heterocomplexes" "heteroplasmy" "heterotetramer" "heterotrimer"
+    "heterozygote" "hexa-coordinate" "hexamer" "hexamers" "hexanucleotide"
+    "hg18" "hg19" "hidden" "high-affinity" "high-confidence" "high-density"
+    "high-dose" "high-energy" "high-fidelity" "high-frequency" "high-grade"
+    "high-level" "high-mannose" "high-mobility" "high-quality"
+    "high-resolution" "high-resolution
 "
     "high-risk" "high-salt" "higher-grade" "higher-order" "highly-charged"
     "highly-conserved" "highly-destabilizing" "hindbrain" "hindlimbs"
     "histiocytoid" "histo" "histo-prognostic" "histochemistry"
     "histologically-confirmed" "histology" "histopathologies" "histopathology"
-    "histoscores" "histotypes" "hiv-web" "hoc" "hodgkin" "holocomplex"
-    "homeodomain" "homo-dimerize" "homo-oligomerization" "homolog" "homologies"
-    "homologs" "homozygote" "homozygotes" "homozygousRac1" "homozygousmys"
-    "homo­logy" "hormone-like" "hormone-naive" "hormone-naïve"
-    "hormone-receptive" "hormone-receptor" "hospital-based" "host-cellular"
-    "host-derived" "host-tumor" "hot-spot" "hotspot" "hotspots" "houre" "hours"
-    "hr" "hrHPV" "hrHPV-immortalized" "hromatin" "hromosome" "hsa-let-7d"
-    "hydrazides" "hydrogen-bond" "hydroxy" "hydroxy-flutamide"
-    "hydroxy-methylglutaryl" "hydroxyethyl" "hydroxyl" "hydroxyvitamin"
-    "hyper-IgE" "hyper-metastatic" "hyper-proliferation" "hyper-proliferative"
-    "hyper-recombination" "hyperandrogenemia" "hyperandrogenism" "hyperdiploid"
-    "hyperinsulinaemia" "hyperinsulinemia" "hyperploid"
-    "hyperpolarization-activated" "hypodiploid" "hypomorph" "hypomorphism"
-    "hypopharynx" "hypothalamic-pituitary-gonadal" "hypotonia" "hyrdoperoxide"
-    "iCycler" "iTGF" "iTGF-βR" "iTRAQ" "ice-cold" "ich" "ie" "ii" "iii" "ileo"
-    "ileo-colonic" "ileum" "iliac" "ill-defined" "imidazole" "immediate-early"
-    "immotile" "immune-activated" "immune-derived" "immune-receptor"
+    "histoscores" "histotypes" "hiv-web" "hodgkin" "holocomplex" "homeodomain"
+    "homo-dimerize" "homo-oligomerization" "homolog" "homologies" "homologs"
+    "homozygote" "homozygotes" "homozygousRac1" "homozygousmys" "homo­logy"
+    "hormone-like" "hormone-naive" "hormone-naïve" "hormone-receptive"
+    "hospital-based" "host-cellular" "host-derived" "host-tumor" "hot-spot"
+    "hotspot" "hotspots" "houre" "hours" "hr" "hrHPV" "hrHPV-immortalized"
+    "hromatin" "hromosome" "hsa-let-7d" "hydrazides" "hydrogen-bond" "hydroxy"
+    "hydroxy-flutamide" "hydroxy-methylglutaryl" "hydroxyethyl" "hydroxyl"
+    "hydroxyvitamin" "hyper-IgE" "hyper-metastatic" "hyper-proliferation"
+    "hyper-proliferative" "hyper-recombination" "hyperandrogenemia"
+    "hyperandrogenism" "hyperdiploid" "hyperinsulinaemia" "hyperinsulinemia"
+    "hyperploid" "hyperpolarization-activated" "hypodiploid" "hypomorph"
+    "hypomorphism" "hypopharynx" "hypothalamic-pituitary-gonadal" "hypotonia"
+    "hyrdoperoxide" "iCycler" "iTGF" "iTGF-βR" "iTRAQ" "ice-cold" "ich" "ie"
+    "ii" "iii" "ileo" "ileo-colonic" "ileum" "iliac" "ill-defined" "imidazole"
+    "immediate-early" "immotile" "immune-activated" "immune-derived"
     "immune-regulatory" "immune-related" "immunecomplex" "immunecomplexes"
     "immuno-EM" "immuno-affinity" "immuno-blots" "immuno-detection"
     "immuno-fluorescence" "immuno-precipitates" "immuno-precipitation"
-    "immuno-reactivity" "immunoaffinity-MS" "immunoassay" "immunocomplex"
-    "immunocomplexes" "immunocytes" "immunocytochemistry" "immunodominant"
-    "immunoelectron" "immunoglobulin" "immunoglobulin-like"
-    "immunohistochemistry" "immunomarkers" "immunophenotype"
-    "immunoprecipitants" "immunoprofile" "immunoprofiles" "immunoreagents"
-    "immunostainings" "immunosurveillance" "immunotherapy" "importin-α"
-    "importin-α-NLS" "importin-α-cargo" "importin-α-importin-β1-Ran"
-    "importin-α3" "importin-α5" "importin-β1" "importin-β1-Ran"
-    "importin-β1-Ran-mediated" "importinαand" "importinβ1" "in-between"
-    "in-depth" "in-frame" "in-gel" "in-growth" "in-part" "in-solution"
-    "in-stent" "in-turn" "in-vitro" "in-vivo" "in14-3-3σ-mediated" "in53bp1"
-    "inAtm" "inBrca2" "inCdk2" "inEbf1" "inFoxO3" "inFyb" "inH2a" "inIL"
-    "inIL-7r" "inKu70" "inNkx3.1" "inPdx" "inPdx1-Cre" "inPten" "inRac1" "inRb"
-    "inRnf168" "inRnf8" "inShp2" "inSta" "inSta5b-CA" "inStat" "inStat3"
-    "inStat5" "inStat5b-CA" "increasedp21" "independent-1" "induced-astrocytic"
-    "induced-death" "induced-fibrosis" "infection-associated"
-    "infection-induced" "infections" "infectives" "inflammation-induced"
-    "inflammation-regulated" "inflammatory–coagulation" "informativeness"
-    "inhibition-defective" "inhibiton" "inhibitor-like"
+    "immuno-reactivity" "immunoassay" "immunocomplex" "immunocomplexes"
+    "immunocytes" "immunocytochemistry" "immunodominant" "immunoelectron"
+    "immunoglobulin" "immunoglobulin-like" "immunohistochemistry"
+    "immunomarkers" "immunophenotype" "immunoprecipitants" "immunoprofile"
+    "immunoprofiles" "immunoreagents" "immunostainings" "immunosurveillance"
+    "immunotherapy" "importin-α" "importin-α-NLS" "importin-α-cargo"
+    "importin-α-importin-β1-Ran" "importin-α3" "importin-α5" "importin-β1"
+    "importin-β1-Ran" "importin-β1-Ran-mediated" "importinαand" "importinβ1"
+    "in-between" "in-depth" "in-frame" "in-gel" "in-growth" "in-part"
+    "in-solution" "in-stent" "in-turn" "in-vitro" "in-vivo"
+    "in14-3-3σ-mediated" "in53bp1" "inAtm" "inBrca2" "inCdk2" "inEbf1"
+    "inFoxO3" "inFyb" "inH2a" "inIL" "inIL-7r" "inKu70" "inNkx3.1" "inPdx"
+    "inPdx1-Cre" "inPten" "inRac1" "inRb" "inRnf168" "inRnf8" "inShp2" "inSta"
+    "inSta5b-CA" "inStat" "inStat3" "inStat5" "inStat5b-CA" "increasedp21"
+    "independent-1" "induced-astrocytic" "induced-death" "induced-fibrosis"
+    "infection-associated" "infection-induced" "infections" "infectives"
+    "inflammation-induced" "inflammation-regulated" "inflammatory–coagulation"
+    "informativeness" "inhibition-defective" "inhibiton" "inhibitor-like"
     "inhibitors-of-apoptosis" "ini" "inmys" "inositiol" "inositol-1,4" "inp21"
-    "inrasa1" "insertions" "inside-out" "inside-out-driven" "insulin-induced"
-    "insulin-like" "insulin-regulated" "insulin-responsive"
-    "insulin-stimulated" "insulin-treated" "int" "intactPten" "integrants"
-    "integrators" "integrin-FAKPI3K-AKT" "intelomere" "intent-to-treat"
-    "inter-convertible" "inter-group" "inter-helical" "inter-individual"
-    "inter-play" "inter-population" "inter-strand" "interactions"
-    "intercrosses" "interefere" "intergin" "intergrin" "interleukine-6"
-    "interlobe" "intermediaryN" "intermembrane" "interprotein" "interquartile"
-    "interstitium" "interstrand" "intersubunit" "interval-limited" "intima"
-    "intra" "intra-abdominal" "intra-helical" "intra-hepatically"
-    "intra-osseous" "intra-patient" "intra-strand" "intra-tandem-duplications"
-    "intra-thoracic" "intra-tumor" "intra-tumoral" "intracardiac" "intracrine"
-    "intravasate" "introitus" "inv16" "invariant" "invasion-associated"
-    "invasion-promoting" "inversely-proportional" "inversus" "invhl" "invitro"
-    "inαE-catenin" "iodotubercidin" "ionic" "ionomycin-treatment"
-    "iron-salophene" "irradiatedRnf168" "isatin-schiff" "ischaemia"
-    "ischaemia–reperfusion" "ischemia-reperfusion" "isobolograms" "isobutyl"
-    "isobutyl-metylxanthine" "isoenzymes" "isoforms" "isopeptide" "isopropanol"
-    "isopropyl" "isopropyl-β-D-thiogalactoside" "isotype" "isotypes" "iv"
-    "jejunum" "jmjd2-a" "k-means" "kPa" "kaposin" "karyotype" "karyotypes"
-    "kcal" "kcat" "kd" "kg" "kg " "kilobases" "kinase-α" "kinase-β"
+    "inrasa1" "insertions" "inside-out" "inside-out-driven" "insulin-like"
+    "intactPten" "integrants" "integrators" "integrin-FAKPI3K-AKT" "intelomere"
+    "intent-to-treat" "inter-convertible" "inter-group" "inter-helical"
+    "inter-individual" "inter-play" "inter-population" "inter-strand"
+    "interactions" "intercrosses" "interefere" "intergin" "intergrin"
+    "interleukine-6" "interlobe" "intermediaryN" "intermembrane" "interprotein"
+    "interquartile" "interstitium" "interstrand" "intersubunit"
+    "interval-limited" "intima" "intra" "intra-abdominal" "intra-helical"
+    "intra-hepatically" "intra-osseous" "intra-patient" "intra-strand"
+    "intra-tandem-duplications" "intra-thoracic" "intra-tumor" "intra-tumoral"
+    "intracardiac" "intracrine" "intravasate" "introitus" "inv16" "invariant"
+    "invasion-associated" "invasion-promoting" "inversely-proportional"
+    "inversus" "invhl" "invitro" "inαE-catenin" "iodotubercidin" "ionic"
+    "ionomycin-treatment" "iron-salophene" "irradiatedRnf168" "isatin-schiff"
+    "ischaemia" "ischaemia–reperfusion" "ischemia-reperfusion" "isobolograms"
+    "isobutyl" "isobutyl-metylxanthine" "isoenzymes" "isoforms" "isopeptide"
+    "isopropanol" "isopropyl" "isopropyl-β-D-thiogalactoside" "isotype"
+    "isotypes" "iv" "jejunum" "jmjd2-a" "k-means" "kPa" "kaposin" "karyotype"
+    "karyotypes" "kcal" "kcat" "kd" "kg" "kg " "kilobases" "kinase-β"
     "kinetochomes" "knock-down" "knock-in" "knocked-down" "knockin"
     "koilocytoid" "krc" "lactoferrein" "laevis" "lambda" "lamellopodia"
     "large-cell" "large-scale" "laser-capture" "laser-induced" "late-G1-phase"
@@ -826,114 +815,114 @@
     "lentiviral-mediated" "lentiviral-particles" "leptomeninges" "let-7i"
     "lethally-irradiated" "leucine-zipper" "leukemia-1" "leukemia-2"
     "leukemias" "leukocytesin" "levels" "lgG" "lid-like" "life-long" "lifespan"
-    "ligand-receptor" "lincRNA-p21" "lineage-specific"
-    "lipid-deposition-induced" "lipo-polysaccharide" "lipopolysaccharide"
-    "lipopolysaccharides" "lipopolysacharride" "lipoproteins" "lipoxygenase-15"
-    "litter-mates" "littermaterasa1" "live-cell" "liver-enriched" "lo" "lobule"
-    "lobules" "localizer" "loco-regional" "locus-dose" "locus-locus"
-    "locus-specific" "log-additive" "log2" "logrank" "logy" "long-chain"
-    "long-distance" "long-lasting" "long-lived" "long-loop" "long-range"
-    "long-standing" "longa" "longest-term" "loop-sheet-helix"
-    "loss-of-function" "loss-of-heterozygosity" "low-affinity" "low-dose"
-    "low-grade" "low-intermediate" "low-level" "low-levels"
-    "low-molecular-mass" "low-passage" "low-penetrance" "low-penetrant"
-    "low-probability" "low-risk" "low-salt" "low-serum" "low-to-moderate"
-    "low-toxicity" "lower-middle" "loxP" "loxp" "lterations" "lumbo"
-    "lumbo-sacral" "lumbricoides" "lumen-to-blood" "lumens" "luminal-A"
+    "lincRNA-p21" "lineage-specific" "lipid-deposition-induced"
+    "lipo-polysaccharide" "lipopolysaccharide" "lipopolysaccharides"
+    "lipopolysacharride" "lipoproteins" "lipoxygenase-15" "litter-mates"
+    "littermaterasa1" "live-cell" "liver-enriched" "lo" "lobule" "lobules"
+    "localizer" "loco-regional" "locus-dose" "locus-locus" "locus-specific"
+    "logrank" "logy" "long-chain" "long-distance" "long-lasting" "long-lived"
+    "long-loop" "long-range" "long-standing" "longa" "longest-term"
+    "loop-sheet-helix" "loss-of-function" "loss-of-heterozygosity"
+    "low-affinity" "low-density" "low-dose" "low-grade" "low-intermediate"
+    "low-level" "low-levels" "low-molecular-mass" "low-passage"
+    "low-penetrance" "low-penetrant" "low-probability" "low-risk" "low-salt"
+    "low-serum" "low-to-moderate" "low-toxicity" "lower-middle" "loxP" "loxp"
+    "lterations" "lumbo" "lumbo-sacral" "lumen-to-blood" "lumens" "luminal-A"
     "luminal-B" "lupus-like" "luteum" "lymhoid" "lymphadenopathy"
     "lymphendothelium" "lympho-hematopoietic" "lympho-myeloid" "lymphoblastoid"
     "lymphoblasts" "lymphoid-lineage" "lymphopenia" "lysenin" "lysine-reactive"
     "lysine-unreactive" "lysis" "lystates" "lyzates" "mAKT" "mAb1801"
     "mCHR-E2F" "mCRCs" "mCy2" "mDC" "mFISH" "mFOLD" "mLpp3" "mM"
-    "mRFP-H2B–positive" "mRNA" "mSin3A" "mV" "macro-dissection"
-    "macroautophagosome" "macrodomain" "macrodomains" "macrophage-like"
-    "macrophage-tropic" "macules" "maintainenance" "maintenance-length"
-    "mal-orientation" "male-to-female" "mammary-derived" "mammary-specific"
+    "mRFP-H2B–positive" "mRNA" "mSin3A" "macro-dissection" "macroautophagosome"
+    "macrodomain" "macrodomains" "macrophage-like" "macrophage-tropic"
+    "macules" "maintainenance" "maintenance-length" "mal-orientation"
+    "male-specific" "male-to-female" "mammary-derived" "mammary-specific"
     "mammoplasties" "mannosidases" "manubria" "manuscipt" "marcrophages"
     "maslinic-acid-induced" "mass-spectrometric" "mastectomy"
-    "matrigel-matrix-coated" "maximally-effective" "mdmx-FL" "mdmx-S" "mdmx211"
-    "meC" "mean=5.64" "mean=65.5" "mean±SD" "mean±SE" "mechanically-responsive"
-    "mechanoproperties" "mechanoresistance" "mediastinum" "medroxyestradiol"
-    "megalovirus" "melanin" "melanogaster" "mellitus" "membrane-proximal"
-    "memory-like" "memory-phenotype" "menas" "meninges" "meprin"
-    "mesenchymal-epithelial" "mesenchymal-like" "mesenchymal-type" "mesenchyme"
-    "meshwork" "mesoderm" "messenger-driven" "mesylate" "meta-analytic"
-    "metabotropic-type" "metagene" "metal-catalyzed" "metal-chelating"
-    "metallocomplex" "metalloprotease-2" "metalloproteinases-2" "metaphosphate"
-    "metaphyses" "methanesulfonate" "methoxyarylimino" "methoxyestradiol"
-    "methoxyethoxy" "methyl-CpG-binding" "methyl-TROSY" "methyl-TROSY-HMQC"
-    "methyl-beta-cyclo-dextrin" "methyl-terminated" "methyl-β" "methyladenine"
-    "methylarginine" "methylene" "methylglutaryl" "methylmethansulfonate"
-    "metylxanthine" "meyslate" "miR-129" "miR-132" "miR-133" "miR-141"
-    "miR-143" "miR-144" "miR-148a" "miR-148a-AS-tranfected" "miR-148b"
-    "miR-155" "miR-181b" "miR-191" "miR-192" "miR-193" "miR-193a" "miR-193c"
-    "miR-194" "miR-200" "miR-200b" "miR-200b–429" "miR-200c-ZEB1"
-    "miR-200c–141" "miR-200–192" "miR-205" "miR-215" "miR-224" "miR-28"
-    "miR-28-induced" "miR-29a" "miR-335" "miR-34" "miR-340" "miR-34b" "miR-34c"
-    "miR34" "miRDB" "mice" "micellar-like" "micro-dissection" "micro-nucleated"
-    "microRNA-21" "microRNA-340-mediated" "microRNA-373" "microT" "microdomain"
-    "microdomains" "microglial-derived" "micrograph" "microhomology"
-    "micrometastases" "micrometeres" "micropenis" "microplate" "microsatellite"
-    "microscopically-visible" "microtiter" "microvasculature" "microvessel"
-    "microvilli-like" "mid-G1" "mid-nanomolar" "mid-point" "midbrain"
-    "midbrain–hindbrain" "middle-coast" "middle-dose" "mide" "mimetopes"
-    "mini-chromosome" "mini-mental" "miniSTRs" "minichromosome" "miniene"
-    "minimally-effective" "minimise" "minus-end-directed" "mir-28"
-    "miss-regulated" "missegregate" "missense" "mitochondrial-associated"
-    "mitochondrial-bound" "mitochondrial-dependent" "mitochondrial-enriched"
-    "mitochondrial-rich" "mitoplasts" "mitoses" "mitotic-related"
-    "mitotic-specific" "mixed-cell" "ml-4" "mock-depleted" "mock-infected"
-    "mock-irradiated" "mock-transfected" "mock-transfected
+    "matrigel-matrix-coated" "mature-miR-21" "maximally-effective" "mdmx-FL"
+    "mdmx-S" "mdmx211" "mean=5.64" "mean=65.5" "mean±SD" "mean±SE"
+    "mechanically-responsive" "mechanoproperties" "mechanoresistance"
+    "mediastinum" "medroxyestradiol" "megalovirus" "melanin" "melanogaster"
+    "mellitus" "membrane-proximal" "memory-like" "memory-phenotype" "menas"
+    "meninges" "meprin" "mesenchymal-epithelial" "mesenchymal-like"
+    "mesenchymal-type" "mesenchyme" "meshwork" "mesoderm" "messenger-driven"
+    "mesylate" "meta-analytic" "metabotropic-type" "metagene" "metal-catalyzed"
+    "metal-chelating" "metallocomplex" "metalloprotease-2" "metalloproteases-1"
+    "metaphosphate" "metaphyses" "methanesulfonate" "methoxyarylimino"
+    "methoxyestradiol" "methoxyethoxy" "methyl-CpG-binding" "methyl-TROSY"
+    "methyl-TROSY-HMQC" "methyl-beta-cyclo-dextrin" "methyl-terminated"
+    "methyl-β" "methyladenine" "methylarginine" "methylene" "methylglutaryl"
+    "methylmethansulfonate" "metylxanthine" "meyslate" "miR-129" "miR-132"
+    "miR-133" "miR-141" "miR-143" "miR-144" "miR-148a" "miR-148a-AS-tranfected"
+    "miR-148a-expressing" "miR-148a-induced" "miR-148a-specific"
+    "miR-148a-tansfected" "miR-148a-transfected" "miR-148b" "miR-181b"
+    "miR-191" "miR-192" "miR-193" "miR-193a" "miR-193c" "miR-194" "miR-200"
+    "miR-200b" "miR-200b–429" "miR-200c-ZEB1" "miR-200c–141" "miR-200–192"
+    "miR-205" "miR-21" "miR-215" "miR-221" "miR-224" "miR-28" "miR-28-induced"
+    "miR-29" "miR-29a" "miR-29a-binding" "miR-29c" "miR-335" "miR-34" "miR-340"
+    "miR-34b" "miR-34c" "miR34" "miRDB" "miRNA-RISC" "mice" "micellar-like"
+    "micro-dissection" "micro-nucleated" "microRNA-21" "microRNA-340-mediated"
+    "microRNA-373" "microT" "microdomain" "microdomains" "microglial-derived"
+    "micrograph" "microhomology" "micrometastases" "micrometeres" "micropenis"
+    "microplate" "microsatellite" "microscopically-visible" "microtiter"
+    "microvasculature" "microvessel" "microvilli-like" "mid-G1" "mid-nanomolar"
+    "mid-point" "midbrain" "midbrain–hindbrain" "middle-coast" "middle-dose"
+    "mide" "mimetopes" "min-treatment" "mini-chromosome" "mini-mental"
+    "miniSTRs" "minichromosome" "miniene" "minimally-effective" "minimise"
+    "minus-end-directed" "mir-28" "miss-regulated" "missegregate" "missense"
+    "mitoplasts" "mitoses" "mitotic-related" "mitotic-specific" "mixed-cell"
+    "ml-4" "mock-depleted" "mock-infected" "mock-irradiated" "mock-transfected"
+    "mock-transfected
 "
     "mock-treated" "moderate-strong" "moderately-differentiated"
-    "moderate–high" "modulaters" "modulus" "molecular-therapeutic"
-    "molecularly-defined" "molten" "molten-globule-like" "moniliform"
-    "monitoredRnf168" "mono-methylated" "mono-methylation" "mono-therapy"
-    "monocyte-derived" "monocyte-microglial" "monocyte-specific"
-    "monocytogenes" "monocytoid" "monodisperse" "monolayer" "mononucleotides"
-    "monotherapy" "morbidities" "more-or-less" "morphants" "morphotype"
-    "mostStat" "mostStat5b-CA" "motif-containing" "motif-specific" "motile"
-    "motogen" "mouseαE-catenin" "msHOT" "msdata" "mt" "mtTP53" "mu" "mucosa"
-    "mucosas" "multi-component" "multi-copy" "multi-domain" "multi-drug"
-    "multi-factorial" "multi-functional" "multi-gene" "multi-institutional"
-    "multi-kinase" "multi-lineage" "multi-modality" "multi-organ" "multi-point"
-    "multi-stage" "multi-step" "multi-subunit" "multi-tissue" "multi-unit"
-    "multicenter" "multicopy" "multidomain" "multigene" "multimer" "multimers"
-    "multinucleate" "multiorgan" "multiphoton" "multiple-case"
-    "multiple-targeted" "multiply-spliced" "multipoint" "multiprotein"
-    "multisubunit" "multisystem" "multivariate" "muscularis" "musculature"
-    "mutantp53" "mutants" "mutations" "mxiD" "myelopathy" "myocardium"
-    "myocilin-ΔC" "myocilin-ΔN" "myocytes" "myosine" "myr-SKAP-1"
+    "moderate–high" "modulaters" "modulus" "molecular-genetic"
+    "molecular-therapeutic" "molecularly-defined" "molten"
+    "molten-globule-like" "moniliform" "monitoredRnf168" "mono-methylated"
+    "mono-methylation" "mono-therapy" "monocyte-derived" "monocyte-microglial"
+    "monocyte-specific" "monocytogenes" "monocytoid" "monodisperse" "monolayer"
+    "mononucleotides" "monotherapy" "morbidities" "more-or-less" "morphants"
+    "morphotype" "mostStat" "mostStat5b-CA" "motif-containing" "motif-specific"
+    "motile" "motogen" "mouseαE-catenin" "msHOT" "msdata" "mt" "mtTP53"
+    "mucosa" "mucosas" "multi-component" "multi-copy" "multi-domain"
+    "multi-drug" "multi-factorial" "multi-functional" "multi-gene"
+    "multi-institutional" "multi-kinase" "multi-lineage" "multi-modality"
+    "multi-organ" "multi-point" "multi-stage" "multi-subunit" "multi-tissue"
+    "multi-unit" "multicenter" "multicopy" "multidomain" "multidrug-resistance"
+    "multigene" "multimer" "multimers" "multinucleate" "multiorgan"
+    "multiphoton" "multiple-targeted" "multiply-spliced" "multipoint"
+    "multiprotein" "multisubunit" "multisystem" "multivariate" "muscularis"
+    "musculature" "mutantp53" "mutants" "mutations" "mxiD" "myelopathy"
+    "myocardium" "myocilin-ΔC" "myocilin-ΔN" "myocytes" "myosine" "myr-SKAP-1"
     "myr-SKAP1-R131M" "myr-SKAP1-WT" "myristate" "myspheroid" "myxobacterium"
     "myxoid" "n=10" "n=134" "n=15" "n=188" "n=2" "n=21" "n=24" "n=3" "n=4"
-    "n=55" "n=6" "n=7" "n=9" "nCDases" "nPKCs" "nano" "nano-molar"
-    "nanometer-thin" "nanomoles" "nanosecond" "narrow-band" "narrow-down"
-    "naturally-arising" "naturally-occurring" "naïve" "near-diploid"
-    "near-endogenous" "near-tetraploid" "nearest" "necropsy" "neem" "neg"
-    "negative-control" "negative-stranded" "neo-adjuvant" "neoadjuvant"
-    "neocortex" "neointima" "neoplasias" "neoplasmas" "nephrocystins" "nephron"
-    "nephroureterectomies" "nerve-nerve" "network-like" "neural-type" "neurite"
-    "neuro" "neuro-ectodermal" "neuroAIDS" "neuroaxis" "neuroendocrine"
-    "neuroepithelia" "neuroimmune" "neurokinin-1" "neuronal-specific"
-    "neuropathology" "neurosphere" "neurospheres" "neutral-charge"
-    "neutral-neutral" "newer" "newly-discovered" "newly-formed"
-    "nickel–Sepharose" "nigricans" "nine-carbon" "nine-year" "ninety-five"
-    "nj4" "nj42" "nmMyoII" "nmMyoIIA" "nmMyoIIB" "nmMyosin" "nner" "no-change"
+    "n=55" "n=6" "n=7" "n=9" "nCDases" "nPKCs" "nano" "nano-molar" "nanomoles"
+    "nanosecond" "narrow-band" "narrow-down" "naturally-arising"
+    "naturally-occurring" "near-diploid" "near-endogenous" "near-tetraploid"
+    "nearest" "necropsy" "neem" "neg" "negative-control" "negative-stranded"
+    "neo-adjuvant" "neoadjuvant" "neocortex" "neointima" "neoplasias"
+    "neoplasmas" "nephrocystins" "nephron" "nephroureterectomies" "nerve-nerve"
+    "network-like" "neural-type" "neurite" "neuro" "neuro-ectodermal"
+    "neuroAIDS" "neuroaxis" "neuroendocrine" "neuroepithelia" "neuroimmune"
+    "neurokinin-1" "neuronal-specific" "neuropathology" "neurosphere"
+    "neurospheres" "neutral-charge" "neutral-neutral" "newer"
+    "newly-discovered" "newly-formed" "nickel–Sepharose" "nigricans"
+    "nine-carbon" "nine-year" "ninety-five" "nitrosourea" "nj4" "nj42"
+    "nmMyoII" "nmMyoIIA" "nmMyoIIB" "nmMyosin" "nner" "no-change"
     "node-negative" "node-positive" "nodes" "nomograms" "nonbulky" "noncardiac"
     "nondrug" "nonequilibrium" "nonimmune" "nonmalignant" "nonobese"
     "nonredundant" "nonsense-mediated" "nonsignificant" "nonstem" "nonstim"
     "nonstress" "normal-proliferating" "normal-tissue" "notRnf168" "notochord"
-    "nouts" "novo" "novyi" "ns-timescale" "nt" "nuclear-on" "nuclear-re-entry"
-    "nuclear-to-cytoplasmic" "nucleases" "nucleate" "nucleates"
-    "nucleophosmin1" "nul" "number=3" "nutlin-treatment" "nutraceuticals"
-    "nutrient-deprivation" "n = 10" "n = 3" "n = 4" "n = 6" "observedT"
-    "occludes" "octahedron" "oestrogen" "of53bp1" "ofAB" "ofAtm" "ofCdk2"
-    "ofFANCA" "ofFoxO3" "ofH2a" "ofO" "ofPdx" "ofPdx1-Cre" "ofRnf168" "ofShp2"
-    "ofStat" "ofStat5b-CA" "ofVhl" "off-target" "off-treatment" "offs" "ofmys"
-    "ofp21" "ofp53" "ofαE-catenin" "oligodeoxynucleotide" "oligofectamine"
-    "omic" "on-going" "on-line" "onAtm" "oncogenicKRAS" "oncology"
+    "nouts" "novo" "novyi" "ns-timescale" "nt" "nuc-1" "nuclear-on"
+    "nuclear-re-entry" "nuclear-to-cytoplasmic" "nucleases" "nucleate"
+    "nucleates" "nucleophosmin1" "nul" "number=3" "nutlin-treatment"
+    "nutraceuticals" "nutrient-deprivation" "n = 10" "n = 3" "n = 4" "n = 6"
+    "observedT" "occludes" "octahedron" "oestrogen" "of53bp1" "ofAB" "ofAtm"
+    "ofCdk2" "ofFANCA" "ofFoxO3" "ofH2a" "ofO" "ofPdx" "ofPdx1-Cre" "ofRnf168"
+    "ofShp2" "ofStat" "ofStat5b-CA" "ofVhl" "off-target" "off-treatment"
+    "ofmys" "ofp21" "ofp53" "ofαE-catenin" "oligodeoxynucleotide"
+    "oligofectamine" "omic" "on-going" "onAtm" "oncogenicKRAS" "oncology"
     "one-dimensional" "one-fifth" "one-quarter" "one-seventh" "one-sided"
-    "one-tenth" "one-third" "one-way" "one-year" "open-angle" "operant"
+    "one-tenth" "one-third" "one-way" "one-year" "ones" "open-angle" "operant"
     "optima" "orFANCC" "orRac1" "orRac2" "orRnf168" "orchiectomy" "ordinates"
     "organelle" "organelles" "organise" "organization-induced" "organoid"
     "organoids" "organs" "orientations" "oropharynx" "orp21" "orp53" "ortholog"
@@ -945,8 +934,8 @@
     "over-transmitted" "overs" "overuse" "overview" "overweigh"
     "oxLDL-treatment" "oxalyl" "oxidases" "oxyester" "oxygens"
     "p110γ-Ras-dependent" "p110γCAAX" "p110γKD" "p18-positive" "p21WAF1"
-    "p21cip" "p300-mediated" "p38-mediated" "p3TP-lux" "p46Shc" "p46ShcA"
-    "p52Shc" "p53-6KR" "p53-7KR" "p53-DNA" "p53-defective" "p53-dependence"
+    "p21cip" "p300-mediated" "p38-mediated" "p46Shc" "p46ShcA" "p52Shc"
+    "p53-6KR" "p53-7KR" "p53-DNA" "p53-defective" "p53-dependence"
     "p53-indendent" "p53-independence" "p53-indpendent" "p53-knock-down"
     "p53-knocked-down" "p53-mediated-transcriptional" "p53-null" "p53-pathway"
     "p53-response" "p53-wt" "p53Ab" "p53BS" "p53BSs" "p53C" "p53RE" "p53autoAb"
@@ -964,27 +953,25 @@
     "p=0.50" "p=0.54" "p=0.55" "p=0.58" "p=0.59" "p=0.69" "p=0.72" "p=0.88"
     "p=0.930" "p=1.24×10" "p=1.28×10" "p=2.78×10" "p=2×10" "p=4.07×10"
     "p=6.55×10" "p=6.70×10" "p=7.03×10" "p=9.11×10" "pALK" "pAR3-luc" "pBIND"
-    "pBSHS4" "pBcl-2" "pBluescript" "pCAGA-luc" "pCDK2" "pCG-AFos" "pCMV-RB"
-    "pCMV5-based" "pCR" "pCYL42" "pCenp" "pCenp-A" "pCenpA" "pDCerm" "pDCs"
+    "pBSHS4" "pBcl" "pBcl-2" "pBluescript" "pCAGA-luc" "pCDK2" "pCG-AFos"
+    "pCMV-RB" "pCMV5-based" "pCYL42" "pCenp" "pCenp-A" "pCenpA" "pDCerm" "pDCs"
     "pEGFR" "pERbmutE" "pES230d" "pES300d" "pET15b" "pFAK" "pFAK-strong"
-    "pFoxO" "pFoxO3" "pG5-E1b-Luc" "pGFP" "pGFP-C2" "pGL3-CM" "pGL3-basic"
-    "pGsk-3β" "pH" "pH-dependence" "pH2A" "pHH3" "pHIV-1" "pHIV-1#totmut" "pHs"
-    "pH " "pIRESneo3" "pJAK1" "pJAK2" "pKAP-1" "pKln1" "pKnl1" "pLNCX2"
-    "pLenti" "pLenti6.2-p21" "pMET" "pMSCV" "pMypt" "pMypt1" "pN" "pNF"
-    "pNF-κB" "pNL4-3" "pP70S6K" "pQE50" "pRKIP" "pRL-CMV" "pRS-KRAS-C12"
-    "pRSK2" "pRb-mediated-repression" "pS-X-X-F" "pS253" "pSQTQ" "pSTAT"
-    "pSTAT1" "pSTAT1α" "pSTAT3" "pSTAT5" "pSV-RL" "pSer10-H3" "pSilencer" "pT"
-    "pT-stage" "pT121-H2A" "pT2" "pT232-Aurora" "pT3" "pT3N2M0" "pT4" "pT555"
-    "pTEFb" "pTK-5103as-mut1" "pTK-5103as-mut1+2" "pTK-5103as-mut2"
-    "pTK-5103as-mut3" "pTK-5103as-totmut" "pTK-5103as-wt" "pTK-5103s-wt"
-    "pTat101" "pTat72" "pTyr239" "pTyrSTAT3" "pUL44" "pY-100" "pY-Stat1"
-    "pY1068" "pY1068EGFR" "pY1086" "pY1086EGFR" "pY204ERK" "pY419" "pY41H3"
-    "pY530" "pY703STAT3" "pY705STAT3" "pack-year" "pack-years" "pair-wise"
-    "pairwise" "pallidus" "palmitoyl" "pan-SFK" "pan-cit" "pan-inhibitors"
-    "pan-nuclear" "pan-specific" "pancreata" "pancreaticoblastomas"
-    "pancreaticoduodenectomy" "pancreatitis" "pancytopenia" "papillae"
-    "papillary-mucinous" "paptients" "paracrine" "parahaemolyticus" "paralog"
-    "parametric
+    "pFoxO" "pFoxO3" "pG5-E1b-Luc" "pGFP" "pGFP-C2" "pGL3-basic" "pGsk-3β"
+    "pH-dependence" "pHH3" "pHIV" "pHIV-1" "pHIV-1#totmut" "pHIV-1-AP-1"
+    "pIRESneo3" "pJAK1" "pJAK2" "pKAP-1" "pKln1" "pKnl1" "pLNCX2" "pLenti"
+    "pLenti6.2-p21" "pMET" "pMSCV" "pMypt" "pMypt1" "pN" "pN1-2" "pNF" "pNF-κB"
+    "pNL4-3" "pP70S6K" "pQE50" "pRKIP" "pRL-CMV" "pRS-KRAS-C12" "pRSK2"
+    "pRb-mediated-repression" "pS-X-X-F" "pS253" "pSQTQ" "pSTAT" "pSTAT1"
+    "pSTAT1α" "pSTAT3" "pSTAT5" "pSer10-H3" "pSilencer" "pT" "pT-stage"
+    "pT121-H2A" "pT232-Aurora" "pT3N2M0" "pT555" "pTEFb" "pTK-5103as-mut1"
+    "pTK-5103as-mut1+2" "pTK-5103as-mut2" "pTK-5103as-mut3" "pTK-5103as-totmut"
+    "pTK-5103as-wt" "pTK-5103s-wt" "pTat101" "pTat72" "pTyr239" "pTyrSTAT3"
+    "pUL44" "pY-100" "pY-Stat1" "pY1068" "pY1068EGFR" "pY1086" "pY1086EGFR"
+    "pY204ERK" "pY419" "pY41H3" "pY530" "pY703STAT3" "pY705STAT3" "pack-year"
+    "pack-years" "pair-wise" "pairwise" "pallidus" "pan-SFK" "pancreata"
+    "pancreaticoblastomas" "pancreaticoduodenectomy" "pancreatitis"
+    "pancytopenia" "papillae" "papillary-mucinous" "paptients" "paracrine"
+    "parahaemolyticus" "paralog" "parametric
 "
     "parasitizedRac1" "parasitizedRac2" "parasitoid" "parenchyma"
     "parkinsonism" "parotid" "parpaillovirus" "particle-induced" "partite"
@@ -1014,43 +1001,40 @@
     "place-holders" "placebo-controlled" "placebo-discontinuation"
     "placebo-treated" "placode" "plasmacytoid" "plasmon" "plastin" "plastins"
     "plate-to-plate" "platin" "platins" "plck-cre" "plck-creAND" "plck-creBM"
-    "plck-cremice" "plck-cresplenocytes" "pleckstrin" "pleomorphism" "pleura"
-    "plex" "plexiform" "plextrin" "ploidy" "plus-end-directed" "pmols"
-    "podomeres" "podoms" "point-mutant" "poly-ADP-ribose" "poly-ADP-ribosyl"
-    "poly-SUMOylation" "poly-l-lysine" "poly-ubiquitylates" "polyA"
-    "polyacrylamide-urea" "polygene" "polymerase-I" "polymerase-chain"
-    "polymerses" "polymorphism" "polymorphisms" "polymorphismwith"
-    "polynorphisms" "polyphenol" "polyphosphoinositides" "polyploid"
-    "polyprotein" "pombe" "poor-outcome" "poor-risk" "poorer"
-    "poorly-differentiated" "population-and" "pore-forming" "porphyrin"
-    "portio" "positive-feedback" "positron" "positve" "possiblyp21" "post-20"
-    "post-Golgi" "post-HIV" "post-MI" "post-R-point" "post-antigen"
-    "post-castration" "post-catalysis" "post-crest" "post-diagnosis"
-    "post-entry" "post-erlotinib" "post-hoc" "post-implantation"
-    "post-incubation" "post-induction" "post-infection" "post-irradiation"
-    "post-menopausal" "post-meta-analysis" "post-mitotic" "post-nuclear"
-    "post-operative" "post-operatively" "post-parasitization" "post-positive"
-    "post-radiation" "post-release" "post-replication" "post-stimulation"
-    "post-surgical" "post-transcriptional" "post-transcriptionally"
-    "post-transduction" "post-transfection" "post-transfer" "post-translation"
-    "post-translational" "post-translationally" "post-treatment" "postexposure"
-    "postmortem" "postsentinel" "postsurgery" "pp66ShcA" "pr1p"
-    "precursor-like" "prefoldin-like" "prepro" "presequences" "previtamin"
-    "pri-miR-28" "pri-miR28" "priori" "pro-IL-1β" "pro-angiogenic"
-    "pro-apop-totic" "pro-atherogenic" "pro-cancer" "pro-caspase-3"
-    "pro-caspase-8" "pro-caspase-9" "pro-caspases" "pro-enzyme"
-    "pro-fibrogenic" "pro-fibrotic" "pro-file" "pro-growth" "pro-inflammatory"
-    "pro-invasive" "pro-metastatic" "pro-migratory" "pro-mitogenic" "pro-or"
+    "plck-cremice" "plck-cresplenocytes" "pleomorphism" "pleura" "plex"
+    "plexiform" "plextrin" "ploidy" "plus-end-directed" "pmols" "podomeres"
+    "podoms" "point-mutant" "poly-ADP-ribose" "poly-ADP-ribosyl"
+    "poly-SUMOylation" "poly-Ub" "poly-l-lysine" "poly-ubiquitylated"
+    "poly-ubiquitylates" "polyA" "polyacrylamide-urea" "polygene"
+    "polymerase-1" "polymerase-chain" "polymerses" "polymorphism"
+    "polymorphisms" "polymorphismwith" "polynorphisms" "polyphenol"
+    "polyphosphoinositides" "polyploid" "polyprotein" "pombe" "poor-outcome"
+    "poor-risk" "poorer" "poorly-differentiated" "population-and"
+    "pore-forming" "porphyrin" "portio" "position-322" "positive-feedback"
+    "positron" "positve" "possiblyp21" "post-20" "post-Golgi" "post-HIV"
+    "post-MI" "post-R-point" "post-castration" "post-catalysis"
+    "post-diagnosis" "post-erlotinib" "post-hoc" "post-implantation"
+    "post-incubation" "post-infection" "post-irradiation" "post-menopausal"
+    "post-meta-analysis" "post-mitotic" "post-operative" "post-operatively"
+    "post-parasitization" "post-radiation" "post-replication" "post-surgical"
+    "post-transcriptional" "post-transcriptionally" "post-transfection"
+    "post-transfer" "post-translational" "post-translationally"
+    "post-treatment" "postexposure" "postmortem" "postsentinel" "postsurgery"
+    "pp66ShcA" "pr1p" "precursor-like" "prefoldin-like" "prepro" "presequences"
+    "previtamin" "pri-miR-28" "pri-miR28" "priori" "pro-angiogenic"
+    "pro-apop-totic" "pro-atherogenic" "pro-cancer" "pro-fibrogenic"
+    "pro-fibrotic" "pro-file" "pro-growth" "pro-inflammatory" "pro-invasive"
+    "pro-metastatic" "pro-migratory" "pro-mitogenic" "pro-or"
     "pro-osteoblastic" "pro-peptide" "pro-proliferative" "pro-survival"
-    "pro-thrombotic" "pro-tumor" "pro-tumorigenic" "proMMP-1" "proMMP-2"
-    "proband" "probands" "probeset" "probesets" "procalcitonin" "procaspase-10"
-    "procaspase-8a" "procaspases-8" "procollagens" "prod-1" "prodomains"
-    "progenitor-like" "progenitors" "progeny" "progression-associated"
-    "proliferation-signature" "proliferator-activated" "promoter-reporter"
-    "promoterless" "promoters" "promoter–reporter" "promotile"
-    "proof-of-concept" "proof-of-principle" "propria" "propria-invasive"
-    "prostaglandinE2" "prostaglandins" "prostatectomies" "prostatectomy"
-    "protease-like" "protein-60" "protein-DNA" "protein-chip"
+    "pro-thrombotic" "pro-tumor" "pro-tumorigenic" "proMMP" "proMMP-1"
+    "proMMP-2" "proband" "probands" "probeset" "probesets" "procalcitonin"
+    "procaspase-10" "procaspase-8a" "procaspases-8" "procollagens" "prod-1"
+    "prodomains" "progenitor-like" "progenitors" "progeny"
+    "progression-associated" "proliferation-signature" "proliferator-activated"
+    "promoter-reporter" "promoterless" "promoters" "promoter–reporter"
+    "promotile" "proof-of-concept" "proof-of-principle" "propria"
+    "propria-invasive" "prostaglandinE2" "prostaglandins" "prostatectomies"
+    "prostatectomy" "protease-like" "protein-60" "protein-DNA"
     "protein-fragment" "protein-interaction-based" "protein-level"
     "protein-tyrosine" "proteins" "protein–DNA" "proteolipid" "proteome"
     "protomer" "protomers" "protooncogene" "protooncogenes" "proven"
@@ -1067,123 +1051,123 @@
     "radiation-mucositis" "radio-labelled" "radio-or" "radio-phosphate"
     "radiochemoresistance" "radiochemotherapy" "radiolabeledN" "radionuclide"
     "radioresistance" "radioresistant" "raft-localized" "ragile" "rampamycin"
-    "rapalog" "rapalogs" "rarer" "rat-specific" "rationally-designed" "re-ChIP"
-    "re-added" "re-addition" "re-analysis" "re-analyze" "re-analyzed"
-    "re-assess" "re-association" "re-classified" "re-distribution"
-    "re-endothelialization" "re-enforce" "re-engagement" "re-engaging"
-    "re-enter" "re-entered" "re-entry" "re-epithelialization" "re-establish"
-    "re-established" "re-evaluated" "re-examine" "re-exported" "re-express"
-    "re-expression" "re-form" "re-forming" "re-growing" "re-growth"
-    "re-induced" "re-introduce" "re-localised" "re-localization" "re-localizes"
-    "re-natured" "re-occur" "re-organization" "re-organizer" "re-oxygenation"
-    "re-plated" "re-precipitated" "re-probed" "re-randomization" "re-review"
-    "re-selected" "re-sensitisation" "re-sensitised" "re-sensitises"
-    "re-sensitising" "re-sensitized" "re-sequenced" "re-sequencing"
-    "re-suspended" "re-targeting" "re-treatment" "reactant" "reactants"
-    "reaction-restriction" "readout" "readouts" "realizations" "realtime"
-    "receiver-operating" "receptor-1" "receptor-dependent" "receptor-ligand"
-    "receptor-like" "receptor-mimetic" "receptor-proximal" "receptor-specific"
-    "receptor-γ" "recombination-dependent" "recombination-like"
-    "recombination-mediated" "rectosigmoid" "red-shifted" "reenter"
-    "regulators" "reinitiate" "release2" "releasingCdk2" "remodelers"
-    "repeat-encoded" "replication-associated" "replication-induced"
-    "replication-specific" "replicon" "reporters" "repressors" "research-grade"
-    "resembleCdk2" "resembledStat" "resembledStat5b-CA" "responder"
-    "responders" "restriction-induced" "retainedneo" "reticulum"
-    "retroperitoneum" "retrovirus" "reverse-phase" "reverse-transcribed"
-    "reverse-transcription" "revertant" "rexinoid" "rexinoids" "rhTGF"
-    "rhTGF-β" "rhabdoid" "rhabdomyo" "rhabdosphincter" "rheology"
-    "rhodamine-123" "ribose" "right-hand" "right-shift" "right-sided" "risen"
-    "risk-associated" "risk-score" "rosette-like" "rotamers" "rotein"
-    "round-to-oval" "round-type" "rphan" "rs10033900" "rs10264084" "rs10417472"
-    "rs1042522" "rs1044322" "rs1044487" "rs10468017" "rs10490924" "rs10494366"
-    "rs10500204" "rs1051730" "rs1061170" "rs10951982" "rs10951983" "rs11066132"
-    "rs11066280" "rs1111875" "rs11202600" "rs11572169" "rs11599672"
-    "rs11599672G" "rs11599672T" "rs1173766" "rs11761528" "rs12189362"
-    "rs12204816" "rs12461383" "rs12536544" "rs12567209" "rs12569998"
-    "rs12573787" "rs13095226" "rs13181" "rs1325258" "rs1410996" "rs1492099"
-    "rs16847548" "rs16866933" "rs16969968" "rs17030613" "rs17107001"
-    "rs17173656" "rs17173658" "rs17277546" "rs17483466" "rs17718586"
-    "rs1799817" "rs1801272" "rs1880118" "rs1883025" "rs1903858" "rs1999930"
-    "rs2010963" "rs2046210" "rs2046971" "rs2059807" "rs210138" "rs210162"
-    "rs2185570" "rs2230199" "rs2234693" "rs2274223" "rs2274223A" "rs2274223G"
-    "rs2279744" "rs2281680" "rs2384550" "rs2497306" "rs2547231" "rs25487"
-    "rs2637125" "rs2639365" "rs2834455" "rs28362491" "rs28675338" "rs2930306"
-    "rs3025316" "rs3025343" "rs3184504" "rs3203713" "rs3203713A" "rs3203713G"
-    "rs34051577" "rs35444" "rs37279790" "rs3757318" "rs3764261" "rs3789068"
-    "rs4086116" "rs4105144" "rs41279092" "rs4292933" "rs4635969" "rs4646450"
-    "rs4711751" "rs4720672" "rs4917639" "rs4919686" "rs4975605" "rs5015480"
-    "rs578776" "rs588765" "rs641153" "rs6422142" "rs671" "rs6738028" "rs684513"
-    "rs6983267" "rs7132154" "rs7157599" "rs7181230" "rs7251418" "rs7251570"
-    "rs740160" "rs755383" "rs77275268" "rs8034191" "rs8102683" "rs8108622"
-    "rs836472" "rs881858" "rs9332739" "rs9340799" "rs9394152" "rs9397435"
-    "rs943080" "rs9488843" "rs9621532" "rs995030" "rtTA" "run-on" "s-flow"
-    "s-transferase" "s13402-011-0048-2" "sFRPs" "sPRDM16" "sacrum"
-    "sagopilone-treatment" "sailoprotein" "salophene" "sarcoma-like"
-    "sarcomatoid" "saturation-transfer" "scaffold-like" "schwannian-type"
-    "sclera" "scleraxis" "sclerosis-like" "scrambled-miRNA-transfected"
-    "screenings" "scrutinise" "scute" "second-degree" "second-line"
-    "second-messenger" "second-site" "secretory-defect" "self-assemble"
-    "self-assembled" "self-digested" "self-dimerization" "self-dimerize"
-    "self-examination" "self-limiting" "self-proteolysis" "self-regulated"
-    "self-renew" "self-renewal" "self-reported" "self-ubiquitination" "semi"
-    "semi-quantitative" "semi-rational" "semi-redundant" "senesce"
-    "senescent-like" "sequelae" "sequence-expressing" "sequence-mediated"
-    "sequence-specific" "sequence-speciﬁc" "sequenceS" "serine-127"
-    "serine-GSK-3β" "serotype" "serum-bovine" "serum-deprivation" "seven-year"
-    "sevenmaker" "sex-dependent" "sex-specific" "sh236" "sh854" "shCSN"
-    "shCSN6-mediated" "shCXCR4" "shControl" "shCtrl" "shCtrl1" "shCtrl2" "shEV"
-    "shFGFR" "shFGFR-4" "shFRGR" "shFRGR-4" "shMA" "shMad2" "shMad2#1"
-    "shMad2#2" "shMad2#3" "shNT" "shNrf2" "shPAK1" "shRNA-0780" "shRNA854"
-    "shRNAi" "shSRF" "shSTAT3" "shSTAT3-1" "shSTAT3-2" "shSrc" "shTP53" "shVHL"
-    "shake-off" "shock-like" "short-chain" "short-hairpin" "short-interfering"
-    "short-loop" "short-range" "short-term" "shrunken" "si" "si-Myc" "si-ctrl"
-    "siATM" "siATM-a" "siATM-c" "siControl" "siCtBP1" "siGLO" "siH2AX"
-    "siMCM7#1" "siPAX" "siPAX8-1" "siPAX8-2" "siPAX8-transfected" "siPIK"
-    "siPIK3CA-treated" "siSTAT3" "sialyltransferases" "sicon" "side-by-side"
-    "side-chain" "side-chains" "side-chain–side-chain" "side-effect"
-    "side-effects" "side-groups" "side-reaction" "sidechain" "sieboldii"
-    "sigmoid" "signal-dependant" "signature-based" "signiﬁcant" "silico"
-    "similar-passage" "simpler" "simplest" "sinceRnf168" "sincerasa1"
-    "single-cell" "single-copy" "single-digit" "single-domain" "single-end"
-    "single-institution" "single-molecule" "single-molecule-directed"
-    "single-nucleotide" "single-quantum" "single-round" "single-selection"
-    "single-step" "single-strand" "single-transgenic" "singly-spliced"
-    "sirtonol" "site-1" "site-2" "site-specificity" "situs" "six-nucleotide"
-    "sixty-three" "size-exclusion" "size-regulating" "skin-derived"
-    "skin-specific" "slow-kinetics" "slowCdk2" "small-cell" "small-molecule"
-    "small-sized" "smokers" "socio" "socio-economic" "soft-agar" "soft-tissue"
-    "soft–tissue" "solid-pseudopapillary" "solid-tumor" "solutes" "sotope"
-    "spacer" "spacers" "specifically-labeled" "speciﬁc" "spectrometer"
-    "spheroid-induced" "sphingosine" "spindle-associated" "spindle-like"
-    "spindle-shape" "splice-acceptor" "splice-site" "sqRT" "sqRT-PCR"
-    "squamous-cell" "square-planar" "ss" "ssn" "stablizies" "stage-1" "stage-2"
-    "stage-3" "stainings" "stand-alone" "steady-sate" "steady-state"
-    "steadystate" "stellate" "stem-cell" "stem-like" "stemcells" "stemness"
-    "step-wise" "stepwise" "steroid-induced" "stochiometry" "straight-forward"
-    "strand-exchanges" "strand-invasion" "stratums" "stress-activated"
-    "stress-causing" "stress-dependent" "stress-induced" "stress-inducible"
-    "stress-inducing" "stress-mediated" "stress-regulated" "stress-responsive"
-    "stress-treated" "stress-triggered" "stressful" "stressors" "stromelysins"
-    "structural-functional" "structurally-related" "structure-based"
-    "structure-function" "structure-functional" "sub-G0" "sub-G1"
-    "sub-analysis" "sub-cellular" "sub-class" "sub-classification"
-    "sub-confluentαE-catenin" "sub-continent" "sub-cytotoxic" "sub-diploidal"
-    "sub-endothelial" "sub-family" "sub-fraction" "sub-group" "sub-groups"
-    "sub-lethal" "sub-nanomolar" "sub-nuclear" "sub-optimal" "sub-phenotypes"
-    "sub-physiological" "sub-population" "sub-types" "subG" "subG0"
-    "subarachnoid" "subclasses" "subcomplex" "subcomplexes" "subcuitis"
-    "subdiploid" "subdomain" "subfamilies" "subgraphs" "sublines" "submembrane"
-    "submembranes" "subpopulations" "subranges" "subset" "subsets" "substage"
-    "substages" "substrate-gel" "subtelomere" "subtype" "subunit–subunit"
-    "succinate" "sulfhydryl" "sulfhydryls" "sulfide" "sulfoximine"
-    "sulpho-transferase" "super-shifting" "superimpositions" "supernatant"
-    "supernatants" "superscript" "supra-maximal" "supra-physiologic"
-    "supra-physiological" "surviva1" "survivalin" "sustained-release" "svm"
-    "switch-like" "synapse" "synapses" "syndrome-associated" "syndrome-like"
-    "synergism" "synkinesia" "synthases" "system-wide" "tachycardia" "tagSNP"
-    "tagSNPs" "tail-vein" "take-home" "talipes" "tandem-affinity" "target-gene"
-    "telocytes" "telomerase-deficient" "telomerase-expressing"
+    "rapalog" "rapalogs" "rarer" "rationally-designed" "re-added" "re-addition"
+    "re-analysis" "re-analyze" "re-analyzed" "re-assess" "re-association"
+    "re-classified" "re-distribution" "re-endothelialization" "re-enforce"
+    "re-engagement" "re-engaging" "re-enter" "re-entered" "re-entry"
+    "re-epithelialization" "re-establish" "re-established" "re-evaluated"
+    "re-examine" "re-exported" "re-express" "re-expression" "re-form"
+    "re-forming" "re-growing" "re-growth" "re-induced" "re-introduce"
+    "re-localised" "re-localization" "re-localizes" "re-natured" "re-occur"
+    "re-organization" "re-organizer" "re-oxygenation" "re-plated"
+    "re-precipitated" "re-probed" "re-randomization" "re-review" "re-selected"
+    "re-sensitisation" "re-sensitised" "re-sensitises" "re-sensitising"
+    "re-sensitized" "re-sequenced" "re-sequencing" "re-suspended"
+    "re-targeting" "re-treatment" "reactant" "reactants" "reaction-restriction"
+    "readout" "readouts" "realizations" "realtime" "receiver-operating"
+    "receptor-1" "receptor-dependent" "receptor-ligand" "receptor-like"
+    "receptor-mimetic" "receptor-proximal" "receptor-specific" "receptor-γ"
+    "recombination-dependent" "recombination-like" "recombination-mediated"
+    "rectosigmoid" "red-shifted" "reenter" "regulators" "regulatory-associated"
+    "reinitiate" "release2" "releasingCdk2" "remodelers" "repeat-encoded"
+    "replication-associated" "replication-induced" "replication-specific"
+    "replicon" "reporters" "repressors" "research-grade" "resembleCdk2"
+    "resembledStat" "resembledStat5b-CA" "responder" "responders"
+    "restriction-induced" "retainedneo" "reticulum" "retroperitoneum"
+    "retrovirus" "reverse-phase" "reverse-transcribed" "reverse-transcription"
+    "revertant" "rexinoid" "rexinoids" "rhTGF" "rhTGF-β" "rhabdoid" "rhabdomyo"
+    "rhabdosphincter" "rheology" "rhodamine-123" "ribose" "right-hand"
+    "right-shift" "right-sided" "risen" "risk-associated" "risk-score"
+    "rosette-like" "rotamers" "rotein" "round-to-oval" "round-type" "rphan"
+    "rs10033900" "rs10264084" "rs10417472" "rs1042522" "rs1044322" "rs1044487"
+    "rs10468017" "rs10490924" "rs10494366" "rs10500204" "rs1051730" "rs1061170"
+    "rs10951982" "rs10951983" "rs11066132" "rs11066280" "rs1111875"
+    "rs11202600" "rs11572169" "rs11599672" "rs11599672G" "rs11599672T"
+    "rs1173766" "rs11761528" "rs12189362" "rs12204816" "rs12461383"
+    "rs12536544" "rs12567209" "rs12569998" "rs12573787" "rs13095226" "rs13181"
+    "rs1325258" "rs1410996" "rs1492099" "rs16847548" "rs16866933" "rs16969968"
+    "rs17030613" "rs17107001" "rs17173656" "rs17173658" "rs17277546"
+    "rs17483466" "rs17718586" "rs1799817" "rs1801272" "rs1880118" "rs1883025"
+    "rs1903858" "rs1999930" "rs2010963" "rs2046210" "rs2046971" "rs2059807"
+    "rs210138" "rs210162" "rs2185570" "rs2230199" "rs2234693" "rs2274223"
+    "rs2274223A" "rs2274223G" "rs2279744" "rs2281680" "rs2384550" "rs2497306"
+    "rs2547231" "rs25487" "rs2637125" "rs2639365" "rs2834455" "rs28362491"
+    "rs28675338" "rs2930306" "rs3025316" "rs3025343" "rs3184504" "rs3203713"
+    "rs3203713A" "rs3203713G" "rs34051577" "rs35444" "rs37279790" "rs3757318"
+    "rs3764261" "rs3789068" "rs4086116" "rs4105144" "rs41279092" "rs4292933"
+    "rs4635969" "rs4646450" "rs4711751" "rs4720672" "rs4917639" "rs4919686"
+    "rs4975605" "rs5015480" "rs578776" "rs588765" "rs641153" "rs6422142"
+    "rs671" "rs6738028" "rs684513" "rs6983267" "rs7132154" "rs7157599"
+    "rs7181230" "rs7251418" "rs7251570" "rs740160" "rs755383" "rs77275268"
+    "rs8034191" "rs8102683" "rs8108622" "rs836472" "rs881858" "rs9332739"
+    "rs9340799" "rs9394152" "rs9397435" "rs943080" "rs9488843" "rs9621532"
+    "rs995030" "rtTA" "run-on" "s-flow" "s-transferase" "s13402-011-0048-2"
+    "sFRPs" "sPRDM16" "sacrum" "sagopilone-treatment" "sailoprotein"
+    "salophene" "sarcoma-like" "sarcomatoid" "saturation-transfer"
+    "scaffold-like" "schwannian-type" "sclera" "scleraxis" "sclerosis-like"
+    "scrambled-miRNA-transfected" "screenings" "scrutinise" "scute"
+    "second-degree" "second-messenger" "second-site" "secretory-defect"
+    "self-assemble" "self-assembled" "self-digested" "self-dimerization"
+    "self-dimerize" "self-examination" "self-limiting" "self-proteolysis"
+    "self-regulated" "self-renew" "self-renewal" "self-reported"
+    "self-ubiquitination" "semi" "semi-quantitative" "semi-rational"
+    "semi-redundant" "senesce" "senescent-like" "sequelae"
+    "sequence-expressing" "sequence-mediated" "sequence-specific"
+    "sequence-speciﬁc" "sequenceS" "serine-127" "serine-GSK-3β" "serotype"
+    "serum-bovine" "serum-deprivation" "seven-year" "sevenmaker"
+    "sex-dependent" "sex-specific" "sh236" "sh854" "shCSN" "shCSN6-mediated"
+    "shCXCR4" "shControl" "shCtrl" "shCtrl1" "shCtrl2" "shEV" "shFGFR"
+    "shFGFR-4" "shFRGR" "shFRGR-4" "shMA" "shMad2" "shMad2#1" "shMad2#2"
+    "shMad2#3" "shNT" "shNrf2" "shPAK1" "shRNA-0780" "shRNA854" "shRNAi"
+    "shSRF" "shSTAT3" "shSTAT3-1" "shSTAT3-2" "shSrc" "shTP53" "shake-off"
+    "shock-like" "short-chain" "short-hairpin" "short-interfering" "short-loop"
+    "short-range" "short-term" "shrunken" "si" "si-Myc" "si-ctrl" "siATM-a"
+    "siATM-c" "siControl" "siCtBP1" "siGLO" "siH2AX" "siMCM7#1" "siPAX"
+    "siPAX8-1" "siPAX8-2" "siPAX8-transfected" "siPIK" "siPIK3CA-treated"
+    "siR-NAs" "siRNA-AR" "siSTAT3" "sialyltransferases" "sicker" "sicon"
+    "side-by-side" "side-chain" "side-chains" "side-chain–side-chain"
+    "side-effect" "side-effects" "side-groups" "side-reaction" "sidechain"
+    "sieboldii" "sigmoid" "signal-dependant" "signature-based" "signiﬁcant"
+    "silico" "similar-passage" "simpler" "simplest" "sinceRnf168" "sincerasa1"
+    "single-Ub" "single-cell" "single-copy" "single-digit" "single-domain"
+    "single-end" "single-institution" "single-molecule"
+    "single-molecule-directed" "single-nucleotide" "single-quantum"
+    "single-round" "single-selection" "single-strand" "single-transgenic"
+    "singly-spliced" "sirtonol" "site-1" "site-2" "site-specificity" "situs"
+    "six-nucleotide" "sixty-three" "size-exclusion" "size-regulating"
+    "skin-derived" "skin-specific" "slow-kinetics" "slowCdk2" "small-cell"
+    "small-molecule" "small-sized" "smokers" "socio" "socio-economic"
+    "soft-agar" "soft-tissue" "soft–tissue" "solid-pseudopapillary"
+    "solid-tumor" "solutes" "sotope" "spacer" "spacers" "specifically-labeled"
+    "speciﬁc" "spectrometer" "spheroid-induced" "sphingosine"
+    "spindle-associated" "spindle-like" "spindle-shape" "splice-acceptor"
+    "splice-site" "sqRT" "sqRT-PCR" "squamous-cell" "square-planar" "ss" "ssn"
+    "stablizies" "stage-1" "stage-2" "stage-3" "stainings" "stand-alone"
+    "steady-sate" "steady-state" "steadystate" "stellate" "stem-cell"
+    "stem-like" "stemcells" "stemness" "step-wise" "stepwise" "steroid-induced"
+    "stochiometry" "straight-forward" "strand-exchanges" "strand-invasion"
+    "stratums" "stress-activated" "stress-causing" "stress-dependent"
+    "stress-induced" "stress-inducible" "stress-inducing" "stress-mediated"
+    "stress-regulated" "stress-responsive" "stress-treated" "stress-triggered"
+    "stressful" "stressors" "stromelysins" "structural-functional"
+    "structurally-related" "structure-based" "structure-function"
+    "structure-functional" "sub-G0" "sub-G1" "sub-analysis" "sub-cellular"
+    "sub-class" "sub-classification" "sub-confluentαE-catenin" "sub-continent"
+    "sub-cytotoxic" "sub-diploidal" "sub-endothelial" "sub-family"
+    "sub-fraction" "sub-group" "sub-groups" "sub-lethal" "sub-nanomolar"
+    "sub-nuclear" "sub-optimal" "sub-phenotypes" "sub-physiological"
+    "sub-population" "sub-types" "subG" "subG0" "subarachnoid" "subclasses"
+    "subcomplex" "subcomplexes" "subcuitis" "subdiploid" "subdomain"
+    "subfamilies" "subgraphs" "sublines" "submembrane" "submembranes"
+    "subpopulations" "subranges" "subset" "subsets" "substage" "substages"
+    "substrate-gel" "subtelomere" "subtype" "subunit–subunit" "succinate"
+    "sulfhydryl" "sulfhydryls" "sulfide" "sulfoximine" "sulpho-transferase"
+    "super-shifting" "superimpositions" "supernatant" "supernatants"
+    "superscript" "supra-maximal" "supra-physiologic" "supra-physiological"
+    "surviva1" "survivalin" "sustained-release" "svm" "switch-like" "synapse"
+    "synapses" "syndrome-associated" "syndrome-like" "synergism" "synkinesia"
+    "synthases" "system-wide" "tachycardia" "tagSNP" "tagSNPs" "tail-vein"
+    "take-home" "talipes" "tandem-affinity" "target-gene" "telocytes"
     "telomeric-telomeric" "telopodes" "temozolo" "temozolo-mide"
     "temperature-sensitive" "tempol-treatment" "ten-times" "tendinitis"
     "tendon-associated" "tendon-specific" "teratoid" "tertile" "tertiles"
@@ -1194,91 +1178,87 @@
     "theAtm" "theBrca2" "theCdk2" "theK" "thePdx" "thePdx1-Cre" "thePten"
     "theRnf168" "theStat" "theStat5b-CA" "theVhl" "theirαE-catenin" "themys"
     "thep53" "ther" "therapy-induced" "therapy±irinotecan" "therionine" "theta"
-    "theαE-catenin" "thiadiazolidine" "thio" "third-instar" "third-line"
-    "thirty-five" "thoughout" "thread-like" "three-dimensional" "three-hit"
-    "three-party" "three-position" "three-stage" "three-step" "three-way"
-    "three-year" "threonie" "threonine-specific" "thrombus" "thymidine-only"
-    "thymocytes" "tight-binding" "time-course" "time-course-dependent"
-    "time-dependant" "time-lapse" "time-point" "time-points" "time-response"
-    "time-series" "timecourse" "timeline" "timepoint" "timepoints"
-    "tissue-specific" "tissues" "titer" "titers" "tm1Awb" "tm1Bal" "tm2Kem"
-    "to-and-fro" "to53bp1" "toAB" "toCdk2" "toH2a" "toNf1" "toRnf168" "toRnf8"
-    "toll-like" "top-end" "top53" "topoisomerase-2β-mediated" "topologies"
-    "topology" "torcetrapib" "totmut" "toαE-catenin" "toμMT"
-    "trans-factor-PCBP1" "trans-gene" "trans-membrane" "trans-thiolation"
-    "transactivators" "transcription-PCR" "transcription-factor"
+    "theαE-catenin" "thiadiazolidine" "thio" "third-instar" "thirty-five"
+    "thoughout" "thread-like" "three-dimensional" "three-hit" "three-party"
+    "three-position" "three-stage" "three-way" "three-year" "threonie"
+    "threonine-specific" "thrombus" "thymidine-only" "thymocytes"
+    "tight-binding" "time-course" "time-course-dependent" "time-dependant"
+    "time-lapse" "time-point" "time-points" "time-response" "time-series"
+    "timecourse" "timeline" "timepoint" "timepoints" "tissue-specific"
+    "tissues" "titer" "titers" "tm1Awb" "tm1Bal" "tm2Kem" "to-and-fro"
+    "to53bp1" "toAB" "toCdk2" "toH2a" "toNf1" "toRnf168" "toRnf8" "toll-like"
+    "top-end" "top53" "topoisomerase-2β-mediated" "topologies" "topology"
+    "torcetrapib" "totmut" "toαE-catenin" "toμMT" "trans-gene" "trans-membrane"
+    "trans-thiolation" "transactivators" "transcription-3" "transcription-PCR"
     "transcription-quantitative" "transcriptionally-relevant"
     "transcription–PCR" "transducer" "transductants" "transfectant"
     "transferases" "transferase–treated" "transition-like" "transition-state"
     "translocon" "transmigrate" "transporter-1" "transposons" "transwell"
     "transwells" "trastazumab" "trastuzamab" "treatedCdk2" "treatedVhl"
-    "treatment-naive" "treatment-naïve" "tresia" "tri-marker" "tri-methyl"
-    "tri-methylation" "tri-phosphate" "tri-radial" "trials--enhanced"
-    "trichiura" "trichrome" "trigonal-planar" "trimester" "trimethyl"
-    "trimethylate" "trinucleotide" "triphosphate" "triple-epitope"
-    "triple-helical" "triple-labeled" "triple-labelled" "triple-mutant"
-    "triple-negative" "triple-resonance" "triploid" "trisomy" "trisphosphate"
-    "trypanblue" "tubal" "tubule" "tubules" "tubulin-deacetylase" "tubulo"
-    "tubulo-vesicular" "tuftsin" "tumor-ablative" "tumor-derived"
+    "treatment-naive" "tresia" "tri-marker" "tri-methyl" "tri-methylation"
+    "tri-phosphate" "tri-radial" "trials--enhanced" "trichrome"
+    "trigonal-planar" "trimester" "trimethyl" "trimethylate" "trinucleotide"
+    "triphosphate" "triple-epitope" "triple-helical" "triple-labeled"
+    "triple-labelled" "triple-mutant" "triple-negative" "triple-resonance"
+    "triploid" "trisomy" "trisphosphate" "trypanblue" "tubal" "tubule"
+    "tubules" "tubulo" "tubulo-vesicular" "tumor-ablative" "tumor-derived"
     "tumor-stromal" "tumor-supportive" "tumor-suppressive" "tumors"
-    "tumour-associated" "tumour-derived" "tumour-initiating" "tumour-promoting"
-    "tumour-suppressive" "tumour-suppressor" "turn-on" "turn-over"
-    "twenty-seven" "twenty-two" "two-SNP" "two-color" "two-domain" "two-hit"
-    "two-hybrid" "two-pronged" "two-pulse" "two-stage" "two-step" "two-tailed"
-    "two-thirds" "two-way" "two-year" "type-1" "type-specificity" "typhimurium"
-    "tyrosin" "tyrosin-phosphatases" "tyrosyl" "uEGF" "uORF" "uPA-mediated"
-    "ub" "ub-ert2cremice" "ubiquitin-adenylate" "ubiquitin-proteasome-mediated"
-    "ubiquitin-proteosome" "ubiquitine" "ubiqutin" "ubiqutin-proteasome" "un"
-    "uncoupler" "under-expressed" "under-recognized" "under-representation"
-    "undergirds" "undergoes" "undergone" "undertaken" "univariate" "unlikeAtm"
-    "unmet" "unresponsiveness" "up-regulator" "up-regulators" "upper-middle"
-    "upshift" "urea" "ureter" "ureterectomies" "urethra" "urokinase-type"
-    "urothelium" "uteri" "v-H" "v1–v10" "v6-specific" "vCyclin"
-    "vFLIP-expressing" "vGPCR-expressing" "vaccine-induced" "vacuoles"
-    "vaginalis" "values" "varLD" "varaiant" "variates" "vaso" "vaso-formative"
-    "vasorelaxant" "vector-only–expressing" "vehicle-control" "vehicle-treated"
-    "vehicle-treatedVhl" "vena" "vera" "vermis" "vesicle-mediated" "vi" "vide"
-    "vii" "viii" "villus" "viral-associated" "virally-encoded" "viremia"
-    "visna" "vitro" "vivo" "vkh" "voltage-dependence" "vulgaris" "waist–hip"
-    "wait-and-watch" "wash-out" "washings" "water-ATP" "water-soluble"
-    "wax-like" "weak-allele" "weakest" "web-based" "website" "week-old"
-    "week-oldPdx1-Cre" "well-and" "well-circumscribed" "well-conserved"
-    "well-controlled" "well-defined" "well-developed" "well-differentiated"
-    "well-documented" "well-phenotyped" "well-recognised" "well-recognized"
-    "well-resolved" "well-structured" "well-studied" "well-used" "whetherStat"
-    "whetherStat5b-CA" "whilePten" "whitish-yellow" "whole-body" "whole-cell"
-    "whole-genome" "whole-scale" "whole-stomach" "wide-range" "wide-ranging"
-    "widely-used" "wildtype" "window-of-opportunity" "winged-helix" "withAB"
-    "within-patient" "wk" "woodchuck" "workers" "workup" "wree"
-    "wt-virus-infected" "wtFLT3" "wtTP53" "x-Mdc1-Rnf8-dependent" "xenogaft"
-    "xl" "xxPxxP" "year-old" "yes-associated" "yet-to-be"
-    "yet-to-be-discovered" "yet-to-be-identified" "yin" "yorkie" "youngRnf168"
-    "yr" "z-VAD" "z-score" "z=0.8" "z=1.3" "z=1.82" "z=2.14" "z=2.17" "z=2.24"
-    "z=2.29" "z=3.00" "z=3.11" "z=3.12" "z=3.42" "zeylanica" "zhu"
-    "zinc-dependent" "zipper-like" "zymogen" "zymogens" "zymography" "×10" "×2"
-    "×35%" "×40" "×40 " "×47" "×67%" "×SNP" "×λ" "ß-catenin-dependent" "Δ1-24"
-    "Δ1-27" "Δ1-32" "Δ1-44" "Δ1-58" "Δ1-6" "Δ13-20" "Δ158-178" "Δ16HER2"
-    "Δ16HER2-LUC" "Δ16HER2-driven" "Δ16HER2-overexpressing" "Δ16HER2-positive"
-    "Δ17-23" "Δ22-30" "Δ27–82" "Δ40P53" "Δ49" "Δ7-16" "Δ9-24" "ΔA" "ΔAID"
-    "ΔAIDT389E" "ΔCrk" "ΔE" "ΔE-Ecad" "ΔM" "ΔMIU1" "ΔMIU2" "ΔMbI" "ΔMbII"
-    "ΔMbIII" "ΔN-EXO1" "ΔNES" "ΔNef" "ΔNp63" "ΔNp63-induced" "ΔNp63-modulated"
-    "ΔP" "ΔPAS" "ΔPH" "ΔSOCS-box" "ΔT" "ΔTCFB" "Δloxp" "ΔΨ" "Δψm" "Λ-shape"
-    "ΨKXE" "ΨKxD" "α-DNP" "α-FLAG" "α-HDAC1" "α-IC" "α-Klotho" "α-factor"
-    "α-helical" "α-helices" "α-helix" "α-helix-C" "α-integrin" "α-integrins"
-    "α-phosphate" "α-positive" "α1-helix" "α1–4" "α2β2" "α3β1" "α4" "α4991A"
-    "α4Y991A" "α4β1" "α5" "α5-α6" "α5–α6-helical" "α6β4" "α7–8" "α9" "α9-helix"
-    "αC" "αDKK-1" "αE" "αE-catenin-nul" "αI" "αIIbβ3-dependent" "αL"
-    "αL-integrin" "αM" "αMβ2" "αV-integrin" "αV-integrins" "αVβ1" "β-IC"
-    "β-III-tubulin" "β-III-tubulin-positive" "β-adrenergic"
-    "β-aminopropionitrile" "β-barrel" "β-carotene" "β-cat" "β-defensin"
-    "β-galactosidadase" "β-integrin" "β-lamin" "β-phosphate" "β-sandwich"
-    "β-selection" "β-sheet" "β-strand" "β-strands" "β-structure" "β-subunit"
-    "β-subunits" "β-β-α-β-β" "β-γ" "β1-intergrin" "β4" "βI" "βII" "βME" "βcat"
-    "β–γ" "γ-H2A" "γ-H2a" "γ-IFN" "γ-O" "γ-activated" "γ-irradiation"
-    "γ-phosphate" "γ-phosphates" "γ-ray" "γ-rays" "γ1" "γ2b" "γ–O"
-    "δ-endotoxin" "ε-acetyl" "ζ-isoform" "κB" "κBα" "λ820" "λ=1.001" "μ-chain"
-    "μMT" "μg" "μg " "μl" "μmol" "‘antiparallel’" "∡2.5" "≅FANCA" "≧pT2"
-    "≪FANCD2" "ﬁndings" "ﬁrst"))
+    "tumour-suppressive" "turn-on" "turn-over" "twenty-seven" "twenty-two"
+    "two-color" "two-domain" "two-hit" "two-hybrid" "two-pronged" "two-pulse"
+    "two-stage" "two-tailed" "two-thirds" "two-way" "two-year" "type-1"
+    "type-specificity" "typhimurium" "tyrosin" "tyrosin-phosphatases" "tyrosyl"
+    "uEGF" "uORF" "uPA-mediated" "ub-ert2cremice" "ubiquitin-adenylate"
+    "ubiquitin-proteasome-mediated" "ubiquitin-proteosome" "ubiquitine"
+    "ubiquitins" "ubiqutin" "ubiqutin-proteasome" "un" "uncoupler"
+    "under-expressed" "under-recognized" "under-representation" "undergirds"
+    "undergoes" "undergone" "undertaken" "univariate" "unlikeAtm" "unmet"
+    "unresponsiveness" "up-regulators" "upper-middle" "upshift" "urea" "ureter"
+    "ureterectomies" "urethra" "urothelium" "uteri" "v-H" "v1–v10"
+    "v6-specific" "vFLIP-expressing" "vGPCR-expressing" "vaccine-induced"
+    "vacuoles" "vaginalis" "values" "varLD" "varaiant" "variates" "vaso"
+    "vaso-formative" "vasorelaxant" "vector-only–expressing" "vehicle-control"
+    "vehicle-treated" "vehicle-treatedVhl" "vena" "vermis" "vesicle-mediated"
+    "vi" "vide" "vii" "viii" "villus" "viral-associated" "virally-encoded"
+    "viremia" "visna" "vitro" "vivo" "vkh" "voltage-dependence" "vulgaris"
+    "waist–hip" "wait-and-watch" "wash-out" "washings" "water-ATP"
+    "water-soluble" "wax-like" "weak-allele" "weakest" "web-based" "website"
+    "week-old" "week-oldPdx1-Cre" "well-and" "well-circumscribed"
+    "well-conserved" "well-controlled" "well-defined" "well-developed"
+    "well-differentiated" "well-documented" "well-phenotyped" "well-recognised"
+    "well-recognized" "well-resolved" "well-structured" "well-studied"
+    "well-used" "whetherStat" "whetherStat5b-CA" "whilePten" "whitish-yellow"
+    "whole-body" "whole-cell" "whole-genome" "whole-scale" "whole-stomach"
+    "wide-range" "wide-ranging" "widely-used" "wildtype"
+    "window-of-opportunity" "winged-helix" "withAB" "within-patient" "wk"
+    "woodchuck" "workers" "workup" "wree" "wt-virus-infected" "wtFLT3" "wtTP53"
+    "x-Mdc1-Rnf8-dependent" "xenogaft" "xl" "xxPxxP" "year-old"
+    "yes-associated" "yet-to-be" "yet-to-be-discovered" "yet-to-be-identified"
+    "yorkie" "youngRnf168" "yr" "z-VAD" "z-score" "z=0.8" "z=1.3" "z=1.82"
+    "z=2.14" "z=2.17" "z=2.24" "z=2.29" "z=3.00" "z=3.11" "z=3.12" "z=3.42"
+    "zeylanica" "zhu" "zinc-dependent" "zipper-like" "zymogen" "zymogens"
+    "zymography" "×10" "×2" "×35%" "×40" "×40 " "×47" "×67%" "×SNP" "×λ" "× 10"
+    "ß-catenin-dependent" "Δ1-24" "Δ1-27" "Δ1-32" "Δ1-44" "Δ1-58" "Δ1-6"
+    "Δ13-20" "Δ158-178" "Δ16HER2" "Δ16HER2-LUC" "Δ16HER2-driven"
+    "Δ16HER2-overexpressing" "Δ16HER2-positive" "Δ17-23" "Δ22-30" "Δ27–82"
+    "Δ40P53" "Δ49" "Δ7-16" "Δ9-24" "ΔA" "ΔAID" "ΔAIDT389E" "ΔCrk" "ΔE"
+    "ΔE-Ecad" "ΔM" "ΔMIU1" "ΔMIU2" "ΔMbI" "ΔMbII" "ΔMbIII" "ΔN-EXO1" "ΔNES"
+    "ΔNef" "ΔNp63" "ΔNp63-induced" "ΔNp63-modulated" "ΔP" "ΔPAS" "ΔPH"
+    "ΔSOCS-box" "ΔT" "ΔTCFB" "Δloxp" "ΔΨ" "Δψm" "Λ-shape" "ΨKXE" "ΨKxD" "α-DNP"
+    "α-FLAG" "α-HDAC1" "α-IC" "α-Klotho" "α-factor" "α-helical" "α-helices"
+    "α-helix" "α-helix-C" "α-integrin" "α-integrins" "α-phosphate" "α-positive"
+    "α1-helix" "α1–4" "α2β2" "α3β1" "α4" "α4991A" "α4Y991A" "α4β1" "α5" "α5-α6"
+    "α5–α6-helical" "α6β4" "α7–8" "α9" "α9-helix" "αC" "αDKK-1" "αE"
+    "αE-catenin-nul" "αI" "αIIbβ3-dependent" "αL" "αL-integrin" "αM" "αMβ2"
+    "αV-integrin" "αV-integrins" "αVβ1" "β-IC" "β-III-tubulin"
+    "β-III-tubulin-positive" "β-adrenergic" "β-aminopropionitrile" "β-barrel"
+    "β-carotene" "β-cat" "β-defensin" "β-galactosidadase" "β-integrin"
+    "β-lamin" "β-phosphate" "β-sandwich" "β-selection" "β-sheet" "β-strand"
+    "β-strands" "β-structure" "β-subunit" "β-subunits" "β-β-α-β-β" "β-γ"
+    "β1-intergrin" "β4" "βI" "βII" "βME" "βcat" "β–γ" "γ-H2A.X" "γ-H2a" "γ-IFN"
+    "γ-O" "γ-activated" "γ-irradiation" "γ-phosphate" "γ-phosphates" "γ-ray"
+    "γ-rays" "γ1" "γ2b" "γ–O" "δ-endotoxin" "ε-acetyl" "ζ-isoform" "κB" "κBα"
+    "λ820" "λ=1.001" "μ-chain" "μMT" "μg" "μg " "μl" "μmol" "‘antiparallel’"
+    "∡2.5" "≅FANCA" "≧pT2" "≪FANCD2" "ﬁndings" "ﬁrst"))
 
 (DEFPARAMETER SPARSER::*BIO-ENTITY-HEADS-PHASE3-5701-6000*
   '("favorable enthalpy" "∼7%" "only 14 °C" "Velcro" "enfuvirtide" "TRaSe"
@@ -1289,23 +1269,24 @@
     "monomeric helices" "∼1.0" "Circular Dichroism" "Dichroism"
     "a smaller subset" "re-selected" "svm" "ssn" "vkh" "4hFosW"
     "re-randomization" "C-capping" "N-capping" "heptads" "abcdefg" "heptad"
-    "FosW" "= 63" "Whitman" "1.35–3.70" "wtFLT3" "FLT3ITD" "≥ 60" "n = 10"
-    "n = 55" "anti-infectives" "≥60" "*24" "*35" "Swigut"
-    "immature dendritic cell/T cell cocultures" "cocultures" "RYPLTFGWCF"
-    "AxxA" "ΔNef" "VY8-" "VY" "GmbH" "Peprotech" "Kumamoto" "JRFL-SF2nef" "Cla"
-    "JRFL" "the amino terminal-extended longer epitope RY11" "RY11" "VY8"
+    "FosW" "activator protein-1" "= 63" "sicker" "Whitman" "1.35–3.70" "wtFLT3"
+    "FLT3ITD" "≥ 60" "n = 10" "n = 55" "anti-infectives" "≥60" "*24" "*35"
+    "Swigut" "immature dendritic cell/T cell cocultures" "cocultures"
+    "RYPLTFGWCF" "AxxA" "ΔNef" "VY8-" "VY" "GmbH" "Peprotech" "Kumamoto"
+    "JRFL-SF2nef" "Cla" "JRFL"
+    "the amino terminal-extended longer epitope RY11" "RY11" "VY8"
     "phylogenetically different viral quasispecies" "viral quasispecies"
     "quasispecies" "RPQVPLRPMTY" "VPLRPMTY" "toAB-" "toAB" "multimers"
     "YB-1:RNA" "byAB-" "byAB" "antibodiesAB-" "antibodiesAB" "bothAB-" "bothAB"
-    "theK" "AB- a" "andAB-" "andAB" "ofAB-" "ofAB" "withAB-" "withAB" "thatAB-"
-    "thatAB" "Phosphopeptides" "AB  -a" "AB-a" "CAPSS" "ecretions" "nouts"
-    "lterations" "AB-  a" "mammoplasties" "NZ" "Dunedin" "p = 0.08" "p = 0.06"
+    "theK" "andAB-" "andAB" "ofAB-" "ofAB" "withAB-" "withAB" "thatAB-"
+    "thatAB" "Phosphopeptides" "CAPSS" "ecretions" "nouts" "lterations"
+    "mammoplasties" "NZ" "Dunedin" "p = 0.08" "p = 0.06"
     "6-Diamidino-2-phenylindole" "non-small" "∼75%" "these latter EOC subtypes"
     "mucinous ovarian cancer subtypes"
     "the publicly available microarray GEO dataset GSE6008" "GSE6008" "tubal"
     "nmol/µ" "serum/plasma" "these ovarian cancer subtypes"
     "ovarian cancer tissue samples representing four different histopathological subtypes"
-    "RhoGTPases" "7q31.3" "HYALP1" "-acetylhexosaminidases"
+    "RhoGTPases" "HYAL" "7q31.3" "HYALP1" "-acetylhexosaminidases"
     "acetylhexosaminidases"
     "morphologically heterogeneous, and different histopathological subtypes"
     "target/biomarker" "mucinous EOCs" "EOCs"
@@ -1314,27 +1295,26 @@
     "Cers" "Kronke" "re-organizer" "Waal" "spontaneously form macrodomains"
     "newly-formed MCRMs" "80.4±12.0%" "co-signal" "Forssman"
     "these newly-formed MCRMs" "/NA " "em" "NA " "Coomassie" "CaCl"
-    "a m itochondrial c eramide-" "BaxΔC" "tBid/50 µ" "palmitoyl" "BAEC"
+    "a m itochondrial c eramide-" "BaxΔC" "tBid/50 µ" "ISP-1" "BAEC"
     "no radiation-induced co-localization" "Mitotracker" "18.4±2.7%"
-    "anti-ceramide" "Colombini" "synthases"
-    "discontinuous sucrose gradients co-purify" "Menten" "Michaelis"
-    "co-isolated" "Na" "Z-DEVD-AFC" "insertion/oligomerization"
-    "at least one instance such CRMs" "CRMs" "macrodomains"
-    "structural re-organization" "cytolysins" "lysenin" "α9-helix"
-    "α5–α6-helical" "macrodomain" "non-existent" "MCRMs" "acrodomain (MCRM)"
-    "a previously-unrecognized m itochondrial c eramide-" "MCRM" "acrodomain"
-    "ich" "eramide-" "eramide" "= 20" "±3.3" "n = 4" "n = 6" "10 Gy" "ED 50"
-    "minimise" "5B7" "chromogenic ISH (CISH)" "ISH" "antibodies±irinotecan"
-    "cetuximab±irinotecan" "WT/" "⩾third" "⩾4.5" "+++" "++" "⩾4.0"
-    "therapy±irinotecan" "immunohistochemistry (IHC)" "GCN" "mCRCs" "P =0.0003"
-    "P =0.001" "P =0.003" "n =3" "P =0.04" "5B"
+    "anti-ceramide" "Colombini" "discontinuous sucrose gradients co-purify"
+    "Menten" "Michaelis" "co-isolated" "Na" "Z-DEVD-AFC"
+    "insertion/oligomerization" "at least one instance such CRMs" "CRMs"
+    "macrodomains" "structural re-organization" "cytolysins" "lysenin"
+    "α9-helix" "α5–α6-helical" "synthases" "macrodomain" "non-existent" "MCRMs"
+    "acrodomain (MCRM)" "a previously-unrecognized m itochondrial c eramide-"
+    "MCRM" "acrodomain" "ich" "eramide-" "eramide" "= 20" "±3.3" "n = 4"
+    "n = 6" "10 Gy" "ED 50" "minimise" "5B7" "chromogenic ISH (CISH)" "ISH"
+    "antibodies±irinotecan" "cetuximab±irinotecan" "WT/" "⩾third" "⩾4.5" "+++"
+    "++" "⩾4.0" "therapy±irinotecan" "immunohistochemistry (IHC)" "GCN" "mCRCs"
+    "P =0.0003" "P =0.001" "P =0.003" "n =3" "P =0.04" "5B"
     "a previous publication BARD1_1/4-11" "BARD1β" "intermediate/strong"
     "Pairwise" "ImageScope" "Aperio" "bioanalyzer" "BARD1_1-2/4-11" "and 2/5"
-    "RPLPO" "five colorectal mucosa" "BARD1_1-4a/5-11" "BARD1_1/4-11"
+    "and 1/5" "RPLPO" "five colorectal mucosa" "BARD1_1-4a/5-11" "BARD1_1/4-11"
     "BARD1_1-4a" "BARD1_1" "BARD1_1-2" "7/9" "8-11" "5-11" "4-11" "10/11"
     "BARD1_1-3/5-11" "10-11" "3/5–" "BARD1_1-3" "SYBRGreen" "Spidey" "2362bp"
     "Nu-Tu-19" "p=0.022" "P=0.0002" "1/4" "1/5" "6/10" "9-11" "_1" "mAb1801"
-    "DO7" "±2.7%" "PCO" "INT" "mg/m2" "ubiqutin" "Miyamoto" "radioresistant"
+    "DO7" "±2.7%" "PCO" "mg/m2" "ubiqutin" "Miyamoto" "radioresistant"
     "Ellisville" "Tocris" "immunohistochemical stainings" "Quik" "Diff"
     "ofFoxO3" "inFoxO3" "andFoxO3" "elastance" "enlargement/emphysema"
     "levels/activity" "100 mg/kg" "_Y657insF" "STAT3α" "PYTK" "#379"
@@ -1347,86 +1327,89 @@
     "benign and malignant histopathologies" "histopathologies"
     "non-malignant bronchial epithelium" "pRKIP" "Yeung" "non-phosphorylated"
     "P = 0.0025" "P = 0.032" "non-parametric" "dbSNP" "rs3203713 G"
-    "rs2274223 G" "Abnet" "a nonsynonymous SNP" "int" "stratums" "rs11599672 G"
-    "AG/GG" "rs11599672T" "rs11599672G" "rs3203713G" "rs2274223G" "rs3203713"
-    "rs11599672" "non-Hispanic" "rs11599672T/G" "rs3203713A/G" "rs2274223A/G"
+    "G rs11599672 A rs2274223 A rs3203713 haplotypes"
+    "both T rs11599672 G rs2274223 A rs3203713"
+    "the most common T rs11599672 A rs2274223 A rs3203713 haplotype"
+    "rs2274223 G" "Abnet" "stratums"
+    "the G rs11599672 A rs2274223 A rs3203713 haplotype" "rs11599672 G"
+    "T rs11599672 A rs2274223 A rs3203713" "AG/GG" "2-3" "rs11599672T"
+    "rs11599672G" "rs3203713G" "rs2274223G" "rs3203713" "rs11599672"
+    "non-Hispanic" "rs11599672T/G" "rs3203713A/G" "rs2274223A/G"
     "polyphosphoinositides" "Rs2274223" "UATC" "GWASs" "rs2274223" "cardia"
     "OR = 1.35" "non- oropharyngeal" "P = 0.048" "P = 0.049" "0-1" "P = 0.07"
-    "5 min" "±5" "± 5" "12q" "PDGR" "co-operatively" "-344" "-435" "-345"
-    "-472" "CAAT" "urea" "GenBank" "holocomplex" "apoptosis/death" "60 min"
-    "anti-head" "production/function" "upstream/enhancer" "Stat-3/tyrosine"
-    "anti-total" "5min" "Stat-3/anti-Stat-3" "N-acetyl-D-glucosamine"
-    "promoter/enhancer" "fluences" "ANCD" "pLenti" "FANCD2/I" "~5-fold"
-    "p21 Cip" "VBC" "markedly higher inVhl R/R" "fromVhl" "andVhl" "inVhl"
-    "the plantar footpads" "theVhl" "footpads" "treatedVhl" "ofVhl" "mU" "lgG"
-    "anti-T7" "properly target HIFα" "pJAK2" "approximately 120KDa"
-    "S-metabolic" "andVHL" "R/R" "andvhl" "R200W/R200W" "vera (PV)" "vera"
+    "5 min" "±5" "± 5" "12q" "PDGR" "C/EBP-β2" "co-operatively" "-344" "-435"
+    "-345" "-472" "CAAT" "urea" "GenBank" "holocomplex" "apoptosis/death"
+    "60 min" "anti-head" "production/function" "upstream/enhancer"
+    "Stat-3/tyrosine" "anti-total" "5min" "Stat-3/anti-Stat-3"
+    "N-acetyl-D-glucosamine" "promoter/enhancer" "fluences" "ANCD" "pLenti"
+    "FANCD2/I" "~5-fold" "p21 Cip" "VBC" "markedly higher inVhl R/R" "fromVhl"
+    "andVhl" "inVhl" "the plantar footpads" "theVhl" "footpads" "treatedVhl"
+    "ofVhl" "lgG" "anti-T7" "properly target HIFα" "pJAK2"
+    "approximately 120KDa" "S-metabolic" "andVHL" "R/R" "andvhl" "R200W/R200W"
     "Hct" "haematocrit" "a specific homozygous mutation 598C→T" "598C→T" "HIFα"
     "CCRCC" "transporter-1" "promoters/enhancers" "ECV" "invhl" "Chuvash"
     "pSTAT5" "the nonsynonymous SNP rs1801272" "a comprehensive overview"
     "socio" "at least 2 other haplotypes" "rs578776" "rs588765" "rs16969968"
     "rs28675338" "rs9394152" "7p14" "rs3025316" "rs3025343" "rs12461383"
     "rs8102683" "rs7251418" "COPDGene" "rs7251570" "rs4105144" "19q13"
-    "rs1801272" "The synonymous rs1051730 SNP" "rs1051730" "15q25" "Lambda"
-    "Bergen" "GenKOLS" "NETT" "3/5" "acetylcholine" "p=2×10" "2q21" "6p21"
-    "=18" "p= 0.002" "p=0.015" "IIBDGC" "rs10951983" "rs1880118" "rs12536544"
-    "colonic lystates" "lystates" "`G" "vs" "rs836472" "eQTLs" "OR = 1.33"
-    "OR= 1.33" "OR= 1.35" "ileo-colonic CD" "ileo" "1.19–1.58" "1.26–1.63"
-    "OR= 1.36" "UC = 4.7" "rs4720672" "rs10951982" "= 6.3" "P=0.008" "1/12"
-    "= 4.2" "6/201" "Falardeau" "syndrome-like" "synkinesia" "_2360delAgta"
-    "S158WfsX45" "R262X" "K321RfsX13" "premature stop codons" "E84GfsX26" "W4X"
-    "S436YfsX3" "HPG" "EndoH" "#54" "#13" "X-chromosomal" "Proband"
-    "_1306dupAT" "#503" "#20" "#11" "displayed unequivocal anosmia" "UPSIT"
-    "yrs" "tresia" "eart" "lip/palate" "micropenis" "the olfactory placode"
-    "placode" "sex-dependent penetrance" "Finnish" "anosmia" "Kallmann"
-    "immunoglobulin -like" "#9" "p = 0.0009" "p = 0.02" "organs/tissues"
-    "invasion/tumor" "0/5" "siCtBP1" "BR1502" "Biomax"
-    "Immunohistochemistry (IHC)" "Carboxyl" "16q22.1" "co-repressor" "∼11%"
-    "postsurgery" "v6-specific" "BSp73AS" "Bötzinger" "homozygote" "CD44v6"
-    "Hgf" "RWH" "GWQ" "EWQ" "v" "E 9.5" "IIβ" "TMPRRS" "abcam" "BioResponse"
-    "-diindolylmethane" "diindolylmethane" "LINE-1" "4/ 5" "intima"
-    "Zohlnhöfer" "F3-receptor–" "F3/F3" "Y40/51" "F40/51" "F79/81" "ChiR"
-    "CSF1R/" "re-endothelialization" "neointima" "C57BL/6J" "phospholipase C γ"
-    "simpler" "MSMS" "co-precipitates" "Ty" "redirects" "Ku" "Bufill" "Wray"
-    "the normal colonic mucosa" "μg/l" "21/66"
-    "adenomatous polyposis coli (APC)" "coli (APC)" "antigen (CEA)"
-    "p  = 0.006" "p  = 0.005" "95% CI" "p  = 0.007" "p  = 0.028" "p  = 0.014"
-    "TCF/Lef" "pTyrSTAT3" "Bewry" "−330∼−322" "+64∼+72" "STAT3C" "MCF-7/ADR"
-    "K562/A02" "oligodeoxynucleotide (ODN)" "oligodeoxynucleotide" "mg/L"
-    "non-surgical" "PRRT" "radionuclide" "glucagonomas" "immunomarkers" "± SD"
-    "re-classified" "AJCC" "re-evaluated" "PanNET" "±SD" "hepatoid" "papillae"
-    "PanNETs" "P = 0.0034" "Dupont" "Toi" "Brien" "Cizkova" "Tenorio" "Perez"
-    "non-hot" "only two exons" "capecitbine" "95%CI" "Fudan" "p95HER2" "mg/m 2"
+    "rs1801272" "rs1051730" "15q25" "Lambda" "Bergen" "GenKOLS" "NETT" "3/5"
+    "acetylcholine" "p=2×10" "2q21" "6p21" "=18" "p= 0.002" "p=0.015" "IIBDGC"
+    "rs10951983" "rs1880118" "rs12536544" "colonic lystates" "lystates" "`G"
+    "vs" "rs836472" "eQTLs" "OR = 1.33" "OR= 1.33" "OR= 1.35" "ileo"
+    "1.19–1.58" "1.26–1.63" "OR= 1.36" "UC = 4.7" "rs4720672" "rs10951982"
+    "= 6.3" "P=0.008" "1/12" "= 4.2" "6/201" "Falardeau" "syndrome-like"
+    "synkinesia" "_2360delAgta" "S158WfsX45" "R262X" "K321RfsX13"
+    "premature stop codons" "E84GfsX26" "W4X" "S436YfsX3" "HPG" "EndoH" "#54"
+    "#13" "X-chromosomal" "Proband" "_1306dupAT" "#503" "#20" "#11"
+    "displayed unequivocal anosmia" "UPSIT" "yrs" "tresia" "eart" "lip/palate"
+    "micropenis" "the olfactory placode" "placode" "sex-dependent penetrance"
+    "Finnish" "anosmia" "Kallmann" "immunoglobulin -like" "#9" "p = 0.0009"
+    "p = 0.02" "organs/tissues" "invasion/tumor" "0/5" "siCtBP1" "Biomax"
+    "Immunohistochemistry (IHC)" "Carboxyl" "16q22.1" "∼11%" "postsurgery"
+    "v6-specific" "BSp73AS" "Bötzinger" "homozygote" "CD44v6" "Hgf" "RWH" "GWQ"
+    "EWQ" "v" "Vegfr" "E 9.5" "topoisomerase IIβ" "TMPRRS" "abcam"
+    "BioResponse" "-diindolylmethane" "diindolylmethane" "LINE-1" "4/ 5"
+    "intima" "Zohlnhöfer" "F3-receptor–" "F3/F3" "Y40/51" "F40/51" "F79/81"
+    "ChiR" "CSF1R/" "re-endothelialization" "neointima" "C57BL/6J" "γ 1"
+    "simpler" "MSMS" "co-precipitates" "Ty" "redirects" "Ku" "Polymerase-1"
+    "Bufill" "Wray" "the normal colonic mucosa" "μg/l" "21/66"
+    "adenomatous polyposis coli (APC)" "coli (APC)" "p  = 0.006" "p  = 0.005"
+    "95% CI" "p  = 0.007" "p  = 0.028" "p  = 0.014" "TCF/Lef" "pTyrSTAT3"
+    "Bewry" "−330∼−322" "+64∼+72" "STAT3C" "MCF-7/ADR" "K562/A02"
+    "oligodeoxynucleotide (ODN)" "oligodeoxynucleotide" "mg/L" "non-surgical"
+    "PRRT" "radionuclide" "glucagonomas" "immunomarkers" "± SD" "re-classified"
+    "AJCC" "re-evaluated" "PanNET" "±SD" "hepatoid" "papillae" "PanNETs"
+    "P = 0.0034" "Dupont" "Toi" "Brien" "Cizkova" "Tenorio" "Perez" "non-hot"
+    "only two exons" "capecitbine" "95%CI" "Fudan" "p95HER2" "mg/m 2"
     "HER2--positive" "± 10" "mono-therapy" "P = 0.017" "ARLEQUIN" "Wahlund"
     "miniSTRs" "D10S1248" "D1S1656" "D12S391" "D22S1045" "D2S441" "Maghreb"
     "P  = 0.0002" "pro-apop-totic" "severe POP" "mild POP" "introitus"
-    "the urethral rhabdosphincter" "rhabdosphincter" "urethra" "UI" "POP"
+    "the urethral rhabdosphincter" "rhabdosphincter" "urethra" "POP"
     "P = 0.0004" "Anti-Apoptotic" "P = 0.01" "N = 9" "Co2+" "chelates"
-    "a much faster Δψm" "a faster Δψm" "familiy" "AB-737" "TMRM" "Δψm" "mV"
-    "mitoplasts" "empty/pcDNA3" "uncoupler" "conductance"
-    "the most important organelles" "4, 5-dimethylthiazol-2-yl" "n = 10"
-    "anti-atherosclerotic" "the constitutively active AMPKα2" "S177A/S181A"
-    "auto-inhibition" "iodotubercidin" "pIKK" "aortae" "DPTA" "methylglutaryl"
+    "a much faster Δψm" "a faster Δψm" "familiy" "TMRM" "Δψm" "mitoplasts"
+    "empty/pcDNA3" "uncoupler" "conductance" "the most important organelles"
+    "4, 5-dimethylthiazol-2-yl" "n = 10" "anti-atherosclerotic"
+    "the constitutively active AMPKα2" "S177A/S181A" "auto-inhibition"
+    "protein IκB" "iodotubercidin" "pIKK" "aortae" "DPTA" "methylglutaryl"
     "ADP/ATP" "DETA-NO" "-1β" "AMPKα2" "activation/deletion" "replicon"
     "polyprotein" "SACAP" "maintainenance" "N/S" "re-examine" "OZ" "EHCC"
     "IHCC" "1 h" "α 6 β 4" "Kapplan" "&N" "upper gastrointestinal endoscopy"
     "England" "commonest" "co-association" "GABP α" "Five-year" "non-ErbB2"
-    "rBT474" "P95L" "p95L" "Anti-phosphotyrosine" "cause Laron’s" "Laron"
-    "Kawai" "pP70S6K" "Hutchinson" "byFord" "Blenis" "dnAKT" "Moerman" "TZDs"
-    "Nutall" "perichondrium" "around 9.5dpc" "9.5dpc" "1Cre" "Dermo"
+    "rBT474" "P95L" "ErbB2+" "p95L" "Anti-phosphotyrosine" "cause Laron’s"
+    "Laron" "Kawai" "pP70S6K" "Hutchinson" "byFord" "Blenis" "dnAKT" "Moerman"
+    "TZDs" "Nutall" "perichondrium" "around 9.5dpc" "9.5dpc" "Dermo 1Cre"
     "calvarial osteoblasts" "around 17dpc" "late stage osteoblasts" "Rosa"
     "dyschondroplasia" "P13K" "around 12.5dpc" "Mundlos" "sailoprotein"
     "Bglap2" "cleidocranial dysplasia" "RUNX" "chondocytes" "Amborgini"
     "inositiol" "expressers" "Sankaran"
     "multiple publicly available microarray datasets" "gene/protein" "omic"
-    "genes/proteins" "P= 0.006" "12h" "apten" "anti-Tax" "CRMPs" "cytokeleton"
-    "TDZ" "Neurite" "Supernatant" "neurite" "anterograde" "axonopathy"
+    "genes/proteins" "P= 0.006" "12h" "apten" "CRMPs" "cytokeleton" "TDZ"
+    "Neurite" "Supernatant" "neurite" "anterograde" "axonopathy"
     "myelopathy/tropical" "2 hr" "Anti-rabbit" "4 hr" "CD8 +" "Warburg" "DLBL"
-    "2DG" "ECAR" "shRNAi" "mAkt" "Positron" "P-4EBP1" ".1 R"
-    "indeed both paralogs" "paralogs" "miR-181b" "ELR" "MiR-193a" "miR-193a"
-    "inFyb" "MGCVQCDKD" "T8.1" "Anti-CD3" "effecter" "Adap" "SH3-like" "YDDV"
-    "fynT" "Fyb" "SARAH" "αL" "lymphocyte function-associated antigen" "∼20%"
-    "Anti-FLAG" "pcDNA 3" "tendon-associated collagens"
+    "2DG" "ECAR" "shRNAi" "mAkt" "Positron" ".1 R" "indeed both paralogs"
+    "paralogs" "ELR" "MiR-193a" "miR-193a" "inFyb" "D-3" "MGCVQCDKD" "T8.1"
+    "Anti-CD3" "effecter" "Adap" "SH3-like" "YDDV" "fynT" "Fyb" "SKAP-55"
+    "SARAH" "αL" "SKAP" "∼20%" "Anti-FLAG" "pcDNA 3"
     "the tenogenic transcription factor scleraxis" "immunocomplexes"
     "co-treated" "microvilli-like" "multiple autophagic cytoplasmic vacuoles"
     "g/day" "bisdemethoxycurcumin" "demethoxycurcumin"
@@ -1438,32 +1421,31 @@
     "5 × 10" "1 h" "Ser 1981" "the NME’s" "n = 2" "Caco-2/TC7" "AfaE" "nm/s"
     "the plasmid-cured isogenic strain BS176" "BS176" "Anti-phospho" "HCx26"
     "galU" "mxiD" "NME" "GIJCs" "GIJC" "appose" "flexneri" "NMEs" "T3SS"
-    "hemichanels" "anti-phosphotyrosine" "N = 6" "Benassi" "si-"
+    "hemichanels" "anti-phosphotyrosine" "N = 6" "Benassi" "si-" "FL-1"
     "promoter/luciferase" "CACGTTG" "CACTTG" "non-cognate" "hexanucleotide"
     "+42" "promoter/reporters" "R273X" "DSMZ" "fibroblasts supports Lozano's"
     "Boyle" "SK-LMS-1" "KM-12" "vide" "Cha-Go-K-1" "Burkitt's"
     "the original heterozygous codon 72" "Lozano" "Guillermina" "ROH" "Codon"
-    "MOLT-16" "MOLT" "Olivier's" "Olivier" "Heyne" "LS-123" "SANGER"
-    "evident DNE" "DNE" "nmMyosin" "nmMyoIIa" "apical nmMyoIIA" "nmMyoII"
-    "endoscopy" "ileum" "pT555" "anti-nmMyoIIA" "lambda" "IIC" "nmMyoIIB"
+    "MOLT-16" "MOLT" "Olivier's" "Olivier" "Heyne" "SANGER" "evident DNE" "DNE"
+    "nmMyosin" "nmMyoIIa" "apical nmMyoIIA" "nmMyoII" "endoscopy" "ileum"
+    "pT555" "anti-nmMyoIIA" "lambda" "IIC" "nmMyoIIB"
     "mouse intestinal epithelia" "intestinal epithelia" "nmMyoIIA" "= 2" "48 h"
-    "PKCι/λ" "CD95+" "Toubi" "12-week" "caspase-3+" "kg" "Friedman" "IU/ml"
-    "phase-2a" "phase-1" "U/l" "P  = 0.008" "P  = 0.50" "= 1" "= 0" "14-days"
-    "P  = 0.05" "P  = 0.10" "P  = 0.07" "P  = 0.02" "P  = 0.01" "P  = 0.002"
-    "P  = 0.006" "14-day" "= 2" "n  = 6" "CD8+ " "LOC645416" "STHs"
-    "Important co-infections" "parvum" "typhimurium" "LOC731682" "Th2-like"
-    "Hsa-let-7d" "CREB5" "LOC128977" "LOC652726" "VNN2" "precursor-like"
-    "glutamyl" "LOC645284" "Harakiri" "BCL" "FCs" "aeroallergens" "trichiura"
-    "Trichuris" "lumbricoides" "Ascaris" "geohelminth" "has-let-7d" "d"
-    "hsa-let-7d" "P = 0.012" "P = 0.02" "P = 0.04" "P = 0.001" "Non-parametric"
-    "= 45" "P = 0.009" "P = 0.0002" "P = 0.005" "P = 0.008" "P = 0.01"
-    "P = 0.03" "P = 0.007" "log 2" "8p11-8p12" "NCH" "log2" "41/44" "8p11" "8p"
-    "8p11-12" "IC 50 s" "co-occurrence" "WST-1" "IC50s"
+    "PKCι/λ" "non-muscle" "CD95+" "Toubi" "12-week" "caspase-3+" "kg"
+    "Friedman" "IU/ml" "phase-1" "U/l" "P  = 0.008" "P  = 0.50" "= 1" "= 0"
+    "14-days" "P  = 0.05" "P  = 0.10" "P  = 0.07" "P  = 0.02" "P  = 0.01"
+    "P  = 0.002" "P  = 0.006" "14-day" "= 2" "n  = 6" "CD8+ " "LOC645416"
+    "STHs" "Important co-infections" "parvum" "typhimurium" "LOC731682"
+    "Th2-like" "Hsa-let-7d" "IL-1R2" "LOC128977" "LOC652726" "VNN2"
+    "precursor-like" "glutamyl" "LOC645284" "Harakiri" "BCL" "FCs" "Ascaris"
+    "aeroallergens" "has-let-7d" "d" "hsa-let-7d" "P = 0.012" "P = 0.02"
+    "P = 0.04" "P = 0.001" "Non-parametric" "= 45" "P = 0.009" "P = 0.0002"
+    "P = 0.005" "P = 0.008" "P = 0.01" "P = 0.03" "P = 0.007" "8p11-8p12" "NCH"
+    "41/44" "8p11" "8p" "8p11-12" "co-occurrence" "WST-1"
     "non-small cell lung carcinoma" "ZHANG" "fei" "Xiao" "Guan" "DONG" "zhu"
-    "Qiong" "HUANG" "ZHENG" "Cui" "WU" "Zhi" "CHEN" "Lipofectamine" "Zhong"
-    "ﬁrst" "protein C2" "signiﬁcant" "nmol/L" "MHCCLM3" "contradictory ﬁndings"
-    "ﬁndings" "RNAa" "speciﬁc" "dsP21-322" "dsControl" "p21WAF1/CIP1"
-    "clinically aggressive glioblastoma subtypes" "Jiang" "Xu"
+    "Qiong" "HUANG" "ZHENG" "Cui" "WU" "Zhi" "cyclin-dependent kinase4"
+    "Lipofectamine" "Zhong" "ﬁrst" "protein C2" "signiﬁcant" "nmol/L" "MHCCLM3"
+    "contradictory ﬁndings" "ﬁndings" "RNAa" "speciﬁc" "dsP21-322" "dsControl"
+    "p21WAF1/CIP1" "clinically aggressive glioblastoma subtypes" "Jiang" "Xu"
     "more favorable medulloblastoma subtypes"
     "more clinically aggressive glioblastoma subtypes" "Verhaak" "PTCH1B"
     "ATRT" "nodular/desmoplastic" "Fernandez" "arachnoid" "neuroepithelia"
@@ -1474,27 +1456,27 @@
     "5/5" "943ins10" "R1443X" "thread-like" "Holliday" "~1.5-fold" "Sce"
     "-pS-X-X-F" "pS-X-X-F" "4 h" "~90%" "~0.7" "~1.5" "macular drusen"
     "intermediate or large drusen" "drusen" "rs9488843" "non-collagenous"
-    "rs943080" "rs881858" "the previously reported rs2010963 SNP" "rs2010963"
-    "rs1883025" "rs3764261" "rs10468017" "rs9621532" "rs4711751" "Cochran's"
-    "Tufts/MGH" "rs12204816" "rs1999930" "6q21–q22.3" "rs10033900" "rs9332739"
-    "rs2230199" "rs641153" "rs1410996" "rs1061170" "rs10490924" "gc"
-    "previously reported SNPs" "Hopital Intercommunal de Creteil"
-    "Australia (AUS)" "the top representative SNPs" "Irish" "Belfast" "CRET"
-    "Creteil" "Washington" "Columbia" "TMMG" "cases/controls" "MIGen" "MMAP"
-    "Pennsylvania" "AREDS" "Michigan" "MGH" "retinal pigment epithelium (RPE)"
-    "epithelium (RPE)" "choriocapillaris" "NV" "ARMS2/HTRA1" "P -value"
-    "HapMap3" "= 6" "= 24" "= 15" "anti-vascular" "SVEC" "AS-605240" "RCAS"
-    "ALV" "Gi" "subequatorial Africa" "rapalogs" "Kaposi’s" "the Kaposi’s"
-    "KS-like" "p=0.0024" "mechanoresistance" "mechanoproperties"
+    "rs943080" "rs881858" "rs2010963" "rs1883025" "rs3764261" "rs10468017"
+    "rs9621532" "rs4711751" "Cochran's" "Tufts/MGH" "rs12204816" "rs1999930"
+    "6q21–q22.3" "rs10033900" "rs9332739" "rs2230199" "rs641153" "rs1410996"
+    "rs1061170" "rs10490924" "gc" "previously reported SNPs"
+    "Hopital Intercommunal de Creteil" "Australia (AUS)"
+    "the top representative SNPs" "Irish" "Belfast" "CRET" "Creteil"
+    "Washington" "Columbia" "TMMG" "cases/controls" "MIGen" "MMAP"
+    "Pennsylvania" "AREDS" "Michigan" "retinal pigment epithelium (RPE)"
+    "epithelium (RPE)" "choriocapillaris" "NV" "P -value" "HapMap3" "= 6"
+    "= 24" "= 15" "anti-vascular" "SVEC" "RCAS" "ALV" "Gi"
+    "subequatorial Africa" "rapalogs" "Kaposi’s" "the Kaposi’s" "KS-like"
+    "p=0.0024" "mechanoresistance" "mechanoproperties"
     "the mechanically-responsive β-catenin transcriptional co-activator"
-    "pMYPT" "co-administered" "pMypt" "DMBA/TPA" "dimethylbenz" "PF562271"
+    "pMYPT" "co-administered" "pMypt" "dimethylbenz" "PF562271"
     "Ser9phosphorylation" "a competitive pseudosubstrate" "PF-562271" "LIMKi"
     "Mypt" "6-bromoindirubin-39-oxime (BIO)" "BIO" "TOPFlash" "Tcf/Lef"
-    "picrosirius" "kPa" "4HT" "Hprt" "MYPT" "elastography" "rheology" "FVB/N"
-    "Fl/Fl" "~2-fold" "only integrin α4" "Gβγ-p101-Ras-dependent" "2.5mg/kg"
+    "picrosirius" "kPa" "4HT" "MYPT" "elastography" "rheology" "FVB/N" "Fl/Fl"
+    "~2-fold" "only integrin α4" "Gβγ-p101-Ras-dependent" "2.5mg/kg"
     "p87-p110γ-Ras-dependent" "Chemoattractants" "Gβγ" "SDF-1α" "phosphoAkt"
     "TG100-115" "AS605240" "p110γKD" "Chang" "αM" "α4Y991A" "HUTS21"
-    "Gr1+CD11b+" "TCM" "VCAM" "transmigrate" "Sdf-1α" "CD11b+"
+    "Gr1+CD11b+" "TCM" "VCAM" "transmigrate" "Sdf-1α" "Il" "CD11b+"
     "phosphotyrosines" "plextrin" "Grunewald" "Palma" "8wk" "α4β1" "inRb"
     "had developed inp53 C/C orp53 C/C" "fromp53" "p53 C/C" "C/C" "inp21"
     "P53 C/C" "p53 R175P" "p53 R172P" "7/10" "theMad2 +/+" "TROMA"
@@ -1508,15 +1490,15 @@
     "pulse/chase" "subdomains" "punctae" "subdomain" "1.0×10" "N=4" "1h" "~32%"
     "at 5 min" "the Bartter's" "Filtz" "SHP-2-PLC β1 complex" "Bregeon"
     "adaptor/scaffolding" "SHP-2-PLCβ1 complex" "SHP-2-PLCβ1complex"
-    "nanomoles" "nonstim" "Bartter's" "Gitelman's" "Gitelman" "Bartter"
-    "Golebiewska" "blocker" "tyrosin" "and 2B" "N = 5" "SDS/PAGE" "1 h" "CTCT"
-    "ation" "co-regulator" "Baylin" "andp16" "Igf2/H19" "azadC" "pERbmutE"
-    "the methylated CpG dinucleotides" "dinucleotides" "LRES" "integrants"
-    "Menges" "shrunken" "siPIK" "positve" "the high dysplastic histology"
-    "CK10" "double indirect immunostainings" "immunostainings" "FK18A"
-    "HPV16E6E7" "FK16A" "adjacent normal cervical epithelium" "arrayCGH"
-    "HPV16E7" "E6E7" "hrHPV" "non-proliferating" "p = 0.04" "Non-targeting"
-    "= 10" "JUND" "Langherans" "peripheral B-cell lymphomas/leukemias"
+    "nanomoles" "and 1B" "nonstim" "Bartter's" "Gitelman's" "Gitelman"
+    "Bartter" "Golebiewska" "blocker" "tyrosin" "and 2B" "N = 5" "SDS/PAGE"
+    "1 h" "CTCT" "ation" "co-regulator" "Baylin" "andp16" "Igf2/H19" "azadC"
+    "pERbmutE" "the methylated CpG dinucleotides" "dinucleotides" "LRES"
+    "integrants" "Menges" "shrunken" "siPIK" "positve"
+    "the high dysplastic histology" "double indirect immunostainings"
+    "immunostainings" "HPV16E6E7" "FK16A" "adjacent normal cervical epithelium"
+    "arrayCGH" "HPV16E7" "E6E7" "hrHPV" "non-proliferating" "p = 0.04"
+    "Non-targeting" "= 10" "Langherans" "peripheral B-cell lymphomas/leukemias"
     "Kamiguti" "splenic B-cell lymphoma/leukemia" "lymphoma/leukemia"
     "other peripheral B-cell lymphomas/leukemias"
     "an archival fixed-paraffin-embedded bone marrow biopsy" "non-leukemic"
@@ -1526,289 +1508,277 @@
     "pancytopenia" "Cancro" "Ricerca" "Italiana" "Associazione"
     "unclassifiable splenic lymphomas/leukemias"
     "the 193 peripheral B-cell lymphomas/leukemias" "lymphomas/leukemias"
-    "clinico" "2/5" "g/dL" "=46" "Tobiume" "modulaters" "Hoechst 33258"
-    "pIRESneo3" "pigmentosus" "activation/phosphorylation" "P =0.005"
-    "P = 0.007" "U133A" "mice/group" "=14" "ETO" "cip1/waf1" "karyotypes" "+/m"
-    "Asai" "Willi" "Prader" "yet another p53 function" "pififthrins"
-    "simian virus 40 (SV-40)-derived tumor antigens" "LY29400" "Basu" "Gallay"
+    "clinico" "2/5" "=46" "Tobiume" "modulaters" "Hoechst 33258" "pIRESneo3"
+    "pigmentosus" "activation/phosphorylation" "P =0.005" "P = 0.007" "U133A"
+    "mice/group" "=14" "cip1/waf1" "karyotypes" "+/m" "Asai" "Willi" "Prader"
+    "yet another p53 function" "pififthrins" "LY29400" "Basu" "Gallay"
     "logrank" "B55 α" "Cβ" "B55α" "p = 0.0018" "p = 0.038" "~ 1.5" "p = 0.012"
-    "p≤ 0.05" "× 2" "Protein Phosphatase 2A" "Atg18p" "orthologue"
-    "phosphoryations" "HEK-293E" "7299 unique phosphopeptides" "~1%" "MADs"
-    "4256 unique phosphopeptides" "nucleates" "the 9-1-1’s" "SVW" "KilA"
-    "APSES" "orthologs" "rphan" "−7/8" "using Dharmacon’s" "OTP" "pSQTQ"
-    "the toxic subset" "HTP" "7/8" "shEV" "Gordan" "desferrioxamine (DFX)"
-    "desferrioxamine" "ΔPAS" "P402/564" "Liu" "HAF" "non-hypoxic" "MCMs" "C/"
-    "sotope" "amino terminal basic-helix-loop-helix" "aintenance" "hromosome"
-    "ini" "2 /5" "basic-helix-loop-helix" "re-enter" "cln1" "CLN1" "SBF"
+    "p≤ 0.05" "× 2" "Atg18p" "phosphoryations" "HEK-293E"
+    "7299 unique phosphopeptides" "~1%" "MADs" "4256 unique phosphopeptides"
+    "nucleates" "the 9-1-1’s" "SVW" "KilA" "APSES" "orthologs" "rphan" "−7/8"
+    "using Dharmacon’s" "OTP" "pSQTQ" "the toxic subset" "HTP" "7/8" "shEV"
+    "Gordan" "desferrioxamine (DFX)" "desferrioxamine" "ΔPAS" "P402/564" "Liu"
+    "HAF" "non-hypoxic" "MCMs" "C/" "sotope"
+    "amino terminal basic-helix-loop-helix" "aintenance" "hromosome" "ini"
+    "2 /5" "basic-helix-loop-helix" "re-enter"
     "lowered serum concentration inCdk2 as/as" "Pto" "Cdk2/" "CVT-313"
     "and 3-MB-PP1" "complementCdk2" "fromCdk2" "theCdk2" "benzylaminopurine"
     "priori" "A-binding" "fibrobalasts" "inCdk2" "ofCdk2" "andCdk2" "3-MB-PP1"
     "benzyl" "radiolabeledN" "as/as" "as/neo" "an allelic series:Cdk2 as/+"
     "as/+" "retainedneo" "rAAV" "aCdk2" "non-catalytic" "72 hr" "Superdex 200"
-    "~65%" "eukaryotic Hsp90s" "Hsp90s" "Iles" "molten" "N-labeled" "TOCSY"
-    "conformer" "CδH" "NOESY" "CRINEPT" "Kay" "TROSY" "BD" "Toft" "Hsp90α"
-    "non-conserved" "whose Hsp90s" "co-chaperone" "9 p" "× 40" "/ 2"
-    "Institute/National" "NHLBI" "ZHT" "BEA" "Roadmap" "NCRR"
+    "4N" "~65%" "eukaryotic Hsp90s" "Hsp90s" "Iles" "molten" "N-labeled"
+    "TOCSY" "conformer" "CδH" "NOESY" "CRINEPT" "Kay" "TROSY" "BD" "Toft"
+    "Hsp90α" "non-conserved" "whose Hsp90s" "co-chaperone" "chaperonin" "9 p"
+    "× 40" "/ 2" "Institute/National" "NHLBI" "ZHT" "BEA" "Roadmap" "NCRR"
     "Ventricular tachycardia" "Francisco" "UCSF" "Adaptin" "rarer"
     "afterdepolarizations" "L-type" "rs2834455" "rs6422142" "ARIC" "Rs4292933"
     "nonsynonymous SNPs" "our conservative approaches vis" "noncardiac"
     "pulseless" "bradycardia" "embolus" "LQT" "adaptin" "rs16866933"
     "rs12189362" "rs2281680" "rs7132154" "rs7157599"
-    "a nonsynonymous coding SNP" "the permuted gene-wise significant SNPs"
-    "CACN1AC" "rs1325258" "SUDS" "Oregon" "CI:1.681" "CI:1.003" "rs2639365"
-    "CI:1.042" "tagSNP" "one-quarter" "vis" "ACYP2" "tagSNPs" "eigenstrat"
-    "arrhythmias" "VT/VF" "cardioverter" "Ventricular tachycardia (VT)" "VT"
-    "CSMD2" "QT" "ventricular tachycardia" "tachycardia" "p = 0.0003" "± 15"
-    "= 6.6" "MADCAM-1" "pallidus" "globus" "unequal crossover" "crossover"
-    "NA1900" "350-kb" "sporadic MSA" "multicopy" "subtelomere" "2p25.3"
-    "4q35.2" "99% concordant genotypes" "beadchips" "co-twin" "SYNA"
-    "parkinsonism" "beadchip" "MZ" "MSA" "polynorphisms" "Huang" "Nakashima"
-    "Finland" "Hu" "co-transcriptional activator" "non-oropharygeal"
-    "three-year" "SNP309 G" "non-HPV" "codon72" "GT/TT" "SNP309G" "paptients"
-    "±11.0" "hoc" "codon 72" "hypopharynx"
-    "the well-studied p53 codon 72 (rs1042522) SNP" "rs1042522" "C-allele"
-    "nine-year" "A2164G" "a 3-year" "9-year" "non-oropharyngeal" "CI = 1"
-    "OR = 1.61" "CI = 0" "G-allele" "sFRPs" "intergin" "coauthors" "intergrin"
-    "non-ocular" "Schelmm's" "Schelmm" "Schlemm's" "Schlemm"
-    "extracellular material/matrix" "Koga" "Myoc" "Fautsch" "Resch"
-    "the trabecular meshwork (TM)" "sclera" "p = 0.006" "p = 0.07" "α3β1"
-    "p = 0.003" "4 hrs" "μg /ml" "endothelial-like" "García" "TAM67" "pGFP"
-    "KIpTIRR" "OA" "A2780/CP" "COC1/CP" "Chemo" "relapsed/refractory"
+    "the permuted gene-wise significant SNPs" "CACN1AC" "rs1325258" "SUDS"
+    "Oregon" "CI:1.681" "CI:1.003" "rs2639365" "CI:1.042" "tagSNP"
+    "one-quarter" "vis" "ACYP2" "tagSNPs" "eigenstrat" "arrhythmias"
+    "cardioverter" "Ventricular tachycardia (VT)" "CSMD2" "QT"
+    "ventricular tachycardia" "tachycardia" "p = 0.0003" "± 15" "= 6.6"
+    "MADCAM-1" "pallidus" "globus" "unequal crossover" "crossover" "NA1900"
+    "350-kb" "multicopy" "subtelomere" "2p25.3" "4q35.2"
+    "99% concordant genotypes" "beadchips" "co-twin" "SYNA" "parkinsonism"
+    "beadchip" "MZ" "polynorphisms" "Huang" "Nakashima" "Finland" "Hu"
+    "co-transcriptional activator" "non-oropharygeal" "three-year" "SNP309 G"
+    "non-HPV" "codon72" "SNP309G" "paptients" "±11.0" "hoc" "codon 72"
+    "hypopharynx" "rs1042522" "C-allele" "nine-year" "A2164G" "a 3-year"
+    "9-year" "non-oropharyngeal" "CI = 1" "OR = 1.61" "CI = 0" "G-allele"
+    "sFRPs" "intergin" "coauthors" "intergrin" "non-ocular" "Schelmm's"
+    "Schelmm" "Schlemm's" "Schlemm" "material/matrix" "Koga" "Myoc" "Fautsch"
+    "Resch" "the trabecular meshwork (TM)" "sclera" "p = 0.006" "p = 0.07"
+    "α3β1" "p = 0.003" "4 hrs" "μg /ml" "endothelial-like" "García" "TAM67"
+    "pGFP" "KIpTIRR" "OA" "A2780/CP" "COC1/CP" "Chemo" "relapsed/refractory"
     "philadelphia" "mesylate" "Newly synthesized LC3 termed LC3-1" "Apg8p"
     "numerous large autophagic vacuoles" "Tzb" "macroautophagosome" "Genentech"
     "AstraZeneca" "CQ" "non–small-cell" "non-EGF" "HER2+" "this bound subset"
-    "V$ELK1_02" "_02" "$ELK1" "NFY" "TFBS" "meC" "varaiant" "spearman" "decile"
+    "V$ELK1_02" "_02" "$ELK1" "NFY" "TFBS" "varaiant" "spearman" "decile"
     "RefSeq" "Peptidylarginine" "methylarginine" "HG18" "ER+" "GABPα"
     "co-recruitment" "co-immunofluorescent" "H2009"
     "a biological process/molecular function enrichment heatmap" "Granta"
     "re-ChIP" "4hrs" "κB" "Navitoclax/ABT-263" "leukemia-1" "kinase-1/2"
-    "shPAK1" "Dox" "PAK1-3" "heterocomplexes" "tuftsin" "branchpoints"
-    "KDR1175" "AdLacZ" "titer" "anti-V5" "non-VEGF-binding" "AdD320A" "AdY297A"
-    "AdWT" "AdGFP" "W301A" "a1/a2" "meprin" "uEGF" "logy" "coculture"
-    "phospholipase Cγ" "BHLB2" "eukaryotic translation initiation factor 2B"
-    "2B" "OPH" "QVD" "hyperdiploid" "Aurkb" "EC50s" "EC50" "Eμ239" "λ820"
-    "Leverson" "Abbott" "Odc" "DLCBL" "Ct" "transgenes" "Moloney" "Pimi" "12H"
-    "E-boxes" "hypomorphism" "B–containing" "KMN" "human Burkitt’s"
-    "only 13 wk" "Eμ-" "pCenp" "Burkitt’s" "MZL" "pT232-Aurora"
-    "auto-activation" "pCenpA" "Cenp" "showing aneuploidy" "PMSCS"
-    "pure C57BL/6" "CAGGS" "centromeres" "aneuploidies" "5 B" "auto-" "2 B"
+    "shPAK1" "Dox" "PAK1-3" "heterocomplexes" "branchpoints" "KDR1175" "AdLacZ"
+    "titer" "anti-V5" "non-VEGF-binding" "AdD320A" "AdY297A" "AdWT" "AdGFP"
+    "W301A" "a1/a2" "meprin" "uEGF" "logy" "coculture" "BHLB2"
+    "eukaryotic translation initiation factor 2B" "hyperdiploid" "Aurkb"
+    "EC50s" "EC50" "Eμ239" "λ820" "Leverson" "Abbott" "Odc" "DLCBL" "Ct"
+    "transgenes" "Moloney" "Pimi" "12H" "E-boxes" "hypomorphism" "B–containing"
+    "KMN" "human Burkitt’s" "only 13 wk" "Eμ-" "pCenp" "Burkitt’s" "MZL"
+    "pT232-Aurora" "auto-activation" "pCenpA" "showing aneuploidy" "PMSCS"
+    "pure C57BL/6" "CAGGS" "centromeres" "Cenp" "aneuploidies" "5 B" "auto-"
     "endoderm" "Fei" "CAGAC" "HNF4α-" "HNF" "CEAS" "Gibbs" "CisGenome"
-    "Hepatocyte nuclear factor 4α" "hg18" "& D" "sevenmaker" "T3.70"
-    "cresplenocytes" "creBM" "andrasa1" "ub-ert2cremice" "ub" "deficientHY"
-    "H-2D" "ERK+ve" "non-TCR" "PCC" "creAND" "Tg" "TCRhiCD" "CD8+" "DN3"
+    "Activator protein-1" "Hepatocyte nuclear factor 4α" "hg18" "& D"
+    "sevenmaker" "T3.70" "cresplenocytes" "creBM" "andrasa1" "ub-ert2cremice"
+    "deficientHY" "ERK+ve" "non-TCR" "PCC" "creAND" "Tg" "TCRhiCD" "CD8+" "DN3"
     "cremice" "plck" "non-conditional" "risen" "CD4+CD8+" "CD44lo"
-    "co-injected" "7AAD" "role/s" "PKCη" "threonie" "peudosubstrate" "invitro"
-    "PP1cγ" "αIIb" "convulxin" "SC-57101" "non-stirring" "AYPGKF" "PKMζ"
-    "phospholipase D2"
+    "co-injected" "7AAD" "role/s" "PKCη" "ser/thr" "threonie" "peudosubstrate"
+    "invitro" "PP1cγ" "Ser/Thr" "αIIb" "convulxin" "non-stirring" "AYPGKF"
+    "PKMζ"
     "phosphoinositide 3-kinase (PI3-K) lipid product phosphatidylinositol (3,4,5)-trisphosphate"
     "Korean" "hyperandrogenemia" "endocrinopathys" "heteroplasmy" "Haplotype"
     "pathogenesy" "severe hyperinsulinemia" "polygene" "dyslipidemia"
     "hyperinsulinemia" "endocrinopathy" "rs10500204" "rs8108622" "rs2059807"
     "rs1799817" "Sequential breast cancer biopsies" "Thompson" "Locatelli"
     "Idirisinghe" "residual mammary parenchyma" "Shimizu" "ASCO/CAP"
-    "significantly worse MFS" "MFS" "mastectomy" "SISH" "peritoneum" "axilla"
-    "LR" "P  = 0.55" "= 23" "P  = 0.003" "P  = 0.002" "P  = 0.02" "P  = 0.72"
-    "P  = 0.0004" "P  = 0.0003" "P  = 0.04" "≤1 " "≤30" "P  = 0.005"
-    "P  = 0.03" "reenter" "anthracyclins" "Responders" "Moffitt" "4–11"
-    "silencing/release" "mitotic E3 ubiquitine ligase APC/C" "ubiquitine"
-    "re-plated" "Rassf1A/C" "Rassf1C/A" "Rassf1C" "Rassf1C polypeptide"
-    "prometaphase/metaphase" "sensitization/resistance" "clinicians"
-    "a ssembly c heckpoint (SAC)" "heckpoint (SAC)" "heckpoint" "pindle"
-    "non-responders" "metaphase/anaphase" "non-amplified" "haptotaxis"
-    "sublines" "DOX" "the mature follicle" "48 hrs" "2 hrs" "siStat3"
-    "Re-expression" "6hr" "clonotype" "6 hrs" "6hr-activated" "388bp"
-    "both naive and memory subsets" "360bp" "6–48hrs"
-    "the memory (CD44hi) subset" "promoterless" "CD44hi" "lo" "naive subsets"
-    "timepoint" "48hrs" "low/negative" "24–48hrs" "6hrs"
+    "mastectomy" "SISH" "peritoneum" "axilla" "LR" "P  = 0.55" "= 23"
+    "P  = 0.003" "P  = 0.002" "P  = 0.02" "P  = 0.72" "P  = 0.0004"
+    "P  = 0.0003" "P  = 0.04" "≤1 " "≤30" "P  = 0.005" "P  = 0.03" "reenter"
+    "anthracyclins" "Responders" "Moffitt" "4–11" "silencing/release"
+    "mitotic E3 ubiquitine ligase APC/C" "ubiquitine" "re-plated" "Rassf1A/C"
+    "Rassf1C/A" "Rassf1C" "Rassf1C polypeptide" "prometaphase/metaphase"
+    "sensitization/resistance" "clinicians" "a ssembly c heckpoint (SAC)"
+    "heckpoint (SAC)" "heckpoint" "pindle" "non-responders"
+    "metaphase/anaphase" "non-amplified" "haptotaxis" "sublines" "DOX"
+    "the mature follicle" "48 hrs" "2 hrs" "siStat3" "Re-expression" "6hr"
+    "clonotype" "6 hrs" "6hr-activated" "388bp" "both naive and memory subsets"
+    "360bp" "6–48hrs" "the memory (CD44hi) subset" "promoterless" "CD44hi" "lo"
+    "naive subsets" "timepoint" "48hrs" "low/negative" "24–48hrs" "6hrs"
     "resting and activated OVA-specific naive and memory subsets" "48–72hrs"
     "TCR/CD3" "72hrs" "24hrs" "tubule" "a basolateral Cl" "an apical Cl" "pds"
-    "/HCO 3" "typical pH" "FnIII-1" "mildly alkaline extracellular pH"
-    "the apical Cl" "L1FL2" "_L2/IRR" "_L1FL2/IRR" "L1F" "GraphPad" "sigmoid"
-    "phosphoIRR" "lyzates" "laevis" "ectodomain" "gonads" "ectodomains"
-    "acid or base-transporting epithelia" "mg/l" "-1/2" "non-peptide"
-    "insulin-like" "Polε" "Polδ" "Y-family" "RAD6/RAD18" "Myung" "overuse"
+    "/HCO 3" "FnIII-1" "FnIII" "the apical Cl" "L1FL2" "_L2/IRR" "_L1FL2/IRR"
+    "L1F" "GraphPad" "sigmoid" "phosphoIRR" "lyzates" "laevis" "ectodomain"
+    "gonads" "ectodomains" "acid or base-transporting epithelia" "mg/l" "-1/2"
+    "non-peptide" "insulin-like" "Polε" "Polδ" "Y-family" "Myung" "overuse"
     "autocleavage" "Ubl" "D-loop" "polymerses" "Polη" "UBZ" "Polζ" "BDPE"
-    "dihydrodiol" "N-terminal+" "thio" "activites" "PCNA-like" "MPN+" "cN0"
-    "dedifferentiates" "N-stage" "SLN" "T-stage" "Hirata" "meticulous workup"
-    "LI" "workup" "biopsy (SNB)" "SNB" "= 4" "= 3" "= 45" "p = 0.005" "LESDV"
-    "LQTDG" "Sato" "six amphipathic helices" "Boltzmann" "Poisson" "DGKVFDEK"
-    "QLLTLASILREDGKVFD" "26-amino-acid-long" "foldamer" "rmsd" "-l" "l" "-k"
-    "k" "Δ27–82" "SAQKNQEQLLTLASILREDGKVFDEK" "N-labelled" "co-ordination"
-    "topology" "the approximate dimensions 56×47×40 " "×40 " "protomers"
-    "protomer" "co-ordinates" "MOLREP" "PROCHECK" "REFMAC" "autoSHARP" "SHELXS"
-    "Patterson" "Scala" "MOSFLM" "Grenoble" "ESRF" "beamline" "Mar345" "RU-300"
-    "Rigaku" "=175.2 " "=66.8 " "methoxyethoxy" "M 1-butyl-3-methylimidazolium"
-    "=67.4 " "=114.7 " "=137.7 " "NaH" "=242.1 " "=143.9 "
-    "approximately 15 mg/ml" "approximately 4 mg/ml" "approximately 20 mg/ml"
-    "Qdat" "ICx" "SensiQ" "HBS" "MHz" "spectrometer" "Avance" "Bruker" "Unicam"
-    "Vis" "Superdex" "Tris/HCl" "imidazole" "pH " "-thiogalactopyranoside"
-    "thiogalactopyranoside" "isopropyl" "pQE50" "Qiagen" "HindIII" "BamHI"
-    "Genomforschung" "für" "Ressourcenzentrum" "Deutsches" "RZPD" "Descartes"
-    "René" "ckSoul" "S2B" "S2A" "anti-parallel" "Amember" "hepatectomy (PH)"
-    "sirtuins" "MCF-7/shNrf2" "MCF-7/pre-miR-28" "CoIP" "pri-miR-28"
-    "Pre-miR-28" "pre-miR-28" "Pri-miR-28" "pfRG"
+    "dihydrodiol" "N-terminal+" "Joseph" "Machado" "thio" "activites"
+    "PCNA-like" "MPN+" "cN0" "dedifferentiates" "N-stage" "T-stage" "Hirata"
+    "meticulous workup" "LI" "workup" "biopsy (SNB)" "SNB" "= 4" "= 3" "= 45"
+    "p = 0.005" "LESDV" "LQTDG" "Sato" "six amphipathic helices" "Boltzmann"
+    "Poisson" "DGKVFDEK" "QLLTLASILREDGKVFD" "26-amino-acid-long" "foldamer"
+    "rmsd" "-l" "l" "-k" "k" "Δ27–82" "N- 1" "SAQKNQEQLLTLASILREDGKVFDEK"
+    "N-labelled" "co-ordination" "topology"
+    "the approximate dimensions 56×47×40 " "×40 " "protomers" "protomer"
+    "co-ordinates" "MOLREP" "PROCHECK" "REFMAC" "autoSHARP" "SHELXS"
+    "Patterson" "Scala" "MOSFLM" "Grenoble" "ESRF" "beamline" "Mar345" "Rigaku"
+    "=175.2 " "=66.8 " "methoxyethoxy" "M 1-butyl-3-methylimidazolium" "=67.4 "
+    "=114.7 " "=137.7 " "NaH" "=242.1 " "=143.9 " "approximately 15 mg/ml"
+    "approximately 4 mg/ml" "approximately 20 mg/ml" "Qdat" "ICx" "SensiQ"
+    "HBS" "MHz" "spectrometer" "Avance" "Bruker" "Unicam" "Vis" "Superdex"
+    "Tris/HCl" "imidazole" "-thiogalactopyranoside" "thiogalactopyranoside"
+    "isopropyl" "pQE50" "Qiagen" "HindIII" "BamHI" "Genomforschung" "für"
+    "Ressourcenzentrum" "Deutsches" "RZPD" "Descartes" "René" "ckSoul" "S2B"
+    "S2A" "anti-parallel" "Amember" "hepatectomy (PH)" "sirtuins"
+    "MCF-7/shNrf2" "CoIP" "Pre-miR-28" "pre-miR-28" "pfRG"
     "CTAAAA (GtoC) C (TtoA) C (CtoG) TACTGTG" "TACTGTG" "CtoG" "TtoA" "GtoC"
     "CTAAAA" "MRE" "miRDB" "/miRDB" "glucuronosyl" "-glutamylcysteine"
     "glutamylcysteine" "μ g/ml" "GU" "polyA" "stabilization/accumulation"
-    "FXR1" "∼80%" "rotein" "ental" "ragile" "GFPu" "Calu" "occurred 4 h" "coll"
-    "CELF" "p21 WAF1/CIP1" "10 d" "∼45%" "co- localization" "pg/L" "NA20"
-    "NA420" "Crohn's" "lipopolysaccharide (LPS)"
-    "the profound non-permissiveness" "non-inflammatory" "rhTGF" "g protein/mL"
-    "pNF" "pseudovirons" "NA353" "jejunum" "The unique non-permissiveness"
-    "human immunodeficiency virus-1" "intestinal macrophages non-permissive"
-    "the unique non-permissiveness" "non-permissiveness" "S-CM" "pNL4-3"
-    "yet-to-be-identified" "anti-HIV-1" "pg/mL" "P  = 0.039" "P  = 0.0001"
-    "gel/filter" "apoptosis/necrosis" "Candolfi"
+    "∼80%" "rotein" "ental" "ragile" "GFPu" "Calu" "occurred 4 h" "coll"
+    "p21 WAF1/CIP1" "10 d" "∼45%" "co- localization" "pg/L" "NA20" "NA420"
+    "Crohn's" "lipopolysaccharide (LPS)" "the profound non-permissiveness"
+    "non-inflammatory" "rhTGF" "pNF" "pseudovirons" "NA353" "jejunum"
+    "The unique non-permissiveness" "human immunodeficiency virus-1"
+    "intestinal macrophages non-permissive" "the unique non-permissiveness"
+    "non-permissiveness" "pNL4-3" "yet-to-be-identified" "anti-HIV-1" "pg/mL"
+    "P  = 0.039" "P  = 0.0001" "gel/filter" "apoptosis/necrosis" "Candolfi"
     "metastatic morphology/phenotype" "Girton" "non-compacted" "MMX"
     "non-sheared" "density/permeability" "dynes/cm 2" "m/sec" "Jain" "mg/ml"
-    "subarachnoid" "Darcy" "Δ P" "Braun" "Wadehra" "non-raft" "cyclodextrin"
-    "Brij" "Ishikawa/V" "Ishikawa/EMP2" "Approximately 35±3%" "HEC-1A/RIBO"
-    "HEC-1A/EMP2" "HEC-1A/V" "endometrium" "membrane protein-2" "p = 0.02"
-    "p = 0.01" "p = 0.03" "p = 0.019" "N -linked" "NeuroAIDS"
-    "β-III-tubulin-positive" "LPS+HIV" "TNF-R1R2" "NB27" "siGLO" "LPS+HIV-MCM"
-    "NPIM" "Parkinson's" "Alzheimer's" "siSTAT3" "sicon" "HIVE" "Jak-STAT3"
-    "p ≤0.05" "2N" "1 ×10" "SPARMS" "menas" "3T3-L1cell line"
-    "whose mouse homolog" "scute" "achaete" "H3K9" "metylxanthine" "isobutyl"
-    "PPRE" "trimethylate" "homeodomain (PHD)" "homeodomain" "JMJD2/KDM4"
-    "Mellitus" "co-repressors" "piloid" "nonstem" "late passage neurospheres"
-    "cortex-derived neurospheres" "bivariate" "PANC"
-    "human cortical neurospheres"
+    "subarachnoid" "CNS-1" "Darcy" "Δ P" "Braun" "Wadehra" "non-raft"
+    "cyclodextrin" "Brij" "Ishikawa/V" "Ishikawa/EMP2" "Approximately 35±3%"
+    "HEC-1A/RIBO" "HEC-1A/EMP2" "HEC-1A/V" "endometrium" "p = 0.02" "p = 0.01"
+    "p = 0.03" "p = 0.019" "N -linked" "NeuroAIDS" "β-III-tubulin-positive"
+    "LPS+HIV" "TNF-R1R2" "NB27" "siGLO" "LPS+HIV-MCM" "NPIM" "Parkinson's"
+    "Alzheimer's" "siSTAT3" "sicon" "HIVE" "Jak-STAT3" "p ≤0.05" "2N" "1 ×10"
+    "SPARMS" "menas" "3T3-L1cell line" "whose mouse homolog" "scute" "achaete"
+    "metylxanthine" "isobutyl" "PPRE" "trimethylate" "homeodomain (PHD)"
+    "homeodomain" "JMJD2/KDM4" "Mellitus" "co-repressor" "co-repressors"
+    "piloid" "nonstem" "late passage neurospheres"
+    "cortex-derived neurospheres" "bivariate" "human cortical neurospheres"
     "early-passage BRAF V600E -transduced neurospheres" "nonsignificant"
     "cortical neural stemcells" "stemcells" "V600E 1" "trimester" "7q34"
-    "pathobiology" "P = 0.0002" "n = 3" "P = 0.0001" "= 13" "1-mm"
-    "cyclin-dependent kinase-2" "BATTLE" "trials--enhanced" "here--a"
-    "acneiform" "representative photomicrographs" "photomicrographs"
-    "Clinical/translational" "clinical/translational" "Rexinoids" "rexinoids"
-    "NNK" "rexinoid" "P = 0.008" "P = 0.02" "P = 0.03" "non-small-cell" "/AML"
-    "CD34+" "the longest tertile" "tertile" "tertiles" "=65" "PBG" "TLs"
-    "CD15+" "PBL" "TL" "pack-years" "Mbp" "Hapmap" "sporadic prostate caner"
-    "caner" "JHH" "rs1903858" "rs12573787" "FBAT" "Co-segregation" "10q23"
-    "CNVs" "CGEMS" "Sweden" "co-segregation" "HPC" "insertion/deletions"
-    "n =188" "re-sequencing" "readouts" "BCFG" "datapoints" "heatmap" "pFAK"
-    "pY530" "pY703STAT3" "pY204ERK" "577FAK" "shSrc" "pY419" "RXF-393" "RXF"
-    "Fuhrman" "phosphatase-like" "plex" "shVHL" "and -2α" "sarcomatoid"
-    "chromophobe" "phosphatase 1B" "4G10" "p= 0.04" "~75%" "≥5%" "re-analysis"
-    "gastroentero" "nomograms" "prognostic/predictive" "P  = 0.009"
+    "pathobiology" "P = 0.0002" "n = 3" "P = 0.0001" "= 13" "1-mm" "BATTLE"
+    "trials--enhanced" "here--a" "acneiform" "representative photomicrographs"
+    "photomicrographs" "Clinical/translational" "clinical/translational"
+    "Rexinoids" "rexinoids" "NNK" "rexinoid" "P = 0.008" "P = 0.02" "P = 0.03"
+    "non-small-cell" "CD34+" "the longest tertile" "tertile" "tertiles" "=65"
+    "PBG" "CD15+" "pack-years" "Mbp" "Hapmap" "sporadic prostate caner" "caner"
+    "JHH" "rs1903858" "rs12573787" "FBAT" "Co-segregation" "10q23" "CNVs"
+    "CGEMS" "Sweden" "co-segregation" "HPC" "insertion/deletions" "n =188"
+    "re-sequencing" "readouts" "BCFG" "datapoints" "heatmap" "pFAK" "pY530"
+    "pY703STAT3" "pY204ERK" "577FAK" "shSrc" "pY419" "RXF-393" "RXF" "Fuhrman"
+    "phosphatase-like" "plex" "shVHL" "and -2α" "sarcomatoid" "chromophobe"
+    "phosphatase 1B" "4G10" "p= 0.04" "~75%" "≥5%" "re-analysis" "gastroentero"
+    "e.g. tumor histology" "nomograms" "prognostic/predictive" "P  = 0.009"
     "P  = 0.028" "P  = 0.005" "P  = 0.001" "= 2" "-bisphosphate"
     "phosphoinositides" "Nox2ds-tat" "carotid" "Nox2ds" "its vascular sequelae"
     "sulfhydryl" "flavocytochrome" "the vascular NOX1 and NOX2 oxidases"
-    "severe genetic condition CGD" "benzoquinolines" "hydrazides" "oxalyl"
-    "flavonoids" "ML171" "acetylphenothiazine" "Pyrazolopyridine" "VAS3947"
-    "Triazolopyrimidines" "Nox" "aminoethyl" "Alzheimer’s" "vasorelaxant"
-    "vascular NADPH oxidases" "FAD" "multisubunit" "guanylyl" "tetrahydro"
-    "ischaemia" "non-radical" "CGD" "vascular NOX1 and NOX2 oxidases"
-    "oxidases" "non-phagocytic" "epitheloid" "myosine"
-    "MCF-7 spheroid-induced CCID" "ALOXs" "Immunocytochemistry" "overs"
-    "interefere" "disassemby" "-HETE-mediated"
+    "benzoquinolines" "hydrazides" "oxalyl" "ML171" "acetylphenothiazine"
+    "Pyrazolopyridine" "Triazolopyrimidines" "Nox" "aminoethyl" "Alzheimer’s"
+    "vasorelaxant" "E-deficient" "vascular NADPH oxidases" "FAD" "multisubunit"
+    "guanylyl" "tetrahydro" "ischaemia" "non-radical"
+    "vascular NOX1 and NOX2 oxidases" "oxidases" "non-phagocytic" "epitheloid"
+    "myosine" "MCF-7 spheroid-induced CCID" "ALOXs" "Immunocytochemistry"
+    "overs" "interefere" "disassemby" "-HETE-mediated"
     "the underneath growing LEC monolayer" "CCIDs" "postsentinel" "emboli"
     "-HETE-induced" "concomittant" "CCID"
     "telomerase-immortalised human lymphendothelial cell (LEC) monolayers"
     "lymphendothelium" "μ g " "μ l" "∼50%" "co-culture" "osetoblasts"
-    "sulfhydryls" "Kumar" "SDF1α" "stromal cell-derived factor 1α" "Steck"
-    "non-cancer" "derivates" "its schwannian derivatives SHEP-2" "SHEP-2"
-    "LC50" "Burlingame" "Brouwer" "Passoni" "pALK" "NBL" "p  = 0.08"
-    "p  = 0.05" "= 8" "4,5-dimethylthiazol-2-yl" "24 h" "= 0" "n  = 4"
-    "p  = 0.03" "p  = 0.01" "glycostructures" "C-mannosylation" "Wagner"
-    "mannosidases" "procaspase-8a/b" "glycomutant" "N118Q/N136Q" "Neumann"
+    "sulfhydryls" "Kumar" "SDF1α" "Steck" "non-cancer" "derivates" "LC50"
+    "Burlingame" "Brouwer" "Passoni" "pALK" "p  = 0.08" "p  = 0.05" "= 8"
+    "4,5-dimethylthiazol-2-yl" "24 h" "= 0" "n  = 4" "p  = 0.03" "p  = 0.01"
+    "glycostructures" "C-mannosylation" "Wagner" "mannosidases"
+    "procaspase-8a/b" "glycomutant" "N118Q/N136Q" "Neumann"
     "a possible N-glycosylation" "glycomutants" "N-glycosidase" "J16" "GlyProt"
     "glycan" "N-glycosylated" "glycoconjugates" "sialyltransferases" "glycans"
-    "N-linked" "other/are" "PLAD" "heterotetramer" "prodomains" "DED"
+    "N-linked" "other/are" "PLAD" "heterotetramer" "prodomains"
     "N-deglycosylation" "cholerae (VCN)" "VCN" "cholerae" "deoxymannojirimycin"
     "glycostructure" "O-glycosylation" "N-Glycosylation" "catabolite" "biostat"
     "phosphorylation/inactivation" "Sphingosine kinase-1" "≤3" "≥4"
     "importinβ1" "importin-α-importin-β1" "RanQ69L" "RacN17" "fluorophore"
-    "fluorophores" "‘antiparallel’" "half-time" "ROI" "Förster" "αand"
-    "infectives" "capsid" "D-peptides" "co-enzyme/co-substrate" "pharmacophore"
-    "EAIHHE" "viral progeny" "nano" "HSQC" "gatekeeper" "Δ158-178" "BH10"
-    "the two countercurrent helices" "a previously unresolved additional helix"
-    "gatekeepers" "α5" "α4" "LAI" "NI3-11" "NI3-3" "bilayer" "Δ1-44" "AxxAxA"
-    "dileucines" "NI3-1" "YSPFSW" "VSWSPD" "NI1-3" "NI1-2" "NI1-1"
-    "isothermal titration calorimetry (ITC)" "calorimetry (ITC)" "ITC"
-    "calorimetry" "CVLS" "MGxxxS" "CQC" "SPFSW" "SWSPD" "AIHHE" "PxxPxR"
-    "ExxxLL" "dileucine" "an amphipathic helix" "HAART" "NI" "NIs"
-    "Co-Immunoprecipitation" "non-polar" "anti-HIV" "Gd 3+" "Naim" "Raimondi"
-    "Hiyoshi" "gadolinium" "Fabbri" "Takahashi" "desoxy" "cellulosum"
-    "Sorangium" "myxobacterium" "EpoB" "EpoA" "novyi" "Clostridia" "bovis"
-    "NPS-2390" "NPS" "Pitari" "aeruginosa" "parahaemolyticus" "n = 3"
-    "non-transfected" "vitro" "the lung alveolar epithelium"
+    "fluorophores" "‘antiparallel’" "half-time" "Ds" "Förster"
+    "transcription-3" "αand" "infectives" "capsid" "D-peptides"
+    "co-enzyme/co-substrate" "pharmacophore" "EAIHHE" "viral progeny" "nano"
+    "HSQC" "gatekeeper" "Δ158-178" "BH10" "the two countercurrent helices"
+    "a previously unresolved additional helix" "gatekeepers" "α5" "α4" "LAI"
+    "NI3-11" "NI3-3" "bilayer" "Δ1-44" "AxxAxA" "dileucines" "NI3-1" "YSPFSW"
+    "VSWSPD" "NI1-3" "NI1-1" "isothermal titration calorimetry (ITC)"
+    "calorimetry (ITC)" "ITC" "calorimetry" "CVLS" "MGxxxS" "CQC" "SPFSW"
+    "SWSPD" "AIHHE" "PxxPxR" "ExxxLL" "dileucine" "an amphipathic helix"
+    "HAART" "NI" "NIs" "Co-Immunoprecipitation" "non-polar" "anti-HIV" "Gd 3+"
+    "Naim" "Raimondi" "Hiyoshi" "gadolinium" "Fabbri" "Takahashi" "desoxy"
+    "cellulosum" "Sorangium" "myxobacterium" "EpoB" "EpoA" "novyi" "Clostridia"
+    "bovis" "NPS-2390" "NPS" "Fura" "Pitari" "aeruginosa" "parahaemolyticus"
+    "n = 3" "non-transfected" "vitro" "the lung alveolar epithelium"
     "stimulatory/inhibitory" "UniPROBE" "Capaldi" "7A1" "IPF" "non-labeled"
     "44K" "×10 s" "Kd" "Efp" "shCSN" "stablizies" "co-ip" "co-elutes" "wree"
-    "pSilencer" "co-elute" "14-3-3σ" "10D" "mM/min" "M/min" "yang" "yin"
+    "pSilencer" "co-elute" "14-3-3σ" "10D" "mM/min" "M/min" "yang"
     "d-flow–mediated ONOO" "Antinitrotyrosine" "antinitrotyrosine" "7-wk-old"
     "TUNEL-" "Fr" "pBIND" "ΔNES" "TBAP" "nonimmune" "CATζ" "D-flow"
-    "lymphoma/leukemia-2" "unique atheroprone" "ONOO" "n = 7" "anti–vascular"
-    "8 wk" "-nitro-" "p53 functions" "tetrakis" "STATy" "Biol" "Heo" "sirtonol"
-    "Tenovins" "ONYX" "USP2a" "xenogaft" "non-covalent" "p53 function"
-    "These unique non-degradation" "p53-6KR" "non-genotoxic" "non-stressed"
-    "phosphospecific antibodies to 14-3-3" "at least 72 h" "IIa" "PYR-41" "PYR"
-    "-acetyl-Leu-Leu-norleucinal (ALLN)" "VAD" "z" "subG" "H4K12ac"
-    "glycogen synthase kinase-3β" "non-histone" "metalloprotease-2" "non-Smad"
-    "coworkers" "autostimulate" "pCAGA" "GADD45β" "trypanblue"
-    "cell migration/invasion" "the respective Smads" "lamellopodia" "TβRs"
-    "TGF-βoverexpression" "Smads" "non-kinase" "cells/cm 2" "Thebault"
-    "Tindall" "shFRGR" "shFGFR" "Gleason" "prostatectomies" "PCas" "shSRF"
-    "Glinsky" "p=0.007" "anti-tumorigenic" "Seiwert" "tunel" "p=0.0004"
-    "at 5min" "2hr" "8 hr" "8hr" "p=0.038" "p=0.0002" "p=0.0003" "Cal-33"
-    "PCI-15B cells" "μmol/L" "UM-22B cells" "chemoradiotherapy" "=0.0011"
-    "24hr" "72hr" "sulfide" "re-oxygenation" "9Lys" "histone 2A" "MBD 2/3" "pb"
-    "bisulfate" "hypoxia-induced factor 1α" "de-silencing" "MethyLight" "5 ×10"
-    "ΔC" "caspase 9a/b" "caspase9b" "Krainer" "resistance/sensitivity"
+    "unique atheroprone" "ONOO" "n = 7" "anti–vascular" "8 wk" "-nitro-"
+    "p53 functions" "tetrakis" "STATy" "Biol" "Heo" "sirtonol" "Tenovins"
+    "ONYX" "USP2a" "xenogaft" "non-covalent" "p53 function"
+    "These unique non-degradation" "p53-6KR" "at least 4 ubiquitins"
+    "non-genotoxic" "non-stressed" "phosphospecific antibodies to 14-3-3"
+    "at least 72 h" "IIa" "PYR-41" "PYR" "-acetyl-Leu-Leu-norleucinal (ALLN)"
+    "VAD" "z" "subG" "H4K12ac" "glycogen synthase kinase-3β"
+    "the previously described ones" "non-Smad" "coworkers" "autostimulate"
+    "pCAGA" "GADD45β" "trypanblue" "cell migration/invasion" "lamellopodia"
+    "TβRs" "TGF-βoverexpression" "non-kinase" "cells/cm 2" "Thebault" "Tindall"
+    "shFRGR" "shFGFR" "Gleason" "prostatectomies" "PCas" "shSRF" "Glinsky"
+    "p=0.007" "anti-tumorigenic" "Seiwert" "tunel" "p=0.0004" "at 5min" "2hr"
+    "8 hr" "8hr" "p=0.038" "p=0.0002" "p=0.0003" "Cal-33" "PCI-15B cells"
+    "μmol/L" "UM-22B cells" "chemoradiotherapy" "=0.0011" "24hr" "72hr"
+    "sulfide" "re-oxygenation" "9Lys" "histone 2A" "MBD 2/3" "pb" "bisulfate"
+    "factor 1α" "de-silencing" "MethyLight" "5 ×10" "ΔC" "caspase 9a/b"
+    "caspase9b" "Krainer" "sub-IC 50" "resistance/sensitivity"
     "de-sensitization" "DNR" "C9a/C9b" "ASRO" "ASROs" "miniene"
-    "mutated C9-I6/ISE co-transfected" "QA" "QD" "SRSF" "Bio-NSC-2"
-    "inclusion/exclusion" "ESS-2" "ESS-1" "caspase 9a/9b" "minigene" "ESE"
-    "ISE" "caspase 9 as" "Caspase 9b" "caspase 9a" "denovo" "caspase-9b"
-    "the pro-apoptotic caspase 9a" "SR" "caspase 9b" "n = 4" "n = 6" "1.0 × 10"
-    "mg/mL" "~ 70%" "Obsil" "B23/NPM" "T308/S473" "co-crystallized" "P34A"
-    "and 3X-RxR" "steadystate" "to 14-3-3ζ" "pFoxO" "pFoxO3" "3XA" "48-hours"
-    "14-3-3ζ" "RxRxxS" "nuclear/cytoplasmic" "RxRxxS/T" "presequences"
-    "TFSEARCH" "anti-acetylated" "hromatin" "p53-D281G L22Q/W23S" "L22Q/W23S"
-    "QNLFLGSLTSR" "TVLEHYALEDDPLAAFK" "TIALNGVEDVR" "VLLDLSAFLK" "PWDGNSDDR"
-    "LQPYNGVALR" "AQGPQQQPGSEGPSYAK" "immunoprecipitants" "nner" "anti-Acetyl"
-    "cell survival/differentiation" "many residual epithelia" "AR +" "/Ymice"
-    "histopathology" "n=6" "co-targeted" "=6" "nearly 100% AR+" "AR+" "UCLA"
-    "AR-low/negative" "n=4" "Δ/" "n=3" "Tfmmice" "Tfmmutant" "/Yprostate"
-    "/Ycells" "whilePten" "WT urogenital mesenchyme (UGSM)" "UGSM" "mesenchyme"
-    "FUCRW" "lenti" "fromPten" "=4" "/Yprostates" "/Ymutants" "Ki67 +" "theAr"
-    "/Y" "L/L" "two public datasets" "a hypergeometric overlap algorithm"
-    "the secretory epithelium" "10mg/kg" "0–3" "cIAP" "TNFRicd" "cIAPs"
-    "100ng/ml" "P-value" "Ni"
+    "mutated C9-I6/ISE co-transfected" "QA" "QD" "SRSF" "inclusion/exclusion"
+    "ESS-1" "ESS" "caspase 9a/9b" "minigene" "ESE" "ISE" "caspase 9 as"
+    "Caspase 9b" "caspase 9a" "denovo" "caspase-9b" "caspase 9b" "n = 4"
+    "n = 6" "1.0 × 10" "mg/mL" "~ 70%" "Obsil" "T308/S473" "co-crystallized"
+    "P34A" "and 3X-RxR" "steadystate" "to 14-3-3ζ" "pFoxO" "pFoxO3" "3XA"
+    "48-hours" "14-3-3ζ" "RxRxxS" "nuclear/cytoplasmic" "RxRxxS/T"
+    "presequences" "TFSEARCH" "anti-acetylated" "hromatin"
+    "p53-D281G L22Q/W23S" "L22Q/W23S" "QNLFLGSLTSR" "TVLEHYALEDDPLAAFK"
+    "TIALNGVEDVR" "VLLDLSAFLK" "PWDGNSDDR" "LQPYNGVALR" "AQGPQQQPGSEGPSYAK"
+    "immunoprecipitants" "nner" "anti-Acetyl" "cell survival/differentiation"
+    "many residual epithelia" "AR +" "/Ymice" "histopathology" "n=6"
+    "co-targeted" "=6" "nearly 100% AR+" "AR+" "UCLA" "AR-low/negative" "n=4"
+    "Δ/" "n=3" "Tfmmice" "Tfmmutant" "/Yprostate" "/Ycells" "whilePten"
+    "WT urogenital mesenchyme (UGSM)" "UGSM" "mesenchyme" "FUCRW" "lenti"
+    "fromPten" "=4" "/Yprostates" "/Ymutants" "Ki67 +" "theAr" "/Y" "L/L"
+    "two public datasets" "a hypergeometric overlap algorithm"
+    "the secretory epithelium" "10mg/kg" "0–3" "cIAP" "TNFRicd"
+    "the slower ones" "cIAPs" "100ng/ml" "P-value" "Ni"
     "significantly (ANOVA 5′ p < 0.0001, 15′ p < 0.0001) greater" "MFI"
-    "directly increasing vesicular pH" "late endosomes/multivesicular bodies"
-    "SIE" "Sos" "clearer" "lateendosome" "co -activators" "Spindle-like"
-    "RON160" "pRSK2" "granule-like" "DSU" "TGF-1β" "XAV" "Darby" "EMT-like"
-    "spindle-like" "non-stimulated" "lymphoblasts" "CCD-18Co" "hexamers"
-    "hexamer" "subcomplexes" "heliquinomycin" "UUT" "pN" "subcomplex" "AAA+"
-    "Minichromosome" "U -test" "phenylmethylsulfonyl" "hydroxyethyl" "CK1δ"
-    "Sugiyama" "Glickman" "transposons" "phosphosites" "HAUS" "α 1c"
-    "hypomethylating agent 5-aza-2" "5-aza-2" "transfectants" "autoradiography"
-    "η/L" "λ/ι" "aPKCs" "nPKCs" "cPKCs" "Hervouet" "DNMT1b" "dI-dC"
-    "Co-localization" "βI" "the ancestral combined genotype"
+    "late endosomes/multivesicular bodies" "SIE" "Sos" "clearer" "lateendosome"
+    "co -activators" "Spindle-like" "RON160" "pRSK2" "granule-like" "DSU"
+    "TGF-1β" "XAV" "Darby" "EMT-like" "spindle-like" "-β1" "non-stimulated"
+    "lymphoblasts" "CCD-18Co" "hexamers" "hexamer" "subcomplexes" "HFL-1"
+    "heliquinomycin" "UUT" "pN" "subcomplex" "AAA+" "Minichromosome" "U -test"
+    "phenylmethylsulfonyl" "hydroxyethyl" "CK1δ" "Sugiyama" "Glickman"
+    "transposons" "phosphosites" "HAUS" "α 1c" "transfectants"
+    "autoradiography" "η/L" "λ/ι" "aPKCs" "nPKCs" "cPKCs" "Hervouet" "DNMT1b"
+    "dI-dC" "Co-localization" "βI" "the ancestral combined genotype"
     "the ancestral combined genotypes" "Lehmann" "Lunn" "Punjab"
     "the Punjabi’s" "Turkish" "Guven" "hypomorph" "polymorphismwith"
     "the trabecular meshwork" "Unal" "non-affected" "AA/GG" "z=3.42" "z=3.00"
-    "Genotypes" "OR=2.44" "=12.1" "CC" "Male+Female" "IOP" "Pakistan" "Punjabi"
-    "IIH" "trabecular meshwork" "AA/GA" "AC/GA" "CI=1" "rs13181" "rs25487"
-    "PCAG" "POAG" "±10" "=15" "19q13.2" "slightly higher ORs" "ORs" "=6.01×10"
-    "p=1.24×10" "rs4975605" "ther" "rs210162" "C/T" "p=1.28×10" "=4.07×10"
-    "=6.70×10" "the previously identified risk SNP rs995030"
-    "rs2046971 ( KITLG )" "rs2046971"
+    "Genotypes" "OR=2.44" "=12.1" "CC" "=4.56" "Male+Female" "IOP" "Pakistan"
+    "Punjabi" "bulky adducts" "IIH" "polymerase-1" "trabecular meshwork"
+    "AA/GA" "CI=1" "rs13181" "rs25487" "PCAG" "POAG" "±10" "=15" "19q13.2"
+    "slightly higher ORs" "ORs" "=6.01×10" "p=1.24×10" "rs4975605" "ther"
+    "rs210162" "C/T" "p=1.28×10" "=4.07×10" "=6.70×10"
+    "the previously identified risk SNP rs995030" "rs2046971 ( KITLG )"
+    "rs2046971"
     "the identified risk SNPs, rs210138 (within an intron of BAK1 )," "Greene"
-    "rs995030" "rs755383" "rs4635969" "rs210138" "=3" "A/G" "non-risk" "c"
-    "P53β" "cofactors/regulators" "HDF1314" "PANTHER" "null/mutant" "9/34"
-    "superfamily member 10D" "unresponsiveness" "19 P" "- 11" "2-3" "1960G"
-    "symptomatic males and females is 1:1" "is 1:1" "screenings" "VI" "III-15"
+    "rs995030" "rs755383" "rs4635969" "rs210138" "=3" "A/G" "non-risk" "P53β"
+    "cofactors/regulators" "HDF1314" "PANTHER" "null/mutant" "9/34"
+    "superfamily member 10D" "unresponsiveness" "19 P" "- 11" "1960G"
+    "symptomatic males and females is 1:1" "is 1:1" "screenings" "III-15"
     "III-3" "IV-16" "LOVD" "Leiden" "Knudson’s" "Knudson" "13q14" "OMIM"
     "deletion/insertions" "4/11" "exon 19" "CnaB" "Spacer"
     "Gram-positive cocci" "PrtF2" "SfbI/PrtF1" "sfbI" "SfbI/" "SfbI"
-    "endosomal/" "TagRFP" "The parental M3 GAS" "an invasive M3 GAS" "pDCerm"
-    "agalactiae (GBS)" "agalactiae" "phagocytosis-like" "invasive GAS"
-    "bacteraemia" "Serotype" "pfbp" "fbaB" "F2/PFBP" "PrtF1"
-    "pathogenic Gram-positive cocci" "cocci" "Streptococcal TSLS" "TSLS"
-    "fasciitis" "the pharyngeal mucosa" "FbaB"
+    "endosomal/" "TagRFP" "pDCerm" "agalactiae (GBS)" "agalactiae"
+    "phagocytosis-like" "bacteraemia" "Serotype" "pfbp" "fbaB" "F2/PFBP"
+    "PrtF1" "pathogenic Gram-positive cocci" "cocci" "Streptococcal TSLS"
+    "TSLS" "fasciitis" "the pharyngeal mucosa" "FbaB"
     "Invasive serotype M3 Streptococcus pyogenes" "pyogenes" "serotype" "A40"
     "simplest" "pTEFb" "Michael" "9-1-1" "phosphoribose" "AlkD" "cereus"
     "benzo" "-nitro-N-nitrosoguanidine" "MUTSα" "MUTS" "orthologues" "CDC18"
-    "RAD3" "Helix" "CENPJ" "TripleT/HSP90" "co-purify" "neoplasias" "Seckel"
+    "RAD3" "Helix" "TripleT/HSP90" "co-purify" "neoplasias" "Seckel"
     "chromatid-" "deoxynucleotides" "sequenceS/TQ" "S/TQs" "PIKK" "subG0"
     "cytometer" "FACSCaliber" "DPBS" "Hercules" "Bio" "iQ" "iCycler"
     "SYBR-green" "SYBR" "SYNGENE" "GeneSnap" "ºC" "Germany" "Hilden" "QIAGEN"
@@ -1822,87 +1792,87 @@
     "Naturally occurring cucurbitacins" "cucurbitacins" "nonredundant" "FERM"
     "micrometastases" "neg" "β3" "celllike" "TGF-βdependent" "BALB/c" "ΔE-Ecad"
     "Smad2/3" "operant" "extracellular signal-regulated kinase 1/2" "immotile"
-    "mesenchymal-like" "dense and independent organoids" "4T07" "renilla"
-    "cultrues" "an elastic modulus" "modulus" "systemic dormancy" "reinitiate"
-    "organoid" "dormancy" "organoids" "ΔE" "Fos" "YY239/240"
-    "present exogenous antigen" "239/240" "p46Shc" "p52Shc" "co-stimulatory"
-    "pp66ShcA" "p66ShcA" "glycosyl" "pTyr239/240" "Toll-like" "μg/ml"
-    "blockers" "AMPKa" "Podar's" "Podar" "Toretsky's" "Toretsky" "Notario's"
-    "Notario" "Baserga" "CPMZ/MCD" "isobolograms" "inhibition/interference"
-    "inhibiton" "interference/inhibition" "co-precipitated" "Sehat"
-    "AEW541 (AEW)" "AEW" "CPMZ" "MSK1/2" "AEW541" "anti-psoriatic" "FOXN3"
-    "co-ordinately" "healthy human skin explants" "healthy volunteers ex vivo"
-    "DAVID" "≥1.2-fold" "GATA3−/−" "knockin" "phototherapy" "Rácz"
+    "mesenchymal-like" "dense and independent organoids" "4T07" "BALB"
+    "renilla" "cultrues" "an elastic modulus" "modulus" "systemic dormancy"
+    "reinitiate" "organoid" "dormancy" "organoids" "ΔE" "toll-like" "Fos"
+    "YY239/240" "239/240" "p46Shc" "p52Shc" "co-stimulatory" "pp66ShcA"
+    "p66ShcA" "glycosyl" "Toll-like" "μg/ml" "blockers" "Podar's" "Podar"
+    "Toretsky's" "Toretsky" "Notario's" "Notario" "Baserga" "CPMZ/MCD"
+    "isobolograms" "inhibition/interference" "inhibiton"
+    "interference/inhibition" "co-precipitated" "Sehat" "AEW541 (AEW)" "AEW"
+    "CPMZ" "MSK1/2" "AEW541" "anti-psoriatic" "FOXN3" "co-ordinately"
+    "healthy human skin explants" "healthy volunteers ex vivo" "DAVID"
+    "≥1.2-fold" "GATA3−/−" "knockin" "phototherapy" "Rácz"
     "mice xref and ex vivo -stimulated human skin
                 explants"
     "Polymorphisms" "re-induced" "UVB" "psoriasiform" "p  = 0.03" "= 3" "= 5"
-    "Th1/Th17" "A/T" "non-lesional" "and αE-catenin" "to αE-catenin"
-    "in αE-catenin" "crowdedness" "between αE-catenin" "both αE-catenin"
-    "thatαE-catenin" "Conditional deletion of αE-catenin" "the αE-catenin"
+    "Th1/Th17" "non-lesional" "and αE-catenin" "to αE-catenin" "in αE-catenin"
+    "crowdedness" "between αE-catenin" "both αE-catenin" "thatαE-catenin"
+    "Conditional deletion of αE-catenin" "the αE-catenin"
     "conditional deletion of αE-catenin" "→Ala" "11.6±1.78%" "that αE-catenin"
     "Mst" "betweenαE-catenin" "confluentαE-catenin" "andαE-catenin"
     "inαE-catenin" "Dharmacon" "ofαE-catenin" "of αE-catenin" "flfl" "nul"
     "fl/fl" "re-expression" "ΔMbII" "MycER" "MbII" "TASA" "Partanen" "TDLU"
-    "lobule" "100 ng/mL" "urokinase/plasminogen activator" "lactoferrein"
-    "the next 15 h" "uPAR-" "uPAR" "nucleate" "gallbladder" "non-cavitary"
-    "MitoTracker" "explant" "Petri" "endomysium" "perimysium" "methylene"
-    "adhaerentia" "manubria" "dilatations" "visible Tps" "regeneration/repair"
-    "myocardium" "reticulum" "podoms" "podomeres" "micrometeres" "endocardium"
-    "ICLCs" "explants" "non-satellite" "thin cell prolongations— telopodes"
-    "moniliform" "Tps" "telopodes" "telocytes" "Fontemaggi" "+Id2" "2Gy" "-luc"
+    "lobule" "100 ng/mL" "lactoferrein" "the next 15 h" "nucleate" "Pax-7"
+    "gallbladder" "non-cavitary" "MitoTracker" "explant" "Petri" "endomysium"
+    "perimysium" "methylene" "adhaerentia" "manubria" "dilatations"
+    "regeneration/repair" "myocardium" "reticulum" "podoms" "podomeres"
+    "micrometeres" "endocardium" "ICLCs" "explants" "non-satellite"
+    "moniliform" "telopodes" "telocytes" "Fontemaggi" "+Id2" "2Gy" "-luc"
     "spacers" "RRRCWWGYYY(0-13 bp spacer)RRRCWWGYYY" "spacer" "RRRCWWGYYY"
     "secondary neurospheres" "larger neurospheres" "semi"
     "adenoviral-infected neurospheres" "significantly smaller neurospheres"
     "neurosphere" "Origene" "ofp53" "neurospheres" "SVZ" "P53 is" "stem-like"
     "TCFE2A" "inEbf1" "E2A" "Galen" "ofStat" "forStat" "thatStat" "andPax5"
-    "inSta" "Treiber" "Itgal" "previously published datasets" "theStat5b-CA"
-    "inStat5b-CA" "whetherStat" "andStat5b-CA" "inIL" "TheStat" "bothStat"
-    "resembledStat" "mostStat" "eitherStat" "theStat" "generatedStat" "inStat"
-    "inStat5" "AA4.1" "wk" "at least one subset" "ALL cytogenetic subsets"
-    "andStat" "Blnk" "prepro" "Nordt" "Philadelphia" "J558" "CD19 +"
-    "Complete Freund's" "intraperitoneal 1,25(OH)2D3" "monocytoid" "1000ng/mL"
-    "ELISAs" "1000 ng/mL" "Naïve" "dihydroxyvitamin" "hydroxyvitamin"
-    "previtamin" "dehydrocholesterol" "2D3" "Th17"
-    "the pro-inflammatory Th17 subset" "0-3" "μL" "CD19+" "20 ng/mL" "μ L"
+    "inSta" "Treiber" "Itgal" "previously published datasets" "EBF1-" "EBF"
+    "theStat5b-CA" "inStat5b-CA" "whetherStat" "andStat5b-CA" "inIL" "TheStat"
+    "bothStat" "resembledStat" "mostStat" "eitherStat" "theStat"
+    "generatedStat" "inStat" "inStat5" "AA4.1" "wk" "at least one subset"
+    "ALL cytogenetic subsets" "andStat" "Blnk" "prepro" "Nordt" "Philadelphia"
+    "J558" "CD19 +" "Complete Freund's" "intraperitoneal 1,25(OH)2D3"
+    "monocytoid" "1000ng/mL" "ELISAs" "1000 ng/mL" "dihydroxyvitamin"
+    "hydroxyvitamin" "previtamin" "dehydrocholesterol" "2D3"
+    "encephalomyelitis (EAE)" "Th17" "0-3" "μL" "CD19+" "20 ng/mL" "μ L"
     "Intra" "Non-Deletion-Type" "≥5/50HPF" "Tos" "Demetri" "Liegl" "two-year"
-    "a significantly longer PFS" "re-analyzed" "receive imatinib 400 mg/day"
-    "CALGB" "SWOG" "CDN" "AUS" "Gastro" "EORTC" "mg/day" "Heinrich"
-    "mitosis/50HPF" "NDTM" "GEIS" "Wardelmann" "IDTs" "Kim" "≥ 5/50HPF"
-    "Lasota" "Miettinen" "-NHI" "NHI" "Fletcher" "Hirota" "p = 0.017"
-    "non-metastatic" "≥10 cm" "immunoglobulin-like" "organise" "Stuart’s"
-    "Antonovsky’s" "Antonovsky" "downer" "Stuart" "PRCA" "HBOC" "BRCA 1/2"
-    "recurrent/founder" "relatively younger" "Norway" "Iceland" "SSCP" "DHPLC"
-    "Polymorphism" "Augello" "Africa" "Tunisia" "colonizations" "1135insA"
-    "4184del4" "Colombia" "Chilean" "America" "Canada" "Eastern Europe"
-    "Greece" "Russia" "Poland" "Mediterranean" "Sardinia" "northeastern France"
-    "France" "Spanish" "the proband’s" "co-segregates" "Life-time"
-    "breast/ovarian" "histo" "French" "+ 2insG" ".5266dupC" "_3334delCAAG"
-    "delCAAG" "_799delTT" "delTT" "G/C" "A/C" "+ 2" "5382 insC" "LbGAP"
-    "anti-parasitoid" "RabGDI" "re-localizes" "andRac1" "inRac1" "∼57%"
-    "non-parasitized" "parasitizedRac1" "formys" "inmys" "orRac1" "nj4"
-    "homozygousmys" "fromw" "themys" "amys" "homozygousRac1"
-    "the non-permissive temperature only 1% ofmys nj42" "nj42" "myspheroid"
-    "ofmys" "andmys" "myospheroid" "Myospheriod" "ImageJ" "non-permeablized"
-    "J11" "mys" "Rab-αGDI" "PNRC" "Hymenoptera" "immunosurveillance"
-    "Mysopheroid" "Mys" "Myospheroid" "boulardi" "Leptopilina" "parasitoid"
-    "∼60%" "∼65%" "non-permeabilized" "non-permissive" "re-localization"
-    "Presneau" "Shalaby" "pseudogene" "15/18" "oligo" "58% hemizygous and
+    "re-analyzed" "receive imatinib 400 mg/day" "CALGB" "SWOG" "CDN" "AUS"
+    "Gastro" "EORTC" "mg/day" "Heinrich" "mitosis/50HPF" "NDTM" "GEIS"
+    "Wardelmann" "IDTs" "Kim" "≥ 5/50HPF" "Lasota" "Miettinen" "-NHI" "NHI"
+    "Fletcher" "Hirota" "p = 0.017" "non-metastatic" "≥10 cm" "organise"
+    "Stuart’s" "Antonovsky’s" "Antonovsky" "downer" "Stuart" "HBOC" "BRCA 1/2"
+    "recurrent/founder" "the previous ones" "relatively younger" "Norway"
+    "Iceland" "SSCP" "DHPLC" "Polymorphism" "Augello" "Africa" "Tunisia"
+    "colonizations" "1135insA" "4184del4" "Colombia" "Chilean" "America"
+    "Canada" "Eastern Europe" "Greece" "Russia" "Poland" "Mediterranean"
+    "Sardinia" "northeastern France" "France" "Spanish" "the proband’s"
+    "co-segregates" ".1648A/C" "Life-time" "breast/ovarian" "histo" "French"
+    "+ 2insG" ".5266dupC" "_3334delCAAG" "delCAAG" "_799delTT" "delTT" "G/C"
+    "A/C" "+ 2" "5382 insC" "LbGAP" "anti-parasitoid" "RabGDI" "re-localizes"
+    "andRac1" "inRac1" "∼57%" "non-parasitized" "parasitizedRac1" "formys"
+    "inmys" "orRac1" "nj4" "homozygousmys" "fromw" "themys" "amys"
+    "homozygousRac1" "the non-permissive temperature only 1% ofmys nj42" "nj42"
+    "myspheroid" "ofmys" "andmys" "myospheroid" "Myospheriod" "ImageJ"
+    "non-permeablized" "J11" "Rab-αGDI" "PNRC" "Hymenoptera"
+    "immunosurveillance" "Mysopheroid" "Myospheroid" "boulardi" "Leptopilina"
+    "parasitoid" "∼60%" "∼65%" "non-permeabilized" "non-permissive"
+    "re-localization" "Presneau" "Shalaby" "pseudogene" "15/18" "oligo"
+    "58% hemizygous and
                 3/26"
-    "approximately 76 kilobases" "±0.4" "Brachyury" "Biosystems" "CH33"
-    "CDKN2A/B" "pixel" "CH36" "10q" "9p" "CNV" "approximately 158 kilobases"
-    "CH14" "CH7" "CH39" "subranges" "7.1±7.2%" "CH37" "CH34" "clivus"
-    "chondroid" "classical chordoma biopsies" "immunoprofile" "myxoid" "sacrum"
-    "notochord" "brachyury" "expression/function" "13/19" "P  = 0.59" "1p36"
-    "= 14" "/µL" "16/20" "duplexes" "GDS2200" "GSE7553" "fresh frozen cSCC"
-    "non-cSCC" "Un" "and 2/8" "RDEB" "Scotland" "ISD" "Polo-like kinase-1"
-    "cSCC" "2 N" "=9" "non-SCC" "autoregulates" "Site-1" "followed 24 h"
-    "Site-2" "siPAX" "Onotology" "siPAX8-2" "siPAX8-1" "siControl"
+    "approximately 76 kilobases" "±0.4" "CH14" "Brachyury" "Biosystems"
+    "CDKN2A/B" "pixel" "CH37" "10q" "9p" "CNV" "approximately 158 kilobases"
+    "subranges" "7.1±7.2%" "CH34" "clivus" "chondroid"
+    "classical chordoma biopsies" "immunoprofile" "myxoid" "sacrum" "notochord"
+    "brachyury" "expression/function" "13/19" "P  = 0.59" "1p36" "= 14" "/µL"
+    "16/20" "duplexes" "GDS2200" "GSE7553" "fresh frozen cSCC" "non-cSCC" "Un"
+    "and 2/8" "RDEB" "Scotland" "ISD" "Polo-like kinase-1" "cSCC" "2 N" "=9"
+    "non-SCC" "autoregulates" "Site-1" "followed 24 h" "Site-2" "siPAX"
+    "Onotology" "siPAX8-2" "siPAX8-1" "siControl"
     "the distal convoluted tubules" "weakest" "Henle" "cyclin-A2" "antigen-3C"
     "megalovirus" "parpaillovirus" "nephron" "hindbrain" "midbrain" "senesce"
     "Δ C" "12 h" "G 0 /G 1" "G 1 /S" "Polyploid" "tetraploid" "triploid"
-    "polyploid" "centromere" "proteosome" "chromatid" "p=0.003" "Chodosh"
-    "Serrano" "UACC-257" "Rap1/2" "deoxytetracycline" "shRNA854" "sh854" "UACC"
-    "melanin" "human Burkitt's" "Burkitt" "Gawecka" "5× 10" "&D" "Huntington’s"
+    "polyploid" "centromere" "proteosome" "chromatid"
+    "pre-cancerous wild-type C57Bl/6" "p=0.003" "Chodosh" "Serrano" "UACC-257"
+    "Rap1/2" "deoxytetracycline" "shRNA854" "sh854" "UACC" "melanin"
+    "human Burkitt's" "Burkitt" "Gawecka" "5× 10" "&D" "Huntington’s"
     "Huntington" "p53 is" "excitotoxins" "p53is" "co-labeled"
     "p53 −/− mice underwent MCAO" "MCAO" "procollagens" "deficiencyleads"
     "Luminex" "neuron/microglia" "co-cultures"
@@ -1920,136 +1890,131 @@
     "only alleles A13–30" "A13–30" "maternal genotype"
     "the maternal and fetal genotypes" "previously assigned genotypes" "CEPH"
     "HAPO" "hyperandrogenism" "Xq" "Bellflower" "Mexican" "Caribbean"
-    "trinucleotide (CAG)" "trinucleotide" "TMP3/4-ALK" "neuro" "interlobe"
-    "only three codons" "Ensembl" "website" "TTC" "CTC" "phosphtidylinositol"
+    "trinucleotide" "TMP3/4-ALK" "neuro" "interlobe" "only three codons"
+    "Ensembl" "website" "TTC" "phosphtidylinositol"
     "anaplastic large-cell non-Hodgkin's" "anaplastic large-cell non-Hodgkin"
     "anti-Flag" "non-Hodgkin" "the endogenously arising DSBs co-localize"
     "arising DSBs co-localize" "DNPH" "carbonyl" "Non-replicating" "MEFS"
     "numbers/cell" "LigIV" "495GOS" "CJ179" "-BOOH" "BOOH" "non-replicating"
     "hyrdoperoxide" "LET" "pKAP-1" "EU" "PFGE" "endogenously arising DNA DSBs"
-    "arising DNA DSBs" "TBH" "non-physiological" "∼15%" "1 × 10"
+    "arising DNA DSBs" "TBH" "non-physiological" "∼15%" "× 10"
     "anti-proliferation" "GeneSet" "184A1" "1-hour" "Kazlauskas" "R-point"
     "culinaris" "non-hodgkin" "4/5" "CA19-9" "2/32" "20/111" "filiae"
     "procalcitonin" "aa81-137" "ammonium" "18-kD-fragment"
     "A schematic overview" "Y-box" "non-cancerous" "= 35" "= 11" "= 5" "= 23"
-    "= 14" "= 20" "Hodgkin" "REMBRANDT" "_3clones" "U1242" "HPRT"
+    "= 14" "= 20" "Hodgkin" "REMBRANDT" "_3clones" "U1242"
     "up-regulated/amplified" "Liang" "Rembrandt" "Meyer" "transwell"
     "Transducers" "non-target" "50 ng/mL" "_2" "Non-Target"
-    "non-receptor tyrosine kinases" "5b" "Bromberg" "non-nuclear" "ellicit"
+    "non-receptor tyrosine kinases" "5b" "non-nuclear" "Bromberg" "ellicit"
     "100 ng/ml" "zymography" "musculature" "μl" "NEO4" "DN5" "DN2"
-    "the parental SRB12-p9" "Stat3β" "Stat3α" "SRB12-p9" "DiGiovanni" "S3DN"
-    "non-transcriptional" "Nu/Nu" "DelNS1" "H5N1" "VAI" "titers" "condon"
-    "antivirus" "assistances" "delNS1" "Huamn" "PcDNA3" "TICs" "trastazumab"
+    "the parental SRB12-p9" "Stat3β" "Stat3α" "SRB12-p9" "metalloproteases-1"
+    "DiGiovanni" "S3DN" "non-transcriptional" "Nu/Nu" "DelNS1" "H5N1" "titers"
+    "condon" "antivirus" "assistances" "delNS1" "Huamn" "PcDNA3" "trastazumab"
     "High/intense" "Nielsen" "basal/TNBC" "low /p16" "weak/null" "high/intense"
     "ACT→TCT" "5193G→A" "LumB" "sporadic TNBCs" "TNBCs" "TNBC" "0–1"
     "cytokeratin 5/6" "High/" "low /" "amplification/overexpression" "high/"
     "cerebella" "occludes" "S1981" "onAtm" "ofAtm" "Frozen" "Rockland" "S1987"
-    "KKRSY" "fromAtm" "Rutgers" "reconfirm" "AWB" "2C1A1" "5C2" "– 2C1A1"
-    "neocortex" "dendrites" "Cerebellar cryostat" "cryostat" "neuropathology"
-    "theAtm" "unlikeAtm" "Awb/Awb" "Bal" "Bal/Bal" "tm1Awb" "tm1Bal" "Awb"
-    "andAtm" "non-functional" "non-responsive" "H & E" "anti-Mouse"
-    "anti-Rabbit" "Cyclin D1 was" "7q21 amplification" "Hsa-miR-124a" "Cycin"
-    "the minimal 7q21amplicon" "semisolid (0.4%) agar" "Monolayer" "Flo1A"
-    "_at" "significantly associated probesets"
-    "the 7 contiguous CDK6 probesets" "only seven probesets" "ANKIB1"
-    "at least one probeset" "probeset" "probesets" "U133" "MGC16142" "C7ORF64"
-    "12q13" "Dekken" "Barrett’s" "the esophageal epithelium" "Barrett"
-    "the minimal amplicon" "minimal amplicon" "amplicon" "7q21" "D-type"
-    "p=0.05" "p≤0.05" "P-values" "72 hrs" "Sutherland" "Alessi" "Du" "RPRAATF"
-    "Hemmings" "Brian" "Zeneca" "Astra" "SFLLRN" "Fii" "Fi" "Bi" "Eii" "Ai"
-    "IGF-1-stimulated" "Akti1/2" "pleckstrin" "bisphosphate" "thrombus"
-    "Urothelial dysplasia" "immunoprofiles" "-2-N-" "thiadiazolidine"
-    "dichlorophenyl" "methoxyarylimino" "casein kinase 2α and" "urothelium"
-    "α and" "a transurethral catheter" "catheter" "UMUC6R" "phosphoinositol"
-    "atelocollagen" "protein phosphatase2A" "Tester" "Owen" "Fligiel" "Lorente"
-    "Aikawa" "Libby" "Geissmann" "Galt" "responder" "mice underwent CLP"
+    "KKRSY" "fromAtm" "Rutgers" "reconfirm" "AWB" "5C2" "2C1A1" "neocortex"
+    "dendrites" "Cerebellar cryostat" "cryostat" "neuropathology" "theAtm"
+    "unlikeAtm" "Awb/Awb" "Bal" "Bal/Bal" "tm1Awb" "tm1Bal" "Awb" "andAtm"
+    "non-functional" "non-responsive" "H & E" "anti-Mouse" "anti-Rabbit"
+    "Cyclin D1 was" "7q21 amplification" "Cycin" "the minimal 7q21amplicon"
+    "semisolid (0.4%) agar" "Monolayer" "Flo1A" "_at"
+    "significantly associated probesets" "the 7 contiguous CDK6 probesets"
+    "only seven probesets" "ANKIB1" "at least one probeset" "probeset"
+    "probesets" "U133" "MGC16142" "C7ORF64" "12q13" "Dekken" "Barrett’s"
+    "the esophageal epithelium" "Barrett" "the minimal amplicon"
+    "minimal amplicon" "amplicon" "7q21" "D-type" "p=0.05" "p≤0.05" "P-values"
+    "72 hrs" "Sutherland" "Alessi" "Du" "RPRAATF" "Hemmings" "Brian" "Zeneca"
+    "Astra" "SFLLRN" "Fii" "Fi" "Bi" "Eii" "Ai" "IGF-1-stimulated" "Akti1/2"
+    "bisphosphate" "thrombus" "Urothelial dysplasia" "immunoprofiles" "-2-N-"
+    "thiadiazolidine" "dichlorophenyl" "methoxyarylimino"
+    "casein kinase 2α and" "urothelium" "α and" "a transurethral catheter"
+    "catheter" "UMUC6R" "phosphoinositol" "atelocollagen" "Tester" "Owen"
+    "Fligiel" "Lorente" "Aikawa" "Libby" "Geissmann" "Galt" "responder"
     "interstitium" "Levi" "anti-thrombotic" "D-dimer" "TFLLRN" "Annane" "12/13"
-    "Amerongen" "Nieuw" "PPACK" "P1pal-12S" "pepducin" "Leger" "Naito" "patho"
-    "h" "MMP-1b" "MMP-Inh-1" "Odake" "∼4–6" "cecum" "Doi" "CLP" "cecal"
-    "Yaguchi" "ProMMP-1" "AKI" "Trivedi" "Goerge" "Boire" "Balbin" "Libert"
-    "Vanlaere" "Rodriguez" "Kaneider" "Bernard" "Riewald" "Kerschen" "Neyrinck"
+    "Amerongen" "Nieuw" "PPACK" "P1pal-12S" "pepducin" "Leger" "Naito" "CF-1"
+    "patho" "h" "MMP-Inh-1" "Odake" "∼4–6" "cecum" "Doi" "cecal" "Yaguchi"
+    "ProMMP-1" "AKI" "Trivedi" "Goerge" "Boire" "Balbin" "Libert" "Vanlaere"
+    "Rodriguez" "Kaneider" "Bernard" "Riewald" "Kerschen" "Neyrinck"
     "Dombrovskiy" "Dellinger" "Slofstra" "Pawlinski" "Esmon" "Rittirsch" "Karl"
-    "Hotchkiss" "Shapiro" "Remick" "Moore" "→See" "MMP-1 as" "MMP-1a"
-    "ortholog" "proMMP-1" "de-identified" "= 1 µ" "7-days" "≥3" "p = 0.03" "≤1"
-    "marcrophages" "MHV" "theta" "nascent viral genomes" "E2F3b" "E2F3a"
-    "viral IE" "co-immunostaining" "pUL44" "co-immunostained" "gB55" "∼10-fold"
-    "progeny" "siATM" "redirect" "IE" "5-day" "PI3-like" "ShNur"
-    "etoposide-treated hMSCs" "Eto" "Pittenger" "intracardiac" "Xl"
-    "fibroblast-like" "erythrocytes" "IDR" "RHS3939-98490780" "anti-leukemic"
-    "CALCUSYN" "ED" "ABT-869" "cinnamyl" "medroxyestradiol"
-    "demethoxygeldanamycin" "4×10" "2 +" "= 1" "Co-IP" "scrutinise"
-    "a particularly favourable CRC subset" "important confounder" "confounder"
-    "HR=1.0" "CI=2" "the possible confounders" "pathological T substage"
-    "substage" "pathological N and M substages" "substages" "CI=11" "CI=10"
-    "CI=0" "CI=7" "=3.9–10.4" "=6.3" "their matched normal colonic mucosa"
-    "asa" "Wnt/calcium" "=4.2" "Ontario" "colorectal tumour subtype" "P =0.007"
-    "=11" "P =0.13" "=6.6" "=5" "⩾50" "P =0.03" "1–3" "=10" "⩾30"
-    "Non-canonical" "pancreatitis" "JAK-STAT3" "KRAS-shp53" "shSTAT3"
-    "shControl" "week-oldPdx1-Cre" "inPdx" "lox/+" "fromPdx" "pancreata"
-    "ofPdx" "thePdx" "crossingPdx" "oncogenicKRAS"
-    "increasingly severe cellular atypia" "Texas" "XW" "PJC" "Hematology" "ABB"
-    "Hopkins" "LRK" "Univ" "MKG" "HHY" "chemo-" "the homozygous genotypes"
-    "nonbulky" "GEJ" "19q" "Only adenocarcinoma histology" "EACs"
-    "heterozygote" "Germline" "PFS" "ECOG" "1-3" "Arg399Gln" "co-investigator"
-    "radioresistance" "polymorphisms (SNP)" "platin" "platins" "DSBR"
-    "radiochemoresistance" "399Gln"
+    "Hotchkiss" "Shapiro" "Remick" "Moore" "→See" "ortholog" "proMMP-1"
+    "de-identified" "= 1 µ" "7-days" "≥3" "p = 0.03" "≤1" "marcrophages" "MHV"
+    "theta" "nascent viral genomes" "E2F3b" "E2F3a" "gB55" "co-immunostaining"
+    "pUL44" "co-immunostained" "∼10-fold" "progeny" "siATM" "redirect" "5-day"
+    "PI3-like" "ShNur" "pBcl" "etoposide-treated hMSCs" "Eto" "Pittenger"
+    "intracardiac" "Xl" "fibroblast-like" "PolyC" "erythrocytes" "IDR"
+    "RHS3939-98490780" "anti-leukemic" "CALCUSYN" "ED" "cinnamyl"
+    "medroxyestradiol" "demethoxygeldanamycin" "g/mL" "4×10" "= 1" "Co-IP"
+    "scrutinise" "a particularly favourable CRC subset" "important confounder"
+    "confounder" "HR=1.0" "CI=0" "CI=2" "the possible confounders"
+    "pathological T substage" "substage" "pathological N and M substages"
+    "substages" "CI=11" "CI=10" "CI=7" "=3.9–10.4" "=6.3"
+    "their matched normal colonic mucosa" "asa" "Wnt/calcium" "=4.2" "Ontario"
+    "colorectal tumour subtype" "P =0.007" "=11" "P =0.13" "=6.6" "=5" "⩾50"
+    "P =0.03" "1–3" "=10" "⩾30" "Non-canonical" "pancreatitis" "JAK-STAT3"
+    "KRAS-shp53" "shSTAT3" "shControl" "week-oldPdx1-Cre" "inPdx" "lox/+"
+    "fromPdx" "pancreata" "ofPdx" "thePdx" "crossingPdx" "oncogenicKRAS"
+    "increasingly severe cellular atypia" "PanINs" "PanIN" "Texas" "XW" "PJC"
+    "Hematology" "ABB" "Hopkins" "LRK" "Univ" "MKG" "HHY" "chemo-"
+    "the homozygous genotypes" "nonbulky" "GEJ" "19q"
+    "Only adenocarcinoma histology" "EACs" "heterozygote" "Germline" "ECOG"
+    "1-3" "Arg399Gln" "co-investigator" "radioresistance" "polymorphisms (SNP)"
+    "platin" "platins" "DSBR" "radiochemoresistance" "399Gln"
     "received cisplatin-based preoperative radiochemotherapy" "multicenter"
-    "radiochemotherapy" "pCR" "Oncology" "polymorphism (SNP)" "H&Es"
-    "subclasses" "Abcam" "Louis" "Aldrich" "Zeiss" "575-630nm" "HeNe" "pinhole"
-    "NA" "FV300" "Olympus" "Mayo" "conductances" "Cl" "anoctamin"
-    "co-transporter" "/K +" "year-old" "non-adjacent" "PPXY" "IQ" "TEADs"
-    "Barbashina" "1p" "CAMTAs" "CAMTA" "TIG" "breakpoints" "vaso"
-    "7626000-7768000" "breakpoint" "3q25.1" "1p36.23" "sarcoma-like" "parotid"
-    "pleomorphism" "mediastinum" "pleura" "EHEs" "Mendlick" "the skeletal EH"
-    "eosinophilia" "angiolymphoid" "Evans" "histiocytoid" "Rosai" "EH"
-    "Epithelioid" "and 3q25" "EHE" "epithelioid" "hg19" "co-localises"
-    "501mell" "the non-processed inactive form proMMP-2" "non-processed"
-    "coverslips/2D" "meshwork" "dendrite" "FO" "non-reducing" "proMMP-2"
-    "cytoplasmic/nuclear" "FMNL" "I/Matrigel" "transwells" "Raichu"
-    "multiphoton" "RhoA-" "multinucleate" "exoenzyme" "botulinum" "P ≤ 0.01"
+    "radiochemotherapy" "Oncology" "polymorphism (SNP)" "H&Es" "subclasses"
+    "Abcam" "Louis" "Aldrich" "Zeiss" "575-630nm" "HeNe" "pinhole" "NA" "FV300"
+    "Olympus" "Mayo" "conductances" "Cl" "anoctamin" "co-transporter" "/K +"
+    "year-old" "non-adjacent" "PPXY" "IQ" "TEADs" "Barbashina" "1p" "CAMTAs"
+    "CAMTA" "breakpoints" "vaso" ".1:7626000-7768000" "breakpoint" "3q25.1"
+    "1p36.23" "sarcoma-like" "parotid" "pleomorphism" "mediastinum" "pleura"
+    "EHEs" "Mendlick" "eosinophilia" "angiolymphoid" "Evans" "histiocytoid"
+    "Rosai" "Epithelioid" "and 3q25" "EHE" "epithelioid" "hg19" "co-localises"
+    "501mell" "non-processed" "coverslips/2D" "meshwork" "dendrite" "FO"
+    "non-reducing" "cytoplasmic/nuclear" "FMNL" "I/Matrigel" "transwells"
+    "Raichu" "multiphoton" "multinucleate" "exoenzyme" "botulinum" "P ≤ 0.01"
     "=8" "g/ml" "± 6%" "and 3D" "its ancestral co-evolution"
     "tonsillar crypt epithelium" "co-regulating" "invasive/metastatic" "α6β4"
     "invasion/metastasis" "wtTP53" "UMSCC" "andintermediate" "19/20"
-    "histoscores" "thoughout" "mucosas" "nuclear localized ΔNp63" "co-binding"
-    "Genomatix" "mtTP53" "SCC38" "mt" "HEKA" "squamous mucosa" "18/21"
-    "that ΔNp63" "squamous epithelia" "epithelia" "ΔNp63-" "co-regulated"
-    "p=0.04" "ΔNp63" "BiPAR" "Sanofi" "Jewish" "Ashkenazi" "meyslate"
-    "brighter" "BRCA1/2" "Pkcs" "ERG:DNA" "intravasate" "Xiaojun" "OCM"
-    "Oncomine" "Oligo" "LACZ" "PLA1A" "RWPE" "IP-MS" "ΔN" "PI3/4"
-    "VVSEDFLQDVSASTK" "3/4" "non-homologous" "in 53BP1" "p = 0.05" "p = 0.007"
-    "22RV1" "p = 0.001" "p = 0.002" "p = 0.01" "co-regulators" "bothShp2"
-    "inStat3" "droplets" "andStat3" "DKO" "agedShp2" "1-year" "leaner"
-    "activaton" "InShp2" "vena" "H&E" "&E" "immune/inflammatory response"
-    "lipopolysaccharides" "trichrome" "n=21" "ofShp2" "andShp2" "=21" "eosin"
-    "inShp2" "hep−/−" "diethylenenitrite" "inflammation/necrosis" "24 hrs"
-    "TNF α and" "stemness" "TE-85" "ΔTCFB" "HT1080" "TCFB" "hMSC" "hrs" "_4791"
-    "rhabdomyo-" "rhabdomyo" "osteo-" "osteo" "leiomyo-" "leiomyo" "fibro-"
-    "fibro" "hMSCs" "FRPs" "Adenomatous Polyposis Coli (APC)" "Coli (APC)"
-    "stem/progenitors" "trastuzamab" "TORC1/2" "endpoints" "thatPten" "rapalog"
-    "HER2/3" "conditionalPten" "phosphoAKT" "inPten" "thePten" "andPten"
-    "intactPten" "transcriptomes" "Creighton" "Nelson" "FDR=0.01"
-    "transcriptome" "a previously reported MSKCC dataset" "MSKCC" "AKT1/2"
-    "mTORC1/2" "ASCO" "George" "mAKT" "30 mg/kg" "p=0.006" "Wu" "_750del"
-    "Heymann" "Vikis" "Suda" "transbronchial biopsies" "HUCA" "Northern Spain"
-    "Spain" "Asturias" "RFLP" "dideoxy" "CAPUA" "pcDNA3" "a 3-hour" "houre"
-    "24-hour" "parental MCF7 cells" "Bay11-0782" "14/21" "intra-"
-    "protein phosphatase 2A" "Thr58/Ser62" "3-hour" "subcuitis"
-    "CI: 1.48-62.15" "Chun" "retroperitoneum" "pSTAT3" "P = 0.005" "P = 0.003"
-    "P = 0.009" "P = 0.04" "P = 0.012" "five-year" "P = 0.002" "P = 0.001"
-    "P = 0.006" "P = 0.027" "foliaceus" "vulgaris" "Praktide" "Matthias"
-    "Gaestel" "phosphoHSP27" "PKA-Cα" "phosphoSer" "MAPKAPK" "partite"
+    "histoscores" "thoughout" "mucosas" "co-binding" "Genomatix" "mtTP53"
+    "SCC38" "mt" "HEKA" "squamous mucosa" "18/21" "that ΔNp63"
+    "squamous epithelia" "epithelia" "ΔNp63-" "co-regulated" "p=0.04" "ΔNp63"
+    "BiPAR" "Sanofi" "Jewish" "Ashkenazi" "meyslate" "brighter" "BRCA1/2"
+    "Pkcs" "ERG:DNA" "intravasate" "Xiaojun" "Oncomine" "Oligo" "LACZ" "RWPE"
+    "ΔN" "PI3/4" "VVSEDFLQDVSASTK" "3/4" "non-homologous" "in 53BP1" "p = 0.05"
+    "p = 0.007" "22RV1" "p = 0.001" "p = 0.002" "p = 0.01" "co-regulators"
+    "bothShp2" "inStat3" "droplets" "andStat3" "DKO" "agedShp2" "1-year"
+    "leaner" "activaton" "InShp2" "vena" "H&E" "&E"
+    "immune/inflammatory response" "lipopolysaccharides" "trichrome" "n=21"
+    "ofShp2" "andShp2" "=21" "eosin" "inShp2" "hep−/−" "diethylenenitrite"
+    "inflammation/necrosis" "24 hrs" "TNF α and" "Cai" "stemness" "TE-85"
+    "ΔTCFB" "TCFB" "hMSC" "hrs" "_4791" "SK-UT-1" "rhabdomyo-" "rhabdomyo"
+    "osteo-" "osteo" "leiomyo-" "leiomyo" "fibro-" "fibro" "hMSCs" "FRPs"
+    "Adenomatous Polyposis Coli (APC)" "Coli (APC)" "stem/progenitors"
+    "trastuzamab" "TORC1/2" "endpoints" "thatPten" "rapalog" "HER2/3"
+    "conditionalPten" "phosphoAKT" "inPten" "thePten" "andPten" "intactPten"
+    "transcriptomes" "Creighton" "Nelson" "FDR=0.01" "transcriptome"
+    "a previously reported MSKCC dataset" "MSKCC" "AKT1/2" "mTORC1/2" "ASCO"
+    "George" "mAKT" "30 mg/kg" "p=0.006" "Wu" "_750del" "Heymann" "Vikis"
+    "Suda" "harboured two coexistent EGFR mutations c"
+    "transbronchial biopsies" "HUCA" "Northern Spain" "Spain" "Asturias" "RFLP"
+    "dideoxy" "CAPUA" "pcDNA3" "a 3-hour" "24-hour" "houre"
+    "parental MCF7 cells" "Bay11-0782" "14/21" "intra-" "Thr58/Ser62"
+    "subcuitis" "CI: 1.48-62.15" "Chun" "retroperitoneum" "pSTAT3" "P = 0.005"
+    "P = 0.003" "P = 0.009" "P = 0.04" "P = 0.012" "five-year" "P = 0.002"
+    "P = 0.001" "P = 0.006" "P = 0.027" "foliaceus" "vulgaris" "Praktide"
+    "Matthias" "Gaestel" "phosphoHSP27" "phosphoSer" "MAPKAPK" "partite"
     "MAPKAPKs" "C57BL/6" "pY1086EGFR" "pY1068EGFR" "Y845EGFR" "translocon"
-    "Ran-GTPase" "ImageQuant" "HPDEC" "cyan" "stainings" "GNP" "phenylarsine"
+    "Ran-GTPase" "ImageQuant" "HPDEC" "cyan" "stainings" "phenylarsine"
     "pY1086" "pY1068" "ZD" "immunecomplexes" "heterocomplex" "Cyto" "Mem"
-    "absorbance" "IP:EGFR/IP:Src" "whereby EGFR immunecomplex" "Tata"
-    "immunoreagents" "IP:Src" "IP:EGFR" "IP:Stat3" "immunecomplex" "tyrosyl"
-    "Transducer" "non-denaturing" "Co-immunoprecipitation" "luc" "IFI"
-    "nonmalignant" "HDFs" "∼70%" "∼5 mM" "∼21%" "p85α" "Yoon" "Garzon" "Ramiro"
-    "TargetScan" "microT" "DIANA" "Boyden's" "MHCC" "Pearson" "MiR-29a"
-    "Santanam" "cholangio" "miR-29a" "24 hr" "neem"
-    "cerebellar tissue homogenates" "Shen" "etiopathology" "CARS" "Osmania"
-    "stressful" "Cesarean" "etio" "IKKs" "an inactive heterotrimer" "Baltimore"
-    "Kanner" "Leo" "gone" "SPSS" "stressors" "AECC" "del/ del" "MODS"
+    "absorbance" "whereby EGFR immunecomplex" "Tata" "immunoreagents"
+    "immunecomplex" "tyrosyl" "Transducer" "β1" "non-denaturing"
+    "Co-immunoprecipitation" "luc" "IFI" "nonmalignant" "HDFs" "∼70%" "∼5 mM"
+    "∼21%" "p85α" "Yoon" "Garzon" "Ramiro" "TargetScan" "microT" "DIANA" "c"
+    "Boyden's" "MHCC" "MiR-29a" "Pearson" "Santanam" "cholangio" "miR-29a"
+    "24 hr" "neem" "cerebellar tissue homogenates" "Shen" "etiopathology"
+    "Osmania" "stressful" "Cesarean" "etio" "IKKs" "an inactive heterotrimer"
+    "Baltimore" "Kanner" "Leo" "gone" "SPSS" "stressors" "del/ del" "MODS"
     "Covariates" "Weinberg" "Genotype" "APACHE" "insertion/deletion" "kd"
     "del/del" "ICU" "P  = 0.03" "= 8" "= 99" "localizer" "Hef"
     "methanesulfonate" "FANCCwt" "FANCAwt" "SPD8" "orFANCC" "FANCwt" "≅FANCA"
@@ -2057,81 +2022,76 @@
     "-chloroethylG" "chloroethylG" "-alkylG" "alkylG" "interstrand" "-ethenoG"
     "ethenoG" "intermediaryN" "-chloroethylguanine" "chloroethylguanine" "ofO"
     "Europe" "bis" "chemo" "mide" "temozolo" "nitrosourea" "chloroethyl"
-    "osteblasts" "methyl/hydroxyl" "biomaterials" "/OH" "goes" "g/mL" "ng/cm 2"
-    "Otsu" "hydroxyl" "WCA" "ellipsometry" "FTIR" "XPS" "alkanethiols"
-    "adamalysin" "fibril-like" "overview" "–OH" "N/" "~79%" "eRNAs" "hr"
+    "osteblasts" "methyl/hydroxyl" "biomaterials" "/OH" "goes" "ng/cm 2" "Otsu"
+    "hydroxyl" "WCA" "ellipsometry" "FTIR" "XPS" "alkanethiols" "adamalysin"
+    "fibril-like" "overview" "–OH" "N/" "β 1" "~79%" "eRNAs" "hr"
     "re-targeting" "~60%" "co-incident" "FOX" "seq" "eRNA" "~40%" "~70%"
     "co-occupied" "non-coding" "the Global BPgen" "= 19,608" "torcetrapib"
     "non-synonymous" "YRI" "JPT+CHB" "fidgetin" "1p13.2" "eSNPs" "A-allele"
     "expression-associated SNP (eSNP) rs17030613" "rs17030613" "eSNP" "eQTL"
-    "varLD" "CNNM" "rs3184504" "Africans" "Genomes" "EHH" "Europeans" "KING"
-    "Fukuoka" "Amagasaki" "Asians" "rs11066280" "rs671" "12q24.13" "JPT"
-    "HapMap" "rs2384550" "rs35444" "12q24.21" "approximately 200-kb" "1+2+3"
-    "rs1173766" "stage-3" "1+2" "Japanese" "stage-1" "novo" "BPgen"
-    "genotypingin" "≤ 1" "4 × 10" "= 8" "P = 0.018" "= 7" "= 1" "P = 0.05"
-    "P -values" "re-engaging" "AMD473" "toxicity/non-specificity" "TCP45"
-    "Kramer" "contractin" "periodic re-treatment" "7/16" "Wilcoxon"
-    "caspase 3/7" "re-sensitisation" "STAT1β" "STAT1α" "re-sensitises" "HADC"
-    "caspase3/7" "mutation/reversion" "remission/response" "unmet"
-    "anti-acetyl" "mimetopes" "chromosome 17p" "anti-p53autoAb" "autoAb"
-    "anti-p53Ab" "anti-p53 Ab" "del17p" "Portefaix" "anti-53" "=20" "=24" "13q"
-    "11q" "Anti-p53" "trisomy" "17p" "non-apoptotic" "Non-apoptotic" "choroid"
-    "isotype" "CoMCont" "MOIs" "meninges" "TBM"
-    "microglia/macrophages secreted proMMP-2" "BBB" "endfeet" "Winchester"
-    "Torg" "transducers" "zymogens" "encephalomyelitis" "CoMTb" "G2/G1"
-    "DeHart" "re-entered" "e-f-r-" "e-f+r-" "e-f+r+" "Cdk1 as" "Coli" "CD133+"
-    "parenchyma" "pLNCX2" "hLPP3-" "hLPP" "¶" "mLpp3" "hLPP3" "hLPP2" "hLPP1"
-    "metalloproteinases-2" "timeline" "neuroendocrine" "N-glycosylation"
-    "anti-LPP3-C-cyto" "histotypes" "Subset" "microdomain" "U118"
-    "phosphatase-3" "low/" "Wnt/β-catenin" "PCLI" "Chanoux" "Sarkaria"
-    "Bartkova" "Yu" "IRAC" "37/40" "HMCLs" "and 53BP1" "S/G2" "Rad3" "Qiu"
-    "succinate" "intersubunit" "DMNQ" "iTRAQ" "immunocomplex" "Mn" "YQEALAK"
-    "Ac" "HHAAYVNNLNVTEEK" "cytotosol" "acetylome" "catalyse"
-    "cleavage/activation" "Quinoline-Val-Asp-Difluorophenoxymethylketone"
-    "MAGE-A-silenced HMCL" "5-bromo-2-deoxyuridine" "shNT" "shMA" "Pt" "PCPI"
-    "CTAgs" "IHC" "Doyle" "HMCL" "CT7" "Yang" "Ki-67+" "Durie" "CTAg" "Antigen"
-    "=35" "= 2" "μg/mL" "databank" "kcat" "ADK" "ADP/AlF" "Propka" "Kannan"
-    "sidechain" "1HCK" "nearly invariant" "Maegley" "P-loop" "O3B" "MgII:O3B"
-    "ATP*2Mg" ":O1B" "NH" "*2Mg" "ATP*1Mg" "protein Cα" "ellipsoids" "18ns"
-    "roughly 18ns" "50ns" "RMSD=2.0" "1QMZ" "1JST" "superimpositions"
-    "nanosecond" "reactant" "100% dissociative=6.6" "=5.25"
+    "varLD" "CNNM" "rs3184504" "Africans" "Genomes" "Europeans" "KING"
+    "Fukuoka" "Amagasaki" "Asians" "rs11066280" "rs671" "12q24.13" "HapMap"
+    "rs2384550" "rs35444" "12q24.21" "approximately 200-kb" "1+2+3" "rs1173766"
+    "stage-3" "1+2" "Japanese" "stage-1" "novo" "BPgen" "genotypingin" "≤ 1"
+    "4 × 10" "= 8" "P = 0.018" "= 7" "= 1" "P = 0.05" "P -values" "re-engaging"
+    "AMD473" "toxicity/non-specificity" "TCP45" "Kramer" "contractin"
+    "periodic re-treatment" "7/16" "Wilcoxon" "caspase 3/7" "re-sensitisation"
+    "STAT1β" "STAT1α" "re-sensitises" "HADC" "caspase3/7" "mutation/reversion"
+    "remission/response" "unmet" "non-histone" "anti-acetyl" "mimetopes"
+    "chromosome 17p" "anti-p53autoAb" "autoAb" "anti-p53Ab" "anti-p53 Ab"
+    "del17p" "Portefaix" "anti-53" "=20" "=24" "13q" "11q" "Anti-p53" "trisomy"
+    "17p" "non-apoptotic" "Non-apoptotic" "choroid" "isotype" "CoMCont" "MOIs"
+    "meninges" "BBB" "proMMP" "endfeet" "Winchester" "Torg" "transducers"
+    "zymogens" "encephalomyelitis" "CoMTb" "G2/G1" "DeHart" "re-entered"
+    "e-f-r-" "e-f+r-" "e-f+r+" "Cdk1 as" "Coli" "CD133+" "parenchyma" "pLNCX2"
+    "hLPP3-" "hLPP" "¶" "mLpp3" "hLPP3" "hLPP2" "hLPP1" "timeline"
+    "neuroendocrine" "N-glycosylation" "anti-LPP3-C-cyto" "histotypes" "Subset"
+    "microdomain" "U118" "phosphatase-3" "low/" "Wnt/β-catenin" "PCLI"
+    "Chanoux" "Sarkaria" "Bartkova" "Yu" "IRAC" "37/40" "HMCLs" "and 53BP1"
+    "S/G2" "Rad3" "Qiu" "succinate" "intersubunit" "DMNQ" "iTRAQ"
+    "immunocomplex" "Mn" "YQEALAK" "Ac" "HHAAYVNNLNVTEEK" "cytotosol"
+    "acetylome" "catalyse" "cleavage/activation"
+    "Quinoline-Val-Asp-Difluorophenoxymethylketone" "MAGE-A-silenced HMCL"
+    "5-bromo-2-deoxyuridine" "shNT" "shMA" "PCPI" "CTAgs" "IHC" "Doyle" "HMCL"
+    "CT7" "Yang" "Ki-67+" "Durie" "=35" "= 2" "μg/mL" "databank" "kcat"
+    "ADP/AlF" "Propka" "Kannan" "sidechain" "1HCK" "nearly invariant" "Maegley"
+    "P-loop" "O3B" "MgII:O3B" "ATP*2Mg" ":O1B" "NH" "*2Mg" "ATP*1Mg"
+    "protein Cα" "ellipsoids" "18ns" "roughly 18ns" "50ns" "1QMZ" "1JST"
+    "superimpositions" "nanosecond" "reactant" "100% dissociative=6.6" "=5.25"
     "100% associative=3.46" "penta" "cation:MgF" "OH" "*1Mg" "stochiometry"
     "0–5mM" "1–2mM" "Dudev" "octahedron" "oxygens" "MgII" "MgI" "Westheimer"
     "metaphosphate" "Adams" "Phenix" "Fo" "BeF" "NDP" "Waals" "der"
-    "pCDK2/CyclinA" "ATP-γS" "/peptide" "P-Thr160" "pHs" "reactants"
-    "Mukherjee" "+ 1" "nucleases" "frank DSBs" "dsDNA" "breaks/gaps"
-    "V-C8+BRCA2 S3291A" "V-C8+BRCA2 S" "theBrca2" "multidomain" "KU" "inBrca2"
-    "~1.8" "directionalities" "kb/h" "m/h" "C2-14" "~97%" "IdU→CldU" "CdU"
-    "revertant" "V-C8+BRCA2" "lex1/lex2" "Whitney" "triphosphate" "CldU"
+    "pCDK2/CyclinA" "ATP-γS" "/peptide" "reactants" "Mukherjee" "+ 1"
+    "nucleases" "frank DSBs" "dsDNA" "breaks/gaps" "V-C8+BRCA2 S3291A"
+    "V-C8+BRCA2 S" "theBrca2" "multidomain" "KU" "inBrca2" "~1.8"
+    "directionalities" "kb/h" "m/h" "C2-14" "~97%" "IdU→CldU" "CdU" "revertant"
+    "V-C8+BRCA2" "lex1/lex2" "Whitney" "triphosphate" "CldU"
     "homologous chromatids" "C-ter" "ss" "phenocopies" "=1" "pentanucleotide"
     "centrosomal proteins NPHP5/6" "BBSome" "IFT" "BBsome" "centrosome/cilia"
     "interactome" "monodisperse" "Interactome" "consanguineous Pakistani"
     "MR20" "Pakistani" "UW95-3" "clubfeet" "equinovarus" "talipes" "hypotonia"
-    "exome" "NPHP5/6" "morphants" "KV" "irregular lumens" "lumens" "Nphp"
-    "Ahi1/Jouberin" "MW∼" "krc" "kerouac" "adherens" "monolayers"
+    "exome" "NPHP5/6" "morphants" "DFCs" "KV" "irregular lumens" "lumens"
+    "Nphp" "MW∼" "krc" "kerouac" "adherens" "monolayers"
     "the most probable subgraphs" "subgraphs" "Cytoscape" "nphp" "Scholtens"
-    "msdata" "APMS" "TIC" "carryover" "Chlamydomonas" "occipital encephalocele"
+    "msdata" "APMS" "carryover" "Chlamydomonas" "occipital encephalocele"
     "encephalocele" "cerebellar vermis aplasia" "aplasia" "vermis" "inversus"
     "situs" "MKS" "Gruber" "Meckel" "JBTS" "co-IP" "co-staining" "submembrane"
     "iTGF-βR" "iTGF" "claudn" "non-infected" "PHBE" "/F" "pseudosubstrate"
     "GeneChip" "submembranes" "immunocytochemistry" "MOI" "RSV/G" "perfringens"
-    "coxsackie" "apicalmost" "edema" "Pneumovirus"
-    "hypoxia-inducible factor-1α" "RSV"
+    "coxsackie" "apicalmost" "edema" "Pneumovirus" "RSV"
     "uncontrolled cell survival/proliferation" "neuroAIDS" "≤19%" "Churchill"
     "FLUD" "G3I" "FOPflash" "postexposure" "~38%" "apoptosis/survival"
-    "multiprotein" "postmortem" "a promiscuous CCR" "CCR" "indirect sequelae"
-    "sequelae" "CHARTER" "frank dementia/encephalitis" "Ag" "TOPflash" "GFAP +"
-    "U251" "factor/lymphoid" "disorderd" "plasmon" "Thomas" "Frodin" "αC" "β4"
-    "HRD" "XX" "Diego" "Romanelli" "Sumani" "PDK1ΔPH" "S6K1ΔAIDT389E"
-    "S6K1ΔAID" "ΔAIDT389E" "ΔAID" "ΔPH" "co-crystal" "Avruch" "stepwise"
-    "rampamycin" "homologs" "S6K1T389E"
-    "two-dimensional thin layer electrophoresis/chromatography"
+    "multiprotein" "postmortem" "indirect sequelae" "sequelae" "CHARTER"
+    "frank dementia/encephalitis" "Ag" "TOPflash" "2 +" "GFAP +" "U251"
+    "disorderd" "plasmon" "Thomas" "Frodin" "αC" "β4" "HRD" "Diego" "Romanelli"
+    "Sumani" "PDK1ΔPH" "S6K1ΔAIDT389E" "S6K1ΔAID" "ΔAIDT389E" "ΔAID" "ΔPH"
+    "co-crystal" "Avruch" "stepwise" "rampamycin" "homologs" "S6K1T389E"
     "electrophoresis/chromatography" "S6K1D" "co-workers" "Nussinov"
     "amplitudes" "-p53C-R282W" "-p53C" "Merabet" "Perhaps" "RMSDs" "rotamers"
-    "RMSF" "RMSFs" "Cα" "neutral pH" "holo" "°C" "p53C" "B-factors" "kcal/mol"
-    "Lindsay" "Goberdhan" "Dp110" "Purkinje" "the mossy fiber synapses"
-    "synapses" "co-purification" "Carnoy's" "Carnoy" "non-crosslinking" "mFOLD"
-    "PTENz14" "PTENz7" "cerebellum" "Scatchard" "bound aptamers" "aliquots"
+    "RMSF" "RMSFs" "Cα" "holo" "°C" "p53C" "kcal/mol" "Lindsay" "ubiquitins"
+    "Goberdhan" "Dp110" "Purkinje" "the mossy fiber synapses" "synapses"
+    "co-purification" "Carnoy's" "Carnoy" "non-crosslinking" "mFOLD" "PTENz14"
+    "PTENz7" "cerebellum" "Scatchard" "bound aptamers" "aliquots"
     "histochemistry" "discriminant" "phosphodiester" "Latin" "Aptamers"
     "Charis" "Dixon" "mouse cerebellar homogenates" "homogenates" "aptamer"
     "SELEX" "aptamers" "-trisphosphate" "trisphosphate" "co-incubated" "w/v"
@@ -2139,63 +2099,60 @@
     "schiff" "salophenes" "two Schiff's" "Schiff" "Salophenes"
     "inactivation/cleavage" "activation/cleavage" "activation/inactivation"
     "co-treatment" "ROO" "peroxyl" "2+" "3+" "Fe" "CuCl" "FeCl" "0.1–3 µ"
-    "chelate" "HNTMB" "intercalates" "Membrane permeable Hoechst" "Hoechst"
-    "ΔΨ" "IMVI" "salophene (SP)" "non-complexed" "DTP" "-salophene" "salophene"
+    "chelate" "HNTMB" "intercalates" "Hoechst" "ΔΨ" "IMVI" "PC-3"
+    "salophene (SP)" "non-complexed" "DTP" "-salophene" "salophene"
     "6-Diamidino-2-Phenylindole" "mg/Kg" "Anti-proliferative" "non-treated"
     "≤1 µ" "≤3 µ" "kaposin" "non-vGPCR-expressing" "nu/nu"
     "EC-vGPCR (10%) + EC- vCYC/vFLIP/RR-mTOR (90%) allografts" "SI" "Paracrine"
-    "aminoacids" "allografts" "vCYC" "vCyclin" "SVECs" "treated HMEC1s"
-    "10 mg/kg" "de-repression" "non-tumorigenic" "overweigh" "MetaCore"
-    "Metacore" "GeneGo" "Venn" "biomakers" "patupilone" "PAC" "TBAs"
-    "immunotherapy" "Gsk" "non-dividing" "CINK" "Fascaplysin" "co-enzymes"
-    "non-proliferative" "C57Bl/6" "Anti-mouse" "S/T – P" "∼30%" "G0/G1"
-    "domine" "HCT" "prostaglandinE2" "si" "azoxymethane" "Sugie" "zeylanica"
-    "Dioncophyllaceae" "Ancestrocladaceae" "Droseraceae" "pEGFR"
-    "Plumbaginaceae" "quinonoid" "G 0 /G 1 phase" "IC 50" "Pedersen" "Finkle"
-    "ZR75.1" "circuitries" "wtHER2" "NCBI" "IRES" "Δ16HER2-LUC" "circuitry"
-    "protooncogene" "mammary epithelium" "Δ16HER2" "= 35" "mean ± SD"
+    "aminoacids" "allografts" "vCYC" "SVECs" "treated HMEC1s" "10 mg/kg"
+    "de-repression" "non-tumorigenic" "overweigh" "MetaCore" "Metacore"
+    "GeneGo" "Venn" "biomakers" "patupilone" "TBAs" "immunotherapy" "Gsk"
+    "non-dividing" "CINK" "Fascaplysin" "co-enzymes" "non-proliferative"
+    "C57Bl/6" "Anti-mouse" "S/T – P" "∼30%" "G0/G1" "domine" "prostaglandinE2"
+    "si" "azoxymethane" "Sugie" "zeylanica" "Dioncophyllaceae"
+    "Ancestrocladaceae" "Droseraceae" "pEGFR" "Plumbaginaceae" "quinonoid"
+    "G 0 /G 1 phase" "Pedersen" "Finkle" "ZR75.1" "circuitries" "wtHER2" "E-1"
+    "NCBI" "IRES" "Δ16HER2-LUC" "circuitry" "protooncogene"
+    "mammary epithelium" "Δ16HER2" "= 35" "mean ± SD"
     "prophylactic subtotal colectomy" "hyperinsulinaemia" "mismatches"
-    "Amsterdam" "Bethesda" "confounders" "1.02–2.64" "0.96–1.65" "1.05–1.76"
-    "non-linear" "rectosigmoid" "1.08–1.58" "Zealand" "Australia" "kg "
-    "person-years" "non-carriers" "P =0.05" "P =0.002" "P =0.37" "P =0.72"
-    "P =0.08" "P =0.02" "P =0.01" "The primary statistical endpoint" "endpoint"
-    "bronchioloalveolar histology" "41/50" "Guerra" "1/21" "17/21" "1/50"
-    "25/50" "2-year" "p=0.0001" "4/21" "9/50"
-    "2 patients underwent bilobectomy" "bilobectomy"
+    "Amsterdam" "Bethesda" "confounders" "0.96–1.65" "1.05–1.76" "non-linear"
+    "rectosigmoid" "1.08–1.58" "Zealand" "Australia" "kg " "person-years"
+    "non-carriers" "P =0.05" "P =0.002" "P =0.37" "P =0.72" "P =0.08" "P =0.02"
+    "P =0.01" "The primary statistical endpoint" "endpoint"
+    "bronchioloalveolar histology" "41/50" "pre-" "Guerra" "1/21" "17/21"
+    "1/50" "25/50" "2-year" "p=0.0001" "4/21" "9/50" "bilobectomy"
     "supraventricular arrhythmia" "arrhythmia" "responders" "21/50" "I/II"
     "≥ 25%" "peripheral lymph adenopathy" "adenopathy" "/G" "supernatant"
-    "uORF" "EBPβ-WT" "·cyclin-dependent kinase 4/6" "Rb" "∼25%" "amoeboid"
-    "presence/absence" "Macrophage-like" "transductants" "SF91"
-    "mature monocyte/macrophages" "monocyte/macrophages"
-    "expression/activation" "monocyte/macrophage" "macrophage-like" "KO" "∼5%"
-    "p ≤ 0.01" "p ≤ 0.05" "1 × 10" "C/EBPs" "Jinyoung" "Cheung" "continuum"
-    "×2" "P=0.064" "Co-overexpression" "6/26-23.0%" "mean±SD"
-    "co-overexpression" "PVU" "uteri" "vaginalis" "portio" "SIL" "P=0.012"
-    "P=0.006" "= 9" "ADPR" "ribose" "diphosphate" "PGC1-αprotein" "/ NADH"
-    "/NADH" "glucose/lipids" "nucleus/cell membrane" "/L" "UA" "Cr" "BUN"
-    "exocrine" "glucose/lipid" "T2DM" "mellitus" "PBLs"
-    "atrophic tubular epithelium" "phosphoepitope" "TAZ/YAP" "NPHP"
+    "uORF" "EBPβ-WT" "∼25%" "amoeboid" "presence/absence" "Macrophage-like"
+    "transductants" "SF91" "PRE" "mature monocyte/macrophages"
+    "monocyte/macrophages" "Rb" "deltanoid" "expression/activation"
+    "monocyte/macrophage" "macrophage-like" "4/6" "∼5%" "p ≤ 0.01" "p ≤ 0.05"
+    "1 × 10" "C/EBPs" "Jinyoung" "Cheung" "continuum" "×2" "P=0.064"
+    "Co-overexpression" "6/26-23.0%" "mean±SD" "co-overexpression" "PVU"
+    "uteri" "vaginalis" "portio" "P=0.012" "P=0.006" "= 9" "ADPR" "ribose"
+    "diphosphate" "PGC1-αprotein" "/ NADH" "/NADH" "glucose/lipids"
+    "nucleus/cell membrane" "/L" "UA" "Cr" "exocrine" "glucose/lipid" "T2DM"
+    "mellitus" "PBLs" "atrophic tubular epithelium" "phosphoepitope" "NPHP"
     "a sensory organelle" "NPHPs" "nephrocystins" "NPH" "to 14-3-3" "Lats1/2"
     "MST1/2" "TEA" "melanogaster" "12 h" "anti–mouse" "anti–rabbit" "anti-FLAG"
-    "–11" "EerbB" "co-occupies" "qChIP" "HER18" "BrUTP" "BrU" "anti-mouse"
-    "anti-RNA" "immunoelectron" "ErbB" "size/cell growth" "micrograph"
-    "methyladenine" "-3-pyridin-4-ylpyrazolo" "phenyl"
-    "self-digested organelles" "organelles" "forgotten" "co-existing" "48 h"
-    "prostatectomy" "Watson" "ct" "non-malignant" "intracrine" "in 1/3"
-    "AR-V567es" "Beadchip" "ARfl" "Non-malignant" "naïve" "HN" "CRPC" "LBD"
-    "P  = 0.02" "= 13" "P ≤0.001" "ESYT1/2" "Zhang" "an important subset"
-    "IAP-MS" "adaptor/scaffold" "PXSP/PXTP" "de-regulation" "PXTP" "PXSP"
-    "Adaptor/scaffold" "SILAC-MS" "NPXY" "non-redundant" "CTKs" "PhosphoScan"
-    "immunoaffinity-MS" "B-acute" "FMS-like" "Fc" "tyrosine kinase-3"
-    "LC-MS/MS" "2009ZX10002-016" "2009ZX09501-027" "miR-148b" "CDNK1B"
+    "–11" "co-occupies" "qChIP" "HER18" "BrUTP" "anti-mouse" "anti-RNA"
+    "immunoelectron" "size/cell growth" "rRNA" "micrograph" "methyladenine"
+    "-3-pyridin-4-ylpyrazolo" "phenyl" "self-digested organelles" "organelles"
+    "forgotten" "co-existing" "48 h" "prostatectomy" "Watson" "ct"
+    "non-malignant" "intracrine" "in 1/3" "AR-V567es" "Beadchip" "ARfl"
+    "Non-malignant" "naïve" "CRPC" "LBD" "P  = 0.02" "= 13" "P ≤0.001"
+    "ESYT1/2" "Zhang" "an important subset" "adaptor/scaffold" "PXSP/PXTP"
+    "de-regulation" "PXTP" "PXSP" "Adaptor/scaffold" "NPXY" "non-redundant"
+    "CTKs" "PhosphoScan" "B-acute" "FMS-like" "Fc" "LC-MS/MS"
+    "immunoglobulin-like" "2009ZX10002-016" "2009ZX09501-027" "CDNK1B"
     "transfectant" "glandular gastric epithelium" "miR-148a" "anti-sense"
     "Corticosteroids" "corticosteroids" "anti-steatogenic" "pY705STAT3"
     "catalse" "Bcl" "protooncogenes" "Ogata" "dihydrocollidine" "xl" "bcl"
-    "lobules" "Blindenbacher" "Cressman" "PHx" "A-induced" "Lafdil"
-    "tetrachloride" "ethionine" "choline" "Disse" "non-parenchymal" "stellate"
+    "lobules" "Blindenbacher" "Cressman" "PHx" "Lafdil" "tetrachloride"
+    "ethionine" "choline" "Disse" "non-parenchymal" "stellate"
     "facial dysmorphism" "top53" "Celeste" "in53bp1" "XY" "inH2a" "distal DSBs"
-    "of 53BP1" "IgA" "toRnf8" "lymphopenia" "3q29" "examinedRnf168" "mFISH"
-    "p  " "ActivatedRnf168" "2.5±0%" "of 53bp1" "DNIV" "TCRγδ"
+    "of 53BP1" "toRnf8" "lymphopenia" "3q29" "examinedRnf168" "mFISH" "p  "
+    "ActivatedRnf168" "2.5±0%" "of 53bp1" "DNIV" "TCRγδ"
     "double negative (DN) thymocytes" "DNIII" "to53bp1" "inAtm" "Sμ-Sγ1"
     "microhomology" "activatedRnf168" "ΔMIU1" "MIU1" "pMSCV" "fromRnf168"
     "the Peyer's" "flora" "Peyer's" "Peyer" "immunoglobulins" "epididymis"
@@ -2221,53 +2178,50 @@
     "neoplasmas" "Abraxane" "Paclitael" "o" "pancreaticoduodenectomy" "~2%"
     "p=0.01" "p=0.02" "endoscopies" "EGD" "/CT" "positron" "proband"
     "genotypes" "Asian" "Korea" "LFS-like" "IARC" "DFCI" "Nichols" "DFCI/NCI"
-    "Gastric dysplasia" "pT4" "pT3" "pT2" "an intestinal morphotype"
-    "morphotype" "fundus" "antrum" "Brazil" "colonoscopy"
-    "significantly younger" "SEER" "Farber" "Dana" "Fraumeni"
-    "chemoattractants" "gavage" "lumbo" "Le" "axons" "DhhCre" "GS" "p75+"
-    "sciatic nerve = 0" "non-neuronal cells" "loxP" "CMB" "axon"
+    "Gastric dysplasia" "an intestinal morphotype" "morphotype" "fundus"
+    "antrum" "Brazil" "colonoscopy" "significantly younger" "SEER" "Farber"
+    "Dana" "Fraumeni" "chemoattractants" "gavage" "lumbo" "Le" "axons" "DhhCre"
+    "GS" "p75+" "sciatic nerve = 0" "non-neuronal cells" "loxP" "CMB" "axon"
     "postnatal (P1-3) tamoxifen-injected PlpCre+" "PlpCre+" "Nf1wt" "equina"
-    "cauda" "brainstem" "3/20" "non-hematopoietic" "EGFP+" "littermate"
-    "hindlimbs" "mitoses" "anaplasia" "PNST" "PLPCre" "minimal cell atypia"
-    "atypia" "neuroaxis" "Nf1fl/fl" "Plp" "E9.5" "non-myelinating" "GFAP+"
-    "lymphadenopathy" "non-cell" "PlpCre" "lympho" "Remak" "S100β+"
-    "proteolipid" "Plexiform" "stem/progenitor" "NEUT" "NFBD1a" "coverslips"
-    "PyMT" "phosphorylation/activation" "HFF" "TP21" "NFBD" "retroviruses"
-    "MRN" "Ju" "HS3A" "trimethyl" "H4K5" "Igκ" "kilobases" "promoter/reporter"
-    "Vhluc" "Vh" "retrovirus" "realtime" "Crip" "Ercc" "Taqman" "pBluescript"
-    "A5T" "enchancer" "I-repeat" "TFII" "pulldown" "co-purified" "Igs" "Xid"
-    "non-receptor Bruton’s" "Bruton" "Immunoglobulin" "I-repeats" "E-box" "Inr"
-    "Oct-1/2" "Eμ" "isotypes" "HS3B" "VDJ" "DICE" "immunoglobulin"
-    "non-receptor" "G-rich" "only ~40 nt" "non-extended"
-    "localization/processivity" "~20%" "~15%" "non-equilibrium" "bodies/cell"
-    "hTR/telomere" "only 30 nt" "co-localizing" "doublings" "nt/PD" "bp/PD"
-    "approximately 130 nt" "multimer" "CsCl" "telomerase/telomere"
-    "nonequilibrium" "ng/" "Tomlinson" "phenocopy" "non-hotspot" "ureter"
-    "followup" "FFPE" "cystectomy" "ureterectomies" "nephroureterectomies"
-    "cystectomies" "Sequenom" "a distinct morphologic subtype"
+    "cauda" "brainstem" "perinatal PlpCre" "3/20" "non-hematopoietic" "EGFP+"
+    "littermate" "PMN" "P1-3" "hindlimbs" "mitoses" "anaplasia" "PNST" "PLPCre"
+    "minimal cell atypia" "atypia" "neuroaxis" "Nf1fl/fl" "Plp" "E9.5"
+    "non-myelinating" "GFAP+" "lymphadenopathy" "non-cell" "PlpCre" "lympho"
+    "Remak" "S100β+" "proteolipid" "Plexiform" "stem/progenitor" "NEUT"
+    "NFBD1a" "coverslips" "PyMT" "phosphorylation/activation" "HFF" "TP21"
+    "NFBD" "retroviruses" "MRN" "Ju" "HS3A" "trimethyl" "H4K5" "Igκ"
+    "kilobases" "promoter/reporter" "Vhluc" "Vh" "retrovirus" "realtime" "Crip"
+    "Ercc" "Taqman" "pBluescript" "A5T" "enchancer" "I-repeat" "TFII"
+    "pulldown" "co-purified" "Igs" "Xid" "non-receptor Bruton’s" "Bruton"
+    "Immunoglobulin" "I-repeats" "E-box" "Inr" "Oct-1/2" "Eμ" "isotypes" "HS3B"
+    "VDJ" "DICE" "immunoglobulin" "non-receptor" "G-rich" "only ~40 nt"
+    "non-extended" "localization/processivity" "~20%" "~15%" "non-equilibrium"
+    "bodies/cell" "hTR/telomere" "only 30 nt" "co-localizing" "doublings"
+    "nt/PD" "bp/PD" "approximately 130 nt" "multimer" "CsCl"
+    "telomerase/telomere" "nonequilibrium" "ng/" "Tomlinson" "phenocopy"
+    "non-hotspot" "ureter" "followup" "FFPE" "cystectomy" "ureterectomies"
+    "nephroureterectomies" "cystectomies" "Sequenom"
+    "a distinct morphologic subtype" "Fibroblast growth factor receptor-3"
     "almost $3.7 billion" "HGUCs" "koilocytoid" "propria" "muscularis" "HGUC"
-    "non-overlapping" "prostaglandins" "both Alzheimer’s" "Alzheimer" "MOR"
-    "mu" "NOP" "Gö6976" "Che" "Standifer" "Thakker" "biotin" "neuroimmune"
-    "synapse" "complete Freund’s" "Freund" "adenylate" "OFQ/N" "20/20" "24 h"
+    "non-overlapping" "prostaglandins" "both Alzheimer’s" "Alzheimer" "NOP"
+    "Gö6976" "Che" "Standifer" "Thakker" "biotin" "neuroimmune" "synapse"
+    "complete Freund’s" "Freund" "adenylate" "OFQ/N" "20/20" "24 h"
     "Tumor-associated monocytic MDSCs" "MDSCs" "ought" "Supernatants"
     "peptidoglycan" "endotoxemia" "activating protein-1" "heterotrimer" "ISRE"
-    "GAS" "J774" "BMMs" "24 h" "2 × 10" "48 h" "μ g/mL"
-    "the main molecular target/s responsible for silibinin’s" "target/s"
-    "cytokertain" "migratory/invasive" "nutraceuticals" "≤0.01" "p≤0.001"
-    "≤0.001" "ShEC" "Anti-migratory" "decrease/s" "eventhough" "re-probed"
+    "J774" "BMMs" "24 h" "2 × 10" "48 h" "μ g/mL" "target/s" "cytokertain"
+    "migratory/invasive" "nutraceuticals" "≤0.01" "p≤0.001" "≤0.001"
+    "Anti-migratory" "decrease/s" "eventhough" "re-probed"
     "possible mechanism/s" "anti-invasive" "anti-migratory" "extravasate"
-    "microvasculature" "flavonoid" "non-toxic" "newer"
-    "anti-migratory/anti-invasive" "PCA" "non-invasive" "anti-metastatic"
-    "pg/ml" "farnesyl" "mutant/IL-8" "≥ 0.05" "re-exported"
-    "a significant re-localization" "ESCRT" "Sap1a" "α3" "GABPβ"
-    "autophagic vacuoles" "vacuoles" "co-chaperones" "EKLF" "TCFs" "SM"
-    "coomassie" "ΔA" "YFPc" "YFPn" "Co-expression" "GST-etsΔ17-23"
-    "HA-Elk-etsΔ17-23" "Δ17-23" "ets" "de-stabilized" "A web-based algorithm"
-    "Austria" "EMBnet" "Δ49" "PEST" "Δ1-6" "The internal deletion Δ9-24"
-    "Δ9-24" "Bafilomycin" "co-crystals" "pcDNA" "haemaglutinin (HA)"
-    "haemaglutinin" "pCMV" "-UTR" "undergoes" "non-exclusive" "degron" "C/EBPδ"
-    "co-activators" "non-productive" "fulminant" "easier" "Src+STAT3+Myc"
-    "Src+STAT3" "oligofectamine" "transducer" "ie"
+    "microvasculature" "non-toxic" "newer" "anti-migratory/anti-invasive" "PCA"
+    "non-invasive" "anti-metastatic" "pg/ml" "farnesyl" "mutant/IL-8" "≥ 0.05"
+    "re-exported" "a significant re-localization" "ESCRT" "Sap1a" "α3" "GABPβ"
+    "autophagic vacuoles" "vacuoles" "co-chaperones" "TCFs" "SM" "coomassie"
+    "ΔA" "YFPc" "YFPn" "Co-expression" "GST-etsΔ17-23" "HA-Elk-etsΔ17-23"
+    "Δ17-23" "ets" "de-stabilized" "A web-based algorithm" "Austria" "EMBnet"
+    "Δ49" "PEST" "Δ1-6" "The internal deletion Δ9-24" "Δ9-24" "Bafilomycin"
+    "co-crystals" "pcDNA" "haemaglutinin (HA)" "haemaglutinin" "pCMV"
+    "undergoes" "degron" "C/EBPδ" "co-activators" "non-productive" "fulminant"
+    "easier" "Src+STAT3+Myc" "Src+STAT3" "oligofectamine" "transducer" "ie"
     "non-receptor tyrosine kinase" "greatest" "soft agar" "cancer cells/tumors"
     "NOD/SCID" "the previous identified p53RE" "Frank Bartel" "Blaydes"
     "Jeremy" "NT2/D1" "p53RE" "Gilkes" "hyperploid" "p21 WAF1" "mdmx-S:mdmx-FL"
@@ -2278,33 +2232,32 @@
     "tumor:endothelial cell" "undergirds" "nodes/pathways" "p=0.002" "H+E"
     "re-growth" "Cmax" "30mg/kg" "the potential anti-tumor" "48h" "anti-MPNST"
     "#4" "NTshRNA" "TUNEL" "METshRNA" "non-targeting" "re-suspended" "HDMEcs"
-    "HDMECs" "microvessel" "washings" "24h" "MTS" "IPT" "ST88" "≥10cm" "=55"
+    "HDMECs" "microvessel" "washings" "24h" "MTS" "ST88" "≥10cm" "=55"
     "an inactive zymogen" "zymogen" "Spearman" "~30%" "Schwann" "motogen"
     "~50%" "plexiform" "Exelixis" "gelfoam" "WB" "pMET" "anti-cancer" "type-1"
     "± 0.01" "±8%" "receptor-1" "immature osteoblasts" "Osteoblasts" "ng/µ"
-    "-13-mediated" "OC" "mature osteoblasts" "triple-helical fibril collagens"
-    "osteoblasts" "collagens" "stromelysins" "gelatinases" "Non-specific" "β1"
-    "monotherapy" "7/20" "casidex" "Greater" "anti-proliferative"
-    "withdrawal/deprivation" "necropsy" "ILS" "NCI"
-    "substantially increases lifespan" "lifespan" "Rokhin" "hydroxy" "LuCaP"
-    "CAB" "orchiectomy" "5 × 10" "Cell proliferation/viability" "anti-tumor"
-    "chemoattractant" "proven" "the gastrointestinal mucosa"
-    "a robust epithelium" "littermates" "discontinuous epithelium"
-    "re-epithelialization" "Re-epithelialization" "Paneth" "ferrocyanide"
-    "model intestinal epithelium" "f/+" "f/f"
+    "-13-mediated" "OC" "collagense" "collagenase-1" "mature osteoblasts"
+    "osteoblasts" "stromelysins" "gelatinases" "Non-specific" "monotherapy"
+    "7/20" "casidex" "Greater" "anti-proliferative" "withdrawal/deprivation"
+    "necropsy" "ILS" "NCI" "substantially increases lifespan" "lifespan"
+    "Rokhin" "hydroxy" "LuCaP" "orchiectomy" "5 × 10"
+    "Cell proliferation/viability" "anti-tumor" "chemoattractant" "proven"
+    "the gastrointestinal mucosa" "a robust epithelium" "littermates"
+    "discontinuous epithelium" "re-epithelialization" "Re-epithelialization"
+    "Paneth" "ferrocyanide" "model intestinal epithelium" "f/+" "f/f"
     "the murine intestinal epithelium" "the mouse intestinal epithelium"
-    "human colonic mucosa" "Crohn’s" "CD" "Crohn" "Epithelium"
+    "human colonic mucosa" "Crohn’s" "Crohn" "Epithelium"
     "Extracellular-regulated kinase-1/2"
     "inducible and constitutive subfamilies" "solutes"
     "The human gastrointestinal mucosa" "colectomy" "Celiac" "villus"
     "the intestinal epithelium" "mg/kg" "anti-rabbit" "Aneuploidy" "ploidy"
     "Staibano" "deeper" "aneuploid" "diploid" "yr" "G1/S" "flowcytometry"
     "Immunohistochemistry" "skeletal dysplasia"
-    "the very severe thanatophoric (lethal) dysplasia (TD)" "the exact x"
-    "/receptor" "/2" "events/interactions" "fWT" "x" "Quant" "anti-Y653/654"
-    "μg" "skeletal dysplasias" "ER/cis-Golgi" "Invitrogen" "Cruz" "nigricans"
-    "Crouzon" "thanatophoric dysplasia" "TD" "dysplasia" "dwarfism"
-    "dysplasias" "A391E" "kcal/mole" "bilayers" "Cdc31" "the mitotic upshift"
+    "the very severe thanatophoric (lethal) dysplasia (TD)" "the exact x" "/2"
+    "events/interactions" "fWT" "x" "Quant" "anti-Y653/654" "μg"
+    "skeletal dysplasias" "ER/cis-Golgi" "Invitrogen" "Cruz" "nigricans"
+    "Crouzon" "thanatophoric dysplasia" "dysplasia" "dwarfism" "dysplasias"
+    "A391E" "kcal/mole" "bilayers" "Cdc31" "the mitotic upshift"
     "phosphoproteome" "Tyler" "SILAC" "a mitotic upshift"
     "the phosphorylation-induced mitotic upshift" "N/Q" "phosphopeptides"
     "upshift" "aneuploidy" "APC/C" "Conclusions/Significance"
@@ -2312,7 +2265,7 @@
     "Missense" "WGS" "Sobreira" "a benign polymorphism" "bone/bone marrow"
     "mild dysmorphism" "dysmorphism" "a premature stop codon" "at least 300 bp"
     "nearest" "genomes" "±7%" "aCGH" "intron" "amplimers" "Sanger"
-    "deletion/insertion" "Novoalign" "GA" "CCDS" "UCSC" "SureSelect" "Illumina"
+    "deletion/insertion" "Novoalign" "CCDS" "UCSC" "SureSelect" "Illumina"
     "short ancestral population haplotypes" "LOD" "the autosomal genome"
     "multipoint" "Affymetrix" "arisen" "epiphyses" "metaphyses" "Maroteaux's"
     "Maroteaux" "Maffuci" "Maffucci" "Ollier" "penetrant"
@@ -2320,8 +2273,7 @@
     "Three identified DHEAS-associated SNPs" "multisystem"
     "The identified DHEAS-associated SNP rs2497306" "rs5015480" "rs1111875"
     "The DHEAS-associated SNP rs6738028" "acenocoumarol" "SULT2B1b" "LCL"
-    "the most significant SNP rs2637125" "rs2547231"
-    "the most significant DHEAS-associated SNP" "rs11572169" "rs4646450"
+    "the most significant SNP rs2637125" "rs2547231" "rs11572169" "rs4646450"
     "the DHEAS-associated SNPs" "KEGG" "GSEA-like" "genotype" "MAGENTA"
     "3 DHEAS-associated SNPs" "LCLs" "lymphoblastoid" "MuTHER" "×SNP" "2q13"
     "1.56×10" "rs740160" "1.72×10" "rs6738028" "4.50×10" "rs17277546"
@@ -2333,111 +2285,111 @@
     "metabolism—co-morbidities" "p = 0.0009" "= 0.0004" "−11" "TSC1/2" "CNS"
     "electropherograms" "Kastritis" "Noonan" "Kompier" "Knowles" "Lopez"
     "Platt" "hotspot" "G1/G2" "≥T2" "Ta" "UCs" "UC" "= 0" "integrators" "2–3"
-    "deoxynucleotide" "YPD" "Bmh" "re-established" "bmh1bmh2" "ARS305" "αE"
-    "bmh2" "bmh1" "methylmethansulfonate" "HU" "Sacc" "Omni" "hetero" "Okazaki"
-    "pombe" "Schizosaccharomyces" "mononucleotides" "bi" "ssDNA" "diffusant"
-    "cytochromes" "cerevisiae" "denitrificans" "Paracoccus" "CuA" "H-bond"
-    "helix-3" "porphyrin" "axial" "non-coincidence" "C-term" "antiparallel"
-    "helix" "helices" "Cu" "RMSD" "conformers" "HADDOCK" "farther" "ionic"
-    "interprotein" "peptides/domains" "cheaper" "Beier" "Bufexmac" "BML"
-    "dynabeads" "CD4+Foxp3+" "FACS" "K22xR" "cyclohexamide (CHX)" "CHX" "lysis"
-    "sirtuin" "allograft" "KDAC" "KDACs" "SIRTs" "SIRT" "Sirtuin"
-    "anti-inflammatory" "Co-transfection" "ß-catenin-dependent" "de-regulated"
-    "Evan" "distal WREs" "C-T-T-T-G-A" "colonocytes" "non-colon" "monolayer"
-    "the distal enhancer" "the distal MYC enhancers"
+    "deoxynucleotide" "YPD" "re-established" "bmh1bmh2" "ARS305" "αE"
+    "methylmethansulfonate" "HU" "Sacc" "Omni" "hetero" "Okazaki" "pombe"
+    "Schizosaccharomyces" "mononucleotides" "bi" "ssDNA" "diffusant"
+    "cytochromes" "denitrificans" "Paracoccus" "CuA" "H-bond" "helix-3"
+    "porphyrin" "axial" "non-coincidence" "C-term" "antiparallel" "helix"
+    "helices" "adducts" "the cytochrome c−Cu A adduct" "Cu" "RMSD" "conformers"
+    "HADDOCK" "farther" "ionic" "interprotein" "peptides/domains" "cheaper"
+    "Beier" "Bufexmac" "BML" "dynabeads" "CD4+Foxp3+" "K22xR"
+    "cyclohexamide (CHX)" "CHX" "lysis" "sirtuin" "allograft" "KDAC" "KDACs"
+    "SIRTs" "SIRT" "Sirtuin" "anti-inflammatory" "Co-transfection"
+    "ß-catenin-dependent" "de-regulated" "Evan" "distal WREs" "colonocytes"
+    "non-colon" "monolayer" "the distal enhancer" "the distal MYC enhancers"
     "the distal ß-catenin enhancers" "H3Ac" "co-localized" "dnTCF4"
-    "proximal WREs" "co-localize" "Ahmadiyeh" "rs6983267" "SNP" "8q24" "WRE"
-    "coli" "GI" "Genome" "remodelers" "bHLHZ" "the distal WREs"
+    "proximal WREs" "co-localize" "Ahmadiyeh" "rs6983267" "8q24" "WRE" "coli"
+    "GI" "Genome" "remodelers" "bHLHZ" "the distal WREs"
     "proximal Wnt/ß-catenin responsive enhancers" "WREs" "enhancers" "Wnt/"
-    "C/G" "non-transformed" "co-activator" "informativeness" "19p13.2" "adeno-"
-    "adeno" "~88%" "Caucasians" "exons" "D19S814" "D19S833" "D19S883"
-    "frameshift" "melanocytic macules" "gastro" "macules"
+    "C/G" "A/T" "non-transformed" "co-activator" "informativeness" "19p13.2"
+    "adeno-" "adeno" "~88%" "Caucasians" "exons" "D19S814" "D19S833" "D19S883"
+    "frameshift" "melanocytic macules" "gastro" "macules" "Jeghers" "Peutz"
     "the seminiferous tubules" "glia" "tubules" "luteum" "follicles" "19p13.3"
-    "19p" "non-tumors" "Non-tumor" "non-tumor" "UbcH" "HECT-like" "HECTs" "anf"
-    "non-reducible" "pulldowns" "+2" "Zn" "adduct" "oxyester" "βME" "HHARI~Ub"
-    "E3~Ub" "R1-IBR-R2" "a lysine-reactive E2~Ub" "invariant" "UbcH7~Ub"
-    "UbcH5c~Ub" "isopeptide" "E2~Ub" "~Ub" "inactive UbcH7/RING" "BPH1" "agar"
-    "cyclohexamide" "EDD1" "NEDD4-like" "follicle" "Duclos" "Lhermitte"
-    "Cowden" "6-diamidino-2-phenylindole" "co-transfection"
+    "19p" "non-tumors" "Non-tumor" "non-tumor" "UbcH" "HECT-like" "HECTs"
+    "HHARI-catalyzed Ub" "anf" "non-reducible" "pulldowns" "+2" "Zn" "adduct"
+    "oxyester" "βME" "reducible thioester-linked Ub" "HHARI~Ub" "E3~Ub"
+    "R1-IBR-R2" "a lysine-reactive E2~Ub" "invariant" "orthologue" "UbcH7~Ub"
+    "UbcH5c~Ub" "isopeptide" "E2~Ub" "~Ub" "inactive UbcH7/RING" "Ub" "agar"
+    "shRNAs" "cyclohexamide" "EDD1" "NEDD4-like" "follicle" "Duclos"
+    "Lhermitte" "Cowden" "6-diamidino-2-phenylindole" "co-transfection"
     "adequate co-stimulation" "co-stimulation"
     "HPVs generally use non-preferred codons" "codons" "immunodominant" "RPP"
     "immunocytes" "-11" "p=0.0009" "2-like" "minimal DR0102" "haplotype"
     "E2/E6" "DR0301" "DR0102" "DRB1*03:01" "DRB1*01:02" "*01:02" "1-like"
     "*03:01" "haplotypes" "co-inhibition" "biopsies" "activatingBRAF"
-    "adipocyctes" "Ser240/244" "ACAP1" "un" "nuclear-re-entry" "RhoA" "EREs"
-    "HBX" "GSK3 α/β" "co-regulate" "RKXS" "RXRXXS/T" "RXRXXS" "KSRs"
-    "co-localizes" "AGC" "GABs" "SOS" "feedforward" "GAB" "hyper" "IEG"
-    "Latino" "lavage" "non-African" "American" "African" "/FVC" "Bootstrap"
-    "IQR" "FVC" "non-smokers" "non-AA" "Americans" "transactivators" "et"
-    "Coss" "FSHβ" "TCAT" "ATTG" "ATTGG" "TGATTGG" "co-transfected" "PGL-200"
+    "adipocyctes" "Ser240/244" "un" "nuclear-re-entry" "EREs" "HBX" "GSK3 α/β"
+    "co-regulate" "RKXS" "RXRXXS/T" "RXRXXS" "KSRs" "co-localizes"
+    "feedforward" "hyper" "IEG" "Latino" "lavage" "non-African" "American"
+    "African" "/FVC" "Bootstrap" "IQR" "FVC" "non-smokers" "non-AA" "Americans"
+    "transactivators" "et" "Coss" "FSHβ" "TCAT" "ATTG" "ATTGG" "TGATTGG"
+    "co-transfected" "co-transfected dual siRNAs" "siRNAs" "PGL-200"
     "Ap1/ccaat" "Ap-1/ccaat" "protein/DNA" "TATA-less" "TATA"
     "a major potential serum/growth factor" "TRANSFAC" "PGL" "manuscipt"
     "HCASMC" "co-localization" "microdomains" "neutral CDases" "nCDases"
-    "optima" "pH" "subtypes" "acyl" "ceramidases" "CDases" "So1P"
-    "neutral CDase" "sphingosine" "CDase" "non-specific" "CBP/βcat/TCF" "iliac"
-    "RGD" "Wnt-5a" "PECAM-1 as" "viii" "iv" "vii" "vi" "iii" "ii" "8-13wk"
-    "no nuclear localized βcat" "transferases" "Xβ-cat-Eng" "Atheroprone"
-    "atheroprotective regions βcat" "βcat/TCF" "endothelial βcat/TCF" "βcat"
-    "atheroprone" "HDAC1/2" "class I/II" "HNSCC" "JHU-029" "440kDa" "JHU"
+    "optima" "subtypes" "acyl" "ceramidases" "CDases" "So1P" "neutral CDase"
+    "sphingosine" "CDase" "non-specific" "CBP/βcat/TCF" "iliac" "RGD"
+    "PECAM-1 as" "viii" "iv" "vii" "vi" "iii" "ii" "8-13wk" "transferases"
+    "Xβ-cat-Eng" "Atheroprone" "atheroprotective regions βcat" "βcat/TCF"
+    "endothelial βcat/TCF" "βcat" "atheroprone" "HDAC1/2" "class I/II"
+    "the lentiviral shRNA" "shRNA" "HNSCC" "JHU-029" "440kDa" "JHU"
     "oropharynx" "subtype" "timepoints" "K231/294R" "co-immunopreciptation"
-    "transcriptional co-regulators" "K231/294" "HA" "paralog" "SUMOplot"
-    "non-receptor proteins" "SLTM" "coregulators" "SENP"
-    "the four amino motif ΨKXE" "ΨKXE" "SUMO2/3" "viremia" "Kaposi's" "HTLV"
-    "visna" "Kaposi" "woodchuck" "HIV-1#1+2mut" "HIV-1-AP-1#totmut"
-    "HIV-1-AP-1#1+2mut" "supernatants" "AP-1#3mut" "AP-1#2mut" "RNAPII"
-    "its mutated counterpart pHIV-1-AP-1#totmut" "#totmut" "pHIV-1" "Tat101"
-    "Tat72" "pTat101" "pTat72" "TAR" "AFos" "pTK-5103as-mut1+2"
+    "transcriptional co-regulators" "K231/294" "paralog" "SUMOplot"
+    "non-receptor proteins" "coregulators" "SENP" "the four amino motif ΨKXE"
+    "ΨKXE" "SUMO2/3" "viremia" "Kaposi's" "HTLV" "visna" "Kaposi" "woodchuck"
+    "HIV-1#1+2mut" "HIV-1-AP-1#totmut" "HIV-1-AP-1#1+2mut" "supernatants"
+    "AP-1#3mut" "AP-1#2mut" "nuc-1" "RNAPII"
+    "its mutated counterpart pHIV-1-AP-1#totmut" "#totmut" "pHIV-1" "pHIV"
+    "Tat101" "Tat72" "pTat101" "pTat72" "TAR" "AFos" "pTK-5103as-mut1+2"
     "pTK-5103as-mut3" "pTK-5103as-mut2" "pTK-5103as-mut1" "pTK-5103as-totmut"
     "totmut" "Renilla" "pTK-5103as-wt" "pTK-5103s-wt" "the mutated AP-1#1mut"
     "AP-1#1mut" "bp" "its mutated version designated AP-1#1mut" "C/EBP" "NL4-3"
     "AP-1#3" "AP-1#2-C1" "AP-1#2-C3"
-    "three retarded complexes designated AP-1#2-C1" "AP-1#2" "#2" "AP" "AP-1#1"
-    "#3" "TPA" "multigene" "atf" "NRE" "homologies"
-    "the hypersensitive site HS7" "8E5" "LTRs" "T-lymhoid" "lymhoid" "+1" "nt"
+    "three retarded complexes designated AP-1#2-C1" "AP-1#2" "#2" "AP-1#1" "#3"
+    "multigene" "atf" "NRE" "homologies" "the hypersensitive site HS7" "8E5"
+    "LTRs" "T-lymhoid" "lymhoid" "+1" "nt"
     "a phorbol 12-myristate 13-acetate (PMA)-inducible intragenic enhancer"
     "LTR" "enhancer" "the DNaseI-hypersensitive site HS7" "HS7" "DNaseI"
     "topologies" "cysteinyl" "Y2H" "PDZ10" "PDZ3" "ESGFG" "ETGFG" "PDZ4" "DLG2"
     "silico" "carboxyl" "2I1N" "FoldX" "EETDIW" "Rosetta" "PIL" "RRRPIL"
-    "this loop display much larger B-factors" "EETSV" "Pin3p" "Lsb1p" "Rvs167p"
-    "orientations" "R/K" "PxxPx" "xxPxxP" "PxxP" "AROC" "#1" "entropy" "ETIW"
-    "chosen" "ANNs" "Markov" "hidden" "non-canonical" "algorithm" "Wabnitz"
-    "motile" "Paxilin" "GMR" "homolog" "PKCβI" "Carlsbad" "paracrine" "perhaps"
-    "Boyden" "Eosinophils" "isoenzymes" "myocytes" "GMRβ" "co-precipitation"
-    "2DE" "phosphopeptide" "antiphosphotyrosine" "Sypro" "lipopolysaccharide"
-    "myristate" "plastins" "plastin" "Eosinophil"
-    "the characteristic pathophysiology" "epithelium" "αMβ2" "EPX" "ECP"
-    "phtalimide" "fluoroanilino" "PKCβII" "βII" "paxilin" "proteome"
-    "eosinophil" "eosinophils" "Dulbecco's" "Dulbecco" "alisol" "amooranin"
-    "subfamilies" "intermembrane" "hypodiploid" "subdiploid" "IC80" "IC50"
-    "anti-tumoral" "wax-like" "UV" "G0/G1 phase" "the protective wax-like"
-    "europaea" "Olea" "Anti-apoptotic" "≤ 0.05" "anti-apoptotic"
-    "geranylgeranyl" "intra" "Steroid-induced ONFH" "Pre" "ELISA"
-    "hypercoagulation/hypofibrinolysis" "steroid-induced ONFH" "ONFH"
+    "EETSV" "non-canonical" "Pin3p" "Lsb1p" "Rvs167p" "orientations" "R/K"
+    "PxxPx" "xxPxxP" "PxxP" "AROC" "#1" "entropy" "ETIW" "chosen" "ANNs"
+    "Markov" "hidden" "algorithm" "Wabnitz" "motile" "Paxilin" "homolog"
+    "PKCβI" "Carlsbad" "paracrine" "perhaps" "Boyden" "Eosinophils"
+    "isoenzymes" "myocytes" "GMRβ" "co-precipitation" "2DE" "phosphopeptide"
+    "antiphosphotyrosine" "Sypro" "lipopolysaccharide" "myristate" "plastins"
+    "plastin" "Eosinophil" "the characteristic pathophysiology" "epithelium"
+    "αMβ2" "EPX" "siRNA" "phtalimide" "fluoroanilino" "PKCβII" "βII" "paxilin"
+    "proteome" "eosinophil" "eosinophils" "Dulbecco's" "Dulbecco" "alisol"
+    "amooranin" "subfamilies" "intermembrane" "ones" "hypodiploid" "subdiploid"
+    "IC80" "anti-tumoral" "wax-like" "UV" "G0/G1 phase"
+    "the protective wax-like" "europaea" "Olea" "Anti-apoptotic" "≤ 0.05"
+    "anti-apoptotic" "geranylgeranyl" "intra" "Steroid-induced ONFH" "Pre"
+    "ELISA" "hypercoagulation/hypofibrinolysis" "steroid-induced ONFH" "ONFH"
     "non-Ara-C" "non-white" "AHD" "PS" "Multivariate" "wt-" "Karyotype" "wt"
     "WBC" "DFS" "11q23" "inv16/t" "TKD" "karyotype" "= 0" "×10" "chromatids"
     "Hochegger" "Cdk1/2" "harder" "μm/min" "Trans24" "derivate" "3MBPP1"
     "immuno" "centrioles" "cdk1as" "1NMPP1" "organelle" "NEBD" "centriole"
     "× 10" "IIIC" "IIIA" "IIA" "nondrug" "datasets" "survivalin" "Meier"
     "Kaplan" "hours/week" "≥18" "eTables" "kg/m 2" "≥30" "multivariate"
-    "univariate" "interquartile" "HUGO" "5-year" "nonobese" "CIMP"
-    "microsatellite" "immunohistochemistry" "HGNC" "MPE" "BMI" "=0" "offs"
-    "Bonferroni" "algorithms" "Easton" "genome" "the bioinformatic covariates"
+    "univariate" "interquartile" "5-year" "nonobese" "CIMP" "microsatellite"
+    "immunohistochemistry" "HGNC" "MPE" "BMI" "=0" "offs" "Bonferroni"
+    "algorithms" "Easton" "genome" "the bioinformatic covariates"
     "no bioinformatic covariates" "superscript" "younger"
     "a hierarchical covariate" "probands" "covariate" "IVS" "GVGD" "≤0.05"
-    "PolyPhen" "≥65" "the hierarchical covariates" "CBC" "VUS" "Li"
+    "PolyPhen" "≥65" "the hierarchical covariates" "VUS" "Li"
     "hierarchical covariates" "Bernstein" "WECARE" "penetrance" "germline"
     "SIFT" "GV" "covariates" "intelomere" "multi" "non-familial"
     "pathophysiology" "broader" "37A→G" "=0.0004" "undergone" "=0.0009"
-    "528 healthy" "intronic SNPs" "SNPs" "polymorphisms" "Wilson’s" "Wilson"
-    "congenita" "codon" "biopsy" "buccal mucosa" "mucosa" "hepatectomy"
-    "leukocytesin" "missense" "Arizona" "genesin" "cytotoxicty" "longa"
-    "Curcuma" "cell proliferation/viability" "dataset" "begun" "bodyweights"
-    "anti-MM" "synergism" "proliferation/cell viability" "at 5μM" "LLL3"
-    "downstreatm" "1/2" "chemoresistance" "pre" "LLL12" "GVL" "mDC/pDCs"
-    "/CD4 +" "mDC/pDC" "subset" "Kussick" "Mohty" "greater" "frozen" "subsets"
-    "subpopulations" "antigens" "antigen" "vivo" "ex" "-ITD" "plasmacytoid"
-    "immunophenotype" "-ITDs" "ITDs" "ITD" "ZEB1/2" "p53BS" "p53BSs" "miR-200b"
-    "sqRT" "b" "UTR" "TWIST" "mesoderm" "UTRs"))
+    "intronic SNPs" "SNPs" "polymorphisms" "Wilson’s" "Wilson" "congenita"
+    "codon" "biopsy" "buccal mucosa" "mucosa" "hepatectomy" "leukocytesin"
+    "missense" "genesin" "cytotoxicty" "longa" "Curcuma"
+    "cell proliferation/viability" "dataset" "begun" "bodyweights" "synergism"
+    "proliferation/cell viability" "at 5μM" "LLL3" "downstreatm" "1/2"
+    "chemoresistance" "pre" "LLL12" "GVL" "mDC/pDCs" "/CD4 +" "mDC/pDC"
+    "subset" "Kussick" "Mohty" "greater" "frozen" "subsets" "subpopulations"
+    "vivo" "ex" "-ITD" "plasmacytoid" "immunophenotype" "-ITDs" "ITDs" "ITD"
+    "ZEB1/2" "200b" "p53BS" "p53BSs" "miR-200b–429" "sqRT" "b" "mesoderm"
+    "UTRs"))
 
 (DEFPARAMETER SPARSER::*BIO-CHEMICAL-HEADS-PHASE3-5701-6000*
   '(("the previously selected FosW" . SPARSER::PROTEIN)
@@ -2462,13 +2414,15 @@
     ("4hFosW and c-Jun" . SPARSER::COLLECTION) ("Dimer" . SPARSER::DIMER)
     ("FosW" . SPARSER::PROTEIN) ("4hFosW" . SPARSER::PROTEIN)
     ("c-Jun-FosW" . SPARSER::COLLECTION) ("c-Jun-4hFosW" . SPARSER::COLLECTION)
-    ("a favorable Glu-Arg electrostatic complement" . SPARSER::PROTEIN)
     ("Glu-Arg" . SPARSER::COLLECTION)
     ("a stronger helical component" . SPARSER::COMPONENT)
     ("the c-Jun and 4hFosW constituent homodimeric melts" . SPARSER::DRUG)
     ("c-Jun and 4hFosW" . SPARSER::COLLECTION) ("melts" . SPARSER::DRUG)
-    ("melt" . SPARSER::DRUG) ("c-Jun-c-Fos" . SPARSER::COLLECTION)
+    ("melt" . SPARSER::DRUG)
+    ("coiled coil and monomeric helices" . SPARSER::COLLECTION)
+    ("c-Jun-c-Fos" . SPARSER::COLLECTION)
     ("heterodimeric form" . SPARSER::FORM) ("Gln-Gln" . SPARSER::COLLECTION)
+    ("a contributory factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Asp and Glu" . SPARSER::COLLECTION)
     ("Leu, and Arg" . SPARSER::COLLECTION)
     ("His and the Gly/Pro that would not be predicted" . SPARSER::COLLECTION)
@@ -2479,68 +2433,78 @@
     ("e2 and e4" . SPARSER::COLLECTION)
     ("Leu, Ile, Val, Arg, Ser, and Gly" . SPARSER::COLLECTION)
     ("Leu, Ile, and Val" . SPARSER::COLLECTION)
-    ("Ser and Gly" . SPARSER::COLLECTION)
+    ("Ser and Gly" . SPARSER::COLLECTION) ("offs" . SPARSER::PROTEIN)
     ("the parallel and dimeric wild-type Jun-Fos" . SPARSER::COLLECTION)
     ("Asn/Lys" . SPARSER::COLLECTION)
     ("the v-Jun viral oncoprotein" . SPARSER::PROTEIN)
     ("dimeric complexes" . SPARSER::BIO-COMPLEX)
     ("-response element" . SPARSER::DNA-RESPONSE-ELEMENT)
-    ("TPA" . SPARSER::DRUG) ("Dimeric complexes" . SPARSER::BIO-COMPLEX)
+    ("Dimeric complexes" . SPARSER::BIO-COMPLEX)
     ("Fos and Jun" . SPARSER::COLLECTION)
     ("dimeric DNA-binding proteins" . SPARSER::PROTEIN)
     ("progressively shorter peptides" . SPARSER::PEPTIDE)
     ("Arg-Gln" . SPARSER::MOLECULE) ("e3" . SPARSER::MOLECULE)
     ("e2" . SPARSER::MOLECULE) ("e  3" . SPARSER::MOLECULE)
     ("K −1" . SPARSER::PROTEIN) ("potassium fluoride" . SPARSER::MOLECULE)
-    ("cm −1" . SPARSER::PROTEIN) ("d -1" . SPARSER::PROTEIN)
-    ("dihydrofolate reductase" . SPARSER::PROTEIN) ("DHFR2" . SPARSER::PROTEIN)
-    ("v-Jun" . SPARSER::PROTEIN)
+    ("d -1" . SPARSER::PROTEIN) ("dihydrofolate reductase" . SPARSER::PROTEIN)
+    ("DHFR2" . SPARSER::PROTEIN) ("v-Jun" . SPARSER::PROTEIN)
     ("12- O -tetradecanoylphorbol-13-acetate" . SPARSER::DRUG)
     ("activator protein 1" . SPARSER::PROTEIN)
-    ("activator protein-1" . SPARSER::PROTEIN)
     ("decitabine and azacitidine" . SPARSER::COLLECTION)
     ("azacitidine" . SPARSER::DRUG) ("decitabine" . SPARSER::DRUG)
+    ("age and types" . SPARSER::COLLECTION)
+    ("age and type" . SPARSER::COLLECTION)
     ("thromboplastin" . SPARSER::PROTEIN)
     ("mutational state" . SPARSER::BIO-STATE)
+    ("the most important prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("FLT3 and nucleophosmin1" . SPARSER::COLLECTION)
-    ("nucleophosmin" . SPARSER::PROTEIN) ("OS 3" . SPARSER::PROTEIN)
+    ("nucleophosmin" . SPARSER::PROTEIN)
+    ("the negative prognostic impact" . SPARSER::PROTEIN)
+    ("a negative prognostic impact" . SPARSER::PROTEIN)
+    ("CN-AML" . SPARSER::COLLECTION) ("OS 3" . SPARSER::PROTEIN)
     ("CR1" . SPARSER::PROTEIN)
     ("only some CTL-escape variants" . SPARSER::VARIANT)
     ("antigenic HIV peptides" . SPARSER::PEPTIDE)
     ("viral receptors" . SPARSER::PROTEIN)
     ("wt and variant" . SPARSER::COLLECTION)
+    ("a preferable target" . SPARSER::TARGET-PROTEIN)
     ("Previously established CTLs" . SPARSER::PROTEIN)
     ("mature MDMs" . SPARSER::PROTEIN)
     ("primary monocyte-derived macrophages" . SPARSER::PROTEIN)
     ("strain SF2 (referred as JRFL-SF2nef) and its variants"
      . SPARSER::COLLECTION)
-    ("viral variants" . SPARSER::VARIANT)
-    ("CTL-escape viral variants" . SPARSER::VARIANT)
+    ("JRFL-SF2nef" . SPARSER::COLLECTION) ("viral variants" . SPARSER::VARIANT)
+    ("CTL-escape viral variants" . SPARSER::VARIANT) ("RY" . SPARSER::PROTEIN)
     ("polyproline" . SPARSER::PROTEIN)
     ("HLA-A" . SPARSER::HUMAN-PROTEIN-FAMILY) ("HLA-A24" . SPARSER::PROTEIN)
     ("HLA-B" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Validated monoclonal antibodies" . SPARSER::ANTIBODY)
-    ("ER and HER2" . SPARSER::COLLECTION) ("YB-1:mRNA" . SPARSER::BIO-COMPLEX)
+    ("ER and HER2" . SPARSER::COLLECTION)
     ("protein:protein" . SPARSER::BIO-COMPLEX)
     ("Phosphoserine" . SPARSER::PHOSPHORYLATED-AMINO-ACID)
     ("the smaller NZ cohort" . SPARSER::MOLECULE)
     ("monomeric YB-1" . SPARSER::PROTEIN)
     ("≈300 kDa (band 2) and ≈100 kDa (band 4)" . SPARSER::COLLECTION)
+    ("LC/MS/MS" . SPARSER::COLLECTION)
     ("almost every case YB-1" . SPARSER::PROTEIN)
+    ("AB-c" . SPARSER::COLLECTION)
     ("the larger Singapore breast cancer cohort" . SPARSER::MOLECULE)
+    ("a different racial mix" . SPARSER::PROTEIN)
     ("larger cohort" . SPARSER::MOLECULE)
     ("YB-1 and hnRNP A1" . SPARSER::COLLECTION)
     ("∼49 kDa and ∼37 kDa" . SPARSER::COLLECTION)
     ("UV and cisplatin" . SPARSER::COLLECTION) ("-c" . SPARSER::COLLECTION)
-    ("-b" . SPARSER::COLLECTION) ("band 3" . SPARSER::PROTEIN)
-    ("multidrug resistance 1" . SPARSER::PROTEIN) ("P67809" . SPARSER::PROTEIN)
-    ("CD44-hyaluronan" . SPARSER::COLLECTION)
+    ("-b" . SPARSER::COLLECTION) ("AB-" . SPARSER::PROTEIN)
+    ("band 3" . SPARSER::PROTEIN) ("multidrug resistance 1" . SPARSER::PROTEIN)
+    ("P67809" . SPARSER::PROTEIN) ("CD44-hyaluronan" . SPARSER::COLLECTION)
     ("FSH and LH" . SPARSER::COLLECTION)
     ("gonadotropin and steroid hormone" . SPARSER::COLLECTION)
+    ("LH" . SPARSER::PROTEIN)
     ("the distinct histological subtypes" . SPARSER::PROTEIN)
     ("angiogenic hyaluronan" . SPARSER::PROTEIN)
     ("SEMA3B and SEMA3F" . SPARSER::COLLECTION)
     ("SEMA" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("mRNA and plasma" . SPARSER::COLLECTION)
     ("the different histological types" . TYPE)
     ("pS2/TFF1" . SPARSER::COLLECTION) ("HYAL1 and PR" . SPARSER::COLLECTION)
     ("HYAL1 and ERα" . SPARSER::COLLECTION)
@@ -2550,10 +2514,10 @@
     ("Hyaluronidase-1 and hormone" . SPARSER::COLLECTION)
     ("ERα ( xref , panel a) and ERβ ( xref , panel a)" . SPARSER::COLLECTION)
     ("ERα, ERβ and PR" . SPARSER::COLLECTION)
+    ("reproductive factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ERα and PR" . SPARSER::COLLECTION) ("OV" . SPARSER::MOLECULE)
     ("HG" . SPARSER::MOLECULE) ("cdc25c" . SPARSER::PROTEIN)
     ("hyaluronidase" . SPARSER::DRUG)
-    ("elevated extracellular hyaluronan" . SPARSER::PROTEIN)
     ("hyaluronan and HYAL-1" . SPARSER::COLLECTION)
     ("hyaluronan and membrane receptors" . SPARSER::COLLECTION)
     ("certain cytoskeletal proteins" . SPARSER::PROTEIN)
@@ -2561,25 +2525,27 @@
     ("HYAL-1 and HYAL-2" . SPARSER::COLLECTION)
     ("PH20/Spam1" . SPARSER::COLLECTION)
     ("SPAM1 and HYALP1" . SPARSER::COLLECTION)
+    ("chondroitinase" . SPARSER::PROTEIN) ("endo-" . SPARSER::PROTEIN)
+    ("endo" . SPARSER::PROTEIN)
     ("HYAL1 , HYAL2 and HYAL3" . SPARSER::COLLECTION)
     ("hyaluronidases" . SPARSER::DRUG) ("Transcriptome" . SPARSER::PROTEIN)
     ("mucinous subtypes" . SPARSER::PROTEIN)
     ("-α, ERβ and progesterone receptor (PR) in EOC tumor" . SPARSER::PROTEIN)
     ("RASSF1" . SPARSER::PROTEIN) ("SEMA3B" . SPARSER::PROTEIN)
-    ("CA125" . SPARSER::DRUG) ("hyaluronidase-1" . SPARSER::PROTEIN)
+    ("CA125" . SPARSER::PROTEIN) ("hyaluronidase-1" . SPARSER::PROTEIN)
     ("hyaluronic acid" . SPARSER::MOLECULE) ("pS2" . SPARSER::PROTEIN)
     ("trefoil factor 1" . SPARSER::PROTEIN)
     ("growth regulation by estrogen in breast cancer 1" . SPARSER::PROTEIN)
-    ("cdc25" . SPARSER::PROTEIN) ("HYAL-2" . SPARSER::PROTEIN)
-    ("Spam1" . SPARSER::PROTEIN) ("SPAM1" . SPARSER::PROTEIN)
-    ("PH20" . SPARSER::PROTEIN) ("HYAL4" . SPARSER::PROTEIN)
-    ("endo- N" . SPARSER::PROTEIN) ("HYAL3" . SPARSER::PROTEIN)
+    ("cdc25" . SPARSER::PROTEIN) ("Spam1" . SPARSER::PROTEIN)
+    ("SPAM1" . SPARSER::PROTEIN) ("PH20" . SPARSER::PROTEIN)
+    ("HYAL4" . SPARSER::PROTEIN) ("HYAL3" . SPARSER::PROTEIN)
     ("HYAL2" . SPARSER::PROTEIN) ("Hyaluronidase-1" . SPARSER::PROTEIN)
     ("HYAL-1" . SPARSER::PROTEIN) ("ERβ" . SPARSER::PROTEIN)
     ("HYAL1" . SPARSER::PROTEIN) ("CS/Bax/MOMP" . SPARSER::COLLECTION)
     ("Bax, Bak and VDAC" . SPARSER::COLLECTION)
     ("VDAC or Bak" . SPARSER::COLLECTION)
-    ("Bax, Bak, and VDAC" . SPARSER::COLLECTION) ("COXII" . SPARSER::PROTEIN)
+    ("Bax, Bak, and VDAC" . SPARSER::COLLECTION) ("PDH" . SPARSER::PROTEIN)
+    ("COXII" . SPARSER::PROTEIN) ("the contiguous MOM" . SPARSER::PROTEIN)
     ("only few lipids" . SPARSER::PROTEIN)
     ("permitting shorter peptides" . SPARSER::PEPTIDE)
     ("proteins or lipids" . SPARSER::COLLECTION)
@@ -2592,13 +2558,13 @@
     ("light membrane-associated Bax" . SPARSER::PROTEIN)
     ("ceramide-poor light" . SPARSER::PROTEIN)
     ("Bak (20.2±1.1%) and VDAC (16.7±1.6%)" . SPARSER::COLLECTION)
+    ("10 Gy" . SPARSER::PROTEIN)
     ("maximally releases cytochrome c" . SPARSER::PROTEIN)
-    ("minimal Bax" . SPARSER::PROTEIN)
+    ("post-10 Gy" . SPARSER::COLLECTION) ("minimal Bax" . SPARSER::PROTEIN)
     ("Bax and other MOMP-inducing proteins" . SPARSER::COLLECTION)
     ("Bcl-xL and several other membrane proteins" . SPARSER::COLLECTION)
     ("glycosphingolipids" . SPARSER::MOLECULE)
     ("most mitochondrial cytochrome c" . SPARSER::PROTEIN)
-    ("endogenous mitochondrial ceramide" . SPARSER::MOLECULE)
     ("Metaxin" . SPARSER::PROTEIN-FAMILY)
     ("exogenous C 16 -ceramide" . SPARSER::MOLECULE)
     ("Bax or BaxΔC" . SPARSER::COLLECTION)
@@ -2607,28 +2573,22 @@
      . SPARSER::COLLECTION)
     ("using anti-ceramide IgM (red) or anti-Bax IgG (green)"
      . SPARSER::COLLECTION)
-    ("mitochondrial ceramide and Bax" . SPARSER::COLLECTION)
     ("ceramide and Bax" . SPARSER::COLLECTION)
     ("intact mitochondria" . SPARSER::PROTEIN)
     ("amphiphile" . SPARSER::MOLECULE)
     ("the MOM protein VDAC ( xref , upper panel, lower lane) or the soluble matrix protein Hsp-60 ( xref )"
      . SPARSER::COLLECTION)
     ("directly release cytochrome c" . SPARSER::PROTEIN)
-    ("either mitochondrial ceramide" . SPARSER::MOLECULE)
     ("which lacks amino acids" . SPARSER::AMINO-ACID)
-    ("tBid" . SPARSER::PROTEIN) ("–1 µ" . SPARSER::PROTEIN)
-    ("-dihydroceramide" . SPARSER::MOLECULE) ("-ceramide" . SPARSER::MOLECULE)
-    ("sphingoid" . SPARSER::MOLECULE) ("dihydroceramide" . SPARSER::MOLECULE)
+    ("tBid" . SPARSER::PROTEIN) ("palmitoyl" . SPARSER::PROTEIN)
+    ("ISP" . SPARSER::PROTEIN) ("-dihydroceramide" . SPARSER::MOLECULE)
+    ("-ceramide" . SPARSER::MOLECULE) ("sphingoid" . SPARSER::MOLECULE)
+    ("dihydroceramide" . SPARSER::MOLECULE)
     ("IgM, and anti-COXI" . SPARSER::COLLECTION) ("COXI" . SPARSER::PROTEIN)
     ("ER or mitochondria" . SPARSER::COLLECTION)
-    ("mitochondrial phosphatidylethanolamine" . SPARSER::MOLECULE)
     ("ER and/or MAM metabolites" . SPARSER::COLLECTION)
-    ("sucrose" . SPARSER::MOLECULE)
-    ("the mitochondrial-enriched fraction" . SPARSER::COMPONENT)
-    ("the post-nuclear membrane fraction" . SPARSER::COMPONENT)
-    ("sphingomyelinase" . SPARSER::PROTEIN)
+    ("sucrose" . SPARSER::MOLECULE) ("sphingomyelinase" . SPARSER::PROTEIN)
     ("Bak and VDAC" . SPARSER::COLLECTION) ("VDAC" . SPARSER::PROTEIN)
-    ("mitochondrial Bax" . SPARSER::PROTEIN)
     ("CS and ceramide" . SPARSER::COLLECTION) ("CFTR" . SPARSER::PROTEIN)
     ("large (1–5 microns in diameter) sphingolipid- and cholesterol-rich platforms"
      . SPARSER::COLLECTION)
@@ -2638,37 +2598,40 @@
     ("pore-forming toxins" . SPARSER::MOLECULE)
     ("Aerolysin" . SPARSER::PROTEIN)
     ("α-helical and β-strand pore-forming toxins" . SPARSER::MOLECULE)
+    ("antigens, growth factors and cytokines" . SPARSER::COLLECTION)
     ("GEMs" . SPARSER::PROTEIN) ("exogenous ceramide" . SPARSER::MOLECULE)
     ("this latter observation ceramide" . SPARSER::MOLECULE)
     ("a functional Bax" . SPARSER::PROTEIN)
-    ("mitochondrial-bound Bax" . SPARSER::PROTEIN)
     ("α-helical pore-forming toxins" . SPARSER::MOLECULE)
     ("α-helical Bax" . SPARSER::PROTEIN)
     ("The principal mammalian pro-apoptotic Bcl-2 protein" . SPARSER::PROTEIN)
-    ("Mitochondrial ceramide" . SPARSER::MOLECULE)
-    ("/CED-4" . SPARSER::COLLECTION) ("-1 and LAGR-1" . SPARSER::COLLECTION)
+    ("MOM" . SPARSER::PROTEIN) ("/CED-4" . SPARSER::COLLECTION)
+    ("HYL" . SPARSER::PROTEIN)
     ("exclusively MOMP-incompatible monomeric Bax" . SPARSER::PROTEIN)
     ("a well-defined natural ceramide synthase inhibitor" . SPARSER::INHIBITOR)
     ("Fumonisin" . SPARSER::MOLECULE) ("SU5416" . SPARSER::DRUG)
     ("C 2 -ceramide" . SPARSER::MOLECULE) ("long chain" . SPARSER::PROTEIN)
-    ("ISP-1" . SPARSER::PROTEIN) ("bis -benzimide" . SPARSER::MOLECULE)
-    ("Mono-Q" . SPARSER::DRUG) ("T-2" . SPARSER::PROTEIN)
+    ("bis -benzimide" . SPARSER::MOLECULE) ("Mono-Q" . SPARSER::DRUG)
     ("diacylglycerol kinase" . SPARSER::PROTEIN) ("P 100" . SPARSER::PROTEIN)
-    ("CO 3" . SPARSER::PROTEIN) ("P 10" . SPARSER::PROTEIN)
-    ("bis- benzimide" . SPARSER::MOLECULE) ("31HL" . SPARSER::PROTEIN)
-    ("Hsp60" . SPARSER::PROTEIN) ("COX IV" . SPARSER::PROTEIN)
-    ("Fis1" . SPARSER::PROTEIN) ("FB 1" . SPARSER::PROTEIN)
-    ("chloride channel" . SPARSER::PROTEIN)
+    ("ribonuclease A" . SPARSER::PROTEIN) ("CO 3" . SPARSER::PROTEIN)
+    ("P 10" . SPARSER::PROTEIN) ("bis- benzimide" . SPARSER::MOLECULE)
+    ("31HL" . SPARSER::PROTEIN) ("Hsp60" . SPARSER::PROTEIN)
+    ("COX IV" . SPARSER::PROTEIN) ("Fis1" . SPARSER::PROTEIN)
+    ("FB 1" . SPARSER::PROTEIN) ("chloride channel" . SPARSER::PROTEIN)
     ("cystic fibrosis transmembrane conductance regulator" . SPARSER::PROTEIN)
     ("asialoGM1" . SPARSER::MOLECULE)
     ("acid sphingomyelinase" . SPARSER::PROTEIN)
     ("diphtheria toxin" . SPARSER::PROTEIN) ("CED-3" . SPARSER::PROTEIN)
-    ("CED-4" . SPARSER::PROTEIN) ("EGL-1" . SPARSER::PROTEIN-FAMILY)
-    ("LAGR-1" . SPARSER::PROTEIN) ("/PTEN" . SPARSER::COLLECTION)
+    ("CED-9" . SPARSER::PROTEIN) ("CED-4" . SPARSER::PROTEIN)
+    ("EGL-1" . SPARSER::PROTEIN-FAMILY) ("LAGR-1" . SPARSER::PROTEIN)
+    ("/PTEN" . SPARSER::COLLECTION)
     ("the anti-EGFR monoclonal antibodies" . SPARSER::ANTIBODY)
     ("metastatic CRC" . SPARSER::PROTEIN)
     ("other commercially available antibodies" . SPARSER::ANTIBODY)
-    ("FISH and CISH" . SPARSER::COLLECTION) ("irinotecan" . SPARSER::DRUG)
+    ("FISH and CISH" . SPARSER::COLLECTION)
+    ("only EGFR GCN ( P =0.0003, HR: 0.16, 95% CI: 0.06–0.43) independently predicted PFS"
+     . SPARSER::PROTEIN)
+    ("the Cox's" . SPARSER::PROTEIN) ("irinotecan" . SPARSER::DRUG)
     ("EGFR and Chr-7" . SPARSER::COLLECTION)
     ("fluorochromes" . SPARSER::MOLECULE) ("chromogen" . SPARSER::MOLECULE)
     ("Chr" . SPARSER::PROTEIN)
@@ -2690,21 +2653,27 @@
     ("L19" . SPARSER::PROTEIN)
     ("BRCA1-associated RING domain protein 1" . SPARSER::PROTEIN)
     ("a highly pleiotropic molecule" . SPARSER::MOLECULE)
-    ("report only epithelial p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("particular nuclear" . SPARSER::PROTEIN)
+    ("report only epithelial p53" . SPARSER::PROTEIN)
     ("mAb p1801" . SPARSER::PROTEIN)
     ("doxorubicin and p53" . SPARSER::COLLECTION)
-    ("paclitaxel and p53" . SPARSER::COLLECTION) ("mAB" . SPARSER::DRUG)
+    ("paclitaxel and p53" . SPARSER::COLLECTION)
+    ("a Predictive Factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("mAB" . SPARSER::DRUG)
+    ("a Prognostic Factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the analyzable cohort" . SPARSER::MOLECULE)
-    ("passed QC" . SPARSER::PROTEIN)
     ("two different monoclonal antibodies" . SPARSER::ANTIBODY)
+    ("a strong predictive factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("CALGB" . SPARSER::PROTEIN)
-    ("epithelial p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("a vital regulator" . SPARSER::REGULATOR)
+    ("Predictive factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("epithelial p53" . SPARSER::PROTEIN)
+    ("a vital regulator" . SPARSER::PROTEIN)
     ("significantly worse RFS" . SPARSER::PROTEIN) ("mAbs" . SPARSER::DRUG)
     ("using two immunohistochemical antibodies" . SPARSER::ANTIBODY)
+    ("DO" . SPARSER::PROTEIN)
     ("doxorubicin and cyclophosphamide" . SPARSER::COLLECTION)
-    ("set 1" . SPARSER::PROTEIN) ("Set 1" . SPARSER::PROTEIN)
-    ("Bio-Pharmaceuticals" . SPARSER::DRUG)
+    ("INT" . SPARSER::PROTEIN) ("set 1" . SPARSER::PROTEIN)
+    ("Set 1" . SPARSER::PROTEIN) ("Bio-Pharmaceuticals" . SPARSER::DRUG)
     ("FoxO3 and NF-κB" . SPARSER::COLLECTION)
     ("FoxO4 as well as FoxO3" . SPARSER::COLLECTION)
     ("FoxO4 and NF-κB" . SPARSER::COLLECTION)
@@ -2712,20 +2681,24 @@
     ("FoxO3-RelA/p65" . SPARSER::COLLECTION) ("chronic CS" . SPARSER::PROTEIN)
     ("FoxO1, FoxO3 and FoxO4" . SPARSER::COLLECTION)
     ("macrophages and neutrophils" . SPARSER::COLLECTION)
+    ("MCP-1, KC and IP-10" . SPARSER::COLLECTION)
     ("oxidants and antioxidants" . SPARSER::COLLECTION)
     ("CuZnSOD" . SPARSER::PROTEIN) ("MnSOD and catalase" . SPARSER::COLLECTION)
     ("Antioxidant" . SPARSER::PROTEIN) ("CSE" . SPARSER::PROTEIN)
-    ("BMT" . SPARSER::PROTEIN) ("Lm" . SPARSER::MOLECULE)
-    ("protein (CBP)" . SPARSER::PROTEIN)
+    ("Trans-AM" . SPARSER::COLLECTION)
+    ("KO (FoxO3-deficient in only lung structural cells) and KO"
+     . SPARSER::COLLECTION)
+    ("BMT" . SPARSER::PROTEIN) ("MCP-1, KC, and IP-10" . SPARSER::COLLECTION)
+    ("Lm" . SPARSER::MOLECULE) ("protein (CBP)" . SPARSER::PROTEIN)
     ("chronic obstructive pulmonary disease (COPD)/emphysema"
      . SPARSER::COLLECTION)
     ("/emphysema" . SPARSER::COLLECTION)
     ("COPD/emphysema" . SPARSER::COLLECTION)
     ("pulmonary emphysema" . SPARSER::PROTEIN) ("emphysema" . SPARSER::PROTEIN)
-    ("smoke (CS)" . SPARSER::MOLECULE) ("Protein-A" . SPARSER::PROTEIN)
-    ("carbon monoxide" . SPARSER::MOLECULE)
-    ("Carbon monoxide" . SPARSER::MOLECULE) ("Sirtuin 1" . SPARSER::PROTEIN)
-    ("class O" . SPARSER::PROTEIN) ("STAT3 or gp130" . SPARSER::COLLECTION)
+    ("smoke (CS)" . SPARSER::MOLECULE) ("carbon monoxide" . SPARSER::MOLECULE)
+    ("Carbon monoxide" . SPARSER::MOLECULE) ("Foxo3a" . SPARSER::PROTEIN)
+    ("Sirtuin 1" . SPARSER::PROTEIN) ("class O" . SPARSER::PROTEIN)
+    ("STAT3 or gp130" . SPARSER::COLLECTION)
     ("STAT3 and gp130" . SPARSER::COLLECTION)
     ("IL-6 and IFN" . SPARSER::COLLECTION)
     ("JAK1 and Src" . SPARSER::COLLECTION)
@@ -2741,27 +2714,27 @@
     ("ligand and serum" . SPARSER::COLLECTION)
     ("hyper-IgE" . SPARSER::PROTEIN-PAIR)
     ("STAT1, STAT2, and STAT3" . SPARSER::COLLECTION)
-    ("one mutated STAT3 allele" . SPARSER::ALLELE) ("HCA" . SPARSER::PROTEIN)
-    ("associated JAK kinases" . SPARSER::PROTEIN)
+    ("HCA" . SPARSER::PROTEIN) ("associated JAK kinases" . SPARSER::KINASE)
     ("receptor, and colony stimulating factor" . SPARSER::COLLECTION)
+    ("serum amyloid A and C-reactive protein" . SPARSER::COLLECTION)
     ("CRP" . SPARSER::PROTEIN)
     ("acute phase inflammatory response target genes" . SPARSER::GENE)
     ("the gp130 co-receptor and signal transducer" . SPARSER::COLLECTION)
     ("IL-6–STAT3" . SPARSER::COLLECTION) ("JAK1 or Src" . SPARSER::COLLECTION)
     ("anti–phospho" . SPARSER::PROTEIN) ("anti-flag" . SPARSER::PROTEIN)
-    ("INCB-018424" . SPARSER::DRUG)
+    ("INCB-018424" . SPARSER::DRUG) ("β 1" . SPARSER::PROTEIN)
     ("catenin (cadherin-associated protein)" . SPARSER::PROTEIN)
     ("HNF1A" . SPARSER::PROTEIN)
     ("hepatocyte nuclear factor 1" . SPARSER::PROTEIN)
-    ("interleukin 6" . SPARSER::PROTEIN)
+    ("serum amyloid A" . SPARSER::PROTEIN) ("interleukin 6" . SPARSER::PROTEIN)
     ("approximately 530 kDa" . SPARSER::PROTEIN)
     ("heterochromatin and gene" . SPARSER::COLLECTION)
     ("the IFNγ /IFNGR1/pSTAT1α complex and its movement" . SPARSER::COLLECTION)
     ("associated nuclear receptors" . SPARSER::RECEPTOR)
     ("IFNGR1 and JAK2" . SPARSER::COLLECTION)
     ("homodimeric type I cytokine receptors" . SPARSER::RECEPTOR)
-    ("JAK2V617F" . SPARSER::PROTEIN) ("stabilizer" . SPARSER::MOLECULE)
-    ("JAK2 and pJAK2" . SPARSER::COLLECTION)
+    ("PDGF or LIF" . SPARSER::COLLECTION) ("JAK2V617F" . SPARSER::PROTEIN)
+    ("stabilizer" . SPARSER::MOLECULE) ("JAK2 and pJAK2" . SPARSER::COLLECTION)
     ("IFNGR1 and pJAK2" . SPARSER::COLLECTION)
     ("IFNγ/IFNGR1" . SPARSER::COLLECTION)
     ("β-tubulin and β-lamin" . SPARSER::COLLECTION)
@@ -2776,7 +2749,7 @@
     ("IFNγ and IFNGR1" . SPARSER::COLLECTION)
     ("one macromolecular complex" . SPARSER::BIO-COMPLEX)
     ("receptor or receptor-associated tyrosine kinases" . SPARSER::COLLECTION)
-    ("receptor-associated tyrosine kinases" . SPARSER::PROTEIN)
+    ("receptor-associated tyrosine kinases" . SPARSER::KINASE)
     ("WISH" . SPARSER::PROTEIN) ("NF-KB" . SPARSER::PROTEIN)
     ("HP1α" . SPARSER::PROTEIN) ("β -tubulin" . SPARSER::PROTEIN)
     ("PDGF2" . SPARSER::PROTEIN)
@@ -2794,17 +2767,17 @@
     ("proteins (PEBP)" . SPARSER::PROTEIN) ("PEBP" . SPARSER::PROTEIN)
     ("RKIP and phospho-RKIP" . SPARSER::COLLECTION)
     ("protein (RKIP)" . SPARSER::PROTEIN) ("RKIP" . SPARSER::PROTEIN)
+    ("Raf Kinase Inhibitor Protein" . SPARSER::PROTEIN)
     ("GRK-2" . SPARSER::PROTEIN) ("Raf-1" . SPARSER::PROTEIN)
-    ("miRNA and target gene PLCE1" . SPARSER::COLLECTION)
+    ("a nonsynonymous SNP" . SPARSER::PROTEIN)
     ("genetic variants of PLCE1 and risk" . SPARSER::COLLECTION)
     ("DMS" . SPARSER::DRUG) ("Ras, Rap1 and Rap2" . SPARSER::COLLECTION)
-    ("gef" . SPARSER::PROTEIN) ("ADH" . SPARSER::PROTEIN)
-    ("smoke and alcohol" . SPARSER::COLLECTION) ("GCA" . SPARSER::PROTEIN)
-    ("Rap2" . SPARSER::PROTEIN) ("T- 3" . SPARSER::PROTEIN)
-    ("phospholipase C epsilon 1" . SPARSER::PROTEIN)
-    ("PLCE1" . SPARSER::PROTEIN)
-    ("Phospholipase C epsilon 1" . SPARSER::PROTEIN)
-    ("PDGR" . SPARSER::RECEPTOR) ("Stat3 and LAP2" . SPARSER::COLLECTION)
+    ("gef" . SPARSER::PROTEIN) ("int" . SPARSER::PROTEIN)
+    ("ADH" . SPARSER::PROTEIN) ("smoke and alcohol" . SPARSER::COLLECTION)
+    ("GCA" . SPARSER::PROTEIN) ("phospholipase" . SPARSER::PROTEIN)
+    ("Rap2" . SPARSER::PROTEIN) ("PLCE1" . SPARSER::PROTEIN)
+    ("Phospholipase C" . SPARSER::PROTEIN) ("PDGR" . SPARSER::PROTEIN)
+    ("Stat3 and LAP2" . SPARSER::COLLECTION)
     ("receptors, and progesterone" . SPARSER::COLLECTION)
     ("AKT and Stat3" . SPARSER::COLLECTION)
     ("AKT/β-catenin/TCF-4" . SPARSER::COLLECTION)
@@ -2813,8 +2786,10 @@
     ("platelet-derived growth factor receptor (PDGR) as well as upstream non-receptor tyrosine kinases"
      . SPARSER::COLLECTION)
     ("Abl and Src-related kinases" . SPARSER::COLLECTION)
-    ("receptor (PDGR)" . SPARSER::RECEPTOR) ("C/EBPβ-2" . SPARSER::COLLECTION)
+    ("receptor (PDGR)" . SPARSER::RECEPTOR)
+    ("C/EBPα and C/EBPβ-2" . SPARSER::COLLECTION)
     ("C/EBP, GATA-1, and Stat3" . SPARSER::COLLECTION)
+    ("C/EBP-β, GATA-1, and Stat3" . SPARSER::COLLECTION)
     ("Stat3 and C/EBPβ" . SPARSER::COLLECTION)
     ("IL-6 and Src" . SPARSER::COLLECTION)
     ("exogenous wild type Stat3" . SPARSER::PROTEIN)
@@ -2822,9 +2797,9 @@
     ("Stat1, Stat3, Stat4, and Stat92E" . SPARSER::COLLECTION)
     ("TTN" . SPARSER::PROTEIN) ("C/EBP-α and" . SPARSER::COLLECTION)
     ("liver-enriched inhibitory protein (LIP)" . SPARSER::PROTEIN)
-    ("a 20-kDa" . SPARSER::COLLECTION) ("C/EBP-β3" . SPARSER::COLLECTION)
-    ("C/EBP-β2" . SPARSER::COLLECTION) ("C/EBP-β1" . SPARSER::COLLECTION)
+    ("a 20-kDa" . SPARSER::COLLECTION)
     ("GATA-2 and GATA-3" . SPARSER::COLLECTION)
+    ("C/EBP-β and GATA-1" . SPARSER::COLLECTION)
     ("C/EBP or GATA-1" . SPARSER::COLLECTION)
     ("The oligonucleotides and mutants" . SPARSER::COLLECTION)
     ("promoter and EMSA analysis of these regions" . SPARSER::COLLECTION)
@@ -2842,10 +2817,12 @@
      . SPARSER::PROTEIN-FAMILY)
     ("transcription factor (TCF)" . SPARSER::PROTEIN)
     ("AKT/β-catenin" . SPARSER::COLLECTION)
+    ("CCAAT/enhancer binding protein-beta" . SPARSER::COLLECTION)
     ("MYC and RAS" . SPARSER::COLLECTION)
     ("Jab1 and p27" . SPARSER::COLLECTION)
     ("E2F1, and cullin 1" . SPARSER::COLLECTION)
     ("Kip1 , p53, and Smad4/7" . SPARSER::COLLECTION)
+    ("smaller CSN" . SPARSER::PROTEIN)
     ("metalloenzyme" . SPARSER::PROTEIN-FAMILY)
     ("cullin" . SPARSER::PROTEIN-FAMILY)
     ("a multifunctional protein complex" . SPARSER::BIO-COMPLEX)
@@ -2856,23 +2833,22 @@
      . SPARSER::COLLECTION)
     ("Stat92E" . SPARSER::PROTEIN) ("LAP-1" . SPARSER::PROTEIN)
     ("liver-enriched inhibitory protein" . SPARSER::PROTEIN)
-    ("LAP2" . SPARSER::PROTEIN) ("LAP1" . SPARSER::PROTEIN)
+    ("LAP2" . SPARSER::PROTEIN) ("LAP1" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("GATA1-6" . SPARSER::PROTEIN) ("c-Myb" . SPARSER::PROTEIN)
     ("Transcription factor" . SPARSER::PROTEIN)
     ("Anti-Flag" . SPARSER::PROTEIN) ("GATA-1" . SPARSER::PROTEIN)
     ("recombinant human epidermal growth factor" . SPARSER::DRUG)
-    ("CCAAT/enhancer binding protein-beta" . SPARSER::PROTEIN)
-    ("isopeptidase activity" . SPARSER::PROTEIN) ("CUL-1" . SPARSER::PROTEIN)
-    ("cullin 1" . SPARSER::PROTEIN)
+    ("C/EBP-β" . SPARSER::PROTEIN) ("isopeptidase activity" . SPARSER::PROTEIN)
+    ("CUL-1" . SPARSER::PROTEIN) ("cullin 1" . SPARSER::PROTEIN)
     ("macrophage migration inhibitory factor" . SPARSER::PROTEIN)
     ("hypoxia inducible factor-1 alpha" . SPARSER::PROTEIN)
     ("cyclin-dependent kinase inhibitor p27" . SPARSER::PROTEIN)
     ("GATA1" . SPARSER::PROTEIN)
     ("CCAAT/enhancer binding protein" . SPARSER::PROTEIN)
     ("COP9 signalosome complex" . SPARSER::PROTEIN) ("6b" . SPARSER::PROTEIN)
-    ("The resultant miR-21" . SPARSER::PROTEIN)
-    ("Strat-3" . SPARSER::COLLECTION) ("siRNA/Stat-3" . SPARSER::COLLECTION)
-    ("caspases and pro-caspases" . SPARSER::COLLECTION)
+    ("Strat-3" . SPARSER::COLLECTION) ("Step" . SPARSER::PROTEIN)
+    ("siRNA/Stat-3" . SPARSER::COLLECTION)
+    ("pro-caspases" . SPARSER::COLLECTION)
     ("HA/CD44-Nanog/Stat-3" . SPARSER::COLLECTION)
     ("p-Stat-3" . SPARSER::COLLECTION) ("p68 and DROSHA" . SPARSER::COLLECTION)
     ("DROSHA" . SPARSER::PROTEIN)
@@ -2905,7 +2881,7 @@
     ("Stat-3 or phospho-Stat-3" . SPARSER::COLLECTION)
     ("anti-phospho" . SPARSER::PROTEIN)
     ("anti-phospho-Stat-3" . SPARSER::COLLECTION)
-    ("antibody-" . SPARSER::PROTEIN)
+    ("antibody-" . SPARSER::ANTIBODY)
     ("Nanog and total Stat-3/tyrosine" . SPARSER::COLLECTION)
     ("Stat-3 or tyrosine" . SPARSER::COLLECTION)
     ("Stat-3/anti-p-Stat-3" . SPARSER::COLLECTION)
@@ -2937,23 +2913,23 @@
     ("IAPs" . SPARSER::PROTEIN) ("HA/CD44" . SPARSER::COLLECTION)
     ("Nanog-Stat-3" . SPARSER::COLLECTION)
     ("hyaluronan (HA)" . SPARSER::MOLECULE)
-    ("Nanog and Stat-3" . SPARSER::COLLECTION) ("HSC-3" . SPARSER::PROTEIN)
-    ("M - 1" . SPARSER::PROTEIN) ("IgG 2b" . SPARSER::BIO-COMPLEX)
-    ("p68" . SPARSER::PROTEIN) ("pri-miRNA" . SPARSER::RNA)
-    ("SM164" . SPARSER::DRUG) ("SM-164" . SPARSER::DRUG)
-    ("IAP-2" . SPARSER::PROTEIN) ("IAP-1" . SPARSER::PROTEIN)
-    ("cIAP-2" . SPARSER::PROTEIN) ("HA-CD44" . SPARSER::PROTEIN)
-    ("Oct3" . SPARSER::PROTEIN) ("Sox2" . SPARSER::PROTEIN)
-    ("Rex1" . SPARSER::PROTEIN) ("PDCD4" . SPARSER::PROTEIN)
-    ("Stat-3" . SPARSER::PROTEIN) ("p21/CDKN1A" . SPARSER::COLLECTION)
-    ("SP1" . SPARSER::PROTEIN) ("Fancd2" . SPARSER::PROTEIN)
-    ("E2F and active" . SPARSER::COLLECTION)
+    ("Nanog and Stat-3" . SPARSER::COLLECTION)
+    ("IgG 2b" . SPARSER::BIO-COMPLEX) ("p68" . SPARSER::PROTEIN)
+    ("pri-miRNA" . SPARSER::RNA) ("SM164" . SPARSER::DRUG)
+    ("SM-164" . SPARSER::DRUG) ("IAP-2" . SPARSER::PROTEIN)
+    ("IAP-1" . SPARSER::PROTEIN) ("cIAP-2" . SPARSER::PROTEIN)
+    ("HA-CD44" . SPARSER::PROTEIN) ("Oct3" . SPARSER::PROTEIN)
+    ("Sox2" . SPARSER::PROTEIN) ("Rex1" . SPARSER::PROTEIN)
+    ("PDCD4" . SPARSER::PROTEIN) ("Stat-3" . SPARSER::PROTEIN)
+    ("p21/CDKN1A" . SPARSER::COLLECTION) ("SP1" . SPARSER::PROTEIN)
+    ("Fancd2" . SPARSER::PROTEIN) ("E2F and active" . SPARSER::COLLECTION)
     ("cyclin-CDK" . SPARSER::COLLECTION)
     ("ATR, CHK1, HCLK2, PCNA and RPA" . SPARSER::COLLECTION)
+    ("a nucleolytic step" . SPARSER::PROTEIN)
     ("MMC-treated p21 +/+" . SPARSER::PROTEIN)
     ("MMC-treated HCT116 p21 −/−" . SPARSER::PROTEIN)
     ("USP1 and UBE2T" . SPARSER::COLLECTION)
-    ("a suitable commercially available antibody" . SPARSER::PROTEIN)
+    ("a suitable commercially available antibody" . SPARSER::ANTIBODY)
     ("enzyme and/or the UBE2T ubiquitin-conjugating enzyme"
      . SPARSER::COLLECTION)
     ("cellular dNTP" . SPARSER::MOLECULE)
@@ -2964,11 +2940,12 @@
     ("MMC and VP-16" . SPARSER::COLLECTION)
     ("MMC, and VP-16, and FANCD2" . SPARSER::COLLECTION)
     ("VP-16, and FANCD2" . SPARSER::COLLECTION)
-    ("which lacks functional p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("which lacks functional p53" . SPARSER::PROTEIN)
     ("FANCD2-Ub:FANCD2" . SPARSER::BIO-COMPLEX)
     ("MMC, and etoposide" . SPARSER::COLLECTION)
     ("PCNA and p21" . SPARSER::COLLECTION)
     ("p53 and p21 proteins" . SPARSER::COLLECTION)
+    ("G1-S and G2-M" . SPARSER::COLLECTION)
     ("cyclin-CDKs" . SPARSER::COLLECTION)
     ("PCNA, and RAD51" . SPARSER::COLLECTION)
     ("FANCL and UBE2T" . SPARSER::COLLECTION)
@@ -2981,10 +2958,11 @@
     ("FANCD2 and FANCI" . SPARSER::COLLECTION)
     ("FA-BRCA" . SPARSER::COLLECTION) ("Cdt2" . SPARSER::PROTEIN)
     ("HCLK2" . SPARSER::PROTEIN) ("FAN1" . SPARSER::PROTEIN)
-    ("VP-16" . SPARSER::PROTEIN) ("p21 proteins" . SPARSER::PROTEIN)
+    ("VP-16" . SPARSER::DRUG) ("p21 proteins" . SPARSER::PROTEIN)
     ("UBE2T" . SPARSER::PROTEIN) ("FAAP100" . SPARSER::PROTEIN)
     ("RAD51C" . SPARSER::PROTEIN) ("SLX4" . SPARSER::PROTEIN)
-    ("HIF- and JAK2-" . SPARSER::COLLECTION) ("HIF-" . SPARSER::PROTEIN-FAMILY)
+    ("PV and CP" . SPARSER::COLLECTION) ("RBC" . SPARSER::PROTEIN)
+    ("HIF- and JAK2-" . SPARSER::COLLECTION) ("HIF-" . SPARSER::PROTEIN)
     ("VHL/Elongin" . SPARSER::COLLECTION)
     ("exogenous EPO and TG101309" . SPARSER::COLLECTION)
     ("EPO and TG101309" . SPARSER::COLLECTION)
@@ -2996,8 +2974,8 @@
     ("phenylhydrazine" . SPARSER::DRUG)
     ("JAK2 and STAT5" . SPARSER::COLLECTION) ("Erythroid" . SPARSER::PROTEIN)
     ("methylcellulose" . SPARSER::DRUG)
-    ("EPOR and T7-JAK2" . SPARSER::COLLECTION) ("/SOCS1" . SPARSER::COLLECTION)
-    ("CP-VHL and SOCS1" . SPARSER::COLLECTION)
+    ("EPOR and T7-JAK2" . SPARSER::COLLECTION)
+    ("CP-VHL/SOCS1" . SPARSER::COLLECTION) ("/SOCS1" . SPARSER::COLLECTION)
     ("VHL/SOCS1" . SPARSER::COLLECTION)
     ("both VHL(WT) and VHL(C162F; α domain mutant that cannot form an ECV) mutant"
      . SPARSER::COLLECTION)
@@ -3018,17 +2996,20 @@
     ("disease-associated VHL mutants" . SPARSER::MUTANT)
     ("robust extracellular FN matrix" . SPARSER::PROTEIN-FAMILY)
     ("The tumour-associated VHL(C162F) mutant" . SPARSER::MUTANT)
-    ("tumour-associated VHL mutants" . SPARSER::MUTANT)
     ("Vhl" . SPARSER::PROTEIN) ("JAK2-STAT5" . SPARSER::COLLECTION)
     ("Transducers and Activator" . SPARSER::COLLECTION)
     ("PHD2 and HIF2α" . SPARSER::COLLECTION)
-    ("chronic hypoxia" . SPARSER::PROTEIN) ("PV" . SPARSER::PROTEIN)
+    ("chronic hypoxia" . SPARSER::PROTEIN) ("vera (PV)" . SPARSER::PROTEIN)
+    ("PV" . SPARSER::PROTEIN) ("vera" . SPARSER::PROTEIN)
+    ("RBCs" . SPARSER::PROTEIN)
+    ("CP- and tumour-associated VHL mutants" . SPARSER::COLLECTION)
+    ("tumour-associated VHL mutants" . SPARSER::MUTANT)
+    ("CP-" . SPARSER::PROTEIN) ("CP-VHL" . SPARSER::COLLECTION)
     ("Ang" . SPARSER::PROTEIN)
-    ("Most tumour-associated VHL mutants" . SPARSER::MUTANT)
     ("vascular endothelial growth factor (VEGF) and erythropoietin (EPO)"
      . SPARSER::COLLECTION)
-    ("EPO" . SPARSER::PROTEIN) ("Elongins" . SPARSER::PROTEIN)
-    ("JAK2-" . SPARSER::PROTEIN)
+    ("EPO" . SPARSER::PROTEIN) ("factor (HIF)" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Elongins" . SPARSER::PROTEIN) ("JAK2-" . SPARSER::PROTEIN)
     ("CP-associated VHL mutants" . SPARSER::MUTANT)
     ("a heterodimeric E3 ligase" . SPARSER::LIGASE)
     ("erythropoietin" . SPARSER::PROTEIN)
@@ -3042,19 +3023,22 @@
     ("HIF2α" . SPARSER::PROTEIN) ("GLUT-1" . SPARSER::PROTEIN)
     ("Cul2" . SPARSER::PROTEIN) ("TG101209" . SPARSER::DRUG)
     ("The latter gene" . SPARSER::GENE)
+    ("social factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the much larger Tobacco and Genetics Consortium" . SPARSER::COLLECTION)
     ("the much larger Tobacco" . SPARSER::DRUG)
     ("neurotransmitter" . SPARSER::MOLECULE)
-    ("a plausible candidate gene" . SPARSER::GENE)
+    ("a plausible candidate gene" . SPARSER::PROTEIN)
     ("dopamine" . SPARSER::PROTEIN)
     ("EGLN2 , RAB4B and CY2B6" . SPARSER::COLLECTION)
     ("the target and the proxy SNPs" . SPARSER::COLLECTION)
+    ("incomplete LD" . SPARSER::PROTEIN)
     ("a true causative variant" . SPARSER::VARIANT)
     ("CPD and rs684513" . SPARSER::COLLECTION)
     ("CYP2A6 and CHRNA3" . SPARSER::COLLECTION)
     ("ZBTB9 and BAK1" . SPARSER::COLLECTION) ("a nominal p" . SPARSER::PROTEIN)
     ("at least three cohorts" . SPARSER::MOLECULE)
-    ("meta-analytic p" . SPARSER::PROTEIN)
+    ("The synonymous rs1051730 SNP" . SPARSER::PROTEIN)
+    ("age and principal components" . SPARSER::COLLECTION)
     ("BCL2-antagonist/killer 1 ( BAK1 ) and Zinc finger and BTB domain containing 9 ( ZBTB9 )"
      . SPARSER::COLLECTION)
     ("principal components" . SPARSER::COMPONENT)
@@ -3068,30 +3052,41 @@
     ("EGLN2" . SPARSER::PROTEIN) ("CHRNA6" . SPARSER::PROTEIN)
     ("CHRNB3" . SPARSER::PROTEIN) ("ZBTB9" . SPARSER::PROTEIN)
     ("Zinc finger and BTB domain containing 9" . SPARSER::PROTEIN)
-    ("BCL2-antagonist/killer 1" . SPARSER::PROTEIN) ("P2A" . SPARSER::PROTEIN)
+    ("BCL2-antagonist/killer 1" . SPARSER::PROTEIN)
     ("acetylcholine receptor" . SPARSER::PROTEIN) ("CYP2A6" . SPARSER::PROTEIN)
     ("Cytochrome P450" . SPARSER::PROTEIN-FAMILY) ("CHRNA5" . SPARSER::PROTEIN)
     ("CHRNA3" . SPARSER::PROTEIN)
     ("Dopamine Beta-Hydroxylase" . SPARSER::PROTEIN)
     ("neutrophil-macrophage" . SPARSER::COLLECTION)
+    ("conditional macrophage/neutrophil Rac1 -KO" . SPARSER::COLLECTION)
     ("macrophage/neutrophil" . SPARSER::COLLECTION)
+    ("the colonic proinflammatory cytokine IL-1β and the neutrophil chemokine KC"
+     . SPARSER::COLLECTION)
     ("the colonic proinflammatory cytokine IL-1β" . SPARSER::PROTEIN)
+    ("conditional neutrophil/macrophage KO" . SPARSER::PROTEIN)
     ("neutrophil/macrophage" . SPARSER::COLLECTION)
     ("IL-1β, IL-12 and TNFα" . SPARSER::COLLECTION)
+    ("the proinflammatory cytokine IL-1β and the neutrophil chemokine KC"
+     . SPARSER::COLLECTION)
     ("Neutrophil" . SPARSER::PROTEIN)
-    ("significantly worse DAI" . SPARSER::PROTEIN) ("MPO" . SPARSER::PROTEIN)
+    ("significantly worse DAI" . SPARSER::PROTEIN)
+    ("only 1/12 Rac1 -KO" . SPARSER::COLLECTION) ("MPO" . SPARSER::PROTEIN)
     ("neutrophil and macrophage" . SPARSER::COLLECTION)
-    ("PBCs" . SPARSER::PROTEIN) ("colonic IBD" . SPARSER::PROTEIN)
-    ("−3 , OR = 1" . SPARSER::COLLECTION) ("azathioprine" . SPARSER::DRUG)
-    ("cytotoxins" . SPARSER::PROTEIN) ("NOD2 and TLR2" . SPARSER::COLLECTION)
-    ("TLR2" . SPARSER::PROTEIN)
+    ("-KO" . SPARSER::COLLECTION) ("PBCs" . SPARSER::PROTEIN)
+    ("colonic IBD" . SPARSER::PROTEIN) ("−3 , OR = 1" . SPARSER::COLLECTION)
+    ("azathioprine" . SPARSER::DRUG) ("cytotoxins" . SPARSER::PROTEIN)
+    ("NOD2 and TLR2" . SPARSER::COLLECTION) ("TLR2" . SPARSER::PROTEIN)
     ("macrophage and neutrophils" . SPARSER::COLLECTION)
     ("NOD2" . SPARSER::PROTEIN) ("KAL1 and FGFR1" . SPARSER::COLLECTION)
+    ("KS or normosmic HH [ xref ]" . SPARSER::COLLECTION)
     ("heterozygous missense variants" . SPARSER::VARIANT)
+    ("autosomal recessive KS" . SPARSER::PROTEIN)
     ("PROK2 and PROKR2" . SPARSER::COLLECTION)
     ("FGFR1 or KAL1" . SPARSER::COLLECTION)
     ("FGFR1 and FGF8" . SPARSER::COLLECTION)
-    ("ligand and heparin" . SPARSER::COLLECTION)
+    ("KS or normosmic HH" . SPARSER::COLLECTION)
+    ("severe congenital HH" . SPARSER::PROTEIN)
+    ("ligand and heparin" . SPARSER::COLLECTION) ("cup" . SPARSER::PROTEIN)
     ("unilateral microphthalmia" . SPARSER::PROTEIN)
     ("KAL1 or FGFR1" . SPARSER::COLLECTION)
     ("FGFRs and FGFs" . SPARSER::COLLECTION) ("myoblasts" . SPARSER::PROTEIN)
@@ -3100,22 +3095,25 @@
     ("sugars" . SPARSER::MOLECULE) ("PNGase" . SPARSER::PROTEIN)
     ("approximately 140 kDa and 120 kDa (Figure xref )" . SPARSER::COLLECTION)
     ("approximately 140 kDa" . SPARSER::PROTEIN) ("FGFR1s" . SPARSER::PROTEIN)
-    ("NELF" . SPARSER::PROTEIN)
+    ("NELF" . SPARSER::PROTEIN) ("normosmic HH" . SPARSER::PROTEIN)
+    ("a severe congenital HH" . SPARSER::PROTEIN)
     ("PROK2 , PROKR2 , FGF8 or WDR11" . SPARSER::COLLECTION)
     ("either FGFR1 (9 probands) or KAL1 (3 probands)" . SPARSER::COLLECTION)
-    ("yrs" . SPARSER::PROTEIN) ("ar" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("KS, autosomal recessive, autosomal dominant, and X-chromosomal"
-     . SPARSER::COLLECTION)
+    ("normosmic HH, or KS" . SPARSER::COLLECTION)
+    ("HH, or KS" . SPARSER::COLLECTION) ("yrs" . SPARSER::PROTEIN)
+    ("ar" . SPARSER::HUMAN-PROTEIN-FAMILY) ("congenital HH" . SPARSER::PROTEIN)
+    ("autosomal dominant, and X-chromosomal" . SPARSER::COLLECTION)
     ("lip" . SPARSER::HUMAN-PROTEIN-FAMILY) ("GnRH" . SPARSER::PROTEIN)
     ("KAL1 (3 men) and FGFR1 (all 5 women vs. 4/25 men)" . SPARSER::COLLECTION)
     ("KAL1 , FGFR1 , FGF8 , PROK2 , PROKR2 , CHD7 , and WDR11"
      . SPARSER::COLLECTION)
-    ("fibronectin type III" . SPARSER::PROTEIN)
-    ("anosmin-1" . SPARSER::PROTEIN) ("8B" . SPARSER::PROTEIN)
+    ("severe HH" . SPARSER::PROTEIN) ("HH" . SPARSER::PROTEIN)
+    ("fibronectin type III" . SPARSER::PROTEIN) ("8B" . SPARSER::PROTEIN)
     ("WDR11" . SPARSER::PROTEIN) ("CHD7" . SPARSER::PROTEIN)
     ("PROKR2" . SPARSER::PROTEIN) ("KAL1" . SPARSER::PROTEIN)
     ("these tumor suppressive genes" . SPARSER::GENE)
     ("CtBP" . SPARSER::PROTEIN)
+    ("factors and co-factors" . SPARSER::COLLECTION)
     ("respective transcriptional repressor" . SPARSER::REPRESSOR)
     ("E-cadherin and CtBP1" . SPARSER::COLLECTION)
     ("CtBP1 and E-cadherin" . SPARSER::COLLECTION)
@@ -3135,9 +3133,8 @@
     ("p16INK4a" . SPARSER::PROTEIN) ("CtBP1" . SPARSER::PROTEIN)
     ("the functional coreceptor and ICAM-1" . SPARSER::COLLECTION)
     ("coreceptor and ICAM-1" . SPARSER::COLLECTION) ("CIA" . SPARSER::PROTEIN)
-    ("CD44 and receptor for hyaluronan-mediated motility"
-     . SPARSER::COLLECTION)
-    ("RHAMM" . SPARSER::PROTEIN) ("Erk, Jnk, and p38" . SPARSER::COLLECTION)
+    ("CD44 and receptor" . SPARSER::COLLECTION) ("RHAMM" . SPARSER::PROTEIN)
+    ("Erk, Jnk, and p38" . SPARSER::COLLECTION)
     ("together signaling molecules" . SPARSER::MOLECULE)
     ("ICAM-1 and CD44v6" . SPARSER::COLLECTION)
     ("c-Met, and siRNAs" . SPARSER::COLLECTION)
@@ -3146,8 +3143,6 @@
      . SPARSER::COLLECTION)
     ("the left lateral and medial lobes" . SPARSER::PROTEIN)
     ("larger isoforms" . SPARSER::ISOFORM)
-    ("a rat-specific peptide" . SPARSER::PEPTIDE)
-    ("a rat-specific v6 antibody" . SPARSER::ANTIBODY)
     ("the CD44v6-specific antibodies and several v6-specific peptides"
      . SPARSER::COLLECTION)
     ("mouse-specific CD44v6 antibodies [developed in rats ( xref )] and murine-specific peptides"
@@ -3166,11 +3161,7 @@
     ("Cd44" . SPARSER::PROTEIN) ("a new coreceptor" . SPARSER::PROTEIN)
     ("c-Met and VEGFR-2" . SPARSER::COLLECTION)
     ("syndecan-4" . SPARSER::PROTEIN) ("syndecan-1" . SPARSER::PROTEIN)
-    ("B-2" . SPARSER::PROTEIN) ("C-12" . SPARSER::PROTEIN)
-    ("ICAM-3" . SPARSER::PROTEIN) ("G-5" . SPARSER::PROTEIN)
-    ("cytokeratin-18" . SPARSER::PROTEIN)
-    ("receptor for hyaluronan-mediated motility" . SPARSER::PROTEIN)
-    ("vascular endothelial growth factor receptor-2" . SPARSER::PROTEIN)
+    ("ICAM-3" . SPARSER::PROTEIN) ("cytokeratin-18" . SPARSER::PROTEIN)
     ("syndecan-2" . SPARSER::PROTEIN) ("ICAM-4" . SPARSER::PROTEIN)
     ("plexin B1" . SPARSER::PROTEIN) ("β4-integrin" . SPARSER::PROTEIN)
     ("VEGFR-2" . SPARSER::PROTEIN)
@@ -3180,7 +3171,6 @@
      . SPARSER::COLLECTION)
     ("AR and NF-κB" . SPARSER::COLLECTION)
     ("Akt, AR and NF-κB" . SPARSER::COLLECTION)
-    ("fusion gene or other signaling perturbation" . SPARSER::COLLECTION)
     ("AR/TMPRSS2-ERG" . SPARSER::COLLECTION)
     ("invasive PCa" . SPARSER::PROTEIN) ("TMPRSS2/ERG" . SPARSER::COLLECTION)
     ("ligand and genotoxic stress-induced cytidine deaminase and LINE-1 repeat-encoded ORF2 endonuclease ( xref )"
@@ -3204,20 +3194,21 @@
     ("Wnt-3a, Wnt-16, and LRP6" . SPARSER::COLLECTION)
     ("Naked2 and Axin1" . SPARSER::COLLECTION)
     ("DHT or testosterone" . SPARSER::COLLECTION)
-    ("AR and PSA" . SPARSER::COLLECTION)
+    ("AR and PSA" . SPARSER::COLLECTION) ("clear-cut" . SPARSER::PROTEIN)
     ("ERG and Wnt or EZH2" . SPARSER::COLLECTION)
     ("Wnt or EZH2" . SPARSER::COLLECTION) ("AR and Wnt" . SPARSER::COLLECTION)
-    ("v-ets" . SPARSER::COLLECTION) ("PCa (CRPC)" . SPARSER::PROTEIN)
-    ("BR-DIM and CDF" . SPARSER::COLLECTION)
+    ("v-ets" . SPARSER::COLLECTION)
+    ("Akt, Wnt, and Hedgehog" . SPARSER::COLLECTION)
+    ("PCa (CRPC)" . SPARSER::PROTEIN) ("BR-DIM and CDF" . SPARSER::COLLECTION)
     ("DIM and curcumin" . SPARSER::COLLECTION)
-    ("AR/TMPRSS2-ERG/Wnt" . SPARSER::COLLECTION)
-    ("DIM" . SPARSER::PROTEIN-FAMILY) ("CDF" . SPARSER::PROTEIN)
-    ("ORF2" . SPARSER::PROTEIN) ("cytidine deaminase" . SPARSER::PROTEIN)
-    ("TOP2B" . SPARSER::PROTEIN) ("Axin1" . SPARSER::PROTEIN)
-    ("Naked2" . SPARSER::PROTEIN) ("Wnt-16" . SPARSER::PROTEIN)
-    ("BR-DIM" . SPARSER::DRUG) ("PI3K and Akt" . SPARSER::COLLECTION)
-    ("Erk1/2 or protein" . SPARSER::COLLECTION)
-    ("RasGAP and SHP-2" . SPARSER::COLLECTION)
+    ("AR/TMPRSS2-ERG/Wnt" . SPARSER::COLLECTION) ("DIM" . SPARSER::PROTEIN)
+    ("CDF" . SPARSER::PROTEIN) ("ORF2" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("cytidine deaminase" . SPARSER::PROTEIN) ("TOP2B" . SPARSER::PROTEIN)
+    ("Axin1" . SPARSER::PROTEIN) ("Naked2" . SPARSER::PROTEIN)
+    ("Wnt-16" . SPARSER::PROTEIN) ("BR-DIM" . SPARSER::DRUG)
+    ("PI3K and Akt" . SPARSER::COLLECTION)
+    ("Erk1/2 or protein kinase" . SPARSER::COLLECTION)
+    ("Rat" . SPARSER::PROTEIN) ("RasGAP and SHP-2" . SPARSER::COLLECTION)
     ("the receptor-associated signaling molecules" . SPARSER::MOLECULE)
     ("PI3K- and PLC γ" . SPARSER::COLLECTION)
     ("the β PDGFR or the PDGF-B gene" . SPARSER::COLLECTION)
@@ -3237,22 +3228,26 @@
      . SPARSER::PROTEIN)
     ("PI3K or PLC γ" . SPARSER::COLLECTION)
     ("either PI3K (Y40/51) or PLC γ (Y1021)" . SPARSER::COLLECTION)
-    ("PI3-kinase and phospholipase C γ" . SPARSER::COLLECTION)
+    ("PI3-kinase and phospholipase C" . SPARSER::COLLECTION)
     ("Akt, Erk, and p38" . SPARSER::COLLECTION)
     ("functional CSF1R" . SPARSER::PROTEIN)
     ("PDGF-BB and M-CSF" . SPARSER::COLLECTION)
-    ("chimeric colony-stimulating factor-1 receptor" . SPARSER::PROTEIN)
-    ("SHP-2, and phospholipase C γ" . SPARSER::COLLECTION)
+    ("SHP-2, and phospholipase C" . SPARSER::COLLECTION)
+    ("PDGF and its beta receptor subtype ( β PDGFR)" . SPARSER::COLLECTION)
     ("cyclin D1 and p27 kip1" . SPARSER::COLLECTION)
     ("Src, PI3K, and PLC γ" . SPARSER::COLLECTION)
     ("PI3K and PLC γ" . SPARSER::COLLECTION)
     ("β PDGFR-associated signaling molecules" . SPARSER::MOLECULE)
     ("mitogen and chemoattractant" . SPARSER::COLLECTION)
-    ("interleukin-2" . SPARSER::PROTEIN) ("c-fms" . SPARSER::PROTEIN)
-    ("colony-stimulating factor-1 receptor" . SPARSER::PROTEIN)
-    ("PLC γ" . SPARSER::PROTEIN-FAMILY) ("PDGF—a" . SPARSER::PROTEIN)
-    ("kinase and DNA-PK" . SPARSER::COLLECTION)
+    ("interleukin-2" . SPARSER::PROTEIN)
+    ("myosin heavy chain" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("c-fms" . SPARSER::PROTEIN) ("PLC γ" . SPARSER::PROTEIN-FAMILY)
+    ("PDGF—a" . SPARSER::PROTEIN) ("kinase and DNA-PK" . SPARSER::COLLECTION)
+    ("DNA-PK as well as FACT" . SPARSER::COLLECTION)
+    ("essential factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("γH2AX/BRCA1" . SPARSER::COLLECTION) ("Nucleosomes" . SPARSER::PROTEIN)
+    ("DNA-PKcs and FACT" . SPARSER::COLLECTION)
+    ("PARP-1, FACT and DNA-PK" . SPARSER::COLLECTION)
     ("DNA repair proficient proteins" . SPARSER::PROTEIN)
     ("DNA-PKcs or SSRP1" . SPARSER::COLLECTION)
     ("SSRP1 or control shRNA" . SPARSER::COLLECTION)
@@ -3264,6 +3259,7 @@
      . SPARSER::COLLECTION)
     ("proteins and γH2AX" . SPARSER::COLLECTION)
     ("Ku86 and SSRP1" . SPARSER::COLLECTION)
+    ("Ku86 and FACT" . SPARSER::COLLECTION)
     ("the un-treated Ku86 complex" . SPARSER::BIO-COMPLEX)
     ("γH2AX, SSRP1, Spt16 and DNA-PKcs" . SPARSER::COLLECTION)
     ("the nucleolar fraction" . SPARSER::COMPONENT)
@@ -3277,7 +3273,8 @@
     ("DNA-PKcs or a control shRNA" . SPARSER::COLLECTION)
     ("nucleosomal H2AX" . SPARSER::PROTEIN)
     ("shRNA and the DNA-PK inhibitor vanillin" . SPARSER::COLLECTION)
-    ("vanillin" . SPARSER::DRUG) ("nucleolar SSRP1" . SPARSER::PROTEIN)
+    ("vanillin" . SPARSER::DRUG) ("FACT and DNA-PK" . SPARSER::COLLECTION)
+    ("nucleolar SSRP1" . SPARSER::PROTEIN) ("HMG" . SPARSER::PROTEIN)
     ("Suppressor" . SPARSER::SUPPRESSOR) ("Fa" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the catalytic subunit DNA Ligase IV and its cofactor XRCC4"
      . SPARSER::COLLECTION)
@@ -3289,44 +3286,64 @@
      . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("adjacent purines" . SPARSER::DRUG) ("purines" . SPARSER::DRUG)
     ("cisplatin or carboplatin" . SPARSER::COLLECTION)
+    ("DNA-PK and FACT" . SPARSER::COLLECTION)
     ("SSRP1 and Ku86" . SPARSER::COLLECTION)
-    ("Ku86 and γH2AX" . SPARSER::COLLECTION) ("DNase" . SPARSER::PROTEIN)
-    ("SSRP1 and Spt16" . SPARSER::COLLECTION)
-    ("Spt16 and γH2AX" . SPARSER::COLLECTION) ("pSM2" . SPARSER::PROTEIN)
-    ("SPT16" . SPARSER::PROTEIN-FAMILY) ("N3" . SPARSER::PROTEIN)
-    ("Nu7026" . SPARSER::DRUG) ("Spt16" . SPARSER::PROTEIN-FAMILY)
+    ("Ku86 and γH2AX" . SPARSER::COLLECTION)
+    ("SSRP1 and Spt16" . SPARSER::COLLECTION) ("FACT" . SPARSER::PROTEIN)
+    ("Spt16 and γH2AX" . SPARSER::COLLECTION)
+    ("micrococcal nuclease" . SPARSER::PROTEIN) ("pSM2" . SPARSER::PROTEIN)
+    ("SPT16" . SPARSER::PROTEIN) ("N3" . SPARSER::PROTEIN)
+    ("Nu7026" . SPARSER::DRUG) ("Spt16" . SPARSER::PROTEIN)
     ("SSRP1" . SPARSER::PROTEIN)
     ("structure specific recognition protein 1" . SPARSER::PROTEIN)
-    ("Ku86" . SPARSER::PROTEIN) ("three biological types" . TYPE)
+    ("Ku86" . SPARSER::PROTEIN)
+    ("only few prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("the unfavorable prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("possible prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("three biological types" . TYPE)
     ("the proximal or distal parts" . SPARSER::COMPONENT)
+    ("Another adverse prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the sporadic CRC" . SPARSER::PROTEIN) ("FAP" . SPARSER::PROTEIN)
     ("Wingless" . SPARSER::PROTEIN)
     ("membrane β-catenin and membrane E-cadherin" . SPARSER::COLLECTION)
+    ("unfavorable prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("analyzed proteins only nuclear β-catenin" . SPARSER::PROTEIN)
     ("strong Wnt-1" . SPARSER::PROTEIN)
     ("β-catenin and E-cadherin" . SPARSER::COLLECTION)
     ("FzD/LRP5/6" . SPARSER::COLLECTION) ("FzD" . SPARSER::PROTEIN-FAMILY)
     ("adherent complexes" . SPARSER::BIO-COMPLEX)
     ("Variety" . SPARSER::VARIETY)
     ("type or microvessel" . SPARSER::COLLECTION)
+    ("American Pathologists fundamental prognostic factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("unfavorable prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("β-catenin, E-cadherin and Wnt-1" . SPARSER::COLLECTION)
     ("E-cadherin, β-catenin and Wnt-1" . SPARSER::COLLECTION)
     ("HR 3" . SPARSER::PROTEIN) ("HR 2" . SPARSER::PROTEIN)
-    ("Wnt-1" . SPARSER::PROTEIN) ("STAT3 and mdr1" . SPARSER::COLLECTION)
+    ("Wnt-1" . SPARSER::PROTEIN) ("ChIP and luciferase" . SPARSER::COLLECTION)
+    ("STAT3 and mdr1" . SPARSER::COLLECTION)
     ("STAT1 and STAT5" . SPARSER::COLLECTION)
     ("ABCG2 and ABCC10" . SPARSER::COLLECTION)
     ("AP-1 and AP-2" . SPARSER::COLLECTION)
-    ("ODN or JSI-124" . SPARSER::COLLECTION) ("-promoter" . SPARSER::PROMOTER)
-    ("pGL3-" . SPARSER::PROTEIN) ("mdr-1 and P-gp" . SPARSER::COLLECTION)
-    ("mdr-1" . SPARSER::PROTEIN) ("rhodamine" . SPARSER::PROTEIN)
+    ("ODN or JSI-124" . SPARSER::COLLECTION)
+    ("P-gp and partly reversed P-gp mediated MDR" . SPARSER::COLLECTION)
+    ("partly reversed P-gp mediated MDR" . SPARSER::PROTEIN)
+    ("-promoter" . SPARSER::PROMOTER) ("pGL3-" . SPARSER::PROTEIN)
+    ("mdr-1 and P-gp" . SPARSER::COLLECTION) ("mdr-1" . SPARSER::PROTEIN)
+    ("rhodamine" . SPARSER::PROTEIN)
     ("other MDR-associated genes" . SPARSER::GENE)
-    ("MRP1 and BCRP1" . SPARSER::COLLECTION) ("BCRP" . SPARSER::PROTEIN)
-    ("ipl" . SPARSER::PROTEIN) ("Nanog" . SPARSER::PROTEIN)
-    ("mdr1 , and STAT3" . SPARSER::COLLECTION) ("ODN" . SPARSER::PROTEIN)
-    ("Multidrug" . SPARSER::PROTEIN) ("ABCC10" . SPARSER::PROTEIN)
-    ("ABCG2" . SPARSER::PROTEIN) ("MRP1" . SPARSER::PROTEIN)
-    ("CCK-8" . SPARSER::PROTEIN) ("Mdr1" . SPARSER::PROTEIN)
-    ("ABCB1" . SPARSER::PROTEIN) ("JSI-124" . SPARSER::DRUG)
-    ("mdr1" . SPARSER::PROTEIN) ("p-glycoprotein" . SPARSER::PROTEIN)
+    ("MRP1 and BCRP1" . SPARSER::COLLECTION)
+    ("STAT3 and MDR" . SPARSER::COLLECTION) ("ipl" . SPARSER::PROTEIN)
+    ("Nanog" . SPARSER::PROTEIN) ("mdr1 , and STAT3" . SPARSER::COLLECTION)
+    ("ODN" . SPARSER::PROTEIN)
+    ("Multidrug resistance (MDR)" . SPARSER::PROTEIN)
+    ("MDR and STAT3" . SPARSER::COLLECTION) ("ABCC10" . SPARSER::PROTEIN)
+    ("ABCG2" . SPARSER::PROTEIN) ("BCRP1" . SPARSER::PROTEIN)
+    ("MRP1" . SPARSER::PROTEIN) ("CCK-8" . SPARSER::MOLECULE)
+    ("Mdr1" . SPARSER::PROTEIN) ("ABCB1" . SPARSER::PROTEIN)
+    ("JSI-124" . SPARSER::DRUG) ("mdr1" . SPARSER::PROTEIN)
+    ("p-glycoprotein" . SPARSER::PROTEIN)
+    ("Multidrug resistance" . SPARSER::PROTEIN)
     ("β-catenin and CD10" . SPARSER::COLLECTION)
     ("Everolimus" . SPARSER::MOLECULE) ("somatostatin" . SPARSER::PROTEIN)
     ("ACTH" . SPARSER::PROTEIN)
@@ -3347,9 +3364,12 @@
     ("alpha-1-antitrypsin" . SPARSER::PROTEIN) ("CD10" . SPARSER::PROTEIN)
     ("CBR" . SPARSER::PROTEIN)
     ("lapatinib as well as trastuzumab" . SPARSER::COLLECTION)
+    ("a positive prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("mTOR/PI3K" . SPARSER::COLLECTION)
     ("AKT and/or MAPK" . SPARSER::COLLECTION)
     ("lapatinib and capecitabine" . SPARSER::COLLECTION)
+    ("a statistically significant shorter median PFS" . SPARSER::PROTEIN)
+    ("a shorter PFS" . SPARSER::PROTEIN)
     ("docetaxel, vinorelbine, paclitaxel, gemcitabine, capecitabine and cisplatin"
      . SPARSER::COLLECTION)
     ("vinorelbine" . SPARSER::DRUG)
@@ -3378,32 +3398,34 @@
     ("Bad and Bax" . SPARSER::COLLECTION)
     ("anti-apoptotic proteins (Bcl-2, Bcl-xl) and pro-apoptotic proteins (Bax, Bad)"
      . SPARSER::COLLECTION)
+    ("the pro-apoptotic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the Bcl-2 family pro-apoptotic proteins" . SPARSER::PROTEIN)
     ("proteins, Bcl-2 and Bcl-xl" . SPARSER::COLLECTION)
     ("Pro-apoptotic proteins" . SPARSER::PROTEIN)
-    ("BH1-3" . SPARSER::COLLECTION) ("Bax and Bad" . SPARSER::COLLECTION)
-    ("Bcl-2/Bad" . SPARSER::COLLECTION) ("Bcl-2/Bax" . SPARSER::COLLECTION)
+    ("BH1-3" . SPARSER::COLLECTION) ("UI" . SPARSER::PROTEIN)
+    ("Bax and Bad" . SPARSER::COLLECTION) ("Bcl-2/Bad" . SPARSER::COLLECTION)
+    ("Bcl-2/Bax" . SPARSER::COLLECTION)
     ("pro-apoptotic protein" . SPARSER::PROTEIN) ("BH 1" . SPARSER::PROTEIN)
+    ("MIMP and mitochondrial" . SPARSER::COLLECTION)
     ("MOMP" . SPARSER::PROTEIN)
-    ("proteins and mitochondrial Ca 2+" . SPARSER::COLLECTION)
-    ("the mitochondrial MCC" . SPARSER::PROTEIN)
-    ("mitochondrial MCC" . SPARSER::PROTEIN)
+    ("proteins and mitochondrial" . SPARSER::COLLECTION)
     ("caspase 9 and caspase 3" . SPARSER::COLLECTION)
     ("extramitochondrial calcein" . SPARSER::MOLECULE)
     ("the ionomycin addition only few mitochondria" . SPARSER::PROTEIN)
     ("calcein" . SPARSER::MOLECULE) ("Typical MCC" . SPARSER::PROTEIN)
-    ("caspase 9 and caspase-3" . SPARSER::COLLECTION)
+    ("mV" . SPARSER::PROTEIN) ("caspase 9 and caspase-3" . SPARSER::COLLECTION)
     ("Ionomycin" . SPARSER::DRUG) ("Caspase" . SPARSER::PROTEIN)
     ("SH-SY5Y/Neo" . SPARSER::COLLECTION)
     ("SH-SY5Y/Bcl-xL" . SPARSER::COLLECTION) ("ionomycin" . SPARSER::DRUG)
     ("Ca 2+−" . SPARSER::CALCIUM-ION) ("MCC" . SPARSER::PROTEIN)
-    ("ANT" . SPARSER::PROTEIN) ("AIF" . SPARSER::PROTEIN)
-    ("MIMP" . SPARSER::PROTEIN) ("ischemia or epilepsy" . SPARSER::COLLECTION)
-    ("epilepsy" . SPARSER::PROTEIN) ("Calcium" . SPARSER::CALCIUM)
+    ("ANT" . SPARSER::PROTEIN) ("DNase" . SPARSER::PROTEIN)
+    ("AIF" . SPARSER::PROTEIN) ("MIMP" . SPARSER::PROTEIN)
+    ("Calcium" . SPARSER::CALCIUM)
     ("pro-apoptotic molecules" . SPARSER::MOLECULE)
     ("BAPTA" . SPARSER::MOLECULE) ("chelator" . SPARSER::MOLECULE)
-    ("Caspases-9" . SPARSER::PROTEIN) ("6-OHDA" . SPARSER::MOLECULE)
-    ("caspase-activated DNase" . SPARSER::PROTEIN)
+    ("patch-clamp" . SPARSER::COLLECTION) ("Caspases-9" . SPARSER::PROTEIN)
+    ("6-OHDA" . SPARSER::MOLECULE)
+    ("the endothelial NO synthase" . SPARSER::PROTEIN)
     ("IκB-GST" . SPARSER::COLLECTION)
     ("a dominant-negative AMPK" . SPARSER::PROTEIN)
     ("two catalytic subunits (IKKα and IKKβ) as well as the regulatory subunit IKKγ or NEMO"
@@ -3417,19 +3439,19 @@
     ("wild-type IKKβ and either AMPKα1" . SPARSER::COLLECTION)
     ("GST-IκBα" . SPARSER::COLLECTION) ("β1 and γ1" . SPARSER::COLLECTION)
     ("IκB as well as p65" . SPARSER::COLLECTION)
-    ("IL-1β and 1.7±0.4-fold" . SPARSER::COLLECTION)
     ("IL-1β ( xref ) or LPS ( xref )" . SPARSER::COLLECTION)
     ("sequestering AMPKβ and γ subunits" . SPARSER::COLLECTION)
     ("E-selectin and VCAM-1" . SPARSER::COLLECTION) ("DEA" . SPARSER::MOLECULE)
-    ("AMPK and NFκB" . SPARSER::COLLECTION)
-    ("bradykinin" . SPARSER::BRADYKININ)
+    ("AMPK and NFκB" . SPARSER::COLLECTION) ("bradykinin" . SPARSER::PROTEIN)
+    ("angiogenic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("gauge and regulator" . SPARSER::COLLECTION)
     ("gauge" . SPARSER::PROTEIN-FAMILY) ("Snf1/AMPK" . SPARSER::COLLECTION)
     ("AMPK and the IκB kinase (IKK)" . SPARSER::COLLECTION)
     ("kinase (IKK)" . SPARSER::KINASE) ("IκB and p65" . SPARSER::COLLECTION)
     ("IKK β" . SPARSER::PROTEIN) ("protein kinase kinase" . SPARSER::PROTEIN)
+    ("NO synthase" . SPARSER::PROTEIN) ("protein I" . SPARSER::PROTEIN)
     ("compound C" . SPARSER::MOLECULE) ("AMPKβ" . SPARSER::PROTEIN)
-    ("angiopoietin 2" . SPARSER::PROTEIN) ("Snf1" . SPARSER::PROTEIN-FAMILY)
+    ("angiopoietin 2" . SPARSER::PROTEIN) ("Snf1" . SPARSER::PROTEIN)
     ("NS3 and the other HCV molecules" . SPARSER::COLLECTION)
     ("SRCAP and SRCAP-related molecules" . SPARSER::COLLECTION)
     ("a host-cellular molecule" . SPARSER::MOLECULE)
@@ -3440,9 +3462,12 @@
     ("both SRCAP as well as p400" . SPARSER::COLLECTION)
     ("Notch1 and its ligand Jagged-1" . SPARSER::COLLECTION)
     ("SRCAP or p400" . SPARSER::COLLECTION)
+    ("IC and NS3" . SPARSER::COLLECTION)
     ("host-cellular molecules" . SPARSER::MOLECULE)
     ("NS3 and its protease-dead mutant" . SPARSER::COLLECTION)
     ("SRCAP and NS3" . SPARSER::COLLECTION)
+    ("IC or Notch3" . SPARSER::COLLECTION)
+    ("IC and Notch3" . SPARSER::COLLECTION)
     ("Notch1 and Notch3" . SPARSER::COLLECTION)
     ("human Notch1 (Notch1 IC) and Notch3 (Notch3 IC)" . SPARSER::COLLECTION)
     ("SNF/SWI" . SPARSER::COLLECTION) ("Notch1-" . SPARSER::PROTEIN)
@@ -3458,22 +3483,24 @@
     ("SRCAP and p400" . SPARSER::COLLECTION)
     ("NS3 and SRCAP" . SPARSER::COLLECTION) ("SRCAP" . SPARSER::PROTEIN)
     ("Nonstructural protein 3" . SPARSER::PROTEIN)
-    ("protease and RNA" . SPARSER::COLLECTION)
+    ("protease and RNA helicase" . SPARSER::COLLECTION)
     ("Anti-Histone" . SPARSER::PROTEIN) ("1 b" . SPARSER::PROTEIN)
     ("Core protein" . SPARSER::PROTEIN)
     ("protein expressed in" . SPARSER::PROTEIN) ("type 5" . SPARSER::PROTEIN)
     ("Hes -1" . SPARSER::PROTEIN)
     ("hairy and enhancer of split 1" . SPARSER::PROTEIN)
     ("Notch3" . SPARSER::PROTEIN) ("NS4A" . SPARSER::PROTEIN)
-    ("anti-FLAG" . SPARSER::PROTEIN) ("SWI2" . SPARSER::PROTEIN)
+    ("anti-FLAG" . SPARSER::PROTEIN) ("SWI2" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("SNF2" . SPARSER::PROTEIN) ("CREB binding protein" . SPARSER::PROTEIN)
     ("Jagged-1" . SPARSER::PROTEIN) ("Delta-1" . SPARSER::PROTEIN)
     ("NS5A" . SPARSER::PROTEIN) ("NS4B" . SPARSER::PROTEIN)
     ("p400" . SPARSER::PROTEIN) ("Hes-1" . SPARSER::PROTEIN)
-    ("Snf2" . SPARSER::PROTEIN) ("NS3" . SPARSER::PROTEIN)
+    ("Snf2" . SPARSER::PROTEIN)
+    ("RNA helicase" . SPARSER::HUMAN-PROTEIN-FAMILY) ("NS3" . SPARSER::PROTEIN)
     ("inhibitors and agents" . SPARSER::COLLECTION)
     ("c-Met, EGFR, and VEGFR" . SPARSER::COLLECTION)
     ("EGFR and MET" . SPARSER::COLLECTION) ("macroscopic type" . TYPE)
+    ("c-Met and clinicopathological factors" . SPARSER::COLLECTION)
     ("NCC-BD1" . SPARSER::COLLECTION) ("NCC-BD2" . SPARSER::COLLECTION)
     ("NCC" . SPARSER::PROTEIN)
     ("c-Met, phospho-Met, EGFR, and phospho-EGFR" . SPARSER::COLLECTION)
@@ -3487,10 +3514,14 @@
      . SPARSER::COLLECTION)
     ("epidermal growth factor receptor (EGFR), vascular epithelial growth factor (VEGF) and c-Met"
      . SPARSER::COLLECTION)
-    ("vascular epithelial growth factor (VEGF)" . SPARSER::GROWTH-FACTOR)
+    ("vascular epithelial growth factor (VEGF)"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("c-Met and epidermal growth factor receptor" . SPARSER::COLLECTION)
+    ("Clinicopathological factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("clinicopathological factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Anti- β" . SPARSER::PROTEIN) ("BD2" . SPARSER::PROTEIN)
-    ("BD1" . SPARSER::PROTEIN) ("key carcinogenic genes" . SPARSER::GENE)
+    ("BD1" . SPARSER::PROTEIN) ("CC4" . SPARSER::PROTEIN)
+    ("key carcinogenic genes" . SPARSER::GENE)
     ("ER81-MMP-1" . SPARSER::PROTEIN-PAIR) ("ERK-PEA3" . SPARSER::PROTEIN-PAIR)
     ("ETS1, GABP α and Elk-1" . SPARSER::COLLECTION)
     ("PEA3 and MMP-7" . SPARSER::COLLECTION)
@@ -3528,9 +3559,10 @@
     ("Cyclin D3" . SPARSER::PROTEIN) ("β catenin" . SPARSER::PROTEIN)
     ("ER81" . SPARSER::PROTEIN) ("PEA3" . SPARSER::PROTEIN)
     ("lapatinib and GW2974" . SPARSER::COLLECTION)
+    ("the 20S proteasomal subunit" . SPARSER::FRAGMENT)
     ("a phosphotyrosine (p-tyr) antibody and FITC-conjugated secondary antibody (green)"
      . SPARSER::COLLECTION)
-    ("FITC-conjugated secondary antibody" . SPARSER::PROTEIN)
+    ("FITC-conjugated secondary antibody" . SPARSER::ANTIBODY)
     ("methionines" . SPARSER::AMINO-ACID)
     ("CTFs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("p185 ErbB2 and p95L" . SPARSER::COLLECTION)
@@ -3538,13 +3570,13 @@
     ("IkB" . SPARSER::PROTEIN)
     ("an ErbB2 phosphotyrosine specific antibody and a FITC-conjugated secondary antibody (green)"
      . SPARSER::COLLECTION)
-    ("a FITC-conjugated secondary antibody" . SPARSER::PROTEIN)
+    ("a FITC-conjugated secondary antibody" . SPARSER::ANTIBODY)
+    ("p-ErbB2" . SPARSER::COLLECTION)
     ("a secondary FITC-conjugated antibody" . SPARSER::ANTIBODY)
-    ("ErbB2 and p-tyr" . SPARSER::COLLECTION)
     ("an ErbB2 specific antibody and a phosphotyrosine (p-tyr) antibody"
      . SPARSER::COLLECTION)
     ("protein and phosphotyrosine" . SPARSER::COLLECTION)
-    ("ErbB2 and EGFR" . SPARSER::COLLECTION)
+    ("p-tyr" . SPARSER::COLLECTION) ("ErbB2 and EGFR" . SPARSER::COLLECTION)
     ("a 185 kDa transmembrane receptor tyrosine kinase"
      . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ECD" . SPARSER::PROTEIN) ("inhibitors (TKI)" . SPARSER::INHIBITOR)
@@ -3558,9 +3590,13 @@
     ("Pten and PI3K" . SPARSER::COLLECTION) ("PTH" . SPARSER::PROTEIN)
     ("flox/flox/col2a1" . SPARSER::COLLECTION)
     ("AKT1/AKT2" . SPARSER::COLLECTION) ("Fgf18" . SPARSER::PROTEIN)
-    ("AKT/PI3K" . SPARSER::COLLECTION) ("AKT-FOXO" . SPARSER::COLLECTION)
-    ("Twist1, and Twist 2" . SPARSER::COLLECTION) ("d" . SPARSER::PROTEIN)
-    ("dpc" . SPARSER::MOLECULE)
+    ("Fgf" . SPARSER::PROTEIN) ("Dermo1 or twist2" . SPARSER::COLLECTION)
+    ("Col2" . SPARSER::PROTEIN) ("AKT/PI3K" . SPARSER::COLLECTION)
+    ("Insulin and Insulin" . SPARSER::COLLECTION)
+    ("AKT-FOXO" . SPARSER::COLLECTION)
+    ("Twist1, and Twist 2" . SPARSER::COLLECTION)
+    ("OST-PTP" . SPARSER::COLLECTION) ("OST" . SPARSER::PROTEIN)
+    ("d" . SPARSER::PROTEIN) ("dpc" . SPARSER::MOLECULE)
     ("Another important osteoblastic gene" . SPARSER::GENE)
     ("p85 and p110β" . SPARSER::COLLECTION)
     ("Osteopontin ( Spp1 ), Bone sailoprotein ( Bsp ) and osteocalcin ( Bglap2 )"
@@ -3574,31 +3610,37 @@
     ("FOXO1, FOXO3 and FOXO4" . SPARSER::COLLECTION)
     ("chondrocytes and osteoblasts" . SPARSER::COLLECTION)
     ("Runx2, Osterix and ATF4" . SPARSER::COLLECTION)
-    ("Osterix" . SPARSER::PROTEIN)
+    ("Osterix" . SPARSER::PROTEIN) ("Forkhead" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Akt and its downstream targets" . SPARSER::COLLECTION)
-    ("tris" . SPARSER::MOLECULE)
+    ("tris" . SPARSER::PROTEIN)
     ("Phosphatase and tensin" . SPARSER::COLLECTION)
-    ("Phosphatidyl" . SPARSER::MOLECULE) ("IGFBP2" . SPARSER::PROTEIN)
+    ("Phosphatidyl" . SPARSER::MOLECULE)
+    ("insulin/growth factor/PI3K" . SPARSER::COLLECTION)
+    ("PTH 1" . SPARSER::PROTEIN) ("IGFBP2" . SPARSER::PROTEIN)
     ("factor2" . SPARSER::PROTEIN)
     ("insulin like growth factor" . SPARSER::PROTEIN)
     ("col2a1" . SPARSER::PROTEIN) ("Pparγ" . SPARSER::PROTEIN)
     ("H10" . SPARSER::PROTEIN) ("Sprouty2" . SPARSER::PROTEIN)
-    ("twist2" . SPARSER::PROTEIN) ("Col2a1" . SPARSER::PROTEIN)
+    ("twist2" . SPARSER::PROTEIN) ("Dermo1" . SPARSER::PROTEIN)
+    ("Dermo 1" . SPARSER::PROTEIN) ("Col2a1" . SPARSER::PROTEIN)
     ("P13" . SPARSER::PROTEIN) ("Twist 2" . SPARSER::PROTEIN)
-    ("Twist1" . SPARSER::PROTEIN) ("CREB2" . SPARSER::PROTEIN)
-    ("NFATc1" . SPARSER::PROTEIN) ("Col1a1" . SPARSER::PROTEIN)
-    ("Sp7" . SPARSER::PROTEIN) ("Spp1" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("ATF4" . SPARSER::PROTEIN) ("FOXO3" . SPARSER::PROTEIN)
+    ("Twist1" . SPARSER::PROTEIN) ("protein2" . SPARSER::PROTEIN)
+    ("CREB2" . SPARSER::PROTEIN) ("NFATc1" . SPARSER::PROTEIN)
+    ("Col1a1" . SPARSER::PROTEIN) ("Sp7" . SPARSER::PROTEIN)
+    ("Spp1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("ATF4" . SPARSER::PROTEIN)
+    ("FOXO3" . SPARSER::PROTEIN)
     ("the invasive and aggressive form" . SPARSER::FORM)
     ("KIAA0101 and Ki67" . SPARSER::COLLECTION)
     ("included all four biomarkers and the second" . SPARSER::COLLECTION)
     ("KIAA0101 or BRCA1" . SPARSER::COLLECTION)
     ("KIAA0101 and BRCA1" . SPARSER::COLLECTION)
     ("Cyclin A and Cyclin" . SPARSER::COLLECTION)
+    ("factors, BRCA1 and BRCA2" . SPARSER::COLLECTION)
     ("BRCA1 and KIAA0101" . SPARSER::COLLECTION)
     ("GFP-centrin-2" . SPARSER::COLLECTION) ("BRCAs" . SPARSER::PROTEIN-FAMILY)
     ("KIAA0101/p15(PAF)" . SPARSER::COLLECTION)
     ("highly penetrant tumor suppressors" . SPARSER::SUPPRESSOR)
+    ("on-line" . SPARSER::PROTEIN)
     ("BRCA1 , BRCA2 , and HMMR" . SPARSER::COLLECTION)
     ("discovering new cancer-associated genes" . SPARSER::GENE)
     ("HMMR" . SPARSER::PROTEIN)
@@ -3608,12 +3650,14 @@
     ("centrin-2" . SPARSER::PROTEIN) ("p15(PAF)" . SPARSER::PROTEIN)
     ("Texas red" . SPARSER::DRUG) ("CCL-2" . SPARSER::PROTEIN)
     ("CHK2" . SPARSER::PROTEIN) ("KIAA0101" . SPARSER::PROTEIN)
-    ("CDK5 or Tax inhibitors" . SPARSER::COLLECTION)
+    ("CDK5 or Tax" . SPARSER::COLLECTION)
     ("antibody or apten" . SPARSER::COLLECTION)
+    ("factors, cell signaling proteins, and PDZ protein domains"
+     . SPARSER::COLLECTION)
     ("This viral protein" . SPARSER::PROTEIN)
     ("tau, CRMPs, and actin" . SPARSER::COLLECTION)
     ("Fyn-CDK5" . SPARSER::COLLECTION) ("calpains" . SPARSER::PROTEIN)
-    ("the neurotoxic activator p25" . SPARSER::PROTEIN)
+    ("the neurotoxic activator p25" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("PP-2A and PP-1" . SPARSER::COLLECTION)
     ("kinase, CDK5, and MAPK" . SPARSER::COLLECTION)
     ("kinase and phosphatase" . SPARSER::COLLECTION)
@@ -3628,6 +3672,7 @@
     ("p35-CDK5" . SPARSER::COLLECTION) ("p39-CDK5" . SPARSER::COLLECTION)
     ("Monomeric CDK5" . SPARSER::PROTEIN) ("p35 or p39" . SPARSER::COLLECTION)
     ("CDK5 and GSK3-β" . SPARSER::COLLECTION)
+    ("the secreted viral protein Tax" . SPARSER::PROTEIN)
     ("tau-tubulin" . SPARSER::COLLECTION)
     ("roscovitine or CDK5" . SPARSER::COLLECTION)
     ("LiCl and TDZD-8" . SPARSER::COLLECTION)
@@ -3635,9 +3680,10 @@
     ("GSK3-β and CDK5" . SPARSER::COLLECTION)
     ("LiCl, TDZD-8, and roscovitine" . SPARSER::COLLECTION)
     ("roscovitine" . SPARSER::DRUG) ("Tau" . SPARSER::PROTEIN)
-    ("tau" . SPARSER::PROTEIN) ("HAM/TSP" . SPARSER::COLLECTION)
-    ("TSP" . SPARSER::PROTEIN) ("HAM" . SPARSER::PROTEIN)
-    ("PP-1" . SPARSER::PROTEIN) ("PP-2A" . SPARSER::PROTEIN)
+    ("Tax" . SPARSER::PROTEIN) ("tau" . SPARSER::PROTEIN)
+    ("HAM/TSP" . SPARSER::COLLECTION) ("TSP" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("HAM" . SPARSER::PROTEIN) ("PP-1" . SPARSER::PROTEIN)
+    ("PP-2A" . SPARSER::PROTEIN)
     ("Creutzfeldt-Jakob disease" . SPARSER::PROTEIN)
     ("4-benzyl-2-methyl-1,2,4-thiadiazolidine-3,5-dione" . SPARSER::DRUG)
     ("p29" . SPARSER::PROTEIN) ("p39" . SPARSER::PROTEIN)
@@ -3667,6 +3713,7 @@
     ("mTORC1/4EBP1" . SPARSER::COLLECTION)
     ("glucose and the glycolytic inhibitor 2-deoxyglucose (2DG)"
      . SPARSER::COLLECTION)
+    ("DG" . SPARSER::PROTEIN) ("OCR" . SPARSER::PROTEIN)
     ("ATP and metabolic flux" . SPARSER::COLLECTION)
     ("Bim and Mcl-1" . SPARSER::COLLECTION)
     ("Bim or other pro-apoptotic Bcl-2 family proteins ( xref , xref )"
@@ -3690,12 +3737,12 @@
     ("Bcl-2/Bcl-xL/Bcl-w" . SPARSER::COLLECTION)
     ("the pro-apoptotic Bcl-2 family protein Bim" . SPARSER::PROTEIN)
     ("adequate glucose" . SPARSER::PROTEIN) ("/Akt/mTOR" . SPARSER::COLLECTION)
-    ("CPT1" . SPARSER::PROTEIN) ("member A" . SPARSER::PROTEIN)
+    ("CPT1" . SPARSER::PROTEIN) ("member A1" . SPARSER::PROTEIN)
     ("ABT-737-" . SPARSER::DRUG) ("Mcl-1 Protein" . SPARSER::PROTEIN)
     ("P-S6K" . SPARSER::PROTEIN) ("CD3ε" . SPARSER::PROTEIN)
     ("p70 S6K1" . SPARSER::PROTEIN) ("Bcl-w" . SPARSER::PROTEIN)
     ("Akt-induced" . SPARSER::PROTEIN)
-    ("phosphatidyl-inositol 3-kinase" . SPARSER::PROTEIN)
+    ("phosphatidyl-inositol" . SPARSER::MOLECULE)
     ("MiR-193a directly targets PLAU and K-Ras" . SPARSER::COLLECTION)
     ("Myc and other Myc-family proteins" . SPARSER::COLLECTION)
     ("the resulting heteromeric complexes" . SPARSER::BIO-COMPLEX)
@@ -3709,18 +3756,16 @@
     ("PLAU or K-Ras" . SPARSER::COLLECTION)
     ("both PLAU ( xref ) and K-Ras ( xref )" . SPARSER::COLLECTION)
     ("PLAU and K-RAS" . SPARSER::COLLECTION) ("MATRIGEL" . SPARSER::PROTEIN)
-    ("7 miRNAs that are up-regulated and 15 miRNAs that are down-regulated in the transformed state ( xref )"
+    ("7 miRNAs that are up-regulated and 15 miRNAs that are down-regulated"
      . SPARSER::COLLECTION)
     ("the transformed state" . SPARSER::BIO-STATE)
-    ("miR-21 and miR-181b" . SPARSER::COLLECTION)
     ("ER-Src" . SPARSER::COLLECTION) ("Max and RXRα" . SPARSER::COLLECTION)
     ("PLAU and K-Ras" . SPARSER::COLLECTION)
-    ("RXRα and Max" . SPARSER::COLLECTION) ("MicroRNA" . SPARSER::RNA)
-    ("MiR-21" . SPARSER::PROTEIN) ("v-Ras" . SPARSER::PROTEIN)
+    ("RXRα and Max" . SPARSER::COLLECTION) ("MicroRNA" . SPARSER::MICRO-RNA)
+    ("Panc1" . SPARSER::PROTEIN) ("v-Ras" . SPARSER::PROTEIN)
     ("h-TERT" . SPARSER::PROTEIN) ("MiR-193b" . SPARSER::MOLECULE)
     ("Let-7" . SPARSER::RNA) ("T antigens" . SPARSER::MOLECULE)
     ("RXRα" . SPARSER::PROTEIN) ("SKAP1 and ADAP" . SPARSER::COLLECTION)
-    ("SKAP-1-RapL-Rap1" . SPARSER::COLLECTION)
     ("RIAM-talin" . SPARSER::COLLECTION)
     ("membrane-associated Rap1" . SPARSER::PROTEIN)
     ("RIAM and talin" . SPARSER::COLLECTION)
@@ -3754,23 +3799,23 @@
     ("Generic upstream regulators" . SPARSER::REGULATOR)
     ("Rac/Rho" . SPARSER::COLLECTION) ("CD8-p56 lck" . SPARSER::COLLECTION)
     ("CD4-" . SPARSER::PROTEIN) ("ICAM-1 and ICAM-2" . SPARSER::COLLECTION)
+    ("lymphocyte function-associated antigen" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("/β2" . SPARSER::COLLECTION) ("myr" . SPARSER::MOLECULE)
     ("Rap1 and LFA-1" . SPARSER::COLLECTION)
     ("LFA-1-intercellular adhesion molecule 1" . SPARSER::COLLECTION)
     ("RapL-Rap1" . SPARSER::COLLECTION) ("RapL" . SPARSER::PROTEIN)
-    ("SKAP2" . SPARSER::PROTEIN) ("D-3" . SPARSER::PROTEIN)
-    ("p59" . SPARSER::PROTEIN) ("src kinase" . SPARSER::PROTEIN)
-    ("src kinase-associated phosphoprotein 1" . SPARSER::PROTEIN)
+    ("SKAP2" . SPARSER::PROTEIN) ("p59" . SPARSER::PROTEIN)
+    ("phosphoprotein 1" . SPARSER::PROTEIN) ("src kinase" . SPARSER::PROTEIN)
     ("SLP-76" . SPARSER::PROTEIN) ("MST-1" . SPARSER::PROTEIN)
     ("family 5" . SPARSER::PROTEIN) ("RASSF5" . SPARSER::PROTEIN)
     ("RASSF3" . SPARSER::PROTEIN) ("NORE1B" . SPARSER::PROTEIN)
     ("MAXP1" . SPARSER::PROTEIN) ("Vav-1" . SPARSER::PROTEIN)
     ("guanine nucleotide exchange factor" . SPARSER::GEF)
     ("p56 lck" . SPARSER::PROTEIN) ("ICAM-2" . SPARSER::PROTEIN)
-    ("VLA-4" . SPARSER::PROTEIN) ("Antigen-4" . SPARSER::PROTEIN)
-    ("CD18" . SPARSER::PROTEIN) ("SKAP-55" . SPARSER::PROTEIN)
+    ("VLA-4" . SPARSER::PROTEIN) ("CD18" . SPARSER::PROTEIN)
     ("SKAP1" . SPARSER::PROTEIN)
     ("lymphocyte function-associated antigen 1" . SPARSER::PROTEIN)
+    ("tendon-associated collagens" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("type I and SCXA" . SPARSER::COLLECTION)
     ("tendon-specific extracellular matrix genes" . SPARSER::GENE)
     ("p110 and p85" . SPARSER::COLLECTION)
@@ -3785,13 +3830,14 @@
     ("PI-3K and Akt" . SPARSER::COLLECTION)
     ("COX-2, MMPs, Bax, and caspase-3" . SPARSER::COLLECTION)
     ("decorin, and tenomodulin" . SPARSER::COLLECTION)
-    ("TRFA-1" . SPARSER::COLLECTION) ("TRFA" . SPARSER::PROTEIN-FAMILY)
+    ("Bcl-2, Bcl-xL, and TRFA-1" . SPARSER::COLLECTION)
+    ("TRFA" . SPARSER::PROTEIN-FAMILY)
     ("wortmannin and curcumin" . SPARSER::COLLECTION)
     ("Ser or Thr" . SPARSER::COLLECTION) ("Akt/IKK" . SPARSER::COLLECTION)
     ("PI-3K/p85" . SPARSER::COLLECTION) ("IKK-α and Akt" . SPARSER::COLLECTION)
     ("Sephadex" . SPARSER::DRUG) ("IL-1β or curcumin" . SPARSER::COLLECTION)
     ("IKK-α or IKK-β" . SPARSER::COLLECTION)
-    ("p65 and curcumin" . SPARSER::COLLECTION)
+    ("p65 and curcumin" . SPARSER::COLLECTION) ("pan-" . SPARSER::PROTEIN)
     ("IL-1β and wortmannin" . SPARSER::COLLECTION)
     ("Bax and biologically active caspase-3" . SPARSER::COLLECTION)
     ("Bcl-2, Bcl-xL, and TRAF1" . SPARSER::COLLECTION)
@@ -3812,12 +3858,12 @@
     ("two subunits and an additional inhibitory subunit" . SPARSER::COLLECTION)
     ("a central transcription factor" . SPARSER::PROTEIN)
     ("Pro-inflammatory cytokines" . SPARSER::PROTEIN)
-    ("a potent pro-inflammatory cytokine" . SPARSER::PROTEIN)
     ("metalloproteinases (MMP)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("IL-1β or other inflammatory cytokines" . SPARSER::COLLECTION)
     ("type III and type V" . SPARSER::COLLECTION)
     ("proteoglycans, elastin, and fibronectin" . SPARSER::COLLECTION)
     ("elastin" . SPARSER::PROTEIN) ("proteoglycans" . SPARSER::PROTEIN)
+    ("the major causative factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("quinolone" . SPARSER::MOLECULE) ("PI-3K/Akt" . SPARSER::COLLECTION)
     ("p85/Akt" . SPARSER::COLLECTION) ("Curcumin" . SPARSER::DRUG)
     ("interleukin-1β (IL-1β) and tumor necrosis factor-α (TNF-α)"
@@ -3838,7 +3884,6 @@
     ("MRE11/RAD50/NBS1" . SPARSER::COLLECTION)
     ("MTT- and Trypan" . SPARSER::COLLECTION) ("MTT-" . SPARSER::MOLECULE)
     ("radical, and t -butyl" . SPARSER::COLLECTION)
-    ("a cellular pro-thrombotic state" . SPARSER::BIO-STATE)
     ("soluble inflammatory molecules" . SPARSER::MOLECULE)
     ("immunoreactive p21" . SPARSER::PROTEIN)
     ("antioxidant and suppressor" . SPARSER::COLLECTION)
@@ -3846,7 +3891,6 @@
     ("DCFDA" . SPARSER::DRUG) ("neither LDL nor oxLDL" . SPARSER::COLLECTION)
     ("immunoreactive γ-H2AX" . SPARSER::PROTEIN)
     ("chromatin and shrunken" . SPARSER::COLLECTION)
-    ("mitochondrial dehydrogenase" . SPARSER::PROTEIN)
     ("The MTT-test" . SPARSER::MOLECULE) ("MTT-test" . SPARSER::MOLECULE)
     ("p  " . SPARSER::PROTEIN) ("immunoreactive β-tubulin" . SPARSER::PROTEIN)
     ("immunoreactive pATM" . SPARSER::PROTEIN)
@@ -3860,10 +3904,10 @@
     ("antioxidant and inhibitor" . SPARSER::COLLECTION)
     ("pyrrolidine" . SPARSER::DRUG)
     ("progressive cerebellar ataxia" . SPARSER::PROTEIN)
-    ("pATM and p21" . SPARSER::COLLECTION) ("oxLDL" . SPARSER::MOLECULE)
-    ("pATM" . SPARSER::PROTEIN) ("OxLDL" . SPARSER::MOLECULE)
-    ("procaspase 3" . SPARSER::PROTEIN) ("Reducing Agent" . SPARSER::MOLECULE)
-    ("18 h" . SPARSER::PROTEIN)
+    ("pATM and p21" . SPARSER::COLLECTION) ("oxLDL" . SPARSER::PROTEIN)
+    ("pATM" . SPARSER::PROTEIN) ("OxLDL" . SPARSER::PROTEIN)
+    ("procaspase 3" . SPARSER::PROTEIN) ("BR 2" . SPARSER::PROTEIN)
+    ("Reducing Agent" . SPARSER::MOLECULE) ("18 h" . SPARSER::PROTEIN)
     ("2-morpholin-4-yl-6-thianthren-1-yl-pyran-4-one" . SPARSER::DRUG)
     ("H 2 DCFDA" . SPARSER::DRUG) ("Apolipoprotein E" . SPARSER::PROTEIN)
     ("N-acetyl- l -cysteine" . SPARSER::MOLECULE)
@@ -3874,7 +3918,7 @@
     ("purinergic receptors" . SPARSER::PROTEIN)
     ("Cx-" . SPARSER::PROTEIN-FAMILY)
     ("the noninvasive isogenic mxiD mutant" . SPARSER::MUTANT)
-    ("gentamicin" . SPARSER::DRUG)
+    ("the apical face" . SPARSER::PROTEIN) ("gentamicin" . SPARSER::DRUG)
     ("bacterial-induced actin foci" . SPARSER::PROTEIN)
     ("Erk1/2 and NME" . SPARSER::COLLECTION)
     ("monomeric actin" . SPARSER::PROTEIN) ("GFP-actin" . SPARSER::COLLECTION)
@@ -3887,8 +3931,9 @@
     ("Connexins" . SPARSER::PROTEIN) ("IpaB and IpaC" . SPARSER::COLLECTION)
     ("IpaC" . SPARSER::PROTEIN) ("β1-integrins" . SPARSER::COLLECTION)
     ("hyaluronan" . SPARSER::PROTEIN) ("IpaB and IpaD" . SPARSER::COLLECTION)
-    ("IpaD" . SPARSER::PROTEIN-FAMILY) ("IpaB" . SPARSER::PROTEIN)
-    ("ATP-" . SPARSER::ATP) ("connexin" . SPARSER::PROTEIN-FAMILY)
+    ("IpaD" . SPARSER::PROTEIN) ("IpaB" . SPARSER::PROTEIN)
+    ("ATP-" . SPARSER::ATP) ("nanometer-thin" . SPARSER::PROTEIN)
+    ("connexin" . SPARSER::PROTEIN-FAMILY)
     ("bacterial effectors" . SPARSER::EFFECTOR) ("ErK1/2" . SPARSER::PROTEIN)
     ("Cytochalasin D" . SPARSER::DRUG)
     ("Mitogen-activated protein kinase kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -3900,32 +3945,32 @@
     ("si-ctrl" . SPARSER::PROTEIN-PAIR) ("si-Myc" . SPARSER::PROTEIN-PAIR)
     ("ctrl" . SPARSER::PROTEIN) ("-Luc" . SPARSER::COLLECTION)
     ("pTA-Luc" . SPARSER::COLLECTION) ("pMyc-TA-Luc" . SPARSER::COLLECTION)
-    ("pTA" . SPARSER::PROTEIN) ("TTG" . SPARSER::PROTEIN)
+    ("pTA" . SPARSER::PROTEIN) ("A A AA TTG" . SPARSER::PROTEIN)
+    ("TTG" . SPARSER::PROTEIN)
     ("the BRCA1 distal promoter" . SPARSER::PROMOTER)
     ("pMyc-GFP" . SPARSER::COLLECTION) ("Myc-GFP" . SPARSER::COLLECTION)
     ("ectopically expressed functional c-Myc" . SPARSER::PROTEIN)
     ("pMYC-GFP" . SPARSER::COLLECTION)
-    ("a CNS-1 (Conserved Nucleotide Site-1) and CNS-2" . SPARSER::COLLECTION)
     ("an aromatic hydrocarbon receptor complex" . SPARSER::BIO-COMPLEX)
     ("CREB/ATF1" . SPARSER::COLLECTION) ("RIBS" . SPARSER::DRUG)
     ("BRCA1 and NBR2" . SPARSER::COLLECTION)
     ("the distal BRCA1 promoter" . SPARSER::PROMOTER)
-    ("mRNA and BRCA1" . SPARSER::COLLECTION) ("γ-glutamyl" . SPARSER::MOLECULE)
+    ("γ-glutamyl" . SPARSER::MOLECULE)
     ("CCCTC binding factor" . SPARSER::PROTEIN)
-    ("MCF 7 cells" . SPARSER::PROTEIN) ("FL-1" . SPARSER::PROTEIN)
-    ("CCA-3" . SPARSER::PROTEIN) ("ATF1" . SPARSER::PROTEIN)
-    ("NBR2" . SPARSER::PROTEIN) ("APC and Rb" . SPARSER::COLLECTION)
-    ("IDH1 or EGFR" . SPARSER::COLLECTION)
+    ("MCF 7 cells" . SPARSER::PROTEIN) ("CCA-3" . SPARSER::PROTEIN)
+    ("ATF1" . SPARSER::PROTEIN) ("NBR2" . SPARSER::PROTEIN)
+    ("mutated mRNA" . SPARSER::RNA) ("APC and Rb" . SPARSER::COLLECTION)
+    ("IDH1 or EGFR" . SPARSER::COLLECTION) ("Line" . SPARSER::PROTEIN)
     ("FBXW7, PTEN, N-RAS and STR" . SPARSER::COLLECTION)
-    ("only one allele" . SPARSER::ALLELE) ("CMK" . SPARSER::PROTEIN)
-    ("IDH1 and EGFR" . SPARSER::COLLECTION)
-    ("mitochondrial TP53" . SPARSER::PROTEIN)
+    ("only one allele" . SPARSER::ALLELE) ("LMS" . SPARSER::PROTEIN)
+    ("CMK" . SPARSER::PROTEIN) ("IDH1 and EGFR" . SPARSER::COLLECTION)
     ("N-RAS, FBXW7, PTEN and STR" . SPARSER::COLLECTION)
     ("STR" . SPARSER::PROTEIN) ("TP53 and SANGER" . SPARSER::COLLECTION)
     ("EGFR and IDH1" . SPARSER::COLLECTION) ("K-1" . SPARSER::PROTEIN)
     ("Loss of Heterozygosity" . SPARSER::PROTEIN) ("TP 53" . SPARSER::PROTEIN)
     ("G16" . SPARSER::PROTEIN) ("FBXW7" . SPARSER::PROTEIN)
     ("N-RAS" . SPARSER::PROTEIN) ("IDH1" . SPARSER::PROTEIN)
+    ("an important pathophysiologic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("aPKC and MLCK" . SPARSER::COLLECTION) ("t  " . SPARSER::PROTEIN)
     ("the apical puncta" . SPARSER::PROTEIN)
     ("The apical aPKC" . SPARSER::PROTEIN)
@@ -3934,32 +3979,32 @@
     ("MYH9, MYH10, and MYH14" . SPARSER::COLLECTION)
     ("other cortical acto-myosin" . SPARSER::COLLECTION)
     ("acto-myosin" . SPARSER::COLLECTION) ("MLCK" . SPARSER::PROTEIN)
-    ("aPKC and Par3" . SPARSER::COLLECTION)
-    ("Drosophila [ xref ] and vertebrate epithelia [ xref – xref ]"
-     . SPARSER::COLLECTION)
+    ("aPKC and Par3" . SPARSER::COLLECTION) ("aPKC–Par" . SPARSER::COLLECTION)
     ("Caenorhabditis elegans PARtition-defective mutant proteins"
      . SPARSER::PROTEIN)
     ("aPKC, PKCζ and PKCι/λ" . SPARSER::COLLECTION)
     ("Par3 and Par6" . SPARSER::COLLECTION)
     ("aPKC and nmMyoIIA" . SPARSER::COLLECTION)
-    ("atypical PKC" . SPARSER::PROTEIN) ("Par3" . SPARSER::PROTEIN)
+    ("atypical PKC" . SPARSER::PROTEIN) ("Par3–Par6" . SPARSER::COLLECTION)
     ("aPKC" . SPARSER::PROTEIN) ("F  3" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("intestinal alkaline phosphatase" . SPARSER::PROTEIN)
     ("MYH14" . SPARSER::PROTEIN) ("MYH10" . SPARSER::PROTEIN)
     ("MYH9" . SPARSER::PROTEIN) ("atypical protein kinase" . SPARSER::PROTEIN)
+    ("myosin II" . SPARSER::PROTEIN)
     ("myosin light chain kinase" . SPARSER::PROTEIN)
-    ("caspase-8 or CD95" . SPARSER::COLLECTION)
+    ("Par3" . SPARSER::PROTEIN) ("caspase-8 or CD95" . SPARSER::COLLECTION)
     ("CD27/CD45RO" . SPARSER::COLLECTION) ("HLA-DR/CD38" . SPARSER::COLLECTION)
     ("peripheral T-cell" . SPARSER::PROTEIN)
     ("A representative flow cytometry" . SPARSER::PROTEIN)
     ("caspase-3 and CD95" . SPARSER::COLLECTION)
     ("hepatocytes and T-cell" . SPARSER::COLLECTION)
     ("caspase-3, caspase-8 and CD95" . SPARSER::COLLECTION)
-    ("receive either 10 mg GS-9450" . SPARSER::DRUG)
+    ("receive either 10 mg GS-9450" . SPARSER::DRUG) ("n  " . SPARSER::PROTEIN)
     ("the central protease" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("1b" . SPARSER::PROTEIN) ("Fas–FasL" . SPARSER::COLLECTION)
-    ("CTLs" . SPARSER::PROTEIN) ("FasL" . SPARSER::PROTEIN)
-    ("TNF-alpha and Fas" . SPARSER::COLLECTION)
+    ("pro-caspase-8" . SPARSER::COLLECTION)
+    ("Fas-receptor" . SPARSER::COLLECTION) ("1b" . SPARSER::PROTEIN)
+    ("Fas–FasL" . SPARSER::COLLECTION) ("CTLs" . SPARSER::PROTEIN)
+    ("FasL" . SPARSER::PROTEIN) ("TNF-alpha and Fas" . SPARSER::COLLECTION)
     ("CD95/APO-1" . SPARSER::COLLECTION)
     ("caspase-8 and CD95+" . SPARSER::COLLECTION)
     ("caspase-3 and caspase-8" . SPARSER::COLLECTION)
@@ -3979,35 +4024,35 @@
     ("RNASE2 [eosinophil-derived neurotoxin] and RNASE3 [eosinophil cationic protein]"
      . SPARSER::COLLECTION)
     ("The STH and chronic STH" . SPARSER::COLLECTION)
-    ("chronic STH" . SPARSER::PROTEIN)
-    ("eosinophil-derived neurotoxin (RNASE2) and eosinophil cationic protein (RNASE3)"
-     . SPARSER::COLLECTION)
-    ("eosinophil cationic protein" . SPARSER::PROTEIN)
+    ("chronic STH" . SPARSER::PROTEIN) ("neurotoxin" . SPARSER::PROTEIN)
     ("GM-CSF and IL-5" . SPARSER::COLLECTION)
     ("GM-CSF, IL-2, IL-5, and IL-10" . SPARSER::COLLECTION)
+    ("base " . SPARSER::PROTEIN)
     ("HLA-DRB3 and HLA-DRB4" . SPARSER::COLLECTION)
     ("RNASE2 and RNASE3" . SPARSER::COLLECTION)
     ("PBEF1/NAMPT" . SPARSER::COLLECTION) ("hook" . SPARSER::PROTEIN-FAMILY)
     ("vanin" . SPARSER::PROTEIN) ("QPCT" . SPARSER::PROTEIN)
     ("NAMPT" . SPARSER::PROTEIN) ("MME" . SPARSER::PROTEIN)
-    ("hemoglobin" . SPARSER::MOLECULE) ("FC" . SPARSER::PROTEIN)
+    ("hemoglobin" . SPARSER::PROTEIN) ("FC" . SPARSER::PROTEIN)
     ("Overall relatively few genes" . SPARSER::GENE) ("PC1" . SPARSER::PROTEIN)
     ("GM-CSF (P = 0.02) and IL-2 (P = 0.004)" . SPARSER::COLLECTION)
     ("IL-5 (P = 0.03) and IL-10 (P = 0.0008)" . SPARSER::COLLECTION)
+    ("Post-hoc" . SPARSER::PROTEIN-PAIR)
     ("cytokines and MCP-2" . SPARSER::COLLECTION)
     ("cytokines and the chemokine MCP-2" . SPARSER::COLLECTION)
     ("IgE" . SPARSER::PROTEIN) ("mRNA and microRNA" . SPARSER::COLLECTION)
     ("immune modulatory cytokines" . SPARSER::PROTEIN)
     ("HRK" . SPARSER::PROTEIN) ("IDO" . SPARSER::PROTEIN)
     ("STH" . SPARSER::PROTEIN) ("IL1R2" . SPARSER::PROTEIN)
-    ("eosinophil-derived neurotoxin" . SPARSER::PROTEIN)
-    ("Hsa-let-7" . SPARSER::RNA) ("ZFAT1" . SPARSER::PROTEIN)
-    ("uncoupling protein 2" . SPARSER::PROTEIN) ("UCP2" . SPARSER::PROTEIN)
+    ("miR-155" . SPARSER::PROTEIN) ("Hsa-let-7" . SPARSER::RNA)
+    ("ZFAT1" . SPARSER::PROTEIN) ("uncoupling protein 2" . SPARSER::PROTEIN)
+    ("UCP2" . SPARSER::PROTEIN)
     ("son of sevenless homolog 1" . SPARSER::PROTEIN)
     ("SOS1" . SPARSER::PROTEIN)
     ("SH3 and multiple ankyrin repeat domains 2" . SPARSER::PROTEIN)
     ("SHANK2" . SPARSER::PROTEIN) ("S23" . SPARSER::PROTEIN)
     ("RPS23" . SPARSER::PROTEIN)
+    ("eosinophil cationic protein" . SPARSER::PROTEIN)
     ("eosinophil derived neurotoxin" . SPARSER::PROTEIN)
     ("prokineticin 2" . SPARSER::PROTEIN) ("PROK2" . SPARSER::PROTEIN)
     ("gamma 1" . SPARSER::PROTEIN) ("PRKAG1" . SPARSER::PROTEIN)
@@ -4019,35 +4064,41 @@
     ("leukocyte immunoglobulin-like receptor" . SPARSER::PROTEIN)
     ("LILRA3" . SPARSER::PROTEIN)
     ("indoleamine 2,3-dioxygenase" . SPARSER::PROTEIN)
-    ("IL-1R2" . SPARSER::PROTEIN) ("DR beta 4" . SPARSER::PROTEIN)
+    ("IL-1R" . SPARSER::PROTEIN) ("DR beta 4" . SPARSER::PROTEIN)
     ("HLA-DRB4" . SPARSER::PROTEIN) ("DR beta 3" . SPARSER::PROTEIN)
-    ("HLA-DRB3" . SPARSER::PROTEIN) ("epsilon 1" . SPARSER::PROTEIN)
-    ("HBE1" . SPARSER::PROTEIN) ("CYP4F3" . SPARSER::PROTEIN)
-    ("MCP-2" . SPARSER::PROTEIN) ("IgG4" . SPARSER::PROTEIN)
-    ("let-7" . SPARSER::RNA) ("RNASE3" . SPARSER::PROTEIN)
-    ("RNASE2" . SPARSER::PROTEIN) ("hsa-let-7" . SPARSER::RNA)
-    ("CCL23" . SPARSER::PROTEIN) ("dovitinib" . SPARSER::DRUG)
-    ("brivanib" . SPARSER::DRUG)
+    ("HLA-DRB3" . SPARSER::PROTEIN) ("HES4" . SPARSER::PROTEIN)
+    ("epsilon 1" . SPARSER::PROTEIN) ("HBE1" . SPARSER::PROTEIN)
+    ("CYP4F3" . SPARSER::PROTEIN)
+    ("cAMP responsive element binding protein 5" . SPARSER::PROTEIN)
+    ("CREB5" . SPARSER::PROTEIN) ("MCP-2" . SPARSER::DRUG)
+    ("IgG4" . SPARSER::PROTEIN) ("let-7" . SPARSER::RNA)
+    ("RNASE3" . SPARSER::PROTEIN) ("RNASE2" . SPARSER::PROTEIN)
+    ("hsa-let-7" . SPARSER::RNA) ("CCL23" . SPARSER::PROTEIN)
+    ("dovitinib" . SPARSER::DRUG) ("brivanib" . SPARSER::DRUG)
     ("FGFR1 instead of BRF2" . SPARSER::COLLECTION)
-    ("the only relevant amplified gene" . SPARSER::GENE)
-    ("FIIN-1" . SPARSER::COLLECTION) ("a 3-" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("the predominant target" . SPARSER::TARGET-PROTEIN)
+    ("the only relevant amplified gene" . SPARSER::PROTEIN)
+    ("a 3-" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("WHSC1L1 or LETM2" . SPARSER::COLLECTION)
     ("WHSC1L1 , LETM2 and FGFR1" . SPARSER::COLLECTION)
     ("the entire FGFR1" . SPARSER::PROTEIN)
     ("the functional SET domain" . SPARSER::PROTEIN)
     ("FGFR1 and LETM2" . SPARSER::COLLECTION)
-    ("EGFR and ERBB2" . SPARSER::COLLECTION)
+    ("pan-FGFR" . SPARSER::COLLECTION) ("EGFR and ERBB2" . SPARSER::COLLECTION)
     ("PDGFRA/KIT" . SPARSER::COLLECTION) ("pemetrexed" . SPARSER::DRUG)
     ("antifolate" . SPARSER::MOLECULE)
     ("two predominant subtypes" . SPARSER::PROTEIN)
     ("WHSC1L1 , LETM2 , and FGFR1" . SPARSER::COLLECTION)
     ("genes–" . SPARSER::GENE) ("BIBF 1120" . SPARSER::DRUG)
     ("SET domain" . SPARSER::PROTEIN) ("chr8" . SPARSER::PROTEIN)
-    ("FRS2" . SPARSER::PROTEIN) ("PD173074" . SPARSER::DRUG)
+    ("log2" . SPARSER::PROTEIN) ("FRS2" . SPARSER::PROTEIN)
+    ("PD173074" . SPARSER::DRUG)
+    ("fibroblast growth factor receptor" . SPARSER::PROTEIN)
     ("BRF2" . SPARSER::PROTEIN) ("DDR2" . SPARSER::PROTEIN)
     ("LETM2" . SPARSER::PROTEIN) ("WHSC1L1" . SPARSER::PROTEIN)
-    ("p11" . SPARSER::PROTEIN) ("DAI, and Cui-fang" . SPARSER::COLLECTION)
-    ("WANG" . SPARSER::PROTEIN) ("inhibitor (CKI)" . SPARSER::INHIBITOR)
+    ("p11" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("DAI, and Cui-fang" . SPARSER::COLLECTION) ("WANG" . SPARSER::PROTEIN)
+    ("CHEN" . SPARSER::PROTEIN) ("inhibitor (CKI)" . SPARSER::INHIBITOR)
     ("p21 and survivin" . SPARSER::COLLECTION)
     ("especially tumor suppressor genes (TSG)" . SPARSER::GENE)
     ("genes (TSG)" . SPARSER::GENE)
@@ -4060,24 +4111,27 @@
     ("cyclin-CDK4" . SPARSER::COLLECTION) ("cyclin-CDK2" . SPARSER::COLLECTION)
     ("what makes one molecule" . SPARSER::MOLECULE) ("saRNA" . SPARSER::DRUG)
     ("ncRNA" . SPARSER::RNA) ("dsRNAs" . SPARSER::RNA)
-    ("cyclin-dependent kinase4" . SPARSER::PROTEIN)
     ("WTS-1" . SPARSER::PROTEIN) ("siP21" . SPARSER::PROTEIN)
     ("Lau" . SPARSER::MOLECULE) ("WNT- and SHH-tumors" . SPARSER::COLLECTION)
     ("WNT-" . SPARSER::HUMAN-PROTEIN-FAMILY) ("SHH" . SPARSER::PROTEIN)
     ("GLI1, GLI2, and PTCH1B" . SPARSER::COLLECTION)
+    ("the chick neural tube" . SPARSER::PROTEIN)
     ("The adherent glioblastoma lines U87 and U373" . SPARSER::COLLECTION)
-    ("U87 and U373" . SPARSER::COLLECTION) ("Glial" . SPARSER::PROTEIN)
-    ("YAP1 and Ki67" . SPARSER::COLLECTION)
+    ("U87 and U373" . SPARSER::COLLECTION) ("HSR" . SPARSER::PROTEIN)
+    ("Glial" . SPARSER::PROTEIN) ("YAP1 and Ki67" . SPARSER::COLLECTION)
     ("wnt" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("an independent poor prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("NFII" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("type II (NFII)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("yes-associated protein-1" . SPARSER::PROTEIN)
-    ("merlin" . SPARSER::PROTEIN) ("LATS1 and LATS2" . SPARSER::COLLECTION)
-    ("histologic subtypes" . SPARSER::PROTEIN) ("GLI2" . SPARSER::PROTEIN)
-    ("GLI1" . SPARSER::PROTEIN) ("PTCH1" . SPARSER::PROTEIN)
-    ("NF2" . SPARSER::PROTEIN) ("LATS2" . SPARSER::PROTEIN)
-    ("yes-associated protein 1" . SPARSER::PROTEIN)
-    ("normal BRCA1" . SPARSER::PROTEIN)
+    ("merlin" . SPARSER::PROTEIN) ("MST1 and MST2" . SPARSER::COLLECTION)
+    ("LATS1 and LATS2" . SPARSER::COLLECTION) ("warts" . SPARSER::PROTEIN)
+    ("histologic subtypes" . SPARSER::PROTEIN)
+    ("its downstream mediator yes-associated protein 1"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("GLI2" . SPARSER::PROTEIN) ("GLI1" . SPARSER::PROTEIN)
+    ("PTCH1" . SPARSER::PROTEIN) ("NF2" . SPARSER::PROTEIN)
+    ("LATS2" . SPARSER::PROTEIN) ("normal BRCA1" . SPARSER::PROTEIN)
     ("BRCA1 and these proteins" . SPARSER::COLLECTION)
     ("RAP80, Abraxas, or BRCC36" . SPARSER::COLLECTION)
     ("part of the Abraxas-RAP80 complex and a putative deubiquitinase [ xref ]"
@@ -4098,7 +4152,7 @@
     ("wild-type BRCA1 and the I26A single mutant" . SPARSER::COLLECTION)
     ("still binding BARD1" . SPARSER::PROTEIN)
     ("ubiquitin-conjugase" . SPARSER::COLLECTION)
-    ("spontaneous DSBs" . SPARSER::PROTEIN)
+    ("spontaneous DSBs" . SPARSER::PROTEIN) ("DR–GFP" . SPARSER::COLLECTION)
     ("BRCA1 and CtIP" . SPARSER::COLLECTION)
     ("FLAG-BRCA1" . SPARSER::COLLECTION)
     ("green fluorescent protein (GFP)" . SPARSER::PROTEIN)
@@ -4109,60 +4163,61 @@
      . SPARSER::BIO-COMPLEX)
     ("complex (BASC)" . SPARSER::BIO-COMPLEX)
     ("the typical juxtaposed RPA-PML foci" . SPARSER::PROTEIN)
-    ("promyelocytic leukemia (PML)" . SPARSER::PROTEIN)
-    ("RPA-PML" . SPARSER::COLLECTION)
+    ("RPA-PML" . SPARSER::COLLECTION) ("thread" . SPARSER::PROTEIN)
     ("a naturally occurring BRCT mutant" . SPARSER::MUTANT)
     ("RAD51 and RPA" . SPARSER::COLLECTION)
     ("BRIP1, and CtIP" . SPARSER::COLLECTION)
     ("Abraxas-RAP80" . SPARSER::COLLECTION)
-    ("Abraxas" . SPARSER::HUMAN-PROTEIN-FAMILY) ("ACT-1" . SPARSER::PROTEIN)
-    ("ICR1" . SPARSER::PROTEIN) ("p32" . SPARSER::PROTEIN)
-    ("Promyelocytic leukemia" . SPARSER::PROTEIN)
+    ("Abraxas" . SPARSER::HUMAN-PROTEIN-FAMILY) ("ICR1" . SPARSER::PROTEIN)
+    ("p32" . SPARSER::PROTEIN) ("Promyelocytic leukemia" . SPARSER::PROTEIN)
     ("Sae2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("BRCC36" . SPARSER::PROTEIN)
-    ("phospho-protein" . SPARSER::PROTEIN) ("MERIT40" . SPARSER::PROTEIN)
+    ("MERIT40" . SPARSER::PROTEIN)
     ("the associated risk variants" . SPARSER::VARIANT)
     ("cohort (TMMG)" . SPARSER::MOLECULE)
     ("COL10A1 or FRK" . SPARSER::COLLECTION)
     ("thrombospondin-1 and the thrombospondin receptor ( CD36 )"
      . SPARSER::COLLECTION)
-    ("thrombospondin" . SPARSER::PROTEIN)
     ("cone–rod homeobox (CRX)" . SPARSER::PROTEIN)
     ("an essential transcription factor" . SPARSER::PROTEIN)
     ("CRX" . SPARSER::PROTEIN)
     ("nearby genome-wide significant variants" . SPARSER::VARIANT)
+    ("the previously reported rs2010963 SNP" . SPARSER::PROTEIN)
     ("ranibizumab" . SPARSER::DRUG)
     ("previously missed variants" . SPARSER::VARIANT)
     ("missed variants" . SPARSER::VARIANT)
     ("ABCA1 and rs13095226" . SPARSER::COLLECTION)
-    ("CFI and ARMS2/HTRA1" . SPARSER::COLLECTION)
-    ("FR-CRET" . SPARSER::PROTEIN-PAIR)
+    ("GA [OR = 1.23 (1.08–1.40), P = 2.0 × 10 −3 ] and NV"
+     . SPARSER::COLLECTION)
+    ("GA [OR = 0.78 (0.69–0.89), P = 1.0 × 10 −4 ] and NV"
+     . SPARSER::COLLECTION)
+    ("GA and NV" . SPARSER::COLLECTION) ("FR-CRET" . SPARSER::PROTEIN-PAIR)
     ("FRK and COL10A1" . SPARSER::COLLECTION)
     ("the genes COL10A1 (encoding the alpha chain of type X collagen) and FRK (encoding the fyn-related kinase)"
      . SPARSER::COLLECTION)
     ("fyn" . SPARSER::PROTEIN) ("FR" . SPARSER::PROTEIN)
+    ("COL" . SPARSER::PROTEIN) ("MGH" . SPARSER::PROTEIN)
     ("AMD and variants" . SPARSER::COLLECTION)
     ("FRK/COL10A1" . SPARSER::COLLECTION)
     ("ABCA1 and COL8A1" . SPARSER::COLLECTION)
     ("TIMP3 (rs9621532) and CETP (rs3764261)" . SPARSER::COLLECTION)
     ("CFI (rs10033900), LIPC (rs10468017), TIMP3 (rs9621532) and CETP (rs3764261)"
      . SPARSER::COLLECTION)
-    ("LIPC" . SPARSER::PROTEIN) ("CFI" . SPARSER::PROTEIN)
-    ("CFB" . SPARSER::PROTEIN) ("CFH" . SPARSER::PROTEIN)
-    ("ARMS" . SPARSER::PROTEIN) ("FRK" . SPARSER::PROTEIN)
+    ("ARMS2/HTRA1" . SPARSER::COLLECTION) ("LIPC" . SPARSER::PROTEIN)
+    ("CFI" . SPARSER::PROTEIN) ("CFB" . SPARSER::PROTEIN)
+    ("CFH" . SPARSER::PROTEIN) ("FRK" . SPARSER::PROTEIN)
     ("paired box 3" . SPARSER::PROTEIN) ("CD36" . SPARSER::PROTEIN)
+    ("thrombospondin receptor" . SPARSER::PROTEIN)
     ("thrombospondin-1" . SPARSER::PROTEIN) ("NC1" . SPARSER::PROTEIN)
     ("cone–rod homeobox" . SPARSER::PROTEIN) ("ABCA 1" . SPARSER::PROTEIN)
-    ("type X" . SPARSER::PROTEIN)
-    ("high-density lipoprotein" . SPARSER::PROTEIN)
-    ("COL8A1" . SPARSER::PROTEIN) ("ABCA1" . SPARSER::PROTEIN)
-    ("TIMP3" . SPARSER::PROTEIN) ("HTRA1" . SPARSER::PROTEIN)
+    ("type X" . SPARSER::PROTEIN) ("COL8A1" . SPARSER::PROTEIN)
+    ("ABCA1" . SPARSER::PROTEIN) ("TIMP3" . SPARSER::PROTEIN)
+    ("HTRA1" . SPARSER::PROTEIN) ("ARMS2" . SPARSER::PROTEIN)
     ("COL10A1" . SPARSER::PROTEIN) ("a functional PI3Kγ" . SPARSER::PROTEIN)
     ("treating iatrogenic KS" . SPARSER::PROTEIN)
-    ("immunosuppressant" . SPARSER::DRUG)
-    ("mTOR, Akt, or pan-PI3K" . SPARSER::COLLECTION)
-    ("vGPCR-PI3Kγ" . SPARSER::COLLECTION)
+    ("immunosuppressant" . SPARSER::DRUG) ("vGPCR-PI3Kγ" . SPARSER::COLLECTION)
     ("vGPCR and the red fluorescent mCherry protein" . SPARSER::COLLECTION)
     ("the red fluorescent mCherry protein" . SPARSER::PROTEIN)
+    ("soluble factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a nuclear-localized FoxO1 mutant" . SPARSER::MUTANT)
     ("GFP-FoxO1" . SPARSER::COLLECTION)
     ("no PI3K −/+ and PI3K −/− mice" . SPARSER::COLLECTION)
@@ -4184,18 +4239,20 @@
     ("PI3Kδ" . SPARSER::PROTEIN) ("Middle T antigen" . SPARSER::PROTEIN)
     ("Tie 2" . SPARSER::PROTEIN) ("PI3Kβ" . SPARSER::PROTEIN)
     ("G βγ" . SPARSER::PROTEIN) ("PI3Kα" . SPARSER::PROTEIN)
+    ("continuously evolving microenvironmental factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("mechanical factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("LIMK and myosin" . SPARSER::COLLECTION)
+    ("MYPT and MLC" . SPARSER::COLLECTION)
     ("ROCK and pMYPT" . SPARSER::COLLECTION)
     ("a pan-specific ROCK1/2 antibody ( xref ) and a phospho-specific antibody"
      . SPARSER::COLLECTION)
-    ("a pan-specific ROCK1/2 antibody" . SPARSER::ANTIBODY)
     ("MYPT" . SPARSER::PHOSPHATASE)
-    ("inhibition lowered epidermal collagen" . SPARSER::PROTEIN)
+    ("inhibition lowered epidermal collagen" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Cyclin D1 and Ki67" . SPARSER::COLLECTION)
-    ("the DMBA/TPA-treated cohort" . SPARSER::MOLECULE)
     ("Pure FVB/N cohorts" . SPARSER::MOLECULE)
     ("K14-KDK:ER" . SPARSER::BIO-COMPLEX)
-    ("epidermal collagen" . SPARSER::PROTEIN)
+    ("epidermal collagen" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("K14-ROCK:ER or K14-KD:ER" . SPARSER::COLLECTION)
     ("anthracene (DMBA)" . SPARSER::DRUG)
     ("12-O-tetradecanoylphorbol-13-acetate (TPA)" . SPARSER::DRUG)
@@ -4215,23 +4272,24 @@
     ("K14-ROCK:ER and K14-KD:ER" . SPARSER::COLLECTION)
     ("CD44 and Cyclin D1" . SPARSER::COLLECTION)
     ("Cyclin D1 ( xref ; xref ) and Lgr5 ( xref )" . SPARSER::COLLECTION)
-    ("DMBA" . SPARSER::MOLECULE) ("BAPN" . SPARSER::PROTEIN)
-    ("aminopropionitrile" . SPARSER::MOLECULE) ("Lox" . SPARSER::PROTEIN)
-    ("normal K1" . SPARSER::PROTEIN)
-    ("the follicular cytokeratin" . SPARSER::PROTEIN-FAMILY)
+    ("DMBA/TPA" . SPARSER::COLLECTION) ("DMBA" . SPARSER::PROTEIN)
+    ("BAPN" . SPARSER::PROTEIN) ("aminopropionitrile" . SPARSER::MOLECULE)
+    ("Lox" . SPARSER::PROTEIN) ("normal K1" . SPARSER::PROTEIN)
     ("K14-KD:ER and WT skin ( xref , xref )" . SPARSER::COLLECTION)
+    ("SHG" . SPARSER::PROTEIN)
     ("K14-ROCK:ER and WT skin dorsal skin" . SPARSER::COLLECTION)
     ("Mlc2" . SPARSER::PROTEIN)
     ("K14-ROCK:ER and a control kinase-dead (KD) version (K14-KD:ER)"
      . SPARSER::COLLECTION)
-    ("K14-KD:ER" . SPARSER::BIO-COMPLEX)
+    ("K14-KD:ER" . SPARSER::BIO-COMPLEX) ("Hprt" . SPARSER::PROTEIN)
     ("tamoxifen or 4-hydroxytamoxifen" . SPARSER::COLLECTION)
     ("ROCK:ER" . SPARSER::BIO-COMPLEX) ("K14-ROCK:ER" . SPARSER::BIO-COMPLEX)
     ("Rho and ROCK" . SPARSER::COLLECTION)
-    ("phosphatase (MYPT)" . SPARSER::PHOSPHATASE)
-    ("kinases (LIMK)" . SPARSER::PROTEIN)
+    ("phosphatase (MYPT)" . SPARSER::PROTEIN)
+    ("kinases (LIMK)" . SPARSER::KINASE) ("LIM" . SPARSER::PROTEIN)
+    ("external factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("LIMK or myosin" . SPARSER::COLLECTION) ("LIMK" . SPARSER::PROTEIN)
-    ("collagen-1" . SPARSER::PROTEIN) ("MAP-kinase" . SPARSER::PROTEIN)
+    ("collagen-1" . SPARSER::PROTEIN)
     ("12-O-tetradecanoylphorbol-13-acetate" . SPARSER::DRUG)
     ("LIMK2" . SPARSER::PROTEIN) ("LIMK1" . SPARSER::PROTEIN)
     ("tm2" . SPARSER::PROTEIN-FAMILY) ("Lgr5" . SPARSER::PROTEIN)
@@ -4240,10 +4298,14 @@
     ("17β-estradiol" . SPARSER::PROTEIN)
     ("myosin-binding subunit" . SPARSER::PROTEIN)
     ("GPCRs, RTKs and TLRs" . SPARSER::COLLECTION)
+    ("an excellent target" . SPARSER::TARGET-PROTEIN)
+    ("pan-PI3K" . SPARSER::COLLECTION)
     ("p110α and p110β" . SPARSER::COLLECTION)
     ("RTK-Class 1A" . SPARSER::COLLECTION)
     ("Ras and p110γ" . SPARSER::COLLECTION)
     ("p87 and Ras" . SPARSER::COLLECTION) ("Gβγ" . SPARSER::PROTEIN)
+    ("pan-PI3 kinase" . SPARSER::COLLECTION)
+    ("Pan-PI3kinase" . SPARSER::COLLECTION)
     ("RTK and TLR/IL1R ligands" . SPARSER::COLLECTION)
     ("Gβγ-p101" . SPARSER::PROTEIN-PAIR)
     ("p110γ and integrin" . SPARSER::COLLECTION) ("RasC" . SPARSER::PROTEIN)
@@ -4271,8 +4333,7 @@
     ("p110β (TGX221) or p110α (PI3Kalpha)" . SPARSER::COLLECTION)
     ("growth factors, interleukins and chemokines" . SPARSER::COLLECTION)
     ("TLR/IL-1Rs" . SPARSER::COLLECTION)
-    ("GPCR as well as RTK" . SPARSER::COLLECTION)
-    ("GPCR-" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("GPCR as well as RTK" . SPARSER::COLLECTION) ("GPCR-" . SPARSER::PROTEIN)
     ("PI3Kγ (p110γ) and Ras GTPases" . SPARSER::COLLECTION)
     ("structurally diverse GPCRs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("EC and VCAM-1" . SPARSER::COLLECTION)
@@ -4282,7 +4343,8 @@
     ("selectins, VCAM or ICAM" . SPARSER::COLLECTION)
     ("ICAM" . SPARSER::PROTEIN-FAMILY) ("selectins" . SPARSER::PROTEIN)
     ("Il-1β and Il-6" . SPARSER::COLLECTION)
-    ("Tnfα, Il-1β and Il-6" . SPARSER::COLLECTION) ("Vegf" . SPARSER::PROTEIN)
+    ("Tnfα, Il-1β and Il-6" . SPARSER::COLLECTION) ("Il-6" . SPARSER::PROTEIN)
+    ("Vegf" . SPARSER::PROTEIN)
     ("Toll-like/IL1 receptors (TLR/IL1Rs) or GPCRs" . SPARSER::COLLECTION)
     ("heterotrimeric G proteins" . SPARSER::PROTEIN) ("Class" . CLASS)
     ("tumor-associated macrophages (TAMs) or tumor-associated neutrophils (TANs)"
@@ -4296,9 +4358,9 @@
      . SPARSER::COLLECTION)
     ("G-protein coupled receptors (GPCRs), receptor tyrosine kinases (RTKs) and Toll-like/IL-1 receptors (TLR/IL1Rs)"
      . SPARSER::COLLECTION)
-    ("TLR/IL1Rs" . SPARSER::COLLECTION) ("CSF-1" . SPARSER::PROTEIN)
-    ("C5a" . SPARSER::PROTEIN) ("Class 1A" . SPARSER::PROTEIN)
-    ("PI3Ks" . SPARSER::PROTEIN)
+    ("TLR/IL1Rs" . SPARSER::COLLECTION) ("B16" . SPARSER::PROTEIN)
+    ("CSF-1" . SPARSER::PROTEIN) ("C5a" . SPARSER::PROTEIN)
+    ("Class 1A" . SPARSER::PROTEIN) ("PI3Ks" . SPARSER::PROTEIN)
     ("exchange factors" . SPARSER::EXCHANGE-FACTOR)
     ("beta2" . SPARSER::PROTEIN) ("PI3kinase" . SPARSER::PROTEIN)
     ("Ras-binding" . SPARSER::PROTEIN) ("RasG12V" . SPARSER::PROTEIN)
@@ -4307,11 +4369,11 @@
     ("PI3Kalpha" . SPARSER::PROTEIN) ("TGX221" . SPARSER::DRUG)
     ("p110β" . SPARSER::PROTEIN) ("IL-1Rs" . SPARSER::PROTEIN)
     ("PI3Kγ" . SPARSER::PROTEIN) ("PI3-Kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("αvβ5" . SPARSER::PROTEIN) ("Il-6" . SPARSER::PROTEIN)
-    ("Il-1β" . SPARSER::PROTEIN) ("Tnfα" . SPARSER::DRUG)
-    ("IL1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("p87" . SPARSER::PROTEIN)
-    ("p101" . SPARSER::PROTEIN) ("Gr1" . SPARSER::PROTEIN)
-    ("p110γ" . SPARSER::PROTEIN) ("IL1Rs" . SPARSER::PROTEIN)
+    ("αvβ5" . SPARSER::PROTEIN) ("Il-1β" . SPARSER::PROTEIN)
+    ("Tnfα" . SPARSER::DRUG) ("IL1" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("p87" . SPARSER::PROTEIN) ("p101" . SPARSER::PROTEIN)
+    ("Gr1" . SPARSER::PROTEIN) ("p110γ" . SPARSER::PROTEIN)
+    ("IL1Rs" . SPARSER::PROTEIN)
     ("at least three mitotic checkpoint genes" . SPARSER::GENE)
     ("Mad2 , BubR1 and CENPE" . SPARSER::COLLECTION)
     ("CHR and CDE" . SPARSER::COLLECTION)
@@ -4322,7 +4384,8 @@
     ("Kras" . SPARSER::PROTEIN)
     ("Hras V12 -transformed TKO MEFs" . SPARSER::PROTEIN)
     ("p107 , p130 and pRb" . SPARSER::COLLECTION)
-    ("Pericentromeric DNA" . SPARSER::DNA) ("p53 or Rb" . SPARSER::COLLECTION)
+    ("Pericentromeric DNA" . SPARSER::DNA) ("Cohesin" . SPARSER::PROTEIN)
+    ("p53 or Rb" . SPARSER::COLLECTION)
     ("Mitotic checkpoint genes" . SPARSER::GENE)
     ("mitotic checkpoint genes" . SPARSER::GENE)
     ("locus-specific interphase FISH" . SPARSER::PROTEIN)
@@ -4339,7 +4402,7 @@
     ("Hras" . SPARSER::PROTEIN) ("Mad2 null MEFs" . SPARSER::PROTEIN)
     ("a higher mitotic fraction" . SPARSER::COMPONENT)
     ("repressor E2F- and p107-containing complexes" . SPARSER::COLLECTION)
-    ("E2F-" . SPARSER::PROTEIN-FAMILY) ("CHR-CDE/E2F" . SPARSER::PROTEIN-PAIR)
+    ("E2F-" . SPARSER::PROTEIN) ("CHR-CDE/E2F" . SPARSER::PROTEIN-PAIR)
     ("CHR" . SPARSER::PROTEIN) ("p107 and/or p130" . SPARSER::COLLECTION)
     ("E2F4 and p107" . SPARSER::COLLECTION)
     ("Cdk2 and the transcriptional repressor HDAC1 ( xref )"
@@ -4357,6 +4420,7 @@
     ("Rb triple knockout (TKO) MEFs" . SPARSER::PROTEIN)
     ("TKO" . SPARSER::PROTEIN)
     ("either both p53 alleles or both p21 alleles" . SPARSER::COLLECTION)
+    ("a putative p53 binding site approximately 160 base" . SPARSER::PROTEIN)
     ("p53 or p21" . SPARSER::COLLECTION) ("phospho-histone" . SPARSER::PROTEIN)
     ("target, and Mad2" . SPARSER::COLLECTION)
     ("Rb or p53" . SPARSER::COLLECTION)
@@ -4367,9 +4431,8 @@
     ("tumor suppressors or gain of oncogenic signals" . SPARSER::COLLECTION)
     ("accelerated loss of heterozygosity" . SPARSER::PROTEIN)
     ("the mitotic checkpoint gene Mad2" . SPARSER::PROTEIN)
-    ("J4" . SPARSER::PROTEIN) ("RP23" . SPARSER::PROTEIN)
-    ("Chr 12" . SPARSER::PROTEIN) ("CDK-1" . SPARSER::PROTEIN)
-    ("Keratin 8" . SPARSER::PROTEIN)
+    ("RP23" . SPARSER::PROTEIN) ("Chr 12" . SPARSER::PROTEIN)
+    ("CDK-1" . SPARSER::PROTEIN) ("Keratin 8" . SPARSER::PROTEIN)
     ("cyclin-dependent kinase-1" . SPARSER::PROTEIN)
     ("DP-1" . SPARSER::PROTEIN) ("E2F5" . SPARSER::PROTEIN)
     ("CDF1" . SPARSER::PROTEIN) ("Three domains" . SPARSER::PROTEIN)
@@ -4386,7 +4449,7 @@
     ("GGA3 and Crk" . SPARSER::COLLECTION) ("prolines" . SPARSER::AMINO-ACID)
     ("GGA3 and Arf6" . SPARSER::COLLECTION)
     ("Arf6 and Rab4" . SPARSER::COLLECTION)
-    ("Arf1 and Arf3" . SPARSER::COLLECTION) ("Arf1" . SPARSER::PROTEIN)
+    ("Arf1 and Arf3" . SPARSER::COLLECTION)
     ("Arf1, Arf3 and Arf6" . SPARSER::COLLECTION)
     ("GGA3 and Arf-GTP" . SPARSER::COLLECTION)
     ("GGA3-Arf" . SPARSER::COLLECTION)
@@ -4402,10 +4465,10 @@
      . SPARSER::MOLECULE)
     ("Rab4/Rab5" . SPARSER::COLLECTION) ("Tsg101" . SPARSER::PROTEIN)
     ("Tsg" . SPARSER::HUMAN-PROTEIN-FAMILY) ("TGN" . SPARSER::PROTEIN)
-    ("Rab4 and Rab5" . SPARSER::COLLECTION)
+    ("Rab4 and Rab5" . SPARSER::COLLECTION) ("post-HGF" . SPARSER::COLLECTION)
     ("the late markers Rab7 or Rab11" . SPARSER::COLLECTION)
     ("Rab5 and Rab4" . SPARSER::COLLECTION)
-    ("Rab7 or Rab11" . SPARSER::COLLECTION) ("Rab7" . SPARSER::PROTEIN)
+    ("Rab7 or Rab11" . SPARSER::COLLECTION)
     ("GGA1 or GGA2" . SPARSER::COLLECTION) ("TfR" . SPARSER::PROTEIN)
     ("mannose-6-phosphate receptor (M6PR) and sortilin" . SPARSER::COLLECTION)
     ("sortilin" . SPARSER::PROTEIN) ("GGA" . SPARSER::MOLECULE)
@@ -4420,8 +4483,9 @@
     ("endocytic proteins" . SPARSER::PROTEIN) ("Crk" . SPARSER::PROTEIN)
     ("”-clathrin" . SPARSER::COLLECTION) ("Rabex-5" . SPARSER::PROTEIN)
     ("Rabaptin-5" . SPARSER::PROTEIN) ("Arf3" . SPARSER::PROTEIN)
-    ("Arf family" . SPARSER::PROTEIN) ("Rab4A" . SPARSER::PROTEIN)
-    ("Sulfo-NHS" . SPARSER::DRUG) ("Rab11" . SPARSER::PROTEIN)
+    ("Arf1" . SPARSER::PROTEIN) ("Arf family" . SPARSER::PROTEIN)
+    ("Rab4A" . SPARSER::PROTEIN) ("Sulfo-NHS" . SPARSER::DRUG)
+    ("Rab11" . SPARSER::PROTEIN) ("Rab7" . SPARSER::PROTEIN)
     ("Rab5" . SPARSER::PROTEIN)
     ("Gag proteins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("M6PR" . SPARSER::PROTEIN) ("GGA1" . SPARSER::PROTEIN)
@@ -4433,51 +4497,51 @@
     ("kinases and SHP-2" . SPARSER::COLLECTION)
     ("NF-κB, and NFAT" . SPARSER::COLLECTION)
     ("Ras-Raf-MAP kinase" . SPARSER::COLLECTION)
-    ("1A and 1B" . SPARSER::COLLECTION)
     ("antibody or anti-SHP-2" . SPARSER::COLLECTION)
     ("PLCβ1 and SHP-2" . SPARSER::COLLECTION)
     ("PLCβ1 or anti" . SPARSER::COLLECTION)
     ("SHP-2 and anti" . SPARSER::COLLECTION)
     ("RhoA-Rho kinase" . SPARSER::COLLECTION) ("Ali" . SPARSER::PROTEIN)
     ("phospholipase C (PLC)" . SPARSER::PROTEIN) ("PLC" . SPARSER::PROTEIN)
-    ("the complex's" . SPARSER::BIO-COMPLEX)
+    ("the complex's" . SPARSER::BIO-COMPLEX) ("RGS" . SPARSER::PROTEIN)
     ("Ang II type 1 receptor blocker losartan's" . SPARSER::PROTEIN)
     ("SHP-2-PLCβ1" . SPARSER::COLLECTION) ("losartan" . SPARSER::PROTEIN)
     ("SHP-2 and PLCβ1" . SPARSER::COLLECTION) ("PTPs" . SPARSER::PROTEIN)
-    ("P-40" . SPARSER::PROTEIN) ("F-10" . SPARSER::PROTEIN)
     ("PLC β1" . SPARSER::PROTEIN) ("type 2 receptor" . SPARSER::PROTEIN)
     ("p190A" . SPARSER::PROTEIN) ("Interleukin-1" . SPARSER::PROTEIN)
     ("regulator of G protein signaling 2" . SPARSER::PROTEIN)
     ("Rho kinase" . SPARSER::PROTEIN) ("PLCγ" . SPARSER::PROTEIN-FAMILY)
-    ("Gαq" . SPARSER::PROTEIN) ("RGS-2" . SPARSER::PROTEIN)
-    ("PLCβ1" . SPARSER::PROTEIN) ("Ang II" . SPARSER::PROTEIN)
-    ("cis or trans" . SPARSER::COLLECTION)
+    ("Gαq" . SPARSER::PROTEIN) ("PLCβ1" . SPARSER::PROTEIN)
+    ("Ang II" . SPARSER::PROTEIN) ("cis or trans" . SPARSER::COLLECTION)
     ("HOTAIR and lincRNA-p21" . SPARSER::COLLECTION) ("lincRNA" . SPARSER::RNA)
     ("HOTAIR" . SPARSER::PROTEIN) ("CTCF-PARP-1" . SPARSER::COLLECTION)
     ("CTCF and PARP-1-dependent poly(ADP-ribosyl)ation" . SPARSER::COLLECTION)
     ("the affected genes and the type" . SPARSER::COLLECTION)
+    ("the histone H3K27me3 repressive mark" . SPARSER::PROTEIN)
     ("a repressive chromatin conformation and a silenced state in cancer cells [ xref , xref ]"
      . SPARSER::COLLECTION)
     ("a repressive chromatin conformation" . SPARSER::BIO-CONFORMATION)
-    ("lamin" . SPARSER::PROTEIN) ("repressive chromatin" . SPARSER::PROTEIN)
+    ("lamin and cohesin" . SPARSER::COLLECTION) ("lamin" . SPARSER::PROTEIN)
+    ("repressive chromatin" . SPARSER::PROTEIN)
     ("CTCF and DNA" . SPARSER::COLLECTION)
+    ("the H3K27me3 histone repressive mark" . SPARSER::PROTEIN)
     ("MBD2 and MeCP2" . SPARSER::COLLECTION)
     ("the Rb core promoter and a set of antibodies" . SPARSER::COLLECTION)
     ("CTCF and methyl-CpG-binding" . SPARSER::COLLECTION)
-    ("Polycomb" . SPARSER::PROTEIN)
+    ("a repressive mark" . SPARSER::PROTEIN) ("Polycomb" . SPARSER::PROTEIN)
     ("other repressive histone" . SPARSER::PROTEIN)
     ("a mutated Rb promoter" . SPARSER::PROMOTER)
     ("CTCF-Rb promoter transgenes" . SPARSER::PROTEIN)
     ("CTCF-Rb" . SPARSER::COLLECTION)
     ("CTCF, RBF-1 and E2F" . SPARSER::COLLECTION) ("RBF" . SPARSER::PROTEIN)
-    ("the repressive histone mark H3K27me3" . SPARSER::PROTEIN)
+    ("the repressive histone mark H3K27me3" . SPARSER::MOLECULE)
     ("CpGs" . SPARSER::PROTEIN) ("fluorescent cytometry" . SPARSER::PROTEIN)
     ("the multifunctional nuclear factor CTCF" . SPARSER::PROTEIN)
     ("Green Fluorescent Protein" . SPARSER::PROTEIN)
     ("CCCTC-binding factor" . SPARSER::PROTEIN) ("Dnmt1" . SPARSER::PROTEIN)
     ("ADP-ribosyl" . SPARSER::MOLECULE) ("hMLH1" . SPARSER::PROTEIN)
-    ("Igf2" . SPARSER::PROTEIN) ("C-15" . SPARSER::PROTEIN)
-    ("H3K27me3" . SPARSER::PROTEIN) ("CpG-binding protein" . SPARSER::PROTEIN)
+    ("Igf2" . SPARSER::PROTEIN) ("H3K27me3" . SPARSER::MOLECULE)
+    ("CpG-binding protein" . SPARSER::PROTEIN)
     ("primary esophageal keratinocytes" . SPARSER::PROTEIN)
     ("Keratin 1, filaggrin and loricrin" . SPARSER::COLLECTION)
     ("loricrin" . SPARSER::PROTEIN) ("filaggrin" . SPARSER::PROTEIN)
@@ -4489,21 +4553,24 @@
     ("the Northern Blot" . SPARSER::PROTEIN)
     ("PIK3CA and PI3-kinase" . SPARSER::COLLECTION)
     ("a universal PI3-kinase inhibitor" . SPARSER::INHIBITOR)
-    ("FK" . SPARSER::MOLECULE)
+    ("FK" . SPARSER::PROTEIN)
     ("the two most potent viral oncogenes E6 and E7" . SPARSER::COLLECTION)
     ("E6 and E7" . SPARSER::COLLECTION)
     ("PI3-kinase/PKB/AKT" . SPARSER::COLLECTION)
     ("p-PKB/AKT" . SPARSER::COLLECTION) ("PKB/AKT" . SPARSER::COLLECTION)
     ("hTERT and HPV16 E6E7" . SPARSER::COLLECTION)
     ("Keratin 1" . SPARSER::PROTEIN) ("p27kip1" . SPARSER::PROTEIN)
-    ("p110α" . SPARSER::PROTEIN) ("interferon or purine" . SPARSER::COLLECTION)
+    ("p110α" . SPARSER::PROTEIN) ("CK10" . SPARSER::PROTEIN)
+    ("cytokeratin 10" . SPARSER::PROTEIN)
+    ("interferon or purine" . SPARSER::COLLECTION)
     ("HCL-variant and splenic marginal zone lymphoma" . SPARSER::COLLECTION)
     ("AP1-transcription factor" . SPARSER::COLLECTION)
-    ("cyclin-D1 and p27" . SPARSER::COLLECTION)
+    ("JUND" . SPARSER::PROTEIN) ("cyclin-D1 and p27" . SPARSER::COLLECTION)
     ("p38/JNK" . SPARSER::COLLECTION) ("MEK-ERK" . SPARSER::COLLECTION)
     ("RAS-RAF-MAPK" . SPARSER::COLLECTION)
     ("MEK and its substrate ERK (data not shown)" . SPARSER::COLLECTION)
     ("phosho-ERK" . SPARSER::COLLECTION) ("PAX5 or CD20" . SPARSER::COLLECTION)
+    ("immunohistological studies 5 BRAF -mutated HCL" . SPARSER::PROTEIN)
     ("MEK (the immediate downstream kinase target of BRAF) and ERK (the kinase phosphorylated by active MEK)"
      . SPARSER::COLLECTION)
     ("HCL-variant and splenic red pulp small B-cell lymphoma"
@@ -4511,18 +4578,21 @@
     ("Val-" . SPARSER::AMINO-ACID)
     ("5 unique non-synonymous variants" . SPARSER::VARIANT)
     ("BRAF, CSMD3, SLC5A1, CNTN6, and OR8J1" . SPARSER::COLLECTION)
+    ("SLC" . SPARSER::PROTEIN)
     ("CD20, DBA44, CD68 and Annexin-A1" . SPARSER::COLLECTION)
     ("CD20, CD11c, CD25 and CD103" . SPARSER::COLLECTION)
+    ("Annexin" . SPARSER::PROTEIN) ("Case" . SPARSER::PROTEIN)
     ("ERK and MEK" . SPARSER::COLLECTION)
     ("phospho-MEK and phospho-ERK" . SPARSER::COLLECTION)
-    ("RAF-MEK-ERK" . SPARSER::COLLECTION) ("cyclin-D1" . SPARSER::PROTEIN)
-    ("OR8J1" . SPARSER::PROTEIN) ("CNTN6" . SPARSER::PROTEIN)
-    ("SLC5A1" . SPARSER::PROTEIN) ("Annexin-A1" . SPARSER::PROTEIN)
-    ("CD103" . SPARSER::PROTEIN) ("Annexin A1" . SPARSER::PROTEIN)
-    ("PLX-4720" . SPARSER::DRUG) ("Akt/mTOR" . SPARSER::COLLECTION)
+    ("RAF-MEK-ERK" . SPARSER::COLLECTION) ("HCL" . SPARSER::PROTEIN)
+    ("cyclin-D1" . SPARSER::PROTEIN) ("OR8J1" . SPARSER::PROTEIN)
+    ("CNTN6" . SPARSER::PROTEIN) ("CD103" . SPARSER::PROTEIN)
+    ("Annexin A1" . SPARSER::PROTEIN) ("PLX-4720" . SPARSER::DRUG)
+    ("Akt/mTOR" . SPARSER::COLLECTION)
     ("kinase and eIF4E" . SPARSER::COLLECTION)
     ("cyclin D1 and Bcl2" . SPARSER::COLLECTION)
-    ("cyclin D1 and p-Rb" . SPARSER::COLLECTION)
+    ("regulatory-associated protein" . SPARSER::PROTEIN)
+    ("LS" . SPARSER::PROTEIN) ("cyclin D1 and p-Rb" . SPARSER::COLLECTION)
     ("SAPK/JNK" . SPARSER::COLLECTION)
     ("ASK1, RASSF2 and MST1" . SPARSER::COLLECTION)
     ("a bona fide tumor suppressor gene" . SPARSER::PROTEIN)
@@ -4534,36 +4604,36 @@
     ("JNK and p38 MAP kinases" . SPARSER::COLLECTION)
     ("kinase (MAPKKK)" . SPARSER::KINASE)
     ("exogenous RASSF1A" . SPARSER::PROTEIN)
-    ("macrophage stimulating 1 (MST1) and Ras association domain-containing protein 2 (RASSF2)"
-     . SPARSER::COLLECTION)
     ("cyclin D2 and growth-arrest-specific" . SPARSER::COLLECTION)
     ("pIRES-RASSF1A" . SPARSER::COLLECTION)
+    ("isoform A (RASSF1A) gene" . SPARSER::PROTEIN)
     ("kinase/eIF4E" . SPARSER::COLLECTION) ("Akt/p70S6" . SPARSER::COLLECTION)
     ("/p38" . SPARSER::COLLECTION)
     ("eukaryotic translation initiation factor 4E" . SPARSER::PROTEIN)
     ("p-Rb" . SPARSER::PROTEIN) ("p38 MAP kinases" . SPARSER::PROTEIN)
     ("MAP kinase kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("GAS1" . SPARSER::PROTEIN) ("RASSF2" . SPARSER::PROTEIN)
-    ("ASK-1" . SPARSER::PROTEIN) ("L-15" . SPARSER::PROTEIN)
-    ("cyclinD1" . SPARSER::PROTEIN) ("RASSF1A" . SPARSER::PROTEIN)
-    ("ENL" . SPARSER::PROTEIN)
+    ("ASK-1" . SPARSER::PROTEIN) ("cyclinD1" . SPARSER::PROTEIN)
+    ("RASSF1A" . SPARSER::PROTEIN) ("ENL" . SPARSER::PROTEIN)
     ("a naturally occurring small molecule" . SPARSER::MOLECULE)
     ("parthenolide" . SPARSER::MOLECULE) ("idarubicin" . SPARSER::DRUG)
     ("Bax, Gadd45 , and possiblyp21" . SPARSER::COLLECTION)
     ("cip" . SPARSER::PROTEIN) ("nutlin-3a or nutlin-3" . SPARSER::COLLECTION)
+    ("the largely quiescent LSCs" . SPARSER::PROTEIN)
     ("acute leukemia" . SPARSER::PROTEIN)
     ("blast phase chronic myelogenous leukemia (CML)" . SPARSER::PROTEIN)
-    ("HSPCs" . SPARSER::PROTEIN) ("a hypermorphic form" . SPARSER::FORM)
-    ("inp53" . SPARSER::PROTEIN)
+    ("AML or MDS" . SPARSER::COLLECTION)
+    ("HSPCs" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("a hypermorphic form" . SPARSER::FORM) ("inp53" . SPARSER::PROTEIN)
     ("the principal biomarkers" . SPARSER::MOLECULE) ("TSG" . SPARSER::PROTEIN)
-    ("HSPC" . SPARSER::PROTEIN) ("14-3-3-sigma (SFN)" . SPARSER::COLLECTION)
-    ("14-3-3-sigma" . SPARSER::COLLECTION) ("sigma" . SPARSER::PROTEIN-FAMILY)
-    ("blocking pro-apoptotic p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("HSPC" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("14-3-3-sigma (SFN)" . SPARSER::COLLECTION)
+    ("14-3-3-sigma" . SPARSER::COLLECTION) ("sigma" . SPARSER::PROTEIN)
+    ("blocking pro-apoptotic p53" . SPARSER::PROTEIN)
     ("Puma null HSCs" . SPARSER::PROTEIN)
     ("its pro-apoptotic target genes" . SPARSER::GENE)
     ("Puma" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("MEF/ELF4 double-null HSCs" . SPARSER::PROTEIN)
-    ("Mitochondrial p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("p53 and other target proteins ( xref )" . SPARSER::COLLECTION)
     ("DNA and relay" . SPARSER::COLLECTION)
     ("Chk1 and Chk2" . SPARSER::COLLECTION)
@@ -4580,7 +4650,11 @@
     ("cell cycle regulators, such as p21 cip1/waf1 ( xref ), and Cyclin C ( xref )"
      . SPARSER::COLLECTION)
     ("p21 cip1/waf1" . SPARSER::COLLECTION) ("MEF/ELF4" . SPARSER::COLLECTION)
-    ("quiescent HSCs" . SPARSER::PROTEIN) ("LSCs" . SPARSER::PROTEIN)
+    ("quiescent HSCs" . SPARSER::PROTEIN)
+    ("simian virus 40 (SV-40)-derived tumor antigens"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("largely quiescent LSCs" . SPARSER::PROTEIN)
+    ("the adverse impact" . SPARSER::PROTEIN) ("LSCs" . SPARSER::PROTEIN)
     ("normal HSCs" . SPARSER::PROTEIN) ("HSCs" . SPARSER::PROTEIN)
     ("macrocytic anemia" . SPARSER::PROTEIN)
     ("PR domain containing 16" . SPARSER::PROTEIN) ("DDIT4" . SPARSER::PROTEIN)
@@ -4593,42 +4667,44 @@
     ("Tie2" . SPARSER::PROTEIN) ("Cyclin C" . SPARSER::PROTEIN)
     ("waf1" . SPARSER::PROTEIN) ("GATA-2" . SPARSER::PROTEIN)
     ("ELF4" . SPARSER::PROTEIN)
-    ("a new possible biomarker" . SPARSER::MOLECULE)
-    ("the particular AKT" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("a new possible biomarker" . SPARSER::MOLECULE) ("HSC" . SPARSER::PROTEIN)
     ("SET" . SPARSER::PROTEIN)
     ("the pro-apoptotic BCL2 family member BAD" . SPARSER::PROTEIN)
     ("S6 Ribosomal Kinase" . SPARSER::KINASE)
     ("the regulatory B subunit" . SPARSER::PROTEIN)
     ("a probable tumor suppressor" . SPARSER::SUPPRESSOR)
+    ("a poor prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("/Phosphatidylinositol" . SPARSER::COLLECTION)
     ("Phosphatidylinositol" . SPARSER::PROTEIN)
+    ("an adverse prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("kinases and AKT" . SPARSER::COLLECTION)
     ("Derived Factor" . SPARSER::PROTEIN) ("SETBP1" . SPARSER::PROTEIN)
     ("SET binding protein" . SPARSER::PROTEIN) ("Complex I" . SPARSER::PROTEIN)
     ("P70S6" . SPARSER::PROTEIN) ("Wilms Tumor 1" . SPARSER::PROTEIN)
-    ("DNMT3A" . SPARSER::PROTEIN) ("DNAse I" . SPARSER::PROTEIN)
+    ("DNMT3A" . SPARSER::PROTEIN) ("protein B" . SPARSER::PROTEIN)
     ("PPP2R2A" . SPARSER::PROTEIN) ("B subunit" . SPARSER::PROTEIN)
     ("Glycogen Synthase" . SPARSER::PROTEIN-FAMILY)
     ("mammalian Target of Rapamycin" . SPARSER::PROTEIN)
-    ("B55" . SPARSER::PROTEIN) ("Protein Kinase B" . SPARSER::PROTEIN)
+    ("Protein Phosphatase 2A" . SPARSER::PROTEIN) ("B55" . SPARSER::PROTEIN)
+    ("Protein Kinase B" . SPARSER::PROTEIN)
     ("IRS1 and Grb10" . SPARSER::COLLECTION)
     ("IRS and Grb10" . SPARSER::COLLECTION) ("alanines" . SPARSER::AMINO-ACID)
-    ("phosphorylatable" . SPARSER::PROTEIN)
     ("IRS1 and IRS2 and p85" . SPARSER::COLLECTION)
     ("IRS2 and p85" . SPARSER::COLLECTION)
+    ("EGF and PDGF" . SPARSER::COLLECTION)
     ("an essential mTORC1 component" . SPARSER::COMPONENT)
     ("raptor" . SPARSER::PROTEIN) ("S6K1 and S6K2" . SPARSER::COLLECTION)
+    ("growth-receptor" . SPARSER::PROTEIN)
     ("the neural stem cell marker Nestin, the pleiotropic AP-1 transcription factor c-Jun, and the myogenic stem cell transcription factor forkhead box K1 (FoxK1)"
      . SPARSER::COLLECTION)
     ("the pleiotropic AP-1 transcription factor c-Jun" . SPARSER::PROTEIN)
     ("Nestin" . SPARSER::PROTEIN)
-    ("topoisomerase II homolog 1" . SPARSER::PROTEIN)
     ("highly pure and intact mTORC1" . SPARSER::PROTEIN)
     ("Akt, S6K1, and SGK1" . SPARSER::COLLECTION)
     ("indirect effectors" . SPARSER::EFFECTOR)
     ("the mTORC2-mediated S472 Akt3 and S330 NDRG1" . SPARSER::COLLECTION)
     ("rapamycin and Torin1" . SPARSER::COLLECTION) ("Unc" . SPARSER::PROTEIN)
-    ("GLY" . SPARSER::AMINO-ACID)
+    ("GLY" . SPARSER::PROTEIN)
     ("47 phosphotyrosine and 4204 phosphoserine-threonine sites on 1661 distinct proteins (FDR ~1%, Table S2)"
      . SPARSER::COLLECTION)
     ("phosphoserine-threonine" . SPARSER::COLLECTION)
@@ -4638,7 +4714,7 @@
     ("rapamycin or Torin1" . SPARSER::COLLECTION)
     ("a recently developed ATP-competitive mTOR kinase domain inhibitor"
      . SPARSER::INHIBITOR)
-    ("the translational regulators S6 Kinase" . SPARSER::PROTEIN-FAMILY)
+    ("PI3K-Akt" . SPARSER::COLLECTION)
     ("4E-BP1 and 4E-BP2" . SPARSER::COLLECTION)
     ("Akt and serum/glucocorticoid regulated kinase 1" . SPARSER::COLLECTION)
     ("TSC1-TSC2" . SPARSER::COLLECTION) ("triphosphatases" . SPARSER::PROTEIN)
@@ -4651,13 +4727,13 @@
     ("Pat1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("LARP1" . SPARSER::PROTEIN)
     ("La ribonucleoprotein domain family member 1" . SPARSER::PROTEIN)
     ("PATL1" . SPARSER::PROTEIN) ("homolog 1" . SPARSER::PROTEIN)
+    ("topoisomerase II" . SPARSER::PROTEIN) ("Atg18" . SPARSER::PROTEIN)
     ("WIPI2" . SPARSER::PROTEIN)
     ("phosphoinositide interacting 2" . SPARSER::PROTEIN)
-    ("WD repeat domain" . SPARSER::PROTEIN) ("E -2" . SPARSER::PROTEIN)
-    ("IRS2" . SPARSER::PROTEIN)
+    ("WD repeat domain" . SPARSER::PROTEIN) ("IRS2" . SPARSER::PROTEIN)
     ("insulin receptor substrate 2" . SPARSER::PROTEIN)
     ("CLIP1" . SPARSER::PROTEIN) ("linker protein" . SPARSER::PROTEIN)
-    ("AKT1S1" . SPARSER::PROTEIN) ("PI3K-Akt" . SPARSER::PROTEIN)
+    ("AKT1S1" . SPARSER::PROTEIN)
     ("phosphoinositide-3-kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("SGK1" . SPARSER::PROTEIN)
     ("serum/glucocorticoid regulated kinase 1" . SPARSER::PROTEIN)
@@ -4679,7 +4755,9 @@
     ("Flag-HA" . SPARSER::COLLECTION) ("MMC and UV" . SPARSER::COLLECTION)
     ("MMC, IR and camptothecin" . SPARSER::COLLECTION)
     ("proteins, SSB1 and SSB2" . SPARSER::COLLECTION) ("OB" . SPARSER::PROTEIN)
-    ("snRNA" . SPARSER::RNA) ("Tipin" . SPARSER::PROTEIN)
+    ("snRNA" . SPARSER::RNA)
+    ("Timeless, Tipin, Chk2 and Period" . SPARSER::COLLECTION)
+    ("Period" . SPARSER::PROTEIN) ("Tipin" . SPARSER::PROTEIN)
     ("Timeless" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("siRNAs and MMC" . SPARSER::COLLECTION)
     ("INTS7, Clock and MGC13204" . SPARSER::COLLECTION)
@@ -4721,14 +4799,15 @@
     ("MCM2 and MCM5" . SPARSER::COLLECTION)
     ("MCM4 or MCM6" . SPARSER::COLLECTION) ("HIF-1α (TM)" . SPARSER::PROTEIN)
     ("HIF-1α (DM)" . SPARSER::PROTEIN) ("MCM3-HIF-1α" . SPARSER::COLLECTION)
-    ("DFX" . SPARSER::PROTEIN) ("HIF-1α-Elongin" . SPARSER::COLLECTION)
+    ("DFX" . SPARSER::PROTEIN) ("E1b" . SPARSER::PROTEIN)
+    ("HIF-1α-Elongin" . SPARSER::COLLECTION)
     ("VHL-Elongin" . SPARSER::COLLECTION)
     ("overexpressed VHL ( xref ) and endogenous VHL" . SPARSER::COLLECTION)
     ("GST-VHL" . SPARSER::COLLECTION) ("GST-Elongin" . SPARSER::COLLECTION)
     ("PHD2, SSAT2, VHL, and Elongin" . SPARSER::COLLECTION)
-    ("RACK1, HAF, or CHIP/HSP70" . SPARSER::COLLECTION)
-    ("MCM3 or MCM7" . SPARSER::COLLECTION)
-    ("VEGF and GLUT1" . SPARSER::COLLECTION) ("pSV" . SPARSER::PROTEIN)
+    ("CHIP/HSP70" . SPARSER::COLLECTION) ("MCM3 or MCM7" . SPARSER::COLLECTION)
+    ("VEGF and GLUT1" . SPARSER::COLLECTION) ("pSV-RL" . SPARSER::COLLECTION)
+    ("RL" . SPARSER::PROTEIN) ("pSV" . SPARSER::PROTEIN)
     ("HIF-1 and HIF-2" . SPARSER::COLLECTION)
     ("another essential component" . SPARSER::COMPONENT)
     ("proteins, MCM3 and MCM7" . SPARSER::COLLECTION)
@@ -4753,17 +4832,16 @@
     ("LDH-A" . SPARSER::PROTEIN) ("HSP70" . SPARSER::PROTEIN)
     ("HIF-2" . SPARSER::PROTEIN) ("Cdt1" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("glutathione- S -transferase" . SPARSER::PROTEIN)
-    ("FIH-1" . SPARSER::PROTEIN) ("factor inhibiting HIF-1" . SPARSER::PROTEIN)
-    ("Cullin 2" . SPARSER::PROTEIN) ("RBX1" . SPARSER::PROTEIN)
-    ("SSAT2" . SPARSER::PROTEIN) ("von Hippel Lindau" . SPARSER::PROTEIN)
-    ("PHD2" . SPARSER::PROTEIN) ("prolyl hydroxylase 2" . SPARSER::PROTEIN)
-    ("GLUT1" . SPARSER::PROTEIN)
-    ("Hypoxia-inducible factor" . SPARSER::PROTEIN)
+    ("FIH-1" . SPARSER::PROTEIN) ("Cullin 2" . SPARSER::PROTEIN)
+    ("RBX1" . SPARSER::PROTEIN) ("SSAT2" . SPARSER::PROTEIN)
+    ("von Hippel Lindau" . SPARSER::PROTEIN) ("PHD2" . SPARSER::PROTEIN)
+    ("prolyl hydroxylase 2" . SPARSER::PROTEIN) ("GLUT1" . SPARSER::PROTEIN)
     ("pre-RC" . SPARSER::BIO-COMPLEX) ("pre-RCs" . SPARSER::BIO-COMPLEX)
     ("pre-replicative complexes" . SPARSER::BIO-COMPLEX)
-    ("hypoxia-inducible factor" . SPARSER::PROTEIN) ("cln2" . SPARSER::PROTEIN)
-    ("Cdk1 and SBF" . SPARSER::COLLECTION) ("Cln3" . SPARSER::PROTEIN)
-    ("MBF" . SPARSER::BIO-COMPLEX) ("Cdk4 and Cdk6" . SPARSER::COLLECTION)
+    ("cln2" . SPARSER::PROTEIN) ("SBF and MBF" . SPARSER::COLLECTION)
+    ("CLN1 and CLN2" . SPARSER::COLLECTION) ("SBF/MBF" . SPARSER::COLLECTION)
+    ("MBF" . SPARSER::PROTEIN) ("SBF" . SPARSER::PROTEIN)
+    ("Cdk4 and Cdk6" . SPARSER::COLLECTION)
     ("Src and Csk" . SPARSER::COLLECTION)
     ("a strong inhibitor" . SPARSER::INHIBITOR) ("mal" . SPARSER::PROTEIN)
     ("Cdk7 and Csk1" . SPARSER::COLLECTION)
@@ -4772,12 +4850,12 @@
     ("Cdk1-cyclin" . SPARSER::COLLECTION)
     ("metazoan" . SPARSER::PROTEIN-FAMILY)
     ("the relevant cyclins" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("R-point" . SPARSER::PROTEIN) ("post-R-point" . SPARSER::PROTEIN-PAIR)
     ("DMSO, 6-BAP or 3-MB-PP1" . SPARSER::COLLECTION)
     ("p107 and p130" . SPARSER::COLLECTION)
     ("Cdk2 and Cdk4" . SPARSER::COLLECTION)
     ("pRb, p107, and p130" . SPARSER::COLLECTION)
     ("-cyclin" . SPARSER::COLLECTION) ("Cdk2-" . SPARSER::PROTEIN)
-    ("exogenous cyclin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("monomeric Cdk2" . SPARSER::PROTEIN)
     ("a weak inhibitor" . SPARSER::INHIBITOR) ("BAP" . SPARSER::PROTEIN)
     ("apt" . SPARSER::PROTEIN) ("nucleobase" . SPARSER::NUCLEOBASE)
@@ -4793,7 +4871,7 @@
     ("CDK/cyclin" . SPARSER::COLLECTION) ("Cdk2-cyclin" . SPARSER::COLLECTION)
     ("Cdk1/cyclin" . SPARSER::COLLECTION) ("CDK-cyclin" . SPARSER::COLLECTION)
     ("monomeric Cdk1" . SPARSER::PROTEIN) ("kinase (CAK)" . SPARSER::KINASE)
-    ("Cdk2 and Cdk1" . SPARSER::COLLECTION)
+    ("CAK" . SPARSER::PROTEIN) ("Cdk2 and Cdk1" . SPARSER::COLLECTION)
     ("Cdk2, Cdk4 and Cdk6" . SPARSER::COLLECTION)
     ("dominant-negative Cdk2" . SPARSER::PROTEIN)
     ("pRb and E2F" . SPARSER::COLLECTION) ("cyclin D-" . SPARSER::PROTEIN)
@@ -4802,18 +4880,17 @@
     ("activator and repressor" . SPARSER::COLLECTION)
     ("pRb, p107 and p130" . SPARSER::COLLECTION)
     ("bulky adenine analogs" . SPARSER::ANALOG)
-    ("active complexes" . SPARSER::BIO-COMPLEX) ("CLN2" . SPARSER::PROTEIN)
-    ("C-Raf" . SPARSER::PROTEIN) ("Csk1" . SPARSER::PROTEIN)
-    ("Cdk7" . SPARSER::PROTEIN)
-    ("a stable hormone-receptive state" . SPARSER::BIO-STATE)
+    ("active complexes" . SPARSER::BIO-COMPLEX) ("cln1" . SPARSER::PROTEIN)
+    ("CLN2" . SPARSER::PROTEIN) ("CLN1" . SPARSER::PROTEIN)
+    ("Cln3" . SPARSER::PROTEIN) ("C-Raf" . SPARSER::PROTEIN)
+    ("Csk1" . SPARSER::PROTEIN) ("Cdk7" . SPARSER::PROTEIN)
     ("Hsp90 and client proteins" . SPARSER::COLLECTION)
     ("Hsp70 and Hsp40" . SPARSER::COLLECTION)
     ("p23 and Aha1" . SPARSER::COLLECTION)
     ("Hsp90 and mutant" . SPARSER::COLLECTION) ("geldanamycin" . SPARSER::DRUG)
     ("p53-Hsp90" . SPARSER::COLLECTION)
     ("ATP and co-chaperone" . SPARSER::COLLECTION)
-    ("apoprotein" . SPARSER::MOLECULE) ("Grp" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("HtpG" . SPARSER::PROTEIN)
+    ("apoprotein" . SPARSER::MOLECULE) ("HtpG" . SPARSER::PROTEIN)
     ("Hsp90 and the client protein" . SPARSER::COLLECTION)
     ("a molten-globule-like conformation" . SPARSER::BIO-CONFORMATION)
     ("a weak ATPase activity" . SPARSER::PROTEIN)
@@ -4829,25 +4906,27 @@
     ("Hsp90 and its analogs" . SPARSER::COLLECTION) ("HOP" . SPARSER::PROTEIN)
     ("TPR" . SPARSER::PROTEIN) ("the weak ATPase activity" . SPARSER::PROTEIN)
     ("GroEL" . SPARSER::PROTEIN) ("p23 and Cdc37" . SPARSER::COLLECTION)
-    ("Cdc37" . SPARSER::PROTEIN) ("considerable homology" . SPARSER::PROTEIN)
+    ("considerable homology" . SPARSER::PROTEIN)
     ("receptors, kinases and polymerases" . SPARSER::COLLECTION)
     ("the 90 kDa heat-shock protein Hsp90 and its co-chaperones"
      . SPARSER::COLLECTION)
-    ("TRiC" . SPARSER::HUMAN-PROTEIN-FAMILY) ("chaperonin" . SPARSER::PROTEIN)
+    ("TRiC" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("chaperone-protein" . SPARSER::COLLECTION)
     ("Hsp90 and p53" . SPARSER::COLLECTION)
     ("Hsp90 and its client proteins" . SPARSER::COLLECTION)
-    ("− 2" . SPARSER::PROTEIN) ("MC 2" . SPARSER::PROTEIN)
-    ("Aha1" . SPARSER::PROTEIN) ("p53s" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("MC 2" . SPARSER::PROTEIN) ("Aha1" . SPARSER::PROTEIN)
+    ("p53s" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Grp94" . SPARSER::PROTEIN)
     ("Sba1" . SPARSER::PROTEIN) ("AMP-PNP" . SPARSER::MOLECULE)
     ("Cdk4" . SPARSER::PROTEIN) ("yeast homolog" . SPARSER::PROTEIN)
-    ("Hsp40" . SPARSER::PROTEIN) ("KL" . SPARSER::PROTEIN)
+    ("Cdc37" . SPARSER::PROTEIN) ("Hsp40" . SPARSER::PROTEIN)
+    ("HL" . SPARSER::PROTEIN) ("KL" . SPARSER::PROTEIN)
     ("Sphingolipid" . SPARSER::MOLECULE) ("sushi" . SPARSER::PROTEIN)
     ("causative variants" . SPARSER::VARIANT) ("fine-map" . SPARSER::PROTEIN)
     ("CACNA1C and NOS3" . SPARSER::COLLECTION)
     ("CACNA1C, NOS3, and NOS1AP" . SPARSER::COLLECTION)
     ("ß-adrenergic" . SPARSER::COLLECTION)
     ("caveolar-localized endothelial NOS" . SPARSER::PROTEIN)
+    ("malignant VT" . SPARSER::PROTEIN)
     ("the causative variant" . SPARSER::VARIANT)
     ("KCNQ1(LQT1) and rs2834455" . SPARSER::COLLECTION)
     ("the gene-wise permutation threshold p" . SPARSER::PROTEIN)
@@ -4856,10 +4935,11 @@
     ("the previously studied genes NOS1AP, CSMD2, AGTR1, and KNG1"
      . SPARSER::COLLECTION)
     ("NOS1AP, CSMD2, AGTR1, and KNG1" . SPARSER::COLLECTION)
-    ("QC" . SPARSER::PROTEIN) ("3 previously reported genes" . SPARSER::GENE)
+    ("QC" . SPARSER::PROTEIN) ("previously reported genes" . SPARSER::GENE)
     ("9 LQT genes and 4 candidate genes" . SPARSER::COLLECTION)
     ("AGTR1, CSMD2, and NOS1AP" . SPARSER::COLLECTION)
     ("predicted exonic splicing enhancer" . SPARSER::PROTEIN)
+    ("a nonsynonymous coding SNP" . SPARSER::PROTEIN)
     ("CACNA1C, NOS3, NOS1AP, CSMD2 and AGTR1" . SPARSER::COLLECTION)
     ("KCNE2 (LQT6) and rs6422142" . SPARSER::COLLECTION)
     ("a gene-wise permutation p" . SPARSER::PROTEIN)
@@ -4870,19 +4950,16 @@
     ("AGTR1, CSMD2, KNG1, and NOS1AP" . SPARSER::COLLECTION)
     ("CACNA1C(LQT8) and NOS3 [ xref , xref ]" . SPARSER::COLLECTION)
     ("vis" . SPARSER::DRUG) ("SCA/SCD" . SPARSER::COLLECTION)
-    ("SCD" . SPARSER::PROTEIN)
-    ("angiotensin-converting enzyme pathway genes and the transforming growth factor ß-receptor 2 gene"
-     . SPARSER::COLLECTION)
-    ("community-based SCA" . SPARSER::PROTEIN)
+    ("SCD" . SPARSER::PROTEIN) ("ß-receptor" . SPARSER::COLLECTION)
+    ("community-based SCA" . SPARSER::PROTEIN) ("VT/VF" . SPARSER::COLLECTION)
     ("SCA and primary VF" . SPARSER::COLLECTION)
-    ("fraction (EF)" . SPARSER::COMPONENT) ("SCAs" . SPARSER::PROTEIN)
-    ("VF" . SPARSER::PROTEIN) ("SCDs" . SPARSER::PROTEIN)
-    ("SCA" . SPARSER::PROTEIN) ("-2 , OR = 1" . SPARSER::COLLECTION)
-    ("-3 , OR = 2" . SPARSER::COLLECTION) ("-3 , OR = 1" . SPARSER::COLLECTION)
-    ("LQT8" . SPARSER::PROTEIN) ("LQT1" . SPARSER::PROTEIN)
-    ("Zinc-finger protein" . SPARSER::PROTEIN)
-    ("KQT-like subfamily" . SPARSER::PROTEIN) ("member 1" . SPARSER::PROTEIN)
-    ("Isk-related family" . SPARSER::PROTEIN)
+    ("fraction (EF)" . SPARSER::COMPONENT) ("ICD" . SPARSER::PROTEIN)
+    ("SCAs" . SPARSER::PROTEIN) ("VF" . SPARSER::PROTEIN)
+    ("VT" . SPARSER::PROTEIN) ("SCDs" . SPARSER::PROTEIN)
+    ("SCA" . SPARSER::PROTEIN) ("-3 , OR = 2" . SPARSER::COLLECTION)
+    ("-3 , OR = 1" . SPARSER::COLLECTION) ("LQT8" . SPARSER::PROTEIN)
+    ("LQT1" . SPARSER::PROTEIN) ("KQT-like subfamily" . SPARSER::PROTEIN)
+    ("member 1" . SPARSER::PROTEIN) ("Isk-related family" . SPARSER::PROTEIN)
     ("Potassium voltage-gated channel" . SPARSER::PROTEIN)
     ("Nitric oxide synthase 3" . SPARSER::PROTEIN)
     ("Nitric oxide synthase 1 adaptor protein" . SPARSER::PROTEIN)
@@ -4892,8 +4969,7 @@
     ("calcium channel" . SPARSER::PROTEIN)
     ("voltage-dependent" . SPARSER::PROTEIN)
     ("alpha 1C subunit" . SPARSER::PROTEIN)
-    ("glutamate receptor 1" . SPARSER::PROTEIN)
-    ("zinc-finger protein" . SPARSER::PROTEIN) ("LQT9" . SPARSER::PROTEIN)
+    ("glutamate receptor 1" . SPARSER::PROTEIN) ("LQT9" . SPARSER::PROTEIN)
     ("CAV3" . SPARSER::PROTEIN) ("CACN1" . SPARSER::PROTEIN)
     ("KCNJ2" . SPARSER::PROTEIN) ("LQT6" . SPARSER::PROTEIN)
     ("KCNE2" . SPARSER::PROTEIN) ("LQT5" . SPARSER::PROTEIN)
@@ -4901,29 +4977,30 @@
     ("ANK2" . SPARSER::PROTEIN) ("LQT3" . SPARSER::PROTEIN)
     ("SCN5A" . SPARSER::PROTEIN) ("KCNQ1" . SPARSER::PROTEIN)
     ("NOS3" . SPARSER::PROTEIN) ("DEGS2" . SPARSER::PROTEIN)
-    ("KNG1" . SPARSER::PROTEIN)
+    ("KNG1" . SPARSER::PROTEIN) ("U19" . SPARSER::PROTEIN)
     ("angiotensin-converting enzyme" . SPARSER::PROTEIN)
     ("AGTR1" . SPARSER::PROTEIN) ("NOS1AP" . SPARSER::PROTEIN)
     ("CACNA1C" . SPARSER::PROTEIN) ("ZNF385B" . SPARSER::PROTEIN)
     ("KCTD1" . SPARSER::PROTEIN) ("GRIA1" . SPARSER::PROTEIN)
     ("AP1G2" . SPARSER::PROTEIN) ("testicular haploid" . SPARSER::PROTEIN)
     ("haploid" . SPARSER::PROTEIN) ("POLRMT" . SPARSER::PROTEIN)
-    ("GZMM" . SPARSER::PROTEIN) ("basigin" . SPARSER::PROTEIN)
-    ("BSG" . SPARSER::PROTEIN)
+    ("GZMM" . SPARSER::PROTEIN) ("GCI" . SPARSER::PROTEIN)
+    ("basigin" . SPARSER::PROTEIN) ("BSG" . SPARSER::PROTEIN)
+    ("nongenetic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("HCN2 , MADCAM1 , and FGF22" . SPARSER::COLLECTION)
     ("the CNVs around SHC2" . SPARSER::PROTEIN) ("Variants" . SPARSER::VARIANT)
     ("SHC2 and its neighboring genes" . SPARSER::COLLECTION)
-    ("hyperpolarization-activated cyclic nucleotide-gated potassium channel"
-     . SPARSER::PROTEIN)
+    ("sporadic MSA" . SPARSER::PROTEIN)
     ("insoluble fibrillar α-synuclein" . SPARSER::PROTEIN)
     ("levodopa" . SPARSER::DRUG)
     ("the (Src homology 2 domain containing)-transforming protein 2 ( SHC2 ) gene"
      . SPARSER::GENE)
     ("-transforming protein" . SPARSER::COLLECTION)
     ("the genes or genomic regions" . SPARSER::COLLECTION)
-    ("homolog (mouse)" . SPARSER::PROTEIN)
+    ("MSA" . SPARSER::PROTEIN) ("homolog (mouse)" . SPARSER::PROTEIN)
     ("polymerase (RNA) mitochondrial (DNA directed)" . SPARSER::PROTEIN)
-    ("family member 2" . SPARSER::PROTEIN) ("MIER2" . SPARSER::PROTEIN)
+    ("family member 2" . SPARSER::PROTEIN)
+    ("early response 1" . SPARSER::PROTEIN) ("MIER2" . SPARSER::PROTEIN)
     ("granzyme M" . SPARSER::PROTEIN)
     ("cell division cycle 34 homolog ( S. cerevisiae )" . SPARSER::PROTEIN)
     ("CDC34" . SPARSER::PROTEIN) ("Shc2" . SPARSER::PROTEIN)
@@ -4932,39 +5009,43 @@
     ("MADCAM1" . SPARSER::PROTEIN)
     ("mucosal vascular addressin cell adhesion molecule 1" . SPARSER::PROTEIN)
     ("HCN2" . SPARSER::PROTEIN) ("potassium channel" . SPARSER::PROTEIN)
-    ("p25" . SPARSER::PROTEIN) ("HK33" . SPARSER::PROTEIN)
-    ("MSA-P" . SPARSER::PROTEIN) ("α-synuclein" . SPARSER::PROTEIN)
-    ("SHC2" . SPARSER::PROTEIN) ("transforming protein" . SPARSER::PROTEIN)
+    ("p25" . SPARSER::HUMAN-PROTEIN-FAMILY) ("HK33" . SPARSER::PROTEIN)
+    ("α-synuclein" . SPARSER::PROTEIN) ("SHC2" . SPARSER::PROTEIN)
+    ("transforming protein" . SPARSER::PROTEIN)
+    ("another etiologic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("only 10 bp" . SPARSER::PROTEIN) ("MDM2 and P53" . SPARSER::COLLECTION)
     ("tobacco and alcohol" . SPARSER::COLLECTION)
     ("SNP309 and p53" . SPARSER::COLLECTION)
     ("pRB, E2F1, and p19ARF" . SPARSER::COLLECTION)
     ("the polymorphic MDM2  SNP309G or MDM2  SNP309T allele" . SPARSER::ALLELE)
-    ("mRNA and MDM2 protein" . SPARSER::COLLECTION)
     ("SNP 309 and p53" . SPARSER::COLLECTION)
-    ("TG and GG" . SPARSER::COLLECTION) ("FPRP" . SPARSER::PROTEIN)
+    ("TG and GG" . SPARSER::COLLECTION)
+    ("TT, TG, and GG" . SPARSER::COLLECTION) ("FPRP" . SPARSER::PROTEIN)
     ("SNP309, A2164G and p53" . SPARSER::COLLECTION)
-    ("AG and GG" . SPARSER::COLLECTION)
+    ("GT/TT" . SPARSER::COLLECTION) ("AG and GG" . SPARSER::COLLECTION)
     ("SNP309 and MDM2" . SPARSER::COLLECTION)
     ("allele and genotype" . SPARSER::COLLECTION) ("whose DNA" . SPARSER::DNA)
+    ("the well-studied p53 codon 72 (rs1042522) SNP" . SPARSER::PROTEIN)
     ("SNP309 and A2164G" . SPARSER::COLLECTION)
     ("MDM2 and p53" . SPARSER::COLLECTION)
     ("tobacco or alcohol" . SPARSER::COLLECTION)
     ("SNP309, A2164G, and p53" . SPARSER::COLLECTION)
-    ("GT and GG" . SPARSER::COLLECTION) ("AA, and p53" . SPARSER::COLLECTION)
-    ("GT" . SPARSER::PROTEIN) ("MDM 2" . SPARSER::PROTEIN)
-    ("p19ARF" . SPARSER::PROTEIN) ("SNP 309" . SPARSER::PROTEIN)
-    ("SNP309" . SPARSER::PROTEIN) ("double minute 2" . SPARSER::PROTEIN)
+    ("GT and GG" . SPARSER::COLLECTION) ("TT" . SPARSER::PROTEIN)
+    ("AA, and p53" . SPARSER::COLLECTION) ("GT" . SPARSER::PROTEIN)
+    ("MDM 2" . SPARSER::PROTEIN) ("p19ARF" . SPARSER::PROTEIN)
+    ("SNP 309" . SPARSER::PROTEIN) ("SNP309" . SPARSER::PROTEIN)
+    ("double minute 2" . SPARSER::PROTEIN)
     ("TM and sclera" . SPARSER::COLLECTION)
     ("Dvl" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("growth factor and integrin" . SPARSER::COLLECTION)
     ("55 kDa and 57 kDa" . SPARSER::COLLECTION)
     ("the 66 kDa and 80 kDa" . SPARSER::COLLECTION)
     ("β1-, α5, and αV-integrins" . SPARSER::COLLECTION)
-    ("β1-" . SPARSER::PROTEIN)
+    ("β1-" . SPARSER::PROTEIN) ("the major extracellular" . SPARSER::PROTEIN)
     ("at least 24 different heterodimeric receptors" . SPARSER::PROTEIN)
     ("integrin-FAK-AKT" . SPARSER::COLLECTION)
     ("wortmannin (10 μM) and LY294002 (20 μM)" . SPARSER::COLLECTION)
+    ("One possible target" . SPARSER::TARGET-PROTEIN)
     ("Kinase (FAK)" . SPARSER::KINASE)
     ("α3-, α5 and αV-integrins" . SPARSER::COLLECTION)
     ("α3- and αV-integrin" . SPARSER::COLLECTION) ("α3-" . SPARSER::PROTEIN)
@@ -5004,39 +5085,39 @@
     ("p-JNK" . SPARSER::COLLECTION) ("BIM-caspase-AKT" . SPARSER::COLLECTION)
     ("caspase-3 and PP2A" . SPARSER::COLLECTION)
     ("caspase-3-PP2A-AKT" . SPARSER::COLLECTION)
-    ("PP2A-AKT" . SPARSER::COLLECTION)
+    ("PP2A-AKT" . SPARSER::COLLECTION) ("the A subunit" . SPARSER::FRAGMENT)
     ("caspase-3 and AKT" . SPARSER::COLLECTION)
     ("siRNA or an AKT inhibitor (LY294002)" . SPARSER::COLLECTION)
     ("caspase-3 and PARP" . SPARSER::COLLECTION)
     ("LY294002 and ATO" . SPARSER::COLLECTION)
-    ("a constitutively active AKT1 gene" . SPARSER::GENE)
     ("mTOR, RICTOR and SIN1" . SPARSER::COLLECTION)
+    ("the mammalian target of rapamycin 2 (mTORC2) or the Rictor protein"
+     . SPARSER::COLLECTION)
     ("intact mTORC2" . SPARSER::PROTEIN)
     ("PTEN and PDK1" . SPARSER::COLLECTION)
     ("fragmentation and condensation in control vector-transfected A2780 and OVCAR-3 cells"
      . SPARSER::PROTEIN-FAMILY)
     ("caspase-9 and caspase-3" . SPARSER::COLLECTION)
-    ("BAX, PUMA and NOXA" . SPARSER::COLLECTION)
+    ("BAX, PUMA and NOXA" . SPARSER::COLLECTION) ("CP" . SPARSER::PROTEIN)
     ("AKT-BIM" . SPARSER::COLLECTION) ("PI-3K/AKT" . SPARSER::COLLECTION)
     ("BAD or BIM" . SPARSER::COLLECTION)
     ("the pro-apoptotic proteins BAD, BIM and caspase-9" . SPARSER::COLLECTION)
     ("BAD, BIM and caspase-9" . SPARSER::COLLECTION)
     ("PI-3K and AKT" . SPARSER::COLLECTION)
     ("protein kinase B or Rac" . SPARSER::COLLECTION)
-    ("one predominant isoform" . SPARSER::ISOFORM)
+    ("one predominant isoform" . SPARSER::PROTEIN)
     ("BIM-EL" . SPARSER::COLLECTION) ("EL" . SPARSER::PROTEIN)
     ("PUMA and NOXA" . SPARSER::COLLECTION)
-    ("BCL-2 and BCL-XL" . SPARSER::COLLECTION)
+    ("BCL-2 and BCL-XL" . SPARSER::COLLECTION) ("multidrug" . SPARSER::PROTEIN)
     ("retinoic acid (ATRA)" . SPARSER::MOLECULE)
     ("relapsed/refractory acute promyelocytic leukemia (APL)"
      . SPARSER::PROTEIN)
     ("an effective chemotherapeutic drug" . SPARSER::DRUG)
     ("ATRA" . SPARSER::DRUG)
     ("Cisplatin and its analogues" . SPARSER::COLLECTION)
-    ("kinases (JNK)" . SPARSER::PROTEIN)
     ("AKT or FOXO3A" . SPARSER::COLLECTION)
     ("caspase-3 and caspase-9" . SPARSER::COLLECTION)
-    ("ATO" . SPARSER::PROTEIN) ("pH 3" . SPARSER::MOLECULE)
+    ("ATO" . SPARSER::PROTEIN) ("pH 3" . SPARSER::PROTEIN)
     ("pH 1" . SPARSER::PROTEIN) ("Amino Acid" . SPARSER::AMINO-ACID)
     ("trypsin inhibitor" . SPARSER::PROTEIN)
     ("3-(4,5-dimethylthiazol-2-yl)-2,5- diphenyltetrazolium bromide"
@@ -5071,18 +5152,23 @@
     ("Elk-1, p300, and PADI4" . SPARSER::COLLECTION)
     ("Elk-1/p300" . SPARSER::COLLECTION)
     ("Elk-1 and p300" . SPARSER::COLLECTION)
+    ("STAT1, STAT3, STAT5, ETS1, PAX and E2F" . SPARSER::COLLECTION)
     ("anti-p-Elk-1" . SPARSER::COLLECTION)
-    ("inactive (CS)" . SPARSER::INACTIVE) ("cit" . SPARSER::PROTEIN)
+    ("inactive (CS)" . SPARSER::INACTIVE)
+    ("anti-pan-cit" . SPARSER::COLLECTION) ("cit" . SPARSER::PROTEIN)
     ("H4K5" . SPARSER::PROTEIN) ("Ac-H4K5" . SPARSER::COLLECTION)
     ("EGF, U0126 or Cl-Amidine" . SPARSER::COLLECTION)
     ("GAL4-Elk-1" . SPARSER::COLLECTION)
     ("either WT PADI4 or the PADI4 catalytic mutant (CS)"
      . SPARSER::COLLECTION)
     ("mutant (CS)" . SPARSER::MUTANT) ("ER−" . SPARSER::PROTEIN)
-    ("drug and Cl-Amidine" . SPARSER::COLLECTION)
     ("a newly developed arginine-based PADI inhibitor" . SPARSER::INHIBITOR)
     ("Amidine" . SPARSER::MOLECULE) ("Elk-1 or PADI4" . SPARSER::COLLECTION)
     ("PADI4 and active" . SPARSER::COLLECTION)
+    ("ChIP-re-ChIP" . SPARSER::PROTEIN-PAIR)
+    ("Elk-1 and p-Elk-1 ChIPs" . SPARSER::COLLECTION)
+    ("PADI4, Elk-1 and p-Elk-1 ChIPs" . SPARSER::COLLECTION)
+    ("ChIPs" . SPARSER::PROTEIN)
     ("both Elk-1 and the active form" . SPARSER::COLLECTION)
     ("Flag-PADI4" . SPARSER::COLLECTION)
     ("Elk-1 and phospho-Elk-1" . SPARSER::COLLECTION)
@@ -5091,7 +5177,7 @@
     ("PADI4 and Elk-1" . SPARSER::COLLECTION)
     ("Elk-1 and PADI4" . SPARSER::COLLECTION)
     ("Ets1 and GABPα" . SPARSER::COLLECTION)
-    ("PADI4 and Active" . SPARSER::COLLECTION)
+    ("PADI4 and Active" . SPARSER::COLLECTION) ("meC" . SPARSER::PROTEIN)
     ("E2F1 and RNAPII" . SPARSER::COLLECTION) ("catabolism" . SPARSER::PROTEIN)
     ("the 4333 unexpressed genes showed significant PADI4" . SPARSER::PROTEIN)
     ("PADI4 and gene" . SPARSER::COLLECTION) ("FPR" . SPARSER::PROTEIN)
@@ -5110,7 +5196,9 @@
     ("response element (SRE)" . SPARSER::DNA-RESPONSE-ELEMENT)
     ("The ternary complex factors form" . SPARSER::FORM)
     ("the ternary complex factors family" . SPARSER::PROTEIN-FAMILY)
+    ("mitogen activated protein kinase/extracellular" . SPARSER::COLLECTION)
     ("directly target Elk-1" . SPARSER::PROTEIN)
+    ("its well-defined target" . SPARSER::TARGET-PROTEIN)
     ("arginine and methylarginine" . SPARSER::COLLECTION)
     ("citrulline" . SPARSER::MOLECULE) ("pSG5" . SPARSER::PROTEIN)
     ("Ets1" . SPARSER::PROTEIN) ("OKL38" . SPARSER::PROTEIN)
@@ -5124,12 +5212,11 @@
     ("an essential HR protein" . SPARSER::PROTEIN)
     ("radiation-induced DNA damage foci" . SPARSER::PROTEIN)
     ("cyclin D1 and RAD51" . SPARSER::COLLECTION)
-    ("-inhibitor" . SPARSER::INHIBITOR)
+    ("-inhibitor" . SPARSER::INHIBITOR) ("DR-eGFP" . SPARSER::COLLECTION)
     ("camptothecin and etoposide" . SPARSER::COLLECTION)
     ("cyclin D1-RAD51" . SPARSER::COLLECTION)
     ("cyclin D1-interactors" . SPARSER::COLLECTION)
-    ("RPA34" . SPARSER::PROTEIN)
-    ("single-stranded DNA binding protein" . SPARSER::PROTEIN)
+    ("RPA34" . SPARSER::PROTEIN) ("DNA binding protein" . SPARSER::PROTEIN)
     ("PD0332991" . SPARSER::DRUG) ("Navitoclax" . SPARSER::DRUG)
     ("PAK1 and IAP" . SPARSER::COLLECTION)
     ("caspase-9 [ xref , xref ] and this protein family" . SPARSER::COLLECTION)
@@ -5157,8 +5244,8 @@
     ("fibronectin or poly-l-lysine" . SPARSER::COLLECTION)
     ("NRP1/NRP2" . SPARSER::COLLECTION)
     ("a natural tetrapeptide" . SPARSER::MOLECULE)
-    ("tetrapeptide" . SPARSER::MOLECULE) ("GFP-" . SPARSER::PROTEIN)
-    ("NRP1, or AdY297A" . SPARSER::COLLECTION)
+    ("tetrapeptide" . SPARSER::MOLECULE) ("tuftsin" . SPARSER::PROTEIN)
+    ("GFP-" . SPARSER::PROTEIN) ("NRP1, or AdY297A" . SPARSER::COLLECTION)
     ("YFP-NRP2" . SPARSER::COLLECTION)
     ("YFP-Y297A NRP1 or vice versa" . SPARSER::COLLECTION)
     ("/yellow fluorescent protein (YFP)" . SPARSER::COLLECTION)
@@ -5184,22 +5271,26 @@
     ("prostanoid" . SPARSER::MOLECULE)
     ("receptors, VEGFR1 and VEGFR2" . SPARSER::COLLECTION)
     ("VEGF or VEGF-A" . SPARSER::COLLECTION)
-    ("semaphorins and vascular endothelial" . SPARSER::COLLECTION)
+    ("semaphorins and vascular endothelial growth factor"
+     . SPARSER::COLLECTION)
     ("semaphorins" . SPARSER::PROTEIN-FAMILY)
     ("transmembrane glycoproteins" . SPARSER::PROTEIN)
+    ("antigen, and receptor" . SPARSER::COLLECTION)
     ("coagulation factor V/VIII" . SPARSER::COLLECTION)
-    ("VIII" . SPARSER::PROTEIN) ("sea" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("MAM" . SPARSER::PROTEIN) ("VIII" . SPARSER::PROTEIN)
+    ("sea" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Neuropilins" . SPARSER::PROTEIN-FAMILY)
     ("NRP1 and NRP2" . SPARSER::COLLECTION)
     ("NRP1 and KDR" . SPARSER::COLLECTION)
     ("receptor (KDR)" . SPARSER::RECEPTOR) ("VEGFR2/KDR" . SPARSER::COLLECTION)
     ("von Willebrand factor" . SPARSER::PROTEIN) ("CD304" . SPARSER::PROTEIN)
     ("Flt1" . SPARSER::PROTEIN) ("301A" . SPARSER::PROTEIN)
+    ("protein kinase D" . SPARSER::PROTEIN)
     ("Extracellular signal-regulated kinase-1" . SPARSER::PROTEIN)
     ("Akt/protein" . SPARSER::PROTEIN) ("VEGFR1" . SPARSER::PROTEIN)
     ("Sema3A" . SPARSER::PROTEIN) ("coagulation factor V" . SPARSER::PROTEIN)
     ("a2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("BMP1" . SPARSER::PROTEIN)
-    ("Bone Morphogenetic Protein" . SPARSER::PROTEIN)
+    ("Bone Morphogenetic Protein 1" . SPARSER::PROTEIN)
     ("NRP2" . SPARSER::PROTEIN) ("NRP1" . SPARSER::PROTEIN)
     ("neuropilin-1" . SPARSER::PROTEIN)
     ("immediate-early genes" . SPARSER::GENE)
@@ -5215,6 +5306,7 @@
     ("AP-1 and CREB" . SPARSER::COLLECTION)
     ("c-Jun, CREB and NFκB" . SPARSER::COLLECTION)
     ("CTGF , CYR61 and PLAU" . SPARSER::COLLECTION)
+    ("PDGF and SB-216763" . SPARSER::COLLECTION)
     ("c-Jun-JunD" . SPARSER::COLLECTION)
     ("BHLHB2 , CTGF , CYR61 , FOSB , NR4A1 , PLAU , and RGS2"
      . SPARSER::COLLECTION)
@@ -5248,15 +5340,16 @@
     ("eukaryotic translation initiation factor 2" . SPARSER::PROTEIN)
     ("PI 3-kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("thus far no inhibitor" . SPARSER::INHIBITOR)
+    ("QVD-OPH" . SPARSER::COLLECTION) ("OPH" . SPARSER::PROTEIN)
     ("Akt or Pim" . SPARSER::COLLECTION) ("Shmt2" . SPARSER::PROTEIN)
     ("Shmt1" . SPARSER::PROTEIN) ("Amd1" . SPARSER::PROTEIN)
     ("the transcriptional active Myc-Max dimer" . SPARSER::DIMER)
     ("the pro-apoptotic BH3-only Bcl-2 family member Bad" . SPARSER::PROTEIN)
     ("Pim-3, Pim-1 and Pim-2" . SPARSER::COLLECTION)
     ("Pim-1 or Pim-2" . SPARSER::COLLECTION) ("PIM" . SPARSER::PROTEIN)
+    ("mRNA, protein and ChIP" . SPARSER::COLLECTION)
     ("Myc-ER" . SPARSER::COLLECTION) ("Pim-1 and Pim-2" . SPARSER::COLLECTION)
     ("Myc and Eμ-" . SPARSER::COLLECTION)
-    ("mRNA and Pim-3" . SPARSER::COLLECTION)
     ("proviral insertion targets or transgenes" . SPARSER::COLLECTION)
     ("considered weak oncogenes" . SPARSER::ONCOGENE)
     ("targets or transgenes" . SPARSER::COLLECTION)
@@ -5272,11 +5365,10 @@
     ("CDC25A and CDC25C" . SPARSER::COLLECTION)
     ("SOCS1 and SOCS3" . SPARSER::COLLECTION)
     ("kinases, Pim-1, Pim-2 and Pim-3" . SPARSER::COLLECTION)
-    ("a strong oncogene" . SPARSER::ONCOGENE)
-    ("Pim" . SPARSER::HUMAN-PROTEIN-FAMILY) ("FL-2" . SPARSER::PROTEIN)
-    ("Q-VD-OPH" . SPARSER::DRUG) ("BP1" . SPARSER::PROTEIN)
-    ("NfκB" . SPARSER::PROTEIN) ("PIM3" . SPARSER::PROTEIN)
-    ("4-hydroxytamoxifen" . SPARSER::DRUG) ("4EBP1" . SPARSER::PROTEIN)
+    ("pan-Pim" . SPARSER::COLLECTION) ("a strong oncogene" . SPARSER::ONCOGENE)
+    ("Pim" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Q-VD-OPH" . SPARSER::DRUG)
+    ("BP1" . SPARSER::PROTEIN) ("NfκB" . SPARSER::PROTEIN)
+    ("PIM3" . SPARSER::PROTEIN) ("4-hydroxytamoxifen" . SPARSER::DRUG)
     ("Pim-2" . SPARSER::PROTEIN) ("Pim-1" . SPARSER::PROTEIN)
     ("murine leukemia virus" . SPARSER::PROTEIN) ("Pim3" . SPARSER::PROTEIN)
     ("Pim-3" . SPARSER::PROTEIN)
@@ -5286,8 +5378,10 @@
     ("associated cofactors" . SPARSER::PROTEIN)
     ("a centromere-associated protein" . SPARSER::PROTEIN)
     ("Bub1 and c-Myc" . SPARSER::COLLECTION)
+    ("pH2A and pCenp-A" . SPARSER::COLLECTION)
     ("two other cell cycle–regulated mitotic checkpoint genes" . SPARSER::GENE)
-    ("Bub1B and Mad1" . SPARSER::COLLECTION) ("MCL" . SPARSER::PROTEIN)
+    ("Bub1B and Mad1" . SPARSER::COLLECTION) ("BL" . SPARSER::PROTEIN)
+    ("MCL" . SPARSER::PROTEIN) ("Bub1 and Aurora" . SPARSER::COLLECTION)
     ("less centromeric MCAK" . SPARSER::PROTEIN)
     ("haspin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("mitotic Bub1  T264 MEFs" . SPARSER::PROTEIN) ("Knl1" . SPARSER::PROTEIN)
@@ -5307,6 +5401,7 @@
     ("HA-Bub1" . SPARSER::COLLECTION)
     ("hemagglutinin (HA)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("hemagglutinin" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("mitotic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Bub1 and other mitotic checkpoint genes" . SPARSER::COLLECTION)
     ("other mitotic checkpoint genes" . SPARSER::GENE)
     ("BubR1 and Cenp-E" . SPARSER::COLLECTION)
@@ -5320,10 +5415,13 @@
     ("Bub1B" . SPARSER::PROTEIN) ("Hec1" . SPARSER::PROTEIN)
     ("TD-60" . SPARSER::PROTEIN) ("centrin 2" . SPARSER::PROTEIN)
     ("H2B" . SPARSER::PROTEIN) ("Sgo1" . SPARSER::PROTEIN)
-    ("Cenp-E" . SPARSER::PROTEIN)
     ("anaphase-promoting complex" . SPARSER::PROTEIN)
+    ("Mix" . SPARSER::PROTEIN)
+    ("other interactive factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("FOXO1 or retinoic acid" . SPARSER::COLLECTION)
     ("receptor/retinoid X receptor" . SPARSER::COLLECTION)
+    ("FOXA2, GABP, HNF1α, HNF4γ, HNF6, cohesin, and CDX2"
+     . SPARSER::COLLECTION)
     ("enhanceosome" . SPARSER::BIO-COMPLEX)
     ("Oligonucleotide" . SPARSER::MOLECULE) ("Qin" . SPARSER::PROTEIN)
     ("TGF-β/activin" . SPARSER::COLLECTION) ("activin" . SPARSER::PROTEIN)
@@ -5337,10 +5435,11 @@
     ("TGF-β and siRNA" . SPARSER::COLLECTION)
     ("APOC3 and APOA1" . SPARSER::COLLECTION)
     ("APOA4/APOC3/APOA1" . SPARSER::COLLECTION)
+    ("the JASPAR data base" . SPARSER::PROTEIN)
     ("antitrypsin, and APOA1" . SPARSER::COLLECTION)
-    ("antitrypsin" . SPARSER::PROTEIN) ("SERPINE1/PAI-1" . SPARSER::COLLECTION)
-    ("MAT" . SPARSER::PROTEIN) ("HNF4α and Smads" . SPARSER::COLLECTION)
-    ("Smads" . SPARSER::PROTEIN) ("Smad3 and Smad4" . SPARSER::COLLECTION)
+    ("SERPINE1/PAI-1" . SPARSER::COLLECTION) ("MAT" . SPARSER::PROTEIN)
+    ("HNF4α and Smads" . SPARSER::COLLECTION)
+    ("Smad3 and Smad4" . SPARSER::COLLECTION)
     ("HNF4α and TGF-β" . SPARSER::COLLECTION)
     ("acute phase reactive proteins" . SPARSER::PROTEIN)
     ("apolipoproteins" . SPARSER::PROTEIN) ("v-Ets" . SPARSER::COLLECTION)
@@ -5351,47 +5450,47 @@
     ("ABCC6" . SPARSER::PROTEIN) ("CDX2" . SPARSER::PROTEIN)
     ("HNF6" . SPARSER::PROTEIN) ("HNF4γ" . SPARSER::PROTEIN)
     ("HNF1α" . SPARSER::PROTEIN) ("interferon-β" . SPARSER::DRUG)
-    ("SBE2" . SPARSER::PROTEIN-FAMILY) ("SBE1" . SPARSER::PROTEIN)
+    ("SBE2" . SPARSER::PROTEIN) ("SBE1" . SPARSER::PROTEIN)
     ("TGF-β 1" . SPARSER::PROTEIN) ("APOA4" . SPARSER::PROTEIN)
     ("APOA1" . SPARSER::PROTEIN) ("SERPINA1" . SPARSER::PROTEIN)
     ("TGF-β3" . SPARSER::PROTEIN) ("MH1" . SPARSER::PROTEIN)
     ("APOC3" . SPARSER::PROTEIN) ("AF1" . SPARSER::PROTEIN)
-    ("Activator protein-1" . SPARSER::PROTEIN) ("MIXL1" . SPARSER::PROTEIN)
+    ("Activator protein" . SPARSER::PROTEIN) ("MIXL1" . SPARSER::PROTEIN)
     ("HNF4α" . SPARSER::PROTEIN)
     ("Hepatocyte nuclear factor 4" . SPARSER::PROTEIN)
     ("staurosporine or serum deprivation" . SPARSER::COLLECTION)
     ("the pro-apoptotic Bim protein" . SPARSER::PROTEIN)
     ("one potential relevant downstream target" . SPARSER::TARGET-PROTEIN)
-    ("peptide and H-2D" . SPARSER::COLLECTION)
+    ("pre-" . SPARSER::PROTEIN) ("The most clear cut" . SPARSER::PROTEIN)
     ("CD3 and CD28" . SPARSER::COLLECTION) ("PCC" . SPARSER::PROTEIN)
     ("PCC-APC" . SPARSER::COLLECTION) ("CD44−" . SPARSER::PROTEIN)
     ("plck-cremice" . SPARSER::PROTEIN-PAIR) ("plck" . SPARSER::PROTEIN)
-    ("ert" . SPARSER::PROTEIN) ("HY" . SPARSER::MOLECULE)
+    ("ert" . SPARSER::PROTEIN) ("ub" . SPARSER::PROTEIN)
+    ("DP and SP" . SPARSER::COLLECTION) ("DN, DP and SP" . SPARSER::COLLECTION)
+    ("a male-specific HY peptide" . SPARSER::PEPTIDE) ("HY" . SPARSER::PROTEIN)
     ("CD4 and CD8" . SPARSER::COLLECTION)
     ("staurosporine and serum deprivation ( xref )" . SPARSER::COLLECTION)
     ("mAb or CD3" . SPARSER::COLLECTION) ("mAb and CD3" . SPARSER::COLLECTION)
     ("CD28 mAb nor CD3 mAb" . SPARSER::COLLECTION)
-    ("the CD28 costimulatory receptor" . SPARSER::RECEPTOR)
-    ("DP and CD4" . SPARSER::COLLECTION)
+    ("the CD28 costimulatory receptor" . SPARSER::PROTEIN)
+    ("DP and CD4" . SPARSER::COLLECTION) ("DP/DN" . SPARSER::COLLECTION)
     ("annexin and 7AAD" . SPARSER::COLLECTION)
-    ("plck-cre" . SPARSER::PROTEIN-PAIR) ("rasa1" . SPARSER::PROTEIN)
-    ("cre" . SPARSER::PROTEIN)
+    ("DN and SP" . SPARSER::COLLECTION) ("plck-cre" . SPARSER::PROTEIN-PAIR)
+    ("rasa1" . SPARSER::PROTEIN) ("cre" . SPARSER::PROTEIN)
     ("Another prototypical RasGAP" . SPARSER::PROTEIN)
     ("At least 10 different RasGAPs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("only weak GTP hydrolase activity" . SPARSER::PROTEIN)
     ("guanine nucleotide exchange factors (GEF)" . SPARSER::GEF)
     ("son of sevenless and Ras" . SPARSER::COLLECTION)
     ("Ras and MAPK" . SPARSER::COLLECTION) ("Ras-MAPK" . SPARSER::COLLECTION)
-    ("RasGAPs" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("IL-7 receptor" . SPARSER::PROTEIN) ("H-2" . SPARSER::PROTEIN)
-    ("I-E" . SPARSER::PROTEIN) ("DN4" . SPARSER::PROTEIN)
-    ("A–D" . SPARSER::PROTEIN) ("NK1.1" . SPARSER::PROTEIN)
-    ("H-2 k" . SPARSER::PROTEIN) ("H-2 b" . SPARSER::PROTEIN)
+    ("RasGAPs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("DN4" . SPARSER::PROTEIN)
+    ("NK1.1" . SPARSER::PROTEIN) ("H-2 k" . SPARSER::PROTEIN)
     ("neurofibromin 1" . SPARSER::PROTEIN)
     ("GTPase-activating" . SPARSER::PROTEIN)
     ("hydrolase activity" . SPARSER::PROTEIN)
     ("guanine nucleotide releasing protein" . SPARSER::PROTEIN)
-    ("son of sevenless" . SPARSER::PROTEIN) ("p120 RasGAP" . SPARSER::PROTEIN)
+    ("son of sevenless" . SPARSER::PROTEIN)
+    ("small G protein" . SPARSER::PROTEIN) ("p120 RasGAP" . SPARSER::PROTEIN)
     ("RASA1" . SPARSER::PROTEIN) ("PP1c and PP2Ac" . SPARSER::COLLECTION)
     ("αIIb" . SPARSER::PROTEIN)
     ("the atypical PKC isoform zeta" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -5404,56 +5503,65 @@
     ("a generic Ser/Thr phosphatase inhibitor" . SPARSER::INHIBITOR)
     ("PP2Ac-αIIb" . SPARSER::PROTEIN-PAIR)
     ("αIIbβ3-associated ser/thr phosphatases" . SPARSER::PHOSPHATASE)
-    ("ser/thr" . SPARSER::COLLECTION) ("thr" . SPARSER::AMINO-ACID)
-    ("GPVI" . SPARSER::PROTEIN) ("phox" . SPARSER::PROTEIN)
-    ("PKM" . SPARSER::PROTEIN) ("PAR-3/PAR-6/PKCζ" . SPARSER::COLLECTION)
+    ("thr" . SPARSER::PROTEIN) ("GPVI" . SPARSER::PROTEIN)
+    ("phox" . SPARSER::PROTEIN) ("PKM" . SPARSER::PROTEIN)
+    ("PAR-3/PAR-6/PKCζ" . SPARSER::COLLECTION)
     ("Atypical PKCs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("diacylglycerol (DAG)" . SPARSER::DAG) ("DAG" . SPARSER::DAG)
     ("the atypical class" . CLASS) ("the classical and novel classes" . CLASS)
     ("thromboxane" . SPARSER::MOLECULE)
     ("PP1c or another phosphatase" . SPARSER::COLLECTION)
-    ("an atypical isoform" . SPARSER::ISOFORM)
+    ("an atypical isoform" . SPARSER::PROTEIN)
     ("zeta" . SPARSER::HUMAN-PROTEIN-FAMILY) ("PDK-1" . SPARSER::PROTEIN)
     ("Protein phosphatase 1" . SPARSER::PROTEIN)
     ("gamma isoform" . SPARSER::PROTEIN) ("PP2Ac" . SPARSER::PROTEIN)
     ("lipase activity" . SPARSER::PROTEIN) ("PGE1" . SPARSER::DRUG)
-    ("PKC ζ" . SPARSER::PROTEIN) ("PAR-4" . SPARSER::PROTEIN)
-    ("PGE 1" . SPARSER::DRUG) ("type VII" . SPARSER::PROTEIN)
-    ("PAR-6" . SPARSER::PROTEIN) ("PAR-3" . SPARSER::PROTEIN)
-    ("PLD2" . SPARSER::PROTEIN) ("phospholipase D" . SPARSER::PROTEIN)
+    ("PO4" . SPARSER::PROTEIN) ("PKC ζ" . SPARSER::PROTEIN)
+    ("PAR-4" . SPARSER::PROTEIN) ("PGE 1" . SPARSER::DRUG)
+    ("type VII" . SPARSER::PROTEIN) ("PAR-6" . SPARSER::PROTEIN)
+    ("PAR-3" . SPARSER::PROTEIN) ("PLD2" . SPARSER::PROTEIN)
+    ("phospholipase D2" . SPARSER::PROTEIN)
     ("3-phosphoinositide dependent protein kinase-1" . SPARSER::PROTEIN)
     ("PKC-zeta" . SPARSER::PROTEIN) ("PP1c" . SPARSER::PROTEIN)
     ("αIIbβ3" . SPARSER::PROTEIN) ("rid" . SPARSER::DRUG)
-    ("allelic variants" . SPARSER::VARIANT) ("gonadotropin" . SPARSER::PROTEIN)
-    ("TDT" . SPARSER::PROTEIN) ("INSR" . SPARSER::PROTEIN)
+    ("allelic variants" . SPARSER::VARIANT)
+    ("PCOS and the candidate gene" . SPARSER::COLLECTION)
+    ("gonadotropin" . SPARSER::PROTEIN) ("TDT" . SPARSER::PROTEIN)
+    ("gene and PCOS" . SPARSER::COLLECTION) ("INSR" . SPARSER::PROTEIN)
+    ("PCOS" . SPARSER::PROTEIN) ("DM and LR" . SPARSER::COLLECTION)
     ("type or better" . SPARSER::COLLECTION)
+    ("technical factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("reagents and type of antigen" . SPARSER::COLLECTION)
-    ("log-rank " . SPARSER::PROTEIN) ("rank " . SPARSER::PROTEIN)
-    ("histological type" . TYPE)
+    ("analytic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("significantly worse MFS" . SPARSER::PROTEIN)
+    ("log-rank " . SPARSER::COLLECTION) ("rank " . SPARSER::PROTEIN)
+    ("MFS" . SPARSER::PROTEIN) ("histological type" . TYPE)
     ("histologic type and E-cadherin expression" . SPARSER::COLLECTION)
     ("PR and ER" . SPARSER::COLLECTION)
     ("ER, PR and HER-2" . SPARSER::COLLECTION)
+    ("synchronous DM" . SPARSER::PROTEIN)
+    ("metachronous DM" . SPARSER::PROTEIN)
     ("hormone and HER-2" . SPARSER::COLLECTION)
     ("estrogen and progesterone" . SPARSER::COLLECTION)
     ("receptors and HER-2" . SPARSER::COLLECTION)
     ("receptor and HER-2" . SPARSER::COLLECTION) ("Group C" . SPARSER::PROTEIN)
-    ("group B" . SPARSER::PROTEIN) ("CC1" . SPARSER::PROTEIN)
-    ("Progesterone receptor" . SPARSER::PROTEIN)
-    ("the pro-metastatic tyrosine kinase receptor c-met" . SPARSER::PROTEIN)
+    ("group B" . SPARSER::PROTEIN) ("for 3 " . SPARSER::PROTEIN)
+    ("CC1" . SPARSER::PROTEIN) ("Progesterone receptor" . SPARSER::PROTEIN)
     ("Cdc20 as well as Cdc27 and Mad2 ( xref )" . SPARSER::COLLECTION)
     ("Cdc27 and Mad2" . SPARSER::COLLECTION)
     ("three-party functional mitotic complex" . SPARSER::BIO-COMPLEX)
     ("Daxx, Rassf1A and Rassf1C" . SPARSER::COLLECTION)
     ("Rassf1A-Rassf1C" . SPARSER::COLLECTION) ("BetaTrCP" . SPARSER::PROTEIN)
     ("Rassf1A and taxol" . SPARSER::COLLECTION)
+    ("Aurora A ( xref ) and Cdc20 ( xref )" . SPARSER::COLLECTION)
     ("several key mitotic-related proteins" . SPARSER::PROTEIN)
-    ("a mitotic regulator" . SPARSER::REGULATOR)
+    ("a mitotic regulator" . SPARSER::PROTEIN)
     ("exclusively cytoplasmic-associated protein" . SPARSER::PROTEIN)
     ("Daxx/Rassf1C" . SPARSER::COLLECTION)
     ("Daxx and its interaction partner Rassf1" . SPARSER::COLLECTION)
     ("Mad1, Mad2, Bub1 and BubR1" . SPARSER::COLLECTION)
     ("mitotic checkpoint proteins or other regulators" . SPARSER::COLLECTION)
-    ("mitotic proteins" . SPARSER::PROTEIN)
+    ("mitotic proteins" . SPARSER::PROTEIN) ("third-line" . SPARSER::PROTEIN)
     ("taxane and anthracycline" . SPARSER::COLLECTION)
     ("anthracycline" . SPARSER::MOLECULE)
     ("Daxx- and Rassf1" . SPARSER::COLLECTION)
@@ -5476,16 +5584,19 @@
     ("the amino terminal 142 aa" . SPARSER::MOLECULE)
     ("Rassf1A and 50 aa" . SPARSER::COLLECTION)
     ("Daxx, Rassf1C and Rassf1A" . SPARSER::COLLECTION)
-    ("Daxx/Rassf1" . SPARSER::COLLECTION) ("Rassf1C" . SPARSER::PROTEIN)
-    ("Rassf1C-RFP" . SPARSER::PROTEIN-PAIR) ("Daxx-GFP" . SPARSER::COLLECTION)
-    ("GFP-Daxx" . SPARSER::COLLECTION) ("GFP-Rassf1C" . SPARSER::COLLECTION)
-    ("GFP-Rassf1A" . SPARSER::COLLECTION)
+    ("isoform and Daxx" . SPARSER::COLLECTION)
+    ("Daxx/Rassf1" . SPARSER::COLLECTION)
+    ("a microtubule-associated protein" . SPARSER::PROTEIN)
+    ("Rassf1C" . SPARSER::PROTEIN) ("Rassf1C-RFP" . SPARSER::PROTEIN-PAIR)
+    ("Daxx-GFP" . SPARSER::COLLECTION) ("GFP-Daxx" . SPARSER::COLLECTION)
+    ("GFP-Rassf1C" . SPARSER::COLLECTION) ("GFP-Rassf1A" . SPARSER::COLLECTION)
     ("Rassf1A and Rassf1C" . SPARSER::COLLECTION)
     ("Daxx and Rassf1C" . SPARSER::COLLECTION)
     ("mitotic-related proteins" . SPARSER::PROTEIN)
+    ("a predominately nuclear protein" . SPARSER::PROTEIN)
     ("NBs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("PML" . SPARSER::PROTEIN)
     ("histone H2B-GFP" . SPARSER::COLLECTION)
-    ("post-thymidine" . SPARSER::PROTEIN) ("Taxanes" . SPARSER::DRUG)
+    ("post-thymidine" . SPARSER::COLLECTION) ("Taxanes" . SPARSER::DRUG)
     ("developmentally essential nuclear protein" . SPARSER::PROTEIN)
     ("BRCA1 ( xref ) and Mad2 antagonist protein p31 comet ( xref )"
      . SPARSER::COLLECTION)
@@ -5497,9 +5608,8 @@
     ("Daxx" . SPARSER::PROTEIN)
     ("mitotic checkpoint proteins" . SPARSER::PROTEIN)
     ("IGFBP-5" . SPARSER::PROTEIN) ("p31Comet" . SPARSER::PROTEIN-FAMILY)
-    ("microtubule-associated protein" . SPARSER::PROTEIN)
     ("beta-gal" . SPARSER::PROTEIN) ("C polypeptide" . SPARSER::PROTEIN)
-    ("HP1-alpha" . SPARSER::PROTEIN) ("Cdc27" . SPARSER::PROTEIN)
+    ("Cdc27" . SPARSER::PROTEIN)
     ("Glutathione-S-transferase" . SPARSER::PROTEIN)
     ("Rassf1A" . SPARSER::PROTEIN) ("family 1" . SPARSER::PROTEIN)
     ("Leu2" . SPARSER::PROTEIN) ("Trp1" . SPARSER::PROTEIN)
@@ -5518,9 +5628,8 @@
     ("receptors and integrins" . SPARSER::COLLECTION)
     ("Quiescent Stat3" . SPARSER::PROTEIN)
     ("chemotaxis and haptotaxis" . SPARSER::COLLECTION)
-    ("RhoA" . SPARSER::PROTEIN) ("DOX and EGF" . SPARSER::COLLECTION)
-    ("GFP-RhoA" . SPARSER::COLLECTION) ("Chemotaxis" . SPARSER::PROTEIN)
-    ("siRNA and FAK" . SPARSER::COLLECTION)
+    ("DOX and EGF" . SPARSER::COLLECTION) ("GFP-RhoA" . SPARSER::COLLECTION)
+    ("Chemotaxis" . SPARSER::PROTEIN) ("siRNA and FAK" . SPARSER::COLLECTION)
     ("IL-6 or EGF" . SPARSER::COLLECTION) ("Stat3-FAK" . SPARSER::COLLECTION)
     ("fibronectin or EGF" . SPARSER::COLLECTION)
     ("EGF or fibronectin" . SPARSER::COLLECTION)
@@ -5542,7 +5651,7 @@
      . SPARSER::COLLECTION)
     ("cytokines, growth factors, and integrins" . SPARSER::COLLECTION)
     ("Stat3, EGF and fibronectin" . SPARSER::COLLECTION)
-    ("FAK-" . SPARSER::PROTEIN)
+    ("the Fallopian tube" . SPARSER::PROTEIN) ("FAK-" . SPARSER::PROTEIN)
     ("Stat3 siRNA or the JAK2 inhibitor AG490" . SPARSER::COLLECTION)
     ("IL-6-" . SPARSER::PROTEIN) ("Hey" . SPARSER::PROTEIN-FAMILY)
     ("ARHI" . SPARSER::PROTEIN) ("LKB-1" . SPARSER::PROTEIN)
@@ -5551,11 +5660,14 @@
     ("opted" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("IFN-γ and other genes" . SPARSER::COLLECTION)
     ("CD8 and CD4" . SPARSER::COLLECTION)
+    ("blot and ChIP" . SPARSER::COLLECTION)
     ("the associated inhibitor molecules" . SPARSER::MOLECULE)
     ("subunits or homodimers" . SPARSER::COLLECTION)
     ("IκB and p105" . SPARSER::COLLECTION)
     ("a control cell-permeable peptide" . SPARSER::PEPTIDE)
     ("the pharmacologic NFκB inhibitor PDTC" . SPARSER::DRUG)
+    ("post-antigen" . SPARSER::COLLECTION)
+    ("These quantitative ChIP" . SPARSER::PROTEIN)
     ("NFκB and T-bet" . SPARSER::COLLECTION)
     ("p50 and T-bet" . SPARSER::COLLECTION)
     ("p50 or T-bet" . SPARSER::COLLECTION) ("p50/p105" . SPARSER::COLLECTION)
@@ -5569,44 +5681,52 @@
     ("the predominant effector cytokine" . SPARSER::PROTEIN)
     ("a cell-permeable peptide inhibitor" . SPARSER::INHIBITOR)
     ("PDTC" . SPARSER::DRUG) ("T-bet and NFκB" . SPARSER::COLLECTION)
-    ("receptor (TCR)" . SPARSER::RECEPTOR)
     ("NFκB subunits p50 and/or p65(RelA)" . SPARSER::COLLECTION)
     ("p105 and IκB" . SPARSER::COLLECTION)
     ("multiple immune-related genes" . SPARSER::GENE)
     ("the ubiquitous transcription factor" . SPARSER::PROTEIN)
     ("delta-" . SPARSER::PROTEIN) ("GL3" . SPARSER::PROTEIN)
-    ("anti-Histone" . SPARSER::PROTEIN) ("CD62L" . SPARSER::PROTEIN)
-    ("RAG2" . SPARSER::PROTEIN) ("IL-2 receptor" . SPARSER::PROTEIN)
+    ("B10" . SPARSER::PROTEIN) ("anti-Histone" . SPARSER::PROTEIN)
+    ("CD62L" . SPARSER::PROTEIN) ("RAG2" . SPARSER::PROTEIN)
     ("an apical v-H + -ATPase" . SPARSER::COLLECTION)
     ("a basolateral vacuolar H + -ATPase" . SPARSER::COLLECTION)
     ("Slc26a4" . SPARSER::PROTEIN) ("TrkA" . SPARSER::PROTEIN)
-    ("histamine" . SPARSER::PROTEIN) ("extracorporal media" . SPARSER::PROTEIN)
+    ("typical pH" . SPARSER::PROTEIN) ("histamine" . SPARSER::PROTEIN)
+    ("extracorporal media" . SPARSER::PROTEIN)
     ("histidines" . SPARSER::AMINO-ACID) ("homologous IR" . SPARSER::PROTEIN)
     ("Cys-Cys" . SPARSER::COLLECTION) ("Cysteines" . SPARSER::AMINO-ACID)
     ("symmetrical receptor subunits" . SPARSER::FRAGMENT)
     ("Agonist" . SPARSER::AGONIST)
     ("receptor, and site-2" . SPARSER::COLLECTION)
     ("IR ( xref ) and IGF-IR ( xref )" . SPARSER::COLLECTION)
+    ("the unique case" . SPARSER::PROTEIN)
     ("the previously identified receptor tyrosine kinase"
      . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("two closely homologous receptors IR and IGF-IR" . SPARSER::COLLECTION)
+    ("mildly alkaline extracellular pH" . SPARSER::PROTEIN)
     ("pendrin and proton pump" . SPARSER::COLLECTION)
     ("pendrin" . SPARSER::PROTEIN) ("gas" . SPARSER::PROTEIN)
     ("NaCl 0.28M instead of NaHCO 3" . SPARSER::COLLECTION)
+    ("acid-base" . SPARSER::PROTEIN)
     ("a crude membrane fraction" . SPARSER::COMPONENT)
     ("protease and phosphatase" . SPARSER::COLLECTION)
-    ("CHO-IRR/IR" . SPARSER::COLLECTION) ("IR/IGF-IR" . SPARSER::COLLECTION)
-    ("MAP" . SPARSER::PROTEIN) ("IRR and IRS" . SPARSER::COLLECTION)
+    ("a live anesthetized rat" . SPARSER::PROTEIN)
+    ("CHO-IRR/IR" . SPARSER::COLLECTION)
+    ("media or insulin" . SPARSER::COLLECTION)
+    ("dye and anti-HA" . SPARSER::COLLECTION) ("Minor" . SPARSER::PROTEIN)
+    ("IR/IGF-IR" . SPARSER::COLLECTION) ("MAP" . SPARSER::PROTEIN)
+    ("IRR and IRS" . SPARSER::COLLECTION)
     ("streptavidin-HRP" . SPARSER::COLLECTION)
     ("anti-IRR/IR" . SPARSER::COLLECTION) ("IR/IRR" . SPARSER::COLLECTION)
     ("IRR and IR" . SPARSER::COLLECTION) ("TrkB/IRR" . SPARSER::COLLECTION)
     ("TrkB" . SPARSER::PROTEIN) ("both IRR and IRR/IR" . SPARSER::COLLECTION)
     ("IRR/IR" . SPARSER::COLLECTION) ("Triton" . SPARSER::MOLECULE)
-    ("IR and a weaker" . SPARSER::COLLECTION)
+    ("IR and a weaker one" . SPARSER::COLLECTION)
     ("pervanadate" . SPARSER::PROTEIN)
     ("alkaline and neutral media" . SPARSER::COLLECTION)
     ("any soluble hormone-like substance" . SPARSER::SUBSTANCE)
-    ("substance" . SPARSER::SUBSTANCE) ("CHO-IRR" . SPARSER::COLLECTION)
+    ("insulin or IGF" . SPARSER::COLLECTION) ("substance" . SPARSER::SUBSTANCE)
+    ("CHO-IRR" . SPARSER::COLLECTION)
     ("peptide or protein" . SPARSER::COLLECTION)
     ("neutral media" . SPARSER::PROTEIN) ("Da" . SPARSER::MOLECULE)
     ("AF" . SPARSER::PROTEIN) ("IRR, IR and IGF-IR" . SPARSER::COLLECTION)
@@ -5618,20 +5738,22 @@
     ("IR and IGF-IR" . SPARSER::COLLECTION)
     ("IR or IGF-IR" . SPARSER::COLLECTION)
     ("IGF-I and IR" . SPARSER::COLLECTION)
+    ("insulin and two insulin-like growth factors, IGF-I and IGF-II"
+     . SPARSER::COLLECTION)
     ("growth factors, IGF-I and IGF-II" . SPARSER::COLLECTION)
     ("insulin receptor (IR) and insulin-like growth factor receptor (IGF-IR)"
      . SPARSER::COLLECTION)
     ("mildly alkaline media" . SPARSER::PROTEIN)
     ("receptor (IRR)" . SPARSER::RECEPTOR) ("IRR" . SPARSER::PROTEIN)
     ("Receptor tyrosine kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Slc26" . SPARSER::PROTEIN) ("F–L" . SPARSER::PROTEIN)
-    ("ion channel" . SPARSER::PROTEIN-FAMILY)
+    ("Slc26" . SPARSER::PROTEIN) ("ion channel" . SPARSER::PROTEIN-FAMILY)
     ("proton pump" . SPARSER::PROTEIN) ("V-H" . SPARSER::PROTEIN)
     ("HCO 3" . SPARSER::MOLECULE) ("sodium bicarbonate" . SPARSER::DRUG)
-    ("ERK 1" . SPARSER::PROTEIN) ("sodium hydroxide" . SPARSER::MOLECULE)
-    ("p60" . SPARSER::PROTEIN) ("IRS-2" . SPARSER::PROTEIN)
-    ("IGF-II" . SPARSER::PROTEIN) ("IGF-I" . SPARSER::PROTEIN)
-    ("IGF-IR" . SPARSER::PROTEIN) ("Insulin receptor" . SPARSER::PROTEIN)
+    ("ERK 1" . SPARSER::PROTEIN) ("FL2" . SPARSER::PROTEIN)
+    ("sodium hydroxide" . SPARSER::MOLECULE) ("p60" . SPARSER::PROTEIN)
+    ("IRS-2" . SPARSER::PROTEIN) ("IGF-II" . SPARSER::PROTEIN)
+    ("IGF-I" . SPARSER::PROTEIN) ("IGF-IR" . SPARSER::PROTEIN)
+    ("Insulin receptor" . SPARSER::PROTEIN)
     ("orphan receptor" . SPARSER::PROTEIN)
     ("the error-prone and poorly processive TLS polymerases"
      . SPARSER::COLLECTION)
@@ -5658,16 +5780,14 @@
     ("CTF18, RAD17, or ELG1" . SPARSER::COLLECTION)
     ("ELG1 and the RFC complex" . SPARSER::COLLECTION)
     ("FANCD2 and PCNA" . SPARSER::COLLECTION) ("Usp1" . SPARSER::PROTEIN)
-    ("replicative polymerases" . SPARSER::PROTEIN)
+    ("Usp" . SPARSER::PROTEIN) ("replicative polymerases" . SPARSER::PROTEIN)
     ("USP1 and its activating partner protein UAF1 (USP1-associated factor 1)"
      . SPARSER::COLLECTION)
-    ("enzymes and the DUBs" . SPARSER::COLLECTION)
     ("Prone" . SPARSER::PROTEIN-FAMILY)
     ("the E2 Ubc9 and the E3 Siz1 [ xref , xref ]" . SPARSER::COLLECTION)
     ("Siz1" . SPARSER::PROTEIN) ("hltf/shprh" . SPARSER::COLLECTION)
     ("shprh" . SPARSER::PROTEIN) ("hltf" . SPARSER::PROTEIN)
-    ("RAD18 and UBC13/MMS2" . SPARSER::COLLECTION)
-    ("UBC13/MMS2" . SPARSER::COLLECTION)
+    ("UBC13/MMS2" . SPARSER::COLLECTION) ("RAD6/RAD18" . SPARSER::COLLECTION)
     ("HLTF and SHPRH" . SPARSER::COLLECTION) ("SHPRH" . SPARSER::PROTEIN)
     ("HLTF" . SPARSER::PROTEIN) ("RAD18 and UBC13" . SPARSER::COLLECTION)
     ("the relevant E3s" . SPARSER::MOLECULE)
@@ -5698,13 +5818,11 @@
     ("hydrolase (UCH)" . SPARSER::PROTEIN)
     ("protease (USP)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ubiquitin-protease" . SPARSER::COLLECTION) ("MJD" . SPARSER::PROTEIN)
-    ("OTU" . SPARSER::PROTEIN-FAMILY) ("Otubain" . SPARSER::PROTEIN-FAMILY)
+    ("OTU" . SPARSER::PROTEIN) ("Otubain" . SPARSER::PROTEIN-FAMILY)
     ("UCH" . SPARSER::PROTEIN) ("hydrolase" . SPARSER::PROTEIN)
-    ("USP" . SPARSER::PROTEIN) ("cellular adducts" . SPARSER::PROTEIN)
-    ("ubiquitin-protein" . SPARSER::COLLECTION)
-    ("metallo-proteases" . SPARSER::COLLECTION)
+    ("USP" . SPARSER::PROTEIN) ("metallo-proteases" . SPARSER::COLLECTION)
     ("mainly mark proteins" . SPARSER::PROTEIN)
-    ("lysine 48 (K48)-linked polyubiquitin" . SPARSER::PROTEIN)
+    ("lysine 48 (K48)-linked polyubiquitin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a lysine of the target protein and the C-terminal glycine of ubiquitin"
      . SPARSER::COLLECTION)
     ("the target protein and the C-terminal glycine" . SPARSER::COLLECTION)
@@ -5715,25 +5833,29 @@
     ("htb1" . SPARSER::PROTEIN) ("FEN1" . SPARSER::PROTEIN)
     ("CTF18" . SPARSER::PROTEIN) ("RFC1" . SPARSER::PROTEIN)
     ("RFC 1" . SPARSER::PROTEIN) ("UAF1" . SPARSER::PROTEIN)
-    ("S.cerevisiae" . SPARSER::PROTEIN) ("Srs2" . SPARSER::PROTEIN)
+    ("Srs2" . SPARSER::PROTEIN) ("RAD6" . SPARSER::PROTEIN)
     ("MMS2" . SPARSER::PROTEIN) ("RAD18" . SPARSER::PROTEIN)
     ("Rad5" . SPARSER::PROTEIN) ("Mms2" . SPARSER::PROTEIN)
-    ("REV1" . SPARSER::PROTEIN) ("RPA2" . SPARSER::PROTEIN)
-    ("Rad18" . SPARSER::PROTEIN) ("Rad6" . SPARSER::PROTEIN)
-    ("Pad1" . SPARSER::PROTEIN) ("Mpr1" . SPARSER::PROTEIN)
-    ("Jab1" . SPARSER::PROTEIN) ("Machado-Joseph disease" . SPARSER::PROTEIN)
+    ("REV1" . SPARSER::PROTEIN) ("DNA ligase I" . SPARSER::PROTEIN)
+    ("RPA2" . SPARSER::PROTEIN) ("Rad18" . SPARSER::PROTEIN)
+    ("Rad6" . SPARSER::PROTEIN) ("Pad1" . SPARSER::PROTEIN)
+    ("Mpr1" . SPARSER::PROTEIN) ("Jab1" . SPARSER::PROTEIN)
     ("ELG1" . SPARSER::PROTEIN) ("USP1" . SPARSER::PROTEIN)
     ("Proliferating Cell Nuclear Antigen" . SPARSER::PROTEIN)
-    ("nodal" . SPARSER::PROTEIN) ("homogeneous cohort" . SPARSER::MOLECULE)
+    ("nodal" . SPARSER::PROTEIN) ("possible impact" . SPARSER::PROTEIN)
+    ("homogeneous cohort" . SPARSER::MOLECULE)
     ("N-Cadherin or P-Cadherin" . SPARSER::COLLECTION)
-    ("Cadherin" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Cadherin" . SPARSER::HUMAN-PROTEIN-FAMILY) ("SLN" . SPARSER::PROTEIN)
     ("the ECAD-associated molecules" . SPARSER::MOLECULE)
     ("types and cell lines" . SPARSER::COLLECTION)
     ("ECAD/catenin" . SPARSER::COLLECTION)
     ("α-catenin and β-catenin" . SPARSER::COLLECTION)
     ("a Ca2 + -dependent intercellular adhesion molecule" . SPARSER::PROTEIN)
-    ("ECAD" . SPARSER::PROTEIN) ("GOD" . SPARSER::PROTEIN)
-    ("Sentinel" . SPARSER::DRUG)
+    ("ECAD" . SPARSER::PROTEIN)
+    ("The hitherto published predictive factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("GOD" . SPARSER::PROTEIN) ("Sentinel" . SPARSER::DRUG)
+    ("an extremely bad prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("an intercellular adhesion molecule" . SPARSER::PROTEIN)
     ("bmi-1" . SPARSER::PROTEIN) ("P-Cadherin" . SPARSER::PROTEIN)
     ("N-Cadherin" . SPARSER::PROTEIN) ("Ca2 +" . SPARSER::CALCIUM-ION)
@@ -5742,8 +5864,8 @@
     ("Bim, Bad and Bmf" . SPARSER::COLLECTION)
     ("The last eight amino acids" . SPARSER::AMINO-ACID)
     ("the 26-amino-acid SOUL peptide" . SPARSER::PEPTIDE)
-    ("an intact BH3-only protein" . SPARSER::PROTEIN)
-    ("BIK" . SPARSER::PROTEIN) ("Bcl-2, Bcl-xL or MCL-1" . SPARSER::COLLECTION)
+    ("their hydrophilic face" . SPARSER::PROTEIN) ("BIK" . SPARSER::PROTEIN)
+    ("Bcl-2, Bcl-xL or MCL-1" . SPARSER::COLLECTION)
     ("the helical conformation" . SPARSER::BIO-CONFORMATION)
     ("Beclin 1 and BIM" . SPARSER::COLLECTION)
     ("These three basic amino acids" . SPARSER::AMINO-ACID)
@@ -5756,23 +5878,23 @@
     ("Both intact Bcl-xL and a form" . SPARSER::COLLECTION)
     ("Both intact Bcl-xL" . SPARSER::PROTEIN)
     ("haemin and SOUL" . SPARSER::COLLECTION) ("Haemin" . SPARSER::MOLECULE)
-    ("SOUL and haemin" . SPARSER::COLLECTION) ("OG" . SPARSER::PROTEIN)
-    ("the orthorhombic crystal form" . SPARSER::FORM)
-    ("the hexagonal crystal form" . SPARSER::FORM)
-    ("Solvent" . SPARSER::MOLECULE)
+    ("SOUL and haemin" . SPARSER::COLLECTION) ("NE" . SPARSER::PROTEIN)
+    ("OG" . SPARSER::PROTEIN) ("the orthorhombic crystal form" . SPARSER::FORM)
+    ("the hexagonal crystal form" . SPARSER::FORM) ("TLS" . SPARSER::PROTEIN)
+    ("Solvent" . SPARSER::MOLECULE) ("RU" . SPARSER::PROTEIN)
     ("0.2 M sodium sulfate and 0.3 M 1-butyl-3-methylimidazolium 2-(2-methoxyethoxy)ethyl sulfate"
      . SPARSER::COLLECTION)
     ("PEG" . SPARSER::PROTEIN) ("The hexagonal crystal form" . SPARSER::FORM)
-    ("Hepes" . SPARSER::MOLECULE) ("amine" . SPARSER::MOLECULE)
-    ("protein and ligand" . SPARSER::COLLECTION)
+    ("KH 2 PO 4 and 0.08 M Hepes (pH 7.5)" . SPARSER::COLLECTION)
+    ("TAG" . SPARSER::PROTEIN) ("Hepes" . SPARSER::MOLECULE)
+    ("amine" . SPARSER::MOLECULE) ("protein and ligand" . SPARSER::COLLECTION)
     ("SOUL and BSA" . SPARSER::COLLECTION) ("haemin" . SPARSER::MOLECULE)
     ("Vis" . SPARSER::DRUG) ("Sigma–Aldrich" . SPARSER::PROTEIN-PAIR)
-    ("A truncated form lacking the flexible loop spanning amino acids 27–82 and the last 24 amino acids"
-     . SPARSER::COLLECTION)
     ("the last 24 amino acids" . SPARSER::AMINO-ACID)
     ("0.15 M NaCl and 0.02% sodium azide" . SPARSER::COLLECTION)
-    ("azide" . SPARSER::MOLECULE) ("Tris" . SPARSER::MOLECULE)
-    ("Sepharose" . SPARSER::MOLECULE) ("nickel" . SPARSER::MOLECULE)
+    ("azide" . SPARSER::MOLECULE) ("pH " . SPARSER::PROTEIN)
+    ("Tris" . SPARSER::MOLECULE) ("Sepharose" . SPARSER::MOLECULE)
+    ("nickel" . SPARSER::MOLECULE)
     ("the fragment and the expression vector pQE50 (Qiagen)"
      . SPARSER::COLLECTION)
     ("endonucleases" . SPARSER::PROTEIN) ("Bcl-xL–SOUL" . SPARSER::COLLECTION)
@@ -5784,9 +5906,8 @@
     ("the intact proteins and their complexes" . SPARSER::COLLECTION)
     ("SOUL" . SPARSER::PROTEIN) ("MCL-1" . SPARSER::PROTEIN)
     ("L12" . SPARSER::PROTEIN) ("2P1" . SPARSER::PROTEIN)
-    ("N- 1" . SPARSER::PROTEIN) ("CCP4" . SPARSER::PROTEIN)
-    ("P 4" . SPARSER::HUMAN-PROTEIN-FAMILY) ("group C" . SPARSER::PROTEIN)
-    ("M 1" . SPARSER::MOLECULE) ("P-20" . SPARSER::PROTEIN)
+    ("CCP4" . SPARSER::PROTEIN) ("P 4" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("group C" . SPARSER::PROTEIN) ("M 1" . SPARSER::MOLECULE)
     ("HEBP2" . SPARSER::PROTEIN) ("HEBP1" . SPARSER::PROTEIN)
     ("p22HBP" . SPARSER::PROTEIN) ("Beclin 1" . SPARSER::PROTEIN)
     ("BH4" . SPARSER::PROTEIN-FAMILY) ("BH2" . SPARSER::MOLECULE)
@@ -5800,6 +5921,7 @@
     ("C/EBPβ and HDAC1" . SPARSER::COLLECTION) ("GH" . SPARSER::PROTEIN)
     ("HDAC1 and C/EBP β" . SPARSER::COLLECTION)
     ("C/EBP β and HDAC1" . SPARSER::COLLECTION)
+    ("transcription-factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("HDAC1-C/EBP β" . SPARSER::COLLECTION)
     ("proteins and BrdU" . SPARSER::COLLECTION)
     ("PCNA and cyclin D1 and DNA" . SPARSER::COLLECTION)
@@ -5807,6 +5929,7 @@
     ("glucose and TGs" . SPARSER::COLLECTION) ("TGs" . SPARSER::PROTEIN)
     ("SIRT1 and SIRT1" . SPARSER::COLLECTION)
     ("C/EBP α and C/EBP β" . SPARSER::COLLECTION)
+    ("glucose and insulin" . SPARSER::COLLECTION)
     ("-Brm" . SPARSER::COLLECTION) ("Brm" . SPARSER::PROTEIN)
     ("glucose and triglycerides" . SPARSER::COLLECTION)
     ("-HDAC1" . SPARSER::COLLECTION)
@@ -5818,18 +5941,23 @@
     ("E2F4" . SPARSER::PROTEIN) ("sirtuin 1" . SPARSER::PROTEIN)
     ("C/EBP α" . SPARSER::PROTEIN)
     ("CCAAT/Enhancer Binding Protein" . SPARSER::PROTEIN)
-    ("miRNA-RISC" . SPARSER::COLLECTION) ("puromycin" . SPARSER::DRUG)
+    ("mRNA or inhibition of translation" . SPARSER::COLLECTION)
+    ("puromycin" . SPARSER::DRUG) ("any possible impact" . SPARSER::PROTEIN)
     ("Nrf2-myc" . SPARSER::PROTEIN-PAIR) ("Keap1-FLAG" . SPARSER::PROTEIN-PAIR)
-    ("Keap1/Nrf2" . SPARSER::COLLECTION)
+    ("pri" . SPARSER::PROTEIN) ("Keap1/Nrf2" . SPARSER::COLLECTION)
+    ("Pri" . SPARSER::PROTEIN) ("UTR and mutant" . SPARSER::COLLECTION)
     ("response element (MER)" . SPARSER::DNA-RESPONSE-ELEMENT)
-    ("MER" . SPARSER::PROTEIN) ("MiR" . SPARSER::PROTEIN)
+    ("MER" . SPARSER::PROTEIN)
     ("estrogen and its metabolites" . SPARSER::COLLECTION)
+    ("Nrf2 and miR-28" . SPARSER::COLLECTION)
     ("complex (RISC)" . SPARSER::BIO-COMPLEX)
     ("Argonaute" . SPARSER::PROTEIN-FAMILY)
     ("their mature form" . SPARSER::FORM) ("Dicer" . SPARSER::PROTEIN)
-    ("Drosha" . SPARSER::PROTEIN) ("MiRNAs" . SPARSER::PROTEIN)
-    ("AhR" . SPARSER::PROTEIN) ("synthetase (GCL)" . SPARSER::PROTEIN)
-    ("UDPs" . SPARSER::UDP) ("Keap1 and Nrf2" . SPARSER::COLLECTION)
+    ("Drosha" . SPARSER::PROTEIN) ("MiRNAs" . SPARSER::MICRO-RNA)
+    ("AhR" . SPARSER::PROTEIN)
+    ("the carcinogenic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("synthetase (GCL)" . SPARSER::PROTEIN) ("UDPs" . SPARSER::UDP)
+    ("GCL" . SPARSER::PROTEIN) ("Keap1 and Nrf2" . SPARSER::COLLECTION)
     ("Keap1-Nrf2" . SPARSER::COLLECTION)
     ("response elements (ARE)" . SPARSER::DNA-RESPONSE-ELEMENT)
     ("m7G" . SPARSER::MOLECULE) ("β -estradiol" . SPARSER::MOLECULE)
@@ -5844,10 +5972,12 @@
     ("VEGF and survivin" . SPARSER::COLLECTION)
     ("cyclinD3-cdk4" . SPARSER::PROTEIN-PAIR)
     ("cyclin D3-cdk4" . SPARSER::PROTEIN-PAIR)
-    ("the associated p21 mRNA" . SPARSER::PROTEIN)
+    ("the associated p21 mRNA" . SPARSER::RNA)
+    ("factors, and CUGBP1" . SPARSER::COLLECTION)
     ("Dcp1a and PARN" . SPARSER::COLLECTION) ("Dcp1a" . SPARSER::PROTEIN)
     ("PARN" . SPARSER::PROTEIN) ("eIF4E and PABP" . SPARSER::COLLECTION)
-    ("PABP" . SPARSER::PROTEIN) ("p21 and ASK1" . SPARSER::COLLECTION)
+    ("PABP" . SPARSER::PROTEIN) ("protecting p21 mRNA" . SPARSER::RNA)
+    ("p21 and ASK1" . SPARSER::COLLECTION)
     ("PKA and Akt" . SPARSER::COLLECTION)
     ("cyclin D-CDK4" . SPARSER::COLLECTION)
     ("cyclin E-CDK2" . SPARSER::COLLECTION)
@@ -5855,29 +5985,26 @@
     ("Irinotecan" . SPARSER::DRUG)
     ("either Ras GTPase-activating protein-binding protein 1 G3BP1 ( xref ) or FXR1 (data not shown)"
      . SPARSER::COLLECTION)
-    ("FXR" . SPARSER::PROTEIN) ("associated p21 mRNA" . SPARSER::PROTEIN)
-    ("CUGBP1-p21" . SPARSER::COLLECTION) ("Arsenite" . SPARSER::DRUG)
-    ("CUGBP1 and p21" . SPARSER::COLLECTION) ("WAF/CIP1" . SPARSER::COLLECTION)
-    ("WAF" . SPARSER::PROTEIN) ("HuR and CUGBP1" . SPARSER::COLLECTION)
-    ("HRI" . SPARSER::PROTEIN)
-    ("a barely detectable p21 mRNA" . SPARSER::PROTEIN)
-    ("FMRP" . SPARSER::PROTEIN)
+    ("associated p21 mRNA" . SPARSER::RNA) ("CUGBP1-p21" . SPARSER::COLLECTION)
+    ("Arsenite" . SPARSER::DRUG) ("CUGBP1 and p21" . SPARSER::COLLECTION)
+    ("WAF/CIP1" . SPARSER::COLLECTION) ("WAF" . SPARSER::PROTEIN)
+    ("HuR and CUGBP1" . SPARSER::COLLECTION) ("HRI" . SPARSER::PROTEIN)
+    ("a barely detectable p21 mRNA" . SPARSER::RNA) ("FMRP" . SPARSER::PROTEIN)
     ("apoptosis signal-regulating kinase 1 (ASK1) and caspase-3"
      . SPARSER::COLLECTION)
     ("nocodazole" . SPARSER::DRUG) ("cyclin D-cdk4" . SPARSER::COLLECTION)
     ("cyclin E/cdk2" . SPARSER::COLLECTION)
     ("a stressed state or normal cell cycle arrest" . SPARSER::COLLECTION)
-    ("Bortezomib" . SPARSER::DRUG)
-    ("its associated p21 mRNA" . SPARSER::PROTEIN)
-    ("MG132 or lactacystin" . SPARSER::COLLECTION)
+    ("Bortezomib" . SPARSER::DRUG) ("its associated p21 mRNA" . SPARSER::RNA)
+    ("CELF" . SPARSER::PROTEIN) ("MG132 or lactacystin" . SPARSER::COLLECTION)
     ("lactacystin" . SPARSER::DRUG) ("RACK1 and TRAF2" . SPARSER::COLLECTION)
     ("small ribosomal subunits" . SPARSER::PROTEIN)
     ("CUGBP1 or p21" . SPARSER::COLLECTION) ("boronate" . SPARSER::MOLECULE)
     ("Velcade" . SPARSER::DRUG)
     ("Fluorescein Isothiocyanate" . SPARSER::MOLECULE)
-    ("cyclinD3" . SPARSER::PROTEIN) ("cyclin D3" . SPARSER::PROTEIN)
-    ("Dcp1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("G3BP1" . SPARSER::PROTEIN)
-    ("Ras GTPase-activating protein-binding protein 1" . SPARSER::PROTEIN)
+    ("its 3" . SPARSER::PROTEIN) ("cyclinD3" . SPARSER::PROTEIN)
+    ("cyclin D3" . SPARSER::PROTEIN) ("Dcp1" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("FXR1" . SPARSER::PROTEIN) ("G3BP1" . SPARSER::PROTEIN)
     ("heme-regulated inhibitor" . SPARSER::PROTEIN) ("ASK1" . SPARSER::PROTEIN)
     ("apoptosis signal-regulating kinase 1" . SPARSER::PROTEIN)
     ("RACK1" . SPARSER::PROTEIN) ("p21 protein" . SPARSER::PROTEIN)
@@ -5897,13 +6024,15 @@
     ("vaginal macrophages" . SPARSER::PROTEIN)
     ("the predominant mononuclear target cell" . SPARSER::PROTEIN)
     ("transcriptionally active p50/p65 heterodimer" . SPARSER::HETERODIMER)
-    ("LPS-exposed intestinal macrophages" . SPARSER::PROTEIN)
+    ("macrophages and S-CM-treated" . SPARSER::COLLECTION)
     ("p50 or p65" . SPARSER::COLLECTION)
     ("irrelevant IgG (100 µg/mL) antibody" . SPARSER::ANTIBODY)
     ("Stromal TGF-β" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the monocyte-derived macrophage" . SPARSER::PROTEIN)
+    ("MNL-CM" . SPARSER::COLLECTION) ("EC-CM" . SPARSER::COLLECTION)
     ("Monocyte-derived macrophages" . SPARSER::PROTEIN)
     ("terminally differentiated intestinal macrophages" . SPARSER::PROTEIN)
+    ("g protein/mL" . SPARSER::COLLECTION)
     ("adherent macrophages" . SPARSER::PROTEIN)
     ("Intestinal stroma-conditioned media" . SPARSER::PROTEIN)
     ("even CD4 + intestinal macrophages" . SPARSER::PROTEIN)
@@ -5911,6 +6040,7 @@
     ("the sorted CD4 + intestinal macrophages" . SPARSER::PROTEIN)
     ("both the intestinal macrophages" . SPARSER::PROTEIN)
     ("autologous CD4 + intestinal macrophages" . SPARSER::PROTEIN)
+    ("MACS" . SPARSER::PROTEIN)
     ("CCR5 (2.9%) and CXCR4 (14.1%)" . SPARSER::COLLECTION)
     ("CD4 (11.6%), CCR5 (2.9%) and CXCR4 (14.1%)" . SPARSER::COLLECTION)
     ("10-fold fewer intestinal macrophages" . SPARSER::PROTEIN)
@@ -5949,9 +6079,8 @@
     ("Apolipoprotein B" . SPARSER::PROTEIN) ("IκBβ" . SPARSER::PROTEIN)
     ("CD13" . SPARSER::PROTEIN) ("co-receptor" . SPARSER::PROTEIN)
     ("TREM-1" . SPARSER::PROTEIN) ("myeloid cells-1" . SPARSER::PROTEIN)
-    ("extracellular MMP-2" . SPARSER::PROTEIN) ("new media" . SPARSER::PROTEIN)
+    ("pro- and active" . SPARSER::COLLECTION) ("new media" . SPARSER::PROTEIN)
     ("cmH" . SPARSER::MOLECULE) ("Calcein" . SPARSER::MOLECULE)
-    ("CNS-1 and U251" . SPARSER::COLLECTION)
     ("normal vasculature" . SPARSER::PROTEIN)
     ("MMP-1 and MMP-2" . SPARSER::COLLECTION)
     ("U87 and CNS-1" . SPARSER::COLLECTION)
@@ -5959,7 +6088,6 @@
     ("extracellular matrix metalloproteinase inducer" . SPARSER::PROTEIN)
     ("type 3" . SPARSER::PROTEIN) ("cmH 2" . SPARSER::PROTEIN)
     ("Matrix Metalloproteinase" . SPARSER::PROTEIN)
-    ("CNS-1" . SPARSER::PROTEIN) ("A 3D" . SPARSER::PROTEIN)
     ("FAK and Src kinase" . SPARSER::COLLECTION) ("β3" . SPARSER::PROTEIN)
     ("an early prognostic biomarker" . SPARSER::MOLECULE)
     ("GAS-3 and tetraspanins" . SPARSER::COLLECTION)
@@ -5968,7 +6096,7 @@
      . SPARSER::COLLECTION)
     ("integrin-FAK" . SPARSER::COLLECTION) ("EMP2-β3" . SPARSER::PROTEIN-PAIR)
     ("Src and FAK" . SPARSER::COLLECTION)
-    ("a receptor-proximal protein" . SPARSER::PROTEIN)
+    ("growth-factor-receptor" . SPARSER::COLLECTION)
     ("caveolin-1 and caveolin-2" . SPARSER::COLLECTION)
     ("caveolins" . SPARSER::PROTEIN-FAMILY)
     ("sphingolipids and make" . SPARSER::COLLECTION)
@@ -5997,15 +6125,15 @@
     ("connexins" . SPARSER::PROTEIN-FAMILY)
     ("tetraspanins" . SPARSER::PROTEIN-FAMILY)
     ("FAK and Src" . SPARSER::COLLECTION) ("/Src" . SPARSER::COLLECTION)
+    ("epithelial membrane protein-2" . SPARSER::PROTEIN)
     ("One recent biomarker" . SPARSER::MOLECULE)
     ("tetraspan" . SPARSER::PROTEIN) ("CD151" . SPARSER::PROTEIN)
-    ("αvβ3" . SPARSER::PROTEIN)
-    ("growth-factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("caveolin-2" . SPARSER::PROTEIN) ("second type" . SPARSER::PROTEIN)
-    ("Flotillin-2" . SPARSER::PROTEIN) ("p-Src" . SPARSER::PROTEIN)
-    ("N -glycanase" . SPARSER::PROTEIN) ("20 kD" . SPARSER::PROTEIN)
-    ("48 kD" . SPARSER::PROTEIN) ("PMP22" . SPARSER::PROTEIN)
-    ("GAS-3" . SPARSER::PROTEIN) ("EMP2" . SPARSER::PROTEIN)
+    ("αvβ3" . SPARSER::PROTEIN) ("caveolin-2" . SPARSER::PROTEIN)
+    ("second type" . SPARSER::PROTEIN) ("Flotillin-2" . SPARSER::PROTEIN)
+    ("p-Src" . SPARSER::PROTEIN) ("N -glycanase" . SPARSER::PROTEIN)
+    ("20 kD" . SPARSER::PROTEIN) ("48 kD" . SPARSER::PROTEIN)
+    ("PMP22" . SPARSER::PROTEIN) ("GAS-3" . SPARSER::PROTEIN)
+    ("EMP2" . SPARSER::PROTEIN) ("membrane protein-2" . SPARSER::PROTEIN)
     ("notch1, notch2 and hes5" . SPARSER::COLLECTION)
     ("Math1, Ngn3, and NeuroD" . SPARSER::COLLECTION)
     ("Hes1, and Hes5" . SPARSER::COLLECTION) ("Notch1-3" . SPARSER::COLLECTION)
@@ -6014,21 +6142,23 @@
     ("TNF-α and IL-1β" . SPARSER::COLLECTION)
     ("LIF and IL-6" . SPARSER::COLLECTION)
     ("Both TNF-α ( xref ) and IL-1β (data not shown)" . SPARSER::COLLECTION)
+    ("other soluble factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("IL-6 and LIF" . SPARSER::COLLECTION)
     ("cytokines, IL-6 and LIF" . SPARSER::COLLECTION)
     ("leukemia inhibitory factor (LIF)" . SPARSER::PROTEIN)
     ("IL-6 and ciliary neurotrophic factor" . SPARSER::COLLECTION)
     ("CNTF" . SPARSER::PROTEIN) ("Jak1-STAT3" . SPARSER::COLLECTION)
+    ("microglial-derived soluble factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Dimerized STAT3" . SPARSER::PROTEIN)
     ("STAT3 and LPS+HIV-MCM" . SPARSER::COLLECTION)
     ("IL-6 and IL-1β" . SPARSER::COLLECTION)
     ("IL-6, IL-1β, and TNF-α" . SPARSER::COLLECTION) ("ADA" . SPARSER::PROTEIN)
-    ("TNF soluble receptors" . SPARSER::PROTEIN)
+    ("Pre" . SPARSER::PROTEIN) ("TNF soluble receptors" . SPARSER::PROTEIN)
     ("LPS- and LPS+HIV-MCM" . SPARSER::COLLECTION) ("LPS-" . SPARSER::PROTEIN)
     ("a phospho-STAT3 antibody and an antibody" . SPARSER::COLLECTION)
     ("Jak1 and STAT3" . SPARSER::COLLECTION)
     ("Jak/STAT3" . SPARSER::COLLECTION) ("Jak1" . SPARSER::PROTEIN)
-    ("Jak-1" . SPARSER::PROTEIN)
+    ("Jak-1" . SPARSER::PROTEIN) ("con-MCM" . SPARSER::COLLECTION)
     ("the astrocytic marker GFAP" . SPARSER::PROTEIN)
     ("the cytoskeletric protein nestin" . SPARSER::PROTEIN)
     ("Human fetal cortical NPCs" . SPARSER::MOLECULE)
@@ -6037,8 +6167,10 @@
     ("Kinase-STAT3" . SPARSER::COLLECTION) ("gyrus" . SPARSER::PROTEIN)
     ("dentate" . SPARSER::PROTEIN)
     ("viral proteins and neurotoxins" . SPARSER::COLLECTION)
+    ("brain mononuclear phagocytes (MP; perivascular macrophages and microglia) release many immune competent factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("proteins and neurotoxins" . SPARSER::COLLECTION)
-    ("IL-6, IL-1β and TNF-α" . SPARSER::COLLECTION)
+    ("pre" . SPARSER::PROTEIN) ("IL-6, IL-1β and TNF-α" . SPARSER::COLLECTION)
     ("LPS-MCM" . SPARSER::COLLECTION)
     ("the inflammatory cytokines" . SPARSER::PROTEIN)
     ("monocyte-derived macrophages (MDM)" . SPARSER::PROTEIN)
@@ -6049,27 +6181,27 @@
     ("Math1" . SPARSER::PROTEIN)
     ("capsid protein" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("MAP-2" . SPARSER::PROTEIN) ("TNF-R1" . SPARSER::PROTEIN)
-    ("N-acetylcysteine" . SPARSER::DRUG) ("NSF-1" . SPARSER::PROTEIN)
+    ("N-acetylcysteine" . SPARSER::DRUG)
     ("colony stimulating factor" . SPARSER::PROTEIN)
     ("fibrillary acidic protein" . SPARSER::PROTEIN)
     ("Jak-STAT" . SPARSER::PROTEIN) ("Janus kinase 1" . SPARSER::PROTEIN)
     ("tumor necrosis factor-alpha" . SPARSER::PROTEIN)
     ("receptor and PPARγ" . SPARSER::COLLECTION)
     ("adrenergic" . SPARSER::PROTEIN) ("Jumonji" . SPARSER::PROTEIN)
+    ("a basic helix-loop-helix transcription factor" . SPARSER::PROTEIN)
     ("retinoic acid receptor (RAR) and Vitamin D receptor (VDR)"
      . SPARSER::COLLECTION)
     ("9-cis-reinoic acid receptor (RXR) and form" . SPARSER::COLLECTION)
     ("9-cis-reinoic acid receptor (RXR)" . SPARSER::RECEPTOR)
     ("receptor (RXR)" . SPARSER::RECEPTOR)
     ("receptor (VDR)" . SPARSER::RECEPTOR)
-    ("receptor (RAR)" . SPARSER::RECEPTOR)
     ("receptor (TR)" . SPARSER::RECEPTOR)
     ("NCoR and SMRT" . SPARSER::COLLECTION) ("VDR" . SPARSER::PROTEIN)
     ("TR" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("H3K4 and H4K20" . SPARSER::COLLECTION)
     ("JMJD2A and NCoR" . SPARSER::COLLECTION)
     ("the homologous protein JMJD2A" . SPARSER::PROTEIN)
-    ("pre-adipocytes" . SPARSER::COLLECTION)
+    ("pre-adipocytes" . SPARSER::PROTEIN-PAIR)
     ("HDAC1 and HDAC3" . SPARSER::COLLECTION) ("HDACS" . SPARSER::PROTEIN)
     ("UAS-LUC" . SPARSER::COLLECTION) ("Gal4-PPARγ" . SPARSER::COLLECTION)
     ("pRb and histone" . SPARSER::COLLECTION)
@@ -6101,12 +6233,12 @@
     ("KDM1A" . SPARSER::PROTEIN) ("KDM3A" . SPARSER::PROTEIN)
     ("Jhdm2a" . SPARSER::PROTEIN) ("ASCL2" . SPARSER::PROTEIN)
     ("α-ketoglutarate" . SPARSER::MOLECULE) ("Suv39h" . SPARSER::PROTEIN)
-    ("KIAA0780" . SPARSER::PROTEIN) ("L-1" . SPARSER::PROTEIN)
-    ("JMJD2D" . SPARSER::PROTEIN) ("JMJD2A" . SPARSER::PROTEIN)
-    ("demethylase activity" . SPARSER::PROTEIN) ("jmjd2" . SPARSER::PROTEIN)
-    ("JMJD2" . SPARSER::PROTEIN) ("class 1" . SPARSER::PROTEIN-FAMILY)
-    ("KDM4C" . SPARSER::PROTEIN) ("JMJD2C" . SPARSER::PROTEIN)
-    ("lysine demethylase 4 C" . SPARSER::PROTEIN)
+    ("KIAA0780" . SPARSER::PROTEIN) ("JMJD2D" . SPARSER::PROTEIN)
+    ("JMJD2A" . SPARSER::PROTEIN) ("demethylase activity" . SPARSER::PROTEIN)
+    ("jmjd2" . SPARSER::PROTEIN) ("JMJD2" . SPARSER::PROTEIN)
+    ("nuclear hormone receptor" . SPARSER::PROTEIN)
+    ("class 1" . SPARSER::PROTEIN-FAMILY) ("KDM4C" . SPARSER::PROTEIN)
+    ("JMJD2C" . SPARSER::PROTEIN) ("lysine demethylase 4 C" . SPARSER::PROTEIN)
     ("jumonji domain containing 2C" . SPARSER::PROTEIN)
     ("Peroxisome Proliferator-activated receptor gamma" . SPARSER::PROTEIN)
     ("OLIG2 and NESTIN" . SPARSER::COLLECTION)
@@ -6116,6 +6248,7 @@
      . SPARSER::COLLECTION)
     ("PAI-1 and p16 INK4a" . SPARSER::COLLECTION)
     ("p16 INK4a staining showed positive Spearman’s" . SPARSER::PROTEIN)
+    ("PANC" . SPARSER::PROTEIN)
     ("the senescence-associated markers p16 INK4a ( xref ) and PAI-1 ( xref )"
      . SPARSER::COLLECTION)
     ("the senescence-associated markers p16 INK4a" . SPARSER::PROTEIN)
@@ -6124,8 +6257,9 @@
     ("SOX2, OLIG2, and NESTIN" . SPARSER::COLLECTION)
     ("NESTIN" . SPARSER::PROTEIN)
     ("β-galactosidase, PAI-1 and p16 INK4a" . SPARSER::COLLECTION)
-    ("KIAA1549:BRAF" . SPARSER::BIO-COMPLEX) ("RAS/RAF" . SPARSER::COLLECTION)
-    ("soft agarose" . SPARSER::MOLECULE)
+    ("KIAA1549:BRAF" . SPARSER::BIO-COMPLEX)
+    ("extracellular-signal regulated kinase" . SPARSER::COLLECTION)
+    ("RAS/RAF" . SPARSER::COLLECTION) ("soft agarose" . SPARSER::MOLECULE)
     ("β-galactosidase, PAI-1, and p16 INK4a" . SPARSER::COLLECTION)
     ("p19 ARF" . SPARSER::PROTEIN) ("E 1" . SPARSER::MOLECULE)
     ("OLIG2" . SPARSER::PROTEIN)
@@ -6135,17 +6269,22 @@
     ("p16 INK4a" . SPARSER::PROTEIN)
     ("EGFR-TKI or rexinoid" . SPARSER::COLLECTION)
     ("Erlotinib and bexarotene" . SPARSER::COLLECTION)
-    ("A larger cohort" . SPARSER::MOLECULE)
+    ("the longest PFS" . SPARSER::PROTEIN)
+    ("A larger cohort" . SPARSER::MOLECULE) ("FDG-PET" . SPARSER::COLLECTION)
     ("bexarotene or erlotinib" . SPARSER::COLLECTION)
     ("significantly more active" . SPARSER::ACTIVE)
+    ("abdominal pain" . SPARSER::PROTEIN) ("pain" . SPARSER::PROTEIN)
     ("wild-type EGFR and wild-type KRAS" . SPARSER::COLLECTION)
+    ("The longest PFS" . SPARSER::PROTEIN) ("second-line" . SPARSER::PROTEIN)
     ("normal triglycerides" . SPARSER::MOLECULE)
     ("triglycerides" . SPARSER::MOLECULE) ("FDG" . SPARSER::PROTEIN)
     ("EGFR, and phospho-EGFR" . SPARSER::COLLECTION)
     ("bexarotene and erlotinib" . SPARSER::COLLECTION)
     ("cyclin D1 and EGFR" . SPARSER::COLLECTION)
     ("Biomarker" . SPARSER::MOLECULE)
-    ("EGFR, or phospho-EGFR" . SPARSER::COLLECTION) ("ED1" . SPARSER::PROTEIN)
+    ("EGFR, or phospho-EGFR" . SPARSER::COLLECTION)
+    ("pharmacologic target" . SPARSER::TARGET-PROTEIN)
+    ("ED1" . SPARSER::PROTEIN)
     ("EGFR, phospho-EGFR, and Ki-67" . SPARSER::COLLECTION)
     ("EGFR or KRAS" . SPARSER::COLLECTION)
     ("retinoid and EGFR" . SPARSER::COLLECTION)
@@ -6156,24 +6295,30 @@
     ("Retinoid X receptor (RXR) agonists (rexinoids) and classical retinoic acid receptor (RAR) agonists"
      . SPARSER::COLLECTION)
     ("classical retinoic acid receptor (RAR) agonists" . SPARSER::AGONIST)
-    ("RAR" . SPARSER::PROTEIN) ("Retinoids" . SPARSER::DRUG)
-    ("HBE" . SPARSER::PROTEIN)
+    ("receptor (RAR)" . SPARSER::RECEPTOR) ("RAR" . SPARSER::PROTEIN)
+    ("Retinoids" . SPARSER::DRUG) ("HBE" . SPARSER::PROTEIN)
     ("The epidermal growth factor receptor (EGFR) and its ligands"
      . SPARSER::COLLECTION)
+    ("a negative prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Cyclin D1 and cyclin E" . SPARSER::COLLECTION)
     ("mutant-" . SPARSER::MUTANT) ("cyclin-E– and KRAS" . SPARSER::COLLECTION)
     ("cyclin-E–" . SPARSER::PROTEIN-FAMILY) ("bexarotene" . SPARSER::DRUG)
-    ("CDK-2" . SPARSER::PROTEIN) ("C-11" . SPARSER::PROTEIN)
-    ("RARβ" . SPARSER::PROTEIN) ("Retinoid X receptor" . SPARSER::PROTEIN)
+    ("CDK-2" . SPARSER::PROTEIN) ("RARβ" . SPARSER::PROTEIN)
+    ("Retinoid X receptor" . SPARSER::PROTEIN)
     ("cyclin-E" . SPARSER::PROTEIN-FAMILY)
     ("hTERT and other genes" . SPARSER::COLLECTION)
-    ("AA or MDS" . SPARSER::COLLECTION) ("t-MDS" . SPARSER::COLLECTION)
+    ("AA or MDS" . SPARSER::COLLECTION)
+    ("PBL, CD15+, CD19+ and saliva" . SPARSER::COLLECTION)
+    ("/AML" . SPARSER::COLLECTION) ("t-MDS" . SPARSER::COLLECTION)
     ("flow-FISH" . SPARSER::PROTEIN) ("toxic substances" . SPARSER::SUBSTANCE)
     ("mutagen" . SPARSER::MOLECULE) ("pesticides" . SPARSER::MOLECULE)
+    ("PBL and CD15+" . SPARSER::COLLECTION)
     ("histologically-confirmed MDS" . SPARSER::PROTEIN)
-    ("MDS" . SPARSER::PROTEIN) ("16A" . SPARSER::PROTEIN)
-    ("BS3" . SPARSER::PROTEIN) ("Tel-1" . SPARSER::PROTEIN)
-    ("CD15" . SPARSER::DRUG) ("variants and CNVs" . SPARSER::COLLECTION)
+    ("PBL" . SPARSER::PROTEIN) ("MDS" . SPARSER::PROTEIN)
+    ("16A" . SPARSER::PROTEIN) ("BS3" . SPARSER::PROTEIN)
+    ("CD15" . SPARSER::DRUG)
+    ("germ-line and/or somatic sequence variants" . SPARSER::COLLECTION)
+    ("variants and CNVs" . SPARSER::COLLECTION)
     ("PTEN and PCa" . SPARSER::COLLECTION)
     ("GASP1 and GASP2" . SPARSER::COLLECTION)
     ("sporadic PCa" . SPARSER::PROTEIN)
@@ -6187,9 +6332,9 @@
     ("HIF, CA-IX and pFAK" . SPARSER::COLLECTION)
     ("HIF and CA-IX" . SPARSER::COLLECTION)
     ("VHL, Src, HIF-2α, PTP1B, pFAK and CA-IX" . SPARSER::COLLECTION)
-    ("VHL-Src" . SPARSER::COLLECTION) ("Ror2" . SPARSER::PROTEIN)
-    ("Ror" . SPARSER::PROTEIN-FAMILY) ("Cbp" . SPARSER::PROTEIN)
+    ("VHL-Src" . SPARSER::COLLECTION) ("Cbp" . SPARSER::PROTEIN)
     ("diminished Src's" . SPARSER::PROTEIN)
+    ("a potential pharmacologic target" . SPARSER::TARGET-PROTEIN)
     ("robust predictive biomarkers" . SPARSER::MOLECULE)
     ("Src, PTP1B, CA-IX, FAK and VHL" . SPARSER::COLLECTION)
     ("HIF2-α and" . SPARSER::COLLECTION)
@@ -6211,6 +6356,8 @@
     ("saracatinib" . SPARSER::DRUG)
     ("ABL, PDGFR, and c-KIT" . SPARSER::COLLECTION) ("ABL" . SPARSER::PROTEIN)
     ("Src T388I or v-Src" . SPARSER::COLLECTION) ("vSrc" . SPARSER::PROTEIN)
+    ("shVHL" . SPARSER::PROTEIN) ("ACHN or ACHN-shVHL" . SPARSER::COLLECTION)
+    ("ACHN-shVHL" . SPARSER::PROTEIN-PAIR) ("ACHN" . SPARSER::PROTEIN)
     ("Src and VHL" . SPARSER::COLLECTION) ("strong Src" . SPARSER::PROTEIN)
     ("Src as well as several Src substrates" . SPARSER::COLLECTION)
     ("paxillin and inositol" . SPARSER::COLLECTION)
@@ -6221,41 +6368,52 @@
     ("the lipid raft-localized inhibitory receptor tyrosine kinase Csk"
      . SPARSER::PROTEIN)
     ("predictive biomarkers" . SPARSER::MOLECULE)
+    ("papillary RCC" . SPARSER::PROTEIN) ("metastatic RCC" . SPARSER::PROTEIN)
     ("VEGF-A, PDGF-B and TGF-A" . SPARSER::COLLECTION)
-    ("VHL-PTP1B-Src" . SPARSER::COLLECTION) ("VHL" . SPARSER::PROTEIN)
-    ("VEGF and mTOR" . SPARSER::COLLECTION)
-    ("Csk binding protein" . SPARSER::PROTEIN) ("α and" . SPARSER::PROTEIN)
-    ("HIF2" . SPARSER::PROTEIN) ("CA-IX" . SPARSER::PROTEIN)
-    ("shPTP1" . SPARSER::PROTEIN) ("c-KIT" . SPARSER::PROTEIN)
-    ("TGF-A" . SPARSER::PROTEIN) ("PDGF-B" . SPARSER::PROTEIN)
-    ("PTP1B" . SPARSER::PROTEIN) ("phosphatase 1" . SPARSER::PROTEIN)
+    ("VHL-PTP1B-Src" . SPARSER::COLLECTION)
+    ("hypoxia inducible factor (HIF)" . SPARSER::PROTEIN)
+    ("VHL" . SPARSER::PROTEIN) ("VEGF and mTOR" . SPARSER::COLLECTION)
+    ("Ror2" . SPARSER::PROTEIN) ("Csk binding protein" . SPARSER::PROTEIN)
+    ("α and" . SPARSER::PROTEIN) ("HIF2" . SPARSER::PROTEIN)
+    ("CA-IX" . SPARSER::PROTEIN) ("shPTP1" . SPARSER::PROTEIN)
+    ("c-KIT" . SPARSER::PROTEIN) ("TGF-A" . SPARSER::PROTEIN)
+    ("PDGF-B" . SPARSER::PROTEIN) ("PTP1B" . SPARSER::PROTEIN)
+    ("phosphatase 1" . SPARSER::PROTEIN)
+    ("hypoxia inducible factor" . SPARSER::PROTEIN)
     ("von Hippel-Lindau" . SPARSER::PROTEIN)
+    ("currently used
+                prognostic factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("E2F1, TOP2A and Ki-67" . SPARSER::COLLECTION)
     ("E2F1, Ki-67 and TOP2A" . SPARSER::COLLECTION)
     ("CCNE1 , CDC25A , MCM4 , TK1 , and CENPE" . SPARSER::COLLECTION)
     ("Rb/E2F" . SPARSER::COLLECTION)
     ("doxorubicin and etoposide" . SPARSER::COLLECTION)
     ("the topological state" . SPARSER::BIO-STATE)
+    ("currently used prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("biomarkers, TOP2A and E2F1" . SPARSER::COLLECTION)
     ("preoperative serum PSA" . SPARSER::PROTEIN)
     ("preoperative PSA" . SPARSER::PROTEIN)
     ("TOP2A and E2F1" . SPARSER::COLLECTION) ("formalin" . SPARSER::MOLECULE)
-    ("genes and canonical pathway gene" . SPARSER::COLLECTION)
     ("CENPE" . SPARSER::PROTEIN)
-    ("S-phase fraction or Ki-67" . SPARSER::COLLECTION)
+    ("e.g. S-phase fraction or Ki-67" . SPARSER::COLLECTION)
+    ("e.g. S-phase fraction" . SPARSER::COMPONENT)
     ("opt" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Current prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("prognostic biomarkers" . SPARSER::MOLECULE) ("Docetaxel" . SPARSER::DRUG)
-    ("alpha), and E2F1" . SPARSER::COLLECTION)
+    ("DNA topoisomerase II, alpha), and E2F1" . SPARSER::COLLECTION)
     ("transcriptional
                 regulator"
      . SPARSER::PROTEIN-FAMILY)
-    ("SMC4" . SPARSER::PROTEIN) ("TK1" . SPARSER::PROTEIN)
-    ("POLE2" . SPARSER::PROTEIN) ("MIB-1" . SPARSER::PROTEIN)
+    ("DNA topoisomerase" . SPARSER::PROTEIN) ("SMC4" . SPARSER::PROTEIN)
+    ("TK1" . SPARSER::PROTEIN) ("POLE2" . SPARSER::PROTEIN)
+    ("MIB-1" . SPARSER::PROTEIN)
     ("monoclonal
                     antibody"
      . SPARSER::DRUG)
+    ("prostate specific antigen" . SPARSER::PROTEIN)
     ("transcription factor 1" . SPARSER::PROTEIN) ("alpha)" . SPARSER::PROTEIN)
-    ("TOP2A" . SPARSER::PROTEIN)
+    ("DNA topoisomerase II" . SPARSER::PROTEIN) ("TOP2A" . SPARSER::PROTEIN)
     ("other NADPH oxidase subunits and membrane phospholipids"
      . SPARSER::COLLECTION)
     ("a clinically safer target" . SPARSER::TARGET-PROTEIN)
@@ -6272,10 +6430,12 @@
     ("competitive inhibitors" . SPARSER::INHIBITOR)
     ("p47phox–NOX2" . SPARSER::COLLECTION) ("virtual ligand" . SPARSER::LIGAND)
     ("an endogenous antimicrobial peptide" . SPARSER::PEPTIDE)
+    ("SH3–PRR" . SPARSER::COLLECTION)
     ("the active NADPH oxidase complex" . SPARSER::BIO-COMPLEX)
     ("p47phox–p22phox" . SPARSER::COLLECTION)
     ("PKC and other protein kinases" . SPARSER::COLLECTION)
     ("the p22phox PRR and membrane phospholipids" . SPARSER::COLLECTION)
+    ("bis-SH3" . SPARSER::COLLECTION) ("SH3 and Phox" . SPARSER::COLLECTION)
     ("Phox" . SPARSER::PROTEIN) ("p47phox and NOXA1" . SPARSER::COLLECTION)
     ("NOXA1 and p47phox" . SPARSER::COLLECTION)
     ("NOX1-p22phox" . SPARSER::COLLECTION) ("PRRs" . SPARSER::PROTEIN)
@@ -6289,27 +6449,29 @@
      . SPARSER::INHIBITOR)
     ("p22phox, NOXA1, NOXO1 and RAC1" . SPARSER::COLLECTION)
     ("NOX3 and NOX4" . SPARSER::COLLECTION)
-    ("oxidase and cytochrome P450" . SPARSER::COLLECTION)
+    ("NOS, xanthine oxidase and cytochrome P450" . SPARSER::COLLECTION)
     ("dual NOX1 and NOX2 oxidase inhibitors" . SPARSER::INHIBITOR)
     ("vascular NOX1 oxidase and NOX2 oxidase" . SPARSER::PROTEIN)
     ("dual inhibitors" . SPARSER::INHIBITOR)
     ("oxidase and NOX2" . SPARSER::COLLECTION)
+    ("severe genetic condition CGD" . SPARSER::PROTEIN)
     ("DUOX1 and DUOX2" . SPARSER::COLLECTION)
     ("benzothiophenes" . SPARSER::DRUG) ("oxindoles" . SPARSER::DRUG)
+    ("flavonoids" . SPARSER::MOLECULE)
     ("NOXO1, NOXA1 or RAC1" . SPARSER::COLLECTION)
     ("oxidase- and NOX4" . SPARSER::COLLECTION) ("oxidase-" . SPARSER::PROTEIN)
     ("GK" . SPARSER::PROTEIN) ("phenylephrine" . SPARSER::DRUG)
-    ("ApoE- or LDL" . SPARSER::COLLECTION) ("ApoE-" . SPARSER::PROTEIN)
-    ("hypoxanthine and xanthine" . SPARSER::COLLECTION)
-    ("xanthine" . SPARSER::MOLECULE) ("hypoxanthine" . SPARSER::DRUG)
-    ("fulvene" . SPARSER::MOLECULE) ("AEBSF" . SPARSER::DRUG)
-    ("benzenesulfonyl" . SPARSER::MOLECULE)
+    ("VAS2870 and VAS3947" . SPARSER::COLLECTION) ("VAS" . SPARSER::PROTEIN)
+    ("ApoE-" . SPARSER::PROTEIN)
+    ("hypoxanthine and xanthine oxidase" . SPARSER::COLLECTION)
+    ("hypoxanthine" . SPARSER::DRUG) ("fulvene" . SPARSER::MOLECULE)
+    ("AEBSF" . SPARSER::DRUG) ("benzenesulfonyl" . SPARSER::MOLECULE)
     ("apocynin and diphenyleneiodonium" . SPARSER::COLLECTION)
     ("DPI" . SPARSER::PROTEIN) ("diphenyleneiodonium" . SPARSER::DRUG)
     ("apocynin" . SPARSER::MOLECULE) ("perivascular fat" . SPARSER::PROTEIN)
     ("oxysterols" . SPARSER::MOLECULE)
     ("neutrophils, monocytes and macrophages" . SPARSER::COLLECTION)
-    ("angiotensin II and endothelin 1" . SPARSER::COLLECTION)
+    ("thrombin, PDGF, angiotensin II and endothelin 1" . SPARSER::COLLECTION)
     ("traditional cytosolic organizer and activator subunits"
      . SPARSER::FRAGMENT)
     ("the other vascular NADPH oxidase isoforms" . SPARSER::ISOFORM)
@@ -6319,7 +6481,7 @@
     ("platelet-derived growth factor (PDGF) and basic fibroblast growth factor"
      . SPARSER::COLLECTION)
     ("tumour necrosis factor (TNF) and IL-1β" . SPARSER::COLLECTION)
-    ("low-density lipoprotein (LDL)" . SPARSER::PROTEIN)
+    ("lipoprotein (LDL)" . SPARSER::PROTEIN)
     ("vasoactive agonists" . SPARSER::AGONIST)
     ("angiotensin II and thrombin" . SPARSER::COLLECTION)
     ("the traditional NADPH oxidase subunits (that is, those subunits utilized by the NADPH oxidase complex originally described in professional phagocytes) p22phox, p47phox and RAC1"
@@ -6347,73 +6509,70 @@
     ("p67phox and NOX activator 1" . SPARSER::COLLECTION)
     ("the so-called NADPH oxidase (NOX) and dual oxidase (DUOX) subunits"
      . SPARSER::COLLECTION)
-    ("dual oxidase (DUOX) subunits" . SPARSER::FRAGMENT)
     ("NADPH oxidase (NOX)" . SPARSER::PROTEIN) ("DUOX" . SPARSER::PROTEIN)
     ("NOX" . SPARSER::PROTEIN) ("the original antioxidant" . SPARSER::PROTEIN)
     ("particular ROS" . SPARSER::PROTEIN)
     ("its own pro-oxidant and pro-atherogenic effects xref"
      . SPARSER::COLLECTION)
     ("its own pro-oxidant" . SPARSER::MOLECULE)
-    ("approximately 1.9 × 10 10 M −1" . SPARSER::PROTEIN)
     ("the therapeutic antioxidant" . SPARSER::PROTEIN)
     ("certain amino acids and nucleic acids" . SPARSER::COLLECTION)
     ("ROS and crucial endogenous molecules" . SPARSER::COLLECTION)
     ("the pro-inflammatory cytokines interleukin-1β (IL-1β) and IL-18"
      . SPARSER::COLLECTION)
-    ("the pro-inflammatory cytokines interleukin-1β" . SPARSER::PROTEIN)
     ("REF" . SPARSER::PROTEIN)
     ("kinases and phosphatases" . SPARSER::COLLECTION)
+    ("soluble guanylyl cyclase" . SPARSER::PROTEIN)
     ("haem" . SPARSER::MOLECULE)
     ("glutathione reductase, glutaredoxin and superoxide"
      . SPARSER::COLLECTION)
     ("dimethylarginine" . SPARSER::DRUG) ("glutaredoxin" . SPARSER::PROTEIN)
     ("vasoprotective enzyme" . SPARSER::ENZYME)
     ("tetrahydrobiopterin" . SPARSER::DRUG)
-    ("a powerful oxidant" . SPARSER::PROTEIN)
-    ("glutathione, cysteine and tetrahydro—biopterin" . SPARSER::COLLECTION)
-    ("biopterin" . SPARSER::MOLECULE) ("Peroxynitrite" . SPARSER::MOLECULE)
-    ("vasodilator" . SPARSER::PROTEIN)
+    ("cysteine and tetrahydro—biopterin  xref" . SPARSER::COLLECTION)
+    ("a powerful oxidant" . SPARSER::PROTEIN) ("biopterin" . SPARSER::MOLECULE)
+    ("Peroxynitrite" . SPARSER::MOLECULE) ("vasodilator" . SPARSER::PROTEIN)
     ("superoxide anions and hydroxyl radicals" . SPARSER::COLLECTION)
     ("oxidants" . SPARSER::MOLECULE)
     ("Such pathological states" . SPARSER::BIO-STATE)
     ("several pathological states" . SPARSER::BIO-STATE)
-    ("carotene" . SPARSER::MOLECULE)
-    ("phagocytic leukocytes" . SPARSER::PROTEIN)
+    ("minimal impact" . SPARSER::PROTEIN) ("carotene" . SPARSER::MOLECULE)
+    ("phagocytic leukocytes" . SPARSER::PROTEIN) ("CGD" . SPARSER::PROTEIN)
     ("NOX1 and NOX2" . SPARSER::COLLECTION)
     ("The NOX1 (NADPH oxidase 1) and NOX2 oxidases" . SPARSER::COLLECTION)
     ("NADPH" . SPARSER::PROTEIN) ("PR39" . SPARSER::MOLECULE)
     ("NOX3" . SPARSER::PROTEIN) ("Nox4" . SPARSER::PROTEIN)
-    ("VAS2870" . SPARSER::DRUG) ("Gp91" . SPARSER::PROTEIN)
-    ("pro-oxidants" . SPARSER::MOLECULE) ("amyloid-β" . SPARSER::MOLECULE)
+    ("VAS2870" . SPARSER::DRUG) ("xanthine oxidase" . SPARSER::PROTEIN)
+    ("Gp91" . SPARSER::PROTEIN) ("pro-oxidants" . SPARSER::MOLECULE)
+    ("amyloid-β" . SPARSER::MOLECULE)
     ("N-methyl- d -aspartate" . SPARSER::MOLECULE)
-    ("endothelin 1" . SPARSER::PROTEIN)
-    ("low-density lipoprotein" . SPARSER::PROTEIN) ("NOX4" . SPARSER::PROTEIN)
+    ("endothelin 1" . SPARSER::PROTEIN) ("NOX4" . SPARSER::PROTEIN)
     ("gp91phox" . SPARSER::PROTEIN) ("DUOX2" . SPARSER::PROTEIN)
     ("DUOX1" . SPARSER::PROTEIN) ("NOX5" . SPARSER::PROTEIN)
     ("RAC2" . SPARSER::PROTEIN) ("p40phox" . SPARSER::PROTEIN)
     ("NOXO1" . SPARSER::PROTEIN) ("NOX organizer 1" . SPARSER::PROTEIN)
     ("NOXA1" . SPARSER::PROTEIN) ("NOX activator 1" . SPARSER::PROTEIN)
-    ("p67phox" . SPARSER::PROTEIN) ("activator 1" . SPARSER::PROTEIN)
-    ("p22phox" . SPARSER::PROTEIN) ("pro-oxidant" . SPARSER::MOLECULE)
-    ("M −1" . SPARSER::PROTEIN) ("caspase 1" . SPARSER::PROTEIN)
+    ("p67phox" . SPARSER::PROTEIN) ("DUOXA1" . SPARSER::PROTEIN)
+    ("activator 1" . SPARSER::PROTEIN) ("p22phox" . SPARSER::PROTEIN)
+    ("dual oxidase" . SPARSER::PROTEIN) ("pro-oxidant" . SPARSER::MOLECULE)
+    ("caspase 1" . SPARSER::PROTEIN)
+    ("dimethylarginine dimethylaminohydrolase" . SPARSER::PROTEIN)
     ("glutathione reductase" . SPARSER::PROTEIN)
     ("superoxide anions" . SPARSER::MOLECULE)
     ("chronic granulomatous disease" . SPARSER::PROTEIN)
     ("p47phox" . SPARSER::PROTEIN) ("NOX2" . SPARSER::PROTEIN)
-    ("NOX1" . SPARSER::PROTEIN) ("S100A4 and Bay11-7082" . SPARSER::COLLECTION)
+    ("NADPH oxidase 1" . SPARSER::PROTEIN) ("NOX1" . SPARSER::PROTEIN)
+    ("S100A4 and Bay11-7082" . SPARSER::COLLECTION)
     ("Cadherins" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("an angiogenic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("paxillin and protein" . SPARSER::COLLECTION)
     ("actin and myosin" . SPARSER::COLLECTION)
     ("MYPT1 and MLC2" . SPARSER::COLLECTION)
-    ("the pro-migratory factor 12(S)-HETE" . SPARSER::MOLECULE)
     ("a 3D-co-culture" . SPARSER::PROTEIN-PAIR)
     ("lymphatic vasculature" . SPARSER::PROTEIN)
-    ("VE-cadherin and S100A4" . SPARSER::COLLECTION)
     ("transcription factor and proto-oncogene" . SPARSER::COLLECTION)
-    ("intact VE-cadherin" . SPARSER::PROTEIN)
-    ("Erk and paxillin" . SPARSER::COLLECTION)
-    ("the pro-metastatic Ca 2+ signal transducer S100A4" . SPARSER::PROTEIN)
-    ("Paxillin" . SPARSER::PROTEIN) ("ROCK-1 and Arp2/3" . SPARSER::COLLECTION)
+    ("Erk and paxillin" . SPARSER::COLLECTION) ("Paxillin" . SPARSER::PROTEIN)
+    ("ROCK-1 and Arp2/3" . SPARSER::COLLECTION) ("rim" . SPARSER::PROTEIN)
     ("lap" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("HETE and the role of NF- κ B" . SPARSER::COLLECTION)
     ("this arachidonic acid metabolite" . SPARSER::MOLECULE)
@@ -6421,7 +6580,8 @@
     ("the lymphatic vasculature" . SPARSER::PROTEIN)
     ("the mesenchymal marker protein S100A4" . SPARSER::PROTEIN)
     ("-HETE" . SPARSER::MOLECULE) ("HETE" . SPARSER::MOLECULE)
-    ("chemorepellent" . SPARSER::PROTEIN) ("E-selectin" . SPARSER::PROTEIN)
+    ("chemorepellent" . SPARSER::PROTEIN) ("LEC" . SPARSER::PROTEIN)
+    ("E-selectin" . SPARSER::PROTEIN)
     ("calcium-binding protein" . SPARSER::PROTEIN)
     ("myosin phosphatase" . SPARSER::PROTEIN) ("ALOX12" . SPARSER::PROTEIN)
     ("PPP1R12A" . SPARSER::PROTEIN) ("ml –1" . SPARSER::PROTEIN)
@@ -6432,35 +6592,38 @@
     ("α -tubulin" . SPARSER::PROTEIN) ("CD144" . SPARSER::PROTEIN)
     ("I- κ B α" . SPARSER::PROTEIN) ("ALOX15" . SPARSER::PROTEIN)
     ("phospho-AKT and CXCR4" . SPARSER::COLLECTION) ("Cao" . SPARSER::MOLECULE)
+    ("protein tyrosine phosphatase (PTP)" . SPARSER::PROTEIN)
     ("disulphide" . SPARSER::MOLECULE) ("PTP" . SPARSER::PROTEIN)
     ("CXCR4 and SDF1α" . SPARSER::COLLECTION)
     ("a functional PTEN" . SPARSER::PROTEIN)
     ("NAC and AMD3100" . SPARSER::COLLECTION)
     ("NAC or AMD3100" . SPARSER::COLLECTION)
-    ("ligands and inhibitors" . SPARSER::COLLECTION) ("Ha" . SPARSER::PROTEIN)
-    ("NAC" . SPARSER::PROTEIN) ("PTEN and CXCR4" . SPARSER::COLLECTION)
+    ("ligands and inhibitors" . SPARSER::COLLECTION) ("NAC" . SPARSER::PROTEIN)
+    ("PTEN and CXCR4" . SPARSER::COLLECTION)
     ("a secondary signaling molecule" . SPARSER::MOLECULE)
     ("Src kinase and HER2" . SPARSER::COLLECTION)
-    ("G-protein coupled receptor (GPCR)" . SPARSER::PROTEIN)
+    ("receptor (GPCR)" . SPARSER::RECEPTOR)
     ("catalase and superoxide" . SPARSER::COLLECTION)
     ("highly reactive oxygen" . SPARSER::MOLECULE)
     ("p-AKT" . SPARSER::COLLECTION) ("Du145" . SPARSER::PROTEIN)
     ("N-ethylmaleimide" . SPARSER::MOLECULE)
     ("N-acetyl-cysteine" . SPARSER::DRUG) ("AMD3100" . SPARSER::DRUG)
-    ("SDF1" . SPARSER::PROTEIN)
-    ("stromal cell-derived factor 1" . SPARSER::PROTEIN)
-    ("PIP2" . SPARSER::PIP2)
+    ("SDF1" . SPARSER::PROTEIN) ("PIP2" . SPARSER::PROTEIN)
     ("phosphatase and tensin homolog" . SPARSER::PROTEIN)
     ("neural differentiation marker PHOX2B" . SPARSER::PROTEIN)
-    ("mRNA and ALK" . SPARSER::COLLECTION)
     ("S100A6 and ALK" . SPARSER::COLLECTION)
     ("early neural differentiation marker PHOX2B" . SPARSER::PROTEIN)
+    ("SHEP" . SPARSER::PROTEIN)
     ("ALK, pALK and downstream signaling proteins" . SPARSER::COLLECTION)
     ("ERK1, ERK2 and AKT" . SPARSER::COLLECTION)
     ("ERK1 and ERK2" . SPARSER::COLLECTION)
-    ("significantly higher ALK" . SPARSER::PROTEIN) ("NMYC" . SPARSER::PROTEIN)
+    ("significantly higher ALK" . SPARSER::PROTEIN)
+    ("ALK mRNA, ALK protein and activation of downstream signaling proteins"
+     . SPARSER::COLLECTION)
+    ("NMYC" . SPARSER::PROTEIN)
     ("pAKT, pERK1, pERK2 and pSTAT3" . SPARSER::COLLECTION)
-    ("pERK2" . SPARSER::PROTEIN)
+    ("pERK2" . SPARSER::PROTEIN) ("hereditary NBL" . SPARSER::PROTEIN)
+    ("sporadic NBL" . SPARSER::PROTEIN)
     ("AKT, JAK-STAT and MAPK" . SPARSER::COLLECTION)
     ("the 220 kDa full length receptor and the truncated 140 kDa protein"
      . SPARSER::COLLECTION)
@@ -6468,9 +6631,10 @@
     ("blot and ALK" . SPARSER::COLLECTION)
     ("phosphorylated ALK (pALK) and downstream signaling proteins"
      . SPARSER::COLLECTION)
-    ("a 3 " . SPARSER::HUMAN-PROTEIN-FAMILY) ("S100A6" . SPARSER::PROTEIN)
-    ("tet2" . SPARSER::PROTEIN) ("SHC3" . SPARSER::PROTEIN)
-    ("PHOX2B" . SPARSER::PROTEIN) ("TAE684" . SPARSER::DRUG)
+    ("NBL" . SPARSER::PROTEIN) ("a 3 " . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("S100A6" . SPARSER::PROTEIN) ("tet2" . SPARSER::PROTEIN)
+    ("SHC3" . SPARSER::PROTEIN) ("PHOX2B" . SPARSER::PROTEIN)
+    ("TAE684" . SPARSER::DRUG)
     ("TRAILR1 (DR4) and TRAILR2 (DR5)" . SPARSER::COLLECTION)
     ("matrilysin" . SPARSER::PROTEIN) ("kDa and Type II" . SPARSER::COLLECTION)
     ("other cells only one form" . SPARSER::FORM)
@@ -6486,14 +6650,14 @@
     ("VCN (recombinant Vibrio cholerae neuraminidase) and different inhibitors"
      . SPARSER::COLLECTION)
     ("VCN" . SPARSER::PROTEIN) ("CD95L and anti-APO-1" . SPARSER::COLLECTION)
-    ("hardly any p18" . SPARSER::PROTEIN)
+    ("hardly any p18" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("agonistic anti-APO-1-antibodies and the CD95 DISCs"
      . SPARSER::COLLECTION)
     ("agonistic anti-APO-1-antibodies" . SPARSER::ANTIBODY)
     ("DISCs" . SPARSER::BIO-COMPLEX) ("CD95/CD95L" . SPARSER::COLLECTION)
     ("stably overexpressing WT CD95 (HeLa-CD95 cells) as well as different CD95 glycomutants (HeLa-CD95-N118Q, HeLa-CD95-N136Q, HeLa-CD95-T214Q, HeLa-CD95-N223Q cells)"
      . SPARSER::COLLECTION)
-    ("Oligomerisation" . SPARSER::PROTEIN-FAMILY)
+    ("JA" . SPARSER::PROTEIN) ("Oligomerisation" . SPARSER::PROTEIN-FAMILY)
     ("CD95-CD95L" . SPARSER::COLLECTION)
     ("CD95 and three molecules" . SPARSER::COLLECTION)
     ("TRAIL-R1 and TRAIL-R2" . SPARSER::COLLECTION)
@@ -6503,7 +6667,8 @@
     ("CD95 and FADD" . SPARSER::COLLECTION) ("Ligand" . SPARSER::LIGAND)
     ("–p18" . SPARSER::COLLECTION) ("p26/p24" . SPARSER::COLLECTION)
     ("p43/p41" . SPARSER::COLLECTION) ("p12" . SPARSER::PROTEIN)
-    ("DEDs" . SPARSER::PROTEIN) ("oligomerized CD95" . SPARSER::PROTEIN)
+    ("two-step" . SPARSER::PROTEIN) ("DEDs" . SPARSER::PROTEIN)
+    ("DED" . SPARSER::PROTEIN) ("oligomerized CD95" . SPARSER::PROTEIN)
     ("procaspase-8/b" . SPARSER::COLLECTION)
     ("complex (DISC)" . SPARSER::BIO-COMPLEX)
     ("agonistic antibodies" . SPARSER::ANTIBODY)
@@ -6511,10 +6676,10 @@
     ("UV- or γ-irradiation" . SPARSER::COLLECTION)
     ("TRAIL and CD95" . SPARSER::COLLECTION) ("DMM" . SPARSER::DRUG)
     ("Fas/APO-1" . SPARSER::COLLECTION) ("DISC" . SPARSER::BIO-COMPLEX)
-    ("TRAIL" . SPARSER::PROTEIN) ("ID 3" . SPARSER::PROTEIN)
-    ("death receptor 5" . SPARSER::PROTEIN) ("Apo2L" . SPARSER::PROTEIN)
-    ("ID 1" . SPARSER::PROTEIN) ("Anti-ERK" . SPARSER::PROTEIN)
-    ("C20" . SPARSER::PROTEIN) ("A3" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("TRAIL-receptor" . SPARSER::COLLECTION) ("TRAIL" . SPARSER::PROTEIN)
+    ("ID 3" . SPARSER::PROTEIN) ("death receptor 5" . SPARSER::PROTEIN)
+    ("Apo2L" . SPARSER::PROTEIN) ("ID 1" . SPARSER::PROTEIN)
+    ("Anti-ERK" . SPARSER::PROTEIN) ("C20" . SPARSER::PROTEIN)
     ("DR5" . SPARSER::PROTEIN) ("TRAILR2" . SPARSER::PROTEIN)
     ("DR4" . SPARSER::PROTEIN) ("TRAILR1" . SPARSER::PROTEIN)
     ("MMP7" . SPARSER::PROTEIN) ("N-glycans" . SPARSER::MOLECULE)
@@ -6524,9 +6689,10 @@
     ("Type II" . SPARSER::HUMAN-PROTEIN-FAMILY) ("p26" . SPARSER::PROTEIN)
     ("p10" . SPARSER::PROTEIN) ("p41" . SPARSER::PROTEIN)
     ("p43" . SPARSER::PROTEIN) ("Procaspase-8" . SPARSER::PROTEIN)
-    ("c-FLIP" . SPARSER::PROTEIN) ("CD95L" . SPARSER::PROTEIN)
-    ("TNF-R" . SPARSER::PROTEIN) ("procaspase-8" . SPARSER::PROTEIN)
-    ("APO-1" . SPARSER::PROTEIN) ("CD95" . SPARSER::PROTEIN)
+    ("c-FLIP" . SPARSER::PROTEIN) ("CD178" . SPARSER::PROTEIN)
+    ("CD95L" . SPARSER::PROTEIN) ("TNF-R" . SPARSER::PROTEIN)
+    ("procaspase-8" . SPARSER::PROTEIN) ("APO-1" . SPARSER::PROTEIN)
+    ("CD95" . SPARSER::PROTEIN)
     ("SPHK1 or its downstream signaling molecules" . SPARSER::COLLECTION)
     ("Rac, Fak and PI3K" . SPARSER::COLLECTION)
     ("Fak" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Ceramide" . SPARSER::MOLECULE)
@@ -6546,6 +6712,7 @@
     ("U87MG-SPHK1" . SPARSER::COLLECTION) ("epirubicin" . SPARSER::DRUG)
     ("PARP and caspase 3" . SPARSER::COLLECTION) ("UV-" . SPARSER::PROTEIN)
     ("caspase 3 and PARP" . SPARSER::COLLECTION)
+    ("pro-caspase 3" . SPARSER::COLLECTION)
     ("chemotherapeutic drug adriamycin" . SPARSER::DRUG)
     ("PI3K/Akt/FOXO3a/Bim" . SPARSER::COLLECTION)
     ("Akt/FOXO3a/Bim" . SPARSER::COLLECTION)
@@ -6558,30 +6725,33 @@
     ("sphingosine kinase" . SPARSER::PROTEIN) ("SPHK1" . SPARSER::PROTEIN)
     ("Sphingosine kinase" . SPARSER::PROTEIN) ("αand" . SPARSER::PROTEIN)
     ("Ran and importinβ1" . SPARSER::COLLECTION)
-    ("mitochondrial STAT3" . SPARSER::PROTEIN)
-    ("STAT3 and mitochondrial proteins" . SPARSER::COLLECTION)
+    ("a cell permeable dye" . SPARSER::MOLECULE)
+    ("STAT3 and mitochondrial" . SPARSER::COLLECTION)
     ("soluble molecules" . SPARSER::MOLECULE)
-    ("cytokines and growth factor" . SPARSER::COLLECTION)
+    ("STAT3 and nuclear" . SPARSER::COLLECTION)
+    ("cytokines and growth factor receptor" . SPARSER::COLLECTION)
     ("importin-α-importin-β1-Ran" . SPARSER::PROTEIN-PAIR)
     ("RanQ69L" . SPARSER::PROTEIN) ("CFP-RanQ69L" . SPARSER::COLLECTION)
     ("CFP-Ran" . SPARSER::COLLECTION)
     ("importin-α and" . SPARSER::PROTEIN-PAIR)
-    ("Rac-GAP" . SPARSER::COLLECTION)
-    ("GTPase-activating protein (GAP)" . SPARSER::PROTEIN)
-    ("YFP and STAT3" . SPARSER::COLLECTION)
+    ("Rac-GAP" . SPARSER::COLLECTION) ("YFP and STAT3" . SPARSER::COLLECTION)
     ("homomeric complexes" . SPARSER::BIO-COMPLEX)
     ("STAT3-CFP" . SPARSER::COLLECTION) ("STAT3-YFP" . SPARSER::COLLECTION)
     ("CFP" . SPARSER::PROTEIN)
     ("STAT3 formed complexes" . SPARSER::BIO-COMPLEX)
-    ("STAT1 and STAT3" . SPARSER::COLLECTION)
+    ("STAT1 and STAT3" . SPARSER::COLLECTION) ("path" . SPARSER::PROTEIN)
+    ("STAT3-GFP continuous nuclear" . SPARSER::PROTEIN)
     ("IFNα or IL-6" . SPARSER::COLLECTION)
-    ("STAT3-PA-GFP" . SPARSER::COLLECTION) ("PA-GFP" . SPARSER::COLLECTION)
+    ("STAT3-PA-GFP" . SPARSER::COLLECTION) ("ROI" . SPARSER::PROTEIN)
+    ("PA-GFP" . SPARSER::COLLECTION)
     ("a control fluorescent protein" . SPARSER::PROTEIN)
     ("STAT3 and STAT3-GFP" . SPARSER::COLLECTION)
+    ("gamma-IFN" . SPARSER::COLLECTION)
     ("enhanced green fluorescent protein (GFP)" . SPARSER::PROTEIN)
     ("Genetically encoded fluorescent proteins" . SPARSER::PROTEIN)
     ("STAT3-GFP" . SPARSER::COLLECTION)
     ("a stable ternary complex" . SPARSER::BIO-COMPLEX)
+    ("factor and Ran-GTP" . SPARSER::COLLECTION)
     ("GTP or GDP" . SPARSER::COLLECTION) ("α3" . SPARSER::PROTEIN)
     ("Importin-β1" . SPARSER::COLLECTION)
     ("Importin" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -6589,34 +6759,31 @@
     ("exportins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("phosphotyrosine and Src homology 2 (SH2) domains" . SPARSER::COLLECTION)
     ("conditional gene" . SPARSER::GENE) ("Ran" . SPARSER::PROTEIN)
-    ("importin-β1" . SPARSER::COLLECTION) ("importin-α3" . SPARSER::COLLECTION)
+    ("β1" . SPARSER::PROTEIN) ("importin-β1" . SPARSER::COLLECTION)
+    ("importin-α3" . SPARSER::COLLECTION)
     ("green fluorescence protein (GFP) or photoactivatable GFP"
      . SPARSER::COLLECTION)
     ("photoactivatable GFP" . SPARSER::PROTEIN)
     ("protein (GFP)" . SPARSER::PROTEIN)
     ("interleukin-6 and interferon" . SPARSER::COLLECTION)
     ("Cytokines" . SPARSER::PROTEIN) ("LT1" . SPARSER::PROTEIN)
-    ("I/II" . SPARSER::PROTEIN)
-    ("GTPase-activating protein" . SPARSER::PROTEIN)
-    ("Ds-Red" . SPARSER::PROTEIN) ("IFNα" . SPARSER::PROTEIN)
+    ("I/II" . SPARSER::PROTEIN) ("IFNα" . SPARSER::PROTEIN)
     ("Nucleotide exchange factors" . SPARSER::NUCLEOTIDE-EXCHANGE-FACTOR)
     ("karyopherin-β" . SPARSER::PROTEIN)
     ("nuclear pore" . SPARSER::BIO-COMPLEX)
-    ("signal transducer and activator of transcription-3" . SPARSER::PROTEIN)
     ("clinically applicable Nef inhibitors" . SPARSER::INHIBITOR)
     ("current anti-HIV infectives target enzymes or structural proteins"
      . SPARSER::COLLECTION)
     ("an accessory adaptor protein" . SPARSER::PROTEIN)
-    ("gp41 or CCR5" . SPARSER::COLLECTION) ("VSWSPD" . SPARSER::PROTEIN)
-    ("tryptophane" . SPARSER::MOLECULE)
+    ("gp41 or CCR5" . SPARSER::COLLECTION) ("Gag" . SPARSER::PROTEIN)
+    ("VSWSPD" . SPARSER::PROTEIN) ("tryptophane" . SPARSER::MOLECULE)
     ("motif-specific intracellular Nef inhibitors" . SPARSER::INHIBITOR)
     ("LEDGF/p75" . SPARSER::COLLECTION) ("LEDGF" . SPARSER::PROTEIN)
+    ("patch" . SPARSER::PROTEIN)
     ("two almost equally populated conformations" . SPARSER::BIO-CONFORMATION)
-    ("NI1-2" . SPARSER::PROTEIN)
     ("a helical conformation" . SPARSER::BIO-CONFORMATION)
-    ("Hck NI1-2" . SPARSER::PROTEIN)
+    ("BH" . SPARSER::PROTEIN)
     ("Y89 Hck (2.6 Å) and the main chain oxygen" . SPARSER::COLLECTION)
-    ("the aromatic side chains W92 Hck" . SPARSER::PROTEIN)
     ("residues V 90 SWSPD" . SPARSER::PROTEIN) ("SWSPD" . SPARSER::PROTEIN)
     ("tryptophan-tyrosine" . SPARSER::COLLECTION)
     ("CD4 and MHC-I" . SPARSER::COLLECTION)
@@ -6624,17 +6791,18 @@
     ("CD4, CCR5, MHC-I or CD71" . SPARSER::COLLECTION)
     ("CD4, MHC-I and CCR5" . SPARSER::COLLECTION)
     ("CD4, CCR5, MHC-I and CD71" . SPARSER::COLLECTION)
-    ("the monomeric complex" . SPARSER::BIO-COMPLEX) ("dansyl" . SPARSER::DRUG)
-    ("a glycine-serine-rich linker" . SPARSER::LINKER)
-    ("NI2 and NI4" . SPARSER::COLLECTION) ("SPR" . SPARSER::PROTEIN)
-    ("VHS" . SPARSER::PROTEIN) ("SQS" . SPARSER::PROTEIN)
+    ("the monomeric complex" . SPARSER::BIO-COMPLEX)
+    ("CD4-SH3" . SPARSER::COLLECTION) ("dansyl" . SPARSER::DRUG)
+    ("SH3-CD4" . SPARSER::COLLECTION) ("NI2 and NI4" . SPARSER::COLLECTION)
+    ("SPR" . SPARSER::PROTEIN) ("VHS" . SPARSER::PROTEIN)
+    ("LL" . SPARSER::PROTEIN) ("SQS" . SPARSER::PROTEIN)
     ("encompassing aa" . SPARSER::MOLECULE)
     ("the two mutant SH3 domains V 90 SWSPD and Y 90 SPFSW"
      . SPARSER::COLLECTION)
     ("SH3 domains V 90 SWSPD" . SPARSER::PROTEIN)
-    ("protein 1-1" . SPARSER::COLLECTION) ("Hck" . SPARSER::PROTEIN)
-    ("the viral protein" . SPARSER::PROTEIN)
-    ("bioactive MHC" . SPARSER::PROTEIN)
+    ("Hck-SH3" . SPARSER::COLLECTION) ("Hck" . SPARSER::PROTEIN)
+    ("the viral protein" . SPARSER::PROTEIN) ("nef" . SPARSER::PROTEIN)
+    ("viral factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("reverse transcriptase, protease and integrase" . SPARSER::COLLECTION)
     ("Tx-100" . SPARSER::DRUG) ("Glutathione S-Transferase" . SPARSER::PROTEIN)
     ("gp41" . SPARSER::HUMAN-PROTEIN-FAMILY) ("PACS1" . SPARSER::PROTEIN)
@@ -6645,7 +6813,6 @@
     ("poly-proline" . SPARSER::MOLECULE)
     ("thermostable direct hemolysin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("TCF/Wnt" . SPARSER::COLLECTION)
-    ("TDH in presence of 1 mM Ca 2+ and 1 mM Gd 3+" . SPARSER::COLLECTION)
     ("an apoptotic inducer" . SPARSER::PROTEIN)
     ("si-RNA and NPS-2390" . SPARSER::COLLECTION)
     ("calcium and gadolinium" . SPARSER::COLLECTION)
@@ -6665,13 +6832,15 @@
     ("dehydrogenase (LDH)" . SPARSER::PROTEIN) ("LDH" . SPARSER::PROTEIN)
     ("dehydrogenase and TUNEL" . SPARSER::COLLECTION)
     ("Lactase" . SPARSER::PROTEIN) ("TDH and CaSR" . SPARSER::COLLECTION)
-    ("EGTA" . SPARSER::MOLECULE) ("the monomeric TDH" . SPARSER::PROTEIN)
+    ("EGTA" . SPARSER::PROTEIN) ("AM" . SPARSER::PROTEIN)
+    ("mRNA and presence" . SPARSER::COLLECTION)
+    ("the monomeric TDH" . SPARSER::PROTEIN)
     ("Thermostable Direct Hemolysin (TDH)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Hemolysin (TDH)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Hemolysin" . SPARSER::PROTEIN)
     ("Cyclin-D and the cell cycle inhibitory protein p27 Kip1"
      . SPARSER::COLLECTION)
-    ("toxin" . SPARSER::MOLECULE) ("β-catenin/Tcf-4" . SPARSER::COLLECTION)
+    ("toxin" . SPARSER::PROTEIN) ("β-catenin/Tcf-4" . SPARSER::COLLECTION)
     ("thermostable direct hemolysin (TDH)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("GMP" . SPARSER::GMP)
     ("a small globular metalloprotein" . SPARSER::MOLECULE)
@@ -6679,7 +6848,10 @@
     ("E-cadherin-β-catenin" . SPARSER::COLLECTION)
     ("Cyclin-D and cdk2" . SPARSER::COLLECTION)
     ("CaSR antagonist as well as si-RNA" . SPARSER::COLLECTION)
-    ("lactate" . SPARSER::LACTATE) ("CaSR" . SPARSER::PROTEIN)
+    ("lactate" . SPARSER::LACTATE)
+    ("a well-known traditional virulent factor"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("CaSR" . SPARSER::PROTEIN)
     ("Thermostable direct hemolysin (TDH)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("hemolysin (TDH)" . SPARSER::PROTEIN) ("TDH" . SPARSER::PROTEIN)
     ("hemolysin" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -6703,9 +6875,12 @@
     ("RRAS" . SPARSER::PROTEIN)
     ("a key regulator of embryonic lung development as well as proper function"
      . SPARSER::COLLECTION)
-    ("SERPINE1 and FOXA2" . SPARSER::COLLECTION) ("citrate" . SPARSER::PROTEIN)
-    ("pyruvate" . SPARSER::PROTEIN) ("FGB" . SPARSER::PROTEIN)
-    ("BMP" . SPARSER::PROTEIN)
+    ("both recombinant SMAD3 and nuclear" . SPARSER::COLLECTION)
+    ("both SMAD3 recombinant protein and nuclear" . SPARSER::COLLECTION)
+    ("SERPINE1 and FOXA2" . SPARSER::COLLECTION)
+    ("citrate" . SPARSER::MOLECULE) ("pyruvate" . SPARSER::PROTEIN)
+    ("FGB" . SPARSER::PROTEIN) ("ubiquitin-protein" . SPARSER::COLLECTION)
+    ("BMP" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a previously reported TGFβ1/SMAD3 target" . SPARSER::TARGET-PROTEIN)
     ("TAGLN" . SPARSER::PROTEIN) ("transgelin" . SPARSER::PROTEIN)
     ("SMAD7 and SERPINE1" . SPARSER::COLLECTION)
@@ -6721,7 +6896,7 @@
     ("SMAD1, SMAD2, SMAD3, SMAD5 and SMAD9" . SPARSER::COLLECTION)
     ("SMADs" . SPARSER::PROTEIN) ("SMAD" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("both TGFβ and its receptors" . SPARSER::COLLECTION)
-    ("a key pro-fibrotic cytokine" . SPARSER::PROTEIN)
+    ("global targets" . SPARSER::TARGET-PROTEIN)
     ("some previously unrecognized targets" . SPARSER::TARGET-PROTEIN)
     ("SERPINE1, SMAD6, SMAD7, TGFB1 and LTBP3" . SPARSER::COLLECTION)
     ("genome-wide scale map" . SPARSER::PROTEIN)
@@ -6733,10 +6908,8 @@
     ("epidermal growth factor receptor pathway substrate 8" . SPARSER::PROTEIN)
     ("fibrinogen beta chain" . SPARSER::PROTEIN)
     ("Connective Tissue Growth Factor" . SPARSER::PROTEIN)
-    ("bone morphogenetic protein" . SPARSER::PROTEIN)
-    ("SMURF1" . SPARSER::PROTEIN)
-    ("ubiquitin-protein ligase" . SPARSER::PROTEIN)
-    ("Protein 3" . SPARSER::PROTEIN) ("R-2" . SPARSER::PROTEIN)
+    ("bone morphogenetic protein" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("SMURF1" . SPARSER::PROTEIN) ("Protein 3" . SPARSER::PROTEIN)
     ("PI 3-K" . SPARSER::PROTEIN) ("ALK-5" . SPARSER::PROTEIN)
     ("HNF3B" . SPARSER::PROTEIN) ("Forkhead Box A2" . SPARSER::PROTEIN)
     ("αSMA" . SPARSER::PROTEIN)
@@ -6744,7 +6917,7 @@
     ("COL7A1" . SPARSER::PROTEIN) ("SMAD9" . SPARSER::PROTEIN)
     ("SMAD5" . SPARSER::PROTEIN) ("SMAD1" . SPARSER::PROTEIN)
     ("R-SMADs" . SPARSER::PROTEIN-FAMILY)
-    ("Transforming Growth Factor" . SPARSER::PROTEIN)
+    ("Transforming Growth Factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("FOXA2" . SPARSER::PROTEIN) ("LTBP3" . SPARSER::PROTEIN)
     ("SMAD6" . SPARSER::PROTEIN) ("SMAD3" . SPARSER::PROTEIN)
     ("Transforming growth factor beta 1" . SPARSER::PROTEIN)
@@ -6760,46 +6933,49 @@
     ("CSN6 and COP1" . SPARSER::COLLECTION)
     ("COP1, CSN6, and 14-3-3σ" . SPARSER::COLLECTION)
     ("COP1 and 14-3-3σ" . SPARSER::COLLECTION)
+    ("CSN and COP1" . SPARSER::COLLECTION)
     ("The COP9 signalosome (CSN) and COP1" . SPARSER::COLLECTION)
-    ("signalosome (CSN)" . SPARSER::PROTEIN)
+    ("COP9 signalosome (CSN)" . SPARSER::PROTEIN)
     ("CSN6-shRNA" . SPARSER::COLLECTION)
+    ("some biological impact" . SPARSER::PROTEIN)
     ("CSN6 and 14-3-3σ" . SPARSER::COLLECTION)
     ("CSN6, COP1 and 14-3-3σ" . SPARSER::COLLECTION)
-    ("stress-responsive transcription factors p53"
-     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("stress-responsive transcription factors p53" . SPARSER::PROTEIN)
+    ("coiled-coil and WD40-repeat" . SPARSER::COLLECTION)
     ("Mov34" . SPARSER::PROTEIN) ("Cullins" . SPARSER::PROTEIN-FAMILY)
     ("JAMM" . SPARSER::PROTEIN-FAMILY) ("Ligases (CRL)" . SPARSER::LIGASE)
     ("the only two subunits" . SPARSER::FRAGMENT)
-    ("CSN6 and CSN5" . SPARSER::COLLECTION)
-    ("CRL" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Ligases" . SPARSER::PROTEIN)
-    ("Cullin" . SPARSER::PROTEIN-FAMILY) ("pr" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("CSN1–CSN8" . SPARSER::COLLECTION) ("signalosome" . SPARSER::PROTEIN)
-    ("Signalosome (CSN)" . SPARSER::PROTEIN) ("Signalosome" . SPARSER::PROTEIN)
-    ("CSN6-COP1" . SPARSER::COLLECTION) ("UbcH5a" . SPARSER::PROTEIN)
-    ("MTA1" . SPARSER::PROTEIN) ("TORC2" . SPARSER::PROTEIN)
-    ("acetyl-coA" . SPARSER::MOLECULE)
+    ("CSN6 and CSN5" . SPARSER::COLLECTION) ("CRL" . SPARSER::PROTEIN)
+    ("Ligases" . SPARSER::PROTEIN) ("Cullin" . SPARSER::PROTEIN-FAMILY)
+    ("pr" . SPARSER::HUMAN-PROTEIN-FAMILY) ("MPN" . SPARSER::PROTEIN)
+    ("CSN1–CSN8" . SPARSER::COLLECTION)
+    ("Signalosome (CSN)" . SPARSER::PROTEIN) ("CSN" . SPARSER::PROTEIN)
+    ("Signalosome" . SPARSER::PROTEIN) ("CSN6-COP1" . SPARSER::COLLECTION)
+    ("UbcH5a" . SPARSER::PROTEIN) ("MTA1" . SPARSER::PROTEIN)
+    ("TORC2" . SPARSER::PROTEIN) ("acetyl-coA" . SPARSER::MOLECULE)
     ("sensitive to apoptosis" . SPARSER::PROTEIN) ("akt1" . SPARSER::PROTEIN)
-    ("HME1" . SPARSER::PROTEIN) ("HY5" . SPARSER::PROTEIN)
-    ("JAB1" . SPARSER::PROTEIN) ("CSN5" . SPARSER::PROTEIN)
-    ("CSN8" . SPARSER::PROTEIN) ("CSN1" . SPARSER::PROTEIN)
-    ("COP9" . SPARSER::PROTEIN) ("Arabidopsis )" . SPARSER::PROTEIN)
-    ("CSN6" . SPARSER::PROTEIN)
+    ("COP9" . SPARSER::PROTEIN) ("HME1" . SPARSER::PROTEIN)
+    ("HY5" . SPARSER::PROTEIN) ("JAB1" . SPARSER::PROTEIN)
+    ("CSN5" . SPARSER::PROTEIN) ("CSN8" . SPARSER::PROTEIN)
+    ("CSN1" . SPARSER::PROTEIN) ("COP9 signalosome" . SPARSER::PROTEIN)
+    ("Arabidopsis )" . SPARSER::PROTEIN) ("CSN6" . SPARSER::PROTEIN)
     ("COP9 signalosome subunit 6" . SPARSER::PROTEIN)
-    ("the endothelial p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("thiols" . SPARSER::MOLECULE) ("p53, and EC" . SPARSER::COLLECTION)
     ("increased cytoplasmic anti-p53" . SPARSER::ANTIBODY)
-    ("subsequent p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("annexin V (Fig. S4 B, red) and VE-cadherin (Fig. S4 B, green)"
-     . SPARSER::COLLECTION)
+    ("subsequent p53 nuclear" . SPARSER::PROTEIN)
+    ("yin and yang" . SPARSER::COLLECTION) ("yin" . SPARSER::PROTEIN)
+    ("anti–VE-cadherin" . SPARSER::COLLECTION)
+    ("VE-cadherin" . SPARSER::COLLECTION)
     ("antigen-preabsorbed anti-p53" . SPARSER::ANTIBODY)
-    ("PRO" . SPARSER::AMINO-ACID) ("-cadherin" . SPARSER::COLLECTION)
-    ("antiphospho-PKCζ" . SPARSER::COLLECTION) ("HP" . SPARSER::PROTEIN)
-    ("Siz/PIAS" . SPARSER::COLLECTION)
+    ("PRO" . SPARSER::PROTEIN) ("-cadherin" . SPARSER::COLLECTION)
+    ("antiphospho-PKCζ" . SPARSER::COLLECTION) ("LP" . SPARSER::PROTEIN)
+    ("HP" . SPARSER::PROTEIN) ("Siz/PIAS" . SPARSER::COLLECTION)
     ("GST-fused PKCζ and Flag-tagged PIASy" . SPARSER::COLLECTION)
     ("GST-fused" . SPARSER::COLLECTION)
     ("PIASy, and ONOO" . SPARSER::COLLECTION) ("pACT" . SPARSER::PROTEIN)
     ("anti-PKCζ, and ONOO" . SPARSER::COLLECTION)
     ("PKCζ and myc-tagged" . SPARSER::COLLECTION)
+    ("subsequent nuclear" . SPARSER::PROTEIN)
     ("the adenoviral p53-K386R (Ad-p53-K386R) mutant" . SPARSER::MUTANT)
     ("wild-type p53 (Ad-WT-p53) or the p53 SUMOylation site mutant (p53-K386R)"
      . SPARSER::COLLECTION)
@@ -6816,19 +6992,18 @@
     ("the anti-p53" . SPARSER::ANTIBODY)
     ("an adenoviral dominant-negative (DN) kinase-dead form" . SPARSER::FORM)
     ("p53 and EC" . SPARSER::COLLECTION)
-    ("d-flow–mediated endothelial p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("d-flow–mediated endothelial p53 nuclear" . SPARSER::PROTEIN)
     ("Masking" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Bcl-xL and Bcl-2" . SPARSER::COLLECTION) ("aortic EC" . SPARSER::PROTEIN)
+    ("Bcl-xL and Bcl-2" . SPARSER::COLLECTION)
+    ("factors and EC" . SPARSER::COLLECTION) ("aortic EC" . SPARSER::PROTEIN)
     ("Siz" . SPARSER::PROTEIN)
     ("d-flow–mediated peroxynitrite" . SPARSER::MOLECULE)
     ("p53–Bcl-2" . SPARSER::COLLECTION) ("PKCζ–PIASy" . SPARSER::COLLECTION)
     ("N -ethylmaleimide" . SPARSER::MOLECULE) ("IgG 1" . SPARSER::BIO-COMPLEX)
-    ("pG5" . SPARSER::PROTEIN) ("A-14" . SPARSER::PROTEIN)
-    ("C-2" . SPARSER::PROTEIN) ("A-3" . SPARSER::PROTEIN)
-    ("aa 1" . SPARSER::PROTEIN) ("B–D" . SPARSER::PROTEIN)
-    ("VE-cadherin" . SPARSER::PROTEIN) ("myc-tagged" . SPARSER::PROTEIN)
-    ("Ad-p53" . SPARSER::DRUG) ("L-NAME" . SPARSER::MOLECULE)
-    ("PKCι" . SPARSER::PROTEIN) ("1 C" . SPARSER::PROTEIN)
+    ("pG5" . SPARSER::PROTEIN) ("aa 1" . SPARSER::PROTEIN)
+    ("myc-tagged" . SPARSER::PROTEIN) ("Ad-p53" . SPARSER::DRUG)
+    ("L-NAME" . SPARSER::MOLECULE) ("PKCι" . SPARSER::PROTEIN)
+    ("1 C" . SPARSER::PROTEIN)
     ("sentrin-specific protease 2" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("SENP2" . SPARSER::PROTEIN) ("19 kD" . SPARSER::PROTEIN)
     ("PKCζ, and nitrotyrosine" . SPARSER::COLLECTION)
@@ -6839,40 +7014,35 @@
     ("dominant-negative PKCζ" . SPARSER::PROTEIN)
     ("GADD45 and p21 cip1" . SPARSER::COLLECTION)
     ("an important antiatherogenic gene" . SPARSER::GENE)
-    ("klf2" . SPARSER::PROTEIN)
-    ("mitochondrial cytochrome c" . SPARSER::PROTEIN)
     ("Bcl-2 or Bcl-xL" . SPARSER::COLLECTION)
     ("proapoptotic genes or cell cycle–regulating genes ( xref ; xref ; xref )"
      . SPARSER::COLLECTION)
     ("proatherogenic genes" . SPARSER::GENE)
     ("atheroprotective genes" . SPARSER::GENE)
     ("Klf2, eNOS, and antioxidant" . SPARSER::COLLECTION)
-    ("Klf2" . SPARSER::PROTEIN)
     ("endothelial nitric oxide synthase" . SPARSER::PROTEIN)
     ("PIASy" . SPARSER::PROTEIN) ("peroxynitrite" . SPARSER::MOLECULE)
     ("l -arginine" . SPARSER::MOLECULE)
-    ("p21 cip1" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("cambinol, and EX-527" . SPARSER::COLLECTION) ("cambinol" . SPARSER::DRUG)
-    ("p53, and Nutlin-3a" . SPARSER::COLLECTION) ("Nutlins" . SPARSER::DRUG)
-    ("RITA" . SPARSER::PROTEIN)
+    ("p21 cip1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("klf2" . SPARSER::PROTEIN)
+    ("Klf2" . SPARSER::PROTEIN) ("cambinol, and EX-527" . SPARSER::COLLECTION)
+    ("cambinol" . SPARSER::DRUG) ("p53, and Nutlin-3a" . SPARSER::COLLECTION)
+    ("Nutlins" . SPARSER::DRUG) ("RITA" . SPARSER::PROTEIN)
     ("directly target upstream regulators" . SPARSER::REGULATOR)
     ("hausp and p53" . SPARSER::COLLECTION)
     ("a stress-induced p53-HAUSP complex" . SPARSER::BIO-COMPLEX)
-    ("mitochondrial HAUSP" . SPARSER::PROTEIN)
     ("p53, Mdm2, and MdmX" . SPARSER::COLLECTION)
     ("p53-HAUSP" . SPARSER::COLLECTION) ("hausp" . SPARSER::PROTEIN)
     ("Herpes-Specific Ubiquitin Specific Protease (HAUSP)"
      . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Protease (HAUSP)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Protease" . SPARSER::HUMAN-PROTEIN-FAMILY) ("DUB" . SPARSER::PROTEIN)
-    ("DUBs" . SPARSER::PROTEIN)
     ("the lysines of p53 that have been identified for sumoylation and neddylation"
-     . SPARSER::HUMAN-PROTEIN-FAMILY)
+     . SPARSER::PROTEIN)
     ("Nedd8" . SPARSER::PROTEIN) ("Fbxo11" . SPARSER::PROTEIN)
     ("an atypical ubiquitin ligase" . SPARSER::PROTEIN)
-    ("monomeric p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Msl2" . SPARSER::PROTEIN) ("PCAF" . SPARSER::PROTEIN)
-    ("a major HAT" . SPARSER::PROTEIN) ("CBP/p300" . SPARSER::COLLECTION)
+    ("monomeric p53" . SPARSER::PROTEIN) ("Msl2" . SPARSER::PROTEIN)
+    ("PCAF" . SPARSER::PROTEIN) ("a major HAT" . SPARSER::PROTEIN)
+    ("CBP/p300" . SPARSER::COLLECTION)
     ("Hsc70 and Hsp90" . SPARSER::COLLECTION)
     ("polyubiquitinate" . SPARSER::PROTEIN)
     ("polyubiquitinated" . SPARSER::PROTEIN) ("synoviolin" . SPARSER::PROTEIN)
@@ -6897,11 +7067,14 @@
     ("day E6.5" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("p53 and Mdm2" . SPARSER::COLLECTION)
     ("the predominant and critical E3 ubiquitin ligase" . SPARSER::PROTEIN)
+    ("exogenous factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the human papilloma virus (HPV) E6-associated cellular protein E6AP"
      . SPARSER::PROTEIN)
-    ("at least 4 ubiquitins" . SPARSER::PROTEIN)
     ("proteosome" . SPARSER::PROTEIN) ("Ubiquitin" . SPARSER::PROTEIN)
     ("enzymes, and E3" . SPARSER::COLLECTION) ("UBL" . SPARSER::PROTEIN)
+    ("several E3 ubiquitin ligases and other associated factors"
+     . SPARSER::COLLECTION)
+    ("other associated factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ubiquitin-proteosome" . SPARSER::COLLECTION)
     ("ubiquitin as well as ubiquitin-like proteins" . SPARSER::COLLECTION)
     ("HBX41108" . SPARSER::DRUG) ("MI-219" . SPARSER::DRUG)
@@ -6916,7 +7089,7 @@
     ("SFN or its metabolites" . SPARSER::COLLECTION)
     ("a unique E3 ligase" . SPARSER::LIGASE)
     ("c-Myc and cyclin E" . SPARSER::COLLECTION)
-    ("dimeric 14-3-3" . SPARSER::PROTEIN)
+    ("dimeric 14-3-3" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("further traffic HDAC3" . SPARSER::PROTEIN)
     ("the monomeric form" . SPARSER::FORM)
     ("indeed no p-14-3-3" . SPARSER::COLLECTION)
@@ -6927,26 +7100,28 @@
     ("HDAC7 and several other class II HDACs" . SPARSER::COLLECTION)
     ("each caspase and its potential HDAC target(s)" . SPARSER::COLLECTION)
     ("Pappa" . SPARSER::PROTEIN) ("the dual aims" . SPARSER::PROTEIN)
-    ("aims" . SPARSER::PROTEIN) ("p-14-3-3" . SPARSER::COLLECTION)
+    ("aims" . SPARSER::PROTEIN) ("the latter case" . SPARSER::PROTEIN)
+    ("p-14-3-3" . SPARSER::COLLECTION)
     ("some client proteins" . SPARSER::PROTEIN)
     ("client proteins" . SPARSER::PROTEIN)
     ("HDAC3 and SMRT" . SPARSER::COLLECTION)
     ("HDAC3/p-SMRT" . SPARSER::COLLECTION)
     ("CK2 or Pin1" . SPARSER::COLLECTION)
     ("namely protein kinase CK2" . SPARSER::PROTEIN)
-    ("-SFN" . SPARSER::COLLECTION)
+    ("-SFN" . SPARSER::COLLECTION) ("N-Cor or HDAC4" . SPARSER::COLLECTION)
     ("phospho-HDAC3 (p-HDAC3) and phospho-SMRT (p-SMRT)" . SPARSER::COLLECTION)
     ("total HDAC3 and total SMRT (Figure xref )" . SPARSER::COLLECTION)
     ("p-SMRT" . SPARSER::COLLECTION) ("p-HDAC3" . SPARSER::COLLECTION)
+    ("SMRT/N-Cor" . SPARSER::COLLECTION)
     ("14-3-3 and Pin1" . SPARSER::COLLECTION) ("CHX" . SPARSER::PROTEIN)
     ("SMRT, N-Cor, or HDAC4" . SPARSER::COLLECTION)
     ("SMRT, N-Cor, and HDAC4" . SPARSER::COLLECTION)
     ("SMRT, N-Cor and HDAC4" . SPARSER::COLLECTION)
-    ("Cor" . SPARSER::PROTEIN-FAMILY)
     ("HDAC3-HDAC4-SMRT/N-CoR" . SPARSER::COLLECTION)
     ("HDAC inhibitors and proteasome inhibitors [ xref - xref ]"
      . SPARSER::COLLECTION)
     ("leupeptin" . SPARSER::DRUG)
+    ("class I and class II HDAC" . SPARSER::COLLECTION)
     ("cycloheximide and actinomycin D" . SPARSER::COLLECTION)
     ("the cell-permeable pan caspase inhibitor z-VAD(OMe)-FMK"
      . SPARSER::COLLECTION)
@@ -6954,22 +7129,26 @@
     ("PARP and caspase-3" . SPARSER::COLLECTION)
     ("HDAC1, HDAC2, HDAC3, HDAC4, HDAC6, and HDAC8" . SPARSER::COLLECTION)
     ("fresh media containing no SFN" . SPARSER::PROTEIN)
+    ("tubulin-deacetylase" . SPARSER::COLLECTION)
     ("HDACs, HDAC5, HDAC7, HDAC9 and HDAC10" . SPARSER::COLLECTION)
     ("HDAC6 and HDAC4" . SPARSER::COLLECTION)
     ("HDAC1, HDAC2, HDAC3 and HDAC8" . SPARSER::COLLECTION)
-    ("weak ligands" . SPARSER::LIGAND)
+    ("post-SFN" . SPARSER::COLLECTION) ("weak ligands" . SPARSER::LIGAND)
     ("A structurally-related isothiocyanate" . SPARSER::MOLECULE)
     ("the cancer chemoprotective agent sulforaphane (SFN)" . SPARSER::DRUG)
+    ("dietary factors and their metabolites [ xref - xref ]"
+     . SPARSER::COLLECTION)
+    ("dietary factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ac" . SPARSER::PROTEIN)
-    ("receptors/nuclear receptor co-repressor" . SPARSER::COLLECTION)
+    ("receptors/nuclear receptor" . SPARSER::COLLECTION)
     ("SMRT/N-CoR" . SPARSER::COLLECTION)
     ("histone and non-histone" . SPARSER::COLLECTION)
     ("SMRT and HDAC3" . SPARSER::COLLECTION)
     ("cis/trans isomerase" . SPARSER::COLLECTION)
     ("peptidyl-prolyl" . SPARSER::COLLECTION)
     ("HDAC3/SMRT" . SPARSER::COLLECTION)
-    ("receptors (SMRT)" . SPARSER::RECEPTOR)
-    ("retinoid and thyroid" . SPARSER::COLLECTION) ("SMRT" . SPARSER::PROTEIN)
+    ("retinoid and thyroid hormone receptors (SMRT)" . SPARSER::COLLECTION)
+    ("receptors (SMRT)" . SPARSER::RECEPTOR) ("SMRT" . SPARSER::PROTEIN)
     ("retinoid" . SPARSER::PROTEIN)
     ("protease or caspase" . SPARSER::COLLECTION)
     ("cycloheximide or actinomycin D" . SPARSER::COLLECTION)
@@ -6977,15 +7156,13 @@
     ("glucosinolate" . SPARSER::MOLECULE) ("SFN" . SPARSER::PROTEIN)
     ("sulforaphane" . SPARSER::PROTEIN)
     ("turn-on epigenetically-silenced genes" . SPARSER::GENE)
-    ("s 5A" . SPARSER::PROTEIN) ("p-14" . SPARSER::PROTEIN)
-    ("1-8" . SPARSER::PROTEIN) ("calpain inhibitor" . SPARSER::PROTEIN)
-    ("HDAC10" . SPARSER::PROTEIN) ("HDAC5" . SPARSER::PROTEIN)
-    ("HDAC8" . SPARSER::PROTEIN) ("Nrf2" . SPARSER::PROTEIN)
-    ("NF-E2-related factor 2" . SPARSER::PROTEIN)
-    ("nuclear receptor co-repressor" . SPARSER::PROTEIN)
-    ("N-CoR" . SPARSER::PROTEIN) ("Pin1" . SPARSER::PROTEIN)
-    ("trans isomerase" . SPARSER::PROTEIN)
-    ("Histone deacetylase" . SPARSER::PROTEIN)
+    ("s 5A" . SPARSER::PROTEIN) ("N-Cor" . SPARSER::PROTEIN)
+    ("calpain inhibitor" . SPARSER::PROTEIN) ("HDAC10" . SPARSER::PROTEIN)
+    ("HDAC5" . SPARSER::PROTEIN) ("HDAC8" . SPARSER::PROTEIN)
+    ("Nrf2" . SPARSER::PROTEIN) ("NF-E2-related factor 2" . SPARSER::PROTEIN)
+    ("nuclear receptor" . SPARSER::PROTEIN) ("N-CoR" . SPARSER::PROTEIN)
+    ("Pin1" . SPARSER::PROTEIN) ("trans isomerase" . SPARSER::PROTEIN)
+    ("Histone deacetylase" . SPARSER::PROTEIN) ("SBE" . SPARSER::PROTEIN)
     ("hydrogenase" . SPARSER::PROTEIN)
     ("reciprocally targets Smad2 and Smad3" . SPARSER::COLLECTION)
     ("ROS and NAD(P)H" . SPARSER::COLLECTION)
@@ -6994,6 +7171,7 @@
     ("Smad3-Smad4-dependent TGF-β target genes" . SPARSER::GENE)
     ("Smad3-Smad4" . SPARSER::COLLECTION)
     ("transcriptional corepressors" . SPARSER::PROTEIN)
+    ("p3TP-lux" . SPARSER::COLLECTION) ("lux" . SPARSER::PROTEIN)
     ("exogenously added and autocrine TGF-β's" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("autocrine TGF-β" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Smad2/3" . SPARSER::PROTEIN) ("TGF-β and EGF-R" . SPARSER::COLLECTION)
@@ -7008,23 +7186,26 @@
     ("FRNK or MYC-tagged" . SPARSER::COLLECTION) ("FRNK" . SPARSER::PROTEIN)
     ("p-Smad2" . SPARSER::COLLECTION) ("pCAGA" . SPARSER::PROTEIN)
     ("pCAGA-luc" . SPARSER::COLLECTION) ("luc" . SPARSER::PROTEIN)
-    ("dn Rac1 and either pAR3-luc (+FAST-1)" . SPARSER::COLLECTION)
-    ("pAR3-luc" . SPARSER::COLLECTION) ("pAR3" . SPARSER::PROTEIN)
-    ("employed PANC-1" . SPARSER::PROTEIN) ("RTCA" . SPARSER::PROTEIN)
+    ("the reporter plasmids pAR3-luc (Smad2-dependent) and pCAGA-luc (Smad3-dependent)"
+     . SPARSER::COLLECTION)
+    ("pAR3-luc" . SPARSER::COLLECTION) ("RTCA" . SPARSER::PROTEIN)
     ("Rac1, or GADD45β" . SPARSER::COLLECTION)
-    ("previously characterized PANC-1" . SPARSER::PROTEIN)
     ("MMP2 and BGN" . SPARSER::COLLECTION) ("BGN" . SPARSER::PROTEIN)
     ("a pharmacologic Smad3 inhibitor" . SPARSER::INHIBITOR)
     ("Smad2-" . SPARSER::PROTEIN) ("Smad3-" . SPARSER::PROTEIN)
-    ("exogenous TGF-β1" . SPARSER::PROTEIN) ("p-Smads" . SPARSER::PROTEIN-PAIR)
+    ("exogenous TGF-β1" . SPARSER::PROTEIN)
+    ("the respective phospho-Smads" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("p-Smads" . SPARSER::COLLECTION)
+    ("the respective Smads" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("-thymidine" . SPARSER::COLLECTION) ("biglycan" . SPARSER::PROTEIN)
     ("proteoglycan" . SPARSER::PROTEIN)
     ("constitutively active (ca) mutants [ xref ] and this"
      . SPARSER::COLLECTION)
     ("TGF-β and Rac1" . SPARSER::COLLECTION)
     ("cyclin D1 and p21 WAF1" . SPARSER::COLLECTION)
-    ("exchange factor (GEF)" . SPARSER::EXCHANGE-FACTOR) ("GEF" . SPARSER::GEF)
-    ("an essential subunit" . SPARSER::FRAGMENT)
+    ("exchange factor (GEF)" . SPARSER::EXCHANGE-FACTOR)
+    ("GEF" . SPARSER::PROTEIN) ("an essential subunit" . SPARSER::FRAGMENT)
+    ("epidermal growth factor-receptor" . SPARSER::COLLECTION)
     ("Smad2 or Smad3" . SPARSER::COLLECTION)
     ("Smad3 and Smad2" . SPARSER::COLLECTION)
     ("TGF-β/Smad" . SPARSER::COLLECTION) ("Smad4/DPC4" . SPARSER::COLLECTION)
@@ -7039,7 +7220,8 @@
     ("TGF-β and its signalling effectors" . SPARSER::COLLECTION)
     ("a dominant-negative Rac1 mutant" . SPARSER::MUTANT)
     ("cdk" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Smad2 and Smad3" . SPARSER::COLLECTION) ("/Smad" . SPARSER::COLLECTION)
+    ("Smad2 and Smad3" . SPARSER::COLLECTION)
+    ("Smads" . SPARSER::HUMAN-PROTEIN-FAMILY) ("/Smad" . SPARSER::COLLECTION)
     ("plasminogen activator inhibitor-1" . SPARSER::PROTEIN)
     ("activin receptor-like kinase 5" . SPARSER::PROTEIN)
     ("pRK5" . SPARSER::PROTEIN) ("TATA box binding protein" . SPARSER::PROTEIN)
@@ -7047,17 +7229,16 @@
     ("p3" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("tyrphostin AG1478" . SPARSER::DRUG) ("p125 FAK" . SPARSER::PROTEIN)
     ("MYC-tagged" . SPARSER::PROTEIN) ("FAST-1" . SPARSER::PROTEIN)
-    ("NSC23766" . SPARSER::DRUG) ("GADD45" . SPARSER::PROTEIN)
-    ("RAC1" . SPARSER::PROTEIN) ("SIS3" . SPARSER::MOLECULE)
-    ("Smads 2" . SPARSER::PROTEIN) ("S1B" . SPARSER::PROTEIN)
-    ("Vav1" . SPARSER::PROTEIN) ("NAD(P)H" . SPARSER::MOLECULE)
-    ("EGF-R" . SPARSER::PROTEIN)
-    ("epidermal growth factor-receptor" . SPARSER::PROTEIN)
+    ("pAR3" . SPARSER::PROTEIN) ("NSC23766" . SPARSER::DRUG)
+    ("GADD45" . SPARSER::PROTEIN) ("RAC1" . SPARSER::PROTEIN)
+    ("SIS3" . SPARSER::PROTEIN) ("Smads 2" . SPARSER::PROTEIN)
+    ("S1B" . SPARSER::PROTEIN) ("Vav1" . SPARSER::PROTEIN)
+    ("NAD(P)H" . SPARSER::MOLECULE)
     ("extracellular signal-regulated kinases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ALK5" . SPARSER::PROTEIN) ("TβRI" . SPARSER::PROTEIN)
-    ("TβRII" . SPARSER::PROTEIN) ("PANC-1" . SPARSER::PROTEIN)
-    ("SiRNA-mediated" . SPARSER::PROTEIN) ("R-Smad" . SPARSER::PROTEIN-FAMILY)
-    ("Smad3" . SPARSER::PROTEIN) ("R-Smads" . SPARSER::PROTEIN)
+    ("TβRII" . SPARSER::PROTEIN) ("SiRNA-mediated" . SPARSER::PROTEIN)
+    ("R-Smad" . SPARSER::PROTEIN-FAMILY) ("Smad3" . SPARSER::PROTEIN)
+    ("R-Smads" . SPARSER::PROTEIN)
     ("transforming growth factor-beta" . SPARSER::PROTEIN)
     ("TRPC" . SPARSER::PROTEIN)
     ("a particularly attractive therapeutic target" . SPARSER::TARGET-PROTEIN)
@@ -7066,12 +7247,11 @@
     ("SRF and ERK" . SPARSER::COLLECTION)
     ("FGF8 and FGF17" . SPARSER::COLLECTION) ("strong SRF" . SPARSER::PROTEIN)
     ("PCas" . SPARSER::PROTEIN) ("SRE and AP1" . SPARSER::COLLECTION)
-    ("MKK" . SPARSER::PROTEIN-FAMILY) ("Klotho" . SPARSER::PROTEIN)
+    ("MKK" . SPARSER::PROTEIN) ("Klotho" . SPARSER::PROTEIN)
     ("FGF2 or FGF19" . SPARSER::COLLECTION)
     ("SRF and AP1" . SPARSER::COLLECTION)
     ("FGF2 and luciferase" . SPARSER::COLLECTION)
     ("SRE or AP1" . SPARSER::COLLECTION) ("NFAT or ARE" . SPARSER::COLLECTION)
-    ("serum response factor (SRF)" . SPARSER::PROTEIN)
     ("response elements (SRE)" . SPARSER::DNA-RESPONSE-ELEMENT)
     ("lysyl oxidase (LOX) and several collagen genes" . SPARSER::COLLECTION)
     ("GRB1, CRKL and RelA" . SPARSER::COLLECTION) ("CRKL" . SPARSER::PROTEIN)
@@ -7080,8 +7260,7 @@
     ("hetero-" . SPARSER::PROTEIN)
     ("extracellular signal-related kinase (ERK) and STATs"
      . SPARSER::COLLECTION)
-    ("kinase (ERK)" . SPARSER::KINASE) ("c" . SPARSER::PROTEIN)
-    ("phospholipase" . SPARSER::PROTEIN)
+    ("kinase (ERK)" . SPARSER::KINASE)
     ("evidence links fibroblast growth factors (FGFs) and FGF receptors (FGFRs)"
      . SPARSER::COLLECTION)
     ("FGFRs" . SPARSER::PROTEIN) ("FGFs" . SPARSER::PROTEIN)
@@ -7094,13 +7273,14 @@
     ("phospholipase-C γ" . SPARSER::PROTEIN-FAMILY)
     ("FGF19" . SPARSER::PROTEIN) ("GRB1" . SPARSER::PROTEIN)
     ("ZNF22" . SPARSER::PROTEIN) ("ZNF19" . SPARSER::PROTEIN)
-    ("lysyl oxidase" . SPARSER::PROTEIN) ("FGFR4" . SPARSER::PROTEIN)
-    ("β-Tubulin" . SPARSER::PROTEIN) ("PLC-γ" . SPARSER::PROTEIN-FAMILY)
-    ("FGFR 1" . SPARSER::PROTEIN)
+    ("lysyl oxidase" . SPARSER::PROTEIN) ("EF1" . SPARSER::PROTEIN)
+    ("FGFR4" . SPARSER::PROTEIN) ("β-Tubulin" . SPARSER::PROTEIN)
+    ("PNT1" . SPARSER::PROTEIN) ("PLC-γ" . SPARSER::PROTEIN-FAMILY)
+    ("phospholipase c" . SPARSER::PROTEIN) ("FGFR 1" . SPARSER::PROTEIN)
     ("fibroblast growth factors" . SPARSER::PROTEIN-FAMILY)
     ("FGFR-4" . SPARSER::PROTEIN) ("EGFR-c-Met" . SPARSER::COLLECTION)
-    ("G protein-coupled receptor, estrogen receptor and COX-2"
-     . SPARSER::COLLECTION)
+    ("pan-src" . SPARSER::COLLECTION)
+    ("receptor, estrogen receptor and COX-2" . SPARSER::COLLECTION)
     ("gefitinib or PF2341066" . SPARSER::COLLECTION)
     ("EGFR or c-Met" . SPARSER::COLLECTION)
     ("EGFR/c-Met" . SPARSER::COLLECTION)
@@ -7150,7 +7330,7 @@
     ("an epithelial-specific tumor suppressive protein" . SPARSER::PROTEIN)
     ("maspin and the GSTp-dependent anti-apoptotic" . SPARSER::COLLECTION)
     ("LNCap/LacZ" . SPARSER::COLLECTION) ("LNCap" . SPARSER::PROTEIN)
-    ("p-H2A" . SPARSER::COLLECTION)
+    ("p-H2A.X" . SPARSER::COLLECTION)
     ("oxidative stressor H 2 O 2" . SPARSER::DRUG)
     ("MG132 and LBH589" . SPARSER::COLLECTION)
     ("maspin and HDAC" . SPARSER::COLLECTION)
@@ -7169,12 +7349,11 @@
     ("maspin/HDAC1" . SPARSER::COLLECTION)
     ("targetable HDACs" . SPARSER::PROTEIN) ("Aza" . SPARSER::DRUG)
     ("reverse DNA" . SPARSER::DNA) ("Neo" . SPARSER::PROTEIN)
-    ("GSTm1" . SPARSER::PROTEIN) ("GSTm3" . SPARSER::PROTEIN)
     ("The exact biological trigger" . SPARSER::PROTEIN)
     ("p21 and Bax" . SPARSER::COLLECTION)
     ("p21, p27 and Bax" . SPARSER::COLLECTION)
     ("condensation" . SPARSER::PROTEIN-FAMILY)
-    ("an epithelial-specific regulator" . SPARSER::REGULATOR)
+    ("an epithelial-specific regulator" . SPARSER::PROTEIN)
     ("metalloproteinases or serine" . SPARSER::COLLECTION)
     ("serpin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("DNA-methylation inhibitor and histone deacetylase (HDAC) inhibitor [ xref , xref ]"
@@ -7188,40 +7367,43 @@
     ("GSTp" . SPARSER::PROTEIN) ("maspin" . SPARSER::PROTEIN)
     ("P-gp" . SPARSER::PROTEIN) ("LSD1" . SPARSER::PROTEIN)
     ("K4" . SPARSER::PROTEIN) ("VEGF-A" . SPARSER::PROTEIN)
-    ("vascular endothelial growth factor-A" . SPARSER::PROTEIN)
     ("MBD 2" . SPARSER::PROTEIN)
     ("DNA (cytosine-5)-methyltransferase 1" . SPARSER::PROTEIN)
     ("cytokeratin 18" . SPARSER::PROTEIN) ("De-" . SPARSER::MOLECULE)
-    ("m2" . SPARSER::MOLECULE) ("ADP-Ribose" . SPARSER::MOLECULE)
-    ("LBH589" . SPARSER::DRUG) ("Class I" . SPARSER::PROTEIN)
+    ("m2" . SPARSER::MOLECULE) ("GSTm1" . SPARSER::PROTEIN)
+    ("GSTm3" . SPARSER::PROTEIN) ("ADP-Ribose" . SPARSER::MOLECULE)
+    ("CF3" . SPARSER::PROTEIN) ("LBH589" . SPARSER::DRUG)
+    ("Class I" . SPARSER::PROTEIN)
     ("serine protease inhibitor" . SPARSER::PROTEIN)
-    ("hypoxia-induced factor 1" . SPARSER::PROTEIN)
     ("histone 2" . SPARSER::PROTEIN) ("histone 3" . SPARSER::PROTEIN)
+    ("2’-deoxycytidine" . SPARSER::MOLECULE)
     ("SRSF1 and hnRNP L" . SPARSER::COLLECTION)
+    ("-factors" . SPARSER::COLLECTION) ("-factor" . SPARSER::COLLECTION)
     ("an intronic splicing enhancer" . SPARSER::PROTEIN)
     ("juxta-exon" . SPARSER::COLLECTION) ("ASF/SF2" . SPARSER::COLLECTION)
     ("ASF" . SPARSER::PROTEIN) ("DNR and erlotinib" . SPARSER::COLLECTION)
     ("erlotinib and DNR" . SPARSER::COLLECTION)
     ("Daunorubicin and Erlotinib" . SPARSER::COLLECTION)
-    ("Erlotinib" . SPARSER::DRUG)
-    ("DNR and Pac ( xref )" . SPARSER::COLLECTION)
+    ("Erlotinib" . SPARSER::DRUG) ("DNR and Pac" . SPARSER::COLLECTION)
     ("DNR and Cp" . SPARSER::COLLECTION) ("DNR" . SPARSER::DRUG)
     ("Cisplatinum (Cp) and Paclitaxel (Pac)" . SPARSER::COLLECTION)
     ("Daunorubicin (DNR), Cisplatinum (Cp) and Paclitaxel (Pac)"
      . SPARSER::COLLECTION)
-    ("Cisplatinum" . SPARSER::DRUG) ("Daunorubicin" . SPARSER::DRUG)
+    ("Pac" . SPARSER::PROTEIN) ("Cisplatinum" . SPARSER::DRUG)
+    ("Daunorubicin" . SPARSER::DRUG)
     ("intronic splicing enhancer" . SPARSER::PROTEIN)
     ("SRSF1-QA" . SPARSER::PROTEIN-PAIR) ("QD" . SPARSER::PROTEIN)
     ("minigene" . SPARSER::PROTEIN) ("SRSF1 or SRSF1-QD" . SPARSER::COLLECTION)
     ("SRSF1-QD" . SPARSER::COLLECTION)
     ("proteins, and SRSF1" . SPARSER::COLLECTION)
-    ("C9-I6/ISE minigene" . SPARSER::PROTEIN) ("purine" . SPARSER::DRUG)
+    ("C9-I6/ISE minigene" . SPARSER::PROTEIN) ("SC" . SPARSER::PROTEIN)
+    ("MUT" . SPARSER::PROTEIN) ("purine" . SPARSER::DRUG)
     ("a relevant therapeutic target" . SPARSER::TARGET-PROTEIN)
     ("a novel and strong intronic splicing enhancer" . SPARSER::PROTEIN)
     ("FAS ligand and UV" . SPARSER::COLLECTION)
     ("PP1 and endogenous ceramide" . SPARSER::COLLECTION)
     ("at least one SR protein isoform" . SPARSER::ISOFORM)
-    ("PP1 and PP2A" . SPARSER::COLLECTION)
+    ("SR" . SPARSER::PROTEIN) ("PP1 and PP2A" . SPARSER::COLLECTION)
     ("sphingomyelin" . SPARSER::MOLECULE)
     ("a novel intronic splicing enhancer" . SPARSER::PROTEIN)
     ("daunorubicin and erlotinib" . SPARSER::COLLECTION)
@@ -7237,11 +7419,8 @@
     ("SRp30a" . SPARSER::PROTEIN) ("arginine/serine-rich" . SPARSER::PROTEIN)
     ("SRSF1" . SPARSER::PROTEIN) ("caspase 9" . SPARSER::PROTEIN)
     ("FoxO4-14-3-3" . SPARSER::COLLECTION)
-    ("PEA-15 and B23/NPM" . SPARSER::COLLECTION)
     ("AKT and vice versa" . SPARSER::COLLECTION)
-    ("an intact AKT" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("SETDB1, B23/NPM and Merlin" . SPARSER::COLLECTION)
-    ("Bad and PEA-15" . SPARSER::COLLECTION)
+    ("Bad and PEA-15" . SPARSER::COLLECTION) ("B23/NPM" . SPARSER::COLLECTION)
     ("AKT activation state and the examined residues" . SPARSER::COLLECTION)
     ("AKT or the substrate" . SPARSER::COLLECTION)
     ("FoxO3-AKT" . SPARSER::COLLECTION) ("AKT-FoxO" . SPARSER::COLLECTION)
@@ -7269,17 +7448,17 @@
     ("VCP and actin" . SPARSER::COLLECTION) ("VCP" . SPARSER::PROTEIN)
     ("RSxpS/TxP" . SPARSER::COLLECTION) ("TxP" . SPARSER::PROTEIN)
     ("the probable E3 ligase" . SPARSER::LIGASE) ("PP2a" . SPARSER::PROTEIN)
-    ("Skp2" . SPARSER::PROTEIN) ("Skp" . SPARSER::PROTEIN)
     ("FoxOs" . SPARSER::PROTEIN-FAMILY)
     ("oxidative stress-regulated kinases" . SPARSER::KINASE)
     ("AKT, SGK, CK1 and DYRK1A" . SPARSER::COLLECTION)
     ("MST1 and JNK" . SPARSER::COLLECTION) ("NES" . SPARSER::PROTEIN)
+    ("FoxO1 and FoxO3" . SPARSER::COLLECTION)
     ("insulin receptor-PI3K-AKT" . SPARSER::COLLECTION)
-    ("Daf" . SPARSER::PROTEIN) ("Elegans" . SPARSER::PROTEIN)
-    ("FoxO1 and FoxO3" . SPARSER::COLLECTION) ("homologues" . SPARSER::PROTEIN)
+    ("Daf" . SPARSER::PROTEIN) ("homologues" . SPARSER::PROTEIN)
     ("FoxO6 and FoxO4" . SPARSER::COLLECTION)
     ("FoxO3 and FoxO1" . SPARSER::COLLECTION)
     ("FoxO proteins and their target genes" . SPARSER::COLLECTION)
+    ("attractive targets" . SPARSER::TARGET-PROTEIN)
     ("Bcl-6 [ xref ] and Fas ligand [ xref ]" . SPARSER::COLLECTION)
     ("Gadd45 [ xref ] and oxidative stress response proteins"
      . SPARSER::COLLECTION)
@@ -7287,25 +7466,25 @@
     ("oxidative stress response proteins" . SPARSER::PROTEIN)
     ("the pro-apoptotic proteins Bim" . SPARSER::PROTEIN)
     ("MnSOD" . SPARSER::PROTEIN)
-    ("elegans and Drosophila" . SPARSER::COLLECTION)
+    ("insulin and insulin-like growth factor" . SPARSER::COLLECTION)
     ("FoxO4 (AFX) and FoxO6" . SPARSER::COLLECTION)
     ("FoxO1 (designated also FoxO1a or FKHR), FoxO3 (FoxO3a/FKHRL1), FoxO4 (AFX) and FoxO6"
      . SPARSER::COLLECTION)
     ("FoxO1a or FKHR" . SPARSER::COLLECTION) ("FoxO6" . SPARSER::PROTEIN)
     ("FoxO3a/FKHRL1" . SPARSER::COLLECTION) ("AFX" . SPARSER::PROTEIN)
-    ("FKHR" . SPARSER::PROTEIN) ("Forkhead" . SPARSER::PROTEIN)
-    ("AKT and 14-3-3" . SPARSER::COLLECTION)
-    ("AKT-FoxO3" . SPARSER::COLLECTION) ("FoxO" . SPARSER::PROTEIN-FAMILY)
-    ("PEA-15" . SPARSER::PROTEIN) ("SETDB1" . SPARSER::PROTEIN)
-    ("Calyculin A" . SPARSER::MOLECULE) ("PP1A" . SPARSER::PROTEIN)
-    ("calyculin A" . SPARSER::MOLECULE) ("Foxo3" . SPARSER::PROTEIN)
-    ("Par-4" . SPARSER::PROTEIN) ("PP2" . SPARSER::DRUG)
+    ("FKHR" . SPARSER::PROTEIN) ("AKT and 14-3-3" . SPARSER::COLLECTION)
+    ("AKT-FoxO3" . SPARSER::COLLECTION) ("FoxO" . SPARSER::PROTEIN)
+    ("PEA-15" . SPARSER::PROTEIN) ("B23" . SPARSER::PROTEIN)
+    ("SETDB1" . SPARSER::PROTEIN) ("Calyculin A" . SPARSER::MOLECULE)
+    ("PP1A" . SPARSER::PROTEIN) ("calyculin A" . SPARSER::MOLECULE)
+    ("Foxo3" . SPARSER::PROTEIN) ("Par-4" . SPARSER::PROTEIN)
+    ("PP2" . SPARSER::DRUG) ("Skp2" . SPARSER::PROTEIN)
     ("DYRK1A" . SPARSER::PROTEIN) ("Gadd45" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Bcl-6" . SPARSER::PROTEIN) ("FoxO4" . SPARSER::PROTEIN)
     ("FKHRL1" . SPARSER::PROTEIN) ("FoxO3a" . SPARSER::PROTEIN)
     ("FoxO1a" . SPARSER::PROTEIN) ("FoxO1" . SPARSER::PROTEIN)
-    ("P34" . SPARSER::PROTEIN) ("FoxO3" . SPARSER::PROTEIN)
-    ("a valuable biomarker" . SPARSER::MOLECULE)
+    ("Forkhead box" . SPARSER::PROTEIN) ("P34" . SPARSER::PROTEIN)
+    ("FoxO3" . SPARSER::PROTEIN) ("a valuable biomarker" . SPARSER::MOLECULE)
     ("around protein" . SPARSER::PROTEIN)
     ("mitochondria or perhaps" . SPARSER::COLLECTION)
     ("UV or staurosporine" . SPARSER::COLLECTION)
@@ -7333,7 +7512,7 @@
     ("mTOR or PI3K/mTOR dual inhibitors" . SPARSER::COLLECTION)
     ("PI3K/mTOR dual inhibitors" . SPARSER::INHIBITOR)
     ("comparingPb-Cre" . SPARSER::COLLECTION)
-    ("AR and mTOR" . SPARSER::COLLECTION)
+    ("AR and mTOR" . SPARSER::COLLECTION) ("LSC" . SPARSER::PROTEIN)
     ("stromal AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the stromal AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the prostate epithelial AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -7341,12 +7520,13 @@
     ("proteins and mediators" . SPARSER::COLLECTION)
     ("PTEN and PHLPP" . SPARSER::COLLECTION)
     ("FKBP5 and the AKT phosphatase" . SPARSER::COLLECTION)
+    ("heterogeneous malignant CaPs" . SPARSER::PROTEIN)
     ("PAKT" . SPARSER::PROTEIN-FAMILY) ("Pten/Ar" . SPARSER::COLLECTION)
     ("androgen/AR" . SPARSER::COLLECTION)
     ("rapamycin and MDV3100" . SPARSER::COLLECTION)
     ("whenPb-Cre" . SPARSER::COLLECTION) ("andPb-Cre" . SPARSER::COLLECTION)
     ("sh-AR" . SPARSER::COLLECTION) ("AR and PTEN" . SPARSER::COLLECTION)
-    ("AR/androgen" . SPARSER::COLLECTION)
+    ("Pten -null CaP" . SPARSER::PROTEIN) ("AR/androgen" . SPARSER::COLLECTION)
     ("AR-FKBP5-PHLPP" . SPARSER::COLLECTION)
     ("AR and FKBP5" . SPARSER::COLLECTION) ("e−3" . SPARSER::COLLECTION)
     ("complete AR−" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -7358,14 +7538,16 @@
     ("AKT and PHLPP" . SPARSER::COLLECTION)
     ("an established androgen regulated gene" . SPARSER::GENE)
     ("Mme and Msmb" . SPARSER::COLLECTION) ("cis-trans" . SPARSER::COLLECTION)
-    ("isomerase" . SPARSER::ISOMERASE) ("prolyl" . SPARSER::PROTEIN)
+    ("isomerase" . SPARSER::PROTEIN) ("prolyl" . SPARSER::PROTEIN)
     ("Pb-Cre" . SPARSER::COLLECTION) ("castratedPb-Cre" . SPARSER::COLLECTION)
+    ("pan-cytokeratin" . SPARSER::COLLECTION)
     ("only regions expressing Cre" . SPARSER::PROTEIN)
     ("Myr" . SPARSER::MOLECULE) ("PTEN or the PTEN" . SPARSER::COLLECTION)
     ("LSL-AKT" . SPARSER::COLLECTION)
+    ("thePten L/L conditional line" . SPARSER::PROTEIN)
     ("epithelial AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Tfm" . SPARSER::PROTEIN) ("FUCRW" . SPARSER::PROTEIN)
-    ("viral-associated RFP reporter gene" . SPARSER::GENE)
+    ("viral-associated RFP reporter gene" . SPARSER::PROTEIN)
     ("Cre-FUCRW or FUCRW" . SPARSER::COLLECTION)
     ("Cre-FUCRW" . SPARSER::PROTEIN-PAIR)
     ("AR−" . SPARSER::HUMAN-PROTEIN-FAMILY) ("inPb-Cre" . SPARSER::COLLECTION)
@@ -7378,6 +7560,7 @@
     ("resultingPb-Cre" . SPARSER::COLLECTION)
     ("the AR conditional allele" . SPARSER::ALLELE)
     ("crossedPb-Cre" . SPARSER::COLLECTION)
+    ("Pten null CaP" . SPARSER::PROTEIN)
     ("Epithelial AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("AR and ERG" . SPARSER::COLLECTION)
     ("Nkx3.1 , Mme and Msmb" . SPARSER::COLLECTION) ("Msmb" . SPARSER::PROTEIN)
@@ -7388,14 +7571,15 @@
     ("EGR1 and c-JUN" . SPARSER::COLLECTION)
     ("EGR1, c-JUN and EZH2" . SPARSER::COLLECTION)
     ("normal cohorts" . SPARSER::MOLECULE) ("rank-rank" . SPARSER::COLLECTION)
+    ("Pten null CaPs" . SPARSER::PROTEIN)
     ("the dorsolateral lobes" . SPARSER::PROTEIN)
-    ("actin (SMA)" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("actin (SMA)" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CaPs" . SPARSER::PROTEIN)
     ("TRAMP ( xref ) and hi-Myc ( xref )" . SPARSER::COLLECTION)
     ("PI3K/AKT/mTOR" . SPARSER::COLLECTION)
     ("the AR and its target genes ( xref )" . SPARSER::COLLECTION)
-    ("their cognitive receptor" . SPARSER::RECEPTOR)
-    ("Ar" . SPARSER::HUMAN-PROTEIN-FAMILY) ("PTEN/PI3K" . SPARSER::COLLECTION)
-    ("EBP1" . SPARSER::PROTEIN) ("P-4" . SPARSER::PROTEIN)
+    ("their cognitive receptor" . SPARSER::PROTEIN)
+    ("Ar" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CaP" . SPARSER::PROTEIN)
+    ("PTEN/PI3K" . SPARSER::COLLECTION) ("4EBP1" . SPARSER::PROTEIN)
     ("c-JUN" . SPARSER::PROTEIN) ("P-S6" . SPARSER::PROTEIN)
     ("Fkbp5" . SPARSER::PROTEIN) ("TNFα-NF-κB" . SPARSER::COLLECTION)
     ("inactive FADD-caspase8 complex" . SPARSER::BIO-COMPLEX)
@@ -7404,6 +7588,7 @@
     ("the membrane-associated complex" . SPARSER::BIO-COMPLEX)
     ("FADD-Sam68" . SPARSER::COLLECTION) ("Sam68-FADD" . SPARSER::COLLECTION)
     ("Cbl and JAK3" . SPARSER::COLLECTION) ("Cbl" . SPARSER::PROTEIN)
+    ("SH3-" . SPARSER::PROTEIN)
     ("an E3 ubiquitin ligase or a kinase ( xref )" . SPARSER::COLLECTION)
     ("TNFR and RIP" . SPARSER::COLLECTION)
     ("TAK1 and IKKs" . SPARSER::COLLECTION) ("TAK1/IKK" . SPARSER::COLLECTION)
@@ -7417,18 +7602,17 @@
     ("caspase8, FADD and RIP" . SPARSER::COLLECTION)
     ("FADD/caspase8" . SPARSER::COLLECTION)
     ("serine, threonine or tyrosine" . SPARSER::COLLECTION)
-    ("orthophosphate" . SPARSER::ORTHOPHOSPHATE) ("KH" . SPARSER::MOLECULE)
+    ("orthophosphate" . SPARSER::ORTHOPHOSPHATE) ("KH" . SPARSER::PROTEIN)
     ("HIS" . SPARSER::AMINO-ACID) ("RIP and TRAF2" . SPARSER::COLLECTION)
     ("a physical component" . SPARSER::COMPONENT)
     ("TAK1 or the IKK complex" . SPARSER::COLLECTION)
     ("IKK1/IKK2" . SPARSER::COLLECTION)
     ("TRAF2 and cIAP1" . SPARSER::COLLECTION)
-    ("mRNA ( xref ) and protein ( xref )" . SPARSER::COLLECTION)
     ("the membrane-associated TNFR complex I" . SPARSER::PROTEIN)
     ("Etoposide" . SPARSER::PROTEIN)
     ("agonistic anti-Fas antibody and cycloheximide" . SPARSER::COLLECTION)
     ("antibody and cycloheximide" . SPARSER::COLLECTION)
-    ("a prototypic death receptor" . SPARSER::RECEPTOR)
+    ("a prototypic death receptor" . SPARSER::PROTEIN)
     ("Fas" . SPARSER::PROTEIN) ("caspase3 and PARP" . SPARSER::COLLECTION)
     ("TNF and cycloheximide" . SPARSER::COLLECTION)
     ("FLAG-Sam68" . SPARSER::COLLECTION)
@@ -7439,8 +7623,9 @@
     ("another proinflammatory cytokine" . SPARSER::PROTEIN)
     ("p65, c-Rel and p50" . SPARSER::COLLECTION)
     ("both the early complex I and the late complex II" . SPARSER::COLLECTION)
-    ("the respective receptor’s" . SPARSER::RECEPTOR)
-    ("the respective receptor" . SPARSER::RECEPTOR)
+    ("the respective receptor’s" . SPARSER::PROTEIN)
+    ("the respective receptor" . SPARSER::PROTEIN)
+    ("SH3 and WW domain-containing proteins ( xref )" . SPARSER::COLLECTION)
     ("Sam68 or KHDRBS1" . SPARSER::COLLECTION)
     ("TRAF2 and RIP" . SPARSER::COLLECTION)
     ("the TNFR as well as caspase8 and FADD" . SPARSER::COLLECTION)
@@ -7460,10 +7645,11 @@
     ("TAK1-IKK" . SPARSER::COLLECTION) ("RIP" . SPARSER::PROTEIN)
     ("Rpl32" . SPARSER::PROTEIN) ("IKK-I" . SPARSER::PROTEIN)
     ("CD71)" . SPARSER::PROTEIN) ("transferrin receptor" . SPARSER::PROTEIN)
-    ("cIAP1" . SPARSER::PROTEIN) ("anti-neoplastic" . SPARSER::DRUG)
-    ("SAA3" . SPARSER::PROTEIN) ("CCL5" . SPARSER::PROTEIN)
-    ("c-IAP2" . SPARSER::PROTEIN) ("VCAM-1" . SPARSER::PROTEIN)
-    ("NF- κB" . SPARSER::PROTEIN) ("RNA binding" . SPARSER::PROTEIN)
+    ("cIAP1" . SPARSER::PROTEIN) ("topoisomerase I" . SPARSER::PROTEIN)
+    ("anti-neoplastic" . SPARSER::DRUG) ("SAA3" . SPARSER::PROTEIN)
+    ("CCL5" . SPARSER::PROTEIN) ("c-IAP2" . SPARSER::PROTEIN)
+    ("VCAM-1" . SPARSER::PROTEIN) ("NF- κB" . SPARSER::PROTEIN)
+    ("RNA binding" . SPARSER::PROTEIN)
     ("KH domain containing" . SPARSER::PROTEIN) ("KHDRBS1" . SPARSER::PROTEIN)
     ("Sphingosine-1-phosphate" . SPARSER::DRUG) ("Caspase8" . SPARSER::PROTEIN)
     ("caspase8" . SPARSER::PROTEIN) ("TAB3" . SPARSER::PROTEIN)
@@ -7473,12 +7659,13 @@
     ("TAK1" . SPARSER::PROTEIN) ("TRAF2" . SPARSER::PROTEIN)
     ("cIAP-1" . SPARSER::PROTEIN) ("Sam68" . SPARSER::PROTEIN)
     ("RNA binding protein" . SPARSER::PROTEIN)
-    ("receptor tyrosine kinase and cytokine" . SPARSER::COLLECTION)
+    ("receptor tyrosine kinase and cytokine receptor" . SPARSER::COLLECTION)
     ("JAK1 or MAPK" . SPARSER::COLLECTION)
+    ("IL-6-receptor" . SPARSER::COLLECTION)
     ("MEK1 and Erk1/2" . SPARSER::COLLECTION)
     ("Transcriptionally relevant STAT3" . SPARSER::PROTEIN)
     ("transcriptionally-relevant STAT3" . SPARSER::PROTEIN)
-    ("endosome-associated receptor" . SPARSER::RECEPTOR)
+    ("endosome-associated receptor" . SPARSER::PROTEIN)
     ("Substantial STAT3" . SPARSER::PROTEIN) ("NTA" . SPARSER::MOLECULE)
     ("utilizing exogenous STAT3 target and IL-6" . SPARSER::COLLECTION)
     ("target and IL-6" . SPARSER::COLLECTION)
@@ -7487,12 +7674,14 @@
      . SPARSER::COLLECTION)
     ("Unt" . SPARSER::MOLECULE)
     ("neither STAT3 nor Erk1/2" . SPARSER::COLLECTION)
-    ("NH 4 Cl and monensin" . SPARSER::COLLECTION) ("monensin" . SPARSER::DRUG)
-    ("-ATPase" . SPARSER::COLLECTION)
+    ("NH 4 Cl and monensin" . SPARSER::COLLECTION)
+    ("directly increasing vesicular pH" . SPARSER::PROTEIN)
+    ("monensin" . SPARSER::DRUG) ("-ATPase" . SPARSER::COLLECTION)
     ("The cationic amphiphilic drug chlorpromazine (CPZ)" . SPARSER::DRUG)
     ("chlorpromazine (CPZ)" . SPARSER::DRUG) ("CPZ" . SPARSER::PROTEIN)
     ("chlorpromazine" . SPARSER::DRUG)
     ("STAT3 or Erk1/2" . SPARSER::COLLECTION)
+    ("the nuclear and endosomes fractions" . SPARSER::COLLECTION)
     ("vesicular fraction" . SPARSER::COMPONENT)
     ("the vesicular fractions" . SPARSER::COMPONENT)
     ("Total STAT3 protein and Y705 activated STAT3" . SPARSER::COLLECTION)
@@ -7500,7 +7689,6 @@
     ("the subcellular fractions" . SPARSER::COMPONENT)
     ("a retrograde transport protein" . SPARSER::PROTEIN)
     ("rab5, rab9, and clathrin heavy chain" . SPARSER::COLLECTION)
-    ("rab" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("fraction and a 115,000 x" . SPARSER::COLLECTION)
     ("five subcellular fractions" . SPARSER::COMPONENT)
     ("Subcellular fractions" . SPARSER::COMPONENT)
@@ -7523,15 +7711,17 @@
     ("STAT3 and MAPK" . SPARSER::COLLECTION)
     ("a physical substrate" . SPARSER::SUBSTRATE)
     ("receptor and lysosomal" . SPARSER::COLLECTION)
-    ("growth factor (NGF)" . SPARSER::GROWTH-FACTOR) ("S-P" . SPARSER::PROTEIN)
+    ("ligand-receptor" . SPARSER::PROTEIN)
+    ("neurotrophic factor (BDNF)" . SPARSER::PROTEIN)
+    ("growth factor (NGF)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Ammonium chloride" . SPARSER::MOLECULE) ("IL -6" . SPARSER::PROTEIN)
     ("NGF receptor" . SPARSER::PROTEIN) ("Stat 3" . SPARSER::PROTEIN)
     ("M67" . SPARSER::PROTEIN) ("JAK1" . SPARSER::PROTEIN)
     ("NaVO 3" . SPARSER::MOLECULE) ("Na + /H +" . SPARSER::PROTEIN)
-    ("clathrin heavy chain" . SPARSER::PROTEIN) ("rab5" . SPARSER::PROTEIN)
-    ("PD 98059" . SPARSER::MOLECULE) ("P300" . SPARSER::PROTEIN)
-    ("exportin-1" . SPARSER::PROTEIN)
-    ("brain-derived neurotrophic factor" . SPARSER::PROTEIN)
+    ("clathrin heavy chain" . SPARSER::PROTEIN) ("rab9" . SPARSER::PROTEIN)
+    ("rab5" . SPARSER::PROTEIN) ("PD 98059" . SPARSER::MOLECULE)
+    ("P300" . SPARSER::PROTEIN) ("exportin-1" . SPARSER::PROTEIN)
+    ("neurotrophic factor" . SPARSER::PROTEIN)
     ("Interleukin-6" . SPARSER::PROTEIN)
     ("both RON and oncogenic variant RON160" . SPARSER::COLLECTION)
     ("only RSK2 specific siRNA" . SPARSER::PROTEIN)
@@ -7541,6 +7731,8 @@
     ("DEF" . SPARSER::PROTEIN) ("The typical example" . SPARSER::EXAMPLE)
     ("MSP-RON-Erk1/2" . SPARSER::COLLECTION)
     ("a strong RSK activation inducer" . SPARSER::MOLECULE)
+    ("NF-κB, Stat3, and hedgehog" . SPARSER::COLLECTION)
+    ("hedgehog" . SPARSER::PROTEIN)
     ("β-catenin and NF-κB" . SPARSER::COLLECTION)
     ("MSP and RON" . SPARSER::COLLECTION) ("TGf" . SPARSER::DRUG)
     ("MSP and TGF-β1-regulated epithelial and mesenchymal proteins"
@@ -7591,7 +7783,7 @@
     ("Smad" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("receptor tyrosine kinases (RTK)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("vimentin and α-smooth muscle" . SPARSER::COLLECTION)
-    ("RON and Erk1/2" . SPARSER::COLLECTION) ("-β1" . SPARSER::COLLECTION)
+    ("RON and Erk1/2" . SPARSER::COLLECTION)
     ("the principal molecule" . SPARSER::MOLECULE)
     ("Ras-Erk1/2" . SPARSER::COLLECTION) ("RON" . SPARSER::PROTEIN)
     ("SRK2" . SPARSER::PROTEIN) ("f-actin" . SPARSER::BIO-COMPLEX)
@@ -7608,17 +7800,18 @@
     ("trimers and hexamers" . SPARSER::COLLECTION)
     ("ATPase and DNA" . SPARSER::COLLECTION)
     ("MCM4-MCM6-MCM7" . SPARSER::COLLECTION) ("trimers" . SPARSER::TRIMER)
-    ("MCM2-MCM7" . SPARSER::COLLECTION)
-    ("HFL-1 and CCD-18Co" . SPARSER::COLLECTION) ("CCD" . SPARSER::PROTEIN)
-    ("pN1-2" . SPARSER::COLLECTION) ("ADC" . SPARSER::PROTEIN)
+    ("MCM2-MCM7" . SPARSER::COLLECTION) ("CCD" . SPARSER::PROTEIN)
+    ("age, pT and pN" . SPARSER::COLLECTION) ("ADC" . SPARSER::PROTEIN)
+    ("AAA" . SPARSER::PROTEIN)
     ("a good prognostic biomarker" . SPARSER::MOLECULE)
     ("Mcm7" . SPARSER::PROTEIN) ("MCM 7" . SPARSER::PROTEIN)
     ("PRMT6" . SPARSER::PROTEIN) ("SBC5" . SPARSER::PROTEIN)
     ("pN3" . SPARSER::PROTEIN) ("pN1" . SPARSER::PROTEIN)
-    ("pN2" . SPARSER::PROTEIN) ("HFL-1" . SPARSER::PROTEIN)
-    ("SBC-5" . SPARSER::PROTEIN) ("LX1" . SPARSER::PROTEIN)
+    ("pN2" . SPARSER::PROTEIN) ("LX1" . SPARSER::PROTEIN)
     ("MCM4" . SPARSER::PROTEIN)
     ("herpes virus-associated ubiquitin specific protease"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("DNA methyltransferase 1-associated protein 1"
      . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("thiogalactoside" . SPARSER::MOLECULE) ("IPTG" . SPARSER::MOLECULE)
     ("dithiothreitol" . SPARSER::PROTEIN) ("DTT" . SPARSER::MOLECULE)
@@ -7640,15 +7833,14 @@
     ("PKC and DNMT1" . SPARSER::COLLECTION)
     ("PKCζ and DMNT1" . SPARSER::COLLECTION)
     ("PKCζ or DNMT1" . SPARSER::COLLECTION)
-    ("PKCζ and/or DNMT1" . SPARSER::COLLECTION)
-    ("-deoxycytidine" . SPARSER::COLLECTION)
-    ("deoxycytidine" . SPARSER::PROTEIN) ("aza" . SPARSER::DRUG)
+    ("PKCζ and/or DNMT1" . SPARSER::COLLECTION) ("aza" . SPARSER::DRUG)
     ("an isotypic IgG antibody" . SPARSER::ANTIBODY)
     ("PKCζ-c-myc" . SPARSER::COLLECTION)
     ("DNMT1 and PKC" . SPARSER::COLLECTION)
     ("c-myc-PKCζ" . SPARSER::COLLECTION)
     ("DNMT1 and PKCζ" . SPARSER::COLLECTION)
     ("DsRed-DNMT1" . SPARSER::COLLECTION) ("transfectants" . SPARSER::PROTEIN)
+    ("Red" . SPARSER::PROTEIN)
     ("DNMT1 and accessory molecules" . SPARSER::COLLECTION)
     ("p53 [ xref ] and G9a [ xref ]" . SPARSER::COLLECTION)
     ("accessory molecules" . SPARSER::MOLECULE)
@@ -7672,31 +7864,35 @@
     ("histone deacetylase 1" . SPARSER::PROTEIN)
     ("enhancer of zeste homolog 2" . SPARSER::PROTEIN)
     ("early growth response protein 1" . SPARSER::PROTEIN)
-    ("DNA methyltransferase 1-associated protein 1" . SPARSER::PROTEIN)
     ("CK1" . SPARSER::PROTEIN)
     ("Luteinizing Hormone Receptor" . SPARSER::PROTEIN)
-    ("p107" . SPARSER::PROTEIN) ("HP1" . SPARSER::PROTEIN)
+    ("p107" . SPARSER::PROTEIN) ("HP1" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("MeCP2" . SPARSER::PROTEIN) ("MBD3" . SPARSER::PROTEIN)
     ("MBD2" . SPARSER::PROTEIN) ("Tip60" . SPARSER::PROTEIN)
     ("methyltransferase activity" . SPARSER::PROTEIN)
-    ("PKCμ" . SPARSER::PROTEIN) ("HP1β" . SPARSER::PROTEIN)
-    ("DMAP1" . SPARSER::PROTEIN) ("G9a" . SPARSER::PROTEIN)
-    ("UHRF1" . SPARSER::PROTEIN) ("DNMT3b" . SPARSER::PROTEIN)
+    ("2'-deoxycytidine" . SPARSER::MOLECULE)
+    ("3b" . SPARSER::HUMAN-PROTEIN-FAMILY) ("PKCμ" . SPARSER::PROTEIN)
+    ("HP1β" . SPARSER::PROTEIN) ("DMAP1" . SPARSER::PROTEIN)
+    ("G9a" . SPARSER::PROTEIN) ("UHRF1" . SPARSER::PROTEIN)
+    ("DNMT3b" . SPARSER::PROTEIN)
     ("DNA methyltransferase 1" . SPARSER::PROTEIN)
+    ("the ancestral XRCC1 (A) and XPD (G) as well as the ancestral combined genotypes (AA/GG)"
+     . SPARSER::COLLECTION)
+    ("XPD (G) as well as the ancestral combined genotypes (AA/GG)"
+     . SPARSER::COLLECTION)
     ("the ancestral XRCC1" . SPARSER::PROTEIN)
-    ("XRCC1 and XPD SNP" . SPARSER::COLLECTION)
-    ("XRCC1 or XPD polymorphisms" . SPARSER::COLLECTION)
+    ("XRCC1 and XPD SNP’s" . SPARSER::PROTEIN)
+    ("the etiological factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("XRCC1 or XPD" . SPARSER::COLLECTION)
     ("macromolecules" . SPARSER::MOLECULE)
-    ("reported XRCC1 and XPD polymorphisms" . SPARSER::COLLECTION)
-    ("XRCC1 and XPD genes" . SPARSER::COLLECTION)
+    ("the 15 XRCC1 and 15 XPD" . SPARSER::COLLECTION)
+    ("XPD and XRCC1" . SPARSER::COLLECTION)
     ("AA, AC, and CC" . SPARSER::COLLECTION) ("CDR" . SPARSER::PROTEIN)
-    ("the XRCC1 and XPD polymorphisms" . SPARSER::COLLECTION)
-    ("bulky adducts" . SPARSER::PROTEIN) ("polymerase-1" . SPARSER::COLLECTION)
     ("Many DNA repair genes and their polymorphisms" . SPARSER::COLLECTION)
     ("the iris and trabecular meshwork" . SPARSER::COLLECTION)
-    ("iris" . SPARSER::PROTEIN) ("AC" . SPARSER::PROTEIN)
-    ("group D ( XPD )" . SPARSER::PROTEIN)
-    ("cross-complementing" . SPARSER::PROTEIN) ("G-3" . SPARSER::PROTEIN)
+    ("iris" . SPARSER::PROTEIN) ("AC/GA" . SPARSER::COLLECTION)
+    ("AC" . SPARSER::PROTEIN) ("XRCC1 and XPD" . SPARSER::COLLECTION)
+    ("group D ( XPD )" . SPARSER::PROTEIN) ("G-3" . SPARSER::PROTEIN)
     ("ATP-dependent" . SPARSER::PROTEIN)
     ("Excision Repair Cross-complementation group 2" . SPARSER::PROTEIN)
     ("open angle" . SPARSER::PROTEIN)
@@ -7712,13 +7908,13 @@
     ("CLPTM1L , and KITLG" . SPARSER::COLLECTION)
     ("TERT-CLPTM1L" . SPARSER::COLLECTION) ("KITLG" . SPARSER::PROTEIN)
     ("known testicular cancer risk variants" . SPARSER::VARIANT)
-    ("ATF7IP" . SPARSER::PROTEIN) ("SPRY4" . SPARSER::PROTEIN)
-    ("OR 2" . SPARSER::MOLECULE) ("OR 1" . SPARSER::PROTEIN)
-    ("CLPTM1L" . SPARSER::PROTEIN) ("DMRT1" . SPARSER::PROTEIN)
-    ("BAK1" . SPARSER::PROTEIN) ("P53, Δ40P53 and P53β" . SPARSER::COLLECTION)
+    ("Aim" . SPARSER::PROTEIN) ("ATF7IP" . SPARSER::PROTEIN)
+    ("SPRY4" . SPARSER::PROTEIN) ("OR 2" . SPARSER::PROTEIN)
+    ("OR 1" . SPARSER::PROTEIN) ("CLPTM1L" . SPARSER::PROTEIN)
+    ("DMRT1" . SPARSER::PROTEIN) ("BAK1" . SPARSER::PROTEIN)
+    ("P53, Δ40P53 and P53β" . SPARSER::COLLECTION)
     ("BRCA1, CDKN2A and CHEK1" . SPARSER::COLLECTION)
-    ("TP-ras" . SPARSER::COLLECTION)
-    ("functional P53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("TP-ras" . SPARSER::COLLECTION) ("functional P53" . SPARSER::PROTEIN)
     ("Almost 40 target genes" . SPARSER::GENE)
     ("CDKN1A and Survivin" . SPARSER::COLLECTION)
     ("P14ARF and BIRC5" . SPARSER::COLLECTION)
@@ -7737,10 +7933,12 @@
     ("Growth differentiation factor 15 (GDF15) and Cytoplasmic FMR1 interacting protein 2 (CYFIP2)"
      . SPARSER::COLLECTION)
     ("Only 3 genes" . SPARSER::GENE)
+    ("Stromal antigen 1 (STAG1) and Survivin (BIRC5)" . SPARSER::COLLECTION)
     ("CD82 (KAI1) and P14ARF (CDKN2A)" . SPARSER::COLLECTION)
     ("homolog 2 (SLUG)" . SPARSER::PROTEIN) ("SLUG" . SPARSER::PROTEIN)
     ("very few P53 target genes" . SPARSER::GENE)
-    ("CCND2, CCNE1 and PCNA" . SPARSER::COLLECTION) ("RM" . SPARSER::MOLECULE)
+    ("CCND2, CCNE1 and PCNA" . SPARSER::COLLECTION)
+    ("Mel-RM" . SPARSER::COLLECTION) ("RM" . SPARSER::PROTEIN)
     ("Mel" . SPARSER::PROTEIN) ("THBS1 and THBS2" . SPARSER::COLLECTION)
     ("Cyclin D1 and RB1" . SPARSER::COLLECTION)
     ("PCNA and RB1" . SPARSER::COLLECTION)
@@ -7755,68 +7953,83 @@
     ("CCNE2" . SPARSER::PROTEIN) ("CCNB2" . SPARSER::PROTEIN)
     ("MDM-2" . SPARSER::PROTEIN) ("CHEK1" . SPARSER::PROTEIN)
     ("Cyclin D2" . SPARSER::PROTEIN) ("ATF3" . SPARSER::PROTEIN)
-    ("PMAIP1" . SPARSER::PROTEIN) ("and -1" . SPARSER::PROTEIN)
-    ("CYFIP2" . SPARSER::PROTEIN)
+    ("PMAIP1" . SPARSER::PROTEIN) ("CYFIP2" . SPARSER::PROTEIN)
     ("Cytoplasmic FMR1 interacting protein 2" . SPARSER::PROTEIN)
     ("GDF15" . SPARSER::PROTEIN)
     ("Growth differentiation factor 15" . SPARSER::PROTEIN)
     ("P14ARF" . SPARSER::PROTEIN) ("KAI1" . SPARSER::PROTEIN)
     ("CD82" . SPARSER::PROTEIN) ("Cell division cycle 25C" . SPARSER::PROTEIN)
     ("homolog 2" . SPARSER::PROTEIN) ("CASP8" . SPARSER::PROTEIN)
-    ("STAG1" . SPARSER::PROTEIN) ("CCNE1" . SPARSER::PROTEIN)
-    ("CCND2" . SPARSER::PROTEIN) ("CX3CL1" . SPARSER::PROTEIN)
-    ("THBS2" . SPARSER::PROTEIN) ("THBS1" . SPARSER::PROTEIN)
-    ("DcR2" . SPARSER::PROTEIN) ("TRAIL-R4" . SPARSER::PROTEIN)
+    ("STAG1" . SPARSER::PROTEIN) ("Stromal antigen 1" . SPARSER::PROTEIN)
+    ("CCNE1" . SPARSER::PROTEIN) ("CCND2" . SPARSER::PROTEIN)
+    ("CX3CL1" . SPARSER::PROTEIN) ("THBS2" . SPARSER::PROTEIN)
+    ("THBS1" . SPARSER::PROTEIN) ("DcR2" . SPARSER::PROTEIN)
+    ("TRAIL-R4" . SPARSER::PROTEIN)
     ("superfamily member 10" . SPARSER::PROTEIN)
     ("tumour necrosis factor" . SPARSER::PROTEIN) ("SESN1" . SPARSER::PROTEIN)
     ("PLK2" . SPARSER::PROTEIN) ("BIRC5" . SPARSER::PROTEIN)
-    ("- 2" . SPARSER::PROTEIN) ("- 3" . SPARSER::PROTEIN)
-    ("MDM4" . SPARSER::PROTEIN) ("the weak allele" . SPARSER::ALLELE)
+    ("- 3" . SPARSER::PROTEIN) ("MDM4" . SPARSER::PROTEIN)
+    ("the weak allele" . SPARSER::ALLELE)
     ("the last nucleotide" . SPARSER::NUCLEOTIDE)
     ("valine and leucine" . SPARSER::COLLECTION)
-    ("a 3-bp" . SPARSER::PROTEIN-PAIR)
-    ("Loss of heterozygosity" . SPARSER::PROTEIN) ("III-10" . SPARSER::DRUG)
+    ("developed unilateral retinoblastoma" . SPARSER::PROTEIN)
+    ("the last base" . SPARSER::PROTEIN) ("a 3-bp" . SPARSER::PROTEIN-PAIR)
+    ("hereditary retinoblastoma" . SPARSER::PROTEIN)
+    ("either malignant retinoblastoma" . SPARSER::PROTEIN)
+    ("bilateral retinoblastoma" . SPARSER::PROTEIN)
+    ("unilateral retinoblastoma" . SPARSER::PROTEIN)
+    ("Retinoblastoma" . SPARSER::PROTEIN)
+    ("Loss of heterozygosity" . SPARSER::PROTEIN) ("VI-3" . SPARSER::PROTEIN)
+    ("III-10" . SPARSER::DRUG) ("UR" . SPARSER::PROTEIN)
     ("an essential molecule" . SPARSER::MOLECULE)
     ("protein and FbaB" . SPARSER::COLLECTION) ("fbaB" . SPARSER::PROTEIN)
-    ("GAS" . SPARSER::PROTEIN) ("a poor invasin" . SPARSER::PROTEIN)
+    ("factor and an essential factor" . SPARSER::COLLECTION)
+    ("a poor invasin" . SPARSER::PROTEIN)
     ("a fluorescently tagged Cdc42 and Rac1 interactive binding domain (CRIB) fused"
      . SPARSER::PROTEIN)
     ("Cdc42 and Rac1" . SPARSER::COLLECTION) ("CRIB" . SPARSER::DRUG)
     ("EGFP-fused" . SPARSER::COLLECTION)
     ("Lamp-1 or BSA-gold" . SPARSER::COLLECTION)
     ("late endosomal/ lysosomal marker protein Lamp-1" . SPARSER::PROTEIN)
+    ("Lamp-1" . SPARSER::PROTEIN) ("Lamp" . SPARSER::PROTEIN)
+    ("PX-DsRed" . SPARSER::PROTEIN-PAIR) ("PX" . SPARSER::PROTEIN)
     ("DsRed" . SPARSER::PROTEIN) ("FbaB" . SPARSER::PROTEIN)
-    ("GST-FbaB" . SPARSER::PROTEIN-PAIR) ("FCT" . SPARSER::PROTEIN)
+    ("GST-FbaB" . SPARSER::PROTEIN-PAIR)
+    ("The parental M3 GAS" . SPARSER::PROTEIN)
+    ("an invasive M3 GAS" . SPARSER::PROTEIN)
+    ("the first streptococcal factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("invasive GAS" . SPARSER::PROTEIN) ("FCT" . SPARSER::PROTEIN)
     ("the pfbp type and the fbaB type ( xref )" . SPARSER::COLLECTION)
     ("adhesins and invasins" . SPARSER::COLLECTION)
     ("invasins" . SPARSER::PROTEIN) ("adhesins" . SPARSER::PROTEIN)
     ("a streptococcal invasin" . SPARSER::PROTEIN)
     ("invasin" . SPARSER::PROTEIN) ("H4A" . SPARSER::PROTEIN)
-    ("Lamp-1" . SPARSER::PROTEIN) ("EEA-1" . SPARSER::PROTEIN)
-    ("phosphatidylinositol-3" . SPARSER::PROTEIN)
+    ("EEA-1" . SPARSER::PROTEIN) ("phosphatidylinositol-3" . SPARSER::PROTEIN)
     ("p40PHOX" . SPARSER::PROTEIN) ("EEA1" . SPARSER::PROTEIN)
     ("group A" . SPARSER::PROTEIN) ("DDR and RNA" . SPARSER::COLLECTION)
     ("CDK9-cyclin" . SPARSER::COLLECTION)
     ("CDK9-CYCLIN K" . SPARSER::COLLECTION) ("CDK9-" . SPARSER::PROTEIN)
     ("the regulatory CYCLIN T1" . SPARSER::PROTEIN)
     ("RNA and DNA" . SPARSER::COLLECTION) ("ribosomal gene" . SPARSER::GENE)
-    ("DBF4-CDC7" . SPARSER::COLLECTION) ("DDK" . SPARSER::BIO-COMPLEX)
-    ("MCM" . SPARSER::PROTEIN) ("ATR-CHK1" . SPARSER::COLLECTION)
-    ("SKP2 and APC" . SPARSER::COLLECTION) ("CLASPIN" . SPARSER::PROTEIN)
-    ("TOPBP1-BACH1" . SPARSER::COLLECTION)
+    ("pace" . SPARSER::PROTEIN) ("DBF4-CDC7" . SPARSER::COLLECTION)
+    ("DDK" . SPARSER::BIO-COMPLEX) ("MCM" . SPARSER::PROTEIN)
+    ("ATR-CHK1" . SPARSER::COLLECTION) ("SKP2 and APC" . SPARSER::COLLECTION)
+    ("CLASPIN" . SPARSER::PROTEIN) ("TOPBP1-BACH1" . SPARSER::COLLECTION)
     ("TOPBP1 and ATR" . SPARSER::COLLECTION)
     ("BACH1 and the MRN complex [ xref - xref ]" . SPARSER::COLLECTION)
     ("TRESLIN, CtIP, BACH1 and the MRN complex [ xref - xref ]"
      . SPARSER::COLLECTION)
-    ("TRESLIN" . SPARSER::PROTEIN) ("AAD and ATRIP" . SPARSER::COLLECTION)
+    ("TRESLIN" . SPARSER::PROTEIN)
+    ("TOPBP1 and not its AAD [ xref , xref ]" . SPARSER::COLLECTION)
+    ("AAD and ATRIP" . SPARSER::COLLECTION)
     ("TOPBP1-ssDNA" . SPARSER::COLLECTION)
     ("RAD9-TOPBP1" . SPARSER::COLLECTION)
     ("ATR and its protein activator TOPBP1" . SPARSER::COLLECTION)
     ("RAD9 and BRCA1" . SPARSER::COLLECTION) ("RFC" . SPARSER::PROTEIN)
     ("the checkpoint clamp protein DDC1" . SPARSER::PROTEIN)
     ("ATR and DDC2" . SPARSER::COLLECTION)
-    ("lysine and cysteine" . SPARSER::COLLECTION)
-    ("FATC" . SPARSER::PROTEIN-FAMILY) ("PRD" . SPARSER::PROTEIN)
+    ("lysine and cysteine" . SPARSER::COLLECTION) ("FATC" . SPARSER::PROTEIN)
+    ("PRD" . SPARSER::PROTEIN)
     ("creating soluble recombinant forms" . SPARSER::FORM)
     ("damaged duplex DNA" . SPARSER::DNA) ("UV or benzo" . SPARSER::COLLECTION)
     ("epoxide" . SPARSER::MOLECULE) ("diol" . SPARSER::MOLECULE)
@@ -7833,7 +8046,8 @@
     ("Mismatch" . SPARSER::PROTEIN) ("MUTL" . SPARSER::PROTEIN-FAMILY)
     ("ICLs" . SPARSER::PROTEIN) ("FA-associated protein" . SPARSER::PROTEIN)
     ("ICL" . SPARSER::PROTEIN) ("FANCM/FAAP24" . SPARSER::COLLECTION)
-    ("CDC6, ATR, and ATRIP" . SPARSER::COLLECTION) ("inS" . SPARSER::PROTEIN)
+    ("CDC6, ATR, and ATRIP" . SPARSER::COLLECTION)
+    ("CDC6 and RAD" . SPARSER::COLLECTION) ("inS" . SPARSER::PROTEIN)
     ("Several new ATR" . SPARSER::PROTEIN)
     ("chromatin, and ATR" . SPARSER::COLLECTION)
     ("ATR or ATRIP" . SPARSER::COLLECTION)
@@ -7845,7 +8059,8 @@
     ("ATR and CINP" . SPARSER::COLLECTION)
     ("CEP152, CENPJ, and PERICENTRIN" . SPARSER::COLLECTION)
     ("PERICENTRIN and CENPJ" . SPARSER::COLLECTION)
-    ("PERICENTRIN" . SPARSER::PROTEIN) ("CHK1 and SMC1" . SPARSER::COLLECTION)
+    ("CENPJ" . SPARSER::PROTEIN) ("PERICENTRIN" . SPARSER::PROTEIN)
+    ("CHK1 and SMC1" . SPARSER::COLLECTION)
     ("protein (CINP)" . SPARSER::PROTEIN)
     ("foci and ATR" . SPARSER::COLLECTION)
     ("lower eukaryotic proteins" . SPARSER::PROTEIN)
@@ -7864,9 +8079,10 @@
     ("ATR Interacting Protein (ATRIP)" . SPARSER::PROTEIN)
     ("ATRIP" . SPARSER::PROTEIN) ("ssDNA" . SPARSER::PROTEIN)
     ("ATR and other ATR signaling components" . SPARSER::COLLECTION)
-    ("RPA-ssDNA" . SPARSER::COLLECTION) ("Protein A (RPA)" . SPARSER::PROTEIN)
+    ("RPA-ssDNA" . SPARSER::COLLECTION)
     ("polymerase and helicase" . SPARSER::COLLECTION)
     ("helicases and nucleases" . SPARSER::COLLECTION)
+    ("helicases" . SPARSER::PROTEIN)
     ("the replicative helicase" . SPARSER::PROTEIN)
     ("Oncogene" . SPARSER::ONCOGENE)
     ("a haploinsufficient tumor suppressor" . SPARSER::SUPPRESSOR)
@@ -7876,15 +8092,17 @@
     ("reactive metabolites" . SPARSER::PROTEIN) ("new ATR" . SPARSER::PROTEIN)
     ("proteins and substrates" . SPARSER::COLLECTION)
     ("PLRG1" . SPARSER::PROTEIN) ("SPF27" . SPARSER::PROTEIN)
-    ("CDC5L" . SPARSER::PROTEIN) ("splicing factor" . SPARSER::PROTEIN)
-    ("CYCLIN K" . SPARSER::PROTEIN) ("CYCLIN T1" . SPARSER::PROTEIN)
-    ("CDK9" . SPARSER::PROTEIN) ("CDC7" . SPARSER::PROTEIN)
-    ("DBF4" . SPARSER::PROTEIN) ("CDC45" . SPARSER::PROTEIN)
-    ("SKP2" . SPARSER::PROTEIN) ("9-1-1 complex" . SPARSER::|9-1-1|)
-    ("DPB11" . SPARSER::PROTEIN) ("N-methyl-N-nitrosourea" . SPARSER::MOLECULE)
-    ("RAD17" . SPARSER::PROTEIN) ("MUTLα" . SPARSER::PROTEIN)
-    ("RAD26" . SPARSER::PROTEIN) ("MCM2" . SPARSER::PROTEIN)
-    ("DNA replication factor" . SPARSER::PROTEIN) ("RPA70" . SPARSER::PROTEIN)
+    ("PRP19" . SPARSER::PROTEIN) ("CDC5L" . SPARSER::PROTEIN)
+    ("splicing factor" . SPARSER::PROTEIN) ("CYCLIN K" . SPARSER::PROTEIN)
+    ("CYCLIN T1" . SPARSER::PROTEIN) ("CDK9" . SPARSER::PROTEIN)
+    ("CDC7" . SPARSER::PROTEIN) ("DBF4" . SPARSER::PROTEIN)
+    ("CDC45" . SPARSER::PROTEIN) ("SKP2" . SPARSER::PROTEIN)
+    ("9-1-1 complex" . SPARSER::|9-1-1|) ("DDC2" . SPARSER::PROTEIN)
+    ("MEC1" . SPARSER::PROTEIN) ("DPB11" . SPARSER::PROTEIN)
+    ("N-methyl-N-nitrosourea" . SPARSER::MOLECULE) ("RAD17" . SPARSER::PROTEIN)
+    ("MUTLα" . SPARSER::PROTEIN) ("RAD26" . SPARSER::PROTEIN)
+    ("MCM2" . SPARSER::PROTEIN) ("DNA replication factor" . SPARSER::PROTEIN)
+    ("RPA70" . SPARSER::PROTEIN)
     ("nucleotide excision repair protein" . SPARSER::PROTEIN)
     ("CEP152" . SPARSER::PROTEIN) ("CEP164" . SPARSER::PROTEIN)
     ("TTI2" . SPARSER::PROTEIN) ("TTI1" . SPARSER::PROTEIN)
@@ -7892,19 +8110,19 @@
     ("Protein 1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("RAD1" . SPARSER::PROTEIN)
     ("HUS1" . SPARSER::PROTEIN) ("RAD9" . SPARSER::PROTEIN)
     ("ATR Interacting Protein" . SPARSER::PROTEIN)
+    ("Replication Protein" . SPARSER::PROTEIN)
     ("PI/RNase" . SPARSER::COLLECTION) ("RNase" . SPARSER::PROTEIN)
-    ("1 ml 75% ice-cold ethanol" . SPARSER::PROTEIN)
     ("c-Myc and β-actin" . SPARSER::COLLECTION)
     ("hTERT and β-actin" . SPARSER::COLLECTION)
     ("dinitrophenyl" . SPARSER::DRUG) ("polyacrylamide" . SPARSER::DRUG)
     ("dNTPs" . SPARSER::MOLECULE) ("RP" . SPARSER::PROTEIN)
     ("diphenyl" . SPARSER::DRUG) ("MTT-formazan" . SPARSER::MOLECULE)
-    ("streptomycin" . SPARSER::DRUG) ("VA" . SPARSER::MOLECULE) ("Type" . TYPE)
+    ("streptomycin" . SPARSER::DRUG) ("VA" . SPARSER::PROTEIN) ("Type" . TYPE)
     ("ERK/MAPK" . SPARSER::COLLECTION)
     ("here affected telomerase activity" . SPARSER::PROTEIN)
     ("-epigallocatechin-3-gallate" . SPARSER::DRUG) ("EGCG" . SPARSER::DRUG)
-    ("sesquiterpene" . SPARSER::MOLECULE) ("costunolide" . SPARSER::DRUG)
-    ("traditional medicine" . SPARSER::DRUG)
+    ("bark" . SPARSER::PROTEIN) ("sesquiterpene" . SPARSER::MOLECULE)
+    ("costunolide" . SPARSER::DRUG)
     ("telomerase inhibitors as well as studies investigating the mode of action of these inhibitors"
      . SPARSER::COLLECTION)
     ("Cucurbitacin" . SPARSER::MOLECULE)
@@ -7917,14 +8135,14 @@
     ("3-(4,5-dimethylthiazol-2-yl)-2,5-diphenyltetrazolium bromide"
      . SPARSER::MOLECULE)
     ("epigallocatechin-3-gallate" . SPARSER::DRUG)
+    ("Twist and Snail" . SPARSER::COLLECTION)
     ("Band 4.1/Ezrin/Radixin/Moesin" . SPARSER::COLLECTION)
-    ("PTK" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Moesin" . SPARSER::PROTEIN)
+    ("PTK" . SPARSER::PROTEIN) ("Moesin" . SPARSER::PROTEIN)
     ("Radixin" . SPARSER::PROTEIN) ("Ezrin" . SPARSER::PROTEIN)
     ("RTKs, and β1 and β3" . SPARSER::COLLECTION)
-    ("β1 and β3" . SPARSER::COLLECTION)
     ("TGF-β, EMT, and E-cad" . SPARSER::COLLECTION)
     ("/EGFR" . SPARSER::COLLECTION) ("-Snail" . SPARSER::COLLECTION)
-    ("/β1" . SPARSER::COLLECTION) ("E-cad and β1" . SPARSER::COLLECTION)
+    ("E-cad and β1" . SPARSER::COLLECTION)
     ("rigid matrices" . SPARSER::PROTEIN-FAMILY)
     ("S2 and S5" . SPARSER::COLLECTION)
     ("either wild-type (WT) E-cad or a mutant E-cad molecule"
@@ -7937,8 +8155,6 @@
      . SPARSER::COLLECTION)
     ("Ras/mitogen-activated protein kinase" . SPARSER::COLLECTION)
     ("a robust EMT" . SPARSER::PROTEIN)
-    ("E-cad mRNA (unpublished data) and protein (Supplemental Figure S3A)"
-     . SPARSER::COLLECTION)
     ("EGFR, Pyk2, and E-cad" . SPARSER::COLLECTION)
     ("this multifunctional cytokine" . SPARSER::PROTEIN)
     ("these metastatic MECs" . SPARSER::PROTEIN)
@@ -7947,21 +8163,26 @@
      . SPARSER::PROMOTER)
     ("exogenous EGF" . SPARSER::PROTEIN)
     ("compliant 3D" . SPARSER::PROTEIN-FAMILY)
-    ("pre- and post-EMT" . SPARSER::COLLECTION) ("post-EMT" . SPARSER::PROTEIN)
+    ("post-EMT" . SPARSER::COLLECTION) ("NM" . SPARSER::PROTEIN)
+    ("TGF-β and Twist" . SPARSER::COLLECTION)
     ("TGF-β and EMT" . SPARSER::COLLECTION) ("MEC" . SPARSER::PROTEIN)
-    ("Snail, and ZEB1" . SPARSER::COLLECTION)
+    ("track" . SPARSER::PROTEIN)
+    ("Twist, Snail, and ZEB1" . SPARSER::COLLECTION)
     ("essential mediators" . SPARSER::PROTEIN)
     ("integrins and FAK" . SPARSER::COLLECTION)
     ("β1 integrin and its downstream effector" . SPARSER::COLLECTION)
-    ("PF573228" . SPARSER::DRUG) ("Band 4.1" . SPARSER::PROTEIN)
-    ("Smad2" . SPARSER::PROTEIN) ("PF228" . SPARSER::DRUG)
+    ("HAN" . SPARSER::PROTEIN) ("PF573228" . SPARSER::DRUG)
+    ("Band 4.1" . SPARSER::PROTEIN) ("Smad2" . SPARSER::PROTEIN)
+    ("PF228" . SPARSER::DRUG)
     ("extracellular signal-regulated kinase 1" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("SB431542" . SPARSER::DRUG) ("S3A" . SPARSER::PROTEIN)
     ("receptor type" . SPARSER::PROTEIN) ("TGF-b" . SPARSER::PROTEIN)
     ("TβR-I" . SPARSER::PROTEIN) ("E-cad" . SPARSER::PROTEIN)
     ("epithelial cadherin" . SPARSER::PROTEIN)
-    ("Transforming growth factor" . SPARSER::PROTEIN)
-    ("HRP" . SPARSER::PROTEIN) ("NF-κB, AP-1 and IRF3" . SPARSER::COLLECTION)
+    ("Transforming growth factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("HRP" . SPARSER::PROTEIN)
+    ("antigen and intercellular adhesion molecule 1" . SPARSER::COLLECTION)
+    ("NF-κB, AP-1 and IRF3" . SPARSER::COLLECTION)
     ("Erk1/2 and p38" . SPARSER::COLLECTION)
     ("MAPK and NF-κB" . SPARSER::COLLECTION) ("Src-Shc" . SPARSER::COLLECTION)
     ("the tolerogenic state" . SPARSER::BIO-STATE) ("hCG" . SPARSER::PROTEIN)
@@ -7969,49 +8190,55 @@
     ("Shc siRNA as well as anti-Shc mAb" . SPARSER::COLLECTION)
     ("TNF receptor-associated factor 6 (TRAF6) and the IL-1 receptor-associated kinases (IRAKs)"
      . SPARSER::COLLECTION)
-    ("interferon-beta (TRIF) and TRIF-related adaptor molecule (TRAM)"
-     . SPARSER::COLLECTION)
     ("molecule (TRAM)" . SPARSER::MOLECULE)
     ("the IL-1 receptor-associated kinases" . SPARSER::KINASE)
     ("NF-κB and MAPK" . SPARSER::COLLECTION) ("IRFs" . SPARSER::PROTEIN)
     ("TRAM" . SPARSER::PROTEIN) ("TRIF" . SPARSER::PROTEIN)
-    ("TIR" . SPARSER::PROTEIN-FAMILY) ("IRAKs" . SPARSER::PROTEIN)
+    ("TIR" . SPARSER::PROTEIN) ("IRAKs" . SPARSER::PROTEIN)
     ("macrophages/monocytes" . SPARSER::COLLECTION)
     ("CD86 or MHC-II" . SPARSER::COLLECTION)
     ("CD80, CD86 and MHC-II" . SPARSER::COLLECTION)
+    ("the immature DCs" . SPARSER::PROTEIN)
+    ("present exogenous antigen" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("IL-12p70 and mRNA" . SPARSER::COLLECTION)
     ("IL-10 and IL-12p40" . SPARSER::COLLECTION)
     ("IL-10 and IL-12p70" . SPARSER::COLLECTION)
     ("IL-10 and IL-12" . SPARSER::COLLECTION) ("YY" . SPARSER::MOLECULE)
+    ("immature DCs" . SPARSER::PROTEIN)
     ("rIL-4, p46Shc and p52Shc" . SPARSER::COLLECTION)
-    ("rGM-CSF" . SPARSER::COLLECTION) ("PTB" . SPARSER::PROTEIN)
-    ("ShcC" . SPARSER::PROTEIN) ("ShcA" . SPARSER::PROTEIN)
-    ("Erk and Jnk" . SPARSER::COLLECTION)
+    ("rGM-CSF" . SPARSER::COLLECTION) ("PTB-CH1-SH2" . SPARSER::COLLECTION)
+    ("PTB" . SPARSER::PROTEIN) ("ShcB and ShcC" . SPARSER::COLLECTION)
+    ("ShcC" . SPARSER::PROTEIN) ("ShcB" . SPARSER::PROTEIN)
+    ("ShcA" . SPARSER::PROTEIN) ("Erk and Jnk" . SPARSER::COLLECTION)
     ("intracellular adaptor proteins and their associated kinases"
      . SPARSER::COLLECTION)
     ("their associated kinases" . SPARSER::KINASE)
     ("TLRs" . SPARSER::PROTEIN-FAMILY)
     ("phosphatidylinositol (GPI)" . SPARSER::MOLECULE)
-    ("GPI" . SPARSER::PROTEIN) ("GM-CSF and rIL-4" . SPARSER::COLLECTION)
-    ("rIL" . SPARSER::PROTEIN)
+    ("GPI" . SPARSER::PROTEIN) ("monocyte-derived DCs" . SPARSER::PROTEIN)
+    ("GM-CSF and rIL-4" . SPARSER::COLLECTION) ("rIL" . SPARSER::PROTEIN)
     ("Th1-type T cell responses need inflammatory IL-12" . SPARSER::PROTEIN)
     ("co-stimulatory molecules and certain cytokines" . SPARSER::COLLECTION)
+    ("Mature DCs" . SPARSER::PROTEIN)
     ("release soluble mediators" . SPARSER::PROTEIN)
+    ("Immature DCs" . SPARSER::PROTEIN)
     ("cytokines, chemokines and IFNs" . SPARSER::COLLECTION)
+    ("LPS-treated DCs" . SPARSER::PROTEIN)
     ("IL-6 and IL-12" . SPARSER::COLLECTION)
     ("interleukin-12" . SPARSER::PROTEIN) ("interleukin-10" . SPARSER::PROTEIN)
-    ("glyceraldehyde 3-phosphate dehydrogenase" . SPARSER::PROTEIN)
+    ("glyceraldehyde 3-phosphate" . SPARSER::MOLECULE)
     ("α-actin" . SPARSER::PROTEIN) ("IRF3" . SPARSER::PROTEIN)
     ("Grb2" . SPARSER::PROTEIN) ("TRAF3" . SPARSER::PROTEIN)
-    ("interferon-beta" . SPARSER::PROTEIN) ("TRAF6" . SPARSER::PROTEIN)
+    ("interferon-beta" . SPARSER::DRUG) ("TRAF6" . SPARSER::PROTEIN)
     ("TNF receptor-associated factor 6" . SPARSER::PROTEIN)
     ("MyD88" . SPARSER::PROTEIN) ("surface protein" . SPARSER::PROTEIN)
     ("IL-12p40" . SPARSER::PROTEIN) ("p66Shc" . SPARSER::PROTEIN)
-    ("p46" . SPARSER::PROTEIN) ("p66" . SPARSER::PROTEIN)
-    ("toll-like receptor 4" . SPARSER::PROTEIN) ("SU6656" . SPARSER::PROTEIN)
-    ("CD80" . SPARSER::PROTEIN) ("costimulatory molecule" . SPARSER::PROTEIN)
+    ("p46" . SPARSER::PROTEIN) ("p66" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("SU6656" . SPARSER::PROTEIN) ("CD80" . SPARSER::PROTEIN)
+    ("costimulatory molecule" . SPARSER::PROTEIN)
     ("cav1/clathrin" . SPARSER::COLLECTION)
     ("clathrin or caveolin1" . SPARSER::COLLECTION)
+    ("AMPKa" . SPARSER::PROTEIN)
     ("AKT, TOR, AMPK and p70S6K" . SPARSER::COLLECTION)
     ("AKT, TOR and p70S6K" . SPARSER::COLLECTION)
     ("IRS1/PI3K/AKT" . SPARSER::COLLECTION)
@@ -8022,13 +8249,15 @@
     ("TOR" . SPARSER::PROTEIN) ("AKT and ERK1/2" . SPARSER::COLLECTION)
     ("CAV1/clathrin" . SPARSER::COLLECTION)
     ("CAV1 or clathrin" . SPARSER::COLLECTION)
-    ("MCD and CPMZ" . SPARSER::COLLECTION)
-    ("clathrin and/or CAV1" . SPARSER::COLLECTION)
+    ("MCD and CPMZ" . SPARSER::COLLECTION) ("RCM/EM" . SPARSER::COLLECTION)
+    ("RCM" . SPARSER::PROTEIN) ("clathrin and/or CAV1" . SPARSER::COLLECTION)
     ("CAV1 and dynamin-2" . SPARSER::COLLECTION) ("CCPs" . SPARSER::PROTEIN)
+    ("a profound impact" . SPARSER::PROTEIN)
     ("CAV1 and clathrin" . SPARSER::COLLECTION)
     ("clathrin or CAV1" . SPARSER::COLLECTION)
     ("clathrin and CAV1" . SPARSER::COLLECTION) ("MCD" . SPARSER::PROTEIN)
-    ("dextrin" . SPARSER::MOLECULE) ("Chlorpromazine" . SPARSER::DRUG)
+    ("dextrin" . SPARSER::MOLECULE) ("cyclo" . SPARSER::PROTEIN)
+    ("Chlorpromazine" . SPARSER::DRUG)
     ("clathrin and CAV1-siRNA" . SPARSER::COLLECTION)
     ("clathrin-" . SPARSER::PROTEIN) ("CAV1-siRNA" . SPARSER::COLLECTION)
     ("caveolin" . SPARSER::PROTEIN)
@@ -8053,7 +8282,7 @@
      . SPARSER::PROTEIN)
     ("growth
                     factor (NGF)"
-     . SPARSER::GROWTH-FACTOR)
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("IFN-α and IL-22" . SPARSER::COLLECTION)
     ("the prototypic
                     Th2 cytokine IL-4"
@@ -8080,16 +8309,16 @@
     ("transcription
                 factor"
      . SPARSER::PROTEIN)
-    ("Jagged 2" . SPARSER::PROTEIN) ("IL-4 receptor" . SPARSER::PROTEIN)
-    ("substance P" . SPARSER::PROTEIN)
+    ("Jagged 2" . SPARSER::PROTEIN) ("substance P" . SPARSER::PROTEIN)
     ("growth
                     factor"
-     . SPARSER::GROWTH-FACTOR)
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("IL-17A" . SPARSER::PROTEIN) ("KLF13" . SPARSER::PROTEIN)
     ("FOXP1" . SPARSER::PROTEIN) ("TFAP2A" . SPARSER::PROTEIN)
-    ("jagged 2" . SPARSER::PROTEIN) ("TNFAIP3" . SPARSER::PROTEIN)
-    ("K 4" . SPARSER::PROTEIN) ("K 3" . SPARSER::PROTEIN)
-    ("X-gal" . SPARSER::MOLECULE) ("K10" . SPARSER::PROTEIN)
+    ("jagged 2" . SPARSER::PROTEIN) ("AP2" . SPARSER::PROTEIN)
+    ("TNFAIP3" . SPARSER::PROTEIN) ("K 4" . SPARSER::PROTEIN)
+    ("K 3" . SPARSER::PROTEIN) ("X-gal" . SPARSER::MOLECULE)
+    ("k8" . SPARSER::PROTEIN) ("K10" . SPARSER::PROTEIN)
     ("X-Gal" . SPARSER::MOLECULE) ("ABL1" . SPARSER::PROTEIN)
     ("S100A" . SPARSER::PROTEIN) ("β-defensins" . SPARSER::PROTEIN)
     ("kallikrein 1" . SPARSER::PROTEIN)
@@ -8100,9 +8329,9 @@
     ("a pivotal inhibitor" . SPARSER::INHIBITOR)
     ("Yap1 and TEAD" . SPARSER::COLLECTION)
     ("TEAD, RUNX2, p73, and ErbB4" . SPARSER::COLLECTION)
-    ("ErbB4" . SPARSER::PROTEIN)
     ("α-catenin and nuclear Yap1" . SPARSER::COLLECTION)
     ("inNestin-Cre/αE-catenin" . SPARSER::COLLECTION)
+    ("predominantly nuclear Yap1" . SPARSER::PROTEIN)
     ("αE-catenin and the transcriptional coactivator Yap1"
      . SPARSER::COLLECTION)
     ("l/p53" . SPARSER::COLLECTION)
@@ -8126,9 +8355,10 @@
     ("αE-catenin and the tumor suppressor-encoding gene p53"
      . SPARSER::COLLECTION)
     ("Ad5" . SPARSER::PROTEIN) ("AD5" . SPARSER::PROTEIN)
-    ("keratin6" . SPARSER::PROTEIN) ("keratin5" . SPARSER::PROTEIN)
-    ("CD49f" . SPARSER::PROTEIN) ("Cyr61" . SPARSER::PROTEIN)
-    ("LATS1" . SPARSER::PROTEIN) ("RUNX2" . SPARSER::PROTEIN)
+    ("MST2" . SPARSER::PROTEIN) ("keratin6" . SPARSER::PROTEIN)
+    ("keratin5" . SPARSER::PROTEIN) ("CD49f" . SPARSER::PROTEIN)
+    ("Cyr61" . SPARSER::PROTEIN) ("LATS1" . SPARSER::PROTEIN)
+    ("ErbB4" . SPARSER::PROTEIN) ("RUNX2" . SPARSER::PROTEIN)
     ("Yap2" . SPARSER::PROTEIN) ("p53 is" . SPARSER::PROTEIN)
     ("p16Ink4A" . SPARSER::PROTEIN) ("Sox9" . SPARSER::PROTEIN)
     ("α E-catenin" . SPARSER::PROTEIN) ("αE-catenin" . SPARSER::PROTEIN)
@@ -8136,6 +8366,7 @@
     ("both immature and mature acini" . SPARSER::PROTEIN)
     ("mature 3D acini" . SPARSER::PROTEIN)
     ("infected mature (day 18) acini" . SPARSER::PROTEIN)
+    ("a conservative FDR" . SPARSER::PROTEIN)
     ("exogenous Myc" . SPARSER::PROTEIN)
     ("both constitutively overexpressed Myc and endogenous Myc ( xref )"
      . SPARSER::COLLECTION)
@@ -8148,7 +8379,9 @@
     ("mature acini" . SPARSER::PROTEIN)
     ("Matrigel—a proteinaceous mixture" . SPARSER::MOLECULE)
     ("both a transcriptional activator and a repressor" . SPARSER::COLLECTION)
-    ("acini" . SPARSER::PROTEIN) ("basic helix–loop–helix" . SPARSER::PROTEIN)
+    ("a basic helix–loop–helix leucine zipper transcription factor"
+     . SPARSER::PROTEIN)
+    ("acini" . SPARSER::PROTEIN) ("RNase H" . SPARSER::PROTEIN)
     ("LDL and PAI-1" . SPARSER::COLLECTION) ("Ligands" . SPARSER::LIGAND)
     ("RAS and RAF" . SPARSER::COLLECTION)
     ("receptor tyrosine kinases and LRP-1" . SPARSER::COLLECTION)
@@ -8157,33 +8390,37 @@
     ("Both DUSP1 (MAPK phosphatase-1, MKP-1) and DUSP6 (MKP-3)"
      . SPARSER::COLLECTION)
     ("DUSP1 ( xref , xref ) and DUSP6 ( xref , xref )" . SPARSER::COLLECTION)
-    ("MEK1/ERK" . SPARSER::COLLECTION)
+    ("MEK1/ERK" . SPARSER::COLLECTION) ("uPAR and LRP-1" . SPARSER::COLLECTION)
     ("LRP-1 and receptor tyrosine kinases" . SPARSER::COLLECTION)
     ("LRP-1 and uPAR" . SPARSER::COLLECTION) ("NGF" . SPARSER::PROTEIN)
     ("DUSP1 and/or DUSP6" . SPARSER::COLLECTION)
     ("an appropriate siRNA" . SPARSER::PROTEIN)
     ("lactoferrin and EGF" . SPARSER::COLLECTION)
     ("uPA/uPAR" . SPARSER::COLLECTION)
+    ("FGF and lactoferrin or LDL" . SPARSER::COLLECTION)
     ("EGF and lactoferrin or LDL" . SPARSER::COLLECTION)
     ("DUSP7, and DUSP9" . SPARSER::COLLECTION)
     ("tyrosine kinase receptor and LRP-1" . SPARSER::COLLECTION)
     ("DUSP1, DUSP4, and DUSP5" . SPARSER::COLLECTION)
     ("DUSP6, DUSP7, and DUSP9" . SPARSER::COLLECTION)
     ("dual specificity (threonine/tyrosine) protein phosphatases"
-     . SPARSER::PHOSPHATASE)
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("threonine/tyrosine" . SPARSER::COLLECTION)
     ("threonine and tyrosine" . SPARSER::COLLECTION)
-    ("Proteasomal" . SPARSER::PROTEIN)
     ("EGF ( xref ) and uPAR ( xref )" . SPARSER::COLLECTION)
     ("neither EGF nor lactoferrin" . SPARSER::COLLECTION)
-    ("Vitronectin" . SPARSER::PROTEIN) ("VEGF, and IGF" . SPARSER::COLLECTION)
+    ("Vitronectin" . SPARSER::PROTEIN)
+    ("FGF, VEGF, and IGF" . SPARSER::COLLECTION)
     ("uPAR-uPA" . SPARSER::COLLECTION) ("uPA and uPAR" . SPARSER::COLLECTION)
     ("two monoclonal antibodies" . SPARSER::ANTIBODY)
-    ("uPA or uPAR" . SPARSER::COLLECTION)
+    ("urokinase and its receptor" . SPARSER::COLLECTION)
+    ("uPAR-" . SPARSER::PROTEIN) ("uPA or uPAR" . SPARSER::COLLECTION)
     ("receptor and LRP-1" . SPARSER::COLLECTION)
+    ("Urokinase" . SPARSER::PROTEIN)
     ("LRP-1 and/or LDL receptor" . SPARSER::COLLECTION)
     ("LRP-1 and the PDGF receptor ( xref , xref )" . SPARSER::COLLECTION)
     ("receptor-associated protein (RAP)" . SPARSER::PROTEIN)
+    ("RAP" . SPARSER::PROTEIN) ("EGF or FGF" . SPARSER::COLLECTION)
     ("lactoferrin and basic fibroblast growth factor" . SPARSER::COLLECTION)
     ("LF" . SPARSER::PROTEIN)
     ("the EGF receptor and an LDL receptor-related protein"
@@ -8193,10 +8430,13 @@
     ("Lactoferrin" . SPARSER::PROTEIN)
     ("LRP-1 and the urokinase/plasminogen activator receptor uPAR"
      . SPARSER::COLLECTION)
+    ("urokinase/plasminogen activator" . SPARSER::COLLECTION)
+    ("EGF, PDGF, FGF, and VEGF" . SPARSER::COLLECTION)
     ("RAF/MEK1" . SPARSER::COLLECTION)
     ("dual specificity phosphatases" . SPARSER::PHOSPHATASE)
     ("dual specificity phosphatases DUSP1 and DUSP6" . SPARSER::COLLECTION)
     ("DUSP1 and DUSP6" . SPARSER::COLLECTION)
+    ("urokinase (uPA) and its receptor (uPAR)" . SPARSER::COLLECTION)
     ("lactoferrin or LDL" . SPARSER::COLLECTION)
     ("LDL or lactoferrin" . SPARSER::COLLECTION)
     ("lactoferrin" . SPARSER::PROTEIN) ("protein (LRP)" . SPARSER::PROTEIN)
@@ -8209,21 +8449,22 @@
     ("receptor-associated protein" . SPARSER::PROTEIN)
     ("FGF2" . SPARSER::PROTEIN) ("β 5" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("PDGF receptor" . SPARSER::PROTEIN) ("DUSP6" . SPARSER::PROTEIN)
-    ("LRP-1" . SPARSER::PROTEIN)
+    ("LRP-1" . SPARSER::PROTEIN) ("LDL receptor" . SPARSER::PROTEIN)
+    ("trophic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("c-kit, caveolin-1 and vimentin" . SPARSER::COLLECTION)
     ("the connective tissue matrix" . SPARSER::PROTEIN-FAMILY)
     ("a basic component" . SPARSER::COMPONENT)
     ("c-kit, caveolin-1, CD34, vimentin and VEGF" . SPARSER::COLLECTION)
-    ("FM" . SPARSER::PROTEIN)
+    ("typical thin" . SPARSER::PROTEIN) ("FM" . SPARSER::PROTEIN)
+    ("Green" . SPARSER::PROTEIN) ("thin and moniliform" . SPARSER::COLLECTION)
     ("skeletal muscles" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("c-kit, caveolin-1, vimentin and VEGF" . SPARSER::COLLECTION)
     ("vimentin" . SPARSER::PROTEIN) ("myo-" . SPARSER::PROTEIN)
     ("myo" . SPARSER::PROTEIN) ("a peculiar type" . TYPE)
-    ("Skeletal muscle" . SPARSER::PROTEIN) ("Pax-7" . SPARSER::PROTEIN)
-    ("anti-VEGF" . SPARSER::DRUG) ("c-Kit" . SPARSER::PROTEIN)
-    ("Pax7" . SPARSER::PROTEIN) ("caveolin-1" . SPARSER::PROTEIN)
-    ("P53 is" . SPARSER::PROTEIN)
-    ("a functional P53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Skeletal muscle" . SPARSER::PROTEIN) ("anti-VEGF" . SPARSER::DRUG)
+    ("c-Kit" . SPARSER::PROTEIN) ("Pax7" . SPARSER::PROTEIN)
+    ("caveolin-1" . SPARSER::PROTEIN) ("P53 is" . SPARSER::PROTEIN)
+    ("a functional P53" . SPARSER::PROTEIN)
     ("NPCs and glioma" . SPARSER::COLLECTION)
     ("Ccnd1, Cdc6 and Cdc25a" . SPARSER::COLLECTION)
     ("Cdc25a" . SPARSER::PROTEIN) ("Ccnd1" . SPARSER::PROTEIN)
@@ -8236,9 +8477,10 @@
     ("CAT2 and CAT3" . SPARSER::COLLECTION)
     ("beta-galactosidase or Cre" . SPARSER::COLLECTION)
     ("the constitutively active CAG promoter" . SPARSER::PROMOTER)
+    ("acetyltransferase" . SPARSER::PROTEIN) ("gene (CAG)" . SPARSER::PROTEIN)
     ("nestin" . SPARSER::PROTEIN) ("Id2 or Id2" . SPARSER::COLLECTION)
     ("the enhanced self-renewal ofp53 (-/-) NPCs" . SPARSER::MOLECULE)
-    ("exogenous WT P53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("exogenous WT P53" . SPARSER::PROTEIN)
     ("Id2 and p53" . SPARSER::COLLECTION)
     ("Multipotent NPCs" . SPARSER::MOLECULE)
     ("NPC and glioma" . SPARSER::COLLECTION)
@@ -8247,22 +8489,22 @@
     ("an essential NPC regulatory gene" . SPARSER::GENE)
     ("multipotent adult NPCs" . SPARSER::MOLECULE)
     ("PTEN , RB1 , NF1 and TP53" . SPARSER::COLLECTION)
-    ("a pro-proliferative gene" . SPARSER::GENE) ("NPC" . SPARSER::MOLECULE)
-    ("Tp53" . SPARSER::PROTEIN) ("NPCs" . SPARSER::MOLECULE)
-    ("Cdc25" . SPARSER::PROTEIN) ("Cdc6" . SPARSER::PROTEIN)
-    ("ID3" . SPARSER::PROTEIN) ("Ad- P53" . SPARSER::DRUG)
-    ("CAT3" . SPARSER::PROTEIN) ("CAT2" . SPARSER::PROTEIN)
-    ("AG2" . SPARSER::PROTEIN) ("beta-galactosidase" . SPARSER::PROTEIN)
+    ("NPC" . SPARSER::MOLECULE) ("Tp53" . SPARSER::PROTEIN)
+    ("NPCs" . SPARSER::MOLECULE) ("Cdc25" . SPARSER::PROTEIN)
+    ("Cdc6" . SPARSER::PROTEIN) ("ID3" . SPARSER::PROTEIN)
+    ("Ad- P53" . SPARSER::DRUG) ("CAT3" . SPARSER::PROTEIN)
+    ("CAT2" . SPARSER::PROTEIN) ("AG2" . SPARSER::PROTEIN)
+    ("beta-galactosidase" . SPARSER::PROTEIN) ("protein 4" . SPARSER::PROTEIN)
     ("PARP 1" . SPARSER::PROTEIN) ("site 2" . SPARSER::PROTEIN)
-    ("site 1" . SPARSER::PROTEIN) ("basic helix-loop-helix" . SPARSER::PROTEIN)
-    ("ID4" . SPARSER::PROTEIN) ("ID1" . SPARSER::PROTEIN)
-    ("ID2" . SPARSER::PROTEIN) ("Id2" . SPARSER::PROTEIN)
+    ("site 1" . SPARSER::PROTEIN) ("ID4" . SPARSER::PROTEIN)
+    ("ID1" . SPARSER::PROTEIN) ("ID2" . SPARSER::PROTEIN)
+    ("Id2" . SPARSER::PROTEIN)
     ("Inhibitor of DNA Binding 2" . SPARSER::PROTEIN)
     ("classical tumor suppressor genes" . SPARSER::GENE)
     ("one defective TCFE2A allele and one defective PBX1 allele"
      . SPARSER::COLLECTION)
     ("E2A-PBX1" . SPARSER::COLLECTION) ("E2A" . SPARSER::PROTEIN)
-    ("IKAROS" . SPARSER::PROTEIN)
+    ("TEL-AML" . SPARSER::COLLECTION) ("IKAROS" . SPARSER::PROTEIN)
     ("Ikzf1 , Tcfe2a , Runx1 , Pbx1 , and Sfpi1" . SPARSER::COLLECTION)
     ("Ikzf1" . SPARSER::PROTEIN) ("Bcl2 and Tnfsf11" . SPARSER::COLLECTION)
     ("E2A-HLF" . SPARSER::PROTEIN-PAIR) ("HLF" . SPARSER::PROTEIN)
@@ -8279,23 +8521,20 @@
     ("Tnfsf11" . SPARSER::PROTEIN)
     ("Bcl2 , Lck , Lmo2 , and Vav3" . SPARSER::COLLECTION)
     ("Lmo2" . SPARSER::PROTEIN) ("Lck" . SPARSER::PROTEIN)
-    ("EBF1- and PAX5-repressed genes" . SPARSER::COLLECTION)
     ("Notch1 or Tnsf11" . SPARSER::COLLECTION)
     ("genes or genes" . SPARSER::COLLECTION)
     ("Bach2 , Btg1 , Btg2, and Ucp2" . SPARSER::COLLECTION)
     ("Ucp2" . SPARSER::PROTEIN) ("Btg1" . SPARSER::PROTEIN)
-    ("Rgs2" . SPARSER::PROTEIN) ("Cyfip2" . SPARSER::PROTEIN)
+    ("Bcl7a , Cyfip2 , and Rgs2" . SPARSER::COLLECTION)
+    ("Cyfip2" . SPARSER::PROTEIN) ("Bcl7a" . SPARSER::PROTEIN)
     ("Cyfip" . SPARSER::PROTEIN-FAMILY)
-    ("EBF1- and PAX5-activated genes ( xref ; xref ; xref ; xref )"
-     . SPARSER::COLLECTION)
     ("EBF1 and PAX5-induced genes (75.6 and 73.5%, respectively)"
      . SPARSER::COLLECTION)
-    ("EBF1-" . SPARSER::PROTEIN)
     ("Cd79a , Blnk , or Cd19" . SPARSER::COLLECTION)
     ("Cd79a , Blnk , and Cd19" . SPARSER::COLLECTION)
-    ("Cd79a" . SPARSER::PROTEIN) ("IgL" . SPARSER::PROTEIN)
-    ("IL-7-" . SPARSER::PROTEIN) ("IL-7r" . SPARSER::PROTEIN)
-    ("IL-7 or TSLP" . SPARSER::COLLECTION)
+    ("Cd79a" . SPARSER::PROTEIN) ("known gene" . SPARSER::GENE)
+    ("IgL" . SPARSER::PROTEIN) ("IL-7-" . SPARSER::PROTEIN)
+    ("IL-7r" . SPARSER::PROTEIN) ("IL-7 or TSLP" . SPARSER::COLLECTION)
     ("SCF and FLT3L" . SPARSER::COLLECTION)
     ("the prosurvival factor BCL2" . SPARSER::PROTEIN)
     ("Malin" . SPARSER::PROTEIN)
@@ -8303,7 +8542,7 @@
      . SPARSER::COLLECTION)
     ("eitherStat5b-CA x Ebf1 +/− or Stat5b-CA x Pax5  +/−"
      . SPARSER::COLLECTION)
-    ("CD19, and IL-7R" . SPARSER::COLLECTION) ("Il2rg" . SPARSER::PROTEIN)
+    ("CD19, and IL-7R" . SPARSER::COLLECTION)
     ("monoclonal leukemia" . SPARSER::PROTEIN) ("IgD" . SPARSER::PROTEIN)
     ("5b-CA x Ebf1 +/− or Stat5b-CA x Pax5  +/−" . SPARSER::COLLECTION)
     ("IL-7 or thymic stromal lymphopoietin" . SPARSER::COLLECTION)
@@ -8324,20 +8563,21 @@
     ("Ebf1 or Pax5" . SPARSER::COLLECTION) ("Ebf1" . SPARSER::PROTEIN)
     ("EBF1 and PAX5" . SPARSER::COLLECTION)
     ("acute lymphoblastic leukemia (ALL)" . SPARSER::PROTEIN)
-    ("PAX5 and EBF1" . SPARSER::COLLECTION) ("CD254" . SPARSER::PROTEIN)
-    ("CD127" . SPARSER::PROTEIN) ("B8)" . SPARSER::PROTEIN)
-    ("CD43" . SPARSER::PROTEIN) ("LFA-1" . SPARSER::PROTEIN)
-    ("CD11a" . SPARSER::PROTEIN) ("GK1" . SPARSER::PROTEIN)
-    ("BP-1" . SPARSER::PROTEIN) ("l -glutamine" . SPARSER::MOLECULE)
+    ("PAX5 and EBF1" . SPARSER::COLLECTION) ("GR-1" . SPARSER::PROTEIN)
+    ("CD254" . SPARSER::PROTEIN) ("CD135" . SPARSER::PROTEIN)
+    ("CD127" . SPARSER::PROTEIN) ("CD43" . SPARSER::PROTEIN)
+    ("LFA-1" . SPARSER::PROTEIN) ("CD11a" . SPARSER::PROTEIN)
+    ("GK1" . SPARSER::PROTEIN) ("l -glutamine" . SPARSER::MOLECULE)
     ("IKZF1" . SPARSER::PROTEIN) ("RUNX1" . SPARSER::PROTEIN)
     ("Sfpi1" . SPARSER::PROTEIN) ("Pbx1" . SPARSER::PROTEIN)
     ("Runx1" . SPARSER::PROTEIN) ("BACH2" . SPARSER::PROTEIN)
     ("LMO2" . SPARSER::PROTEIN) ("BTG1" . SPARSER::PROTEIN)
     ("Bcr-Abl" . SPARSER::PROTEIN) ("Vav3" . SPARSER::PROTEIN)
     ("Btg2" . SPARSER::PROTEIN) ("Bach2" . SPARSER::PROTEIN)
+    ("Rgs2" . SPARSER::PROTEIN) ("TSLP receptor" . SPARSER::PROTEIN)
     ("IL-7Rα" . SPARSER::PROTEIN) ("MCL1" . SPARSER::PROTEIN)
-    ("Rag2" . SPARSER::PROTEIN) ("pre–BCR" . SPARSER::BIO-COMPLEX)
-    ("IL-7R" . SPARSER::PROTEIN)
+    ("Il2rg" . SPARSER::PROTEIN) ("Rag2" . SPARSER::PROTEIN)
+    ("pre–BCR" . SPARSER::BIO-COMPLEX) ("IL-7R" . SPARSER::PROTEIN)
     ("thymic stromal lymphopoietin" . SPARSER::PROTEIN)
     ("IL-7" . SPARSER::PROTEIN) ("pro–B" . SPARSER::DRUG)
     ("factor 1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Stat5b" . SPARSER::PROTEIN)
@@ -8347,7 +8587,7 @@
     ("the precursors vitamin D3 or 25-hydroxyvitamin D3" . SPARSER::COLLECTION)
     ("anti-CD3/CD28" . SPARSER::COLLECTION)
     ("estrogen and vitamin D" . SPARSER::COLLECTION)
-    ("IL-4 and IL-10" . SPARSER::COLLECTION)
+    ("IL-4 and IL-10" . SPARSER::COLLECTION) ("Rag-1" . SPARSER::PROTEIN)
     ("STAT6 and GATA-3" . SPARSER::COLLECTION) ("MOG" . SPARSER::PROTEIN)
     ("Th2-associated cytokine and transcription factor" . SPARSER::COLLECTION)
     ("cytokine and transcription factor" . SPARSER::COLLECTION)
@@ -8367,9 +8607,9 @@
     ("Th2, and IL-17" . SPARSER::COLLECTION)
     ("vitamin D and Th" . SPARSER::COLLECTION)
     ("vitamin D and Th17 cells" . SPARSER::COLLECTION)
+    ("Naïve" . SPARSER::PROTEIN) ("sun" . SPARSER::PROTEIN)
     ("ultraviolet (UV) light" . SPARSER::PROTEIN)
-    ("GATA-3 and STAT6" . SPARSER::COLLECTION) ("Rag-1" . SPARSER::PROTEIN)
-    ("Notch1" . SPARSER::PROTEIN)
+    ("GATA-3 and STAT6" . SPARSER::COLLECTION) ("Notch1" . SPARSER::PROTEIN)
     ("myelin oligodendrocyte glycoprotein" . SPARSER::PROTEIN)
     ("IL-17F" . SPARSER::PROTEIN) ("Notch 1" . SPARSER::PROTEIN)
     ("RORγT" . SPARSER::PROTEIN) ("T-bet" . SPARSER::PROTEIN)
@@ -8379,20 +8619,35 @@
     ("1,25-dihydroxyvitamin D" . SPARSER::MOLECULE)
     ("vitamin D" . SPARSER::MOLECULE) ("Vitamin D" . SPARSER::MOLECULE)
     ("PDGFRA D842V mutant and WT GIST" . SPARSER::COLLECTION)
-    ("Dei" . SPARSER::PROTEIN) ("Sunitinib" . SPARSER::DRUG)
+    ("the only recognized independent prognostic factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Dei" . SPARSER::PROTEIN)
+    ("a predictive and prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Sunitinib" . SPARSER::DRUG)
     ("imatinib or sunitinib" . SPARSER::COLLECTION)
     ("sunitinib" . SPARSER::DRUG)
     ("an alternate tyrosine kinase receptor" . SPARSER::PROTEIN)
     ("AKT/mTOR" . SPARSER::COLLECTION) ("a longer RFS" . SPARSER::PROTEIN)
+    ("a prognostic and predictive factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("a significantly longer PFS" . SPARSER::PROTEIN)
+    ("the only significant predictive factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("a significant prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("the suggested prognostic and predictive factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("AUS" . SPARSER::PROTEIN) ("TTP" . SPARSER::PROTEIN)
     ("EU-AUS" . SPARSER::COLLECTION) ("Group B (CALGB)" . SPARSER::PROTEIN)
     ("Leukemia" . SPARSER::PROTEIN) ("receive imatinib" . SPARSER::DRUG)
     ("KIT/PDGFRA" . SPARSER::COLLECTION)
     ("KIT exon 9 (only the non-gastric tumors) and PDGFRA exons 18 and 12"
      . SPARSER::COLLECTION)
+    ("any time-related prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a significantly shorter RFS" . SPARSER::PROTEIN)
-    ("1999 only KIT exon" . SPARSER::PROTEIN) ("HPF" . SPARSER::PROTEIN)
-    ("JAK/STAT" . SPARSER::COLLECTION)
+    ("a known negative prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("1999 only KIT exon" . SPARSER::PROTEIN)
+    ("an important prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("predictive factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("HPF" . SPARSER::PROTEIN) ("JAK/STAT" . SPARSER::COLLECTION)
     ("stem cell factor (SCF) and platelet-derived growth factor (PDGF)"
      . SPARSER::COLLECTION)
     ("whose natural ligands" . SPARSER::LIGAND)
@@ -8402,10 +8657,13 @@
     ("Adenosine Triphosphate" . SPARSER::MOLECULE)
     ("Group B" . SPARSER::PROTEIN)
     ("adenosine triphosphate" . SPARSER::MOLECULE)
+    ("The emotional impact" . SPARSER::PROTEIN) ("SOC" . SPARSER::PROTEIN)
     ("the extended family developed different types" . TYPE)
-    ("bad" . SPARSER::PROTEIN) ("a more aggressive form" . SPARSER::FORM)
-    ("Male" . SPARSER::MOLECULE)
+    ("bad" . SPARSER::PROTEIN) ("sick" . SPARSER::PROTEIN)
+    ("an emotional impact" . SPARSER::PROTEIN)
+    ("a more aggressive form" . SPARSER::FORM) ("PRCA" . SPARSER::PROTEIN)
     ("breast-ovarian cancer families" . SPARSER::PROTEIN-FAMILY)
+    ("age " . SPARSER::PROTEIN)
     ("the breast-ovarian cancer families" . SPARSER::PROTEIN-FAMILY)
     ("hereditary breast/ovarian cancer families" . SPARSER::PROTEIN-FAMILY)
     ("only six families" . SPARSER::PROTEIN-FAMILY)
@@ -8422,19 +8680,18 @@
     ("two breast-ovarian cancer families" . SPARSER::PROTEIN-FAMILY)
     ("ovarian cancer families" . SPARSER::PROTEIN-FAMILY)
     ("a bilateral breast cancer family" . SPARSER::PROTEIN-FAMILY)
-    ("BRCA1 gene’s" . SPARSER::GENE) ("intron" . SPARSER::PROTEIN)
+    ("BRCA1 gene’s" . SPARSER::PROTEIN) ("intron" . SPARSER::PROTEIN)
     ("Tunisian breast cancer families" . SPARSER::PROTEIN-FAMILY)
     ("the BRCA1/2 genes as well as other genes" . SPARSER::COLLECTION)
-    ("SBR" . SPARSER::PROTEIN) ("MENA" . SPARSER::PROTEIN)
-    ("the entire BRCA1" . SPARSER::PROTEIN)
+    ("multiple-case" . SPARSER::PROTEIN) ("SBR" . SPARSER::PROTEIN)
+    ("MENA" . SPARSER::PROTEIN) ("the entire BRCA1" . SPARSER::PROTEIN)
     ("16 Tunisian high-risk breast cancer families" . SPARSER::PROTEIN-FAMILY)
     ("exon–intron" . SPARSER::COLLECTION)
     ("hereditary breast cancer families" . SPARSER::PROTEIN-FAMILY)
     ("family 8" . SPARSER::PROTEIN) ("C 20 " . SPARSER::PROTEIN)
     ("proteins (GAP)" . SPARSER::PROTEIN)
-    ("Rac1 and JNK" . SPARSER::COLLECTION)
-    ("Drosophila , Pvf1, -2, and -3" . SPARSER::COLLECTION)
-    ("Pvf" . SPARSER::MOLECULE) ("Pvr" . SPARSER::PROTEIN)
+    ("Rac1 and JNK" . SPARSER::COLLECTION) ("Pvf" . SPARSER::MOLECULE)
+    ("Pvr" . SPARSER::PROTEIN) ("PDGF/VEGF" . SPARSER::COLLECTION)
     ("PVR" . SPARSER::PROTEIN) ("mys and Rac1" . SPARSER::COLLECTION)
     ("fresh integrin receptors" . SPARSER::RECEPTOR)
     ("the Rho-family GTPase Rac1 and the heat-shock protein Hsp83"
@@ -8444,30 +8701,33 @@
     ("Rac1 and α-Tubulin" . SPARSER::COLLECTION)
     ("Hemese-GAL4" . SPARSER::COLLECTION) ("UAS-Rac1" . SPARSER::COLLECTION)
     ("The temperature-sensitive alleles" . SPARSER::ALLELE)
-    ("mys" . SPARSER::PROTEIN) ("SE" . SPARSER::PROTEIN)
-    ("Mys" . SPARSER::PROTEIN) ("GTPases, Rac1 and Rac2" . SPARSER::COLLECTION)
+    ("SE" . SPARSER::PROTEIN) ("GTPases, Rac1 and Rac2" . SPARSER::COLLECTION)
     ("the Drosophila Rac GTPases ( Rac1 and Rac2 ) and mys"
      . SPARSER::COLLECTION)
+    ("mys" . SPARSER::PROTEIN)
+    ("Rac1 and the heat shock protein Hsp83" . SPARSER::COLLECTION)
     ("Racs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("RhoGAP" . SPARSER::PROTEIN)
     ("Rab1 and Rab3A" . SPARSER::COLLECTION)
     ("proteins and Rab" . SPARSER::COLLECTION) ("GDI" . SPARSER::PROTEIN)
     ("GDP and GTP" . SPARSER::COLLECTION)
     ("Rabs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("subdomains" . SPARSER::PROTEIN)
-    ("the Drosophila 's" . SPARSER::PROTEIN)
     ("an essential part" . SPARSER::COMPONENT)
     ("Rac1 and Hsp83" . SPARSER::COLLECTION) ("Hsp83" . SPARSER::PROTEIN)
     ("Rac1 and Rac2" . SPARSER::COLLECTION)
     ("heterodimeric adhesion receptors" . SPARSER::RECEPTOR)
-    ("Integrins" . SPARSER::PROTEIN) ("rac1" . SPARSER::PROTEIN)
-    ("PKD1" . SPARSER::PROTEIN) ("heat-shock protein" . SPARSER::PROTEIN)
+    ("Integrins" . SPARSER::PROTEIN) ("Mys" . SPARSER::PROTEIN)
+    ("rac1" . SPARSER::PROTEIN) ("PKD1" . SPARSER::PROTEIN)
     ("Hsp70" . SPARSER::PROTEIN) ("perinuclear region" . SPARSER::PROTEIN)
+    ("heat shock proteins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("α-Tubulin" . SPARSER::PROTEIN) ("Rab3A" . SPARSER::PROTEIN)
     ("Rab1" . SPARSER::PROTEIN) ("Rab4" . SPARSER::PROTEIN)
+    ("heat shock protein" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Rac2" . SPARSER::PROTEIN) ("KRAS and BRAF" . SPARSER::COLLECTION)
     ("ERK-ETS2" . SPARSER::PROTEIN-PAIR) ("FGFR-RAS" . SPARSER::PROTEIN-PAIR)
     ("APC , CTNNB1 , BRAF , EGFR , FLT3 , JAK2 , KIT , KRAS , NOTCH1 , NRAS , PIK3CA , and TP53"
      . SPARSER::COLLECTION)
     ("Akt/mTORC1" . SPARSER::COLLECTION)
+    ("CH1, CH33, and CH36" . SPARSER::COLLECTION)
     ("CH2, CH7, CH34, CH36, and CH37" . SPARSER::COLLECTION)
     ("Cdk-cyclin" . SPARSER::COLLECTION)
     ("protein or p16" . SPARSER::COLLECTION)
@@ -8480,6 +8740,7 @@
      . SPARSER::COLLECTION)
     ("bisulfite" . SPARSER::MOLECULE) ("MSP" . SPARSER::PROTEIN)
     ("red anti-PTEN" . SPARSER::ANTIBODY) ("AQUA" . SPARSER::MOLECULE)
+    ("CH3 and CH33" . SPARSER::COLLECTION)
     ("CDKN2A
                     and PTEN"
      . SPARSER::COLLECTION)
@@ -8488,7 +8749,7 @@
      . SPARSER::GENE)
     ("homozygous CDKN2A" . SPARSER::PROTEIN)
     ("CH2, CH7, CH14, CH34, CH36, and CH39" . SPARSER::COLLECTION)
-    ("CDKN2A/CDKN2B" . SPARSER::COLLECTION)
+    ("CDKN2A/CDKN2B" . SPARSER::COLLECTION) ("CH" . SPARSER::PROTEIN)
     ("bacterial artificial
                 chromosome (BAC) array CGH"
      . SPARSER::PROTEIN)
@@ -8497,6 +8758,8 @@
      . SPARSER::GENE)
     ("CDKN2A and CDKN2B" . SPARSER::COLLECTION)
     ("complex (TSC)" . SPARSER::BIO-COMPLEX)
+    ("potential relevant targets" . SPARSER::TARGET-PROTEIN)
+    ("a familial case or a component" . SPARSER::COLLECTION)
     ("CDKN2A and PTEN" . SPARSER::COLLECTION)
     ("loss of
                 heterozygosity"
@@ -8504,7 +8767,7 @@
     ("a
                 3"
      . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("ETS2" . SPARSER::PROTEIN)
+    ("ETS2" . SPARSER::PROTEIN) ("CH1" . SPARSER::PROTEIN)
     ("retinoblastoma
                 protein"
      . SPARSER::PROTEIN)
@@ -8513,10 +8776,12 @@
     ("tumor suppressor
                 gene"
      . SPARSER::PROTEIN)
-    ("family 4" . SPARSER::PROTEIN) ("CH3" . SPARSER::MOLECULE)
+    ("family 4" . SPARSER::PROTEIN) ("n  2  " . SPARSER::PROTEIN)
+    ("n  1  " . SPARSER::PROTEIN) ("CH3" . SPARSER::MOLECULE)
     ("CH2" . SPARSER::PROTEIN) ("Y chromosome" . SPARSER::PROTEIN)
-    ("MCM7" . SPARSER::PROTEIN) ("I-M" . SPARSER::PROTEIN)
-    ("MSP2" . SPARSER::PROTEIN) ("NOTCH1" . SPARSER::PROTEIN)
+    ("MCM7" . SPARSER::PROTEIN) ("MSP2" . SPARSER::PROTEIN)
+    ("MSP1" . SPARSER::PROTEIN) ("M. SssI" . SPARSER::PROTEIN)
+    ("NOTCH1" . SPARSER::PROTEIN)
     ("cyclin-dependent kinase inhibitor 2A" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("CDKN2B" . SPARSER::PROTEIN)
     ("HAT or histone deacetylase" . SPARSER::COLLECTION)
@@ -8526,16 +8791,14 @@
     ("definite therapeutic targets" . SPARSER::TARGET-PROTEIN)
     ("BI 2536 and GW843682X" . SPARSER::COLLECTION)
     ("Three further potential targets" . SPARSER::TARGET-PROTEIN)
-    ("PLK1 and C20orf20" . SPARSER::COLLECTION) ("GDS" . SPARSER::PROTEIN)
-    ("clinically relevant genes" . SPARSER::GENE)
+    ("PLK1 and C20orf20" . SPARSER::COLLECTION) ("GSE" . SPARSER::PROTEIN)
+    ("GDS" . SPARSER::PROTEIN) ("clinically relevant genes" . SPARSER::GENE)
     ("p53 and p16" . SPARSER::COLLECTION) ("RDEB" . SPARSER::PROTEIN)
     ("epidermolysis bullosa (RDEB)" . SPARSER::PROTEIN)
-    ("dystrophic" . SPARSER::PROTEIN)
-    ("a 70y old Australian male" . SPARSER::MOLECULE)
-    ("WDHD1" . SPARSER::PROTEIN) ("BRD8" . SPARSER::PROTEIN)
-    ("MRG15" . SPARSER::PROTEIN) ("GW843682X" . SPARSER::DRUG)
-    ("BI 2536" . SPARSER::DRUG) ("C-myc" . SPARSER::PROTEIN)
-    ("epidermolysis bullosa" . SPARSER::PROTEIN)
+    ("dystrophic" . SPARSER::PROTEIN) ("WDHD1" . SPARSER::PROTEIN)
+    ("BRD8" . SPARSER::PROTEIN) ("MRG15" . SPARSER::PROTEIN)
+    ("GW843682X" . SPARSER::DRUG) ("BI 2536" . SPARSER::DRUG)
+    ("C-myc" . SPARSER::PROTEIN) ("epidermolysis bullosa" . SPARSER::PROTEIN)
     ("C20orf20" . SPARSER::PROTEIN) ("Polo-like kinase" . SPARSER::PROTEIN)
     ("PAX8 and Myc" . SPARSER::COLLECTION)
     ("hTERT and hTR" . SPARSER::COLLECTION)
@@ -8551,7 +8814,8 @@
     ("E2F1 and cyclin-A" . SPARSER::COLLECTION)
     ("E2F1 , CCNA2 , CDC6 , MCM3 and DHFR" . SPARSER::COLLECTION)
     ("DHFR" . SPARSER::PROTEIN) ("trypan" . SPARSER::DRUG)
-    ("PAX8 and RB" . SPARSER::COLLECTION) ("E2F7–E2F8" . SPARSER::COLLECTION)
+    ("RCC" . SPARSER::PROTEIN) ("PAX8 and RB" . SPARSER::COLLECTION)
+    ("E2F7–E2F8" . SPARSER::COLLECTION)
     ("only A-type lamins" . SPARSER::PROTEIN-FAMILY)
     ("cellular and viral oncoproteins" . SPARSER::PROTEIN)
     ("gankyrin" . SPARSER::PROTEIN)
@@ -8561,23 +8825,28 @@
     ("symporter" . SPARSER::PROTEIN) ("thyroglobulin" . SPARSER::PROTEIN)
     ("RB–E2F1" . SPARSER::COLLECTION)
     ("E2F1 and its target genes" . SPARSER::COLLECTION)
-    ("–E2F1" . SPARSER::COLLECTION) ("Protein-G" . SPARSER::PROTEIN)
+    ("PAX" . SPARSER::PROTEIN) ("–E2F1" . SPARSER::COLLECTION)
+    ("for 3 " . SPARSER::PROTEIN) ("Protein-G" . SPARSER::PROTEIN)
     ("G 2 /M" . SPARSER::PROTEIN) ("pE2" . SPARSER::PROTEIN)
     ("PAX2" . SPARSER::PROTEIN) ("MCM3" . SPARSER::PROTEIN)
     ("CDC6" . SPARSER::PROTEIN) ("CCNA2" . SPARSER::PROTEIN)
-    ("cyclin-A" . SPARSER::PROTEIN) ("pre-S" . SPARSER::PROTEIN)
+    ("cyclin-A" . SPARSER::PROTEIN) ("Wilms tumor" . SPARSER::PROTEIN)
     ("E2F8" . SPARSER::PROTEIN) ("E2F7" . SPARSER::PROTEIN)
     ("pp71" . SPARSER::PROTEIN) ("antigen-3" . SPARSER::PROTEIN)
     ("Pax2" . SPARSER::PROTEIN) ("Pax8" . SPARSER::PROTEIN)
     ("RB protein" . SPARSER::PROTEIN) ("PAX8" . SPARSER::PROTEIN)
     ("p53 and mediators" . SPARSER::COLLECTION) ("Tri" . SPARSER::PROTEIN)
-    ("functional p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("the p53 transcriptional target gene and cell cycle inhibitor p21"
+     . SPARSER::COLLECTION)
+    ("functional p53" . SPARSER::PROTEIN)
     ("partial or whole genomes" . SPARSER::COLLECTION)
+    ("Mdm2 and age" . SPARSER::COLLECTION)
     ("tumor suppressor p53, and Mdm2" . SPARSER::COLLECTION)
     ("a key regulator of the p53 tumor suppressor and modulator"
      . SPARSER::COLLECTION)
     ("DNA repair protein" . SPARSER::PROTEIN)
     ("RapGEFs" . SPARSER::PROTEIN-FAMILY) ("Rap1Gap" . SPARSER::PROTEIN)
+    ("GTPase-activating protein (GAP)" . SPARSER::PROTEIN)
     ("small GTPases and a target" . SPARSER::COLLECTION)
     ("Ras-associated protein-1" . SPARSER::PROTEIN)
     ("HGF and EGF" . SPARSER::COLLECTION)
@@ -8598,8 +8867,9 @@
     ("a mutated variant" . SPARSER::VARIANT) ("tetracycline" . SPARSER::DRUG)
     ("RasGRP3-LNCaP" . SPARSER::COLLECTION) ("tet" . SPARSER::PROTEIN)
     ("thermostable DNA polymerase" . SPARSER::PROTEIN)
+    ("killer" . SPARSER::PROTEIN)
     ("growth factors or cytokines" . SPARSER::COLLECTION)
-    ("receptor, T-cell receptor, hepatocyte growth factor and epidermal growth factor"
+    ("receptor, hepatocyte growth factor and epidermal growth factor"
      . SPARSER::COLLECTION)
     ("receptor tyrosine kinases and G-protein coupled" . SPARSER::COLLECTION)
     ("immediate upstream activators" . SPARSER::ACTIVATOR)
@@ -8607,28 +8877,26 @@
     ("Ras/PI3K" . SPARSER::COLLECTION) ("MGSA" . SPARSER::PROTEIN)
     ("HGF or EGF" . SPARSER::COLLECTION)
     ("H-Ras, R-Ras and Rap1/2" . SPARSER::COLLECTION)
-    ("TNF-alpha" . SPARSER::PROTEIN) ("TGF-beta" . SPARSER::PROTEIN)
-    ("Rap1GAP" . SPARSER::PROTEIN)
-    ("Rap1 GTPase-activating protein" . SPARSER::PROTEIN)
-    ("C-Met" . SPARSER::PROTEIN) ("V-EGF" . SPARSER::PROTEIN)
-    ("A2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Ras family" . SPARSER::PROTEIN)
-    ("B-Raf" . SPARSER::PROTEIN) ("M-Ras" . SPARSER::PROTEIN)
-    ("INK4a" . SPARSER::PROTEIN) ("N-Ras" . SPARSER::PROTEIN)
-    ("c-Met" . SPARSER::PROTEIN) ("Rap1" . SPARSER::PROTEIN)
-    ("R-Ras" . SPARSER::PROTEIN) ("RasGRP3" . SPARSER::PROTEIN)
+    ("Raf1" . SPARSER::PROTEIN) ("TNF-alpha" . SPARSER::PROTEIN)
+    ("TGF-beta" . SPARSER::PROTEIN) ("Rap1GAP" . SPARSER::PROTEIN)
+    ("GTPase-activating protein" . SPARSER::PROTEIN)
+    ("C-Met" . SPARSER::PROTEIN) ("A2" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Ras family" . SPARSER::PROTEIN) ("B-Raf" . SPARSER::PROTEIN)
+    ("M-Ras" . SPARSER::PROTEIN) ("INK4a" . SPARSER::PROTEIN)
+    ("N-Ras" . SPARSER::PROTEIN) ("c-Met" . SPARSER::PROTEIN)
+    ("Rap1" . SPARSER::PROTEIN) ("R-Ras" . SPARSER::PROTEIN)
+    ("RasGRP3" . SPARSER::PROTEIN)
     ("neurotoxic cytokines and small molecules" . SPARSER::COLLECTION)
-    ("neurotoxic cytokines" . SPARSER::PROTEIN)
-    ("Both pro-inflammatory cytokines" . SPARSER::PROTEIN)
-    ("NMDA" . SPARSER::MOLECULE) ("arginase" . SPARSER::PROTEIN)
-    ("extracellular toxins" . SPARSER::MOLECULE)
+    ("neurotoxic cytokines" . SPARSER::PROTEIN) ("NMDA" . SPARSER::MOLECULE)
     ("p53 and the inflammation pathway transcription factor NFκB"
      . SPARSER::COLLECTION)
     ("vascular macrophages" . SPARSER::PROTEIN)
-    ("the pro-inflammatory gene MARCO" . SPARSER::PROTEIN)
+    ("a dramatic impact" . SPARSER::PROTEIN)
     ("p53 and CD163" . SPARSER::COLLECTION)
     ("p53 or CD163" . SPARSER::COLLECTION)
     ("p53 or CD163 and p53" . SPARSER::COLLECTION)
     ("CD163 and p53" . SPARSER::COLLECTION)
+    ("the contralateral non-ischemic side" . SPARSER::PROTEIN)
     ("increased CD206 immunoreactive microglia" . SPARSER::PROTEIN)
     ("Adult p53 +/+ and p53 −/− mice underwent MCAO confirmed by cerebral blood flow monitoring"
      . SPARSER::COLLECTION)
@@ -8649,6 +8917,8 @@
     ("p53 and the alternative activation marker CD163" . SPARSER::COLLECTION)
     ("typical macrophage" . SPARSER::PROTEIN)
     ("excitatory amino acids" . SPARSER::AMINO-ACID)
+    ("Classically activated microglia release neurotoxic factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("prostanoids" . SPARSER::MOLECULE)
     ("nitric oxide (NO)" . SPARSER::MOLECULE)
     ("interferon gamma (IFNγ) or bacterial lipopolysacharride (LPS)"
@@ -8657,27 +8927,30 @@
     ("classical and alternative activated states" . SPARSER::BIO-STATE)
     ("Macrophages" . SPARSER::PROTEIN) ("ALS" . SPARSER::PROTEIN)
     ("glutamate receptor" . SPARSER::PROTEIN)
-    ("N-methyl-D-aspartate" . SPARSER::MOLECULE) ("Th2" . SPARSER::PROTEIN)
+    ("N-methyl-D-aspartate" . SPARSER::MOLECULE)
+    ("arginase 1" . SPARSER::PROTEIN) ("Th2" . SPARSER::PROTEIN)
     ("insulin like growth factor-1" . SPARSER::PROTEIN)
     ("pifithrin-alpha" . SPARSER::DRUG) ("Ptpn2" . SPARSER::PROTEIN)
     ("Shp-2" . SPARSER::PROTEIN) ("Srf2" . SPARSER::PROTEIN)
     ("mannose receptor" . SPARSER::PROTEIN) ("PKH26" . SPARSER::DRUG)
     ("FIZZ1" . SPARSER::PROTEIN) ("10C" . SPARSER::PROTEIN)
     ("BS2" . SPARSER::PROTEIN) ("CD68" . SPARSER::PROTEIN)
-    ("P 3–4" . SPARSER::PROTEIN)
     ("macrophage mannose receptor" . SPARSER::PROTEIN)
     ("CD206" . SPARSER::PROTEIN) ("coat protein" . SPARSER::PROTEIN)
     ("TH2" . SPARSER::PROTEIN) ("interferon gamma" . SPARSER::PROTEIN)
     ("interleukin 4" . SPARSER::PROTEIN) ("CD163" . SPARSER::PROTEIN)
     ("the most parsimonious solution" . SPARSER::MOLECULE)
-    ("BRCA2 or BRCA1" . SPARSER::COLLECTION) ("-TCCGAAGA" . SPARSER::GENE)
-    ("TCCGAAGA" . SPARSER::GENE) ("gene (TCCGAAGA)" . SPARSER::GENE)
-    ("much shorter haplo-type" . TYPE)
+    ("arisen only 29 generations ago" . SPARSER::PROTEIN)
+    ("BRCA2 or BRCA1" . SPARSER::COLLECTION)
+    ("the Myers et al. ( xref ) genetic map" . SPARSER::PROTEIN)
+    ("-TCCGAAGA" . SPARSER::GENE) ("TCCGAAGA" . SPARSER::GENE)
+    ("gene (TCCGAAGA)" . SPARSER::PROTEIN) ("much shorter haplo-type" . TYPE)
     ("a ~2 Mb region around BRCA1 or BRCA2" . SPARSER::COLLECTION)
     ("BRCA1 and BRCA2 , Slatkin and Rannala" . SPARSER::COLLECTION)
     ("BRCA2 , Slatkin and Rannala" . SPARSER::COLLECTION)
-    ("lactase" . SPARSER::PROTEIN) ("insC" . SPARSER::PROTEIN)
-    ("MCM6" . SPARSER::PROTEIN) ("G6PD" . SPARSER::PROTEIN)
+    ("lactase" . SPARSER::PROTEIN) ("The G6PD A allele" . SPARSER::ALLELE)
+    ("insC" . SPARSER::PROTEIN) ("MCM6" . SPARSER::PROTEIN)
+    ("G6PD" . SPARSER::PROTEIN)
     ("glucose-6-phosphate dehydrogenase" . SPARSER::PROTEIN)
     ("large multiethnic cohorts" . SPARSER::MOLECULE)
     ("the protein’s" . SPARSER::PROTEIN) ("Afro-" . SPARSER::PROTEIN)
@@ -8686,10 +8959,9 @@
     ("Caribbean" . SPARSER::PROTEIN)
     ("testosterone and insulin resistance" . SPARSER::COLLECTION)
     ("the pathogenic AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("polyglutamine" . SPARSER::MOLECULE)
+    ("SBMA" . SPARSER::PROTEIN) ("polyglutamine" . SPARSER::MOLECULE)
     ("Afro-Caribbean" . SPARSER::COLLECTION) ("Afro" . SPARSER::PROTEIN)
     ("Adverse Pregnancy Outcome study cohort" . SPARSER::MOLECULE)
-    ("AR (CAG)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("longer alleles" . SPARSER::ALLELE) ("A20" . SPARSER::PROTEIN)
     ("the recently developed ALK inhibitors" . SPARSER::INHIBITOR)
     ("Crizotinib" . SPARSER::DRUG) ("crizotinib" . SPARSER::DRUG)
@@ -8709,22 +8981,24 @@
     ("glutamic acid (G1201E) of ALK" . SPARSER::PROTEIN)
     ("GAG" . SPARSER::PROTEIN) ("GGG" . SPARSER::MOLECULE)
     ("phenylalanine (L1198F) of ALK" . SPARSER::PROTEIN)
+    ("CTC" . SPARSER::PROTEIN)
     ("two novel missense heterozygous ALK point mutations" . SPARSER::PROTEIN)
     ("PTC and FTC" . SPARSER::COLLECTION) ("FTC" . SPARSER::DRUG)
-    ("PTC" . SPARSER::PROTEIN) ("/Akt" . SPARSER::COLLECTION)
-    ("RANBP2-ALK" . SPARSER::COLLECTION) ("TMP" . SPARSER::TMP)
+    ("PTC" . SPARSER::HUMAN-PROTEIN-FAMILY) ("/Akt" . SPARSER::COLLECTION)
+    ("RANBP2-ALK" . SPARSER::COLLECTION) ("TMP" . SPARSER::PROTEIN)
     ("EML4-ALK" . SPARSER::COLLECTION) ("NPM-ALK" . SPARSER::COLLECTION)
     ("NPM1-ALK" . SPARSER::COLLECTION) ("NPM" . SPARSER::PROTEIN)
     ("ATCs" . SPARSER::DRUG)
     ("the neuroblastoma-associated ALK mutants K1062M and F1174L"
      . SPARSER::PROTEIN)
-    ("Thyroid" . SPARSER::PROTEIN) ("Tyrosine Kinase" . SPARSER::PROTEIN)
-    ("RANBP2" . SPARSER::PROTEIN) ("EML4" . SPARSER::PROTEIN)
+    ("Tyrosine Kinase" . SPARSER::PROTEIN) ("RANBP2" . SPARSER::PROTEIN)
+    ("EML4" . SPARSER::PROTEIN)
     ("Anaplastic lymphoma kinase" . SPARSER::PROTEIN)
     ("eu- and heterochromatin" . SPARSER::COLLECTION)
     ("eu-" . SPARSER::PROTEIN) ("eu" . SPARSER::PROTEIN)
     ("severe combined immunodeficiency (SCID)" . SPARSER::PROTEIN)
-    ("A-T and Artemis" . SPARSER::COLLECTION)
+    ("a more severe impact" . SPARSER::PROTEIN)
+    ("The strong impact" . SPARSER::PROTEIN)
     ("ROS or IR-induced DSBs" . SPARSER::COLLECTION)
     ("‘dirty’ DNA" . SPARSER::DNA) ("directly ligatable DNA" . SPARSER::DNA)
     ("neither NCS nor TBH" . SPARSER::COLLECTION) ("EU" . SPARSER::PROTEIN)
@@ -8733,13 +9007,13 @@
     ("siRNA and γ-H2AX" . SPARSER::COLLECTION)
     ("TBH or γ-ray" . SPARSER::COLLECTION)
     ("efficiently repair any DSBs" . SPARSER::PROTEIN)
-    ("Artemis and LIG4" . SPARSER::COLLECTION)
-    ("synthetase (GS)" . SPARSER::PROTEIN) ("DNP" . SPARSER::DRUG)
+    ("Artemis and LIG4" . SPARSER::COLLECTION) ("DNP" . SPARSER::DRUG)
     ("dinitrophenylhydrazine" . SPARSER::DRUG)
     ("ATM and Artemis-defective" . SPARSER::COLLECTION)
-    ("A-T and Artemis-defective" . SPARSER::COLLECTION)
+    ("BR" . SPARSER::PROTEIN)
     ("ATM (AT1BR) or Artemis (CJ179)" . SPARSER::COLLECTION)
     ("ATM, Artemis and DNA ligase IV" . SPARSER::COLLECTION)
+    ("endogenously induced DSBs or the combined impact" . SPARSER::COLLECTION)
     ("MEFs and greater" . SPARSER::COLLECTION)
     ("decreased proliferation potential and increased γ-H2AX foci"
      . SPARSER::PROTEIN)
@@ -8752,7 +9026,8 @@
     ("TBH or t" . SPARSER::COLLECTION) ("Artemis or ATM" . SPARSER::COLLECTION)
     ("TBH" . SPARSER::MOLECULE) ("ATM or Artemis" . SPARSER::COLLECTION)
     ("ATR, and ATM" . SPARSER::COLLECTION)
-    ("ATM and ataxia" . SPARSER::COLLECTION) ("oxidative DNA" . SPARSER::DNA)
+    ("ATM and ataxia telangiectasia and Rad3" . SPARSER::COLLECTION)
+    ("oxidative DNA" . SPARSER::DNA)
     ("endogenously arising DSBs" . SPARSER::PROTEIN)
     ("arising DSBs" . SPARSER::PROTEIN)
     ("hydrogen peroxide and t -butyl" . SPARSER::COLLECTION)
@@ -8760,23 +9035,28 @@
     ("‘complex’" . SPARSER::BIO-COMPLEX) ("ray" . SPARSER::PROTEIN)
     ("secondary electrons" . SPARSER::MOLECULE)
     ("electrons" . SPARSER::MOLECULE) ("HC-DSB" . SPARSER::COLLECTION)
+    ("a heterochromatic building factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("building factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("protein (ATM)" . SPARSER::PROTEIN)
     ("euchromatic (EU) DSBs" . SPARSER::PROTEIN)
     ("XLF/Cernunnos" . SPARSER::COLLECTION) ("Cernunnos" . SPARSER::PROTEIN)
     ("XLF" . SPARSER::PROTEIN) ("DSB" . SPARSER::PROTEIN)
     ("rays" . SPARSER::PROTEIN) ("SSBs" . SPARSER::PROTEIN)
-    ("SSB" . SPARSER::PROTEIN)
+    ("base or sugar" . SPARSER::COLLECTION) ("SSB" . SPARSER::PROTEIN)
     ("HC as well as euchromatic DNA" . SPARSER::COLLECTION)
     ("euchromatic DNA" . SPARSER::DNA)
     ("Artemis and ATM" . SPARSER::COLLECTION)
     ("ATM or Artemis-defective" . SPARSER::COLLECTION)
     ("ATM and Artemis" . SPARSER::COLLECTION) ("DSBs" . SPARSER::PROTEIN)
+    ("ataxia telangiectasia and a class" . SPARSER::COLLECTION)
     ("heterochromatic DNA" . SPARSER::DNA) ("HC-DSBs" . SPARSER::COLLECTION)
     ("HC" . SPARSER::PROTEIN) ("Artemis" . SPARSER::PROTEIN)
     ("severe combined immunodeficiency" . SPARSER::PROTEIN)
-    ("anti-oxidants" . SPARSER::DRUG) ("γ - H2AX" . SPARSER::PROTEIN)
-    ("KU55933" . SPARSER::DRUG) ("LIG4" . SPARSER::PROTEIN)
-    ("per 2" . SPARSER::PROTEIN) ("18 h" . SPARSER::PROTEIN)
+    ("anti-oxidants" . SPARSER::DRUG)
+    ("glutathione synthetase" . SPARSER::PROTEIN)
+    ("γ - H2AX" . SPARSER::PROTEIN) ("KU55933" . SPARSER::DRUG)
+    ("LIG4" . SPARSER::PROTEIN) ("per 2" . SPARSER::PROTEIN)
+    ("18 h" . SPARSER::PROTEIN) ("and 1 " . SPARSER::PROTEIN)
     ("β-Galactosidase" . SPARSER::PROTEIN) ("KU-55933" . SPARSER::DRUG)
     ("l -Glutamine" . SPARSER::MOLECULE) ("AT1BR" . SPARSER::PROTEIN)
     ("Ligase IV" . SPARSER::PROTEIN) ("t -butyl" . SPARSER::MOLECULE)
@@ -8793,8 +9073,8 @@
     ("the soluble fraction" . SPARSER::COMPONENT)
     ("specific MEK (U0126) and PI3K (LY294002) drugs" . SPARSER::COLLECTION)
     ("EGF and IGF-1" . SPARSER::COLLECTION)
-    ("EGF and the insulin-like growth factor" . SPARSER::COLLECTION)
-    ("mild EGR1" . SPARSER::PROTEIN)
+    ("EGF and the insulin-like growth factor 1 (IGF-1)" . SPARSER::COLLECTION)
+    ("mild EGR1" . SPARSER::PROTEIN) ("TF" . SPARSER::PROTEIN)
     ("lipid and cholesterol" . SPARSER::COLLECTION)
     ("Metformin and AICAR" . SPARSER::COLLECTION)
     ("Mevastatin" . SPARSER::DRUG) ("Metformin" . SPARSER::DRUG)
@@ -8803,26 +9083,25 @@
     ("the dual PI3K/mTOR inhibitor" . SPARSER::INHIBITOR)
     ("ERK, AKT and ribosomal protein" . SPARSER::COLLECTION)
     ("RPPA" . SPARSER::PROTEIN) ("c-MYC and E2F" . SPARSER::COLLECTION)
-    ("PI3K-" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("PI3K-" . SPARSER::PROTEIN)
     ("phosphoinositide 3-kinase-" . SPARSER::PROTEIN)
     ("epidermal growth factor (EGF)" . SPARSER::PROTEIN)
-    ("complemented" . SPARSER::PROTEIN)
+    ("dual-step" . SPARSER::PROTEIN) ("GF" . SPARSER::PROTEIN)
     ("fortuitous growth factors" . SPARSER::GROWTH-FACTOR)
     ("essential metabolic enzymes" . SPARSER::ENZYME)
     ("Gene 1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("c-FOS" . SPARSER::PROTEIN)
     ("IDI1" . SPARSER::PROTEIN)
     ("isopentenyl-diphosphate delta isomerase 1" . SPARSER::PROTEIN)
-    ("EGR1" . SPARSER::PROTEIN) ("TGF" . SPARSER::DRUG)
-    ("HMGB" . SPARSER::PROTEIN-FAMILY) ("prothrombin" . SPARSER::PROTEIN)
-    ("des" . SPARSER::PROTEIN) ("carcinoembryonic" . SPARSER::PROTEIN)
-    ("agglutinin" . SPARSER::PROTEIN)
-    ("Antibody and MS/MS mapping" . SPARSER::COLLECTION)
-    ("Antibody" . SPARSER::PROTEIN) ("extracellular YB-1" . SPARSER::PROTEIN)
-    ("AFP, CEA or CA19-9" . SPARSER::COLLECTION)
+    ("EGR1" . SPARSER::PROTEIN) ("TGF" . SPARSER::PROTEIN)
+    ("HMGB" . SPARSER::PROTEIN) ("prothrombin" . SPARSER::PROTEIN)
+    ("des" . SPARSER::PROTEIN) ("agglutinin" . SPARSER::PROTEIN)
+    ("FT" . SPARSER::PROTEIN) ("Antibody" . SPARSER::ANTIBODY)
+    ("AFP, CEA or CA19-9" . SPARSER::COLLECTION) ("age-" . SPARSER::PROTEIN)
     ("CEA or CA19-9" . SPARSER::COLLECTION) ("DCP" . SPARSER::DRUG)
     ("AFP, CA19-9 and CEA" . SPARSER::COLLECTION)
     ("histologically proven HCC" . SPARSER::PROTEIN) ("CEA" . SPARSER::PROTEIN)
-    ("aa" . SPARSER::MOLECULE) ("N-term and C-term" . SPARSER::COLLECTION)
+    ("aa" . SPARSER::MOLECULE) ("MS/MS" . SPARSER::COLLECTION)
+    ("N-term and C-term" . SPARSER::COLLECTION)
     ("N-term, C-term or DbpA" . SPARSER::COLLECTION)
     ("C-terminal (C-term) part of YB-1 or the N-terminus"
      . SPARSER::COLLECTION)
@@ -8851,20 +9130,21 @@
     ("alpha-1-acid glycoprotein" . SPARSER::PROTEIN)
     ("MDR-1" . SPARSER::PROTEIN) ("chi 2" . SPARSER::PROTEIN)
     ("C-reactive protein" . SPARSER::PROTEIN) ("CSD1" . SPARSER::PROTEIN)
-    ("DNA-binding protein B" . SPARSER::PROTEIN) ("C-5" . SPARSER::PROTEIN)
+    ("DNA-binding protein B" . SPARSER::PROTEIN) ("min 2" . SPARSER::PROTEIN)
     ("Monoclonal antibody" . SPARSER::DRUG)
+    ("carcinoembryonic antigen" . SPARSER::PROTEIN)
     ("α-fetoprotein" . SPARSER::PROTEIN) ("HMGB1" . SPARSER::PROTEIN)
     ("signal peptide" . SPARSER::PROTEIN) ("PDGF-BB" . SPARSER::PROTEIN)
     ("matrix metalloproteinase-2" . SPARSER::PROTEIN)
-    ("epidermal growth-factor receptor" . SPARSER::PROTEIN)
-    ("DNA-polymerase" . SPARSER::PROTEIN)
+    ("growth-factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Alpha-fetoprotein" . SPARSER::PROTEIN) ("18 kD" . SPARSER::PROTEIN)
     ("YB-1" . SPARSER::PROTEIN) ("Immuno" . SPARSER::PROTEIN)
     ("transcriptional co-factors" . SPARSER::MOLECULE)
     ("state-" . SPARSER::BIO-STATE)
     ("Lung type I cell membrane-associated glycoprotein" . SPARSER::PROTEIN)
     ("podoplanin" . SPARSER::PROTEIN) ("uPa" . SPARSER::PROTEIN)
-    ("genes or ESTs" . SPARSER::COLLECTION) ("attractant" . SPARSER::PROTEIN)
+    ("genes or ESTs" . SPARSER::COLLECTION) ("ESTs" . SPARSER::PROTEIN)
+    ("attractant" . SPARSER::PROTEIN)
     ("STAT5a or STAT5b" . SPARSER::COLLECTION)
     ("STAT5b and STAT3" . SPARSER::COLLECTION)
     ("STAT3, STAT5a and STAT5b" . SPARSER::COLLECTION)
@@ -8873,16 +9153,18 @@
      . SPARSER::COLLECTION)
     ("hypoxanthine-guanine phosphoribosyltransferase (HPRT)"
      . SPARSER::PROTEIN)
+    ("HPRT" . SPARSER::PROTEIN)
     ("non-malignant fetal astrocytes" . SPARSER::PROTEIN)
     ("MMP-1 and uPA" . SPARSER::COLLECTION)
-    ("whose receptor" . SPARSER::RECEPTOR)
+    ("whose receptor" . SPARSER::PROTEIN)
     ("relevant signalling molecules" . SPARSER::MOLECULE)
-    ("c-src" . SPARSER::PROTEIN-PAIR)
+    ("c-src" . SPARSER::COLLECTION)
     ("anti-apoptotic regulatory proteins [ xref , xref ] as well as cyclin D1"
      . SPARSER::COLLECTION)
     ("the epidermal growth factor receptor (EGFR) and platelet-derived growth factor receptor (PDGFR)"
      . SPARSER::COLLECTION)
-    ("STAT6-" . SPARSER::PROTEIN) ("shRNA-" . SPARSER::PROTEIN)
+    ("STA" . SPARSER::PROTEIN) ("STAT6-" . SPARSER::PROTEIN)
+    ("shRNA-" . SPARSER::PROTEIN)
     ("normal astrocytes (NHA)" . SPARSER::PROTEIN) ("Cdk6" . SPARSER::PROTEIN)
     ("Alpha-tubulin" . SPARSER::PROTEIN) ("MAS 5" . SPARSER::PROTEIN)
     ("Type IV collagen" . SPARSER::PROTEIN)
@@ -8900,17 +9182,17 @@
     ("c-met and Stat3" . SPARSER::COLLECTION)
     ("c-met/Stat3" . SPARSER::COLLECTION) ("p-c-met" . SPARSER::COLLECTION)
     ("MMP-2 and MMP-9" . SPARSER::COLLECTION)
+    ("both prominent nuclear" . SPARSER::PROTEIN)
     ("Stat3 and c-met" . SPARSER::COLLECTION)
     ("a naturally occurring Stat3 splice variant" . SPARSER::VARIANT)
     ("a dominant-negative form" . SPARSER::FORM)
     ("HGF/c-met" . SPARSER::COLLECTION)
     ("Scatter factor, or hepatocyte growth factor" . SPARSER::COLLECTION)
     ("MMP-1, MMP-2, and MMP-9" . SPARSER::COLLECTION)
-    ("metalloproteases-1" . SPARSER::COLLECTION)
     ("suppressor of cytokine signaling (SOCS), a negative regulator of cytokine signaling that is silenced by methylation in some tumors [ xref , xref ] and various receptor tyrosine kinases such as EGFR and c-met that are activated in cancers [ xref , xref ]"
      . SPARSER::COLLECTION)
     ("suppressor of cytokine signaling (SOCS)" . SPARSER::PROTEIN)
-    ("EGFR and c-met" . SPARSER::COLLECTION)
+    ("EGFR and c-met" . SPARSER::COLLECTION) ("SOCS" . SPARSER::PROTEIN)
     ("Stat3 or signaling molecules" . SPARSER::COLLECTION)
     ("cyclin D1 [ xref ] and c-myc [ xref ]" . SPARSER::COLLECTION)
     ("VEGF [ xref ] and HGF [ xref ]" . SPARSER::COLLECTION)
@@ -8924,12 +9206,13 @@
     ("stat3" . SPARSER::PROTEIN) ("Bcl-X" . SPARSER::PROTEIN)
     ("c-met" . SPARSER::PROTEIN) ("RAS/MEK" . SPARSER::COLLECTION)
     ("viral oncogene" . SPARSER::ONCOGENE) ("IFN-gamma" . SPARSER::PROTEIN)
-    ("unable preferential translation viral mRNA" . SPARSER::PROTEIN)
-    ("omnipresent dsRNA-dependent protein kinase (PKR)" . SPARSER::KINASE)
+    ("unable preferential translation viral mRNA" . SPARSER::RNA)
+    ("omnipresent dsRNA-dependent protein kinase (PKR)" . SPARSER::PROTEIN)
     ("RAS/RAF/MEK" . SPARSER::COLLECTION)
     ("the central transcription factor" . SPARSER::PROTEIN)
-    ("kinase (PKR)" . SPARSER::KINASE) ("dsRNA" . SPARSER::RNA)
-    ("The nonstructural protein" . SPARSER::PROTEIN)
+    ("VAI" . SPARSER::PROTEIN) ("protein kinase (PKR)" . SPARSER::PROTEIN)
+    ("dsRNA" . SPARSER::RNA) ("The nonstructural protein" . SPARSER::PROTEIN)
+    ("PKR" . SPARSER::PROTEIN)
     ("Raf, phosphatidylinositol 3-kinase and etc" . SPARSER::COLLECTION)
     ("RASGAPs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("RAS and gene" . SPARSER::COLLECTION)
@@ -8937,9 +9220,8 @@
     ("IRF-3 and IFN-beta" . SPARSER::COLLECTION)
     ("IFN-beta and IRF-3" . SPARSER::COLLECTION) ("eIF4GI" . SPARSER::PROTEIN)
     ("delE" . SPARSER::PROTEIN) ("IFN-alpha" . SPARSER::PROTEIN)
-    ("c-3" . SPARSER::PROTEIN) ("v-RAS" . SPARSER::PROTEIN)
-    ("RasV12" . SPARSER::DRUG) ("IFN-beta" . SPARSER::PROTEIN)
-    ("NS1" . SPARSER::PROTEIN)
+    ("v-RAS" . SPARSER::PROTEIN) ("RasV12" . SPARSER::DRUG)
+    ("IFN-beta" . SPARSER::PROTEIN) ("NS1" . SPARSER::PROTEIN)
     ("gemcitabine and carboplatin" . SPARSER::COLLECTION)
     ("TICs" . SPARSER::PROTEIN) ("the two DNA damaging agent's" . SPARSER::DNA)
     ("cyclophosphamide or mitoxantrone" . SPARSER::COLLECTION)
@@ -8948,6 +9230,7 @@
     ("progesterone-receptors" . SPARSER::COLLECTION)
     ("estrogen-receptors" . SPARSER::PROTEIN)
     ("p53, p16 and pRb" . SPARSER::COLLECTION)
+    ("gene and RB" . SPARSER::COLLECTION)
     ("BRCA1, pRb, p16, PTEN and p53" . SPARSER::COLLECTION)
     ("special histological types" . TYPE)
     ("PTEN and high Ki-67 (highly proliferative)" . SPARSER::COLLECTION)
@@ -8963,7 +9246,7 @@
     ("LumA or LumB, and grade" . SPARSER::COLLECTION) ("TN" . SPARSER::PROTEIN)
     ("LumA" . SPARSER::PROTEIN)
     ("ER, PR, HER2, CK5/6, EGFR and Ki-67" . SPARSER::COLLECTION)
-    ("BRCA1 and 999del5" . SPARSER::COLLECTION)
+    ("BRCA1 and 999del5" . SPARSER::COLLECTION) ("ACT" . SPARSER::PROTEIN)
     ("receptors (PR)" . SPARSER::RECEPTOR) ("estrogen-" . SPARSER::MOLECULE)
     ("progesterone" . SPARSER::PROTEIN) ("RB/p16" . SPARSER::COLLECTION)
     ("BRCA1, pRb, p16 and PTEN" . SPARSER::COLLECTION)
@@ -8977,10 +9260,10 @@
     ("claudin-3" . SPARSER::PROTEIN) ("MUC1" . SPARSER::PROTEIN)
     ("CK18" . SPARSER::PROTEIN) ("CK8" . SPARSER::PROTEIN)
     ("hippocampal LTP" . SPARSER::PROTEIN) ("LTP" . SPARSER::PROTEIN)
-    ("AGAT" . SPARSER::PROTEIN) ("ATC" . SPARSER::DRUG)
+    ("AGAT" . SPARSER::PROTEIN) ("ATC" . SPARSER::PROTEIN)
     ("S1987" . SPARSER::PROTEIN) ("BAL" . SPARSER::PROTEIN)
     ("several unique RNA" . SPARSER::RNA)
-    ("a fluorescent conjugated secondary antibody" . SPARSER::PROTEIN)
+    ("a fluorescent conjugated secondary antibody" . SPARSER::ANTIBODY)
     ("p53-S15" . SPARSER::COLLECTION) ("ATM-S1987" . SPARSER::COLLECTION)
     ("GFP:ATM" . SPARSER::BIO-COMPLEX)
     ("immunoreactive ATM protein" . SPARSER::PROTEIN)
@@ -8995,24 +9278,23 @@
      . SPARSER::COLLECTION)
     ("calbindin" . SPARSER::PROTEIN)
     ("residual ATM protein and mRNA" . SPARSER::COLLECTION)
-    ("nearly full length Atm mRNA and a catalytically active protein"
-     . SPARSER::COLLECTION)
-    ("nearly full length Atm mRNA" . SPARSER::PROTEIN)
+    ("nearly full length Atm mRNA" . SPARSER::RNA)
     ("the 38th exon" . SPARSER::PROTEIN)
     ("p53 and the checkpoint kinase Chk2" . SPARSER::COLLECTION)
     ("Mre11/Rad50/Nbs1" . SPARSER::COLLECTION)
     ("cerebellar ataxia" . SPARSER::PROTEIN)
     ("residual ATM protein" . SPARSER::PROTEIN)
     ("p53 and Chk2" . SPARSER::COLLECTION) ("–Atm" . SPARSER::COLLECTION)
-    ("– 2" . SPARSER::PROTEIN) ("Brain-specific" . SPARSER::PROTEIN)
+    ("Brain-specific" . SPARSER::PROTEIN) ("B27" . SPARSER::PROTEIN)
     ("PSD95" . SPARSER::PROTEIN) ("brain-specific" . SPARSER::PROTEIN)
     ("A-T Mutated" . SPARSER::PROTEIN)
+    ("Ataxia telangiectasia" . SPARSER::PROTEIN)
     ("MET (15 tumors) and VEGFA (14 tumors)" . SPARSER::COLLECTION)
     ("ERBB2 (13 tumors), EGFR (22 tumors), PIK3CA (7 tumors), MET (15 tumors) and VEGFA (14 tumors)"
      . SPARSER::COLLECTION)
     ("VEGFA" . SPARSER::PROTEIN) ("CDK4/CDK6" . SPARSER::COLLECTION)
     ("acute lymphoblastic leukemia" . SPARSER::PROTEIN)
-    ("microRNA’s" . SPARSER::RNA) ("Hsa-" . SPARSER::PROTEIN)
+    ("microRNA’s" . SPARSER::MICRO-RNA) ("Hsa-" . SPARSER::PROTEIN)
     ("Hsa" . SPARSER::PROTEIN)
     ("CDK inhibitors (INK4A, INK4B and KIP1) and pRB ( xref )"
      . SPARSER::COLLECTION)
@@ -9034,25 +9316,28 @@
     ("MTERF, AKAP9, CYP51A1, LOC401387, KRIT1, ANKIB1, GATAD1, PEX1, C7ORF64, MGC16142, FAM133B, CDK6, SAMD9, SAMD9L, HEPACAM2, CCDC132 and CALCR"
      . SPARSER::COLLECTION)
     ("GATAD1, PEX1, C7ORF64, MGC16142, FAM133B and CDK6" . SPARSER::COLLECTION)
-    ("CALCR" . SPARSER::PROTEIN) ("HEPACAM" . SPARSER::PROTEIN)
-    ("FAM" . SPARSER::PROTEIN) ("MTERF" . SPARSER::PROTEIN)
-    ("only six genes" . SPARSER::GENE)
+    ("CALCR" . SPARSER::PROTEIN) ("FAM" . SPARSER::PROTEIN)
+    ("MTERF" . SPARSER::PROTEIN) ("only six genes" . SPARSER::GENE)
     ("several genes and this hypothesis" . SPARSER::COLLECTION)
     ("Van" . SPARSER::PROTEIN) ("Trastuzumab" . SPARSER::DRUG)
     ("mitogens that are amplified and subsequently highly expressed leading"
      . SPARSER::COLLECTION)
-    ("CDK4 and CDK6" . SPARSER::COLLECTION)
+    ("GERD" . SPARSER::PROTEIN)
+    ("an uncommon tumor 20 years ago" . SPARSER::PROTEIN)
+    ("ago" . SPARSER::PROTEIN) ("CDK4 and CDK6" . SPARSER::COLLECTION)
     ("CDK4 and/or CDK6" . SPARSER::COLLECTION)
     ("CDK6 and CDK4" . SPARSER::COLLECTION) ("KIP1" . SPARSER::PROTEIN)
     ("INK4B" . SPARSER::PROTEIN) ("INK4A" . SPARSER::PROTEIN)
     ("INK4" . SPARSER::PROTEIN) ("CDK 6" . SPARSER::PROTEIN)
     ("IBR domain containing 1" . SPARSER::PROTEIN)
-    ("ankyrin repeat" . SPARSER::PROTEIN) ("SAMD9L" . SPARSER::PROTEIN)
-    ("SAMD9" . SPARSER::PROTEIN) ("ORF64" . SPARSER::PROTEIN)
-    ("PEX1" . SPARSER::PROTEIN) ("GATAD1" . SPARSER::PROTEIN)
-    ("KRIT1" . SPARSER::PROTEIN) ("CYP51A1" . SPARSER::PROTEIN)
-    ("AKAP9" . SPARSER::PROTEIN) ("p130" . SPARSER::PROTEIN)
-    ("RB2" . SPARSER::PROTEIN) ("cyclin-dependent kinase 6" . SPARSER::PROTEIN)
+    ("ankyrin repeat" . SPARSER::PROTEIN) ("HEPACAM2" . SPARSER::PROTEIN)
+    ("SAMD9L" . SPARSER::PROTEIN) ("SAMD9" . SPARSER::PROTEIN)
+    ("ORF64" . SPARSER::PROTEIN) ("PEX1" . SPARSER::PROTEIN)
+    ("GATAD1" . SPARSER::PROTEIN) ("KRIT1" . SPARSER::PROTEIN)
+    ("CYP51A1" . SPARSER::PROTEIN) ("AKAP9" . SPARSER::PROTEIN)
+    ("p130" . SPARSER::PROTEIN) ("RB2" . SPARSER::PROTEIN)
+    ("log 2" . SPARSER::PROTEIN) ("Log 2" . SPARSER::PROTEIN)
+    ("cyclin-dependent kinase 6" . SPARSER::PROTEIN)
     ("Epidermal growth factor Receptor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("HER-2" . SPARSER::PROTEIN) ("PD-0332991" . SPARSER::DRUG)
     ("the mTORC1 inhibitor rapamycin and the mTOR inhibitors PP242 and Torin1"
@@ -9073,11 +9358,14 @@
     ("Akti" . SPARSER::PROTEIN) ("p70S6K and 4E-BP1" . SPARSER::COLLECTION)
     ("the mTORC1 inhibitor rapamycin and the mTORC1/2 inhibitors PP242 and Torin1"
      . SPARSER::COLLECTION)
+    ("insulin/IGF-1" . SPARSER::COLLECTION)
     ("p70S6K and Akt" . SPARSER::COLLECTION)
-    ("Threonine" . SPARSER::AMINO-ACID)
+    ("Threonine" . SPARSER::AMINO-ACID) ("Insulin" . SPARSER::PROTEIN)
+    ("pleckstrin" . SPARSER::PROTEIN)
     ("newly developed inhibitors" . SPARSER::INHIBITOR)
     ("mTOR, PP242 and Torin1" . SPARSER::COLLECTION)
-    ("Raptor" . SPARSER::PROTEIN) ("a multimeric kinase" . SPARSER::KINASE)
+    ("insulin-" . SPARSER::PROTEIN) ("Raptor" . SPARSER::PROTEIN)
+    ("a multimeric kinase" . SPARSER::KINASE)
     ("Protor" . SPARSER::PROTEIN-FAMILY)
     ("mTORC2 (mammalian target of rapamycin complex 2) and DNA-activated protein kinase"
      . SPARSER::COLLECTION)
@@ -9087,10 +9375,10 @@
     ("IGF-1, thrombopoietin and VEGF" . SPARSER::COLLECTION)
     ("thrombopoietin" . SPARSER::PROTEIN)
     ("Akt1 and Akt2" . SPARSER::COLLECTION)
-    ("proteins Akt and phosphoinositide-dependent kinase"
-     . SPARSER::COLLECTION)
     ("diacylglycerol and inositol 1,4,5-trisphosphate" . SPARSER::COLLECTION)
     ("diacylglycerol" . SPARSER::PROTEIN)
+    ("receptor (PAR)" . SPARSER::RECEPTOR)
+    ("prothrombinase" . SPARSER::PROTEIN)
     ("phosphatidylserine" . SPARSER::PROTEIN)
     ("phospholipase C/PKC" . SPARSER::COLLECTION)
     ("thrombin and insulin-like growth factor" . SPARSER::COLLECTION)
@@ -9102,10 +9390,9 @@
     ("4E-BP1" . SPARSER::PROTEIN) ("IGF-1-" . SPARSER::PROTEIN)
     ("P81" . SPARSER::PROTEIN) ("bis-tris" . SPARSER::MOLECULE)
     ("microcystin-LR" . SPARSER::MOLECULE) ("d -glucose" . SPARSER::MOLECULE)
-    ("Microcystin-LR" . SPARSER::MOLECULE) ("H-9" . SPARSER::PROTEIN)
-    ("B-1" . SPARSER::PROTEIN) ("mSin1" . SPARSER::PROTEIN)
-    ("MAPKAP-K2" . SPARSER::PROTEIN) ("PIP 3" . SPARSER::PIP3)
-    ("IP 3" . SPARSER::IP3)
+    ("Microcystin-LR" . SPARSER::MOLECULE) ("mSin1" . SPARSER::PROTEIN)
+    ("MAPKAP-K2" . SPARSER::PROTEIN) ("thromboxane A 2" . SPARSER::MOLECULE)
+    ("PIP 3" . SPARSER::PIP3) ("IP 3" . SPARSER::IP3)
     ("inositol 1,4,5-trisphosphate" . SPARSER::MOLECULE)
     ("α IIb β 3" . SPARSER::PROTEIN) ("Torin1" . SPARSER::DRUG)
     ("PP242" . SPARSER::DRUG) ("COX2 or Akt" . SPARSER::COLLECTION)
@@ -9113,10 +9400,11 @@
      . SPARSER::COLLECTION)
     ("no clinically available inhibitors" . SPARSER::INHIBITOR)
     ("kinase and Akt" . SPARSER::COLLECTION)
-    ("Akt-HSP90" . SPARSER::COLLECTION) ("protein (HSP)" . SPARSER::PROTEIN)
-    ("COX2/CK2α" . SPARSER::COLLECTION) ("anesthetic" . SPARSER::DRUG)
-    ("pTa" . SPARSER::PROTEIN) ("CIS" . SPARSER::PROTEIN)
-    ("uPA and protein" . SPARSER::COLLECTION)
+    ("Akt-HSP90" . SPARSER::COLLECTION)
+    ("Heat shock protein (HSP)" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("HSP" . SPARSER::PROTEIN) ("COX2/CK2α" . SPARSER::COLLECTION)
+    ("anesthetic" . SPARSER::DRUG) ("pTa" . SPARSER::PROTEIN)
+    ("CIS" . SPARSER::PROTEIN) ("uPA and protein" . SPARSER::COLLECTION)
     ("the drinking water (3.0 mg/l) and mice" . SPARSER::COLLECTION)
     ("drinking water" . SPARSER::MOLECULE)
     ("CK2α-Akt-p27" . SPARSER::COLLECTION) ("Meloxicam" . SPARSER::DRUG)
@@ -9130,18 +9418,26 @@
     ("kinase-Akt" . SPARSER::COLLECTION)
     ("an upstream molecule of uPA and G1 cell cycle arrest"
      . SPARSER::COLLECTION)
+    ("the CK2α gene as well as COX2 (Figures xref and xref )"
+     . SPARSER::COLLECTION)
+    ("urokinase or tissue type" . SPARSER::COLLECTION)
     ("kinase/uPA" . SPARSER::COLLECTION)
-    ("p53, p21, p16 or Rb" . SPARSER::COLLECTION)
-    ("DuP" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CK2α-Akt" . SPARSER::COLLECTION)
+    ("p53, p21, p16 or Rb" . SPARSER::COLLECTION) ("DuP" . SPARSER::PROTEIN)
+    ("CK2α-Akt" . SPARSER::COLLECTION)
     ("a ubiquitous serine/threonine protein kinase" . SPARSER::PROTEIN)
-    ("kinase (CK)" . SPARSER::KINASE) ("Casein" . SPARSER::PROTEIN)
+    ("kinase (CK)" . SPARSER::KINASE)
+    ("Casein" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("pro- and/or anti-apoptotic molecules[ xref , xref ]"
+     . SPARSER::COLLECTION)
     ("eicosanoids" . SPARSER::MOLECULE) ("WNT/β-catenin" . SPARSER::COLLECTION)
     ("Akt and uPA" . SPARSER::COLLECTION) ("meloxicam" . SPARSER::DRUG)
     ("CK2α-Akt/uPA" . SPARSER::COLLECTION)
     ("Akt and urokinase type" . SPARSER::COLLECTION)
-    ("casein" . SPARSER::PROTEIN) ("casein kinase 2" . SPARSER::PROTEIN)
-    ("pT1" . SPARSER::PROTEIN) ("tissue type" . SPARSER::PROTEIN)
-    ("ST-7" . SPARSER::PROTEIN)
+    ("casein" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("protein phosphatase2A" . SPARSER::PROTEIN)
+    ("Heat shock protein" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("casein kinase 2" . SPARSER::PROTEIN)
+    ("pT1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("tissue type" . SPARSER::PROTEIN)
     ("Phosphatidylinositol-3-kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("CAY10404" . SPARSER::DRUG) ("COX1" . SPARSER::PROTEIN)
     ("CK2" . SPARSER::PROTEIN)
@@ -9154,37 +9450,43 @@
     ("IL-6, MCP-1, TNF-α and IL-10" . SPARSER::COLLECTION)
     ("IL-12p70 and IFNγ" . SPARSER::COLLECTION)
     ("TNF-α (5-fold) and IL-10 (3-fold)" . SPARSER::COLLECTION)
+    ("systemic pro-inflammatory cytokines IL-6 (480-fold), the IL-8 ortholog KC (52-fold), TNF-α (5-fold) and IL-10 (3-fold)"
+     . SPARSER::COLLECTION)
     ("systemic pro-inflammatory cytokines IL-6" . SPARSER::PROTEIN)
-    ("TNF-α, MCP-1 and IL-6" . SPARSER::COLLECTION)
-    ("Leukocytes" . SPARSER::PROTEIN)
-    ("pro-inflammatory mediators" . SPARSER::PROTEIN)
-    ("collagen/vWF" . SPARSER::COLLECTION) ("vWF" . SPARSER::PROTEIN)
-    ("a pro-thrombotic state" . SPARSER::BIO-STATE)
-    ("intraperitoneal LPS" . SPARSER::PROTEIN)
+    ("TNF-α, MCP-1 and IL-6" . SPARSER::COLLECTION) ("KC" . SPARSER::PROTEIN)
+    ("Leukocytes" . SPARSER::PROTEIN) ("collagen/vWF" . SPARSER::COLLECTION)
+    ("vWF" . SPARSER::PROTEIN) ("TAT and D-dimer" . SPARSER::COLLECTION)
+    ("TAT" . SPARSER::PROTEIN) ("intraperitoneal LPS" . SPARSER::PROTEIN)
     ("exogenous MMP-1" . SPARSER::PROTEIN)
     ("MMP-1 and MMP-1a" . SPARSER::COLLECTION)
     ("the PAR1 antagonists RWJ-56110 and P1pal-12S ( xref )"
      . SPARSER::COLLECTION)
     ("-Rho" . SPARSER::COLLECTION) ("MCF7 cells" . SPARSER::PROTEIN)
     ("PAR1-MCF7" . SPARSER::COLLECTION)
+    ("MMP-1a and PAR1" . SPARSER::COLLECTION)
     ("PAR1-MCF7 cells" . SPARSER::COLLECTION)
+    ("CLP or sham" . SPARSER::COLLECTION)
+    ("MMP-1a and MMP-1" . SPARSER::COLLECTION)
     ("FITC-phalloidin" . SPARSER::MOLECULE)
     ("MMP-1 and PAR1" . SPARSER::COLLECTION) ("PMSF" . SPARSER::MOLECULE)
     ("hirudin" . SPARSER::PROTEIN) ("pal" . SPARSER::PROTEIN)
     ("systemic endotoxin" . SPARSER::MOLECULE)
-    ("underwent sham or CLP surgery" . SPARSER::COLLECTION)
-    ("underwent sham" . SPARSER::DRUG)
+    ("the aortic endothelium en face" . SPARSER::PROTEIN)
+    ("sham or CLP" . SPARSER::COLLECTION)
     ("endotoxins and other inflammatory mediators" . SPARSER::COLLECTION)
     ("endotoxins" . SPARSER::MOLECULE) ("Endotoxin" . SPARSER::MOLECULE)
     ("PAR1 or PAR2" . SPARSER::COLLECTION)
     ("Par1 or Par2" . SPARSER::COLLECTION) ("Par2" . SPARSER::PROTEIN)
+    ("Par" . SPARSER::PROTEIN)
     ("a vascular barrier protective receptor" . SPARSER::RECEPTOR)
-    ("a vascular barrier disruptive receptor" . SPARSER::RECEPTOR)
+    ("a vascular barrier disruptive receptor" . SPARSER::PROTEIN)
+    ("Cos7" . SPARSER::PROTEIN) ("Cos" . SPARSER::MOLECULE)
+    ("MMP-1a and MMP-1b" . SPARSER::COLLECTION)
+    ("CLP or LPS" . SPARSER::COLLECTION) ("CLP" . SPARSER::PROTEIN)
     ("HBD and AKI" . SPARSER::COLLECTION)
-    ("HBD and male" . SPARSER::COLLECTION)
     ("MMP-1 or IL-8" . SPARSER::COLLECTION)
     ("MMP-1 and IL-8" . SPARSER::COLLECTION)
-    ("a pivotal regulator" . SPARSER::REGULATOR)
+    ("a pivotal regulator" . SPARSER::PROTEIN)
     ("metalloprotease" . SPARSER::PROTEIN)
     ("MMP-13 and the mouse ortholog" . SPARSER::COLLECTION)
     ("MMP-1, MMP-8, MMP-13 and the mouse ortholog" . SPARSER::COLLECTION)
@@ -9195,14 +9497,15 @@
     ("clinically useful prognostic biomarkers" . SPARSER::MOLECULE)
     ("MMP1-PAR1" . SPARSER::COLLECTION) ("plasma)" . SPARSER::PROTEIN)
     ("glutathione S-transferase" . SPARSER::PROTEIN)
-    ("ToPro-3" . SPARSER::MOLECULE) ("TIMP1" . SPARSER::PROTEIN)
-    ("MMP-10" . SPARSER::PROTEIN) ("IL12p70" . SPARSER::PROTEIN)
-    ("IL-12p70" . SPARSER::PROTEIN) ("P4" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("PAR4" . SPARSER::PROTEIN) ("RWJ-56110" . SPARSER::DRUG)
-    ("Par1" . SPARSER::PROTEIN) ("CF-1" . SPARSER::PROTEIN)
-    ("PAR2" . SPARSER::PROTEIN) ("MMP-8" . SPARSER::PROTEIN)
-    ("tissue factor" . SPARSER::PROTEIN) ("MMP1" . SPARSER::PROTEIN)
-    ("PAR1" . SPARSER::PROTEIN) ("the ATM-associated DDR" . SPARSER::PROTEIN)
+    ("ToPro-3" . SPARSER::MOLECULE) ("O11" . SPARSER::PROTEIN)
+    ("TIMP1" . SPARSER::PROTEIN) ("MMP-10" . SPARSER::PROTEIN)
+    ("IL12p70" . SPARSER::PROTEIN) ("IL-12p70" . SPARSER::PROTEIN)
+    ("P4" . SPARSER::HUMAN-PROTEIN-FAMILY) ("PAR4" . SPARSER::PROTEIN)
+    ("RWJ-56110" . SPARSER::DRUG) ("Par1" . SPARSER::PROTEIN)
+    ("MMP-1b" . SPARSER::PROTEIN) ("PAR2" . SPARSER::PROTEIN)
+    ("MMP-8" . SPARSER::PROTEIN) ("tissue factor" . SPARSER::PROTEIN)
+    ("MMP1" . SPARSER::PROTEIN) ("PAR1" . SPARSER::PROTEIN)
+    ("MMP-1a" . SPARSER::PROTEIN) ("the ATM-associated DDR" . SPARSER::PROTEIN)
     ("The herpesviral proteins" . SPARSER::PROTEIN)
     ("RB and RB" . SPARSER::COLLECTION)
     ("possible ATM activators" . SPARSER::ACTIVATOR)
@@ -9213,6 +9516,7 @@
     ("DNA and evidence" . SPARSER::COLLECTION)
     ("an essential serine residue" . SPARSER::MOLECULE)
     ("the viral integrase" . SPARSER::PROTEIN)
+    ("viral factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("nascent viral DNA" . SPARSER::DNA)
     ("parental viral DNA and γH2AX" . SPARSER::COLLECTION)
     ("parental viral DNA" . SPARSER::DNA)
@@ -9220,11 +9524,12 @@
     ("the viral DNA" . SPARSER::DNA)
     ("ATM and other DDR proteins" . SPARSER::COLLECTION)
     ("E2F2 or E2F3a or E2F3b" . SPARSER::COLLECTION)
-    ("E2F1, E2F2 or E2F3" . SPARSER::COLLECTION)
+    ("viral IE" . SPARSER::PROTEIN) ("AD-IE2" . SPARSER::COLLECTION)
+    ("AD" . SPARSER::PROTEIN) ("E2F1, E2F2 or E2F3" . SPARSER::COLLECTION)
     ("p-ATM and γH2AX" . SPARSER::COLLECTION)
     ("foci and protein" . SPARSER::COLLECTION)
-    ("γH2AX and p-ATM" . SPARSER::COLLECTION) ("siH" . SPARSER::MOLECULE)
-    ("PKcs" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("γH2AX and p-ATM" . SPARSER::COLLECTION) ("AX" . SPARSER::PROTEIN)
+    ("siH" . SPARSER::MOLECULE) ("PKcs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("CS and NBS1" . SPARSER::COLLECTION)
     ("NBS1 and DNA" . SPARSER::COLLECTION) ("CS" . SPARSER::PROTEIN)
     ("MRE11-NBS1-RAD50" . SPARSER::COLLECTION)
@@ -9234,10 +9539,12 @@
     ("phosphoserine 1918-ATM and γH2AX" . SPARSER::COLLECTION)
     ("γH2AX and pUL44" . SPARSER::COLLECTION)
     ("IE1 and IE2" . SPARSER::COLLECTION) ("IE1 or IE2" . SPARSER::COLLECTION)
-    ("a nonspecific siRNA" . SPARSER::PROTEIN)
-    ("functional ATM" . SPARSER::PROTEIN)
+    ("a nonspecific siRNA" . SPARSER::PROTEIN) ("siATM" . SPARSER::PROTEIN)
+    ("siATM-c" . SPARSER::COLLECTION) ("functional ATM" . SPARSER::PROTEIN)
     ("the first viral gene" . SPARSER::GENE)
-    ("IE2, pp65 and gB55" . SPARSER::COLLECTION) ("caffeine" . SPARSER::DRUG)
+    ("IE2, pp65 and gB55" . SPARSER::COLLECTION) ("gB" . SPARSER::PROTEIN)
+    ("ataxia telangiectasia (AT)" . SPARSER::PROTEIN)
+    ("HEL" . SPARSER::PROTEIN) ("caffeine" . SPARSER::DRUG)
     ("the infection-associated DDR" . SPARSER::PROTEIN)
     ("E2F2 and E2F3" . SPARSER::COLLECTION)
     ("ATM and E2F1" . SPARSER::COLLECTION)
@@ -9249,23 +9556,26 @@
     ("chemicals" . SPARSER::MOLECULE)
     ("a cellular transcription factor" . SPARSER::PROTEIN)
     ("E2F2 or E2F3" . SPARSER::COLLECTION) ("hpi" . SPARSER::PROTEIN)
-    ("DDRs" . SPARSER::PROTEIN) ("2F1" . SPARSER::PROTEIN)
-    ("DNA ligase IV" . SPARSER::PROTEIN) ("E7" . SPARSER::PROTEIN-FAMILY)
-    ("Ad-E7" . SPARSER::PROTEIN) ("β-gal" . SPARSER::PROTEIN)
-    ("E2Fs" . SPARSER::PROTEIN-FAMILY) ("RAD50" . SPARSER::PROTEIN)
-    ("UL123" . SPARSER::PROTEIN) ("pp65" . SPARSER::PROTEIN)
-    ("IE2" . SPARSER::PROTEIN) ("IE1" . SPARSER::PROTEIN)
+    ("IE" . SPARSER::PROTEIN) ("DDRs" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("2F1" . SPARSER::PROTEIN) ("DNA ligase IV" . SPARSER::PROTEIN)
+    ("E7" . SPARSER::PROTEIN-FAMILY) ("Ad-E7" . SPARSER::PROTEIN)
+    ("β-gal" . SPARSER::PROTEIN) ("E2Fs" . SPARSER::PROTEIN-FAMILY)
+    ("RAD50" . SPARSER::PROTEIN) ("UL123" . SPARSER::PROTEIN)
+    ("pp65" . SPARSER::PROTEIN) ("IE2" . SPARSER::PROTEIN)
+    ("IE1" . SPARSER::PROTEIN)
     ("Ataxia Telangiectasia Mutated" . SPARSER::PROTEIN)
     ("E2F3" . SPARSER::PROTEIN) ("E2F2" . SPARSER::PROTEIN)
     ("Nur
                 77 and Bcl-2"
      . SPARSER::COLLECTION)
+    ("Nur 77 primary interactive targets" . SPARSER::TARGET-PROTEIN)
     ("Bcl-2 and Bcl-B" . SPARSER::COLLECTION) ("ShRNA" . SPARSER::PROTEIN)
     ("Bcl-2 and Nur 77" . SPARSER::COLLECTION)
     ("a pro-apoptotic protein" . SPARSER::PROTEIN)
     ("TR3 or NGFI-B" . SPARSER::COLLECTION)
     ("apoptotic inducers" . SPARSER::MOLECULE)
-    ("scr-shRNA" . SPARSER::COLLECTION)
+    ("scr-shRNA" . SPARSER::COLLECTION) ("scr" . SPARSER::PROTEIN)
+    ("/lin" . SPARSER::COLLECTION)
     ("caspase 3 ( xref ) and caspase 7" . SPARSER::COLLECTION)
     ("Mcl-1 and Bak" . SPARSER::COLLECTION)
     ("the pro-apoptotic protein Bax" . SPARSER::PROTEIN)
@@ -9275,8 +9585,8 @@
     ("bFGF/EGF" . SPARSER::COLLECTION) ("BDNF" . SPARSER::PROTEIN)
     ("Trypan" . SPARSER::DRUG)
     ("osteogenic differentiation media" . SPARSER::PROTEIN)
-    ("etoposide-treated MSC" . SPARSER::PROTEIN) ("cyt" . SPARSER::MOLECULE)
-    ("sFasL" . SPARSER::PROTEIN)
+    ("etoposide-treated MSC" . SPARSER::PROTEIN) ("c" . SPARSER::PROTEIN)
+    ("cyt" . SPARSER::PROTEIN) ("sFasL" . SPARSER::PROTEIN)
     ("etoposide and staurosporine" . SPARSER::COLLECTION)
     ("staurosporine" . SPARSER::DRUG)
     ("polysaccharide" . SPARSER::POLYSACCHARIDE)
@@ -9299,7 +9609,7 @@
     ("NGFI-B" . SPARSER::PROTEIN) ("TR3" . SPARSER::PROTEIN)
     ("caspase 7" . SPARSER::PROTEIN) ("APO 2" . SPARSER::PROTEIN)
     ("soluble Fas ligand" . SPARSER::PROTEIN)
-    ("leukocyte common antigen" . SPARSER::PROTEIN)
+    ("leukocyte common antigen" . SPARSER::PROTEIN) ("CD90" . SPARSER::PROTEIN)
     ("CD105" . SPARSER::PROTEIN)
     ("APO
                         2"
@@ -9307,8 +9617,8 @@
     ("Nur 77" . SPARSER::PROTEIN)
     ("a FLT3 and multi-targeted tyrosine kinase inhibitor"
      . SPARSER::COLLECTION)
-    ("PCBP-1 and PRL-3" . SPARSER::COLLECTION)
-    ("PolyC-RNA-binding protein" . SPARSER::COLLECTION)
+    ("PRL-3 mRNA and an inverse correlation" . SPARSER::COLLECTION)
+    ("trans-factor-PCBP1" . SPARSER::COLLECTION)
     ("C-terminal Src kinase (Csk) and PTEN tumor suppressor gene"
      . SPARSER::COLLECTION)
     ("Csk" . SPARSER::PROTEIN) ("liver metastatic CRCs" . SPARSER::PROTEIN)
@@ -9318,10 +9628,12 @@
     ("Guo" . SPARSER::MOLECULE) ("hPRL" . SPARSER::PROTEIN)
     ("HDAC4 and PRL-3" . SPARSER::COLLECTION) ("IDR" . SPARSER::DERIVATIVE)
     ("derivative (IDR)" . SPARSER::DERIVATIVE) ("indirubin" . SPARSER::DRUG)
-    ("PRL-3 and FLT3" . SPARSER::COLLECTION) ("TF-1" . SPARSER::PROTEIN)
-    ("p-ERK1/2" . SPARSER::PROTEIN) ("p-Stat3" . SPARSER::COLLECTION)
+    ("PRL-3 and FLT3" . SPARSER::COLLECTION)
+    ("TF-1 and TF1-ITD" . SPARSER::COLLECTION) ("TF1" . SPARSER::PROTEIN)
+    ("TF-1" . SPARSER::PROTEIN) ("p-ERK1/2" . SPARSER::PROTEIN)
+    ("p-Stat3" . SPARSER::COLLECTION) ("c-IAP1 and XIAP" . SPARSER::COLLECTION)
     ("Bcl-xL, Bcl-2 and Survivin" . SPARSER::COLLECTION)
-    ("c-IAP1" . SPARSER::COLLECTION)
+    ("c-IAP1" . SPARSER::PROTEIN-PAIR)
     ("specifically knockdown PRL-3" . SPARSER::PROTEIN)
     ("p-Stat5" . SPARSER::COLLECTION)
     ("ORC1L, MND1, ZNF85 and LMO4" . SPARSER::COLLECTION)
@@ -9338,21 +9650,19 @@
     ("flavopiridol" . SPARSER::DRUG)
     ("histone acetyltransferase (HAT) and histone deacetylase (HDAC)"
      . SPARSER::COLLECTION)
-    ("acetyltransferase (HAT)" . SPARSER::PROTEIN) ("HAT" . SPARSER::PROTEIN)
-    ("acetyltransferase" . SPARSER::PROTEIN)
-    ("HDAC4 and SAHA" . SPARSER::COLLECTION)
+    ("HAT" . SPARSER::PROTEIN) ("HDAC4 and SAHA" . SPARSER::COLLECTION)
     ("transducers and activators" . SPARSER::COLLECTION)
-    ("ABT" . SPARSER::MOLECULE) ("Histone Deacetylase" . SPARSER::PROTEIN)
-    ("FLT-3" . SPARSER::PROTEIN) ("ABT-737" . SPARSER::DRUG)
-    ("PCBP-1" . SPARSER::PROTEIN) ("PCBP1" . SPARSER::PROTEIN)
-    ("MG-132" . SPARSER::DRUG) ("DLD-1" . SPARSER::PROTEIN)
-    ("IAP1" . SPARSER::PROTEIN) ("Stat5" . SPARSER::PROTEIN)
-    ("PRL3" . SPARSER::PROTEIN) ("LMO4" . SPARSER::PROTEIN)
-    ("ZNF85" . SPARSER::PROTEIN) ("MND1" . SPARSER::PROTEIN)
-    ("ORC1L" . SPARSER::PROTEIN)
+    ("ABT" . SPARSER::PROTEIN) ("Histone Deacetylase" . SPARSER::PROTEIN)
+    ("2 +" . SPARSER::PROTEIN) ("FLT-3" . SPARSER::PROTEIN)
+    ("ABT-737" . SPARSER::DRUG) ("PCBP1" . SPARSER::PROTEIN)
+    ("MG-132" . SPARSER::DRUG) ("IAP1" . SPARSER::PROTEIN)
+    ("Stat5" . SPARSER::PROTEIN) ("PRL3" . SPARSER::PROTEIN)
+    ("LMO4" . SPARSER::PROTEIN) ("ZNF85" . SPARSER::PROTEIN)
+    ("MND1" . SPARSER::PROTEIN) ("ORC1L" . SPARSER::PROTEIN)
     ("Phosphatase of regenerating liver-3" . SPARSER::PROTEIN)
     ("LAQ824" . SPARSER::DRUG)
     ("Suberoylanilide hydroxamic acid" . SPARSER::DRUG)
+    ("histone acetyltransferase" . SPARSER::PROTEIN)
     ("fms-like tyrosine kinase 3" . SPARSER::PROTEIN)
     ("Mcl-1 protein" . SPARSER::PROTEIN) ("PRL-3" . SPARSER::PROTEIN)
     ("PTP4A3" . SPARSER::PROTEIN) ("a pivotal antagonist" . SPARSER::MOLECULE)
@@ -9362,66 +9672,78 @@
     ("at least one mismatch repair protein" . SPARSER::PROTEIN)
     ("MSS" . SPARSER::PROTEIN)
     ("the quintessential non-canonical Wnt ligand" . SPARSER::MOLECULE)
-    ("Wnt5a" . SPARSER::PROTEIN) ("4–1" . SPARSER::PROTEIN)
-    ("mismatch repair protein" . SPARSER::PROTEIN) ("C-3" . SPARSER::PROTEIN)
-    ("CC-3" . SPARSER::PROTEIN) ("β -catenin" . SPARSER::PROTEIN)
-    ("Wnt5" . SPARSER::PROTEIN)
+    ("these distinct arms" . SPARSER::PROTEIN) ("4–1" . SPARSER::PROTEIN)
+    ("mismatch repair protein" . SPARSER::PROTEIN) ("TCA-3" . SPARSER::PROTEIN)
+    ("β -catenin" . SPARSER::PROTEIN) ("Wnt5a" . SPARSER::PROTEIN)
     ("EGFR, ALK, or BRAF or amplification/overexpression"
      . SPARSER::COLLECTION)
     ("BRAF or amplification/overexpression" . SPARSER::COLLECTION)
     ("ALK" . SPARSER::PROTEIN) ("LIF and IL6" . SPARSER::COLLECTION)
-    ("gp130-STAT3" . SPARSER::COLLECTION) ("PDAC—we" . SPARSER::MOLECULE)
-    ("moderately-differentiated PDAC" . SPARSER::MOLECULE)
+    ("gp130-STAT3" . SPARSER::COLLECTION)
+    ("moderately-differentiated PDAC" . SPARSER::PROTEIN)
     ("moderately-differentiated and poorly-differentiated PDAC"
-     . SPARSER::MOLECULE)
+     . SPARSER::PROTEIN)
     ("shp" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("fully developed PDAC" . SPARSER::MOLECULE)
+    ("fully developed PDAC" . SPARSER::PROTEIN)
     ("STAT3 and ADM" . SPARSER::COLLECTION)
     ("only sporadic foci" . SPARSER::PROTEIN)
-    ("control mice showed extensive ADM" . SPARSER::PROTEIN)
-    ("invasive PDAC" . SPARSER::MOLECULE)
+    ("invasive PDAC" . SPARSER::PROTEIN)
     ("a conditional STAT3-knockout allele" . SPARSER::ALLELE)
-    ("fully developed invasive PDAC" . SPARSER::MOLECULE)
-    ("LSL-KRAS" . SPARSER::COLLECTION) ("Pdx1-Cre" . SPARSER::COLLECTION)
-    ("LSL" . SPARSER::PROTEIN) ("IL6/LIF" . SPARSER::COLLECTION)
-    ("PDACs" . SPARSER::MOLECULE) ("IL6 and LIF" . SPARSER::COLLECTION)
+    ("fully developed invasive PDAC" . SPARSER::PROTEIN)
+    ("ADM and PanINs" . SPARSER::COLLECTION)
+    ("ADM and PanIN" . SPARSER::COLLECTION) ("LSL-KRAS" . SPARSER::COLLECTION)
+    ("Pdx1-Cre" . SPARSER::COLLECTION) ("LSL" . SPARSER::PROTEIN)
+    ("IL6/LIF" . SPARSER::COLLECTION) ("IL6 and LIF" . SPARSER::COLLECTION)
     ("IL6R and LIFR/CD118" . SPARSER::COLLECTION) ("LIFR" . SPARSER::PROTEIN)
     ("a monoclonal neutralizing antibody" . SPARSER::ANTIBODY)
     ("EGFR, MEK1/2, and IGF1R" . SPARSER::COLLECTION)
     ("oncostatin M, and ciliary neurotrophic factor" . SPARSER::COLLECTION)
     ("an anti-apoptotic protein and an established STAT3 target ( xref )"
      . SPARSER::COLLECTION)
-    ("BclXL" . SPARSER::PROTEIN) ("JAK2/STAT3" . SPARSER::COLLECTION)
+    ("BclXL" . SPARSER::PROTEIN) ("Chip" . SPARSER::PROTEIN)
+    ("JAK2/STAT3" . SPARSER::COLLECTION)
     ("dominant-negative STAT3" . SPARSER::PROTEIN)
     ("interferon and other inflammatory cytokines ( xref )"
      . SPARSER::COLLECTION)
     ("other inflammatory cytokines" . SPARSER::PROTEIN)
-    ("src" . SPARSER::PROTEIN) ("p53 , and SMAD4" . SPARSER::COLLECTION)
+    ("src" . SPARSER::PROTEIN)
+    ("cytokine and growth factor receptors" . SPARSER::COLLECTION)
+    ("p53 , and SMAD4" . SPARSER::COLLECTION)
     ("Ink4a/Arf" . SPARSER::COLLECTION) ("Arf" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("gp130 and phospho-STAT3" . SPARSER::COLLECTION)
-    ("ADM" . SPARSER::PROTEIN) ("KRAS-driven PDAC" . SPARSER::MOLECULE)
+    ("ADM" . SPARSER::PROTEIN) ("KRAS-driven PDAC" . SPARSER::PROTEIN)
     ("IL6/LIF-gp130" . SPARSER::COLLECTION) ("LIF" . SPARSER::PROTEIN)
-    ("PDAC" . SPARSER::MOLECULE) ("Gp130" . SPARSER::PROTEIN)
-    ("IL6R" . SPARSER::PROTEIN) ("MEK1/2" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("PDAC" . SPARSER::PROTEIN) ("IL6 receptor" . SPARSER::PROTEIN)
+    ("Gp130" . SPARSER::PROTEIN) ("IL6R" . SPARSER::PROTEIN)
+    ("MEK1/2" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("cytokine receptor" . SPARSER::PROTEIN)
     ("membrane glycoprotein 130" . SPARSER::PROTEIN)
     ("IL6ST" . SPARSER::PROTEIN)
     ("interleukin 6 signal transducer" . SPARSER::PROTEIN)
     ("AZ960" . SPARSER::DRUG) ("Pdx1" . SPARSER::PROTEIN)
     ("Ink4a" . SPARSER::PROTEIN) ("MP" . SPARSER::PROTEIN)
-    ("Medicine" . SPARSER::DRUG)
     ("prognostic or predictive biomarkers" . SPARSER::MOLECULE)
     ("previously reported alleles" . SPARSER::ALLELE)
     ("oxaliplatin" . SPARSER::DRUG)
+    ("traditional clinical-pathologic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("PFS" . SPARSER::PROTEIN)
     ("Baseline clinicopathologic traits" . SPARSER::PROTEIN)
-    ("resectable EAC" . SPARSER::PROTEIN)
+    ("resectable EAC" . SPARSER::PROTEIN) ("SNP and pCR" . SPARSER::COLLECTION)
     ("the XRCC1 gene (Arg399Gln) and XPD gene (Lys751Gln)"
      . SPARSER::COLLECTION)
     ("DSBR" . SPARSER::PROTEIN) ("XRCC1 (BER)" . SPARSER::PROTEIN)
-    ("NER" . SPARSER::PROTEIN) ("a 2-" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("ERCC1 and XPD" . SPARSER::COLLECTION) ("NER" . SPARSER::PROTEIN)
+    ("a 2-" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("a rational step" . SPARSER::PROTEIN)
     ("other clinicopathologic traits" . SPARSER::PROTEIN)
     ("EAC" . SPARSER::PROTEIN) ("larger cohorts" . SPARSER::MOLECULE)
     ("interventional trial cohort" . SPARSER::MOLECULE)
-    ("Group" . SPARSER::MOLECULE)
+    ("the base-excision repair SNP, XRCC1 Arg399Gln, and 4 other SNPs"
+     . SPARSER::COLLECTION)
+    ("XPD" . SPARSER::PROTEIN)
+    ("Eighty-one eligible treatment-naïve" . SPARSER::PROTEIN)
+    ("a secondary aim" . SPARSER::PROTEIN) ("Group" . SPARSER::MOLECULE)
+    ("pCR" . SPARSER::PROTEIN)
     ("a histologically homogeneous clinical trial cohort" . SPARSER::MOLECULE)
     ("X-ray repair complementing defective repair in Chinese hamster cells 2"
      . SPARSER::PROTEIN)
@@ -9432,29 +9754,38 @@
     ("complementing defective" . SPARSER::PROTEIN)
     ("X-ray repair" . SPARSER::PROTEIN) ("M 1a" . SPARSER::MOLECULE)
     ("N 1" . SPARSER::PROTEIN) ("XRCC2" . SPARSER::PROTEIN)
-    ("XRCC1" . SPARSER::PROTEIN)
+    ("XRCC1" . SPARSER::PROTEIN) ("ICC and easier" . SPARSER::COLLECTION)
     ("the vascular smooth muscle" . SPARSER::PROTEIN)
     ("Ano1 and Kit-positive" . SPARSER::COLLECTION)
+    ("In contrast Ano1-immunoreactive structures representing ICC"
+     . SPARSER::PROTEIN)
     ("non obstructive colon cancer" . SPARSER::PROTEIN)
-    ("Sigma" . SPARSER::PROTEIN-FAMILY) ("transporters" . SPARSER::PROTEIN)
+    ("Sigma" . SPARSER::PROTEIN) ("BX" . SPARSER::PROTEIN)
+    ("transporters" . SPARSER::PROTEIN)
     ("Ano1 and Kit-immunoreactivity" . SPARSER::COLLECTION)
-    ("antisera" . SPARSER::PROTEIN) ("DOG1 or TMEM16A" . SPARSER::COLLECTION)
-    ("Ano1" . SPARSER::PROTEIN) ("Aims" . SPARSER::PROTEIN)
+    ("significantly fewer Ano1-positive ICC" . SPARSER::PROTEIN)
+    ("antisera" . SPARSER::PROTEIN) ("Kit-positive ICC" . SPARSER::PROTEIN)
+    ("normal ICC" . SPARSER::PROTEIN) ("DOG1 or TMEM16A" . SPARSER::COLLECTION)
+    ("ICC" . SPARSER::PROTEIN) ("Aims" . SPARSER::PROTEIN)
     ("FLJ10261" . SPARSER::PROTEIN) ("NKCC1" . SPARSER::PROTEIN)
     ("K +" . SPARSER::MOLECULE) ("stem cell factor" . SPARSER::PROTEIN)
     ("TMEM16A" . SPARSER::PROTEIN) ("DOG1" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Ano1" . SPARSER::PROTEIN) ("TIG, ANK and IQ" . SPARSER::COLLECTION)
     ("Runx2 and peroxisome" . SPARSER::COLLECTION)
     ("peroxisome" . SPARSER::PROTEIN) ("ANK" . SPARSER::PROTEIN)
     ("angiomotin" . SPARSER::PROTEIN) ("Cbfa1/Runx2" . SPARSER::COLLECTION)
     ("CTGF, IGFBP3, ITGB2, Birc5/Survivin, Gli2, and Axl"
      . SPARSER::COLLECTION)
     ("Axl" . SPARSER::PROTEIN) ("LATS" . SPARSER::PROTEIN)
+    ("WWTR1 and YAP" . SPARSER::COLLECTION)
     ("element binding protein (CREB)" . SPARSER::PROTEIN)
-    ("CaMK" . SPARSER::HUMAN-PROTEIN-FAMILY) ("-receptor" . SPARSER::RECEPTOR)
-    ("calmodulin" . SPARSER::PROTEIN) ("CAMTA1 or WWTR1" . SPARSER::COLLECTION)
-    ("Exon" . SPARSER::PROTEIN) ("RP11-2G17" . SPARSER::COLLECTION)
+    ("CaMK" . SPARSER::PROTEIN) ("-receptor" . SPARSER::COLLECTION)
+    ("TIG" . SPARSER::PROTEIN) ("calmodulin" . SPARSER::PROTEIN)
+    ("CAMTA1 or WWTR1" . SPARSER::COLLECTION) ("Exon" . SPARSER::PROTEIN)
     ("the largest genes" . SPARSER::GENE)
+    ("EH, E-AS or epithelioid" . SPARSER::COLLECTION)
     ("unsuccessful FISH" . SPARSER::PROTEIN)
+    ("the skeletal EH" . SPARSER::PROTEIN) ("EH" . SPARSER::PROTEIN)
     ("CAMTA1 and WWTR1" . SPARSER::COLLECTION)
     ("WWTR1-CAMTA1" . SPARSER::COLLECTION) ("PPARγ" . SPARSER::PROTEIN)
     ("Pro-Pro" . SPARSER::MOLECULE) ("PAX3" . SPARSER::PROTEIN)
@@ -9465,6 +9796,7 @@
     ("G17" . SPARSER::PROTEIN) ("RP11" . SPARSER::PROTEIN)
     ("Fli1" . SPARSER::PROTEIN) ("CAMTA1" . SPARSER::PROTEIN)
     ("p36" . SPARSER::PROTEIN) ("a generic TCF/LEF" . SPARSER::COLLECTION)
+    ("melanoma and colon cancer" . SPARSER::COLLECTION)
     ("3D ( xref ) or ROCK" . SPARSER::COLLECTION)
     ("TARGET" . SPARSER::TARGET-PROTEIN) ("ON" . SPARSER::PROTEIN)
     ("the Rho-associated kinase ROCK" . SPARSER::PROTEIN-FAMILY)
@@ -9472,8 +9804,9 @@
     ("matrigel (basement membrane) or a collagen/matrigel mixture"
      . SPARSER::COLLECTION)
     ("collagen/matrigel" . SPARSER::COLLECTION)
-    ("dermal collagen" . SPARSER::PROTEIN)
+    ("dermal collagen" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("beta-catenin and MITF" . SPARSER::COLLECTION)
+    ("a beta-catenin" . SPARSER::COLLECTION)
     ("matrix-metalloproteinases" . SPARSER::COLLECTION)
     ("MMP-7 (Matrilysin) and S100A4" . SPARSER::COLLECTION)
     ("Matrilysin" . SPARSER::PROTEIN)
@@ -9481,9 +9814,9 @@
     ("MITF" . SPARSER::PROTEIN) ("beta-Catenin" . SPARSER::PROTEIN)
     ("GM6001" . SPARSER::DRUG) ("For 3" . SPARSER::PROTEIN)
     ("MLC2" . SPARSER::PROTEIN) ("beta-tubulin" . SPARSER::PROTEIN)
-    ("C-14" . SPARSER::PROTEIN) ("E-5" . SPARSER::PROTEIN)
-    ("WNT5A" . SPARSER::PROTEIN) ("Wnt3a" . SPARSER::PROTEIN)
-    ("DIA1" . SPARSER::PROTEIN) ("GSK-3" . SPARSER::PROTEIN)
+    ("bcat1" . SPARSER::PROTEIN) ("WNT5A" . SPARSER::PROTEIN)
+    ("Wnt3a" . SPARSER::PROTEIN) ("DIA1" . SPARSER::PROTEIN)
+    ("GSK-3" . SPARSER::PROTEIN) ("a beta" . SPARSER::PROTEIN)
     ("S100A4" . SPARSER::PROTEIN) ("MMP-7" . SPARSER::PROTEIN)
     ("EphB4" . SPARSER::PROTEIN) ("MT1-MMP" . SPARSER::PROTEIN)
     ("beta-catenin" . SPARSER::PROTEIN) ("formins" . SPARSER::PROTEIN)
@@ -9496,41 +9829,42 @@
     ("FMNL1 and FMNL3" . SPARSER::COLLECTION)
     ("ROCK2 and RhoC" . SPARSER::COLLECTION)
     ("Neither ROCK1 nor ROCK2" . SPARSER::COLLECTION)
-    ("ROCK2-" . SPARSER::PROTEIN) ("RFP-ROCK2" . SPARSER::COLLECTION)
-    ("RFP" . SPARSER::PROTEIN) ("GFP-ROCK1" . SPARSER::COLLECTION)
-    ("ROCK1/ROCK2" . SPARSER::COLLECTION)
+    ("ROCK2-" . SPARSER::PROTEIN) ("RhoA or ROCK2" . SPARSER::COLLECTION)
+    ("RFP-ROCK2" . SPARSER::COLLECTION) ("RFP" . SPARSER::PROTEIN)
+    ("GFP-ROCK1" . SPARSER::COLLECTION) ("ROCK1/ROCK2" . SPARSER::COLLECTION)
     ("Y-27632 or another ROCK inhibitor HA-1077 ( xref and not depicted)"
      . SPARSER::COLLECTION)
     ("ROCK1 or ROCK2" . SPARSER::COLLECTION)
     ("The Rho-associated protein kinases ROCK1 and ROCK2"
      . SPARSER::COLLECTION)
-    ("FLIM" . SPARSER::PROTEIN-FAMILY) ("Rac1 and RhoA" . SPARSER::COLLECTION)
-    ("a cytoskeletal protein" . SPARSER::PROTEIN)
+    ("FLIM" . SPARSER::PROTEIN) ("Rac1 and RhoA" . SPARSER::COLLECTION)
+    ("mix" . SPARSER::PROTEIN) ("a cytoskeletal protein" . SPARSER::PROTEIN)
     ("Cortactin" . SPARSER::PROTEIN)
     ("RhoA-depleted cells underwent chemotaxis" . SPARSER::PROTEIN)
+    ("RhoA-" . SPARSER::PROTEIN) ("RhoA and RhoB" . SPARSER::COLLECTION)
     ("DU145 and LnCAP" . SPARSER::COLLECTION) ("LnCAP" . SPARSER::PROTEIN)
+    ("RhoA, RhoB, or RhoC" . SPARSER::COLLECTION)
+    ("RhoA or RhoC" . SPARSER::COLLECTION)
     ("targets—ROCKs and FMNL3" . SPARSER::COLLECTION)
-    ("ROCKs" . SPARSER::PROTEIN-FAMILY)
+    ("ROCKs" . SPARSER::PROTEIN-FAMILY) ("RhoA or RhoB" . SPARSER::COLLECTION)
     ("the Rho-associated kinases ROCK1 and ROCK2" . SPARSER::COLLECTION)
-    ("RhoGDI" . SPARSER::PROTEIN) ("RhoB" . SPARSER::PROTEIN)
+    ("RhoGDI" . SPARSER::PROTEIN)
+    ("RhoA, RhoB, and RhoC" . SPARSER::COLLECTION) ("RhoB" . SPARSER::PROTEIN)
     ("formin" . SPARSER::PROTEIN) ("ROCK1 and ROCK2" . SPARSER::COLLECTION)
-    ("RhoC" . SPARSER::PROTEIN) ("3-2" . SPARSER::PROTEIN)
-    ("3-1" . SPARSER::PROTEIN) ("1-1" . SPARSER::PROTEIN)
-    ("K-23" . SPARSER::PROTEIN)
+    ("RhoA and RhoC" . SPARSER::COLLECTION) ("RhoC" . SPARSER::PROTEIN)
+    ("3-2" . SPARSER::PROTEIN)
     ("extracellular signal–regulated kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("K-18" . SPARSER::PROTEIN) ("B14" . SPARSER::PROTEIN)
-    ("C-16" . SPARSER::PROTEIN) ("FMNL1" . SPARSER::PROTEIN)
+    ("B14" . SPARSER::PROTEIN) ("FMNL1" . SPARSER::PROTEIN)
     ("3 D" . SPARSER::PROTEIN-FAMILY) ("Y-27632" . SPARSER::MOLECULE)
-    ("Cdc42" . SPARSER::PROTEIN) ("1 D" . SPARSER::PROTEIN)
-    ("1 A" . SPARSER::PROTEIN) ("1 B" . SPARSER::PROTEIN)
+    ("Cdc42" . SPARSER::PROTEIN) ("2 B" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("1 D" . SPARSER::PROTEIN) ("1 A" . SPARSER::PROTEIN)
     ("FMNL2" . SPARSER::PROTEIN) ("Rho GTPase" . SPARSER::PROTEIN)
     ("Rho family" . SPARSER::PROTEIN) ("FMNL3" . SPARSER::PROTEIN)
     ("ROCK2" . SPARSER::PROTEIN) ("ROCK1" . SPARSER::PROTEIN)
     ("versatilely co-regulate NF-κB" . SPARSER::PROTEIN)
-    ("CSF2 and YAP promoters" . SPARSER::COLLECTION)
-    ("IL-8, CSF2 and YAP promoters" . SPARSER::COLLECTION)
     ("p63 and REL" . SPARSER::COLLECTION)
-    ("laminins" . SPARSER::PROTEIN-FAMILY)
+    ("IL-8, CSF2 and YAP" . SPARSER::COLLECTION)
+    ("laminins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Proinflammatory cytokines" . SPARSER::PROTEIN)
     ("neutrophils and macrophages" . SPARSER::COLLECTION)
     ("The inflammatory cytokines" . SPARSER::PROTEIN)
@@ -9541,14 +9875,16 @@
     ("CIP1 and PUMA" . SPARSER::COLLECTION)
     ("TP53 and p73" . SPARSER::COLLECTION)
     ("NOXA and PUMA" . SPARSER::COLLECTION) ("NOXA" . SPARSER::PROTEIN)
-    ("asp" . SPARSER::AMINO-ACID) ("c-REL and cytokine" . SPARSER::COLLECTION)
+    ("asp" . SPARSER::PROTEIN) ("c-REL and cytokine" . SPARSER::COLLECTION)
     ("c-REL and RELA" . SPARSER::COLLECTION)
     ("REL and TP53" . SPARSER::COLLECTION)
     ("transcriptomes" . SPARSER::PROTEIN)
-    ("cytokeratin-K14" . SPARSER::COLLECTION) ("CK" . SPARSER::PROTEIN)
-    ("cytokeratin" . SPARSER::PROTEIN-FAMILY)
+    ("cytokeratin-K14" . SPARSER::COLLECTION)
+    ("CK" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("basilar nuclear" . SPARSER::PROTEIN)
     ("relatively higher ΔNp63 andintermediate Ki67" . SPARSER::PROTEIN)
     ("RELA and ΔNp63" . SPARSER::COLLECTION)
+    ("profound impact" . SPARSER::PROTEIN)
     ("TNF-α and ΔNp63-induced" . SPARSER::COLLECTION)
     ("p63, c-REL and RELA" . SPARSER::COLLECTION)
     ("classical NF-κB inducer" . SPARSER::MOLECULE)
@@ -9558,7 +9894,8 @@
     ("p63 and TNF-α" . SPARSER::COLLECTION)
     ("NF-κB, TP53, p21Cip1 or IL-8" . SPARSER::COLLECTION)
     ("c-REL and/or RELA" . SPARSER::COLLECTION)
-    ("distinct p63" . SPARSER::PROTEIN) ("RELA and p63" . SPARSER::COLLECTION)
+    ("distinct p63" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("RELA and p63" . SPARSER::COLLECTION) ("MBs" . SPARSER::PROTEIN)
     ("c-REL and/or RELA protein" . SPARSER::COLLECTION)
     ("p63, c-REL and/or RELA protein" . SPARSER::COLLECTION)
     ("p63 and NF-κB" . SPARSER::COLLECTION) ("p65/cREL" . SPARSER::COLLECTION)
@@ -9566,8 +9903,8 @@
     ("RELA/p65" . SPARSER::COLLECTION) ("Antibodies" . SPARSER::ANTIBODY)
     ("IL-8 , CSF2 , PDGFA , and YAP1" . SPARSER::COLLECTION)
     ("IPA" . SPARSER::MOLECULE) ("cytokine and NF-κB" . SPARSER::COLLECTION)
-    ("the proximal promoters" . SPARSER::PROMOTER) ("Yan" . SPARSER::PROTEIN)
-    ("Bin" . SPARSER::PROTEIN)
+    ("NF" . SPARSER::PROTEIN) ("the proximal promoters" . SPARSER::PROMOTER)
+    ("Yan" . SPARSER::PROTEIN) ("Bin" . SPARSER::PROTEIN)
     ("NF-κB as well as TP53 target genes" . SPARSER::COLLECTION)
     ("wt and mtTP53" . SPARSER::COLLECTION)
     ("CSF2, IL6 , and IL8" . SPARSER::COLLECTION)
@@ -9575,7 +9912,7 @@
     ("ITGA6, ITGB4 and ICAM1" . SPARSER::COLLECTION)
     ("PDGFA" . SPARSER::PROTEIN) ("NF-κB and TP53" . SPARSER::COLLECTION)
     ("REL/NF-κB" . SPARSER::COLLECTION) ("TP53/p63" . SPARSER::COLLECTION)
-    ("a classical TP53 target gene" . SPARSER::GENE)
+    ("a classical TP53 target gene" . SPARSER::PROTEIN)
     ("RELA and c-REL" . SPARSER::COLLECTION)
     ("NF-κB/REL" . SPARSER::COLLECTION) ("TA and ΔNp63" . SPARSER::COLLECTION)
     ("TA" . SPARSER::PROTEIN) ("NF-κB/RELs" . SPARSER::COLLECTION)
@@ -9599,8 +9936,9 @@
     ("ETS:PARP1" . SPARSER::BIO-COMPLEX)
     ("their next generation PARP inhibitor" . SPARSER::INHIBITOR)
     ("Iniparib" . SPARSER::DRUG) ("regulatory co-factors" . SPARSER::MOLECULE)
-    ("ETS-PARP1" . SPARSER::COLLECTION)
+    ("ETS-PARP1" . SPARSER::COLLECTION) ("CML" . SPARSER::PROTEIN)
     ("XRCC4 or XRCC3" . SPARSER::COLLECTION) ("−3 and p" . SPARSER::COLLECTION)
+    ("LACZ and EZH2" . SPARSER::COLLECTION)
     ("ERG and ETV1" . SPARSER::COLLECTION)
     ("EZH2 , DNMT3a , ZNF100 , PBX1 , ZNF618, PLA1A and PLAT"
      . SPARSER::COLLECTION)
@@ -9608,9 +9946,12 @@
     ("MDA" . SPARSER::DRUG)
     ("alanine aminotransferase (ALT) and aspartate aminotransferase (AST) ( xref )"
      . SPARSER::COLLECTION)
-    ("CAM" . SPARSER::PROTEIN)
+    ("aspartate aminotransferase (AST)" . SPARSER::PROTEIN)
+    ("LACZ" . SPARSER::PROTEIN) ("PC3-ERG" . SPARSER::COLLECTION)
+    ("PC3-LACZ" . SPARSER::COLLECTION) ("CAM" . SPARSER::PROTEIN)
     ("Neither Olaparib nor NU7026" . SPARSER::COLLECTION)
     ("Olaparib and NU7026" . SPARSER::COLLECTION)
+    ("PC3 and RWPE" . SPARSER::COLLECTION)
     ("PARP1 or DNA-PKcs siRNA ( xref ) or small molecule inhibitors"
      . SPARSER::COLLECTION)
     ("ATM or XRCC4" . SPARSER::COLLECTION)
@@ -9621,16 +9962,17 @@
     ("siRNA or NU7026" . SPARSER::COLLECTION) ("RWPE" . SPARSER::PROTEIN)
     ("several progression-associated genes" . SPARSER::GENE)
     ("RWPE-ETV1" . SPARSER::PROTEIN-PAIR) ("Olaparib" . SPARSER::DRUG)
-    ("Map (OCM)" . SPARSER::PROTEIN) ("Map" . SPARSER::PROTEIN)
-    ("DNA-PKcs or PARP1" . SPARSER::COLLECTION)
+    ("Map (OCM)" . SPARSER::PROTEIN) ("OCM" . SPARSER::PROTEIN)
+    ("Map" . SPARSER::PROTEIN) ("DNA-PKcs or PARP1" . SPARSER::COLLECTION)
     ("ERG-transcriptome" . SPARSER::PROTEIN-PAIR)
     ("XRCC4 and DNA Ligase IV" . SPARSER::COLLECTION)
     ("DNA-PKcs, Ku70 and Ku80" . SPARSER::COLLECTION)
     ("XRCC4/DNA Ligase IV" . SPARSER::COLLECTION)
-    ("ATM and ATR" . SPARSER::COLLECTION)
+    ("multi-step" . SPARSER::COLLECTION) ("ATM and ATR" . SPARSER::COLLECTION)
     ("both DNA-PKcs (p = 1.99 × 10 −3 ) and PARP1 (p = 2.37 × 10 −3 )"
      . SPARSER::COLLECTION)
     ("an ERG:PARP1 complex and an ERG:DNA-PKcs complex" . SPARSER::COLLECTION)
+    ("ERG siRNA ( xref and xref ) and ChIP" . SPARSER::COLLECTION)
     ("Ku70, Ku80 and PARP1" . SPARSER::COLLECTION)
     ("FKBP5 , PSA and TMPRSS2" . SPARSER::COLLECTION)
     ("DNA-PKcs and PARP1" . SPARSER::COLLECTION)
@@ -9642,6 +9984,7 @@
     ("ERG, DNA-PKcs, Ku70, Ku80 and PARP1" . SPARSER::COLLECTION)
     ("flag" . SPARSER::PROTEIN-FAMILY)
     ("DNA-PKcs, Ku70, Ku80 and PARP1" . SPARSER::COLLECTION)
+    ("ERG-IP" . SPARSER::COLLECTION)
     ("ATR or XRCC4 and ERG" . SPARSER::COLLECTION)
     ("XRCC4 and ERG" . SPARSER::COLLECTION)
     ("ERG and either PARP1 or DNA-PKcs" . SPARSER::COLLECTION)
@@ -9668,15 +10011,16 @@
     ("ETV4 ( xref ) and ETV5 ( xref )" . SPARSER::COLLECTION)
     ("ETV1 ( xref ), ETV4 ( xref ) and ETV5 ( xref )" . SPARSER::COLLECTION)
     ("PARP1 and DNA-PKcs" . SPARSER::COLLECTION)
-    ("the enzyme poly(ADP-ribose) polymerase 1 (PARP1) and the catalytic subunit of DNA protein kinase (DNA-PKcs)"
+    ("the enzyme poly(ADP-ribose) polymerase 1 (PARP1) and the catalytic subunit"
      . SPARSER::COLLECTION)
     ("TMPRSS2:ERG" . SPARSER::BIO-COMPLEX) ("ERG" . SPARSER::PROTEIN)
     ("DNA repair enzyme" . SPARSER::PROTEIN) ("ZNF618" . SPARSER::PROTEIN)
     ("PBX1" . SPARSER::PROTEIN) ("ZNF100" . SPARSER::PROTEIN)
     ("DNMT3a" . SPARSER::PROTEIN) ("DNA-Pkcs" . SPARSER::PROTEIN)
     ("SLC45A3" . SPARSER::PROTEIN) ("EZH2" . SPARSER::PROTEIN)
-    ("KIAA0066" . SPARSER::PROTEIN) ("SPI1" . SPARSER::PROTEIN)
-    ("ETS1" . SPARSER::PROTEIN) ("ETS family" . SPARSER::PROTEIN)
+    ("KIAA0066" . SPARSER::PROTEIN) ("PLA1A" . SPARSER::PROTEIN)
+    ("SPI1" . SPARSER::PROTEIN) ("ETS1" . SPARSER::PROTEIN)
+    ("ETS family" . SPARSER::PROTEIN) ("IP-MS" . SPARSER::PROTEIN)
     ("XRCC4" . SPARSER::PROTEIN) ("Ku80" . SPARSER::PROTEIN)
     ("ETV5" . SPARSER::PROTEIN) ("ETV4" . SPARSER::PROTEIN)
     ("ETV1" . SPARSER::PROTEIN) ("PARP1" . SPARSER::PROTEIN)
@@ -9711,16 +10055,17 @@
     ("Hematoxylin" . SPARSER::MOLECULE)
     ("alanine aminotransferase (ALT) and aspartate aminotransferase (AST)"
      . SPARSER::COLLECTION)
-    ("aminotransferase (AST)" . SPARSER::PROTEIN)
     ("aminotransferase (ALT)" . SPARSER::PROTEIN)
     ("aminotransferase" . SPARSER::PROTEIN)
     ("Albumin-Cre" . SPARSER::COLLECTION) ("Albumin" . SPARSER::PROTEIN)
-    ("Ras-Erk" . SPARSER::COLLECTION) ("v-Src and c-Src" . SPARSER::COLLECTION)
+    ("hep" . SPARSER::PROTEIN) ("Ras-Erk" . SPARSER::COLLECTION)
+    ("v-Src and c-Src" . SPARSER::COLLECTION)
     ("PTPN11/Shp2" . SPARSER::COLLECTION)
     ("Shp2 and Stat3" . SPARSER::COLLECTION) ("GAG-3" . SPARSER::PROTEIN)
-    ("T-3" . SPARSER::PROTEIN) ("Gab1" . SPARSER::PROTEIN)
-    ("TNF α" . SPARSER::PROTEIN) ("Jnk1/2" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Iκ Bα" . SPARSER::PROTEIN) ("IFNγ" . SPARSER::PROTEIN)
+    ("Gab1" . SPARSER::PROTEIN) ("TNF α" . SPARSER::PROTEIN)
+    ("Jnk1/2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Iκ Bα" . SPARSER::PROTEIN)
+    ("IFNγ" . SPARSER::PROTEIN)
+    ("aspartate aminotransferase" . SPARSER::PROTEIN)
     ("Autosomal dominant" . SPARSER::PROTEIN)
     ("Src-homology" . SPARSER::PROTEIN) ("v-Src" . SPARSER::PROTEIN)
     ("anti-oncogenes" . SPARSER::PROTEIN) ("Shp2" . SPARSER::PROTEIN)
@@ -9732,8 +10077,8 @@
     ("LRP6 or both receptors" . SPARSER::COLLECTION)
     ("LRP5, LRP6 or both receptors" . SPARSER::COLLECTION)
     ("canonical Wnt" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Wnt7b and Wnt10b" . SPARSER::COLLECTION) ("Wnt7b" . SPARSER::PROTEIN)
-    ("Cai" . SPARSER::DRUG) ("Rb, p53 or Ras" . SPARSER::COLLECTION)
+    ("Wnt7b and Wnt10b" . SPARSER::COLLECTION)
+    ("Rb, p53 or Ras" . SPARSER::COLLECTION)
     ("the Wnt activated sarcoma cell lines" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Cyclin dependent kinase 4 (CDK4) or dominant negative p53 (dnp53)"
      . SPARSER::COLLECTION)
@@ -9741,10 +10086,10 @@
     ("Rb and p53" . SPARSER::COLLECTION)
     ("alkaline phosphatase (ALPL) and alizarin" . SPARSER::COLLECTION)
     ("alizarin" . SPARSER::DRUG) ("ALPL" . SPARSER::PROTEIN)
-    ("-CDC25A" . SPARSER::COLLECTION)
+    ("TE" . SPARSER::PROTEIN) ("-CDC25A" . SPARSER::COLLECTION)
     ("c-MYC and CDC25A" . SPARSER::COLLECTION)
     ("c-MYC or CyclinD1" . SPARSER::COLLECTION)
-    ("CDC25A and c-MYC" . SPARSER::COLLECTION)
+    ("CDC25A and c-MYC" . SPARSER::COLLECTION) ("HT1080" . SPARSER::PROTEIN)
     ("CDC25B and CDC25C" . SPARSER::COLLECTION)
     ("DKK1, FRP, and shRNA" . SPARSER::COLLECTION)
     ("representative Wnt" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -9755,16 +10100,16 @@
     ("CDC25A and AXIN2" . SPARSER::COLLECTION) ("HOS" . SPARSER::PROTEIN)
     ("at least some Wnts" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("various canonical Wnt" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Alanine" . SPARSER::AMINO-ACID) ("SK-UT-1" . SPARSER::COLLECTION)
+    ("Alanine" . SPARSER::AMINO-ACID) ("UT" . SPARSER::PROTEIN-FAMILY)
     ("SK" . SPARSER::PROTEIN)
     ("DKK1 and/or FRP ( xref )" . SPARSER::COLLECTION)
     ("DKK1 or FRP" . SPARSER::COLLECTION) ("FRP" . SPARSER::PROTEIN)
     ("12 different histological subtypes" . SPARSER::PROTEIN)
     ("lipo-" . SPARSER::PROTEIN) ("lipo" . SPARSER::PROTEIN)
     ("diverse histological types" . TYPE) ("MSC" . SPARSER::PROTEIN)
-    ("myogenic" . SPARSER::PROTEIN) ("MSCs" . SPARSER::PROTEIN)
-    ("APC , CTNNB1 or AXIN" . SPARSER::COLLECTION) ("AXIN" . SPARSER::PROTEIN)
-    ("AXIN2 and DKK1" . SPARSER::COLLECTION)
+    ("MFH" . SPARSER::PROTEIN) ("myogenic" . SPARSER::PROTEIN)
+    ("MSCs" . SPARSER::PROTEIN) ("APC , CTNNB1 or AXIN" . SPARSER::COLLECTION)
+    ("AXIN" . SPARSER::PROTEIN) ("AXIN2 and DKK1" . SPARSER::COLLECTION)
     ("AXIN2, c-MYC, and LEF1" . SPARSER::COLLECTION)
     ("transcription factor/lymphoid enhancer binding factor"
      . SPARSER::COLLECTION)
@@ -9773,31 +10118,32 @@
     ("Canonical Wnts" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Axin and glycogen synthase" . SPARSER::COLLECTION)
     ("LRP" . SPARSER::PROTEIN) ("TCF/β-catenin" . SPARSER::COLLECTION)
-    ("adenomatous polyposis coli ( APC ) gene" . SPARSER::GENE)
+    ("adenomatous polyposis coli ( APC ) gene" . SPARSER::PROTEIN)
     ("diverse histological subtypes" . SPARSER::PROTEIN)
     ("sodium chloride" . SPARSER::DRUG)
     ("tyrosine kinase receptor" . SPARSER::PROTEIN)
     ("Cdc25A" . SPARSER::PROTEIN) ("DKK2" . SPARSER::PROTEIN)
     ("FRP4" . SPARSER::PROTEIN) ("FRP2" . SPARSER::PROTEIN)
     ("FRP1" . SPARSER::PROTEIN) ("Wnt10b" . SPARSER::PROTEIN)
-    ("Wnt7" . SPARSER::PROTEIN) ("WIF1" . SPARSER::PROTEIN)
+    ("Wnt7b" . SPARSER::PROTEIN) ("WIF1" . SPARSER::PROTEIN)
     ("Cyclin dependent kinase 4" . SPARSER::PROTEIN)
     ("CDC25C" . SPARSER::PROTEIN) ("CDC25B" . SPARSER::PROTEIN)
     ("S33" . SPARSER::PROTEIN) ("CDC25" . SPARSER::PROTEIN)
     ("WNT3A" . SPARSER::PROTEIN) ("LRP6" . SPARSER::PROTEIN)
-    ("LRP5" . SPARSER::PROTEIN) ("UT-1" . SPARSER::PROTEIN)
+    ("LRP5" . SPARSER::PROTEIN)
     ("negative regulators" . SPARSER::NEGATIVE-REGULATOR)
     ("LEF1" . SPARSER::PROTEIN) ("AXIN2" . SPARSER::PROTEIN)
     ("lymphoid enhancer binding factor" . SPARSER::PROTEIN)
-    ("Ca2+" . SPARSER::CALCIUM-ION) ("CDC25A" . SPARSER::PROTEIN)
-    ("LRP5/6" . SPARSER::PROTEIN) ("pertuzumab" . SPARSER::DRUG)
+    ("lipoprotein receptor" . SPARSER::PROTEIN) ("Ca2+" . SPARSER::CALCIUM-ION)
+    ("CDC25A" . SPARSER::PROTEIN) ("LRP5/6" . SPARSER::PROTEIN)
+    ("pertuzumab" . SPARSER::DRUG)
     ("the preclinical HER2 inhibitor PKI-166" . SPARSER::DRUG)
-    ("AR and mTORC1" . SPARSER::COLLECTION)
+    ("Side" . SPARSER::PROTEIN) ("AR and mTORC1" . SPARSER::COLLECTION)
     ("generation AR pathway inhibitors" . SPARSER::INHIBITOR)
     ("abiraterone or MDV3100" . SPARSER::COLLECTION)
     ("antiandrogen" . SPARSER::DRUG)
     ("prostate-specific antigen or PSA" . SPARSER::COLLECTION)
-    ("PI3K/AR" . SPARSER::COLLECTION)
+    ("a strong case" . SPARSER::PROTEIN) ("PI3K/AR" . SPARSER::COLLECTION)
     ("BEZ235 and PKI166" . SPARSER::COLLECTION)
     ("PI3K and/or mTORC1/2 and AR" . SPARSER::COLLECTION)
     ("mTORC1 or MEK" . SPARSER::COLLECTION)
@@ -9819,7 +10165,7 @@
     ("Pbsn , Nkx3.1 and Psca" . SPARSER::COLLECTION)
     ("Psca" . SPARSER::PROTEIN) ("Pbsn" . SPARSER::PROTEIN)
     ("AR and MAPK" . SPARSER::COLLECTION)
-    ("BEZ235 or RAD001" . SPARSER::COLLECTION)
+    ("BEZ235 or RAD001" . SPARSER::COLLECTION) ("p-ERK" . SPARSER::COLLECTION)
     ("pAKT and pS6" . SPARSER::COLLECTION) ("PI3K/mTOR" . SPARSER::COLLECTION)
     ("pAKT" . SPARSER::PROTEIN-FAMILY)
     ("a dual PI3K and mTORC1/2 inhibitor" . SPARSER::INHIBITOR)
@@ -9835,27 +10181,27 @@
     ("prostate-specific antigen" . SPARSER::PROTEIN)
     ("PRAS40" . SPARSER::PROTEIN) ("PD0325901" . SPARSER::DRUG)
     ("PKI166" . SPARSER::DRUG) ("HER3" . SPARSER::PROTEIN)
-    ("Nkx3.1" . SPARSER::PROTEIN) ("p-ERK" . SPARSER::PROTEIN)
-    ("RAD001" . SPARSER::DRUG) ("pS6" . SPARSER::PROTEIN)
-    ("BEZ235" . SPARSER::DRUG)
+    ("Nkx3.1" . SPARSER::PROTEIN) ("RAD001" . SPARSER::DRUG)
+    ("pS6" . SPARSER::PROTEIN) ("BEZ235" . SPARSER::DRUG)
     ("Further analysis encompassing single and double mutant"
      . SPARSER::MUTANT)
-    ("the entire exon" . SPARSER::PROTEIN)
     ("at least five families" . SPARSER::PROTEIN-FAMILY)
     ("genesis" . SPARSER::PROTEIN)
     ("R776G mutant variant and the resultant construction"
      . SPARSER::COLLECTION)
-    ("Hae III restriction enzyme" . SPARSER::ENZYME)
-    ("available DNA" . SPARSER::DNA) ("-mutant" . SPARSER::MUTANT)
-    ("Kinase activity" . SPARSER::PROTEIN)
+    ("Hae III restriction enzyme" . SPARSER::PROTEIN)
+    ("available DNA" . SPARSER::DNA) ("data-base" . SPARSER::PROTEIN)
+    ("-mutant" . SPARSER::MUTANT) ("COS7" . SPARSER::PROTEIN)
     ("Tyrosine kinase" . SPARSER::PROTEIN) ("beta-actin" . SPARSER::PROTEIN)
     ("IKK/Myc" . SPARSER::COLLECTION) ("PP2A or cip2A" . SPARSER::COLLECTION)
     ("NF-κB and IκBα" . SPARSER::COLLECTION)
     ("still no reliable drug" . SPARSER::DRUG)
-    ("cyclin D1 and Twist proteins" . SPARSER::COLLECTION)
+    ("Myc, cyclin D1, and Twist" . SPARSER::COLLECTION)
+    ("Cyclin D1 and Twist" . SPARSER::COLLECTION)
     ("Doxorubicin" . SPARSER::PROTEIN) ("IKK and Myc" . SPARSER::COLLECTION)
     ("IKKs/Myc" . SPARSER::COLLECTION) ("IKKα- or IKKβ-" . SPARSER::COLLECTION)
-    ("IKKβ-" . SPARSER::PROTEIN) ("matrigel" . SPARSER::PROTEIN)
+    ("IKKβ-" . SPARSER::PROTEIN) ("cyclin D1 and Twist" . SPARSER::COLLECTION)
+    ("matrigel" . SPARSER::PROTEIN)
     ("IKKα, IKKβ and Myc" . SPARSER::COLLECTION)
     ("IKKβ/Myc" . SPARSER::COLLECTION) ("IKKα/Myc" . SPARSER::COLLECTION)
     ("IKKβ and Myc" . SPARSER::COLLECTION)
@@ -9878,17 +10224,15 @@
     ("Both IκB kinase (IKK) complex and oncgenic protein Myc play important roles"
      . SPARSER::COLLECTION)
     ("Bay11-7082" . SPARSER::DRUG) ("cip2A" . SPARSER::PROTEIN)
-    ("protein phosphatase 2" . SPARSER::PROTEIN)
-    ("E 2 F" . SPARSER::PROTEIN-FAMILY) ("IKKγ" . SPARSER::PROTEIN)
-    ("IKKα" . SPARSER::PROTEIN)
+    ("protein phosphatase 2A" . SPARSER::PROTEIN) ("E 2 F" . SPARSER::PROTEIN)
+    ("IKKγ" . SPARSER::PROTEIN) ("IKKα" . SPARSER::PROTEIN)
     ("STAT3 (OR = 9.6, 95% CI: 1.48-62.15) and pSTAT3 (OR = 16, 95% CI: 1.6-159.3)"
      . SPARSER::COLLECTION)
     ("STAT3 and p-STAT3" . SPARSER::COLLECTION) ("Stata" . SPARSER::PROTEIN)
     ("Reverse transcriptase-" . SPARSER::PROTEIN)
     ("STAT3 and pSTAT3" . SPARSER::COLLECTION) ("β- actin" . SPARSER::PROTEIN)
-    ("kinase or protein" . SPARSER::COLLECTION)
+    ("protein kinase or protein kinase A" . SPARSER::COLLECTION)
     ("MAPK-activated protein kinase" . SPARSER::COLLECTION)
-    ("meticulous mapping" . SPARSER::PROTEIN)
     ("PKA-MK5-HSP27" . SPARSER::COLLECTION)
     ("-MK2-HSP27" . SPARSER::COLLECTION)
     ("F-actin and cytoskeleton" . SPARSER::COLLECTION)
@@ -9919,18 +10263,19 @@
     ("MK2, MK3, and MK5 share at least one known common substrate"
      . SPARSER::SUBSTRATE)
     ("MK2/MK3" . SPARSER::COLLECTION) ("RSKs" . SPARSER::PROTEIN)
-    ("kinase (MSK)" . SPARSER::KINASE) ("kinase (MNK)" . SPARSER::KINASE)
+    ("kinase (MSK)" . SPARSER::KINASE)
+    ("protein kinase (MNK)" . SPARSER::PROTEIN)
     ("ribosomal S6 kinase (RSK)" . SPARSER::PROTEIN-FAMILY)
     ("structural and functional homology" . SPARSER::PROTEIN)
     ("MSK1 and MSK2" . SPARSER::COLLECTION)
     ("MNK1 and MNK2" . SPARSER::COLLECTION) ("mitogen-" . SPARSER::MITOGEN)
-    ("MAPKAPK" . SPARSER::KINASE) ("kinases (MAPKAPK)" . SPARSER::PROTEIN)
+    ("MAPKAPK" . SPARSER::KINASE) ("MNK" . SPARSER::PROTEIN)
+    ("MSK" . SPARSER::PROTEIN) ("kinases (MAPKAPK)" . SPARSER::KINASE)
     ("mitogen-activated protein kinase-activating protein"
      . SPARSER::COLLECTION)
-    ("yet other protein kinases" . SPARSER::PROTEIN)
+    ("yet other protein kinases" . SPARSER::KINASE)
     ("ERK3, ERK4, and ERK7" . SPARSER::COLLECTION)
     ("MEK5/ERK5" . SPARSER::COLLECTION) ("JNK1-3" . SPARSER::COLLECTION)
-    ("MEK1-2/ERK1-2" . SPARSER::COLLECTION)
     ("HSP27, MK2 and MK5" . SPARSER::COLLECTION) ("MK" . SPARSER::PROTEIN)
     ("MK3 and MK5" . SPARSER::COLLECTION)
     ("p38 MAPK or the catalytic subunit" . SPARSER::COLLECTION)
@@ -9938,22 +10283,22 @@
     ("MK2 and MK5" . SPARSER::COLLECTION)
     ("stress-induced F-actin" . SPARSER::BIO-COMPLEX)
     ("-MK2" . SPARSER::COLLECTION) ("MK2, MK3, and MK5" . SPARSER::COLLECTION)
-    ("maybe p38 MAPK" . SPARSER::PROTEIN)
+    ("maybe p38 MAPK" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the atypical MAPK ERK3 and ERK4" . SPARSER::COLLECTION)
     ("MK2, MK3 and MK5" . SPARSER::COLLECTION)
     ("MK2 and MK3" . SPARSER::COLLECTION)
     ("ERK3 and ERK4" . SPARSER::COLLECTION)
     ("MAPK-activating protein" . SPARSER::COLLECTION)
-    ("S115" . SPARSER::PROTEIN) ("PKA-C" . SPARSER::PROTEIN)
+    ("S115" . SPARSER::PROTEIN) ("PKA-Cα" . SPARSER::PROTEIN)
     ("sodium arsenite" . SPARSER::DRUG) ("42 kD" . SPARSER::PROTEIN)
     ("Hsp27" . SPARSER::PROTEIN) ("Sodium arsenite" . SPARSER::DRUG)
     ("MNK2" . SPARSER::PROTEIN) ("MNK1" . SPARSER::PROTEIN)
     ("MSK2" . SPARSER::PROTEIN) ("MSK1" . SPARSER::PROTEIN)
     ("MAPK kinase kinase" . SPARSER::PROTEIN) ("ERK7" . SPARSER::PROTEIN)
     ("ERK5" . SPARSER::PROTEIN) ("MEK5" . SPARSER::PROTEIN)
-    ("MKK6" . SPARSER::PROTEIN) ("ERK4" . SPARSER::PROTEIN)
-    ("ERK3" . SPARSER::PROTEIN) ("MK5" . SPARSER::PROTEIN)
-    ("MK3" . SPARSER::PROTEIN)
+    ("MKK6" . SPARSER::PROTEIN) ("heat shock protein 27" . SPARSER::PROTEIN)
+    ("ERK4" . SPARSER::PROTEIN) ("ERK3" . SPARSER::PROTEIN)
+    ("MK5" . SPARSER::PROTEIN) ("MK3" . SPARSER::PROTEIN)
     ("the nuclear EGFR, Src and Stat3 heteromeric complex"
      . SPARSER::BIO-COMPLEX)
     ("other accessory proteins" . SPARSER::PROTEIN)
@@ -9981,20 +10326,21 @@
     ("anti-Stat3, anti-Src, or anti-EGFR" . SPARSER::COLLECTION)
     ("antibody, or non-specific" . SPARSER::COLLECTION)
     ("the monoclonal anti-EGFR antibody" . SPARSER::ANTIBODY)
-    ("GNP" . SPARSER::PROTEIN) ("anti-EGFR-GNP" . SPARSER::COLLECTION)
+    ("anti-EGFR-GNP" . SPARSER::COLLECTION)
     ("dynamic light" . SPARSER::PROTEIN)
     ("nanoparticle (GNP)" . SPARSER::MOLECULE)
+    ("single-step" . SPARSER::PROTEIN) ("GNP" . SPARSER::PROTEIN)
     ("nanoparticle" . SPARSER::MOLECULE) ("Dynamic Light" . SPARSER::PROTEIN)
     ("Light" . SPARSER::PROTEIN) ("DANS" . SPARSER::PROTEIN)
     ("Nanoparticle" . SPARSER::MOLECULE) ("PAO" . SPARSER::PROTEIN)
     ("the heteromeric complex" . SPARSER::BIO-COMPLEX)
     ("oxide" . SPARSER::MOLECULE) ("Src/Stat3" . SPARSER::COLLECTION)
-    ("exportin" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("alpha1/beta1" . SPARSER::COLLECTION) ("exportin" . SPARSER::PROTEIN)
     ("importins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the heteromeric EGFR, Src and Stat3 complex" . SPARSER::BIO-COMPLEX)
     ("EGFR-Stat3" . SPARSER::COLLECTION)
     ("pY1068 peptide and pY1086 peptide" . SPARSER::COLLECTION)
-    ("EGFR (ZD) or Src (Das)" . SPARSER::COLLECTION)
+    ("SPI" . SPARSER::PROTEIN) ("EGFR (ZD) or Src (Das)" . SPARSER::COLLECTION)
     ("the nuclear heteromeric EGFR, Src, and Stat3 complex"
      . SPARSER::BIO-COMPLEX)
     ("EGFR/Src" . SPARSER::COLLECTION)
@@ -10015,11 +10361,14 @@
     ("Stat3 or Src" . SPARSER::COLLECTION) ("EGFR/Stat3" . SPARSER::COLLECTION)
     ("RHA" . SPARSER::PROTEIN) ("EGFR or Stat3" . SPARSER::COLLECTION)
     ("The heteromeric complex" . SPARSER::BIO-COMPLEX)
+    ("IP:EGFR/IP:Src" . SPARSER::BIO-COMPLEX)
     ("Stat3 and Src" . SPARSER::COLLECTION)
     ("Stat3 and EGFR" . SPARSER::COLLECTION)
     ("the observed EGFR, Src and Stat3 heteromeric complex"
      . SPARSER::BIO-COMPLEX)
     ("the EGFR, Src and Stat3 heteromeric complex" . SPARSER::BIO-COMPLEX)
+    ("con" . SPARSER::PROTEIN) ("IP:EGFR" . SPARSER::BIO-COMPLEX)
+    ("IP:Stat3" . SPARSER::BIO-COMPLEX) ("IP:Src" . SPARSER::BIO-COMPLEX)
     ("the respective blocking peptides (BP)" . SPARSER::PEPTIDE)
     ("peptides (BP)" . SPARSER::PEPTIDE)
     ("Src, Stat3 or EGFR" . SPARSER::COLLECTION)
@@ -10050,8 +10399,9 @@
     ("a functional heteromeric complex" . SPARSER::BIO-COMPLEX)
     ("Activator" . SPARSER::ACTIVATOR) ("Sec61" . SPARSER::PROTEIN)
     ("anti- EGFR" . SPARSER::PROTEIN) ("CRM1" . SPARSER::PROTEIN)
-    ("beta1" . SPARSER::PROTEIN) ("ZD1839" . SPARSER::DRUG)
-    ("RNA helicase A" . SPARSER::PROTEIN) ("SP 5" . SPARSER::PROTEIN)
+    ("beta1" . SPARSER::PROTEIN) ("alpha1" . SPARSER::PROTEIN)
+    ("ZD1839" . SPARSER::DRUG) ("RNA helicase A" . SPARSER::PROTEIN)
+    ("SP 5" . SPARSER::PROTEIN) ("L protein" . SPARSER::PROTEIN)
     ("anti-EGFR" . SPARSER::PROTEIN) ("β-Actin" . SPARSER::PROTEIN)
     ("mitogen-activated protein kinase kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("H2AX and ATM" . SPARSER::COLLECTION)
@@ -10075,51 +10425,46 @@
     ("LC3-II and ATG7" . SPARSER::COLLECTION)
     ("p21 and IFI16" . SPARSER::COLLECTION)
     ("p21 , Hdm2 , and Bax" . SPARSER::COLLECTION)
-    ("mRNA and the B isoform" . SPARSER::COLLECTION)
-    ("Ataxia" . SPARSER::PROTEIN) ("ATM/AMPK/p53" . SPARSER::COLLECTION)
-    ("AMPK/p53" . SPARSER::COLLECTION) ("AMP/ATP" . SPARSER::PROTEIN-PAIR)
-    ("ARK5" . SPARSER::PROTEIN) ("CASP7" . SPARSER::PROTEIN)
-    ("BNIP2" . SPARSER::PROTEIN) ("TP73" . SPARSER::PROTEIN)
-    ("Caspase-7" . SPARSER::PROTEIN) ("BCL-xL" . SPARSER::PROTEIN)
-    ("caspase-1" . SPARSER::PROTEIN) ("ATG7" . SPARSER::PROTEIN)
-    ("Glo 3" . SPARSER::PROTEIN) ("A-2" . SPARSER::PROTEIN)
+    ("pro-IL-1β" . SPARSER::COLLECTION) ("AT" . SPARSER::PROTEIN)
+    ("ATM/AMPK/p53" . SPARSER::COLLECTION) ("AMPK/p53" . SPARSER::COLLECTION)
+    ("AMP/ATP" . SPARSER::PROTEIN-PAIR) ("ARK5" . SPARSER::PROTEIN)
+    ("CASP7" . SPARSER::PROTEIN) ("BNIP2" . SPARSER::PROTEIN)
+    ("TP73" . SPARSER::PROTEIN) ("Caspase-7" . SPARSER::PROTEIN)
+    ("BCL-xL" . SPARSER::PROTEIN) ("caspase-1" . SPARSER::PROTEIN)
+    ("ATG7" . SPARSER::PROTEIN) ("Glo 3" . SPARSER::PROTEIN)
     ("p-ATM" . SPARSER::PROTEIN) ("Hdm2" . SPARSER::PROTEIN)
     ("p21 CIP1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("IFN-β" . SPARSER::PROTEIN)
     ("calmodulin-dependent protein kinase" . SPARSER::PROTEIN)
-    ("IFI16" . SPARSER::PROTEIN) ("Akt and MMP-2" . SPARSER::COLLECTION)
-    ("miRNA and its target genes" . SPARSER::COLLECTION)
-    ("PETN" . SPARSER::PROTEIN-FAMILY) ("Han" . SPARSER::PROTEIN)
+    ("Ataxia Telangiectasia" . SPARSER::PROTEIN) ("IFI16" . SPARSER::PROTEIN)
+    ("Akt and MMP-2" . SPARSER::COLLECTION) ("PETN" . SPARSER::PROTEIN-FAMILY)
+    ("Han" . SPARSER::PROTEIN)
     ("a multifunctional oncoprotein" . SPARSER::PROTEIN)
     ("serine-threonine" . SPARSER::COLLECTION)
-    ("UTR-1 and PTEN" . SPARSER::COLLECTION)
-    ("HBx, and HepG2-P" . SPARSER::COLLECTION)
-    ("miR-21 and miR-221" . SPARSER::COLLECTION)
+    ("PTEN mRNA or not" . SPARSER::COLLECTION)
+    ("HBx, and HepG2-P" . SPARSER::COLLECTION) ("MiR" . SPARSER::MICRO-RNA)
     ("protein and phosphoinositide" . SPARSER::COLLECTION)
-    ("Tcl1 and DNMT3" . SPARSER::COLLECTION) ("Capn4" . SPARSER::PROTEIN)
-    ("MIG" . SPARSER::PROTEIN) ("p21-HBx" . SPARSER::COLLECTION)
-    ("HBx" . SPARSER::PROTEIN) ("Tween20" . SPARSER::MOLECULE)
-    ("Dual-luciferase" . SPARSER::PROTEIN) ("small nuclear RNA" . SPARSER::RNA)
-    ("coding region determinant-binding protein" . SPARSER::PROTEIN)
+    ("Tcl1 and DNMT3" . SPARSER::COLLECTION) ("MIG" . SPARSER::PROTEIN)
+    ("an essential factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("p21-HBx" . SPARSER::COLLECTION) ("HBx" . SPARSER::PROTEIN)
+    ("Tween20" . SPARSER::MOLECULE) ("Dual-luciferase" . SPARSER::PROTEIN)
+    ("small nuclear RNA" . SPARSER::RNA)
     ("microphthalmia-associated transcription factor" . SPARSER::PROTEIN)
-    ("p85" . SPARSER::PROTEIN) ("miR-29b" . SPARSER::MOLECULE)
+    ("p85" . SPARSER::HUMAN-PROTEIN-FAMILY) ("miR-29b" . SPARSER::MOLECULE)
     ("Protein kinase B" . SPARSER::PROTEIN) ("UTR-2" . SPARSER::PROTEIN)
-    ("UTR-1" . SPARSER::PROTEIN) ("miR-29c" . SPARSER::PROTEIN)
-    ("MiR-29" . SPARSER::PROTEIN) ("miR-221" . SPARSER::PROTEIN)
-    ("miR-21" . SPARSER::PROTEIN)
     ("Phosphatase and tensin homolog" . SPARSER::PROTEIN)
     ("DNMT3" . SPARSER::PROTEIN) ("Tcl1" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("messenger RNAs" . SPARSER::RNA) ("miR-29" . SPARSER::PROTEIN)
-    ("Drugs" . SPARSER::DRUG) ("CSF" . SPARSER::PROTEIN)
+    ("messenger RNAs" . SPARSER::RNA) ("Capn4" . SPARSER::PROTEIN)
+    ("sect" . SPARSER::PROTEIN) ("Drugs" . SPARSER::DRUG)
+    ("CSF" . SPARSER::PROTEIN)
     ("the suppressor of
                 cytokine signaling 1 (SOCS1) and several inhibitors"
      . SPARSER::COLLECTION)
     ("Macrophage
                 chemoattractant protein (MCP-1) and tumor growth factor beta-1 (TGFβ-1)"
      . SPARSER::COLLECTION)
-    ("TGFβ-1" . SPARSER::COLLECTION)
     ("IL-1β, IL-6, IL-8, and IL-12 p40" . SPARSER::COLLECTION)
-    ("antibiotic" . SPARSER::DRUG) ("Chez" . SPARSER::PROTEIN-FAMILY)
-    ("nitrotyrosine" . SPARSER::MOLECULE)
+    ("CARS" . SPARSER::PROTEIN) ("antibiotic" . SPARSER::DRUG)
+    ("Chez" . SPARSER::PROTEIN-FAMILY) ("nitrotyrosine" . SPARSER::MOLECULE)
     ("whose
                 laboratory NF-κB"
      . SPARSER::PROTEIN)
@@ -10139,29 +10484,32 @@
     ("3-NT" . SPARSER::PROTEIN) ("Flt3" . SPARSER::PROTEIN)
     ("beta-1" . SPARSER::PROTEIN) ("IL-12 p40" . SPARSER::PROTEIN)
     ("group D" . SPARSER::PROTEIN) ("IκBα" . SPARSER::PROTEIN)
+    ("transforming growth factor beta" . SPARSER::PROTEIN)
     ("IL-18" . SPARSER::PROTEIN)
+    ("tumor necrosis factor receptor" . SPARSER::PROTEIN)
     ("tumor necrosis
                 factor"
      . SPARSER::PROTEIN)
     ("active heterodimers" . SPARSER::HETERODIMER)
     ("decreased repressive homodimers" . SPARSER::HOMODIMER)
     ("chemokines, and cytokines" . SPARSER::COLLECTION)
-    ("the gene and any individual risk factor" . SPARSER::COLLECTION)
+    ("AECC" . SPARSER::PROTEIN) ("ANOVA" . SPARSER::PROTEIN)
     ("adj" . SPARSER::DRUG) ("heterozygotes" . SPARSER::PROTEIN)
-    ("p " . SPARSER::PROTEIN) ("pro-inflammatory genes" . SPARSER::GENE)
-    ("repressive p50 subunits" . SPARSER::FRAGMENT) ("ins" . SPARSER::PROTEIN)
-    ("an inactive complex" . SPARSER::BIO-COMPLEX)
+    ("p " . SPARSER::PROTEIN) ("repressive p50 subunits" . SPARSER::FRAGMENT)
+    ("ins" . SPARSER::PROTEIN) ("an inactive complex" . SPARSER::BIO-COMPLEX)
     ("chemokines and cytokines" . SPARSER::COLLECTION)
+    ("Kappa-Beta" . SPARSER::COLLECTION) ("Beta" . SPARSER::PROTEIN)
     ("Kappa" . SPARSER::PROTEIN-FAMILY)
     ("pro- and anti-inflammatory" . SPARSER::COLLECTION)
-    ("many pro-inflammatory genes" . SPARSER::GENE)
     ("105 kD" . SPARSER::PROTEIN) ("factor-κ B" . SPARSER::PROTEIN)
-    ("HR 1" . SPARSER::PROTEIN-FAMILY) ("NFKB1" . SPARSER::PROTEIN)
+    ("HR 1" . SPARSER::PROTEIN) ("NFKB1" . SPARSER::PROTEIN)
     ("loco" . SPARSER::PROTEIN) ("FANCN" . SPARSER::PROTEIN)
     ("FANCM" . SPARSER::PROTEIN) ("FANCL" . SPARSER::PROTEIN)
+    ("BRCA1-associating C-terminal helicase 1 (BACH1) or BRCA-interacting protein 1 (BRIP1)"
+     . SPARSER::COLLECTION)
     ("proteins or BRCA1" . SPARSER::COLLECTION) ("FANCJ" . SPARSER::PROTEIN)
     ("FANCI" . SPARSER::PROTEIN) ("BCNU or TMZ" . SPARSER::COLLECTION)
-    ("FANCF" . SPARSER::PROTEIN) ("FANC" . SPARSER::PROTEIN-FAMILY)
+    ("FANCF" . SPARSER::PROTEIN) ("FANC" . SPARSER::PROTEIN)
     ("FANCD1/BRCA2-FANCD2-FANCG-XRCC3" . SPARSER::COLLECTION)
     ("ACNU-" . SPARSER::DRUG) ("FANCA and FANCC" . SPARSER::COLLECTION)
     ("FANCA, FANCC and FANCD2" . SPARSER::COLLECTION)
@@ -10175,9 +10523,8 @@
     ("Polypeptide" . SPARSER::PEPTIDE) ("MGMT" . SPARSER::PROTEIN)
     ("a monofunctional alkylating agent" . SPARSER::MOLECULE)
     ("-methylG" . SPARSER::DRUG) ("methylG" . SPARSER::DRUG)
-    ("-cytosine" . SPARSER::NUCLEOBASE) ("-O 6" . SPARSER::COLLECTION)
-    ("oxygen or nitrogen" . SPARSER::COLLECTION)
-    ("-1-nitrosourea" . SPARSER::PROTEIN-PAIR) ("BCNU" . SPARSER::DRUG)
+    ("-cytosine" . SPARSER::NUCLEOBASE)
+    ("oxygen or nitrogen" . SPARSER::COLLECTION) ("BCNU" . SPARSER::DRUG)
     ("carmustine" . SPARSER::DRUG)
     ("Nimustine [1-(4-amino-2-methyl-5-pyrimidinyl) methyl-3-(2-chloroethyl)-3-nitrosourea; ACNU] and temozolo-mide (TMZ)"
      . SPARSER::COLLECTION)
@@ -10192,21 +10539,21 @@
     ("ACNU" . SPARSER::DRUG) ("Nimustine" . SPARSER::DRUG)
     ("PALB2" . SPARSER::PROTEIN) ("FAAP24" . SPARSER::PROTEIN)
     ("E. coli )" . SPARSER::PROTEIN) ("BRIP1" . SPARSER::PROTEIN)
-    ("BACH1" . SPARSER::PROTEIN) ("XRCC3" . SPARSER::PROTEIN)
-    ("recombinase activity" . SPARSER::PROTEIN) ("Rad51" . SPARSER::PROTEIN)
-    ("Serum Albumin" . SPARSER::PROTEIN) ("BRCA2 protein" . SPARSER::PROTEIN)
-    ("I-19" . SPARSER::PROTEIN) ("Fanconi Anemia" . SPARSER::PROTEIN)
+    ("BACH1" . SPARSER::PROTEIN) ("helicase 1" . SPARSER::PROTEIN)
+    ("XRCC3" . SPARSER::PROTEIN) ("recombinase activity" . SPARSER::PROTEIN)
+    ("Rad51" . SPARSER::PROTEIN) ("Serum Albumin" . SPARSER::PROTEIN)
+    ("BRCA2 protein" . SPARSER::PROTEIN) ("Fanconi Anemia" . SPARSER::PROTEIN)
+    ("DNA methyltransferase" . SPARSER::PROTEIN)
     ("alkylating agent" . SPARSER::MOLECULE) ("N 3" . SPARSER::PROTEIN)
-    ("O 6" . SPARSER::PROTEIN) ("FANCD1" . SPARSER::PROTEIN)
-    ("FANCD2" . SPARSER::PROTEIN) ("regenerative medicine" . SPARSER::DRUG)
+    ("FANCD1" . SPARSER::PROTEIN) ("FANCD2" . SPARSER::PROTEIN)
     ("protein and gene" . SPARSER::COLLECTION)
     ("Runx2 and MMP9" . SPARSER::COLLECTION)
     ("a key transcription factor" . SPARSER::PROTEIN)
     ("FN and vitronectin" . SPARSER::COLLECTION)
     ("a fibrillar matrix" . SPARSER::PROTEIN-FAMILY)
     ("actin-myosin" . SPARSER::COLLECTION)
-    ("filaments and myosin" . SPARSER::COLLECTION)
-    ("myosin" . SPARSER::PROTEIN-FAMILY) ("RGD" . SPARSER::PROTEIN)
+    ("filaments and myosin" . SPARSER::COLLECTION) ("MLC" . SPARSER::PROTEIN)
+    ("myosin" . SPARSER::HUMAN-PROTEIN-FAMILY) ("RGD" . SPARSER::PROTEIN)
     ("the most favorable conformation" . SPARSER::BIO-CONFORMATION)
     ("PEA" . SPARSER::MOLECULE)
     ("the finely tuned chemistry-mediated conformation"
@@ -10218,10 +10565,14 @@
     ("western-blot" . SPARSER::PROTEIN) ("Src and PI-3" . SPARSER::COLLECTION)
     ("kinase (FAK)" . SPARSER::KINASE)
     ("the more hydrophilic substrates" . SPARSER::SUBSTRATE)
-    ("the methyl-terminated SAM" . SPARSER::MOLECULE)
-    ("AFM" . SPARSER::PROTEIN) ("monoclonal antibodies" . SPARSER::ANTIBODY)
+    ("the methyl-terminated SAM" . SPARSER::PROTEIN) ("AFM" . SPARSER::PROTEIN)
+    ("g/mL" . SPARSER::COLLECTION)
+    ("monoclonal antibodies" . SPARSER::ANTIBODY)
     ("FN-coated mixed self-assembled monolayers" . SPARSER::PROTEIN)
     ("directly uPA receptor" . SPARSER::RECEPTOR) ("uPAR" . SPARSER::PROTEIN)
+    ("urokinase (uPA) and plasmin" . SPARSER::COLLECTION)
+    ("thrombin, tissue plasminogen activator (tPA), urokinase (uPA) and plasmin"
+     . SPARSER::COLLECTION)
     ("disintegrin and metalloproteinase" . SPARSER::COLLECTION)
     ("ADAMs or MDCs" . SPARSER::COLLECTION) ("uPA" . SPARSER::PROTEIN)
     ("tPA" . SPARSER::PROTEIN) ("MDCs" . SPARSER::PROTEIN)
@@ -10240,16 +10591,19 @@
     ("FAKs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("FN" . SPARSER::PROTEIN)
     ("mixed self-assembled monolayers" . SPARSER::PROTEIN)
     ("–CH 3" . SPARSER::MOLECULE) ("SAMs" . SPARSER::MOLECULE)
-    ("p-40" . SPARSER::PROTEIN) ("CH 2" . SPARSER::MOLECULE)
-    ("myosin light chain" . SPARSER::PROTEIN) ("β 1" . SPARSER::PROTEIN)
+    ("CH 2" . SPARSER::MOLECULE)
+    ("myosin light chain" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("PI-3" . SPARSER::PROTEIN) ("OH-" . SPARSER::MOLECULE)
     ("α v β 3" . SPARSER::PROTEIN) ("plasminogen activator" . SPARSER::PROTEIN)
     ("cell surface associated" . SPARSER::PROTEIN) ("MMP9" . SPARSER::PROTEIN)
-    ("CH 3" . SPARSER::MOLECULE) ("a strong H3K4" . SPARSER::PROTEIN)
+    ("CH 3" . SPARSER::MOLECULE)
+    ("Cell lineage-specific factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("a strong H3K4" . SPARSER::PROTEIN)
     ("the central H3K4" . SPARSER::PROTEIN)
     ("AREs" . SPARSER::ANTI-OXIDANT-RESPONSE-ELEMENT)
     ("an activated enhancer and its regulated gene promoter"
      . SPARSER::COLLECTION)
+    ("the most precise mark" . SPARSER::PROTEIN)
     ("p300 or Med12" . SPARSER::COLLECTION)
     ("AR-bound enhancers and specific gene promoters" . SPARSER::COLLECTION)
     ("two representative genes" . SPARSER::GENE) ("Med12" . SPARSER::PROTEIN)
@@ -10260,32 +10614,45 @@
     ("such massive AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("AR and FoxA1" . SPARSER::COLLECTION)
     ("ARE" . SPARSER::ANTI-OXIDANT-RESPONSE-ELEMENT)
-    ("distal H3K4" . SPARSER::PROTEIN) ("dihydrotestosterone" . SPARSER::DRUG)
-    ("prostatic" . SPARSER::PROTEIN) ("cofactors" . SPARSER::PROTEIN)
-    ("GRO-seq" . SPARSER::COLLECTION) ("a unique class" . CLASS)
-    ("GRO" . SPARSER::PROTEIN) ("a distinct cohort" . SPARSER::MOLECULE)
+    ("distal H3K4" . SPARSER::PROTEIN)
+    ("forkhead" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("dihydrotestosterone" . SPARSER::DRUG) ("prostatic" . SPARSER::PROTEIN)
+    ("factors and cofactors" . SPARSER::COLLECTION)
+    ("cofactors" . SPARSER::PROTEIN) ("GRO-seq" . SPARSER::COLLECTION)
+    ("a unique class" . CLASS) ("GRO" . SPARSER::PROTEIN)
+    ("a distinct cohort" . SPARSER::MOLECULE)
     ("functionally-distinct classes" . CLASS)
+    ("cell lineage-specific factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("transcriptional enhancers" . SPARSER::PROTEIN)
     ("H2A.Z" . SPARSER::PROTEIN) ("PMEPA1" . SPARSER::PROTEIN)
     ("H3K27Ac" . SPARSER::MOLECULE) ("SOX9" . SPARSER::PROTEIN)
     ("H3K27ac" . SPARSER::MOLECULE) ("FoxA1" . SPARSER::PROTEIN)
+    ("other metabolic traits and CAD" . SPARSER::COLLECTION)
+    ("traits and CAD" . SPARSER::COLLECTION)
     ("ENPEP, and NPR3" . SPARSER::COLLECTION) ("CETP" . SPARSER::PROTEIN)
+    ("BP and CAD" . SPARSER::COLLECTION)
     ("receptors and insulin-like growth factor" . SPARSER::COLLECTION)
     ("ATPases" . SPARSER::PROTEIN)
+    ("BP and extracellular" . SPARSER::COLLECTION)
     ("renin-angiotensin-aldosterone" . SPARSER::COLLECTION)
     ("angiotensin" . SPARSER::PROTEIN) ("renin" . SPARSER::PROTEIN)
     ("a novel BP-associated variant" . SPARSER::VARIANT)
     ("BP-associated variants" . SPARSER::VARIANT)
+    ("a cumulative impact" . SPARSER::PROTEIN)
+    ("Cumulative impact" . SPARSER::PROTEIN)
     ("TBX3-TBX5" . SPARSER::COLLECTION) ("variants—" . SPARSER::VARIANT)
     ("c10orf107 and PLEKHA7" . SPARSER::COLLECTION)
     ("CACNB2 and PLEKHA7" . SPARSER::COLLECTION)
     ("c10orf107 , PLCD3 , and ZNF652" . SPARSER::COLLECTION)
     ("CSK-ULK3" . SPARSER::COLLECTION) ("MTHFR" . SPARSER::PROTEIN)
+    ("CAD" . SPARSER::PROTEIN) ("EHH" . SPARSER::PROTEIN)
     ("iHS" . SPARSER::MOLECULE) ("Hg" . SPARSER::MOLECULE)
+    ("JPT/CHB" . SPARSER::COLLECTION) ("CHB" . SPARSER::PROTEIN)
     ("BP and rs35444" . SPARSER::COLLECTION)
-    ("a biological candidate gene" . SPARSER::GENE)
-    ("SBP and/or DBP" . SPARSER::COLLECTION) ("BP—" . SPARSER::PROTEIN)
-    ("SBP and DBP" . SPARSER::COLLECTION) ("traits" . SPARSER::PROTEIN)
+    ("a biological candidate gene" . SPARSER::PROTEIN)
+    ("SBP and/or DBP" . SPARSER::COLLECTION) ("—and 1" . SPARSER::COLLECTION)
+    ("BP—" . SPARSER::PROTEIN) ("SBP and DBP" . SPARSER::COLLECTION)
+    ("−log" . SPARSER::COLLECTION) ("traits" . SPARSER::PROTEIN)
     ("SBP or DBP" . SPARSER::COLLECTION)
     ("SBP or DBP and variants" . SPARSER::COLLECTION)
     ("DBP and variants" . SPARSER::COLLECTION)
@@ -10295,27 +10662,29 @@
     ("SP2" . SPARSER::PROTEIN) ("ST7" . SPARSER::PROTEIN)
     ("suppression of tumorigenicity 7 like" . SPARSER::PROTEIN)
     ("insulin-like growth factor" . SPARSER::PROTEIN)
-    ("growth factor receptor-bound protein 14" . SPARSER::PROTEIN)
-    ("natriuretic peptide" . SPARSER::PROTEIN)
+    ("natriuretic peptide receptor" . SPARSER::PROTEIN)
+    ("angiotensin III" . SPARSER::PROTEIN)
     ("glutamyl aminopeptidase" . SPARSER::PROTEIN) ("TBX5" . SPARSER::PROTEIN)
     ("ZNF652" . SPARSER::PROTEIN) ("PLCD3" . SPARSER::PROTEIN)
     ("c10orf107" . SPARSER::PROTEIN) ("PLEKHA7" . SPARSER::PROTEIN)
     ("CACNB2" . SPARSER::PROTEIN) ("ULK3" . SPARSER::PROTEIN)
     ("NT5C2" . SPARSER::PROTEIN) ("FGF5" . SPARSER::PROTEIN)
-    ("SH2B3" . SPARSER::PROTEIN) ("ITGA9" . SPARSER::PROTEIN)
-    ("CASZ1" . SPARSER::PROTEIN) ("RPL6" . SPARSER::PROTEIN)
-    ("ATP2B1" . SPARSER::PROTEIN) ("ALDH2" . SPARSER::PROTEIN)
-    ("TBX3" . SPARSER::PROTEIN) ("NPR3" . SPARSER::PROTEIN)
-    ("GRB14" . SPARSER::PROTEIN) ("CAPZA1" . SPARSER::PROTEIN)
-    ("ST7L" . SPARSER::PROTEIN)
+    ("CI 1" . SPARSER::PROTEIN) ("SH2B3" . SPARSER::PROTEIN)
+    ("ITGA9" . SPARSER::PROTEIN) ("CASZ1" . SPARSER::PROTEIN)
+    ("RPL6" . SPARSER::PROTEIN) ("ATP2B1" . SPARSER::PROTEIN)
+    ("ALDH2" . SPARSER::PROTEIN) ("TBX3" . SPARSER::PROTEIN)
+    ("NPR3" . SPARSER::PROTEIN) ("GRB14" . SPARSER::PROTEIN)
+    ("CAPZA1" . SPARSER::PROTEIN) ("ST7L" . SPARSER::PROTEIN)
     ("potentially other platinum" . SPARSER::MOLECULE)
     ("the most appropriate predictive biomarker" . SPARSER::MOLECULE)
+    ("front-line" . SPARSER::PROTEIN)
     ("cisplatin and AMD473" . SPARSER::COLLECTION) ("AMD" . SPARSER::PROTEIN)
     ("docetaxel" . SPARSER::DRUG)
     ("STAT1 and the cytotoxic" . SPARSER::COLLECTION)
-    ("HDAC4/classII" . SPARSER::COLLECTION)
+    ("pan-HDAC" . SPARSER::COLLECTION) ("HDAC4/classII" . SPARSER::COLLECTION)
     ("classII" . SPARSER::PROTEIN-FAMILY)
-    ("HDACs, HDAC1 and HDAC3" . SPARSER::COLLECTION) ("lys" . SPARSER::PROTEIN)
+    ("HDACs, HDAC1 and HDAC3" . SPARSER::COLLECTION)
+    ("lys" . SPARSER::AMINO-ACID)
     ("tubulin, contractin and Hsp90" . SPARSER::COLLECTION)
     ("IIb" . SPARSER::DRUG)
     ("HDAC4, STAT1, FOLR2 and PIK3R1" . SPARSER::COLLECTION)
@@ -10324,14 +10693,14 @@
     ("HDAC4 or STAT1" . SPARSER::COLLECTION) ("HDACi" . SPARSER::MOLECULE)
     ("Ac-STAT1" . SPARSER::PROTEIN-PAIR)
     ("anti-acetyl lysine antibody and western blot" . SPARSER::COLLECTION)
-    ("SRB" . SPARSER::PROTEIN-FAMILY)
+    ("possible targets" . SPARSER::TARGET-PROTEIN) ("SRB" . SPARSER::PROTEIN)
     ("these genes, HDAC4 and STAT1," . SPARSER::GENE)
     ("FOLR2, PIK3R1, HDAC4 and STAT1" . SPARSER::COLLECTION)
     ("BRCA" . SPARSER::PROTEIN-FAMILY) ("functional BRCA2" . SPARSER::PROTEIN)
-    ("Platinum" . SPARSER::MOLECULE) ("Acetyl" . SPARSER::MOLECULE)
-    ("HDAC4 and STAT1" . SPARSER::COLLECTION)
+    ("first-line" . SPARSER::PROTEIN) ("Platinum" . SPARSER::MOLECULE)
+    ("Acetyl" . SPARSER::MOLECULE) ("HDAC4 and STAT1" . SPARSER::COLLECTION)
     ("HDAC4, FOLR2, PIK3R1 or STAT1" . SPARSER::COLLECTION)
-    ("PEO1" . SPARSER::PROTEIN) ("class-II" . SPARSER::PROTEIN)
+    ("PEA2" . SPARSER::PROTEIN) ("PEO1" . SPARSER::PROTEIN)
     ("HDAC6" . SPARSER::PROTEIN) ("interferon induced" . SPARSER::PROTEIN)
     ("IRF1" . SPARSER::PROTEIN) ("caspase3" . SPARSER::PROTEIN)
     ("3-(4,5-Dimethylthiazol-2-yl)-2,5-diphenyltetrazolium bromide"
@@ -10339,32 +10708,39 @@
     ("LAMIN A/C" . SPARSER::PROTEIN) ("TAP1" . SPARSER::PROTEIN)
     ("LAMA4" . SPARSER::PROTEIN) ("ITGB2" . SPARSER::PROTEIN)
     ("FOLR2" . SPARSER::PROTEIN) ("HDAC4" . SPARSER::PROTEIN)
-    ("Autoantibody" . SPARSER::PROTEIN) ("auto-antibody" . SPARSER::PROTEIN)
+    ("Autoantibody" . SPARSER::PROTEIN) ("auto-antibody" . SPARSER::ANTIBODY)
     ("auto-antibodies" . SPARSER::ANTIBODY)
     ("a larger sub fraction" . SPARSER::COMPONENT)
-    ("a partially functional p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("a partially functional p53" . SPARSER::PROTEIN) ("AB" . SPARSER::PROTEIN)
+    ("peptide 1 and full p53 (p<0.0001, r = 0.6332)" . SPARSER::COLLECTION)
+    ("peptide 1 and peptide" . SPARSER::COLLECTION)
     ("autoantibody" . SPARSER::PROTEIN)
     ("had measureable anti-p53 autoantibodies" . SPARSER::PROTEIN)
     ("many anti-cancer drugs and poor survival [ xref ]" . SPARSER::COLLECTION)
     ("autoantibodies" . SPARSER::PROTEIN) ("Autoantibodies" . SPARSER::PROTEIN)
-    ("SO 4" . SPARSER::PROTEIN) ("ddH 2" . SPARSER::PROTEIN)
-    ("MAP kinase/NFκB" . SPARSER::COLLECTION)
+    ("peptide 1" . SPARSER::PROTEIN) ("SO 4" . SPARSER::PROTEIN)
+    ("ddH 2" . SPARSER::PROTEIN) ("MAP kinase/NFκB" . SPARSER::COLLECTION)
     ("subunits and caspase 8" . SPARSER::COLLECTION)
-    ("the pro-inflammatory cytokine TNF-α" . SPARSER::PROTEIN)
     ("chemokine and cytokine" . SPARSER::COLLECTION)
+    ("FLICE-associated huge protein (FLASH)-caspase 8" . SPARSER::COLLECTION)
     ("-caspase 8" . SPARSER::COLLECTION) ("FLASH" . SPARSER::PROTEIN)
+    ("FLICE" . SPARSER::PROTEIN)
+    ("In contrast many other MMP genes" . SPARSER::GENE)
+    ("apolipoprotein" . SPARSER::MOLECULE)
     ("resident microglia or infiltrating peripheral macrophages [ xref ]"
      . SPARSER::COLLECTION)
     ("infiltrating peripheral macrophages" . SPARSER::PROTEIN)
     ("resident microglia" . SPARSER::PROTEIN)
-    ("ERK and p38" . SPARSER::COLLECTION)
+    ("In contrast p38 MAP kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("ERK and p38" . SPARSER::COLLECTION) ("up-regulator" . SPARSER::PROTEIN)
     ("MAP kinase, NFκB and caspase 8" . SPARSER::COLLECTION)
     ("helenalin" . SPARSER::DRUG) ("Helenalin" . SPARSER::DRUG)
     ("microglial phospho-p38" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Soluble factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Microglia" . SPARSER::PROTEIN)
-    ("MMP-2 and astrocytes" . SPARSER::COLLECTION)
-    ("TIMP-1 or -2" . SPARSER::COLLECTION)
-    ("neuronal MMP-14" . SPARSER::PROTEIN) ("dystroglycan" . SPARSER::PROTEIN)
+    ("MMP-2 and astrocytes" . SPARSER::COLLECTION) ("TBM" . SPARSER::PROTEIN)
+    ("neuronal MMP-14" . SPARSER::PROTEIN) ("EAE" . SPARSER::PROTEIN)
+    ("Mmp" . SPARSER::PROTEIN) ("dystroglycan" . SPARSER::PROTEIN)
     ("aggrecan and laminin" . SPARSER::COLLECTION)
     ("aggrecan" . SPARSER::PROTEIN)
     ("these kinases and signal transducers" . SPARSER::COLLECTION)
@@ -10372,21 +10748,20 @@
     ("p38 mitogen activated protein kinases (MAPK)"
      . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("MMPs and TIMPs" . SPARSER::COLLECTION) ("TIMPs" . SPARSER::PROTEIN)
-    ("metalloproteinase" . SPARSER::PROTEIN)
+    ("metalloproteinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("pathogen-driven host-derived factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("MAP kinase and NFκB" . SPARSER::COLLECTION)
     ("p38 and NFκB" . SPARSER::COLLECTION)
     ("microglia/macrophages" . SPARSER::COLLECTION)
     ("which targets CNS-specific substrates" . SPARSER::SUBSTRATE)
-    ("Caspase-2" . SPARSER::PROTEIN)
-    ("FLICE-associated huge protein" . SPARSER::PROTEIN)
-    ("apolipoprotein E" . SPARSER::PROTEIN) ("IKK2" . SPARSER::PROTEIN)
-    ("Oncostatin M" . SPARSER::PROTEIN) ("Iba1" . SPARSER::PROTEIN)
-    ("p18" . SPARSER::PROTEIN) ("H11" . SPARSER::PROTEIN)
-    ("H37" . SPARSER::PROTEIN) ("SC-514" . SPARSER::PROTEIN)
-    ("IL-1Ra" . SPARSER::PROTEIN) ("z-IETD-fmk" . SPARSER::DRUG)
-    ("MMP-14" . SPARSER::PROTEIN) ("Mmp2" . SPARSER::PROTEIN)
-    ("type IV collagen" . SPARSER::PROTEIN) ("MMP-9" . SPARSER::PROTEIN)
-    ("kinase-1" . SPARSER::PROTEIN)
+    ("TB" . SPARSER::PROTEIN) ("Caspase-2" . SPARSER::PROTEIN)
+    ("IKK2" . SPARSER::PROTEIN) ("Oncostatin M" . SPARSER::PROTEIN)
+    ("Iba1" . SPARSER::PROTEIN) ("p18" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("H11" . SPARSER::PROTEIN) ("H37" . SPARSER::PROTEIN)
+    ("SC-514" . SPARSER::DRUG) ("IL-1Ra" . SPARSER::PROTEIN)
+    ("z-IETD-fmk" . SPARSER::DRUG) ("MMP-14" . SPARSER::PROTEIN)
+    ("Mmp2" . SPARSER::PROTEIN) ("type IV collagen" . SPARSER::PROTEIN)
+    ("MMP-9" . SPARSER::PROTEIN) ("kinase-1" . SPARSER::PROTEIN)
     ("p38 mitogen activated protein kinases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("caspase 8" . SPARSER::PROTEIN) ("Caspase 8" . SPARSER::PROTEIN)
     ("MMP-2" . SPARSER::PROTEIN)
@@ -10401,22 +10776,27 @@
     ("enhanced green fluorescent protein (EGFP)" . SPARSER::PROTEIN)
     ("HSA" . SPARSER::PROTEIN) ("aphidicolin" . SPARSER::PROTEIN)
     ("lamins" . SPARSER::PROTEIN-FAMILY) ("CRS" . SPARSER::PROTEIN)
+    ("MPF" . SPARSER::PROTEIN)
     ("important mitotic regulatory proteins" . SPARSER::PROTEIN)
     ("Cdk1-CyclinB1" . SPARSER::COLLECTION)
     ("Cdk1 and CyclinB1" . SPARSER::COLLECTION)
+    ("viral protein R" . SPARSER::PROTEIN)
+    ("The two major cytopathic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Vpr" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Vif" . SPARSER::PROTEIN)
-    ("1-2" . SPARSER::PROTEIN) ("CD24" . SPARSER::PROTEIN)
+    ("scaffold protein" . SPARSER::PROTEIN) ("CD24" . SPARSER::PROTEIN)
     ("PLK1" . SPARSER::PROTEIN) ("Cdc25C" . SPARSER::PROTEIN)
-    ("CyclinB1" . SPARSER::PROTEIN) ("LPP3-RGD" . SPARSER::PROTEIN-PAIR)
+    ("CyclinB1" . SPARSER::PROTEIN) ("protein R" . SPARSER::PROTEIN)
+    ("LPP3-RGD" . SPARSER::PROTEIN-PAIR)
     ("LPP3 and m Lpp3" . SPARSER::COLLECTION)
     ("normal β-catenin" . SPARSER::PROTEIN)
-    ("Adenomatous Polyposis Coli ( APC  mut/mut ) gene" . SPARSER::GENE)
+    ("Adenomatous Polyposis Coli ( APC  mut/mut ) gene" . SPARSER::PROTEIN)
     ("mut/mut" . SPARSER::COLLECTION)
-    ("a pro-angiogenic growth factor and cytokine" . SPARSER::COLLECTION)
+    ("these two angiogenic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("growth factor and cytokine" . SPARSER::COLLECTION)
     ("an aggressive type" . TYPE)
     ("β-catenin, and CYCLIN-D1" . SPARSER::COLLECTION)
-    ("-PI" . SPARSER::COLLECTION) ("Phosphatase" . SPARSER::PHOSPHATASE)
+    ("-PI" . SPARSER::COLLECTION) ("-RAD" . SPARSER::COLLECTION)
+    ("RAD" . SPARSER::PROTEIN) ("Phosphatase" . SPARSER::PHOSPHATASE)
     ("LPP3 or m Lpp3 (Figure xref )" . SPARSER::COLLECTION)
     ("VEGF and IL-8" . SPARSER::COLLECTION)
     ("vascular endothelial growth factor (VEGF) and interleukin-8 (IL-8)"
@@ -10425,19 +10805,20 @@
     ("endocrine and exocrine" . SPARSER::COLLECTION)
     ("both mature and immature forms" . SPARSER::FORM)
     ("one immature 32-33 kDa" . SPARSER::PROTEIN) ("Lpp3" . SPARSER::PROTEIN)
-    ("TCF/LEF-1" . SPARSER::COLLECTION)
+    ("TCF/LEF-1" . SPARSER::COLLECTION) ("wingless" . SPARSER::PROTEIN)
     ("S1P and its structural homologs" . SPARSER::COLLECTION)
     ("S1P and LPA" . SPARSER::COLLECTION)
     ("LPP1, LPP2, and LPP3" . SPARSER::COLLECTION)
     ("sphingosine 1-phosphate (S1P) and its structural homologs"
      . SPARSER::COLLECTION)
-    ("lysophosphatidic acid (LPA)" . SPARSER::LPA) ("LPA" . SPARSER::LPA)
+    ("lysophosphatidic acid (LPA)" . SPARSER::LPA) ("LPA" . SPARSER::PROTEIN)
     ("LPPs" . SPARSER::PROTEIN)
     ("β-catenin and CYCLIN-D1" . SPARSER::COLLECTION)
     ("β-catenin, CYCLIN-D1, and CD133" . SPARSER::COLLECTION)
     ("U87 and U118" . SPARSER::COLLECTION) ("Lipid" . SPARSER::LIPID)
     ("chemo-attractant" . SPARSER::PROTEIN) ("Anti-β" . SPARSER::PROTEIN)
     ("TIMP-2" . SPARSER::PROTEIN)
+    ("tissue inhibitor of metalloproteinases" . SPARSER::PROTEIN)
     ("glial fibrillary acidic protein" . SPARSER::PROTEIN)
     ("regulator of cell cycle" . SPARSER::PROTEIN) ("LEF-1" . SPARSER::PROTEIN)
     ("β- catenin" . SPARSER::PROTEIN) ("Sphk1" . SPARSER::PROTEIN)
@@ -10450,8 +10831,8 @@
     ("DNA-replication" . SPARSER::DNA)
     ("H2AX positive abnormal PCs" . SPARSER::PROTEIN)
     ("normal PCs" . SPARSER::PROTEIN) ("a larger cohort" . SPARSER::MOLECULE)
-    ("yet 15% BM-PCs" . SPARSER::PROTEIN) ("dL" . SPARSER::MOLECULE)
-    ("the normal PC" . SPARSER::PROTEIN)
+    ("yet 15% BM-PCs" . SPARSER::PROTEIN) ("g/dL" . SPARSER::COLLECTION)
+    ("dL" . SPARSER::PROTEIN) ("the normal PC" . SPARSER::PROTEIN)
     ("primary malignant PCs" . SPARSER::PROTEIN) ("DP" . SPARSER::PROTEIN)
     ("p53 and p53" . SPARSER::COLLECTION)
     ("ATR and H2AX" . SPARSER::COLLECTION)
@@ -10464,7 +10845,6 @@
     ("wortmannin" . SPARSER::PROTEIN) ("PCs" . SPARSER::PROTEIN)
     ("PI3-kinases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("M protein" . SPARSER::PROTEIN) ("Texas-Red" . SPARSER::DRUG)
-    ("DNA-dependent protein kinase" . SPARSER::PROTEIN)
     ("ataxia telangiectasia mutated" . SPARSER::PROTEIN)
     ("PI3" . SPARSER::PROTEIN) ("Tao" . SPARSER::DRUG)
     ("SIRT3–SOD2" . SPARSER::COLLECTION)
@@ -10479,7 +10859,6 @@
     ("combined glucose and amino-acid deprivation" . SPARSER::COLLECTION)
     ("Nutrient" . SPARSER::MOLECULE) ("the cellular ROS" . SPARSER::PROTEIN)
     ("SIRT3 or SOD2" . SPARSER::COLLECTION)
-    ("mitochondrial ROS" . SPARSER::PROTEIN)
     ("SIRT3 and SOD2" . SPARSER::COLLECTION)
     ("SOD2–SIRT3" . SPARSER::COLLECTION)
     ("SOD2 and SIRT3" . SPARSER::COLLECTION)
@@ -10490,7 +10869,8 @@
     ("SIRTs—SIRT1" . SPARSER::PROTEIN-PAIR)
     ("SIRTs—SIRT3" . SPARSER::PROTEIN-PAIR)
     ("TSA or NAM" . SPARSER::COLLECTION)
-    ("sirtuin 3 (SIRT)" . SPARSER::PROTEIN) ("Classes" . CLASS)
+    ("sirtuin 3 (SIRT)" . SPARSER::PROTEIN)
+    ("‘classical' histone deacetylases" . SPARSER::PROTEIN) ("Classes" . CLASS)
     ("either SOD2 K68Q or SOD2 K68R mutants ( xref )" . SPARSER::COLLECTION)
     ("SOD2 K68Q and SOD2 K68R" . SPARSER::COLLECTION)
     ("HEK" . SPARSER::PROTEIN) ("CobB or CobB" . SPARSER::COLLECTION)
@@ -10501,9 +10881,8 @@
     ("either glutamine (SOD2 K68Q ) or arginine (SOD2 K68R )"
      . SPARSER::COLLECTION)
     ("SOD2s" . SPARSER::PROTEIN) ("TSA and NAM" . SPARSER::COLLECTION)
-    ("nicotinamide (NAM) and trichostatin" . SPARSER::COLLECTION)
+    ("most known deacetylases" . SPARSER::PROTEIN)
     ("histones and transcription regulators ( xref )" . SPARSER::COLLECTION)
-    ("mitochondrial SOD2" . SPARSER::PROTEIN)
     ("oxygen and hydrogen peroxide" . SPARSER::COLLECTION)
     ("oxygen and water" . SPARSER::COLLECTION)
     ("superoxide" . SPARSER::MOLECULE) ("Superoxide" . SPARSER::MOLECULE)
@@ -10514,17 +10893,16 @@
     ("SOD1" . SPARSER::PROTEIN) ("SOD2" . SPARSER::PROTEIN)
     ("manganese superoxide dismutase" . SPARSER::PROTEIN)
     ("a cancer-associated gene" . SPARSER::GENE)
-    ("lacked functional p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("MAGEA3/TRIM28" . SPARSER::COLLECTION)
+    ("lacked functional p53" . SPARSER::PROTEIN)
+    ("MAGEA3/TRIM28" . SPARSER::COLLECTION) ("Ub" . SPARSER::PROTEIN)
     ("ligases, and p53" . SPARSER::COLLECTION)
-    ("MAGE-A1 as well as MAGE-A3" . SPARSER::COLLECTION)
     ("The lentiviral shRNA" . SPARSER::PROTEIN)
     ("MAGE and survivin" . SPARSER::COLLECTION)
     ("Bax, Bak, and survivin" . SPARSER::COLLECTION)
-    ("Survivin" . SPARSER::PROTEIN)
+    ("Survivin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a multifunctional protein" . SPARSER::PROTEIN)
-    ("reverted Bax and Bak mRNA" . SPARSER::PROTEIN)
-    ("Ub-p53" . SPARSER::COLLECTION)
+    ("reverted Bax and Bak mRNA" . SPARSER::RNA)
+    ("Ub-p53" . SPARSER::PROTEIN-PAIR)
     ("Bid, Bim, Mcl-1, Bcl-2, and Bcl-xl" . SPARSER::COLLECTION)
     ("Bim" . SPARSER::PROTEIN)
     ("pro-apoptotic Bax and Bak" . SPARSER::COLLECTION)
@@ -10532,17 +10910,12 @@
     ("Bax and survivin" . SPARSER::COLLECTION)
     ("p21 and p27" . SPARSER::COLLECTION)
     ("p21 Cip1 and p27 Kip1" . SPARSER::COLLECTION)
-    ("ARP-1 or Pt" . SPARSER::COLLECTION) ("bromo" . SPARSER::MOLECULE)
-    ("ARP-1 and Pt" . SPARSER::COLLECTION)
-    ("targeted lentiviral shRNA" . SPARSER::PROTEIN)
-    ("ARP-1" . SPARSER::PROTEIN)
+    ("viable MM1" . SPARSER::PROTEIN) ("bromo" . SPARSER::MOLECULE)
+    ("Con" . SPARSER::PROTEIN) ("targeted lentiviral shRNA" . SPARSER::PROTEIN)
     ("the predominant type I MAGEs" . SPARSER::PROTEIN-FAMILY)
     ("both the plasma cell marker CD138 and the proliferation marker Ki-67 ( xref )"
      . SPARSER::COLLECTION)
-    ("MAGE-A1, MAGE-A4, and NY-ESO-1" . SPARSER::COLLECTION)
-    ("FISH" . SPARSER::PROTEIN)
-    ("MAGE-A3 and other CTAg proteins" . SPARSER::COLLECTION)
-    ("Bax and Bak" . SPARSER::COLLECTION)
+    ("FISH" . SPARSER::PROTEIN) ("Bax and Bak" . SPARSER::COLLECTION)
     ("the sole or dominant target substrate" . SPARSER::SUBSTRATE)
     ("MAGE-A2 and -C2" . SPARSER::COLLECTION)
     ("MAGE-A3 or CT7" . SPARSER::COLLECTION)
@@ -10550,20 +10923,21 @@
     ("MAGE-A3 and CT7" . SPARSER::COLLECTION)
     ("tumor-associated genes" . SPARSER::GENE)
     ("MAGE" . SPARSER::PROTEIN-FAMILY) ("MAGEs" . SPARSER::PROTEIN-FAMILY)
-    ("GEnes" . SPARSER::GENE) ("MAGEA3" . SPARSER::PROTEIN)
+    ("GEnes" . SPARSER::GENE) ("Antigen" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Melanoma" . SPARSER::PROTEIN) ("MAGEA3" . SPARSER::PROTEIN)
     ("70 kD" . SPARSER::PROTEIN) ("Caspase-9" . SPARSER::PROTEIN)
     ("MitoTracker Red" . SPARSER::MOLECULE) ("p27 Kip1" . SPARSER::PROTEIN)
     ("p21 Cip1" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("chromosome 17" . SPARSER::PROTEIN) ("MAGE-C2" . SPARSER::PROTEIN)
-    ("Protein A" . SPARSER::PROTEIN) ("cyclin E2" . SPARSER::PROTEIN)
-    ("cyclin B2" . SPARSER::PROTEIN) ("cyclin B1" . SPARSER::PROTEIN)
-    ("Q-VD-OPh" . SPARSER::DRUG) ("MAGE-A4" . SPARSER::PROTEIN)
-    ("MAGE-A1" . SPARSER::PROTEIN) ("CT10" . SPARSER::PROTEIN)
-    ("Kap1" . SPARSER::PROTEIN) ("TRIM28" . SPARSER::PROTEIN)
-    ("MAGE-A2" . SPARSER::PROTEIN) ("Type I" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("MAGE-A3" . SPARSER::PROTEIN) ("this flexible enzyme" . SPARSER::ENZYME)
+    ("CS3" . SPARSER::PROTEIN) ("Protein A" . SPARSER::PROTEIN)
+    ("cyclin E2" . SPARSER::PROTEIN) ("cyclin B2" . SPARSER::PROTEIN)
+    ("cyclin B1" . SPARSER::PROTEIN) ("Q-VD-OPh" . SPARSER::DRUG)
+    ("CT10" . SPARSER::PROTEIN) ("Kap1" . SPARSER::PROTEIN)
+    ("TRIM28" . SPARSER::PROTEIN) ("MAGE-A2" . SPARSER::PROTEIN)
+    ("Type I" . SPARSER::HUMAN-PROTEIN-FAMILY) ("MAGE-A3" . SPARSER::PROTEIN)
+    ("this flexible enzyme" . SPARSER::ENZYME)
     ("intrinsically inefficient enzyme" . SPARSER::ENZYME)
-    ("ADK" . SPARSER::KINASE) ("kinase (ADK)" . SPARSER::KINASE)
+    ("kinase (ADK)" . SPARSER::KINASE) ("ADK" . SPARSER::PROTEIN)
     ("PKA and other kinases" . SPARSER::COLLECTION)
     ("Cip and P16" . SPARSER::COLLECTION) ("CDK2/Cyclin" . SPARSER::COLLECTION)
     ("a second divalent ion" . SPARSER::MOLECULE)
@@ -10574,6 +10948,7 @@
      . SPARSER::COLLECTION)
     ("the catalytically competent active site conformation"
      . SPARSER::BIO-CONFORMATION)
+    ("salt and pH" . SPARSER::COLLECTION)
     ("a bound divalent Mg 2+" . SPARSER::MOLECULE)
     ("monovalent ions" . SPARSER::MOLECULE)
     ("a water molecule instead of a substrate Ser/Thr" . SPARSER::COLLECTION)
@@ -10591,6 +10966,7 @@
     ("the precise crystal-structure conformations" . SPARSER::BIO-CONFORMATION)
     ("The most flexible state" . SPARSER::BIO-STATE)
     ("substrate and activator" . SPARSER::COLLECTION)
+    ("the cyclin A subunit" . SPARSER::FRAGMENT)
     ("typically much better substrates" . SPARSER::SUBSTRATE)
     ("protein and reactant" . SPARSER::COLLECTION)
     ("ADP and peptide" . SPARSER::COLLECTION)
@@ -10606,43 +10982,48 @@
     ("PKI" . SPARSER::PROTEIN-FAMILY)
     ("the inactive CDK2 monomer" . SPARSER::MONOMER)
     ("pdb" . SPARSER::MOLECULE) ("Glycine" . SPARSER::AMINO-ACID)
-    ("The trigonal-planar MgF" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("anion" . SPARSER::MOLECULE) ("vanadate" . SPARSER::MOLECULE)
+    ("anion" . SPARSER::MOLECULE)
+    ("the square-planar AlF 4" . SPARSER::PROTEIN)
+    ("ADP, Mg 2+ , NaF, and substrate" . SPARSER::COLLECTION)
+    ("NaF" . SPARSER::PROTEIN) ("vanadate" . SPARSER::MOLECULE)
     ("van" . SPARSER::PROTEIN)
     ("the ADP, the 10-residue substrate peptide, and a trigonal-planar MgF 3"
      . SPARSER::COLLECTION)
     ("ADP, the 10-residue substrate peptide, and a trigonal-planar MgF 3"
      . SPARSER::COLLECTION)
-    ("a trigonal-planar MgF" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("CDK2/Cyclin A" . SPARSER::COLLECTION) ("AMPPNP" . SPARSER::MOLECULE)
-    ("ADP/MgF" . SPARSER::COLLECTION)
+    ("pHs" . SPARSER::PROTEIN) ("ADP/MgF" . SPARSER::COLLECTION)
     ("an active Phosho-CDK2/CyclinA complex" . SPARSER::BIO-COMPLEX)
     ("Phosho-CDK2/CyclinA" . SPARSER::COLLECTION)
-    ("the divergent protein kinases" . SPARSER::PROTEIN)
+    ("the divergent protein kinases" . SPARSER::KINASE)
     ("a single metal ion and a one Mg 2+ mechanism" . SPARSER::COLLECTION)
-    ("PKA and CDK2" . SPARSER::COLLECTION) ("state (TS)" . SPARSER::BIO-STATE)
-    ("TS" . SPARSER::PROTEIN) ("a single divalent ion" . SPARSER::MOLECULE)
+    ("PKA and CDK2" . SPARSER::COLLECTION)
+    ("Protein Kinase A (PKA)" . SPARSER::PROTEIN)
+    ("state (TS)" . SPARSER::BIO-STATE) ("TS" . SPARSER::PROTEIN)
+    ("a single divalent ion" . SPARSER::MOLECULE)
     ("any divalent ions" . SPARSER::MOLECULE)
-    ("at least one protein kinase" . SPARSER::KINASE)
+    ("at least one protein kinase" . SPARSER::PROTEIN)
     ("two divalent metal ions" . SPARSER::MOLECULE) ("CASK" . SPARSER::PROTEIN)
     ("NTP" . SPARSER::MOLECULE)
     ("their catalytically competent state" . SPARSER::BIO-STATE)
     ("Cip and p27" . SPARSER::COLLECTION) ("KIP" . SPARSER::PROTEIN)
     ("Cip" . SPARSER::PROTEIN) ("Cyclins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("cdc28a" . SPARSER::PROTEIN) ("ions" . SPARSER::MOLECULE)
-    ("substrate peptide and MgF" . SPARSER::COLLECTION)
+    ("substrate peptide and MgF 3" . SPARSER::COLLECTION)
     ("CDK2/CyclinA" . SPARSER::COLLECTION)
     ("MgF" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CyclinA" . SPARSER::PROTEIN)
     ("Na+" . SPARSER::MOLECULE) ("P80" . SPARSER::PROTEIN)
     ("ULP1" . SPARSER::PROTEIN) ("MgSO 4" . SPARSER::DRUG)
-    ("P 32" . SPARSER::PROTEIN) ("ERK2" . SPARSER::PROTEIN)
+    ("Smt3" . SPARSER::PROTEIN) ("P 32" . SPARSER::PROTEIN)
+    ("Cak1" . SPARSER::PROTEIN) ("ERK2" . SPARSER::PROTEIN)
     ("P16" . SPARSER::PROTEIN) ("P21" . SPARSER::PROTEIN)
     ("exchange factor" . SPARSER::EXCHANGE-FACTOR) ("Wee1" . SPARSER::PROTEIN)
     ("Myt1" . SPARSER::PROTEIN) ("protein C" . SPARSER::PROTEIN)
-    ("O-P" . SPARSER::PROTEIN) ("ATP 4" . SPARSER::PROTEIN)
-    ("Na +" . SPARSER::MOLECULE) ("1L" . SPARSER::PROTEIN)
-    ("PO 3" . SPARSER::PROTEIN) ("NO 3" . SPARSER::PROTEIN)
-    ("BRCA2 and MRE11" . SPARSER::COLLECTION)
+    ("ATP 4" . SPARSER::PROTEIN) ("Na +" . SPARSER::MOLECULE)
+    ("1L" . SPARSER::PROTEIN) ("2+" . SPARSER::PROTEIN)
+    ("PO 3" . SPARSER::PROTEIN) ("AlF 4" . SPARSER::PROTEIN)
+    ("NO 3" . SPARSER::PROTEIN) ("Protein Kinase A" . SPARSER::PROTEIN)
+    ("cdc28" . SPARSER::PROTEIN) ("BRCA2 and MRE11" . SPARSER::COLLECTION)
     ("either BRCA2 ( xref and xref ) or RAD51" . SPARSER::COLLECTION)
     ("dNTP" . SPARSER::MOLECULE)
     ("the replisome and the stalled fork structure" . SPARSER::COLLECTION)
@@ -10654,13 +11035,15 @@
     ("either wild-type BRCA2 or the S3291A mutant" . SPARSER::COLLECTION)
     ("olaparib" . SPARSER::DRUG) ("colcemid" . SPARSER::DRUG)
     ("BRCA2 and RAD51" . SPARSER::COLLECTION)
+    ("successful HDR" . SPARSER::PROTEIN)
     ("defective BRCA2" . SPARSER::PROTEIN)
-    ("Filaments" . SPARSER::PROTEIN-FAMILY) ("endonuclease" . SPARSER::PROTEIN)
-    ("C-ter" . SPARSER::PROTEIN) ("C-ter-RAD51" . SPARSER::PROTEIN-PAIR)
-    ("RPA" . SPARSER::PROTEIN) ("Brca2" . SPARSER::PROTEIN)
-    ("protein and DNA" . SPARSER::COLLECTION) ("mirin" . SPARSER::DRUG)
-    ("VC" . SPARSER::MOLECULE) ("Gap" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("mES" . SPARSER::MOLECULE)
+    ("Filaments" . SPARSER::PROTEIN-FAMILY) ("DR-GFP" . SPARSER::COLLECTION)
+    ("endonuclease" . SPARSER::PROTEIN) ("C-ter" . SPARSER::PROTEIN)
+    ("C-ter-RAD51" . SPARSER::PROTEIN-PAIR) ("RPA" . SPARSER::PROTEIN)
+    ("Brca2" . SPARSER::PROTEIN) ("protein and DNA" . SPARSER::COLLECTION)
+    ("mirin" . SPARSER::DRUG) ("VC" . SPARSER::MOLECULE)
+    ("Gap" . SPARSER::HUMAN-PROTEIN-FAMILY) ("mES" . SPARSER::PROTEIN)
+    ("lex1" . SPARSER::PROTEIN)
     ("the chemotherapeutic gemcitabine" . SPARSER::DRUG)
     ("nucleoside" . SPARSER::MOLECULE)
     ("deoxyribonucleoside" . SPARSER::MOLECULE) ("IdU" . SPARSER::DRUG)
@@ -10669,9 +11052,9 @@
     ("trim" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the C-terminal ~200 amino acids of BRCA2 (C-ter)" . SPARSER::PROTEIN)
     ("BRC" . SPARSER::PROTEIN) ("nucleoprotein" . SPARSER::PROTEIN)
-    ("hydroxyurea" . SPARSER::DRUG) ("Ku70" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("CHK1" . SPARSER::PROTEIN) ("ATPase activity" . SPARSER::PROTEIN)
-    ("I-SceI" . SPARSER::PROTEIN)
+    ("hydroxyurea" . SPARSER::DRUG) ("HDR" . SPARSER::PROTEIN)
+    ("Ku70" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CHK1" . SPARSER::PROTEIN)
+    ("ATPase activity" . SPARSER::PROTEIN) ("I-SceI" . SPARSER::PROTEIN)
     ("cyclin dependent kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("PIR2" . SPARSER::PROTEIN) ("RAD54" . SPARSER::PROTEIN)
     ("exonuclease activity" . SPARSER::PROTEIN)
@@ -10689,18 +11072,20 @@
     ("NPHP2 and AHI1" . SPARSER::COLLECTION)
     ("MKS1 and its interacting proteins" . SPARSER::COLLECTION)
     ("the centrosomal module proteins NPHP5 and NPHP6" . SPARSER::COLLECTION)
-    ("PALS1, PATJ and Par6" . SPARSER::COLLECTION)
-    ("a systematic mapping" . SPARSER::PROTEIN) ("Multi" . SPARSER::PROTEIN)
-    ("Ptc1 and Gli1" . SPARSER::COLLECTION) ("Ptc1" . SPARSER::PROTEIN)
-    ("Ptc" . SPARSER::HUMAN-PROTEIN-FAMILY) ("FoxA2" . SPARSER::PROTEIN)
-    ("microphthalmia" . SPARSER::PROTEIN) ("MR" . SPARSER::PROTEIN)
+    ("PALS1, PATJ and Par6" . SPARSER::COLLECTION) ("Multi" . SPARSER::PROTEIN)
+    ("Smoothened" . SPARSER::PROTEIN) ("Ptc1 and Gli1" . SPARSER::COLLECTION)
+    ("Ptc1" . SPARSER::PROTEIN) ("Ptc" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("FoxA2" . SPARSER::PROTEIN) ("microphthalmia" . SPARSER::PROTEIN)
+    ("Hh-dependent neural tube" . SPARSER::PROTEIN) ("MR" . SPARSER::PROTEIN)
     ("MRI" . SPARSER::PROTEIN) ("a heterozygous state" . SPARSER::BIO-STATE)
+    ("a high nonparametric linkage score for 3" . SPARSER::PROTEIN)
     ("Ataxin10 ( ATXN10 ) and Tectonic2 ( TCTN2 )" . SPARSER::COLLECTION)
     ("AHI1 and MKS1" . SPARSER::COLLECTION)
     ("Nek8/NPHP9" . SPARSER::COLLECTION) ("CC2D2A/MKS6" . SPARSER::COLLECTION)
     ("Ataxin10 and Tectonic2" . SPARSER::COLLECTION)
     ("-luciferase" . SPARSER::COLLECTION) ("Gli" . SPARSER::PROTEIN)
-    ("DFCs" . SPARSER::DRUG) ("nphp2, nphp5 and nphp6" . SPARSER::COLLECTION)
+    ("tube and limb" . SPARSER::COLLECTION)
+    ("nphp2, nphp5 and nphp6" . SPARSER::COLLECTION)
     ("nphp6" . SPARSER::PROTEIN) ("nphp5" . SPARSER::PROTEIN)
     ("nphp2" . SPARSER::PROTEIN) ("Ahi1 or Nphp3" . SPARSER::COLLECTION)
     ("Nphp1, Nphp4, Nphp8 and Nphp2" . SPARSER::COLLECTION)
@@ -10716,21 +11101,21 @@
     ("Nphp5, Nphp6, Nphp2, Nphp3, Nphp1, Nphp4, Nphp8, Ahi1 or Mks1"
      . SPARSER::COLLECTION)
     ("Nphp8" . SPARSER::PROTEIN) ("Nphp4" . SPARSER::PROTEIN)
-    ("Nphp1" . SPARSER::PROTEIN) ("Nphp3" . SPARSER::PROTEIN)
-    ("Nphp2" . SPARSER::PROTEIN) ("Nphp6" . SPARSER::PROTEIN)
-    ("Nphp5" . SPARSER::PROTEIN)
+    ("Nphp3" . SPARSER::PROTEIN) ("Nphp2" . SPARSER::PROTEIN)
+    ("Nphp6" . SPARSER::PROTEIN) ("Nphp5" . SPARSER::PROTEIN)
     ("an intraflagellar transport component" . SPARSER::COMPONENT)
-    ("Ift88" . SPARSER::PROTEIN)
     ("α-tubulin and pericentrin" . SPARSER::COLLECTION)
     ("Mks1, Mks6, and Tectonic1" . SPARSER::COLLECTION)
-    ("Ahi1" . SPARSER::PROTEIN) ("B9d2 and Mks1" . SPARSER::COLLECTION)
-    ("B9d2" . SPARSER::PROTEIN) ("B9d1" . SPARSER::PROTEIN)
-    ("Mks6/CC2D2A" . SPARSER::COLLECTION)
+    ("Ahi1/Jouberin" . SPARSER::COLLECTION)
+    ("B9d2 and Mks1" . SPARSER::COLLECTION) ("B9d2" . SPARSER::PROTEIN)
+    ("B9d1" . SPARSER::PROTEIN) ("Mks6/CC2D2A" . SPARSER::COLLECTION)
+    ("the neural tube" . SPARSER::PROTEIN)
     ("Tectonic 1-3" . SPARSER::COLLECTION)
-    ("biliary malformations" . SPARSER::PROTEIN) ("kerouac" . SPARSER::PROTEIN)
+    ("biliary malformations" . SPARSER::PROTEIN)
+    ("neural tube" . SPARSER::PROTEIN) ("kerouac" . SPARSER::PROTEIN)
     ("malformations" . SPARSER::PROTEIN)
     ("Mks1 and its interacting proteins ( xref )" . SPARSER::COLLECTION)
-    ("Mks1" . SPARSER::PROTEIN) ("NPHP5-Ataxin10" . SPARSER::COLLECTION)
+    ("NPHP5-Ataxin10" . SPARSER::COLLECTION)
     ("Sec3, Sec8 and Sec10" . SPARSER::COLLECTION)
     ("exocyst" . SPARSER::BIO-COMPLEX) ("Sec8 and Sec10" . SPARSER::COLLECTION)
     ("Sec10" . SPARSER::PROTEIN) ("Sec8" . SPARSER::PROTEIN)
@@ -10745,7 +11130,8 @@
     ("NPHP5 and NPHP6" . SPARSER::COLLECTION) ("detergent" . SPARSER::MOLECULE)
     ("cortical regulators" . SPARSER::REGULATOR)
     ("Some previously reported interactors" . SPARSER::PROTEIN)
-    ("PATJ" . SPARSER::PROTEIN) ("phospholipids" . SPARSER::PHOSPHOLIPID)
+    ("PATJ" . SPARSER::PROTEIN) ("the ciliary base" . SPARSER::PROTEIN)
+    ("phospholipids" . SPARSER::PHOSPHOLIPID)
     ("centriole distal appendage marker OFD1 and axonemal"
      . SPARSER::COLLECTION)
     ("OFD1 and axonemal" . SPARSER::COLLECTION) ("axonemal" . SPARSER::PROTEIN)
@@ -10758,11 +11144,11 @@
     ("NPHP1, NPHP4 and NPHP8" . SPARSER::COLLECTION)
     ("NPHP1-NPHP4" . SPARSER::COLLECTION) ("NPHP1-NPHP2" . SPARSER::COLLECTION)
     ("in fact other disease proteins" . SPARSER::PROTEIN)
-    ("a graphical form" . SPARSER::FORM) ("cys" . SPARSER::AMINO-ACID)
-    ("an identifiable peptide" . SPARSER::PEPTIDE)
+    ("a graphical form" . SPARSER::FORM) ("cys" . SPARSER::PROTEIN)
+    ("an identifiable peptide" . SPARSER::PEPTIDE) ("TIC" . SPARSER::PROTEIN)
     ("NPHP5/IQCB1" . SPARSER::COLLECTION)
     ("NPHP2/Inversin" . SPARSER::COLLECTION) ("Inversin" . SPARSER::PROTEIN)
-    ("Flp" . SPARSER::PROTEIN) ("Mapping" . SPARSER::PROTEIN)
+    ("Flp" . SPARSER::PROTEIN)
     ("the NPHP gene Ataxin10 ( ATXN10 ) and JBTS gene Tectonic2 ( TCTN2 )"
      . SPARSER::COLLECTION)
     ("NPHP2, NPHP3, and NPHP4" . SPARSER::COLLECTION)
@@ -10771,37 +11157,43 @@
     ("NPHP6/CEP290" . SPARSER::COLLECTION)
     ("MKS6/CC2D2A" . SPARSER::COLLECTION) ("MKS3/TMEM67" . SPARSER::COLLECTION)
     ("AHI1/Jouberin" . SPARSER::COLLECTION) ("Jouberin" . SPARSER::PROTEIN)
+    ("ataxia" . SPARSER::PROTEIN)
     ("additional ciliary effectors" . SPARSER::EFFECTOR)
-    ("ciliary receptors" . SPARSER::PROTEIN)
+    ("ciliary receptors" . SPARSER::PROTEIN) ("limb" . SPARSER::PROTEIN)
     ("sensory receptors" . SPARSER::PROTEIN) ("retina" . SPARSER::DRUG)
     ("rhodopsin" . SPARSER::PROTEIN) ("ATXN10 and TCTN2" . SPARSER::COLLECTION)
-    ("Tctn2" . SPARSER::PROTEIN) ("interactors" . SPARSER::PROTEIN)
+    ("tube and Hedgehog" . SPARSER::COLLECTION) ("Tctn2" . SPARSER::PROTEIN)
+    ("interactors" . SPARSER::PROTEIN) ("Hedgehog" . SPARSER::PROTEIN)
     ("Joubert" . SPARSER::PROTEIN-FAMILY)
-    ("Spinocerebellar ataxia" . SPARSER::PROTEIN) ("IFT122" . SPARSER::PROTEIN)
-    ("BBS1" . SPARSER::PROTEIN) ("BBS14" . SPARSER::PROTEIN)
-    ("BBS13" . SPARSER::PROTEIN) ("Gli3" . SPARSER::PROTEIN)
-    ("Gli1" . SPARSER::PROTEIN) ("Islet1" . SPARSER::PROTEIN)
-    ("Nkx2.2" . SPARSER::PROTEIN) ("Pax6" . SPARSER::PROTEIN)
+    ("Spinocerebellar ataxia" . SPARSER::PROTEIN)
+    ("Spinocerebellar ataxia type 10" . SPARSER::PROTEIN)
+    ("IFT122" . SPARSER::PROTEIN) ("BBS1" . SPARSER::PROTEIN)
+    ("BBS14" . SPARSER::PROTEIN) ("BBS13" . SPARSER::PROTEIN)
+    ("Gli3" . SPARSER::PROTEIN) ("Gli1" . SPARSER::PROTEIN)
+    ("Islet1" . SPARSER::PROTEIN) ("Nkx2.2" . SPARSER::PROTEIN)
+    ("Pax6" . SPARSER::PROTEIN) ("age 2" . SPARSER::PROTEIN)
     ("NPHP9" . SPARSER::PROTEIN) ("Nek8" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("S12" . SPARSER::PROTEIN) ("ZO1" . SPARSER::PROTEIN)
-    ("Tectonic1" . SPARSER::PROTEIN) ("Tectonic 1" . SPARSER::PROTEIN)
-    ("Mks6" . SPARSER::PROTEIN) ("Spinocerebellar Ataxia" . SPARSER::PROTEIN)
+    ("Nphp1" . SPARSER::PROTEIN) ("Ift88" . SPARSER::PROTEIN)
+    ("Ahi1" . SPARSER::PROTEIN) ("Tectonic1" . SPARSER::PROTEIN)
+    ("Tectonic 1" . SPARSER::PROTEIN) ("Mks6" . SPARSER::PROTEIN)
+    ("Mks1" . SPARSER::PROTEIN) ("Spinocerebellar Ataxia" . SPARSER::PROTEIN)
     ("Ataxin 10" . SPARSER::PROTEIN) ("68kD)" . SPARSER::PROTEIN)
     ("membrane protein" . SPARSER::PROTEIN)
     ("Par6" . SPARSER::HUMAN-PROTEIN-FAMILY) ("PALS1" . SPARSER::PROTEIN)
     ("p130Cas" . SPARSER::PROTEIN) ("OFD1" . SPARSER::PROTEIN)
-    ("ODF2" . SPARSER::PROTEIN) ("1-4" . SPARSER::PROTEIN)
-    ("IQCB1" . SPARSER::PROTEIN) ("Tectonic2" . SPARSER::PROTEIN)
-    ("Ataxin10" . SPARSER::PROTEIN) ("NPHP2" . SPARSER::PROTEIN)
-    ("RPGRIP1L" . SPARSER::PROTEIN) ("NPHP8" . SPARSER::PROTEIN)
-    ("CEP290" . SPARSER::PROTEIN) ("NPHP6" . SPARSER::PROTEIN)
-    ("NPHP3" . SPARSER::PROTEIN) ("CC2D2A" . SPARSER::PROTEIN)
-    ("MKS6" . SPARSER::PROTEIN) ("TMEM67" . SPARSER::PROTEIN)
-    ("MKS3" . SPARSER::PROTEIN) ("MKS1" . SPARSER::PROTEIN)
-    ("TMEM216" . SPARSER::PROTEIN) ("INPP5E" . SPARSER::PROTEIN)
-    ("ARL13B" . SPARSER::PROTEIN) ("AHI1" . SPARSER::PROTEIN)
-    ("mental retardation" . SPARSER::PROTEIN) ("TCTN2" . SPARSER::PROTEIN)
-    ("ATXN10" . SPARSER::PROTEIN) ("NPHP5" . SPARSER::PROTEIN)
+    ("ODF2" . SPARSER::PROTEIN) ("IQCB1" . SPARSER::PROTEIN)
+    ("Tectonic2" . SPARSER::PROTEIN) ("Ataxin10" . SPARSER::PROTEIN)
+    ("NPHP2" . SPARSER::PROTEIN) ("RPGRIP1L" . SPARSER::PROTEIN)
+    ("NPHP8" . SPARSER::PROTEIN) ("CEP290" . SPARSER::PROTEIN)
+    ("NPHP6" . SPARSER::PROTEIN) ("NPHP3" . SPARSER::PROTEIN)
+    ("CC2D2A" . SPARSER::PROTEIN) ("MKS6" . SPARSER::PROTEIN)
+    ("TMEM67" . SPARSER::PROTEIN) ("MKS3" . SPARSER::PROTEIN)
+    ("MKS1" . SPARSER::PROTEIN) ("TMEM216" . SPARSER::PROTEIN)
+    ("INPP5E" . SPARSER::PROTEIN) ("ARL13B" . SPARSER::PROTEIN)
+    ("AHI1" . SPARSER::PROTEIN) ("mental retardation" . SPARSER::PROTEIN)
+    ("TCTN2" . SPARSER::PROTEIN) ("ATXN10" . SPARSER::PROTEIN)
+    ("NPHP5" . SPARSER::PROTEIN)
     ("claudin-4 or occludin" . SPARSER::COLLECTION)
     ("receptor, CAR, and claudin-1 and occludin" . SPARSER::COLLECTION)
     ("HIF-1α, claudin-4, phospho-PKCδ, and phospho-NF-κB"
@@ -10836,7 +11228,7 @@
     ("TGF-β1 and TGF-β" . SPARSER::COLLECTION)
     ("the small membranous substances" . SPARSER::SUBSTANCE)
     ("many small membranous substances" . SPARSER::SUBSTANCE)
-    ("pan-PKC, PKCδ, and NF-κB" . SPARSER::COLLECTION)
+    ("TER" . SPARSER::PROTEIN) ("PKCδ, and NF-κB" . SPARSER::COLLECTION)
     ("the PKCδ inhibitor and the NF-κB inhibitor ( xref )"
      . SPARSER::COLLECTION)
     ("the PKCδ inhibitor and NF-κB inhibitor ( xref )" . SPARSER::COLLECTION)
@@ -10846,12 +11238,13 @@
     ("myristoylated" . SPARSER::PROTEIN) ("rottlerin" . SPARSER::DRUG)
     ("GF109203X and NF-κB" . SPARSER::COLLECTION)
     ("SP600125, and NF-κB" . SPARSER::COLLECTION)
+    ("pan-PKC" . SPARSER::COLLECTION)
     ("claudin-7, ZO-1, JAM-A, or E-cadherin" . SPARSER::COLLECTION)
     ("ZO-1, JAM-A, and E-cadherin" . SPARSER::COLLECTION)
     ("PKCδ/NF-κB" . SPARSER::COLLECTION)
     ("occludin, ZO-2, cingulin, and MAGI-1" . SPARSER::COLLECTION)
     ("cingulin" . SPARSER::PROTEIN) ("IL-8 and TNF-α" . SPARSER::COLLECTION)
-    ("RIG-I and MDA5" . SPARSER::COLLECTION)
+    ("RIG-I and MDA5" . SPARSER::COLLECTION) ("TEM" . SPARSER::PROTEIN)
     ("the filamentous actin and the virus" . SPARSER::COLLECTION)
     ("the live virus group" . SPARSER::MOLECULE)
     ("F proteins and virus filaments" . SPARSER::COLLECTION)
@@ -10868,25 +11261,24 @@
     ("PKCδ/HIF-1α/NF-κB" . SPARSER::COLLECTION)
     ("proinflammatory cytokines and chemokines" . SPARSER::COLLECTION)
     ("target cell, and G protein" . SPARSER::COLLECTION)
-    ("SH" . SPARSER::PROTEIN-FAMILY)
-    ("claudin-4 and occludin" . SPARSER::COLLECTION)
+    ("SH" . SPARSER::PROTEIN) ("claudin-4 and occludin" . SPARSER::COLLECTION)
     ("occludin" . SPARSER::PROTEIN)
     ("the tight junctional barrier" . SPARSER::PROTEIN)
     ("a well-developed barrier" . SPARSER::PROTEIN) ("a 3D" . SPARSER::PROTEIN)
     ("HIF-1" . SPARSER::PROTEIN) ("a 20" . SPARSER::PROTEIN)
     ("intercellular adhesion molecule 1" . SPARSER::PROTEIN)
-    ("NT5" . SPARSER::PROTEIN)
-    ("tight junction protein ZO-1" . SPARSER::PROTEIN)
-    ("IMD-0354" . SPARSER::DRUG) ("GF109203X" . SPARSER::DRUG)
-    ("PD98059" . SPARSER::MOLECULE) ("claudin-7" . SPARSER::PROTEIN)
-    ("MAGI-1" . SPARSER::PROTEIN) ("claudin-2" . SPARSER::PROTEIN)
-    ("MDA5" . SPARSER::PROTEIN) ("RIG-I" . SPARSER::PROTEIN)
-    ("β1" . SPARSER::PROTEIN) ("ZO-2" . SPARSER::PROTEIN)
+    ("NT5" . SPARSER::PROTEIN) ("IMD-0354" . SPARSER::DRUG)
+    ("GF109203X" . SPARSER::DRUG) ("PD98059" . SPARSER::MOLECULE)
+    ("claudin-7" . SPARSER::PROTEIN) ("MAGI-1" . SPARSER::PROTEIN)
+    ("claudin-2" . SPARSER::PROTEIN) ("MDA5" . SPARSER::PROTEIN)
+    ("RIG-I" . SPARSER::PROTEIN) ("ZO-2" . SPARSER::PROTEIN)
     ("ZO-1" . SPARSER::PROTEIN) ("JAM-A" . SPARSER::PROTEIN)
     ("claudin-1" . SPARSER::PROTEIN) ("G protein" . SPARSER::PROTEIN)
-    ("factor-κB" . SPARSER::PROTEIN) ("claudin-4" . SPARSER::PROTEIN)
-    ("hypoxia-inducible factor-1" . SPARSER::PROTEIN)
+    ("F protein" . SPARSER::PROTEIN) ("factor-κB" . SPARSER::PROTEIN)
+    ("claudin-4" . SPARSER::PROTEIN)
+    ("hypoxia-inducible factor-1α" . SPARSER::PROTEIN)
     ("IFN-γ and β-catenin–signaling pathway" . SPARSER::COLLECTION)
+    ("protein-2 +" . SPARSER::PROTEIN-PAIR)
     ("β-amyloid and deprivation" . SPARSER::COLLECTION)
     ("exogenous molecules" . SPARSER::MOLECULE)
     ("LiCl or Wnt-3a" . SPARSER::COLLECTION) ("LiCl" . SPARSER::DRUG)
@@ -10902,23 +11294,29 @@
     ("DKK-1 (αDKK-1) or a GSK3β inhibitor (G3I)" . SPARSER::COLLECTION)
     ("Abs" . SPARSER::PROTEIN) ("DKK1 and STAT3" . SPARSER::COLLECTION)
     ("IFN-γ–treated PFA" . SPARSER::MOLECULE)
-    ("PFA and U251MG" . SPARSER::COLLECTION)
+    ("PFA and U251MG" . SPARSER::COLLECTION) ("frizzled" . SPARSER::PROTEIN)
     ("two prominent antagonists" . SPARSER::MOLECULE)
     ("DKK1 and GSK3β" . SPARSER::COLLECTION)
     ("PFA and U87MG" . SPARSER::COLLECTION)
     ("PFA ( xref ) or U87MG astroglioma cells ( xref )" . SPARSER::COLLECTION)
+    ("post–IFN-γ" . SPARSER::COLLECTION) ("TOP-flash" . SPARSER::COLLECTION)
+    ("flash" . SPARSER::PROTEIN) ("TOP" . SPARSER::PROTEIN)
     ("human primary fetal astrocytes (PFA)" . SPARSER::PROTEIN)
     ("PFA" . SPARSER::MOLECULE) ("axin" . SPARSER::PROTEIN)
+    ("Frizzled (G-coupled seven transmembrane protein receptor, Fz) and low-density lipoprotein receptor-related protein 5 or 6 coreceptors"
+     . SPARSER::COLLECTION)
     ("low-density lipoprotein receptor-related protein 5 or 6 coreceptors"
      . SPARSER::COLLECTION)
     ("coreceptors" . SPARSER::PROTEIN) ("glycoproteins" . SPARSER::PROTEIN)
-    ("perivascular macrophages" . SPARSER::PROTEIN)
-    ("mannose" . SPARSER::MOLECULE)
+    ("perivascular macrophages" . SPARSER::PROTEIN) ("HAD" . SPARSER::PROTEIN)
+    ("a promiscuous CCR" . SPARSER::PROTEIN) ("mannose" . SPARSER::MOLECULE)
+    ("CCR" . SPARSER::PROTEIN)
+    ("neurotrophic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("cytokines/chemokines" . SPARSER::COLLECTION)
     ("Astrocytes" . SPARSER::PROTEIN)
     ("monocytes/macrophages" . SPARSER::COLLECTION)
-    ("neurotoxic proteins" . SPARSER::PROTEIN) ("seizures" . SPARSER::PROTEIN)
-    ("reactive astrocytes" . SPARSER::PROTEIN)
+    ("neurotoxic proteins" . SPARSER::PROTEIN)
+    ("endothelin" . SPARSER::PROTEIN) ("seizures" . SPARSER::PROTEIN)
     ("Approximately 500 genes" . SPARSER::GENE)
     ("GTPase, and suppressor of cytokine signaling" . SPARSER::COLLECTION)
     ("breast cancer susceptibility gene 1 (BRCA1) and mini-chromosome maintenance protein"
@@ -10930,13 +11328,12 @@
     ("macrophages/microglia" . SPARSER::COLLECTION)
     ("microglia" . SPARSER::PROTEIN)
     ("an antiviral cytokine" . SPARSER::PROTEIN)
-    ("microtubule-associated protein-2" . SPARSER::PROTEIN)
     ("β-amyloid" . SPARSER::MOLECULE)
     ("N -methyl-D-aspartate" . SPARSER::MOLECULE) ("Wnt-3a" . SPARSER::PROTEIN)
-    ("MCP-1" . SPARSER::PROTEIN) ("gp120" . SPARSER::DRUG)
+    ("MCP-1" . SPARSER::PROTEIN) ("gp120" . SPARSER::PROTEIN)
     ("STAT 2" . SPARSER::PROTEIN) ("STAT 1" . SPARSER::PROTEIN)
     ("DKK-1" . SPARSER::PROTEIN) ("βTrCP" . SPARSER::PROTEIN)
-    ("low-density lipoprotein receptor" . SPARSER::PROTEIN)
+    ("lipoprotein receptor-related protein" . SPARSER::PROTEIN)
     ("Dkk1" . SPARSER::PROTEIN) ("DKK1" . SPARSER::PROTEIN)
     ("U87MG" . SPARSER::PROTEIN) ("casein kinase 1" . SPARSER::PROTEIN)
     ("glycogen synthase kinase-3" . SPARSER::PROTEIN)
@@ -10952,15 +11349,16 @@
     ("the reactive ternary complex" . SPARSER::BIO-COMPLEX)
     ("max" . SPARSER::PROTEIN) ("/Thr" . SPARSER::COLLECTION)
     ("lobes" . SPARSER::PROTEIN)
-    ("most eukaryotic protein kinases" . SPARSER::PROTEIN)
-    ("Eukaryotic protein kinases" . SPARSER::PROTEIN)
+    ("most eukaryotic protein kinases" . SPARSER::KINASE)
+    ("Eukaryotic protein kinases" . SPARSER::KINASE)
     ("the eukaryotic initiation factor 3 preinitiation complex"
      . SPARSER::BIO-COMPLEX)
     ("DFG Phe and Tyr-216" . SPARSER::COLLECTION)
     ("His/Tyr-Arg-Asp" . SPARSER::COLLECTION)
     ("Asp-Phe-Gly" . SPARSER::COLLECTION) ("DFG" . SPARSER::PROTEIN)
-    ("glycine" . SPARSER::AMINO-ACID) ("Ade" . SPARSER::PROTEIN)
-    ("lobe" . SPARSER::PROTEIN) ("HA-S6K1" . SPARSER::COLLECTION)
+    ("glycine" . SPARSER::AMINO-ACID) ("XX" . SPARSER::PROTEIN)
+    ("Ade" . SPARSER::PROTEIN) ("lobe" . SPARSER::PROTEIN)
+    ("three-step" . SPARSER::PROTEIN) ("HA-S6K1" . SPARSER::COLLECTION)
     ("San" . SPARSER::PROTEIN) ("myc-mTOR" . SPARSER::COLLECTION)
     ("pure PDK1" . SPARSER::PROTEIN)
     ("PDK1, PKCζ, or PKB" . SPARSER::COLLECTION)
@@ -10974,45 +11372,45 @@
     ("rapamycin and phosphatase treatment" . SPARSER::COLLECTION)
     ("AID" . SPARSER::PROTEIN) ("nutrient" . SPARSER::MOLECULE)
     ("PKA and PKC" . SPARSER::COLLECTION)
-    ("p90 S6 kinase 1 (RSK1) and mitogen and stress-activated protein kinase ( xref )"
-     . SPARSER::COLLECTION)
     ("mitogen and stress-activated protein kinase ( xref )"
      . SPARSER::COLLECTION)
-    ("kinase (PKG)" . SPARSER::KINASE) ("kinase (PKA)" . SPARSER::KINASE)
-    ("PKG" . SPARSER::PROTEIN) ("Kinase, and Protein" . SPARSER::COLLECTION)
-    ("Mg 2+" . SPARSER::MOLECULE) ("RSK2" . SPARSER::PROTEIN)
-    ("αII" . SPARSER::PROTEIN) ("RSK1" . SPARSER::PROTEIN)
-    ("p90 S" . SPARSER::HUMAN-PROTEIN-FAMILY) ("p70 S6" . SPARSER::PROTEIN)
-    ("cGMP-dependent" . SPARSER::PROTEIN) ("cAMP-dependent" . SPARSER::PROTEIN)
+    ("protein kinase (PKG)" . SPARSER::PROTEIN)
+    ("protein kinase (PKA)" . SPARSER::PROTEIN) ("PKG" . SPARSER::PROTEIN)
+    ("growth factor and insulin" . SPARSER::COLLECTION)
+    ("Protein Kinase, and Protein Kinase" . SPARSER::COLLECTION)
+    ("Mg 2+" . SPARSER::MOLECULE) ("ribosomal S6 kinase 2" . SPARSER::PROTEIN)
+    ("RSK2" . SPARSER::PROTEIN) ("αII" . SPARSER::PROTEIN)
+    ("RSK1" . SPARSER::PROTEIN) ("p90 S" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("p70 S6" . SPARSER::PROTEIN) ("cGMP-dependent" . SPARSER::PROTEIN)
+    ("cAMP-dependent" . SPARSER::PROTEIN)
     ("phosphoinositide-dependent protein kinase 1" . SPARSER::PROTEIN)
     ("cGMP dependent" . SPARSER::PROTEIN) ("cAMP dependent" . SPARSER::PROTEIN)
     ("S6K1" . SPARSER::PROTEIN)
     ("ribosomal protein S6 kinase" . SPARSER::PROTEIN)
-    ("DNA-contact" . SPARSER::DNA)
-    ("the crystalline state" . SPARSER::BIO-STATE)
+    ("Pan and Nussinov" . SPARSER::COLLECTION) ("DNA-contact" . SPARSER::DNA)
+    ("Pan" . SPARSER::PROTEIN) ("the crystalline state" . SPARSER::BIO-STATE)
     ("Solution" . SPARSER::MOLECULE) ("Chen" . SPARSER::PROTEIN)
     ("this alternate conformation" . SPARSER::BIO-CONFORMATION)
     ("sharp" . SPARSER::PROTEIN) ("glutamine" . SPARSER::AMINO-ACID)
     ("apo and holo" . SPARSER::COLLECTION) ("S2 and S2" . SPARSER::COLLECTION)
-    ("apo" . SPARSER::PROTEIN)
+    ("neutral pH" . SPARSER::PROTEIN) ("apo" . SPARSER::PROTEIN)
     ("the wild-type (WT) protein and the V157F mutant" . SPARSER::COLLECTION)
     ("melting" . SPARSER::DRUG)
     ("the loop-sheet-helix directly contact DNA" . SPARSER::DNA)
-    ("C-R" . SPARSER::PROTEIN) ("S10" . SPARSER::PROTEIN)
+    ("S10" . SPARSER::PROTEIN)
     ("rabbit antibodies and the other part" . SPARSER::COLLECTION)
-    ("ubiquitins" . SPARSER::PROTEIN) ("preset" . SPARSER::PROTEIN-FAMILY)
+    ("preset" . SPARSER::PROTEIN-FAMILY)
     ("the PTEN protein or a chemically synthesized peptide"
      . SPARSER::COLLECTION)
-    ("aptamer and antibody" . SPARSER::COLLECTION)
+    ("naïve" . SPARSER::PROTEIN) ("aptamer and antibody" . SPARSER::COLLECTION)
     ("paraformaldehyde" . SPARSER::DRUG)
     ("aptamers and antibodies" . SPARSER::COLLECTION)
     ("aptamers" . SPARSER::PROTEIN) ("aptamer" . SPARSER::PROTEIN)
     ("antiserum, and antibodies" . SPARSER::COLLECTION)
     ("aptamer–PTEN" . SPARSER::PROTEIN-PAIR)
     ("masking" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("antiserum" . SPARSER::PROTEIN) ("Anp32a" . SPARSER::PROTEIN)
-    ("Anp" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("acetic acid mixture" . SPARSER::MOLECULE) ("ethanol" . SPARSER::PROTEIN)
+    ("antiserum" . SPARSER::PROTEIN)
+    ("acetic acid mixture" . SPARSER::MOLECULE) ("ethanol" . SPARSER::MOLECULE)
     ("the cerebellar PTEN protein" . SPARSER::PROTEIN)
     ("the recombinant protein instead of the peptide" . SPARSER::COLLECTION)
     ("antibodies and aptamers" . SPARSER::COLLECTION)
@@ -11021,7 +11419,7 @@
     ("using peptide instead of GST-PTEN" . SPARSER::COLLECTION)
     ("phosphate-buffered serum-bovine serum albumin" . SPARSER::PROTEIN)
     ("PBS-BSA" . SPARSER::COLLECTION) ("PBS" . SPARSER::PROTEIN)
-    ("GST-PTEN" . SPARSER::COLLECTION)
+    ("cm 2" . SPARSER::PROTEIN) ("GST-PTEN" . SPARSER::COLLECTION)
     ("glutathione-S-transferase/PTEN" . SPARSER::COLLECTION)
     ("nitrocellulose" . SPARSER::MOLECULE)
     ("possible conformations" . SPARSER::BIO-CONFORMATION)
@@ -11031,12 +11429,13 @@
     ("phosphatidylinositol-" . SPARSER::PROTEIN)
     ("tyrosine-" . SPARSER::AMINO-ACID)
     ("phosphothreonine" . SPARSER::PHOSPHORYLATED-AMINO-ACID)
-    ("subcellular fractions" . SPARSER::COMPONENT)
-    ("phosphatidylinositol" . SPARSER::PROTEIN) ("C-20" . SPARSER::PROTEIN)
+    ("sin" . SPARSER::PROTEIN) ("subcellular fractions" . SPARSER::COMPONENT)
+    ("phosphatidylinositol" . SPARSER::PROTEIN) ("Anp32e" . SPARSER::PROTEIN)
     ("IP3" . SPARSER::IP3) ("phospholipase activity" . SPARSER::PROTEIN)
+    ("Anp32" . SPARSER::PROTEIN) ("Anp32a" . SPARSER::PROTEIN)
     ("glutathione-S-transferase" . SPARSER::PROTEIN)
     ("major vault protein" . SPARSER::PROTEIN)
-    ("protein phosphatase" . SPARSER::PROTEIN)
+    ("protein phosphatase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("inhibitors or growth factors" . SPARSER::COLLECTION)
     ("isothiocyanate and aziridine" . SPARSER::COLLECTION)
     ("aziridine" . SPARSER::DRUG) ("isothiocyanate" . SPARSER::MOLECULE)
@@ -11048,38 +11447,43 @@
     ("cyclophosphamide" . SPARSER::DRUG) ("daunorubicin" . SPARSER::DRUG)
     ("exogenous antioxidants" . SPARSER::DRUG)
     ("chemotherapeutic drugs" . SPARSER::DRUG)
-    ("both these pro-apoptotic MAPKs" . SPARSER::PROTEIN)
+    ("both these pro-apoptotic MAPKs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("cellular defensive antioxidants" . SPARSER::DRUG)
+    ("catalase and SOD" . SPARSER::COLLECTION) ("SOD" . SPARSER::PROTEIN)
     ("catalase" . SPARSER::PROTEIN) ("cellular ROS" . SPARSER::PROTEIN)
     ("quinine" . SPARSER::DRUG) ("Salens" . SPARSER::DRUG)
     ("-salen" . SPARSER::DRUG) ("salen" . SPARSER::DRUG)
     ("isatin" . SPARSER::MOLECULE) ("-type" . TYPE) ("MYCN" . SPARSER::PROTEIN)
     ("aliphatic diamines" . SPARSER::MOLECULE) ("diamines" . SPARSER::MOLECULE)
-    ("salens" . SPARSER::DRUG) ("pro-apoptotic MAPK" . SPARSER::PROTEIN)
+    ("salens" . SPARSER::DRUG)
+    ("pro-apoptotic MAPK" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("p38 or JNK" . SPARSER::COLLECTION)
     ("cytotoxic drugs and diverse pro-apoptotic stimuli xref"
      . SPARSER::COLLECTION)
     ("UV light" . SPARSER::PROTEIN)
     ("p38 and SAP/JNK in SMS-KCNR cells" . SPARSER::COLLECTION)
     ("SAP/JNK" . SPARSER::COLLECTION) ("PARP and XIAP" . SPARSER::COLLECTION)
-    ("XIAP" . SPARSER::PROTEIN) ("cellular MAPKs" . SPARSER::PROTEIN)
-    ("western blot" . SPARSER::PROTEIN)
-    ("drug and antioxidant" . SPARSER::COLLECTION)
-    ("fenretinide" . SPARSER::DRUG) ("a cellular oxidant" . SPARSER::PROTEIN)
-    ("Carboxy" . SPARSER::MOLECULE)
+    ("XIAP" . SPARSER::PROTEIN)
+    ("cellular MAPKs" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("western blot" . SPARSER::PROTEIN) ("fenretinide" . SPARSER::DRUG)
+    ("a cellular oxidant" . SPARSER::PROTEIN) ("Carboxy" . SPARSER::MOLECULE)
+    ("HO" . SPARSER::PROTEIN)
     ("the respective metal chloride salts" . SPARSER::DRUG)
-    ("salts" . SPARSER::DRUG) ("chelate iron and copper" . SPARSER::COLLECTION)
-    ("Cytotoxic" . SPARSER::PROTEIN) ("Fe-SP or Cu-SP" . SPARSER::COLLECTION)
+    ("salts" . SPARSER::DRUG) ("Cu" . SPARSER::PROTEIN)
+    ("chelate iron and copper" . SPARSER::COLLECTION)
+    ("Cytotoxic" . SPARSER::PROTEIN) ("Cu-SP" . SPARSER::COLLECTION)
     ("antioxidant" . SPARSER::PROTEIN) ("Oxygen" . SPARSER::MOLECULE)
     ("the previous sections Fe-SP" . SPARSER::DRUG)
     ("Annexin V and 7-AAD" . SPARSER::COLLECTION)
-    ("0.2 or 0.8 µM Fe-SP or non-complexed SP" . SPARSER::COLLECTION)
     ("PI (chromatin stain in cells with ruptured cell membrane) and Rhodamine"
      . SPARSER::COLLECTION)
-    ("Rhodamine" . SPARSER::PROTEIN) ("LOX" . SPARSER::PROTEIN)
-    ("PC-3" . SPARSER::PROTEIN) ("Therapeutics" . SPARSER::THERAPEUTICS)
-    ("pro-apoptotic p38 and JNK MAPK" . SPARSER::PROTEIN)
-    ("antioxidants" . SPARSER::DRUG) ("NB" . SPARSER::PROTEIN)
+    ("Rhodamine" . SPARSER::PROTEIN)
+    ("Membrane permeable Hoechst 33342 nuclear" . SPARSER::PROTEIN)
+    ("SW" . SPARSER::PROTEIN) ("LOX" . SPARSER::PROTEIN)
+    ("LC" . SPARSER::PROTEIN) ("Therapeutics" . SPARSER::THERAPEUTICS)
+    ("pro-apoptotic p38 and JNK MAPK" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("antioxidants" . SPARSER::DRUG) ("-SP" . SPARSER::COLLECTION)
+    ("SP" . SPARSER::PROTEIN) ("NB" . SPARSER::PROTEIN)
     ("ROS" . SPARSER::PROTEIN) ("Iron" . SPARSER::MOLECULE)
     ("hydroxyl radical" . SPARSER::MOLECULE) ("p-P38" . SPARSER::PROTEIN)
     ("P38" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Caspase 7" . SPARSER::PROTEIN)
@@ -11104,13 +11508,17 @@
     ("glycoside" . SPARSER::MOLECULE) ("Digoxin" . SPARSER::DRUG)
     ("anti-angiogenic and anti-cancer effects in vivo  xref"
      . SPARSER::COLLECTION)
-    ("EC-" . SPARSER::PROTEIN) ("vGPCR-" . SPARSER::PROTEIN)
-    ("vGPCR or vCYC/vFLIP" . SPARSER::COLLECTION)
-    ("vCYC/vFLIP" . SPARSER::COLLECTION) ("TSC/mTOR/HIF" . SPARSER::COLLECTION)
-    ("RR" . SPARSER::MOLECULE) ("vCYC" . SPARSER::PROTEIN)
+    ("vCYC/vFLIP/RR-mTOR" . SPARSER::COLLECTION) ("EC-" . SPARSER::PROTEIN)
+    ("vGPCR-" . SPARSER::PROTEIN) ("vGPCR or vCYC/vFLIP" . SPARSER::COLLECTION)
+    ("EC-vCYC/vFLIP/RR-mTOR" . SPARSER::COLLECTION)
+    ("EC-vGPCR/RR-mTOR" . SPARSER::COLLECTION)
+    ("RR-mTOR" . SPARSER::COLLECTION) ("vCYC/vFLIP" . SPARSER::COLLECTION)
+    ("TSC/mTOR/HIF" . SPARSER::COLLECTION) ("RR" . SPARSER::PROTEIN)
+    ("vCYC" . SPARSER::PROTEIN)
     ("HIF-1α, HIF-2α and VEGF" . SPARSER::COLLECTION)
     ("HIF-1α mRNA (3-fold) and HIF-2α mRNA (18-fold)" . SPARSER::COLLECTION)
     ("key angiogenic proteins" . SPARSER::PROTEIN)
+    ("vGPCR angiogenic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("these four kinases and the corresponding targeted aminoacids"
      . SPARSER::COLLECTION)
     ("TSC2 or TSC1" . SPARSER::COLLECTION)
@@ -11120,42 +11528,52 @@
     ("IL-1β, IL-10, TNFα and VEGF" . SPARSER::COLLECTION)
     ("ERK, p38 and IKKβ" . SPARSER::COLLECTION)
     ("p38/MK2" . SPARSER::COLLECTION) ("TSC1/TSC2/mTOR" . SPARSER::COLLECTION)
-    ("EC-vCYC" . SPARSER::PROTEIN-PAIR) ("EC-vCYC/vFLIP" . SPARSER::COLLECTION)
-    ("EC-vGPCR" . SPARSER::COLLECTION) ("vFLIP" . SPARSER::PROTEIN)
+    ("EC-vCYC" . SPARSER::PROTEIN-PAIR)
+    ("vCyclin and vFLIP" . SPARSER::COLLECTION)
+    ("EC-vCYC/vFLIP" . SPARSER::COLLECTION) ("EC-vGPCR" . SPARSER::COLLECTION)
+    ("vFLIP" . SPARSER::PROTEIN) ("vCyclin" . SPARSER::PROTEIN)
     ("Rapamycin" . SPARSER::DRUG) ("TSC/mTOR" . SPARSER::COLLECTION)
-    ("Tet" . SPARSER::PROTEIN) ("this viral protein" . SPARSER::PROTEIN)
+    ("the mechanism whereby vGPCR angiogenic factors"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Tet" . SPARSER::PROTEIN)
+    ("a key angiogenic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("this viral protein" . SPARSER::PROTEIN)
     ("this viral oncogene" . SPARSER::ONCOGENE)
     ("vGPCR and VEGF" . SPARSER::COLLECTION)
     ("VEGF and KDR" . SPARSER::COLLECTION) ("KDR" . SPARSER::PROTEIN)
+    ("this angiogenic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("its profound impact" . SPARSER::PROTEIN)
+    ("the angiogenic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("cytokines, chemokines and growth factors" . SPARSER::COLLECTION)
+    ("a vulnerable target" . SPARSER::TARGET-PROTEIN)
     ("HIF-1α and HIF-2α" . SPARSER::COLLECTION)
-    ("AKT, ERK, p38 and IKKβ" . SPARSER::COLLECTION)
-    ("HIF" . SPARSER::PROTEIN-FAMILY) ("vGPCR" . SPARSER::PROTEIN)
+    ("AKT, ERK, p38 and IKKβ" . SPARSER::COLLECTION) ("HIF" . SPARSER::PROTEIN)
+    ("vGPCR" . SPARSER::PROTEIN)
     ("angiogenic and inflammatory cytokines" . SPARSER::PROTEIN)
     ("KS" . SPARSER::PROTEIN) ("Nuclear Antigen-1" . SPARSER::PROTEIN)
     ("p-ERK1" . SPARSER::PROTEIN) ("p-p38" . SPARSER::PROTEIN)
     ("IKK-α" . SPARSER::PROTEIN) ("p-S6" . SPARSER::PROTEIN)
-    ("p-S6K" . SPARSER::PROTEIN) ("L-Glutamine" . SPARSER::MOLECULE)
-    ("SDF-1" . SPARSER::PROTEIN) ("IP-10" . SPARSER::PROTEIN)
+    ("L-Glutamine" . SPARSER::MOLECULE) ("SDF-1" . SPARSER::PROTEIN)
+    ("IP-10" . SPARSER::PROTEIN)
     ("endothelial cell growth factor" . SPARSER::PROTEIN)
     ("IRF-3" . SPARSER::PROTEIN) ("LANA-1" . SPARSER::PROTEIN)
     ("IFN—γ" . SPARSER::PROTEIN) ("K1" . SPARSER::PROTEIN)
     ("BAY 11-7082" . SPARSER::DRUG) ("ribosomal protein" . SPARSER::PROTEIN)
     ("FKBP12" . SPARSER::PROTEIN) ("HIF-1β" . SPARSER::PROTEIN)
-    ("ERK1" . SPARSER::PROTEIN)
+    ("Hypoxia Inducible Factor" . SPARSER::PROTEIN) ("ERK1" . SPARSER::PROTEIN)
     ("viral G protein-coupled receptor" . SPARSER::PROTEIN)
-    ("ORF74" . SPARSER::PROTEIN) ("HIF-2α" . SPARSER::PROTEIN)
-    ("HIF-1α" . SPARSER::PROTEIN)
-    ("G protein-coupled receptor" . SPARSER::PROTEIN)
+    ("ORF74" . SPARSER::PROTEIN) ("vascular endothelial" . SPARSER::PROTEIN)
+    ("HIF-2α" . SPARSER::PROTEIN) ("HIF-1α" . SPARSER::PROTEIN)
     ("the currently available TP53 inhibitors" . SPARSER::INHIBITOR)
     ("predictive biomarker" . SPARSER::MOLECULE) ("pifithrin" . SPARSER::DRUG)
     ("CDKN1A or GADD45A" . SPARSER::COLLECTION)
-    ("the long-lived TP53 mRNA" . SPARSER::PROTEIN)
+    ("the long-lived TP53 mRNA" . SPARSER::RNA)
+    ("epothilones and PAC" . SPARSER::COLLECTION)
     ("epothilones" . SPARSER::MOLECULE) ("SAC and genes" . SPARSER::COLLECTION)
     ("BUBR1 and Cyclin B1" . SPARSER::COLLECTION)
     ("carboplatin" . SPARSER::DRUG) ("TBA" . SPARSER::PROTEIN)
     ("TP53 and downstream effectors" . SPARSER::COLLECTION)
-    ("TP53 and CDKN1A" . SPARSER::COLLECTION)
+    ("shRNAs" . SPARSER::PROTEIN) ("TP53 and CDKN1A" . SPARSER::COLLECTION)
     ("CDKN1A, MDM2, GADD45A, and FAS" . SPARSER::COLLECTION)
     ("SAG or
                     PAC"
@@ -11163,6 +11581,7 @@
     ("CDKN1A, or GADD45A" . SPARSER::COLLECTION)
     ("TP53 and direct transcriptional targets" . SPARSER::COLLECTION)
     ("H2AX and PARP" . SPARSER::COLLECTION)
+    ("pan-caspase" . SPARSER::COLLECTION)
     ("XRCC6 and
                     XRCC5"
      . SPARSER::COLLECTION)
@@ -11190,10 +11609,10 @@
     ("drug- or drug" . SPARSER::COLLECTION) ("drug-" . SPARSER::DRUG)
     ("TUBB3 (beta
                 III tubulin"
-     . SPARSER::PROTEIN)
-    ("PAC" . SPARSER::DRUG)
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("epidermal growth factor receptor (EGFR)" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("platinum" . SPARSER::MOLECULE) ("taxanes" . SPARSER::DRUG)
+    ("platinum" . SPARSER::MOLECULE) ("PAC" . SPARSER::PROTEIN)
+    ("MDR" . SPARSER::PROTEIN) ("taxanes" . SPARSER::DRUG)
     ("SAG" . SPARSER::PROTEIN)
     ("TP53 and its downstream
                     effectors"
@@ -11212,14 +11631,17 @@
     ("zVAD-fmk" . SPARSER::DRUG) ("XRCC5" . SPARSER::PROTEIN)
     ("XRCC6" . SPARSER::PROTEIN) ("DNA Polymerase" . SPARSER::PROTEIN)
     ("BUB1" . SPARSER::PROTEIN) ("Nek2A" . SPARSER::PROTEIN)
-    ("Cyclin A" . SPARSER::PROTEIN) ("U6" . SPARSER::PROTEIN)
-    ("MAS5" . SPARSER::PROTEIN) ("BUB1B" . SPARSER::PROTEIN)
-    ("Bis-Tris" . SPARSER::MOLECULE) ("DiOC 6" . SPARSER::DRUG)
-    ("SP3" . SPARSER::PROTEIN) ("(beta" . SPARSER::PROTEIN)
-    ("TUBB3" . SPARSER::PROTEIN) ("ERCC1" . SPARSER::PROTEIN)
-    ("GADD45A" . SPARSER::PROTEIN) ("BUBR1" . SPARSER::PROTEIN)
-    ("Cyclin B1" . SPARSER::PROTEIN) ("kinase-" . SPARSER::KINASE)
-    ("SAP" . SPARSER::PROTEIN) ("IL-6 and IL-1" . SPARSER::COLLECTION)
+    ("Cyclin A" . SPARSER::PROTEIN) ("MAS5" . SPARSER::PROTEIN)
+    ("RNase
+                    H"
+     . SPARSER::PROTEIN)
+    ("BUB1B" . SPARSER::PROTEIN) ("Bis-Tris" . SPARSER::MOLECULE)
+    ("DiOC 6" . SPARSER::DRUG) ("SP3" . SPARSER::PROTEIN)
+    ("(beta" . SPARSER::PROTEIN) ("TUBB3" . SPARSER::PROTEIN)
+    ("ERCC1" . SPARSER::PROTEIN) ("GADD45A" . SPARSER::PROTEIN)
+    ("BUBR1" . SPARSER::PROTEIN) ("Cyclin B1" . SPARSER::PROTEIN)
+    ("kinase-" . SPARSER::KINASE) ("SAP" . SPARSER::PROTEIN)
+    ("IL-6 and IL-1" . SPARSER::COLLECTION)
     ("a
                 CDK inhibitor and potential anti-cancer drug"
      . SPARSER::COLLECTION)
@@ -11240,7 +11662,7 @@
      . SPARSER::COLLECTION)
     ("littermate" . SPARSER::PROTEIN) ("Wt and CDK4" . SPARSER::COLLECTION)
     ("Wt" . SPARSER::PROTEIN) ("cJun" . SPARSER::PROTEIN)
-    ("CDK2 and CDK4" . SPARSER::COLLECTION)
+    ("CDK2 and CDK4" . SPARSER::COLLECTION) ("pan-CDK" . SPARSER::COLLECTION)
     ("Pharmacologic kinase inhibitors" . SPARSER::INHIBITOR)
     ("SU9516 and
                     Fascaplysin"
@@ -11252,7 +11674,7 @@
     ("p38 and ERK" . SPARSER::COLLECTION) ("MAPK/SAPK" . SPARSER::COLLECTION)
     ("p-c-Jun" . SPARSER::COLLECTION) ("TLR7 and CD40" . SPARSER::COLLECTION)
     ("c-Jun, cFos, or ATF" . SPARSER::COLLECTION) ("ATF" . SPARSER::PROTEIN)
-    ("receptor (TLR)" . SPARSER::RECEPTOR) ("TLR" . SPARSER::PROTEIN-FAMILY)
+    ("receptor (TLR)" . SPARSER::RECEPTOR) ("TLR" . SPARSER::PROTEIN)
     ("c-Jun and cyclin D" . SPARSER::COLLECTION)
     ("JNK and c-Jun" . SPARSER::COLLECTION)
     ("stress activated protein kinases
@@ -11285,8 +11707,9 @@
     ("caspase-3 and cytosolic
                 Cytochrome C"
      . SPARSER::COLLECTION)
-    ("PGs" . SPARSER::PROTEIN) ("PG" . SPARSER::PROTEIN)
-    ("prostaglandin" . SPARSER::PROTEIN) ("Cyclooxygenase" . SPARSER::PROTEIN)
+    ("HCT" . SPARSER::PROTEIN) ("PGs" . SPARSER::PROTEIN)
+    ("PG" . SPARSER::PROTEIN) ("prostaglandin" . SPARSER::PROTEIN)
+    ("Cyclooxygenase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("NFκB, COX and iNOS" . SPARSER::COLLECTION)
     ("nonsteroidal anti-inflammatory drugs" . SPARSER::DRUG)
     ("TNF-α and cox-2" . SPARSER::COLLECTION)
@@ -11294,9 +11717,9 @@
     ("Akt and EGFR" . SPARSER::COLLECTION)
     ("EGFR, PCNA and cyclin D1" . SPARSER::COLLECTION)
     ("plumbagin and HT29 cells" . SPARSER::COLLECTION)
-    ("medicine" . SPARSER::DRUG) ("naphthoquinone" . SPARSER::MOLECULE)
-    ("COX" . SPARSER::PROTEIN) ("pAkt" . SPARSER::PROTEIN-FAMILY)
-    ("plumbagin" . SPARSER::DRUG) ("Plumbagin" . SPARSER::DRUG)
+    ("naphthoquinone" . SPARSER::MOLECULE) ("COX" . SPARSER::PROTEIN)
+    ("pAkt" . SPARSER::PROTEIN-FAMILY) ("plumbagin" . SPARSER::DRUG)
+    ("Plumbagin" . SPARSER::DRUG)
     ("epidermal
                 growth factor receptor"
      . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -11317,67 +11740,69 @@
                     C"
      . SPARSER::PROTEIN)
     ("cytochrome C" . SPARSER::PROTEIN) ("COX2" . SPARSER::PROTEIN)
-    ("cm−1" . SPARSER::PROTEIN) ("Triton X- 100" . SPARSER::MOLECULE)
-    ("CO2" . SPARSER::PROTEIN) ("S-G2" . SPARSER::PROTEIN)
-    ("Cytochrome C" . SPARSER::PROTEIN) ("Caspases-3" . SPARSER::PROTEIN)
-    ("wtHER2" . SPARSER::PROTEIN) ("MMTV-wtHER2" . SPARSER::PROTEIN-PAIR)
-    ("PCNA" . SPARSER::PROTEIN)
+    ("Triton X- 100" . SPARSER::MOLECULE) ("CO2" . SPARSER::PROTEIN)
+    ("S-G2" . SPARSER::PROTEIN) ("Cytochrome C" . SPARSER::PROTEIN)
+    ("Caspases-3" . SPARSER::PROTEIN) ("wtHER2" . SPARSER::PROTEIN)
+    ("MMTV-wtHER2" . SPARSER::PROTEIN-PAIR) ("PCNA" . SPARSER::PROTEIN)
     ("mainly activated MAPK- and AKT-mediated signaling circuitries"
      . SPARSER::COLLECTION)
-    ("MAPK-" . SPARSER::PROTEIN)
+    ("MAPK-" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("AKT, Src kinase and STAT3" . SPARSER::COLLECTION)
     ("constitutively active Δ16HER2 homodimers" . SPARSER::HOMODIMER)
     ("b" . SPARSER::PROTEIN) ("p-HER2" . SPARSER::COLLECTION)
     ("HER2 and luciferase" . SPARSER::COLLECTION)
+    ("delicate fibrovascular septa" . SPARSER::PROTEIN)
+    ("septa" . SPARSER::PROTEIN)
+    ("the human Δ16HER2 oncogene ( xref ) and the luciferase gene ( xref )"
+     . SPARSER::COLLECTION)
     ("the transgene and these predicted genes" . SPARSER::COLLECTION)
     ("Transgene" . SPARSER::PROTEIN)
     ("neither genes nor regulatory sequences" . SPARSER::COLLECTION)
-    ("luciferase and Δ16HER2" . SPARSER::COLLECTION) ("LUC" . SPARSER::PROTEIN)
-    ("trastuzumab" . SPARSER::DRUG) ("neu or HER2" . SPARSER::COLLECTION)
+    ("NT" . SPARSER::PROTEIN) ("luciferase and Δ16HER2" . SPARSER::COLLECTION)
+    ("LUC" . SPARSER::PROTEIN) ("trastuzumab" . SPARSER::DRUG)
+    ("neu or HER2" . SPARSER::COLLECTION)
     ("fragments (CTF)" . SPARSER::FRAGMENT) ("CTF" . SPARSER::PROTEIN)
     ("valine instead of glutamic acid" . SPARSER::COLLECTION)
     ("a mutated form" . SPARSER::FORM) ("valine" . SPARSER::AMINO-ACID)
     ("constitutively active homodimers" . SPARSER::HOMODIMER)
     ("luciferase and the human Δ16HER2 oncogene" . SPARSER::COLLECTION)
     ("erbB-2" . SPARSER::PROTEIN) ("c-erbB2" . SPARSER::PROTEIN)
-    ("p44" . SPARSER::PROTEIN) ("1–4" . SPARSER::PROTEIN)
-    ("1–1" . SPARSER::PROTEIN) ("centromere protein C1" . SPARSER::PROTEIN)
-    ("HMG-17" . SPARSER::PROTEIN)
-    ("non-histone chromosomal protein" . SPARSER::PROTEIN)
-    ("E-1" . SPARSER::PROTEIN) ("whey acidic protein" . SPARSER::PROTEIN)
+    ("citric acid" . SPARSER::MOLECULE) ("p44" . SPARSER::PROTEIN)
+    ("centromere protein C1" . SPARSER::PROTEIN) ("HMG-17" . SPARSER::PROTEIN)
+    ("whey acidic protein" . SPARSER::PROTEIN)
     ("homolog of" . SPARSER::PROTEIN)
     ("insulin-like growth factor receptor (IGFR)" . SPARSER::PROTEIN)
-    ("IGFR" . SPARSER::PROTEIN)
+    ("IGFR" . SPARSER::PROTEIN) ("insulin and C-peptide" . SPARSER::COLLECTION)
+    ("particularly not only insulin and insulin-like growth factors"
+     . SPARSER::GROWTH-FACTOR)
+    ("insulin and insulin-like" . SPARSER::COLLECTION)
     ("leptin and adiponectin" . SPARSER::COLLECTION)
-    ("MLH1 or PMS2" . SPARSER::COLLECTION) ("CFR" . SPARSER::DRUG)
+    ("MLH1 or PMS2" . SPARSER::COLLECTION) ("the broad CIs" . SPARSER::PROTEIN)
+    ("CIs" . SPARSER::PROTEIN) ("CFR" . SPARSER::PROTEIN)
     ("MutL α or MutS α heterodimer genes" . SPARSER::COLLECTION)
     ("CRCs" . SPARSER::PROTEIN)
     ("MLH1 , MSH2 , MSH6 and PMS2" . SPARSER::COLLECTION)
-    ("MSH2 and MSH6" . SPARSER::COLLECTION)
+    ("MSH2 and MSH6" . SPARSER::COLLECTION) ("MutS" . SPARSER::PROTEIN)
     ("MLH1 and PMS2" . SPARSER::COLLECTION)
-    ("HRs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("–1" . SPARSER::PROTEIN)
-    ("modifiers" . SPARSER::MOLECULE) ("CRC" . SPARSER::PROTEIN)
-    ("MMR" . SPARSER::PROTEIN)
+    ("HRs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("modifiers" . SPARSER::MOLECULE)
+    ("CRC" . SPARSER::PROTEIN) ("MMR" . SPARSER::PROTEIN)
     ("insulin-like growth factor receptor" . SPARSER::PROTEIN)
     ("C-peptide" . SPARSER::MOLECULE) ("MutL α" . SPARSER::PROTEIN)
     ("Colon Cancer" . SPARSER::PROTEIN) ("PMS2" . SPARSER::PROTEIN)
     ("MSH6" . SPARSER::PROTEIN) ("MSH2" . SPARSER::PROTEIN)
     ("gefitinib or erlotinib" . SPARSER::COLLECTION)
-    ("PI3K and BRAF" . SPARSER::COLLECTION) ("pre-" . SPARSER::PROTEIN)
-    ("Lara" . SPARSER::MOLECULE) ("=−1" . SPARSER::COLLECTION)
-    ("transaminase" . SPARSER::PROTEIN)
+    ("PI3K and BRAF" . SPARSER::COLLECTION) ("post-" . SPARSER::PROTEIN)
+    ("Lara" . SPARSER::MOLECULE) ("transaminase" . SPARSER::PROTEIN)
+    ("the postoperative period" . SPARSER::PROTEIN)
     ("PIK3CA (E542K) and BRAF (V600E)" . SPARSER::COLLECTION)
     ("met" . SPARSER::AMINO-ACID)
-    ("either clinical stage IA (28) or stage IB (21)" . SPARSER::COLLECTION)
-    ("Pre" . SPARSER::PROTEIN) ("TKI" . SPARSER::PROTEIN)
-    ("receive adjuvant gefitinib" . SPARSER::DRUG)
+    ("protein-tyrosine kinase" . SPARSER::COLLECTION)
+    ("TKI" . SPARSER::PROTEIN) ("receive adjuvant gefitinib" . SPARSER::DRUG)
     ("preoperative gefitinib" . SPARSER::DRUG) ("1A" . SPARSER::PROTEIN)
-    ("1 L" . SPARSER::PROTEIN) ("T1-2" . SPARSER::PROTEIN)
-    ("protein-tyrosine kinase" . SPARSER::PROTEIN)
     ("strong transcriptional repressors" . SPARSER::REPRESSOR)
     ("cyclin D-CDK4/6" . SPARSER::COLLECTION) ("Rb" . SPARSER::PROTEIN)
     ("cyclin D1-CDK4" . SPARSER::COLLECTION) ("Rb-E2F" . SPARSER::PROTEIN-PAIR)
-    ("HF" . SPARSER::PROTEIN) ("C/EBPβ and C/EBPα" . SPARSER::COLLECTION)
+    ("C/EBPβ and C/EBPα" . SPARSER::COLLECTION)
     ("C/EBPβ (LAP)" . SPARSER::PROTEIN) ("TNF-" . SPARSER::PROTEIN)
     ("TNF, IL-1β, and IL-6" . SPARSER::COLLECTION)
     ("resident primary C/EBP β WT macrophages" . SPARSER::PROTEIN)
@@ -11394,9 +11819,8 @@
     ("cyclin D1 ( xref ) and a repressor" . SPARSER::COLLECTION)
     ("cyclin D1 as well as p27" . SPARSER::COLLECTION)
     ("the longer C/EBPβ isoforms" . SPARSER::ISOFORM)
-    ("CEBP" . SPARSER::PROTEIN) ("premonocytic THP-1" . SPARSER::PROTEIN)
-    ("p30 or LIP" . SPARSER::COLLECTION) ("p42/p30" . SPARSER::COLLECTION)
-    ("p42 and p30" . SPARSER::COLLECTION)
+    ("CEBP" . SPARSER::PROTEIN) ("p30 or LIP" . SPARSER::COLLECTION)
+    ("p42/p30" . SPARSER::COLLECTION) ("p42 and p30" . SPARSER::COLLECTION)
     ("C/EBPα and C/EBPβ" . SPARSER::COLLECTION)
     ("Macrophage" . SPARSER::PROTEIN)
     ("longer C/EBPβ isoforms" . SPARSER::ISOFORM)
@@ -11404,68 +11828,73 @@
     ("C/EBPβ-LAP" . SPARSER::COLLECTION) ("IL-1-RA" . SPARSER::COLLECTION)
     ("RA" . SPARSER::PROTEIN)
     ("the largest isoform LAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("PRE" . SPARSER::PROTEIN) ("eGFP" . SPARSER::PROTEIN)
-    ("the vector SF91" . SPARSER::PROTEIN)
+    ("eGFP" . SPARSER::PROTEIN) ("the vector SF91" . SPARSER::PROTEIN)
     ("the complete C/EBP β" . SPARSER::PROTEIN)
     ("C/EBPβ-LIP" . SPARSER::COLLECTION) ("SF" . SPARSER::PROTEIN)
     ("the smaller LIP protein" . SPARSER::PROTEIN)
     ("the larger C/EBPβ isoforms LAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("C/EBPβ Isoforms and LAP/LIP Ratio" . SPARSER::COLLECTION)
     ("LAP/LIP" . SPARSER::COLLECTION) ("Isoforms" . SPARSER::ISOFORM)
-    ("Rb/E2F/cyclin E" . SPARSER::COLLECTION)
     ("the smaller isoform LIP" . SPARSER::PROTEIN)
     ("the largest C/EBPβ isoform LAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("C/EBPβ and PU.1" . SPARSER::COLLECTION)
+    ("interleukin 1β, chitotriosidase, and myeloid" . SPARSER::COLLECTION)
+    ("PMA-" . SPARSER::PROTEIN) ("chitotriosidase" . SPARSER::PROTEIN)
+    ("C/EBPβ and retinoblastoma protein" . SPARSER::COLLECTION)
+    ("HF" . SPARSER::PROTEIN) ("PU.1 and C/EBP" . SPARSER::COLLECTION)
+    ("factors, and C/EBPβ" . SPARSER::COLLECTION)
     ("protein (LIP)" . SPARSER::PROTEIN)
     ("the considerably shorter variant" . SPARSER::VARIANT)
     ("its slightly shorter version LAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("The two larger isoforms" . SPARSER::ISOFORM)
     ("MafB, and Egr-1" . SPARSER::COLLECTION) ("MafB" . SPARSER::PROTEIN)
-    ("E2F1 and cyclin E" . SPARSER::COLLECTION)
-    ("THP-1 and C/EBPβ-long" . SPARSER::COLLECTION)
-    ("directly study C/EBPβ" . SPARSER::PROTEIN)
-    ("nuclear C/EBPβ-liver-enriched activating protein" . SPARSER::PROTEIN)
-    ("LIP" . SPARSER::PROTEIN) ("LAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("THP-1" . SPARSER::PROTEIN) ("c- myc" . SPARSER::PROTEIN)
+    ("retinoblastoma/E2F/cyclin E" . SPARSER::COLLECTION)
+    ("E2F1 and cyclin E" . SPARSER::COLLECTION) ("KO" . SPARSER::PROTEIN)
+    ("directly study C/EBPβ" . SPARSER::PROTEIN) ("LIP" . SPARSER::PROTEIN)
+    ("LAP" . SPARSER::HUMAN-PROTEIN-FAMILY) ("c- myc" . SPARSER::PROTEIN)
     ("retinoic acid" . SPARSER::MOLECULE) ("Cyclin E" . SPARSER::PROTEIN)
-    ("CDK4/6" . SPARSER::PROTEIN)
-    ("cyclin-dependent kinase 4" . SPARSER::PROTEIN)
-    ("ATG3" . SPARSER::PROTEIN) ("ATG1" . SPARSER::PROTEIN)
-    ("cyclin A2" . SPARSER::PROTEIN) ("p30" . SPARSER::PROTEIN)
-    ("p42" . SPARSER::PROTEIN) ("1–8" . SPARSER::PROTEIN)
-    ("SV2" . SPARSER::PROTEIN) ("E-4" . SPARSER::PROTEIN)
-    ("A-12" . SPARSER::PROTEIN) ("H-7" . SPARSER::PROTEIN)
-    ("TATA box-binding protein" . SPARSER::PROTEIN)
-    ("factor 2" . SPARSER::PROTEIN) ("interleukin 1β" . SPARSER::PROTEIN)
-    ("NDRG1" . SPARSER::PROTEIN) ("Pyk2" . SPARSER::PROTEIN)
+    ("CDK4/6" . SPARSER::PROTEIN) ("ATG3" . SPARSER::PROTEIN)
+    ("ATG1" . SPARSER::PROTEIN) ("cyclin A2" . SPARSER::PROTEIN)
+    ("p30" . SPARSER::PROTEIN) ("p42" . SPARSER::PROTEIN)
+    ("SV2" . SPARSER::PROTEIN) ("factor 2" . SPARSER::PROTEIN)
+    ("interleukin 1β" . SPARSER::PROTEIN) ("NDRG1" . SPARSER::PROTEIN)
+    ("Pyk2" . SPARSER::PROTEIN)
     ("proline-rich tyrosine kinase 2" . SPARSER::PROTEIN)
     ("retinoblastoma protein" . SPARSER::PROTEIN) ("Egr-1" . SPARSER::PROTEIN)
     ("cyclin E1" . SPARSER::PROTEIN) ("E2F1" . SPARSER::PROTEIN)
-    ("C/EBP β" . SPARSER::PROTEIN) ("c-myc and bcl-2" . SPARSER::COLLECTION)
-    ("s-myc" . SPARSER::COLLECTION) ("l-myc" . SPARSER::COLLECTION)
-    ("b-myc" . SPARSER::PROTEIN-PAIR) ("bcl-2 and bax" . SPARSER::COLLECTION)
+    ("C/EBP β" . SPARSER::PROTEIN)
+    ("prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("c-myc and bcl-2" . SPARSER::COLLECTION) ("s-myc" . SPARSER::COLLECTION)
+    ("l-myc" . SPARSER::COLLECTION) ("b-myc" . SPARSER::PROTEIN-PAIR)
+    ("Mitochondrial" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("bcl-2 and bax" . SPARSER::COLLECTION)
     ("death antagonists (bcl-2, bcl-XL, Mcl-1) and death agonists (bax, bak, bcl-XS)"
      . SPARSER::COLLECTION)
     ("bak" . SPARSER::PROTEIN) ("bax" . SPARSER::PROTEIN)
     ("bcl-2 and c-myc" . SPARSER::COLLECTION) ("IA" . SPARSER::MOLECULE)
-    ("Myc protein" . SPARSER::PROTEIN)
+    ("SIL" . SPARSER::PROTEIN) ("Myc protein" . SPARSER::PROTEIN)
     ("hydrogen peroxide" . SPARSER::MOLECULE) ("cyclin E" . SPARSER::PROTEIN)
     ("n-myc" . SPARSER::PROTEIN) ("bcl-XS" . SPARSER::PROTEIN)
     ("bcl-XL" . SPARSER::PROTEIN)
     ("β-cell and increases blood sugar" . SPARSER::COLLECTION)
+    ("mitochondrial and fatty acid" . SPARSER::COLLECTION)
     ("dehydrogenase" . SPARSER::PROTEIN) ("adenosine" . SPARSER::PROTEIN)
     ("β-cell and PBLs" . SPARSER::COLLECTION) ("glycogen" . SPARSER::PROTEIN)
     ("SIRT1 and T2DM" . SPARSER::COLLECTION)
     ("a multifunctional transcription factor" . SPARSER::PROTEIN)
     ("sugar" . SPARSER::MOLECULE) ("NADH" . SPARSER::MOLECULE)
-    ("monocytes, and SIRT4" . SPARSER::COLLECTION) ("GGT" . SPARSER::PROTEIN)
+    ("monocytes, and SIRT4" . SPARSER::COLLECTION) ("BUN" . SPARSER::PROTEIN)
+    ("GGT" . SPARSER::PROTEIN) ("ALT" . SPARSER::PROTEIN)
+    ("AST" . SPARSER::PROTEIN)
     ("low density lipoprotein (LDL)" . SPARSER::PROTEIN)
     ("LDL" . SPARSER::PROTEIN) ("TC" . SPARSER::PROTEIN)
     ("triglyceride (TG) and lipoprotein" . SPARSER::COLLECTION)
-    ("group and NC" . SPARSER::COLLECTION) ("DBP" . SPARSER::PROTEIN)
-    ("GDH" . SPARSER::PROTEIN) ("glucose (FPG)" . SPARSER::MOLECULE)
+    ("group and NC" . SPARSER::COLLECTION)
+    ("DBP" . SPARSER::HUMAN-PROTEIN-FAMILY) ("GDH" . SPARSER::PROTEIN)
+    ("glucose (FPG)" . SPARSER::MOLECULE)
     ("/lipoprotein" . SPARSER::COLLECTION) ("HDL" . SPARSER::PROTEIN)
     ("lipoprotein" . SPARSER::PROTEIN) ("TG" . SPARSER::PROTEIN)
-    ("triglyceride" . SPARSER::MOLECULE) ("FPG" . SPARSER::PROTEIN-FAMILY)
+    ("triglyceride" . SPARSER::MOLECULE) ("FPG" . SPARSER::PROTEIN)
     ("SIRT1 and SIRT4" . SPARSER::COLLECTION)
     ("SIRT1 or SIRT4" . SPARSER::COLLECTION) ("NC" . SPARSER::PROTEIN)
     ("ADP-ribosyltransferase" . SPARSER::PROTEIN)
@@ -11474,41 +11903,45 @@
     ("low density lipoprotein" . SPARSER::PROTEIN)
     ("NH4Cl" . SPARSER::MOLECULE) ("deacetylase activity" . SPARSER::PROTEIN)
     ("Sir2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("β-cell" . SPARSER::PROTEIN)
-    ("Type 2" . SPARSER::PROTEIN)
+    ("Type 2" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("high density lipoprotein" . SPARSER::PROTEIN)
     ("SIRT4" . SPARSER::PROTEIN) ("TAZ and NPHP4" . SPARSER::COLLECTION)
     ("NPHP4 and TAZ" . SPARSER::COLLECTION)
     ("the latter protein" . SPARSER::PROTEIN)
     ("Lats1 and NPHP4" . SPARSER::COLLECTION)
     ("V5-tagged NPHP4" . SPARSER::PROTEIN) ("MCF-10A" . SPARSER::PROTEIN)
-    ("a previously described TAZ/TEAD target gene" . SPARSER::GENE)
+    ("a previously described TAZ/TEAD target gene" . SPARSER::PROTEIN)
     ("TAZ/TEAD" . SPARSER::COLLECTION) ("CTGF" . SPARSER::PROTEIN)
     ("an antagonistic enhancer" . SPARSER::PROTEIN)
-    ("exogenous TAZ" . SPARSER::PROTEIN) ("GAL4-TEAD" . SPARSER::COLLECTION)
+    ("TAZ/YAP" . SPARSER::COLLECTION)
+    ("exogenous TAZ or YAP" . SPARSER::COLLECTION)
+    ("TAZ or YAP" . SPARSER::COLLECTION) ("GAL4-TEAD" . SPARSER::COLLECTION)
     ("Lats1–NPHP4" . SPARSER::COLLECTION)
     ("NPHP1 or NPHP4" . SPARSER::COLLECTION)
     ("NPHP1 and NPHP4" . SPARSER::COLLECTION)
     ("Lats1 and MST1" . SPARSER::COLLECTION)
     ("these ciliary proteins" . SPARSER::PROTEIN)
     ("Nf2, Fat4, MST1/2, Lats1/2, WW45, and Mob1" . SPARSER::COLLECTION)
-    ("TAZ-" . SPARSER::PROTEIN)
+    ("TAZ and YAP" . SPARSER::COLLECTION) ("TAZ-" . SPARSER::PROTEIN)
     ("the transcriptional activators Yes-associated protein (YAP) and TAZ (transcriptional coactivator with PDZ-binding domain)"
      . SPARSER::COLLECTION)
     ("the transcriptional activators Yes-associated protein (YAP)"
      . SPARSER::PROTEIN)
     ("Merlin/Nf2" . SPARSER::COLLECTION) ("Merlin" . SPARSER::PROTEIN)
-    ("TEAD/TAZ" . SPARSER::COLLECTION) ("TEAD" . SPARSER::PROTEIN)
+    ("TEAD/TAZ" . SPARSER::COLLECTION) ("YAP and TAZ" . SPARSER::COLLECTION)
+    ("TEAD" . SPARSER::PROTEIN)
     ("the Yes-associated protein (YAP) and TAZ (transcriptional coactivator with PDZ-binding domain)"
      . SPARSER::COLLECTION)
     ("these protooncogenic transcriptional regulators"
      . SPARSER::PROTEIN-FAMILY)
     ("the Yes-associated protein (YAP)" . SPARSER::PROTEIN)
-    ("TAZ" . SPARSER::PROTEIN)
+    ("TAZ" . SPARSER::PROTEIN) ("YAP" . SPARSER::PROTEIN)
     ("a known cilia-associated protein" . SPARSER::PROTEIN)
     ("The cilia-associated protein NPHP4" . SPARSER::PROTEIN)
     ("CL4" . SPARSER::PROTEIN) ("HPRT1" . SPARSER::PROTEIN)
     ("anti–" . SPARSER::ANTIBODY) ("WWTR1" . SPARSER::PROTEIN)
-    ("anti–β" . SPARSER::PROTEIN) ("HK2" . SPARSER::PROTEIN)
+    ("anti–β" . SPARSER::PROTEIN) ("l protein" . SPARSER::PROTEIN)
+    ("HK2" . SPARSER::PROTEIN) ("2 b" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("connective tissue growth factor" . SPARSER::PROTEIN)
     ("TEAD4" . SPARSER::PROTEIN) ("NPHP1" . SPARSER::PROTEIN)
     ("Mob1" . SPARSER::PROTEIN) ("Fat4" . SPARSER::PROTEIN)
@@ -11518,10 +11951,10 @@
     ("transcriptional coactivator" . SPARSER::PROTEIN)
     ("Lats1" . SPARSER::PROTEIN) ("NPHP4" . SPARSER::PROTEIN)
     ("rDNA and co-occupies" . SPARSER::COLLECTION)
+    ("both the rDNA promoter and 28S rRNA coding region" . SPARSER::COLLECTION)
     ("AZD6244 and MK2206" . SPARSER::COLLECTION)
     ("MAPK and PI3-K" . SPARSER::COLLECTION)
     ("Myc or tumor suppressors p53, RB and ARF" . SPARSER::COLLECTION)
-    ("rRNA and protein" . SPARSER::COLLECTION)
     ("p53, RB and ARF" . SPARSER::COLLECTION) ("RB" . SPARSER::PROTEIN)
     ("mature ribosomes" . SPARSER::BIO-COMPLEX)
     ("ribosomes" . SPARSER::BIO-COMPLEX)
@@ -11532,11 +11965,14 @@
     ("rDNA, and β-actin" . SPARSER::COLLECTION)
     ("ErbB-2/β-actin/Pol" . SPARSER::COLLECTION)
     ("ErbB-2 or control mouse IgG antibodies" . SPARSER::COLLECTION)
+    ("-terminal part of rDNA containing promoter and the 28S rRNA"
+     . SPARSER::COLLECTION)
     ("the promoter and the coding region of the rDNA ( xref )"
      . SPARSER::COLLECTION)
     ("HER" . SPARSER::PROTEIN)
     ("the residual BrU-labeled nascent nuclear RNA" . SPARSER::RNA)
-    ("fibrillarin" . SPARSER::PROTEIN)
+    ("Pol II and Pol" . SPARSER::COLLECTION) ("fibrillarin" . SPARSER::PROTEIN)
+    ("BrU" . SPARSER::PROTEIN)
     ("the primary antibodies mouse anti-ErbB-2, goat anti-RNA Pol I, and rabbit anti-β-actin"
      . SPARSER::COLLECTION)
     ("secondary antibodies" . SPARSER::ANTIBODY)
@@ -11551,28 +11987,29 @@
     ("gold" . SPARSER::MOLECULE) ("ErbB-2 and Pol" . SPARSER::COLLECTION)
     ("ErbB-2 and RNA" . SPARSER::COLLECTION)
     ("ErbB-2 (green) and β-actin (red)" . SPARSER::COLLECTION)
-    ("ErbB-2 and β-actin" . SPARSER::COLLECTION)
+    ("green" . SPARSER::PROTEIN) ("ErbB-2 and β-actin" . SPARSER::COLLECTION)
     ("ErbB-2/β-actin" . SPARSER::COLLECTION)
-    ("HER2 or neu" . SPARSER::COLLECTION)
+    ("HER2 or neu" . SPARSER::COLLECTION) ("ErbB" . SPARSER::PROTEIN)
     ("many oncoproteins and tumor suppressor proteins" . SPARSER::COLLECTION)
     ("oncoproteins" . SPARSER::PROTEIN) ("varieties" . SPARSER::VARIETY)
     ("PI3-K and MEK/ERK" . SPARSER::COLLECTION) ("rDNA" . SPARSER::PROTEIN)
-    ("pre" . SPARSER::PROTEIN) ("pre-rRNA" . SPARSER::COLLECTION)
-    ("β-actin and RNA" . SPARSER::COLLECTION) ("ErbB2" . SPARSER::PROTEIN)
-    ("rRNA" . SPARSER::PROTEIN) ("MK2206" . SPARSER::DRUG)
-    ("AZD6244" . SPARSER::DRUG) ("FSC-H" . SPARSER::PROTEIN)
-    ("RNase A" . SPARSER::PROTEIN) ("lamin B" . SPARSER::PROTEIN-FAMILY)
-    ("LY294002" . SPARSER::MOLECULE) ("actinomycin D" . SPARSER::MOLECULE)
-    ("α-amanitin" . SPARSER::MOLECULE) ("anti-ERK" . SPARSER::PROTEIN)
-    ("Lamin B" . SPARSER::PROTEIN-FAMILY) ("RPA194" . SPARSER::PROTEIN)
+    ("β-actin and RNA" . SPARSER::COLLECTION) ("Pol" . SPARSER::PROTEIN)
+    ("MK2206" . SPARSER::DRUG) ("AZD6244" . SPARSER::DRUG)
+    ("FSC-H" . SPARSER::PROTEIN) ("β-2" . SPARSER::PROTEIN)
+    ("lamin B" . SPARSER::PROTEIN-FAMILY) ("LY294002" . SPARSER::MOLECULE)
+    ("actinomycin D" . SPARSER::MOLECULE) ("α-amanitin" . SPARSER::MOLECULE)
+    ("anti-ERK" . SPARSER::PROTEIN) ("Lamin B" . SPARSER::PROTEIN-FAMILY)
+    ("RPA194" . SPARSER::PROTEIN)
     ("MAP kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ErbB-2" . SPARSER::PROTEIN) ("PI3-K" . SPARSER::PROTEIN)
+    ("growth factor receptor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("ErbB2" . SPARSER::PROTEIN)
     ("low androgen and low oxygen" . SPARSER::COLLECTION)
-    ("an anabolic hormone" . SPARSER::MOLECULE)
+    ("an anabolic hormone" . SPARSER::PROTEIN)
     ("AMPK-beclin" . SPARSER::COLLECTION) ("beclin" . SPARSER::PROTEIN)
     ("puncta" . SPARSER::PROTEIN) ("oxygen-" . SPARSER::MOLECULE)
     ("punctate" . SPARSER::PROTEIN) ("androgen-" . SPARSER::PROTEIN)
-    ("Atg5" . SPARSER::PROTEIN) ("Atg" . SPARSER::DRUG)
+    ("Atg5-Atg12" . SPARSER::COLLECTION)
     ("hypoxia and testosterone" . SPARSER::COLLECTION)
     ("phosphatidylethanolamine" . SPARSER::MOLECULE)
     ("androgen and oxygen" . SPARSER::COLLECTION)
@@ -11592,14 +12029,15 @@
     ("AMPK or beclin-1" . SPARSER::COLLECTION)
     ("Low androgen and low oxygen" . SPARSER::COLLECTION)
     ("hATG1" . SPARSER::PROTEIN) ("ULK1" . SPARSER::PROTEIN)
-    ("Atg12" . SPARSER::PROTEIN) ("LC3-II" . SPARSER::PROTEIN)
-    ("BECN1" . SPARSER::PROTEIN) ("alpha-tubulin" . SPARSER::PROTEIN)
-    ("ATG12" . SPARSER::PROTEIN) ("ATG5" . SPARSER::PROTEIN)
-    ("p62" . SPARSER::PROTEIN) ("HIF1-alpha" . SPARSER::PROTEIN)
-    ("AMPKα" . SPARSER::PROTEIN-FAMILY) ("LC3" . SPARSER::PROTEIN)
-    ("GFP-LC3" . SPARSER::PROTEIN) ("s100" . SPARSER::PROTEIN)
-    ("AMPKα1" . SPARSER::PROTEIN) ("Compound C" . SPARSER::MOLECULE)
-    ("beclin-1" . SPARSER::PROTEIN) ("Beclin-1" . SPARSER::PROTEIN)
+    ("Atg12" . SPARSER::PROTEIN) ("Atg5" . SPARSER::PROTEIN)
+    ("LC3-II" . SPARSER::PROTEIN) ("BECN1" . SPARSER::PROTEIN)
+    ("alpha-tubulin" . SPARSER::PROTEIN) ("ATG12" . SPARSER::PROTEIN)
+    ("ATG5" . SPARSER::PROTEIN) ("p62" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("HIF1-alpha" . SPARSER::PROTEIN) ("AMPKα" . SPARSER::PROTEIN-FAMILY)
+    ("LC3" . SPARSER::PROTEIN) ("GFP-LC3" . SPARSER::PROTEIN)
+    ("s100" . SPARSER::PROTEIN) ("AMPKα1" . SPARSER::PROTEIN)
+    ("Compound C" . SPARSER::MOLECULE) ("beclin-1" . SPARSER::PROTEIN)
+    ("Beclin-1" . SPARSER::PROTEIN)
     ("some classical androgen" . SPARSER::PROTEIN)
     ("TMPRSS2, and FKBP5" . SPARSER::COLLECTION)
     ("AR-V7 or AR-V567es" . SPARSER::COLLECTION)
@@ -11610,41 +12048,47 @@
     ("AR-V1 and AR-V7" . SPARSER::COLLECTION)
     ("the normal AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("AR-V7 and AR-V1" . SPARSER::COLLECTION)
+    ("Sun and co-workers" . SPARSER::COLLECTION) ("Sun" . SPARSER::PROTEIN)
     ("KLK2, NKX3-1, FKBP5 and TMPRSS2" . SPARSER::COLLECTION)
     ("receptors, BAX, BCL2, and caspases" . SPARSER::COLLECTION)
     ("survivin and BCL2L12" . SPARSER::COLLECTION)
     ("C-MYC and CDK1" . SPARSER::COLLECTION)
     ("AR, C-MYC, and CDK1" . SPARSER::COLLECTION)
     ("AR-V1, AR-V7, and ARfl" . SPARSER::COLLECTION)
-    ("AR-V7 and AR-V567es" . SPARSER::COLLECTION)
+    ("AR-V7 and AR-V567es" . SPARSER::COLLECTION) ("n  " . SPARSER::PROTEIN)
     ("AR-V1, AR-V7 or -V567es" . SPARSER::COLLECTION)
-    ("undetectable AR-V7 mRNA" . SPARSER::PROTEIN)
-    ("parts" . SPARSER::COMPONENT) ("GS" . SPARSER::PROTEIN)
+    ("undetectable AR-V7 mRNA" . SPARSER::RNA) ("parts" . SPARSER::COMPONENT)
+    ("GS" . SPARSER::PROTEIN)
     ("the full length AR (ARfl) and its clinically most abundant splice variants"
      . SPARSER::COLLECTION)
     ("its clinically most abundant splice variants" . SPARSER::VARIANT)
-    ("COOH" . SPARSER::MOLECULE)
+    ("HN and CRPC" . SPARSER::COLLECTION)
+    ("hormone-naïve" . SPARSER::COLLECTION) ("COOH" . SPARSER::PROTEIN)
+    ("NTD" . SPARSER::PROTEIN)
     ("intense nuclear AR" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("androgen receptor (AR)" . SPARSER::PROTEIN) ("CRPC" . SPARSER::PROTEIN)
-    ("PC (CRPC)" . SPARSER::PROTEIN) ("Androgens" . SPARSER::DRUG)
+    ("termed castration-resistant PC (CRPC)" . SPARSER::PROTEIN)
+    ("Androgens" . SPARSER::DRUG)
     ("full length AR (ARfl) and AR-Vs" . SPARSER::COLLECTION)
     ("AR-V1, AR-V7, and AR-V567es" . SPARSER::COLLECTION)
     ("PC and non-malignant" . SPARSER::COLLECTION) ("PC" . SPARSER::PROTEIN)
+    ("HN" . SPARSER::PROTEIN) ("G1-S" . SPARSER::PROTEIN)
     ("CYP17" . SPARSER::PROTEIN) ("TMPRSS2" . SPARSER::PROTEIN)
     ("FKBP5" . SPARSER::PROTEIN) ("NKX3-1" . SPARSER::PROTEIN)
     ("KLK2" . SPARSER::PROTEIN) ("KLK3" . SPARSER::PROTEIN)
     ("UBE2C" . SPARSER::PROTEIN) ("CDC20" . SPARSER::PROTEIN)
     ("UGT2B17" . SPARSER::PROTEIN) ("HSP27" . SPARSER::PROTEIN)
     ("CYCLINA2" . SPARSER::PROTEIN) ("BCL2L12" . SPARSER::PROTEIN)
-    ("C-MYC" . SPARSER::PROTEIN) ("N-20" . SPARSER::PROTEIN)
-    ("g protein" . SPARSER::PROTEIN) ("RPL13A" . SPARSER::PROTEIN)
-    ("housekeeping gene" . SPARSER::PROTEIN) ("NH 2" . SPARSER::MOLECULE)
-    ("AR-V7" . SPARSER::PROTEIN) ("AR-V1" . SPARSER::PROTEIN)
+    ("C-MYC" . SPARSER::PROTEIN) ("g protein" . SPARSER::PROTEIN)
+    ("RPL13A" . SPARSER::PROTEIN) ("housekeeping gene" . SPARSER::PROTEIN)
+    ("NH 2" . SPARSER::MOLECULE) ("AR-V7" . SPARSER::PROTEIN)
+    ("AR-V1" . SPARSER::PROTEIN) ("new hope" . SPARSER::PROTEIN)
     ("MAPK, BCR, and CD40" . SPARSER::COLLECTION)
     ("CEP-701 and PKC412" . SPARSER::COLLECTION)
     ("LYN, SF3B4, SHC1, STAT5A, and VASP" . SPARSER::COLLECTION)
     ("SF3B4" . SPARSER::PROTEIN) ("VASP" . SPARSER::PROTEIN)
-    ("HGS" . SPARSER::PROTEIN) ("FLT3 and FLT3-ITD" . SPARSER::COLLECTION)
+    ("HGS" . SPARSER::PROTEIN) ("the lengthy period" . SPARSER::PROTEIN)
+    ("FLT3 and FLT3-ITD" . SPARSER::COLLECTION)
     ("CD19, BCAP and LAB" . SPARSER::COLLECTION)
     ("BCAP, CD19, LAB, DOK1, GAB1, and GAB2" . SPARSER::COLLECTION)
     ("a protein's" . SPARSER::PROTEIN) ("ENO1 and HCK" . SPARSER::COLLECTION)
@@ -11681,38 +12125,37 @@
     ("CSF1R, C-KIT, and PDGFRA" . SPARSER::COLLECTION)
     ("FLT3, PDGFRA, CSF1R, and C-KIT" . SPARSER::COLLECTION)
     ("PDGFRA" . SPARSER::PROTEIN) ("quinazoline" . SPARSER::MOLECULE)
-    ("LAB" . SPARSER::PROTEIN) ("BCAP" . SPARSER::PROTEIN)
-    ("the dominant RTK" . SPARSER::PROTEIN)
+    ("receptor (BCR)" . SPARSER::RECEPTOR) ("LAB" . SPARSER::PROTEIN)
+    ("BCAP" . SPARSER::PROTEIN) ("the dominant RTK" . SPARSER::PROTEIN)
     ("LCK, LYN, and TEC" . SPARSER::COLLECTION) ("TEC" . SPARSER::PROTEIN)
     ("LCK" . SPARSER::PROTEIN) ("scaffold, and proteins" . SPARSER::COLLECTION)
+    ("RS(4;11) and REH" . SPARSER::COLLECTION)
     ("B cell acute lymphoblastic leukemia" . SPARSER::PROTEIN)
-    ("REH" . SPARSER::PROTEIN) ("phenylalanine" . SPARSER::AMINO-ACID)
-    ("MV" . SPARSER::PROTEIN) ("LYN, HCK and BTK" . SPARSER::COLLECTION)
-    ("HCK" . SPARSER::PROTEIN) ("LYN" . SPARSER::PROTEIN)
-    ("IGF1R and FLT3" . SPARSER::COLLECTION)
-    ("IAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("REH" . SPARSER::PROTEIN) ("RS" . SPARSER::PROTEIN)
+    ("phenylalanine" . SPARSER::AMINO-ACID) ("MV" . SPARSER::PROTEIN)
+    ("LYN, HCK and BTK" . SPARSER::COLLECTION) ("HCK" . SPARSER::PROTEIN)
+    ("LYN" . SPARSER::PROTEIN) ("IGF1R and FLT3" . SPARSER::COLLECTION)
+    ("IAP-MS" . SPARSER::COLLECTION) ("IAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Phosphotyrosine" . SPARSER::PHOSPHORYLATED-AMINO-ACID)
     ("stable isotopic amino acids" . SPARSER::AMINO-ACID)
     ("FLT3 or its downstream effectors" . SPARSER::COLLECTION)
-    ("PI3K, SRC, and phospholipase C-gamma" . SPARSER::COLLECTION)
-    ("MLL" . SPARSER::PROTEIN) ("FLT3-ITDs" . SPARSER::COLLECTION)
-    ("ITDs" . SPARSER::PROTEIN) ("human acute leukemia" . SPARSER::PROTEIN)
+    ("phospholipase C-gamma" . SPARSER::COLLECTION) ("MLL" . SPARSER::PROTEIN)
+    ("FLT3-ITDs" . SPARSER::COLLECTION) ("ITDs" . SPARSER::PROTEIN)
+    ("human acute leukemia" . SPARSER::PROTEIN)
     ("receptor (PDGFR)" . SPARSER::RECEPTOR)
     ("C-KIT, C-FMS, and platelet-derived growth factor" . SPARSER::COLLECTION)
     ("BCR, and CD40" . SPARSER::COLLECTION) ("epsilon" . SPARSER::PROTEIN)
-    ("pTyr, pSer, and pThr" . SPARSER::COLLECTION)
-    ("pThr" . SPARSER::PHOSPHORYLATED-AMINO-ACID)
+    ("pSer, and pThr" . SPARSER::COLLECTION) ("pThr" . SPARSER::PROTEIN)
     ("an attractive drug target" . SPARSER::TARGET-PROTEIN)
     ("FMS" . SPARSER::PROTEIN) ("N2" . SPARSER::PROTEIN)
     ("phospho-threonine" . SPARSER::PHOSPHORYLATED-AMINO-ACID)
-    ("GDM-1" . SPARSER::PROTEIN) ("ML-1" . SPARSER::PROTEIN)
-    ("AML3" . SPARSER::PROTEIN) ("CEP-701" . SPARSER::DRUG)
-    ("SHC1" . SPARSER::PROTEIN) ("SF3" . SPARSER::PROTEIN)
-    ("SHIP-2" . SPARSER::PROTEIN) ("INPPL1" . SPARSER::PROTEIN)
-    ("HSP90AA" . SPARSER::PROTEIN-FAMILY) ("FAM62A" . SPARSER::PROTEIN)
-    ("ESYT1" . SPARSER::PROTEIN) ("DOK1" . SPARSER::PROTEIN)
-    ("ENO1" . SPARSER::PROTEIN)
-    ("G protein-coupled receptor kinase interactor 1" . SPARSER::PROTEIN)
+    ("ML-1" . SPARSER::PROTEIN) ("AML3" . SPARSER::PROTEIN)
+    ("CEP-701" . SPARSER::DRUG) ("SHC1" . SPARSER::PROTEIN)
+    ("SF3" . SPARSER::PROTEIN) ("SHIP-2" . SPARSER::PROTEIN)
+    ("INPPL1" . SPARSER::PROTEIN) ("HSP90AA" . SPARSER::PROTEIN-FAMILY)
+    ("FAM62A" . SPARSER::PROTEIN) ("ESYT1" . SPARSER::PROTEIN)
+    ("DOK1" . SPARSER::PROTEIN) ("ENO1" . SPARSER::PROTEIN)
+    ("G protein-coupled receptor kinase interactor" . SPARSER::PROTEIN)
     ("GIT1" . SPARSER::PROTEIN) ("cofilin1" . SPARSER::PROTEIN)
     ("MLL2" . SPARSER::PROTEIN) ("cdc2" . SPARSER::PROTEIN)
     ("p105" . SPARSER::PROTEIN) ("phospho-tyrosine" . SPARSER::MOLECULE)
@@ -11722,45 +12165,50 @@
     ("STAT5A" . SPARSER::PROTEIN) ("BCR-ABL" . SPARSER::PROTEIN)
     ("CSF1R" . SPARSER::PROTEIN) ("type III" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("MLN518" . SPARSER::DRUG) ("phospholipase C" . SPARSER::PROTEIN)
-    ("JAK-STAT" . SPARSER::PROTEIN) ("B-ALL" . SPARSER::PROTEIN)
+    ("JAK-STAT" . SPARSER::PROTEIN)
     ("Type III" . SPARSER::HUMAN-PROTEIN-FAMILY) ("C-FMS" . SPARSER::PROTEIN)
-    ("C-KIT" . SPARSER::PROTEIN) ("Drug" . SPARSER::DRUG)
-    ("CB" . SPARSER::PROTEIN) ("blot and luciferase" . SPARSER::COLLECTION)
-    ("CCKBR" . SPARSER::PROTEIN) ("Mitf" . SPARSER::PROTEIN)
-    ("endongenous p27" . SPARSER::PROTEIN) ("p" . SPARSER::PROTEIN)
+    ("C-KIT" . SPARSER::PROTEIN) ("tyrosine kinase-3" . SPARSER::PROTEIN)
+    ("Drug" . SPARSER::DRUG) ("CB" . SPARSER::PROTEIN)
+    ("blot and luciferase" . SPARSER::COLLECTION) ("CCKBR" . SPARSER::PROTEIN)
+    ("Mitf" . SPARSER::PROTEIN) ("endongenous p27" . SPARSER::PROTEIN)
+    ("pGL3-CM" . SPARSER::COLLECTION) ("p" . SPARSER::PROTEIN)
     ("Northern Blot" . SPARSER::PROTEIN) ("Blot" . SPARSER::PROTEIN)
-    ("BGC" . SPARSER::PROTEIN) ("SNU-16" . SPARSER::PROTEIN)
-    ("Northern blot" . SPARSER::PROTEIN) ("CAND1" . SPARSER::PROTEIN)
+    ("AS" . SPARSER::PROTEIN) ("BGC" . SPARSER::PROTEIN)
+    ("AGS" . SPARSER::PROTEIN) ("Northern blot" . SPARSER::PROTEIN)
+    ("CAND1" . SPARSER::PROTEIN)
     ("Microphthalmia associated transcription factor" . SPARSER::PROTEIN)
-    ("1B" . SPARSER::PROTEIN) ("GES-1" . SPARSER::PROTEIN)
-    ("single-stranded RNAs" . SPARSER::RNA) ("ischemia" . SPARSER::PROTEIN)
+    ("GES-1" . SPARSER::PROTEIN) ("single-stranded RNAs" . SPARSER::RNA)
+    ("ischemia" . SPARSER::PROTEIN)
     ("soluble IL-6 receptor" . SPARSER::PROTEIN)
     ("the cytokines and small molecules" . SPARSER::COLLECTION)
     ("p-STAT3" . SPARSER::COLLECTION) ("strong STAT3" . SPARSER::PROTEIN)
     ("pY" . SPARSER::PROTEIN) ("IL-6, IL-22, and leptin" . SPARSER::COLLECTION)
-    ("an adipose-derived hormone" . SPARSER::MOLECULE)
+    ("an adipose-derived hormone" . SPARSER::PROTEIN)
     ("food" . SPARSER::MOLECULE)
     ("Bcl-2, Bcl-xl, and Mcl-1" . SPARSER::COLLECTION)
     ("c-myc, cyclin D1, Rb2, and CDK4" . SPARSER::COLLECTION)
-    ("IL-6, IL-22 and leptin" . SPARSER::COLLECTION)
+    ("IL-6, IL-22 and leptin" . SPARSER::COLLECTION) ("DEN" . SPARSER::PROTEIN)
     ("diethylnitrosamine" . SPARSER::MOLECULE)
-    ("growth factor (VEGF)" . SPARSER::GROWTH-FACTOR)
+    ("vascular endothelial growth factor (VEGF)"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("bFGF" . SPARSER::PROTEIN)
     ("Mn-SOD, ferritin, and catalse" . SPARSER::COLLECTION)
     ("RegIIIβ, RegIIIγ, and Tff3" . SPARSER::COLLECTION)
     ("Tff3" . SPARSER::PROTEIN) ("ferritin" . SPARSER::PROTEIN)
-    ("IL-6-STAT3" . SPARSER::COLLECTION) ("kappaB" . SPARSER::PROTEIN)
+    ("IL-6-STAT3" . SPARSER::COLLECTION)
+    ("STAT3, Akt, and extracellular" . SPARSER::COLLECTION)
+    ("factor-kappaB" . SPARSER::COLLECTION) ("kappaB" . SPARSER::PROTEIN)
     ("JAK/STAT3" . SPARSER::COLLECTION) ("JAK" . SPARSER::PROTEIN)
-    ("an important pro-fibrogenic cytokine" . SPARSER::PROTEIN)
     ("Leptin" . SPARSER::PROTEIN)
     ("adenovirus dominant STAT3" . SPARSER::PROTEIN)
     ("flox/flox" . SPARSER::COLLECTION) ("flox" . SPARSER::PROTEIN)
     ("gp130/STAT3" . SPARSER::COLLECTION) ("DDC" . SPARSER::PROTEIN)
     ("EGFR and IGF-1" . SPARSER::COLLECTION)
     ("conditionally inactivated STAT3" . SPARSER::PROTEIN)
-    ("multidrug" . SPARSER::PROTEIN) ("PDK1/Akt" . SPARSER::COLLECTION)
-    ("Dr" . SPARSER::MOLECULE) ("cyclin D and c-myc" . SPARSER::COLLECTION)
+    ("PDK1/Akt" . SPARSER::COLLECTION) ("Dr" . SPARSER::MOLECULE)
+    ("cyclin D and c-myc" . SPARSER::COLLECTION)
     ("mcl-1, and c-Flip" . SPARSER::COLLECTION)
+    ("the biological impact" . SPARSER::PROTEIN)
     ("the human soluble IL-6 receptor/gp80" . SPARSER::COLLECTION)
     ("IL-6 receptor/gp80" . SPARSER::COLLECTION)
     ("MAPK/ERK" . SPARSER::COLLECTION) ("CHO" . SPARSER::PROTEIN)
@@ -11771,7 +12219,7 @@
     ("detrimental and hepatoprotective cytokines" . SPARSER::PROTEIN)
     ("hepatoprotective cytokines" . SPARSER::PROTEIN)
     ("IL-6 and IL-22" . SPARSER::COLLECTION)
-    ("IFN-γ/STAT1" . SPARSER::COLLECTION)
+    ("IFN-γ/STAT1" . SPARSER::COLLECTION) ("Con A-" . SPARSER::PROTEIN)
     ("acute phase proteins and chemokines" . SPARSER::COLLECTION)
     ("proteins and chemokines" . SPARSER::COLLECTION)
     ("Gao" . SPARSER::PROTEIN) ("OSM, or IL-22" . SPARSER::COLLECTION)
@@ -11782,22 +12230,26 @@
     ("PEPCK" . SPARSER::PROTEIN) ("phosphoenolpyruvate" . SPARSER::MOLECULE)
     ("gp130 (upstream of STAT3) or STAT3" . SPARSER::COLLECTION)
     ("alcohol-" . SPARSER::DRUG) ("IL-1β and TNF-α" . SPARSER::COLLECTION)
-    ("FFAs" . SPARSER::PROTEIN) ("toxins" . SPARSER::MOLECULE)
+    ("FFAs" . SPARSER::PROTEIN)
+    ("nutritional factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("alpha 1-antitrypsin" . SPARSER::COLLECTION)
+    ("antitrypsin" . SPARSER::PROTEIN) ("toxins" . SPARSER::MOLECULE)
     ("IL-6 and leptin" . SPARSER::COLLECTION)
     ("IL-10 or IL-6" . SPARSER::COLLECTION)
     ("IL-6 and IL-10" . SPARSER::COLLECTION)
     ("liver resident macrophages" . SPARSER::PROTEIN)
-    ("hepatitis viral proteins" . SPARSER::PROTEIN)
-    ("the receptor-associated Janus tyrosine kinases" . SPARSER::PROTEIN)
+    ("hepatitis viral proteins" . SPARSER::PROTEIN) ("SH2" . SPARSER::PROTEIN)
+    ("the receptor-associated Janus tyrosine kinases" . SPARSER::KINASE)
     ("JAKs" . SPARSER::PROTEIN)
     ("interleukin-6 (IL-6), the IL-6 family of cytokines (such as leukemia inhibitory factor, ciliary neurotrophic factor, oncostatin M, cardiotrophin-1, and IL-11), and IL-22 xref"
      . SPARSER::COLLECTION)
     ("leukemia inhibitory factor, ciliary neurotrophic factor, oncostatin M, cardiotrophin-1, and IL-11"
      . SPARSER::COLLECTION)
     ("complex and multicellular roles" . SPARSER::COLLECTION)
+    ("factor-kappa" . SPARSER::COLLECTION)
     ("The cytokines and small molecules" . SPARSER::COLLECTION)
-    ("IL-22 receptor" . SPARSER::PROTEIN) ("Rb2" . SPARSER::PROTEIN)
-    ("Mcl-1" . SPARSER::PROTEIN) ("S1PR1" . SPARSER::PROTEIN)
+    ("Rb2" . SPARSER::PROTEIN) ("Mcl-1" . SPARSER::PROTEIN)
+    ("S1PR1" . SPARSER::PROTEIN)
     ("sphingosine-1-phosphate receptor-1" . SPARSER::PROTEIN)
     ("basic fibroblast growth factor" . SPARSER::PROTEIN)
     ("HIF1α" . SPARSER::PROTEIN)
@@ -11805,11 +12257,12 @@
     ("RegIIIγ" . SPARSER::PROTEIN) ("RegIIIβ" . SPARSER::PROTEIN)
     ("Mn-SOD" . SPARSER::PROTEIN) ("TIMP-1" . SPARSER::PROTEIN)
     ("IGF-1" . SPARSER::PROTEIN) ("mdr2" . SPARSER::PROTEIN)
-    ("mcl-1" . SPARSER::PROTEIN) ("bcl-2" . SPARSER::PROTEIN)
-    ("c-myc" . SPARSER::PROTEIN) ("gp80" . SPARSER::PROTEIN)
-    ("IL-6 receptor" . SPARSER::PROTEIN) ("TNFR-1" . SPARSER::PROTEIN)
+    ("multidrug resistance" . SPARSER::PROTEIN) ("mcl-1" . SPARSER::PROTEIN)
+    ("bcl-2" . SPARSER::PROTEIN) ("c-myc" . SPARSER::PROTEIN)
+    ("gp80" . SPARSER::PROTEIN) ("IL-6 receptor" . SPARSER::PROTEIN)
+    ("TNFR-1" . SPARSER::PROTEIN) ("Con A" . SPARSER::PROTEIN)
     ("G6Pase" . SPARSER::PROTEIN) ("glucose-6-phosphatase" . SPARSER::PROTEIN)
-    ("SREBP-1" . SPARSER::PROTEIN) ("alpha 1-antitrypsin" . SPARSER::PROTEIN)
+    ("SREBP-1" . SPARSER::PROTEIN) ("alpha 1" . SPARSER::PROTEIN)
     ("vitamin A" . SPARSER::MOLECULE) ("SOCS3" . SPARSER::PROTEIN)
     ("suppressor of cytokine signaling 3" . SPARSER::PROTEIN)
     ("IL-22" . SPARSER::PROTEIN) ("cardiotrophin-1" . SPARSER::PROTEIN)
@@ -11817,58 +12270,65 @@
     ("ciliary neurotrophic factor" . SPARSER::PROTEIN)
     ("leukemia inhibitory factor" . SPARSER::PROTEIN)
     ("Signal transducer and activator of transcription 3" . SPARSER::PROTEIN)
-    ("IgM" . SPARSER::PROTEIN) ("IRIFs" . SPARSER::PROTEIN)
-    ("Cohorts" . SPARSER::MOLECULE) ("littermates" . SPARSER::PROTEIN)
-    ("Atm-Chk2-p53" . SPARSER::COLLECTION)
+    ("IgA" . SPARSER::PROTEIN) ("IgM" . SPARSER::PROTEIN)
+    ("IRIFs" . SPARSER::PROTEIN) ("Cohorts" . SPARSER::MOLECULE)
+    ("littermates" . SPARSER::PROTEIN) ("Atm-Chk2-p53" . SPARSER::COLLECTION)
     ("Mdc1, Rnf8, 53bp1 or Brca1" . SPARSER::COLLECTION)
     ("Mdc1-IRIF" . SPARSER::PROTEIN-PAIR) ("Tcr" . SPARSER::PROTEIN)
+    ("efficient CSR" . SPARSER::PROTEIN)
     ("Nbs1 −/− or WT B-cells xref" . SPARSER::COLLECTION)
     ("Xrcc4 or DNA Ligase IV" . SPARSER::COLLECTION)
-    ("Xrcc4" . SPARSER::PROTEIN) ("Rnf168 or Rnf168" . SPARSER::COLLECTION)
+    ("CSR and form" . SPARSER::COLLECTION) ("Xrcc4" . SPARSER::PROTEIN)
+    ("Rnf168 or Rnf168" . SPARSER::COLLECTION)
     ("LPS and IL-4" . SPARSER::COLLECTION) ("CFSE" . SPARSER::DRUG)
     ("anti-CD40 or LPS" . SPARSER::COLLECTION)
     ("IgG2a and IgG3" . SPARSER::COLLECTION) ("IgG1-" . SPARSER::BIO-COMPLEX)
+    ("defective CSR" . SPARSER::PROTEIN)
     ("immunoglobulins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ATM-Chk2-p53" . SPARSER::COLLECTION)
     ("Atm and DNA-PK" . SPARSER::COLLECTION)
     ("Chk2 (threonine 68) and p53 (serine 15) inRnf168 −/− MEFs"
      . SPARSER::COLLECTION)
     ("Chk2 (threonine 68) and p53 (serine 15)" . SPARSER::COLLECTION)
-    ("Smc1" . SPARSER::PROTEIN) ("Smc" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("IB" . SPARSER::DRUG) ("IRIF" . SPARSER::PROTEIN)
-    ("53bp1 and Brca1" . SPARSER::COLLECTION)
+    ("IB" . SPARSER::PROTEIN) ("IRIF" . SPARSER::PROTEIN)
+    ("H2A.X, MDC1 and RNF8" . SPARSER::COLLECTION)
+    ("53bp1 and Brca1" . SPARSER::COLLECTION) ("post-IR" . SPARSER::COLLECTION)
     ("iodide (PI)" . SPARSER::PROTEIN) ("Atm" . SPARSER::PROTEIN)
-    ("IR and UV" . SPARSER::COLLECTION) ("AAD" . SPARSER::MOLECULE)
+    ("IR and UV" . SPARSER::COLLECTION) ("AAD" . SPARSER::PROTEIN)
     ("IR or UV" . SPARSER::COLLECTION) ("UV" . SPARSER::PROTEIN)
-    ("Mdc1-" . SPARSER::PROTEIN)
+    ("LN" . SPARSER::PROTEIN) ("Mdc1-" . SPARSER::PROTEIN)
+    ("receptor (TCR)" . SPARSER::RECEPTOR)
     ("53BP1, RAP80 and BRCA1" . SPARSER::COLLECTION)
     ("K63-polyubiquitin" . SPARSER::COLLECTION)
-    ("polyubiquitin" . SPARSER::PROTEIN)
+    ("polyubiquitin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("800 amino acids of MDC1" . SPARSER::PROTEIN)
     ("ATM-MRN" . SPARSER::PROTEIN-PAIR) ("ATM-MDC1" . SPARSER::COLLECTION)
     ("Ser-Asp-Thr (SDT)" . SPARSER::COLLECTION)
     ("Ser-Asp-Thr" . SPARSER::COLLECTION) ("FHA" . SPARSER::PROTEIN-FAMILY)
-    ("cancer 1-" . SPARSER::HUMAN-PROTEIN-FAMILY) ("ataxia" . SPARSER::PROTEIN)
+    ("cancer 1-" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("ataxia telangiectasia and Rad3" . SPARSER::COLLECTION)
     ("Mre11/Rad50/NBS1" . SPARSER::COLLECTION)
+    ("immune-receptor" . SPARSER::PROTEIN)
     ("ultraviolet light (UV)" . SPARSER::PROTEIN)
     ("radical" . SPARSER::MOLECULE) ("DDR" . SPARSER::PROTEIN)
     ("Rnf168 and p53" . SPARSER::COLLECTION)
     ("histones and chromatin" . SPARSER::COLLECTION)
     ("synergizes" . SPARSER::PROTEIN) ("53bp1" . SPARSER::PROTEIN)
-    ("Rnf168" . SPARSER::PROTEIN) ("NU7441" . SPARSER::MOLECULE)
-    ("NU7026" . SPARSER::DRUG) ("pCR2" . SPARSER::PROTEIN)
+    ("Rnf168" . SPARSER::PROTEIN)
+    ("ATM,γ-H2A.X, MDC1, and RNF8" . SPARSER::COLLECTION)
+    ("NU7441" . SPARSER::MOLECULE) ("NU7026" . SPARSER::DRUG)
     ("IgG2b" . SPARSER::BIO-COMPLEX) ("histone-H3" . SPARSER::PROTEIN)
     ("anti-IgM" . SPARSER::PROTEIN) ("Thy1" . SPARSER::PROTEIN)
     ("F3" . SPARSER::HUMAN-PROTEIN-FAMILY) ("TCRβ" . SPARSER::PROTEIN)
     ("CD44" . SPARSER::PROTEIN) ("DNA Ligase IV" . SPARSER::PROTEIN)
     ("CD40" . SPARSER::PROTEIN) ("IgG2a" . SPARSER::PROTEIN)
     ("IL4" . SPARSER::PROTEIN) ("IgG3" . SPARSER::BIO-COMPLEX)
-    ("Pre-B" . SPARSER::PROTEIN) ("DNA-PK" . SPARSER::PROTEIN)
-    ("Nbs1" . SPARSER::PROTEIN) ("Brca1" . SPARSER::PROTEIN)
-    ("F11" . SPARSER::PROTEIN) ("T-cell receptor" . SPARSER::PROTEIN)
-    ("RAP80" . SPARSER::PROTEIN) ("K63" . SPARSER::PROTEIN)
-    ("UBC13" . SPARSER::PROTEIN) ("RING finger protein 8" . SPARSER::PROTEIN)
-    ("T-Q" . SPARSER::DRUG) ("protein-1" . SPARSER::PROTEIN)
+    ("DNA-PK" . SPARSER::PROTEIN) ("Nbs1" . SPARSER::PROTEIN)
+    ("Smc1" . SPARSER::PROTEIN) ("Brca1" . SPARSER::PROTEIN)
+    ("F11" . SPARSER::PROTEIN) ("RAP80" . SPARSER::PROTEIN)
+    ("K63" . SPARSER::PROTEIN) ("UBC13" . SPARSER::PROTEIN)
+    ("RING finger protein 8" . SPARSER::PROTEIN) ("T-Q" . SPARSER::DRUG)
+    ("protein-1" . SPARSER::PROTEIN)
     ("cancer 1" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("checkpoint kinase 2" . SPARSER::PROTEIN)
     ("protein 1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("SMC1" . SPARSER::PROTEIN)
@@ -11877,12 +12337,12 @@
     ("phosphoinositide 3-kinase" . SPARSER::PROTEIN)
     ("Rnf8" . SPARSER::PROTEIN) ("H2a" . SPARSER::PROTEIN)
     ("Mdc1" . SPARSER::PROTEIN) ("53BP1" . SPARSER::PROTEIN)
-    ("RNF8" . SPARSER::PROTEIN) ("H2A" . SPARSER::PROTEIN)
-    ("RNF168" . SPARSER::PROTEIN)
+    ("H2A" . SPARSER::PROTEIN) ("RNF8" . SPARSER::PROTEIN)
+    ("H2A.X" . SPARSER::PROTEIN) ("RNF168" . SPARSER::PROTEIN)
     ("tamoxifen and fulvestrant" . SPARSER::COLLECTION)
     ("fulvestrant" . SPARSER::DRUG)
     ("an alternative transcription factor" . SPARSER::PROTEIN)
-    ("a single polycistronic mRNA" . SPARSER::PROTEIN)
+    ("a single polycistronic mRNA" . SPARSER::RNA)
     ("ESR1 and the three C6orfs" . SPARSER::COLLECTION)
     ("numerous classical and novel ERα-dependent targets"
      . SPARSER::TARGET-PROTEIN)
@@ -11898,8 +12358,8 @@
     ("lapatinib" . SPARSER::DRUG) ("orf" . SPARSER::PROTEIN)
     ("C6ORF96 , C6ORF211 and part" . SPARSER::COLLECTION)
     ("ESR1 , C6ORF96 , C6ORF97 and C6ORF211" . SPARSER::COLLECTION)
-    ("CGH" . SPARSER::PROTEIN) ("ESR1 and the C6orfs" . SPARSER::COLLECTION)
-    ("Wang" . SPARSER::PROTEIN)
+    ("CGH" . SPARSER::PROTEIN) ("CN" . SPARSER::PROTEIN)
+    ("ESR1 and the C6orfs" . SPARSER::COLLECTION) ("Wang" . SPARSER::PROTEIN)
     ("C6ORF96, C6ORF97 and C6ORF211" . SPARSER::COLLECTION)
     ("M eiotic N uclear D ivision 1 homolog)" . SPARSER::PROTEIN)
     ("the top 20 most correlated genes included well-established ER-associated genes"
@@ -11916,13 +12376,17 @@
     ("ESR1 , C6ORF97 and the two genes" . SPARSER::COLLECTION)
     ("C6ORF211 and C6ORF96" . SPARSER::COLLECTION)
     ("the pathogenic variant" . SPARSER::VARIANT) ("CTCF" . SPARSER::PROTEIN)
+    ("a second adjacent SNP" . SPARSER::PROTEIN)
     ("C6ORF97 and ESR1" . SPARSER::COLLECTION)
-    ("SNPs around C6ORF97" . SPARSER::PROTEIN)
+    ("SNPs around C6ORF97" . SPARSER::PROTEIN) ("ORF" . SPARSER::PROTEIN)
     ("antioestrogen" . SPARSER::DRUG)
+    ("the most clinically important biological factor"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("a previously unreported transcriptional activity hub" . SPARSER::PROTEIN)
     ("ESR1 , C6ORF96 , C6ORF97 , and C6ORF211" . SPARSER::COLLECTION)
     ("synthase" . SPARSER::PROTEIN) ("ICI182780" . SPARSER::DRUG)
-    ("C6orf211" . SPARSER::PROTEIN) ("Sin3A" . SPARSER::PROTEIN)
-    ("SAP18" . SPARSER::PROTEIN)
+    ("C6orf211" . SPARSER::PROTEIN) ("Log2" . SPARSER::PROTEIN)
+    ("Sin3A" . SPARSER::PROTEIN) ("SAP18" . SPARSER::PROTEIN)
     ("proliferation-associated" . SPARSER::PROTEIN)
     ("a polypeptide" . SPARSER::PROTEIN) ("ICI 182,780" . SPARSER::DRUG)
     ("FOXO3a" . SPARSER::PROTEIN) ("homolog)" . SPARSER::PROTEIN)
@@ -11937,6 +12401,7 @@
     ("ER/PR" . SPARSER::COLLECTION) ("aromatase" . SPARSER::PROTEIN)
     ("dehydroepiandrosterone" . SPARSER::MOLECULE)
     ("androgen receptor and ERBB2" . SPARSER::COLLECTION)
+    ("an independent prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("estrogens and androgens" . SPARSER::COLLECTION)
     ("ER, PR, HER2, CK5/6 and EGFR" . SPARSER::COLLECTION)
     ("histologic type" . TYPE) ("EGFR-" . SPARSER::PROTEIN)
@@ -11957,64 +12422,74 @@
     ("ER-α" . SPARSER::PROTEIN) ("Estrogen receptor" . SPARSER::PROTEIN)
     ("Androgen receptor" . SPARSER::PROTEIN)
     ("cytokeratin 5" . SPARSER::PROTEIN)
+    ("the following clinicopathologic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Other Clinicopathologic Factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("had intact e-cadherin" . SPARSER::PROTEIN)
-    ("tumoral e-cadherin" . SPARSER::PROTEIN) ("log-rank" . SPARSER::PROTEIN)
+    ("tumoral e-cadherin" . SPARSER::PROTEIN)
+    ("other clinicopathologic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("intact e-cadherin" . SPARSER::PROTEIN) ("fluorouracil" . SPARSER::DRUG)
     ("TNM" . SPARSER::MOLECULE)
+    ("other prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("APC, Axin, GSK3β, and cytokeratin-1" . SPARSER::COLLECTION)
+    ("cytokeratin" . SPARSER::PROTEIN)
     ("β-catenin, p120 catenin and Hakai" . SPARSER::COLLECTION)
     ("cadherins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("gemcitabine" . SPARSER::DRUG) ("albumin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Sparc" . SPARSER::PROTEIN) ("RELN" . SPARSER::PROTEIN)
     ("SPARC" . SPARSER::PROTEIN) ("DPC4/SMAD4" . SPARSER::COLLECTION)
+    ("using pathological factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("e–cadherin" . SPARSER::PROTEIN) ("E-Cadherin" . SPARSER::PROTEIN)
-    ("cytokeratin-1" . SPARSER::PROTEIN) ("p120 catenin" . SPARSER::PROTEIN)
-    ("miR-200a" . SPARSER::MOLECULE) ("BNIP3" . SPARSER::PROTEIN)
-    ("TFPI2" . SPARSER::PROTEIN) ("Smad4" . SPARSER::PROTEIN)
-    ("SMAD4" . SPARSER::PROTEIN) ("DPC4" . SPARSER::PROTEIN)
-    ("KRAS2" . SPARSER::PROTEIN) ("e-cadherin" . SPARSER::PROTEIN)
-    ("LFS or LFS-like" . SPARSER::COLLECTION) ("NCCN" . SPARSER::MOLECULE)
-    ("gonadal" . SPARSER::PROTEIN-FAMILY) ("HDGC" . SPARSER::PROTEIN)
+    ("p120 catenin" . SPARSER::PROTEIN) ("miR-200a" . SPARSER::MOLECULE)
+    ("BNIP3" . SPARSER::PROTEIN) ("TFPI2" . SPARSER::PROTEIN)
+    ("Smad4" . SPARSER::PROTEIN) ("SMAD4" . SPARSER::PROTEIN)
+    ("DPC4" . SPARSER::PROTEIN) ("KRAS2" . SPARSER::PROTEIN)
+    ("e-cadherin" . SPARSER::PROTEIN) ("PET" . SPARSER::PROTEIN)
+    ("pilot" . SPARSER::PROTEIN) ("LFS or LFS-like" . SPARSER::COLLECTION)
+    ("NCCN" . SPARSER::PROTEIN) ("gonadal" . SPARSER::PROTEIN-FAMILY)
+    ("HDGC" . SPARSER::PROTEIN)
     ("GC and 6 (9.7%) families" . SPARSER::COLLECTION)
     ("LFS-" . SPARSER::PROTEIN) ("LFS" . SPARSER::PROTEIN)
-    ("lymphoid and myeloid" . SPARSER::COLLECTION)
+    ("pT4" . SPARSER::PROTEIN) ("pT3" . SPARSER::PROTEIN)
+    ("pT2" . SPARSER::PROTEIN) ("lymphoid and myeloid" . SPARSER::COLLECTION)
     ("cytometry and immunohistochemistry" . SPARSER::COLLECTION)
     ("yet neurofibromas form" . SPARSER::FORM)
     ("glutathione synthase (GS)" . SPARSER::PROTEIN)
     ("cervical DRG" . SPARSER::PROTEIN) ("Electron" . SPARSER::MOLECULE)
     ("tilt" . SPARSER::DRUG) ("DRGs" . SPARSER::PROTEIN)
     ("lympho-myeloid" . SPARSER::PROTEIN-PAIR)
-    ("Tamoxifen" . SPARSER::MOLECULE) ("perinatal" . SPARSER::PROTEIN)
-    ("mast cell" . SPARSER::PROTEIN)
+    ("Tamoxifen" . SPARSER::MOLECULE) ("mast cell" . SPARSER::PROTEIN)
     ("matrix and collagen" . SPARSER::COLLECTION) ("wt" . SPARSER::PROTEIN)
-    ("ERT" . SPARSER::PROTEIN) ("Myelin" . SPARSER::PROTEIN)
-    ("Krox20-Cre" . SPARSER::COLLECTION) ("GEM" . SPARSER::PROTEIN)
-    ("Pax3-Cre" . SPARSER::COLLECTION) ("Mpz-Cre" . SPARSER::COLLECTION)
-    ("Wnt1-Cre" . SPARSER::COLLECTION) ("Mpz" . SPARSER::PROTEIN)
-    ("glial" . SPARSER::PROTEIN) ("S100β and periaxin" . SPARSER::COLLECTION)
+    ("ERT" . SPARSER::PROTEIN) ("Krox20-Cre" . SPARSER::COLLECTION)
+    ("GEM" . SPARSER::PROTEIN) ("Pax3-Cre" . SPARSER::COLLECTION)
+    ("Mpz-Cre" . SPARSER::COLLECTION) ("Wnt1-Cre" . SPARSER::COLLECTION)
+    ("Mpz" . SPARSER::PROTEIN) ("post-crest" . SPARSER::COLLECTION)
+    ("crest" . SPARSER::PROTEIN) ("glial" . SPARSER::PROTEIN)
+    ("S100β and periaxin" . SPARSER::COLLECTION)
     ("periaxin" . SPARSER::PROTEIN) ("myelin" . SPARSER::PROTEIN)
     ("S100β or GFAP" . SPARSER::COLLECTION) ("DRG" . SPARSER::PROTEIN)
     ("GFAP" . SPARSER::PROTEIN)
     ("A conditional EGFP reporter allele" . SPARSER::ALLELE)
-    ("EGFP" . SPARSER::PROTEIN) ("Perinatal" . SPARSER::PROTEIN)
-    ("P1-3" . SPARSER::PROTEIN) ("CD117" . SPARSER::PROTEIN)
+    ("EGFP" . SPARSER::PROTEIN) ("CD117" . SPARSER::PROTEIN)
     ("Ly6C" . SPARSER::PROTEIN) ("Gr-1" . SPARSER::PROTEIN)
     ("C11" . SPARSER::PROTEIN) ("6B" . SPARSER::PROTEIN)
-    ("GS 1" . SPARSER::PROTEIN) ("glutathione synthase" . SPARSER::PROTEIN)
+    ("glutathione synthase" . SPARSER::PROTEIN)
     ("enhanced green fluorescent protein" . SPARSER::PROTEIN)
-    ("A -Cre" . SPARSER::PROTEIN) ("Krox20" . SPARSER::PROTEIN)
-    ("target cell" . SPARSER::PROTEIN) ("Pax3" . SPARSER::PROTEIN)
-    ("Wnt1" . SPARSER::PROTEIN) ("p75" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("S100β" . SPARSER::PROTEIN) ("NFBD1, Erk, and Akt" . SPARSER::COLLECTION)
+    ("Myelin proteolipid protein" . SPARSER::PROTEIN)
+    ("Krox20" . SPARSER::PROTEIN) ("target cell" . SPARSER::PROTEIN)
+    ("Pax3" . SPARSER::PROTEIN) ("Wnt1" . SPARSER::PROTEIN)
+    ("p75" . SPARSER::HUMAN-PROTEIN-FAMILY) ("S100β" . SPARSER::PROTEIN)
+    ("NFBD1, Erk, and Akt" . SPARSER::COLLECTION)
     ("Chk2, H2AX, and p53" . SPARSER::COLLECTION) ("Mos" . SPARSER::PROTEIN)
     ("ARF" . SPARSER::PROTEIN) ("ADP" . SPARSER::PROTEIN)
     ("exogenous DNA" . SPARSER::DNA) ("genotoxins" . SPARSER::MOLECULE)
     ("ERKs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Cav1 and CAV1" . SPARSER::COLLECTION)
     ("STAT1, Myc, and estrogen receptor" . SPARSER::COLLECTION)
-    ("pERK" . SPARSER::PROTEIN) ("HA–Cav1" . SPARSER::COLLECTION)
+    ("fell" . SPARSER::PROTEIN) ("pERK" . SPARSER::PROTEIN)
+    ("HA–Cav1" . SPARSER::COLLECTION) ("shRNA" . SPARSER::PROTEIN)
     ("Erk and GAPDH" . SPARSER::COLLECTION)
-    ("Cav1-shRNA" . SPARSER::COLLECTION) ("phalloidin" . SPARSER::MOLECULE)
+    ("NFBD1 or Cav1-shRNA" . SPARSER::COLLECTION)
+    ("Cav1-shRNA" . SPARSER::PROTEIN-PAIR) ("phalloidin" . SPARSER::MOLECULE)
     ("vinculin" . SPARSER::PROTEIN) ("glass" . SPARSER::MOLECULE)
     ("MMTV" . SPARSER::PROTEIN) ("Erk2 and Mek1" . SPARSER::COLLECTION)
     ("Mek1" . SPARSER::PROTEIN)
@@ -12022,8 +12497,8 @@
     ("Erk1/2 and Mek1/2" . SPARSER::COLLECTION)
     ("Mek1/2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Antisense" . SPARSER::PROTEIN)
     ("NFBD1 and/or p53" . SPARSER::COLLECTION)
-    ("Cav1 and Cav2" . SPARSER::COLLECTION) ("Cav2" . SPARSER::PROTEIN)
-    ("Cav" . SPARSER::PROTEIN) ("NFBD1 and Cav1" . SPARSER::COLLECTION)
+    ("Cav1 and Cav2" . SPARSER::COLLECTION)
+    ("NFBD1 and Cav1" . SPARSER::COLLECTION)
     ("p53- and IR-regulated genes" . SPARSER::COLLECTION)
     ("PTEN and LAMA5" . SPARSER::COLLECTION)
     ("NFBD1/p53" . SPARSER::COLLECTION)
@@ -12039,14 +12514,15 @@
     ("–Chk2" . SPARSER::COLLECTION) ("DNA-damage" . SPARSER::DNA)
     ("CAV1 and CAV2" . SPARSER::COLLECTION)
     ("IR and p53" . SPARSER::COLLECTION) ("carbohydrate" . SPARSER::MOLECULE)
-    ("NFBD1/MDC1" . SPARSER::COLLECTION) ("H-RAS" . SPARSER::PROTEIN)
-    ("v- ABL" . SPARSER::PROTEIN) ("T antigen" . SPARSER::MOLECULE)
-    ("H-Ras" . SPARSER::PROTEIN) ("c-Src" . SPARSER::PROTEIN)
-    ("beta tubulin" . SPARSER::PROTEIN) ("LAMA5" . SPARSER::PROTEIN)
-    ("SLC2A3" . SPARSER::PROTEIN) ("SCF family" . SPARSER::PROTEIN)
-    ("SKP1" . SPARSER::PROTEIN) ("BCL2L1" . SPARSER::PROTEIN)
-    ("Jak–STAT" . SPARSER::PROTEIN) ("NH 4 Cl" . SPARSER::MOLECULE)
-    ("Erk1/2" . SPARSER::PROTEIN) ("β-tubulin" . SPARSER::PROTEIN)
+    ("gene (ATM)" . SPARSER::PROTEIN) ("NFBD1/MDC1" . SPARSER::COLLECTION)
+    ("H-RAS" . SPARSER::PROTEIN) ("v- ABL" . SPARSER::PROTEIN)
+    ("T antigen" . SPARSER::MOLECULE) ("H-Ras" . SPARSER::PROTEIN)
+    ("c-Src" . SPARSER::PROTEIN) ("beta tubulin" . SPARSER::PROTEIN)
+    ("LAMA5" . SPARSER::PROTEIN) ("SLC2A3" . SPARSER::PROTEIN)
+    ("SCF family" . SPARSER::PROTEIN) ("SKP1" . SPARSER::PROTEIN)
+    ("BCL2L1" . SPARSER::PROTEIN) ("Jak–STAT" . SPARSER::PROTEIN)
+    ("NH 4 Cl" . SPARSER::MOLECULE) ("Erk1/2" . SPARSER::PROTEIN)
+    ("β-tubulin" . SPARSER::PROTEIN) ("Cav2" . SPARSER::PROTEIN)
     ("L-glutamate" . SPARSER::MOLECULE) ("Caveolin 2" . SPARSER::PROTEIN)
     ("Caveolin 1" . SPARSER::PROTEIN) ("p53 S" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("nuclease activity" . SPARSER::PROTEIN) ("Mre11" . SPARSER::PROTEIN)
@@ -12054,10 +12530,9 @@
     ("MRE11" . SPARSER::PROTEIN) ("H2AX" . SPARSER::PROTEIN)
     ("mediator of DNA damage checkpoint 1" . SPARSER::PROTEIN)
     ("Cav1" . SPARSER::PROTEIN) ("CAV2" . SPARSER::PROTEIN)
-    ("CAV1" . SPARSER::PROTEIN)
-    ("ataxia telangiectasia-mutated" . SPARSER::PROTEIN)
+    ("CAV1" . SPARSER::PROTEIN) ("ataxia telangiectasia" . SPARSER::PROTEIN)
     ("γH2AX" . SPARSER::PROTEIN) ("MDC1" . SPARSER::PROTEIN)
-    ("NFBD1" . SPARSER::PROTEIN) ("PIC" . SPARSER::BIO-COMPLEX)
+    ("NFBD1" . SPARSER::PROTEIN) ("PIC" . SPARSER::PROTEIN)
     ("cofactor" . SPARSER::MOLECULE)
     ("TFIID and RNA polymerase II" . SPARSER::COLLECTION)
     ("at least some enhancer" . SPARSER::PROTEIN)
@@ -12065,10 +12540,10 @@
     ("OCA-B and promoter-bound TFII-I" . SPARSER::COLLECTION)
     ("enhancers and their cognate promoters" . SPARSER::COLLECTION)
     ("LCRs" . SPARSER::PROTEIN) ("metazoans" . SPARSER::PROTEIN-FAMILY)
-    ("NP" . SPARSER::PROTEIN) ("TFIID and Pol" . SPARSER::COLLECTION)
+    ("NP" . SPARSER::PROTEIN) ("TFIID and Pol II" . SPARSER::COLLECTION)
     ("TAF4 and TAF5" . SPARSER::COLLECTION) ("TAF/TFIID" . SPARSER::COLLECTION)
-    ("Pol" . SPARSER::PROTEIN) ("TFIID" . SPARSER::PROTEIN)
-    ("TAF" . SPARSER::PROTEIN) ("distal Igh promoter" . SPARSER::PROMOTER)
+    ("TFIID" . SPARSER::PROTEIN) ("TAF" . SPARSER::PROTEIN)
+    ("mark" . SPARSER::PROTEIN) ("distal Igh promoter" . SPARSER::PROMOTER)
     ("Oct-2/OCA-B" . SPARSER::COLLECTION)
     ("OCA-B, Oct-2 and TFII-I" . SPARSER::COLLECTION)
     ("OCA-B and Oct-2" . SPARSER::COLLECTION)
@@ -12087,8 +12562,10 @@
     ("a mutated octamer DNA" . SPARSER::DNA) ("BTK" . SPARSER::PROTEIN)
     ("TFII-I and OCA-B" . SPARSER::COLLECTION)
     ("GST-TFII-IR4" . SPARSER::COLLECTION)
-    ("OCA-B and HDAC3" . SPARSER::COLLECTION) ("TFII" . SPARSER::PROTEIN)
-    ("TFII-IR4" . SPARSER::COLLECTION) ("GST-OCA-B" . SPARSER::COLLECTION)
+    ("OCA-B and HDAC3" . SPARSER::COLLECTION)
+    ("TFII-IR4" . SPARSER::COLLECTION) ("TFII" . SPARSER::PROTEIN)
+    ("TFII-IC" . SPARSER::COLLECTION) ("TFII-IM" . SPARSER::COLLECTION)
+    ("IM" . SPARSER::PROTEIN) ("GST-OCA-B" . SPARSER::COLLECTION)
     ("a bona fide OCA-B" . SPARSER::PROTEIN)
     ("ectopically expressed OCA-B and FLAG-tagged TFII-I"
      . SPARSER::COLLECTION)
@@ -12103,38 +12580,48 @@
     ("Oct-1 or Oct-2" . SPARSER::COLLECTION)
     ("the ubiquitously expressed Oct-1 and the more B cell-specific Oct-2"
      . SPARSER::COLLECTION)
-    ("-ATGCAAAT-3" . SPARSER::COLLECTION) ("the entire Igh" . SPARSER::PROTEIN)
+    ("-ATGCAAAT-3" . SPARSER::COLLECTION)
+    ("CSR and germline" . SPARSER::COLLECTION)
+    ("the entire Igh" . SPARSER::PROTEIN) ("CSR and Igh" . SPARSER::COLLECTION)
     ("-enhancers" . SPARSER::COLLECTION)
-    ("The intronic enhancer" . SPARSER::PROTEIN)
+    ("The intronic enhancer" . SPARSER::PROTEIN) ("CSR" . SPARSER::PROTEIN)
     ("enhancer-bound OCA-B and promoter-bound TFII-I" . SPARSER::COLLECTION)
     ("cis and trans" . SPARSER::COLLECTION) ("Igh" . SPARSER::PROTEIN)
     ("IgH" . SPARSER::PROTEIN) ("enhancer" . SPARSER::PROTEIN)
-    ("S-tag" . SPARSER::PROTEIN) ("Hi-C" . SPARSER::PROTEIN)
-    ("light chain" . SPARSER::PROTEIN) ("MED6" . SPARSER::PROTEIN)
-    ("TAF5" . SPARSER::PROTEIN) ("TAF4" . SPARSER::PROTEIN)
-    ("K5" . SPARSER::PROTEIN) ("IR4" . SPARSER::PROTEIN)
+    ("S-tag" . SPARSER::PROTEIN) ("2b" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("MED6" . SPARSER::PROTEIN) ("TAF5" . SPARSER::PROTEIN)
+    ("TAF4" . SPARSER::PROTEIN) ("K5" . SPARSER::PROTEIN)
+    ("Pol II" . SPARSER::PROTEIN) ("IR4" . SPARSER::PROTEIN)
     ("XBP-1" . SPARSER::PROTEIN) ("derived factor" . SPARSER::PROTEIN)
     ("POU domain" . SPARSER::PROTEIN) ("HS1" . SPARSER::PROTEIN)
-    ("HS3" . SPARSER::PROTEIN) ("heavy chain" . SPARSER::PROTEIN)
-    ("TFII-I" . SPARSER::PROTEIN) ("OCA-B" . SPARSER::PROTEIN)
-    ("TPP1-Pot1" . SPARSER::COLLECTION) ("Shelterin" . SPARSER::PROTEIN)
+    ("HS3" . SPARSER::PROTEIN) ("TFII-I" . SPARSER::PROTEIN)
+    ("OCA-B" . SPARSER::PROTEIN) ("TPP1-Pot1" . SPARSER::COLLECTION)
+    ("Shelterin" . SPARSER::PROTEIN) ("Tin" . SPARSER::PROTEIN)
     ("only one molecule" . SPARSER::MOLECULE)
+    ("diffusible telomerase" . SPARSER::PROTEIN)
     ("TRF1 and TRF2" . SPARSER::COLLECTION) ("TPP1/Pot1" . SPARSER::COLLECTION)
     ("TPP1 and Pot1" . SPARSER::COLLECTION)
+    ("exogenous overexpressed telomerase" . SPARSER::PROTEIN)
     ("a single processive molecule" . SPARSER::MOLECULE)
     ("state and non-equilibrium" . SPARSER::COLLECTION)
     ("TCAB1 and TPP1" . SPARSER::COLLECTION)
+    ("hTR/telomerase" . SPARSER::COLLECTION)
+    ("Less processive telomerase" . SPARSER::PROTEIN)
+    ("Hela cells transiently not expressing telomerase" . SPARSER::PROTEIN)
+    ("PDs" . SPARSER::PROTEIN)
     ("the overexpressed exogenous enzyme" . SPARSER::ENZYME)
     ("TRAP" . SPARSER::PROTEIN) ("thymidine and BrdU" . SPARSER::COLLECTION)
     ("dimer or multimer" . SPARSER::COLLECTION) ("mer" . SPARSER::PROTEIN)
-    ("thymidine" . SPARSER::PROTEIN) ("Imetelstat" . SPARSER::DRUG)
-    ("mTR" . SPARSER::PROTEIN) ("TIN2 and TPP1" . SPARSER::COLLECTION)
+    ("thymidine" . SPARSER::PROTEIN) ("hTR/Cajal" . SPARSER::COLLECTION)
+    ("Imetelstat" . SPARSER::DRUG) ("mTR" . SPARSER::PROTEIN)
+    ("TIN2 and TPP1" . SPARSER::COLLECTION)
     ("Hsp23 and Hsp90" . SPARSER::COLLECTION) ("foci" . SPARSER::PROTEIN)
-    ("hTERT" . SPARSER::PROTEIN) ("POT1 and TPP1" . SPARSER::COLLECTION)
-    ("shelterin" . SPARSER::PROTEIN) ("hTERC" . SPARSER::RNA)
-    ("hTR" . SPARSER::RNA) ("ribonucleoprotein" . SPARSER::PROTEIN)
-    ("polymerases" . SPARSER::PROTEIN) ("repetitive DNA" . SPARSER::DNA)
-    ("Cajal" . SPARSER::PROTEIN) ("GRN" . SPARSER::PROTEIN)
+    ("hTR and hTERT" . SPARSER::COLLECTION) ("hTERT" . SPARSER::PROTEIN)
+    ("POT1 and TPP1" . SPARSER::COLLECTION) ("shelterin" . SPARSER::PROTEIN)
+    ("hTERC" . SPARSER::RNA) ("hTR" . SPARSER::PROTEIN)
+    ("ribonucleoprotein" . SPARSER::PROTEIN) ("polymerases" . SPARSER::PROTEIN)
+    ("repetitive DNA" . SPARSER::DNA) ("Cajal" . SPARSER::PROTEIN)
+    ("GRN" . SPARSER::PROTEIN)
     ("homeostatic telomere length-maintenance conditions only one molecule"
      . SPARSER::MOLECULE)
     ("a 20 µ" . SPARSER::PROTEIN) ("TRF2" . SPARSER::PROTEIN)
@@ -12148,37 +12635,39 @@
     ("the invasive component" . SPARSER::COMPONENT)
     ("an extensive exophytic papillary component" . SPARSER::COMPONENT)
     ("papillary component" . SPARSER::COMPONENT)
+    ("attractive target" . SPARSER::TARGET-PROTEIN)
     ("EGFR , KRAS and BRAF" . SPARSER::COLLECTION)
     ("chronic myelogenous leukemia" . SPARSER::PROTEIN)
     ("abl" . SPARSER::PROTEIN) ("imatinib" . SPARSER::DRUG)
     ("both the retrospective and prospective cohorts" . SPARSER::MOLECULE)
     ("noninvasive component" . SPARSER::COMPONENT)
-    ("were run" . SPARSER::PROTEIN-FAMILY)
+    ("were run" . SPARSER::PROTEIN)
     ("the same consecutive cohort" . SPARSER::MOLECULE)
     ("a prospective cohort" . SPARSER::MOLECULE)
+    ("Representative MS" . SPARSER::PROTEIN)
     ("exophytic component" . SPARSER::COMPONENT)
     ("fibroblast growth factor receptor family"
      . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("FGFR-3" . SPARSER::PROTEIN) ("PLX4032" . SPARSER::DRUG)
     ("c-kit" . SPARSER::PROTEIN)
-    ("Fibroblast growth factor receptor-3" . SPARSER::PROTEIN)
+    ("Fibroblast growth factor receptor" . SPARSER::PROTEIN)
     ("astrocytes and glia" . SPARSER::COLLECTION)
     ("chemokines, cytokines, and prostaglandins" . SPARSER::COLLECTION)
     ("TNFα and IL-1" . SPARSER::COLLECTION)
     ("IL-6, IL-1, IL-10, and TNFα" . SPARSER::COLLECTION)
     ("Pro- and anti-inflammatory" . SPARSER::COLLECTION)
     ("Pro-" . SPARSER::AMINO-ACID)
-    ("pro-inflammatory cytokines" . SPARSER::PROTEIN)
+    ("PKC, protein kinase A, and AKT" . SPARSER::COLLECTION)
     ("p50/p65" . SPARSER::COLLECTION)
     ("cytokines and chemokines" . SPARSER::COLLECTION)
     ("mu opioid receptor (MOR) and kappa opioid receptor (KOR)"
      . SPARSER::COLLECTION)
-    ("opioid receptor (KOR)" . SPARSER::PROTEIN)
-    ("opioid receptor (MOR)" . SPARSER::PROTEIN) ("KOR" . SPARSER::PROTEIN)
-    ("opioid" . SPARSER::PROTEIN) ("net" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("opioid receptor (KOR)" . SPARSER::PROTEIN) ("KOR" . SPARSER::PROTEIN)
+    ("MOR" . SPARSER::PROTEIN) ("net" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a robust activator" . SPARSER::ACTIVATOR)
     ("p50 (homodimer) and p65/p50 (heterodimer) subunits"
      . SPARSER::COLLECTION)
+    ("OFQ/N-treated nuclear" . SPARSER::PROTEIN)
     ("complex and absence" . SPARSER::COLLECTION)
     ("p65 or p50" . SPARSER::COLLECTION)
     ("antagonist and PKC" . SPARSER::COLLECTION)
@@ -12189,30 +12678,32 @@
     ("TNFα and IL-6" . SPARSER::COLLECTION) ("RelA/p65" . SPARSER::COLLECTION)
     ("hetero" . SPARSER::PROTEIN) ("Rel" . SPARSER::PROTEIN)
     ("RelA" . SPARSER::PROTEIN) ("IKK" . SPARSER::PROTEIN)
-    ("pro-inflammatory IL-6, IL-1β, and tumor necrosis factor-α (TNFα) mRNA"
-     . SPARSER::PROTEIN)
-    ("pro-inflammatory cytokine interleukin (IL)-2" . SPARSER::PROTEIN)
+    ("interleukin (IL)" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("IL-6, IL-1β, and tumor necrosis factor-α" . SPARSER::COLLECTION)
     ("astrocytes" . SPARSER::PROTEIN) ("NOPr and OFQ/N" . SPARSER::COLLECTION)
-    ("smooth muscle" . SPARSER::PROTEIN) ("calcium" . SPARSER::CALCIUM)
+    ("smooth muscle" . SPARSER::PROTEIN)
+    ("cyclase and voltage-gated" . SPARSER::COLLECTION)
+    ("calcium" . SPARSER::CALCIUM) ("cyclase" . SPARSER::PROTEIN)
     ("nociceptin/orphanin FQ" . SPARSER::COLLECTION)
     ("Orphanin FQ/nociceptin" . SPARSER::COLLECTION)
     ("p50 and p65" . SPARSER::COLLECTION) ("SH-SY5Y" . SPARSER::PROTEIN)
     ("the immune and central nervous system regulator" . SPARSER::REGULATOR)
     ("kappa" . SPARSER::PROTEIN-FAMILY)
     ("G protein coupled receptor (GPCR)" . SPARSER::PROTEIN)
-    ("GPCR" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("GPCR" . SPARSER::PROTEIN)
     ("orphanin FQ/nociceptin" . SPARSER::COLLECTION)
     ("NOPr" . SPARSER::PROTEIN) ("OFQ" . SPARSER::PROTEIN)
     ("nociceptin" . SPARSER::PROTEIN) ("neuropeptide" . SPARSER::PROTEIN)
     ("dual-luciferase" . SPARSER::PROTEIN) ("PKC α" . SPARSER::PROTEIN)
     ("opioid receptor" . SPARSER::PROTEIN)
-    ("A 2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Na 3 VO 4" . SPARSER::MOLECULE)
-    ("SB612111" . SPARSER::DRUG) ("p52" . SPARSER::PROTEIN)
-    ("c-rel" . SPARSER::PROTEIN) ("IκB" . SPARSER::PROTEIN)
-    ("voltage-gated" . SPARSER::PROTEIN) ("Orphanin FQ" . SPARSER::PROTEIN)
-    ("gene 2" . SPARSER::PROTEIN) ("p65" . SPARSER::PROTEIN)
-    ("p50" . SPARSER::PROTEIN) ("–2" . SPARSER::PROTEIN)
+    ("mu opioid receptor" . SPARSER::PROTEIN)
+    ("opioid receptors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("A 2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("and 1 µ" . SPARSER::PROTEIN)
+    ("Na 3 VO 4" . SPARSER::MOLECULE) ("SB612111" . SPARSER::DRUG)
+    ("p52" . SPARSER::PROTEIN) ("c-rel" . SPARSER::PROTEIN)
+    ("IκB" . SPARSER::PROTEIN) ("voltage-gated" . SPARSER::PROTEIN)
+    ("Orphanin FQ" . SPARSER::PROTEIN) ("gene 2" . SPARSER::PROTEIN)
+    ("p65" . SPARSER::PROTEIN) ("p50" . SPARSER::PROTEIN)
     ("NFκB" . SPARSER::PROTEIN)
     ("G protein coupled receptor" . SPARSER::PROTEIN)
     ("its receptor" . SPARSER::PROTEIN) ("orphanin FQ" . SPARSER::PROTEIN)
@@ -12256,9 +12747,10 @@
     ("phosphoserine" . SPARSER::PHOSPHORYLATED-AMINO-ACID)
     ("phosphotyrosine" . SPARSER::PHOSPHORYLATED-AMINO-ACID)
     ("DUSPs" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("tumor necrosis factor (TNF)" . SPARSER::PROTEIN)
     ("cyclooxygenase-2 (COX-2) and iNOS [ xref , xref , xref , xref – xref ]"
      . SPARSER::COLLECTION)
-    ("tumor necrosis factor (TNF), interleukin(IL)-1, IL-6, IL-8, cyclooxygenase-2 (COX-2) and iNOS [ xref , xref , xref , xref – xref ]"
+    ("IL-6, IL-8, cyclooxygenase-2 (COX-2) and iNOS [ xref , xref , xref , xref – xref ]"
      . SPARSER::COLLECTION)
     ("LPS, cytokines and growth factors" . SPARSER::COLLECTION)
     ("p38 α and p38" . SPARSER::COLLECTION)
@@ -12274,7 +12766,8 @@
     ("HuR" . SPARSER::PROTEIN) ("Proteins" . SPARSER::PROTEIN)
     ("β , glucocorticoids, and inhibitors of calcineurin [ xref – xref ]"
      . SPARSER::INHIBITOR)
-    ("calcineurin" . SPARSER::PROTEIN) ("MAPK and Jun" . SPARSER::COLLECTION)
+    ("calcineurin" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("MAPK and Jun" . SPARSER::COLLECTION)
     ("cAMP-responsive element-binding protein" . SPARSER::PROTEIN)
     ("protein, STAT3, NF-IL6, and hypoxia-induced factor-1"
      . SPARSER::COLLECTION)
@@ -12283,9 +12776,8 @@
     ("STAT2, and interferon" . SPARSER::COLLECTION) ("IRF" . SPARSER::PROTEIN)
     ("Interferon" . SPARSER::PROTEIN)
     ("response element (ISRE)" . SPARSER::DNA-RESPONSE-ELEMENT)
-    ("LPS and IFNs" . SPARSER::COLLECTION) ("IFNs" . SPARSER::DRUG)
-    ("nNOS and eNOS" . SPARSER::COLLECTION)
-    ("endothelial NOS" . SPARSER::PROTEIN) ("neuronal NOS" . SPARSER::PROTEIN)
+    ("GAS" . SPARSER::PROTEIN) ("LPS and IFNs" . SPARSER::COLLECTION)
+    ("IFNs" . SPARSER::DRUG) ("nNOS and eNOS" . SPARSER::COLLECTION)
     ("eNOS" . SPARSER::PROTEIN) ("nNOS" . SPARSER::PROTEIN)
     ("NOS" . SPARSER::PROTEIN)
     ("a gaseous signaling molecule" . SPARSER::MOLECULE)
@@ -12298,22 +12790,22 @@
     ("disease-modifying antirheumatic drug" . SPARSER::DRUG)
     ("SB203580" . SPARSER::DRUG) ("DUSP4" . SPARSER::PROTEIN)
     ("green fluorescent" . SPARSER::PROTEIN) ("Lamin A/C" . SPARSER::PROTEIN)
-    ("MK2" . SPARSER::PROTEIN) ("activated protein kinase" . SPARSER::PROTEIN)
-    ("lamin A/C" . SPARSER::PROTEIN) ("F12" . SPARSER::PROTEIN)
-    ("MMP-3" . SPARSER::PROTEIN)
+    ("MK2" . SPARSER::PROTEIN) ("lamin A/C" . SPARSER::PROTEIN)
+    ("F12" . SPARSER::PROTEIN) ("MMP-3" . SPARSER::PROTEIN)
     ("matrix metalloproteinase" . SPARSER::PROTEIN)
+    ("protein phosphatases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("COX-2" . SPARSER::PROTEIN) ("cyclooxygenase-2" . SPARSER::PROTEIN)
     ("p38 δ" . SPARSER::PROTEIN) ("p38 γ" . SPARSER::PROTEIN)
     ("p38 α" . SPARSER::PROTEIN) ("p42/44" . SPARSER::PROTEIN)
     ("heterogeneous nuclear ribonucleoprotein D" . SPARSER::PROTEIN)
     ("KH-type splicing regulatory protein" . SPARSER::PROTEIN)
-    ("RNA-binding protein" . SPARSER::PROTEIN)
     ("Mitogen-activated protein kinases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("hypoxia-induced factor-1" . SPARSER::PROTEIN)
     ("NF-IL6" . SPARSER::PROTEIN) ("HMG-I(Y)" . SPARSER::PROTEIN)
     ("activating protein" . SPARSER::PROTEIN) ("IRF-1" . SPARSER::PROTEIN)
     ("ISGF3" . SPARSER::PROTEIN) ("NF- κ B" . SPARSER::PROTEIN)
-    ("inducible NOS" . SPARSER::PROTEIN) ("Nitric oxide" . SPARSER::MOLECULE)
+    ("endothelial NOS" . SPARSER::PROTEIN) ("inducible NOS" . SPARSER::PROTEIN)
+    ("neuronal NOS" . SPARSER::PROTEIN) ("Nitric oxide" . SPARSER::MOLECULE)
     ("BIRB 796" . SPARSER::DRUG) ("IL-1 β" . SPARSER::PROTEIN)
     ("IFN γ" . SPARSER::PROTEIN) ("nitric oxide synthase" . SPARSER::PROTEIN)
     ("DUSP1" . SPARSER::PROTEIN)
@@ -12324,9 +12816,10 @@
     ("E-cadherin or β-catenin" . SPARSER::COLLECTION)
     ("Src, Hakai, β-catenin and E-cadherin" . SPARSER::COLLECTION)
     ("Receptor and non-receptor" . SPARSER::COLLECTION)
-    ("Receptor" . SPARSER::RECEPTOR)
+    ("Receptor" . SPARSER::PROTEIN)
     ("Hakai, Slug, Snail and phospho-Akt" . SPARSER::COLLECTION)
     ("nutraceutical agent silibinin" . SPARSER::DRUG)
+    ("Sh-PC3" . SPARSER::COLLECTION) ("ShEC-PC3" . SPARSER::COLLECTION)
     ("Sh" . SPARSER::PROTEIN-FAMILY)
     ("that dasatinib and/or silibinin treatment decrease/s"
      . SPARSER::COLLECTION)
@@ -12347,16 +12840,18 @@
     ("β-catenin and p120" . SPARSER::COLLECTION)
     ("β-catenin and actin" . SPARSER::COLLECTION)
     ("multi-catenin" . SPARSER::COLLECTION) ("multi" . SPARSER::PROTEIN)
-    ("TRAMP" . SPARSER::PROTEIN) ("dasatinib" . SPARSER::DRUG)
+    ("TRAMP" . SPARSER::PROTEIN) ("flavonoid" . SPARSER::MOLECULE)
+    ("call" . SPARSER::PROTEIN) ("dasatinib" . SPARSER::DRUG)
     ("phospho-Src(tyr 419 ) and Hakai" . SPARSER::COLLECTION)
     ("Slug, Snail, phospho-Akt(ser 473 ), nuclear β-catenin, phospho-Src(tyr 419 ) and Hakai"
      . SPARSER::COLLECTION)
-    ("Hakai" . SPARSER::PROTEIN) ("tyr" . SPARSER::AMINO-ACID)
+    ("Hakai" . SPARSER::PROTEIN) ("tyr" . SPARSER::PROTEIN)
     ("ser" . SPARSER::AMINO-ACID) ("Silibinin" . SPARSER::DRUG)
     ("silibinin" . SPARSER::DRUG) ("phytochemicals" . SPARSER::DRUG)
-    ("mitomycin C" . SPARSER::DRUG) ("C4-2" . SPARSER::PROTEIN)
-    ("α-catenin" . SPARSER::PROTEIN) ("p120" . SPARSER::PROTEIN)
+    ("mitomycin C" . SPARSER::DRUG) ("α-catenin" . SPARSER::PROTEIN)
+    ("p120" . SPARSER::PROTEIN) ("PC3" . SPARSER::PROTEIN)
     ("IL-8 siRNAs or the IL-8" . SPARSER::COLLECTION)
+    ("factor and IL-8" . SPARSER::COLLECTION)
     ("an attractive therapeutic target" . SPARSER::TARGET-PROTEIN)
     ("bevacizumab" . SPARSER::DRUG) ("p38-MAPK" . SPARSER::COLLECTION)
     ("ERK and EGFR" . SPARSER::COLLECTION)
@@ -12366,7 +12861,7 @@
     ("MEK and p38" . SPARSER::COLLECTION) ("KRAS/EGFR" . SPARSER::COLLECTION)
     ("KRAS and EGFR" . SPARSER::COLLECTION)
     ("histological subtypes" . SPARSER::PROTEIN)
-    ("siR-NAs" . SPARSER::COLLECTION) ("NAs" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("NAs" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("gefitinib and erlotinib" . SPARSER::COLLECTION)
     ("erlotinib" . SPARSER::DRUG) ("gefitinib" . SPARSER::DRUG)
     ("pRS" . SPARSER::PROTEIN) ("CXCR1 and CXCR2" . SPARSER::COLLECTION)
@@ -12376,54 +12871,65 @@
     ("EGFR-TKIs" . SPARSER::COLLECTION) ("TKIs" . SPARSER::PROTEIN)
     ("siRNAs or a neutralizing antibody" . SPARSER::COLLECTION)
     ("KRAS or EGFR" . SPARSER::COLLECTION)
-    ("an angiogenic growth factor" . SPARSER::GROWTH-FACTOR)
+    ("an angiogenic growth factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("EGFR-TKI" . SPARSER::PROTEIN) ("SB202190" . SPARSER::DRUG)
     ("IgG1" . SPARSER::BIO-COMPLEX) ("CXCR2" . SPARSER::PROTEIN)
-    ("GTP-binding protein" . SPARSER::PROTEIN)
-    ("interleukin-8" . SPARSER::PROTEIN)
-    ("active promoter" . SPARSER::PROMOTER)
+    ("PC9" . SPARSER::PROTEIN) ("interleukin-8" . SPARSER::PROTEIN)
+    ("NAR" . SPARSER::PROTEIN) ("active promoter" . SPARSER::PROMOTER)
     ("heterochromatin" . SPARSER::PROTEIN)
     ("FRAP and FLIP" . SPARSER::COLLECTION)
+    ("for example HLH domain proteins" . SPARSER::PROTEIN)
     ("ongoing dynamic DNA-interactions" . SPARSER::DNA)
     ("dynamic DNA-interactions" . SPARSER::DNA)
-    ("DNA-interactions" . SPARSER::DNA) ("indirect mapping" . SPARSER::PROTEIN)
-    ("Net and Sap1a" . SPARSER::COLLECTION)
+    ("DNA-interactions" . SPARSER::DNA) ("Net and Sap1a" . SPARSER::COLLECTION)
     ("Net" . SPARSER::HUMAN-PROTEIN-FAMILY) ("ankyrin" . SPARSER::PROTEIN)
-    ("GABP" . SPARSER::PROTEIN) ("TEL" . SPARSER::PROTEIN)
-    ("a temperature-sensitive E1 enzyme" . SPARSER::ENZYME)
-    ("mask" . SPARSER::PROTEIN) ("chaperone" . SPARSER::PROTEIN)
+    ("GABP" . SPARSER::PROTEIN) ("PNT" . SPARSER::PROTEIN)
+    ("TEL" . SPARSER::PROTEIN)
+    ("a temperature-sensitive E1 enzyme" . SPARSER::PROTEIN)
+    ("mask" . SPARSER::PROTEIN) ("Hsc70/CHIP" . SPARSER::COLLECTION)
+    ("chaperone" . SPARSER::PROTEIN) ("CHIP" . SPARSER::PROTEIN)
     ("chaperones" . SPARSER::PROTEIN)
+    ("Factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a latent transcription factor" . SPARSER::PROTEIN)
     ("conformations or complexes" . SPARSER::COLLECTION)
-    ("conformations" . SPARSER::BIO-CONFORMATION)
+    ("conformations" . SPARSER::BIO-CONFORMATION) ("aid" . SPARSER::PROTEIN)
     ("the DNA binding-defective Elk-1 mutant" . SPARSER::MUTANT)
-    ("Elk-1 and Elk-SM" . SPARSER::COLLECTION) ("FLIP" . SPARSER::PROTEIN)
+    ("Elk-SM" . SPARSER::PROTEIN-PAIR) ("FLIP" . SPARSER::PROTEIN)
+    ("Elk-1 and Elk-SM" . SPARSER::COLLECTION)
     ("no immobile Elk-1 fraction" . SPARSER::COMPONENT)
     ("a DNA binding-defective Elk-1 mutant" . SPARSER::MUTANT)
-    ("FRAP" . SPARSER::PROTEIN) ("Elk-1 and Elk-ets" . SPARSER::COLLECTION)
-    ("Ethidium" . SPARSER::MOLECULE)
+    ("Elk-DM" . SPARSER::COLLECTION) ("FRAP" . SPARSER::PROTEIN)
+    ("Elk-1 and PU.1" . SPARSER::COLLECTION) ("ets-DM" . SPARSER::COLLECTION)
+    ("Ethidium" . SPARSER::MOLECULE) ("PU.1-ets" . SPARSER::COLLECTION)
     ("a monomer or a dimer" . SPARSER::COLLECTION)
-    ("Elk-1-YFP" . SPARSER::COLLECTION)
+    ("proteins, Ets-1 and PU.1" . SPARSER::COLLECTION)
+    ("Elk-YFP" . SPARSER::COLLECTION) ("Elk-1-YFP" . SPARSER::COLLECTION)
+    ("Elk-GFP" . SPARSER::COLLECTION)
     ("Venus-yellow fluorescent protein" . SPARSER::COLLECTION)
-    ("YFP" . SPARSER::PROTEIN) ("around 100 kDa" . SPARSER::PROTEIN)
+    ("YFP" . SPARSER::PROTEIN) ("GST-Elk-ets" . SPARSER::COLLECTION)
+    ("HA-Elk-ets" . SPARSER::COLLECTION) ("around 100 kDa" . SPARSER::PROTEIN)
     ("Individually both proteins" . SPARSER::PROTEIN)
-    ("mixtures" . SPARSER::MOLECULE) ("ets" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("KCl" . SPARSER::MOLECULE) ("PRM" . SPARSER::PROTEIN)
-    ("EKLF/KLF1" . SPARSER::COLLECTION) ("erythroid" . SPARSER::PROTEIN)
+    ("mixtures" . SPARSER::MOLECULE) ("Elk-ets" . SPARSER::COLLECTION)
+    ("ets" . SPARSER::HUMAN-PROTEIN-FAMILY) ("KCl" . SPARSER::MOLECULE)
+    ("PRM" . SPARSER::PROTEIN) ("EKLF/KLF1" . SPARSER::COLLECTION)
+    ("EKLF" . SPARSER::PROTEIN) ("erythroid" . SPARSER::PROTEIN)
+    ("PEST" . SPARSER::PROTEIN) ("PEST-FIND" . SPARSER::PROTEIN-PAIR)
+    ("FIND" . SPARSER::PROTEIN)
     ("all the Elk-1 internal deletion mutants" . SPARSER::MUTANT)
-    ("internal deletion mutants" . SPARSER::MUTANT)
-    ("SRE" . SPARSER::PROTEIN-FAMILY) ("IMAC" . SPARSER::PROTEIN)
+    ("internal deletion mutants" . SPARSER::MUTANT) ("odd" . SPARSER::PROTEIN)
+    ("Elk-" . SPARSER::PROTEIN) ("Elk" . SPARSER::PROTEIN)
+    ("SRE" . SPARSER::PROTEIN-FAMILY) ("UPS" . SPARSER::PROTEIN)
+    ("poly-ubiquitylated sElk" . SPARSER::PROTEIN) ("IMAC" . SPARSER::PROTEIN)
     ("his" . SPARSER::AMINO-ACID)
-    ("neither Elk-1 nor sElk" . SPARSER::COLLECTION)
-    ("the flexible linker" . SPARSER::LINKER) ("SID" . SPARSER::PROTEIN-FAMILY)
-    ("linker" . SPARSER::LINKER)
+    ("neither Elk-1 nor sElk" . SPARSER::COLLECTION) ("SID" . SPARSER::PROTEIN)
     ("the largest polysomes" . SPARSER::BIO-COMPLEX)
     ("polysomes" . SPARSER::BIO-COMPLEX)
     ("Elk-1 and sElk RNA ( xref d) and their distribution"
      . SPARSER::COLLECTION)
+    ("stable mRNA or lack of translation" . SPARSER::COLLECTION)
     ("polysome" . SPARSER::BIO-COMPLEX)
-    ("Elk-1 and sElk" . SPARSER::COLLECTION)
-    ("the neuronal-specific isoform" . SPARSER::ISOFORM)
+    ("Elk-1 and sElk" . SPARSER::COLLECTION) ("-UTR" . SPARSER::COLLECTION)
+    ("the neuronal-specific isoform" . SPARSER::PROTEIN)
     ("sElk" . SPARSER::PROTEIN)
     ("conformation and stability" . SPARSER::COLLECTION)
     ("Sur" . SPARSER::PROTEIN)
@@ -12451,7 +12957,7 @@
      . SPARSER::COLLECTION)
     ("FAS" . SPARSER::PROTEIN)
     ("siRNA and short-hairpin RNA" . SPARSER::COLLECTION)
-    ("metalloproteases" . SPARSER::PROTEIN)
+    ("Twist" . SPARSER::PROTEIN) ("metalloproteases" . SPARSER::PROTEIN)
     ("siRNA or Src+STAT3+Myc" . SPARSER::COLLECTION)
     ("at least part" . SPARSER::COMPONENT)
     ("Src, Stat3, and Myc" . SPARSER::COLLECTION)
@@ -12472,7 +12978,7 @@
     ("a single siRNA or various siRNAs" . SPARSER::COLLECTION)
     ("Akt2 or EGFR" . SPARSER::COLLECTION)
     ("MAPK1, Akt1, cMyc, and STAT3" . SPARSER::COLLECTION)
-    ("STAT3 or cMyc" . SPARSER::COLLECTION)
+    ("fig" . SPARSER::PROTEIN) ("STAT3 or cMyc" . SPARSER::COLLECTION)
     ("nanoparticles" . SPARSER::MOLECULE) ("Bcr/Abl" . SPARSER::COLLECTION)
     ("Abl" . SPARSER::PROTEIN) ("Bcr" . SPARSER::PROTEIN)
     ("Imatinib" . SPARSER::DRUG) ("claudin" . SPARSER::PROTEIN)
@@ -12491,22 +12997,23 @@
     ("CoCl 2" . SPARSER::MOLECULE)
     ("green fluorescent protein" . SPARSER::PROTEIN)
     ("K-RAS" . SPARSER::PROTEIN) ("Von Hippel-Lindau" . SPARSER::PROTEIN)
-    ("vascular endothelial" . SPARSER::PROTEIN) ("Akt2" . SPARSER::PROTEIN)
-    ("Akt1" . SPARSER::PROTEIN) ("MAPK1" . SPARSER::PROTEIN)
-    ("Src kinase" . SPARSER::PROTEIN)
+    ("vascular endothelial growth factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Akt2" . SPARSER::PROTEIN) ("Akt1" . SPARSER::PROTEIN)
+    ("MAPK1" . SPARSER::PROTEIN) ("Src kinase" . SPARSER::PROTEIN)
     ("progesterone receptor" . SPARSER::PROTEIN) ("Stat3" . SPARSER::PROTEIN)
     ("signal transducer and activator of transcription 3" . SPARSER::PROTEIN)
-    ("an essential regulator" . SPARSER::REGULATOR)
+    ("an essential regulator" . SPARSER::PROTEIN)
     ("a unique exon" . SPARSER::PROTEIN) ("ATG" . SPARSER::DRUG)
-    ("p53/MDM2/MDMX" . SPARSER::COLLECTION)
+    ("a new twist" . SPARSER::PROTEIN) ("p53/MDM2/MDMX" . SPARSER::COLLECTION)
     ("mdmx and mdm2" . SPARSER::COLLECTION) ("MEK/ERK" . SPARSER::COLLECTION)
     ("Ets" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("MDMX or alternative MDMX proteins" . SPARSER::COLLECTION)
     ("myc-mdmx" . SPARSER::COLLECTION) ("myc" . SPARSER::PROTEIN)
+    ("a prognostic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("MDMX and MDMX211" . SPARSER::COLLECTION)
     ("both full-length MDMX and the alternative MDMX211 form"
      . SPARSER::COLLECTION)
-    ("p53-wt" . SPARSER::PROTEIN-PAIR)
+    ("p53-wt" . SPARSER::PROTEIN-PAIR) ("ARO" . SPARSER::PROTEIN)
     ("the full-length MDMX and the alternative splicing variants"
      . SPARSER::COLLECTION)
     ("only full-length MDMX protein can" . SPARSER::PROTEIN)
@@ -12523,6 +13030,7 @@
     ("just lacking exon" . SPARSER::PROTEIN)
     ("approximately 16 kDa" . SPARSER::PROTEIN) ("COS" . SPARSER::MOLECULE)
     ("26 unique C-terminal amino acids" . SPARSER::AMINO-ACID)
+    ("MDMX-S protein" . SPARSER::COLLECTION)
     ("doxorubicin and neocarzinostatin" . SPARSER::COLLECTION)
     ("pRB" . SPARSER::PROTEIN) ("Actinomycin D or 5-FU" . SPARSER::COLLECTION)
     ("the ribosomal proteins" . SPARSER::PROTEIN)
@@ -12530,35 +13038,35 @@
     ("derivatives" . SPARSER::DERIVATIVE) ("relevant genes" . SPARSER::GENE)
     ("doxorubicin, cisplatin, IR, and UV-C" . SPARSER::COLLECTION)
     ("Polymerase" . SPARSER::PROTEIN)
+    ("a universal essential factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("these ruthless conditions MDMX protein" . SPARSER::PROTEIN)
-    ("anchor" . SPARSER::ANCHOR)
-    ("a pro- or antiapoptotic function of MDMX" . SPARSER::COLLECTION)
-    ("pro-" . SPARSER::AMINO-ACID) ("adriamycin" . SPARSER::DRUG)
+    ("anchor" . SPARSER::ANCHOR) ("pro-" . SPARSER::PROTEIN)
+    ("adriamycin" . SPARSER::DRUG)
     ("doxorubicin or cisplatin" . SPARSER::COLLECTION)
-    ("microRNA" . SPARSER::RNA) ("Rev" . SPARSER::PROTEIN-FAMILY)
+    ("microRNA" . SPARSER::MICRO-RNA) ("mL" . SPARSER::PROTEIN)
+    ("Rev" . SPARSER::PROTEIN) ("CTD" . SPARSER::PROTEIN)
     ("the hSlu7 protein (3′ site selection) and the hnRNP A1 proteins (5′ site selection)"
      . SPARSER::COLLECTION)
     ("mdmx- and mdmx-S" . SPARSER::COLLECTION) ("mdmx-" . SPARSER::PROTEIN)
     ("Alt2" . SPARSER::PROTEIN) ("Alt1" . SPARSER::PROTEIN)
     ("unique C-terminal amino acids" . SPARSER::AMINO-ACID)
     ("only few high-quality antibodies" . SPARSER::ANTIBODY)
-    ("mdm2 and mdmx" . SPARSER::COLLECTION)
-    ("Extensive alternative mRNA" . SPARSER::PROTEIN)
-    ("MDMX/p53" . SPARSER::COLLECTION) ("p53/MDMX" . SPARSER::COLLECTION)
-    ("Tyrosine" . SPARSER::AMINO-ACID) ("-Myc" . SPARSER::COLLECTION)
-    ("IR or IR-mimetic" . SPARSER::COLLECTION)
+    ("mdm2 and mdmx" . SPARSER::COLLECTION) ("MDMX/p53" . SPARSER::COLLECTION)
+    ("p53/MDMX" . SPARSER::COLLECTION) ("Tyrosine" . SPARSER::AMINO-ACID)
+    ("-Myc" . SPARSER::COLLECTION) ("IR or IR-mimetic" . SPARSER::COLLECTION)
     ("14-3-3/HAUSP" . SPARSER::COLLECTION) ("ATM/Chk2" . SPARSER::COLLECTION)
     ("neocarzinostatin" . SPARSER::PROTEIN) ("NCS" . SPARSER::PROTEIN)
     ("IR" . SPARSER::PROTEIN) ("HAUSP/MDMX" . SPARSER::COLLECTION)
-    ("deubiquitinase" . SPARSER::DEUBIQUITINASE)
-    ("p53-" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Adriamycin" . SPARSER::DRUG)
+    ("deubiquitinase" . SPARSER::DEUBIQUITINASE) ("p53-" . SPARSER::PROTEIN)
+    ("Adriamycin" . SPARSER::DRUG)
     ("ubiquitin-ligase activity" . SPARSER::COLLECTION)
     ("oligomer" . SPARSER::MOLECULE) ("MDM2/MDMX" . SPARSER::COLLECTION)
-    ("Mdmx" . SPARSER::PROTEIN) ("normal MEFs" . SPARSER::PROTEIN)
-    ("MEFs" . SPARSER::PROTEIN) ("p53 and p53-7KR" . SPARSER::COLLECTION)
-    ("KR" . SPARSER::PROTEIN-FAMILY) ("arginines" . SPARSER::AMINO-ACID)
-    ("p300/CBP" . SPARSER::COLLECTION)
+    ("spec" . SPARSER::PROTEIN) ("Mdmx" . SPARSER::PROTEIN)
+    ("normal MEFs" . SPARSER::PROTEIN) ("MEFs" . SPARSER::PROTEIN)
+    ("p53 and p53-7KR" . SPARSER::COLLECTION) ("KR" . SPARSER::PROTEIN)
+    ("arginines" . SPARSER::AMINO-ACID) ("p300/CBP" . SPARSER::COLLECTION)
     ("polyubiquitination" . SPARSER::PROTEIN)
+    ("stress-induced HAUSP-p53" . SPARSER::COLLECTION)
     ("HAUSP-p53" . SPARSER::COLLECTION) ("Mdm2-" . SPARSER::PROTEIN)
     ("HAUSP" . SPARSER::PROTEIN)
     ("homo-oligomers and hetero-oligomers" . SPARSER::COLLECTION)
@@ -12569,42 +13077,46 @@
     ("MDM2 or MDMX" . SPARSER::COLLECTION)
     ("hypoxia, and oncogene" . SPARSER::COLLECTION)
     ("p53-MDMX" . SPARSER::COLLECTION) ("mdmx" . SPARSER::PROTEIN)
-    ("MDM" . SPARSER::PROTEIN) ("p14ARF" . SPARSER::PROTEIN)
-    ("K-Ras" . SPARSER::PROTEIN) ("ribosomal protein L11" . SPARSER::PROTEIN)
-    ("Nutlin-3" . SPARSER::DRUG) ("L11" . SPARSER::PROTEIN)
-    ("Actinomycin D" . SPARSER::MOLECULE) ("polymerase II" . SPARSER::PROTEIN)
-    ("α -amanitin" . SPARSER::MOLECULE) ("HIPK2" . SPARSER::PROTEIN)
-    ("S46" . SPARSER::PROTEIN) ("WAF1" . SPARSER::PROTEIN)
-    ("Leptomycin B" . SPARSER::MOLECULE) ("hnRNP A1" . SPARSER::PROTEIN)
-    ("hSlu7" . SPARSER::PROTEIN) ("c-Abl" . SPARSER::PROTEIN)
-    ("pre-mRNA" . SPARSER::RNA) ("Chk1" . SPARSER::PROTEIN)
-    ("Chk2" . SPARSER::PROTEIN) ("Pim1" . SPARSER::PROTEIN)
-    ("serine residue" . SPARSER::MOLECULE)
+    ("MDM" . SPARSER::PROTEIN) ("NT2" . SPARSER::PROTEIN)
+    ("p14ARF" . SPARSER::PROTEIN) ("K-Ras" . SPARSER::PROTEIN)
+    ("S protein" . SPARSER::PROTEIN)
+    ("ribosomal protein L11" . SPARSER::PROTEIN) ("Nutlin-3" . SPARSER::DRUG)
+    ("L11" . SPARSER::PROTEIN) ("Actinomycin D" . SPARSER::MOLECULE)
+    ("polymerase II" . SPARSER::PROTEIN) ("α -amanitin" . SPARSER::MOLECULE)
+    ("HIPK2" . SPARSER::PROTEIN) ("S46" . SPARSER::PROTEIN)
+    ("WAF1" . SPARSER::PROTEIN) ("Leptomycin B" . SPARSER::MOLECULE)
+    ("hnRNP A1" . SPARSER::PROTEIN) ("hSlu7" . SPARSER::PROTEIN)
+    ("c-Abl" . SPARSER::PROTEIN) ("pre-mRNA" . SPARSER::RNA)
+    ("Chk1" . SPARSER::PROTEIN) ("Chk2" . SPARSER::PROTEIN)
+    ("Pim1" . SPARSER::PROTEIN) ("serine residue" . SPARSER::MOLECULE)
     ("tumor suppressor protein" . SPARSER::PROTEIN)
     ("a novel MPNST prognostic biomarker" . SPARSER::MOLECULE)
     ("which targets MET and VEGFR2" . SPARSER::COLLECTION)
     ("the orally available tyrosine kinase inhibitor XL184" . SPARSER::DRUG)
+    ("generally only low-to-moderate severity side" . SPARSER::PROTEIN)
     ("the angiogenic receptor VEGFR2 and the RET, KIT, FLT3, TIE2, and AXL receptors ( xref )"
      . SPARSER::COLLECTION)
     ("the angiogenic receptor VEGFR2" . SPARSER::PROTEIN)
     ("RET, KIT, FLT3, TIE2, and AXL" . SPARSER::COLLECTION)
     ("a potential MPNST therapeutic target" . SPARSER::TARGET-PROTEIN)
+    ("hope" . SPARSER::PROTEIN)
     ("angiogenic cytokines IL-8 and VEGF" . SPARSER::COLLECTION)
-    ("IL-8 and VEGF" . SPARSER::COLLECTION) ("VEGFR" . SPARSER::PROTEIN)
-    ("ERK and AKT" . SPARSER::COLLECTION)
+    ("IL-8 and VEGF" . SPARSER::COLLECTION)
+    ("a known independent angiogenic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("VEGFR" . SPARSER::PROTEIN) ("ERK and AKT" . SPARSER::COLLECTION)
     ("p53, RB1, p16, p14, and p27" . SPARSER::COLLECTION)
     ("Nf1" . SPARSER::PROTEIN) ("neurofibromin" . SPARSER::PROTEIN)
     ("each experimental arm" . SPARSER::PROTEIN) ("arm" . SPARSER::PROTEIN)
-    ("SD" . SPARSER::PROTEIN)
-    ("XL184 (30mg/kg) or vehicle" . SPARSER::COLLECTION)
+    ("SD" . SPARSER::PROTEIN) ("PK" . SPARSER::PROTEIN)
     ("AXL, RET, and KIT" . SPARSER::COLLECTION) ("RET" . SPARSER::PROTEIN)
-    ("AXL" . SPARSER::PROTEIN) ("MET and VEGFR2" . SPARSER::COLLECTION)
+    ("AXL" . SPARSER::PROTEIN) ("Only minimal impact" . SPARSER::PROTEIN)
+    ("MET and VEGFR2" . SPARSER::COLLECTION)
     ("multi-tyrosine kinase" . SPARSER::PROTEIN-PAIR)
-    ("HGF or HDMEcs" . SPARSER::COLLECTION)
+    ("HGF or HDMEcs" . SPARSER::COLLECTION) ("CM" . SPARSER::PROTEIN)
     ("simultaneously expressing both the receptor and the ligand"
      . SPARSER::COLLECTION)
-    ("MET and pMET" . SPARSER::COLLECTION)
-    ("unfavorable DSS" . SPARSER::PROTEIN)
+    ("IPT" . SPARSER::PROTEIN) ("MET and pMET" . SPARSER::COLLECTION)
+    ("NSC" . SPARSER::PROTEIN) ("unfavorable DSS" . SPARSER::PROTEIN)
     ("only minimal HGF" . SPARSER::PROTEIN)
     ("a potential MPNST biomarker" . SPARSER::MOLECULE)
     ("HGF and MET" . SPARSER::COLLECTION) ("HGF/MET" . SPARSER::COLLECTION)
@@ -12642,14 +13154,12 @@
     ("thrombin" . SPARSER::PROTEIN)
     ("very early osteogenic genes" . SPARSER::GENE)
     ("the collagenous matrix" . SPARSER::PROTEIN-FAMILY)
-    ("Collagen" . SPARSER::PROTEIN) ("Runx2 or Dlx5" . SPARSER::COLLECTION)
-    ("Osx, AP and pro-proliferative factors MSX2 and its inducer TGF-β1"
+    ("stimulatory factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Collagen" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Runx2 or Dlx5" . SPARSER::COLLECTION)
+    ("pro-proliferative factors MSX2 and its inducer TGF-β1"
      . SPARSER::COLLECTION)
-    ("Osx, AP and pro-proliferative" . SPARSER::COLLECTION)
-    ("OC and AP" . SPARSER::COLLECTION)
     ("the very early stage transcription factor Dlx5 or its effector BMP2"
-     . SPARSER::COLLECTION)
-    ("the early stage transcription factor Runx2 and the markers AP"
      . SPARSER::COLLECTION)
     ("BMP-2 and TGF-β1" . SPARSER::COLLECTION)
     ("OC and BSP" . SPARSER::COLLECTION)
@@ -12665,18 +13175,19 @@
     ("MMP-1 and -13 differentially" . SPARSER::COLLECTION)
     ("BMP-2, Dlx5 and Osx" . SPARSER::COLLECTION)
     ("TGF-β1 (1.1-fold) and MSX2 (1.5-fold)" . SPARSER::COLLECTION)
-    ("sialoprotein" . SPARSER::PROTEIN) ("osteopontin" . SPARSER::PROTEIN)
+    ("sialoprotein" . SPARSER::PROTEIN)
+    ("osteopontin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("bone morphogenetic protein 2 (BMP-2) and distal-less homeobox 5 (Dlx5)"
      . SPARSER::COLLECTION)
-    ("osterix (Osx) and AP" . SPARSER::COLLECTION)
-    ("transforming growth factor-β1" . SPARSER::COLLECTION)
     ("osterix" . SPARSER::PROTEIN) ("MMP-1 or MMP-13" . SPARSER::COLLECTION)
     ("proteinases" . SPARSER::HUMAN-PROTEIN-FAMILY) ("MMP" . SPARSER::PROTEIN)
     ("exogenous bacterial collagenase or human MMP-1" . SPARSER::COLLECTION)
     ("exogenous bacterial collagenase" . SPARSER::PROTEIN)
     ("PDL" . SPARSER::MOLECULE) ("OC" . SPARSER::PROTEIN)
-    ("osteocalcin" . SPARSER::PROTEIN) ("collagense-2" . SPARSER::COLLECTION)
+    ("osteocalcin" . SPARSER::PROTEIN)
     ("a major organic component" . SPARSER::COMPONENT)
+    ("triple-helical fibril collagens" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("collagens" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Collagenases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("collagenases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("zinc-dependent endopeptidases" . SPARSER::PROTEIN)
@@ -12685,26 +13196,25 @@
     ("Matrix" . SPARSER::PROTEIN-FAMILY) ("Osx and MSX2" . SPARSER::COLLECTION)
     ("MMPs" . SPARSER::PROTEIN) ("TGF-β1, MSX2 and Osx" . SPARSER::COLLECTION)
     ("Osx" . SPARSER::PROTEIN) ("Runx2, OP and BSP" . SPARSER::COLLECTION)
-    ("OP and BSP" . SPARSER::COLLECTION)
     ("TGF-β1 and MSX2" . SPARSER::COLLECTION) ("BSP" . SPARSER::PROTEIN)
-    ("OP" . SPARSER::MOLECULE)
-    ("MMP-1- and -13-mediated" . SPARSER::COLLECTION)
+    ("OP" . SPARSER::PROTEIN) ("MMP-1- and -13-mediated" . SPARSER::COLLECTION)
     ("MMP-1-" . SPARSER::PROTEIN)
     ("MMP-1 (collagenase-1) and MMP-13 (collagenase-3) differentially"
      . SPARSER::COLLECTION)
-    ("collagenase-1" . SPARSER::COLLECTION) ("SDS 1" . SPARSER::PROTEIN)
-    ("Beta-actin" . SPARSER::PROTEIN) ("alpha-" . SPARSER::PROTEIN)
-    ("PAR-1" . SPARSER::PROTEIN) ("BMP2" . SPARSER::PROTEIN)
-    ("distal-less homeobox 5" . SPARSER::PROTEIN)
+    ("SDS 1" . SPARSER::PROTEIN) ("Beta-actin" . SPARSER::PROTEIN)
+    ("alpha-" . SPARSER::PROTEIN) ("PAR-1" . SPARSER::PROTEIN)
+    ("BMP2" . SPARSER::PROTEIN) ("distal-less homeobox 5" . SPARSER::PROTEIN)
     ("bone morphogenetic protein 2" . SPARSER::PROTEIN)
-    ("Msh homeobox 2" . SPARSER::PROTEIN) ("Runx2" . SPARSER::PROTEIN)
-    ("MSX2" . SPARSER::PROTEIN) ("Dlx5" . SPARSER::PROTEIN)
-    ("BMP-2" . SPARSER::PROTEIN) ("collagenase-3" . SPARSER::PROTEIN)
-    ("MMP-13" . SPARSER::PROTEIN) ("MMP-1" . SPARSER::PROTEIN)
+    ("Msh homeobox 2" . SPARSER::PROTEIN)
+    ("transforming growth factor-β1" . SPARSER::PROTEIN)
+    ("Runx2" . SPARSER::PROTEIN) ("MSX2" . SPARSER::PROTEIN)
+    ("Dlx5" . SPARSER::PROTEIN) ("BMP-2" . SPARSER::PROTEIN)
+    ("collagenase-3" . SPARSER::PROTEIN) ("MMP-13" . SPARSER::PROTEIN)
+    ("MMP-1" . SPARSER::PROTEIN)
     ("increasingly more potent anti-androgens" . SPARSER::DRUG)
     ("abiraterone acetate and MDV3100" . SPARSER::COLLECTION)
-    ("LNCaP and 22RV1" . SPARSER::COLLECTION) ("RV" . SPARSER::MOLECULE)
-    ("AR and androgen" . SPARSER::COLLECTION)
+    ("arms" . SPARSER::PROTEIN) ("LNCaP and 22RV1" . SPARSER::COLLECTION)
+    ("RV" . SPARSER::PROTEIN) ("AR and androgen" . SPARSER::COLLECTION)
     ("p53 and AR" . SPARSER::COLLECTION)
     ("protein and mRNA" . SPARSER::COLLECTION)
     ("AR and p53" . SPARSER::COLLECTION)
@@ -12717,10 +13227,9 @@
     ("androgen (PSA)" . SPARSER::MOLECULE) ("PSA" . SPARSER::PROTEIN)
     ("sham" . SPARSER::DRUG) ("bid" . SPARSER::PROTEIN)
     ("nutlin and CSS" . SPARSER::COLLECTION)
-    ("miR-34a and miR" . SPARSER::COLLECTION)
     ("MDM2 and MDMX" . SPARSER::COLLECTION)
     ("p53 and several other proteins" . SPARSER::COLLECTION)
-    ("siRNA-AR" . SPARSER::COLLECTION)
+    ("siRNA" . SPARSER::PROTEIN) ("siRNA-AR" . SPARSER::COLLECTION)
     ("Nutlin-3a and CDX" . SPARSER::COLLECTION)
     ("Exponentially growing LNCaP" . SPARSER::PROTEIN)
     ("CDX" . SPARSER::PROTEIN) ("Casodex" . SPARSER::DRUG)
@@ -12730,15 +13239,18 @@
     ("Nutlin" . SPARSER::DRUG) ("MDM2 and p21" . SPARSER::COLLECTION)
     ("Waf1/CIP1" . SPARSER::COLLECTION) ("MDMX" . SPARSER::PROTEIN)
     ("p53-MDM2" . SPARSER::COLLECTION) ("etoposide" . SPARSER::PROTEIN)
+    ("a desirable target" . SPARSER::TARGET-PROTEIN)
     ("this autoregulatory loop both p53 and MDM2" . SPARSER::COLLECTION)
     ("p53 and MDM2" . SPARSER::COLLECTION)
-    ("which targets p53" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Androgen" . SPARSER::PROTEIN) ("media" . SPARSER::PROTEIN)
+    ("which targets p53" . SPARSER::PROTEIN) ("Androgen" . SPARSER::PROTEIN)
+    ("media" . SPARSER::PROTEIN)
     ("anti-androgens, or estrogens" . SPARSER::COLLECTION)
+    ("CAB" . SPARSER::PROTEIN)
     ("flutamide or the more potent bicalutamide" . SPARSER::COLLECTION)
-    ("hormone" . SPARSER::MOLECULE) ("bicalutamide" . SPARSER::DRUG)
-    ("flutamide" . SPARSER::DRUG) ("testicular- androgen" . SPARSER::PROTEIN)
-    ("LHRH" . SPARSER::PROTEIN) ("nutlin" . SPARSER::DRUG)
+    ("hormone-receptor" . SPARSER::COLLECTION) ("hormone" . SPARSER::PROTEIN)
+    ("bicalutamide" . SPARSER::DRUG) ("flutamide" . SPARSER::DRUG)
+    ("testicular- androgen" . SPARSER::PROTEIN) ("LHRH" . SPARSER::PROTEIN)
+    ("nutlin" . SPARSER::DRUG)
     ("nutlin-3 and the p53 wild-type prostate cancer cell line"
      . SPARSER::COLLECTION)
     ("LNCaP" . SPARSER::PROTEIN)
@@ -12747,7 +13259,7 @@
     ("recently developed MDM2 antagonists" . SPARSER::MOLECULE)
     ("nutlins" . SPARSER::DRUG) ("antagonists" . SPARSER::MOLECULE)
     ("testicular androgen" . SPARSER::PROTEIN) ("androgen" . SPARSER::PROTEIN)
-    ("Hormone" . SPARSER::MOLECULE) ("Foxn1" . SPARSER::PROTEIN)
+    ("Hormone" . SPARSER::PROTEIN) ("Foxn1" . SPARSER::PROTEIN)
     ("MDV3100" . SPARSER::DRUG) ("abiraterone acetate" . SPARSER::DRUG)
     ("full- length" . SPARSER::PROTEIN) ("CIP1" . SPARSER::PROTEIN)
     ("Waf1" . SPARSER::PROTEIN) ("MDM2 protein" . SPARSER::PROTEIN)
@@ -12756,8 +13268,8 @@
     ("androgen receptor" . SPARSER::PROTEIN) ("anti-androgen" . SPARSER::DRUG)
     ("the arachidonic acid metabolites" . SPARSER::MOLECULE)
     ("other inflammation-regulated mediators" . SPARSER::PROTEIN)
-    ("CCL20 or human beta-defensins" . SPARSER::COLLECTION)
-    ("defensins" . SPARSER::PROTEIN)
+    ("beta-defensins" . SPARSER::COLLECTION) ("defensins" . SPARSER::PROTEIN)
+    ("beta" . SPARSER::PROTEIN)
     ("heterodimeric CXCR4:CXCR7 receptors" . SPARSER::RECEPTOR)
     ("CXCR4:CXCR7" . SPARSER::BIO-COMPLEX)
     ("its chemokine ligand CCL20 or the human β-defensin HBD2 agonist"
@@ -12767,7 +13279,6 @@
      . SPARSER::COLLECTION)
     ("CCR6 or leukotriene" . SPARSER::COLLECTION)
     ("leukotriene" . SPARSER::MOLECULE)
-    ("leukotriene B4 receptor-2" . SPARSER::COLLECTION)
     ("CXCR4 and CXCR7" . SPARSER::COLLECTION)
     ("the transcription factor NF-κB and its proinflammatory target gene TNF"
      . SPARSER::COLLECTION)
@@ -12778,10 +13289,11 @@
     ("CXCL12 and TGFβ1" . SPARSER::COLLECTION)
     ("receptor, epidermal growth factor receptor, cadherin, laminin, and Vav"
      . SPARSER::COLLECTION)
-    ("Vav" . SPARSER::PROTEIN) ("laminin" . SPARSER::PROTEIN)
+    ("Vav" . SPARSER::PROTEIN) ("laminin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("cadherin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("NF-κB or AP1" . SPARSER::COLLECTION) ("Cxcl12" . SPARSER::PROTEIN)
     ("chemokines, CXCL12 and CXCR4" . SPARSER::COLLECTION)
+    ("a key etiological step" . SPARSER::PROTEIN)
     ("chemokine or chemokine receptor" . SPARSER::COLLECTION)
     ("chemokine receptor and ERK1/2" . SPARSER::COLLECTION)
     ("heterozygous and homozygous CXCR4" . SPARSER::PROTEIN)
@@ -12801,6 +13313,7 @@
     ("CXCL12 and CXCR4" . SPARSER::COLLECTION)
     ("the epithelial barrier" . SPARSER::PROTEIN)
     ("inducer" . SPARSER::PROTEIN) ("a redundant chemokine" . SPARSER::PROTEIN)
+    ("Extracellular" . SPARSER::PROTEIN)
     ("conditionally inactivated CXCR4" . SPARSER::PROTEIN)
     ("CXCR4-CXCL12" . SPARSER::COLLECTION)
     ("CXCR4 or CXCL12" . SPARSER::COLLECTION)
@@ -12817,53 +13330,55 @@
      . SPARSER::RECEPTOR)
     ("chemokines and chemokine" . SPARSER::COLLECTION)
     ("Chemokines" . SPARSER::PROTEIN)
-    ("antimicrobial peptides" . SPARSER::PEPTIDE) ("mucins" . SPARSER::PROTEIN)
+    ("antimicrobial peptides" . SPARSER::PEPTIDE)
+    ("mucins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("potentially noxious molecules and organisms" . SPARSER::COLLECTION)
     ("a dynamic barrier" . SPARSER::PROTEIN)
     ("molecules and organisms" . SPARSER::COLLECTION)
     ("luminal" . SPARSER::DRUG) ("IBD" . SPARSER::PROTEIN)
     ("interleukin-1, and chemokines" . SPARSER::COLLECTION)
-    ("TNF" . SPARSER::PROTEIN) ("heterozygous CXCR4" . SPARSER::PROTEIN)
-    ("dextran" . SPARSER::DEXTRAN) ("CXCR4 and CXCL12" . SPARSER::COLLECTION)
-    ("DAI" . SPARSER::PROTEIN) ("Dextran" . SPARSER::DEXTRAN)
-    ("Southern blot" . SPARSER::PROTEIN)
+    ("TNF" . SPARSER::PROTEIN)
+    ("extracellular-regulated kinase" . SPARSER::COLLECTION)
+    ("heterozygous CXCR4" . SPARSER::PROTEIN) ("dextran" . SPARSER::DEXTRAN)
+    ("CXCR4 and CXCL12" . SPARSER::COLLECTION) ("DAI" . SPARSER::PROTEIN)
+    ("Dextran" . SPARSER::DEXTRAN) ("Southern blot" . SPARSER::PROTEIN)
     ("the chemokine receptor CXCR4 and its cognate ligand CXCL12"
      . SPARSER::COLLECTION)
     ("Barrier" . SPARSER::PROTEIN) ("CXCL8" . SPARSER::PROTEIN)
-    ("G-protein coupled receptor" . SPARSER::PROTEIN)
     ("beta defensin 2" . SPARSER::PROTEIN) ("CCL20" . SPARSER::PROTEIN)
     ("leukotriene B4 receptor" . SPARSER::PROTEIN) ("CXCR7" . SPARSER::PROTEIN)
     ("CXCL13" . SPARSER::PROTEIN) ("TLR4" . SPARSER::PROTEIN)
     ("CXCL1" . SPARSER::PROTEIN) ("tight junction" . SPARSER::PROTEIN)
-    ("G-protein" . SPARSER::PROTEIN) ("TGF-β1" . SPARSER::PROTEIN)
+    ("TGF-β1" . SPARSER::PROTEIN)
     ("epidermal growth factor receptor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("CXCR1" . SPARSER::PROTEIN) ("Texas Red" . SPARSER::DRUG)
     ("glyceraldehyde-3-phosphate dehydrogenase" . SPARSER::PROTEIN)
-    ("F-12" . SPARSER::PROTEIN) ("NaHCO 3" . SPARSER::DRUG)
-    ("regulated kinase-1" . SPARSER::PROTEIN)
+    ("NaHCO 3" . SPARSER::DRUG) ("regulated kinase-1" . SPARSER::PROTEIN)
     ("intercellular adhesion molecule-1" . SPARSER::PROTEIN)
     ("G-proteins" . SPARSER::PROTEIN) ("G-protein coupled" . SPARSER::PROTEIN)
     ("CX 3 CR1" . SPARSER::PROTEIN) ("CCR6" . SPARSER::PROTEIN)
-    ("transforming growth factor" . SPARSER::PROTEIN)
+    ("transforming growth factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("interleukin-1" . SPARSER::PROTEIN) ("sodium sulfate" . SPARSER::MOLECULE)
     ("Sodium Sulfate" . SPARSER::MOLECULE) ("CXCL12" . SPARSER::PROTEIN)
     ("chemokine receptor" . SPARSER::PROTEIN)
-    ("STAT5-cyclin D1" . SPARSER::COLLECTION) ("rapamycin" . SPARSER::DRUG)
+    ("STAT5-cyclin D1" . SPARSER::COLLECTION)
     ("cyclin D1 and biologic" . SPARSER::COLLECTION)
+    ("factors influencing patient’s" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("cyclin D1 and CDKs" . SPARSER::COLLECTION)
     ("CCN" . SPARSER::PROTEIN-FAMILY)
     ("only cells overexpressing cyclin D1" . SPARSER::PROTEIN)
     ("SPF" . SPARSER::PROTEIN) ("CDK4 or CDK6" . SPARSER::COLLECTION)
+    ("retinoblastoma" . SPARSER::PROTEIN)
     ("CDK6 and their inhibitors" . SPARSER::COLLECTION)
     ("-CDK4" . SPARSER::COLLECTION) ("cyclins" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a reliable biomarker" . SPARSER::MOLECULE) ("Tobacco" . SPARSER::DRUG)
     ("cyclin D1 and DNA" . SPARSER::COLLECTION) ("H 1.5" . SPARSER::PROTEIN)
-    ("E2F" . SPARSER::PROTEIN-FAMILY) ("CDK6" . SPARSER::PROTEIN)
+    ("E2F" . SPARSER::PROTEIN) ("CDK6" . SPARSER::PROTEIN)
     ("CDK4" . SPARSER::PROTEIN)
     ("cyclin-dependent kinases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("of 45" . SPARSER::PROTEIN) ("Cyclin D1" . SPARSER::PROTEIN)
     ("A391E" . SPARSER::PROTEIN) ("disulfide" . SPARSER::MOLECULE)
-    ("fits" . SPARSER::PROTEIN-FAMILY)
+    ("/receptor" . SPARSER::COLLECTION) ("fits" . SPARSER::PROTEIN-FAMILY)
     ("an adequate fit" . SPARSER::PROTEIN-FAMILY)
     ("the inactive monomers ( M ) and the active dimers ( D )"
      . SPARSER::COLLECTION)
@@ -12884,14 +13399,17 @@
     ("Endo" . SPARSER::PROTEIN)
     ("wild-type FGFR3 and the A391E mutant" . SPARSER::COLLECTION)
     ("FGFR3 and a fluorescein" . SPARSER::COLLECTION)
-    ("anti-rabbit IgG secondary antibody" . SPARSER::PROTEIN)
+    ("anti-rabbit IgG secondary antibody" . SPARSER::ANTIBODY)
     ("fluorescein" . SPARSER::MOLECULE) ("anti" . SPARSER::PROTEIN)
     ("goat" . SPARSER::PROTEIN) ("FITC" . SPARSER::MOLECULE)
-    ("Neu" . SPARSER::PROTEIN) ("homodimer" . SPARSER::HOMODIMER)
-    ("HCH" . SPARSER::MOLECULE) ("ACH" . SPARSER::PROTEIN)
-    ("heparin" . SPARSER::PROTEIN) ("Ig" . SPARSER::MOLECULE)
+    ("Santa" . SPARSER::PROTEIN) ("PDGF/FGF" . SPARSER::COLLECTION)
+    ("PDGF" . SPARSER::PROTEIN) ("Neu" . SPARSER::PROTEIN)
+    ("homodimer" . SPARSER::HOMODIMER) ("HCH" . SPARSER::MOLECULE)
+    ("TD" . SPARSER::PROTEIN) ("ACH" . SPARSER::PROTEIN)
+    ("FGF" . SPARSER::PROTEIN) ("heparin" . SPARSER::PROTEIN)
+    ("fgf" . SPARSER::PROTEIN) ("Ig" . SPARSER::MOLECULE)
     ("TM" . SPARSER::PROTEIN)
-    ("fibroblast growth factor receptor" . SPARSER::PROTEIN)
+    ("fibroblast growth factor receptor 3" . SPARSER::PROTEIN)
     ("FGFR1" . SPARSER::PROTEIN)
     ("fibroblast growth factor" . SPARSER::PROTEIN-FAMILY)
     ("hMps1 and Plk1 share at least some common physiological substrate"
@@ -12905,17 +13423,16 @@
     ("kinase and hMps1" . SPARSER::COLLECTION)
     ("Nup98 (S591) and Cep215 (S613)" . SPARSER::COLLECTION)
     ("MCAK (T87), Nup98 (S591) and Cep215 (S613)" . SPARSER::COLLECTION)
-    ("Nup98" . SPARSER::PROTEIN)
+    ("Nup98" . SPARSER::PROTEIN) ("Nup" . SPARSER::PROTEIN)
     ("TAL and SP600125, and phosphopeptides" . SPARSER::COLLECTION)
     ("SP600125, and phosphopeptides" . SPARSER::COLLECTION)
     ("fresh medium containing kinase inhibitors" . SPARSER::INHIBITOR)
     ("TAL or SP600125" . SPARSER::COLLECTION)
-    ("Reversine and Mps1-IN-1" . SPARSER::COLLECTION)
     ("TAL, Roscovitine, or ZM447439" . SPARSER::COLLECTION)
-    ("Mps1-IN-1" . SPARSER::COLLECTION) ("Reversine" . SPARSER::DRUG)
-    ("IN-1" . SPARSER::PROTEIN) ("Roscovitine, or MAPK" . SPARSER::COLLECTION)
-    ("TAL" . SPARSER::MOLECULE) ("Thymidine" . SPARSER::PROTEIN)
-    ("MCAK" . SPARSER::PROTEIN)
+    ("SP600125, Reversine and Mps1-IN-1" . SPARSER::COLLECTION)
+    ("Reversine" . SPARSER::DRUG)
+    ("Roscovitine, or MAPK" . SPARSER::COLLECTION) ("TAL" . SPARSER::PROTEIN)
+    ("Thymidine" . SPARSER::PROTEIN) ("MCAK" . SPARSER::PROTEIN)
     ("both MAPK (Erk2) and Plk1" . SPARSER::COLLECTION)
     ("Cdk1/Cyclin" . SPARSER::COLLECTION)
     ("GST-hMps1-KD" . SPARSER::COLLECTION)
@@ -12923,19 +13440,21 @@
     ("GST-hMps1" . SPARSER::COLLECTION)
     ("several known mitotic kinases" . SPARSER::KINASE)
     ("several mitotic kinases" . SPARSER::KINASE)
-    ("CDKs or MAPKs" . SPARSER::COLLECTION) ("MAPKs" . SPARSER::PROTEIN)
-    ("CDKs" . SPARSER::PROTEIN) ("key mitotic kinases" . SPARSER::KINASE)
-    ("trypsin" . SPARSER::PROTEIN) ("anti-hMps1-N1" . SPARSER::COLLECTION)
-    ("mAb" . SPARSER::DRUG) ("hMps1 and Plk1" . SPARSER::COLLECTION)
+    ("CDKs or MAPKs" . SPARSER::COLLECTION)
+    ("MAPKs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CDKs" . SPARSER::PROTEIN)
+    ("key mitotic kinases" . SPARSER::KINASE) ("trypsin" . SPARSER::PROTEIN)
+    ("anti-hMps1-N1" . SPARSER::COLLECTION) ("mAb" . SPARSER::DRUG)
+    ("hMps1 and Plk1" . SPARSER::COLLECTION)
     ("Mad1 and Mad2" . SPARSER::COLLECTION) ("Mad2" . SPARSER::PROTEIN)
     ("TTK" . SPARSER::PROTEIN) ("SPB" . SPARSER::PROTEIN)
     ("Mad3/BubR1" . SPARSER::COLLECTION) ("cyclosome" . SPARSER::PROTEIN)
     ("a proteinaceous complex" . SPARSER::BIO-COMPLEX)
     ("centromeres" . SPARSER::PROTEIN)
     ("Cdk1, MAPK, Plk1 and hMps1" . SPARSER::COLLECTION)
-    ("SAC" . SPARSER::PROTEIN) ("32P" . SPARSER::|32P|)
+    ("Aurora" . SPARSER::PROTEIN) ("SAC" . SPARSER::PROTEIN)
+    ("PO 4" . SPARSER::PROTEIN) ("32P" . SPARSER::|32P|)
     ("N 2" . SPARSER::PROTEIN) ("L-arginine" . SPARSER::MOLECULE)
-    ("α-tubulin" . SPARSER::PROTEIN) ("Spc29" . SPARSER::PROTEIN-FAMILY)
+    ("α-tubulin" . SPARSER::PROTEIN) ("Spc29" . SPARSER::PROTEIN)
     ("Ndc80" . SPARSER::PROTEIN) ("AZ3146" . SPARSER::DRUG)
     ("Cep215" . SPARSER::PROTEIN) ("S15" . SPARSER::PROTEIN)
     ("ZM447439" . SPARSER::DRUG) ("SP600125" . SPARSER::PROTEIN)
@@ -12951,8 +13470,8 @@
      . SPARSER::COLLECTION)
     ("genomic DNA and finding frameshift mutations in the same exon (exon 4)"
      . SPARSER::COLLECTION)
-    ("gene and exons" . SPARSER::COLLECTION) ("bar-coded DNAs" . SPARSER::DNA)
-    ("DNAs" . SPARSER::DNA) ("exon, and Sanger" . SPARSER::COLLECTION)
+    ("gene and exons" . SPARSER::COLLECTION) ("DNAs" . SPARSER::DNA)
+    ("exon, and Sanger" . SPARSER::COLLECTION) ("MLPA" . SPARSER::PROTEIN)
     ("microcephaly and mild dysmorphism" . SPARSER::COLLECTION)
     ("microcephaly" . SPARSER::PROTEIN) ("dinucleotide" . SPARSER::MOLECULE)
     ("MVP" . SPARSER::PROTEIN) ("MTOR" . SPARSER::PROTEIN)
@@ -12961,6 +13480,7 @@
     ("CG" . SPARSER::PROTEIN) ("AG" . SPARSER::PROTEIN)
     ("acceptor" . SPARSER::MOLECULE) ("Family" . SPARSER::PROTEIN-FAMILY)
     ("Families" . SPARSER::PROTEIN-FAMILY) ("hg" . SPARSER::MOLECULE)
+    ("GA" . SPARSER::PROTEIN)
     ("an Agilent Technologies 1M SureSelect DNA" . SPARSER::DNA)
     ("GAII" . SPARSER::PROTEIN) ("MERLIN" . SPARSER::PROTEIN)
     ("parathyroid hormone and parathyroid hormone-related protein"
@@ -12968,47 +13488,53 @@
     ("EXT1 or EXT2" . SPARSER::COLLECTION)
     ("glycosyltransferases" . SPARSER::PROTEIN) ("MIM" . SPARSER::PROTEIN)
     ("EXT1 and EXT2" . SPARSER::COLLECTION) ("or 2 µ" . SPARSER::MOLECULE)
-    ("family A" . SPARSER::PROTEIN)
+    ("DNA ligase" . SPARSER::PROTEIN) ("family A" . SPARSER::PROTEIN)
     ("protein tyrosine phosphatase" . SPARSER::PROTEIN)
-    ("MAP2K2" . SPARSER::PROTEIN) ("PIK3C2B" . SPARSER::PROTEIN)
-    ("SOS2" . SPARSER::PROTEIN) ("ERBB2" . SPARSER::PROTEIN)
-    ("Family B" . SPARSER::PROTEIN) ("Family A" . SPARSER::PROTEIN)
+    ("chr12" . SPARSER::PROTEIN) ("MAP2K2" . SPARSER::PROTEIN)
+    ("PIK3C2B" . SPARSER::PROTEIN) ("SOS2" . SPARSER::PROTEIN)
+    ("ERBB2" . SPARSER::PROTEIN) ("Family B" . SPARSER::PROTEIN)
+    ("Family A" . SPARSER::PROTEIN)
     ("parathyroid hormone-related protein" . SPARSER::PROTEIN)
     ("parathyroid hormone" . SPARSER::PROTEIN) ("PTH1R" . SPARSER::PROTEIN)
     ("heparan sulfate" . SPARSER::MOLECULE) ("PTPN11" . SPARSER::PROTEIN)
     ("EXT2" . SPARSER::PROTEIN) ("EXT1" . SPARSER::PROTEIN)
     ("CYP3A43 and CYP3A4" . SPARSER::COLLECTION)
     ("the tripartite motif (TRIM) family" . SPARSER::PROTEIN-FAMILY)
-    ("TRIM" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("TRIM4/CYP3A43" . SPARSER::COLLECTION)
+    ("TRIM" . SPARSER::PROTEIN) ("TRIM4/CYP3A43" . SPARSER::COLLECTION)
     ("the diabetes-associated gene" . SPARSER::GENE)
-    ("DHEA and DHEAS" . SPARSER::COLLECTION) ("Bmf" . SPARSER::PROTEIN)
+    ("DHEA and DHEAS" . SPARSER::COLLECTION)
+    ("homeobox" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Bmf" . SPARSER::PROTEIN)
     ("anti- or pro-apoptotic regulators" . SPARSER::COLLECTION)
     ("pro-apoptotic regulators" . SPARSER::REGULATOR)
     ("BCL2L11 and BMF" . SPARSER::COLLECTION)
     ("CYP11A1 and CYP17A1" . SPARSER::COLLECTION)
     ("CYP11A1 and rs4919686" . SPARSER::COLLECTION)
     ("warfarin" . SPARSER::DRUG) ("lipids" . SPARSER::PROTEIN)
-    ("gene ( STS )" . SPARSER::GENE) ("STS" . SPARSER::PROTEIN)
+    ("gene ( STS )" . SPARSER::PROTEIN) ("STS" . SPARSER::PROTEIN)
+    ("strong LD" . SPARSER::PROTEIN)
     ("pregnenolone and 17α-" . SPARSER::COLLECTION)
     ("mineralocorticoid and glucocorticoid" . SPARSER::COLLECTION)
     ("mineralocorticoid" . SPARSER::MOLECULE)
     ("SULT2A1 , pregnenolone and 17α-" . SPARSER::COLLECTION)
     ("HSD3B2" . SPARSER::PROTEIN) ("HSD" . SPARSER::PROTEIN)
     ("pregnenolone" . SPARSER::PROTEIN) ("sulpho" . SPARSER::MOLECULE)
-    ("CYP3A4 and CYP3A43" . SPARSER::COLLECTION)
+    ("the most significant DHEAS-associated SNP" . SPARSER::PROTEIN)
+    ("LD" . SPARSER::PROTEIN) ("CYP3A4 and CYP3A43" . SPARSER::COLLECTION)
     ("CYP3A5 and CYP3A7" . SPARSER::COLLECTION)
     ("CYP2C8 , and rs2637125" . SPARSER::COLLECTION)
     ("CYP3A4 , CYP3A43 , CYP3A5 , and CYP3A7" . SPARSER::COLLECTION)
     ("CYP2C8 and CYP2C9" . SPARSER::COLLECTION) ("CYP2C8" . SPARSER::PROTEIN)
-    ("RXR" . SPARSER::PROTEIN)
+    ("RXR" . SPARSER::PROTEIN) ("FDR " . SPARSER::PROTEIN)
+    ("FDR" . SPARSER::PROTEIN)
     ("predefined biologically relevant gene" . SPARSER::GENE)
     ("GSEA" . SPARSER::PROTEIN) ("UK" . SPARSER::PROTEIN)
     ("ZKSCAN5 , ARPC1A , TRIM4 and CYP3A43" . SPARSER::COLLECTION)
     ("HHEX and CYP2C9" . SPARSER::COLLECTION)
-    ("TRIM4 and CYP3A43" . SPARSER::COLLECTION) ("GC" . SPARSER::PROTEIN)
-    ("cohort and DHEAS" . SPARSER::COLLECTION) ("SHIP" . SPARSER::PROTEIN)
-    ("FHS" . SPARSER::PROTEIN) ("MSE" . SPARSER::PROTEIN)
+    ("TRIM4 and CYP3A43" . SPARSER::COLLECTION) ("MB" . SPARSER::PROTEIN)
+    ("GC" . SPARSER::PROTEIN) ("cohort and DHEAS" . SPARSER::COLLECTION)
+    ("ABC" . SPARSER::PROTEIN) ("SHIP" . SPARSER::PROTEIN)
+    ("FHS" . SPARSER::PROTEIN) ("RS1" . SPARSER::PROTEIN)
+    ("meta" . SPARSER::PROTEIN) ("MSE" . SPARSER::PROTEIN)
     ("cortisol and aldosterone" . SPARSER::COLLECTION)
     ("aldosterone" . SPARSER::PROTEIN) ("cortisol" . SPARSER::PROTEIN)
     ("testosterone and estradiol" . SPARSER::COLLECTION)
@@ -13018,7 +13544,6 @@
     ("DHEA" . SPARSER::DRUG)
     ("BCL2L11 , ARPC1A , ZKSCAN5 , TRIM4 , HHEX , CYP2C9 , BMF , and SULT2A1"
      . SPARSER::COLLECTION)
-    ("drug and xenobiotic" . SPARSER::COLLECTION)
     ("xenobiotic" . SPARSER::MOLECULE) ("CYP2C9" . SPARSER::PROTEIN)
     ("HHEX" . SPARSER::PROTEIN) ("BMF" . SPARSER::PROTEIN)
     ("Genes" . SPARSER::GENE) ("sulphate (DHEAS)" . SPARSER::MOLECULE)
@@ -13028,23 +13553,26 @@
     ("zinc finger protein" . SPARSER::PROTEIN) ("CYP17A1" . SPARSER::PROTEIN)
     ("CYP11A1" . SPARSER::PROTEIN) ("P450" . SPARSER::PROTEIN-FAMILY)
     ("cytochrome P450" . SPARSER::PROTEIN-FAMILY)
-    ("X chromosome" . SPARSER::PROTEIN) ("CYP3A7" . SPARSER::PROTEIN)
+    ("X chromosome" . SPARSER::PROTEIN) ("2B" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("3B" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CYP3A7" . SPARSER::PROTEIN)
     ("CYP3A5" . SPARSER::PROTEIN) ("CYP3A4" . SPARSER::PROTEIN)
     ("retinoid X receptor" . SPARSER::PROTEIN) ("CYP3A43" . SPARSER::PROTEIN)
-    ("steroid hormone" . SPARSER::MOLECULE) ("type 2" . SPARSER::PROTEIN)
-    ("CYP2" . SPARSER::PROTEIN) ("BCL2L11" . SPARSER::PROTEIN)
-    ("TRIM4" . SPARSER::PROTEIN) ("ARPC1A" . SPARSER::PROTEIN)
-    ("SULT2A1" . SPARSER::PROTEIN) ("ZKSCAN5" . SPARSER::PROTEIN)
+    ("steroid hormone" . SPARSER::MOLECULE)
+    ("type 2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CYP2" . SPARSER::PROTEIN)
+    ("BCL2L11" . SPARSER::PROTEIN) ("TRIM4" . SPARSER::PROTEIN)
+    ("ARPC1A" . SPARSER::PROTEIN) ("SULT2A1" . SPARSER::PROTEIN)
+    ("ZKSCAN5" . SPARSER::PROTEIN)
+    ("a possible target" . SPARSER::TARGET-PROTEIN)
     ("PIK3CA/AKT1" . SPARSER::COLLECTION)
     ("TSC1 or TSC2" . SPARSER::COLLECTION) ("TSC1/TSC2" . SPARSER::COLLECTION)
-    ("APC or CTNNB1" . SPARSER::COLLECTION)
+    ("hub" . SPARSER::PROTEIN) ("APC or CTNNB1" . SPARSER::COLLECTION)
     ("APC and CTNNB1" . SPARSER::COLLECTION)
     ("FGFR3 , PIK3CA , and RAS" . SPARSER::COLLECTION)
     ("ARAF or RAF1" . SPARSER::COLLECTION) ("KD" . SPARSER::PROTEIN)
     ("FGFR3 , TP53 , and PIK3CA" . SPARSER::COLLECTION)
     ("PIK3R1 and TSC2" . SPARSER::COLLECTION)
     ("FGFR3 , PIK3CA , HRAS , KRAS , NRAS , and TP53" . SPARSER::COLLECTION)
-    ("TSC1 and TSC2" . SPARSER::COLLECTION)
+    ("aim" . SPARSER::PROTEIN) ("TSC1 and TSC2" . SPARSER::COLLECTION)
     ("FGFR3 or TP53" . SPARSER::COLLECTION)
     ("the complete exon" . SPARSER::PROTEIN)
     ("BRAF and the equivalent exons" . SPARSER::COLLECTION)
@@ -13053,7 +13581,7 @@
     ("RAS and FGFR3" . SPARSER::COLLECTION)
     ("HRAS , KRAS , and NRAS" . SPARSER::COLLECTION)
     ("PTEN and PIK3R1" . SPARSER::COLLECTION)
-    ("PIK3CA and TP53" . SPARSER::COLLECTION)
+    ("PIK3CA and TP53" . SPARSER::COLLECTION) ("n " . SPARSER::PROTEIN)
     ("TP53 and FGFR3" . SPARSER::COLLECTION) ("NMI" . SPARSER::PROTEIN)
     ("FGFR3 , PIK3CA , PIK3R1 , PTEN , AKT1 , KRAS , HRAS , NRAS , BRAF , ARAF , RAF1 , TSC1 , TSC2 , APC , CTNNB1 , and TP53"
      . SPARSER::COLLECTION)
@@ -13071,33 +13599,37 @@
     ("ARAF" . SPARSER::PROTEIN) ("HRAS" . SPARSER::PROTEIN)
     ("PIK3CA , AKT1 , and RAS" . SPARSER::COLLECTION)
     ("GSK3B" . SPARSER::PROTEIN) ("iSH2" . SPARSER::PROTEIN)
-    ("non-muscle" . SPARSER::PROTEIN) ("Chi2" . SPARSER::PROTEIN)
-    ("Chi-2" . SPARSER::PROTEIN) ("RAS family" . SPARSER::PROTEIN)
+    ("Chi2" . SPARSER::PROTEIN) ("Chi-2" . SPARSER::PROTEIN)
+    ("RAS family" . SPARSER::PROTEIN)
     ("receptor protein" . SPARSER::RECEPTOR-PROTEIN)
     ("PI3-kinase" . SPARSER::HUMAN-PROTEIN-FAMILY) ("TSC1" . SPARSER::PROTEIN)
     ("RAF1" . SPARSER::PROTEIN) ("PIK3R1" . SPARSER::PROTEIN)
     ("AKT1" . SPARSER::PROTEIN) ("FGFR3" . SPARSER::PROTEIN)
     ("replisome, or proteins" . SPARSER::COLLECTION)
-    ("clamp" . SPARSER::PROTEIN-FAMILY)
+    ("clamp" . SPARSER::PROTEIN)
     ("possible central regulator" . SPARSER::REGULATOR)
     ("14-3-3 and Rad53" . SPARSER::COLLECTION) ("arc" . SPARSER::PROTEIN)
     ("Part" . SPARSER::COMPONENT) ("Rad53 and Exo1" . SPARSER::COLLECTION)
     ("RIs" . SPARSER::MOLECULE) ("GST-Bmh1" . SPARSER::COLLECTION)
     ("Exo1-Myc" . SPARSER::COLLECTION) ("PVDF" . SPARSER::DRUG)
-    ("Bmh/Exo1" . SPARSER::COLLECTION) ("Bmh1 or Bmh2" . SPARSER::COLLECTION)
+    ("Bmh/Exo1" . SPARSER::COLLECTION) ("Bmh" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Bmh1 or Bmh2" . SPARSER::COLLECTION)
     ("A C-terminal Myc- or a HA-tag" . SPARSER::COLLECTION)
-    ("EXO1 or BMH1/BMH2" . SPARSER::COLLECTION) ("Myc-" . SPARSER::PROTEIN)
-    ("BMH" . SPARSER::PROTEIN) ("Exo1 and 14-3-3" . SPARSER::COLLECTION)
+    ("the endogenous EXO1 or BMH1/BMH2 genes" . SPARSER::COLLECTION)
+    ("BMH1/BMH2" . SPARSER::COLLECTION) ("Myc-" . SPARSER::PROTEIN)
+    ("Exo1 and 14-3-3" . SPARSER::COLLECTION)
     ("Bmh1 and Bmh2" . SPARSER::COLLECTION)
     ("EXO1/14-3-3" . SPARSER::COLLECTION)
     ("Omni-EXO1 and 14-3-3" . SPARSER::COLLECTION)
-    ("Omni-EXO1" . SPARSER::PROTEIN-PAIR) ("MLH1" . SPARSER::PROTEIN)
+    ("Omni-EXO1" . SPARSER::PROTEIN-PAIR) ("pan-14-3-3" . SPARSER::COLLECTION)
+    ("pan" . SPARSER::PROTEIN) ("MLH1" . SPARSER::PROTEIN)
     ("EXO1 or ΔN-EXO1" . SPARSER::COLLECTION)
     ("acetyltransferases and deacetylases" . SPARSER::COLLECTION)
     ("cruciform DNA xref and replication initiation proteins"
      . SPARSER::PROTEIN)
     ("Mcm2 and Orc2" . SPARSER::COLLECTION) ("Mcm2" . SPARSER::PROTEIN)
-    ("Mcm" . SPARSER::PROTEIN) ("Eukaryotic 14-3-3" . SPARSER::PROTEIN)
+    ("Mcm" . SPARSER::PROTEIN)
+    ("Eukaryotic 14-3-3" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ATM" . SPARSER::PROTEIN) ("ATR" . SPARSER::PROTEIN)
     ("meiotic and mitotic recombination" . SPARSER::COLLECTION)
     ("meiotic" . SPARSER::DRUG) ("mismatch" . SPARSER::PROTEIN)
@@ -13106,11 +13638,14 @@
     ("Exo1 and additional unknown targets" . SPARSER::COLLECTION)
     ("Phenyl-Phosphate" . SPARSER::MOLECULE) ("AP4" . SPARSER::PROTEIN)
     ("exo1" . SPARSER::PROTEIN) ("Phos-tag" . SPARSER::DRUG)
+    ("bmh2" . SPARSER::PROTEIN) ("bmh1" . SPARSER::PROTEIN)
+    ("BMH2" . SPARSER::PROTEIN) ("BMH1" . SPARSER::PROTEIN)
     ("Bmh2" . SPARSER::PROTEIN) ("Bmh1" . SPARSER::PROTEIN)
     ("GAL4" . SPARSER::PROTEIN) ("Rpd3" . SPARSER::PROTEIN)
     ("Rad53" . SPARSER::PROTEIN) ("Orc2" . SPARSER::PROTEIN)
-    ("rad53" . SPARSER::PROTEIN) ("EXO1" . SPARSER::PROTEIN)
-    ("Rad27" . SPARSER::PROTEIN) ("Exo1" . SPARSER::PROTEIN)
+    ("mec1" . SPARSER::PROTEIN) ("rad53" . SPARSER::PROTEIN)
+    ("EXO1" . SPARSER::PROTEIN) ("Rad27" . SPARSER::PROTEIN)
+    ("Mec1" . SPARSER::PROTEIN) ("Exo1" . SPARSER::PROTEIN)
     ("Exonuclease 1" . SPARSER::PROTEIN)
     ("pro-survival proteins or
                     identifying drugs"
@@ -13128,7 +13663,6 @@
     ("intermediate states and the unbinding step" . SPARSER::COLLECTION)
     ("states" . SPARSER::BIO-STATE)
     ("cytochrome c and cytochrome" . SPARSER::COLLECTION)
-    ("Saccharomyces" . SPARSER::PROTEIN)
     ("Asp and
                     Glu"
      . SPARSER::COLLECTION)
@@ -13147,8 +13681,7 @@
                     pro-apoptotic Bak peptide"
      . SPARSER::PEPTIDE)
     ("helix-3" . SPARSER::COLLECTION) ("Asn" . SPARSER::AMINO-ACID)
-    ("Glu" . SPARSER::AMINO-ACID) ("adducts" . SPARSER::PROTEIN)
-    ("cytochrome c−Bcl-x" . SPARSER::COLLECTION)
+    ("Glu" . SPARSER::AMINO-ACID) ("cytochrome c−Bcl-x" . SPARSER::COLLECTION)
     ("cytochrome c and Bcl-x" . SPARSER::COLLECTION)
     ("NaCl" . SPARSER::PROTEIN) ("amides" . SPARSER::MOLECULE)
     ("the relevant redox state" . SPARSER::BIO-STATE)
@@ -13158,15 +13691,18 @@
     ("Bax or Bak" . SPARSER::COLLECTION)
     ("phospholipid" . SPARSER::PHOSPHOLIPID)
     ("cardiolipin" . SPARSER::MOLECULE)
+    ("the
+                outer mitochondrial"
+     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Apaf-1 and pro-caspase-9" . SPARSER::COLLECTION)
+    ("pro-caspase-9" . SPARSER::COLLECTION)
     ("a small soluble heme protein" . SPARSER::PROTEIN)
     ("oxidase" . SPARSER::PROTEIN) ("heme" . SPARSER::PROTEIN)
     ("cytochrome c and
                         Bcl-x"
      . SPARSER::COLLECTION)
-    ("solution" . SPARSER::MOLECULE) ("adduct" . SPARSER::PROTEIN)
-    ("–3" . SPARSER::PROTEIN) ("H- 15" . SPARSER::PROTEIN)
-    ("N-term" . SPARSER::PROTEIN) ("S. cerevisiae" . SPARSER::PROTEIN)
+    ("solution" . SPARSER::MOLECULE) ("J3" . SPARSER::PROTEIN)
+    ("–3" . SPARSER::PROTEIN) ("N-term" . SPARSER::PROTEIN)
     ("cytochrome c 1" . SPARSER::PROTEIN)
     ("cytochrome
                     c"
@@ -13183,14 +13719,14 @@
     ("ionophore, or anti-CD3 and anti-CD28" . SPARSER::COLLECTION)
     ("anti-CD3 and anti-CD28" . SPARSER::COLLECTION)
     ("mRNA and protein" . SPARSER::COLLECTION)
-    ("ionophore" . SPARSER::MOLECULE)
+    ("ionophore" . SPARSER::MOLECULE) ("IPEX" . SPARSER::PROTEIN)
     ("other commercially available KDAC inhibitors" . SPARSER::INHIBITOR)
     ("Nicotinamide" . SPARSER::MOLECULE) ("sirt1" . SPARSER::PROTEIN)
     ("sirt" . SPARSER::PROTEIN) ("TSA, SAHA, and VPA" . SPARSER::COLLECTION)
     ("VPA" . SPARSER::PROTEIN) ("Tubacin" . SPARSER::DRUG)
-    ("Zap70" . SPARSER::PROTEIN) ("ITK" . SPARSER::PROTEIN)
-    ("SIRT1 and Foxp3" . SPARSER::COLLECTION)
+    ("ITK" . SPARSER::PROTEIN) ("SIRT1 and Foxp3" . SPARSER::COLLECTION)
     ("IL-2 and TGF-β" . SPARSER::COLLECTION)
+    ("proteasomal degradation Foxp3" . SPARSER::PROTEIN)
     ("luciferase, NFAT, Foxp3 and SIRT1" . SPARSER::COLLECTION)
     ("IL-2, anti-CD3 and anti-CD28" . SPARSER::COLLECTION)
     ("Foxp3 or Foxp3" . SPARSER::COLLECTION) ("SIRT" . SPARSER::PROTEIN)
@@ -13208,9 +13744,10 @@
     ("HDAC1, HDAC7, HDAC9 and SIRT1" . SPARSER::COLLECTION)
     ("TIP60 and p300" . SPARSER::COLLECTION)
     ("deacetylases" . SPARSER::PROTEIN) ("KATs" . SPARSER::PROTEIN)
-    ("EX-527" . SPARSER::DRUG) ("MS-275" . SPARSER::DRUG)
-    ("Jak2" . SPARSER::PROTEIN) ("SIRT3" . SPARSER::PROTEIN)
-    ("P53" . SPARSER::HUMAN-PROTEIN-FAMILY) ("SMAD7" . SPARSER::PROTEIN)
+    ("deacetylase" . SPARSER::PROTEIN) ("EX-527" . SPARSER::DRUG)
+    ("MS-275" . SPARSER::DRUG) ("Jak2" . SPARSER::PROTEIN)
+    ("Zap70" . SPARSER::PROTEIN) ("SIRT3" . SPARSER::PROTEIN)
+    ("P53" . SPARSER::PROTEIN) ("SMAD7" . SPARSER::PROTEIN)
     ("β2-microglobulin" . SPARSER::PROTEIN) ("as 2" . SPARSER::PROTEIN)
     ("TGF-β" . SPARSER::HUMAN-PROTEIN-FAMILY) ("M 2" . SPARSER::MOLECULE)
     ("P40" . SPARSER::PROTEIN) ("IL–2" . SPARSER::PROTEIN)
@@ -13223,7 +13760,7 @@
     ("SIRT1" . SPARSER::PROTEIN) ("Foxp3" . SPARSER::PROTEIN)
     ("MYC proximal promoter" . SPARSER::PROMOTER)
     ("holoenzyme" . SPARSER::PROTEIN)
-    ("proximal promoters" . SPARSER::PROMOTER)
+    ("proximal promoters" . SPARSER::PROMOTER) ("cohesin" . SPARSER::PROTEIN)
     ("mitogen and Wnt/" . SPARSER::COLLECTION)
     ("TCF4 and AP-1" . SPARSER::COLLECTION)
     ("CBP and p300" . SPARSER::COLLECTION)
@@ -13236,27 +13773,29 @@
     ("distal enhancers and the MYC promoter" . SPARSER::COLLECTION)
     ("distal enhancers" . SPARSER::PROTEIN)
     ("all five distal enhancers and the MYC promoter" . SPARSER::COLLECTION)
-    ("TIG-1" . SPARSER::PROTEIN)
     ("the distal enhancers and the MYC promoter" . SPARSER::COLLECTION)
     ("chromatin-associated ß-catenin/TCF4" . SPARSER::COLLECTION)
     ("all five distal enhancers" . SPARSER::PROTEIN)
-    ("tubulin" . SPARSER::PROTEIN) ("preys" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("tubulin" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("preys" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("formaldehyde" . SPARSER::MOLECULE) ("Chromatin" . SPARSER::PROTEIN)
     ("the distal enhancers" . SPARSER::PROTEIN)
     ("Irrelevant IgG" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("associated chromatin" . SPARSER::PROTEIN) ("Histone" . SPARSER::PROTEIN)
     ("protein (TBP)" . SPARSER::PROTEIN) ("TBP" . SPARSER::PROTEIN)
+    ("antibodies and ChIP" . SPARSER::COLLECTION)
     ("ß-Catenin" . SPARSER::COLLECTION) ("Ctrl" . SPARSER::PROTEIN)
-    ("proto-oncogene ( MYC )" . SPARSER::PROTEIN)
+    ("proto-oncogene ( MYC )" . SPARSER::PROTO-ONCOGENE)
     ("histones" . SPARSER::PROTEIN) ("prone" . SPARSER::PROTEIN-FAMILY)
     ("RNAP" . SPARSER::PROTEIN) ("distal target genes" . SPARSER::GENE)
-    ("the colon and prostate cancer-associated rs6983267 SNP maps"
+    ("the colon and prostate cancer-associated rs6983267 SNP"
      . SPARSER::PROTEIN)
-    ("maps" . SPARSER::PROTEIN) ("hot" . SPARSER::PROTEIN)
-    ("stop" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("SNP" . SPARSER::PROTEIN) ("hot" . SPARSER::PROTEIN)
+    ("stop" . SPARSER::HUMAN-PROTEIN-FAMILY) ("TSS" . SPARSER::PROTEIN)
     ("ß-Catenin/TCF4" . SPARSER::COLLECTION)
     ("Catenin" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("the adenomatous polyposis coli ( APC ) gene" . SPARSER::GENE)
+    ("factor/lymphoid" . SPARSER::COLLECTION)
+    ("the adenomatous polyposis coli ( APC ) gene" . SPARSER::PROTEIN)
     ("MIZ-1" . SPARSER::PROTEIN)
     ("acetyltransferases and chromatin" . SPARSER::COLLECTION)
     ("MYC:MAX" . SPARSER::BIO-COMPLEX)
@@ -13267,20 +13806,20 @@
     ("quantitative chromatin conformation" . SPARSER::BIO-CONFORMATION)
     ("nucleosomes" . SPARSER::PROTEIN) ("ß-catenin/TCF4" . SPARSER::COLLECTION)
     ("enhancers" . SPARSER::PROTEIN) ("ß-catenin" . SPARSER::COLLECTION)
-    ("catenin" . SPARSER::HUMAN-PROTEIN-FAMILY) ("T-A" . SPARSER::PROTEIN)
-    ("G-A" . SPARSER::PROTEIN) ("T-T" . SPARSER::PROTEIN)
-    ("C-T" . SPARSER::PROTEIN) ("A-A-A" . SPARSER::PROTEIN)
-    ("A-C" . SPARSER::PROTEIN) ("A-T" . SPARSER::PROTEIN)
+    ("catenin" . SPARSER::HUMAN-PROTEIN-FAMILY) ("MYC 3" . SPARSER::PROTEIN)
+    ("C-T" . SPARSER::PROTEIN) ("A-G" . SPARSER::PROTEIN)
     ("MYC protein" . SPARSER::PROTEIN) ("S5" . SPARSER::MOLECULE)
     ("A–F" . SPARSER::PROTEIN) ("A-F" . SPARSER::PROTEIN)
-    ("EL1" . SPARSER::PROTEIN) ("C 20" . SPARSER::PROTEIN)
-    ("K14" . SPARSER::PROTEIN) ("H3K4" . SPARSER::PROTEIN)
-    ("zinc finger" . SPARSER::PROTEIN) ("bright" . SPARSER::PROTEIN)
+    ("EL1" . SPARSER::PROTEIN) ("CL1" . SPARSER::PROTEIN)
+    ("BL1" . SPARSER::PROTEIN) ("C 20" . SPARSER::PROTEIN)
+    ("K14" . SPARSER::PROTEIN) ("H3K9" . SPARSER::PROTEIN)
+    ("H3K4" . SPARSER::PROTEIN) ("zinc finger" . SPARSER::PROTEIN)
+    ("SKT" . SPARSER::PROTEIN) ("bright" . SPARSER::PROTEIN)
     ("LKB1 and K-ras" . SPARSER::COLLECTION) ("alleles (HD)" . SPARSER::ALLELE)
-    ("TMA" . SPARSER::MOLECULE) ("complementing" . SPARSER::PROTEIN)
-    ("the gluconeogenic gene" . SPARSER::GENE)
+    ("TMA" . SPARSER::MOLECULE) ("the gluconeogenic gene" . SPARSER::GENE)
     ("hyperglycemia" . SPARSER::PROTEIN) ("tuberin" . SPARSER::PROTEIN)
-    ("kinase (AMPK)" . SPARSER::KINASE) ("skeletal muscle" . SPARSER::PROTEIN)
+    ("protein kinase (AMPK)" . SPARSER::PROTEIN)
+    ("skeletal muscle" . SPARSER::PROTEIN)
     ("serine–threonine" . SPARSER::COLLECTION) ("CISH" . SPARSER::PROTEIN)
     ("loss of heterozygosity (LOH)" . SPARSER::PROTEIN)
     ("LKB" . SPARSER::PROTEIN) ("HD" . SPARSER::PROTEIN)
@@ -13296,51 +13835,51 @@
     ("asparagine and serine" . SPARSER::COLLECTION)
     ("aspartate, serine, asparagine, glutamate, and proline"
      . SPARSER::COLLECTION)
-    ("asparagine" . SPARSER::AMINO-ACID) ("aspartate" . SPARSER::PROTEIN)
+    ("asparagine" . SPARSER::AMINO-ACID) ("aspartate" . SPARSER::MOLECULE)
     ("the relevant E3" . SPARSER::MOLECULE)
     ("HECT or RBRs" . SPARSER::COLLECTION)
     ("bacterial HECT-like E3s" . SPARSER::MOLECULE)
     ("thiol" . SPARSER::MOLECULE) ("serine or alanine" . SPARSER::COLLECTION)
-    ("alanine" . SPARSER::AMINO-ACID) ("HHARI-catalyzed Ub" . SPARSER::PROTEIN)
-    ("reagents" . SPARSER::MOLECULE) ("HHARI-RING1" . SPARSER::COLLECTION)
-    ("GST-HHARI" . SPARSER::COLLECTION) ("Ub-adduct" . SPARSER::PROTEIN-PAIR)
+    ("alanine" . SPARSER::AMINO-ACID) ("reagents" . SPARSER::MOLECULE)
+    ("HHARI-RING1" . SPARSER::COLLECTION) ("GST-HHARI" . SPARSER::COLLECTION)
     ("labile" . SPARSER::PROTEIN)
     ("whose active site cysteines" . SPARSER::AMINO-ACID)
     ("serines" . SPARSER::AMINO-ACID) ("cysteines" . SPARSER::AMINO-ACID)
     ("Ref" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Cysteine" . SPARSER::AMINO-ACID)
     ("The N-terminal canonical RING1" . SPARSER::PROTEIN)
-    ("reducible thioester-linked Ub" . SPARSER::PROTEIN)
     ("ME" . SPARSER::PROTEIN) ("SDS" . SPARSER::PROTEIN)
-    ("trap" . SPARSER::PROTEIN) ("UbcH7 or UbcH5c" . SPARSER::COLLECTION)
+    ("ice" . SPARSER::PROTEIN) ("trap" . SPARSER::PROTEIN)
+    ("UbcH7 or UbcH5c" . SPARSER::COLLECTION)
     ("HHARI and Parkin" . SPARSER::COLLECTION)
     ("Parkin and HHARI" . SPARSER::COLLECTION)
     ("UbcH5c and UbcH7" . SPARSER::COLLECTION)
     ("lysine-unreactive E2s" . SPARSER::MOLECULE)
     ("thioesters" . SPARSER::MOLECULE)
     ("CNOT4 and APC/C" . SPARSER::COLLECTION) ("Rma1" . SPARSER::PROTEIN)
-    ("BRCA1/BARD1" . SPARSER::COLLECTION) ("an E2’s" . SPARSER::MOLECULE)
+    ("NMR" . SPARSER::PROTEIN) ("BRCA1/BARD1" . SPARSER::COLLECTION)
+    ("an E2’s" . SPARSER::MOLECULE)
     ("a lysine-reactive E2" . SPARSER::MOLECULE) ("pKa" . SPARSER::PROTEIN)
     ("UbcH5c and lysine" . SPARSER::COLLECTION)
     ("proline and histidine" . SPARSER::COLLECTION)
     ("histidine" . SPARSER::AMINO-ACID)
     ("lysine-reactive E2s" . SPARSER::MOLECULE) ("Ubc" . SPARSER::PROTEIN)
-    ("elegans" . SPARSER::PROTEIN) ("Ube2k and Ubc13" . SPARSER::COLLECTION)
-    ("cysteine and lysine" . SPARSER::COLLECTION) ("Ube2k" . SPARSER::PROTEIN)
+    ("Ube2k and Ubc13" . SPARSER::COLLECTION)
+    ("cysteine and lysine" . SPARSER::COLLECTION)
     ("the relevant nucleophile" . SPARSER::MOLECULE)
     ("cysteine or lysine" . SPARSER::COLLECTION)
     ("nucleophile" . SPARSER::MOLECULE) ("threonine" . SPARSER::AMINO-ACID)
     ("serine" . SPARSER::AMINO-ACID) ("acceptors" . SPARSER::MOLECULE)
-    ("Ub and lysine" . SPARSER::COLLECTION) ("cysteine" . SPARSER::AMINO-ACID)
-    ("thioester" . SPARSER::MOLECULE) ("His" . SPARSER::AMINO-ACID)
-    ("Cys" . SPARSER::AMINO-ACID) ("RBRs" . SPARSER::PROTEIN-FAMILY)
+    ("cysteine" . SPARSER::AMINO-ACID) ("thioester" . SPARSER::MOLECULE)
+    ("His" . SPARSER::AMINO-ACID) ("Cys" . SPARSER::AMINO-ACID)
+    ("HC4" . SPARSER::PROTEIN) ("RBRs" . SPARSER::PROTEIN-FAMILY)
     ("Parkin and human homologue" . SPARSER::COLLECTION)
     ("HHARI" . SPARSER::PROTEIN) ("ariadne" . SPARSER::PROTEIN)
-    ("Parkin" . SPARSER::PROTEIN) ("RBR" . SPARSER::PROTEIN-FAMILY)
+    ("Parkin" . SPARSER::PROTEIN) ("RBR" . SPARSER::PROTEIN)
     ("active UbcH5/RING complexes" . SPARSER::BIO-COMPLEX)
     ("gap" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Ube2L3" . SPARSER::PROTEIN)
     ("ubiquitin conjugating enzymes (E2s) and ubiquitin ligases (E3s)"
      . SPARSER::COLLECTION)
-    ("Ub" . SPARSER::PROTEIN) ("ammonium chloride" . SPARSER::MOLECULE)
+    ("ammonium chloride" . SPARSER::MOLECULE)
     ("L-Arginine" . SPARSER::MOLECULE)
     ("polyvinylidene fluoride" . SPARSER::DRUG) ("a 15" . SPARSER::PROTEIN)
     ("ISG15" . SPARSER::PROTEIN) ("HERC5" . SPARSER::PROTEIN)
@@ -13349,8 +13888,9 @@
     ("CNOT4" . SPARSER::PROTEIN) ("Mdm2" . SPARSER::PROTEIN)
     ("BARD1" . SPARSER::PROTEIN) ("asparagine residue" . SPARSER::MOLECULE)
     ("Ubc9" . SPARSER::PROTEIN) ("Ubc13" . SPARSER::PROTEIN)
-    ("UbcH5c" . SPARSER::PROTEIN) ("RING2" . SPARSER::PROTEIN)
-    ("Zn 2+" . SPARSER::MOLECULE) ("UbcH5" . SPARSER::PROTEIN)
+    ("Ube2k" . SPARSER::PROTEIN) ("UbcH5c" . SPARSER::PROTEIN)
+    ("RING2" . SPARSER::PROTEIN) ("Zn 2+" . SPARSER::MOLECULE)
+    ("UbcH5" . SPARSER::PROTEIN) ("Ube2" . SPARSER::PROTEIN)
     ("UbcH7" . SPARSER::PROTEIN) ("E3s" . SPARSER::MOLECULE)
     ("E2s" . SPARSER::MOLECULE)
     ("ubiquitin conjugating enzymes" . SPARSER::PROTEIN-FAMILY)
@@ -13361,9 +13901,10 @@
     ("PTEN-WWP2" . SPARSER::COLLECTION) ("WWP2-PTEN" . SPARSER::COLLECTION)
     ("an as-yet-unknown kinase" . SPARSER::KINASE)
     ("a potential oncogene" . SPARSER::ONCOGENE)
-    ("DU145-WWP2" . SPARSER::COLLECTION) ("shRNAs" . SPARSER::RNA)
+    ("DU145-WWP2" . SPARSER::COLLECTION)
     ("an E3 ligase and a negative regulator" . SPARSER::COLLECTION)
     ("doxorubicin" . SPARSER::PROTEIN) ("WWP2 and PTEN" . SPARSER::COLLECTION)
+    ("PI3K–AKT" . SPARSER::COLLECTION)
     ("a Cowden syndrome-associated lysine mutant" . SPARSER::MUTANT)
     ("the predominant E3 ligase" . SPARSER::LIGASE)
     ("intact WWP2" . SPARSER::PROTEIN)
@@ -13381,33 +13922,34 @@
     ("HECT" . SPARSER::PROTEIN) ("EDD" . SPARSER::PROTEIN)
     ("PTEN and WWP2" . SPARSER::COLLECTION)
     ("epithelial sodium channel and EGR-2" . SPARSER::COLLECTION)
-    ("octamer" . SPARSER::PROTEIN) ("agarose" . SPARSER::MOLECULE)
-    ("SFB–PTEN" . SPARSER::COLLECTION) ("SFB" . SPARSER::PROTEIN)
-    ("SBP" . SPARSER::PROTEIN) ("streptavidin" . SPARSER::PROTEIN)
-    ("ref" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("EGR" . SPARSER::PROTEIN) ("octamer" . SPARSER::PROTEIN)
+    ("agarose" . SPARSER::MOLECULE) ("SFB–PTEN" . SPARSER::COLLECTION)
+    ("SFB" . SPARSER::PROTEIN) ("SBP" . SPARSER::PROTEIN)
+    ("streptavidin" . SPARSER::PROTEIN) ("ref" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("PDK1 (phosphoinositide-dependent kinase 1) and AKT (also known as protein kinase B; PKB)"
      . SPARSER::COLLECTION)
     ("PKB" . SPARSER::PROTEIN) ("PtdIns" . SPARSER::PROTEIN)
     ("external growth factors" . SPARSER::GROWTH-FACTOR)
-    ("thyroid" . SPARSER::PROTEIN) ("Pten" . SPARSER::PROTEIN)
+    ("Pten" . SPARSER::PROTEIN)
     ("a well-defined tumour suppressor" . SPARSER::SUPPRESSOR)
     ("phosphatase and tensin" . SPARSER::COLLECTION)
     ("homologue" . SPARSER::PROTEIN) ("tensin" . SPARSER::PROTEIN)
+    ("fate" . SPARSER::PROTEIN) ("AIP" . SPARSER::PROTEIN)
     ("suppressors" . SPARSER::SUPPRESSOR) ("UBE1" . SPARSER::PROTEIN)
     ("E1" . SPARSER::MOLECULE) ("pEF1" . SPARSER::PROTEIN)
     ("Nonidet P-40" . SPARSER::DRUG) ("ml −1" . SPARSER::PROTEIN)
     ("myelin basic protein" . SPARSER::PROTEIN) ("Smurf1" . SPARSER::PROTEIN)
     ("WWP1" . SPARSER::PROTEIN) ("ligase activity" . SPARSER::PROTEIN)
-    ("proto-oncogene" . SPARSER::PROTEIN) ("DU145" . SPARSER::PROTEIN)
-    ("PI3K–AKT" . SPARSER::PROTEIN)
+    ("proto-oncogene" . SPARSER::PROTO-ONCOGENE) ("BPH1" . SPARSER::PROTEIN)
+    ("DU145" . SPARSER::PROTEIN)
     ("negative regulator" . SPARSER::NEGATIVE-REGULATOR)
     ("UbcH5b" . SPARSER::PROTEIN) ("Myc-tagged" . SPARSER::PROTEIN)
     ("glutathione S -transferase" . SPARSER::PROTEIN)
-    ("E6AP" . SPARSER::PROTEIN) ("EGR-2" . SPARSER::PROTEIN)
+    ("E6AP" . SPARSER::PROTEIN)
     ("epithelial sodium channel" . SPARSER::PROTEIN)
-    ("Rpb1" . SPARSER::PROTEIN) ("transcription factor 4" . SPARSER::PROTEIN)
-    ("Oct-4" . SPARSER::PROTEIN) ("streptavidin–agarose" . SPARSER::DRUG)
-    ("S-protein" . SPARSER::PROTEIN)
+    ("Rpb1" . SPARSER::PROTEIN) ("RNA polymerase" . SPARSER::PROTEIN)
+    ("transcription factor 4" . SPARSER::PROTEIN) ("Oct-4" . SPARSER::PROTEIN)
+    ("streptavidin–agarose" . SPARSER::DRUG) ("S-protein" . SPARSER::PROTEIN)
     ("developmentally down-regulated 4" . SPARSER::PROTEIN)
     ("neural precursor cell expressed" . SPARSER::PROTEIN)
     ("NEDD4-1" . SPARSER::PROTEIN)
@@ -13415,9 +13957,8 @@
     ("P 3" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("phosphatidylinositol 3,4,5-triphosphate" . SPARSER::PIP3)
     ("phosphatidylinositol 4,5-bisphosphate" . SPARSER::PIP2)
-    ("NEDD4" . SPARSER::PROTEIN) ("AIP-2" . SPARSER::PROTEIN)
-    ("atrophin-1-interacting protein 2" . SPARSER::PROTEIN)
-    ("WWP2" . SPARSER::PROTEIN)
+    ("NEDD4" . SPARSER::PROTEIN) ("protein 2" . SPARSER::PROTEIN)
+    ("atrophin-1" . SPARSER::PROTEIN) ("WWP2" . SPARSER::PROTEIN)
     ("IL-2 and other common gamma chain cytokines" . SPARSER::COLLECTION)
     ("the anergic state" . SPARSER::BIO-STATE) ("CTL" . SPARSER::PROTEIN)
     ("viral proteins" . SPARSER::PROTEIN)
@@ -13438,21 +13979,21 @@
     ("IL-10 and IL-4" . SPARSER::COLLECTION)
     ("E2 and E6" . SPARSER::COLLECTION)
     ("IFN-γ, IL-2, and TNF-α" . SPARSER::COLLECTION)
-    ("tetramer" . SPARSER::TETRAMER) ("Peptide" . SPARSER::PEPTIDE)
-    ("immunogenic peptides" . SPARSER::PEPTIDE)
+    ("held" . SPARSER::PROTEIN) ("tetramer" . SPARSER::TETRAMER)
+    ("Peptide" . SPARSER::PEPTIDE) ("immunogenic peptides" . SPARSER::PEPTIDE)
     ("tetramers" . SPARSER::TETRAMER) ("MHC" . SPARSER::PROTEIN)
     ("RRP, disease severity, and T H 2-like responses to HPV early proteins"
      . SPARSER::COLLECTION)
-    ("DRB" . SPARSER::PROTEIN) ("RRP" . SPARSER::PROTEIN)
-    ("CD8" . SPARSER::PROTEIN) ("DR1" . SPARSER::PROTEIN)
-    ("CTLA-4" . SPARSER::PROTEIN) ("PD-1" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("STAT5" . SPARSER::PROTEIN) ("STAT-6" . SPARSER::PROTEIN)
-    ("STAT-4" . SPARSER::PROTEIN) ("IL2" . SPARSER::PROTEIN)
-    ("CD45" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CD49d" . SPARSER::PROTEIN)
-    ("anti-CD28" . SPARSER::PROTEIN) ("IL-10" . SPARSER::PROTEIN)
-    ("DQB1" . SPARSER::PROTEIN) ("anti-viral" . SPARSER::DRUG)
-    ("STAT-5" . SPARSER::PROTEIN) ("IL-13" . SPARSER::PROTEIN)
+    ("RRP" . SPARSER::PROTEIN) ("CD8" . SPARSER::PROTEIN)
+    ("DR1" . SPARSER::PROTEIN) ("CTLA-4" . SPARSER::PROTEIN)
+    ("PD-1" . SPARSER::PROTEIN) ("STAT5" . SPARSER::PROTEIN)
+    ("STAT-6" . SPARSER::PROTEIN) ("STAT-4" . SPARSER::PROTEIN)
+    ("IL2" . SPARSER::PROTEIN) ("CD45" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("CD49d" . SPARSER::PROTEIN) ("anti-CD28" . SPARSER::PROTEIN)
+    ("IL-10" . SPARSER::PROTEIN) ("DQB1" . SPARSER::PROTEIN)
+    ("anti-viral" . SPARSER::DRUG) ("IL-13" . SPARSER::PROTEIN)
     ("E2" . SPARSER::MOLECULE) ("E6" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("DRB1" . SPARSER::PROTEIN)
     ("dual PI3K-mTOR inhibitors" . SPARSER::INHIBITOR)
     ("MEK, or PI3K" . SPARSER::COLLECTION) ("RAS-MAPK" . SPARSER::COLLECTION)
     ("ERK and EGFR and RAS-like" . SPARSER::COLLECTION)
@@ -13468,18 +14009,16 @@
     ("rpS6, RSK and S6K" . SPARSER::COLLECTION)
     ("ATPase/helicase" . SPARSER::COLLECTION) ("helicase" . SPARSER::PROTEIN)
     ("ATPase" . SPARSER::PROTEIN) ("unique substrates" . SPARSER::SUBSTRATE)
-    ("rpS6" . SPARSER::PROTEIN) ("rpS" . SPARSER::PROTEIN)
-    ("RSK and AKT" . SPARSER::COLLECTION)
+    ("rpS6" . SPARSER::PROTEIN) ("CCT" . SPARSER::PROTEIN)
+    ("rpS" . SPARSER::PROTEIN) ("RSK and AKT" . SPARSER::COLLECTION)
     ("transcription factor, girdin and palladin" . SPARSER::COLLECTION)
     ("palladin" . SPARSER::PROTEIN) ("girdin" . SPARSER::PROTEIN)
     ("Rac and CDC42" . SPARSER::COLLECTION)
     ("S6K and PAK" . SPARSER::COLLECTION) ("AKT or S6K" . SPARSER::COLLECTION)
     ("RSK and the un-related PAK (p21-activated kinase)" . SPARSER::COLLECTION)
-    ("PAK" . SPARSER::PROTEIN-FAMILY) ("Filamin" . SPARSER::PROTEIN-FAMILY)
-    ("importin" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("ROCK" . SPARSER::PROTEIN-FAMILY)
-    ("p27 kip1 and filamin" . SPARSER::COLLECTION)
-    ("filamin" . SPARSER::PROTEIN-FAMILY)
+    ("PAK" . SPARSER::PROTEIN) ("importin" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("ROCK" . SPARSER::PROTEIN-FAMILY) ("RhoA" . SPARSER::PROTEIN)
+    ("p27 kip1 and filamin A" . SPARSER::COLLECTION)
     ("cyclin D1 , EGFR, FOS, and MYC" . SPARSER::COLLECTION)
     ("FOS" . SPARSER::PROTEIN)
     ("cap-dependent pro-growth mRNAs" . SPARSER::PROTEIN)
@@ -13487,7 +14026,8 @@
     ("AKT-" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("their unique and mutual target genes" . SPARSER::GENE)
     ("β-catenin and glycogen synthase" . SPARSER::COLLECTION)
-    ("IGF" . SPARSER::PROTEIN) ("EGF and phorbol" . SPARSER::COLLECTION)
+    ("insulin and IGF" . SPARSER::COLLECTION) ("IGF" . SPARSER::PROTEIN)
+    ("EGF and phorbol" . SPARSER::COLLECTION)
     ("ERK-" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the individual AGC kinase’s" . SPARSER::KINASE)
     ("type, strength, and duration" . SPARSER::COLLECTION)
@@ -13506,8 +14046,7 @@
      . SPARSER::COLLECTION)
     ("cyclin D and MYC" . SPARSER::COLLECTION)
     ("another pro-apoptotic BH3-only protein" . SPARSER::PROTEIN)
-    ("proteasomal" . SPARSER::PROTEIN) ("BIM" . SPARSER::PROTEIN)
-    ("MEK and PI3K" . SPARSER::COLLECTION)
+    ("BIM" . SPARSER::PROTEIN) ("MEK and PI3K" . SPARSER::COLLECTION)
     ("mitochondria and pro-survival" . SPARSER::COLLECTION)
     ("PKA and RSK" . SPARSER::COLLECTION) ("AKT and S6K" . SPARSER::COLLECTION)
     ("BAX and BAK" . SPARSER::COLLECTION) ("BAK" . SPARSER::PROTEIN)
@@ -13520,7 +14059,7 @@
     ("FOXO1 and FOXO3A" . SPARSER::COLLECTION) ("ubiquitin" . SPARSER::PROTEIN)
     ("apoptotic proteins and cell cycle regulators" . SPARSER::COLLECTION)
     ("FOXOs" . SPARSER::PROTEIN-FAMILY) ("BAD" . SPARSER::PROTEIN)
-    ("forkhead" . SPARSER::PROTEIN) ("FOXO" . SPARSER::PROTEIN-FAMILY)
+    ("FOXO" . SPARSER::PROTEIN-FAMILY)
     ("ERK, RSK, AKT, and S6K" . SPARSER::COLLECTION)
     ("glucose and fatty acid" . SPARSER::COLLECTION)
     ("mTORC1 and mTORC2" . SPARSER::COLLECTION)
@@ -13533,35 +14072,39 @@
     ("PI3K, TSC2, and mTORC1" . SPARSER::COLLECTION)
     ("RAS-ERK" . SPARSER::COLLECTION) ("RAS or RAF" . SPARSER::COLLECTION)
     ("RAF" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("RAS" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("RAS" . SPARSER::HUMAN-PROTEIN-FAMILY) ("melanoma" . SPARSER::PROTEIN)
     ("PP1 (protein phosphatase 1) and/or PP2A" . SPARSER::COLLECTION)
     ("mitogen" . SPARSER::MITOGEN) ("Ras and MEK" . SPARSER::COLLECTION)
     ("cAMP" . SPARSER::PROTEIN) ("AKT and Raf" . SPARSER::COLLECTION)
+    ("phospho-AKT" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("receptor (EGFR)" . SPARSER::RECEPTOR) ("EGF" . SPARSER::PROTEIN)
+    ("PI3K-AKT" . SPARSER::COLLECTION)
     ("ERK and the AGC kinases" . SPARSER::COLLECTION)
     ("substrate or complex" . SPARSER::COLLECTION)
-    ("RSK, AKT, and S6K" . SPARSER::COLLECTION)
+    ("RSK, AKT, and S6K" . SPARSER::COLLECTION) ("AGC" . SPARSER::PROTEIN)
     ("PXS/TP" . SPARSER::COLLECTION) ("TP" . SPARSER::PROTEIN)
     ("these latter kinases" . SPARSER::KINASE)
     ("complex or protein" . SPARSER::COLLECTION) ("p70S6K" . SPARSER::PROTEIN)
-    ("IRS and RICTOR" . SPARSER::COLLECTION) ("Examples" . SPARSER::EXAMPLE)
-    ("sprouty" . SPARSER::PROTEIN-FAMILY)
+    ("lab" . SPARSER::PROTEIN) ("IRS and RICTOR" . SPARSER::COLLECTION)
+    ("Examples" . SPARSER::EXAMPLE) ("sprouty" . SPARSER::PROTEIN-FAMILY)
+    ("SOS, Raf, and MEK1" . SPARSER::COLLECTION)
     ("GAB1 and its associated RTKs" . SPARSER::COLLECTION)
     ("its associated RTKs" . SPARSER::PROTEIN)
     ("RasGAP, SHP2, PI3K, and PIP3" . SPARSER::COLLECTION)
     ("homology" . SPARSER::PROTEIN) ("RasGAP" . SPARSER::PROTEIN)
+    ("GRB2–SOS" . SPARSER::COLLECTION) ("SOS" . SPARSER::PROTEIN)
     ("strong PI3K-mTORC1 activators" . SPARSER::ACTIVATOR)
-    ("growth factor-1" . SPARSER::COLLECTION)
+    ("insulin, and IGF1" . SPARSER::COLLECTION)
     ("a strong activator" . SPARSER::ACTIVATOR)
     ("AKT, SGK, and PKC" . SPARSER::COLLECTION) ("SGK" . SPARSER::PROTEIN)
     ("Growth factors and PI3K" . SPARSER::COLLECTION)
     ("scaffolds" . SPARSER::SCAFFOLD) ("mLST8 and mSIN1" . SPARSER::COLLECTION)
-    ("RICTOR" . SPARSER::PROTEIN) ("RHEB-mTORC1" . SPARSER::COLLECTION)
-    ("AMPK" . SPARSER::PROTEIN) ("AMP" . SPARSER::AMP)
-    ("hypoxia" . SPARSER::PROTEIN) ("Glucose" . SPARSER::PROTEIN)
-    ("Rag" . SPARSER::PROTEIN) ("PI3K-mTORC1" . SPARSER::COLLECTION)
+    ("rapamycin" . SPARSER::DRUG) ("RICTOR" . SPARSER::PROTEIN)
+    ("RHEB-mTORC1" . SPARSER::COLLECTION) ("AMPK" . SPARSER::PROTEIN)
+    ("AMP" . SPARSER::AMP) ("hypoxia" . SPARSER::PROTEIN)
+    ("Glucose" . SPARSER::PROTEIN) ("Rag" . SPARSER::PROTEIN)
+    ("PI3K-mTORC1" . SPARSER::COLLECTION)
     ("RNA helicases and other protein substrates" . SPARSER::COLLECTION)
-    ("helicases" . SPARSER::PROTEIN)
     ("protein (4E-BP) and S6K (p70 ribosomal S6 Kinase)" . SPARSER::COLLECTION)
     ("c-Myc and cyclin D" . SPARSER::COLLECTION) ("eIF" . SPARSER::PROTEIN)
     ("a scaffolding protein RAPTOR (regulatory-associated protein of mTOR) and mLST8 (mammalian lethal with Sec13 protein 8)"
@@ -13570,13 +14113,16 @@
      . SPARSER::COLLECTION)
     ("Sec13" . SPARSER::PROTEIN) ("Ser/Thr" . SPARSER::COLLECTION)
     ("RAPTOR" . SPARSER::PROTEIN) ("RHEB" . SPARSER::PROTEIN)
-    ("TSC" . SPARSER::PROTEIN) ("GAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("3-phosphoinositide-dependent kinase" . SPARSER::KINASE)
+    ("TSC" . SPARSER::PROTEIN)
+    ("factors as well as the TSC2 (tuberous sclerosis complex 2) GAP (GTPase activating protein)"
+     . SPARSER::COLLECTION)
+    ("GAP" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("phosphoinositide" . SPARSER::PROTEIN) ("inositol" . SPARSER::PROTEIN)
     ("phosphatidyl" . SPARSER::MOLECULE)
     ("the IRS (insulin receptor substrate) or GAB (GRB2-associated binder)"
      . SPARSER::COLLECTION)
-    ("IRS" . SPARSER::PROTEIN) ("MEK and ERK" . SPARSER::COLLECTION)
+    ("GAB" . SPARSER::PROTEIN) ("IRS" . SPARSER::PROTEIN)
+    ("MEK and ERK" . SPARSER::COLLECTION)
     ("CDK (cyclin-dependent kinase) inhibitors and trigger cell cycle arrest [ xref ]"
      . SPARSER::COLLECTION)
     ("CDK" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -13587,10 +14133,11 @@
     ("These proteins physically bridge two signaling proteins"
      . SPARSER::PROTEIN)
     ("protein–protein" . SPARSER::COLLECTION)
-    ("Phosphatases" . SPARSER::PHOSPHATASE) ("Kinases" . SPARSER::PROTEIN)
-    ("GAPs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("GEFs" . SPARSER::PROTEIN)
-    ("GDP" . SPARSER::NUCLEOTIDE) ("tri" . SPARSER::PROTEIN)
-    ("GTP" . SPARSER::NUCLEOTIDE) ("GTPases" . SPARSER::GTPASE)
+    ("Phosphatases" . SPARSER::PHOSPHATASE) ("gamma" . SPARSER::PROTEIN)
+    ("Kinases" . SPARSER::KINASE) ("GAPs" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("GEFs" . SPARSER::PROTEIN) ("GDP" . SPARSER::NUCLEOTIDE)
+    ("tri" . SPARSER::PROTEIN) ("GTP" . SPARSER::NUCLEOTIDE)
+    ("GTPases" . SPARSER::GTPASE)
     ("their cognate RTKs (receptor tyrosine kinases) and GPCRs (G protein-coupled receptors)"
      . SPARSER::COLLECTION)
     ("neurotransmitters, chemokines, and phorbol" . SPARSER::COLLECTION)
@@ -13607,7 +14154,7 @@
     ("MAPKK" . SPARSER::HUMAN-PROTEIN-FAMILY) ("MAPKKK" . SPARSER::PROTEIN)
     ("triphosphatase" . SPARSER::PROTEIN) ("guanosine" . SPARSER::MOLECULE)
     ("GTPase" . SPARSER::GTPASE) ("oncoprotein" . SPARSER::PROTEIN)
-    ("MAPK" . SPARSER::PROTEIN) ("Types" . TYPE)
+    ("MAPK" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Types" . TYPE)
     ("therapeutics" . SPARSER::THERAPEUTICS) ("-mTOR" . SPARSER::COLLECTION)
     ("Ras-ERK" . SPARSER::COLLECTION) ("RAS-like" . SPARSER::PROTEIN)
     ("IGF1R" . SPARSER::PROTEIN) ("TPL2" . SPARSER::PROTEIN)
@@ -13617,41 +14164,43 @@
     ("chaperonin containing TCP1" . SPARSER::PROTEIN)
     ("eukaryotic elongation factor 2 kinase" . SPARSER::PROTEIN)
     ("eEF2K" . SPARSER::PROTEIN) ("initiation factor 4B" . SPARSER::PROTEIN)
-    ("CDC42" . SPARSER::PROTEIN) ("p27 kip1" . SPARSER::PROTEIN)
+    ("ACAP1" . SPARSER::PROTEIN) ("CDC42" . SPARSER::PROTEIN)
+    ("Filamin A" . SPARSER::PROTEIN)
+    ("cell cycle regulatory protein" . SPARSER::PROTEIN)
+    ("filamin A" . SPARSER::PROTEIN) ("p27 kip1" . SPARSER::PROTEIN)
     ("Y-box binding protein 1" . SPARSER::PROTEIN) ("YB1" . SPARSER::PROTEIN)
     ("GSK3α" . SPARSER::PROTEIN) ("GSK3β" . SPARSER::PROTEIN)
     ("GSK3 α" . SPARSER::PROTEIN) ("AKT-induced" . SPARSER::PROTEIN)
-    ("BH3-only protein" . SPARSER::PROTEIN) ("BCL2" . SPARSER::PROTEIN)
     ("FOXO1" . SPARSER::PROTEIN) ("MDM2" . SPARSER::PROTEIN)
     ("ubiquitin ligase" . SPARSER::PROTEIN) ("FOXO3A" . SPARSER::PROTEIN)
-    ("BCL2-associated agonist of cell death" . SPARSER::PROTEIN)
+    ("BCL2" . SPARSER::PROTEIN) ("forkhead box" . SPARSER::PROTEIN)
     ("fatty acid" . SPARSER::MOLECULE) ("KSR2" . SPARSER::PROTEIN)
     ("cell membrane" . SPARSER::PROTEIN) ("MP1" . SPARSER::PROTEIN)
     ("Ras-GTP" . SPARSER::PROTEIN) ("PP2A" . SPARSER::PROTEIN)
     ("protein phosphatase 1" . SPARSER::PROTEIN)
-    ("PP1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("14-3-3" . SPARSER::PROTEIN)
+    ("PP1" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("14-3-3" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("protein kinase A" . SPARSER::PROTEIN)
     ("epidermal growth factor" . SPARSER::PROTEIN) ("p70S6" . SPARSER::PROTEIN)
     ("MEK1" . SPARSER::PROTEIN) ("GAB1" . SPARSER::PROTEIN)
     ("SHP2" . SPARSER::PROTEIN) ("IGF1" . SPARSER::PROTEIN)
-    ("stress-activated protein kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("mSIN1" . SPARSER::PROTEIN)
-    ("rapamycin-insensitive companion of mTOR" . SPARSER::PROTEIN)
-    ("GSK3" . SPARSER::PROTEIN) ("Amino acids" . SPARSER::AMINO-ACID)
-    ("Amino acid" . SPARSER::AMINO-ACID)
+    ("activated protein kinase" . SPARSER::PROTEIN)
+    ("mSIN1" . SPARSER::PROTEIN) ("GSK3" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Amino acids" . SPARSER::AMINO-ACID) ("Amino acid" . SPARSER::AMINO-ACID)
+    ("RNA helicases" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ribosomal protein S6" . SPARSER::PROTEIN)
     ("mRNA cap-binding protein" . SPARSER::PROTEIN)
     ("S6 Kinase" . SPARSER::PROTEIN-FAMILY) ("p70" . SPARSER::PROTEIN)
     ("S6K" . SPARSER::PROTEIN) ("4E-BP" . SPARSER::PROTEIN)
     ("eukaryotic initiation factor 4E" . SPARSER::PROTEIN-FAMILY)
     ("mLST8" . SPARSER::PROTEIN)
-    ("regulatory-associated protein of mTOR" . SPARSER::PROTEIN)
-    ("brain)" . SPARSER::PROTEIN)
+    ("Ras homolog enriched in brain" . SPARSER::PROTEIN)
     ("GTPase activating protein" . SPARSER::PROTEIN)
     ("TSC2" . SPARSER::PROTEIN) ("mTORC2" . SPARSER::PROTEIN)
     ("PDK1" . SPARSER::PROTEIN) ("PIP3" . SPARSER::PIP3)
     ("GRB2" . SPARSER::PROTEIN) ("insulin receptor" . SPARSER::PROTEIN)
+    ("growth factor receptors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Growth factors" . SPARSER::GROWTH-FACTOR) ("mTORC1" . SPARSER::PROTEIN)
-    ("cyclin-dependent kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("c-Myc" . SPARSER::PROTEIN) ("Immediate Early" . SPARSER::PROTEIN)
     ("S6 kinase" . SPARSER::PROTEIN-FAMILY) ("p90" . SPARSER::PROTEIN)
     ("GTPase activating" . SPARSER::PROTEIN)
@@ -13667,14 +14216,17 @@
     ("extracellular signal-regulated kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("methacholine" . SPARSER::DRUG) ("COPD" . SPARSER::PROTEIN)
     ("nicotine" . SPARSER::DRUG) ("PAI-1 and FVC" . SPARSER::COLLECTION)
-    ("FEV" . SPARSER::PROTEIN) ("AA" . SPARSER::MOLECULE)
+    ("FEV" . SPARSER::PROTEIN) ("DM" . SPARSER::PROTEIN)
+    ("Age" . SPARSER::PROTEIN) ("AA" . SPARSER::MOLECULE)
     ("cotinine" . SPARSER::DRUG)
     ("PAI-1 and MC-derived PAI-1" . SPARSER::COLLECTION)
-    ("bleomycin" . SPARSER::DRUG) ("t-PA and u-PA" . SPARSER::COLLECTION)
+    ("MCs" . SPARSER::PROTEIN) ("bleomycin" . SPARSER::DRUG)
+    ("t-PA and u-PA" . SPARSER::COLLECTION)
     ("Tissue-type-PA" . SPARSER::COLLECTION) ("fibrin" . SPARSER::PROTEIN)
-    ("PA" . SPARSER::PROTEIN) ("plasminogen" . SPARSER::PROTEIN)
-    ("plasmin" . SPARSER::PROTEIN) ("ECM" . SPARSER::PROTEIN)
-    ("Tissue-type" . SPARSER::PROTEIN) ("u-PA" . SPARSER::PROTEIN)
+    ("PA" . SPARSER::PROTEIN) ("urokinase" . SPARSER::PROTEIN)
+    ("plasminogen" . SPARSER::PROTEIN) ("plasmin" . SPARSER::PROTEIN)
+    ("ECM" . SPARSER::PROTEIN) ("Tissue-type" . SPARSER::PROTEIN)
+    ("u-PA" . SPARSER::PROTEIN)
     ("promitogenic sphingosine metabolites" . SPARSER::MOLECULE)
     ("-activating factor" . SPARSER::COLLECTION)
     ("eukaryotic genes" . SPARSER::GENE)
@@ -13688,25 +14240,27 @@
     ("GATA" . SPARSER::PROTEIN) ("Oct" . SPARSER::PROTEIN)
     ("AP-1 and/or NF-Y" . SPARSER::COLLECTION)
     ("only four amino acids" . SPARSER::AMINO-ACID)
-    ("Subunits" . SPARSER::FRAGMENT) ("GTCA" . SPARSER::PROTEIN)
-    ("NF-Y and AP-1" . SPARSER::COLLECTION) ("FSH" . SPARSER::DRUG)
-    ("-ATTGG-3" . SPARSER::COLLECTION) ("TGA" . SPARSER::PROTEIN)
+    ("Subunits" . SPARSER::FRAGMENT)
+    ("factors (including AP-1) and NF-Y" . SPARSER::COLLECTION)
+    ("GTCA" . SPARSER::PROTEIN) ("NF-Y and AP-1" . SPARSER::COLLECTION)
+    ("FSH" . SPARSER::PROTEIN) ("-ATTGG-3" . SPARSER::COLLECTION)
+    ("TGA" . SPARSER::PROTEIN)
     ("the Jun family (c-Jun, JunB, and JunD) and the Fos family (c-Fos, FosB, Fra-1, and Fra-2)"
      . SPARSER::COLLECTION)
     ("c-Jun, JunB, and JunD" . SPARSER::COLLECTION)
     ("c-Fos, FosB, Fra-1, and Fra-2" . SPARSER::COLLECTION)
     ("-activators" . SPARSER::ACTIVATOR)
     ("the nCDase proximal promoter" . SPARSER::PROMOTER)
+    ("Log" . SPARSER::PROTEIN)
     ("Jun-family/Jun-family dimers or Jun-family/Fos-family dimers"
      . SPARSER::COLLECTION)
     ("dimers" . SPARSER::DIMER) ("c-Jun and c-Fos" . SPARSER::COLLECTION)
     ("at least one c-Jun subunit" . SPARSER::FRAGMENT)
-    ("siRNA and PGL-200" . SPARSER::COLLECTION)
-    ("co-transfected dual siRNAs" . SPARSER::PROTEIN)
     ("human nCDase proximal promoter" . SPARSER::PROMOTER)
     ("AP-1 and NF-Y" . SPARSER::COLLECTION)
     ("the oligonucleotide’s" . SPARSER::MOLECULE)
-    ("AP-1 or NF-Y" . SPARSER::COLLECTION) ("AP1" . SPARSER::PROTEIN)
+    ("AP-1 or NF-Y" . SPARSER::COLLECTION) ("base" . SPARSER::PROTEIN)
+    ("AP1" . SPARSER::PROTEIN)
     ("nonspecific oligonucleotide" . SPARSER::MOLECULE)
     ("ccaat" . SPARSER::PROTEIN) ("AP-1/CCAAT" . SPARSER::COLLECTION)
     ("AP-1 and CCAAT" . SPARSER::COLLECTION) ("CCAAT" . SPARSER::PROTEIN)
@@ -13715,15 +14269,17 @@
     ("The human nCDase proximal promoter" . SPARSER::PROMOTER)
     ("FBS and luciferase" . SPARSER::COLLECTION)
     ("the proximal promoter" . SPARSER::PROMOTER) ("FBS" . SPARSER::PROTEIN)
+    ("the promitogenic phosphorylated metabolite" . SPARSER::MOLECULE)
     ("metabolite" . SPARSER::MOLECULE)
     ("response elements (TRE)" . SPARSER::DNA-RESPONSE-ELEMENT)
     ("cytokine- and growth factor-" . SPARSER::COLLECTION)
-    ("growth factor-" . SPARSER::GROWTH-FACTOR)
+    ("growth factor-" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("cytokine-" . SPARSER::PROTEIN) ("ultraviolet light" . SPARSER::PROTEIN)
     ("cytokine and growth factor" . SPARSER::COLLECTION)
     ("exogenously delivered Cer [ xref ] as well as endogenous ceramide"
      . SPARSER::COLLECTION)
-    ("alkaline" . SPARSER::PROTEIN) ("Cer and Sph" . SPARSER::COLLECTION)
+    ("rat" . SPARSER::PROTEIN) ("alkaline" . SPARSER::PROTEIN)
+    ("pH" . SPARSER::PROTEIN) ("Cer and Sph" . SPARSER::COLLECTION)
     ("modulators" . SPARSER::PROTEIN) ("Sph" . SPARSER::PROTEIN)
     ("Cer" . SPARSER::PROTEIN) ("metabolites" . SPARSER::MOLECULE)
     ("sphingolipid" . SPARSER::MOLECULE) ("c-Jun/AP-1" . SPARSER::COLLECTION)
@@ -13734,51 +14290,51 @@
     ("promitogenic sphingosine-1-phosphate" . SPARSER::DRUG)
     ("ceramide" . SPARSER::MOLECULE) ("activating factor" . SPARSER::PROTEIN)
     ("IL-2" . SPARSER::PROTEIN) ("H3.3B" . SPARSER::PROTEIN)
-    ("thromboxane A 2" . SPARSER::MOLECULE) ("CYP4A2" . SPARSER::PROTEIN)
-    ("OCT-1" . SPARSER::PROTEIN)
+    ("thromboxane A 2 receptor" . SPARSER::PROTEIN)
+    ("CYP4A2" . SPARSER::PROTEIN) ("OCT-1" . SPARSER::PROTEIN)
     ("follicle-stimulating hormone beta" . SPARSER::PROTEIN)
-    ("CCAAT-binding factor" . SPARSER::PROTEIN) ("A-D" . SPARSER::PROTEIN)
+    ("CCAAT-binding factor" . SPARSER::PROTEIN)
     ("AP-1 transcription factor" . SPARSER::PROTEIN)
     ("NF-Y" . SPARSER::PROTEIN) ("L-aspartyl" . SPARSER::MOLECULE)
     ("Caspase-3" . SPARSER::PROTEIN)
     ("polynucleotide kinase" . SPARSER::PROTEIN) ("32 P" . SPARSER::|32P|)
+    ("CPR1" . SPARSER::PROTEIN)
     ("response elements" . SPARSER::DNA-RESPONSE-ELEMENT)
     ("nitric oxide" . SPARSER::MOLECULE) ("interleukin-1β" . SPARSER::PROTEIN)
     ("derived growth factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Fas ligand" . SPARSER::PROTEIN)
-    ("growth factor" . SPARSER::GROWTH-FACTOR) ("PKCζ" . SPARSER::PROTEIN)
-    ("sphingosine kinase 1" . SPARSER::PROTEIN)
-    ("caspase 3" . SPARSER::PROTEIN) ("Growth factor" . SPARSER::GROWTH-FACTOR)
+    ("growth factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("PKCζ" . SPARSER::PROTEIN) ("sphingosine kinase 1" . SPARSER::PROTEIN)
+    ("caspase 3" . SPARSER::PROTEIN)
+    ("Growth factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("sphingosine-1-phosphate" . SPARSER::DRUG)
-    ("the pro-inflammatory molecule fibronectin"
-     . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("monocytes" . SPARSER::PROTEIN)
     ("several atherosclerosis-associated genes" . SPARSER::GENE)
-    ("NF-κB and JNK" . SPARSER::COLLECTION)
+    ("DN-TCF-4" . SPARSER::COLLECTION) ("NF-κB and JNK" . SPARSER::COLLECTION)
     ("matrices" . SPARSER::PROTEIN-FAMILY)
     ("GSK-3β/fibronectin" . SPARSER::COLLECTION) ("LPS" . SPARSER::PROTEIN)
-    ("AKT/GSK-3β" . SPARSER::COLLECTION)
-    ("AKT" . SPARSER::HUMAN-PROTEIN-FAMILY) ("smoke" . SPARSER::MOLECULE)
+    ("AKT/GSK-3β" . SPARSER::COLLECTION) ("smoke" . SPARSER::MOLECULE)
     ("tobacco" . SPARSER::DRUG) ("antagonist" . SPARSER::MOLECULE)
     ("GSK-3β/Axin/APC" . SPARSER::COLLECTION) ("Axin" . SPARSER::PROTEIN)
-    ("Wnt" . SPARSER::HUMAN-PROTEIN-FAMILY) ("cues" . SPARSER::PROTEIN-FAMILY)
-    ("pS-GSK-3β" . SPARSER::COLLECTION)
-    ("endothelial GSK-3β" . SPARSER::PROTEIN)
+    ("Frizzled" . SPARSER::PROTEIN) ("Wnt" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("cues" . SPARSER::PROTEIN-FAMILY) ("pS-GSK-3β" . SPARSER::COLLECTION)
+    ("endothelial GSK-3β" . SPARSER::PROTEIN) ("DN-TCF4" . SPARSER::COLLECTION)
     ("gene and protein" . SPARSER::COLLECTION)
     ("HATs" . SPARSER::HUMAN-PROTEIN-FAMILY) ("acetyl" . SPARSER::MOLECULE)
     ("Eng" . SPARSER::PROTEIN) ("fused" . SPARSER::PROTEIN)
-    ("drosophila" . SPARSER::PROTEIN) ("MECs" . SPARSER::PROTEIN)
+    ("MECs" . SPARSER::PROTEIN)
     ("the proximal fibronectin promoter" . SPARSER::PROMOTER)
     ("CyclinD1, IL-8 and fibronectin" . SPARSER::COLLECTION)
-    ("monolayers" . SPARSER::PROTEIN) ("EC" . SPARSER::PROTEIN)
-    ("LacZ" . SPARSER::PROTEIN) ("/ApoE" . SPARSER::COLLECTION)
-    ("lacZ" . SPARSER::PROTEIN) ("transgene" . SPARSER::PROTEIN)
-    ("ApoE" . SPARSER::PROTEIN)
+    ("DN" . SPARSER::PROTEIN) ("monolayers" . SPARSER::PROTEIN)
+    ("EC" . SPARSER::PROTEIN) ("LacZ" . SPARSER::PROTEIN)
+    ("/ApoE" . SPARSER::COLLECTION) ("lacZ" . SPARSER::PROTEIN)
+    ("transgene" . SPARSER::PROTEIN) ("Nuclear" . SPARSER::PROTEIN)
+    ("ApoE" . SPARSER::PROTEIN) ("face" . SPARSER::PROTEIN)
     ("a strong nuclear fraction" . SPARSER::COMPONENT)
-    ("the pro-atherogenic protein fibronectin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Wnts and growth factors" . SPARSER::COLLECTION)
     ("Wnts" . SPARSER::HUMAN-PROTEIN-FAMILY) ("TCF/LEF" . SPARSER::COLLECTION)
-    ("LEF" . SPARSER::PROTEIN) ("β-catenin and GSK-3β" . SPARSER::COLLECTION)
+    ("LEF" . SPARSER::PROTEIN) ("cat" . SPARSER::PROTEIN)
+    ("β-catenin and GSK-3β" . SPARSER::COLLECTION)
     ("TCF and the transcriptional co-activator CBP" . SPARSER::COLLECTION)
     ("β-catenin, TCF and the transcriptional co-activator CBP"
      . SPARSER::COLLECTION)
@@ -13787,7 +14343,7 @@
     ("transcriptional regulators" . SPARSER::PROTEIN-FAMILY)
     ("SW480" . SPARSER::PROTEIN) ("p38" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Rac1" . SPARSER::PROTEIN) ("SHP-2" . SPARSER::PROTEIN)
-    ("IL-1β" . SPARSER::PROTEIN) ("Wnt-5" . SPARSER::PROTEIN)
+    ("IL-1β" . SPARSER::PROTEIN) ("Wnt-5a" . SPARSER::PROTEIN)
     ("Dickkopf-1" . SPARSER::PROTEIN)
     ("phospho-serine" . SPARSER::PHOSPHORYLATED-AMINO-ACID)
     ("ICG-001" . SPARSER::DRUG) ("p300" . SPARSER::PROTEIN)
@@ -13797,20 +14353,20 @@
     ("glycogen synthase" . SPARSER::PROTEIN-FAMILY)
     ("GSK-3β" . SPARSER::PROTEIN) ("PECAM-1" . SPARSER::PROTEIN)
     ("SCCs" . SPARSER::PROTEIN) ("cisplatin and HDAC" . SPARSER::COLLECTION)
-    ("Vorinostat" . SPARSER::DRUG)
+    ("Vorinostat" . SPARSER::DRUG) ("IP" . SPARSER::PROTEIN)
     ("Bcl-2, and vice-versa" . SPARSER::COLLECTION)
     ("versa" . SPARSER::PROTEIN) ("FDA" . SPARSER::PROTEIN)
     ("SAHA" . SPARSER::DRUG) ("vorinostat" . SPARSER::DRUG)
     ("TSA" . SPARSER::PROTEIN) ("trichostatin" . SPARSER::MOLECULE)
     ("HDAC1 and p63" . SPARSER::COLLECTION)
-    ("the lentiviral shRNA" . SPARSER::PROTEIN) ("shRNA" . SPARSER::PROTEIN)
     ("a potent suppressor of both p73 and p53-dependent PUMA reporter activation"
      . SPARSER::COLLECTION)
     ("ΔNp63α (WT)" . SPARSER::PROTEIN) ("TAp" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("p63 and HDAC1" . SPARSER::COLLECTION)
     ("p63 and HDACs" . SPARSER::COLLECTION) ("HDACs" . SPARSER::PROTEIN)
-    ("a trimeric complex" . SPARSER::BIO-COMPLEX) ("SAM" . SPARSER::MOLECULE)
-    ("sterile" . SPARSER::PROTEIN-FAMILY) ("TID" . SPARSER::PROTEIN)
+    ("a trimeric complex" . SPARSER::BIO-COMPLEX) ("SAM" . SPARSER::PROTEIN)
+    ("sterile" . SPARSER::PROTEIN-FAMILY)
+    ("TID" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("p63, HDAC1 and HDAC2" . SPARSER::COLLECTION)
     ("ΔNp63α, HDAC1, and HDAC2" . SPARSER::COLLECTION)
     ("glycerol" . SPARSER::PROTEIN)
@@ -13837,7 +14393,7 @@
     ("TAp63" . SPARSER::PROTEIN) ("p53 family" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("HDAC2" . SPARSER::PROTEIN) ("HDAC1" . SPARSER::PROTEIN)
     ("N-terminally" . SPARSER::PROTEIN) ("ΔNp63α" . SPARSER::PROTEIN)
-    ("TP63" . SPARSER::PROTEIN) ("p63" . SPARSER::PROTEIN)
+    ("TP63" . SPARSER::PROTEIN) ("p63" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("p53-related protein" . SPARSER::PROTEIN)
     ("a multi-functional protein" . SPARSER::PROTEIN)
     ("large oligomerized complexes" . SPARSER::BIO-COMPLEX)
@@ -13858,11 +14414,13 @@
     ("HA-PIAS1" . SPARSER::COLLECTION) ("lysines" . SPARSER::AMINO-ACID)
     ("HA immunoblotting of lysates from HEK293T cells expressing either HA-SAFB1 wild-type (WT), K231R, K294R or the K231/294R double mutant"
      . SPARSER::COLLECTION)
-    ("SUMO1 or SUMO3" . SPARSER::COLLECTION) ("HA" . SPARSER::PROTEIN)
+    ("SUMO1 or SUMO3" . SPARSER::COLLECTION)
     ("the predicted lysine’s" . SPARSER::AMINO-ACID)
     ("arginine" . SPARSER::AMINO-ACID)
     ("SUMO1 and SUMO3" . SPARSER::COLLECTION)
-    ("HA-SAFB1" . SPARSER::COLLECTION) ("MCF7" . SPARSER::PROTEIN)
+    ("HA and Flag" . SPARSER::COLLECTION) ("HA-SAFB1" . SPARSER::COLLECTION)
+    ("Hela" . SPARSER::PROTEIN) ("MCF7" . SPARSER::PROTEIN)
+    ("HA or Flag" . SPARSER::COLLECTION) ("HA" . SPARSER::PROTEIN)
     ("Flag-SUMO3" . SPARSER::COLLECTION) ("Flag-SUMO1" . SPARSER::COLLECTION)
     ("Flag" . SPARSER::PROTEIN-FAMILY)
     ("SAFB1 and its human paralog SAFB2 ( xref )" . SPARSER::COLLECTION)
@@ -13872,10 +14430,12 @@
     ("other important transcriptional repressive proteins" . SPARSER::PROTEIN)
     ("NCoR and HDAC3" . SPARSER::COLLECTION) ("NCoR" . SPARSER::PROTEIN)
     ("estrogen receptor (ER)" . SPARSER::PROTEIN) ("ER" . SPARSER::PROTEIN)
-    ("SAFB1 and SAFB2" . SPARSER::COLLECTION)
+    ("SAFB1 and SAFB2" . SPARSER::COLLECTION) ("RRM" . SPARSER::PROTEIN)
+    ("SAF" . SPARSER::PROTEIN) ("SLTM" . SPARSER::PROTEIN)
     ("a large multi-functional protein" . SPARSER::PROTEIN)
+    ("factors and coregulators" . SPARSER::COLLECTION)
     ("RanBP2, or PC2" . SPARSER::COLLECTION) ("PIAS" . SPARSER::PROTEIN-FAMILY)
-    ("ligases" . SPARSER::LIGASE)
+    ("ligases" . SPARSER::LIGASE) ("PC2" . SPARSER::PROTEIN)
     ("a known transcriptional repressor and SAFB1 binding partner"
      . SPARSER::COLLECTION)
     ("ligase" . SPARSER::LIGASE) ("lysine’s" . SPARSER::AMINO-ACID)
@@ -13888,35 +14448,41 @@
     ("estrogen receptor" . SPARSER::PROTEIN) ("SAFB2" . SPARSER::PROTEIN)
     ("scaffold attachment factor B2" . SPARSER::PROTEIN)
     ("Scaffold attachment factor B1" . SPARSER::PROTEIN)
-    ("PC2" . SPARSER::PROTEIN) ("RanBP2" . SPARSER::PROTEIN)
-    ("glutamic acid" . SPARSER::AMINO-ACID) ("HDAC3" . SPARSER::PROTEIN)
-    ("SENP1" . SPARSER::PROTEIN) ("E3" . SPARSER::MOLECULE)
-    ("PIAS1" . SPARSER::PROTEIN) ("SUMO2" . SPARSER::PROTEIN)
-    ("SUMO1" . SPARSER::PROTEIN) ("SAFB1" . SPARSER::PROTEIN)
+    ("RanBP2" . SPARSER::PROTEIN) ("glutamic acid" . SPARSER::AMINO-ACID)
+    ("HDAC3" . SPARSER::PROTEIN) ("SENP1" . SPARSER::PROTEIN)
+    ("E3" . SPARSER::MOLECULE) ("PIAS1" . SPARSER::PROTEIN)
+    ("SUMO2" . SPARSER::PROTEIN) ("SUMO1" . SPARSER::PROTEIN)
+    ("SAFB1" . SPARSER::PROTEIN)
+    ("scaffold attachment factor B1" . SPARSER::PROTEIN)
     ("antiviral and inflammatory genes" . SPARSER::GENE)
     ("AP-1 or NF-κB" . SPARSER::COLLECTION) ("coactivators" . SPARSER::PROTEIN)
-    ("homodimers" . SPARSER::HOMODIMER) ("Akt" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("homodimers" . SPARSER::HOMODIMER) ("AP-1 and PU.1" . SPARSER::COLLECTION)
+    ("Akt" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a dominant-negative A-Fos mutant" . SPARSER::MUTANT)
     ("VSV and HIV-1-AP-1#totmut" . SPARSER::COLLECTION)
     ("mutants" . SPARSER::MUTANT) ("glycoprotein" . SPARSER::PROTEIN)
-    ("VSV" . SPARSER::PROTEIN) ("AP-1#3mut" . SPARSER::PROTEIN)
-    ("HIV-1-AP-1#2mut" . SPARSER::PROTEIN) ("viral mRNAs" . SPARSER::PROTEIN)
-    ("HIV-1-AP-1#3mut" . SPARSER::PROTEIN) ("viral p24" . SPARSER::PROTEIN)
-    ("Mutant" . SPARSER::MUTANT) ("RNA and protein" . SPARSER::COLLECTION)
+    ("VSV" . SPARSER::PROTEIN) ("factors or co-factors" . SPARSER::COLLECTION)
+    ("HIV-1-AP-1#3mut, HIV-1-AP-1#1mut, HIV-1-AP-1#1+2mut and HIV-1-AP-1#totmut"
+     . SPARSER::COLLECTION)
+    ("AP-1#3mut" . SPARSER::PROTEIN) ("HIV-1-AP-1#2mut" . SPARSER::PROTEIN)
+    ("viral mRNAs" . SPARSER::PROTEIN) ("HIV-1-AP-1#3mut" . SPARSER::PROTEIN)
+    ("viral p24" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Mutant" . SPARSER::MUTANT)
+    ("RNA and protein" . SPARSER::COLLECTION)
     ("the viral Tat protein" . SPARSER::PROTEIN)
     ("the receptor CD4 and both co-receptors CXCR4 and CCR5"
      . SPARSER::COLLECTION)
     ("CXCR4 and CCR5" . SPARSER::COLLECTION)
     ("protein and RNA" . SPARSER::COLLECTION)
     ("viral genomic RNA" . SPARSER::RNA) ("viral RNA" . SPARSER::RNA)
-    ("RNAPII" . SPARSER::PROTEIN) ("vpr" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("RT" . SPARSER::PROTEIN) ("RNAPII" . SPARSER::PROTEIN)
+    ("vpr" . SPARSER::HUMAN-PROTEIN-FAMILY) ("nuc" . SPARSER::PROTEIN)
     ("RNA polymerase II (RNAPII)" . SPARSER::PROTEIN)
-    ("pHIV-1-AP-1" . SPARSER::COLLECTION) ("pNL" . SPARSER::PROTEIN)
-    ("pREP" . SPARSER::PROTEIN) ("FLAG" . SPARSER::PROTEIN-FAMILY)
-    ("pCG" . SPARSER::PROTEIN-FAMILY)
+    ("pNL" . SPARSER::PROTEIN) ("pREP" . SPARSER::PROTEIN)
+    ("the potential impact" . SPARSER::PROTEIN)
+    ("FLAG" . SPARSER::PROTEIN-FAMILY) ("pCG" . SPARSER::PROTEIN-FAMILY)
     ("the Jun basic region form" . SPARSER::FORM)
-    ("heterodimer" . SPARSER::HETERODIMER)
-    ("Jun" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("coiled-coil" . SPARSER::PROTEIN) ("heterodimer" . SPARSER::HETERODIMER)
+    ("coil" . SPARSER::PROTEIN) ("Jun" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("ectopically expressed dominant-negative A-Fos mutant" . SPARSER::MUTANT)
     ("Fos" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("pTK, pTK-5103s-wt and pTK-5103as-wt" . SPARSER::COLLECTION)
@@ -13927,7 +14493,6 @@
     ("a cytosine and an adenine residue" . SPARSER::COLLECTION)
     ("thymine" . SPARSER::MOLECULE)
     ("the viral reverse transcriptase" . SPARSER::PROTEIN)
-    ("protein-antibody" . SPARSER::COLLECTION)
     ("anti-cFos and anti-JunB" . SPARSER::COLLECTION)
     ("c-Fos and JunB" . SPARSER::COLLECTION)
     ("an anti-cFos or an anti-JunB antibody ( xref , top panel; compare lane 8 with lanes 2 and 7)"
@@ -13935,7 +14500,7 @@
     ("an anti-cFos" . SPARSER::ANTIBODY) ("cFos" . SPARSER::PROTEIN)
     ("c-Fos, FosB, Fra-1, Fra-2, c-Jun, JunB, JunD, CREB, CREM, ATF-1, ATF-2, C/EBPα, C/EBPβ, C/EBPδ or Ets-1"
      . SPARSER::COLLECTION)
-    ("CREM" . SPARSER::PROTEIN) ("CREB" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("CREM" . SPARSER::PROTEIN) ("CREB" . SPARSER::PROTEIN)
     ("FosB" . SPARSER::PROTEIN) ("IgG" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("EBP" . SPARSER::PROTEIN) ("dC" . SPARSER::MOLECULE)
     ("the mutated AP-1 consensus oligonucleotide" . SPARSER::MOLECULE)
@@ -13947,11 +14512,13 @@
      . SPARSER::COLLECTION)
     ("cytosine" . SPARSER::NUCLEOBASE) ("adenine" . SPARSER::NUCLEOBASE)
     ("TRE" . SPARSER::PROTEIN) ("guanine" . SPARSER::PROTEIN)
-    ("oligonucleotide" . SPARSER::MOLECULE) ("MDMs" . SPARSER::PROTEIN)
-    ("SWI/SNF" . SPARSER::COLLECTION) ("SNF" . SPARSER::PROTEIN-FAMILY)
+    ("oligonucleotide" . SPARSER::MOLECULE)
+    ("PMA-treated HeLa nuclear" . SPARSER::PROTEIN) ("MDMs" . SPARSER::PROTEIN)
+    ("SWI/SNF" . SPARSER::COLLECTION) ("SNF" . SPARSER::PROTEIN)
     ("SWI" . SPARSER::PROTEIN) ("dimer" . SPARSER::DIMER)
     ("the wider B-ZIP family" . SPARSER::PROTEIN-FAMILY)
-    ("TREs" . SPARSER::PROTEIN) ("ZIP" . SPARSER::PROTEIN)
+    ("TPA or PMA" . SPARSER::COLLECTION) ("TREs" . SPARSER::PROTEIN)
+    ("TPA" . SPARSER::PROTEIN) ("ZIP" . SPARSER::PROTEIN)
     ("leucine" . SPARSER::AMINO-ACID)
     ("jun , fos and atf" . SPARSER::COLLECTION)
     ("fos" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -13965,12 +14532,12 @@
     ("Sp1/Sp3" . SPARSER::COLLECTION)
     ("the previously identified 5103 and 5105 fragments" . SPARSER::FRAGMENT)
     ("integrase" . SPARSER::PROTEIN) ("ACH2 and 8E5" . SPARSER::COLLECTION)
-    ("monocyte-macrophage" . SPARSER::PROTEIN)
-    ("macrophage" . SPARSER::PROTEIN) ("TK" . SPARSER::PROTEIN)
+    ("monocyte-macrophage" . SPARSER::PROTEIN) ("TK" . SPARSER::PROTEIN)
     ("exon" . SPARSER::PROTEIN) ("vif" . SPARSER::PROTEIN)
     ("the viral transactivating Tat protein" . SPARSER::PROTEIN)
     ("Sp1 and Oct-1" . SPARSER::COLLECTION)
-    ("NF-κB and NFAT" . SPARSER::COLLECTION) ("NFAT" . SPARSER::PROTEIN)
+    ("NF-κB and NFAT" . SPARSER::COLLECTION)
+    ("NFAT" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("trans" . SPARSER::PROTEIN-FAMILY) ("cis" . SPARSER::PROTEIN)
     ("macrophages" . SPARSER::PROTEIN)
     ("the viral promoter" . SPARSER::PROMOTER) ("Jurkat" . SPARSER::PROTEIN)
@@ -13981,38 +14548,37 @@
      . SPARSER::COLLECTION)
     ("type I" . SPARSER::HUMAN-PROTEIN-FAMILY) ("T-cell" . SPARSER::PROTEIN)
     ("M-CSF" . SPARSER::PROTEIN)
-    ("colony-stimulating factor" . SPARSER::PROTEIN)
     ("adipose differentiation-related protein" . SPARSER::PROTEIN)
+    ("transcription factor PU.1" . SPARSER::PROTEIN)
     ("phosphatidylinositol-3-kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("extracellular regulated kinase" . SPARSER::PROTEIN)
-    ("co-factor" . SPARSER::MOLECULE) ("AP-3" . SPARSER::PROTEIN)
-    ("co-factors" . SPARSER::MOLECULE) ("Oct-2" . SPARSER::PROTEIN)
+    ("co-factor" . SPARSER::MOLECULE) ("co-factors" . SPARSER::MOLECULE)
+    ("Oct-2" . SPARSER::PROTEIN)
     ("Response element" . SPARSER::DNA-RESPONSE-ELEMENT)
-    ("pMD2" . SPARSER::MOLECULE) ("AG-3" . SPARSER::PROTEIN)
-    ("a 3" . SPARSER::HUMAN-PROTEIN-FAMILY) ("DNase I" . SPARSER::PROTEIN)
-    ("p24" . SPARSER::PROTEIN) ("nuc-1" . SPARSER::PROTEIN)
-    ("NP-40" . SPARSER::DRUG) ("Ets-1" . SPARSER::PROTEIN)
-    ("C/EBPβ" . SPARSER::PROTEIN) ("C/EBPα" . SPARSER::PROTEIN)
-    ("ATF-2" . SPARSER::PROTEIN) ("ATF-1" . SPARSER::PROTEIN)
-    ("Fra-2" . SPARSER::PROTEIN) ("Fra-1" . SPARSER::PROTEIN)
-    ("NL4" . SPARSER::PROTEIN) ("pGL2" . SPARSER::PROTEIN)
-    ("de-" . SPARSER::MOLECULE) ("CCR5" . SPARSER::PROTEIN)
-    ("CXCR4" . SPARSER::PROTEIN) ("co-receptors" . SPARSER::PROTEIN)
+    ("pMD2" . SPARSER::MOLECULE) ("a 3" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("p24" . SPARSER::HUMAN-PROTEIN-FAMILY) ("NP-40" . SPARSER::DRUG)
+    ("Ets-1" . SPARSER::PROTEIN) ("C/EBPβ" . SPARSER::PROTEIN)
+    ("C/EBPα" . SPARSER::PROTEIN) ("ATF-2" . SPARSER::PROTEIN)
+    ("ATF-1" . SPARSER::PROTEIN) ("Fra-2" . SPARSER::PROTEIN)
+    ("Fra-1" . SPARSER::PROTEIN) ("NL4" . SPARSER::PROTEIN)
+    ("pGL2" . SPARSER::PROTEIN) ("de-" . SPARSER::MOLECULE)
+    ("CCR5" . SPARSER::PROTEIN) ("CXCR4" . SPARSER::PROTEIN)
+    ("co-receptors" . SPARSER::PROTEIN)
     ("Extracellular Regulated Kinase" . SPARSER::PROTEIN)
     ("12- O -Tetradecanoylphorbol-13-acetate" . SPARSER::DRUG)
     ("HS4" . SPARSER::PROTEIN) ("AP-4" . SPARSER::PROTEIN)
-    ("AP-2" . SPARSER::PROTEIN) ("Sp3" . SPARSER::PROTEIN)
-    ("ACH2" . SPARSER::PROTEIN) ("U3" . SPARSER::PROTEIN)
+    ("AP-2" . SPARSER::PROTEIN) ("PU.1" . SPARSER::PROTEIN)
+    ("Sp3" . SPARSER::PROTEIN) ("ACH2" . SPARSER::PROTEIN)
     ("Oct-1" . SPARSER::PROTEIN) ("Sp1" . SPARSER::PROTEIN)
     ("RNA polymerase II" . SPARSER::PROTEIN) ("c-Fos" . SPARSER::PROTEIN)
-    ("thymidine kinase" . SPARSER::PROTEIN) ("type 1" . SPARSER::PROTEIN)
-    ("linkers" . SPARSER::LINKER)
+    ("thymidine kinase" . SPARSER::PROTEIN)
+    ("type 1" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("amino acids or nucleotides" . SPARSER::COLLECTION)
     ("nucleotides" . SPARSER::NUCLEOTIDE) ("substrates" . SPARSER::SUBSTRATE)
     ("map" . SPARSER::PROTEIN) ("peptides or proteins" . SPARSER::COLLECTION)
     ("runs" . SPARSER::PROTEIN-FAMILY) ("ribosome" . SPARSER::BIO-COMPLEX)
-    ("One potential example" . SPARSER::EXAMPLE)
-    ("shn-1" . SPARSER::COLLECTION) ("GABA" . SPARSER::MOLECULE)
+    ("protein-chip" . SPARSER::COLLECTION) ("chip" . SPARSER::PROTEIN)
+    ("One potential example" . SPARSER::EXAMPLE) ("GABA" . SPARSER::MOLECULE)
     ("NF-κB and AP-1" . SPARSER::COLLECTION) ("chemokine" . SPARSER::PROTEIN)
     ("leukotrienes" . SPARSER::MOLECULE) ("AP-1" . SPARSER::PROTEIN)
     ("ANO9 and CYSLTR2" . SPARSER::COLLECTION)
@@ -14026,11 +14592,15 @@
     ("trimer" . SPARSER::TRIMER) ("DLG" . SPARSER::PROTEIN)
     ("Trp" . SPARSER::AMINO-ACID) ("PDB" . SPARSER::MOLECULE)
     ("Val" . SPARSER::AMINO-ACID) ("paralogs" . SPARSER::PROTEIN)
-    ("Arg" . SPARSER::AMINO-ACID) ("SRC" . SPARSER::PROTEIN)
-    ("ligands" . SPARSER::LIGAND) ("proline" . SPARSER::AMINO-ACID)
-    ("PWMs and HMMs" . SPARSER::COLLECTION) ("seven" . SPARSER::PROTEIN)
-    ("−1" . SPARSER::PROTEIN) ("HMMs" . SPARSER::DRUG)
+    ("Arg" . SPARSER::AMINO-ACID)
+    ("both class I and class II ligands" . SPARSER::COLLECTION)
+    ("SRC" . SPARSER::PROTEIN) ("ligands" . SPARSER::LIGAND)
+    ("class I" . SPARSER::PROTEIN) ("proline" . SPARSER::AMINO-ACID)
+    ("PWMs and HMMs" . SPARSER::COLLECTION) ("bar" . SPARSER::PROTEIN)
+    ("seven" . SPARSER::PROTEIN) ("HMMs" . SPARSER::DRUG)
     ("strongly interacting peptides" . SPARSER::PEPTIDE)
+    ("Kinase" . SPARSER::KINASE)
+    ("SH3 ( xref ) and kinases ( xref ; xref )" . SPARSER::COLLECTION)
     ("DLG1 and SCRIB" . SPARSER::COLLECTION) ("SCRIB" . SPARSER::DRUG)
     ("Modular protein interaction domains form" . SPARSER::FORM)
     ("tryptophan" . SPARSER::AMINO-ACID) ("example" . SPARSER::EXAMPLE)
@@ -14039,32 +14609,33 @@
     ("position weight matrix (PWM) or position-specific scoring matrix"
      . SPARSER::COLLECTION)
     ("matrix (PWM)" . SPARSER::PROTEIN-FAMILY) ("PWM" . SPARSER::DRUG)
-    ("the predominant form" . SPARSER::FORM)
-    ("β-galactosidase" . SPARSER::PROTEIN) ("X-GAL" . SPARSER::MOLECULE)
-    ("Trp-Leu" . SPARSER::MOLECULE) ("Fur4" . SPARSER::PROTEIN)
-    ("URA3" . SPARSER::PROTEIN) ("leu2" . SPARSER::PROTEIN)
-    ("trp1" . SPARSER::PROTEIN) ("pPR3" . SPARSER::PROTEIN)
-    ("full-length" . SPARSER::PROTEIN) ("VP16" . SPARSER::DRUG)
-    ("SLC6A5" . SPARSER::PROTEIN) ("EPHA2" . SPARSER::PROTEIN)
-    ("Full-length" . SPARSER::PROTEIN)
+    ("simple" . SPARSER::PROTEIN) ("the predominant form" . SPARSER::FORM)
+    ("SH3" . SPARSER::PROTEIN) ("β-galactosidase" . SPARSER::PROTEIN)
+    ("X-GAL" . SPARSER::MOLECULE) ("Trp-Leu" . SPARSER::MOLECULE)
+    ("Fur4" . SPARSER::PROTEIN) ("URA3" . SPARSER::PROTEIN)
+    ("leu2" . SPARSER::PROTEIN) ("trp1" . SPARSER::PROTEIN)
+    ("pPR3" . SPARSER::PROTEIN) ("full-length" . SPARSER::PROTEIN)
+    ("VP16" . SPARSER::DRUG) ("SLC6A5" . SPARSER::PROTEIN)
+    ("EPHA2" . SPARSER::PROTEIN) ("Full-length" . SPARSER::PROTEIN)
+    ("shn-1" . SPARSER::PROTEIN)
     ("integral membrane protein" . SPARSER::PROTEIN)
     ("scaffolding protein" . SPARSER::PROTEIN) ("NF-κB" . SPARSER::PROTEIN)
-    ("LTC4" . SPARSER::MOLECULE)
-    ("G-protein-coupled receptor" . SPARSER::PROTEIN)
+    ("LTC4" . SPARSER::MOLECULE) ("G-protein" . SPARSER::PROTEIN)
     ("SLC6A12" . SPARSER::PROTEIN) ("CYSLTR2" . SPARSER::PROTEIN)
     ("ANO9" . SPARSER::PROTEIN) ("three domains" . SPARSER::PROTEIN)
-    ("−2" . SPARSER::PROTEIN) ("MAGI3" . SPARSER::PROTEIN)
-    ("MAGI1" . SPARSER::PROTEIN) ("SYNJ2BP" . SPARSER::PROTEIN)
-    ("Par-6" . SPARSER::PROTEIN) ("2–4" . SPARSER::PROTEIN)
+    ("MAGI3" . SPARSER::PROTEIN) ("MAGI1" . SPARSER::PROTEIN)
+    ("SYNJ2BP" . SPARSER::PROTEIN) ("Par-6" . SPARSER::PROTEIN)
     ("DLG3" . SPARSER::PROTEIN) ("Lsb1" . SPARSER::PROTEIN)
     ("Rvs167" . SPARSER::PROTEIN) ("HTRA2" . SPARSER::PROTEIN)
     ("MLLT4" . SPARSER::PROTEIN) ("PDZ1" . SPARSER::PROTEIN)
-    ("DLG1" . SPARSER::PROTEIN) ("CD2 or CD28" . SPARSER::COLLECTION)
+    ("unknown protein" . SPARSER::PROTEIN) ("DLG1" . SPARSER::PROTEIN)
+    ("CD2 or CD28" . SPARSER::COLLECTION)
     ("CD25 and CD69" . SPARSER::COLLECTION)
+    ("a potential target" . SPARSER::TARGET-PROTEIN)
     ("IL-5/GM-CSF/IL-3" . SPARSER::COLLECTION)
     ("subsequent effector" . SPARSER::EFFECTOR)
     ("receptors and signaling molecules" . SPARSER::COLLECTION)
-    ("filament" . SPARSER::PROTEIN-FAMILY)
+    ("twist" . SPARSER::PROTEIN) ("filament" . SPARSER::PROTEIN-FAMILY)
     ("cofilin/ADF" . SPARSER::COLLECTION) ("ADF" . SPARSER::PROTEIN)
     ("GM-CSF and eotaxin" . SPARSER::COLLECTION)
     ("another testable crosstalk molecule" . SPARSER::MOLECULE)
@@ -14072,7 +14643,7 @@
     ("integrin and the GM-CSF receptor" . SPARSER::COLLECTION)
     ("the possible downstream targets" . SPARSER::TARGET-PROTEIN)
     ("receptor, integrins, and chemokines" . SPARSER::COLLECTION)
-    ("receptors" . SPARSER::PROTEIN)
+    ("GMR or αMβ2" . SPARSER::COLLECTION) ("receptors" . SPARSER::PROTEIN)
     ("kinases or phosphatases" . SPARSER::COLLECTION)
     ("phosphatases" . SPARSER::PHOSPHATASE)
     ("actin-L-plastin" . SPARSER::COLLECTION)
@@ -14082,11 +14653,12 @@
     ("barrier" . SPARSER::PROTEIN) ("chemokines" . SPARSER::PROTEIN)
     ("enzymes" . SPARSER::ENZYME) ("BCR or IL-4" . SPARSER::COLLECTION)
     ("BclxL and Bcl2" . SPARSER::COLLECTION) ("BclxL" . SPARSER::PROTEIN)
-    ("BCR" . SPARSER::PROTEIN) ("RI" . SPARSER::MOLECULE)
+    ("BCR" . SPARSER::PROTEIN) ("RI" . SPARSER::PROTEIN)
     ("PKCβ and PKCδ" . SPARSER::COLLECTION)
     ("the membrane-proximal part" . SPARSER::COMPONENT)
     ("Rack1" . SPARSER::PROTEIN) ("part" . SPARSER::COMPONENT)
-    ("substrate" . SPARSER::SUBSTRATE) ("pSer" . SPARSER::PROTEIN)
+    ("substrate" . SPARSER::SUBSTRATE) ("an essential step" . SPARSER::PROTEIN)
+    ("pSer" . SPARSER::PROTEIN)
     ("the Chariot-mediated peptide transduction reagent" . SPARSER::MOLECULE)
     ("Active" . SPARSER::ACTIVE) ("reagent" . SPARSER::MOLECULE)
     ("integrins" . SPARSER::PROTEIN) ("peptides" . SPARSER::PEPTIDE)
@@ -14094,7 +14666,7 @@
      . SPARSER::COLLECTION)
     ("no available inhibitors" . SPARSER::INHIBITOR)
     ("p-L-plastin" . SPARSER::COLLECTION)
-    ("eotaxin and extracellular ECP" . SPARSER::COLLECTION)
+    ("eotaxin and extracellular" . SPARSER::COLLECTION)
     ("both the GM-CSF receptor and the ICAM-1 adhesion molecule ( xref )"
      . SPARSER::COLLECTION)
     ("optimal chemotaxis" . SPARSER::PROTEIN)
@@ -14106,14 +14678,14 @@
     ("GMRα, GMRβ and PKCβII" . SPARSER::COLLECTION)
     ("cofilin and paxilin" . SPARSER::COLLECTION)
     ("IL-5, and IL-3" . SPARSER::COLLECTION)
-    ("receptor–GMRα" . SPARSER::COLLECTION)
+    ("receptor–GMRα" . SPARSER::COLLECTION) ("GMR" . SPARSER::PROTEIN)
     ("actin, cofilin, paxilin and PKC" . SPARSER::COLLECTION)
-    ("cytoskeletal proteins" . SPARSER::PROTEIN)
+    ("cytoskeletal proteins" . SPARSER::PROTEIN) ("Protein" . SPARSER::PROTEIN)
     ("two cytokines known to prime eosinophil’s" . SPARSER::PROTEIN)
-    ("IL-5 or TNFα" . SPARSER::COLLECTION)
-    ("phosphatase" . SPARSER::PHOSPHATASE) ("Swiss-Prot" . SPARSER::COLLECTION)
-    ("Prot" . SPARSER::PROTEIN) ("TOF" . SPARSER::PROTEIN)
-    ("kDa" . SPARSER::PROTEIN) ("phosphoproteins" . SPARSER::PROTEIN)
+    ("IL-5 or TNFα" . SPARSER::COLLECTION) ("phosphatase" . SPARSER::PROTEIN)
+    ("Swiss-Prot" . SPARSER::COLLECTION) ("Prot" . SPARSER::PROTEIN)
+    ("TOF" . SPARSER::PROTEIN) ("kDa" . SPARSER::PROTEIN)
+    ("phosphoproteins" . SPARSER::PROTEIN) ("dye" . SPARSER::MOLECULE)
     ("several cytoskeletal proteins" . SPARSER::PROTEIN)
     ("GM-CSF-" . SPARSER::PROTEIN) ("PKA, PKC, and PI3K" . SPARSER::COLLECTION)
     ("activators or inhibitors" . SPARSER::COLLECTION)
@@ -14131,16 +14703,17 @@
     ("cytokine and integrin" . SPARSER::COLLECTION)
     ("Integrin" . SPARSER::PROTEIN) ("zymosan" . SPARSER::PROTEIN)
     ("GM-CSF and eosinophil" . SPARSER::COLLECTION)
-    ("PAF or eotaxin" . SPARSER::COLLECTION) ("PAF" . SPARSER::PROTEIN-FAMILY)
+    ("PAF or eotaxin" . SPARSER::COLLECTION) ("PAF" . SPARSER::PROTEIN)
     ("IL-3, IL-5 and GM-CSF" . SPARSER::COLLECTION)
     ("allergen" . SPARSER::MOLECULE) ("agonists" . SPARSER::AGONIST)
-    ("agonist" . SPARSER::AGONIST) ("Ser" . SPARSER::AMINO-ACID)
-    ("peptide" . SPARSER::PEPTIDE) ("eotaxin" . SPARSER::PROTEIN)
-    ("chemotaxis" . SPARSER::PROTEIN) ("siRNA" . SPARSER::PROTEIN)
+    ("agonist" . SPARSER::AGONIST)
+    ("chemotactic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Ser" . SPARSER::AMINO-ACID) ("peptide" . SPARSER::PEPTIDE)
+    ("ECP and EPX" . SPARSER::COLLECTION) ("ECP" . SPARSER::PROTEIN)
+    ("eotaxin" . SPARSER::PROTEIN) ("chemotaxis" . SPARSER::PROTEIN)
     ("bis" . SPARSER::PROTEIN)
     ("proteins, paxilin and cofilin" . SPARSER::COLLECTION)
-    ("cofilin" . SPARSER::PROTEIN) ("Kinase" . SPARSER::KINASE)
-    ("Protein" . SPARSER::PROTEIN) ("phosphoprotein" . SPARSER::PROTEIN)
+    ("cofilin" . SPARSER::PROTEIN) ("phosphoprotein" . SPARSER::PROTEIN)
     ("integrin" . SPARSER::PROTEIN) ("Actin" . SPARSER::PROTEIN)
     ("chemoattractants" . SPARSER::PROTEIN) ("CD69" . SPARSER::PROTEIN)
     ("CD25" . SPARSER::PROTEIN) ("CD28" . SPARSER::PROTEIN)
@@ -14160,16 +14733,17 @@
     ("serum albumin" . SPARSER::PROTEIN) ("penicillin G" . SPARSER::MOLECULE)
     ("monoclonal antibody" . SPARSER::DRUG) ("phospho-ERK" . SPARSER::PROTEIN)
     ("protein A" . SPARSER::PROTEIN) ("GMRα" . SPARSER::PROTEIN)
-    ("PI3K" . SPARSER::HUMAN-PROTEIN-FAMILY) ("FcγRII" . SPARSER::PROTEIN)
-    ("IL-8" . SPARSER::PROTEIN) ("TNFα" . SPARSER::PROTEIN)
-    ("IL-1" . SPARSER::PROTEIN) ("NADPH oxidase" . SPARSER::PROTEIN)
-    ("F-actin" . SPARSER::BIO-COMPLEX) ("Ca 2+" . SPARSER::CALCIUM-ION)
-    ("T-plastin" . SPARSER::PROTEIN) ("I-plastin" . SPARSER::PROTEIN)
+    ("FcγRII" . SPARSER::PROTEIN) ("IL-8" . SPARSER::PROTEIN)
+    ("TNFα" . SPARSER::PROTEIN) ("IL-1" . SPARSER::PROTEIN)
+    ("NADPH oxidase" . SPARSER::PROTEIN) ("F-actin" . SPARSER::BIO-COMPLEX)
+    ("Ca 2+" . SPARSER::CALCIUM-ION) ("plastin 3" . SPARSER::PROTEIN)
+    ("I-plastin" . SPARSER::PROTEIN) ("plastin 1" . SPARSER::PROTEIN)
     ("IL-5" . SPARSER::PROTEIN) ("β2" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("PKCβ" . SPARSER::PROTEIN) ("L-plastin" . SPARSER::PROTEIN)
-    ("iodide" . SPARSER::PROTEIN) ("propidium" . SPARSER::MOLECULE)
+    ("PKCβ" . SPARSER::PROTEIN) ("Protein Kinase" . SPARSER::PROTEIN)
+    ("L-plastin" . SPARSER::PROTEIN) ("iodide" . SPARSER::PROTEIN)
+    ("propidium" . SPARSER::MOLECULE) ("FACS" . SPARSER::PROTEIN)
     ("phenylindole" . SPARSER::MOLECULE) ("DAPI" . SPARSER::DRUG)
-    ("dien" . SPARSER::MOLECULE)
+    ("dien" . SPARSER::MOLECULE) ("APC-min" . SPARSER::COLLECTION)
     ("the pro-apoptotic Bcl-2 proteins Bax and Bid" . SPARSER::COLLECTION)
     ("Bax and Bid" . SPARSER::COLLECTION)
     ("Initiator caspase-9 and executor caspase-3" . SPARSER::COLLECTION)
@@ -14184,6 +14758,7 @@
     ("pro-apoptotic Bax" . SPARSER::PROTEIN) ("fragment" . SPARSER::FRAGMENT)
     ("pro-apoptotic proteins" . SPARSER::PROTEIN)
     ("p21, Bax and Bcl-2" . SPARSER::COLLECTION)
+    ("p53 and mitochondrial" . SPARSER::COLLECTION)
     ("family and caspase" . SPARSER::COLLECTION)
     ("triterpenes" . SPARSER::MOLECULE)
     ("protease" . SPARSER::HUMAN-PROTEIN-FAMILY)
@@ -14196,42 +14771,50 @@
      . SPARSER::PROTEIN)
     ("the Bcl-2 pro-apoptotic protein Bax" . SPARSER::PROTEIN)
     ("the pro-apoptotic Bcl-2 proteins" . SPARSER::PROTEIN)
-    ("Bax and Bcl-2" . SPARSER::COLLECTION) ("fragments" . SPARSER::FRAGMENT)
-    ("FS/SS" . SPARSER::COLLECTION) ("SS" . SPARSER::PROTEIN)
-    ("JNK and p53" . SPARSER::COLLECTION) ("JNKs" . SPARSER::PROTEIN)
-    ("DR" . SPARSER::MOLECULE) ("ester and CDDO" . SPARSER::COLLECTION)
-    ("ester" . SPARSER::MOLECULE) ("imidazolide" . SPARSER::MOLECULE)
-    ("CDDO" . SPARSER::DRUG) ("triterpenoid" . SPARSER::MOLECULE)
+    ("Bax and Bcl-2" . SPARSER::COLLECTION)
+    ("p53 and JNK-mediated ones" . SPARSER::COLLECTION)
+    ("fragments" . SPARSER::FRAGMENT) ("FS/SS" . SPARSER::COLLECTION)
+    ("SS" . SPARSER::PROTEIN) ("FS" . SPARSER::PROTEIN)
+    ("IC" . SPARSER::PROTEIN) ("JNK and p53" . SPARSER::COLLECTION)
+    ("JNKs" . SPARSER::PROTEIN) ("DR" . SPARSER::PROTEIN)
+    ("ester and CDDO" . SPARSER::COLLECTION) ("ester" . SPARSER::MOLECULE)
+    ("imidazolide" . SPARSER::MOLECULE) ("CDDO" . SPARSER::DRUG)
+    ("triterpenoid" . SPARSER::MOLECULE)
     ("Bcl-2 and Bcl-xL" . SPARSER::COLLECTION)
     ("Bax/Bak" . SPARSER::COLLECTION) ("oligomers" . SPARSER::MOLECULE)
-    ("Bak" . SPARSER::PROTEIN) ("pro" . SPARSER::AMINO-ACID)
-    ("pro-apoptotic genes" . SPARSER::GENE) ("effectors" . SPARSER::EFFECTOR)
+    ("Bak" . SPARSER::PROTEIN) ("pro-caspase-3" . SPARSER::COLLECTION)
+    ("pro" . SPARSER::PROTEIN) ("pro-apoptotic genes" . SPARSER::GENE)
+    ("effectors" . SPARSER::EFFECTOR)
     ("at least two proteins" . SPARSER::PROTEIN)
     ("repressor" . SPARSER::REPRESSOR) ("MKK7-JNK1" . SPARSER::COLLECTION)
-    ("MKK7-JNK" . SPARSER::COLLECTION) ("proteases" . SPARSER::PROTEIN)
-    ("mitochondria" . SPARSER::PROTEIN) ("Bid and Bax" . SPARSER::COLLECTION)
+    ("MKK7-JNK" . SPARSER::COLLECTION)
+    ("pro-apoptotic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("proteases" . SPARSER::PROTEIN) ("mitochondria" . SPARSER::PROTEIN)
+    ("death-receptor" . SPARSER::PROTEIN) ("Bid and Bax" . SPARSER::COLLECTION)
     ("Bax" . SPARSER::PROTEIN) ("Bid" . SPARSER::PROTEIN)
     ("kinase (JNK)" . SPARSER::KINASE) ("JNK" . SPARSER::PROTEIN)
-    ("cytotoxic" . SPARSER::PROTEIN)
+    ("rest" . SPARSER::PROTEIN) ("cytotoxic" . SPARSER::PROTEIN)
+    ("mitochondrial" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a pentacyclic triterpene" . SPARSER::MOLECULE)
     ("wax" . SPARSER::MOLECULE) ("triterpene" . SPARSER::MOLECULE)
     ("NF-kB" . SPARSER::PROTEIN) ("Ursolic acid" . SPARSER::MOLECULE)
     ("ursolic acid" . SPARSER::MOLECULE) ("Bcl2" . SPARSER::PROTEIN)
     ("caspases -8" . SPARSER::PROTEIN) ("adaptor protein" . SPARSER::PROTEIN)
-    ("t-Bid" . SPARSER::PROTEIN)
-    ("tumor-suppressor protein" . SPARSER::PROTEIN)
-    ("MgCl2" . SPARSER::MOLECULE) ("oleanolic acid" . SPARSER::MOLECULE)
-    ("caspase-7" . SPARSER::PROTEIN) ("caspases -3" . SPARSER::PROTEIN)
+    ("t-Bid" . SPARSER::PROTEIN) ("MgCl2" . SPARSER::MOLECULE)
+    ("oleanolic acid" . SPARSER::MOLECULE) ("caspase-7" . SPARSER::PROTEIN)
+    ("caspases -3" . SPARSER::PROTEIN)
     ("MAP kinases" . SPARSER::HUMAN-PROTEIN-FAMILY) ("CDDO-Me" . SPARSER::DRUG)
     ("anti-oxidant" . SPARSER::DRUG) ("Bcl-xL" . SPARSER::PROTEIN)
     ("apoptosis-inducing" . SPARSER::PROTEIN) ("MKK7" . SPARSER::PROTEIN)
-    ("Bcl-2-like" . SPARSER::PROTEIN) ("caspase-9" . SPARSER::PROTEIN)
-    ("Apaf-1" . SPARSER::PROTEIN) ("caspases -9" . SPARSER::PROTEIN)
-    ("NH2" . SPARSER::MOLECULE) ("c-Jun" . SPARSER::PROTEIN)
+    ("Bcl-2-like" . SPARSER::PROTEIN) ("death receptor" . SPARSER::PROTEIN)
+    ("caspase-9" . SPARSER::PROTEIN) ("Apaf-1" . SPARSER::PROTEIN)
+    ("caspases -9" . SPARSER::PROTEIN) ("NH2" . SPARSER::MOLECULE)
+    ("c-Jun" . SPARSER::PROTEIN)
     ("adiponectin and TNF-α" . SPARSER::COLLECTION)
     ("leptin" . SPARSER::PROTEIN) ("Glucocorticoids" . SPARSER::PROTEIN)
-    ("endocrine" . SPARSER::PROTEIN) ("Adiponectin" . SPARSER::PROTEIN)
-    ("statin" . SPARSER::MOLECULE) ("cytochrome" . SPARSER::PROTEIN)
+    ("insulin" . SPARSER::PROTEIN) ("endocrine" . SPARSER::PROTEIN)
+    ("Adiponectin" . SPARSER::PROTEIN) ("statin" . SPARSER::MOLECULE)
+    ("cytochrome" . SPARSER::PROTEIN)
     ("receptor and Rho" . SPARSER::COLLECTION)
     ("pyrophosphate (GGPP)" . SPARSER::MOLECULE) ("GGPP" . SPARSER::PROTEIN)
     ("pyrophosphate" . SPARSER::MOLECULE)
@@ -14240,6 +14823,8 @@
     ("Dexamethasone and simvastatin" . SPARSER::COLLECTION)
     ("1 μM dexamethasone or 10 μM simvastatin" . SPARSER::COLLECTION)
     ("PAI-1 and adiponectin" . SPARSER::COLLECTION)
+    ("3-hydroxy-3-methylglutaryl coenzyme A (HMG-CoA) reductase inhibitors"
+     . SPARSER::INHIBITOR)
     ("coenzyme" . SPARSER::MOLECULE) ("sera" . SPARSER::PROTEIN)
     ("NFκ-B ligand (RANKL) and support osteoclast differentiation [ xref ]"
      . SPARSER::COLLECTION)
@@ -14250,8 +14835,8 @@
     ("various physiologically active substances" . SPARSER::SUBSTANCE)
     ("visceral adipocytes" . SPARSER::PROTEIN)
     ("lipid and protein" . SPARSER::COLLECTION) ("fat" . SPARSER::PROTEIN)
-    ("glucose" . SPARSER::PROTEIN) ("glucocorticoids" . SPARSER::PROTEIN)
-    ("Simvastatin" . SPARSER::DRUG)
+    ("side" . SPARSER::PROTEIN) ("glucose" . SPARSER::PROTEIN)
+    ("glucocorticoids" . SPARSER::PROTEIN) ("Simvastatin" . SPARSER::DRUG)
     ("dexamethasone and simvastatin" . SPARSER::COLLECTION)
     ("adiponectin" . SPARSER::PROTEIN) ("Dexamethasone" . SPARSER::PROTEIN)
     ("dexamethasone or simvastatin" . SPARSER::COLLECTION)
@@ -14274,41 +14859,52 @@
     ("PAI-1" . SPARSER::PROTEIN)
     ("Plasminogen activator inhibitor-1" . SPARSER::PROTEIN)
     ("different cytogenetic subtypes" . SPARSER::PROTEIN)
+    ("CBF and poor risk cytogenetics AML" . SPARSER::COLLECTION)
+    ("SCT" . SPARSER::PROTEIN) ("secondary AML" . SPARSER::PROTEIN)
+    ("AML and AML" . SPARSER::COLLECTION)
+    ("its prognostic impact" . SPARSER::PROTEIN)
     ("CBFB-MYH11" . SPARSER::COLLECTION) ("AML1-ETO" . SPARSER::COLLECTION)
     ("CBFB" . SPARSER::PROTEIN) ("ETO" . SPARSER::PROTEIN)
-    ("the larger cohorts" . SPARSER::MOLECULE)
+    ("Inv" . SPARSER::PROTEIN) ("the larger cohorts" . SPARSER::MOLECULE)
     ("shorter EFS" . SPARSER::PROTEIN) ("creatinine" . SPARSER::PROTEIN)
     ("fit" . SPARSER::PROTEIN-FAMILY) ("bilirubin" . SPARSER::MOLECULE)
     ("platelets" . SPARSER::PROTEIN) ("NR" . SPARSER::PROTEIN)
     ("CR" . SPARSER::PROTEIN)
     ("contained high-dose Ara-C and majority (88%)" . SPARSER::COLLECTION)
     ("fludarabine and Ara-C" . SPARSER::COLLECTION)
-    ("fludarabine" . SPARSER::DRUG) ("APL" . SPARSER::PROTEIN)
-    ("t" . SPARSER::PROTEIN)
+    ("fludarabine" . SPARSER::DRUG)
+    ("CBF AML (20%) and Poor Risk AML (7.6%)" . SPARSER::COLLECTION)
+    ("the prognostic impact" . SPARSER::PROTEIN)
+    ("AML and non-APL" . SPARSER::COLLECTION) ("APL" . SPARSER::PROTEIN)
+    ("inv" . SPARSER::PROTEIN) ("t" . SPARSER::PROTEIN)
     ("receptor tyrosine kinase (RTK)" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("AKT" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Mek" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Raf" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Ras" . SPARSER::HUMAN-PROTEIN-FAMILY) ("KIT" . SPARSER::PROTEIN)
     ("class" . CLASS) ("RTK" . SPARSER::PROTEIN)
+    ("several prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("NPM1 , FLT3 , WT1 and CEBPA" . SPARSER::COLLECTION)
-    ("CEBPA" . SPARSER::PROTEIN) ("ITD" . SPARSER::PROTEIN)
-    ("FLT3-ITD" . SPARSER::PROTEIN-PAIR)
+    ("CEBPA" . SPARSER::PROTEIN) ("a prognostic impact" . SPARSER::PROTEIN)
+    ("ITD" . SPARSER::PROTEIN) ("FLT3-ITD" . SPARSER::PROTEIN-PAIR)
     ("the FLT3 -internal tandem duplication (ITD) group" . SPARSER::MOLECULE)
-    ("EFS" . SPARSER::PROTEIN) ("CBF" . SPARSER::PROTEIN)
-    ("MYH11" . SPARSER::PROTEIN) ("AML1" . SPARSER::PROTEIN)
-    ("etc." . SPARSER::PROTEIN) ("histone deacetylase" . SPARSER::PROTEIN)
-    ("PKC412" . SPARSER::DRUG) ("5–2" . SPARSER::PROTEIN)
+    ("CBF (P=0.84) and poor-risk AML (P=0.37)" . SPARSER::COLLECTION)
+    ("EFS" . SPARSER::PROTEIN) ("CBF-AML" . SPARSER::COLLECTION)
+    ("Core-Binding Factor (CBF) AML" . SPARSER::PROTEIN)
+    ("CBF" . SPARSER::PROTEIN) ("Factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Impact" . SPARSER::PROTEIN) ("MYH11" . SPARSER::PROTEIN)
+    ("AML1" . SPARSER::PROTEIN) ("etc." . SPARSER::PROTEIN)
+    ("histone deacetylase" . SPARSER::PROTEIN) ("PKC412" . SPARSER::DRUG)
     ("Ara-C" . SPARSER::DRUG) ("IL-11" . SPARSER::PROTEIN)
     ("G-CSF" . SPARSER::PROTEIN) ("ara-C" . SPARSER::DRUG)
     ("aspartic acid" . SPARSER::AMINO-ACID) ("p23" . SPARSER::PROTEIN)
-    ("promyelocytic leukemia" . SPARSER::PROTEIN)
-    ("PI3K-AKT" . SPARSER::PROTEIN)
+    ("promyelocytic leukemia" . SPARSER::PROTEIN) ("PI3K" . SPARSER::PROTEIN)
     ("receptor tyrosine kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("WT1" . SPARSER::PROTEIN) ("NPM1" . SPARSER::PROTEIN)
     ("Separase" . SPARSER::PROTEIN) ("differentially" . SPARSER::PROTEIN)
     ("Dynein/Dynactin" . SPARSER::COLLECTION)
     ("Dynactin" . SPARSER::PROTEIN-FAMILY) ("matrix" . SPARSER::PROTEIN-FAMILY)
-    ("Myosin" . SPARSER::PROTEIN-FAMILY)
+    ("Myosin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("the long astral interphase MTs" . SPARSER::PROTEIN)
     ("The minus-end-directed motor protein Dynein ( xref ; xref ) as well as the Tiam1"
      . SPARSER::COLLECTION)
@@ -14320,7 +14916,7 @@
     ("Nocodazole and Taxol" . SPARSER::COLLECTION) ("Taxol" . SPARSER::DRUG)
     ("Blebbistatin" . SPARSER::DRUG) ("Nocodazole" . SPARSER::DRUG)
     ("Plk1 or Cdk" . SPARSER::COLLECTION) ("polymers" . SPARSER::MOLECULE)
-    ("Plk1 or Cdk2" . SPARSER::COLLECTION)
+    ("Plk1 or Cdk2" . SPARSER::COLLECTION) ("MS" . SPARSER::PROTEIN)
     ("Cdk2 or Plk1" . SPARSER::COLLECTION) ("Pericentrin" . SPARSER::PROTEIN)
     ("Cdk and Plk1" . SPARSER::COLLECTION)
     ("Cdk1 or Cdk2" . SPARSER::COLLECTION)
@@ -14331,8 +14927,9 @@
     ("Cdks" . SPARSER::HUMAN-PROTEIN-FAMILY) ("siRNAs" . SPARSER::PROTEIN)
     ("RO3306 and BI2536" . SPARSER::COLLECTION)
     ("cohesive proteins" . SPARSER::PROTEIN)
-    ("mitotic Cdk1" . SPARSER::PROTEIN) ("GFP-γ-tubulin" . SPARSER::COLLECTION)
-    ("GFP" . SPARSER::PROTEIN)
+    ("mitotic Cdk1" . SPARSER::PROTEIN) ("step" . SPARSER::PROTEIN)
+    ("GFP-γ-tubulin" . SPARSER::COLLECTION) ("GFP" . SPARSER::PROTEIN)
+    ("min" . SPARSER::PROTEIN)
     ("either inhibitors or both" . SPARSER::COLLECTION)
     ("Plk1 or Cdk1" . SPARSER::COLLECTION)
     ("Cdk1, Plk1 and Eg5" . SPARSER::COLLECTION)
@@ -14341,56 +14938,64 @@
     ("analogue-sensitive Plk1" . SPARSER::PROTEIN) ("RPE" . SPARSER::PROTEIN)
     ("electron" . SPARSER::MOLECULE) ("ATP" . SPARSER::ATP)
     ("Plk1 and Eg5" . SPARSER::COLLECTION)
-    ("Cdk1 and Plk1" . SPARSER::COLLECTION) ("Drosophila" . SPARSER::PROTEIN)
+    ("Cdk1 and Plk1" . SPARSER::COLLECTION) ("Polo" . SPARSER::PROTEIN)
     ("another mitotic kinase" . SPARSER::KINASE)
     ("mitotic kinases" . SPARSER::KINASE)
+    ("Aurora A and Nek2" . SPARSER::COLLECTION)
     ("The plus-end-directed MT motor Eg5" . SPARSER::PROTEIN)
     ("Rootletin and C-Nap1" . SPARSER::COLLECTION)
     ("Rootletin" . SPARSER::PROTEIN)
     ("a complex and poorly understood process that is of pivotal importance"
      . SPARSER::COLLECTION)
-    ("MTs" . SPARSER::PROTEIN) ("microtubules" . SPARSER::PROTEIN)
-    ("actin" . SPARSER::PROTEIN) ("trigger" . SPARSER::PROTEIN)
+    ("MT" . SPARSER::PROTEIN) ("MTs" . SPARSER::PROTEIN)
+    ("microtubules" . SPARSER::PROTEIN) ("actin" . SPARSER::PROTEIN)
+    ("fast" . SPARSER::PROTEIN) ("trigger" . SPARSER::PROTEIN)
     ("Cdk1 and the kinesin Eg5" . SPARSER::COLLECTION)
     ("kinesin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("centrosomes" . SPARSER::PROTEIN) ("Plk1 and Cdk1" . SPARSER::COLLECTION)
-    ("Eg5" . SPARSER::PROTEIN) ("RNAse A" . SPARSER::PROTEIN)
-    ("1–2" . SPARSER::PROTEIN) ("Bis–Tris" . SPARSER::MOLECULE)
-    ("reducing agent" . SPARSER::MOLECULE) ("C-NAP1" . SPARSER::PROTEIN)
+    ("Bis–Tris" . SPARSER::MOLECULE) ("reducing agent" . SPARSER::MOLECULE)
+    ("C-NAP1" . SPARSER::PROTEIN)
     ("alkaline phosphatase" . SPARSER::PROTEIN-FAMILY)
     ("MnCl 2" . SPARSER::DRUG) ("CDK2" . SPARSER::PROTEIN)
     ("β-mercaptoethanol" . SPARSER::MOLECULE) ("or 2" . SPARSER::MOLECULE)
     ("6.3" . SPARSER::PROTEIN) ("Beta 4" . SPARSER::PROTEIN)
     ("min–1" . SPARSER::PROTEIN) ("NP40" . SPARSER::MOLECULE)
-    ("Centrin-2" . SPARSER::PROTEIN) ("a 37" . SPARSER::PROTEIN)
-    ("L -glutamine" . SPARSER::MOLECULE) ("MG132" . SPARSER::PROTEIN)
-    ("Tiam1" . SPARSER::PROTEIN) ("Myosin 2" . SPARSER::PROTEIN)
+    ("for 3" . SPARSER::PROTEIN) ("Centrin-2" . SPARSER::PROTEIN)
+    ("a 37" . SPARSER::PROTEIN) ("L -glutamine" . SPARSER::MOLECULE)
+    ("MG132" . SPARSER::PROTEIN) ("Tiam1" . SPARSER::PROTEIN)
+    ("Mst2" . SPARSER::PROTEIN) ("Myosin 2" . SPARSER::PROTEIN)
     ("cytochalasin D" . SPARSER::DRUG) ("cdk2" . SPARSER::PROTEIN)
-    ("P-Thr" . SPARSER::PROTEIN) ("3D" . SPARSER::PROTEIN-FAMILY)
-    ("CENP-F" . SPARSER::PROTEIN) ("BI2536" . SPARSER::DRUG)
-    ("RO3306" . SPARSER::DRUG) ("cdk1" . SPARSER::PROTEIN)
-    ("siRNA-mediated" . SPARSER::PROTEIN) ("γ-tubulin" . SPARSER::PROTEIN)
-    ("cyclin-dependent kinase 1" . SPARSER::PROTEIN)
+    ("3D" . SPARSER::PROTEIN-FAMILY) ("CENP-F" . SPARSER::PROTEIN)
+    ("BI2536" . SPARSER::DRUG) ("RO3306" . SPARSER::DRUG)
+    ("cdk1" . SPARSER::PROTEIN) ("siRNA-mediated" . SPARSER::PROTEIN)
+    ("γ-tubulin" . SPARSER::PROTEIN) ("Aurora A" . SPARSER::PROTEIN)
+    ("cyclin-dependent kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Nek2" . SPARSER::PROTEIN) ("G2/M" . SPARSER::PROTEIN)
     ("Cdk2" . SPARSER::PROTEIN) ("C-Nap1" . SPARSER::PROTEIN)
     ("polo-like kinase 1" . SPARSER::PROTEIN)
-    ("Cyclin-dependent kinase 1" . SPARSER::PROTEIN)
+    ("Cyclin-dependent kinase" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("Cdk1" . SPARSER::PROTEIN) ("Plk1" . SPARSER::PROTEIN)
-    ("Cohort" . SPARSER::MOLECULE) ("cohorts" . SPARSER::MOLECULE)
-    ("etc" . SPARSER::PROTEIN) ("IIIB" . SPARSER::DRUG)
-    ("IIB" . SPARSER::PROTEIN) ("CTNNB1 or CDKN1B" . SPARSER::COLLECTION)
-    ("subtypes" . SPARSER::PROTEIN) ("FASN" . SPARSER::PROTEIN)
+    ("Eg5" . SPARSER::PROTEIN) ("Cohort" . SPARSER::MOLECULE)
+    ("cohorts" . SPARSER::MOLECULE) ("etc" . SPARSER::PROTEIN)
+    ("IIIB" . SPARSER::DRUG) ("IIB" . SPARSER::PROTEIN)
+    ("CTNNB1 or CDKN1B" . SPARSER::COLLECTION) ("subtypes" . SPARSER::PROTEIN)
+    ("FASN" . SPARSER::PROTEIN)
+    ("prognostic factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("a predictive biomarker" . SPARSER::MOLECULE)
     ("biomarker" . SPARSER::MOLECULE) ("inactive" . SPARSER::INACTIVE)
     ("hours/week" . SPARSER::PROTEIN)
     ("MET-hours/week" . SPARSER::PROTEIN-PAIR) ("weaker" . SPARSER::PROTEIN)
-    ("rank" . SPARSER::PROTEIN) ("IV" . SPARSER::PROTEIN)
-    ("MYC" . SPARSER::PROTEIN) ("TCF" . SPARSER::PROTEIN)
-    ("APC" . SPARSER::PROTEIN) ("MET" . SPARSER::PROTEIN)
+    ("log-rank" . SPARSER::COLLECTION) ("rank" . SPARSER::PROTEIN)
+    ("log" . SPARSER::PROTEIN) ("IV" . SPARSER::PROTEIN)
+    ("PRKA" . SPARSER::PROTEIN) ("MYC" . SPARSER::PROTEIN)
+    ("TCF" . SPARSER::PROTEIN) ("APC" . SPARSER::PROTEIN)
+    ("HUGO" . SPARSER::PROTEIN) ("Post" . SPARSER::PROTEIN)
+    ("MET" . SPARSER::PROTEIN)
     ("KRAS, BRAF , PIK3CA , and TP53" . SPARSER::COLLECTION)
     ("BRAF" . SPARSER::PROTEIN) ("KRAS" . SPARSER::PROTEIN)
-    ("MSI" . SPARSER::PROTEIN) ("HR" . SPARSER::PROTEIN)
-    ("-1" . SPARSER::PROTEIN) ("ID" . SPARSER::PROTEIN)
+    ("LINE" . SPARSER::PROTEIN) ("MSI" . SPARSER::PROTEIN)
+    ("HR" . SPARSER::PROTEIN) ("Cox" . SPARSER::PROTEIN)
+    ("ID" . SPARSER::PROTEIN) ("post" . SPARSER::PROTEIN)
     ("WNT-CTNNB1" . SPARSER::COLLECTION)
     ("WNT" . SPARSER::HUMAN-PROTEIN-FAMILY) ("p27" . SPARSER::PROTEIN)
     ("CDKN1B" . SPARSER::PROTEIN) ("H 2 O 2" . SPARSER::DRUG)
@@ -14402,48 +15007,57 @@
     ("AMP-activated" . SPARSER::PROTEIN) ("CCND1" . SPARSER::PROTEIN)
     ("m 2" . SPARSER::MOLECULE) ("PIK3CA" . SPARSER::PROTEIN)
     ("β-catenin" . SPARSER::PROTEIN) ("CTNNB1" . SPARSER::PROTEIN)
-    ("classes" . CLASS) ("mapping" . SPARSER::PROTEIN)
-    ("harmless variants" . SPARSER::VARIANT)
+    ("cut-offs" . SPARSER::PROTEIN-PAIR) ("cut" . SPARSER::PROTEIN)
+    ("classes" . CLASS) ("harmless variants" . SPARSER::VARIANT)
+    ("very modest impact" . SPARSER::PROTEIN) ("red" . SPARSER::PROTEIN)
     ("the IVS polymorphic variants" . SPARSER::VARIANT)
     ("the 24 common polymorphic variants" . SPARSER::VARIANT)
+    ("MAF" . SPARSER::PROTEIN) ("CBC" . SPARSER::PROTEIN)
     ("light" . SPARSER::PROTEIN) ("alleles" . SPARSER::ALLELE)
+    ("minor" . SPARSER::PROTEIN)
     ("the common polymorphic variants" . SPARSER::VARIANT)
-    ("BRCA1 or BRCA2" . SPARSER::COLLECTION) ("GD" . SPARSER::PROTEIN)
-    ("BRCA1 and BRCA2" . SPARSER::COLLECTION) ("K45" . SPARSER::PROTEIN)
-    ("M1" . SPARSER::MOLECULE) ("amino acids" . SPARSER::AMINO-ACID)
-    ("amino acid" . SPARSER::AMINO-ACID) ("BRCA2" . SPARSER::PROTEIN)
-    ("BRCA1" . SPARSER::PROTEIN) ("more aggressive forms" . SPARSER::FORM)
-    ("forms" . SPARSER::FORM) ("TERT or TERC" . SPARSER::COLLECTION)
-    ("families" . SPARSER::PROTEIN-FAMILY) ("collagen" . SPARSER::PROTEIN)
-    ("chemical" . SPARSER::MOLECULE)
+    ("impact" . SPARSER::PROTEIN) ("BRCA1 or BRCA2" . SPARSER::COLLECTION)
+    ("GD" . SPARSER::PROTEIN) ("BRCA1 and BRCA2" . SPARSER::COLLECTION)
+    ("case" . SPARSER::PROTEIN) ("task" . SPARSER::PROTEIN)
+    ("K45" . SPARSER::PROTEIN) ("M1" . SPARSER::MOLECULE)
+    ("amino acids" . SPARSER::AMINO-ACID) ("amino acid" . SPARSER::AMINO-ACID)
+    ("BRCA2" . SPARSER::PROTEIN) ("BRCA1" . SPARSER::PROTEIN)
+    ("more aggressive forms" . SPARSER::FORM) ("forms" . SPARSER::FORM)
+    ("TERT or TERC" . SPARSER::COLLECTION)
+    ("families" . SPARSER::PROTEIN-FAMILY)
+    ("collagen" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("chemical" . SPARSER::MOLECULE) ("Telomerase" . SPARSER::PROTEIN)
     ("keratins and other genes" . SPARSER::COLLECTION)
-    ("keratins" . SPARSER::PROTEIN) ("oxidant" . SPARSER::PROTEIN)
-    ("alcohol" . SPARSER::DRUG) ("components" . SPARSER::COMPONENT)
-    ("Ile" . SPARSER::AMINO-ACID) ("TERC and TERT" . SPARSER::COLLECTION)
+    ("keratin" . SPARSER::PROTEIN) ("keratins" . SPARSER::PROTEIN)
+    ("oxidant" . SPARSER::PROTEIN) ("alcohol" . SPARSER::DRUG)
+    ("components" . SPARSER::COMPONENT) ("Ile" . SPARSER::AMINO-ACID)
+    ("TERC and TERT" . SPARSER::COLLECTION)
+    ("TERT and TERC" . SPARSER::COLLECTION) ("period" . SPARSER::PROTEIN)
     ("nucleotide" . SPARSER::NUCLEOTIDE)
     ("primary biliary cirrhosis" . SPARSER::PROTEIN)
-    ("alcoholic cirrhosis" . SPARSER::PROTEIN) ("Leu" . SPARSER::AMINO-ACID)
-    ("Pro" . SPARSER::AMINO-ACID) ("male" . SPARSER::MOLECULE)
+    ("alcoholic cirrhosis" . SPARSER::PROTEIN) ("III" . SPARSER::PROTEIN)
+    ("Leu" . SPARSER::AMINO-ACID) ("Pro" . SPARSER::AMINO-ACID)
     ("hepatitis C virus-associated cirrhosis" . SPARSER::PROTEIN)
-    ("Thr" . SPARSER::AMINO-ACID) ("Ala" . SPARSER::AMINO-ACID)
-    ("Gene" . SPARSER::GENE) ("variety" . SPARSER::VARIETY)
-    ("hepatocytes" . SPARSER::PROTEIN) ("nail" . SPARSER::PROTEIN)
+    ("n" . SPARSER::PROTEIN) ("Thr" . SPARSER::AMINO-ACID)
+    ("Ala" . SPARSER::AMINO-ACID) ("Gene" . SPARSER::GENE)
+    ("variety" . SPARSER::VARIETY) ("hepatocytes" . SPARSER::PROTEIN)
+    ("CCl" . SPARSER::DRUG) ("nail" . SPARSER::PROTEIN)
     ("p53 and p21" . SPARSER::COLLECTION) ("dyskerin" . SPARSER::PROTEIN)
     ("elongation" . SPARSER::PROTEIN) ("component" . SPARSER::COMPONENT)
-    ("Components" . SPARSER::COMPONENT) ("enzyme" . SPARSER::ENZYME)
+    ("Components" . SPARSER::COMPONENT) ("enzyme" . SPARSER::PROTEIN)
     ("DNA" . SPARSER::DNA) ("variants" . SPARSER::VARIANT)
-    ("allele" . SPARSER::ALLELE) ("variant" . SPARSER::VARIANT)
-    ("polymerase" . SPARSER::PROTEIN) ("leukocytes" . SPARSER::PROTEIN)
-    ("TERT and TERC" . SPARSER::COLLECTION) ("TERC" . SPARSER::PROTEIN)
-    ("TERT" . SPARSER::PROTEIN) ("sporadic cirrhosis" . SPARSER::PROTEIN)
-    ("complex" . SPARSER::BIO-COMPLEX) ("cirrhosis" . SPARSER::PROTEIN)
-    ("A 3" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("Telomerase Activity" . SPARSER::PROTEIN)
+    ("age" . SPARSER::PROTEIN) ("TERC" . SPARSER::PROTEIN)
+    ("allele" . SPARSER::ALLELE) ("TERT" . SPARSER::PROTEIN)
+    ("variant" . SPARSER::VARIANT) ("polymerase" . SPARSER::PROTEIN)
+    ("leukocytes" . SPARSER::PROTEIN) ("sporadic cirrhosis" . SPARSER::PROTEIN)
+    ("germ-line" . SPARSER::PROTEIN) ("complex" . SPARSER::BIO-COMPLEX)
+    ("telomerase" . SPARSER::PROTEIN) ("line" . SPARSER::PROTEIN)
+    ("cirrhosis" . SPARSER::PROTEIN) ("Telomerase Activity" . SPARSER::PROTEIN)
     ("Telomerase activity" . SPARSER::PROTEIN)
     ("telomerase reverse transcriptase" . SPARSER::PROTEIN)
     ("NOLA3" . SPARSER::PROTEIN) ("NOLA2" . SPARSER::PROTEIN)
-    ("autosomal recessive" . SPARSER::PROTEIN) ("TINF2" . SPARSER::PROTEIN)
-    ("autosomal dominant" . SPARSER::PROTEIN) ("X-linked" . SPARSER::PROTEIN)
+    ("TINF2" . SPARSER::PROTEIN) ("autosomal dominant" . SPARSER::PROTEIN)
+    ("X-linked" . SPARSER::PROTEIN) ("p15" . SPARSER::PROTEIN)
     ("DKC1" . SPARSER::PROTEIN) ("p21" . SPARSER::PROTEIN)
     ("telomerase activity" . SPARSER::PROTEIN) ("effector" . SPARSER::EFFECTOR)
     ("potent anti-STAT3" . SPARSER::ANTIBODY)
@@ -14452,19 +15066,22 @@
     ("Janus" . SPARSER::PROTEIN-FAMILY)
     ("gp130 and IL-6R" . SPARSER::COLLECTION) ("subunits" . SPARSER::FRAGMENT)
     ("a key cytokine" . SPARSER::PROTEIN)
+    ("an attractive target" . SPARSER::TARGET-PROTEIN)
+    ("MM and LLL12" . SPARSER::COLLECTION)
     ("IFN-α and IFN-γ" . SPARSER::COLLECTION)
     ("IFN-α, and STAT4" . SPARSER::COLLECTION)
     ("IFN-α and IL-6" . SPARSER::COLLECTION) ("caspase" . SPARSER::PROTEIN)
     ("molecule" . SPARSER::MOLECULE) ("oligonucleotides" . SPARSER::MOLECULE)
-    ("NOD" . SPARSER::PROTEIN) ("IL-6/STAT3" . SPARSER::COLLECTION)
+    ("NOD" . SPARSER::PROTEIN) ("the in vivo anti-MM" . SPARSER::ANTIBODY)
+    ("IL-6/STAT3" . SPARSER::COLLECTION) ("CI" . SPARSER::PROTEIN)
     ("drugs" . SPARSER::DRUG) ("IL-6 and STAT3" . SPARSER::COLLECTION)
     ("Western blot" . SPARSER::PROTEIN) ("blot" . SPARSER::PROTEIN)
     ("MTT" . SPARSER::MOLECULE) ("Annexin V and PI" . SPARSER::COLLECTION)
     ("PI" . SPARSER::PROTEIN)
     ("cyclin D1, survivin, Bcl-2, Bcl-XL, and DNMT1" . SPARSER::COLLECTION)
-    ("run" . SPARSER::PROTEIN-FAMILY)
+    ("run" . SPARSER::PROTEIN)
     ("cyclin D1, survivin, DNMT1, and Bcl-2" . SPARSER::COLLECTION)
-    ("survivin" . SPARSER::PROTEIN) ("DMSO" . SPARSER::MOLECULE)
+    ("survivin" . SPARSER::HUMAN-PROTEIN-FAMILY) ("DMSO" . SPARSER::MOLECULE)
     ("STAT4 or STAT6" . SPARSER::COLLECTION)
     ("IFN-α or IFN-γ" . SPARSER::COLLECTION)
     ("IL-6 or IFN-α" . SPARSER::COLLECTION) ("Stattic" . SPARSER::DRUG)
@@ -14474,11 +15091,13 @@
      . SPARSER::COLLECTION)
     ("Staurosporine" . SPARSER::MOLECULE) ("CDK1/cyclin" . SPARSER::COLLECTION)
     ("FAK" . SPARSER::PROTEIN) ("cyclin" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("CSK, Fgr, Fyn, JAK3, LcK, Lyn, or ZAP-70" . SPARSER::COLLECTION)
+    ("BMX, BRK, CSK, Fgr, Fyn, JAK3, LcK, Lyn, or ZAP-70"
+     . SPARSER::COLLECTION)
     ("Lyn" . SPARSER::PROTEIN) ("LcK" . SPARSER::PROTEIN)
     ("Fyn" . SPARSER::PROTEIN) ("Fgr" . SPARSER::PROTEIN)
-    ("CSK" . SPARSER::PROTEIN) ("BMX" . SPARSER::PROTEIN)
-    ("kinase" . SPARSER::KINASE) ("ERK(1/2) and mTOR" . SPARSER::COLLECTION)
+    ("CSK" . SPARSER::PROTEIN) ("BRK" . SPARSER::PROTEIN)
+    ("BMX" . SPARSER::PROTEIN) ("kinase" . SPARSER::KINASE)
+    ("ERK(1/2) and mTOR" . SPARSER::COLLECTION)
     ("mTOR and Src" . SPARSER::COLLECTION)
     ("mTOR, Src and ERK" . SPARSER::COLLECTION)
     ("ERK" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Src" . SPARSER::PROTEIN)
@@ -14494,17 +15113,17 @@
     ("form" . SPARSER::FORM) ("antisense" . SPARSER::PROTEIN)
     ("a dominant-negative mutant" . SPARSER::MUTANT)
     ("mutant" . SPARSER::MUTANT) ("se" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("IL" . SPARSER::PROTEIN) ("interleukin" . SPARSER::PROTEIN)
+    ("IL" . SPARSER::PROTEIN) ("interleukin" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("types" . TYPE) ("active" . SPARSER::ACTIVE)
     ("lysine" . SPARSER::AMINO-ACID) ("Tyr" . SPARSER::AMINO-ACID)
-    ("tyrosine" . SPARSER::AMINO-ACID) ("oncogene" . SPARSER::ONCOGENE)
+    ("tyrosine" . SPARSER::AMINO-ACID) ("oncogene" . SPARSER::PROTEIN)
     ("STATs" . SPARSER::PROTEIN)
     ("Transducers and Activators" . SPARSER::COLLECTION)
     ("cytokines and growth factors" . SPARSER::COLLECTION)
-    ("proteins" . SPARSER::PROTEIN) ("STAT" . SPARSER::PROTEIN)
-    ("Activators" . SPARSER::ACTIVATOR) ("Transducers" . SPARSER::PROTEIN)
-    ("States" . SPARSER::BIO-STATE) ("STAT3 and IL-6" . SPARSER::COLLECTION)
-    ("kinases" . SPARSER::KINASE)
+    ("extracellular" . SPARSER::PROTEIN) ("proteins" . SPARSER::PROTEIN)
+    ("STAT" . SPARSER::PROTEIN) ("Activators" . SPARSER::ACTIVATOR)
+    ("Transducers" . SPARSER::PROTEIN) ("States" . SPARSER::BIO-STATE)
+    ("STAT3 and IL-6" . SPARSER::COLLECTION) ("kinases" . SPARSER::KINASE)
     ("interleukin-6 (IL-6) and interferon-α" . SPARSER::COLLECTION)
     ("STAT1, STAT2, STAT4, and STAT6" . SPARSER::COLLECTION)
     ("interferon-α, interferon-γ, and interleukin-4" . SPARSER::COLLECTION)
@@ -14512,139 +15131,155 @@
     ("lenalidomide and bortezomib" . SPARSER::COLLECTION)
     ("bortezomib" . SPARSER::DRUG) ("lenalidomide" . SPARSER::DRUG)
     ("a newly developed STAT3 inhibitor" . SPARSER::INHIBITOR)
-    ("LLL" . SPARSER::MOLECULE) ("inhibitor" . SPARSER::INHIBITOR)
-    ("IL-6R" . SPARSER::PROTEIN) ("gp130" . SPARSER::PROTEIN)
-    ("P5" . SPARSER::HUMAN-PROTEIN-FAMILY) ("Bcl-XL" . SPARSER::PROTEIN)
-    ("Reverse Transcriptase" . SPARSER::PROTEIN)
+    ("MM" . SPARSER::PROTEIN) ("LLL" . SPARSER::MOLECULE)
+    ("inhibitor" . SPARSER::INHIBITOR) ("IL-6R" . SPARSER::PROTEIN)
+    ("gp130" . SPARSER::PROTEIN) ("P5" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("Bcl-XL" . SPARSER::PROTEIN) ("Reverse Transcriptase" . SPARSER::PROTEIN)
     ("cyclin D1" . SPARSER::PROTEIN)
-    ("reverse transcriptase" . SPARSER::PROTEIN) ("PKC-δ" . SPARSER::PROTEIN)
-    ("PKC-α" . SPARSER::PROTEIN) ("PDGFR-α" . SPARSER::PROTEIN)
-    ("PAK2" . SPARSER::PROTEIN) ("PAK1" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("JNK2" . SPARSER::PROTEIN) ("JNK1" . SPARSER::PROTEIN)
-    ("IKKβ" . SPARSER::PROTEIN) ("FGFR2" . SPARSER::PROTEIN)
-    ("CDK1" . SPARSER::PROTEIN) ("AKT2" . SPARSER::PROTEIN)
-    ("ZAP-70" . SPARSER::PROTEIN) ("JAK3" . SPARSER::PROTEIN)
-    ("Annexin V" . SPARSER::PROTEIN) ("Annexin-V" . SPARSER::PROTEIN)
+    ("reverse transcriptase" . SPARSER::PROTEIN) ("MM1" . SPARSER::PROTEIN)
+    ("PKC-δ" . SPARSER::PROTEIN) ("PKC-α" . SPARSER::PROTEIN)
+    ("PDGFR-α" . SPARSER::PROTEIN) ("PAK2" . SPARSER::PROTEIN)
+    ("PAK1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("JNK2" . SPARSER::PROTEIN)
+    ("JNK1" . SPARSER::PROTEIN) ("IKKβ" . SPARSER::PROTEIN)
+    ("FGFR2" . SPARSER::PROTEIN) ("CDK1" . SPARSER::PROTEIN)
+    ("AKT2" . SPARSER::PROTEIN) ("ZAP-70" . SPARSER::PROTEIN)
+    ("JAK3" . SPARSER::PROTEIN) ("Annexin V" . SPARSER::PROTEIN)
+    ("Annexin-V" . SPARSER::PROTEIN)
     ("Reverse transcriptase" . SPARSER::PROTEIN)
     ("Transcription Factor" . SPARSER::PROTEIN) ("DNMT1" . SPARSER::PROTEIN)
     ("Bcl-2" . SPARSER::PROTEIN) ("cyclin D" . SPARSER::PROTEIN)
     ("caspase-8" . SPARSER::PROTEIN) ("caspase-3" . SPARSER::PROTEIN)
     ("ADP-ribose" . SPARSER::MOLECULE)
     ("ERK1/2" . SPARSER::HUMAN-PROTEIN-FAMILY) ("IFN-γ" . SPARSER::PROTEIN)
-    ("-2" . SPARSER::PROTEIN) ("kinase activity" . SPARSER::PROTEIN)
+    ("protein kinase" . SPARSER::PROTEIN) ("Protein kinase" . SPARSER::PROTEIN)
     ("dimethyl sulfoxide" . SPARSER::MOLECULE) ("S3I-201" . SPARSER::MOLECULE)
     ("WP1066" . SPARSER::DRUG) ("CD138" . SPARSER::PROTEIN)
     ("CO 2" . SPARSER::PROTEIN) ("L-glutamine" . SPARSER::MOLECULE)
     ("STA-21" . SPARSER::DRUG) ("AG490" . SPARSER::DRUG)
-    ("JAK2" . SPARSER::PROTEIN) ("interleukin-4" . SPARSER::PROTEIN)
+    ("JAK2" . SPARSER::PROTEIN) ("growth factors" . SPARSER::GROWTH-FACTOR)
+    ("interleukin-4" . SPARSER::PROTEIN) (NIL . SPARSER::PROTEIN)
     ("STAT6" . SPARSER::PROTEIN) ("STAT4" . SPARSER::PROTEIN)
     ("STAT2" . SPARSER::PROTEIN) ("STAT1" . SPARSER::PROTEIN)
     ("interferon-α" . SPARSER::DRUG) ("IL-6" . SPARSER::PROTEIN)
     ("interleukin-6" . SPARSER::PROTEIN) ("STAT3" . SPARSER::PROTEIN)
     ("adjuvant" . SPARSER::DRUG)
     ("GM-CSF, IL-4, and TNF-α" . SPARSER::COLLECTION)
+    ("past" . SPARSER::PROTEIN)
+    ("an immunologic factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("factor" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("healthy mDCs and pDCs" . SPARSER::COLLECTION)
     ("IFN-α and IL-1α" . SPARSER::COLLECTION)
-    ("CpG and CD40L" . SPARSER::COLLECTION) ("IFN" . SPARSER::DRUG)
+    ("CpG and CD40L" . SPARSER::COLLECTION) ("IFN" . SPARSER::PROTEIN)
     ("interferon" . SPARSER::PROTEIN) ("CD40L or CpG" . SPARSER::COLLECTION)
-    ("partial" . SPARSER::PROTEIN) ("examples" . SPARSER::EXAMPLE)
+    ("partial" . SPARSER::PROTEIN) ("myelocytic DCs" . SPARSER::PROTEIN)
+    ("examples" . SPARSER::EXAMPLE)
     ("The subsequent flow cytometry" . SPARSER::PROTEIN)
     ("cytometry" . SPARSER::PROTEIN) ("/pDCs" . SPARSER::COLLECTION)
     ("GM-CSF/IL-4" . SPARSER::COLLECTION)
     ("mDCs (GM-CSF, IL-4, CD40L) or pDCs (IL-3, CD40L)" . SPARSER::COLLECTION)
-    ("the original leukemia" . SPARSER::PROTEIN)
-    ("cytokine" . SPARSER::PROTEIN) ("II" . SPARSER::PROTEIN)
+    ("nuclear" . SPARSER::PROTEIN) ("the original leukemia" . SPARSER::PROTEIN)
+    ("diagnostic AML" . SPARSER::PROTEIN) ("cytokine" . SPARSER::PROTEIN)
+    ("II" . SPARSER::PROTEIN)
     ("immunoglobulin-like transcript 3 instead of HLA-DR"
      . SPARSER::COLLECTION)
     ("group and 26%" . SPARSER::COLLECTION)
     ("a much smaller fraction" . SPARSER::COMPONENT)
-    ("CD86 or CD83" . SPARSER::COLLECTION) ("fraction" . SPARSER::COMPONENT)
+    ("CD86 or CD83" . SPARSER::COLLECTION) ("AML-mDCs" . SPARSER::COLLECTION)
+    ("fraction" . SPARSER::COMPONENT)
     ("the mDCs (in the range between 0.4% and 1.2%) and pDCs (0.3–0.8%)"
      . SPARSER::COLLECTION)
     ("mDCs (0.3–60%) and pDCs (0.2–70%)" . SPARSER::COLLECTION)
     ("detectable mDCs (lin − /CD11c + /HLA-DR + ) and pDCs (lin − /CD123 + /HLA-DR + )"
      . SPARSER::COLLECTION)
     ("/CD123" . SPARSER::COLLECTION) ("/HLA-DR" . SPARSER::COLLECTION)
-    ("/CD11c" . SPARSER::COLLECTION)
+    ("/CD11c" . SPARSER::COLLECTION) ("lin" . SPARSER::PROTEIN)
     ("a healthy control group" . SPARSER::MOLECULE)
     ("group" . SPARSER::MOLECULE) ("CD86 and CD83" . SPARSER::COLLECTION)
     ("HLA-DR/CD123" . SPARSER::COLLECTION)
     ("HLA-DR/CD11c" . SPARSER::COLLECTION)
     ("inflammatory cytokines" . SPARSER::PROTEIN)
+    ("AML-DCs" . SPARSER::COLLECTION)
     ("myelomonocytic and monocytic leukemia" . SPARSER::PROTEIN)
     ("receptor" . SPARSER::RECEPTOR)
     ("myeloid and lymphoid" . SPARSER::COLLECTION)
     ("lymphoid" . SPARSER::PROTEIN) ("regulator" . SPARSER::REGULATOR)
     ("granulocyte–macrophage colony-stimulating factor (GM-CSF: mDC) and FMS-like tyrosine kinase 3 ligand (FL: mDC, pDC)"
      . SPARSER::COLLECTION)
-    ("APCs" . SPARSER::PROTEIN) ("CD40L and CpG" . SPARSER::COLLECTION)
+    ("ligand" . SPARSER::LIGAND) ("macrophage" . SPARSER::PROTEIN)
+    ("antigens" . SPARSER::HUMAN-PROTEIN-FAMILY) ("APCs" . SPARSER::PROTEIN)
+    ("antigen" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("CD40L and CpG" . SPARSER::COLLECTION)
     ("IFN-α, TNF-α, and IL-1α" . SPARSER::COLLECTION)
     ("mDCs/pDCs" . SPARSER::COLLECTION) ("leukemia" . SPARSER::PROTEIN)
-    ("CpG" . SPARSER::PROTEIN) ("mDCs and pDCs" . SPARSER::COLLECTION)
+    ("CpG" . SPARSER::PROTEIN)
+    ("all ITD + AML ( n  = 11) and ITD" . SPARSER::COLLECTION)
+    ("n  " . SPARSER::PROTEIN) ("mDCs and pDCs" . SPARSER::COLLECTION)
     ("cytokines" . SPARSER::PROTEIN) ("mDCs or pDCs" . SPARSER::COLLECTION)
-    ("DCs" . SPARSER::MOLECULE) ("pDCs" . SPARSER::PROTEIN)
+    ("DCs" . SPARSER::PROTEIN) ("pDCs" . SPARSER::PROTEIN)
     ("mDCs" . SPARSER::PROTEIN) ("pDC" . SPARSER::PROTEIN)
-    ("myeloid" . SPARSER::PROTEIN) ("ligand" . SPARSER::LIGAND)
-    ("gene" . SPARSER::GENE) ("IL-3R" . SPARSER::PROTEIN)
-    ("IL-3 receptor" . SPARSER::PROTEIN) ("CD34" . SPARSER::PROTEIN)
-    ("A–C" . SPARSER::PROTEIN) ("IL-3" . SPARSER::PROTEIN)
+    ("myeloid" . SPARSER::PROTEIN) ("gene" . SPARSER::GENE)
+    ("AML" . SPARSER::PROTEIN) ("IL-3R" . SPARSER::PROTEIN)
+    ("CD34" . SPARSER::PROTEIN) ("IL-3" . SPARSER::PROTEIN)
     ("IL-4" . SPARSER::PROTEIN)
     ("major histocompatibility complex" . SPARSER::PROTEIN)
-    ("immunoglobulin-like transcript 3" . SPARSER::PROTEIN)
+    ("transcript 3" . SPARSER::PROTEIN) ("and 1" . SPARSER::PROTEIN)
     ("tumor necrosis factor" . SPARSER::PROTEIN) ("CD83" . SPARSER::PROTEIN)
     ("FUN-1" . SPARSER::MOLECULE) ("CD56" . SPARSER::PROTEIN)
     ("CD20" . SPARSER::PROTEIN) ("CD19" . SPARSER::PROTEIN)
     ("CD16" . SPARSER::PROTEIN) ("CD14" . SPARSER::PROTEIN)
     ("CD3" . SPARSER::PROTEIN) ("a 2" . SPARSER::HUMAN-PROTEIN-FAMILY)
-    ("DNA polymerase" . SPARSER::PROTEIN) ("MgCl 2" . SPARSER::MOLECULE)
-    ("-3" . SPARSER::PROTEIN) ("CD4" . SPARSER::PROTEIN)
+    ("DNA polymerase" . SPARSER::PROTEIN) ("and 1 " . SPARSER::PROTEIN)
+    ("MgCl 2" . SPARSER::MOLECULE) ("-3" . SPARSER::PROTEIN)
+    ("Acute Myeloid Leukemia" . SPARSER::PROTEIN) ("CD4" . SPARSER::PROTEIN)
     ("tyrosine kinase" . SPARSER::PROTEIN) ("GM-CSF" . SPARSER::PROTEIN)
-    ("granulocyte–macrophage colony-stimulating factor" . SPARSER::PROTEIN)
+    ("colony-stimulating factor" . SPARSER::PROTEIN) ("DC2" . SPARSER::PROTEIN)
     ("IL-1α" . SPARSER::PROTEIN) ("TNF-α" . SPARSER::PROTEIN)
     ("IFN-α" . SPARSER::PROTEIN) ("CD40L" . SPARSER::PROTEIN)
     ("CD123" . SPARSER::PROTEIN) ("CD86" . SPARSER::PROTEIN)
     ("CD11c" . SPARSER::PROTEIN) ("HLA-DR" . SPARSER::PROTEIN)
-    ("FLT3" . SPARSER::PROTEIN)
+    ("FLT3 ligand" . SPARSER::PROTEIN) ("FLT3" . SPARSER::PROTEIN)
     ("FMS-like tyrosine kinase 3" . SPARSER::PROTEIN)
     ("p53 and miRNAs" . SPARSER::COLLECTION)
     ("p53 and EMT" . SPARSER::COLLECTION) ("cohort" . SPARSER::MOLECULE)
-    ("complement" . SPARSER::PROTEIN) ("primary HCC" . SPARSER::PROTEIN)
-    ("Luciferase" . SPARSER::PROTEIN) ("antibody" . SPARSER::ANTIBODY)
+    ("primary HCC" . SPARSER::PROTEIN) ("Luciferase" . SPARSER::PROTEIN)
+    ("antibody" . SPARSER::ANTIBODY) ("ChIP" . SPARSER::PROTEIN)
     ("chromatin" . SPARSER::PROTEIN) ("BS" . SPARSER::PROTEIN)
-    ("the primary miRNAs" . SPARSER::PROTEIN)
+    ("BSs" . SPARSER::PROTEIN)
     ("that miR-34a and miR-192 family members (miR-192 and miR-215)"
      . SPARSER::COLLECTION)
-    ("the primary HCC" . SPARSER::PROTEIN) ("miRNA" . SPARSER::PROTEIN)
+    ("the primary HCC" . SPARSER::PROTEIN) ("miRNA" . SPARSER::MICRO-RNA)
     ("sh-p53" . SPARSER::COLLECTION) ("sh-CTRL" . SPARSER::COLLECTION)
-    ("CTRL" . SPARSER::PROTEIN) ("promoter" . SPARSER::PROMOTER)
-    ("luciferase" . SPARSER::PROTEIN) ("ZEB1 or ZEB2" . SPARSER::COLLECTION)
-    ("sh-ZEB2" . SPARSER::COLLECTION) ("-ZEB1" . SPARSER::COLLECTION)
-    ("sh" . SPARSER::PROTEIN-FAMILY) ("RNA" . SPARSER::RNA)
-    ("mRNA or protein" . SPARSER::COLLECTION) ("protein" . SPARSER::PROTEIN)
-    ("mRNA" . SPARSER::PROTEIN)
+    ("UTR" . SPARSER::PROTEIN) ("CTRL" . SPARSER::PROTEIN)
+    ("promoter" . SPARSER::PROMOTER) ("luciferase" . SPARSER::PROTEIN)
+    ("ZEB1 or ZEB2" . SPARSER::COLLECTION) ("sh-ZEB2" . SPARSER::COLLECTION)
+    ("-ZEB1" . SPARSER::COLLECTION) ("sh" . SPARSER::PROTEIN-FAMILY)
+    ("RNA" . SPARSER::RNA) ("mRNA or protein" . SPARSER::COLLECTION)
+    ("protein" . SPARSER::PROTEIN) ("mRNA" . SPARSER::RNA)
     ("SNAI1, SNAI2, TGFB1, and TGFB2" . SPARSER::COLLECTION)
     ("SNAI1, SNAI2, TGFB1, TGFB2, TWIST, ZEB1, and ZEB2" . SPARSER::COLLECTION)
     ("activators" . SPARSER::ACTIVATOR) ("regulators" . SPARSER::REGULATOR)
-    ("CDH2 or VIM" . SPARSER::COLLECTION) ("VIM" . SPARSER::PROTEIN)
-    ("Vimentin" . SPARSER::PROTEIN) ("EMT and p53" . SPARSER::COLLECTION)
-    ("targets" . SPARSER::TARGET-PROTEIN)
-    ("dEF1, TCF8, and AREB6" . SPARSER::COLLECTION) ("Slug" . SPARSER::PROTEIN)
+    ("CDH2 or VIM" . SPARSER::COLLECTION) ("thin" . SPARSER::PROTEIN)
+    ("VIM" . SPARSER::PROTEIN) ("Vimentin" . SPARSER::PROTEIN)
+    ("EMT and p53" . SPARSER::COLLECTION) ("targets" . SPARSER::TARGET-PROTEIN)
+    ("dEF1, TCF8, and AREB6" . SPARSER::COLLECTION)
+    ("TWIST" . SPARSER::PROTEIN) ("Slug" . SPARSER::PROTEIN)
     ("Snail" . SPARSER::PROTEIN)
     ("TGFB1 (TGFβ1) and TGFB2 (TGFβ2; xref )" . SPARSER::COLLECTION)
-    ("TGFs" . SPARSER::DRUG)
+    ("TGFs" . SPARSER::DRUG) ("tube and mesoderm" . SPARSER::COLLECTION)
+    ("tube" . SPARSER::PROTEIN) ("genes and miRNAs" . SPARSER::COLLECTION)
     ("oncogenes or tumor suppressor genes ( xref )" . SPARSER::COLLECTION)
     ("genes" . SPARSER::GENE) ("suppressor" . SPARSER::SUPPRESSOR)
     ("oncogenes" . SPARSER::ONCOGENE) ("Differentially" . SPARSER::PROTEIN)
     ("mRNAs" . SPARSER::PROTEIN) ("target" . SPARSER::TARGET-PROTEIN)
-    ("RNAs" . SPARSER::RNA) ("MicroRNAs" . SPARSER::RNA)
+    ("RNAs" . SPARSER::RNA) ("MicroRNAs" . SPARSER::MICRO-RNA)
     ("mediators" . SPARSER::PROTEIN) ("family" . SPARSER::PROTEIN-FAMILY)
-    ("miR" . SPARSER::PROTEIN) ("microRNAs" . SPARSER::RNA)
+    ("miR" . SPARSER::MICRO-RNA) ("microRNAs" . SPARSER::MICRO-RNA)
     ("HCC" . SPARSER::PROTEIN) ("HCCs" . SPARSER::PROTEIN)
     ("EMT" . SPARSER::PROTEIN) ("ZEB1 and ZEB2" . SPARSER::COLLECTION)
-    ("miRNAs" . SPARSER::PROTEIN) ("S4" . SPARSER::PROTEIN-FAMILY)
-    ("S2" . SPARSER::MOLECULE) ("Triton X-100" . SPARSER::MOLECULE)
-    ("Dual-Luciferase" . SPARSER::PROTEIN) ("pGL3" . SPARSER::PROTEIN)
-    (NIL . SPARSER::PROTEIN) ("Anti-" . SPARSER::ANTIBODY)
+    ("factors" . SPARSER::HUMAN-PROTEIN-FAMILY) ("miRNAs" . SPARSER::MICRO-RNA)
+    ("S4" . SPARSER::PROTEIN-FAMILY) ("S2" . SPARSER::MOLECULE)
+    ("Triton X-100" . SPARSER::MOLECULE) ("Dual-Luciferase" . SPARSER::PROTEIN)
+    ("pGL3" . SPARSER::PROTEIN) ("Anti-" . SPARSER::ANTIBODY)
     ("N-cadherin" . SPARSER::PROTEIN) ("E-cadherin" . SPARSER::PROTEIN)
     ("anti-β" . SPARSER::PROTEIN) ("CDKN1A" . SPARSER::PROTEIN)
     ("anti-" . SPARSER::ANTIBODY) ("β-actin" . SPARSER::PROTEIN)
@@ -14652,15 +15287,15 @@
     ("Nutlin-3a" . SPARSER::DRUG) ("5-FU" . SPARSER::PROTEIN)
     ("sh-RNA" . SPARSER::RNA) ("TP53" . SPARSER::PROTEIN)
     ("miR-34a" . SPARSER::MOLECULE) ("miR-200c" . SPARSER::MOLECULE)
-    ("miR-193b" . SPARSER::MOLECULE) ("nutlin-3" . SPARSER::DRUG)
-    ("CDH2" . SPARSER::PROTEIN) ("CDH1" . SPARSER::PROTEIN)
-    ("TGFβ" . SPARSER::HUMAN-PROTEIN-FAMILY) ("SNAI2" . SPARSER::PROTEIN)
-    ("SNAI1" . SPARSER::PROTEIN) ("SIP1" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("miR-193b" . SPARSER::MOLECULE) ("3 B" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("nutlin-3" . SPARSER::DRUG) ("CDH2" . SPARSER::PROTEIN)
+    ("CDH1" . SPARSER::PROTEIN) ("TGFβ" . SPARSER::HUMAN-PROTEIN-FAMILY)
+    ("SNAI2" . SPARSER::PROTEIN) ("SNAI1" . SPARSER::PROTEIN)
+    ("SIP1" . SPARSER::HUMAN-PROTEIN-FAMILY) ("AREB6" . SPARSER::PROTEIN)
     ("TCF8" . SPARSER::PROTEIN) ("dEF1" . SPARSER::PROTEIN)
     ("TGFβ2" . SPARSER::PROTEIN) ("TGFB2" . SPARSER::PROTEIN)
     ("TGFβ1" . SPARSER::PROTEIN) ("TGFB1" . SPARSER::PROTEIN)
-    ("growth factors" . SPARSER::GROWTH-FACTOR)
+    ("transforming growth factors" . SPARSER::HUMAN-PROTEIN-FAMILY)
     ("transcription factor" . SPARSER::PROTEIN)
-    ("tumor suppressor p53" . SPARSER::PROTEIN)
-    ("p53" . SPARSER::HUMAN-PROTEIN-FAMILY) ("ZEB2" . SPARSER::PROTEIN)
-    ("ZEB1" . SPARSER::PROTEIN)))
+    ("tumor suppressor p53" . SPARSER::PROTEIN) ("p53" . SPARSER::PROTEIN)
+    ("ZEB2" . SPARSER::PROTEIN) ("ZEB1" . SPARSER::PROTEIN)))
