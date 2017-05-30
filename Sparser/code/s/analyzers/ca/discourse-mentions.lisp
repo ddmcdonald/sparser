@@ -551,10 +551,12 @@
         ((and (individual-p top-ref)
               (itypep top-ref 'relativized-prepositional-phrase))
          nil)
-        ((itypep value 'comparative-attribution)
+        ((and (individual-p value) ;; guard against that-rel = t binding
+              (itypep value 'comparative-attribution))
          ;; e.g. "longer periods" -- the comparative is constructed whole cloth -- DAVID
          nil)
-        ((itypep value 'prepositional-phrase)
+        ((and (individual-p value)
+              (itypep value 'prepositional-phrase))
          ;; NEED TO WORK WITH DAVID HERE
          ;; "Only in conditions where RAS is constitutively active "
          nil)
