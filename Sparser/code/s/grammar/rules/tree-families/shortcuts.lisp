@@ -126,6 +126,12 @@ be (defaults to common noun)"
 
 (defparameter *inhibited-plurals* nil) 
 
+(defun get-head-ref-from-rule (s-t-r-rule)
+  (let ((ref (cfr-referent s-t-r-rule)))
+    (if (consp ref) ;; happens when the ref word is a collection (e.g. "RNAs") and maybe other cases?
+        (second (assoc :head ref))
+        ref)))
+
 (defun add-rules-cond-plural (word category ind &key plural no-plural (pos :common-noun))
   "Given a word, category, and individual, add-rules to the individual
 for that word, and if no-plural or if the plural-version of the word
@@ -138,11 +144,11 @@ see if there are issues"
          (defined-plural-sc (when defined-plural?
                               (if (name-is-cat-p plural-word)
                                   (cat-name (second (super-categories-of (name-is-cat-p plural-word))))
-                                  (cat-name (category-of (cfr-referent (car (single-term-rewrite? plural-word  :no-warn t))))))))
+                                  (cat-name (category-of (get-head-ref-from-rule (car (single-term-rewrite? plural-word  :no-warn t))))))))
          (*inhibit-constructing-plural* 
           (or no-plural
               (when defined-plural?
-                (push `(,word :new-cat ,category :old-cat ,defined-plural-sc ,plural-word)  
+                (push `(,word :new-cat ,(cat-name category) :old-cat ,defined-plural-sc ,plural-word)  
                       *inhibited-plurals*)))))
     (declare (special *inhibit-constructing-plural*))
     (if plural
