@@ -1,5 +1,4 @@
 ;;; -*- Mode: Lisp; Package:MUMBLE; Syntax: COMMON-LISP; Base:10; -*-
-;;; $Id: characteristics.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 
 ;;; MUMBLE-86: grammar; characteristics
 ;;;
@@ -8,6 +7,7 @@
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
 ;;;    non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2017  David D. McDonald  -- All Rights Reserved
 
 (in-package :mumble)
 
@@ -34,12 +34,15 @@
 
 (define-grammatical-characteristic vp)
 
-(define-grammatical-characteristic qp)
+(define-grammatical-characteristic qp) ;; 'quantifier phrase'
+
+(define-grammatical-characteristic ap) ;; adjective phrase
 
 
 (define-grammatical-characteristic adverb)
 
 (define-grammatical-characteristic adverbial-phrase)
+(define-grammatical-characteristic advp)
 
 
 ;******NEW FOR PURPOSE CLAUSES 
