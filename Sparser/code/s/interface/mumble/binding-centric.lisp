@@ -57,6 +57,7 @@
     (noun :common-noun)
     (verb :verb)
     (adjective :adjective)
+    (adverb :adverb)
     (preposition :prep)
     (interjection :interjection)))
 
@@ -167,7 +168,9 @@
                (sp::bound-object-var i)
                (find sp::**lambda-var** (sp::indiv-binds i)
                      :key #'sp::binding-value))
-           'verb)))
+           'verb)
+          ;; ((sp::rdata-head-word i t)  )
+          ))
   (:method or ((i sp::referential-category))
     (cond ((or (sp::subject-variable i)
                (sp::object-variable i))
@@ -282,8 +285,18 @@ attach-via-binding. |#
          (apply-category-linked-phrase i))
         ((sp::itypep i 'sp::relative-location)
          (apply-category-linked-phrase i))
+        ((and (null (sp::indiv-binds i))
+              (sp::rdata-head-word i t))
+         ;; nothing for realize-via-bindings to chew on
+         ;; Look for a word to use
+         (apply-lexical-resource i))
         (t (realize-via-bindings i))))
 
+(defun apply-lexical-resource (i)
+  "There's a word associated with this individual. Use it's lexicalized phrase
+   as the resource"
+  (let ((lp (get-lexicalized-phrase i)))
+    (make-dtn :referent i :resource lp)))
 
 (defgeneric realize-via-bindings (i &key pos resource)
   (:documentation "Loop over the bindings of the individual 'i' to populate
