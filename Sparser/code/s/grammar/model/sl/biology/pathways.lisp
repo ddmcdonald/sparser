@@ -86,3 +86,5 @@
 (def-pathway "MEK" "ERK")
 
 (def-pathway "Raf" "MAPK")
+
+;; add "Gab1-Akt" "PI3K-AKT" "PI3K-AKT-mTOR" "PI3K-Akt"
