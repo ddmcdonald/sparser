@@ -4073,7 +4073,7 @@
 (define-protein "UP:P13477" ("Colicin-E6 immunity protein" "immE6")) 
 (define-protein "UP:P13489" ("HGNC:10074" "RNH1" "ribonuclease/angiogenin inhibitor 1")) 
 (define-protein "UP:P13489" ("NCIT:C101603" "PRI" "RNH1")) 
-(define-protein "UP:P13497" ("3.4.24.19" "BMP-1" "BMP1" "BMP1_HUMAN" "Mammalian tolloid protein" "P13497" "PCOLC" "PCP" "Procollagen C-proteinase" "mTld")) 
+(define-protein "UP:P13497" ("3.4.24.19" "BMP-1" "BMP1" "BMP1_HUMAN" "Bone morphogenetic protein 1" "Mammalian tolloid protein" "P13497" "PCOLC" "PCP" "Procollagen C-proteinase" "mTld")) 
 (define-protein "UP:P13498" ("CY24A_HUMAN" "CYBA" "Cytochrome b(558)alpha chain" "Cytochrome b-245 light chain" "Cytochrome b558 subunit alpha" "HGNC:2577" "Neutrophil cytochrome b 22 kDa polypeptide" "P13498" "Superoxide-generating NADPH oxidase light chain subunit" "UP:P13498 CYBA" "cytochrome" "cytochrome b-245" "cytochrome b-245 alpha chain" "flavocytochrome b-558 alpha polypeptide" "p22 phagocyte B-cytochrome" "p22-phox" "p22phox")) 
 (define-protein "UP:P13500" ("C-C motif chemokine 2" "C-C motif chemokine ligand 2" "CCL-2" "CCL2" "CCL2_HUMAN" "HC11" "HGNC:10618" "MCAF" "MCP-1" "Monocyte chemoattractant protein 1" "Monocyte chemotactic and activating factor" "Monocyte chemotactic protein 1" "Monocyte secretory protein JE" "P13500" "PR:P13500" "Small-inducible cytokine A2" "monocyte chemotactic protein 1")) 
 (define-protein "UP:P13500" ("CCL2" "MCP1" "NCIT:C49745")) 
