@@ -84,6 +84,8 @@
 (noun "liquid chromatography" :super bio-method)
 (noun "mass-spectrometry" :super bio-method)
 (def-synonym mass-spectrometry (:noun "mass spectrometry"))
+(noun "IP-MS" :super bio-method) ;; added to get rid of erroneous TRIPS def that was plural of "IPM"
+(def-synonym ip-ms (:noun "immunoprecipitation mass spectrometry"))
 
 (noun "means" :super bio-method
       :restrict ((object over-ridden))
