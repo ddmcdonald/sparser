@@ -54,6 +54,9 @@
 (defmethod get-lexicalized-phrase ((category sp::category))
   (get-lexicalized-phrase (symbol-name (sp::cat-symbol category))))
 
+(defmethod get-lexicalized-phrase ((i sp::individual))
+  (get-lexicalized-phrase (itype-of i)))
+
 
 (defmethod discourse-unit  ((i sp::individual))
   (mumble::make-discourse-unit-dtn i i))

@@ -215,6 +215,16 @@ Should mirror the cases on the *single-words* ETF."
     (when mumble
       (apply-mumble-rdata category rdata))))
 
+(defun setup-word-data (word pos category)
+  "For adverbs, adjectives, and anything else whose realization
+   is made by rule rather than the interpretation of an rdata
+   expression."  
+  (assert (or (word-p word) (polyword-p word)))
+  ;; do we care whether the category already has some realization?
+  (make-realization-data category
+                         :heads `(,pos ,word)))
+
+
 ;;;----------------------------
 ;;; Recording realization data
 ;;;----------------------------

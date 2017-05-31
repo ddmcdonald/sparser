@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   March 2017
+;;;   Version:   May 2017
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -172,7 +172,7 @@
                                   super-category)
                  :bindings (name ,word)
                  :documentation ,documentation))))
-       
+
         (let ((rule
                ;; Create the single-term rule that rewrites the word
                ;; as the category we've created for it
@@ -192,6 +192,8 @@
               ;; e.g., sequencer/determiner is responsible for making those 
               ;; form rules and we'd get a clash if we did them here. 
               (apply-function-term-etf category tree-families)))
+
+          (setup-word-data word (rationalize-pos form) category)
 
           ;; This isn't ready for prime time yet. The function it's
           ;; calling was never finished and there need to be

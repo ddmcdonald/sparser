@@ -85,7 +85,7 @@
                      (pname s-head-word)))
             (let ((lp (or (m::get-lexicalized-phrase m-word)
                           (make-resource-for-sparser-word
-                           s-head-word pos phrase))))
+                           s-head-word pos category phrase))))
               ;;(lsp-break "lp for ~s is ~a" (pname s-head-word) lp)
               (values m-word lp))))))))
 
@@ -211,7 +211,7 @@
 ;;;------------
          
 (defun make-corresponding-lexical-resource (head-word category)
-  "Called from the initialize-instace method of realization-data;
+  "Called from the initialize-instance method of realization-data;
    see make-realization-data. The 'head-word' was constructed by
    decode-rdata-heads. The goal is to arrange that every word
    that is mentioned in realization data of a category should 
@@ -239,9 +239,11 @@
                       (setq pos-tag (car lemma))
                       (cadr lemma))))))
       (when word
-        (make-resource-for-sparser-word word pos-tag)))))
+        (make-resource-for-sparser-word word pos-tag category)))))
 
-(defun make-corresponding-mumble-resource (word pos-tag)
+;;/// define-preposition in words
+;;    after method is morphology: make-rules-for-head
+(defun make-corresponding-mumble-resource (word pos-tag category)
   ;; As called from decode-realization-parameter-list which is
   ;; the central place 'shortcut' realization specification
   ;; handling that everything goes through. 
@@ -250,21 +252,10 @@
   ;; 'regular' specifications).
   (when (or *build-mumble-equivalents*
             *CwC*)
-    (make-resource-for-sparser-word word pos-tag)
+    (make-resource-for-sparser-word word pos-tag category)
     :done)) ;; keep this on the stack
 
-(defun mumble-pos (pos-tag) ;; c.f. sparser-pos in binding-centric
-  "Translate a Sparser part of speech into the Mumble equivalent"
-  (case pos-tag ;; no entry for :word and probably others
-    ;; look at e.g. comparative-modifier
-    (:adjective 'm::adjective)
-    ((or :noun :common-noun :proper-noun) 'm::noun)
-    (:verb 'm::verb)
-    (:adverb 'm::adverb)
-    (:prep 'm::preposition)
-    (:interjection 'm::interjection)))
-
-(defun make-resource-for-sparser-word (word pos-tag &optional verb-phrase)
+(defun make-resource-for-sparser-word (word pos-tag category &optional verb-phrase)
   "Look up the corresponding mumble part of speech ('m-pos').
    Make the mumble word ('m-word'). Then create and record 
    lexicalized phrase to embed the word in the appropriate
@@ -281,6 +272,33 @@
                (:prep (m::prep m-word))
                (:interjection (m::interjection m-word)))))
     (when lp
-      (m::record-lexicalized-phrase m-word lp))))
+      (m::record-lexicalized-phrase m-word lp)
+      (m::record-lexicalized-phrase category lp)
+      lp)))
+
+
+(defun rationalize-pos (form)
+  "Convert from 'form' as used in define-function-term to one of the
+   head-keyword part-of-speech options suitable for indicating its
+   mumble equivalent."
+  (ecase form
+    (adverb :adverb)
+    ((or adjective spatial-adjective temporal-adjective) :adjective)
+    ((or comparative superlative) :adjective)
+    ((or det approximator sequencer) :determiner)
+    ((or conjunction subordinate-conjunction) :word) ;; i.e. ignore
+    (standalone :word)))
+
+(defun mumble-pos (pos-tag) ;; c.f. sparser-pos in binding-centric
+  "Translate a Sparser part of speech into the Mumble equivalent"
+  (case pos-tag ;; no entry for :word and probably others
+    ;; look at e.g. comparative-modifier
+    ((or :noun :common-noun :proper-noun) 'm::noun)
+    (:verb 'm::verb)
+    (:adverb 'm::adverb)
+    (:adjective 'm::adjective)
+    (:prep 'm::preposition)
+    (:determiner 'm::determiner)
+    (:interjection 'm::interjection)))
 
 

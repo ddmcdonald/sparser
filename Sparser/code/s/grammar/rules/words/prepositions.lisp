@@ -96,7 +96,7 @@
                     :schema (get-schematic-word-rule :preposition)
                     :referent i)))) ;; had been category
             (add-rules rules category)))
-        (make-corresponding-mumble-resource word :prep)
+        (make-corresponding-mumble-resource word :prep category)
         (values i
                 category
                 word-rule )))))

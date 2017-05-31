@@ -153,12 +153,12 @@ or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
            special-cases))
   (:method :after (pos word category referent &rest special-cases)
     "Assign brackets and maybe make a Mumble word."
-    (declare (ignore category referent special-cases))
+    (declare (ignore referent special-cases))
     (typecase word
       ((or word polyword)
        (assign-brackets-for-word word pos)
        (when *build-mumble-equivalents*
-         (make-corresponding-mumble-resource word pos))))))
+         (make-corresponding-mumble-resource word pos category))))))
 
 (deftype irregular-keyword ()
   '(member :plural
@@ -202,6 +202,51 @@ or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
       (pushnew w value))))
 
 
+;;;-------------
+;;; determiners
+;;;-------------
+
+(defmethod make-rules-for-head ((pos (eql :determiner)) word category referent &key)
+  "We're likely getting here for the definition of some modifier, e.g. 'about', 
+   that's marked as a determiner syntactically and define-function-term is
+   invoking make-realization-data to keep a consistent record. In that case
+   the rule (etc.) we would create has already been made and we're a no-op."
+  (declare (ignore pos category))
+  (let ((rule (find-unary-cfr/referent word referent)))
+    (unless rule
+      (warn "Make-rules-for-head, determiner - ~s was not predefined" (pname word)))))
+
+
+(defun determiner? (word)
+  ;; ///need to revise their definitions in rules:words; so this
+  ;; is easier to compute
+  (or (let ((module (get-tag :grammar-module word)))
+        (when module
+          (eq (gmod-symbol module) '*determiners*)))
+      (let* ((rs (label-rule-set word))
+             (brackets (when rs (rs-phrase-boundary rs)))
+             (.[ (when brackets (ba-begins-before brackets))))
+        (eq .[ .[np))))
+
+
+;;;---------
+;;; adverbs
+;;;---------
+
+(defun adverb? (word)
+  (let ((rs (word-rules word)))
+    (when rs
+      (let ((brackets (rs-phrase-boundary rs)))
+        (when brackets
+          (eq (ba-ends-before brackets)
+              (find-bracket :end :before 'adverb)))))))
+
+
+(defun adverbial-morphology? (word)
+  (eq (word-morphology word)
+      :ends-in-ly ))
+
+
 ;;;-------
 ;;; verbs
 ;;;-------
@@ -222,29 +267,6 @@ or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
            (member (noun-category-name) ambiguity)))))
 
 
-(defun adverb? (word)
-  (let ((rs (word-rules word)))
-    (when rs
-      (let ((brackets (rs-phrase-boundary rs)))
-        (when brackets
-          (eq (ba-ends-before brackets)
-              (find-bracket :end :before 'adverb)))))))
-
-
-
-(defun determiner? (word)
-  ;; ///need to revise their definitions in rules:words; so this
-  ;; is easier to compute
-  (or (let ((module (get-tag :grammar-module word)))
-        (when module
-          (eq (gmod-symbol module) '*determiners*)))
-      (let* ((rs (label-rule-set word))
-             (brackets (when rs (rs-phrase-boundary rs)))
-             (.[ (when brackets (ba-begins-before brackets))))
-        (eq .[ .[np))))
-
-
-
 (defun verbal-form? (edge)
   ;; a useful predicate when doing dm&p explorations
   (member (edge-form edge)
@@ -256,11 +278,6 @@ or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
                 category::verb+present
                 category::verb+passive )
           :test #'eq ))
-
-
-(defun adverbial-morphology? (word)
-  (eq (word-morphology word)
-      :ends-in-ly ))
 
 
 (defun verb-form-corresponding-to-word-morph (word)
