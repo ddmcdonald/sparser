@@ -1,7 +1,8 @@
 (in-package :sparser)
 
 (defparameter *trips-Apr24*
-'(("alpha-mangostin" "ONT:CHEMICAL" :ID "CHEBI:67547" :NAME "alpha-mangostin")
+'(
+("alpha-mangostin" "ONT:CHEMICAL" :ID "CHEBI:67547" :NAME "alpha-mangostin")
  
 ; ("9-1-1" "ONT:PROTEIN-FAMILY" :ID "BE:9_1_1" :NAME "9-1-1") ;; actually a bio-complex consisting of Rad9-Hus1-Rad1 http://genesdev.cshlp.org/content/21/12/1472.abstract ;; EBI-2606881
  ("9-1-1" "ONT:MACROMOLECULAR-COMPLEX" :ID "EBI:2606881" :NAME "9-1-1")

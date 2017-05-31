@@ -1,3 +1,5 @@
+("alpha-mangostin" "ONT:CHEMICAL" :ID "CHEBI:67547" :NAME "alpha-mangostin") ;; actually from apr24, but easier to put the couple of those in here
+("201B7" "ONT:CELL-LINE" :ID "CVCL:A324" :NAME "201B7") ;; actually from apr24, but easier to put the couple of those in here
 ("Agrobacterium" "ONT:BACTERIUM" :id "NCIT:C86011" :name "agrobacterium") 
 ("Brucella" "ONT:BACTERIUM" :id "NCIT:C86215" :name "brucella") 
 ("Burkholderia" "ONT:BACTERIUM" :id "NCIT:C86222" :name "burkholderia") 
