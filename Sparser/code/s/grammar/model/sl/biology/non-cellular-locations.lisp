@@ -35,6 +35,7 @@
 (noun "prostate" :super bio-organ)
 (noun "kidney" :super bio-organ)
 (noun "thyroid" :super bio-organ)
+(noun "parathyroid" :super bio-organ) ;; UBERON_0001132
 (define-category pancreas :specializes bio-organ
   :realization
   (:noun "pancreas" :adj "pancreatic"))
@@ -116,7 +117,7 @@
 
 (def-indiv-with-id organism "Caenorhabditis elegans" "TI:6239" :synonyms ("C. elegans")) 
 (def-indiv-with-id organism "drosophila" "NCIT:C14202" :synonyms ("fruit fly")) 
-(def-indiv-with-id organism "mouse" "NCIT:C14238" :plural "mice" :synonyms ("mus"))
+(def-indiv-with-id organism "mouse" "NCIT:C14238" :plural "mice" :synonyms ("mus") :adj "murine")
 (def-indiv-with-id organism "rat" "NCIT:C14266")
 (def-indiv-with-id organism "xenopus" "NCIT:C14285") 
 (def-indiv-with-id organism "zebrafish" "NCIT:C14287") 
