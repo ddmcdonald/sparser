@@ -836,6 +836,7 @@
 
 (define-category rna :specializes molecule
   :instantiates self
+  :bindings (uid "NCIT:C812")
   :index (:permanent :key name)
   :lemma (:common-noun "RNA")
   :realization
