@@ -1,8 +1,8 @@
 (in-package :sparser)
 
 
-(define-protein "EPHB5_HUMAN" ("ephrin type-B receptor 5")) 
-(define-protein "IPR000663" ("natriuretic peptide")) 
+;(define-protein "EPHB5_HUMAN" ("ephrin type-B receptor 5")) ;; not clear this exists -- uniprot lists chicken and other species but no human
+#|(define-protein "IPR000663" ("natriuretic peptide")) 
 (define-protein "IPR000837" ("AP-1 transcription factor")) 
 (define-protein "IPR003989" ("vascular cell adhesion molecule-1")) 
 (define-protein "IPR004724" ("epithelial sodium channel")) 
@@ -24,12 +24,12 @@
 (define-protein "IPR028309" ("retinoblastoma protein")) 
 (define-protein "IPR028858" ("Cyclin E" "cyclin E")) 
 (define-protein "IPR029845" ("nuclear factor erythroid 2 related factor 2")) 
-(define-protein "IPR029866" ("steroidogenic acute regulatory protein")) 
-(define-protein "O88587-2" nil) 
-(define-protein "P10636-8" ("hTau40")) 
-(define-protein "UP:SL-0146" ("IP-MS")) 
-(define-protein "UP:SL-0314" ("Z-bodies")) 
-(define-protein "byr2_schpo" ("SPBC1D7.05" "SPBC2F12.01" "byr2" "ste8")) 
+(define-protein "IPR029866" ("steroidogenic acute regulatory protein"))  |#
+;(define-protein "P10636-8" ("hTau40")) 
+;(define-protein "UP:SL-0146" ("IP-MS")) ;; Interphotoreceptor matrix IPM
+;(define-protein "UP:SL-0314" ("Z-bodies")) 
+;(define-protein "byr2_schpo" ("SPBC1D7.05" "SPBC2F12.01" "byr2" "ste8")) 
+#|
 (define-protein "cell membrane" ("SL-0039")) 
 (define-protein "clathrin coated pit" ("SL-0069")) 
 (define-protein "lipid droplet" ("SL-0154")) 
@@ -37,3 +37,4 @@
 (define-protein "perinuclear region" ("SL-0198")) 
 (define-protein "target cell" ("SL-0487")) 
 (define-protein "tight junction" ("SL-0265")) 
+|#
