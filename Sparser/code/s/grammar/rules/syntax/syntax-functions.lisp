@@ -207,20 +207,25 @@
 (define-category lambda-expression :specializes predicate)
 
 (defun make-predication-edge (pre-pred-edge predication)
+  "Span 'pre-pred-edge' with a new edge with the same end-points.
+   The caller has provided 'predication' to be the referent of
+   this new edge."
   (let* ((start-vec (edge-starts-at pre-pred-edge))
          (end-vec (edge-ends-at pre-pred-edge))
          (pred (edge-referent pre-pred-edge))
          (edge
           (make-completed-unary-edge
            start-vec end-vec
-           'make-predication-edge
-           (maybe-extract-statement-edge pre-pred-edge)
-           category::lambda-expression
-           category::lambda-form
-           predication)))
+           'make-predication-edge ;; rule
+           (maybe-extract-statement-edge pre-pred-edge) ;; daughter
+           category::lambda-expression ;; category
+           category::lambda-form ;; form
+           predication)))  ;; referent
     edge))
 
 (defun maybe-extract-statement-edge (pre-pred-edge)
+  "Determines the daughter of the new spanning edge being created by
+   make-predication-edge. "
   (declare (special pre-pred-edge))
   (let* ((ref (edge-referent pre-pred-edge))
          (statement
@@ -394,28 +399,43 @@
 
 (defun create-partitive-np (quantifier of-pp)
   (declare (special quantifier of-pp category::preposition))
-  (let ((pp-edge (right-edge-for-referent)))
+  (let* ((pp-edge (right-edge-for-referent))
+         (right-daughter (edge-right-daughter pp-edge)))
     (unless (eq (edge-form pp-edge) category::preposition)
       ;; Rules out "all" + "of" where we've not filled in the of-pp
-      (when (or
-             (has-definite-determiner? (edge-right-daughter pp-edge))
-             (eq 'which (cat-name (edge-category (edge-right-daughter pp-edge)))))
-        ;;/// alternatively, we could just look for the determiner directly
-        ;; rather than depend on this device to stay stable
-        (cond
-          (*subcat-test* t)
-          (t
-           (unless *sentence-in-core*
-             (error "Threading bug. No value for *sentence-in-core*"))
-           (let ((pobj-ref
-                  (find-or-make-lattice-description-for-ref-category
-                   (edge-referent (edge-right-daughter pp-edge)))))
-             (revise-parent-edge :category (itype-of pobj-ref))
-             (if *determiners-in-DL*
-               (setq pobj-ref (bind-variable 'quantifier quantifier pobj-ref))
-               (add-pending-partitive quantifier (parent-edge-for-referent) *sentence-in-core*))
-             pobj-ref)))))))
+      (cond
+        ((eq 'which (cat-name (edge-category right-daughter)))
+         (create-partitive-wh-relativizer quantifier of-pp))
+        ((has-definite-determiner? right-daughter)
+         ;;/// alternatively, we could just look for the determiner directly
+         ;; rather than depend on this device to stay stable
+         (cond
+           (*subcat-test* t)
+           (t
+            (unless *sentence-in-core*
+              (error "Threading bug. No value for *sentence-in-core*"))
+            (let ((pobj-ref
+                   (individual-for-ref (edge-referent right-daughter))))
+              (revise-parent-edge :category (itype-of pobj-ref))
+              (if *determiners-in-DL* 
+                (setq pobj-ref (bind-variable 'quantifier quantifier pobj-ref))
+                (add-pending-partitive quantifier (parent-edge-for-referent)
+                                       *sentence-in-core*))
+              pobj-ref))))))))
 
+(defun create-partitive-wh-relativizer (quantifier of-pp)
+  ;; e.g. "three of which"  of-pp should be a relativized-prepositional-phrase
+  ;; and the quantifier is a quantifier or a number
+  (if *subcat-test*
+    (itypep of-pp 'relativized-prepositional-phrase)
+    (let* ((wh (value-of 'pobj of-pp))
+           (i (define-or-find-individual 'partitive-relativizer
+                  :quantifier quantifier :relativizer wh)))
+      ;; Make "6 of which" have the same labels as "which"
+      (revise-parent-edge :category (category-named 'which)
+                          :form (category-named 'wh-pronoun))
+      i)))
+    
 
 (defparameter *dets-seen* nil)
 
@@ -1394,6 +1414,14 @@
   (if *subcat-test*
     t
     (cond
+      ((itypep wh-obj 'partitive-relativizer) ;; e.g. "one of which"
+       ;; When the relative clause we are creating here is composed with
+       ;; its np, which must be a collection of some sort, the force of the
+       ;; partitive relativizer is to specify a subset, a 'portion' of the
+       ;; np collection. We're not ready to write that just now (5/31/17)
+       ;; so instead we drop the relativizer on the floor and let the np + relative
+       ;; composition do what it would otherwise normally do.
+       predicate)
       ((itypep wh-obj 'wh-question)
        (let* ((wh (value-of 'wh wh-obj))
               (wh-name (cat-symbol wh))
@@ -1425,9 +1453,6 @@
            (wh-obj (make-wh-object wh))
            (i (define-or-find-individual 'relativized-prepositional-phrase
                   :prep prep-word :pobj wh-obj)))
-      (assert (word-p prep-word) ()
-              "Could not retrieve a preposition word from ~a"
-              (parent-edge-for-referent))
       i)))
 
 (defun make-pp-relative-clause (wh-pp vp)

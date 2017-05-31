@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "syntactic-classes"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  December 2016
+;;;  Version:  May 2017
 
 ;; Extracted from syntax-functions 12/5/16
 
@@ -96,7 +96,16 @@
   information doesn't come into play"
   :index (:temporary :sequential-keys prep pobj))
 
-
+(define-category partitive-relativizer
+  :specializes phrase-interpretation
+  :binds ((quantifier (:or quantifier number))
+          (relativizer)) ;; e.g. 'which'
+  :documentation "Provides a scafold for relativizers like
+ 'all of which' or 'three of which'. Should be cached out
+ in a 'portion' object (a kind of collection) when the
+ relative clause is attached to its head np (which should
+ refer to a collection)."
+  :index (:temporary :sequential-keys quantifier relativizer))
 
 (define-category copular-pp-rel-clause
   :specializes phrase-interpretation
