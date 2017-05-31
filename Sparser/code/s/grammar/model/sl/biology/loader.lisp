@@ -30,12 +30,14 @@
 
 (gload "bio;taxonomy")
 (gload "bio;cellular-locations")
+(gload "bio;new-defs;new-cell-loc")
 (gload "bio;non-cellular-locations") ;; needs to be before protein families so human is defined
+(gload "bio;new-defs;new-noncell-loc")
 (gload "bio;aux-taxonomy")
 ;; have to get the uniprot-names before you do any define-protein's
 (gload "bio;uniprot-names.lisp")
 (gload "bio;standardized-protein-defs")
-(gload "bio;non-upa-upm-proteins")
+;(gload "bio;non-upa-upm-proteins") all of these have been folded into real defs now
 (gload "bio;proteins-revised")
 (gload "bio;fix-protein-defs")
 #|
@@ -46,22 +48,33 @@
 (gload "bio;rhgnc-proteins")
 |#
 (gload "bio;bio-complexes")
+(gload "bio;new-defs;new-bio-complexes")
 (gload "bio;bio-methods")
+(gload "bio;new-defs;new-bio-meth")
 (gload "bio;bio-processes")
+(gload "bio;new-defs;new-bio-proc")
 (gload "bio;bio-predications")
 (gload "bio;cells")
+(gload "bio;new-defs;new-cells")
 (gload "bio;cellular-processes")
+(gload "bio;new-defs;new-cell-proc")
 (gload "bio;diseases-pathogens")
+(gload "bio;new-defs;new-diseases")
 (gload "bio;measurements")
+(gload "bio;new-defs;new-units")
 (gload "bio;molecular-locations")
 (gload "bio;plasmids-rna")
+(gload "bio;new-defs;new-rna")
 (gload "bio;post-trans-mods")
+(gload "bio;new-defs;new-post-trans-mod")
 (gload "bio;substances")
+(gload "bio;new-defs;new-substances")
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
 (gload "bio;terms")
 (gload "bio;drugs") ;; needed by verbs
+(gload "bio;new-defs;new-drugs")
 
 (gload "bio;harvard-terms")
 
@@ -72,21 +85,24 @@
 
 ;;(gload "bio;UCD-proteins")
 (gload "bio;protein-families")
+(gload "bio;new-defs;new-prot-fam")
 ;(gload "bio;phenomena") ;; basically empty
 (gload "bio;pathways") ;; after proteins
 (gload "bio;protein-terminals-domains") ;; has to be after terms-to-move
+(gload "bio;new-defs;new-prot-dom")
 (gload "bio;general-verbs") ;; akin to terms-to-move
 (gload "bio;verbs") ;; after phenomena, with bio synonyms of general verbs
 
 (gload "bio;molecules")
+(gload "bio;new-defs;new-molecules")
 
-;;(gload "bio;trips-terms.lisp")
-(gload "bio;trips-terms-new.lisp")
-(gload "bio;trips-terms-phase3-1-2000-non-proteins")
-(gload "bio;trips-terms-phase3-2nd-run-non-proteins")
-(gload "bio;trips-terms-apr24-non-proteins")
+;(gload "bio;trips-terms.lisp")
+;(gload "bio;trips-terms-new.lisp")
+;(gload "bio;trips-terms-phase3-1-2000-non-proteins")
+;(gload "bio;trips-terms-phase3-2nd-run-non-proteins")
+;(gload "bio;trips-terms-apr24-non-proteins")
 ;;(gload "bio;trips-proteins")
-(gload "bio;reach-terms.lisp")
+;(gload "bio;reach-terms.lisp")
 
 (gload "bio;citations")
 (gload "bio;examples.lisp") ;; no definitions in here
