@@ -74,6 +74,7 @@
 
 (define-category apoptosis ;; aka cell death
     :specializes cellular-process
+    :bindings (uid "GO:0006915")
     :realization
     (:noun "apoptosis" :adj "apoptotic"))
 
@@ -183,6 +184,7 @@
 (def-synonym adhesion (:noun "cell–cell adhesion"))
 (def-synonym apoptosis (:noun "cell death"))
 (def-synonym apoptosis (:noun "cellular death"))
+(def-synonym apoptosis (:noun "programmed cell death"))
 (def-synonym division (:noun "cell division"))
 (def-synonym division (:noun "cellular division"))
 (def-synonym motility (:noun "cell motility"))
