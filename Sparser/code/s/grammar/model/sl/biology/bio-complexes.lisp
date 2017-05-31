@@ -265,3 +265,11 @@
 ;;;-------------------------------------
 ;;; Complex definitions with IDs 
 ;;;-------------------------------------
+
+(def-indiv-with-id bio-complex "9-1-1" "EBI:2606881" :synonyms ("Rad9-Hus1-Rad1 complex" "9-1-1 complex" "Rad9-Hus1-Rad1 (9-1-1) clamp complex" "Rad9-Rad1-Hus1"))
+(def-indiv-with-id bio-complex "proteasome complex" "GO:0000502" :adj "proteasomal" :synonyms ("PR:000027410"))
+
+;(def-family "DDR" :identifier "IPR003208" :synonyms ("diol dehydratase-reactivating factor")) ;; also PR:000027169 -- both a family and a complex
+;(def-family "TSH" :identifier "NCIT:C2280" :synonyms ("thyroid stimulating hormone") :members ("UP:P01215" "UP:P01222")) ;; alternate id  "PR:000028269" -- more of a complex than a protein family
+;(define-protein "PR:000028438" ("casein kinase II")) ;; another complex  in humans with alpha (UP:P68400 -- not in our defs) alpha' (UP:P19784) and beta (UP:P67870)
+;(define-protein "PR:000028509" ("chaperonin-containing TCP1 complex")) ;; another complex, in the mouse, with 8 subunits
