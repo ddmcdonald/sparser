@@ -441,7 +441,7 @@
      :for process))
 
 (define-category bio-mechanism :specializes mechanism
-  :mixins (has-name biological)
+                 :mixins (has-name biological has-uid)
   :realization
     (:noun "mechanism"))
 
