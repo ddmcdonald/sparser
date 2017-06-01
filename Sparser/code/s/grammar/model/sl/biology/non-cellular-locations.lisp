@@ -122,5 +122,12 @@
 (def-indiv-with-id organism "xenopus" "NCIT:C14285") 
 (def-indiv-with-id organism "zebrafish" "NCIT:C14287") 
 
-(def-indiv-with-id species "Saccharomyces cerevisiae" "NCIT:C14271" :synonyms ("saccharomyces" "yeast" "S. cerevisiae")) 
-(def-indiv-with-id species "human" "NCIT:C14225" :name "human" :synonyms ("homo sapiens"))
+(def-indiv-with-id species "Saccharomyces cerevisiae" "NCIT:C14271" :synonyms ("saccharomyces" "yeast" "S. cerevisiae"))
+(define-category human :specializes species
+                 :mixins (has-UID has-name mammal) ;; not sure if mixin is the right thing?
+                   :instantiates self
+                   :index (:permanent :key name)
+                   :bindings (uid "NCIT:C14225")
+                   :realization (:noun ("human" "homo sapiens"))) ;;possibly add "person" and "people"
+(def-indiv-with-id human "man" "NCIT:C14366" :name "man" :plural "men")
+(def-indiv-with-id human "woman" "NCITC14284" :name "woman" :plural "women")
