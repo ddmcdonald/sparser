@@ -1770,7 +1770,7 @@
 ("SC2" "ONT:CELL-LINE" :id "CVCL:6F20" :name "SC2") 
 ("SC1" "ONT:CELL-LINE" :id "CVCL:6F19" :name "SC1") 
 ("TAC" "ONT:CELL-LINE" :id "CVCL:D939" :name "MRC-iPS-26") 
-("TAB" "ONT:CELL-LINE" :id "CVCL:E842" :name "TAB089") 
+;("TAB" "ONT:CELL-LINE" :id "CVCL:E842" :name "TAB089") ;;causes errors
 ("T98Gs" "ONT:CELL-LINE" :id "EFO:0002085" :name "T98G") 
 ("T3M4" "ONT:CELL-LINE" :id "CVCL:4056" :name "T3M-4") 
 ("T2a" "ONT:CELL-LINE" :id "CVCL:6C58" :name "T2-A") 
@@ -11498,8 +11498,8 @@
 ("vectors" "ONT:ORGANISM" :id "NCIT:C14198" :name "disease vector") 
 ("vectored" "ONT:ORGANISM" :id "NCIT:C14198" :name "disease vector") 
 ("vector" "ONT:ORGANISM" :id "NCIT:C14198" :name "disease vector") 
-("Human" "ONT:PERSON" :id "NCIT:C14225" :name "human") 
-("Man" "ONT:PERSON" :id "NCIT:C14366" :name "man") 
+;("Human" "ONT:PERSON" :id "NCIT:C14225" :name "human") ;;manually added these
+;("Man" "ONT:PERSON" :id "NCIT:C14366" :name "man") 
 ("ETH" "ONT:PHARMACOLOGIC-SUBSTANCE" :id "CHEBI:4885" :name "ethionamide") 
 ("DiOC6" "ONT:PHARMACOLOGIC-SUBSTANCE" :id "MESH:C007392" :name "3,3'-dihexyl-2,2'-oxacarbocyanine") 
 ("DMMB" "ONT:PHARMACOLOGIC-SUBSTANCE" :id "MESH:C435946" :name "dimethylmethylene blue") 
@@ -14976,7 +14976,7 @@
 ("siRNA" "ONT:RNA" :id "NCIT:C2191" :name "small interfering RNA") 
 ("uRNA" "ONT:RNA" :id "NCIT:C815" :name "small nuclear RNA") 
 ("microRNAs" "ONT:RNA" :id "NCIT:C25966" :name "microRNA") 
-("siN" "ONT:SIGNALING-PATHWAY" :id "GO:0031028" :name "septation initiation signaling") 
+("SIN" "ONT:SIGNALING-PATHWAY" :id "GO:0031028" :name "septation initiation signaling") 
 ("colloids" "ONT:SUBSTANCE" :id "NCIT:C32345" :name "colloid") 
 ("Gas" "ONT:SUBSTANCE" :id "NCIT:C45299" :name "gas") 
 ("Fluid" "ONT:SUBSTANCE" :id "NCIT:C25278" :name "fluid") 

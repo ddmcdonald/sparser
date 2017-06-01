@@ -3191,10 +3191,12 @@
               do (push term *trips-terms-phase3-2nd-run*))))
 
 (defun load-trips-terms ()
+  (unless (and *trips-terms-PHASE3-1-2000* *trips-terms-phase3-2nd-run*)
+    (load-trips-phase3))
   (loop for term-name in
           `(
             *trips-terms*
-            *trips-bio-process*
+           *trips-bio-process*
             *trips-disease*
             *trips-cells*
             *trips-cell-lines*
