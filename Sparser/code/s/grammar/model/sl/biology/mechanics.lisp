@@ -45,10 +45,11 @@
 (defparameter *new-cell-proc* nil)
 (defparameter *new-drugs* nil)
 (defparameter *new-molecules* nil)
+(defparameter *new-pathways* nil)
 (defparameter *new-post-trans-mod* nil)
 (defparameter *new-prot-dom* nil)
 (defparameter *new-rna* nil)
-(defparameter *new-substance* nil)
+(defparameter *new-substances* nil)
 (defparameter *new-units* nil)
 (defparameter *new-prot-fam* nil)
 
@@ -99,6 +100,7 @@
       (let* 
           ((name (getf (cddr term) :name))
            (name-cat (when name (name-is-cat-p name))))
+        ;(lsp-break "past redefs; name: ~s category: ~s" name category)
         (case category
           ((residue-on-protein molecular-site nil )
            ;;(format t "Rejecting REACH definition ~s~%" term)
@@ -133,6 +135,8 @@
            (stash-def-indiv-with-id word category id name '*new-drugs* :no-plural t))
           (molecule
            (stash-def-indiv-with-id word category id name '*new-molecules*))
+          (pathway
+           (stash-def-indiv-with-id word category id name '*new-pathways*))
           (post-translational-modification
             (stash-def-indiv-with-id word category id name '*new-post-trans-mod*))
           (protein-domain
@@ -140,7 +144,7 @@
           ((micro-rna rna) ;; check if it still has problems
            (stash-def-indiv-with-id word category id name '*new-rna*))
           (substance
-           (stash-def-indiv-with-id word category id name '*new-substance*))
+           (stash-def-indiv-with-id word category id name '*new-substances*))
           (unit-of-measure
            (if (< (length word) 4) ;; for abbreviations, case matters (e.g. "m" meter vs. "M" molar) but for full names it doesn't
                (stash-def-indiv-with-id word category id name '*new-units* :maintain-case t)
@@ -152,9 +156,9 @@
            (car *trips-define-proteins*))
           (protein-family
            (if (and name name-cat)
-               (then (push (list (value-of 'uid (category-named name-cat)) name-cat term)
-                     *prot-fam-redef*)
-                     (car *prot-fam-redef*))
+               (then (push `(:old-id ,(value-of 'uid (category-named name-cat)) ',name-cat ,term)
+                           *prot-fam-redef*)
+                     t) ;; had to change this because otherwise it tries to evaluate the list
                (else (push `(def-family-with-id ,word ,id ,.(when name `(:name ,(pname name))))
                            *new-prot-fam*)
                      (car *new-prot-fam*))))
@@ -367,6 +371,7 @@ uid binding, if there is one"
       (cell-line 'cell-line)
       (cell-part 'cellular-location)
       ((chemical molecule) 'molecule)
+      (gene-translation 'cellular-process) ;; so far only "translation" so mostly moot
       (injury 'injury) ;; added category modeled on disease
       (macromolecular-complex 'bio-complex)
       ((length-unit measure-unit volume-unit weight-unit) 'unit-of-measure)
@@ -375,7 +380,7 @@ uid binding, if there is one"
       (molecular-domain 'protein-domain)
       (molecular-site 'residue-on-protein)
       ((organism nonhuman-animal animal fish insect invertebrate
-                 microorganism fungus plant bird vertebrate) 'organism)
+                 microorganism person fungus plant bird vertebrate) 'organism)
       (pharmacologic-substance 'drug)
       (physical-condition 'disease)
       (post-translational-modification 'post-translational-modification)
@@ -476,7 +481,7 @@ uid binding, if there is one"
 
 (defparameter *suppressed-new-defs* '(*suppressed-hyphenated-new-words* *suppressed-mod-redefs* *id-mismatch-redef* *id-and-cat-mismatch* *no-id-redef* *namecat-id-mismatches* *no-rule-redef* *name-id-mismatches* *prot-fam-redef* *inhibited-plurals* *violates-no-plural* *word-diff-pos-name* *plurals-of-existing-cats* *diff-pos-of-existing-cats* *plurals-of-existing-words* *diff-pos-of-existing-words* *synonym-for-existing-words* *category-mismatch-existing-cats* *category-mismatch-existing-words* *suppressed-redefs*))
 
-(defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth* *new-bio-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substance*))
+(defparameter *new-id-defs*  '(*new-diseases* *new-bio-complexes* *new-bio-meth* *new-bio-proc* *new-noncell-loc* *new-cells* *new-cell-loc* *new-cell-proc* *new-drugs* *new-molecules* *new-pathways* *new-prot-dom* *new-rna* *new-units* *new-prot-fam* *new-post-trans-mod* *new-substances*))
 
 (defun collect-all-new-defs (functions)
   "Call on a list of functions, e.g., (list #'load-trips-terms #'load-reach-terms)"

@@ -97,7 +97,7 @@
 (gload "bio;new-defs;new-molecules")
 
 ;(gload "bio;trips-terms.lisp")
-;(gload "bio;trips-terms-new.lisp")
+(gload "bio;trips-terms-new.lisp")
 ;(gload "bio;trips-terms-phase3-1-2000-non-proteins")
 ;(gload "bio;trips-terms-phase3-2nd-run-non-proteins")
 ;(gload "bio;trips-terms-apr24-non-proteins")

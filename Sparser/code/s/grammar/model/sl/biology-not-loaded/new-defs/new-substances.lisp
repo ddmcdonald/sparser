@@ -1,5 +1,6 @@
 (in-package :sparser)
 
+
 (def-indiv-with-id substance "Fluid" "NCIT:C25278" :name "fluid") 
 (def-indiv-with-id substance "Liquid" "NCIT:C45298" :name "liquid") 
 (def-indiv-with-id substance "Oil" "NCIT:C66934" :name "oil") 
