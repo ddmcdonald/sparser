@@ -65,6 +65,15 @@
    :etf (svo-passive)))
 
 ;; manually added from TRIPS
+(define-category acylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0043543")
+  :realization
+  (:verb "acylate"
+   :noun "acylation"
+   :etf (svo-passive)))
+
+;; manually added from TRIPS
 (define-category de-acylation
   :specializes post-translational-modification
   :bindings (uid  "GO:0035601")
@@ -149,12 +158,20 @@
      :etf (svo-passive)))
 
 ;; manually added from TRIPS
+(define-category nitrosylation
+  :specializes post-translational-modification
+  :bindings (uid  "GO:0017014")
+  :realization
+  (:verb "nitrosylate" :noun "nitrosylation"
+         :etf (svo-passive)))
+
+;; manually added from TRIPS
 (define-category s-nitrosylation
   :specializes post-translational-modification
   :bindings (uid  "NCIT:C120476")
   :realization
   (:verb "s-nitrosylate" :noun "s-nitrosylation"
-   :etf (svo-passive)))
+         :etf (svo-passive)))
 
 ;; manually added from TRIPS
 (define-category neddylation
