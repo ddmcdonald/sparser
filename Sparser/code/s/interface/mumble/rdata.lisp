@@ -277,7 +277,10 @@
    elementary tree (i.e. lexicalize the appropriate phrase).
    Record the lexicalized tree on the mumble word and th
    See Mumble/derivation-trees/builders.lisp for the lexicalized
-   phrase creators." ;;(lsp-break "make resource for ~a" word)
+   phrase creators." 
+  (when (consp word) ;; irregulars e.g. ("bacterium" :plural "bacteria")
+    ;; drop them on the floor for now. /// lookup Mumble rep of irregulars
+    (setq word (car word)))
   (let* ((m-pos (mumble-pos pos-tag))
          (m-word (and m-pos (get-mumble-word-for-sparser-word word m-pos)))
          (lp (or (m::get-lexicalized-phrase m-word)
