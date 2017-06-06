@@ -218,11 +218,10 @@ Should mirror the cases on the *single-words* ETF."
 (defun setup-word-data (word pos category)
   "For adverbs, adjectives, and anything else whose realization
    is made by rule rather than the interpretation of an rdata
-   expression."  
+   expression. The call oridinates in define-function-term, where
+   the category will be based on the word."  
   (assert (or (word-p word) (polyword-p word)))
-  ;; do we care whether the category already has some realization?
-  (make-realization-data category
-                         :heads `(,pos ,word)))
+  (make-realization-data category :heads `(,pos ,word)))
 
 
 ;;;----------------------------
@@ -256,8 +255,9 @@ Should mirror the cases on the *single-words* ETF."
 (defmethod initialize-instance :after ((instance realization-data)
                                        &key category etf heads mumble)
   (when etf (record-use-of-tf-by etf category))  
-  (when heads (make-corresponding-lexical-resource heads category))
-  (when mumble (setup-mumble-data mumble category instance)))
+  (when mumble (setup-mumble-data mumble category instance))
+  ;; Mumble rdata runs first. It has better information
+  (when heads (make-corresponding-lexical-resource heads category)))
 
 (defun make-realization-data (category &rest initargs)
   "Make a realization data record and attach it to a category."
@@ -268,7 +268,7 @@ Should mirror the cases on the *single-words* ETF."
     (make-rules-for-rdata category rdata)
     (nconcf (cat-realization category) (list rdata))
     rdata))
-
+         
 (defgeneric rdata (item)
   (:documentation "Retrieve the realization data for a category designator.")
   (:method (item)
@@ -303,6 +303,11 @@ Should mirror the cases on the *single-words* ETF."
          (let ((head-var (find head (indiv-binds i) :key #'binding-variable)))
            (and head-var (binding-value head-var))))))))
 
+
+;;;-----------------
+;;; handling lemmas
+;;;-----------------
+
 (defgeneric lemma (item pos)
   (:method ((c category) pos)
     (getf (get-tag :lemma c) pos))
@@ -315,10 +320,11 @@ Should mirror the cases on the *single-words* ETF."
 
 (defun setup-category-lemma (category lemmata)
   "Used when the name of a category is the same as some word,
-e.g. 'comparative', and the realization field is used to provide
-the rspec for the words of instances of the category."
-  ;;/// look at apply-realization-schema-to-individual for part of
-  ;; the old approach to this problem
+   e.g. 'comparative', and the realization field is used to provide
+   the rspec for the words of instances of the category.
+   Note that if the category has any normal rdata it will have been
+   handled before this is called and an rdata object installed
+   on the category."
   (loop for (key lemma) on lemmata by #'cddr
         do (unless (keywordp key) ;; friendly DWIM
              (setq key (intern (string key) :keyword)))
@@ -326,8 +332,34 @@ the rspec for the words of instances of the category."
            (check-type lemma (or string cons word))
            (let* ((head (deref-rdata-word lemma category))
                   (rules (make-rules-for-head key head category category)))
+             (when (stringp lemma) (setq lemma (resolve lemma)))
+             (integrate-lemma-rdata category key lemma)
              (setf (lemma category key) head)
              (add-rules rules category))))
+
+(defun integrate-lemma-rdata (category key lemma)
+  "Copy the lemma data into the category's realization data and
+   make the corresponding mumble resource"
+  (let* ((rdata (car (rdata category)))
+         (head-data (when rdata (rdata-head-words rdata))))
+    (if rdata ;; add the data for this word
+      (cond
+        ((null head-data)
+         (setf (rdata-head-words rdata) `(,key ,lemma)))
+        ((some #'lambda-variable-p head-data)
+         ;; e.g. (:common-noun #<variable name>)
+         (setf (elt head-data (position-if #'lambda-variable-p head-data))
+               lemma))
+        (head-data ;; has at least one entry already
+         (setf (rdata-head-words rdata)
+               (cons key (cons lemma rdata)))))
+      (else
+        ;; Make an rdata and place the information where it needs = to go
+        ;; since the procesing was already done in setup-category-lemma
+        (let ((rdata (make-realization-data category)))
+          (setf (rdata-head-words rdata) `(,key ,lemma)))))
+    (make-corresponding-mumble-resource lemma key category)))
+
 
 
 ;;;--------------------------------------
