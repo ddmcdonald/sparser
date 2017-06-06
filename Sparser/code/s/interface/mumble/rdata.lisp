@@ -45,7 +45,7 @@
              collect (make-instance 'mumble::parameter-variable-pair
                                     :var variable :param parameter)))
          (head-data (rdata-head-words rdata)))
-
+  
     (multiple-value-bind (m-head lp)
         (decode-rdata-head-data head-data phrase category)
       (let ((mdata (make-instance 'm::mumble-rdata
@@ -61,11 +61,10 @@
    This digests it and returns the mumble word that is the head and
    the corresponding lexicalized phrase."
   (when head-data
+    ;; head = (:verb (#<word "build"> :past-tense #<word "built">))
     (unless (third head-data) ;; e.g. evidence in bio;taxonomy
       ;;(error "the category ~a has mulitple heads: ~a" category head-data))
       ;;/// Have to think about what to do with these
-      
-      ;; head = (:verb (#<word "build"> :past-tense #<word "built">))
       (let* ((pos (car head-data)) 
              (word-data (cadr head-data)))
         (multiple-value-bind (s-head-word irregulars)
@@ -88,6 +87,17 @@
                            s-head-word pos category phrase))))
               ;;(lsp-break "lp for ~s is ~a" (pname s-head-word) lp)
               (values m-word lp))))))))
+
+(defgeneric has-mumble-rdata (category)
+  (:documentation "Return the mumble field in the category's rdata")
+  (:method ((i individual))
+    (has-mumble-rdata (itype-of i)))
+  (:method ((c category))
+    (let* ((rdata-field (rdata c))
+           (rdata (car rdata-field)))
+      (when rdata
+        (when (cdr rdata-field) (warn "multiple reaalizations for ~a" c))
+        (mumble-rdata rdata)))))
 
 
 
@@ -241,53 +251,48 @@
       (when word
         (make-resource-for-sparser-word word pos-tag category)))))
 
-;;/// define-preposition in words
-;;    after method is morphology: make-rules-for-head
-(defun make-corresponding-mumble-resource (word pos-tag category)
-  ;; As called from decode-realization-parameter-list which is
-  ;; the central place 'shortcut' realization specification
-  ;; handling that everything goes through. 
-  ;; Notice that the word and tag are organized differently
-  ;; which is why we can't use the other form (which fits
-  ;; 'regular' specifications).
-  (when (or *build-mumble-equivalents*
-            *CwC*)
-    (make-resource-for-sparser-word word pos-tag category)
-    :done)) ;; keep this on the stack
+(defgeneric make-corresponding-mumble-resource (word pos-tag krisp-obj)
+  (:documentation "Special path to generating the resource when the
+    caller has the word and part-of-speech in hand, such as lemmas.
+    Calls the standard lexicalized tree constructor and then records
+    the result on the Krisp category or individual.")
+  (:method :around (word pos-tag krisp-obj)
+    (when (or *build-mumble-equivalents*
+              *CwC*)
+      (call-next-method)))
+  (:method (word pos-tag (i individual))
+    "Route for attributes"
+    (let ((lp (make-resource-for-sparser-word word pos-tag i)))
+      (when lp (m::record-lexicalized-phrase i lp))))
+  (:method (word pos-tag (c category))
+    "Route for lemmas, preposititions, make-rules-for-head"
+    (let ((lp (make-resource-for-sparser-word word pos-tag c)))
+      (when lp (m::record-lexicalized-phrase c lp)))))
+
 
 (defun make-resource-for-sparser-word (word pos-tag category &optional verb-phrase)
   "Look up the corresponding mumble part of speech ('m-pos').
    Make the mumble word ('m-word'). Then create and record 
    lexicalized phrase to embed the word in the appropriate
    elementary tree (i.e. lexicalize the appropriate phrase).
+   Record the lexicalized tree on the mumble word and th
    See Mumble/derivation-trees/builders.lisp for the lexicalized
-   phrase creators."
+   phrase creators." ;;(lsp-break "make resource for ~a" word)
   (let* ((m-pos (mumble-pos pos-tag))
          (m-word (and m-pos (get-mumble-word-for-sparser-word word m-pos)))
-         (lp (case pos-tag
-               (:adjective (m::adjective m-word))
-               ((or :noun :common-noun :proper-noun) (m::noun m-word))
-               (:verb (m::verb m-word verb-phrase))
-               (:adverb (m::adverb m-word))
-               (:prep (m::prep m-word))
-               (:interjection (m::interjection m-word)))))
+         (lp (or (m::get-lexicalized-phrase m-word)
+                 (case pos-tag
+                   (:adjective (m::adjective m-word))
+                   ((or :noun :common-noun :proper-noun) (m::noun m-word))
+                   (:verb (m::verb m-word verb-phrase))
+                   (:adverb (m::adverb m-word))
+                   (:prep (m::prep m-word))
+                   (:quantifier (m::quantifier m-word))
+                   (:pronoun (m::pronoun m-word))
+                   (:interjection (m::interjection m-word))))))
     (when lp
       (m::record-lexicalized-phrase m-word lp)
-      (m::record-lexicalized-phrase category lp)
       lp)))
-
-
-(defun rationalize-pos (form)
-  "Convert from 'form' as used in define-function-term to one of the
-   head-keyword part-of-speech options suitable for indicating its
-   mumble equivalent."
-  (ecase form
-    (adverb :adverb)
-    ((or adjective spatial-adjective temporal-adjective) :adjective)
-    ((or comparative superlative) :adjective)
-    ((or det approximator sequencer) :determiner)
-    ((or conjunction subordinate-conjunction) :word) ;; i.e. ignore
-    (standalone :word)))
 
 (defun mumble-pos (pos-tag) ;; c.f. sparser-pos in binding-centric
   "Translate a Sparser part of speech into the Mumble equivalent"
@@ -299,6 +304,7 @@
     (:adjective 'm::adjective)
     (:prep 'm::preposition)
     (:determiner 'm::determiner)
+    (:quantifier 'm::quantifier)
+    (:pronoun 'm::pronoun)
     (:interjection 'm::interjection)))
-
 
