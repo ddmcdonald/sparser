@@ -46,16 +46,34 @@
   (find-or-make-word (sp::pname w)))
 
 
+;;--- linking/accessing lexicalized-phrases
+;; see Mumble/derivation-trees/make.lisp
+
 (defmethod record-lexicalized-phrase ((category sp::category)
                                       (lp lexicalized-resource))
+  "Called from sp:make-resource-from-sparser-word along the usual path
+   from sp::make-corresponding-resource in the initialization of the
+   rdata for a category. This goes to a table from strings to lp."
   (record-lexicalized-phrase (symbol-name (sp::cat-symbol category)) lp))
 
+(defparameter *individuals-to-lexicalized-phrases* (make-hash-table)
+  "Special index serving the same function as *strings-to-lexicalized-phrases*
+   but for direct linking to individuals")
+
+(defmethod record-lexicalized-phrase ((i sp::individual)
+                                      (lp lexicalized-resource))
+  "Deliberately associating the lp with the individual rather than
+   the usual link to the category. Needed with the category is too
+   general as with attributes (size, color, etc.)."
+  (setf (gethash i *individuals-to-lexicalized-phrases*) lp))
 
 (defmethod get-lexicalized-phrase ((category sp::category))
   (get-lexicalized-phrase (symbol-name (sp::cat-symbol category))))
 
 (defmethod get-lexicalized-phrase ((i sp::individual))
-  (get-lexicalized-phrase (itype-of i)))
+  (or (gethash i *individuals-to-lexicalized-phrases*)
+      (get-lexicalized-phrase (sp::itype-of i))))
+
 
 
 (defmethod discourse-unit  ((i sp::individual))
@@ -85,4 +103,29 @@
      (let ((category (sp::itype-of i)))
        `( ,(sp::cat-symbol category) )
        ))))
+
+
+;;------- print methods for derivation types refering categories
+
+(defmethod print-object ((clp category-linked-phrase) stream)
+  (print-unreadable-object (clp stream)
+    (let ((category (linked-category clp))
+          (lp (linked-phrase clp)))
+      (format stream "clp: ~a ~a" (sp::pname category) lp))))
+
+(defmethod print-object ((md mumble-rdata) stream)
+  (print-unreadable-object (md stream)
+    (let* ((category (linked-category md))
+           (lp (linked-phrase md))
+           (phrase (phrase lp))
+           (bound (bound lp))
+           (pvp (car bound))
+           (vars (variables-consumed md)))
+      (format stream "mdata: ~a, ~a ~a=~a ~a"
+              (sp::pname category)
+              (phrase-name-for-printing phrase)
+              (name (phrase-parameter pvp))
+              (pprint-value (value pvp))
+              vars))))
+
 
