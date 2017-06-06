@@ -2,7 +2,7 @@
 ;;; Copyright (c) 2013-2017 David D. McDonald  All Rights Reserved
 ;;;
 ;;;  /Mumble/derivation-trees/builders.lisp
-;;;  April 2017
+;;;  June 2017
 
 ;; Initated 11/20/13 to package up reusable parameterized
 ;; derivation tree patterns at roughly the level of maximal projections.
@@ -71,16 +71,42 @@
 
 
 (defgeneric adjective (word)
-  (:documentation "Defines a lexicalized tree for an adjective
-    taken as a simple premodifier. The relationship of something
-    having this property is not this tree but should have
-    a choice set of some sort since it has several realizations.")
+  (:documentation "Defines a lexicalized phrase for an adjective.
+    Leaves the decision of how to position this adjective phrase
+    within the text open, e.g. as premodifier, predicate adjective,
+    resultative, etc.")
   (:method ((w word))
     (adjective (pname w)))
   (:method ((pname string))
-    (let* ((word (word-for-string pname 'adjective))
-           (ap (attachment-point-named 'adjective)))
+    (let ((phrase (phrase-named 'adjp))
+          (adjective (word-for-string pname 'adjective)))
+      (make-instance
+       'saturated-lexicalized-phrase
+       :phrase phrase
+       :bound (list (pvp 'a adjective))))))
+
+(defgeneric adjectivial-modifier (word)
+  (:documentation "Interpret the word as an adjective but
+    return a lexicalized attachment point using the adjective AP")
+  (:method ((w word))
+    (adjectivial-modifier (pname w)))
+  (:method ((pname string))
+    (let ((word (word-for-string pname 'adjective))
+          (ap (attachment-point-named 'adjective)))
       (make-lexicalized-attachment ap word))))
+
+
+(defgeneric adverb (word)
+  (:documentation "Make a lexicalized adverbial phrase")
+  (:method ((w word))
+    (adverb (pname w)))
+  (:method ((pname string))
+    (let ((phrase (phrase-named 'advp))
+          (adverb (word-for-string pname 'adverb)))
+      (make-instance
+       'saturated-lexicalized-phrase
+       :phrase phrase
+       :bound (list (pvp 'adv adverb))))))
 
 
 (defgeneric prep (word)
@@ -105,29 +131,32 @@
                     :value preposition))
        :free `(,(parameter-named 'prep-object))))))
 
-(defgeneric adverb (word)
-  (:documentation "Make a lexicalized adverbial phrase")
+
+(defgeneric quantifier (word)
+  (:documentation "Creates a lexicalized tree, a QP phrase, for
+    a quantifier. Returns a fully saturated lexicalized phrase.")
   (:method ((w word))
-    (adverb (pname w)))
+    (quantifier (pname w)))
   (:method ((pname string))
-    (let ((phrase (phrase-named 'advp))
-          (adverb (word-for-string pname 'adverb)))
-      (make-instance
-       'saturated-lexicalized-phrase
-       :phrase phrase
-       :bound (list (pvp 'adv adverb))))))
+    (let ((phrase (phrase-named 'qp))
+          (quantifier (word-for-string pname 'quantifier)))
+      (make-instance 'saturated-lexicalized-phrase
+                     :phrase phrase
+                     :bound (list (pvp 'q quantifier))))))
 
 
-
-(defun wrap-pronoun (pronoun-symbol)
-  "Returns a lexicalized phrase expected to be used as a resource
-  to a DTN that something else builds (which is where the referent
-  is recorded). So this is really just a convenience function."
-  (let ((phrase (phrase-named 'pronominal-np))
-        (pronoun (mumble-value pronoun-symbol 'pronoun)))
-    (make-instance 'saturated-lexicalized-phrase
-      :phrase phrase
-      :bound (list (pvp 'p pronoun)))))
+(defgeneric pronoun (word)
+  (:documentation "Returns a lexicalized phrase expected to 
+   be used as a resource to a DTN that something else builds 
+   (which is where the referent  is recorded).")
+  (:method ((w word))
+    (pronoun (pname w)))
+  (:method ((pname string))                  
+    (let ((phrase (phrase-named 'pronominal-np))
+          (pronoun (word-for-string pname 'pronoun)))
+      (make-instance 'saturated-lexicalized-phrase
+                     :phrase phrase
+                     :bound (list (pvp 'p pronoun))))))
 
 
 (defgeneric predicate (word)
