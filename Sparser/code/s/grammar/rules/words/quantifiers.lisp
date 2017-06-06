@@ -103,6 +103,9 @@
                :referent object)))
         (push cfr cfrs))
 
+      ;; Not clear we need anything bigger
+      (make-corresponding-mumble-resource word :quantifier object)
+
       (setf (get-rules object) cfrs)
       object )))
 
