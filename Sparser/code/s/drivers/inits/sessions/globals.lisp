@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "globals"
 ;;;   Module:  "drivers;inits:sessions:"
-;;;  Version:  March 2017
+;;;  Version:  June 2017
 
 ;;;  Flags and the code to initialize them, as pertain to the state
 ;;;  of an entire session with the analyzer.
@@ -36,6 +36,21 @@
 ;; parameter definitions and setting them to nil. 
 
 (in-package :sparser)
+
+;;;---------------------------------------
+;;;  parameters for what rules are formed
+;;;---------------------------------------
+
+(defparameter *reduced-form-rules* t
+  "turn this on to reduce the number of form rules 
+   produced for adjectives and other function terms")
+
+(defparameter *head-rules-already-created* nil
+  "Dynamically bound in define-function-term and read in
+   make-rules-for-rdata to avoid duplicate unary rules. 
+   Avoids assembly of redundant rules.")
+
+
 
 
 ;;;-----------------------------------------
