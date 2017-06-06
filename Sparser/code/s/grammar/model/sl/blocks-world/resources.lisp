@@ -14,7 +14,7 @@
 ;;;-----------------------------
 
 ;;--- vocabulary
-
+#|
 (define-word "let" (verb))
 
 (defun setup-lexicalized-trees ()
@@ -28,3 +28,4 @@
 ;;//// one-off that should go away. Reanalyze as conventional attachment
 (define-dtn-operator let-us (let s sp::*you* o sp::*us*) command )
 
+|#
