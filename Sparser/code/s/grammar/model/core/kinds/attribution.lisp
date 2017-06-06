@@ -263,6 +263,7 @@ be added to attribute so it knows how to handle the individuals.
              (declare (special *inhibit-constructing-comparatives*))
              (let ((i (define-or-find-individual ',attibute-field-name
                           :name string)))
+               (make-corresponding-mumble-resource (value-of 'name i) :adjective i)
                (setup-comparatives i dir er est)
                i )))
      #| This defined an attribute-specific function for defining
