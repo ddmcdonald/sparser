@@ -117,11 +117,13 @@
 ;;;-----------------
 
 (defun make-rules-for-rdata (category rdata)
+  (declare (special *head-rules-already-created*))
   (check-type category category)
   (when rdata
     (check-type rdata realization-data)
     (flet ((add-rules (rules) (add-rules rules category)))
-      (add-rules (make-rules-for-head t rdata category category))
+      (unless *head-rules-already-created*
+        (add-rules (make-rules-for-head t rdata category category)))
       (with-slots (etf mapping locals) rdata
         (dolist (schema (and etf (filter-schemas (etf-cases etf))))
           (add-rules (instantiate-rule-schema schema mapping category)))
