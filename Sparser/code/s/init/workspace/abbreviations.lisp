@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "abbreviations"
 ;;;   Module:  "init;workspace:"
-;;;  version:  April 2017
+;;;  version:  June 2017
 
 ;; broken out into this form 9/93.
 ;; 2/23/95 changed definition of P to look for whether *workshop-window* was up, and
@@ -170,6 +170,23 @@
   (display-rules category-name)
   (display-subcategorization category-name)
   (category-named category-name))
+
+#+:mumble
+(defgeneric realize (individual)
+  (:documentation "Packages frequent idiom when working with Mumble tests")
+  (:method ((n number))
+    (realize (individual-object# n)))
+  (:method ((i individual))
+    (m::pp-dtn (m::realize i))))
+#+:mumble
+(defgeneric say (item)
+  (:documentation "Another standard idiom for Mumble test")
+  (:method ((n number))
+    (say (individual-object# n)))
+  (:method ((i individual))
+    (m::say i))
+  (:method ((text string))
+    (m::say text)))
 
 
 ;;--- accessors
