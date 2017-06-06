@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:   "fn word routine"
 ;;;    Module:   "grammar;rules:words:"
-;;;   Version:   May 2017
+;;;   Version:   June 2017
 
 ;; 0.1 (12/17/92 v2.3) redid the routine so it was caps insensitive and handled
 ;;      bracketing.
@@ -82,6 +82,16 @@
 
 
 
+;;;-------
+;;; flags
+;;;-------
+
+(defparameter *ignore-redefine-warning* nil
+  "When you are deliberately reloading a set of function terms,
+   you can set this flag to t and it will quiet the complaint
+   about redefining an already known category.")
+
+
 ;;;-----------------------------------------------
 ;;; Generalized object creator for function words
 ;;;-----------------------------------------------
@@ -93,14 +103,6 @@
 ;; It presently presumes that the tree-family is one of a small
 ;; set that involve a single label and lead to form-rules.
 ;; See etf-form-substitution-label for the list. 
-
-(defparameter *ignore-redefine-warning* nil
-  "When you are deliberately reloading a set of function terms,
-   you can set this flag to t and it will quiet the complaint
-   about redefining an already known category.")
-
-;; turn this on to reduce the number of fomr rules produced for adjectives and other "function terms"
-(defparameter *reduced-form-rules* t) 
 
 (defun define-function-term (string form 
                              &key  brackets super-category
@@ -193,7 +195,9 @@
               ;; form rules and we'd get a clash if we did them here. 
               (apply-function-term-etf category tree-families)))
 
-          (setup-word-data word (rationalize-pos form) category)
+          (let ((*head-rules-already-created* t))
+            (declare (special *head-rules-already-created*))
+            (setup-word-data word (rationalize-pos form) category))
 
           ;; This isn't ready for prime time yet. The function it's
           ;; calling was never finished and there need to be
@@ -237,3 +241,15 @@
     (error "Haven't yet vetted this ETF for form rules: ~a" etf))
   (car (etf-labels etf)))
 
+
+(defun rationalize-pos (form)
+  "Convert from 'form' as used in define-function-term to one of the
+   head-keyword part-of-speech options suitable for indicating its
+   mumble equivalent."
+  (ecase form
+    (adverb :adverb)
+    ((or adjective spatial-adjective temporal-adjective) :adjective)
+    ((or comparative superlative) :adjective)
+    ((or det approximator sequencer) :determiner)
+    ((or conjunction subordinate-conjunction) :word) ;; i.e. ignore
+    (standalone :word)))
