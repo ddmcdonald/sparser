@@ -1693,24 +1693,24 @@
 
 ;;--- adjective phrase patterns
 
-(define-phrase adjective-phrase (a)
+(define-phrase bare-adjp (a)
   (AP
     adjective a))
 
-(define-phrase bare-adjp (a)
+(define-phrase adjp (a)
   (AP
    adjp-head a))
 
-(define-phrase bare-comparative-adjp (a)
+(define-phrase comparative-adjp (a)
   (AP
    comparative-head a))
 
-(define-phrase bare-superlative-adjp (a)
+(define-phrase superlative-adjp (a)
   (AP
    superlative-head a))
 
 
-(define-phrase adjp (m a)  ;; "two stories high" /// rename!
+(define-phrase modified-adjp (m a)  ;; "two stories high" /// rename!
   (AP
    adj-premodifier m
    adjp-head a))

@@ -1,5 +1,4 @@
 ;; -*- Mode: Lisp; Package:MUMBLE; Syntax: COMMON-LISP; Base:10; -*-
-;;; $Id: labels.lisp 349 2010-02-01 23:15:35Z cgreenba $
 
 ;;; MUMBLE-86: grammar; labels
 ;;;
@@ -8,6 +7,7 @@
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
 ;;;    non-commercial purposes.
 ;;; Copyright (c) 2006-2010 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (c) 2017 David D. McDonald  -- All Rights Reserved
 
 ;; ChangeLog
 ;;  6/6/95 added grammatical constraints to COMPLEMENT-OF-BE
@@ -129,12 +129,11 @@
 ;;--- labels for the sentence and above
 
 (define-slot-label turn
-   grammatical-constraints (clause np vp pp ap advp))
-   ;;not using these now, but when testing paragraphs they should be 
-   ;;turned on
+   grammatical-constraints (clause np vp pp adjp advp))
    ;;word-stream-actions ((new-line initial)
    ;;		       (indent initial)))
-
+   ;;not using these now, but when testing paragraphs they should be 
+   ;;turned on
 
 (define-slot-label paragraph
    associated-attachment-points (next-paragraph))
@@ -153,8 +152,8 @@
 (define-slot-label comp ;; as in 'comp position' - sister to 's'
    grammatical-constraints (whp wh-pronoun np interrogative-pronoun))
 
-(define-slot-label question)
-
+(define-slot-label question
+  grammatical-constraints (clause))
 
 ;;--- labels for the interior of a clause
 
@@ -163,10 +162,12 @@
    associated-attachment-points (tense-modal preposed-tense-modal))
 
 (define-slot-label predicate
+  grammatical-constraints (vp)
   associated-attachment-points 
      (clause-prep-complement  adverbial-preceding adverbial-following))
 
 (define-slot-label verb
+  grammatical-constraints (verb)
   associated-attachment-points (post-verbal-adjunct #|post-verbal-path post-verbal-destination|#
                                 ))
 
@@ -184,7 +185,7 @@
   grammatical-constraints (np))  ;; so it's probably spurious
 
 (define-slot-label complement-of-be
-  grammatical-constraints (ap adjective adverb vp np))
+  grammatical-constraints (adjp adjective advp adverb vp np))
 
 (define-slot-label scomp
    grammatical-constraints (clause))
@@ -193,7 +194,7 @@
    grammatical-constraints (vp))
 
 (define-slot-label predicate-adjective
-  grammatical-characteristics (ap))
+  grammatical-characteristics (adjp))
 
 (define-slot-label pp-object
    grammatical-constraints (np))
@@ -216,11 +217,12 @@
 (define-slot-label inf-comp
   grammatical-constraints (subject-reducible vp))
 
-(define-slot-label gerund)
+(define-slot-label gerund
+  grammatical-constraints (subject-reducible vp))
 
 
 (define-slot-label adverbial-phrase
-    grammatical-constraints (adverb ap np vp pp))
+    grammatical-constraints (adverb advp adjective adjp np vp pp))
 
 (define-slot-label leading-detached-adverbial-phrase
   ;; Using this for the 'short replies' that are written as though
@@ -228,15 +230,17 @@
   ;; there's no grammatical relationship between them, e.g.
   ;;  "Ok, I come along if I have to"
   word-stream-actions ((punctuation final comma))
-  grammatical-constraints (adverb ap np vp pp))
+  grammatical-constraints (adverb advp np vp pp))
 
 (define-slot-label adverb
-   associated-attachment-points (of-complement
-				 np-prep-complement
+  grammatical-constraints (adverb)
+  associated-attachment-points (of-complement
+              			 np-prep-complement
 				 nominal-premodifier))
 
 (define-slot-label adjp-head
-  associated-attachment-points (intensifier adverbial-preceding adverbial-following))
+    associated-attachment-points (intensifier adverbial-preceding adverbial-following)
+    grammatical-constraints (adjp adjective))
 
 (define-slot-label comparative-head
   grammatical-constraints (np clause)
@@ -250,18 +254,21 @@
    word-stream-actions ((function-word initial "than" lexical-contents)))
 
 (define-slot-label vocative
-  grammatical-constraints (np/no-det))
+  grammatical-constraints (np))
   ;;/// add a leading comma?
 
 
 ;;--- ///// labels for the interior of a noun phrase
 
 (define-slot-label modifier
-  grammatical-constraints (adjp advp adjective adverb))
+    grammatical-constraints (adjp advp adjective adverb
+                             quantifier qp))
 
-(define-slot-label adj-premodifier)
+(define-slot-label adj-premodifier
+  grammatical-constraints (adjp adjective))
 
-(define-slot-label quantifier)  ;; "all", "each", etc.
+(define-slot-label quantifier  ;; "all", "each", etc.
+  grammatical-constraints (qp quantifier))
 
 (define-slot-label determiner)  ;; "the" "a"
 
@@ -297,7 +304,7 @@
   word-stream-actions ((punctuation final percent)))
 
 (define-slot-label nominal-premodifier
-   grammatical-constraints (np )
+   grammatical-constraints (np quantifier qp)
      associated-attachment-points
        (adjective ))
 
@@ -308,7 +315,7 @@
    grammatical-constraints (adjective))
 
 (define-slot-label quantifier
-   grammatical-constraints (QP))
+   grammatical-constraints (QP quantifier))
 
 (define-slot-label wh
    grammatical-constraints (wh-pronoun))

@@ -138,15 +138,15 @@ AdvpIComp (adv c) ;; infinitive complement
 AdvpOfComp (adv c) ;; of complement
 
 
-adjective-phrase (a)
+bare-adj (a) ;; no attachments to the adjective
 
-bare-adjp (a) ;; different head slot
+adjp (a) ;; takes intensifiers, pre/pos adverbs
 
-bare-comparative-adjp (a)
+comparative-adjp (a) ;; takes adjp attachments, plus than-complement
 
-bare-superlative-adjp (a)
+superlative-adjp (a) ;; takes the  adjp attachments
 
-adjp (m a)  ;; "two stories high" /// rename
+modified-adjp (m a)  ;; "two stories high" 
 
 quantified-adjp (q a)
 

@@ -7,12 +7,13 @@
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
 ;;;    non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
-;;; Copyright (c) 2017  David D. McDonald  -- All Rights Reserved
+;;; Copyright (c) 2017 David D. McDonald  -- All Rights Reserved
 
 (in-package :mumble)
 
 
 (define-grammatical-characteristic np)
+(define-grammatical-characteristic noun)
 
 (define-grammatical-characteristic clause)
 
@@ -33,11 +34,13 @@
 (define-grammatical-characteristic interrogative-pronoun)
 
 (define-grammatical-characteristic vp)
+(define-grammatical-characteristic verb)
 
 (define-grammatical-characteristic qp) ;; 'quantifier phrase'
+(define-grammatical-characteristic quantifier)
 
-(define-grammatical-characteristic ap) ;; adjective phrase
-
+(define-grammatical-characteristic adjp) ;; adjective phrase
+(define-grammatical-characteristic adjective)
 
 (define-grammatical-characteristic adverb)
 
