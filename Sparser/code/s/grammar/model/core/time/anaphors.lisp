@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1992-2005,2011-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2011-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "anaphors"
 ;;;   Module:  "model;core:time:"
-;;;  version:  1.5 May 2014
+;;;  version:  June 2017
 
 ;; 1.1 (10/19/94) completely reconceptualized.  10/30 fixed bad v/r
 ;;     (8/28/95) added simple phrases with sequencers
@@ -48,6 +48,14 @@
   :realization (:word name))  ;; //this needs a hook for doing 
                               ;; the calculation
 
+(defun define-calulated-time (string) ;; e.g. "now"
+  (let* ((word (resolve/make string))
+         (i (find-or-make-individual 'calculated-time
+                                     :name word)))
+    (assign-brackets-as-a-common-noun word)
+    (make-corresponding-mumble-resource word :noun i)
+    i))
+
 
 ;;;----------------------------------
 ;;; "yesterday", "today", "tomorrow"
@@ -62,15 +70,13 @@
           (calculator :primitive symbol))
   :index (:key name))
 
-;;--- should be possible to convert this to a macro 
-;;
 (defun define-calculated-day (string calculation-fn)
   (let* ((word (resolve/make string))
          (i (find-or-make-individual 'calculated-day 
                                      :name word
                                      :calculator calculation-fn)))
     (assign-brackets-as-a-common-noun word)
-
+    (make-corresponding-mumble-resource word :noun i)
     ;; This is a completely ad-hoc rule, but pushing this
     ;; through the existing single-word rdata construction
     ;; was not going to happen easily
