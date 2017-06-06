@@ -73,7 +73,7 @@
                ;; These were thrown together for SELF and now feel like a short-cut that should
                ;; be removed in favor of derivation trees. Types file has pieces to re-use. And/or are
                ;; called by code that remains underconsideration but might go away
-               (:file "interface/derivations/types")
+               #+(or) (:file "interface/derivations/types")
                #+(or) (:file "interface/derivations/rspec-interpretation")
 
                (:file "interface/bundles/specification-operators")
