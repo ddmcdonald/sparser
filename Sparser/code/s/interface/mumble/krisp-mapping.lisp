@@ -12,50 +12,50 @@
 (defparameter *mappings-for-category-linked-phrase*
   (make-hash-table :test 'equal))
 
-(defmethod record-krisp-mapping ((word word) (clp category-linked-phrase))
+(defgeneric record-krisp-mapping (i category-linked-phrase)
+  (:documentation
   "We need to be able to get to the CLP from both the Sparser and
    the Mumble words, and from the Krisp category (hidden in the CLP
-   to simplify the signature). Doing string mapping of the words too."
-  (let ((category (linked-category clp))
-        (pname (pname word))
-        (s-word (sparser::get-sparser-word-for-mumble-word word)))
-    (setf (gethash category *mappings-for-category-linked-phrase*) clp)
-    (setf (gethash word *mappings-for-category-linked-phrase*) clp)
-    (setf (gethash s-word *mappings-for-category-linked-phrase*) clp)
-    (setf (gethash pname *mappings-for-category-linked-phrase*) clp)))
+   to simplify the signature). Doing string mapping of the words too.")
+  (:method  ((word word) (clp category-linked-phrase))
+    (let ((category (linked-category clp))
+          (pname (pname word))
+          (s-word (sparser::get-sparser-word-for-mumble-word word)))
+      (setf (gethash category *mappings-for-category-linked-phrase*) clp)
+      (setf (gethash word *mappings-for-category-linked-phrase*) clp)
+      (setf (gethash s-word *mappings-for-category-linked-phrase*) clp)
+      (setf (gethash pname *mappings-for-category-linked-phrase*) clp))))
 
-(defmethod krisp-mapping ((i sp::individual))
-  (krisp-mapping (sp::itype-of i)))
-
-(defmethod krisp-mapping ((c sp::category))
-  (gethash c *mappings-for-category-linked-phrase*))
-
-(defmethod krisp-mapping ((w word))
-  (gethash w *mappings-for-category-linked-phrase*))
-
-(defmethod krisp-mapping ((w sp::word))
-  (gethash w *mappings-for-category-linked-phrase*))
-
-(defmethod krisp-mapping ((pname string))
-  (gethash pname *mappings-for-category-linked-phrase*))
+(defgeneric krisp-mapping (individual)
+  (:documentation "Return the associated category-linked-phrase")
+  (:method ((i sp::individual))
+    (krisp-mapping (sp::itype-of i)))
+  (:method ((c sp::category))
+    (gethash c *mappings-for-category-linked-phrase*))
+  (:method ((w word))
+    (gethash w *mappings-for-category-linked-phrase*))
+  (:method ((w sp::word))
+    (gethash w *mappings-for-category-linked-phrase*))
+  (:method ((pname string))
+    (gethash pname *mappings-for-category-linked-phrase*)))
 
 
-(defgeneric variable-for-parameter (parameter source)
-  (:method ((p parameter) (mapping list))
-    (variable-for-parameter
-     p (find p mapping :key #'corresponding-parameter :test #'eq)))
-  (:method ((p parameter) (pair parameter-variable-pair))
-    (declare (ignore p))
-    (corresponding-variable pair)))
-
+(defgeneric realizing-resource (item)
+  (:documentation "Look up the resource(s) that will be used
+   to realize the item. Usually a category-linked-phrase, but
+   fall back to lexicalized phrases.")
+  (:method (null) nil)
+  (:method ((i sp::individual))
+    (or (realizing-resource (sp::itype-of i)) ;; get it from the category
+        (get-lexicalized-phrase i)))
+  (:method ((c sp::referential-category))
+    (sp::get-tag :mumble c)))
 
 (defgeneric apply-category-linked-phrase (individual)
-  ;;(:documentation "")
+  (:documentation "If there is a category-linked-phrase associated
+    with this individual use it to make the dtn")
   (:method ((i sp::individual))
-    (let* (;;(clp (krisp-mapping i))
-           ;;/// modify apply-mumble-phrase-data to call record-krisp-mapping
-           ;; once it clear what to do when the 'word' isn't a verb
-           (clp (realizing-resource i)))
+    (let ((clp (realizing-resource i)))
       (when clp
         (apply-CLP-to-individual i clp)))))
 
@@ -72,16 +72,6 @@
     dtn))
 
 
-(defgeneric realizing-resource (item)
-  (:documentation "Look up the resource(s) that will be used
-   to realize the item.")
-  (:method (null) nil)
-  (:method ((i sp::individual))
-    (or (realizing-resource (sp::itype-of i)) ;; get it from the category
-        (word-for i 'noun))) ;; 'noun' presumes too much
-  (:method ((c sp::referential-category))
-    (sp::get-tag :mumble c)))
-
 (defgeneric realizing-label (resource)
   (:documentation "Return the label of the resource,
     which will be a node-label if the resource is based on
@@ -92,14 +82,45 @@
   (:method ((lp lexicalized-phrase))
     (realizing-label (phrase lp)))
   (:method ((p phrase))
-    (car (car (definition p))))
+    (let ((first (car (definition p))))
+      (etypecase first
+        (cons (car first))
+        (slot-label first))))
   (:method ((w word))
     (car (word-labels w))))
 
-;; have considered that a symbol might be easier in some cases
-  #+ignore(:method ((n node-label))
-    (name n))
+(defgeneric lookup-pos (resource)
+  (:documentation "Return the mumble word-level part-of-speech
+   of the resource. Interpolate phrase levels to their implicit heads")
+  (:method ((w word))
+    (name (car (word-labels w))))
+  (:method ((lp lexicalized-phrase))
+    (lookup-pos (realizing-label lp)))
+  (:method ((n node-label))
+    (let ((name (name n)))
+      (case name
+        ((clause vp) 'verb)
+        (adv 'adverb)
+        (ap 'adjective)
+        (np 'noun)
+        (otherwise
+         ;;(warn "No pos option for ~a" n)
+         'noun)))))
 
+(defun all-the-phrases ()
+  (members (mcatalog (mtype 'phrase))))
+
+(defun all-phrase-labels ()
+  (remove-duplicates 
+   (loop for p in (all-the-phrases)
+      collect (realizing-label p))))
+#|  6/1/17
+m> (all-phrase-labels)
+(#<node-label advp> #<node-label dp> #<node-label number>
+ #<node-label conditional> #<node-label pp> #<node-label qp>
+ #<node-label discourse-unit> #<slot-label comp> #<node-label clause>
+ #<node-label conjunction> #<node-label np> #<node-label compound-sentence>
+ #<node-label vp> #<node-label whp> #<node-label ap>) |#
 
     
 ;;;------------------------------------
@@ -195,4 +216,12 @@
                alist))
     alist))
 
-
+(defgeneric variable-for-parameter (parameter source)
+  (:documentation "Given a phrase parameter and a source of
+    values for the paratmeter, return the value. Mostly used in parsing")
+  (:method ((p parameter) (mapping list))
+    (variable-for-parameter
+     p (find p mapping :key #'corresponding-parameter :test #'eq)))
+  (:method ((p parameter) (pair parameter-variable-pair))
+    (declare (ignore p))
+    (corresponding-variable pair)))
