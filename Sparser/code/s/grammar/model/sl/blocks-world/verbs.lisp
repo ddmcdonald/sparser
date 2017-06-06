@@ -93,7 +93,7 @@
                 :etf (svo-passive)
                 :s agent
                 :o theme
-                :mumble (transitive-with-final-adverbial "push" "together")))
+                :mumble (transitive-with-bound-prep "push" "together")))
 
 #|    original w/ :loc-pp-complement
 ;; 1.2 "Put a block on the table"
