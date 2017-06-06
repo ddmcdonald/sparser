@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1995-1999,2016  David D. McDonald  -- all rights reserved
+;;; copyright (c) 1995-1999,2016-2017  David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "directions"
 ;;;   Module:  "model;core:places:"
-;;;  version:  December 2016
+;;;  version:  June 2017
 
 ;; initiated in 1/9/95. Added string printer 1/9/96.
 ;; 0.1 (11/25/99) Changed the realizations to use the new schema protocol
@@ -61,6 +61,7 @@
          (rule (define-cfr category::direction `(,word)
                  :form category::common-noun
                  :referent i)))
+    (make-corresponding-mumble-resource word :common-noun i)
     (add-rule rule i)
     i))
 
@@ -82,6 +83,7 @@
          (rule (define-cfr category::direction `(,word)
                  :form category::np
                  :referent i)))
+    (make-corresponding-mumble-resource word :common-noun i) ;; misses np aspect
     (add-rule rule i)
     i))
 

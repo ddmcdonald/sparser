@@ -118,8 +118,12 @@
 
          (rule (first (get-rules pronoun))))
 
+    ;; Specific pronouns are all individuals ('it', 'itself', etc.)
+    ;; so we need Mumble resources to match. Attributes are also
+    ;; done this way.
+    (make-corresponding-mumble-resource pronoun-word :pronoun pronoun)
+
     (setf (cfr-form rule) form-category)
-    ;;///(setf (cfr-referent rule) xx )
 
     pronoun ))
 
@@ -160,6 +164,7 @@ with a special case just below. |#
     (let ((i (find-or-make-individual 'indefinite-pronoun
                                       :word word))
           (rules (find-unary-cfr/referent word 'indefinite-pronoun)))
+      (make-corresponding-mumble-resource word :pronoun i)
       (assert rules)
       (assert (null (cdr rules)) (word)
               "There is more than one indefinite-pronoun rule defined for ~s"
