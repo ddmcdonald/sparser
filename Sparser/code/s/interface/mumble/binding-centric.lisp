@@ -3,12 +3,17 @@
 ;;;
 ;;;     File:  "binding-centric"
 ;;;   Module:  "interface;mumble;"
-;;;  Version:  May 2017
+;;;  Version:  June 2017
 
 ;; Broken out from interface 4/7/13.
 ;; Completely rewritten 8/16 by AFP.
 
 (in-package :mumble)
+
+
+(defparameter *check-lp-coverage* nil
+  "Guards breaks used when testing whether the coverage of lexicalized
+   phrases provided by the rdata on categories and individuals is thorough")
 
 
 ;;;-----------------------------------------------------------
@@ -70,6 +75,7 @@
     (adverb :adverb)
     (preposition :prep)
     (quantifier :quantifier)
+    (pronoun :pronoun)
     (interjection :interjection)))
 
 
@@ -93,7 +99,8 @@
   (:method ((item sp::referential-category) pos)
     "Try to get a head word for a category."
     (let ((head (sp::rdata-head-word item (sparser-pos pos))))
-      (break "word-for on category ~a" item)
+      (when *check-lp-coverage*
+        (break "word-for: category ~a" item))
       (word-for (typecase head
                   (sp::lambda-variable (sp::lemma item (sparser-pos pos)))
                   (null (string-downcase (sp::cat-name item)))
@@ -101,7 +108,8 @@
                 pos)))
   (:method ((item sp::individual) pos)
     "Try to get a head word for an individual."
-    ;;(break "word-for individual ~a" item)
+    (when *check-lp-coverage*
+      (break "word-for: individual ~a" item))
     (let ((head (or (sp::rdata-head-word item (sparser-pos pos))
                     (sp::lemma item (sparser-pos pos))
                     (sp::value-of 'sp::name item)
@@ -139,6 +147,31 @@
     (or (call-next-method)
         (word-for item 'adjective))))
 
+(defgeneric guess-pos (i)
+  (:documentation "Guess the part of speech to be used for an individual.")
+  (:method-combination or)
+  (:method or ((i sp::individual))
+    (cond ((let ((subject (sp::bound-subject-var i)))
+             (and subject (eq (sp::value-of subject i) sp::**lambda-var**)))
+           'adjective)
+          ((or (sp::bound-subject-var i)
+               (sp::bound-object-var i)
+               (find sp::**lambda-var** (sp::indiv-binds i)
+                     :key #'sp::binding-value))
+           'verb)
+          ;; ((sp::rdata-head-word i t)  )
+          ))
+  (:method or ((i sp::referential-category))
+    (cond ((or (sp::subject-variable i)
+               (sp::object-variable i))
+           'verb)))
+  (:method or (i)
+    (when *check-lp-coverage*
+      (break "fell through quess-pos on ~a" i))
+    (if (current-position-p 'adjective 'relative-clause)
+      'adjective
+      'noun)))
+
 
 (defgeneric tense (object)
   (:documentation "Determine and attach tense to the given object.")
@@ -169,30 +202,6 @@
                     (or (eq (sp::binding-value b) sp::**lambda-var**)
                         (eq (sp::var-name (sp::binding-variable b)) 'sp::name)))
                   (sp::indiv-binds i))))
-
-(defgeneric guess-pos (i)
-  (:documentation "Guess the part of speech to be used for an individual.")
-  (:method-combination or)
-  (:method or ((i sp::individual))
-    (cond ((let ((subject (sp::bound-subject-var i)))
-             (and subject (eq (sp::value-of subject i) sp::**lambda-var**)))
-           'adjective)
-          ((or (sp::bound-subject-var i)
-               (sp::bound-object-var i)
-               (find sp::**lambda-var** (sp::indiv-binds i)
-                     :key #'sp::binding-value))
-           'verb)
-          ;; ((sp::rdata-head-word i t)  )
-          ))
-  (:method or ((i sp::referential-category))
-    (cond ((or (sp::subject-variable i)
-               (sp::object-variable i))
-           'verb)))
-  (:method or (i)
-    (break "fell through quess-pos on ~a" i)
-    (if (current-position-p 'adjective 'relative-clause)
-      'adjective
-      'noun)))
 
 
 ;;--------- dtn modifiers
@@ -228,6 +237,7 @@ attach-via-binding. |#
 
 
 (defun possibly-pronoun (item)
+  "Wrapper around subject, object, and complement below."
   (cond ((sp::itypep item 'sp::pronoun/first/singular)
          (pronoun-named 'first-person-singular))
         ((sp::itypep item 'sp::pronoun/first/plural)
@@ -267,8 +277,8 @@ attach-via-binding. |#
 ;;;--------------------------------------
 
 (defmethod realize ((i sp::individual))
-  "Realize a Sparser individual. Since categories are not (yet) classes,
-   and therefore cannot have specialized methods, special cases go here."
+  "Realize a Sparser individual. Handles special cases then falls through
+   to realize-via-bindings."
   (cond ((sp::itypep i 'sp::collection)
          (let ((items (sp::value-of 'sp::items i))
                (type (sp::value-of 'sp::type i)))
@@ -337,6 +347,8 @@ attach-via-binding. |#
         (loop-over-bindings i pos dtn)))))
 
 
+;;--- primary driver for the general case
+
 (defgeneric realize-via-bindings (i &key pos resource)
   (:documentation "Loop over the bindings of the individual 'i' to populate
     its dtn. If the caller knows the part of speech (pos) or the resource
@@ -344,7 +356,7 @@ attach-via-binding. |#
     as we can before starting to walk over the bindings.")
   
   (:method ((i sp::individual) &key pos resource)
-    "Look for realization data on the individual's category and marshal it."
+    "Look for realization data on the individual or its category and marshal it."
     (let ((lp (get-lexicalized-phrase i)))
       (unless pos ;; passed in for copular-predication, there-exists
         (setq pos (if lp (lookup-pos lp) (guess-pos i))))
@@ -357,7 +369,9 @@ attach-via-binding. |#
       (tr "Realize-via-bindings for ~a  lp = ~a" i lp)
       (let ((dtn (make-dtn :referent i :resource resource))
             (rdata (sp::has-mumble-rdata i)))
-        (case pos (verb (tense dtn)))
+        ;; rdata is essentially an annotated category-linked-phrase.
+        ;; It encodes the variable to phrase-parameter mapping.
+        (case pos (verb (tense dtn))) ;; also checks for command
         (if rdata
           (loop-over-some-bindings i pos dtn rdata)
           (loop-over-bindings i pos dtn))))))
@@ -372,6 +386,8 @@ attach-via-binding. |#
      finally (return dtn)))
 
 (defun loop-over-some-bindings (i pos dtn rdata)
+  "Use the map on the rdata to handle the core bindings
+   then use the regular loop for the rest."
   (let ((map (parameter-variable-map rdata)))
     (let ((handled
            (loop for pvp in map
@@ -379,7 +395,7 @@ attach-via-binding. |#
               as parameter = (corresponding-parameter pvp)
               as value = (sp::value-of variable i)
               do (when value (make-complement-node parameter value dtn))
-              collect variable))) ;; (break "handled = ~a" handled)
+              collect variable)))
       (loop for binding in (reverse (sp::indiv-binds i))
          as variable = (sp::binding-variable binding)
          as var-name = (sp::var-name variable)
@@ -388,20 +404,14 @@ attach-via-binding. |#
       dtn)))
 
 
-
-    
 (defun verb-frame-for (i)
-  "Examine the realization data on the category of this individual
-   to look for an already specified phrase."
-  ;;// Could include a mapping as well, doing much of the work
-  ;; of reversing the realization data. If that turns out to
-  ;; be easy to do then refactor realize-via-bindings to 'consume'
-  ;; the bindings that are explicitly mapped before using
-  ;; generic realizations.
-  (break "call to verb-frame-for")
-  'svo ) ;; standin while working this out -- ddm
+  ;; Should be able to eliminate this along with the other guesswork
+  ;; since these cases shold be handled by rdata
+  (when *check-lp-coverage*
+    (break "call to verb-frame-for"))
+  'svo )
 
- 
+;; Original for reference during transition
 #|  (:method ((i sp::individual) &key
             (pos (guess-pos i))
             (resource (ecase pos
@@ -550,7 +560,6 @@ attach-via-binding. |#
      point that fits."
     (let* ((i (sp::binding-value binding)))
       (tr "location binding: ~a" i)
-      ;;(break "loc")
       (let ((ap (cond
                  ((heavy-predicate-p i) 'np-prep-complement)
                   (t 'nominal-premodifier))))
