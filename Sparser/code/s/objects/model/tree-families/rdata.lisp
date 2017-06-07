@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1992-2005,2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1992-2005,2014-2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "rdata"
 ;;;   Module:  "objects;model:tree-families:"
-;;;  version:  July 2016
+;;;  version:  June 2017
 
 ;; initiated 8/4/92 v2.3, fleshed out 8/10, added more cases 8/31
 ;; 0.1 (5/25/93) changed what got stored, keeping around a dereferenced
@@ -342,22 +342,15 @@ Should mirror the cases on the *single-words* ETF."
    make the corresponding mumble resource"
   (let* ((rdata (car (rdata category)))
          (head-data (when rdata (rdata-head-words rdata))))
-    (if rdata ;; add the data for this word
-      (cond
-        ((null head-data)
-         (setf (rdata-head-words rdata) `(,key ,lemma)))
-        ((some #'lambda-variable-p head-data)
-         ;; e.g. (:common-noun #<variable name>)
-         (setf (elt head-data (position-if #'lambda-variable-p head-data))
-               lemma))
-        (head-data ;; has at least one entry already
-         (setf (rdata-head-words rdata)
-               (cons key (cons lemma rdata)))))
-      (else
-        ;; Make an rdata and place the information where it needs = to go
-        ;; since the procesing was already done in setup-category-lemma
-        (let ((rdata (make-realization-data category)))
-          (setf (rdata-head-words rdata) `(,key ,lemma)))))
+    (cond
+      ((and rdata (null head-data)) ;; entry but no head information
+       (setf (rdata-head-words rdata) `(,key ,lemma)))
+      (head-data ;; has at least one entry already
+       (setf (rdata-head-words rdata)
+             (cons key (cons lemma head-data))))
+      ((null rdata) ;; not even an entry
+       (let ((rdata (make-realization-data category)))
+         (setf (rdata-head-words rdata) `(,key ,lemma)))))
     (make-corresponding-mumble-resource lemma key category)))
 
 
