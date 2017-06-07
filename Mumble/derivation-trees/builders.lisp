@@ -26,8 +26,7 @@
     (let* ((phrase (phrase-named (or phrase-name 'common-noun)))
            (parameter (parameter-named 'n))
            (parameters (remove parameter (parameters-to-phrase phrase)))
-           (word (etypecase pname
-                   (string (word-for-string pname 'noun))))
+           (word (word-for-string pname 'noun))
            (pair (make-instance 'parameter-value-pair
                     :phrase-parameter parameter
                     :value word)))
@@ -39,6 +38,20 @@
         (make-instance 'saturated-lexicalized-phrase
                        :phrase phrase
                        :bound `(,pair))))))
+
+(defgeneric proper-noun (word)
+  (:documentation "Use the word ake a lexicalized proper-name phrase.
+    The label proper-noun that it uses will capitalized the word")
+  (:method ((w word))
+    (proper-noun (pname w)))
+  (:method ((pname string))
+    (let ((phrase (phrase-named 'proper-name))
+          (proper-noun (word-for-string pname 'proper-noun)))
+      (make-instance 'saturated-lexicalized-phrase
+                     :phrase phrase
+                     :bound (list (pvp 'n proper-noun))))))
+
+
  
 
 (defgeneric verb (word phrase-name)

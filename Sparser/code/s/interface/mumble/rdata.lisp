@@ -281,27 +281,30 @@
   (when (consp word) ;; irregulars e.g. ("bacterium" :plural "bacteria")
     ;; drop them on the floor for now. /// lookup Mumble rep of irregulars
     (setq word (car word)))
-  (let* ((m-pos (mumble-pos pos-tag))
-         (m-word (and m-pos (get-mumble-word-for-sparser-word word m-pos)))
-         (lp (or (m::get-lexicalized-phrase m-word)
-                 (case pos-tag
-                   (:adjective (m::adjective m-word))
-                   ((or :noun :common-noun :proper-noun) (m::noun m-word))
-                   (:verb (m::verb m-word verb-phrase))
-                   (:adverb (m::adverb m-word))
-                   (:prep (m::prep m-word))
-                   (:quantifier (m::quantifier m-word))
-                   (:pronoun (m::pronoun m-word))
-                   (:interjection (m::interjection m-word))))))
-    (when lp
-      (m::record-lexicalized-phrase m-word lp)
-      lp)))
+  (let ((m-pos (mumble-pos pos-tag)))
+    (when m-pos
+      (let* ((m-word (and m-pos (get-mumble-word-for-sparser-word word m-pos)))
+             (lp (or (m::get-lexicalized-phrase m-word)
+                     (case pos-tag
+                       (:adjective (m::adjective m-word))
+                       ((or :noun :common-noun) (m::noun m-word))
+                       (:proper-noun (m::proper-noun m-word))
+                       (:verb (m::verb m-word verb-phrase))
+                       (:adverb (m::adverb m-word))
+                       (:prep (m::prep m-word))
+                       (:quantifier (m::quantifier m-word))
+                       (:pronoun (m::pronoun m-word))
+                       (:interjection (m::interjection m-word))))))
+        (when lp
+          (m::record-lexicalized-phrase m-word lp)
+          lp)))))
 
-(defun mumble-pos (pos-tag) ;; c.f. sparser-pos in binding-centric
+(defun mumble-pos (pos-tag) ;; keep in sync w/ sparser-pos in binding-centric
   "Translate a Sparser part of speech into the Mumble equivalent"
   (case pos-tag ;; no entry for :word and probably others
-    ;; look at e.g. comparative-modifier
-    ((or :noun :common-noun :proper-noun) 'm::noun)
+    ;; including comparative-modifier
+    ((or :noun :common-noun) 'm::noun)
+    (:proper-noun 'm::proper-noun)
     (:verb 'm::verb)
     (:adverb 'm::adverb)
     (:adjective 'm::adjective)

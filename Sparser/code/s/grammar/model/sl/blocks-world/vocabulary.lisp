@@ -20,7 +20,7 @@
   :instantiates :self
   :index (:permanent :key name)
   :lemma (:common-noun "block")
-  :realization (:noun name))
+  :realization (:proper-noun name))
 
 #| An interesting deference between a block and a table is
 that you can't use the table as part of any of the standard

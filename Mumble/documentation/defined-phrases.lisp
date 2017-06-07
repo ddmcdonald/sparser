@@ -1,5 +1,5 @@
 ;; ~/sparser/Mumble/documentation/defined-phrases.lisp
-;; 5/9/17
+;; 6/7/17
 
 ;;---------- preamble ----------
 
@@ -61,6 +61,9 @@ There-be-s (s) ;; "there is a cat'
 bare-np-head (n) ;; no labels on the slot
 
 common-noun (n) ;; common-noun label
+
+proper-name (n)
+;; np with additional proper-name label that capitalizes the word
 
 two-element-capitalized-sequence (pn1 pn2) ;; proper names
 
