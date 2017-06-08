@@ -321,11 +321,13 @@
 
 (define-category development
     :specializes caused-bio-process
+    :bindings (uid "NCIT:C17770")
     :binds ((treatment therapeutic-strategy))
     :realization
     (:verb ("develop" :present-participle "developing" :past-tense "developed")
            :etf (svo-passive)
            :noun "development"
+           :adj "developmental"
            :object treatment
            :of :object))
 
