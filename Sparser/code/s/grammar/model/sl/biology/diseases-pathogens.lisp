@@ -27,14 +27,9 @@
 ;;; cancers
 ;;;-------------------------------
 
-(noun "adenocarcinoma" :super cancer)
-(noun "carcinoma" :super cancer)
 (noun "glioblastoma" :super cancer)
 (noun "keratoacanthoma" :super cancer)
 (noun "neuroblastoma" :super cancer) ;; removed erroneous extra "o"
-(noun "NSCLC" :super cancer)
-(def-synonym NSCLC (:noun "non-small cell lung cancer"))
-(def-synonym NSCLC (:noun "non small cell lung cancer"))
 
 ;;;--------------
 ;;; disease terms
@@ -49,7 +44,6 @@
 
 (noun "anaphylaxis" :super disease)
 (noun "metaplasia" :super disease)
-(noun "hyperplasia" :super disease)
 (noun "neurofibromatosis" :super disease)
 (noun "CML" :super disease)
 
