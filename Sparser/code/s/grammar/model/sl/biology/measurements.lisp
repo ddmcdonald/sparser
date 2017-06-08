@@ -76,3 +76,4 @@
 ;;#+sbcl (define-unit-of-measure "μm")
 ;;(define-unit-of-measure "µm") this fails in ACL. Reading in UTF-8 ?
 ;; add mug as a synonym of ug and microgram
+(define-unit-of-measure "mOsM") ;milliosmole
