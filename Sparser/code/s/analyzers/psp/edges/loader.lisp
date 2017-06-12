@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 1991-2005,2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1991-2005,2016-2017 David D. McDonald  -- all rights reserved
 ;;; 
 ;;;     File:  "loader"
 ;;;   Module:  "analyzers;psp:edges:"
-;;;  Version:  August 2016
+;;;  Version:  June 2017
 
 ;;  1.1  (v1.5)  Added files for the edge-creating routines that had
 ;;        been embedded in other code so that it could all be centralized.
@@ -49,14 +49,13 @@
 (gload "kinds of edges;polyw")
 (gload "kinds of edges;long scan")
 (gload "kinds of edges;looking under")
-(gload "kinds of edges;lattice-operations")
 
 ;; These aren't needed unless *load-the-grammar* is true.
 ;; However since that flag won't go up until late in the process
 ;; in some configurations, rather than check the flag here and
 ;; do the loading, we set up this function and have it run inside
-;; load-the-grammar itself.  !!! Note that these live in [grammar;rules:
-;; edges:]
+;; load-the-grammar itself.
+;; Note that these live in [grammar;rules:edges:]
 
 (defun load-grammar-specific-edge-types ()
   (gload "grammar edge types;digits")

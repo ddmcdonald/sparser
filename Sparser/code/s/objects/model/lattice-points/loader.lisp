@@ -1,10 +1,10 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:(SPARSER LISP) -*-
-;;; copyright (c) 1997-2000,2012-2014 David D. McDonald  -- all rights reserved
+;;; copyright (c) 1997-2000,2012-2014,2017 David D. McDonald  -- all rights reserved
 ;;; extensions copyright (c) 2007-2009 BBNT Solutions LLC. All Rights Reserved
 ;;;
 ;;;     File:  "loader"
 ;;;   Module:  "objects;model:lattice-points:"
-;;;  version:  May 2014
+;;;  version:  June 2017
 
 ;; initiated 11/29/97. 3/7/98 added annotation, psi. 7/9 added c+v.
 ;; 7/29 broke up "psi" into find and make. 9/12 added runtime. 
@@ -34,3 +34,5 @@
 (lload "lattice-points;dependent terms")
 (lload "lattice-points;operations")
 
+(lload "lattice-points;lattice-operations")
+(lload "lattice-points;walk-individuals")
