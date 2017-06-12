@@ -11,7 +11,8 @@
 (in-package :sparser)
 
 (when (find-package :mumble)
-;;  (gload "blocks;resources")  empty -- recycle
+  ;;  (gload "blocks;resources")  empty -- recycle
+  
   (gload "blocks;experiments") ;; rather dusty.
   ;;Mostly same as regression tests
 
@@ -19,10 +20,8 @@
   (gload "blocks;vocabulary")
   (gload "blocks;verbs")
 
-  ;;  (gload "blocks;entities")
-  ;; Not used anymore (move to spg)
-  ;; Caused not-yet-debugged 'sticky' lexicalized phrases
-  ;; for all blocks -> the UPS block
+  (gload "blocks;entities")
+  ;; defines B6 etc. and the named blocks
 
   (gload "blocks;specialists") ;; mine for heuristics
   (gload "blocks;speech-acts") ;; ditto
