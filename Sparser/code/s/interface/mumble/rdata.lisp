@@ -249,11 +249,12 @@
                       (setq pos-tag (car lemma))
                       (cadr lemma))))))
       (when word
-        (make-resource-for-sparser-word word pos-tag category)))))
+        (make-corresponding-mumble-resource word pos-tag category)))))
 
 (defgeneric make-corresponding-mumble-resource (word pos-tag krisp-obj)
-  (:documentation "Special path to generating the resource when the
-    caller has the word and part-of-speech in hand, such as lemmas.
+  (:documentation "Used when the caller has the word and part-of-speech 
+    in hand, such as lemmas or in the after method or make-rules-for-head's
+    after method.
     Calls the standard lexicalized tree constructor and then records
     the result on the Krisp category or individual.")
   (:method :around (word pos-tag krisp-obj)

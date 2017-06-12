@@ -4,7 +4,7 @@
 ;;;
 ;;;     File:  "morphology"
 ;;;   Module:  "grammar;rules:tree-families:"
-;;;  version:  January 2017
+;;;  version:  June 2017
 
 ;; initiated 8/31/92 v2.3, fleshing out verb rules 10/12
 ;; 0.1 (11/2) fixed how lists of rules formed with synonyms
@@ -105,7 +105,13 @@
 
 (defgeneric make-rules-for-head (pos word category referent &rest special-cases)
   (:documentation "Construct rules for a single word, multiple words,
-or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
+ or a word with morphological special cases, e.g., :plural, :past-tense, etc.
+ May be invoked on explicit works in the realization fields of categories
+ (e.g. table has :realization (:common-noun table)) in which case the referent
+ with be the category itself (see make-rules-for-rdata), or it may be invoked
+ on individuals who are substituting a word they supply for a variable in the
+ rdata (e.g. block has :realization (:proper-noun name), instance of block supply
+ the word to use as the name) in which case the referent is the individual.")
   (:argument-precedence-order word pos category referent)
   
   (:method (pos (rdata realization-data) category referent &rest special-cases)
@@ -165,7 +171,12 @@ or a word with morphological special cases, e.g., :plural, :past-tense, etc.")
       ((or word polyword)
        (assign-brackets-for-word word pos)
        (when *build-mumble-equivalents*
-         (make-corresponding-mumble-resource word pos category))))))
+         ;;(lsp-break "After: category = ~a referent = ~a" category referent)
+         (if (eq referent category) ;; we're working with a category
+           (make-corresponding-mumble-resource word pos category)
+           ;; otherwise we're working with an individual
+           (make-corresponding-mumble-resource word pos referent)))))))
+
 
 (deftype irregular-keyword ()
   '(member :plural
