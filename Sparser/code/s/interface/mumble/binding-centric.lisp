@@ -532,11 +532,7 @@ attach-via-binding. |#
         (make-adjunction-node
          (make-lexicalized-attachment
           'restrictive-relative-clause
-          (let ((be (make-dtn :referent predicate
-                              :resource (phrase-named 's-be-comp))))
-            (attach-subject individual be)
-            (attach-complement predicate be)
-            (present-tense be)))
+          (realize-via-bindings predicate :pos 'verb))
          dtn)
         (attach-adjective predicate dtn pos))))
   
