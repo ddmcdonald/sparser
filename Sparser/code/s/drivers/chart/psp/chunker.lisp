@@ -527,7 +527,7 @@
       (when (and edges-before
                  (if (edge-p representative-edge)
                      (eq (cat-name (edge-form representative-edge)) 'verb)
-                     (loop for e in (ev-edge-list ev)
+                     (loop for e in (ev-edges ev)
                            thereis
                              (eq (cat-name (edge-form e)) 'verb))))
                              
