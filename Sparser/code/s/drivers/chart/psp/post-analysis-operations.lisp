@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2016-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "pos-analysis-operations"
 ;;;   Module:  "drivers/chart/psp/"
-;;;  version:  April 2016
+;;;  version:  June 2017
 
 ;; all code for post-processing of sentences 
 
@@ -357,7 +357,9 @@ is replaced with replacement."
   (:method or (indiv) (declare (ignore indiv))))
 
 
-;;-------------
+;;;-------------------------
+;;; repair bad compositions
+;;;-------------------------
 
 (defun repair-bad-composition (sentence)
   ;; 1st experiment -- generalize when there's been a third.
@@ -365,6 +367,7 @@ is replaced with replacement."
                 (starts-at-pos sentence)
                 (ends-at-pos sentence)))
          (i (when edge (edge-referent edge))))
+    ;;(push-debug `(,i ,edge ,sentence)) (lsp-break "repair")
     (when (and i (individual-p i))
       (when (itypep i 'move-something-verb)
         (unless (value-of 'location i)
@@ -374,12 +377,9 @@ is replaced with replacement."
           (lift-location-out-of-theme i edge))))))
 
 (defun lift-location-out-of-theme (i top-edge)
-  ;; Move the location edge to the VP (as its ETF does (see
-  ;; transitive-loc-comp).
-  ;; Make a new version of the theme that leaves off
-  ;; the location.
-  ;; Have the whole region rescanned for its (now revised)
-  ;; mention structure 
+  ;; Move the location edge to the VP (as its ETF does (see transitive-loc-comp).
+  ;; Make a new version of the theme that leaves off the location.
+  ;; Have the whole region rescanned for its (now revised) mention structure .
   (assert (itypep i 'move-something-verb))
   (let* ((theme (value-of 'theme i))
          (location (when theme (value-of 'location theme))))
@@ -391,14 +391,19 @@ is replaced with replacement."
                                  theme 'location))
                  (j (rebind-variable 'theme revised-theme i))
                  (k (bind-variable 'location location j))
-                 (parent-of-loc (edge-used-in loc-edge))
+                 (parent-of-loc (edge-used-in loc-edge)) ;; np: np+pp
+                 (grandparent (edge-used-in parent-of-loc)) ;; vp
+                 (side-of-granchild ;; which side do we replace
+                  (if (eq (edge-right-daughter grandparent) parent-of-loc)
+                    :right :left))
                  (obj-edge (edge-left-daughter parent-of-loc)))
-            (unless (eq parent-of-loc
-                        (edge-right-daughter top-edge))
-              (error "Assumption about parent-of-loc broken"))
 
-            ;; Detach obj and loc from their parent, and remove
-            ;; them from their edge-vactors so we can reconstruct
+            ;;/// convert to trace
+            #+ignore(format t "~&Redefined ~a as ~a~%to elevate ~a~%"
+                    i j location)
+
+            ;; Detach loc-edge from its parent, and remove
+            ;; it from their edge-vectors so we can reconstruct
             ;; the vectors again after the dust settles
             (detach-edge loc-edge)
 
@@ -414,18 +419,36 @@ is replaced with replacement."
             (detach-edge parent-of-loc)            
 
             ;; Connect the obj edge as the right daughter
-            ;; of the top edge (the vp), removing the overly
+            ;; of the higher edge (the vp), removing the overly
             ;; long version of the obj that's presently there
-            (setf (edge-right-daughter top-edge) obj-edge)
+            (if (eq side-of-granchild :right)
+              (setf (edge-right-daughter grandparent) obj-edge)
+              (setf (edge-left-daughter grandparent) obj-edge))
             
-            ;; Change the bondary of the vp edge to same as obj
-            (change-edge-end-position top-edge
+            ;; Change the boundary of the vp edge to same as obj
+            (change-edge-end-position grandparent
                                       (edge-ends-at obj-edge))
             
             ;; Change the referent of the vp to be just vg+obj
-            (set-edge-referent top-edge j)
+            (set-edge-referent grandparent j)
 
             ;; Attach the location to a new VP above this one.
             ;; (Edge-creator needs the referent to get through complete)
-            (chomsky-adjoin top-edge loc-edge k)))))))
+            (let ((edge-above-grandparent (edge-used-in grandparent))
+                  (chomsky-edge (chomsky-adjoin grandparent loc-edge k)))
+              #+ignore(format t "~&edge-above = ~a~%chomsky = ~a~%"
+                         edge-above-grandparent chomsky-edge)
+
+              ;; It might just be a vp
+              (when edge-above-grandparent
+                ;; swap grandparent for new chomsky-adjunction
+                (replace-daughter-edge edge-above-grandparent
+                                       grandparent
+                                       chomsky-edge)
+
+                ;; The edge-above also needs the updated referent
+                (setf (edge-referent edge-above-grandparent) k))
+
+              ;; runs for side-effects, but this is good for tracing
+              (values chomsky-edge k))))))))
 
