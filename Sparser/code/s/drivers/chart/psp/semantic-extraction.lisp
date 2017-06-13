@@ -545,8 +545,9 @@
   (let ((*sentence-results-stream*
          (unless with-ids *sentence-results-stream*)))
     (declare (special *sentence-results-stream*))
-    (let ((*for-spire* t))
-      (declare (special *for-spire*))
+    (let ((*for-spire* t)
+          (*with-uids* with-ids))
+      (declare (special *for-spire* *with-uids*))
       (semtree item))))
 
 ;;----- semtree methods
@@ -610,13 +611,16 @@
 
 
 (defun indiv-or-type (i)
-  (declare (special *for-spire* *sentence-results-stream*))
+  (declare (special *for-spire* *sentence-results-stream* *with-uids*))
   (cond
     (*sentence-results-stream*
      `(,(cat-name (itype-of i))))
-    (*for-spire* 
-      `((,(cat-name (itype-of i))
-          ,(indiv-uid i))))
+    (*for-spire*
+     (case *with-uids*
+       (:no `(,(cat-name (itype-of i))))
+       (t
+        `((,(cat-name (itype-of i))
+            ,(indiv-uid i))))))
     (t `(,i))))
 
 (defmethod collect-model-description ((i individual))
