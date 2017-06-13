@@ -169,7 +169,7 @@ make them according to the spec given in the class instance
 ;;; Find-or-make facility creator
 ;;;-------------------------------
 
-(defun setup-find-or-make (class-name) ;;&key (storage-type :table))
+(defmacro setup-find-or-make (class-name) ;;&key (storage-type :table))
   "Makes a customized table, get function, and find or make function
    for the indicated class. If the class-name was the symbol 'speaker
    then it makes a special variable SPEAKER-TABLE that is bound to
@@ -183,8 +183,11 @@ make them according to the spec given in the class instance
    to simplify (by burning in) the initialization parameters of the
    class. "
 
-;  (ecase storage-type ;; alist??
-;    (:table))
+                                        ;  (ecase storage-type ;; alist??
+                                        ;    (:table))
+  (if (and (consp class-name)
+           (eq (car class-name) 'quote))
+      (setq class-name (second class-name)))
   (unless (symbolp class-name)
     (error "Class argument should be the symbol that names the class"))
   (let* ((class-string (symbol-name class-name))
@@ -196,24 +199,21 @@ make them according to the spec given in the class instance
          (getter-name (intern (string-append "GET-" class-string)
                               sparser-package))
          (clear-name (intern (string-append "CLEAR-" class-string)
-                             sparser-package)))
-    ;; Could return a progn that does all this, but this version
-    ;; is easier to incrementally debug
-    (let ((table-form `(defvar ,table-name (make-hash-table))))
-      (eval table-form))
-    (let ((getter-form `(defun ,getter-name (name)
-                          (gethash name ,table-name))))
-      (eval getter-form))
-    (let ((fom-form `(defun ,finder-name (name)
-                       (or (,getter-name name)
-                           (let ((i (make-instance ',class-name :name name)))
-                             (setf (gethash name ,table-name) i)
-                             i)))))
-      (eval fom-form))
-    (let ((clear-form `(defun ,clear-name ()
-                         (clrhash ,table-name)) ))
-      (eval clear-form))
-    class-string))
+                             sparser-package))
+         ;; Could return a progn that does all this, but this version
+         ;; is easier to incrementally debug
+         (table-form `(defvar ,table-name (make-hash-table)))
+         (getter-form `(defun ,getter-name (name)
+                         (gethash name ,table-name)))
+         (fom-form `(defun ,finder-name (name)
+                      (or (,getter-name name)
+                          (let ((i (make-instance ',class-name :name name)))
+                            (setf (gethash name ,table-name) i)
+                            i))))
+         (clear-form `(defun ,clear-name ()
+                        (clrhash ,table-name)) ))
+    `(progn ,table-form ,getter-form ,fom-form ,clear-form
+            ',class-string)))
 
 
 
