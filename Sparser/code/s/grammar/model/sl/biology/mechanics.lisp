@@ -1186,7 +1186,12 @@ the process.
                     :form form
                     :referent i)
                   rules))))
-
+    (when
+        (or name word)
+      (make-corresponding-mumble-resource
+       (or name word)
+       :common-noun i))
+    
       (when synonyms ;; quoted list of strings
         (dolist (syn synonyms)
           (let ((word (resolve/make syn)))
