@@ -17,22 +17,26 @@
   (:documentation "Given a dtn, produce an s-expression that
    displays its parts.")
   (:method ((dtn derivation-tree-node))
-    `(derivation-tree-node
+    `(:dtn ;;derivation-tree-node
       ,@(when (referent dtn)
-             `(:referent ,(pp-dtn (referent dtn))))
+          `((:referent ,(pp-dtn (referent dtn)))))
       (:resource ,(pp-dtn (resource dtn)))
-      ,(when (features dtn)
-             `(:features ,(pp-dtn (features dtn))))
-      ,@(if (adjuncts dtn)
-           `(:adjuncts
-             ,@(loop for an in (adjuncts dtn)
-                  collect (pp-dtn an)))
-           '(:adjuncts nil))
-      ,@(if (complements dtn)
-           `(:complements
-             ,@(loop for cn in (complements dtn)
-                  collect (pp-dtn cn)))
-           nil)))
+      ,@(when (features dtn)
+          `((:features ,(pp-dtn (features dtn)))))
+       ,@(loop for an in (adjuncts dtn)
+               collect (pp-dtn an))
+       #+ignore
+       (when (adjuncts dtn)
+         `((:adjuncts
+            ,(loop for an in (adjuncts dtn)
+                   collect (pp-dtn an)))))
+       ,@(loop for cn in (complements dtn)
+               collect (pp-dtn cn))
+       #+ignore
+       (when (complements dtn)
+          `((:complements
+             ,(loop for cn in (complements dtn)
+                    collect (pp-dtn cn)))))))
 
   ;; method for sp::individual is in
   ;; Sparser/.../interface/mumble/interface.lisp
@@ -69,20 +73,24 @@
   (:method ((cn complement-node))
     (let ((param (phrase-parameter cn))
           (value (value cn)))
-      `(,(pp-dtn param) = ,(pp-dtn value)) ))
+      ;;`(,(pp-dtn param) = ,(pp-dtn value))
+      `(:complement ,(pp-dtn param) ,(pp-dtn value))))
   (:method ((an adjunction-node))
     (let ((ap (ap an))
           (value (value an)))
-      `(,(pp-dtn ap) ,(pp-dtn value))))
+      ;;`(,(pp-dtn ap) ,(pp-dtn value))
+      `(:adjunct ,(pp-dtn ap) ,(pp-dtn value))
+      ))
   
   (:method ((lp saturated-lexicalized-phrase))
     (let ((phrase (phrase lp))
           (bound-args (bound lp)))
-      `(,(mname phrase)
-         ,(loop for cn in bound-args
-             as parameter = (phrase-parameter cn)
-             as value = (value cn)
-             return `(,(mname parameter) ,(pp-dtn value))))))
+      `(:slp
+        ,(mname phrase)
+        ,(loop for cn in bound-args
+               as parameter = (phrase-parameter cn)
+               as value = (value cn)
+               return `(,(mname parameter) ,(pp-dtn value))))))
   (:method ((p phrase))
     (mname p)))
 
