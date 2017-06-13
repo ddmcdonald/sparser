@@ -72,6 +72,27 @@
     dtn))
 
 
+(defgeneric select-realization (mumble-rdata &key pos)
+  (:documentation "There are at least two if not more possible
+    realizations on this category. Return the most appropriate
+    one. Presently called by sp::has-mumble-rdata only.")
+  (:method ((rdata-choices cons) &key pos)
+    "Which of the choices best fits the part of speech"
+    (assert (symbolp pos))
+    (let* ((mpos (if (eq (symbol-package pos) (find-package :mumble))
+                   pos
+                   (sp::mumble-pos pos))) ;; presume sparser
+           (consistent (loop for mrd in rdata-choices
+                          when (eq mpos (lookup-pos mrd))
+                          collect mrd)))
+      (if (null (cdr consistent))
+        (car consistent)
+        (else (warn "More than one consistent realization")
+              (car consistent)))))
+  (:method ((fall-through t) &key pos)
+    (break "Caller passed unexpected data type to select-realization: ~
+            ~a~%~a" (type-of fall-through) fall-through)))
+
 (defgeneric realizing-label (resource)
   (:documentation "Return the label of the resource,
     which will be a node-label if the resource is based on
@@ -96,6 +117,8 @@
     (name (car (word-labels w))))
   (:method ((lp lexicalized-phrase))
     (lookup-pos (realizing-label lp)))
+  (:method ((mrd mumble-rdata))
+    (lookup-pos (head-word mrd)))
   (:method ((n node-label))
     (let ((name (name n)))
       (case name
