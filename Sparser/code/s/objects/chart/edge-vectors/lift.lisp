@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "lift"
 ;;;   Module:  "objects/chart/edge vectors/"
-;;;  Version:  April 2017
+;;;  Version:  June 2017
 
 ;; Initiated 4/28/17 for cases where lower, possibly embedded
 ;; edge has to be raised up and reattached to a higher edge.
@@ -43,6 +43,16 @@
        (setf (edge-ends-at edge) (edge-ends-at left))
        (setf (edge-right-daughter edge) :single-term)))
     edge))
+
+(defun replace-daughter-edge (parent old-daughter new-daughter)
+  "Replace the old daughter with the new one. Relieves the caller
+   from needing to know which side of the parent changes"
+  (let ((side (if (eq (edge-left-daughter parent) old-daughter)
+                :left :right)))
+    (ecase side
+      (:left (setf (edge-left-daughter parent) new-daughter))
+      (:right (setf (edge-right-daughter parent) new-daughter)))
+    parent))
 
 (defun chomsky-adjoin (head adjunct ref)
   "Make a new edge whose left daughter is the head edge
