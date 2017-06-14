@@ -37,16 +37,16 @@
     (get-mumble-word-for-sparser-word (pname s-word) pos))
   (:method ((s-word polyword) pos)
     (get-mumble-word-for-sparser-word (pname s-word) pos))
-  
-  (:method ((s-pname string) pos)
+  (:method ((pname string) pos)
     "If the mumble word doesn't exist (or not for this part of speech)
-     then create it."    
-    (or (mumble::find-word s-pname pos)
-        (else
-          #+ignore(when (or (string-equal s-pname "top")
-                    (string-equal s-pname "top-qua-location"))
-            (lsp-break "Ok to word for ~s ?" s-pname))
-          (mumble::define-word/expr s-pname (list pos))))))
+     then create it."
+    (assert (symbolp pos))
+    (let ((mpos (if (eq (symbol-package pos) (find-package :mumble))
+                  pos
+                  (mumble-pos pos))))
+      (or (mumble::find-word pname mpos)
+          (mumble::define-word/expr pname (list mpos))))))
+
 
 (defun get-sparser-word-for-mumble-word (m-word)
   (word-named (mumble::pname m-word)))
