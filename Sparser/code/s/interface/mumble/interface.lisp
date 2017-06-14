@@ -116,16 +116,22 @@
 (defmethod print-object ((md mumble-rdata) stream)
   (print-unreadable-object (md stream)
     (let* ((category (linked-category md))
-           (lp (linked-phrase md))
-           (phrase (phrase lp))
-           (bound (bound lp))
-           (pvp (car bound))
-           (vars (variables-consumed md)))
-      (format stream "mdata: ~a, ~a ~a=~a ~a"
-              (sp::pname category)
-              (phrase-name-for-printing phrase)
-              (name (phrase-parameter pvp))
-              (pprint-value (value pvp))
-              vars))))
+           (lp (linked-phrase md)))
+      (if (null lp)
+        (format stream "no linked-phrase: mumble-rdata for ~a"
+                       category)
+        (let* ((phrase (phrase lp))
+               (bound (bound lp))
+               (pvp (car bound))
+               (vars (variables-consumed md)))
+          (format stream "mdata: ~a, ~a ~a=~a ~a"
+                  (sp::pname category)
+                  (phrase-name-for-printing phrase)
+                  (name (phrase-parameter pvp))
+                  (pprint-value (value pvp))
+                  vars))))))
 
+;;--- other print methods
 
+(defmethod pprint-value ((c sp::category))
+  (format nil "~a" (sp::cat-symbol c)))
