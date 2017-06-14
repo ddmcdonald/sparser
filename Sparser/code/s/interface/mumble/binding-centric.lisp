@@ -66,6 +66,18 @@
                          (0 4) ; elide bio-prefix
                          (t 0))))))))
 
+;;/// move into mumble proper
+(deftype mumble-part-of-speech ()
+  `(member 'noun
+           'verb
+           'adjective
+           'adverb
+           'preposition
+           'quantifier
+           'pronoun
+           'interjection))
+
+
 (defun sparser-pos (pos)
   "Translate a Mumble part-of-speech tag to the equivalent Sparser tag."
   (ecase pos
@@ -347,7 +359,7 @@ attach-via-binding. |#
         (loop-over-bindings i pos dtn)))))
 
 
-;;--- primary driver for the general case
+;;--- realize-via-bindings
 
 (defgeneric realize-via-bindings (i &key pos resource)
   (:documentation "Loop over the bindings of the individual 'i' to populate
@@ -357,9 +369,13 @@ attach-via-binding. |#
   
   (:method ((i sp::individual) &key pos resource)
     "Look for realization data on the individual or its category and marshal it."
-    (let ((lp (get-lexicalized-phrase i)))
-      (unless pos ;; passed in for copular-predication, there-exists
-        (setq pos (if lp (lookup-pos lp) (guess-pos i))))
+    (let* ((lp (get-lexicalized-phrase i))
+           (pos (or pos ;; passed in for copular-predication, there-exists
+                    (if lp (lookup-pos lp) (guess-pos i))))
+           ;; rdata is essentially an annotated category-linked-phrase.
+           ;; It encodes the variable to phrase-parameter mapping.
+           (rdata (sp::has-mumble-rdata i :pos pos)))
+      
       (unless resource
         (setq resource (if lp lp (ecase pos ;; make the lp from scratch
                                    (adjective (word-for i pos))
@@ -367,27 +383,15 @@ attach-via-binding. |#
                                    (verb (verb (word-for i pos)
                                                (verb-frame-for i)))))))
       (tr "Realize-via-bindings for ~a  lp = ~a" i lp)
-      (let ((dtn (make-dtn :referent i :resource resource))
-            (rdata (sp::has-mumble-rdata i)))
-        ;; rdata is essentially an annotated category-linked-phrase.
-        ;; It encodes the variable to phrase-parameter mapping.
+      (let ((dtn (make-dtn :referent i :resource resource)))            
         (case pos (verb (tense dtn))) ;; also checks for command
         (if rdata
           (loop-over-some-bindings i pos dtn rdata)
           (loop-over-bindings i pos dtn))))))
  
-(defun loop-over-bindings (i pos dtn)
-  "Handle every binding on i"
-  (loop
-     for binding in (reverse (sp::indiv-binds i))
-     as variable = (sp::binding-variable binding)
-     as var-name = (sp::var-name variable)
-     do (attach-via-binding binding var-name dtn pos)
-     finally (return dtn)))
-
 (defun loop-over-some-bindings (i pos dtn rdata)
   "Use the map on the rdata to handle the core bindings
-   then use the regular loop for the rest."
+   then use the normal binding loop dispatch for the rest."
   (let ((map (parameter-variable-map rdata)))
     (let ((handled
            (loop for pvp in map
@@ -403,9 +407,18 @@ attach-via-binding. |#
          do (attach-via-binding binding var-name dtn pos))
       dtn)))
 
+(defun loop-over-bindings (i pos dtn)
+  "Handle every binding on i"
+  (loop
+     for binding in (reverse (sp::indiv-binds i))
+     as variable = (sp::binding-variable binding)
+     as var-name = (sp::var-name variable)
+     do (attach-via-binding binding var-name dtn pos)
+     finally (return dtn)))
+
 
 (defun verb-frame-for (i)
-  ;; Should be able to eliminate this along with the other guesswork
+  ;; Should be able to eliminate this along with the other guess work
   ;; since these cases shold be handled by rdata
   (when *check-lp-coverage*
     (break "call to verb-frame-for"))
@@ -466,7 +479,9 @@ attach-via-binding. |#
               (make-lexicalized-attachment 'restrictive-relative-clause value)
               dtn))
             ((find :m subcats)
-             (attach-adjective value dtn pos)))))
+             (attach-adjective value dtn pos))
+            (t (tr "No handler for unmarked binding ~a" variable)
+               nil))))
   
   (:method (binding (var-name (eql 'sp::adverb)) dtn pos)
     "Attach an adverb."
