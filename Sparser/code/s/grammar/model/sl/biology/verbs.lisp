@@ -185,9 +185,12 @@
   (:verb "lyse" :etf (svo-passive)))
 
 (define-category label :specializes bio-method
-  ;; e.g. "SILAC labeling"
+                 ;; e.g. "SILAC labeling"
+  :bindings (uid "EFO:0000562")
   :realization
-  (:verb "label" :etf (svo-passive)))
+  (:verb ("label" :present-participle ("labeling" "labelling")
+                  :past-tense ("labeled" "labelled"))
+         :etf (svo-passive))) ;; how to add single-l version for "labeling"?
 
 (define-category screen :specializes  bio-method
   :realization
@@ -841,6 +844,14 @@
     (:verb "hypothesize" ;; keyword: ENDS-IN-ED 
 	   :noun "hypothesis"
 	   :etf (svo-passive)))
+
+(define-category immortalize :specializes bio-method
+                 :bindings (uid "NCIT:C82424")
+                 :restrict ((object cell-entity)) ; covers both cell-line and cell-type
+                 :realization
+                 (:verb "immortalize" :noun "immortalization"
+                       :etf (svo-passive)
+                       ))
 
 (define-category immunoprecipitate :specializes immune-method
   :binds ((origin bio-location))
