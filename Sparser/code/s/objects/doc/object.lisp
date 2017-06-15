@@ -731,6 +731,60 @@
                            (find-package :sp)))
                    *article-sentences*))))
 
+(defparameter *curr-art* nil)
+(defparameter *articles-with-no-xml-parse* nil)
+
+(defun articles->corpora-files (&key (corpus :phase3)
+                                  (out-dir (concatenate
+                                            'string 
+                                            (directory-namestring (r3::corpus-path corpus))
+                                            (string-downcase (string corpus)) "_sentence-corpora/"))
+                                  (quiet t) (n 100) (start 1))
+  (loop with article-list = (r3::all-corpus-article-names (r3::corpus-path corpus))
+          for article-id in (nthcdr (1- start) article-list)
+          as i from start to (or (when n (+ start n -1)) (length article-list))
+          do (print article-id)
+            (article->corpora-file article-id :corpus corpus :out-dir out-dir :quiet quiet)))
+
+              
+(defun article->corpora-file (article-id &key (corpus :phase3)
+                                           (out-dir (concatenate
+                                            'string 
+                                            (directory-namestring (r3::corpus-path corpus)) 
+                                            (string-downcase (string corpus)) "_sentence-corpora/"))
+                                           (quiet t))
+  (declare (special *article-sentences* *curr-art* *articles-with-no-xml-parse*))
+  (ensure-directories-exist out-dir)
+  (let* ((article-string (if (pathnamep article-id)
+                             (pathname-name article-id)
+                             article-id))
+         (populated-article 
+          (r3::populate-article article-string :quiet quiet
+                                :dir (r3::corpus-path corpus)))
+         (article (when populated-article (r3::sweep-article populated-article))))
+    (when *article-sentences* (clrhash *article-sentences*))
+    (if article
+        (then (setq *curr-art* article)
+              (recurse-through-document article #'get-sents-from-1st-sent)
+              (let ((sentences-var (car (create-article-corpora))))
+                (with-open-file (stream
+                                 (concatenate
+                                  'string out-dir article-string "-corpus.lisp")
+                                 :direction :output :if-exists :supersede
+                                 :if-does-not-exist :create :external-format :utf-8)
+                  (format stream "(in-package :sparser)~%~%")
+                  (format stream "(defparameter ~s ~%'(" sentences-var)
+                  (loop for sent in (symbol-value sentences-var)
+                        do (lc-one-line-print sent stream))
+                  (format stream ")"))
+                (concatenate 'string article-string "-corpus.lisp")))
+        (push article-id *articles-with-no-xml-parse*))))
+
+(defun get-sents-from-1st-sent (sentence)
+  (declare (special *curr-art*))
+  (save-article-sentence *curr-art* sentence)
+  (when (next sentence)
+    (get-sents-from-1st-sent (next sentence))))
 
 
 ;;;--------------
