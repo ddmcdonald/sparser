@@ -402,8 +402,10 @@
 
 (defun end-of-sentence-processing-cleanup (sentence)
   (declare (special *current-article* *sentence-results-stream*
+                    *end-of-sentence-display-operation*
                     *localization-interesting-heads-in-sentence*
                     *localization-split-sentences*
+                    *colorized-sentence*
                     *save-bio-processes*  *indra-post-process*
                     *predication-links-ht*))
   (set-discourse-history sentence (cleanup-lifo-instance-list))
@@ -430,7 +432,7 @@
 
 
 ;;;----------------------------------
-;;; diverse processing for HMS/Intra
+;;; diverse processing for HMS/Indra
 ;;;----------------------------------
 
 (defparameter *end-of-sentence-display-operation* nil)

@@ -212,6 +212,7 @@ collected a set of ns-examples"
                                              "sparser:tools;ns-stuff;ns-unknown-rd-items-~a.lisp"
                                              prefix)))
   "Save the collected ns examples to a file"
+  (declare (special *bio-entity-heads* *bio-chemical-heads*))
   (with-open-file (stream filename :direction :output :if-exists :supersede)
     (pprint `(in-package :sp) stream)
     (pprint
