@@ -377,14 +377,17 @@
 ;;; walking a function through a document
 ;;;---------------------------------------
 
-(defgeneric recurse-through-document (source fn in-results?)
-  (:documentation "recurses through document structure applying fn"))
+(defgeneric recurse-through-document (source fn)
+  (:documentation "recurses through document structure applying fn to the sentences"))
 
-(defmethod recurse-through-document ((a article) fn in-results?)
-  (declare (ignore in-results?))
-  (loop for child in (children a)
-     do (recurse-through-document child fn nil)))
+(defmethod recurse-through-document ((hc has-children) fn)
+  (let ((children (children hc)))
+    (if (eq 'sentence (type-of children))
+        (funcall fn children)
+        (loop for child in children
+              do (recurse-through-document child fn)))))
 
+#| no longer applicable
 (defmethod recurse-through-document ((ss section-of-sections) fn in-results?)
   (let ((ir (or in-results? (in-results? ss))))
     (loop for child in (children ss)
@@ -404,8 +407,9 @@
 (defmethod recurse-through-document ((p paragraph) fn in-results?)
   (declare (ignore p fn in-results?))
   nil)
+|#
 
-
+#| no longer used anywhere
 
 (defun in-results? (s)
   ;; Are we in a results section?
@@ -415,11 +419,11 @@
              (title s)
              (content-string (title s)))))
       (member (string-downcase title)'("results") :test #'equal))))
-
+|#
 
 
 (defgeneric document-tree (source)
-  (:documentation "recurses through document structure applying fn"))
+  (:documentation "recurses through document structure creating a tree structure"))
 
 (defmethod document-tree ((hc has-children))
     (cons hc
@@ -430,6 +434,7 @@
     (list hc))
 
 
+#| these don't seem to be used anywhere
 (defparameter *results-section-titles* nil)
 (defparameter *relevant-titles* nil)
 
@@ -441,7 +446,7 @@
 
 (defun collect-relevant-titles (title)
   (push (content-string title) *relevant-titles*))
-          
+|#
 
 
 
