@@ -13,7 +13,8 @@
 ;;; RNA and microRNAs
 ;;;------------------
 
-
+(noun "saRNA" :super rna)
+(def-synonym saRNA (:noun "small activating RNA")) ;; no findable ontology ID yet but wiki article with sources https://en.wikipedia.org/wiki/SaRNA
 
 (noun "miR-26A" :super micro-rna)
 (noun "miR-26A2" :super micro-rna)

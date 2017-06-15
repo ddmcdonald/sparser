@@ -301,6 +301,14 @@
      :noun ("deglycosylation" "de-glycosylation")
      :etf (svo-passive)))
 
+(define-category fucosylation
+    :specializes glycosylation
+    :bindings (uid  "GO:0036065")
+  :realization 
+    (:verb "fucosylate"
+     :noun "fucosylation"
+     :etf (svo-passive)))
+
 (define-category hydroxylation 
  :specializes post-translational-modification 
  :bindings (uid  "GO:0018126")
@@ -310,7 +318,7 @@
      :etf (svo-passive)))
 
 (define-category methylation 
-  :specializes post-translational-modification
+  :specializes post-translational-modification ;; uid for protein methylation: GO:0006479
   :restrict ((substrate (:or protein variant dna gene)))
   :realization 
   (:verb "methylate"
@@ -335,6 +343,15 @@
    :noun ("hyper-methylation" "hypermethylation")
    :etf (svo-passive)))
 
+(define-category hypo-methylation 
+  :specializes post-translational-modification
+  :bindings (uid "NCIT:C121521")
+  :restrict ((substrate (:or protein variant dna gene)))
+  :realization 
+  (:verb ("hypo-methylate" "hypomethylate")
+   :noun ("hypo-methylation" "hypomethylation")
+   :etf (svo-passive)))
+
 (define-category ribosylation 
  :specializes post-translational-modification 
   :realization 
@@ -352,7 +369,8 @@
      :etf (svo-passive)))
 
 (define-category sumoylation 
- :specializes post-translational-modification 
+    :specializes post-translational-modification
+    :bindings (uid  "GO:0016925")
   :realization 
     (:verb "sumoylate"
      :noun "sumoylation"

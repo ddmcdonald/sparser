@@ -80,15 +80,12 @@
 ;;A fibroblast is a type of cell that synthesizes the extracellular matrix and collagen,[1] 
 ;; the structural framework (stroma) for animal tissues, and plays a critical role in wound healing. 
 ;; Fibroblasts are the most common cells of connective tissue in animals.
-(noun "fibroblast" :super cell-type)
-(noun "leukocyte" :super cell-type)
-(noun "astrocyte" :super cell-type)
-(noun "neuron" :super cell-type)
+;(noun "fibroblast" :super cell-type)
 
 (noun "keratin" :super cell-type) ;; NOT SURE THIS IS HOW IT IS BEING USED
-(noun "keratinocyte" :super cell-type)
 
-(noun "MenSC" :super cell-type) ;; TRIPS wanted to define this as a protein domain going from MANSC -> MENSC, but that's clearly not right in context -- it's really "Menstrual Stem Cell" but, unfortunately for some reason that isn't in either cellosaurus or cell ontology, so I can't give it an ID
+(noun "MenSC" :super cell-type) ;; TRIPS wanted to define this as a protein domain stemming from MANSC -> MENSC, but that's clearly not right in context -- it's really "Menstrual Stem Cell" but, unfortunately for some reason that isn't in either cellosaurus or cell ontology, so I can't give it an ID
+(def-synonym MenSC (:noun "menstrual stem cell"))
 
 (noun "induced pluripotent stem cell" :super cell-type)
 (def-synonym induced-pluripotent-stem-cell (:noun "iPSC"))

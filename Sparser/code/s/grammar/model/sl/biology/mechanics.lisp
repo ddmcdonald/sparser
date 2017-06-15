@@ -326,11 +326,13 @@ uid binding, if there is one"
                          ;; "Picornaviridae" for "picornavirus"
                          ,(string-append (subseq pname 0 (- (length pname) 2)) "idae")))
                         ((ends-in? pname "is") 
-                         ;; "meningitides" for "meningitis"
+                         ;; "meningitides" for "meningitis" 
                          `(,(string-append (subseq pname 0 (- (length pname) 2)) "ides")
+                            ;; "analyses" for "analysis"
                             ,(string-append (subseq pname 0 (- (length pname) 2)) "es")))
                         ((ends-in? pname "um") ;; "flagella" "filopodia"
                          `(,(string-append (subseq pname 0 (- (length pname) 2)) "a")))
+                        ;; "caveolae" for "caveola"
                         ((ends-in? pname "a")
                          `(,(string-append pname "e")))
                         (t

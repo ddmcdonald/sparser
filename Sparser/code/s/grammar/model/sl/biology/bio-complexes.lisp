@@ -114,7 +114,7 @@
   :realization
   (:verb "oligomerize" ;; need this (perhaps) for etf and :s and :o
    :etf (sv)
-   :noun "oligomerization"
+   :noun ("oligomerization" "oligomerisation")
    :s monomer
    :of monomer
    :with monomer
@@ -139,7 +139,7 @@
 (define-category dimerize :specializes oligomerize
   :realization
   (:verb "dimerize" 
-   :noun "dimerization"
+   :noun ("dimerization" "dimerisation")
    :etf (sv)))
 
 (define-category heterodimerize :specializes dimerize

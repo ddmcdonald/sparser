@@ -5758,28 +5758,28 @@
 
 (defparameter *NO-ID-REDEF* '(("orig" "NSCLC"
                                ("NSCLC" "ONT:CANCER" :ID "EFO:0003060" :NAME
-                                "non-small cell lung carcinoma"))
+                                "non-small cell lung carcinoma"));done
                               ("orig" "adenocarcinoma"
                                ("adenocarcinoma" "ONT:CANCER" :ID "EFO:0000228"
-                                :NAME "adenocarcinoma"))
+                                :NAME "adenocarcinoma"));done
                               ("orig" "carcinoma"
                                ("carcinoma" "ONT:CANCER" :ID "EFO:0000313"
-                                :NAME "carcinoma"))
+                                :NAME "carcinoma"));done
                               ("orig" "melanoma"
                                ("melanoma" "ONT:CANCER" :ID "EFO:0000756" :NAME
                                 "melanoma"))
                               ("orig" "fibroblast"
                                ("fibroblast" "ONT:CELL" :ID "CO:0000057" :NAME
-                                "fibroblast"))
+                                "fibroblast"));done
                               ("orig" "leukocyte"
                                ("leukocyte" "ONT:CELL" :ID "BTO:0000751" :NAME
-                                "leukocyte"))
+                                "leukocyte"));done
                               ("orig" "keratinocyte"
                                ("keratinocyte" "ONT:CELL" :ID "BTO:0000667"
-                                :NAME "keratinocyte"))
+                                :NAME "keratinocyte"));done
                               ("orig" "neuron"
                                ("neuron" "ONT:CELL" :ID "CO:0000540" :NAME
-                                "neuron"))
+                                "neuron"));done
                               ("orig" "HEK293T"
                                ("HEK293T" "ONT:CELL-LINE" :ID "EFO:0001184"
                                 :NAME "HEK293T"))
@@ -6050,7 +6050,7 @@
                               ("orig" "sumoylation"
                                ("sumoylation"
                                 "ONT:POST-TRANSLATIONAL-MODIFICATION" :ID
-                                "GO:0016925" :NAME "protein sumoylation"))
+                                "GO:0016925" :NAME "protein sumoylation"));done
                               ("orig" "ubiquitination"
                                ("ubiquitination"
                                 "ONT:POST-TRANSLATIONAL-MODIFICATION" :ID
@@ -6130,7 +6130,7 @@
                                 :NAME "dalton"))
                               ("orig" "astrocyte"
                                ("astrocyte" "ONT:CELL" :ID "BTO:0000099" :NAME
-                                "astrocyte"))
+                                "astrocyte"));done
                               ("hyphens-dc" "saos2"
                                ("Sa-OS-2" "ONT:CELL-LINE" :ID "CVCL:0548" :NAME
                                 "SaOS-2"))
@@ -6144,7 +6144,7 @@
 (defparameter *NAMECAT-ID-MISMATCHES* '((CELL-TYPE LEUKOCYTE NIL :NEWUID
                                          "BTO:0000751" :WORD "PMNC")
                                         (CELL-TYPE LEUKOCYTE NIL :NEWUID
-                                         "BTO:0000751" :WORD "leucocyte")
+                                         "BTO:0000751" :WORD "leucocyte");done
                                         (CELLULAR-LOCATION GOLGI-APPARATUS
                                          "GO:0005794" :NEWUID "UP:SL-0132"
                                          :WORD "golgi")
@@ -6157,9 +6157,9 @@
                                         (ORGANISM MAMMAL NIL :NEWUID
                                          "NCIT:C14234" :WORD "mammalians")
                                         (CELL-TYPE NEURON NIL :NEWUID
-                                         "CO:0000540" :WORD "neurone")
+                                         "CO:0000540" :WORD "neurone");done
                                         (CELL-TYPE NEURON NIL :NEWUID
-                                         "CO:0000540" :WORD "neurones")
+                                         "CO:0000540" :WORD "neurones");done
                                         (BIO-METHOD RT-PCR NIL :NEWUID
                                          "NCIT:C18136" :WORD "RTPCR")))
 
@@ -7667,12 +7667,12 @@
                                             (MOLECULE LIGAND "CHEBI:52214"
                                              :WORD "liganded")
                                             (DISEASE HYPERPLASIA "NCIT:C3113"
-                                             :WORD "hyperplastic")))
+                                             :WORD "hyperplastic"))) ;dealt with
 
 (defparameter *PLURALS-OF-EXISTING-WORDS* '((BACTERIUM "Salmonellae"
-                                             "NCIT:C76380" :NAME "salmonella")
+                                             "NCIT:C76380" :NAME "salmonella") ;done 
                                             (CANCER "leukemias" "EFO:0000565"
-                                             :NAME "leukemia")
+                                             :NAME "leukemia");dealt with
                                             (CELL-TYPE "microglias"
                                              "BTO:0000078" :NAME "microglia")
                                             (CELL-LINE "MORs" "EFO:0006655"
@@ -7682,7 +7682,7 @@
                                             (CELLULAR-LOCATION "buds"
                                              "UP:SL-0027" :NAME "Bud")
                                             (CELLULAR-LOCATION "microvilli"
-                                             "UP:SL-0293" :NAME "Microvillus")
+                                             "UP:SL-0293" :NAME "Microvillus"); dealt with
                                             (MOLECULE "inducers" "NCIT:C120268"
                                              :NAME "inducer")
                                             (BIO-COMPLEX "chromatins"
@@ -7690,7 +7690,7 @@
                                             (BIO-COMPLEX "enhanceosomes"
                                              "GO:0034206" :NAME "enhanceosome")
                                             (DISEASE "ataxias" "NCIT:C26702"
-                                             :NAME "ataxia")
+                                             :NAME "ataxia");done
                                             (DISEASE "nevi" "EFO:0000625" :NAME
                                              "nevus")
                                             (PROTEIN-DOMAIN "PCIs"
@@ -7732,7 +7732,7 @@
                                             (DRUG "phenothiazines" "NCIT:C740"
                                              :NAME "phenothiazine")
                                             (DRUG "saRNAs" "NCIT:C29445" :NAME
-                                             "sarna")
+                                             "sarna");dealt with
                                             (DRUG "taxanes" "MESH:C080625"
                                              :NAME "taxane")
                                             (DRUG "sunscreens" "NCIT:C851"
@@ -7750,7 +7750,7 @@
                                             (BIO-COMPLEX "nucleosomes"
                                              "GO:0000786" :NAME "nucleosome")
                                             (DISEASE "cirrhoses" "NCIT:C2951"
-                                             :NAME "cirrhosis")
+                                             :NAME "cirrhosis");done
                                             (PROTEIN-DOMAIN "MRPs"
                                              "XFAM:PF09387.8" :NAME "MRP")
                                             (MOLECULE "quinones" "CHEBI:36141"
@@ -7758,34 +7758,34 @@
 
 (defparameter *DIFF-POS-OF-EXISTING-WORDS* '((BIO-PROCESS "Inflammation"
                                               "GO:0006954"
-                                              "inflammatory response")
+                                              "inflammatory response") ;done
                                              (BIO-PROCESS "biosynthetic"
-                                              "NCIT:C17702" "biosynthesis")
+                                              "NCIT:C17702" "biosynthesis");done
                                              (BIO-PROCESS "angiogenic"
-                                              "NCIT:C17932" "angiogenesis")
+                                              "NCIT:C17932" "angiogenesis");done
                                              (BIO-PROCESS "chelation"
                                               "NCIT:C40483"
-                                              "chelating activity")
+                                              "chelating activity");done
                                              (BIO-PROCESS "diastolic"
-                                              "NCIT:C62109" "diastole")
+                                              "NCIT:C62109" "diastole");done
                                              (BIO-PROCESS "degenerative"
-                                              "NCIT:C61557" "degeneration")
+                                              "NCIT:C61557" "degeneration");done
                                              (BIO-PROCESS "glycosylases"
                                               "GO:0016798"
-                                              "hydrolase activity, acting on glycosyl bonds")
+                                              "hydrolase activity, acting on glycosyl bonds");kind of
                                              (BIO-PROCESS "glycosylase"
                                               "GO:0016798"
-                                              "hydrolase activity, acting on glycosyl bonds")
+                                              "hydrolase activity, acting on glycosyl bonds");kind of
                                              (BIO-PROCESS "infiltrating"
                                               "NCIT:C25754" "infiltration")
                                              (BIO-PROCESS "infiltrated"
                                               "NCIT:C25754" "infiltration")
                                              (BIO-PROCESS "lytic" "NCIT:C37889"
-                                              "lysis")
+                                              "lysis");done
                                              (BIO-PROCESS "systolic"
-                                              "NCIT:C62110" "systole")
+                                              "NCIT:C62110" "systole");done
                                              (CANCER "hepatoma" "NCIT:C3099"
-                                              "hepatocellular carcinoma")
+                                              "hepatocellular carcinoma");done
                                              (CELLULAR-LOCATION "budded"
                                               "UP:SL-0027" "Bud")
                                              (CELLULAR-LOCATION "spindled"
@@ -7793,17 +7793,17 @@
                                              (MOLECULE "poisoning"
                                               "CHEBI:64909" "poison")
                                              (DISEASE "Infection" "NCIT:C26726"
-                                              "infectious disorder")
+                                              "infectious disorder");done
                                              (DISEASE "asthmatic" "EFO:0000270"
-                                              "asthma")
+                                              "asthma");done
                                              (PROTEIN-DOMAIN "gated"
                                               "XFAM:PF07670.12" "gate")
                                              (POST-TRANSLATIONAL-MODIFICATION
                                               "nitrosylating" "GO:0017014"
-                                              "protein nitrosylation")
+                                              "protein nitrosylation");done
                                              (POST-TRANSLATIONAL-MODIFICATION
                                               "nitrosylated" "GO:0017014"
-                                              "protein nitrosylation")
+                                              "protein nitrosylation");done
                                              (BIO-METHOD "imputed"
                                               "NCIT:C80304"
                                               "statistical imputation")
@@ -7822,11 +7822,11 @@
                                               "NCIT:C17355" "G1-phase")
                                              (BIO-PROCESS "catabolic"
                                               "NCIT:C41544"
-                                              "catabolic process")
+                                              "catabolic process");done
                                              (BIO-PROCESS "crosstalk"
                                               "NCIT:C94304" "cross-talk")
                                              (BIO-PROCESS "oncogenesis"
-                                              "NCIT:C18121" "tumorigenesis")
+                                              "NCIT:C18121" "tumorigenesis");done
                                              (BIO-PROCESS "phlebotomy"
                                               "GO:0044369"
                                               "feeding on blood of other organism")
@@ -7838,25 +7838,25 @@
                                               "DNA sequence rearrangement")
                                              (BIO-PROCESS "vascularization"
                                               "NCIT:C16900"
-                                              "neovascularization")
+                                              "neovascularization");done
                                              (CANCER "HGPIN" "NCIT:C5541"
-                                              "high-grade prostatic intraepithelial neoplasia")
+                                              "high-grade prostatic intraepithelial neoplasia") ;not defined
                                              (CANCER "HSIL" "NCIT:C8336"
-                                              "high-grade squamous intraepithelial neoplasia")
+                                              "high-grade squamous intraepithelial neoplasia");not defined
                                              (CANCER "PanIN3" "NCIT:C95432"
-                                              "pancreatic intraepithelial neoplasia-3")
+                                              "pancreatic intraepithelial neoplasia-3");done
                                              (CANCER "PanIN1A" "NCIT:C95429"
-                                              "pancreatic intraepithelial neoplasia-1A")
+                                              "pancreatic intraepithelial neoplasia-1A");done
                                              (CANCER "PanIN1" "NCIT:C6820"
-                                              "grade I pancreatic intraepithelial neoplasia")
+                                              "grade I pancreatic intraepithelial neoplasia");done
                                              (CANCER "RAEB2" "NCIT:C7168"
-                                              "RAEB-2")
+                                              "RAEB-2");done
                                              (CELL-TYPE "lactotropes"
-                                              "CO:0002311" "mammotroph")
+                                              "CO:0002311" "mammotroph");done
                                              (CELL-TYPE "Hsc" "BTO:0000725"
-                                              "hematopoietic stem cell")
+                                              "hematopoietic stem cell");done
                                              (CELL-TYPE "HSCs" "BTO:0000725"
-                                              "hematopoietic stem cell")
+                                              "hematopoietic stem cell");done
                                              (CELL-TYPE "LEC" "CO:0002138"
                                               "endothelial cell of lymphatic vessel")
                                              (CELL-TYPE "RBCs" "BTO:0000424"
@@ -7881,6 +7881,7 @@
                                               "oocyte")
                                              (CELL-LINE "Int407" "CVCL:1907"
                                               "Intestine 407")
+                                             ;all cells above done
                                              (CELL-LINE "RGC5" "CVCL:4059"
                                               "RGC-5")
                                              (CELL-LINE "GTL16" "CVCL:7668"
@@ -8164,43 +8165,44 @@
                                              (CELL-LINE "tsa201" "CVCL:2737"
                                               "tsA201")
                                              (CELLULAR-LOCATION "C-fibre"
-                                              "GO:0044299" "C-fiber")
+                                              "GO:0044299" "C-fiber");done
                                              (CELLULAR-LOCATION "MOM"
                                               "GO:0036407"
-                                              "mycolate outer membrane")
+                                              "mycolate outer membrane");done
                                              (CELLULAR-LOCATION "MVB"
                                               "GO:0005771"
-                                              "multivesicular body")
+                                              "multivesicular body");done
                                              (CELLULAR-LOCATION "MUM"
                                               "GO:0036407"
-                                              "mycolate outer membrane")
+                                              "mycolate outer membrane");wrong
                                              (CELLULAR-LOCATION "ND10"
-                                              "GO:0016605" "PML body")
+                                              "GO:0016605" "PML body");done
                                              (CELLULAR-LOCATION "core"
                                               "GO:0019013"
                                               "viral nucleocapsid")
                                              (CELLULAR-LOCATION "chromocentres"
-                                              "GO:0010369" "chromocenter")
+                                              "GO:0010369" "chromocenter");done
                                              (CELLULAR-LOCATION "bud"
-                                              "UP:SL-0027" "Bud")
+                                              "UP:SL-0027" "Bud");done
                                              (CELLULAR-LOCATION "fimbriae"
-                                              "GO:0009289" "pilus")
+                                              "GO:0009289" "pilus");done
                                              (CELLULAR-LOCATION "fimbria"
-                                              "GO:0009289" "pilus")
+                                              "GO:0009289" "pilus");done
                                              (CELLULAR-LOCATION "septa"
-                                              "GO:0030428" "cell septum")
+                                              "GO:0030428" "cell septum");done
                                              (CELLULAR-LOCATION "sulcus"
                                               "GO:0097612"
                                               "dinoflagellate sulcus")
                                              (CELLULAR-LOCATION "transGolgi"
                                               "UP:SL-0266"
                                               "trans-Golgi network")
+                                             ;all cell-loc done
                                              (MOLECULE "DMAB" "NCIT:C44324"
                                               "4-dimethylaminoazobenzene")
                                              (MOLECULE "Kepone" "NCIT:C44352"
                                               "chlordecone")
                                              (MOLECULE "NO2" "CHEBI:16301"
-                                              "nitrite")
+                                              "nitrite");done
                                              (MOLECULE "aminotriazole"
                                               "NCIT:C44331" "amitrole")
                                              (MOLECULE "estradiol-17β"
@@ -8209,9 +8211,9 @@
                                               "CHEBI:17898"
                                               "all-trans-retinal")
                                              (MOLECULE "plasticizers"
-                                              "CHEBI:79056" "plasticiser")
+                                              "CHEBI:79056" "plasticiser");done
                                              (MOLECULE "plasticizer"
-                                              "CHEBI:79056" "plasticiser")
+                                              "CHEBI:79056" "plasticiser");done
                                              (MOLECULE "oxidizer" "CHEBI:63248"
                                               "oxidising agent")
                                              (MOLECULE "IAA" "CHEBI:16411"

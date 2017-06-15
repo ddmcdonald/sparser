@@ -415,7 +415,7 @@
 (def-family "Lst2" :synonyms ("lst-2") :identifier "FA:02122")
 (def-family "MAD-1" :synonyms ("MAD1") :identifier "FA:02139")
 (def-family "MAG" :members ("UP:P18074" "UP:P20916"))
-(def-family "MAP2K" :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7") :synonyms ("mitogen activated protein kinase" "MAP kinase kinase") )
+(def-family "MAP2K" :members ("MAP2K1" "MAP2K2" "MAP2K3" "MAP2K4" "MAP2K5" "MAP2K6" "MAP2K7") :identifier "BE:MAP2K" :synonyms ("mitogen activated protein kinase kinase" "MAP kinase kinase") )
 (def-family "MAPK" :members ("UP:Q5A1D3" "UP:P27638" "UP:Q54QB1" ) :long "mitogen activated protein kinase" :synonyms ("ERK" "extracellular signal-regulated kinase" "ERK1/2" "erk" "mapk" "MAP kinase"  "map kinase" "mitogen-activated protein kinase" "mitogen activated protein kinas" "ERK-1/2") :identifier "PR:000000019")
 (def-family "MAT1" :members ("UP:P51948" "UP:Q15121" "XFAM:PF06391.11"))
 (def-family "MAT1" :synonyms ("Mat1") :identifier "XFAM:PF06391.11")
@@ -423,7 +423,7 @@
 (def-family "MCRA" :synonyms NIL :identifier "XFAM:PF06100.9")
 (def-family "MEF2" :synonyms NIL :identifier "FA:02224")
 (def-family "MEI5" :synonyms ("mei5") :identifier "XFAM:PF10376.7")
-(def-family "MEK" :members ("MEK1" "MEK2") :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase"))
+(def-family "MEK" :members ("MEK1" "MEK2") :identifier "BE:MEK" :synonyms ("MEK1/2" "MAPKK" "mitogen activated ERK kinase" "mitogen activated protein kinase kinase" "mitogen-activated protein kinase kinase"))
 (def-family "MEK" :members ("UP:P36507" "UP:Q02750" "UP:Q94A06"))
 (def-family "MESD" :synonyms ("Mesd") :identifier "FA:02236")
 (def-family "METTL20" :synonyms NIL :identifier "FA:04857")
@@ -1066,7 +1066,7 @@
 
 (cond ((not *use-small-proteins*)
        (def-family "FAK" :identifier "FA:03125" :synonyms ("FAK subfamily") :members ("PTK2" "PTK2B"))
-       (def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family") :members ("TP53" "TP63" "TP73"))
+       (def-family "p53" :identifier "FA:02632" :synonyms ("p-53" "p53"  "p53 family" "p53−") :members ("TP53" "TP63" "TP73"))
        (def-family "beta-catenin" :identifier "FA:00361" :synonyms ( "beta-catenin family")
                    :members("CTNNB1" "CTNND1" "CTNND2" "JUP" "PKP1" "PKP2" "PKP3" "PKP4")))
       (t

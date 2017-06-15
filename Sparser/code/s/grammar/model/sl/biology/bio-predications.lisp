@@ -161,7 +161,7 @@
 (define-category stable :specializes bio-predication
      :realization
      (:adj "stable"))
-
+(adj "sterile" :super bio-predication)
 (delete-adj-cfr (resolve/make "sufficient"))
 (adj "sufficient" :super bio-predication
      :binds ((theme biological)

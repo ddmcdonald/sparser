@@ -30,6 +30,7 @@
 (def-indiv-with-id protein-domain "CNF1" "XFAM:PF05785.10" :name "CNF1") 
 (def-indiv-with-id protein-domain "C1q" "XFAM:PF00386.19" :name "C1q") 
 (def-indiv-with-id protein-domain "BH-3" "XFAM:PF15285.4" :name "BH3")
+(def-indiv-with-id protein-domain "CUE" "XFAM:PF02845.14" :name "CUE" :maintain-case t) 
 
 (def-indiv-with-id protein-domain "CKK" "XFAM:PF08683.9" :name "CAMSAP CKK") 
 (def-indiv-with-id protein-domain "CCT" "XFAM:PF06203.12" :name "CCT") 
@@ -216,7 +217,7 @@
 (def-indiv-with-id protein-domain "apolipoprotein" "XFAM:PF01442.16" :name "apolipoprotein") 
 (def-indiv-with-id protein-domain "chromodomains" "XFAM:PF00385.22" :name "chromo") 
 (def-indiv-with-id protein-domain "cytochrome-C" "XFAM:PF00034.19" :name "cytochrom C") 
-(def-indiv-with-id protein-domain "dimerisation" "XFAM:PF08100.9" :name "dimerisation") 
+;(def-indiv-with-id protein-domain "dimerisation" "XFAM:PF08100.9" :name "dimerisation") 
 (def-indiv-with-id protein-domain "glycolytic" "XFAM:PF00274.17" :name "glycolytic") 
 (def-indiv-with-id protein-domain "interferon-γ" "XFAM:PF00714.15" :name "IFN-gamma") 
 (def-indiv-with-id protein-domain "octapeptide" "XFAM:PF03373.12" :name "octapeptide") 

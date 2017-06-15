@@ -40,4 +40,6 @@
 (def-indiv-with-id unit-of-measure "Siemens" "UO:0000264" :name "siemens") 
 (def-indiv-with-id unit-of-measure "fmol" "UO:0000043" :name "femtomole") 
 (def-indiv-with-id unit-of-measure "mmHg" "UO:0000272" :name "millimetres of mercury") 
-(def-indiv-with-id unit-of-measure "picomole" "UO:0000042" :name "picomole") 
+(def-indiv-with-id unit-of-measure "picomole" "UO:0000042" :name "picomole")
+
+
