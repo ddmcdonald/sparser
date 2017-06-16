@@ -10,22 +10,32 @@
 
 (in-package :sparser)
 
-(defun vv-of (i)
-  "Walk up the dlvv chain and return all the values"
-  (format t "  ~a" i)
-  (let ((uplink (indiv-uplinks i)))
-    ;; e.g. ((#<dl-vv has-determiner + #<the 106>> . #<protein 74245>))
-    (let* ((wrapper (car uplink))
-           (dlvv (car wrapper))
-           (variable (dlvv-variable dlvv))
-           (value (dlvv-value dlvv))
-           (individual-added-to (cdr wrapper))
-           (list `(,dlvv)))
-      ;;(lsp-break "wrapper = ~a" wrapper)
-      (unless (eq variable :superc)
-        (cons (car (vv-of individual-added-to))
-              wrapper)))))
-  
+(defun uplinks-of (i) ;; Rusty's lister
+  (let ((up (indiv-uplinks i)))
+    (unless (eq (dlvv-variable (caar up)) :superc)
+      (cons (car up)(indiv-vvs (cdar up))))))
+
+;; e.g. ((#<dl-vv has-determiner + #<the 106>> . #<protein 74245>))
+;; In principle there are multiple uplinks though a the moment
+;; there is just one, whose car is a vv and whose cdr is the
+;; individual we started from to get i by adding that vv.
+(defun uplink-indiv (uplink) (cdr uplink))
+(defun uplink-vv (uplink) (car uplink))
+
+(defun unwind-from-right (i)
+  (let* ((uplinks (reverse (indiv-vvs i)))
+         (j (uplink-indiv (car uplinks)))
+         (vv (loop for uplink in (cdr uplinks)
+                collect (uplink-vv uplink))))
+    (values j vv)))
+
+#|sp> (unwind-from-right i)
+#<protein 2183>
+(#<dl-vv non-cellular-location + #<liver 81969>>
+ #<dl-vv organism + #<human 1830>>
+ #<dl-vv predication + #<phorphorylate 81972>>
+ #<dl-vv has-determiner + #<the 106>>) |#                  
+
 #|
 sp> (p/s "the phorphorylated human liver protein")
 [the phorphorylated human liver protein]
