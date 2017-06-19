@@ -1189,6 +1189,19 @@
     (revise-parent-edge :category (value-of 'type vp)))
 
   (cond
+    ((itypep vp 'control-verb) ;; e.g. "want"
+     (when *subcat-test* (return-from assimilate-subject t))
+     (let ((complement (value-of 'theme vp))
+           (object (value-of 'patient vp)))
+       (when complement ;; cf. "what do you want"
+         (let ((revised-complement
+                (if object
+                  ;; 'I want you to wash the dishes' vs 'I want to wash the dishes'
+                  (bind-variable 'agent object complement)
+                  (bind-variable 'agent subj complement))))
+           (setq vp (bind-variable 'theme revised-complement vp))))
+       (assimilate-subcat vp :subject subj)))
+
     ((itypep vp 'copular-predication)
      (and (null (value-of 'item vp))
           (or *subcat-test*
@@ -1210,7 +1223,6 @@
              (if (eq 's (cat-name (edge-form (edge-right-daughter right-edge))))
                  ;; case where subordinate conjunction is attached above the S
                  ;; "...since p130 CAS , paxillin, and FAK  are already hyperphosphorylated.
-                 
                  (edge-right-daughter (edge-right-daughter right-edge))
                  (edge-right-daughter right-edge))))
        (when (edge-p vg-edge)
@@ -1263,6 +1275,10 @@
     ;; that we've just got a vg (one one form or another)
     ;; and not a full vp, in which case we're returning nil
     ;; so that the rule doesn't go through.
+
+    ;; Don't want to have a subject in a relative clause if there is
+    ;; no object (complement) in the VP. Applies to main clauses modulo
+    ;; the possibility of traces. 
     (cond
       (*subcat-test*
        (and
@@ -1274,9 +1290,11 @@
                                             '(past raw-text))))
                  ))))
       ((can-fill-vp-subject? vp subj)
-       (if (transitive-vp-missing-object? vp)
-           (revise-parent-edge :form category::transitive-clause-without-object))
+       (when (transitive-vp-missing-object? vp)
+         (revise-parent-edge :form category::transitive-clause-without-object))
+       ;;/// try using assimilate-subject
        (assimilate-subcat vp :subject subj))
+      
       ((can-fill-vp-object? vp subj)
        (setq vp
              (create-predication-by-binding (subcategorized-variable vp :object subj)

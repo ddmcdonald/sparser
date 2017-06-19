@@ -965,8 +965,13 @@
   (and vars (not (binds-some-var-p i vars))))
 
 (defun missing-object-vars (i)
-  (and (not (get-tag :optional-object (itype-of i)))
-       (binds-no-vars-p i (find-object-vars i))))
+  (cond
+    ((itypep i 'control-verb)
+     (and (binds-no-vars-p i (find-object-vars i)) ;; patient
+         (binds-no-vars-p i (find-subcat-vars :to-comp i))))
+    (t
+     (and (not (get-tag :optional-object (itype-of i)))
+          (binds-no-vars-p i (find-object-vars i))))))
 
 (defun missing-subject-vars (i)
   (binds-no-vars-p i (find-subject-vars i)))

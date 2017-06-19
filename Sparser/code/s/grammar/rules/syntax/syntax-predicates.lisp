@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "syntax-predicates"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2017
+;;;  Version:  June 2017
 
 ;; Simple function lifted from syntax-functions 8/30/16
 
@@ -102,18 +102,21 @@
   (and
    (missing-subject-vars vp) ;; vp has a subject which is not bound
    (subcategorized-variable vp :subject subj)
-   (or ;; can't be a reduced relative, no available object-var
-       (not (missing-object-vars vp)) ;; (not (object-variable vp)) (bound-object-var vp)
-       ;; or a statement (clausal complement)
-       (value-of 'statement vp)
+   (or (not (missing-object-vars vp))
+       ;; can't be a reduced relative, no available object-var
+
+       ;; Unless we have reason to believe the object's been
+       ;; replaced with a trace
        (preceding-that-whether-or-conjunction? left-edge)
+
+       (value-of 'statement vp) ;; or a statement (clausal complement)
        (and *current-chunk*
             (typep *current-chunk* 'chunk)
             (memq 'ng (chunk-forms *current-chunk*))))))
        
 (defun can-fill-vp-object? (vp subj)
   (and ;; vp has a bound subject -- NP can fill object
-   (not (can-fill-vp-subject? vp subj)) ;;(bound-subject-var vp)
+   (not (can-fill-vp-subject? vp subj))
    (not (intransitive? (itype-of vp)))
    (subcategorized-variable vp :object subj)))
 
@@ -121,11 +124,11 @@
 
 ;; check to see if a verb is defined as intransitive
 (defun intransitive? (cat)
-  (if (individual-p cat) (setq cat (itype-of cat)))
+  (when (individual-p cat) (setq cat (itype-of cat)))
   (loop for realization in (cat-realization cat)
-        thereis
-          (when (rdata-etf realization)
-            (eq (etf-name (rdata-etf realization)) 'intransitive))))
+     thereis
+       (when (rdata-etf realization)
+         (eq (etf-name (rdata-etf realization)) 'intransitive))))
 
 (defun transitive-vp-missing-object? (vp &optional (right-edge (right-edge-for-referent)))
   ;; this is a case like "that MEK phosphorylates" which has
@@ -144,28 +147,25 @@
                thereis (value-of v vp)))))
 
 (defun preceding-that-whether-or-conjunction? (left-edge)
-  (declare (special left-edge))
+  "Called by can-fill-vp-subject? to determine whether there is a trace-forming
+   operator to the immediate left of the would-be subject. This allows transitive
+   verbs to presume that their object has been replaced with a trace"
   (when (and (edge-p left-edge)
              (position-p (pos-edge-starts-at left-edge)))
     (let* ((previous-treetop (left-treetop-at/only-edges (pos-edge-starts-at left-edge)))
-	   (prev-form (and (edge-p previous-treetop)
-			   (edge-form previous-treetop)))
-	   (prev-cat (and (edge-p previous-treetop)
-			  (edge-category previous-treetop))))
-      (declare (special previous-treetop prev-form prev-cat))
-      (cond
-	((or
-	  (and (category-p prev-form)
-	       (member (cat-name prev-form)
-                       '(SUBORDINATE-CONJUNCTION CONJUNCTION
-                         SPATIO-TEMPORAL-PREPOSITION ADVERB)))
-	  (and (category-p prev-cat)
-	       (member (cat-name prev-cat) '(THAT))))
-        
-	 t)
-	(t
-	 ;;(format t "preceding-that-or-whether? prev-form=~s and prev-cat=~s~&" prev-form prev-cat)
-	 nil)))))
+	   (prev-form (when (edge-p previous-treetop)
+                        (edge-form previous-treetop)))
+	   (prev-cat (when (edge-p previous-treetop)
+                       (edge-category previous-treetop))))
+      (when (category-p prev-form)
+        (or
+	 (member (cat-name prev-cat) '(that))
+         (member (cat-name prev-form)
+                 '(question-marker ;; what block
+                   wh-pronoun ;; which (like 'that')
+                   subordinate-conjunction conjunction
+                   spatio-temporal-preposition adverb)))))))
+
 
 
 (defun collection-p (item)
