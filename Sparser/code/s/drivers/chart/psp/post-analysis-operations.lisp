@@ -366,15 +366,18 @@ is replaced with replacement."
   (let* ((edge (span-covered-by-one-edge?
                 (starts-at-pos sentence)
                 (ends-at-pos sentence)))
-         (i (when edge (edge-referent edge))))
-    ;;(push-debug `(,i ,edge ,sentence)) (lsp-break "repair")
-    (when (and i (individual-p i))
-      (when (itypep i 'move-something-verb)
-        (unless (value-of 'location i)
-          ;; (p/s "put the block near the other block")
-          ;; The block has swallowed the location. We need
-          ;; to retrieve it and rethread everything.
-          (lift-location-out-of-theme i edge))))))
+         (edge-to-repair
+          (when edge
+            (search-tree-for-type edge 'move-something-verb))))
+    (when edge-to-repair
+      (let ((i (edge-referent edge-to-repair)))
+        (when (individual-p i)
+          (unless (value-of 'location i)
+            ;; (p/s "put the block near the other block")
+            ;; The block has swallowed the location. We need
+            ;; to retrieve it and rethread everything.
+            (lift-location-out-of-theme i edge-to-repair)))))))
+
 
 (defun lift-location-out-of-theme (i top-edge)
   ;; Move the location edge to the VP (as its ETF does (see transitive-loc-comp).
