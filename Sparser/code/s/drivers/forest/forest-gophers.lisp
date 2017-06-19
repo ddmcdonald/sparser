@@ -252,6 +252,44 @@
               (edge-right-daughter edge) test-fn)))))))
            
 
+(defgeneric search-tree-for-type (edge category)
+  (:documentation "Walk through binary tree of edges until yuo
+    encounter an edge referent of a designated category as judged 
+    by itypep. Return that edge.")
+  (:method ((edge edge) (cat-name symbol))
+    (search-tree-for-type edge (category-named cat-name :error)))
+  (:method ((edge edge) (c category))
+    (let ((test (lambda (edge) (itypep (edge-referent edge) c))))
+      (catch :type-search
+        (research-edge-tree edge test)))))
+
+(defun research-edge-tree (edge test-fn)
+  "Written with different search pattern than search-edge-tree
+   as an experiment (which could merge now). Copes with problem
+   of long spans where the right daughter has no information but
+   there will likely be a recorded list of constituents."
+  (etypecase edge
+    (word nil) ;; terminal ignore
+    (polyword nil) ;; ditto
+    (symbol nil) ;; ditto
+    (edge
+     (when (funcall test-fn edge) (throw :type-search edge))
+     (let ((left (edge-left-daughter edge))
+           (right (edge-right-daughter edge))
+           (consitituents (edge-constituents edge)))
+       (cond
+         (consitituents
+          (loop for e in consitituents
+             do (research-edge-tree e test-fn)))
+         ((and (edge-p left) (edge-p right))
+          (research-edge-tree left test-fn)
+          (research-edge-tree right test-fn))
+         ((edge-p left)
+          (research-edge-tree left test-fn)))))))
+ 
+
+
+
 
 ;;/// move to edge file
 (defvar *right-daughter-keywords*
