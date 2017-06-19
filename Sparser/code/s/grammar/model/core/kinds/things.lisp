@@ -100,7 +100,7 @@
 
 (define-mixin-category with-an-agent
   :specializes relation
-  :binds ((agent physical-agent)))
+  :binds ((agent (:or pronoun physical-agent))))
 ;; Dolce has 'agency' as the union of physical and social agent
 
 
