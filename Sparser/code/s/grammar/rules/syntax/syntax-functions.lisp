@@ -1278,7 +1278,11 @@
 
     ;; Don't want to have a subject in a relative clause if there is
     ;; no object (complement) in the VP. Applies to main clauses modulo
-    ;; the possibility of traces. 
+    ;; the possibility of traces.
+    (when (eq (cat-name vp-form) 'vg+ed)
+      (format t "~%~s ~s rejected in ~s~%"
+              subj vp (sentence-string *sentence-in-core*))
+      (return-from assimilate-subject-to-vp-ed nil))
     (cond
       (*subcat-test*
        (and
