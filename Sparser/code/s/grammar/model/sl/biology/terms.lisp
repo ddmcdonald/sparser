@@ -436,11 +436,11 @@
 
 
 
-(adj "unable" :super bio-relation
-     :binds ((capability bio-process))
-     :realization
-     (:adj "unable"
-           :to-comp capability))
+(define-category unable :specializes bio-relation
+  :mixins (control-verb-intrans)
+  :restrict ((theme bio-process))
+  :realization
+  (:adj "unable"))
            
 
 (adj "unresponsive" :super bio-relation

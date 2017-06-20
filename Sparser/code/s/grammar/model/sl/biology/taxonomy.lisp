@@ -611,6 +611,8 @@
 ;;;------------
 
 (define-category purposive-process :specializes  process
+  ;; not quite right -- the verb takes an object, but it is the subject that is moved to the to-comp
+  ;;  not quite a raising verb, however, since the subject of the main verb has a meaning
   :binds ((result-or-purpose bio-process))
   :realization
      (:to-comp result-or-purpose
@@ -687,11 +689,7 @@
      :o theme))
 
 (define-category aspectual-relation :specializes bio-relation
-  :binds ((action bio-process))
-  :realization
-    (:to-comp action))
-
-
+  :mixins (control-verb-intrans))
                  
 (define-category post-adj :specializes linguistic 
   :documentation "used as a marker for adjectives which can follow nouns")

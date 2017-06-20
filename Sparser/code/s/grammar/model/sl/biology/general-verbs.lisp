@@ -31,27 +31,25 @@
 (define-category bio-act
   ;; N.b. "bio-" implies that there's an unmarked "act" as well, and it's a bit cumbersome
   :specializes other-bio-process
-  :binds ((actor (:or bio-entity bio-location))
-	  (co-actor bio-entity)
-          (object bio-entity)
+  :mixins (control-verb-intrans)
+  :restrict ((agent (:or bio-entity bio-location)))
+  :binds ((co-agent bio-entity)
+          (acted-on bio-entity)
           (process bio-process)
           (functionality (:or  bio-process bio-entity bio-location))
-          (bio biological)
-          (tocomp biological))
+          (bio biological))
   :documentation "compare with act as"
   :realization
   (:verb "act"
 	 :etf sv
 	 :noun "action"
-	 :s actor
-	 :with co-actor
+	 :with co-agent
 	 :at bio
 	 :as functionality
 	 :by process
-	 :on object
+	 :on acted-on
 	 :through bio
-	 :via bio
-	 :to-comp tocomp))
+	 :via bio))
 
 (define-category addition :specializes caused-bio-process
   :mixins (bio-thatcomp)
@@ -66,14 +64,19 @@
 ;; clausal roles
 ;; really want to have the form "CRAF allows CRAF to hyperactivate the pathway"  -- want the clausal modiffer
 (define-category allow :specializes positive-bio-control
-    :binds ((process (:or biological have process)))
-    :realization
-    (:verb ("allow" :past-tense "allowed" :past-participle "allowed") ;; keyword: ENDS-IN-ING 
-	   :noun "allowance"
-	   :etf (svo-passive)
-           :for object
-           :for affected-process
-           :to-comp process))
+  :mixins (raising-to-object) ;; conflict between agent roles in these cases
+  :restrict ((agent
+              (:or         ;;bio-entity
+               bio-chemical-entity ;;molecule bio-complex drug
+               bio-process bio-mechanism bio-method
+               )))               
+  :binds ((process (:or biological have process)))
+  :realization
+  (:verb ("allow" :past-tense "allowed" :past-participle "allowed") ;; keyword: ENDS-IN-ING 
+         :noun "allowance"
+         :etf (svo-passive)
+         :for object
+         :for affected-process))
 
 "" ;; keyword: (ion N) 
 (define-category alter :specializes bio-control
@@ -173,15 +176,13 @@
 
 
 (define-category consider :specializes bio-rhetorical
-    :mixins (bio-whethercomp)
-    :binds ((tocomp (:or be biological))) ;; could be "the effects..."
+    :mixins (bio-whethercomp raising-to-object)
+    :restrict ((theme (:or be biological))) ;; could be "the effects..."
     :realization
     (:verb ("consider" :present-participle "considering"
                        :past-tense "considered") ;; keyword: ENDS-IN-ED 
 	   :noun "consideration"
-	   :etf (svo-passive)
-           :to-comp tocomp))
-
+	   :etf (svo-passive)))
 
 (define-category contrast :specializes bio-rhetorical
   :binds ((contrasted-with biological))
@@ -223,7 +224,8 @@
                       :noun "contribution"
                       :o contribution
                       :to object
-                      :to-comp object))
+                      ;; :to-comp object -- don't believe this now
+                      ))
 
 (define-category conversion-change :specializes change   ;; for our purposes, since we only have biologically relevant reactions
    :realization (:noun "conversion"
@@ -420,13 +422,13 @@
 
 
 (define-category enable :specializes positive-bio-control
-    :binds ((process (:or biological have process)))
+    :mixins (raising-to-object)
+    :restrict ((theme (:or biological have process)))
     :realization
     (:verb ("enable" :past-tense "enabled" :past-participle "enabled" :present-participle "enabling") ;; keyword: ENDS-IN-ING 
 	   :etf (svo-passive)
            :for object
-           :for affected-process
-           :to-comp process))
+           :for affected-process))
 
 (define-category engender :specializes positive-bio-control
     :realization
@@ -650,13 +652,13 @@
 
 
 (define-category know :specializes bio-rhetorical
-  :binds ((topic biological)
-          (tocomp (:or be biological)))
+  :mixins (raising-to-object)
+  :restrict ((theme (:or be biological)))
+  :binds ((topic biological))
     :realization
     (:verb ("know" :past-tense "known")	   :noun "knowledge" 
 	   :etf (svo-passive)
-           :about topic
-           :to-comp tocomp))
+           :about topic))
 
 (define-category lacking :specializes bio-relation
   :realization
@@ -671,15 +673,14 @@
 (delete-noun-cfr (resolve "leads"))
 (define-category lead 
   :specializes positive-bio-control
+  :mixins (raising-to-object)
   :restrict ((agent (:or bio-process bio-method bio-mechanism bio-relation
-                         bio-entity))) ;; "KRAS leads to cancer"
-  :binds ((leads-to (:or biological bio-rhetorical)))
+                         bio-entity)) ;; "KRAS leads to cancer"
+             (theme (:or biological bio-rhetorical)))
   :realization
     (:verb ("lead" :past-tense "led")
      :etf (svo)
-     :o object
-     :to leads-to
-     :to-comp leads-to))
+     :to theme))
 
 
 #+ignore
@@ -744,7 +745,6 @@
   (:verb ("mean"  :past-tense "meant")
          :etf (svo)))
 
-
 (define-category modify :specializes bio-control
   :binds ((site molecular-location))
   :realization 
@@ -754,14 +754,13 @@
 
 
 (define-category need :specializes bio-relation
+    :mixins (control-verb)
     :binds ((needed-for process))
     :realization
       (:verb "need" 
        :noun "need"
        :etf (svo-passive)
-       :o theme
-       :for needed-for
-       :to-comp needed-for))
+       :for needed-for))
 
 
 (define-category observe :specializes bio-rhetorical
@@ -1030,15 +1029,6 @@
   :to state
   :to scalar))
 
-(define-category reveal :specializes bio-rhetorical
-  :mixins (bio-thatcomp)
-  ;; the analysis revealed
-  :realization
-  (:verb "reveal" :noun "revelation" 
-         :etf (svo-passive)))
-
-
-
 (define-category sample :specializes bio-method
   :realization
   (:verb "sample" :noun "sample"
@@ -1067,12 +1057,11 @@
 ;;  See rules/syntax/copulars.lisp.  Need to figure out
 ;;  how to get the equivalent of biological for the restriction
 (define-category seem :specializes be
-  :mixins (bio-rhetorical)
-    :binds ((tocomp (:or be biological)))
-    :realization
-    (:verb "seem"
-	   :etf (svo)
-           :to-comp tocomp))
+  :mixins (bio-rhetorical raising-to-subject)
+  :restrict ((theme (:or be biological)))
+  :realization
+  (:verb "seem"
+         :etf (svo)))
 (make-copular-def "seem")
 
 (def-synonym seem (:verb "appear" :etf (svo)))
@@ -1089,18 +1078,37 @@
 
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show :specializes bio-rhetorical
-  :mixins (bio-thatcomp)
-  :binds ((tocomp (:or be biological predication)))
+  :mixins (bio-thatcomp raising-to-object)
+  :restrict ((theme (:or be biological predication))
+             (agent
+              (:or pronoun/first/plural
+                   PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals
+                   pronoun/plural         ;; "they"
+                   organism               ;; "these animals showed..."
+                   these
+                   ;; bio-entity too general -- leads to problems with created semantic rules
+                   bio-chemical-entity
+                   bio-location ;; "the Y561 site displayed no difference..."
+                   evidence
+                   article-figure
+                   bio-quality
+                   bio-rhetorical
+                   bio-process ;; the B-RAFV600E mutation predicts
+                   bio-method ;; high-throughput functional screens may inform
+                   bio-mechanism ;; "this pathway describes ..."
+                   bio-predication ;; the success of raf and mek inhibitors
+                   measurement     ;; these data
+                   visual-representation)))
   ;; it was shown that
   :realization
   (:verb ("show" :past-tense "showed" :past-participle "shown")
-         :etf (svo-passive)
-         :to-comp tocomp))
+         :etf (svo-passive)))
 
+;; want this to inherit from SHOW, so moved it here
 (define-category reveal :specializes show
-		 :realization
-		 (:verb "reveal"
-			:etf (svo-passive)))
+  :realization
+  (:verb "reveal" :noun "revelation" 
+         :etf (svo-passive)))
 
 (define-category slow :specializes negative-bio-control
     :realization
@@ -1196,14 +1204,15 @@
          :etf (svo-passive)))
 
 (define-category bio-use :specializes bio-method
-    :binds ((used-to biological)
-            (disease disease)
-            (purpose (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
-    :realization ;; (p/s "use KRAS to treat pancreatic cancer")
-      (:verb ("use" :past-tense "used" :present-participle "using")
-       :noun "use"
-       :etf (svo-passive)
-       :to used-to
-       :for disease ;; (p/s "what drug should I use for pancreatic cancer?")
-       :to-comp purpose))
-
+  :mixins (raising-to-object)
+  :restrict ((theme
+              (:or bio-event bio-predication bio-process bio-method bio-rhetorical)))
+  :binds ((used-to biological)
+          (disease disease))
+  :realization ;; (p/s "use KRAS to treat pancreatic cancer")
+  (:verb ("use" :past-tense "used" :present-participle "using")
+         :noun "use"
+         :etf (svo-passive)
+         :to used-to
+         :for disease ;; (p/s "what drug should I use for pancreatic cancer?")
+         ))

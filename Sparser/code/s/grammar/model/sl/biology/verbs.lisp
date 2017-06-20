@@ -345,8 +345,7 @@
 (define-category affect :specializes bio-control
   :binds ((causing (:or be biological)))
   :realization 
-  (:verb "affect" :etf (svo-passive) 
-         :to-comp affected-process))
+  (:verb "affect" :etf (svo-passive) ))
 
 
 
@@ -359,10 +358,10 @@
 	   :etf (svo-passive)
            :for object
            :for affected-process
-           :to-comp process))
+           ;; :to-comp process probably not right
+           ))
 
 (define-category abolish :specializes negative-bio-control
-    :binds ((process (:or biological have process)))
     :realization
     (:verb ("abolish" :past-tense "abolished" :past-participle "abolished"
                       :present-participle "abolishing")
@@ -370,8 +369,7 @@
            ;; keyword: ENDS-IN-ING 
 	   :etf (svo-passive)
            :for object
-           :for affected-process
-           :to-comp process))
+           :for affected-process))
 
 
 

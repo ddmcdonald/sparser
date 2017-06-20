@@ -44,20 +44,20 @@
 ;; is likely that this possible feedback
 ;; will likely be useful
 (define-category likely
+  :mixins (raising-to-subject)
   :specializes certainty ;; bio-relation
   :realization
     (:adj "likely"
      :adverb "likely" ;;want likely to ambiguously be an adjective or adverb
-     :to-comp theme
      :thatcomp theme))
 ;; bio-relation and bio-rhetorical appear to differ mostly
 ;; on their value restrictions. 
 
 (define-category unlikely
+  :mixins (raising-to-subject)
   :specializes certainty ;;bio-relation
   :realization
     (:adj "unlikely"
-     :to-comp theme
      :thatcomp theme))
 ;; almost never an adverb in our texts
 ;; need a good way to distinguish the cases
@@ -103,11 +103,11 @@
 ;; failed to find a treatment for pancreatic cancer
 
 (define-category fail :specializes aspectual-relation
-  :binds ((process bio-process))
+  :mixins (control-verb-intrans)
+  :restrict ((theme bio-process))
   :realization 
     (:verb "fail"  
-     :etf (sv)
-     :to-comp process ))
+     :etf (sv) ))
 
 
 ;; mostly passive -- "... are found ..."

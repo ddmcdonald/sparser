@@ -157,12 +157,12 @@ be biology specific, since they aren't. |#
 ;;--- bio-relation
 
 (define-category ability :specializes bio-relation
-      :binds ((ability bio-process))
-      :realization (:noun "ability"
-                    :adj "able"
-                    :to-comp ability
-                    :of subject
-                    :to ability))
+   :mixins (control-verb-intrans)
+   :binds ((ability bio-process))
+   :realization (:noun "ability"
+                       :adj "able"
+                       :of subject
+                       :to ability))
 
 (define-category capability :specializes ability
   :restrict ((subject bio-entity))
