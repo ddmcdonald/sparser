@@ -365,7 +365,8 @@
       (when
 	  (not (and ;; need to generalize this for "high priority" NP post-modifiers
 		(category-p (second r-triple-rhs))
-		(member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))))
+                (or (member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))
+                    (eq (cat-name (edge-form r-triple-3)) 'object-relative-clause))))
 	(or
          
          ;;(eq 'category::infinitive l-triple-left)
