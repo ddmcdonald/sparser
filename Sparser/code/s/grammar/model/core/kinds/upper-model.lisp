@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "upper-model"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  February 2017
+;;;  version:  June 2017
 
 #| Defines the set of 'expressive categories' (see Meteer 1992) that we're
    experimenting with as the top tier of our domain model.  This sort of thing
@@ -171,6 +171,15 @@
  an existence outside of the context of parsing and semantic
  interpretation. Things that are phrase-interpretation's only
  live during an interpretation and are meaningless afterwards.")
+
+(define-category subcategorization-pattern
+  :instantiates nil
+  :specializes linguistic
+  :documentation
+  "The role of these mixin categories is to enforce the use of
+ a uniform, only-defined-once set of categories, and to provide the
+ basic subcategorization information for how those variables are
+ realized.")
 
 
 ;;;---------------------------------------

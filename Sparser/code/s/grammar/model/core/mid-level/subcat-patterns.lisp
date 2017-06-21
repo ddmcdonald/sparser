@@ -3,14 +3,15 @@
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  March 2017
+;;;  version:  June 2017
 
 ;; broken out of relations 3/7/15
 
 (in-package :sparser)
 
+
 (define-mixin-category action-verb
-  :specializes linguistic ;; daughter of abstract
+  :specializes subcategorization-pattern ;; daughter of linguistic, abstract
   :instantiates nil
   :binds ((actor (:or pronoun endurant))
           (patient physical)
@@ -23,7 +24,7 @@
      :to-comp theme))
 
 (define-mixin-category move-something-verb
-  :specializes linguistic ;; daughter of abstract
+  :specializes subcategorization-pattern
   :instantiates nil
   :mixins (with-an-agent) ;; v/r = physical-agent
   :binds ((theme physical) ;; what moves
@@ -31,7 +32,8 @@
   :realization
     (:s agent
      :o theme
-     :l location)
+     :l location
+     :mumble (svo1o2 :s agent :o1 theme :o2 location))
   :documentation "For verbs like 'put' where an agent
  is moving the theme from one location to another.
  The ETF for this set of arguments is 'svol'.
@@ -50,7 +52,7 @@
 
 (define-mixin-category control-verb
   ;; https://en.wikipedia.org/wiki/Control_(linguistics)
-  :specializes linguistic
+  :specializes subcategorization-pattern
   :mixins (with-an-agent) ;; v/r = physical-agent
   :binds ((patient physical) ;; "I want a block"
           (theme perdurant)) ;; "I want to go home"
@@ -58,7 +60,10 @@
   :realization
     (:s agent
      :o patient
-     :to-comp theme))
+     :to-comp theme
+     :mumble ((svo :s agent :o patient)
+              (svicomp :s agent :c theme)
+              (svoicomp :s agent :o patient :c theme)) ))
 ;; "I want a block" -- agent v patient
 ;; "I want to go home" -- agent v theme
 ;; "I want you to go home" -- agent v patient theme
@@ -99,7 +104,7 @@
 
 
 (define-mixin-category prop-attitude
-  :specializes linguistic
+  :specializes subcategorization-pattern
   :mixins (with-an-agent) ;; v/r = physical-agent
   :binds ((theme perdurant))
   :documentation "Breaks out a complement argument that
@@ -107,12 +112,12 @@
    'doubt') towards a proposition."
   :realization (:o theme
                 :thatcomp theme
-                :whethercomp theme))   
+                :whethercomp theme))
 
 ;; "the blocks are red", "what to do"
 
 (define-mixin-category knowledge-verb
-  :specializes linguistic
+  :specializes subcategorization-pattern
   :binds ((experiencer (:or pronoun physical-agent))) ;; "I"
   :mixins (prop-attitude)
   :realization
