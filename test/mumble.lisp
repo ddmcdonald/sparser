@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: COMMON-LISP; Package: MUMBLE -*-
-;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
 
 (in-package :mumble)
 
@@ -322,6 +322,29 @@
     (make-complement-node 's me drink)
     (mumble-says drink))
   "I drink milk in the house")
+
+
+(defun cat-drinks-milk () ;; the cat drinks milk
+  "Reusable 'downstairs' clause"
+  (let ((cat (always-definite (cat)))
+        (milk (milk))
+        (dtn (present-tense (drink))))
+    (make-complement-node 's cat dtn)
+    (make-complement-node 'o milk dtn)
+    dtn))
+
+(deftest (say cat wants-to)
+  (let* ((downstairs (cat-drinks-milk))
+         (want-to (verb "want" 'svicomp)) ;; infinitive complement
+         (dtn (present-tense
+               (make-dtn :referent 'want-to
+                         :resource want-to))))
+    (make-complement-node 's (always-definite (cat)) dtn)
+    (make-complement-node 'c downstairs dtn)
+    (mumble-says dtn))
+  "the cat wants to drink milk")
+
+    
 
 #+ignore  ;; what's with passing nil to noun? 'nil' isn't the basis of a word
 (deftest (say mutation that makes kras active)
