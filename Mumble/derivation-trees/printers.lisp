@@ -2,7 +2,7 @@
 ;;; copyright (c) 2017 David D. McDonald  -- all rights reserved
 
 ;; /Mumble/derivation-trees/printers.lisp
-;; May 2017
+;; June 2017
 
 ;; For pretty printers and similar code that needs the full set of Mumble object
 ;; types to already be defined so they can be referenced.
@@ -55,6 +55,7 @@
               collect (pp-dtn item))))))
 
   (:method ((s string)) s)
+  (:method ((s symbol)) (string-downcase (symbol-name s))) ;; e.g.test referents
   (:method ((w word))
     (pname w))
   (:method ((p pronoun))
@@ -164,3 +165,30 @@
     (let ((param (corresponding-parameter pvp))
           (var (corresponding-variable pvp)))
       (format stream "~a : ~a" param var))))
+
+
+
+;;------------ copy
+;;/// Why isn't there a copy-instance function? -- can't even find one is smop
+;;/// much cleaner as an operation directly over the slots
+(defgeneric copy-instance (instance-of-class)
+  (:method ((rdata mumble-rdata))
+    (make-instance
+     'mumble-rdata
+     :class (linked-category rdata)
+     :lp (linked-phrase rdata)
+     :map (parameter-variable-map rdata)
+     :vars (variables-consumed rdata)
+     :head (head-word rdata)))
+  
+  (:method ((rdata multi-subcat-mdata))
+    (let ((copied-pairs
+           (loop for pair in (mdata-pairs rdata)
+              as var-list = (mpair-vars pair)
+              as mdata = (mpair-mdata pair)
+              collect (make-instance 'variable-mdata-pair
+                                     :vars (copy-list var-list)
+                                     :mdata (copy-instance mdata)))))
+      (make-instance 'multi-subcat-mdata
+                     :mpairs copied-pairs))))
+
