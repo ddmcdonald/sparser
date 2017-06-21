@@ -68,18 +68,23 @@
 
 ;;/// move into mumble proper
 (deftype mumble-part-of-speech ()
-  `(member 'noun
-           'verb
-           'adjective
-           'adverb
-           'preposition
-           'quantifier
-           'pronoun
-           'interjection))
+  `(member noun
+           proper-noun
+           verb
+           modal
+           adjective
+           adverb
+           preposition
+           determiner
+           quantifier
+           pronoun
+           interjection
+           number))
 
 
 (defun sparser-pos (pos)
-  "Translate a Mumble part-of-speech tag to the equivalent Sparser tag."
+  "Translate a Mumble part-of-speech tag to the equivalent Sparser tag.
+   The other direction is mumble-pos "
   (ecase pos
     (noun :common-noun)
     (verb :verb)
