@@ -2,47 +2,45 @@
 ;;;
 ;;; MUMBLE-86:  grammar > transformations
 ;;;
-;;; Copyright (c) 2015-2016 SIFT LLC. All Rights Reserved
+;;; Copyright (c) 2015-2017 SIFT LLC. All Rights Reserved
 
 (in-package :mumble)
 
-(defun do-any-label-driven-transformations (phrase-node position)
+(defun do-any-label-driven-transformations (phrasal-root position)
   "Called from process-slot just after the realization-cycle has
    updated the contents."
   (cond
     ((find 'relative-clause (labels position) :key #'name)
-     (let* ((subject-slot-contents (contents (first-constituent phrase-node)))
+     (let* ((subject-slot-contents (contents (first-constituent phrasal-root)))
 	    (trace (build-trace subject-slot-contents)))
-      (set-contents (first-constituent phrase-node) trace)
-      (push (slot-label-named 'that) (labels position))))))
-
-#+ignore
-(defun feature-driven-prepocessing (features dtn)
-  ;; This is an experiment that could turn into a hook when
-  ;; the editing style of 'transformations' matures.
-  ;; Writing it with just one case in mind, as more cases
-  ;; accumulate might want to move from location inside
-  ;; realize-dtn in the lexicalized-phrase case
-  (when features
-    (when (assoc (accessory-type-named :command) features)
-      ;; bind the value of the subject to a trace
-      (let* ((lexp (resource dtn))
-             (free-vars (free lexp))
-             (subject (parameter-named 's))
-             (trace (build-trace nil))) 
-        ;; replace the nil of the trace with designator for
-        ;; the interlocutor ("you")
-        (unless (memq subject free-vars)
-          (error "The subject isn't free. Something's wrong"))
-        (make-complement-node subject trace dtn)))))
+      (set-contents (first-constituent phrasal-root) trace)
+      (push (slot-label-named 'that) (labels position))))
+    ((find 'inf-comp (labels position) :key #'name)
+     (remove-subject phrasal-root)
+     (remove-tense-marker phrasal-root)
+     (set-aux-state 'initial))))
 
 (defgeneric remove-subject (clause)
+  (:documentation "Find the subject slot and splice it out")
+  (:method ((root phrasal-root))
+    (remove-subject (context-object root)))
   (:method ((clause phrasal-context))
     (let* ((positions (position-table clause))
            (subject-slot (cdr (assoc 'subject positions))))
       (unless subject-slot
         (error "There is no subject in the position table of ~a" clause))
       (splice-out-slot subject-slot))))
+
+(defgeneric remove-tense-marker (clause-context)
+  (:method ((root phrasal-root))
+    (remove-tense-marker (context-object root)))
+  (:method ((clause phrasal-context))
+    (let* ((positions (position-table clause))
+           (tns-modal-slot (cdr (assoc 'tense-marker positions))))
+      (unless tns-modal-slot
+        (error "There is no tense-marker in the table of ~a" clause))
+      (splice-out-slot tns-modal-slot))))
+
 
 
 (defgeneric add-dummy-subject (dtn)
