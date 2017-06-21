@@ -212,8 +212,12 @@ Should mirror the cases on the *single-words* ETF."
                                :mapping mapping
                                :local-rules local-rules
                                :mumble mdata)))
-    (when mumble
-      (apply-mumble-rdata category rdata))))
+    (when mumble ;; check flag
+      (cond
+        ((includes-mumble-spec? rdata)
+         (apply-mumble-rdata category rdata))
+        ((inherits-mumble-data? category)
+         (apply-inherited-mumble-data category))))))
 
 (defun setup-word-data (word pos category)
   "For adverbs, adjectives, and anything else whose realization
@@ -255,8 +259,7 @@ Should mirror the cases on the *single-words* ETF."
 (defmethod initialize-instance :after ((instance realization-data)
                                        &key category etf heads mumble)
   (when etf (record-use-of-tf-by etf category))  
-  (when mumble (setup-mumble-data mumble category instance))
-  ;; Mumble rdata runs first. It has better information
+  (when mumble (setup-mumble-data mumble category instance)) ;; Try Mumble rdata first.
   (when heads (make-corresponding-lexical-resource heads category)))
 
 (defun make-realization-data (category &rest initargs)
@@ -279,6 +282,24 @@ Should mirror the cases on the *single-words* ETF."
     (rdata (itype-of i)))
   (:method ((c category))
     (cat-realization c)))
+
+(defgeneric rdata/pos (item pos)
+  (:documentation "Similar to rdata, but retrieve the datum
+    corresponding to a particular part of speech, e.g. verb
+    vs. noun vs. adjective")
+  (:method :before (item pos)
+   "check for valid part of speech"
+   (declare (ignore item))
+   (assert (keywordp pos) ()
+           "Part of speech argument must be a keyword"))
+  (:method ((i individual) pos)
+    (rdata/pos (itype-of i) pos))
+  (:method ((name symbol) pos)
+    (rdata/pos (category-named name t) pos))
+  (:method ((c category) pos)
+    (loop for rdata in (rdata c)
+       when (getf (rdata-head-words rdata) pos)
+       return rdata)))
 
 (defgeneric rdata-head-word (item pos)
   (:argument-precedence-order pos item)

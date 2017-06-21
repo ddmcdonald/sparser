@@ -3,7 +3,7 @@
 ;;; copyright (c) 2011,2015-2017 David D. McDonald  -- all rights reserved
 
 ;; /Mumble/derivation-trees/types.lisp
-;; April 2017
+;; June 2017
 
 ;; Initated 9/16/09. Added derivation tree nodes 10/6. 3/9/11 removed
 ;; co: from the defobject calls not that's it's been brought into utils.
@@ -219,3 +219,17 @@
   (:documentation "Build by setup-mumble-data to record everything
  that is necessary or just useful in realizing an individual of
  a particular category"))
+
+
+(defclass variable-mdata-pair ()
+  ((variables :initarg :vars :initform nil :accessor mpair-vars
+    :documentation "a list of Krisp variables")
+   (mdata :initarg :mdata :initform nil :accessor mpair-mdata
+    :documentation "a mumble-rdata object")))
+
+(defclass multi-subcat-mdata ()
+  ((pairs :initarg :mpairs :initform nil :accessor mdata-pairs
+    :documentation "a list of variable-mdata-pair objects"))
+  (:documentation "For cases where there are multiple subcategorization
+    patterns for a given lexical item, and the choice will depend on
+    how many variables we want to express in the realization."))
