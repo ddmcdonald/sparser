@@ -3,7 +3,7 @@
 ;;;
 ;;;     File: "gofers"
 ;;;   Module: "interface;mumble;"
-;;;  Version: May 2017
+;;;  Version: June 2017
 
 ;; Initated 1/7/16 to consolidate usable gofer-type code from files
 ;; that for various reasons (OBE mostly) are not being loaded.
@@ -37,6 +37,17 @@
     (get-mumble-word-for-sparser-word (pname s-word) pos))
   (:method ((s-word polyword) pos)
     (get-mumble-word-for-sparser-word (pname s-word) pos))
+  
+  (:method ((pname string) (pos null))
+    (let ((word (resolve pname)))
+      (assert word (pname)
+       "Can only get mumble-words for known sparser words. ~s is unknown." pname)
+      (get-mumble-word-for-sparser-word word nil)))
+  (:method ((s-word word) (pos null))
+    "Get the part of speach from the rules on the word"
+    (setq pos (part-of-speech-given-word s-word))
+    (get-mumble-word-for-sparser-word (pname s-word) pos))
+
   (:method ((pname string) pos)
     "If the mumble word doesn't exist (or not for this part of speech)
      then create it."

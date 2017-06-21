@@ -3,7 +3,7 @@
 ;;; 
 ;;;     File:  "object"
 ;;;   Module:  "objects;chart:words:"
-;;;  Version:  May 2017
+;;;  Version:  June 2017
 
 ;; 3.0 (6/2/93) changed the object to inherit from label
 ;; 3.1 (7/19) added wrapping data-check on Word-string to catch the
@@ -78,6 +78,30 @@
     (when rs
       (rs-phrase-boundary rs))))
 
+(defgeneric infer-part-of-speech (word)
+  (:documentation "Words in Sparser do not instrinsically have 
+    a part of speech. (Just as they don't instrinsicaly have
+    any meaning.) They accrue these via the rules that use them.
+    If there is just one rule we can get pos from it.")
+  (:method ((pname string))
+    (infer-part-of-speech (resolve pname)))
+  (:method ((w word)) ;;/// factor for polyword?
+    (let ((rule (find-single-unary-cfr w)))
+      ;; That returns the first of the single-term rules.
+      ;; If we wanted to consider multiple parts of speech
+      ;; we'd need to change that and work out how to adjudicate.
+      (when rule
+        (let ((form (cfr-form rule)))
+          (infer-part-of-speech form))))))
+ 
+(defgeneric part-of-speech-given-word (word)
+  (:documentation "Wrapper around infer-part-of-speech to supply
+    default when it returns nil. Get-mumble-word-for-sparse-word
+    needs this to avoid having its methods loop.")
+  (:method ((word t))
+    (let ((pos (infer-part-of-speech word)))
+      (unless pos (setq pos :common-noun))
+      pos)))
 
 
 ;;;------------------------------------

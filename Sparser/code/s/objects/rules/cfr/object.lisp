@@ -70,15 +70,17 @@ This sorts out what to use as the category in the unusual cases."
       when (eq form (cfr-form cfr))
        do (return cfr))))
 
-(defun find-single-unary-cfr (word)
-  "Return the first unary rule for this word if there is one.
-   Ignores the possibility of there being more than one rule."
-  (let ((rs (rule-set-for word)))
-    (when rs
-      (let ((single-rewrites (rs-single-term-rewrites rs)))
-        (when single-rewrites
-          ;;/// check for there being more than one?
-          (car single-rewrites))))))
+(defgeneric find-single-unary-cfr (word)
+  (:documentation "Return the first unary rule for this word if there is one.
+   Ignores the possibility of there being more than one rule.")
+  ;; c.f. single-term-rewrite? in rules/rule-links/generic.lisp
+  (:method ((word word))
+    (let ((rs (rule-set-for word)))
+      (when rs
+        (let ((single-rewrites (rs-single-term-rewrites rs)))
+          (when single-rewrites
+            ;;/// check for there being more than one?
+            (car single-rewrites)))))))
 
 (defgeneric find-unary-cfr/referent (word category)
   (:documentation

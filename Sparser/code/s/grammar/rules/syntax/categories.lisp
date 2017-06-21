@@ -102,19 +102,19 @@
 ;;; setting up form categories
 ;;;----------------------------
 
-(defmethod form-category? ((s string))
-  ;; The point where this case comes up is when walking the
-  ;; rhs of a case in an ETF and this corresponds to a word
-  nil)
-
-(defmethod form-category? ((s symbol))
-  (let ((c (category-named s)))
-    (when c
-      (form-category? c))))
-
-(defmethod form-category? ((c category))
-  (when (first (member :form-category (cat-plist c)))
-    c ))
+(defgeneric form-category? (category)
+  (:documentation "Is this category a 'form' category?")
+  (:method ((s string))
+    ;; Tthis case comes up  when walking the
+    ;; rhs of a case in an ETF and this corresponds to a word
+    nil)
+  (:method ((s symbol))
+    (let ((c (category-named s)))
+      (when c
+        (form-category? c))))
+  (:method ((c category))
+    (when (get-tag :form-category c)
+      c )))
 
 
 (defparameter *the-top-form-category*
@@ -137,13 +137,13 @@
     (mark-as-form-category c)
     c ))
 
+(defgeneric mark-as-form-category (category)
+  (:method ((name symbol))
+    (mark-as-form-category (category-named name :break-if-none)))
+  (:method ((c category))
+    (setf (get-tag :form-category c) t)))
 
-(defmethod mark-as-form-category ((category-name symbol))
-  (mark-as-form-category (category-named category-name :break-if-none)))
 
-(defmethod mark-as-form-category ((c category))
-  (setf (cat-plist c)
-        `( :form-category t ,@(cat-plist c))))
 
 ;;;-----------------
 ;;; paragraph level
@@ -260,6 +260,7 @@
 
 (def-form-category  preposition)
 (def-form-category  spatial-preposition)
+(def-form-category  temporal-preposition)
 (def-form-category  spatio-temporal-preposition)
 
 (def-form-category  verb)
@@ -332,6 +333,46 @@
 (def-form-category  punctuation)
 (def-form-category  newline)
 (def-form-category  treetop)
+
+
+;;;------------------------
+;;; Implied part of speech
+;;;------------------------
+
+(defmethod infer-part-of-speech ((c category))
+  "See infer-part-of-speech methods in object/chart/words/object.lisp.
+   Given this form category, what simple part of speech does it correspond
+   to. The head-keywords define the legal candidates, see objects/model/tree-
+   families/rdata.lisp"
+  (assert (form-category? c) (c)
+          "Can only get part of speech off of form categories. Not from ~a" c)
+  (infer-part-of-speech (cat-name c)))
+
+(defmethod infer-part-of-speech ((name symbol))
+  (assert (category-named name) ()
+          "The symbol signature only applies to categories")
+  (case name
+    ;; pronoun possessive/pronoun reflexive/pronoun wh-pronoun
+    ;; det
+    ((verb verb+s verb+ed verb+ing
+      verb+present verb+past verb+passive)
+     :verb)
+    (modal :modal)
+    ((noun common-noun common-noun/plural) :common-noun)
+    (proper-noun :proper-noun)
+    ((adjective proper-adjective comparative superlative
+                spatial-adjective  temporal-adjective approximator)
+     :adjective)
+    ((adverb comparative-adverb superlative-adverb)
+     :adverb)
+    (interjection :interjection)
+    ((preposition spatial-preposition temporal-preposition
+     spatio-temporal-preposition)
+     :preposition)
+    (quantifier :quantifier)
+    (number :number)
+    (otherwise nil)))
+    
 
 
 ;;;-----------------
