@@ -1299,7 +1299,6 @@
   :binds ((destination biological))
   :realization
   (:verb ("target" :third-singular "targets" :present-participle "targeting" :past-tense "targeted")  ;; keyword: ENDS-IN-ED
-   :mumble ("target" svo)
    :etf (svo-passive)
    :to destination))
 
