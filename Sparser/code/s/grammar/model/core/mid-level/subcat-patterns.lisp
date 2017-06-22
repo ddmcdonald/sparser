@@ -69,38 +69,33 @@
 ;; "I want you to go home" -- agent v patient theme
 
 (define-mixin-category control-verb-intrans
-    ;; need reference
-    ;; "acts to ...", "fails to ..."
-    :specializes linguistic
-    :mixins (with-an-agent)  ;; v/r = physical-agent
-    :binds ((theme perdurant)) ;; "I want to go home"
-    ;; T: neutral, VN: theme
-    :realization
+  ;; need reference
+  ;; "acts to ...", "fails to ..."
+  :specializes linguistic
+  :mixins (with-an-agent)
+  :binds ((theme perdurant))
+  :realization
     (:s agent
-        :to-comp theme))
+     :to-comp theme))
 
 (define-mixin-category raising-to-object
-    ;; need reference
-    ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."
-    :specializes linguistic
-    :mixins (with-an-agent)  ;; v/r = physical-agent
-    :binds ((theme perdurant)) ;; "I want to go home"
-    ;; T: neutral, VN: theme
-    :realization
+  ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."
+  :specializes linguistic
+  :mixins (with-an-agent)
+  :binds ((theme perdurant))
+  :realization
     (:s agent
-        :o patient
-        :to-comp theme))
+     :o patient
+     :to-comp theme))
 
 (define-mixin-category raising-to-subject
-    ;; need reference
-    ;; "X seems to ..."
-    :specializes linguistic
-    :mixins (with-an-agent)    ;; v/r = physical-agent
-    :binds ((theme perdurant)) ;; "I want to go home"
-    ;; T: neutral, VN: theme
-    :realization
+  ;; "X seems to ..."
+  :specializes linguistic
+  :mixins (with-an-agent)
+  :binds ((theme perdurant))
+  :realization
     (:s agent
-        :to-comp theme))
+     :to-comp theme))
 
 
 (define-mixin-category prop-attitude
