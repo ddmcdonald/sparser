@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "cases"
 ;;;   Module:  "model;core:pronouns:"
-;;;  version:  January 2017
+;;;  version:  June 2017
 
 ;; 1.0 (7/11/94) completely redone from scratch.
 ;; 1.1 (6/27/96) made "i" into "I" so that it would be correctly recognized.
@@ -19,10 +19,6 @@
 (define-pronoun "he"   'male           'pronoun)
 (define-pronoun "she"  'female         'pronoun)
 (define-pronoun "it"   'inanimate      'pronoun)
-
-(defparameter *you* (find-individual 'pronoun/second
-                                     :word "you"))
-
 
 (define-pronoun "we"   'first/plural 'pronoun)
 (define-pronoun "they" 'plural       'pronoun)
