@@ -753,6 +753,9 @@
         (;;(itypep item 'pronoun/first/plural) - but should add check for agentive verbs
          (itypep item category::pronoun) ;; of any sort
          t)
+        ((itypep item 'interlocutor)
+         ;; replacement for forms of "I", "we", "you" 6/23/17
+         t)
         ((and (itypep item category::number)
               (not (itypep item '(:or post-ordinal ordinal hyphenated-number)))
               (not (and (numberp (value-of 'value item))
