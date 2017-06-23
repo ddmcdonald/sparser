@@ -125,6 +125,9 @@
 
     (setf (cfr-form rule) form-category)
 
+    (pre-interpret-first-and-second-pronouns
+     rule category-suffix)
+
     pronoun ))
 
 
