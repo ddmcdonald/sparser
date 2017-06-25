@@ -788,6 +788,7 @@
                      restriction))))
         ((category-p restriction)
          (subcat-itypep item restriction))
+        ((null restriction) t)
         ((symbolp restriction) ;; this is the case for :prep subcat-patterns
           nil)
         (t (error "Unexpected type of subcat restriction: ~a"
