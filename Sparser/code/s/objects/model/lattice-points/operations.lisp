@@ -200,7 +200,15 @@
   (declare (special *top-of-category-tree*))
   (when category-list
     ;; happens with mixins
-    (let ((top *top-of-category-tree*)) ;; shorten name
+    (let ((top *top-of-category-tree*) ;; shorten name
+          (mixins (loop for c in category-list
+                        when (eq (type-of c) 'mixin-category)
+                        collect c))
+          (referential-categories
+           (loop for c in category-list
+                 unless (eq (type-of c) 'mixin-category)
+                 collect c)))
+      (setq category-list (nconc referential-categories mixins))
       (assert (memq top category-list) ()
               "Category list does not included top: ~a~
              ~%One of these categories is not a specialization of ~
