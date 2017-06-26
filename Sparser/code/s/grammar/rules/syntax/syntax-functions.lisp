@@ -1467,9 +1467,13 @@
    make-pp-relative-clause which will unfold the pied-piped
    preposition."  
   (if *subcat-test*
-    (not (itypep prep 'prepositional-phrase)) ;; example?
+    (not (itypep prep 'prepositional-phrase))
     (let* ((prep-word (identify-preposition (parent-edge-for-referent)))
-           (wh-obj (make-wh-object wh))
+           (wh-obj (cond ((itypep wh 'wh-pronoun) ;; which
+                          (make-wh-object wh))
+                         ((itypep wh 'partitive-relativizer) ;; each of which
+                          wh)
+                         (t wh)))
            (i (define-or-find-individual 'relativized-prepositional-phrase
                   :prep prep-word :pobj wh-obj)))
       i)))

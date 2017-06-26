@@ -116,8 +116,7 @@
          (typecase v/r
            (list (decode-value-for-var/list
                   value-exp variable v/r))
-           ((or referential-category
-                mixin-category)
+           ((referential-category mixin-category)
             (decode-exp-as-ref-category value-exp v/r))
 	   (otherwise
 	    (error "New type of v/r: ~a~%~a"
@@ -152,8 +151,8 @@
                          ~%   ~A~%does not match the value restriction ~A"
                       exp category)))
 
-    ((or referential-category  ;; e.g. 1st
-         mixin-category)
+    ((referential-category  ;; e.g. 1st
+      mixin-category)
      (if (itypep exp category) ;; (category-inherits-type? exp category)
        exp
        (v/r-violation "The type of the category given as the value,~
