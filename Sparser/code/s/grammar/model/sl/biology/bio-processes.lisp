@@ -34,10 +34,10 @@
          :for complement))
 
 (noun "dna binding" :super bio-process
-      :binds ((substrate bio-entity))
-      :realization 
-      (:noun "dna binding"
-             :of substrate))
+   :mixins (on-substrate)
+   :realization 
+   (:noun "dna binding"
+          :of substrate))
 
 (noun "fate" :super bio-process)
 (noun "manner" :super bio-process

@@ -134,7 +134,7 @@ it is created from N-terminus to C-terminus.|#
 (noun ("pleckstrin-homology domain" "pleckstrin homology domain" "PH domain" "pleckstrin-homology" "pleckstrin homology (PH) domain" "Pleckstrin Homology (PH) domain" ) :super protein-domain)
 
 (define-category DBD :specializes binding-domain
-      :binds ((substrate bio-entity))
+      :mixins (on-substrate)
       :realization 
       (:noun "DBD"
              :of substrate))
@@ -153,8 +153,8 @@ it is created from N-terminus to C-terminus.|#
   (:noun "shuttling domain"))
 
 (define-category protein-targeting-domain :specializes protein-domain
-    :binds ((target (:or cellular-location molecular-location protein))
-	    (substrate protein))
+   :mixins (on-substrate)
+   :binds ((target (:or cellular-location molecular-location protein)))
    :realization
    (:noun "targeting domain"
 	  :m target

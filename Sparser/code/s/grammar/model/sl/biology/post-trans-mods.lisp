@@ -17,9 +17,9 @@
 ;;"It is interesting that various stimuli provoke EGF receptor tyrosine phosphorylation by two distinct means.")
 (define-category post-translational-modification :specializes caused-biochemical-process
   :bindings (uid  "GO:0043687")
-  :binds ((substrate (:or protein variant bio-complex bio-entity)) ;; allow variant to pick up "phosphorylated fraction"
-	  (site molecular-location)
-          (amino-acid amino-acid)) ;; which is attached here
+  :mixins (on-substrate with-specified-amino-acid)               
+  :binds (;; allow variant to pick up "phosphorylated fraction"
+	  (site molecular-location)) ;; which is attached here
   :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate molecule)) ;;bio-process
 	     (object blocked-category)) ;; trying to BLOCK object by giving it an impossible class
   :realization 

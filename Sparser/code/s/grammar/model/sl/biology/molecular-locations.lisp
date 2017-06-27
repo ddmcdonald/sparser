@@ -15,7 +15,6 @@
 (noun "site" :super molecular-location
   :binds ((process bio-process)
           (kinase protein)
-	  (substrate protein)
 	  ;;(kinase-or-substrate protein)
           (residue residue-on-protein))
   :realization

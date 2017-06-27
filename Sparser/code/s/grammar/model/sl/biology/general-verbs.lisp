@@ -206,16 +206,14 @@
      (:verb "contain"  
             :etf (svo-passive) ))
 
-
 (define-category continue :specializes aspectual-relation
-  :binds ((agent biological)
-          (process bio-process))
+  :binds ((process bio-process))
+  :restrict ((agent biological))
   :realization 
   (:verb "continue"  
          :etf (svo-passive)
          :s agent
-         :o process))
-
+         :o theme))
 
 (define-category contribute :specializes positive-bio-control ;; not sure about this
   :binds ((contribution biological))
@@ -603,8 +601,8 @@
 
 
 (define-category bio-insert :specializes caused-bio-process
-  :binds ((substrate (:or protein gene protein-domain molecular-location))
-          (between residue-on-protein)
+  :mixins (on-substrate)
+  :binds ((between residue-on-protein)
           (after residue-on-protein))
   :realization 
   (:verb "insert" :noun"insertion" 
@@ -998,9 +996,9 @@
          :in visual-presentation))
 
 (define-category require :specializes bio-control
-  :binds ((requirement (:or biological process))
-	  (purpose biological))
-    :realization
+  :binds ((requirement (:or biological process)))
+  :restrict ((purpose biological))
+  :realization
     (:verb "require"
 	   :noun "requirement"
 	   :etf (svo-passive)
@@ -1137,8 +1135,7 @@
          :etf (sv)))
 
 (define-category bio-take :specializes bio-method
-    :binds ((agent pronoun/first/plural)
-            (approach approach))
+    :binds ((approach approach))
     :realization ;; (p/s "use KRAS to treat pancreatic cancer")
       (:verb ("take" :past-tense "took" :past-participle "taken")
        :etf (svo-passive)))

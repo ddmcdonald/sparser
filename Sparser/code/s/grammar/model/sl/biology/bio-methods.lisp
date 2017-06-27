@@ -44,7 +44,7 @@
 
 (noun  "pipetting" :super bio-method)
 (noun  "processing" :super bio-method
-       :binds ((agent biological)(object bio-entity))
+       :binds ((object bio-entity))
        :realization
        (:noun "processing"
        :by agent

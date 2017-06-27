@@ -103,7 +103,6 @@
 ;; failed to find a treatment for pancreatic cancer
 
 (define-category fail :specializes aspectual-relation
-  :mixins (control-verb-intrans)
   :restrict ((theme bio-process))
   :realization 
     (:verb "fail"  

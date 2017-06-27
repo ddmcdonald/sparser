@@ -220,8 +220,7 @@
 
 (define-category range :specializes bio-relation ;; REVIEW!!
   :binds ((low-value scalar-quantity)
-          (high-value scalar-quantity)
-          (subject biological))
+          (high-value scalar-quantity))
   :realization
   (:verb "range"
          :etf (sv)
@@ -431,15 +430,15 @@
 ;; "call"  assigns a name in passive "X is called N"
 
 (define-category co-operate :specializes bio-process 
-  :binds ((agent biological)
+  :binds ((aperator biological)
           (co-operator biological)) 
   :realization 
   (:verb "co-operate"
          :noun"co-operation" 
          :etf (sv) 
-         :s agent 
+         :s aperator
          :with co-operator
-         :of agent))
+         :of aperator))
 
 
 (define-category bio-open :specializes caused-bio-process 
@@ -607,9 +606,9 @@
    :etf (svo-passive)))
 
 (define-category dissociate :specializes caused-bio-process
+  :mixins (on-substrate)
   :binds ((into biological)
-	  (site molecular-location)
-	  (substrate (:or bio-complex protein gene molecule)))
+	  (site molecular-location))
   :realization
   (:verb "dissociate" :noun "dissociation"
          :etf (svo-passive)
@@ -787,29 +786,25 @@
 
 
 
-(define-category bio-fraction :specializes variant ;; avoid conflict with core category FRACTION
-  :binds ((agent pronoun/first/plural) (basis bio-entity)) ;; this should be for genes and proteins
+(define-category bio-fraction :specializes bio-method ;; avoid conflict with core category FRACTION
+  :binds ((basis bio-entity)) ;; this should be for genes and proteins
   :realization
   (:verb ("fractionXX" :past-participle "fractioned" :past-tense "fractioned")
          ;; bizarre, but needed to handle the conflict between "fractioned" and the noun
          :etf (svo-passive)
-         :s agent
-         :o basis))
+         :o basis
+         :on instrument))
 
 ;; exchange
 
 
 (define-category generate :specializes caused-bio-process
-  :binds ((agent (:or biological pronoun/first/plural))
-          (bio biological))
+  :binds ((bio biological))
   :realization 
   (:verb "generate" :noun "generation"
          :etf (svo-passive) 
-         :s agent
-         :by agent
          :from bio
          :in bio))
-
 
 ;; formation "GO:0009058"
 ;;--- hydrolysis
@@ -935,7 +930,7 @@
 
 (define-category ligate :specializes caused-bio-process
   :restrict ((agent bio-chemical-entity))
-  :binds ((substrate (:or protein gene residue-on-protein))) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :mixins (on-substrate) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "ligate" :noun "ligation" 
          :etf (svo-passive)
@@ -943,9 +938,9 @@
          :to substrate))
 
 
-(define-category link :specializes caused-bio-process 
-  :binds ((substrate bio-entity)
-          (linked-processes bio-process)
+(define-category link :specializes caused-bio-process
+  :mixins (on-substrate) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :binds ((linked-processes bio-process)
           (process bio-process)
           (co-process bio-process)
           (linked-process bio-process))
@@ -962,7 +957,7 @@
 (def-synonym link (:noun "link"))
 
 (define-category cross-link :specializes caused-bio-process 
-  :binds ((substrate bio-entity)) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
+  :mixins (on-substrate)
   :realization 
   (:verb "cross-link" :noun "cross-linkage" 
          :etf (svo-passive)
@@ -1074,7 +1069,6 @@
 
 (define-category purify :specializes bio-method
   :binds ((bio biological))
-  :restrict((agent (:or pronoun/first/plural bio-method)))
   :realization 
   (:verb "purify" :noun "purification" 
          :etf (svo-passive)
@@ -1303,10 +1297,11 @@
    :to destination))
 
 (define-category target-protein :specializes protein
-		 :binds ((agent (:or protein gene drug)))
-		 :realization
-		 (:noun "target"
-			:of agent))
+  :mixins (with-an-agent)
+  :restrict ((agent (:or protein gene drug)))
+  :realization
+  (:noun "target"
+         :of agent))
 
 
 (define-category term :specializes bio-rhetorical

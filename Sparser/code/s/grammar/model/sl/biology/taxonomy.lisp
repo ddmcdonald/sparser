@@ -198,10 +198,9 @@
 
 ;;--- Quality
 
-(define-category bio-quality :specializes quality
+(define-category bio-quality :specializes bio-predication
   :mixins (biological
            temporally-localized) ;; provides time, certainty modifiers
-  :binds ((subject biological))
   :realization
     (:of subject))
 
@@ -384,24 +383,22 @@
 
 (define-category caused-bio-process
     :specializes bio-process
-    :restrict ((subject blocked-category))
-    :binds
-    ((agent
-      (:or                 ;;bio-entity
-       bio-chemical-entity ;;molecule bio-complex drug
-       bio-process bio-mechanism bio-method
-       )) ;; membrane targeting domains that facilitate interaction with the plasma membrane
-     (cause ;; sematically like agent, but want to tighten the restriction on premodifiers used as agents
-      ;; we had gotten "an equivalent activation" which treated "equivalent" as an agent
-      (:or process-rate
-           bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
-           measurement 
-           bio-scalar ;; "these data raised the possibility..."
-           protein-domain ;; not molecular-location -- that allows residues
-           ))
-     (object
-      (:or bio-entity cell-entity molecular-location
-           measurement bio-scalar disease)))
+    :mixins (with-an-agent)
+    :restrict ((subject blocked-category)
+               (agent
+                (:or bio-chemical-entity ;;molecule bio-complex drug
+                     bio-process bio-mechanism bio-method)))
+    :binds ((cause ;; semantically like agent, but want to tighten the restriction on premodifiers used as agents
+             ;; we had gotten "an equivalent activation" which treated "equivalent" as an agent
+             (:or process-rate
+                  bio-relation ;; The ability of oncogenic RAS to ... allows the cell to have a
+                  measurement 
+                  bio-scalar ;; "these data raised the possibility..."
+                  protein-domain ;; not molecular-location -- that allows residues
+                  ))
+            (object
+             (:or bio-entity cell-entity molecular-location
+                  measurement bio-scalar disease)))
     :realization
     (:s agent
         :s cause
@@ -441,7 +438,8 @@
      :for process))
 
 (define-category bio-mechanism :specializes mechanism
-                 :mixins (has-name biological has-uid)
+  :mixins (has-name biological has-uid)
+  :binds ((participant biological))
   :realization
     (:noun "mechanism"))
 
@@ -451,29 +449,29 @@
 ;;;----------------
 
 (define-category bio-rhetorical :specializes perdurant
-  :mixins (biological 
+  :mixins (with-an-agent biological 
            bio-thatcomp bio-whethercomp
            with-measurement bio-howcomp)
-  :binds ((agent
-           (:or pronoun/first/plural
-                PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals
-                pronoun/plural ;; "they"
-                organism ;; "these animals showed..."
-                these
-                ;; bio-entity too general -- leads to problems with created semantic rules
-                bio-chemical-entity
-                bio-location ;; "the Y561 site displayed no difference..."
-                evidence
-                article-figure
-                bio-quality
-                bio-rhetorical
-                bio-process ;; the B-RAFV600E mutation predicts
-                bio-method	;; high-throughput functional screens may inform
-                bio-mechanism    ;; "this pathway describes ..."
-                bio-predication ;; the success of raf and mek inhibitors
-                measurement     ;; these data
-                visual-representation))
-	  (ratio-condition ratio)
+  :restrict ((agent
+              (:or ;; pronoun/first/plural
+               ;; PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals
+               ;; pronoun/plural ;; "they"
+               organism ;; "these animals showed..."
+               these
+               ;; bio-entity too general -- leads to problems with created semantic rules
+               bio-chemical-entity
+               bio-location ;; "the Y561 site displayed no difference..."
+               evidence
+               article-figure
+               bio-quality
+               bio-rhetorical
+               bio-process ;; the B-RAFV600E mutation predicts
+               bio-method ;; high-throughput functional screens may inform
+               bio-mechanism    ;; "this pathway describes ..."
+               bio-predication ;; the success of raf and mek inhibitors
+               measurement     ;; these data
+               visual-representation)))
+  :binds ((ratio-condition ratio)
 	  (fig article-figure)
 	  (method bio-method)
           (result biological)
@@ -619,12 +617,13 @@
       :for result-or-purpose))
 
 (define-category bio-method :specializes purposive-process
-  :mixins (has-UID has-name biological)
+  :mixins (has-UID has-name biological with-an-agent)
   :documentation "No content by itself, provides a common parent
     for 'liquid chromatography', etc. that may be the basis
     of the grammar patterns."
-  :binds ((agent (:or pronoun/first/plural biological))
-          (object (:or biological measurement bio-scalar)))
+  :restrict ((agent biological))
+  :binds ((object (:or biological measurement bio-scalar))
+          (instrument (:or bio-process bio-method)))
   :realization
     (:s agent
      :o object
@@ -713,7 +712,6 @@
 
 
 (define-category feedback-loop :specializes bio-mechanism
-  :binds ((participant biological))
   :realization
     (:noun "feedback loop"
      :between participant))
@@ -974,9 +972,11 @@
 ;; "enhanced GTP loading"
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
+(define-mixin-category on-substrate :specializes bio-process
+  :binds ((substrate (:or bio-chemical-entity molecular-location))))
+
 (define-category molecule-load :specializes caused-bio-process
-  :binds (;;(object molecule) ;; the nucleotyde that moves
-          (substrate biological))
+  :mixins (on-substrate)
   :realization
     (:verb "load"
      :etf (svo-passive)
@@ -1061,7 +1061,7 @@
 
 
 (define-category molecular-location  :specializes bio-location
-  :binds ((substrate molecule))
+  :mixins (on-substrate)
   :instantiates self
   :index (:permanent :key name)
   :realization
@@ -1134,9 +1134,12 @@
      :m enzyme))
 
 
+(define-mixin-category with-specified-amino-acid :specializes relation
+   :binds ((amino-acid amino-acid)))
+
 (define-category post-translational-enzyme :specializes enzyme
-  :binds ((residue residue-on-protein)
-          (amino-acid amino-acid)))
+  :mixins (with-specified-amino-acid)
+  :binds ((residue residue-on-protein)))
 
 
 (define-category kinase :specializes post-translational-enzyme
@@ -1169,8 +1172,8 @@
 (define-category exchange-factor :specializes enzyme
   ;; once "exchange" is defined as a verb, then this becomes a
   ;;  special case phrase
-  :binds ((substrate protein)
-          (nucleotide nucleotide))
+  :mixins (on-substrate)
+  :binds ((nucleotide nucleotide))
   :restrict ((enzyme determiner)) ;; BLOCK THIS (huh? ddm 2/3/17)
   :realization
     (:noun "exchange factor"
@@ -1204,7 +1207,7 @@
 (def-synonym bio-exchange (:noun "turnover"))
 
 (define-category nucleotide-exchange :specializes bio-exchange
-  :binds ((substrate (:or protein bio-complex gene)))
+  :mixins (on-substrate)
   :realization
     (:noun "nucleotide exchange"
      :on substrate
@@ -1376,15 +1379,12 @@ the aggregate across the predicate it's in. |#
     (:noun "strength"))
 
 
-
-
 (define-category residue-on-protein
   :specializes molecular-location
   ;; NOT same as protein, it is the location, not the amino acid
   :instantiates :self
-  :binds ((amino-acid amino-acid)
-          (substrate protein)
-          (position number)) ;; counting from the N terminus
+  :mixins (on-substrate with-specified-amino-acid)
+  :binds ((position number)) ;; counting from the N terminus
   :index (:permanent :sequential-keys amino-acid position)
   :realization
      (:noun "residue"

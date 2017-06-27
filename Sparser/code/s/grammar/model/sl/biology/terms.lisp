@@ -449,8 +449,8 @@
      (:adj "unresponsive"
            :to treatment))
 
-(adj "useful" :super bio-relation
-     :binds ((purpose (:or bio-process bio-method)))
+(define-category useful :specializes bio-relation
+     :restrict ((purpose (:or bio-process bio-method)))
      :realization
      (:adj "useful"
            :for purpose))

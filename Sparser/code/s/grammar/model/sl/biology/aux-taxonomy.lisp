@@ -93,13 +93,13 @@
 (define-category response
   :specializes bio-process
   :binds ((beneficiary biological)
-          (agent biological)) ;; (:or biological drug)))
+          (cause biological))
   :realization
     (:verb "respond"
      :etf (sv)
      :noun "response"
      :of beneficiary
-     :to agent))
+     :to cause))
 
 (define-category cellular-process
     :specializes bio-process

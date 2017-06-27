@@ -59,6 +59,10 @@
 
 
 (define-category  html-tag   ;; also just specialized, and an anchor
+  :binds ((attributes . html-attribute)
+          (start-index . (:primitive number))
+          (end-index . (:primitive number))
+          (interior-start . (:primitive number)))
   :instantiates nil         ;; for the discourse history
   :specializes html-markup-element )
 
@@ -66,22 +70,13 @@
 (define-category  paired-html-tag
   :instantiates html-tag
   :specializes html-tag
-  :binds ((attributes . html-attribute)
-          (contents)
-          (start-index . (:primitive number))
-          (end-index . (:primitive number))
-          (interior-start . (:primitive number))
+  :binds ((contents)
           (interior-end . (:primitive number))
           (start-action)
           (end-action)))
 
-
 (define-category  empty-html-tag
   :instantiates html-tag
   :specializes html-tag
-  :binds ((attributes . html-attribute)
-          (start-index . (:primitive number))
-          (end-index . (:primitive number))
-          (interior-start . (:primitive number))
-          (action)))
+  :binds ((action)))
 

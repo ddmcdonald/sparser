@@ -124,7 +124,7 @@
 
 (def-indiv-with-id species "Saccharomyces cerevisiae" "NCIT:C14271" :synonyms ("saccharomyces" "yeast" "S. cerevisiae"))
 (define-category human :specializes species
-                 :mixins (has-UID has-name mammal) ;; not sure if mixin is the right thing?
+                 :mixins (has-UID has-name mammal) ;; not sure if mixins is the right thing?
                    :instantiates self
                    :index (:permanent :key name)
                    :bindings (uid "NCIT:C14225")

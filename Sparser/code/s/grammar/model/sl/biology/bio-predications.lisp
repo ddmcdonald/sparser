@@ -147,12 +147,10 @@
 (adj "real-time" :super bio-predication)
 (def-synonym real-time (:adj "real time"))
 (adj "recombinant" :super bio-predication)
-(adj "responsible" :super bio-predication ;; adj/noun "resposibility"
-  :binds ((subject bioloical)(theme bio-entity))
+(adj "responsible" :super bio-relation ;; adj/noun "resposibility"
+  :binds ((theme bio-entity))
   :realization 
-  (:adj "responsible"
-        :s subject 
-        :for theme))
+  (:adj "responsible"))
 
 (noun "restricted substrate" :super bio-predication)
 (adj "rich" :super bio-predication) ;; proline rich region
