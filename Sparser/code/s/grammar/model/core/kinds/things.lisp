@@ -98,10 +98,6 @@
  Object's. People have bodies. Robots are assembled out of engines and
  sensors and such (Legos). ") ;; n.b. "Mossad agent"
 
-(define-mixin-category with-an-agent
-  :specializes relation
-  :binds ((agent (:or pronoun physical-agent))))
-;; Dolce has 'agency' as the union of physical and social agent
 
 
 (define-category feature
