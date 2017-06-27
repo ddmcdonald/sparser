@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "processes"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  March 2017
+;;;  version:  June 2017
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 9/24/14 Moved event above perdurant as a hack to ensure that
@@ -25,24 +25,22 @@
 ;; Split this out, because category::collection can also take these
 ;;  variables -- because collections can be collections of perdurants
 (define-mixin-category takes-tense-aspect-modal
-    :binds ((modal :primitive category)
-            (present :primitive  category)
-            (past :primitive  category)
-            (progressive  category)
-            (perfect  category)))
-
-(define-mixin-category takes-adverb
-    :binds ((adverb)))
+  :specializes relation
+  :binds ((modal :primitive category)
+          (present :primitive  category)
+          (past :primitive  category)
+          (progressive  category)
+          (perfect  category)))
 
 (define-category  perdurant
   :instantiates self
   :specializes top
-  :mixins (temporally-localized takes-adverb takes-tense-aspect-modal)
-  :binds ((theme) ;; one salient participant
-                  ;; FrameNet for the thing that moves
-          (participant) ;; any number of others
+  :mixins (takes-tense-aspect-modal
+           temporally-localized
+           takes-adverb
+           has-location)
+  :binds ((participant) ;; is one this useful?
           (time)
-          (location)
           (purpose)  ;; in order to ...
           (reason)  ;; answers "why", "because E"
           (circumstance)
@@ -53,7 +51,6 @@
           ;; interpret-adverb+verb needs to be improved to diagnose the
           ;; type of adverb but until then, we need to have this variable
           ;; or something equivalent
-
 
           (occurs-at-moment) ;; future, past
          )
