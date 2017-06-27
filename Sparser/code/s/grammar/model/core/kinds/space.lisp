@@ -68,14 +68,6 @@
 ;;; mixin predicates
 ;;;------------------
 
-(define-category has-location
-  :specializes relation
-  :binds ((location location))
-  :documentation "Said of something that must have a location
-    Supplies a location variable whose value says where
-    this thing is.")
-
-
 #|  /// We need something of this sort as predicates on physical. 
  (Property containedIn
    "One step containment. Relates an item to the container it is
