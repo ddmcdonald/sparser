@@ -1079,26 +1079,7 @@
 ;; can be both "<people> show ..." and "<molecule> shows <properties>"
 (define-category show :specializes bio-rhetorical
   :mixins (bio-thatcomp raising-to-object)
-  :restrict ((theme (:or be biological predication))
-             (agent
-              (:or pronoun/first/plural
-                   PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals
-                   pronoun/plural         ;; "they"
-                   organism               ;; "these animals showed..."
-                   these
-                   ;; bio-entity too general -- leads to problems with created semantic rules
-                   bio-chemical-entity
-                   bio-location ;; "the Y561 site displayed no difference..."
-                   evidence
-                   article-figure
-                   bio-quality
-                   bio-rhetorical
-                   bio-process ;; the B-RAFV600E mutation predicts
-                   bio-method ;; high-throughput functional screens may inform
-                   bio-mechanism ;; "this pathway describes ..."
-                   bio-predication ;; the success of raf and mek inhibitors
-                   measurement     ;; these data
-                   visual-representation)))
+  :restrict ((theme (:or be biological predication)))
   ;; it was shown that
   :realization
   (:verb ("show" :past-tense "showed" :past-participle "shown")
