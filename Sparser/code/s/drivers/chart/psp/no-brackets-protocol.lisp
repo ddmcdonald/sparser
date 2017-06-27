@@ -422,8 +422,7 @@
     (write-semantics sentence *sentence-results-stream*))
   (when *indra-post-process*
     (let ((mentions (find-all-mentions sentence)))
-      (when *indra-post-process*
-        (indra-post-process mentions sentence *sentence-results-stream*))))
+        (indra-post-process mentions sentence *sentence-results-stream*)))
   (when *localization-interesting-heads-in-sentence*
     (let ((colorized-sentence (split-sentence-string-on-loc-heads)))
       (setf (gethash sentence *colorized-sentence*) colorized-sentence)
