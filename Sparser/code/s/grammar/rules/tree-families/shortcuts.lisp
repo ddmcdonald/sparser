@@ -161,7 +161,7 @@ see if there are issues"
                 &key noun 
                      super specializes index
                      binds realization
-                     instantiates mixin restrict rule-label 
+                     instantiates mixins restrict rule-label 
                      obo-id)
   (typecase name
     (symbol)
@@ -186,7 +186,7 @@ see if there are issues"
          :noun ',noun
          :super ',super :specializes ',specializes :index ',index
          :binds ',binds :realization ',realization
-         :instantiates ',instantiates :mixin ',mixin 
+         :instantiates ',instantiates :mixins ',mixins 
          :restrict ',restrict :rule-label ',rule-label
          :obo-id ,obo-id))
 
@@ -195,7 +195,7 @@ see if there are issues"
                   &key noun
                        super specializes index
                        binds realization
-                       instantiates mixin 
+                       instantiates mixins 
                        restrict rule-label obo-id)
   (when (stringp name)
     (setq noun name)
@@ -235,7 +235,7 @@ see if there are issues"
                :binds ,binds
                ;;:index ,index
                :restrict ,restrict
-               :mixins ,mixin
+               :mixins ,mixins
                :realization ,realization)))
         (setq category (eval form))))
      (t
@@ -248,7 +248,7 @@ see if there are issues"
                 :rule-label ,rule-label
                 :index ,index
                 :restrict ,restrict
-                :mixins ,mixin
+                :mixins ,mixins
                 :realization
                   (:common-noun ,noun))))
         (setq category (eval form)))))
@@ -265,7 +265,7 @@ see if there are issues"
                 &key noun 
                      super specializes index
                      binds realization
-                     instantiates mixin restrict rule-label 
+                     instantiates mixins restrict rule-label 
 		  obo-id)
   (cond
     ((and super specializes)
@@ -296,7 +296,7 @@ see if there are issues"
          :super ',super ;;:specializes ',specializes no longer use this
 	 :index ',index
          :binds ',binds :realization ',realization
-         :instantiates ',instantiates :mixin ',mixin 
+         :instantiates ',instantiates :mixins ',mixins
          :restrict ',restrict :rule-label ',rule-label
          :obo-id ,obo-id))
 
@@ -304,7 +304,7 @@ see if there are issues"
 (defun np-head (name 
                 &key noun super specializes index
                      binds realization
-                     instantiates mixin restrict rule-label 
+                     instantiates mixins restrict rule-label 
 		  obo-id)
 
    (cond
@@ -322,7 +322,7 @@ see if there are issues"
          :super super ;;:specializes specializes
 	 :index index
          :binds binds :realization realization
-         :instantiates instantiates :mixin mixin 
+         :instantiates instantiates :mixins mixins
          :restrict restrict :rule-label rule-label
          :obo-id obo-id))
 
@@ -332,7 +332,7 @@ see if there are issues"
 		    super ;; specializes (use only one keyword)
 		    index
 		    binds realization
-		    instantiates mixin 
+		    instantiates mixins 
 		    restrict rule-label obo-id)
   (declare (ignore rule-label instantiates index))
   (when (stringp name)
@@ -349,7 +349,7 @@ see if there are issues"
 	       :binds ,binds
 	       ;;:index ,index
 	       :restrict ,restrict
-	       :mixins ,mixin
+	       :mixins ,mixins
 	       :realization
 	       ,(if noun `(:noun ,(if (and (consp noun)
                                            (not (member :plural noun)))
@@ -373,7 +373,7 @@ see if there are issues"
                &key adj
                     super specializes
                     binds realization
-                    instantiates mixin restrict rule-label 
+                    instantiates mixins restrict rule-label 
 		 obo-id)
      (cond
     ((and super specializes)
@@ -396,7 +396,7 @@ see if there are issues"
         :adj ',adj
         :super ',super ;; :specializes ',specializes
         :binds ',binds :realization ',realization
-        :instantiates ',instantiates :mixin ',mixin 
+        :instantiates ',instantiates :mixins',mixins
         :restrict ',restrict :rule-label ',rule-label
         :obo-id ,obo-id))
 
@@ -404,7 +404,7 @@ see if there are issues"
                  &key adj
 		   super specializes 
 		   binds realization
-		   instantiates mixin 
+		   instantiates mixins
 		   restrict rule-label obo-id)
   (declare (ignore rule-label instantiates))
   (unless (or super specializes)
@@ -425,7 +425,7 @@ see if there are issues"
 	       :specializes ,super
 	       :binds ,binds
 	       :restrict ,restrict
-	       :mixins ,mixin
+	       :mixins ,mixins
 	       :realization
 	       ,(if adj `(:adj ,(if (consp adj)
 					  (car adj)
@@ -603,7 +603,7 @@ see if there are issues"
 ;; Assumes the variables are defined on more abstract categories
 ;; than this one. The subject & object info is for the mapping
 (defun c3-sv-optional-o (verb super-category 
-                         &key restrict mixin subject object)
+                         &key restrict mixins subject object)
   (unless super-category
     (setq super-category 'process))
   (unless subject object
@@ -619,7 +619,7 @@ see if there are issues"
              :instantiates :self
              :specializes ,super-category
              :restrict ,restrict
-             :mixins ,mixin
+             :mixins ,mixins
              :realization
                ((:tree-family intransitive
                  :mapping ((agent . ,subj-var)
@@ -638,7 +638,7 @@ see if there are issues"
 
 #+ignore  ;; only used in unloaded biology/nfkappb
 (defun vo (verb super-category &key object)
-  ;;// rule-for, restrict, mixin
+  ;;// rule-for, restrict, mixins
   ;; Based on verb+direct-object, the variable for the object
   ;; is 'theme' by a convention out of c3.
   (let ((name (name-to-use-for-category verb)))

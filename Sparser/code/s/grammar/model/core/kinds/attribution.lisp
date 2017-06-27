@@ -161,7 +161,7 @@ be added to attribute so it knows how to handle the individuals.
     (attribute-name ;; a symbol, e.g. 'size'
      &key
        ((:var name-of-variable))
-       ((:mixin name-of-mixin-category))
+       ((:mixins name-of-mixin-category))
        ((:word word-that-denotes-attribute))
        ((:a-pos attribute-part-of-speech))
        ((:value-cat name-of-field-category))
