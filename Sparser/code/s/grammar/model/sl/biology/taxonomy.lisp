@@ -60,7 +60,7 @@
 ;;; mixins
 ;;;--------
 
-(define-mixin-category type-marker
+(define-mixin-category type-marker :specializes relation
   :documentation "This is mixed into selected classes
    like 'protein' or 'pathway or 'cell line' so that their
    lemmas can trigger a specific compose method
@@ -68,12 +68,12 @@
 
 ;;--- labels needed by various sources / exports
 
-(define-mixin-category reactome-category
+(define-mixin-category reactome-category :specializes relation
   :mixins (has-name)
   :binds ((displayname)
            (reactome-id)))
 
-(define-mixin-category in-ras2-model
+(define-mixin-category in-ras2-model :specializes relation
   :binds ((ras2-model)))
 
 
@@ -221,7 +221,7 @@
 ;;; measurements
 ;;;--------------
 
-(define-mixin-category with-measurement
+(define-mixin-category with-measurement :specializes relation
   :binds ((at-measurement (:or bio-concentration measurement)) 
           (extent (:or amount measurement bio-scalar)))
   :realization
