@@ -221,7 +221,10 @@
 
 (define-category remain :specializes be
   :mixins (bio-relation)
-    :realization
+  :restrict ((subject biological)) 
+  ;; got 'subject' from be where there is no restriction, though
+  ;; there is a subject v/r on bio-relation
+  :realization
     (:verb "remain" ;; keyword: ENDS-IN-ED 
 	   :etf (sv)
            ;; remains to be determined
