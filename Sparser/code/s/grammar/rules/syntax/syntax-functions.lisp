@@ -1197,8 +1197,9 @@
          (let ((revised-complement
                 (if object
                   ;; 'I want you to wash the dishes' vs 'I want to wash the dishes'
-                  (bind-variable 'agent object complement)
-                  (bind-variable 'agent subj complement))))
+                    (assimilate-subject object complement)
+                    
+                    (assimilate-subject subj complement))))
            (setq vp (bind-variable 'theme revised-complement vp))))
        (assimilate-subcat vp :subject subj)))
 
@@ -1294,6 +1295,7 @@
        (when (transitive-vp-missing-object? vp)
          (revise-parent-edge :form category::transitive-clause-without-object))
        ;;/// try using assimilate-subject
+
        (assimilate-subcat vp :subject subj))
       
       ((can-fill-vp-object? vp subj)
