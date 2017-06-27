@@ -92,9 +92,9 @@
  They all need to be unified at some point.")
 
 (define-category prepositional
-  :specializes predicate
+  :specializes linguistic ;; to supply 'word'
+  :mixins (predicate) ;; for their verb-like nature
   :instantiates nil
-  :binds ((word :primitive word))
   :documentation "Intended to be the common parent of every
  sort of operator that can be realized as a preposition. 
  These have the semantic force of predicates and (arguably)
