@@ -1,5 +1,7 @@
 (in-package :sparser)
 
+(defvar *use-all-proteins* nil)
+
 (defparameter *good-protein-defs*
   (append '( ;; these are names used in def-family, and not seen directly in the articles
             "PDE1A_HUMAN" "PDE1B_HUMAN""PDE1C_HUMAN" "EPHB1_HUMAN" "EPHB2_HUMAN" "EPHB3_HUMAN"
@@ -22263,7 +22265,9 @@ arsenite"
 (defparameter *used-protein-defs* (make-hash-table :size 100000 :test #'equal))
 
 (defun allowable-protein-head (w)
-  (gethash w *allowable-protein-head-ht*)
+  (or (and (boundp 'cl-user::*use-all-proteins*)
+           cl-user::*use-all-proteins*)
+      (gethash w *allowable-protein-head-ht*))
   #+ignore
   (when (gethash w *allowable-protein-head-ht*)
     (setf (gethash w *used-protein-defs*) t)
