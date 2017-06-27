@@ -13,9 +13,10 @@
 (define-mixin-category action-verb
   :specializes subcategorization-pattern ;; daughter of linguistic, abstract
   :instantiates nil
-  :binds ((actor (:or pronoun endurant))
-          (patient physical)
-          (theme perdurant))
+  :mixins (actor patient theme)
+  :restrict ((actor (:or pronoun endurant))
+             (patient physical)
+             (theme perdurant))
   :documentation "For 'fail', 'find' etc. where there can be a
  to-complement argument as in 'I failed to find a block'"
   :realization
@@ -26,9 +27,9 @@
 (define-mixin-category move-something-verb
   :specializes subcategorization-pattern
   :instantiates nil
-  :mixins (with-an-agent) ;; v/r = physical-agent
-  :binds ((theme physical) ;; what moves
-          (location location)) ;; where it is moved to
+  :mixins (with-an-agent theme has-location)
+  :restrict ((theme physical) ;; what moves
+             (location location)) ;; where it is moved to
   :realization
     (:s agent
      :o theme
@@ -42,7 +43,8 @@
 (define-mixin-category directed-action ;; tell, give
   :specializes action-verb
   :instantiates nil
-  :binds ((beneficiary (:or pronoun endurant)))
+  :mixins (beneficiary)
+  :restrict ((beneficiary (:or pronoun endurant)))
   :realization
     (:o beneficiary))
 ;; Have we ever had indirect objects? Using 'o' is just
@@ -53,9 +55,9 @@
 (define-mixin-category control-verb
   ;; https://en.wikipedia.org/wiki/Control_(linguistics)
   :specializes subcategorization-pattern
-  :mixins (with-an-agent) ;; v/r = physical-agent
-  :binds ((patient physical) ;; "I want a block"
-          (theme perdurant)) ;; "I want to go home"
+  :mixins (with-an-agent patient theme)
+  :restrict ((patient physical) ;; "I want a block"
+             (theme perdurant)) ;; "I want to go home"
                 ;; T: neutral, VN: theme
   :realization
     (:s agent
@@ -72,8 +74,8 @@
   ;; need reference
   ;; "acts to ...", "fails to ..."
   :specializes linguistic
-  :mixins (with-an-agent)
-  :binds ((theme perdurant))
+  :mixins (with-an-agent theme)
+  :restrict ((theme perdurant))
   :realization
     (:s agent
      :to-comp theme))
@@ -91,8 +93,8 @@
 (define-mixin-category raising-to-subject
   ;; "X seems to ..."
   :specializes linguistic
-  :mixins (with-an-agent)
-  :binds ((theme perdurant))
+  :mixins (with-an-agent theme)
+  :restrict ((theme perdurant))
   :realization
     (:s agent
      :to-comp theme))
@@ -100,8 +102,8 @@
 
 (define-mixin-category prop-attitude
   :specializes subcategorization-pattern
-  :mixins (with-an-agent) ;; v/r = physical-agent
-  :binds ((theme perdurant))
+  :mixins (with-an-agent theme) ;; v/r = physical-agent
+  :restrict ((theme perdurant))
   :documentation "Breaks out a complement argument that
    common to many verbs -- taking a stance (e.g. 'believe',
    'doubt') towards a proposition."
@@ -113,8 +115,8 @@
 
 (define-mixin-category knowledge-verb
   :specializes subcategorization-pattern
-  :binds ((experiencer (:or pronoun physical-agent))) ;; "I"
-  :mixins (prop-attitude)
+  :mixins (prop-attitude experiencer)
+  :restrict ((experiencer (:or pronoun physical-agent))) ;; "I"
   :realization
     (:s experiencer))
      
