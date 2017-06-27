@@ -69,6 +69,7 @@
 (gload "bio;new-defs;new-post-trans-mod")
 (gload "bio;substances")
 (gload "bio;new-defs;new-substances")
+(gload "bio;new-defs;reach-additional-proteins")
 
 (gload "bio;amino-acids")
 (gload "bio;terms-to-move")
