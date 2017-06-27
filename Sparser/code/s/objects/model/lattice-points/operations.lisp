@@ -195,20 +195,10 @@
    walks up the superc chains, but since we are not being clever
    about how we interleave going up a main line and up from mixins,
    the 'raw' collected can't guarentee this so we do it manually."
-  ;;/// if we want to introduce more organization into the list
-  ;; we could do it here, but that doesn't seem to be a pressing need
   (declare (special *top-of-category-tree*))
   (when category-list
-    ;; happens with mixins
-    (let ((top *top-of-category-tree*) ;; shorten name
-          (mixins (loop for c in category-list
-                        when (eq (type-of c) 'mixin-category)
-                        collect c))
-          (referential-categories
-           (loop for c in category-list
-                 unless (eq (type-of c) 'mixin-category)
-                 collect c)))
-      (setq category-list (nconc referential-categories mixins))
+    ;; can be null with mixins
+    (let ((top *top-of-category-tree*)) ;; shorten the name
       (assert (memq top category-list) ()
               "Category list does not included top: ~a~
              ~%One of these categories is not a specialization of ~
@@ -218,19 +208,23 @@
   
              
 (defun super-categories-of-list-type (category-list)
+  "For each category in the list, append its super-categories.
+   Note that super-categories-of will include the category
+   itself as the first element of the list that it returns."
   (loop for category in category-list
-    append (super-categories-of category) into supers 
-    append (list category) into supers
-    finally (return supers)))
+     append (super-categories-of category) into supers
+     finally (return supers)))
+  
+
 
 (defun collect-supercategories-off-lp (c lp)
   "We gather the categories defined directly on c, that is c and
    any mixins it incorporates. From those make recursive calls to
    get their supercategories, then append their results together
-   as they return.
-"
+   as they return."
   (let* ((mixins (cat-mix-ins c))
-         ;; 1. Get the super categories of each mixin used here
+         
+         ;; Get the super categories of each local mixin
          (mixin-supers
           (when mixins ;; if there's one there will likely be several
             (super-categories-of-list-type mixins)))
@@ -259,24 +253,26 @@
                      (top-lattice-point-p immediate-super-lp)
                      (lp-super-category immediate-super-lp))
             (super-categories-of1 immediate-super-category))))
+
+    (unless mixin-supers
+      (when mixins (setq mixin-supers mixins)))
     
     (when nil
-      (format t "~%  mixin-supers  ~a~
+      (format t "~% For ~a~
+                 ~%  mixin-supers  ~a~
                  ~%  super-supers  ~a~
                  ~%  mixins of immediate super-category ~a~
                  ~%  immediate-super ~a~%" 
-              mixin-supers super-supers mixins-of-immediate-super-category
+              c mixin-supers super-supers mixins-of-immediate-super-category
               immediate-super-category))
+    
     (let ((supers
            (cond
             ((and mixin-supers super-supers immediate-super-category)
-             ;;/// On reviewing this code 3/4/17 I don't understand why
-             ;; this case doesn't include the immediate-super-category
-             ;; in its output -- it was also duplicated
-             (cons c (append mixin-supers super-supers)))
+             (cons c (append super-supers mixin-supers)))
             
             ((and mixin-supers super-supers)
-             (cons c (append mixin-supers super-supers)))
+             (cons c (append super-supers mixin-supers)))
             
             ((and mixin-supers immediate-super-category)
              (cons c (cons immediate-super-category mixin-supers)))
@@ -291,6 +287,7 @@
              (cons c mixin-supers)))))
       
       (when mixins-of-immediate-super-category
+        ;;/// should this be supers before mixins?
         (setq supers (append mixins-of-immediate-super-category supers)))
       
       (remove-duplicates supers))))
@@ -356,9 +353,9 @@
                finally (return nil))))))))
 
 
-;;--- helper Rusty wrote
-
 (defun immediate-supers (c)
+  "Return a category's super-catgory and mixins, reading directly
+   from the category object."
   (let* ((lp (cat-lattice-position c)) ; 
          (mixins (cat-mix-ins c)))
     (if (and (lattice-point-p lp)
