@@ -35,7 +35,7 @@
   ;; See hack in record-any-determiner
   (push-debug `(,arg)) (break "indefinite stub"))
 
-(define-lambda-variable 'has-determiner nil category::det)
+;;(define-lambda-variable 'has-determiner nil category::det)
 
 ;; too fine grained?
 (define-lambda-variable 'definite nil category::definite)

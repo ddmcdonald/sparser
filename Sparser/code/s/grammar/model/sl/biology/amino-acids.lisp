@@ -287,7 +287,7 @@ We therefore have the special cases:
 (define-category phosphorylated-amino-acid
   :specializes amino-acid
   :rule-label amino-acid
-  :binds ((amino-acid amino-acid))
+  :binds ((modified-amino-acid amino-acid))
   :index (:permanent :key amino-acid))
 
 (defmacro def-phospho-amino-acid (acid &rest names)
@@ -300,7 +300,7 @@ We therefore have the special cases:
       (error "Can't retrieve an amino acid named ~a" name-of-aa))
     (let* ((first-name (resolve/make first-name))
            (i (find-or-make-individual 'phosphorylated-amino-acid
-                  :amino-acid aa :name first-name)))
+                  :modified-amino-acid aa :name first-name)))
       ;; Order of definition in the bindings determines whether
       ;; we can retrive the individual with a find on the acid.
       ;;(push-debug `(,i ,aa)) (break "rule on i?")
@@ -338,7 +338,7 @@ We therefore have the special cases:
   ;; called from one-hyphen-ns-patterns for (:little-p :hyphen :single-cap :digits)
   (push-debug `(,amino-acid ,digits))
   (let ((phospho-aa (find-individual 'phosphorylated-amino-acid
-                                     :amino-acid amino-acid))
+                                     :modified-amino-acid amino-acid))
         (number (find-or-make-number digits)))
     (unless phospho-aa
       (break "Why is there apparently no phorphorylated version of ~a"
@@ -380,7 +380,7 @@ We therefore have the special cases:
   ;; if we had 'mutation' that might be better
   ;; but these do involve a particular residue
   :binds ((new-amino-acid . amino-acid)
-          (amino-acid . amino-acid)
+          (original-amino-acid . amino-acid)
           (position number)) ;; counting from the N terminus
   :lemma (common-noun "point mutation")
   :index (:permanent :sequential-keys new-amino-acid position))
@@ -440,7 +440,7 @@ We therefore have the special cases:
 
 (defun make-point-mutation (original replacement residue-number)
   (find-or-make-individual 'point-mutation
-    :amino-acid original
+    :original-amino-acid original
     :new-amino-acid replacement
     :position residue-number))
 
