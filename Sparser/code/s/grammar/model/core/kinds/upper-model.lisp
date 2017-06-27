@@ -188,16 +188,11 @@
 
 (define-category has-name
   :specializes relation 
-  :binds ((name :primitive word))
   ;; Can hang lots of realizations here
   ;; 'known as', 'called', ...
-;;/// This has to be integrated with 'real' names in a cleaner
-;; way, but it's a start. Probably requires a more complex 'or'
-;; restriction on the name variable.
-  :documentation "Used as a mix-in to supply a simple name
-  variable to another class. Part of the movement to cut down
-  on the number and diversity of variables in the ontology
-  as per C3.")
+  :documentation "Had been used to supply a simple name variable
+ but that has moved to top. Now just the supercategory of named-type
+ so should look into eliminate has-name altogether.")
 
 (define-mixin-category has-UID
   :specializes relation
