@@ -37,7 +37,7 @@
 
 (define-category has-location
   :specializes relation
-  :binds ((location location))
+  :binds ((location)) ;; location))
   :documentation "Said of something that must have a location
     Supplies a location variable whose value says where
     this thing is.")

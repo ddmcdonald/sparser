@@ -1,9 +1,9 @@
 ;;; -*- Mode:LISP; Syntax:Common-Lisp; Package:SPARSER -*-
-;;; copyright (c) 2014-2016 David D. McDonald  -- all rights reserved
+;;; copyright (c) 2014-2017 David D. McDonald  -- all rights reserved
 ;;;
 ;;;     File:  "things"
 ;;;   Module:  "model;core:kinds:"
-;;;  version:  October 2016
+;;;  version:  June 2017
 
 ;; Broken out from upper-model and added long definitions 3/31/14.
 ;; 7/20/14 Added lemmas and realizations as needed to hold the
@@ -34,7 +34,7 @@
 
 (define-category physical
   :specializes endurant
-  :binds ((location))
+  :mixins (has-location)
   :documentation
   "Common parent to the physical subclasses.This is the level at
  which to state that every physical object has a real location.")

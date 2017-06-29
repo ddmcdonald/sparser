@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2017
+;;; version: June 2017
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 ;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, 
@@ -124,7 +124,7 @@
    and processes by being mixed into those categories, Because
    it spans such a wide range of things it will not fit into
    an upper-model category. It's real job is to contribute slots."
-  :mixins (with-quantifier)
+  :mixins (with-quantifier has-location)
   :binds ((context (:or bio-context
                         bio-mechanism ;; for pathways -- they are context, not manner
                         experiment-data))
@@ -132,16 +132,15 @@
           (cell-type cell-type)
           (organ bio-organ)
           (preparation preparation)
-          (location non-cellular-location)
           (cellular-location cellular-location)
           (organism organism) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
           (excluding biological) ;; nucleotide-free Ras but not GTP-loaded Ras
-	  (modifier)
+	  ;; (modifier) provided by top
 	  (like biological)
-	  (unlike biological)
-          )
+	  (unlike biological))
+  :restrict ((location non-cellular-location))          
   :realization
     (:adj "biological"
      :at cellular-location

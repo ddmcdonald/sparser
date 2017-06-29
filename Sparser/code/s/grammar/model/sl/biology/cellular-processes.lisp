@@ -31,8 +31,9 @@
 ;; a new mode of Ras activation in which signaling is sustained ...
 (define-category signal :specializes cellular-process
   ;;//// bind it explicitly? :obo-id "GO:0023052"  ;; reasonable stand-in
-  :binds ((agent protein) ;;bio-entity) ;; what's doing the signalling
-          (object (:or bio-process protein)))  ;; what's being signaled
+  :mixins (with-an-agent)
+  :binds ((object (:or bio-process protein)))  ;; what's being signaled
+  :restrict ((agent protein)) ;;bio-entity) ;; what's doing the signalling
   :realization 
     (:verb ("signal"  :present-participle "xxxsignaling") ;; block "signaling" as a verb
      :noun "signalling"

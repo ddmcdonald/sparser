@@ -716,9 +716,10 @@
 
 ;; as in "genes express proteins" or "cell (lines) express proteins" and not the abstract sense
 (define-category gene-transcript-express :specializes caused-bio-process
-    :binds ((location bio-location)
-            (from biological))
-    :restrict ((agent (:or bio-entity cell-line)))
+    :mixins (has-location)
+    :binds ((from biological))
+    :restrict ((agent (:or bio-entity cell-line))
+               (location bio-location))
     :realization
     (:verb "express"
 	   :noun "expression"
@@ -726,9 +727,10 @@
            ))
 
 (define-category gene-transcript-over-express :specializes caused-bio-process
-    :binds ((location bio-location)
-            (from biological))
-    :restrict ((agent (:or bio-entity cell-line)))
+    :mixins (has-location)
+    :binds ((from biological))
+    :restrict ((agent (:or bio-entity cell-line))
+               (location bio-location))
     :realization
     (:verb "over-express"
 	   :noun "over-expression"
@@ -738,10 +740,11 @@
     (:verb "overexpress" :noun "overexpression" :etf (svo-passive)))
 
 (define-category gene-code :specializes caused-bio-process
-    :binds ((location bio-location)
-            (from biological)
+    :mixins (has-location)
+    :binds ((from biological)
             (protein (:or protein gene variant)))
-    :restrict ((agent (:or bio-entity cell-line)))
+    :restrict ((agent (:or bio-entity cell-line))
+               (location bio-location))
     :realization
     (:verb "code"
 	   :etf (svo-passive)
@@ -750,8 +753,9 @@
 
 
 (define-category gene-transcript-co-express :specializes gene-transcript-express
-    :binds ((location bio-location)
-            (from biological)
+    :mixins (has-location)
+    :restrict ((location bio-location))
+    :binds ((from biological)
             (other-protein (:or protein gene)))
     :realization
     (:verb "co-express"
@@ -1282,9 +1286,10 @@
 
 
 (define-category tag :specializes bio-method
-    :binds ((location bio-location))
+    :mixins (has-location)
+    :restrict ((location bio-location))
     :realization
-    (:verb "tag" ;; keyword: ENDS-IN-ED 
+          (:verb "tag" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
            :at location
            :with agent))

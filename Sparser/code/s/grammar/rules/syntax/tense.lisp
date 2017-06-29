@@ -4,7 +4,7 @@
 ;;; 
 ;;;     File:  "tense"
 ;;;   Module:  "grammar;rules:syntax:"
-;;;  Version:  March 2017
+;;;  Version:  June 2017
 
 ;; moved from [syntax;aux verbs] 5/7/93 v2.3
 ;; 0.1 (5/15) giving it some real semantic content
@@ -36,18 +36,28 @@
   :form infinitive
   :referent (:function make-infinitive left-edge right-edge))
 
+(defun make-infinitive (prep-or-pp verb-element)
+  "Avoid case where 'to' is the head of a pp, then drop it on the floor"
+  (when (not (itypep prep-or-pp 'prepositional-phrase))
+    verb-element))
+
 ;; We need this version of the rule because the
 ;; usual chunking is, e.g. to [ phosphorylate]
 ;; with the "to" stranded. ///But it blocks "want to do" because
 ;; it produces an infinitive over "to do" rather than the desired to-comp
-#+ignore(def-form-rule (to vg)
-  :form infinitive
-  :referent (:function make-infinitive left-edge right-edge))
-
-(defun make-infinitive (prep-or-pp verb-element)
-  (declare (special prep-or-pp verb-element))
-  (when (not (itypep prep-or-pp 'prepositional-phrase))
-    verb-element))
+#| sp> (p/s "what do you want to do?")
+what [do ][you ][want ][to do]
+e7    WHAT          1 "what " 2
+e1    DO            2 "do " 3
+e9    WANT          3 "you want " 5
+e8    DO            5 "to do" 7
+                    question-mark
+sp> (tts-form)
+e7    QUESTION-MARKER 1 "what " 2
+e1    VG            2 "do " 3
+e9    S             3 "you want " 5
+e8    INFINITIVE    5 "to do" 7
+                    question-mark     |#
 
 
 ;;;------------------------------------
@@ -57,9 +67,9 @@
 (define-category  do
   :specializes process
   :instantiates self
-  :binds ((agent pronoun)
-          (predicate pronoun))
-  :mixins (takes-neg)
+  :mixins (takes-neg with-an-agent)
+  :binds ((predicate pronoun))
+  :restrict ((agent physical-agent))
   :realization (:etf (svo)
                 :s agent
                 :o predicate))
