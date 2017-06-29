@@ -28,14 +28,14 @@
   :index (:permanent :key name)
   :realization (:adverb name))
 
-
+#| ''no longer used
 ;;---- object for subtyping these individuals
 
 (define-mixin-category  at-specific-frequency
   :instantiates nil
   :specializes modified
   :binds ((frequency . frequency-of-event)))
-
+|#
 
 
 ;;;----------
