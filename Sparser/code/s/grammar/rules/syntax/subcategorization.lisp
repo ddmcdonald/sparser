@@ -860,17 +860,20 @@
                 (member (cat-name (edge-form *left-edge-into-reference*))
                         '(np ng vg+ing))
                 (loop for pat in subcat-patterns
-                      thereis (and (equalp (pname (subcat-label pat)) "of")
-                                   (eq (pname (subcat-variable pat)) 'object)
-                                   ;; n.b. look at "panel"
-                                   (not (itypep (subcat-restriction pat) 'over-ridden))
-                                   (not (itypep (subcat-restriction pat) 'blocked-category))
-                                   ))))
+                      when (and (equalp (pname (subcat-label pat)) "of")
+                                (eq (pname (subcat-variable pat)) 'object)
+                                ;; n.b. look at "panel"
+                                (not (itypep (subcat-restriction pat) 'over-ridden))
+                                (not (itypep (subcat-restriction pat) 'blocked-category))
+                                )
+                      return pat)))
          (ambiguous-of-object
           (when of-object
             (loop for pat in subcat-patterns
                   when (and (eq label (subcat-label pat))
-                            (not (eq (pname (subcat-variable pat)) 'object)))
+                            (not (eq (pname (subcat-variable pat)) 'object))
+                            (not (itypep (subcat-restriction pat) 'over-ridden))
+                            (not (itypep (subcat-restriction pat) 'blocked-category)))
                   do (return pat)))))
     (declare (special category subcat-patterns of-object ambiguous-of-object))
 
@@ -878,16 +881,17 @@
       (if ambiguous-of-object
           (if (itypep head 'effect)
               (setq label :object)
-              (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
-                    item head (sentence-string *sentence-in-core*)))
+              (unless *subcat-test*
+                ;;(lsp-break "of-object")
+                (warn "ambiguous-of-object for ~s attaching to ~s in ~s"
+                      item head (sentence-string *sentence-in-core*))))
           (setq label :object)))
     (when subcat-patterns
       (setq *label* label)
       (setq *head* head)
       (let ((*trivial-subcat-test* nil)
             variable  over-ridden)
-        (if (and *ambiguous-variables*
-                 (not *subcat-test*))
+        (if (and *ambiguous-variables* (not *subcat-test*))
             (let ( pats )
               (loop for pat in subcat-patterns
                     as scr = (subcat-restriction pat)
