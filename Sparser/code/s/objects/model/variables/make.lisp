@@ -37,7 +37,7 @@
                                category)
 
   (when (symbolp category)
-    (setq category (resolve-symbol-to-category/check category)))
+    (setq category (category-named category t)))
 
   (let ((restriction (resolve-variable-restriction
                       restriction-expression)))
