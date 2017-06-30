@@ -83,7 +83,7 @@
           
           (when *trace-edge-creation*
             (format t "~%creating ~A from ~A~
-         ~%    rule: ~A"
+         ~%    rule: ~s"
                     edge
                     (edge-position-in-resource-array edge)
                     rule))
@@ -100,7 +100,7 @@
   (let ((edge-to-promulgate (cfr-completion rule)))
     (if (not (keywordp edge-to-promulgate))
         (cerror
-            "Rule ~a is not a form rule" rule))
+            "Rule ~s is not a form rule" rule))
     (let ((promulgated-label
            (ecase edge-to-promulgate
              (:left-edge

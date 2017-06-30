@@ -22265,6 +22265,7 @@ arsenite"
 (defparameter *used-protein-defs* (make-hash-table :size 100000 :test #'equal))
 
 (defun allowable-protein-head (w)
+  (declare (special cl-user::*use-all-proteins*))
   (or (and (boundp 'cl-user::*use-all-proteins*)
            cl-user::*use-all-proteins*)
       (gethash w *allowable-protein-head-ht*))
