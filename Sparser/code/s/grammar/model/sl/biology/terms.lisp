@@ -119,23 +119,9 @@
 (define-adjective "transmembrane")
 (define-adjective "tumorigenic") ;tumorigenesis
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 (define-category equivalent :specializes bio-relation
   :realization
-  (:adj "equivalent"
+  (:adj "equivalent" :noun "equivalence"
 	:to theme))
 
 (define-category prerequisite :specializes bio-relation
@@ -379,7 +365,7 @@
 
 
 (adj "relative" :super bio-relation
-     :restrict ((subject scalar-quality))
+     :restrict ((participant scalar-quality))
      :realization
      (:to theme))
 
@@ -387,6 +373,7 @@
 
 
 (define-category responsive :specializes bio-relation
+  :mixins (of-participant-bio-predication)
   :realization
   (:noun  "responsiveness"
           :adj "responsive"
@@ -437,10 +424,10 @@
 
 
 (define-category unable :specializes bio-relation
-  :mixins (control-verb-intrans)
+  :mixins (control-verb-intrans of-participant-bio-predication)
   :restrict ((theme bio-process))
   :realization
-  (:adj "unable"))
+  (:adj "unable" :noun "inability"))
            
 
 (adj "unresponsive" :super bio-relation

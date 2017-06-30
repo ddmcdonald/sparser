@@ -211,16 +211,15 @@
 
 
 (define-category reach :specializes bio-relation
-  :restrict ((subject (:or scalar-quality biological))
+  :restrict ((participant (:or scalar-quality biological))
              (theme (:or scalar-quality measurement)))
   :realization
   (:verb "reach"
-         :etf (svo)
-         :o theme))
+         :etf (svo)))
 
 (define-category remain :specializes be
   :mixins (bio-relation)
-  :restrict ((subject biological)) 
+  :restrict ((participant biological)) 
   ;; got 'subject' from be where there is no restriction, though
   ;; there is a subject v/r on bio-relation
   :realization
@@ -229,7 +228,6 @@
            ;; remains to be determined
            :to-comp theme))
 (make-copular-def "remain") ;; gives it the adjective rules
-
 
 (define-category follow :specializes bio-event-relation
                  ;; this is intended to suppress definitions of "followed" and "follows"

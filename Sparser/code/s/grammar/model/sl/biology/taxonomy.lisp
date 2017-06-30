@@ -3,7 +3,7 @@
 ;;;
 ;;;    File: "taxonomy"
 ;;;  Module: "grammar/model/sl/biology/
-;;; version: January 2017
+;;; version: June 2017
 
 ;; Lifted from mechanics 9/8/14. Tweaks through 10/29/14.
 ;; 11/9/14 Bunch of reworking on bio taxonomy, still a work in progress, 
@@ -124,7 +124,7 @@
    and processes by being mixed into those categories, Because
    it spans such a wide range of things it will not fit into
    an upper-model category. It's real job is to contribute slots."
-  :mixins (with-quantifier)
+  :mixins (with-quantifier has-location)
   :binds ((context (:or bio-context
                         bio-mechanism ;; for pathways -- they are context, not manner
                         experiment-data))
@@ -132,16 +132,15 @@
           (cell-type cell-type)
           (organ bio-organ)
           (preparation preparation)
-          (location non-cellular-location)
           (cellular-location cellular-location)
           (organism organism) ;; human? mouse?
           (non-cellular-location non-cellular-location)
           (examples biological)
           (excluding biological) ;; nucleotide-free Ras but not GTP-loaded Ras
-	  (modifier)
+	  ;; (modifier) provided by top
 	  (like biological)
-	  (unlike biological)
-          )
+	  (unlike biological))
+  :restrict ((location non-cellular-location))          
   :realization
     (:adj "biological"
      :at cellular-location
@@ -169,6 +168,7 @@
      :upon cellular-location
      :with context
      :within cellular-location
+     :within non-cellular-location
      :like like
      :unlike unlike ))
 
@@ -188,21 +188,24 @@
   ;; Made it inherit from event because that provided
   ;; almost all the slots.
   ;; Aspect was annotated with "will likely be useful"
-  :binds ((subject (:or biological visual-representation))
-          (as-comp as-comp)
+  :binds ((as-comp as-comp)
           (certainty certainty))
+  :restrict ((participant (:or biological visual-representation)))
   :realization
-    (:s subject
-     :as-comp as-comp))
+  (:s participant
+      ;;:of participant
+      :as-comp as-comp))
 
+(define-mixin-category of-participant-bio-predication :specializes bio-predication
+  :realization (:of participant))
 
 ;;--- Quality
 
 (define-category bio-quality :specializes bio-predication
   :mixins (biological
+           of-participant-bio-predication
            temporally-localized) ;; provides time, certainty modifiers
-  :realization
-    (:of subject))
+  )
 
 (define-category bio-scalar
 ;;  :specializes bio-quality
@@ -324,18 +327,18 @@
   :documentation "No content by itself, provides a common parent
     for 'processing', 'ubiquitization', etc. that may be the basis
     of the grammar patterns."
-  :binds ((subject biological)
-          (by-means-of (:or bio-process mechanism bio-method pathway))
+  :binds ((by-means-of (:or bio-process mechanism bio-method pathway))
           (using protein)
           (manner manner) ;; conflict with "increase" bio-process CHECK THIS WAS  bio-method
           (without-using protein)
           (without-means-of (:or bio-process mechanism bio-method pathway))
           (as-comp as-comp)
           (target (:or protein gene)))
+  :restrict ((participant  biological))
   :realization 
     (:noun "process"
-     :s subject
-     ;;:of subject
+     :s participant
+     :of participant
      :by by-means-of ;;find out what uses this
      :through by-means-of
      :via by-means-of
@@ -365,7 +368,6 @@
     :binds ((theme biological))                 
     :realization
     (:noun "activity"
-          :of subject
           :towards theme
           :on theme))
 
@@ -384,7 +386,7 @@
 (define-category caused-bio-process
     :specializes bio-process
     :mixins (with-an-agent)
-    :restrict ((subject blocked-category)
+    :restrict ((participant blocked-category)
                (agent
                 (:or bio-chemical-entity ;;molecule bio-complex drug
                      bio-process bio-mechanism bio-method)))
@@ -681,10 +683,10 @@
  
 
 (define-category bio-event-relation :specializes bio-relation
-  :restrict ((subject perdurant) ;; this captures all of these and more
+  :restrict ((participant perdurant) ;; this captures all of these and more
              (theme perdurant))
   :realization
-    (:s subject
+    (:s participant
      :o theme))
 
 (define-category aspectual-relation :specializes bio-relation
@@ -1111,7 +1113,6 @@
      :in complex
      :in equilibrium-state
      :in state
-     :in location
      :m site))
 
 
@@ -1191,15 +1192,14 @@
 
 (define-category bio-exchange :specializes bio-movement
   :binds ((state-before (:or nucleotide bio-state variant))
-          (state-after (:or nucleotide bio-chemical-entity bio-state variant))
-          (subject nucleotide))
+          (state-after (:or nucleotide bio-chemical-entity bio-state variant)))
+  :restrict ((participant nucleotide))
   :realization
     (:noun "exchange"
      :verb "exchange"
      :etf (svo-passive)
      :o moving-object
-     :m subject
-     :s subject
+     :m participand
      :of state-before
      :from state-before
      :to state-after))
@@ -1326,8 +1326,7 @@
   :bindings (species (find-individual 'species :name "human"))
   :lemma (:common-noun "human protein family")
   :realization
-    (:common-noun name
-     :in location))
+    (:common-noun name))
 
 
 

@@ -244,6 +244,7 @@
 
 (define-category correspond :specializes bio-relation
   :binds ((property common-noun))
+  :mixins (of-participant-bio-predication)
   :realization
   (:verb "correspond" :noun "correspondence"
          :etf (sv)
@@ -290,6 +291,7 @@
 
 (define-category depend
   :specializes bio-relation
+  :mixins (of-participant-bio-predication)
   :realization
   (:verb "depend" :noun "dependency"
          :adj "dependent"
@@ -357,6 +359,7 @@
 
 
 (define-category dominate :specializes bio-relation 
+  :mixins (of-participant-bio-predication)
   :realization 
   (:verb "dominate" 
   :noun "domination" 
@@ -462,6 +465,7 @@
 
 
 (define-category exist :specializes bio-predication
+  :mixins (of-participant-bio-predication)
   :binds ((measurement (:or measurement bio-scalar))
           (theme bio-chemical-entity))
   :realization
@@ -553,7 +557,7 @@
   (:verb "incorporate" :noun "incorporation"
          :etf (svo-passive)
          :o theme
-         :into subject))
+         :into participant))
 
 (define-category indicate :specializes bio-rhetorical
     :mixins (bio-thatcomp)
@@ -615,7 +619,6 @@
   :realization 
   (:verb "interact" :noun"interaction" 
          :etf (sv) 
-         :of subject
          :with interactor
          :between interactor))
 
@@ -636,11 +639,12 @@
 
 
 (define-category involve :specializes bio-relation
-    :realization
-    (:verb "involve" ;; keyword: ENDS-IN-ING 
-	   :etf (svo)
-           :o theme
-           :in theme))
+  :mixins (of-participant-bio-predication)
+  :realization
+  (:verb "involve" ;; keyword: ENDS-IN-ING 
+         :etf (svo)
+         :o theme
+         :in theme))
 
 (define-category keep :specializes bio-relation
     :realization
@@ -752,7 +756,7 @@
 
 
 (define-category need :specializes bio-relation
-    :mixins (control-verb)
+    :mixins (control-verb of-participant-bio-predication)
     :binds ((needed-for process))
     :realization
       (:verb "need" 
@@ -786,21 +790,23 @@
            :without source))
 
 (define-category occur :specializes bio-predication
-    :realization
+  :mixins (of-participant-bio-predication)
+  :realization
     (:verb ("occur" :present-participle "occurring" :past-tense "occurred")
 	   :noun "occurrence"
 	   :etf (sv)))
 
 
 (define-category overlap :specializes bio-relation
+  :mixins (of-participant-bio-predication)
   :realization
     (:verb ("overlap" "over-lap")
      :noun "overlap"
      :etf (svo-passive)
      :with theme
      :o theme
-     :in subject
-     :among subject
+     :in participant
+     :among participant
      :between theme))
 
 
@@ -906,13 +912,12 @@
 ;; TO-DO may want to split rehtorical version and bio-chemical version
 ;; "X provides support for Y" and "X supports process Y"
 (define-category provide :specializes bio-relation
-    :restrict ((subject (:or result biological))
+    :restrict ((participant (:or result biological))
                (theme (:or insight argument-support biological bio-rhetorical)))
     :realization
     (:verb "provide"
 	   :noun "provision"
-	   :etf (svo-passive)
-           :o theme))
+	   :etf (svo-passive)))
 
 (define-category put-forward :specializes bio-rhetorical
    :realization
@@ -957,6 +962,7 @@
          :etf (svo-passive)))
 
 (define-category persist :specializes bio-predication
+  :mixins (of-participant-bio-predication)
   :realization
   (:verb "persist" :etf (sv)))
 
@@ -1006,14 +1012,14 @@
            :for purpose))
 
 (define-category result :specializes bio-relation
-    :binds ((results-in (:or bio-process bio-method bio-predication)))
-    :restrict ((subject perdurant))
+  :mixins (of-participant-bio-predication)
+  :binds ((results-in (:or bio-process bio-method bio-predication)))
+  :restrict ((participant perdurant))
     :realization
     (:verb ("result" :third-singular "results") ;; block plural form of the verb, because of interaction with noun
 	   :etf (sv)
-           :from subject 
-	   :in results-in
-           :of subject))
+           :from participant 
+	   :in results-in))
 
 (def-synonym result (:noun "result"))
 
@@ -1122,11 +1128,11 @@
 
 
 (define-category succeed :specializes bio-predication
+  :mixins (of-participant-bio-predication)
   :realization
   (:verb "succeed" :noun "success"
    :etf (sv)
-   :in theme
-   :of subject))
+   :in theme))
 
 (define-category suggest :specializes bio-rhetorical
   :mixins (bio-thatcomp)

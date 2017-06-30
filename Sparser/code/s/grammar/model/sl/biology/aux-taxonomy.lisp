@@ -103,7 +103,7 @@
 
 (define-category cellular-process
     :specializes bio-process
-    :restrict ((subject cell-entity))
+    :restrict ((participant cell-entity))
     :index (:permanent :key name)
     :realization
     (:common-noun name

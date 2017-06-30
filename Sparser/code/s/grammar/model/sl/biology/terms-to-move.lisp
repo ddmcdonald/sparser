@@ -157,15 +157,15 @@ be biology specific, since they aren't. |#
 ;;--- bio-relation
 
 (define-category ability :specializes bio-relation
-   :mixins (control-verb-intrans)
+   :mixins (control-verb-intrans of-participant-bio-predication)
    :binds ((ability bio-process))
    :realization (:noun "ability"
                        :adj "able"
-                       :of subject
+                       :of participant
                        :to ability))
 
 (define-category capability :specializes ability
-  :restrict ((subject bio-entity))
+  :restrict ((participant bio-entity))
   :realization (:noun "capability"
                 :adj "capable"
                 :of ability))
@@ -226,7 +226,7 @@ be biology specific, since they aren't. |#
   :realization (:noun "threshold"))
 
 (define-category duration :specializes bio-scalar
-  :restrict ((subject (:or process bio-method bio-mechanism)))
+  :restrict ((participant (:or process bio-method bio-mechanism)))
   :realization
     (:noun "duration"))
 

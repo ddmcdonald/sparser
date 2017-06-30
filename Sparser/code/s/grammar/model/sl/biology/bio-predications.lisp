@@ -102,9 +102,9 @@
 (adj "ectopic" :super bio-predication) ;; keyword: (ic ADJ) 
 (define-adverb "ectopically") ;; keyword: ENDS-IN-LY 
 (define-category efficacy :specializes bio-predication
+  :mixins (of-participant-bio-predication)
   :realization
-  (:noun "efficacy"
-         :of subject))
+  (:noun "efficacy"))
 
 (adj "endogenous" :super bio-predication) ;; keyword: (ous ADJ) 
 (adj "enzymatic" :super bio-predication)
@@ -157,8 +157,9 @@
 (adj "short-lived" :super bio-predication)
 (adj "speckled" :super bio-predication)
 (define-category stable :specializes bio-predication
-     :realization
-     (:adj "stable"))
+  :mixins (of-participant-bio-predication)
+  :realization
+  (:adj "stable" :noun "stability"))
 (adj "sterile" :super bio-predication)
 (delete-adj-cfr (resolve/make "sufficient"))
 (adj "sufficient" :super bio-predication

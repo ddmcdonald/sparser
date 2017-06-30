@@ -77,6 +77,8 @@
 
 (defparameter *show-bio-verbs* nil)
 
+(defparameter *show-new-svo/bio-definitions* nil)
+
 (defun svo/bio/expr (verb)
   (declare (special category::bio-process))
   (when *show-bio-verbs*
@@ -96,11 +98,14 @@
     (let* ((form `(define-category ,category-name
                      :instantiates :self
                      :specializes bio-process
-                     :binds ((subject endurant)
+                     :binds ((participant endurant)
                              (object endurant))
                      :realization (:etf (svo-passive)
-                                   :verb ,verb :s subject :o object)))
+                                   :verb ,verb :o object)))
            (category (eval form)))
+      (when *show-new-svo/bio-definitions*
+        (print form))
+      ;; need to figure out a way to show the context!!
       (note-permanence-of-categorys-individuals category)
       category)))
 
@@ -221,10 +226,11 @@
 (define-category range :specializes bio-relation ;; REVIEW!!
   :binds ((low-value scalar-quantity)
           (high-value scalar-quantity))
+  :mixins (of-participant-bio-predication)
   :realization
   (:verb "range"
          :etf (sv)
-         :s subject
+         :s participant
          :from low-value
          :to high-value))
 
@@ -324,6 +330,7 @@
          :etf sv))
 
 (define-category bio-functionality :specializes bio-quality
+  :mixins (of-participant-bio-predication)
   :realization
   (:noun "function"))
 
@@ -374,10 +381,11 @@
 
 
 (define-category articulate :specializes bio-rhetorical
-    :realization
-    (:verb "articulate" ;; keyword: ENDS-IN-ED 
-	   :noun "articulation"
-	   :etf (svo-passive)))
+  :mixins (of-participant-bio-predication)
+  :realization
+  (:verb "articulate" ;; keyword: ENDS-IN-ED 
+         :noun "articulation"
+         :etf (svo-passive)))
 
 (define-category bio-associate  :specializes other-bio-process ;; MAYBE THIS IS LIKE BIND
   ;;:obo-id "GO:0005488"
@@ -394,7 +402,6 @@
          :via site
 	 :at site
          :with object
-         :of :object
          :between objects))
 
 (define-category assess :specializes bio-method
@@ -430,16 +437,13 @@
 ;; "call"  assigns a name in passive "X is called N"
 
 (define-category co-operate :specializes bio-process 
-  :binds ((aperator biological)
-          (co-operator biological)) 
+  :binds ((co-participant biological))
+  :restrict ((participant biological))
   :realization 
   (:verb "co-operate"
          :noun"co-operation" 
          :etf (sv) 
-         :s aperator
-         :with co-operator
-         :of aperator))
-
+         :with co-participant))
 
 (define-category bio-open :specializes caused-bio-process 
   :realization 
@@ -451,12 +455,9 @@
   (:verb "operate"
          :noun"operation" 
          :etf (sv) 
-         :of agent
          :on object
          :on affected-process
          :upon affected-process))
-
-
 
 
 (define-category challenge :specializes bio-rhetorical
@@ -705,8 +706,7 @@
 	   :etf (svo)
 	   :o process
            :from process
-           :noun "escape" 
-           :of subject))
+           :noun "escape"))
 
 
 (define-category exhibit :specializes caused-bio-process
@@ -750,17 +750,16 @@
 
 
 (define-category gene-transcript-co-express :specializes gene-transcript-express
-    :binds ((location bio-location)
-            (from biological)
+    ;; :restrict ((location bio-location)) ;; not sure why this is needed
+    :binds ((from biological)
             (other-protein (:or protein gene)))
     :realization
     (:verb "co-express"
 	   :noun "co-expression"
 	   :etf (svo-passive)
            :from from
-           :in location
            :of :object
-           :on location
+           ;; :on location ;; not sure why this is needed
            :with other-protein))
 
 (def-synonym gene-transcript-co-express
@@ -854,12 +853,13 @@
          :from origin))
 
 
+
 (define-category impact :specializes bio-relation
+  :mixins (of-participant-bio-predication)
   :realization
   (:verb "impact" 
          :etf (svo-passive)
          :o theme
-         :of subject
          :on theme))
 
 (def-synonym impact
@@ -925,8 +925,6 @@
          :verb ("knock down" :past-tense "knocked down"  
                              :present-participle "knocking down" )
          :etf (svo-passive)))
-
-
 
 (define-category ligate :specializes caused-bio-process
   :restrict ((agent bio-chemical-entity))
@@ -1005,8 +1003,7 @@
 
 ;; alm ost never a verb (define-category model :specializes bio-process :binds ((agent bio-entity)(object bio-process)) :realization (:verb "model"  :etf (svo-passive) :s agent :o object)) ;;VERB unknown word "modeling" keyword: ENDS-IN-ING
 
-(define-category modulate
-  :specializes bio-control
+(define-category modulate :specializes bio-control
   :binds ((theme biological)) ;; increase in rate vs increase in RAS activity
   :realization
   (:verb "modulate" :noun "modulation"
@@ -1021,9 +1018,10 @@
    :etf (svo-passive)
    :in object
    :into object
-   :on location
+   ;; :on location  ;; not sure why this is needed
    :to object
-   :within location))
+   ;; :within location  ;; not sure why this is needed
+   ))
 
 #|
 ;; These two were in terms and need to be integrated with
@@ -1151,10 +1149,11 @@
     (:verb "re-activate" :noun "re-activation"))
 
 (define-category relapse :specializes bio-predication
-    :realization
-    (:verb "relapse" ;; keyword: ENDS-IN-ING 
-	   :noun "relapse"
-	   :etf (sv)))
+  :mixins (of-participant-bio-predication)
+  :realization
+  (:verb "relapse" ;; keyword: ENDS-IN-ING 
+         :noun "relapse"
+         :etf (sv)))
 
 (def-synonym relapse (:noun "relapse"))
 
@@ -1195,12 +1194,13 @@
 
 
 (define-category resist :specializes bio-relation
-    :realization
-    (:verb "resist"
-	   :noun "resistance"
-           :adj "resistant"
-	   :etf (svo-passive)
-           :to theme))
+  :mixins (of-participant-bio-predication)
+  :realization
+  (:verb "resist"
+         :noun "resistance"
+         :adj "resistant"
+         :etf (svo-passive)
+         :to theme))
 
 
 (define-category retention :specializes caused-bio-process
@@ -1282,11 +1282,12 @@
 
 
 (define-category tag :specializes bio-method
-    :binds ((location bio-location))
+    :binds ((molecular-location molecular-location))    ;; :mixins (has-location)
+    ;; :restrict ((location bio-location))
     :realization
     (:verb "tag" ;; keyword: ENDS-IN-ED 
 	   :etf (svo-passive)
-           :at location
+           :at molecular-location
            :with agent))
 
 (define-category target :specializes bio-control
