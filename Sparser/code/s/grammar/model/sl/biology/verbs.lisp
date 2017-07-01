@@ -78,6 +78,7 @@
 (defparameter *show-bio-verbs* nil)
 
 (defparameter *show-new-svo/bio-definitions* nil)
+(defparameter *comlex-category-names* nil)
 
 (defun svo/bio/expr (verb)
   (declare (special category::bio-process))
@@ -86,28 +87,42 @@
   (when (word-p verb) 
     ;; came in from setup-verb
     (setq verb (word-pname verb)))
-  (let ((category-name (intern (string-upcase verb)
-                               (find-package :sparser))))
-    (when (category-named category-name) ;; e.g. 'time
+  (let* ((category-name (intern (string-upcase verb)
+                                (find-package :sparser)))
+         (existing-bio-verb-category-name
+          (member category-name *comlex-category-names*))
+         (existing-bio-verb-category (and
+                                      existing-bio-verb-category-name
+                                      (category-named category-name))))
+    (when (and (category-named category-name)
+               (null existing-bio-verb-category-name))
+      ;; e.g. 'time
       ;; had some difficulty with redefining verb "leave",
       ;; and then redefining the category
       (setq category-name
             (construct-disambiguating-category-name
-             category-name category::bio-process)))
-
-    (let* ((form `(define-category ,category-name
-                     :instantiates :self
-                     :specializes bio-process
-                     :binds ((participant endurant)
-                             (object endurant))
-                     :realization (:etf (svo-passive)
-                                   :verb ,verb :o object)))
-           (category (eval form)))
-      (when *show-new-svo/bio-definitions*
-        (print form))
-      ;; need to figure out a way to show the context!!
-      (note-permanence-of-categorys-individuals category)
-      category)))
+             category-name category::bio-process))
+      (when (member category-name *comlex-category-names*)
+        (setq existing-bio-verb-category (category-named category-name))))
+    
+    (cond (existing-bio-verb-category)
+          (t
+           (push category-name *comlex-category-names*)
+           (let* ((form (unless existing-bio-verb-category
+                          `(define-category ,category-name
+                               :instantiates :self
+                               :specializes bio-process
+                               :binds ((participant endurant)
+                                       (object endurant))
+                               :realization (:etf (svo-passive)
+                                                  :verb ,verb :o object))))
+                  (category (or existing-bio-verb-category (eval form))))
+             (when *show-new-svo/bio-definitions*
+               (print form))
+             ;; need to figure out a way to show the context!!
+             (unless existing-bio-verb-category
+               (note-permanence-of-categorys-individuals category))
+             category)))))
 
 
 ;;; Verbs added temporarily for load-test -- to be reviewed and corrected

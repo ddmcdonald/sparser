@@ -64,6 +64,11 @@
   ;; the symbol. If just the symbol is given it's an implicit action
   ;; by define-cfr to establish a non-terminal.
 
+  ;; NOTE:: We assume that this is the only way that categories can be defined with variables!!
+  ;;  so that all calls to find-or-make-category-object that do not come through here
+  ;;  simply make the category itself
+
+
   (let ((old-obj (category-named symbol)))
     (when old-obj
       (when (not (referential-category-p old-obj))
@@ -71,7 +76,14 @@
 
     (let ((category (find-or-make-category-object symbol :referential source-location)))
       (apply #'decode-category-parameter-list category parameter-list)
-      category )))
+      (when (and old-obj (cached-variable-lookup?)
+                 (subcategories-of old-obj)) ;; only need to recompute cached variables if there are sub-categories
+        (format t "cache-variable-lookup called on redefinition of ~s" old-obj)
+
+        ;;(lsp-break "cache-variable-lookup")
+        (cache-variable-lookup))
+      category )
+    ))
 
 (defun define-mixin-category/expr (symbol parameter-list)
   ;; called from define-mixin-category.

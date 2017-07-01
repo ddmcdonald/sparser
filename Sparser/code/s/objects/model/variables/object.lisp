@@ -37,7 +37,7 @@
   ;; variables/index2, but for now we'll redirect them since the
   ;; calls are ubiquitous.
   (cond
-    (category (find-variable-in-category name category))
+    (category (find-variable-for-category name category))
     (individual (find-variable-from-individual name individual))
     (t (break "new case for decode-variable-name.~
              ~%variable name = ~a, caller-does-disambiguation = ~a"

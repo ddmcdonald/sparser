@@ -63,12 +63,54 @@
     ;; First we look on the category itself. Then we look through
     ;; of its superc's as determined by super-categories-of,
     ;; Finally we consult the category's mixins.
-    (or (find-variable-in-category variable-name category) 
-        (super-category-has-variable-named variable-name category) 
-        (find-variable-in-mixins variable-name category)))
+
+    (if (cached-variable-lookup?)
+        (hash-find-variable variable-name category)
+        (or (find-variable-in-category variable-name category) 
+            (super-category-has-variable-named variable-name category) 
+            (find-variable-in-mixins variable-name category))))
   
   (:method ((var anonymous-variable) (category category))
     (find-variable-for-category (pname var) category)))
+
+(defun cached-variable-lookup? ()
+  (> (hash-table-count *inherited-cat-variables*) 0))
+
+(defparameter *inherited-cat-variables* (make-hash-table :size 5000))
+
+(defun hash-find-variable (var-name cat)
+  (declare (special category::top))
+  (let ((var-table (gethash cat *inherited-cat-variables*)))
+    (when (and (not (hash-table-p var-table))
+               (itypep cat category::top))
+      (setq var-table (fill-inherited-vars cat)))
+    (gethash var-name var-table)))
+
+
+(defun fill-inherited-vars (cat)
+  (if (not (itypep cat 'top)) ;; was (form-category? cat), but NUMBER has variables!
+      (setf (gethash cat *inherited-cat-variables*) (make-hash-table :size 2))
+      (let* ((sups (super-categories-of cat))
+             vars rvars
+             (var-ht (make-hash-table :size 40 :test #'eq)))
+        (loop for s in sups
+              do
+                (loop for v in (cat-slots s)
+                      do
+                        (push v vars)
+                        (when (get-tag :restricts v)
+                          (push (get-tag :restricts v) rvars))))
+      
+        (loop for v in vars unless (member v rvars :test #'eq)
+              do
+                (setf (gethash (var-name v) var-ht) v))
+        ;;(lsp-break "fill-inherited-vars ~s" cat)
+          
+        (setf (gethash cat *inherited-cat-variables*) var-ht))))
+
+(defun cache-variable-lookup ()
+  (format t "~%cache-variable-lookup~%")
+  (loop for c in *categories-defined* do (fill-inherited-vars c)))
 
 ;;/// depricated
 (defun find-variable-from-individual (variable-name i)
@@ -180,15 +222,14 @@
       (find-variable-in-category symbol category)))
 
   (:method (symbol (category model-category))
+    ;;(find-variable-for-category symbol category)
     (let ((variables (cat-slots category)))
       (when variables
         (find symbol variables :key #'var-name))))
 
   (:method (symbol (category-name symbol))
     (let ((category (category-named category-name :break-if-missing)))
-      (let ((variables (cat-slots category)))
-        (when variables
-          (find symbol variables :key #'var-name))))))
+      (find-variable-in-category symbol category))))
   
 
 

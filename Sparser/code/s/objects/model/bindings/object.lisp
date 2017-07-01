@@ -83,6 +83,8 @@
 			    (individual (itype-of individual)))))
 	    (variable
 	     (or (when (lambda-variable-p var-name) var-name)
+                 (when (symbolp var-name)
+                   (find-variable-for-category var-name category))
 		 (find-variable-in-category var-name category))))
        (if variable
          (then
@@ -211,7 +213,7 @@
   "Walk through the bindings on the individual and return 
    the one that binds this variable. If 'all' is specified, 
    return ever binding of that variable."
-  (let ((variable (decode-variable-name var-name :individual indiv))
+  (let ((variable (find-variable-from-individual var-name  indiv))
         (bindings (indiv-binds indiv))
         matched-bindings )
     (dolist (b bindings)

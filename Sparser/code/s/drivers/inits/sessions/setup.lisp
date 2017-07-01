@@ -48,6 +48,7 @@
   ;; initializations required by the definitions in the grammar that 
   ;; we don't particularly want taking up space in an image.
   (when *load-the-grammar*
+    (cache-variable-lookup)
     (when *paragraph-detection* ;; the module, i.e. the code in included
       (when *newline-delimits-paragraphs* ;; actually do it?
         (use-newline-fsa/paragraph)))))
