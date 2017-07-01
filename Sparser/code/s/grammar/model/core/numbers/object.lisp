@@ -48,7 +48,7 @@
   :realization (:common-noun name))
 
 
-(define-category illions-distribution
+(define-category illions-distribution :specializes index
   :binds ((number number)      ;; #<number 1,110,087.0>
           (illion multiplier)  ;; #<multiplier "million">
           (value number)))     ;; #<number 110>
