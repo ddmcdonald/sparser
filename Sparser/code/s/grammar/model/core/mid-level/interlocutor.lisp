@@ -47,3 +47,7 @@
   (mumble-value 'second-person-singular 'pronoun))
 (defmethod realize ((i (eql sp::*us*)))
   (mumble-value 'first-person-plural 'm::pronoun))
+
+(defmethod grammatical-number ((i (eql sp::*me*))) 'singular)
+(defmethod grammatical-number ((i (eql sp::*you*))) 'singular)
+(defmethod grammatical-number ((i (eql sp::*us*))) 'plural)

@@ -33,6 +33,8 @@
                (:file "interface/browser/glass-tty-menus")
                #+mcl (:file "interface/browser/mcl-output-window")
 
+               (:file "interface/interface")
+
                (:file "interpreters/top-level")
                (:file "interpreters/realize")
                (:file "interpreters/instantiate-phrase")
@@ -56,7 +58,7 @@
                (:file "grammar/tense-markers")
                (:file "grammar/traces")
                (:file "grammar/punctuation-marks")
-               (:file "grammar/morphology") ;; ok up to here
+               (:file "grammar/morphology")
                (:file "grammar/word-stream-actions")
 
                (:file "derivation-trees/make")
@@ -80,7 +82,7 @@
                #+(or) (:file "interface/bundles/operators-over-specifications") ;; deprecated
                (:file "interface/bundles/specification-templates")
 
-               ;; Unused? Deprecated?
+               ;; Unused but retained in the code-base for reference
                #+(or) (:file "interface/bundles/tree-families")
                #+(or) (:file "interface/bundles/single-choices")
                #+(or) (:file "interface/bundles/curried-tree-families")

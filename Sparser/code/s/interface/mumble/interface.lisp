@@ -83,7 +83,7 @@
   (mumble::make-discourse-unit-dtn i i))
 
 
-(defmethod number-of-subject ((subj sp::individual))
+(defmethod grammatical-number ((subj sp::individual))
   (if (sp::itypep subj 'collection) 'plural 'singular))
 
 

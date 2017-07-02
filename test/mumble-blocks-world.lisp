@@ -1,5 +1,5 @@
 ;;; -*- Mode: Lisp; Syntax: Common-Lisp; Package: MUMBLE -*-
-;;; Copyright (c) 2016 SIFT LLC. All Rights Reserved.
+;;; Copyright (c) 2016-2017 SIFT LLC. All Rights Reserved.
 
 (in-package :mumble)
 
@@ -25,7 +25,6 @@
   (mumble-says "Make the steps green.")
   "make the steps green")
 
-#+(or) ; Number concord ("we doesn't") - need better rep. of "we"
 (deftest (say not enough green blocks)
   (mumble-says "We do not have enough green blocks.")
   "we don't have enough green blocks")
