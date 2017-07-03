@@ -119,7 +119,11 @@
 (defparameter *save-surface-text-as-variable* t)
 (defparameter *save-surface-text-classes*
   '(bio-chemical-entity pathway bio-complex
-    bio-control post-translational-modification))
+    ;;bio-control post-translational-modification
+    bio-process
+    bio-method
+    residue-on-protein
+    ))
 
 
 (defparameter *bio-entity-heads* nil)
@@ -292,8 +296,10 @@
               (setf (gethash referent *surface-strings*) str)
               (maybe-record-localization-interesting-heads edge referent)
               
-              (when (and  (eq (edge-right-daughter edge) :SINGLE-TERM)
-                          (individual-p referent))
+              (when (or
+                     (and  (eq (edge-right-daughter edge) :SINGLE-TERM)
+                           (individual-p referent))
+                     (itypep (edge-referent edge) 'residue-on-protein))
                 (maybe-record-bio-chemical-entity-strings str referent)
                 (setq referent (maybe-insert-raw-text-variable referent edge)))
               (maybe-record-all-referent-surface-strings referent str)
