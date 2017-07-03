@@ -22,7 +22,7 @@
 (in-package :sparser)
 
 ;;; Define a new variable for the actual spelling of the definition
-;;;  for use by HMS
+;;;   for HMS INDRA processing
 (define-lambda-variable 'raw-text
     nil 'top)
 
