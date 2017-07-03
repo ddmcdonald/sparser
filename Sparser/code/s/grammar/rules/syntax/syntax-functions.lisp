@@ -100,9 +100,6 @@
 ;;;----------------------
 
 
-(define-lambda-variable 'raw-text ;; for Harvard
-    nil category::top)
-
 (define-lambda-variable 'predicate
     nil 'top)
 
