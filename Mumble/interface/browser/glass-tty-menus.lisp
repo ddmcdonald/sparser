@@ -1,7 +1,6 @@
 ;;; -*- Syntax: Common-lisp; Mode: LISP; Package: MUMBLE;  -*-
-;;; $Id: glass-tty-menus.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 
-;;;MUMBLE-86 lisp > glass-tty-menus
+;;;MUMBLE-86 interface > browsr > glass-tty-menus
 
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
@@ -9,6 +8,7 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (C) 2017 David D. McDonald, All Rights Reserved
 
 (in-package :mumble)
 
@@ -40,10 +40,10 @@
 		  (functionp value)))
     (:menu    (progn (when (symbolp value)
 		       (setq value (symbol-value value)))
-		     (if (not window-code?)
-			 (listp value)
+		     #+ignore(if window-code?
 			 (and (instance? value)
-			      (send value :operation-handled-p :choose)))))
+			      (send value :operation-handled-p :choose)))
+                     (listp value)))
     (:buttons (and (listp value)
 		   (= (length value) 3)
 		   (every #'valid-menu-item? value)))))
@@ -116,9 +116,8 @@ Thus, the item 'foo is equivalent to '(foo :value foo)."
   "A menu-choose function which uses either TV:MENU-CHOOSE or 
 TTY-MENU-CHOOSE, depending on the *WINDOW-CODE?* variable.  Using this menu
 function keeps your program from depending on a fancy Lisp machine."
-  (if window-code?
-      (funcall menu-function item-list preamble)
-      (tty-menu-choose item-list preamble stream)))
+  ;;(if window-code? (funcall menu-function item-list preamble)
+  (tty-menu-choose item-list preamble stream))
 (export 'menu-choose)
 
 

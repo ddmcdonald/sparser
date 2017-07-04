@@ -1,5 +1,4 @@
 ;;; -*- Syntax: Common-lisp; Mode: LISP -*-
-;;; $Id: load-initial.lisp 100 2007-07-04 14:31:27Z dmcdonal $
 
 ;;;  MUMBLE-86:  load-initial
 
@@ -9,12 +8,13 @@
 ;;;   this file of the Mumble-86 system for
 ;;;   non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (C) 2017 David D. McDonald, All Rights Reserved
 
 (in-package :mumble)
 
 (defconstant window-code? nil
   "Defined as a constant, NIL, because there is no way we will ever be 
-executing window code on anything by a lispmachine, so we may as well let 
+executing window code on anything but a lispmachine, so we may as well let 
 the compiler eliminate some dead code.")
 
 (defvar *loading-whole-system*)
@@ -22,17 +22,17 @@ the compiler eliminate some dead code.")
 
 ;;from Loader.lisp
 ;;; ============================================================================
-;;; The Mumble initialization list.  This list lets other systems (e.g. the
+;;; The Mumble initialization list. This list lets other systems (e.g. the
 ;;; Tracker), arrange for functions to be run after Mumble is loaded.  It's not
-;;; used a lot right now, and may be flushed someday.  Then again, maybe we 
+;;; used a lot right now, and may be flushed someday. Then again, maybe we 
 ;;; should put the top-level postprocessing function, postprocess-entire-system,
 ;;; on it.
 
 
 (defvar *mumble-initialization-list* nil
   "A list of functions, all of which will be called after all the Mumble files 
-are loaded.  This way, another system can transparently initialize things after
-Mumble has loaded.  The Tracker does, for instance.")
+are loaded. This way, another system can transparently initialize things after
+Mumble has loaded. The Tracker does, for instance.")
 
 (defun run-mumble-initializations ()
   (mapc #'funcall *mumble-initialization-list*))

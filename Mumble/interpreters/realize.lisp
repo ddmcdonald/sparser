@@ -2,7 +2,7 @@
 
 ;;; MUMBLE-05:  interpreters> realization> realize
 
-;;; Copyright (C) 2005,2010-2015 David D. McDonald
+;;; Copyright (C) 2005,2010-2017 David D. McDonald
 ;;; Copyright (c) 2006-2009 BBNT Solutions LLC. All Rights Reserved
 ;;; Copyright (C) 1985, 1986, 1987, 1988  David D. McDonald
 ;;;   and the Mumble Development Group.  All rights
@@ -146,14 +146,11 @@ that knows how to how to handle the specific accessories."
 
 (defun select-and-evaluate-choice-from-tree-fam (rspec tree-fam)
   (declare (special *tree-fam-parameter-argument-list*))
-  (when window-code?
-    (initialize-tree-fam-window-and-display-tree-fam tree-fam *tree-fam-parameter-argument-list*))
   (let ((chosen (choose-from-choice-set (choices tree-fam))))
     (landmark "Choice taken = " chosen)
     (let ((result (execute-choice (choice chosen) (argument-list chosen) rspec)))
       (landmark "The resulting node is " result)
-      result)
-    ))
+      result)))
 
 (defun execute-choice (C arguments rspec)
   (etypecase C

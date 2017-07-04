@@ -1,5 +1,4 @@
 ;;; -*- Mode: Lisp; Package:MUMBLE; Syntax: COMMON-LISP; Base:10; -*-
-;;; $Id$
 
 ;;;  MUMBLE-86:  interface> defining-demos
 ;;;
@@ -8,6 +7,7 @@
 ;;;    Permission is granted to use and copy this file of the Mumble-86 system for
 ;;;    non-commercial purposes.
 ;;; Copyright (c) 2006 BBNT Solutions LLC. All Rights Reserved
+;;; Copyright (C) 2017 David D. McDonald, All Rights Reserved
 
 
 ;################################################################
@@ -83,7 +83,6 @@ the bundle."
 
 |#
 
-
 (defmacro def-demo-rspec (demo-name
 			  text-produced
 			  reason-for-this-demo
@@ -111,10 +110,10 @@ the bundle."
   (declare (special *pending-discourse-units* *message-display-window*))
     (setq *pending-discourse-units* (create-message  message))
     (initialize-mumble)
-    (when window-code?
+    #+ignore(when window-code?
       (initialize-message-window-and-display-message *pending-discourse-units*))
     (mumble *pending-discourse-units*)
-    (when window-code?
+    #+ignore(when window-code?
       (let* ((mdw  *message-display-window*)
 	     (yah  (send mdw :you-are-here-blinker)))
 	(send yah :set-visibility nil))))
