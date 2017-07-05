@@ -1288,12 +1288,6 @@
                        thereis (not (member (var-name (binding-variable binding))
                                             '(past raw-text))))
                  ))))
-      ((can-fill-vp-subject? vp subj)
-       (when (transitive-vp-missing-object? vp)
-         (revise-parent-edge :form category::transitive-clause-without-object))
-       ;;/// try using assimilate-subject
-
-       (assimilate-subcat vp :subject subj))
       
       ((can-fill-vp-object? vp subj)
        (setq vp
@@ -1305,6 +1299,16 @@
        (setq  subj (bind-dli-variable 'predication vp subj))
        (revise-parent-edge :form category::np :category (itype-of subj))
        subj)
+      ((can-fill-vp-subject? vp subj)
+       (when (transitive-vp-missing-object? vp)
+         #+ignore
+         (warn "assimilate-subject-to-vp-ed (~s ~s) revising the form of edge ~s to transitive-clause-without-object~%"
+               subj vp
+               (parent-edge-for-referent))
+         (revise-parent-edge :form category::transitive-clause-without-object))
+       ;;/// try using assimilate-subject
+
+       (assimilate-subcat vp :subject subj))
       (t (warn "Error in sentence: ~s"
                (sentence-string *sentence-in-core*))
          (error "How can this happen? Null referent produced in assimilate-subject-to-vp-ed~%" )))))
@@ -1340,9 +1344,10 @@
 			       :form (case (cat-name (edge-form (parent-edge-for-referent)))
 				       ((vg vp) category::vp)
 				       ((vp+ing vg+ing) category::vp+ing)
-				       ((vp+ed vg+ed) category::vp+ed)
+				       ((vp+ed vg+ed vp+past) category::vp+past)
                                        ((to-comp) category::to-comp)
-                                       (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP?!")
+                                       (t (warn "bad verb form in assimilate-np-to-v-as-object -- interpreting as an NP? in ~s!"
+                                                (sentence-string *sentence-in-core*))
                                        category::n-bar))
 			       :referent result))
        result))))
@@ -1762,8 +1767,9 @@
              ;; of the np with the completed-attribution as its value.
              (unless edge-over-comparative
                (push-debug `(,open-attribution))
-               (error "Could not locate edge over ~a under ~a"
-                      attribution (left-edge-for-referent)))
+               (warn "Could not locate edge over ~a under ~a"
+                     attribution (left-edge-for-referent))
+               (return-from maybe-extend-comparative-with-than-np nil))
              (respan-edge-for-new-referent edge-over-comparative
                                            complete-attribution)
              (setq i (rebind-variable variable complete-attribution i))

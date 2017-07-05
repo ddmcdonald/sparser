@@ -102,7 +102,9 @@
   (and
    (missing-subject-vars vp) ;; vp has a subject which is not bound
    (subcategorized-variable vp :subject subj)
-   (or (not (missing-object-vars vp))
+   (or (not (or (missing-object-vars vp)
+                (and (not (intransitive? (itype-of vp))) ;; for cases like "X resulted in Y"
+                     (eq (cat-name (edge-form (right-edge-for-referent))) 'vp+ed))))
        ;; can't be a reduced relative, no available object-var
 
        ;; Unless we have reason to believe the object's been
