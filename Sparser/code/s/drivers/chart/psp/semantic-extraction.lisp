@@ -123,6 +123,7 @@
     bio-process
     bio-method
     residue-on-protein
+    cellular-location
     ))
 
 
