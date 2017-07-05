@@ -316,13 +316,16 @@ in the scope of referent-from-rule.
 ;;; operating over the edges
 ;;;--------------------------
 
+(defparameter *warn-on-unbound-parent-edge* nil)
+
 (defun revise-parent-edge (&key category form referent)
   (if (and *parent-edge-getting-reference*
            (not (deactivated? *parent-edge-getting-reference*)))
-    (let ((edge (parent-edge-for-referent)))
-      (revise-edge edge category form referent))
-    (warn "revise-parent-edge called when *parent-edge-getting-reference* ~
-           is inactive or not bound -- possibly in da-rule")))
+      (let ((edge (parent-edge-for-referent)))
+        (revise-edge edge category form referent))
+      (when *warn-on-unbound-parent-edge*
+        (warn "revise-parent-edge called when *parent-edge-getting-reference* ~
+           is inactive or not bound -- possibly in da-rule"))))
 
 (defun revise-left-edge-into-rule (&key category form referent)
   (let ((edge (left-edge-for-referent)))
