@@ -251,12 +251,12 @@
                (push string *bad-sentences*)
                (format t "~&Error ~a~%" e)))))
 
-(defun safe-parse (string)
+(defun safe-parse (string) ;; quiet, error-protected call to pp
   (let ((*trap-error-skip-sentence* t))
     (declare (special *trap-error-skip-sentence*))
     (with-total-quiet (analyze-text-from-string string))))
 
-(defun qpp (string) ;; quiet, error-protected call to pp
+(defun qpp (string) 
   (with-total-quiet
     (analyze-text-from-string string)))
 
