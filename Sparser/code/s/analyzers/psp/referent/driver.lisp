@@ -252,12 +252,13 @@
                 when (eq **lambda-var** (binding-value b))
                 do (return (binding-variable b))))
          (new-lambda-form
-          (create-predication-by-binding
-           lambda-variable
-           **lambda-var**
-           new-pred-form
-           (list 'referent-for-edge edge)
-           :insert-edge nil)))
+          (when lambda-variable
+            (create-predication-by-binding
+             lambda-variable
+             **lambda-var**
+             new-pred-form
+             (list 'referent-for-edge edge)
+             :insert-edge nil))))
     new-lambda-form))
 
 
@@ -274,6 +275,8 @@
       (error "Right edge isn't bound now")))
 
 (defun parent-edge-for-referent ()
+  (when (deactivated? *parent-edge-getting-reference*)
+    (lsp-break "parent-edge-for-referent is ~s~%" *parent-edge-getting-reference*))
   (or *parent-edge-getting-reference*
       (error "*parent-edge-getting-reference* isn't bound now")))
 
@@ -314,11 +317,12 @@ in the scope of referent-from-rule.
 ;;;--------------------------
 
 (defun revise-parent-edge (&key category form referent)
-  (if *parent-edge-getting-reference*
+  (if (and *parent-edge-getting-reference*
+           (not (deactivated? *parent-edge-getting-reference*)))
     (let ((edge (parent-edge-for-referent)))
       (revise-edge edge category form referent))
     (warn "revise-parent-edge called when *parent-edge-getting-reference* ~
-           isn't bound -- possibly in da-rule")))
+           is inactive or not bound -- possibly in da-rule")))
 
 (defun revise-left-edge-into-rule (&key category form referent)
   (let ((edge (left-edge-for-referent)))
