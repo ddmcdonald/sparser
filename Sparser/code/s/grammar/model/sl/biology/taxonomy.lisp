@@ -975,7 +975,7 @@
 ;; "Structural basis for conformational switching and GTP loading of the large G protein atlastin"
 
 (define-mixin-category on-substrate :specializes bio-process
-  :binds ((substrate (:or bio-chemical-entity molecular-location))))
+  :binds ((substrate (:or bio-complex peptide protein-domain region-of-molecule))))
 
 (define-category molecule-load :specializes caused-bio-process
   :mixins (on-substrate)
@@ -1082,9 +1082,6 @@
 
 (def-synonym protein-domain (:noun "region"))
 
-
-
-
 (define-category peptide :specializes molecule
   :binds ((residue residue-on-protein))
   :realization
@@ -1114,7 +1111,6 @@
      :in equilibrium-state
      :in state
      :m site))
-
 
 (define-category protein-state :specializes molecule
   :binds ((protein protein)
