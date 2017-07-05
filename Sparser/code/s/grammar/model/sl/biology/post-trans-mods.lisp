@@ -20,7 +20,7 @@
   :mixins (on-substrate with-specified-amino-acid)               
   :binds (;; allow variant to pick up "phosphorylated fraction"
 	  (site molecular-location)) ;; which is attached here
-  :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate molecule)) ;;bio-process
+  :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate peptide )) ;;bio-process
 	     (object blocked-category)) ;; trying to BLOCK object by giving it an impossible class
   :realization 
   (:noun ("post-translational modification" "PTM" 
@@ -37,6 +37,7 @@
 	 :on amino-acid ;;"BRAF that is phosphorylated on serine and tyrosine."
 	 :at site
 	 :in site
+         :in substrate
 	 :m site
 	 :on site))			    
 
