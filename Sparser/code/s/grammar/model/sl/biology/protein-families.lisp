@@ -599,7 +599,7 @@
 (def-family "Ras" :synonyms ("ras") :identifier "FA:03663")
 (def-family "RasGAP" :members ("UP:P09851" "UP:P20936"))
 (def-family "Rheb" :synonyms ("rheb") :identifier "FA:03667")
-(def-family "Rho" :synonyms ("rho") :identifier "FA:03668")
+(def-family "Rho" :synonyms ("rho" "rho associated kinase" "rho-kinase") :identifier "FA:03668")
 (def-family "Ric-8" :synonyms ("ric-8" "ric8") :identifier "XFAM:PF10165.7")
 (def-family "RyR" :synonyms ("RyRs") :identifier "XFAM:PF02026.14")
 (def-family "S-100" :synonyms NIL :identifier "FA:03480")
