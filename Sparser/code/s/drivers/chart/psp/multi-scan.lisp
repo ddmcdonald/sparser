@@ -1127,7 +1127,7 @@ was dropped.
            (one-word-long? first-edge)
            (eq (pos-capitalization pos-after-open) :all-caps))
       (unless (and edge-to-left (edge-p edge-to-left))
-        (break "Stub of new case: probable acronym w/o edge to ~
+        (warn "Stub of new case: probable acronym w/o edge to ~
                 the left - in assess-parenthesized-content"))
       (when (edge-p edge-to-left) ;; otherwise there's nothing to hide under
         (let* ((ev-after-close (pos-ends-here pos-after-close))
