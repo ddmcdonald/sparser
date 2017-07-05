@@ -942,7 +942,8 @@
          :etf (svo-passive)))
 
 (define-category ligate :specializes caused-bio-process
-  :restrict ((agent bio-chemical-entity))
+  :restrict ((agent bio-chemical-entity)
+             (substrate (:or bio-complex peptide protein-domain region-of-molecule residue-on-protein)))
   :mixins (on-substrate) ;; either a residue-on-protein (dectest 8) ubiquitin C77, or a molecule
   :realization 
   (:verb "ligate" :noun "ligation" 
