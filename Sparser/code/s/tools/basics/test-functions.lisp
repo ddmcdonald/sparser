@@ -663,7 +663,7 @@
     (if (or *break-on-reach-errors*
             (and (find-package :r3)
                  (eval (intern "*BREAK-DURING-READ*" (find-package :r3)))))
-        (loop for s in sents do (qpp s))   
+        (loop for s in sents do (safe-parse s))   
         (loop for s in sents
               as i from 0
               do (qepp s)
@@ -1252,7 +1252,7 @@ applied to l, and values are values associated with that key example"
     (if (or *break-on-hms-errors*
             (and (find-package :r3)
                  (eval (intern "*BREAK-DURING-READ*" (find-package :r3)))))
-        (loop for s in sents do (incf *hms-sent-count*)(qpp s))   
+        (loop for s in sents do (incf *hms-sent-count*)(safe-parse s))   
         (loop for s in sents as i from 0 do (incf *hms-sent-count*)(qepp s)))))
 
 (defvar *semantic-output-format*)
