@@ -202,7 +202,9 @@
 	 new-left new-items new-interp new-edge)
     (when var-name
       (when (eq clause (edge-used-in left-clause))
-        (break "circular structure produced in distribute-pp-to-first-conjoined-clause")))
+        (warn "circular structure produced in distribute-pp-to-first-conjoined-clause")
+        (return-from distribute-pp-to-first-conjoined-clause nil)))
+    
     ;;(lsp-break "2d")
     (when var-name
       (setq new-left
@@ -378,6 +380,10 @@
   :pattern ( s conjunction vp+ed )
   :action (:function attach-trailing-participle-to-clause-with-conjunction-and first second third))
 
+(define-debris-analysis-rule attach-trailing-vp+past-to-clause-with-conjunction-and
+  :pattern ( s conjunction vp+past )
+  :action (:function attach-trailing-participle-to-clause-with-conjunction-and first second third))
+
 (defun attach-trailing-participle-to-clause-with-conjunction-and (s and vp)
   (attach-trailing-participle-to-clause-with-conjunction s and vp))
 
@@ -399,12 +405,16 @@
   (attach-trailing-participle-to-clause-with-conjunction s comma vp))
 
 
-(define-debris-analysis-rule attach-trailing-vp+ed-to-subordinate-clause-with-conjunction-and
+(define-debris-analysis-rule attach-trailing-vp+ing-to-subordinate-clause-with-conjunction-and
   :pattern ( subordinate-clause and vp+ing )
   :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
 
 (define-debris-analysis-rule attach-trailing-participle-to-subordinate-clause-with-conjunction-and
   :pattern ( subordinate-clause and vp+ed )
+  :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
+
+(define-debris-analysis-rule attach-trailing-vp+past-to-subordinate-clause-with-conjunction-and
+  :pattern ( subordinate-clause and vp+past )
   :action (:function attach-trailing-participle-to-subordinate-clause-with-conjunction-and first second third))
 
 (defun attach-trailing-participle-to-subordinate-clause-with-conjunction-and (s and vp)
@@ -489,6 +499,13 @@
 
 (define-debris-analysis-rule attach-comma-appositive-np-under-vp+ed
   :pattern ( vp+ed "," np)
+  ;; The action can fail. Returning nil ought to suffice
+  :action (:function
+           attach-comma-appositive-np-under-s
+           first second third))
+
+(define-debris-analysis-rule attach-comma-appositive-np-under-vp+past
+  :pattern ( vp+past "," np)
   ;; The action can fail. Returning nil ought to suffice
   :action (:function
            attach-comma-appositive-np-under-s
@@ -745,6 +762,10 @@
     :pattern (np "," subject-relative-clause)
     :action (:function np-comma-subj-relative first second third))
 
+(define-debris-analysis-rule proper-noun-comma-subj-relative
+    :pattern (proper-noun "," subject-relative-clause)
+    :action (:function np-comma-subj-relative first second third))
+
 (defun np-comma-subj-relative (np-edge comma-edge srel-edge)
   (declare (ignore comma-edge))
   (let* ((np (edge-referent np-edge))
@@ -758,6 +779,10 @@
 
 (define-debris-analysis-rule np-comma-subj-relative-comma
     :pattern (np "," subject-relative-clause ",")
+    :action (:function np-comma-subj-relative-comma first second third fourth))
+
+(define-debris-analysis-rule np-comma-subj-relative-comma
+    :pattern (proper-noun "," subject-relative-clause ",")
     :action (:function np-comma-subj-relative-comma first second third fourth))
 
 (defun np-comma-subj-relative-comma (np-edge comma-edge srel-edge comma-2)
@@ -851,6 +876,7 @@
   :action (:function ;; providing all edges should let the constituents
            ;; field keep them connected in the web graph
            proper-noun-comma-vg+ed-comma first second third fourth))
+
 
 (defun proper-noun-comma-vg+ed-comma (np intial-comma vp+ed final-comma)
   (declare (special category::np))
