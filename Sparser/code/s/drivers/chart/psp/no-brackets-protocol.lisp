@@ -460,6 +460,15 @@
     (when (c-itypep ref 'inhibit)
       (maybe-push-sem mention ref sentence '(affected-process) output-stream))
 
+    (when (and (c-itypep ref 'positive-bio-control)
+               (individual-p (value-of 'affected-process ref))
+               (itypep (value-of 'affected-process ref) 'post-translational-modification))
+      ;;e.g. "Rho induces tyrosine phosphorylation of gamma-catenin"
+      (maybe-push-sem mention ref sentence '(agent) output-stream
+                      (bind-dli-variable 'agent
+                                         (value-of 'agent ref)
+                                         (value-of 'affected-process ref))))
+
     (when (or (c-itypep ref 'translocation)
               (c-itypep ref 'import)
               (c-itypep ref 'export)
@@ -476,14 +485,15 @@
       (maybe-push-sem mention ref sentence '(substrate agent-or-substrate site) output-stream))
     ))
 
-(defun maybe-push-sem (mention ref sentence necessary-vars output-stream)
+(defun maybe-push-sem (mention ref sentence necessary-vars output-stream &optional desc)
       
   (when (loop for v in necessary-vars thereis (value-of v ref))
     (push-sem->indra-post-process
      mention
      sentence
      (loop for v in necessary-vars thereis (eq (value-of v ref) '*lambda-var*))
-     output-stream)))
+     output-stream
+     desc)))
 
 
 (defun c-itypep (c super)
@@ -501,10 +511,10 @@
 (defun get-pmid ()
   (when *current-article* (symbol-name (name *current-article*))))
 
-(defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream)
+(defun push-sem->indra-post-process (mention sentence lambda-expansion output-stream &optional desc)
   (declare (special *indra-text* *predication-links-ht*))
-  (let* ((desc (base-description mention))
-         (lambda-expansion
+  (unless desc (setq desc (base-description mention)))
+  (let* ((lambda-expansion
           (when lambda-expansion (gethash desc *predication-links-ht*)))
          (desc-sexp (sem-sexp desc))
          (subst-desc-sexp
