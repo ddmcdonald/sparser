@@ -208,6 +208,9 @@
 (def-form-category  vp)
 (def-form-category  vp+ing)
 (def-form-category  vp+ed)
+(def-form-category  vp+past)
+;; disambiguate vp+ed vs case where there is an explicit object
+;; "phosphorylated at Ser746" vs "phosphorylated Ser746"
 (def-form-category  vp+passive) ;; vp with an be and V+ED
 
 (def-form-category  vg)

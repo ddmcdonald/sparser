@@ -157,6 +157,7 @@
     ,category::vg+passive
     ,category::vp
     ,category::vp+ed
+    ,category::vp+past
     ,category::vp+ing
     ,category::vp+passive
     )

@@ -408,6 +408,7 @@
 		(eq (second (cfr-rhs-forms (car r-triple))) 's)))
 	   (memq r-triple-right
 		 '(category::vg category::vp category::vg+ed category::vp+ed
+                   category::vp+past
 		   category::vg+passive category::vp+passive
                    category::copular-pp
 		   ;;category::comma-separated-subject-relative-clause
@@ -415,7 +416,7 @@
 	   ;; this is needed because the schema based rules generate rules in terms of 
 	   ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
 	   (memq (second (cfr-rhs-forms (car r-triple)))
-		 '(vg vp vg+ed vg+ed vp+ed vg+passive vp+passive
+		 '(vg vp vg+ed vg+ed vp+ed vp+past vg+passive vp+passive
 		   vg/+ed vg/+ed vp/+ed vg/+passive vp/+passive
 		   ;;comma-separated-subject-relative-clause
 		   )))
@@ -438,7 +439,7 @@
 	     (member sym *adjg-head-categories*)
 	     (member sym 
 		     '(category::vp category::vg 
-		       category::vg+ed category::vp+ed 
+		       category::vg+ed category::vp+ed category::vp+past 
 		       category::vg+ing category::vp+ing
 		       category::vg+passive category::vp+passive
 		       category::adverb))))))))))
