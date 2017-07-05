@@ -110,6 +110,7 @@
 (loop for vv in '((vp vp)
                   (vg vp)
                   (vp+ed vp+ed)
+                  (vp+past vp+past)
                   (vg+ed vp+ed)
                   (verb+ed vg+ed) ;; somehow "phosphorylated" stops being elevated
                                   ;; to vg+ed after we run the June corpus

@@ -318,6 +318,7 @@
                   (vp+ing vp+ing)
                   (vg+ed vg+ed)
                   (vp+ed vp+ed)
+                  (vp+past vp+past) ;; if there already was a direct object, then keep the marking
                   (vg+passive vg+passive)
                   (vp+passive vp+passive)
                   (s s)
@@ -409,7 +410,7 @@
 
 (loop for n in `(np pronoun ,@*n-bar-categories*) ;; move vp+ing vg+ing to da-rules
   do
-  (loop for v in '(vp vg vp+passive vg+passive 
+  (loop for v in '(vp vg vp+passive vg+passive vp+past vp+ed
                       ;; vg+ing ;; TO-DO see if this change improves or damages things
                       )
     do
@@ -446,8 +447,9 @@
 (loop for nb in `(vp+ing vg+ing ;; allow present-participles (gerunds) as objects
                   np pronoun reflexive/pronoun ,@*n-bar-categories*)
   do
-     (loop for vv in '((vg vp) (vg+ing vp+ing) (vg+ed vp+ed)
-                       (infinitive to-comp) (to-comp to-comp))
+        (loop for vv in '((vg vp) (vg+ing vp+ing)
+                          (vg+ed vp+past) ;; if there is a direct object, then mark the vg+ed as a past tense
+                          (infinitive to-comp) (to-comp to-comp))
     do
     (eval 
      `(def-syntax-rule (,(car vv) ,nb)
@@ -468,6 +470,7 @@
                   (vp+ing vp+ing)
                   (vg+ed vp+ed)
                   (vp+ed vp+ed)
+                  (vp+past vp+past)  ;; if there already was a direct object, then keep the marking
                   (vg+passive vp+passive)
                   (vp+passive vp+passive)
                   (infinitive to-comp)
@@ -527,8 +530,11 @@
 ;; e.g. "interestingly , we observed that in contrast to wild type
 ;; aspp 2 , aspp 2 ( s 827 a ) remains at the plasma membrane"
 
-(loop for vv in '((s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
-                  (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
+(loop for vv in '((s s)(vp vp)(vp+ing vp+ing)
+                  (vp+ed vp+past)  ;; thatcomp and howcomp rule out passive (??)
+                  (vg vp)(vg+ing vp+ing)
+                  (vg+ed vp+past)  ;; thatcomp and howcomp rule out passive (??)
+                  (vg+passive vp+passive)(vp+passive vp+passive)
                   (infinitive to-comp))
   ;; verb complements 
   do
@@ -642,6 +648,7 @@
                   (vp+ing vp+ing)
                   (vg+ed vp+ed)
                   (vp+ed vp+ed)
+                  (vp+past vp+past)   ;; if there already was a direct object, then keep the marking
                   (vg+passive vp+passive)
                   (vp+passive vp+passive))
    do
@@ -683,7 +690,8 @@
 
 (loop for vv in '((subordinate-clause subordinate-clause)
                   ;; as in "Thus, although genetic alterations that engender C-RAF activation..."
-		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed) (vg vp)(vg+ing vp+ing)
+		  (s s)(vp vp)(vp+ing vp+ing)(vp+ed vp+ed)(vp+past vp+past)
+                  (vg vp)(vg+ing vp+ing)
                   (vg+ed vp+ed)(vg+passive vp+passive)(vp+passive vp+passive)
 		  (verb+present vg))
    do
@@ -718,6 +726,12 @@
     :referent (:function interpret-for-to-comp left-edge right-edge))
 
 (def-form-rule (as vp+ed)
+    :head :right-edge
+    :form as-comp
+    :referent 
+    (:function interpret-adverb+verb left-edge right-edge))
+
+(def-form-rule (as vp+past)
     :head :right-edge
     :form as-comp
     :referent 
