@@ -12,8 +12,14 @@
 
 (defun uplinks-of (i) ;; Rusty's lister
   (let ((up (indiv-uplinks i)))
+    (when up
+      (unless (eq (dlvv-variable (caar up)) :superc)
+        (cons (car up)(uplinks-of (cdar up)))))))
+#|
+(defun indiv-vvs (i)
+  (let ((up (indiv-uplinks i)))
     (unless (eq (dlvv-variable (caar up)) :superc)
-      (cons (car up)(indiv-vvs (cdar up))))))
+        (cons (car up) (indiv-vvs (cdar up))))))   |#
 
 ;; e.g. ((#<dl-vv has-determiner + #<the 106>> . #<protein 74245>))
 ;; In principle there are multiple uplinks though a the moment
