@@ -557,7 +557,7 @@
       (declare (special *for-spire* *with-uids*))
       (semtree item))))
 
-(defun krisp->sexpr (item)
+(defun krisp->sexpr (item &optional (with-ids nil))
   (let ((*sentence-results-stream*
          (unless with-ids *sentence-results-stream*)))
     (declare (special *sentence-results-stream*))
