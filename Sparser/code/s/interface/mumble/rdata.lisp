@@ -308,7 +308,12 @@ a word. |#
          (local-rdata-field (rdata category))
          (local-rdata (when (null (cdr local-rdata-field)) (car local-rdata-field))))
     (unless local-rdata
-      (error "first case of multiple local rdata: ~a" category))
+      (warn "first case of multiple local rdata: ~a" category)
+      ;;/// synonym for "seem" -- "appear" gets this. Two local rdata, one where
+      ;; the head is "seem", the other where it's "appear"
+      (if  inherited-rdata ;; do the first one
+        (setq local-rdata (car local-rdata-field))
+        (return-from apply-inherited-mumble-data nil))) ;; punt
     (when inherited-rdata
       (let ((new-rdata (m::copy-instance inherited-rdata))
             (local-head (rdata-head-words local-rdata)))
