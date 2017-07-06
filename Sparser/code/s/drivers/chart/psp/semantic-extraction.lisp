@@ -557,70 +557,54 @@
       (declare (special *for-spire* *with-uids*))
       (semtree item))))
 
-(defun krisp->sexpr (item &optional (with-ids nil))
-  (let ((*sentence-results-stream*
-         (unless with-ids *sentence-results-stream*)))
+(defun krisp->sexpr (item)
+  (let ((*sentence-results-stream* nil))
     (declare (special *sentence-results-stream*))
     (let ((*for-spire* t)
           (*with-uids* :no))
       (declare (special *for-spire* *with-uids*))
       (semtree item))))
 
-(defun sexpr->krisp (tree)
-  (cond
-    ((or (stringp tree) (numberp tree) (symbolp tree) ;; for *lambda-var*
-         (category-p tree) (word-p tree)(polyword-p tree))
-     tree)
-    ((consp tree)
-     (case (car tree)
-       ((wd pw) (resolve (second tree)))
-       (cat (category-named (second tree)))
-       (t
-        (let ((result (find-or-make-lattice-description-for-ref-category
-                       (category-named (caar tree)))))
-          (loop for branch in (reverse (cdr tree))
-                do
-                  (setq result (bind-dli-variable
-                                (safe-sparser-symbol (car branch))
-                                (if (eq (car branch) 'sparser::items)
-                                    (loop for item in (cdr branch)
-                                          collect
-                                            (sexpr->krisp item))
-                                    (sexpr->krisp (second branch)))
-                                result)))
-          result))))))
-
 (defun to-krisp (sexpr)
   (etypecase sexpr
     (symbol (to-krisp (list sexpr)))
     (string sexpr)
+    (number sexpr)
     (cons
-     (let* ((cat-name (case (car sexpr) (you 'pronoun/second)
-                            (i 'pronoun/first/singular)
-                            (t (car sexpr))))
-            (indiv 
-             (find-or-make-lattice-description-for-ref-category
-              (category-named cat-name)))
-            (args (if (symbolp (second sexpr))
-                      (loop for pair on (cdr sexpr) by #'cddr
-                            as key = (car pair)
-                            collect (list (if (assoc key *subcat-aliases*)
-                                              (cdr (assoc key *subcat-aliases*))
-                                              key)
-                                          (second pair)))
-                      (cdr sexpr))))
-       (loop for pair in args
-             do
-               (let* ((val (to-krisp (second pair)))
-                      (var/name
-                       (if (find-variable-for-category (car pair) indiv)
-                           (car pair)
-                           (subcategorized-variable indiv (car pair) val))))
-                 (if (null var/name)
-                     (lsp-break "can't find variable corresponding to triple (~s ~s ~s)~%"
-                                indiv var/name val)
-                     (setq indiv (bind-dli-variable var/name val indiv)))))
-       indiv))))
+     (case (car sexpr)
+       (category (category-named (second sexpr)))
+       (wd (resolve (second sexpr)))
+       (t
+        (let* ((cat-name (case (car sexpr) (you 'pronoun/second)
+                               (i 'pronoun/first/singular)
+                               (t (car sexpr))))
+               (indiv 
+                (find-or-make-lattice-description-for-ref-category
+                 (category-named cat-name)))
+               (args (if (symbolp (second sexpr))
+                         (loop for pair on (cdr sexpr) by #'cddr
+                               as key = (car pair)
+                               collect (list (if (assoc key *subcat-aliases*)
+                                                 (cdr (assoc key *subcat-aliases*))
+                                                 key)
+                                             (second pair)))
+                         (cdr sexpr))))
+          (loop for pair in (reverse args)
+                do
+                  (let* ((*pair* pair)
+                         (var/name
+                          (if (find-variable-for-category (car pair) indiv)
+                              (car pair)
+                              (subcategorized-variable indiv (car pair) val)))
+                         (val (case (car pair)
+                                (items (loop for desc in (second pair) collect (to-krisp desc)))
+                                (t (to-krisp (second pair))))))
+                    (declare (special *pair* val var/name))
+                    (if (null var/name)
+                        (lsp-break "can't find variable corresponding to triple (~s ~s ~s)~%"
+                                   indiv var/name val)
+                        (setq indiv (bind-dli-variable var/name val indiv)))))
+          indiv))))))
 
 
 
@@ -821,7 +805,7 @@
              (items
               (let ((member-descs (mapcar #'collect-model-description value)))
                 (push (if (or *for-spire* *sentence-results-stream*)
-                        `(:members ,.member-descs)
+                        `(items ,member-descs)
                         `(,var-name (collection (:members (,@ member-descs)))))
                       desc)))
              (t

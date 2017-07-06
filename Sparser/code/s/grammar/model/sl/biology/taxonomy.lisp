@@ -388,7 +388,8 @@
     :mixins (with-an-agent)
     :restrict ((participant blocked-category)
                (agent
-                (:or bio-chemical-entity ;;molecule bio-complex drug
+                (:or bio-entity
+                     bio-chemical-entity ;;molecule bio-complex drug
                      bio-process bio-mechanism bio-method)))
     :binds ((cause ;; semantically like agent, but want to tighten the restriction on premodifiers used as agents
              ;; we had gotten "an equivalent activation" which treated "equivalent" as an agent

@@ -733,6 +733,13 @@
     (when (and *trivial-subcat-test*
                (note-failed-tests item restriction))
       (return-from satisfies-subcat-restriction? t))
+    #+ignore
+    (when (and var (eq 'agent (var-name var))
+               (eq 'bio-entity (cat-name (itype-of item))))
+      (unless *subcat-test*
+        (format t "accepting ~s as AGENT in ~s~%"
+              item pat-or-v/r))
+      (return-from satisfies-subcat-restriction? t))
     (flet ((subcat-itypep (item category)
              ;; For protein-families and such that are re-written
              ;; as a more general catgory (e.g. protein). There's no
@@ -894,11 +901,11 @@
         (if (and *ambiguous-variables* (not *subcat-test*))
             (let ( pats )
               (loop for pat in subcat-patterns
-                    as scr = (subcat-restriction pat)
+                    ;;as scr = (subcat-restriction pat)
                     do (when (eq label (subcat-label pat))
-                         (when (satisfies-subcat-restriction? item scr)
+                         (when (satisfies-subcat-restriction? item pat)
                            (push pat pats))))
-              (setq over-ridden (check-overridden-vars pats))
+              (setq over-ridden (check-overridden-vars pats item head))
               (setq pats (loop for p in pats unless (member p over-ridden) collect p))
               (setq variable (variable-from-pats item head label pats subcat-patterns)))
             (dolist (entry subcat-patterns)
@@ -906,7 +913,6 @@
                 (when (satisfies-subcat-restriction? item entry)
                   (setq variable (subcat-variable entry))
                   (return)))))
-        
         (when (and *ambiguous-variables*
                    (consp variable))
           (setq variable
@@ -935,7 +941,7 @@
         when (and (if (disjunctive-lambda-variable-p var)
                     (memq (subcat-variable pattern) (dvar-variables var))
                     (eq (subcat-variable pattern) var))
-                  (satisfies-subcat-restriction? item (subcat-restriction pattern)))
+                  (satisfies-subcat-restriction? item pattern))
         collect (subcat-label pattern)))
 
 (defun find-subcat-vars (label cat)
@@ -1057,13 +1063,16 @@
 
 
 
-(defun check-overridden-vars (pats)
+(defun check-overridden-vars (pats item head)
   (cond
     ((and
       (eq (length pats) 2)
       (eq (subcat-label (first pats)) :m)
       (member (var-name (subcat-variable (first pats))) '(agent object))
       (member (var-name (subcat-variable (second pats))) '(agent object)))
+     #+ignore
+     (warn "over-riding agent in favor of object for ~s ~s in ~s~%"
+           item head (sentence-string *sentence-in-core*))
      (if (eq (var-name (subcat-variable (first pats))) 'object)
          (list (second pats))
          (list (first pats))))

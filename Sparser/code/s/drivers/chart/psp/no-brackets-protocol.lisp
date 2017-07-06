@@ -454,7 +454,8 @@
     ;;  than one type of INDRA statement (MEK phosphorylates and activates ERK"
     (when (or (c-itypep ref 'bio-activate)
               (c-itypep ref 'bio-inactivate)
-              (c-itypep ref 'inhibit))
+              (c-itypep ref 'inhibit)
+              (c-itypep ref 'gene-transcript-express))
       (maybe-push-sem mention ref sentence '(object) output-stream))
 
     (when (c-itypep ref 'inhibit)
@@ -478,6 +479,7 @@
     (when
         (or
          (c-itypep ref 'post-translational-modification)
+         (c-itypep ref 'methylation)
          (and (is-basic-collection? ref)
               (or ;;(lsp-break)
                (c-itypep (value-of 'type ref)
