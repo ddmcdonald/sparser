@@ -3,30 +3,33 @@
 ;;;
 ;;;      File:  "verbs"
 ;;;    Module:  grammar/model/sl/blocks
-;;;   version:  March 2017
+;;;   version:  July 2017
 
 ;; Broken out of vocabulary 3/7/17
 
 (in-package :sparser)
 
-;; (p "Add another block")
+;; (p "Add another block to the row")
 
 (define-category add-to
   :specializes achievement
-  :mixins (with-an-agent with-specified-location)
-  :restrict ((goal built-out-of-bricks))
-  :binds ((theme object))
+  :mixins (move-something-verb with-specified-location)
+  :restrict ((goal built-out-of-bricks)) ;; on with-specified-location
+  :documentation "This is the 'add' where we're extending
+    a structure that's under construction. The 'to' picking out
+    the assemblage is always present, even if it's been
+    omitted as obvious."
   :realization
     (:verb "add"
-     :etf (svo-passive)
+     :etf (svol)
      :s agent
      :o theme
-     :loc-pp-complement (next\ to
-                         on
-                         on\ top\ of
+     :loc-pp-complement (on
                          at
                          to) ;; "... to the row" via adjoin-pp-to-vg
-      :mumble ("add" svo :o theme)))
+      :mumble ("add" svo1o2 :s agent :o1 theme :o2 location)))
+;;///replace with explicit preposition phrase
+;;///would be easier if the spatial operators -were- the relation
 
 
 ;; 1.1 (p "Let's build a staircase.") 
@@ -42,6 +45,14 @@
                   :s agent
                   :o artifact
                   :mumble ("build" svo :o artifact)))
+
+(define-category hold-something
+  :specializes process
+  :mixins (action-verb)
+  :restrict ((patient object))
+  :realization (:verb ("hold" :past-tense "held"))
+  :documentation "Needs extension or a variant for variants
+    like 'hold it up' or (?) 'hold it higher'")
 
 (define-category make
   :specializes process
@@ -69,6 +80,17 @@
                  :loc-pp-complement (to next\ to)
                  :mumble ("move" svo :s agent :o theme)))
 
+(define-category pull
+    :specializes process
+    :mixins (with-an-agent with-specified-location)
+    :binds ((theme physical))
+    :realization (:verb "pull"
+                  :etf (svo-passive)
+                  :s agent
+                  :o theme
+                  :loc-pp-complement (to next\ to)
+                  :mumble ("pull" svo :s agent :o theme)))
+
 (define-category push
     :specializes process
     :mixins (with-an-agent with-specified-location)
@@ -95,20 +117,6 @@
                 :o theme
                 :mumble ("push" svop :s agent :o theme :p "together")))
 
-#|    original w/ :loc-pp-complement
-;; 1.2 "Put a block on the table"
-(define-category put-something-somewhere
-  :specializes process
-  :mixins (with-an-agent with-specified-location)
-  :binds ((theme physical))
-  :realization
-    (:verb "put"
-     :etf (svo-passive)
-     :s agent
-     :o theme
-     :loc-pp-complement (next\ to on on\ top\ of at)
-     :mumble ("put" svo1o2 :o1 theme :o2 location)))
-|#
 
 (define-category put-something-somewhere
   :specializes process
@@ -118,4 +126,17 @@
      :etf svol
      :mumble ("put" svo1o2 :o1 theme :o2 location)))
 
+(define-category roll
+  :specializes process
+  :mixins (action-verb)
+  :realization (:verb "roll" :etf (svo-passive))
+  :documentation "Balls and cylinders roll. Blocks don't.
+    need a constraint model for that")
 
+(define-category rotate
+  :specializes process
+  :mixins (action-verb)
+  :realization (:verb "rotate" :etf (svo-passive))
+  :documentation "Need to indicate that the patient must
+    have an axis that it can rotate around")
+                      

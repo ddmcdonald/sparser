@@ -3,7 +3,7 @@
 ;;;
 ;;;      File:  "vocabulary"
 ;;;    Module:  grammar/model/sl/blocks-world/
-;;;   version:  May 2017
+;;;   version:  July 2017
 
 ;; Initiated 12/3/15.
 
@@ -34,6 +34,14 @@ support a substantial number of blocks.
   :specializes rectangular-solid
   :index (:permanent :list)
   :realization (:common-noun "table"))
+
+(define-category ball
+  :specializes object
+  :index (:permanent :list)
+  :realization (:common-noun "ball")
+  :documentation "FIXME: needs a disinction from 'block'
+    that licenses 'roll' but not 'slide'")
+
 
 ;;--- Composites
 

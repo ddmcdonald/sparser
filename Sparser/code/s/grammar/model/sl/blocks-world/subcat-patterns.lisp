@@ -29,12 +29,11 @@
 ;;; location resouce
 
 (define-mixin-category with-specified-location   :specializes relation
-  :binds ((location location)
-          (supported-by physical)
+  :binds ((supported-by physical)
           (next-to physical)
           (at-relative-location (:or location physical)) ;;relative-position)
           (goal (:or location physical)))
-  :realization (;; :next\ to next-to
+  :realization (;; :next\ to next-to ;;moved to regular prep's
                 :on supported-by
                 ;; :on\ top\ of supported-by
                 :at at-relative-location ;; at the end

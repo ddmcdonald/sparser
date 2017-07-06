@@ -3,7 +3,7 @@
 ;;;
 ;;;     File:  "subcat-patterns"
 ;;;   Module:  "model;core:mid-level::"
-;;;  version:  June 2017
+;;;  version:  July 2017
 
 ;; broken out of relations 3/7/15
 
@@ -15,14 +15,33 @@
   :instantiates nil
   :mixins (actor patient theme)
   :restrict ((actor (:or pronoun endurant))
-             (patient physical)
-             (theme perdurant))
-  :documentation "For 'fail', 'find' etc. where there can be a
- to-complement argument as in 'I failed to find a block'"
+             (patient physical))       
   :realization
     (:s actor
      :o patient
-     :to-comp theme))
+     :mumble (svo :s actor :o patient)))
+
+
+(define-mixin-category action-on-eventuality
+  :specializes subcategorization-pattern
+  :instantiates nil
+  :mixins (actor theme)
+  :restrict ((actor endurant)
+             (theme perdurant))
+  :realization
+    (:s actor
+     :to-comp theme)
+  :documentation "For 'fail', 'find' etc. where there can be a
+ to-complement argument as in 'I failed to find a block'")
+
+
+(define-mixin-category directed-action ;; tell, give
+  :specializes action-verb
+  :instantiates nil
+  :mixins (beneficiary)
+  :restrict ((beneficiary (:or pronoun endurant)))
+  :realization
+    (:o beneficiary)) 
 
 (define-mixin-category move-something-verb
   :specializes subcategorization-pattern
@@ -38,15 +57,8 @@
   :documentation "For verbs like 'put' where an agent
  is moving the theme from one location to another.
  The ETF for this set of arguments is 'svol'.
- In TRIPS 'put' is  agent, affected, result.") 
+ In TRIPS 'put' is  agent, affected, result.")
 
-(define-mixin-category directed-action ;; tell, give
-  :specializes action-verb
-  :instantiates nil
-  :mixins (beneficiary)
-  :restrict ((beneficiary (:or pronoun endurant)))
-  :realization
-    (:o beneficiary))
 ;; Have we ever had indirect objects? Using 'o' is just
 ;; a standin since it won't do "give him the ball" unless
 ;; it falls out from the times and the grammar doesn't notice.
@@ -73,7 +85,7 @@
 (define-mixin-category control-verb-intrans
   ;; need reference
   ;; "acts to ...", "fails to ..."
-  :specializes linguistic
+  :specializes subcategorization-pattern
   :mixins (with-an-agent theme)
   :restrict ((theme perdurant))
   :realization
@@ -82,7 +94,7 @@
 
 (define-mixin-category raising-to-object
   ;;"allows X to ...", "consider X to ...", "enable X to ...", "know X to ...", "lead X to ...", "use X to ..."
-  :specializes linguistic
+  :specializes subcategorization-pattern
   :mixins (with-an-agent)
   :binds ((theme perdurant))
   :realization
@@ -92,7 +104,7 @@
 
 (define-mixin-category raising-to-subject
   ;; "X seems to ..."
-  :specializes linguistic
+  :specializes subcategorization-pattern
   :mixins (with-an-agent theme)
   :restrict ((theme perdurant))
   :realization

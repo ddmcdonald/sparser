@@ -9,6 +9,14 @@
   (mumble-says "a block.")
   "a block")
 
+(deftest (say b6)
+  (mumble-says "B6")
+  "B6")
+
+(deftest (say toyota)
+  (mumble-says "the Toyota block")
+  "the Toyota block")
+
 (deftest (say big red block)
   (mumble-says "a big red block.")
   "a big red block")
@@ -117,7 +125,7 @@
 
 (deftest (say add block at right end of row)
   (mumble-says "Add a red block at the right end of the row.")
-  "add a red block on the right end of the row")
+  "add a red block at the right end of the row")
 
 (deftest (say push two blocks together)
   (mumble-says "Push the two blocks together.")
@@ -134,3 +142,15 @@
 (deftest (say push block to end of table)
   (mumble-says "Push the block to the end of the table.")
   "push the block to the end of the table")
+
+(deftest (say hold ball)
+  (mumble-says "hold the ball")
+  "hold the ball")
+
+
+;;;--- from clic-bw-tests
+;; 7/5/17 the labeled 'B' blocks have regressed. 
+;; "put B7 on the table"
+;; "push B1 and B2 together"
+;; "put B1 on B2"
+;; "put B7 on the table and put B8 on it"

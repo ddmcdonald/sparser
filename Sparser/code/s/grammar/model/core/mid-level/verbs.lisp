@@ -54,18 +54,17 @@ be an entry for it in bio;overrides.lisp that expunges it. |#
 ;; I failed to find a block
 (define-category fail
   :specializes process ;; acomplishment?
-  :mixins (action-verb)
+  :mixins (action-on-eventuality)
   :realization 
-    (:verb "fail"  
-     :etf (sv)))
+    (:verb "fail"))
 
 (define-category find ;; see bio;harvard-terms
   :specializes process
   :mixins (action-verb)
   :restrict ((patient (:or physical-object location))) ;; find a block
   :realization
-    (:verb ("find" :past-tense "found")
-     :etf (svo-passive)))
+    (:verb ("find" :past-tense "found")))
+
 
 (define-category intend
   :specializes state
