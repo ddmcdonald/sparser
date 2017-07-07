@@ -22,7 +22,7 @@
 	   (:or bio-complex small-molecule protein protein-domain ion)) ;; ion is for things like Ca2+-calmodulin
           (componentstoichiometry stoichiometry)) 
   :realization
-  (:noun "complex"
+  (:noun ("complex" :plural "complexes")
          ;; verb form is very rare, and causes problems
          ;;:verb ("complex" :third-singular "complexXXX") :etf (sv) ;; we have a comment with is complexed with SOS,
          ;;:s component
