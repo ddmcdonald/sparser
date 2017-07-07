@@ -6711,7 +6711,7 @@
 (define-protein "UP:P20233" ("TFA" "TFA subfamily")) 
 (define-protein "UP:P20240" ("OTE")) 
 (define-protein "UP:P20241" ("NRG" "neuregulin family" "neuregulins")) 
-(define-protein "UP:P20248" ("CCN1" "CCNA" "CCNA2" "CCNA2_HUMAN" "ccna2" "Cyclin A" "Cyclin A2" "Cyclin-A" "Cyclin-A2" "CyclinA" "CyclinA2" "p20248" "PolyUb-CCNA2" "cyclin A2" "cyclin-A" "cyclinA" "cyclinA2")) 
+(define-protein "UP:P20248" ("CCN1" "CCNA" "CCNA2" "CCNA2_HUMAN" "ccna2" "cyclin A" "cyclin A2" "cyclin-A" "cyclin-A2" "cyclina2" "p20248" "PolyUb-CCNA2" "cyclin A2" "cyclinA" "cyclinA2")) 
 (define-protein "UP:P20264" ("brain-1" "brn1" "POU class 3 homeobox 3" "POU3F3" "pou3f3")) 
 (define-protein "UP:P20265" ("BRN2" "POU class 3 homeobox 2" "POU3F2")) 
 (define-protein "UP:P20268" ("CEH-6")) 
