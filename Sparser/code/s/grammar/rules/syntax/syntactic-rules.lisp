@@ -143,15 +143,6 @@
   :form np
   :referent (:function allowable-post-quantifier? left-edge right-edge))
 
-(defun allowable-post-quantifier? (n quant)
-  ;; for "RSK1 and RSK2 both"
-  (when (and (itypep n 'collection)
-             (or (itypep quant 'both) (itypep quant 'all)))
-    (or *subcat-test*
-        (bind-dli-variable 'quantifier quant n))))
-
-
-
 #+ignore ;;THIS ALLOWS FOR "during the process"
 ;; RUSTY -- What was wrong with this rule? (Other than it being a method call)
 (def-form-rule (sequencer np)

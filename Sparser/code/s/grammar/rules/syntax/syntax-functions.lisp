@@ -1810,3 +1810,11 @@
 
 (defun superlative-adj-noun-compound (superlative head)
   (comparative-adj-noun-compound superlative head))
+
+
+(defun allowable-post-quantifier? (n quant)
+  ;; for "RSK1 and RSK2 both"
+  (when (and (itypep n 'collection)
+             (or (itypep quant 'both) (itypep quant 'all)))
+    (or *subcat-test*
+        (bind-dli-variable 'quantifier quant n))))
