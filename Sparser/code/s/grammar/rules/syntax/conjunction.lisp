@@ -819,10 +819,14 @@
 
 
 (defun adjudicate-specializations (left-ref left-type
-                                    right-ref right-type)
+                                   right-ref right-type)
   ;;///stub
-  (declare (ignore right-type))
-  (values left-ref right-ref left-type))
+  ;;(declare (ignore right-type))
+  (values left-ref right-ref
+          (if (eq (cat-name left-type) 'bio-entity)
+              right-type
+              left-type)
+          left-type))
 
 (defun adjudicate-specializations/list (referents types)
   ;;///stub
