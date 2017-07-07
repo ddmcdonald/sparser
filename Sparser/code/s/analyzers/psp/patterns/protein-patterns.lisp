@@ -78,7 +78,14 @@
   (declare (special category::protein category::collection category::n-bar))
   (let* ((ttops (treetops-between start-pos end-pos))
          (edges (loop for tt in ttops when (edge-p tt) collect tt))
-         proteins)
+         proteins
+         (category
+          (if (cddr proteins)
+              category::collection
+              category::collection
+              ;;category::hyphenated-pair Work in progress
+              ;;  want "phosphorylated Trk-ROS" to specify a complex
+              )))
     (cond
      ((loop for edge in edges
         always
@@ -89,11 +96,11 @@
            ((word-p ref) t)
            (t nil))))
       (tr :making-a-protein-collection start-pos end-pos)
-      (make-ns-edge start-pos end-pos category::collection
+      (make-ns-edge start-pos end-pos category
                     :form category::n-bar
                     :rule 'make-protein-collection
                     :referent 
-                    (find-or-make-individual 'collection 
+                    (find-or-make-individual category
                                              :items (reverse proteins)
                                              :type category::protein)
                     :constituents edges))
