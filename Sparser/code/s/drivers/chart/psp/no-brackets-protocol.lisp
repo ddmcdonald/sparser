@@ -455,7 +455,8 @@
     (when (or (c-itypep ref 'bio-activate)
               (c-itypep ref 'bio-inactivate)
               (c-itypep ref 'inhibit)
-              (c-itypep ref 'gene-transcript-express))
+              (c-itypep ref 'gene-transcript-express)
+              (c-itypep ref 'transcribe))
       (maybe-push-sem mention ref sentence '(object) output-stream))
 
     (when (c-itypep ref 'inhibit)
