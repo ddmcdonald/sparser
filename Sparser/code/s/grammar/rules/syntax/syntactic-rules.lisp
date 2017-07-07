@@ -127,11 +127,38 @@
                 :form np
                 :head :right-edge
                 :referent (:function determiner-noun left-edge right-edge))))
+
+(def-syntax-rule (proper-noun quantifier) 
+    :head :left-edge 
+  :form np
+  :referent (:function allowable-post-quantifier? left-edge right-edge))
+
+(def-syntax-rule (n-bar quantifier) 
+    :head :left-edge 
+  :form np
+  :referent (:function allowable-post-quantifier? left-edge right-edge))
+
+(def-syntax-rule (np quantifier) 
+    :head :left-edge 
+  :form np
+  :referent (:function allowable-post-quantifier? left-edge right-edge))
+
+(defun allowable-post-quantifier? (n quant)
+  ;; for "RSK1 and RSK2 both"
+  (when (and (itypep n 'collection)
+             (or (itypep quant 'both) (itypep quant 'all)))
+    (or *subcat-test*
+        (bind-dli-variable 'quantifier quant n))))
+
+
+
 #+ignore ;;THIS ALLOWS FOR "during the process"
 ;; RUSTY -- What was wrong with this rule? (Other than it being a method call)
 (def-form-rule (sequencer np)
   :form np
   :referent (:method determiner-noun left-edge right-edge))
+
+
 
 
 ;;;-------------
