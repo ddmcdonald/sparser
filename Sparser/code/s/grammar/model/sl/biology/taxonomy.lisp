@@ -203,8 +203,7 @@
 
 (define-category bio-quality :specializes bio-predication
   :mixins (biological
-           of-participant-bio-predication
-           temporally-localized) ;; provides time, certainty modifiers
+           of-participant-bio-predication)
   )
 
 (define-category bio-scalar
@@ -269,6 +268,7 @@
          :of group-members))
 
 (def-synonym bio-grouping (:noun "set"))
+(def-synonym bio-grouping (:noun "subset"))
 (def-synonym bio-grouping (:noun "collection"))
 (def-synonym bio-grouping (:noun "family"))
 
@@ -455,9 +455,8 @@
            bio-thatcomp bio-whethercomp
            with-measurement bio-howcomp)
   :restrict ((agent
-              (:or ;; pronoun/first/plural
-               ;; PRONOUN/FIRST/SINGULAR ;; in dialog, not typical in journals
-               ;; pronoun/plural ;; "they"
+              (:or
+               bio-grouping ;; a group/set/subset...
                organism ;; "these animals showed..."
                these
                ;; bio-entity too general -- leads to problems with created semantic rules
