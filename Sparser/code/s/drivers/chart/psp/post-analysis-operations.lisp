@@ -380,9 +380,9 @@ is replaced with replacement."
 
 
 (defun lift-location-out-of-theme (i top-edge)
-  ;; Move the location edge to the VP (as its ETF does (see transitive-loc-comp).
-  ;; Make a new version of the theme that leaves off the location.
-  ;; Have the whole region rescanned for its (now revised) mention structure .
+  "Move the location edge to the VP (as its ETF does, see transitive-loc-comp).
+   Make a new version of the theme that leaves off the location.
+   Have the whole region rescanned for its (now revised) mention structure."
   (assert (itypep i 'move-something-verb))
   (let* ((theme (value-of 'theme i))
          (location (when theme (value-of 'location theme))))
@@ -390,8 +390,14 @@ is replaced with replacement."
       ;; now find the edge of the location below the edge for the theme
       (let ((loc-edge (search-tree-for-referent top-edge location)))
         (when loc-edge
-          (let* ((revised-theme (copy-indiv-minus-variable
-                                 theme 'location))
+          (let* ((last-var-bound (most-recent-binding theme))
+                 ;; Most likely it's the location and we can be delicate.
+                 ;; Otherwise we use a kudgle.
+                 (revised-theme (if (eq (var-name last-var-bound)
+                                        'location)
+                                  (prior-individual theme)
+                                  (copy-indiv-minus-variable
+                                   theme 'location)))
                  (j (rebind-variable 'theme revised-theme i))
                  (k (bind-variable 'location location j))
                  (parent-of-loc (edge-used-in loc-edge)) ;; np: np+pp
