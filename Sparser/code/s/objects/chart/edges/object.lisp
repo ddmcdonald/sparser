@@ -335,6 +335,9 @@ code is make-edge-over-abbreviation and its feeders. |#
 (defun edge-starting-position (position)
   (ev-position (edge-starts-at position)))
 
+(defun edge-ending-position (position)
+  (ev-position (edge-ends-at position)))
+
 
 (defun edges/starting-at (position)
   (pos-starts-here position))
