@@ -19,7 +19,7 @@
   :bindings (uid  "GO:0043687")
   :mixins (on-substrate with-specified-amino-acid)               
   :binds (;; allow variant to pick up "phosphorylated fraction"
-	  (site molecular-location)) ;; which is attached here
+	  (site (:or molecular-location residue))) ;; which is attached here
   :restrict ((agent (:or protein bio-complex bio-mechanism bio-activate peptide )) ;;bio-process
 	     (object blocked-category)) ;; trying to BLOCK object by giving it an impossible class
   :realization 
@@ -38,6 +38,7 @@
 	 :at site
 	 :in site
          :in substrate
+         :on substrate ;; the tyrosine residues hyperphosphorylated on p130 CAS
 	 :m site
 	 :on site))			    
 
