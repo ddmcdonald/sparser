@@ -127,8 +127,28 @@ returning a new one.
      (attach-binding-to-category var/name value individual))
     (*description-lattice*
      (setq individual (look-for-ambiguous-variables individual var/name))
+     (when (individual-p value)
+       (setq value (look-for-over-ridden-variables value)))
      (find-or-make-lattice-subordinate individual var/name value category))
     (t (old-bind-variable var/name value individual category))))
+
+(defun make-maximal-projection (indiv)
+  "The value is now being used as a modifier of another entity -- so it is no longer on the head line, and will no longer have modifiers attached to it -- barring DA rules?"
+  (let ((binding-to-override
+         (loop for binding in (indiv-binds indiv)
+               when
+                 (and
+                  (disjunctive-lambda-variable-p (binding-variable binding))
+                  (eq (var-name (binding-variable binding)) 'agent-or-object))
+               do (return binding))))
+    (when binding-to-override
+      (setf (indiv-binds indiv)
+            (remove binding-to-override
+                   (indiv-binds indiv)))
+      (print (list 'over-ridden (semtree indiv))))
+    indiv))
+          
+
 
 
 (defun bind-variable (var/name value individual &optional category)
@@ -227,11 +247,12 @@ returning a new one.
   "Called from bind-dli-variable, where it has to return the individual,
    original or as modified to do any local disambiguation."
   (let ((ambiguous-binding
-         (loop for binding in (binds individual)
-            when (and (disjunctive-lambda-variable-p (binding-variable binding))
-                      (loop for v in (dvar-variables (binding-variable binding))
-                         thereis (or (eq v var/name) (eq (var-name v) var/name))))
-            do (return binding))))
+         (when (individual-p individual)
+           (loop for binding in (binds individual)
+                 when (and (disjunctive-lambda-variable-p (binding-variable binding))
+                           (loop for v in (dvar-variables (binding-variable binding))
+                                 thereis (or (eq v var/name) (eq (var-name v) var/name))))
+                 do (return binding)))))
     (if ambiguous-binding
       (setq individual
             (perform-local-variable-disambiguation ambiguous-binding var/name individual))
@@ -254,6 +275,50 @@ returning a new one.
 		(binding-value binding)
 		new)))
     new))
+
+(defun look-for-over-ridden-variables (individual)
+  "Called from bind-dli-variable, where it has to return the individual,
+   original or as modified to do any local disambiguation."
+  (let ((over-ridden-binding
+         (loop for binding in (binds individual)
+               when (and (disjunctive-lambda-variable-p (binding-variable binding))
+                         (eq (var-name (binding-variable binding)) 'agent-or-object))
+            do (return binding))))
+    (if over-ridden-binding
+      (setq individual
+            (perform-over-ridden-variable-disambiguation
+             over-ridden-binding 'agent individual))
+      individual)))
+
+
+(defun perform-over-ridden-variable-disambiguation (over-ridden-binding var/name i)
+  (let* ((new (find-or-make-lattice-description-for-cat-list (indiv-type i)))
+	 (over-ridden-var (binding-variable over-ridden-binding))
+	 (over-ridden-variables (dvar-variables over-ridden-var))
+         (left *left-edge-into-reference*)
+         (right *right-edge-into-reference*))
+   
+    (loop for binding in (reverse (indiv-binds i))
+       do
+	 (setq new
+	       (bind-dli-variable
+		(disambiguated-variable binding over-ridden-binding
+                                        over-ridden-variables
+                                        var/name)
+		(binding-value binding)
+		new)))
+    (cond ((and (edge-p left) (eq i (edge-referent left)))
+           ;; typically for a noun-type premodifier
+           (reinterpret-edge? left i new))
+          ((and (edge-p right) (eq i (edge-referent right)))
+           ;; typically for a noun-type premodifier
+           (reinterpret-edge? right i new)))
+          
+    new))
+
+(defun reinterpret-edge? (edge old-indiv new-indiv)
+  (declare (special edge old-indiv new-indiv))
+  (set-edge-referent edge new-indiv))
 
 (defparameter *break-on-ambiguous-variable* nil)
 (defparameter *quiet-ambiguous-variable* t)
