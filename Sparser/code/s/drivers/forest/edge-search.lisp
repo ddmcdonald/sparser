@@ -120,29 +120,22 @@
 
 
 
-(defparameter *use-broader-set-of-tts* t)
-
 (defun best-treetop-rule (sentence)
   ;; feeder routine in whack-a-rule-cycle that identifies
   ;; all of the treetop edges that are pairwise adjacent
   ;; using adjacent-tts and winnows that list down using
   ;; filter-rules-by-local-competition
-  (let ((pairs (if *use-broader-set-of-tts*
-                 (adjacent-tt-pairs sentence)
-                 (adjacent-tts)))
-        rule  triples )
+  (let ((pairs (adjacent-tt-pairs sentence))
+        rule  triples grouped-triples)
     ;;(push-debug `(,pairs))
     (tr :pairs-to-consider-whacking pairs)
     (loop for pair in pairs 
       when (setq rule (rule-for-edge-pair pair))
-      do (push (cons rule pair)
-               triples))
+      do (push (cons rule pair) triples))
     (unless triples
       (let ((new-pairs
              (loop for pair in (adjacent-tt-pairs sentence)
-                unless (or (member pair pairs :test #'equal)
-                           (bad-edge? (first pair))
-                           (bad-edge? (second pair)))
+                unless (member pair pairs :test #'equal)
 	       collect pair)))
 	(when new-pairs
 	  (format t "~&old set of pairs~s~&new set of pairs: ~s" pairs new-pairs)
@@ -151,11 +144,9 @@
 	     do (push (cons rule pair)
 		      triples)))))
     (setq triples
-          (if *use-broader-set-of-tts*
-            (let ((original-triples (copy-list triples))) ;; for trace
-              (push-debug `(,original-triples))
-              (remove-surplus-literal-compositions triples))
-            triples))
+          (let ((original-triples (copy-list triples))) ;; for trace
+            (push-debug `(,original-triples))
+            (remove-surplus-literal-compositions triples)))
     ;; (break "triples")
     (let ((triple (filter-rules-by-local-competition triples)))
       (tr :filter-selected-triple triple)
@@ -305,17 +296,55 @@
       ;; use ref/function as a predicate!!
       (ref/function (cdr (cfr-referent rule))))))
 
-
+(defparameter *losing-competitions* nil)
 
 (defun filter-rules-by-local-competition (triples)
-  (loop for tail on triples
-    ;; Go through every pair of triples. Establish whether
-    ;; they are competing over an edges that they have
-    ;; in common, and apply heuristics to determine
-    ;; which one to permit to win.
-    unless (and (cadr tail)
-                (losing-competition?  (cadr tail) (car tail)))
-        do (return (car tail))))
+  "triples consist of pairs of adjacent edges, headed by a rule that is syntactically and semantically appropriate to the pair of edges. Triples are ordered right-to-left, with possible duplicating edge spans due to ambiguous definitions. Default is to take the rightmost triple, unless there is some evidence that the second edge should be left-extended as part of a NP or a VP"
+
+  (multiple-value-bind (first-group second-group)
+      (first-two-groups triples)
+    (or (left-winner? first-group second-group)
+        (car first-group))))
+
+(defun left-winner? (first-group second-group)
+  (when second-group
+    (loop for first-triple in first-group
+          do
+            (loop for second-triple in second-group
+                  when (losing-competition? second-triple first-triple)
+                  do
+                    ;;#+ignore ;; used only to check where losing-competition? succeeds
+                    (push (list (car second-triple)
+                                (car first-triple)
+                                (sentence-string *sentence-in-core*))
+                          *losing-competitions*)
+                    (return-from left-winner? second-triple)))))
+
+
+(defun first-two-groups (triples)
+  (multiple-value-bind (first-group rest)
+      (group-first-triples-by-span triples)
+    (values first-group
+            (when rest
+              (group-first-triples-by-span rest)))))
+
+(defun group-first-triples-by-span (triples)
+  "create a list of all initial triples which cover the same span -- only happens
+for ambiguous words"
+  (let ((group (if (consp (caar triples))
+                   (car triples)
+                   (list (car triples))))
+        (rest (cdr triples)))
+    (loop while (and
+                 rest
+                 (eq (edge-starting-position (second (car group)))
+                     (edge-starting-position (second (car rest))))
+                 (eq (edge-ending-position (third (car group)))
+                     (edge-ending-position (third (car rest)))))
+          do
+            (setq group `(,.group ,(car rest)))
+            (setq rest (cdr rest)))
+    (values group rest)))
 
 (defparameter *l-triple-tests* nil)
 (defun l-triple-tests ()
@@ -336,7 +365,137 @@
               (,category::infinitive  ,category::np)
               (,category::infinitive  ,category::n-bar)))))
 
+(defparameter *rule-with-non-category* nil)
+
 (defun losing-competition? (l-triple r-triple)
+  (declare (special r-triple l-triple category::as
+                    category::adjective*NG-HEAD-CATEGORIES*
+                    *ADJG-HEAD-CATEGORIES* *VG-HEAD-CATEGORIES*))
+  ;; goal here is to put off subject attachment until the subject 
+  ;; is as large as possible.
+  ;; Don't do right-to-left activation for the subj+verb rules
+  ;;(print `(dropping rule ,r-triple))
+  ;;(print `(in *p-sent* ,*p-sent* dropping rule ,r-triple compared to ,l-triple))
+  (when (and (eq (second r-triple) (third l-triple))
+             (not (high-priority-postmod? r-triple)))
+    ;; there is an edge which is being competed for
+    (let* ((l-triple-rhs (cfr-rhs (car l-triple)))
+           (l-triple-left (cat-symbol (car l-triple-rhs)))
+           (r-triple-3 (third r-triple)))
+      (declare (special l-triple-rhs l-triple-left triple-1-rhs r-triple-3))
+      ;;(lsp-break "compete")
+      (or
+       (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
+       (and
+        (member l-triple-rhs (l-triple-tests) :test #'equal)
+        ;; likely competition against a relative clause or a main clause
+        ;;  accept r-triple as a winner if if is a rightward extension of and NP
+        ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
+        (or
+         (and (eq (cat-name (edge-form r-triple-3)) 'pp)
+              (member (edge-left-daughter (edge-left-daughter r-triple-3))
+                      (get-tag :loc-pp-complement (itype-of (edge-referent (second l-triple)))))
+              (not (some-edge-satisfying? (edges-after r-triple-3) #'pp?)))
+         (not (member (cat-name (edge-form r-triple-3))
+                      '(pp
+                        ;; "To validate the use of an in vitro system to dissect the mechanism of Ras regulation.
+                        to-comp where-relative-clause when-relative-clause
+                        subject-relative-clause comma-separated-subject-relative-clause)))))
+       (losing-to-leftwards-pp? l-triple r-triple)
+       ))))
+
+(defun losing-to-leftwards-pp? (l-triple r-triple)
+  (let ((r-triple-rhs (cfr-rhs (car r-triple))))
+    (and
+     (prep? (cat-symbol (car (cfr-rhs (car l-triple))))) ;;l-triple-left
+     (not (subordinate-conjunction? l-triple))
+     (or (not (possible-spatio-temporal-prep? l-triple))
+         (itypep (edge-referent (third l-triple)) 'process))
+     ;; "until" is both a preposition and a subordinate conjunction
+     ;; causes problems with "Does the amount of phosphorylated MAP2K1 remain low until phosphorylated BRAF reaches a high value?"
+     (not (eq (edge-category (second l-triple)) category::as))
+     ;; almost always a use of "as" as a subordinate conjunction
+  
+     (not
+      (and (edge-p (edge-left-daughter (third r-triple)))
+           (eq category::adjective 
+               (edge-form (edge-left-daughter (third r-triple))))))
+     (or
+      (pp-relative-clause? r-triple)    
+      (memq (cat-symbol (second r-triple-rhs))
+            '(category::vg category::vp category::vg+ed category::vp+ed
+              category::vp+past
+              category::vg+passive category::vp+passive
+              category::copular-pp
+              ;;category::comma-separated-subject-relative-clause
+              ))
+      ;; this is needed because the schema based rules generate rules in terms of 
+      ;;  semantics and not syntax, so we have phosphorylate+ed and not vp/+ed
+      (memq (second (cfr-rhs-forms (car r-triple)))
+            '(vg vp vg+ed vg+ed vp+ed vp+past vg+passive vp+passive
+              vg/+ed vg/+ed vp/+ed vg/+passive vp/+passive
+              ;;comma-separated-subject-relative-clause
+              )))
+
+     (pp-absorbing-edge? (edge-just-to-left-of (second l-triple))))))
+
+(defun pp-absorbing-edge? (preceding-edge)
+  ;; there must be a constituent which can absorb the result of
+  ;; the left competing rule
+  (let ((sym (safe-edge-form preceding-edge)))
+    (or
+     (member sym *ng-head-categories*)
+     (member sym *vg-head-categories*)
+     (member sym *adjg-head-categories*)
+     (member sym 
+             '(category::vp category::vg 
+               category::vg+ed category::vp+ed category::vp+past 
+               category::vg+ing category::vp+ing
+               category::vg+passive category::vp+passive
+               category::adverb)))))
+
+
+(defun safe-edge-form (edge? &aux (ef (and (edge-p edge?)
+                                           (edge-form edge?))))
+  ;; got a case with COMMA as a literal edge
+  (when ef (cat-symbol ef)))
+
+(defun high-priority-postmod? (r-triple &aux (r-triple-rhs (cfr-rhs (car r-triple))))
+  (and ;; need to generalize this for "high priority" NP post-modifiers
+   (category-p (second r-triple-rhs))
+   (or (member (cat-name (second r-triple-rhs)) '(in-vitro in-vivo))
+       (eq (cat-name (edge-form (third r-triple)))
+           'object-relative-clause))))
+
+(defun pp-relative-clause? (r-triple &aux (r-triple-rhs (cfr-rhs (car r-triple))))
+  ;; pp starting a relative clause -- "in which"
+  (and 
+   (memq (cat-symbol (car r-triple-rhs))
+         '(category::which category::who category::whom category::where))
+   (eq (cat-symbol (second r-triple-rhs)) 'category::s)))
+
+(defun prep? (cat)
+  (memq cat '(category::preposition category::spatial-preposition
+              category::spatio-temporal-preposition)))
+
+(defun possible-spatio-temporal-prep? (l-triple)
+  (declare (special category::spatio-temporal-preposition))
+  (loop for e in (all-edges-at (second l-triple))
+     thereis
+       (eq (edge-form e) category::spatio-temporal-preposition)))
+
+
+(defun subordinate-conjunction? (l-triple)
+  (declare (special category::subordinate-conjunction))
+  (loop for e in (all-edges-at (second l-triple))
+     thereis
+       (eq (edge-form e) category::subordinate-conjunction)))
+
+
+;;; OBSOLETE CODE -- FOR REFERENCE AND LATER DELETION
+
+
+(defun old-losing-competition? (l-triple r-triple)
   (declare (special r-triple l-triple
                     category::as category::adjective                    
                     *NG-HEAD-CATEGORIES* *ADJG-HEAD-CATEGORIES* *VG-HEAD-CATEGORIES*))
@@ -348,13 +507,9 @@
   (when (eq (second r-triple) (third l-triple))	
     ;; there is an edge which is being competed for
     (let* ((l-triple-rhs (cfr-rhs (car l-triple)))
-           (l-triple-left (if (category-p (car l-triple-rhs))
-			      (cat-symbol (car l-triple-rhs))
-			      (car l-triple-rhs)))
+           (l-triple-left (cat-symbol (car l-triple-rhs)))
            (r-triple-rhs (cfr-rhs (car r-triple)))
-           (r-triple-left (if (category-p (car r-triple-rhs))
-			      (cat-symbol (car r-triple-rhs))
-			      (car r-triple-rhs)))
+           (r-triple-left (cat-symbol (car r-triple-rhs)))
            (r-triple-right 
             (when (category-p (second r-triple-rhs))
               (cat-symbol (second r-triple-rhs))))
@@ -376,8 +531,7 @@
 
          (eq 'category::syntactic-there l-triple-left) ;; competing against a "there BE"
 	 (and
-	  (member l-triple-rhs (l-triple-tests)
-                  :test #'equal)
+	  (member l-triple-rhs (l-triple-tests) :test #'equal)
 	  ;; likely competition against a relative clause or a main clause
 	  ;;  accept r-triple as a winner if if is a rightward extension of and NP
 	  ;; e.g. "...the molecular mechanisms that regulate ERK nuclear translocation are not fully understood."
@@ -443,22 +597,3 @@
 		       category::vg+ing category::vp+ing
 		       category::vg+passive category::vp+passive
 		       category::adverb))))))))))
-
-(defun prep? (cat)
-  (memq cat '(category::preposition category::spatial-preposition
-              category::spatio-temporal-preposition)))
-
-(defun possible-spatio-temporal-prep? (l-triple)
-  (declare (special category::spatio-temporal-preposition))
-  (loop for e in (all-edges-at (second l-triple))
-     thereis
-       (eq (edge-form e) category::spatio-temporal-preposition)))
-
-
-(defun subordinate-conjunction? (l-triple)
-  (declare (special category::subordinate-conjunction))
-  (loop for e in (all-edges-at (second l-triple))
-     thereis
-       (eq (edge-form e) category::subordinate-conjunction)))
-
-
