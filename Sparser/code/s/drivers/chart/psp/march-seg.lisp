@@ -360,18 +360,6 @@
     (not (member (cat-symbol (edge-form edge)) *vg-word-categories*)))
    (t t)))
 
-;;%%%%%% replacing with adjacent-tts whose code is identical
-(defun adjacent-segment-tts (edges)
-  (loop for edges on edges 
-    while (cdr edges) 
-    when (and 
-          (edge-p (car edges)) 
-          (edge-p (second edges))
-          (adjacent-edges? (car edges) (second edges)))
-    collect
-    (list (car edges)(second edges))))
-
-
 (defun add-chunk-edges-snapshot ()
   (push (loop for edge in (treetops-in-current-chunk)
           collect 
