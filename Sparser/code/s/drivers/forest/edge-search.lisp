@@ -298,6 +298,9 @@
 
 (defparameter *losing-competitions* nil)
 
+
+;; Major change to coding of filter-rules-by-local-competition
+;;  much more readable, and that has allowed a revision to handle ambiguous edges correctly
 (defun filter-rules-by-local-competition (triples)
   "triples consist of pairs of adjacent edges, headed by a rule that is syntactically and semantically appropriate to the pair of edges. Triples are ordered right-to-left, with possible duplicating edge spans due to ambiguous definitions. Default is to take the rightmost triple, unless there is some evidence that the second edge should be left-extended as part of a NP or a VP"
 
