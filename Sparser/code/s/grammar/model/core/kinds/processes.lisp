@@ -32,6 +32,44 @@
           (progressive  category)
           (perfect  category)))
 
+#| ;; this used to be defined, but it causes circularity -- merging it with 
+;; temporally-localized
+(define-category with-certainty
+  :specializes event-relation
+  :binds ((certainty certainty))
+  :realization
+    (:with certainty))
+|#
+
+(define-mixin-category temporally-localized
+  :specializes relation
+  :instantiates nil
+  :index (:list)
+  :binds ((certainty certainty) ;; originally from with-certainty
+          
+          (following process)
+          (preceding process)
+          (during process)
+          (after (:or time-unit
+                      time ;; for "any time"
+                      amount-of-time))
+          (before (:or time-unit time amount-of-time))
+          (timeperiod (:or time-unit time amount-of-time)))
+  :realization
+  (:with certainty   ;; originally from with-certainty
+     :for timeperiod
+     :over timeperiod
+     :at timeperiod
+     :in timeperiod
+     :upon following
+     :after following
+     :following following
+     :before preceding
+     :during during
+     :after after
+     :before before))
+
+
 (define-category  perdurant
   :instantiates self
   :specializes top
@@ -113,6 +151,14 @@
  actually a state. Lambda abstraction would do this nicely, especially
  if we type the abstracted participant.")
 
+(define-category event-relation
+  :specializes perdurant
+  :binds ((relation)
+          (event)
+          (subordinated-event))
+  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
+    though the head decides what to do with it based on the
+    composition. Same design as pps.")
 
 (define-category process
   :specializes perdurant

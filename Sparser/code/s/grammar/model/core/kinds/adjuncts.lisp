@@ -18,46 +18,10 @@
     ;; through what to do. Inheriting from 'relation' as
 ;; this did originally leads to a circular lattice
 
-(define-category event-relation
-  :specializes top
-  :binds ((relation)
-          (event)
-          (subordinated-event))
-  :documentation "This picks up phrases like 'Thus MEK phosphorylates ERK...'
-    though the head decides what to do with it based on the
-    composition. Same design as pps.")
-(mark-as-form-category category::event-relation)
 
-(define-category with-certainty
-  :specializes event-relation
-  :binds ((certainty certainty))
-  :realization
-    (:with certainty))
+;;(mark-as-form-category category::event-relation)
 
-(define-category temporally-localized
-  :specializes with-certainty
-  :instantiates :self
-  :index (:list)
-  :binds ((following process)
-          (preceding process)
-          (during process)
-          (after (:or time-unit
-                      time ;; for "any time"
-                      amount-of-time))
-          (before (:or time-unit time amount-of-time))
-          (timeperiod (:or time-unit time amount-of-time)))
-  :realization
-    (:for timeperiod
-     :over timeperiod
-     :at timeperiod
-     :in timeperiod
-     :upon following
-     :after following
-     :following following
-     :before preceding
-     :during during
-     :after after
-     :before before))
+
 
 
 
