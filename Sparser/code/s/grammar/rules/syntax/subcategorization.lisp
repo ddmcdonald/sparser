@@ -1064,32 +1064,24 @@
 
 
 (defun check-overridden-vars (pats item head)
-  (cond
-    ((and
-      (eq (length pats) 2)
-      (eq (subcat-label (first pats)) :m)
-      (member (var-name (subcat-variable (first pats))) '(agent object))
-      (member (var-name (subcat-variable (second pats))) '(agent object)))
-     #+ignore
-     (warn "over-riding agent in favor of object for ~s ~s in ~s~%"
-           item head (sentence-string *sentence-in-core*))
-     (if (eq (var-name (subcat-variable (first pats))) 'object)
-         (list (second pats))
-         (list (first pats))))
-    (t
-     (let (over-ridden)
-       (loop for pat in pats
+  ;; remove code for doing an immediate over-ride of premodifiers that
+  ;;  are ambiguous between agent and object -- this is now done ONLY when
+  ;;  the ambiguity is still present when the individual becomes a maximal
+  ;;  projection -- i.e. it is bound to a variable inside another individual
+  ;;  See code in bind-dli-variable
+  (let (over-ridden)
+    (loop for pat in pats
           do
             (loop for p in pats
-               when
-                 (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
-                      (not (consp (subcat-restriction p)))
-                      (if (consp (subcat-restriction pat))
-                          (loop for i in (cdr (subcat-restriction pat))
-                             thereis (itypep i (subcat-restriction p)))
-                          (itypep (subcat-restriction pat) (subcat-restriction p))))
-               do (push p over-ridden)))
-       over-ridden))))
+                  when
+                    (and (not (eq (subcat-restriction p) (subcat-restriction pat)))
+                         (not (consp (subcat-restriction p)))
+                         (if (consp (subcat-restriction pat))
+                             (loop for i in (cdr (subcat-restriction pat))
+                                   thereis (itypep i (subcat-restriction p)))
+                             (itypep (subcat-restriction pat) (subcat-restriction p))))
+                  do (push p over-ridden)))
+    over-ridden))
 
 (defun note-failed-tests (item restriction)
   ;; return non-null when tests failed
